@@ -1,19 +1,19 @@
-# TITRE CALCUL AVEC IMPEDANCE TEMPORELLE DANS UN BATIMENT 
+# TITRE CALCUL AVEC IMPEDANCE TEMPORELLE DANS UN BATIMENT
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
@@ -74,10 +74,10 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=4.E10,
 MAT_NL=DEFI_MATERIAU(DIS_ECRO_CINE =_F(    # DEFINIR DANS LE REPERE LOCAL !!!!!!!! La raideur globale en X correspond a la raideur locale en Z
                           LIMY_DX = ltr_ledz, KCIN_DX = ltr_kcdz,
                           LIMY_DY = ltr_ledy, KCIN_DY = ltr_kcdy,
-                          LIMY_DZ = ltr_ledx, KCIN_DZ = ltr_kcdx,                          
-                          LIMY_RX = ltr_lerz, KCIN_RX = ltr_kcrz, 
-                          LIMY_RY = ltr_lery, KCIN_RY = ltr_kcry, 
-                          LIMY_RZ = ltr_lerx, KCIN_RZ = ltr_kcrx,), 
+                          LIMY_DZ = ltr_ledx, KCIN_DZ = ltr_kcdx,
+                          LIMY_RX = ltr_lerz, KCIN_RX = ltr_kcrz,
+                          LIMY_RY = ltr_lery, KCIN_RY = ltr_kcry,
+                          LIMY_RZ = ltr_lerx, KCIN_RZ = ltr_kcrx,),
                       );
 
 
@@ -156,7 +156,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=STICKMOD,
 
 #*****************************************************************
 #
-#      DEFINITION DES CONDITIONS AUX LIMITES    
+#      DEFINITION DES CONDITIONS AUX LIMITES
 #
 #
 
@@ -182,7 +182,7 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=STICKMOD,
 #                 INFO=1,
 #                 MASS_INER=_F(TOUT='OUI',
 #                              GROUP_MA=('BK','MASSES',),),);
-                             
+
 #IMPR_TABLE(TABLE=MASSE);
 #
 #*****************************************************************
@@ -245,10 +245,10 @@ INTERDYN=DEFI_INTERF_DYNA(NUME_DDL=NUMEROTA,
                           INTERFACE=_F(NOM='DROITE',
                                        TYPE='CRAIGB',
                                        GROUP_NO='CENT_RAD',),);
-                                       
+
 MODSTA=MODE_STATIQUE(  MATR_RIGI=MATRRIGI,
                      MODE_STAT=_F(
-                     GROUP_NO = 'CENT_RAD', 
+                     GROUP_NO = 'CENT_RAD',
                      AVEC_CMP = ('DX','DY','DZ','DRX','DRY','DRZ'),
                                  ));
 
@@ -259,7 +259,7 @@ BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE,
                              ),
                        INTERF_DYNA=INTERDYN,
                        NUME_REF=NUMEROTA,);
-                       
+
 NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',);
 
 
@@ -267,13 +267,13 @@ NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',);
 #-----------------------------
 #
 #    DEFI_FONCTION : UL 33
-#    ACCELEROGRAMME : LBEW 
+#    ACCELEROGRAMME : LBEW
 #    (LONG BEACH NORTH SOUTH)
 #
 #-----------------------------
 #
 #    DEFI_FONCTION : UL 34
-#    ACCELEROGRAMME : LBNS 
+#    ACCELEROGRAMME : LBNS
 #    (LONG BEACH EAST WEST)
 #
 
@@ -319,51 +319,51 @@ dt_lap = pas_arch * dt
 
 linst = DEFI_LIST_REEL ( DEBUT = 0.,
                           INTERVALLE = (
-                                      _F( 
+                                      _F(
                                          JUSQU_A = (N-1)*dt,
                                          PAS=1*dt,
                                          ),
                                        ),
                            );
-                           
+
 ACCEX0=CALC_FONCTION(COMB=_F(FONCTION=LBNS,
                                COEF=1.5,),
                        LIST_PARA=linst,);
-                       
+
 ACCEY0=CALC_FONCTION(COMB=_F(FONCTION=LBEW,
                                COEF=1.5,),
                        LIST_PARA=linst,);
 
 
 ACCEX=CALC_FONCTION(CORR_ACCE=_F(FONCTION=ACCEX0,), );
-                       
+
 vitex=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEX,));
 
 deplx0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitex,));
 
 deplxF=FORMULE(NOM_PARA='INST',
             VALE='deplx0(INST)-(INST*deplx0(19.99)/19.99)')
-            
+
 deplx=CALC_FONC_INTERP(FONCTION=deplxF, NOM_PARA = 'INST',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
                         LIST_PARA=linst);
-                       
-                       
+
+
 ACCEY=CALC_FONCTION(CORR_ACCE=_F(FONCTION=ACCEY0,), );
-                       
+
 vitey=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEY,));
 
 deply0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitey,));
 
 deplyF=FORMULE(NOM_PARA='INST',
             VALE='deply0(INST)-(INST*deply0(19.99)/19.99)')
-            
+
 deply=CALC_FONC_INTERP(FONCTION=deplyF, NOM_PARA = 'INST',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=linst);       
-                       
+                        LIST_PARA=linst);
+
 TABSOL = DEFI_SOL_MISS(
    TITRE="SOL STRATIFIE",
    MATERIAU=(
@@ -417,22 +417,22 @@ CALC_MISS(
         SPEC_NB=16384,
     ),
 );
-        
+
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31,);
- 
-impe = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,           
+
+impe = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,
                         UNITE_RESU_IMPE=31, FREQ_EXTR=3.,
                         SYME='OUI',
                         #TYPE='BINAIRE',
                            );
-                           
-impe0 = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,              
+
+impe0 = LIRE_IMPE_MISS(BASE=BAMO, NUME_DDL_GENE=NDDLGEN,
                         UNITE_RESU_IMPE=31, FREQ_EXTR=0.3,
                         SYME='OUI',
                         #TYPE='BINAIRE',
                            );
-                           
-                        
+
+
 rito=COMB_MATR_ASSE(COMB_R=(
                              _F(MATR_ASSE=impe0,
                              #_F(MATR_ASSE=impe,
@@ -441,7 +441,7 @@ rito=COMB_MATR_ASSE(COMB_R=(
                              ),
                                 SANS_CMP='LAGR',
                     );
-                    
+
 mato=COMB_MATR_ASSE(COMB_R=(
                              _F(MATR_ASSE=impe0,
                                 PARTIE='REEL',
@@ -454,7 +454,7 @@ mato=COMB_MATR_ASSE(COMB_R=(
                             ),
                                 SANS_CMP='LAGR',
                     );
- 
+
 amto=COMB_MATR_ASSE(COMB_R=(
                              _F(MATR_ASSE=impe,
                                 PARTIE='IMAG',
@@ -468,7 +468,7 @@ amto=COMB_MATR_ASSE(COMB_R=(
                             ),
                                 SANS_CMP='LAGR',
                    );
- 
+
 amto2=COMB_MATR_ASSE(COMB_R=(
                              _F(MATR_ASSE=impe,
                                 PARTIE='IMAG',
@@ -482,18 +482,18 @@ amto2=COMB_MATR_ASSE(COMB_R=(
 # from numpy import fft, exp, linalg, diag, zeros, real, eye, dot, float, complex
 # from numpy.fft import ifft
 # from numpy import remainder, fmod
-# 
+#
 # import os
 # import shutil
-# 
+#
 # DR = 5. #DREF
 # dt = 0.01
-# N = 2000 # 
+# N = 2000 #
 # factor = 1
 # NF = factor*N
 # epsilon = 1.0e-10
-# 
-# CALC_LAPL_TEMPS( 
+#
+# CALC_LAPL_TEMPS(
 #     INST_FIN = 20,
 #     PRECISION = 1E-10,
 #     PAS_INST = 0.01,
@@ -517,7 +517,7 @@ amto2=COMB_MATR_ASSE(COMB_R=(
 #                  MATR_MASS = mato,
 #                  MATR_RIGI = rito,
 #                  MATR_AMOR = amto2,
-#                   ), 
+#                   ),
 #                );
 
 CALC_MISS(
@@ -565,15 +565,15 @@ CALC_MISS(
 MATK = LIRE_IMPE_MISS(UNITE_RESU_IMPE=35, INST_EXTR=0.0,
                       SYME='OUI',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
-                      
+
 MATC = LIRE_IMPE_MISS(UNITE_RESU_IMPE=37, INST_EXTR=0.0,
                       SYME='OUI',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
-                      
+
 MATM = LIRE_IMPE_MISS(UNITE_RESU_IMPE=38, INST_EXTR=0.0,
                       SYME='OUI',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
-                      
+
 # Termes Z0
 
 MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
@@ -582,11 +582,11 @@ MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
                        MATR_IMPE_MASS = MATM,
                        SANS_GROUP_NO='RADIER',
                        );
-                       
+
 #IMPR_CO(CONCEPT=_F(NOM=MAEL));
-                       
+
 IMPR_CO(CHAINE='MAEL    .LINO');
-                                              
+
 MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                           _F(MACR_ELEM=MAEL,
                              SUPER_MAILLE='STAT1',),
@@ -594,7 +594,7 @@ MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                       RECO_GLOBAL=_F(TOUT='OUI',),
                       DEFI_NOEUD=_F(TOUT='OUI',
                                      INDEX=(1,0,1,8,),),);
-                                     
+
 MAILB=ASSE_MAILLAGE(MAILLAGE_1=MAILLAGE,
                     MAILLAGE_2=MAYADYN,
                     OPERATION='SOUS_STR',);
@@ -615,7 +615,7 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                               MODELISATION='DKT',),
                            ),
                      );
-                     
+
 ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                         POUTRE=(_F(GROUP_MA='BK1',
                                    SECTION='GENERALE',
@@ -672,7 +672,7 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                                     VALE=(0.,0.,0.,0.,0.,0.,),),
                                ),
                      );
-                     
+
 # POST_TRAITEMENT
 #          CALCUL DES SPECTRES DE PLANCHERS AU NIVEAU DU
 #          RADIER (-5.80 M) ET DU SOMMET
@@ -682,7 +682,7 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
 COND_LIB=AFFE_CHAR_MECA(MODELE=MODELB,
                         LIAISON_SOLIDE=_F(GROUP_NO=('CENT_RAD','RADIER'),),
                         );
-                        
+
 CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
                      AFFE=(
                                _F(GROUP_MA=('MASSES','RADIER',),
@@ -693,8 +693,8 @@ CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
                                MATER=MAT,
                                 ),
                              ),
-                     );       
-                                                                                          
+                     );
+
 ASSEMBLAGE(MODELE=MODELB,
                 CHAM_MATER=CHMATB,
                 CARA_ELEM=ELEMB,
@@ -715,8 +715,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                                    JUSQU_A=(N_DNL-1)*dt,
                                    PAS=dt,),
                      );
-                     
-                          
+
+
 CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                  FORCE_SOL=_F(#SUPER_MAILLE='STAT1',
                              GROUP_NO_INTERF='CENT_RAD',
@@ -726,7 +726,7 @@ CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                              UNITE_RESU_FORC=36,
                              ),
                       );
-                      
+
 
 DYNA=DYNA_NON_LINE(MODELE=MODELB,
                  CHAM_MATER=CHMATB,
@@ -754,31 +754,31 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,
                  INCREMENT=_F(LIST_INST=L_INST,
 #                 INST_FIN=1.,
                  ),
-                 ARCHIVAGE=_F(PAS_ARCH=pas_arch,),             
+                 ARCHIVAGE=_F(PAS_ARCH=pas_arch,),
                           );
-                                                         
-                  
+
+
 freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
                           INTERVALLE = (
-                                      _F( 
+                                      _F(
                                          JUSQU_A = 15.,
                                          NOMBRE = 149,
                                        ),
-                                      _F( 
+                                      _F(
                                          JUSQU_A = 35.,
                                          NOMBRE = 80,
                                        ),
-                                      _F( 
+                                      _F(
                                          JUSQU_A = 100.,
                                          NOMBRE = 65,
                                        ),
                                        ),
-                           ); 
+                           );
 #
 #======================================================================
 #          CALCUL DES ACCELERATIONS, VITESSES, DEPLACEMENTS :
 #
-#             AU CENTRE DU RADIER - FACE INFERIEURE 
+#             AU CENTRE DU RADIER - FACE INFERIEURE
 #             AU SOMMET
 #
 #======================================================================
@@ -835,8 +835,8 @@ GABK_Y=RECU_FONCTION(RESULTAT=DYNA,
                      TITRE='ACCELERATION ABSOLUE AU SOMMET',);
 
 
-              
-                   
+
+
 # POST_TRAITEMENT
 #          CALCUL DES SPECTRES DE PLANCHERS AU NIVEAU DU
 #          RADIER (-5.80 M) ET DU SOMMET
@@ -847,7 +847,7 @@ GABK_Y=RECU_FONCTION(RESULTAT=DYNA,
 #======================================================================
 #          CALCUL DES SPECTRES DE PLANCHER :
 #
-#             AU CENTRE DU RADIER - FACE INFERIEURE 
+#             AU CENTRE DU RADIER - FACE INFERIEURE
 #             AU SOMMET
 #
 #======================================================================
@@ -856,7 +856,7 @@ GABK_Y=RECU_FONCTION(RESULTAT=DYNA,
 #
 # CALCUL DES SPECTRES DE PLANCHER DU RADIER
 # -----------------------------------------
-# 
+#
 # EN X
 #-----
 #
@@ -864,7 +864,7 @@ GABK_Y=RECU_FONCTION(RESULTAT=DYNA,
 
 SRADBX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_X,
                                    NORME=9.81, AMOR_REDUIT=(0.05),),);
-                                   
+
 
 #
 #
@@ -878,12 +878,12 @@ SRADBX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_X,
 
 SRADBY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_Y,
                                    NORME=9.81, AMOR_REDUIT=(0.05),),);
-                                   
+
 
 #
 # CALCUL DES SPECTRES DE PLANCHER AU SOMMET
 # -----------------------------------------
-# 
+#
 # EN X
 #-----
 #
@@ -891,7 +891,7 @@ SRADBY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_Y,
 
 SBKX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABK_X,
                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
-                                 
+
 
 # EN Y
 #-----
@@ -901,14 +901,14 @@ SBKX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABK_X,
 
 SBKY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABK_Y,
                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
-                                 
-                 
+
+
 SIMPOX=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEX, #LIST_FREQ = freqspec,
                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
-                                 
+
 SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, #LIST_FREQ = freqspec,
                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
-                                 
+
 
 
 #======================================================
@@ -917,7 +917,7 @@ SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, #LIST_FREQ = freqspec,
 # -------------------------
 #
 #
-# COURBES SRO DU RADIER EN X 
+# COURBES SRO DU RADIER EN X
 #
 #
 #
@@ -1039,8 +1039,8 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.19293913,
 #                          PRECISION=0.003,
 #                          ),
 #                         ),
-#                );                   
-#                    
+#                );
+#
 # TEST_FONCTION ( VALEUR =(
 #                      _F( FONCTION  = SRADBX5,
 #                          NOM_PARA = ('AMOR','FREQ'),
@@ -1106,6 +1106,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.19293913,
 #                          PRECISION=0.035,
 #                          ),
 #                         ),
-#                );                   
-                   
+#                );
+
 FIN();

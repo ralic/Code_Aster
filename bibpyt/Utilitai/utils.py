@@ -22,9 +22,11 @@ Module fournissant quelques fonctions utilitaires.
 """
 
 import os
+import os.path as osp
 import re
 import time
 from functools import partial
+from subprocess import Popen
 
 from Utilitai.string_utils import maximize_lines
 from Execution.strfunc import convert
@@ -145,6 +147,22 @@ def fmtF2PY(fformat):
       print 'Error :',msg
       print 'Format par défaut utilisé :',fmt
    return fmt
+
+def encode_str(string):
+    """Convert a string in an array of int"""
+    return [ord(i) for i in string]
+
+def decode_str(array):
+    """Convert an array of int in a string"""
+    return ''.join([chr(i) for i in array])
+
+def send_file(fname, dest):
+    """Send a file into an existing remote destination directory using scp"""
+    dst = osp.join(dest, osp.basename(fname))
+    print "Sending {} onto {}...".format(fname, dst)
+    proc = Popen(["scp", "-rBCq", "-o StrictHostKeyChecking=no", fname, dst])
+    return proc.wait()
+
 
 if __name__ == '__main__':
     npar = ('X', 'Y',)
