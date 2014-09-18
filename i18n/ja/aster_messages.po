@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-11 12:48+0200\n"
-"PO-Revision-Date: 2014-09-10 15:38-0400\n"
+"POT-Creation-Date: 2014-09-18 11:14+0200\n"
+"PO-Revision-Date: 2014-09-18 05:12-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -900,31 +900,31 @@ msgstr "GAZ : v1"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:239
 msgid ""
 "JOINT_BA : déformation de glissement cumulée par frottement des fissures"
-msgstr ""
+msgstr "JOINT_BA : 摩擦亀裂による累積すべり変形"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:240
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon X dans la "
 "partie inférieure de la plaque"
-msgstr ""
+msgstr "DHRC : プレート下部にあるX方向の鉄筋に沿ったすべり変形"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:241
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon X dans la "
 "partie supérieure de la plaque"
-msgstr ""
+msgstr "DHRC : プレート上部にあるX方向の鉄筋に沿ったすべり変形"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:242
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon Y dans la "
 "partie inférieure de la plaque"
-msgstr ""
+msgstr "DHRC : プレート下部にあるY方向の鉄筋に沿ったすべり変形"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:243
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon Y dans la "
 "partie supérieure de la plaque"
-msgstr ""
+msgstr "DHRC : プレート上部にあるY方向の鉄筋に沿ったすべり変形"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:244
 msgid "gonflement"
@@ -1065,7 +1065,7 @@ msgstr "HYDR_UTIL : v1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:271
 msgid "JOINT_MECA_FROT : indicateur d'ouverture complète =0 fermé, =1 ouvert"
-msgstr ""
+msgstr "JOINT_MECA_FROT : 完全オープンインジケータ 0がクローズ, 1がオープン"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:272
 msgid ""
@@ -1127,11 +1127,11 @@ msgstr ""
 msgid ""
 "LETK : indicateur de la position de l'etat de contrainte par rapport aux "
 "seuils viscoplastiques"
-msgstr ""
+msgstr "LETK : 相対粘塑性しきい値のための制約状態の位置インジケータ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:281
 msgid "LETK : indicateur de contractance ou de dilatance"
-msgstr ""
+msgstr "LETK : 契約者かダイラタンシーのインジケータ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:282
 msgid " Pinto-Menegotto, indicateur d'activation du comportement cyclique"
@@ -1140,7 +1140,7 @@ msgstr " Pinto-Menegotto, 繰り返し挙動の活性化指標"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:283
 msgid ""
 "Indicateur de dissipation =0 si régime linéaire, =1 si régime dissipatif."
-msgstr ""
+msgstr "散逸インジケータ 0が線形領域 , 1が散逸体制"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:284
 msgid "indicateur d'endommagement pour la flexion positive"
@@ -1156,11 +1156,11 @@ msgstr "損傷指標"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:287
 msgid "indicateur d'endommagement normal =0 sain, =1 endommagé, =2 cassé"
-msgstr ""
+msgstr "法線方向損傷インジケータ 0が健全, 1が破損, 2が破壊"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:288
 msgid "indicateur d'endommagement tangentiel =0 sain, =1 endommagé, =2 cassé"
-msgstr ""
+msgstr "接線方向損傷インジケータ 0が健全, 1が破損, 2が破壊"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:289
 msgid "indicateur de flambement"
@@ -1175,17 +1175,23 @@ msgid ""
 "indicateur de plasticité en compression  (0 : seuil non atteint, 1 ou > 1 : "
 "seuil atteint)"
 msgstr ""
+"塑性圧縮インジケータ  (0 : しきい値に達していない, 1 または > 1 : しきい値に"
+"達している)"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:292
 msgid ""
 "indicateur de plasticité (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"
 msgstr ""
+"塑性インジケータ (0 : しきい値に達していない, 1 または > 1 : しきい値に達して"
+"いる)"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:293
 msgid ""
 "indicateur de plasticité en traction  (0 : seuil non atteint, 1 ou > 1 : "
 "seuil atteint)"
 msgstr ""
+"塑性引張りインジケータ  (0 : しきい値に達していない, 1 または > 1 : しきい値"
+"に達している)"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:294
 msgid "indice des vides"
@@ -1201,7 +1207,7 @@ msgstr "照射"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:297
 msgid "mémorisation de l'historique d'irradiation (fluence),"
-msgstr ""
+msgstr "放射(流束量)の履歴の記憶,"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:298
 msgid "Beton_umlv_fp : v21"
@@ -1248,6 +1254,7 @@ msgid ""
 "JOINT_MECA_FROT : paramètre croissant indiquant le déplacement tangentiel "
 "plastique cumulé (sans orientation)."
 msgstr ""
+"JOINT_MECA_FROT : 累積塑性接線方向変位を示す増加パラメータ (方向がない)."
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:309
 msgid "LIQADGV1"
@@ -1311,7 +1318,7 @@ msgstr "内部反復回数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:324
 msgid "nombre de redécoupages locaux du pas de temps"
-msgstr ""
+msgstr "局所時間ステップの再分割数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:325
 msgid "cam_clay : contrainte de confinement"
@@ -1347,7 +1354,7 @@ msgstr "BETON_RAG : RAGによる有効圧力"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:333
 msgid "perméabilité longitudinale de la fissure"
-msgstr ""
+msgstr "亀裂の長手方向の進展性"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:334
 msgid "Hayhurst : variable PHI"
@@ -1359,7 +1366,7 @@ msgstr "気孔率"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:336
 msgid "VISC_DRUC_PRAG : position du point de charge par rapport au seuil"
-msgstr ""
+msgstr "VISC_DRUC_PRAG : しきい値に関する負荷点の位置"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:337
 msgid "LIQU_AD_GAZ v4"
@@ -1391,23 +1398,27 @@ msgstr "DIS_ZENER : 離散剛性"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:344
 msgid "valeur du test local d'arrêt des itérations internes"
-msgstr ""
+msgstr "内部反復停止のローカルテスト値"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:345
 msgid ""
 "Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant "
 "le décharge du mécanisme déviatoire du plan 2"
 msgstr ""
+"Hujeux : 平面2における偏差メカニズムによる除荷前の荷重面が到達する偏差半径し"
+"きい値"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:346
 msgid ""
 "Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant "
 "le décharge du mécanisme déviatoire du plan 1"
 msgstr ""
+"Hujeux : 平面1における偏差メカニズムによる除荷前の荷重面が到達する偏差半径し"
+"きい値"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:347
 msgid "Facteur de triaxialité des contraintes, modèle Mazars"
-msgstr ""
+msgstr "3軸応力ファクター, マザースモデル"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:348
 msgid "LIQU_AD_GAZ v3"
@@ -1433,7 +1444,7 @@ msgstr "CJS 偏差しきい値と臨界偏差しきい値の関係"
 msgid ""
 "CJS signe du produit contracté de la contrainte déviatorique par la "
 "déformation plastique déviatorique"
-msgstr ""
+msgstr "偏差塑性ひずみによる偏差応力の圧縮積の符号CJS"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:354
 msgid ""
@@ -1471,7 +1482,7 @@ msgstr "閾値"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:361
 msgid "CZM  seuil correspondant au plus grand saut de déplacement (en norme)"
-msgstr ""
+msgstr "最大のジャンプ変位（基準）に対応するしきい値 CZM"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:362
 msgid "seuil hydrique"
@@ -14906,19 +14917,20 @@ msgid ""
 " Champ : '%(k1)s' \n"
 " Commentaire sur ce champ : %(k2)s\n"
 " Grandeur : %(k3)s   Composante non reconnue : %(k4)s\n"
-" Type de l'élément :  %(k5)s\n"
+"\n"
 " Ce problème concerne %(i1)d mailles\n"
 " Les premières mailles concernées sont imprimées ci-dessous.\n"
+" Type de l'élément affecté sur la première maille imprimée : %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:296
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:297
 #, python-format
 msgid ""
 "  Maille : %(k1)s. Cette maille appartient aux GROUP_MA : %(k2)s %(k3)s "
 "%(k4)s %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:299
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:300
 #, python-format
 msgid ""
 "\n"
@@ -14932,7 +14944,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:310
 #, python-format
 msgid ""
 "\n"
@@ -14941,7 +14953,7 @@ msgstr ""
 "\n"
 " CHAM_ELEM:  %(k1)s は存在しない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:314
 #, python-format
 msgid ""
 "\n"
@@ -14949,14 +14961,14 @@ msgid ""
 "tous ses éléments.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:317
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:318
 #, python-format
 msgid ""
 "\n"
 " le CHAM_ELEM : %(k1)s a des sous-points.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:323
 #, python-format
 msgid ""
 "\n"
@@ -14969,7 +14981,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:332
 #, python-format
 msgid ""
 "\n"
@@ -14977,7 +14989,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:336
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:337
 #, python-format
 msgid ""
 "\n"
@@ -14985,7 +14997,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:341
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:342
 #, python-format
 msgid ""
 "\n"
@@ -14994,7 +15006,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:346
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:347
 #, python-format
 msgid ""
 "\n"
@@ -15007,7 +15019,7 @@ msgid ""
 "vous devriez peut-être l'utiliser.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:355
 #, python-format
 msgid ""
 "\n"
@@ -15015,7 +15027,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:359
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:360
 #, python-format
 msgid ""
 "\n"
@@ -15030,7 +15042,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:370
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:371
 #, python-format
 msgid ""
 "\n"
@@ -15043,21 +15055,21 @@ msgid ""
 " il est possible de poursuivre le calcul en choisissant PROL_ZERO='OUI'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:381
 #, python-format
 msgid ""
 "\n"
 " grandeur:  %(k1)s  inconnue au catalogue.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:384
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:385
 #, python-format
 msgid ""
 "\n"
 " numéro de maille invalide     :  %(k1)s  (<1 ou > nombre de mailles)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:389
 #, python-format
 msgid ""
 "\n"
@@ -15065,7 +15077,7 @@ msgid ""
 " pour la maille                :  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:393
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:394
 #, python-format
 msgid ""
 "\n"
@@ -15074,7 +15086,7 @@ msgid ""
 " pour le point                 :  %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:399
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:400
 #, python-format
 msgid ""
 "\n"
@@ -15084,7 +15096,7 @@ msgid ""
 " pour le sous-point            :  %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:406
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:407
 #, python-format
 msgid ""
 "\n"
@@ -15099,7 +15111,7 @@ msgid ""
 "   1050 : ELS : Dépassement contrainte béton;\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:417
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:418
 msgid ""
 "\n"
 " Erreur utilisateur commande CALC_FERRAILLAGE :\n"
@@ -15111,7 +15123,7 @@ msgid ""
 "        CEQUI\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:426
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:427
 #, python-format
 msgid ""
 "\n"
@@ -15119,21 +15131,21 @@ msgid ""
 "   La valeur du module d'Young ES est de <%(r1)E>. Elle n'est pas correcte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:430
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:431
 msgid ""
 "\n"
 " Votre modèle ne contient que des éléments 1D. Le lissage global n'est\n"
 " possible que pour les éléments 2D ou 3D.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:435
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:436
 msgid ""
 "\n"
 " Votre modèle contient un mélange d'éléments 1D,2D ou 3D.\n"
 " Le lissage global n'est possible que pour les éléments 2D soit 3D.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:440
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:441
 #, python-format
 msgid ""
 "\n"
@@ -15142,7 +15154,7 @@ msgid ""
 " mailles n'existant pas dans %(k1)s et il est de type VARI_ELGA.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:445
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:446
 #, python-format
 msgid ""
 "\n"
@@ -15150,21 +15162,21 @@ msgid ""
 " ( %(k2)s / %(k3)s )\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:450
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:451
 #, python-format
 msgid ""
 "\n"
 " type scalaire du CHAM_NO :  %(k1)s  non réel.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:454
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:455
 #, python-format
 msgid ""
 "\n"
 " type scalaire du NUME_DDL :  %(k1)s  non réel.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:458
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:459
 msgid ""
 "\n"
 " mélange de CHAM_ELEM_S et CHAM_NO_S\n"
@@ -17623,12 +17635,16 @@ msgid ""
 "\n"
 "  Le paramètre n'existe pas.\n"
 msgstr ""
+"\n"
+"  パラメータが存在しない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:45
 msgid ""
 "\n"
 "  0 ligne trouvée pour les NOM_PARA.\n"
 msgstr ""
+"\n"
+"  NOM_PARAのために0行が見つかった。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:49
 msgid ""
@@ -17678,6 +17694,8 @@ msgid ""
 "\n"
 "  L'option %(k1)s est inconnue.\n"
 msgstr ""
+"\n"
+"  オプション %(k1)s が不明。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:83
 msgid ""
@@ -17988,6 +18006,8 @@ msgid ""
 "\n"
 " composantes dans EDITGD:\n"
 msgstr ""
+"\n"
+" EDITGDのコンポーネント:\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:289
 msgid ""
@@ -18139,12 +18159,16 @@ msgid ""
 "\n"
 "  On ne trouve pas le noeud %(k1)s.\n"
 msgstr ""
+"\n"
+"  節点 %(k1)s が見つからない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:386
 msgid ""
 "\n"
 "  On ne trouve pas le ddl.\n"
 msgstr ""
+"\n"
+"  ddl が見つからない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:390
 msgid ""
@@ -18395,7 +18419,7 @@ msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/catamess.py:79
 msgid "           aucune alarme\n"
-msgstr ""
+msgstr "           アラームがない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/chainage.py:23
 msgid ""
@@ -20930,7 +20954,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:59
 #, python-format
 msgid "         V%(i1)d : %(k1)s"
-msgstr ""
+msgstr "         V%(i1)d : %(k1)s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:61
 msgid "  Détails du kit THM"
@@ -20958,7 +20982,7 @@ msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:71
 msgid "  Détails du kit DDI"
-msgstr ""
+msgstr "DDI キットの詳細"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:73
 #, python-format
@@ -21026,28 +21050,7 @@ msgstr " 内部変数 V%(i1)d の最後: %(k1)s"
 msgid " ... jusqu'à V%(i1)d "
 msgstr " ... 最大 V%(i1)d "
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:101
-msgid ""
-"\n"
-"L'utilisation de l'option TYPE_MATR_TANG n'est pas possible avec un "
-"comportement externe (UMAT, ZMAT ou MFRONT).\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:105
-msgid ""
-"\n"
-"L'utilisation de l'option POST_ITER n'est pas possible avec un comportement "
-"externe (UMAT, ZMAT ou MFRONT).\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:109
-msgid ""
-"\n"
-"Aucun KIT ne peut être utilisé avec un comportement externe de type UMAT ou "
-"MFRONT.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:113
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:104
 msgid ""
 "\n"
 "  -> Le critère de convergence pour intégrer le comportement "
@@ -21057,27 +21060,27 @@ msgid ""
 "     Cela peut nuire à la qualité de la solution et à la convergence.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:120
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:111
 msgid ""
 "\n"
 "La définition explicite du comportement est obligatoire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:124
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:115
 msgid ""
 "\n"
 "Comme vous n'avez pas défini explicitement le comportement, tout le modèle "
 "est supposé élastique en petites perturbations.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:119
 msgid ""
 "\n"
 "Il y a trop d'occurrences du mot-clef facteur COMPORTEMENT. On n'affichera "
 "aucune information sur les comportements."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:122
 #, python-format
 msgid ""
 "\n"
@@ -21085,7 +21088,7 @@ msgid ""
 "On ne peut donc pas utiliser le mot-clé  %(k1)s . On l'ignore.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:127
 #, python-format
 msgid ""
 "\n"
@@ -23246,6 +23249,8 @@ msgid ""
 "\n"
 "      YACS : Type de variable inconnu\n"
 msgstr ""
+"\n"
+"      YACS : 未知の変数タイプ\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/edyos.py:59
 msgid ""
@@ -23408,12 +23413,16 @@ msgid ""
 "\n"
 "      YACS : Option inconnue\n"
 msgstr ""
+"\n"
+"      YACS : 不明なオプション\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/edyos.py:159
 msgid ""
 "\n"
 "      YACS : Valeur d'option incorrecte\n"
 msgstr ""
+"\n"
+"      YACS : 不正なオプション値\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/edyos.py:163
 msgid ""
@@ -23444,6 +23453,8 @@ msgid ""
 "\n"
 "      YACS : Erreur de communication \n"
 msgstr ""
+"\n"
+"      YACS : 通信エラー \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/edyos.py:195
 msgid ""
@@ -26040,40 +26051,22 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds. \n"
-"Vous n'avez pas précisé correctement son lieu d'extraction.\n"
-"Il faut donner une maille, un groupe de mailles, un noeud ou un groupe de "
-"noeuds (MAILLE ou GROUP_MA ou NOEUD ou GROUP_NO).\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:29
-#, python-format
-msgid ""
-"\n"
-"Le champ %(k1)s que l'on veut extraire est de type champ aux points "
-"d'intégration. \n"
-"Vous n'avez pas précisé correctement son lieu d'extraction.\n"
-"Il faut donner une maille ou un groupe de mailles (MAILLE ou GROUP_MA).\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:35
-#, python-format
-msgid ""
-"\n"
 "Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds.\n"
-"Les noeuds donnés n'appartiennent pas au modèle.\n"
+"Vous n'avez pas précisé correctement son lieu d'extraction ou les noeuds "
+"donnés n'appartiennent pas au modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:40
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:28
 #, python-format
 msgid ""
 "\n"
 "Le champ %(k1)s que l'on veut extraire est de type champ aux points "
 "d'intégration. \n"
-"Les mailles donnés n'appartiennent pas au modèle.\n"
+"Vous n'avez pas précisé correctement son lieu d'extraction ou les mailles "
+"données n'appartiennent pas au modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:45
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:33
 #, python-format
 msgid ""
 "\n"
@@ -26081,7 +26074,7 @@ msgid ""
 "On a pris <VALE> par défaut.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:50
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:38
 #, python-format
 msgid ""
 "\n"
@@ -26091,18 +26084,18 @@ msgid ""
 "On a pris <VALE> par défaut.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:56
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:44
 #, python-format
 msgid ""
 "\n"
-"Le champ %(k1)s pour la maille %(k2)s est de type <ELGA> et vous voulez "
-"extraire sa valeur (EXTR_ELGA='VALE'). \n"
+"Le champ %(k1)s est de type <ELGA> et vous voulez extraire sa valeur "
+"(EXTR_ELGA='VALE'). \n"
 "Vous n'avez pas précisé l'endroit où il est doit être extrait.\n"
 "Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément "
 "de structure (POINT/SOUS_POINT).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:62
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:50
 #, python-format
 msgid ""
 "\n"
@@ -26110,14 +26103,14 @@ msgid ""
 "composantes, or vous en avez %(i2)d.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:66
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:54
 #, python-format
 msgid ""
 "\n"
 " La composante %(k2)s est inconnue sur le noeud %(k1)s .\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:70
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:58
 #, python-format
 msgid ""
 "\n"
@@ -26125,7 +26118,7 @@ msgid ""
 "et le SOUS_POINT %(i2)d n'existe pas.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:74
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:62
 #, python-format
 msgid ""
 "\n"
@@ -36809,6 +36802,8 @@ msgid ""
 "\n"
 " option  %(k1)s  invalide\n"
 msgstr ""
+"\n"
+" オプション  %(k1)s  が無効\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:160
 #, python-format
@@ -36817,6 +36812,9 @@ msgid ""
 " il faut indiquer le mot-clé 'NOEUD_2' ou 'GROUP_NO_2' après le mot-clé "
 "facteur  %(k1)s  pour l'option '3D_POU'.\n"
 msgstr ""
+"\n"
+" オプション'3D_POU'のキーワード ファクター %(k1)s  の後には、キーワー"
+"ド'NOEUD_2' または 'GROUP_NO_2'の指定が必要です。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:164
 msgid ""
@@ -36932,6 +36930,8 @@ msgid ""
 "\n"
 " type sd non traité:  %(k1)s\n"
 msgstr ""
+"\n"
+" タイプ sd 未処理:  %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:232
 #, python-format
@@ -36940,6 +36940,8 @@ msgid ""
 " le mot-clé : %(k1)s  est identique (sur ses 8 premiers caractères) à un "
 "autre.\n"
 msgstr ""
+"\n"
+" キーワード : %(k1)s  は、他 (最初の８文字)と同じです。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:236
 #, python-format
@@ -36970,6 +36972,8 @@ msgid ""
 "\n"
 " erreurs rencontrées.\n"
 msgstr ""
+"\n"
+" 発生したエラー\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:252
 msgid ""
@@ -36998,42 +37002,56 @@ msgid ""
 "\n"
 " comportement TRACTION non trouvé\n"
 msgstr ""
+"\n"
+" コンポーネント TRACTION が見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:270
 msgid ""
 "\n"
 " comportement META_TRACTION non trouvé\n"
 msgstr ""
+"\n"
+" コンポーネント META_TRACTION が見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:274
 msgid ""
 "\n"
 " fonction SIGM_F1 non trouvée\n"
 msgstr ""
+"\n"
+" 関数 SIGM_F1 が見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:278
 msgid ""
 "\n"
 " fonction SIGM_F2 non trouvée\n"
 msgstr ""
+"\n"
+" 関数 SIGM_F2 見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:282
 msgid ""
 "\n"
 " fonction SIGM_F3 non trouvée\n"
 msgstr ""
+"\n"
+" 関数 SIGM_F3 が見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:286
 msgid ""
 "\n"
 " fonction SIGM_F4 non trouvée\n"
 msgstr ""
+"\n"
+" 関数 SIGM_F4 が見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:290
 msgid ""
 "\n"
 " fonction SIGM_C non trouvée\n"
 msgstr ""
+"\n"
+" 関数 SIGM_C が見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:294
 #, python-format
@@ -37185,6 +37203,8 @@ msgid ""
 "\n"
 " le nom  %(k1)s  existe déjà\n"
 msgstr ""
+"\n"
+" 名前 %(k1)s は既にあります \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa7.py:67
 #, python-format
@@ -37192,6 +37212,8 @@ msgid ""
 "\n"
 " le groupe  %(k1)s  existe déjà\n"
 msgstr ""
+"\n"
+" グループ %(k1)s は既にあります \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa7.py:71
 #, python-format
@@ -38335,6 +38357,8 @@ msgid ""
 "\n"
 " on prend celle du modèle.\n"
 msgstr ""
+"\n"
+" モデルをとる\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:144
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:185
@@ -38575,6 +38599,8 @@ msgid ""
 "\n"
 " comportement :%(k1)s non trouvé\n"
 msgstr ""
+"\n"
+" 動作 : %(k1)s 見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:322
 #, python-format
@@ -38582,6 +38608,8 @@ msgid ""
 "\n"
 " comportement %(k1)s non trouvé pour la maille  %(k2)s\n"
 msgstr ""
+"\n"
+"  %(k2)s のための動作 %(k1)s が見つからない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:326
 #, python-format
@@ -38691,6 +38719,8 @@ msgid ""
 "\n"
 "Erreur d'interpolation: %(k1)s\n"
 msgstr ""
+"\n"
+"補間誤差: %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/oar0.py:29
 msgid ""
@@ -38704,24 +38734,32 @@ msgid ""
 "\n"
 "Erreur d'accès aux données.\n"
 msgstr ""
+"\n"
+"データアクセスエラー\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/oar0.py:37
 msgid ""
 "\n"
 "Fonction non implantée.\n"
 msgstr ""
+"\n"
+"未実装機能\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/oar0.py:41
 msgid ""
 "\n"
 "Mot clé facteur inconnu.\n"
 msgstr ""
+"\n"
+"未知のキーワードファクター\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/oar0.py:45
 msgid ""
 "\n"
 "Erreur à l'ouverture du fichier.\n"
 msgstr ""
+"\n"
+"ファイルオープンエラー\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/observation.py:23
 #, python-format
@@ -40445,6 +40483,8 @@ msgid ""
 "\n"
 " contradiction avec INTE_MAIL_2D\n"
 msgstr ""
+"\n"
+" 矛盾 INTE_MAIL_2D \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/postrele.py:131
 #, python-format
@@ -40587,6 +40627,31 @@ msgid ""
 "                         %(k22)s\n"
 "                         %(k23)s\n"
 msgstr ""
+"\n"
+" 未処理のオプション: %(k1)s, 後処理: %(i1)d\n"
+" 指向性トレースの計算\n"
+"   オプション :  %(k2)s\n"
+"                       %(k3)s\n"
+"                       %(k4)s\n"
+"                       %(k5)s\n"
+"                       %(k6)s\n"
+"                       %(k7)s\n"
+"                       %(k8)s\n"
+"                       %(k9)s\n"
+"                       %(k10)s\n"
+"                       %(k11)s\n"
+"                       %(k12)s\n"
+"                       %(k13)s\n"
+"                       %(k14)s\n"
+"                       %(k15)s\n"
+"                       %(k16)s\n"
+"                       %(k17)s\n"
+"                       %(k18)s\n"
+"                       %(k19)s\n"
+"                       %(k20)s\n"
+"   または 大きさ %(k21)s\n"
+"                         %(k22)s\n"
+"                         %(k23)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/postrele.py:242
 #, python-format
@@ -40595,6 +40660,9 @@ msgid ""
 " trace directionnelle, post-traitement: %(i1)d\n"
 " direction nulle, pas de calcul\n"
 msgstr ""
+"\n"
+" 方向とレース, 後処理: %(i1)d\n"
+" ゼロ方向, 全く計算しない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/postrele.py:247
 #, python-format
@@ -41305,6 +41373,8 @@ msgid ""
 "\n"
 " pas d'impression du champ\n"
 msgstr ""
+"\n"
+" フィールドをプリントしない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:249
 #, python-format
@@ -41320,6 +41390,8 @@ msgid ""
 "\n"
 "  incompatibilité entre les GREL\n"
 msgstr ""
+"\n"
+" GREL 中の非互換\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:259
 msgid ""

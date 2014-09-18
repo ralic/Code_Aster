@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-11 12:48+0200\n"
-"PO-Revision-Date: 2014-09-10 15:38-0400\n"
+"POT-Creation-Date: 2014-09-18 11:14+0200\n"
+"PO-Revision-Date: 2014-09-18 05:12-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -3812,6 +3812,12 @@ msgid ""
 " -> Conseil :\n"
 " utiliser l'option 'CENTRE'.\n"
 msgstr ""
+"\n"
+" Option 'BANDE' is not authorized for a problem with damping\n"
+" (%(k1)s complex and/or presence of the keyword %(k2)s). \n"
+" \n"
+" - > Advice: \n"
+" use option 'CENTRE'. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline2.py:321
 msgid ""
@@ -16774,19 +16780,20 @@ msgid ""
 " Champ : '%(k1)s' \n"
 " Commentaire sur ce champ : %(k2)s\n"
 " Grandeur : %(k3)s   Composante non reconnue : %(k4)s\n"
-" Type de l'élément :  %(k5)s\n"
+"\n"
 " Ce problème concerne %(i1)d mailles\n"
 " Les premières mailles concernées sont imprimées ci-dessous.\n"
+" Type de l'élément affecté sur la première maille imprimée : %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:296
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:297
 #, python-format
 msgid ""
 "  Maille : %(k1)s. Cette maille appartient aux GROUP_MA : %(k2)s %(k3)s "
 "%(k4)s %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:299
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:300
 #, python-format
 msgid ""
 "\n"
@@ -16800,7 +16807,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:310
 #, python-format
 msgid ""
 "\n"
@@ -16809,7 +16816,7 @@ msgstr ""
 "\n"
 " the CHAM_ELEM:  %(k1)s do not exist. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:314
 #, python-format
 msgid ""
 "\n"
@@ -16817,7 +16824,7 @@ msgid ""
 "tous ses éléments.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:317
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:318
 #, python-format
 msgid ""
 "\n"
@@ -16826,7 +16833,7 @@ msgstr ""
 "\n"
 " the CHAM_ELEM:  %(k1)s has subpoints. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:323
 #, python-format
 msgid ""
 "\n"
@@ -16839,7 +16846,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:332
 #, python-format
 msgid ""
 "\n"
@@ -16847,7 +16854,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:336
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:337
 #, python-format
 msgid ""
 "\n"
@@ -16858,7 +16865,7 @@ msgstr ""
 " Option:  %(k1)s non-existent in the catalogues. \n"
 " Field:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:341
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:342
 #, python-format
 msgid ""
 "\n"
@@ -16867,7 +16874,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:346
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:347
 #, python-format
 msgid ""
 "\n"
@@ -16880,7 +16887,7 @@ msgid ""
 "vous devriez peut-être l'utiliser.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:355
 #, python-format
 msgid ""
 "\n"
@@ -16891,7 +16898,7 @@ msgstr ""
 " The LIGREL contains late meshes\n"
 " Champ:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:359
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:360
 #, python-format
 msgid ""
 "\n"
@@ -16906,7 +16913,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:370
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:371
 #, python-format
 msgid ""
 "\n"
@@ -16927,7 +16934,7 @@ msgstr ""
 " If this error occurs during command execution PROJ_CHAMP,\n"
 " it is possible to continue computation by choosing PROL_ZERO='OUI' \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:381
 #, python-format
 msgid ""
 "\n"
@@ -16936,7 +16943,7 @@ msgstr ""
 "\n"
 " quantity:  %(k1)s unknown factor with the catalogue. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:384
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:385
 #, python-format
 msgid ""
 "\n"
@@ -16945,7 +16952,7 @@ msgstr ""
 "\n"
 " invalid number of mesh:  %(k1)s (<1 or > number of meshes) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:389
 #, python-format
 msgid ""
 "\n"
@@ -16956,7 +16963,7 @@ msgstr ""
 " invalid number of point:  %(k1)s (<1 or > many points)\n"
 " for the mesh:  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:393
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:394
 #, python-format
 msgid ""
 "\n"
@@ -16969,7 +16976,7 @@ msgstr ""
 " for the mesh:  %(k2)s \n"
 " for the point:  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:399
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:400
 #, python-format
 msgid ""
 "\n"
@@ -16984,7 +16991,7 @@ msgstr ""
 " for the point:  %(k3)s \n"
 " for the subpoint:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:406
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:407
 #, python-format
 msgid ""
 "\n"
@@ -16999,7 +17006,7 @@ msgid ""
 "   1050 : ELS : Dépassement contrainte béton;\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:417
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:418
 msgid ""
 "\n"
 " Erreur utilisateur commande CALC_FERRAILLAGE :\n"
@@ -17011,7 +17018,7 @@ msgid ""
 "        CEQUI\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:426
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:427
 #, python-format
 msgid ""
 "\n"
@@ -17019,21 +17026,21 @@ msgid ""
 "   La valeur du module d'Young ES est de <%(r1)E>. Elle n'est pas correcte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:430
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:431
 msgid ""
 "\n"
 " Votre modèle ne contient que des éléments 1D. Le lissage global n'est\n"
 " possible que pour les éléments 2D ou 3D.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:435
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:436
 msgid ""
 "\n"
 " Votre modèle contient un mélange d'éléments 1D,2D ou 3D.\n"
 " Le lissage global n'est possible que pour les éléments 2D soit 3D.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:440
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:441
 #, python-format
 msgid ""
 "\n"
@@ -17042,7 +17049,7 @@ msgid ""
 " mailles n'existant pas dans %(k1)s et il est de type VARI_ELGA.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:445
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:446
 #, python-format
 msgid ""
 "\n"
@@ -17053,7 +17060,7 @@ msgstr ""
 " inconsistency of the families of Gauss points for the mesh %(k1)s\n"
 " (  %(k2)s /  %(k3)s ) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:450
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:451
 #, python-format
 msgid ""
 "\n"
@@ -17062,7 +17069,7 @@ msgstr ""
 "\n"
 " scalar type of the CHAM_NO:  %(k1)s not reality. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:454
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:455
 #, python-format
 msgid ""
 "\n"
@@ -17071,7 +17078,7 @@ msgstr ""
 "\n"
 " scalar type of the NUME_DDL:  %(k1)s not reality. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:458
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:459
 msgid ""
 "\n"
 " mélange de CHAM_ELEM_S et CHAM_NO_S\n"
@@ -20951,15 +20958,12 @@ msgstr ""
 " You should supplement the field %(k1)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/champs.py:34
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
 " La composante demandée %(k1)s n'est pas trouvée dans le champ.\n"
 msgstr ""
-"\n"
-"User error in command POST_CHAMP / MIN_MAX_SP: \n"
-" The required component %(k1)s is not found in the field  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/champs.py:39
 msgid ""
@@ -21135,15 +21139,12 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/champs.py:120
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
 " La composante demandée %(k1)s n'est pas trouvée dans le champ %(k2)s.\n"
 msgstr ""
-"\n"
-"User error in command POST_CHAMP / MIN_MAX_SP: \n"
-" The required component %(k1)s is not found in the field  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:22
 #, python-format
@@ -21731,26 +21732,20 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges2.py:278
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " La maille de nom %(k1)s est de type volumique.\n"
 " Elle ne sera pas affectée par %(k2)s .\n"
 msgstr ""
-"\n"
-" The mesh of name %(k1)s is not of type SEG3 or SEG4,\n"
-" it will not be affected by  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges2.py:283
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " La maille de nom %(k1)s est de type linéique.\n"
 " Elle ne sera pas affectée par %(k2)s .\n"
 msgstr ""
-"\n"
-" The mesh of name %(k1)s is not of type SEG3 or SEG4,\n"
-" it will not be affected by  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges2.py:292
 msgid ""
@@ -23704,28 +23699,7 @@ msgstr ""
 msgid " ... jusqu'à V%(i1)d "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:101
-msgid ""
-"\n"
-"L'utilisation de l'option TYPE_MATR_TANG n'est pas possible avec un "
-"comportement externe (UMAT, ZMAT ou MFRONT).\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:105
-msgid ""
-"\n"
-"L'utilisation de l'option POST_ITER n'est pas possible avec un comportement "
-"externe (UMAT, ZMAT ou MFRONT).\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:109
-msgid ""
-"\n"
-"Aucun KIT ne peut être utilisé avec un comportement externe de type UMAT ou "
-"MFRONT.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:113
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:104
 msgid ""
 "\n"
 "  -> Le critère de convergence pour intégrer le comportement "
@@ -23735,27 +23709,27 @@ msgid ""
 "     Cela peut nuire à la qualité de la solution et à la convergence.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:120
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:111
 msgid ""
 "\n"
 "La définition explicite du comportement est obligatoire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:124
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:115
 msgid ""
 "\n"
 "Comme vous n'avez pas défini explicitement le comportement, tout le modèle "
 "est supposé élastique en petites perturbations.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:119
 msgid ""
 "\n"
 "Il y a trop d'occurrences du mot-clef facteur COMPORTEMENT. On n'affichera "
 "aucune information sur les comportements."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:122
 #, python-format
 msgid ""
 "\n"
@@ -23763,7 +23737,7 @@ msgid ""
 "On ne peut donc pas utiliser le mot-clé  %(k1)s . On l'ignore.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:127
 #, python-format
 msgid ""
 "\n"
@@ -29676,29 +29650,12 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:23
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
-"Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds. \n"
-"Vous n'avez pas précisé correctement son lieu d'extraction.\n"
-"Il faut donner une maille, un groupe de mailles, un noeud ou un groupe de "
-"noeuds (MAILLE ou GROUP_MA ou NOEUD ou GROUP_NO).\n"
-msgstr ""
-"\n"
-"The field %(k1)s which one wants to extract is of standard field to the "
-"nodes. \n"
-"You did not specify its place of extraction correctly. \n"
-"It is necessary to give a mesh, a mesh group, a node or a nodes group (MESH "
-"or GROUP_MA or NODE or GROUP_NO). \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:29
-#, python-format
-msgid ""
-"\n"
-"Le champ %(k1)s que l'on veut extraire est de type champ aux points "
-"d'intégration. \n"
-"Vous n'avez pas précisé correctement son lieu d'extraction.\n"
-"Il faut donner une maille ou un groupe de mailles (MAILLE ou GROUP_MA).\n"
+"Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds.\n"
+"Vous n'avez pas précisé correctement son lieu d'extraction ou les noeuds "
+"donnés n'appartiennent pas au modèle.\n"
 msgstr ""
 "\n"
 "The field %(k1)s which one wants to extract is of standard field at the "
@@ -29706,24 +29663,22 @@ msgstr ""
 "You did not specify its place of extraction correctly. \n"
 "It is necessary to give a mesh or a mesh group (MESH or GROUP_MA). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:35
-#, python-format
-msgid ""
-"\n"
-"Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds.\n"
-"Les noeuds donnés n'appartiennent pas au modèle.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:40
-#, python-format
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:28
+#, fuzzy, python-format
 msgid ""
 "\n"
 "Le champ %(k1)s que l'on veut extraire est de type champ aux points "
 "d'intégration. \n"
-"Les mailles donnés n'appartiennent pas au modèle.\n"
+"Vous n'avez pas précisé correctement son lieu d'extraction ou les mailles "
+"données n'appartiennent pas au modèle.\n"
 msgstr ""
+"\n"
+"The field %(k1)s which one wants to extract is of standard field at the "
+"points of integration. \n"
+"You did not specify its place of extraction correctly. \n"
+"It is necessary to give a mesh or a mesh group (MESH or GROUP_MA). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:45
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:33
 #, python-format
 msgid ""
 "\n"
@@ -29734,7 +29689,7 @@ msgstr ""
 "You did not specify the type of the extraction for the field %(k1)s. \n"
 "<VALE> by default was taken. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:50
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:38
 #, python-format
 msgid ""
 "\n"
@@ -29749,18 +29704,18 @@ msgstr ""
 "You did not specify the type of the extraction. \n"
 "<VALE> by default was taken. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:56
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:44
 #, python-format
 msgid ""
 "\n"
-"Le champ %(k1)s pour la maille %(k2)s est de type <ELGA> et vous voulez "
-"extraire sa valeur (EXTR_ELGA='VALE'). \n"
+"Le champ %(k1)s est de type <ELGA> et vous voulez extraire sa valeur "
+"(EXTR_ELGA='VALE'). \n"
 "Vous n'avez pas précisé l'endroit où il est doit être extrait.\n"
 "Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément "
 "de structure (POINT/SOUS_POINT).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:62
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:50
 #, python-format
 msgid ""
 "\n"
@@ -29771,7 +29726,7 @@ msgstr ""
 " The extraction must be done on more than one component and less %(i1)d "
 "components, but have you %(i2)d. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:66
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:54
 #, python-format
 msgid ""
 "\n"
@@ -29780,7 +29735,7 @@ msgstr ""
 "\n"
 " The component %(k2)s is unknown on the node %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:70
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:58
 #, python-format
 msgid ""
 "\n"
@@ -29788,7 +29743,7 @@ msgid ""
 "et le SOUS_POINT %(i2)d n'existe pas.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:74
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/extraction.py:62
 #, python-format
 msgid ""
 "\n"
@@ -35025,6 +34980,7 @@ msgid ""
 msgstr ""
 "\n"
 " You cannot use contact with continuation methods (PILOTAGE)\n"
+" "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline.py:61
 msgid ""
@@ -35311,7 +35267,7 @@ msgid ""
 msgstr ""
 "\n"
 " <Action> Trying to adapt the penalization ratio for contact. \n"
-" "
+" \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline10.py:114
 msgid " <Action><Échec> On a déjà choisi l'autre solution de pilotage."
@@ -54462,7 +54418,7 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/supervis.py:271
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La variable python \"%(k1)s\" fait référence au concept \"%(k2)s\".\n"
@@ -54478,18 +54434,6 @@ msgid ""
 "   qui produit la base en faisant :\n"
 "      %(k3)s\n"
 msgstr ""
-"\n"
-"The variable python\" %(k1)s\" refers to the concept\" %(k2)s\". \n"
-"That occurs with this kind of sequence: \n"
-"  %(k2)s = COMMAND (...)\n"
-" %(k1)s = %(k2)s\n"
-"\n"
-" One destroys this variable (\" %(k1)s\"in the example above). \n"
-" \n"
-"- > the Council: \n"
-" To avoid this alarm, remove the reference in the command set\n"
-" which produces the base: \n"
-"  %(k1)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/supervis.py:285
 #, python-format
@@ -62165,34 +62109,14 @@ msgstr "Simple key word: %s %s"
 
 #~ msgid ""
 #~ "\n"
-#~ " La composante %(k1)s n'existe pas dans le champ.\n"
+#~ "Le champ %(k1)s que l'on veut extraire est de type champ aux noeuds. \n"
+#~ "Vous n'avez pas précisé correctement son lieu d'extraction.\n"
+#~ "Il faut donner une maille, un groupe de mailles, un noeud ou un groupe de "
+#~ "noeuds (MAILLE ou GROUP_MA ou NOEUD ou GROUP_NO).\n"
 #~ msgstr ""
 #~ "\n"
-#~ " The component %(k1)s does not exist in the field. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "  La composante %(k1)s n'existe pas pour ce champ.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " The component %(k1)s does not exist for this field. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " La composante %(k1)s du champ  n'existe pas.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " The component %(k1)s of the field does not exist. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " <Action> On essaie de réactualiser le préconditionneur.\n"
-#~ " "
-#~ msgstr ""
-#~ "\n"
-#~ " <Action> Trying to recompute preconditionner for iterative linear "
-#~ "solver. \n"
-#~ " \n"
-
-#~ msgid " <Action> On réactualise le préconditionneur LDLT_SP."
-#~ msgstr " <Action> One reactualizes preconditioner LDLT_SP."
+#~ "The field %(k1)s which one wants to extract is of standard field to the "
+#~ "nodes. \n"
+#~ "You did not specify its place of extraction correctly. \n"
+#~ "It is necessary to give a mesh, a mesh group, a node or a nodes group "
+#~ "(MESH or GROUP_MA or NODE or GROUP_NO). \n"
