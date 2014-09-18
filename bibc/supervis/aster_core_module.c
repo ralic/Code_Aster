@@ -703,6 +703,66 @@ PyObject *args;
     return Py_None;
 }
 
+static PyObject* aster_mpi_bcast_py(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    /*! Broadcasts a list/tuple from one process to all other processes
+        All items of the list/tuple must have the same type (int or double).
+     */
+    PyObject *tupl, *item, *res;
+    int count, root;
+    int iret, idecref;
+    MPI_Datatype type;
+    void *buff;
+    int i;
+
+    if ( !PyArg_ParseTuple(args, "Oi:mpi_bcast", &tupl, &root) ) return NULL;
+
+    idecref = 0;
+    if ( PyList_Check(tupl) ) {
+        DEBUG_MPI("convert <%s> to <%s>\n", "list", "tuple");
+        idecref = 1;
+        tupl = PyList_AsTuple(tupl);
+    }
+    if ( ! PyTuple_Check(tupl) ) {
+        return NULL;
+    } else {
+        count = (int)PyTuple_Size(tupl);
+        item = PyTuple_GetItem(tupl, 0);
+        if ( PyLong_Check(item) || PyInt_Check(item) ) {
+            type = MPI_INTEGER8;
+            buff = (void *)malloc((size_t)count * sizeof(INTEGER));
+            convert(count, tupl, (INTEGER *)buff);
+            printf("Type <int> count=%d\nvalues =", count);
+            for (i=0; i < count; i++) printf("%ld ", ((long *)buff)[i]);
+            printf("\n");
+        } else if ( PyFloat_Check(item) ) {
+            type = MPI_DOUBLE_PRECISION;
+            buff = (void *)malloc((size_t)count * sizeof(DOUBLE));
+            convr8(count, tupl, (DOUBLE *)buff);
+        } else {
+            // unsupported type
+            return NULL;
+        }
+    }
+    if (idecref == 1) {
+        DEBUG_MPI("DECREF %s <%s>\n", "converted", "tuple");
+        Py_DECREF(tupl);
+    }
+
+    DEBUG_MPI("Broadcast from %d for %d values\n", root, count);
+    iret = aster_mpi_bcast(buff, count, type, root, aster_get_current_comm());
+    if ( iret != 0 ) {
+        return NULL;
+    }
+    if ( type == MPI_INTEGER8 ) {
+        res = MakeTupleInt(count, (INTEGER *)buff);
+    } else if ( type == MPI_DOUBLE_PRECISION ) {
+        res = MakeTupleFloat(count, (DOUBLE *)buff);
+    }
+    return res;
+}
 
 /*
  * Methods of the aster_core module.
@@ -715,6 +775,7 @@ static PyMethodDef methods[] = {
     { "mpi_info",       aster_mpi_info,      METH_VARARGS},
     { "mpi_warn",       aster_mpi_warn,      METH_VARARGS},
     { "mpi_barrier",    aster_mpi_barrier,   METH_VARARGS},
+    { "MPI_Bcast",      aster_mpi_bcast_py,  METH_VARARGS},
     // { "get_option",  ... } : method added in register_jdc
     // { "set_info",  ... } : method added in register_jdc
     { NULL, NULL, 0, NULL }

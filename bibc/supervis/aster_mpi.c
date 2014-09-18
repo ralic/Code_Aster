@@ -205,6 +205,16 @@ int aster_set_mpi_barrier(aster_comm_t *node) {
     return 0;
 }
 
+int aster_mpi_bcast(void *buffer, int count, MPI_Datatype datatype, int root, aster_comm_t *node) {
+    /*! Broadcasts a message from one process to all other processes */
+#ifdef _USE_MPI
+    DEBUG_MPI("MPI_Bcast: send %d values from proc #%d\n", count, root);
+    AS_ASSERT(MPI_Bcast((void *)buffer, count, datatype, root, node->id) == MPI_SUCCESS);
+#endif
+    return 0;
+}
+
+
 /* Access functions */
 aster_comm_t* _search_id(aster_comm_t *node, MPI_Comm *id) {
     /*! Search for 'id' in 'node' and its childs
