@@ -44,7 +44,7 @@ from Utilitai.Utmess          import UTMESS
 from Utilitai.System          import ExecCommand
 from Utilitai.UniteAster      import UniteAster
 from Utilitai.utils           import set_debug, _print, _printDBG
-from Utilitai.utils           import encode_str, decode_str
+from Utilitai.utils           import encode_str, decode_str, send_file
 from Miss.miss_fichier_sol    import fichier_sol
 from Miss.miss_fichier_option import fichier_option
 from Miss.miss_resu_aster     import ResuAsterReader
@@ -358,22 +358,19 @@ class CalculMissFichierTemps(CalculMiss):
     """Définition d'une exécution de CALC_MISS dans le domaine de Laplace"""
     option_calcul = 'IMPE_LAPL'
 
-    # def _fichier_tmp(self, ext, idx=0):
-    #     """Retourne le nom d'un fichier MISS dans WRKDIR"""
-    #     fich = '%s.%s.%04d' % (self.param['PROJET'], ext, idx)
-    #     return osp.join(self.param['_WRKDIR'], fich)
-
     def init_attr(self):
         """Initialisations"""
-        rank, size = aster_core.mpi_info()
+        rank, size = aster_core.MPI_CommRankSize()
         cwd = os.getcwd()
         host = socket.gethostname()
         path = "{}:{}".format(host, cwd)
         print "Processor #{}/{} is working in '{}'".format(rank, size, path)
         ipath = encode_str(path)
-        buffer = aster_core.MPI_Bcast(ipath, 0)
-        path = decode_str(buffer)
-        print "Processor #{}/{} is working in '{}'".format(0, size, path)
+        self._results_path = []
+        for k in range(size):
+            buffer = aster_core.MPI_Bcast(ipath, k)
+            self._results_path.append(decode_str(buffer))
+            print "Bcast: Processor #{}/{} is working in '{}'".format(k, size, self._results_path[k])
 
         self.dt = self.param['PAS_INST']
         N_inst = int(self.param['INST_FIN']/self.param['PAS_INST'])
@@ -417,13 +414,12 @@ class CalculMissFichierTemps(CalculMiss):
             copie_fichier(self._fichier_forc, self._flapl_forc)
             copie_fichier(self._fichier_forc, self._fichier_aster(self.param['EXCIT_SOL']['UNITE_RESU_FORC']))
 
-        fd = open(self._flapl_impe, 'w')
         CalculMiss.cree_fichier_sol(self)
         aster.affiche("MESSAGE",'BOUCLE SUR LES FREQUENCES COMPLEXES')
-        self._exec_boucle_lapl(fd)
-        fd.close()
+        self._exec_boucle_lapl()
+        self.build_global_file()
 
-    def _exec_boucle_lapl(self, fd):
+    def _exec_boucle_lapl(self):
         """Exécute MISS3D dans une boucle sur toutes les fréquences complexes"""
         L_points = self.L_points
         dt = self.dt
@@ -431,14 +427,13 @@ class CalculMissFichierTemps(CalculMiss):
         #TODO la règle UN_PARMI(FREQ_MIN, LIST_FREQ, FREQ_IMAG) ne convient pas!
         # au moins mettre FREQ_MIN à None
         self.param.set('FREQ_MIN', None)
-        rank, size = aster_core.mpi_info()
+        rank, size = aster_core.MPI_CommRankSize()
 
-        for k in range(0, self.nbr_freq):
+        for k in range(self.nbr_freq):
             # round-robin partition
             print "Frequency {} will be computed by proc #{}".format(k, rank)
             if k % size != rank:
-                # continue
-                pass
+                continue
             print "Compute frequency {} on proc #{}".format(k, rank)
 
 
@@ -454,14 +449,27 @@ class CalculMissFichierTemps(CalculMiss):
             str00 = str(self.param['FREQ_IMAG'])+' + i . '+str(self.param['LIST_FREQ'][0])+' ('+str(k+1)+'/'+str(self.nbr_freq)+')'
             aster.affiche("MESSAGE",'FREQUENCE COMPLEXE COURANTE =  '+str00)
             CalculMiss.execute(self)
-            copie_fichier(self._fichier_impe, self._fichier_tmp('resu_impe_%04d' % k))
+            resname = self._fichier_tmp('resu_impe_%04d' % k)
+            copie_fichier(self._fichier_impe, resname)
 
-            text = open(self._fichier_impe, 'r').read()
-            fd.write(text)
+            if rank != 0:
+                send_file(resname, self._results_path[0])
 
         # libérer la structure contenant les données numériques
         CalculMiss.init_data(self)
 
+    def build_global_file(self):
+        """Build the file by concatenating those on each frequency"""
+        rank = aster_core.MPI_CommRankSize()[0]
+        if rank == 0:
+            fd = open(self._flapl_impe, 'w')
+            for k in range(self.nbr_freq):
+                resname = self._fichier_tmp('resu_impe_%04d' % k)
+                fd.write(open(resname, 'r').read())
+            fd.close()
+            for k in range(1, self.nbr_freq):
+                send_file(self._flapl_impe, self._results_path[k])
+        aster_core.MPI_Barrier()
 
     def cree_commande_miss(self):
         """Produit le fichier de commandes Miss du champ incident (.inci)"""
