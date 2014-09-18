@@ -34980,7 +34980,6 @@ msgid ""
 msgstr ""
 "\n"
 " You cannot use contact with continuation methods (PILOTAGE)\n"
-" "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline.py:61
 msgid ""
@@ -35267,7 +35266,7 @@ msgid ""
 msgstr ""
 "\n"
 " <Action> Trying to adapt the penalization ratio for contact. \n"
-" \n"
+" "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline10.py:114
 msgid " <Action><Échec> On a déjà choisi l'autre solution de pilotage."
