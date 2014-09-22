@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist R 
 
 F comm wtnv114a.comm D 1
-F mail wtnp101a.mail D 20
+F mail wtnv114a.mail D 20
