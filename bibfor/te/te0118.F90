@@ -86,7 +86,7 @@ subroutine te0118(option, nomte)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), meast, nx, ny, nz, neutr, jac
     real(kind=8) :: gradx, grady, gradz, normgr, k(8), delphi, dphi(8), sigmak
     real(kind=8) :: sigkfi, alpha(8), smxdfi, dmin, distij, xi, yi, zpti, xj, yj
-    real(kind=8) :: zj, sigmni(3), norm12, norm14, norm15, toleni
+    real(kind=8) :: zj, sigmni(3), norm12, norm14, norm15, toleni, tol
     character(len=8) :: typma, nomail, kdime
     character(len=24) :: valk(3)
 !
@@ -94,6 +94,9 @@ subroutine te0118(option, nomte)
 !
 ! DEBUT ----------------------------------------------------------------
     call jemarq()
+!
+!   tolerance introduite pour determiner si une quantite, normalisee, est nulle
+    tol=100.d0*r8prem()
 !
 !  VERIFICATION DU TYPE D'ELEMENT
     call tecael(iadzi, iazk24)
@@ -374,7 +377,7 @@ subroutine te0118(option, nomte)
 !  AYANT AUTANT DE NOEUDS DE PART ET D'AUTRE DE L'ISOZERO EN L'ABSENCE
 !  DE L'ALGORITHME DE CALCUL DIRECT DES DISTANCES
 !
-        if (zr(igdf) .eq. 0.d0) goto 850
+        if (abs(zr(igdf)) .lt. tol) goto 850
 !  --------------------------------------
 !  CALCUL DU GRADIENT DE LS SUR L'ELEMENT
 !  --------------------------------------

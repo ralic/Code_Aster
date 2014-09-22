@@ -144,6 +144,11 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     real(kind=8), pointer :: nlsn(:) => null()
     real(kind=8), pointer :: nlst(:) => null()
 !
+!   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
+    real(kind=8), parameter :: atol=1.e-12
+    real(kind=8), parameter :: rtol=1.e-12
+    aster_logical :: near
+!
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------
@@ -607,7 +612,11 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !            DISTANCE MN
 !            SAVE CPU TIME: THE SQUARE OF THE DISTANCE IS EVALUATED!
                 d = (xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+(zn-zm)*(zn-zm)
-                if (d .lt. dmin) then
+
+!            d est-elle egale a dmin ?
+                near = abs(d-dmin) .le. (atol + dmin*rtol)
+
+                if (d .lt. dmin .and. .not. near) then
                     dmin = d
                     jmin = j
                     smin = s
@@ -632,7 +641,11 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !               SAVE CPU TIME: THE SQUARE OF THE DISTANCE IS EVALUATED!
                 d = (xi1-xm)*(xi1-xm)+(yi1-ym)*(yi1-ym)+ (zi1-zm)*( zi1-zm)
-                if (d .lt. dmin) then
+
+!               d est-elle egale a dmin ?
+                near = abs(d-dmin) .le. (atol + dmin*rtol)
+
+                if (d .lt. dmin .and. .not. near) then
                     dmin = d
                     jmin = j
 !                 STORE THE DISTANCE VECTOR

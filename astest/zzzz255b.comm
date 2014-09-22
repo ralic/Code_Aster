@@ -96,9 +96,8 @@ dist = 500.*sqrt(2.) - (rayon+nbcalc*avance)
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='NON_DEFINI',
-           TOLE_MACHINE=0.02,      #TODO variabilite
            PRECISION=0.050000000000000003,
-           VALE_CALC=382.182226707,
+           VALE_CALC=377.851802342,
            VALE_REFE=dist,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -107,9 +106,8 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='NON_DEFINI',
-           TOLE_MACHINE=0.02,      #TODO variabilite
            PRECISION=0.050000000000000003,
-           VALE_CALC=382.182217425,
+           VALE_CALC=377.851802338,
            VALE_REFE=dist,
            NOM_PARA='X1',
            TYPE_TEST='MIN',

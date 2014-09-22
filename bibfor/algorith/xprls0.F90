@@ -1,8 +1,9 @@
 subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                   cnslt, isozro, levset, nodtor, eletor,&
                   poifi, trifi)
+!
+! aslint: disable=W1501
     implicit none
-#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -22,6 +23,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xajare.h"
+#include "asterfort/xexiar.h"
 #include "asterfort/xproj.h"
 #include "asterfort/xprpfi.h"
 #include "asterfort/as_deallocate.h"
@@ -121,6 +124,45 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: tmdim(:) => null()
     integer, pointer :: connex(:) => null()
+!
+!  stockage de la liste des noeuds adjacents aux aretes coupees
+!
+!   * nombre maximum de noeuds adjacents a un noeud coupe
+    integer, parameter :: nadjmx = 50
+!
+!   * nombre de noeuds adjacents a chaque noeud coupes
+    integer, pointer :: vnbadj(:) => null()
+!   * liste des noeuds adjacents a chaque noeud coupes
+!   la liste de noeuds adjacents au noeud coupe d'indice ino dans zi(jnomco)
+!   est de longueur vnbadj(ino) et elle stockee dans :
+!      vladj(nadjmx*(ino - 1) + 1:nadjmx*(ino - 1) + vnbadj(ino))
+!   N.B.: vladj(:) stocke des numeros de noeuds absolus
+    integer, pointer :: vladj(:) => null()
+    integer :: numar
+!
+!   * nombre maximum d'aretes
+    integer :: nedgmx
+!   * stockage des numeros d'aretes stockes dans les listes d'ajacence
+    integer, pointer :: vnuadj(:) => null()
+    integer :: nbedge
+!
+!  marquage des sommets et aretes porteurs de points d'intersection
+!   * structure type ainter utilisee dans le decoupage 
+!       - ainter(1, i) = indice dans vedges de l'arete ou se situe le point d'intersection, 
+!                        0 si le point coincide avec un noeud sommet
+!       - ainter(2, i) = indice dans zi(jnomco) du numero de sommet ou se situe le point
+!                        d'intersection, 0 si le point est situe sur une arete
+    integer :: ainter(2, 7)
+!    * indice dans vpoifis du point d'intersection situe sur un noeud sommet ou une
+!      arete
+!       - vpos(1:nbnoco)                   : position des points d'intersection coincidant
+!                                            avec un noeud sommet
+!       - vpos(nbnoco + 1:nbnoco + nedgmx) : position des points d'interserction situes sur
+!                                            une arete
+    integer, pointer :: vpos(:) => null()
+    integer :: ipos
+!  lecture des connectivites des triangles
+    integer :: posa, posb, posc
 !
 !        ---------------------
 !        |  I | TRIANGLE | N |
@@ -244,6 +286,9 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
         endif
     end do
 !
+! N.B. : cette etape de reajustement des level-set assure la validite de
+!        tests du type : abs(lsna) .lt. r8prem()
+!
 !--------------------------------------------------------------------
 !     ON REPERE LES MAILLES VOLUMIQUES COUPEES OU TANGENTEES PAR LS=0
 !     ( I.E. LES MAILLES OU L'ON PEUT INTERPOLER UN PLAN LS=0 )
@@ -324,6 +369,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !     AND THE LSN=0. THE THREE COORDINATES AND THE LSN ARE STORED.
 !     EACH ROW:   X,Y,Z,LSN
     AS_ALLOCATE(vr=vpoifis, size=nbmaco*24)
+!     pour un point on stocke : x, y, z, lst = 4 reels
+!     on attend donc : 8*nbmaco points d'intersection
 !
 !     INITIALISE THE COUNTER FOR JTRI TABLE
     nbpfis = 0
@@ -347,7 +394,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                 nbnoma = zi(jconx2+nmaabs)-zi(jconx2+nmaabs-1)
 !  BOUCLE SUR LES NOEUDS DE LA MAILLE
                 do inob = 1, nbnoma
-                    nunob = connex(zi(jconx2+nmaabs-1)+inob-1)
+                    nunob=connex(zi(jconx2+nmaabs-1)+inob-1)
                     if (nunob .eq. node) then
                         nbnoco = nbnoco+1
                         zi(jnomco-1+nbnoco) = node
@@ -357,6 +404,384 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             end do
         endif
 200     continue
+    end do
+!
+!     * stokage du nombre de noeuds adjacents a chaque noeud coupe
+!       correspondant a une arete portant un point d'intersection
+!     * AS_ALLOCATE initialise vnbadj avec des 0
+    AS_ALLOCATE(vi=vnbadj, size=nbnoco)
+!
+!     * stockage de la liste de noeuds adjacents pour chaque noeud
+!       correspondant a une arete portant un point d'intersection
+!     * AS_ALLOCATE initialise vladj avec des 0
+    AS_ALLOCATE(vi=vladj, size=nadjmx*nbnoco)
+!
+!     * stockage des numeros d'aretes portant un point d'intersection
+!     * AS_ALLOCATE initialise vnuadj avec des 0
+    AS_ALLOCATE(vi=vnuadj, size=nadjmx*nbnoco)
+!
+!     * nombre d'arete portant un point d'intersection
+    nbedge = 0
+!
+!   calcul du nombre maximal d'aretes possible (toutes les mailles
+!   sont des hexa et on stocke chaque arete de chaque maille)
+    nedgmx = 12*nbmaco
+!
+!     * stokage des aretes des positions des points d'intersection
+!   situes sur une arete ou un noeud sommet
+!     * AS_ALLOCATE initialise vpos avec des 0
+    AS_ALLOCATE(vi=vpos, size=nbnoco + nedgmx)
+!
+! construction de la triangulation de la surface de l'isozero pour
+! l'ensemble des mailles coupees
+!  BOUCLE SUR LES MAILLES COUPEES
+    do ima = 1, nbmaco
+        nmaabs = zi(jmaco-1+ima)
+        nbnoma = zi(jconx2+nmaabs)-zi(jconx2+nmaabs-1)
+
+!  ON RECUPERE LES POINTS D'INTERSECTION ISOZERO-ARETES
+        nptint = 0
+!
+! On initialise les coordonnes des points d'intersection
+        do i = 1, 7
+            x(i)=0.d0
+            y(i)=0.d0
+            z(i)=0.d0
+        end do
+!
+! initialisation de ainter
+        do i = 1, 7
+            ainter(1, i) = 0
+            ainter(2, i) = 0
+        end do
+!
+!  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
+        do inoa = 1, nbnoma
+            nunoa=connex(zi(jconx2+nmaabs-1)+inoa-1)
+            if (.not.zl(jnosom-1+nunoa)) goto 340
+            lsna = zr(jlsno-1+nunoa)
+            if (abs(lsna) .lt. r8prem()) then
+                nptint = nptint+1
+                x(nptint) = vale(3*(nunoa-1)+1)
+                y(nptint) = vale(3*(nunoa-1)+2)
+                if (ndim .eq. 3) then
+                    z(nptint) = vale(3*(nunoa-1)+3)
+                else if (ndim.eq.2) then
+                    z(nptint) = 0.d0
+                endif
+                lst(nptint)=zr(jltno-1+nunoa)
+!
+! stockage du numero du noeud sommet dans la table de connectivite de
+! la maille coupee
+                ainter(2, nptint) = inoa
+            endif
+340         continue
+        end do
+!
+!
+!  ON PARCOURT ENSUITE LES ARETES [AB] DE LA MAILLE
+        itypma=zi(jmai-1+nmaabs)
+        call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
+!  On verifie prealablement qu'une face ne contient pas
+! plus de 2 aretes coupees par LSN0
+!
+        nbsom = 0400
+!
+        if ((typma(1:4).eq.'HEXA') .or. (typma(1:4).eq.'QUAD')) nbsom = 4
+        if ((typma(1:5).eq.'TETRA') .or. (typma(1:4).eq.'TRIA')) nbsom = 3
+!
+        if (ndim .eq. 3) call confac(typma, ibid2, ibid, fa, nbf)
+        if (ndim .eq. 2) then
+            nbf=1
+            do i = 1, nbsom
+                fa(1,i)=i
+            end do
+        endif
+!
+        do ifq = 1, nbf
+            nblsn0 = 0
+            na=fa(ifq,1)
+            nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
+            lsna=zr(jlsno-1+(nunoa-1)+1)
+            do i = 2, nbsom
+                nunob=connex(zi(jconx2+nmaabs-1)+fa(ifq,i)-1)
+                lsnb=zr(jlsno-1+(nunob-1)+1)
+                if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna) .gt.r8prem()) .and.&
+                    (abs(lsnb).gt.r8prem())) then
+                    nblsn0 = nblsn0 + 1
+                endif
+                lsna=lsnb
+            end do
+!  On affecte a B le point A initial pour comparer D et A
+            nunob=nunoa
+            lsnb=zr(jlsno-1+(nunob-1)+1)
+            if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna).gt.r8prem( )) .and.&
+                (abs(lsnb).gt.r8prem())) then
+                nblsn0 = nblsn0 + 1
+            endif
+!  Arret fatal si on trouve au moins 3 points d'intersection sur
+! une meme face
+            if (nblsn0 .ge. 3) then
+                call utmess('F', 'XFEM_61')
+            endif
+        end do
+!
+!
+        call conare(typma, ar, nbar)
+!  On cherche la plus grande arete de l'element
+        longmx=0
+        do iar = 1, nbar
+            na=ar(iar,1)
+            nb=ar(iar,2)
+            nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
+            nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
+            do i = 1, ndim
+                  a(i)= vale(3*(nunoa-1)+i)
+                  b(i)= vale(3*(nunob-1)+i)
+            end do
+            longar=padist(ndim,a,b)
+            if (longar .gt. longmx) longmx = longar
+        end do
+        do iar = 1, nbar
+            na=ar(iar,1)
+            nb=ar(iar,2)
+!
+            nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
+            nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
+            lsna = zr(jlsno-1+nunoa)
+            lsnb = zr(jlsno-1+nunob)
+!
+            if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna).gt.r8prem( )) .and.&
+                (abs(lsnb).gt.r8prem())) then
+!  UN POINT D'INTERSECTION SE SITUE ENTRE LES NOEUDS (NUNOA) ET (NUNOB)
+!  Incrementation commente par julien pour verifier la validite du point
+!                NPTINT = NPTINT+1
+               xa = vale(3*(nunoa-1)+1)
+               ya = vale(3*(nunoa-1)+2)
+               if (ndim .eq. 3) za = vale(3*(nunoa-1)+3)
+               if (ndim .eq. 2) za = 0.d0
+               xb = vale(3*(nunob-1)+1)
+               yb = vale(3*(nunob-1)+2)
+               if (ndim .eq. 3) zb = vale(3*(nunob-1)+3)
+               if (ndim .eq. 2) zb = 0.d0
+               s = abs(lsna) / ( abs(lsna) + abs(lsnb) )
+               x(nptint+1) = xa + s*(xb-xa)
+               y(nptint+1) = ya + s*(yb-ya)
+               z(nptint+1) = za + s*(zb-za)
+!
+!  ON VERIFIE LA VALIDITE DU POINT
+               deja=.false.
+               if (ndim .eq. 3) then
+                   dist = (&
+                          (&
+                          (x(nptint+1)-xa)**2)+ ((y(nptint+ 1)-ya)**2)+ ((z(nptint+1)-za&
+                          )**2&
+                          )&
+                          )**0.5d0
+               else if (ndim.eq.2) then
+                   dist = ( ((x(nptint+1)-xa)**2)+ ((y(nptint+ 1)-ya)**2 ) )**0.5d0
+               endif
+!
+!
+               if (nptint .gt. 0) then
+                   do ipt = 1, nptint
+!
+                       if (ndim .eq. 3) then
+                           dist = (&
+                                  (&
+                                  (&
+                                  x(nptint+1)-x(nptint+1- ipt))**2)+ ((y(nptint+1)-y(npt&
+                                  &int+ 1-ipt))**2)+ ((z(nptint+1)-z( nptint+1-ipt)&
+                                  )**2&
+                                  )&
+                                  )**0.5d0
+                       else if (ndim.eq.2) then
+                           dist = (&
+                                  (&
+                                  (&
+                                  x(nptint+1)-x(nptint+1- ipt))**2)+ ((y(nptint+1)-y(npt&
+                                  &int+ 1-ipt)&
+                                  )**2&
+                                  )&
+                                  )**0.5d0
+                       endif
+                       if (dist .gt. (longmx*ndim**0.5d0)) then
+                           deja=.true.
+                           goto 330
+                       endif
+!
+                       if (dist .lt. r8prem()) then
+                           deja=.true.
+                           goto 330
+                       endif
+!
+!
+                   end do
+!
+               endif
+!
+               if (.not.deja) then
+                   nptint = nptint+1
+                   lsta = zr(jltno-1+nunoa)
+                   lstb = zr(jltno-1+nunob)
+                   lst(nptint) = lsta + s*(lstb-lsta)
+!
+! stockage du numero de l'arete dans la liste des aretes de la maille coupeee
+                   ainter(1, nptint) = iar
+               endif
+           endif
+!
+330        continue
+        end do
+!
+!  VERIFICATION SUR LE NOMBRE DE POINTS D'INTERSECTION TROUVES
+!
+!           LES ARETES DE LA MAILLE 'NOMMA' DE TYPE 'TYPMA' ONT  N
+!           POINTS D'INTERSECTION AVEC L'ISO-ZERO DE 'LEVSET'
+!
+!
+        bool = (typma(1:5) .eq.'TETRA'.and.nptint.gt.4) .or.&
+               (typma(1:5) .eq.'PENTA'.and.nptint.gt.5) .or.&
+               (typma(1:4) .eq.'HEXA'.and.nptint.gt.6) .or.&
+               (typma(1:4) .eq.'QUAD'.and.nptint.gt.2)
+        ASSERT(.not. bool)
+!
+        if (ndim .eq. 2 .and. nptint .lt. 2) goto 310
+        if (ndim .eq. 3 .and. nptint .lt. 3) goto 310
+!
+        ASSERT(nptint.le.6)
+!
+!       CORRECTION FOR THE 2D CASE
+!       ONLY TWO POINTS ARE FOUND FOR THE 2D CASE. IN ORDER TO
+!       USE THE PROJECTION ON A TRIANGLE, THAT IS THE SAME CODE
+!       USED FOR THE 3D CASE, A "VIRTUAL" THIRD POINT IS CREATED.
+!       IN ORDER TO AVOID ILL CONDITIONED PROBLEMS, ITS Z-COORD
+!       IS EVALUATED AS THE DISTANCE BETWEEN THE OTHER TWO (REAL)
+!       POINTS
+        if (ndim .eq. 2) then
+            ASSERT(nptint.eq.2)
+            nptint = nptint+1
+            x(nptint) = x(1)
+            y(nptint) = y(1)
+            z(nptint) = ((x(1)-x(2))**2+(y(1)-y(2))**2)** 0.5d0
+            lst(nptint) = lst(1)
+        endif
+!
+!       STORE THE INTERSECTION POINTS FOR THE UPWIND INTEGRATION.
+!       STORE THE NUMBER OF POINTS FOR THE ELEMENT
+        zi(jtri-1+7*(ima-1)+1) = nptint
+!
+!       STORE EACH POINT IN THE COORDINATE TABLE
+        do ipt = 1, nptint
+!
+!         CHECK IF THE INTERSECTION POINT HAS BEEN ALREADY
+!         INCLUDED IN THE COORDINATE TABLE
+!
+! verification de la necessite de stocker le point, sans comparer les coordonnees
+           ipos=0
+           pos=0
+!
+! cas ou le point est sur un noeud sommet
+           if (ainter(2, ipt) .gt. 0) then
+! calcul du numero absolu du noeud sommet
+              na = ainter(2, ipt)
+              nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
+! recherche de l'indice du sommet dans zi(jnomco)
+              inoa = 0
+              do inob=1, nbnoco
+                 nunob = zi(jnomco-1+inob)
+                 if (nunob .eq. nunoa) then
+                    ! ici, on a trouve le sommet cherche
+                    inoa = inob
+                    exit
+                 endif
+              end do
+! hypothese : nunoa est stocke dans zi(jnomco)
+              ASSERT(inoa .gt. 0)
+!
+! calcul de la position ou stocker le numero du point d'intersection
+              ipos=inoa
+              pos=vpos(ipos)
+! N.B. : le point d'instersection est deja stocke ssi pos est non nul
+           endif
+!
+! cas ou le point est sur une arete
+           if (ainter(1, ipt) .gt. 0) then
+! calcul des numeros absolus des deux noeuds sommet de l'arete
+              iar = ainter(1, ipt)
+!
+              na=ar(iar,1)
+              nb=ar(iar,2)
+!
+              nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
+              nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
+!
+              ! recherche de l'indice dans zi(jnomco) des deux noeuds
+              ! de l'arete
+              inoa = 0
+              inob = 0
+              do ino=1, nbnoco
+                 if (zi(jnomco-1+ino) .eq. nunoa) then
+                    inoa=ino
+                 end if
+                 if (zi(jnomco-1+ino) .eq. nunob) then
+                    inob=ino
+                 end if
+                 if (inoa .ne. 0 .and. inob .ne. 0) then
+                    exit
+                 end if
+              end do
+              ! assertion : on retrouve les deux numeros de noeuds sommet
+              ASSERT(inoa .ne. 0 .and. inob .ne. 0)
+!
+              ! recherche de l'arete (a, b) dans le tableau de listes d'adjacence
+              call xexiar(vnbadj, vladj, nadjmx, vnuadj, inoa, nunoa, inob, nunob, numar)
+!
+              ! l'arete est deja stockee ssi numar n'est pas nul
+              if (numar.ne.0) then
+!                cas ou  l'arete est deja stockee :
+!                calcul de la position ou stocker le numero du point d'intersection
+                 ipos=nbnoco + numar
+              else
+!                cas ou  l'arete n'est pas encore stockee :
+!                  * stockage de l'arete dans les listes d'adjacence
+                 call xajare(vnbadj, vladj, nadjmx, vnuadj, inoa, nunoa, inob, nunob, nbedge)
+
+                 ! verification du nombre d'aretes stockees
+                 ASSERT(nbedge .le. nedgmx)
+
+!                  * calcul de la position ou stocker le numero du point d'intersection
+                 ipos=nbnoco + nbedge
+
+              endif
+!
+              pos=vpos(ipos)
+! N.B. : le point d'instersection est deja stocke ssi pos est non nul
+           endif
+!
+! si pos = 0, le point doit etre stocke qu'il soit :
+! un vertiable point d'inteserction ou le troisieme point rajoute en 2D
+           intabl=pos .ne. 0
+!
+           if (.not.intabl) then
+!             THE COORDINATES OF THE POINT MUST BE STORED...
+               nbpfis = nbpfis+1
+               vpoifis(4*(nbpfis-1)+1) = x(ipt)
+               vpoifis(4*(nbpfis-1)+2) = y(ipt)
+               vpoifis(4*(nbpfis-1)+3) = z(ipt)
+               vpoifis(4*(nbpfis-1)+4) = lst(ipt)
+!           ...THE NUMBER OF THE POINT AS WELL
+               zi(jtri-1+7*(ima-1)+ipt+1) = nbpfis
+!
+! stockage du numero du nouveau point d'intersection
+               if (ipos .ne. 0) vpos(ipos) = nbpfis
+           else
+!               ONLY THE NUMBER OF THE POINT MUST BE STORED
+                zi(jtri-1+7*(ima-1)+ipt+1) = pos
+           endif
+!
+        end do
+310     continue
     end do
 !
 !----------------------------------------------
@@ -411,294 +836,43 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                 if (ndim .eq. 2) p(3)=0.d0
 !
 !
-!  ON RECUPERE LES POINTS D'INTERSECTION ISOZERO-ARETES
-                nptint = 0
-!
-! On initialise les coordonnes des points d'intersection
-                do i = 1, 7
-                    x(i)=0.d0
-                    y(i)=0.d0
-                    z(i)=0.d0
-                end do
-!
-!
-!  ON RECHERCHE D'ABORD LES NOEUDS QUI SONT DES POINTS D'INTERSECTIONS
-                do inoa = 1, nbnoma
-                    nunoa = connex(zi(jconx2+nmaabs-1)+inoa-1)
-                    if (.not.zl(jnosom-1+nunoa)) goto 340
-                    lsna = zr(jlsno-1+nunoa)
-                    if (abs(lsna) .lt. r8prem()) then
-                        nptint = nptint+1
-                        x(nptint) = vale(3*(nunoa-1)+1)
-                        y(nptint) = vale(3*(nunoa-1)+2)
-                        if (ndim .eq. 3) then
-                            z(nptint) = vale(3*(nunoa-1)+3)
-                        else if (ndim.eq.2) then
-                            z(nptint) = 0.d0
-                        endif
-                        lst(nptint)=zr(jltno-1+nunoa)
-!
-                    endif
-340                 continue
-                end do
-!
-!
-!  ON PARCOURT ENSUITE LES ARETES [AB] DE LA MAILLE
-                itypma=zi(jmai-1+nmaabs)
-                call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-!  On verifie prealablement qu'une face ne contient pas
-! plus de 2 aretes coupees par LSN0
-!
-                nbsom = 0400
-!
-                if ((typma(1:4).eq.'HEXA') .or. (typma(1:4).eq.'QUAD')) nbsom = 4
-                if ((typma(1:5).eq.'TETRA') .or. (typma(1:4).eq.'TRIA')) nbsom = 3
-!
-                if (ndim .eq. 3) call confac(typma, ibid2, ibid, fa, nbf)
-                if (ndim .eq. 2) then
-                    nbf=1
-                    do i = 1, nbsom
-                        fa(1,i)=i
-                    end do
-                endif
-!
-                do ifq = 1, nbf
-                    nblsn0 = 0
-                    na=fa(ifq,1)
-                    nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
-                    lsna=zr(jlsno-1+(nunoa-1)+1)
-                    do i = 2, nbsom
-                        nunob=connex(zi(jconx2+nmaabs-1)+fa(ifq,&
-                        i)-1)
-                        lsnb=zr(jlsno-1+(nunob-1)+1)
-                        if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna) .gt.r8prem()) .and.&
-                            (abs(lsnb).gt.r8prem())) then
-                            nblsn0 = nblsn0 + 1
-                        endif
-                        lsna=lsnb
-                    end do
-!  On affecte a B le point A initial pour comparer D et A
-                    nunob=nunoa
-                    lsnb=zr(jlsno-1+(nunob-1)+1)
-                    if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna).gt.r8prem( )) .and.&
-                        (abs(lsnb).gt.r8prem())) then
-                        nblsn0 = nblsn0 + 1
-                    endif
-!  Arret fatal si on trouve au moins 3 points d'intersection sur
-! une meme face
-                    if (nblsn0 .ge. 3) then
-                        call utmess('F', 'XFEM_61')
-                    endif
-                end do
-!
-!
-                call conare(typma, ar, nbar)
-!  On cherche la plus grande ar�te de l'�l�ment
-                longmx=0
-                do iar = 1, nbar
-                    na=ar(iar,1)
-                    nb=ar(iar,2)
-                    nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
-                    nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
-                    do i = 1, ndim
-                        a(i)= vale(3*(nunoa-1)+i)
-                        b(i)= vale(3*(nunob-1)+i)
-                    end do
-                    longar=padist(ndim,a,b)
-                    if (longar .gt. longmx) longmx = longar
-                end do
-                do iar = 1, nbar
-                    na=ar(iar,1)
-                    nb=ar(iar,2)
-!
-                    nunoa=connex(zi(jconx2+nmaabs-1)+na-1)
-                    nunob=connex(zi(jconx2+nmaabs-1)+nb-1)
-                    lsna = zr(jlsno-1+nunoa)
-                    lsnb = zr(jlsno-1+nunob)
-!
-                    if ((lsna*lsnb.lt.0.d0) .and. (abs(lsna).gt.r8prem( )) .and.&
-                        (abs(lsnb).gt.r8prem())) then
-!  UN POINT D'INTERSECTION SE SITUE ENTRE LES NOEUDS (NUNOA) ET (NUNOB)
-!  Incrementation commente par julien pour verifier la validite du point
-!                     NPTINT = NPTINT+1
-                        xa = vale(3*(nunoa-1)+1)
-                        ya = vale(3*(nunoa-1)+2)
-                        if (ndim .eq. 3) za = vale(3*(nunoa-1)+3)
-                        if (ndim .eq. 2) za = 0.d0
-                        xb = vale(3*(nunob-1)+1)
-                        yb = vale(3*(nunob-1)+2)
-                        if (ndim .eq. 3) zb = vale(3*(nunob-1)+3)
-                        if (ndim .eq. 2) zb = 0.d0
-                        s = abs(lsna) / ( abs(lsna) + abs(lsnb) )
-                        x(nptint+1) = xa + s*(xb-xa)
-                        y(nptint+1) = ya + s*(yb-ya)
-                        z(nptint+1) = za + s*(zb-za)
-!
-!  ON VERIFIE LA VALIDITE DU POINT
-                        deja=.false.
-                        if (ndim .eq. 3) then
-                            dist = (&
-                                   (&
-                                   (x(nptint+1)-xa)**2)+ ((y(nptint+ 1)-ya)**2)+ ((z(nptint+1)-za&
-                                   )**2&
-                                   )&
-                                   )**0.5d0
-                        else if (ndim.eq.2) then
-                            dist = ( ((x(nptint+1)-xa)**2)+ ((y(nptint+ 1)-ya)**2 ) )**0.5d0
-                        endif
-!
-!
-                        if (nptint .gt. 0) then
-                            do ipt = 1, nptint
-!
-                                if (ndim .eq. 3) then
-                                    dist = (&
-                                           (&
-                                           (&
-                                           x(nptint+1)-x(nptint+1- ipt))**2)+ ((y(nptint+1)-y(npt&
-                                           &int+ 1-ipt))**2)+ ((z(nptint+1)-z( nptint+1-ipt)&
-                                           )**2&
-                                           )&
-                                           )**0.5d0
-                                else if (ndim.eq.2) then
-                                    dist = (&
-                                           (&
-                                           (&
-                                           x(nptint+1)-x(nptint+1- ipt))**2)+ ((y(nptint+1)-y(npt&
-                                           &int+ 1-ipt)&
-                                           )**2&
-                                           )&
-                                           )**0.5d0
-                                endif
-                                if (dist .gt. (longmx*ndim**0.5d0)) then
-                                    deja=.true.
-                                    goto 330
-                                endif
-!
-                                if (dist .lt. r8prem()) then
-                                    deja=.true.
-                                    goto 330
-                                endif
-!
-!
-                            end do
-!
-                        endif
-!
-                        if (.not.deja) then
-                            nptint = nptint+1
-                            lsta = zr(jltno-1+nunoa)
-                            lstb = zr(jltno-1+nunob)
-                            lst(nptint) = lsta + s*(lstb-lsta)
-                        endif
-                    endif
-!
-!
-!
-330                 continue
-                end do
-!
-!  VERIFICATION SUR LE NOMBRE DE POINTS D'INTERSECTION TROUVES
-!
-!              LES ARETES DE LA MAILLE 'NOMMA' DE TYPE 'TYPMA' ONT  N
-!              POINTS D'INTERSECTION AVEC L'ISO-ZERO DE 'LEVSET'
-!
-!
-                bool = (typma(1:5) .eq.'TETRA'.and.nptint.gt.4) .or.&
-                       (typma(1:5) .eq.'PENTA'.and.nptint.gt.5) .or.&
-                       (typma(1:4) .eq.'HEXA'.and.nptint.gt.6) .or.&
-                       (typma(1:4) .eq.'QUAD'.and.nptint.gt.2)
-                ASSERT(.not. bool)
-!
-                if (ndim .eq. 2 .and. nptint .lt. 2) goto 310
-                if (ndim .eq. 3 .and. nptint .lt. 3) goto 310
-!
-                ASSERT(nptint.le.6)
-!
-!              CORRECTION FOR THE 2D CASE
-!              ONLY TWO POINTS ARE FOUND FOR THE 2D CASE. IN ORDER TO
-!              USE THE PROJECTION ON A TRIANGLE, THAT IS THE SAME CODE
-!              USED FOR THE 3D CASE, A "VIRTUAL" THIRD POINT IS CREATED.
-!              IN ORDER TO AVOID ILL CONDITIONED PROBLEMS, ITS Z-COORD
-!              IS EVALUATED AS THE DISTANCE BETWEEN THE OTHER TWO (REAL)
-!              POINTS
-                if (ndim .eq. 2) then
-                    ASSERT(nptint.eq.2)
-                    nptint = nptint+1
-                    x(nptint) = x(1)
-                    y(nptint) = y(1)
-                    z(nptint) = ((x(1)-x(2))**2+(y(1)-y(2))**2)** 0.5d0
-                    lst(nptint) = lst(1)
-                endif
-!
-!              STORE THE INTERSECTION POINTS FOR THE UPWIND INTEGRATION.
-!              STORE THE NUMBER OF POINTS FOR THE ELEMENT
-                zi(jtri-1+7*(ima-1)+1) = nptint
-!
-!              STORE EACH POINT IN THE COORDINATE TABLE
-                do ipt = 1, nptint
-!
-!                 CHECK IF THE INTERSECTION POINT HAS BEEN ALREADY
-!                 INCLUDED IN THE COORDINATE TABLE
-                    intabl = .false.
-                    do pos = 1, nbpfis
-                        dist = sqrt(&
-                               (&
-                               x(ipt)-vpoifis(4*(pos-1)+1))** 2+ (y(ipt)-vpoifis(4*(pos-1)+2))**2&
-                               &+ (z(ipt)-vpoifis(4*(pos-1)+3)&
-                               )**2&
-                               )
-                        if (dist .lt. r8prem()) then
-                            intabl=.true.
-                            goto 424
-                        endif
-                    end do
-!
-424                 continue
-!
-                    if (.not.intabl) then
-!                    THE COORDINATES OF THE POINT MUST BE STORED...
-                        nbpfis = nbpfis+1
-                        vpoifis(4*(nbpfis-1)+1) = x(ipt)
-                        vpoifis(4*(nbpfis-1)+2) = y(ipt)
-                        vpoifis(4*(nbpfis-1)+3) = z(ipt)
-                        vpoifis(4*(nbpfis-1)+4) = lst(ipt)
-!                    ...THE NUMBER OF THE POINT AS WELL
-                        zi(jtri-1+7*(ima-1)+ipt+1) = nbpfis
-                    else
-!                    ONLY THE NUMBER OF THE POINT MUST BE STORED
-                        zi(jtri-1+7*(ima-1)+ipt+1) = pos
-                    endif
-!
-                end do
-!
 !  CALCUL DE DISTANCE DU NOEUD (INO) A L'ISOZERO SUR LA MAILLE (NMAABS)
 !  --------------------------------------------------------------------
 !  ON PARCOURT TOUS LES TRIANGLES QUE L'ON PEUT FORMER AVEC LES POINTS
 !  D'INTERSECTION ISOZERO-ARETES :
 !
+!
+! lecture du nombre de points d'intersection stocke dans zi(jtri)
+                nptint=zi(jtri-1+7*(ima-1)+1)
+
                 if (nptint .eq. 3) ntri=1
                 if (nptint .eq. 4) ntri=4
                 if (nptint .eq. 5) ntri=10
                 if (nptint .eq. 6) ntri=20
 !
                 do itri = 1, ntri
+! lecture de la triangulation stockee dans vpoifis + zi(jtri)
                     ia=iatri(itri)
                     ib=ibtri(itri)
                     ic=ictri(itri)
-                    a(1)=x(ia)
-                    a(2)=y(ia)
-                    a(3)=z(ia)
-                    b(1)=x(ib)
-                    b(2)=y(ib)
-                    b(3)=z(ib)
-                    c(1)=x(ic)
-                    c(2)=y(ic)
-                    c(3)=z(ic)
+
+                    posa=zi(jtri-1+7*(ima-1)+ia+1)
+                    posb=zi(jtri-1+7*(ima-1)+ib+1)
+                    posc=zi(jtri-1+7*(ima-1)+ic+1)
+
+                    a(1)=vpoifis(4*(posa-1)+1)
+                    a(2)=vpoifis(4*(posa-1)+2)
+                    a(3)=vpoifis(4*(posa-1)+3)
+                    b(1)=vpoifis(4*(posb-1)+1)
+                    b(2)=vpoifis(4*(posb-1)+2)
+                    b(3)=vpoifis(4*(posb-1)+3)
+                    c(1)=vpoifis(4*(posc-1)+1)
+                    c(2)=vpoifis(4*(posc-1)+2)
+                    c(3)=vpoifis(4*(posc-1)+3)
                     if (levset .eq. 'LN') then
-                        lsta=lst(ia)
-                        lstb=lst(ib)
-                        lstc=lst(ic)
+                        lsta=vpoifis(4*(posa-1)+4)
+                        lstb=vpoifis(4*(posb-1)+4)
+                        lstc=vpoifis(4*(posc-1)+4)
                     endif
 !
                     call xproj(p, a, b, c, m,&
@@ -734,9 +908,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                         endif
                     endif
                 end do
-!
             endif
-310         continue
         end do
 !
 !  ON ATTRIBUE LES LS CORRESPONDANT AUX MEILLEURES DISTANCES TROUVEES
@@ -752,8 +924,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
             zl(ipproj-1+ino) = .true.
         endif
 !
-        bool=dejadi
-        ASSERT(bool)
+        ASSERT(dejadi)
         zl(jzero-1+nuno)=.true.
 !
 300     continue
@@ -769,6 +940,14 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
     AS_DEALLOCATE(vr=vpoifis)
 !
+    AS_DEALLOCATE(vi=vnbadj)
+!
+    AS_DEALLOCATE(vi=vladj)
+!
+    AS_DEALLOCATE(vi=vnuadj)
+!
+    AS_DEALLOCATE(vi=vpos)
+!
 !  REMPLACEMENT DES LEVEL SETS PAR CELLES CALCULEES
 !  ------------------------------------------------
     do ino = 1, nbnoco
@@ -777,11 +956,13 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !        CALCULATE THE LEVEL SETS BY PROJECTION AT ALL THE NODES WHICH
 !        HAVEN'T A PROJECTION INSIDE A TRIANGLE
         if (zl(jzero-1+nuno) .and. zl(ipproj-1+ino)) then
+!
             p(1)=vale(3*(nuno-1)+1)
             p(2)=vale(3*(nuno-1)+2)
             if (ndim .eq. 3) p(3)=vale(3*(nuno-1)+3)
             if (ndim .eq. 2) p(3)=0.d0
             lsnp = zr(jlsno-1+nuno)
+!
             if (lsnp .ne. 0.d0) then
                 call xprpfi(p, lsnp, armin, poifis, trifis,&
                             fispre, ndim, lsnnew, lstnew)
