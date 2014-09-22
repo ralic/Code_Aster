@@ -124,4 +124,10 @@ En interaction sol, structure, fluide (ISSF='OUI'), les propriétés du fluide
 doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.
 """),
 
+24 : _(u"""La fréquence numéro %(i1)d sera calculée par le processeur #%(i2)d.
+"""),
+
+25 : _(u"""Calcul de la fréquence numéro %(i1)d sur le processeur #%(i2)d.
+"""),
+
 }

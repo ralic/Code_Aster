@@ -426,11 +426,10 @@ class CalculMissFichierTemps(CalculMiss):
 
         for k in range(self.nbr_freq):
             # round-robin partition
-            print "Frequency {} will be computed by proc #{}".format(k, k % size)
             if k % size != rank:
+                UTMESS('I', 'MISS0_24', vali=(k, k % size))
                 continue
-            print "Compute frequency {} on proc #{}".format(k, rank)
-
+            UTMESS('I', 'MISS0_25', vali=(k, rank))
 
             if (k == 0) or (k == self.nbr_freq - 1):
                 self.param.set('LIST_FREQ', (0.1E-4,) )
