@@ -67,7 +67,7 @@ implicit none
     character(len=19) :: vitini, accini
     character(len=19) :: depmoi, accplu, vitplu
     character(len=19) :: xseuco, xseucp
-    character(len=19) :: xindco, xmemco, xindcp, xmemcp
+    character(len=19) :: xindco, xmemco, xindcp, xmemcp, xcohes, xcohep
     character(len=24) :: tabfin, etatct
     integer :: jtabf, jetat
     integer :: ztabf, zetat
@@ -135,14 +135,17 @@ implicit none
         xmemcp = resoco(1:14)//'.XMEP'
         xseuco = resoco(1:14)//'.XFSE'
         xseucp = resoco(1:14)//'.XFSP'
+        xcohes = resoco(1:14)//'.XCOH'
+        xcohep = resoco(1:14)//'.XCOP'
         call copisd('CHAMP_GD', 'V', xindcp, xindco)
         call copisd('CHAMP_GD', 'V', xmemcp, xmemco)
         call copisd('CHAMP_GD', 'V', xseucp, xseuco)
+        call copisd('CHAMP_GD', 'V', xcohep, xcohes)
     endif
 !
 ! --- AFIN QUE LE VECTEUR DES FORCES D'INERTIE NE SOIT PAS MODIFIE AU
 ! --- COURS DE LA BOUCLE DES CONTRAINTES ACTIVES PAR L'APPEL A OP0070
-! --- ON LE DUPLIQUE ET ON UTILISE CETTE COPIE FIXE (VITINI,ACCINI)
+! --- ON LE DUPLIQUE ET ON UTILISE CETTE COPIE FIXE  (VITINI,ACCINI)
 !
     vitini = resoco(1:14)//'.VITI'
     accini = resoco(1:14)//'.ACCI'

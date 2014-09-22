@@ -230,7 +230,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 ! --- ON COPIE CMEMCO DANS RESOCO.XMEM
 !
     call copisd('CHAMP_GD', 'V', lchout(3), xmemco)
-    call copisd('CHAMP_GD', 'V', lchout(4), xcoheo)
+    call copisd('CHAMP_GD', 'V', lchout(4), xcohes)
 !
 999 continue
 !

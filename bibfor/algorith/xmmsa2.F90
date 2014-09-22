@@ -4,6 +4,7 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
                   dtang, p, am)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/lcejex.h"
 #include "asterfort/lcejli.h"
 #include "asterfort/matini.h"
@@ -68,7 +69,7 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
     real(kind=8) :: vim(9), vip(9)
     real(kind=8) :: am2d(2), dam2d(2), dsid2d(6, 6), dam(3)
-    real(kind=8) :: sigma(6), eps
+    real(kind=8) :: sigma(6)
 !
     character(len=16) :: option
 !
@@ -110,7 +111,16 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
     if (job .ne. 'SAUT_LOC') then
         vim(1)=cohes(1)
-        vim(2)=cohes(2)
+        if(rela.eq.1.d0) then
+            vim(2) = cohes(2)
+        else
+            if (cohes(2) .le. 0.d0) then
+                vim(2)=0.d0
+            else
+                vim(2)=1.d0
+            endif
+            vim(3) = abs(cohes(2)) - 1.d0
+        endif
 !
 ! PREDICTION: COHES(3)=1 ; CORRECTION: COHES(3)=2
 !
@@ -156,14 +166,18 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
         endif
 !
         alpha(1) = vip(1)
-        alpha(2) = vip(2)
-        eps = 1.d-4
-        if (alpha(1) .le. (cohes(1)*(1.d0+eps))) alpha(2)=0.d0
-!        IF(ALPHA(1).GT.1.01*COHES(1)) THEN
-!            ALPHA(2)=1.D0
-!        ELSE
-!            ALPHA(2)=0.D0
-!         ENDIF
+        if(rela.eq.1.d0) then
+            alpha(2) = vip(2)
+        else
+            if (vip(2) .eq. 0.d0) then
+                alpha(2) = -vip(3)-1.d0
+            else if (vip(2).eq.1.d0) then
+                alpha(2) = vip(3) + 1.d0
+            else
+                ASSERT(.false.)
+            endif
+        endif
+! ici on a enleve la securite numerique
 !
         if (job .eq. 'ACTU_VI') then
             alpha(3) = xcoef_he()/2

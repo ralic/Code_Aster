@@ -77,7 +77,7 @@ implicit none
 !
     if (present(sdcont_algo)) then
         xindco = sdcont_algo(1:14)//'.XFIN'
-        xcohes = sdcont_algo(1:14)//'.XCOH'
+        xcohes = sdcont_algo(1:14)//'.XCOP'
         xseuco = sdcont_algo(1:14)//'.XFSE'
     endif
     if (present(sdpost)) then

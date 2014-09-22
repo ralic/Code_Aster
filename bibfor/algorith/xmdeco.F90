@@ -54,6 +54,6 @@ subroutine xmdeco(resoco)
     call copisd('CHAMP_GD', 'V', xindco, xindcp)
     call copisd('CHAMP_GD', 'V', xmemco, xmemcp)
     call copisd('CHAMP_GD', 'V', xseuco, xseucp)
-    call copisd('CHAMP_GD', 'V', xcohep, xcohes)
+    call copisd('CHAMP_GD', 'V', xcohes, xcohep)
 !
 end subroutine

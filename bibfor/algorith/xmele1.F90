@@ -154,11 +154,10 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
     call wkvect(chnbsp, 'V V I', nbma, jnbsp)
 !
 ! --- TEST EXISTENCE DU CHAM_ELEM OU NON
+! --- SI LE CHAMP EXISTE, ON NE FAIT RIEN
 !
     call exisd('CHAM_ELEM', chelem, iret)
-    if (iret .ne. 0) then
-        call celces(chelem, 'V', chelsi)
-    else
+    if (iret .eq. 0) then
 !
 ! ---  BOUCLE SUR LES FISSURES
 !
@@ -215,7 +214,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
         if (param .eq. 'PCOHES') then
             call cescre('V', chelsi, 'ELEM', noma, nomgd,&
-                        1, licmp3, [-1], zi( jnbsp), [-ncmp])
+                        ncmp, licmp3, [-1], zi( jnbsp), [-ncmp])
         else
             call cescre('V', chelsi, 'ELEM', noma, nomgd,&
                         1, 'X1', [-1], zi( jnbsp), [-ncmp])
@@ -223,7 +222,6 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- RAZ VECTEUR DE DIMENSIONNEMENT
 !
-    endif
     call jedetr(chnbsp)
     call wkvect(chnbsp, 'V V I', nbma, jnbsp)
 !
@@ -327,6 +325,7 @@ subroutine xmele1(noma, modele, defico, ligrel, nfiss,&
 ! --- MENAGE
 !
     call detrsd('CHAM_ELEM_S', chelsi)
+    endif
     call detrsd('CHAM_ELEM_S', cmafis)
     call detrsd('CHAM_ELEM_S', faclon)
     call jedetr(chnbsp)
