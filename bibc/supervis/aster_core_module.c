@@ -734,9 +734,6 @@ PyObject *args;
             type = MPI_INTEGER8;
             buff = (void *)malloc((size_t)count * sizeof(INTEGER));
             convert(count, tupl, (INTEGER *)buff);
-            printf("Type <int> count=%d\nvalues =", count);
-            for (i=0; i < count; i++) printf("%ld ", ((long *)buff)[i]);
-            printf("\n");
         } else if ( PyFloat_Check(item) ) {
             type = MPI_DOUBLE_PRECISION;
             buff = (void *)malloc((size_t)count * sizeof(DOUBLE));
