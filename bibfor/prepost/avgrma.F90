@@ -46,8 +46,7 @@ subroutine avgrma(vwork, tdisp, vnbpg, nbpgt, nbordr,&
     integer :: tdisp, nbmap, vnbpg(nbmap), nbpgt, nbordr, nmaini
     integer :: numpaq, tspaq
     real(kind=8) :: vwork(tdisp)
-    character(len=8) :: grdvie
-    character(len=16) :: nomcri, proaxe, nomfor, forvie
+    character(len=16) :: nomcri, proaxe, nomfor, forvie, grdvie
     character(len=19) :: cesr
     aster_logical :: fordef, post
 ! ---------------------------------------------------------------------

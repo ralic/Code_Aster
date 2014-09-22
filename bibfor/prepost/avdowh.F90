@@ -35,8 +35,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
 !    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)
     integer :: jgdeq, jnrupt, jdomel
     aster_logical :: post
-    character(len=8) :: nommat, grdvie
-    character(len=16) :: nomcri, forvie
+    character(len=8) :: nommat
+    character(len=16) :: nomcri, forvie, grdvie
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LE DOMMAGE ELEMENTAIRE A PARTIR D'UNE COURBE
 !      GRANDEUR EQ - VIE POUR TOUS LES CYCLES
@@ -84,7 +84,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
     endif
 !
     if (nomcri(1:16) .eq. 'FATESOCI_MODI_AV') then
-        call rcpare(nommat, 'FATIGUE', 'MANSON_C', icodre(1))
+        call rcpare(nommat, 'FATIGUE', 'MANSON_COFFIN', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_89', sk=nomcri(1:16))
         endif
@@ -94,14 +94,14 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                 adrs = (ivect-1)*nbordr + icycl
 !
                 call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs),&
-                            1, 'MANSON_C', zr(jnrupt+adrs), icodre(1), 1)
+                            1, 'MANSON_COFFIN', zr(jnrupt+adrs), icodre(1), 1)
 !
-                call limend(nommat, zr(jgdeq+adrs), 'MANSON_C', kbid, limit)
+                call limend(nommat, zr(jgdeq+adrs), 'MANSON_COFFIN', kbid, limit)
                 if (limit) then
                     zr(jnrupt+adrs)=r8maem()
                 else
                     call rcvale(nommat, 'FATIGUE', 1, 'EPSI    ', zr(jgdeq+adrs),&
-                                1, 'MANSON_C', zr(jnrupt+adrs), icodre(1), 1)
+                                1, 'MANSON_COFFIN', zr(jnrupt+adrs), icodre(1), 1)
                 endif
 !
                 zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)
@@ -111,7 +111,7 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
  10     continue
 !
         elseif (( nomcri(1:14) .eq. 'MATAKE_MODI_AV' ) .or. ( nomcri(1:16)&
-    .eq. 'DANG_VAN_MODI_AV' )) then
+                               .eq. 'DANG_VAN_MODI_AV' )) then
         call rcpare(nommat, 'FATIGUE', 'WOHLER', icodre(1))
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_90', sk=nomcri(1:16))
@@ -147,23 +147,22 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                     zr(jnrupt+adrs)=r8maem()
                 else
 !
-                    if (grdvie(1:6) .eq. 'WOHLER') then
+                    if (grdvie .eq. 'WOHLER') then
                         nomgrd = 'SIGM    '
-                        grdvie(7:8) = '  '
 !
                         call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs),&
                                     1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
                     endif
 !
-                    if (grdvie(1:8) .eq. 'MANSON_C') then
+                    if (grdvie .eq. 'MANSON_COFFIN') then
                         nomgrd = 'EPSI    '
                         call rcvale(nommat, 'FATIGUE', 1, nomgrd, zr(jgdeq+adrs),&
-                                    1, grdvie, zr(jnrupt+adrs), icodre(1), 1)
+                                    1, grdvie, zr(jnrupt+adrs), icodre(1), 1)                   
 !
                     endif
 !
-                    if (grdvie(1:8) .eq. 'FORM_VIE') then
-                        call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs), icodre(1))
+                    if (grdvie .eq. 'FORM_VIE') then
+                        call renrfa(forvie, zr(jgdeq+adrs), zr(jnrupt+adrs), icodre(1))            
                     endif
 !
                     zr(jdomel+adrs) = 1.0d0/zr(jnrupt+adrs)

@@ -73,8 +73,8 @@ subroutine te0151(option, nomte)
     integer :: codres(nbres)
     character(len=3) :: stopz
     character(len=4) :: fami
-    character(len=8) :: nompar, nomres(nbres), famil, poum
-    character(len=16) :: ch16
+    character(len=8) :: nompar, famil, poum
+    character(len=16) :: ch16, nomres(nbres)
     real(kind=8) :: ul(14), ug(14), pgl(3, 3), klc(14, 14), klv(105)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), epsthe(1)
     integer :: kpg, spt, nklv

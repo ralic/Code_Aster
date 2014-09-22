@@ -71,7 +71,7 @@ subroutine te0311(option, nomte)
     real(kind=8) :: u1l(3), u1g(3), u2l(3), u2g(3), u3l(3), u3g(3)
     real(kind=8) :: g, k1, k2, k3, prsc
     integer :: ibalo, imate, iret
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
     integer :: icodre(3)
 !
     character(len=8) :: nompar(4)

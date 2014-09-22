@@ -60,8 +60,8 @@ subroutine te0141(option, nomte)
     parameter (nbres=6)
     real(kind=8) :: valres(nbres), valpar
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres), nomail, fami, poum
-    character(len=16) :: ch16
+    character(len=8) :: nompar, nomail, fami, poum
+    character(len=16) :: ch16, nomres(nbres)
     character(len=24) :: mator
     integer :: i, lmater, iret, nbpar, lcage, labsc
     integer :: lorien, iacce, ivect, lrcou, lmat

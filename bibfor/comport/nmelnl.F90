@@ -74,8 +74,8 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
 ! DECLARATION VARIABLES LOCALES
     aster_logical :: cplan, elas, vmis, line, nonlin, inco, puis
     integer :: icodre(5)
-    character(len=8) :: nomres(5)
-    character(len=16) :: phenom
+    character(len=16) :: nomres(5)
+    character(len=32) :: phenom
     integer :: jprol, jvale, nbvale, ndimsi, niter, k, l, ibid
 !
     real(kind=8) :: valres(5), e, nu, troisk, deuxmu, sigy, dsde
@@ -199,7 +199,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
 ! - LECTURE DES CARACTERISTIQUES DE NON LINEARITE DU MATERIAU
 !====================================================================
     if (line) then
-        nomres(1)='D_SIGM_EPSI'(1:8)
+        nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, poum, imate,&
                     ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
@@ -246,7 +246,7 @@ subroutine nmelnl(fami, kpg, ksp, idecpg, poum,&
 !
         if (iret .eq. 0) then
             phenom = 'THM_DIFFU'
-            nomres(1) = 'BIOT_COE'
+            nomres(1) = 'BIOT_COEF'
 !
             call rcvalb(fami, kpg, ksp, poum, imate,&
                         ' ', phenom, 0, ' ', [0.d0],&

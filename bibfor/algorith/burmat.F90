@@ -67,7 +67,8 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
     real(kind=8) :: epsi
     character(len=3) :: matcst
     character(len=*) :: fami
-    character(len=8) :: mod, nomc(14)
+    character(len=8) :: mod
+    character(len=16) :: nomc(14)
 !
 ! === ============================================
 !
@@ -109,7 +110,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 !
 ! === =============================================
 !
-    nomc(6)='FONC_DES'
+    nomc(6)='FONC_DESORP'
 !
 ! === ===========
 !     INSTANT T-

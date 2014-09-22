@@ -66,8 +66,9 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
     real(kind=8) :: zero, deux
     real(kind=8) :: em, ef, num, nuf
     character(len=3) :: nume
-    character(len=8) :: nomres(33), nompar
-    character(len=10) :: phenom
+    character(len=8) :: nompar
+    character(len=16) :: nomres(33)
+    character(len=32) :: phenom
     character(len=16) :: nomte
 !
 !     ------------------------------------------------------------------
@@ -200,11 +201,11 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
             nomres(1) = 'MEMB_L  '
             nomres(2) = 'MEMB_LT '
             nomres(3) = 'MEMB_T  '
-            nomres(4) = 'MEMB_G_L'
+            nomres(4) = 'MEMB_G_LT'
             nomres(5) = 'FLEX_L  '
             nomres(6) = 'FLEX_LT '
             nomres(7) = 'FLEX_T  '
-            nomres(8) = 'FLEX_G_L'
+            nomres(8) = 'FLEX_G_LT'
             nomres(9) = 'CISA_L  '
             nomres(10) = 'CISA_T  '
         else if (elasco.eq.2) then

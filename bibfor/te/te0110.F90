@@ -59,9 +59,9 @@ subroutine te0110(option, nomte)
     integer :: icodre(nbres)
     character(len=2) :: num
     integer :: codmat
-    character(len=8) :: hfmoin, hfplus, hfbord, alias8, fami, poum
-    character(len=8) :: nomres(nbres), nompar(nbpar)
-    character(len=16) :: phenom
+    character(len=8) :: hfmoin, hfplus, hfbord, alias8, fami, poum, nompar(nbpar)
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
     real(kind=8) :: valres(nbres), valpar(nbpar), hom(nbres)
     real(kind=8) :: m(3, 3), roc, h, tpg(3), lam, dtpgdx(3), b(3, 3)
     real(kind=8) :: coor2d(18), dfdx(9), dfdy(9), poids, dtpgdy(3)

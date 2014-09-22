@@ -66,7 +66,8 @@ subroutine dglrda()
     real(kind=8) :: mp1cst(2), mp2cst(2), omt, eat, bt1, bt2, pflua, pretr
     integer :: icodr2(5)
     character(len=6) :: k6
-    character(len=8) :: mater, fon(4), k8b, nomres(5)
+    character(len=8) :: mater, fon(4), k8b
+    character(len=16) :: nomres(5)
     character(len=8) :: fsncx, fsncy, fscxd, fscyd, fscxd2, fscyd2
     character(len=8) :: fincx, fincy, ficxd, ficyd, ficxd2, ficyd2
     character(len=16) :: type, nomcmd
@@ -107,9 +108,9 @@ subroutine dglrda()
     nub = valres(2)
     rho = valres(3)
 !
-    nomres(1) = 'AMOR_ALP'
-    nomres(2) = 'AMOR_BET'
-    nomres(3) = 'AMOR_HYS'
+    nomres(1) = 'AMOR_ALPHA'
+    nomres(2) = 'AMOR_BETA'
+    nomres(3) = 'AMOR_HYST'
 !
     call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1), 2, nomres, valres, icodr2, 0)
 !
@@ -138,8 +139,8 @@ subroutine dglrda()
     fc = valres(2)
 !
 ! PERT_FLUA et PERT_RETR
-    nomres(1) = 'PERT_FLU'
-    nomres(2) = 'PERT_RET'
+    nomres(1) = 'PERT_FLUA'
+    nomres(2) = 'PERT_RETR'
     call rcvale(mater, 'BPEL_BETON      ', 0, k8b, r8b(1), 2, nomres, valres, icodr2, 0)
     if (icodr2(1) .eq. 0) then
         pflua = valres(1)
@@ -286,57 +287,57 @@ subroutine dglrda()
 !---------ELASTIQUE---------------
     lonobj = 10
     call codent(2,'D0',K6)
-    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
     call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
     call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
     call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk8(jmelk) = 'E_M     '
+    zk16(jmelk) = 'E_M     '
     zr(jmelr) = em
-    zk8(jmelk+1) = 'NU_M    '
+    zk16(jmelk+1) = 'NU_M    '
     zr(jmelr+1) = num
-    zk8(jmelk+2) = 'E_F     '
+    zk16(jmelk+2) = 'E_F     '
     zr(jmelr+2) = eeq
-    zk8(jmelk+3) = 'NU_F    '
+    zk16(jmelk+3) = 'NU_F    '
     zr(jmelr+3) = nueq
-    zk8(jmelk+4) = 'BT1     '
+    zk16(jmelk+4) = 'BT1     '
     zr(jmelr+4) = bt1
-    zk8(jmelk+5) = 'BT2     '
+    zk16(jmelk+5) = 'BT2     '
     zr(jmelr+5) = bt2
-    zk8(jmelk+6) = 'RHO     '
+    zk16(jmelk+6) = 'RHO     '
     zr(jmelr+6) = rho
     if (amora .gt. 0.0d0) then
-        zk8(jmelk+7) = 'AMOR_ALP'
+        zk16(jmelk+7) = 'AMOR_ALPHA'
         zr(jmelr+7) = amora
     endif
     if (amorb .gt. 0.0d0) then
-        zk8(jmelk+8) = 'AMOR_BET'
+        zk16(jmelk+8) = 'AMOR_BETA'
         zr(jmelr+8) = amorb
     endif
     if (amorh .gt. 0.0d0) then
-        zk8(jmelk+9) = 'AMOR_HYS'
+        zk16(jmelk+9) = 'AMOR_HYST'
         zr(jmelr+9 ) = amorh
     endif
 !---------BPEL_BETON--------------
     lonobj = 2
     call codent(3,'D0',K6)
-    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
     call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
     call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
     call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk8(jmelk )  = 'PERT_RET'
+    zk16(jmelk )  = 'PERT_RETR'
     zr(jmelr )   = pretr
-    zk8(jmelk+1) = 'PERT_FLU'
+    zk16(jmelk+1) = 'PERT_FLUA'
     zr(jmelr+1 ) = pflua
 !---------GLRC_DAMAGE---------------
     lonobj = 48
     lonuti = 35
     call codent(1,'D0',K6)
 !
-    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
 !
     call getvr8('BETON', 'MP1X', iocc=1, scal=mp1cst(1), nbret=icst)
 !
@@ -353,63 +354,63 @@ subroutine dglrda()
     ifon0 = jmelk + lonuti
     longf = 12
     ifon1 = ifon0 + longf
-    zk8(jmelk )  = 'BN11    '
+    zk16(jmelk )  = 'BN11    '
     zr(jmelr )   = bn11
-    zk8(jmelk+1) = 'BN12    '
+    zk16(jmelk+1) = 'BN12    '
     zr(jmelr+1 ) = bn12
-    zk8(jmelk+2) = 'BN22    '
+    zk16(jmelk+2) = 'BN22    '
     zr(jmelr+2 ) = bn22
-    zk8(jmelk+3) = 'BN33    '
+    zk16(jmelk+3) = 'BN33    '
     zr(jmelr+3 ) = bn33
-    zk8(jmelk+4) = 'MF1     '
+    zk16(jmelk+4) = 'MF1     '
     zr(jmelr+4 ) = mf1
-    zk8(jmelk+5) = 'MF2     '
+    zk16(jmelk+5) = 'MF2     '
     zr(jmelr+5 ) = mf2
-    zk8(jmelk+6) = 'QP1     '
+    zk16(jmelk+6) = 'QP1     '
     zr(jmelr+6 ) = qp1
-    zk8(jmelk+7) = 'QP2     '
+    zk16(jmelk+7) = 'QP2     '
     zr(jmelr+7 ) = qp2
-    zk8(jmelk+8) = 'GAMMA   '
+    zk16(jmelk+8) = 'GAMMA   '
     zr(jmelr+8 ) = gamma
-    zk8(jmelk+9) = 'BT1     '
+    zk16(jmelk+9) = 'BT1     '
     zr(jmelr+9 ) = bt1
-    zk8(jmelk+10) = 'BT2     '
+    zk16(jmelk+10) = 'BT2     '
     zr(jmelr+10 ) = bt2
-    zk8(jmelk+11) = 'C1N1    '
+    zk16(jmelk+11) = 'C1N1    '
     zr(jmelr+11 ) = cn(1,1)
-    zk8(jmelk+12) = 'C1N2    '
+    zk16(jmelk+12) = 'C1N2    '
     zr(jmelr+12 ) = cn(1,2)
-    zk8(jmelk+13) = 'C1N3    '
+    zk16(jmelk+13) = 'C1N3    '
     zr(jmelr+13 ) = cn(1,3)
-    zk8(jmelk+14) = 'C2N1    '
+    zk16(jmelk+14) = 'C2N1    '
     zr(jmelr+14 ) = cn(2,1)
-    zk8(jmelk+15) = 'C2N2    '
+    zk16(jmelk+15) = 'C2N2    '
     zr(jmelr+15 ) = cn(2,2)
-    zk8(jmelk+16) = 'C2N3    '
+    zk16(jmelk+16) = 'C2N3    '
     zr(jmelr+16 ) = cn(2,3)
-    zk8(jmelk+17) = 'C1M1    '
+    zk16(jmelk+17) = 'C1M1    '
     zr(jmelr+17 ) = cm(1,1)
-    zk8(jmelk+18) = 'C1M2    '
+    zk16(jmelk+18) = 'C1M2    '
     zr(jmelr+18 ) = cm(1,2)
-    zk8(jmelk+19) = 'C1M3    '
+    zk16(jmelk+19) = 'C1M3    '
     zr(jmelr+19 ) = cm(1,3)
-    zk8(jmelk+20) = 'C2M1    '
+    zk16(jmelk+20) = 'C2M1    '
     zr(jmelr+20 ) = cm(2,1)
-    zk8(jmelk+21) = 'C2M2    '
+    zk16(jmelk+21) = 'C2M2    '
     zr(jmelr+21 ) = cm(2,2)
-    zk8(jmelk+22) = 'C2M3    '
+    zk16(jmelk+22) = 'C2M3    '
     zr(jmelr+22 ) = cm(2,3)
-    zk8(jmelk+23) = 'MAXMP1  '
+    zk16(jmelk+23) = 'MAXMP1  '
     zr(jmelr+23 ) = 0.0d0
-    zk8(jmelk+24) = 'MAXMP2  '
+    zk16(jmelk+24) = 'MAXMP2  '
     zr(jmelr+24 ) = 0.0d0
-    zk8(jmelk+25) = 'MINMP1  '
+    zk16(jmelk+25) = 'MINMP1  '
     zr(jmelr+25 ) = 0.0d0
-    zk8(jmelk+26) = 'MINMP2  '
+    zk16(jmelk+26) = 'MINMP2  '
     zr(jmelr+26 ) = 0.0d0
-    zk8(jmelk+27) = 'NORMM  '
+    zk16(jmelk+27) = 'NORMM  '
     zr(jmelr+27 ) = 1.0d0
-    zk8(jmelk+27) = 'NORMN  '
+    zk16(jmelk+27) = 'NORMN  '
     zr(jmelr+27 ) = 1.0d0
 !---------IMPRESSION-------------
     if (niv .gt. 0) then
@@ -493,30 +494,30 @@ subroutine dglrda()
                         ficyd, fscyd2, ficyd2, prey)
         endif
 !
-        zk8(ifon0 ) = 'FMEX1   '
-        zk8(ifon1 ) = fsncx
-        zk8(ifon0+1) = 'FMEY1   '
-        zk8(ifon1+1) = fsncy
-        zk8(ifon0+2) = 'DFMEX1  '
-        zk8(ifon1+2) = fscxd
-        zk8(ifon0+3) = 'DFMEY1  '
-        zk8(ifon1+3) = fscyd
-        zk8(ifon0+4) = 'DDFMEX1 '
-        zk8(ifon1+4) = fscxd2
-        zk8(ifon0+5) = 'DDFMEY1 '
-        zk8(ifon1+5) = fscyd2
-        zk8(ifon0+6) = 'FMEX2   '
-        zk8(ifon1+6) = fincx
-        zk8(ifon0+7) = 'FMEY2   '
-        zk8(ifon1+7) = fincy
-        zk8(ifon0+8) = 'DFMEX2  '
-        zk8(ifon1+8) = ficxd
-        zk8(ifon0+9) = 'DFMEY2  '
-        zk8(ifon1+9) = ficyd
-        zk8(ifon0+10) = 'DDFMEX2 '
-        zk8(ifon1+10) = ficxd2
-        zk8(ifon0+11) = 'DDFMEY2 '
-        zk8(ifon1+11) = ficyd2
+        zk16(ifon0 ) = 'FMEX1   '
+        zk16(ifon1 ) = fsncx
+        zk16(ifon0+1) = 'FMEY1   '
+        zk16(ifon1+1) = fsncy
+        zk16(ifon0+2) = 'DFMEX1  '
+        zk16(ifon1+2) = fscxd
+        zk16(ifon0+3) = 'DFMEY1  '
+        zk16(ifon1+3) = fscyd
+        zk16(ifon0+4) = 'DDFMEX1 '
+        zk16(ifon1+4) = fscxd2
+        zk16(ifon0+5) = 'DDFMEY1 '
+        zk16(ifon1+5) = fscyd2
+        zk16(ifon0+6) = 'FMEX2   '
+        zk16(ifon1+6) = fincx
+        zk16(ifon0+7) = 'FMEY2   '
+        zk16(ifon1+7) = fincy
+        zk16(ifon0+8) = 'DFMEX2  '
+        zk16(ifon1+8) = ficxd
+        zk16(ifon0+9) = 'DFMEY2  '
+        zk16(ifon1+9) = ficyd
+        zk16(ifon0+10) = 'DDFMEX2 '
+        zk16(ifon1+10) = ficxd2
+        zk16(ifon0+11) = 'DDFMEY2 '
+        zk16(ifon1+11) = ficyd2
 !
 !---------IMPRESSION-------------
         if (niv .gt. 0) then
@@ -583,29 +584,29 @@ subroutine dglrda()
 !
     normn=0.5d0*max(abs(nmax(1)-nmin(1)),abs(nmax(2)-nmin(2)))
 !
-    zk8(jmelk+23) = 'MAXMP1  '
+    zk16(jmelk+23) = 'MAXMP1  '
     zr(jmelr+23 ) = maxmp(1)
-    zk8(jmelk+24) = 'MAXMP2  '
+    zk16(jmelk+24) = 'MAXMP2  '
     zr(jmelr+24 ) = maxmp(2)
-    zk8(jmelk+25) = 'MINMP1  '
+    zk16(jmelk+25) = 'MINMP1  '
     zr(jmelr+25 ) = minmp(1)
-    zk8(jmelk+26) = 'MINMP2  '
+    zk16(jmelk+26) = 'MINMP2  '
     zr(jmelr+26 ) = minmp(2)
-    zk8(jmelk+27) = 'NORMM  '
+    zk16(jmelk+27) = 'NORMM  '
     zr(jmelr+27 ) = normm
-    zk8(jmelk+28) = 'NORMN  '
+    zk16(jmelk+28) = 'NORMN  '
     zr(jmelr+28 ) = normn
-    zk8(jmelk+29) = 'EPAIS  '
+    zk16(jmelk+29) = 'EPAIS  '
     zr(jmelr+29 ) = hh
-    zk8(jmelk+30) = 'BM11    '
+    zk16(jmelk+30) = 'BM11    '
     zr(jmelr+30 ) = bm11
-    zk8(jmelk+31) = 'BM12    '
+    zk16(jmelk+31) = 'BM12    '
     zr(jmelr+31 ) = bm12
-    zk8(jmelk+32) = 'BM22    '
+    zk16(jmelk+32) = 'BM22    '
     zr(jmelr+32 ) = bm22
-    zk8(jmelk+33) = 'BM33    '
+    zk16(jmelk+33) = 'BM33    '
     zr(jmelr+33 ) = bm33
-    zk8(jmelk+34) = 'MPCST   '
+    zk16(jmelk+34) = 'MPCST   '
     if (icst .ne. 0) then
         zr(jmelr+34 ) = 0.d0
     else

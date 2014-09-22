@@ -63,7 +63,7 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd,&
     real(kind=8) :: un, deux, trois, sigmp2, sigmp1, apic, mpic
     real(kind=8) :: cohere
     integer :: cerr(17)
-    character(len=8) :: nomc(17)
+    character(len=16) :: nomc(17)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================

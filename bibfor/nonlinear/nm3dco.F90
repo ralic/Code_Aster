@@ -54,7 +54,7 @@ subroutine nm3dco(fami, kpg, ksp, ndim, option,&
     real(kind=8) :: young, nu, kcoef, mcoef, coefdc, limit
     real(kind=8) :: valres(4)
     integer :: codres(4)
-    character(len=8) :: nomres(4)
+    character(len=16) :: nomres(4)
 !
     integer :: iter, itemax, ndimsi, i, k, l, m, itd, ibid
 !

@@ -78,7 +78,8 @@ subroutine rc36ma(nommat, noma)
     integer :: jcesvb, jcesdb, ier, iocc, nbsitu, jchmat, na, nb, jmater
     real(kind=8) :: para(nbcmp), tempa, tempra, tempb, temprb, tke
     integer :: icodre(nbcmp)
-    character(len=8) :: k8b, nomgd, mater, nopa, nopb, typeke, nocmp(nbcmp)
+    character(len=8) :: k8b, nomgd, mater, nopa, nopb, typeke
+    character(len=16) :: nocmp(nbcmp)
     character(len=8) :: licmp(2), ktref
     character(len=16) :: motcl1, motcl2
     character(len=19) :: chnmat, chsmat, chsma2

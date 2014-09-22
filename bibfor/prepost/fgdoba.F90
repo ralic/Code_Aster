@@ -44,7 +44,8 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
 !
     real(kind=8) :: delta, val(2), rbid
     integer :: icodre(2)
-    character(len=8) :: nomres(2), nompar
+    character(len=16) :: nomres(2)
+    character(len=8) ::  nompar
 !
 !-----------------------------------------------------------------------
     integer :: i, nbpar
@@ -52,8 +53,8 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke,&
     rbid = 0.d0
     nompar = ' '
     nbpar = 0
-    nomres(1) = 'A_BASQUI'
-    nomres(2) = 'BETA_BAS'
+    nomres(1) = 'A_BASQUIN'
+    nomres(2) = 'BETA_BASQUIN'
     call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                 2, nomres, val, icodre, 2)
     do 10 i = 1, nbcycl

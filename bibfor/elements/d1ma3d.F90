@@ -58,8 +58,9 @@ subroutine d1ma3d(fami, mater, instan, poum, kpg,&
     parameter (nbres = 9)
 !
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), nompar(2)
-    character(len=16) :: phenom
+    character(len=8) :: nompar(2)
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
 !
     real(kind=8) :: valres(nbres), valpar(1)
     real(kind=8) :: passag(6, 6), d1orth(6, 6), work(6, 6)

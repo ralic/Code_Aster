@@ -35,7 +35,7 @@ interface
         character(len=8) :: nommat
         character(len=16) :: nomcri
         character(len=16) :: nomfor
-        character(len=8) :: grdvie
+        character(len=16) :: grdvie
         character(len=16) :: forvie
         real(kind=8) :: vala
         real(kind=8) :: coefpa

@@ -74,9 +74,10 @@ subroutine te0299(option, nomte)
     real(kind=8) :: guv, guv1, guv2, k1, k2, g, poids, ray, puls
 !
     character(len=4) :: fami
-    character(len=8) :: nomres(3), nompar(4)
-    character(len=16) :: phenom, compor(4)
+    character(len=8) :: nompar(4)
+    character(len=16) :: nomres(3), compor(4)
     character(len=24) :: valk
+    character(len=32) :: phenom
 !
     aster_logical :: lcour, fonc, lpesa, lrota
     aster_logical :: axi

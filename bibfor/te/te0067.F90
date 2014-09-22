@@ -74,8 +74,7 @@ subroutine te0067(option, nomte)
         jftrc = zi(ipftrc)
         jtrc = zi(ipftrc+1)
 !
-        call rcadma(matos, 'META_ACIER', 'TRC', iadtrc, icodre,&
-                    1)
+        call rcadma(matos, 'META_ACIER', 'TRC', iadtrc, icodre, 1)
 !
         nbcb1 = nint(zr(iadtrc+1))
         nbhist = nint(zr(iadtrc+2))

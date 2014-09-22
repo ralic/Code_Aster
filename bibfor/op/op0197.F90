@@ -51,6 +51,7 @@ subroutine op0197()
 #include "asterfort/jexnum.h"
 #include "asterfort/optimw.h"
 #include "asterfort/peweib.h"
+#include "asterfort/rccome.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
@@ -72,6 +73,7 @@ subroutine op0197()
     character(len=8) :: tapait, k8bid, cara, typarr(nbparr), typars(nbpars)
     character(len=8) :: typart(nbpart), tabtri, typark(nbpark), tabout, resu
     character(len=8) :: chcop1, chcop2
+    character(len=11) :: k11
     character(len=16) :: optcal(2), method, nomcmd, nomrc, concep, parcal(2)
     character(len=16) :: noparr(nbparr), nopark(nbpark), nopars(nbpars)
     character(len=16) :: nopart(nbpart)
@@ -82,7 +84,7 @@ subroutine op0197()
     integer :: it, iseg, nchar, jcha, itabr, vali(nbparr), ix, iy
     integer :: nrupt, iweik, iweir, ipro, irent, isigk, isigkp, isigi, ntemp
     integer :: itpsi, itpre, ntpsi, ipth, inopa, itypa, ivapa, ikval, ikvak, imc
-    integer :: iainst, preor, deror, nbold, anomm1, anomm2, tord(1)
+    integer :: iainst, preor, deror, nbold, anomm1, anomm2, tord(1), iret
     real(kind=8) :: mini, minip, vini, epsi, mk, mkp, sigint, r8bid
     real(kind=8) :: valr(nbparr), test, proint, maxcs, tpsmin, tpsmax
     real(kind=8) :: valrr(3)
@@ -306,24 +308,22 @@ subroutine op0197()
         call jelira(zk8(ichmat-1+iresu)//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm)
         call wkvect('&&OP0197.L_NOM_MAT', 'V V K8', nbmtcm, anomm1)
         call chmrck(zk8(ichmat-1+iresu), nomrc, zk8(anomm1), nbmtrc)
-        zk24(ikvak-1+iresu)(1:8) = zk8(anomm1)
-        zk24(ikvak-1+iresu)(9:24) = '.WEIBULL   .VALK'
-        zk24(ikval-1+iresu)(1:8) = zk8(anomm1)
-        zk24(ikval-1+iresu)(9:24) = '.WEIBULL   .VALR'
-!
+        call rccome(zk8(anomm1), 'WEIBULL', iret, k11_ind_nomrc=k11)
+        zk24(ikval-1+iresu) = zk8(anomm1)//k11//'.VALR'
+        zk24(ikvak-1+iresu) = zk8(anomm1)//k11//'.VALK'
         call jedetr('&&OP0197.L_NOM_MAT')
         call jeveuo(zk24(ikvak-1+iresu), 'L', iweik)
         call jeveuo(zk24(ikval-1+iresu), 'L', iweir)
         call jelira(zk24(ikvak-1+iresu), 'LONMAX', imc)
 !
         do 117 i = 1, imc
-            if (zk8(iweik + i-1) .eq. 'M       ') then
+            if (zk16(iweik + i-1) .eq. 'M       ') then
                 mini=zr(iweir + i-1)
             endif
-            if (zk8(iweik + i-1) .eq. 'VOLU_REF') then
+            if (zk16(iweik + i-1) .eq. 'VOLU_REFE') then
                 vini=zr(iweir + i-1)
             endif
-            if (zk8(iweik + i-1) .eq. 'SIGM_REF') then
+            if (zk16(iweik + i-1) .eq. 'SIGM_REFE') then
                 zr(isigi-1+iresu)=zr(iweir + i-1)
             endif
 117     continue
@@ -401,17 +401,18 @@ subroutine op0197()
 301     continue
 !
         call jedetr('&&OP0197.L_NOM_MAT')
-        call jeveuo(chcop2//'.WEIBULL   .VALR', 'E', iweir)
-        call jeveuo(chcop2//'.WEIBULL   .VALK', 'L', iweik)
+        call rccome(chcop2, 'WEIBULL', iret, k11_ind_nomrc=k11) 
+        call jeveuo(chcop2//k11//'.VALR', 'E', iweir)
+        call jeveuo(chcop2//k11//'.VALK', 'L', iweik)
 !
         do 302 i = 1, imc
-            if (zk8(iweik + i-1) .eq. 'M       ') then
+            if (zk16(iweik + i-1) .eq. 'M       ') then
                 zr(iweir + i-1) = mk
             endif
-            if (zk8(iweik + i-1) .eq. 'VOLU_REF') then
+            if (zk16(iweik + i-1) .eq. 'VOLU_REFE') then
                 zr(iweir + i-1) = vini
             endif
-            if (zk8(iweik + i-1) .eq. 'SIGM_REF') then
+            if (zk16(iweik + i-1) .eq. 'SIGM_REFE') then
                 zr(iweir + i-1) = zr(isigk+zi(itpre-1+iresu)-1)
             endif
 302     continue

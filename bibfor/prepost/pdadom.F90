@@ -40,10 +40,9 @@ subroutine pdadom(xm0, xm2, xm4, dom)
 !
     integer :: icodwo, icodre(6)
     integer :: icodba, icodhs
-    character(len=8) :: nommat, cara
-    character(len=8) :: method, mecomp, nompar
-    character(len=8) :: nomres(6), kcorre, kbid
-    character(len=16) :: pheno
+    character(len=8) :: nommat, method, mecomp, nompar, kcorre, kbid
+    character(len=16) :: nomres(6), cara 
+    character(len=32) :: pheno
     real(kind=8) :: delta, rvke, alpha, pi, salt, x, val(6), re(1)
     real(kind=8) :: valmin, valmax, pas, xireg, rundf, nrupt(1)
     integer :: ibask, ifonc, ihosin, nbval
@@ -73,7 +72,7 @@ subroutine pdadom(xm0, xm2, xm4, dom)
     endif
     cara = 'WOHLER'
     call rcpare(nommat, pheno, cara, icodwo)
-    cara = 'A_BASQUI'
+    cara = 'A_BASQUIN'
     call rcpare(nommat, pheno, cara, icodba)
     cara = 'A0'
     call rcpare(nommat, pheno, cara, icodhs)
@@ -197,8 +196,8 @@ subroutine pdadom(xm0, xm2, xm4, dom)
         else if (ibask.ne.0) then
             nompar = ' '
             nbpar = 0
-            nomres(1) = 'A_BASQUI'
-            nomres(2) = 'BETA_BAS'
+            nomres(1) = 'A_BASQUIN'
+            nomres(2) = 'BETA_BASQUIN'
             call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                         2, nomres, val, icodre, 2)
             do 308 ipoint = 1, nbpoin

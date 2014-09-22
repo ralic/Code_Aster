@@ -46,8 +46,8 @@ subroutine te0473(option, nomte)
     parameter (nbres=2)
     character(len=4) :: fami
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), famil, poum
-    character(len=16) :: nomte, option, nomshb
+    character(len=8) :: famil, poum
+    character(len=16) :: nomres(nbres), nomte, option, nomshb
     real(kind=8) :: para(11), re20(60, 60)
     real(kind=8) :: valres(nbres), re(24, 24), re6(18, 18)
     integer :: nbv, kpg, spt

@@ -1,5 +1,4 @@
-subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
-                  iarret)
+subroutine rcadma(jmat, phenom, nomres, valres, icodre, iarret)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -85,7 +84,7 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
     nbk = zi(ipi+2)
     ivalk = zi(ipi+3)
     do 150 ik = 1, nbk
-        if (nomres .eq. zk8(ivalk+nbr+nbc+ik-1)) then
+        if (nomres .eq. zk16(ivalk+nbr+nbc+ik-1)) then
             icodre = 0
             ipif = ipi + lmat + (ik-1)*lfct -1
             valres = zi(ipif )

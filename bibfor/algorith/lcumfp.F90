@@ -203,7 +203,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
     character(len=16) :: compoz(1)
     real(kind=8) :: det
     integer :: iret
-    character(len=8) :: nomres(16)
+    character(len=16) :: nomres(16)
     integer :: icodre(16)
     real(kind=8) :: cfps, cfpd
     integer :: i, j, k, l, nstrs, ifou, isph
@@ -404,7 +404,7 @@ subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
 !
 !  ------- CARACTERISTIQUES HYGROMETRIE H
 !
-    nomres(1)='FONC_DES'
+    nomres(1)='FONC_DESORP'
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [rbid],&
                 1, nomres(1), valres(1), icodre(1), 2)

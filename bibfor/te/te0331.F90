@@ -50,8 +50,8 @@ subroutine te0331(option, nomte)
     integer :: icodre(4)
     integer :: codres
     character(len=4) :: fami
-    character(len=8) :: nomres(4)
-    character(len=16) :: optcal(12), phenom
+    character(len=16) :: nomres(4), optcal(12)
+    character(len=32) :: phenom
     real(kind=8) :: sig(6), sigi, dsigwb, valres(4), epsgi
     real(kind=8) :: poids, r, volume, volact, dvol, seuil, m, v0
     real(kind=8) :: cong(4), epsq(4), dfdx(9), dfdy(9), pp, ppt
@@ -192,7 +192,7 @@ subroutine te0331(option, nomte)
             tmoy = tmoy/volume
             call rcvalb(fami, 1, 1, '+', zi(imate),&
                         ' ', phenom, 1, 'TEMP', [tmoy],&
-                        1, nomres(4), valres(4), icodre(4), 1)
+                        1, nomres(4), valres(4), icodre(4), 1)           
             sref = valres(4)
             sigi = sigi/sref
         endif

@@ -65,7 +65,8 @@ subroutine lcmzge(fami, kpg, ksp, ndim, typmod,&
     aster_logical :: rigi, resi, elas, rela, prog, cplan
     character(len=1) :: poum
     integer :: icodre(7)
-    character(len=8) :: nomres(7), nompar
+    character(len=16) :: nomres(7) 
+    character(len=8) :: nompar
     integer :: ndimsi, nperm, nitjac, trij, ordrej
     integer :: i, j, l, iret, iret1, iret2, iret3
     real(kind=8) :: e, nu, epsthe, kdess, bendo

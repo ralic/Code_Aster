@@ -52,7 +52,8 @@ subroutine tanbul(option, ndim, g, mate, compor,&
     real(kind=8) :: xyzgau(3), repere(7), epsth(6)
     real(kind=8) :: coef, coef1, coef2, coef3
     character(len=4) :: fami
-    character(len=8) :: nomres(2), nompar
+    character(len=16) :: nomres(2)
+    character(len=8) :: nompar
 !-----------------------------------------------------------------------
 !
 !

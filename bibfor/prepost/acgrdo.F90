@@ -29,8 +29,8 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
 !
     integer :: nbordr, kwork
     integer :: sompgw, jrwork, tspaq, ipg
-    character(len=16) :: nommet, nomcri, nomfor, forvie, forcri
-    character(len=8) :: nommat, grdvie
+    character(len=16) :: nommet, nomcri, nomfor, forvie, forcri, grdvie
+    character(len=8) :: nommat
     real(kind=8) :: vresu(24), valpar(35), vala, coefpa
 !
 ! ======================================================================
@@ -835,20 +835,19 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork,&
                 nrupt(k)=r8maem()
             else
 !
-                if (grdvie(1:6) .eq. 'WOHLER') then
+                if (grdvie .eq. 'WOHLER') then
                     nomgrd = 'SIGM    '
-                    grdvie(7:8) = '  '
                     call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k),&
                                 1, grdvie, nrupt(k), icodre(1), 1)
                 endif
 !
-                if (grdvie(1:8) .eq. 'MANSON_C') then
+                if (grdvie .eq. 'MANSON_COFFIN') then
                     nomgrd = 'EPSI    '
                     call rcvale(nommat, 'FATIGUE', 1, nomgrd, grdeq(k),&
                                 1, grdvie, nrupt(k), icodre(1), 1)
                 endif
 !
-                if (grdvie(1:8) .eq. 'FORM_VIE') then
+                if (grdvie .eq. 'FORM_VIE') then
 !
                     call renrfa(forvie, grdeq(k), nrupt(k), icodre(1))
 !

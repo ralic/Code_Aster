@@ -150,24 +150,24 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
     integer :: icodre(nresma)
     character(len=4) :: nompar(dimpar)
-    character(len=8) :: ncra1(dim1), ncra2(dim2), ncra3(dim3), ncra4(dim4)
-    character(len=8) :: ncra5(dim5), ncra6(dim6), ncra7(dim7), ncra8(dim8)
-    character(len=8) :: ncra9(dim9), ncra10(dim10), ncra11(dim11)
-    character(len=8) :: ncra12(dim12), ncra13(dim13), ncra14(dim14)
-    character(len=8) :: ncra15(dim15), ncra16(dim16), ncra17(dim17)
-    character(len=8) :: ncra18(dim18), ncra19(dim19), ncra20(dim20)
-    character(len=8) :: ncra21(dim21), ncra22(dim22), ncra23(dim23)
-    character(len=8) :: ncra24(dim24), ncra25(dim25), ncra26(dim26)
-    character(len=8) :: ncra27(dim27), ncra28(dim28), ncra29(dim29)
-    character(len=8) :: ncra30(dim30), ncra31(dim31), ncra32(dim32)
-    character(len=8) :: ncra33(dim33)
-    character(len=8) :: ncra35(dim35), ncra36(dim36), ncra37(dim37)
-    character(len=8) :: ncra38(dim38), ncra39(dim39), ncra40(dim40)
-    character(len=8) :: ncra41(dim41), ncra42(dim42), ncra43(dim43)
-    character(len=8) :: crad35(dim35), crad36(dim36), crad37(dim37)
-    character(len=8) :: crad39(dim39), crad40(dim40)
-    character(len=8) :: crad41(dim41), crad42(dim42)
-    character(len=8) :: nsat(dimsat), nvg(dimvg)
+    character(len=16) :: ncra1(dim1), ncra2(dim2), ncra3(dim3), ncra4(dim4)
+    character(len=16) :: ncra5(dim5), ncra6(dim6), ncra7(dim7), ncra8(dim8)
+    character(len=16) :: ncra9(dim9), ncra10(dim10), ncra11(dim11)
+    character(len=16) :: ncra12(dim12), ncra13(dim13), ncra14(dim14)
+    character(len=16) :: ncra15(dim15), ncra16(dim16), ncra17(dim17)
+    character(len=16) :: ncra18(dim18), ncra19(dim19), ncra20(dim20)
+    character(len=16) :: ncra21(dim21), ncra22(dim22), ncra23(dim23)
+    character(len=16) :: ncra24(dim24), ncra25(dim25), ncra26(dim26)
+    character(len=16) :: ncra27(dim27), ncra28(dim28), ncra29(dim29)
+    character(len=16) :: ncra30(dim30), ncra31(dim31), ncra32(dim32)
+    character(len=16) :: ncra33(dim33)
+    character(len=16) :: ncra35(dim35), ncra36(dim36), ncra37(dim37)
+    character(len=16) :: ncra38(dim38), ncra39(dim39), ncra40(dim40)
+    character(len=16) :: ncra41(dim41), ncra42(dim42), ncra43(dim43)
+    character(len=16) :: crad35(dim35), crad36(dim36), crad37(dim37)
+    character(len=16) :: crad39(dim39), crad40(dim40)
+    character(len=16) :: crad41(dim41), crad42(dim42)
+    character(len=16) :: nsat(dimsat), nvg(dimvg)
 ! =====================================================================
 ! --- DEFINITION DES DONNEES INITIALES --------------------------------
 ! =====================================================================
@@ -175,12 +175,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'PRE1'     ,&
      &              'PRE2'     ,&
      &              'PORO'     ,&
-     &              'PRES_VAP' /
+     &              'PRES_VAPE' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_SATU -----
 ! =====================================================================
     data ncra2  / 'RHO'      ,&
-     &              'BIOT_COE' ,&
+     &              'BIOT_COEF' ,&
      &              'BIOT_L'   ,&
      &              'BIOT_N'   ,&
      &              'CP'    ,&
@@ -195,7 +195,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
     data ncra4  / 'R_GAZ'    ,&
      &              'RHO'      ,&
-     &              'BIOT_COE' ,&
+     &              'BIOT_COEF' ,&
      &              'BIOT_L'   ,&
      &              'BIOT_N'   ,&
      &              'CP' ,&
@@ -208,11 +208,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
     data ncra6  / 'R_GAZ'    ,&
      &              'RHO'      ,&
-     &              'BIOT_COE' ,&
+     &              'BIOT_COEF' ,&
      &              'BIOT_L'   ,&
      &              'BIOT_N'   ,&
      &              'CP'       ,&
-     &              'SATU_PRE' ,&
+     &              'SATU_PRES' ,&
      &              'EMMAG'  ,&
      &              'BIOT_T'   /
     data ncra7  / 'RHO'      ,&
@@ -226,12 +226,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
     data ncra9  / 'R_GAZ'    ,&
      &              'RHO'      ,&
-     &              'BIOT_COE' ,&
+     &              'BIOT_COEF' ,&
      &              'BIOT_L'   ,&
      &              'BIOT_N'   ,&
      &              'CP'       ,&
-     &              'SATU_PRE' ,&
-     &              'D_SATU_P' ,&
+     &              'SATU_PRES' ,&
+     &              'D_SATU_PRES' ,&
      &              'EMMAG'    ,&
      &              'BIOT_T'   /
     data ncra10 / 'RHO'      ,&
@@ -247,12 +247,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
     data ncra13 / 'R_GAZ'    ,&
      &              'RHO'      ,&
-     &              'BIOT_COE' ,&
+     &              'BIOT_COEF' ,&
      &              'BIOT_L'   ,&
      &              'BIOT_N'   ,&
      &              'CP'       ,&
-     &              'SATU_PRE' ,&
-     &              'D_SATU_P' ,&
+     &              'SATU_PRES' ,&
+     &              'D_SATU_PRES' ,&
      &              'EMMAG' ,&
      &              'BIOT_T'   /
     data ncra14 / 'RHO'      ,&
@@ -265,12 +265,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! --- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_GAZ_ATM --
 ! =====================================================================
     data ncra16 / 'RHO'      ,&
-     &              'BIOT_COE' ,&
+     &              'BIOT_COEF' ,&
      &              'BIOT_L'   ,&
      &              'BIOT_N'   ,&
      &              'CP'       ,&
-     &              'SATU_PRE' ,&
-     &              'D_SATU_P' ,&
+     &              'SATU_PRES' ,&
+     &              'D_SATU_PRES' ,&
      &              'EMMAG' ,&
      &              'BIOT_T'   /
     data ncra17 / 'RHO'      ,&
@@ -304,7 +304,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'LAMB_C_T'/
     data ncra19 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' ,&
+     &              'D_VISC_TEMP' ,&
      &              'ALPHA' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS GAZ ------------------
@@ -334,7 +334,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'LAMB_C_T'/
     data ncra21 / 'MASS_MOL' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' /
+     &              'D_VISC_TEMP' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_VAPE ------------
 ! =====================================================================
@@ -359,21 +359,21 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'LAMB_CT'  ,&
      &              'LAMB_C_L',&
      &              'LAMB_C_N',&
-     &              'SATU_PRE' ,'D_SATU_P'  ,&
-     &              'PERM_LIQ' , 'D_PERM_L' ,&
-     &              'PERM_GAZ' , 'D_PERM_S' ,&
-     &              'D_PERM_P',&
+     &              'SATU_PRES' ,'D_SATU_PRES'  ,&
+     &              'PERM_LIQU' , 'D_PERM_LIQU_SATU' ,&
+     &              'PERM_GAZ' , 'D_PERM_SATU_GAZ' ,&
+     &              'D_PERM_PRES_GAZ',&
      &              'PERMIN_T',&
      &              'LAMB_TT',&
      &              'D_LB_TT',&
      &              'LAMB_C_T'/
     data ncra23 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' ,&
+     &              'D_VISC_TEMP' ,&
      &              'ALPHA'    /
     data ncra24 / 'MASS_MOL' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' /
+     &              'D_VISC_TEMP' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_VAPE_GAZ --------
 ! =====================================================================
@@ -394,10 +394,10 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'LAMB_CT'   ,&
      &              'LAMB_C_L',&
      &              'LAMB_C_N',&
-     &              'SATU_PRE' ,'D_SATU_P' ,&
-     &              'PERM_LIQ' ,'D_PERM_L' ,&
-     &              'PERM_GAZ' ,'D_PERM_S' ,&
-     &              'D_PERM_P' ,'FICKV_T'  ,&
+     &              'SATU_PRES' ,'D_SATU_PRES' ,&
+     &              'PERM_LIQU' ,'D_PERM_LIQU_SATU' ,&
+     &              'PERM_GAZ' ,'D_PERM_SATU_GAZ' ,&
+     &              'D_PERM_PRES_GAZ' ,'FICKV_T'  ,&
      &              'FICKV_PV' ,'FICKV_PG' ,&
      &              'FICKV_S'  ,'D_FV_T'   ,&
      &              'D_FV_PG',&
@@ -408,11 +408,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'LAMB_C_T'/
     data ncra26 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' ,&
+     &              'D_VISC_TEMP' ,&
      &              'ALPHA'  /
     data ncra27 / 'MASS_MOL' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' /
+     &              'D_VISC_TEMP' /
     data ncra28 / 'MASS_MOL' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_GAZ -------------
@@ -436,21 +436,21 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'LAMB_CT'  ,&
      &              'LAMB_C_L',&
      &              'LAMB_C_N',&
-     &              'SATU_PRE' ,&
-     &              'D_SATU_P' ,'PERM_LIQ' ,&
-     &              'D_PERM_L' ,'PERM_GAZ' ,&
-     &              'D_PERM_S' ,'D_PERM_P',&
+     &              'SATU_PRES' ,&
+     &              'D_SATU_PRES' ,'PERM_LIQU' ,&
+     &              'D_PERM_LIQU_SATU' ,'PERM_GAZ' ,&
+     &              'D_PERM_SATU_GAZ' ,'D_PERM_PRES_GAZ',&
      &              'PERMIN_T',&
      &              'LAMB_TT',&
      &              'D_LB_TT',&
      &              'LAMB_C_T'/
     data ncra30 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' ,&
+     &              'D_VISC_TEMP' ,&
      &              'ALPHA'  /
     data ncra31 / 'MASS_MOL' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T'/
+     &              'D_VISC_TEMP'/
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_GAZ_ATM ---------
 ! =====================================================================
@@ -474,27 +474,27 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'LAMB_CT'   ,&
      &              'LAMB_C_L',&
      &              'LAMB_C_N',&
-     &              'SATU_PRE','D_SATU_P' ,&
-     &              'PERM_LIQ','D_PERM_L',&
+     &              'SATU_PRES','D_SATU_PRES' ,&
+     &              'PERM_LIQU','D_PERM_LIQU_SATU',&
      &              'PERMIN_T',&
      &              'LAMB_TT',&
      &              'D_LB_TT',&
      &              'LAMB_C_T'/
     data ncra33 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' ,&
+     &              'D_VISC_TEMP' ,&
      &              'ALPHA'   /
 ! =====================================================================
 ! -- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_AD_GAZ_VAPE
 ! =====================================================================
     data ncra35  / 'R_GAZ'    ,&
      &              'RHO'      ,&
-     &              'BIOT_COE' ,&
+     &              'BIOT_COEF' ,&
      &              'BIOT_L'   ,&
      &              'BIOT_N'   ,&
      &              'CP'       ,&
-     &              'SATU_PRE' ,&
-     &              'D_SATU_P' ,&
+     &              'SATU_PRES' ,&
+     &              'D_SATU_PRES' ,&
      &              'EMMAG' ,&
      &              'BIOT_T'   /
     data ncra36 / 'RHO'      ,&
@@ -506,7 +506,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     data ncra38 / 'MASS_MOL' ,&
      &              'CP'       /
     data ncra39 / 'CP'        ,&
-     &               'COEF_HEN' /
+     &               'COEF_HENRY' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_AD_GAZ_VAPE -----
 ! =====================================================================
@@ -527,10 +527,10 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &               'LAMB_CT'    ,&
      &               'LAMB_C_L',&
      &               'LAMB_C_N',&
-     &               'SATU_PRE' ,'D_SATU_P' ,&
-     &               'PERM_LIQ' ,'D_PERM_L' ,&
-     &               'PERM_GAZ' ,'D_PERM_S' ,&
-     &               'D_PERM_P' ,'FICKV_T'  ,&
+     &               'SATU_PRES' ,'D_SATU_PRES' ,&
+     &               'PERM_LIQU' ,'D_PERM_LIQU_SATU' ,&
+     &               'PERM_GAZ' ,'D_PERM_SATU_GAZ' ,&
+     &               'D_PERM_PRES_GAZ' ,'FICKV_T'  ,&
      &               'FICKV_PV' ,'FICKV_PG' ,&
      &               'FICKV_S'  ,'D_FV_T',&
      &               'D_FV_PG','FICKA_T'  ,&
@@ -543,23 +543,23 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &               'LAMB_C_T'/
     data ncra41 / 'UN_SUR_K' ,&
      &               'VISC'     ,&
-     &               'D_VISC_T' ,&
+     &               'D_VISC_TEMP' ,&
      &               'ALPHA'  /
     data ncra42 / 'MASS_MOL' ,&
      &               'VISC'     ,&
-     &               'D_VISC_T' /
+     &               'D_VISC_TEMP' /
     data ncra43 / 'MASS_MOL' /
 ! =====================================================================
 ! -- DEFINITION DES DONNEES INTERMEDIAIRES DANS LE CAS LIQU_AD_GAZ
 ! =====================================================================
     data crad35  / 'R_GAZ'    ,&
      &               'RHO'      ,&
-     &               'BIOT_COE' ,&
+     &               'BIOT_COEF' ,&
      &               'BIOT_L'   ,&
      &               'BIOT_N'   ,&
      &               'CP'       ,&
-     &               'SATU_PRE' ,&
-     &               'D_SATU_P' ,&
+     &               'SATU_PRES' ,&
+     &               'D_SATU_PRES' ,&
      &               'EMMAG' ,&
      &               'BIOT_T'   /
     data crad36 / 'RHO'      ,&
@@ -569,7 +569,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     data crad37 / 'MASS_MOL' ,&
      &               'CP'       /
     data crad39 / 'CP'        ,&
-     &               'COEF_HEN' /
+     &               'COEF_HENRY' /
 ! =====================================================================
 ! --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_AD_GAZ -----
 ! =====================================================================
@@ -591,10 +591,10 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &                'LAMB_CT'    ,&
      &                'LAMB_C_L',&
      &                'LAMB_C_N',&
-     &                'SATU_PRE' ,'D_SATU_P' ,&
-     &                'PERM_LIQ' ,'D_PERM_L' ,&
-     &                'PERM_GAZ' ,'D_PERM_S' ,&
-     &                'D_PERM_P' ,'FICKV_T'  ,&
+     &                'SATU_PRES' ,'D_SATU_PRES' ,&
+     &                'PERM_LIQU' ,'D_PERM_LIQU_SATU' ,&
+     &                'PERM_GAZ' ,'D_PERM_SATU_GAZ' ,&
+     &                'D_PERM_PRES_GAZ' ,'FICKV_T'  ,&
      &                'FICKV_PV' ,'FICKV_PG' ,&
      &                'FICKV_S'  ,'D_FV_T',&
      &                'D_FV_PG','FICKA_T'  ,&
@@ -607,16 +607,16 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &                'LAMB_C_T'/
     data crad41 / 'UN_SUR_K' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' ,&
+     &              'D_VISC_TEMP' ,&
      &              'ALPHA'  /
     data crad42 / 'MASS_MOL' ,&
      &              'VISC'     ,&
-     &              'D_VISC_T' /
+     &              'D_VISC_TEMP' /
 ! =====================================================================
 ! --- DEFINITION SATURATION -------------------------------------------
 ! =====================================================================
-    data nsat   / 'SATU_PRE' ,&
-     &              'D_SATU_P' /
+    data nsat   / 'SATU_PRES' ,&
+     &              'D_SATU_PRES' /
 ! =====================================================================
 ! --- DEFINITION PARAMETRES MUALEM VAN GENUCHTEN ----------------------
 ! =====================================================================
@@ -1127,10 +1127,10 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             [p1], 2, ncra35(7), val35(8), icodre,&
                             1)
             endif
-            call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 0, ' ',&
+            call rcvala(imate, ' ', 'THM_AIR_DISS', 0, ' ',&
                         [0.d0], 1, ncra39(1), val39(1), icodre,&
                         1)
-            call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 1, 'TEMP',&
+            call rcvala(imate, ' ', 'THM_AIR_DISS', 1, 'TEMP',&
                         [t], 1, ncra39(2), val39(2), icodre,&
                         1)
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
@@ -1250,10 +1250,10 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             [p1], 2, crad35(7), val35(8), icodre,&
                             1)
             endif
-            call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 0, ' ',&
+            call rcvala(imate, ' ', 'THM_AIR_DISS', 0, ' ',&
                         [0.d0], 1, crad39(1), val39(1), icodre,&
                         1)
-            call rcvala(imate, ' ', 'THM_AIR_DISSOUS', 1, 'TEMP',&
+            call rcvala(imate, ' ', 'THM_AIR_DISS', 1, 'TEMP',&
                         [t], 1, crad39(2), val39(2), icodre,&
                         1)
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
@@ -1505,15 +1505,15 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! =====================================================================
 ! --- CAS FINAL -------------------------------------------------------
 ! =====================================================================
-! RECUPERATION DE BIOT_COEFF DANS LE CAS FINAL (ISOTROPIE)
+! RECUPERATION DE BIOT_COEF DANS LE CAS FINAL (ISOTROPIE)
         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                    [0.d0], 1, 'BIOT_COE', biot(1), icodre,&
+                    [0.d0], 1, 'BIOT_COEF', biot(1), icodre,&
                     0)
         if (icodre(1) .eq. 1) then
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, 'BIOT_T', biot(4), icodre,&
                         0)
-! RECUPERATION DES BIOT_COEFF DANS LE CAS FINAL (ANISOTROPIE)
+! RECUPERATION DES BIOT_COEFFF DANS LE CAS FINAL (ANISOTROPIE)
             if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                 aniso=1
@@ -1695,7 +1695,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
@@ -1900,7 +1900,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
@@ -2148,7 +2148,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
@@ -2457,7 +2457,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
@@ -2797,7 +2797,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
@@ -3107,7 +3107,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         0)
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
@@ -3376,7 +3376,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             0)
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
@@ -3614,7 +3614,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                             0)
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
-                        [instap], 1, 'PESA_MUL', fpesa, icodre,&
+                        [instap], 1, 'PESA_MULT', fpesa, icodre,&
                         0)
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE

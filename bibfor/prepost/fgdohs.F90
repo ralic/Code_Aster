@@ -43,7 +43,7 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke,&
 !
     integer :: icodre(6)
     character(len=8) :: nompar
-    character(len=8) :: nomres(6)
+    character(len=16) :: nomres(6)
 !
     real(kind=8) :: delta, salt, x, y, nrupt, slmodi, val(6), rbid, re(1)
 !

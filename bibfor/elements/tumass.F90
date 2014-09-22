@@ -46,7 +46,8 @@ subroutine tumass(nomte, nbrddl, mass)
 !     VARIABLES LOCALES
     integer :: nbres, icoude, nbsecm, nbcoum, nspg
     parameter (nbres=9)
-    character(len=8) :: nomres(nbres), nompar
+    character(len=8) :: nompar
+    character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
     parameter (nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)

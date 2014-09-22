@@ -46,9 +46,9 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1,&
 #include "blas/dscal.h"
     integer :: jnbspi
     integer :: valret(26)
-    character(len=8) :: nomres(26), typmod(2)
-    character(len=10) :: phenom
-    character(len=16) :: option, nomte
+    character(len=8) :: typmod(2)
+    character(len=32) :: phenom
+    character(len=16) :: nomres(26), option, nomte
     integer :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8), codret
     integer :: cod, ksp
     real(kind=8) :: xi(3, 9)

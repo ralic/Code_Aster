@@ -39,7 +39,8 @@ subroutine te0254(option, nomte)
     real(kind=8) :: r
 !-----------------------------------------------------------------------
     parameter         ( nbres=2 )
-    character(len=8) :: nomres(nbres), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(nbres)
     integer :: icodre(nbres), kpg, spt
     character(len=16) :: nomte, option
     real(kind=8) :: valres(nbres), a(2, 2, 9, 9)

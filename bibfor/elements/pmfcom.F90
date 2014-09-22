@@ -84,8 +84,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     real(kind=8) :: cstpm(13), epsm, angmas(3), depsm, nu
     character(len=4) :: fami
     character(len=8) :: nompim(12), mazars(8)
-    character(len=8) :: materi, nomres(2)
-    character(len=16) :: compo, algo
+    character(len=8) :: materi
+    character(len=16) :: compo, algo, nomres(2)
     character(len=30) :: valkm(3)
 !
     data nompim /'SY','EPSI_ULT','SIGM_ULT','EPSP_HAR','R_PM',&

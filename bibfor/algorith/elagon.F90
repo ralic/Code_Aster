@@ -49,8 +49,8 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
     integer :: ndimsi
     integer :: k, l, kpg, spt
     integer :: icodre(2)
-    character(len=8) :: nomres(2), fami, poum
-    character(len=8) :: nprefr(1)
+    character(len=16) :: nomres(2)
+    character(len=8) :: nprefr(1), fami, poum
 !
 ! ======================================================================
     integer :: ndt, ndi

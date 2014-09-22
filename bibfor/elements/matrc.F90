@@ -34,8 +34,9 @@ subroutine matrc(nno, kcis, matc, vectt)
     real(kind=8) :: valres(5), valpar(1)
     integer :: icodre(5)
     character(len=4) :: fami
-    character(len=8) :: nomres(5), nompar
-    character(len=10) :: phenom
+    character(len=8) :: nompar
+    character(len=16) :: nomres(5)
+    character(len=32) :: phenom
     real(kind=8) :: young, nu, nult, nutl, alpha, beta
     real(kind=8) :: passag(3, 3), pas2(2, 2), dorth(3, 3), work(3, 3), d(3, 3)
     real(kind=8) :: dcis(2, 2), c, s, d2(2, 2), el, et, glt, gtn, delta

@@ -47,7 +47,8 @@ subroutine verifg(fami, npg, nspg, poum, imate,&
 !
 !
     integer :: codrem(3), codrep(3)
-    character(len=8) :: nomres(3), valek(2)
+    character(len=8) :: valek(2)
+    character(len=16) :: nomres(3)
     integer :: iret1, iret2, iret3, ind, somire, iadzi, iazk24
     real(kind=8) :: tm, tref, tp, valrep(3), valrem(3)
 !

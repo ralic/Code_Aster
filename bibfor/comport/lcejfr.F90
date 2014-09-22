@@ -66,7 +66,8 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: gp(ndim-1), gploc(ndim), gpglo(ndim), fhloc(ndim)
     real(kind=8) :: fhglo(ndim), doset, oset, sciage
     real(kind=8) :: invrot(ndim, ndim), rigart
-    character(len=8) :: nom(nbpa), nompar(ndim+1)
+    character(len=8) :: nompar(ndim+1)
+    character(len=16) :: nom(nbpa)
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, ifpahm, ifhyme
 !
@@ -165,7 +166,7 @@ subroutine lcejfr(fami, kpg, ksp, ndim, mate,&
 ! RECUPERATION DE LA TAILLE DE SCIE = SCIAGE (FONCTION DE L'ESPACE ET DU TEMPS)
 !
     call rcvalb(fami, kpg, ksp, poum, mate,&
-                ' ', 'JOINT_MECA_RUPT', ndim+1, nompar, valpar,&
+                ' ', 'JOINT_MECA_FROT', ndim+1, nompar, valpar,&
                 1, nom(10), val(10), cod(10), 0)
 !
     if (cod(10) .eq. 0) then

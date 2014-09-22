@@ -86,7 +86,8 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
 ! ---------------------------------------------------------------------
 !
     integer :: k2(1)
-    character(len=8) :: nom(1), famil, poum
+    character(len=16) :: nom(1)
+    character(len=8) ::  famil, poum
 !
     aster_logical :: resi, rigi, grand, axi, elas, full
     integer :: nddl, ndimsi, g, cod(27), n, i, m, j, kl, pq, os, osa, kk
@@ -100,7 +101,7 @@ subroutine nmgvno(fami, ndim, nno1, nno2, npg,&
     real(kind=8) :: dfdi2(8*3)
     real(kind=8) :: critd(20)
 !
-    data  nom /'C_GRAD_V'/
+    data  nom /'C_GRAD_VARI'/
 !
 ! ---------------------------------------------------------------------
 !

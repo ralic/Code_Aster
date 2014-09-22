@@ -66,7 +66,8 @@ subroutine pipedo(ndim, typmod, tau, mate, vim,&
     integer :: nbres
     parameter   (nbres=6)
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), fami, poum
+    character(len=16) :: nomres(nbres)
+    character(len=8) :: fami, poum
     real(kind=8) :: valres(nbres)
 !
 !

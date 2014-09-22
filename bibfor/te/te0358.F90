@@ -44,8 +44,8 @@ subroutine te0358(option, nomte)
     real(kind=8) :: deltaz, sigmo, zalpha, zvarim, zvarip
 !-----------------------------------------------------------------------
     parameter (nbres=21)
-    character(len=16) :: compor
-    character(len=8) :: nomres(nbres), nomcle(5), acier(4), zirc(2)
+    character(len=16) :: compor, nomres(nbres)
+    character(len=8) :: nomcle(5), acier(4), zirc(2)
     character(len=4) :: fami
     integer :: icodre(nbres)
     integer :: test

@@ -43,7 +43,8 @@ subroutine pipeba(ndim, mate, sup, sud, vim,&
     real(kind=8) :: p0, p1, p2, rac(2), eta(4), a0(4), a1(4), tmp
     real(kind=8) :: lc, k0, ka, kref, c, val(3), etasol(4), xn
     integer :: cod(3), kpg, spt
-    character(len=8) :: nom(3), fami, poum
+    character(len=16) :: nom(3) 
+    character(len=8) :: fami, poum
 !
 !-----------------------------------------------------------------------
 !

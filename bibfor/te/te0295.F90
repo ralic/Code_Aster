@@ -78,8 +78,9 @@ subroutine te0295(option, nomte)
     real(kind=8) :: valpar(4), lsng, lstg, puls, coef
 !
     character(len=4) :: fami
-    character(len=8) :: nomres(4), nompar(4)
-    character(len=16) :: phenom, compor(4)
+    character(len=8) :: nompar(4)
+    character(len=16) :: nomres(4), compor(4)
+    character(len=32) :: phenom
 !
     aster_logical :: lcour, fonc, lpesa, lrota
 !

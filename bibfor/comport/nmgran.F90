@@ -79,8 +79,8 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     integer :: ndimsi, ibid, iret
     integer :: i, k, l, n, iret1, iret2, iret3
     integer :: icodre(16)
-    character(len=8) :: nomres(16), mod
-    character(len=8) :: nompar
+    character(len=16) :: nomres(16)
+    character(len=8) :: nompar, mod
     real(kind=8) :: valpam, valpap
     real(kind=8) :: bendom, bendop, kdessm, kdessp
     real(kind=8) :: j(8), taux(8), hygrm, hygrp, qsrt, qsrv, vieil

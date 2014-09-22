@@ -56,7 +56,7 @@ subroutine te0333(option, nomte)
     real(kind=8) :: repere(7), nharm, e, nu, zero, un, tempg
     real(kind=8) :: epsflf(nbsgm)
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres)
+    character(len=16) :: nomres(nbres)
     character(len=8) :: nompar(2), mod3d
     character(len=16) :: optio2, phenom, cmp1, cmp2, cmp3
     aster_logical :: lflu, ltemp

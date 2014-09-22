@@ -104,8 +104,8 @@ subroutine fragex(ndim, imate, instam, instap, epsm,&
     real(kind=8) :: fd, d, dm, dd, ener, dt, dddt
     real(kind=8) :: e, nu, lambda, deuxmu, gamma, sy, wy
 !
-    integer :: idret(3)
-    character(len=8) :: nomres(3)
+    integer :: idret(2)
+    character(len=16) :: nomres(2)
 !
     parameter  (dmax = 1.d0, fmin = 1.d-5)
     data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/

@@ -40,7 +40,8 @@ subroutine te0451(option, nomte)
     real(kind=8) :: siyyb, siyym, siyyh, sixxb, sixxm, sixxh, sixyb, sixym
     real(kind=8) :: sixyh
     real(kind=8) :: siyzb, siyzm, siyzh, sixzb, sixzm, sixzh, epcou(100), epi(1)
-    character(len=8) :: alias8, nomres
+    character(len=8) :: alias8
+    character(len=16) :: nomres
     character(len=3) :: cmod, num
     character(len=2) :: val
     aster_logical :: lcoqmu, lreel

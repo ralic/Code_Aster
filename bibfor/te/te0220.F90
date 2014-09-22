@@ -42,8 +42,9 @@ subroutine te0220(option, nomte)
 !
 !
     integer :: icodre(2), kpg, spt
-    character(len=8) :: nompar, fami, poum, nomres(2)
-    character(len=16) :: phenom
+    character(len=8) :: nompar, fami, poum
+    character(len=16) :: nomres(2)
+    character(len=32) :: phenom
     real(kind=8) :: valres(2), valpar
     real(kind=8) :: dfdx(9), dfdy(9), poids, flux, fluy, epot
     real(kind=8) :: angmas(7), rbid(3), fluglo(2), fluloc(2), p(2, 2)

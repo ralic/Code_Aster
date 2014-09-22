@@ -32,8 +32,9 @@ subroutine dxroep(rho, epais)
     real(kind=8) :: r8bid, valres(2)
     integer :: icodre(2)
     character(len=24) :: valk(2)
-    character(len=8) :: nomres(2), nomail
-    character(len=16) :: phenom
+    character(len=8) :: nomail
+    character(len=16) :: nomres(2)
+    character(len=32) :: phenom
 ! --DEB
 !
     r8bid = 0.d0

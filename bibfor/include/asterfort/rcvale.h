@@ -24,7 +24,7 @@ interface
         character(len=*), intent(in) :: phenom
         character(len=8), intent(in) :: nompar(nbpar)
         real(kind=8), intent(in) :: valpar(nbpar)
-        character(len=8), intent(in) :: nomres(nbres)
+        character(len=*), intent(in) :: nomres(nbres)
         real(kind=8), intent(out) :: valres(nbres)
         integer, intent(out) :: icodre(nbres)
         integer, intent(in) :: iarret

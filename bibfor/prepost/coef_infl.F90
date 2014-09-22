@@ -60,8 +60,9 @@ subroutine coef_infl(prodef, londef, lrev, matrev, matmdb,&
     real(kind=8) :: ztempb, ztempc, valpar(1)
     integer :: ix1, ix2, iy1, iy2
     integer :: i,k, icodre(2)
-    character(len=8)  :: nompar(2),nomres(2)
-    character(len=16) :: phenom
+    character(len=8)  :: nompar(2)
+    character(len=16) :: nomres(2)
+    character(len=32) :: phenom
 !
 !   asc <=> a/c 
 !   asr <=> a/r 

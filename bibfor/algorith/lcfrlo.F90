@@ -62,9 +62,9 @@ subroutine lcfrlo(ndim, typmod, imate, epsm, deps,&
     real(kind=8) :: fd, d, dm, ener, coef
     real(kind=8) :: e, nu, lambda, deuxmu, gamma, sy, wy
 !
-    integer :: icodre(3)
-    character(len=8) :: nomres(3)
-    real(kind=8) :: valres(3)
+    integer :: icodre(2)
+    character(len=16) :: nomres(2)
+    real(kind=8) :: valres(2)
 !
 !
     real(kind=8) :: dmax, fmin

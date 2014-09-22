@@ -55,10 +55,10 @@ subroutine lccgad(fami, kpg, ksp, mat, option,&
     integer :: cod(3)
     real(kind=8) :: val(3), n, courb, de, sut
     real(kind=8) :: frot, r, mult, frotc
-    character(len=12) :: nom(3)
+    character(len=16) :: nom(3)
     character(len=1) :: poum
 !
-    data nom /'FROT_LIN','PENA_LAG','FROT_COU'/
+    data nom /'FROT_LINE','PENA_LAGR','FROT_COURB'/
 !-----------------------------------------------------------------------
 !
 ! ---------------------------

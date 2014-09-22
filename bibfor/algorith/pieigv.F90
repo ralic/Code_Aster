@@ -68,7 +68,8 @@ subroutine pieigv(neps, tau, imate, vim, epsm,&
     real(kind=8) :: critp1, critp2
     real(kind=8) :: epsvp
     integer :: icodre(3), kpg, spt
-    character(len=8) :: nomres(3), fami, poum
+    character(len=16) :: nomres(3)
+    character(len=8)  :: fami, poum
     real(kind=8) :: valres(3)
 !
     real(kind=8) :: epsmax, etasup, etainf, epsnor

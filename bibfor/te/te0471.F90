@@ -44,7 +44,8 @@ subroutine te0471(option, nomte)
     integer :: nbres, nddl
     parameter   ( nbres=4, nddl = 7)
     character(len=24) :: carac, ff
-    character(len=8) :: nomres(nbres), elrefe, fami, poum
+    character(len=8) :: elrefe, fami, poum
+    character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), tpg, pgl(3, 3)
     integer :: nno1, nno2, npg1(2, 2), npg2(2, 2), npg, n, nbv

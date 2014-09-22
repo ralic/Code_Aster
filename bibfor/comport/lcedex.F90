@@ -59,7 +59,8 @@ subroutine lcedex(option, imate, npg, lgpg, s,&
     real(kind=8) :: dsialf(2, 2), h(2, 2), det
     real(kind=8) :: valres(2)
     integer :: icodre(2)
-    character(len=8) :: nomres(2), fami, poum
+    character(len=16) :: nomres(2)
+    character(len=8) :: fami, poum
 !
 ! - INITIALISATIONS :
 ! -------------------

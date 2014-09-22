@@ -39,8 +39,8 @@ subroutine lcimpl(fami, kpg, ksp, imate, em,&
     real(kind=8) :: rprim, rm, sige, valres(2), depsth
     real(kind=8) :: sieleq, rp, dp
     integer :: codres(2)
-    character(len=8) :: nomecl(2)
-    data nomecl/'D_SIGM_E','SY'/
+    character(len=16) :: nomecl(2)
+    data nomecl/'D_SIGM_EPSI','SY'/
 !
 !
     pm = vim(1)

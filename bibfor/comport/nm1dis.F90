@@ -66,8 +66,9 @@ subroutine nm1dis(fami, kpg, ksp, imate, em,&
     real(kind=8) :: sieleq, rp, dp, nu, asige
     integer :: jprolm, jvalem, nbvalm, nbvalp, jprolp, jvalep, iret
     integer :: icodre(2)
-    character(len=8) :: nompar, nomecl(2), para_type
-    data nomecl /'D_SIGM_E','SY'/
+    character(len=8) :: nompar,para_type 
+    character(len=16) :: nomecl(2)
+    data nomecl /'D_SIGM_EPSI','SY'/
 !
 !
 !

@@ -43,7 +43,7 @@ subroutine te0160(option, nomte)
 !
     integer ::          icodre(2)
     real(kind=8) ::     valres(2)
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
 !
     integer :: nno, kp, ii, jj, imatuu
     integer :: ipoids, ivf, igeom, imate, jcret

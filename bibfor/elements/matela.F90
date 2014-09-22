@@ -40,7 +40,8 @@ subroutine matela(icodma, materi, itemp, temp, e,&
     parameter    (nbres=2)
     real(kind=8) :: valpar, valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres)
+    character(len=8) :: nompar
+    character(len=16) :: nomres(nbres)
     data nomres / 'E', 'NU'/
 !
     do 10 i = 1, nbres

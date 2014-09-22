@@ -75,11 +75,11 @@ subroutine lceigv(fami, kpg, ksp, neps, imate,&
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref
     real(kind=8) :: r, c, grad(3), ktg(6, 6, 4), apg, lag, valnl(2)
     character(len=1) :: poum
-    character(len=8) :: nomnl(2)
+    character(len=16) :: nomnl(2)
     parameter  (rigmin = 1.d-5)
     parameter  (told = 1.d-6)
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data nomnl /'C_GRAD_V','PENA_LAG'/
+    data nomnl /'C_GRAD_VARI','PENA_LAGR'/
 !
 ! ----------------------------------------------------------------------
 !

@@ -35,7 +35,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
 ! --------------------------------------------------------------------------------------------------
     integer :: icodre(2)
     real(kind=8) :: valres(2), tpl, tms, tref
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
 !
     nomres(1) = 'E'
     nomres(2) = 'NU'

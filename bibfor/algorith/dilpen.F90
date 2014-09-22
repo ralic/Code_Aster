@@ -26,11 +26,12 @@ subroutine dilpen(imate, rpena)
 ! ======================================================================
     real(kind=8) :: val(1)
     integer :: icodre(1), kpg, spt
-    character(len=8) :: ncra, fami, poum
+    character(len=16) :: ncra
+    character(len=8) :: fami, poum
 ! ======================================================================
 ! --- DEFINITION DES DONNEES INITIALES ---------------------------------
 ! ======================================================================
-    data ncra  / 'PENA_LAG' /
+    data ncra  / 'PENA_LAGR' /
     fami='FPG1'
     kpg=1
     spt=1

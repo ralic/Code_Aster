@@ -101,8 +101,8 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     parameter (nbclem=7, nbcvil=5, nbcint=2)
     real(kind=8) :: coelem(nbclem), coevil(nbcvil)
     real(kind=8) :: coeint(nbcint)
-    character(len=8) :: nomlem(nbclem), nomvil(nbcvil)
-    character(len=8) :: nomint(nbcint)
+    character(len=16) :: nomlem(nbclem), nomvil(nbcvil)
+    character(len=16) :: nomint(nbcint)
     integer :: codvil(nbcvil), codlem(nbclem), codint(nbcint)
     character(len=*) :: fami
 !
@@ -276,7 +276,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     else if (compor(1)(1:10).eq.'VISC_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'VISC_IRRA_', 1, 'TEMP', [tschem],&
+                    ' ', 'VISC_IRRA_LOG', 1, 'TEMP', [tschem],&
                     5, nomvil(1), coevil(1), codvil, 1)
         a = coevil(1)
         b = coevil(2)
@@ -297,7 +297,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     else if (compor(1)(1:10).eq.'GRAN_IRRA_') then
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate,&
-                    ' ', 'GRAN_IRRA_', 1, ' ', [0.d0],&
+                    ' ', 'GRAN_IRRA_LOG', 1, ' ', [0.d0],&
                     5, nomvil(1), coevil(1), codvil, 1)
         if (coevil(5) .ne. 1.d0) then
             fluphi=coevil(5)

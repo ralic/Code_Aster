@@ -73,7 +73,7 @@ subroutine brag00(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: sigm(6), deps(6), epsm(6)
     real(kind=8) :: sigp(6), dsidep(6, 6)
 !
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
     real(kind=8) :: valres(2)
     integer :: icodre(2)
     real(kind=8) :: rbid

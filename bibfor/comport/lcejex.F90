@@ -46,7 +46,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: sc, gc, lc, k0, val(4), rtan
     real(kind=8) :: a(ndim), na, ka, kap, r0, rc, beta, rk, ra, coef, coef2
     integer :: cod(4)
-    character(len=8) :: nom(4)
+    character(len=16) :: nom(4)
     character(len=1) :: poum
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE

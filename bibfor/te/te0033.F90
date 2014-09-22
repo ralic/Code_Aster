@@ -79,8 +79,9 @@ subroutine te0033(option, nomte)
     character(len=2) :: val
     character(len=3) :: num
     character(len=4) :: fami
-    character(len=8) :: nomres, famil, poum
-    character(len=16) :: phenom
+    character(len=8) :: famil, poum
+    character(len=16) :: nomres
+    character(len=32) :: phenom
 !     ------------------------------------------------------------------
 !
 !

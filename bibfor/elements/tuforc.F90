@@ -44,7 +44,8 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
 !      EFGE_ELNO ELEMENT: MET3SEG3 MET6SEG3 MET3SEG4
     integer :: nbres, nbrddl, nbsecm, nbcoum, nval
     parameter (nbres=9)
-    character(len=8) :: nomres(nbres), nompar
+    character(len=16) :: nomres(nbres)
+    character(len=8) :: nompar
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar, h, a, l, e, nu
     parameter (nbsecm=32,nbcoum=10)

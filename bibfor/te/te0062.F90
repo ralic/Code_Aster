@@ -52,8 +52,8 @@ subroutine te0062(option, nomte)
     real(kind=8) :: dire(3), orig(3), point(3), angl(3)
     real(kind=8) :: alpha, beta
 !
-    character(len=8) :: nomres(3)
-    character(len=16) :: phenom
+    character(len=16) :: nomres(3)
+    character(len=32) :: phenom
 !
     aster_logical :: aniso, global
 !

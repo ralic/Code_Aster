@@ -39,7 +39,7 @@ subroutine rcpare(nommat, pheno, para, icodre)
 ! DEB ------------------------------------------------------------------
     character(len=6) ::  k6
     character(len=8) ::  nomma2
-    character(len=10) :: pheno2
+    character(len=32) :: pheno2
     character(len=32) :: ncomr, ncomc, ncomk, ncomp
     integer :: nbpar, nbr, nbc, nbk, nbcomp, icomp
 !
@@ -54,7 +54,7 @@ subroutine rcpare(nommat, pheno, para, icodre)
     call jelira(ncomp, 'LONUTI', nbcomp)
     call jeveuo(ncomp, 'L', icomp)
     do i = 1, nbcomp
-       if (pheno2 .eq. zk32(icomp+i-1)(1:len(pheno2))) then            
+       if (pheno2 .eq. zk32(icomp+i-1)) then            
           call codent(i, 'D0', k6)
           ncomr = nomma2//'.CPT.'//k6//'.VALR        '
           ncomc = nomma2//'.CPT.'//k6//'.VALC        '
@@ -65,7 +65,7 @@ subroutine rcpare(nommat, pheno, para, icodre)
           call jeveuo(ncomk, 'L', ipar)
           nbpar = nbr + nbc + nbk/2
           do j = 1, nbpar
-             if (para .eq. zk8(ipar+j-1)(1:len(para))) then
+             if (para .eq. zk16(ipar+j-1)) then
                icodre = 0
              endif
           end do

@@ -71,7 +71,7 @@ implicit none
     integer :: nbresm
     parameter (nbresm=3)
     integer :: icodre(nbresm)
-    character(len=8) :: nomres(nbresm)
+    character(len=16) :: nomres(nbresm)
     real(kind=8) :: valres(nbresm)
 !
     character(len=8) :: para_name, materi

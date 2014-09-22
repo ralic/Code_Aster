@@ -189,8 +189,9 @@ subroutine vdpnlr(option, nomte, codret)
 !
 !---- LES REALS
     integer :: icodre ( 26 )
-    character(len=8) :: nomres ( 26 ), typmod ( 2 )
-    character(len=10) :: phenom
+    character(len=8) :: typmod ( 2 )
+    character(len=16) :: nomres ( 26 )
+    character(len=32) :: phenom
     integer :: imate, icarcr, iinstm, iinstp, ivarim
     integer :: nbvari, itab(8), lgpg, k2
     integer :: nbv, iret

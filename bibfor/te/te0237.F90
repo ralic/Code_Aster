@@ -39,8 +39,8 @@ subroutine te0237(option, nomte)
 ! .                    NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=8) :: elrefe
-    character(len=8) :: nomres(3), nompar
+    character(len=8) :: elrefe, nompar
+    character(len=16) :: nomres(3)
     integer :: icodre(3)
     real(kind=8) :: e, nu, tpg, tpgmoy, tpginf, tpgsup, valpar, tref
     real(kind=8) :: x3, eps(5), c1, c2, h, epsthe, ki(3), niv

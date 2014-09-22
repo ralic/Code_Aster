@@ -79,7 +79,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum,&
 ! ----------------------------------------------------------------------
     aster_logical :: rigi, resi, conv, trac, adher
     integer :: icodre(14)
-    character(len=8) :: nomres(14)
+    character(len=16) :: nomres(14)
     integer :: k, itemax
     real(kind=8) :: su(2), eps(2), e, gtt, hpen
     real(kind=8) :: bdn, adn, epstr0

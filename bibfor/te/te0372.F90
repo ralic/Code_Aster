@@ -37,8 +37,8 @@ subroutine te0372(option, nomte)
 #include "asterfort/vff2dn.h"
 !
     integer :: icodre(2), kpg, spt
-    character(len=8) :: nomres(2), fami, poum
-    character(len=16) :: nomte, option
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(2), nomte, option
     real(kind=8) :: nx, ny, poids
     real(kind=8) :: valres(2), rho, celer
     integer :: ipoids, ivf, idfde, igeom, imate

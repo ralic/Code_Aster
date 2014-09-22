@@ -63,7 +63,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 !    CODI(P.I)  :NOMBRE DE COEFFICIENTS REELS
 !    CODI(P.I+1):NOMBRE DE COEFFICIENTS COMPLEXES
 !    CODI(P.I+2):NOMBRE DE COEFFICIENTS FONCTIONS
-!    CODI(P.I+3):ADRESSE ZK8 RELATIVE AU .VALK DES PARAMETRES (NOMS)
+!    CODI(P.I+3):ADRESSE ZK16 RELATIVE AU .VALK DES PARAMETRES (NOMS)
 !    CODI(P.I+4):ADRESSE ZR  RELATIVE AU .VALR DES REELS
 !    CODI(P.I+5):ADRESSE ZC  RELATIVE AU .VALC DES COMPLEXES
 !
@@ -220,19 +220,19 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 ! ---     BOUCLE SUR LE NOMBRE DE COEFFICIENTS REELS :
 !         ------------------------------------------
             do 21 l = 0, zi(kk)-1
-                ch19 = zk8(zi(kk+5)+l)
-                if (ch19 .eq. 'PRECISIO') prec = zr(zi(kk+1)+l)
+                ch19 = zk16(zi(kk+5)+l)
+                if (ch19 .eq. 'PRECISION') prec = zr(zi(kk+1)+l)
 21          continue
             do 22 l = 0, zi(kk)-1
-                ch19 = zk8(zi(kk+5)+l)
-                if (ch19 .eq. 'TEMP_DEF') then
+                ch19 = zk16(zi(kk+5)+l)
+                if (ch19 .eq. 'TEMP_DEF_ALPHA') then
                     tdef = zr(zi(kk+1)+l)
 !
 ! ---       BOUCLE SUR LES FONCTIONS :
 !           ------------------------
                     do 23 m = 0, zi(kk+4)-1
-                        ch19 = zk8(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+ m)
-                        nopara = zk8(zi(kk+5)+zi(kk)+zi(kk+2)+m)
+                        ch19 = zk16(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+ m)
+                        nopara = zk16(zi(kk+5)+zi(kk)+zi(kk+2)+m)
                         if (nopara(1:5) .eq. 'ALPHA' .or. nopara .eq. 'F_ALPHA ' .or.&
                             nopara .eq. 'C_ALPHA ') then
 !
@@ -242,8 +242,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                             if (chmat .ne. '&chpoint') then
                                 call alfint(chmat, imate, nommat, tdef, nopara,&
                                             k, prec, ch19)
-                                zk8(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+&
-                                m) = ch19
+                                zk16(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+m) = ch19
                             endif
                         endif
 23                  continue
@@ -254,7 +253,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 ! ---     BOUCLE SUR LE NOMBRE DE COEFFICIENTS FONCTIONS :
 !         ------------------------------------------------
             do 25 l = 0, zi(kk+4)-1
-                ch19 = zk8(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+l)
+                ch19 = zk16(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+l)
                 call exisd('FONCTION', ch19(1:8), iretf)
                 call exisd('TABLE', ch19(1:8), irett)
 ! ---   DES FONCTIONS SONT CREEES SUR LA VOLATILE (ROUTINE ALFINT) ---

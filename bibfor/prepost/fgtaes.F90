@@ -44,9 +44,10 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
     integer :: icodre(10), icodwo
     integer :: icodba, icodhs
     character(len=4) :: mode
-    character(len=8) :: nomre1, nomre2, nompa1, nomp(2), nomres(10)
-    character(len=8) :: cara, nompar, kbid
-    character(len=10) :: pheno
+    character(len=8) :: nompa1, nomp(2)
+    character(len=16) :: nomre1, nomre2, nomres(10), cara
+    character(len=8) :: nompar, kbid
+    character(len=32) :: pheno
     real(kind=8) :: nrupt(1), delta, dnap, epmax, valp(2), val(10)
     real(kind=8) :: salt, x, re(1), slmodi, y
     aster_logical :: endur
@@ -60,7 +61,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
 !
     rbid = 0.d0
     epmax = 0.d0
-    nomre1 = 'MANSON_C'
+    nomre1 = 'MANSON_COFFIN'
     nomre2 = 'WOHLER  '
     nbpar = 1
     pheno = 'FATIGUE '
@@ -69,13 +70,13 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax,&
     cara = 'WOHLER'
     call rcpare(nommat, pheno, cara, icodwo)
     if (icodwo .eq. 0) mode = 'FONC'
-    cara = 'A_BASQUI'
+    cara = 'A_BASQUIN'
     call rcpare(nommat, pheno, cara, icodba)
     if (icodba .eq. 0) then
         nompar = ' '
         nbpar = 0
-        nomres(2) = 'A_BASQUI'
-        nomres(3) = 'BETA_BAS'
+        nomres(2) = 'A_BASQUIN'
+        nomres(3) = 'BETA_BASQUIN'
         call rcvale(nommat, 'FATIGUE', nbpar, nompar, [rbid],&
                     2, nomres(2), val(2), icodre(2), 2)
         mode = 'BASQ'

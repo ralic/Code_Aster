@@ -66,7 +66,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: em, num, troikm, deumum, plasti
     integer :: ndimsi
     integer :: icodre(3)
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
     character(len=10) :: phenom
     real(kind=8) :: rac2
 !-----------------------------------------------------------------------
@@ -114,8 +114,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
 !
 ! LECTURE DES CARACTERISTIQUES D'ECROUISSAGE
 !
-!     nomres(1)='D_SIGM_EPSI'
-    nomres(1)='D_SIGM_E'
+    nomres(1)='D_SIGM_EPSI'
     nomres(2)='SY'
     call rcvalb(fami, kpg, ksp, '-', imate, ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)
@@ -128,8 +127,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate,&
         cm = 2.d0/3.d0*dsdem/(1.d0-dsdem/em)
     endif
 !
-!     nomres(1)='D_SIGM_EPSI'
-    nomres(1)='D_SIGM_E'
+    nomres(1)='D_SIGM_EPSI'
     nomres(2)='SY'
     call rcvalb(fami, kpg, ksp, '+', imate, ' ', 'ECRO_LINE', 0, ' ', [0.d0],&
                 2, nomres, valres, icodre, 2)

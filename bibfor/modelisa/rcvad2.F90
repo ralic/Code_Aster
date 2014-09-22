@@ -27,7 +27,7 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
     integer :: kpg, ksp, imat, nbres, jmat
     character(len=*) :: fami, poum
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres)
+    character(len=16) :: nomres(nbres)
     character(len=*) :: phenom
     real(kind=8) :: temp, valres(nbres), devres(nbres)
 ! ......................................................................
@@ -86,7 +86,7 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
     ivalr = zi(ipi+4)
     do 150 ir = 1, nbr
         do 140 ires = 1, nbres
-            if (nomres(ires) .eq. zk8(ivalk+ir-1)) then
+            if (nomres(ires) .eq. zk16(ivalk+ir-1)) then
                 valres(ires) = zr(ivalr-1+ir)
                 devres(ires) = 0.d0
                 icodre(ires) = 0
@@ -103,7 +103,7 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
         if (iret .eq. 0) then
             do 170 ires = 1, nbres
                 do 160 ik = 1, nbf
-                    if (nomres(ires) .eq. zk8(ivalk+idf+ik-1)) then
+                    if (nomres(ires) .eq. zk16(ivalk+idf+ik-1)) then
                         ifon = ipi+lmat-1+lfct*(ik-1)
                         call rcfode(ifon, temp, valres(ires), devres( ires))
                         icodre(ires) = 0
@@ -113,7 +113,7 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
         else
             do 180 ires = 1, nbres
                 do 190 ik = 1, nbf
-                    if (nomres(ires) .eq. zk8(ivalk+idf+ik-1)) then
+                    if (nomres(ires) .eq. zk16(ivalk+idf+ik-1)) then
                         ifon = ipi+lmat-1+lfct*(ik-1)
                         call rcfode(ifon, 0.d0, valres(ires), devres( ires))
                         icodre(ires) = 0

@@ -90,7 +90,8 @@ subroutine pipeed(nno, npg, ipoids, ivf, idfde,&
 !
     real(kind=8) :: valres(nbres)
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), fami, poum
+    character(len=16) :: nomres(nbres)
+    character(len=8) :: fami, poum
 !
 !
     integer :: i, j, k, kont, n, kpg, spt

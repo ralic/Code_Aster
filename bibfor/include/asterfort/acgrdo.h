@@ -34,9 +34,9 @@ interface
         real(kind=8) :: vala
         real(kind=8) :: coefpa
         character(len=16) :: nomfor
-        character(len=8) :: grdvie
+        character(len=16) :: grdvie
         character(len=16) :: forvie
-        character(len=16) ::forcri
+        character(len=16) :: forcri
         real(kind=8) :: valpar(35)
         real(kind=8) :: vresu(24)
     end subroutine acgrdo

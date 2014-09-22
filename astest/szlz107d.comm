@@ -222,7 +222,7 @@ for i in range(NBPR-1) :
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
                        FORMULE_GRDEQ = CRIT[i],
-                       DOMMAGE='MANSON_C',
+                       DOMMAGE='MANSON_COFFIN',
                        MATER=MAT0,
                        PROJECTION = 'UN_AXE'                 )
                        
@@ -620,7 +620,7 @@ for i in range(NBPR-2) :
                        TYPE_CHARGE = 'NON_PERIODIQUE',
                        CRITERE='FORMULE_CRITERE',
                        FORMULE_GRDEQ = CRIT[i],
-                       DOMMAGE='MANSON_C',
+                       DOMMAGE='MANSON_COFFIN',
                        MATER=MAT0,
                        PROJECTION = 'UN_AXE'                 )
                        
@@ -1105,7 +1105,7 @@ FATN3=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                    TYPE_CHARGE = 'NON_PERIODIQUE',
                    CRITERE='FORMULE_CRITERE',
                    FORMULE_GRDEQ = CRIT[3],
-                   DOMMAGE='MANSON_C',
+                   DOMMAGE='MANSON_COFFIN',
                    MATER=MAT0,
                    PROJECTION = 'UN_AXE'                 )
                    

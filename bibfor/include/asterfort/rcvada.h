@@ -22,7 +22,7 @@ interface
         integer :: jmat
         character(len=*) :: phenom
         real(kind=8) :: temp
-        character(len=8) :: nomres(nbres)
+        character(len=16) :: nomres(nbres)
         real(kind=8) :: valres(nbres)
         real(kind=8) :: devres(nbres)
         integer :: icodre(nbres)

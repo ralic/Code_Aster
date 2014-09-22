@@ -96,7 +96,8 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 ! Declaration of integer type variables
     aster_logical :: epflag, tridim, outofp
 ! Declaration of character type variables
-    character(len=8) :: mod, nomres(3)
+    character(len=8) :: mod
+    character(len=16) :: nomres(3)
 !
 ! Declaration of constant variables
     data&

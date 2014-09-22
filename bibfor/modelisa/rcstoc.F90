@@ -31,10 +31,11 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbr, nbc, nbk, nbobj, ind
+    integer :: nbr, nbc, nbk, nbobj
     real(kind=8) :: valr(*)
     complex(kind=8) :: valc(*)
-    character(len=8) :: nommat, valk(*)
+    character(len=8) :: nommat
+    character(len=16) :: valk(*)
     character(len=32) :: nomrc
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -222,8 +223,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                 else if (nomobj(i) .eq. 'COEF_MASS_AJOU') then
                     valk(nbr+nbc+nbk) = 'CM'
                 else
-                    ind=lxlgut(nomobj(i))+1
-                    if (ind .gt. 9) then
+                    if (lxlgut(nomobj(i)) .gt. 16) then
                        call utmess('A','MODELISA9_84', sk=nomobj(i))
                     endif   
                     valk(nbr+nbc+nbk) = nomobj(i)

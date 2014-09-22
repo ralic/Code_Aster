@@ -54,8 +54,8 @@ subroutine te0528(option, nomte)
     real(kind=8) :: epsfl(mxcmel), epstmp(nbsgm)
     real(kind=8) :: valpar, nu(1)
     integer :: icodre(1)
-    character(len=8) :: nomres, nompar
-    character(len=16) :: compo1, compo2, valk(2)
+    character(len=8) ::  nompar
+    character(len=16) :: nomres, compo1, compo2, valk(2)
     aster_logical :: lflu
 ! DEB ------------------------------------------------------------------
 !

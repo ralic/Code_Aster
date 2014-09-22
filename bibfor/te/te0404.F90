@@ -48,7 +48,7 @@ subroutine te0404(option, nomte)
     character(len=4) :: fami
     integer :: icodre(1)
     integer :: codres(2)
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
     character(len=8) :: cnd
     integer :: icour, imate, igeom, nd, ndim, nno, nnos, npg
     integer :: i, j, ipoids, ivf, idfde, jgano, ier, iret

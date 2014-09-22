@@ -18,8 +18,8 @@ subroutine avgrdo(nbvec, nbordr, vectn, vwork, tdisp,&
     integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)
-    character(len=16) :: nomcri, forvie, nomfor
-    character(len=8) :: nommat, grdvie
+    character(len=16) :: nomcri, forvie, nomfor, grdvie
+    character(len=8) :: nommat
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
     integer :: jomin, jomax, jvmin, jvmax
     real(kind=8) :: vala, coefpa

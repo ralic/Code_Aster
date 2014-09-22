@@ -33,7 +33,7 @@ subroutine lcquma(mat, fami, kpg, ksp, poum)
     integer         :: iok(7)
     real(kind=8)    :: valer(7), coef, cc, cv, e, nu,rdum(1)
     character(len=8):: nomdum(1)
-    character(len=8):: nomer(7)
+    character(len=16):: nomer(7)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
     common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
@@ -44,7 +44,7 @@ subroutine lcquma(mat, fami, kpg, ksp, poum)
     real(kind=8) :: pct, pch, pcs
     common /lcmqu/ pch,pct,pcs
 ! --------------------------------------------------------------------------------------------------
-    data nomer /'K','M','P','Q','COEF_RIG','C_VOLU','C_COMP'/
+    data nomer /'K','M','P','Q','COEF_RIGI_MINI','C_VOLU','C_COMP'/
 ! --------------------------------------------------------------------------------------------------
 
     call rcvalb(fami, kpg, ksp, poum, mat,' ', 'ENDO_SCALAIRE', 0, nomdum, rdum, &

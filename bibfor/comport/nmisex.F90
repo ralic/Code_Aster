@@ -88,7 +88,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: rac2
     integer :: icodre(3)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
 !
 !----- COMMONS NECESSAIRES A VON_MISES ISOTROPE C_PLAN :
 !      COMMONS COMMUNS A NMCRI1 ET NMISOT
@@ -181,7 +181,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate,&
     if (compor(1) .eq. 'VMIS_ISOT_LINE') then
         plasti=(vim(2).gt.0.0d0)
         line=1.d0
-        nomres(1)='D_SIGM_EPSI'(1:8)
+        nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
 !
         call rcvalb(fami, kpg, ksp, '+', imate,&

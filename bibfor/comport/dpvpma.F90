@@ -46,7 +46,7 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd,&
     real(kind=8) :: e, nu, mu, k
     real(kind=8) :: un, deux, trois
     integer :: cerr(17)
-    character(len=8) :: nomc(17)
+    character(len=16) :: nomc(17)
 ! =================================================================
     parameter ( trois  =  3.0d0 )
     parameter ( deux   =  2.0d0 )

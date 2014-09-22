@@ -72,8 +72,8 @@ subroutine te0150(option, nomte)
     real(kind=8) :: valpar(3), valres(nbres)
     integer :: codres(nbres)
     character(len=4) :: fami
-    character(len=8) :: nompar(3), nomres(nbres), materi
-    character(len=16) :: ch16
+    character(len=8) :: nompar(3), materi
+    character(len=16) :: ch16, nomres(nbres)
     real(kind=8) :: e, nu, g
     real(kind=8) :: a, a2, xl, rbid
     real(kind=8) :: ang, rad, angarc, angs2, along

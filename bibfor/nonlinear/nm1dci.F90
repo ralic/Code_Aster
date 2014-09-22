@@ -57,9 +57,9 @@ subroutine nm1dci(fami, kpg, ksp, imate, em,&
     real(kind=8) :: sige, dp, valres(2), etm, etp, xp, xm, hm, hp
 !
     integer :: icodre(2)
-    character(len=8) :: nomecl(2)
+    character(len=16) :: nomecl(2)
 !
-    data nomecl/'D_SIGM_E','SY'/
+    data nomecl/'D_SIGM_EPSI','SY'/
 !     ------------------------------------------------------------------
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 materi, 'ECRO_LINE', 0, ' ', [0.d0],&

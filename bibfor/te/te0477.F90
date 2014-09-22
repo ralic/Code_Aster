@@ -56,8 +56,7 @@ subroutine te0477(option, nomte)
     character(len=8) :: typmod(2)
     character(len=4) :: fami
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres)
-    character(len=16) :: nomte, option, nomshb
+    character(len=16) :: nomres(nbres), nomte, option, nomshb
     real(kind=8) :: re(24, 24), sigma(120), d(36)
     real(kind=8) :: dusdx(180), fstab(12), sigmm(120), sigmp(120)
     real(kind=8) :: valres(nbres), sigm(6), simp(6)

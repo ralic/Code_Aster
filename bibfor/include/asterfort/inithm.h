@@ -43,6 +43,6 @@ interface
         real(kind=8) :: unsks
         real(kind=8) :: alpha0
         integer :: ndim
-        character(len=16) :: phenom
+        character(len=*) :: phenom
     end subroutine inithm
 end interface 

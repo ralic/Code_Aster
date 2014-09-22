@@ -77,7 +77,8 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     integer :: nbval
     parameter     (nbval=8)
     integer :: icodre(nbval)
-    character(len=8) :: nomres(nbval), mazars(nbval)
+    character(len=16) :: nomres(nbval)
+    character(len=8) :: mazars(nbval)
     real(kind=8) :: valres(nbval+1)
 !
     aster_logical :: resi

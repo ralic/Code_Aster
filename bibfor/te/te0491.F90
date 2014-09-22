@@ -151,7 +151,8 @@ subroutine te0491(option, nomte)
     real(kind=8) :: epsm(mxcmel), integ2, nu, k, indigl, xyz(3)
     real(kind=8) :: f(3, 3), r, para_vale, epsbid(6), dfdbid(27*3)
     character(len=4) :: fami
-    character(len=8) :: nomres(5), para_type
+    character(len=16) :: nomres(5)
+    character(len=8) :: para_type
     character(len=16) :: nomte, option, optio2, compor(3)
     aster_logical :: grand, axi
 !-----------------------------------------------------------------------

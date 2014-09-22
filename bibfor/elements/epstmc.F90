@@ -61,8 +61,9 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
     parameter (nbres = 3)
 !
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), nompar
-    character(len=16) :: phenom
+    character(len=8) :: nompar
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
     integer :: elas_type
 !
     real(kind=8) :: valres(nbres), valpar, bendog, kdessi, angl(3)
@@ -140,7 +141,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !           ----------------------------------------------------------
 !
             phenom = 'THM_DIFFU'
-            nomres(1) = 'BIOT_COE'
+            nomres(1) = 'BIOT_COEF'
             nbv = 1
 !
             call rcvalb(fami, igau, isgau, poum, mater,&

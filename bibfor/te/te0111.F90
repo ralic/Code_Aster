@@ -36,7 +36,7 @@ subroutine te0111(option, nomte)
 !
     integer ::          icodre(1)
     real(kind=8) ::     valres(1)
-    character(len=8) :: nomres(1)
+    character(len=16) :: nomres(1)
 !
     integer :: imater, igeom, lsect, lcastr
     real(kind=8) :: r8bid, rho, xl, aire

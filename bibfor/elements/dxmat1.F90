@@ -48,8 +48,9 @@ subroutine dxmat1(fami, epais, df, dm, dmf, pgl, indith, npg)
     real(kind=8) :: alpha, beta
     real(kind=8) :: em, ef, num, nuf
     integer :: icodre(21)
-    character(len=8) :: nomres(21), nompar
-    character(len=10) :: phenom
+    character(len=16) :: nomres(21)
+    character(len=8) :: nompar
+    character(len=32) :: phenom
 !     ------------------------------------------------------------------
 !
     call r8inir(9, 0.d0, dm, 1)

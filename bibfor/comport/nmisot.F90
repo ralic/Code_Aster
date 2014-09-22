@@ -93,9 +93,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     integer :: iret2, iret3, iret4, iret5
     integer :: icodre(3)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
     character(len=8) :: nompar(3), para_type
-    character(len=10) :: phenom
+    character(len=32) :: phenom
     real(kind=8) :: valpam(3), valpap(3), para_vale, valrm(2)
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, xm(6), xp(6)
 !-----------------------------------------------------------------------
@@ -277,8 +277,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     plasti=(vim(2).ge.0.5d0)
     if (compor(10:14) .eq. '_LINE') then
         line=1.d0
-!         nomres(1)='D_SIGM_EPSI'
-        nomres(1)='D_SIGM_E'
+        nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'ECRO_LINE', 0, ' ', [0.d0],&

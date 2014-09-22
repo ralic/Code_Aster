@@ -55,9 +55,9 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     integer :: nbres, nbrddl, nc, kpgs, nbcoum, nbsecm
     integer :: vali
     parameter (nbres=9)
-    character(len=16) :: nomte
-    character(len=8) :: nomres(nbres), typmod(2)
-    character(len=10) :: phenom
+    character(len=16) :: nomres(nbres), nomte
+    character(len=8) :: typmod(2)
+    character(len=32) :: phenom
     integer :: valret(nbres)
     real(kind=8) :: valres(nbres), xpg(4)
     parameter (nbsecm=32,nbcoum=10)

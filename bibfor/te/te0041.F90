@@ -66,7 +66,8 @@ subroutine te0041(option, nomte)
     real(kind=8) :: eta, r8bid, un, zero, valpar, valres(3)
     complex(kind=8) :: hyst, dcmplx
     integer :: icodre(3), kpg, spt
-    character(len=8) :: nomres(3), k8bid, fami, poum
+    character(len=8) :: k8bid, fami, poum
+    character(len=16) :: nomres(3)
     character(len=24) :: valk(2)
     integer :: ibid, itype, irep, nbterm, nno, nc, ndim, nddl, i, iret, j
     integer :: jdr, jdm, lorien, jdc, jma, iacce, ivect

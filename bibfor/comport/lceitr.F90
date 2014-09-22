@@ -51,11 +51,11 @@ subroutine lceitr(fami, kpg, ksp, mat, option,&
     real(kind=8) :: sc, gc, c, h, ka, sk, st, val(nbpar), tmp, kap, skp, gap
     real(kind=8) :: dn, tn, t(3), ddndtn, dele, delp, delc, coee, coep
     integer :: cod(nbpar)
-    character(len=8) :: nom(nbpar)
+    character(len=16) :: nom(nbpar)
     character(len=1) :: poum
 !
-    data nom /'GC','SIGM_C','COEF_EXT','COEF_PLA',&
-     &          'PENA_LAG','RIGI_GLI'/
+    data nom /'GC','SIGM_C','COEF_EXTR','COEF_PLAS',&
+     &          'PENA_LAGR','RIGI_GLIS'/
 !-----------------------------------------------------------------------
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE

@@ -87,7 +87,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm,&
     real(kind=8) :: vecepm(3, 3), valepm(3)
 !
     integer :: icodre(6)
-    character(len=8) :: nomres(6)
+    character(len=16) :: nomres(6)
     real(kind=8) :: valres(6)
 !
     data  kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/

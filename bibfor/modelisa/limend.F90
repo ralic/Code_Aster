@@ -19,7 +19,6 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/fointe.h"
 #include "asterfort/fonbpa.h"
 #include "asterfort/jedema.h"
@@ -51,9 +50,9 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
 !
     integer :: iret, ivalr, nbr, nbc, ivalk, nbk, nbf, ik, ivalf, iprol
-    integer :: jprof, nbmx, np, ibid, ind
+    integer :: jprof, nbmx, np, ibid
     real(kind=8) :: vallim, nlimim
-    character(len=6) :: k6
+    character(len=11) :: k11
     character(len=32) :: nomphe
     character(len=8) :: nomfon, nommat, nompf
     character(len=16) :: typfon
@@ -70,30 +69,29 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 ! LA DUREE DE VIE A 10^7
     nlimim = 1.d7
 !
-    if (nomres(1:6) .eq. 'WOHLER') then
+    if (nomres .eq. 'WOHLER') then
 !
 !    DANS LE CAS OU LE MOT CLE EST WOHLER
 !
-        call rccome(nommat, nomphe, iret, ind_nomrc=ind)
+        call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
         ASSERT(iret .eq. 0)
-        call codent(ind,'D0',K6)
-        call jeexin(nommat//'.CPT.'//k6//'.VALR', iret)
-        call jeveuo(nommat//'.CPT.'//k6//'.VALR', 'L', ivalr)
-        call jelira(nommat//'.CPT.'//k6//'.VALR', 'LONUTI', nbr)
+        call jeexin(nommat//k11//'.VALR', iret)
+        call jeveuo(nommat//k11//'.VALR', 'L', ivalr)
+        call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
 !
-        call jelira(nommat//'.CPT.'//k6//'.VALC', 'LONUTI', nbc)
-        call jeexin(nommat//'.CPT.'//k6//'.VALK', iret)
-        call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONUTI', nbk)
+        call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
+        call jeexin(nommat//k11//'.VALK', iret)
+        call jeveuo(nommat//k11//'.VALK', 'L', ivalk)
+        call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
 !
 !    NOMBRE DE FONCTIONS PRESENTES
 !
         nbf = (nbk-nbr-nbc)/2
 !
         do 10 ik = 1, nbf
-            if (nomres .eq. zk8(ivalk-1+nbr+nbc+ik)) then
+            if (nomres .eq. zk16(ivalk-1+nbr+nbc+ik)) then
 !         NOM DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
-                nomfon = zk8(ivalk-1+nbr+nbc+nbf+ik)
+                nomfon = zk16(ivalk-1+nbr+nbc+nbf+ik)
 !         VALEURS DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
                 call jeveuo(nomfon//'           .VALE', 'L', ivalf)
 !         PROLONGEMENT DE LA FONCTION REPRESENTANT LA COURBE DE WOHLER
@@ -111,30 +109,29 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
         call utmess('F', 'MODELISA4_89')
  20     continue
 !
-    else if (nomres(1:8) .eq. 'MANSON_C') then
+    else if (nomres .eq. 'MANSON_COFIN') then
 !
 !    DANS LE CAS OU LE MOT CLE EST MANSON_COFFIN
 !
-        call rccome(nommat, nomphe, iret, ind_nomrc=ind)
+        call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
         ASSERT(iret .eq. 0)
-        call codent(ind,'D0',K6)
 !
-        call jeveuo(nommat//'.CPT.'//k6//'.VALR', 'L', ivalr)
-        call jelira(nommat//'.CPT.'//k6//'.VALR', 'LONUTI', nbr)
+        call jeveuo(nommat//k11//'.VALR', 'L', ivalr)
+        call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
 !
-        call jelira(nommat//'.CPT.'//k6//'.VALC', 'LONUTI', nbc)
-        call jeexin(nommat//'.CPT.'//k6//'.VALK', iret)
-        call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', ivalk)
-        call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONUTI', nbk)
+        call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
+        call jeexin(nommat//k11//'.VALK', iret)
+        call jeveuo(nommat//k11//'.VALK', 'L', ivalk)
+        call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
 !
 !    NOMBRE DE FONCTIONS PRESENTES
 !
         nbf = (nbk-nbr-nbc)/2
 !
         do 30 ik = 1, nbf
-            if (nomres .eq. zk8(ivalk-1+nbr+nbc+ik)) then
+            if (nomres .eq. zk16(ivalk-1+nbr+nbc+ik)) then
 !        NOM DE LA FONCTION REPRESENTANT LA COURBE DE MANSON_COFFIN
-                nomfon = zk8(ivalk-1+nbr+nbc+nbf+ik)
+                nomfon = zk16(ivalk-1+nbr+nbc+nbf+ik)
 !        VALEURS DE LA FONCTION REPRESENTANT LA COURBE DE MANSON_COFFIN
                 call jeveuo(nomfon//'           .VALE', 'L', ivalf)
 !        PROLONGEMENT DE LA FONCTION REPRESENTANT LA COURBE DE
@@ -154,7 +151,7 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
         call utmess('F', 'MODELISA4_91')
  40     continue
 !
-    else if (nomres(1:8) .eq. 'FORM_VIE') then
+    else if (nomres .eq. 'FORM_VIE') then
 !
 !    DANS LE CAS OU LE MOT CLE N'EST PAS MANSON_COFFIN NI WOHLERS
         chnom(20:24) = '.PROL'

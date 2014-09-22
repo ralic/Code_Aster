@@ -2,6 +2,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
                   iarret)
     implicit   none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -9,6 +10,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rcvals.h"
+#include "asterfort/rccome.h"
 #include "asterfort/tbexlr.h"
     character(len=*) :: nommaz, phenom, nomres
     integer :: icodre, iarret
@@ -42,40 +44,45 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
 !
     integer :: iret,  nbr, nbc, nbk, nbco, ik,  nbcb1, nbcb2, nblb2
     integer :: nbhist, nbtrc
+    character(len=11) :: k11
     character(len=8) :: nommat
-    character(len=10) :: nomphe
-    character(len=19) :: ch19, listr
+    character(len=32) :: nomphe
+    character(len=19) :: ch19, listr, noobrc
     real(kind=8), pointer :: vale(:) => null()
-    character(len=8), pointer :: valk(:) => null()
+    character(len=16), pointer :: valk(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
     nommat = nommaz
     nomphe = phenom
 !
-    call jeexin(nommat//'.'//nomphe//'.VALR', iret)
+    call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
+!    ASSERT (iret .eq. 0)
+    noobrc = nommat//k11
+    
+    call jeexin(noobrc//'.VALR', iret)
     if (iret .eq. 0) then
         icodre = 1
         goto 9999
     else
-        call jelira(nommat//'.'//nomphe//'.VALR', 'LONUTI', nbr)
+        call jelira(noobrc//'.VALR', 'LONUTI', nbr)
     endif
 !
-    call jeexin(nommat//'.'//nomphe//'.VALC', iret)
+    call jeexin(noobrc//'.VALC', iret)
     if (iret .eq. 0) then
         icodre = 1
         goto 9999
     else
-        call jelira(nommat//'.'//nomphe//'.VALC', 'LONUTI', nbc)
+        call jelira(noobrc//'.VALC', 'LONUTI', nbc)
     endif
 !
-    call jeexin(nommat//'.'//nomphe//'.VALK', iret)
+    call jeexin(noobrc//'.VALK', iret)
     if (iret .eq. 0) then
         icodre = 1
         goto 9999
     else
-        call jeveuo(nommat//'.'//nomphe//'.VALK', 'L', vk8=valk)
-        call jelira(nommat//'.'//nomphe//'.VALK', 'LONUTI', nbk)
+        call jeveuo(noobrc//'.VALK', 'L', vk16=valk)
+        call jelira(noobrc//'.VALK', 'LONUTI', nbk)
     endif
 !
     nbco = ( nbk - nbr - nbc ) / 2

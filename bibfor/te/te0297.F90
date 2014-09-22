@@ -60,7 +60,8 @@ subroutine te0297(option, nomte)
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81), puls
     integer :: icodre(3)
-    character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
+    character(len=8) :: elrefp, elrese(6), fami(6), nompar(4), enr
+    character(len=16) :: nomres(3)
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','RIGI','XINT','BID','RIGI','XINT'/

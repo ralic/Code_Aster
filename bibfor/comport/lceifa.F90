@@ -48,10 +48,10 @@ subroutine lceifa(fami, kpg, ksp, mat, option,&
     real(kind=8) :: sc, gc, dc, dc0, c, h, ka, sk, rk, val(4), kap, gap, incr
     real(kind=8) :: dn, tn, t(3), ddndtn, deltam
     integer :: cod(4)
-    character(len=8) :: nom(4)
+    character(len=16) :: nom(4)
     character(len=1) :: poum
 !
-    data nom /'GC','SIGM_C','PENA_LAG','RIGI_GLI'/
+    data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
 !-----------------------------------------------------------------------
 !
 !

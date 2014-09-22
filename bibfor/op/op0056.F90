@@ -100,8 +100,8 @@ subroutine op0056()
     character(len=6) :: k6
     character(len=24) :: valk(2)
     character(len=3) :: num
-    character(len=8) :: k8b, multic, mater, nomres(9)
-    character(len=16) :: type, nomcmd, fichie
+    character(len=8) :: k8b, multic, mater
+    character(len=16) :: type, nomcmd, fichie, nomres(9)
     aster_logical :: elas, ther
     character(len=32), pointer :: nomrc(:) => null()
     parameter (nv=83)
@@ -163,7 +163,7 @@ subroutine op0056()
         zk32(jrela) = 'ELAS_COQMU      '
         lonobj = 56 + nv*nbcou
         call codent(1, 'D0', k6)
-        call wkvect(multic//'.CPT.'//k6//'.VALK', 'G V K8', 2*lonobj, jmate)
+        call wkvect(multic//'.CPT.'//k6//'.VALK', 'G V K16', 2*lonobj, jmate)
         call jeecra(multic//'.CPT.'//k6//'.VALK', 'LONUTI', lonobj)
         call wkvect(multic//'.CPT.'//k6//'.VALR', 'G V R', lonobj, jobme)
         call jeecra(multic//'.CPT.'//k6//'.VALR', 'LONUTI', lonobj)
@@ -172,7 +172,7 @@ subroutine op0056()
         eptot = 0.d0
         do 30 i = 1, 56
             call codent(i, 'G', num)
-            zk8(jmate+i-1) = 'HOM_'//num
+            zk16(jmate+i-1) = 'HOM_'//num
  30     continue
         do 50 icou = 1, nbcou
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
@@ -182,7 +182,7 @@ subroutine op0056()
             call codent(icou, 'G', num)
             do 40 i = 1, nv
                 call codent(i, 'G', val)
-                zk8(jmate+56+nv* (icou-1)+i-1) = 'C'//num//'_V'//val
+                zk16(jmate+56+nv* (icou-1)+i-1) = 'C'//num//'_V'//val
  40         continue
             zr(jepor-1+3*icou-2) = epais
             zr(jepor-1+3*icou-1) = orien
@@ -691,7 +691,7 @@ subroutine op0056()
         zk32(jrela) = 'THER_COQMU      '
         lonobj = 31 + 3*nbcou
         call codent(1, 'D0', k6)
-        call wkvect(multic//'.CPT.'//k6//'.VALK', 'G V K8', 2*lonobj, jmate)
+        call wkvect(multic//'.CPT.'//k6//'.VALK', 'G V K16', 2*lonobj, jmate)
         call jeecra(multic//'.CPT.'//k6//'.VALK', 'LONUTI', lonobj)
         call wkvect(multic//'.CPT.'//k6//'.VALR', 'G V R', lonobj, jobth)
         call jeecra(multic//'.CPT.'//k6//'.VALR', 'LONUTI', lonobj)
@@ -700,7 +700,7 @@ subroutine op0056()
         eptot = 0.d0
         do 250 i = 1, 31
             call codent(i, 'G', num)
-            zk8(jmate+i-1) = 'HOM_'//num
+            zk16(jmate+i-1) = 'HOM_'//num
 250     continue
         do 270 icou = 1, nbcou
             call getvr8('COUCHE', 'EPAIS', iocc=icou, scal=epais, nbret=n)
@@ -710,7 +710,7 @@ subroutine op0056()
             call codent(icou, 'G', num)
             do 260 i = 1, 3
                 call codent(i, 'G', val)
-                zk8(jmate+31+3* (icou-1)+i-1) = 'C'//num//'_V'//val
+                zk16(jmate+31+3* (icou-1)+i-1) = 'C'//num//'_V'//val
 260         continue
             zr(jepor-1+3*icou-2) = epais
             zr(jepor-1+3*icou-1) = orien

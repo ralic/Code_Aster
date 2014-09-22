@@ -45,7 +45,8 @@ subroutine te0235(option, nomte)
     parameter (nbres=6)
     real(kind=8) :: valres(nbres), r8b
     integer :: codres(nbres)
-    character(len=8) :: nomres(nbres), nomail, fami, poum
+    character(len=8) :: nomail, fami, poum
+    character(len=16) :: nomres(nbres)
     integer :: i, lmater, j
     integer :: lorien, lmat
     integer :: nno, nc, kpg, spt

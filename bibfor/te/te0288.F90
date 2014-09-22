@@ -63,8 +63,8 @@ subroutine te0288(option, nomte)
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
     integer :: icodre(3),iadzi, iazk24
-    character(len=8) :: elrefp, elrese(6), fami(6), nomres(3), nompar(4), enr
-    character(len=16) :: compor(4)
+    character(len=8) :: elrefp, elrese(6), fami(6), nompar(4), enr
+    character(len=16) :: compor(4), nomres(3)
     aster_logical :: grand, incr
 !
 

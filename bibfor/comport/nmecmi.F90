@@ -88,7 +88,8 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
     integer :: jprolp, jvalep, nbvalp, k, l, niter, imate2, ibid
     integer :: icodre(3)
-    character(len=8) :: nomres(3), para_type
+    character(len=16) :: nomres(3)
+    character(len=8) :: para_type
 !-----------------------------------------------------------------------
     real(kind=8) :: dp0, xap
 !-----------------------------------------------------------------------
@@ -170,7 +171,7 @@ subroutine nmecmi(fami, kpg, ksp, ndim, typmod,&
     line=0.d0
     if (compor(1)(10:14) .eq. '_LINE') then
         line=1.d0
-        nomres(1)='D_SIGM_EPSI'(1:8)
+        nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'ECRO_LINE', 0, ' ', [0.d0],&

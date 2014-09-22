@@ -40,7 +40,7 @@ subroutine te0086(option, nomte)
 !
     integer ::          icodre(2)
     real(kind=8) ::     valres(2)
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
 !
     integer ::      nno, kp, ii, jj, imatuu, ipoids, ivf, igeom, imate,iforce
     integer ::      ideplp, idfdk, imat, iyty

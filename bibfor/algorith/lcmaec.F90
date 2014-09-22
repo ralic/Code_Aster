@@ -34,7 +34,7 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater,&
 #include "asterfort/rcvalb.h"
     integer :: kpg, ksp, nmat, nbval, imat
     real(kind=8) :: valres(nmat), vallue(nmat)
-    character(len=8) :: nomres(nmat)
+    character(len=16) :: nomres(nmat)
     character(len=*) :: fami, poum
     integer :: icodre(nmat)
     character(len=16) :: nmater, necoul

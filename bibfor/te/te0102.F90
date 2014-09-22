@@ -47,8 +47,9 @@ subroutine te0102(option, nomte)
     parameter (nbvar=2)
     integer :: icodre(nbres)
     character(len=2) :: num
-    character(len=8) :: nomres(nbres), nompar(nbvar), fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: nompar(nbvar), fami, poum
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
     real(kind=8) :: m(3, 3), h
     real(kind=8) :: valres(nbres)
     real(kind=8) :: coor2d(18)

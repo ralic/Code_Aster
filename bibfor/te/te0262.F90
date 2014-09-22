@@ -45,7 +45,8 @@ subroutine te0262(option, nomte)
     parameter (nbres=3,nl=144)
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres), fami, poum
+    character(len=8) :: nompar, fami, poum
+    character(len=16) :: nomres(nbres)
     real(kind=8) :: pgl(3, 3), klv(nl)
     real(kind=8) :: e, rho
     real(kind=8) :: valpar, xnu, zero

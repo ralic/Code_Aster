@@ -55,7 +55,8 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: valpaf
     real(kind=8) :: epsi, theta
-    character(len=8) :: mod, nomc(14), nompar
+    character(len=8) :: mod, nompar
+    character(len=16) :: nomc(14)
     integer :: cerr(14)
     character(len=3) :: matcst
     character(len=*) :: fami
@@ -81,13 +82,13 @@ subroutine betmat(fami, kpg, ksp, mod, imat,&
     nomc(5) = 'K_DESSIC'
     nomc(6) = 'F_C     '
     nomc(7) = 'F_T     '
-    nomc(8) = 'COEF_BIA'
-    nomc(9) = 'ENER_COM'
-    nomc(10)= 'ENER_TRA'
-    nomc(11)= 'COEF_ELA'
-    nomc(12)= 'ECRO_COM'
-    nomc(13)= 'ECRO_TRA'
-    nomc(14)= 'LONG_CAR'
+    nomc(8) = 'COEF_BIAX'
+    nomc(9) = 'ENER_COMP_RUPT'
+    nomc(10)= 'ENER_TRAC_RUPT'
+    nomc(11)= 'COEF_ELAS_COMP'
+    nomc(12)= 'ECRO_COMP_P_PIC'
+    nomc(13)= 'ECRO_TRAC_P_PIC'
+    nomc(14)= 'LONG_CARA'
 !
 ! -     TEMPERATURE MAXIMAL AU COURS DE L'HISTORIQUE DE CHARGEMENT
 ! -     THEMIQUE THETA (T+DT)

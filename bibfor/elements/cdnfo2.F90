@@ -1,5 +1,4 @@
-subroutine cdnfo2(mater, kfonc, xx, dn, fxx,&
-                  ier)
+subroutine cdnfo2(mater, kfonc, xx, dn, fxx, ier)
 !
     implicit none
 ! ======================================================================
@@ -22,10 +21,11 @@ subroutine cdnfo2(mater, kfonc, xx, dn, fxx,&
 !
 #include "asterfort/rcvale.h"
     integer :: dn, ier
-    character(len=8) :: kfonc, kaux, mater, k8b
+    character(len=16) :: kfonc, kaux
+    character(len=8) :: mater, k8b
     real(kind=8) :: xx, fxx, wfxx(1)
     integer :: icodr2(1)
-    character(len=16) :: phenom
+    character(len=32) :: phenom
 !
     phenom = 'GLRC_DAMAGE'
     k8b = 'X '

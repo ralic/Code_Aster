@@ -52,7 +52,8 @@ subroutine te0342(option, nomte)
     integer :: iret, iadzi, iazk24
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres), nomail
+    character(len=8) :: nompar, nomail
+    character(len=16) :: nomres(nbres)
     real(kind=8) :: nu
     real(kind=8) :: b(7, 14)
     real(kind=8) :: pgl(14, 14), depl(14), depglo(14)

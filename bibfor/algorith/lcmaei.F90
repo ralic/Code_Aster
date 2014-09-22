@@ -46,7 +46,7 @@ subroutine lcmaei(fami, kpg, ksp, poum, nmater,&
     real(kind=8) :: valres(nmat), hsri(nsg, nsg), h, e, nu, mu
     real(kind=8) :: vallue(nmat), val(1)
     character(len=*) :: fami, poum
-    character(len=8) :: nomres(nmat)
+    character(len=16) :: nomres(nmat)
     integer :: icodre(nmat)
     character(len=16) :: nmater, necris, nomfam, necoul, phenom
     aster_logical :: zecris

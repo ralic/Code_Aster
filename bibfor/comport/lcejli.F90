@@ -47,7 +47,7 @@ subroutine lcejli(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: sc, gc, lc, k0, val(4), rtan, zero, un
     real(kind=8) :: a(ndim), na, ka, kap, r0, rc, beta, rk, ra, coef, coef2
     integer :: cod(5)
-    character(len=8) :: nom(4)
+    character(len=16) :: nom(4)
     character(len=1) :: poum
     parameter  (zero = 0.d0, un = 1.d0)
 !

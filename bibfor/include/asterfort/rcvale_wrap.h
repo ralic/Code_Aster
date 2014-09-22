@@ -15,26 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine paqmai(nomsd, nomu, nommai, nommet, nomcri,&
-                      nomfor, grdvie, forvie, forcri, fordef, typcha,&
-                      proaxe, instic, inscri, prec)
-        character(len=8) :: nomsd
-        character(len=8) :: nomu
-        character(len=8) :: nommai
-        character(len=16) :: nommet
-        character(len=16) :: nomcri
-        character(len=16) :: nomfor
-        character(len=16) :: grdvie
-        character(len=16) :: forvie
-        character(len=16) :: forcri
-        aster_logical :: fordef
-        character(len=16) :: typcha
-        character(len=16) :: proaxe
-        real(kind=8) :: instic
-        character(len=8) :: inscri
-        real(kind=8) :: prec
-    end subroutine paqmai
+    subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
+                      nbres, nomres, valres, icodre, iarret)
+        integer, intent(in) :: nbres
+        integer, intent(in) :: nbpar
+        character(len=*), intent(in) :: nommaz
+        character(len=*), intent(in) :: phenom
+        character(len=8), intent(in) :: nompar(nbpar)
+        real(kind=8), intent(in) :: valpar(nbpar)
+        character(len=16), intent(in) :: nomres(nbres)
+        real(kind=8), intent(out) :: valres(nbres)
+        integer, intent(out) :: icodre(nbres)
+        integer, intent(in) :: iarret
+    end subroutine rcvale
 end interface

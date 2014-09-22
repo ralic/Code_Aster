@@ -55,7 +55,7 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
     real(kind=8) :: un, deux, eps
     real(kind=8) :: cohere
     integer :: cerr(14)
-    character(len=8) :: nomc(14)
+    character(len=16) :: nomc(14)
     integer :: ii
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------

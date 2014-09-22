@@ -47,9 +47,9 @@ subroutine te0061(option, nomte)
 !
     integer :: nbres
     parameter (nbres=4)
-    character(len=8) :: nomres(nbres)
     integer :: icodre(nbres)
-    character(len=16) :: nomte, option, phenom
+    character(len=16) :: nomres(nbres), nomte, option
+    character(len=32) :: phenom
     character(len=2) :: typgeo
     real(kind=8) :: valres(nbres), valpar(1), theta, lambor(3), point(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), tem, poids, dire(3), orig(3)

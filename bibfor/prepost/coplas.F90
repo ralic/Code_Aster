@@ -98,7 +98,7 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
                 call jeveuo(typnom, 'L', ineut1)
                 call jeveuo(ty2nom, 'L', ineut2)
                 do 5 j = 0, lreel-1
-                    if (zk8(ineut2+j) .eq. 'SY') then
+                    if (zk16(ineut2+j) .eq. 'SY') then
                         sigma = zr(ineut1+j)
                         goto 30
                     endif
@@ -106,8 +106,8 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
             else
                 call jeveuo(ty2nom, 'L', ineut2)
                 do 110 j = 0, long-1
-                    if (zk8(ineut2+j) .eq. 'SY') then
-                        fonct = zk8(ineut2+j+long)
+                    if (zk16(ineut2+j) .eq. 'SY') then
+                        fonct = zk16(ineut2+j+long)
                         autnom = fonct//'.PROL'
                         vaenom = fonct//'.VALE'
                         call jeveuo(autnom, 'L', ineut4)
@@ -167,7 +167,7 @@ subroutine coplas(tempa, k1a, k1b, k1c, matrev, &
             romnom = matrev//'.CPT.'//k6
             cocnom = romnom//'.VALK'
             call jeveuo(cocnom, 'L', ineut6)
-            tranom = zk8(ineut6+1)
+            tranom = zk16(ineut6+1)
             parnom = tranom//'.PARA'
             call jelira(parnom, 'LONUTI', npara)
             call jeveuo(parnom, 'L', ineut5)

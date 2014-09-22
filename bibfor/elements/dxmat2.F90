@@ -74,8 +74,9 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
 !
     character(len=2) :: val
     character(len=3) :: num
-    character(len=8) :: nomres(134), nompar
-    character(len=10) :: phenom
+    character(len=8) :: nompar
+    character(len=16) :: nomres(134)
+    character(len=32) :: phenom
 !
 !     ------------------------------------------------------------------
 !
@@ -148,11 +149,11 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, epais, dm, indith)
         nomres(1) = 'MEMB_L  '
         nomres(2) = 'MEMB_LT '
         nomres(3) = 'MEMB_T  '
-        nomres(4) = 'MEMB_G_L'
+        nomres(4) = 'MEMB_G_LT'
         nomres(5) = 'FLEX_L  '
         nomres(6) = 'FLEX_LT '
         nomres(7) = 'FLEX_T  '
-        nomres(8) = 'FLEX_G_L'
+        nomres(8) = 'FLEX_G_LT'
         nomres(9) = 'CISA_L  '
         nomres(10) = 'CISA_T  '
         nomres(11) = 'ALPHA   '

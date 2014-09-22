@@ -40,9 +40,10 @@
     real(kind=8)      :: predef(npred),dpred(npred),vrcm,vrcp,valres(3),valrem(3),wkin(nwkin)
     real(kind=8)      :: hydrm,hydrp,sechm,sechp,sref,epsbp,epsbm,bendom,kdessm,bendop,kdessp
     real(kind=8)      :: tm,tp,tref,epsth(neps),depsth(neps),temp,dtemp
-    character(len=8)  :: nomres(3), lvarc(npred), materi
+    character(len=8)  :: lvarc(npred), materi
     character(len=*)  :: fami
-    character(len=16) :: mcmate
+    character(len=16) :: nomres(3)
+    character(len=32) :: mcmate
     materi = ' '
 
     call r8inir(neps, 0.d0, depsth, 1)

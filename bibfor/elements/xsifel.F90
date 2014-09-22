@@ -105,7 +105,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref, tempg
     real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef, rho, rac2
     integer :: icodre(4)
-    character(len=8) :: nomres(4), elrese(6), fami(6)
+    character(len=16) :: nomres(4)
+    character(len=8) :: elrese(6), fami(6)
     aster_logical :: lcour, grdepl, axi
     integer :: irese, nnops
     integer :: ddln, nnon, indenn, mxstac

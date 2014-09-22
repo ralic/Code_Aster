@@ -48,7 +48,8 @@ subroutine te0390(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: nu, instam, instap
-    character(len=8) :: nomres(4), elrefe
+    character(len=8) :: elrefe
+    character(len=16) :: nomres(4)
     integer :: icodre(4)
     real(kind=8) :: en(3, 2), enprim(3, 2), valres(4), granc(6), grani(4)
     real(kind=8) :: rigi(18, 18), fint(6, 3), y0(3), x00(3, 3), x0k(3, 3)

@@ -67,6 +67,7 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ordcoq.h"
+#include "asterfort/rccome.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: base, mater1, mater2, noma
@@ -75,9 +76,9 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
     integer :: iddl(2)
     character(len=3) :: kmod
-    character(len=8) :: nompar(3)
+    character(len=11) :: k11
+    character(len=16) :: nompar(3)
     character(len=14) :: numddl
-    character(len=19) :: nomrc
     character(len=24) :: matria, coorno, rcvalk, rcvalr, nomgrp(*)
     character(len=32) :: grpno
 !
@@ -129,9 +130,13 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
 ! --- 2.1.MATERIAU CONSTITUTIF DE LA COQUE INTERNE
 !
-    nomrc = mater1//'.ELAS      '
-    rcvalk = nomrc//'.VALK'
-    rcvalr = nomrc//'.VALR'
+    call rccome(mater1, 'ELAS', iret, k11_ind_nomrc=k11)
+    if ( iret .eq. 0 ) then 
+       rcvalk = mater1//k11//'.VALK'
+       rcvalr = mater1//k11//'.VALR'  
+    else
+       rcvalk = ' '   
+    endif       
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_92')
@@ -144,13 +149,13 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     iok3 = 0
     call jelira(rcvalr, 'LONUTI', nbpara)
     do ipara = 1, nbpara
-        if (zk8(ivalk+ipara-1) .eq. nompar(1)) then
+        if (zk16(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
             young1 = zr(ivalr+ipara-1)
-        else if (zk8(ivalk+ipara-1).eq.nompar(2)) then
+        else if (zk16(ivalk+ipara-1).eq.nompar(2)) then
             iok2 = 1
             poiss1 = zr(ivalr+ipara-1)
-        else if (zk8(ivalk+ipara-1).eq.nompar(3)) then
+        else if (zk16(ivalk+ipara-1).eq.nompar(3)) then
             iok3 = 1
             rho1 = zr(ivalr+ipara-1)
         endif
@@ -163,9 +168,13 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
 !
 ! --- 2.2.MATERIAU CONSTITUTIF DE LA COQUE EXTERNE
 !
-    nomrc = mater2//'.ELAS      '
-    rcvalk = nomrc//'.VALK'
-    rcvalr = nomrc//'.VALR'
+    call rccome(mater2, 'ELAS', iret, k11_ind_nomrc=k11)
+    if ( iret .eq. 0 ) then  
+       rcvalk = mater2//k11//'.VALK'
+       rcvalr = mater2//k11//'.VALR'  
+    else
+       rcvalk = ' '   
+    endif       
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         call utmess('F', 'ALGELINE_95')
@@ -178,13 +187,13 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2,&
     iok3 = 0
     call jelira(rcvalr, 'LONUTI', nbpara)
     do ipara = 1, nbpara
-        if (zk8(ivalk+ipara-1) .eq. nompar(1)) then
+        if (zk16(ivalk+ipara-1) .eq. nompar(1)) then
             iok1 = 1
             young2 = zr(ivalr+ipara-1)
-        else if (zk8(ivalk+ipara-1).eq.nompar(2)) then
+        else if (zk16(ivalk+ipara-1).eq.nompar(2)) then
             iok2 = 1
             poiss2 = zr(ivalr+ipara-1)
-        else if (zk8(ivalk+ipara-1).eq.nompar(3)) then
+        else if (zk16(ivalk+ipara-1).eq.nompar(3)) then
             iok3 = 1
             rho2 = zr(ivalr+ipara-1)
         endif

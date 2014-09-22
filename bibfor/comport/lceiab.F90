@@ -49,11 +49,11 @@ subroutine lceiab(fami, kpg, ksp, mat, option,&
     real(kind=8) :: t(3), pr(3, 3), tpo(3), tpon(3), tno, tnon
     real(kind=8) :: dno, ddno, dnon, dsidno
     real(kind=8) :: res, rn, deriv, bmin, bmax
-    character(len=8) :: nom(6)
+    character(len=16) :: nom(6)
     character(len=1) :: poum
 !
-    data nom /'SIGM_C','GLIS_C','ALPHA','BETA','PENA_LAG',&
-     &          'CINEMATI'/
+    data nom /'SIGM_C','GLIS_C','ALPHA','BETA','PENA_LAGR',&
+     &          'CINEMATIQUE'/
 !-----------------------------------------------------------------------
 !
 ! ---------------------------

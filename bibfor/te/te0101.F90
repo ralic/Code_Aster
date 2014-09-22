@@ -50,8 +50,9 @@ subroutine te0101(option, nomte)
     parameter (nbvar=2)
     integer :: icodre(nbres), kpg, spt
     character(len=2) :: num
-    character(len=8) :: nomres(nbres), nompar(nbvar), alias8, fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: nompar(nbvar), alias8, fami, poum
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
     real(kind=8) :: b(3, 3), a(3, 3, 2, 2), conduc, h, theta
     real(kind=8) :: valres(nbres), axe(3, 3), ang(2), hom(nbres)
     real(kind=8) :: dfdx(9), dfdy(9), poids, pk, coor2d(18)

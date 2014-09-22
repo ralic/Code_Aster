@@ -55,7 +55,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim,&
 !.......................................................................
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
 !
     real(kind=8) :: e, nu, demu, k, k3, alpha
     real(kind=8) :: de, dnu, demudt, dk, dalpha

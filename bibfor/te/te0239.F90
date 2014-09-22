@@ -49,9 +49,9 @@ subroutine te0239(option, nomte)
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
     real(kind=8) :: zmin, hic, depsx3
     integer :: nbres, itab(8), jnbspi
-    character(len=16) :: option, nomte
     parameter (nbres=2)
-    character(len=8) :: nomres(nbres), nompar, elrefe
+    character(len=16) :: nomres(nbres), option, nomte
+    character(len=8) ::  nompar, elrefe
     integer :: valret(nbres)
     real(kind=8) :: valres(nbres), tempm, tempp
     real(kind=8) :: dfdx(3), zero, un, deux

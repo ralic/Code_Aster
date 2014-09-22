@@ -95,7 +95,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
     integer :: ndimsi, signf, signfi, iret
     integer :: k, l, iter, matr, iadzi, iazk24, umess
     integer :: icodre(16)
-    character(len=8) :: nomres(16)
+    character(len=16) :: nomres(16)
     character(len=8) :: nompar(1)
     real(kind=8) :: epxmax
     character(len=8) :: nomail

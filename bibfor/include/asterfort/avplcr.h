@@ -37,7 +37,7 @@ interface
         integer :: i
         character(len=16) :: nomcri
         character(len=16) :: nomfor
-        character(len=8) :: grdvie
+        character(len=16) :: grdvie
         character(len=16) :: forvie
         aster_logical :: fordef
         real(kind=8) :: fatsoc

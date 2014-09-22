@@ -64,7 +64,8 @@ subroutine pipepl(ndim, compor, typmod, tau, mate,&
     integer :: nbres
     parameter   (nbres=4)
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), fami, poum
+    character(len=16) :: nomres(nbres)
+    character(len=8) ::fami, poum
     real(kind=8) :: valres(nbres)
 !
     aster_logical :: cplan

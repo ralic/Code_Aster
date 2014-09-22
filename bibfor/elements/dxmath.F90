@@ -57,8 +57,9 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
     real(kind=8) :: deux
     integer :: icodre(56)
     character(len=3) :: nume
-    character(len=8) :: nomres(56), nompar
-    character(len=10) :: phenom
+    character(len=16) :: nomres(56)
+    character(len=8) :: nompar
+    character(len=32) :: phenom
 !     ------------------------------------------------------------------
 !
     deux = 2.0d0
@@ -150,11 +151,11 @@ subroutine dxmath(fami, epais, df, dm, dmf, pgl, multic, indith, t2iu, t2ui, t1v
             nomres(1) = 'MEMB_L  '
             nomres(2) = 'MEMB_LT '
             nomres(3) = 'MEMB_T  '
-            nomres(4) = 'MEMB_G_L'
+            nomres(4) = 'MEMB_G_LT'
             nomres(5) = 'FLEX_L  '
             nomres(6) = 'FLEX_LT '
             nomres(7) = 'FLEX_T  '
-            nomres(8) = 'FLEX_G_L'
+            nomres(8) = 'FLEX_G_LT'
             nomres(9) = 'CISA_L  '
             nomres(10) = 'CISA_T  '
             nomres(11) = 'ALPHA   '

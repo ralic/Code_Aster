@@ -98,7 +98,8 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     integer :: ndimsi, signf, signfi
     integer :: i, k, l, iter, matr
     integer :: icodre(9)
-    character(len=8) :: nomres(10), nompar(10)
+    character(len=18) :: nomres(10)
+    character(len=8) :: nompar(10)
 ! ======================================================================
     real(kind=8) :: valrm(5)
     character(len=16) :: valkm(5)

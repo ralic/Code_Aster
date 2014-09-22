@@ -41,8 +41,9 @@ subroutine te0421(option, nomte)
     real(kind=8) :: e1, e2, e3
 !-----------------------------------------------------------------------
     parameter        ( nbres=10 )
-    character(len=16) :: phenom
-    character(len=8) :: nomres(nbres), nompar, blan8
+    character(len=32) :: phenom
+    character(len=16) :: nomres(nbres)
+    character(len=8) :: nompar, blan8
     character(len=4) :: fami
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar, zero

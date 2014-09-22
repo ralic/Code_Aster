@@ -31,8 +31,9 @@ subroutine matrth(fami, npg, young, nu, alpha,&
 !
     real(kind=8) :: valres(26)
     integer :: icodre(26)
-    character(len=8) :: nomres(26), nompar
-    character(len=10) :: phenom
+    character(len=8) :: nompar
+    character(len=16) :: nomres(26)
+    character(len=32) :: phenom
     real(kind=8) :: young, nu, alpha
     integer :: npg
     character(len=4) :: fami

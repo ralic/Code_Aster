@@ -44,8 +44,8 @@ subroutine te0225(option, nomte)
     real(kind=8) :: tref
 !-----------------------------------------------------------------------
     parameter (nbres=3)
-    character(len=16) :: phenom
-    character(len=8) :: nomres(nbres)
+    character(len=32) :: phenom
+    character(len=16) :: nomres(nbres)
     character(len=4) :: fami
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), dfdx(3), r, cour, jac, cosa, sina

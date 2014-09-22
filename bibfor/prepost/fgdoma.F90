@@ -38,15 +38,16 @@ subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
 !     ------------------------------------------------------------------
 !
     integer :: icodre(1)
-    character(len=8) :: nomres, nompar
-    character(len=10) :: pheno
+    character(len=8) :: nompar
+    character(len=16) :: nomres
+    character(len=32) :: pheno
     real(kind=8) :: nrupt(1), delta
 !
 !-----------------------------------------------------------------------
     integer :: i, nbpar
 !-----------------------------------------------------------------------
     call jemarq()
-    nomres = 'MANSON_C '
+    nomres = 'MANSON_COFFIN'
     nbpar = 1
     pheno = 'FATIGUE   '
     nompar = 'EPSI    '

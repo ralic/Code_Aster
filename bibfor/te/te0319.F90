@@ -41,8 +41,9 @@ subroutine te0319(option, nomte)
 !
 !
     integer :: icodre(3), kpg, spt
-    character(len=8) :: nomres(3), fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(3)
+    character(len=32) :: phenom
     real(kind=8) :: valres(3), lambda, fluxx, fluxy, fluxz, tpg
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids
     real(kind=8) :: lambor(3), fluglo(3), fluloc(3), p(3, 3)

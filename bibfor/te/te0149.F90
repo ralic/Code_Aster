@@ -53,7 +53,8 @@ subroutine te0149(option, nomte)
     integer :: codres(nbres), codref(nbref)
     integer :: nbfib, inbf, isief, ino, i
     real(kind=8) :: sixx, simin, simax
-    character(len=8) :: nompar, nomres(nbres), nomref(nbref)
+    character(len=8) :: nompar, nomref(nbref)
+    character(len=16) :: nomres(nbres)
     character(len=24) :: suropt, messk(2)
     real(kind=8) :: zero, e, nu, rho, valpar, r1, ep1, absmoy, rhos, rhofi
     real(kind=8) :: rhofe, cm, phie, phii

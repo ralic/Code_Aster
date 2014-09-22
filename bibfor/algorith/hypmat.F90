@@ -55,7 +55,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate,&
 !
     integer :: nbres
     parameter   ( nbres = 3  )
-    character(len=8) :: nomres(nbres)
+    character(len=16) :: nomres(nbres)
     integer :: codres(nbres)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: nu

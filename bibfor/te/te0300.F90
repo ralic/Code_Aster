@@ -64,7 +64,8 @@ subroutine te0300(option, nomte)
 !
     integer :: icodre(3)
     character(len=4) :: fami
-    character(len=8) :: nomres(3), nompar(3), elrefe
+    character(len=8) :: nompar(3), elrefe
+    character(len=16) :: nomres(3)
 !
     aster_logical :: fonc, axi
 !.......................................................................

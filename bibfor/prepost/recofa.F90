@@ -89,7 +89,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
-                    1, 'COEF_FLE', v(1), icodre(1), 0)
+                    1, 'COEF_FLEX_TORS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_66')
@@ -114,7 +114,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
-                    1, 'COEF_CIS', v(1), icodre(1), 0)
+                    1, 'COEF_CISA_TRAC', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_69')
@@ -139,7 +139,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
-                    1, 'COEF_FLE', v(1), icodre(1), 0)
+                    1, 'COEF_FLEX_TORS', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_72')
@@ -164,7 +164,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         endif
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
-                    1, 'COEF_CIS', v(1), icodre(1), 0)
+                    1, 'COEF_CISA_TRAC', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_72')
@@ -185,7 +185,7 @@ subroutine recofa(nomcri, nommat, vala, valb, coefpa)
         valb = 1.0d0
 !
         call rcvale(nommat, 'CISA_PLAN_CRIT', 0, k8b, [r8b],&
-                    1, 'COEF_CIS', v(1), icodre(1), 0)
+                    1, 'COEF_CISA_TRAC', v(1), icodre(1), 0)
         coefpa=v(1)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_72')

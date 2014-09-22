@@ -63,7 +63,8 @@ subroutine te0537(option, nomte)
     real(kind=8) :: b(4), gg, xi, wi, valres(2), sign_noeu, alpha
     integer :: ip, ipos, iadzi, iazk24, istrxr
     integer :: ipos1, ipos2, nbfig, nbgf, ig, nugf, ifb, icp, isdcom, icompo
-    character(len=8) :: materi, nomres(2), nomail
+    character(len=8) :: materi, nomail
+    character(len=16) :: nomres(2)
     integer :: codres(2), ncomp
     integer :: npg, ndim, nnoel, nnos, ipoids, ivf
     real(kind=8) :: klv(78),klc(12,12) ,effo(12)

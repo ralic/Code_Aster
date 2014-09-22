@@ -62,10 +62,10 @@ subroutine pofape()
     aster_logical :: lhaigh, lke, post, fordef, plcicr
     aster_logical :: crsigm, crepst, crepse, crepsp, plcr2
     integer :: icodre(2), icodwo, icodba, icodhs
-    character(len=8) :: k8b, nomten(6), nomres(2), kdomm, nompar, nommat, cara
+    character(len=8) :: k8b, nomten(6), nompar, nommat
     character(len=8) :: result, nomeps(6), nomepp(6)
-    character(len=16) :: nomcmd, pheno, criter, nomfor, typcha, forvie
-    character(len=16) :: proaxe, nommet, forcri
+    character(len=16) :: kdomm, nomcmd, pheno, criter, nomfor, typcha, forvie
+    character(len=16) :: nomres(2), proaxe, nommet, forcri, cara
     character(len=19) :: k19b
     character(len=24) :: fvale(6), etvale(6), ptvale(6)
 !     --- POST_FATI_MULT -----------------------------------------------
@@ -548,7 +548,7 @@ subroutine pofape()
             endif
             cara = 'WOHLER'
             call rcpare(nommat, pheno, cara, icodwo)
-            cara = 'A_BASQUI'
+            cara = 'A_BASQUIN'
             call rcpare(nommat, pheno, cara, icodba)
             cara = 'A0'
             call rcpare(nommat, pheno, cara, icodhs)

@@ -61,7 +61,7 @@ subroutine lcdpnl(fami, kpg, ksp, typmod, ndim,&
     real(kind=8) :: kron(6), tre, trer, valres(2), dsdp2(6, 6), tp, tm, tref
     real(kind=8) :: deuxmu, lambda, dsdp1b(6, 6), young, nu
     integer :: icodre(2)
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
 ! =====================================================================
     common /tdim/   ndt, ndi
 ! =====================================================================

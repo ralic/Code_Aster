@@ -1583,7 +1583,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    phenom=None
    ind=0   
    for cmpt in matph :
-       ind=ind+1	   
+       ind=ind+1           
        if cmpt[:4]=='ELAS' :
           phenom=cmpt
           break
@@ -1615,11 +1615,11 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       except ValueError : pass
       try:list_oper.remove("RHO")
       except ValueError : pass
-      try:list_oper.remove("PRECISIO")
+      try:list_oper.remove("PRECISION")
       except ValueError : pass
       try:list_oper.remove("K_DESSIC")
       except ValueError  : pass
-      try:list_oper.remove("TEMP_DEF")
+      try:list_oper.remove("TEMP_DEF_ALPHA")
       except ValueError : pass
 
       nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
@@ -1632,13 +1632,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
           (nom_fonc_nu.Parametres() ['NOM_PARA']!='TEMP' and nom_fonc_nu_prol!='CONSTANT')):
          UTMESS('F','RUPTURE1_67')
 
-      if dicmat.has_key('TEMP_DEF') and not EVOL_THER :
+      if dicmat.has_key('TEMP_DEF_ALPHA') and not EVOL_THER :
          nompar = ('TEMP',)
-         valpar = (dicmat['TEMP_DEF'],)
+         valpar = (dicmat['TEMP_DEF_ALPHA'],)
          UTMESS('A','RUPTURE0_6',valr=valpar)
          nomres=['E','NU']
          valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,2)
-
          if (nom_fonc_e_prol=='CONSTANT'):
             e  = nom_fonc_e.Ordo()[0]
          else:
@@ -1650,7 +1649,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
             nu = valres[1]
 
 
-      if not dicmat.has_key('TEMP_DEF') and not EVOL_THER :
+      if not dicmat.has_key('TEMP_DEF_ALPHA') and not EVOL_THER :
          UTMESS('F','RUPTURE0_52')
 
 

@@ -51,12 +51,7 @@ subroutine ntfcma(compo, jmat, ifon)
     ASSERT(nbmat.eq.1)
     imate = jmat+zi(jmat+nbmat+1)
 !    
-    if(compo(1:7).ne.'THER_NL' .and. compo(1:9).ne.'THER_HYDR'&
-                               .and. compo.ne. ' ') ASSERT(.false.)
-!
-    if (compo(1:7) .ne. 'THER_NL' .and. compo(1:9) .ne. 'THER_HYDR' .and. compo .ne. ' ') then
-        ASSERT(.false.)
-    endif
+    ASSERT( compo(1:7).eq. 'THER_NL' .or. compo(1:9).eq. 'THER_HYDR' .or. compo.eq. ' ' )
 !
     if (compo .eq. ' ') then
         do k = 1, zi(imate+1)
@@ -101,7 +96,7 @@ subroutine ntfcma(compo, jmat, ifon)
  11 continue
     idf = zi(ipi)+zi(ipi+1)
     do k = 1, zi(ipi+2)
-        if ('BETA    ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
+        if ('BETA    ' .eq. zk16(zi(ipi+3)+idf+k-1)) then
             ifon(1) = ipi+lmat-1+lfct*(k-1)
             goto 25
         endif
@@ -109,7 +104,7 @@ subroutine ntfcma(compo, jmat, ifon)
     call utmess('F', 'MODELISA5_44')
  25 continue
     do k = 1, zi(ipi+2)
-        if ('LAMBDA  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
+        if ('LAMBDA  ' .eq. zk16(zi(ipi+3)+idf+k-1)) then
             ifon(2) = ipi+lmat-1+lfct*(k-1)
             goto 35
         endif
@@ -118,7 +113,7 @@ subroutine ntfcma(compo, jmat, ifon)
  35 continue
     if (compo2(1:9) .eq. 'THER_HYDR') then
         do k = 1, zi(ipi+2)
-            if ('AFFINITE  ' .eq. zk8(zi(ipi+3)+idf+k-1)) then
+            if ('AFFINITE  ' .eq. zk16(zi(ipi+3)+idf+k-1)) then
                 ifon(3) = ipi+lmat-1+lfct*(k-1)
                 goto 45
             endif

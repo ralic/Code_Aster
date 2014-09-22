@@ -1920,7 +1920,7 @@ PyObject *args;
    INTEGER *codret;
    DOUBLE *valpar, *valres;
    int long_nompar = 8;       /* doivent impérativement correspondre aux  */
-   int long_nomres = 8;       /* longueurs des chaines de caractères      */
+   int long_nomres = 16;       /* longueurs des chaines de caractères      */
    void *malloc(size_t size);
 
    if (!PyArg_ParseTuple(args, "ssOOOi", &nommat, &phenom, \
@@ -1945,7 +1945,7 @@ PyObject *args;
    valres = (DOUBLE *)malloc(inbres*sizeof(DOUBLE));
    codret = (INTEGER *)malloc(inbres*sizeof(INTEGER));
 
-   CALL_RCVALE(nommat, phenom, &nbpar, nompar, valpar, &nbres, nomres, valres, codret, &stop);
+   CALL_RCVALE_WRAP(nommat, phenom, &nbpar, nompar, valpar, &nbres, nomres, valres, codret, &stop);
 
    /* création des tuples de sortie */
    t_valres = MakeTupleFloat((long)inbres, valres);

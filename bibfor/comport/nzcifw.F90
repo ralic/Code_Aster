@@ -96,7 +96,8 @@ subroutine nzcifw(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(20)
-    character(len=8) :: nomres(20), acier(4)
+    character(len=16) :: nomres(20)
+    character(len=8) :: acier(4)
 !
     aster_logical :: resi, rigi
 !

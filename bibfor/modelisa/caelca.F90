@@ -88,6 +88,7 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/rccome.h"
 #include "asterfort/utmess.h"
 !
     character(len=8) :: modele, chmat, caelem
@@ -104,20 +105,21 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
     real(kind=8) :: eps, rbid
     aster_logical :: trouv1, trouv2, trouv3, trouv4, trouv5
     character(len=3) :: k3cab, k3mai
+    character(len=11) :: k11
     character(len=8) :: acier, k8b
-    character(len=19) :: carte, nomrc
+    character(len=19) :: carte
     character(len=24) :: cadesc, captma, cavalk, cavalr, modmai, rcvalk, rcvalr
     character(len=24) :: valk(2)
     character(len=4) :: regl
 !
 !
-    character(len=8) :: bpela(5), etcca(4), young
+    character(len=16) :: bpela(5), etcca(4), young
     character(len=16) :: nomele(2)
 !
     data          nomele /'MECA_BARRE      ','MECGSEG3        '/
-    data          bpela  /'RELAX_10','MU0_RELA','F_PRG',&
-     &                      'FROT_COU','FROT_LIN'/
-    data          etcca  /'RELAX_10','F_PRG','COEF_FRO','PERT_LIG'/
+    data          bpela  /'RELAX_1000','MU0_RELAX','F_PRG',&
+     &                      'FROT_COURB','FROT_LINE'/
+    data          etcca  /'RELAX_1000','F_PRG','COEF_FROT','PERT_LIGNE'/
     data          young  /'E       '/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -209,21 +211,21 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 !
 ! 2.2 RELATION DE COMPORTEMENT <ELAS> DU MATERIAU ACIER
 ! ---
-    nomrc = acier//'.ELAS      '
-    rcvalk = nomrc//'.VALK'
+    call rccome(acier, 'ELAS', iret, k11_ind_nomrc=k11)  
+    rcvalk = acier//k11//'.VALK'
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         write(k3cab,'(I3)') icabl
         call utmess('F', 'MODELISA2_51', sk=k3cab)
     endif
-    rcvalr = nomrc//'.VALR'
+    rcvalr = acier//k11//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
     call jeveuo(rcvalr, 'L', jvalr)
     call jelira(rcvalr, 'LONMAX', nbcste)
 !
     trouv1 = .false.
     do icste = 1, nbcste
-        if (zk8(jvalk+icste-1) .eq. young) then
+        if (zk16(jvalk+icste-1) .eq. young) then
             trouv1 = .true.
             ea = zr(jvalr+icste-1)
             goto 31
@@ -245,17 +247,17 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
 ! ---
 !
     if (regl .eq. 'BPEL') then
-        nomrc = acier//'.BPEL_ACIER'
+        call rccome(acier, 'BPEL_ACIER', iret, k11_ind_nomrc=k11)
     else
-        nomrc = acier//'.ETCC_ACIER'
+        call rccome(acier, 'ETCC_ACIER', iret, k11_ind_nomrc=k11)   
     endif
-    rcvalk = nomrc//'.VALK'
+    rcvalk = acier//k11//'.VALK'
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
         write(k3cab,'(I3)') icabl
         call utmess('F', 'MODELISA2_54', sk=k3cab)
     endif
-    rcvalr = nomrc//'.VALR'
+    rcvalr = acier//k11//'.VALR'
     call jeveuo(rcvalk, 'L', jvalk)
     call jeveuo(rcvalr, 'L', jvalr)
     call jelira(rcvalr, 'LONMAX', nbcste)
@@ -268,23 +270,23 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         trouv4 = .false.
         trouv5 = .false.
         do icste = 1, nbcste
-            if (zk8(jvalk+icste-1) .eq. bpela(1)) then
+            if (zk16(jvalk+icste-1) .eq. bpela(1)) then
                 trouv1 = .true.
                 rh1000 = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. bpela(2)) then
+            if (zk16(jvalk+icste-1) .eq. bpela(2)) then
                 trouv2 = .true.
                 prelax = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. bpela(3)) then
+            if (zk16(jvalk+icste-1) .eq. bpela(3)) then
                 trouv3 = .true.
                 fprg = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. bpela(4)) then
+            if (zk16(jvalk+icste-1) .eq. bpela(4)) then
                 trouv4 = .true.
                 frco = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. bpela(5)) then
+            if (zk16(jvalk+icste-1) .eq. bpela(5)) then
                 trouv5 = .true.
                 frli = zr(jvalr+icste-1)
             endif
@@ -300,19 +302,19 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl,&
         trouv4 = .false.
 !
         do icste = 1, nbcste
-            if (zk8(jvalk+icste-1) .eq. etcca(1)) then
+            if (zk16(jvalk+icste-1) .eq. etcca(1)) then
                 trouv1 = .true.
                 rh1000 = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. etcca(2)) then
+            if (zk16(jvalk+icste-1) .eq. etcca(2)) then
                 trouv2 = .true.
                 fprg = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. etcca(3)) then
+            if (zk16(jvalk+icste-1) .eq. etcca(3)) then
                 trouv3 = .true.
                 frco = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. etcca(4)) then
+            if (zk16(jvalk+icste-1) .eq. etcca(4)) then
                 trouv4 = .true.
                 frli = zr(jvalr+icste-1)
             endif

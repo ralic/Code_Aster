@@ -488,7 +488,7 @@ FATN2=POST_FATIGUE(    CHARGEMENT='MULTIAXIAL',
                    TYPE_CHARGE = 'NON_PERIODIQUE',
                    CRITERE='FORMULE_CRITERE',
                    FORMULE_GRDEQ = CRIT_FAT,
-                   DOMMAGE='MANSON_C',
+                   DOMMAGE='MANSON_COFFIN',
                    MATER=ACIER2,
                    PROJECTION = 'UN_AXE'                 )
 

@@ -70,7 +70,8 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum,&
     real(kind=8) :: dsdedt, dsigy, drprim, dp, drp, dairep
     real(kind=8) :: nrj, dnrj, valres(3), devres(3)
 !
-    character(len=8) :: nomres(3), para_type
+    character(len=16) :: nomres(3)
+    character(len=8) :: para_type
 !
     aster_logical :: trac, line, puis
 !

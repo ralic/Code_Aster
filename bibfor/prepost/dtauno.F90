@@ -50,8 +50,8 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini,&
     integer :: tspaq, ordini
     aster_logical :: post
     real(kind=8) :: vresu(24), valpar(35)
-    character(len=8) :: nommai, grdvie, nommap
-    character(len=16) :: nomcri, nommet, nomfor, forvie, forcri
+    character(len=8) :: nommai, nommap
+    character(len=16) :: nomcri, nommet, nomfor, forvie, forcri, grdvie
     character(len=19) :: cnsr
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLAN INCLINE POUR LEQUEL DELTA_TAU EST MAXIMUM

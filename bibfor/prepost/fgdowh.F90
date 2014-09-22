@@ -45,8 +45,9 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke,&
 !     ------------------------------------------------------------------
 !
     integer :: icodre(1)
-    character(len=8) :: nomres, nompar, kbid
-    character(len=10) :: pheno
+    character(len=8) :: nompar, kbid
+    character(len=16) :: nomres
+    character(len=32) :: pheno
     real(kind=8) :: nrupt(1), delta
     aster_logical :: endur
 !

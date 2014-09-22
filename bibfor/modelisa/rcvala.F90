@@ -62,7 +62,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
     integer :: ires, icomp, ipi, iadzi, iazk24, nbobj, nbr, nbc, nbf, ivalk
     integer :: ivalr, ir, ipif, ik, nbmat, imat, kmat, inom
     character(len=8) :: nomail, nomi
-    character(len=10) :: nomphe
+    character(len=32) :: nomphe
     character(len=24) :: valk(2)
 ! DEB ------------------------------------------------------------------
 !
@@ -96,7 +96,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
         icodre(ires) = 1
 10  end do
     do 20 icomp = 1, zi(imat+1)
-        if (nomphe .eq. zk32(zi(imat)+icomp-1)(1:10)) then
+        if (nomphe .eq. zk32(zi(imat)+icomp-1)) then
             ipi = zi(imat+2+icomp-1)
             goto 22
         endif
@@ -126,7 +126,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
     ivalr = zi(ipi+4)
     do 32 ires = 1, nbres
         do 30 ir = 1, nbr
-            if (nomres(ires) .eq. zk8(ivalk+ir-1)) then
+            if (nomres(ires) .eq. zk16(ivalk+ir-1)) then
                 valres(ires) = zr(ivalr-1+ir)
                 icodre(ires) = 0
                 nbobj = nbobj + 1
@@ -139,12 +139,12 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
         do 40 ires = 1, nbres
             ipif = ipi+lmat-1
             do 42 ik = 1, nbf
-                if (nomres(ires) .eq. zk8(ivalk+nbr+nbc+ik-1)) then
+                if (nomres(ires) .eq. zk16(ivalk+nbr+nbc+ik-1)) then
                     call fointa(ipif, nbpar, nompar, valpar, valres(ires))
                     icodre(ires) = 0
                 endif
                 ipif = ipif + lfct
-                if (nomphe(1:8) .eq. 'TRACTION') then
+                if (nomphe .eq. 'TRACTION') then
                     ipif = ipif + lsup
                 else if (nomphe.eq. 'META_TRACT') then
                     ipif = ipif + lsup

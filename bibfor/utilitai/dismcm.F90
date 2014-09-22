@@ -108,7 +108,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                         call jeveuo(nomobj(ii), 'L', iaobj)
                         call jelira(nomobj(ii), 'LONMAX', lonobj)
                         do 10 iii = 1, lonobj
-                            if (zk8(iaobj-1+iii) .eq. quest2(5:12)) then
+                            if (zk16(iaobj-1+iii) .eq. quest2(5:14)) then
                                 trouve=.true.
                                 goto 50
 !
@@ -204,7 +204,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                     call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
                     do 100 if = 1, nf
-                        nomf=zk8(iavalk-1+nr+nc+nf+if)
+                        nomf=zk16(iavalk-1+nr+nc+nf+if)
                         call jeveuo(nomf//'           .PROL', 'L', iaprol)
                         if (zk24(iaprol-1+1) .eq. 'NAPPE') then
 !              -- CAS D'UNE FONCTION A 2 VARIABLES :
@@ -261,7 +261,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                     call jelira(mater//'.CPT.'//k6//'.VALC', 'LONUTI', nc)
                     nf=(n1-nr-nc)/2
                     do 150 if = 1, nf
-                        nomf=zk8(iavalk-1+nr+nc+nf+if)
+                        nomf=zk16(iavalk-1+nr+nc+nf+if)
                         call jeveuo(nomf//'           .PROL', 'L', iaprol)
                         if (zk24(iaprol-1+1) .eq. 'CONSTANT') then
 !                  -- CAS D'UNE FONCTION CONSTANTE :

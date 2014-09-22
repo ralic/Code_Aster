@@ -49,7 +49,7 @@ subroutine metau1(l_meta)
 !
     integer :: nbres
     parameter (nbres=2)
-    character(len=8) :: nomres(nbres)
+    character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres)
 !
@@ -69,8 +69,8 @@ subroutine metau1(l_meta)
 !
     l_meta = .true.
     ispg = 1
-    nomres(1) = 'PHASE_REFE'(1:8)
-    nomres(2) = 'EPSF_EPSC_TREF'(1:8)
+    nomres(1) = 'PHASE_REFE'
+    nomres(2) = 'EPSF_EPSC_TREF'
 !
 ! - Get metallurgy type
 !

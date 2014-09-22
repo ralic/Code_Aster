@@ -51,8 +51,8 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr,&
     integer :: tspaq
     aster_logical :: fordef, post
     real(kind=8) :: vwork(tdisp), resu(7)
-    character(len=8) :: nommai, grdvie, nommap
-    character(len=16) :: nomcri, proaxe, nomfor, forvie
+    character(len=8) :: nommai, nommap
+    character(len=16) :: nomcri, proaxe, nomfor, forvie, grdvie
     character(len=19) :: cnsr
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLAN DANS LEQUEL LE DOMMAGE EST MAXIMAL

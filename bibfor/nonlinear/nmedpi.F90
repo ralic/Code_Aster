@@ -40,7 +40,8 @@ subroutine nmedpi(spg, sdg, qg, d, npg,&
     real(kind=8) :: long, e, nu, deuxmu, troisk, val
     real(kind=8) :: mtemp(2, 4), mats(2, 8), dsidep(6, 6)
     real(kind=8) :: xa, xb, ya, yb
-    character(len=8) :: nomres(2), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(2)
     integer :: icodre(2), kpg, spt
     aster_logical :: axi
 !

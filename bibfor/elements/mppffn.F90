@@ -38,7 +38,7 @@ subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg,&
     real(kind=8) :: nmzef, nmzeg, zero, normm
     real(kind=8) :: valres(4)
 !
-    character(len=8) :: nomres(4)
+    character(len=16) :: nomres(4)
 !
     zero = 1.0d-6
     nmief = 0

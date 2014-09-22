@@ -19,7 +19,7 @@
 from SD import *
 
 from SD.sd_fonction import sd_fonction
-
+from SD.sd_table import sd_table
 
 
 class sd_mater_XDEP(AsBase):
@@ -34,42 +34,27 @@ class sd_compor1(AsBase):
 #-----------------------
     nomj = SDNom(fin=19)
     VALC = AsVC(SDNom(), )
-    VALK = AsVK8(SDNom(), )
+    VALK = AsVK16(SDNom(), )
     VALR = AsVR(SDNom(), )
 
 
-    # parfois, THER_NL crée une sd_fonction pour BETA
+    # parfois, comme dans THER_NL on crée une sd_fonction pour BETA
     def check_compor1_i_VALK(self, checker):
         nom= self.nomj().strip()
-        if nom[8:16]=='.THER_NL' :
-            valk=list(self.VALK.get_stripped())
-            if valk :
-                nbk2=self.VALK.lonuti
-                nbr=self.VALR.lonuti
-                nbc=self.VALC.lonuti
-                nbk=nbk2-nbr-nbc
-                k2=valk.index('BETA')
-                k=k2-nbr-nbc
+        valk=list(self.VALK.get_stripped())
+        if valk :
+            nbk2=self.VALK.lonuti
+            nbr=self.VALR.lonuti
+            nbc=self.VALC.lonuti
+            nbk=nbk2-nbr-nbc
+            for k in range(nbk/2) : 
                 nomfon=valk[nbr+nbc+nbk/2+k]
-                sd2=sd_fonction(nomfon) ; sd2.check(checker)
-        #Dans GLRC_DAMA on utilise soit des fonctions pour le critère de plasticité
-        #soit des constantes. Quand on utilise des fonctions, on doit vérifier leurs structures
-        if nom[8:16]=='.GLRC_DA' :
-            valk=list(self.VALK.get_stripped())
-            if valk :
-                nbk2=self.VALK.lonuti
-                nbr=self.VALR.lonuti
-                nbc=self.VALC.lonuti
-                nbk=nbk2-nbr-nbc
-                if 'FMEX1' in valk :
-                  for fon in ('FMEX1'  ,'FMEX2'  ,'FMEY1'  ,'FMEY2' ,
-                              'DFMEX1' ,'DFMEX2' ,'DFMEY1' ,'DFMEY2',
-                              'DDFMEX1','DDFMEX2','DDFMEY1','DDFMEY2'):
-                      k2=valk.index(fon)
-                      k=k2-nbr-nbc
-                      nomfon=valk[nbr+nbc+nbk/2+k]
-                      sd2=sd_fonction(nomfon) ; sd2.check(checker)
-
+                sd2=sd_fonction(nomfon) 
+                if sd2.PROL.exists :   # pourquoi sd2.exists() plante-t-il ? 
+                   sd2.check(checker)
+                else :
+                   sd3=sd_table(nomfon)  
+                   assert sd3.exists() 
 
 class sd_mater(AsBase):
 #----------------------

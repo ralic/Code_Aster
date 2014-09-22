@@ -87,7 +87,8 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: coef1, coef2, deltev
     integer :: icodre(5)
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(5), nompar(2)
+    character(len=8) :: nompar(2)
+    character(len=16) :: nomres(5)
     data              kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/

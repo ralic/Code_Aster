@@ -45,7 +45,8 @@ subroutine te0157(option, nomte)
     real(kind=8) :: poids, r, x(9), y(9), volume
     real(kind=8) :: matine(6), xxi, yyi, xyi
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(nbres)
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

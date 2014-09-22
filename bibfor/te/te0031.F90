@@ -100,8 +100,9 @@ subroutine te0031(option, nomte)
 !
     character(len=2) :: val
     character(len=3) :: num
-    character(len=8) :: nomres, fami, poum
-    character(len=10) :: phenom
+    character(len=16) :: nomres
+    character(len=8) :: fami, poum
+    character(len=32) :: phenom
 !
     aster_logical :: lcqhom
 !

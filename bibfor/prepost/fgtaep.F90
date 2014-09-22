@@ -40,8 +40,9 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
 !     ------------------------------------------------------------------
 !
     integer :: icodre(1)
-    character(len=8) :: nomres, nompar, nomp(2)
-    character(len=10) :: pheno
+    character(len=16) :: nomres
+    character(len=8) :: nompar, nomp(2)
+    character(len=32) :: pheno
     real(kind=8) :: nrupt(1), delta, dsigm, depsi, epmax, valp(2)
 !-----------------------------------------------------------------------
     integer :: i, ier, nbpar
@@ -52,7 +53,7 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
     call jemarq()
 !
     epmax = 0.d0
-    nomres = 'MANSON_C'
+    nomres = 'MANSON_COFFIN'
     nbpar = 1
     pheno = 'FATIGUE   '
     nompar = 'EPSI    '
@@ -68,11 +69,9 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin,&
             nomp(2) = 'EPSI'
             valp(1) = epmax
             valp(2) = delta
-            call fointe('F ', nomnap, 2, nomp, valp,&
-                        dsigm, ier)
+            call fointe('F ', nomnap, 2, nomp, valp, dsigm, ier)
             nomp(2) = 'SIGM'
-            call fointe('F ', nomfo1, 1, [nomp(2)], [dsigm],&
-                        depsi, ier)
+            call fointe('F ', nomfo1, 1, [nomp(2)], [dsigm], depsi, ier)
             call rcvale(nommat, pheno, nbpar, nompar, [depsi],&
                         1, nomres, nrupt(1), icodre(1), 2)
             dom(i) = 1.d0/nrupt(1)

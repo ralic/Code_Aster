@@ -36,7 +36,8 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
     real(kind=8) :: lc(1), mm, echp, ki, epai, ct1, ct2, randd, surff
     integer :: icodre(5)
     integer :: k2(1), kpg, spt
-    character(len=8) :: nomres(5), fami, poum
+    character(len=16) :: nomres(5)
+    character(len=8) :: fami, poum
     real(kind=8) :: valres(5), sa, sp, sc
 !
 !
@@ -62,7 +63,7 @@ subroutine cavini(ndim, nno, geom, vim, npg,&
                 5, nomres, valres, icodre, 1)
     call rcvalb(fami, kpg, spt, poum, imate,&
                 ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
-                1, 'LONG_CAR', lc, k2, 1)
+                1, 'LONG_CARA', lc, k2, 1)
 !  FACTEUR D ECHELLE
     echp = valres(1)
 !  MODULE DE WEIBULL

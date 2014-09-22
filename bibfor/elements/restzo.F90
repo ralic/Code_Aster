@@ -35,7 +35,8 @@ function restzo(zimat, nmnbn, bend, normm, normn)
     real(kind=8) :: nmnbn(6), dx, dy, normn, normm, mpcste(2)
     real(kind=8) :: valres(4)
 !
-    character(len=8) :: nomres(4), kpfonc(2)
+    character(len=8) :: kpfonc(2)
+    character(len=16) :: nomres(4)
 !
     restzo = 0
 !

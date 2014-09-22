@@ -54,8 +54,9 @@ subroutine d1madp(fami, mater, instan, poum, kpg,&
     parameter (nbres = 7)
 !
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), nompar
-    character(len=16) :: phenom
+    character(len=8) :: nompar
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
 !
     real(kind=8) :: valres(nbres), valpar
     real(kind=8) :: passag(4, 4), d1orth(4, 4), work(4, 4)

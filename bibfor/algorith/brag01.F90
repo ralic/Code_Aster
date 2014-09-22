@@ -118,8 +118,7 @@ subroutine brag01(fami, kpg, ksp, ndim, typmod,&
 ! SEULS LES VERITABLES PARAMETRES MATERIAUX ONT ETE CONSERVES
 ! ATTENTION : SECH DESIGNE LA SATURATION DU MATERIAU
 !
-!      CHARACTER*8  NOMRES(32),NOMPAR(1)
-    character(len=8) :: nomres(33)
+    character(len=16) :: nomres(33)
     integer :: icodre(33)
     real(kind=8) :: valres(33)
     real(kind=8) :: rbid, valr(4)

@@ -65,9 +65,9 @@ subroutine vmci1d(fami, kpg, ksp, imate, em,&
     character(len=16) :: valkm(3)
     integer ::          icodre(4)
     real(kind=8) ::     valres(4)
-    character(len=8) :: nomecl(4)
+    character(len=16) :: nomecl(4)
 !
-    data nomecl/'D_SIGM_E','SY','SIGM_LIM','EPSI_LIM'/
+    data nomecl/'D_SIGM_EPSI','SY','SIGM_LIM','EPSI_LIM'/
 ! --------------------------------------------------------------------------------------------------
 !   instant -
     call rcvalb(fami, kpg, ksp, '-', imate,&

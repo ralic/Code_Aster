@@ -47,7 +47,8 @@ subroutine te0234(option, nomte)
 !---- DECLARATIONS LOCALES ( RAMENEES DE TE0239.F FULL_MECA )
 !
     parameter (nbres=2)
-    character(len=8) :: nomres(nbres), elrefe
+    character(len=8) :: elrefe
+    character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: dfdx(3), zero, un, deux

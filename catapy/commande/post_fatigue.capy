@@ -75,7 +75,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
                                ),
                                
              TYPE_CHARGE    = SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE")),                            
-             DOMMAGE         = SIMP(statut='f',typ='TXM',into=("WOHLER","MANSON_C","FORM_VIE") ), 
+             DOMMAGE         = SIMP(statut='f',typ='TXM',into=("WOHLER","MANSON_COFFIN","FORM_VIE") ), 
              
              b_fati_pfvie  = BLOC(condition = "(DOMMAGE == 'FORM_VIE')",
                                     FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),

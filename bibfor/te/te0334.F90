@@ -52,9 +52,9 @@ subroutine te0334(option, nomte)
     real(kind=8) :: epsflf(nbsgm)
     real(kind=8) :: repere(7), nharm, e, nu, zero, un
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), nompar, mod3d
-    character(len=16) :: optio2, phenom, cmp1, cmp2
-    character(len=16) :: compor
+    character(len=8) :: nompar, mod3d
+    character(len=16) :: nomres(nbres), optio2, cmp1, cmp2, compor
+    character(len=32) :: phenom
     aster_logical :: lflu
 ! DEB ------------------------------------------------------------------
 !

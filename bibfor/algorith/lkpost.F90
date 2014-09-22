@@ -36,7 +36,7 @@ subroutine lkpost(imate, tempd, sigf, nvi, vip)
     real(kind=8) :: mater(dimpar), i1, sii, devsig(6), lgleps, rcos3t
     real(kind=8) :: crit0, crite
     parameter(lgleps=1.0d-8)
-    character(len=8) :: nomc(dimpar)
+    character(len=16) :: nomc(dimpar)
 !
 ! =================================================================
 ! --- RECUPERATION DES PROPRIETES MATERIAUX -----------------------

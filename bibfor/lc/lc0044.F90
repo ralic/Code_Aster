@@ -38,7 +38,7 @@ subroutine lc0044(fami, kpg, ksp, ndim, imate,&
 !
     real(kind=8) :: valres(1),alpham,alphap
     real(kind=8) :: epsmc(6),depsc(6)
-    character(len=8) :: nomres(1)
+    character(len=16) :: nomres(1)
     integer :: i,icodre(2)
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE

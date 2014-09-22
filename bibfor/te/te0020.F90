@@ -56,7 +56,7 @@ subroutine te0020(nomopt, nomte)
     real(kind=8) :: a2, xiy2, xiz2
     real(kind=8) :: epx, xky, xkz
     real(kind=8) :: pgl(3, 3)
-    character(len=8) :: nomres(nbres)
+    character(len=16) :: nomres(nbres)
     parameter (zero=0.0d0, un=1.0d0, deux = 2.0d0)
 !     ------------------------------------------------------------------
 !

@@ -101,7 +101,8 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(12), test
-    character(len=8) :: nomres(12), nomcle(3), zirc(2)
+    character(len=16) :: nomres(12)
+    character(len=8) :: nomcle(3), zirc(2)
 !
     aster_logical :: resi, rigi
 !

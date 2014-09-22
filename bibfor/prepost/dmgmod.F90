@@ -6,7 +6,6 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8miem.h"
-#include "asterfort/codent.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -61,8 +60,9 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !       OUT    VDOMAG    VECTEUR DOMMAGE AUX POINTS
 !       ----------------------------------------------------------------
 !       ---------------------------------------------------------------
-    character(len=6) :: k6
-    character(len=8) :: nomrm(1), nompar, kcorre, nomfon
+    character(len=11) :: k11
+    character(len=8) :: nompar, kcorre, nomfon
+    character(len=16) :: nomrm(1)
     character(len=32) :: nomphe
     character(len=19) :: chequi, chequ2(nbordr)
     character(len=24) :: nomdmg
@@ -74,7 +74,7 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
 !
     integer :: ipt, iord, icmp, nbr, nbk, nbc, nbf
     integer :: ivch, ivpt, ibid, ivalk
-    integer :: numsym, ivch2, ivord2(nbordr), numord, ind
+    integer :: numsym, ivch2, ivord2(nbordr), numord
     aster_logical :: crit
 !
 ! ---   VECTEURS DE TRAVAIL
@@ -123,16 +123,15 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr,&
     su = val(1)
 !
     nomphe = 'FATIGUE   '
-    call rccome(nommat, nomphe, icodre(1), ind_nomrc=ind)
-    call codent(ind,'D0',k6)
-    call jelira(nommat//'.CPT.'//k6//'.VALR', 'LONUTI', nbr)
-    call jelira(nommat//'.CPT.'//k6//'.VALC', 'LONUTI', nbc)
-    call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', ivalk)
-    call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONUTI', nbk)
+    call rccome(nommat, nomphe, icodre(1), k11_ind_nomrc=k11)
+    call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
+    call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
+    call jeveuo(nommat//k11//'.VALK', 'L', ivalk)
+    call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
     nbf = (nbk-nbr-nbc)/2
     do 50 ik = 1, nbf
-        if (zk8(ivalk-1+nbr+nbc+ik) .eq. 'WOHLER') then
-            nomfon = zk8(ivalk-1+nbr+nbc+nbf+ik)
+        if (zk16(ivalk-1+nbr+nbc+ik) .eq. 'WOHLER') then
+            nomfon = zk16(ivalk-1+nbr+nbc+nbf+ik)
             call jeveuo(nomfon//'           .VALE', 'L', vr=vale)
             salt0=vale(1)
         endif

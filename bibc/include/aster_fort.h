@@ -170,9 +170,11 @@ extern void DEF0(ASMPI_WARN,asmpi_warn);
 extern void DEF0(ABORTF,abortf);
 
 /* routines de manipulation de la SD MATERIAU */
-#define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPPP(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)
-extern void DEFSSPSPPSPPP(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *,
-    char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, INTEGER *);
+#define CALL_RCVALE_WRAP(a,b,c,d,e,f,g,h,i,j) \
+        CALLSSPSPPSPPP(RCVALE_WRAP,rcvale_wrap,a,b,c,d,e,f,g,h,i,j)
+extern void DEFSSPSPPSPPP(RCVALE_WRAP, rcvale_wrap, char *,STRING_SIZE, char *,STRING_SIZE, 
+    INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, 
+    INTEGER *);
 
 
 /* routines d'impression des MESSAGES */

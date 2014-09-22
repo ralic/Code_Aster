@@ -90,10 +90,10 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !   paramètres issus de DEFI_MATERIAU
     integer :: nbcar, ie1, ie2, ie3, in3, ia3, is1, is2, is3
     parameter  (nbcar=8, ie1=1, ie2=2, ie3=3, in3=4, ia3=5, is1=6,is2=7, is3=8)
-    character(len=8) :: nomcar(nbcar)
+    character(len=16) :: nomcar(nbcar)
     real(kind=8) :: valcar(nbcar)
     integer :: codcar(nbcar)
-    data nomcar /'K1','K2','K3','C','PUIS_ALP','UNSUR_K1','UNSUR_K2','UNSUR_K3'/
+    data nomcar /'K1','K2','K3','C','PUIS_ALPHA','UNSUR_K1','UNSUR_K2','UNSUR_K3'/
 ! --------------------------------------------------------------------------------------------------
 !
     neq = nno*nc

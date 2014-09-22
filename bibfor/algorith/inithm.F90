@@ -34,14 +34,14 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
     integer :: nelas, ndim, iret
     parameter    ( nelas=4 )
     real(kind=8) :: elas(nelas)
-    character(len=8) :: ncra1(nelas)
+    character(len=16) :: ncra1(nelas)
     integer :: icodre(nelas)
     aster_logical :: yachai
     integer :: imate, yamec, i, aniso
     real(kind=8) :: phi0, em, cs, tbiot(6), epsvm, epsv, depsv
     real(kind=8) :: angmas(3), t, eps, dalal, mdal(6), young, nu
     real(kind=8) :: alphfi, rbid(6, 6), biot(4), cbiot, unsks, alpha0, k0
-    character(len=16) :: phenom
+    character(len=*) :: phenom
 !
     parameter  ( eps = 1.d-21 )
 ! ======================================================================
@@ -56,7 +56,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
 ! =====================================================================
 ! --- CALCUL CAS ISOTROPE (POUR LA ROUTINE VIPORO) --------------------
 ! =====================================================================
-        999     if (aniso.eq.0) then
+999 if (aniso.eq.0) then
 !
         call rccoma(imate, 'ELAS', 0, phenom, iret)
         if (iret .eq. 0) then
@@ -114,7 +114,7 @@ subroutine inithm(imate, yachai, yamec, phi0, em,&
                 angmas, tbiot, phenom)
 !
     call calela(imate, angmas, mdal, dalal, t,&
-                aniso, rbid, ndim, phenom)
+                aniso, rbid, ndim, phenom)             
 !
 ! =====================================================================
 ! --- SI ABSENCE DE MECANIQUE -----------------------------------------

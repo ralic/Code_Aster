@@ -72,8 +72,9 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p,&
     real(kind=8) :: normn, normm, dsidep(6, *), delas(6, *), valres(4)
 !
     integer :: codres(8)
-    character(len=8) :: nomres(8), fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(8)
+    character(len=32) :: phenom
 !
     r8bid = 0.d0
     call jemarq()

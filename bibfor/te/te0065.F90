@@ -39,8 +39,9 @@ subroutine te0065(option, nomte)
     parameter   ( nbres = 3, nbfamx = 20 )
 !
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), lielrf(nbfamx)
-    character(len=16) :: phenom
+    character(len=8) :: lielrf(nbfamx)
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
     real(kind=8) :: poids, volume
     real(kind=8) :: x(27), y(27), z(27), xg, yg, zg, matine(6)
     real(kind=8) :: rhopou, rhoflu, tpg, valres(nbres), ayz, ycell, rapp, yf

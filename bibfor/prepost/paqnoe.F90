@@ -49,9 +49,9 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri,&
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    character(len=8) :: nomsd, nomu, nommai, grdvie, inscri
+    character(len=8) :: nomsd, nomu, nommai, inscri
     character(len=16) :: nommet, nomcri, typcha, proaxe, nomfor, forvie
-    character(len=16) :: forcri
+    character(len=16) :: forcri, grdvie
     aster_logical :: fordef
     real(kind=8) :: instic, prec
 ! ---------------------------------------------------------------------

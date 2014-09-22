@@ -55,14 +55,14 @@ subroutine nmmaba(icodma, compor, e, dsde, sigy,&
 !
 ! *************** DECLARATION DES VARIABLES LOCALES ********************
 !
-!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------omecl
     integer :: nbpar, nbres, nbval
 !-----------------------------------------------------------------------
     parameter    (nbval = 12)
     real(kind=8) :: valpar, valres(nbval)
     integer :: codres(nbval)
-    character(len=8) :: nompar, nomela(1), nomecl(2)
-    character(len=8) :: nompim(12)
+    character(len=8) :: nompar, nomela(1) 
+    character(len=16) :: nomecl(2), nompim(12)
     character(len=4) :: fami
 !
 ! *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
@@ -70,12 +70,10 @@ subroutine nmmaba(icodma, compor, e, dsde, sigy,&
 ! ****************************** DATA  *********************************
 !
     data nomela / 'E' /
-!     DATA NOMECL / 'D_SIGM_EPSI', 'SY' /
-    data nomecl / 'D_SIGM_E', 'SY' /
-!     DATA NOMPIM / 'SY','EPSI_ULTM','SIGM_ULTM','ELAN','EPSP_HARD',
-    data nompim / 'SY','EPSI_ULT','SIGM_ULT','ELAN','EPSP_HAR',&
-     &              'R_PM','EP_SUR_E', 'A1_PM','A2_PM','A6_PM',&
-     &              'C_PM','A_PM' /
+    data nomecl / 'D_SIGM_EPSI', 'SY' /
+    data nompim / 'SY','EPSI_ULTM','SIGM_ULTM','ELAN','EPSP_HARD',&
+     &            'R_PM','EP_SUR_E', 'A1_PM','A2_PM','A6_PM',&
+     &            'C_PM','A_PM' /
 !
 ! ********************* DEBUT DE LA SUBROUTINE *************************
 !

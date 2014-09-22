@@ -50,7 +50,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
 ! ----------------------------------------------------------------------
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
     integer :: i, k, ndimsi
     real(kind=8) :: valres(3), e, nu
     real(kind=8) :: sref, sechm, hydrm
@@ -121,7 +121,7 @@ subroutine lceib1(fami, kpg, ksp, imate, compor,&
         kdess=valres(2)
 !
 !    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
-        nomres(1) = 'D_SIGM_EPSI'(1:8)
+        nomres(1) = 'D_SIGM_EPSI'
         nomres(2) = 'SYT'
         nomres(3) = 'SYC'
         call rcvalb(fami, 1, 1, '+', imate,&

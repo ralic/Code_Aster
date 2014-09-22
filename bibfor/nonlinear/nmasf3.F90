@@ -63,8 +63,8 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
     aster_logical :: grand, calbn, axi
     integer :: codre(1)
-    character(len=8) :: nomres(2)
-    character(len=16) :: phenom
+    character(len=16) :: nomres(2)
+    character(len=32) :: phenom
     integer :: kpg, i, ii, ino, ia, j, k, kl, proj, nbpg2
     integer :: ndim, nnos, jgano, kp, iaa
     real(kind=8) :: d(6, 6), f(3, 3), eps(6), r, s

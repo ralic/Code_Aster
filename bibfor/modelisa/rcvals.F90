@@ -25,7 +25,7 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
 ! ======================================================================
 !
     character(len=24) :: valk
-    character(len=8) :: nomail, para
+    character(len=16) :: nomail, para
     integer :: ier, iadzi, iazk24, ires
 ! ----------------------------------------------------------------------
 !

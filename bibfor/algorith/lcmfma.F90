@@ -35,7 +35,7 @@ subroutine lcmfma(mat, fami, kpg, ksp, poum)
     integer :: iok(nber)
     real(kind=8) :: valer(nber),rdum(1)
     character(len=8):: nomdum(1)
-    character(len=8):: nomer(nber)
+    character(len=16):: nomer(nber)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth
     common /lcee/ lambda,deuxmu,troisk,rigmin,pc,pr,epsth
@@ -46,7 +46,7 @@ subroutine lcmfma(mat, fami, kpg, ksp, poum)
     real(kind=8) :: tau, sig0, beta
     common /lcmmf/ tau,sig0,beta
 ! --------------------------------------------------------------------------------------------------
-    data nomer /'K','M','P','Q','COEF_RIG','TAU','SIG0','BETA'/
+    data nomer /'K','M','P','Q','COEF_RIGI_MINI','TAU','SIG0','BETA'/
 ! --------------------------------------------------------------------------------------------------
 !
     call rcvalb(fami, kpg, ksp, poum, mat, ' ', 'ENDO_FISS_EXP', 0, nomdum(1), rdum(1),&

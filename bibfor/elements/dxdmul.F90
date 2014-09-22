@@ -49,7 +49,7 @@ subroutine dxdmul(lcalct, icou, iniv, t1ve, t2ui,&
     integer :: i, k, l, jcaco, jcou, jmate, icodre(27)
     character(len=2) :: val
     character(len=3) :: num
-    character(len=8) :: nomres(27)
+    character(len=16) :: nomres(27)
     real(kind=8) :: valres(27), r8bid
     real(kind=8) :: dx1i(2, 2), dx2i(2, 4)
     real(kind=8) :: da1i(2, 2), da2i(2, 4)

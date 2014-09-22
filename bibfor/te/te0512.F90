@@ -100,12 +100,12 @@ subroutine te0512(option, nomte)
 !
     character(len=4) :: fami
     integer :: codres(nbres), codre2(nbres2)
-    character(len=8) :: nomres(nbres)
-    character(len=8) :: nomre2(nbres2)
+    character(len=16) :: nomres(nbres)
+    character(len=16) :: nomre2(nbres2)
     character(len=16) :: pheno, phenom, pheno2, phenm2
 !
     data nomres / 'E','NU' /
-    data nomre2 / 'S','EPSP_SEU','EXP_S' /
+    data nomre2 / 'S','EPSP_SEUIL','EXP_S' /
 !
 ! ----------------------------------------------------------------------
 !

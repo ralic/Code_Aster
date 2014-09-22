@@ -36,7 +36,8 @@ subroutine te0553(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=8) :: nomres(3), fami, poum
+    character(len=16) :: nomres(3)
+    character(len=8) ::  fami, poum
     integer :: icodre(3), kpg, spt
     real(kind=8) :: poids, nx, ny, valres(3), e, nu, lambda, mu
     real(kind=8) :: rhocp, rhocs

@@ -87,7 +87,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
         nbf=zi(ipi+2)
         ivalk=zi(ipi+3)
         do 30 ik = 1, nbf
-            if ('SIGM    ' .eq. zk8(ivalk+idf+ik-1)) then
+            if ('SIGM    ' .eq. zk16(ivalk+idf+ik-1)) then
                 ipif=ipi+lmat-1+lfct*(ik-1)
                 goto 40
             endif
@@ -114,7 +114,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
         if (nomcl(1:7) .eq. 'SIGM_F1') then
             do 70 ik = 1, nbf
-                if ('SIGM_F1  ' .eq. zk8(ivalk+idf+ik-1)) then
+                if ('SIGM_F1  ' .eq. zk16(ivalk+idf+ik-1)) then
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 80
                 endif
@@ -125,7 +125,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
         if (nomcl(1:7) .eq. 'SIGM_F2') then
             do 90 ik = 1, nbf
-                if ('SIGM_F2  ' .eq. zk8(ivalk+idf+ik-1)) then
+                if ('SIGM_F2  ' .eq. zk16(ivalk+idf+ik-1)) then
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 100
                 endif
@@ -136,7 +136,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
         if (nomcl(1:7) .eq. 'SIGM_F3') then
             do 110 ik = 1, nbf
-                if ('SIGM_F3  ' .eq. zk8(ivalk+idf+ik-1)) then
+                if ('SIGM_F3  ' .eq. zk16(ivalk+idf+ik-1)) then
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 120
                 endif
@@ -147,7 +147,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
         if (nomcl(1:7) .eq. 'SIGM_F4') then
             do 130 ik = 1, nbf
-                if ('SIGM_F4  ' .eq. zk8(ivalk+idf+ik-1)) then
+                if ('SIGM_F4  ' .eq. zk16(ivalk+idf+ik-1)) then
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 140
                 endif
@@ -158,7 +158,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
 !
         if (nomcl(1:6) .eq. 'SIGM_C') then
             do 150 ik = 1, nbf
-                if ('SIGM_C  ' .eq. zk8(ivalk+idf+ik-1)) then
+                if ('SIGM_C  ' .eq. zk16(ivalk+idf+ik-1)) then
                     ipif=ipi+lmat-1+lfct*(ik-1)+lsup*(ik-1)
                     goto 160
                 endif

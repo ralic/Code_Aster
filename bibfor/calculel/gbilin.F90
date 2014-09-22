@@ -70,7 +70,7 @@ subroutine gbilin(fami, kp, imate, dudm, dvdm,&
     integer :: i, j, k, p, l, m, iret
 !
     integer :: icodre(3)
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
     real(kind=8) :: valres(3)
     real(kind=8) :: vect(7), s11, s12, s13, s21, s22, s23, s1, s2, puls, rho
     real(kind=8) :: tcla, tfor, tthe, tdyn, divt, divv, s1th, s2th, prod, epsthe

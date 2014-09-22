@@ -74,6 +74,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/rccome.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -98,15 +99,16 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
     aster_logical :: mail3d, trouv1, trouv2
     character(len=3) :: k3mai
+    character(len=11) :: k11a, k11b
     character(len=8) :: beton
-    character(len=19) :: carte, nomrc, chsmat, cartez, chtmp
+    character(len=19) :: carte, chsmat, cartez, chtmp
     character(len=24) :: captma, cavalk, conxma, rcvalk, rcvalr, tymama
 !
-    character(len=8) :: bpelb(2)
+    character(len=16) :: bpelb(2)
     character(len=4) :: regl
     real(kind=8) :: crite
     character(len=8), pointer :: cesv(:) => null()
-    data          bpelb  /'PERT_FLU','PERT_RET'/
+    data          bpelb  /'PERT_FLUA','PERT_RETR'/
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
@@ -271,14 +273,14 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
     regl='BPEL'
     beton=cesv(iad)
-    nomrc = beton//'.BPEL_BETON'
-    rcvalk = nomrc//'.VALK'
+    call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)
+    rcvalk = beton//k11a//'.VALK'
     call jeexin(rcvalk, iret)
     if (iret .eq. 0) then
 !       ON TESTE SI ETCC_BETON EST RENSEIGNE
         regl='ETCC'
-        nomrc = beton//'.ETCC_BETON'
-        rcvalk = nomrc//'.VALK'
+        call rccome(beton, 'ETCC_BETON', iret, k11_ind_nomrc=k11b)    
+        rcvalk = beton//k11b//'.VALK'
         call jeexin(rcvalk, iret)
         if (iret .eq. 0) then
             call utmess('F', 'MODELISA7_48')
@@ -287,18 +289,18 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
 !     RECUPERATION DES PERTES PAR FLUAGE OU RETRAIT POUR BPEL_BETON
     if (regl .eq. 'BPEL') then
-        rcvalr = nomrc//'.VALR'
+        rcvalr = beton//k11a//'.VALR'
         call jeveuo(rcvalk, 'L', jvalk)
         call jeveuo(rcvalr, 'L', jvalr)
         call jelira(rcvalr, 'LONMAX', nbcste)
         trouv1 = .false.
         trouv2 = .false.
         do 150 icste = 1, nbcste
-            if (zk8(jvalk+icste-1) .eq. bpelb(1)) then
+            if (zk16(jvalk+icste-1) .eq. bpelb(1)) then
                 trouv1 = .true.
                 xflu = zr(jvalr+icste-1)
             endif
-            if (zk8(jvalk+icste-1) .eq. bpelb(2)) then
+            if (zk16(jvalk+icste-1) .eq. bpelb(2)) then
                 trouv2 = .true.
                 xret = zr(jvalr+icste-1)
             endif
@@ -320,9 +322,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 call cesexi('C', jcesd, jcesl, numail, 1,&
                             1, 1, iad)
                 beton=cesv(iad)
-                nomrc = beton//'.BPEL_BETON'
-                rcvalk = nomrc//'.VALK'
-                rcvalr = nomrc//'.VALR'
+                call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)   
+                rcvalk = beton//k11a//'.VALK'
+                rcvalr = beton//k11a//'.VALR'
                 call jeveuo(rcvalk, 'L', jvalk)
                 call jeveuo(rcvalr, 'L', jvalr)
                 call jelira(rcvalr, 'LONMAX', nbcste)
@@ -335,7 +337,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
                 do 250 icste = 1, nbcste
 !
-                    if (zk8(jvalk+icste-1) .eq. bpelb(1)) then
+                    if (zk16(jvalk+icste-1) .eq. bpelb(1)) then
                         if (abs(xflu) .lt. crite) then
                             if (abs(xflu-zr(jvalr+icste-1)) .gt. crite) then
                                 call utmess('F', 'MODELISA7_49')
@@ -345,7 +347,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                                 call utmess('F', 'MODELISA7_49')
                             endif
                         endif
-                    else if (zk8(jvalk+icste-1).eq.bpelb(2)) then
+                    else if (zk16(jvalk+icste-1).eq.bpelb(2)) then
                         if (abs(xret) .lt. crite) then
                             if (abs(xret-zr(jvalr+icste-1)) .gt. crite) then
                                 call utmess('F', 'MODELISA7_51')

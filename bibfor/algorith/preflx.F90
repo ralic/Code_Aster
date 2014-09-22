@@ -55,13 +55,14 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 #include "asterfort/jeveut.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/rccome.h"
 #include "asterfort/reseci.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: nmnoe1, nmnoe2, chamat, celem, mailla, mater, kbid
-    character(len=16) :: graexc
+    character(len=8) :: nmnoe1, nmnoe2, chamat, celem, mailla, mater
+    character(len=16) :: graexc, kbid
     character(len=24) :: k24bd1
     character(len=24) :: lifex2, lifex3
-!
+    character(len=11) :: k11
 !-----------------------------------------------------------------------
     integer :: iad1, iaddx,  iadfx2, iadfx3, iadlma, iadr
     integer :: iadrho, iadsc3, iadsec, iapp1, iapp1b, iapp2, iapp2b
@@ -70,7 +71,7 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
     integer :: ima1, imai1, imai2, imai3, inbfx3, inbmai, inbnoe
     integer :: ingrma, inlien, inoe1, inoe2, inuno1, inuno2, inuno3
     integer :: inuno4, inurho, invalk, ipar1, ipar2, ivalk1, nindex
-    integer :: nmalim, npdsc3
+    integer :: nmalim, npdsc3, iret
     real(kind=8) :: dx, dx1, dx2, omega, pi, rho
     real(kind=8) :: rho1, rho2, sect1, sect2, sign, x1, x2
     real(kind=8) :: y1, y2, z1, z2
@@ -204,18 +205,19 @@ subroutine preflx(graexc, mailla, chamat, celem, npdsc3,&
 !
         call jeveuo(chamat//'.CHAMP_MAT .VALE', 'L', iad1)
         mater=zk8(iad1-1+ilien2)
-        k24bd1=mater//'.FLUIDE    .VALK'
+        call rccome(mater, 'FLUIDE', iret, k11_ind_nomrc=k11)
+        k24bd1 = mater//k11//'.VALK'
         call jeveuo(k24bd1, 'L', iad1)
         call jelira(k24bd1, 'LONMAX', invalk)
         do 317 ivalk1 = 1, invalk
-            kbid=zk8(iad1-1+ivalk1)
+            kbid=zk16(iad1-1+ivalk1)
             if (kbid(1:3) .eq. 'RHO') then
                 inurho=ivalk1
                 goto 318
             endif
-317      continue
-318      continue
-        k24bd1=mater//'.FLUIDE    .VALR'
+317     continue
+318     continue
+        k24bd1=mater//k11//'.VALR'
         call jeveuo(k24bd1, 'L', iad1)
         rho=zr(iad1-1+inurho)
         zr(iadrho-1+iexc1)=rho

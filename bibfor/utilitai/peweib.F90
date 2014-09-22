@@ -27,6 +27,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 #include "asterfort/mecact.h"
 #include "asterfort/mecham.h"
 #include "asterfort/mesomm.h"
+#include "asterfort/rccome.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
@@ -77,6 +78,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     real(kind=8) :: sigmaw
     character(len=1) :: base
     character(len=2) :: codret
+    character(len=11) :: k11
     character(len=8) :: k8b, noma, resul, crit, chmat, nommai, typarr(nbparr), typard(nbpard)
     character(len=8) :: lpain(9), lpaout(2), valek(2)
     character(len=16) :: typres, option, optio2, optcal(2), toptca(2), nomrc, noparr(nbparr)
@@ -226,7 +228,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
     call jelira(chmat//'.CHAMP_MAT .VALE', 'LONMAX', nbmtcm)
     AS_ALLOCATE(vk8=l_nom_mat, size=nbmtcm)
     nomrc = 'WEIBULL         '
-    call chmrck(chmat, nomrc, l_nom_mat, nbmtrc)
+    call chmrck(chmat, nomrc, l_nom_mat, nbmtrc) 
     if (nbmtrc .gt. 1) then
         vali = nbmtrc
         valk (1) = k8b
@@ -236,22 +238,22 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
 !
 !     --- RECUPERATION DES PARAMETRES DE LA RC WEIBULL ---
     kvalrc(1:8) = l_nom_mat(1)
-    kvalrc(9:24) = '.WEIBULL   .VALR'
-    kvalrk(1:8) = l_nom_mat(1)
-    kvalrk(9:24) = '.WEIBULL   .VALK'
+    call rccome(kvalrc(1:8), 'WEIBULL', iret, k11_ind_nomrc=k11)    
+    kvalrc = l_nom_mat(1)//k11//'.VALR'
+    kvalrk = l_nom_mat(1)//k11//'.VALK'
     call jeveuo(kvalrc, 'L', ibid)
     call jeveuo(kvalrk, 'L', ibik)
     call jelira(kvalrk, 'LONMAX', imc)
     sref = 0.d0
     do i = 1, imc
-        if (zk8(ibik+i-1) .eq. 'SIGM_CNV') sref = zr(ibid+i-1)
-        if (zk8(ibik+i-1) .eq. 'M       ') mref = zr(ibid+i-1)
-        if (zk8(ibik+i-1) .eq. 'VOLU_REF') vref = zr(ibid+i-1)
+        if (zk16(ibik+i-1) .eq. 'SIGM_CNV') sref = zr(ibid+i-1)
+        if (zk16(ibik+i-1) .eq. 'M       ') mref = zr(ibid+i-1)
+        if (zk16(ibik+i-1) .eq. 'VOLU_REFE') vref = zr(ibid+i-1)
     end do
 ! CAS WEIBULL_FO
     if (sref .eq. 0.d0) then
         do i = 1, imc
-            if (zk8(ibik+i-1) .eq. 'SIGM_REF') sref = zr(ibid+i-1)
+            if (zk16(ibik+i-1) .eq. 'SIGM_REFE') sref = zr(ibid+i-1)
         end do
         valr (1) = mref
         valr (2) = vref
@@ -395,7 +397,7 @@ subroutine peweib(resu, modele, mate, cara, chmat,&
                         goto 50
                     endif
                     call jeveuo(jexnom(mlggma, nomgrm), 'L', jad)
-                    call mesomm(chelem, mxvale, vr=trav1, nbma=nbma, linuma=zi(jad))
+                    call mesomm(chelem, mxvale, vr=trav1, nbma=nbma, linuma=zi(jad))      
                     sigmaw = coesym*trav1(1)* (sref**mref)
                     probaw = sigmaw/ (sref**mref)
                     probaw = 1.0d0 - exp(-probaw)

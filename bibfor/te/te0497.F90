@@ -121,13 +121,13 @@ subroutine te0497(option, nomte)
     integer :: codme1(nbre1), codme2(nbre2), codme3(nbre3), codme4(nbre4), codm11(nbr11)
     integer :: codm12(nbr12), codm13(nbr13), codme5(nbre5), codme6(nbre6)
 !
-    character(len=8) :: nomre1(nbre1), nomre2(nbre2), nomre3(nbre3), nomre4(nbre4), nomr11(nbr11)
-    character(len=8) :: nomr12(nbr12), nomr13(nbr13), nomre5(nbre5), nomre6(nbre6)
+    character(len=16) :: nomre1(nbre1), nomre2(nbre2), nomre3(nbre3), nomre4(nbre4), nomr11(nbr11)
+    character(len=16) :: nomr12(nbr12), nomr13(nbr13), nomre5(nbre5), nomre6(nbre6)
     character(len=8) :: valk(2)
 !
     aster_logical :: yapr, yaro
 !
-    data nomre1 / 'RHO','BIOT_COE' /
+    data nomre1 / 'RHO','BIOT_COEF' /
     data nomr13 / 'RHO','BIOT_L','BIOT_N','BIOT_T'/
     data nomr11 / 'PERM_IN' /
     data nomr12 / 'PERMIN_L','PERMIN_N','PERMIN_T' /

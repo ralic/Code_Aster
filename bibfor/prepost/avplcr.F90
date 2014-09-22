@@ -21,8 +21,8 @@ subroutine avplcr(nbvec, vectn, vectu, vectv, nbordr,&
     aster_logical :: fordef, post
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
     real(kind=8) :: vwork(tdisp), fatsoc
-    character(len=16) :: nomcri, proaxe, nomfor, forvie
-    character(len=8) :: nommat, grdvie
+    character(len=16) :: nomcri, proaxe, nomfor, forvie, grdvie
+    character(len=8) :: nommat
     real(kind=8) :: vala, coefpa
     real(kind=8) :: cudomx, nxm(2), nym(2), nzm(2)
 !

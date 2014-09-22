@@ -104,7 +104,8 @@ subroutine dglrdm()
 !
     integer :: icodr2(6)
     character(len=6) :: k6
-    character(len=8) :: mater, k8b, compr, nomres(6)
+    character(len=8) :: mater, k8b, compr
+    character(len=16) :: nomres(6)
     character(len=19) :: mendom
     character(len=19) :: cisail, pente
     character(len=16) :: type, nomcmd, fichie
@@ -140,9 +141,9 @@ subroutine dglrdm()
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
-    nomres(4) = 'AMOR_ALP'
-    nomres(5) = 'AMOR_BET'
-    nomres(6) = 'AMOR_HYS'
+    nomres(4) = 'AMOR_ALPHA'
+    nomres(5) = 'AMOR_BETA'
+    nomres(6) = 'AMOR_HYST'
     k8b = ' '
     r8b = 0.d0
 !
@@ -326,58 +327,58 @@ subroutine dglrdm()
 !---------ELASTIQUE---------------
     lonobj = 8
     call codent(2,'D0',K6)
-    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
     call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
     call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
     call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk8(jmelk ) = 'E_M     '
+    zk16(jmelk ) = 'E_M     '
     zr(jmelr ) = em
-    zk8(jmelk+1) = 'NU_M    '
+    zk16(jmelk+1) = 'NU_M    '
     zr(jmelr+1 ) = num
-    zk8(jmelk+2 ) = 'E_F     '
+    zk16(jmelk+2 ) = 'E_F     '
     zr(jmelr+2 ) = ef
-    zk8(jmelk+3) = 'NU_F    '
+    zk16(jmelk+3) = 'NU_F    '
     zr(jmelr+3 ) = nuf
-    zk8(jmelk+4) = 'RHO     '
+    zk16(jmelk+4) = 'RHO     '
     zr(jmelr+4 ) = rho
     if (alpha .gt. 0.0d0) then
-        zk8(jmelk+5) = 'AMOR_ALP'
+        zk16(jmelk+5) = 'AMOR_ALPHA'
         zr(jmelr+5 ) = alpha
     endif
     if (beta .gt. 0.0d0) then
-        zk8(jmelk+6) = 'AMOR_BET'
+        zk16(jmelk+6) = 'AMOR_BETA'
         zr(jmelr+6 ) = beta
     endif
     if (hyst .gt. 0.0d0) then
-        zk8(jmelk+7) = 'AMOR_HYS'
+        zk16(jmelk+7) = 'AMOR_HYST'
         zr(jmelr+7 ) = hyst
     endif
 !---------GLRC_DM---------------
     lonobj = 8
     call codent(1,'D0',K6)    
-    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K8', 2*lonobj, jmelk)
+    call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
     call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
     call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
     call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk8(jmelk)   = 'GAMMA_T '
+    zk16(jmelk)   = 'GAMMA_T '
     zr(jmelr )   = gt
-    zk8(jmelk+1) = 'GAMMA_F '
+    zk16(jmelk+1) = 'GAMMA_F '
     zr(jmelr+1 ) = gf
-    zk8(jmelk+2) = 'GAMMA_C '
+    zk16(jmelk+2) = 'GAMMA_C '
     zr(jmelr+2 ) = gc
-    zk8(jmelk+3) = 'NYT     '
+    zk16(jmelk+3) = 'NYT     '
     zr(jmelr+3 ) = nyt
-    zk8(jmelk+4) = 'MYF     '
+    zk16(jmelk+4) = 'MYF     '
     zr(jmelr+4 ) = myf
-    zk8(jmelk+5) = 'NYC     '
+    zk16(jmelk+5) = 'NYC     '
     zr(jmelr+5 ) = nyc
-    zk8(jmelk+6) = 'ALPHA_C '
+    zk16(jmelk+6) = 'ALPHA_C '
     zr(jmelr+6 ) = 1.d0
-    zk8(jmelk+7) = 'EPAIS   '
+    zk16(jmelk+7) = 'EPAIS   '
     zr(jmelr+7 ) = h
 !---------IMPRESSION-------------
     if (nimpr .gt. 0) then

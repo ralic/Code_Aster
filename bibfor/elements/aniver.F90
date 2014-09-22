@@ -30,7 +30,6 @@ subroutine aniver(mater)
 ! -----  ARGUMENTS
 #include "jeveux.h"
 #include "asterc/indik8.h"
-#include "asterfort/codent.h"
 #include "asterfort/dortvp.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -40,7 +39,7 @@ subroutine aniver(mater)
 ! -----  VARIABLES LOCALES
     character(len=2) :: m2blan
     character(len=2) :: k8bid
-    character(len=6) :: k6
+    character(len=11) :: k11
     character(len=16) :: nomrc
     character(len=19) :: noobrc
 !
@@ -53,14 +52,14 @@ subroutine aniver(mater)
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, iel, ien, iet, igln, iglt, igtn, ind, iret
+    integer :: i, iel, ien, iet, igln, iglt, igtn, iret
     integer :: inuln, inult, inutn, j, jtypfo
     integer ::  k, nbcrme, nbr, ndim
     real(kind=8) :: c1, delta, deux, e1, e2, e3, g12
     real(kind=8) :: g13, g23, un, undemi, zero
     real(kind=8), pointer :: valr(:) => null()
     character(len=32), pointer :: vnomrc(:) => null()
-    character(len=8), pointer :: valk(:) => null()
+    character(len=16), pointer :: valk(:) => null()
 !-----------------------------------------------------------------------
     zero = 0.0d0
     undemi = 0.5d0
@@ -101,10 +100,9 @@ subroutine aniver(mater)
 !     ----------------------------------------
     do 20 k = 1, nbcrme
         nomrc = vnomrc(k)
-        call rccome(mater, vnomrc(k), iret, ind_nomrc=ind)
+        call rccome(mater, vnomrc(k), iret, k11_ind_nomrc=k11)
         if ( iret .ne. 0 ) goto 20
-        call codent(ind,'D0',k6)
-        noobrc = mater//'.CPT.'//k6
+        noobrc = mater//k11
 !
 ! --- SI LE MATERIAU N'EST PAS UNE FONCTION :
 !     -------------------------------------
@@ -118,7 +116,7 @@ subroutine aniver(mater)
 ! ---     DEFINISSANT LE MATERIAU :
 !         -----------------------
                 call jeveuo(noobrc//'.VALR', 'L', vr=valr)
-                call jeveuo(noobrc//'.VALK', 'L', vk8=valk)
+                call jeveuo(noobrc//'.VALK', 'L', vk16=valk)
 !
 ! ---     LONGUEUR DU TABLEAU DES COMPOSANTES :
 !         -----------------------------------

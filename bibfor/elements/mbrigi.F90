@@ -34,8 +34,8 @@ subroutine mbrigi(fami, kpg, imate, rig)
 #include "asterfort/rcvalb.h"
     integer :: codres(7)
     character(len=4) :: fami
-    character(len=8) :: nomres(7)
-    character(len=13) :: phenom
+    character(len=16) :: nomres(7)
+    character(len=32) :: phenom
     integer :: kpg, imate, codret
     real(kind=8) :: valres(7), rig(3, 3)
 !

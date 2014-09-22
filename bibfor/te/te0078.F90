@@ -44,8 +44,9 @@ subroutine te0078(option, nomte)
     integer :: nbres
     parameter     (nbres=3)
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), elrefe, alias8
-    character(len=16) :: phenom, option, nomte
+    character(len=8) :: elrefe, alias8
+    character(len=16) :: nomres(nbres), option, nomte
+    character(len=32) :: phenom
     real(kind=8) :: valres(nbres), dfdx(9), dfdy(9), poids, r, tpg, theta, cp
     real(kind=8) :: orig(2), lambor(2), lambda, fluglo(2), fluloc(2), p(2, 2)
     real(kind=8) :: point(2), coorse(18), vectt(9), deltat, alpha, dtpgdx

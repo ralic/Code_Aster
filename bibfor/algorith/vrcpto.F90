@@ -45,7 +45,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
 ! IN  IMATE   : ADRESSE DU MATERIAU CODE
 !
     integer :: icodre(2)
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
     real(kind=8) :: valres(2)
     real(kind=8) :: ptotm, ptotp, biotp, biotm, em, num, ep, nup, troikp, troikm
     integer :: iret1, iret2, k
@@ -108,7 +108,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
 !
 ! --- COEFFICIENT DE BIOT
 !
-        nomres(1)='BIOT_COE'
+        nomres(1)='BIOT_COEF'
 !
         call rcvalb(fami, kpg, ksp, '-', imate,&
                     ' ', 'THM_DIFFU', 0, ' ', [0.d0],&

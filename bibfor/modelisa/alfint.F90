@@ -70,9 +70,9 @@ subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
     character(len=19) :: ch19
 ! -----  VARIABLES LOCALES
     integer :: icodre(1)
-    character(len=8) :: k8b, chmat, nommat, nopara, ktref, nomgd, valk(2)
-    character(len=10) :: phenom
-    character(len=16) :: typres, nomcmd
+    character(len=8) :: k8b, chmat, nommat, ktref, nomgd, valk(2)
+    character(len=32) :: phenom
+    character(len=16) :: typres, nomcmd, nopara
     character(len=19) :: chwork
     integer :: nummat, ncmp, jnomrc,   i, nbpts, imate
     integer :: nbec, k, ec1, kk, igd, ngdmax,  jvale

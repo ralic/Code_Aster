@@ -53,8 +53,9 @@ subroutine te0109(option, nomte)
     real(kind=8) :: pvec1(3), pvec2(3), npvec1, fx, fy, fz
     real(kind=8) :: ep, fac1, fac2, fac3
 !
-    character(len=8) :: nomres(nbres), fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
 !
 !-----------------------------------------------------------------------
 !

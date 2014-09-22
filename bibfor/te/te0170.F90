@@ -40,9 +40,9 @@ subroutine te0170(option, nomte)
 !
 !-----------------------------------------------------------------------
     parameter (nbres=2)
-    character(len=8) :: nomres(nbres), fami, poum
+    character(len=8) :: fami, poum
     integer :: icodre(nbres)
-    character(len=16) :: nomte, option
+    character(len=16) :: nomres(nbres), nomte, option
     real(kind=8) :: valres(nbres), a(2, 2, 27, 27)
     real(kind=8) :: b(54, 54), ul(54), c(1485)
     real(kind=8) :: poids, rho, celer

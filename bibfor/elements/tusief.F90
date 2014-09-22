@@ -49,7 +49,8 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 !
     integer :: nbres, nbrddl
     parameter (nbres=9)
-    character(len=8) :: nomres(nbres), nompar
+    character(len=8) :: nompar
+    character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar, degg(24)
     real(kind=8) :: h, a, l, e, nu, beta, cisail, g, omega, dhk

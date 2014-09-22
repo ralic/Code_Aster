@@ -38,8 +38,9 @@ subroutine te0318(option, nomte)
 !
 !
     integer :: icodre(2), kpg, spt
-    character(len=8) :: nomres(2), fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(2)
+    character(len=32) :: phenom
     real(kind=8) :: dfdx(9), dfdy(9), tpg, poids, lambda, a, b
     real(kind=8) :: lambor(2), p(2, 2), point(2), orig(2)
     real(kind=8) :: fluglo(2), fluloc(2), valres(2)

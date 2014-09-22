@@ -42,8 +42,7 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
 #include "asterfort/wkvect.h"
     integer :: jrwork, jnbpg, nbpgt, nbordr, nmaini, numpaq, nbmap
     integer :: tspaq, ordini
-    character(len=8) :: grdvie
-    character(len=16) :: nomcri, nommet, nomfor, forvie, forcri
+    character(len=16) :: nomcri, nommet, nomfor, forvie, forcri, grdvie
     character(len=19) :: cesr
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLAN INCLINE POUR LEQUEL DELTA_TAU EST MAXIMUM

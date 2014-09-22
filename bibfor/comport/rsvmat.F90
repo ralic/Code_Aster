@@ -57,7 +57,8 @@ subroutine rsvmat(fami, kpg, ksp, mod, imat,&
     real(kind=8) :: epsi, vind(nvi), f0
     real(kind=8) :: para_vale
 !
-    character(len=8) :: mod, nomc(16), para_type
+    character(len=8) :: mod, para_type 
+    character(len=16) :: nomc(16)
     integer :: cerr(16)
     character(len=3) :: matcst
     character(len=*) :: fami

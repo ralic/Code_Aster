@@ -41,7 +41,7 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater,&
     integer :: iret2, nbsys
     real(kind=8) :: valres(nmat), hsri(nsg, nsg), h, e, nu, mu
     real(kind=8) :: tempf, valh(6), vallue(nmat), val(1)
-    character(len=8) :: nomres(nmat)
+    character(len=16) :: nomres(nmat)
     integer :: icodre(nmat)
     character(len=*) :: fami, poum
     character(len=16) :: nmater, necoul, necris, phenom

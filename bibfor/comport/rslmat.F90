@@ -57,7 +57,8 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
     real(kind=8) :: epsi, vind(*), f0
     real(kind=8) :: para_vale
 !
-    character(len=8) :: mod, nomc(14), para_type
+    character(len=16) :: nomc(14)
+    character(len=8) :: mod, para_type
     integer :: cerr(14)
     character(len=3) :: matcst
     character(len=*) :: fami
@@ -72,18 +73,18 @@ subroutine rslmat(fami, kpg, ksp, mod, imat,&
 ! -   RECUPERATION MATERIAU ------------------------------------------
 !
 !
-    nomc(1) = 'E        '(1:8)
-    nomc(2) = 'NU       '(1:8)
-    nomc(3) = 'ALPHA    '(1:8)
-    nomc(4) = 'B_ENDOGE'(1:8)
-    nomc(5) = 'K_DESSIC'(1:8)
-    nomc(6) = 'D        '(1:8)
-    nomc(7) = 'SIGM_1   '(1:8)
-    nomc(8) = 'PORO_INIT'(1:8)
-    nomc(9) = 'PORO_CRIT'(1:8)
-    nomc(10)= 'PORO_ACCE'(1:8)
-    nomc(11)= 'PORO_LIMI'(1:8)
-    nomc(12)= 'D_SIGM_EPSI_NORM'(1:8)
+    nomc(1) = 'E        '
+    nomc(2) = 'NU       '
+    nomc(3) = 'ALPHA    '
+    nomc(4) = 'B_ENDOGE'
+    nomc(5) = 'K_DESSIC'
+    nomc(6) = 'D        '
+    nomc(7) = 'SIGM_1   '
+    nomc(8) = 'PORO_INIT'
+    nomc(9) = 'PORO_CRIT'
+    nomc(10)= 'PORO_ACCE'
+    nomc(11)= 'PORO_LIMI'
+    nomc(12)= 'D_SIGM_EPSI_NORM'
     nomc(13)= 'AN'
     nomc(14)= 'BETA'
 !

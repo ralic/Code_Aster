@@ -113,7 +113,7 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
     nbf   = zi(ipi+2)
     ivalk = zi(ipi+3)
     do ik = 1, nbf
-        if (keyw .eq. zk8(ivalk+idf+ik-1)) then
+        if (keyw .eq. zk16(ivalk+idf+ik-1)) then
             if (keyw.eq.'SIGM') then
                 ipif = ipi+lmat-1+lfct*(ik-1)
             elseif ((keyw.eq.'SIGM_F1').or.&

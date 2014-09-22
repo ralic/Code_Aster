@@ -56,8 +56,8 @@ subroutine te0498(option, nomte)
     real(kind=8) :: vondn(3), vondt(3)
     integer :: icodre(3), kpg, spt
     character(len=2) :: type
-    character(len=8) :: nomres(3), fami, poum
-!
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(3)
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option.eq.'ONDE_PLAN')

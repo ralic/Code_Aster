@@ -31,7 +31,7 @@ interface
         character(len=16) :: nommet
         character(len=16) :: nomcri
         character(len=16) :: nomfor
-        character(len=8) :: grdvie
+        character(len=16) :: grdvie
         character(len=16) :: forvie
         character(len=16) :: forcri
         character(len=19) :: cesr

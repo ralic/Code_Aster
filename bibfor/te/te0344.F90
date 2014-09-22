@@ -54,8 +54,8 @@ subroutine te0344(option, nomte)
     integer :: lorien, jdepl, lforcr, lforcf
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomres(nbres)
-    character(len=16) :: messk(2)
+    character(len=8) :: nompar
+    character(len=16) :: messk(2), nomres(nbres)
     real(kind=8) :: valpar, zero, angs2, rad, e, g, a, rbid
     real(kind=8) :: xl, epsith
     real(kind=8) :: nu, fe(12), fi(12), flr(14), klv(105)

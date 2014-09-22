@@ -60,7 +60,8 @@ subroutine te0140(option, nomte)
     real(kind=8) :: angarc, angs2, deux, e, rad
     real(kind=8) :: valpar, xl, xnu, g, un, zero
     integer :: codres(nbres), kpg, spt
-    character(len=8) :: nompar, nomres(nbres), nomail, fami, poum
+    character(len=8) :: nompar, nomail, fami, poum
+    character(len=16) :: nomres(nbres)
     character(len=16) :: opti
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), klv(105)
 !     ------------------------------------------------------------------

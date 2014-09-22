@@ -41,8 +41,8 @@ subroutine te0221(option, nomte)
     real(kind=8) :: gss
 !-----------------------------------------------------------------------
     parameter (nbres=2)
-    character(len=8) :: nomres(nbres), nompar
-    character(len=8) :: elrefe
+    character(len=16) :: nomres(nbres)
+    character(len=8) :: elrefe, nompar
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar
     real(kind=8) :: dfdx(3), zero, un, deux, trois, douze

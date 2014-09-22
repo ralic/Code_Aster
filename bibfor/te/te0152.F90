@@ -34,7 +34,8 @@ subroutine te0152(option, nomte)
     real(kind=8) :: rho, xxi, yyi, zero, zzi
 !-----------------------------------------------------------------------
     parameter (nbres=2)
-    character(len=8) :: nomres(nbres), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(nbres)
 !
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres)

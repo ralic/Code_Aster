@@ -54,7 +54,7 @@ subroutine te0144(option, nomte)
     parameter    (nbres=2)
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nomres(nbres)
+    character(len=16) :: nomres(nbres)
 !
     real(kind=8) :: ul(12), ug(12), pgl(3, 3), klc(12, 12), klv(78)
     real(kind=8) :: fl(12), pgl1(3, 3), pgl2(3, 3), epsith(1)

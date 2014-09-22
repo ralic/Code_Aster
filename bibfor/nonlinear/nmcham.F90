@@ -36,7 +36,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
     integer :: imate, nbvar, kpg, ksp, memo, visc, idelta, nrad
-    character(len=16) :: compor(3), valk(2), texte(2)
+    character(len=16) :: compor(3), valk(2), texte(2), nomres(12)
     real(kind=8) :: mat(18), matel(4)
     character(len=*) :: fami
 ! ---- VARIABLES LOCALES
@@ -44,7 +44,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor,&
     real(kind=8) :: r0, rinf, b, cinf, k, w, gamma0, epsi
     real(kind=8) :: un, ainf, kvi, valden, unskvi
     integer :: icodre(12)
-    character(len=8) :: nomres(12), nomemo(4)
+    character(len=8) :: nomemo(4)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     nbvar=0

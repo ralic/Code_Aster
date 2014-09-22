@@ -40,7 +40,8 @@ subroutine ef0142(nomte)
     parameter(nbres=3,nbref=6)
     real(kind=8) :: valres(nbres), valref(nbref)
     integer :: codres(nbres), codref(nbref)
-    character(len=8) :: nompar, nomres(nbres), nomref(nbref)
+    character(len=8) :: nompar, nomref(nbref)
+    character(len=16) :: nomres(nbres)
     real(kind=8) :: zero, e, nu, rho
     real(kind=8) :: klv(78), klc(12, 12)
     character(len=24) :: suropt

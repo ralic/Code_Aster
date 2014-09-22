@@ -61,7 +61,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
     real(kind=8) :: nyt, nyc, myf, nuf, delas(6, 6), t1p, t2p, t3p
     real(kind=8) :: t1m, t2m, t3m
     character(len=4) :: fami
-    character(len=8) :: nomres(7)
+    character(len=16) :: nomres(7)
 !
     ther=.false.
     if ((.not.( compor(1:7) .eq. 'GLRC_DM'))) then

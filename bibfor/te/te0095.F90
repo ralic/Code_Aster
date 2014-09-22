@@ -48,8 +48,9 @@ subroutine te0095(option, nomte)
 #include "asterfort/utmess.h"
     integer :: icodre(3)
     integer :: icorsv(3)
-    character(len=8) :: nomres(3), nompar(4)
-    character(len=16) :: nomte, option, phenom
+    character(len=8) :: nompar(4)
+    character(len=16) :: nomres(3), nomte, option 
+    character(len=32) :: phenom
 !
     real(kind=8) :: epsi
     real(kind=8) :: dfdi(81), f(3, 3), eps(6), fnou(81), fnov(81)

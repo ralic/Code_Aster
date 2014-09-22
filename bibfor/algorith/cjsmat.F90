@@ -46,7 +46,8 @@ subroutine cjsmat(mod, imat, tempf, materf, ndt,&
 #include "asterfort/utmess.h"
     integer :: ndt, ndi, nvi, imat
     real(kind=8) :: materf(14, 2), tempf
-    character(len=8) :: mod, nomc(17)
+    character(len=8) :: mod
+    character(len=16) :: nomc(17)
     character(len=4) :: nivcjs
     integer :: cerr(17)
 !       ----------------------------------------------------------------

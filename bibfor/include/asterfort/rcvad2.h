@@ -26,7 +26,7 @@ interface
         character(len=*) :: poum
         integer :: jmat
         character(len=*) :: phenom
-        character(len=8) :: nomres(nbres)
+        character(len=16) :: nomres(nbres)
         real(kind=8) :: valres(nbres)
         real(kind=8) :: devres(nbres)
         integer :: icodre(nbres)

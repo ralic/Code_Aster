@@ -32,7 +32,8 @@ subroutine ef0231(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: nomres(3), elrefe
+    character(len=8) :: elrefe
+    character(len=16) :: nomres(3)
     integer :: icodre(3)
     real(kind=8) :: e, nu, tpg, tgmoy, tgsup, tginf, tref
     real(kind=8) :: x3, eps(5), c, h, epsthe, valres(3)

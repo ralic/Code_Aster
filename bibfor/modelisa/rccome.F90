@@ -1,4 +1,4 @@
-subroutine rccome(nommat, pheno, icodre, ind_nomrc)
+subroutine rccome(nommat, pheno, icodre, k11_ind_nomrc)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,12 +17,13 @@ subroutine rccome(nommat, pheno, icodre, ind_nomrc)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterfort/codent.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nommat, pheno
     integer, intent(out) :: icodre
-    integer, intent(out), optional :: ind_nomrc
+    character(len=11), intent(out), optional :: k11_ind_nomrc
 ! ----------------------------------------------------------------------
 !     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
 !     D'UN PREMISSE (C'EST L'INDICE DU PREMIER NOM QUI CONTIENT LA CHAINE 
@@ -37,16 +38,18 @@ subroutine rccome(nommat, pheno, icodre, ind_nomrc)
 !  
 ! DEB ------------------------------------------------------------------
     character(len=32) :: ncomp
+    character(len=6) :: k6
     integer :: i, icomp, nbcomp
 !-----------------------------------------------------------------------
     icodre = 1
     ncomp = nommat//'.MATERIAU.NOMRC         '
     call jelira(ncomp, 'LONUTI', nbcomp)
     call jeveuo(ncomp, 'L', icomp)
-    do i = 1, nbcomp
+    do i = 1, nbcomp 
         if (pheno .eq. zk32(icomp+i-1)(1:len(pheno))) then
-            if (present(ind_nomrc)) then
-               ind_nomrc=i
+            if (present(k11_ind_nomrc)) then
+               call codent(i,'D0',k6)  
+               k11_ind_nomrc='.CPT.'//k6
             endif   
             icodre = 0
         endif

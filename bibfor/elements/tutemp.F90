@@ -50,8 +50,9 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     real(kind=8) :: poids, rayon, theta, sinfi, xpg(4)
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl)
     integer :: codres(3)
-    character(len=8) :: nomres(3), nompar
-    character(len=16) :: phenom, nomte
+    character(len=8) :: nompar
+    character(len=16) :: nomte, nomres(3)
+    character(len=32) :: phenom
     integer :: nno, npg, nbcou, nbsec, m, lorien, icoude, i
     integer :: ipoids, ivf, icou, nbpar
     integer :: icagep, igeom, jout, imate, j

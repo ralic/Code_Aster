@@ -91,10 +91,10 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
     real(kind=8) :: b(4, 3), gliss
     real(kind=8) :: sigcab, dsidep, dde(2), ddedn, courb
     real(kind=8) :: angmas(3), val(3), rphi, frotc, wkin(2), wkout(1)
-    character(len=12) :: nom(3)
+    character(len=16) :: nom(3)
     character(len=1) :: poum
 !
-    data nom /'FROT_LIN','PENA_LAG','FROT_COU'/
+    data nom /'FROT_LINE','PENA_LAGR','FROT_COURB'/
 ! ----------------------------------------------------------------------
 !
 !

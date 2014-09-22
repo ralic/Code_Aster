@@ -60,7 +60,7 @@ subroutine lc0055(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: tp, tm, tref, rprops(3), r0
 !
 ! Declaration of character variables
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
 !
 ! Declaration of constant variables
     data r0   / 0.0d0 /

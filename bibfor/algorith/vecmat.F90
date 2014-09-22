@@ -162,7 +162,7 @@ subroutine vecmat(fami, kpg, ksp, mod, loi,&
                 ipi=zi(imat+ik+2-1)
                 do 15 il = 1, zi(ipi+2)
                     ivalk = zi(ipi+3)
-                    if (zk8(ivalk+il-1)(1:3) .eq. 'K_D') then
+                    if (zk16(ivalk+il-1)(1:3) .eq. 'K_D') then
                         ipif=ipi+lmat-1+lfct*(il-1)
                         jpro=zi(ipif+1)
                         if (zk24(jpro) .eq. 'NAPPE') then

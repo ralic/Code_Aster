@@ -66,9 +66,10 @@ subroutine pofaun()
     integer :: ibid, intrav, ivpics, nbpics, nbcycl, nbpar, ivdome
     integer :: icodre(3), icodwo
     integer :: icodba, icodhs, icodma
-    character(len=8) :: nomfon, result, txcum, k8b, nommat, kcorre, cara
-    character(len=8) :: method, nompar, nomres(3)
-    character(len=16) :: pheno, kdomm, nomcmd, methd1
+    character(len=8) :: nomfon, result, txcum, k8b, nommat, kcorre
+    character(len=8) :: method, nompar
+    character(len=16) :: kdomm, nomcmd, methd1, nomres(3), cara
+    character(len=32) :: pheno
     character(len=24) :: fvale
     real(kind=8) :: r8b, pseuil, rdomm, val(3), rampl
     complex(kind=8) :: cbid
@@ -242,7 +243,7 @@ subroutine pofaun()
         endif
         cara = 'WOHLER'
         call rcpare(nommat, pheno, cara, icodwo)
-        cara = 'A_BASQUI'
+        cara = 'A_BASQUIN'
         call rcpare(nommat, pheno, cara, icodba)
         cara = 'A0'
         call rcpare(nommat, pheno, cara, icodhs)
@@ -268,7 +269,7 @@ subroutine pofaun()
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif
-        cara = 'MANSON_C'
+        cara = 'MANSON_COFFIN'
         call rcpare(nommat, pheno, cara, icodma)
         if (icodma .eq. 0) then
             call fgdoma(nommat, nbcycl, zr(ivmin), zr(ivmax), zr(ivdome))

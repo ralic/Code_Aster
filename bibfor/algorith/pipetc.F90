@@ -46,10 +46,10 @@ subroutine pipetc(mat, sup, sud, mup, mud,&
     real(kind=8) :: tt2, tp(3), td(3), tpn, tdn, c0, c1, c2, n0, n1, n2, rac(4)
     real(kind=8) :: eta, pente
     integer :: cod(3), kpg, spt
-    character(len=8) :: nom(3), fami, poum
+    character(len=16) :: nom(3)
+    character(len=8) :: fami, poum
 !
-!     DATA NOM /'GC','SIGM_C','PENA_LAGR'/
-    data nom /'GC','SIGM_C','PENA_LAG'/
+    data nom /'GC','SIGM_C','PENA_LAGR'/
 ! ----------------------------------------------------------------------
 !
 ! -- SEUIL EN ENERGIE DISSIPE

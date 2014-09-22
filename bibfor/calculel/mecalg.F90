@@ -117,8 +117,6 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     call jemarq()
     chtime = ' '
     option = optioz
-    write(6,*)' hello mecalg'
-    write(6,*)' hello incr ',incr
 !
 !     INITIALISATIONS
     g = 0.d0

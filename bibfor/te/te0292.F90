@@ -55,7 +55,7 @@ subroutine te0292(option, nomte)
 !
     integer :: icodre(2)
     character(len=4) :: fami
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
 !
     aster_logical :: laxi
 !

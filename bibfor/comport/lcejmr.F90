@@ -67,7 +67,8 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     real(kind=8) :: rt0, r8bid
     real(kind=8) :: oset, doset, inst, valpar(ndim+1), rhof, visf, amin
     real(kind=8) :: invrot(ndim, ndim), rigart
-    character(len=8) :: nom(nbpa), nompar(ndim+1)
+    character(len=8) :: nompar(ndim+1)
+    character(len=16) :: nom(nbpa)
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas, ifpahm, ifhyme
 !
@@ -107,7 +108,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !--------------------------------------
     nom(1) = 'K_N'
     nom(2) = 'SIGM_MAX'
-    nom(3) = 'PENA_RUPT'
+    nom(3) = 'PENA_RUPTURE'
     nom(4) = 'PENA_CONTACT'
     nom(5) = 'ALPHA'
     nom(6) = 'K_T'

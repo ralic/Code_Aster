@@ -41,7 +41,8 @@ subroutine te0499(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: nomres(3), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(3)
     integer :: icodre(3), kpg, spt
     character(len=1) :: type
     real(kind=8) :: poids, nx, ny, valres(3), e, nu, lambda, mu, cp, cs

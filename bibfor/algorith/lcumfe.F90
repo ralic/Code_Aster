@@ -38,7 +38,7 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
     real(kind=8) :: tinstm, tinstp, epstm(12), depst(12)
     real(kind=8) :: sigm(6), sigp(6), vim(25), vip(25)
-    real(kind=8) :: dsidpt(6, 6, 2), proj(6, 6), tbid(6)
+    real(kind=8) :: dsidpt(6, 6, 2), proj(6, 6), tbid(6),bendo,kdess
 !
 ! COUPLAGE UMLV MAZARS EN NON LOCAL
 !---&s---1---------2---------3---------4---------5---------6---------7--
@@ -193,41 +193,21 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !_______________________________________________________________________
 !
     integer :: iret
-! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION DE NOMPAR
-!      CHARACTER*8     NOMRES(16),NOMPAR(3)
-    character(len=8) :: nomres(16)
+    character(len=16) :: nomres(16)
     integer :: icodre(16)
     real(kind=8) :: cfps, cfpd
-!     NSTRS --> 6 NVARI --> 20
     integer :: i, j, k, nstrs, ifou, isph
     real(kind=8) :: tdt
-! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION DE ALPHAP
-!      REAL*8  ALPHAP,YOUN,XNU,DEUMU,TROIK
     real(kind=8) :: youn, xnu
-! MODIFI DU 18 AOUT 2004 - YLP AJOUT CARACTERISTIQUES DU RETRAIT
-    real(kind=8) :: bendo, kdess
     real(kind=8) :: krs, etars, kis, etais, krd, etard, etaid
-! MODIFI DU 25 AOUT 2004 - YLP AJOUT VARIABLE DE DESSICCATION DE BAZANT
     real(kind=8) :: etafd
-! MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION
-! DE VALPAM ET VALPAP
-!      REAL*8  VALPAM(3),VALPAP(3),SIGM(6),DEPS(6)
     real(kind=8) :: cmat(15), dep(6, 6), depm(6, 6)
     real(kind=8) :: an(6), bn(6, 6), cn(6, 6), valres(16)
     real(kind=8) :: hygrm, hygrp, rbid
-! MODIFI DU 18 AOUT 2004 - YLP AJOUT DE LA DEFORMATION DE RETRAIT
     real(kind=8) :: epsrm, epsrp, epsfm(6)
-! MODIFI OCT 2004 - SMP AJOUT DILATATION THERMIQUE
-!      REAL*8 ALPHA
-! MODIFI AVR 2005 - SMP CORRECTION RETRAIT SI COUPLAGE AVEC EIB
     real(kind=8) :: kron(6)
-! MODIFI MARS 2006 "NOUVELLE" VARIABLE DE COMMANDE HYDR ET SECH
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref, tm, tp, tref
-!      INTEGER  IER
-! MODIFI JUIN 2007
     real(kind=8) :: epsthp, epsthm
-!
-! MODIFI 20 OTT 2008 - M.B.
     real(kind=8) :: tmaxp, tmaxm, younm, xnum, epsm(6), deps(6)
     real(kind=8) :: sigelm(6), sigelp(6), epsel(6)
     data     kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -399,7 +379,7 @@ subroutine lcumfe(fami, kpg, ksp, ndim, typmod,&
 !
 !  ------- CARACTERISTIQUES HYGROMETRIE H
 !
-    nomres(1)='FONC_DES'
+    nomres(1)='FONC_DESORP'
     call rcvalb(fami, kpg, ksp, '-', imate,&
                 ' ', 'ELAS', 0, ' ', [rbid],&
                 1, nomres(1), valres(1), icodre(1), 2)

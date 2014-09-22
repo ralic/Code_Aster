@@ -50,7 +50,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
     character(len=8) :: kmat, kbid
     character(len=24) :: krc
     integer ::  arc, imat, nbrc, ipos, ncmpmx,  izone, i, nbzone
-    integer :: l1, nbzmax
+    integer :: l1, nbzmax, k
     integer, pointer :: desc(:) => null()
     character(len=8), pointer :: vale(:) => null()
     parameter (ncmpmx=30)
@@ -79,7 +79,13 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
             krc = kmat//'.MATERIAU.NOMRC'
             call jeveuo(krc, 'L', arc)
             call jelira(krc, 'LONMAX', nbrc)
-            call utfk16(zk16(arc), nbrc, nomrc, ipos)
+            ipos=0
+            do k=1,nbrc
+               if ( zk32(arc+k-1) .eq. nomrc) then
+                  ipos=k
+               endif   
+            end do
+!            call utfk16(zk32(arc), nbrc, nomrc, ipos)
             if (ipos .gt. 0) then
                 nbmtrc = nbmtrc + 1
                 nommat(nbmtrc) = kmat

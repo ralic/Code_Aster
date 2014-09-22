@@ -60,7 +60,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, c0, aa_t, ga_t, ab, gb,&
 !
     integer :: icodre(24), i, j, l
     real(kind=8) :: valres(24)
-    character(len=8) :: nomres(24)
+    character(len=16) :: nomres(24)
 !
     if ((.not.( compor(1:4) .eq. 'DHRC'))) then
         call utmess('F', 'ELEMENTS4_65', sk=compor)

@@ -45,8 +45,8 @@ subroutine lcesma(mat, fami, kpg, ksp, poum, lccrma)
     integer :: iok(nbel+nbnl),idum
     real(kind=8) :: valel(nbel), valnl(nbnl), alpha, temp, tref,rdum(1)
     real(kind=8) :: e, nu
-    character(len=8),parameter,dimension(nbel) :: nomel=(/'E       ','NU      '/)
-    character(len=8),parameter,dimension(nbnl) :: nomnl=(/'C_GRAD_V','PENA_LAG'/)
+    character(len=16),parameter,dimension(nbel) :: nomel=(/'E               ','NU              '/)
+    character(len=16),parameter,dimension(nbnl) :: nomnl=(/'C_GRAD_VARI     ','PENA_LAGR       '/)
     character(len=8) :: nomdum(1)
 ! ----------------------------------------------------------------------
     real(kind=8) :: lambda, deuxmu, troisk, rigmin, pc, pr, epsth

@@ -91,7 +91,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     real(kind=8) :: d(6, 6), mdal(6), dalal
     character(len=16) :: complg(3)
     aster_logical :: cp, yapre2
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
     real(kind=8) :: rprops(3)
 ! ======================================================================
 !    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE

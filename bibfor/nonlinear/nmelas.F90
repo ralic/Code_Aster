@@ -61,8 +61,8 @@ subroutine nmelas(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: bendom, bendop, kdessm, kdessp, rac2, tm
     character(len=*) :: fami
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(3), typmod(*)
-    character(len=16) :: option
+    character(len=8) :: typmod(*)
+    character(len=16) :: nomres(3), option
 !-----------------------------------------------------------------------
     data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data epsa/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/

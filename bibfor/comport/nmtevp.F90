@@ -91,7 +91,7 @@ subroutine nmtevp(fami, kpg, ksp, ndim, typmod,&
 !
     integer :: codret(8), iter
     character(len=6) :: epsa(6)
-    character(len=8) :: nomres(8)
+    character(len=16) :: nomres(8)
     character(len=16) :: meth
 !
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/

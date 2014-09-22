@@ -40,7 +40,8 @@ subroutine te0396(option, nomte)
 !
     integer :: nno, npg, ipoids, ivf, idfdk, kp, ne, imate
     integer :: lsect, lorien, jefint, kc, igeom, i, k0, ifint, ic
-    character(len=8) :: nomres(4), elrefe
+    character(len=8) :: elrefe
+    character(len=16) :: nomres(4)
     integer :: icodre(4)
     real(kind=8) :: en(3, 2), enprim(3, 2), valres(4), granc(6), fint(6, 3)
     real(kind=8) :: y0(3), x00(3, 3), x0pg(3), rot0(3, 3), nu, gn(3), gm(3)

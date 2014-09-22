@@ -49,8 +49,9 @@ subroutine te0069(option, nomte)
     real(kind=8) :: alpha, fluxx, fluxy
     real(kind=8) :: xu, yu, xnorm
 !
-    character(len=8) :: nomres(2), elrefe, elref2, fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: elrefe, elref2, fami, poum
+    character(len=16) :: nomres(2)
+    character(len=32) :: phenom
 !
     aster_logical :: aniso, global
 !

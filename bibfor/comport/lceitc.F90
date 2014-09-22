@@ -49,10 +49,10 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
     integer :: regime, regm, i, j, cod(4), cinema
     real(kind=8) :: sc, gc, dc, h, ka, kap, gap, sk, val(4)
     real(kind=8) :: t(3), pr(3, 3), tpo(3), tno, lbd, d
-    character(len=12) :: nom(4)
+    character(len=16) :: nom(4)
     character(len=1) :: poum
 !
-    data nom /'GC','SIGM_C','PENA_LAG','CINEMATI'/
+    data nom /'GC','SIGM_C','PENA_LAGR','CINEMATIQUE'/
 !-----------------------------------------------------------------------
 !
 ! ---------------------------

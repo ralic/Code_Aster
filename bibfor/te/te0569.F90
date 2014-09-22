@@ -36,7 +36,8 @@ subroutine te0569(option, nomte)
     real(kind=8) :: matr(27, 27)
     real(kind=8) :: vtx, vty, vtz
     integer :: icodre(3)
-    character(len=8) :: nomres(3), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(3)
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&

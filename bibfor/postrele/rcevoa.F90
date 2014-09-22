@@ -65,8 +65,8 @@ subroutine rcevoa(typtab, nommat)
     complex(kind=8) :: cbid
     aster_logical :: exist, trouve
     integer :: icodre(4)
-    character(len=8) :: k8b, nomres, crit(2), nompar, nomval(4)
-    character(len=16) :: motclf, valek(4), table, concep, nomcmd
+    character(len=8) :: k8b, nomres, crit(2), nompar
+    character(len=16) :: motclf, valek(4), table, concep, nomcmd, nomval(4)
     character(len=19) :: nomf
     character(len=24) :: instan, ktheta, abscur, valk(7)
 !

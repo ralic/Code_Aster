@@ -56,7 +56,8 @@ subroutine nmedel(ndim, typmod, imate, deps, sigm,&
     integer :: ndimsi
     integer :: k, j, kpg, spt
     integer :: icodre(3)
-    character(len=8) :: nomres(3), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(3)
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
 !     INITIALISATIONS

@@ -46,8 +46,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     integer :: nbpar, kpg, spt
     real(kind=8) :: valres(nbres), valpar(2), tz0
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), nompar(2), fami, poum
-    character(len=16) :: phenom
+    character(len=8) :: nompar(2), fami, poum
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
 !
     call jemarq()
 !
@@ -88,9 +89,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
         nompar(1) ='TEMP'
         valpar(1) = c
         nomres(1) = 'D1'
-        nomres(2) = 'ALPHA_BA'
+        nomres(2) = 'ALPHA_BAZANT'
         nomres(3) = 'N'
-        nomres(4) = 'FONC_DES'
+        nomres(4) = 'FONC_DESORP'
         call rcvalb(fami, kpg, spt, poum, imate,&
                     ' ', phenom, nbpar, nompar, valpar,&
                     4, nomres, valres, icodre, 1)

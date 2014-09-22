@@ -37,7 +37,7 @@ subroutine lclbr2(fami, kpg, ksp, imate, compor,&
 ! OUT SEUIL
 ! ----------------------------------------------------------------------
     integer :: icodre(6)
-    character(len=8) :: nomres(6)
+    character(len=16) :: nomres(6)
     real(kind=8) :: valres(6)
 !
     t(1,1)=1

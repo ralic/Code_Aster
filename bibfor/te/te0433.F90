@@ -45,7 +45,7 @@ subroutine te0433(option, nomte)
 !
     integer :: codres(2), iret
     character(len=4) :: fami
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
     integer :: nddl, nno, nnos, npg, ndim, i, j, n, kpg
     integer :: jgano, ipoids, ivf, idfde, igeom, imate
     integer :: icontp, imass, idepl, idefo, inr

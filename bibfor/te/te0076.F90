@@ -47,8 +47,9 @@ subroutine te0076(option, nomte)
 !-----------------------------------------------------------------------
     parameter         (       nbres=2 )
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), elrefe, alias8
-    character(len=16) :: phenom
+    character(len=8) :: elrefe, alias8
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
     real(kind=8) :: valres(nbres)
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, theta, fluglo(2)
     real(kind=8) :: lambor(2), orig(2), p(2, 2), point(2)

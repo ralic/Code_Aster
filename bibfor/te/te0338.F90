@@ -49,8 +49,8 @@ subroutine te0338(option, nomte)
     integer :: icodre(4)
     integer :: codres
     character(len=4) :: fami
-    character(len=8) :: nomres(4)
-    character(len=16) :: optcal(12), phenom
+    character(len=32) :: phenom
+    character(len=16) :: optcal(12), nomres(4)
 !
     real(kind=8) :: sigm(6), sig1, sigwk, valres(4), epsg(6), eps1
     real(kind=8) :: m, vref, sref, seuil, dvpg, poids, vkp, dfdbid(30)

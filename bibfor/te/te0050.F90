@@ -52,8 +52,9 @@ subroutine te0050(option, nomte)
     real(kind=8) :: alpha, beta, eta, valres(nbres), valpar(nbpar), vxyz
 !
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres), nompar(nbpar)
-    character(len=10) :: phenom
+    character(len=8) :: nompar(nbpar)
+    character(len=16) :: nomres(nbres)
+    character(len=32) :: phenom
 !
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
@@ -134,10 +135,8 @@ subroutine te0050(option, nomte)
             ASSERT(idmass(2).eq. nbddl*(nbddl+1)/2)
         endif
 !
-!         nomres(1)='AMOR_ALPHA'
-!         nomres(2)='AMOR_BETA'
-        nomres(1)='AMOR_ALP'
-        nomres(2)='AMOR_BET'
+        nomres(1)='AMOR_ALPHA'
+        nomres(2)='AMOR_BETA'
         valres(1) = 0.d0
         valres(2) = 0.d0
         call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 2,&
@@ -145,8 +144,7 @@ subroutine te0050(option, nomte)
 !
     else if (option.eq.'RIGI_MECA_HYST') then
 !     ------------------------------------------
-!         nomres(1)='AMOR_HYST'
-        nomres(1)='AMOR_HYS'
+        nomres(1)='AMOR_HYST'
         valres(1) = 0.d0
         call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 1,&
                     nomres, valres, icodre, 0)

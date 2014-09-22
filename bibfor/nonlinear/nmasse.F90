@@ -37,7 +37,8 @@ subroutine nmasse(fami, kpg, ksp, poum, icodma,&
 ! OUT DEUXMU  : COEFFICIENT DE LAME 1
 ! OUT TROISK  : COEFFICIENT DE LAME 2
 !
-    character(len=8) :: nomres(2), nompar
+    character(len=8) :: nompar
+    character(len=16) :: nomres(2)
     real(kind=8) :: valres(2), valpar
     integer :: icodre(2)
 !

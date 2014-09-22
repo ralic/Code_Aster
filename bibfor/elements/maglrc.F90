@@ -31,8 +31,8 @@ subroutine maglrc(zimat, matr, delas, ecr)
     real(kind=8) :: ecr(*), alph, beta, vel
 !
     integer :: codres(15)
-    character(len=8) :: nomres(15)
-    character(len=16) :: phenom
+    character(len=16) :: nomres(15)
+    character(len=32) :: phenom
 !
     r8b = 0.d0
     call r8inir(6*6, 0.0d0, delas, 1)

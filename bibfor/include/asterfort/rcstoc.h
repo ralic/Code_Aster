@@ -19,11 +19,11 @@ interface
     subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                       valk, nbr, nbc, nbk)
         character(len=8) :: nommat
-        character(len=16) :: nomrc
+        character(len=32) :: nomrc
         integer :: nbobj
         real(kind=8) :: valr(*)
         complex(kind=8) :: valc(*)
-        character(len=8) :: valk(*)
+        character(len=16) :: valk(*)
         integer :: nbr
         integer :: nbc
         integer :: nbk

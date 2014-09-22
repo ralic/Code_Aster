@@ -49,10 +49,10 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
     real(kind=8) :: sc, gc, dc, c, h, ka, sk, val(4), tmp, ga, kap, gap
     real(kind=8) :: dn, tn, t(3), ddndtn
     integer :: cod(4)
-    character(len=8) :: nom(4)
+    character(len=16) :: nom(4)
     character(len=1) :: poum
 !
-    data nom /'GC','SIGM_C','PENA_LAG','RIGI_GLI'/
+    data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
 !-----------------------------------------------------------------------
 !
 !

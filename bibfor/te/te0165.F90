@@ -39,7 +39,7 @@ subroutine te0165(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    character(len=8) :: nomres(2)
+    character(len=16) :: nomres(2)
     integer :: icodre(2)
     real(kind=8) :: a, w(9), nx, l1(3), l2(3), l10(3), l20(3)
     real(kind=8) :: valres(2), e

@@ -154,10 +154,10 @@ subroutine op0005()
         if (nomrc .eq. 'THER_NL') nbobm = nbobm + 1
         call wkvect(noobrc//'.VALR', 'G V R', nbobm, jvalrm)
         call wkvect(noobrc//'.VALC', 'G V C', nbobm, jvalcm)
-        call wkvect(noobrc//'.VALK', 'G V K8', 2*nbobm, jvalkm)
+        call wkvect(noobrc//'.VALK', 'G V K16', 2*nbobm, jvalkm)
 !
         call rcstoc(matout, nomrc, nbobm, zr(jvalrm), zc(jvalcm),&
-                    zk8( jvalkm), nbr, nbc, nbk)
+                    zk16( jvalkm), nbr, nbc, nbk)         
         call jeecra(noobrc//'.VALR', 'LONUTI', nbr)
         call jeecra(noobrc//'.VALC', 'LONUTI', nbc)
         call jeecra(noobrc//'.VALK', 'LONUTI', nbr+nbc+2*nbk)
@@ -169,10 +169,10 @@ subroutine op0005()
     write (ifm,'(1X)')
     write (ifm,'(1X,2A)') 'MATERIAU : ', matout
     call jeveuo(matout//'.MATERIAU.NOMRC', 'L', jnomrc)
-    write (ifm,'(1X,A,A16)') 'RELATION DE COMPORTEMENT: ',zk32(jnomrc)
-    write (ifm,'(27X,A16)') (zk32(jnomrc+k-1),k=2,nbrcme)
+    write (ifm,'(1X,A,A32)') 'RELATION DE COMPORTEMENT: ',zk32(jnomrc)
+    write (ifm,'(27X,A32)') (zk32(jnomrc+k-1),k=2,nbrcme)
     write (ifm,'(1X)')
-!
+!   niv=2
     if (niv .eq. 2) then
         do 200 k = 1, nbrcme
             call codent(k, 'D0', nom)
@@ -185,15 +185,12 @@ subroutine op0005()
             call jelira(noobrc//'.VALK', 'LONUTI', nbk2)
             nbk=(nbk2-nbr-nbc)/2
             write(ifm,'(1X,2A)') 'PARAMETRES DE LA RELATION : ',zk32(jnomrc+k-1)
-            write(ifm,'(5(3X,A8,5X))') (zk8(jvalkm-1+i),i=1,nbr)
-            write(ifm,'(5(3X,G13.6))') (zr (jvalrm-1+i),i=1,nbr)
-            write(ifm,'(5(3X,A8,5X))') (zk8(jvalkm-1+i),i=nbr+1,nbr+&
-            nbc)
-            write(ifm,'(5(3X,2G13.6))')(zc (jvalcm-1+i),i=1,nbc)
-            write(ifm,'(5(3X,A8,5X))') (zk8(jvalkm-1+i), i = nbr+nbc+&
-            1, nbr+nbc+nbk)
-            write(ifm,'(5(3X,A8,5X))') (zk8(jvalkm-1+i), i = nbr+nbc+&
-            nbk+1, nbr+nbc+2*nbk)
+            write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=1,nbr)
+            write(ifm,'(5(3X,G13.6))')  (zr(jvalrm-1+i),i=1,nbr)
+            write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=nbr+1,nbr+nbc)
+            write(ifm,'(5(3X,2G13.6))') (zc(jvalcm-1+i),i=1,nbc)
+            write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=nbr+nbc+1,nbr+nbc+nbk)
+            write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=nbr+nbc+nbk+1,nbr+nbc+2*nbk)
             write(ifm,'(1X)')
 200      continue
     endif

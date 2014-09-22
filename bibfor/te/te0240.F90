@@ -45,8 +45,8 @@ subroutine te0240(option, nomte)
     parameter                 (nbres=2)
     real(kind=8) :: valpar, valres(nbres)
     integer :: codres(nbres), kpg, spt
-    character(len=8) :: nompar, nomres(nbres), nomail, fami, poum
-    character(len=16) :: ch16
+    character(len=8) :: nompar, nomail, fami, poum
+    character(len=16) :: ch16, nomres(nbres)
     real(kind=8) :: zero, c1, c2, pgl(3, 3), mat(136)
     real(kind=8) :: e, nu, g, celer
     real(kind=8) :: a, ai, xiy, xiz, alfay, alfaz, xjx, xl

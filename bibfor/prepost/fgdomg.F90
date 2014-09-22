@@ -54,9 +54,8 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
 !       OUT DOMMAG  VALEUR DU DOMMAGE
 !       ----------------------------------------------------------------
     integer :: icodwo, icodba, icodhs
-    character(len=8) :: cara
-    character(len=10) :: pheno
-    character(len=16) :: k16b
+    character(len=32) :: pheno
+    character(len=16) :: cara,k16b
     aster_logical :: lke, lhaigh
 !
 !-----------------------------------------------------------------------
@@ -74,7 +73,7 @@ subroutine fgdomg(method, nommat, nomnap, nomfon, valmin,&
     if (method .eq. 'WOHLER') then
         cara = 'WOHLER'
         call rcpare(nommat, pheno, cara, icodwo)
-        cara = 'A_BASQUI'
+        cara = 'A_BASQUIN'
         call rcpare(nommat, pheno, cara, icodba)
         cara = 'A0'
         call rcpare(nommat, pheno, cara, icodhs)

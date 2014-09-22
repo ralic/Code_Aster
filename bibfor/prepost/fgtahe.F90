@@ -42,8 +42,9 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 !
 !
     integer :: icodwo, icodma, icodba, icodhs, icodre(3)
-    character(len=8) :: nommat, nomfo1, nomnap, cara
-    character(len=16) :: pheno
+    character(len=8) :: nommat, nomfo1, nomnap
+    character(len=16) :: cara
+    character(len=32) :: pheno
 !
 !-----------------------------------------------------------------------
     integer :: nbval
@@ -71,7 +72,7 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif
-        cara = 'MANSON_C'
+        cara = 'MANSON_COFFIN'
         call rcpare(nommat, pheno, cara, icodma)
         if (icodma .ne. 0) then
             call utmess('F', 'FATIGUE1_11')
@@ -99,11 +100,11 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
         if (icodre(1) .eq. 1) then
             call utmess('F', 'FATIGUE1_24')
         endif
-        cara = 'MANSON_C'
+        cara = 'MANSON_COFFIN'
         call rcpare(nommat, pheno, cara, icodma)
         cara = 'WOHLER'
         call rcpare(nommat, pheno, cara, icodwo)
-        cara = 'A_BASQUI'
+        cara = 'A_BASQUIN'
         call rcpare(nommat, pheno, cara, icodba)
         cara = 'A0'
         call rcpare(nommat, pheno, cara, icodhs)

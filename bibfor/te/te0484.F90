@@ -46,8 +46,8 @@ subroutine te0484(option, nomte)
     parameter (nbres=2)
     character(len=4) :: fami
     integer :: icodre(nbres), kpg, spt
-    character(len=8) :: nomres(nbres), famil, poum
-    character(len=16) :: nomte, nomshb, option
+    character(len=8) ::  famil, poum
+    character(len=16) :: nomres(nbres), nomte, nomshb, option
     real(kind=8) :: sigma(120), xidepm(60)
     real(kind=8) :: fstab(12), para(2)
     real(kind=8) :: valres(nbres)

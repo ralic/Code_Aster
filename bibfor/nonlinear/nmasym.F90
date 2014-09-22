@@ -61,9 +61,10 @@ subroutine nmasym(fami, kpg, ksp, icodma, option,&
 !
     real(kind=8) :: valpar, valres(4)
     integer :: icodre(4)
-    character(len=8) :: nompar, nomela, nomasl(4), famil, poum
+    character(len=8) :: nompar, famil, poum
+    character(len=16) :: nomela, nomasl(4)
     data nomela / 'E' /
-    data nomasl / 'SY_C', 'DC_SIGM_','SY_T','DT_SIGM_' /
+    data nomasl / 'SY_C', 'DC_SIGM_EPSI','SY_T','DT_SIGM_EPSI' /
 !
 !----------INITIALISATIONS
 !

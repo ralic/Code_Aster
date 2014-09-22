@@ -20,7 +20,6 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -35,7 +34,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     integer, intent(in) :: iarret
     character(len=*), intent(in) :: nommaz
     integer, intent(out) :: icodre(nbres)
-    character(len=8), intent(in) :: nompar(nbpar), nomres(nbres)
+    character(len=8), intent(in) :: nompar(nbpar)
+    character(len=*), intent(in) :: nomres(nbres)
     real(kind=8), intent(in) :: valpar(nbpar)
     real(kind=8), intent(out) :: valres(nbres)
 ! ----------------------------------------------------------------------
@@ -75,17 +75,18 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
     integer :: nbmx, nbresp, ires, ier, nbr, nbc, nbk, iret
     integer :: nbobj, nbf, ir, ik
     parameter        ( nbmx=30 )
-    integer :: nbfp, ind
+    integer :: nbfp
     real(kind=8) :: valrep(nbmx)
     aster_logical :: change
     integer :: icodr2(nbmx)
     character(len=2) :: kstop
     character(len=32) :: nomphe, phen, phepre
-    character(len=8) :: matpre, nomrep(nbmx), nomfop(nbmx)
-    character(len=6) :: k6
+    character(len=8) :: matpre
+    character(len=16) :: nomrep(nbmx), nomfop(nbmx)
+    character(len=11) :: k11
     character(len=8) :: nommat
     real(kind=8), pointer :: valr(:) => null()
-    character(len=8), pointer :: valk(:) => null()
+    character(len=16), pointer :: valk(:) => null()
     save  matpre,phepre,nbfp,nbresp,nomrep,valrep,icodr2,nomfop
 !
     call jemarq()
@@ -130,9 +131,8 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
 !
     else
         nomphe = phen
-        call rccome(nommat, nomphe, iret, ind_nomrc=ind)
-        call codent(ind,'D0',k6)    
-        call jeexin(nommat//'.CPT.'//k6//'.VALR', iret)
+        call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)  
+        call jeexin(nommat//k11//'.VALR', iret)
         if (iret .eq. 0) then
             do 113 ires = 1, nbres
                 icodre(ires) = 1
@@ -140,11 +140,11 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar,&
             goto 999
         endif
 !
-        call jeveuo(nommat//'.CPT.'//k6//'.VALR', 'L', vr=valr)
-        call jelira(nommat//'.CPT.'//k6//'.VALR', 'LONUTI', nbr)
-        call jelira(nommat//'.CPT.'//k6//'.VALC', 'LONUTI', nbc)
-        call jeveuo(nommat//'.CPT.'//k6//'.VALK', 'L', vk8=valk)
-        call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONUTI', nbk)
+        call jeveuo(nommat//k11//'.VALR', 'L', vr=valr)
+        call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
+        call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
+        call jeveuo(nommat//k11//'.VALK', 'L', vk16=valk)
+        call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
         do 130 ires = 1, nbres
             icodre(ires) = 1
             nomfop(ires) = ' '

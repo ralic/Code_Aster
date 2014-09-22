@@ -47,7 +47,8 @@ subroutine lcroma(fami, kpg, ksp, poum, mate)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: icodre(7)
-    character(len=8) :: nomres(7), para_type
+    character(len=8) :: para_type
+    character(len=16) :: nomres(7)
     real(kind=8) ::  valres(7), pente, aire, temp, para_vale, val(1)
 ! ----------------------------------------------------------------------
 !

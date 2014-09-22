@@ -63,7 +63,7 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd,&
     real(kind=8) :: mu0v, xi0v, s0, a0, var1, var2
     real(kind=8) :: mpic, apic, sigmp1, sigc, me, ae, cohere
     integer :: cerr(32)
-    character(len=8) :: nomc(32)
+    character(len=16) :: nomc(32)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================

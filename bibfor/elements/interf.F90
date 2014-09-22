@@ -1,5 +1,5 @@
 subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
-                  xrac)
+                  xrac) 
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,12 +20,13 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0,&
 #include "asterfort/cdnfo2.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: kfonc1, kfonc2, mater, k8b
+    character(len=16) :: kfonc1, kfonc2
+    character(len=8) :: mater, k8b
     real(kind=8) :: normf, x0
     real(kind=8) :: xrac
     integer :: ier1, ier2, iter, itermx
     real(kind=8) :: fx1(1), fx2(1), fx, dfx1, dfx2, dfx, tole, err
-    character(len=16) :: phenom
+    character(len=32) :: phenom
     integer :: icodr2(1)
 !
     phenom = 'GLRC_DAMAGE'

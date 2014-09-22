@@ -65,7 +65,8 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
 ! DECLARATION LOCALE
 !
     integer :: icodre(3), lgpg
-    character(len=8) :: nomres(3), kbid, para_type
+    character(len=16) :: nomres(3)
+    character(len=8) :: kbid, para_type
     real(kind=8) :: epsthe, sigy, aire, dsde, valrm(2)
     real(kind=8) :: r8bid, valres(3), para_vale, apui, npui, rprim
     integer :: iret1, iret2
@@ -125,7 +126,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate,&
     endif
 !
     if (compor(10:14) .eq. '_LINE') then
-        nomres(1)='D_SIGM_EPSI'(1:8)
+        nomres(1)='D_SIGM_EPSI'
         nomres(2)='SY'
         call rcvalb(fami, kpg, ksp, poum, mate,&
                     ' ', 'ECRO_LINE', 0, kbid, [r8bid],&

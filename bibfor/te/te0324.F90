@@ -58,7 +58,7 @@ subroutine te0324(option, nomte)
     real(kind=8) :: x(4), y(4), z(4), c1(3), c2(3), c3(3)
     real(kind=8) :: a(3), b(3), surf, surf2
     integer :: icodre(nbres)
-    character(len=8) :: nomres(nbres)
+    character(len=16) :: nomres(nbres)
     aster_logical :: ljfr
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
@@ -92,7 +92,7 @@ subroutine te0324(option, nomte)
     nomres(1) = 'K_N'
     nomres(2) = 'AMOR_NOR'
     nomres(3) = 'AMOR_TAN'
-    nomres(4) = 'COEF_AMO'
+    nomres(4) = 'COEF_AMOR'
     valres(1) = 0.d0
     valres(2) = 0.d0
     valres(3) = 0.d0

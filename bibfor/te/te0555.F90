@@ -35,7 +35,8 @@ subroutine te0555(option, nomte)
 #include "asterfort/rcvalb.h"
 !
     integer :: icodre(1)
-    character(len=8) :: nomres(1), fami, poum
+    character(len=8) :: fami, poum
+    character(len=16) :: nomres(1)
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
     real(kind=8) :: valres(1), celer, a(18, 18), vites(18)

@@ -29,8 +29,7 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
     integer :: ndim
     integer :: ndimsi
     character(len=*) :: fami
-    character(len=8) :: nomres(4)
-    character(len=16) :: compor(*)
+    character(len=16) :: compor(*), nomres(4)
     real(kind=8) :: deps(6), epsm(6), eps(6), valres(4), epsmax, eps2, vepsm
     real(kind=8) :: veps(6)
     real(kind=8) :: veps2, instam, instap, dt, tmax, tmin, temp

@@ -27,7 +27,7 @@ interface
         character(len=16) :: nomcri
         integer :: ncycl(nbvec)
         integer :: jgdeq
-        character(len=8) :: grdvie
+        character(len=16) :: grdvie
         character(len=16) :: forvie
         aster_logical :: post
         integer :: jdomel

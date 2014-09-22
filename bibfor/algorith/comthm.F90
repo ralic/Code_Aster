@@ -196,7 +196,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                 kh, rho11, phi0, pvp0, sat,&
                 retcom, crit, tbiot, vihrho, vicphi,&
                 vicpvp, vicsat, instap, angmas, aniso,&
-                phenom)
+                phenom)              
 !
     if (retcom .ne. 0) then
         goto 9000

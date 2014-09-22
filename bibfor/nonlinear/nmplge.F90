@@ -113,7 +113,7 @@ subroutine nmplge(ndim, nno1, vff1, idfde1, nno2,&
     poum='+'
     call rcvalb(fami, kpg, spt, poum, mate,&
                 ' ', 'NON_LOCAL', 0, ' ', [0.d0],&
-                1, 'LONG_CAR', lc, k2, 1)
+                1, 'LONG_CARA', lc, k2, 1)
     c = lc(1)**2
     do 5 g = 1, npg
         cod(g)=0

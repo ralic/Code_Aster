@@ -42,8 +42,9 @@ subroutine te0066(option, nomte)
 !.......................................................................
 !
 !
-    character(len=8) :: nompar, fami, poum, nomres(3)
-    character(len=16) :: phenom
+    character(len=8) :: nompar, fami, poum
+    character(len=16) :: nomres(3)
+    character(len=32) :: phenom
     integer :: icodre(3)
     real(kind=8) :: valpar, lambda(1), poids, epot, valres(3), lambor(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), flux, fluy, fluz

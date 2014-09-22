@@ -100,7 +100,8 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
     character(len=1) :: c1
     integer :: icodre(20), test
-    character(len=8) :: nomres(20), nomcle(5), acier(4)
+    character(len=16) :: nomres(20)
+    character(len=8) :: nomcle(5), acier(4)
 !
     aster_logical :: resi, rigi
 !
@@ -189,8 +190,8 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     nomres(2)='NU'
     nomres(3)='F_ALPHA'
     nomres(4)='C_ALPHA'
-    nomres(5)='PHASE_REFE'(1:8)
-    nomres(6)='EPSF_EPSC_TREF'(1:8)
+    nomres(5)='PHASE_REFE'
+    nomres(6)='EPSF_EPSC_TREF'
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
@@ -219,7 +220,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
             nomres(3) ='F3_SY'
             nomres(4) ='F4_SY'
             nomres(5) ='C_SY'
-            nomres(6) ='SY_MELANGE'(1:8)
+            nomres(6) ='SY_MELANGE'
         endif
 !
         if (compor(1)(1:6) .eq. 'META_V') then
@@ -258,14 +259,14 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 compor(1)(1:13) .eq. 'META_V_INL_RE' .or. compor(1)(1:16) .eq.&
                 'META_V_INL_PT_RE') then
 !
-                nomres(1) ='C_F1_THETA'(1:8)
-                nomres(2) ='C_F2_THETA'(1:8)
-                nomres(3) ='C_F3_THETA'(1:8)
-                nomres(4) ='C_F4_THETA'(1:8)
-                nomres(5) ='F1_C_THETA'(1:8)
-                nomres(6) ='F2_C_THETA'(1:8)
-                nomres(7) ='F3_C_THETA'(1:8)
-                nomres(8) ='F4_C_THETA'(1:8)
+                nomres(1) ='C_F1_THETA'
+                nomres(2) ='C_F2_THETA'
+                nomres(3) ='C_F3_THETA'
+                nomres(4) ='C_F4_THETA'
+                nomres(5) ='F1_C_THETA'
+                nomres(6) ='F2_C_THETA'
+                nomres(7) ='F3_C_THETA'
+                nomres(8) ='F4_C_THETA'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
                             ' ', 'META_RE', 0, '  ', [0.d0],&
@@ -409,10 +410,10 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
                 nomres(2) = 'F2_K'
                 nomres(3) = 'F3_K'
                 nomres(4) = 'F4_K'
-                nomres(5) = 'F1_D_F_META'(1:8)
-                nomres(6) = 'F2_D_F_META'(1:8)
-                nomres(7) = 'F3_D_F_META'(1:8)
-                nomres(8) = 'F4_D_F_META'(1:8)
+                nomres(5) = 'F1_D_F_META'
+                nomres(6) = 'F2_D_F_META'
+                nomres(7) = 'F3_D_F_META'
+                nomres(8) = 'F4_D_F_META'
 !
                 call rcvalb(fami, kpg, ksp, c1, imat,&
                             ' ', 'META_PT', 0, ' ', [0.d0],&
@@ -447,11 +448,11 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
 !
         if (compor(1)(1:9) .eq. 'META_P_IL' .or. compor(1)(1:9) .eq. 'META_V_IL') then
 !
-            nomres(1) ='F1_D_SIGM_EPSI'(1:8)
-            nomres(2) ='F2_D_SIGM_EPSI'(1:8)
-            nomres(3) ='F3_D_SIGM_EPSI'(1:8)
-            nomres(4) ='F4_D_SIGM_EPSI'(1:8)
-            nomres(5) ='C_D_SIGM_EPSI'(1:8)
+            nomres(1) ='F1_D_SIGM_EPSI'
+            nomres(2) ='F2_D_SIGM_EPSI'
+            nomres(3) ='F3_D_SIGM_EPSI'
+            nomres(4) ='F4_D_SIGM_EPSI'
+            nomres(5) ='C_D_SIGM_EPSI'
 !
             call rcvalb(fami, kpg, ksp, c1, imat,&
                         ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&

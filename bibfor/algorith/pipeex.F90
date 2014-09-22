@@ -40,10 +40,10 @@ subroutine pipeex(mat, sup, sud, mup, mud,&
     real(kind=8) :: sc, gc, dc, h, r, ka, ga, sk, val(3), tmp
     real(kind=8) :: tt, tpn, tdn, tauref
     integer :: cod(3), kpg, spt
-    character(len=8) :: nom(3), fami, poum
+    character(len=16) :: nom(3)
+    character(len=8) ::  fami, poum
 !
-!     DATA NOM /'GC','SIGM_C','PENA_LAGR'/
-    data nom /'GC','SIGM_C','PENA_LAG'/
+    data nom /'GC','SIGM_C','PENA_LAGR'/
 ! ----------------------------------------------------------------------
 !
 !

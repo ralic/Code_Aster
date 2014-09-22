@@ -48,10 +48,10 @@ subroutine te0051(option, nomte)
     real(kind=8) :: alpha, beta
 !-----------------------------------------------------------------------
     parameter (nbres=3)
-    character(len=8) :: nomres(nbres)
     integer :: icodre(nbres)
     character(len=8) :: fami, poum
-    character(len=16) :: nomte, option, phenom
+    character(len=16) :: nomres(nbres), nomte, option
+    character(len=32) :: phenom
     real(kind=8) :: valres(nbres), lambda, theta, fluloc(3), fluglo(3)
     real(kind=8) :: valpar(nbres), lambor(3), orig(3), dire(3)
     real(kind=8) :: p(3, 3), dfdx(27), dfdy(27), dfdz(27), poids

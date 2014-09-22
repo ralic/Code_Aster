@@ -95,7 +95,7 @@ subroutine te0489(option, nomte)
     real(kind=8) :: sigeqn
     character(len=4) :: fami
     character(len=8) :: para_type
-    character(len=8) :: nomres(3)
+    character(len=16) :: nomres(3)
     character(len=16) :: compor
 ! ----------------------------------------------------------------------
 !
