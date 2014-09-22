@@ -3,17 +3,17 @@
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
@@ -169,7 +169,7 @@ class PostMiss(object):
         if self.acce_z:
             _zff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_z, METHODE=self.methode_fft,),)
             self.zff = _zff
-            
+
         if self.depl_x:
             _xff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_x, METHODE=self.methode_fft,),)
             self.xff = _xff
@@ -178,7 +178,7 @@ class PostMiss(object):
             self.yff = _yff
         if self.depl_z:
             _zff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_z, METHODE=self.methode_fft,),)
-            self.zff = _zff            
+            self.zff = _zff
 
     def set_freq_dlh(self):
         """Déterminer les fréquences du calcul harmonique."""
@@ -410,7 +410,7 @@ class PostMissTran(PostMiss):
                                    AMOR_MODAL=_F(
                                    AMOR_REDUIT=self.param['AMOR_REDUIT'],),
                                    EXCIT=excit,
-                                   **opts)        
+                                   **opts)
         return dyge
 
 
@@ -689,7 +689,7 @@ class PostMissControl(PostMiss):
                 self.gen_funct(nompc, 'ACCE', 'FONC_Y', fct[1], self.tf_yff)
             if self.acce_z:
                 self.gen_funct(nompc, 'ACCE', 'FONC_Z', fct[2], self.tf_zff)
- 
+
     def sortie(self):
         """Prépare et produit les concepts de sortie"""
         self.parent.DeclareOut('tabout', self.parent.sd)
@@ -775,15 +775,6 @@ class PostMissFichierTemps(PostMissFichier):
         self.Z_temps = NP.zeros((self.nrows, self.ncols, self.L_points), float)
         self.Fs_temps = NP.zeros((self.ncols, self.L_points), float)
 
-        # Noms des fichiers à utiliser
-        lfich = ( "impe_Laplace", "forc_Laplace")
-        lfich = map(self._fichier_tmp, lfich)
-        # chemins relatifs au _WRKDIR sinon trop longs pour Miss
-        lfich = map(osp.basename, lfich)
-        self._fich_impe =  lfich[0]
-        self._fich_forc =  lfich[1]
-
-
     def execute(self):
         """Lance le post-traitement (passage Laplace-Temps)"""
         self.init_attr()
@@ -797,7 +788,7 @@ class PostMissFichierTemps(PostMissFichier):
 
     def calc_impe_temps(self):
         """Calcul de l'impédance dans le domaine temporel"""
-        fid = open(self._fich_impe, 'r')
+        fid = open(self.fname("impe_Laplace"), 'r')
 
         impe_Laplace = NP.zeros((self.nrows, self.ncols, self.nbr_freq), complex)
         k = -1
@@ -986,7 +977,7 @@ class PostMissFichierTemps(PostMissFichier):
 
     def impr_impe(self, Zdt, unite_type_impe):
         """Ecriture d'une impédance quelconque dans le fichier de sortie en argument"""
-        fname = osp.join( self.param['_WRKDIR'], self.param['PROJET'] + '.' + str(unite_type_impe) )
+        fname = self.fname(unite_type_impe)
         fid = open(fname, 'w')
 
         if self.param['NB_MODE'] < 6:
@@ -1013,7 +1004,7 @@ class PostMissFichierTemps(PostMissFichier):
     def ecri_forc(self, fs_temps):
         """Ecriture de l'effort sismique dans le fichier de sortie"""
         ul = self.param['EXCIT_SOL']['UNITE_RESU_FORC']
-        fname = osp.join( self.param['_WRKDIR'], self.param['PROJET'] + '.' + str(ul) )
+        fname = self.fname(ul)
         fid = open(fname, 'w')
 
         if self.param['NB_MODE'] < 6:
@@ -1074,7 +1065,7 @@ class PostMissFichierTemps(PostMissFichier):
 
 class ListPost(list):
     """Définit une liste de post-traitement à enchainer"""
-    
+
     def set_filename_callback(self, callback):
         """Enregistre le callback nommant les fichiers"""
         for post in self:

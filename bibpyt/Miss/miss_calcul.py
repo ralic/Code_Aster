@@ -308,7 +308,8 @@ class CalculMiss(object):
         return osp.join(self.param['_WRKDIR'], fich)
 
     def _fichier_tmp_local(self, ext):
-        """Retourne le nom d'un fichier MISS en local"""
+        """Retourne le nom d'un fichier MISS en relatif par rapport au
+        répertoire d'exécution de Miss"""
         return osp.join('./', osp.basename(self._fichier_tmp(ext)))
 
 
@@ -361,7 +362,7 @@ class CalculMissFichierTemps(CalculMiss):
     def init_attr(self):
         """Initialisations"""
         rank, size = aster_core.MPI_CommRankSize()
-        cwd = os.getcwd()
+        cwd = osp.join(os.getcwd(), self.param['_WRKDIR'])
         host = socket.gethostname()
         path = "{}:{}".format(host, cwd)
         print "Processor #{}/{} is working in '{}'".format(rank, size, path)
@@ -381,14 +382,6 @@ class CalculMissFichierTemps(CalculMiss):
         factor = self.param['COEF_SURECH']
         self.L_points = factor*N_inst
         self.nbr_freq = self.L_points/2 + 1
-
-        # Noms des fichiers à utiliser
-        # chemins relatifs au _WRKDIR sinon trop longs pour Miss
-        # _flapl_impe : concatenation des N fichiers sur proc #0
-        self._flapl_impe = self._fichier_tmp_local("impe_Laplace")
-        self._flapl_forc = self._fichier_tmp_local("forc_Laplace")
-        self._fichier_impe = self._fichier_tmp("resu_impe")
-        self._fichier_forc = self._fichier_tmp("resu_forc")
 
         # Variables à rajouter dans 'param'
         self.param.set('LIST_FREQ', None)
@@ -411,8 +404,10 @@ class CalculMissFichierTemps(CalculMiss):
             CalculMiss.execute(self)
             copie_fichier(self._fichier_tmp("OUT"), self._fichier_tmp("OUT.inci"))
             copie_fichier(self._fichier_tmp("sol"), self._fichier_tmp("sol.inci"))
-            copie_fichier(self._fichier_forc, self._flapl_forc)
-            copie_fichier(self._fichier_forc, self._fichier_aster(self.param['EXCIT_SOL']['UNITE_RESU_FORC']))
+            copie_fichier(self._fichier_tmp("resu_forc"),
+                          self._fichier_tmp("forc_Laplace"))
+            copie_fichier(self._fichier_tmp("resu_forc"),
+                          self._fichier_aster(self.param['EXCIT_SOL']['UNITE_RESU_FORC']))
 
         CalculMiss.cree_fichier_sol(self)
         aster.affiche("MESSAGE",'BOUCLE SUR LES FREQUENCES COMPLEXES')
@@ -431,7 +426,7 @@ class CalculMissFichierTemps(CalculMiss):
 
         for k in range(self.nbr_freq):
             # round-robin partition
-            print "Frequency {} will be computed by proc #{}".format(k, rank)
+            print "Frequency {} will be computed by proc #{}".format(k, k % size)
             if k % size != rank:
                 continue
             print "Compute frequency {} on proc #{}".format(k, rank)
@@ -450,25 +445,27 @@ class CalculMissFichierTemps(CalculMiss):
             aster.affiche("MESSAGE",'FREQUENCE COMPLEXE COURANTE =  '+str00)
             CalculMiss.execute(self)
             resname = self._fichier_tmp('resu_impe_%04d' % k)
-            copie_fichier(self._fichier_impe, resname)
+            copie_fichier(self._fichier_tmp("resu_impe"), resname)
 
             if rank != 0:
                 send_file(resname, self._results_path[0])
 
         # libérer la structure contenant les données numériques
         CalculMiss.init_data(self)
+        aster_core.MPI_Barrier()
 
     def build_global_file(self):
         """Build the file by concatenating those on each frequency"""
-        rank = aster_core.MPI_CommRankSize()[0]
+        rank, size = aster_core.MPI_CommRankSize()
         if rank == 0:
-            fd = open(self._flapl_impe, 'w')
+            fimpe = self._fichier_tmp("impe_Laplace")
+            fd = open(fimpe, 'w')
             for k in range(self.nbr_freq):
                 resname = self._fichier_tmp('resu_impe_%04d' % k)
                 fd.write(open(resname, 'r').read())
             fd.close()
-            for k in range(1, self.nbr_freq):
-                send_file(self._flapl_impe, self._results_path[k])
+            for k in range(1, size):
+                send_file(fimpe, self._results_path[k])
         aster_core.MPI_Barrier()
 
     def cree_commande_miss(self):
