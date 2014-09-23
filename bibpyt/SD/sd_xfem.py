@@ -74,8 +74,6 @@ class sd_fiss_xfem(AsBase):
 
 # I.3) objets relatifs a la propagation
 
-    PRO_MES_EL  = Facultatif(sd_cham_elem(SDNom(nomj='.PRO.MES_EL')))
-    PRO_NORMAL  = Facultatif(sd_cham_elem(SDNom(nomj='.PRO.NORMAL')))
 #   objets relatifs a la localisation du domaine de calcul
     PRO_RAYON_TORE  = Facultatif(AsVR(SDNom(nomj='.PRO.RAYON_TORE'),lonmax=1,))
     PRO_NOEUD_TORE  = Facultatif(AsVL(SDNom(nomj='.PRO.NOEUD_TORE')))
@@ -100,7 +98,6 @@ class sd_fiss_xfem(AsBase):
         sdu_ensemble((self.FONDFISS, self.FONDMULT, self.BASEFOND))
 
         # si ....
-        sdu_ensemble((self.PRO_MES_EL.CELD, self.PRO_NORMAL.CELD))
         sdu_ensemble((self.PRO_RAYON_TORE, self.PRO_NOEUD_TORE))
         sdu_ensemble((self.GRILLE_MODELE, self.GRILLE_LNNO.DESC, self.GRILLE_GRLNNO.DESC))
         sdu_ensemble((self.GRILLE_LTNO.DESC, self.GRILLE_GRLTNO.DESC))
