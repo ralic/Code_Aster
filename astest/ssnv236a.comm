@@ -1,0 +1,339 @@
+#  TITRE FLUAGE BIAXIAL (Gopola)
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#  TEST LOI DE TEST LOI KIT_RGI (module FLUA_PORO_BETON)
+# -----------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+
+Mail=LIRE_MAILLAGE(FORMAT='MED', );
+
+M=CREA_MAILLAGE(
+             MAILLAGE=Mail,
+             QUAD_LINE=_F(TOUT='OUI',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_INF',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_SUP',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_GCH',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_DRT',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_AVT',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_ARR',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='VOL1',),);
+
+MO=AFFE_MODELE(MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),);
+
+M=MODI_MAILLAGE(reuse =M,
+                MAILLAGE=M,
+                ORIE_PEAU_3D=_F(GROUP_MA=('S_ARR','S_DRT',),),);
+
+rc1=29.;
+tref0=120./86400.;
+youn1=41838.;
+nu1=0.13;
+mu11=(youn1/2.)/(1.+nu1);
+k11=(youn1/3.)/(1.-(2.*nu1));
+
+e2lim1=-100./k11;
+
+E=DEFI_CONSTANTE(VALE=youn1,);
+
+NU=DEFI_CONSTANTE(VALE=nu1,);
+
+ALPHA=DEFI_CONSTANTE(VALE=0.00001,);
+
+
+BETON=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
+                                   NU    = NU,
+                                   TEMP_DEF_ALPHA=20.,
+                                   ALPHA   =ALPHA,
+                                   K_DESSIC=0.,
+                                   B_ENDOGE=0.,RHO=2400),
+             PORO_BETON          =_F(
+                                    HYDS =0.2
+                                   ,F_C =rc1
+                                   ,F_T =3
+                                   ,EPS_COMP =2.e-3
+                                   ,EPS_TRAC=1.3e-4
+                                   ,EKVP=3.5e-3
+                                   ,CBIO =0.3
+                                   ,MODU_EAU=0
+                                   ,SFLD =27.
+                                   ,MODU_GEL=100.0
+                                   ,VOL_GEL=0.01
+                                   ,PORO=0.12
+                                   ,TKVP=1.0
+                                   ,NRJA=36500.
+                                   ,MSHR=0
+                                   ,KD=k11
+                                   ,MU=mu11
+                                   ,DT80=0.3
+                                   ,STMP=1.0
+                                   ,KTMP=4.5,
+                                   Y1SY= 20.,
+                                   TAU1= 1.5,
+                                   TAU2=22.,
+                                   EKFL=3.1e-4,
+                                   DFMX=1.,
+                                   TREF  = tref0, 
+                                   GFTL  = 10.e-4,
+                                   GFCL  = 10.e-2,
+                                   WREF  = 5e-6,
+                                   TPHI  = 1.0,
+                                   ANG_CRIT  = 0.15,
+                                   SREF  = 5.,
+                                   VREF  = 3.17e-4,
+                                   VMAX  = 3.17e-4,
+                                   KWB   = 10,
+                                   COVS  = 0.0,),);
+
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDR=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_VARC',
+               NOM_CHAM='HYDR_NOEU',
+               AFFE=(
+               _F(CHAM_GD=HYDRI,
+                  INST=0.0,),
+               _F(CHAM_GD=HYDRF,
+                  INST=100.,),),);
+
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=20,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=20,),);
+
+TEMP=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=TEMPI,
+                  INST=0.0,),
+               _F(CHAM_GD=TEMPF,
+                  INST=100.,),),);
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=BETON,),
+                      AFFE_VARC=(_F(TOUT='OUI',
+                                    NOM_VARC='HYDR',
+                                    EVOL=HYDR,
+                                    NOM_CHAM='HYDR_NOEU',),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='TEMP',
+                                    EVOL=TEMP,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=20.0,),
+                                ),
+                                    );
+
+Fonc1=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(0.0,0.,
+                          0.1,1,28.,1,28.1,0.0001,200,0.0001
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+                   
+
+char1=AFFE_CHAR_MECA(MODELE=MO,
+                      PRES_REP=_F(GROUP_MA='S_DRT',
+                                  PRES=12.54,),);
+char2=AFFE_CHAR_MECA(MODELE=MO,
+                      PRES_REP=_F(GROUP_MA='S_ARR',
+                                  PRES=7.25,),);
+
+CL=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_NO='S_INF',
+                               DZ=0,),
+                            _F(GROUP_NO='S_GCH',
+                               DX=0,),
+                            _F(GROUP_NO='S_AVT',
+                               DY=0,),),
+);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=(_F(JUSQU_A=0.2,
+                                    PAS=0.025),
+                                 _F(JUSQU_A=10,
+                                    PAS=0.2),
+                                 _F(JUSQU_A=28,
+                                    PAS=1.),
+                                 _F(JUSQU_A=28.2,
+                                    PAS=0.01),
+                                 _F(JUSQU_A=30,
+                                    PAS=0.2),
+                                 _F(JUSQU_A=50,
+                                    PAS=2.),
+                                 ),);
+
+U=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=(_F(CHARGE=char1,
+                               FONC_MULT=Fonc1,),
+  _F(CHARGE=char2,
+                               FONC_MULT=Fonc1,),
+                          _F(CHARGE=CL,),),
+                   COMPORTEMENT=_F(RELATION = 'KIT_DDI', 
+                                RELATION_KIT =('ENDO_PORO_BETON',
+      'FLUA_PORO_BETON'),),
+                   INCREMENT=_F(LIST_INST=L_INST,
+                                INST_INIT=0,),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1e-5,
+                                 ITER_GLOB_MAXI=100,
+                                 ARRET='OUI',),
+                   TITRE='BENCH-B LOI ENDO_PORO_BETON',);
+
+U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO','SIEF_NOEU'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO','EPSI_NOEU'))
+
+
+
+# VALEURS DE NON-REGRESSION
+TEST_RESU(RESU=(_F(INST=28.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.000525687414,
+                   VALE_REFE=-0.000525687414,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(INST=28.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.000254732324139,
+                   VALE_REFE=-0.000254732324139,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(INST=50.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.000177467160317,
+                   VALE_REFE=-0.000177467160317,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(INST=50.0,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-8.59952530761E-05,
+                   VALE_REFE=-8.59952530761E-05,
+                   PRECISION=5.0000000000000001E-3,
+                   MAILLE='M1',),
+                ),
+          )
+
+# VALEURS EXPERIMENTALES
+TEST_RESU(RESU=(_F(INST=28.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.000525687414,
+                   VALE_REFE=-5.1500000000000005E-4,
+                   PRECISION=0.05,
+                   MAILLE='M1',),
+                _F(INST=28.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.000254732324139,
+                   VALE_REFE=-2.33E-4,
+                   PRECISION=0.1,
+                   MAILLE='M1',),
+                _F(INST=50.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.000177467160317,
+                   VALE_REFE=-1.75E-4,
+                   PRECISION=0.05,
+                   MAILLE='M1',),
+                _F(INST=50.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N19',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-8.59952530761E-05,
+                   VALE_REFE=-9.0000000000000006E-05,
+                   PRECISION=0.05,
+                   MAILLE='M1',),
+                ),
+          )
+
+
+
+FIN();

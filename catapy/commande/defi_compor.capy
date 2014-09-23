@@ -117,6 +117,9 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                                        "BETON_UMLV_FP",
                                        "ROUSS_PR",
                                        "BETON_DOUBLE_DP",
+                                       "ENDO_PORO_BETON",
+                                       "FLUA_PORO_BETON", 
+                                       "RGI_BETON",
                                        ),),
 # on pourrait ajouter TOUT_GROUP_FIBRE
 

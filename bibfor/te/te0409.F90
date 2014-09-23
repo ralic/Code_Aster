@@ -23,6 +23,7 @@ subroutine te0409(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/crgdm.h"
@@ -64,7 +65,7 @@ subroutine te0409(option, nomte)
 !
     integer :: codret
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
-    real(kind=8) :: ul(6, 4), dul(6, 4)
+    real(kind=8) :: ul(6, 4), dul(6, 4),angmas(3)
     real(kind=8) :: matloc((6*4)*(6*4+1)/2), vecloc(6, 4)
     character(len=16) :: option, nomte, compor
 !
@@ -594,10 +595,11 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
+                call r8inir(3, r8vide(), angmas, 1)
                 call nmcoup('RIGI', ipg, 1, 3, k8bid,&
                             zi(imate), zk16(icompo), lbid, zr(icarcr), r8bid,&
                             r8bid, 6, epsm, deps, 6,&
-                            sigm, ecr, option, 1, win,&
+                            sigm, ecr, option, angmas, 1, win,&
                             sig, ecrp, 36, dsidep, 1,&
                             wout, codret)
             else

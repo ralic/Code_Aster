@@ -150,7 +150,7 @@ subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
             call nmcoup(fami, kpg, ksp, ndim, typmod,&
                         imate, compor, cp, crit, instam,&
                         instap, neps, epsm, deps, nsig,&
-                        sigm, vim, option, nwkin, wkin,&
+                        sigm, vim, option, angmas, nwkin, wkin,&
                         sigp, vip, ndsde, dsidep, nwkout,&
                         wkout, codret)
         else

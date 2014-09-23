@@ -1,0 +1,330 @@
+#  TITRE Loi de comportement KIT_RGI : Influence de la température dans l'évolution du fluage
+# TEMPERATURE 50°C
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#  TEST LOI DE TEST LOI KIT_RGI (module FLUA_PORO_BETON)
+# -----------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+mail=LIRE_MAILLAGE(FORMAT='MED',);
+
+
+
+mod=AFFE_MODELE(MAILLAGE=mail,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),);
+
+youn1=41600.;
+nu1=0.28;
+rc1=84;
+rt1=2.4;
+ept1=rt1/youn1;
+
+E=DEFI_CONSTANTE(VALE=youn1,);
+
+Nu=DEFI_CONSTANTE(VALE=nu1,);
+
+ALPHA=DEFI_CONSTANTE(VALE=0.0,);
+
+mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
+                                   NU    = Nu,
+                                   TEMP_DEF_ALPHA=20.,
+                                   ALPHA   =ALPHA,
+                                   K_DESSIC=0.,
+                                   B_ENDOGE=0.,RHO=2300),
+             PORO_BETON          =_F(HYDS = 0.2,
+                                   F_C    = rc1,
+                                   F_T    = rt1,
+                                   EPS_COMP   = 2.e-3,
+                                   EPS_TRAC   = ept1,
+                                   EKVP  = 3.5e-3,
+                                   CBIO = 0.3,
+                                   MODU_EAU  = 0.,
+                                   SFLD  = 27.,
+                                   MODU_GEL    = 0.0,
+                                   VOL_GEL   = 0.0,
+                                   PORO  = 0.12,
+                                   TKVP  = 1.0,
+                                   NRJA  = 1.5e4,
+                                   MSHR  = 0.,
+                                   KD    = 0,
+                                   MU    = 0,
+                                   DT80  = 0.28,
+                                   GFTL  = 10.e-4,
+                                   GFCL  = 10.e-2,
+                                   WREF  = 5e-6,
+                                   TPHI  = 1.0,
+                                   ANG_CRIT  = 1,
+                                   SREF  = 5.,
+                                   VREF  = 4.e-4,
+                                   VMAX  = 10.e-4,
+                                   KWB   = 7.0,
+                                   COVS  = 0.0, 
+                                   STMP=1.,
+                                   KTMP=5.,
+                                   Y1SY= 10.,
+                                   TAU1= 10,
+                                   TAU2=50.,
+                                   EKFL=4.0e-4,
+                                   DFMX=1.,
+                                   TREF  = 1.0, ),);
+
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDR=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_VARC',
+               NOM_CHAM='HYDR_NOEU',
+               AFFE=(
+               _F(CHAM_GD=HYDRI,
+                  INST=0.0,),
+               _F(CHAM_GD=HYDRF,
+                  INST=350.,),),);
+
+SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=0.12,),);
+
+SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=0.12,),);
+
+SECH=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=SECHI,
+                  INST=0.0,),
+               _F(CHAM_GD=SECHF,
+                  INST=350.0,),),);
+
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=50,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=50,),);
+
+TEMP=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=TEMPI,
+                  INST=0.0,),
+               _F(CHAM_GD=TEMPF,
+                  INST=350.,),),);
+
+afmat=AFFE_MATERIAU(MAILLAGE=mail,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=mat,),
+                      AFFE_VARC=(_F(TOUT='OUI',
+                                    NOM_VARC='HYDR',
+                                    EVOL=HYDR,
+                                    NOM_CHAM='HYDR_NOEU',),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='SECH',
+                                    EVOL=SECH,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=0.12,),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='TEMP',
+                                    EVOL=TEMP,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=20.,),
+                                ),
+                                    );
+
+Fonc1=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(0.0,0.,
+                          0.1,1.,350.,1.0,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+char1=AFFE_CHAR_MECA(MODELE=mod,
+                      PRES_REP=_F(GROUP_MA='SXY1',
+                                  PRES=25.8,),);
+
+CL=AFFE_CHAR_MECA(MODELE=mod,
+                  DDL_IMPO=(_F(GROUP_NO='sxz0no',
+                               DY=0,),
+                            _F(GROUP_NO='sxy0no',
+                               DZ=0,),
+                            _F(GROUP_NO='syz0no',
+                               DX=0,),),
+);
+
+litps=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=(_F(JUSQU_A=0.2,
+                                    PAS=0.025),
+                                 _F(JUSQU_A=10,
+                                    PAS=0.2),
+                                 _F(JUSQU_A=350,
+                                    PAS=2.),
+                                 ),);
+
+liarc=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=(_F(JUSQU_A=0.2,
+                                    PAS=0.025),
+                                 _F(JUSQU_A=10,
+                                    PAS=0.2),
+                                 _F(JUSQU_A=350,
+                                    PAS=2.),
+                                 ),);
+
+RESU=STAT_NON_LINE(MODELE=mod,
+                   CHAM_MATER=afmat,
+                   EXCIT=(_F(CHARGE=char1,
+                               FONC_MULT=Fonc1,),
+                          _F(CHARGE=CL,),),
+                   COMPORTEMENT=_F(RELATION = 'KIT_DDI', 
+                                RELATION_KIT =('ENDO_PORO_BETON',
+                                'FLUA_PORO_BETON'),),
+                   INCREMENT=_F(LIST_INST=litps,
+                                INST_INIT=0,),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1e-5,
+                                 ITER_GLOB_MAXI=100,
+                                 ARRET='OUI',),
+          ARCHIVAGE=_F(LIST_INST = liarc),
+                   TITRE='BENCH-B LOI KIT_RGI',);
+
+
+
+
+RESU=CALC_CHAMP(reuse =RESU,
+                 MODELE=mod,
+                 RESULTAT=RESU,
+                 TOUT='OUI',
+                 CONTRAINTE='SIEF_ELNO',
+                 DEFORMATION='EPSI_ELNO',);
+
+# VALEURS DE NON-REGRESSION
+TEST_RESU(RESU=(_F(INST=1,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.000649737723697,
+                   VALE_REFE=-0.000649737723697,
+                   CRITERE='ABSOLU',
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(INST=50,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.00106673155169,
+                   VALE_REFE=-0.00106673155169,
+                   PRECISION=5.0E-5,
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(INST=200,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.00131704464589,
+                   VALE_REFE=-0.00131704464589,
+                   PRECISION=5.0E-5,
+                   CRITERE='ABSOLU',
+                   MAILLE='M1',),
+                _F(INST=350,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.00142217806342,
+                   VALE_REFE=-0.00142217806342,
+                   CRITERE='ABSOLU',
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                ),
+          )
+
+# VALEURS EXPERIMENTALES
+TEST_RESU(RESU=(_F(INST=28,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.000971275886694,
+                   VALE_REFE=-0.000963,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.00005,
+                   MAILLE='M1',),
+                _F(INST=74,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.00113509689347,
+                   VALE_REFE=-0.001106,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.00005,
+                   MAILLE='M1',),
+                _F(INST=300,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RESU,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N7',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-0.00139311161787,
+                   VALE_REFE=-0.001434,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.00005,
+                   MAILLE='M1',),
+                ),
+          )
+
+FIN();
+

@@ -36,6 +36,9 @@ cata_msg={
  La loi de fluage %(k1)s n'est pas autorisée dans le couplage fluage/fissuration (KIT_DDI).
 """),
 
+7 : _(u"""Dans le KIT_DDI, FLUA_PORO_BETON ne peux être couplé qu’avec le modèle d’endommagement ENDO_PORO_BETON. 
+"""),
+
 49: _(u"""
  Pour un modèle de type GRAD_VARI, le KIT_DDI ne peut pas coupler le comportement <%(k1)s> avec <%(k2)s>.
 """),

@@ -21,7 +21,7 @@ interface
     subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                       imat, comp, lcpdb, crit, timed,&
                       timef, neps, epsdt, depst, nsig,&
-                      sigd, vind, opt, nwkin, wkin,&
+                      sigd, vind, opt,angmas, nwkin, wkin,&
                       sigf, vinf, ndsde, dsde, nwkout,&
                       wkout, iret)
         character(len=*) :: fami
@@ -42,6 +42,7 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
         character(len=16) :: opt
+        real(kind=8) :: angmas(*)
         integer :: nwkin
         real(kind=8) :: wkin(*)
         real(kind=8) :: sigf(6)

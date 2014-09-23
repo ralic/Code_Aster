@@ -3,9 +3,12 @@ subroutine lc0066(fami, kpg, ksp, ndim, imate,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
+    implicit none
+#include "asterfort/lcsend.h"
 !
+! ======================================================================
+! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-!
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,20 +21,27 @@ subroutine lc0066(fami, kpg, ksp, ndim, imate,&
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: Etienne grimal at edf.fr
+! ======================================================================
+!.......................................................................
+!     BUT: LOI D'ENDOMMAGEMENT DE KIT_RGI
 !
-! aslint: disable=W1504
-    implicit none
-#include "asterfort/utmess.h"
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
-    real(kind=8) :: crit(*), angmas(3)
+!          RELATION : 'ENDO_PORO_BETON'
+    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
+    real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), sigp(6)
-    real(kind=8) :: vim(*), vip(*)
+    real(kind=8) :: vim(*), vip(*), tm, tp, tref
     real(kind=8) :: dsidep(6, 6)
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    call utmess('F', 'FERMETUR_11')
+!
+      call lcsend(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
+                    instap,epsm,deps,sigm,vim,option,angmas,sigp,vip,&
+                    tampon,typmod,icomp,nvi,dsidep,codret)
+!
 end subroutine

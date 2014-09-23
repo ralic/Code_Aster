@@ -51,18 +51,18 @@ subroutine ddi_kit_read(keywordfact, iocc, rela_flua, rela_plas, rela_cpla, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: dmflua, dmplas
-    parameter  ( dmflua = 6, dmplas = 9)
+    parameter  ( dmflua = 7, dmplas = 10)
     character(len=16) :: poflua(dmflua), poplas(dmplas)
     integer :: ikit, ii, nocc
     character(len=16) :: rela_kit(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    data poflua / 'GRANGER_FP'      ,'GRANGER_FP_V'    ,'GRANGER_FP_INDT' ,&
-                  'BETON_UMLV_FP'   ,'GLRC_DM'         ,'GLRC_DAMAGE'/
-    data poplas / 'ELAS'            ,'VMIS_ISOT_TRAC'  ,'VMIS_ISOT_PUIS'  ,&
-                  'VMIS_ISOT_LINE'  ,'VMIS_CINE_LINE'  ,'ROUSS_PR'        ,&
-                  'BETON_DOUBLE_DP' ,'ENDO_ISOT_BETON' ,'MAZARS'/
+    data poflua / 'GRANGER_FP'      ,'GRANGER_FP_V'    ,'GRANGER_FP_INDT' ,        &
+                  'BETON_UMLV_FP'   ,'GLRC_DM'         ,'GLRC_DAMAGE'     ,'FLUA_PORO_BETON'/
+    data poplas / 'ELAS'            ,'VMIS_ISOT_TRAC'  ,'VMIS_ISOT_PUIS'  ,        &
+                  'VMIS_ISOT_LINE'  ,'VMIS_CINE_LINE'  ,'ROUSS_PR'        ,        &
+                  'BETON_DOUBLE_DP' ,'ENDO_ISOT_BETON' ,'MAZARS'          ,'ENDO_PORO_BETON'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,6 +120,10 @@ subroutine ddi_kit_read(keywordfact, iocc, rela_flua, rela_plas, rela_cpla, &
         if (rela_plas.ne.'VMIS_ISOT_TRAC'.and. rela_plas .ne. 'VMIS_ISOT_LINE' .and. &
             rela_plas.ne.'VMIS_CINE_LINE' ) then
             call utmess('F', 'COMPOR3_4', sk=rela_plas)
+        endif
+    elseif (rela_flua.eq.'FLUA_PORO_BETON') then
+        if (rela_plas.ne.'ENDO_PORO_BETON') then
+            call utmess('F', 'COMPOR3_3', sk=rela_plas)
         endif
     else
         call utmess('F', 'COMPOR3_6', sk=rela_flua)
