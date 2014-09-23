@@ -367,11 +367,14 @@ class CalculMissFichierTemps(CalculMiss):
         path = "{}:{}".format(host, cwd)
         print "Processor #{}/{} is working in '{}'".format(rank, size, path)
         ipath = encode_str(path)
+        # send proc #0 directory to others
         self._results_path = []
-        for k in range(size):
-            buffer = aster_core.MPI_Bcast(ipath, k)
-            self._results_path.append(decode_str(buffer))
-            print "Bcast: Processor #{}/{} is working in '{}'".format(k, size, self._results_path[k])
+        buffer = aster_core.MPI_Bcast(ipath, 0)
+        self._results_path.append(decode_str(buffer))
+        # proc #0 gathers all working directories
+        alldirs = aster_core.MPI_GatherStr(path, 0)
+        if rank == 0:
+            self._results_path.extend(alldirs[1:])
 
         self.dt = self.param['PAS_INST']
         N_inst = int(self.param['INST_FIN']/self.param['PAS_INST'])
