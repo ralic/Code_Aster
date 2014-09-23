@@ -54,10 +54,6 @@ def calc_modes_multi_bandes(self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL
     if (dbg):
         IMPR_CO        =self.get_cmd('IMPR_CO')
 
-    # La macro compte pour 1 dans la numerotation des commandes
-    self.set_icmd(1)
-
-
     # Recuperation parametres solveur lineaire
     dSolveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
     for i in dSolveur.keys():
@@ -389,7 +385,7 @@ def calc_modes_multi_bandes(self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL
     #
     #-----------------------------------------------------------------------
     self.DeclareOut('modes',self.sd)
-    
+
     modes=EXTR_MODE(**motscles)
 
 
