@@ -105,7 +105,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                
                b_fati_pf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
                    FORMULE_GRDEQ   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
-                   COURBE_GRD_VIE  = SIMP(statut='o',typ='TXM',into=("WOHLER","MANSON_C","FORM_VIE") ),
+                   COURBE_GRD_VIE  = SIMP(statut='o',typ='TXM',into=("WOHLER","MANSON_COFFIN","FORM_VIE") ),
                    FORMULE_CRITIQUE = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
                    b_fati_pfvie  = BLOC(condition = "(COURBE_GRD_VIE == 'FORM_VIE')",
                         FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
@@ -130,7 +130,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                ),
                b_fati_npf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
                    FORMULE_GRDEQ   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
-                   COURBE_GRD_VIE  = SIMP(statut='o',typ='TXM',into=("WOHLER","MANSON_C","FORM_VIE") ),
+                   COURBE_GRD_VIE  = SIMP(statut='o',typ='TXM',into=("WOHLER","MANSON_COFFIN","FORM_VIE") ),
                    b_fati_npfvie  = BLOC(condition = "(COURBE_GRD_VIE == 'FORM_VIE')",
                         FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                   ),
