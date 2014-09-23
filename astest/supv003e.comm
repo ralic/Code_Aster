@@ -21,10 +21,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
       PAR_LOT='NON')
 
 import aster_core
+help(aster_core)
 
 rank, size = aster_core.MPI_CommRankSize()
 print "Run on processor #%d/%d" % (rank, size)
 
+# check for MPI_Bcast
 NB = 5
 iarray = [rank] * NB
 if rank == 0:
@@ -32,7 +34,6 @@ if rank == 0:
 print "Processor #{}: array is {}".format(rank, iarray)
 
 buffer = aster_core.MPI_Bcast(iarray, 0)
-
 print "Broadcast returns:", buffer
 
 tab = CREA_TABLE(LISTE=_F(PARA='SUM', LISTE_I=sum(buffer)))
@@ -42,5 +43,25 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE_I=NB * (NB - 1) / 2,
            NOM_PARA='SUM',
            TABLE=tab,)
+
+# check for MPI_GatherStr
+cwd = os.getcwd()
+paths = aster_core.MPI_GatherStr(cwd, 0)
+if rank == 0:
+    print 'Collected paths:', paths
+    ok = True
+    for i, dname in enumerate(paths):
+        # this value is as_run dependant!
+        ok = ok and dname.endswith('proc.%d' % i)
+else:
+    print 'Here, it should be None:', paths
+    ok = paths is None
+
+tbool = CREA_TABLE(LISTE=_F(PARA='BOOL', LISTE_I=int(ok)))
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=int(True),
+           VALE_REFE_I=int(True),
+           NOM_PARA='BOOL',
+           TABLE=tbool,)
 
 FIN()

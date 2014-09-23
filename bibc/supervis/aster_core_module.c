@@ -703,6 +703,12 @@ PyObject *args;
     return Py_None;
 }
 
+static char aster_mpi_bcast_doc[] =
+"values = MPI_Bcast(list_or_tuple, root)\n\n"
+"Broadcasts a list/tuple from one process to all other processes.\n"
+"All items of the list/tuple must have the same type (int or double).\n"
+"Returns the values of the root processor.";
+
 static PyObject* aster_mpi_bcast_py(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
@@ -717,7 +723,7 @@ PyObject *args;
     void *buff;
     int i;
 
-    if ( !PyArg_ParseTuple(args, "Oi:mpi_bcast", &tupl, &root) ) return NULL;
+    if ( !PyArg_ParseTuple(args, "Oi:MPI_Bcast", &tupl, &root) ) return NULL;
 
     idecref = 0;
     if ( PyList_Check(tupl) ) {
@@ -761,6 +767,86 @@ PyObject *args;
     return res;
 }
 
+static char aster_mpi_gather_str_doc[] =
+"tuple_of_strings = MPI_GatherStr(string, root)\n\n"
+"Gathers a string from a group of processes.\n"
+"Returns a tuple of strings, one by processor.";
+
+static PyObject* aster_mpi_gather_str(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    /*! Gathers a string from a group of processes.
+        Returns a tuple of strings, one by processor.
+     */
+    PyObject *tupl, *item, *res;
+    char *instr, *arraystr, *wrk;
+    int count, total, root, rank, size;
+    int *length, *displ;
+    int iret, idecref;
+    MPI_Datatype type;
+    void *buff;
+    int i;
+    aster_comm_t *node;
+
+    if ( !PyArg_ParseTuple(args, "s#i:MPI_GatherStr", &instr, &count, &root) ) return NULL;
+
+    // root gathers the size of the string on each processor
+    node = aster_get_current_comm();
+    aster_get_mpi_info(node, &rank, &size);
+    length = (int *)malloc(size * sizeof(int));
+    iret = aster_mpi_gather((void *)&count, 1, MPI_INTEGER4,
+                            (void *)length, 1, MPI_INTEGER4,
+                            root, node);
+    if ( iret != 0 ) {
+        return NULL;
+    }
+
+    displ = (int *)malloc(size * sizeof(int));
+    total = 0;
+    if (rank == root) {
+        displ[0] = 0;
+        for (i = 0; i < size; i++) {
+            total += length[i];
+            if ( i < size -1 ) {
+                displ[i + 1] = displ[i] + length[i];
+            }
+            DEBUG_MPI("string length = %d, displ = %d\n", length[i], displ[i]);
+        }
+        DEBUG_MPI("%s = %d\n", "total length", total);
+    }
+
+    arraystr = (char *)malloc(total * sizeof(char));
+    iret = aster_mpi_gatherv((void *)instr, count, MPI_CHAR,
+                             (void *)arraystr, length, displ, MPI_CHAR,
+                             root, node);
+    if ( iret != 0 ) {
+        return NULL;
+    }
+
+    if (rank == root) {
+        res = PyTuple_New((Py_ssize_t)size);
+        for (i = 0; i < size; i++) {
+            wrk = (char*)malloc((length[i] + 1) * sizeof(char));
+            strncpy(wrk, &arraystr[displ[i]], length[i]);
+            wrk[length[i]] = '\0';
+            DEBUG_MPI("arraystr: %s (len=%d)\n", wrk, (int)strlen(wrk));
+            if( PyTuple_SetItem(res, i, PyString_FromString(wrk))) {
+                Py_DECREF(res);
+                return NULL;
+            }
+            free(wrk);
+        }
+    } else {
+        Py_INCREF(Py_None);
+        res = Py_None;
+    }
+    free(length);
+    free(arraystr);
+    return res;
+}
+
+
 /*
  * Methods of the aster_core module.
  */
@@ -769,10 +855,11 @@ static PyMethodDef methods[] = {
     { "matfpe",         asterc_matfpe,       METH_VARARGS, matfpe_doc },
     { "get_mem_stat",   asterc_get_mem_stat, METH_VARARGS, get_mem_stat_doc },
     { "set_mem_stat",   asterc_set_mem_stat, METH_VARARGS, set_mem_stat_doc },
-    { "MPI_CommRankSize", aster_mpi_info,      METH_VARARGS},
+    { "MPI_CommRankSize", aster_mpi_info,    METH_VARARGS},
     { "MPI_Warn",       aster_mpi_warn,      METH_VARARGS},
     { "MPI_Barrier",    aster_mpi_barrier,   METH_VARARGS},
-    { "MPI_Bcast",      aster_mpi_bcast_py,  METH_VARARGS},
+    { "MPI_Bcast",      aster_mpi_bcast_py,  METH_VARARGS, aster_mpi_bcast_doc},
+    { "MPI_GatherStr",  aster_mpi_gather_str, METH_VARARGS, aster_mpi_gather_str_doc },
     // { "get_option",  ... } : method added in register_jdc
     // { "set_info",  ... } : method added in register_jdc
     { NULL, NULL, 0, NULL }

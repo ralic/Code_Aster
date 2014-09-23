@@ -46,6 +46,7 @@ from _aster_core import (
     MPI_Warn,
     MPI_Barrier,
     MPI_Bcast,
+    MPI_GatherStr,
     _USE_MPI,
     _USE_OPENMP,
     _USE_64_BITS,

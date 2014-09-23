@@ -39,6 +39,7 @@
 #   define MPI_DOUBLE_COMPLEX   2
 #   define MPI_INTEGER8         3
 #   define MPI_INTEGER4         4
+#   define MPI_CHAR             5
 #endif
 
 /*
@@ -81,6 +82,11 @@ extern aster_comm_t* aster_split_comm(aster_comm_t *, int, int, char *);
 extern void aster_free_comm(aster_comm_t *);
 extern int aster_set_mpi_barrier(aster_comm_t *);
 extern int aster_mpi_bcast(void *, int, MPI_Datatype, int, aster_comm_t *);
+extern int aster_mpi_gather(void *, int, MPI_Datatype, void *, int, MPI_Datatype,
+                            int, aster_comm_t *);
+extern int aster_mpi_gatherv(void *, int, MPI_Datatype,
+                             void *, int *, int *, MPI_Datatype,
+                             int, aster_comm_t *);
 
 extern void DEFSP(ASMPI_COMM, asmpi_comm,  char *, STRING_SIZE, MPI_Fint *);
 extern void DEFPPPSP(ASMPI_SPLIT_COMM, asmpi_split_comm,
