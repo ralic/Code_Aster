@@ -408,7 +408,10 @@ Les résultats obtenus ne sont pas exactes avec un autre type d'élément.
 """),
 
 90 : _(u"""
-Loi d'endommagement de Sellier est mal utilisé ou echec d'intégration local d'un phénomène. Vérifiez les propriétés matériaux et que vla modélisation est 3D.
+La loi d'endommagement de Sellier est mal utilisée ou bien il y a un problème
+d'intégration local d'un phénomène.
+
+Vérifiez les propriétés matériaux et que la modélisation est 3D.
 """),
 
 }
