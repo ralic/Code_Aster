@@ -64,7 +64,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     integer :: n1, ifiss, nfiss
     integer :: ino, valeno, nbnot
     integer :: idlist, jstno
-    character(len=8) :: noma, nomnoe, fiss, nomafi, nomogr
+    character(len=8) :: noma, nomnoe, fiss, nomafi
     character(len=8) :: nomagr, valk(2), ma
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno, cnslt, cnsln
@@ -202,14 +202,10 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                 if (ibid .eq. 0) then
                     call getvid(' ', 'GRILLE', scal=ma, nbret=ibid)
 !                  CHECK FOR THE PRESENCE OF THE GRID
-                    stnot = fiss//'.GRI.MODELE'
+                    stnot = fiss//'.GRI.MAILLA'
                     call jeexin(stnot, ibid)
                     if (ibid .gt. 0) then
-                        call jeveuo(stnot, 'L', ibid)
-!                    GRID MODEL NAME
-                        nomogr = zk8(ibid)
 !                    GRID NAME
-                        stnot = nomogr//'.MODELE    .LGRF'
                         call jeveuo(stnot, 'L', ibid)
                         nomagr = zk8(ibid)
                         if (nomagr .ne. ma) then
@@ -252,15 +248,11 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
                 call dismoi('NOM_MAILLA', fiss, 'FISS_XFEM', repk=nomafi)
 !
 !             CHECK FOR THE PRESENCE OF THE GRID
-                stnot = fiss//'.GRI.MODELE'
+                stnot = fiss//'.GRI.MAILLA'
                 call jeexin(stnot, ibid)
                 if (ibid .gt. 0) then
                     grille = .true.
-                    call jeveuo(stnot, 'L', ibid)
-!                GRID MODEL NAME
-                    nomogr = zk8(ibid)
 !                GRID NAME
-                    stnot = nomogr//'.MODELE    .LGRF'
                     call jeveuo(stnot, 'L', ibid)
                     nomagr = zk8(ibid)
                 else

@@ -47,12 +47,6 @@ MODbox20=AFFE_MODELE(MAILLAGE=box20,
 # ON UTILISE LE MAILLAGE 20X20 POUR LA GRILLE
 grille=DEFI_GRILLE(MAILLAGE=box20)
 
-GriAux=AFFE_MODELE(GRILLE=grille,
-                   AFFE=_F(GROUP_MA=('VOL',),
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',)),
-
-
 #-----------------------------------------------------------------------
 # FISS: MAILLAGE 10X10 POUR LA STRUCTURE,
 #       MAILLAGE 20X20 POUR LA GRILLE AUXILIAIRE
@@ -70,7 +64,7 @@ fLST=FORMULE(NOM_PARA='Y',
 
 FISS[0]=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
                                     FONC_LT=fLST),
-                       MODELE_GRILLE=GriAux,
+                       MAILLAGE_GRILLE=grille,
                        MAILLAGE=box10,);
 
 #----------------------------------------------

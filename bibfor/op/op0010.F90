@@ -79,6 +79,7 @@ subroutine op0010()
     integer :: iadrma
     real(kind=8) :: lcmin, deltat
     character(len=8) :: k8bid, noma, nomo, fiss, fispre, method, fisini, ncrack
+    character(len=8) :: ma_grill_pre
     character(len=16) :: k16bid, typdis
     character(len=19) :: cnsvt, cnsvn, grlt, grln, cnslt, cnsln, cnsen, cnsenr
     character(len=19) :: noesom, isozro, noresi, cnxinv, cnsbl, cnsdis, cnslj
@@ -185,15 +186,14 @@ subroutine op0010()
 ! --- RETRIEVE THE NAME OF THE MODEL THAT SHOULD BE USED AS AN AUXILIARY
 !     GRID FOR THE EVALUATION OF THE LEVELSETS.
 !
-    call jeexin(fispre//'.GRI.MODELE', ibid)
+    call jeexin(fispre//'.GRI.MAILLA', ibid)
     if (ibid .eq. 0) then
 !        NO AUXILIARY GRID USED
         griaux=' '
         grille=.false.
     else
 !        AUXILIARY GRID USED
-        call jeveuo(fispre//'.GRI.MODELE', 'L', ibid)
-        griaux=zk8(ibid-1+1)
+        call getvid(' ', 'MODELE_GRILLE', scal=griaux, nbret=ibid)
         grille=.true.
     endif
 !
@@ -372,7 +372,7 @@ subroutine op0010()
             write(ifm,*)'UNE GRILLE AUXILIAIRE EST UTILISEE POUR LA'//&
             ' PROPAGATION:'
             write(ifm,*)'   MODELE PHYSIQUE  : ',nomo
-            write(ifm,*)'   MODELE GRILLE AUXILIAIRE: ',unomo
+            write(ifm,*)'   MAILLAGE GRILLE AUXILIAIRE: ',unoma
         endif
 !
     else
@@ -433,8 +433,10 @@ subroutine op0010()
 !     IF AN AUXILIARY GRID IS USED IN THIS STEP, STORE ITS NAME FOR THE
 !     NEW CRACK
     if (grille) then
-        call wkvect(fiss//'.GRI.MODELE', 'G V K8', 1, ibid)
-        zk8(ibid) = griaux
+        call jeveuo(fispre//'.GRI.MAILLA', 'L', ibid)
+        ma_grill_pre = zk8(ibid)
+        call wkvect(fiss//'.GRI.MAILLA', 'G V K8', 1, ibid)
+        zk8(ibid) = ma_grill_pre
     endif
 !
 !-----------------------------------------------------------------------
@@ -638,8 +640,8 @@ subroutine op0010()
             write(ifm,*)'   LE DOMAINE DE CALCUL COINCIDE AVEC LE'//&
      &                  ' MODELE PHYSIQUE ',nomo
         else
-            write(ifm,*)'   LE DOMAINE DE CALCUL COINCIDE AVEC LE'//&
-     &                  ' MODELE GRILLE AUXILIAIRE ',griaux
+            write(ifm,*)'   LE DOMAINE DE CALCUL COINCIDE AVEC LA'//&
+     &                  ' GRILLE AUXILIAIRE ',unoma
         endif
     endif
 !

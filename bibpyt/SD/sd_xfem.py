@@ -52,7 +52,7 @@ class sd_fiss_xfem(AsBase):
     JONCOEF = Facultatif(AsVI())
     CHAMPS_LVS = Facultatif(AsVL(SDNom(nomj='.CHAMPS.LVS'),lonmax=1))
 #   objets relatifs a la grille auxiliaire
-    GRILLE_MODELE  = Facultatif(AsVK8(SDNom(nomj='.GRI.MODELE'),lonmax=1,))
+    GRILLE_MAILLAGE= Facultatif(AsVK8(SDNom(nomj='.GRI.MAILLA'),lonmax=1,))
     GRILLE_LNNO    = Facultatif(sd_cham_no(SDNom(nomj='.GRI.LNNO')))
     GRILLE_LTNO    = Facultatif(sd_cham_no(SDNom(nomj='.GRI.LTNO')))
     GRILLE_GRLNNO  = Facultatif(sd_cham_no(SDNom(nomj='.GRI.GRLNNO')))
@@ -99,7 +99,7 @@ class sd_fiss_xfem(AsBase):
 
         # si ....
         sdu_ensemble((self.PRO_RAYON_TORE, self.PRO_NOEUD_TORE))
-        sdu_ensemble((self.GRILLE_MODELE, self.GRILLE_LNNO.DESC, self.GRILLE_GRLNNO.DESC))
+        sdu_ensemble((self.GRILLE_MAILLAGE, self.GRILLE_LNNO.DESC, self.GRILLE_GRLNNO.DESC))
         sdu_ensemble((self.GRILLE_LTNO.DESC, self.GRILLE_GRLTNO.DESC))
 
 #-------------------------------

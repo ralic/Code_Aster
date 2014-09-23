@@ -68,13 +68,6 @@ MaiGril=LIRE_MAILLAGE(FORMAT='MED', UNITE=41,
 
 Grille=DEFI_GRILLE(MAILLAGE=MaiGril);
 
-ModGri=AFFE_MODELE(GRILLE=Grille,
-                   AFFE=_F(
-                           GROUP_MA='Vol',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),
-                   );
-
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
@@ -92,7 +85,7 @@ a0 = 4.0
 FISS = [None]*nbcalc
 
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MeshSEB,
-                       MODELE_GRILLE=ModGri,
+                       MAILLAGE_GRILLE=Grille,
                        GROUP_MA_ENRI='Vol',
                        DEFI_FISS=_F(
                                   FORM_FISS='DEMI_PLAN',

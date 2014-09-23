@@ -60,11 +60,6 @@ mailvs=LIRE_MAILLAGE(FORMAT='MED',
 
 grille=DEFI_GRILLE(MAILLAGE=mailvs);
 
-modlvs=AFFE_MODELE(GRILLE=grille,
-                   AFFE=(_F(GROUP_MA='All',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN',),),);
-
 # *********************************************
 # DEFINITION DE LA FISSURE DANS LE MODELE
 # *********************************************
@@ -86,7 +81,7 @@ LT = FORMULE(VALE='Y-YFiss',
 
 # DEFINITION DE LA FISSURE INITIALE
 fiss[0] = DEFI_FISS_XFEM(MAILLAGE=poutre,
-                         MODELE_GRILLE=modlvs,
+                         MAILLAGE_GRILLE=grille,
                          DEFI_FISS=_F(FONC_LT=LT,
                                       FONC_LN=LN,),
                          );

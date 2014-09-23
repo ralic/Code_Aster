@@ -36,11 +36,6 @@ modele=AFFE_MODELE(MAILLAGE=mesh,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),)
 
-mgrille=AFFE_MODELE(GRILLE=grille,
-                    AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
-
 Alu=DEFI_MATERIAU(ELAS=_F(E=70000,NU=0.34,),);
 
 ChAlu=AFFE_MATERIAU(MAILLAGE=mesh,
@@ -50,7 +45,7 @@ ChAlu=AFFE_MATERIAU(MAILLAGE=mesh,
                     );
 
 fiss = DEFI_FISS_XFEM(MAILLAGE=mesh,
-                      MODELE_GRILLE=mgrille,
+                      MAILLAGE_GRILLE=grille,
                       DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
                                    PFON=(5.,4.,0.),
                                    NORMALE=(1.,0.,0.),

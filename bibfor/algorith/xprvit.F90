@@ -190,7 +190,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !     CHECK if an auxilliary grid is used
 !
-    call jeexin(fiss//'.GRI.MODELE', ibid)
+    call jeexin(fiss//'.GRI.MAILLA', ibid)
     if (ibid .eq. 0) then
 !        NO AUXILIARY GRID USED
         grille=.false.

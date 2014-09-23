@@ -19,7 +19,7 @@
 DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
                fr=tr("Définition des caratéristiques d'une fissure ou d'une interface avec X-FEM"),
-            regles = EXCLUS('MODELE_GRILLE','FISS_GRILLE'),
+            regles = EXCLUS('MAILLAGE_GRILLE','FISS_GRILLE'),
 
 # ------------------------------------------------------------------------------------------------------------------------
 #                       maillage sous-jacent
@@ -31,7 +31,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                       grille auxiliaire
 # ------------------------------------------------------------------------------------------------------------------------
 
-    MODELE_GRILLE         =SIMP(statut='f',typ=modele_sdaster,max=1,position='global'),
+    MAILLAGE_GRILLE       =SIMP(statut='f',typ=maillage_sdaster,max=1,position='global'),
     FISS_GRILLE           =SIMP(statut='f',typ=fiss_xfem,max=1),
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                       branchement
 # ------------------------------------------------------------------------------------------------------------------------
 
-    b_jonction            =BLOC(condition = "(MODELE_GRILLE == None) and (FISS_GRILLE == None)",
+    b_jonction            =BLOC(condition = "(MAILLAGE_GRILLE == None) and (FISS_GRILLE == None)",
         JONCTION              =FACT(statut='f',max=1,
           FISSURE             =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
           POINT               =SIMP(statut='o',typ='R',max=3,),

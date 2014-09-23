@@ -71,12 +71,6 @@ MODEL[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
 
 grille=DEFI_GRILLE(MAILLAGE=MAILLAG2);
 
-
-NODEL=AFFE_MODELE(GRILLE=grille,
-                      AFFE=(_F(GROUP_MA=('RECT',),
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='D_PLAN',),),);
-
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO=_F(GROUP_MA='Surface',),);
@@ -111,7 +105,7 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='X-X0');
 FISS = [None]*(NPAS+1)
 
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
-                       MODELE_GRILLE=NODEL,
+                       MAILLAGE_GRILLE=grille,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                        );
 

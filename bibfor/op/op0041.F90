@@ -91,11 +91,11 @@ subroutine op0041()
 #include "asterfort/xlenri.h"
 #include "asterfort/xlorie.h"
     integer :: ifm, niv, ibid, mxval, iret
-    integer :: me1, me2, me3, iadrma, me4
+    integer :: me1, me2, me3, me4
     integer :: ndim, jinfo, jmod, jma
     real(kind=8) :: noeud(3), vect1(3), vect2(3), a, b, r, distma
     character(len=8) :: fiss, nfonf, nfong, mafis, fonfis, noma, meth
-    character(len=8) :: griaux, maiaux
+    character(len=8) :: maiaux
     character(len=8) :: cote, ncham, chadis, kbid
     character(len=16) :: k16bid, geofis, typdis, corres
     character(len=19) :: cnslt, cnsln, grlt, grln, cnsen, cnsenr, cnslj
@@ -129,17 +129,13 @@ subroutine op0041()
     goinop=.false.
 !
 !     CHECK IF THE USER WANTS TO USE AN AUXILIARY GRID
-    call getvid(' ', 'MODELE_GRILLE', scal=griaux, nbret=iret)
+    call getvid(' ', 'MAILLAGE_GRILLE', scal=maiaux, nbret=iret)
     if (iret .gt. 0) then
 !        YES
         grille = .true.
-        write(ifm,900)griaux
+        write(ifm,900)maiaux
 !
-!        RETREIVE THE MESH ATTACHED TO THE AUXILIARY GRID
-        call jeveuo(griaux(1:8)//'.MODELE    .LGRF', 'L', iadrma)
-        maiaux = zk8(iadrma)
-!
-!        CHECK IF THE MESH ASSOCIATED TO THE MODEL IS A SD_GRILLE
+!        CHECK IF THE MESH IS A SD_GRILLE
         call jeexin(maiaux//'.GRLI', ibid)
         if (ibid .eq. 0) then
             call utmess('F', 'XFEM2_95', sk=maiaux)
@@ -151,10 +147,10 @@ subroutine op0041()
             call utmess('F', 'XFEM2_58')
         endif
 !
-!        STORE THE AUXILIARY GRID MODEL ON WHICH THE CRACK WILL BE
+!        STORE THE AUXILIARY GRID ON WHICH THE CRACK WILL BE
 !        DEFINED
-        call wkvect(fiss(1:8)//'.GRI.MODELE', 'G V K8', 1, jmod)
-        zk8(jmod-1+1)=griaux
+        call wkvect(fiss(1:8)//'.GRI.MAILLA', 'G V K8', 1, jmod)
+        zk8(jmod-1+1)=maiaux
     else
         grille = .false.
     endif
@@ -165,12 +161,12 @@ subroutine op0041()
     if (iret .gt. 0) then
 !        YES, THE GRID INFOS ARE DUPLICATED FOR THE NEW CRACK.
 !        CHECK IF A GRID IS ASSOCIATED TO THE GIVEN CRACK.
-        call jeexin(fisgri//'.GRI.MODELE', ibid)
+        call jeexin(fisgri//'.GRI.MAILLA', ibid)
         if (ibid .eq. 0) then
             call utmess('F', 'XFEM_68')
         endif
 !
-        call jedupo(fisgri//'.GRI.MODELE', 'G', fiss(1:8)// '.GRI.MODELE', .false._1)
+        call jedupo(fisgri//'.GRI.MAILLA', 'G', fiss(1:8)// '.GRI.MAILLA', .false._1)
         call copisd('CHAMP', 'G', fisgri//'.GRI.LNNO', fiss(1:8)// '.GRI.LNNO')
         call copisd('CHAMP', 'G', fisgri//'.GRI.GRLNNO', fiss(1:8)// '.GRI.GRLNNO')
 !

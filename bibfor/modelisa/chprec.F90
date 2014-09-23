@@ -143,7 +143,7 @@ subroutine chprec(chou)
     if (n1 .eq. 1) then
 !
 !       VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
-        call jeexin(fis//'.GRI.MODELE', ibid)
+        call jeexin(fis//'.GRI.MAILLA', ibid)
         if (ibid .eq. 0) then
             grille=.false.
         else

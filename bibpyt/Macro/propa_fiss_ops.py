@@ -232,8 +232,9 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   ier=0
 #------------------------------------------------------------------
   # On importe les definitions des commandes a utiliser dans la macro
-  ASSE_MAILLAGE    =self.get_cmd('ASSE_MAILLAGE'  )
-  LIRE_MAILLAGE    =self.get_cmd('LIRE_MAILLAGE'  )
+  ASSE_MAILLAGE    = self.get_cmd('ASSE_MAILLAGE'  )
+  AFFE_MODELE      = self.get_cmd('AFFE_MODELE'  )
+  LIRE_MAILLAGE    = self.get_cmd('LIRE_MAILLAGE'  )
   DEFI_FICHIER     = self.get_cmd('DEFI_FICHIER'  )
   DEFI_GROUP       = self.get_cmd('DEFI_GROUP'  )
   CALC_TABLE       = self.get_cmd('CALC_TABLE'  )
@@ -334,6 +335,30 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               mcsimp['ANGLE']   = TABLE_BETA
               mcsimp['VITESSE'] = TABLE_VIT
 
+              # si reference a une grille auxilliaire pour la fissure courante,
+              # on cree un modele de grille temporaire pour PROPA_XFEM
+              nom_grille = Fiss['FISS_ACTUELLE'].sdj.GRILLE_MAILLAGE.get()
+              if nom_grille is not None:
+
+                assert type(nom_grille) is tuple and len(nom_grille) == 1
+                nom_grille = nom_grille[0]
+                grille = self.get_concept(nom_grille.strip())
+
+                #          0    1    2         3
+                typmod = [' ', ' ', 'D_PLAN', '3D']
+                iret,dimgri,kbid = aster.dismoi('DIM_GEOM',nom_grille,'MAILLAGE','F')
+                assert dimgri in [2, 3]
+
+                aster.affiche('MESSAGE',' ------------------------')
+                aster.affiche('MESSAGE',' CREATION DU MODELE DE GRILLE TEMPORAIRE')
+                __mogril = AFFE_MODELE(GRILLE=grille,
+                                 AFFE=_F(TOUT='OUI',
+                                 PHENOMENE='MECANIQUE',MODELISATION=typmod[dimgri],))
+                mcsimp['MODELE_GRILLE'] = __mogril
+                aster.affiche('MESSAGE',' ')
+                aster.affiche('MESSAGE',' ------------------------')
+                aster.affiche('MESSAGE',' ')
+
               if NumStep==StepTot-1 :
                  self.DeclareOut('nomfiss',FissNou[numfis])
                  nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
@@ -367,7 +392,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     print 'NOMBRE DE FISSURES A TRAITER : ',Nbfissure
     for numfis,Fiss in enumerate(Fissures) :
       print 'FISSURE ',numfis+1,'  : ',Fiss['FISS_ACTUELLE'].get_name()
-      numfis=numfis+1
     print '-------------------------------------------'
 
 # Recuperation des donnees
@@ -660,10 +684,35 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       FissNou = [Fiss['FISS_PROPAGEE'] for Fiss in Fissures]
 
       for numfis in range(0,len(FissAct)) :
+
         mcsimp['FISS_PROP']   = FissAct[numfis]
         mcsimp['ANGLE']       = TABLE_BETA[numfis]
         mcsimp['VITESSE']     = TABLE_VIT[numfis]
         mcsimp['DA_FISS']     = Vmfiss[numfis] * NBCYCLE
+
+        # si reference a une grille auxilliaire pour la fissure courante,
+        # on cree un modele de grille temporaire pour PROPA_XFEM
+        nom_grille = Fiss['FISS_ACTUELLE'].sdj.GRILLE_MAILLAGE.get()
+        if nom_grille is not None:
+
+          assert type(nom_grille) is tuple and len(nom_grille) == 1
+          nom_grille = nom_grille[0]
+          grille = self.get_concept(nom_grille.strip())
+
+          #          0    1    2         3
+          typmod = [' ', ' ', 'D_PLAN', '3D']
+          iret,dimgri,kbid = aster.dismoi('DIM_GEOM',nom_grille,'MAILLAGE','F')
+          assert dimgri in [2, 3]
+
+          aster.affiche('MESSAGE',' ------------------------')
+          aster.affiche('MESSAGE',' CREATION DU MODELE DE GRILLE TEMPORAIRE')
+          __mogril = AFFE_MODELE(GRILLE=grille,
+                                 AFFE=_F(TOUT='OUI',
+                                 PHENOMENE='MECANIQUE',MODELISATION=typmod[dimgri],))
+          mcsimp['MODELE_GRILLE'] = __mogril
+          aster.affiche('MESSAGE',' ')
+          aster.affiche('MESSAGE',' ------------------------')
+          aster.affiche('MESSAGE',' ')
 
         self.DeclareOut('nomfiss',FissNou[numfis])
         nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
