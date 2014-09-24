@@ -1,5 +1,5 @@
 subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
-                  ipos, base)
+                  ipos, base, perm)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !     ----------
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dbgobj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -37,6 +38,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
     character(len=*) :: sch1, base
     integer :: ipos, niveau, unit
     aster_logical :: lattr, lcont
+    character(len=3), optional, intent(in) :: perm
 ! ----------------------------------------------------------------------
 ! BUT:
 !   IMPRIMER LE CONTENU DES OBJETS JEVEUX (K24) AYANT
@@ -58,6 +60,13 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !   IPOS   : / DEBUT DE LA CHAINE DE CARACTERES A CHERCHER (1,...,24)
 !            / 0 : ON NE REGARDE PAS SCH1, ON IMPRIME TOUS LES OBJETS
 !   BASE   : 'G','V','L',OU ' '(TOUTES)
+!   PERM   : , VAUT 'OUI' ou 'NON'. 
+!   PERM   : K3 : /OUI/NON. 
+!            OPTIONNEL -> PRESENCE OBLIGATOIRE SI NIVEAU == -1
+!            NON : ON FAIT LA SOMME BETE DES ELEMENTS DU VECTEUR
+!                  => UNE PERMUTATION DU VECTEUR NE SE VOIT PAS !
+!            OUI : ON FAIT UNE "SOMME" QUI DONNE UN RESULTAT
+!                  DEPENDANT UN PEU DE L'ORDRE DES ELEMENTS DU VECTEUR
 !
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
@@ -129,9 +138,11 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
 !
 !
     else if (niveau.eq.-1) then
+        ASSERT(present(perm))
+        ASSERT(perm.eq.'OUI' .or. perm.eq.'NON')
         do 4 i = 1, nbobj
             ob1 = liste(i)
-            call dbgobj(ob1, 'OUI', unit, '&&UTIMSD')
+            call dbgobj(ob1, perm, unit, '&&UTIMSD')
   4     continue
 !
 !

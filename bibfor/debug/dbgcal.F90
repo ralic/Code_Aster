@@ -87,12 +87,12 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
             else
                 write(ifm,*) ' * RESUME DE LA SD :'
                 call utimsd(ifm, -1, .true._1, .true._1, lchiz(ich),&
-                            1, ' ')
+                            1, ' ', perm='OUI')
             endif
         else
             write(ifm,*) ' * RESUME DE LA SD :'
             call utimsd(ifm, -1, .true._1, .true._1, lchiz(ich)(1:19),&
-                        1, ' ')
+                        1, ' ', perm='OUI')
         endif
 100  end do
 !
@@ -120,12 +120,12 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
             else
                 write(ifm,*) ' * RESUME DE LA SD :'
                 call utimsd(ifm, -1, .true._1, .true._1, lchouz(ich),&
-                            1, ' ')
+                            1, ' ', perm='OUI')
             endif
         else
             write(ifm,*) ' * RESUME DE LA SD :'
             call utimsd(ifm, -1, .true._1, .true._1, lchouz(ich)(1:19),&
-                        1, ' ')
+                        1, ' ', perm='OUI')
         endif
 200  end do
 end subroutine

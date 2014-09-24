@@ -19,7 +19,7 @@
 !
 interface
     subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
-                      ipos, base)
+                      ipos, base, perm)
         integer :: unit
         integer :: niveau
         aster_logical :: lattr
@@ -27,5 +27,6 @@ interface
         character(len=*) :: sch1
         integer :: ipos
         character(len=*) :: base
+        character(len=3), optional, intent(in) :: perm
     end subroutine utimsd
 end interface

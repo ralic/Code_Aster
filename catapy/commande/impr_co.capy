@@ -30,4 +30,10 @@ IMPR_CO=PROC(nom="IMPR_CO",op=17,
          CHAINE          =SIMP(statut='f',typ='TXM'),
          POSITION        =SIMP(statut='f',typ='I',defaut=1),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+
+         b_permut = BLOC(
+                         condition   = "NIVEAU == -1 ",
+                         PERMUTATION = SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI")),
+                         ),
+
 )  ;

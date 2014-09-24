@@ -419,7 +419,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     if (niv .ge. 2) then
         write(ifm,*) '<XFEM  > LISTE DES RELATIONS LINEAIRES'
         call utimsd(ifm, -1, .true._1, .true._1, nliseq,&
-                    1, ' ')
+                    1, ' ', perm='OUI')
     endif
 !
     call jedema()

@@ -191,22 +191,13 @@ DEFI_FICHIER(UNITE=35, FICHIER='./fort.35')
 DEFI_FICHIER(UNITE=36, FICHIER='./fort.36')
 DEFI_FICHIER(UNITE=37, FICHIER='./fort.37')
 
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-#IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MLMECPX ),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MLMECPXC),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MLMEDPX ),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=34,CONCEPT=_F(NOM=MLMEDPXC),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=35,CONCEPT=_F(NOM=MLMEAXX ),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=36,CONCEPT=_F(NOM=MLTHPLX ),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=37,CONCEPT=_F(NOM=MLTHAXX ),NIVEAU=-1,PERMUTATION='NON',)
-IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MLMECPX ),NIVEAU=-1,)
-IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MLMECPXC),NIVEAU=-1,)
-IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MLMEDPX ),NIVEAU=-1,)
-IMPR_CO(UNITE=34,CONCEPT=_F(NOM=MLMEDPXC),NIVEAU=-1,)
-IMPR_CO(UNITE=35,CONCEPT=_F(NOM=MLMEAXX ),NIVEAU=-1,)
-IMPR_CO(UNITE=36,CONCEPT=_F(NOM=MLTHPLX ),NIVEAU=-1,)
-IMPR_CO(UNITE=37,CONCEPT=_F(NOM=MLTHAXX ),NIVEAU=-1,)
+IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MLMECPX ),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MLMECPXC),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MLMEDPX ),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=34,CONCEPT=_F(NOM=MLMEDPXC),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=35,CONCEPT=_F(NOM=MLMEAXX ),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=36,CONCEPT=_F(NOM=MLTHPLX ),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=37,CONCEPT=_F(NOM=MLTHAXX ),NIVEAU=-1,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
@@ -335,37 +326,6 @@ for line in LinesFile37:
     # on remplace le nom du modele par 8 " "
     lsplit[1] = lsplit[1].replace(nommo," "*8)
     ListLTHAX.append(lsplit)
-
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-for line in ListLMECP:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLMECPC:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLMEDP:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLMEDPC:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLMEAX:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLTHPL:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLTHAX:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
 
 ## pour debug
 #assert len(ListLMECP ) == len(ListLMECPC)
@@ -632,12 +592,8 @@ MQHMDPX = MODI_MODELE_XFEM(MODELE_IN = MQHMDPS,
 DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
 DEFI_FICHIER(UNITE=32, FICHIER='./fort.32')
 
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-#IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MQMEDPX),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MQHMDPX),NIVEAU=-1,PERMUTATION='NON',)
-IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MQMEDPX),NIVEAU=-1,)
-IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MQHMDPX),NIVEAU=-1,)
+IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MQMEDPX),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MQHMDPX),NIVEAU=-1,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
@@ -681,17 +637,6 @@ for line in LinesFile32:
     # on remplace le nom du modele par 8 " "
     lsplit[1] = lsplit[1].replace(nommo," "*8)
     ListQHMDP.append(lsplit)
-
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-for line in ListQMEDP:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListQHMDP:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
 
 ## pour debug
 #assert len(ListQMEDP) == len(ListQHMDP)

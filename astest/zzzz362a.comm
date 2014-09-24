@@ -145,14 +145,9 @@ DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
 DEFI_FICHIER(UNITE=32, FICHIER='./fort.32')
 DEFI_FICHIER(UNITE=33, FICHIER='./fort.33')
 
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-#IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MLMEX ),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MLMEXC),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MLTHX ),NIVEAU=-1,PERMUTATION='NON',)
-IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MLMEX ),NIVEAU=-1,)
-IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MLMEXC),NIVEAU=-1,)
-IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MLTHX ),NIVEAU=-1,)
+IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MLMEX ),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MLMEXC),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MLTHX ),NIVEAU=-1,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
@@ -213,21 +208,6 @@ for line in LinesFile33:
     # on remplace le nom du modele par 8 " "
     lsplit[1] = lsplit[1].replace(nommo," "*8)
     ListLTHX.append(lsplit)
-
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-for line in ListLMEX:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLMEXC:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListLTHX:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
 
 ## pour debug
 #assert len(ListLMEX ) == len(ListLMEXC)
@@ -376,12 +356,8 @@ MQHMX = MODI_MODELE_XFEM(MODELE_IN = MQHMS,
 DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
 DEFI_FICHIER(UNITE=32, FICHIER='./fort.32')
 
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-#IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MQMEX),NIVEAU=-1,PERMUTATION='NON',)
-#IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MQHMX),NIVEAU=-1,PERMUTATION='NON',)
-IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MQMEX),NIVEAU=-1,)
-IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MQHMX),NIVEAU=-1,)
+IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MQMEX),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MQHMX),NIVEAU=-1,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
@@ -425,17 +401,6 @@ for line in LinesFile32:
     # on remplace le nom du modele par 8 " "
     lsplit[1] = lsplit[1].replace(nommo," "*8)
     ListQHMX.append(lsplit)
-
-# tant que issue22486 n'est pas restituee : -> pas de SOMMI ou SOMMR 
-# car les permutations peuvent changer la somme de controle
-for line in ListQMEX:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
-for line in ListQHMX:
-  for row in line:
-    if 'SOMMR' in row or 'SOMMI' in row:
-      line.remove(row)
 
 ## pour debug
 #assert len(ListQMEX) == len(ListQHMX)

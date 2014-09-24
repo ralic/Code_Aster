@@ -43,6 +43,7 @@ subroutine op0017()
     integer :: i, iocc
     aster_logical :: lattr, lcont
     character(len=1) :: base
+    character(len=3) :: perm
     character(len=8) :: leresu
     character(len=16) :: nomfi
     character(len=72) :: chaine
@@ -54,6 +55,8 @@ subroutine op0017()
 !
     nivo = 0
     call getvis(' ', 'NIVEAU', scal=nivo, nbret=n3)
+    perm = '' 
+    if (nivo .eq. -1) call getvtx(' ', 'PERMUTATION', scal=perm)
 !
     call getvtx(' ', 'ATTRIBUT', scal=chaine, nbret=n3)
     if (chaine(1:3) .eq. 'OUI') then
@@ -90,7 +93,7 @@ subroutine op0017()
             do i = 1, ncon
                 leresu = liste_co(i)
                 call utimsd(ifi, nivo, lattr, lcont, leresu,&
-                            1, base)
+                            1, base, perm=perm)
             end do
             AS_DEALLOCATE(vk8=liste_co)
         endif
@@ -102,13 +105,13 @@ subroutine op0017()
                     long, n3)
         call getvis(' ', 'POSITION', scal=ipos, nbret=n4)
         call utimsd(ifi, nivo, lattr, lcont, chaine(1:long(1)),&
-                    ipos, base)
+                    ipos, base, perm=perm)
     endif
 !
     call getvtx(' ', 'TOUT', scal=chaine, nbret=n2)
     if (n2 .gt. 0) then
         call utimsd(ifi, nivo, lattr, lcont, ' ',&
-                    0, base)
+                    0, base, perm=perm)
     endif
     call jedema()
 end subroutine

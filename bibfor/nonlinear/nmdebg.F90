@@ -93,7 +93,7 @@ subroutine nmdebg(typobz, nomobz, ifm)
         endif
     else
         call utimsd(ifm, -1, .true._1, .true._1, nomobj(1:24),&
-                    1, ' ')
+                    1, ' ', perm='OUI')
     endif
 !
     1003 format (' <MECANONLINE>        ',a19,' | LONMAX=',i12,&
