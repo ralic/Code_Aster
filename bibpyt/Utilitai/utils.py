@@ -159,7 +159,6 @@ def decode_str(array):
 def send_file(fname, dest):
     """Send a file into an existing remote destination directory using scp"""
     dst = osp.join(dest, osp.basename(fname))
-    print "Sending {} onto {}...".format(fname, dst)
     proc = Popen(["scp", "-rBCq", "-o StrictHostKeyChecking=no", fname, dst])
     return proc.wait()
 

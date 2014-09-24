@@ -365,7 +365,8 @@ class CalculMissFichierTemps(CalculMiss):
         cwd = osp.join(os.getcwd(), self.param['_WRKDIR'])
         host = socket.gethostname()
         path = "{}:{}".format(host, cwd)
-        print "Processor #{}/{} is working in '{}'".format(rank, size, path)
+        if size > 1:
+            UTMESS('I', 'PARALLEL_1', vali=(rank, size), valk=path)
         ipath = encode_str(path)
         # send proc #0 directory to others
         self._results_path = []
@@ -450,6 +451,7 @@ class CalculMissFichierTemps(CalculMiss):
             copie_fichier(self._fichier_tmp("resu_impe"), resname)
 
             if rank != 0:
+                UTMESS('I', 'PARALLEL_2', valk=(resname, self._results_path[0]))
                 send_file(resname, self._results_path[0])
 
         # libérer la structure contenant les données numériques
@@ -467,6 +469,7 @@ class CalculMissFichierTemps(CalculMiss):
                 fd.write(open(resname, 'r').read())
             fd.close()
             for k in range(1, size):
+                UTMESS('I', 'PARALLEL_2', valk=(fimpe, self._results_path[k]))
                 send_file(fimpe, self._results_path[k])
         aster_core.MPI_Barrier()
 
