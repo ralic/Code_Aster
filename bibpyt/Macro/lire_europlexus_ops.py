@@ -225,7 +225,6 @@ le mot-clé %s"""%mc_cara)
         self.unite = get_unite_libre()
         #DEFI_FICHIER(UNITE=unite, ACTION='LIBERER')
         fort = 'fort.%i' %self.unite
-        print 'etienne fort =',fort
         if os.path.isfile(fort):
             print 'remove fort ',fort
             os.remove(fort)
@@ -656,7 +655,6 @@ présentes%s"""%compo)
 
         DEFI_FICHIER(UNITE=self.unite, ACTION='LIBERER')
 
-        print 'etienne remove fort',self.fort
         os.remove(self.fort)
     # -------------------------------------------------------------------------
 ### fin classe LireEPX

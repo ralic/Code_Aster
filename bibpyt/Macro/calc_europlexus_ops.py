@@ -21,17 +21,6 @@
     CALC_EUROPLEXUS
 """
 
-#-----------------------------------------------------------------------
-#----------------------------- Importation des modules  ----------------
-#-----------------------------------------------------------------------
-
-# EC : voir si cela est utile
-# unite associe au fichier ou le post-traitement CASTEM2000 est fait en
-# commandes epx
-# unite_cast2000 = 0 # il ne fait pas le pos-traitement
-# __temp
-unite_cast2000 = 95
-
 debug = False
 
 import types, string
@@ -336,17 +325,6 @@ class EUROPLEXUS:
             bloc = BLOC_DONNEES('MEDE', cle='NEWN')
             epx[directive].add_bloc(bloc)
 
-        # __temp
-        fichier_cast2000 = 'fort.%i' %unite_cast2000
-        if unite_cast2000 and os.path.isfile(fichier_cast2000):
-            raise Exception(
-               'export_DEBUT : utilisation de fichier cast2000 nécessaire')
-            #sortie_cast2000 = os.path.join(self.REPE_epx, 'post.k2000')
-
-            #epx[MODULE].append('OPNF 12')
-            #epx[MODULE].append(2*' ' + "'%s'" %sortie_cast2000)
-            #epx[MODULE].append('\n')
-
         # on traite la directive fin maintenant car elle est toujours présente
         # à la fin
         directive = 'FIN'
@@ -629,6 +607,7 @@ class EUROPLEXUS:
             return
 
         courbe_fact = courbe_fact.List_F()
+        self.nb_COURBE = len(courbe_fact)
         epx = self.epx
 
         # SUITE
@@ -669,6 +648,8 @@ class EUROPLEXUS:
                     cham_aster = table['NOM_CHAM']
                     cmp_aster = table['NOM_CMP']
                     cham_epx = cata_champs[cham_aster]
+                    if not cata_compo[cham_aster].has_key(cmp_aster):
+                        UTMESS('F', 'PLEXUS_38', valk=[cham_aster,cmp_aster])
                     cmp_epx = cata_compo[cham_aster][cmp_aster]
                     ylabel = cham_aster + '_' + cmp_aster
                     entite = tolist(entite)
@@ -683,7 +664,10 @@ class EUROPLEXUS:
                         vale = ['', cmp_epx,]
                         if entite_type == 'GROUP_MA':
                             cara.append('GAUSS')
-                            vale.append(table['NUM_GAUSS'])
+                            num_gauss = table['NUM_GAUSS']
+                            if type(num_gauss) is tuple:
+                                num_gauss = num_gauss[0]
+                            vale.append(num_gauss)
                         cara.append(entite_EPX[entite_type])
                         vale.append('')
                         val_cle = "'%s'"%label
@@ -874,12 +858,12 @@ class EUROPLEXUS:
             if nc == 0:
                 para_abscisse = self.legend_courbes[icourbe][0]
                 vale_abscisse = valeurs[0, :].tolist()
-                assert len(para_abscisse) < 17
+                if len(para_abscisse ) > 16: para_abscisse  =  para_abscisse[:17]
                 dico.append({'TYPE_K':'K16', 'LISTE_R' : vale_abscisse,
                            'PARA' : para_abscisse})
                 para_ordonnee = self.legend_courbes[icourbe][1]
                 vale_ordonnee = valeurs[1, :].tolist()
-                assert len(para_ordonnee) < 17
+                if len(para_ordonnee) > 16: para_ordonnee =  para_ordonnee[:17]
                 dico.append({'TYPE_K':'K16', 'LISTE_R' : vale_ordonnee,
                            'PARA' : para_ordonnee})
                 nc = 1
@@ -888,12 +872,14 @@ class EUROPLEXUS:
                   (vale_abscisse == valeurs[0, :].tolist())):
                     para_ordonnee = self.legend_courbes[icourbe][1]
                     vale_ordonnee = valeurs[1, :].tolist()
-                    assert len(para_ordonnee) < 17
+                    if len(para_ordonnee) > 16: para_ordonnee =  para_ordonnee[:17]
                     dico.append({'TYPE_K':'K16', 'LISTE_R' : vale_ordonnee,
                                'PARA' : para_ordonnee})
                 else:
                     raise Exception('Table non compatible')
 
+        if len(dico)-1 != self.nb_COURBE:
+            UTMESS('A','PLEXUS_39')
         table = CREA_TABLE(LISTE=dico)
 
         # test d'impression de la table

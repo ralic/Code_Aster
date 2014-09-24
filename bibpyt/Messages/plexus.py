@@ -174,4 +174,18 @@ Le résultat %(k1)s donné en état initial comporte plusieurs %(k2)s.
 CALC_EUROPLEXUS ne sait pas traiter de tels cas.
 """),
 
+38 : _(u"""
+CALC_EUROPLEXUS/COURBE :
+Le champ %(k1)s ne possède pas de composante %(k2)s.
+"""),
+
+39 : _(u"""
+CALC_EUROPLEXUS/COURBE :
+La quantité de données présente dans le fichier de sortie **.pun ne concorde
+pas avec les instructions du fichier de commande.
+Une erreur s'est certainement produite lors du traitement de ce mot-clé par EPX.
+
+Conseil : regarder le message de sortie d'EPX dans le fichier .mess pour comprendre 
+ou le problème se situe.
+"""),
 }
