@@ -46,15 +46,14 @@ MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
                CHAM_GD = CHERR,
                CRIT_RAFF_PE = 0.02,
                USAGE_CMP = 'RELATIF',
+               #ADD_CHAM=(_F(CHAM_GD=CO('NIVEAU'),
+                            #CHAM_CAT='NIVEAU',),),
                MAILLAGE_N = MA0,
                MAILLAGE_NP1 = MAILLAG1)
 
 #IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MAILLAG1));
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(CHAM_GD=NIVEAU,),);
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(GROUP_MA='VOL'),
-                                   _F(GROUP_MA='SURFSUP')),)
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -178,20 +177,20 @@ coef=(pi*a)/(2.*b)
 fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
 K1REF=-PRES*sqrt(pi*a)*fab
 
-VAL_CALC =[1.1108859141933E+07  ,
-           1.1086429011601E+07  ,
-           1.1110238405357E+07  ,
-           1.1088479022117E+07  ,
-           1.1114910882229E+07  ,
-           1.1077066680568E+07  ,
-           1.1112438553705E+07  ,
-           1.1079810446001E+07  ,
-           1.1110876388698E+07  ,
-           1.108330823459E+07   ,
-           1.1108784944078E+07  ,
-           1.1086688704045E+07  ,
-           1.1108784944078E+07  ,
-           1.1086688704045E+07  ]
+VAL_CALC =[11102866.959  ,
+           11069927.2198  ,
+           11098918.8102  ,
+           11088615.3764  ,
+           11102371.8903  ,
+           11078289.4357  ,
+           11097260.1618  ,
+           11079413.5685  ,
+           11097835.9076  ,
+           11076105.3082  ,
+           11102872.7786  ,
+           11069944.0231  ,
+           11102872.7786  ,
+           11069944.0231  ]
 
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
@@ -225,8 +224,8 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.040000000000000001,
-           VALE_CALC= 1.1238813022496E+07,
+           PRECISION=0.04,
+           VALE_CALC=1.1232885627E+07,
            VALE_REFE=1.1202664084020415E7,
            NOM_PARA='K1',
            TABLE=PK,

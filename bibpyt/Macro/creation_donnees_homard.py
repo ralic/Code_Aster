@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@
 Cette classe crée le fichier de configuration permettant de lancer HOMARD
 depuis Code_Aster.
 """
-__revision__ = "V1.14"
+__revision__ = "V1.15"
 __all__ = [ ]
 
 import os
@@ -279,20 +279,21 @@ class creation_donnees_homard:
                 aux = "DiametMi"
               self.niveau.append((aux, self.mots_cles[mot_cle]))
               saux += aux
+        #print "saux =", saux
 #
         if ( "DiametMi" in saux ) :
           #print self.mots_cles["DIAM_MIN"]
           if self.mots_cles["DIAM_MIN"] < 0 :
-            message_erreur = "Le diametre mini doit etre strictement positif. "+\
-                             "La valeur "+str(self.mots_cles["DIAM_MIN"])+" est incorrecte."
+            message_erreur = "Le diametre minimal doit etre strictement positif. "+\
+                             "La valeur %e est incorrecte." % self.mots_cles["DIAM_MIN"]
             break
 #
         if ( ( "NiveauMi" in saux ) and ( "NiveauMa" in saux ) ) :
           #print self.mots_cles["NIVE_MIN"]
           #print self.mots_cles["NIVE_MAX"]
           if self.mots_cles["NIVE_MIN"] >= self.mots_cles["NIVE_MAX"] :
-            message_erreur = "Le niveau mini ,"+str(self.mots_cles["NIVE_MIN"])+\
-                             ", doit etre < au niveau maxi, "+str(self.mots_cles["NIVE_MAX"])+"."
+            message_erreur  = "Le niveau mini, %d, " % self.mots_cles["NIVE_MIN"]
+            message_erreur += "doit etre inferieur au niveau maxi, %d." % self.mots_cles["NIVE_MAX"]
             break
 #
 #     7.5. Les éventuelles zones de raffinement
@@ -301,16 +302,23 @@ class creation_donnees_homard:
           iaux = 0
           for zone in self.dico_configuration["Zones_raffinement"] :
             iaux = iaux + 1
-            s_aux_1 = "Zone numero "+str(iaux)+" : "
-            s_aux_2 = ", doit etre < au "
+            s_aux_1 = "\nZone numero %d : " % iaux
+            s_aux_2 = ", doit etre inferieur au "
             if zone.has_key("X_MINI") :
               if zone["X_MINI"] > zone["X_MAXI"] :
-                message_erreur = s_aux_1+"X mini ,"+str(zone["X_MINI"])+s_aux_2+"X maxi, "+str(zone["X_MAXI"])+"."
+                message_erreur  = s_aux_1 + "X mini, %e"  % zone["X_MINI"]
+                message_erreur += s_aux_2 + "X maxi, %e." % zone["X_MAXI"]
               if zone["Y_MINI"] > zone["Y_MAXI"] :
-                message_erreur = s_aux_1+"Y mini ,"+str(zone["Y_MINI"])+s_aux_2+"Y maxi, "+str(zone["Y_MAXI"])+"."
+                if ( message_erreur == None ) :
+                  message_erreur = ""
+                message_erreur += s_aux_1 + "Y mini, %e"  % zone["Y_MINI"]
+                message_erreur += s_aux_2 + "Y maxi, %e." % zone["Y_MAXI"]
             if zone.has_key("Z_MINI") :
               if zone["Z_MINI"] > zone["Z_MAXI"] :
-                message_erreur = s_aux_1+"Z mini ,"+str(zone["Z_MINI"])+s_aux_2+"Z maxi, "+str(zone["Z_MAXI"])+"."
+                if ( message_erreur == None ) :
+                  message_erreur = ""
+                message_erreur += s_aux_1 + "Z mini, %e"  % zone["Z_MINI"]
+                message_erreur += s_aux_2 + "Z maxi, %e." % zone["Z_MAXI"]
 #
 #     8. Le pilotage de la modification
 #
@@ -402,7 +410,18 @@ class creation_donnees_homard:
       . valeur : la valeur associée
     """
 #
-    ligne = motcle + " " + str(valeur) + "\n"
+    ligne  = motcle
+#
+    if ( type(valeur) == type(0) ) :
+      saux = "%d" % valeur
+    elif ( type(valeur) == type(0.0) ) :
+      saux = "%e" % valeur
+    else :
+      saux = valeur
+    ligne += " " + saux
+#
+    ligne += "\n"
+#
     self.fichier.write(ligne)
 #
     return
@@ -412,10 +431,30 @@ class creation_donnees_homard:
     Ecrit une ligne du fichier de configuration dans le cas : motcle + valeur1 + valeur2
    Arguments :
       . motcle : le mot-cle HOMARD a ecrire
-      . valeur : la valeur associée
+      . valeur1 : la première valeur associée
+      . valeur2 : la seconde valeur associée
     """
 #
-    ligne = motcle + " " + str(valeur1) + " " + str(valeur2) + "\n"
+    ligne  = motcle
+#
+    if ( type(valeur1) == type(0) ) :
+      saux = "%d" % valeur1
+    elif ( type(valeur1) == type(0.0) ) :
+      saux = "%e" % valeur1
+    else :
+      saux = valeur1
+    ligne += " " + saux
+#
+    if ( type(valeur2) == type(0) ) :
+      saux = "%d" % valeur2
+    elif ( type(valeur2) == type(0.0) ) :
+      saux = "%e" % valeur2
+    else :
+      saux = valeur2
+    ligne += " " + saux
+#
+    ligne += "\n"
+#
     self.fichier.write(ligne)
 #
     return
@@ -538,7 +577,8 @@ class creation_donnees_homard:
           iaux = 0
           for zone in self.dico_configuration["Zones_raffinement"] :
             iaux = iaux + 1
-            self.ecrire_ligne_configuration_0("Zone de raffinement numero "+str(iaux))
+            message = "Zone de raffinement numero %d" % iaux
+            self.ecrire_ligne_configuration_0(message)
             jaux = dico_zone[zone["TYPE"]]
             aux = "USAGE"
             if zone.has_key(aux) :
@@ -594,7 +634,8 @@ class creation_donnees_homard:
         iaux = 0
         for le_champ in self.dico_configuration["Champs_mis_a_jour"] :
           iaux = iaux + 1
-          self.ecrire_ligne_configuration_0("Mise a jour du champ numero "+str(iaux))
+          message = "Mise a jour du champ numero %d" % iaux
+          self.ecrire_ligne_configuration_0(message)
           self.ecrire_ligne_configuration_3("CCChaNom", iaux, le_champ["NOM_CHAM_MED"])
           self.ecrire_ligne_configuration_3("CCChaTIn", iaux, le_champ["TYPE_MAJ"])
           if le_champ.has_key("NUME_ORDRE") :
@@ -659,17 +700,22 @@ class creation_donnees_homard:
         dico_frontiere["TYPE"] = "FAType"
         dico_frontiere["CYLINDRE"] = 1
         dico_frontiere["SPHERE"] = 2
+        dico_frontiere["CONE_A"] = 3
+        dico_frontiere["CONE_R"] = 4
+        dico_frontiere["TORE"] = 5
         iaux = 0
         kaux = 0
         for frontiere in self.dico_configuration["Frontiere_analytique"] :
           iaux += 1
-          self.ecrire_ligne_configuration_0("Description de la frontiere analytique numero "+str(iaux))
+          message = "Description de la frontiere analytique numero %d" % iaux
+          self.ecrire_ligne_configuration_0(message)
           jaux = dico_frontiere[frontiere["TYPE"]]
           self.ecrire_ligne_configuration_3(dico_frontiere["TYPE"], iaux, jaux)
           for aux in l_aux :
             if frontiere.has_key(aux) :
               self.ecrire_ligne_configuration_3(dico_frontiere[aux], iaux, frontiere[aux])
-          self.ecrire_ligne_configuration_0("Lien de la frontiere analytique numero "+str(iaux)+" avec les groupes")
+          message = "Lien de la frontiere analytique numero %d avec les groupes" % iaux
+          self.ecrire_ligne_configuration_0(message)
           if not type(frontiere["GROUP_MA"]) in EnumTypes :
             lt_aux = [ frontiere["GROUP_MA"] ]
           else :

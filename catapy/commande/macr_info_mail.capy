@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +21,7 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
                      op=OPS('Macro.macr_adap_mail_ops.macr_adap_mail_ops'),
                      docu="U7.03.02",UIinfo={"groupes":("Maillage",)},
                      fr=tr("Donner des informations sur un maillage."),
-                     
+
 #
 # 1. Le niveau d'information
 #
@@ -40,7 +41,7 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
   b_frontiere = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
                       fr=tr("Information complémentaire sur la frontière"),
-                      
+
 #
     GROUP_MA_FRONT = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                           fr=tr("Groupes de mailles définissant la frontière"),
@@ -51,51 +52,51 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 # 4. Les options ; par defaut, on controle tout, sauf l'interpénétration
 # 4.1. Nombre de noeuds et mailles
 #
-  NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
+  NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI", "NON",),
                         fr=tr("Nombre de noeuds et de mailles du maillage"),
                         ),
 #
 # 4.2. Determination de la qualite des mailles du maillage
 #
-  QUALITE        = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr=tr("Qualité du maillage"),
+  QUALITE        = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI", "NON",),
+                        fr=tr("Qualité des mailles du maillage."),
                         ),
 #
 # 4.3. Connexite du maillage
 #
-  CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
+  CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI", "NON",),
                         fr=tr("Connexité du maillage."),
                         ),
 #
 # 4.4. Taille des sous-domaines du maillage
 #
-  TAILLE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
+  TAILLE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI", "NON",),
                         fr=tr("Tailles des sous-domaines du maillage."),
                         ),
 #
 # 4.5. Controle de la non-interpénétration des mailles
 #
-  INTERPENETRATION=SIMP(statut='f',typ='TXM',into=("OUI",),
+  INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI", "NON",),
                         fr=tr("Controle de la non interpénétration des mailles."),
                         ),
 #
 # 4.6. Propriétés du maillage de calcul
 #
-  PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
+  PROP_CALCUL    = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI", "NON",),
                         fr=tr("Propriétés du maillage de calcul."),
                         ),
 #
 # 4.7. Determination des diametres des mailles du maillage
 #
-  DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI",),
-                        fr=tr("Diamètre du maillage"),
+  DIAMETRE       = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI", "NON",),
+                        fr=tr("Diamètre des mailles du maillage."),
                         ),
 #
 # 5. Les options avancées
 # 5.1. Langue des messages issus de HOMARD
 #
   LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",
-                into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
+                into=("FRANCAIS", "FRENCH", "ANGLAIS", "ENGLISH",),
                 fr=tr("Langue des messages issus de HOMARD."),
                 ),
 #
@@ -109,8 +110,8 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
 # 5.3. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_6",
-                        into=("V10_6", "V10_N", "V10_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V11_2",
+                        into=("V11_2", "V11_N", "V11_N_PERSO"),
                         fr=tr("Version de HOMARD"),
                         ),
 #
@@ -122,12 +123,12 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
 # 5.5. Unite logique d'un fichier à ajouter a HOMARD.Configuration
 #
-  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
-                                (VERSION_HOMARD == 'V10_N_PERSO') " ,
+  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V11_N') or \
+                                (VERSION_HOMARD == 'V11_N_PERSO') " ,
                                 fr=tr("Fichier supplementaire."),
-                                
+
 #
-  UNITE = SIMP(statut='f',typ='I',
+  UNITE = SIMP(statut='f',typ='I',val_min=1,
                fr=tr("Unite logique a ajouter a HOMARD.Configuration"),
                ),
 #

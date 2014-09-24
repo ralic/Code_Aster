@@ -1,0 +1,509 @@
+# -*- coding: iso-8859-1 -*-
+"""
+Geometrie et maillage
+Copyright EDF R&D 2014
+"""
+__revision__ = "V2.2"
+
+import os
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+erreur = 0
+#
+HOME = os.environ["HOME"]
+ficmed = os.path.join ( HOME, "maill.00.init.med" )
+ficmed_f = os.path.join ( HOME, "front.med" )
+
+import math
+#
+#=====================================================
+# DELTA : la structure est de taille proportionnelle a DELTA
+DELTA = 20.
+# LG_ARETE = longueur typique d'une arete du maillage
+LG_ARETE = 1.5*DELTA
+#
+verbose = 1
+cree_geom = 1
+# cree_mail = 1 : BLSURF/GHS3D
+# cree_mail = 2 : NETGEN_1D2D3D
+cree_mail = 2
+#=====================================================
+
+###
+### GEOM component
+###
+if cree_geom :
+#
+  import GEOM
+  from salome.geom import geomBuilder
+  geompy = geomBuilder.New(theStudy)
+#
+# 1. Le repere
+#
+  O = geompy.MakeVertex(0., 0., 0.)
+  OX = geompy.MakeVectorDXDYDZ(DELTA, 0., 0.)
+  OY = geompy.MakeVectorDXDYDZ(0., DELTA, 0.)
+  OZ = geompy.MakeVectorDXDYDZ(0., 0., DELTA)
+#
+# 2. Le tore
+#
+  R1_T = 20.*DELTA
+  R2_T =  8.*DELTA
+#
+  Tore = geompy.MakeTorus(O, OX, R1_T, R2_T)
+  if ( verbose ) :
+    print 'Tore'
+    print '. Centre  :', 0., 0., 0.
+    print '. Axe     :', DELTA, 0., 0.
+    print '==> Axe  normalise :', 1., 0., 0.
+    print '. Rayon 1 :', R1_T
+    print '. Rayon 2 :', R2_T
+#
+# 2. Les cones
+# 2.1. Le cone de reference
+#
+  R1_C =  0.
+  H_C  = 16.*DELTA
+  angle = 30.
+  R2_C = H_C*math.tan(angle*math.pi/180.)
+  Cone = geompy.MakeCone(O, OX, R1_C, R2_C, H_C)
+  if ( verbose ) :
+    print 'Cone de reference'
+    print '. Centre  :', 0., 0., 0.
+    print '. Axe     :', 0., 0., 0.
+    print '. Hauteur :', H_C
+    print '. Angle   :', angle
+    print '. Rayon 1 :', R1_C
+    print '. Rayon 2 :', R2_C
+#
+# 2.2. Le premier cone
+#
+  TR_X = 0.
+  TR_Y = 20.*DELTA
+  TR_Z = 0.
+  Cone_1 = geompy.MakeTranslation(Cone, TR_X, TR_Y, TR_Z)
+#
+# 2.3. Le deuxieme cone
+#
+  TR_X = 0.
+  TR_Y = -20.*DELTA
+  TR_Z = 0.
+  Cone_2 = geompy.MakeTranslation(Cone, TR_X, TR_Y, TR_Z)
+#
+# 2.4. Le troisieme cone
+#
+  TR_X = 0.
+  TR_Y = 0.
+  TR_Z = 20.*DELTA
+  Cone_3 = geompy.MakeTranslation(Cone, TR_X, TR_Y, TR_Z)
+#
+# 2.4. Le quatrieme cone
+#
+  TR_X = 0.
+  TR_Y = 0.
+  TR_Z = -20.*DELTA
+  Cone_4 = geompy.MakeTranslation(Cone, TR_X, TR_Y, TR_Z)
+#
+# 3. Fusion
+#
+  DOMAINE_G1 = geompy.MakeFuse(Tore, Cone_1)
+  DOMAINE_G2 = geompy.MakeFuse(DOMAINE_G1, Cone_2)
+  DOMAINE_G3 = geompy.MakeFuse(DOMAINE_G2, Cone_3)
+  DOMAINE_G = geompy.MakeFuse(DOMAINE_G3, Cone_4)
+#
+# 4. Groupes
+#
+  decala = 0.10*DELTA
+#
+# 4.1. Tous
+#
+  l_a_tout = geompy.SubShapeAllIDs(DOMAINE_G, geompy.ShapeType["EDGE"])
+  l_f_tout = geompy.SubShapeAllIDs(DOMAINE_G, geompy.ShapeType["FACE"])
+  l_v_tout = geompy.SubShapeAllIDs(DOMAINE_G, geompy.ShapeType["SOLID"])
+  if ( verbose ) :
+    print "4.1. l_a_tout =", l_a_tout
+    print "4.1. l_f_tout =", l_f_tout
+    print "4.1. l_v_tout =", l_v_tout
+#
+  VOLUME_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["SOLID"] )
+  geompy.UnionIDs ( VOLUME_G, l_v_tout )
+#
+# 4.2. Le tore
+#
+  DX = 2.*R2_T
+  DY = 2.*(R1_T+R2_T)
+  DZ = 2.*(R1_T+R2_T)
+  boite_1 = geompy.MakeBoxDXDYDZ(DX+2.0*decala, DY+2.0*decala, DZ+2.0*decala)
+#
+  TR_X = -0.5*DX - decala
+  TR_Y = -0.5*DY - decala
+  TR_Z = -0.5*DZ - decala
+  geompy.TranslateDXDYDZ(boite_1, TR_X, TR_Y, TR_Z)
+#
+  l_f = geompy.GetShapesOnBoxIDs ( boite_1, DOMAINE_G, geompy.ShapeType["FACE"], GEOM.ST_ONIN )
+  if ( verbose ) :
+    print "4.2. l_f =", l_f
+  Tore_f_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Tore_f_G, l_f )
+#
+# 4.3. Les cones
+# 4.3.1. Les faces de base
+#
+  DX = 0.5*R2_T
+  DY = 3.*(R1_T+R2_T)
+  DZ = 3.*(R1_T+R2_T)
+  boite_2 = geompy.MakeBoxDXDYDZ(DX+2.0*decala, DY+2.0*decala, DZ+2.0*decala)
+#
+  TR_X = -0.5*DX + H_C - decala
+  TR_Y = -0.5*DY - decala
+  TR_Z = -0.5*DZ - decala
+  geompy.TranslateDXDYDZ(boite_2, TR_X, TR_Y, TR_Z)
+  l_s = geompy.GetShapesOnBoxIDs ( boite_2, DOMAINE_G, geompy.ShapeType["VERTEX"], GEOM.ST_ONIN )
+  l_f = geompy.GetShapesOnBoxIDs ( boite_2, DOMAINE_G, geompy.ShapeType["FACE"], GEOM.ST_ONIN )
+  TR_X = -R2_T
+  TR_Y = 0.
+  TR_Z = 0.
+  geompy.TranslateDXDYDZ(boite_2, TR_X, TR_Y, TR_Z)
+  l_a = geompy.GetShapesOnBoxIDs ( boite_2, DOMAINE_G, geompy.ShapeType["EDGE"], GEOM.ST_ONIN )
+  if ( verbose ) :
+    print "4.3.1. l_s =", l_s
+    print "4.3.1. l_a =", l_a
+    print "4.3.1. l_f =", l_f
+#
+# 4.3.2. Cone 1
+#
+  DX = H_C
+  DY = 2.*R2_C
+  DZ = 2.*R2_C
+  boite_3 = geompy.MakeBoxDXDYDZ(DX+2.0*decala, DY+2.0*decala, DZ+2.0*decala)
+#
+  TR_X =  0.0*DX - decala
+  TR_Y = -0.5*DY + 20.*DELTA - decala
+  TR_Z = -0.5*DZ - decala
+  geompy.TranslateDXDYDZ(boite_3, TR_X, TR_Y, TR_Z)
+  l_s_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["VERTEX"], GEOM.ST_ONIN )
+  l_a_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["EDGE"], GEOM.ST_ONIN )
+  l_f_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["FACE"], GEOM.ST_ONIN )
+  if ( verbose ) :
+    print "4.3.2. l_a_c =", l_a_c
+    print "4.3.2. l_f_c =", l_f_c
+#
+  l_f_1 = []
+  l_f_2 = []
+  for face_id in l_f_c :
+    if face_id in l_f :
+      l_f_1.append(face_id)
+    else :
+      l_f_2.append(face_id)
+  Cone_1_f_base_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_1_f_base_G, l_f_1 )
+  Cone_1_f_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_1_f_G, l_f_2 )
+#
+  l_a_1 = []
+  for edge_id in l_a_c :
+    if edge_id in l_a :
+      l_a_1.append(edge_id)
+  Cone_1_a_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["EDGE"] )
+  geompy.UnionIDs ( Cone_1_a_G, l_a_1 )
+#
+  l_s_1 = []
+  for vertex_id in l_s_c :
+    if vertex_id in l_s :
+      l_s_1.append(vertex_id)
+  Cone_1_s_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["VERTEX"] )
+  geompy.UnionIDs ( Cone_1_s_G, l_s_1 )
+#
+# 4.3.3. Cone 2
+#
+  TR_X =  0.0
+  TR_Y = -40.*DELTA
+  TR_Z =  0.0
+  geompy.TranslateDXDYDZ(boite_3, TR_X, TR_Y, TR_Z)
+  l_s_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["VERTEX"], GEOM.ST_ONIN )
+  l_a_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["EDGE"], GEOM.ST_ONIN )
+  l_f_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["FACE"], GEOM.ST_ONIN )
+  if ( verbose ) :
+    print "4.3.3. l_a_c =", l_a_c
+    print "4.3.3. l_f_c =", l_f_c
+#
+  l_f_1 = []
+  l_f_2 = []
+  for face_id in l_f_c :
+    if face_id in l_f :
+      l_f_1.append(face_id)
+    else :
+      l_f_2.append(face_id)
+  Cone_2_f_base_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_2_f_base_G, l_f_1 )
+  Cone_2_f_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_2_f_G, l_f_2 )
+#
+  l_a_1 = []
+  for edge_id in l_a_c :
+    if edge_id in l_a :
+      l_a_1.append(edge_id)
+  Cone_2_a_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["EDGE"] )
+  geompy.UnionIDs ( Cone_2_a_G, l_a_1 )
+#
+  l_s_1 = []
+  for vertex_id in l_s_c :
+    if vertex_id in l_s :
+      l_s_1.append(vertex_id)
+  Cone_2_s_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["VERTEX"] )
+  geompy.UnionIDs ( Cone_2_s_G, l_s_1 )
+#
+# 4.3.4. Cone 3
+#
+  TR_X =  0.0
+  TR_Y =  20.*DELTA
+  TR_Z =  20.*DELTA
+  geompy.TranslateDXDYDZ(boite_3, TR_X, TR_Y, TR_Z)
+  l_s_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["VERTEX"], GEOM.ST_ONIN )
+  l_a_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["EDGE"], GEOM.ST_ONIN )
+  l_f_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["FACE"], GEOM.ST_ONIN )
+  if ( verbose ) :
+    print "4.3.4. l_a_c =", l_a_c
+    print "4.3.4. l_f_c =", l_f_c
+#
+  l_f_1 = []
+  l_f_2 = []
+  for face_id in l_f_c :
+    if face_id in l_f :
+      l_f_1.append(face_id)
+    else :
+      l_f_2.append(face_id)
+  Cone_3_f_base_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_3_f_base_G, l_f_1 )
+  Cone_3_f_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_3_f_G, l_f_2 )
+#
+  l_a_1 = []
+  for edge_id in l_a_c :
+    if edge_id in l_a :
+      l_a_1.append(edge_id)
+  Cone_3_a_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["EDGE"] )
+  geompy.UnionIDs ( Cone_3_a_G, l_a_1 )
+#
+  l_s_1 = []
+  for vertex_id in l_s_c :
+    if vertex_id in l_s :
+      l_s_1.append(vertex_id)
+  Cone_3_s_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["VERTEX"] )
+  geompy.UnionIDs ( Cone_3_s_G, l_s_1 )
+#
+# 4.3.5. Cone 4
+#
+  TR_X =  0.0
+  TR_Y =  0.0
+  TR_Z = -40.*DELTA
+  geompy.TranslateDXDYDZ(boite_3, TR_X, TR_Y, TR_Z)
+  l_s_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["VERTEX"], GEOM.ST_ONIN )
+  l_a_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["EDGE"], GEOM.ST_ONIN )
+  l_f_c = geompy.GetShapesOnBoxIDs ( boite_3, DOMAINE_G, geompy.ShapeType["FACE"], GEOM.ST_ONIN )
+  if ( verbose ) :
+    print "4.3.5. l_s_c =", l_s_c
+    print "4.3.5. l_a_c =", l_a_c
+    print "4.3.5. l_f_c =", l_f_c
+#
+  l_f_1 = []
+  l_f_2 = []
+  for face_id in l_f_c :
+    if face_id in l_f :
+      l_f_1.append(face_id)
+    else :
+      l_f_2.append(face_id)
+  Cone_4_f_base_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_4_f_base_G, l_f_1 )
+  Cone_4_f_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["FACE"] )
+  geompy.UnionIDs ( Cone_4_f_G, l_f_2 )
+#
+  l_a_1 = []
+  for edge_id in l_a_c :
+    if edge_id in l_a :
+      l_a_1.append(edge_id)
+  Cone_4_a_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["EDGE"] )
+  geompy.UnionIDs ( Cone_4_a_G, l_a_1 )
+#
+  l_s_1 = []
+  for vertex_id in l_s_c :
+    if vertex_id in l_s :
+      l_s_1.append(vertex_id)
+  Cone_4_s_G = geompy.CreateGroup ( DOMAINE_G, geompy.ShapeType["VERTEX"] )
+  geompy.UnionIDs ( Cone_4_s_G, l_s_1 )
+#
+# 5. Affichage
+#
+  geompy.addToStudy( O, 'O' )
+  geompy.addToStudy( OX, 'OX' )
+  geompy.addToStudy( OY, 'OY' )
+  geompy.addToStudy( OZ, 'OZ' )
+#
+  geompy.addToStudy( boite_1, "boite_1" )
+  geompy.addToStudy( boite_2, "boite_2" )
+  geompy.addToStudy( boite_3, "boite_3" )
+#
+  geompy.addToStudy( Tore, "Tore" )
+  geompy.addToStudy( Cone, "Cone Ref" )
+  geompy.addToStudy( Cone_1, "Cone 1" )
+  geompy.addToStudy( Cone_2, "Cone 2" )
+  geompy.addToStudy( Cone_3, "Cone 3" )
+  geompy.addToStudy( Cone_4, "Cone 4" )
+#
+  geompy.addToStudy( DOMAINE_G, "DOMAINE" )
+  geompy.addToStudyInFather( DOMAINE_G, VOLUME_G, "LEM" )
+  geompy.addToStudyInFather( DOMAINE_G, Tore_f_G, "Tore_f" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_1_f_base_G, "Cone_1_base" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_1_f_G, "Cone_1_lateral" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_1_a_G, "Tore_Cone_1" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_1_s_G, "S_1" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_2_f_base_G, "Cone_2_base" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_2_f_G, "Cone_2_lateral" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_2_a_G, "Tore_Cone_2" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_2_s_G, "S_2" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_3_f_base_G, "Cone_3_base" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_3_f_G, "Cone_3_lateral" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_3_a_G, "Tore_Cone_3" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_3_s_G, "S_3" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_4_f_base_G, "Cone_4_base" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_4_f_G, "Cone_4_lateral" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_4_a_G, "Tore_Cone_4" )
+  geompy.addToStudyInFather( DOMAINE_G, Cone_4_s_G, "S_4" )
+#
+###
+### SMESH component
+###
+if cree_mail and cree_geom :
+#
+  import  SMESH, SALOMEDS
+  from salome.smesh import smeshBuilder
+#
+  smesh = smeshBuilder.New(theStudy)
+#
+# A. Maillage du volume
+# A.1. Creation du maillage
+#
+  DOMAINE_M = smesh.Mesh(DOMAINE_G)
+  smesh.SetName(DOMAINE_M.GetMesh(), "LEM" )
+#
+# A.2. Parametrages
+#
+  if ( cree_mail == 1 ) :
+    BLSURF = DOMAINE_M.Triangle(algo=smeshBuilder.BLSURF)
+    BLSURF_Parameters = BLSURF.Parameters()
+    BLSURF_Parameters.SetPhysicalMesh( 1 )
+    BLSURF_Parameters.SetPhySize( LG_ARETE )
+    BLSURF_Parameters.SetGeometricMesh( 0 )
+  ###  BLSURF_Parameters.SetGradation( 1.9 )
+  ###  BLSURF_Parameters.SetAngleMeshC( 16 )
+  ###  BLSURF_Parameters.SetAngleMeshS( 16 )
+  ###  BLSURF_Parameters.SetGeoMax( RG*45./50. )
+  #
+    Tetrahedron_GHS3D = DOMAINE_M.Tetrahedron(algo=smeshBuilder.GHS3D)
+    Tetrahedron_GHS3D.SetToMeshHoles( 0 )
+  else :
+    NETGEN_2D3D = DOMAINE_M.Tetrahedron(algo=smeshBuilder.NETGEN_1D2D3D)
+    NETGEN_3D_Parameters = NETGEN_2D3D.Parameters()
+    NETGEN_3D_Parameters.SetMinSize( 30 )
+    NETGEN_3D_Parameters.SetMaxSize( 300 )
+    NETGEN_3D_Parameters.SetSecondOrder( 0 )
+    NETGEN_3D_Parameters.SetOptimize( 1 )
+    NETGEN_3D_Parameters.SetFineness( 1 )
+#
+# A.3. Groupes
+#
+  VOLUME_M = DOMAINE_M.Group(VOLUME_G, "VOLUME" )
+  Tore_f_M = DOMAINE_M.Group(Tore_f_G, "Tore_f" )
+#
+  Cone_1_f_base_M = DOMAINE_M.Group(Cone_1_f_base_G, "C_1_base" )
+  Cone_1_f_M = DOMAINE_M.Group(Cone_1_f_G, "C_1_cote" )
+  Cone_1_a_M = DOMAINE_M.Group(Cone_1_a_G, "inter_1" )
+  Cone_1_s_M = DOMAINE_M.Group(Cone_1_s_G, "S_1" )
+#
+  Cone_2_f_base_M = DOMAINE_M.Group(Cone_2_f_base_G, "C_2_base" )
+  Cone_2_f_M = DOMAINE_M.Group(Cone_2_f_G, "C_2_cote" )
+  Cone_2_a_M = DOMAINE_M.Group(Cone_2_a_G, "inter_2" )
+  Cone_2_s_M = DOMAINE_M.Group(Cone_2_s_G, "S_2" )
+#
+  Cone_3_f_base_M = DOMAINE_M.Group(Cone_3_f_base_G, "C_3_base" )
+  Cone_3_f_M = DOMAINE_M.Group(Cone_3_f_G, "C_3_cote" )
+  Cone_3_a_M = DOMAINE_M.Group(Cone_3_a_G, "inter_3" )
+  Cone_3_s_M = DOMAINE_M.Group(Cone_3_s_G, "S_3" )
+#
+  Cone_4_f_base_M = DOMAINE_M.Group(Cone_4_f_base_G, "C_4_base" )
+  Cone_4_f_M = DOMAINE_M.Group(Cone_4_f_G, "C_4_cote" )
+  Cone_4_a_M = DOMAINE_M.Group(Cone_4_a_G, "inter_4" )
+  Cone_4_s_M = DOMAINE_M.Group(Cone_4_s_G, "S_4" )
+#
+# A.4. Calcul du maillage
+#
+  isDone = DOMAINE_M.Compute()
+#
+# A.5. Passage au degre 2
+#
+  DOMAINE_M.ConvertToQuadratic(1)
+#
+# A.6. Bilan
+#
+  if ( verbose ) :
+    print "Nombre de noeuds      : ", DOMAINE_M.NbNodes()
+    print "Nombre d'aretes       : ", DOMAINE_M.NbEdges()
+    print "Nombre de faces       : ", DOMAINE_M.NbFaces()
+    print "          triangles   : ", DOMAINE_M.NbTriangles()
+    print "Nombre de volumes     : ", DOMAINE_M.NbVolumes()
+    print "          tetraedres  : ", DOMAINE_M.NbTetras()
+#
+# A.7. Sauvegarde du maillage du volume
+#
+  DOMAINE_M.ExportMED( ficmed, 0, SMESH.MED_V2_2 )
+#
+# B. Maillage de l'intersection tore/cones
+# B.1. Parametrage des elements
+#
+  DOMAINE_F = smesh.Mesh(DOMAINE_G)
+  smesh.SetName(DOMAINE_F.GetMesh(), 'ConeTore')
+  Regular_1D = DOMAINE_F.Segment()
+  Nb_Segments_1 = Regular_1D.NumberOfSegments(1000)
+  Nb_Segments_1.SetDistrType( 0 )
+#
+# B.2. Maillage
+#
+  isDone = DOMAINE_F.Compute()
+#
+# B.3. Groupes
+#
+  Cone_1_a_F = DOMAINE_F.Group(Cone_1_a_G, "inter_1" )
+  Cone_2_a_F = DOMAINE_F.Group(Cone_2_a_G, "inter_2" )
+  Cone_3_a_F = DOMAINE_F.Group(Cone_3_a_G, "inter_3" )
+  Cone_4_a_F = DOMAINE_F.Group(Cone_4_a_G, "inter_4" )
+#
+# B.4. Bilan
+#
+  if ( verbose ) :
+    print "Nombre de noeuds      : ", DOMAINE_F.NbNodes()
+    print "Nombre d'aretes       : ", DOMAINE_F.NbEdges()
+#
+# B.5. Sauvegarde du maillage
+#
+  DOMAINE_F.ExportMED( ficmed_f, 0, SMESH.MED_V2_2 )
+#
+# C. Options graphiques
+#
+  isGUIMode = 1
+  if isGUIMode and salome.sg.hasDesktop():
+#
+    if ( cree_mail == 1 ) :
+      smesh.SetName(BLSURF.GetAlgorithm(), 'BLSURF')
+      smesh.SetName(BLSURF_Parameters, 'BLSURF Parameters_1')
+      smesh.SetName(Tetrahedron_GHS3D.GetAlgorithm(), 'Tetrahedron (GHS3D)')
+    else :
+      smesh.SetName(NETGEN_2D3D.GetAlgorithm(), 'NETGEN_2D3D')
+      smesh.SetName(NETGEN_3D_Parameters, 'NETGEN 3D Parameters')
+    smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+#
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

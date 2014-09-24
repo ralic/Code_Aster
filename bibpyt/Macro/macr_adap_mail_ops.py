@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V2.4"
+__revision__ = "V3.1"
 #
 import string
 import os
@@ -29,8 +29,10 @@ from glob import glob
 import tarfile
 from types import ListType, TupleType
 EnumTypes = (ListType, TupleType)
+import shutil
 #
 from Utilitai.Utmess     import UTMESS, MasquerAlarme, RetablirAlarme
+from Utilitai.UniteAster import UniteAster
 #
 # ======================================================================
 #
@@ -41,21 +43,21 @@ initialisation de la liste des passages, eventuellement apres extraction de l'ar
 Entree :
   INFO : niveau d'information pour la macro-commande
   fichier_archive : nom de l'eventuel fichier d'archive des cas precedents
-  Rep_Calc_ASTER : repertoire de calcul d'Aster
+  Rep_Calc_ASTER : répertoire de calcul d'Aster
 Sortie :
   Liste_Passages : liste decrivant les passages deja faits
   """
 #
   if ( INFO >= 3 ) :
-    print "\nDans liste_passages_init, archive :", fichier_archive
+    print "\nDans liste_passages_init, fichier_archive :", fichier_archive
 #
 # A.0. A priori, la liste est vide
 #
   Liste_Passages = []
 #
 # A.1. S'il existe un fichier de reprise, c'est que l'on est au premier
-#      appel apres une 'poursuite'. On recupere les repertoires qui auraient pu
-#      etre archives au calcul precedent
+#      appel apres une 'poursuite' ou un 'debut' avec les historiques.
+#      On recupere les répertoires qui auraient pu etre archives au calcul precedent.
 #
   if os.path.isfile(fichier_archive) :
 #
@@ -81,24 +83,28 @@ Sortie :
     if ( INFO >= 3 ) :
       print os.listdir(Rep_Calc_ASTER)
 #
-# A.1.2. Liste de tous les repertoires d'adaptation qui ont ete recuperes
+# A.1.2. Liste de tous les répertoires d'adaptation qui ont ete recuperes
 #
     laux = glob("*_ADAP_*")
 #
-#     On prend le fichier pickle du 1er repertoire (ce sont tous les memes),
-#     puis on recupere la liste des passages
+#   On prend le fichier pickle du 1er répertoire (ce sont tous les memes),
+#   puis on recupere la liste des passages
 #
     fic = os.path.join(Rep_Calc_ASTER, laux[0], "pick.1")
     file = open(fic, "r")
     laux = cPickle.load(file)
     file.close()
 #
-# A.1.3. Pour chaque cas, mise a jour du repertoire global
+# A.1.3. Pour chaque cas, mise à jour du répertoire global
 #
     for dico in laux :
       Rep_Calc_HOMARD_local  = dico["Rep_Calc_HOMARD_local"]
       dico["Rep_Calc_HOMARD_global"] = os.path.join(Rep_Calc_ASTER, Rep_Calc_HOMARD_local)
       Liste_Passages.append(dico)
+#
+  else :
+    if ( INFO >= 3 ) :
+      print "Fichier inconnu."
 #
   return Liste_Passages
 #
@@ -116,8 +122,8 @@ Entree :
   maillage_np1 : concept ASTER du dernier maillage adapte
   maillage_np1_nom_med : Nom MED du dernier maillage adapte
   Nom_Co_Mail_NP1_ANNEXE : Nom du concept du maillage n+1 annexe
-  Rep_Calc_HOMARD_local : repertoire local de calcul de HOMARD
-  Rep_Calc_HOMARD_global : repertoire global de calcul de HOMARD
+  Rep_Calc_HOMARD_local : répertoire local de calcul de HOMARD
+  Rep_Calc_HOMARD_global : répertoire global de calcul de HOMARD
   fic_homard_niterp1 : fichier HOMARD n+1
   unite_fichier_homard_vers_aster : unite du fichier d'ASTER vers HOMARD
   liste_champs : liste des champs definis
@@ -255,7 +261,7 @@ Sortie :
   ###print "dico =", dico
 #
   nom_cham_med_fichier = "champ_de_pilotage"
-#                             12345678901234567890123456789012
+#                         12345678901234567890123456789012
   dico["NOM_CHAM_MED"] = nom_cham_med_fichier
   ###print "==> dico[\"NOM_CHAM_MED\"] =", dico["NOM_CHAM_MED"]
 #
@@ -422,16 +428,18 @@ Sortie :
 #
   for frontiere in les_front_analytiques :
     l_aux = [ "NOM", "TYPE", "GROUP_MA", "X_CENTRE", "Y_CENTRE", "Z_CENTRE"]
-    if ( frontiere["TYPE"] in ( "CYLINDRE", "CONE_A") ) :
+    if ( frontiere["TYPE"] in ( "CYLINDRE", "CONE_A", "TORE") ) :
       l_aux.append("X_AXE")
       l_aux.append("Y_AXE")
       l_aux.append("Z_AXE")
-    if ( frontiere["TYPE"] in ( "CYLINDRE", "SPHERE", "CONE_R" ) ) :
+    if ( frontiere["TYPE"] in ( "CYLINDRE", "SPHERE" ) ) :
       l_aux.append("RAYON")
-    if ( frontiere["TYPE"] in ( "CONE_A" ) ) :
-      l_aux.append("ANGLE")
-    if ( frontiere["TYPE"] in ( "CONE_R" ) ) :
+    if ( frontiere["TYPE"] in ( "CONE_R", "TORE" ) ) :
+      l_aux.append("RAYON")
       l_aux.append("RAYON2")
+    if ( frontiere["TYPE"] == "CONE_A" ) :
+      l_aux.append("ANGLE")
+    if ( frontiere["TYPE"] == "CONE_R" ) :
       l_aux.append("X_CENTRE2")
       l_aux.append("Y_CENTRE2")
       l_aux.append("Z_CENTRE2")
@@ -443,6 +451,31 @@ Sortie :
     liste_front_analytiques.append(dico)
 #
   return liste_front_analytiques
+#
+# ======================================================================
+#
+def argument_historique ( INFO, args ) :
+#
+  """
+Les historiques dans les arguments
+Entree :
+  INFO : niveau d'information pour la macro-commande
+  args : dictionnaire des arguments de macr_adap_mail
+Sortie :
+  dico_unites : dictionnaire des unites des historiques
+  """
+#
+  dico_unites = {}
+#
+  for mot_cle in ( "UNITE_HIST_IN", "UNITE_HIST_OUT" ) :
+    if args.has_key(mot_cle) :
+      if ( args[mot_cle] != None ) :
+        dico_unites[mot_cle] = args[mot_cle]
+#
+  if ( INFO >= 3 ) :
+    print "dico_unites =", dico_unites
+#
+  return dico_unites
 #
 # ======================================================================
 #
@@ -482,7 +515,7 @@ def fichier_echange_unite ( INFO, numero_passage_fonction ) :
   """
 Les unites des fichiers d'echange entre Aster et HOMARD
 Remarque : aujourd'hui, les ecritures ou les lectures au format MED se font obligatoirement
-           dans un fichier de nom fort.n, place dans le repertoire de calcul
+           dans un fichier de nom fort.n, place dans le répertoire de calcul
 Entree :
   INFO : niveau d'information pour la macro-commande
   numero_passage_fonction : numero du passage dans cette macro
@@ -497,12 +530,12 @@ Sortie :
 # A.1. ==> D'ASTER vers HOMARD
 #
   unite_fichier_aster_vers_homard = 1787 + 2*numero_passage_fonction
-##  #print "unite_fichier_aster_vers_homard =",unite_fichier_aster_vers_homard
+  #print "unite_fichier_aster_vers_homard =",unite_fichier_aster_vers_homard
 #
 # A.2. ==> De HOMARD vers ASTER
 #
   unite_fichier_homard_vers_aster = unite_fichier_aster_vers_homard + 1
-##    #print "unite_fichier_homard_vers_aster =",unite_fichier_homard_vers_aster
+  #print "unite_fichier_homard_vers_aster =",unite_fichier_homard_vers_aster
 #
   return unite_fichier_aster_vers_homard, unite_fichier_homard_vers_aster
 #
@@ -514,11 +547,11 @@ def fichier_echange_nom ( INFO, unite, Rep_Calc_ASTER ) :
   """
 Les noms des fichiers d'echange entre Aster et HOMARD
 Remarque : aujourd'hui, les ecritures ou les lectures au format MED se font obligatoirement
-           dans un fichier de nom fort.n, place dans le repertoire de calcul
+           dans un fichier de nom fort.n, place dans le répertoire de calcul
 Entree :
   INFO : niveau d'information pour la macro-commande
   unite : unite du fichier voulu
-  Rep_Calc_ASTER : repertoire de calcul d'Aster
+  Rep_Calc_ASTER : répertoire de calcul d'Aster
 Sortie :
   fichier : nom du fichier associe a l'unite
   """
@@ -526,8 +559,9 @@ Sortie :
   if ( INFO >= 3 ) :
     print "\nDans fichier_echange_nom, unite =", unite
 #
-  fichier = os.path.join(Rep_Calc_ASTER, "fort." + str(unite))
-##  #print "fichier =",fichier
+  saux = "fort.%d" % unite
+  fichier = os.path.join(Rep_Calc_ASTER, saux)
+  #print "fichier =",fichier
 #
   return fichier
 #
@@ -626,11 +660,11 @@ Creation des donnees pour le fichier de configuration de HOMARD
 Entree :
   INFO : niveau d'information pour la macro-commande
   args : dictionnaire des arguments de macr_adap_mail
-  Rep_Calc_ASTER : repertoire de calcul d'Aster
+  Rep_Calc_ASTER : répertoire de calcul d'Aster
   mode_homard : mode de homard (MODI, INFO, ADAP, LECT)
   VERSION_HOMARD : la version de homard mise en forme
   version_perso : vrai/faux si la version est la version personnelle
-  Rep_Calc_HOMARD_global : repertoire global de calcul de HOMARD
+  Rep_Calc_HOMARD_global : répertoire global de calcul de HOMARD
   niter : numero d'iteration de depart
   fichier_aster_vers_homard : fichier d'ASTER vers HOMARD
   fichier_homard_vers_aster : fichier de HOMARD vers ASTER
@@ -656,8 +690,10 @@ Sortie :
   dico_configuration["version_perso"] = version_perso
   if args.has_key("UNITE") :
     UNITE = args["UNITE"]
-    fichier_conf_suppl = os.path.join(Rep_Calc_ASTER, "fort." + str(UNITE))
-    dico_configuration["fichier_conf_suppl"] = fichier_conf_suppl
+    if ( UNITE != None ) :
+      saux = "fort.%d" % UNITE
+      fichier_conf_suppl = os.path.join(Rep_Calc_ASTER, saux)
+      dico_configuration["fichier_conf_suppl"] = fichier_conf_suppl
 #
   dico_configuration["niter"] = niter
   dico_configuration["Fichier_ASTER_vers_HOMARD"] = fichier_aster_vers_homard
@@ -701,8 +737,8 @@ Sortie :
       l_aux = dico_configuration["Zones_raffinement"]
       l_aux.append(dico)
     dico_configuration["Zones_raffinement"] = l_aux
-###  if dico_configuration.has_key("Zones_raffinement") :
-##    #print "dico_configuration[Zones_raffinement] =", dico_configuration["Zones_raffinement"]
+  #if dico_configuration.has_key("Zones_raffinement") :
+    #print "dico_configuration[Zones_raffinement] =", dico_configuration["Zones_raffinement"]
 #
 # A.5. ==> Les eventuelles mises a jour de champs
 #
@@ -730,8 +766,8 @@ Sortie :
         l_aux = dico_configuration["Champs_mis_a_jour"]
         l_aux.append(dico_aux)
       dico_configuration["Champs_mis_a_jour"] = l_aux
-#    if dico_configuration.has_key("Champs_mis_a_jour") :
-     #print "dico_configuration[Champs_mis_a_jour] =", dico_configuration["Champs_mis_a_jour"]
+    #if dico_configuration.has_key("Champs_mis_a_jour") :
+      #print "dico_configuration[Champs_mis_a_jour] =", dico_configuration["Champs_mis_a_jour"]
 #
 # A.6. ==> Les eventuels champs supplementaires
 #
@@ -772,13 +808,12 @@ Sortie :
 #
 # ======================================================================
 #
-def file_print ( INFO, Rep_Calc_HOMARD_global ) :
+def file_print ( Rep_Calc_HOMARD_global ) :
 #
   """
 Impression des fichiers des donnees pour HOMARD
 Entree :
-  INFO : niveau d'information pour la macro-commande
-  Rep_Calc_HOMARD_global : repertoire global de calcul de HOMARD
+  Rep_Calc_HOMARD_global : répertoire global de calcul de HOMARD
 Sortie :
   """
 #
@@ -811,7 +846,7 @@ En mode d'information, on garde egalement les fichiers textes
 Entree :
   INFO : niveau d'information pour la macro-commande
   mode_homard : mode de homard (MODI, INFO, ADAP, LECT)
-  Rep_Calc_HOMARD_global : repertoire global de calcul de HOMARD
+  Rep_Calc_HOMARD_global : répertoire global de calcul de HOMARD
   fichier_aster_vers_homard : fichier d'ASTER vers HOMARD
   fichier_homard_vers_aster : fichier de HOMARD vers ASTER
   fic_homard_niterp1 : fichier HOMARD a l'iteration n+1
@@ -853,7 +888,7 @@ Entree :
 Sortie :
   la_chaine : la chaine
   """
-    #print "\nArguments à l'entree de", __name__, ":", entier
+  #print "\nArguments à l'entree de", __name__, ":", entier
 #
   if type(entier) == type(0) :
     la_chaine = '%02d' % entier
@@ -873,7 +908,7 @@ Entree :
   mode_homard : mode de homard (MODI, INFO, ADAP, LECT)
   dico_configuration : dictionnaire decrivant le fichier de configuration de HOMARD
                        voir la fonction 'cree_configuration'
-  Rep_Calc_ASTER : repertoire de calcul d'Aster
+  Rep_Calc_ASTER : répertoire de calcul d'Aster
 Sortie :
   d_aux : dictionnaire avec une cle obligatoire :
           erreur : 0, si OK, !=0 si probleme
@@ -882,7 +917,6 @@ Sortie :
   if ( INFO >= 3 ) :
     print "\nPassage dans post_traitement"
 #
-  import shutil
   d_aux = {}
   erreur = 0
 #
@@ -904,43 +938,42 @@ Sortie :
 #    print "str_niter_vers_niterp1", str_niter_vers_niterp1
 #
 # 2. Copie des fichiers bruts d'indicateurs
-#    On doit personnaliser le repertoire d'arrivee
+#    On doit personnaliser le répertoire d'arrivee
 #
-    HOME = os.environ["HOME"]
+    #HOME = os.environ["HOME"]
     ##reparr = os.path.join(HOME, "ASTER_USER", "TEST", "zzzz175b", "Indic")
-    reparr = Rep_Calc_ASTER
-    if os.path.isdir(reparr) :
-      l_aux = [ "no", "ar", "tr", "qu", "te", "he", "pe", "py" ]
-      for suff in l_aux :
-        nomfic = "ind." + suff + ".%03d.dat" % niter
-        ficdeb = os.path.join(Rep_Calc_HOMARD_global, nomfic)
-        if os.path.isfile(ficdeb) :
-          ficarr = os.path.join(reparr, nomfic)
-          if ( INFO >= 3 ) :
-            print "\nCopie de", ficdeb, "dans", ficarr
-          shutil.copyfile(ficdeb, ficarr)
-        else :
-          if ( INFO >= 3 ) :
-            print "\nLe fichier", ficdeb, "est inconnu."
-    else :
-      if ( INFO >= 2 ) :
-        print "Le repertoire", reparr, "est inconnu."
-      erreur = 2
-      break
+    #reparr = Rep_Calc_ASTER
+    #if os.path.isdir(reparr) :
+      #l_aux = [ "no", "ar", "tr", "qu", "te", "he", "pe", "py" ]
+      #for suff in l_aux :
+        #nomfic = "ind." + suff + ".%03d.dat" % niter
+        #ficdeb = os.path.join(Rep_Calc_HOMARD_global, nomfic)
+        #if os.path.isfile(ficdeb) :
+          #ficarr = os.path.join(reparr, nomfic)
+          #if ( INFO >= 3 ) :
+            #print "\nCopie de", ficdeb, "dans", ficarr
+          #shutil.copyfile(ficdeb, ficarr)
+        #else :
+          #if ( INFO >= 3 ) :
+            #print "\nLe fichier", ficdeb, "est inconnu."
+    #else :
+      #if ( INFO >= 2 ) :
+        #print "Le répertoire", reparr, "est inconnu."
+      #erreur = 2
+      #break
 #
 # 3. Analyse de la liste standard
 #
-    if ( mode_homard in [ "ADAP", "MODI" ] ) :
-      nomfic = "Liste." + str_niter_vers_niterp1
-      fic = os.path.join(Rep_Calc_HOMARD_global, nomfic)
-      if os.path.isfile(fic) :
-        if ( INFO >= 3 ) :
+    if ( INFO >= 3 ) :
+      if ( mode_homard in [ "ADAP", "MODI" ] ) :
+        nomfic = "Liste." + str_niter_vers_niterp1
+        fic = os.path.join(Rep_Calc_HOMARD_global, nomfic)
+        if os.path.isfile(fic) :
           print "\nAnalyse de", fic
-        fichier = open (fic, "r")
-        les_lignes = fichier.readlines()
-        fichier.close()
-        for ligne in les_lignes :
-          if ( INFO >= 3333 ) :
+          fichier = open (fic, "r")
+          les_lignes = fichier.readlines()
+          fichier.close()
+          for ligne in les_lignes :
             print ligne[:-1]
       else :
         print "\nLe fichier", fic, "est inconnu."
@@ -976,9 +1009,9 @@ def macr_adap_mail_ops ( self,
         dico["Maillage_NP1"]           = o ; string ; nom du concept du dernier maillage adapte
         dico["maillage_np1"]           = o ; string ; Concept ASTER du dernier maillage adapte
         dico["maillage_np1_nom_med"]   = o ; string ; Nom MED du dernier maillage adapte
-        dico["Rep_Calc_HOMARD_global"] = o ; string ; Nom global du repertoire de calcul pour HOMARD
-        dico["Rep_Calc_HOMARD_local"]  = o ; string ; Nom local du repertoire de calcul pour HOMARD
-                                                      depuis le repertoire de calcul pour ASTER
+        dico["Rep_Calc_HOMARD_global"] = o ; string ; Nom global du répertoire de calcul pour HOMARD
+        dico["Rep_Calc_HOMARD_local"]  = o ; string ; Nom local du répertoire de calcul pour HOMARD
+                                                      depuis le répertoire de calcul pour ASTER
         dico["niter"]                  = o ; entier ; numero d'iteration de depart
         dico["fichier_homard_vers_aster"] = f ; string ; nom du fichier d'echange entre HOMARD et Aster
         dico["fic_homard_niterp1"]     = o ; string ; nom du fichier HOMARD a l'iteration n+1
@@ -1052,22 +1085,49 @@ def macr_adap_mail_ops ( self,
   repertoire_outils = aster_core.get_option('repout')
   Rep_Calc_ASTER = os.getcwd()
   if ( INFO >= 3 ) :
-    print "Contenu du repertoire de calcul d'Aster", Rep_Calc_ASTER
+    print "Contenu du répertoire de calcul d'Aster", Rep_Calc_ASTER
     print os.listdir(Rep_Calc_ASTER)
 #
-# Remarque : le nom pick.homard.tar est obligatoire car ASTK rapatrie dans la base tous les fichiers en pick.*
-  fichier_archive = os.path.join(Rep_Calc_ASTER, "pick.homard.tar")
-    #print "fichier_archive =",fichier_archive
-#
-# 1.3. ==> Numero du passage dans cette macro
+# 1.3. ==> Numéro du passage dans cette macro
 #
   try :
     numero_passage_fonction = numero_passage_fonction + 1
   except :
     numero_passage_fonction = 1
-    #print "numero_passage_fonction =",numero_passage_fonction
+  if ( INFO >= 4 ) :
+    print "numero_passage_fonction =", numero_passage_fonction
 #
-# 1.4. ==> Au tout premier passage, initialisation de la liste des passages
+# 1.4. ==> Fichier d'archivage
+# 1.4.1. ==> Si une unite a ete fournie
+#
+  dico_unites = argument_historique ( INFO, args )
+#
+  if dico_unites.has_key("UNITE_HIST_IN") :
+    unite = dico_unites["UNITE_HIST_IN"]
+#   recherche de l'eventuel fichier defini par DEFI_FICHIER
+#   sinon, c'est un fort.xx classique
+    UL = UniteAster()
+    try:
+      #print "defini par DEFI_FICHIER"
+      fichier_archive = UL.Nom(unite)
+      if ( fichier_archive[0:1] != os.sep ) :
+        fichier_archive = os.path.join(Rep_Calc_ASTER, fichier_archive)
+    except:
+      #print "fort.xx classique"
+      aux = "fort.%d" % unite
+      fichier_archive = os.path.join(Rep_Calc_ASTER, aux)
+#
+# 1.4.2. ==> C'est le fichier contenu dans la base : son nom est pick.homard.tar (cf.11.2.1)
+#
+  else :
+    fichier_archive = os.path.join(Rep_Calc_ASTER, "pick.homard.tar")
+#
+  fichier_archive = os.path.normpath(fichier_archive)
+  if ( INFO >= 4 ) :
+    print "fichier_archive =", fichier_archive
+    #os.system("ls -la "+fichier_archive)
+#
+# 1.5. ==> Au tout premier passage, initialisation de la liste des passages
 #
   if numero_passage_fonction == 1 :
     Liste_Passages = liste_passages_init ( INFO, fichier_archive, Rep_Calc_ASTER )
@@ -1075,7 +1135,7 @@ def macr_adap_mail_ops ( self,
   if ( INFO >= 3 ) :
     print "1.4. Liste_Passages =", Liste_Passages
 #
-# 1.5. ==> Initialisations
+# 1.6. ==> Initialisations
 #
   codret_partiel = [0]
 #
@@ -1130,7 +1190,7 @@ def macr_adap_mail_ops ( self,
       #print dico_pilo
 #
 # 2.1.4. ==> Les champs a mettre a jour ou supplementaires
-     #print "\n.. Debut de 2.1.4."
+    #print "\n.. Debut de 2.1.4."
 #
     iaux = 0
     for usage_champ in ( "MAJ_CHAM", "ADD_CHAM" ) :
@@ -1149,6 +1209,11 @@ def macr_adap_mail_ops ( self,
     if args.has_key("ZONE") :
       if args["ZONE"] != None :
         liste_zones = argument_zone ( INFO, args )
+#
+# 2.1.6. ==> Les historiques
+    #print "\n.. Debut de 2.1.6."
+#
+    dico_unites = argument_historique ( INFO, args )
 #
 # 2.2. ==> Donnees de pilotage de l'information
 #
@@ -1239,33 +1304,35 @@ def macr_adap_mail_ops ( self,
     #print ".... dico apres =", dico
   liste_maillages = l_aux
 #
-# 3.2. ==> Recherche du numero d'iteration et du repertoire de travail
+# 3.2. ==> Recherche du numero d'iteration et du répertoire de travail
 #
 # 3.2.1. ==> Par defaut :
 #            . le numero d'iteration est nul
-#            . le nom du repertoire de lancement de HOMARD est construit sur le nom
+#            . le nom du répertoire de lancement de HOMARD est construit sur le nom
 #              du maillage en entree et le numero de passage dans la fonction
 #
   #print ".. Debut de 3.2.1."
 #
   niter = 0
-  Nom_Rep_local = Nom_Co_Mail_N + "_" + mode_homard + "_" + str(numero_passage_fonction)
+  saux = "_%d" % numero_passage_fonction
+  Nom_Rep_local = Nom_Co_Mail_N + "_" + mode_homard + saux
   Rep_Calc_HOMARD_local = os.path.join(".", Nom_Rep_local)
   Rep_Calc_HOMARD_global = os.path.join(Rep_Calc_ASTER, Nom_Rep_local)
     #print "Rep_Calc_HOMARD_local  =", Rep_Calc_HOMARD_local
     #print "Rep_Calc_HOMARD_global =", Rep_Calc_HOMARD_global
 #
-# 3.2.2. ==> En adaptation ou en lecture, il faut repartir du repertoire de l'iteration precedente
+# 3.2.2. ==> En adaptation ou en lecture, il faut repartir du répertoire de l'iteration precedente
 #            On recherche si dans les passages deja effectues, il en existe un dont le maillage
 #            d'arrivee etait l'actuel maillage d'entree. Si c'est le cas, cela veut dire que
 #            l'adaptation en cours ou la lecture est la suite d'une precedente.
-#            On doit donc utiliser le meme repertoire.
+#            On doit donc utiliser le meme répertoire.
 #            En adaptation, Le numero d'iteration est celui de l'adaptation precedente augmente de 1.
 #
   #print ".. Debut de 3.2.2."
 #
   if ( mode_homard in ("ADAP", "LECT") ) :
 #
+    #print ".. Nom_Co_Mail_N =", Nom_Co_Mail_N
     for dico in Liste_Passages :
       #print ".... dico :", dico
 #
@@ -1286,14 +1353,14 @@ def macr_adap_mail_ops ( self,
           liste_champs = dico["liste_champs"]
 #
         if ( INFO >= 3 ) :
-          print ".... ==> repertoire de calcul de HOMARD :", Rep_Calc_HOMARD_local
+          print ".... ==> répertoire de calcul de HOMARD :", Rep_Calc_HOMARD_local
           print ".... ==> niter :", niter
 #
-# 3.2.3. Le repertoire pour homard
+# 3.2.3. Le répertoire pour homard
 #        Attention : on ne fait cette creation qu'une seule fois par cas
 #                    d'adaptation, de modification ou d'information
 #
-  #print ".. Debut de 3.2.3."
+  #print ".. Debut de 3.2.3. avec niter =", niter
 #
   if ( mode_homard != "LECT" ) :
 #
@@ -1302,7 +1369,8 @@ def macr_adap_mail_ops ( self,
       try :
         os.mkdir(Rep_Calc_HOMARD_global)
       except os.error, codret_partiel :
-        self.cr.warn("Code d'erreur de mkdir : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
+        saux = "Code d'erreur de mkdir : %d" % codret_partiel[0]
+        self.cr.warn(saux + " : " + codret_partiel[1])
         UTMESS("F", 'HOMARD0_4', valk=Rep_Calc_HOMARD_global)
 #
     else :
@@ -1310,7 +1378,7 @@ def macr_adap_mail_ops ( self,
       if not os.path.isdir(Rep_Calc_HOMARD_global) :
         UTMESS("F", 'HOMARD0_8', valk=Rep_Calc_HOMARD_global)
       if ( INFO >= 3 ) :
-        print "Contenu du repertoire de calcul de HOMARD", Rep_Calc_HOMARD_local
+        print "Contenu du répertoire de calcul de HOMARD", Rep_Calc_HOMARD_local
         print os.listdir(Rep_Calc_HOMARD_global)
 #
 #====================================================================
@@ -1399,7 +1467,7 @@ def macr_adap_mail_ops ( self,
 #
       motscfa = {}
       motscfa["RESU"] = _F( INFO_MAILLAGE=infomail, **motscsi )
-      #print ".. motscfa =",motscfa
+      #print ".. motscfa =", motscfa
 #
 # 4.3.2.2. Appel de la commande Aster
 #
@@ -1422,7 +1490,7 @@ def macr_adap_mail_ops ( self,
 # 5.2. ==> Appel de la fonction de creation
 #
     donnees_homard = creation_donnees_homard.creation_donnees_homard ( self.nom, args, dico_configuration )
-    if ( INFO >= 4 ) :
+    if ( INFO >= 3 ) :
       donnees_homard.quel_mode ( )
     fic_homard_niter, fic_homard_niterp1 = donnees_homard.creation_configuration ( )
     donnees_homard.ecrire_fichier_configuration ( )
@@ -1436,9 +1504,9 @@ def macr_adap_mail_ops ( self,
 #
 # 5.4. ==> Impression eventuelle des fichiers crees
 #
-    #print "Repertoire ",Rep_Calc_HOMARD_global
+    #print "Repertoire ", Rep_Calc_HOMARD_global
     if ( INFO >= 4 ) :
-      file_print ( INFO, Rep_Calc_HOMARD_global )
+      file_print ( Rep_Calc_HOMARD_global )
 #    if ( mode_homard == "ADAP" ) :
 #      if args.has_key("MAJ_CHAM") :
 #        if args["MAJ_CHAM"] != None :
@@ -1455,7 +1523,7 @@ def macr_adap_mail_ops ( self,
   #commande = "/bin/cp " + fichier_aster_vers_homard +"  /tmp"
   #os.system(commande)
   #fic = os.path.join(Rep_Calc_HOMARD_global, "HOMARD.Configuration")
-  #commande = "/bin/cp " + fic + " /home/nicolas/Adaptation/HOMARD.Configuration."+str(numero_passage_fonction)
+  #commande = "/bin/cp " + fic + " /home/nicolas/Adaptation/HOMARD.Configuration.%d" % numero_passage_fonction
   #commande = "/bin/cp " + fic + " /tmp"
   #os.system(commande)
 #
@@ -1468,14 +1536,20 @@ def macr_adap_mail_ops ( self,
       UTMESS('F', 'HOMARD0_10', valk=homard)
 #
     if ( INFO == 1 ) :
-      iaux = INFO
+      saux = "1"
+      iaux = 1
     else :
+      saux = "2"
       iaux = 2
-    EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_HOMARD_global, # nom du repertoire
+    if ( version_perso ) :
+      saux2 = "1"
+    else :
+      saux2 = "0"
+    EXEC_LOGICIEL ( ARGUMENT = (Rep_Calc_HOMARD_global, # nom du répertoire
                                 VERSION_HOMARD,         # version de homard
-                                str(INFO),              # niveau d information
+                                saux,                   # niveau d information
                                 Nom_Fichier_Donnees,    # fichier de donnees HOMARD
-                                str(version_perso),     # version personnelle de homard ?
+                                saux2,                  # version personnelle de homard ?
                               ),
                     LOGICIEL = homard,
                     INFO     = iaux,
@@ -1487,7 +1561,7 @@ def macr_adap_mail_ops ( self,
 # 7. ==> Post-traitement eventuel
 #====================================================================
 #
-    ###d_aux = post_traitement ( INFO, mode_homard, dico_configuration, Rep_Calc_ASTER )
+    d_aux = post_traitement ( INFO, mode_homard, dico_configuration, Rep_Calc_ASTER )
 #
 #====================================================================
 # 8. ==> Ecriture de la commande de lecture des resultats med
@@ -1521,7 +1595,7 @@ def macr_adap_mail_ops ( self,
 #
         RetablirAlarme('MODELISA5_49')
 #
-        #print "MAILLAGE =",maillage_a_lire
+        #print "MAILLAGE =", maillage_a_lire
         #print "NOM_MED =", dico["NOM_MED"]
         if ( dico["Type_Maillage"] == "MAILLAGE_NP1" ) :
           maillage_np1 = maillage_a_lire
@@ -1645,7 +1719,8 @@ def macr_adap_mail_ops ( self,
       try :
         os.remove(fic)
       except os.error, codret_partiel :
-        self.cr.warn("Code d'erreur de remove : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
+        saux = "Code d'erreur de remove : %d" % codret_partiel[0]
+        self.cr.warn(saux + " : " + codret_partiel[1])
         UTMESS("F", 'HOMARD0_5', valk=fic)
 #
 # 10.3. Liberation du fichier de ASTER vers HOMARD
@@ -1654,49 +1729,81 @@ def macr_adap_mail_ops ( self,
     DEFI_FICHIER ( ACTION= "LIBERER",
                   UNITE = unite_fichier_aster_vers_homard,
                   INFO = infocomm )
-    #print "Repertoire ",Rep_Calc_HOMARD_global
+    #print "Repertoire ", Rep_Calc_HOMARD_global
     #print os.listdir(Rep_Calc_HOMARD_global)
-    #print "Repertoire ",Rep_Calc_ASTER
+    #print "Repertoire ", Rep_Calc_ASTER
     #print os.listdir(Rep_Calc_ASTER)
 #
 #====================================================================
-# 11. Archivage des repertoires d'adaptation en vue de poursuite
+# 11. Archivage des répertoires d'adaptation en vue de poursuite
 #====================================================================
     #print ".. Debut de 10."
 #
   if ( INFO >= 3 ) :
     print os.listdir(Rep_Calc_ASTER)
     print "Archivage dans", fichier_archive
+#
+# 11.1. Archivage de chacun des passages
+#
   laux = []
   for dico in Liste_Passages :
-#   Memorisation du nom du repertoire local pour ce cas d'adaptation
+#   Memorisation du nom du répertoire local pour ce cas d'adaptation
     Rep_Calc_HOMARD_local  = dico["Rep_Calc_HOMARD_local"]
     laux.append(Rep_Calc_HOMARD_local)
-#   Memorisation de la liste des passages
-#   Remarque : c'est fait a chaque repertoire pour faciliter le decodage ensuite
+# 11.1.2. Creation du fichier pour ce passage
+#         Remarque : c'est fait a chaque répertoire pour faciliter le decodage ensuite
     Rep_Calc_HOMARD_global = dico["Rep_Calc_HOMARD_global"]
     fic = os.path.join(Rep_Calc_HOMARD_global, "pick.1")
     file = open(fic, "w")
     cPickle.dump(Liste_Passages, file)
     file.close()
-# Si on a au moins un cas d'adaptation, archivage
+#
+# 11.2. Si on a au moins un cas d'adaptation, archivage
+#
   if len(laux) > 0 :
+#
+# 11.2.1. Archivage dans le fichier
+#         Remarque : le nom pick.homard.tar est obligatoire car ASTK rapatrie
+#                    dans la base tous les fichiers en pick.*
+#
+    fichier_archive = os.path.join(Rep_Calc_ASTER, "pick.homard.tar")
+#
     file = tarfile.open(fichier_archive, "w")
     for rep in laux :
       if ( INFO >= 3 ) :
         print ".. Insertion de", rep
       file.add(rep)
     file.close()
-  if ( INFO >= 3 ) :
-    print os.listdir(Rep_Calc_ASTER)
+#
+# 11.2.2. Sur demande, transfert dans le fichier ad-hoc
+#
+    if dico_unites.has_key("UNITE_HIST_OUT") :
+#
+      unite = dico_unites["UNITE_HIST_OUT"]
+#     recherche de l'eventuel fichier defini par DEFI_FICHIER
+#     sinon, c'est un fort.xx classique
+      UL = UniteAster()
+      try:
+        fichier_hist_out = UL.Nom(unite)
+      except:
+        aux = "fort.%d" % unite
+        fichier_hist_out = os.path.join(Rep_Calc_ASTER, aux)
+#
+      if os.path.isfile(fichier_hist_out) :
+        os.remove(fichier_hist_out)
+      if ( INFO >= 3 ) :
+        print "Copie de", fichier_archive, "vers", fichier_hist_out
+      shutil.copyfile(fichier_archive, fichier_hist_out)
 #
 #====================================================================
 #  C'est fini !
 #====================================================================
 #
-###  if ( mode_homard == "ADAP" and niter == 3 ) :
-###  if ( niter == 2 ) :
-#    import time
-#    time.sleep(3600)
+  if ( INFO >= 3 ) :
+    print "A la fin, contenu du repertoire de calcul ASTER"
+    print os.listdir(Rep_Calc_ASTER)
+#
+  #import time
+  #time.sleep(3600)
 #
   return

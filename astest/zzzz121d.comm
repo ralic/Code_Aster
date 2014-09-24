@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # person_in_charge: gerald.nicolas at edf.fr
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # ======================================================================
@@ -195,12 +196,8 @@ RESU_0=CALC_CHAMP(reuse =RESU_0,
                RESULTAT=RESU_0,
                CONTRAINTE='SIGM_NOEU',);
 #
-# 3.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 0
-##IMPR_RESU(
-##FORMAT='MED',
-##UNITE=80,
-##RESU=_F(RESULTAT=RESU_0,),
-##);
+# 3.7. Impressions pour creer la base du cas-test homard sfr_1d_mix_zzzz121d_d1 a l'iteration 0
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU_0,),);
 
 #
 # 4. Adaptation du maillage de 0 vers 1
@@ -216,6 +213,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                QUALITE='OUI',
                CONNEXITE='OUI',
                TAILLE='OUI');
+#IMPR_RESU(FORMAT='MED',UNITE=71,RESU=_F(MAILLAGE=M_1,),);
 #
 # 5. Calcul sur le maillage 1
 #
@@ -275,12 +273,8 @@ RESU_1=CALC_CHAMP(reuse =RESU_1,
                RESULTAT=RESU_1,
                CONTRAINTE='SIGM_NOEU',);
 #
-# 5.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 1
-##IMPR_RESU(
-##FORMAT='MED',
-##UNITE=81,
-##RESU=_F(RESULTAT=RESU_1,),
-##);
+# 5.7. Impressions pour creer la base du cas-test homard sfr_1d_mix_zzzz121d_d1 a l'iteration 1
+#IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RESU_1,),);
 
 #
 # 6. Adaptation du maillage de 1 vers 2
@@ -302,6 +296,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                            NOM_CHAM='DEPL',
                            NUME_ORDRE=1,),
                QUALITE='OUI',);
+#IMPR_RESU(FORMAT='MED',UNITE=72,RESU=_F(MAILLAGE=M_2,),);
 #
 # 7. Calcul sur le maillage 2
 #
@@ -361,12 +356,8 @@ RESU_2=CALC_CHAMP(reuse =RESU_2,
                RESULTAT=RESU_2,
                CONTRAINTE='SIGM_NOEU',);
 #
-# 7.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 2
-##IMPR_RESU(
-##FORMAT='MED',
-##UNITE=82,
-##RESU=_F(RESULTAT=RESU_2,),
-##);
+# 7.7. Impressions pour creer la base du cas-test homard sfr_1d_mix_zzzz121d_d1 a l'iteration 2
+#IMPR_RESU(FORMAT='MED',UNITE=82,RESU=_F(RESULTAT=RESU_2,),);
 
 #
 # 8. Adaptation du maillage de 2 vers 3
@@ -381,6 +372,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                CRIT_DERA_PE=0.8,
                MAILLAGE_FRONTIERE=ARC,
                QUALITE='OUI',);
+#IMPR_RESU(FORMAT='MED',UNITE=73,RESU=_F(MAILLAGE=M_3,),);
 #
 # 9. Calcul sur le maillage 3
 #
@@ -442,8 +434,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU_1,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=0.83646560000000003,
-                   
+                   VALE_CALC=0.83646560,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=1,
@@ -451,8 +442,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU_2,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=0.50229053000000001,
-                   
+                   VALE_CALC=0.50491074,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=1,
@@ -460,7 +450,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU_3,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=0.51272200999999995,
+                   VALE_CALC=0.50830985,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=1,
@@ -468,7 +458,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU_1,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=1.5763891000000001,
+                   VALE_CALC=1.5763891,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=1,
@@ -476,7 +466,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU_2,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=1.590414,
+                   VALE_CALC=1.5891275,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=1,
@@ -484,7 +474,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU_3,
                    NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
-                   VALE_CALC=1.7902384,
+                   VALE_CALC=1.8640630,
                    CRITERE='RELATIF',
                    ),
                 ),)
@@ -493,7 +483,7 @@ TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
                      NOM_CMP='DX',
                      GROUP_NO='GNP21',
                      CHAM_GD=DEPL_1_2,
-                     VALE_CALC=7.7330000000000003E-06,
+                     VALE_CALC=7.733E-06,
                      ),
           )
 

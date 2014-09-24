@@ -199,9 +199,9 @@ for i_raff in range(nb_raff) :
 
    DETRUIRE(CONCEPT=_F(NOM=(MO,FISS,CHERR,MAIT[i_tot])),INFO=1)
 
-   i_tot=i_tot+1
+   i_tot += 1
 
-# impression du "denier" (c-a-d le plus raffine) maillage total
+# impression du "dernier" (c-a-d le plus raffine) maillage total
 DEFI_FICHIER(ACTION='ASSOCIER',UNITE=100+i_propa,FICHIER='./REPE_OUT/mail_tot_'+str(i_propa)+'.med')
 IMPR_RESU(FORMAT='MED',UNITE=100+i_propa,RESU=_F(MAILLAGE=MAIT[i_tot]))
 
@@ -347,7 +347,7 @@ for i_propa in xrange(nb_pas) :
    #                RAFFINEMENT DU MAILLAGE APRES PROPAGATION
    #-----------------------------------------------------------------------------------------
 
-   # feinte : il faut que homard reparte du meme maillage (meme nom) que le denier NP1
+   # feinte : il faut que homard reparte du meme maillage (meme nom) que le dernier NP1
    MAIT[i_tot]= COPIER(CONCEPT= MAIT[i_tot+1])
    DETRUIRE(CONCEPT=_F(NOM=MAIT[i_tot+1]),INFO=1)
 
@@ -454,7 +454,7 @@ for i_propa in xrange(nb_pas) :
 
       DETRUIRE(CONCEPT=_F(NOM=(LSTB,CHFOR,CERRB)),INFO=1)
 
-      i_tot=i_tot+1
+      i_tot += 1
 
    # menage
    for i_raff in range(nb_raff+1) :

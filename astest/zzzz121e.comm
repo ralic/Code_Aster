@@ -354,8 +354,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU02,
                    NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ERREST',
-                   VALE_CALC=5.1818752999999997E4,
-                   
+                   VALE_CALC=5.1818753E4,
+
                    CRITERE='RELATIF',
                    ),
                 ),)
@@ -364,12 +364,12 @@ TEST_RESU(CHAM_NO=(_F(CRITERE='RELATIF',
                       NOM_CMP='DX',
                       GROUP_NO='N55',
                       CHAM_GD=DEPL2,
-                      VALE_CALC=6.0363379999999998,),
+                      VALE_CALC=6.036338,),
                    _F(CRITERE='RELATIF',
                       NOM_CMP='DZ',
                       GROUP_NO='N56',
                       CHAM_GD=DEPL2,
-                      VALE_CALC=-14.061542599999999,),
+                      VALE_CALC=-14.0615426,),
                    ),
           )
 
