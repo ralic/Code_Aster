@@ -19,7 +19,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      sous programme de calcul des contraintes endommagees
 !      calcule l increment elastique si cela n a pas deja

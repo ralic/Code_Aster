@@ -15,7 +15,7 @@ subroutine b3d_chrep(m, a, p)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !
 !     on calcule la transposée de P => TP

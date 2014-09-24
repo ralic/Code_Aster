@@ -17,7 +17,7 @@ subroutine vsolal_3d(dalsol,dallib,daft,dafm,alc,phi,sr,dalpha,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      provient de rsi_3d : !     Calcul de la vitesse en solution de l'aluminium dans les csh
 !=====================================================================

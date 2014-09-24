@@ -17,7 +17,7 @@ subroutine cohe_3d(delta1,beta1,cohe1,h1,cohemin1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !       calcul de la cohesion pour Drucker Prager interface3d      
 !=====================================================================

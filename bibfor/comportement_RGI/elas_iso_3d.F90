@@ -16,7 +16,7 @@ subroutine elas_iso_3d(depst6, e1, xnu1, dsige6)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !       calcul d'un increment de contrainte pour la loi elastique  isotr
 !=====================================================================

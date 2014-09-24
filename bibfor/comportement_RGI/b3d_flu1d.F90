@@ -16,7 +16,7 @@ subroutine b3d_flu1d(vsigma,e0,dt,eps10,veps10,e1,eta1,eta2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !=====================================================================
 !     calcul des increments de deformations de fluage induites

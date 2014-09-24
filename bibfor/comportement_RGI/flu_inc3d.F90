@@ -20,7 +20,7 @@ subroutine flu_inc3d(e0i, e1i, e2i, ve1i, ve2i,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !    calcul des increments de deformation visqueuses
 !    basee sur une interpolatin parabolique en temps des etages de KV et

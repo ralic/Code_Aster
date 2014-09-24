@@ -16,7 +16,7 @@ subroutine indice1(i, k, l)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     indices complementaires dans une matrice carre
 !=====================================================================

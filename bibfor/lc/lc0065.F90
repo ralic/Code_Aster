@@ -25,7 +25,7 @@ subroutine lc0065(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: Etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 ! ======================================================================
 !.......................................................................
 !     BUT: LOI DE FLUAGE DE KIT_RGI

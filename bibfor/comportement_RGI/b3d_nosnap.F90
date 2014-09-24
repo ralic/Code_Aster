@@ -18,7 +18,7 @@ subroutine b3d_nosnap(istep, fr, rtref, dpic, gf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !=====================================================================
 !          calcul de la taille maximale de l element  et de la resistanc

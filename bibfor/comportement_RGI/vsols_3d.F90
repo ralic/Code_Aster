@@ -17,7 +17,7 @@ subroutine vsols_3d(dssol,dsf,daft,dafm,sc,phi,sr,dalpha,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      provient de rsi_3d : 
 !     Calcul de la vitesse en solution du sulfate dans les csh

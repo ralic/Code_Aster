@@ -17,7 +17,7 @@ subroutine dp_3d(xj2d,xi1,cohe1,delta1,beta1,h1,cohemin,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !       calcul des invariants d' un tenseur de contrainte      
 !=====================================================================

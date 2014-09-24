@@ -15,7 +15,7 @@ subroutine b3d_jacob3(a,idim,d,x,control,epsv)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     version modifiee par A.Sellier le sam. 28 août 2010 18:16:10 CEST 
 !     pour corriger le pb (rencontre sous linux)  de non detection de 

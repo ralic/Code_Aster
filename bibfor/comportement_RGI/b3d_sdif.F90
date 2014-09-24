@@ -17,7 +17,7 @@ subroutine b3d_sdif(ss6, young0, rt, epic, erreur,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     endo diffus de la forme d=s/(r+s)
 !=====================================================================

@@ -17,7 +17,7 @@ subroutine flu_tot1d(e0, e1, eta1, eta2, dt,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !=====================================================================
 !     calcul de l evolution des deformations pour une evolution

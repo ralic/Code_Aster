@@ -15,7 +15,7 @@ subroutine b3d_dam(s,e,epic,reg,r,nu,dam,e2,fr,beta,dpic)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     A.Sellier juin 2009 : maj sam. 28 août 2010 14:13:52 CEST
 !     calcul de l'endommagement en fonction de la contrainte equivalente

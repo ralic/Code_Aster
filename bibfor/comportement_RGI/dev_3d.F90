@@ -16,7 +16,7 @@ subroutine dev_3d(sig6,dev6,xi1)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !       calcul du deviateur du tenseur des contraintes      
 !=====================================================================

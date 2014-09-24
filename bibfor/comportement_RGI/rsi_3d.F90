@@ -16,7 +16,7 @@ subroutine rsi_3d(x0, x1, beton, dt)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      M.SALGUES 28 avril 2012, modif sellier / multon sept 2012
 !      modif sellier micro diffusion novembre 2012

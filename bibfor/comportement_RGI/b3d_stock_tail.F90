@@ -19,7 +19,7 @@ subroutine b3d_stock_tail(xmat, nmatt, ifour, mfr1, nmat0,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !=====================================================================
 !     chargement des matrice de taille, digonalisation si necessaire

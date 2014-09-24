@@ -17,7 +17,7 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      sous programme de !alcul des avancements chimiques rgi
 !      rag et rsi + repercussion poro elastique des volumes neoformes

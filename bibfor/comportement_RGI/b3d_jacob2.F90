@@ -15,7 +15,7 @@ subroutine b3d_jacob2(x33,x3,v33,epsv)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !=====================================================================
 !     digonalisation d'une matrice 33 dont la direction 3 a deja ete reperee comme principale

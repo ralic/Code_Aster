@@ -16,7 +16,7 @@ subroutine b3d_covs(covs,vsige33,vsige33t,siget3,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !
 !     prise en compte des autocontraintes induites par les  inclusions
@@ -31,7 +31,7 @@ subroutine b3d_covs(covs,vsige33,vsige33t,siget3,&
        real(kind=8)  :: vsige33t(3,3),siget3(3),sigec3(3)
 
        real(kind=8)  :: l66(6,6),lm166(6,6)
-       real(kind=8)  :: sigit6(6),sigic3(3),sigit3(3)
+       real(kind=8)  :: sigic3(3),sigit3(3)
        real(kind=8)  :: sigi133(3,3),sigi33(3,3),deltas
 
       if (covs.ne.0.) then

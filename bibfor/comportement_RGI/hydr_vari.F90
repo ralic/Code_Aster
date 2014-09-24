@@ -17,7 +17,7 @@ subroutine hydr_vari(vari0, vari1, hydra0, hydra1, hydras,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     effets de l hydratation sur les varibles internes
 !     declaration externes

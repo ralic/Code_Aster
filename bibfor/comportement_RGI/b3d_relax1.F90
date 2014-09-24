@@ -19,7 +19,7 @@ subroutine b3d_relax1(spl0, s0, s1, vsigma, eta1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     calcul de la relaxation de la contrainte dans la fissure
 !=====================================================================

@@ -16,7 +16,7 @@ subroutine activite_3d(gam1,gam2,temp,casol,nasol,ohsol)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      provient de rsi_3d : 
 !     choix des coefficients d'activité

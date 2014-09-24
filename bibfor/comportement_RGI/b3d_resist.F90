@@ -19,7 +19,7 @@ subroutine b3d_resist(ssr6, rap6, t33, n33, vt33,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      calcul des seuils d endo associees a des resistances residuelles
 !      les resistance et les seuils sont en base fixe

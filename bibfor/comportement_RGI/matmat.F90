@@ -16,25 +16,26 @@ subroutine matmat(a, b, nl, nc1, nc2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !=====================================================================
 !  C(NL,NC2)=A(NL,NC1)*B(NC1,NC2)
 !  LE PREMIER INDICE EST DE LIGNE, LE DEUXIEME DE COLONNE
 !=====================================================================
-        implicit none
-        integer :: nc1
-        integer :: nl
-        real(kind=8) :: a(nl, *)
-        real(kind=8) :: b(nc1, *),xx
-        integer :: nc2,i,j,k
-        real(kind=8) :: c(nl, *)
-    do 1 i = 1, nl
-        do 1 j = 1, nc2
+    implicit none
+    integer :: nc1
+    integer :: nl
+    real(kind=8) :: a(nl, *)
+    real(kind=8) :: b(nc1, *),xx
+    integer :: nc2,i,j,k
+    real(kind=8) :: c(nl, *)
+    do i = 1, nl
+        do j = 1, nc2
             xx= 0.d0
-            do 2 k = 1, nc1
+            do k = 1, nc1
                 xx = a(i,k)*b(k,j) + xx
- 2          end do
+            end do
             c(i,j)=xx
- 1      continue
+        end do
+    end do
 end subroutine

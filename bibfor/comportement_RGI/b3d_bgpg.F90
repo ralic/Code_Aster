@@ -17,7 +17,7 @@ subroutine b3d_bgpg(vg,biot0,poro0,xmg,vp0,bg,epsvt,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !********************************************************************** 
 !     calcul de la pression de gel      

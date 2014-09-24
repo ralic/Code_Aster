@@ -19,7 +19,7 @@ subroutine b3d_srf(sigal6,vss33,spl6,long3,eps23,wfeff3,wfm6,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !=====================================================================
 !     calcul de la la contrainte de refermeture de fissure de traction

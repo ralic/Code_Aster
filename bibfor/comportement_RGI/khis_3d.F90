@@ -17,7 +17,7 @@ subroutine khis_3d(tau1,khi,xid,alpha,ar,asr,dth0,coth,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !      provient de rsi_3d : 
 !     calcul de l'évolution de khi au cours du temps

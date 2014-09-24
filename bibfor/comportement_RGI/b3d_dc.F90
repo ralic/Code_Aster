@@ -16,7 +16,7 @@ subroutine b3d_dc(sigec03,long3,dcf,dc0,e,delta,gf,rc,epic,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     calcul de lendommagement anisotrope de compression
 !     le critere est isotrope mais pour assurer Gfc la loi d evolution

@@ -16,7 +16,7 @@ subroutine b3d_sst(ss6, istep, vsige33, vsige33t, sigit3)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: etienne grimal at edf.fr
+! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
 !     actualisation des contraintes seuils pour  l endo de traction
 !     declarations externes
