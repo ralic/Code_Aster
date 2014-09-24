@@ -1,4 +1,4 @@
-subroutine csh_3d(alpha,sic,csh)
+subroutine csh_3d(alpha, sic, csh)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,9 @@ subroutine csh_3d(alpha,sic,csh)
 !      provient de rsi_3d : 
 !     calcul des csh
 !=====================================================================
-        implicit none
-      real(kind=8) :: alpha
-      real(kind=8) :: csh
-      real(kind=8) :: sic 
-      csh=alpha*sic
+    implicit none
+    real(kind=8) :: alpha
+    real(kind=8) :: csh
+    real(kind=8) :: sic
+    csh=alpha*sic
 end subroutine

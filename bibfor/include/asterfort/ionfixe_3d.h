@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,17 +15,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine ionfixe_3d(alfeq,sfeq,csh,csheff,temp,nasol,ssol,&
-     alsol,alpal,cash)
-      real(kind=8) :: alfeq
-      real(kind=8) :: sfeq
-      real(kind=8) :: csh
-      real(kind=8) :: csheff
-      real(kind=8) :: temp
-      real(kind=8) :: nasol
-      real(kind=8) :: ssol
-      real(kind=8) :: alsol
-      real(kind=8) :: alpal
-      real(kind=8) :: cash
+    subroutine ionfixe_3d(alfeq, sfeq, csh, csheff, temp,&
+                          nasol, ssol, alsol, alpal, cash)
+        real(kind=8) :: alfeq
+        real(kind=8) :: sfeq
+        real(kind=8) :: csh
+        real(kind=8) :: csheff
+        real(kind=8) :: temp
+        real(kind=8) :: nasol
+        real(kind=8) :: ssol
+        real(kind=8) :: alsol
+        real(kind=8) :: alpal
+        real(kind=8) :: cash
     end subroutine ionfixe_3d
 end interface 

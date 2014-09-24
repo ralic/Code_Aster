@@ -1,4 +1,5 @@
-subroutine activite_3d(gam1,gam2,temp,casol,nasol,ohsol)
+subroutine activite_3d(gam1, gam2, temp, casol, nasol,&
+                       ohsol)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,28 +22,28 @@ subroutine activite_3d(gam1,gam2,temp,casol,nasol,ohsol)
 !      provient de rsi_3d : 
 !     choix des coefficients d'activité
 !=====================================================================
-        implicit none
-      real(kind=8) :: gam1
-      real(kind=8) :: gam2
-      real(kind=8) :: temp
-      real(kind=8) :: casol
-      real(kind=8) :: nasol
-      real(kind=8) :: ohsol
-
-      real(kind=8) :: elec
-      real(kind=8) :: at
-
- !     calcul de la constante fonction de t
- !     dans l'équation de debye hückel      
-      at=1.8d-6/(((7.73d-7*temp)**3)**0.5d0)
-      
- !     electroneutralité simplifiée (1)    (3 ci-dessous a verifier ?)  
-      elec=nasol+3.d0*casol
- !     détermination de la concentration en hydroxydes à partir de (1)      
-      ohsol=nasol+2.d0*casol
-      
- !     calcul des coefficients d'activité suivant les valences des ions      
-      gam1=10.d0**(-at*((elec**0.5d0/(1.d0+(elec**0.5d0)))-0.3d0*elec))
-      gam2=10.d0**(-at*4.d0*((elec**0.5d0/(1.d0+(elec**0.5d0)))&
+    implicit none
+    real(kind=8) :: gam1
+    real(kind=8) :: gam2
+    real(kind=8) :: temp
+    real(kind=8) :: casol
+    real(kind=8) :: nasol
+    real(kind=8) :: ohsol
+!
+    real(kind=8) :: elec
+    real(kind=8) :: at
+!
+!     calcul de la constante fonction de t
+!     dans l'équation de debye hückel      
+    at=1.8d-6/(((7.73d-7*temp)**3)**0.5d0)
+!
+!     electroneutralité simplifiée (1)    (3 ci-dessous a verifier ?)  
+    elec=nasol+3.d0*casol
+!     détermination de la concentration en hydroxydes à partir de (1)      
+    ohsol=nasol+2.d0*casol
+!
+!     calcul des coefficients d'activité suivant les valences des ions      
+    gam1=10.d0**(-at*((elec**0.5d0/(1.d0+(elec**0.5d0)))-0.3d0*elec))
+    gam2=10.d0**(-at*4.d0*((elec**0.5d0/(1.d0+(elec**0.5d0)))&
      -0.3d0*elec))      
 end subroutine

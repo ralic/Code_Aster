@@ -1,4 +1,5 @@
-subroutine cash_3d(alf,dcash,khi,csheff,casol,alsol,nasol,cash)
+subroutine cash_3d(alf, dcash, khi, csheff, casol,&
+                   alsol, nasol, cash)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,21 +22,21 @@ subroutine cash_3d(alf,dcash,khi,csheff,casol,alsol,nasol,cash)
 !      provient de rsi_3d : 
 !     calcul des vistesses de cash
 !=====================================================================
-        implicit none
-      real(kind=8) :: alf
-      real(kind=8) :: dcash
-      real(kind=8) :: khi
-      real(kind=8) :: csheff
-      real(kind=8) :: casol
-      real(kind=8) :: alsol
-      real(kind=8) :: nasol
-      real(kind=8) :: cash
+    implicit none
+    real(kind=8) :: alf
+    real(kind=8) :: dcash
+    real(kind=8) :: khi
+    real(kind=8) :: csheff
+    real(kind=8) :: casol
+    real(kind=8) :: alsol
+    real(kind=8) :: nasol
+    real(kind=8) :: cash
 !     attention desormais alf contient cash
 !     condition sur alf (si alf est faible on ne peut plus former de cash)
-      if (alf.le.cash) then
+    if (alf .le. cash) then
         dcash=0.d0
-      else
- !       les alus fice ds les csh le sont definitvement      
+    else
+!       les alus fice ds les csh le sont definitvement      
         dcash=max((log10(alf)-log10(cash)),0.d0)*khi*100.
-      endif
+    endif
 end subroutine 

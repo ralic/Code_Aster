@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,14 +15,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine cash_3d(alf,dcash,khi,csheff,casol,alsol,nasol,cash)
-      real(kind=8) :: alf
-      real(kind=8) :: dcash
-      real(kind=8) :: khi
-      real(kind=8) :: csheff
-      real(kind=8) :: casol
-      real(kind=8) :: alsol
-      real(kind=8) :: nasol
-      real(kind=8) :: cash
+    subroutine cash_3d(alf, dcash, khi, csheff, casol,&
+                       alsol, nasol, cash)
+        real(kind=8) :: alf
+        real(kind=8) :: dcash
+        real(kind=8) :: khi
+        real(kind=8) :: csheff
+        real(kind=8) :: casol
+        real(kind=8) :: alsol
+        real(kind=8) :: nasol
+        real(kind=8) :: cash
     end subroutine cash_3d
 end interface 

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,15 +15,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine vaft_3d(khi,casol,alsol,ssol,ohsol,kaft,gam1,gam2,daft)
-      real(kind=8) :: khi
-      real(kind=8) ::casol
-      real(kind=8) ::alsol
-      real(kind=8) ::ssol
-      real(kind=8) ::ohsol
-      real(kind=8) ::kaft
-      real(kind=8) ::gam1
-      real(kind=8) ::gam2
-      real(kind=8) ::daft
+    subroutine vaft_3d(khi, casol, alsol, ssol, ohsol,&
+                       kaft, gam1, gam2, daft)
+        real(kind=8) :: khi
+        real(kind=8) :: casol
+        real(kind=8) :: alsol
+        real(kind=8) :: ssol
+        real(kind=8) :: ohsol
+        real(kind=8) :: kaft
+        real(kind=8) :: gam1
+        real(kind=8) :: gam2
+        real(kind=8) :: daft
     end subroutine vaft_3d
 end interface 

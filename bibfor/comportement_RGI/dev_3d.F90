@@ -1,4 +1,4 @@
-subroutine dev_3d(sig6,dev6,xi1)
+subroutine dev_3d(sig6, dev6, xi1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,16 +21,16 @@ subroutine dev_3d(sig6,dev6,xi1)
 !       calcul du deviateur du tenseur des contraintes      
 !=====================================================================
     implicit none
-        real(kind=8) :: sig6(6)
-        real(kind=8) :: dev6(6)
-        real(kind=8) :: xi1
-        real(kind=8) :: xi2
-        integer::i
-        xi2=xi1/3.d0
-        do i=1,3
-          dev6(i)=sig6(i)-xi2
-        end do
-        do i=4,6
-          dev6(i)=sig6(i)
-        end do
+    real(kind=8) :: sig6(6)
+    real(kind=8) :: dev6(6)
+    real(kind=8) :: xi1
+    real(kind=8) :: xi2
+    integer :: i
+    xi2=xi1/3.d0
+    do i = 1, 3
+        dev6(i)=sig6(i)-xi2
+    end do
+    do i = 4, 6
+        dev6(i)=sig6(i)
+    end do
 end subroutine

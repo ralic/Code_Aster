@@ -1,5 +1,6 @@
-subroutine b3d_elas(var0,nvari,nvar0,depsv,dgamd6,&
-     xk0,xmu0,sigef6,varf,hydra0,hydra1)
+subroutine b3d_elas(var0, nvari, nvar0, depsv, dgamd6,&
+                    xk0, xmu0, sigef6, varf, hydra0,&
+                    hydra1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,38 +22,38 @@ subroutine b3d_elas(var0,nvari,nvar0,depsv,dgamd6,&
 !=====================================================================
 !     calcul de l increment de contrainte elastique
 !=====================================================================
-        implicit none
-      integer :: nvari,nvar0
-      real(kind=8) :: var0(nvari),varf(nvari)
-      real(kind=8) :: depsv,xk0,xmu0,hydra0,hydra1
-      real(kind=8) :: sigef6(6),dgamd6(6)
-      integer :: i
-      real(kind=8) :: dsige,sig0
+    implicit none
+    integer :: nvari, nvar0
+    real(kind=8) :: var0(nvari), varf(nvari)
+    real(kind=8) :: depsv, xk0, xmu0, hydra0, hydra1
+    real(kind=8) :: sigef6(6), dgamd6(6)
+    integer :: i
+    real(kind=8) :: dsige, sig0
 !     (cf ordre du stockage ds les variables internes dans idva10)
 !     rem: castem travaille avec les gamma et non les epsilon (gamma=2*epsilon)
 !     pour les termes de ciasaillement
-      do i=1,3
-       dsige=xk0*depsv+xmu0*dgamd6(i)
+    do i = 1, 3
+        dsige=xk0*depsv+xmu0*dgamd6(i)
 !      prise en compte eventuelle degradation chimique
-       if (hydra1.lt.hydra0) then
-        sig0=var0(nvar0+i)*hydra1/hydra0
-       else
-        sig0=var0(nvar0+i)
-       end if
-       sigef6(i)=sig0+dsige
-       varf(nvar0+i)=sigef6(i)
-      end do
-      do i=4,6
-       dsige=xmu0*dgamd6(i)
+        if (hydra1 .lt. hydra0) then
+            sig0=var0(nvar0+i)*hydra1/hydra0
+        else
+            sig0=var0(nvar0+i)
+        end if
+        sigef6(i)=sig0+dsige
+        varf(nvar0+i)=sigef6(i)
+    end do
+    do i = 4, 6
+        dsige=xmu0*dgamd6(i)
 !      prise en compte eventuelle degradation chimique
-       if (hydra1.lt.hydra0) then
-        sig0=var0(nvar0+i)*hydra1/hydra0
-       else
-        sig0=var0(nvar0+i)
-       end if
-       sigef6(i)=sig0+dsige
-       varf(nvar0+i)=sigef6(i)
-      end do
+        if (hydra1 .lt. hydra0) then
+            sig0=var0(nvar0+i)*hydra1/hydra0
+        else
+            sig0=var0(nvar0+i)
+        end if
+        sigef6(i)=sig0+dsige
+        varf(nvar0+i)=sigef6(i)
+    end do
 !      do i=1,6
 !       print*,'sigef(',i,')=',sigef6(i)
 !      end do

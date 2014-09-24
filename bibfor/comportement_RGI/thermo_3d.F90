@@ -1,4 +1,4 @@
-subroutine thermo_3d(kaft,temp,kafm)
+subroutine thermo_3d(kaft, temp, kafm)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +21,10 @@ subroutine thermo_3d(kaft,temp,kafm)
 !      provient de rsi_3d : 
 !     calcul des données thermodynamiques
 !=====================================================================
-        implicit none
-      real(kind=8) :: kaft
-      real(kind=8) ::temp
-      real(kind=8) ::kafm
-      kaft=1d-67*dexp(0.1693d0*temp)
-      kafm=8d-37*dexp(0.0526d0*temp)
+    implicit none
+    real(kind=8) :: kaft
+    real(kind=8) :: temp
+    real(kind=8) :: kafm
+    kaft=1d-67*dexp(0.1693d0*temp)
+    kafm=8d-37*dexp(0.0526d0*temp)
 end subroutine

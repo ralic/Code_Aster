@@ -1,5 +1,5 @@
-subroutine vsolal_3d(dalsol,dallib,daft,dafm,alc,phi,sr,dalpha,&
-     vsr,alsol)
+subroutine vsolal_3d(dalsol, dallib, daft, dafm, alc,&
+                     phi, sr, dalpha, vsr, alsol)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,17 +21,17 @@ subroutine vsolal_3d(dalsol,dallib,daft,dafm,alc,phi,sr,dalpha,&
 !=====================================================================
 !      provient de rsi_3d : !     Calcul de la vitesse en solution de l'aluminium dans les csh
 !=====================================================================
-        implicit none
-      real(kind=8) :: dalsol
-      real(kind=8) :: dallib
-      real(kind=8) :: daft
-      real(kind=8) :: dafm
-      real(kind=8) :: dalpha
-      real(kind=8) :: phi
-      real(kind=8) :: sr
-      real(kind=8) :: alc
-      real(kind=8) :: alsol
-      real(kind=8) :: vsr
-      dalsol=(-dallib-2.d0*(daft+dafm)+alc*dalpha-phi*vsr*alsol)
-      dalsol=dalsol/(phi*sr)
+    implicit none
+    real(kind=8) :: dalsol
+    real(kind=8) :: dallib
+    real(kind=8) :: daft
+    real(kind=8) :: dafm
+    real(kind=8) :: dalpha
+    real(kind=8) :: phi
+    real(kind=8) :: sr
+    real(kind=8) :: alc
+    real(kind=8) :: alsol
+    real(kind=8) :: vsr
+    dalsol=(-dallib-2.d0*(daft+dafm)+alc*dalpha-phi*vsr*alsol)
+    dalsol=dalsol/(phi*sr)
 end subroutine

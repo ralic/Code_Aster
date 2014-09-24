@@ -1,4 +1,4 @@
-subroutine poyet_3d(casol,temp,nasol)
+subroutine poyet_3d(casol, temp, nasol)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,17 +21,17 @@ subroutine poyet_3d(casol,temp,nasol)
 !      provient de rsi_3d : 
 !     calcul de la concentration en calcium
 !=====================================================================
-        implicit none
-      real(kind=8) :: nasol
-      real(kind=8) :: temp
-      real(kind=8) :: casol
-      real(kind=8) :: x
-      real(kind=8) :: y
-      real(kind=8) :: z
-      real(kind=8) :: w
-      w=356.77d0  
-      x=-386.74d0
-      y=0.0098d0
-      z=1.36d0      
-      casol=w*dexp(-x*nasol-y*temp-z*temp*nasol)*0.001d0
+    implicit none
+    real(kind=8) :: nasol
+    real(kind=8) :: temp
+    real(kind=8) :: casol
+    real(kind=8) :: x
+    real(kind=8) :: y
+    real(kind=8) :: z
+    real(kind=8) :: w
+    w=356.77d0  
+    x=-386.74d0
+    y=0.0098d0
+    z=1.36d0      
+    casol=w*dexp(-x*nasol-y*temp-z*temp*nasol)*0.001d0
 end subroutine

@@ -34,7 +34,7 @@ subroutine b3d_l3(local, t33, n33, vt33, vss33,&
     real(kind=8) :: codir33(3, 3), denom
     if (local) then
 !       calcul de la taille de l elements finis dans les directions prin
-        call tail3d(l3,t33,n33,vss33)
+        call tail3d(l3, t33, n33, vss33)
 !***********************************************************************
 !       ne disposant pas de vt33 ds code ASTER on passe cette
 !       correction secondaire
@@ -61,12 +61,12 @@ subroutine b3d_l3(local, t33, n33, vt33, vss33,&
             l3(i)=l3(i)*2.d0/denom
 !         print*,'ds b3d_l3 l3(',i,')=',l3(i)
         end do
-10      continue
+ 10     continue
     else
 !       on est en formulation sans localisation, l energie ne depend pas
 !       de l element, les tailles sont alors unitaires
         do i = 1, 3
             l3(i)=1.d0
         end do
-        end if
-    end subroutine
+    end if
+end subroutine

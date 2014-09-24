@@ -26,25 +26,25 @@ subroutine b3d_sdif(ss6, young0, rt, epic, erreur,&
 #include "asterfort/b3d_valp33.h"
 #include "asterfort/x6x33.h"
 #include "asterfort/transpos1.h"
-        real(kind=8) :: ss6(6)
-        real(kind=8) :: young0
-        real(kind=8) :: rt
-        real(kind=8) :: epic
-        integer :: erreur
-        real(kind=8) :: dt3(3)
-        real(kind=8) :: st3(3)
-        real(kind=8) :: vss33(3, 3)
-        real(kind=8) :: vss33t(3, 3)
-        real(kind=8) :: rapp3(3)
-    real(kind=8) ::  ss33(3, 3), ss3(3),rt0
+    real(kind=8) :: ss6(6)
+    real(kind=8) :: young0
+    real(kind=8) :: rt
+    real(kind=8) :: epic
+    integer :: erreur
+    real(kind=8) :: dt3(3)
+    real(kind=8) :: st3(3)
+    real(kind=8) :: vss33(3, 3)
+    real(kind=8) :: vss33t(3, 3)
+    real(kind=8) :: rapp3(3)
+    real(kind=8) :: ss33(3, 3), ss3(3), rt0
     integer :: i
 !
 !     diagonalisation contraintes seuils actuelles et valeurs
 !     propres par la methode de jacobi
-      call x6x33(ss6,ss33)
+    call x6x33(ss6, ss33)
     call b3d_valp33(ss33, ss3, vss33)
 !     creation de la matrice de passage inverse
-      call transpos1(vss33t,vss33,3)
+    call transpos1(vss33t, vss33, 3)
 !
 !     resistance effective au pic de traction
     rt0=young0*epic
@@ -58,19 +58,19 @@ subroutine b3d_sdif(ss6, young0, rt, epic, erreur,&
 !         print*,'Ds b3d_sdiffd diff(',i,')=',dt3(i)
         else
             dt3(i)=0.d0
-            end if
+        end if
 !       resistance residuelle localisee apres endommagement diffus
-            rapp3(i)=rt*(1.d0-dt3(i))
-            end do
+        rapp3(i)=rt*(1.d0-dt3(i))
+    end do
 !     verif de la condition de croissance des endos inutile car
 !     endo local ne depend pas de la taille des elements
 !     calcul des indice de fissuration
-            do i = 1, 3
-                if (dt3(i) .lt. 1.d0) then
-                    st3(i)=1.d0/(1.d0-dt3(i))
-                else
-                    print*,'dt3==1 ds b3d_sdif',dt3(i)
-                    erreur=1
-                    end if
-                    end do
+    do i = 1, 3
+        if (dt3(i) .lt. 1.d0) then
+            st3(i)=1.d0/(1.d0-dt3(i))
+        else
+            print*,'dt3==1 ds b3d_sdif',dt3(i)
+            erreur=1
+        end if
+    end do
 end subroutine

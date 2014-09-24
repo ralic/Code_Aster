@@ -33,24 +33,24 @@ subroutine b3d_resist(ssr6, rap6, t33, n33, vt33,&
 #include "asterfort/b3d_inv.h"
 #include "asterfort/b3d_chrep.h"
 #include "asterf_types.h"
-        real(kind=8) :: ssr6(6)
-        real(kind=8) :: rap6(6)
-        real(kind=8) :: t33(3, 3)
-        real(kind=8) :: n33(3, 3)
-        real(kind=8) :: vt33(3, 3)
-        aster_logical :: local
-        real(kind=8) :: rt
-        real(kind=8) :: beta1
-        real(kind=8) :: epic
-        real(kind=8) :: fr
-        real(kind=8) :: gf
-        real(kind=8) :: young0
-        real(kind=8) :: xnu0
-        real(kind=8) :: reg
-        real(kind=8) :: src3(3)
-        real(kind=8) :: srt3(3)
-        real(kind=8) :: vrap33(3, 3)
-        real(kind=8) :: vrap33t(3, 3)
+    real(kind=8) :: ssr6(6)
+    real(kind=8) :: rap6(6)
+    real(kind=8) :: t33(3, 3)
+    real(kind=8) :: n33(3, 3)
+    real(kind=8) :: vt33(3, 3)
+    aster_logical :: local
+    real(kind=8) :: rt
+    real(kind=8) :: beta1
+    real(kind=8) :: epic
+    real(kind=8) :: fr
+    real(kind=8) :: gf
+    real(kind=8) :: young0
+    real(kind=8) :: xnu0
+    real(kind=8) :: reg
+    real(kind=8) :: src3(3)
+    real(kind=8) :: srt3(3)
+    real(kind=8) :: vrap33(3, 3)
+    real(kind=8) :: vrap33t(3, 3)
 !
 !      declaration des varibles locales
     real(kind=8) :: x33(3, 3), y33(3, 3), rap3(3)
@@ -58,10 +58,10 @@ subroutine b3d_resist(ssr6, rap6, t33, n33, vt33,&
     integer :: i
 !
 !      directions principales des resistances
-    call x6x33(Rap6,x33)
+    call x6x33(Rap6, x33)
     call b3d_valp33(x33, rap3, vrap33)
 !      creation de la matrice de passage inverse
-    call transpos1(vrap33t,vrap33,3)
+    call transpos1(vrap33t, vrap33, 3)
 !      taille des elements ds les dir prin des resistances
     call b3d_l3(local, t33, n33, vt33, vrap33,&
                 l3)
@@ -79,7 +79,7 @@ subroutine b3d_resist(ssr6, rap6, t33, n33, vt33,&
         ssr6(i)=0.d0
     end do
 !      retour des seuils en base fixe
-    call x6x33(ssr6,x33)
+    call x6x33(ssr6, x33)
     call b3d_chrep(y33, x33, vrap33t)
-    call x33x6(y33,ssr6)
+    call x33x6(y33, ssr6)
 end subroutine

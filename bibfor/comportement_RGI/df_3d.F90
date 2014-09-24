@@ -1,4 +1,4 @@
-subroutine df_3d(dps6,dsige6,df0)
+subroutine df_3d(dps6, dsige6, df0)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,16 +21,16 @@ subroutine df_3d(dps6,dsige6,df0)
 !       calcul de l'increment de la fonction de charge       
 !=====================================================================
     implicit none
-        real(kind=8) :: dps6(6)
-        real(kind=8) :: dsige6(6)
-        real(kind=8) :: df0
-        integer::i
-        df0=0.d0
-        do i=1,6
-         if(i.le.3) then
-          df0=df0+dps6(i)*dsige6(i)
-         else
-          df0=df0+2.d0*dps6(i)*dsige6(i)
-         end if
-        end do
+    real(kind=8) :: dps6(6)
+    real(kind=8) :: dsige6(6)
+    real(kind=8) :: df0
+    integer :: i
+    df0=0.d0
+    do i = 1, 6
+        if (i .le. 3) then
+            df0=df0+dps6(i)*dsige6(i)
+        else
+            df0=df0+2.d0*dps6(i)*dsige6(i)
+        end if
+    end do
 end subroutine

@@ -1,4 +1,4 @@
-subroutine j2d_i1_3d(sig6,xj2d,xi1)
+subroutine j2d_i1_3d(sig6, xj2d, xi1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +21,11 @@ subroutine j2d_i1_3d(sig6,xj2d,xi1)
 !       calcul des invariants d' un tenseur de contrainte      
 !=====================================================================
     implicit none
-        real(kind=8) :: sig6(6)
-        real(kind=8) :: xj2d
-        real(kind=8) :: xi1
-        xj2d=((sig6(1)-sig6(2))**2+(sig6(2)-sig6(3))**2+&
+    real(kind=8) :: sig6(6)
+    real(kind=8) :: xj2d
+    real(kind=8) :: xi1
+    xj2d=((sig6(1)-sig6(2))**2+(sig6(2)-sig6(3))**2+&
        (sig6(3)-sig6(1))**2)/6.d0&
        +(sig6(4)**2+sig6(5)**2+sig6(6)**2)
-        xi1=sig6(1)+sig6(2)+sig6(3)
+    xi1=sig6(1)+sig6(2)+sig6(3)
 end subroutine

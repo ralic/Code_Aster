@@ -37,41 +37,41 @@ subroutine flu_inc3d(e0i, e1i, e2i, ve1i, ve2i,&
 !    variation parabilique de e2 et lineaire de h2 sur le pas de temps
 !=====================================================================
     implicit none
-        real(kind=8) :: e0i
-        real(kind=8) :: e1i
-        real(kind=8) :: e2i
-        real(kind=8) :: ve1i
-        real(kind=8) :: ve2i
-        real(kind=8) :: k0
-        real(kind=8) :: k1
-        real(kind=8) :: h1
-        real(kind=8) :: h2
-        real(kind=8) :: vk0
-        real(kind=8) :: vk1
-        real(kind=8) :: vh1
-        real(kind=8) :: vh2
-        real(kind=8) :: depst
-        real(kind=8) :: delta
-        real(kind=8) :: e0f
-        real(kind=8) :: e1f
-        real(kind=8) :: e2f
-        real(kind=8) :: dsigma
-        real(kind=8) :: ve1f
-        real(kind=8) :: ve2f
-        real(kind=8) :: dissip
-        real(kind=8) ::t1,t2,t3,t4,t5,t7,t8,t9,t10,t12,t13,t14,t16
-        real(kind=8) ::t17,t18,t20,t21,t23,t24,t26,t27,t28,t30,t31
-        real(kind=8) ::t32,t34,t36,t37,t39,t40,t42,t44,t45,t47,t48
-        real(kind=8) ::t50,t51,t52,t54,t56,t58,t61,t64,t65,t67,t69
-        real(kind=8) :: t70,t71,t74,t77,t78,t79
-        real(kind=8) ::t82,t83,t84,t86,t87,t90,t105,t108,t113,t134
-        real(kind=8) ::t135,t137,t141,t139,t143,t144,t146,t148
-        real(kind=8) ::t150,t152,t153,t155,t157,t164,t160,t162,t166
-        real(kind=8) ::t168,t171,t173,t176,t179,t180,t181,t182,t183
-        real(kind=8) ::t184,t186,t188,t190,t191,t192,t195,t197
-        real(kind=8) ::t200,t203,t205,t212,t214,t215
-        real(kind=8) ::t218,t219,t220,t231,t249
-        real(kind=8) ::t169,t89,t88,t81,t46
+    real(kind=8) :: e0i
+    real(kind=8) :: e1i
+    real(kind=8) :: e2i
+    real(kind=8) :: ve1i
+    real(kind=8) :: ve2i
+    real(kind=8) :: k0
+    real(kind=8) :: k1
+    real(kind=8) :: h1
+    real(kind=8) :: h2
+    real(kind=8) :: vk0
+    real(kind=8) :: vk1
+    real(kind=8) :: vh1
+    real(kind=8) :: vh2
+    real(kind=8) :: depst
+    real(kind=8) :: delta
+    real(kind=8) :: e0f
+    real(kind=8) :: e1f
+    real(kind=8) :: e2f
+    real(kind=8) :: dsigma
+    real(kind=8) :: ve1f
+    real(kind=8) :: ve2f
+    real(kind=8) :: dissip
+    real(kind=8) :: t1, t2, t3, t4, t5, t7, t8, t9, t10, t12, t13, t14, t16
+    real(kind=8) :: t17, t18, t20, t21, t23, t24, t26, t27, t28, t30, t31
+    real(kind=8) :: t32, t34, t36, t37, t39, t40, t42, t44, t45, t47, t48
+    real(kind=8) :: t50, t51, t52, t54, t56, t58, t61, t64, t65, t67, t69
+    real(kind=8) :: t70, t71, t74, t77, t78, t79
+    real(kind=8) :: t82, t83, t84, t86, t87, t90, t105, t108, t113, t134
+    real(kind=8) :: t135, t137, t141, t139, t143, t144, t146, t148
+    real(kind=8) :: t150, t152, t153, t155, t157, t164, t160, t162, t166
+    real(kind=8) :: t168, t171, t173, t176, t179, t180, t181, t182, t183
+    real(kind=8) :: t184, t186, t188, t190, t191, t192, t195, t197
+    real(kind=8) :: t200, t203, t205, t212, t214, t215
+    real(kind=8) :: t218, t219, t220, t231, t249
+    real(kind=8) :: t169, t89, t88, t81, t46
     t1 = ve1i * delta
     t2 = delta ** 2
     t3 = vh2 * t2
@@ -121,7 +121,7 @@ subroutine flu_inc3d(e0i, e1i, e2i, ve1i, ve2i,&
     t65 = vh2 * delta * t64
     t67 = t3 * t47
     t69 = vk0 * ve2i
-
+!
     t70 = t8 * t69
     t71 = t30 * depst
     t74 = t7 * vk0 * t23
@@ -146,7 +146,7 @@ subroutine flu_inc3d(e0i, e1i, e2i, ve1i, ve2i,&
            &4d1 * h1 * h2 + 0.4d1 * t113 * delta + 0.4d1 * t30 * delta + 0.2d1 * t12 * t2 + 0.2d1&
            & * t44 * vk0 + 0.4d1 * t46 * vh2 + 0.4d1 * t16 * k1 + 0.4d1 * t46* k0 + 0.2d1 * t87 *&
            & vk0 + 0.4d1 * t3 * k0 + 0.2d1 * t8 * vk0
-
+!
     t135 = 0.1d1 / t134
     e1f = e1i + t1 - t90 * delta * t135
     t137 = t113 * depst

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +20,9 @@ interface
     subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                       imat, comp, lcpdb, crit, timed,&
                       timef, neps, epsdt, depst, nsig,&
-                      sigd, vind, opt,angmas, nwkin, wkin,&
-                      sigf, vinf, ndsde, dsde, nwkout,&
-                      wkout, iret)
+                      sigd, vind, opt, angmas, nwkin,&
+                      wkin, sigf, vinf, ndsde, dsde,&
+                      nwkout, wkout, iret)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp

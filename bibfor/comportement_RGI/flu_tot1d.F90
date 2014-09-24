@@ -28,20 +28,20 @@ subroutine flu_tot1d(e0, e1, eta1, eta2, dt,&
 !     cf fichier Maple flu_inc1d si parametres varibles sur le pas de te
 !     il faudra alors rajouter eps0, veps1 et veps2 en varible internes
 !=====================================================================
-
-        implicit none
-        real(kind=8) :: e0
-        real(kind=8) :: e1
-        real(kind=8) :: eta1
-        real(kind=8) :: eta2
-        real(kind=8) :: dt
-        real(kind=8) :: s0
-        real(kind=8) :: s1
-        real(kind=8) :: eps10
-        real(kind=8) :: eps11
-        real(kind=8) :: deps0
-        real(kind=8) :: deps1
-        real(kind=8) :: deps2,t4,t12,t5
+!
+    implicit none
+    real(kind=8) :: e0
+    real(kind=8) :: e1
+    real(kind=8) :: eta1
+    real(kind=8) :: eta2
+    real(kind=8) :: dt
+    real(kind=8) :: s0
+    real(kind=8) :: s1
+    real(kind=8) :: eps10
+    real(kind=8) :: eps11
+    real(kind=8) :: deps0
+    real(kind=8) :: deps1
+    real(kind=8) :: deps2, t4, t12, t5
 !
 !     calul de la deformation visco elastique en fin de pas
     if (dt .gt. 0.d0) then
@@ -52,12 +52,12 @@ subroutine flu_tot1d(e0, e1, eta1, eta2, dt,&
      & * t12 - dt * s1 * e1 + s1 * eta1 - s0 * eta1) / dt / t12
     else
         eps11=eps10
-        end if
-        deps1=eps11-eps10
+    end if
+    deps1=eps11-eps10
 !
 !     calcul de l'increment de deformation visqueuse
-        deps2 = (s0 * dt + dt * s1) / eta2 / 0.2d1
+    deps2 = (s0 * dt + dt * s1) / eta2 / 0.2d1
 !
 !     calcul de l increment elastique
-        deps0= (s1-s0)/e0
+    deps0= (s1-s0)/e0
 end subroutine

@@ -1,4 +1,5 @@
-subroutine vafm_3d(khi,casol,alsol,ssol,ohsol,kafm,gam1,gam2,dafm)
+subroutine vafm_3d(khi, casol, alsol, ssol, ohsol,&
+                   kafm, gam1, gam2, dafm)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,28 +22,28 @@ subroutine vafm_3d(khi,casol,alsol,ssol,ohsol,kafm,gam1,gam2,dafm)
 !      provient de rsi_3d : 
 !     calcul de la vitesse de précipitation/dissolution del'afm
 !=====================================================================
-        implicit none
-      real(kind=8) :: khi
-      real(kind=8) ::casol
-      real(kind=8) ::alsol
-      real(kind=8) ::ssol
-      real(kind=8) ::ohsol
-      real(kind=8) ::kafm
-      real(kind=8) ::gam1
-      real(kind=8) ::gam2,dafm
-      real(kind=8) :: actca
-      real(kind=8) ::acts
-      real(kind=8) ::actal
-      real(kind=8) ::actoh
-      real(kind=8) ::nom
-      real(kind=8) ::denom
- !     calcul des activités ioniques      
-      actca=casol*gam2
-      acts=ssol*gam2
-      actal=alsol*gam1
-      actoh=ohsol*gam1
- !     décomposition du calcul: numérateur/dénominateur          
-      nom=dlog10((actca**4.d0)*(acts**1.d0)*(actal**2.d0)*(actoh**4.d0))
-      denom=dlog10(kafm)
-      dafm=khi*(1.d0-(nom/denom))      
+    implicit none
+    real(kind=8) :: khi
+    real(kind=8) :: casol
+    real(kind=8) :: alsol
+    real(kind=8) :: ssol
+    real(kind=8) :: ohsol
+    real(kind=8) :: kafm
+    real(kind=8) :: gam1
+    real(kind=8) :: gam2, dafm
+    real(kind=8) :: actca
+    real(kind=8) :: acts
+    real(kind=8) :: actal
+    real(kind=8) :: actoh
+    real(kind=8) :: nom
+    real(kind=8) :: denom
+!     calcul des activités ioniques      
+    actca=casol*gam2
+    acts=ssol*gam2
+    actal=alsol*gam1
+    actoh=ohsol*gam1
+!     décomposition du calcul: numérateur/dénominateur          
+    nom=dlog10((actca**4.d0)*(acts**1.d0)*(actal**2.d0)*(actoh**4.d0))
+    denom=dlog10(kafm)
+    dafm=khi*(1.d0-(nom/denom))      
 end subroutine 

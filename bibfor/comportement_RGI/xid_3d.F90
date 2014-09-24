@@ -1,4 +1,4 @@
-subroutine xid_3d(vxid,dalpha,ar)
+subroutine xid_3d(vxid, dalpha, ar)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +21,9 @@ subroutine xid_3d(vxid,dalpha,ar)
 !      provient de rsi_3d : 
 !     calcul de la vitesse de xid
 !=====================================================================
-        implicit none
-      real(kind=8) :: vxid
-      real(kind=8) :: dalpha
-      real(kind=8) :: ar
-      vxid=ar*dalpha
+    implicit none
+    real(kind=8) :: vxid
+    real(kind=8) :: dalpha
+    real(kind=8) :: ar
+    vxid=ar*dalpha
 end subroutine

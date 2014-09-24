@@ -1,5 +1,5 @@
-subroutine cohe_3d(delta1,beta1,cohe1,h1,cohemin1,&
-      epse2,delta2,beta2,cohe2,h2)
+subroutine cohe_3d(delta1, beta1, cohe1, h1, cohemin1,&
+                   epse2, delta2, beta2, cohe2, h2)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,19 +22,19 @@ subroutine cohe_3d(delta1,beta1,cohe1,h1,cohemin1,&
 !       calcul de la cohesion pour Drucker Prager interface3d      
 !=====================================================================
     implicit none
-        real(kind=8) :: delta1
-        real(kind=8) :: beta1
-        real(kind=8) :: cohe1
-        real(kind=8) :: h1
-        real(kind=8) :: cohemin1
-        real(kind=8) :: epse2
-        real(kind=8) :: delta2
-        real(kind=8) :: beta2
-        real(kind=8) :: cohe2
-        real(kind=8) :: h2
+    real(kind=8) :: delta1
+    real(kind=8) :: beta1
+    real(kind=8) :: cohe1
+    real(kind=8) :: h1
+    real(kind=8) :: cohemin1
+    real(kind=8) :: epse2
+    real(kind=8) :: delta2
+    real(kind=8) :: beta2
+    real(kind=8) :: cohe2
+    real(kind=8) :: h2
 !       loi d ecrouissage lineaire
-        epse2=max(epse2,0.d0)
-        cohe2=cohe1+H1*epse2
+    epse2=max(epse2,0.d0)
+    cohe2=cohe1+H1*epse2
 !        if(cohe2.le.cohemin1) then
 !        si cohesion quasi nulle on repasse en von mises        
 !         cohe2=cohemin1
@@ -42,7 +42,7 @@ subroutine cohe_3d(delta1,beta1,cohe1,h1,cohemin1,&
 !         delta2=0.d0
 !         beta2=0.d0
 !        else
-         h2=h1
-         beta2=beta1
-         delta2=delta1
+    h2=h1
+    beta2=beta1
+    delta2=delta1
 end subroutine

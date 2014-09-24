@@ -42,9 +42,9 @@ subroutine hydr_xmat(xmat0, xmat1, hydra1, hydras, n,&
             print*,'Donnees incoherentes pour l hydratation'
             print*,'0<HYDR<10<HYDRS<1 cf hydr_xmat.eso'
             erreur=1
-            call utmess('F','COMPOR1_90')
-            end if
-            end if
+            call utmess('F', 'COMPOR1_90')
+        end if
+    end if
 !      print*,'ds hydr_xmat'
 !      print*,xmat0,xmat1,hydra1,hydras,n,erreur
 end subroutine

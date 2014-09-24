@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,8 +15,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine cohe_3d(delta1,beta1,cohe1,h1,cohemin1,&
-      epse2,delta2,beta2,cohe2,h2)
+    subroutine cohe_3d(delta1, beta1, cohe1, h1, cohemin1,&
+                       epse2, delta2, beta2, cohe2, h2)
         real(kind=8) :: delta1
         real(kind=8) :: beta1
         real(kind=8) :: cohe1

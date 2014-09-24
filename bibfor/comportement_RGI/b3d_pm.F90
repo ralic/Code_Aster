@@ -28,53 +28,53 @@ subroutine b3d_pm(vg, vp0, dv0, depst6, ssg6,&
 !     associees aux fissurations diffuses dues au gel
 !=====================================================================
     implicit none
-
+!
 #include "asterfort/b3d_bgpg.h"
 #include "asterfort/b3d_bwpw.h"
 #include "asterfort/b3d_sdif.h"
 #include "asterfort/b3d_viscoplast.h"
-
-        real(kind=8) :: vg
-        real(kind=8) :: vp0
-        real(kind=8) :: dv0
-        real(kind=8) :: depst6(6)
-        real(kind=8) :: ssg6(6)
-        real(kind=8) :: dg3(3)
-        real(kind=8) :: epspg6(6)
-        real(kind=8) :: epspfg6(6)
-        real(kind=8) :: etag
-        real(kind=8) :: bg
-        real(kind=8) :: xmg
-        real(kind=8) :: pg
-        real(kind=8) :: dt
-        real(kind=8) :: epg0
-        real(kind=8) :: vw0
-        real(kind=8) :: poro0
-        real(kind=8) :: biot0
-        real(kind=8) :: xwsat
-        real(kind=8) :: pw1
-        real(kind=8) :: bw1
-        real(kind=8) :: epsvpw
-        real(kind=8) :: vplg33(3, 3)
-        real(kind=8) :: vplg33t(3, 3)
-        real(kind=8) :: e0
-        real(kind=8) :: rt0
-        real(kind=8) :: ept0
-        integer :: erreur
-        real(kind=8) :: xwns
-        integer :: mfr
-        real(kind=8) :: pw0
-        real(kind=8) :: dpw
-        real(kind=8) :: vw1
+!
+    real(kind=8) :: vg
+    real(kind=8) :: vp0
+    real(kind=8) :: dv0
+    real(kind=8) :: depst6(6)
+    real(kind=8) :: ssg6(6)
+    real(kind=8) :: dg3(3)
+    real(kind=8) :: epspg6(6)
+    real(kind=8) :: epspfg6(6)
+    real(kind=8) :: etag
+    real(kind=8) :: bg
+    real(kind=8) :: xmg
+    real(kind=8) :: pg
+    real(kind=8) :: dt
+    real(kind=8) :: epg0
+    real(kind=8) :: vw0
+    real(kind=8) :: poro0
+    real(kind=8) :: biot0
+    real(kind=8) :: xwsat
+    real(kind=8) :: pw1
+    real(kind=8) :: bw1
+    real(kind=8) :: epsvpw
+    real(kind=8) :: vplg33(3, 3)
+    real(kind=8) :: vplg33t(3, 3)
+    real(kind=8) :: e0
+    real(kind=8) :: rt0
+    real(kind=8) :: ept0
+    integer :: erreur
+    real(kind=8) :: xwns
+    integer :: mfr
+    real(kind=8) :: pw0
+    real(kind=8) :: dpw
+    real(kind=8) :: vw1
 !
 !     declaration externe
-    integer :: i,j
+    integer :: i, j
 !
 !     declarations locales
     real(kind=8) :: depsv
     real(kind=8) :: vssg33(3, 3), vssg33t(3, 3)
     real(kind=8) :: dff3(3), st3(3)
-    real(kind=8) :: rapp3(3),epsvpg,epsvt
+    real(kind=8) :: rapp3(3), epsvpg, epsvt
 !
 !**********************************************************************
 !     calcul du volume poreux accessible au gel en debut de pas
@@ -150,9 +150,9 @@ subroutine b3d_pm(vg, vp0, dv0, depst6, ssg6,&
                 else
                     vplg33(i,j)=1.d0
                     vplg33t(i,j)=1.d0
-                    end if
-                    end do
-                    end do
-                    end if
+                end if
+            end do
+        end do
+    end if
 !     print*,'Press ap ecoul ds b3d_pm bg,pg:',bg,pg
 end subroutine

@@ -25,10 +25,10 @@ subroutine b3d_vectp(aa, vp, x, n)
 !=====================================================================
     implicit none
 #include "asterfort/affiche33.h"
-        real(kind=8) :: aa(3, 3)
-        real(kind=8) :: vp,a,b,c,d,e,f,det1,det2,det3,xn,xsc
-        real(kind=8) :: x(*)
-        integer :: n
+    real(kind=8) :: aa(3, 3)
+    real(kind=8) :: vp, a, b, c, d, e, f, det1, det2, det3, xn, xsc
+    real(kind=8) :: x(*)
+    integer :: n
     a=aa(1,1)-vp
     b=aa(1,2)
     c=aa(1,3)
@@ -61,54 +61,54 @@ subroutine b3d_vectp(aa, vp, x, n)
         else
             print*,'norme nulle ds b3d_vectp',n
             print*,'matrice a diagonaliser :'
-            call affiche33 (aa)
-            end if
+            call affiche33(aa)
+        end if
 !      xn=dsqrt(x(1)**2+x(2)**2+x(3)**2)
 !      print*,'norme de vp apres normalisation',xn
-        else if (n.eq.2) then
-            if (abs(a) .ge. abs(d) .and. abs(a) .ge. abs(f)) then
-                x(1)=-b/a
-                x(2)=1.d0
-                x(3)=0.d0
-                x(4)=-c/a
-                x(5)=0.d0
-                x(6)=1.d0
-            else if (abs(d).ge.abs(a).and.abs(d).ge.abs(f)) then
-                x(1)=1.d0
-                x(2)=-b/d
-                x(3)=0.d0
-                x(4)=0.d0
-                x(5)=-e/d
-                x(6)=1.d0
-            else if (abs(f).ge.abs(a).and.abs(f).ge.abs(d)) then
-                x(1)=1.d0
-                x(2)=0.d0
-                x(3)=-c/f
-                x(4)=0.d0
-                x(5)=1.d0
-                x(6)=-e/f
-            endif
-            xn=dsqrt(x(1)**2+x(2)**2+x(3)**2)
-            x(1)=x(1)/xn
-            x(2)=x(2)/xn
-            x(3)=x(3)/xn
-            xsc=x(1)*x(4)+x(2)*x(5)+x(3)*x(6)
-            x(4)=x(4)-xsc*x(1)
-            x(5)=x(5)-xsc*x(2)
-            x(6)=x(6)-xsc*x(3)
-            xn=dsqrt(x(4)**2+x(5)**2+x(6)**2)
-            x(4)=x(4)/xn
-            x(5)=x(5)/xn
-            x(6)=x(6)/xn
-        else if (n.eq.3) then
+    else if (n.eq.2) then
+        if (abs(a) .ge. abs(d) .and. abs(a) .ge. abs(f)) then
+            x(1)=-b/a
+            x(2)=1.d0
+            x(3)=0.d0
+            x(4)=-c/a
+            x(5)=0.d0
+            x(6)=1.d0
+        else if (abs(d).ge.abs(a).and.abs(d).ge.abs(f)) then
             x(1)=1.d0
-            x(2)=0.d0
+            x(2)=-b/d
             x(3)=0.d0
             x(4)=0.d0
+            x(5)=-e/d
+            x(6)=1.d0
+        else if (abs(f).ge.abs(a).and.abs(f).ge.abs(d)) then
+            x(1)=1.d0
+            x(2)=0.d0
+            x(3)=-c/f
+            x(4)=0.d0
             x(5)=1.d0
-            x(6)=0.d0
-            x(7)=0.d0
-            x(8)=0.d0
-            x(9)=1.d0
+            x(6)=-e/f
         endif
+        xn=dsqrt(x(1)**2+x(2)**2+x(3)**2)
+        x(1)=x(1)/xn
+        x(2)=x(2)/xn
+        x(3)=x(3)/xn
+        xsc=x(1)*x(4)+x(2)*x(5)+x(3)*x(6)
+        x(4)=x(4)-xsc*x(1)
+        x(5)=x(5)-xsc*x(2)
+        x(6)=x(6)-xsc*x(3)
+        xn=dsqrt(x(4)**2+x(5)**2+x(6)**2)
+        x(4)=x(4)/xn
+        x(5)=x(5)/xn
+        x(6)=x(6)/xn
+    else if (n.eq.3) then
+        x(1)=1.d0
+        x(2)=0.d0
+        x(3)=0.d0
+        x(4)=0.d0
+        x(5)=1.d0
+        x(6)=0.d0
+        x(7)=0.d0
+        x(8)=0.d0
+        x(9)=1.d0
+    endif
 end subroutine

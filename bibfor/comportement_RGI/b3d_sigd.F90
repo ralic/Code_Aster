@@ -37,31 +37,31 @@ subroutine b3d_sigd(bg1, pg1, bw1, pw1, sfld,&
 #include "asterfort/x6x33.h"
 #include "asterfort/b3d_chrep.h"
 #include "asterfort/b3d_sigapp.h"
-        real(kind=8) :: bg1
-        real(kind=8) :: pg1
-        real(kind=8) :: bw1
-        real(kind=8) :: pw1
-        real(kind=8) :: sfld
-        real(kind=8) :: ssg6(6)
-        real(kind=8) :: e1
-        real(kind=8) :: rt2
-        real(kind=8) :: ept1
-        integer :: mfr,i
-        integer :: erreur
-        real(kind=8) :: dg3(3)
-        real(kind=8) :: dw3(3)
-        real(kind=8) :: xnu0
-        real(kind=8) :: sigaf6(6)
-        real(kind=8) :: dflu0
-        real(kind=8) :: sigef6(6)
-        real(kind=8) :: xmg
-        real(kind=8) :: sigat6(6)
-        real(kind=8) :: vplg33(3, 3)
-        real(kind=8) :: vplg33t(3, 3)
-        real(kind=8) :: vssw33(3, 3)
-        real(kind=8) :: vssw33t(3, 3)
-        real(kind=8) :: ssw6(6)
-        real(kind=8) :: dth0
+    real(kind=8) :: bg1
+    real(kind=8) :: pg1
+    real(kind=8) :: bw1
+    real(kind=8) :: pw1
+    real(kind=8) :: sfld
+    real(kind=8) :: ssg6(6)
+    real(kind=8) :: e1
+    real(kind=8) :: rt2
+    real(kind=8) :: ept1
+    integer :: mfr, i
+    integer :: erreur
+    real(kind=8) :: dg3(3)
+    real(kind=8) :: dw3(3)
+    real(kind=8) :: xnu0
+    real(kind=8) :: sigaf6(6)
+    real(kind=8) :: dflu0
+    real(kind=8) :: sigef6(6)
+    real(kind=8) :: xmg
+    real(kind=8) :: sigat6(6)
+    real(kind=8) :: vplg33(3, 3)
+    real(kind=8) :: vplg33t(3, 3)
+    real(kind=8) :: vssw33(3, 3)
+    real(kind=8) :: vssw33t(3, 3)
+    real(kind=8) :: ssw6(6)
+    real(kind=8) :: dth0
     real(kind=8) :: sigaf3(3), vsigaf33(3, 3), vsigaf33t(3, 3)
     real(kind=8) :: sigaft6(6), sigafc6(6), sigafc3(3), sigaft3(3)
 !
@@ -70,7 +70,7 @@ subroutine b3d_sigd(bg1, pg1, bw1, pw1, sfld,&
     real(kind=8) :: ddg66(6, 6), sw3(3), rapp3(3), sigew3(3)
     real(kind=8) :: x33(3, 3), sigpg6(6)
     real(kind=8) :: sigag6(6), x6(6), sigaf33(3, 3), sigag33(3, 3)
-    real(kind=8) :: bw2,sigext2,sigext1,smax,sigpw0,sigpg0,sigm1,sigext0
+    real(kind=8) :: bw2, sigext2, sigext1, smax, sigpw0, sigpg0, sigm1, sigext0
 !
 !***********************************************************************
 !     prise en compte de l'endo de fluage sur les contraintes effectives
@@ -104,210 +104,210 @@ subroutine b3d_sigd(bg1, pg1, bw1, pw1, sfld,&
             sigm1=sigext0
         else
             sigm1=0.d0
-            end if
+        end if
 !        print*,'b3d_sigd sigaf3(',i,')=',sigaf3(i)
 !        print*,'b3d-sigd bg:',bg1,' pg:',pg1,' bgpg:',bg1*pg1
 !        calcul des contraintes préjudiciables dans le squelette solide
 !        i.e partie positive des autocontraintes + attenuation externe e
-            sigeg3(i)=sigm1+bg1*abs(pg1)
-            sigew3(i)=sigm1+bw1*abs(pw1)
+        sigeg3(i)=sigm1+bg1*abs(pg1)
+        sigew3(i)=sigm1+bw1*abs(pw1)
 !        remarque : il vaudrait mieux calculer la proba de fissuration d
 !        à la fin de ce programme car à ce moment là on connait sigex
-            end do
+    end do
 !     actualisation des contraintes seuils de fissuration diffuse
 !     pour le pas suivant : les contraintes orthogonales de compression
 !     sont envoyees avec un aleas nul
-            call b3d_sst(ssg6, 0, vsigaf33, vsigaf33t, sigeg3)
-            call b3d_sst(ssw6, 0, vsigaf33, vsigaf33t, sigew3)
+    call b3d_sst(ssg6, 0, vsigaf33, vsigaf33t, sigeg3)
+    call b3d_sst(ssw6, 0, vsigaf33, vsigaf33t, sigew3)
 !
 !**********************************************************************
 !     si on neglige l effet de l endo hydrique sur le comportement
-            goto 10
+    goto 10
 !     si non : calcul des endommagements diffus hydriques principaux
 !     et de la matrice de passage
 !      print*,ssw6,E1,rt2,ept1,
 !     #erreur,dw3,sw3,vssw33,vssw33t,rapp3
-            call b3d_sdif(ssw6, e1, rt2, ept1, erreur,&
-                          dw3, sw3, vssw33, vssw33t, rapp3)
+    call b3d_sdif(ssw6, e1, rt2, ept1, erreur,&
+                  dw3, sw3, vssw33, vssw33t, rapp3)
 !     prise en compte des endommagents diffus hydriques actuels sur
 !     le squelette solide
 !     remarque : comp=.true. induit une matrice diagonale dans la base p
-            call b3d_d66(xnu0, sw3, ddw66, e1, .false.,&
-                         .true.)
+    call b3d_d66(xnu0, sw3, ddw66, e1, .false.,&
+                 .true.)
 !      call affiche66(ddw66)
 !      print*,'pw',pw1,'bw1',bw1
 !      print*,'sigaf',sigaf6
 !     prise en compte de lendo diffus hydrique sur la partie positive de
 !     contraintes effectives
-            call x6x33(sigaft6,x33)
-            call b3d_chrep(sigaf33, x33, vssw33)
-            call x33x6(sigaf33,x6)
-            call b3d_sigapp(x6, ddw66, sigaf6, .true.)
+    call x6x33(sigaft6, x33)
+    call b3d_chrep(sigaf33, x33, vssw33)
+    call x33x6(sigaf33, x6)
+    call b3d_sigapp(x6, ddw66, sigaf6, .true.)
 !     retour en base fixe
-            call x6x33(sigaf6,x33)
-            call b3d_chrep(sigaf33, x33, vssw33t)
-            call x33x6(sigaf33,sigaft6)
+    call x6x33(sigaf6, x33)
+    call b3d_chrep(sigaf33, x33, vssw33t)
+    call x33x6(sigaf33, sigaft6)
 !     prise en compte des fissures fermees sur
 !     les contraintes effectives
-            do i = 1, 6
-                sigaf6(i)=(sigaft6(i)+sigafc6(i))
-            end do
+    do i = 1, 6
+        sigaf6(i)=(sigaft6(i)+sigafc6(i))
+    end do
 !
 !***********************************************************************
 !     prise en compte de lendo diffus de gel sur la partie positive des
 !     contraintes effectives
-
-10 continue
-            if (xmg.ne.0.) then
-            do i = 1, 3
-                st3(i)=1.d0/(1.d0-min(dg3(i),0.999d0))
-                dw3(i)=0.d0
-            end do
-
+!
+ 10 continue
+    if (xmg .ne. 0.) then
+        do i = 1, 3
+            st3(i)=1.d0/(1.d0-min(dg3(i),0.999d0))
+            dw3(i)=0.d0
+        end do
+!
 !      matrice d endommagement diffus en base prin d endo
-            call b3d_d66(xnu0, st3, ddg66, e1, .false.,&
-                         .true.)
+        call b3d_d66(xnu0, st3, ddg66, e1, .false.,&
+                     .true.)
 !      traitement des refermetures des micro-fissures dues au gel
-            call b3d_partition(sigaf6, sigaf3, vsigaf33, vsigaf33t, sigaft6,&
-                               sigafc6, sigafc3, sigaft3)
+        call b3d_partition(sigaf6, sigaf3, vsigaf33, vsigaf33t, sigaft6,&
+                           sigafc6, sigafc3, sigaft3)
 !      on applique l endo de gel sur les contraintes de traction
-            call x6x33(sigaft6,x33)
-            call b3d_chrep(sigaf33, x33, vplg33)
-            call x33x6(sigaf33,x6)
-            call b3d_sigapp(x6, ddg66, sigaf6, .true.)
+        call x6x33(sigaft6, x33)
+        call b3d_chrep(sigaf33, x33, vplg33)
+        call x33x6(sigaf33, x6)
+        call b3d_sigapp(x6, ddg66, sigaf6, .true.)
 !      retour en base fixe
-            call x6x33(sigaf6,x33)
-            call b3d_chrep(sigaf33, x33, vplg33t)
-            call x33x6(sigaf33,sigaf6)
+        call x6x33(sigaf6, x33)
+        call b3d_chrep(sigaf33, x33, vplg33t)
+        call x33x6(sigaf33, sigaf6)
 !      prise en compte des fissures fermees sur
 !      les contraintes effectives
-            do i = 1, 6
-                sigaf6(i)=(sigaf6(i)+sigafc6(i))
-            end do
+        do i = 1, 6
+            sigaf6(i)=(sigaf6(i)+sigafc6(i))
+        end do
 !      *****************************************************************
 !      modif pression de gel a combiner a la contrainte effectives
 !      seul le gel pas encore ds les fissures contribue a la contrainte
 !      le gel passé ds les fissures a recristallisé il est devenu de l
 !      qui ne doit plus être comptabilisée dans la pression de gel
-            sigpg0=-bg1*pg1
-            do i = 1, 3
-                sigpg6(i)=sigpg0
-            end do
-            do i = 4, 6
-                sigpg6(i)=0.d0
-            end do
+        sigpg0=-bg1*pg1
+        do i = 1, 3
+            sigpg6(i)=sigpg0
+        end do
+        do i = 4, 6
+            sigpg6(i)=0.d0
+        end do
 !      le gel dans les fissures n a plus de pression significative une f
 !      que la deformation d ouverture est devenue une deformation plasti
 !      la contribution du gel dans la reprise des contraintes effectives
 !      est donc sigag=-bg(1-dg)Pg
-            call b3d_sigapp(sigpg6, ddg66, sigag6, .true.)
+        call b3d_sigapp(sigpg6, ddg66, sigag6, .true.)
 !      retour base fixe
-            call x6x33(sigag6,x33)
-            call b3d_chrep(sigag33, x33, vplg33t)
-            call x33x6(sigag33,sigag6)
+        call x6x33(sigag6, x33)
+        call b3d_chrep(sigag33, x33, vplg33t)
+        call x33x6(sigag33, sigag6)
 !      consequence :les contraintes effectives dans la matrice non fissu
 !      calculee dans endo3d est surestimee de bg.dg.pg
 !      *****************************************************************
 !      contrainte totale integrant la pression de gel
-            do i = 1, 6
-                sigaf6(i)=sigaf6(i)+sigag6(i)
-            end do
-
-        else
+        do i = 1, 6
+            sigaf6(i)=sigaf6(i)+sigag6(i)
+        end do
+!
+    else
 !      pas de gel de rag ni de def car xmg==0, sigaf6  inchangé
-            do i = 1, 6
-                sigag6(i)=0.d0
-            end do
-            do i = 1, 3
-                dw3(i)=0.d0
-            end do
-            end if
+        do i = 1, 6
+            sigag6(i)=0.d0
+        end do
+        do i = 1, 3
+            dw3(i)=0.d0
+        end do
+    end if
 !
 !***********************************************************************
 !     prise en compte de l amplification de retrait par precontrainte
 !     (effet Picket anisotrope)
 !     externe (en lien avec lendommagement hydrique diffus en theorie)
-            if (pw1 .lt. 0.d0) then
+    if (pw1 .lt. 0.d0) then
 !      contribution a sigext de la pression non corrigee
-                sigpw0=-bw1*pw1
+        sigpw0=-bw1*pw1
 !      on se place dans les directions principales de contrainte apparen
-                call b3d_partition(sigaf6, sigaf3, vsigaf33, vsigaf33t, sigaft6,&
-                                   sigafc6, sigafc3, sigaft3)
+        call b3d_partition(sigaf6, sigaf3, vsigaf33, vsigaf33t, sigaft6,&
+                           sigafc6, sigafc3, sigaft3)
 !      contrainte equivalente maxi pour cet effet
 !       smax=min(rt2,0.99d0*sfld)
 !      smax==0 implique qu il n'y ait pas de fluage de dessiccation en t
 !      cf these Nary pour integrer un fluage de traction en dessiccation
-                smax=0.d0
+        smax=0.d0
 !      on teste  l opportunite de l amplification dans chaque direction
-                do i = 1, 3
-                    sigext1=sigaf3(i)+sigpw0
-                    sigext2=sigext1/(1.d0+sigpw0/sfld)
-                    if (sigext2 .gt. smax) then
+        do i = 1, 3
+            sigext1=sigaf3(i)+sigpw0
+            sigext2=sigext1/(1.d0+sigpw0/sfld)
+            if (sigext2 .gt. smax) then
 !          on limite la minoration a smax
-                        bw2=bw1*(1.d0-smax/sfld)
+                bw2=bw1*(1.d0-smax/sfld)
 !          print*,'minoration limite de bw', bw2
-                    else
+            else
 !          la modification est possible avec sigext2
-                        bw2=bw1*(1.d0-sigext2/sfld)
+                bw2=bw1*(1.d0-sigext2/sfld)
 !          print*,'majoration de bw2',bw2
-                        end if
-                        sigaf3(i)=sigaf3(i)-bw2*pw1
-                        x6(i)=sigaf3(i)
-                        end do
-                        do i = 4, 6
-                            x6(i)=0.d0
-                        end do
+            end if
+            sigaf3(i)=sigaf3(i)-bw2*pw1
+            x6(i)=sigaf3(i)
+        end do
+        do i = 4, 6
+            x6(i)=0.d0
+        end do
 !      retour base fixe
-                        call x6x33(x6,x33)
-                        call b3d_chrep(sigaf33, x33, vsigaf33t)
-                        call x33x6(sigaf33,sigaf6)
+        call x6x33(x6, x33)
+        call b3d_chrep(sigaf33, x33, vsigaf33t)
+        call x33x6(sigaf33, sigaf6)
 !      recuperation des contraintes effectives integrant
 !      les pressions de disjonction
 !       do i=1,6
 !        sigef6(i)=sigaf6(i)/(1.d0-dflu0)
 !       end if
-                        end if
+    end if
 !
 !***********************************************************************
 !     calcul des contraintes suivant la formulation
 !     (en non saturé : la contrainte non endo = la contrainte totale ca
 !     la contrainte dans le solide peut localement etre = a la totale)
 !       i.e pas de depression dans les fissures
-                        do i = 1, 6
-                            sigat6(i)=sigaf6(i)
-                        end do
+    do i = 1, 6
+        sigat6(i)=sigaf6(i)
+    end do
 !      print*,'pw ds b3d sigd',pw1,' bw',bw1 ,' mfr',mfr
 !     changement said ok
 !     traitement particulier de la formulation poreuse
-                        if (mfr .eq. 33) then
+    if (mfr .eq. 33) then
 !       formulation poreuse
 !       sigaf contient les depression d'eau et la pression de gel
 !       seules les supressions sont a traiter en mode poreux
 !       elles sont triatées en dehors du point d integration mecanique
 !       on fournit donc les contraintes effectives
 !       complement par rapport a modif said cas non sature
-                            if (pw1 .lt. 0.d0) then
+        if (pw1 .lt. 0.d0) then
 !        on enleve les contraintes hydriques car le code va les remettre
 !        mais on les a deja considere ici en cas de depression
-                                do i = 1, 3
-                                    sigat6(i)=sigaf6(i)+bw1*pw1
-                                end do
-                                end if
-                            else
+            do i = 1, 3
+                sigat6(i)=sigaf6(i)+bw1*pw1
+            end do
+        end if
+    else
 !      formulation non poreuse
 !      en saturé : la contrainte non endo = la contrainte effective
 !      (la contrainte dans le solide est toujours purement effective)
 !      il ne manque que les surpression hydriques que l on rajoute ici
-                                if (pw1 .ge. 0.d0) then
+        if (pw1 .ge. 0.d0) then
 !        print*,'surpression',bw1,pw1
 !       il faut rajouter les supressions
-                                    do i = 1, 6
-                                        if (i .le. 3) then
-                                            sigat6(i)=sigaf6(i)-bw1*pw1
-                                        else
-                                            sigat6(i)=sigaf6(i)
-                                            end if
-                                            end do
-                                            end if
-                                            end if
+            do i = 1, 6
+                if (i .le. 3) then
+                    sigat6(i)=sigaf6(i)-bw1*pw1
+                else
+                    sigat6(i)=sigaf6(i)
+                end if
+            end do
+        end if
+    end if
 end subroutine

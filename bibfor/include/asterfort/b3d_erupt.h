@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +19,7 @@ interface
                          beta, epic, fr, gf, e,&
                          dpic)
 #include "asterf_types.h"
-        aster_logical:: local
+        aster_logical :: local
         integer :: i
         real(kind=8) :: l3(3)
         real(kind=8) :: e23(3)

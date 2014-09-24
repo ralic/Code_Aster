@@ -1,4 +1,4 @@
-subroutine b3d_dth(theta,dth,dt80)
+subroutine b3d_dth(theta, dth, dt80)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,26 +20,25 @@ subroutine b3d_dth(theta,dth,dt80)
 !=====================================================================
 !     calcul de lendommagement thermique    
 !=====================================================================
-        implicit none
+    implicit none
 !     declarations externes
-        real(kind=8) :: theta
-        real(kind=8) :: dth
-        real(kind=8) :: dt80,dth0,theta_ref,dtheta,dth1,dtheta_k
+    real(kind=8) :: theta
+    real(kind=8) :: dth
+    real(kind=8) :: dt80, dth0, theta_ref, dtheta, dth1, dtheta_k
 !     endommagement thermique initial
-      dth0=dth
+    dth0=dth
 !     parametres de la loi d endommagement thermique
-      theta_ref=50.d0
-      if((theta_ref.lt.80.d0).and.(dt80.lt.1.).and.(dt80.gt.0.)) then
+    theta_ref=50.d0
+    if ((theta_ref.lt.80.d0) .and. (dt80.lt.1.) .and. (dt80.gt.0.)) then
 !      calcul de dtheta_k fonction de dt80 impose
-       dtheta_k=-(80.d0-theta_ref)/log(1.d0-dt80)
+        dtheta_k=-(80.d0-theta_ref)/log(1.d0-dt80)
 !      endommagement thermique      
-       dtheta=max(theta-theta_ref,0.d0)
-       dth1=1.d0-exp(-(dtheta/dtheta_k))
-      else
+        dtheta=max(theta-theta_ref,0.d0)
+        dth1=1.d0-exp(-(dtheta/dtheta_k))
+    else
 !      pas d'endo thermique
-       dth1=0.d0
-      end if
+        dth1=0.d0
+    end if
 !     condition de croissance de l endo thermique
-      dth=min(max(dth1,dth0),0.99999d0)
+    dth=min(max(dth1,dth0),0.99999d0)
 end subroutine
-

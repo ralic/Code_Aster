@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,9 +15,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine thermo_3d(kaft,temp,kafm)
-      real(kind=8) :: kaft
-      real(kind=8) ::temp
-      real(kind=8) ::kafm
+    subroutine thermo_3d(kaft, temp, kafm)
+        real(kind=8) :: kaft
+        real(kind=8) :: temp
+        real(kind=8) :: kafm
     end subroutine thermo_3d
 end interface 

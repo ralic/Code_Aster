@@ -25,25 +25,25 @@ subroutine b3d_relax1(spl0, s0, s1, vsigma, eta1,&
 !=====================================================================
     implicit none
 !
-        real(kind=8) :: spl0
-        real(kind=8) :: s0
-        real(kind=8) :: s1
-        real(kind=8) :: vsigma
-        real(kind=8) :: eta1
-        real(kind=8) :: e1
-        real(kind=8) :: eta2
-        real(kind=8) :: e0
-        real(kind=8) :: dt
-        real(kind=8) :: sref1
-        real(kind=8) :: spl1
-        real(kind=8) :: depst
-        real(kind=8) :: sref
-        real(kind=8) :: wref
-        real(kind=8) :: w
-        real(kind=8) :: li
-        real(kind=8) :: xx1
-        real(kind=8) :: dam
-        real(kind=8) :: dpic,sf11,tau1,sf10
+    real(kind=8) :: spl0
+    real(kind=8) :: s0
+    real(kind=8) :: s1
+    real(kind=8) :: vsigma
+    real(kind=8) :: eta1
+    real(kind=8) :: e1
+    real(kind=8) :: eta2
+    real(kind=8) :: e0
+    real(kind=8) :: dt
+    real(kind=8) :: sref1
+    real(kind=8) :: spl1
+    real(kind=8) :: depst
+    real(kind=8) :: sref
+    real(kind=8) :: wref
+    real(kind=8) :: w
+    real(kind=8) :: li
+    real(kind=8) :: xx1
+    real(kind=8) :: dam
+    real(kind=8) :: dpic, sf11, tau1, sf10
 !     vsigma est non nul que si on est en train d ouvrir ou de fermer
 !     la fissure
     sf10=s1-spl0
@@ -83,9 +83,9 @@ subroutine b3d_relax1(spl0, s0, s1, vsigma, eta1,&
 !             spl1=spl0+vspl*dt
 !             spl1=max(spl1,0.d0)
 !             sf11=s1-spl1
-            end if
-            end if
-            goto 20
+        end if
+    end if
+    goto 20
 !      if(vsigma.eq.0.) then
 !c        la fissure est refermee
 !         if(sf10.ge.0.) then
@@ -112,15 +112,15 @@ subroutine b3d_relax1(spl0, s0, s1, vsigma, eta1,&
 !          end if
 !         end if
 !      end if
-            20 if(vsigma.le.0.) then
+    20 if(vsigma.le.0.) then
 !         modif realise avec Said Rahal le 27/03/2013
 !         on referme la fissure en relaxant spl
 !          vspl1=vsigma*min(exp(eta2/E0*vsigma),1.d0)
 !          vspl2=(-eta2/E0*spl0)
 !          tau2=eta2/E0
 !          vspl=vspl2
-            spl1=spl0*exp(-dt/tau1)
-            spl1=max(spl1,0.d0)
-            sf11=s1-spl1
-            end if
+    spl1=spl0*exp(-dt/tau1)
+    spl1=max(spl1,0.d0)
+    sf11=s1-spl1
+end if
 end subroutine

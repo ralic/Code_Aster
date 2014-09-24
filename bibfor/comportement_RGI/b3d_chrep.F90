@@ -22,7 +22,7 @@ subroutine b3d_chrep(m, a, p)
 !===================================================================
     implicit none
     real(kind=8) :: m(3, 3), a(3, 3), p(3, 3)
-    real(kind=8) ::tp(3, 3), r(3, 3)
+    real(kind=8) :: tp(3, 3), r(3, 3)
     integer :: i, j
 #include "asterfort/matmat.h"
     do i = 1, 3
@@ -31,7 +31,8 @@ subroutine b3d_chrep(m, a, p)
             m(i,j)=0.d0
         enddo
     enddo
-      call matmat(a,p,3,3,3,r)
-      call matmat(tp,r,3,3,3,m)
+    call matmat(a, p, 3, 3, 3,&
+                r)
+    call matmat(tp, r, 3, 3, 3,&
+                m)
 end subroutine
-

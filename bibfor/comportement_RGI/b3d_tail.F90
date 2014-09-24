@@ -57,41 +57,41 @@ subroutine b3d_tail(xmat, nmat, ifou, mfr1, nmat0,&
             n33(2,1)=n33(1,2)
             n33(3,1)=n33(1,3)
             n33(3,2)=n33(2,3)
-            end if
-            if ((ifou.eq.0) .or. (ifou.eq.-1)) then
+        end if
+        if ((ifou.eq.0) .or. (ifou.eq.-1)) then
 !       mode axisymetrique ou deformation plane
 !       chargement des matrices des tailles de EF
-                t33(1,1)=xmat(nmat1+1)
-                t33(2,2)=xmat(nmat1+2)
-                if (ifou .eq. 0) then
+            t33(1,1)=xmat(nmat1+1)
+            t33(2,2)=xmat(nmat1+2)
+            if (ifou .eq. 0) then
 !        cas axisym on recupere le rayon en 8 pour calculer la dim 3
-                    ray=xmat(nmat1+8)
-                    t33(3,3)=3.14d0*ray
+                ray=xmat(nmat1+8)
+                t33(3,3)=3.14d0*ray
 !         print*,t33(3,3)
-                else
+            else
 !        cas def plane on recupere l epaisseur vraie
-                    t33(3,3)=xmat(nmat1+8)
-                    end if
-                    t33(1,2)=xmat(nmat1+4)
-                    t33(1,3)=0.d0
-                    t33(2,3)=0.d0
-                    t33(2,1)=t33(1,2)
-                    t33(3,1)=t33(1,3)
-                    t33(3,2)=t33(2,3)
-                    n33(1,1)=xmat(nmat1+5)
-                    n33(2,2)=xmat(nmat1+6)
-                    n33(3,3)=1.d0
-                    n33(1,2)=xmat(nmat1+7)
-                    n33(1,3)=0.d0
-                    n33(2,3)=0.d0
-                    n33(2,1)=n33(1,2)
-                    n33(3,1)=n33(1,3)
-                    n33(3,2)=n33(2,3)
-                    end if
-                else
-                    print*,'ENDO3D non implante pour cette formulation'
-                    read*
-                    end if
+                t33(3,3)=xmat(nmat1+8)
+            end if
+            t33(1,2)=xmat(nmat1+4)
+            t33(1,3)=0.d0
+            t33(2,3)=0.d0
+            t33(2,1)=t33(1,2)
+            t33(3,1)=t33(1,3)
+            t33(3,2)=t33(2,3)
+            n33(1,1)=xmat(nmat1+5)
+            n33(2,2)=xmat(nmat1+6)
+            n33(3,3)=1.d0
+            n33(1,2)=xmat(nmat1+7)
+            n33(1,3)=0.d0
+            n33(2,3)=0.d0
+            n33(2,1)=n33(1,2)
+            n33(3,1)=n33(1,3)
+            n33(3,2)=n33(2,3)
+        end if
+    else
+        print*,'ENDO3D non implante pour cette formulation'
+        read*
+    end if
 !     variable logique localisation
 !     la transformation de Hillerborgh n est activee que si t33 non nul
 !     c a d fourni en prametres materiaux
@@ -104,4 +104,4 @@ subroutine b3d_tail(xmat, nmat, ifou, mfr1, nmat0,&
 !      end if
 !      call affiche33(t33)
 !      read*
- end subroutine
+end subroutine

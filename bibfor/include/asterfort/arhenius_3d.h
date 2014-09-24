@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,13 +15,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine arhenius_3d(ar,ard,temp,temp0,asr,sr,srpal)
-      real(kind=8) :: ar
-      real(kind=8) :: ard
-      real(kind=8) :: temp
-      real(kind=8) :: temp0
-      real(kind=8) :: asr
-      real(kind=8) :: sr
-      real(kind=8) :: srpal
+    subroutine arhenius_3d(ar, ard, temp, temp0, asr,&
+                           sr, srpal)
+        real(kind=8) :: ar
+        real(kind=8) :: ard
+        real(kind=8) :: temp
+        real(kind=8) :: temp0
+        real(kind=8) :: asr
+        real(kind=8) :: sr
+        real(kind=8) :: srpal
     end subroutine arhenius_3d
 end interface 

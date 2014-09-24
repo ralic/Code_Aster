@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +15,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine df_3d(dps6,dsige6,df0)
+    subroutine df_3d(dps6, dsige6, df0)
         real(kind=8) :: dps6(6)
         real(kind=8) :: dsige6(6)
         real(kind=8) :: df0

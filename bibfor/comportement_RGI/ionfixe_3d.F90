@@ -1,5 +1,5 @@
-subroutine ionfixe_3d(alfeq,sfeq,csh,csheff,temp,nasol,ssol,&
-     alsol,alpal,cash)
+subroutine ionfixe_3d(alfeq, sfeq, csh, csheff, temp,&
+                      nasol, ssol, alsol, alpal, cash)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,20 +22,20 @@ subroutine ionfixe_3d(alfeq,sfeq,csh,csheff,temp,nasol,ssol,&
 !      provient de rsi_3d : 
 !     calcul des quantités d'ions fixés dans les csh à l'équilibre
 !=====================================================================
-        implicit none
-      real(kind=8) :: alfeq
-      real(kind=8) :: sfeq
-      real(kind=8) :: csh
-      real(kind=8) :: csheff
-      real(kind=8) :: temp
-      real(kind=8) :: nasol
-      real(kind=8) :: ssol
-      real(kind=8) :: alsol
-      real(kind=8) :: alpal
-      real(kind=8) :: cash
- !     les alfeq contienne les cash de façon a nnuler la vitesse
- !     liberation si alf=cash quand il ny aen pls en solution
-      alfeq=csheff*(1.d0-dexp(-alsol/alpal))+cash
-      sfeq=2.067d0*csh*ssol*(temp**0.2124d0)*(nasol**0.2004d0)
- !      print*, 'sfeq', sfeq, 'nasol', nasol      
+    implicit none
+    real(kind=8) :: alfeq
+    real(kind=8) :: sfeq
+    real(kind=8) :: csh
+    real(kind=8) :: csheff
+    real(kind=8) :: temp
+    real(kind=8) :: nasol
+    real(kind=8) :: ssol
+    real(kind=8) :: alsol
+    real(kind=8) :: alpal
+    real(kind=8) :: cash
+!     les alfeq contienne les cash de façon a nnuler la vitesse
+!     liberation si alf=cash quand il ny aen pls en solution
+    alfeq=csheff*(1.d0-dexp(-alsol/alpal))+cash
+    sfeq=2.067d0*csh*ssol*(temp**0.2124d0)*(nasol**0.2004d0)
+!      print*, 'sfeq', sfeq, 'nasol', nasol      
 end subroutine

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +15,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine dps_3d(dev6,xj2d,xi1,delta2,dps6)
+    subroutine dps_3d(dev6, xj2d, xi1, delta2, dps6)
         real(kind=8) :: dev6(6)
         real(kind=8) :: xj2d
         real(kind=8) :: xi1

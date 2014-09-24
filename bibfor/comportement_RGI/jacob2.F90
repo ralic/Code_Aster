@@ -30,10 +30,10 @@ subroutine jacob2(a, d, s)
 !        RECUPERATION INCA FEVRIER 85    EBERSOLT
 !====================================================================
     implicit none
-        real(kind=8) :: a(3, *)
-        real(kind=8) :: d(*)
-        real(kind=8) :: s(3, *)
-        real(kind=8) ::x1,x2,x3,x4,x5,x6,x7
+    real(kind=8) :: a(3, *)
+    real(kind=8) :: d(*)
+    real(kind=8) :: s(3, *)
+    real(kind=8) :: x1, x2, x3, x4, x5, x6, x7
 !
     x1  =2.*a(1,2)
     x2  =a(1,1)-a(2,2)
@@ -50,7 +50,7 @@ subroutine jacob2(a, d, s)
     x4=x1/x2
     if (abs(x4) .lt. 1.e+10) goto 50
 !
-70  continue
+ 70 continue
     x5    =sqrt(2.d0)*.5
     s(1,1)=x5
     s(2,1)=sign(x5,x1)
@@ -58,7 +58,7 @@ subroutine jacob2(a, d, s)
     s(2,2)=x5
     goto 100
 !
-50  continue
+ 50 continue
     x5=1. + x4*x4
     x5=sign(1.d0,x2)/sqrt(x5)
     x6=(1.+x5)*.5
@@ -69,4 +69,4 @@ subroutine jacob2(a, d, s)
     s(2,1)= x7
     s(1,2)=-x7
     s(2,2)= x6
- 100 end subroutine
+    100 end subroutine

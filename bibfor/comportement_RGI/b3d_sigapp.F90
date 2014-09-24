@@ -41,20 +41,20 @@ subroutine b3d_sigapp(sigef6, d66, siga6, base_prin)
                 else
                     if ((j.le.3) .and. (i.le.3)) then
                         siga6(i)=siga6(i)-d66(i,j)*sigef6(j)
-                        end if
-                        end if
-                        end do
-                        end do
-                    else
-                        do i = 1, 6
-                            siga6(i)=0.d0
-                            do j = 1, 6
-                                if (i .eq. j) then
-                                    siga6(i)=siga6(i)+(un-d66(i,j))*sigef6(j)
-                                else
-                                    siga6(i)=siga6(i)-d66(i,j)*sigef6(j)
-                                    end if
-                                    end do
-                                    end do
-                                    end if
+                    end if
+                end if
+            end do
+        end do
+    else
+        do i = 1, 6
+            siga6(i)=0.d0
+            do j = 1, 6
+                if (i .eq. j) then
+                    siga6(i)=siga6(i)+(un-d66(i,j))*sigef6(j)
+                else
+                    siga6(i)=siga6(i)-d66(i,j)*sigef6(j)
+                end if
+            end do
+        end do
+    end if
 end subroutine

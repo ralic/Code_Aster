@@ -40,8 +40,10 @@ subroutine lc0066(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 !
-      call lcsend(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
-                    instap,epsm,deps,sigm,vim,option,angmas,sigp,vip,&
-                    tampon,typmod,icomp,nvi,dsidep,codret)
+    call lcsend(fami, kpg, ksp, ndim, imate,&
+                compor, crit, instam, instap, epsm,&
+                deps, sigm, vim, option, angmas,&
+                sigp, vip, tampon, typmod, icomp,&
+                nvi, dsidep, codret)
 !
 end subroutine

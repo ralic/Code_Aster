@@ -21,13 +21,13 @@ subroutine elas_iso_3d(depst6, e1, xnu1, dsige6)
 !       calcul d'un increment de contrainte pour la loi elastique  isotr
 !=====================================================================
     implicit none
-        real(kind=8) :: depst6(6)
-        real(kind=8) :: e1
-        real(kind=8) :: xnu1
-        real(kind=8) :: dsige6(6)
+    real(kind=8) :: depst6(6)
+    real(kind=8) :: e1
+    real(kind=8) :: xnu1
+    real(kind=8) :: dsige6(6)
 !       depst6: pour les 3 1er, gamma pour les autres
-        real(kind=8) :: dgamd6(6),depsv,xk0,xmu0
-        integer::i
+    real(kind=8) :: dgamd6(6), depsv, xk0, xmu0
+    integer :: i
 !       increment de la deformation volumique
     depsv=0.d0
     do i = 1, 3

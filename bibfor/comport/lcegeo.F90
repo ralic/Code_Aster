@@ -32,12 +32,12 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 #include "blas/dcopy.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
-
-    integer :: nno, npg, ipoids, ivf, idfde, ndim,iret,jj
+!
+    integer :: nno, npg, ipoids, ivf, idfde, ndim, iret, jj
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*)
     real(kind=8) :: geom(3, nno), elgeom(10, npg), dfdi(nno, 3)
-    real(kind=8) :: deplm(3, nno), ddepl(3, nno),inv(3,3),det,de,dn,dk
+    real(kind=8) :: deplm(3, nno), ddepl(3, nno), inv(3, 3), det, de, dn, dk
 !
 ! ----------------------------------------------------------------------
 !
@@ -183,56 +183,58 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
 272         continue
 200     continue
     endif
-
- if ((compor(1) .eq. 'ENDO_PORO_BETON').or.&
-         ((compor(1) .eq. 'KIT_DDI').and.&
-          ((compor(8).eq.'ENDO_PORO_BETON').or.&
-           (compor(9).eq.'ENDO_PORO_BETON')))) then
-
-        if (typmod(1)(1:2).eq.'3D')then
-
-          do 300 kpg=1,npg
-            do 310 i=1,3
-              l(1,i) = 0.d0
-              l(2,i) = 0.d0
-              l(3,i) = 0.d0
-              do 320 j=1,nno
-                k  = 3*nno*(kpg-1)
-                jj = 3*(j-1)
-                de = zr(idfde-1+k+jj+1)
-                dn = zr(idfde-1+k+jj+2)
-                dk = zr(idfde-1+k+jj+3)
-                l(1,i) = l(1,i) + de*geom(i,j)
-                l(2,i) = l(2,i) + dn*geom(i,j)
-                l(3,i) = l(3,i) + dk*geom(i,j)
-320           continue
-310         continue
-
+!
+    if ((compor(1) .eq. 'ENDO_PORO_BETON') .or.&
+        (&
+        (compor(1) .eq. 'KIT_DDI') .and.&
+        ((compor(8).eq.'ENDO_PORO_BETON').or. (compor(9).eq.'ENDO_PORO_BETON'))&
+        )) then
+!
+        if (typmod(1)(1:2) .eq. '3D') then
+!
+            do 300 kpg = 1, npg
+                do 310 i = 1, 3
+                    l(1,i) = 0.d0
+                    l(2,i) = 0.d0
+                    l(3,i) = 0.d0
+                    do 320 j = 1, nno
+                        k = 3*nno*(kpg-1)
+                        jj = 3*(j-1)
+                        de = zr(idfde-1+k+jj+1)
+                        dn = zr(idfde-1+k+jj+2)
+                        dk = zr(idfde-1+k+jj+3)
+                        l(1,i) = l(1,i) + de*geom(i,j)
+                        l(2,i) = l(2,i) + dn*geom(i,j)
+                        l(3,i) = l(3,i) + dk*geom(i,j)
+320                 continue
+310             continue
+!
 ! --------- inversion de la matrice l
-            iret = 0
-            det = 0.d0
-            call r8inir(9,0.d0,inv,1)
-            do 11 i=1,3
-              inv(i,i) = 1.d0
- 11         continue
-
-            call mgauss('NCVP',l, inv, 3, 3, 3, det, iret)
-            if (iret.gt.0) then
-              write(*,*)'erreur dans l inversion de la jacobienne'
-            endif
-
-            do 330 i=1,3
-              do 340 j=1,3
-                elgeom(3*(i-1)+j,kpg)=inv(i,j)
-340           continue
-330         continue
-300       continue
-
+                iret = 0
+                det = 0.d0
+                call r8inir(9, 0.d0, inv, 1)
+                do 11 i = 1, 3
+                    inv(i,i) = 1.d0
+ 11             continue
+!
+                call mgauss('NCVP', l, inv, 3, 3,&
+                            3, det, iret)
+                if (iret .gt. 0) then
+                    write(*,*)'erreur dans l inversion de la jacobienne'
+                endif
+!
+                do 330 i = 1, 3
+                    do 340 j = 1, 3
+                        elgeom(3*(i-1)+j,kpg)=inv(i,j)
+340                 continue
+330             continue
+300         continue
+!
         else
-          write(*,*)'seul le cas 3d est programmé actuellement'
-          write(*,*)'pour la loi ENDO_PORO_BETON'
+            write(*,*)'seul le cas 3d est programmé actuellement'
+            write(*,*)'pour la loi ENDO_PORO_BETON'
         endif
-
-      endif
+!
+    endif
 !
 end subroutine

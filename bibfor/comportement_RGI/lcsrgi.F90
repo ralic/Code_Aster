@@ -32,7 +32,7 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/matini.h"
 #include "asterc/r8prem.h"
 #include "asterfort/hydr_xmat.h"
-
+!
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)
@@ -52,7 +52,7 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: dt, d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2, sechp, sechm, sref
     real(kind=8) :: hydrm, hydrp, nam, nap, somme
-    real(kind=8) :: hydras,e1
+    real(kind=8) :: hydras, e1
     aster_logical :: fl3d
 !
     parameter       (nmat=30)
@@ -60,22 +60,29 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 !
-      call rcvarc('f','TEMP','-',fami,kpg,ksp,tm,iret)
-      call rcvarc('f','TEMP','+',fami,kpg,ksp,tp,iret)
-      call rcvarc('f','TEMP','REF',fami,kpg,ksp,tref,iret)
+    call rcvarc('f', 'TEMP', '-', fami, kpg,&
+                ksp, tm, iret)
+    call rcvarc('f', 'TEMP', '+', fami, kpg,&
+                ksp, tp, iret)
+    call rcvarc('f', 'TEMP', 'REF', fami, kpg,&
+                ksp, tref, iret)
 !
 ! ------------------------------------------------
 !       recuperation de l hydratation et du sechage
-         call rcvarc(' ','SECH','+',fami,kpg,ksp,sechp,iret)
+    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+                ksp, sechp, iret)
     if (iret .ne. 0) sechp=0.d0
-         call rcvarc(' ','SECH','-',fami,kpg,ksp,sechm,iret)
+    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+                ksp, sechm, iret)
     if (iret .ne. 0) sechm=0.d0
-         call rcvarc(' ','SECH','REF',fami,kpg,ksp,sref,iret)
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+                ksp, sref, iret)
     if (iret .ne. 0) sref=0.d0
 !
 ! ------------------------------------------------
 !     recuperation de l hydratation debut de pas
-       call rcvarc(' ','HYDR','-',fami,kpg,ksp,hydrm,codret)
+    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+                ksp, hydrm, codret)
     if (codret .ne. 0) then
         hydrm=0.d0
         codret = 0
@@ -83,7 +90,8 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !     RECUPERATION DE L HYDRATATION FIN DE PAS
-       call rcvarc(' ','HYDR','+',fami,kpg,ksp,hydrp,codret)
+    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+                ksp, hydrp, codret)
     if (codret .ne. 0) then
         hydrp=0.d0
         codret = 0
@@ -91,7 +99,8 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !     RECUPERATION DE LA CONCENTRATION EN NA DEBUT DE PAS
-       call rcvarc(' ','X1','-',fami,kpg,ksp,nam,codret)
+    call rcvarc(' ', 'X1', '-', fami, kpg,&
+                ksp, nam, codret)
     if (codret .ne. 0) then
         nam=0.d0
         codret = 0
@@ -101,7 +110,8 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !     RECUPERATION DE LA CONCENTRATION EN NA FIN DE PAS
-       call rcvarc(' ','X1','+',fami,kpg,ksp,nap,codret)
+    call rcvarc(' ', 'X1', '+', fami, kpg,&
+                ksp, nap, codret)
     if (codret .ne. 0) then
         nap=0.d0
         codret = 0
@@ -111,8 +121,9 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
 !
     nomres(1)='E'
     nomres(2)='NU'
-       call rcvalb(fami,kpg,ksp,'-',imate,' ', 'ELAS', 0,' ', [0.d0],&
-                   2, nomres, valres, retour, 2)
+    call rcvalb(fami, kpg, ksp, '-', imate,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                2, nomres, valres, retour, 2)
 !
 !        MODULES INSTANTANES ISOTROPES
     xmat(1) = valres(1)
@@ -147,21 +158,22 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
     rbid = 0.d0
     rac2 = sqrt(2.d0)
 !
-       call rcvalb(fami,kpg,ksp,'-',imate,' ', 'PORO_BETON', 0,' ',&
-                  [rbid],23, nomres, valres, retour, 2)
+    call rcvalb(fami, kpg, ksp, '-', imate,&
+                ' ', 'PORO_BETON', 0, ' ', [rbid],&
+                23, nomres, valres, retour, 2)
 !
     do 10 i = 1, 5
         xmat(4+i) = valres(i)
-10  end do
+ 10 end do
 !
     xmat(10) = sechp
     xmat(11) = hydrp
     xmat(12) = valres(6)
     xmat(13) = nap
-
-    do 20 i = 14,30
+!
+    do 20 i = 14, 30
         xmat(i) = valres(i-7)
-20  continue
+ 20 continue
 !
     dt = instap - instam
     if (ndim .eq. 2) then
@@ -174,18 +186,18 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
     somme = 0.d0
     do 30 i = 1, nvari
         somme = somme + abs(vim(i))
-30  continue
-
-    if(somme.lt.r8prem())then
-        do 40 i = 1, 3 
+ 30 continue
+!
+    if (somme .lt. r8prem()) then
+        do 40 i = 1, 3
             vim(i) = sigm(i)
-40      continue
-        do 50 i = 4, nstrs 
+ 40     continue
+        do 50 i = 4, nstrs
             vim(3+i) = sigm(i)/rac2
-50      continue
+ 50     continue
     endif
-
-    vim(7)  = hydrm
+!
+    vim(7) = hydrm
 !
     if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
 !
@@ -197,10 +209,12 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
 !     L'INCREMENT DE DEFORMATION EN ENTREE
         do 60 i = 4, nstrs
             deps(i) = deps(i) * rac2
-60      continue
+ 60     continue
 !
-        call rgilin3d(xmat,nmat,vim,vip,nvari,dt,deps,&
-                     nstrs,sigp,mfr,erreur,tm,tp,fl3d,ifour,istep)
+        call rgilin3d(xmat, nmat, vim, vip, nvari,&
+                      dt, deps, nstrs, sigp, mfr,&
+                      erreur, tm, tp, fl3d, ifour,&
+                      istep)
 !
 !-----MISE AU FORMAT CASTEM --> ASTER DE
 !     L'INCREMENT DE DEFORMATION ET DES
@@ -208,7 +222,7 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
         do 70 i = 4, nstrs
             deps(i) = deps(i) / rac2
             sigp(i) = sigp(i) * rac2
-70      continue
+ 70     continue
 !
     endif
 !
@@ -218,13 +232,14 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
         un = 1.d0
         deux = 2.d0
 !
-         call matini(6,6,zero,D)
+        call matini(6, 6, zero, D)
 !
         e = xmat(1)
         nu = xmat(2)
         hydras=xmat(12)
         erreur = 0
-        call hydr_xmat(e,e1,hydrp,hydras,0.5d0,erreur)
+        call hydr_xmat(e, e1, hydrp, hydras, 0.5d0,&
+                       erreur)
 !
         coef = un/ ((un+nu)* (un-deux*nu))
         coef1 = e1* (un-nu)*coef
@@ -250,8 +265,8 @@ subroutine lcsrgi(fami, kpg, ksp, ndim, imate,&
         do 80 i = 1, nstrs
             do 90 j = 1, nstrs
                 dsidep(i,j) = d(i,j)
-90          continue
-80      continue
+ 90         continue
+ 80     continue
 !
     endif
 !

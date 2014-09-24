@@ -21,9 +21,9 @@ subroutine b3d_gama(x, gama)
 !     approximation de la fonction gamma
 !     par f2 := 1.075*(x/exp(1))^x*sqrt(2)*sqrt(Pi/x)
 !=====================================================================
-        implicit none
-        real(kind=8) :: x
-        real(kind=8) :: gama,t1,t4,t5,t9
+    implicit none
+    real(kind=8) :: x
+    real(kind=8) :: gama, t1, t4, t5, t9
     t1 = exp(0.1d1)
     t4 = (x / t1) ** x
     t5 = sqrt(0.2d1)

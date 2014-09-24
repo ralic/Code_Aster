@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,8 +15,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine dp_3d(xj2d,xi1,cohe1,delta1,beta1,h1,cohemin,&
-       fdp1,cohe2,delta2,beta2,h2)
+    subroutine dp_3d(xj2d, xi1, cohe1, delta1, beta1,&
+                     h1, cohemin, fdp1, cohe2, delta2,&
+                     beta2, h2)
         real(kind=8) :: xj2d
         real(kind=8) :: xi1
         real(kind=8) :: cohe1

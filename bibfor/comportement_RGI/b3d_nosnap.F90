@@ -28,22 +28,22 @@ subroutine b3d_nosnap(istep, fr, rtref, dpic, gf,&
 !     pour assurer le non snp back en traction et la condition proba loc
 !=====================================================================
     implicit none
-        integer :: istep
-        real(kind=8) :: fr
-        real(kind=8) :: rtref
-        real(kind=8) :: dpic
-        real(kind=8) :: gf
-        real(kind=8) :: e
-        real(kind=8) :: beta
-        real(kind=8) :: gama
-        real(kind=8) :: li
-        real(kind=8) :: vref
-        real(kind=8) :: xkweib
-        real(kind=8) :: veq
-        real(kind=8) :: rteff
-        real(kind=8) :: errmesh
-        real(kind=8) :: coeff3
-        real(kind=8) :: coefft,gf2,xgf,rtmeca,xlimax,t17,t10,gf1,rtproba,xwb
+    integer :: istep
+    real(kind=8) :: fr
+    real(kind=8) :: rtref
+    real(kind=8) :: dpic
+    real(kind=8) :: gf
+    real(kind=8) :: e
+    real(kind=8) :: beta
+    real(kind=8) :: gama
+    real(kind=8) :: li
+    real(kind=8) :: vref
+    real(kind=8) :: xkweib
+    real(kind=8) :: veq
+    real(kind=8) :: rteff
+    real(kind=8) :: errmesh
+    real(kind=8) :: coeff3
+    real(kind=8) :: coefft, gf2, xgf, rtmeca, xlimax, t17, t10, gf1, rtproba, xwb
     if (istep .ne. 0) then
 !       methode WL2 : effet d echelle probabiliste
 !       resistance probabiliste maxi
@@ -53,50 +53,49 @@ subroutine b3d_nosnap(istep, fr, rtref, dpic, gf,&
             print*,'donnee incoherente dans b3d_nosnap'
             print*,'V equivalent ne peut etre < ou = a 0'
             read*
-            end if
+        end if
 !       en local veq=vref et coefft=1 -> Rtproba=Rtref
 !       coefft modifie l energie de fissuration egalement cf ci dessous
-            rtproba=(rtref*coefft)*(vref/veq)**(xwb)
+        rtproba=(rtref*coefft)*(vref/veq)**(xwb)
 !
 !       modification  probabiliste l energie de fissuration pour
 !       conserver la la fragilite local
 !       en calcul local coeff3 sera egal a 1 et l energie sera conservee
-            coeff3=(rtproba/rtref)**2
+        coeff3=(rtproba/rtref)**2
 !
 !       print*, 'modif probabiliste de Rt',rtproba/rtref, ' de Gf',coeff
 !       si on veut gft independant de la taille de la zone chargéee il
-            gf1=gf*coeff3
-        else
+        gf1=gf*coeff3
+    else
 !       calcul deterministe avec priorite sur rt sur les grand elements
-            rtproba=rtref
-            coeff3=1.d0
-            gf1=gf
-            end if
+        rtproba=rtref
+        coeff3=1.d0
+        gf1=gf
+    end if
 !
 !     condition mecanique pour ne pas avoir de snap back dans les gros e
-            t10 = gama * fr
+    t10 = gama * fr
 !     t17 = rtref ** 2
 !     on prend en compte la modif probabiliste de rt ds la condition de
-            t17 = rtproba ** 2
+    t17 = rtproba ** 2
 !     taille maximale de l element pour conserver rt
-            xlimax = -0.6d1 * (-0.1d1 + dpic) * gf1* e * fr / (fr + 0.2d1 * beta + 0.2d1 * gama -&
-                     & 0.4d1 * fr * beta - 0.2d1 * gama * beta + 0.4d1 * t10 * beta - 0.2d1 + 0.2&
-                     &d1 * t10) / t17
+    xlimax = -0.6d1 * (-0.1d1 + dpic) * gf1* e * fr / (fr + 0.2d1 * beta + 0.2d1 * gama - 0.4d1 *&
+             & fr * beta - 0.2d1 * gama * beta + 0.4d1 * t10 * beta - 0.2d1 + 0.2d1 * t10) / t17
 !     resistance maximale pour conserver li et gf
-            rtmeca=sqrt(xlimax*t17/li)
+    rtmeca=sqrt(xlimax*t17/li)
 !     multiplicateur de l energie de fissuration mini pour conserver rt
 !     si les mailles sont trop grandes
-            xgf=max(li/xlimax,1.d0)
+    xgf=max(li/xlimax,1.d0)
 !
 !     rt et gf a adopter avec priorite a rt
-            rteff=rtproba
+    rteff=rtproba
 !     print*,rteff,li,veq
 !     modification eventuelle de gf pour ne pas avoir de snap back local
-            gf2=gf1*xgf
-            coeff3=gf2/gf
+    gf2=gf1*xgf
+    coeff3=gf2/gf
 !
 !     erreur relative sur gf induite par les mailles trop grandes
-            errmesh=abs(gf2-gf1)/gf1
+    errmesh=abs(gf2-gf1)/gf1
 !
 !      print*,'li',li,'rt ref',rtref
 !      print*,'limax',xlimax

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,12 +15,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine activite_3d(gam1,gam2,temp,casol,nasol,ohsol)
-      real(kind=8) :: gam1
-      real(kind=8) :: gam2
-      real(kind=8) :: temp
-      real(kind=8) :: casol
-      real(kind=8) :: nasol
-      real(kind=8) :: ohsol
+    subroutine activite_3d(gam1, gam2, temp, casol, nasol,&
+                           ohsol)
+        real(kind=8) :: gam1
+        real(kind=8) :: gam2
+        real(kind=8) :: temp
+        real(kind=8) :: casol
+        real(kind=8) :: nasol
+        real(kind=8) :: ohsol
     end subroutine activite_3d
 end interface 

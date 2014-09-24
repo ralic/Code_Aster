@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,9 +15,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine xid_3d(vxid,dalpha,ar)
-      real(kind=8) :: vxid
-      real(kind=8) :: dalpha
-      real(kind=8) :: ar
+    subroutine xid_3d(vxid, dalpha, ar)
+        real(kind=8) :: vxid
+        real(kind=8) :: dalpha
+        real(kind=8) :: ar
     end subroutine xid_3d
 end interface 

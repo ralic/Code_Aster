@@ -46,29 +46,37 @@ subroutine lc0065(fami, kpg, ksp, ndim, imate,&
     if (compor(1) .eq. 'KIT_DDI') then
 ! - si module de fluage associe au module d'endommagement
         if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-
 !
-          call lcsflu(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
-              instap,epsm,deps,sigm,vim,option,angmas,sigp,vip,&
-              tampon,typmod,icomp,nvi,dsidep,codret)
-
 !
-          call lcsend(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
-              instap,epsm,deps,sigm,vim,option,angmas,sigp,vip,&
-              tampon,typmod,icomp,nvi,dsidep,codret)
-
+            call lcsflu(fami, kpg, ksp, ndim, imate,&
+                        compor, crit, instam, instap, epsm,&
+                        deps, sigm, vim, option, angmas,&
+                        sigp, vip, tampon, typmod, icomp,&
+                        nvi, dsidep, codret)
+!
+!
+            call lcsend(fami, kpg, ksp, ndim, imate,&
+                        compor, crit, instam, instap, epsm,&
+                        deps, sigm, vim, option, angmas,&
+                        sigp, vip, tampon, typmod, icomp,&
+                        nvi, dsidep, codret)
+!
 !
         else if (option(1:9).eq.'RIGI_MECA') then
-          call lcsflu(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
-              instap,epsm,deps,sigm,vim,option,angmas,sigp,vip,&
-              tampon,typmod,icomp,nvi,dsidep,codret)
+            call lcsflu(fami, kpg, ksp, ndim, imate,&
+                        compor, crit, instam, instap, epsm,&
+                        deps, sigm, vim, option, angmas,&
+                        sigp, vip, tampon, typmod, icomp,&
+                        nvi, dsidep, codret)
 !
         endif
     else
 ! - si module de fluage seul
-        call lcsflu(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
-                  instap,epsm,deps,sigm,vim,option,angmas,sigp,vip,&
-                 tampon,typmod,icomp,nvi,dsidep,codret)
+        call lcsflu(fami, kpg, ksp, ndim, imate,&
+                    compor, crit, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, tampon, typmod, icomp,&
+                    nvi, dsidep, codret)
 !
     endif
 !

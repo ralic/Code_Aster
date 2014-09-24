@@ -1,4 +1,4 @@
-subroutine vsf_3d(khi,dsf,sf,sfeq,csh)
+subroutine vsf_3d(khi, dsf, sf, sfeq, csh)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +21,11 @@ subroutine vsf_3d(khi,dsf,sf,sfeq,csh)
 !      provient de rsi_3d : 
 !     calcul de la vitesse de fixation du sulfate dans les csh
 !=====================================================================
-        implicit none
-      real(kind=8) :: khi
-      real(kind=8) ::dsf
-      real(kind=8) ::sf
-      real(kind=8) ::sfeq
-      real(kind=8) ::csh
-      dsf=khi*(dlog10(max(sfeq,1d-6))-dlog10(sf))  
+    implicit none
+    real(kind=8) :: khi
+    real(kind=8) :: dsf
+    real(kind=8) :: sf
+    real(kind=8) :: sfeq
+    real(kind=8) :: csh
+    dsf=khi*(dlog10(max(sfeq,1d-6))-dlog10(sf))  
 end subroutine

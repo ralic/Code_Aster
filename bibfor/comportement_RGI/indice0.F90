@@ -25,17 +25,17 @@ subroutine indice0(i, k, l)
     if (i .le. 3) then
         k=i
         l=i
-        end if
-        if (i .eq. 4) then
-            k=1
-            l=2
-            end if
-            if (i .eq. 5) then
-                k=1
-                l=3
-                end if
-                if (i .eq. 6) then
-                    k=2
-                    l=3
-                    end if
+    end if
+    if (i .eq. 4) then
+        k=1
+        l=2
+    end if
+    if (i .eq. 5) then
+        k=1
+        l=3
+    end if
+    if (i .eq. 6) then
+        k=2
+        l=3
+    end if
 end subroutine

@@ -56,23 +56,23 @@ subroutine dmin_3d(d03, df3)
 !       print*,iminif,imoyf,imaxif,Df3(iminif),df3(imoyf),df3(imaxif)
 !       read*
         df3(iminif)=d03(imini0)
-        end if
-        if (df3(imoyf) .lt. d03(imoy0)) then
+    end if
+    if (df3(imoyf) .lt. d03(imoy0)) then
 !       print*,'dD>0 actif ds b3d_util dmin_3D pour dmoy'
 !       print*,df3(imoyf),d03(imoy0),df3(imoyf)-d03(imoy0)
 !       print*,imini0,imoy0,imaxi0,d03(imini0),d03(imoy0),d03(imaxi0)
 !       print*,iminif,imoyf,imaxif,Df3(iminif),df3(imoyf),df3(imaxif)
 !       read*
-            df3(imoyf)=d03(imoy0)
-            end if
-            if (df3(imaxif) .lt. d03(imaxi0)) then
+        df3(imoyf)=d03(imoy0)
+    end if
+    if (df3(imaxif) .lt. d03(imaxi0)) then
 !       print*,'dD>0 actif ds b3d_util dmin_3D pour dmax'
 !       print*,df3(imaxif),d03(imaxi0),df3(imaxif)-d03(imaxi0)
 !       print*,imini0,imoy0,imaxi0,d03(imini0),d03(imoy0),d03(imaxi0)
 !       print*,iminif,imoyf,imaxif,Df3(iminif),df3(imoyf),df3(imaxif)
 !       read*
-                df3(imaxif)=d03(imaxi0)
-                end if
+        df3(imaxif)=d03(imaxi0)
+    end if
 !      print*,df3(1),df3(2),df3(3)
 !      read*
 end subroutine

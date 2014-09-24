@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,28 +15,29 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine csheff_3d(dcash,dcsheff,dalpha,sic,csh,alsol,&
-     dalsol,csheff,xidtot,xidtot1,nasol,vnasol,dt,alpha,cash,&
-     alc,sc,id0,id1,id2)
-      real(kind=8) :: dcash
-      real(kind=8) ::dcsheff
-      real(kind=8) ::dalpha
-      real(kind=8) ::sic
-      real(kind=8) ::csh
-      real(kind=8) ::alsol
-      real(kind=8) ::dalsol
-      real(kind=8) ::csheff
-      real(kind=8) ::xidtot
-      real(kind=8) ::xidtot1
-      real(kind=8) ::vnasol
-      real(kind=8) ::nasol
-      real(kind=8) ::dt
-      real(kind=8) ::alpha
-      real(kind=8) ::cash
-      real(kind=8) ::alc
-      real(kind=8) ::sc
-      real(kind=8) ::id0
-      real(kind=8) ::id1
-      real(kind=8) ::id2
+    subroutine csheff_3d(dcash, dcsheff, dalpha, sic, csh,&
+                         alsol, dalsol, csheff, xidtot, xidtot1,&
+                         nasol, vnasol, dt, alpha, cash,&
+                         alc, sc, id0, id1, id2)
+        real(kind=8) :: dcash
+        real(kind=8) :: dcsheff
+        real(kind=8) :: dalpha
+        real(kind=8) :: sic
+        real(kind=8) :: csh
+        real(kind=8) :: alsol
+        real(kind=8) :: dalsol
+        real(kind=8) :: csheff
+        real(kind=8) :: xidtot
+        real(kind=8) :: xidtot1
+        real(kind=8) :: vnasol
+        real(kind=8) :: nasol
+        real(kind=8) :: dt
+        real(kind=8) :: alpha
+        real(kind=8) :: cash
+        real(kind=8) :: alc
+        real(kind=8) :: sc
+        real(kind=8) :: id0
+        real(kind=8) :: id1
+        real(kind=8) :: id2
     end subroutine csheff_3d
 end interface 

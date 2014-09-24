@@ -24,11 +24,11 @@ subroutine x33x6(x33, x6)
     real(kind=8) :: x6(6), x33(3, 3)
     integer :: i, k, l
     do i = 1, 6
-       call indice0(i,k,l)
+        call indice0(i, k, l)
         if (i .le. 3) then
             x6(i)=x33(k,l)
         else
             x6(i)=0.5*(x33(k,l)+x33(l,k))
-            end if
-            end do
+        end if
+    end do
 end subroutine

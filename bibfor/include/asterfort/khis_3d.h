@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,16 +15,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine khis_3d(tau1,khi,xid,alpha,ar,asr,dth0,coth,&
-     xidtot)
-      real(kind=8) :: tau1
-      real(kind=8) :: khi
-      real(kind=8) :: xid
-      real(kind=8) :: alpha
-      real(kind=8) :: ar
-      real(kind=8) :: asr
-      real(kind=8) :: dth0
-      real(kind=8) :: coth
-      real(kind=8) :: xidtot
+    subroutine khis_3d(tau1, khi, xid, alpha, ar,&
+                       asr, dth0, coth, xidtot)
+        real(kind=8) :: tau1
+        real(kind=8) :: khi
+        real(kind=8) :: xid
+        real(kind=8) :: alpha
+        real(kind=8) :: ar
+        real(kind=8) :: asr
+        real(kind=8) :: dth0
+        real(kind=8) :: coth
+        real(kind=8) :: xidtot
     end subroutine khis_3d
 end interface 

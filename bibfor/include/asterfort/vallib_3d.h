@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,14 +15,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine vallib_3d(khi,dallib,alf,alfeq,dafm,casol,nasol,alsol)
-      real(kind=8) :: khi
-      real(kind=8) ::dallib
-      real(kind=8) ::alf
-      real(kind=8) ::alfeq
-      real(kind=8) ::dafm
-      real(kind=8) ::alsol
-      real(kind=8) ::casol
-      real(kind=8) ::nasol
+    subroutine vallib_3d(khi, dallib, alf, alfeq, dafm,&
+                         casol, nasol, alsol)
+        real(kind=8) :: khi
+        real(kind=8) :: dallib
+        real(kind=8) :: alf
+        real(kind=8) :: alfeq
+        real(kind=8) :: dafm
+        real(kind=8) :: alsol
+        real(kind=8) :: casol
+        real(kind=8) :: nasol
     end subroutine vallib_3d
 end interface 

@@ -91,5 +91,5 @@ subroutine b3d_stock_tail(xmat, nmatt, ifour, mfr1, nmat0,&
 !      lors des calculs suivants (attention si changement de maillage en
 !      cours de calcul (avec proj des vari alors remettre a zero cette
 !      variable pour forcer un recalcul)
-        end if
+    end if
 end subroutine

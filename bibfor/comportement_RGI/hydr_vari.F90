@@ -26,7 +26,7 @@ subroutine hydr_vari(vari0, vari1, hydra0, hydra1, hydras,&
     real(kind=8) :: vari0, vari1, hydra0, hydra1, hydras
     integer :: erreur
 !     varibles locales
-    real(kind=8) ::  yymin
+    real(kind=8) :: yymin
     parameter (yymin=0.001d0)
 !      print*,'hdratation actuelle:',hydra1
 !      print*,'hydratation precedente:',hydra0
@@ -44,7 +44,7 @@ subroutine hydr_vari(vari0, vari1, hydra0, hydra1, hydras,&
                 vari1=0.d0
             else
                 vari1=vari0
-                end if
-                end if
-                end if
+            end if
+        end if
+    end if
 end subroutine

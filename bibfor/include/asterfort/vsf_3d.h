@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,11 +15,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine vsf_3d(khi,dsf,sf,sfeq,csh)
-      real(kind=8) :: khi
-      real(kind=8) ::dsf
-      real(kind=8) ::sf
-      real(kind=8) ::sfeq
-      real(kind=8) ::csh
+    subroutine vsf_3d(khi, dsf, sf, sfeq, csh)
+        real(kind=8) :: khi
+        real(kind=8) :: dsf
+        real(kind=8) :: sf
+        real(kind=8) :: sfeq
+        real(kind=8) :: csh
     end subroutine vsf_3d
 end interface 

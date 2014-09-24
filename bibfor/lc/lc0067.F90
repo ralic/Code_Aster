@@ -39,10 +39,12 @@ subroutine lc0067(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-
 !
-      call lcsrgi(fami,kpg,ksp,ndim,imate,compor,crit,instam,&
-                   instap,epsm,deps,sigm,vim,option,angmas,sigp,vip,&
-                   tampon,typmod,icomp,nvi,dsidep,codret)
+!
+    call lcsrgi(fami, kpg, ksp, ndim, imate,&
+                compor, crit, instam, instap, epsm,&
+                deps, sigm, vim, option, angmas,&
+                sigp, vip, tampon, typmod, icomp,&
+                nvi, dsidep, codret)
 !
 end subroutine

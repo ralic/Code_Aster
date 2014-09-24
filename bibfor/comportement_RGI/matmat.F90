@@ -26,8 +26,8 @@ subroutine matmat(a, b, nl, nc1, nc2,&
     integer :: nc1
     integer :: nl
     real(kind=8) :: a(nl, *)
-    real(kind=8) :: b(nc1, *),xx
-    integer :: nc2,i,j,k
+    real(kind=8) :: b(nc1, *), xx
+    integer :: nc2, i, j, k
     real(kind=8) :: c(nl, *)
     do i = 1, nl
         do j = 1, nc2

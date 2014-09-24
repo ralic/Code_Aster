@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,15 +15,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine vafm_3d(khi,casol,alsol,ssol,ohsol,kafm,gam1,gam2,dafm)
-      real(kind=8) :: khi
-      real(kind=8) ::casol
-      real(kind=8) ::alsol
-      real(kind=8) ::ssol
-      real(kind=8) ::ohsol
-      real(kind=8) ::kafm
-      real(kind=8) ::gam1
-      real(kind=8) ::gam2
-      real(kind=8) :: dafm
+    subroutine vafm_3d(khi, casol, alsol, ssol, ohsol,&
+                       kafm, gam1, gam2, dafm)
+        real(kind=8) :: khi
+        real(kind=8) :: casol
+        real(kind=8) :: alsol
+        real(kind=8) :: ssol
+        real(kind=8) :: ohsol
+        real(kind=8) :: kafm
+        real(kind=8) :: gam1
+        real(kind=8) :: gam2
+        real(kind=8) :: dafm
     end subroutine vafm_3d
 end interface 

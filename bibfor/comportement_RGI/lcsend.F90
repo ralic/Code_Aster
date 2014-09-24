@@ -35,7 +35,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/endo3d.h"
 #include "asterfort/matini.h"
 !
-
+!
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)
@@ -45,15 +45,15 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: vim(*), vip(*), tm, tp, tref
     real(kind=8) :: dsidep(6, 6)
     character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*),elem,hexa8
+    character(len=8) :: typmod(*), elem, hexa8
     character(len=*) :: fami
 !
 ! DECLARATIONS LOCALES
     character(len=8) :: nomres(31), nomflu(26)
     integer :: nmat, nvari, nstrs, mfr, erreur, i, j
     integer :: retour(31), ifour, istep
-    integer :: nvcom, nvflu, nvendo, nvtail,iadzi, iazk24,ind
-    integer :: nmelas, nmhydr, nmflu, nmendo, nmtail,nbno
+    integer :: nvcom, nvflu, nvendo, nvtail, iadzi, iazk24, ind
+    integer :: nmelas, nmhydr, nmflu, nmendo, nmtail, nbno
     real(kind=8) :: valres(31), xmat(56), rbid, valflu(26)
     real(kind=8) :: dt, d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2
@@ -70,14 +70,14 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
     ind=iazk24+3-1+nbno+3
     elem=zk24(ind)(1:8)
     hexa8="HEXA8"
-
-    if (elem.ne.hexa8) call utmess('A', 'COMPOR1_89')
-
+!
+    if (elem .ne. hexa8) call utmess('A', 'COMPOR1_89')
+!
 ! -----------------------------------
 ! --- TRAITEMENT COMMUN DES SOURCES
 ! -----------------------------------
 !
-
+!
     dt = instap - instam
     if (ndim .eq. 2) then
         nstrs = 4
@@ -87,42 +87,51 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 !
-      call rcvarc('f','TEMP','-',fami,kpg,ksp,tm,iret)
-      call rcvarc('f','TEMP','+',fami,kpg,ksp,tp,iret)
-      call rcvarc('f','TEMP','REF',fami,kpg,ksp,tref,iret)
-
+    call rcvarc('f', 'TEMP', '-', fami, kpg,&
+                ksp, tm, iret)
+    call rcvarc('f', 'TEMP', '+', fami, kpg,&
+                ksp, tp, iret)
+    call rcvarc('f', 'TEMP', 'REF', fami, kpg,&
+                ksp, tref, iret)
+!
 !
 ! ------------------------------------------------
 !     RECUPERATION DE L HYDRATATION DEBUT DE PAS
-      call rcvarc(' ','HYDR','-',fami,kpg,ksp,hydrm,codret)
+    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+                ksp, hydrm, codret)
     if (codret .ne. 0) then
         hydrm=0.d0
         codret = 0
     endif
-
+!
 !
 ! ------------------------------------------------
 !     recuperation de l hydratation fin de pas
-      call rcvarc(' ','HYDR','+',fami,kpg,ksp,hydrp,codret)
+    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+                ksp, hydrp, codret)
     if (codret .ne. 0) then
         hydrp=0.d0
         codret = 0
     endif
-
+!
 !
 !      WRITE(6,*)'HYDR OK = ',HYDRM,HYDRP
 ! ------------------------------------------------
 !     recuperation du sechage
-      call rcvarc(' ','SECH','+',fami,kpg,ksp,sechp,iret)
+    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+                ksp, sechp, iret)
     if (iret .ne. 0) sechp=0.d0
-      call rcvarc(' ','SECH','-',fami,kpg,ksp,sechm,iret)
+    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+                ksp, sechm, iret)
     if (iret .ne. 0) sechm=0.d0
-     call rcvarc(' ','SECH','REF',fami,kpg,ksp,sref,iret)
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+                ksp, sref, iret)
     if (iret .ne. 0) sref=0.d0
 !
 ! -----------------------------------------------
 !     RECUPERATION DU VOLUME DE GEL DEBUT DE PAS
-     call rcvarc(' ','X1','-',fami,kpg,ksp,vgm,codret)
+    call rcvarc(' ', 'X1', '-', fami, kpg,&
+                ksp, vgm, codret)
     if (codret .ne. 0) then
         vgm=0.d0
         codret = 0
@@ -130,7 +139,8 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !     recuperation du volume de gel fin de pas
-     call rcvarc(' ','X1','+',fami,kpg,ksp,vgp,codret)
+    call rcvarc(' ', 'X1', '+', fami, kpg,&
+                ksp, vgp, codret)
     if (codret .ne. 0) then
         vgp=0.d0
         codret = 0
@@ -141,8 +151,9 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
     nomres(1)='E'
     nomres(2)='NU'
     nomres(3)='ALPHA'
-      call rcvalb(fami,kpg,ksp,'-',imate,' ', 'ELAS', 0,' ', [0.d0],&
-                  2, nomres, valres, retour, 2)
+    call rcvalb(fami, kpg, ksp, '-', imate,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                2, nomres, valres, retour, 2)
 !
 !        MODULES INSTANTANES ISOTROPES
     xmat(1) = valres(1)
@@ -199,8 +210,9 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         nomflu(25)= 'EKFL'
         nomflu(26)= 'DFMX'
 !
-        call rcvalb(fami,kpg,ksp,'-',imate,' ', 'PORO_BETON', 0&
-                 ,' ',[rbid],26, nomflu, valflu, retour, 2)
+        call rcvalb(fami, kpg, ksp, '-', imate,&
+                    ' ', 'PORO_BETON', 0, ' ', [rbid],&
+                    26, nomflu, valflu, retour, 2)
 !
         if ((hydrp.lt.0) .and. (hydrp.ge.-0.0000001)) hydrp=0.0
         if ((hydrp.gt.1) .and. (hydrp.le.1.000001)) hydrp=1.0
@@ -211,12 +223,12 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 ! --- ON REMPLIT XMAT DE 6 A 12
         do 10 i = 1, 7
             xmat(5+i) = valflu(i)
-10      continue
+ 10     continue
 !
 ! --- ON REMPLIT XMAT DE 17 A 33
         do 20 i = 1, 17
             xmat(16+i) = valflu(9+i)
-20      continue
+ 20     continue
 !
 ! --- TENEUR EN EAU
 !
@@ -246,16 +258,17 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         nomres(9)= 'KWB'
         nomres(10)= 'COVS'
 !
-       call rcvalb(fami,kpg,ksp,'-',imate,' ', 'PORO_BETON', 0&
-                 ,' ',[rbid],nmendo, nomres, valres, retour, 2)
+        call rcvalb(fami, kpg, ksp, '-', imate,&
+                    ' ', 'PORO_BETON', 0, ' ', [rbid],&
+                    nmendo, nomres, valres, retour, 2)
 !
         do 30 i = 1, nmendo
             xmat(nmelas+nmflu+nmhydr+i) = valres(i)
-30      continue
+ 30     continue
 !
         do 40 i = 1, 9
             xmat(nmelas+nmflu+nmhydr+nmendo+i) = tampon(i)
-40      continue
+ 40     continue
         xmat(nmat-2) = 0.d0
         xmat(nmat-1) = 0.d0
         xmat(nmat) = 0.d0
@@ -297,8 +310,9 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         nomres(30)= 'KWB'
         nomres(31)= 'COVS'
 !
-        call rcvalb(fami,kpg,ksp,'-',imate,' ', 'PORO_BETON', 0&
-                 ,' ',[rbid],31, nomres, valres, retour, 2)
+        call rcvalb(fami, kpg, ksp, '-', imate,&
+                    ' ', 'PORO_BETON', 0, ' ', [rbid],&
+                    31, nomres, valres, retour, 2)
 !
         if ((hydrp.lt.0) .and. (hydrp.ge.-0.0000001)) hydrp=0.0
         if ((hydrp.gt.1) .and. (hydrp.le.1.000001)) hydrp=1.0
@@ -308,12 +322,12 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 ! --- ON REMPLIT XMAT DE 6 A 12
         do 50 i = 1, 7
             xmat(5+i) = valres(i)
-50      continue
+ 50     continue
 !
 ! --- ON REMPLIT XMAT DE 17 A 38
         do 60 i = 1, 22
             xmat(16+i) = valres(9+i)
-60      continue
+ 60     continue
 !
 ! --- TENEUR EN EAU
 !
@@ -333,7 +347,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 !
         do 70 i = 1, 9
             xmat(38+i) = tampon(i)
-70      continue
+ 70     continue
         xmat(48) = 0.d0
         xmat(49) = 0.d0
         xmat(50) = 0.d0
@@ -343,12 +357,12 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         somme = 0.d0
         do 80 i = 1, nvari
             somme = somme + abs(vim(i))
-80      continue
+ 80     continue
 !
         if (somme .lt. r8prem()) then
             do 90 i = 1, nstrs
                 vim(29+i) = sigm(i)
-90          continue
+ 90         continue
         endif
 !
         vim(1) = hydrm
@@ -359,8 +373,9 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 !
 ! --- CALCUL DU RETRAIT DU A LA DILATATION THERMIQUE
         nomres(1)='ALPHA'
-        call rcvalb(fami,kpg,ksp,'+',imate,' ', 'ELAS', 0,' ',&
-                [0.d0], 1, nomres, valres, retour, 2)
+        call rcvalb(fami, kpg, ksp, '+', imate,&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
+                    1, nomres, valres, retour, 2)
 !
         alphap = valres(1)
 !
@@ -382,7 +397,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         else
             write(*,*)'Seul le 3D est developpe actuellement'
             write(*,*)'pour la loi SELLIER_ENDO'
-            call utmess('F','COMPOR1_90')
+            call utmess('F', 'COMPOR1_90')
         endif
 !
         istep = 0
@@ -392,10 +407,12 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         rac2 = sqrt(2.d0)
         do 120 i = 4, nstrs
             depsc(i) = depsc(i) * rac2
-120      continue
+120     continue
 !
-        call endo3d( xmat,nmat,vim,vip,nvari,dt,depsc,&
-                 nstrs,sigp,mfr,erreur,tm,tp,fl3d,ifour,istep)
+        call endo3d(xmat, nmat, vim, vip, nvari,&
+                    dt, depsc, nstrs, sigp, mfr,&
+                    erreur, tm, tp, fl3d, ifour,&
+                    istep)
 !
         vip(29)=1.d0
 !
@@ -404,7 +421,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 !     CONTRAINTES EN SORTIE
         do 130 i = 4, nstrs
             sigp(i) = sigp(i) * rac2
-130      continue
+130     continue
 !
     endif
 !
@@ -414,7 +431,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         un = 1.d0
         deux = 2.d0
 !
-        call matini(6,6,zero,d)
+        call matini(6, 6, zero, d)
 !
         e = xmat(1)
         nu = xmat(2)
@@ -443,8 +460,8 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
         do 140 i = 1, nstrs
             do 150 j = 1, nstrs
                 dsidep(i,j) = d(i,j)
-150          continue
-140      continue
+150         continue
+140     continue
 !
     endif
 end subroutine

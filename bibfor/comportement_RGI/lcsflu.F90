@@ -32,7 +32,7 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 !
-
+!
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)
@@ -62,13 +62,17 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 !
-      call rcvarc('f','TEMP','-',fami,kpg,ksp,tm,iret)
-      call rcvarc('f','TEMP','+',fami,kpg,ksp,tp,iret)
-      call rcvarc('f','TEMP','REF',fami,kpg,ksp,tref,iret)
+    call rcvarc('f', 'TEMP', '-', fami, kpg,&
+                ksp, tm, iret)
+    call rcvarc('f', 'TEMP', '+', fami, kpg,&
+                ksp, tp, iret)
+    call rcvarc('f', 'TEMP', 'REF', fami, kpg,&
+                ksp, tref, iret)
 !
 ! ------------------------------------------------
 !     RECUPERATION DE L HYDRATATION DEBUT DE PAS
-      call rcvarc(' ','HYDR','-',fami,kpg,ksp,hydrm,codret)
+    call rcvarc(' ', 'HYDR', '-', fami, kpg,&
+                ksp, hydrm, codret)
     if (codret .ne. 0) then
         hydrm=0.d0
         codret = 0
@@ -76,7 +80,8 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !     RECUPERATION DE L HYDRATATION FIN DE PAS
-      call rcvarc(' ','HYDR','+',fami,kpg,ksp,hydrp,codret)
+    call rcvarc(' ', 'HYDR', '+', fami, kpg,&
+                ksp, hydrp, codret)
     if (codret .ne. 0) then
         hydrp=0.d0
         codret = 0
@@ -85,17 +90,21 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 !      WRITE(6,*)'HYDR OK = ',HYDRM,HYDRP
 ! ------------------------------------------------
 !     RECUPERATION DU SECHAGE
-      call rcvarc(' ','SECH','+',fami,kpg,ksp,sechp,iret)
+    call rcvarc(' ', 'SECH', '+', fami, kpg,&
+                ksp, sechp, iret)
     if (iret .ne. 0) sechp=0.d0
-      call rcvarc(' ','SECH','-',fami,kpg,ksp,sechm,iret)
+    call rcvarc(' ', 'SECH', '-', fami, kpg,&
+                ksp, sechm, iret)
     if (iret .ne. 0) sechm=0.d0
-     call rcvarc(' ','SECH','REF',fami,kpg,ksp,sref,iret)
+    call rcvarc(' ', 'SECH', 'REF', fami, kpg,&
+                ksp, sref, iret)
     if (iret .ne. 0) sref=0.d0
 !      PRINT*,'SECHP',SECHP
 !      WRITE(6,*)'SECH OK = ',SECHM,SECHP,SREF
 ! -----------------------------------------------
 !     RECUPERATION DU VOLUME DE GEL DEBUT DE PAS
-      call rcvarc(' ','X1','-',fami,kpg,ksp,vgm,codret)
+    call rcvarc(' ', 'X1', '-', fami, kpg,&
+                ksp, vgm, codret)
     if (codret .ne. 0) then
         vgm=0.d0
         codret = 0
@@ -103,7 +112,8 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 !
 ! ------------------------------------------------
 !     RECUPERATION DU VOLUME DE GEL FIN DE PAS
-      call rcvarc(' ','X1','+',fami,kpg,ksp,vgp,codret)
+    call rcvarc(' ', 'X1', '+', fami, kpg,&
+                ksp, vgp, codret)
     if (codret .ne. 0) then
         vgp=0.d0
         codret = 0
@@ -116,10 +126,11 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
     nomres(2)='NU'
     nomres(3)='ALPHA'
 !
-      call rcvalb(fami,kpg,ksp,'-',imate,' ', 'ELAS', 0,' ', [0.d0],&
-                  3, nomres, valres, retour, 2)
-
-
+    call rcvalb(fami, kpg, ksp, '-', imate,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                3, nomres, valres, retour, 2)
+!
+!
 !        MODULES INSTANTANES ISOTROPES
     xmat(1) = valres(1)
     xmat(2) = valres(2)
@@ -128,8 +139,9 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 !      XMAT(4) = 0.D0
 !
 ! --- EVALUATION PARAMETERES MATERIAU ELASTIQUES A T+
-      call rcvalb(fami,kpg,ksp,'+',imate,' ', 'ELAS', 0,' ', [0.d0],&
-                 3, nomres, valres, retour, 2)
+    call rcvalb(fami, kpg, ksp, '+', imate,&
+                ' ', 'ELAS', 0, ' ', [0.d0],&
+                3, nomres, valres, retour, 2)
 !
     alphap = valres(3)
 !
@@ -141,16 +153,16 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
     else
         nstrs = 6
     endif
-
+!
     if ((option(1:9).eq.'RAPH_MECA') .or. (option(1:9).eq.'FULL_MECA')) then
         do 10 i = 1, 3
             depsc(i) = deps(i) - (alphap*(tp-tref)-alpham*(tm-tref))
             epsmc(i) = epsm(i) - alpham*(tm-tref)
-10      end do
+ 10     end do
         do 20 i = 4, nstrs
-            depsc(i) = deps(i) 
-            epsmc(i) = epsm(i) 
-20      continue
+            depsc(i) = deps(i)
+            epsmc(i) = epsm(i)
+ 20     continue
     endif
 !
 ! ------------------------------------------------------------------
@@ -187,9 +199,10 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
     rbid = 0.d0
     rac2 = sqrt(2.d0)
 !
-      call rcvalb(fami,kpg,ksp,'-',imate,' ', 'PORO_BETON', 0,' ',&
-                 [rbid],26, nomres, valres, retour, 2)
-    
+    call rcvalb(fami, kpg, ksp, '-', imate,&
+                ' ', 'PORO_BETON', 0, ' ', [rbid],&
+                26, nomres, valres, retour, 2)
+!
 !
 ! --- AFFECTATION DES VALEURS D'HYDRATATION
     xmat(5) = hydrp
@@ -197,12 +210,12 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 ! --- ON REMPLIT XMAT DE 6 A 12
     do 30 i = 6, 12
         xmat(i) = valres(i-5)
-30  end do
+ 30 end do
 !
 ! --- ON REMPLIT XMAT DE 6 A 12
     do 40 i = 17, 33
         xmat(i) = valres(i-7)
-40  end do
+ 40 end do
 !
 ! --- TENEUR EN EAU
 !
@@ -229,12 +242,12 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
     somme = 0.d0
     do 50 i = 1, nvari
         somme = somme + abs(vim(i))
-50  end do
+ 50 end do
 !
     if (somme .lt. r8prem()) then
         do 60 i = 1, nstrs
             vim(66+i) = sigm(i)
-60      continue
+ 60     continue
     endif
 !
     vim(1) = hydrm
@@ -250,17 +263,18 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
 !     L'INCREMENT DE DEFORMATION EN ENTREE
         do 70 i = 4, nstrs
             depsc(i) = depsc(i) * rac2
-70      continue
+ 70     continue
 !
-        call fluag3d( xmat,nmat,vim,vip,nvari,dt,depsc,&
-                    nstrs,sigp,mfr,erreur,tm,tp)
+        call fluag3d(xmat, nmat, vim, vip, nvari,&
+                     dt, depsc, nstrs, sigp, mfr,&
+                     erreur, tm, tp)
 !
 !-----MISE AU FORMAT CASTEM --> ASTER DE
 !     L'INCREMENT DE DEFORMATION ET DES
 !     CONTRAINTES EN SORTIE
         do 80 i = 4, nstrs
             sigp(i) = sigp(i) * rac2
-80      continue
+ 80     continue
 !
     endif
 !
@@ -270,7 +284,7 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
         un = 1.d0
         deux = 2.d0
 !
-        call matini(6,6,zero,d)
+        call matini(6, 6, zero, d)
 !
         e = xmat(1)
         nu = xmat(2)
@@ -299,8 +313,8 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
         do 90 i = 1, nstrs
             do 100 j = 1, nstrs
                 dsidep(i,j) = d(i,j)
-100          continue
-90      continue
+100         continue
+ 90     continue
 !
     endif
 !

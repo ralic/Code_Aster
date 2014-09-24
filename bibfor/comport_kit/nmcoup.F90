@@ -1,9 +1,9 @@
 subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
                   imat, comp, lcpdb, crit, timed,&
                   timef, neps, epsdt, depst, nsig,&
-                  sigd, vind, opt,angmas, nwkin, wkin,&
-                  sigf, vinf, ndsde, dsde, nwkout,&
-                  wkout, iret)
+                  sigd, vind, opt, angmas, nwkin,&
+                  wkin, sigf, vinf, ndsde, dsde,&
+                  nwkout, wkout, iret)
 ! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: wkin(*), wkout(*)
     real(kind=8) :: epsdt(*), depst(*)
     real(kind=8) :: sigd(6), sigf(6)
-    real(kind=8) :: vind(*), vinf(*),angmas(*)
+    real(kind=8) :: vind(*), vinf(*), angmas(*)
 !
     real(kind=8) :: dsde(*)
     aster_logical :: lcpdb
@@ -177,14 +177,15 @@ subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
 !
     else if ((cmp1(1:15).eq.'FLUA_PORO_BETON').or.&
              (cmp2(1:15).eq.'FLUA_PORO_BETON')) then
-        if ((cmp2(1:15) .eq. 'ENDO_PORO_BETON').or.&
-           (cmp1(1:15) .eq. 'ENDO_PORO_BETON') ) then
-     
-            call lc0065 (fami,kpg,ksp,ndim,imat,comp,crit,timed,&
-                    timef,epsdt,depst,sigd,vind,opt,angmas,sigf,vinf,&
-                    wkin,typmod,1,155,dsde,iret )
+        if ((cmp2(1:15) .eq. 'ENDO_PORO_BETON') .or. (cmp1(1:15) .eq. 'ENDO_PORO_BETON')) then
+!
+            call lc0065(fami, kpg, ksp, ndim, imat,&
+                        comp, crit, timed, timef, epsdt,&
+                        depst, sigd, vind, opt, angmas,&
+                        sigf, vinf, wkin, typmod, 1,&
+                        155, dsde, iret)
         else
-           call utmess('F', 'COMPOR3_7')
+            call utmess('F', 'COMPOR3_7')
         endif
     else
         call utmess('F', 'COMPOR3_6', nk=1, valk=cmp1)

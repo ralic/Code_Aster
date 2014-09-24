@@ -25,13 +25,13 @@ subroutine indice1(i, k, l)
     if (i .eq. 1) then
         k=2
         l=3
-        end if
-        if (i .eq. 2) then
-            k=1
-            l=3
-            end if
-            if (i .eq. 3) then
-                k=1
-                l=2
-                end if
+    end if
+    if (i .eq. 2) then
+        k=1
+        l=3
+    end if
+    if (i .eq. 3) then
+        k=1
+        l=2
+    end if
 end subroutine

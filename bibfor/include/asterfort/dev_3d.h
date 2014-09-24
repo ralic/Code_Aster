@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +15,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-subroutine dev_3d(sig6,dev6,xi1)
+    subroutine dev_3d(sig6, dev6, xi1)
         real(kind=8) :: sig6(6)
         real(kind=8) :: dev6(6)
         real(kind=8) :: xi1
