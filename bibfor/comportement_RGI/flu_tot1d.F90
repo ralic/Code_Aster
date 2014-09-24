@@ -41,7 +41,7 @@ subroutine flu_tot1d(e0, e1, eta1, eta2, dt,&
         real(kind=8) :: eps11
         real(kind=8) :: deps0
         real(kind=8) :: deps1
-        real(kind=8) :: deps2,t4,t2,t12,t5
+        real(kind=8) :: deps2,t4,t12,t5
 !
 !     calul de la deformation visco elastique en fin de pas
     if (dt .gt. 0.d0) then

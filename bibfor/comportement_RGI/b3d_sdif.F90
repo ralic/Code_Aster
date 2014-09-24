@@ -37,7 +37,7 @@ subroutine b3d_sdif(ss6, young0, rt, epic, erreur,&
         real(kind=8) :: vss33t(3, 3)
         real(kind=8) :: rapp3(3)
     real(kind=8) ::  ss33(3, 3), ss3(3),rt0
-    integer :: i,j,k
+    integer :: i
 !
 !     diagonalisation contraintes seuils actuelles et valeurs
 !     propres par la methode de jacobi

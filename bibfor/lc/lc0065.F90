@@ -31,7 +31,7 @@ subroutine lc0065(fami, kpg, ksp, ndim, imate,&
 !     BUT: LOI DE FLUAGE DE KIT_RGI
 !
 !          RELATION : 'FLUA_PORO_BETON'
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
+    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6)
@@ -42,7 +42,6 @@ subroutine lc0065(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: typmod(*)
     character(len=*) :: fami
 !
-    integer :: i, j
 !
     if (compor(1) .eq. 'KIT_DDI') then
 ! - si module de fluage associe au module d'endommagement

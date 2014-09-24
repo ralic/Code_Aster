@@ -89,7 +89,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
     parameter (nvtail=10)
 !***********************************************************************
 !     declarations locale pour cendo3d
-    real(kind=8) :: x6(6), x33(3, 3), x3(3), vx33(3, 3), xl33(3, 3)
+    real(kind=8) :: x6(6), x33(3, 3), vx33(3, 3), xl33(3, 3)
 !     increments de deformation
     real(kind=8) :: depst6(6)
     real(kind=8) :: dgamd6(6), sigef6(6)
@@ -101,10 +101,10 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     seuil diffus
     real(kind=8) :: ssg6(6)
 !     taille des elements
-    real(kind=8) :: t33(3, 3), n33(3, 3),beta,regl0,fr2,fr10,xtaumin,fminvref
+    real(kind=8) :: t33(3, 3), n33(3, 3),regl0,fr2,fr10,xtaumin,fminvref
     real(kind=8) :: xk00,xmu00,e00,xx1,hydras,rc00,rt00,epc0,ept0,dt80,gft00
     real(kind=8) :: gfc00,wref0,tphi0,xktmp,beta1,gama1,xnu00,hydra1,hydra0
-    real(kind=8) :: sref0,alea0,xkyemp,xs1,coefft,cg0,delta,e0,sref1,rt0,gft0
+    real(kind=8) :: sref0,xs1,coefft,cg0,delta,e0,sref1,rt0,gft0
     real(kind=8) :: rc0,ept00,cnlt1,dpic0,coeff2,epsplg0,xwnsat0, poro0,xwnsat
     real(kind=8) :: delta0,aleas0,xktemp,gfc0,biot00,umbiot00,vw1,vw0
     real(kind=8) :: xwsat,xmsrt0,xmsrt1,sfld,vg0,vp0,taug0,xmg0, eafluage
@@ -112,7 +112,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
     real(kind=8) :: pw0,dpw,epsvpw,bg1,xk0,xmu0,disolocal, aux3,rtw1,gftw1,aux4
     real(kind=8) ::xb,xwb0,coeffgf0,veq1,depsv,xvef,xli,dpict00,rtw2,errmesh
     real(kind=8) ::gftw2,eptw2,rteff,errmesh2,coeffgf2,suw1,sigmax,tref
-    real(kind=8) ::tau0,dsgtgtmp1,tau1,dtaueq,tequ1,xtau2,xtau1,cc2,teta12,xloc
+    real(kind=8) :: tau0,tau1,dtaueq,tequ1,xtau2,xtau1,cc2,teta12,xloc
     real(kind=8) ::sigseuil, dsigtmp0,taueq1,y1sy,tau2,dvfiss0,dpw1,suc0,dc0,dcf,umd0
     real(kind=8) ::dsigtmp1
 !     fin des tabelaux de fluage et hydratation
@@ -125,7 +125,6 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     vecteur propre des tailles des element
     real(kind=8) :: vt33(3, 3)
 !     contraintes a utiliser pour actualiser les seuils
-    real(kind=8) :: siges6(6), sigest3(3), sigesc3(3)
 !     taille dans les directions principales d endommagement
     real(kind=8) :: l3(3)
 !     gestion du seuil de fissuration et de la densite de fissuration
@@ -146,20 +145,16 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     contrainte effective apres endo du coeff de Poisson
     real(kind=8) :: sigep6(6)
 !     contrainte totale non endommagee
-    real(kind=8) :: siget6(6), siget3(3), vsiget33(3, 3), vsiget33t(3, 3)
+    real(kind=8) :: siget6(6), vsiget33(3, 3), vsiget33t(3, 3)
     real(kind=8) :: siget33(3, 3)
-    real(kind=8) :: sigett6(6), sigetc6(6), sigetc3(3), sigett3(3)
 !     contraintes caracteristiques pour l endo diffus
-    real(kind=8) :: siged3(3)
 !     contrainte hydrique apres endo diffus
-    real(kind=8) :: sigwt6(6), sigaw6(6), sigaw33(3, 3)
+    real(kind=8) ::  sigaw33(3, 3)
 !     contraintes hydriques apress att coeff de Poisson
-    real(kind=8) :: sigew6(6), sigew33(3, 3)
+    real(kind=8) ::  sigew33(3, 3)
 !     contrainte effective caracteristique pour le endo localise
-    real(kind=8) :: sigefl6(6), sigefl3(3), vsigefl33(3, 3), vsigefl33t(3, 3)
-    real(kind=8) :: sigeflt6(6), sigeflc6(6), sigeflc3(3), sigeflt3(3)
+    real(kind=8) ::  vsigefl33(3, 3), vsigefl33t(3, 3)
 !     contrainte effective apres attenuation des coeffs de Poisson
-    real(kind=8) :: sigel6(6), sigelt6(6)
 !     seuils de traction pour l endo localise des modules
     real(kind=8) :: ssl6(6)
 !     contrainte plastique dans les fissures localisees
@@ -182,43 +177,38 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     contrainte effective non en do apres att Poisson base fixe
     real(kind=8) :: sigel33(3, 3)
 !     contrainte effective endo localise
-    real(kind=8) :: sigal6(6), sigal33(3, 3)
+    real(kind=8) ::  sigal33(3, 3)
 !     varaiation de volume
     real(kind=8) :: dv0
 !     contraintes dues au gel
-    real(kind=8) :: sigepg6(6), sigapg6(6)
     real(kind=8) :: sigapg33(3, 3)
 !     pression gel apres att coeff de Poisson
     real(kind=8) :: sigepg33(3, 3)
 !     fonction Heaveside pour le risque de localisation
-    real(kind=8) :: hvsd0
 !     contrainte positive localisante
     real(kind=8) :: sigefl33(3, 3)
 !     matrice d endo diffus en base principale d endo diffus
     real(kind=8) :: dd66(6, 6), vdd33(3, 3), vdd33t(3, 3)
 !     part de la contrainte totale due aux pressions
-    real(kind=8) :: sigap6(6), dsw6(6), dsw33(3, 3)
+    real(kind=8) ::  dsw6(6), dsw33(3, 3)
 !     contrainte de refermeture de fissure en zone effective
-    real(kind=8) :: sigaff6(6)
 !     contrainte seuil associee a la resistance residuelle
-    real(kind=8) :: ssr3(3), rapp3(3)
 !     contrainte de gel ds les macro fissures
-    real(kind=8) :: dpg6(6), dpg33(3, 3)
+    real(kind=8) ::  dpg33(3, 3)
 !     deformation plastique dues au gel
     real(kind=8) :: epsplg6(6), epsplfg6(6)
 !     deformation plastique dues a l eau
-    real(kind=8) :: ssw6(6), epsplfw6(6)
+    real(kind=8) :: ssw6(6)
 !     endo diffus final
-    real(kind=8) :: dff3(3), ssd33(3, 3), ssd3(3)
+    real(kind=8) ::  ssd33(3, 3)
 !     passage base prin de plasticite
-    real(kind=8) :: vplg33(3, 3), vplg33t(3, 3), epdg3(3)
+    real(kind=8) :: vplg33(3, 3), vplg33t(3, 3)
 !     passage base prin de plasticite
-    real(kind=8) :: vssw33(3, 3), vssw33t(3, 3), epdw3(3)
+    real(kind=8) :: vssw33(3, 3), vssw33t(3, 3)
 !     endommagements diffus hydriques et de gel
     real(kind=8) :: dw3(3), dg3(3)
 !     Weibull
-    real(kind=8) :: Smaxlocal, aux1, aux2, xproba1
-    real(kind=8) :: veq, Pflocal, xweibull, vref, xwb1
+    real(kind=8) :: veq, xweibull, xwb1
     real(kind=8) :: vref0, vmax0, weib0, coeffGf
 !     deformation visco elastique (kelvin voigt au droit des fissures)
     real(kind=8) :: eve6(6), vve6(6), sve6(6)
@@ -230,8 +220,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     dans les fissures pour le suivi de la contrainte viscoelastique
     aster_logical :: maj0
 !     diagonalisation des contraintes effectives pour le non local
-    real(kind=8) :: sigaf33(3, 3), sigaf3(3), vsigaf33(3, 3)
-    real(kind=8) :: sigafc3(3), sigaft3(3)
+    real(kind=8) :: sigaf33(3, 3), vsigaf33(3, 3)
 !     coeff d amplification maxi temporel
     real(kind=8) :: coefftmax0
 !     tableaux pour stocker les contraintes modifiees par les autocontra
@@ -1372,7 +1361,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
       do i=1,3
        varf(nvar0+21+i)=dfl3(i)
       end do
-20    call  b3d_d66(xnu0,st3,dl66,e0,.false.,.true.)
+      call  b3d_d66(xnu0,st3,dl66,e0,.false.,.true.)
 
 !***************************************************************************
 !     application de l'endommagement localise sur les contraintes effectives
@@ -1391,7 +1380,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     prise en compte des contraintes de refermeture des fissures localisees
 !     les refermetures de fissures ne s appliquent qu' a la partie solide
 !***************************************************************************
-30    do i=1,6
+      do i=1,6
        call hydr_vari(var0(nvar0+24+i),spl6(i),hydra0,hydra1,&
       hydras,erreur)
        call hydr_vari(var0(nvar0+30+i),wfm6(i),hydra0,hydra1,&
@@ -1510,7 +1499,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !!!!!!l evolution de Biot n etant pas implementer on laisse faire le solveur!!!!!
 ! avec son biot constant
       if(mfr.ne.33) then    
-103   do i=1,3
+      do i=1,3
        if (pw1.gt.0.d0) then
         dsw6(i)=-pw1*(dfl3(i)+bw1*(1.d0-dfl3(i)))
        else
@@ -1596,7 +1585,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !        read*
 !     passage des contraintes calculees au code EF
 !     print*,'fin d endo3d'
-100   if(mfr.ne.33) then
+      if(mfr.ne.33) then
 !      formulation non poreuse
        do i=1,nstrs
         sigf(i)=siga6(i)

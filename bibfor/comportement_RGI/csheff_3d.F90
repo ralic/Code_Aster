@@ -44,7 +44,7 @@ subroutine csheff_3d(dcash,dcsheff,dalpha,sic,csh,alsol,&
       real(kind=8) ::id2
       real(kind=8) ::xidtot
       real(kind=8) ::xidtot1
-      real(kind=8) :: frac,frac0
+      real(kind=8) :: frac0
       real(kind=8) ::bsup
       real(kind=8) ::binf
       real(kind=8) :: xid0

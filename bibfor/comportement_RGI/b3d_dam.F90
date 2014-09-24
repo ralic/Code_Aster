@@ -17,9 +17,9 @@ subroutine b3d_dam(s,e,epic,reg,r,nu,dam,e2,fr,beta,dpic)
 ! ======================================================================
 ! person_in_charge: etienne grimal at edf.fr
 !=====================================================================
-!     A.Sellier juin 2009 : maj sam. 28 août 2010 14:13:52 CEST 
+!     A.Sellier juin 2009 : maj sam. 28 août 2010 14:13:52 CEST
 !     calcul de l'endommagement en fonction de la contrainte equivalente
-!     loi de comportement definie par : 
+!     loi de comportement definie par :
 !     - une loi de Weibull jusqu au pic de traction de 0 a epic
 !     - deux polynomes de la forme sigma=a.eps**2+b.eps+ de epic a e2
 !     le changement d equation de polynome a lieu a epic+(e2-epic)/fr
@@ -44,9 +44,9 @@ subroutine b3d_dam(s,e,epic,reg,r,nu,dam,e2,fr,beta,dpic)
         real(kind=8) :: beta
         real(kind=8) :: dpic
 !     declaration locale
-      real(kind=8) :: eps,xm,epslim
-      real(kind=8):: s33(3,3),t2,t5,t8,t9,t10,t11,t13,t15,t17,t20,t28,t4
-      real(kind=8)::t24,t31,t35,t40,t55,sre,sef2,sef,su,slim,t23,t36,t41
+      real(kind=8) :: eps,xm
+      real(kind=8):: t2,t5,t8,t9,t10,t11,t13,t15,t17,t20,t28,t4
+      real(kind=8):: t24,t31,t35,t40,t55,sre,sef2,sef,su,slim,t23,t36,t41
 !     deformation equivalente
       sef2=E*e2
       sef=max(s,0.d0)
@@ -97,7 +97,7 @@ subroutine b3d_dam(s,e,epic,reg,r,nu,dam,e2,fr,beta,dpic)
         else
          if (sef.lt.sef2)then
       t4 = dpic ** 2
-      t8 = R * fr * (-0.1D1 - 0.2D1 * dpic * beta + t4 * beta + 0.2D1 *& 
+      t8 = R * fr * (-0.1D1 - 0.2D1 * dpic * beta + t4 * beta + 0.2D1 *&
      dpic - t4 + beta)
       t9 = sef2 ** 2
       t13 = R ** 2

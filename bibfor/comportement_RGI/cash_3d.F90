@@ -25,7 +25,6 @@ subroutine cash_3d(alf,dcash,khi,csheff,casol,alsol,nasol,cash)
       real(kind=8) :: alf
       real(kind=8) :: dcash
       real(kind=8) :: khi
-      real(kind=8) :: trefcash
       real(kind=8) :: csheff
       real(kind=8) :: casol
       real(kind=8) :: alsol

@@ -44,7 +44,6 @@ subroutine b3d_dc(sigec03,long3,dcf,dc0,e,delta,gf,rc,epic,&
         real(kind=8) :: bw1
         real(kind=8) :: pw1
 !     declarations externes
-      real(kind=8) :: dc3(3),d03(3)
 !     declarations internes
       real(kind=8) ::xj2,rj2,xi1,xc,xlimax,e2
       integer i,k,l

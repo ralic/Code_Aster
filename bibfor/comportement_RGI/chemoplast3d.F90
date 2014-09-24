@@ -61,9 +61,9 @@
       integer:: nmelast,erreur,i,iter1
 !     deformation totale   (rem les depst castem sont des gammas)    
       real(kind=8) :: depst6(6),dsige6(6),sig6(6),dev6(6),dps06(6),dsigp6(6)
-      real(kind=8) :: dps16(6),depspl6(6),dspl6(6),sig26(6),deps16(6)
+      real(kind=8) :: dps16(6),depspl6(6),dspl6(6),deps16(6)
       real(kind=8) :: e0,xnu0,cohe0,delta0,h0,beta0,hydra1,hydra0,hydras,e1,cohe1
-      real(kind=8) :: cohemin1, cohe2,delta1,delta,h1,h2,beta1,beta2,xnu1,epse0
+      real(kind=8) :: cohemin1, cohe2,delta1,h1,h2,beta1,beta2,xnu1,epse0
       real(kind=8) :: epse2,epse1,delta3,beta3,delta2,cohe3,h3,xi1,f0,cohe4,delta4,beta4
       real(kind=8) :: h4,df1,dcde,coeff4,denom4,dlambda,depse,xj2d
 !     elasticite isotrope

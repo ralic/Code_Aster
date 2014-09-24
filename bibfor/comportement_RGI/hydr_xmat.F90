@@ -27,7 +27,7 @@ subroutine hydr_xmat(xmat0, xmat1, hydra1, hydras, n,&
     real(kind=8) :: xmat0, xmat1, hydra1, hydras, n
     integer :: erreur
 !     declaration locale
-    real(kind=8) :: yy, zz, zzmin
+    real(kind=8) :: yy, zzmin
 !     avant le seuil d hydratation on a 1e-5 des cracateristiques
     parameter (zzmin=1.d-5)
 !

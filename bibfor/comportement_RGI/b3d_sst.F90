@@ -29,8 +29,7 @@ subroutine b3d_sst(ss6, istep, vsige33, vsige33t, sigit3)
 
     real(kind=8) :: ss6(6)
     integer :: istep
-    real(kind=8) :: vsige33(3, 3), vsige33t(3, 3), siget3(3), sigec3(3)
-    real(kind=8) :: aleas
+    real(kind=8) :: vsige33(3, 3), vsige33t(3, 3)
 !     variables locales
     real(kind=8) :: ss33(3, 3), ss133(3, 3)
     integer :: i, k, l

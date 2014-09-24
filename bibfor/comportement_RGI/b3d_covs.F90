@@ -27,12 +27,11 @@ subroutine b3d_covs(covs,vsige33,vsige33t,siget3,&
 #include "asterfort/x6x33.h"
 #include "asterfort/b3d_chrep.h"
        integer::i,j
-       real(kind=8)  ::sige6(6),covs,sigi6(6),vsige33(3,3)
+       real(kind=8)  :: sige6(6),covs,sigi6(6),vsige33(3,3)
        real(kind=8)  :: vsige33t(3,3),siget3(3),sigec3(3)
-       
+
        real(kind=8)  :: l66(6,6),lm166(6,6)
-       real(kind=8)  :: sigi3(3),vsigi33(3,3),vsigi33t(3,3)
-       real(kind=8)  ::sigit6(6),sigic6(6),sigic3(3),sigit3(3)
+       real(kind=8)  :: sigit6(6),sigic3(3),sigit3(3)
        real(kind=8)  :: sigi133(3,3),sigi33(3,3),deltas
 
       if (covs.ne.0.) then
@@ -59,8 +58,8 @@ subroutine b3d_covs(covs,vsige33,vsige33t,siget3,&
        end do
 !      on introduit ici les modification eventuelles de la matrice
 !      de localisation des contraintes moyenne sur les inclusions
-!      l66(i,j)=...       
-      
+!      l66(i,j)=...
+
 !      initialisation de la matrice covs*(L-I), (L-I) contient
 !      la variation moyenne de la contrainte au bord de l'inclusion
        do i=1,6
@@ -71,8 +70,8 @@ subroutine b3d_covs(covs,vsige33,vsige33t,siget3,&
           lm166(i,i)=covs*(l66(i,i)-1.d0)
          end if
         end do
-       end do 
-       
+       end do
+
 !      calcul des contraintes totales au bord des inclusions
 
 !      reconstruction du tenseur des contraintes effectives
@@ -83,8 +82,8 @@ subroutine b3d_covs(covs,vsige33,vsige33t,siget3,&
          sige6(6)=0.d0
         end if
        end do
-       
-!      on se place en base fixe ca L est en base fixe      
+
+!      on se place en base fixe ca L est en base fixe
        call x6x33 (sige6,sigi33)
        call b3d_chrep(sigi133,sigi33,vsige33)
        call x33x6(sigi133,sige6)
@@ -94,9 +93,9 @@ subroutine b3d_covs(covs,vsige33,vsige33t,siget3,&
           sigi6(i)=sigi6(i)+lm166(i,j)*sige6(j)
         end do
        end do
-       
-!      passage des contraintes induites dans la base principale 
-!      des contraintes principales 
+
+!      passage des contraintes induites dans la base principale
+!      des contraintes principales
        call x6x33 (sigi6,sigi33)
        call b3d_chrep(sigi133,sigi33,vsige33t)
        call x33x6(sigi133,sigi6)

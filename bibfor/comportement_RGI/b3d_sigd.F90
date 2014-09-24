@@ -62,13 +62,13 @@ subroutine b3d_sigd(bg1, pg1, bw1, pw1, sfld,&
         real(kind=8) :: vssw33t(3, 3)
         real(kind=8) :: ssw6(6)
         real(kind=8) :: dth0
-    real(kind=8) :: sigaf3(3), vsigaf33(3, 3), vsigaf33t(3, 3), sigel6(6)
+    real(kind=8) :: sigaf3(3), vsigaf33(3, 3), vsigaf33t(3, 3)
     real(kind=8) :: sigaft6(6), sigafc6(6), sigafc3(3), sigaft3(3)
 !
 !      variables internes
     real(kind=8) :: sigeg3(3), st3(3), vss33(3, 3), vss33t(3, 3), ddw66(6, 6)
-    real(kind=8) :: ddg66(6, 6), ssw3(3), sw3(3), rapp3(3), sigew3(3)
-    real(kind=8) :: sigwt6(6), sigaw6(6), sigaw33(3, 3), x33(3, 3), sigpg6(6)
+    real(kind=8) :: ddg66(6, 6), sw3(3), rapp3(3), sigew3(3)
+    real(kind=8) ::  sigaw33(3, 3), x33(3, 3), sigpg6(6)
     real(kind=8) :: sigag6(6), x6(6), sigaf33(3, 3), sigag33(3, 3)
     real(kind=8) :: bw2,sigext2,sigext1,smax,sigpw0,sigpg0,sigm1,sigext0
 !

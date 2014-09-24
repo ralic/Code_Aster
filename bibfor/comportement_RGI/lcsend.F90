@@ -55,7 +55,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
     integer :: nvcom, nvflu, nvendo, nvtail,iadzi, iazk24,ind
     integer :: nmelas, nmhydr, nmflu, nmendo, nmtail
     real(kind=8) :: valres(31), xmat(56), rbid, valflu(26)
-    real(kind=8) :: dt, hydra, d(6, 6), e, nu, coef, coef1, coef2, coef3
+    real(kind=8) :: dt, d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2
     real(kind=8) :: hydrm, hydrp, sechp, sechm, sref, vgm, vgp
     real(kind=8) :: alpham, alphap, somme,nbno

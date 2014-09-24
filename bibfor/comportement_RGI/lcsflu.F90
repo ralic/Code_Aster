@@ -50,8 +50,8 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: valres(28), xmat(33), rbid
     integer :: nred, nmat, nvari, nstrs, mfr, erreur, i, j
     integer :: retour(27)
-    real(kind=8) :: dt, hydra, d(6, 6), e, nu, coef, coef1, coef2, coef3
-    real(kind=8) :: zero, un, deux, rac2,valmat
+    real(kind=8) :: dt, d(6, 6), e, nu, coef, coef1, coef2, coef3
+    real(kind=8) :: zero, un, deux, rac2
 !
     real(kind=8) :: hydrm, hydrp, sechp, sechm, sref, vgm, vgp
     real(kind=8) :: alpham, alphap, somme

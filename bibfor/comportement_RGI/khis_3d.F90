@@ -31,7 +31,6 @@ subroutine khis_3d(tau1,khi,xid,alpha,ar,asr,dth0,coth,&
       real(kind=8) :: asr
       real(kind=8) :: dth0
       real(kind=8) :: coth
-      real(kind=8) :: dxidtot
  !     declaration variables locales
       real(kind=8) :: tau0,tau2, c1, c2,id1,id2,idref,beta,nom,tau,xm,xidtot 
       

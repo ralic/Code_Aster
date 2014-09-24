@@ -46,7 +46,7 @@ subroutine fluag3d(xmat, nmat, var0, varf, nvari,&
     real(kind=8) :: teta1, teta2
 !
 !      declaration locales
-    integer :: i, nmat0, nvar1, nbrhyd3d, nbelas3d, nvhydra
+    integer :: i, nmat0, nbrhyd3d, nbelas3d, nvhydra
 !      nombre de parametres communs(idvisc) et nvhydra(idvar4) nbr vari
     parameter(nbrhyd3d=24,nbelas3d=4,nvhydra=29)
 !      nombre de parametre avant le chargement des parametres de fluage
@@ -56,38 +56,34 @@ subroutine fluag3d(xmat, nmat, var0, varf, nvari,&
 !      alpha=rc biax / rc uniax < 0 pour avoir tetac3 <0
     real(kind=8) :: dfmin, alpha
     parameter (dfmin=1.d-3,alpha=0.5d0)
-    real(kind=8) :: depsd6(6), siged6(6), ve0df6(6), e0df6(6), depst6(6), sigef6(6)
-    real(kind=8) :: siga6(6)
+    real(kind=8) :: depsd6(6), siged6(6), e0df6(6), depst6(6), sigef6(6)
 !      variables gerant l evolution de l hydratation
     real(kind=8) :: hydra1, hydra2, hydras
 !      variables gerant la consolidation
-    real(kind=8) :: ve2ve2, epsseq0, epsseq1, epsdeq0, epsdeq1
 !      coeffs de ponderation des deformations cumulees pour la
 !      construction de la variables interne de consolidation
-    real(kind=8) :: thetas0, thetad0, xsomme
+    real(kind=8) ::  xsomme
 !      caracteristiques materiau
-    real(kind=8) :: e0, xnu0, xk0, x2mu0, xk1, hs1, hs2, epcs, sw0, sb0, xx1, xx2
+    real(kind=8) :: e0, xnu0, xk0, x2mu0, xk1, hs1, hs2, xx1, xx2
     real(kind=8) :: Eafluage
 !      coeff d activation thermique
     real(kind=8) :: unsurtr, unsurts, unsurt
-    real(kind=8) :: easurr, cvth1, cpth1, xxx1, xxx2, cvth2, cpth2, cvc12
+    real(kind=8) :: easurr, cvth1, cpth1, xxx1, xxx2, cvth2, cpth2
 !      calcul de la contrainte equivalente
     real(kind=8) :: x33(3, 3), x3(3), v33(3, 3), v33t(3, 3)
-    real(kind=8) :: sigeq1
 !      parametres viscoplastiques
     real(kind=8) :: ssg6(6), epsplg6(6), dg3(3), epsplfg6(6)
 !      gel dans la matrice
     real(kind=8) :: bg1, pg1
 !      contrainte locale pour la fissuration diffuse
-    real(kind=8) :: siged3(3)
 !      variable pour l actualisation des seuils d endo diffus
-    real(kind=8) :: dff3(3), st3(3), vss33(3, 3), vss33t(3, 3), rapp3(3)
+    real(kind=8) ::  vss33(3, 3), vss33t(3, 3)
 !      matrice d endommagement diffus
-    real(kind=8) :: dd66(6, 6), x6(6)
+    real(kind=8) :: dd66(6, 6)
 !      transmission des pressions hydriques
-    real(kind=8) :: sigwt6(6), sigaw6(6), sigaw33(3, 3)
+    real(kind=8) ::  sigaw33(3, 3)
 !      contrainte due au gel
-    real(kind=8) :: sigpg6(6), sigag6(6), sigag33(3, 3)
+    real(kind=8) ::  sigag33(3, 3)
 !      contrainte effectives endommagees
     real(kind=8) :: sigef3(3), vsigef33(3, 3), vsigef33t(3, 3)
     real(kind=8) :: sigeft6(6), sigefc6(6), sigefc3(3), sigeft3(3), sigef33(3, 3)
@@ -97,7 +93,7 @@ subroutine fluag3d(xmat, nmat, var0, varf, nvari,&
 !      direction principale des endo diffus reels
     real(kind=8) :: vplg33(3, 3), vplg33t(3, 3)
 !      endo diffus hydrique
-    real(kind=8) :: dw3(3), ssw6(6), epsplfw6(6), vssw33(3, 3), vssw33t(3, 3)
+    real(kind=8) :: dw3(3), ssw6(6), vssw33(3, 3), vssw33t(3, 3)
 !      parametre de confinement
 !       real*8 deltaDP,alphaS
 !      controle du passage post pic en traction
@@ -117,19 +113,19 @@ subroutine fluag3d(xmat, nmat, var0, varf, nvari,&
     real(kind=8) :: xk00,xmu00,dt80,epsk0,dmax0,rc1,rt1,epc1,ept1,etaw1
     real(kind=8) ::rc1e,cohet1,epsplg0,xwnsat0,xwnsat,poro0,biot00,umbiot00
     real(kind=8) ::biot0,umbiot0,xwsat,vw1,vw0,xmsrt0,xmsrt1,sfld, vg0,vp0,xmg0
-    real(kind=8) ::taug0,beta0,cohec1,x2mu1,hd1,hd2,easurrw,etag1,etag2,xk0i
-    real(kind=8) ::xk1i,x2mu0i,hd1i,hs2iref,unsek0,unsek01,epsk01,cc0m
+    real(kind=8) :: taug0,beta0,cohec1,x2mu1,hd1,hd2,easurrw,etag1,xk0i
+    real(kind=8) :: xk1i,x2mu0i,hd1i,hs2iref,unsek0,unsek01,epsk01
     real(kind=8) ::hs2i,xk0f,xk1f,x2mu1f,hs1f,x2mu1i,hs1i,hd2iref
-    real(kind=8) ::cciom,hd2i,x2muof,hd1f,hs2fref,cohet2,cohec2,e1,rt2
+    real(kind=8) :: hd2i,hd1f,hs2fref,cohet2,cohec2,e1,rt2
     real(kind=8) ::phis0,phid0,phisref1,phidref1,dflu00,dv0,epsvpw
     real(kind=8) ::pw1,bw1,depsv,cci0p,dflu01,cci1p,hs2f,cci0m
     real(kind=8) ::x2mu0f,hd2fref,dflu0,hd2f,vk0,vk1,v2mu0,v2mu1
     real(kind=8) ::vhs1,vhd1,vhs2,vhd2,xx4,phis1,phid1,e0si,e1si
     real(kind=8) ::e2sf,dsigs,e2si,ve1si,ve2si,e0sf,e1sf,ve1sf,ve2sf,dphis1
     real(kind=8) ::e0di,e1di,e2df,ve1df,ve2df,dphid1,siges,dsige,xj2,xi1
-    real(kind=8) ::sigeqc1,dphivo,sigem,phit0,xphit,e2di,ve1di,ve2di,e1df
+    real(kind=8) :: sigeqc1,sigem,phit0,xphit,e2di,ve1di,ve2di,e1df
     real(kind=8) ::dphiv0,phit1,phit2,tauc1,tau3,epsk1,epseq1,depseq
-    real(kind=8) :: xw1,dflu1,ddflu0max,ddfu0,ddflu01,cci2p,dth0,tau4,epsk00
+    real(kind=8) :: xw1,dflu1,ddflu0max,ddflu01,cci2p,dth0,tau4,epsk00
     real(kind=8) ::xw3,epseq0,dcci0p,ddflu0
 !***********************************************************************
 ! Chargement DES PROPRIETES MECANIQUES

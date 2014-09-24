@@ -64,7 +64,7 @@ subroutine b3d_valp33(x33, x3, v33)
 !     on verifie si x33 n est pas deja diagonale ( a epsv*xmax pres)
     xmax=max(abs(x33(1,1)),abs(x33(2,2)),abs(x33(3,3)))
     depsv=epsv*xmax
-    20 if((abs(x33(1,2)).le.depsv).and.&
+       if((abs(x33(1,2)).le.depsv).and.&
      &   (abs(x33(1,3)).le.depsv).and.&
      &   (abs(x33(2,3)).le.depsv))then
     diago=.true.

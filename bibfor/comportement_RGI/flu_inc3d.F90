@@ -63,7 +63,7 @@ subroutine flu_inc3d(e0i, e1i, e2i, ve1i, ve2i,&
         real(kind=8) ::t17,t18,t20,t21,t23,t24,t26,t27,t28,t30,t31
         real(kind=8) ::t32,t34,t36,t37,t39,t40,t42,t44,t45,t47,t48
         real(kind=8) ::t50,t51,t52,t54,t56,t58,t61,t64,t65,t67,t69
-        real(kind=8) ::t70,t71,t74,t77,t78,t79,t91
+        real(kind=8) :: t70,t71,t74,t77,t78,t79
         real(kind=8) ::t82,t83,t84,t86,t87,t90,t105,t108,t113,t134
         real(kind=8) ::t135,t137,t141,t139,t143,t144,t146,t148
         real(kind=8) ::t150,t152,t153,t155,t157,t164,t160,t162,t166
@@ -72,7 +72,6 @@ subroutine flu_inc3d(e0i, e1i, e2i, ve1i, ve2i,&
         real(kind=8) ::t200,t203,t205,t212,t214,t215
         real(kind=8) ::t218,t219,t220,t231,t249
         real(kind=8) ::t169,t89,t88,t81,t46
-    integer :: erreur
     t1 = ve1i * delta
     t2 = delta ** 2
     t3 = vh2 * t2

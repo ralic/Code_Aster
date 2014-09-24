@@ -29,12 +29,12 @@ subroutine lc0066(fami, kpg, ksp, ndim, imate,&
 !     BUT: LOI D'ENDOMMAGEMENT DE KIT_RGI
 !
 !          RELATION : 'ENDO_PORO_BETON'
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
+    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap, tampon(*)
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), sigp(6)
-    real(kind=8) :: vim(*), vip(*), tm, tp, tref
+    real(kind=8) :: vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*)

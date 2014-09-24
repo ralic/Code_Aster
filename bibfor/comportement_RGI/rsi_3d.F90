@@ -45,21 +45,21 @@ subroutine rsi_3d(x0, x1, beton, dt)
 #include "asterfort/activite_3d.h"
 
 
-    real(kind=8) :: phi, nac, alc, sc, sic, tref
+    real(kind=8) :: phi, alc, sc, sic, tref
     real(kind=8) :: alpha, temp, dalpha, sr, alpha0
     real(kind=8) :: nasol, alsol, ssol, casol
-    real(kind=8) :: naf, alf, sf, dallib
-    real(kind=8) :: dalf, dsf, dalsol, dssol, daft, dafm
+    real(kind=8) ::  alf, sf, dallib
+    real(kind=8) ::  dsf, dalsol, dssol, daft, dafm
     real(kind=8) :: aft, afm, csh, kaft, kafm
-    real(kind=8) :: xid, cash, csheff, dtheq, dcash, dcsheff
-    real(kind=8) :: f, fcash, alpal
-    real(kind=8) :: khi, khi0
+    real(kind=8) :: xid, cash, csheff, dcash, dcsheff
+    real(kind=8) :: f, alpal
+    real(kind=8) :: khi
     real(kind=8) :: dtmin, dtcal
     real(kind=8) :: t, dt
     real(kind=8) :: x0(16), x1(16), beton(19)
-    real(kind=8) :: alpha1, tempf, templ, na0, id0, id1, id2
+    real(kind=8) :: alpha1, id0, id1, id2
     integer :: niter, i, nitermax
-    real(kind=8) ::srpal,tau1,temp0,temp1,dth0,coth,nsal0, sr0
+    real(kind=8) :: srpal,tau1,temp0,temp1,dth0,coth, sr0
     real(kind=8) ::sr1,valini,vnasol,dtemp,vsr,dteff,gam1,gam2
     real(kind=8) ::ohsol,ar,ard,vxid,xidtot,alfeq,sfeq
     real(kind=8) ::nasol0,nasol1,asr,xidtot1

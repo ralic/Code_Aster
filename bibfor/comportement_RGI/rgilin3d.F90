@@ -361,7 +361,7 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
 !       print*,'sigf rsilin3d=',sigf(i)
       end do
 !      read*
-20    if (erreur.ne.0) then
+      if (erreur.ne.0) then
        print*,'erreur dans endo3d'
        errb3d=1
       call utmess('F','COMPOR1_90')

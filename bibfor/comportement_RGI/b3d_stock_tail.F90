@@ -34,8 +34,7 @@ subroutine b3d_stock_tail(xmat, nmatt, ifour, mfr1, nmat0,&
     real(kind=8) :: t33(3, 3), n33(3, 3), vt33(3, 3)
     real(kind=8) :: gf, fr, rt, epic, beta1, gama1
 !     declarations locales
-    real(kind=8) :: vpt_connue, xlimax, t3(3)
-    integer :: i
+    real(kind=8) :: vpt_connue, t3(3)
 !     recuperation des matrices de taille t33 et n33 des elements finis
 !      print*,'av tail ds stock tail'
     call b3d_tail(xmat, nmatt, ifour, mfr1, nmat0,&

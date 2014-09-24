@@ -51,7 +51,6 @@ subroutine dtrgi_3d(f,dtmin,dalsol,dssol,daft,dafm,dsf,alsol,ssol&
       real(kind=8) ::vsr
 
       real(kind=8) ::cmin
-      real(kind=8) :: dtcsheff
       real(kind=8) ::dtalsol
       real(kind=8) ::dtssol
       real(kind=8) ::dtaft
