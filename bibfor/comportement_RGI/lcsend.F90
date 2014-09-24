@@ -50,18 +50,16 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 !
 ! DECLARATIONS LOCALES
     character(len=8) :: nomres(31), nomflu(26)
-    integer :: nred, nmat, nvari, nstrs, mfr, erreur, i, j
+    integer :: nmat, nvari, nstrs, mfr, erreur, i, j
     integer :: retour(31), ifour, istep
     integer :: nvcom, nvflu, nvendo, nvtail,iadzi, iazk24,ind
-    integer :: nmelas, nmhydr, nmflu, nmendo, nmtail
+    integer :: nmelas, nmhydr, nmflu, nmendo, nmtail,nbno
     real(kind=8) :: valres(31), xmat(56), rbid, valflu(26)
     real(kind=8) :: dt, d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2
     real(kind=8) :: hydrm, hydrp, sechp, sechm, sref, vgm, vgp
-    real(kind=8) :: alpham, alphap, somme,nbno
+    real(kind=8) :: alpham, alphap, somme
     aster_logical :: fl3d
-! ATTENTION NRED DOIT ETRE SUPERIEUR OU EGAL A 3
-    parameter       (nred=31)
 !
 ! -----------------------------------
 ! --- Limitation aux éléments He8
@@ -70,7 +68,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
     call tecael(iadzi, iazk24)
     nbno=zi(iadzi-1+2)
     ind=iazk24+3-1+nbno+3
-    elem=zk24(ind)
+    elem=zk24(ind)(1:8)
     hexa8="HEXA8"
 
     if (elem.ne.hexa8) call utmess('A', 'COMPOR1_89')

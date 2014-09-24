@@ -29,7 +29,7 @@ subroutine b3d_stock_tail(xmat, nmatt, ifour, mfr1, nmat0,&
 #include "asterfort/b3d_valp33.h"
 #include "asterf_types.h"
     integer :: nmatt, ifour, mfr1, nmat0, nmat1, nvari, erreur, nvar1
-    aster_logical :: local, copier_vt33
+    aster_logical :: local
     real(kind=8) :: xmat(nmatt), var0(nvari), varf(nvari)
     real(kind=8) :: t33(3, 3), n33(3, 3), vt33(3, 3)
     real(kind=8) :: gf, fr, rt, epic, beta1, gama1

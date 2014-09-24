@@ -40,9 +40,9 @@ subroutine b3d_d66(nu,sn3,d66,e0,prog1,comp)
        do i=1,3
         sn3(i)=min(sn3(i),smax)
        end do
-      end if     
+      end if
 !     initialisation de la matrice d endommagement dt66
-10    do i=1,6
+      do i=1,6
        do j=1,6
         d66(i,j)=0.d0
        end do
@@ -60,7 +60,7 @@ subroutine b3d_d66(nu,sn3,d66,e0,prog1,comp)
        end do
       else
 !      cas ou on endommage en suivant la theorie de l homogeneisation
-20     d1=1.d0-1.d0/sn3(1)
+       d1=1.d0-1.d0/sn3(1)
        d2=1.d0-1.d0/sn3(2)
        d3=1.d0-1.d0/sn3(3)
        t1 = nu ** 2
@@ -113,12 +113,12 @@ subroutine b3d_d66(nu,sn3,d66,e0,prog1,comp)
 !     calcul des termes de cisaillement
       do i=4,6
        call indice0(i,k,l)
-!      endommagement effectif       
-       sdmax=max(sn3(k),sn3(l))       
+!      endommagement effectif
+       sdmax=max(sn3(k),sn3(l))
        d66(i,i)=1.d0-1.d0/sdmax
       end do
 !     affichage de la matrice d'endommagement en base principale de fissuration
 !     print*,'endo dt66 en base principale de fissuration'
 !     call affiche66(d66)
-!     read*      
+!     read*
 end subroutine

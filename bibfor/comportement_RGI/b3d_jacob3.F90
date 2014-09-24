@@ -17,43 +17,43 @@ subroutine b3d_jacob3(a,idim,d,x,control,epsv)
 ! ======================================================================
 ! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
-!     version modifiee par A.Sellier le sam. 28 août 2010 18:16:10 CEST 
-!     pour corriger le pb (rencontre sous linux)  de non detection de 
+!     version modifiee par A.Sellier le sam. 28 août 2010 18:16:10 CEST
+!     pour corriger le pb (rencontre sous linux)  de non detection de
 !     deux valeurs propres petites considerees a tort comme non double :
 !     1)on definit deps en valeur absolue pour eviter les pb liees aux vp
 !     negative
-!     2)dans le cas ou les deux valeur propre sont egales et de 
+!     2)dans le cas ou les deux valeur propre sont egales et de
 !     signes opposes, la difference est superieure au test ce qui est correct
 !     mais difficile a traiter numeriquement lorsque les valeurs sont toutes deux
 !     petites par rapport à la troisieme ( elle pourrait alors etre toute
 !     deux considerees comme nulle), il faut donc tester si la somme des
-!     valeurs absolue peut etre considere comme negligeable par rapport 
+!     valeurs absolue peut etre considere comme negligeable par rapport
 !     à la troisieme, si c est le cas on impose a ces deux valeurs considere
 !     d etre egales a leur moyenne...
-      
-!======================================================================         
-!     OBJET                                                                     
-!     -----                                                                     
-!     DIAGONALISATION D UNE MATRICE 3*3 SYMETRIQUE                              
-!                                                                               
-!     ENTREES                                                                   
-!     -------                                                                   
-!     A(3,3) = MATRICE SYMETRIQUE                                               
-!     IDIM   = 2 OU 3  SI 2 ON NE S OCCUPE QUE DE A(2,2)                        
-!                      SI 3                    DE A(3,3)                        
-!     SORTIES                                                                   
-!     -------                                                                   
+
+!======================================================================
+!     OBJET
+!     -----
+!     DIAGONALISATION D UNE MATRICE 3*3 SYMETRIQUE
+!
+!     ENTREES
+!     -------
+!     A(3,3) = MATRICE SYMETRIQUE
+!     IDIM   = 2 OU 3  SI 2 ON NE S OCCUPE QUE DE A(2,2)
+!                      SI 3                    DE A(3,3)
+!     SORTIES
+!     -------
 !     D(3)   = VALEURS PROPRES ORDONNEES D(1)>D(2)>D(3)
 !
 !     S(3,3) = VECTEURS PROPRES ( S(IP,2) EST LE VECTEUR
 !                                 ASSOCIE A D(2) )
-!                                                                               
-!===============================================================                
+!
+!===============================================================
         implicit none
 #include "asterfort/jacob2.h"
 #include "asterfort/b3d_degre3.h"
 #include "asterfort/b3d_vectp.h"
-!     varibles supplementaires...      
+!     varibles supplementaires...
         real(kind=8) :: a(3, 3)
         integer :: idim
         real(kind=8) :: d(3)
@@ -75,21 +75,11 @@ subroutine b3d_jacob3(a,idim,d,x,control,epsv)
       d(1)=max(d1,d2,d3)
       d(3)=min(d1,d2,d3)
       d(2)=d1+d2+d3-d(1)-d(3)
-!      print*,'d2 calcule par jacob3',d(2)
-!      aux1=a(1,1)+a(2,2)+a(3,3)-d(1)-d(3)      
-!      print*,'d2 par conservation trace de a33',aux1
-!      print*
-!      if(d(2).lt.d(3))then
-!       print*,'PB 1 ds jacob3'
-!       print*,d(1),d(2),d(3)
-!       stop
-!      end if
 !     on impose aux petites valeurs propres d etres exactement egale
 !     pour eviter les pb de test de valeurs double
-!      goto 10
       ad(1)=abs(d(1))
-      ad(2)=abs(d(2))  
-      ad(3)=abs(d(3)) 
+      ad(2)=abs(d(2))
+      ad(3)=abs(d(3))
       xmaxi=max(ad(1),ad(2),ad(3))
       deps=xmaxi*epsv
       if((ad(2)+ad(3)).le.deps)then
@@ -118,17 +108,17 @@ subroutine b3d_jacob3(a,idim,d,x,control,epsv)
         end if
        end if
       end if
-!     on reclasse les valeurs propres      
+!     on reclasse les valeurs propres
       d(1)=max(d1,d2,d3)
       d(3)=min(d1,d2,d3)
-      d(2)=d1+d2+d3-d(1)-d(3)       
+      d(2)=d1+d2+d3-d(1)-d(3)
 !      if(d(2).lt.d(3))then
 !       print*,'PB 2 ds jacob3'
 !       print*,d(1),d(2),d(3)
 !       stop
-!      end if  
-!     rajout du abs ds le deps     
-10    deps=abs(d(1)*epsv)
+!      end if
+!     rajout du abs ds le deps
+      deps=abs(d(1)*epsv)
       if (d(1)-d(2).le.deps) then
 !      valeur propre double
        control=.true.

@@ -72,8 +72,8 @@ subroutine b3d_pm(vg, vp0, dv0, depst6, ssg6,&
 !
 !     declarations locales
     real(kind=8) :: depsv
-    real(kind=8) :: ssd33(3, 3), vssg33(3, 3), vssg33t(3, 3)
-    real(kind=8) :: x33(3, 3), epsp33(3, 3), dff3(3), st3(3)
+    real(kind=8) :: vssg33(3, 3), vssg33t(3, 3)
+    real(kind=8) :: dff3(3), st3(3)
     real(kind=8) :: rapp3(3),epsvpg,epsvt
 !
 !**********************************************************************

@@ -66,9 +66,9 @@ subroutine b3d_sigd(bg1, pg1, bw1, pw1, sfld,&
     real(kind=8) :: sigaft6(6), sigafc6(6), sigafc3(3), sigaft3(3)
 !
 !      variables internes
-    real(kind=8) :: sigeg3(3), st3(3), vss33(3, 3), vss33t(3, 3), ddw66(6, 6)
+    real(kind=8) :: sigeg3(3), st3(3), ddw66(6, 6)
     real(kind=8) :: ddg66(6, 6), sw3(3), rapp3(3), sigew3(3)
-    real(kind=8) ::  sigaw33(3, 3), x33(3, 3), sigpg6(6)
+    real(kind=8) :: x33(3, 3), sigpg6(6)
     real(kind=8) :: sigag6(6), x6(6), sigaf33(3, 3), sigag33(3, 3)
     real(kind=8) :: bw2,sigext2,sigext1,smax,sigpw0,sigpg0,sigm1,sigext0
 !
@@ -157,12 +157,13 @@ subroutine b3d_sigd(bg1, pg1, bw1, pw1, sfld,&
 !     prise en compte de lendo diffus de gel sur la partie positive des
 !     contraintes effectives
 
-            10 if (xmg.ne.0.) then
+10 continue
+            if (xmg.ne.0.) then
             do i = 1, 3
                 st3(i)=1.d0/(1.d0-min(dg3(i),0.999d0))
                 dw3(i)=0.d0
             end do
-            
+
 !      matrice d endommagement diffus en base prin d endo
             call b3d_d66(xnu0, st3, ddg66, e1, .false.,&
                          .true.)

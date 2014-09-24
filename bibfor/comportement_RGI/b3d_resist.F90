@@ -53,10 +53,9 @@ subroutine b3d_resist(ssr6, rap6, t33, n33, vt33,&
         real(kind=8) :: vrap33t(3, 3)
 !
 !      declaration des varibles locales
-    real(kind=8) :: x33(3, 3), y33(3, 3), rap33(3, 3), rap3(3)
+    real(kind=8) :: x33(3, 3), y33(3, 3), rap3(3)
     real(kind=8) :: l3(3)
     integer :: i
-    real(kind=8) :: codir33(3, 3)
 !
 !      directions principales des resistances
     call x6x33(Rap6,x33)

@@ -66,7 +66,6 @@ subroutine b3d_sd(ss6, t33, n33, l3, vt33,&
         integer :: istep
 !     declarations locales
     real(kind=8) :: ss3(3), ss33(3, 3)
-    real(kind=8) :: codir33(3, 3)
     integer :: i, j
     real(kind=8) :: gf
     real(kind=8) :: rapp33(3, 3), x33(3, 3),su

@@ -43,17 +43,17 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
        real(kind=8) ::vtot0,dvtot,vtot1,dt80,dth0,alpharag,ear,temp1
        real(kind=8) ::tref0,ar,aar0,sr1,srsrag,aar1,aar2,sig0,vrag1
        real(kind=8) ::brag1,srrag,prag1,srag,corg,xnasol0,xnasol1,dt1,vdef0,vmaft
-       real(kind=8) ::dvded1,dvdef2,xmbdef,v0def,bdef,srdef,pdef,sdef,dvdef1,vdef2
+       real(kind=8) ::dvdef2,xmbdef,v0def,bdef,srdef,pdef,sdef,dvdef1,vdef2
        aster_logical:: fl3d
 !   ********************************************************************
 !     declaration locale
       integer:: nmelast,erreur
-!     deformation totale   (rem les depst castem sont des gammas)    
-      real(kind=8) :: depst6(6),dsige6(6),sig6(6)      
+!     deformation totale   (rem les depst castem sont des gammas)
+      real(kind=8) :: depst6(6),dsige6(6),sig6(6)
 !     elasticite isotrope
       parameter (nmelast=4)
 !     variables rsi
-      real(kind=8) :: X0(16), X1(16),beton(19)     
+      real(kind=8) :: X0(16), X1(16),beton(19)
 !   ********************************************************************
 !      print*,xmat
 !      read*
@@ -62,7 +62,7 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
 !     poisson
       xnu0=xmat(2)
 !     coeff de dilatation thermique
-      alpha=xmat(3)      
+      alpha=xmat(3)
       if (xnu0 .gt. 0.49) then
         print*,'Coeff de Poisson trop grand dans rgilin3d'
         errb3d=1
@@ -72,9 +72,9 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
       hydra0=var0(7)
 !     actualisation hydratation fin de pas
       hydra1=xmat(nmelast+7)
-      varf(7)=hydra1      
+      varf(7)=hydra1
 !     seuil d hydratation
-      hydras=xmat(nmelast+8)    
+      hydras=xmat(nmelast+8)
 !   ********************************************************************
 !     prise en compte de l hydratation sur les variables materiau
 !     recuperation des caracteristiques de l hydratation
@@ -85,7 +85,7 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
 !     effet de l hydratation sur Poisson neglige (comme dans cendo3d car
 !     significatif que avant le seuil
       xnu1=xnu0
-!     test pb hydratation      
+!     test pb hydratation
       if (erreur.ne.0) then
        print*,'pb hydratation dans endo3d'
        errb3d=1
@@ -118,18 +118,18 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
         errb3d=1
       call utmess('F','COMPOR1_90')
        end if
-       
+
 !     increment de deformation volumique (mecanique)
       dvtot=0.d0
       do i=1,3
        dvtot=dvtot+depst6(i)
       end do
-      
+
 !     actualisation deformation volumique mecanique
       vtot0=var0(21)
       vtot1=vtot0+dvtot
-      varf(21)=vtot1  
-      
+      varf(21)=vtot1
+
 !   ********************************************************************
 !      tir elastique
 !      increment elastique
@@ -144,20 +144,20 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
         sig6(i)=sig0+dsige6(i)
         varf(i)=sig6(i)
 !        print*,'sigf=',sig6(i)
-       end do 
-!       read* 
+       end do
+!       read*
 
 !   ********************************************************************
 !       on calcule l endo thermique
 !       recuperation de l endo thermique et effet de l'hydratation
-        dt80=xmat(nmelast+21) 
+        dt80=xmat(nmelast+21)
         call hydr_vari(var0(25),dth0,hydra0,hydra1,hydras,erreur)
         call b3d_dth(teta2,dth0,dt80)
 !       mise a jour de l endo thermique
-        varf(25)=dth0            
+        varf(25)=dth0
 !   ********************************************************************
 
-!     calcul de rag 
+!     calcul de rag
       alpharag=(xmat(nmelast+10))**(-1)
 !     prise en compte de l activation thermique
       ear=5875.d0
@@ -172,7 +172,7 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
 !     recup saturation seuil pour la rag
       srsrag=xmat(nmelast+11)
 !     calcul de l avancement chimique
-      if(aar0.lt.sr1) then 
+      if(aar0.lt.sr1) then
        if (sr1.gt.srsrag) then
           alpharag=alpharag*(sr1-srsrag)/(1.d0-srsrag)
           aar1=sr1-(sr1-aar0)*exp(-alpharag*dt)
@@ -182,7 +182,7 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
       else
        aar1=aar0
       end if
-!     attenuation par hydratation      
+!     attenuation par hydratation
 !      call hydr_vari(aar1,aar2,hydra0,hydra1,hydras,erreur)
       aar2=aar1
 !     stockage avancement chimique
@@ -190,27 +190,27 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
 !     calcul de la pression de rag
       vrag1=aar2*xmat(nmelast+13)
 !     stockage volume de gel
-      varf(23)=vrag1      
+      varf(23)=vrag1
       brag1=xmat(nmelast+17)
 !     saturation en rag
-      srrag=vrag1/xmat(nmelast+5)      
+      srrag=vrag1/xmat(nmelast+5)
       prag1=max(xmat(nmelast+19)*(vrag1-xmat(nmelast+15)-&
      brag1*srrag*vtot1),0.d0)
 !     contrainte induite par la rag
-      srag=-brag1*prag1*srrag 
+      srag=-brag1*prag1*srrag
 
 !***********************************************************************
 !      couplage RAG-RSI les alcalins entrent dans les granulats
 !      avec l avancement de la rag
-      corg=xmat(nmelast+23) 
+      corg=xmat(nmelast+23)
 !     nal (la teneur en alcalin libre est  cste sur le pas de temps)
 !     la RAG consomme les lacalins
       xnasol0=max(var0(24),1.d-4)
       X0(4)=xnasol0
       beton(14)=xnasol0
-      xnasol1=xmat(nmelast+9)*(1.d0-aar2*corg) 
-      beton(15)=xnasol1      
-!        
+      xnasol1=xmat(nmelast+9)*(1.d0-aar2*corg)
+      beton(15)=xnasol1
+!
 !***********************************************************************
 !     calcul chimie de la RSI
 !     recuperation des donnnees materiaux  pour la chimie
@@ -220,42 +220,42 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
       beton(2)=xmat(nmelast+1)
 !     sulfate
       beton(3)=xmat(nmelast+2)
-!     silice      
+!     silice
       beton(4)=xmat(nmelast+3)
-!     temps caracteristique de micro diffusion (pour ID=ID1 dans rsi_3d)    
+!     temps caracteristique de micro diffusion (pour ID=ID1 dans rsi_3d)
       beton(5)=xmat(nmelast+4)
-!     phi (on le passe en l/m3) en * par 1000     
+!     phi (on le passe en l/m3) en * par 1000
       beton(6)=1.d3*xmat(nmelast+5)
-!     sr      
+!     sr
       beton(7)=xmat(nmelast+6)/xmat(nmelast+5)
-!     sotockage vw pour pas suivant      
+!     sotockage vw pour pas suivant
       varf(26)=xmat(nmelast+6)
-!     calcul teneur en eau initiale      
+!     calcul teneur en eau initiale
       if (var0(26).eq.0) then
 !        on a sans doute pas initialise la teneur en eau init
-!        on impose la precedente egale a l actuelle      
+!        on impose la precedente egale a l actuelle
          beton(16)=xmat(nmelast+6)/xmat(nmelast+5)
       else
          beton(16)=var0(26)/xmat(nmelast+5)
       endif
-!     id min 
+!     id min
       beton(17)=xmat(nmelast+24)
 !     id pessimum
       beton(18)=xmat(nmelast+25)
-!     id max      
-      beton(19)=xmat(nmelast+26)       
-!     alpha0      
+!     id max
+      beton(19)=xmat(nmelast+26)
+!     alpha0
       beton(8)=hydra0
-!     alpha1      
+!     alpha1
       beton(9)=hydra1
-!     temp0  (°K)    
+!     temp0  (°K)
       beton(10)=teta1+273.d0
-!     temp1  (°K)   
+!     temp1  (°K)
       beton(11)=teta2+273.d0
 !     endommagement thermique
-      beton(12)=dth0 
+      beton(12)=dth0
 !     coeff de couplage avec l endo thermique
-      beton(13)=xmat(nmelast+22)     
+      beton(13)=xmat(nmelast+22)
 !     recuperation des variables internes pour la chimie
 !     hydratation
       X0(1)=var0(7)
@@ -287,15 +287,15 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
       X0(15)=var0(18)
 !     casol
       X0(16)=var0(19)
-!     ******************************************************************      
-!     appel de l increment chimique pour la rsi 
-      dt1=dt     
+!     ******************************************************************
+!     appel de l increment chimique pour la rsi
+      dt1=dt
       call rsi_3d(X0,X1,beton,dt1)
 !     stockage des variables internes pour la chimie
 !     csh
-      varf(8)=X1(3)   
+      varf(8)=X1(3)
 !     nasol
-      varf(24)=X1(4)       
+      varf(24)=X1(4)
 !     alsol
       varf(9)=X1(6)
 !     alf
@@ -318,34 +318,34 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
       varf(18)=X1(15)
 !     casol
       varf(19)=X1(16)
-      
-!     *******repercussion meca de la rsi ******************************* 
-     
+
+!     *******repercussion meca de la rsi *******************************
+
 !     volume d ettringite
       vdef0=var0(20)
 !     volume molaire de l ettringite
-      vmaft=xmat(nmelast+14) 
-!     volume ettringite final avant prise en compte hydratation      
-      dvdef1=(varf(13)-var0(13))*vmaft 
-!     calcul de la partie efficace de l ettringite      
+      vmaft=xmat(nmelast+14)
+!     volume ettringite final avant prise en compte hydratation
+      dvdef1=(varf(13)-var0(13))*vmaft
+!     calcul de la partie efficace de l ettringite
       call hydr_vari(dvdef1,dvdef2,hydra0,hydra1,hydras,erreur)
-!     stocakge volume d ettringite efficace 
-      vdef2=max(vdef0+dvdef2,0.d0)     
+!     stocakge volume d ettringite efficace
+      vdef2=max(vdef0+dvdef2,0.d0)
       varf(20)=vdef2
 !     calcul de la pression due a l ettringite
 !     module de raideur ettringite
       xmbdef=xmat(nmelast+20)
-!     vides connectes      
+!     vides connectes
       v0def=xmat(nmelast+16)
 !     recup biot ettringite
       bdef=xmat(nmelast+18)
 !     saturation ettringite
-      srdef=vdef2/xmat(nmelast+5)      
+      srdef=vdef2/xmat(nmelast+5)
       pdef=max(xmbdef*(vdef2-v0def-bdef*srdef*vtot1),0.d0)
 !     calcul de la contrainte isotrope induite sur la structure
-      sdef=-bdef*pdef*srdef     
+      sdef=-bdef*pdef*srdef
 
-!***********************************************************************      
+!***********************************************************************
 !     affectation des contraintes dans le vecteur de sortie
 !      write(6,*)'***************************'
 !!      write(6,*)'deps = ',(depst(i),i=1,6)
@@ -355,7 +355,7 @@ subroutine rgilin3d(xmat,nmat,var0,varf,nvari,dt,depst,&
 !      write(6,*)
       do i=1,nstrs
         sigf(i)=sig6(i)
-        if (i.le.3) then 
+        if (i.le.3) then
           sigf(i)=sigf(i)+sdef+srag
         end if
 !       print*,'sigf rsilin3d=',sigf(i)

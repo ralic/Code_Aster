@@ -49,7 +49,7 @@ subroutine b3d_valp33(x33, x3, v33)
 
     parameter(un=1.d0,epsv=1.d-4)
     real(kind=8) :: v33t(3, 3)
-    real(kind=8) :: u33(3, 3), u033(3, 3), dif33(3, 3)
+    real(kind=8) :: u33(3, 3)
     logical :: vpmultiple, erreur, diago, ordre
     integer :: imin, imax, imoy
 !

@@ -62,7 +62,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     dimension des tableaux d echange avec le modele d endommagement
 !     cas des materiaux
 !     dimension reelle
-    integer :: nmelast, nmfluag, nmendo, nmtail,nmhydra
+    integer :: nmelast, nmfluag, nmendo,nmhydra
 !     cas des variables internes (cf idvar4)
 !     dimensions reelles
     integer :: nvendo, nvfluag, nvhydra, nvtail
@@ -76,8 +76,6 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
     parameter (nmfluag=5)
 !     -endommagement
     parameter (nmendo=10)
-!     -taille des elements, maximum 12
-    parameter (nmtail=12)
 !     nombre de composantes de varibles internes
 !     -nombre de variable interne pour le modele de fluage
     parameter (nvfluag=48)
@@ -89,7 +87,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
     parameter (nvtail=10)
 !***********************************************************************
 !     declarations locale pour cendo3d
-    real(kind=8) :: x6(6), x33(3, 3), vx33(3, 3), xl33(3, 3)
+    real(kind=8) :: x6(6), x33(3, 3)
 !     increments de deformation
     real(kind=8) :: depst6(6)
     real(kind=8) :: dgamd6(6), sigef6(6)
@@ -145,15 +143,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     contrainte effective apres endo du coeff de Poisson
     real(kind=8) :: sigep6(6)
 !     contrainte totale non endommagee
-    real(kind=8) :: siget6(6), vsiget33(3, 3), vsiget33t(3, 3)
-    real(kind=8) :: siget33(3, 3)
-!     contraintes caracteristiques pour l endo diffus
-!     contrainte hydrique apres endo diffus
-    real(kind=8) ::  sigaw33(3, 3)
-!     contraintes hydriques apress att coeff de Poisson
-    real(kind=8) ::  sigew33(3, 3)
-!     contrainte effective caracteristique pour le endo localise
-    real(kind=8) ::  vsigefl33(3, 3), vsigefl33t(3, 3)
+    real(kind=8) :: siget6(6)
 !     contrainte effective apres attenuation des coeffs de Poisson
 !     seuils de traction pour l endo localise des modules
     real(kind=8) :: ssl6(6)
@@ -166,41 +156,24 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     contrainte effective reprise par les fissures refermees
     real(kind=8) :: sigaf6(6)
 !     contrainte apparente de traction en base fixe
-    real(kind=8) :: sigat6(6), sigat33(3, 3)
+    real(kind=8) :: sigat6(6)
 !     diagonalisation des contraintes effective endommage par la tractio
-    real(kind=8) :: siga3(3), vsiga33(3, 3), vsiga33t(3, 3), siga33(3, 3)
+    real(kind=8) :: siga3(3), vsiga33(3, 3), vsiga33t(3, 3)
     real(kind=8) :: sigac6(6), sigac3(3), sigat3(3)
 !     longueur des elements pour l'endo de compression
     real(kind=8) :: long3(3)
 !     endo localise de traction calcule avec contraintes en poisson deco
     real(kind=8) :: dfl3(3), e2l3(3), dl66(6, 6)
-!     contrainte effective non en do apres att Poisson base fixe
-    real(kind=8) :: sigel33(3, 3)
 !     contrainte effective endo localise
     real(kind=8) ::  sigal33(3, 3)
 !     varaiation de volume
     real(kind=8) :: dv0
-!     contraintes dues au gel
-    real(kind=8) :: sigapg33(3, 3)
-!     pression gel apres att coeff de Poisson
-    real(kind=8) :: sigepg33(3, 3)
-!     fonction Heaveside pour le risque de localisation
-!     contrainte positive localisante
-    real(kind=8) :: sigefl33(3, 3)
-!     matrice d endo diffus en base principale d endo diffus
-    real(kind=8) :: dd66(6, 6), vdd33(3, 3), vdd33t(3, 3)
 !     part de la contrainte totale due aux pressions
     real(kind=8) ::  dsw6(6), dsw33(3, 3)
-!     contrainte de refermeture de fissure en zone effective
-!     contrainte seuil associee a la resistance residuelle
-!     contrainte de gel ds les macro fissures
-    real(kind=8) ::  dpg33(3, 3)
 !     deformation plastique dues au gel
     real(kind=8) :: epsplg6(6), epsplfg6(6)
 !     deformation plastique dues a l eau
     real(kind=8) :: ssw6(6)
-!     endo diffus final
-    real(kind=8) ::  ssd33(3, 3)
 !     passage base prin de plasticite
     real(kind=8) :: vplg33(3, 3), vplg33t(3, 3)
 !     passage base prin de plasticite
@@ -219,8 +192,6 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     varaible logique pour savoir si on doit considerer s1 comme s0
 !     dans les fissures pour le suivi de la contrainte viscoelastique
     aster_logical :: maj0
-!     diagonalisation des contraintes effectives pour le non local
-    real(kind=8) :: sigaf33(3, 3), vsigaf33(3, 3)
 !     coeff d amplification maxi temporel
     real(kind=8) :: coefftmax0
 !     tableaux pour stocker les contraintes modifiees par les autocontra
@@ -289,23 +260,23 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !***********************************************************************
 
 !     recuperation du coeff de compressibilite draine
-      xk00=xmat(nmelast+19) 
+      xk00=xmat(nmelast+19)
       if(xk00.ne.0.) then
-!      print*,'coeff elastique recalcules a partir de k et mu endo3d'      
+!      print*,'coeff elastique recalcules a partir de k et mu endo3d'
 !      coefficient de cisaillement
-       xmu00=xmat(nmelast+20) 
+       xmu00=xmat(nmelast+20)
 !      recalcul des coeffs E et nu compatibles avec k et mu
        e00=9.d0*xk00/(1.d0+3.d0*xk00/xmu00)
        xx1=(2.d0*xmu00)/(3.d0*xk00)
-       xnu00=(1.d0-xx1)/(2.d0+xx1) 
+       xnu00=(1.d0-xx1)/(2.d0+xx1)
       else
 !       print*,'on adopte les coeff du modele elastique dans endo3d'
 !      Young
        e00=xmat(1)
 !      poisson
-       xnu00=xmat(2)       
-      end if       
-!     test coeff de Poisson      
+       xnu00=xmat(2)
+      end if
+!     test coeff de Poisson
       if (xnu00 .gt. 0.49) then
         print*,'Coeff de Poisson trop grand dans endo13d'
         errb3d=1
@@ -328,64 +299,64 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     deformation au pic de traction
       ept0=xmat(nmelast+6)
 !     endo thermique a 80°C
-      dt80=xmat(nmelast+21)     
+      dt80=xmat(nmelast+21)
 !     energie de fissuration de traction
       gft00=xmat(nmat0+1)
 !     energie de fissuration en compression uniaxiale
       gfc00=xmat(nmat0+2)
 !     ouverture residuelle de reference pour les fissures de traction
 !     sigma=sref/2e si w = wref
-      wref0=xmat(nmat0+3) 
+      wref0=xmat(nmat0+3)
 !     coeff de frottement sur les bords de fissure
       tphi0=xmat(nmat0+4)
 !     coeff delta de Drucker Pragger a partir de sin(phim)
       delta0=xmat(nmat0+5)
-!     contrainte de refermeture complete de la fissure 
+!     contrainte de refermeture complete de la fissure
       sref0=xmat(nmat0+6)
 !     volume  de reference pour l essai de traction
-      vref0=xmat(nmat0+7)      
+      vref0=xmat(nmat0+7)
 !     volume  dintegration maximale pour le non local
       vmax0=xmat(nmat0+8)
 !     exposant de Weibull
-      weib0=xmat(nmat0+9) 
+      weib0=xmat(nmat0+9)
 !     aleas induit par les contraintes de compression dans les heterogenites      )
       aleas0=xmat(nmat0+10)
-!     exposant de leffet d echelle temporel        
+!     exposant de leffet d echelle temporel
       xktemp=xmat(nmelast+23)
-      if(xktemp.eq.0.) then 
+      if(xktemp.eq.0.) then
 !         print*,'il manque KTMP dans ENDO3D, on prend 2.5'
          xktmp=2.5d0
       end if
-!     seuil de l effet d echelle temporel        
+!     seuil de l effet d echelle temporel
       xs1=xmat(nmelast+22)
       if (xs1.ge.1.) then
-!         on ignore l effet dechelle temporel      
+!         on ignore l effet dechelle temporel
           coefft=1.d0
-      end if      
+      end if
 !     adaptation des donnees determinites pour le calcul probabiliste
-!     cf fichier maple drucker prager probabiliste      
+!     cf fichier maple drucker prager probabiliste
       if(aleas0.ne.0.) then
 !         aleas0=min(aleas0,0.49)
          aleas0=max(aleas0,0.)
 !        on peut forcer le critere de compression a ignorer l aleas
-!        en mettant cg0 à 0.          
+!        en mettant cg0 à 0.
          cg0=0.d0
          delta=delta0
 !         cg =(-sqrt(0.3D1+0.6D1 * cg0 * sqrt(0.2D1)+0.9D1* cg0 ** 2 -
-!     #   0.6D1 * cg0 - 0.6D1 * cg0 ** 2 * sqrt(0.2D1))+sqrt(0.3D1) - 
+!     #   0.6D1 * cg0 - 0.6D1 * cg0 ** 2 * sqrt(0.2D1))+sqrt(0.3D1) -
 !     #   (2. * delta)) / (-0.2D1 + cg0 * sqrt(0.2D1) + 0.2D1 * cg0)
 !         delta0=cg
       else
          cg0=0.d0
-      end if        
-      
+      end if
+
 !***********************************************************************
 !     prise en compte de l hydratation sur les variables materiau
 !     recuperation des caracteristiques de l hydratation
 !     effet de l hydratation sur Young
 !      print*,'Av hydr_xmat endo3d',e00,e0,hydra1,hydras,0.66d0,erreur
       call hydr_xmat(e00,e0,hydra1,hydras,0.33d0,erreur)
-!     prise en compte de l hydratation sur la contrainte de refermeture      
+!     prise en compte de l hydratation sur la contrainte de refermeture
       sref1=sref0*e00/e0
 !      print*,'e0 ds endo3d', e0
 !      read*
@@ -397,7 +368,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     significatif que avant le seuil)
       xnu0=xnu00
 !     ( a modifier si retrait considere avant le seuil)
-      call hydr_xmat(rt00,rt0,hydra1,hydras,0.4d0,erreur)      
+      call hydr_xmat(rt00,rt0,hydra1,hydras,0.4d0,erreur)
 !     effet de l hydratation sur l energie de fissuration de traction
       call hydr_xmat(gft00,gft0,hydra1,hydras,0.33d0,erreur)
 !     effet de l hydratation sur la resistance a la compression
@@ -410,7 +381,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
       ept00=max(ept0,rt00/e00)
       ept0=max(ept0,rt0/e0)
 !     coeff de non linearite pre-pic en traction
-      cnlt1=ept0/(rt0/e0)     
+      cnlt1=ept0/(rt0/e0)
 !     precaution au cas ou epc0 non fourni
       epc0=max(epc0,rc0/e0)
 !     adaptation des données pour le critere en contrainte effective
@@ -435,15 +406,15 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !      coeff de Biot
        biot00=xmat(nmelast+8)
        umbiot00=1.d0-biot00
-!      effet de l' hydratation sur le coeff de Biot       
+!      effet de l' hydratation sur le coeff de Biot
        call hydr_xmat(umbiot00,umbiot0,hydra1,hydras,0.5d0,erreur)
        biot0=1.d0-umbiot0
 !      volume d eau actuel
        vw1=xmat(nmelast+9)
-!      actualisation de l apport de masse d eau       
+!      actualisation de l apport de masse d eau
        varf(nvar0+44)=vw1-poro0
 !      volume d eau initial rapporte a la poro
-       vw0=poro0+var0(nvar0+44)       
+       vw0=poro0+var0(nvar0+44)
 !      compressibilite de l eau
        xwsat=xmat(nmelast+10)
       else
@@ -455,7 +426,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
        xwsat=xmat(nmat)
        xwnsat=xwsat
 !      le volume d eau est calcule a partir de l apport de masse
-!      fluide normalise 
+!      fluide normalise
 !      l apport de masse fluide est egalement disponible sigf(nstrs)=msr0
        xmsrt0=var0(nvar0+44)
 !       xmsrt1=xmsrt0+sigf(nstrs)
@@ -465,7 +436,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
        vw1=poro0+xmsrt1
       end if
 !      print*,'dans endo3d'
-!      print*,'biot',biot0,' mob',xwsat,' vw0', vw0     
+!      print*,'biot',biot0,' mob',xwsat,' vw0', vw0
 !      read*
 !     heterogeneite contrainte hydrique
       sfld=xmat(nmelast+11)
@@ -537,14 +508,14 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !       variables est definie dans le modele de fluage et dans idvar4
 !       print*,'chargement des calculs effectues par fluage 3d'
         do i=1,6
-!        contrainte effective dans le squelette solide        
+!        contrainte effective dans le squelette solide
          sigef6(i)=varf(nvhydra+37+i)
          varf(nvar0+i)=sigef6(i)
-!        contrainte seuil dans le critere RGI         
+!        contrainte seuil dans le critere RGI
          ssg6(i)=varf(1+i)
-!        deforlations anelastiques RGI        
+!        deforlations anelastiques RGI
          epsplg6(i)=varf(7+i)
-!        contrainte seuil critere hydrique (le cas echeant dans b3d_sigd)         
+!        contrainte seuil critere hydrique (le cas echeant dans b3d_sigd)
          ssw6(i)=varf(18+i)
 !        print*,'sigef6(',i,')=',sigef6(i)
 !        print*,'ssg6(',i,')=',ssg6(i)
@@ -554,7 +525,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !         recuperation des endommagements diffus calcules avec le fluage
 !         endommagement du aux RGI
           dg3(i)=varf(13+i)
-!         endommagement due a lhydrique (le cas echeant)          
+!         endommagement due a lhydrique (le cas echeant)
           dw3(i)=varf(24+i)
 !         print*,'dg3(',i,')=',dg3(i)
 !         print*,'dw3(',i,')=',dw3(i)
@@ -573,13 +544,13 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !       recuperation des pressions calculees lors du fluage
 !       pression de l eau
         pw1=varf(17)
-!       pression RGI        
+!       pression RGI
         pg1=varf(18)
 !       recalcul du coeff de Biot reel de l eau tel que fait
 !       dans b3d_bwpw appele dans fluag3d
-        if(mfr.ne.33) then 
+        if(mfr.ne.33) then
          if (pw1.lt.0.d0) then
-!            juin 2013 biot constant tout est dans pw         
+!            juin 2013 biot constant tout est dans pw
 !             bw1=biot0*vw0/poro0
 !            pour etre compatible avec version juin 2013 de b3d_bwpw
              bw1=biot0
@@ -611,12 +582,12 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
              end if
            else
 !            cas du milieu non sature en eau : on endommage avec les contraintes
-!            totales non saturees 
+!            totales non saturees
              sigaf6(i)=sigat6(i)/xumdft
            end if
 !          print*,'sigat init(',i,')=',sigat6(i)
 !          print*,'sigaf init(',i,')=',sigaf6(i)
-         end do 
+         end do
          if (nstrs.lt.6) then
           do i=(nstrs+1),6
              sigat6(i)=0.d0
@@ -634,7 +605,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !            des contraintes effectives pour que le code considere nos totales
 !            et non les siennes, il faut les remettre pour retrouver les totales
 !            vraies, on les reenlevera a la fin
-!            hydriques on les remet 
+!            hydriques on les remet
              if (i.le.3) then
               sigaf6(i)=(sigat6(i)-bw1*pw1)/xumdft
              else
@@ -650,7 +621,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
            end if
 !          print*,'sigat init(',i,')=',sigat6(i)
 !          print*,'sigaf init(',i,')=',sigaf6(i)
-         end do 
+         end do
          if ((nstrs-1).lt.6) then
           do i=nstrs,6
              sigat6(i)=0.d0
@@ -667,20 +638,20 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
         do i=1,6
          epsplfg6(i)=varf(7+i)
          epsplg6(i)=var0(7+i)
-!        les termes hors diagonale contiennent des gama         
+!        les termes hors diagonale contiennent des gama
          if (i.le.3) then
           depst6(i)=depst6(i)-(epsplfg6(i)-epsplg6(i))
          else
           depst6(i)=depst6(i)-2.d0*(epsplfg6(i)-epsplg6(i))
          end if
         end do
-!       *** fin traitement si fluage prealable *************************        
+!       *** fin traitement si fluage prealable *************************
        else
 !       **** on est pas passé par le fluage avant l endo ***************
 !       les contraintes effectives doivent être calculees ici
-!       **************************************************************** 
-     
-!       ***endo de fluage***********************************************       
+!       ****************************************************************
+
+!       ***endo de fluage***********************************************
 !       pas de fluage prealable
         dflu0=0.d0
 !       print*,'dflu',dflu0
@@ -691,9 +662,9 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
         call hydr_vari(var0(28),dth0,hydra0,hydra1,hydras,erreur)
         call b3d_dth(teta2,dth0,dt80)
 !       mise a jour de l endo thermique
-        varf(28)=dth0 
+        varf(28)=dth0
 
-!       *** contraintes effectives *************************************        
+!       *** contraintes effectives *************************************
 !       les contraintes effectives ne sont pas connues, on les calcule
 !       actualisation de la deformation viscoplastique et de la pression de gel
 !       recuperation des parametres d endo et de la def vpl
@@ -720,15 +691,15 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !       print*,'on fait le calcul poro meca 1'
         pw0=var0(17)
         if(mfr.eq.33) then
-!        on est en poreux  l increment de la pression a deja été calculee 
+!        on est en poreux  l increment de la pression a deja été calculee
          dpw=depst(nstrs)
 !        l apport de masse fluide est egalement disponible sig(nstrs)=msr0
 !         print*,'ds endo3d apports de masse fluide',vw0,vw1
 !        b3d pm ne calcule que la pression de gel
-        end if 
+        end if
 !       prise en compte des microfissures hydriques eventuelle
-        epsvpw=0.d0 
-!       calcul des pressions       
+        epsvpw=0.d0
+!       calcul des pressions
         call b3d_pm(vg0,vp0,dv0,depst6,ssg6,dg3,epsplg6,epsplfg6,&
       etag1,bg1,xmg0,pg1,dt,epsplg0,vw0,poro0,biot0,xwsat,pw1,bw1,&
       epsvpw,vplg33,vplg33t,e0,rt0,ept0,erreur,xwnsat,mfr,pw0,dpw,vw1)
@@ -800,13 +771,13 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
         end do
 
 !       ****************************************************************
-!       calcul des contraintes apparentes non affectees par 
+!       calcul des contraintes apparentes non affectees par
 !       l endo de fluage et l endo thermique
 !       juin 2013 modif propose par S.Multon dflu n affecte que Maxwell
 !        xumdft=((1.d0-dflu0)*(1.d0-dth0))
 !       (1.d0-dflu0) repporté sur rc et non directement sur E
         xumdft=(1.d0-dth0)
-        if(mfr.ne.33) then 
+        if(mfr.ne.33) then
 !        formulation non poreuse
          do i=1,nstrs
 !         recuperation de la contrainte effective sans endo localisee
@@ -820,17 +791,17 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
              end if
            else
 !            cas du milieu non sature en eau : on endommage avec les contraintes
-!            totales non saturees 
+!            totales non saturees
              sigaf6(i)=sigat6(i)/xumdft
            end if
 !          print*,'sigat init(',i,')=',sigat6(i)
 !          print*,'sigaf init(',i,')=',sigaf6(i)
-         end do 
+         end do
          if (nstrs.lt.6) then
           do i=(nstrs+1),6
              sigat6(i)=0.d0
              sigaf6(i)=0.d0
-          end do 
+          end do
          end if
         else
 !        formulation poreuse
@@ -841,7 +812,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !            totales non saturees mais comme on a enlever les contraintes hydriques
 !            des contraintes  effectives pour que castem considere nos totales et non les siennes
 !            il faut les remettre pour retrouver les totales vraies, on les reenlevera a la fin
-!            hydriques on les remet 
+!            hydriques on les remet
              if (i.le.3) then
               sigaf6(i)=(sigat6(i)-bw1*pw1)/xumdft
              else
@@ -855,14 +826,14 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
            end if
 !          print*,'sigat init(',i,')=',sigat6(i)
 !          print*,'sigaf init(',i,')=',sigaf6(i)
-         end do 
+         end do
          if ((nstrs-1).lt.6) then
           do i=nstrs,6
              sigat6(i)=0.d0
              sigaf6(i)=0.d0
           end do
          end if
-        end if         
+        end if
 !       fin de la zone de traitement si pas de fluage prealable
       end if
 !***********************************************************************
@@ -870,7 +841,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !      dus au gel et des tailles des zones chargees
 !***********************************************************************
 !      on suppose la resistance residuelle isotrope est controlee par
-!      l endo diffus le plus grand (sauf le fluage et la thermique) 
+!      l endo diffus le plus grand (sauf le fluage et la thermique)
 !      (car on est effectif / fluage)
 !      disolocal=max(dg3(1),dg3(2),dg3(3),dw3(1),dw3(2),dw3(3))
 !      cas ou l endo hydrique est neglige sur la loi de comp
@@ -879,15 +850,15 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !      effet de l'endommagement du au gel sur les resistances
 !      (approximation de la chute de resistance due au gel isotrope)
        aux3=(1.d0-disolocal)
-!      en traction    
+!      en traction
        rt0=rt0*aux3
-!      stockage de la valeur de ref hydratee pour weibull 
+!      stockage de la valeur de ref hydratee pour weibull
        rtw1=rt0
-!      cas de l energie de fissuration       
+!      cas de l energie de fissuration
        gft0=gft0*aux3
        gftw1=gft0
 !      en compression
-       aux4=aux3**0.15    
+       aux4=aux3**0.15
        rc0=rc0*aux4
 !       *(1.d0-dflu0)
        gfc0=gfc0*aux4
@@ -898,7 +869,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !      compression (a faire si necessaire)
 
 !***********************************************************************
-!     stockage des tailles des elements et calcul ou recuperation 
+!     stockage des tailles des elements et calcul ou recuperation
 !     (t33, n33) des directions principales des elements (vt33)
 !     le calcul des tailles peut elors etre fait  avec b3d_l3
 !***********************************************************************
@@ -917,15 +888,15 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !      on teste si le pic de traction est passé ou pas
        if (istep.ne.0) then
 !        prise en compte de l effet d echelle de Weibull
-!        par methode non  locale  
-!        recup coeff multiplicateur dt rt Gft du pas precedent     
+!        par methode non  locale
+!        recup coeff multiplicateur dt rt Gft du pas precedent
          xwb0=var0(nvar0+57)
          coeffGf0=var0(nvar0+72)
-         coefft=var0(nvar0+77) 
+         coefft=var0(nvar0+77)
 !        recup du tau de chargement actuel (cf. istep=1 plus bas)
-!        si istep=2:2nd passage non local, donc onrecupere le tau 
+!        si istep=2:2nd passage non local, donc onrecupere le tau
 !        de chargement pour le pas actuels
-!         tauw0=var0(nvar0+58)        
+!         tauw0=var0(nvar0+58)
 !        test 1er passage
          if (xwb0.le.1.d-4) then
 !          zone non chargee au pas precedent
@@ -934,47 +905,47 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
            xwb0=1.d0
            coeffGf0=1.d0
            coefft=1.d0
-!          et on suppose le taux de chargement precedent nul           
+!          et on suppose le taux de chargement precedent nul
 !           tauw0=0.d0
-         end if           
+         end if
 !        contrainte limite de traction du pas converge precedent
-!         su0w=cnlt1*rt0*xwb0 
-!        test de localisation au pas precedent (s/E >epic) 
+!         su0w=cnlt1*rt0*xwb0
+!        test de localisation au pas precedent (s/E >epic)
 !         do i=1,6
 !           x6(i)=var0(nvar0+15+i)
 !         end do
-!        diagonalisation de la contrainte seuil du pas precedent     
+!        diagonalisation de la contrainte seuil du pas precedent
 !         call x6x33(x6,x33)
-!         call b3d_valp33(x33,x3,vx33) 
-!        recuperation du maximum     
-!         ssl0max=max(x3(1),x3(2),x3(3),0.d0)   
+!         call b3d_valp33(x33,x3,vx33)
+!        recuperation du maximum
+!         ssl0max=max(x3(1),x3(2),x3(3),0.d0)
          if (istep.eq.2) then
 !          do i=1,nvari
 !            print*,2,var0(nvar0+43),varf(nvar0+43)
 !          end do
 !          read*
 !          2nd passage non local : modif de la resistance a la traction si pre pic
-!          Attention calcul ok que si VMAX realiste dans la procedure non locale  
-!          on recupere alpha=tauref*veq    
+!          Attention calcul ok que si VMAX realiste dans la procedure non locale
+!          on recupere alpha=tauref*veq
 !           alpha0=var0(nvar0+43)
 !          on recupere la variable issue de la procedure non locale dans les var0 (cf unpas.proc)
 !          elle vaut alpha/(tau.vmax)
 !          calcul du volume equivalent
            veq1=var0(nvar0+43)*vmax0
 !          suite a modif de unpas on retrouve pour istep=2 taumax dans var0(nvar0+58)
-           veq1=var0(nvar0+43)/var0(nvar0+58)           
-!           if (veq1.le.0. ) then 
+           veq1=var0(nvar0+43)/var0(nvar0+58)
+!           if (veq1.le.0. ) then
 !            pb induit par les fonctions d interpolation en zone de fort gradient de chragement
-!            normalement impossible avec le second non local dans un pas pas defa           
+!            normalement impossible avec le second non local dans un pas pas defa
 !             print*,'veq<0 ds endo3 :', veq1
              veq1=max(veq1,fminvref*vref0)
-!            end if             
-!          taux de chargement actuel          
+!            end if
+!          taux de chargement actuel
 !           tauw0=var0(nvar0+58)
 !          probabilite de defaillance instantanee
 !           betak=(var0(nvar0+58))*veq1/vref0
 !           xpf1=max((1.d0-exp(-betak)),var0(nvar0+74))
-!          on la stocke a la place de tauw pour voir..............  
+!          on la stocke a la place de tauw pour voir..............
 !           varf(nvar0+58)=xpf1
 !          test de localisation au pas precedent
 !          if (ssl0max.le.su0w) then
@@ -993,33 +964,33 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
              call b3d_l3(local,t33,n33,vt33,vt33,l3)
              xvef=l3(1)*l3(2)*l3(3)
              xli=max(l3(1),l3(2),l3(3))
-             dpict00=1.d0-cnlt1**(-1)             
+             dpict00=1.d0-cnlt1**(-1)
 !            donnees pour endo de Poisson sans effet d echelle
              call b3d_nosnap(0,fr10,rt0,dpict00,Gft0,e0,beta1,gama1&
-            ,xli,vref0,weib0,vref0,rtw2,errmesh,coeffGf,1.d0)                         
+            ,xli,vref0,weib0,vref0,rtw2,errmesh,coeffGf,1.d0)
              gftw2=coeffgf*gft0
-             eptw2=cnlt1*(rtw2/e0)             
+             eptw2=cnlt1*(rtw2/e0)
 !            prise en compte des aleas
 !            recuperation du coeff d aleas temporel utilise pour calculer taux
 !             coefft=var0(nvar0+77)
-!             print*,'istep 2 coefft=',coefft             
+!             print*,'istep 2 coefft=',coefft
              call b3d_nosnap(istep,fr10,rt0,dpict00,Gft0,e0,beta1,gama1&
             ,xli,vref0,weib0,veq,rteff,errmesh,coeffGf,coefft)
-!            coeff amplificateur pour effet d echelle spatial     
-             xwb1=rteff/(rt0*coefft)                       
+!            coeff amplificateur pour effet d echelle spatial
+             xwb1=rteff/(rt0*coefft)
            else
-!            istep=2 mais pic deja passe pour ce point           
+!            istep=2 mais pic deja passe pour ce point
 !            print*,'localisation deja amorcee dans endo3d proba'
-!            on a passé le pic, on recupere le coeff d effet dechelle spatial du pas precedent 
-             xwb1=var0(nvar0+57)  
-!             print*,'on a deja localise on reprend xwb1=',xwb1             
+!            on a passé le pic, on recupere le coeff d effet dechelle spatial du pas precedent
+             xwb1=var0(nvar0+57)
+!             print*,'on a deja localise on reprend xwb1=',xwb1
 !            recuperation du coeff d aleas temporel utilise pour calculer tau spatial
-             coefft=var0(nvar0+77)             
+             coefft=var0(nvar0+77)
 !            attention nouvelle definition de alpha cf unpas.proc et ci-dessus
              veq=vref0/((xwb1)**weib0)
              coeffgf=var0(nvar0+72)
-             errmesh=var0(nvar0+71)            
-!            print*,'veq',veq,' xwb',xwb1 
+             errmesh=var0(nvar0+71)
+!            print*,'veq',veq,' xwb',xwb1
 !            print*,'rt0=rt0*xwb1',rt0,rt0*xwb1
 !            comme coefft evolue encore dans la zone fissuree on repasse par nosnap
 !             if(coefft.ne.1.) then
@@ -1030,98 +1001,98 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
              dpict00=1.d0-cnlt1**(-1)
 !            donnees pour endo de Poisson sans effet d echelle
              call b3d_nosnap(istep,fr10,rt0,dpict00,Gft0,e0,beta1,gama1&
-            ,xli,vref0,weib0,vref0,rtw2,errmesh2,coeffGf2,1.d0)                         
+            ,xli,vref0,weib0,vref0,rtw2,errmesh2,coeffGf2,1.d0)
              gftw2=coeffgf2*gft0
              eptw2=cnlt1*(rtw2/e0)
            end if
 !          on stocke veq/vref pour info dans la variable non locale qui n est plus utile
-           varf(nvar0+43)=veq/vref0 
+           varf(nvar0+43)=veq/vref0
 !          stockage du facteur d effet d echelle dans les variables internes
-           varf(nvar0+57)=xwb1 
+           varf(nvar0+57)=xwb1
 !          stockage facteur d effet d echelle sur l energie de fissuration
-           varf(nvar0+72)=coeffGf           
+           varf(nvar0+72)=coeffGf
 !          stockage du coeff  d amplification temporelle a rupture
-           varf(nvar0+77)=coefft 
+           varf(nvar0+77)=coefft
 !          stockage de l indicateur d erreur de la taille de mailles
-!          dans les variables internes       
-           varf(nvar0+71)=errmesh             
-!          fin du traitement si 2nd passage non locale          
-         else 
-!          istep=1 : pas d effet d echelle hors "non snap back"    
-!          pour la 1ere etape non locale coefft=1 veq=vref0           
-           coefft=1.d0                 
+!          dans les variables internes
+           varf(nvar0+71)=errmesh
+!          fin du traitement si 2nd passage non locale
+         else
+!          istep=1 : pas d effet d echelle hors "non snap back"
+!          pour la 1ere etape non locale coefft=1 veq=vref0
+           coefft=1.d0
            veq=vref0
 !          on verifie la condition de non snap back local
            call b3d_l3(local,t33,n33,vt33,vt33,l3)
-           dpict00=1.d0-cnlt1**(-1)     
+           dpict00=1.d0-cnlt1**(-1)
            xli=max(l3(1),l3(2),l3(3))
            call b3d_nosnap(istep,fr10,rt0,dpict00,Gft0,e0,beta1,gama1&
           ,xli,vref0,weib0,veq,rtw2,errmesh,coeffGf,coefft)
            xwb1=rtw2/(rt0*coefft)
            gftw2=Gft0*coeffGf
-           eptw2=cnlt1*(rtw2/e0)           
-         end if          
+           eptw2=cnlt1*(rtw2/e0)
+         end if
 !        istep=1 ou istep=2 : donnees pour calcul probabiliste si istep=2
-!        modif des autres parametres de la loi de traction pour rester compatible 
-!        effet d echelle spatial         
-         rt0=rt0*xwb1*coefft   
+!        modif des autres parametres de la loi de traction pour rester compatible
+!        effet d echelle spatial
+         rt0=rt0*xwb1*coefft
 !        print*,'Nouvelle resistance a la traction', rt0
 !        modif de la deformation au pic pour conserver la non
 !        linearite pour avoir ept0>=rt/E
          ept0=cnlt1*(rt0/e0)
-!        seuil de rankine en contrainte non endo         
+!        seuil de rankine en contrainte non endo
          suw1=e0*ept0
 !        adaptation des données pour le critere en contrainte effective
 !        avec attenuation du coeff de Poisson
          dpic0=1.d0-rt0/e0/ept0
          gft0=gft0*coeffGf
-!        modification de l energie de fissuration en fonction de xwb et 
-!        du volume de lelement         
+!        modification de l energie de fissuration en fonction de xwb et
+!        du volume de lelement
        else
 !        pas de calcul non local veq est pris egal au volume de l element fini
-!        pas d effet d echelle temporel    
+!        pas d effet d echelle temporel
 !        print*,'juste avant b3d_l3',local,t33,n33,vt33,vt33,l3
          call b3d_l3(local,t33,n33,vt33,vt33,l3)
 !        l3 contient alors les tailles principales de l element
 !        on calcul la resistance de l element avec les criteres proba et no snap back
          dpict00=1.d0-cnlt1**(-1)
-!        la taille est la plus grande des 3 principales de l element      
+!        la taille est la plus grande des 3 principales de l element
          xli=max(l3(1),l3(2),l3(3))
 !        on prend veq=vref0 pour ne pas avoir
 !        d effet d echelle probabiliste en calcul local, ainsi, s il y a une minoration
 !        de rt ce sera a cause de la taille trop grande de l element uniquement
 !        on verifiera alors tout de meme excatement gf
-         veq=vref0  
-         coefft=1.d0         
+         veq=vref0
+         coefft=1.d0
          call b3d_nosnap(istep,fr10,rt0,dpict00,Gft0,e0,beta1,gama1,xli,&
         vref0,weib0,veq,rteff,errmesh,coeffGf,coefft)
 !        multiplicateur probabiliste
-         xwb1=rteff/rt0 
-!         print*,'ds endo3d coeffgf:',coeffgf, 'coeff rt',xwb1        
+         xwb1=rteff/rt0
+!         print*,'ds endo3d coeffgf:',coeffgf, 'coeff rt',xwb1
 !        affectation de la resistance a la traction de calcul
          rt0=rteff
          gft0=gft0*coeffGf
-!        volume considere pour minorer la resistance         
-         varf(nvar0+43)=veq 
+!        volume considere pour minorer la resistance
+         varf(nvar0+43)=veq
 !        stockage du facteur d effet d echelle dans les variables internes
-         varf(nvar0+57)=xwb1 
+         varf(nvar0+57)=xwb1
 !        stockage facteur d effet d echelle sur l energie de fissuration
-         varf(nvar0+72)=coeffGf                   
+         varf(nvar0+72)=coeffGf
 !        stockage de l indicateur d erreur de la taille de mailles
-!        dans les variables internes       
+!        dans les variables internes
          varf(nvar0+71)=errmesh
 !        valeurs considerees pour Poisson identiques
          rtw2=rt0
-         eptw2=cnlt1*(rtw2/e0)         
-         gftw2=Gft0         
+         eptw2=cnlt1*(rtw2/e0)
+         gftw2=Gft0
        end if
-!      controle de la valeur de la resistance a la traction      
+!      controle de la valeur de la resistance a la traction
        if (rt0.eq.0.)then
          print*,'Dans endo3d pb de donnees incoherentes pour Weibull'
          print*,'istep',istep
          print*,'rt0',rt0,'xwb1',xwb1,'xwb0',xwb0,'veq',veq,'vref',vref0
          print*,'(vref/veq)**xb',(vref0/veq)**xb,'var0(nvar0+57) ',&
-        var0(nvar0+57) 
+        var0(nvar0+57)
          read*
          call utmess('F','COMPOR1_90')
        end if
@@ -1177,7 +1148,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
       end do
 !     matrice d endommagement pour l attenuation du coeff de Poisson
       call b3d_d66(xnu0,st3,d66,e0,.false.,.false.)
-   
+
 !********************************************************************************
 !     on en deduit les contraintes totales dans la matrice apres
 !     attenuation des coeffs de Poisson
@@ -1205,13 +1176,13 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     on poursuit les calcul avec ces nouvelles contraintes effectives
       call b3d_partition(siget6,sigef3,vsigef33,vsigef33t,&
      sigeft6,sigefc6,sigefc3,sigeft3)
-     
+
 !********************************************************************************
 !     prise en compte de l aleas eventuel sur le champ de contrainte
-!*******************************************************************************     
+!*******************************************************************************
 !     calcul des contraintes locales (sigi) incluant les autocontraintes eventuelles
       call b3d_covs(aleas0,vsigef33,vsigef33t,sigeft3,&
-     sigefc3,sigi6,sigit3,sigic3)     
+     sigefc3,sigi6,sigit3,sigic3)
 
 !******************************************************************************
 !    WL2 : on utilise cette contrainte effective pour calculer les probabilites
@@ -1219,33 +1190,33 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !******************************************************************************
 
 !     ces effets d echelle ne sont actif qu'en non local
-      if((istep.eq.1).or.(istep.eq.2)) then     
-     
-!     ************ traction maxi ****************************************  
-!     recherche de la contrainte maxi integrant l aleas du champ de contrainte      
-      sigmax=max(sigit3(1),sigit3(2),sigit3(3)) 
-      
-!     *********** prise en compte de l aleas sur la resistance *******      
-       
+      if((istep.eq.1).or.(istep.eq.2)) then
+
+!     ************ traction maxi ****************************************
+!     recherche de la contrainte maxi integrant l aleas du champ de contrainte
+      sigmax=max(sigit3(1),sigit3(2),sigit3(3))
+
+!     *********** prise en compte de l aleas sur la resistance *******
+
 !     *********** aspect temporel ************************************
 
       if(xs1.lt.1.) then
 !      traitement effet d echelle temporel possible
 !      actualisation du tau de chargement equivalent
        sigseuil=xs1*rtw1
-!      temps de reference pour le calage de rtref        
+!      temps de reference pour le calage de rtref
        tref=xmat(nmelast+24)
-!      tau de chargement temporel maxi pour ce pas        
+!      tau de chargement temporel maxi pour ce pas
        tau0=var0(nvar0+76)
-!      tau de chargement temporel de reference debut de pas  (sans DRGI)      
+!      tau de chargement temporel de reference debut de pas  (sans DRGI)
        dsigtmp0=(tau0**(1./xktemp))*(rtw1-sigseuil)
-!      tau de chargement fin de pas       
+!      tau de chargement fin de pas
        dsigtmp1=max((sigmax-sigseuil),0.d0)
-!      tau de chargement de reference fin de pas    (sans DRGI)    
+!      tau de chargement de reference fin de pas    (sans DRGI)
        tau1=(dsigtmp1/(rtw1-sigseuil))**xktemp
-!      stockage du tau de chargement de reference pour la pas suivant        
+!      stockage du tau de chargement de reference pour la pas suivant
        varf(nvar0+76)=tau1
-!      tau de chargement equivalent (-ln(1-pf))        
+!      tau de chargement equivalent (-ln(1-pf))
        if(tau1.eq.tau0)then
           dtaueq=dt*tau0
        else
@@ -1256,9 +1227,9 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
             dtaueq=0.d0
           end if
        end if
-!      actualisation du tau de chargement equivalent temporel 
-       taueq1=var0(nvar0+73)+dtaueq      
-       varf(nvar0+73)=taueq1 
+!      actualisation du tau de chargement equivalent temporel
+       taueq1=var0(nvar0+73)+dtaueq
+       varf(nvar0+73)=taueq1
 !      actualisation du temps chargé equivalent
        if(tau1.ne.0.) then
            tequ1= taueq1/tau1
@@ -1271,19 +1242,19 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
          coefft=((tref/tequ1)**(1./xktemp))*(1.d0-xs1)+xs1
        else
 !       en l'abscence de chargement on adopte une valeur forfaitaire tre eleve
-!       pour qu il n' y ait pas de risque de rupture       
+!       pour qu il n' y ait pas de risque de rupture
          coefft=coefftmax0
        end if
       else
-!      pas d effet d echelle temporel car xs1=1      
+!      pas d effet d echelle temporel car xs1=1
        coefft=1.d0
       end if
-!     stockage du coeff multiplicateur de rt / effet d echelle temporel 
+!     stockage du coeff multiplicateur de rt / effet d echelle temporel
 !     print*,'istep=',istep,' coefft apres reevaluation=',coefft
 !     read*
 !     on prend ce coefft que si pas encore localise
-      if(var0(nvar0+74).ne.1.)then 
-!        pas encore localise la resistance peut changer      
+      if(var0(nvar0+74).ne.1.)then
+!        pas encore localise la resistance peut changer
           varf(nvar0+77)=coefft
       else
 !         varf(nvar0+77)=coefft
@@ -1292,40 +1263,40 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
       end if
 !      pas de condition de localisation car affecte aussi la zone localisee
 !      (si la fissure se propage lentement il faudra moins d energie)
-        
-!      *************traitement de  l aleas spatial local ****************        
-             
+
+!      *************traitement de  l aleas spatial local ****************
+
 !      taux de chargement pour le volume de reference et le temps equivalent
 !      si on veut ignorer le temps equivalent on met coefft a 1
 !       coefft=1.d0
 !      rtw1 integre un couplage rgi/wl2 (cf plus haut)
        xtau2=max((sigmax/(rtw1*coefft))*(1.d0-var0(nvar0+74)),xtaumin)
        xtau1=xtau2**xweibull
-!       xtau1=min(xtau1,1.d0)       
+!       xtau1=min(xtau1,1.d0)
 !      on teste avec un tau qui n est pas celui de Weibull !!!
 !      pour evacuer les non linearites lors de l evaluation du volume charge
 !       xtau1=(1.d0+xweibull*(sigmax/(rtw1*coefft)-1.d0))
-!       xtau1=xtau1*(1.d0-var0(nvar0+74)) 
+!       xtau1=xtau1*(1.d0-var0(nvar0+74))
 !       xtau1=max(xtau1,xtaumin)
 !        xtau1=xtau2
-!       xtau1=min(xtau1,1.d0)      
-!      prise en compte de la zone non encore localisee uniquement           
+!       xtau1=min(xtau1,1.d0)
+!      prise en compte de la zone non encore localisee uniquement
 !       xtau1=(xtau0*(1.d0-var0(nvar0+74))),xtaumin)
-!      print*,'taux de chargement pour istep=1',xtau1 
-!      variable a modifier par la procedure non locale 
+!      print*,'taux de chargement pour istep=1',xtau1
+!      variable a modifier par la procedure non locale
        if (istep.eq.1) then
-!         pour le calcul non local      
+!         pour le calcul non local
           varf(nvar0+43)=xtau1*vmax0
           varf(nvar0+58)=xtau1
-          goto 999 
+          goto 999
        else
 !         on stocke veq/vref pour voir l ampleur de la zone chargé
           varf(nvar0+43)=veq/vref0
           varf(nvar0+58)=xtau1
        end if
-!      fin du traitement des effets d echelle par WL2        
-      end if        
- 
+!      fin du traitement des effets d echelle par WL2
+      end if
+
 !******************************************************************************
 !    endommagement localise de traction apres decouplage des effets de Poisson
 !******************************************************************************
@@ -1348,7 +1319,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
       nfid1=1.d0
       call b3d_sd (ssl6,t33,n33,l3,vt33,e0,xnu0,Gft0,fr10,rt0,ept0,&
      beta1,gama1,regl0,erreur,d03,dfl3,st3,vss33,vss33t,local,e2l3,&
-     nfid1,rrr,Rapp6,dpic0,0)     
+     nfid1,rrr,Rapp6,dpic0,0)
       if (erreur.eq.1) then
        print*,'seuils localisation traction'
        print*, ssl6
@@ -1370,11 +1341,11 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
       call b3d_chrep(sigef33,x33,vss33)
       call x33x6(sigef33,x6)
 !     prise en compte de l endo localise en base prin endo
-      call b3d_sigapp(x6,dl66,sigat6,.true.)      
+      call b3d_sigapp(x6,dl66,sigat6,.true.)
 !     retour en base fixe
       call x6x33(sigat6,x33)
       call b3d_chrep(sigal33,x33,vss33t)
-      call x33x6(sigal33,sigat6)       
+      call x33x6(sigal33,sigat6)
 
 !***************************************************************************
 !     prise en compte des contraintes de refermeture des fissures localisees
@@ -1384,7 +1355,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
        call hydr_vari(var0(nvar0+24+i),spl6(i),hydra0,hydra1,&
       hydras,erreur)
        call hydr_vari(var0(nvar0+30+i),wfm6(i),hydra0,hydra1,&
-      hydras,erreur) 
+      hydras,erreur)
       end do
       if(fl3d) then
 !      recuperation des parametres de fluage
@@ -1392,8 +1363,8 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
        tau1=xmat(nmelast+nmhydra+2)
        tau2=xmat(nmelast+nmhydra+3)
        eafluage=xmat(nmelast+17)
-!      recuperation de la consolidation  
-       cc2=max(varf(nvhydra+48),1.d0)           
+!      recuperation de la consolidation
+       cc2=max(varf(nvhydra+48),1.d0)
 !      recuperation des deformation visco elastiques du pas precedent
 !      et des vitesses de deformation du pas precedent
        do i=1,6
@@ -1402,17 +1373,17 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
      call hydr_vari(var0(nvar0+58+i),vve6(i),hydra0,hydra1,&
        hydras,erreur)
      call hydr_vari(var0(nvar0+64+i),vm6(i),hydra0,hydra1,&
-       hydras,erreur)     
+       hydras,erreur)
        end do
       else
 !      pas de parametres de fluage disponibles
        y1sy=0.d0
        tau1=0.d0
        tau2=0.d0
-       eafluage=0.d0 
+       eafluage=0.d0
 !      recuperation de la consolidation
-       cc2=1.d0          
-!      pas de def visco elastique      
+       cc2=1.d0
+!      pas de def visco elastique
        do i=1,6
          eve6(i)=0.d0
          vve6(i)=0.d0
@@ -1423,10 +1394,10 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     et des contraintes de refermeture dans les fissures
       do i=1,6
        sve6(i)=var0(nvar0+50+i)
-      end do 
+      end do
 !     calcul de la contrainte de refermeture
 !     print*,'ds b3d av b3d_srf'
-!     print*,y1sy,tau1,tau2,cc2,0.5d0*(teta1+teta2),eafluage 
+!     print*,y1sy,tau1,tau2,cc2,0.5d0*(teta1+teta2),eafluage
 !     temperature moyenne pendant le pas pour le calcul du fluage dans la fissure
       teta12=0.5d0*(teta1+teta2)
 !     indicateur de 1er passage pour savoir si on doit initialiser la contrainte
@@ -1435,50 +1406,50 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
         maj0=.true.
       else
         maj0=.false.
-      end if 
+      end if
 
-!     recup de l indicateur de localisation      
+!     recup de l indicateur de localisation
       xloc=var0(nvar0+74)
       call b3d_srf(sigat6,vss33,spl6,l3,e2l3,wfeff3,wfm6,&
      vss33t,sigarf6,xnu0,e0,dpic0,rc0,wref0,tphi0,dl66,&
      erreur,dfl3,ssl6,ept0,siget6,sref1,fl3d,eve6,vve6,sve6,&
      y1sy,tau1,tau2,cc2,teta12,eafluage,dt,vm6,maj0,depst6,&
      sigaf6,xloc)
-!     indicateur de localisation et de choix de rt             
+!     indicateur de localisation et de choix de rt
       varf(nvar0+74)=xloc
 !      if((xloc.eq.1.).and.(var0(nvar0+74).ne.1.))then
 !       print*,'on vient de localiser avec',xwb1
 !      end if
-    
-!     ******************************************************************     
+
+!     ******************************************************************
 !     calcul de l increment du volume d ouverture de fissure pour estimer
-!     l increment de pression induit 
+!     l increment de pression induit
 !     ******************************************************************
 
 !     et maj des ouvetures dans les variables internes
-      dvfiss0=0.d0     
+      dvfiss0=0.d0
       do i=1,3
         varf(nvar0+36+i)=wfeff3(i)
         dvfiss0=dvfiss0+ varf(nvar0+36+i)-var0(nvar0+36+i)
       end do
-      
-!     ******************************************************************      
+
+!     ******************************************************************
 !     correction de la pression pour integrer l ouverture de fissure
       if(pw1.gt.0.)then
        dpw1=-xwsat*(1.d0-bw1)*dvfiss0
-!       if(dpw1.ne.0.)then       
+!       if(dpw1.ne.0.)then
 !         print*,'variation de pression dans endo3d',dpw1
 !       end if
       else
         dpw1=0.d0
-      end if   
+      end if
 !     pw1=pw1+dpw1 debranché pour l instant
       varf(17)=pw1
 !     ******************************************************************
-      
-!     mise a jour des varibles internes du modele de fissuration        
+
+!     mise a jour des varibles internes du modele de fissuration
       do i=1,6
-!       cf desfinition des variables internes dans idvar4      
+!       cf desfinition des variables internes dans idvar4
         varf(nvar0+24+i)=spl6(i)
         varf(nvar0+30+i)=wfm6(i)
         varf(nvar0+44+i)=eve6(i)
@@ -1491,14 +1462,14 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
         siga6(i)=sigat6(i)+sigarf6(i)
 !        print*,'siga6 avant pression(',i,')=',siga6(i)
       end do
-     
+
 !*****************************************************************************
 !  contribution des supressions hydriques dans les fissures localisees
 !*****************************************************************************
 
 !!!!!!l evolution de Biot n etant pas implementer on laisse faire le solveur!!!!!
 ! avec son biot constant
-      if(mfr.ne.33) then    
+      if(mfr.ne.33) then
       do i=1,3
        if (pw1.gt.0.d0) then
         dsw6(i)=-pw1*(dfl3(i)+bw1*(1.d0-dfl3(i)))
@@ -1521,7 +1492,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
        dsw6(i)=0.d0
       end do
       end if
-! !!!!!!!!!!!fin premiere partie modif provisoire !!!!!!!!!!!!!!!!!!!!!     
+! !!!!!!!!!!!fin premiere partie modif provisoire !!!!!!!!!!!!!!!!!!!!!
 
 !**************************************************************************
 !     prise en compte de l'endommagement isotrope de compression
@@ -1539,7 +1510,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
       call hydr_vari(var0(nvar0+41),dc0,hydra0,hydra1,&
      hydras,erreur)
 !     actualisation de l endommagement de compression cisaillement
-!     l aleas n est repercute que si cg0=aleas0 au debut d endo3d       
+!     l aleas n est repercute que si cg0=aleas0 au debut d endo3d
       call b3d_dc(siga3,long3,dcf,dc0,e0,delta0,gfc0,rc0,epc0,&
      beta1,gama1,regl0,fr2,suc0,ifour,cg0,bw1,pw1)
 !     stockage des variables internes actualisee
@@ -1549,16 +1520,16 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !***************************************************************************
 !     calcul des contraintes totales
 !***************************************************************************
-!     composition de l'endommagement isotrope de compression et 
+!     composition de l'endommagement isotrope de compression et
 !     de l'endommagement
 !     localise de traction avec l endo de fluage et l endo thermique
 !     depuis juin 2013 dflu n affecte plus que l etage de Maxwell
 !     cf calage de S.Multon
-      umd0=(1.d0-dcf)*(1.d0-dth0)  
-!      umd0=(1.d0-dcf)*(1.d0-dflu0)*(1.d0-dth0)      
+      umd0=(1.d0-dcf)*(1.d0-dth0)
+!      umd0=(1.d0-dcf)*(1.d0-dflu0)*(1.d0-dth0)
 !     calcul des contraintes totales
-   
-!     **********************************************************************      
+
+!     **********************************************************************
 !     contribution des pressions hydriques
 !     **********************************************************************
       do i=1,6
@@ -1575,12 +1546,12 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !            nul que pour les surpressions
 ! !!!!! siga6(i)=siga6(i)+bw1*pw1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
               continue
-! !!!!!! fin 2eme partie modif en attendant mieux !!!!!!!!!!!!!!!!!!!!!!              
+! !!!!!! fin 2eme partie modif en attendant mieux !!!!!!!!!!!!!!!!!!!!!!
 !             siga6(i)=siga6(i)-dsw6(i)
            end if
           end if
 !          print*,'siga6(',i,')=',siga6(i),'dsw6(',i,')=',dsw6(i)
-         end if        
+         end if
       end do
 !        read*
 !     passage des contraintes calculees au code EF
@@ -1603,13 +1574,13 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
        errb3d=1
        call utmess('F','COMPOR1_90')
       end if
-   
+
 !********************************************************************************
 !     recuperation des variables internes en cas de calcul non local
 !********************************************************************************
 !     lors d'un calcul non local unpas.pric attribue les varf aux var0
 !     on fait l inverse pour les varibles a conserver
-999   if (istep.eq.1) then 
+999   if (istep.eq.1) then
 !       on recopie les var0 ds les varf sauf
 !       celle a moyenner
 !       le taux de chargement instantane*vmax (43)
@@ -1630,28 +1601,28 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !     excepté l hydratation et la temperature de controle nvar0(1)
 !     excepte la taille principale des elements var0(nvar1+1) a var0(nvar1+nvtail)
 !     excepte l indicateur d initialisation des conditions initiales var0(29)
-!     le materiau est "neuf" a chaque iteration tant q'on a pas passe le seuil 
+!     le materiau est "neuf" a chaque iteration tant q'on a pas passe le seuil
 !     d hydratation
 !********************************************************************************
       if ((istep.eq.0 .or. istep.eq.2).and.(hydra1.le.hydras)) then
-        do i=1,nvari 
+        do i=1,nvari
          if(i.le.nvar1 .or. i.gt.(nvar1+nvtail)) then
-!          si pas les vecteurs propres de la taille des elements         
+!          si pas les vecteurs propres de la taille des elements
            if(i.ne.1) then
 !            si pas l hydratation
              if(i.ne.29) then
 !             si pas l indicateur d intialisation des CI
               if(fl3d) then
 !                si on passe par le fluage on exclue la mise a zero de la temperature
-                 if (i.ne. (nvhydra+36)) then          
+                 if (i.ne. (nvhydra+36)) then
                      varf(i)=0.d0
                  end if
-              else 
+              else
                  varf(i)=0.d0
               end if
              end if
            end if
          end if
         end do
-      end if  
+      end if
 end subroutine

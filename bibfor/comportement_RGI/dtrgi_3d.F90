@@ -57,67 +57,66 @@ subroutine dtrgi_3d(f,dtmin,dalsol,dssol,daft,dafm,dsf,alsol,ssol&
       real(kind=8) ::dtafm
       real(kind=8) ::dtsf
       real(kind=8) ::dtmin1
-      real(kind=8) ::dalf
       real(kind=8) ::vmin
       real(kind=8) ::dtallib
       real(kind=8) ::dtcash
 
-      
-      vmin=1.d-15
-      cmin=1.d-10  
 
-      if ((sf.lt.cmin).and.(dsf.le.0.d0)) then      
+      vmin=1.d-15
+      cmin=1.d-10
+
+      if ((sf.lt.cmin).and.(dsf.le.0.d0)) then
        dsf=-vmin
        dtsf=(f*sf)/dabs(dsf)
-       dsf=0.d0      
+       dsf=0.d0
       else
-       dtsf=(f*sf)/dabs(dsf) 
+       dtsf=(f*sf)/dabs(dsf)
       end if
 
-      if ((alf.lt.cmin).and.(dallib.le.0.d0)) then      
+      if ((alf.lt.cmin).and.(dallib.le.0.d0)) then
        dallib=-vmin
        dtallib=(f*alf)/dabs(dallib)
-       dallib=0.d0      
+       dallib=0.d0
       else
-       dtallib=(f*alf)/dabs(dallib)  
+       dtallib=(f*alf)/dabs(dallib)
       end if
 
       if (dcash.eq.0.) then
        dtcash=(f*alf)/vmin
-      else      
+      else
        dtcash=(f*alf)/dabs(dcash)
-      end if      
-      
-      if ((aft.lt.cmin).and.(daft.le.0.d0)) then      
+      end if
+
+      if ((aft.lt.cmin).and.(daft.le.0.d0)) then
        daft=-vmin
        dtaft=(f*aft)/dabs(daft)
-       daft=0.d0      
+       daft=0.d0
       else
-       dtaft=(f*aft)/dabs(daft)  
-      end if      
+       dtaft=(f*aft)/dabs(daft)
+      end if
 
-      if ((afm.lt.cmin).and.(dafm.le.0.d0)) then      
+      if ((afm.lt.cmin).and.(dafm.le.0.d0)) then
        dafm=-vmin
        dtafm=(f*afm)/dabs(dafm)
        dafm=0.d0
       else
-       dtafm=(f*afm)/dabs(dafm)  
-      end if      
-      
- !      if ((csheff.lt.cmin).and.(dcsheff.lt.0.d0)) then      
+       dtafm=(f*afm)/dabs(dafm)
+      end if
+
+ !      if ((csheff.lt.cmin).and.(dcsheff.lt.0.d0)) then
  !      dcsheff=-vmin
  !      dtcsheff=(f*csheff)/dabs(dcsheff)
- !      dcsheff=0.d0      
+ !      dcsheff=0.d0
  !      elseif (dcsheff.eq.0.) then
- !      dtcsheff=(f*csheff)/vmin      
+ !      dtcsheff=(f*csheff)/vmin
  !      else
- !      dtcsheff=(f*csheff)/dabs(dcsheff)      
- !      end if    
-      
+ !      dtcsheff=(f*csheff)/dabs(dcsheff)
+ !      end if
+
       call vsolal_3d(dalsol,dallib,daft,dafm,alc,phi,sr,dalpha,&
      vsr,alsol)
       call vsols_3d(dssol,dsf,daft,dafm,sc,phi,sr,dalpha,vsr,ssol)
-      
+
       if(dssol.ne.0.)then
        if(ssol.gt.cmin)then
         dtssol=(f*ssol)/dabs(dssol)
@@ -134,14 +133,14 @@ subroutine dtrgi_3d(f,dtmin,dalsol,dssol,daft,dafm,dsf,alsol,ssol&
       else
         dtssol=(f*ssol)/dabs(vmin)
       end if
-      
+
       if (dalsol.ne.0.)then
        if(alsol.gt.cmin) then
         dtalsol=(f*alsol)/dabs(dalsol)
        else
         dtalsol=(f*alsol)/dabs(vmin)
         dalsol=alc*dalpha/(phi*sr)-alsol*vsr/sr
-        dssol=sc*dalpha/(phi*sr)-ssol*vsr/sr        
+        dssol=sc*dalpha/(phi*sr)-ssol*vsr/sr
         dsf=0.d0
         daft=0.d0
         dafm=0.d0
@@ -149,10 +148,10 @@ subroutine dtrgi_3d(f,dtmin,dalsol,dssol,daft,dafm,dsf,alsol,ssol&
         dcash=0.d0
 
        end if
-      else 
+      else
        dtalsol=(f*alsol)/dabs(vmin)
       end if
-             
+
       dtmin1=dmin1(dtalsol,dtssol,dtaft,dtallib,dtafm)
       dtmin=dmin1(dtsf,dtcash,dtcal,dtmin1)
  !     dtcsheff,

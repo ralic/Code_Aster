@@ -18,7 +18,7 @@ subroutine vallib_3d(khi,dallib,alf,alfeq,dafm,casol,nasol,alsol)
 ! ======================================================================
 ! person_in_charge: etienne.grimal at edf.fr
 !=====================================================================
-!      provient de rsi_3d : 
+!      provient de rsi_3d :
 !     calcul de la vitesse de fixation de l'aluminium dans les csh
 !=====================================================================
         implicit none
@@ -27,12 +27,11 @@ subroutine vallib_3d(khi,dallib,alf,alfeq,dafm,casol,nasol,alsol)
       real(kind=8) ::alf
       real(kind=8) ::alfeq
       real(kind=8) ::dafm
-      real(kind=8) ::csheff
       real(kind=8) ::alsol
       real(kind=8) ::casol
       real(kind=8) ::nasol
  !     on ne fixe de l alu dans les csh ou on les relargue
  !     on fait en sorte que cette vitesse soit grande devant
  !     celle de formation d aft et afm de façon a la priovilegier
-      dallib=100.d0*khi*(dlog10(alfeq)-dlog10(alf))        
+      dallib=100.d0*khi*(dlog10(alfeq)-dlog10(alf))
 end subroutine
