@@ -9,6 +9,8 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xneuvi.h"
@@ -70,7 +72,7 @@ implicit none
     integer :: cpt, deja, k, noeud(2*nb_edgez), ik, tabdir(nb_edgez, 2), nbno, ii, ia
     integer :: scorar(nb_edgez), bestar, maxi, ir, t1(2*nb_edgez)
     integer :: mi, ma, npaq, t2(nb_edgez), nreleq, ip, dimeq, eq(nb_edgez), ie, ipaq
-    integer :: liseqt(nb_edgez, 2), jlis1
+    integer :: liseqt(nb_edgez, 2), jlis1, ier
     integer :: npil
     real(kind=8) :: tabco(nb_edgez, nb_dim), tabcr(nb_edgez)
     integer :: nunoa, nunob
@@ -298,6 +300,8 @@ implicit none
 !
 !     STOCKAGE DE LISEQT
     if (nreleq .gt. 0) then
+        call jeexin(sdline_crack,ier)
+        if(ier.ne.0) call jedetr(sdline_crack)
         call wkvect(sdline_crack, 'G V I', nreleq*2, jlis1)
         do ie = 1, nreleq
             zi(jlis1-1+2*(ie-1)+1)=liseqt(ie,1)

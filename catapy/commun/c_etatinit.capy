@@ -24,6 +24,7 @@ def C_ETAT_INIT( COMMAND, statut ) :  #COMMUN#
     kwargs['SIGM']           = SIMP(statut='f',typ=(cham_elem,carte_sdaster))
     kwargs['VARI']           = SIMP(statut='f',typ=cham_elem)
     kwargs['STRX']           = SIMP(statut='f',typ=cham_elem)
+    kwargs['COHE']      = SIMP(statut='f',typ=cham_elem)
 
     if COMMAND == 'DYNA_NON_LINE':
         kwargs['VITE']       = SIMP(statut='f',typ=cham_no_sdaster)
@@ -38,7 +39,7 @@ def C_ETAT_INIT( COMMAND, statut ) :  #COMMUN#
 
     if COMMAND == 'DYNA_NON_LINE':
         mcfact = FACT(statut=statut,max='**',            
-                  regles=(AU_MOINS_UN('EVOL_NOLI','ACCE','VITE','DEPL','SIGM','VARI',),
+                  regles=(AU_MOINS_UN('EVOL_NOLI','ACCE','VITE','DEPL','SIGM','VARI','COHE',),
                           EXCLUS('NUME_ORDRE','INST'), ),
                   b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
                                    PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
@@ -48,7 +49,7 @@ def C_ETAT_INIT( COMMAND, statut ) :  #COMMUN#
                  )
     else:
         mcfact = FACT(statut=statut,max='**',            
-                  regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI',),
+                  regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI','COHE',),
                           EXCLUS('NUME_ORDRE','INST'), ),
                   b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
                                    PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),

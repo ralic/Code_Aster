@@ -14,6 +14,7 @@ implicit none
 #include "asterfort/nmetnc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
+#include "asterfort/xetco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,6 +128,11 @@ implicit none
 !
 ! --------- Try to convert field (discretization) if necessary
 !
+            if(field_name_resu.eq.'COHE_ELEM') then
+                call xetco(field_resu, field_algo, field_name_init)
+            endif
+            if(field_name_resu.eq.'COHE_ELEM') goto 98
+!
             call nmetcv(field_name_init, field_resu, field_disc_in, field_resu_cv, field_disc_out)
 !
 ! --------- Copy field
@@ -145,6 +151,7 @@ implicit none
                 write(6,*) 'DISCRETISATION NON TRAITEE: ',field_disc_in
                 ASSERT(.false.)
             endif
+98          continue
 !
 ! --------- New state of field
 !

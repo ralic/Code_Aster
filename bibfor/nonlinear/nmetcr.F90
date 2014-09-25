@@ -104,7 +104,7 @@ implicit none
 ! - Keyword for initial state (ETAT_INIT)
     data keyw_etat_init   /'DEPL','SIGM','VARI',&
                            ' '   ,'VITE','ACCE',&
-                           ' '   ,' '   ,' '   ,&
+                           ' '   ,' '   ,'COHE',&
                            ' '   ,' '   ,' '   ,&
                            ' '   ,' '   ,' '   ,&
                            ' '   ,'STRX',' '   ,&

@@ -7,6 +7,8 @@ implicit none
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/r8maem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -85,7 +87,7 @@ implicit none
     integer :: nb_node_mesh, nbar, nbarto, itypma
     integer :: ar(12, 3), na, nb, nunoa, nb_edge_max
     integer :: nunob, nunom, nunoaa, nunobb
-    integer :: ia, iia, ia1, ia2, i, k, iret, ima
+    integer :: ia, iia, ia1, i, k, iret, ima
     integer :: jconx2, jmail
     integer :: npil
     real(kind=8) :: c(3), cc(3)
@@ -105,11 +107,16 @@ implicit none
     character(len=6) :: nompro
     parameter (nompro = 'XLAGSP')
     integer :: nmaenr, ienr, jgrp, jxc, ier, jnbpt
+    integer :: noeco(2),nuno1,nuno2,jlis,naren
+    character(len=8) ::  kbid
+    aster_logical :: relpre, enleve
+    integer :: nuno_1, nuno_2, ia2, decalage
     integer, pointer :: cesv2(:) => null()
     real(kind=8), pointer :: cesv3(:) => null()
     real(kind=8), pointer :: cesv4(:) => null()
     integer, pointer :: typmail(:) => null()
     integer, pointer :: connex(:) => null()
+    aster_logical, pointer :: tab_enl(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -153,6 +160,19 @@ implicit none
     call jeveuo(chsba//'.CESD', 'L', jcesd5)
     call jeveuo(chsba//'.CESV', 'L', jcesv5)
     call jeveuo(chsba//'.CESL', 'L', jcesl5)
+!
+! --- SI SDLINE_CRACK EXISTE (PROPAGATION), ON LE LIT
+!
+    call jeexin(sdline_crack,ier)
+    relpre = .false.
+    if(ier.ne.0) then
+        call jelira(sdline_crack,'LONUTI',naren,kbid)
+        naren = naren/2
+        if(naren.ne.0) then
+           relpre = .true.
+           call jeveuo(sdline_crack,'L',jlis)
+        endif
+    endif
 !
 ! --- RECUPERATION DE DONNEES RELATIVES AU MAILLAGE
 !
@@ -333,6 +353,108 @@ implicit none
 !
     end do
  99 continue
+!
+! --- SI NLISEQ EXISTE, ON ENLEVE LES ARETES HYPERSTATIQUES POUR L'ANCIEN ESPACE
+!
+    if(relpre) then
+!
+        AS_ALLOCATE(vl=tab_enl,size=nbarto)
+!
+        do ia = 1,nbarto
+!
+            enleve = .false.
+            nunoa = zi(jtabno-1+3*(ia-1)+1)
+            nunob = zi(jtabno-1+3*(ia-1)+2)
+            noeco(1) = 0
+            noeco(2) = 0
+            do i=1,naren
+                nuno1 = zi(jlis-1+2*(i-1)+1)
+                nuno2 = zi(jlis-1+2*(i-1)+2)
+!
+!               SI ARETE VITALE PRECEDENTE, ON LA GARDE
+                if(nunoa.eq.nuno1.and.nunob.eq.nuno2) goto 882
+                if(nunoa.eq.nuno2.and.nunob.eq.nuno1) goto 882
+!
+!               ON REGARDE LES NOEUDS REPERTORIES DS NLISEQ PRECEDENT
+                if(nunoa.eq.nuno1.or.nunoa.eq.nuno2) then
+                    if(noeco(1).eq.0) then
+                        noeco(1) = nunoa
+                    elseif(nunoa.ne.noeco(1)) then
+                        noeco(2) = nunoa
+                    endif
+                endif
+!
+                if(nunob.eq.nuno1.or.nunob.eq.nuno2) then
+                   if(noeco(1).eq.0) then
+                       noeco(1) = nunob
+                   elseif(nunob.ne.noeco(1)) then
+                       noeco(2) = nunob
+                   endif
+                endif
+            end do
+            if(noeco(1).ne.0.and.noeco(2).ne.0) enleve = .true.
+!           Ajout
+!           On regarde si un des noeuds connecte a une ancienne arete
+!           vitale qui n est plus intersectee
+!           Si oui, on laisse l arete
+            if(enleve) then
+              do i=1,naren
+                 nuno1 = zi(jlis-1+2*(i-1)+1)
+                 nuno2 = zi(jlis-1+2*(i-1)+2)
+!
+!                Ancienne arete vitale connectee
+                 if(noeco(1).eq.nuno1.or.noeco(1).eq.nuno2.or.&
+                    noeco(2).eq.nuno1.or.noeco(2).eq.nuno2) then
+                    do ia2=1,nbarto
+                         nuno_1 = zi(jtabno-1+3*(ia2-1)+1)
+                         nuno_2 = zi(jtabno-1+3*(ia2-1)+2)
+!
+                         if((nuno_1.eq.nuno1.and.nuno_2.eq.nuno2).or.&
+                            (nuno_1.eq.nuno2.and.nuno_2.eq.nuno1)) goto 881
+!
+                     end do
+!                    Arete vitale perdue pour le nouvel espace
+                     enleve = .false.
+                     goto 882
+881                  continue
+                 endif
+              end do
+            endif
+!
+!           Si on doit enlever l arete
+882        continue
+           tab_enl(ia) = enleve
+        end do
+!
+        decalage = 0
+        do ia=1, nbarto
+            if(tab_enl(ia)) then
+               decalage = decalage+1
+            else
+               zi(jtabno-1+3*(ia-decalage-1)+1) = zi(jtabno-1+3*(ia-1)+1)
+               zi(jtabno-1+3*(ia-decalage-1)+2) = zi(jtabno-1+3*(ia-1)+2)
+               zi(jtabno-1+3*(ia-decalage-1)+3) = zi(jtabno-1+3*(ia-1)+3)
+               do i=1,nb_dim
+               zr(jtabin-1+nb_dim*(ia-decalage-1)+i) = zr(jtabin-1+nb_dim*(ia-1)+i)
+               end do
+            endif
+        end do
+!
+        do ia =nbarto-decalage+1,nbarto
+            zi(jtabno-1+3*(ia-1)+1) = 0
+            zi(jtabno-1+3*(ia-1)+2) = 0
+            zi(jtabno-1+3*(ia-1)+3) = 0
+            do i=1,nb_dim
+                zr(jtabin-1+nb_dim*(ia-1)+i) = 0.d0
+            end do
+        end do
+!
+        nbarto = nbarto-decalage
+!
+        AS_DEALLOCATE(vl=tab_enl)
+    endif
+!
+    
 !
 !
 ! --- CRITERE POUR DEPARTAGER LES ARETES HYPERSTATIQUES:
