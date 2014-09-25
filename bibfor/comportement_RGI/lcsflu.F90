@@ -59,6 +59,9 @@ subroutine lcsflu(fami, kpg, ksp, ndim, imate,&
     parameter       (nred=28)
     parameter       (nmat=nred+5)
     parameter       (nvari=77)
+        do 21 i = 1, 6
+            depsc(i)=0.
+21      continue
 !
 ! APPEL DE RCVARC POUR LE CALCUL DE LA TEMPERATURE
 !

@@ -61,6 +61,9 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: alpham, alphap, somme
     aster_logical :: fl3d
 !
+        do 21 i = 1, 6
+            depsc(i)=0.
+21      continue
 ! -----------------------------------
 ! --- Limitation aux éléments He8
 ! -----------------------------------
