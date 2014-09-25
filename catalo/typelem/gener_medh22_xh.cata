@@ -133,6 +133,7 @@ MODE_LOCAL__
    
    
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
+    E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
    
    
@@ -308,7 +309,7 @@ OPTION__
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N2NEUT_R PGRADLT
-                                     N2NEUT_R PGRADLN
+                                     N2NEUT_R PGRADLN  E1NEUTI  PTYPDIS
                               OUT__  E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONGCO
                                      E12NEUTR PBASECO  E6NEUTR  PGESCLA  E6NEUTR  PGMAITR  E6NEUTR  PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  

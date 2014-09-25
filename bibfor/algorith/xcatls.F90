@@ -148,7 +148,7 @@ subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
             endif
 !
 !         STOCKAGE DES LEVEL SETS
-            if (typdis .eq. 'FISSURE') then
+            if (typdis .eq. 'FISSURE'.or.typdis.eq.'COHESIF') then
 !
                 zl(jlnsl-1+(ino-1)+1)=.true.
                 zl(jltsl-1+(ino-1)+1)=.true.

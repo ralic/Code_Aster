@@ -1,5 +1,5 @@
 subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
-                  jconx2, clsm)
+                  jconx2, clsm, typdis)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -15,6 +15,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
     integer :: nbma, jconx1, jconx2, clsm
     character(len=8) :: noma
+    character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln
 !
 ! ======================================================================
@@ -132,7 +133,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !         LA VALEUR D'UN LSN DIVISE PAR LA DIFFERENCE DES VALEURS AUX
 !         DEUX EXTREMITES SONT INFERIEURES D'UN CERTAINE NOMBRE, ON MET
 !         LES LSN A ZERO.
-            if (abs(lsna-lsnb) .gt. r8prem()) then
+            if (abs(lsna-lsnb) .gt. r8prem().and.(typdis.ne.'COHESIF'.or.lsna*lsnb.lt.0.d0)) then
                 d1=lsna/(lsna-lsnb)
                 if (abs(d1) .le. crilsn) then
 !              REAJUSTEMENT DE LSNA

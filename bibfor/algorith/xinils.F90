@@ -131,6 +131,7 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
     call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
     if (typdis .eq. 'INTERFACE') callst = .false.
     if (typdis .eq. 'FISSURE') callst = .true.
+    if (typdis .eq. 'COHESIF') callst = .true.
 !
     if (meth .eq. 'FONCTION') then
 !
@@ -278,10 +279,10 @@ subroutine xinils(noma, maiaux, grille, ndim, meth,&
 !
     if (grille) then
         call xajuls(maiaux, nbmagr, cnslt, cnsln, jcong1,&
-                    jcong2, clsm)
+                    jcong2, clsm, typdis)
     else
         call xajuls(noma, nbma, cnslt, cnsln, jconx1,&
-                    jconx2, clsm)
+                    jconx2, clsm, typdis)
     endif
 !
     if (niv .ge. 2) then

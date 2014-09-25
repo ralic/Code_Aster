@@ -56,6 +56,7 @@ subroutine te0510(option, nomte)
 !
 !
     character(len=8) :: elp, noma
+    character(len=16) :: typdis
     integer :: igeom, jlsn, jlst, jgrlsn, jgrlst
     integer :: jout1, jout2, jout3, jout4, jout5, jout6, jout7
     integer :: iadzi, iazk24
@@ -63,12 +64,12 @@ subroutine te0510(option, nomte)
     integer :: i, j, k, jj, nnop
     real(kind=8) :: nd(3), grlt(3), tau1(3), tau2(3), norme, ps
     real(kind=8) :: norm2, ptree(3), ptref(3)
-    real(kind=8) :: lsn
+    real(kind=8) :: lsn, minlst
     integer :: ndim, ibid, nptf, nbtot, nfiss, jtab(7), iret
     aster_logical :: elim, elim2
     integer :: zxain, ifiss, ncompp, ncompa, ncompb, ncompc
     integer :: jfisco, jfiss, kfiss, kcoef, ncomph, he, hescl, hmait
-    integer :: nfisc, ifisc, nfisc2, nn, vali(2)
+    integer :: nfisc, ifisc, nfisc2, nn, vali(2), jtyp
     character(len=16) :: enr
 !
 !     ALLOCATION DES OBJETS TEMPORAIRES A UNE TAILLE SUFFISANTE
@@ -115,6 +116,23 @@ subroutine te0510(option, nomte)
     call jevech('PGRADLN', 'L', jgrlsn)
     call jevech('PGRADLT', 'L', jgrlst)
 !
+!   PREMIERE DETECTION TYPE DISCONTINUITE
+!   SUR LE TYPE D ELEMENT
+    call teattr('S', 'XFEM', enr, ibid)
+    if(enr(2:2).eq.'T'.or.enr(3:3).eq.'T') then
+        typdis = 'FISSURE'
+    else if(enr(1:3).eq.'XH1'.or.enr(1:3).eq.'XH2'.or.&
+            enr(1:3).eq.'XH3'.or.enr(1:3).eq.'XH4') then
+!
+!   MULTI-HEAVISIDE : ON GERE LA DECOUPE COMME UNE FISSURE
+        typdis = 'FISSURE'
+    else
+        call jevech('PTYPDIS', 'L', jtyp)
+        if(zi(jtyp).eq.1) typdis='FISSURE'
+        if(zi(jtyp).eq.2) typdis='INTERFACE'
+        if(zi(jtyp).eq.3) typdis='COHESIF'
+    endif
+!
     call jevech('PPINTER', 'E', jout1)
     call jevech('PAINTER', 'E', jout2)
     call jevech('PCFACE', 'E', jout3)
@@ -127,7 +145,6 @@ subroutine te0510(option, nomte)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nmaabs=zi(iadzi)
 !
-    call teattr('S', 'XFEM', enr, ibid)
     if (enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') then
 ! --- PAS D'ELEMENTS COUPÉES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
         goto 999
@@ -221,10 +238,16 @@ subroutine te0510(option, nomte)
                         nmaabs, pinter, ninter, ainter, nface,&
                         nptf, cface, nbtot, nfiss, ifiss)
         else
-            call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom, enr,&
-                        nfiss, ifiss, fisc, nfisc, noma,&
-                        nmaabs, pinter, ninter, ainter, nface,&
-                        nptf, cface)
+            call xcface(zr(jlsn), zr(jlst), jgrlsn, igeom,&
+                        enr, nfiss, ifiss, fisc, nfisc,&
+                        noma, nmaabs, typdis, pinter, ninter, ainter,&
+                        nface, nptf, cface, minlst)
+            if(typdis.eq.'COHESIF'.and.minlst.ge.0.d0) then
+                nptf = 0
+                ninter = 0
+                nface = 0
+                goto 97
+            endif
             nbtot=ninter
         endif
         if (nfiss .gt. 1 .and. nbtot .gt. 0) then
@@ -386,6 +409,7 @@ subroutine te0510(option, nomte)
 !
 !     ARCHIVAGE DE LONCHAM
 !
+97      continue
         zi(jout4+3*(ifiss-1)-1+2)=nface
 998     continue
         zi(jout4+3*(ifiss-1)-1+1)=ninter

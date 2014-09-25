@@ -20,7 +20,11 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
             UIinfo={"groupes":("Modélisation",)},
                fr=tr("Définition des caratéristiques d'une fissure ou d'une interface avec X-FEM"),
             regles = EXCLUS('MAILLAGE_GRILLE','FISS_GRILLE'),
+# ------------------------------------------------------------------------------------------------------------------------
+#                       fissure/interface/cohesif
+# ------------------------------------------------------------------------------------------------------------------------
 
+    TYPE_DISCONTINUITE  =SIMP(statut='f',typ='TXM',into=("FISSURE","INTERFACE","COHESIF",) ,defaut="FISSURE",position='global'),
 # ------------------------------------------------------------------------------------------------------------------------
 #                       maillage sous-jacent
 # ------------------------------------------------------------------------------------------------------------------------
@@ -28,17 +32,11 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
     MAILLAGE              =SIMP(statut='o',typ=maillage_sdaster),
 
 # ------------------------------------------------------------------------------------------------------------------------
-#                       grille auxiliaire
+#                       grille auxiliaire : pas ouvert avec le cohesif
 # ------------------------------------------------------------------------------------------------------------------------
 
     MAILLAGE_GRILLE       =SIMP(statut='f',typ=maillage_sdaster,max=1,position='global'),
     FISS_GRILLE           =SIMP(statut='f',typ=fiss_xfem,max=1),
-
-# ------------------------------------------------------------------------------------------------------------------------
-#                       fissure/interface
-# ------------------------------------------------------------------------------------------------------------------------
-
-      TYPE_DISCONTINUITE  =SIMP(statut='f',typ='TXM',into=("FISSURE","INTERFACE",) ,defaut="FISSURE",position='global'),
 
 # ------------------------------------------------------------------------------------------------------------------------
 #                       caracteristiques de la fissure/interface
@@ -46,27 +44,21 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 
     DEFI_FISS             =FACT(statut='o',max=1,
 
-      regles              =UN_PARMI('GROUP_MA_FISS','FONC_LN','FORM_FISS','CHAM_NO_LSN'),
-
-# impossible de faire des regles dans des blocs condition, dommage
-#       b_fissure           =BLOC(condition = "TYPE_DISCONTINUITE == 'FISSURE' ",fr=tr("Regles pour les fissures"),
-#                 regles    =(ENSEMBLE('FONC_LN','FONC_LT'),
-#                             ENSEMBLE('CHAM_NO_LSN','CHAM_NO_LST'),
-#                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
-#                                ),
-# 
-#       b_interface           =BLOC(condition = "TYPE_DISCONTINUITE == 'INTERFACE' ",fr=tr("Regles pour les interfaces"),
-#                 regles    =(PRESENT_ABSENT('FONC_LN','FONC_LT'),
-#                             PRESENT_ABSENT('CHAM_NO_LSN','CHAM_NO_LST'),
-#                             PRESENT_ABSENT('GROUP_MA_FISS','GROUP_MA_FOND')),
-#                                ),
+#      regles              =UN_PARMI('GROUP_MA_FISS','FONC_LN','FORM_FISS','CHAM_NO_LSN'),
 
       FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
-      CHAM_NO_LSN         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
-      CHAM_NO_LST         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
-      GROUP_MA_FISS       =SIMP(statut='f',typ=grma,min=1,max=1),
-      GROUP_MA_FOND       =SIMP(statut='f',typ=grma,min=1,max=1),
+#     Front initial ptopagation cohesive
+      b_cohesif           =BLOC(condition = "TYPE_DISCONTINUITE == 'COHESIF'",
+         GROUP_MA_BORD     =SIMP(statut='o',typ=grma,max=1),
+      ),
+#
+      b_sans_cohesif      = BLOC(condition = "TYPE_DISCONTINUITE != 'COHESIF'",fr="Options pas ouvertes avec le cohesif",
+         CHAM_NO_LSN         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
+         CHAM_NO_LST         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
+         GROUP_MA_FISS       =SIMP(statut='f',typ=grma,min=1,max=1),
+         GROUP_MA_FOND       =SIMP(statut='f',typ=grma,min=1,max=1),
+      ),
       FORM_FISS   =SIMP(statut='f',typ='TXM',into=("ELLIPSE","RECTANGLE","CYLINDRE","DEMI_PLAN",
                                                    "SEGMENT","DEMI_DROITE","DROITE","ENTAILLE") ),
       b_ellipse           =BLOC(condition = "FORM_FISS == 'ELLIPSE' ",fr=tr("Paramètres de la fissure/interface elliptique"),

@@ -904,7 +904,7 @@ subroutine op0010()
     endif
 !
     call xajuls(noma, nbma, cnslt, cnsln, jconx1,&
-                jconx2, clsm)
+                jconx2, clsm, typdis)
 !
     if (niv .ge. 0) then
         write(ifm,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',&

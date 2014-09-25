@@ -96,8 +96,7 @@ MODE_LOCAL__
                                  EN1   (DX      DY      DZ      H1X      H1Y      H1Z )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX     DY      DZ      )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-   
-   
+    E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E10NEUTI = N120_I   ELEM__         (X[10]    )
     E15NEUTI = N120_I   ELEM__         (X[15]    )
@@ -346,7 +345,7 @@ OPTION__
     SISE_ELNO        289  IN__  ECONTPG  PCONTRR  E10NEUTI  PLONCHA
                           OUT__ ECONTSE  PCONTSER
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N3NEUT_R PGRADLN  N3NEUT_R PGRADLT  N1NEUT_R PLSN     
-                                N1NEUT_R PLST     
+                                N1NEUT_R PLST     E1NEUTI  PTYPDIS
                           OUT__ E35NEUTR PAINTER  E63NEUTR PBASECO  E15NEUTI PCFACE   E21NEUTR PGESCLA  
                                 E21NEUTR PGESCLO  E21NEUTR PGMAITR  E3NEUTI  PLONGCO  E21NEUTR PPINTER  
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET  

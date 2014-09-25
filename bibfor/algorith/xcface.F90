@@ -1,7 +1,7 @@
 subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
                   nfiss, ifiss, fisco, nfisc, noma,&
-                  nmaabs, pinter, ninter, ainter, nface,&
-                  nptf, cface)
+                  nmaabs, typdis, pinter, ninter, ainter, nface,&
+                  nptf, cface, minlst)
     implicit none
 !
 #include "asterf_types.h"
@@ -29,7 +29,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     integer :: jgrlsn, igeom, ninter, nface, cface(5, 3), nptf
     integer :: nfiss, ifiss, fisco(*), nfisc, nmaabs
     character(len=8) :: noma
-    character(len=16) :: enr
+    character(len=16) :: enr, typdis
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +80,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     real(kind=8) :: h(3), oh(3), noh, cos, noa, r3(3), theta(6), eps
     real(kind=8) :: ab(2), lsta, lstb, lstc, abprim(2), prec, pre2
     real(kind=8) :: lsja(nfisc+1), lsjb(nfisc+1), lsjc, beta
-    real(kind=8) :: minlsn
+    real(kind=8) :: minlsn, minlst
     integer :: j, ar(12, 3), nbar, na, nb, nc, ins
     integer :: ia, i, ipt, ibid, pp, pd, nno, k, nnos
     integer :: iadzi, iazk24, ndim, ptmax
@@ -97,6 +97,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !   A IA=IN=0 POUR LES MAILLES DU FRONT
     prec = 1000*r8prem()
     minlsn = 1*r8maem()
+    minlst = 1*r8maem()
 !
     zxain = xxmmvd('ZXAIN')
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
@@ -160,12 +161,14 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
             if (lsna .eq. 0.d0 .and. lsta .le. pre2) then
 !           ON AJOUTE A LA LISTE LE POINT A
                 lajpa = .true.
-                if (lcont .and. lsta .ge. 0.d0) na=0
+                if(minlst.gt.lsta) minlst=lsta
+                if (typdis.ne.'COHESIF'.and.lcont .and. lsta .ge. 0.d0) na=0
             endif
             if (lsnb .eq. 0.d0 .and. lstb .le. pre2) then
 !           ON AJOUTE A LA LISTE LE POINT B
                 lajpb = .true.
-                if (lcont .and. lstb .ge. 0.d0) nb=0
+                if (typdis.ne.'COHESIF'.and.lcont .and. lstb .ge. 0.d0) nb=0
+                if(minlst.gt.lstb) minlst=lstb
             endif
             if (lsna .ne. 0.d0 .and. lsnb .ne. 0.d0) then
                 beta = lsna/(lsnb-lsna)
@@ -175,9 +178,14 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
                 lstc=lsta-beta*(lstb-lsta)
-                if (lstc .le. prec) then
+                if(typdis.eq.'COHESIF') then
+                    if(minlst.gt.lstc) minlst=lstc
                     lajpc = .true.
-                    if (lcont .and. lstc .ge. 0.d0) nc = 0
+                else
+                    if (lstc .le. prec) then
+                        lajpc = .true.
+                        if (lcont .and. lstc .ge. 0.d0) nc = 0
+                    endif
                 endif
             endif
 !         MODIFICATION EN TENANT COMPTE DE LA LEVEL SET JONCTION
@@ -246,6 +254,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     endif
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
     if (enr(2:2) .eq. 'T' .or. enr(3:3) .eq. 'T') then
+        ASSERT(typdis.ne.'COHESIF')
 !
 !       ON A DROIT A 1 POINT EN PLUS
         call xcfacf(pinter, ptmax+1, ipt, ainter, lsn,&

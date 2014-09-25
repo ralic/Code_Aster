@@ -18,8 +18,8 @@
 interface
     subroutine xcface(lsn, lst, jgrlsn, igeom,&
                       enr, nfiss, ifiss, fisco, nfisc,&
-                      noma, nmaabs, pinter, ninter, ainter,&
-                      nface, nptf, cface)
+                      noma, nmaabs, typdis, pinter, ninter, ainter,&
+                      nface, nptf, cface, minlst)
         integer :: nfisc
         character(len=8) :: elref
         real(kind=8) :: lsn(*)
@@ -32,11 +32,13 @@ interface
         integer :: fisco(*)
         character(len=8) :: noma
         integer :: nmaabs
+        character(len=16) :: typdis
         real(kind=8) :: pinter(*)
         integer :: ninter
         real(kind=8) :: ainter(*)
         integer :: nface
         integer :: nptf
         integer :: cface(5, 3)
+        real(kind=8) :: minlst
     end subroutine xcface
 end interface

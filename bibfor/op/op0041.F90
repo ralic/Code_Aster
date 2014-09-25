@@ -104,7 +104,7 @@ subroutine op0041()
     character(len=19) :: lnnofa, grltfa, grlnfa
     character(len=24) :: lismae, lisnoe
     aster_logical :: grille, ldmax, goinop
-    character(len=8) :: fisgri
+    character(len=8) :: fisgri, method
 !
 ! ----------------------------------------------------------------------
 !
@@ -215,6 +215,9 @@ subroutine op0041()
 !
     call getvtx('DEFI_FISS', 'GROUP_MA_FISS', iocc=1, scal=mafis, nbret=me2)
     call getvtx('DEFI_FISS', 'GROUP_MA_FOND', iocc=1, scal=fonfis, nbret=ibid)
+    if ((me2.eq.1.or.ibid.eq.1).and.typdis.eq.'COHESIF') then
+           ASSERT(.false.)
+    endif
     if (me2 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') then
         call utmess('F', 'XFEM_24', sk='GROUP_MA_FOND')
     endif
@@ -228,6 +231,9 @@ subroutine op0041()
 !
     call getvid('DEFI_FISS', 'CHAM_NO_LSN', iocc=1, scal=ncham, nbret=me4)
     call getvid('DEFI_FISS', 'CHAM_NO_LST', iocc=1, scal=ncham, nbret=ibid)
+    if((me4.eq.1.or.ibid.eq.1).and.typdis.eq.'COHESIF') then
+         ASSERT(.false.)
+    endif
     if (me4 .eq. 1 .and. ibid .eq. 0 .and. typdis .eq. 'FISSURE') then
         call utmess('F', 'XFEM_24', sk='CHAM_NO_LST')
     endif

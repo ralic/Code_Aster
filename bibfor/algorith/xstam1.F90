@@ -1,6 +1,7 @@
 subroutine xstam1(noma, nbma, nmafis, mafis,&
                   stano, mafon, maen1, maen2, maen3,&
-                  nmafon, nmaen1, nmaen2, nmaen3)
+                  nmafon, nmaen1, nmaen2, nmaen3,&
+                  typdis, cnslt)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +37,8 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
     integer :: stano(*), mafis(nmafis)
     integer :: mafon(nmafis), maen1(nbma), maen2(nbma), maen3(nbma)
     character(len=8) :: noma
+    character(len=16) :: typdis
+    character(len=19) :: cnslt
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,12 +66,13 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
 !
 !
 !
-    integer ::  jma, nuno,  jconx2
-    integer :: i, im1, im2, im3, ima, itypma, in, imae
+    integer ::  jma, nuno,  jconx2, jltsv
+    integer :: i, im1, im2, im3, ima, itypma, in, imae, nunop
     integer :: em, em1, em2, nmaabs, nbnott(3), nno, en
     integer :: ndim, dime_topo
     character(len=8) :: typma
     character(len=19) :: mai
+    aster_logical :: lstch
     integer, pointer :: connex(:) => null()
 !
     call jemarq()
@@ -82,6 +86,7 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
     call jeveuo(mai, 'L', jma)
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
+    if(cnslt(3:8).eq.'OP0010') call jeveuo(cnslt//'.CNSV','L',jltsv)
 !
 !   dimension du maillage
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
@@ -103,11 +108,15 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
         nno = nbnott(1) + nbnott(2) + nbnott(3)
 !
 !       BOUCLE SUR LES NOEUDS DE LA MAILLE
+        lstch = .false.
         do 311 in = 1, nno
+            if(in.gt.1) nunop = nuno
             nuno = connex(zi(jconx2+nmaabs-1)+in-1)
             en = stano(nuno)
             if (en .eq. 1 .or. en .eq. 3) em1=em1+1
             if (en .eq. 2 .or. en .eq. 3) em2=em2+1
+            if(in.gt.1.and.cnslt(3:8).eq.'OP0010') lstch = &
+            lstch.or.(( zr(jltsv-1+nuno)*zr(jltsv-1+nunop)).le.0.d0)
 311     continue
         if (em1 .ge. 1) em=1
         if (em2 .ge. 1) em=2
@@ -115,7 +124,8 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
 !
 !         MAILLE RETENUE POUR MAFOND (TS LS NOEUDS SONT 'CARRÉS')
 !         SOUS RÉSERVE QUE CE SOIT UNE MAILLE PRINCIPALE DE MAFIS
-        if (em2 .eq. nno) then
+        if(typdis.ne.'COHESIF') then
+            if (em2 .eq. nno) then
 !
             call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=dime_topo)
             if (dime_topo .eq. ndim) then
@@ -131,8 +141,23 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
 312             continue
 313         continue
             endif
-        endif
+            endif
+        else if(typdis.eq.'COHESIF') then
 !
+            if(lstch.or.(em1.lt.nno.and.em1.gt.0)&
+               .and.typma(1:3).ne.'SEG') then
+                do 412 imae=1,nmafis
+                    if (nmaabs .eq. mafis(imae)) then
+                        i=i+1
+                        ASSERT(i.le.nmafis)
+                        mafon(i)=nmaabs
+                        goto 413
+                    endif
+412             continue
+413             continue
+            endif
+         endif
+
 !       ON RÉCUPÈRE LES NUMEROS DES MAILLES ENRICHIES
         if (em .eq. 1) then
             im1=im1+1

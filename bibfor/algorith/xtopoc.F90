@@ -21,6 +21,7 @@ subroutine xtopoc(modele)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -31,6 +32,7 @@ subroutine xtopoc(modele)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/mecact.h"
     character(len=8) :: modele
 !
 ! ----------------------------------------------------------------------
@@ -50,8 +52,9 @@ subroutine xtopoc(modele)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=7, nbin=6)
+    parameter    (nbout=7, nbin=7)
     character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
+    character(len=8) :: nomfis, cpar
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=19) :: ligrel, chgeom
@@ -60,6 +63,11 @@ subroutine xtopoc(modele)
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
     integer :: jcesd, jcesl, iad, i, nbma, ima
+    integer :: jmofis, jnfiss, nfiss, ifiss, ityp
+    character(len=16) :: typdis, memtyp
+    character(len=19) :: typenr
+    real(kind=8) :: rbid
+    complex(kind=8) :: cbid
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: nbsp(:) => null()
@@ -102,6 +110,30 @@ subroutine xtopoc(modele)
     champ(6) = modele(1:8)//'.TOPOFAC.OE'
     champ(7) = modele(1:8)//'.TOPOFAC.HE'
 !
+! --- CREATION D UNE CARTE POUR INFO TYPE DE DISCONTINUITE
+!
+    call jeveuo(modele//'.FISS','L',jmofis)
+    call jeveuo(modele//'.NFIS','L',jnfiss)
+    nfiss = zi(jnfiss)
+    do ifiss = 1,nfiss
+        nomfis = zk8(jmofis-1+ifiss)
+        if(ifiss.gt.1) memtyp = typdis
+        call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
+!    
+!       SI TYPE DE DISCONTINUITE DIFFERENTES, CELA DOIT ETRE DETECTE
+!       EN AMONT DANS DEFI_FISS_XFEM
+        if(ifiss.gt.1) then
+            if(memtyp.eq.'FISSURE') typdis = 'FISSURE' 
+        endif
+    enddo
+    typenr = '&&XTOPOC.TYPENR'
+    if(typdis.eq.'FISSURE') ityp = 1
+    if(typdis.eq.'INTERFACE') ityp = 2
+    if(typdis.eq.'COHESIF') ityp = 3
+    cpar = 'X1'
+    call mecact('V', typenr, 'MODELE',ligrel, 'NEUT_I',&
+                ncmp=1, nomcmp=cpar, si=ityp)
+!
 ! --- POUR LE MULTI-HEAVISIDE, TOUS LES CHAMPS DE SORTIE SONT
 ! --- DUPLIQUÉS PAR LE NOMBRE DE FISSURES VUES
 !
@@ -143,6 +175,8 @@ subroutine xtopoc(modele)
     lchin(5) = grltno
     lpain(6) = 'PFISCO'
     lchin(6) = fissco
+    lpain(7) = 'PTYPDIS'
+    lchin(7) = typenr
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

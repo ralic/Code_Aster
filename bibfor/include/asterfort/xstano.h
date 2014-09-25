@@ -17,7 +17,8 @@
 !
 interface
     subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
-                      cnsln, cnslj, rayon, cnxinv, stano)
+                      cnsln, cnslj, rayon, cnxinv, stano,&
+                      typdis)
         character(len=8) :: noma
         character(len=24) :: lisno
         integer :: nmafis
@@ -28,5 +29,6 @@ interface
         real(kind=8) :: rayon
         character(len=19) :: cnxinv
         character(len=24) :: stano
+        character(len=16) :: typdis
     end subroutine xstano
 end interface

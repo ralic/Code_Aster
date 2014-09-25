@@ -157,6 +157,7 @@ MODE_LOCAL__
                                         IZZ      IXY      IXZ      IYZ      )
     EGNEUT_F = NEUT_F   ELGA__ XFEM    (X[30])
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
+    E1NEUTI  = NEUT_I   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ XFEM    (X[30])
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
@@ -326,7 +327,7 @@ OPTION__
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N3NEUT_R PGRADLT
-                                     N3NEUT_R PGRADLN
+                                     N3NEUT_R PGRADLN  E1NEUTI  PTYPDIS
                               OUT__  E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO
                                      E63NEUTR PBASECO  E21NEUTR PGESCLA  E21NEUTR PGMAITR  E21NEUTR PGESCLO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET

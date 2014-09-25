@@ -1,7 +1,7 @@
 subroutine xstama(noma, nbma, nmafis, jmafis,&
                   ncouch, lisnoe, stano, cnslt, cnsln,&
                   jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
-                  nmaen1, nmaen2, nmaen3)
+                  nmaen1, nmaen2, nmaen3, typdis)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
     integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma, jmafis
     integer :: ncouch, stano(*), jmafon, jmaen1, jmaen2, jmaen3
     character(len=8) :: noma
+    character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln
     character(len=24) :: lisnoe
 !
@@ -109,7 +110,7 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
 !     --------------------------------------------------
     call xstam1(noma, nbma, nmafis, zi(jmafis),&
                 stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3),&
-                nmafon, nmaen1, nmaen2, nmaen3)
+                nmafon, nmaen1, nmaen2, nmaen3, typdis, cnslt)
 !
 !     S'IL N'Y A PAS DE MAILLES DE FOND, ON SORT
     if (nmafon .eq. 0) goto 999
@@ -178,7 +179,7 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
 !       ON RECOMMENCE L'ENRICHISSEMENT DES MAILLES AVEC LE NOUVEAU STANO
         call xstam1(noma, nbma, nmafis, zi(jmafis),&
                     stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3),&
-                    nmafon, nmaen1, nmaen2, nmaen3)
+                    nmafon, nmaen1, nmaen2, nmaen3, typdis, cnslt)
 !
     endif
 !

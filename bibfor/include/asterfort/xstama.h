@@ -19,7 +19,7 @@ interface
     subroutine xstama(noma, nbma, nmafis, jmafis,&
                       ncouch, lisnoe, stano, cnslt, cnsln,&
                       jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
-                      nmaen1, nmaen2, nmaen3)
+                      nmaen1, nmaen2, nmaen3, typdis)
         character(len=8) :: noma
         integer :: nbma
         integer :: nmafis
@@ -37,5 +37,6 @@ interface
         integer :: nmaen1
         integer :: nmaen2
         integer :: nmaen3
+        character(len=16) :: typdis
     end subroutine xstama
 end interface

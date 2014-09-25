@@ -415,7 +415,7 @@ OPTION__
     SIGM_ELNO         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N3NEUT_R PGRADLN  N3NEUT_R PGRADLT  N1NEUT_R PLSN     
-                                N1NEUT_R PLST     
+                                N1NEUT_R PLST     E1NEUTI  PTYPDIS
                           OUT__ E35NEUTR PAINTER  E63NEUTR PBASECO  E15NEUTI PCFACE   E21NEUTR PGESCLA  
                                 E21NEUTR PGESCLO  E21NEUTR PGMAITR  E3NEUTI  PLONGCO  E21NEUTR PPINTER  
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET

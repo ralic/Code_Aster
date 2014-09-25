@@ -77,7 +77,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     integer :: nbno, ino, imae, nmafon, jfon, jtail, nfon
     integer :: jfono, jbaso, jtailo
     integer :: jcoor, jstano, jfonmu
-    integer :: jensv, jensl, nbma
+    integer :: jensv, jensl, nbma, nbmai
     integer :: jenslr, jcaraf
     integer :: i, nmafis
     integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
@@ -167,7 +167,8 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
 !     CALCUL DU STATUT DES NOEUDS
     call xstano(noma, lisnoe, nmafis, jmafis, cnslt,&
-                cnsln, cnslj, rayon, cnxinv, stano)
+                cnsln, cnslj, rayon, cnxinv, stano,&
+                typdis)
 !
 !--------------------------------------------------------------------
 !    3°) ON ATTRIBUE LE STATUT DES MAILLES DU MAILLAGE
@@ -187,7 +188,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     call xstama(noma, nbma, nmafis, jmafis,&
                 ncouch, lisnoe, zi(jstano), cnslt, cnsln,&
                 jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
-                nmaen1, nmaen2, nmaen3)
+                nmaen1, nmaen2, nmaen3, typdis)
 !
 !
 !     IMPRESSION DES MAILLES ENRICHIES
@@ -261,7 +262,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     call xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                 cnxinv, jmafon, nxptff, jfono, nfon,&
                 jbaso, jtailo, fiss, goinop, listpt,&
-                orient)
+                orient,typdis,nbmai)
     ASSERT(nfon.gt.0)
 !
     if (.not.goinop) then
@@ -297,9 +298,15 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
         info = fiss//'.INFO'
 !
-        call xoriff(info, nfon, jfono, jbaso, jtailo,&
-                    nmafon, listpt, goinop, jfon, jbas,&
-                    jtail, fonmul, nbfond)
+        if(cnsln(3:8).eq.'OP0041'.and.typdis.eq.'COHESIF') then
+            call xoriff(info, nfon, jfono, jbaso, jtailo,&
+                        nbmai, listpt, goinop, jfon, jbas,&
+                        jtail, fonmul, nbfond)
+        else
+            call xoriff(info, nfon, jfono, jbaso, jtailo,&
+                        nmafon, listpt, goinop, jfon, jbas,&
+                        jtail, fonmul, nbfond)
+        endif
 !
     endif
 !   SI LE FOND EST FERME

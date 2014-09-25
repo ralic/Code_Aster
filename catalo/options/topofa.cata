@@ -28,6 +28,7 @@ OPTION__
         PGRADLN  NEUT_R
         PGRADLT  NEUT_R
         PFISCO   NEUT_I
+        PTYPDIS  NEUT_I
    OUT__
         PPINTER  N120_R ELEM__
         PAINTER  N120_R ELEM__

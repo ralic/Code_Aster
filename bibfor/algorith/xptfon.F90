@@ -1,7 +1,7 @@
 subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                   cnxinv, jmafon, nxptff, jfon, nfon,&
                   jbas, jtail, fiss, goinop, listpt,&
-                  orient)
+                  orient, typdis, nbmai)
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -42,6 +42,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 #include "asterfort/wkvect.h"
 #include "asterfort/xextre.h"
 #include "asterfort/xfabor.h"
+#include "asterfort/xfocoh.h"
 #include "asterfort/xnorme.h"
 #include "asterfort/xtailm.h"
 #include "asterfort/as_deallocate.h"
@@ -49,6 +50,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
+    character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln, cnxinv, listpt
     aster_logical :: orient, goinop
 !     ------------------------------------------------------------------
@@ -86,10 +88,11 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nbfacb, iptbor(2), nbptma, ndime, indptf(3), codret
     integer :: nunopa, nunopb, nunopc, nunopd
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
+    integer :: nbmai, nuno1, nuno2, jlism
     real(kind=8) :: m(3), p(3), gln(3), glt(3), coorg(3), vectn(12)
-    real(kind=8) :: normi
+    real(kind=8) :: normi, rbid3(3)
     character(len=8) :: typma, nommai, alias
-    character(len=19) :: grlt, chgrt, grln, chgrn
+    character(len=19) :: grlt, chgrt, grln, chgrn, lismai
     aster_logical :: fabord, indic
     real(kind=8), pointer :: lsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
@@ -130,6 +133,12 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     chgrn = '&&XPTFON.GRLT'
     call cnocns(grln, 'V', chgrn)
     call jeveuo(chgrn//'.CNSV', 'L', vr=gn)
+    if(typdis.eq.'COHESIF'.and.cnsln(3:8).eq.'OP0041') then
+        call xfocoh(jbas,jconx1,jconx2,jcoor,jfon,&
+                    cnsln,chgrn, chgrt,noma,listpt,ndim,nfon,&
+                    nxptff,orient,nbmai)
+    endif
+    if(typdis.eq.'COHESIF'.and.cnsln(3:8).eq.'OP0041') goto 999
 !
     AS_ALLOCATE(vl=ptbord, size=nxptff)
 !
@@ -163,7 +172,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !     BOUCLE SUR LES MAILLES DE MAFOND
     do ima = 1, nmafon
 !
-        nmaabs = zi(jmafon-1+(ima-1)+1)
+        nmaabs = zi(jmafon-1+ima)
         itypma = typmail(nmaabs)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
@@ -436,5 +445,6 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     call jedetr('&&XPTFON.LBORD')
     call jedetr('&&XPTFON.VDIROL')
     call jedetr('&&XPTFON.NVDIR')
+999 continue
     call jedema()
 end subroutine

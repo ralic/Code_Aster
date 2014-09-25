@@ -17,7 +17,7 @@
 !
 interface
     subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
-                      jconx2, clsm)
+                      jconx2, clsm, typdis)
         character(len=8) :: noma
         integer :: nbma
         character(len=19) :: cnslt
@@ -25,5 +25,6 @@ interface
         integer :: jconx1
         integer :: jconx2
         integer :: clsm
+        character(len=16) :: typdis
     end subroutine xajuls
 end interface

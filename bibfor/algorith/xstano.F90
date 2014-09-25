@@ -1,5 +1,6 @@
 subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
-                  cnsln, cnslj, rayon, cnxinv, stano)
+                  cnsln, cnslj, rayon, cnxinv, stano,&
+                  typdis)
     implicit none
 !
 #include "asterf_types.h"
@@ -26,6 +27,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     real(kind=8) :: rayon
     integer :: nmafis, jmafis
     character(len=8) :: noma
+    character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln, cnslj, cnxinv
     character(len=24) :: lisno, stano
 !     ------------------------------------------------------------------
@@ -78,11 +80,11 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     real(kind=8) :: minlsn, minlst, maxlsn, maxlst, lsna, lsnb, lsta, lstb
     real(kind=8) :: minlsj(10, 2), maxlsj(10), lsja(10, 2), lsjb(10, 2)
     real(kind=8) :: lsjc(10, 2), lstm, lsnm, a1, b1, c1, a2, b2, c2, x1
-    real(kind=8) :: lstc, lsn, a(3), b(3), c(3), lst
+    real(kind=8) :: lstc, lsn, a(3), b(3), c(3), lst, mincoh
     real(kind=8) :: ab(3), ac(3)
     character(len=8) :: typma
     character(len=19) :: mai, lmafis
-    aster_logical :: ljonc
+    aster_logical :: ljonc, cohenr
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: ljsv(:) => null()
     real(kind=8), pointer :: lnsv(:) => null()
@@ -151,7 +153,9 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
         isup=0
 !
 !       BOUCLE SUR LES MAILLES SUPPORT DE INO
+        cohenr = .true.
         do j = 1, nmasup
+            mincoh = r8maem()
             ima = zi(jmasup-1+j)
 !
 !         SI LA MAILLE N'APPARTIENT PAS A MAFIS, ON PASSE A LA SUIVANTE
@@ -176,6 +180,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                 lsta=ltsv((nunoa-1)+1)
                 lstb=ltsv((nunob-1)+1)
                 if (.not.ismali(typma)) then
+                  mincoh=-1
 !               ON NE TRAITE PAS LA MULTI-FISSURATION EN QUADRATIQUE
                   nm=ar(ia,3)
                   nunom=connex(zi(jconx2+ima-1)+nm-1)
@@ -242,8 +247,10 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !               ON RETIENT LES 2 POINTS A ET B
 !               ET ACTUALISATION DE MIN ET MAX POUR LST
                       if (lsta .lt. minlst) minlst=lsta
+                      if (lsta .lt. mincoh) mincoh=lsta
                       if (lsta .gt. maxlst) maxlst=lsta
                       if (lstb .lt. minlst) minlst=lstb
+                      if (lstb .lt. mincoh) mincoh=lstb
                       if (lstb .gt. maxlst) maxlst=lstb
                       if (ljonc) then
                           do ifiss = 1, nfiss
@@ -269,6 +276,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                       ASSERT(ddot(ndim, ab, 1, ab, 1).gt.r8prem())
                       lstc = lsta + (lstb-lsta) * ddot(ndim,ab,1,ac,1) / ddot(ndim,ab,1,ab,1)
                       if (lstc .lt. minlst) minlst=lstc
+                      if (lstc .lt. mincoh) mincoh=lstc
                       if (lstc .gt. maxlst) maxlst=lstc
                       if (ljonc) then
                           do ifiss = 1, nfiss
@@ -298,7 +306,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                 if (lsn .lt. minlsn) minlsn=lsn
                 if (lsn .gt. maxlsn) maxlsn=lsn
             end do
-!
+             if(mincoh.ge.0.d0) cohenr = .false.
 210         continue
         end do
 !
@@ -308,8 +316,13 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
 !
 !       TEST S'IL Y A EU UNE MAILLE SUPPORT TROUVÉE DANS MAFIS
         if (isup .gt. 0) then
-            if ((minlsn*maxlsn.lt.0.d0) .and. (maxlst.le.r8prem())) enr1=1
-            if ((minlsn*maxlsn.le.r8prem()) .and. (minlst* maxlst.le.r8prem())) enr2=2
+            if(typdis.eq.'COHESIF') then
+                if ((minlsn*maxlsn.lt.0.d0).and.cohenr) enr1=1
+            else
+                if ((minlsn*maxlsn.lt.0.d0) .and. (maxlst.le.r8prem())) enr1=1
+                if ((minlsn*maxlsn.le.r8prem()) .and.&
+                (minlst* maxlst.le.r8prem())) enr2=2
+            endif
             if (ljonc) then
 !       CORRECTION DU STATUT SI ON EST DU MAUVAIS COTÉ DE LA JONCTION
                 do ifiss = 1, nfiss
@@ -328,7 +341,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
         endif
 !
 !       SI ON DEFINIT UN RAYON POUR LA ZONE D'ENRICHISSEMENT SINGULIER
-        if (rayon .gt. 0.d0) then
+        if (rayon .gt. 0.d0 .and. typdis.ne.'COHESIF') then
             lsn=lnsv((ino-1)+1)
             lst=ltsv((ino-1)+1)
             if (sqrt(lsn**2+lst**2) .le. rayon) enr2=2
