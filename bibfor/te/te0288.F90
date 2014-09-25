@@ -62,7 +62,7 @@ subroutine te0288(option, nomte)
     integer :: ninter, nface, cface(5, 3), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
-    integer :: icodre(3),iadzi, iazk24
+    integer :: icodre(3), contac, iadzi, iazk24
     character(len=8) :: elrefp, elrese(6), fami(6), nompar(4), enr
     character(len=16) :: compor(4), nomres(3)
     aster_logical :: grand, incr
@@ -101,7 +101,7 @@ subroutine te0288(option, nomte)
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
                 ibid, ibid, ibid, ddlm, nfiss,&
-                ibid)
+                contac)
 !
 !
     call jevech('PCOMPOR', 'L', icomp)
@@ -258,7 +258,8 @@ subroutine te0288(option, nomte)
                     igeom, nfh, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
-                    nompar, presn, option, igthet, jbasec)
+                    nompar, presn, option, igthet, jbasec,&
+                    contac)
 200  continue
 !
 !

@@ -1,4 +1,4 @@
-subroutine cgvemf(modele, typfis, nomfis)
+subroutine cgvemf(modele, typfis, nomfis, typdis)
     implicit none
 !
 #include "asterf_types.h"
@@ -6,6 +6,7 @@ subroutine cgvemf(modele, typfis, nomfis)
 #include "asterfort/utmess.h"
 #include "asterfort/xvfimo.h"
     character(len=8) :: modele, typfis, nomfis
+    character(len=16) :: typdis
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +56,8 @@ subroutine cgvemf(modele, typfis, nomfis)
     endif
 !
 !     ERREUR SI FISSURE N'EST PAS ASSOCIEE AU MODELE X-FEM
-    if (typfis .eq. 'FISSURE') then
+!     SAUF SI MODELE COHESIF
+    if (typfis .eq. 'FISSURE'.and.typdis.eq.'FISSURE') then
         fiinmo = xvfimo(modele,nomfis)
         if (.not.fiinmo) then
             valk(1)=nomfis

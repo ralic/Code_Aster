@@ -19,7 +19,8 @@
 !
 interface
     subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
-                      iadgks, iadgki, abscur, num, modele)
+                      iadgks, iadgki, abscur, num, modele,&
+                      typdis)
         integer :: nnoff
         character(len=24) :: chfond
         integer :: iadrgk
@@ -30,5 +31,6 @@ interface
         character(len=24) :: abscur
         integer :: num
         character(len=8) :: modele
+        character(len=16) :: typdis
     end subroutine gkmet3
 end interface

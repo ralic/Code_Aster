@@ -18,7 +18,7 @@
 interface
     subroutine cglect(resu, modele, ndim, option, cas,&
                       typfis, nomfis, fonoeu, chfond, basfon,&
-                      taillr, conf, lnoff, liss, ndeg)
+                      taillr, conf, lnoff, liss, ndeg, typdis)
         character(len=8) :: resu
         character(len=8) :: modele
         integer :: ndim
@@ -34,5 +34,6 @@ interface
         integer :: lnoff
         character(len=24) :: liss
         integer :: ndeg
+        character(len=16) :: typdis
     end subroutine cglect
 end interface

@@ -1,13 +1,14 @@
-subroutine cgveli(typfis, cas, option, lnoff, liss,&
+subroutine cgveli(typfis, typdis, cas, option, lnoff, liss,&
                   ndeg)
     implicit none
 !
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer :: lnoff, ndeg
     character(len=8) :: typfis
-    character(len=16) :: option, cas
+    character(len=16) :: option, cas, typdis
     character(len=24) :: liss
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,6 +110,12 @@ subroutine cgveli(typfis, cas, option, lnoff, liss,&
         if (liss .eq. 'MIXTE') then
             if (option .eq. 'G_MAX' .or. option .eq. 'G_BILI') then
                 call utmess('F', 'RUPTURE0_83', sk=option)
+            endif
+        endif
+        if(liss.eq.'MIXTE'.or.liss.eq.'LEGENDRE'&
+           .or.liss.eq.'LAGRANGE_REGU') then
+            if(typdis.eq.'COHESIF') then
+                call utmess('F', 'RUPTURE2_5')
             endif
         endif
 !

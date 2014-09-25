@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cgveli(typfis, cas, option, lnoff, liss,&
+    subroutine cgveli(typfis, typdis, cas, option, lnoff, liss,&
                       ndeg)
         character(len=8) :: typfis
+        character(len=16) :: typdis
         character(len=16) :: cas
         character(len=16) :: option
         integer :: lnoff

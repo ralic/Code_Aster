@@ -1,5 +1,6 @@
 subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
-                  thlag2, ndeg, trav1, trav2, trav3)
+                  thlag2, ndeg, trav1, trav2, trav3,&
+                  typdis)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,6 +63,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+    character(len=16) :: typdis
     character(len=24) :: trav0, trav1, trav2, trav3, chfond, absgam, taillr
     character(len=8) :: config, nompar(1), rinff, rsupf
 !
@@ -87,14 +89,17 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !
 ! ALLOCATION DE 3 OBJETS DE TRAVAIL
 !
-    trav0 = '&&VERIFG.GAM0'//'           '
-    trav1 = '&&VERIFG.RINF'//'           '
-    trav2 = '&&VERIFG.RSUP'//'           '
+    if(typdis.ne.'COHESIF') then
+        trav0 = '&&VERIFG.GAM0'//'           '
+        trav1 = '&&VERIFG.RINF'//'           '
+        trav2 = '&&VERIFG.RSUP'//'           '
+        call wkvect(trav0, 'V V K8', lnoff, iadrt0)
+        call wkvect(trav1, 'V V R', lnoff, iadrt1)
+        call wkvect(trav2, 'V V R', lnoff, iadrt2)
+    endif
     trav3 = '&&VERIFG.THET'//'           '
-    call wkvect(trav0, 'V V K8', lnoff, iadrt0)
-    call wkvect(trav1, 'V V R', lnoff, iadrt1)
-    call wkvect(trav2, 'V V R', lnoff, iadrt2)
     call wkvect(trav3, 'V V R', (nbre+1)*lnoff, iadrt3)
+    if(typdis.eq.'COHESIF') goto 98
 !
     call getvr8('THETA', 'R_INF', iocc=1, scal=rinf, nbret=nr)
     call getvr8('THETA', 'R_SUP', iocc=1, scal=rsup, nbret=nr)
@@ -191,6 +196,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
 !
     call jedetr(absgam)
     call jedetr(trav0)
+98  continue
 !
     call jedema()
 end subroutine

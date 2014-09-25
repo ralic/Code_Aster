@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cgvemf(modele, typfis, nomfis)
+    subroutine cgvemf(modele, typfis, nomfis, typdis)
         character(len=8) :: modele
         character(len=8) :: typfis
         character(len=8) :: nomfis
+        character(len=16) :: typdis
     end subroutine cgvemf
 end interface

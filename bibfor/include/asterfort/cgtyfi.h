@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cgtyfi(typfis, nomfis)
+    subroutine cgtyfi(typfis, nomfis, typdis)
         character(len=8) :: typfis
         character(len=8) :: nomfis
+        character(len=16) :: typdis
     end subroutine cgtyfi
 end interface

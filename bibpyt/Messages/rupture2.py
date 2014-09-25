@@ -42,4 +42,9 @@ Il y a trop de chargements de type fonction à gérer pour CALC_G.
  (via l'opérateur DEFI_FONCTION ou CALC_FONC_INTERP).
  On poursuit sans tenir compte de la fonction multiplicatrice.
 """),
+
+5 : _(u"""
+ Une fissure XFEM de type cohésive n'est utilisable qu'avec les lissages LAGRANGE/LAGRANGE_NO_NO,
+ en 3D, avec l'option CALC_K_G.
+"""),
 }

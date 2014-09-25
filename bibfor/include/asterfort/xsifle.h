@@ -20,7 +20,8 @@ interface
                       igeom, nfh, singu, nfe, ddlc,&
                       ddlm, jlst, ipres, ipref, itemps,&
                       idepl, nnop, valres, basloc, ithet,&
-                      nompar, presn, option, igthet, jbasec)
+                      nompar, presn, option, igthet, jbasec,&
+                      contac)
         integer :: nnop
         integer :: ndim
         integer :: ifa
@@ -46,5 +47,6 @@ interface
         character(len=16) :: option
         integer :: igthet
         integer :: jbasec
+        integer :: contac
     end subroutine xsifle
 end interface

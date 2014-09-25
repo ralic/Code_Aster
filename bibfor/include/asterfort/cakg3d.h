@@ -24,7 +24,7 @@ interface
                       ndeg, thlagr, glagr, thlag2, pair,&
                       ndimte, extim, time, nbprup, noprup,&
                       fiss, lmelas, nomcas, lmoda, puls,&
-                      milieu, connex)
+                      milieu, connex, typdis)
         character(len=16) :: option
         character(len=8) :: result
         character(len=8) :: modele
@@ -56,5 +56,6 @@ interface
         real(kind=8) :: puls
         aster_logical :: milieu
         aster_logical :: connex
+        character(len=16), intent(in), optional :: typdis
     end subroutine cakg3d
 end interface

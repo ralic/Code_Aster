@@ -4,7 +4,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
                   thlagr, glagr, thlag2, pair, ndimte,&
                   extim, time, nbprup, noprup, fiss,&
                   lmelas, nomcas, lmoda, puls, milieu,&
-                  connex)
+                  connex, typdis)
 ! aslint: disable=W1504
     implicit none
 !
@@ -28,6 +28,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 #include "asterfort/gkmet4.h"
 #include "asterfort/gksimp.h"
 #include "asterfort/infniv.h"
+#include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
@@ -50,6 +51,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=8) :: modele, thetai, fiss
     character(len=8) :: result, symech
     character(len=16) :: option, noprup(*), nomcas
+    character(len=16), intent(in), optional :: typdis
     character(len=19) :: lischa
     character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls
     aster_logical :: extim, thlagr, glagr, thlag2, pair, lmelas, lmoda, milieu, connex
@@ -120,7 +122,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=2) :: codret
 !    character(len=8) :: resu
 !    character(len=24) :: chsig, chepsp, chvari, type
-    character(len=16) :: opti
+    character(len=16) :: opti, typdisc
     character(len=19) :: chrota, chpesa, chvolu, ch1d2d, chepsi, ch2d3d, chpres
     character(len=19) :: chvarc, chvref
     character(len=24) :: ligrmo, chgeom, chgthi
@@ -139,7 +141,12 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
-
+!   Securite appels
+    if(present(typdis)) then
+        typdisc = typdis
+    else
+        typdisc = 'RIEN'
+    endif
 !   cas FEM ou X-FEM
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
@@ -154,6 +161,17 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     chvarc='&&CAKG3D.VARC'
     chvref='&&CAKG3D.VARC.REF'
+!   Initialisation des champs
+    chvolu = ' '
+    chpesa = ' '
+    chrota = ' '
+    chepsi = ' '
+    pintto = ' '
+    cnseto = ' '
+    heavto = ' '
+    loncha = ' '
+    pmilto = ' '
+    chpres = ' '
 !
 !   RECUPERATION DU COMPORTEMENT (dans cakg2d, on recupere pas incr
 !    call getfac('COMPORTEMENT', incr)
@@ -226,29 +244,46 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     call vrcref(modele, mate(1:8), '        ', chvref(1:19))
 !
-!   TRAITEMENT DES CHARGES
-    chvolu = '&&CAKG3D.VOLU'
-    ch1d2d = '&&CAKG3D.1D2D'
-    ch2d3d = '&&CAKG3D.2D3D'
-    chpres = '&&CAKG3D.PRES'
-    chepsi = '&&CAKG3D.EPSI'
-    chpesa = '&&CAKG3D.PESA'
-    chrota = '&&CAKG3D.ROTA'
-    call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
-                chpres, chepsi, chpesa, chrota, lfonc,&
-                time, iord)
-    if (lfonc) then
-        pavolu = 'PFFVOLU'
-        pa2d3d = 'PFF2D3D'
-        papres = 'PPRESSF'
-        pepsin = 'PEPSINF'
-        opti = 'CALC_K_G_F'
-    else
+!     TRAITEMENT DES CHARGES
+!     ON SHUNTE SI COHESIF
+    if(typdisc.eq.'COHESIF') then
+!       Parametres non utilises
+!       ms renseignes pour ne pas pourrir l'appel à calcul.F90
+!       avec des conditions partout
         pavolu = 'PFRVOLU'
         pa2d3d = 'PFR2D3D'
         papres = 'PPRESSR'
         pepsin = 'PEPSINR'
-        opti = 'CALC_K_G'
+!       De façon analogue à ce qui est fait pour CALC_K_G_F,
+!       on change le nom d'option: programmation plus simple.
+!       Evite de passer un champ supplementaire à calcul.F90
+!       pour porter l'info du type de discontinuite
+!       Evite egalement l'ajout d'un test de sortie pour éléments XH
+        opti='CALC_K_G_COHE'
+    else   
+        chvolu = '&&CAKG3D.VOLU'
+        ch1d2d = '&&CAKG3D.1D2D'
+        ch2d3d = '&&CAKG3D.2D3D'
+        chpres = '&&CAKG3D.PRES'
+        chepsi = '&&CAKG3D.EPSI'
+        chpesa = '&&CAKG3D.PESA'
+        chrota = '&&CAKG3D.ROTA'
+        call gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d,&
+                    chpres, chepsi, chpesa, chrota, lfonc,&
+                    time, iord)
+        if (lfonc) then
+            pavolu = 'PFFVOLU'
+            pa2d3d = 'PFF2D3D'
+            papres = 'PPRESSF'
+            pepsin = 'PEPSINF'
+            opti = 'CALC_K_G_F'
+        else
+            pavolu = 'PFRVOLU'
+            pa2d3d = 'PFR2D3D'
+            papres = 'PPRESSR'
+            pepsin = 'PEPSINR'
+            opti = 'CALC_K_G'
+        endif
     endif
 !
 !     RECUPERATION DES DONNEES XFEM OU FEM (TOPOSE)
@@ -288,6 +323,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !   BOUCLE SUR LES DIFFERENTS CHAMPS THETA
     do i = 1, ndimte
 !
+        call inical(26,lpain,lchin,1,lpaout,lchout)
         chthet = zk24(jresu+i-1)
         call codent(i, 'G', chgthi)
 !
@@ -337,7 +373,6 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         lchin(21) = ltno
         if (option .eq. 'CALC_K_G' .or. option .eq. 'CALC_K_G_F') then
             lpain(22) = 'PPINTER'
-!          LCHIN(22) = MODELE(1:8)//'.TOPOFAC.PI'
             lchin(22) = modele(1:8)//'.TOPOFAC.OE'
             lpain(23) = 'PAINTER'
             lchin(23) = modele(1:8)//'.TOPOFAC.AI'
@@ -464,7 +499,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         else
             num = 3
             call gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
-                        iadgks, iadgki, abscur, num, modele)
+                        iadgks, iadgki, abscur, num, modele,&
+                        typdis)
         endif
     endif
 !
@@ -519,18 +555,20 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     call jedetr(abscur)
     call jedetr('&&CAKG3D.VALGK_S')
-    call jedetr('&&CAKG3D.VALGKI')
-    call detrsd('CHAMP_GD', chvarc)
-    call detrsd('CHAMP_GD', chvref)
-    call detrsd('CHAMP_GD', chvolu)
-    call detrsd('CHAMP_GD', ch1d2d)
-    call detrsd('CHAMP_GD', ch2d3d)
-    call detrsd('CHAMP_GD', chpres)
-    call detrsd('CHAMP_GD', chepsi)
-    call detrsd('CHAMP_GD', chpesa)
-    call detrsd('CHAMP_GD', chrota)
+    if(typdisc.ne.'COHESIF') then
+        call jedetr('&&CAKG3D.VALGKI')
+        call detrsd('CHAMP_GD', chvarc)
+        call detrsd('CHAMP_GD', chvref)
+        call detrsd('CHAMP_GD', chvolu)
+        call detrsd('CHAMP_GD', ch1d2d)
+        call detrsd('CHAMP_GD', ch2d3d)
+        call detrsd('CHAMP_GD', chpres)
+        call detrsd('CHAMP_GD', chepsi)
+        call detrsd('CHAMP_GD', chpesa)
+        call detrsd('CHAMP_GD', chrota)
 !
-    call jedetr('&&CAKG3D.VALG')
+        call jedetr('&&CAKG3D.VALG')
+    endif
 !
     call jedema()
 end subroutine

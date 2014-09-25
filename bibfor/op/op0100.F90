@@ -91,7 +91,7 @@ subroutine op0100()
     character(len=8) :: nomfis, litypa(nxpara), symech, config
     character(len=8) :: table, noma, thetai, noeud, typfis, typfon
     character(len=16) :: option, typsd, linopa(nxpara), cas, typco
-    character(len=16) :: optio2, nomcas, k16bid
+    character(len=16) :: optio2, nomcas, k16bid, typdis
     character(len=19) :: lischa, lisopt, vecord, grlt
     character(len=24) :: depla, mate, compor, chvite, chacce
     character(len=24) :: basfon, fonoeu, liss, taillr
@@ -136,7 +136,7 @@ subroutine op0100()
 !     - LISS, NDEG
     call cglect(resu, modele, ndim, option, cas,&
                 typfis, nomfis, fonoeu, chfond, basfon,&
-                taillr, config, lnoff, liss, ndeg)
+                taillr, config, lnoff, liss, ndeg, typdis)
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     nomno = noma//'.NOMNOE'
@@ -294,11 +294,11 @@ subroutine op0100()
         grlt = nomfis//'.GRLTNO'
 !
         call gveri3(chfond, taillr, config, lnoff, thlagr,&
-                    thlag2, ndeg, trav1, trav2, trav3)
+                    thlag2, ndeg, trav1, trav2, trav3, typdis)
         call gcour3(thetai, noma, coorn, lnoff, trav1,&
                     trav2, trav3, chfond, connex, grlt,&
                     thlagr, thlag2, basfon, ndeg, milieu,&
-                    pair, ndimte)
+                    pair, ndimte, typdis, nomfis)
 !
     else if (cas.eq.'3D_LOCAL'.and.typfis.eq.'FONDFISS') then
 !
@@ -319,7 +319,7 @@ subroutine op0100()
         thetai = '&&THETA '
 !
         call gveri3(chfond, taillr, config, lnoff, thlagr,&
-                    thlag2, ndeg, trav1, trav2, trav3)
+                    thlag2, ndeg, trav1, trav2, trav3, option)
         call gcour2(thetai, noma, modele, nomno, coorn,&
                     lnoff, trav1, trav2, trav3, fonoeu,&
                     nomfis, connex, stok4, thlagr, thlag2,&
@@ -347,6 +347,7 @@ subroutine op0100()
 !
 !     CREATION DE LA TABLE
 !
+    if(option.eq.'K_G_COHE') nbpara = 11
     call cgcrtb(table, option, lmelas, cas, typfis,&
                 lmoda, nbpara, linopa, litypa)
 !
@@ -509,7 +510,7 @@ subroutine op0100()
                         thlagr, glagr, thlag2, pair, ndimte,&
                         exitim, time, nbpara, linopa, nomfis,&
                         lmelas, nomcas, lmoda, puls, milieu,&
-                        connex)
+                        connex, typdis)
 !
  33         continue
         end do

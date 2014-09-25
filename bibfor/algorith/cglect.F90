@@ -1,6 +1,6 @@
 subroutine cglect(resu, modele, ndim, option, cas,&
                   typfis, nomfis, fonoeu, chfond, basfon,&
-                  taillr, conf, lnoff, liss, ndeg)
+                  taillr, conf, lnoff, liss, ndeg, typdis)
     implicit none
 !
 #include "asterc/getfac.h"
@@ -20,7 +20,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 #include "asterfort/jemarq.h"
     integer :: ndim, lnoff, ndeg
     character(len=8) :: resu, modele, typfis, nomfis, conf
-    character(len=16) :: option, cas
+    character(len=16) :: option, cas, typdis
     character(len=24) :: fonoeu, chfond, basfon, taillr, liss
 !
 ! ======================================================================
@@ -72,33 +72,36 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !     RECUPERATION DE LA SD RESULTAT : RESU
     call getvid(' ', 'RESULTAT', scal=resu, nbret=ier)
 !
+!     RECUPERATION DE L'OPTION
+    call getvtx(' ', 'OPTION', scal=option, nbret=ier)
+!
+!     DETERMINATION DU TYPFIS = 'FONDFISS' OU 'FISSURE' OU 'THETA'
+!     ET RECUPERATION DE LA SD POUR DECRIRE LE FOND DE FISSURE : NOMFIS
+!     TYPE DE DISCONTINUITE SI FISSURE XFEM: 'FISSURE' OU 'COHESIF'
+    call cgtyfi(typfis, nomfis, typdis)
+!
 !     LECTURE DES CHARGES ET VERIFICATION DE LA COMPATIBILITE AVEC RESU
-    call getfac('EXCIT', nexci)
-    call cgverc(resu, nexci)
+    if(typdis.ne.'COHESIF') then
+        call getfac('EXCIT', nexci)
+        call cgverc(resu, nexci)
+    endif
 !
 !     RECUPERATION DU MODELE PUIS DE LA DIMENSION DU MODELE
     call dismoi('MODELE', resu, 'RESULTAT', repk=modele)
     call dismoi('DIM_GEOM', modele, 'MODELE', repi=ndim)
 !
-!     RECUPERATION DE L'OPTION
-    call getvtx(' ', 'OPTION', scal=option, nbret=ier)
-!
 !     VERIFICATION DE LA COMPATIBILITE ENTRE NDIM ET OPTION
-    call cgvedo(ndim, option)
+    call cgvedo(ndim, option, typdis)
 !
 !     DETERMINATION DU CAS : 2D, 3D LOCAL OU 3D GLOBAL
     call cgveca(ndim, option, cas)
 !
-!     DETERMINATION DU TYPFIS = 'FONDFISS' OU 'FISSURE' OU 'THETA'
-!     ET RECUPERATION DE LA SD POUR DECRIRE LE FOND DE FISSURE : NOMFIS
-    call cgtyfi(typfis, nomfis)
-!
 !     VERIFICATION DE LA COMPATIBILITE ENTRE LA SD ASSOCIEE AU FOND
 !     DE FISSURE ET LE MODELE
-    call cgvemf(modele, typfis, nomfis)
+    call cgvemf(modele, typfis, nomfis, typdis)
 !
 !     VERIFICATION DE LA COMPATIBILITE ENTRE OPTION ET TYPE DE FISSURE
-    call cgvefo(option, typfis, nomfis)
+    call cgvefo(option, typfis, nomfis, typdis)
 !
 !     VERIFICATION DES DONNEES RELATIVES AU(X) CHAMP(S) THETA
     call cgveth(typfis, cas)
@@ -110,7 +113,7 @@ subroutine cglect(resu, modele, ndim, option, cas,&
 !
 !     VERIFICATION DES DONNEES RELATIVES AU LISSAGE
 !     ET DETERMINATION DU LISSAGE (NOM UNIQUE CONTRACTE) : LISS ET NDEG
-    call cgveli(typfis, cas, option, lnoff, liss,&
+    call cgveli(typfis, typdis, cas, option, lnoff, liss,&
                 ndeg)
 !
     call jedema()

@@ -1,11 +1,11 @@
-subroutine cgvedo(ndim, option)
+subroutine cgvedo(ndim, option, typdis)
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer :: ndim
-    character(len=16) :: option
+    character(len=16) :: option, typdis
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,6 +60,11 @@ subroutine cgvedo(ndim, option)
                 call utmess('F', 'RUPTURE0_3', sk=option)
             endif
 10      continue
+    endif
+!
+!   CALCUL COHESIF OUVERT EN 3D UNIQUEMENT POUR L INSTANT
+    if(ndim.eq.2.and.typdis.eq.'COHESIF') then
+        call utmess('F', 'RUPTURE2_5')
     endif
 !
 end subroutine

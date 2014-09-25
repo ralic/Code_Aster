@@ -163,8 +163,8 @@ subroutine cgcrtb(table, option, lmelas, cas, typfis,&
         typrup(6) = 'R'
         noprup(7) = 'G_IRWIN'
         typrup(7) = 'R'
-        elseif((option.eq.'CALC_K_G'.or.option.eq.'CALC_K_MAX') .and.(&
-    cas.eq.'3D_LOCAL').and.(.not.lmoda)) then
+        elseif((option.eq.'CALC_K_G'.or.option.eq.'CALC_K_MAX'.or.option.eq.'K_G_COHE')&
+        .and.(cas.eq.'3D_LOCAL').and.(.not.lmoda)) then
         nbprup = 11
         noprup(1) = 'NUME_FOND'
         typrup(1) = 'I'

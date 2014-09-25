@@ -1,4 +1,4 @@
-subroutine cgvefo(option, typfis, nomfis)
+subroutine cgvefo(option, typfis, nomfis, typdis)
     implicit none
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
@@ -8,7 +8,7 @@ subroutine cgvefo(option, typfis, nomfis)
 #include "asterfort/utmess.h"
 !
     character(len=8) :: typfis, nomfis
-    character(len=16) :: option
+    character(len=16) :: option, typdis
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,6 +71,11 @@ subroutine cgvefo(option, typfis, nomfis)
             call utmess('F', 'RUPTURE0_29', sk=option)
         endif
 !
+    endif
+!
+!   SI FISSURE TYPE 'COHESIF', LA SEULE OPTION EST CALC_K_G
+    if(typdis.eq.'COHESIF'.and.option.ne.'CALC_K_G') then
+        call utmess('F','RUPTURE2_5')
     endif
 !
 !     CERTAINES OPTIONS NE SONT PAS ENCORE PROGRAMMEES POUR X-FEM

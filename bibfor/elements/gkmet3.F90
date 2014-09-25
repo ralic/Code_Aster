@@ -1,10 +1,12 @@
 subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
-                  iadgks, iadgki, abscur, num, modele)
+                  iadgks, iadgki, abscur, num, modele,&
+                  typdis)
 ! aslint: disable=W1306
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8gaem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/gsyste.h"
 #include "asterfort/jedema.h"
@@ -15,6 +17,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
 !
     integer :: nnoff, iadrgk, iadgks, iadgki, num
     character(len=8) :: modele
+    character(len=16) :: typdis
     character(len=24) :: chfond, abscur
     aster_logical :: milieu, connex
 !
@@ -69,7 +72,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
     real(kind=8) :: gs(nnoff), k1s(nnoff), k2s(nnoff), k3s(nnoff)
     real(kind=8) :: betas(nnoff), gith(nnoff), gis(nnoff)
     real(kind=8) :: g1th(nnoff), g2th(nnoff), g3th(nnoff)
-    real(kind=8) :: g1s(nnoff), g2s(nnoff), g3s(nnoff)
+    real(kind=8) :: g1s(nnoff), g2s(nnoff), g3s(nnoff), beta
     character(len=24) :: lissg, vect, matr
 !
 !
@@ -86,8 +89,12 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
         k1th(i)=zr(iadrgk-1+(i-1)*8+5)
         k2th(i)=zr(iadrgk-1+(i-1)*8+6)
         k3th(i)=zr(iadrgk-1+(i-1)*8+7)
-        gith(i)=g1th(i)*g1th(i) +g2th(i)*g2th(i) +g3th(i)*g3th(i)
- 10 end do
+        if(typdis.ne.'COHESIF') then
+            gith(i)=g1th(i)*g1th(i) +g2th(i)*g2th(i) +g3th(i)*g3th(i)
+        else
+            gith(i)=gthi(i)
+        endif
+10  end do
 !
     call getvtx('LISSAGE', 'LISSAGE_G', iocc=1, scal=lissg, nbret=ibid)
 !
@@ -297,13 +304,28 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
 !                  RECOPIES
 !     ----------------------------------------------------------------
 !
-    do 80 i = 1, nnoff
-        zr(iadgks-1+(i-1)*6+1)=gs(i)
-        zr(iadgks-1+(i-1)*6+2)=k1s(i)
-        zr(iadgks-1+(i-1)*6+3)=k2s(i)
-        zr(iadgks-1+(i-1)*6+4)=k3s(i)
-        zr(iadgks-1+(i-1)*6+5)=gis(i)
- 80 end do
+    if(typdis.ne.'COHESIF') then
+        do 80 i = 1, nnoff
+            zr(iadgks-1+(i-1)*6+1)=gs(i)
+            zr(iadgks-1+(i-1)*6+2)=k1s(i)
+            zr(iadgks-1+(i-1)*6+3)=k2s(i)
+            zr(iadgks-1+(i-1)*6+4)=k3s(i)
+            zr(iadgks-1+(i-1)*6+5)=gis(i)
+80      end do
+    else if(typdis.eq.'COHESIF') then
+        do i = 1, nnoff
+            zr(iadgks-1+(i-1)*6+1)=gs(i)
+            k1s(i)=sqrt(k1s(i))
+            zr(iadgks-1+(i-1)*6+2)=k1s(i)
+            if(g2th(i).ge.0.d0) k2s(i)= sqrt(abs(k2s(i)))
+            if(g2th(i).lt.0.d0) k2s(i)=-sqrt(abs(k2s(i)))
+            zr(iadgks-1+(i-1)*6+3)=k2s(i)
+            if(g3th(i).ge.0.d0) k3s(i)=sqrt(abs(k3s(i)))
+            if(g3th(i).lt.0.d0) k3s(i)=-sqrt(abs(k3s(i)))
+            zr(iadgks-1+(i-1)*6+4)=k3s(i)
+            zr(iadgks-1+(i-1)*6+5)=gs(i)
+        end do
+    endif
 !
     do 90 i = 1, nnoff
         zr(iadgki-1+(i-1)*5+1) = zr(iadrgk-1+(i-1)*8+1)
@@ -316,7 +338,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
 !     CALCUL DES ANGLES DE PROPAGATION DE FISSURE LOCAUX BETA
     do 100 i = 1, nnoff
         betas(i) = 0.0d0
-        if (k2s(i) .ne. 0.d0) betas(i) = 2.0d0*atan2(&
+        if (abs(k2s(i)).gt.(1/r8gaem())) betas(i) = 2.0d0*atan2(&
                                          0.25d0*(&
                                          k1s(i)/k2s( i) -sign(1.0d0, k2s(i))*sqrt((k1s(i)/k2s(i))&
                                          &**2.0d0+8.0d0)&
@@ -324,7 +346,21 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex,&
                                          1.0d0&
                                          )
         zr(iadgks-1+(i-1)*6+6)=betas(i)
-100 end do
+100  end do
+!    LISSAGE PAR MOYENNE GLISSANTE SI METHODE COHESIVE
+     if(typdis.eq.'COHESIF') then
+         if(nnoff.gt.2) then
+             zr(iadgks-1+6) = (betas(1)+betas(2)+betas(3))/3.d0
+             zr(iadgks-1+(nnoff-1)*6+6)=(betas(nnoff-2)+betas(nnoff-1)+betas(nnoff))/3.d0
+             do i= 2,nnoff-1
+                 beta = (betas(i-1)+betas(i)+betas(i+1))/3.d0
+                 zr(iadgks-1+(i-1)*6+6)=beta
+             end do
+         else if(nnoff.eq.2) then
+             zr(iadgks-1+6) = (betas(1)+betas(2))/2.d0
+             zr(iadgks-1+6+6) = (betas(1)+betas(2))/2.d0
+        endif
+     endif
 !
     call jedetr('&&METHO3.MATRI')
     call jedetr('&&METHO3.VECT')

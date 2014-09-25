@@ -1,11 +1,13 @@
-subroutine cgtyfi(typfis, nomfis)
+subroutine cgtyfi(typfis, nomfis, typdis)
     implicit none
 !
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     character(len=8) :: typfis, nomfis
+    character(len=16) :: typdis
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +53,8 @@ subroutine cgtyfi(typfis, nomfis)
 !     NORMALEMENT, CETTE REGLE D'EXCLUSION EST VERIFIEE DANS LE CAPY
     ASSERT(ithet+ifond+ifiss.eq.1)
 !
+    typdis = ' '
+!
     if (ithet .eq. 1) then
 !
         typfis='THETA'
@@ -62,6 +66,8 @@ subroutine cgtyfi(typfis, nomfis)
     else if (ifiss.eq.1) then
 !
         typfis='FISSURE'
+!
+        call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
 !
     endif
 !

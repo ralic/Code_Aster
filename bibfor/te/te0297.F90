@@ -58,6 +58,7 @@ subroutine te0297(option, nomte)
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, idecpg, icode
     integer :: nface, cface(5, 3), ifa, singu, jpmilt, ipuls, iret, jtab(7)
     integer :: irese, ddlm, jbasec, nptf, nfiss, jfisno
+    integer :: contac
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81), puls
     integer :: icodre(3)
@@ -98,24 +99,25 @@ subroutine te0297(option, nomte)
 !   INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
                 ibid, ibid, ibid, ddlm, nfiss,&
-                ibid)
+                contac)
 !
 !     ------------------------------------------------------------------
 !              CALCUL DE G, K1, K2, K3 SUR L'ELEMENT MASSIF
 !     ------------------------------------------------------------------
 !
-!   Parametres propres a X-FEM
-    call jevech('PPINTTO', 'L', jpintt)
-    call jevech('PCNSETO', 'L', jcnset)
-    call jevech('PHEAVTO', 'L', jheavt)
-    call jevech('PLONCHA', 'L', jlonch)
+!     PARAMÈTRES PROPRES À X-FEM
+    if(option.ne.'CALC_K_G_COHE') then
+        call jevech('PPINTTO', 'L', jpintt)
+        call jevech('PCNSETO', 'L', jcnset)
+        call jevech('PHEAVTO', 'L', jheavt)
+        call jevech('PLONCHA', 'L', jlonch)
+        call jevech('PLSN', 'L', jlsn)
+    endif
     call jevech('PBASLOR', 'L', jbaslo)
-    call jevech('PLSN'   , 'L', jlsn)
     call jevech('PLST'   , 'L', jlst)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PGTHETA', 'E', igthet)
     call jevech('PGTHETA', 'E', igthet)
 
 !   Propre aux elements 1d et 2d (quadratiques)
@@ -125,6 +127,7 @@ subroutine te0297(option, nomte)
          .and..not.iselli(elrefp))&
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
+    if(option.eq.'CALC_K_G_COHE') goto 98
 !
 !   VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
     if ( .not. cgverho(imate) ) call utmess('F', 'RUPTURE1_26')
@@ -214,6 +217,8 @@ subroutine te0297(option, nomte)
 90  continue
     if (compt .eq. nnop) goto 999
 !
+98  continue
+!
 !   PARAMETRES PROPRES A X-FEM
     call jevech('PPINTER', 'L', jptint)
     call jevech('PAINTER', 'L', jaint)
@@ -259,7 +264,8 @@ subroutine te0297(option, nomte)
                     igeom, nfh, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
-                    nompar, presn, option, igthet, jbasec)
+                    nompar, presn, option, igthet, jbasec,&
+                    contac)
 200  continue
 !
 !

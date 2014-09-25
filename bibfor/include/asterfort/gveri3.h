@@ -19,7 +19,7 @@
 !
 interface
     subroutine gveri3(chfond, taillr, config, lnoff, thlagr,&
-                      thlag2, ndeg, trav1, trav2, trav3)
+                      thlag2, ndeg, trav1, trav2, trav3, typdis)
         character(len=24) :: chfond
         character(len=24) :: taillr
         character(len=8) :: config
@@ -30,5 +30,6 @@ interface
         character(len=24) :: trav1
         character(len=24) :: trav2
         character(len=24) :: trav3
+        character(len=16) :: typdis
     end subroutine gveri3
 end interface
