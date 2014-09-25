@@ -77,7 +77,7 @@ class sd_char_chme(AsBase):
     EFOND = Facultatif(sd_carte())
 
     VEASS = Facultatif(AsVK8(lonmax=1, ))
-    VEISS = Facultatif(AsVK8(lonmax=6, ))
+    VEISS = Facultatif(AsVK24(lonmax=6, ))
     EVOL_CHAR  = Facultatif(AsVK8(SDNom(nomj='.EVOL.CHAR'), lonmax=1, ))
     TEMPE_TEMP = Facultatif(AsVK8(SDNom(nomj='.TEMPE.TEMP'), lonmax=1, ))
 
