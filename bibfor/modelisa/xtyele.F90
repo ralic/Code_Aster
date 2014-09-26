@@ -1,4 +1,4 @@
-subroutine xtyele(noma, trav, nfiss, fiss, contac,&
+subroutine xtyele(model, trav, nfiss, fiss, contac,&
                   ndim, linter)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,12 +45,13 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 #include "asterfort/panbno.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xelfis_lists.h"
 #include "asterfort/xtyhea.h"
 #include "blas/ddot.h"
 !
     character(len=24) :: trav
     integer :: nfiss
-    character(len=8) :: fiss(nfiss), noma
+    character(len=8) :: fiss(nfiss), model
     integer :: contac, ndim, iret
     aster_logical :: linter
 !
@@ -77,9 +78,10 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
     integer :: ar(12, 3), ia, nunoa, nunob, stna, stnb, nma, imae
     integer :: fa(6, 4), ibid3(12, 3), nbf, ifq, codret, ilsn, ilst, igeom
     character(len=2) :: ch2
-    character(len=8) :: typma, k8bid, nomail
+    character(len=8) :: typma, k8bid, noma, nomail
     character(len=19) :: clsn, clst, cnxinv, cstn(nfiss), maicon(nfiss)
     character(len=24) :: grp(4*nfiss)
+    character(len=24) :: elfis_heav(nfiss), elfis_ctip(nfiss), elfis_hect(nfiss)
     aster_logical :: lcont
     integer, pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -89,6 +91,9 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
 !
 ! ----------------------------------------------------------------------
 !
+
+
+
     call jemarq()
 !
 ! --- INITIALISATION
@@ -103,7 +108,11 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
         call codent(ifiss, 'G', ch2)
         cstn(ifiss)='&&XTYELE.STN'//ch2
         maicon(ifiss)='&&XTYELE.CONT'//ch2
+        elfis_heav(ifiss)='&&XTYELE.ELEMFISS.HEAV'//ch2
+        elfis_ctip(ifiss)='&&XTYELE.ELEMFISS.CTIP'//ch2
+        elfis_hect(ifiss)='&&XTYELE.ELEMFISS.HECT'//ch2
     end do
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma)
     call jeveuo(noma(1:8)//'.COORDO    .VALE', 'L', vr=vale)
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call jeveuo(noma(1:8)//'.TYPMAIL', 'L', vi=typmail)
@@ -132,9 +141,11 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
         call cnocns(fiss(ifiss)//'.STNO', 'V', cstn(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSL', 'L', jstnl(ifiss))
         call jeveuo(cstn(ifiss)//'.CNSV', 'L', jstnv(ifiss))
-        grp(4*(ifiss-1)+1) = fiss(ifiss)//'.MAILFISS.HEAV'
-        grp(4*(ifiss-1)+2) = fiss(ifiss)//'.MAILFISS.CTIP'
-        grp(4*(ifiss-1)+3) = fiss(ifiss)//'.MAILFISS.HECT'
+        call xelfis_lists(fiss(ifiss), model, elfis_heav(ifiss),&
+                              elfis_ctip(ifiss), elfis_hect(ifiss))
+        grp(4*(ifiss-1)+1) = elfis_heav(ifiss)
+        grp(4*(ifiss-1)+2) = elfis_ctip(ifiss)
+        grp(4*(ifiss-1)+3) = elfis_hect(ifiss)
         grp(4*(ifiss-1)+4) = fiss(ifiss)//'.MAILFISS.CONT'
         do l = 1, 3
             call jeexin(grp(4*(ifiss-1)+l), iret)
@@ -481,6 +492,10 @@ subroutine xtyele(noma, trav, nfiss, fiss, contac,&
         endif
         call jedetr(maicon(ifiss))
         call jedetr(cstn(ifiss))
+        do kk = 1, 3
+            call jeexin(grp(4*(ifiss-1)+kk), iret)
+            if (iret .ne. 0) call jedetr(grp(4*(ifiss-1)+kk)) 
+        enddo
     end do
 !
     call jedetr(cnxinv)

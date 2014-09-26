@@ -82,7 +82,7 @@ fonc = 'X+Y+Z+'+str(fit2vertex/raff)
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE=fonc);
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
                     INFO=1,);

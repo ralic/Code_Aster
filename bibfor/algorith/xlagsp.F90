@@ -47,6 +47,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 #include "asterfort/xlag2c.h"
 #include "asterfort/xlagsc.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/xelfis_lists.h"
 !
     character(len=8) :: noma, nomo, fiss
     integer :: ndim
@@ -95,7 +96,9 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer :: jcesd2, jcesd3, jcesd4, jcesd5
     integer :: jcesv5
     integer :: iad2, iad3, iad4, ninter, pint, ifiss
-    character(len=24) :: grp(3), gr
+    character(len=24) :: grp(3), gr, elfis_heav, elfis_ctip, elfis_hect
+    character(len=6) :: nompro
+    parameter (nompro = 'XLAGSP')
     integer :: nmaenr, ienr, jgrp, jxc, ier, jnbpt
     integer, pointer :: cesv2(:) => null()
     real(kind=8), pointer :: cesv3(:) => null()
@@ -188,9 +191,14 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- CREATION DE LA LISTE DES ARETES COUPEES
 !
 !
-    grp(1) = fiss//'.MAILFISS.HEAV'
-    grp(2) = fiss//'.MAILFISS.CTIP'
-    grp(3) = fiss//'.MAILFISS.HECT'
+    elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
+    elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
+    elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
+    call xelfis_lists(fiss, nomo, elfis_heav,&
+                          elfis_ctip, elfis_hect)
+    grp(1)=elfis_heav
+    grp(2)=elfis_ctip
+    grp(3)=elfis_hect
 !
 ! --- REPERAGE NUM LOCAL DE FISSURE POUR CHAQUE MAILLE
 ! --- ENRICHIE
@@ -211,6 +219,12 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
         end do
  10     continue
     end do
+!
+!   menage
+    do k = 1, 3
+        call jeexin(grp(k), iret)
+        if (iret .ne. 0) call jedetr(grp(k)) 
+    enddo
 !
 ! --- RECUP MAILLES DE CONTACT
 !

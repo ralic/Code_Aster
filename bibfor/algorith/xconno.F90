@@ -30,11 +30,13 @@ subroutine xconno(mox, chfis, base, opt, param,&
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/xelfis_lists.h"
 !
     character(len=*) :: opt, param
     character(len=1) :: base
@@ -64,8 +66,10 @@ subroutine xconno(mox, chfis, base, opt, param,&
     integer :: ncmp1, jmofis, jcesd, jcesv, jcesl, iad, nncp
     integer :: jcesd2, jcesl2, itypma, ndime, ndim
     character(len=3) :: tsca
+    character(len=6) :: nompro
+    parameter (nompro = 'XCONNO')
     character(len=19) :: ces, cns, ligrel, cns2, ces2
-    character(len=24) :: grp(3)
+    character(len=24) :: grp(3), elfis_heav, elfis_ctip, elfis_hect
     aster_logical :: lstno
     character(len=8) :: ma, nomgd, nomfis, licmp(2)
     integer, pointer :: nbsp(:) => null()
@@ -154,9 +158,14 @@ subroutine xconno(mox, chfis, base, opt, param,&
         nomfis = zk8(jmofis-1 + ifis)
         call cnocns(nomfis//chfis, 'V', cns)
 !
-        grp(1)=nomfis//'.MAILFISS.HEAV'
-        grp(2)=nomfis//'.MAILFISS.CTIP'
-        grp(3)=nomfis//'.MAILFISS.HECT'
+        elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
+        elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
+        elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
+        call xelfis_lists(nomfis, mox, elfis_heav,&
+                              elfis_ctip, elfis_hect)
+        grp(1)=elfis_heav
+        grp(2)=elfis_ctip
+        grp(3)=elfis_hect
 !
         call jeveuo(cns//'.CNSV', 'L', jcnsv)
         call jeveuo(cns//'.CNSL', 'L', jcnsl)
@@ -230,10 +239,15 @@ subroutine xconno(mox, chfis, base, opt, param,&
                     endif
 120                 continue
                 end do
+!               menage
+                call jedetr(grp(ii))
             endif
         end do
 !
         call detrsd('CHAM_NO_S', cns)
+        call jedetr(elfis_heav)
+        call jedetr(elfis_ctip)
+        call jedetr(elfis_hect)
     end do
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM

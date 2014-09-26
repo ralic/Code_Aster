@@ -25,6 +25,7 @@ subroutine xoripe(modele)
 #include "asterfort/vdiff.h"
 #include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xelfis_lists.h"
 #include "blas/ddot.h"
 !
     character(len=8) :: modele
@@ -68,9 +69,12 @@ subroutine xoripe(modele)
     integer :: nsignp, nsignm, nsignz, ihe, he, itypma
     integer :: ifiss, nfiss, mailvo(1)
     character(len=8) :: noma, typbo, fiss
+    character(len=6) :: nompro
+    parameter (nompro = 'XORIPE')
     character(len=2) :: kdim
     character(len=19) :: ligrel, chs(5), chlsn
     character(len=24) :: grmape, nomob, vecnor, grp(3)
+    character(len=24) :: elfis_heav, elfis_ctip, elfis_hect
     character(len=19) :: pintto, cnseto, loncha, heav
     aster_logical :: quadratique
     integer :: itypbo
@@ -129,9 +133,14 @@ subroutine xoripe(modele)
         fiss = vfiss(ifis)
 !
 !       REMPLISSAGE DE LA LISTE
-        grp(1) = fiss//'.MAILFISS.HEAV'
-        grp(2) = fiss//'.MAILFISS.CTIP'
-        grp(3) = fiss//'.MAILFISS.HECT'
+        elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
+        elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
+        elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
+        call xelfis_lists(fiss, modele, elfis_heav,&
+                              elfis_ctip, elfis_hect)
+        grp(1)=elfis_heav
+        grp(2)=elfis_ctip
+        grp(3)=elfis_hect
 !
 !       BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT
         do kk = 1, 3
@@ -151,6 +160,8 @@ subroutine xoripe(modele)
                         zi(jmail-1+nbmail)=ima
                     endif
                 end do
+!               menage
+                call jedetr(grp(kk))
 !
             endif
         end do

@@ -43,7 +43,7 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     integer :: jinfo,  long
-    character(len=8), pointer :: modele(:) => null()
+    character(len=8), pointer :: mailla(:) => null()
 !
 !
     call jemarq()
@@ -66,10 +66,10 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
         call jeveuo(nomob//'.INFO', 'L', jinfo)
         repk = zk16(jinfo-1+3)
 !
-    else if (questi.eq.'NOM_MODELE') then
+    else if (questi.eq.'NOM_MAILLA') then
 !
-        call jeveuo(nomob//'.MODELE', 'L', vk8=modele)
-        repk = modele(1)
+        call jeveuo(nomob//'.MAILLAGE', 'L', vk8=mailla)
+        repk = mailla(1)
 !
     else if (questi.eq.'NB_FOND') then
 !

@@ -73,7 +73,7 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 
 FISS = [None]*nbcalc
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE,
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                        DEFI_FISS=_F(
                                  FORM_FISS = 'DEMI_PLAN',
                                  PFON      =(0. , 2. ,9.),

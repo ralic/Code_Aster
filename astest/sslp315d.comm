@@ -70,7 +70,7 @@ LT = FORMULE(VALE='Y-YFiss',
              NOM_PARA=('Y'));
 
 # DEFINITION DE LA FISSURE INITIALE
-fiss[0] = DEFI_FISS_XFEM(MODELE=mod,
+fiss[0] = DEFI_FISS_XFEM(MAILLAGE=poutre,
                          DEFI_FISS=_F(FONC_LT=LT,
                                       FONC_LN=LN,),
                          );

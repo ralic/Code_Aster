@@ -125,6 +125,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=24) :: obj1, obj2, coord, coorn, chtime
     character(len=24) :: pavolu, pa1d2d, papres, chpuls, chsigi, livk(nbmxpa)
     real(kind=8), pointer :: valg(:) => null()
+    character(len=8), pointer :: p_mod_sain(:) => null()
 !
     data chvarc/'&&CAKG2D.CH_VARC_R'/
     data chvref/'&&CAKG2D.CHVREF'/
@@ -250,7 +251,8 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !   Recuperation du modele
     if (lxfem) then
 !       cas X-FEM : MOSAIN = MODELE ISSU DE AFFE_MODELE
-        call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=mosain)
+        call jeveuo(modele//'.MODELE_SAIN', 'L', vk8=p_mod_sain)
+        mosain = p_mod_sain(1)
         call dismoi('MODELISATION', mosain, 'MODELE', repk=typmo)
     else
 !       cas FEM

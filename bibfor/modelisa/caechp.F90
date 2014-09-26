@@ -203,8 +203,8 @@ subroutine caechp(char, ligrch, ligrmo, mesh, fonree,&
 !           RECUPERATION DES MAILLES PRINCIPALES XFEM POUR FISS(1:NFISS)
                 mesmai = '&&CAECHP.MES_MAILLES'
                 lismai = '&&CAECHP.NUM_MAILLES'
-                call xtmafi(mesh, ndim, fiss, nfiss, lismai,&
-                            mesmai, nbm)
+                call xtmafi(ndim, fiss, nfiss, lismai,&
+                            mesmai, nbm, model=ligrmo(1:8))
                 call jeveuo(mesmai, 'L', jma)
 !
 !           STOCKAGE DANS LA CARTE SUR CES MAILLES

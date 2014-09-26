@@ -52,7 +52,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                      RAYON=1.E-6,
                                      PRECISION=1.E-6));
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELE,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LSN));
 

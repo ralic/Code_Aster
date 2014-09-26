@@ -49,7 +49,7 @@ ChAlu=AFFE_MATERIAU(MAILLAGE=mesh,
                             MATER=Alu,),
                     );
 
-fiss = DEFI_FISS_XFEM(MODELE=modele,
+fiss = DEFI_FISS_XFEM(MAILLAGE=mesh,
                       MODELE_GRILLE=mgrille,
                       DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
                                    PFON=(5.,4.,0.),

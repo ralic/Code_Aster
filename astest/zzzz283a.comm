@@ -71,7 +71,7 @@ fLST=FORMULE(NOM_PARA='Y',
 FISS[0]=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
                                     FONC_LT=fLST),
                        MODELE_GRILLE=GriAux,
-                       MODELE=MODbox10,);
+                       MAILLAGE=box10,);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -193,7 +193,7 @@ MODraff=AFFE_MODELE(MAILLAGE=boxRaf,
 FISSlast=DEFI_FISS_XFEM(DEFI_FISS=_F(CHAM_NO_LSN=LSNlast,
                                      CHAM_NO_LST=LSTlast,),
                          FISS_GRILLE=FISS[i+1],
-                         MODELE=MODraff,);
+                         MAILLAGE=boxRaf,);
 
 #----------------------------------------------
 # DERNIER PAS DE PROPAGATION DE FISS SUR UN

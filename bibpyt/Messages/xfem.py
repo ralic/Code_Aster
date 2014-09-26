@@ -249,10 +249,10 @@ cata_msg={
 39: _(u"""
      Erreur utilisateur : incohérence entre les mots-clés FISSURE et MODELE_IN.
      Il faut que les (ou la) fissure sous le mot-clé FISSURE soient toutes définies à
-     partir du même modèle.
+     partir du même maillage.
      Or :
-     - la fissure %(k1)s est définie à partir du modèle %(k2)s
-     - le modèle renseigné sous MODELE_IN est %(k3)s.
+     - la fissure %(k1)s est définie à partir du maillage %(k2)s
+     - le modèle renseigné sous MODELE_IN est défini à partir du maillage %(k3)s.
      Conseil :
      Veuillez revoir la définition de la fissure %(k1)s ou bien changer MODELE_IN.
 """),
@@ -471,9 +471,11 @@ cata_msg={
 """),
 
 71: _(u"""
-  -> DEFI_FISS_XFEM :
-     La jonction de fissures n'est pas une fonctionnalité disponible pour les modèles
-     thermiques. Or le modèle %(k1)s est un modèle thermique.
+     La jonction de fissures est une fonctionnalité disponible uniquement pour les
+     modélisations mécaniques. Or le modèle %(k1)s est soit un modèle thermique,
+     soit un modèle mécanique supportant une modélisation hydro-mécanique.
+  -> Conseil:
+     Revoyez la définition de votre modèle, ou celle de la fissure (ou des fissures).
 """),
 
 72: _(u"""

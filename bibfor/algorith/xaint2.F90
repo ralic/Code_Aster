@@ -39,6 +39,7 @@ subroutine xaint2(noma, modele)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/xelfis_lists.h"
 !
     character(len=8) :: modele, noma
 !
@@ -76,9 +77,11 @@ subroutine xaint2(noma, modele)
 !
 !
 !
-    character(len=24) :: grp(3)
+    character(len=24) :: grp(3), elfis_heav, elfis_ctip, elfis_hect
     character(len=19) :: ces(5), cel(5), cnxinv, ligrel
     character(len=8) :: typma, nomfis
+    character(len=6) :: nompro
+    parameter (nompro = 'XAINT2')
     character(len=2) :: ch2
     integer :: jcesd(5), jcesl(5), jcesv(5), iad, iret
     integer :: itypma, nncp, ibid, ier
@@ -156,9 +159,14 @@ subroutine xaint2(noma, modele)
     call jeveuo(modele//'.FISS', 'L', vk8=fiss)
     do ifis = 1, nfis
         nomfis = fiss(ifis)
-        grp(1)=nomfis//'.MAILFISS.HEAV'
-        grp(2)=nomfis//'.MAILFISS.CTIP'
-        grp(3)=nomfis//'.MAILFISS.HECT'
+        elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
+        elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
+        elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
+        call xelfis_lists(nomfis, modele, elfis_heav,&
+                              elfis_ctip, elfis_hect)
+        grp(1)=elfis_heav
+        grp(2)=elfis_ctip
+        grp(3)=elfis_hect
 !       BOUCLE SUR LES GROUPES
         do igrp = 1, 3
             call jeexin(grp(igrp), iret)
@@ -343,6 +351,8 @@ subroutine xaint2(noma, modele)
 !
 220                 continue
                 end do
+!               menage
+                call jedetr(grp(igrp))
             endif
         end do
     end do

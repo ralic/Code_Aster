@@ -100,7 +100,7 @@ for i in range(nbcalc) :
                                
    FF[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                  GROUP_MA_FOND='FOND_'+str(i)),
-                      MODELE=MODELE[i],
+                      MAILLAGE=MA[i],
                       );
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[i],FISSURE=FF[i],INFO=1,);

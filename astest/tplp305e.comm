@@ -73,7 +73,7 @@ delta = 0.05
 
 LN1=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-X+Y+Z-h*(-0.5+delta)');
 
-FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN1),
                     INFO=1,);

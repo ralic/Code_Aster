@@ -80,7 +80,7 @@ for i in range(0,(nbcalc-1)) :
                             
  FF[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                               GROUP_MA_FOND='FOND_'+str(i),),
-                   MODELE=MODEL[i],
+                   MAILLAGE=MAT[i],
                    INFO=1
                    );
                    

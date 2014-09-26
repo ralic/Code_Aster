@@ -54,7 +54,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        MODELISATION='3D',),)
 
 # fissure X-FEM
-FISS=DEFI_FISS_XFEM(MODELE=MO,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     DEFI_FISS=_F(FORM_FISS='ELLIPSE',
                                  DEMI_GRAND_AXE=a,
                                  DEMI_PETIT_AXE=a,

@@ -65,7 +65,7 @@ NPS = NPS+2
 
 Fiss = [None]*NPS
 
-Fiss[1]=DEFI_FISS_XFEM(MODELE=MO,
+Fiss[1]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                         DEFI_FISS=_F(FONC_LT=LT,
                                      FONC_LN=LN,),);
 

@@ -83,7 +83,7 @@ LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
 LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
 
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELE,  
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,  
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
                     );

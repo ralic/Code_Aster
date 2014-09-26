@@ -60,37 +60,37 @@ MODTHS = AFFE_MODELE(MAILLAGE = MAILLAGE,
 a = 10.
 h = a/18.
 
-FISSME1 = DEFI_FISS_XFEM(MODELE = MODMES,
+FISSME1 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
                                        PFON = (0.25*a, 0.25*a, 0.),
                                        DTAN = (1., 0., 0.),),)
 
-FISSTH1 = DEFI_FISS_XFEM(MODELE = MODTHS,
+FISSTH1 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
                                        PFON = (0.25*a, 0.25*a, 0.),
                                        DTAN = (1., 0., 0.),),)
 
-FISSME2 = DEFI_FISS_XFEM(MODELE = MODMES,
+FISSME2 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
                                        PFON = (0.25*a, 0.75*a, 0.),
                                        DTAN = ( 1., 0., 0.),),)
 
-FISSTH2 = DEFI_FISS_XFEM(MODELE = MODTHS,
+FISSTH2 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
                                        PFON = (0.25*a, 0.75*a, 0.),
                                        DTAN = ( 1., 0., 0.),),)
 
-FISSME3 = DEFI_FISS_XFEM(MODELE = MODMES,
+FISSME3 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
                                        PFON = (a-1.5*h, 0.5*h, 0.),
                                        DTAN = (-1., 0., 0.),),)
 
-FISSTH3 = DEFI_FISS_XFEM(MODELE = MODTHS,
+FISSTH3 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
                                        PFON = (a-1.5*h, 0.5*h, 0.),

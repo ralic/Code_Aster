@@ -1,4 +1,4 @@
-subroutine xvermo(nfiss, fiss, mod)
+subroutine xvermo(nfiss, fiss, mai)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,26 +24,27 @@ subroutine xvermo(nfiss, fiss, mod)
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
     integer :: nfiss
-    character(len=8) :: fiss(nfiss), mod
+    character(len=8) :: fiss(nfiss), mai
 !
 ! ----------------------------------------------------------------------
 !
 ! ROUTINE XFEM (VERIFICATION DES SD)
 !
-! VERIFICATION QUE LES FISSURES SONT TOUTES DEFINIES A PARTIR DU MODELE
-! EN ENTREE DE MODI_MODELE_XFEM
-!
+! VERIFICATION QUE LES FISSURES SONT TOUTES DEFINIES A PARTIR DU
+! MAILLAGE UTILISE POUR CONSTRUIRE LE MODELE SAIN EN ENTREE DE
+! MODI_MODELE_XFEM  (MC MODELE_IN)
 ! ----------------------------------------------------------------------
 !
 ! IN  NFISS  : NOMBRE DE FISSURES
 ! IN  FISS   : LISTE DES NOMS DES FISSURES
-! IN  MOD    : NOM DU MODELE EN ENTREE DE MODI_MODELE_XFEM
+! IN  MAI    : NOM DU MAILLAGE UTILISE POUR CONSTRUIRE LE MODELE SAIN
+!              EN ENTREE DE MODI_MODELE_XFEM  (MC MODELE_IN)
 !
 !
 !
 !
     integer :: ifiss
-    character(len=8) :: modf, valk(3)
+    character(len=8) :: maif, valk(3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,14 +52,14 @@ subroutine xvermo(nfiss, fiss, mod)
 !
     do ifiss = 1, nfiss
 !
-!       RECUPERATION DU MODELE ASSOCIE A LA FISSURE COURANTE
-        call dismoi('NOM_MODELE', fiss(ifiss), 'FISS_XFEM', repk=modf)
+!       RECUPERATION DU MAILLAGE ASSOCIE A LA FISSURE COURANTE
+        call dismoi('NOM_MAILLA', fiss(ifiss), 'FISS_XFEM', repk=maif)
 !
 !       VERIFICATION DE LA COHERENCE
-        if (mod .ne. modf) then
+        if (mai .ne. maif) then
             valk(1)=fiss(ifiss)
-            valk(2)=modf
-            valk(3)=mod
+            valk(2)=maif
+            valk(3)=mai
             call utmess('F', 'XFEM_39', nk=3, valk=valk)
         endif
 !

@@ -55,7 +55,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 # PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
 a=5.
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FORM_FISS = 'DEMI_PLAN',
                                  PFON      =(0. , a ,15.),
                                  NORMALE   =(0. , 0. , 1.),

@@ -154,7 +154,7 @@ for i_raff in range(nb_raff+1) :
                           MODELISATION='3D'))
   
    # definition de la fissure semi elliptique                     
-   FISS[i_propa]=DEFI_FISS_XFEM(MODELE=MO,  
+   FISS[i_propa]=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],  
                                 DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                              DEMI_GRAND_AXE = a,
                                              DEMI_PETIT_AXE = b,
@@ -216,7 +216,7 @@ for i_propa in xrange(nb_pas) :
 
 
       #definition de la fissure
-      FISS[i_propa]=DEFI_FISS_XFEM(MODELE=MO,
+      FISS[i_propa]=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
                                    DEFI_FISS=_F(CHAM_NO_LSN = LSN[nb_raff],
                                                 CHAM_NO_LST = LST[nb_raff],),);
 
@@ -471,7 +471,7 @@ if type_cas == 'cas_test' :
                                MODELISATION='3D',),)
 
    # Fissure
-   FI_TEST=DEFI_FISS_XFEM(MODELE=MO_TEST,
+   FI_TEST=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
                           DEFI_FISS=_F(CHAM_NO_LSN = LSN[nb_raff],
                                        CHAM_NO_LST = LST[nb_raff],),);
 

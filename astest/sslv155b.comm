@@ -85,7 +85,7 @@ for i_raff in range(nb_iter) :
                                   PHENOMENE='MECANIQUE',
                                   MODELISATION='AXIS'))
 
-   FISS[i_raff]=DEFI_FISS_XFEM(MODELE=MO[i_raff],
+   FISS[i_raff]=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],
                                DEFI_FISS=_F(FONC_LT=LT,
                                             FONC_LN=LN,))
       
@@ -118,7 +118,7 @@ MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
                          PHENOMENE='MECANIQUE',
                          MODELISATION='AXIS',),);
 
-FISSX=DEFI_FISS_XFEM(MODELE=MODE,
+FISSX=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                      DEFI_FISS=_F(FONC_LT=LT,
                                   FONC_LN=LN,))
 

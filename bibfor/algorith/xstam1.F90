@@ -1,4 +1,4 @@
-subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
+subroutine xstam1(noma, nbma, nmafis, mafis,&
                   stano, mafon, maen1, maen2, maen3,&
                   nmafon, nmaen1, nmaen2, nmaen3)
 !
@@ -24,6 +24,7 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
@@ -34,7 +35,7 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
     integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma
     integer :: stano(*), mafis(nmafis)
     integer :: mafon(nmafis), maen1(nbma), maen2(nbma), maen3(nbma)
-    character(len=8) :: nomo, noma
+    character(len=8) :: noma
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,7 +45,6 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 !
 ! ----------------------------------------------------------------------
 !
-! IN  NOMO   : NOM DU MODELE
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 ! IN  NMAFIS : NOMBRE DE MAILLES DE LA ZONE FISSURE
@@ -66,9 +66,9 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
     integer ::  jma, nuno,  jconx2
     integer :: i, im1, im2, im3, ima, itypma, in, imae
     integer :: em, em1, em2, nmaabs, nbnott(3), nno, en
+    integer :: ndim, dime_topo
     character(len=8) :: typma
     character(len=19) :: mai
-    integer, pointer :: maille(:) => null()
     integer, pointer :: connex(:) => null()
 !
     call jemarq()
@@ -80,10 +80,12 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
 !
     mai=noma//'.TYPMAIL'
     call jeveuo(mai, 'L', jma)
-    call jeveuo(nomo//'.MAILLE', 'L', vi=maille)
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
 !
+!   dimension du maillage
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+    ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
 !
 !     BOUCLE SUR LES MAILLES DU MAILLAGE
     do 310 ima = 1, nbma
@@ -93,9 +95,6 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
         itypma=zi(jma-1+nmaabs)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
         if (typma(1:3) .eq. 'POI') goto 310
-!
-!       ON ZAPPE LES MAILLES SANS MODELE
-        if (maille(nmaabs) .eq. 0) goto 310
 !
         em=0
         em1=0
@@ -109,26 +108,29 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
             en = stano(nuno)
             if (en .eq. 1 .or. en .eq. 3) em1=em1+1
             if (en .eq. 2 .or. en .eq. 3) em2=em2+1
-311      continue
+311     continue
         if (em1 .ge. 1) em=1
         if (em2 .ge. 1) em=2
         if (em1 .ge. 1 .and. em2 .ge. 1) em=3
 !
-        if (em2 .eq. nno .and. typma(1:3) .ne. 'SEG') then
-!
 !         MAILLE RETENUE POUR MAFOND (TS LS NOEUDS SONT 'CARRÉS')
-!         SOUS RÉSERVE QUE CE SOIT UNE MAILLE DE MAFIS
-!         ET PAS UNE MAILLE SEG
-            do 312 imae = 1, nmafis
-                if (nmaabs .eq. mafis(imae)) then
-                    i=i+1
-                    ASSERT(i.le.nmafis)
-                    mafon(i)=nmaabs
-!             ON SORT DE LA BOUCLE 312
-                    goto 313
-                endif
-312          continue
-313          continue
+!         SOUS RÉSERVE QUE CE SOIT UNE MAILLE PRINCIPALE DE MAFIS
+        if (em2 .eq. nno) then
+!
+            call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=dime_topo)
+            if (dime_topo .eq. ndim) then
+!
+                do 312 imae = 1, nmafis
+                    if (nmaabs .eq. mafis(imae)) then
+                        i=i+1
+                        ASSERT(i.le.nmafis)
+                        mafon(i)=nmaabs
+!                       ON SORT DE LA BOUCLE 312
+                        goto 313
+                    endif
+312             continue
+313         continue
+            endif
         endif
 !
 !       ON RÉCUPÈRE LES NUMEROS DES MAILLES ENRICHIES
@@ -145,7 +147,7 @@ subroutine xstam1(nomo, noma, nbma, nmafis, mafis,&
             ASSERT(im3.le.nbma)
             maen3(im3)=nmaabs
         endif
-310  end do
+310 end do
 !
     nmafon=i
     nmaen1=im1

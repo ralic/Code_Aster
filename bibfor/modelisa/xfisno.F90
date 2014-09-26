@@ -51,6 +51,7 @@ subroutine xfisno(noma, modelx)
     integer :: jcesd2, jcesl2
     integer :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
     integer :: ibid, iad, nncp
+    integer, pointer :: p_mail_affe(:) => null()
     character(len=19) :: fissno, ces, cesf, ligrel, ces2, heavno
     aster_logical :: lcont
     integer, pointer :: xfem_cont(:) => null()
@@ -88,6 +89,11 @@ subroutine xfisno(noma, modelx)
     call jeveuo(cesf//'.CESV', 'L', vi=cesfv)
     call jeveuo(cesf//'.CESL', 'L', jcesfl)
 !
+! --- RECUPERATION DE LA LISTE DES MAILLES AFFECTEES PAR DES EF
+!
+    call jeveuo(modelx//'.MAILLE', 'L', vi=p_mail_affe)
+
+!
 ! --- RECUPERATION DU NOMBRE DE FISSURES VUES
 !
     call jeveuo('&&XTYELE.NBSP', 'L', vi=nbsp)
@@ -123,6 +129,8 @@ subroutine xfisno(noma, modelx)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jlcnx)
 !
     do ima = 1, nbma
+!       la maille est-elle affectee par un ef ?
+        if (p_mail_affe(ima) .eq. 0) cycle
         nfiss = nbsp(ima)
         nheav = nbsp2(ima)
         if (nfiss .ge. 2) then

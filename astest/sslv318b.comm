@@ -40,7 +40,7 @@ x0 = LX
 y0 = LY/2.
 z0 = LZ
 
-FISS=DEFI_FISS_XFEM(MODELE=MOD,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     DEFI_FISS=_F(FORM_FISS      = 'CYLINDRE',
                                  DEMI_GRAND_AXE = r,
                                  DEMI_PETIT_AXE = r,

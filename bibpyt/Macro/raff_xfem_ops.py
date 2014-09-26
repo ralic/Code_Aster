@@ -22,10 +22,7 @@ def get_nom_maillage_sdfiss(FISS) :
    import aster
    from Utilitai.Utmess     import  UTMESS
 
-   iret,ibid,nom_mo = aster.dismoi('NOM_MODELE',FISS.nom,'FISS_XFEM','F')
-   nom_mo=nom_mo.strip()
-
-   iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',nom_mo,'MODELE','F')
+   iret,ibid,nom_ma = aster.dismoi('NOM_MAILLA',FISS.nom,'FISS_XFEM','F')
    return nom_ma.strip()
 
 

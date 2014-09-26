@@ -102,7 +102,7 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='X-X0');
 
 FISS = [None]*(NPAS+1)
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=MOD[0],
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
 #                        TYPE_ENRI_FOND = 'GEOMETRIQUE',
 #                        RAYON_ENRI = 0.2,

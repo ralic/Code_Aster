@@ -316,11 +316,11 @@ subroutine op0010()
     call jedupo(fispre//'.GROUP_MA_ENRI', 'G', lismae, .false._1)
     call jedupo(fispre//'.GROUP_NO_ENRI', 'G', lisnoe, .false._1)
 !
-! --- DUPLICATION DE INFO ET MODELE (LA NOUVELLE FISSURE RESTE
-!     ATTACHE AU MODELE SAIN INITIAL
+! --- DUPLICATION DE INFO ET MAILLAGE (LA NOUVELLE FISSURE RESTE
+!     ATTACHE AU MAILLAGE INITIAL
 !
     call jedupo(fispre//'.INFO', 'G', fiss//'.INFO', .false._1)
-    call jedupo(fispre//'.MODELE', 'G', fiss//'.MODELE', .false._1)
+    call jedupo(fispre//'.MAILLAGE', 'G', fiss//'.MAILLAGE', .false._1)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES DU FOND DE FISSURE
 !
@@ -510,7 +510,7 @@ subroutine op0010()
         cnsljg = '&&OP0010.CNSLJG'
         cnseg='&&OP0010.CNSEG'
         cnseng='&&OP0010.CNSENG'
-        call xenrch(dnomo, dnoma, dcnslt, dcnsln, cnsljg,&
+        call xenrch(dnoma, dcnslt, dcnsln, cnsljg,&
                     cnseg, cnseng, ndim, fispre, goinop,&
                     lismag, lisnog)
 !
@@ -979,7 +979,7 @@ subroutine op0010()
     cnsen='&&OP0010.CNSEN'
     cnsenr='&&OP0010.CNSENR'
     goinop=.false.
-    call xenrch(nomo, noma, cnslt, cnsln, cnslj,&
+    call xenrch(noma, cnslt, cnsln, cnslj,&
                 cnsen, cnsenr, ndim, fiss, goinop,&
                 lismae, lisnoe)
 !

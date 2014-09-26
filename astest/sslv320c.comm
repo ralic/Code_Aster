@@ -91,7 +91,7 @@ a0 = 4.0
 
 FISS = [None]*nbcalc
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=ModSEB,
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MeshSEB,
                        MODELE_GRILLE=ModGri,
                        GROUP_MA_ENRI='Vol',
                        DEFI_FISS=_F(
@@ -212,7 +212,7 @@ for i in range(nbcalc) :
                                PHENOMENE='MECANIQUE',
                                MODELISATION='3D',),),);
 
-         FISSH[i] = DEFI_FISS_XFEM(MODELE=ModH[i],
+         FISSH[i] = DEFI_FISS_XFEM(MAILLAGE=MeshH[i],
                                    FISS_GRILLE=FISS[i],
                                    DEFI_FISS=_F(CHAM_NO_LSN=LSNH[i],
                                                 CHAM_NO_LST=LSTH[i],),

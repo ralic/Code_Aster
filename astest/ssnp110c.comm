@@ -89,7 +89,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),),);
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FORM_FISS = 'DEMI_DROITE',
                                  PFON      =(0. , 0. ,0.),
                                  DTAN      =(1. , 0. ,0.),),);

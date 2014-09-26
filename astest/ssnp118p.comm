@@ -50,7 +50,7 @@ LN = FORMULE(VALE='X*cos(THETA)+Y*sin(THETA)-0.4',
              NOM_PARA=('X','Y',),);
 
 # definition de la fissure
-FISS=DEFI_FISS_XFEM(MODELE=MO,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='G_CUBE',

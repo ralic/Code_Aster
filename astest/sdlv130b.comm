@@ -56,7 +56,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),);
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
                                  PFON=(0.,5.,15.,),
                                  NORMALE=(0.,0.,1.,),

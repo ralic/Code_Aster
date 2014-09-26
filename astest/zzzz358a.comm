@@ -36,7 +36,7 @@ MODBID = AFFE_MODELE(MAILLAGE = MA0,
 
 LN = FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z+0.125');
 
-FISBID = DEFI_FISS_XFEM(MODELE = MODBID,
+FISBID = DEFI_FISS_XFEM(MAILLAGE = MA0,
                         TYPE_DISCONTINUITE = 'INTERFACE', 
                         DEFI_FISS = _F(FONC_LN = LN,),
                         )
@@ -90,7 +90,7 @@ cent = D/2
 a    = 0.57
 b    = 0.57
 
-FISSME = DEFI_FISS_XFEM(MODELE = MODMES,
+FISSME = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'ELLIPSE',
                                        DEMI_GRAND_AXE = a, # suivant x ellipse
@@ -101,7 +101,7 @@ FISSME = DEFI_FISS_XFEM(MODELE = MODMES,
                                        ),
                         )
 
-FISSTH = DEFI_FISS_XFEM(MODELE = MODTHS,
+FISSTH = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'FISSURE', 
                         DEFI_FISS = _F(FORM_FISS = 'ELLIPSE',
                                        DEMI_GRAND_AXE = a, # suivant x ellipse
@@ -114,11 +114,11 @@ FISSTH = DEFI_FISS_XFEM(MODELE = MODTHS,
 
 LNHAUT = FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-0.5');
 
-INTEME = DEFI_FISS_XFEM(MODELE = MODMES,
+INTEME = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'INTERFACE', 
                         DEFI_FISS = _F(FONC_LN = LNHAUT,),)
 
-INTETH = DEFI_FISS_XFEM(MODELE = MODTHS,
+INTETH = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'INTERFACE', 
                         DEFI_FISS = _F(FONC_LN = LNHAUT,),)
 

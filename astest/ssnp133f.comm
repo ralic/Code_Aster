@@ -69,7 +69,7 @@ MO = AFFE_MODELE(
 LN = FORMULE(VALE='Y',
              NOM_PARA=('X','Y'));
 
-FISS=DEFI_FISS_XFEM(MODELE=MO,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='MATIERE',

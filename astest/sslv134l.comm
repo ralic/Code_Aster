@@ -61,7 +61,7 @@ M=DEFI_GROUP(reuse=M,
                    INFO =2 );
                                         
 
-FF=DEFI_FISS_XFEM(MODELE=MO,
+FF=DEFI_FISS_XFEM(MAILLAGE=M,
                   DEFI_FISS=_F(FORM_FISS='ELLIPSE',
                                DEMI_GRAND_AXE=2.0,
                                DEMI_PETIT_AXE=2.0,

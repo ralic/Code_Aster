@@ -165,7 +165,7 @@ for i_raff in range(nb_raff) :
                           MODELISATION='3D'))
   
    # definition de la fissure semi elliptique                     
-   FISS=DEFI_FISS_XFEM(MODELE=MO,  
+   FISS=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],  
                        DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                     DEMI_GRAND_AXE = a,
                                     DEMI_PETIT_AXE = b,
@@ -220,7 +220,7 @@ for i_propa in xrange(nb_pas) :
 
    #definition des levels-sets
 
-   FISS=DEFI_FISS_XFEM(MODELE=MO,
+   FISS=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i_propa),
                                     GROUP_MA_FOND='FOND_'+str(i_propa),),
                        GROUP_MA_ENRI='VOL',);
@@ -358,7 +358,7 @@ for i_propa in xrange(nb_pas) :
                           MODELISATION='3D'))
    
    # definition des levels sets de la fissure propagee
-   FISS=DEFI_FISS_XFEM(MODELE=MO,
+   FISS=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i_propa+1),
                                     GROUP_MA_FOND='FOND_'+str(i_propa+1),),)
                     
@@ -506,7 +506,7 @@ MO_TEST=AFFE_MODELE(MAILLAGE=MAIT[i_tot],
                        MODELISATION='3D',),)
 
 # Fissure
-FI_TEST=DEFI_FISS_XFEM(MODELE=MO_TEST,
+FI_TEST=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i_propa+1),
                                     GROUP_MA_FOND='FOND_'+str(i_propa+1),),);
 

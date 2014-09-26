@@ -297,8 +297,10 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
        __Fis = [None]*(StepTot*len(FissAct))
        __Mod = [None]*StepTot
 
-       iret,ibid,mod_fiss = aster.dismoi('NOM_MODELE',FissAct[0].nom,'FISS_XFEM','F')
-       MOD_FISS = self.get_concept(mod_fiss.strip())
+       nom_mod_xfem = mcsimp['MODELE'].nom.ljust(8)
+       nom_mod_sain = aster.getvectjev(nom_mod_xfem + '.MODELE_SAIN')
+       nom_mod_sain = nom_mod_sain[0]
+       MOD_SAIN = self.get_concept(nom_mod_sain.strip())
 
        FissNou=[Fiss['FISS_PROPAGEE'] for Fiss in Fissures]
 
@@ -343,7 +345,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               aster.affiche('MESSAGE',' ------------------------')
               aster.affiche('MESSAGE',' CREATION DU MODELE FISSURE TEMPORAIRE')
               aster.affiche('MESSAGE',' ')
-              __Mod[NumStep] = MODI_MODELE_XFEM(MODELE_IN=MOD_FISS,FISSURE=(ListeFiss))
+              __Mod[NumStep] = MODI_MODELE_XFEM(MODELE_IN=MOD_SAIN,FISSURE=(ListeFiss))
               mcsimp['LISTE_FISS'] = ListeFiss
               aster.affiche('MESSAGE',' ')
               aster.affiche('MESSAGE',' ------------------------')

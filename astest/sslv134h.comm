@@ -56,7 +56,7 @@ ray = 2.
 
 # avec l'orientation automatique du fond de fissure
 # on tourne dans l'autre sans, il faudra changer les DTAN_ORIG....
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     DEFI_FISS=_F(
                                  FORM_FISS      = 'ELLIPSE',
                                  DEMI_GRAND_AXE = ray,

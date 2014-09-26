@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
+    subroutine xstama(noma, nbma, nmafis, jmafis,&
                       ncouch, lisnoe, stano, cnslt, cnsln,&
                       jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
                       nmaen1, nmaen2, nmaen3)
-        character(len=8) :: nomo
         character(len=8) :: noma
         integer :: nbma
         integer :: nmafis

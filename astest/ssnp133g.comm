@@ -70,7 +70,7 @@ MO = AFFE_MODELE(
 LN = FORMULE(VALE='Y',
              NOM_PARA=('X','Y'));
 
-FISS=DEFI_FISS_XFEM(MODELE=MO,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='MATIERE',
@@ -81,7 +81,8 @@ MA=DEFI_GROUP(reuse=MA,
               CREA_GROUP_MA=_F(FISSURE=FISS,
                                NOM='TRAVERS',
                                OPTION='FISS_XFEM',
-                               TYPE_GROUP='HEAVISIDE'));
+                               TYPE_GROUP='HEAVISIDE',
+                               TYPE_MAILLE='2D'));
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,

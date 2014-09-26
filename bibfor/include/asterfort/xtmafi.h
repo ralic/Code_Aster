@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
-                      mesmai, nbma)
+    subroutine xtmafi(ndim, fiss, nfiss, lismai,&
+                      mesmai, nbma, mesh, model)
         integer :: nfiss
-        character(len=8) :: noma
         integer :: ndim
         character(len=8) :: fiss(nfiss)
         character(len=24) :: lismai
         character(len=24) :: mesmai
         integer :: nbma
+        character(len=8), optional, intent(in) :: mesh
+        character(len=8), optional, intent(in) :: model
     end subroutine xtmafi
 end interface

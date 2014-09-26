@@ -83,7 +83,7 @@ else :
       PFONDX=0.5-2/math.tan(alpha)
       PFONDY=-1.5
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     DEFI_FISS=_F(
                                  FORM_FISS  = 'SEGMENT',
                                  PFON_ORIG  = (0.5 , 0.5,0.),

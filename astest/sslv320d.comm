@@ -117,7 +117,7 @@ Mod=AFFE_MODELE(MAILLAGE=MATOT[0],
 #           CREATION DES LEVEL SET
 #----------------------------------------------
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=Mod,
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MATOT[0],
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(0),
                                     GROUP_MA_FOND='FOND_'+str(0)),
                         );
@@ -216,7 +216,7 @@ for i in range(nbcalc) :
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D',),),);
 
-   FISSH[i] = DEFI_FISS_XFEM(MODELE=ModH[i],
+   FISSH[i] = DEFI_FISS_XFEM(MAILLAGE=MeshH[i],
                              DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                           GROUP_MA_FOND='FOND_'+str(i)),
                              GROUP_MA_ENRI='Vol',)
@@ -304,7 +304,7 @@ for i in range(nbcalc) :
                            MODELISATION='3D',),);
 
    if ( i < nbcalc-1 ) :
-      FISS[i+1]=DEFI_FISS_XFEM(MODELE=Mod,
+      FISS[i+1]=DEFI_FISS_XFEM(MAILLAGE=MATOT[i+1],
                                DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i+1),
                                             GROUP_MA_FOND='FOND_'+str(i+1)),
                                );

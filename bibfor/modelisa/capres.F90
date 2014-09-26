@@ -128,8 +128,8 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !           VERIFICATION DE LA COHERENCE ENTRE LES FISSURES ET LE MODELE
             call xvelfm(nfiss, fiss, ligrmo(1:8))
 !           RECUPERATION DES MAILLES PRINCIPALES X-FEM FISSUREES
-            call xtmafi(noma, ndim, fiss, nfiss, lismai,&
-                        mesmai, nbma)
+            call xtmafi(ndim, fiss, nfiss, lismai,&
+                        mesmai, nbma, model=ligrmo(1:8))
             call jeveuo(mesmai, 'L', jma)
             call nocart(carte, 3, ncmp, mode='NOM', nma=nbma,&
                         limano=zk8(jma))

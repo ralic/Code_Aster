@@ -24,7 +24,7 @@ MO=AFFE_MODELE(MAILLAGE=MA[nb_raff],
                         MODELISATION='D_PLAN',),),);
 
 # entaille
-FISS1=DEFI_FISS_XFEM(MODELE=MO,  
+FISS1=DEFI_FISS_XFEM(MAILLAGE=MA[nb_raff],  
                      TYPE_DISCONTINUITE='INTERFACE', 
                      DEFI_FISS=_F(FORM_FISS     = 'ENTAILLE',
                                   DEMI_LONGUEUR = 0.3,
@@ -35,7 +35,7 @@ FISS1=DEFI_FISS_XFEM(MODELE=MO,
                                   ))
 
 # inclusion circulaire
-FISS2=DEFI_FISS_XFEM(MODELE=MO,  
+FISS2=DEFI_FISS_XFEM(MAILLAGE=MA[nb_raff],  
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                   DEMI_GRAND_AXE = 0.05,
@@ -45,13 +45,13 @@ FISS2=DEFI_FISS_XFEM(MODELE=MO,
                                   VECT_Y         = (0., 1., 0. ),
                                   ),)
 
-FISS3=DEFI_FISS_XFEM(MODELE=MO,  
+FISS3=DEFI_FISS_XFEM(MAILLAGE=MA[nb_raff],  
                      DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                   PFON_ORIG  = (0.2, 0.25, 0.),
                                   PFON_EXTR  = (0.4, 0.25, 0.),))
 
 
-FISS4=DEFI_FISS_XFEM(MODELE=MO,  
+FISS4=DEFI_FISS_XFEM(MAILLAGE=MA[nb_raff],  
                      DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                   PFON_ORIG  = (-0.3, 0.25, 0.),
                                   PFON_EXTR  = (-0.1, 0.25, 0.),))

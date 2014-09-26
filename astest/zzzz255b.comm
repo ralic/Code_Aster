@@ -39,7 +39,7 @@ avance = 25.
 
 Fiss = [None]*2
 
-Fiss[0] = DEFI_FISS_XFEM(MODELE=plate,
+Fiss[0] = DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                          DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                       DEMI_GRAND_AXE = rayon,
                                       DEMI_PETIT_AXE = rayon,

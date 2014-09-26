@@ -50,7 +50,7 @@ for num_calc in range(nb_raff+1) :
                                      MODELISATION='D_PLAN',),),);
 
    # entaille
-   FISS1[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
+   FISS1[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
                                   TYPE_DISCONTINUITE='INTERFACE', 
                                   DEFI_FISS=_F(FORM_FISS     = 'ENTAILLE',
                                                DEMI_LONGUEUR = 0.3,
@@ -61,7 +61,7 @@ for num_calc in range(nb_raff+1) :
                                                ))
 
    # inclusion circulaire
-   FISS2[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
+   FISS2[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
                                   TYPE_DISCONTINUITE='INTERFACE',
                                   DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                                DEMI_GRAND_AXE = r2,
@@ -71,13 +71,13 @@ for num_calc in range(nb_raff+1) :
                                                VECT_Y         = (0., 1., 0. ),
                                                ),)
 
-   FISS3[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
+   FISS3[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
                                   DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                                PFON_ORIG  = (0.2, 0.25, 0.),
                                                PFON_EXTR  = (0.4, 0.25, 0.),))
 
 
-   FISS4[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
+   FISS4[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
                                   DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                                PFON_ORIG  = (-0.3, 0.25, 0.),
                                                PFON_EXTR  = (-0.1, 0.25, 0.),))

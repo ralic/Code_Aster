@@ -1,5 +1,4 @@
-subroutine xgrals(mode, noma, ln, lt, grlt,&
-                  grln)
+subroutine xgrals(noma, ln, lt, grlt, grln)
     implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
@@ -8,7 +7,8 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    character(len=8) :: mode, noma
+#include "asterfort/xgrals_ligr.h"
+    character(len=8) :: noma
     character(len=19) :: ln, lt, grlt, grln
 !
 ! ======================================================================
@@ -46,10 +46,15 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
 !
     integer :: nchin, ier
     character(len=8) :: lpain(2), lpaout(1)
-    character(len=19) :: chgrlt, chgrln, chams
-    character(len=24) :: lchin(2), lchout(1), ligrmo
+    character(len=19) :: chgrlt, chgrln, chams, ligrel
+    character(len=24) :: lchin(2), lchout(1)
 !     ------------------------------------------------------------------
     call jemarq()
+!
+! - creation d'un LIGREL temporaire pour calcul / option GRAD_NEUT_R 
+!
+    ligrel = '&&XGRALS.LIGREL    '
+    call xgrals_ligr(noma,ligrel)
 !
     chgrlt = '&&OP0112.CHGRLT'
     chgrln = '&&OP0112.CHGRLN'
@@ -64,9 +69,8 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
     lchin(2)=lt
     lpaout(1)='PGNEUTR'
     lchout(1)=chgrlt
-    ligrmo=mode//'.MODELE'
     nchin=2
-    call calcul('S', 'GRAD_NEUT_R', ligrmo, nchin, lchin,&
+    call calcul('S', 'GRAD_NEUT_R', ligrel, nchin, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
 !
@@ -87,9 +91,8 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
     lchin(2)=ln
     lpaout(1)='PGNEUTR'
     lchout(1)=chgrln
-    ligrmo=mode//'.MODELE'
     nchin=2
-    call calcul('S', 'GRAD_NEUT_R', ligrmo, nchin, lchin,&
+    call calcul('S', 'GRAD_NEUT_R', ligrel, nchin, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
 !
@@ -100,6 +103,7 @@ subroutine xgrals(mode, noma, ln, lt, grlt,&
 !
     call detrsd('CHAM_ELEM_S', chams)
     call detrsd('CHAM_ELEM'  , chgrln)
+    call detrsd('LIGREL'     , ligrel)
 !
     call jedema()
 end subroutine

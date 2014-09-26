@@ -103,7 +103,7 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
 
 FISS = [None]*5
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE[0],
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                        );
 

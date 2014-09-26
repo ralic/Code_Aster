@@ -53,19 +53,19 @@ b = 0.4
 # longueurs des fissures : 2a
 a = 0.15
 
-FISS1=DEFI_FISS_XFEM(MODELE=MODEF,
+FISS1=DEFI_FISS_XFEM(MAILLAGE=MA,
                      DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                   PFON_ORIG  = (-a,-b/2.,0.),
                                   PFON_EXTR  = ( a,-b/2.,0.),),
                      )
 
-FISS2=DEFI_FISS_XFEM(MODELE=MODEF,
+FISS2=DEFI_FISS_XFEM(MAILLAGE=MA,
                      DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                   PFON_ORIG  = (-a,b/2.,0.),
                                   PFON_EXTR  = ( a,b/2.,0.),),
                      )
 
-FISS=DEFI_FISS_XFEM(MODELE=MODEF,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                      DEFI_FISS=_F(FORM_FISS  = 'SEGMENT',
                                   PFON_ORIG  = (-a,0.,0.),
                                   PFON_EXTR  = ( a,0.,0.),),

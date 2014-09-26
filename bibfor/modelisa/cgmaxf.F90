@@ -131,8 +131,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
     else if (typgrp.eq.'XFEM') then
 !
         lisman = '&&CGMAXF.TEM1'
-        call xtmafi(noma, 0, vfiss, nfiss, lismai,&
-                    lisman, nbma)
+        call xtmafi(0, vfiss, nfiss, lismai,&
+                    lisman, nbma, mesh=noma)
         call jedetr(lisman)
 !
 ! --- TYPE DE MAILLE = 'FISSUREE'
@@ -145,8 +145,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !       POUR DIMENSIONNER GROSSIEREMENT LA LISTE DES MAILLES
         lisman = '&&CGMAXF.TEM1'
         lismar = '&&CGMAXF.TEM2'
-        call xtmafi(noma, 0, vfiss, nfiss, lismar,&
-                    lisman, nbma)
+        call xtmafi(0, vfiss, nfiss, lismar,&
+                    lisman, nbma, mesh=noma)
         call jedetr(lismar)
         call jedetr(lisman)
 !
@@ -164,8 +164,8 @@ subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
 !
 !         RECUPERATION DE TOUTES MAILLES XFEM DE LA FISSURE COURANTE
             lisman = '&&CGMAXF.TEM1'
-            call xtmafi(noma, 0, fiss, 1, lismar,&
-                        lisman, nbmala)
+            call xtmafi(0, fiss, 1, lismar,&
+                        lisman, nbmala, mesh=noma)
             call jeveuo(lismar, 'L', jlmas)
 !
 !         POUR CHAQUE MAILLE XFEM DE LA FISSURE COURANTE

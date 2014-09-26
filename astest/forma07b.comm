@@ -51,7 +51,7 @@ for num_calc in range(0,nb_calc) :
                                     MODELISATION='3D',),);
   
    # definition de la fissure semi elliptique                     
-   FISS[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
+   FISS[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
                                  DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                               DEMI_GRAND_AXE = 2.,
                                               DEMI_PETIT_AXE = 2.,

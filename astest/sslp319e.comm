@@ -77,11 +77,11 @@ NPS = NPS+2
 FissR = [None]*NPS
 FissL = [None]*NPS
 
-FissR[1]=DEFI_FISS_XFEM(MODELE=plate,
+FissR[1]=DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                         DEFI_FISS=_F(FONC_LT=LTR,
                                      FONC_LN=LNR,),);
 
-FissL[1]=DEFI_FISS_XFEM(MODELE=plate,
+FissL[1]=DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                         DEFI_FISS=_F(FONC_LT=LTL,
                                      FONC_LN=LNL,),);
 

@@ -18,10 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
+    subroutine xenrch(noma, cnslt, cnsln, cnslj,&
                       cnsen, cnsenr, ndim, fiss, goinop,&
                       lismae, lisnoe)
-        character(len=8) :: nomo
         character(len=8) :: noma
         character(len=19) :: cnslt
         character(len=19) :: cnsln

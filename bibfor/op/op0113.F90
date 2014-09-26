@@ -60,6 +60,7 @@ subroutine op0113()
 #include "asterfort/xcpmod.h"
 #include "asterfort/xmolig.h"
 #include "asterfort/xtyele.h"
+#include "asterfort/xverm2.h"
 #include "asterfort/xvermo.h"
 !
     real(kind=8) :: crimax
@@ -80,6 +81,7 @@ subroutine op0113()
     aster_logical :: linter
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
+    character(len=8), pointer :: p_mod_sain(:) => null()
 !
     data motfac /' '/
 !
@@ -98,6 +100,9 @@ subroutine op0113()
     call getvid(motfac, 'MODELE_IN', iocc=1, scal=mod1, nbret=ibid)
     ligr1 = mod1//'.MODELE'
     liel1 = ligr1//'.LIEL'
+!
+    call wkvect(modelx//'.MODELE_SAIN', 'G V K8', 1, vk8=p_mod_sain)
+    p_mod_sain(1) = mod1
 !
 ! --- ACCES AU MAILLAGE INITIAL
 !
@@ -133,7 +138,11 @@ subroutine op0113()
                 nbret=ibid)
 !
 !     VERIFICATION DE LA COHERENCE DES MOT-CLES FISSURE ET MODELE_IN
-    call xvermo(nfiss, zk8(jmofis), mod1)
+!     (COHERENCE DES MAILLAGES SOUS-JACENTS AUX FISSURES ET MODELE)
+    call xvermo(nfiss, zk8(jmofis), noma)
+!
+!     VERIFS POUR LES MODELISATIONS "EXOTIQUES" (multi-h, thermique, HM)
+    call xverm2(nfiss, zk8(jmofis), mod1)
 !
 !
 ! --- CONTACT ?
@@ -168,7 +177,7 @@ subroutine op0113()
 !     1)  REMPLISSAGE DE TAB : NBMA X 5 : GR1 | GR2 | GR3 | GR0 | ITYP
 ! ---------------------------------------------------------------------
 !
-    call xtyele(noma, trav, nfiss, zk8(jmofis), zi(jxc),&
+    call xtyele(mod1, trav, nfiss, zk8(jmofis), zi(jxc),&
                 ndim, linter)
 !
 ! ---------------------------------------------------------------------

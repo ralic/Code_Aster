@@ -188,7 +188,7 @@ XVECT = 0. ;
 YVECT = -sin(ALPHA) ;
 ZVECT = cos(ALPHA) ;
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT,
                                  FONC_LN=LN),
                      )

@@ -42,7 +42,7 @@ LT = FORMULE(VALE='X-2',
 LN = FORMULE(VALE='Y',
              NOM_PARA='Y',);
 
-FISS=DEFI_FISS_XFEM(MODELE=MODE,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAIL,
                     TYPE_DISCONTINUITE='FISSURE',
                     DEFI_FISS=_F(FONC_LT=LT,
                                  FONC_LN=LN,),

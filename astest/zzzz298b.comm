@@ -51,7 +51,7 @@ MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-0.5');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y-X/2.+1.');
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     DEFI_FISS=_F(FONC_LT=LT,
                                  FONC_LN=LN,),);
                                  

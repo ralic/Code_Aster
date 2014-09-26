@@ -1,4 +1,4 @@
-subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
+subroutine xstama(noma, nbma, nmafis, jmafis,&
                   ncouch, lisnoe, stano, cnslt, cnsln,&
                   jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
                   nmaen1, nmaen2, nmaen3)
@@ -43,7 +43,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
     integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma, jmafis
     integer :: ncouch, stano(*), jmafon, jmaen1, jmaen2, jmaen3
-    character(len=8) :: nomo, noma
+    character(len=8) :: noma
     character(len=19) :: cnslt, cnsln
     character(len=24) :: lisnoe
 !
@@ -58,7 +58,6 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 ! ----------------------------------------------------------------------
 !
 !
-! IN  NOMO   : NOM DU MODELE
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 ! IN  NMAFIS : NOMBRE DE MAILLES DE LA ZONE FISSURE
@@ -108,7 +107,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
 !
 !     1) STATUT DES MAILLES SANS TENIR COMPTE DE NB_COUCHES
 !     --------------------------------------------------
-    call xstam1(nomo, noma, nbma, nmafis, zi(jmafis),&
+    call xstam1(noma, nbma, nmafis, zi(jmafis),&
                 stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3),&
                 nmafon, nmaen1, nmaen2, nmaen3)
 !
@@ -177,7 +176,7 @@ subroutine xstama(nomo, noma, nbma, nmafis, jmafis,&
         call jerazo('&&XENRCH.MAENR3', nbma, 1)
 !
 !       ON RECOMMENCE L'ENRICHISSEMENT DES MAILLES AVEC LE NOUVEAU STANO
-        call xstam1(nomo, noma, nbma, nmafis, zi(jmafis),&
+        call xstam1(noma, nbma, nmafis, zi(jmafis),&
                     stano, zi(jmafon), zi(jmaen1), zi(jmaen2), zi(jmaen3),&
                     nmafon, nmaen1, nmaen2, nmaen3)
 !

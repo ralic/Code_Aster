@@ -111,7 +111,7 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='X-X0');
 
 FISS = [None]*(NPAS+1)
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=MODEL[0],
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                        MODELE_GRILLE=NODEL,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                        );

@@ -50,19 +50,19 @@ for num_calc in range(nb_raff+1):
   # Definition des fissures
   #========================
 
-  FISS1=DEFI_FISS_XFEM(MODELE=MO,
+  FISS1=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM21',
                                     GROUP_MA_FOND='GM1'),
                        INFO=1,);
 
-  FISS2=DEFI_FISS_XFEM(MODELE=MO,
+  FISS2=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM22',
                                     GROUP_MA_FOND='GM2'),
                        INFO=1,);
 
-  FISS3=DEFI_FISS_XFEM(MODELE=MO,
+  FISS3=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM23',
                                     GROUP_MA_FOND='GM3'),
@@ -70,46 +70,46 @@ for num_calc in range(nb_raff+1):
 
 
   if (num_calc == nb_raff):
-    FISS4=DEFI_FISS_XFEM(MODELE=MO,
+    FISS4=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                          TYPE_DISCONTINUITE='FISSURE',
                          JONCTION=_F(FISSURE=FISS1,POINT=(0.2030945,1.557297),),
                          DEFI_FISS=_F(GROUP_MA_FISS='GM24',
                                       GROUP_MA_FOND='GM4'),
                          INFO=1,);
   else:
-    FISS4=DEFI_FISS_XFEM(MODELE=MO,
+    FISS4=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                          TYPE_DISCONTINUITE='FISSURE',
                          DEFI_FISS=_F(GROUP_MA_FISS='GM24',
                                       GROUP_MA_FOND='GM4'),
                          INFO=1,);
 
-  FISS5=DEFI_FISS_XFEM(MODELE=MO,
+  FISS5=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM31',
                                     GROUP_MA_FOND='GM5'),
                        INFO=1,);
 
-  FISS6=DEFI_FISS_XFEM(MODELE=MO,
+  FISS6=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM32',
                                     GROUP_MA_FOND='GM6'),
                        INFO=1,);
 
-  FISS7=DEFI_FISS_XFEM(MODELE=MO,
+  FISS7=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                        TYPE_DISCONTINUITE='FISSURE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM33',
                                     GROUP_MA_FOND='GM7'),
                        INFO=1,);
 
   if (num_calc == nb_raff):
-    FISS8=DEFI_FISS_XFEM(MODELE=MO,
+    FISS8=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                          TYPE_DISCONTINUITE='FISSURE',
                          JONCTION=_F(FISSURE=FISS5,POINT=(-0.2030955,0.057297),),
                          DEFI_FISS=_F(GROUP_MA_FISS='GM34',
                                       GROUP_MA_FOND='GM8'),
                          INFO=1,);
   else:
-    FISS8=DEFI_FISS_XFEM(MODELE=MO,
+    FISS8=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
                          TYPE_DISCONTINUITE='FISSURE',
                          DEFI_FISS=_F(GROUP_MA_FISS='GM34',
                                       GROUP_MA_FOND='GM8'),

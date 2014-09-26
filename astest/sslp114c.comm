@@ -229,7 +229,7 @@ for K in range(len(alphaREF)):
          PFONDX=0.5-2/math.tan(alpha[K])
          PFONDY=-1.5
 
-   FISS[K]=DEFI_FISS_XFEM(MODELE=MODELEIN,
+   FISS[K]=DEFI_FISS_XFEM(MAILLAGE=MAIL,
                           DEFI_FISS=_F(
                                  FORM_FISS  = 'SEGMENT',
                                  PFON_ORIG  = (0.5 , 0.5,0.),

@@ -75,7 +75,7 @@ LN = FORMULE(VALE='Y-2.5',
              NOM_PARA=('X','Y'));
 
 
-FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN),
                     GROUP_MA_ENRI='SURF',

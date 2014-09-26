@@ -33,8 +33,8 @@ from SD.sd_l_table import sd_l_table
 class sd_fiss_xfem(AsBase):
     nomj = SDNom(fin=8)
 
-    INFO   = AsVK16(lonmax=3,)   # info discontinuite et type de fissure
-    MODELE = AsVK8(lonmax=1,)
+    INFO     = AsVK16(lonmax=3,)   # info discontinuite et type de fissure
+    MAILLAGE = AsVK8(lonmax=1,)
 
 # I.1) objets relatifs aux level sets
 
@@ -108,6 +108,9 @@ class sd_fiss_xfem(AsBase):
 
 class sd_modele_xfem(AsBase):
     nomj = SDNom(fin=8)
+
+#   nom du modele sain 
+    MODELE_SAIN = AsVK8(lonmax=1,)
 
 # II.1) objets relatifs aux sous-elements
 

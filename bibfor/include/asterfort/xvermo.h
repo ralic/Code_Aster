@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xvermo(nfiss, fiss, mod)
+    subroutine xvermo(nfiss, fiss, mai)
         integer :: nfiss
         character(len=8) :: fiss(nfiss)
-        character(len=8) :: mod
+        character(len=8) :: mai
     end subroutine xvermo
 end interface

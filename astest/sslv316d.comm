@@ -92,7 +92,7 @@ ModGri=AFFE_MODELE(GRILLE=Grille,
 
 FISS = [None]*nbcalc
 
-FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE,
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                        MODELE_GRILLE=ModGri,
                        DEFI_FISS=_F(
                                  FORM_FISS = 'DEMI_PLAN',

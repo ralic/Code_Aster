@@ -16,6 +16,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xelfis_lists.h"
 #include "asterfort/xxmmvd.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -73,9 +74,11 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
     integer :: jcsd1, jcsl1, jcsd2, jcsl2, jconx2
     integer :: jlis1, ima, pin, iad, iret, ninter, ifiss
     integer :: ar(12, 3), i, ia, nbar, nloc(2), nglo(2), nuno(2), neq, no
-    character(len=24) :: grp(3)
+    character(len=24) :: grp(3), elfis_heav, elfis_ctip, elfis_hect
     character(len=19) :: nliseq
     character(len=8) :: typma
+    character(len=6) :: nompro
+    parameter (nompro = 'XBARVI')
     integer :: zxain, in, jn, iac, ier, ncta, ncte
     integer :: jcntes, jcnte2, narcon
     aster_logical :: lmulti, lconne
@@ -150,9 +153,14 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
 !
 ! --- RECUPERATION DES GROUPES
 !
-    grp(1) = fiss//'.MAILFISS.HEAV'
-    grp(2) = fiss//'.MAILFISS.CTIP'
-    grp(3) = fiss//'.MAILFISS.HECT'
+    elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
+    elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
+    elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
+    call xelfis_lists(fiss, nomo, elfis_heav,&
+                          elfis_ctip, elfis_hect)
+    grp(1)=elfis_heav
+    grp(2)=elfis_ctip
+    grp(3)=elfis_hect
 !
 ! --- PREMIÈRE PASSE POUR DIMENSIONER LE VECT DES ARETES CONNECTÉES
 !
@@ -335,6 +343,11 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
  20         continue
  10     continue
  80 end do
+!   menage
+    do kk = 1, 3
+        call jeexin(grp(kk), iret)
+        if (iret .ne. 0) call jedetr(grp(kk)) 
+    enddo
 !
     ASSERT(iac.eq.narcon)
     if (narcon .gt. 0) then

@@ -76,7 +76,7 @@ for i_raff in range(nb_raff) :
                                   PHENOMENE='MECANIQUE',
                                   MODELISATION='3D'))
 
-   fiss_1=DEFI_FISS_XFEM(MODELE=MO[i_raff],
+   fiss_1=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],
                          DEFI_FISS=_F(
                                       FORM_FISS      = 'ELLIPSE',
                                       DEMI_GRAND_AXE = ray,
@@ -121,7 +121,7 @@ MOD=AFFE_MODELE(MAILLAGE=MA[nb_raff],
                         PHENOMENE='MECANIQUE',
                         MODELISATION='3D'))
 
-fiss_1=DEFI_FISS_XFEM(MODELE=MOD,
+fiss_1=DEFI_FISS_XFEM(MAILLAGE=MA[nb_raff],
                       DEFI_FISS=_F(
                                    FORM_FISS      = 'ELLIPSE',
                                    DEMI_GRAND_AXE = ray,

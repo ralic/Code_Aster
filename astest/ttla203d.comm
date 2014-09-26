@@ -53,7 +53,7 @@ MODTHIN=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='3D',
                             ),);
 
-FISSTH=DEFI_FISS_XFEM(MODELE=MODTHIN,
+FISSTH=DEFI_FISS_XFEM(MAILLAGE=MA,
                       DEFI_FISS=_F(
                                    FORM_FISS      = 'ELLIPSE',
                                    DEMI_GRAND_AXE = 0.5*Rext,

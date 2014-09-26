@@ -257,8 +257,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
     call dismoi('NB_FISS_XFEM', modthx, 'MODELE', repi=nfiss)
     call jeveuo(modthx//'.FISS', 'L', vk8=fiss)
 !
-    call xtmafi(noma, 0, fiss, nfiss, lismai,&
-                mesmai, nbmx)
+    call xtmafi(0, fiss, nfiss, lismai, mesmai, nbmx, model=modthx)
     call jeveuo(lismai, 'L', vi=tabmx)
 !
 ! - recuperation du '.MAILLE' de modthx et modmes

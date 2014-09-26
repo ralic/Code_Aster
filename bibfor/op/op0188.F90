@@ -52,7 +52,7 @@ subroutine op0188()
     integer ::   jnoeu, nbmac, jadr, adrvlc, acncin
     integer :: idlima, nbmazo
     real(kind=8) :: rayon, dist
-    character(len=8) :: fiss, modele, ma, chout
+    character(len=8) :: fiss, ma, chout
     character(len=16) :: typdis, k16bid
     character(len=19) :: carte, cnslt, cnsln
     character(len=24) :: mafond, listma, cnxinv, lisnoz, lismaz
@@ -81,11 +81,8 @@ subroutine op0188()
 !     TYPE DE SD_FISS_XFEM EN ENTREE (FISSURE/INTERFACE)
     call dismoi('TYPE_DISCONTINUITE', fiss, 'FISS_XFEM', repk=typdis)
 !
-!     MODELE ASSOCIE A LA FISSURE/INTERFACE
-    call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=modele)
-!
-!     MAILLAGE ASSOCIE AU MODELE
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=ma)
+!     MAILLAGE ASSOCIE A LA FISSURE/INTERFACE
+    call dismoi('NOM_MAILLA', fiss, 'FISS_XFEM', repk=ma)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbno)
 !

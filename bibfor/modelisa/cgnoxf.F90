@@ -64,7 +64,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
     integer :: n1, ifiss, nfiss
     integer :: ino, valeno, nbnot
     integer :: idlist, jstno
-    character(len=8) :: noma, nomnoe, fiss, nomofi, nomafi, nomogr
+    character(len=8) :: noma, nomnoe, fiss, nomafi, nomogr
     character(len=8) :: nomagr, valk(2), ma
     character(len=16) :: motfac, typgrp
     character(len=19) :: stno, cnslt, cnsln
@@ -192,10 +192,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             if (typgrp .eq. 'TORE') then
 !
 !              GET THE CRACK MESH
-                call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=nomofi)
-                stnot = nomofi//'.MODELE    .LGRF'
-                call jeveuo(stnot, 'L', ibid)
-                nomafi = zk8(ibid)
+                call dismoi('NOM_MAILLA', fiss, 'FISS_XFEM', repk=nomafi)
 !
                 call getvr8(motfac, 'RAYON_TORE', iocc=1, scal=rayon, nbret=ibid)
                 rayon = rayon**2
@@ -252,10 +249,7 @@ subroutine cgnoxf(mofaz, iocc, nomaz, lisnoz, nbno)
             if (typgrp .eq. 'ZONE_MAJ') then
 !
 !             GET THE CRACK MESH
-                call dismoi('NOM_MODELE', fiss, 'FISS_XFEM', repk=nomofi)
-                stnot = nomofi//'.MODELE    .LGRF'
-                call jeveuo(stnot, 'L', ibid)
-                nomafi = zk8(ibid)
+                call dismoi('NOM_MAILLA', fiss, 'FISS_XFEM', repk=nomafi)
 !
 !             CHECK FOR THE PRESENCE OF THE GRID
                 stnot = fiss//'.GRI.MODELE'

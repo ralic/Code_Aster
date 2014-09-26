@@ -16,9 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xgrals(mode, noma, ln, lt, grlt,&
-                      grln)
-        character(len=8) :: mode
+    subroutine xgrals(noma, ln, lt, grlt, grln)
         character(len=8) :: noma
         character(len=19) :: ln
         character(len=19) :: lt

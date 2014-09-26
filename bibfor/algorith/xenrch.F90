@@ -1,4 +1,4 @@
-subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
+subroutine xenrch(noma, cnslt, cnsln, cnslj,&
                   cnsen, cnsenr, ndim, fiss, goinop,&
                   lismae, lisnoe)
 !
@@ -44,7 +44,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 #include "asterfort/xstano.h"
 #include "asterfort/xtabff.h"
     integer :: ndim
-    character(len=8) :: noma, fiss, nomo
+    character(len=8) :: noma, fiss
     character(len=19) :: cnslt, cnsln, cnslj
     character(len=19) :: cnsen, cnsenr
     character(len=24) :: lismae, lisnoe
@@ -60,7 +60,6 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
 !
 !
 ! I/O FISS   : NOM DE LA FISSURE
-! IN  NOMO   : NOM DU MODELE
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  GOINOP : .TRUE.  SI  OPOO10 AVEC UPWIND-SIMPLEXE/GRILLE/3D
 !              .FALSE. SINON
@@ -185,7 +184,7 @@ subroutine xenrch(nomo, noma, cnslt, cnsln, cnslj,&
     call wkvect('&&XENRCH.MAENR3', 'V V I', nbma, jmaen3)
 !
 !     CALCUL EFFECTIF DU STATUT DES MAILLES (+MAJ STANO)
-    call xstama(nomo, noma, nbma, nmafis, jmafis,&
+    call xstama(noma, nbma, nmafis, jmafis,&
                 ncouch, lisnoe, zi(jstano), cnslt, cnsln,&
                 jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
                 nmaen1, nmaen2, nmaen3)

@@ -86,7 +86,7 @@ if typ_ma == 'grossier' :
                                      PHENOMENE='MECANIQUE',
                                      MODELISATION='3D'))
 
-      FISS[i_raff]=DEFI_FISS_XFEM(MODELE=MO[i_raff],
+      FISS[i_raff]=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],
                                   DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                                DEMI_GRAND_AXE = a,
                                                DEMI_PETIT_AXE = b,
@@ -139,7 +139,7 @@ MO_SAIN=AFFE_MODELE(MAILLAGE=MA[nb_iter],
 
 # PARAMETRES DE LA FISSURE
 
-FISS=DEFI_FISS_XFEM(MODELE=MO_SAIN,  
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],  
                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                  DEMI_GRAND_AXE = a,
                                  DEMI_PETIT_AXE = b,

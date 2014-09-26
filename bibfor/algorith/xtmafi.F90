@@ -1,5 +1,5 @@
-subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
-                  mesmai, nbma)
+subroutine xtmafi(ndim, fiss, nfiss, lismai,&
+                  mesmai, nbma, mesh, model)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,9 +21,11 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !
 ! aslint: disable=W1306
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 !
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -36,8 +38,9 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: nfiss, nbma, ndim
-    character(len=8) :: noma, fiss(nfiss)
+    character(len=8) :: fiss(nfiss)
     character(len=24) :: lismai, mesmai
+    character(len=8), optional, intent(in) :: mesh, model
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,25 +54,33 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !
 ! ----------------------------------------------------------------------
 !
-! IN     NOMA   : NOM DU MAILLAGE
 ! IN     NDIM   : DIMENSION DES MAILLES A LISTER
 ! IN     FISS   : LISTE DES NOMS DES SD FISS_XFEM
 ! IN     NFISS  : LONGUEUR DE FISS
 ! IN/OUT LISMAI : NOM DE LA LISTE CREEE CONTENANT LES NUMEROS DE MAILLES
 ! IN/OUT MESMAI : NOM DE LA LISTE CREEE CONTENANT LES NOMS DES MAILLES
 ! OUT    NBMA   : LONGUEUR DE MESMAI
+! IN     mesh   : optionnel / nom du maillage
+! IN     model  : optionnel / nom du modele
 !
-!
+! regles sur les arguments optionnels : 
+! -------------------------------------
+! - mesh ou model doit etre present (ou exclusif)
+! - si mesh est present  -> on prend toutes les mailles sachant ndim
+! - si model est present -> on prend toutes les mailles affectees dans 
+!                           model sachant ndim
 !
 !
     integer :: ifiss, kk, jgrp, nmaenr, i, ima,  cpt, iret
     integer ::   ndime, jmad,  mxstac
-    character(len=8) :: nomail
+    character(len=8) :: noma, nomafi, nomail
     character(len=24) :: nommai, grp(nfiss, 3)
     integer, pointer :: temi(:) => null()
     character(len=8), pointer :: temp(:) => null()
     integer, pointer :: tmdim(:) => null()
     integer, pointer :: typmail(:) => null()
+    integer, pointer :: p_mail_affe(:) => null()
+    aster_logical :: lmesh, lmodel, l_mail_affe
 !
     parameter (mxstac=100)
 !
@@ -77,80 +88,139 @@ subroutine xtmafi(noma, ndim, fiss, nfiss, lismai,&
 !
     call jemarq()
 !
-!     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
-!     (VOIR CRS 1404)
+!   VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
+!   (VOIR CRS 1404)
     ASSERT(nfiss.le.mxstac)
 !
+! - Verification ou exclusif pour les arguments optionnels
+!
+    lmesh = .false.
+    lmodel = .false.
+    ASSERT(present(mesh) .or. present(model))
+    if (present(mesh)) then
+        lmesh = .true.
+        ASSERT(.not.present(model))
+    endif
+    if (present(model)) then
+        lmodel = .true.
+        ASSERT(.not.present(mesh))
+    endif
+!
+! - Recuperation de l'objet '.TYPMAIL' pour filtrer sur ndim
+!
+    if ( present(mesh) ) then
+        noma = mesh
+    else
+        call dismoi('NOM_MAILLA', model, 'MODELE', repk=noma)
+    endif
     nommai = noma//'.NOMMAI'
     call jeveuo('&CATA.TM.TMDIM', 'L', vi=tmdim)
     call jeveuo(noma//'.TYPMAIL', 'L', vi=typmail)
 !
-!     DIMENTIONNEMENT GROSSIER DE LA LISTE
+! - Si model present, recuperation de l'objet '.MAILLE' pour filtrer 
+!   sur les mailles affectees
+!
+    if ( present(model) ) then
+        call jeveuo(model//'.MAILLE', 'L', vi=p_mail_affe)
+    endif
+!
+! - Dimensionnement grossier de la liste
+!
     cpt = 0
-    do 10 ifiss = 1, nfiss
+    do ifiss = 1, nfiss
+
+!       verif coherence maillage in <-> maillage de definition de la fissure
+        call dismoi('NOM_MAILLA', fiss(ifiss), 'FISS_XFEM', repk=nomafi)
+        ASSERT(nomafi .eq. noma)
+!
         grp(ifiss,1) = fiss(ifiss)//'.MAILFISS.HEAV'
         grp(ifiss,2) = fiss(ifiss)//'.MAILFISS.CTIP'
         grp(ifiss,3) = fiss(ifiss)//'.MAILFISS.HECT'
-        do 20 kk = 1, 3
-            call jeexin(grp(ifiss, kk), iret)
-            if (iret .eq. 0) goto 20
-            call jelira(grp(ifiss, kk), 'LONMAX', nmaenr)
-            cpt = cpt + nmaenr
-20      continue
-10  end do
 !
-!     CREATION DE LA LISTE TEMPORAIRE
-    AS_ALLOCATE(vk8=temp, size=cpt)
-!     CREATION DE LA LISTE TEMPORAIRE
-    AS_ALLOCATE(vi=temi, size=cpt)
-!
-!     REMPLISSAGE DE LA LISTE
-    nbma = 0
-    do 100 ifiss = 1, nfiss
-!
-!
-!       BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT
-        do 110 kk = 1, 3
-!
+        do kk = 1, 3
             call jeexin(grp(ifiss, kk), iret)
             if (iret .ne. 0) then
+                call jelira(grp(ifiss, kk), 'LONMAX', nmaenr)
+                cpt = cpt + nmaenr
+            endif
+        enddo
+!
+    end do
+!
+! - Creation des listes temporaires
+!
+    AS_ALLOCATE(vk8=temp, size=cpt)
+    AS_ALLOCATE(vi=temi, size=cpt)
+!
+! - Remplissage des listes temporaires
+!
+    nbma = 0
+!
+!   boucle sur les fissures
+    do ifiss = 1, nfiss
+!
+!       boucle sur les 3 groupes HEAV, CTIP et HECT
+        do kk = 1, 3
+!
+            call jeexin(grp(ifiss, kk), iret)
+!
+!           si le groupe courant existe pour ifiss
+            if (iret .ne. 0) then
+!
                 call jeveuo(grp(ifiss, kk), 'L', jgrp)
                 call jelira(grp(ifiss, kk), 'LONMAX', nmaenr)
 !
-!           BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
-                do 120 i = 1, nmaenr
+!               boucle sur les mailles de chaque groupe
+                do i = 1, nmaenr
+!
                     ima = zi(jgrp-1+i)
-!             NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
+!                   ndime : dimension topologique de la maille
                     ndime= tmdim(typmail(ima))
                     if ((ndim.eq.ndime) .or. (ndim.eq.0)) then
-                        call jenuno(jexnum(nommai, ima), nomail)
-                        nbma =nbma + 1
-                        temp(nbma) = nomail
-                        temi(nbma) = ima
+!
+!                       on retient la maille si mesh present
+!                       ou si model present et maille affectee
+                        l_mail_affe = .false.
+                        if (lmodel) then
+                            l_mail_affe = p_mail_affe(ima) .ne. 0
+                        endif
+                        if (lmesh .or. l_mail_affe) then
+                            call jenuno(jexnum(nommai, ima), nomail)
+                            nbma =nbma + 1
+                            temp(nbma) = nomail
+                            temi(nbma) = ima
+                        endif
+!
                     endif
-120              continue
+!
+!               fin boucle sur les mailles de chaque groupe
+                enddo
 !
             endif
 !
-110      continue
+!       fin boucle sur les 3 groupes HEAV, CTIP et HECT
+        enddo
+
+!   fin boucle sur les fissures
+    enddo
 !
-100  end do
+! - Verification
 !
-!     VERIFICATION
     ASSERT(nbma.le.cpt)
     ASSERT(nbma.ge.1)
 !
-!     CREATION DE LA LISTE DEFINITIVE
-    call wkvect(mesmai, 'V V K8', nbma, jmad)
-    do 200 i = 1, nbma
-        zk8(jmad-1+i) = temp(i)
-200  end do
+! - Creation des listes definitives
 !
-!     CREATION DE LA LISTE DEFINITIVE
+    call wkvect(mesmai, 'V V K8', nbma, jmad)
+    do i = 1, nbma
+        zk8(jmad-1+i) = temp(i)
+    enddo
     call wkvect(lismai, 'V V I', nbma, jmad)
-    do 201 i = 1, nbma
+    do i = 1, nbma
         zi(jmad-1+i) = temi(i)
-201  end do
+    enddo
+!
+! - Menage
 !
     AS_DEALLOCATE(vk8=temp)
     AS_DEALLOCATE(vi=temi)

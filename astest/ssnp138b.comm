@@ -153,7 +153,7 @@ for i in range(nbcalc) :
   # on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
   alpha = str(eval('alphaf[i]*pi/180.'))
 
-  FISS[i]=DEFI_FISS_XFEM(MODELE=MODELEIN,
+  FISS[i]=DEFI_FISS_XFEM(MAILLAGE=MAILLAGE,
                     DEFI_FISS=_F(
                                  FORM_FISS  = 'SEGMENT',
                                  PFON_ORIG  = (-A*cos(eval(alpha))/2,-A*sin(eval(alpha))/2, 0.),

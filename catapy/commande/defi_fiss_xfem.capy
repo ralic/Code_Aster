@@ -22,10 +22,10 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
             regles = EXCLUS('MODELE_GRILLE','FISS_GRILLE'),
 
 # ------------------------------------------------------------------------------------------------------------------------
-#                       modele sous-jacent
+#                       maillage sous-jacent
 # ------------------------------------------------------------------------------------------------------------------------
 
-    MODELE                =SIMP(statut='o',typ=modele_sdaster),
+    MAILLAGE              =SIMP(statut='o',typ=maillage_sdaster),
 
 # ------------------------------------------------------------------------------------------------------------------------
 #                       grille auxiliaire

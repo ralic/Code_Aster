@@ -51,7 +51,7 @@ MODTHIN=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='AXIS',
                             ),);
 
-FISSTH=DEFI_FISS_XFEM(MODELE=MODTHIN,
+FISSTH=DEFI_FISS_XFEM(MAILLAGE=MA,
                       DEFI_FISS=_F(FORM_FISS='DEMI_DROITE',
                                    PFON=( 0.5*LX, 0.5*LY, 0.,),
                                    DTAN=(    -1.,     0., 0.,),),

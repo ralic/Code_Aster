@@ -101,7 +101,7 @@ for i in range(nbcalc) :
                                  GROUP_MA_FOND='FOND_'+str(i)),
                    TYPE_ENRI_FOND = 'GEOMETRIQUE',
                    NB_COUCHES = 2,
-                      MODELE=MODELE[i],
+                      MAILLAGE=MA[i],
                       );
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE[i],FISSURE=FF[i],INFO=1,);

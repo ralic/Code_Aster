@@ -179,7 +179,7 @@ for i in range(NPAS+1) :
                                                                        
     FISS[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                     GROUP_MA_FOND='FOND_'+str(i),),
-                   MODELE=MODEL[i],                         
+                   MAILLAGE=MAT[i],                         
          #          TYPE_ENRI_FOND = 'GEOMETRIQUE',
          #           TYPE_ENRI_FOND = 'TOPOLOGIQUE',
              );               

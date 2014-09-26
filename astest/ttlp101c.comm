@@ -43,7 +43,7 @@ MODTHIN=AFFE_MODELE(MAILLAGE=MA,
                             PHENOMENE='THERMIQUE',
                             MODELISATION='3D',),);
 
-FISSTH=DEFI_FISS_XFEM(MODELE=MODTHIN,
+FISSTH=DEFI_FISS_XFEM(MAILLAGE=MA,
                       DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
                                    PFON   =( 0.5*L, 0.5*L, 0.,),
                                    NORMALE=(    0.,    1., 0.,),

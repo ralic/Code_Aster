@@ -39,7 +39,7 @@ MOD=AFFE_MODELE(MAILLAGE=MAIL,
                         MODELISATION = '3D') )
 
 # fissure X-FEM
-FISSX=DEFI_FISS_XFEM(MODELE=MOD,  
+FISSX=DEFI_FISS_XFEM(MAILLAGE=MAIL,  
                      DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                   DEMI_GRAND_AXE = 2.,
                                   DEMI_PETIT_AXE = 2.,

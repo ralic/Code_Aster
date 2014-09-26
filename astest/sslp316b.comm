@@ -71,7 +71,7 @@ MOD=AFFE_MODELE(MAILLAGE=MA,
                         PHENOMENE='MECANIQUE',
                         MODELISATION='D_PLAN',),);
 
-FISS=DEFI_FISS_XFEM(MODELE=MOD,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                     DEFI_FISS=_F(FONC_LT=LT,
                                  FONC_LN=LN,),);
 

@@ -80,7 +80,7 @@ NPS = NPS+2
 
 Fiss = [None]*NPS
 
-Fiss[1]=DEFI_FISS_XFEM(MODELE=plate,
+Fiss[1]=DEFI_FISS_XFEM(MAILLAGE=MaiPlate,
                        DEFI_FISS=_F(FONC_LT=LT,
                                     FONC_LN=LN,),);
 

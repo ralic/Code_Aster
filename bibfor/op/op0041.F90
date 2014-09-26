@@ -54,7 +54,7 @@ subroutine op0041()
 !         FISS//'.BASLOC'
 !         FISS//'.BASFOND'
 !         FISS//'.INFO'
-!         FISS//'.MODELE'
+!         FISS//'.MAILLAGE'
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -92,9 +92,9 @@ subroutine op0041()
 #include "asterfort/xlorie.h"
     integer :: ifm, niv, ibid, mxval, iret
     integer :: me1, me2, me3, iadrma, me4
-    integer :: ndim, jinfo, jmod
+    integer :: ndim, jinfo, jmod, jma
     real(kind=8) :: noeud(3), vect1(3), vect2(3), a, b, r, distma
-    character(len=8) :: fiss, nomo, nfonf, nfong, mafis, fonfis, noma, meth
+    character(len=8) :: fiss, nfonf, nfong, mafis, fonfis, noma, meth
     character(len=8) :: griaux, maiaux
     character(len=8) :: cote, ncham, chadis, kbid
     character(len=16) :: k16bid, geofis, typdis, corres
@@ -102,7 +102,7 @@ subroutine op0041()
     character(len=19) :: cnsltg, cnslng, grltg, grlng
     character(len=19) :: ltno, lnno, grltno, grlnno, stnor, stno, info, ltnofa
     character(len=19) :: lnnofa, grltfa, grlnfa
-    character(len=24) :: lismae, lisnoe, pheno, poro
+    character(len=24) :: lismae, lisnoe
     aster_logical :: grille, ldmax, goinop
     character(len=8) :: fisgri
 !
@@ -116,19 +116,11 @@ subroutine op0041()
 !
     call getres(fiss, k16bid, k16bid)
 !
-! --- NOM DU MODELE ET TYPE DE PHENOMENE
+! --- NOM DU MAILLAGE
 !
-    call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
-    call dismoi('PHENOMENE', nomo, 'MODELE', repk=pheno)
-    ASSERT(pheno.eq.'MECANIQUE' .or. pheno.eq.'THERMIQUE')
-    call wkvect(fiss//'.MODELE', 'G V K8', 1, jmod)
-    zk8(jmod-1+1)=nomo
-!
-! --- NOM DU MAILLAGE ATTACHE AU MODELE
-!
-    call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', iadrma)
-    noma = zk8(iadrma)
-!
+    call getvid(' ', 'MAILLAGE', scal=noma, nbret=ibid)
+    call wkvect(fiss//'.MAILLAGE', 'G V K8', 1, jma)
+    zk8(jma-1+1)=noma
 !
 ! --- DIMENSION DU PROBLEME
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
@@ -213,13 +205,6 @@ subroutine op0041()
     zk16(jinfo-1+1) = typdis
     zk16(jinfo-1+2) = chadis
     zk16(jinfo-1+3) = '      '
-!
-! --- SI ON EST EN HM-XFEM, ON AUTORISE UNIQUEMENT LA PRESENCE D'INTERFACES
-!
-    call dismoi('EXI_THM', nomo, 'MODELE', repk=poro)
-    if (poro .eq. 'OUI' .and. typdis .eq. 'FISSURE') then
-        call utmess('F', 'XFEM_78', sk='HM-XFEM')
-    endif
 !
 ! --- MOT-CLEFS DEFINITION FISSURE
 !
@@ -451,8 +436,7 @@ subroutine op0041()
     grlt = '&&OP0041.GRLT'
     grln = '&&OP0041.GRLN'
 !
-    call xgrals(nomo, noma, lnno, ltno, grlt,&
-                grln)
+    call xgrals(noma, lnno, ltno, grlt, grln)
 !
 ! --- CREATION DES CHAM_NO DES GRADIENTS DES LEVEL-SETS
 !
@@ -477,8 +461,7 @@ subroutine op0041()
         grltg = '&&OP0041.GRLTG'
         grlng = '&&OP0041.GRLNG'
 !
-        call xgrals(griaux, maiaux, lnnofa, ltnofa, grltg,&
-                    grlng)
+        call xgrals(maiaux, lnnofa, ltnofa, grltg, grlng)
 !
 !
 ! --- CREATION DES CHAM_NO DES GRADIENTS DES LEVEL-SETS
@@ -522,15 +505,12 @@ subroutine op0041()
     cnslj = '&&OP0041.CNSLJ'
     call getvid('JONCTION', 'FISSURE', iocc=1, nbval=0, nbret=me1)
     if (me1 .lt. 0) then
-        if (pheno .eq. 'THERMIQUE') then
-            call utmess('F', 'XFEM_71', sk=nomo)
-        endif
         call xinlsj(noma, ndim, fiss, me1, cnslj)
     endif
     cnsen = '&&OP0041.CNSEN'
     cnsenr = '&&OP0041.CNSENR'
 !
-    call xenrch(nomo, noma, cnslt, cnsln, cnslj,&
+    call xenrch(noma, cnslt, cnsln, cnslj,&
                 cnsen, cnsenr, ndim, fiss, goinop,&
                 lismae, lisnoe)
 !

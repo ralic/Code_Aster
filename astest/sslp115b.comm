@@ -73,7 +73,7 @@ MO=AFFE_MODELE(MAILLAGE=MAILMECA,
 a0=23
 #LN = FORMULE(NOM_PARA=('Y'),VALE='Y')
 #LT = FORMULE(NOM_PARA=('X'),VALE='abs(X-a0/2)-a0/2')
-FISS=DEFI_FISS_XFEM(MODELE=MO,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILMECA,
                     DEFI_FISS=_F(FORM_FISS='SEGMENT',
                                  PFON_ORIG  = (0. , 0., 0.),
                                  PFON_EXTR  = (a0 , 0., 0.),),
