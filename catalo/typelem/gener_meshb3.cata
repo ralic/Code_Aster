@@ -62,7 +62,7 @@ MODE_LOCAL__
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
-    EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
+   
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
@@ -100,9 +100,9 @@ MODE_LOCAL__
     ESIGMPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   RADI_V   ERR_RADI )
-    EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   RADI_V   ERR_RADI )
-    EPHASRR  = VARI_R   ELNO__ IDEN__  (VARI     )
+   
+   
+   
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5

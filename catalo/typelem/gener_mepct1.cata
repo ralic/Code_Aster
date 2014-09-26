@@ -47,7 +47,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ      )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     EENERR   = ENER_R   ELEM__         (TOTALE   PLAN_XY  PLAN_XZ  )
-    CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
+   
     CFORCEC  = FORC_C   ELEM__         (FX       FY       FZ       MX       MY       MZ
                                         REP      )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       MX       MY       MZ
@@ -70,11 +70,11 @@ MODE_LOCAL__
     CMASDIA  = POSI     ELEM__         (POS      )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
-    EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
+   
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+   
+   
     ECONTPO  = SIEF_R   ELNO__ IDEN__  (SN       SVY      SVZ      SMT      SMFY     SMFZ     )
     ECONTPC  = SIEF_C   ELNO__ IDEN__  (SN       SVY      SVZ      SMT      SMFY     SMFZ     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )

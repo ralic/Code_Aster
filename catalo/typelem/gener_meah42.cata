@@ -46,11 +46,11 @@ ENTETE__ ELEMENT__ THHM_AXIS_TR6S   MAILLE__ TRIA6
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+   
+   
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    NMATERC  = ADRSJEVE ELNO__  IDEN__ (I1       )
+   
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
                                        POSTITER LC_EXT[3] MODECALC )

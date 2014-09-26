@@ -57,8 +57,7 @@ MODE_LOCAL__
                                         KIT6     KIT7     KIT8     KIT9     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
-                                        COPECO   COPEFR)
+   
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
     CREFERI  = NEUT_I   ELEM__         (X[12]    )
@@ -75,7 +74,7 @@ MODE_LOCAL__
     E18NEUI  = N120_I   ELEM__         (X[18]    )
     E36NEUI  = N512_I   ELEM__         (X[36]    )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
+   
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
     E06NEUR  = N132_R   ELEM__         (X[6]     )
     E12NEUTR = N120_R   ELEM__         (X[12]    )
@@ -86,7 +85,7 @@ MODE_LOCAL__
                                         T5       T6       )
     EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
                                         TERMN2   TERMSA   TERMS2   TAILLE   )
-    E20NEUTR = NEUT_R   ELEM__         (X[20]    )
+   
     ECODRET  = CODE_I   ELEM__         (IRET     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
@@ -94,7 +93,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTSE  = N1920R   ELEM__         (X[144]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
+   
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
     EGGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
@@ -104,7 +103,7 @@ MODE_LOCAL__
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
-    I1NEUT_I = NEUT_I   ELEM__         (X1       )
+   
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )

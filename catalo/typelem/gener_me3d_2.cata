@@ -48,7 +48,7 @@ MODE_LOCAL__
                                  EN1   (DX       DY       DZ       )
                                  EN2   (         )
     EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       DZ       )
-    CCAMASS  = CAMASS   ELEM__         (ALPHA    BETA     )
+   
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
@@ -80,7 +80,7 @@ MODE_LOCAL__
                                         Z        )
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
+   
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     FIC3
                                         K1       K2       K3       BETA     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
@@ -88,9 +88,9 @@ MODE_LOCAL__
     EMNEUT_I = NEUT_I   ELEM__         (X[1]     )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X[9]     )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X[27]    )
-    E6NEUTI  = NEUT_I   ELEM__         (X[9]     )
-    E18NEUI  = NEUT_I   ELEM__         (X[18]    )
-    E9NEUTR  = NEUT_R   ELEM__         (X[9]     )
+   
+   
+   
     ENORME   = NEUT_R   ELEM__         (X1       )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )

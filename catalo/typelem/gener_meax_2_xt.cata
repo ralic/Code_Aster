@@ -52,8 +52,7 @@ MODE_LOCAL__
                                         SD_COMP    KIT[9])
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
-                                        COPECO   COPEFR)
+   
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
     CREFERI  = NEUT_I   ELEM__         (X[12]    )
@@ -67,16 +66,16 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
-    E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
+   
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
     E6NEUTI  = N128_I   ELEM__         (X[6]     )
     E06NEUR  = N132_R   ELEM__         (X[6]     )
     E9NEUTI  = N120_I   ELEM__         (X[9]     )
-    E10NEUTR = NEUT_R   ELEM__         (X[10]    )
+   
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
-    E20NEUTR = NEUT_R   ELEM__         (X[20]    )
+   
     E22NEUTR = N480_R   ELEM__         (X[22]    )
     E36NEUI  = N512_I   ELEM__         (X[36]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
@@ -91,7 +90,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTSE  = N1920R   ELEM__         (X[144]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
+   
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
     EGGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )

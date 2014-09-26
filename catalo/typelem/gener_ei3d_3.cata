@@ -67,8 +67,8 @@ MODE_LOCAL__
                                  EN2   (SIGN     SITX     SITY     )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+   
+   
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ DIFF__
                                  EN1   ()

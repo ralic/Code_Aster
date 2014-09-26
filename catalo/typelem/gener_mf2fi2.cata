@@ -41,8 +41,8 @@ MODE_LOCAL__
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+   
+   
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
     ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )

@@ -169,7 +169,7 @@ MODE_LOCAL__
                                  EN2   (DX       DY       DZ       LAGS_C  )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CCONFR   = NEUT_R   ELEM__         (X[28])
-    ENEUTR   = NEUT_R   ELNO__ IDEN__  (X1    )
+   
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

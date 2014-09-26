@@ -46,9 +46,9 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+   
+   
+   
 
 VECTEUR__
 

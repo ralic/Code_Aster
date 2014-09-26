@@ -33,7 +33,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX     DY      H1X     H1Y  )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-    EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       )
+   
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y       )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
@@ -43,11 +43,11 @@ MODE_LOCAL__
     E2NEUTI = N128_I    ELEM__         (X[2])
     E6NEUTI = N512_I    ELEM__         (X[6])
     E8NEUTI = N120_I    ELEM__         (X[8])
-    E18NEUI = NEUT_I    ELEM__         (X[18])
+   
 
     E4NEUTR = N480_R    ELEM__         (X[4])
     E6NEUTR = N132_R    ELEM__         (X[6])
-    E10NEUTR = N120_R   ELEM__         (X[10])
+   
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )

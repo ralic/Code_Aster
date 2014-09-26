@@ -62,8 +62,8 @@ MODE_LOCAL__
                                  EN2   (       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+   
+   
     CTEMPSR  = INST_R   ELEM__         (INST     )
     E1NEUTK  = NEUT_K24 ELEM__         (Z1       )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )

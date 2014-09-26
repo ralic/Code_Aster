@@ -30,7 +30,7 @@ MODE_LOCAL__
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NACCELR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
-    NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
+   
     CFLUXNF  = FLUN_F   ELEM__         (FLUN     )
     CFLUXNR  = FLUN_R   ELEM__         (FLUN     )
     CFLUXVF  = FLUX_F   ELEM__         (FLUX     FLUY     )
@@ -49,7 +49,7 @@ MODE_LOCAL__
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
     ETEMPPG  = TEMP_R   ELGA__ RIGI    (TEMP     )
-    ETEMPNO  = TEMP_R   ELNO__ IDEN__  (TEMP     )
+   
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )

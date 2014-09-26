@@ -183,7 +183,7 @@ MODE_LOCAL__
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NVITESR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
-    NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
+   
     EDURTNO  = DURT_R   ELNO__ IDEN__  (HV       )
     EENERR   = ENER_R   ELEM__         (TOTALE   )
     EERREURT = ERRE_R   ELEM__         (ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1
@@ -195,7 +195,7 @@ MODE_LOCAL__
     CGRAINF  = FLUX_F   ELEM__         (FLUX     FLUY     )
     CGRAINR  = FLUX_R   ELEM__         (FLUX     FLUY     )
     EFLUXPG  = FLUX_R   ELGA__ RIGI    (FLUX     FLUY     )
-    EFLUXPN  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     )
+   
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        )
@@ -221,7 +221,7 @@ MODE_LOCAL__
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ETEMPPG  = TEMP_R   ELGA__ RIGI    (TEMP     )
-    ETEMPNO  = TEMP_R   ELNO__ IDEN__  (TEMP     )
+   
     CPHASIN_ = VAR2_R   ELEM__         (V[5]    )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5

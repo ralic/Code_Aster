@@ -49,8 +49,8 @@ ENTETE__ ELEMENT__ MECPQU8_XH      MAILLE__ QUAD8
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+   
+   
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
@@ -62,8 +62,7 @@ MODE_LOCAL__
                                         KIT6     KIT7     KIT8     KIT9     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
-                                        COPECO   COPEFR)
+   
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
     CREFERI  = NEUT_I   ELEM__         (X[12]    )
@@ -76,18 +75,18 @@ MODE_LOCAL__
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    E2NEUTI  = NEUT_I   ELEM__         (X1       X2       )
+   
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E6NEUTI  = N128_I   ELEM__         (X[6]     )
     E9NEUTI  = N120_I   ELEM__         (X[9]     )
-    E2NEUTR  = NEUT_R   ELEM__         (X[2]     )
-    E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
-    E10NEUTR = NEUT_R   ELEM__         (X[10]    )
+   
+   
+   
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
     E06NEUR  = N132_R   ELEM__         (X[6]     )
-    E20NEUTR = NEUT_R   ELEM__         (X[20]    )
+   
     E22NEUTR = N480_R   ELEM__         (X[22]    )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
     E36NEUI  = N512_I   ELEM__         (X[36]    )
@@ -103,7 +102,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTSE  = N1920R   ELEM__         (X[144]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
+   
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
     EGGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
@@ -115,7 +114,7 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
-    I1NEUT_I = NEUT_I   ELEM__         (X1       )
+   
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )

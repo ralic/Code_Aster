@@ -47,7 +47,7 @@ MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN1   (DX       DY       SIXX     SIYY     SIZZ     SIXY     )
                                  EN2   (DX       DY       )
-    EDEULNO  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
+   
     EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMA_R   ELNO__ IDEN__  (DOMA     )
@@ -68,32 +68,32 @@ MODE_LOCAL__
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
     EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   EPPTOT)
     EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR   EPPTOT)
-    CFORCEF  = FORC_F   ELEM__         (FX       FY       )
-    NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-    EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
+   
+   
+   
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+   
+   
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGRDUPG  = G_DEPL_R ELGA__ RIGI    (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
-    EGRDUNO  = G_DEPL_R ELNO__ IDEN__  (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
+   
+   
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     ECARAGE  = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      IXR2     IYR2     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
-    CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
+   
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    CTYPEPI  = PILO_K   ELEM__         (TYPE     )
-    CBORNPI  = PILO_R   ELEM__         (A0       A1       )
-    CCDTAU   = PILO_R   ELEM__         (A0       )
-    ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
+   
+   
+   
+   
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     )
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
@@ -104,8 +104,8 @@ MODE_LOCAL__
                                         VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
-    EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   RADI_V   ERR_RADI )
-    EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   RADI_V   ERR_RADI )
+   
+   
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5

@@ -50,10 +50,10 @@ MODE_LOCAL__
     CINSTPR  = INST_R   ELEM__         (INST     )
     CLISTMA  = LISTMA   ELEM__         (LISTMA   TRANS    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
+   
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
-    EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
+   
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     CSTADYN  = STAOUDYN ELEM__         (STAOUDYN ALFNMK   DELNMK   )

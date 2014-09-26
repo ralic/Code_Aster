@@ -58,9 +58,9 @@ MODE_LOCAL__
                                         VECT_3_Y VECT_3_Z )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (N        )
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (N        )
-    ECONTPG  = SIEF_R   ELGA__ RIGI    (N        )
+   
+   
+   
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )

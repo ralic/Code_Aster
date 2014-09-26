@@ -71,8 +71,8 @@ ENTETE__ ELEMENT__ MECA_XH_TETRA10     MAILLE__ TETRA10
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+   
+   
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    BETA     KAPPA    X        Y
                                         Z        )
@@ -83,10 +83,9 @@ MODE_LOCAL__
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
                                         SD_COMP    KIT1     KIT2     KIT3     KIT4     KIT5
                                         KIT6     KIT7     KIT8     KIT9     )
-    CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+   
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
-                                        COPECO   COPEFR)
+   
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
@@ -97,8 +96,8 @@ MODE_LOCAL__
                                  EN1   (DX      DY      DZ      H1X      H1Y      H1Z )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX     DY      DZ      )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    E1NEUTI  = NEUT_I   ELEM__         (X1       )
-    E2NEUTR  = NEUT_R   ELEM__         (X[2]     )
+   
+   
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E10NEUTI = N120_I   ELEM__         (X[10]    )
     E15NEUTI = N120_I   ELEM__         (X[15]    )
@@ -116,7 +115,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTSE  = N1920R   ELEM__         (X[1920]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+   
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EFACY_R  = FACY_R   ELGA__ RIGI    (DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1
                                         EPNMAX1  EPNMOY1  SIGEQ1   NBRUP1   ENDO1    DTAUM2
@@ -140,7 +139,7 @@ MODE_LOCAL__
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
-    EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       FZ       )
+   
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        Z        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )

@@ -49,11 +49,11 @@ MODE_LOCAL__
                                  EN2   (DX       DY       )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (DEPV     DGONFX1  DGONFX2  )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (DEPV     DGONFX1  DGONFX2  )
-    EDEFONC  = EPSI_C   ELNO__ IDEN__  (DEPV     DGONFX1  DGONFX2  )
+   
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGINDLO  = INDL_R ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
+   
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
@@ -61,7 +61,7 @@ MODE_LOCAL__
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
-    CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
+   
     ECONTPG  = SIEF_R   ELGA__ RIGI    (PRES     SIG1     SIG2     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (PRES     SIG1     SIG2     )
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (PRES     SIG1     SIG2     )

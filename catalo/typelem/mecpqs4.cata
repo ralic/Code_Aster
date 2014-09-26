@@ -37,7 +37,7 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       )
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       )
-    EDEULNO  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
+   
     EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMA_R   ELNO__ IDEN__  (DOMA     )
@@ -74,8 +74,8 @@ MODE_LOCAL__
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGRDUPG  = G_DEPL_R ELGA__ RIGI    (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
-    EGRDUNO  = G_DEPL_R ELNO__ IDEN__  (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
+   
+   
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
@@ -123,7 +123,7 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
-    NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
+   
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5

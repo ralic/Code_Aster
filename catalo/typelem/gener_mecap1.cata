@@ -39,7 +39,7 @@ MODE_LOCAL__
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        )
-    EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       )
+   
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EREFCO   = PREC     ELEM__         (EFFORT   )

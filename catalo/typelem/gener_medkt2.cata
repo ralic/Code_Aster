@@ -133,8 +133,8 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEMA_R = GEOM_R   ELGA__ MATER   (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    CTIMER   = INST_R   ELEM__         (INST     DELTAT   THETA    )
-    CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
+   
+   
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
@@ -150,15 +150,14 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     ENBSP_I  = NBSP_I   ELEM__         (COQ_NCOU )
-    CNUMCOR  = NUMC_I   ELEM__         (NUMC     ORDO     )
+   
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     EREFCO   = PREC     ELEM__         (EFFORT    MOMENT)
-    EEFGEGA  = SIEF_R   ELGA__ RIGI    (NXX      NYY      NXY      MXX      MYY      MXY
-                                        QX       QY       )
+   
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -183,7 +182,7 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
-    EVITNOR  = VNOR_C   ELEM__         (VNOR     )
+   
     EGAMIMA  = SPMX_R   ELGA__ RIGI    (VAL      NUCOU    NUSECT   NUFIBR   POSIC    POSIS    )
     ENOMIMA  = SPMX_R   ELNO__ IDEN__  (VAL      NUCOU    NUSECT   NUFIBR   POSIC    POSIS    )
     ECHGREP  = CHGREPER ELEM__         (NATCHG   CMAT[9] )

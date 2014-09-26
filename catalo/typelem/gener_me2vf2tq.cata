@@ -55,16 +55,15 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[8]     )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[8]     )
-    CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
+   
     ECONTPG  = SIEF_R   ELGA__ FPGCONT (M11      FH11     M12      FH12
                                         M21      FH21     M22      FH22   )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (M11      FH11     M12      FH12
-                                        M21      FH21     M22      FH22   )
-    EREFCO   = PREC     ELEM__         (SIGM     FHYDR1   FHYDR2   FTHERM     )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    ZVARI1   = VARI_R   ELEM__         (VARI     )
+   
+   
+   
+   
     ZVARIPG  = VARI_R   ELGA__ FPGVARI (VARI     )
-    ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+   
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )

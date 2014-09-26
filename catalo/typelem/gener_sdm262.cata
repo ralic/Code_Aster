@@ -47,8 +47,8 @@ MODE_LOCAL__
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
                                  EN3   (PRE1     PRE2     )
-    CFLUXF   = FTHM_F   ELEM__         (PFLU1    PFLU2   )
-    EFLUXE   = FTHM_R   ELGA__ RIGI   (PFLU1    PFLU2  )
+   
+   
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
@@ -57,16 +57,15 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[8]     )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[8]     )
-    CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
+   
     ECONTPG  = SIEF_R   ELGA__ FPGCONT (M11      FH11     M12      FH12
                                         M21      FH21     M22      FH22   )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (M11      FH11     M12      FH12
-                                        M21      FH21     M22      FH22   )
-    EREFCO   = PREC     ELEM__         (SIGM     FHYDR1   FHYDR2   FTHERM     )
-    CTEREFE  = TEMP_R   ELEM__         (TEMP     )
-    ZVARI1   = VARI_R   ELEM__         (VARI     )
+   
+   
+   
+   
     ZVARIPG  = VARI_R   ELGA__ FPGVARI (VARI     )
-    ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+   
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )

@@ -51,10 +51,9 @@ MODE_LOCAL__
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[6]     )
     ECONTPG  = SIEF_R   ELGA__ FPGCONT (M11      FH11     M12      FH12
                                         M21      FH21     M22      FH22   )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (M11      FH11     M12      FH12
-                                        M21      FH21     M22      FH22   )
+   
     ZVARIPG  = VARI_R   ELGA__ FPGVARI (VARI     )
-    ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+   
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )

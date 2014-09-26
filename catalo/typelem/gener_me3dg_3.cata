@@ -82,11 +82,11 @@ MODE_LOCAL__
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
     EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L EPTHER_T EPTHER_N EPSECH   EPHYDR  )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+   
+   
     CFORCEF  = FORC_F   ELEM__         (FX       FY       FZ       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
-    EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       FZ       )
+   
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
@@ -97,7 +97,7 @@ MODE_LOCAL__
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
     ECOURAN  = NEUT_R   ELEM__         (X1       )
-    CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
+   
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
@@ -114,8 +114,8 @@ MODE_LOCAL__
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z TRSIG    TRIAX    )
-    EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   RADI_V   ERR_RADI   )
-    EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   RADI_V   ERR_RADI   )
+   
+   
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5

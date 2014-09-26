@@ -63,12 +63,12 @@ MODE_LOCAL__
                                  EN1   ()
                                  EN2   (X        Y       Z      )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y       Z      W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
-    CTYPEPI  = PILO_K   ELEM__         (TYPE     )
-    ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1      A2       A3       ETA      )
-    CBORNPI  = PILO_R   ELEM__         (A0       A1      )
-    CCDTAU   = PILO_R   ELEM__         (A0       )
+   
+   
+   
+   
+   
+   
     
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN     SITX    SITY     FH11X    FH11Y    )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN     SITX    SITY     FH11X    FH11Y    )

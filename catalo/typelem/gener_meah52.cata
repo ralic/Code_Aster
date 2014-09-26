@@ -86,8 +86,8 @@ MODE_LOCAL__
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+   
+   
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGINDLO  = INDL_R   ELGA__ RIGI    (INDICE   DIR[4]   )

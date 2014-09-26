@@ -44,13 +44,13 @@ MODE_LOCAL__
     EFLUXNO  = FLUX_R   ELNO__ IDEN__  (FLUX     FLUY     FLUZ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-    ENORME   = NEUT_R   ELEM__         (X1       )
+   
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CHARMON  = HARMON   ELEM__         (NH       )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+   
+   
     CSOURCF  = SOUR_F   ELEM__         (SOUR     )
     CSOURCR  = SOUR_R   ELEM__         (SOUR     )
     ESOURCR  = SOUR_R   ELGA__ RIGI    (SOUR     )

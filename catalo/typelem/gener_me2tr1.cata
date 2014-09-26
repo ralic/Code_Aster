@@ -47,7 +47,7 @@ MODE_LOCAL__
     CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       MFZ      )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       MFZ      )
-    EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       MZ       )
+   
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       MFZ      )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       MFZ      )
     CINSTPR  = INST_R   ELEM__         (INST     )

@@ -46,7 +46,7 @@ MODE_LOCAL__
                                  EN4   (DX   DY   H1X  H1Y  H2X  H2Y  H3X  H3Y  H4X  H4Y  )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-    EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       )
+   
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y       )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
@@ -57,8 +57,8 @@ MODE_LOCAL__
     E9NEUTI  = N120_I    ELEM__         (X[8])
     E24NEUI  = N512_I    ELEM__         (X[24])
     
-    E8NEUTR = NEUT_R    ELEM__         (X[8])
-    E10NEUTR = N120_R   ELEM__         (X[10])
+   
+   
     E24NEUTR = N132_R   ELEM__         (X[24])
     E16NEUTR = N480_R   ELEM__         (X[16])
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )

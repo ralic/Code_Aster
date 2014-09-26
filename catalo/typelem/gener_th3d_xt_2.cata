@@ -32,7 +32,7 @@ MODE_LOCAL__
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     E1       )
     E6NEUTI  = N128_I   ELEM__         (X[6])
     E10NEUTI = N120_I   ELEM__         (X[10])
-    E10NEUTR = N120_R   ELEM__         (X[10])
+   
     E12NEUTR = N132_R   ELEM__         (X[12])
     E33NEUTR = N480_R   ELEM__         (X[33])
     E36NEUI  = N512_I   ELEM__         (X[36])

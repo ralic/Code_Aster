@@ -126,8 +126,8 @@ MODE_LOCAL__
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
+   
+   
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -141,7 +141,7 @@ MODE_LOCAL__
     E1GNEUT  = NEUT_R   ELGA__ RIGI    (X1       )
     E1NNEUT  = NEUT_R   ELNO__ IDEN__  (X1       )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
+   
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     EREFCO   = PREC     ELEM__         (SIGM     FHYDR1   FHYDR2   FTHERM   )

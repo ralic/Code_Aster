@@ -40,7 +40,7 @@ MODE_LOCAL__
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NACCELR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
-    NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
+   
     CFLUXNF  = FLUN_F   ELEM__         (FLUN     )
     CFLUXNR  = FLUN_R   ELEM__         (FLUN     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )

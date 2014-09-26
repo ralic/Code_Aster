@@ -54,7 +54,7 @@ MODE_LOCAL__
                                         X        Y        Z        )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       VZ       )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       VZ       )
-    EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       )
+   
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )

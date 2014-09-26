@@ -47,13 +47,13 @@ MODE_LOCAL__
                                         SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1
                                         SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2   )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
-    ENORME   = NEUT_R   ELEM__         (X1       )
-    EMNEUT_R = NEUT_R   ELEM__         (X[30]     )
+   
+   
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     EFLHN    = FLHN_R   ELGA__ RIGI    (FH11     FH12     FH21     FH22     )
-    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+   
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

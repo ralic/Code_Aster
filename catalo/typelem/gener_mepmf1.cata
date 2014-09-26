@@ -46,7 +46,7 @@ MODE_LOCAL__
     NVITER   = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   TRAC_COM TORSION  FLEX_Y   FLEX_Z   )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
-    EDEFGPG  = EPSI_R   ELGA__ RIGI    (EPXX     GAXY     GAXZ     GAT      KY       KZ       )
+   
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     )
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
@@ -82,7 +82,7 @@ MODE_LOCAL__
                                         NUG5     NUG6     NUG7     NUG8     NUG9     NUG10    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
-    EEFFONO  = SIEF_R   ELNO__ IDEN__  (FX       FY       FZ       MX       MY       MZ       )
+   
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     )

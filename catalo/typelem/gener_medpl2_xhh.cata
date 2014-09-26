@@ -79,11 +79,10 @@ MODE_LOCAL__
                                         KIT6     KIT7     KIT8     KIT9     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CONTX_R  = XCONTAC  ELEM__         (RHON     MU       RHOTK    INTEG   COECH    COSTCO   COSTFR
-                                        COPECO   COPEFR)
+   
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
-    CREFERI  = NEUT_I   ELEM__         (X[12]    )
+   
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
@@ -100,7 +99,7 @@ MODE_LOCAL__
     E24NEUI  = N128_I   ELEM__         (X[24]    )
     E72NEUI  = N512_I   ELEM__         (X[72]    )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-    E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
+   
     E6NEUTR  = N120_R   ELEM__         (X[6]     )
     E12NEUTR = N120_R   ELEM__         (X[12]    )
     E15NEUTR = N120_R   ELEM__         (X[15]    )
@@ -109,19 +108,18 @@ MODE_LOCAL__
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
-    EERREUR  = ERRE_R   ELEM__         (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
-                                        TERMN2   TERMSA   TERMS2   TAILLE   )
-    E20NEUTR = NEUT_R   ELEM__         (X[20]    )
+   
+   
     ECODRET  = CODE_I   ELEM__         (IRET     )
-    ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
-    ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     )
+   
+   
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
-    ECONTSE  = N120_R   ELEM__         (X[72]    )
+   
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
+   
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
-    EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
+   
     EGGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     EGNEUT_F = NEUT_F   ELGA__ XFEM    (X[30]    )
@@ -129,7 +127,7 @@ MODE_LOCAL__
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
-    I1NEUT_I = NEUT_I   ELEM__         (X1       )
+   
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )
