@@ -34,8 +34,8 @@ PHENOMENE_MODELISATION__
 %
 %  DIM_TOPO_MODELI : dimension "topologique" de la modelisation a laquelle appartient
 %                    l'element.
-%                      - 3 pour les elements isoparametrques 3D
-%                      - 2 pour les elements isoparametrques 2D
+%                      - 3 pour les elements isoparametriques 3D
+%                      - 2 pour les elements isoparametriques 2D
 %                      - 2 pour plaques et coques en 3D
 %                      - 1 pour les poutres ou pour les coques en 2D
 %                      - ...
@@ -184,9 +184,7 @@ PHENOMENE_MODELISATION__
 %
 %
 %
-% ==========================================================================================
-
-
+%=============================================================================================
 
    PHENOMENE__  MECANIQUE       CODE__  'ME'
 
@@ -234,7 +232,7 @@ PHENOMENE_MODELISATION__
                MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUC
                MAILLE__ SEG3      ELEMENT__ DHH2S3_SUC
 
-       MODELISATION__ 'VF1'      DIM__ 2 2  CODE__ 'VF1'
+       MODELISATION__ 'VF1'              DIM__ 2 2  CODE__ 'VF1'
               ATTRIBUT__  VF_AVEC_VOISIN=OUI  TYPE_VOISIN=A2
               MAILLE__ TRIA3     ELEMENT__ VF1T3
               MAILLE__ QUAD4     ELEMENT__ VF1Q4
@@ -680,14 +678,18 @@ PHENOMENE_MODELISATION__
 
          MODELISATION__ 'AXIS_XHT'        DIM__ 2 2   CODE__ 'AX3'
               ATTRIBUT__  NBSIGM=X4 AXIS=OUI TYPMOD=AXIS
+              MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XHT
               MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XHT
+              MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XHT
               MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XHT
               MAILLE__ SEG3      ELEMENT__ MEAXSE3_XHT
               MAILLE__ SEG2      ELEMENT__ MEAXSE2_XHT
 
          MODELISATION__ 'AXIS_XT'         DIM__ 2 2   CODE__ 'AX2'
               ATTRIBUT__  NBSIGM=X4 AXIS=OUI  TYPMOD=AXIS
+              MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XT
               MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XT
+              MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XT
               MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XT
               MAILLE__ SEG3      ELEMENT__ MEAXSE3_XT
               MAILLE__ SEG2      ELEMENT__ MEAXSE2_XT
@@ -1793,6 +1795,164 @@ PHENOMENE_MODELISATION__
               MAILLE__ TETRA10   ELEMENT__ T10_3D
               MAILLE__ PENTA15   ELEMENT__ P15_3D
               MAILLE__ HEXA20    ELEMENT__ H20_3D
+              
+              
+%------------------------------------------------------------------------------------
+% Modelisations sous-terraines pour le contact/frottement en methode "continue" :
+%------------------------------------------------------------------------------------
+
+       MODELISATION__ 'CF_CONT1'         DIM__ 2 3   CODE__ 'CC1'
+              ATTRIBUT__  METH_CONTINUE=OUI
+              MAILLE__ QU4QU8    ELEMENT__ COQ4Q8
+              MAILLE__ QU4QU9    ELEMENT__ COQ4Q9
+              MAILLE__ QU4TR3    ELEMENT__ COQ4T3
+              MAILLE__ QU4TR6    ELEMENT__ COQ4T6
+              MAILLE__ QU8QU4    ELEMENT__ COQ8Q4
+              MAILLE__ QU8QU9    ELEMENT__ COQ8Q9
+              MAILLE__ QU8TR3    ELEMENT__ COQ8T3
+              MAILLE__ QU8TR6    ELEMENT__ COQ8T6
+              MAILLE__ QU9QU4    ELEMENT__ COQ9Q4
+              MAILLE__ QU9QU8    ELEMENT__ COQ9Q8
+              MAILLE__ QU9TR3    ELEMENT__ COQ9T3
+              MAILLE__ QU9TR6    ELEMENT__ COQ9T6
+              MAILLE__ QUAD44    ELEMENT__ COQ4Q4
+              MAILLE__ QUAD88    ELEMENT__ COQ8Q8
+              MAILLE__ QUAD99    ELEMENT__ COQ9Q9
+              MAILLE__ SE2QU4    ELEMENT__ COS2Q4
+              MAILLE__ SE2QU8    ELEMENT__ COS2Q8
+              MAILLE__ SE2QU9    ELEMENT__ COS2Q9
+              MAILLE__ SE2TR3    ELEMENT__ COS2T3
+              MAILLE__ SE2TR6    ELEMENT__ COS2T6
+              MAILLE__ SE3QU4    ELEMENT__ COS3Q4
+              MAILLE__ SE3QU8    ELEMENT__ COS3Q8
+              MAILLE__ SE3QU9    ELEMENT__ COS3Q9
+              MAILLE__ SE3TR3    ELEMENT__ COS3T3
+              MAILLE__ SE3TR6    ELEMENT__ COS3T6
+              MAILLE__ TR3QU4    ELEMENT__ COT3Q4
+              MAILLE__ TR3QU8    ELEMENT__ COT3Q8
+              MAILLE__ TR3QU9    ELEMENT__ COT3Q9
+              MAILLE__ TR3TR6    ELEMENT__ COT3T6
+              MAILLE__ TR6QU4    ELEMENT__ COT6Q4
+              MAILLE__ TR6QU8    ELEMENT__ COT6Q8
+              MAILLE__ TR6QU9    ELEMENT__ COT6Q9
+              MAILLE__ TR6TR3    ELEMENT__ COT6T3
+              MAILLE__ TRIA33    ELEMENT__ COT3T3
+              MAILLE__ TRIA66    ELEMENT__ COT6T6
+                                                                                                                                                       
+       MODELISATION__ 'CF_CONT2'         DIM__ 1 2   CODE__ 'CC2'
+              ATTRIBUT__  METH_CONTINUE=OUI
+              MAILLE__ SEG22     ELEMENT__ COS2S2
+              MAILLE__ SEG23     ELEMENT__ COS2S3
+              MAILLE__ SEG32     ELEMENT__ COS3S2
+              MAILLE__ SEG33     ELEMENT__ COS3S3
+                                                                                                                                                       
+       MODELISATION__ 'CF_CONT3'         DIM__ 1 2   CODE__ 'CC3'
+              ATTRIBUT__  METH_CONTINUE=OUI  AXIS=OUI
+              MAILLE__ SEG22     ELEMENT__ COS2S2A
+              MAILLE__ SEG23     ELEMENT__ COS2S3A
+              MAILLE__ SEG32     ELEMENT__ COS3S2A
+              MAILLE__ SEG33     ELEMENT__ COS3S3A
+                                                                                                                                                       
+       MODELISATION__ 'CF_CONT4'         DIM__ 1 2   CODE__ 'CC4'
+              ATTRIBUT__  METH_CONTINUE=OUI
+              MAILLE__ SEG22     ELEMENT__ COP2P2
+                                                                                                                                                       
+       MODELISATION__ 'CF_CONT5'         DIM__ 2 3   CODE__ 'CC5'
+              ATTRIBUT__  METH_CONTINUE=OUI  FROTTEMENT=OUI
+              MAILLE__ QU4QU8    ELEMENT__ CFQ4Q8
+              MAILLE__ QU4QU9    ELEMENT__ CFQ4Q9
+              MAILLE__ QU4TR3    ELEMENT__ CFQ4T3
+              MAILLE__ QU4TR6    ELEMENT__ CFQ4T6
+              MAILLE__ QU8QU4    ELEMENT__ CFQ8Q4
+              MAILLE__ QU8QU9    ELEMENT__ CFQ8Q9
+              MAILLE__ QU8TR3    ELEMENT__ CFQ8T3
+              MAILLE__ QU8TR6    ELEMENT__ CFQ8T6
+              MAILLE__ QU9QU4    ELEMENT__ CFQ9Q4
+              MAILLE__ QU9QU8    ELEMENT__ CFQ9Q8
+              MAILLE__ QU9TR3    ELEMENT__ CFQ9T3
+              MAILLE__ QU9TR6    ELEMENT__ CFQ9T6
+              MAILLE__ QUAD44    ELEMENT__ CFQ4Q4
+              MAILLE__ QUAD88    ELEMENT__ CFQ8Q8
+              MAILLE__ QUAD99    ELEMENT__ CFQ9Q9
+              MAILLE__ SE2QU4    ELEMENT__ CFS2Q4
+              MAILLE__ SE2QU8    ELEMENT__ CFS2Q8
+              MAILLE__ SE2QU9    ELEMENT__ CFS2Q9
+              MAILLE__ SE2TR3    ELEMENT__ CFS2T3
+              MAILLE__ SE2TR6    ELEMENT__ CFS2T6
+              MAILLE__ SE3QU4    ELEMENT__ CFS3Q4
+              MAILLE__ SE3QU8    ELEMENT__ CFS3Q8
+              MAILLE__ SE3QU9    ELEMENT__ CFS3Q9
+              MAILLE__ SE3TR3    ELEMENT__ CFS3T3
+              MAILLE__ SE3TR6    ELEMENT__ CFS3T6
+              MAILLE__ TR3QU4    ELEMENT__ CFT3Q4
+              MAILLE__ TR3QU8    ELEMENT__ CFT3Q8
+              MAILLE__ TR3QU9    ELEMENT__ CFT3Q9
+              MAILLE__ TR3TR6    ELEMENT__ CFT3T6
+              MAILLE__ TR6QU4    ELEMENT__ CFT6Q4
+              MAILLE__ TR6QU8    ELEMENT__ CFT6Q8
+              MAILLE__ TR6QU9    ELEMENT__ CFT6Q9
+              MAILLE__ TR6TR3    ELEMENT__ CFT6T3
+              MAILLE__ TRIA33    ELEMENT__ CFT3T3
+              MAILLE__ TRIA66    ELEMENT__ CFT6T6
+                                                                                                                                                       
+       MODELISATION__ 'CF_CONT6'         DIM__ 1 2   CODE__ 'CC6'
+              ATTRIBUT__  METH_CONTINUE=OUI  FROTTEMENT=OUI
+              MAILLE__ SEG22     ELEMENT__ CFS2S2
+              MAILLE__ SEG23     ELEMENT__ CFS2S3
+              MAILLE__ SEG32     ELEMENT__ CFS3S2
+              MAILLE__ SEG33     ELEMENT__ CFS3S3
+                                                                                                                                                       
+       MODELISATION__ 'CF_CONT7'         DIM__ 1 2   CODE__ 'CC7'
+              ATTRIBUT__  METH_CONTINUE=OUI  FROTTEMENT=OUI  AXIS=OUI
+              MAILLE__ SEG22     ELEMENT__ CFS2S2A
+              MAILLE__ SEG23     ELEMENT__ CFS2S3A
+              MAILLE__ SEG32     ELEMENT__ CFS3S2A
+              MAILLE__ SEG33     ELEMENT__ CFS3S3A
+                                                                                                                            
+       MODELISATION__ 'CF_CONT8'         DIM__ 1 2   CODE__ 'CC8'
+              ATTRIBUT__  METH_CONTINUE=OUI  FROTTEMENT=OUI
+              MAILLE__ SEG22     ELEMENT__ CFP2P2
+
+
+%------------------------------------------------------------------------------------
+% Modelisations sous-terraines pour :
+%  * conditions d'echange thermique entre deux parois
+%  * Forces et sources nodales
+%------------------------------------------------------------------------------------
+                                                                                                                            
+       MODELISATION__ 'CL_ECHANGE1'         DIM__ 2 3   CODE__ 'CL1'
+              MAILLE__ TRIA33      ELEMENT__ THER_FACE33
+              MAILLE__ QUAD44      ELEMENT__ THER_FACE44
+              MAILLE__ TRIA66      ELEMENT__ THER_FACE66
+              MAILLE__ QUAD88      ELEMENT__ THER_FACE88
+              MAILLE__ QUAD99      ELEMENT__ THER_FACE99
+                                                                                                                            
+       MODELISATION__ 'CL_ECHANGE2'         DIM__ 1 2   CODE__ 'CL2'
+              MAILLE__ SEG22       ELEMENT__ THAXSE22
+              MAILLE__ SEG33       ELEMENT__ THAXSE33
+              MAILLE__ SEG22       ELEMENT__ THPLSE22
+              MAILLE__ SEG33       ELEMENT__ THPLSE33
+                                                                                                                            
+       MODELISATION__ 'CL_FNOD2'            DIM__ 0 2   CODE__ 'CL3'
+              MAILLE__ POI1        ELEMENT__ FORCE_NOD_2DDL
+                                                                                                                            
+       MODELISATION__ 'CL_FNOD3'            DIM__ 0 3   CODE__ 'CL4'
+              MAILLE__ POI1        ELEMENT__ FORCE_NOD_3DDL
+                                                                                                                            
+       MODELISATION__ 'CL_FNOD6'            DIM__ 0 3   CODE__ 'CL5'
+              MAILLE__ POI1        ELEMENT__ FORCE_NOD_6DDL
+                                                                                                                            
+       MODELISATION__ 'CL_FNODCQ2'          DIM__ 0 2   CODE__ 'CL6'
+              MAILLE__ POI1        ELEMENT__ FORCE_NOD_COQ2D
+                                                                                                                            
+       MODELISATION__ 'CL_SNOD2'            DIM__ 0 2   CODE__ 'CL7'
+              MAILLE__ POI1        ELEMENT__ SOURCE_NOD_2D
+                                                                                                                            
+       MODELISATION__ 'CL_SNOD3'            DIM__ 0 3   CODE__ 'CL8'
+              MAILLE__ POI1        ELEMENT__ SOURCE_NOD_3D
+
+
+%=============================================================================================
 
    PHENOMENE__  THERMIQUE       CODE__  'TH'
 
@@ -1942,7 +2102,8 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ THAXTR3_XHT
               MAILLE__ QUAD4     ELEMENT__ THAXQU4_XHT
               MAILLE__ SEG2      ELEMENT__ THAXSE2_XHT
-%-------------------------------------------------------------------
+
+%=============================================================================================
 
    PHENOMENE__  ACOUSTIQUE       CODE__  'AC'
 
@@ -1969,7 +2130,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ ACPLSE2
               MAILLE__ SEG3      ELEMENT__ ACPLSE3
 
-%===============================================================================
+%=============================================================================================
 % le phenomene / modelisation  suivant est "neutre"
 % Il sert actuellement dans IMPR_RESU
 
