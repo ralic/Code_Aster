@@ -57,6 +57,19 @@ class table_sdaster(ASSD):
             titr = ''
         return titr
 
+    def get_nom_para(self):
+        """Produit une liste des noms des colonnes
+        """
+        if not self.accessible():
+            raise Accas.AsException("Erreur dans table.get_nom_para en PAR_LOT='OUI'")
+        l_name = []
+        shape = self.sdj.TBNP.get()
+        desc  = self.sdj.TBLP.get()
+        for n in range(shape[0]):
+            nom = desc[4*n]
+            l_name.append( nom.strip() )
+        return l_name
+
     def EXTR_TABLE(self, para=None) :
         """Produit un objet Table à partir du contenu d'une table Aster.
         On peut limiter aux paramètres listés dans 'para'.

@@ -94,8 +94,8 @@ CONDLIM=AFFE_CHAR_MECA(MODELE=MO,
 
 
 #
-ASSEMBLAGE(MODELE=MO,   
-           CHARGE=CONDLIM,   
+ASSEMBLAGE(MODELE=MO,
+           CHARGE=CONDLIM,
            CARA_ELEM=CARAEL,
            CHAM_MATER=CHMAT,
            NUME_DDL=CO("NUMEDDL"),
@@ -117,7 +117,7 @@ MODE_MEC=NORM_MODE(reuse=MODE_MEC,  MODE=MODE_MEC,   NORME='MASS_GENE' )
 #
 # CALCUL DES MODES STATIQUES AUX POINTS D ANCRAGE:
 #-------------------------------------------------
-MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,   
+MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                        MATR_MASS=MASSE,
                        MODE_STAT=(_F(GROUP_NO='CDG',AVEC_CMP =('DX','DY','DZ')),
                                   _F(GROUP_NO='S',AVEC_CMP =('DX','DY','DZ'))))
@@ -342,18 +342,18 @@ RESU=DYNA_VIBRA(TYPE_CALCUL='TRAN',
 #
 frequ=DEFI_LIST_REEL(VALE=(0.10,0.20,0.30,0.41,0.52,10.,15., 20.))
 
-TABAVMAC=MACR_SPECTRE(MAILLAGE=MA,
-                      RESU=_F(RESU_GENE=RESU,),
-                      PLANCHER=(_F(GROUP_NO=('A1','B1','C1','D1'),NOM='P_1'),),
-                      LIST_FREQ=frequ,
-                      NOM_CHAM='ACCE',
-                      CALCUL='ABSOLU',
-                      NORME = 9.81,
-                      AMOR_SPEC=(0.05),
-                      MULT_APPUI='OUI',)
-
-                   
-IMPR_TABLE(TABLE=TABAVMAC)
+TABAVMAC=MACR_SPECTRE(
+    MAILLAGE=MA,
+    RESU=_F(RESU_GENE=RESU,),
+    PLANCHER=(_F(GROUP_NO=('A1','B1','C1','D1'),NOM='P_1'),),
+    LIST_FREQ=frequ,
+    NOM_CHAM='ACCE',
+    CALCUL='ABSOLU',
+    NORME = 9.81,
+    AMOR_SPEC=(0.05),
+    MULT_APPUI='OUI',
+)
+#IMPR_TABLE(TABLE=TABAVMAC)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=4.53316E-02,
@@ -363,6 +363,56 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            FILTRE=_F(NOM_PARA='FREQ',
                      VALE=0.52,),
            )
- 
+
+# --------------------------------------------------------------------------------------------------
+ACCELE=REST_GENE_PHYS(RESU_GENE=RESU, NOM_CHAM='ACCE', TOUT_INST='OUI',)
+
+liste_grpno = ('A1', 'B1', 'C1',  'D1',)
+liste_noeud = ('N78','N84','N129','N133',)
+
+TAB_RESU=CREA_TABLE(
+    RESU=_F(RESULTAT=ACCELE,  GROUP_NO= liste_grpno,
+            NOM_CHAM='ACCE',  NOM_CMP=('DX','DY','DZ'),)
+)
+
+TABSPEC1=MACR_SPECTRE(
+    MAILLAGE=MA,
+    PLANCHER=(
+        _F(NOM='P_1', GROUP_NO= liste_grpno,),
+    ),
+    NOM_CHAM='ACCE', AMOR_SPEC=(0.05), LIST_FREQ=frequ, NORME=1.0,
+    CALCUL='RELATIF',
+    RESU=_F(TABLE=TAB_RESU, ACCE_X=ACCERX, ACCE_Y=ACCERY, ACCE_Z=ACCERZ,),
+)
+
+TABSPEC2=MACR_SPECTRE(
+    PLANCHER=(
+        _F(NOM='P_1', NOEUD= liste_noeud,),
+    ),
+    NOM_CHAM='ACCE', AMOR_SPEC=(0.05), LIST_FREQ=frequ, NORME=9.7647346,
+    CALCUL='RELATIF',
+    RESU=_F(TABLE=TAB_RESU, ACCE_X=ACCEPX, ACCE_Y=ACCEPY, ACCE_Z=ACCEPZ,),
+)
+
+#
+TEST_TABLE(
+    REFERENCE='AUTRE_ASTER',
+    TABLE=TABSPEC1,
+    VALE_REFE= 0.00225538264094,
+    VALE_CALC= 0.00225538264094,
+    NOM_PARA='eH_0_P_1',
+    FILTRE=_F(NOM_PARA='FREQ', VALE=0.52,),
+)
+
+TEST_TABLE(
+    REFERENCE='AUTRE_ASTER',
+    TABLE=TABSPEC2,
+    VALE_REFE= 4.53316E-02,
+    VALE_CALC= 4.53316E-02,
+    NOM_PARA='eH_0_P_1',
+    FILTRE=_F(NOM_PARA='FREQ', VALE=0.52,),
+)
+
+
 FIN()
 #

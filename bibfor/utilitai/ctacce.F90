@@ -202,7 +202,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
             call rsorac(resu, 'LONUTI', ibid, r8b, k8b,&
                         cbid, r8b, k8b, tord, 1,&
                         nbtrou)
-            nbval=tord(1)            
+            nbval=tord(1)
             call wkvect(nival, 'V V I', nbval, jival)
             call rsorac(resu, 'TOUT_ORDRE', ibid, r8b, k8b,&
                         cbid, r8b, k8b, zi(jival), nbval,&
@@ -211,7 +211,8 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
 !         -- SI LE RESULTAT EST UN EVOL_XXX, ON FORCE TYPAC='INST'
 !            POUR QUE LES INSTANTS SOIENT IMPRIMES DANS LA TABLE :
             call gettco(resu, concep)
-            if (concep(1:5) .eq. 'EVOL_') then
+            if ( (concep(1:5) .eq. 'EVOL_') .or. &
+                 (concep(1:10) .eq. 'DYNA_TRANS') ) then
                 typac='INST'
                 call wkvect(nrval, 'V V R', nbval, jrval)
                 do 25, kk=1,nbval
@@ -259,7 +260,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
             do 40 i = 1, nbval
                 call rsorac(resu, 'NUME_MODE', zi(jival+i-1), 0.0d0, k8b,&
                             cbid, epsi, crit, tord, 0,&
-                            n1)    
+                            n1)
                 if (n1 .eq. 0) then
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                     valk = typac
@@ -288,7 +289,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval,&
             do 50 i = 1, nbval
                 call rsorac(resu, typac, 0, zr(jrval+i-1), k8b,&
                             cbid, epsi, crit, tord, 0,&
-                            n1)          
+                            n1)
                 if (n1 .eq. 0) then
                     zk24(jkcha+i-1) = '&&CHAMP_INEXISTANT'
                     valk = typac
