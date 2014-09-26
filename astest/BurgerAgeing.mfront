@@ -69,7 +69,7 @@
 
 @Integrator{
     real stresP=trace(sig)/3.;
-    real Vsech =max(0.,dSECH);
+    real Vsech =fabs(dSECH);
     Stensor stresD=sig-stresP*Stensor::Id();
     real Tmoy=(2.*T+dT)/2.;
     real KRS_T=KRS*exp(Ea_R*(1./(273.+Tmoy)-1./(273+Tref)));

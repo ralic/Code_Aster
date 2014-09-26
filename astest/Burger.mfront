@@ -74,7 +74,7 @@ nu.setGlossaryName("PoissonRatio");
 
 @Integrator{
     real stresP=trace(sig)/3.;
-    real Vsech =max(0.,dSECH);
+    real Vsech =fabs(dSECH);
     Stensor stresD=sig-stresP*Stensor::Id();
     real emax=sqrt(((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI))|((ESPHI+dESPHI)*Stensor::Id()+(EDEVI+dEDEVI)));
     fELIM=ELIM+dELIM-max(ELIM,emax);
