@@ -268,7 +268,9 @@ subroutine bamo78(nomres, trange, typres)
 !         --- CREATION DU CHAMP
             if (iret .eq. 0) call detrsd('CHAM_NO', chamno)
 !
-            call vtcreb(chamno, numedd, 'G', 'R', neq)
+            call vtcreb(chamno, 'G', 'R',&
+                        nume_ddlz = numedd,&
+                        nb_equa_outz = neq)
             call jeveuo(chamno(1:19)//'.VALE', 'E', ldnew)
 !
 !         --- TRANSFERT EFFECTIF SUR BASE PHYSIQUE

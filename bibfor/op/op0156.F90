@@ -42,7 +42,7 @@ subroutine op0156()
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
-    integer :: n1, iret, neq, ier
+    integer :: n1, iret, ier
     integer :: lmat, jchin, jchout
     character(len=1) :: typmat, typres
     character(len=24) :: valk(2)
@@ -94,7 +94,7 @@ subroutine op0156()
         valk(2)=pfchn2
         call utmess('A', 'CALCULEL3_46', nk=2, valk=valk)
         chamn2='&&OP0156.CHAM_NO'
-        call vtcreb(chamn2, numem, 'V', typres, neq)
+        call vtcreb(chamn2, 'V', typres, nume_ddlz = numem)
         call vtcopy(chamno, chamn2, 'F', ier)
         chamno=chamn2
     endif
@@ -107,7 +107,7 @@ subroutine op0156()
     if (iret .ne. 0) then
         call utmess('F', 'ALGELINE2_87', sk=resu(1:8))
     endif
-    call vtcreb(resu, numem, 'G', typres, neq)
+    call vtcreb(resu, 'G', typres, nume_ddlz = numem)
     call jeveuo(resu//'.VALE', 'E', jchout)
 !
 !

@@ -16,11 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vtcreb(champz, numedz, basez, typcz, neq)
-        character(len=*) :: champz
-        character(len=*) :: numedz
-        character(len=*) :: basez
-        character(len=*) :: typcz
-        integer :: neq
+    subroutine vtcreb(field_nodez , base      , type_scalz,&
+                      nume_ddlz   ,&
+                      meshz       , prof_chnoz, idx_gdz, nb_equa_inz,&
+                      nb_equa_outz)
+        character(len=*), intent(in) :: field_nodez
+        character(len=1), intent(in) :: base
+        character(len=*), intent(in) :: type_scalz
+        character(len=*), optional, intent(in) :: nume_ddlz
+        character(len=*), optional, intent(in) :: meshz
+        character(len=*), optional, intent(in) :: prof_chnoz
+        integer, optional, intent(in) :: nb_equa_inz
+        integer, optional, intent(in) :: idx_gdz
+        integer, optional, intent(out) :: nb_equa_outz
     end subroutine vtcreb
 end interface

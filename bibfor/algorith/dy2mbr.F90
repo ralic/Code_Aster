@@ -77,11 +77,21 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri,&
     cnvoch = '&&DY2MBR.CNVOCH'
     cnveac = '&&DY2MBR.CNVEAC'
     cnvass = '&&DY2MBR.CNVASS'
-    call vtcreb(cndiri, numddl, 'V', typres, neq)
-    call vtcreb(cnneum, numddl, 'V', typres, neq)
-    call vtcreb(cnvoch, numddl, 'V', typres, neq)
-    call vtcreb(cnveac, numddl, 'V', typres, neq)
-    call vtcreb(cnvass, numddl, 'V', typres, neq)
+    call vtcreb(cndiri, 'V', typres,&
+                nume_ddlz = numddl,&
+                nb_equa_outz = neq)
+    call vtcreb(cnneum, 'V', typres,&
+                nume_ddlz = numddl,&
+                nb_equa_outz = neq)
+    call vtcreb(cnvoch, 'V', typres,&
+                nume_ddlz = numddl,&
+                nb_equa_outz = neq)
+    call vtcreb(cnveac, 'V', typres,&
+                nume_ddlz = numddl,&
+                nb_equa_outz = neq)
+    call vtcreb(cnvass, 'V', typres,&
+                nume_ddlz = numddl,&
+                nb_equa_outz = neq)
 !
 ! --- VECTEUR RESULTANT
 !

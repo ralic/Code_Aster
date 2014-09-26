@@ -170,7 +170,8 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     call wkvect('&&DLADAP.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLADAP.F2', 'V V R', neq, iwk2)
     call wkvect('&&DLADAP.DEPL', 'V V R', neq, jdepl)
-    call vtcreb('&&DLADAP.DEP2', numedd, 'V', 'R', neq)
+    call vtcreb('&&DLADAP.DEP2', 'V', 'R',&
+                nume_ddlz = numedd)
     call jeveuo('&&DLADAP.DEP2      '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLADAP.VITE', 'V V R', neq, jvite)
     call wkvect('&&DLADAP.VIT2', 'V V R', neq, jvit2)
@@ -298,15 +299,15 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ALGORITH3_14')
     endif
-    do 17 , iexcl = 1,nbexcl
-    if (typ1(iexcl) .eq. 'DEPL') then
-        typear(1) = '    '
-    else if (typ1(iexcl).eq.'VITE') then
-        typear(2) = '    '
-    else if (typ1(iexcl).eq.'ACCE') then
-        typear(3) = '    '
-    endif
-    17 end do
+    do iexcl = 1,nbexcl
+        if (typ1(iexcl) .eq. 'DEPL') then
+            typear(1) = '    '
+        else if (typ1(iexcl).eq.'VITE') then
+            typear(2) = '    '
+        else if (typ1(iexcl).eq.'ACCE') then
+            typear(3) = '    '
+        endif
+    end do
 !
 ! 1.8. ==> --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
 !
@@ -544,9 +545,9 @@ subroutine dladap(result, tinit, lcrea, lamort, neq,&
 !
     if (nbexcl .ne. 0) then
 !
-        do 41 , iexcl = 1,nbexcl
-        typear(iexcl) = typ1(iexcl)
- 41     continue
+        do iexcl = 1,nbexcl
+            typear(iexcl) = typ1(iexcl)
+        end do
 !
         alarm = 0
         call dlarch(result, neq, istoc, iarchi, 'DERNIER(S)',&

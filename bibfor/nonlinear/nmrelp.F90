@@ -153,7 +153,6 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     fopt = r8maem()
     k19bla = ' '
     ldccvg = -1
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call nmchai('VALINC', 'LONMAX', nmax)
     ASSERT(nmax.eq.zvalin)
     call nmchai('SOLALG', 'LONMAX', nmax)
@@ -202,8 +201,8 @@ subroutine nmrelp(modele, numedd, mate, carele, comref,&
     call vtzero(depplt)
     call copisd('CHAMP_GD', 'V', varplu, varplt)
     call copisd('CHAMP_GD', 'V', sigplu, sigplt)
-    call vtcreb('&&NMRECH.RESI', numedd, 'V', 'R', neq)
-    call vtcreb('&&NMRECH.DIRI', numedd, 'V', 'R', neq)
+    call vtcreb('&&NMRECH.RESI', 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+    call vtcreb('&&NMRECH.DIRI', 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
 !
 ! --- CONSTRUCTION DES VARIABLES CHAPEAUX
 !

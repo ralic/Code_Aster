@@ -75,7 +75,7 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec, ityp, neq, jass, i, ibid, iret, icha
+    integer :: nbvec,  ityp, jass, i, ibid, iret, icha
     integer :: n1, jvacha
     aster_logical :: bidon
     character(len=4) :: tych
@@ -125,7 +125,8 @@ subroutine asasve(vechar, numedd, typres, vachar)
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
         call corich('E', chamno, -2, ibid)
-        call vtcreb(chamno, numedd, 'V', typres, neq)
+        call vtcreb(chamno, 'V', typres,&
+                    nume_ddlz = numedd)
         zk24(jass-1+1) = chamno
         goto 30
     endif
@@ -164,7 +165,8 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !       -- SI LE RESUELEM N'EST PAS UN RESUELEM !(CHAM_NO)
         else if (tych.eq.'NOEU') then
-            call vtcreb(chamno, numedd, 'V', typres, neq)
+            call vtcreb(chamno, 'V', typres,&
+                        nume_ddlz = numedd)
             call vtcopy(resuel, chamno, ' ', iret)
 !
         else

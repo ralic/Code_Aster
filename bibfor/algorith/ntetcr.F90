@@ -61,7 +61,7 @@ implicit none
     character(len=24) :: io_lcha, io_info
     character(len=24), pointer :: v_io_para(:) => null()
     integer, pointer :: v_io_info(:) => null()
-    integer :: i_field, i_field_maxi, neq
+    integer :: i_field, i_field_maxi
     aster_logical :: l_hydr
     character(len=24) :: temp_init
     aster_logical :: list_field_acti(nb_field_maxi)
@@ -88,7 +88,7 @@ implicit none
 ! - Keyword for OBSERVATION
     data keyw_obsv        /'TEMP'        ,' '   ,' '/
 !
-! --------------------------------------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -175,7 +175,7 @@ implicit none
 !
 ! - Create initial state fields
 !
-    call vtcreb(temp_init, nume_ddl, 'V', 'R', neq)
+    call vtcreb(temp_init, 'V', 'R', nume_ddlz = nume_ddl)
 !
     call jedema()
 end subroutine

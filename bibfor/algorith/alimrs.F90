@@ -1,10 +1,10 @@
 subroutine alimrs(mate, ma1, ma2, moint, ndble,&
-                  num, cn1, chno, cmp, icor)
+                  nume_ddl, cn1, chno, cmp, icor)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/calflu.h"
-#include "asterfort/crchno.h"
+#include "asterfort/vtcreb.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -63,9 +63,8 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
     integer :: ino1, nocmp, icor(2), ichnul, ndble, i_ligr_mesh
     real(kind=8) :: tailmi
     character(len=8) :: gd1, gd2, ma1, ma2
-    character(len=14) :: num
+    character(len=14) :: nume_ddl
     character(len=19) :: chnul, cn1, cn2, pchno1, pchno2
-    character(len=24) :: prchno
 ! -----------------------------------------------------------------
 !---------------------------------------------------------------------
 ! TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER
@@ -73,7 +72,7 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !-----------------------------------------------------------------------
     integer :: iadg1, ieq1, ieq2, igeom1
     integer :: igeom2, iprn1, iprn2, ival1, ival2
-    integer :: nbid, nbno1, nbno2, ncmp2, nec1, nec2, neq
+    integer :: nbno1, ncmp2, nec1, nec2
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()
     integer, pointer :: nueq1(:) => null()
@@ -87,21 +86,18 @@ subroutine alimrs(mate, ma1, ma2, moint, ndble,&
 !
 ! RECUPERATION DE LA TAILLE DE REFERENCE
 !
-    call getvr8(' ', 'DIST_REFE', scal=tailmi, nbret=nbid)
+    call getvr8(' ', 'DIST_REFE', scal=tailmi)
 !
 !
 ! ON CREE UN CHAMNO BIDON SUR L INTERFACE THERMIQUE
 !
-    call dismoi('NB_NO_MAILLA', ma2, 'MAILLAGE', repi=nbno2)
     chnul='&&ALIMRS.CHNUL'
-    call dismoi('NB_EQUA', num, 'NUME_DDL', repi=neq)
-    prchno = num//'.NUME'
-    call crchno(chnul, prchno, 'TEMP_R', ma2, 'V',&
-                'R', nbno2, neq)
+    call vtcreb(chnul, 'V', 'R',&
+                nume_ddlz = nume_ddl)
     call jeveuo(chnul//'.VALE', 'E', ichnul)
 !
     cn2=chno
-    call calflu(chnul, moint, mate, num, cn2,&
+    call calflu(chnul, moint, mate, nume_ddl, cn2,&
                 nbdesc, nbrefe, nbvale, 'X')
 !
 !

@@ -345,13 +345,13 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         liseq2='&&NMDOPI.LISEQ2'
         call wkvect(liseq2, 'V V I', nbno, jeq2)
         chapic = sdpilo(1:14)//'.PLCI'
-        call vtcreb(chapic, numedd, 'V', 'R', neq)
+        call vtcreb(chapic, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
         call jeveuo(chapic(1:19)//'.VALE', 'E', vr=vale)
     endif
 !
     if (selfem .or. selxfe) then
         chapil = sdpilo(1:14)//'.PLCR'
-        call vtcreb(chapil, numedd, 'V', 'R', neq)
+        call vtcreb(chapil, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
         call jeveuo(chapil(1:19)//'.VALE', 'E', jvale)
         call jeveuo(liscmp, 'L', jlicmp)
         call jelira(liscmp, 'LONMAX', ival=nddl)
@@ -401,7 +401,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
     if (typpil .eq. 'LONG_ARC') then
         selpil = sdpilo(1:14)//'.PLSL'
-        call vtcreb(selpil, numedd, 'V', 'R', neq)
+        call vtcreb(selpil, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
         call jeveuo(selpil(1:19)//'.VALE', 'E', vr=plsl)
         nddl = 3
         call wkvect(liscmp, 'V V K8', nddl, jlicmp)

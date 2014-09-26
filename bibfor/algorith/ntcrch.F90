@@ -46,7 +46,7 @@ subroutine ntcrch(modele, numedd, hydr0, vhydr)
 !
 !
     character(len=19) :: hydric, hydris, ligrmo
-    integer :: ibid, nncp, iret, neq
+    integer :: ibid, nncp, iret
     character(len=24) :: vtemp
 !
 ! ----------------------------------------------------------------------
@@ -75,7 +75,8 @@ subroutine ntcrch(modele, numedd, hydr0, vhydr)
 ! --- CREATION DES CHAMPS
 !
     vtemp='&&NXLECTVAR_____'
-    call vtcreb(vtemp, numedd, 'V', 'R', neq)
+    call vtcreb(vtemp, 'V', 'R',&
+                nume_ddlz = numedd)
 !
     call detrsd('CHAMP', hydric)
     call detrsd('CHAMP', hydris)

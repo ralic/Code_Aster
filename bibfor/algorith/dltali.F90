@@ -112,9 +112,13 @@ subroutine dltali(neq, result, imat, masse, rigid,&
 ! 1. CREATION DES STRUCTURES
 !====
 !
-    call vtcreb(force0, numedd, 'V', 'R', neq)
+    call vtcreb(force0, 'V', 'R',&
+                nume_ddlz = numedd,&
+                nb_equa_outz = neq)
     call jeveuo(force0(1:19)//'.VALE', 'E', iforc0)
-    call vtcreb(force1, numedd, 'V', 'R', neq)
+    call vtcreb(force1, 'V', 'R',&
+                nume_ddlz = numedd,&
+                nb_equa_outz = neq)
     call jeveuo(force1(1:19)//'.VALE', 'E', iforc1)
 !
 ! 1.2. ==> NOM DES STRUCTURES DE TRAVAIL

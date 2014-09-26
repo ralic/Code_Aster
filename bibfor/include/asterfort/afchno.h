@@ -16,20 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine afchno(chamn, base, gran, noma, nbnoeu,&
-                      nbcpno, desc, lonval, typval, rval,&
+    subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
+                      nbcpno, desc, nb_equa, typval, rval,&
                       cval, kval)
         character(len=*) :: chamn
         character(len=*) :: base
-        character(len=*) :: gran
-        character(len=*) :: noma
-        integer :: nbnoeu
+        character(len=*) :: gran_name
+        integer :: nb_node
         integer :: nbcpno(*)
         integer :: desc(*)
-        integer :: lonval
+        integer :: nb_equa
         character(len=*) :: typval
         real(kind=8) :: rval(*)
         complex(kind=8) :: cval(*)
         character(len=*) :: kval(*)
+        character(len=*) :: mesh
     end subroutine afchno
 end interface

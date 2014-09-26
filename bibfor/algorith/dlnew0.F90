@@ -176,21 +176,23 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
     chamno = '&&'//nompro//'.CHAMNO'
     call jeexin(chamno(1:19)//'.REFE', iret)
     if (iret .eq. 0) then
-        call vtcreb(chamno, numedd, 'V', 'R', neq)
+        call vtcreb(chamno, 'V', 'R',&
+                    nume_ddlz = numedd,&
+                    nb_equa_outz = neq)
     endif
     chamn2 = '&&'//nompro//'.CHAMN2'
     call jeexin(chamn2(1:19)//'.REFE', iret)
     if (iret .eq. 0) then
-        call vtcreb(chamn2, numedd, 'V', 'R', neq)
+        call vtcreb(chamn2, 'V', 'R',&
+                    nume_ddlz = numedd,&
+                    nb_equa_outz = neq)
     endif
 !====
 ! 2. DEPLACEMENT, VITESSE ET ACCELERATIONS A
 !====
-    do 21 , ieq = 1,neq
-    depla(ieq) = 0.d0
-    vitea(ieq) = 0.d0
-    accea(ieq) = 0.d0
-    21 end do
+    depla(1:neq) = 0.d0
+    vitea(1:neq) = 0.d0
+    accea(1:neq) = 0.d0
 !
     if (lmodst) then
 !
@@ -217,9 +219,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq,&
 !====
 ! 3.
 !====
-    do 31 , ieq = 1,neq
-    vite(ieq) = vit0(ieq)
-    31 end do
+    do ieq = 1,neq
+        vite(ieq) = vit0(ieq)
+    end do
     if (lmodst) then
         do 32 , ieq = 1,neq
         vien(ieq) = vitea(ieq)

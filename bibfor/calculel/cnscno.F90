@@ -46,6 +46,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 #include "asterfort/jexnum.h"
 #include "asterfort/pteequ.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -93,7 +94,7 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     integer :: icmp, nec, jcnsv, jcnsl, gd, iexi, ncmp, jcorr2
     integer :: reste, iec, code, nbno
     integer :: ncmpmx, jrefe, ncmp1, neq2, jcmpgd, icmp1, k, ieq2, iexi2, nbec
-    integer :: jprn2, ino, idg2, ico, jdesc, jvale, iret, n1
+    integer :: jprn2, ino, idg2, ico, jvale, iret, n1
     integer :: lshift, nuprf
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp
@@ -243,23 +244,14 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !       POUR DES RAISONS DE PERFORMANCES, IL VAUT MIEUX LE
 !       FAIRE PLUTARD.
     endif
+    call jelira(prchno//'.NUEQ', 'LONMAX', neq2)
 !
+! - Create node field
 !
-!     4- ON CREE LE .REFE :
-!     ------------------------
-    call wkvect(cno//'.REFE', base//' V K24', 4, jrefe)
-    zk24(jrefe-1+1)=ma
-    zk24(jrefe-1+2)=prchno
-    zk24(jrefe-1+3)=' '
-    zk24(jrefe-1+4)=' '
-!
-!
-!     5- ON CREE LE .DESC :
-!     ------------------------
-    call wkvect(cno//'.DESC', base//' V I', 2, jdesc)
-    call jeecra(cno//'.DESC', 'DOCU', cval='CHNO')
-    zi(jdesc-1+1)=gd
-    zi(jdesc-1+2)=1
+    call vtcreb(cno, base, tsca,&
+                meshz = ma, prof_chnoz = prchno, idx_gdz = gd, nb_equa_inz = neq2)
+    call jeveuo(cno//'.REFE','E',jrefe)
+    call jeveuo(cno//'.VALE','E',jvale)
 !
 !
 !     5-BIS ON CREE SI NECESSAIRE LE .DEEQ DU PROF_CHNO
@@ -283,11 +275,10 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     endif
 !
 !
-!     6- ON CREE ET ON REMPLIT LE .VALE :
+!     6- ON REMPLIT LE .VALE :
 !     -----------------------------------
-    call jelira(prchno//'.NUEQ', 'LONMAX', neq2)
+
     call jeveuo(prchno//'.DEEQ', 'L', vi=deeq)
-    call wkvect(cno//'.VALE', base//' V '//tsca, neq2, jvale)
 !
     do ieq2 = 1, neq2
         ino=deeq(2*(ieq2-1)+1)

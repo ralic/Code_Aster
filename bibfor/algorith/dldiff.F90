@@ -150,7 +150,8 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     call wkvect('&&DLDIFF.F0', 'V V R', neq, iwk0)
     call wkvect('&&DLDIFF.F1', 'V V R', neq, iwk1)
     call wkvect('&&DLDIFF.F2', 'V V R', neq, iwk2)
-    call vtcreb('&&DLDIFF.DEPL1', numedd, 'V', 'R', neq)
+    call vtcreb('&&DLDIFF.DEPL1', 'V', 'R',&
+                nume_ddlz = numedd)
     call jeveuo('&&DLDIFF.DEPL1     '//'.VALE', 'E', vr=vale)
     call wkvect('&&DLDIFF.VITE1', 'V V R', neq, ivite1)
     call wkvect('&&DLDIFF.VITE2', 'V V R', neq, ivite2)
@@ -213,15 +214,15 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ALGORITH3_14')
     endif
-    do 16 , iexcl = 1,nbexcl
-    if (typ1(iexcl) .eq. 'DEPL') then
-        typear(1) = '    '
-    else if (typ1(iexcl).eq.'VITE') then
-        typear(2) = '    '
-    else if (typ1(iexcl).eq.'ACCE') then
-        typear(3) = '    '
-    endif
-    16 end do
+    do iexcl = 1,nbexcl
+        if (typ1(iexcl) .eq. 'DEPL') then
+            typear(1) = '    '
+        else if (typ1(iexcl).eq.'VITE') then
+            typear(2) = '    '
+        else if (typ1(iexcl).eq.'ACCE') then
+            typear(3) = '    '
+        endif
+    end do
 !
 ! 1.7. ==> --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
 !
@@ -232,16 +233,16 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     if (lamort) write(ifm,*)'! LA MATRICE D''AMORTISSEMENT EST : ',amort
     write(ifm,*) '! LE NB D''EQUATIONS EST          : ',neq
     if (nume .ne. 0) write(ifm,*)'! REPRISE A PARTIR DU NUME_ORDRE  : ',nume
-    do 17 , igrpa = 1,nbgrpa
-    dt = zr(jlpas-1+igrpa)
-    nbptpa = zi(jnbpa-1+igrpa)
-    t0 = zr(jbint-1+igrpa)
-    tf = t0 + nbptpa*dt
-    write(ifm,*)'! L''INSTANT INITIAL EST        : ',t0
-    write(ifm,*)'! L''INSTANT FINAL EST          : ',tf
-    write(ifm,*)'! LE PAS DE TEMPS DU CALCUL EST : ',dt
-    write(ifm,*)'! LE NB DE PAS DE CALCUL EST    : ',nbptpa
-    17 end do
+    do igrpa = 1,nbgrpa
+        dt = zr(jlpas-1+igrpa)
+        nbptpa = zi(jnbpa-1+igrpa)
+        t0 = zr(jbint-1+igrpa)
+        tf = t0 + nbptpa*dt
+        write(ifm,*)'! L''INSTANT INITIAL EST        : ',t0
+        write(ifm,*)'! L''INSTANT FINAL EST          : ',tf
+        write(ifm,*)'! LE PAS DE TEMPS DU CALCUL EST : ',dt
+        write(ifm,*)'! LE NB DE PAS DE CALCUL EST    : ',nbptpa
+    end do
     write(ifm,*) '----------------------------------------------',' '
 !
 !====
@@ -271,94 +272,94 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
     call uttcpu('CPU.DLDIFF.1', 'INIT', ' ')
     call uttcpu('CPU.DLDIFF.2', 'INIT', ' ')
 !
-    do 31 , igrpa = 1,nbgrpa
+    do igrpa = 1,nbgrpa
 !
 ! 3.1.1. ==> PREALABLES
 !
-    call uttcpu('CPU.DLDIFF.1', 'DEBUT', ' ')
-    dt = zr(jlpas-1+igrpa)
-    nbptpa = zi(jnbpa-1+igrpa)
-    t0 = zr(jbint-1+igrpa)
-    tf = zr(jbint+igrpa)
+        call uttcpu('CPU.DLDIFF.1', 'DEBUT', ' ')
+        dt = zr(jlpas-1+igrpa)
+        nbptpa = zi(jnbpa-1+igrpa)
+        t0 = zr(jbint-1+igrpa)
+        tf = zr(jbint+igrpa)
 !
 ! 3.1.2. ==> VERIFICATION DU PAS DE TEMPS
 !
-    call extdia(rigid, numedd, 2, zr(iwk2))
-    ibid=0
-    dtmax=dt
-    do ieq = 1, neq
-        if (zr(iwk1+ieq-1) .ne. 0.d0) then
-            omeg = sqrt( zr(iwk2+ieq-1) * zr(iwk1+ieq-1) )
-            dtm = 5.d-02*deuxpi/omeg
-            if (dtmax .gt. dtm) then
-                dtmax=dtm
-                ibid=1
+        call extdia(rigid, numedd, 2, zr(iwk2))
+        ibid=0
+        dtmax=dt
+        do ieq = 1, neq
+            if (zr(iwk1+ieq-1) .ne. 0.d0) then
+                omeg = sqrt( zr(iwk2+ieq-1) * zr(iwk1+ieq-1) )
+                dtm = 5.d-02*deuxpi/omeg
+                if (dtmax .gt. dtm) then
+                    dtmax=dtm
+                    ibid=1
+                endif
             endif
-        endif
-    end do
+        end do
 !
-    if (ibid .eq. 1) then
-        vali(1) = nint((tf-t0)/dtmax)
-        vali(2) = igrpa
-        valr(1) = dt
-        valr(2) = dtmax
-        call utmess('F', 'DYNAMIQUE_12', ni=2, vali=vali, nr=2,&
-                    valr=valr)
-    endif
+        if (ibid .eq. 1) then
+            vali(1) = nint((tf-t0)/dtmax)
+            vali(2) = igrpa
+            valr(1) = dt
+            valr(2) = dtmax
+            call utmess('F', 'DYNAMIQUE_12', ni=2, vali=vali, nr=2,&
+                        valr=valr)
+        endif
 ! ==> FIN DE VERIFICATION
 !
 !
 ! 3.1.3. ==> BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
 !
-    do 313 , ipepa = 1 , nbptpa
-    ipas = ipas+1
-    if (ipas .gt. npatot) goto 3900
-    istoc = 0
-    temps = t0 + dt*ipepa
-    call uttcpu('CPU.DLDIFF.2', 'DEBUT', ' ')
-    archiv = zi(jstoc+ipas-1)
+        do ipepa = 1 , nbptpa
+            ipas = ipas+1
+            if (ipas .gt. npatot) goto 99
+            istoc = 0
+            temps = t0 + dt*ipepa
+            call uttcpu('CPU.DLDIFF.2', 'DEBUT', ' ')
+            archiv = zi(jstoc+ipas-1)
 !
-    call dldif0(result, force1, neq, istoc, iarchi,&
-                ifm, lamort, imat, masse, rigid,&
-                amort, dep0, vit0, acc0, vale,&
-                zr(ivite1), zr(iacce1), zr(ivite2), fexte(1), famor(1),&
-                fliai(1), nchar, nveca, liad, lifo,&
-                modele, ener, solveu, mate, carele,&
-                charge, infoch, fomult, numedd, dt,&
-                temps, zr(iwk0), zr(iwk1), archiv, nbtyar,&
-                typear, numrep)
+            call dldif0(result, force1, neq, istoc, iarchi,&
+                        ifm, lamort, imat, masse, rigid,&
+                        amort, dep0, vit0, acc0, vale,&
+                        zr(ivite1), zr(iacce1), zr(ivite2), fexte(1), famor(1),&
+                        fliai(1), nchar, nveca, liad, lifo,&
+                        modele, ener, solveu, mate, carele,&
+                        charge, infoch, fomult, numedd, dt,&
+                        temps, zr(iwk0), zr(iwk1), archiv, nbtyar,&
+                        typear, numrep)
 !
 ! 3.5. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
 !
-    call uttcpu('CPU.DLDIFF.2', 'FIN', ' ')
-    call uttcpr('CPU.DLDIFF.2', 4, tps2)
-    if (tps2(1) .lt. 5.d0 .or. tps2(4) .gt. tps2(1)) then
-        if (ipepa .ne. npatot) then
+            call uttcpu('CPU.DLDIFF.2', 'FIN', ' ')
+            call uttcpr('CPU.DLDIFF.2', 4, tps2)
+            if (tps2(1) .lt. 5.d0 .or. tps2(4) .gt. tps2(1)) then
+                if (ipepa .ne. npatot) then
+                    istop = 1
+                    vali(1) = igrpa
+                    vali(2) = ipepa
+                    valr(1) = tps2(4)
+                    valr(2) = tps2(1)
+                    goto 99
+                endif
+            endif
+!
+! ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
+        end do
+        call uttcpu('CPU.DLDIFF.1', 'FIN', ' ')
+        call uttcpr('CPU.DLDIFF.1', 4, tps1)
+        if (tps1(1) .lt. 5.d0 .and. igrpa .ne. nbgrpa) then
             istop = 1
             vali(1) = igrpa
             vali(2) = ipepa
-            valr(1) = tps2(4)
-            valr(2) = tps2(1)
-            goto 3900
+            valr(1) = tps1(4)
+            valr(2) = tps1(1)
+            goto 99
         endif
-    endif
-!
-! ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
-    313     end do
-    call uttcpu('CPU.DLDIFF.1', 'FIN', ' ')
-    call uttcpr('CPU.DLDIFF.1', 4, tps1)
-    if (tps1(1) .lt. 5.d0 .and. igrpa .ne. nbgrpa) then
-        istop = 1
-        vali(1) = igrpa
-        vali(2) = ipepa
-        valr(1) = tps1(4)
-        valr(2) = tps1(1)
-        goto 3900
-    endif
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
-    31 end do
+    end do
 !
-3900 continue
+99  continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -367,9 +368,9 @@ subroutine dldiff(result, force1, lcrea, lamort, neq,&
 !
     if (nbexcl .ne. 0) then
 !
-        do 41 , iexcl = 1,nbexcl
-        typear(iexcl) = typ1(iexcl)
- 41     continue
+        do iexcl = 1,nbexcl
+            typear(iexcl) = typ1(iexcl)
+        end do
 !
         alarm = 0
 !

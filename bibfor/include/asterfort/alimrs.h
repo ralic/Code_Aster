@@ -17,13 +17,13 @@
 !
 interface
     subroutine alimrs(mate, ma1, ma2, moint, ndble,&
-                      num, cn1, chno, cmp, icor)
+                      nume_ddl, cn1, chno, cmp, icor)
         character(len=*) :: mate
         character(len=8) :: ma1
         character(len=8) :: ma2
         character(len=*) :: moint
         integer :: ndble
-        character(len=14) :: num
+        character(len=14) :: nume_ddl
         character(len=19) :: cn1
         character(len=*) :: chno
         character(len=*) :: cmp

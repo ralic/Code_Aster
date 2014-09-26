@@ -59,35 +59,34 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !     -- CREATION DE CNCINE = 0. PARTOUT :
 !     --------------------------------------
     call exisd('CHAMP_GD', cncine, iret)
-    if (iret .eq. 0) call vtcreb(cncine, numedd, 'V', 'R', neq)
+    if (iret .eq. 0) then
+        call vtcreb(cncine, 'V', 'R', nume_ddlz = numedd, nb_equa_outz = neq)
+    endif    
     call jelira(cncine(1:19)//'.VALE', 'LONMAX', ival=neq)
     call jelira(depmoi(1:19)//'.VALE', 'LONMAX', ival=neq2)
     ASSERT(neq.eq.neq2)
     call jeveuo(cncine(1:19)//'.VALE', 'E', vr=vale)
-    do 2 ieq = 1, neq
-        vale(ieq)=0.d0
-  2 end do
 !
 !
 !     -- Y-A-T-IL DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
     lvcine=.false.
     call jeveuo(infoch, 'L', jinfc)
-    do 10 ichar = 1, zi(jinfc)
+    do ichar = 1, zi(jinfc)
         if (zi(jinfc+ichar) .lt. 0) lvcine=.true.
- 10 end do
+    end do
 !
 !     -- Y-A-T-IL DES CHARGES CONTENANT DES CHARGES CINEMATIQUES ?
 !     -----------------------------------------------------------------
     call jeveuo(charge, 'L', jlchar)
     call jelira(charge, 'LONMAX', ival=nbchar)
-    do 11 ichar = 1, nbchar
+    do ichar = 1, nbchar
         char1=zk24(jlchar-1+ichar)(1:8)
- 11 end do
+    end do
 !
 !     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, IL N'Y A RIEN A FAIRE:
 !     -----------------------------------------------------------------
-    if (.not.lvcine) goto 9999
+    if (.not.lvcine) goto 999
 !
 !
 !     -- S'IL Y A DES CHARGES CINEMATIQUES :
@@ -108,11 +107,11 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
 !     ---------------------------------------------------------
     call copisd('CHAMP_GD', 'V', depmoi, cncinm)
     call jeveuo(cncinm(1:19)//'.VALE', 'E', vr=cncim)
-    do 1 ieq = 1, neq
+    do ieq = 1, neq
         if (dlci(ieq) .eq. 0) then
             cncim(ieq)=0.d0
         endif
-  1 end do
+    end do
 !
 !     DIFFERENCE UIMP+ - UIMP- :
 !     ---------------------------
@@ -130,7 +129,7 @@ subroutine nmcvci(charge, infoch, fomult, numedd, depmoi,&
     call detrsd('CHAM_NO', cncinm)
     call detrsd('CHAM_NO', cncinp)
 !
-9999 continue
+999 continue
     call jedema()
 !
 end subroutine

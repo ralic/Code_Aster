@@ -310,7 +310,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
         endif
-        call vtcreb(chamno, nume, 'G', 'R', neq)
+        call vtcreb(chamno, 'G', 'R',&
+                    nume_ddlz = nume,&
+                    nb_equa_outz = neq)
         call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
 !
 !       --- REMPLISSAGE DE L'OBJET .VALE DU CHAM_NO ---
@@ -343,7 +345,9 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !
 ! --- CHARGES SUIVEUSE (TYPE_CHARGE: 'SUIV')
             call detrsd('CHAMP_GD', bidon)
-            call vtcreb(bidon, nume, 'G', 'R', neq)
+            call vtcreb(bidon, 'G', 'R',&
+                        nume_ddlz = nume,&
+                        nb_equa_outz = neq)
             call vecgme(modele, carac, mater, charge, infoch,&
                         partps(1), chdepl, bidon, vecgmp, partps(1),&
                         compor, k24bid, ligrel, chvive, k24bid)

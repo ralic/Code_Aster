@@ -118,8 +118,11 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 !
     autoc1 = resoco(1:14)//'.REA1'
     autoc2 = resoco(1:14)//'.REA2'
-    call vtcreb(autoc1, numedd, 'V', 'R', neq)
-    call vtcreb(autoc2, numedd, 'V', 'R', neq)
+    call vtcreb(autoc1, 'V', 'R',&
+                nume_ddlz = numedd,&
+                nb_equa_outz = neq)
+    call vtcreb(autoc2, 'V', 'R',&
+                nume_ddlz = numedd)
     clreac = resoco(1:14)//'.REAL'
     call wkvect(clreac, 'V V L', 4, jclrea)
     zl(jclrea+1-1) = .false.
@@ -179,24 +182,28 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 ! --- INCREMENT DE SOLUTION SANS CORRECTION DU CONTACT
 !
     ddepl0 = resoco(1:14)//'.DEL0'
-    call vtcreb(ddepl0, numedd, 'V', 'R', neq)
+    call vtcreb(ddepl0, 'V', 'R',&
+                nume_ddlz = numedd)
 !
 ! --- INCREMENT DE SOLUTION ITERATION DE CONTACT
 !
     ddelt = resoco(1:14)//'.DDEL'
-    call vtcreb(ddelt, numedd, 'V', 'R', neq)
+    call vtcreb(ddelt, 'V', 'R',&
+                nume_ddlz = numedd)
 !
 ! --- INCREMENT DE SOLUTION APRES CORRECTION DU CONTACT
 !
     ddeplc = resoco(1:14)//'.DELC'
-    call vtcreb(ddeplc, numedd, 'V', 'R', neq)
+    call vtcreb(ddeplc, 'V', 'R',&
+                nume_ddlz = numedd)
 !
 ! --- INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS DE TEMPS
 ! --- SANS CORRECTION DU CONTACT
 !
     if (lctfd) then
         depl0 = resoco(1:14)//'.DEP0'
-        call vtcreb(depl0, numedd, 'V', 'R', neq)
+        call vtcreb(depl0, 'V', 'R',&
+                    nume_ddlz = numedd)
     endif
 !
 ! --- INCREMENT DE DEPLACEMENT CUMULE DEPUIS DEBUT DU PAS DE TEMPS
@@ -204,13 +211,15 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
 !
     if (lctfd) then
         deplc = resoco(1:14)//'.DEPC'
-        call vtcreb(deplc, numedd, 'V', 'R', neq)
+        call vtcreb(deplc, 'V', 'R',&
+                    nume_ddlz = numedd)
     endif
 !
 ! --- CHARGEMENT CINEMATIQUE NUL
 !
     cncin0 = resoco(1:14)//'.CIN0'
-    call vtcreb(cncin0, numedd, 'V', 'R', neq)
+    call vtcreb(cncin0, 'V', 'R',&
+                nume_ddlz = numedd)
 !
 ! --- CHAMPS POUR GCP
 !
@@ -222,7 +231,8 @@ subroutine cfcrsd(noma, numedd, defico, resoco)
         sgrprp = resoco(1:14)//'.SGPP'
         mum = resoco(1:14)//'.MUM'
         secmbr = resoco(1:14)//'.SECM'
-        call vtcreb(secmbr, numedd, 'V', 'R', neq)
+        call vtcreb(secmbr, 'V', 'R',&
+                    nume_ddlz = numedd)
         call wkvect(sgradm, 'V V R', ntpc, jsgram)
         call wkvect(sgradp, 'V V R', ntpc, jsgrap)
         call wkvect(sgrprm, 'V V R', ntpc, jsgprm)

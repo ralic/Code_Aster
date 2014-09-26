@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine harm75(nomres, typres, nomin, nomcmd, basemo)
+    subroutine harm75(nomres, typres, nomin, basemo)
         character(len=8) :: nomres
         character(len=16) :: typres
         character(len=8) :: nomin
-        character(len=16) :: nomcmd
         character(len=8) :: basemo
     end subroutine harm75
 end interface

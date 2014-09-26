@@ -1,10 +1,10 @@
-subroutine afchno(chamn, base, gran, noma, nbnoeu,&
-                  nbcpno, desc, lonval, typval, rval,&
+subroutine afchno(chamn, base, gran_name, mesh, nb_node,&
+                  nbcpno, desc, nb_equa, typval, rval,&
                   cval, kval)
     implicit none
 #include "jeveux.h"
 #include "asterfort/cmpcha.h"
-#include "asterfort/crchno.h"
+#include "asterfort/vtcreb.h"
 #include "asterfort/crprno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -20,7 +20,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
     integer :: nbcpno(*), desc(*)
     real(kind=8) :: rval(*)
     complex(kind=8) :: cval(*)
-    character(len=*) :: chamn, gran, noma, base, typval, kval(*)
+    character(len=*) :: chamn, gran_name, base, typval, kval(*), mesh
 !--------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,37 +42,38 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
 !
 !
-    character(len=19) :: chamno
+    character(len=19) :: chamno, prof_chno
     integer :: ncmp, ncmpmx, jcorr2
 !
 !-----------------------------------------------------------------------
     integer :: i1, ic, idec, iec, ii, inec
-    integer :: ino, jj, lnueq, lonval,  lvale, nbnoeu
-    integer :: nec, nn, numgd
+    integer :: ino, jj, lnueq, nb_equa, lvale, nb_node
+    integer :: nec, nn, idx_gd
     integer, pointer :: prno(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chamno = chamn
 !
-    call jenonu(jexnom('&CATA.GD.NOMGD', gran), numgd)
-    call jelira(jexnum('&CATA.GD.NOMCMP', numgd), 'LONMAX', ncmpmx)
-    call dismoi('NB_EC', gran, 'GRANDEUR', repi=nec)
+    call jenonu(jexnom('&CATA.GD.NOMGD', gran_name), idx_gd)
+    call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
+    call dismoi('NB_EC', gran_name, 'GRANDEUR', repi=nec)
 !
-!     --- CREATION DU CHAMP ---
+! - Create PROF_CHNO
 !
-    call crchno(chamno, chamno, gran, noma, base,&
-                typval, nbnoeu, lonval)
+    prof_chno = chamno(1:19)
+    call crprno(prof_chno, base, mesh, gran_name, nb_equa)
 !
-!     --- CONSTRUCTION DU PROF_CHNO ---
+! - Create NODE field
 !
-    call crprno(chamno, base, noma, gran, lonval)
+    call vtcreb(chamno      , base                  , typval,&
+                meshz = mesh, prof_chnoz = prof_chno, idx_gdz = idx_gd, nb_equa_inz = nb_equa)
 !
 !     --- AFFECTATION DU .PRNO DE L'OBJET PROF_CHNO ---
 !
     call jeveuo(chamno//'.PRNO', 'E', vi=prno)
     ii = 0
     idec = 1
-    do ino = 1, nbnoeu
+    do ino = 1, nb_node
         prno((nec+2)*(ino-1)+1) = idec
         prno((nec+2)*(ino-1)+2) = nbcpno(ino)
         do inec = 1, nec
@@ -86,7 +87,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
     call jeveuo(chamno//'.VALE', 'E', lvale)
     call jeveuo(chamno//'.NUEQ', 'E', lnueq)
-    do ino = 1, nbnoeu
+    do ino = 1, nb_node
         i1 = prno((nec+2)*(ino-1)+1) + lnueq - 1
         do ic = 1, ncmpmx
             iec = ( ic - 1 ) / 30 + 1
@@ -111,7 +112,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
     call cmpcha(chamno, '&&AFCHNO.NOMCMP', '&&AFCHNO.CORR1', '&&AFCHNO.CORR2', ncmp,&
                 ncmpmx)
     call jeveuo('&&AFCHNO.CORR2', 'L', jcorr2)
-    call pteequ(chamno, base, lonval, numgd, ncmp,&
+    call pteequ(chamno, base, nb_equa, idx_gd, ncmp,&
                 zi(jcorr2))
     call jedetr('&&AFCHNO.NOMCMP')
     call jedetr('&&AFCHNO.CORR1')

@@ -120,13 +120,13 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
     call dismoi('NUM_GD_SI', nume, 'NUME_DDL', repi=gd)
-    if (interf .eq. ' ') call vtcreb(nomch0, nume, 'V', 'R', neq)
+    if (interf .eq. ' ') call vtcreb(nomch0, 'V', 'R', nume_ddlz = nume, nb_equa_outz = neq)
 !CC
 !     ----- DEBUT DES IMPRESSIONS DE MISS3D -----
 !CC
 !
-    write(ifmis,1200) 'DYNA', nbmode, typi
-    write(ifmis,1200) 'STAT', nbmods, typi
+    write(ifmis,120) 'DYNA', nbmode, typi
+    write(ifmis,120) 'STAT', nbmods, typi
     nbmodt = nbmode + nbmods
 !
     if (nti .ne. 0) then
@@ -267,18 +267,18 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !
     nbno = 0
     do ij = 1, nbnoeu
-        if (parno(ij) .eq. 0) goto 105
-        nbno = nbno + 1
-105     continue
+        if (parno(ij) .ne. 0) then
+            nbno = nbno + 1
+        endif
     end do
 !
     AS_ALLOCATE(vi=noeud, size=nbno)
     ii = 0
     do ij = 1, nbnoeu
-        if (parno(ij) .eq. 0) goto 106
-        ii = ii + 1
-        noeud(ii) = ij
-106     continue
+        if (parno(ij) .ne. 0) then
+            ii = ii + 1
+            noeud(ii) = ij
+        endif
     end do
 !
 !
@@ -428,9 +428,9 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
                 iddl0 = iddl+1
                 if (iddl0 .eq. 0) then
-                    write(ifmis,1100) zero,zero,zero,zero,zero,zero
+                    write(ifmis,110) zero,zero,zero,zero,zero,zero
                 else
-                    write(ifmis,1100) ( vect1(1+iddl+ic-1), ic=1,&
+                    write(ifmis,110) ( vect1(1+iddl+ic-1), ic=1,&
                     ncmp )
                 endif
             end do
@@ -438,18 +438,18 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     endif
 !
     if (formim .eq. '1PE16.9') then
-        write(ifmis,1000) 'DYNA FREQ', ( freq(k) , k=1,nbmode )
-        write(ifmis,1000) 'DYNA AMOR', ( amored(k) , k=1,nbmode )
-        write(ifmis,1000) 'DYNA MASS',(mass(k+(k-1)*nbmode), k=1,&
+        write(ifmis,100) 'DYNA FREQ', ( freq(k) , k=1,nbmode )
+        write(ifmis,100) 'DYNA AMOR', ( amored(k) , k=1,nbmode )
+        write(ifmis,100) 'DYNA MASS',(mass(k+(k-1)*nbmode), k=1,&
         nbmode)
-        write(ifmis,1000) 'DYNA RIGI',(rigi(k+(k-1)*nbmode), k=1,&
+        write(ifmis,100) 'DYNA RIGI',(rigi(k+(k-1)*nbmode), k=1,&
         nbmode)
     else
-        write(ifmis,1300) 'DYNA FREQ', ( freq(k) , k=1,nbmode )
-        write(ifmis,1300) 'DYNA AMOR', ( amored(k) , k=1,nbmode )
-        write(ifmis,1300) 'DYNA MASS',(mass(k+(k-1)*nbmode), k=1,&
+        write(ifmis,130) 'DYNA FREQ', ( freq(k) , k=1,nbmode )
+        write(ifmis,130) 'DYNA AMOR', ( amored(k) , k=1,nbmode )
+        write(ifmis,130) 'DYNA MASS',(mass(k+(k-1)*nbmode), k=1,&
         nbmode)
-        write(ifmis,1300) 'DYNA RIGI',(rigi(k+(k-1)*nbmode), k=1,&
+        write(ifmis,130) 'DYNA RIGI',(rigi(k+(k-1)*nbmode), k=1,&
         nbmode)
     endif
 !
@@ -464,41 +464,41 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
                 ncmp = zi( aprno + (nec+2)*(inoe-1) + 2 - 1 )
                 iddl0 = iddl+1
                 if (iddl0 .eq. 0) then
-                    write(ifmis,1100) zero,zero,zero,zero,zero,zero
+                    write(ifmis,110) zero,zero,zero,zero,zero,zero
                 else
-                    write(ifmis,1100) ( vect2(1+iddl+ic-1) , ic=1,&
+                    write(ifmis,110) ( vect2(1+iddl+ic-1) , ic=1,&
                     ncmp )
                 endif
             end do
         end do
     endif
     if (formim .eq. '1PE16.9') then
-        write(ifmis,1000) 'STAT MASS', ((smass(k+(l-1)*nbmods),k=1,&
+        write(ifmis,100) 'STAT MASS', ((smass(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmods)
-        write(ifmis,1000) 'STAT RIGI' , ((srigi(k+(l-1)*nbmods),k=1,&
+        write(ifmis,100) 'STAT RIGI' , ((srigi(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmods)
-        if (lamor) write(ifmis, 1000) 'STAT AMOR',&
+        if (lamor) write(ifmis, 100) 'STAT AMOR',&
                    ((samor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmods)
         write(ifmis,'(''COUPL'',2(1X,I6))') nbmode,nbmods
-        write(ifmis,1000) 'COUPL MASS' , ((cmass(k+(l-1)*nbmods),k=1,&
+        write(ifmis,100) 'COUPL MASS' , ((cmass(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmode)
-        write(ifmis,1000) 'COUPL RIGI' , ((crigi(k+(l-1)*nbmods),k=1,&
+        write(ifmis,100) 'COUPL RIGI' , ((crigi(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmode)
-        if (lamor) write(ifmis, 1000) 'COUPL AMOR',&
+        if (lamor) write(ifmis, 100) 'COUPL AMOR',&
                    ((camor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmode)
     else
-        write(ifmis,1300) 'STAT MASS', ((smass(k+(l-1)*nbmods),k=1,&
+        write(ifmis,130) 'STAT MASS', ((smass(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmods)
-        write(ifmis,1300) 'STAT RIGI' , ((srigi(k+(l-1)*nbmods),k=1,&
+        write(ifmis,130) 'STAT RIGI' , ((srigi(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmods)
-        if (lamor) write(ifmis, 1300) 'STAT AMOR',&
+        if (lamor) write(ifmis, 130) 'STAT AMOR',&
                    ((samor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmods)
         write(ifmis,'(''COUPL'',2(1X,I6))') nbmode,nbmods
-        write(ifmis,1300) 'COUPL MASS' , ((cmass(k+(l-1)*nbmods),k=1,&
+        write(ifmis,130) 'COUPL MASS' , ((cmass(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmode)
-        write(ifmis,1300) 'COUPL RIGI' , ((crigi(k+(l-1)*nbmods),k=1,&
+        write(ifmis,130) 'COUPL RIGI' , ((crigi(k+(l-1)*nbmods),k=1,&
         nbmods),l=1,nbmode)
-        if (lamor) write(ifmis, 1300) 'COUPL AMOR',&
+        if (lamor) write(ifmis, 130) 'COUPL AMOR',&
                    ((camor(k+(l-1)* nbmods), k=1, nbmods), l=1, nbmode)
     endif
 !
@@ -512,10 +512,10 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !     ----- FIN DES IMPRESSIONS DE MISS3D -----
 !CC
 !
-    1000 format(a,/,4(2x,1p,d16.9) )
-    1100 format( 6(1x,1p,d12.5) )
-    1200 format( a4, 1x, i6, 1x, a8 )
-    1300 format(a,/,6(1x,1p,d12.5) )
+100 format(a,/,4(2x,1p,d16.9) )
+110 format( 6(1x,1p,d12.5) )
+120 format( a4, 1x, i6, 1x, a8 )
+130 format(a,/,6(1x,1p,d12.5) )
 !
 !
 ! --- MENAGE

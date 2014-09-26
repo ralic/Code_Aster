@@ -272,7 +272,9 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
                     ier)
         if (ier .eq. 0) then
         else if (ier .eq. 100 .and. lrefd) then
-            call vtcreb(chamno, nume, 'G', type(1:1), neq)
+            call vtcreb(chamno, 'G', type(1:1),&
+                        nume_ddlz = nume,&
+                        nb_equa_outz = neq)
         else
             vali (1) = kmode
             vali (2) = jmode

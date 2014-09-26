@@ -78,7 +78,7 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
     character(len=24) :: resuel
     character(len=8) :: newnom, modele, typech, typsca
     integer :: ivach, nbvach
-    integer :: neq, nbvec
+    integer :: nbvec
     integer :: iret, ibid, ivec, ichar, ityprs
     character(len=4) :: tyresl
     character(len=1) :: typchn
@@ -133,7 +133,8 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
         call corich('E', chamno, -2, ibid)
-        call vtcreb(chamno, numedd, 'V', typres, neq)
+        call vtcreb(chamno, 'V', typres,&
+                    nume_ddlz = numedd)
         zk24(jvacha-1+1) = chamno
         goto 99
     endif
@@ -196,7 +197,8 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
             call lisltc(lischa, ichar, typech)
             typchn = 'R'
             if (typech .eq. 'COMP') typchn = 'C'
-            call vtcreb(chamno, numedd, 'V', typchn, neq)
+            call vtcreb(chamno, 'V', typchn,&
+                        nume_ddlz = numedd)
             call vtcopy(resuel, chamno, 'F', ibid)
         endif
 !

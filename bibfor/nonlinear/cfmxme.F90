@@ -58,7 +58,7 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 ! ----------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: neq, ntpc
+    integer :: ntpc
     aster_logical :: ldyna, lnoeu
     character(len=24) :: mdecol, etatct
     integer :: jmdeco, jetat
@@ -81,7 +81,6 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
 !
 ! --- INITIALISATIONS
 !
-    call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     ntpc = cfdisi(defico,'NTPC' )
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
 !
@@ -106,8 +105,10 @@ subroutine cfmxme(numedd, sddyna, defico, resoco)
     if (ldyna) then
         vitini = resoco(1:14)//'.VITI'
         accini = resoco(1:14)//'.ACCI'
-        call vtcreb(vitini, numedd, 'V', 'R', neq)
-        call vtcreb(accini, numedd, 'V', 'R', neq)
+        call vtcreb(vitini, 'V', 'R',&
+                    nume_ddlz = numedd)
+        call vtcreb(accini, 'V', 'R',&
+                    nume_ddlz = numedd)
     endif
 !
 ! --- OBJET DE SAUVEGARDE DE L ETAT DE CONTACT

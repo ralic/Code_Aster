@@ -89,7 +89,7 @@ subroutine macr78(nomres, trange, typres)
      &               'DRX     ','DRY     ','DRZ     '/
 !     ------------------------------------------------------------------
     call jemarq()
-    nomin = trange
+    nomin = trange(1:8)
 !      TYPRES = 'DYNA_TRANS'
     call gettco(nomin, concep)
 !
@@ -102,7 +102,7 @@ subroutine macr78(nomres, trange, typres)
 !      IF (TREDU.EQ.'OUI') LREDU = .TRUE.
     call getvid(' ', 'MACR_ELEM_DYNA', scal=macrel, nbret=nmc)
     call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
-    basemo = mael_refe(1)
+    basemo = mael_refe(1)(1:8)
     call rsorac(basemo, 'LONUTI', 0, rbid, k8b,&
                 cbid, rbid, k8b, tmod, 1,&
                 ibid)
@@ -259,7 +259,9 @@ subroutine macr78(nomres, trange, typres)
             end do
             call rsexch(' ', nomres, champ(i)(1:4), iarch, chamno,&
                         iret)
-            call vtcreb(chamno, numedd, 'G', 'R', neq)
+            call vtcreb(chamno, 'G', 'R',&
+                        nume_ddlz = numedd,&
+                        nb_equa_outz = neq)
             call jeveuo(chamno(1:19)//'.VALE', 'E', ldnew)
             call mdgeph(neq, nbmode, base, restr, zr(ldnew))
             call rsnoch(nomres, champ(i)(1:4), iarch)

@@ -153,7 +153,7 @@ subroutine op0075()
     else if (concep(1:9).eq.'HARM_GENE') then
         if (prsimp) then
 !         --- SANS SOUS STRUCTURATION
-            call harm75(nomres, typres, resin, nomcmd, blanc8)
+            call harm75(nomres, typres, resin, blanc8)
 !
         else if (typrep(1:9).eq.'MODE_GENE') then
 !         --- AVEC SOUS STRUCTURATION, RECUPERER LA BASE MODALE
@@ -162,7 +162,7 @@ subroutine op0075()
                 call utmess('F', 'ALGORITH9_48')
             endif
 !
-            call harm75(nomres, typres, resin, nomcmd, mode)
+            call harm75(nomres, typres, resin, mode)
 !
         else
 !         --- BLINDAGE : VOIR REMARQUE 1

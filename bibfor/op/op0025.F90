@@ -62,7 +62,7 @@ subroutine op0025()
 !
     integer :: vali
     integer :: ifm, niv, iret
-    integer :: neq, numins
+    integer :: numins
     integer :: parmei(2), parcri(3)
 !
     real(kind=8) :: parmer(2), parcrr(2), para(2), valr(2)
@@ -166,7 +166,7 @@ subroutine op0025()
 !
 ! 2.6. ==> CREATION DES STRUCTURES
 !
-    call vtcreb(vec2nd, numedd, 'V', 'R', neq)
+    call vtcreb(vec2nd, 'V', 'R', nume_ddlz = numedd)
 !
 !====
 ! 3. BOUCLES SUR LES PAS DE TEMPS

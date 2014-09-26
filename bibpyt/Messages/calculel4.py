@@ -340,10 +340,6 @@ Conseil :
   Remarque : ces mots clés sont peut être inutiles pour cette utilisation de CREA_CHAMP.
 """),
 
-79 : _(u"""
- La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.
-"""),
-
 80 : _(u"""
  le nom de la grandeur  %(k1)s  ne respecte pas le format XXXX_c
 """),

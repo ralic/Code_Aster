@@ -66,7 +66,7 @@ subroutine op0183()
     integer :: jfo, jinfc
     integer :: jordr
     integer :: lonch, lvafon, n0, n2, nbchar
-    integer :: nbddl, nbordr, nc, neq, nh, np
+    integer :: nbddl, nbordr, nc, nh, np
     integer :: ii, ltps, ltps2
     real(kind=8) :: time, prec, partps(3)
 !
@@ -313,7 +313,7 @@ subroutine op0183()
             call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
         endif
-        call vtcreb(chamno, nume, 'G', 'R', neq)
+        call vtcreb(chamno, 'G', 'R', nume_ddlz=nume)
         call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
 !
         call jeveuo(vafono, 'L', jfo)

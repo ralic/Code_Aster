@@ -227,7 +227,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         call jenuno(jexnum('&CATA.TE.NOMTE', itypel), nomte)
         if ((nomte(1:9).eq.'MEFA_FACE') .or. (nomte(1:6).eq.'MEFASE')) then
             repk = 'OUI'
-            goto 1039
+            goto 10
         endif
     end do
 !
@@ -235,7 +235,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         limped = .false.
     endif
 !
-1039 continue
+10  continue
 !
 ! 1.4. ==> ???
 !
@@ -251,13 +251,21 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
 ! 1.5. ==> CREATION D'UN CHAMP_NO POUR LA VITESSE INITIALE
 !
-    call vtcreb(vitini, numedd, 'V', 'R', neq)
+    call vtcreb(vitini, 'V', 'R',&
+                nume_ddlz = numedd,&
+                nb_equa_outz = neq)
+
     call jeveuo(vitini(1:19)//'.VALE', 'E', vr=vite)
-    call vtcreb(vitent, numedd, 'V', 'R', neq)
+    call vtcreb(vitent, 'V', 'R',&
+                nume_ddlz = numedd,&
+                nb_equa_outz = neq)
+
     call jeveuo(vitent(1:19)//'.VALE', 'E', vr=vien)
 !
 ! 1.6. ==> CREATION D'UN CHAMP_NO POUR L'AMORTISSEMENT MODAL
-    call vtcreb(famomo, numedd, 'V', 'R', neq)
+    call vtcreb(famomo, 'V', 'R',&
+                nume_ddlz = numedd,&
+                nb_equa_outz = neq)
     call jeveuo(famomo(1:19)//'.VALE', 'E', vr=fammo)
 !
 ! 1.7. ==> VECTEURS DE TRAVAIL SUR BASE VOLATILE ---
@@ -265,7 +273,10 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     call wkvect('&&'//nompro//'.F1', 'V V R', neq, iwk1)
     call wkvect('&&'//nompro//'.F2', 'V V R', neq, iwk2)
     call wkvect('&&'//nompro//'.FORCE2', 'V V R', neq, iforc2)
-    call vtcreb('&&'//nompro//'.DEPL1', numedd, 'V', 'R', neq)
+    call vtcreb('&&'//nompro//'.DEPL1', 'V', 'R',&
+                nume_ddlz = numedd,&
+                nb_equa_outz = neq)
+
     call jeveuo('&&'//nompro//'.DEPL1     '//'.VALE', 'E', vr=epl1)
     call wkvect('&&'//nompro//'.VITE1', 'V V R', neq, ivite1)
     call wkvect('&&'//nompro//'.ACCE1', 'V V R', neq, iacce1)
@@ -282,12 +293,12 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !    Verification de presence des modes_statiques
     call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
     call getfac('EXCIT', nbexci)
-    do 69 , iexci = 1,nbexci
-    call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
-    if (k8b .eq. 'OUI' .and. nbv .eq. 0) then
-        call utmess('F', 'ALGORITH13_46')
-    endif
- 69 continue
+    do iexci = 1,nbexci
+        call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
+        if (k8b .eq. 'OUI' .and. nbv .eq. 0) then
+            call utmess('F', 'ALGORITH13_46')
+        endif
+    end do
 !
 ! 1.8. ==> ???
 !
@@ -304,22 +315,22 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         call wkvect('&&'//nompro//'.FACC', 'V V K8', nbexci, jnoacc)
         call wkvect('&&'//nompro//'.MLTP', 'V V I', nbexci, jmltap)
         call wkvect('&&'//nompro//'.IPSD', 'V V R', nbexci*neq, jpsdel)
-        do 108 , iexci = 1,nbexci
+        do iexci = 1,nbexci
 !     --- CAS D'UN ACCELEROGRAMME
-        call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
-        if (k8b .eq. 'OUI') then
-            zi(jmltap+iexci-1) = 1
-            call getvid('EXCIT', 'ACCE', iocc=iexci, scal=zk8(jnoacc+ iexci-1), nbret=na)
-            call getvid('EXCIT', 'VITE', iocc=iexci, scal=zk8(jnovit+ iexci-1), nbret=nv)
-            call getvid('EXCIT', 'DEPL', iocc=iexci, scal=zk8(jnodep+ iexci-1), nbret=nd)
-            call trmult(modsta, iexci, mailla, neq, iddeeq,&
-                        zr(jpsdel+ (iexci-1)*neq))
+            call getvtx('EXCIT', 'MULT_APPUI', iocc=iexci, scal=k8b, nbret=nd)
+            if (k8b .eq. 'OUI') then
+                zi(jmltap+iexci-1) = 1
+                call getvid('EXCIT', 'ACCE', iocc=iexci, scal=zk8(jnoacc+ iexci-1), nbret=na)
+                call getvid('EXCIT', 'VITE', iocc=iexci, scal=zk8(jnovit+ iexci-1), nbret=nv)
+                call getvid('EXCIT', 'DEPL', iocc=iexci, scal=zk8(jnodep+ iexci-1), nbret=nd)
+                call trmult(modsta, iexci, mailla, neq, iddeeq,&
+                            zr(jpsdel+ (iexci-1)*neq))
 !     --- MISE A ZERO DES DDL DE LAGRANGE
-            call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+ (iexci-1)*neq))
-        else
-            zi(jmltap+iexci-1) = 0
-        endif
-108     continue
+                call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+ (iexci-1)*neq))
+            else
+                zi(jmltap+iexci-1) = 0
+            endif
+        end do
     else
         jnodep = 1
         jnovit = 1
@@ -397,15 +408,15 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     if (nbexcl .eq. nbtyar) then
         call utmess('F', 'ALGORITH3_14')
     endif
-    do 112 , iexcl = 1,nbexcl
-    if (typ1(iexcl) .eq. 'DEPL') then
-        typear(1) = '    '
-    else if (typ1(iexcl).eq.'VITE') then
-        typear(2) = '    '
-    else if (typ1(iexcl).eq.'ACCE') then
-        typear(3) = '    '
-    endif
-    112 end do
+    do iexcl = 1,nbexcl
+        if (typ1(iexcl) .eq. 'DEPL') then
+            typear(1) = '    '
+        else if (typ1(iexcl).eq.'VITE') then
+            typear(2) = '    '
+        else if (typ1(iexcl).eq.'ACCE') then
+            typear(3) = '    '
+        endif
+    end do
 !
 ! 1.13. ==>  --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
 !
@@ -416,17 +427,17 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
     if (lamort) write (ifm,*) '! LA MATRICE D''AMORTISSEMENT EST : ', amort
     write (ifm,*) '! LE NB D''EQUATIONS EST          : ',neq
     if (nume .ne. 0) write (ifm,*) '! REPRISE A PARTIR DU NUME_ORDRE  : ',nume
-    do 113 , igrpa = 1,nbgrpa
-    dt = zr(jlpas-1+igrpa)
-    nbptpa = zi(jnbpa-1+igrpa)
-    t0 = zr(jbint-1+igrpa)
-    tf = t0 + nbptpa*dt
-    write (ifm,*) '! POUR LE GROUPE DE PAS NUMERO   : ',igrpa
-    write (ifm,*) '! L''INSTANT INITIAL EST         : ',t0
-    write (ifm,*) '! L''INSTANT FINAL EST           : ',tf
-    write (ifm,*) '! LE PAS DE TEMPS DU CALCUL EST  : ',dt
-    write (ifm,*) '! LE NB DE PAS DE CALCUL EST : ',nbptpa
-    113 end do
+    do igrpa = 1,nbgrpa
+        dt = zr(jlpas-1+igrpa)
+        nbptpa = zi(jnbpa-1+igrpa)
+        t0 = zr(jbint-1+igrpa)
+        tf = t0 + nbptpa*dt
+        write (ifm,*) '! POUR LE GROUPE DE PAS NUMERO   : ',igrpa
+        write (ifm,*) '! L''INSTANT INITIAL EST         : ',t0
+        write (ifm,*) '! L''INSTANT FINAL EST           : ',tf
+        write (ifm,*) '! LE PAS DE TEMPS DU CALCUL EST  : ',dt
+        write (ifm,*) '! LE NB DE PAS DE CALCUL EST : ',nbptpa
+    end do
     write (ifm,*) '----------------------------------------------',' '
 !
 !====
@@ -517,9 +528,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
         lcoef(2) = a0
         lcoef(3) = a1
 !
-        do 322 , ibmat = 1,nbmat
-        nmat(ibmat) = zk24(zi(imat(ibmat)+1))
-322     continue
+        do ibmat = 1,nbmat
+            nmat(ibmat) = zk24(zi(imat(ibmat)+1))
+        end do
         nmtres = zk24(zi(imtres+1))
         call mtcmbl(nbmat, typcst, lcoef, nmat, nmtres,&
                     nomddl, ' ', 'ELIM=')
@@ -530,51 +541,51 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
 ! 3.2.4. ==> BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
 !
-        do 324 , ipepa = 1,nbptpa
+        do ipepa = 1,nbptpa
 !
-        ipas = ipas + 1
-        if (ipas .gt. npatot) goto 3900
-        call uttcpu('CPU.DLNEWI.2', 'DEBUT', ' ')
-        istoc = 0
-        temps = t0 + dt*ipepa
-        tempm = t0 + dt* (ipepa-1)
-        archiv = zi(jstoc+ipas-1)
-        call dlnew0(result, force0, force1, iinteg, neq,&
-                    istoc, iarchi, ifm, nbexci, nondp,&
-                    nmodam, lamort, limped, lmodst, imat,&
-                    masse, rigid, amort, nchar, nveca,&
-                    liad, lifo, modele, mate, carele,&
-                    charge, infoch, fomult, numedd, zr(idepla),&
-                    zr(ivitea), zr(iaccea), dep0, vit0, acc0,&
-                    fexte, famor, fliai, epl1, zr(ivite1),&
-                    zr( iacce1), zr(jpsdel), fammo, zr(ifimpe), zr(ifonde),&
-                    vien, vite, zr(ivita1), zi(jmltap), a0,&
-                    a2, a3, a4, a5, a6,&
-                    a7, a8, c0, c1, c2,&
-                    c3, c4, c5, zk8(jnodep), zk8(jnovit),&
-                    zk8(jnoacc), matres, maprec, solveu, criter,&
-                    chondp, ener, vitini, vitent, valmod,&
-                    basmod, veanec, vaanec, vaonde, veonde,&
-                    dt, theta, tempm, temps, iforc2,&
-                    zr(iwk1), zr(iwk2), archiv, nbtyar, typear,&
-                    numrep)
+            ipas = ipas + 1
+            if (ipas .gt. npatot) goto 99
+            call uttcpu('CPU.DLNEWI.2', 'DEBUT', ' ')
+            istoc = 0
+            temps = t0 + dt*ipepa
+            tempm = t0 + dt* (ipepa-1)
+            archiv = zi(jstoc+ipas-1)
+            call dlnew0(result, force0, force1, iinteg, neq,&
+                        istoc, iarchi, ifm, nbexci, nondp,&
+                        nmodam, lamort, limped, lmodst, imat,&
+                        masse, rigid, amort, nchar, nveca,&
+                        liad, lifo, modele, mate, carele,&
+                        charge, infoch, fomult, numedd, zr(idepla),&
+                        zr(ivitea), zr(iaccea), dep0, vit0, acc0,&
+                        fexte, famor, fliai, epl1, zr(ivite1),&
+                        zr( iacce1), zr(jpsdel), fammo, zr(ifimpe), zr(ifonde),&
+                        vien, vite, zr(ivita1), zi(jmltap), a0,&
+                        a2, a3, a4, a5, a6,&
+                        a7, a8, c0, c1, c2,&
+                        c3, c4, c5, zk8(jnodep), zk8(jnovit),&
+                        zk8(jnoacc), matres, maprec, solveu, criter,&
+                        chondp, ener, vitini, vitent, valmod,&
+                        basmod, veanec, vaanec, vaonde, veonde,&
+                        dt, theta, tempm, temps, iforc2,&
+                        zr(iwk1), zr(iwk2), archiv, nbtyar, typear,&
+                        numrep)
 !
 !
 ! 3.2.5. ==> VERIFICATION DU TEMPS DE CALCUL RESTANT
 !
-        call uttcpu('CPU.DLNEWI.2', 'FIN', ' ')
-        call uttcpr('CPU.DLNEWI.2', 4, tps2)
-        if (tps2(1) .lt. 5.d0 .or. tps2(4) .gt. tps2(1)) then
-            istop = 1
-            vali(1) = igrpa
-            vali(2) = ipepa
-            valr(1) = tps2(4)
-            valr(2) = tps2(1)
-            goto 3900
-        endif
+            call uttcpu('CPU.DLNEWI.2', 'FIN', ' ')
+            call uttcpr('CPU.DLNEWI.2', 4, tps2)
+            if (tps2(1) .lt. 5.d0 .or. tps2(4) .gt. tps2(1)) then
+                istop = 1
+                vali(1) = igrpa
+                vali(2) = ipepa
+                valr(1) = tps2(4)
+                valr(2) = tps2(1)
+                goto 99
+            endif
 !
 ! ---------- FIN DE LA BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
-324     continue
+        end do
 !
         call uttcpu('CPU.DLNEWI.1', 'FIN', ' ')
         call uttcpr('CPU.DLNEWI.1', 4, tps1)
@@ -584,14 +595,14 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
             vali(2) = ipepa
             valr(1) = tps1(4)
             valr(2) = tps1(1)
-            goto 3900
+            goto 99
         endif
 !
 ! ------- FIN BOUCLE SUR LES GROUPES DE PAS DE TEMPS
 !
     end do
 !
-3900 continue
+99  continue
 !
 !====
 ! 4. ARCHIVAGE DU DERNIER INSTANT DE CALCUL POUR LES CHAMPS QUI ONT
@@ -600,9 +611,9 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort,&
 !
     if (nbexcl .ne. 0) then
 !
-        do 41 , iexcl = 1,nbexcl
-        typear(iexcl) = typ1(iexcl)
- 41     continue
+        do iexcl = 1,nbexcl
+            typear(iexcl) = typ1(iexcl)
+        end do
         alarm = 0
         call dlarch(result, neq, istoc, iarchi, ' ',&
                     alarm, ifm, temps, nbtyar, typear,&

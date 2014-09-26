@@ -115,16 +115,17 @@ subroutine calvci(nomci, nomnu, nbchci, lchci, inst,&
 !     ---------------------------------------------------------
     call detrsd('CHAMP_GD', vcine)
     call jedetr(vcine//'.DLCI')
-    call dismoi('NB_EQUA', nu, 'NUME_DDL', repi=neq)
     call dismoi('NOM_GD', nu, 'NUME_DDL', repk=gd)
     call dismoi('NOM_MAILLA', nu, 'NUME_DDL', repk=nomma)
     call jenonu(jexnom('&CATA.GD.NOMGD', gd), numgd)
     call jeveuo('&CATA.GD.TYPEGD', 'L', vk8=typegd)
-    typval = typegd(numgd)
+    typval = typegd(numgd)(1:1)
     call jeveuo(jexnum('&CATA.GD.DESCRIGD', numgd), 'L', iddes)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', numgd), 'L', jnocmp)
     nec = zi(iddes+2 )
-    call vtcreb(vcine, nu, base, typval, neq)
+    call vtcreb(vcine, base, typval,&
+                nume_ddlz = nomnu,&
+                nb_equa_outz = neq)
 !
 ! --- ALLOCATION DE VCINE.DLCI QUI SERVIRA DANS NMCVCI :
     call wkvect(vcine//'.DLCI', 'V V I', neq, jdlci)

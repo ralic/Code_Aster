@@ -187,7 +187,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !            Y AVOIR DES CHAM_NO (VECT_ASSE):
         knueq=nudev//'.NUME.NUEQ'
         call jelira(knueq, 'LONMAX', nequa)
-        call vtcreb(vecas, nu, bas, 'R', nequa)
+        call vtcreb(vecas, base, 'R',&
+                    nume_ddlz = nu,&
+                    nb_equa_outz = nequa)
         goto 270
 !
     endif
@@ -710,7 +712,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 ASSERT(ktyp.eq.'R')
                 ASSERT(type.eq.1)
                 c19='&&ASSVEC.CHAMNO'
-                call vtcreb(c19, nu, 'V', ktyp, nequa)
+                call vtcreb(c19, 'V', ktyp,&
+                            nume_ddlz = nu,&
+                            nb_equa_outz = nequa)
 !
                 call vtcopy(b19, c19, 'F', iret)
                 call jeveuo(c19//'.VALE', 'L', vr=vale)

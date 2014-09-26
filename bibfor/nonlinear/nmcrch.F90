@@ -61,7 +61,6 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     aster_logical :: lunil, lctcd, lctfd, lpenac, lallv
     aster_logical :: lsstf, limpe
     aster_logical :: ldidi, lpilo, lener
-    integer :: neq
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depmoi, vitmoi, accmoi
     character(len=19) :: fexmoi, fammoi, flimoi, fnomoi
@@ -132,14 +131,14 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
         call nmchex(valinc, 'VALINC', 'FAMPLU', famplu)
         call nmchex(valinc, 'VALINC', 'FLIPLU', fliplu)
         call nmchex(valinc, 'VALINC', 'FNOPLU', fnoplu)
-        call vtcreb(fexmoi, numedd, 'V', 'R', neq)
-        call vtcreb(fammoi, numedd, 'V', 'R', neq)
-        call vtcreb(flimoi, numedd, 'V', 'R', neq)
-        call vtcreb(fnomoi, numedd, 'V', 'R', neq)
-        call vtcreb(fexplu, numedd, 'V', 'R', neq)
-        call vtcreb(famplu, numedd, 'V', 'R', neq)
-        call vtcreb(fliplu, numedd, 'V', 'R', neq)
-        call vtcreb(fnoplu, numedd, 'V', 'R', neq)
+        call vtcreb(fexmoi, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(fammoi, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(flimoi, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(fnomoi, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(fexplu, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(famplu, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(fliplu, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(fnoplu, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CREATION DES CHAMPS DE BASE - ETAT EN T-
@@ -147,10 +146,10 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     call nmchex(valinc, 'VALINC', 'DEPMOI', depmoi)
     call nmchex(valinc, 'VALINC', 'VITMOI', vitmoi)
     call nmchex(valinc, 'VALINC', 'ACCMOI', accmoi)
-    call vtcreb(depmoi, numedd, 'V', 'R', neq)
+    call vtcreb(depmoi, 'V', 'R', nume_ddlz = numedd)
     if (ldyna) then
-        call vtcreb(vitmoi, numedd, 'V', 'R', neq)
-        call vtcreb(accmoi, numedd, 'V', 'R', neq)
+        call vtcreb(vitmoi, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(accmoi, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CREATION DES CHAMPS DE BASE - ETAT EN T+
@@ -158,10 +157,10 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     call nmchex(valinc, 'VALINC', 'DEPPLU', depplu)
     call nmchex(valinc, 'VALINC', 'VITPLU', vitplu)
     call nmchex(valinc, 'VALINC', 'ACCPLU', accplu)
-    call vtcreb(depplu, numedd, 'V', 'R', neq)
+    call vtcreb(depplu, 'V', 'R', nume_ddlz = numedd)
     if (ldyna) then
-        call vtcreb(vitplu, numedd, 'V', 'R', neq)
-        call vtcreb(accplu, numedd, 'V', 'R', neq)
+        call vtcreb(vitplu, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(accplu, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CREATION DES CHAMPS DE BASE - POUTRES EN GRANDES ROTATIONS
@@ -171,11 +170,11 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     call nmchex(valinc, 'VALINC', 'ACCKM1', acckm1)
     call nmchex(valinc, 'VALINC', 'ROMKM1', romkm1)
     call nmchex(valinc, 'VALINC', 'ROMK  ', romk)
-    call vtcreb(depkm1, numedd, 'V', 'R', neq)
-    call vtcreb(vitkm1, numedd, 'V', 'R', neq)
-    call vtcreb(acckm1, numedd, 'V', 'R', neq)
-    call vtcreb(romkm1, numedd, 'V', 'R', neq)
-    call vtcreb(romk, numedd, 'V', 'R', neq)
+    call vtcreb(depkm1, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(vitkm1, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(acckm1, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(romkm1, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(romk, 'V', 'R', nume_ddlz = numedd)
 !
 ! --- CREATION DES CHAMPS DE BASE - INCREMENTS SOLUTIONS
 !
@@ -184,45 +183,45 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     call nmchex(solalg, 'SOLALG', 'DEPPR1', deppr1)
     call nmchex(solalg, 'SOLALG', 'DEPPR2', deppr2)
     call nmchex(solalg, 'SOLALG', 'DEPOLD', depold)
-    call vtcreb(depdel, numedd, 'V', 'R', neq)
-    call vtcreb(ddepla, numedd, 'V', 'R', neq)
-    call vtcreb(depold, numedd, 'V', 'R', neq)
-    call vtcreb(deppr1, numedd, 'V', 'R', neq)
-    call vtcreb(deppr2, numedd, 'V', 'R', neq)
+    call vtcreb(depdel, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(ddepla, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(depold, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(deppr1, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(deppr2, 'V', 'R', nume_ddlz = numedd)
     if (ldyna) then
         call nmchex(solalg, 'SOLALG', 'VITDEL', vitdel)
         call nmchex(solalg, 'SOLALG', 'DVITLA', dvitla)
         call nmchex(solalg, 'SOLALG', 'VITPR1', vitpr1)
         call nmchex(solalg, 'SOLALG', 'VITPR2', vitpr2)
         call nmchex(solalg, 'SOLALG', 'VITOLD', vitold)
-        call vtcreb(vitdel, numedd, 'V', 'R', neq)
-        call vtcreb(dvitla, numedd, 'V', 'R', neq)
-        call vtcreb(vitold, numedd, 'V', 'R', neq)
-        call vtcreb(vitpr1, numedd, 'V', 'R', neq)
-        call vtcreb(vitpr2, numedd, 'V', 'R', neq)
+        call vtcreb(vitdel, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(dvitla, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(vitold, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(vitpr1, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(vitpr2, 'V', 'R', nume_ddlz = numedd)
         call nmchex(solalg, 'SOLALG', 'ACCDEL', accdel)
         call nmchex(solalg, 'SOLALG', 'DACCLA', daccla)
         call nmchex(solalg, 'SOLALG', 'ACCPR1', accpr1)
         call nmchex(solalg, 'SOLALG', 'ACCPR2', accpr2)
         call nmchex(solalg, 'SOLALG', 'ACCOLD', accold)
-        call vtcreb(accdel, numedd, 'V', 'R', neq)
-        call vtcreb(daccla, numedd, 'V', 'R', neq)
-        call vtcreb(accold, numedd, 'V', 'R', neq)
-        call vtcreb(accpr1, numedd, 'V', 'R', neq)
-        call vtcreb(accpr2, numedd, 'V', 'R', neq)
+        call vtcreb(accdel, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(daccla, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(accold, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(accpr1, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(accpr2, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- REACTIONS D'APPUI BT.LAMBDA
 !
     call nmchex(veasse, 'VEASSE', 'CNDIRI', cndiri)
-    call vtcreb(cndiri, numedd, 'V', 'R', neq)
+    call vtcreb(cndiri, 'V', 'R', nume_ddlz = numedd)
 !
 ! --- VECTEURS SOLUTION
 !
     call nmchex(solalg, 'SOLALG', 'DEPSO1', depso1)
     call nmchex(solalg, 'SOLALG', 'DEPSO2', depso2)
-    call vtcreb(depso1, numedd, 'V', 'R', neq)
-    call vtcreb(depso2, numedd, 'V', 'R', neq)
+    call vtcreb(depso1, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(depso2, 'V', 'R', nume_ddlz = numedd)
 !
 ! --- CREATION DES CHAMPS DE BASE - DEPL/VITE/ACCE D'ENTRAINEMENT
 !
@@ -230,9 +229,9 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
         call ndynkk(sddyna, 'DEPENT', depent)
         call ndynkk(sddyna, 'VITENT', vitent)
         call ndynkk(sddyna, 'ACCENT', accent)
-        call vtcreb(depent, numedd, 'V', 'R', neq)
-        call vtcreb(vitent, numedd, 'V', 'R', neq)
-        call vtcreb(accent, numedd, 'V', 'R', neq)
+        call vtcreb(depent, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(vitent, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(accent, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CREATION DES CHAMPS DEPL/VITE/ACCE ABSOLUS POUR LE MULTI-APPUIS
@@ -241,43 +240,43 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
         call ndynkk(sddyna, 'DEPABS', depabs)
         call ndynkk(sddyna, 'VITABS', vitabs)
         call ndynkk(sddyna, 'ACCABS', accabs)
-        call vtcreb(depabs, numedd, 'V', 'R', neq)
-        call vtcreb(vitabs, numedd, 'V', 'R', neq)
-        call vtcreb(accabs, numedd, 'V', 'R', neq)
+        call vtcreb(depabs, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(vitabs, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(accabs, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- FORCES DE SOL
 !
     if (lviss) then
         call nmchex(veasse, 'VEASSE', 'CNVISS', cnviss)
-        call vtcreb(cnviss, numedd, 'V', 'R', neq)
+        call vtcreb(cnviss, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- FORCES D'IMPEDANCES (PREDICTION ET CORRECTION)
 !
     if (limpe) then
         call nmchex(veasse, 'VEASSE', 'CNIMPP', cnimpp)
-        call vtcreb(cnimpp, numedd, 'V', 'R', neq)
+        call vtcreb(cnimpp, 'V', 'R', nume_ddlz = numedd)
         call nmchex(veasse, 'VEASSE', 'CNIMPC', cnimpc)
-        call vtcreb(cnimpc, numedd, 'V', 'R', neq)
+        call vtcreb(cnimpc, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- SECOND MEMBRE
 !
     call nmchex(veasse, 'VEASSE', 'CNFEDO', cnfedo)
-    call vtcreb(cnfedo, numedd, 'V', 'R', neq)
+    call vtcreb(cnfedo, 'V', 'R', nume_ddlz = numedd)
     call nmchex(veasse, 'VEASSE', 'CNFSDO', cnfsdo)
-    call vtcreb(cnfsdo, numedd, 'V', 'R', neq)
+    call vtcreb(cnfsdo, 'V', 'R', nume_ddlz = numedd)
     call nmchex(veasse, 'VEASSE', 'CNDIDO', cndido)
     if (ldidi) then
         call nmchex(veasse, 'VEASSE', 'CNDIDI', cndidi)
-        call vtcreb(cndidi, numedd, 'V', 'R', neq)
+        call vtcreb(cndidi, 'V', 'R', nume_ddlz = numedd)
     endif
     if (lpilo) then
         call nmchex(veasse, 'VEASSE', 'CNFEPI', cnfepi)
-        call vtcreb(cnfepi, numedd, 'V', 'R', neq)
+        call vtcreb(cnfepi, 'V', 'R', nume_ddlz = numedd)
         call nmchex(veasse, 'VEASSE', 'CNDIPI', cndipi)
-        call vtcreb(cndipi, numedd, 'V', 'R', neq)
+        call vtcreb(cndipi, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- PAS VRAIMENT DES VECT_ELEM MAIS DES CHAM_NO A CREER
@@ -285,32 +284,32 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
     call nmchex(veasse, 'VEASSE', 'CNFINT', cnfint)
     call nmchex(veasse, 'VEASSE', 'CNVCF1', cnvcf1)
-    call vtcreb(cnfext, numedd, 'V', 'R', neq)
-    call vtcreb(cnfint, numedd, 'V', 'R', neq)
-    call vtcreb(cnvcf1, numedd, 'V', 'R', neq)
+    call vtcreb(cnfext, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(cnfint, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(cnvcf1, 'V', 'R', nume_ddlz = numedd)
 !
     if (ldyna) then
         call nmchex(veasse, 'VEASSE', 'CNDYNA', cndyna)
-        call vtcreb(cndyna, numedd, 'V', 'R', neq)
+        call vtcreb(cndyna, 'V', 'R', nume_ddlz = numedd)
         if (lmpas) then
             call ndynkk(sddyna, 'OLDP_CNFEDO', cnfedo)
-            call vtcreb(cnfedo, numedd, 'V', 'R', neq)
+            call vtcreb(cnfedo, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNFSDO', cnfsdo)
-            call vtcreb(cnfsdo, numedd, 'V', 'R', neq)
+            call vtcreb(cnfsdo, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNDIDO', cndido)
-            call vtcreb(cndido, numedd, 'V', 'R', neq)
+            call vtcreb(cndido, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNDIDI', cndidi)
-            call vtcreb(cndidi, numedd, 'V', 'R', neq)
+            call vtcreb(cndidi, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNFINT', cnfint)
-            call vtcreb(cnfint, numedd, 'V', 'R', neq)
+            call vtcreb(cnfint, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNONDP', cnondp)
-            call vtcreb(cnondp, numedd, 'V', 'R', neq)
+            call vtcreb(cnondp, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNLAPL', cnlapl)
-            call vtcreb(cnlapl, numedd, 'V', 'R', neq)
+            call vtcreb(cnlapl, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNSSTF', cnsstf)
-            call vtcreb(cnsstf, numedd, 'V', 'R', neq)
+            call vtcreb(cnsstf, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNCINE', cncine)
-            call vtcreb(cncine, numedd, 'V', 'R', neq)
+            call vtcreb(cncine, 'V', 'R', nume_ddlz = numedd)
         endif
     endif
 !
@@ -318,14 +317,14 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 !
     if (lmacr) then
         call nmchex(veasse, 'VEASSE', 'CNSSTR', cnsstr)
-        call vtcreb(cnsstr, numedd, 'V', 'R', neq)
+        call vtcreb(cnsstr, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CALCUL PAR SOUS-STRUCTURATION
 !
     if (lsstf) then
         call nmchex(veasse, 'VEASSE', 'CNSSTF', cnsstf)
-        call vtcreb(cnsstf, numedd, 'V', 'R', neq)
+        call vtcreb(cnsstf, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- AMORTISSEMENT MODAL
@@ -333,47 +332,47 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
     if (lammo) then
         call nmchex(veasse, 'VEASSE', 'CNMODP', cnmodp)
         call nmchex(veasse, 'VEASSE', 'CNMODC', cnmodc)
-        call vtcreb(cnmodp, numedd, 'V', 'R', neq)
-        call vtcreb(cnmodc, numedd, 'V', 'R', neq)
+        call vtcreb(cnmodp, 'V', 'R', nume_ddlz = numedd)
+        call vtcreb(cnmodc, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CONTACT/FROTTEMENT DISCRET
 !
     if (lctcd .and. (.not.lallv)) then
         call nmchex(veasse, 'VEASSE', 'CNCTDC', cnctdc)
-        call vtcreb(cnctdc, numedd, 'V', 'R', neq)
+        call vtcreb(cnctdc, 'V', 'R', nume_ddlz = numedd)
     endif
     if ((lctfd.or.lpenac) .and. (.not.lallv)) then
         call nmchex(veasse, 'VEASSE', 'CNCTDF', cnctdf)
-        call vtcreb(cnctdf, numedd, 'V', 'R', neq)
+        call vtcreb(cnctdf, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- LIAISON UNILATERALE
 !
     if (lunil) then
         call nmchex(veasse, 'VEASSE', 'CNUNIL', cnunil)
-        call vtcreb(cnunil, numedd, 'V', 'R', neq)
+        call vtcreb(cnunil, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CONTACT AVEC DES ELEMENTS FINIS (CONTINUE/XFEM)
 !
     if (leltc .and. (.not.lallv)) then
         call nmchex(veasse, 'VEASSE', 'CNELTC', cneltc)
-        call vtcreb(cneltc, numedd, 'V', 'R', neq)
+        call vtcreb(cneltc, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- FROTTEMENT AVEC DES ELEMENTS FINIS (CONTINUE/XFEM)
 !
     if (leltf .and. (.not.lallv)) then
         call nmchex(veasse, 'VEASSE', 'CNELTF', cneltf)
-        call vtcreb(cneltf, numedd, 'V', 'R', neq)
+        call vtcreb(cneltf, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- RESIDU DE REFERENCE
 !
     if (lrefe) then
         call nmchex(veasse, 'VEASSE', 'CNREFE', cnrefe)
-        call vtcreb(cnrefe, numedd, 'V', 'R', neq)
+        call vtcreb(cnrefe, 'V', 'R', nume_ddlz = numedd)
     endif
 !
 ! --- CREATION DE CHAMPS NODAUX PARTAGES (PASSES EN SOUTERRAIN)
@@ -383,27 +382,27 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
 !         CNZERO : LECTURE SEULE -> IL VAUT TJRS 0
 !         CNTMPX : NE TRANSITENT PAS D'UNE ROUTINE A L'AUTRE
 !
-    call vtcreb('&&CNPART.ZERO', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNPART.CHP1', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNPART.CHP2', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNPART.CHP3', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNREPL.CHP1', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNREPL.CHP2', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNREPL.CHP3', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNREPL.CHP4', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCETA.CHP0', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCETA.CHP1', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCETA.CHP2', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.FFDO', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.FFPI', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.DFDO', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.DFPI', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.FVDO', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.FVDY', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.DUMM', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.CINE', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.DONN', numedd, 'V', 'R', neq)
-    call vtcreb('&&CNCHAR.PILO', numedd, 'V', 'R', neq)
+    call vtcreb('&&CNPART.ZERO', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNPART.CHP1', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNPART.CHP2', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNPART.CHP3', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNREPL.CHP1', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNREPL.CHP2', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNREPL.CHP3', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNREPL.CHP4', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCETA.CHP0', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCETA.CHP1', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCETA.CHP2', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.FFDO', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.FFPI', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.DFDO', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.DFPI', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.FVDO', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.FVDY', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.DUMM', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.CINE', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.DONN', 'V', 'R', nume_ddlz = numedd)
+    call vtcreb('&&CNCHAR.PILO', 'V', 'R', nume_ddlz = numedd)
 !
     call jedema()
 end subroutine

@@ -1,4 +1,15 @@
-subroutine sdchgd(champ, tysca)
+subroutine sdchgd(fieldz, type_scalz)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,66 +26,53 @@ subroutine sdchgd(champ, tysca)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
 !
-!     ARGUMENTS:
-!     ----------
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
+    character(len=*), intent(in) :: fieldz
+    character(len=*), intent(in) :: type_scalz
 !
-    character(len=*) :: champ, tysca
-! ----------------------------------------------------------------------
-!     BUT: CHANGER LA GRANDEUR ASSOCIEE A UN CHAM_NO/_ELEM
-!          EN FAIT CHANGER DANS LE .DESC (OU .CELD)
-!          DU CHAMP LE TYPE_SCALAIRE
-!          DE LA GRANDEUR:
-!         'DEPLA_R' --> 'DEPLA_C' , ...
+! --------------------------------------------------------------------------------------------------
 !
-!   ON CHERCHE LE NOM DE LA GRANDEUR ASSOCIEE AU CHAM_NO/_ELEM
-!   ON SUPPOSE QU'IL EST DE LA FORME : XXXX_R OU XXXX_C OU XXXX_F
-!   ON MODIFIE ALORS LE NUMERO DE LA GRANDEUR POUR SURCHARGER
-!   LE SUFFIXE _R _C _F .
+! Field utility
 !
-!     IN:
-!       CHAMP (K19): NOM D'UN CHAM_NO/_ELEM
-!       TYSCA  (K1) : 'R', 'C' OU 'F'
+! Change type of GRANDEUR in a field
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!     VARIABLES LOCALES:
-!     ------------------
-    character(len=19) :: nocham
-    character(len=8) :: nomgd, nomgd2
-    character(len=1) :: tysca2
-    integer :: iadesc, ibid, igd, igd2
-!----------------------------------------------------------------------
-    call jemarq()
-    nocham= champ
-    tysca2= tysca
-    call jeexin(nocham//'.DESC', ibid)
-    if (ibid .gt. 0) then
-        call jeveuo(nocham//'.DESC', 'E', iadesc)
+! In  field     : name of field
+! In  type_scal : new type of GRANDEUR (R, C or F)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=19) :: field
+    character(len=8) :: gd_name_old, gd_name_new
+    integer :: i_exi, i_gd_old, i_gd_new
+    integer, pointer :: p_desc(:) => null()
+    character(len=3) :: type_scal
+!
+! --------------------------------------------------------------------------------------------------
+!
+    field     = fieldz
+    type_scal = type_scalz
+!
+! - Field type
+!
+    call jeexin(field//'.DESC', i_exi)
+    if (i_exi .gt. 0) then
+        call jeveuo(field//'.DESC', 'E', vi = p_desc)  
     else
-        call jeveuo(nocham//'.CELD', 'E', iadesc)
+        call jeveuo(field//'.CELD', 'E', vi = p_desc)
     endif
 !
-    igd = zi(iadesc-1+1)
-    call jenuno(jexnum('&CATA.GD.NOMGD', igd), nomgd)
-    nomgd2= nomgd(1:5)//tysca2(1:1)
-    call jenonu(jexnom('&CATA.GD.NOMGD', nomgd2), igd2)
-    if (igd2 .eq. 0) then
-        call utmess('F', 'CALCULEL4_79', sk=nomgd2)
-    endif
-    zi(iadesc-1+1)= igd2
+! - Old GRANDEUR
 !
+    i_gd_old = p_desc(1)
+    call jenuno(jexnum('&CATA.GD.NOMGD', i_gd_old), gd_name_old)
 !
-    call jedema()
+! - New GRANDEUR
+!
+    gd_name_new = gd_name_old(1:5)//type_scal
+    call jenonu(jexnom('&CATA.GD.NOMGD', gd_name_new), i_gd_new)
+    ASSERT(i_gd_new.ne.0)
+    p_desc(1) = i_gd_new
+
 end subroutine

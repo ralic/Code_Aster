@@ -280,7 +280,7 @@ subroutine op0077()
             if (ibid .eq. 0) then
                 call utmess('F', 'ALGORITH9_48')
             endif
-            call harm75(nomres, typres, resin, nomcmd, mode)
+            call harm75(nomres, typres, resin, mode)
         endif
 !
     endif

@@ -67,7 +67,7 @@ subroutine op0171()
 !
     aster_logical :: matcst, coecst, prem, reasmt, reasvt
     integer :: parcri(9), iifm, jlagp, jinst
-    integer :: ibid, k, neq, iret
+    integer :: ibid, k, iret
     integer :: itmaxl, iterl, ifm, niv, num
     integer :: iocc, n1, n2
     integer :: jtemp, jtempm, jtempp, j2nd, lonch, lglap
@@ -181,7 +181,7 @@ subroutine op0171()
     call numero(numedd, solveu, 'VG',&
                 modelz = modele , list_loadz = list_load)
 !
-    call vtcreb(vtemp, numedd, 'V', 'R', neq)
+    call vtcreb(vtemp, 'V', 'R', nume_ddlz=numedd)
 !
 !
     call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=tempev, nbret=n1)

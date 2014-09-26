@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine sdchgd(champ, tysca)
-        character(len=*) :: champ
-        character(len=*) :: tysca
+    subroutine sdchgd(fieldz, type_scalz)
+        character(len=*), intent(in) :: fieldz
+        character(len=*), intent(in) :: type_scalz
     end subroutine sdchgd
 end interface

@@ -106,7 +106,7 @@ subroutine rsmode(resu)
 !        -- SI LE CHAMP NOMCHA N'A PAS LA BONNE NUMEROTATION,
 !           IL FAUT LA MODIFIER :
             call jelira(nomcha//'.VALE', 'TYPE', cval=typ1)
-            call vtcreb(champt, nu, 'V', typ1, neq)
+            call vtcreb(champt, 'V', typ1, nume_ddlz = nu, nb_equa_outz = neq)
             call vtcopy(nomcha, champt, 'F', iret)
             call detrsd('CHAM_NO', nomcha)
             call copisd('CHAMP', 'G', champt, nomcha)

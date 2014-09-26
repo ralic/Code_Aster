@@ -159,7 +159,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !                  SUR BASE MODALE (.REFD[3])
 !
                 call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numedd)
-                call vtcreb(chdeps, numedd(1:8), 'G', 'C', n1)
+                call vtcreb(chdeps, 'G', 'C', nume_ddlz = numedd, nb_equa_outz = n1)
                 ASSERT(n1.eq.neq)
             endif
 !           -------------------------------------------------------
@@ -186,7 +186,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
                 call vtcrem(chdeps, raide, 'G', 'R')
             else
                 call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numedd)
-                call vtcreb(chdeps, numedd(1:8), 'G', 'R', n1)
+                call vtcreb(chdeps, 'G', 'R', nume_ddlz = numedd, nb_equa_outz = n1)
                 ASSERT(n1.eq.neq)
             endif
 !

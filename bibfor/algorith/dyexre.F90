@@ -68,12 +68,14 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
 !
     chamn2 = '&&DYEXRE.CHAMN2'
     call detrsd('CHAM_NO', chamn2)
-    call vtcreb(chamn2, numddl, 'V', 'C', neq)
+    call vtcreb(chamn2, 'V', 'C',&
+                nume_ddlz = numddl,&
+                nb_equa_outz = neq)
     prec = 1.d-6
     eps0 = 1.d-12
     call jeveuo(exreco, 'L', jlccre)
     call jeveuo(exresu, 'L', jlresu)
-    do 10 iresu = 1, nbexre
+    do iresu = 1, nbexre
         if (abs(freq) .gt. eps0) then
             call rsorac(zk8(jlresu+iresu-1), 'FREQ', 0, freq, k8bid,&
                         c16bid, prec, 'RELATIF', ifreq, 1,&
@@ -87,10 +89,10 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu,&
                     iret)
         call vtcopy(chamno, chamn2, 'F', ibid)
         call jeveuo(chamn2//'.VALE', 'L', vc=vale)
-        do 20 ieq = 1, neq
+        do ieq = 1, neq
             zc(j2nd-1+ieq) = zc(j2nd-1+ieq) + vale(ieq)*zc( jlccre-1+iresu)
-20      continue
-10  end do
+        end do
+    end do
 !
     call jedema()
 end subroutine

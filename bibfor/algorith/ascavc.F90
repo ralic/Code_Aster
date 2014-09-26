@@ -104,7 +104,9 @@ subroutine ascavc(lchar, infcha, fomult, numedd, inst, vci)
         call gcnco2(newnom)
         chamno(10:16) = newnom(2:8)
         call corich('E', chamno, -2, ibid)
-        call vtcreb(chamno, numedd, 'V', 'R', neq)
+        call vtcreb(chamno, 'V', 'R',&
+                    nume_ddlz = numedd,&
+                    nb_equa_outz = neq)
         zk24(ilchno-1+1) = chamno
 !
 !

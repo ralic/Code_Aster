@@ -266,7 +266,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
         call jelira(trange//'.FDEP', 'LONMAX', nbexci)
         nbexci = nbexci/2
         if (tousno) then
-            call vtcreb(chamn2, numddl, 'V', 'R', neq)
+            call vtcreb(chamn2, 'V', 'R',&
+                        nume_ddlz = numddl,&
+                        nb_equa_outz = neq)
             chamn2(20:24) = '.VALE'
             call jeveuo(chamn2, 'E', lval2)
             lpsdel = ipsdel
@@ -409,7 +411,9 @@ subroutine tran75(nomres, typres, nomin, basemo)
                         if (leffor) then
                             call vtdefs(chamno, typref(ich), 'G', 'R')
                         else
-                            call vtcreb(chamno, numddl, 'G', 'R', neq)
+                            call vtcreb(chamno, 'G', 'R',&
+                                        nume_ddlz = numddl,&
+                                        nb_equa_outz = neq)
                         endif
                     else
                         call vtcrec(chamno, chmod, 'G', 'R', neq)

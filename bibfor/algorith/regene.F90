@@ -284,9 +284,13 @@ subroutine regene(nomres, resgen, profno)
             call rsexch(' ', nomres, depl, i, chamno,&
                         ier)
             if (zcmplx) then
-                call vtcreb(chamno, numedd, 'G', 'C', neq)
+                call vtcreb(chamno, 'G', 'C',&
+                            nume_ddlz = numedd,&
+                            nb_equa_outz = neq)
             else
-                call vtcreb(chamno, numedd, 'G', 'R', neq)
+                call vtcreb(chamno, 'G', 'R',&
+                            nume_ddlz = numedd,&
+                            nb_equa_outz = neq)
             endif
             call jeveuo(chamno//'.VALE', 'E', ldnew)
 !

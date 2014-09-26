@@ -157,7 +157,9 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = baseno//'.DEPINI'
-            call vtcreb(cham2, numedd, 'V', 'R', neq)
+            call vtcreb(cham2, 'V', 'R',&
+                        nume_ddlz = numedd,&
+                        nb_equa_outz = neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, depini, 1)
@@ -173,7 +175,9 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 1
             cham2 = baseno//'.VITINI'
-            call vtcreb(cham2, numedd, 'V', 'R', neq)
+            call vtcreb(cham2, 'V', 'R',&
+                        nume_ddlz = numedd,&
+                        nb_equa_outz = neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, vitini, 1)
@@ -189,7 +193,9 @@ subroutine dltini(lcrea, nume, result, depini, vitini,&
             call chpver('F', champ, 'NOEU', 'DEPL_R', ierr)
             inchac = 0
             cham2 = baseno//'.ACCINI'
-            call vtcreb(cham2, numedd, 'V', 'R', neq)
+            call vtcreb(cham2, 'V', 'R',&
+                        nume_ddlz = numedd,&
+                        nb_equa_outz = neq)
             call vtcopy(champ, cham2, ' ', iret)
             call jeveuo(cham2//'.VALE', 'L', jvale)
             call dcopy(neq, zr(jvale), 1, accini, 1)

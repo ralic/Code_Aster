@@ -316,7 +316,9 @@ subroutine tran77(nomres, typres, nomin, basemo)
                         if (leffor) then
                             call vtdefs(chamno, typref(ich), 'G', 'R')
                         else
-                            call vtcreb(chamno, numddl, 'G', 'R', neq)
+                            call vtcreb(chamno, 'G', 'R',&
+                                        nume_ddlz = numddl,&
+                                        nb_equa_outz = neq)
                         endif
                     else
                         call vtcrec(chamno, nomcha, 'G', 'R', neq)

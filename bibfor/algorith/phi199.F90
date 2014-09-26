@@ -150,7 +150,9 @@ subroutine phi199(model, mate, ma, nu, num,&
         nocham = nocham(1:19)//'.REFE'
         call jeveuo(nocham, 'L', jref)
         nume = zk24(jref+1)(1:14)
-        call vtcreb(nomcha, nume, 'V', 'R', neq)
+        call vtcreb(nomcha, 'V', 'R',&
+                    nume_ddlz = nume,&
+                    nb_equa_outz = neq)
 !
 ! --- QUELLE EST LA DIRECTION ?
 !
