@@ -122,4 +122,9 @@ Erreur utilisateur :
  La composante demandée %(k1)s n'est pas trouvée dans le champ %(k2)s.
 """),
 
+20 : _(u"""
+ On ne peut pas traiter ce champ car il y a des termes condensés dans la numérotation.
+ Contactez le support.
+"""),
+
 }

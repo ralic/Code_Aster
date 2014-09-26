@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nueq_chck(prof_chnoz, nb_equaz)
+    subroutine nueq_chck(prof_chnoz, nb_equaz, l_error)
         character(len=*), intent(in) :: prof_chnoz
         integer, optional, intent(out) :: nb_equaz
+        logical, optional, intent(in) :: l_error
     end subroutine nueq_chck
 end interface

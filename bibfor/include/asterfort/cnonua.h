@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cnonua(nx, chno, lno, nuage)
-        integer :: nx
-        character(len=*) :: chno
-        character(len=*) :: lno
-        character(len=*) :: nuage
+    subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
+        integer, intent(in) :: nb_dim
+        character(len=*), intent(in) :: chnoz
+        character(len=*), intent(in) :: list_nodez
+        character(len=*), intent(in) :: nuagez
     end subroutine cnonua
 end interface

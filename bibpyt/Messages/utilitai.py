@@ -190,9 +190,6 @@ Erreur utilisateur dans la commande CREA_CHAMP.
  le champ  %(k1)s n'est pas de type complexe
 """),
 
-36 : _(u"""
- On ne traite que des CHAM_NO réels ou complexes. Désolé !
-"""),
 
 37 : _(u"""
 Erreur utilisateur dans la commande CREA_CHAMP.
@@ -220,9 +217,6 @@ Le champ %(k1)s n'est pas un champ aux noeuds.
 
 
 
-45 : _(u"""
- type non connu.
-"""),
 
 46 : _(u"""
  la fonction doit s appuyer sur un maillage pour lequel une abscisse curviligne a été définie.

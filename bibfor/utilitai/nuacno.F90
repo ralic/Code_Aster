@@ -1,6 +1,9 @@
-subroutine nuacno(nuage, lno, chno)
-    implicit none
+subroutine nuacno(nuagez, list_nodez, chnoz)
+!
+implicit none
+!
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -17,9 +20,8 @@ subroutine nuacno(nuage, lno, chno)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/nueq_chck.h"
 !
-    character(len=*) :: nuage, lno, chno
-!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,84 +38,95 @@ subroutine nuacno(nuage, lno, chno)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     PASSAGE D'UNE UNE SD NUAGE A SD CHAM_NO
 !
-! IN  NUAGE  : NOM DE LA SD NUAGE
-! IN  LNO    : LISTE DES NOEUDS A PRENDRE EN COMPTE
-! IN  CHNO   : NOM DE LA SD CHAM_NO
-!     ------------------------------------------------------------------
-    integer :: gd
-    character(len=4) :: type
-    character(len=8) :: noma, nomgd
-    character(len=19) :: kchno, klno, knuage, nonu
-!     ------------------------------------------------------------------
+    character(len=*), intent(in) :: chnoz
+    character(len=*), intent(in) :: list_nodez
+    character(len=*), intent(in) :: nuagez
 !
-!-----------------------------------------------------------------------
-    integer :: i, iad,   iaprno, ibid, icmp
-    integer :: icompt, iec, ieq, ino, itype, ival
-    integer :: j,  jlno,  jnuav,  k
-    integer :: kcomp, kvale, nc, ncmp, ncmpmx, nec, np
+! --------------------------------------------------------------------------------------------------
+!
+! Convert NUAGE to CHAM_NO
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  nuagez       : name of NUAGE datastructure
+! In  chnoz        : name of CHAM_NO (nodal field) datastructure
+! In  list_node   : list of nodes
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: idx_gd
+    character(len=4) :: type_scal
+    character(len=8) :: mesh, gran_name
+    character(len=19) :: chno, list_node, nuage, profchno
+    integer :: iaprno, icmp
+    integer :: icompt, i_ec, ieq, nume_pt, itype, ival, i_pt
+    integer :: j, jnuai, jnuav, k, i_ligr_mesh
+    integer :: kcomp, kvale, nc, ncmp, ncmpmx, nb_ec, nb_point
     integer :: num
+    integer, pointer :: p_desc(:) => null()
     integer, pointer :: ent_cod(:) => null()
-    character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: nuai(:) => null()
     integer, pointer :: nueq(:) => null()
-!-----------------------------------------------------------------------
+    integer, pointer :: p_list_node(:) => null()
+    character(len=24), pointer :: p_refe(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    knuage = nuage
-    klno = lno
-    kchno = chno
 !
-    call jeveuo(kchno//'.DESC', 'L', vi=desc)
-    gd = desc(1)
-    num = desc(2)
-    call jelira(jexnum('&CATA.GD.NOMCMP', gd), 'LONMAX', ncmpmx)
-    call jeveuo(jexnum('&CATA.GD.NOMCMP', gd), 'L', iad)
-    call jenuno(jexnum('&CATA.GD.NOMGD', gd), nomgd)
-    nec = nbec(gd)
+    chno        = chnoz
+    list_node   = list_nodez
+    nuage       = nuagez
+!
+    call jeveuo(chno//'.DESC', 'L', vi = p_desc)
+    idx_gd = p_desc(1)
+    num    = p_desc(2)
+    call jelira(jexnum('&CATA.GD.NOMCMP', idx_gd), 'LONMAX', ncmpmx)
+    call jenuno(jexnum('&CATA.GD.NOMGD', idx_gd), gran_name)
+    nb_ec = nbec(idx_gd)
     call wkvect('&&NUACNO.NOMCMP', 'V V I', ncmpmx, kcomp)
-    AS_ALLOCATE(vi=ent_cod, size=nec)
+    AS_ALLOCATE(vi=ent_cod, size=nb_ec)
 !
-    call jeveuo(kchno//'.REFE', 'L', vk24=refe)
-    noma = refe(1) (1:8)
-    nonu = refe(2) (1:19)
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=np)
+    call jeveuo(chno//'.REFE', 'L', vk24 = p_refe)
+    mesh     = p_refe(1)(1:8)
+    profchno = p_refe(2)(1:19)
+    call nueq_chck(profchno, l_error= .true.)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_point)
 !
-    if (klno .ne. ' ') then
-        call jelira(klno, 'LONUTI', np)
-        call jeveuo(klno, 'L', jlno)
+    if (list_node .ne. ' ') then
+        call jelira(list_node, 'LONUTI', nb_point)
+        call jeveuo(list_node, 'L', vi = p_list_node)
     else
-        call wkvect('&&NUACNO.NOEUD', 'V V I', np, jlno)
-        do i = 1, np
-            zi(jlno+i-1) = i
+        call wkvect('&&NUACNO.NOEUD', 'V V I', nb_point, vi = p_list_node)
+        do i_pt = 1, nb_point
+            p_list_node(i_pt) = i_pt
         end do
     endif
 !
-    call jelira(kchno//'.VALE', 'TYPE', cval=type)
-    call jeveuo(kchno//'.VALE', 'E', kvale)
-    if (type(1:1) .eq. 'R') then
+    call jelira(chno//'.VALE', 'TYPE', cval=type_scal)
+    call jeveuo(chno//'.VALE', 'E', kvale)
+    if (type_scal(1:1) .eq. 'R') then
         itype = 1
-    else if (type(1:1) .eq. 'C') then
+    else if (type_scal(1:1) .eq. 'C') then
         itype = 2
     else
-        call utmess('F', 'UTILITAI_36')
+        ASSERT(.false.)
     endif
 !
-    call jeveuo(knuage//'.NUAV', 'L', jnuav)
-    call jeveuo(knuage//'.NUAI', 'L', vi=nuai)
-    nc = nuai(3)
+    call jeveuo(nuage//'.NUAV', 'L', jnuav)
+    call jeveuo(nuage//'.NUAI', 'L', jnuai)
+    nc = zi(jnuai+2)
 !
 !     --SI LE CHAMP EST A REPRESENTATION CONSTANTE ---
 !
     if (num .lt. 0) then
         ncmp = -num
-        do iec = 1, nec
-            ent_cod(iec) = desc(2+iec)
+        do i_ec = 1, nb_ec
+            ent_cod(i_ec) = p_desc(2+i_ec)
         end do
-        do j = 1, np
-            ino = zi(jlno+j-1)
-            ival = ncmp * ( ino - 1 )
+        do j = 1, nb_point
+            nume_pt = p_list_node(j)
+            ival = ncmp * ( nume_pt - 1 )
             icompt = 0
             do icmp = 1, ncmpmx
                 if (exisdg(ent_cod, icmp )) then
@@ -131,16 +144,16 @@ subroutine nuacno(nuage, lno, chno)
 !
 !     --- SI LE CHAMP EST DECRIT PAR 1 "PRNO" ---
 !
-        call jeveuo(nonu//'.NUEQ', 'L', vi=nueq)
-        call jenonu(jexnom(nonu//'.LILI', '&MAILLA'), ibid)
-        call jeveuo(jexnum(nonu//'.PRNO', ibid), 'L', iaprno)
-        do j = 1, np
-            ino = zi(jlno+j-1)
-            ival = zi(iaprno-1+ (ino-1)*(nec+2)+1 )
-            ncmp = zi(iaprno-1+ (ino-1)*(nec+2)+2 )
+        call jeveuo(profchno//'.NUEQ', 'L',  vi=nueq)
+        call jenonu(jexnom(profchno//'.LILI', '&MAILLA'), i_ligr_mesh)
+        call jeveuo(jexnum(profchno//'.PRNO', i_ligr_mesh), 'L', iaprno)
+        do j = 1, nb_point
+            nume_pt = p_list_node(j)
+            ival = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+1 )
+            ncmp = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2 )
             if (ncmp .eq. 0) goto 210
-            do iec = 1, nec
-                ent_cod(iec) = zi(iaprno-1+ (ino-1)*(nec+2)+2+iec )
+            do i_ec = 1, nb_ec
+                ent_cod(i_ec) = zi(iaprno-1+ (nume_pt-1)*(nb_ec+2)+2+i_ec )
             end do
             icompt = 0
             do icmp = 1, ncmpmx

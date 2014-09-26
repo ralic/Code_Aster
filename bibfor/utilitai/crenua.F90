@@ -1,17 +1,15 @@
-subroutine crenua(nuage, nomgd, np, nx, nc,&
-                  lnual)
-    implicit none
+subroutine crenua(nuagez    , gran_name, nb_point, nb_dim, nb_cmp_max,&
+                  l_crea_nual)
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: np, nx, nc
-    character(len=*) :: nuage, nomgd
-    aster_logical :: lnual
-!     ------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,56 +26,65 @@ subroutine crenua(nuage, nomgd, np, nx, nc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     CREATION D'UN SD NUAGE
-! IN  NUAGE  : NOM DE LA SD A ALLOUER
-! IN  NOMGD  : NOM DE LA GRANDEUR
-! IN  NP     : NOMBRE DE POINTS DU NUAGE
-! IN  NX     : NOMBRE DE COORDONNES DES POINTS
-! IN  NC     : NOMBRE MAX DE CMP PORTES PAR LES POINTS
-! IN  LNUAL  : CREATION OU NON DU .NUAL
-!     ------------------------------------------------------------------
-    integer :: i, ndim
-    character(len=4) :: type
-    character(len=19) :: knuage
-!     ------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
+    character(len=*), intent(in) :: nuagez
+    character(len=*), intent(in) :: gran_name
+    integer, intent(in) :: nb_point
+    integer, intent(in) :: nb_dim
+    integer, intent(in) :: nb_cmp_max
+    aster_logical, intent(in) :: l_crea_nual
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Create NUAGE datastructure
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  nuage       : name of NUAGE datastructure
+! In  gran_name   : name of GRANDEUR
+! In  nb_point    : number of ppoints in NUAGE
+! In  nb_dim      : dimension of model
+! In  nb_cmp_max  : number maxi of components on point
+! In  l_crea_nual : .true. if create .NUAL
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: length
+    character(len=4) :: type_scal
+    character(len=19) :: nuage
     integer :: jnuai, jnual, jnuav, jnuax
-!-----------------------------------------------------------------------
-    call jemarq()
-    knuage = nuage
 !
-!     --- CREATION DU .NUAX ---
+! --------------------------------------------------------------------------------------------------
 !
-    ndim = nx * np
-    call wkvect(knuage//'.NUAX', 'V V R', ndim, jnuax)
+    nuage = nuagez
 !
-!     --- CREATION DU .NUAI ---
+! - Create .NUAX
 !
-    ndim = 5 + nc
-    call wkvect(knuage//'.NUAI', 'V V I', ndim, jnuai)
+    length = nb_dim * nb_point
+    call wkvect(nuage//'.NUAX', 'V V R', length, jnuax)
 !
-!     --- CREATION DU .NUAV ---
+! - Create .NUAI
 !
-    call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=type)
-    ndim = nc * np
-    if (type(1:1) .eq. 'R') then
-        call wkvect(knuage//'.NUAV', 'V V R', ndim, jnuav)
-    else if (type(1:1) .eq. 'C') then
-        call wkvect(knuage//'.NUAV', 'V V C', ndim, jnuav)
+    length = 5 + nb_cmp_max
+    call wkvect(nuage//'.NUAI', 'V V I', length, jnuai)
+!
+! - Create .NUAV
+!
+    call dismoi('TYPE_SCA', gran_name, 'GRANDEUR', repk=type_scal)
+    length = nb_cmp_max * nb_point
+    if (type_scal(1:1) .eq. 'R') then
+        call wkvect(nuage//'.NUAV', 'V V R', length, jnuav)
+    else if (type_scal(1:1) .eq. 'C') then
+        call wkvect(nuage//'.NUAV', 'V V C', length, jnuav)
     else
-        call utmess('F', 'UTILITAI_45')
+        ASSERT(.false.)
     endif
 !
-!     --- CREATION DU .NUAL ---
+! - Create .NUAL
 !
-    if (lnual) then
-        ndim = nc * np
-        call wkvect(knuage//'.NUAL', 'V V L', ndim, jnual)
-        do i = 1, ndim
-            zl(jnual+i-1) = .false.
-        end do
+    if (l_crea_nual) then
+        length = nb_cmp_max * nb_point
+        call wkvect(nuage//'.NUAL', 'V V L', length, jnual)
     endif
 !
-    call jedema()
 end subroutine

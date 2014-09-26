@@ -1,9 +1,10 @@
-subroutine nueq_chck(prof_chnoz, nb_equaz)
+subroutine nueq_chck(prof_chnoz, nb_equaz, l_error)
 !
 implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +25,7 @@ implicit none
 !
     character(len=*), intent(in) :: prof_chnoz
     integer, optional, intent(out) :: nb_equaz
+    logical, optional, intent(in) :: l_error
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -33,6 +35,7 @@ implicit none
 !
 ! In  prof_chno   : name of PROF_CHNO
 ! Out nb_equa     : number of equations
+! In  l_error     : ASSERT 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +50,13 @@ implicit none
     deeq = prof_chno//'.DEEQ'
     call jelira(deeq, 'LONMAX', len_v)
     call jelira(nueq, 'LONMAX', nb_equa)
-    ASSERT(len_v.eq.2*nb_equa)
+    if (len_v.ne.2*nb_equa) then
+        if (present(l_error)) then
+            call utmess('F','CHAMPS_20')
+        else
+            ASSERT(.false.)       
+        endif
+    endif
     if (present(nb_equaz)) then
         nb_equaz = nb_equa
     endif

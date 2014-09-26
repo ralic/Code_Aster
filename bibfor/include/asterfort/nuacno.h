@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nuacno(nuage, lno, chno)
-        character(len=*) :: nuage
-        character(len=*) :: lno
-        character(len=*) :: chno
+    subroutine nuacno(nuagez, list_nodez, chnoz)
+        character(len=*), intent(in) :: chnoz
+        character(len=*), intent(in) :: list_nodez
+        character(len=*), intent(in) :: nuagez
     end subroutine nuacno
 end interface
