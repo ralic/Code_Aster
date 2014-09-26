@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine crprno(champ, base, nbnoeu, nequa)
-        character(len=*) :: champ
-        character(len=*) :: base
-        integer :: nbnoeu
-        integer :: nequa
+    subroutine crprno(prof_chnoz, base, meshz, gran_namez, nb_equa)
+        character(len=*), intent(in) :: prof_chnoz
+        character(len=1), intent(in) :: base
+        character(len=*), intent(in) :: gran_namez
+        character(len=*), intent(in) :: meshz
+        integer, intent(in) :: nb_equa
     end subroutine crprno
 end interface

@@ -1,25 +1,24 @@
 subroutine nummo1(nugene, modmec, nbmode, typrof)
-    implicit    none
-#include "jeveux.h"
 !
+implicit none
+!
+#include "asterfort/assert.h"
 #include "asterfort/crsmos.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
-    integer :: nbmode
-    character(len=8) :: modmec
-    character(len=*) :: typrof
-    character(len=14) :: nugene
-    character(len=19) :: prgene, stomor
-!-----------------------------------------------------------------------
+#include "asterfort/profgene_crsd.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +35,14 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!-----------------------------------------------------------------------
+!
+    integer, intent(in) :: nbmode
+    character(len=8), intent(in) :: modmec
+    character(len=*), intent(in) :: typrof
+    character(len=14), intent(in) :: nugene
+!
+! --------------------------------------------------------------------------------------------------
+!
 !    BUT: < NUMEROTATION GENERALISEE >
 !
 !    DETERMINER LA NUMEROTATION GENERALISEE A PARTIR D'UN MODE_MECA
@@ -46,97 +52,47 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 ! IN : MODMEC : NOM K8 DU MODE_MECA OU DU MODE_GENE
 ! IN : NBMODE : NOMBRE DE MODES
 ! IN : TYPROF : TYPE DE STOCKAGE
-!-----------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=19) :: prof_gene, stomor
+    character(len=24) :: lili, orig, prno
+    integer :: i_ligr_link, i_ligr_sstr
+    integer, pointer :: prgene_orig(:) => null()
+    integer, pointer :: prgene_prno(:) => null()
 !
-    integer :: ibid, jrefn, jdesc, ldnequ, ldors, ldprs, ldorl, ldprl, lddeeq
-    integer :: ldnueq, j, lddelg
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    prgene=nugene//'.NUME'
+    prof_gene=nugene//'.NUME'
     stomor=nugene//'.SMOS'
+    lili=prof_gene//'.LILI'
+    orig=prof_gene//'.ORIG'
+    prno=prof_gene//'.PRNO'
 !
-!-----CREATION DU .REFN
+! - Create PROF_GENE
 !
-    call wkvect(prgene//'.REFN', 'G V K24', 4, jrefn)
-    zk24(jrefn)=modmec
-    zk24(jrefn+1)='DEPL_R'
+    call profgene_crsd(prof_gene, 'G', nbmode, nb_sstr = 1, nb_link = 1,&
+                       model_genez = modmec, gran_namez = 'DEPL_R')
 !
-!-----CREATION DU .DESC
+! - Set sub_structures
 !
-    call wkvect(prgene//'.DESC', 'G V I', 1, jdesc)
-    zi(jdesc)=2
+    call jenonu(jexnom(lili, '&SOUSSTR'), i_ligr_sstr)
+    ASSERT(i_ligr_sstr.eq.1)
+    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi = prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi = prgene_orig)
+    prgene_prno(1) = 1
+    prgene_prno(2) = nbmode
+    prgene_orig(1) = 1
 !
-!---------------------------DECLARATION JEVEUX--------------------------
+! - Set links
 !
-!     CREATION DE LA COLLECTION .LILI
-!
-    call jecreo(prgene//'.LILI', 'G N K8')
-    call jeecra(prgene//'.LILI', 'NOMMAX', 2)
-    call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
-    call jecroc(jexnom(prgene//'.LILI', 'LIAISONS'))
-!
-!     CREATION DES COLLECTIONS
-!
-    call jecrec(prgene//'.PRNO', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                2)
-    call jecrec(prgene//'.ORIG', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                2)
-!
-!------RECUPERATION DES DIMENSIONS PRINCIPALES
-!
-    call wkvect(prgene//'.NEQU', 'G V I', 1, ldnequ)
-    zi(ldnequ)=nbmode
-!
-!-----ECRITURE DIMENSIONS
-!
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-!
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprs)
-!
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldors)
-!
-    call jenonu(jexnom(prgene//'.LILI', 'LIAISONS'), ibid)
-!
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprl)
-!
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldorl)
-!
-    zi(ldors)=1
-    zi(ldprs)=1
-    zi(ldprs+1)=nbmode
-    zi(ldorl)=1
-    zi(ldorl+1)=1
-    zi(ldprl)=0
-    zi(ldprl+1)=0
-!
-!-----BOUCLES DE COMPTAGE DES DDL
-!
-!
-!-----ALLOCATIONS DIVERSES
-!
-    call wkvect(prgene//'.DELG', 'G V I', nbmode, lddelg)
-    call wkvect(prgene//'.DEEQ', 'G V I', nbmode*2, lddeeq)
-    call wkvect(prgene//'.NUEQ', 'G V I', nbmode, ldnueq)
-!
-!     REMPLISSAGE DU .DEEQ ET DU .NUEQ
-!
-    do 10 j = 1, nbmode
-        zi(ldnueq+j-1)=j
-        zi(lddelg+j-1)=0
-        zi(lddeeq+2*j-1)=1
-        zi(lddeeq+2*j-2)=j
-10  end do
-!
+    call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_orig)
+    prgene_prno(1) = 0
+    prgene_orig(1) = 1
 !
 !     CREATION DU STOCKAGE MORSE :
     call crsmos(stomor, typrof, nbmode)
-!
-    call jedema()
+
 end subroutine

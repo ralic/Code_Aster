@@ -26,7 +26,6 @@ subroutine nugeel(nugene, modgen)
 !     SIZLIA  : NB DE DDL POUR CHAQUE SOUS STRUCTURE
 !     SST      : NOMS DES SOUS STRUCTURES, DANS L'ORDRE D'ASSEMBLAGE
 !
-!      IMPLICIT REAL*8(A-H,O-Z)
     implicit none
 !
 !  DETERMINER LA NUMEROTATION DES DEGRES DE LIBERTE GENERALISES
@@ -41,6 +40,7 @@ subroutine nugeel(nugene, modgen)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/indlia.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jecrec.h"
@@ -56,16 +56,17 @@ subroutine nugeel(nugene, modgen)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/profgene_crsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
 !
-    integer :: lddelg, nindep, nbddl
+    integer :: nindep, nbddl, nb_sstr
     character(len=6) :: pgc
     character(len=8) :: modgen, sst1, sst2
     character(len=14) :: nugene
-    character(len=19) :: prgene
+    character(len=19) :: prof_gene
     character(len=24) :: defli, nomsst, sizlia, sst
     character(len=24) :: valk, seliai
     aster_logical :: pbcone
@@ -74,9 +75,11 @@ subroutine nugeel(nugene, modgen)
 !---------- VARIABLES PERSOS -------------------------------------------
 !
 !
-    integer :: lsilia, lsst, i1, j1, ibid, jrefn, lddesc, imes, nblia, nbsst
-    integer :: icomp, ldprs, ldors, ldnequ, lddeeq, ldnueq, ltssnb, ltlia, nulia
+    integer :: lsilia, lsst, i1, j1, imes, nblia, nbsst
+    integer :: icomp, ltssnb, ltlia, nulia, i_ligr_sstr
     integer :: nusst1, nusst2, nusst, ltsst, lldefl
+    integer, pointer :: prgene_orig(:) => null()
+    integer, pointer :: prgene_prno(:) => null()
 !
 !
 !-----------------------------------------------------------------------
@@ -91,60 +94,15 @@ subroutine nugeel(nugene, modgen)
     defli=modgen//'      .MODG.LIDF'
     nomsst=modgen//'      .MODG.SSNO'
 !
-!--------------------CREATION DU .REFN----------------------------------
-!                       ET DU DESC
-    prgene=nugene//'.NUME'
-    call wkvect(prgene//'.REFN', 'G V K24', 4, jrefn)
-    zk24(jrefn)=modgen
-    zk24(jrefn+1)='DEPL_R'
-!
-!--  CONSTRUCTION D'UN MODELE GENE BIDONS POUR AUTORISER
-!--  LA RECHERCHE DE MODES RIGIDES (OPTION='MODE_RIGIDE'
-!--  DANS MODE_ITER_SIMULT)
-!
-    call wkvect(prgene//'.DESC', 'G V I', 1, lddesc)
-    zi(lddesc)=2
-!
-!
-!---------------------------DECLARATION JEVEUX--------------------------
-!
-    call jecreo(prgene//'.LILI', 'G N K8')
-!      CALL JEECRA(PRGENE//'.LILI','NOMMAX',2,K8BID)
-    call jeecra(prgene//'.LILI', 'NOMMAX', 1)
-!
-    call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
-!      CALL JECROC(JEXNOM(PRGENE//'.LILI','LIAISONS'))
-!
-!
-!      CALL JECREC(PRGENE//'.PRNO','G V I','NU','DISPERSE','VARIABLE',2)
-!      CALL JECREC(PRGENE//'.ORIG','G V I','NU','DISPERSE','VARIABLE',2)
-    call jecrec(prgene//'.PRNO', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                1)
-    call jecrec(prgene//'.ORIG', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                1)
-!
-!
-!
 !----------------------RECUPERATION DES DIMENSIONS PRINCIPALES----------
 !
     call jelira(defli, 'NMAXOC', nblia)
     call jelira(nomsst, 'NOMMAX', nbsst)
-!
-!-----------------------------ECRITURE DIMENSIONS-----------------------
-!
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-!      CALL JEECRA(JEXNUM(PRGENE//'.PRNO',IBID),'LONMAX',NBSST*2,' ')
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
-!
-!      CALL JENONU(JEXNOM(PRGENE//'.LILI','LIAISONS'),IBID)
-!      CALL JEECRA(JEXNUM(PRGENE//'.PRNO',IBID),'LONMAX',1,' ')
-!
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-!      CALL JEECRA(JEXNUM(PRGENE//'.ORIG',IBID),'LONMAX',NBSST,' ')
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 1)
-!
-!      CALL JENONU(JEXNOM(PRGENE//'.LILI','LIAISONS'),IBID)
-!      CALL JEECRA(JEXNUM(PRGENE//'.ORIG',IBID),'LONMAX',1,' ')
+   
+!  ON REMPLIT LE NUME_DDL COMME S'IL N'Y AVAIT QU'UNE SEULE SOUS
+!  STRUCTURE. 
+    nb_sstr = 1
+
 !
 !
 !
@@ -155,9 +113,6 @@ subroutine nugeel(nugene, modgen)
 !--                                                            --C
 !----------------------------------------------------------------C
 !
-!      SELIAI= '&&'//NUGENE(1:8)//'PROJ_EQ_LIAI'
-!      SIZLIA='&&'//NUGENE(1:8)//'VECT_SIZE_SS'
-!      SST=    '&&'//NUGENE(1:8)//'VECT_NOM_SS'
     seliai=nugene(1:14)//'.ELIM.BASE'
     sizlia=nugene(1:14)//'.ELIM.TAIL'
     sst=   nugene(1:14)//'.ELIM.NOMS'
@@ -165,43 +120,39 @@ subroutine nugeel(nugene, modgen)
     call indlia(modgen, seliai, nindep, nbddl, sst,&
                 sizlia)
 !
+! - Create PROF_GENE
+!   
+    prof_gene=nugene//'.NUME'
+    call profgene_crsd(prof_gene, 'G', nindep, nb_sstr = nb_sstr, nb_link = 0,&
+                       model_genez = modgen, gran_namez = 'DEPL_R')
+!
+! - Set sub_structures
+!
+    call jenonu(jexnom(prof_gene//'.LILI', '&SOUSSTR'), i_ligr_sstr)
+    ASSERT(i_ligr_sstr.eq.1)
+    call jeveuo(jexnum(prof_gene//'.PRNO', i_ligr_sstr), 'E', vi = prgene_prno)
+    call jeveuo(jexnum(prof_gene//'.ORIG', i_ligr_sstr), 'E', vi = prgene_orig)
+    prgene_prno(1) = 1
+    prgene_prno(2) = nindep
+    prgene_orig(1) = 1
+
+
+!
 !----------------------BOUCLES DE COMPTAGE DES DDL----------------------
 !
     icomp=0
-!
-!   BOUCLE SUR LES SOUS-STRUCTURES
-!
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprs)
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldors)
+
 !
     call jeveuo(sizlia, 'L', lsilia)
     call jeveuo(sst, 'L', lsst)
-!
-    zi(ldors)=1
-    zi(ldprs)=1
-    zi(ldprs+1)=nindep
 !
     write (imes,*)'+++ NOMBRE DE SOUS-STRUSTURES: ',nbsst
     write (imes,*)'+++ NOMBRE DE LIAISONS: ',nblia
 !
 !
-    call wkvect(prgene//'.NEQU', 'G V I', 1, ldnequ)
-    zi(ldnequ)=nindep
-!
-!
 !
 !------------------------ALLOCATIONS DIVERSES---------------------------
 !
-    call wkvect(prgene//'.DEEQ', 'G V I', nindep*2, lddeeq)
-!
-    call wkvect(prgene//'.NUEQ', 'G V I', nindep, ldnueq)
-    call wkvect(prgene//'.DELG', 'G V I', nindep, lddelg)
-    do 20 i1 = 1, nindep
-        zi(ldnueq+i1-1)=i1
-        zi(lddelg+i1-1)=0
- 20 end do
 !
     call wkvect('&&'//pgc//'.SST.NBLIA', 'V V I', nbsst, ltssnb)
 !
@@ -218,7 +169,7 @@ subroutine nugeel(nugene, modgen)
 !   ON CONSERVE POUR DETECTER LES SOUS STRUCTURES NON CONNECTEES
 !
 !
-    do 30 i1 = 1, nblia*2
+    do i1 = 1, nblia*2
         nulia=int((i1-1)/2)+1
         call jeveuo(jexnum(defli, nulia), 'L', lldefl)
         sst1=zk8(lldefl)
@@ -229,7 +180,7 @@ subroutine nugeel(nugene, modgen)
         zi(ltssnb+nusst1-1)=1
         zi(ltssnb+nusst2-1)=1
         zi(ltlia+i1-1)=max(nusst1,nusst2)
- 30 end do
+    end do
 !
 !   BOUCLE PERMETTANT DE DETERMINER L'INVERSE
 !   NUMERO TARDIF  SOUS-STRUCTURE --> NUMEROS TARDIF LIAISONS
@@ -238,7 +189,7 @@ subroutine nugeel(nugene, modgen)
 !   ET POUR DETECTER LES SOUS-STRUCTURES NON CONNECTEES
 !
     pbcone=.false.
-    do 50 i1 = 1, nbsst
+    do i1 = 1, nbsst
         icomp=0
         call jenonu(jexnom(nomsst, zk8(lsst+i1-1)), nusst)
         if (zi(ltssnb+nusst-1) .eq. 0) then
@@ -249,13 +200,13 @@ subroutine nugeel(nugene, modgen)
         endif
         call jecroc(jexnum('&&'//pgc//'.SST.LIA', i1))
         call jeveuo(jexnum('&&'//pgc//'.SST.LIA', i1), 'E', ltsst)
-        do 40 j1 = 1, nblia*2
+        do j1 = 1, nblia*2
             if (zi(ltlia+j1-1) .eq. nusst) then
                 icomp=icomp+1
                 zi(ltsst+icomp-1)=j1
             endif
- 40     continue
- 50 end do
+        end do
+    end do
 !
     if (pbcone) then
         call utmess('F', 'ALGORITH13_76')
@@ -267,10 +218,6 @@ subroutine nugeel(nugene, modgen)
 !--------------------REMPLISSAGE DES NUMERO D'EQUATION-----------------
 !
 !
-    do 120 i1 = 1, nindep
-        zi(lddeeq+(i1-1)*2)=i1
-        zi(lddeeq+(i1-1)*2+1)=1
-120 end do
 !
     call jedema()
 end subroutine

@@ -1,4 +1,4 @@
-subroutine genugl(profno, indirf, modgen, mailsk)
+subroutine genugl(prof_chno, indirf, modgen, mailsk)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !-----------------------------------------------------------------------
 !
-! PROFNO  /I/ : NOM K19 DU PROF_CHNO A CREER
+! PROF_CHNO   /I/: NOM K19 DU PROF_CHNO A CREER
 ! INDIRF  /I/ : NOM K24 DE LA FAMILLE DES INDIRECTIONS A CREER
 ! MODGEN  /I/ : NOM DU MODELE GENERALISE EN AMONT
 ! MAILSK  /I/ : NOM DU MAILLAGE SKELETTE
@@ -39,6 +39,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"
@@ -56,12 +57,13 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/utmess.h"
+#include "asterfort/profchno_crsd.h"
 #include "asterfort/wkvect.h"
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icomp, iddn, idds, iec, ieq
+    integer :: i, icomp, iddn, idds, iec, ieq, i_ligr_mesh, ibid, i_ligr_link
     integer :: ipoint, j, k, lddeeq, ldinse, ldnueq
     integer :: ldprno, linueq,   llprno, lttds, nbcmp
     integer :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
@@ -71,7 +73,7 @@ subroutine genugl(profno, indirf, modgen, mailsk)
     character(len=6) :: pgc
     character(len=8) :: mailsk, modgen, kbid
     character(len=8) :: k8bid
-    character(len=19) :: numddl, profno
+    character(len=19) :: numddl, prof_chno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx)
     integer, pointer :: vnueq(:) => null()
@@ -133,19 +135,24 @@ subroutine genugl(profno, indirf, modgen, mailsk)
 !
 !-----ALLOCATION DES DIVERS OBJETS-------------------------------------
 !
-    lili=profno//'.LILI'
-    prno=profno//'.PRNO'
-    deeq=profno//'.DEEQ'
-    nueq=profno//'.NUEQ'
+    lili=prof_chno//'.LILI'
+    prno=prof_chno//'.PRNO'
+    deeq=prof_chno//'.DEEQ'
+    nueq=prof_chno//'.NUEQ'
 !
-    call jecreo(lili, 'G N K24')
-    call jeecra(lili, 'NOMMAX', 2)
-    call wkvect(deeq, 'G V I', nddlt*2, lddeeq)
-    call wkvect(nueq, 'G V I', nddlt, ldnueq)
-    call jecrec(prno, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                2)
-    call jecroc(jexnom(prno(1:19)//'.LILI', '&MAILLA'))
-    call jecroc(jexnom(prno(1:19)//'.LILI', 'LIAISONS'))
+! - Create PROF_CHNO
+!
+    call profchno_crsd(prof_chno, 'G', nb_equa = nddlt, nb_ligrz = 2,&
+                       prno_lengthz = nbnot*(2+nbec))
+    call jeveuo(deeq, 'E', lddeeq)
+    call jeveuo(nueq, 'E', ldnueq)
+!
+! - Create object LIAISON
+!
+    call jecroc(jexnom(lili, 'LIAISONS'))
+    call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
+    call jeecra(jexnum(prno, i_ligr_link), 'LONMAX', 1)
+
     call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
                 nbsst)
 !
@@ -157,16 +164,10 @@ subroutine genugl(profno, indirf, modgen, mailsk)
         endif
     end do
 !
-!-----REMPLISSAGE DES OBJETS EVIDENTS-----------------------------------
-!
-    call jeecra(jexnum(prno, 1), 'LONMAX', nbnot*(2+nbec))
-    call jeecra(jexnum(prno, 2), 'LONMAX', 1)
-    call jeecra(prno, 'LONT', nbnot*(2+nbec)+1)
-!
 !-----REMPLISSAGE DES OBJETS--------------------------------------------
 !
-    call jenonu(jexnom(prno(1:19)//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(prno, ibid), 'E', ldprno)
+    call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(prno, i_ligr_mesh), 'E', ldprno)
 !
     icomp=0
 !

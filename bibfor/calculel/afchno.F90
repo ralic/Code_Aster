@@ -65,7 +65,7 @@ subroutine afchno(chamn, base, gran, noma, nbnoeu,&
 !
 !     --- CONSTRUCTION DU PROF_CHNO ---
 !
-    call crprno(chamno, base, nbnoeu, lonval)
+    call crprno(chamno, base, noma, gran, lonval)
 !
 !     --- AFFECTATION DU .PRNO DE L'OBJET PROF_CHNO ---
 !

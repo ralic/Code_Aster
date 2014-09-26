@@ -180,7 +180,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
     ssami='&&MASS91'
 !
     call wkvect(coint, 'V V I', sizeco, lconnc)
-    call conint(nume, raide, coint, sizeco, connec,&
+    call conint(nume, raide, coint, connec,&
                 noddli, nnoint, nume91, raiint, ssami)
 !
 !-------------------------------------------------C

@@ -95,8 +95,8 @@ implicit none
     character(len=19) :: nume_equa
     character(len=24) :: nequ, refn
     character(len=19) :: prof_chno
-    character(len=24) :: lili, prno, nueq
-    integer :: nb_node_mesh, ilim, itypel, nequa
+    character(len=24) :: lili, prno, nueq, deeq
+    integer :: nb_node_mesh, ilim, itypel, nequa, jdeeq
     integer :: i, iad,   ianueq,  icddlb
     integer :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
     integer :: idnequ, idnocm, idprn1, idprn2, idref
@@ -233,6 +233,7 @@ implicit none
     lili      = prof_chno(1:19)//'.LILI'
     prno      = prof_chno(1:19)//'.PRNO'
     nueq      = prof_chno(1:19)//'.NUEQ'
+    deeq      = prof_chno(1:19)//'.DEEQ'
     nume_equa = nume_ddl//'.NUME'
     nequ      = nume_equa(1:19)//'.NEQU'
     refn      = nume_equa(1:19)//'.REFN'
@@ -989,10 +990,16 @@ implicit none
 !
 ! - Create NUEQ object
 !
+    call jedetr(nueq)
     call wkvect(nueq, base(2:2)//' V I', nequa, ianueq)
     do i = 1, nequa
         zi(ianueq-1+i) = i
     end do
+!
+! - Create .DEEQ object
+!
+    call jedetr(deeq)
+    call wkvect(deeq, base(2:2)//' V I', 2*nequa, jdeeq)
 !
 ! - Set DEEQ and DELG objects with non-physical nodes
 !

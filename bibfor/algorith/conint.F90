@@ -1,5 +1,5 @@
-subroutine conint(nume, raide, coint, sizeco, connec,&
-                  noddli, nnoint, nume91, raiint, ssami)
+subroutine conint(nume, raide, coint, connec,&
+                  noddli, nnoint, nume_gene, raiint, ssami)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !  NODDLI  /I/ : NOM DU VECTEUR CONTENANT LES NOEUD ET LES DDL
 !                    D'INTERFACE
 !  NNOINT   /I/ : NOMBRE DE NOEUDS D'INTERFACE
-!  NUME91    /O/ : NUME_DDL_GENE DES OPERATEURS D'INTERFACE
+!  nume_gene    /O/ : NUME_DDL_GENE DES OPERATEURS D'INTERFACE
 !  RAIINT   /O/ : MATRICE DE RAIDEUR DU MODELE D'INTERFACE
 !  SSAMI   /O/ : MATRICE DE MASSE DU MODELE D'INTERFACE
 !
@@ -60,25 +60,26 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/matint.h"
+#include "asterfort/profgene_crsd.h"
 #include "asterfort/wkvect.h"
 !
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    integer :: sizeco, connec, nnoint
-    character(len=14) :: nume, nume91
+    integer :: connec, nnoint
+    character(len=14) :: nume, nume_gene
     character(len=24) :: coint, noddli
     character(len=19) :: raide
 !
 !-- VARIABLES DE LA ROUTINE
     integer :: ibid, i1, j1, k1, l1, m1, n1, lraide, lsmdi, lsmhc, neq
     integer :: lprno, lnddli, ipos1, ipos2, noeu, nbec, icon1, icon2, noeuco
-    integer :: numno, lconnc, lrefn, ldprs, ldors, lddeeq,  ldnueq, lddelg
-    integer :: neqddl, nozero, no1, no2,  indeq, ismhc, indddl, neqd2
-    integer :: nbvois, iret, nbvmax,  lraint, lmaint
+    integer :: numno, lconnc
+    integer :: neqddl, nozero, no1, no2, indeq, ismhc, indddl, neqd2
+    integer :: nbvois, iret, nbvmax, lraint, lmaint
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
     real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3)
     character(len=8) :: nomma
-    character(len=19) :: prgene, prno, raiint, ssami, solveu
+    character(len=19) :: prof_gene, prof_chno, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
     integer, pointer :: ipos_ddl_interf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -98,18 +99,12 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
 !--                            --C
 !--------------------------------C
 !
-!
-!--------------------CREATION DU .REFN----------------------------------
-!                       ET DU DESC
-    prgene=nume91//'.NUME'
-    call wkvect(prgene//'.REFN', 'V V K24', 4, lrefn)
-    zk24(lrefn)='&&MODL91'
-    zk24(lrefn+1)='DEPL_R'
-    call wkvect(prgene//'.DESC', 'V V I', 1, ibid)
-    zi(ibid)=2
+
+    prof_gene=nume_gene//'.NUME'
+
 !
 !-- CREATION D'UN MODELE_GENE MINIMALISTE
-    call wkvect(prgene//'.REFE', 'V V K24', 4, ibid)
+    call wkvect(prof_gene//'.REFE', 'V V K24', 4, ibid)
     zk24(ibid)='&&MODL91'
 !-- ET ON REMPLIT AVEC JUSTE LES INFOS UTILES POUR RGNDAS.F
     repsst='&&MODL91      .MODG.SSNO'
@@ -126,26 +121,13 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     zk8(ibid)='MODLINTF'
 !-- FIN DU MODELE_GENE
 !
-    call jecreo(prgene//'.LILI', 'V N K8')
-    call jeecra(prgene//'.LILI', 'NOMMAX', 1)
-    call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
-    call jecrec(prgene//'.PRNO', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                1)
-    call jecrec(prgene//'.ORIG', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                1)
+
 !
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 1)
-!
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprs)
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldors)
-!
-    zi(ldors)=1
-    zi(ldprs)=1
+! - Create PROF_GENE
+!   
+    neq=6*nnoint
+    call profgene_crsd(prof_gene, 'V', neq, nb_sstr = 1, nb_link = 0,&
+                       model_genez = '&&MODL91', gran_namez = 'DEPL_R')
 !
 !-------------------------------------C
 !--                                 --C
@@ -158,8 +140,8 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     call jeveuo(jexnum(raide//'.VALM', 1), 'L', lraide)
     call jeveuo(nume//'.SMOS.SMDI', 'L', lsmdi)
     call jeveuo(nume//'.SMOS.SMHC', 'L', lsmhc)
-    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prno)
-    call jeveuo(jexnum(prno//'.PRNO', 1), 'L', lprno)
+    call dismoi('PROF_CHNO', nume, 'NUME_DDL', repk=prof_chno)
+    call jeveuo(jexnum(prof_chno//'.PRNO', 1), 'L', lprno)
 !
 !-- BOUCLE SUR LES NOEUDS D'INTERFACE
 !
@@ -215,30 +197,15 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     neq=6*nnoint
     nozero=21*nnoint+36*connec
 !
-    zi(ldprs+1)=neq
-    call wkvect(prgene//'.NEQU', 'V V I', 1, ibid)
-    zi(ibid)=neq
-!
-    call wkvect(prgene//'.DEEQ', 'V V I', neq*2, lddeeq)
-    call wkvect(prgene//'.NUEQ', 'V V I', neq, ldnueq)
-    call wkvect(prgene//'.DELG', 'V V I', neq, lddelg)
-!
-    do i1 = 1, neq
-        zi(ldnueq+i1-1)=i1
-        zi(lddelg+i1-1)=0
-        zi(lddeeq+(i1-1)*2)=i1
-        zi(lddeeq+(i1-1)*2+1)=1
-    end do
-!
 !-- CONSTRUCTION DU .SMDE
-    call wkvect(nume91//'.SMOS.SMDE', 'V V I', 6, ibid)
+    call wkvect(nume_gene//'.SMOS.SMDE', 'V V I', 6, ibid)
     zi(ibid)=neq
     zi(ibid+1)=nozero
     zi(ibid+2)=1
 !
 !-- CONSTRUCTION DU .SMDI ET DU .SMHC
-    call wkvect(nume91//'.SMOS.SMDI', 'V V I', neq, lsmdi)
-    call wkvect(nume91//'.SMOS.SMHC', 'V V S', nozero, lsmhc)
+    call wkvect(nume_gene//'.SMOS.SMDI', 'V V I', neq, lsmdi)
+    call wkvect(nume_gene//'.SMOS.SMHC', 'V V S', nozero, lsmhc)
 !
     call jeveuo('&&MOIN93.IND_NOEUD', 'E', vi=ind_noeud)
     call jeveuo('&&MOIN93.IPOS_DDL_INTERF', 'E', vi=ipos_ddl_interf)
@@ -283,7 +250,7 @@ subroutine conint(nume, raide, coint, sizeco, connec,&
     end do
 !
 !-- CREATION DU SOLVEUR
-    solveu=nume91//'.SOLV'
+    solveu=nume_gene//'.SOLV'
 !
 !-- TEST SUR LA PRESENCE DE MUMPS POUR ACCELERER LE CALCUL
     call haslib('MUMPS', iret)

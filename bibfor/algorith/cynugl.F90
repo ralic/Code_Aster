@@ -1,4 +1,4 @@
-subroutine cynugl(profno, indirf, modcyc, mailsk)
+subroutine cynugl(prof_chno, indirf, modcyc, mailsk)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 ! NOM----- / /:
 !
-! PROFNO   /I/: NOM K19 DU PROF_CHNO A CREER
+! PROF_CHNO   /I/: NOM K19 DU PROF_CHNO A CREER
 ! INDIRF   /I/: NOM K24 DE LA FAMILLE DES INDIRECTIONS A CREER
 ! MODCYC   /I/: NOM DU RESULTAT CYCLIQUE EN AMONT
 ! MAILSK   /I/: NOM DU MAILLAGE SKELETTE
@@ -43,6 +43,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"
@@ -57,13 +58,14 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/profchno_crsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, icomp, iec, ieq, ipoint
+    integer :: i, iad, icomp, iec, ieq, ipoint, i_ligr_mesh, i_ligr_link
     integer :: j, lddeeq, ldnueq, ldprno, linueq
     integer ::   llprno,  ltinse, lttds
     integer :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
@@ -72,7 +74,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
     parameter    (nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, basmod, intf
-    character(len=19) :: numddl, profno
+    character(len=19) :: numddl, prof_chno, prnosect
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx)
     character(len=24), pointer :: cycl_refe(:) => null()
@@ -89,10 +91,10 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !-------------------RECUPERATION DE LA BASE MODALE----------------------
 !
     call jeveuo(modcyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
-    basmod=cycl_refe(3)
+    basmod=cycl_refe(3)(1:8)
     call jelibe(modcyc//'.CYCL_REFE')
 !
-!----------------RECUPERATION DU NUMDDLET DE L'INTERF_DYNA--------------
+!----------------RECUPERATION DU NUMDDL ET DE L'INTERF_DYNA--------------
 !
 !
 !
@@ -105,9 +107,7 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
     call dismoi('NB_CMP_MAX', intf, 'INTERF_DYNA', repi=nbcmp)
     call dismoi('NB_EC', intf, 'INTERF_DYNA', repi=nbec)
-    if (nbec .gt. 10) then
-        call utmess('F', 'MODELISA_94')
-    endif
+    ASSERT(nbec.le.10)
 !
 !---------------RECUPERATION DU NOMBRE DE SECTEURS----------------------
 !
@@ -126,11 +126,10 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !--------------RECUPERATION DU PRNO DU SECTEUR--------------------------
 !
-!----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
-    numddl(15:19)='.NUME'
-    call jenonu(jexnom(numddl//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(numddl//'.PRNO', ibid), 'L', llprno)
-    call jeveuo(numddl//'.NUEQ', 'L', vi=vnueq)
+    prnosect = numddl(1:14)//'.NUME'
+    call jenonu(jexnom(prnosect//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(prnosect//'.PRNO', i_ligr_mesh), 'L', llprno)
+    call jeveuo(prnosect//'.NUEQ', 'L', vi=vnueq)
     call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neqsec)
 !
 !--------------------ALLOCATION DU VECTEUR DE TRAVAIL-------------------
@@ -151,26 +150,24 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
-    lili=profno//'.LILI'
-    prno=profno//'.PRNO'
-    deeq=profno//'.DEEQ'
-    nueq=profno//'.NUEQ'
+    lili=prof_chno//'.LILI'
+    prno=prof_chno//'.PRNO'
+    deeq=prof_chno//'.DEEQ'
+    nueq=prof_chno//'.NUEQ'
 !
-    call jecreo(lili, 'G N K24')
-    call jeecra(lili, 'NOMMAX', 2)
+! - Create PROF_CHNO
 !
+    call profchno_crsd(prof_chno, 'G', nb_equa = nddlt, nb_ligrz = 2,&
+                       prno_lengthz = nbnot*(2+nbec))
+    call jeveuo(deeq, 'E', lddeeq)
+    call jeveuo(nueq, 'E', ldnueq)
 !
-    call wkvect(deeq, 'G V I', nddlt*2, lddeeq)
+! - Create object LIAISON
 !
-!
-    call wkvect(nueq, 'G V I', nddlt, ldnueq)
-!
-    call jecrec(prno, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                2)
-!
-!
-    call jecroc(jexnom(prno(1:19)//'.LILI', '&MAILLA'))
-    call jecroc(jexnom(prno(1:19)//'.LILI', 'LIAISONS'))
+    call jecroc(jexnom(lili, 'LIAISONS'))
+    call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
+    call jeecra(jexnum(prno, i_ligr_link), 'LONMAX', 1)
+
 !
 !
     call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
@@ -184,19 +181,12 @@ subroutine cynugl(profno, indirf, modcyc, mailsk)
         zi(lttds+i-1)=0
     end do
 !
-!
-!---------------REMPLISSAGE DES OBJETS EVIDENTS-------------------------
-!
-    call jeecra(jexnum(prno, 1), 'LONMAX', nbnot*(2+nbec))
-    call jeecra(jexnum(prno, 2), 'LONMAX', 1)
-    call jeecra(prno, 'LONT', nbnot*(2+nbec)+1)
-!
 !-------------------------REMPLISSAGE DES OBJETS------------------------
 !  SUPPOSE QUE LES NOEUDS GLOBAUX SONT RANGES PAR SOUS-STRUCTURES
 !
 !
-    call jenonu(jexnom(prno(1:19)//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(prno, ibid), 'E', ldprno)
+    call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(prno, i_ligr_mesh), 'E', ldprno)
 !
     nsecpr=1
     call jeveuo(jexnum(indirf, nsecpr), 'E', ltinse)

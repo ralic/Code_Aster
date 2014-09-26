@@ -1,5 +1,4 @@
-subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
-                  nbmcal)
+subroutine cynupl(prof_chno, indirf, modcyc, mailsk, nbsec)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +35,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 ! NOM----- / /:
 !
-! PROFNO   /I/: NOM K19 DU PROF_CHNO A CREER
+! PROF_CHNO   /I/: NOM K19 DU PROF_CHNO A CREER
 ! INDIRF   /I/: NOM K24 DE LA FAMILLE DES INDIRECTIONS A CREER
 ! MODCYC   /I/: NOM DU RESULTAT CYCLIQUE EN AMONT
 ! MAILSK   /I/: NOM DU MAILLAGE SKELETTE
@@ -46,6 +45,7 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"
@@ -63,21 +63,22 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 #include "asterfort/nbec.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
+#include "asterfort/profchno_crsd.h"
 #include "asterfort/wkvect.h"
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, icomp, iec, ieq, ier
+    integer :: i, iad, icomp, iec, ieq, ier, i_ligr_mesh, i_ligr_link
     integer :: ipoint, j, lddeeq, ldnueq, ldprno, linueq
     integer ::   llprno, ltinse, lttds, nbcmp, nbcpmx
-    integer :: nbddl, nbmcal, nbnot, nbsec, nddlt, neqsec, nsecpr
+    integer :: nbddl, nbnot, nbsec, nddlt, neqsec, nsecpr
     integer :: ntail, nugd, numnos, numsec
 !-----------------------------------------------------------------------
     parameter    (nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, nomgd
-    character(len=19) :: pfchno, profno, chamno
+    character(len=19) :: prof_chno_sec, prof_chno, chamno
     character(len=24) :: indirf, lili, prno, deeq, nueq
     integer :: idec(nbcpmx), nec
     integer, pointer :: skeleton(:) => null()
@@ -92,18 +93,16 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !----------------RECUPERATION DU PROF_CHNO:
     call rsexch('F', modcyc, 'DEPL', 1, chamno,&
                 ier)
-    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=pfchno)
+    call dismoi('PROF_CHNO', chamno, 'CHAM_NO', repk=prof_chno_sec)
 !
 !---------------RECUPERATION DU NOMBRE DE COMPOSANTES-------------------
 !
 !     -- QUESTION "POURRIE" :
-    call dismoi('NOM_GD', pfchno, 'PROF_CHNO', repk=nomgd)
+    call dismoi('NOM_GD', prof_chno_sec, 'PROF_CHNO', repk=nomgd)
     call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
     call jenonu(jexnom('&CATA.GD.NOMGD', nomgd), nugd)
     nec = nbec(nugd)
-    if (nec .gt. 10) then
-        call utmess('F', 'MODELISA_94')
-    endif
+    ASSERT(nec.le.10)
 !
 !
 !-------------RECUPERATION DIMENSION MAILLAGE SQUELETTE-----------------
@@ -116,10 +115,10 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 !--------------RECUPERATION DU PRNO DU SECTEUR--------------------------
 !
-    call jenonu(jexnom(pfchno//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(pfchno//'.PRNO', ibid), 'L', llprno)
-    call jeveuo(pfchno//'.NUEQ', 'L', vi=vnueq)
-    call dismoi('NB_EQUA', pfchno, 'PROF_CHNO', repi=neqsec)
+    call jenonu(jexnom(prof_chno_sec//'.LILI', '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(prof_chno_sec//'.PRNO', i_ligr_mesh), 'L', llprno)
+    call jeveuo(prof_chno_sec//'.NUEQ', 'L', vi=vnueq)
+    call dismoi('NB_EQUA', prof_chno_sec, 'PROF_CHNO', repi=neqsec)
 !
 !--------------------ALLOCATION DU VECTEUR DE TRAVAIL-------------------
 !     POUR STOCKAGE NOMBRE DE DDL GLOBAUX ENGENDRE PAR SECTEUR
@@ -139,24 +138,23 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
 !
 !-----------------ALLOCATION DES DIVERS OBJETS--------------------------
 !
-    lili=profno//'.LILI'
-    prno=profno//'.PRNO'
-    deeq=profno//'.DEEQ'
-    nueq=profno//'.NUEQ'
+    lili=prof_chno//'.LILI'
+    prno=prof_chno//'.PRNO'
+    deeq=prof_chno//'.DEEQ'
+    nueq=prof_chno//'.NUEQ'
 !
-    call jecreo(lili, 'G N K24')
-    call jeecra(lili, 'NOMMAX', 2)
+! - Create PROF_CHNO
 !
-    call wkvect(deeq, 'G V I', nddlt*2, lddeeq)
+    call profchno_crsd(prof_chno, 'G', nb_equa = nddlt, nb_ligrz = 2,&
+                       prno_lengthz = nbnot*(2+nec))
+    call jeveuo(deeq, 'E', lddeeq)
+    call jeveuo(nueq, 'E', ldnueq)
 !
-    call wkvect(nueq, 'G V I', nddlt, ldnueq)
+! - Create object LIAISON
 !
-    call jecrec(prno, 'G V I', 'NU', 'CONTIG', 'VARIABLE',&
-                2)
-!
-!
-    call jecroc(jexnom(prno(1:19)//'.LILI', '&MAILLA'))
-    call jecroc(jexnom(prno(1:19)//'.LILI', 'LIAISONS'))
+    call jecroc(jexnom(lili, 'LIAISONS'))
+    call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
+    call jeecra(jexnum(prno, i_ligr_link), 'LONMAX', 1)
 !
 !
     call jecrec(indirf, 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
@@ -170,17 +168,10 @@ subroutine cynupl(profno, indirf, modcyc, mailsk, nbsec,&
         zi(lttds+i-1)=0
     end do
 !
-!
-!---------------REMPLISSAGE DES OBJETS EVIDENTS-------------------------
-!
-    call jeecra(jexnum(prno, 1), 'LONMAX', nbnot*(2+nec))
-    call jeecra(jexnum(prno, 2), 'LONMAX', 1)
-    call jeecra(prno, 'LONT', nbnot*(2+nec)+1)
-!
 !-------------------------REMPLISSAGE DES OBJETS------------------------
 !
-    call jenonu(jexnom(prno(1:19)//'.LILI', '&MAILLA'), ibid)
-    call jeveuo(jexnum(prno, ibid), 'E', ldprno)
+    call jenonu(jexnom(lili, '&MAILLA'), i_ligr_mesh)
+    call jeveuo(jexnum(prno, i_ligr_mesh), 'E', ldprno)
 !
     nsecpr=1
     call jeveuo(jexnum(indirf, nsecpr), 'E', ltinse)

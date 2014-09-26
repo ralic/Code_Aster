@@ -16,6 +16,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1304
 !-------------------------------------------------------------C
 !--                                                         --C
 !--  ROUTINE QUI REALISE L'EXPANSION DES MODES D'INTERFACE  --C
@@ -165,7 +166,7 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod,&
     call wkvect(coint, 'V V I', sizeco, lconnc)
     call wkvect('&&MOIN93.IND_NOEUD', 'V V I', zi(lnoint+nbno-1), lindno)
     call wkvect('&&MOIN93.IPOS_DDL_INTERF', 'V V I', nbno, lipos)
-    call conint(nume, raide, coint, sizeco, connec,&
+    call conint(nume, raide, coint, connec,&
                 noddli, nbno, nume91, raiint, ssami)
 !
 !-- CALCUL DES MODES DU MODELE D'INTERFACE

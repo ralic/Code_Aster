@@ -97,8 +97,7 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
 !
 !-------------------CREATION PROF_CHAMNO ET TABLES INDIRECTION----------
 !
-    call cynupl(profno, indirf, modcyc, mailla, nbsec,&
-                nbmcal)
+    call cynupl(profno, indirf, modcyc, mailla, nbsec)
 !
 !------------------------------RESTITUTION -----------------------------
 !

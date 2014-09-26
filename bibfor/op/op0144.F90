@@ -331,7 +331,7 @@ subroutine op0144()
 ! --------AU PREMIER PASSAGE CREATION DU PROF_CHNO
             if (io .eq. 1 .and. ipar .eq. 1) then
                 zk24(jcrefe+1) = cham19
-                call crprno(cham19, 'G', nbnoeu, long)
+                call crprno(cham19, 'G', mailla, gran, long)
                 call jeveuo(cham19//'.PRNO', 'E', vi=prno)
                 idec = 1
                 ii = 0

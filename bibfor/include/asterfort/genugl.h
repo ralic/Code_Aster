@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine genugl(profno, indirf, modgen, mailsk)
-        character(len=19) :: profno
+    subroutine genugl(prof_chno, indirf, modgen, mailsk)
+        character(len=19) :: prof_chno
         character(len=24) :: indirf
         character(len=8) :: modgen
         character(len=8) :: mailsk

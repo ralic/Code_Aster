@@ -34,6 +34,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 !
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/cresol.h"
 #include "asterfort/crnslv.h"
 #include "asterfort/jecrec.h"
@@ -46,6 +47,7 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/profgene_crsd.h"
 #include "asterfort/wkvect.h"
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
@@ -56,10 +58,13 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    character(len=19) :: prgene, solveu
-    character(len=8) :: k8bid
-    integer :: lddesc, ldnequ, jrefn, lddeeq, lddelg, jnslv
-    integer :: ldnueq, ibid, ldprno, ldorig, mrefa, mdesc, k, ismde
+    character(len=19) :: prof_gene, solveu
+    character(len=24) :: lili, orig, prno
+    integer :: i_ligr_link, i_ligr_sstr
+    integer, pointer :: prgene_orig(:) => null()
+    integer, pointer :: prgene_prno(:) => null()
+    integer :: jnslv
+    integer :: ibid, mrefa, mdesc, ismde
 !
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES PARAMETRES ET CREATION DU SOLVEUR
@@ -72,57 +77,34 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! --- CREATION DU NUME_DDL_GENE ASSOCIEE A LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
 ! --- CREATION DU PROF_GENE
-    prgene=numdrv//'.NUME'
-! --- DESC
-    call wkvect(prgene//'.DESC', 'V V I', 1, lddesc)
-    zi(lddesc)=2
-! --- NEQU
-    call wkvect(prgene//'.NEQU', 'V V I', 1, ldnequ)
-    zi(ldnequ)=ninc
-! --- REFN
-    call wkvect(prgene//'.REFN', 'V V K24', 4, jrefn)
-    zk24(jrefn+1)='DEPL_R'
-! --- DEEQ
-    call wkvect(prgene//'.DEEQ', 'V V I', ninc*2, lddeeq)
-    do k = 1, ninc
-        zi(lddeeq-1+(k-1)*2+1)=k
-        zi(lddeeq-1+(k-1)*2+2)=1
-    end do
-! --- DELG
-    call wkvect(prgene//'.DELG', 'V V I', ninc, lddelg)
-! --- LILI
-    call jecreo(prgene//'.LILI', 'V N K8')
-    call jeecra(prgene//'.LILI', 'NOMMAX', 2, k8bid)
-    call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
-    call jecroc(jexnom(prgene//'.LILI', 'LIAISONS'))
-! --- NUEQ
-    call wkvect(prgene//'.NUEQ', 'V V I', ninc, ldnueq)
-    do k = 1, ninc
-        zi(ldnueq-1+k)=k
-    end do
-! --- PRNO
-    call jecrec(prgene//'.PRNO', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                2)
-    call jecrec(prgene//'.ORIG', 'V V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                2)
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2, ' ')
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprno)
-    zi(ldprno-1+1)=1
-    zi(ldprno-1+2)=ninc
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2, ' ')
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldorig)
-    zi(ldorig-1+1)=1
-    zi(ldorig-1+2)=0
-    call jenonu(jexnom(prgene//'.LILI', 'LIAISONS'), ibid)
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2, ' ')
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprno)
-    zi(ldprno-1+1)=0
-    zi(ldprno-1+2)=0
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2, ' ')
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldorig)
-    zi(ldorig-1+1)=1
-    zi(ldorig-1+2)=1
+    prof_gene=numdrv//'.NUME'
+    lili=prof_gene//'.LILI'
+    orig=prof_gene//'.ORIG'
+    prno=prof_gene//'.PRNO'
+!
+! - Create PROF_GENE
+!
+    call profgene_crsd(prof_gene, 'V', ninc, nb_sstr = 1, nb_link = 1,&
+                       model_genez = ' ', gran_namez = 'DEPL_R')
+!
+! - Set sub_structures
+!
+    call jenonu(jexnom(lili, '&SOUSSTR'), i_ligr_sstr)
+    ASSERT(i_ligr_sstr.eq.1)
+    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi = prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi = prgene_orig)
+    prgene_prno(1) = 1
+    prgene_prno(2) = ninc
+    prgene_orig(1) = 1
+!
+! - Set links
+!
+    call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_orig)
+    prgene_prno(1) = 0
+    prgene_orig(1) = 1
+
 ! --- CREATION DU SMOS
     call wkvect(numdrv//'.SMOS.SMDI', 'V V I', ninc, ibid)
     call wkvect(numdrv//'.SMOS.SMDE', 'V V I', 3, ismde)

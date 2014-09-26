@@ -26,12 +26,13 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 #include "asterfort/assert.h"
 #include "asterfort/cmpcha.h"
 #include "asterfort/codent.h"
-#include "asterfort/crprn2.h"
+#include "asterfort/profchno_crsd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/idensd.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -210,7 +211,9 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
         endif
 !
 !       2.2 ALLOCATION DES OBJETS :
-        call crprn2(prchno, base, nbno, neq2, nec)
+        call profchno_crsd(prchno , base, neq2, meshz = ma,&
+                           gran_namez = nomgd, l_coll_const=.true.)
+        call jecroc(jexnum(prchno//'.PRNO', 1))
 !
 !       2.3 REMPLISSAGE DE .PRNO :
         call jeveuo(jexnum(prchno//'.PRNO', 1), 'E', jprn2)
@@ -429,3 +432,4 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
     call jedema()
 !     CALL UTIMSD(6,2,.TRUE.,.TRUE.,CNO,1,' ')
 end subroutine
+

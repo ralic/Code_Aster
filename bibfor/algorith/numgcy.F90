@@ -32,8 +32,8 @@ subroutine numgcy(nugene, modgen)
 !
 !
 #include "jeveux.h"
-!
 #include "asterfort/crsmos.h"
+#include "asterfort/assert.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -46,16 +46,20 @@ subroutine numgcy(nugene, modgen)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/profgene_crsd.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/wkvect.h"
 !
 !
     character(len=8) :: modgen, nomcou, kbid
     character(len=14) :: nugene
-    character(len=19) :: prgene, stomor
+    character(len=19) :: prof_gene, stomor
     character(len=24) :: defli, fprofl, nomsst
-    integer :: ibid, jrefn, lddesc, ldnequ, ldors, ldprs, ldorl, ldprl, lddeeq
-    integer :: ldnueq, i, j, lddelg
+    integer :: ibid, i, i_ligr_link, nb_link, nb_sstr, i_ligr_sstr
+    character(len=24) :: lili, prno, orig
+    integer, pointer :: prgene_orig(:) => null()
+    integer, pointer :: prgene_prno(:) => null()
+
 !
 !-----------------------------------------------------------------------
 !
@@ -72,38 +76,12 @@ subroutine numgcy(nugene, modgen)
     defli=modgen//'      .MODG.LIDF'
     fprofl=modgen//'      .MODG.LIPR'
     nomsst=modgen//'      .MODG.SSNO'
-    prgene=nugene//'.NUME'
+    prof_gene=nugene//'.NUME'
     stomor=nugene//'.SMOS'
-!
-!-----CREATION DU .REFN
-!
-    call wkvect(prgene//'.REFN', 'G V K24', 4, jrefn)
-    zk24(jrefn)=modgen
-    zk24(jrefn+1)='DEPL_R'
-!
-!-----CREATION DU .DESC
-!
-    call wkvect(prgene//'.DESC', 'G V I', 1, lddesc)
-    zi(lddesc)=2
-!
-!---------------------------DECLARATION JEVEUX--------------------------
-!
-!     CREATION DE LA COLLECTION .LILI
-!
-    call jecreo(prgene//'.LILI', 'G N K8')
-    call jeecra(prgene//'.LILI', 'NOMMAX', 2)
-    call jecroc(jexnom(prgene//'.LILI', '&SOUSSTR'))
-    call jecroc(jexnom(prgene//'.LILI', 'LIAISONS'))
-!
-!     CREATION DES COLLECTIONS
-!
-    call jecrec(prgene//'.PRNO', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                2)
-    call jecrec(prgene//'.ORIG', 'G V I', 'NU', 'DISPERSE', 'VARIABLE',&
-                2)
-!
-!------RECUPERATION DES DIMENSIONS PRINCIPALES
-    call wkvect(prgene//'.NEQU', 'G V I', 1, ldnequ)
+    lili=prof_gene//'.LILI'
+    prno=prof_gene//'.PRNO'
+    orig=prof_gene//'.ORIG'
+
 ! ON RECUPERE LE NOMBRE DE LIAISON
     call jelira(defli, 'NMAXOC', nblia)
 ! ON RECUPERE LE NOMBRE DE SOUS-STRUCTURE
@@ -119,71 +97,57 @@ subroutine numgcy(nugene, modgen)
 !
 !   BOUCLE SUR LES SOUS-STRUCTURES
 !
-    do 10 i = 1, nbsst
+    do i = 1, nbsst
         call mgutdm(modgen, kbid, i, 'NOM_MACR_ELEM', ibid,&
                     nomcou)
         call jeveuo(nomcou//'.MAEL_RAID_DESC', 'L', vi=mael_raid_desc)
         nbmod=mael_raid_desc(2)
         icomps=icomps+nbmod
-10  end do
+    end do
 !
 !   BOUCLE SUR LES LIAISONS
 !
     call jeveuo(fprofl, 'L', llprof)
-    do 20 i = 1, nblia
+    do i = 1, nblia
         nblig=zi(llprof+(i-1)*9)
         icompl=icompl+nblig
-20  end do
+    end do
 !
     neq=icomps-icompl
 !
-    zi(ldnequ)=neq
-!
-    write (ifimes,*)'+++ NOMBRE DE SOUS-STRUSTURES: ',nbsst
+    write (ifimes,*)'+++ NOMBRE DE SOUS-STRUCTURES: ',nbsst
     write (ifimes,*)'+++ NOMBRE DE LIAISONS: ',nblia
     write (ifimes,*)'+++ NOMBRE TOTAL D''EQUATIONS: ',neq
     write (ifimes,*)'+++ DONT NOMBRE D''EQUATIONS STRUCTURE: ',icomps
     write (ifimes,*)'+++ DONT NOMBRE D''EQUATIONS LIAISON: ',icompl
+!  ON REMPLIT LE NUME_DDL COMME S'IL N'Y AVAIT QU'UNE SEULE SOUS
+!  STRUCTURE. 
+    nb_sstr = 1
+    nb_link = 1
 !
-!-----ECRITURE DIMENSIONS
+! - Create PROF_GENE
 !
-    call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), ibid)
+    call profgene_crsd(prof_gene, 'G', neq, nb_sstr = nb_sstr, nb_link = nb_link,&
+                       model_genez = modgen, gran_namez = 'DEPL_R')
 !
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 2)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprs)
+! - Set sub_structures
 !
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 2)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldors)
+    call jenonu(jexnom(lili, '&SOUSSTR'), i_ligr_sstr)
+    ASSERT(i_ligr_sstr.eq.1)
+    call jeveuo(jexnum(prno, i_ligr_sstr), 'E', vi = prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_sstr), 'E', vi = prgene_orig)
+    prgene_prno(1) = 1
+    prgene_prno(2) = neq
+    prgene_orig(1) = 1
 !
-    call jenonu(jexnom(prgene//'.LILI', 'LIAISONS'), ibid)
+! - Set links
 !
-    call jeecra(jexnum(prgene//'.PRNO', ibid), 'LONMAX', 1)
-    call jeveuo(jexnum(prgene//'.PRNO', ibid), 'E', ldprl)
-!
-    call jeecra(jexnum(prgene//'.ORIG', ibid), 'LONMAX', 1)
-    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'E', ldorl)
-!
-    zi(ldors)=1
-    zi(ldprs)=1
-    zi(ldprs+1)=neq
-    zi(ldorl)=1
-    zi(ldprl)=0
-!
-!-----ALLOCATIONS DIVERSES
-!
-    call wkvect(prgene//'.DEEQ', 'G V I', neq*2, lddeeq)
-    call wkvect(prgene//'.NUEQ', 'G V I', neq, ldnueq)
-    call wkvect(prgene//'.DELG', 'G V I', neq, lddelg)
-!
-!     REMPLISSAGE DU .DEEQ ET DU .NUEQ
-!
-    do 30 j = 1, neq
-        zi(ldnueq+j-1)=j
-        zi(lddelg+j-1)=0
-        zi(lddeeq+2*j-1)=1
-        zi(lddeeq+2*j-2)=j
-30  end do
-!
+    call jenonu(jexnom(lili, 'LIAISONS'), i_ligr_link)
+    call jeveuo(jexnum(prno, i_ligr_link), 'E', vi = prgene_prno)
+    call jeveuo(jexnum(orig, i_ligr_link), 'E', vi = prgene_orig)
+    prgene_prno(1) = 0
+    prgene_orig(1) = 1
+
 !
 !     CREATION DU STOCKAGES MORSE :
     call crsmos(stomor, 'PLEIN', neq)

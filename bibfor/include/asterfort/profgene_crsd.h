@@ -16,11 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine crprn2(pfchno, base, nbnoeu, nequa, nec)
-        character(len=*) :: pfchno
-        character(len=*) :: base
-        integer :: nbnoeu
-        integer :: nequa
-        integer :: nec
-    end subroutine crprn2
+    subroutine profgene_crsd(prof_genez , base      , nb_equa, nb_sstr, nb_link,&
+                             model_genez, gran_namez)
+        character(len=*), intent(in) :: prof_genez
+        character(len=1), intent(in) :: base
+        integer, intent(in) :: nb_equa
+        integer, intent(in) :: nb_sstr
+        integer, intent(in) :: nb_link
+        character(len=*), optional, intent(in) :: model_genez
+        character(len=*), optional, intent(in) :: gran_namez
+    end subroutine profgene_crsd
 end interface

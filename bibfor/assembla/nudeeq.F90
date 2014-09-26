@@ -49,8 +49,8 @@ implicit none
 !
 ! Numbering 
 !
-! Create DEEQ object (with non-physical nodes)
-! Create DELG object
+! Set DEEQ object (with non-physical nodes)
+! Set DELG object
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -133,19 +133,15 @@ implicit none
     ASSERT(ncmpmx .ne. 0)
     ASSERT(nec .ne. 0)
 !
-! - Create .DEEQ object
-!
-    call jedetr(deeq)
-    call wkvect(deeq, base(2:2)//' V I', 2*neq, jdeeq)
-!
 ! - Create .DELG object
 !
     call jedetr(delg)
     call wkvect(delg, base(1:1)//' V I', neq, jdelg)
 !
-! - Access to NUEQ object
+! - Access to NUEQ/DEEQ object
 !
     call jeveuo(nueq, 'L', vi = p_nueq)
+    call jeveuo(deeq, 'E', jdeeq)
     nb_lagr = 0
 !
     call jelira(prno, 'NMAXOC', nb_ligr)

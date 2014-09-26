@@ -196,3 +196,4 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
     call jedema()
 end subroutine
+
