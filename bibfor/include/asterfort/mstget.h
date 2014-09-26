@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mstget(nomcmp, matric, motfac, nbind, ddlsta)
-        character(len=*) :: nomcmp
-        character(len=*) :: matric
-        character(len=*) :: motfac
-        integer :: nbind
-        integer :: ddlsta(*)
+    subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
+        character(len=*), intent(in) :: keywordfactz
+        character(len=*), intent(in) :: matrix
+        integer, intent(in) :: nbocc
+        integer, intent(inout) :: ddlsta(*)
     end subroutine mstget
 end interface

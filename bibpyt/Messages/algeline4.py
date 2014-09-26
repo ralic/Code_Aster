@@ -162,9 +162,7 @@ Risques & conseils :
     ce qui peut induire des perturbations numériques.
 """),
 
-24 : _(u"""
- %(k1)s   pour le mot clé :  %(k2)s    noeud :  %(k3)s composante :  %(k4)s
-"""),
+
 
 25 : _(u"""
  combinaison non prévue   type résultat :  %(k1)s    type matrice  :  %(k2)s

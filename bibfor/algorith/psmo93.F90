@@ -41,7 +41,6 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
     real(kind=8) :: coef(3), xnorm
     character(len=8) :: monaxe
     character(len=14) :: nume
-    character(len=16) :: nomcmd
     character(len=19) :: raide, raidfa, masse, matpre
     character(len=19) :: solveu
     character(len=24) :: moauni, moaimp, ddlac
@@ -160,7 +159,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume,&
 !
     if (nbacc .ne. nbpsmo) then
         call wkvect(ddlac, 'V V I', neq, lddad)
-        call mstget(nomcmd, masse, 'PSEUDO_MODE', nbpsmo, zi(lddad))
+        call mstget(masse, 'PSEUDO_MODE', nbpsmo, zi(lddad))
         do ii = 0, neq-1
             nbmoad = nbmoad + zi(lddad+ii)
         end do

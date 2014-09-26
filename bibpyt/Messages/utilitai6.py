@@ -104,12 +104,6 @@ cata_msg = {
  nombre de modes         :  %(i2)d
 """),
 
-47 : _(u"""
- erreur dans la recherche du noeud
- nom du noeud    :  %(k1)s
- nom du maillage :  %(k2)s
-"""),
-
 48 : _(u"""
  méthode de Newton
  exposant de la loi  = %(r1)f

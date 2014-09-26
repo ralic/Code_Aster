@@ -38,10 +38,6 @@ cata_msg = {
  Erreur sur la recherche des multiplicateurs de Lagrange
 """),
 
-5 : _(u"""
- mot-clé facteur incorrect
-"""),
-
 6 : _(u"""
  Type de matrice " %(k1)s " inconnu.
 """),

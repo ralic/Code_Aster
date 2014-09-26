@@ -60,7 +60,6 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 !
     character(len=8) :: nomma
     character(len=14) :: nume, nume91
-    character(len=16) :: nomcmd
     character(len=19) :: raide, masse, solveu, prno, ssami, raiint, raidfa
     character(len=24) :: coint, noddli, matmod, vefreq
 !
@@ -86,7 +85,7 @@ subroutine moin93(masse, raide, raidfa, nbmoin, matmod,&
 !
 !-- ALLOCATION ET REMPLISSAGE DU VECTEUR DES INDICES DES DDL D'INTERFACE
     call wkvect('&&MOIN93.IS_DDL_INTERF', 'V V I', neq, lddld)
-    call mstget(nomcmd, raide, 'MODE_INTERF', 1, zi(lddld))
+    call mstget(raide, 'MODE_INTERF', 1, zi(lddld))
     nddlin=0
     nnoint=0
     numno=0

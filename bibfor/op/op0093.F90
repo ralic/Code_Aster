@@ -54,7 +54,7 @@ subroutine op0093()
     integer :: nbmoda, nbmoin, nbmodi, massfa
     character(len=8) :: resu, nomma
     character(len=14) :: nume
-    character(len=16) :: nomcmd, concep
+    character(len=16) :: k16bid, concep
     character(len=19) :: raide, masse, amor, numedd, matpre, solveu, raidfa
     character(len=24) :: valk, mocb, moatta, moaimp, moauni, mointf, ddlcb
     character(len=24) :: ddlmn, vefreq, ddlac
@@ -83,7 +83,7 @@ subroutine op0093()
 !--                                         --C
 !---------------------------------------------C
 !
-    call getres(resu, concep, nomcmd)
+    call getres(resu, concep, K16bid)
 !
     call getvid(' ', 'MATR_RIGI', scal=raide, nbret=nra)
     call getvid(' ', 'MATR_MASS', scal=masse, nbret=nma)
@@ -154,7 +154,7 @@ subroutine op0093()
 !-- CALCUL DES MODES DE CONTRAINTES (METHODE CRAIG & BAMPTON)
     if (nbmost .gt. 0) then
         call wkvect(ddlcb, 'V V I', neq, lddld)
-        call mstget(nomcmd, raide, 'MODE_STAT', nbmost, zi(lddld))
+        call mstget(raide, 'MODE_STAT', nbmost, zi(lddld))
         do i = 0, neq-1
             nbmodd = nbmodd + zi(lddld+i)
         end do
@@ -167,7 +167,7 @@ subroutine op0093()
 !-- CALCUL DES MODES D'ATTACHE (METHODE MAC NEAL)
     if (nbfona .gt. 0) then
         call wkvect(ddlmn, 'V V I', neq, lddlf)
-        call mstget(nomcmd, raide, 'FORCE_NODALE', nbfona, zi(lddlf))
+        call mstget(raide, 'FORCE_NODALE', nbfona, zi(lddlf))
         do i = 0, neq-1
             nbmodf = nbmodf + zi(lddlf+i)
         end do
