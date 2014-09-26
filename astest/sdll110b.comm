@@ -26,9 +26,14 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 TUBE=LIRE_MAILLAGE(FORMAT='MED')
 MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
 
-TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
-                       CREA_GROUP_MA=_F(  NOM = 'POUTRE',
-                                       TOUT = 'OUI')  )
+TUBE=DEFI_GROUP(reuse=TUBE,
+                MAILLAGE=TUBE,
+                CREA_GROUP_NO=(_F(NOM='GR_NO_INIT',
+                                  NOEUD='N_02_001',),
+                               _F(NOM='GR_NO_FIN',
+                                  NOEUD='N_02_060',),),
+                CREA_GROUP_MA=_F(NOM='POUTRE',
+                                 TOUT='OUI',),);
 
 MODELE=AFFE_MODELE(  MAILLAGE=TUBE,
                      AFFE=_F(  GROUP_MA = 'POUTRE',
@@ -60,13 +65,11 @@ RHOE=DEFI_FONCTION(
                                 'N_04_001', 'N_04_089', )
 )
 
-PROFVIT1=DEFI_FONC_FLUI(       MAILLAGE=TUBE,
-                             NOEUD_INIT='N_02_001',
-                              NOEUD_FIN='N_02_060',
-                             VITE=_F(
-                                   PROFIL = 'UNIFORME',
-                                   VALE = 1.000000E+00)
-)
+PROFVIT1=DEFI_FONC_FLUI(MAILLAGE=TUBE,
+                        NOEUD_INIT='N_02_001',
+                        GROUP_NO_FIN='GR_NO_FIN',
+                        VITE=_F(PROFIL='UNIFORME',
+                                VALE=1.000000E+00),);
 
 TYPEFLUI=DEFI_FLUI_STRU(
                FAISCEAU_TRANS=_F(

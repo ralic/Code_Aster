@@ -198,10 +198,6 @@ Les noms de paramètres doivent être différents
  les noms de chaque paramètre doivent être différents
 """),
 
-    83 : _(u"""
- les noeuds DEBUT et fin n appartiennent pas au maillage.
-"""),
-
     84 : _(u"""
  la fonction doit s appuyée sur un maillage pour lequel une abscisse curviligne est définie.
 """),

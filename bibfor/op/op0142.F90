@@ -50,33 +50,41 @@ subroutine op0142()
 #include "asterfort/lxlgut.h"
 #include "asterfort/ordonn.h"
 #include "asterfort/prvite.h"
+#include "asterfort/reliem.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: pnoe, ptch, ier
+    integer :: pnoe, ptch
     character(len=2) :: prolgd
     character(len=4) :: interp(2)
-    character(len=8) :: nommai, nod, nof
+    character(len=8) :: nommai
     character(len=16) :: nomcmd, tprof, typfon
+    character(len=16) :: motcleini(2), motclefin(2), typmcl(2)
     character(len=19) :: nomfon
-    character(len=24) :: cooabs, nomnoe, nommas, typmai, connex
-    character(len=24) :: conseg, typseg
+    character(len=24) :: cooabs, nommas, typmai, connex
+    character(len=24) :: conseg, typseg, lisnoini, lisnofin
     character(len=8) :: typm
-    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, iabs, iach, iacnex, iagm, iav1, iav2
     integer :: ibid, iexi, ifm, ij, im, ima1, ima2
     integer :: ind, ing, ino, iplac1, iplac2, iseg2, isens
-    integer :: itp, itym, itypm, jgcnx, kseg, l, labs
-    integer :: lnoe, lpro, lval, mi, n3, nbbav, nbchm
+    integer :: itp, itym, itypm, jgcnx, jnof, jnoi, kseg, l, labs
+    integer :: lnoe, lpro, lval, mi, n3, nbbav, nbchm, nbno
     integer :: nbnoma, nbpoi1, nbrm21, nbrma, nbrma1, nbrma2, nbrse1
     integer :: nbrse2, nbrseg, nbseg2, niv, nnoe, num1, num2
     integer :: numno
     real(kind=8) :: rvale
 !-----------------------------------------------------------------------
+!
+    data motcleini  /'NOEUD_INIT','GROUP_NO_INIT'/
+    data motclefin  /'NOEUD_FIN','GROUP_NO_FIN'/
+    data typmcl  /'NOEUD','GROUP_NO'/
+!
+!=======================================================================
+!
     call jemarq()
 !
 ! --- RECUPERATION DU NIVEAU D'IMPRESSION
@@ -86,32 +94,26 @@ subroutine op0142()
     call getres(nomfon, typfon, nomcmd)
 !
     call getvid(' ', 'MAILLAGE', scal=nommai, nbret=l)
-    call getvem(nommai, 'NOEUD', ' ', 'NOEUD_INIT', 0,&
-                iarg, 1, nod, ibid)
-    call getvem(nommai, 'NOEUD', ' ', 'NOEUD_FIN', 0,&
-                iarg, 1, nof, ibid)
+    lisnoini = '&&OP0142.LISTE_NO_INI'
+    lisnofin = '&&OP0142.LISTE_NO_FIN'
+    call reliem(' ', nommai, 'NU_NOEUD', ' ', 1,&
+                2, motcleini, typmcl, lisnoini, nbno)
+    ASSERT(nbno.eq.1)
+    call reliem(' ', nommai, 'NU_NOEUD', ' ', 1,&
+                2, motclefin, typmcl, lisnofin, nbno)
+    ASSERT(nbno.eq.1)
 !
 !     --- CONSTRUCTION DES OBJETS DU CONCEPT MAILLAGE ---
 !
-    nomnoe = nommai//'.NOMNOE'
     cooabs = nommai//'.ABSC_CURV .VALE'
     nommas = nommai//'.NOMMAI'
     connex = nommai//'.CONNEX'
     typmai = nommai//'.TYPMAIL'
 !
-    ier = 0
-    call jenonu(jexnom(nomnoe, nod), num1)
-    if (num1 .eq. 0) then
-        ier = ier+1
-    endif
-    call jenonu(jexnom(nomnoe, nof), num2)
-    if (num2 .eq. 0) then
-        ier = ier+1
-    endif
-!
-    if (ier .ne. 0) then
-        call utmess('F', 'UTILITAI2_83')
-    endif
+    call jeveuo(lisnoini, 'L', jnoi)
+    num1 = zi(jnoi-1+1)
+    call jeveuo(lisnofin, 'L', jnof)
+    num2 = zi(jnof-1+1)
 !
     call jeexin(cooabs, iexi)
     if (iexi .eq. 0) then
