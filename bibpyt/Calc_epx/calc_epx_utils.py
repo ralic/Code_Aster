@@ -131,7 +131,7 @@ def lire_pun(fichier):
     icourbe = 0
     courbes = {}
     for ligne in data:
-        if ligne[0] in ('VALEURS', 'VALUES'):
+        if ligne[0].startswith('VAL'):
             icourbe += 1
             courbes[icourbe] = []
         else:
