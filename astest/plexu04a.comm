@@ -164,7 +164,7 @@ CHARBLOQ=AFFE_CHAR_MECA(MODELE=MODELE,
 l_excit_encast.append(_F(CHARGE=CHARBLOQ))
 
 CHARPRES = AFFE_CHAR_MECA(MODELE = MODELE,
-                          PRES_REP = _F(GROUP_MA='CYL', PRES=Pres_Int,),)
+                          FORCE_COQUE = _F(GROUP_MA='CYL', PRES=Pres_Int,),)
 
 #------------------------------------------------------------------------
 # Definition des cables

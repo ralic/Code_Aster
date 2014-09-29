@@ -117,7 +117,7 @@ CHARMECA=AFFE_CHAR_MECA(
                 RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
                                SIGM_BPEL = 'NON',
                                RELA_CINE = 'OUI'),
-                PRES_REP=_F(PRES = -1.E7,GROUP_MA = 'GROUPE_____VOILE',),
+                FORCE_COQUE=_F(PRES = -1.E7,GROUP_MA = 'GROUPE_____VOILE',),
                         INFO=1 )
 #
 # -----------------------------------------------------------

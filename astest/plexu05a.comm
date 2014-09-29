@@ -182,7 +182,7 @@ BLOQ=AFFE_CHAR_MECA(
                                ),)
 
 PRESS=AFFE_CHAR_MECA(MODELE=MO,
-                     PRES_REP=_F(PRES = 0.15E6,GROUP_MA = 'TALLE',),)
+                     FORCE_COQUE=_F(PRES = 0.15E6,GROUP_MA = 'TALLE',),)
 
 FONC=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,      0.0,

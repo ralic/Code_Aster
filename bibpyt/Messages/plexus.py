@@ -181,7 +181,7 @@ Le champ %(k1)s ne possède pas de composante %(k2)s.
 
 39 : _(u"""
 CALC_EUROPLEXUS/COURBE :
-La quantité de données présente dans le fichier de sortie **.pun ne concorde
+La quantité de données présente dans le fichier de sortie de suivi de point ne concorde
 pas avec les instructions du fichier de commande.
 Une erreur s'est certainement produite lors du traitement de ce mot-clé par EPX.
 

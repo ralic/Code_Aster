@@ -328,7 +328,7 @@ le mot-clé %s"""%mc_cara)
                     dic_champ_var_int[loi][nom_cham_med] = loi
                 else:
                     dic_champ_var_int['SANS'][nom_cham_med] = loi
-		self.modi_repere = modi_repere
+        self.modi_repere = modi_repere
         return dic_champ_cont, dic_champ_var_int
     # -------------------------------------------------------------------------
     def transfo_var_int(self, dic_champ_var_int):
@@ -358,9 +358,9 @@ le mot-clé %s"""%mc_cara)
             if compo == 'GLRC':
                 ccc = cc.copy()
                 ccc.update(TYPE_CHAM='ELGA_NEUT_R',
-						AFFE={'VALE' : (1., 1./2.),
-							  'TOUT' : 'OUI',
-							  'NOM_CMP':('X1', 'X2'),})
+                        AFFE={'VALE' : (1., 1./2.),
+                              'TOUT' : 'OUI',
+                              'NOM_CMP':('X1', 'X2'),})
                 __CH_CAV[ico] = CREA_CHAMP(**ccc)
                 dic_transfo[compo]['CH_CARA'] = __CH_CAV[ico]
                 nb_comp = self.info_comp_epx[compo]['NB_VAR_ASTER']
@@ -380,9 +380,9 @@ le mot-clé %s"""%mc_cara)
 
                 ccc = cc.copy()
                 ccc.update(TYPE_CHAM='ELGA_NEUT_F',
-						   AFFE={'GROUP_MA' : self.compor[compo],
-								 'NOM_CMP'  : nom_cmp_f,
-								 'VALE_F'   : li_fonc,})
+                           AFFE={'GROUP_MA' : self.compor[compo],
+                                 'NOM_CMP'  : nom_cmp_f,
+                                 'VALE_F'   : li_fonc,})
                 __CH_FOV[ico] = CREA_CHAMP(**ccc)
                 dic_transfo[compo]['CH_FONC'] = __CH_FOV[ico]
                 ico += 1

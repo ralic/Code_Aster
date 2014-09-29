@@ -357,7 +357,7 @@ chf0=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_GAUCHE='CONSTANT',);
 
 COND_P=AFFE_CHAR_MECA(MODELE=MOD,
-                      PRES_REP=_F(GROUP_MA='DALLE',
+                      FORCE_COQUE=_F(GROUP_MA='DALLE',
                                      PRES=pres,),);
 
 inst1=DEFI_LIST_REEL(DEBUT=0.0,

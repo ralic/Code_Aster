@@ -117,7 +117,7 @@ CL=AFFE_CHAR_MECA(
 
 PRESS=AFFE_CHAR_MECA(
                       MODELE=MODELE,
-                PRES_REP=_F(PRES = -1.E1,GROUP_MA = 'GROUPE_____VOILE',),
+                FORCE_COQUE=_F(PRES = -1.E1,GROUP_MA = 'GROUPE_____VOILE',),
                         INFO=1 )
 
 

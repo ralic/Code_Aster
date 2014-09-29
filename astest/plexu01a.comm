@@ -150,7 +150,7 @@ ELEM = AFFE_CARA_ELEM(MODELE = MO,
 # ------------------- Conditions aux limites
 
 CH_PI=AFFE_CHAR_MECA(MODELE=MO,
-                     PRES_REP=(_F(PRES = 0.01,GROUP_MA = 'DALLE',),),
+                     FORCE_COQUE=(_F(PRES = 0.01,GROUP_MA = 'DALLE',),),
                     );
 
 #

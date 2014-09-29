@@ -493,10 +493,9 @@ cata_cara_elem = {
 cata_charge = {
     'INFO'   : False,
     'MODELE' : False,
-    'PRES_REP' : {
-        # EC : voir pour passer à FORCE_COQUE/PRES
+    'FORCE_COQUE' : {
         'DIRECTIVE'  : 'CHARGE',
-        'MOT_CLE_EPX': ['1 FACTO 2', 'PRESS COQU'],
+        'MOT_CLE_EPX': ['1 FACTO 2', 'PRES COQU'],
         'FONC_MULT'  : 'TABLE',
         'ASTER'      : ['PRES'],
         'EPX'        : None,

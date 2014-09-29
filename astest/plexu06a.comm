@@ -197,7 +197,7 @@ ELEMDNL = AFFE_CARA_ELEM(MODELE = MO2,
 # ------------------- Conditions aux limites
 
 CH_PI=AFFE_CHAR_MECA(MODELE=MO2,
-                     PRES_REP=(_F(PRES = -0.001,GROUP_MA = 'DGLRC',),),
+                     FORCE_COQUE=(_F(PRES = -0.001,GROUP_MA = 'DGLRC',),),
                     );
 
 #
@@ -357,7 +357,7 @@ ELEMMED2 = AFFE_CARA_ELEM(MODELE = MO2_MED2,
                      INFO=1,);
 #
 CHPIMED2=AFFE_CHAR_MECA(MODELE=MO2_MED2,
-                     PRES_REP=(_F(PRES = -0.001,GROUP_MA = 'DGLRC',),),
+                     FORCE_COQUE=(_F(PRES = -0.001,GROUP_MA = 'DGLRC',),),
                     );
 
 #
