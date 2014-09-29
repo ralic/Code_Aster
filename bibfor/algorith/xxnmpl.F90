@@ -23,6 +23,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
+#include "asterfort/xcalf_he.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
     integer :: nfh, ddlc, ddlm, nfe, idepl, ivectu, ideplp
     integer :: nfiss, fisno(nnop, nfiss), idecpg
@@ -208,7 +209,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
             do n = 1, nnop
                 ur = ur + ff(n)*zr(ideplp-1+ddls*(n-1)+1)
                 do ig = 1, nfh
-                    ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
+                    ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*ig+1) *&
+                            xcalf_he(he(fisno(n,ig)),lsn((n-1)*nfiss+fisno(n,ig)))
                 end do
                 do ig = 1, nfe
                     ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
@@ -221,7 +223,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                     ndim, he, r, ur, fisno,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    deps, rbid33)
+                    deps, rbid33, lsn)
 !
 ! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T-
         if (axi) then
@@ -229,7 +231,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
             do n = 1, nnop
                 ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
                 do ig = 1, nfh
-                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
+                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *&
+                            xcalf_he(he(fisno(n,ig)),lsn((n-1)*nfiss+fisno(n,ig)))
                 end do
                 do ig = 1, nfe
                     ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
@@ -242,7 +245,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                     ndim, he, r, ur, fisno,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    eps, rbid33)
+                    eps, rbid33, lsn)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
@@ -271,7 +274,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 do i = 1, ndim
                     cpt=ndim*(1+ig-1)+i
                     do m = 1, 2*ndim
-                        def(m,n,cpt) = def(m,n,i) * he(fisno(n,ig))
+                        def(m,n,cpt) = def(m,n,i) * xcalf_he(he(fisno(n,ig)),&
+                                                    lsn((n-1)*nfiss+fisno(n,ig)))
                     end do
                     if (ndim .eq. 2) then
                         def(3,n,cpt) = 0.d0
@@ -280,7 +284,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 !  ATTENTION:TERME DE CORRECTION (3,3) AXI SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3,n,(1+ndim*ig)) = f(3,3) * ff(n)/r * he( fisno(n,ig))
+                    def(3,n,(1+ndim*ig)) = f(3,3) * ff(n)/r * xcalf_he(he( fisno(n,ig)),&
+                                                              lsn((n-1)*nfiss+fisno(n,ig)))
                 endif
 !
             end do

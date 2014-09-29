@@ -33,6 +33,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
+#include "asterfort/xcalf_he.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
     integer :: igeom, ndim, ddlc, nfe, nnop
@@ -195,8 +196,10 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
                 if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ig)
                 do j = 1, ndim
                     pos=pos+1
-                    zr(ivectu-1+pos) = zr(ivectu-1+pos) + zi(jheavt-1+ (ifiss-1)*ncomp+ise)*forvo&
-                                       &l(j)*poids*ff(ino)
+                    zr(ivectu-1+pos) = zr(ivectu-1+pos) + &
+                                       xcalf_he(real(zi(jheavt-1+ (ifiss-1)*ncomp+ise),8),&
+                                                 zr(jlsn-1+(ino-1)*nfiss+ifiss))&
+                                       *forvol(j)*poids*ff(ino)
                 end do
             end do
 !

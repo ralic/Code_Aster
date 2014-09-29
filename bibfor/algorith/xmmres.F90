@@ -43,6 +43,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 #include "asterfort/xmmred.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
+#include "asterfort/xcoef_he.h"
 !
     character(len=19) :: cnsinr
     character(len=19) :: veasse(*)
@@ -85,7 +86,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     character(len=24) :: dejcal
     integer :: jdejca
 !
-    real(kind=8) :: xyz(3), jeu, ff(2), mult, cont
+    real(kind=8) :: xyz(3), jeu, ff(2), mult, cont, coefh
     real(kind=8) :: saut(3), glit(3), p(3, 3), n(3), gli, lagfro(3)
     real(kind=8) :: lagsf, rr, rnxyz(3), rn, alpha, longar, levels
     real(kind=8) :: tau1(3), tau2(3)
@@ -114,6 +115,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
 ! --- INITIALISATIONS
 !
+    coefh=xcoef_he()
     faclos = '&&XMMRES.FACLOS'
     aintes = '&&XMMRES.AINTES'
     pintes = '&&XMMRES.PINTES'
@@ -327,7 +329,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
                 do k = 1, nsom
 !             DDL HEAVISIDE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+j)) then
-                        saut(j) = saut(j) - 2.d0 * ff(k) * depv(2*ndim*(nosom(k)-1)+j)
+                        saut(j) = saut(j) - coefh * ff(k) * depv(2*ndim*(nosom(k)-1)+j)
                     endif
 !             DDL ASYMPTOTIQUE
                     if (zl(jdepl-1+2*ndim*(nosom(k)-1)+ndim+j)) then

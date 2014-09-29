@@ -193,11 +193,11 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F  37  IN__  E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   NGEOMER  PGEOMER  
                                 E3NEUTI  PLONGCO  N1NEUT_R PLST     E6NEUTR  PPINTER  CPRESSF  PPRESSF  
-                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  
+                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  N1NEUT_R PLSN
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R  37  IN__  E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   NGEOMER  PGEOMER  
                                 E3NEUTI  PLONGCO  N1NEUT_R PLST     E6NEUTR  PPINTER  EPRESNO  PPRESSR  
-                                     STANO_I  PSTANO
+                                STANO_I  PSTANO N1NEUT_R PLSN
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PTOT_R  -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
@@ -233,7 +233,7 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GEOM_FAC         519  IN__  E1NEUTK  NOMFIS   DDL_MECA PDEPLA   E6NEUTR  PGESCLO  E3NEUTI  PLONGCO  
-                                N1NEUT_R PLST     E6NEUTR  PPINTER  
+                                N1NEUT_R PLST     E6NEUTR  PPINTER
                           OUT__ E08NEUR  PBASESC  E08NEUR  PBASMAI  E4NEUTR  PNEWGEM  E4NEUTR  PNEWGES  
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
                               OUT__  N2NEUT_R PGNEUTR

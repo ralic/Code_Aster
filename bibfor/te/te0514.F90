@@ -74,7 +74,7 @@ subroutine te0514(option, nomte)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi)
     real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax)
     real(kind=8) :: xg(3), cridist
-    parameter(cridist=1.d-7)
+    parameter(cridist=1.d-9)
     integer :: fisco(2*nfimax), fisc(2*nfimax), zxain, ai
     integer :: ndoubl(ninmax*(2**nfimax)), ndoub2(ninmax*(2**nfimax))
     integer :: ndoub3(nmmax*(2**nfimax))

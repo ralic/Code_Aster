@@ -212,6 +212,8 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
                 lchin(9) = stano
                 lpain(10) = 'PBASECO'
                 lchin(10) = baseco
+                lpain(11) = 'PLSN'
+                lchin(11) = lsn
 !
                 do 10 k = 1, nbchmx
                     lchin(3) = nomcha//'.CHTH'//nomchp(k)//'.DESC'
@@ -226,7 +228,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
                         lpain(3) (1:6) = nompar(k)
                         ilires = ilires + 1
                         call codent(ilires, 'D0', lchout(1) (12:14))
-                        call calcul('S', option, ligcal, 10, lchin,&
+                        call calcul('S', option, ligcal, 11, lchin,&
                                     lpain, 1, lchout, lpaout, 'V',&
                                     'OUI')
                         call reajre(merigi, lchout(1), 'V')

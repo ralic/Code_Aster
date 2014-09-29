@@ -1,5 +1,5 @@
 subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
-                  nddlm, npg, igeom, jpintt, jpmilt,&
+                  nddlm, npg, igeom, jpintt, jpmilt, jlsn,&
                   ivf, ipoids, idfde, ivectu, ipesa,&
                   heavt, lonch, cnset, rho, axi,&
                   yaenrm)
@@ -39,11 +39,12 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 # include "asterfort/indent.h"
 # include "asterfort/reeref.h"
 # include "asterfort/vecini.h"
+# include "asterfort/xcalf_he.h"
 # include "jeveux.h"
     aster_logical :: axi
     integer :: nse, ise, in, ino, nno, j, ndim
     integer :: nnop, nnops, n, nddls, nddlm, ipi, npg
-    integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde
+    integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde, jlsn
     integer :: ivectu, yaenrm
     integer :: ipesa, dec1(nnop), dec2(nnop), icla, ienr
     integer :: heavt(36), lonch(10), cnset(4*32)
@@ -133,7 +134,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !     TERMES HEAVISIDE
                     if (yaenrm .eq. 1) then
                         zr(ivectu+ienr+ndim+1)=zr(ivectu+ienr+ndim+1)&
-                        +he*poids*zr(ipesa+2)*ff(ino)
+                        +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+2)*ff(ino)
                     endif
  90             continue
             else
@@ -155,13 +156,13 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !     TERMES HEAVISIDE
                     if (yaenrm .eq. 1) then
                         zr(ivectu+ienr+ndim)=zr(ivectu+ienr+ndim)&
-                        +he*poids*zr(ipesa+1)*ff(ino)
+                        +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+1)*ff(ino)
 !
                         zr(ivectu+ienr+ndim+1)=zr(ivectu+ienr+ndim+1)&
-                        +he*poids*zr(ipesa+2)*ff(ino)
+                        +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+2)*ff(ino)
                         if (ndim .eq. 3) then
                             zr(ivectu+ienr+ndim+2)=zr(ivectu+ienr+ndim+2)&
-                                      +he*poids*zr(ipesa+3)*ff(ino)  
+                                      +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+3)*ff(ino)  
                         endif
                     endif
 100             continue

@@ -53,7 +53,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
     call jemarq()
 !
     itemax=100
-    epsmax=1.d-8
+    epsmax=1.d-9
     name='XINTER'
     n(1)=ia
     n(2)=ib

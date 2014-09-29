@@ -56,7 +56,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 ! --------------------------------------------------------------------
 !
     itemax=100
-    epsmax=1.d-8
+    epsmax=1.d-9
     name='XMIFIS'
 !
     call xelrex(elrefp, nno, x)

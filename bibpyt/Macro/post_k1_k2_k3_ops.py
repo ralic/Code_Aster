@@ -1074,16 +1074,19 @@ def get_depl_sup(FOND_FISS,tabsupi,ndim,Lnofon,d_coor,ino,TYPE_MAILLAGE) :
          E1 = getattr(tabsupi,'E1X').values()
          E1 = complete(E1)
          dxs = 2*(H1 + NP.sqrt(abscs)*E1)
+#         dxs = xcoef_he()*H1 + 2*NP.sqrt(abscs)*E1
          H1 = getattr(tabsupi,'H1Y').values()
          E1 = getattr(tabsupi,'E1Y').values()
          H1 = complete(H1)
          E1 = complete(E1)
          dys = 2*(H1 + NP.sqrt(abscs)*E1)
+#         dys = xcoef_he()*H1 + 2*NP.sqrt(abscs)*E1
          H1 = getattr(tabsupi,'H1Z').values()
          E1 = getattr(tabsupi,'E1Z').values()
          H1 = complete(H1)
          E1 = complete(E1)
          dzs = 2*(H1 + NP.sqrt(abscs)*E1)
+#         dzs = xcoef_he()*H1 + 2*NP.sqrt(abscs)*E1
          abscs=NP.array(abscs[:nbval])
 
       ds = NP.asarray([dxs,dys,dzs])

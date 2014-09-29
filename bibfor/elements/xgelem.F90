@@ -20,7 +20,6 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1306
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -47,6 +46,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/xcinem.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
+#include "asterfort/xcalf_he.h"
     character(len=8) :: elrefp
     integer :: igeom, ndim, nfh, ddlc, nfe, nnop, ddlm
     integer :: idepl, nfiss, jfisno, jheavt, ise
@@ -386,7 +386,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
             do ig = 1, nfh
                 do i = 1, ndim
                     cpt=cpt+1
-                    depla(i) = depla(i) + he(fisno(in,ig)) * ff(in) * zr(idepl-1+indeni+cpt)
+                    depla(i) = depla(i) + xcalf_he(he(fisno(in,ig)),lsn((in-1)*nfiss+fisno(in,ig)))&
+                           * ff(in) * zr(idepl-1+indeni+cpt)
                 end do
             end do
 !         DDL ENRICHIS EN FOND DE FISSURE
@@ -425,7 +426,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     ndim, he, rbid, rbid, fisno,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    eps, grad)
+                    eps, grad, lsn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         do i = 1, ndim

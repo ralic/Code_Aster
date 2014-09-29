@@ -20,6 +20,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
+#include "asterfort/xcalf_he.h"
     integer :: ndim, nfe, nfh, nfiss, nnop, npg
     integer :: ddlc, ddlm, fisno(nnop, nfiss)
     integer :: codopt, idepl, igeom, ivectu
@@ -189,7 +190,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
                         ndim, he, r, rbid, fisno,&
                         nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f,&
-                        rbid6, rbid33)
+                        rbid6, rbid33, lsn)
         else
 !           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R,
 !                      l'adresse idepl est un argument bidon...)
@@ -229,7 +230,8 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
                 do i = 1, ndim
                     cpt = cpt+1
                     do m = 1, 2*ndim
-                        def(m,n,cpt) = def(m,n,i) * he(fisno(n,ig))
+                        def(m,n,cpt) = def(m,n,i) * xcalf_he(he(fisno(n,ig)),&
+                                                    lsn((n-1)*nfiss+fisno(n,ig)))
                     end do
                     if (ndim .eq. 2) then
                         def(3,n,cpt) = 0.d0
@@ -238,7 +240,8 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !
 !   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3,n,1+ndim*ig) = f(3,3) * ff(n)/r * he(fisno( n,ig))
+                    def(3,n,1+ndim*ig) = f(3,3) * ff(n)/r * xcalf_he(he(fisno(n,ig)),&
+                                                            lsn((n-1)*nfiss+fisno(n,ig)))
                 endif
 !
             end do

@@ -20,7 +20,6 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! aslint: disable=W1306
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -34,6 +33,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
+#include "asterfort/xcalf_he.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
     integer :: igeom, ndim, ddlh, ddlc, nfe, nnop
@@ -220,7 +220,8 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !         TERME HEAVISIDE
             do j = 1, ddlh
                 pos=pos+1
-                zr(ivectu-1+pos) = zr(ivectu-1+pos) + he*forvol(j)* poids*ff(ino)
+                zr(ivectu-1+pos) = zr(ivectu-1+pos) + &
+                                   xcalf_he(he,zr(jlsn-1+ino))*forvol(j)* poids*ff(ino)
 !
             end do
 !

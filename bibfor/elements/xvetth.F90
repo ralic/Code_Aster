@@ -64,6 +64,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcalf_he.h"
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrefp
@@ -246,9 +247,9 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                 end do
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
-                    ffenr(inp,1+nfh) = he*ff(inp)
+                    ffenr(inp,1+nfh) = xcalf_he(he,lsn(inp))*ff(inp)
                     do j = 1, ndim
-                        dffenr(inp,1+nfh,j) = he*dfdi(inp,j)
+                        dffenr(inp,1+nfh,j) = xcalf_he(he,lsn(inp))*dfdi(inp,j)
                     end do
                 endif
 !           DDL CRACK-TIP (E1)

@@ -9,6 +9,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnos, nnol
     integer :: pla(27), nfh
     integer :: singu, ddls, ddlm, jfisno, nfiss, ifiss, jheafa, ncomph, ifa
@@ -80,7 +81,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 !
 ! ----------------------------------------------------------------------
 !
-    coefi = 2
+    coefi = int(xcoef_he())
     lmultc = nfiss.gt.1
     dn = 0.d0
     do 143 j = 1, ndim

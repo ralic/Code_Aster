@@ -4,7 +4,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                   ndim, cmp, nbcmp, nfh, nfe,&
                   ddlc, ima, jconx1, jconx2, jcnsv1,&
                   jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                  nnn, contac, lmeca, pre1)
+                  nnn, contac, lmeca, pre1, jlsn)
 ! aslint: disable=W1306,W1504
     implicit none
 !
@@ -21,10 +21,14 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 #include "asterfort/xlacti.h"
 #include "asterfort/xmoffc.h"
 #include "asterfort/xpoffo.h"
+#include "asterfort/xcalf_he.h"
+#include "asterfort/ismali.h"
+!
     integer :: ino, nnop, igeom, ndim, ndime, ddlc, jdirno
     integer :: nbcmp, cmp(nbcmp), nfe, ima, jconx1, jconx2, jcnsv1
     integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac
     integer :: nfiss, jfisno, he(nfiss), nfh, inn, nnn, ninter
+    integer, optional :: jlsn
     aster_logical :: lmeca
     character(len=8) :: elrefp, typma
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
@@ -218,7 +222,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             do 85 ig = 1, nfh
                 do 90 i = 1, ndimc
                     ipos=ipos+1
-                    chpri(i) = chpri(i) + he(zi(jfisno-1+(j-1)*nfh+ig) ) *ff(j)*zr(iad+cmp(ipos))
+                    chpri(i) = chpri(i) + xcalf_he(real(he(zi(jfisno-1+(j-1)*nfh+ig)),8),&
+                                 zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
+                                 *ff(j)*zr(iad+cmp(ipos))
  90             continue
  85         continue
 !
@@ -250,7 +256,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             do 120 ig = 1, nfh
                 do 130 i = 1, ndimc
                     ipos=ipos+1
-                    chpri(i) = chpri(i) + he(zi(jfisno-1+(j-1)*nfh+ig) ) * ff(j) * zr(iad+cmp(ipo&
+                    chpri(i) = chpri(i) + xcalf_he(real(he(zi(jfisno-1+(j-1)*nfh+ig)),8),&
+                                 zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
+                                 * ff(j) * zr(iad+cmp(ipo&
                                &s))
 130             continue
 120         continue

@@ -115,13 +115,13 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
        call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
        if (maxfem .ne. 'LINE') then   
           call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
-          crimax=0.d0
+          crimax=5.d-17
           zk8(jcond)='OUI'
        endif
     elseif ( k8condi .eq. 'FORCE' ) then
        call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
        call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
-       crimax=0.d0
+       crimax=5.d-17
        zk8(jcond)='OUI'
     endif
 !

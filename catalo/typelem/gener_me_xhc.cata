@@ -259,11 +259,11 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F  37  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  E15NEUTI PCFACE   NGEOMER  PGEOMER  
                                 E3NEUTI  PLONGCO  N1NEUT_R PLST     E21NEUTR PPINTER  CPRESSF  PPRESSF  
-                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  
+                                STANO_I  PSTANO   CTEMPSR  PTEMPSR  N1NEUT_R PLSN
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R  37  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  E15NEUTI PCFACE   NGEOMER  PGEOMER  
                                 E3NEUTI  PLONGCO  N1NEUT_R PLST     E21NEUTR PPINTER  EPRESNO  PPRESSR  
-                                STANO_I  PSTANO   
+                                STANO_I  PSTANO   N1NEUT_R PLSN
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PTOT_R  -1  IN__  
                           OUT__ XXXXXX   XXXXXX   

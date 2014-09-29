@@ -52,6 +52,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/xcinem.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
+#include "asterfort/xcalf_he.h"
     character(len=8) :: elrefp
     integer :: igeom, ndim, nfh, ddlc, ddlm, nfe, nnop, idecpg, idepl
     integer :: nfiss, jfisno, jheavt, ise
@@ -108,8 +109,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     character(len=16) :: nomres(4)
     character(len=8) :: elrese(6), fami(6)
     aster_logical :: lcour, grdepl, axi
-    integer :: irese, nnops
-    integer :: ddln, nnon, indenn, mxstac
+    integer :: irese, nnops, ddln, nnon, indenn, mxstac
     parameter      (mxstac=1000)
 !
     data     nomres /'E','NU','ALPHA','RHO'/
@@ -339,7 +339,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
                 ur = ur + ff(ino)*zr(idepl-1+ddls*(ino-1)+1)
                 do 115 ig = 1, nfh
-                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim* ig+1) *he(fisno(ino,ig))
+                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim* ig+1) *&
+                             xcalf_he(he(fisno(ino,ig)),lsn((ino-1)*nfiss+fisno(ino,ig)))
 115             continue
                 do 116 ig = 1, nfe
                     ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*( nfh+ig)+1) *fe(ig)
@@ -423,7 +424,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             do 202 ig = 1, nfh
                 do 203 i = 1, ndim
                     cpt=cpt+1
-                    depla(i) = depla(i) + he(fisno(in,ig)) * ff(in) * zr(idepl-1+indenn+cpt)
+                    depla(i) = depla(i) + xcalf_he(he(fisno(in,ig)),lsn((in-1)*nfiss+fisno(in,ig)))&
+                           * ff(in) * zr(idepl-1+indenn+cpt)
 203              continue
 202         continue
 !           DDL ENRICHIS EN FOND DE FISSURE
@@ -460,7 +462,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
         call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
                     r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, eps, grad)
+                    fe, dgdgl, ff, dfdi, f, eps, grad, lsn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         do 230 i = 1, ndim

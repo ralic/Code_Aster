@@ -122,7 +122,7 @@ implicit none
     elseif ((option.eq.'CHAR_THER_PARO_F').or.&
             (option.eq.'CHAR_THER_PARO_R')) then
 !
-        nbadd = 7
+        nbadd = 8
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTER'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOFAC.OE'
@@ -138,6 +138,8 @@ implicit none
         lchin(nchin + 6 ) = model(1:8)//'.STNO'
         lpain(nchin + 7 ) = 'PBASECO'
         lchin(nchin + 7 ) = model(1:8)//'.TOPOFAC.BA'
+        lpain(nchin + 8 ) = 'PLSN'
+        lchin(nchin + 8 ) = model(1:8)//'.LNNO'
         nchin = nchin+nbadd
 !
     else

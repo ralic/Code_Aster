@@ -25,6 +25,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
+#include "asterfort/xcalf_he.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
     integer :: nfiss, fisno(nnop, nfiss), idecpg
     integer :: nfh, ddlc, ddlm, nfe
@@ -205,14 +206,14 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                     ndim, he, rbid, rbid, fisno,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, fm,&
-                    epsm, rbid33)
+                    epsm, rbid33, lsn)
 !
 !       CALCUL EN T+
         call xcinem(axi, nnop, nnops, ideplp, grdepl,&
                     ndim, he, rbid, rbid, fisno,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    epsp, rbid33)
+                    epsp, rbid33, lsn)
 !
 !       CALCUL DE DEPS POUR LDC
         do i = 1, 6
@@ -254,7 +255,8 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                 do i = 1, ndim
                     cpt = ndim*(1+ig-1)+i
                     do m = 1, 2*ndim
-                        def(m,n,cpt) = def(m,n,i) * he(fisno(n,ig))
+                        def(m,n,cpt) = def(m,n,i) * xcalf_he(he(fisno(n,ig)),&
+                                         lsn((n-1)*nfiss+fisno(n,ig)))
                     end do
                     if (ndim .eq. 2) def(3,n,cpt) = 0.d0
                 end do
@@ -307,7 +309,8 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                     pff(cpt,n,i) = dfdi(n,i)
                     do ig = 1, nfh
                         cpt = cpt+1
-                        pff(cpt,n,i) = dfdi(n,i) * he(fisno(n,ig))
+                        pff(cpt,n,i) = dfdi(n,i) * xcalf_he(he(fisno(n,ig)),&
+                                                   lsn((n-1)*nfiss+fisno(n,ig)))
                     end do
                     do ig = 1, nfe
                         cpt = cpt+1

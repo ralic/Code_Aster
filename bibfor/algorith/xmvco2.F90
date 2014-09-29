@@ -14,6 +14,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnol
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu
@@ -88,7 +89,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 ! ON STOCKE DANS LE VECTEUR SECOND MEMBRE ELEMENTAIRE DE L EQUILIBRE
 ! ! IL Y A DEJA UN MOINS DU AUX CONVENTIONS POUR LE SAUT
 !
-    coefi = 2
+    coefi = xcoef_he()
     lmultc = nfiss.gt.1
     do 10 i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
@@ -106,7 +107,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
  12         continue
  11     continue
         do 13 j = 1, singu*ndim
-            vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) - coefi*ffp(i)*rr*hfix(j )*jac
+            vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) - 2.d0*ffp(i)*rr*hfix(j )*jac
  13     continue
  10 continue
 !

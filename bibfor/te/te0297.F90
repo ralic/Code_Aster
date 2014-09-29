@@ -20,6 +20,7 @@ subroutine te0297(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/xsifle.h"
 #include "asterfort/xteini.h"
+!
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -81,7 +82,7 @@ subroutine te0297(option, nomte)
 11      continue
         if (thet .lt. r8prem()) compt = compt + 1
 10  continue
-    if (compt .eq. nnop) goto 9999
+    if (compt .eq. nnop) goto 999
 !
 !   SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
     if (.not.iselli(elrefp)) then
@@ -211,7 +212,7 @@ subroutine te0297(option, nomte)
         if (option .eq. 'CALC_K_G_F') pres = abs(presn(i))
         if (pres .lt. r8prem()) compt = compt + 1
 90  continue
-    if (compt .eq. nnop) goto 9999
+    if (compt .eq. nnop) goto 999
 !
 !   PARAMETRES PROPRES A X-FEM
     call jevech('PPINTER', 'L', jptint)
@@ -224,7 +225,7 @@ subroutine te0297(option, nomte)
     ninter=zi(jlongc-1+1)
     nface=zi(jlongc-1+2)
     nptf=zi(jlongc-1+3)
-    if (ninter .lt. ndim) goto 9999
+    if (ninter .lt. ndim) goto 999
 !
     do 40 i = 1, 5
         do 41 j = 1, 3
@@ -262,5 +263,5 @@ subroutine te0297(option, nomte)
 200  continue
 !
 !
-9999  continue
+999  continue
 end subroutine

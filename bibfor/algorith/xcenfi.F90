@@ -72,7 +72,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     call elrefe_info(elrefe=elrefp,fami='RIGI',nno=nno)
 !
     itemax=100
-    epsmax=1.d-8
+    epsmax=1.d-9
     name='XCENFI'
     if (present(num)) then
        pi1 = num(1) 

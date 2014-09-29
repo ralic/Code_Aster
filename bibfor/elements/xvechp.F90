@@ -1,6 +1,6 @@
 subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                   itps, ihechp, jptint, jaint, jcface,&
-                  jlonch, jlst, jbasec, nfh, nfe,&
+                  jlonch, jlst, jlsn, jbasec, nfh, nfe,&
                   fonree, ivectt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,10 +65,11 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/xcalf_he.h"
     character(len=4) :: fonree
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, itemp, itps, ihechp, jptint, jaint, jcface
-    integer :: jlonch, jlst, jbasec, nfh, nfe, ivectt
+    integer :: jlonch, jlst, jlsn, jbasec, nfh, nfe, ivectt
 !
 !-----------------------------------------------------------------------
 !
@@ -256,7 +257,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                     ffenr(i,1) = ff(i)
 !             DDL HEAVISIDE (H1)
                     if (nfh .eq. 1) then
-                        ffenr(i,1+nfh) = he(ilev)*ff(i)
+                        ffenr(i,1+nfh) = xcalf_he(he(ilev),zr(jlsn-1+i))*ff(i)
                     endif
 !             DDL CRACK-TIP (E1)
                     if (nfe .eq. 1) then

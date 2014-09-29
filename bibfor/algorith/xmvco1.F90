@@ -8,6 +8,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 #include "asterc/r8prem.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnol
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu
@@ -56,7 +57,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 !
 !
     integer :: i, j, k, pli, nli
-    real(kind=8) :: tau(3)
+    real(kind=8) :: tau(3), coefh
     real(kind=8) :: ffi, ttx(3), eps, sqrtan, sqttan
 !
 ! ---------------------------------------------------------------------
@@ -64,6 +65,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 ! DIRECTION DU SAUT DE DEPLACEMENT TANGENT
 !
     call vecini(3, 0.d0, tau)
+    coefh=xcoef_he()
     eps=r8prem()
     sqttan=0.d0
     sqrtan=dtang(1)**2+dtang(2)**2+dtang(3)**2
@@ -76,13 +78,13 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 !
     do 450 i = 1, nno
         do 451 j = 1, nfh*ndim
-            vtmp(ddls*(i-1)+ndim+j) = vtmp(&
-                                      ddls*(i-1)+ndim+j)+ (2.d0*sigma(1)*nd(j)*ffp(i)*jac)+ (2.d0&
-                                      &*sigma(2)*tau1(j)* ffp(i)*jac&
+            vtmp(ddls*(i-1)+ndim+j) =vtmp(&
+                                     ddls*(i-1)+ndim+j)+ (coefh*sigma(1)*nd(j)*ffp(i)*jac)+ (coefh&
+                                     &*sigma(2)*tau1(j)* ffp(i)*jac&
                                       )
             if (ndim .eq. 3) then
                 vtmp(ddls*(i-1)+ndim+j) = vtmp(&
-                                          ddls*(i-1)+ndim+j)+ (2.d0*sigma(3)*tau2(j)*ffp(i)*jac)
+                                          ddls*(i-1)+ndim+j)+ (coefh*sigma(3)*tau2(j)*ffp(i)*jac)
             endif
 !
 451      continue

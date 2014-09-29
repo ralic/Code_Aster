@@ -231,7 +231,7 @@ OPTION__
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GEOM_FAC         519  IN__  E1NEUTK  NOMFIS   DDL_MECA PDEPLA   E6NEUTR  PGESCLO  E3NEUTI  PLONGCO  
-                                N1NEUT_R PLST     E6NEUTR  PPINTER  
+                                N1NEUT_R PLST     E6NEUTR  PPINTER
                           OUT__ E08NEUR  PBASESC  E08NEUR  PBASMAI  E4NEUTR  PNEWGEM  E4NEUTR  PNEWGES  
     GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
                               OUT__  N2NEUT_R PGNEUTR

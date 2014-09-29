@@ -7,6 +7,7 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), lact(8)
@@ -65,12 +66,13 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
 !
 !
     integer :: i, j, k, l, jn, nli, pli
-    real(kind=8) :: ffi, tauknp(2, 3)
+    real(kind=8) :: ffi, tauknp(2, 3), coefh
 !
 ! ----------------------------------------------------------------------
 !
 !     INITIALISATION
     call matini(2, 3, 0.d0, tauknp)
+    coefh=xcoef_he()
 !
 !     II.3.1. CALCUL DE B ET DE BT
 !
@@ -101,7 +103,7 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla,&
             call indent(j, ddls, ddlm, nnos, jn)
             do 166 k = 1, ndim-1
                 do 167 l = 1, nfh*ndim
-                    mmat(pli+k,jn+ndim+l) = mmat(pli+k,jn+ndim+l) + 2.d0*mu*seuil*ffi*ffp(j)*tauk&
+                    mmat(pli+k,jn+ndim+l) = mmat(pli+k,jn+ndim+l) + coefh*mu*seuil*ffi*ffp(j)*tauk&
                                             &np(k,l)*jac
 !
 167              continue

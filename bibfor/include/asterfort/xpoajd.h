@@ -24,7 +24,7 @@ interface
                       ndim, cmp, nbcmp, nfh, nfe,&
                       ddlc, ima, jconx1, jconx2, jcnsv1,&
                       jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                      nnn, contac, lmeca, pre1)
+                      nnn, contac, lmeca, pre1, jlsn)
         integer :: nbcmp
         integer :: nfiss
         integer :: nnop
@@ -57,6 +57,7 @@ interface
         integer :: inn
         integer :: nnn
         integer :: contac
+        integer, optional :: jlsn
         aster_logical :: lmeca
         aster_logical :: pre1
     end subroutine xpoajd

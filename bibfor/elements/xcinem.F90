@@ -2,7 +2,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
                   ndim, he, r, ur, fisno,&
                   nfiss, nfh, nfe, ddls, ddlm,&
                   fe, dgdgl, ff, dfdi, f,&
-                  eps, grad)
+                  eps, grad, lsn)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,6 +30,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 #include "asterfort/jemarq.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcalf_he.h"
 !
     aster_logical, intent(in) :: axi
     integer, intent(in) :: nnop
@@ -53,6 +54,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     real(kind=8), intent(out) :: f(3, 3)
     real(kind=8), intent(out) :: eps(6)
     real(kind=8), intent(out) :: grad(ndim, ndim)
+    real(kind=8) :: lsn(nnop)
 !
 ! ----------------------------------------------------------------------
 !
@@ -150,7 +152,8 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
             do 406 i = 1, ndim
                 cpt = cpt+1
                 do 407 j = 1, ndim
-                    grad(i,j) = grad(i,j) + he(fisno(n,ig)) * dfdi(n, j) * zr(idepl-1+nn+cpt)
+                    grad(i,j) = grad(i,j) +  xcalf_he(he(fisno(n,ig)),lsn((n-1)*nfiss+fisno(n,ig)))&
+                            * dfdi(n, j) * zr(idepl-1+nn+cpt)
 407             continue
 406         continue
 405     continue

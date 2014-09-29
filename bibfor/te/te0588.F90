@@ -269,7 +269,7 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, angnau, dimmat)
+                        jpmilt, jlsn, angnau, dimmat)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
@@ -286,7 +286,7 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, angnau, dimmat)
+                        jpmilt, jlsn, angnau, dimmat)
             zi(jcret) = retloi
         endif
 ! =====================================================================
@@ -313,7 +313,7 @@ subroutine te0588(option, nomte)
         yaenrm = enrmec(1)
 !
         call xpeshm(nno, nnop, nnops, ndim, nddls,&
-                    nddlm, npg, igeom, jpintt, jpmilt,&
+                    nddlm, npg, igeom, jpintt, jpmilt, jlsn,&
                     ivf, ipoids, idfde, ivectu, ipesa,&
                     zi(jheavt), zi( jlonch), zi(jcnset), rho(1), axi,&
                     yaenrm)
@@ -360,7 +360,7 @@ subroutine te0588(option, nomte)
                     mecani, press1, dimcon, nddls, nddlm,&
                     dimuel, nmec, np1, ndim, axi,&
                     dimenr, nnop, nnops, nnopm, igeom,&
-                    jpintt, jpmilt, zi(jlonch), zi( jcnset), zi(jheavt),&
+                    jpintt, jpmilt, jlsn, zi(jlonch), zi( jcnset), zi(jheavt),&
                     enrmec)
 !
 ! =====================================================================

@@ -62,7 +62,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     parameter    (zero=0.d0)
     real(kind=8) :: dist, dmin, intinf, intsup
     real(kind=8) :: ksi2(ndime), delta(ndime), ksim(ndime)
-    data  itermin/1/
+    data  itermin/3/
 !
 ! ------------------------------------------------------------------
 !

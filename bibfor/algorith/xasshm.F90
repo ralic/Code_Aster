@@ -10,7 +10,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                   np1, ndim, compor, axi, modint,&
                   codret, nnop, nnops, nnopm, enrmec,&
                   dimenr, heavt, lonch, cnset, jpintt,&
-                  jpmilt, angmas, dimmat)
+                  jpmilt, jlsn, angmas, dimmat)
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
@@ -53,7 +53,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     integer :: nbvari, nddls, nddlm, nmec, np1, ndim, codret
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: yamec, yap1
-    integer :: addeme, addep1, ii, jj, in
+    integer :: addeme, addep1, ii, jj, in, jlsn
     integer :: kpi, ipi
     integer :: i, j, n, k, kji, nvim, nbcomp
     real(kind=8) :: geom(ndim, nnop), crit(*), poids
@@ -296,7 +296,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he)
+                        he, jlsn)
 ! =====================================================================
 ! --- CALCUL INTERMEDIAIRE POUR LES DEF GENERALISEES AVEC XFEM --------
 ! =====================================================================

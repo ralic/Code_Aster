@@ -44,7 +44,7 @@ subroutine xajpmi(ndim, list, long, ipt, cpt, newpt,&
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: p(3), cridist
-    parameter(cridist=1.d-7)
+    parameter(cridist=1.d-9)
     integer :: i, j
     aster_logical :: deja
 !

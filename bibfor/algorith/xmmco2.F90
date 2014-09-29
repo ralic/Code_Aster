@@ -11,6 +11,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 #include "asterfort/matini.h"
 #include "asterfort/promat.h"
 #include "asterfort/transp.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nfh, ddls, singu
     real(kind=8) :: mmat(216, 216), dsidep(6, 6)
     real(kind=8) :: ffp(27), jac
@@ -59,7 +60,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
     integer :: i, j, ddlm, ifa, ifh, ifiss, in, jfh, jfisno, jheafa, jn
     integer :: k, l, ncomph, nfiss, nnol, nnos, pla(27), pli, plj
     real(kind=8) :: au(3, 3), coefi, coefj, dside2(3, 3), ffc(8), pdotal(3, 3)
-    real(kind=8) :: ffi, ffj, r, temp(3, 3), unity(3, 3), ptr(3, 3)
+    real(kind=8) :: ffi, ffj, r, temp(3, 3), unity(3, 3), ptr(3, 3), coefh
     real(kind=8) :: alocal(3, 3)
     aster_logical :: lmultc
 !
@@ -106,8 +107,9 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 !
 ! ON STOCKE DANS LA MATRICE ELEMENTAIRE
 !
-    coefi = 2
-    coefj = 2
+    coefi = int(xcoef_he())
+    coefj = int(xcoef_he())
+    coefh = xcoef_he()
     lmultc = nfiss.gt.1
 !
     do 10 i = 1, nnol
@@ -195,7 +197,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                         do 144 l = 1, singu*ndim
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) =&
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) -&
-                            4.d0*ffp(i)*ffp(j)*rr*r*au(k,l)*jac
+                            coefh*2.d0*ffp(i)*ffp(j)*rr*r*au(k,l)*jac
 144                     continue
 142                 continue
 149             continue
@@ -205,7 +207,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                 do 146 l = 1, nfh*ndim
                     mmat(in+ndim*(1+nfh)+k,jn+ndim+l) = mmat(&
                                                         in+ndim*(1+nfh)+k,&
-                                                        jn+ndim+l) - 4.d0*ffp(i)*ffp(j)*rr*r*au( &
+                                                   jn+ndim+l) - coefh*2.d0*ffp(i)*ffp(j)*rr*r*au( &
                                                         &k,&
                                                         l&
                                                         )*jac

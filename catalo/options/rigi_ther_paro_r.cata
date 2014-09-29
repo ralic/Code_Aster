@@ -28,6 +28,7 @@ OPTION__
         PAINTER  N120_R
         PCFACE   N120_I
         PLONGCO  N120_I
+        PLSN     NEUT_R
         PLST     NEUT_R
         PSTANO   N120_I
         PBASECO  N120_R

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,27 +14,8 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+!
 interface
-    subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
-                      ihechp, jptint, jaint, jcface, jlonch,&
-                      jlst, jlsn, jbasec, nfh, nfe, fonree,&
-                      imattt)
-        integer :: nfe
-        integer :: nfh
-        integer :: nnop
-        integer :: ndim
-        character(len=8) :: elrefp
-        integer :: igeom
-        integer :: itps
-        integer :: ihechp
-        integer :: jptint
-        integer :: jaint
-        integer :: jcface
-        integer :: jlonch
-        integer :: jlst
-        integer :: jlsn
-        integer :: jbasec
-        character(len=4) :: fonree
-        integer :: imattt
-    end subroutine xrechp
+    function xcoef_he()
+    end function xcoef_he
 end interface

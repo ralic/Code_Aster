@@ -18,8 +18,6 @@ subroutine te0036(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!
-!
 !     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
 !          CORRESPONDANT A UN CHARGEMENT EN PRESSION REPARTIE
 !          SUR DES FACES D'ELEMENTS X-FEM
@@ -35,8 +33,6 @@ subroutine te0036(option, nomte)
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
-!
-!
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -64,17 +60,16 @@ subroutine te0036(option, nomte)
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xteddl.h"
+#include "asterfort/xcalf_he.h"
 #include "blas/ddot.h"
 !
-    character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
-    character(len=8) :: elref
+    character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag, elref
     character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
     integer :: jpmilt, irese, nfiss, ifiss, jfisno, jtab(7), ncomp
     integer :: ibid, ier, ndim, nno, nnop, nnops, npg, nnos, kpg
     integer :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, i, j
-    integer :: nfh, nfe, nse, ise
-    integer :: in, ino, iadzi, iazk24, jstno
+    integer :: nfh, nfe, nse, ise, in, ino, iadzi, iazk24, jstno
     integer :: iforc, iret, ig, pos, ndime, nddl, ddls
     real(kind=8) :: y(3), xg(4), fe(4), xe(2), lsng, lstg, rg, tg
     real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
@@ -101,11 +96,6 @@ subroutine te0036(option, nomte)
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)(1:8)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-!
-!     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
-!     NDIM EST LA DIMENSION DU MAILLAGE
-!     NDIME EST DIMENSION DE L'ELEMENT FINI
-!     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
 !
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then
@@ -147,7 +137,6 @@ subroutine te0036(option, nomte)
 !-----------------------------------------------------------------------
 !     RECUPERATION DES ENTREES / SORTIE
 !-----------------------------------------------------------------------
-!
     call jevech('PGEOMER', 'L', igeom)
 !
     if (option .eq. 'CHAR_MECA_PRES_R') then
@@ -173,7 +162,6 @@ subroutine te0036(option, nomte)
         call jevech('PTEMPSR', 'L', itemps)
 !
     endif
-!
 !     PARAMETRES PROPRES A X-FEM
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
@@ -383,12 +371,6 @@ subroutine te0036(option, nomte)
                 end do
             end do
 !
-!           2EME METHODE POUR CALCULER LES COORDONNÉES RÉELLES
-!           DU POINT DE GAUSS
-!            G(1)=A(1)+AB(1)*GLOC(1)+Y(1)*GLOC(2)
-!            G(2)=A(2)+AB(2)*GLOC(1)+Y(2)*GLOC(2)
-!            G(3)=A(3)+AB(3)*GLOC(1)+Y(3)*GLOC(2)
-!
 !           CALCUL DES FONCTIONS D'ENRICHISSEMENT
 !           -------------------------------------
 !
@@ -497,8 +479,9 @@ subroutine te0036(option, nomte)
                     if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ ig)
                     do j = 1, ndim
                         pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + zi(jheavt-1+ (ifiss-1)*ncomp+ise)*forre&
-                                         &p(j)*poids*ff(ino)
+                        zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(real(zi(jheavt-1+ (ifiss-1)&
+                                         *ncomp+ise),8),zr(jlsn-1+(ino-1)*nfiss+ifiss))&
+                                         *forrep(j)*poids*ff(ino)
                     end do
                 end do
 !

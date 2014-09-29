@@ -9,6 +9,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), jfisno, nfiss, ifiss, jheafa, ncomph, ifa
@@ -70,8 +71,8 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
 ! ----------------------------------------------------------------------
 !
-    coefi = 2
-    coefj = 2
+    coefi = int(xcoef_he())
+    coefj = int(xcoef_he())
     lmultc = nfiss.gt.1
 ! I.1 CALCUL DE A
     do 130 i = 1, nnol
@@ -151,7 +152,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
                         do 144 l = 1, singu*ndim
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) =&
                             mmat(in+ndim+k,jn+ndim*(1+nfh)+l) +&
-                            4.d0*cstaco*ffp(i)*ffp(j)*rr*nd(k)*nd(l)*&
+                            coefi*2.d0*cstaco*ffp(i)*ffp(j)*rr*nd(k)*nd(l)*&
                             jac
 144                     continue
 142                 continue
@@ -162,7 +163,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
                 do 146 l = 1, nfh*ndim
                     mmat(in+ndim*(1+nfh)+k,jn+ndim+l) = mmat(&
                                                         in+ndim*(1+nfh)+k,&
-                                                        jn+ndim+l) + 4.d0*cstaco*ffp(i)*ffp(j)* r&
+                                                   jn+ndim+l) + coefi*2.d0*cstaco*ffp(i)*ffp(j)* r&
                                                         &r*nd(k)*nd(l&
                                                         )*jac
 146             continue

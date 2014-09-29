@@ -1,6 +1,6 @@
 subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                   ihechp, jptint, jaint, jcface, jlonch,&
-                  jlst, jbasec, nfh, nfe, fonree,&
+                  jlst, jlsn, jbasec, nfh, nfe, fonree,&
                   imattt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,10 +64,12 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalf_he.h"
     character(len=4) :: fonree
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, itps, ihechp, jptint, jaint, jcface, jlonch
-    integer :: jlst, jbasec, nfh, nfe, imattt
+    integer :: jlst, jlsn, jbasec, nfh, nfe, imattt
 !
 !-----------------------------------------------------------------------
 !
@@ -255,7 +257,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                     ffenr(i,1) = ff(i)
 !             DDL HEAVISIDE (H1)
                     if (nfh .eq. 1) then
-                        ffenr(i,1+nfh) = he(ilev)*ff(i)
+                        ffenr(i,1+nfh) = xcalf_he(he(ilev),zr(jlsn-1+i))*ff(i)
                     endif
 !             DDL CRACK-TIP (E1)
                     if (nfe .eq. 1) then
@@ -288,7 +290,7 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                                     if (lddl .eq. 1) then
                                         r8tmp = 0.d0
                                     else if (lddl.eq.2) then
-                                        r8tmp = 2.d0*he(ilev)*ff(jnp)
+                                        r8tmp = xcoef_he()*he(ilev)*ff(jnp)
                                     else if (lddl.eq.3) then
                                         r8tmp = 2.d0*rr(ilev)*ff(jnp)
                                     else

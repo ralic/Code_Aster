@@ -190,7 +190,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                     ndim, he, r, rbid, fisno,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    eps, grad)
+                    eps, grad, lsn)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         call vecini(6, 0.d0, epsth)

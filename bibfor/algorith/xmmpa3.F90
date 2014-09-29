@@ -9,6 +9,7 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), jfisno, nfiss, ifiss, jheafa, ncomph, ifa
@@ -69,7 +70,7 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
 ! ----------------------------------------------------------------------
 !
-    coefj = 2
+    coefj = int(xcoef_he())
     lmultc = nfiss.gt.1
 ! I.1 CALCUL DE A
     do 130 i = 1, nnol

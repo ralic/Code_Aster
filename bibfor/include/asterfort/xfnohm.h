@@ -25,7 +25,7 @@ interface
                       dimcon, nddls, nddlm, dimuel, nmec,&
                       np1, ndim, axi, dimenr, nnop,&
                       nnops, nnopm, igeom, jpintt, jpmilt,&
-                      lonch, cnset, heavt, enrmec)
+                      jlsn, lonch, cnset, heavt, enrmec)
         integer :: nnops
         integer :: nnop
         integer :: dimenr
@@ -53,6 +53,7 @@ interface
         integer :: nddlm
         integer :: nmec
         integer :: np1
+        integer :: jlsn
         aster_logical :: axi
         integer :: nnopm
         integer :: igeom

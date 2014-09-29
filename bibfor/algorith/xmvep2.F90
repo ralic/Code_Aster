@@ -9,6 +9,7 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnos, nnol
     integer :: pla(27), nfh
     integer :: singu, ddls, ddlm, jfisno, nfiss, ifiss, jheafa, ncomph, ifa
@@ -67,12 +68,13 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
 !
 !
 !
-    integer :: i, j, in, pli, ifh, coefi
+    integer :: i, j, in, pli, ifh, coefi, coefh
     real(kind=8) :: ffi, dn
     aster_logical :: lmultc
 !
 ! ----------------------------------------------------------------------
 !
+    coefh = int(xcoef_he())
     coefi = 2
     lmultc = nfiss.gt.1
     dn = 0.d0
@@ -86,7 +88,7 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
         call indent(i, ddls, ddlm, nnos, in)
         do 156 ifh = 1, nfh
             if (lmultc) then
-                coefi = zi(&
+                coefh = zi(&
                         jheafa-1+ncomph*(&
                         nfiss*(ifiss-1) +zi( jfisno-1+nfh*(i-1)+ifh)-1)+2*ifa) - zi(jheafa-1+ nco&
                         &mph*(nfiss*(ifiss-1) +zi(jfisno-1+nfh*(i-1)+ifh)-1&
@@ -94,7 +96,7 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
                         )
             endif
             do 154 j = 1, ndim
-                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + reac* coefi*ffp(i)*nd(j)*jac
+                vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + reac* coefh*ffp(i)*nd(j)*jac
 154         continue
 156     continue
         do 155 j = 1, singu*ndim

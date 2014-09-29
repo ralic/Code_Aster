@@ -18,6 +18,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/xcalf_he.h"
 !
     integer :: ino, icompt, ndim, jnoxfv
     real(kind=8) :: valimr, direct(3)
@@ -254,7 +255,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     if (stano(1) .eq. 1 .or. stano(1) .eq. 3) then
                         i = i+1
                         ddl(i) = 'H1'//axes(j)
-                        coef(i)=he(irel,1)*direct(j)
+                        coef(i)=xcalf_he(he(irel,1),lsn(1))*direct(j)
                     endif
 !
                     if (stano(1) .eq. 2 .or. stano(1) .eq. 3) then
@@ -277,7 +278,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                             i = i+1
                             call codent(ifh, 'G', ch)
                             ddl(i) = 'H'//ch//axes(j)
-                            coef(i)=he(irel,ifh)*direct(j)
+                            coef(i)=xcalf_he(he(irel,ifh),lsn(fisno(ifh)))*direct(j)
                         endif
                     end do
                 endif
@@ -295,7 +296,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                 if (stano(1) .eq. 1 .or. stano(1) .eq. 3) then
                     i = i+1
                     ddl(i) = 'H1'//motcle(2:2)
-                    coef(i)=he(irel,1)
+                    coef(i)=xcalf_he(he(irel,1),lsn(1))
                 endif
                 if (stano(1) .eq. 2 .or. stano(1) .eq. 3) then
                     i = i+1
@@ -317,7 +318,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                         i = i+1
                         call codent(ifh, 'G', ch)
                         ddl(i) = 'H'//ch//motcle(2:2)
-                        coef(i)=he(irel,ifh)
+                        coef(i)=xcalf_he(he(irel,ifh),lsn(fisno(ifh)))
                     endif
                 end do
             endif

@@ -42,7 +42,7 @@ subroutine te0594(option, nomte)
 !-----------------------------------------------------------------------
 !
     integer :: ndim, nfh, nfe, igeom, nnop, jptint, jaint, jcface
-    integer :: jlonch, jlst, itps, ihechp, jstno, jbasec
+    integer :: jlonch, jlst, itps, ihechp, jstno, jbasec, jlsn
     integer :: imattt, nddlno
     character(len=8) :: elrefp
     character(len=4) :: fonree
@@ -78,6 +78,7 @@ subroutine te0594(option, nomte)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PLST', 'L', jlst)
+    call jevech('PLSN', 'L', jlsn)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PBASECO', 'L', jbasec)
 !
@@ -98,7 +99,7 @@ subroutine te0594(option, nomte)
 !
     call xrechp(ndim, elrefp, nnop, igeom, itps,&
                 ihechp, jptint, jaint, jcface, jlonch,&
-                jlst, jbasec, nfh, nfe, fonree,&
+                jlst, jlsn, jbasec, nfh, nfe, fonree,&
                 imattt)
 !
 ! ----------------------------------------------------------------------

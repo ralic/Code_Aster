@@ -105,7 +105,7 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
     seuil_mloc=sqrt(ech*5.d-17)
     do i=1,nm
        if (diag(i) .lt. seuil_mloc) then
-         write(6,*) '<SVD> Elimination forcée: ',diag(j),seuil_mloc
+!         write(6,*) '<SVD> Elimination forcée: ',diag(i),seuil_mloc
          diag(i)=sqrt(ech)*r8gaem()
        endif
     enddo

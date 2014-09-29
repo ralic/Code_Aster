@@ -9,6 +9,7 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xmafr1.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, ipgf, imate
     real(kind=8) :: saut(3), am(3), pp(3, 3), dsidep(6, 6)
     real(kind=8) :: tau1(3), tau2(3), nd(3)
@@ -113,9 +114,9 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
 ! PREDICTION: COHES(3)=1 ; CORRECTION: COHES(3)=2
 !
-        if (cohes(3) .eq. 1.d0) then
+        if (cohes(3) .eq. xcoef_he()/2) then
             option='RIGI_MECA_TANG'
-        else if (cohes(3).eq.2.d0) then
+        else if (cohes(3).eq.xcoef_he()) then
             option='FULL_MECA'
         else
             option='FULL_MECA'
@@ -165,9 +166,9 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !         ENDIF
 !
         if (job .eq. 'ACTU_VI') then
-            alpha(3) = 1.d0
+            alpha(3) = xcoef_he()/2
         else if (job.eq.'MATRICE') then
-            alpha(3) = 2.d0
+            alpha(3) = xcoef_he()
         endif
 !
     endif

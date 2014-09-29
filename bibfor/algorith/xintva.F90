@@ -44,9 +44,10 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     real(kind=8) :: x(81), a(ndime), b(ndime), c(ndime), ab(ndime), bc(ndime)
     real(kind=8) :: ca(ndime), ptini(ndime), k(ndime), det, alpha, kappa
     real(kind=8) :: ka(ndime), kb(ndime), kc(ndime), b1, c1, c2
-    real(kind=8) :: norm_ab, norm_bc , norm_ca, eps
+    real(kind=8) :: norm_ab, norm_bc , norm_ca, eps, tole
     integer :: nno, ia , ib , ic, j, cpt
     parameter (eps = 1.d-12)
+    parameter (tole = 1.d-7)
 !
 ! ------------------------------------------------------------------
 !
@@ -91,11 +92,13 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     c1 = ddot(ndime,k,1,ka,1)
     c2 = ddot(ndime,ka,1,ab,1)
     det =  -1.d0+b1**2
-    if (abs(det).gt.1.d-8) then
+!    write(6,*)'KOR: det1=',det
+    if (abs(det).gt.eps) then
        kappa = (-c1+c2*b1)/det
        alpha = (c2-b1*c1)/det
        alpha = alpha/norm_ab
-       if (alpha.le.(1.d0+eps).and.alpha.ge.-eps) then
+!    write(6,*)'KOR: alpha1=',alpha
+       if (alpha.le.(1.d0+tole).and.alpha.ge.-tole) then
           if (kappa.le.0.d0) intinf = kappa
           if (kappa.ge.0.d0) intsup = kappa
           cpt = cpt+1
@@ -110,11 +113,13 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     c1 = ddot(ndime,k,1,kb,1)
     c2 = ddot(ndime,kb,1,bc,1)
     det = -1.d0+b1**2
-    if (abs(det).gt.1.d-8) then
+!    write(6,*)'KOR: det2=',det
+    if (abs(det).gt.eps) then
        kappa = (-c1+c2*b1)/det
        alpha = (c2-b1*c1)/det
        alpha = alpha/norm_bc
-       if (alpha.le.(1.d0+eps).and.alpha.ge.-eps) then
+!    write(6,*)'KOR: alpha2=',alpha
+       if (alpha.le.(1.d0+tole).and.alpha.ge.-tole) then
           if (kappa.le.0.d0) intinf = kappa
           if (kappa.ge.0.d0) intsup = kappa
           cpt = cpt+1
@@ -129,11 +134,13 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     c1 = ddot(ndime,k,1,kc,1)
     c2 = ddot(ndime,kc,1,ca,1)
     det =  -1.d0+b1**2
-    if (abs(det).gt.1.d-8) then
+!    write(6,*)'KOR: det3=',det
+    if (abs(det).gt.eps) then
        kappa = (-c1+c2*b1)/det
        alpha = (c2-b1*c1)/det
        alpha = alpha/norm_ca
-       if (alpha.le.(1.d0+eps).and.alpha.ge.-eps) then
+!    write(6,*)'KOR: alpha3=',alpha
+       if (alpha.le.(1.d0+tole).and.alpha.ge.-tole) then
           if (kappa.le.0.d0) intinf = kappa
           if (kappa.ge.0.d0) intsup = kappa
           cpt = cpt+1

@@ -4,7 +4,7 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                   mecani, press1, dimcon, nddls, nddlm,&
                   dimuel, nmec, np1, ndim, axi,&
                   dimenr, nnop, nnops, nnopm, igeom,&
-                  jpintt, jpmilt, lonch, cnset, heavt,&
+                  jpintt, jpmilt, jlsn, lonch, cnset, heavt,&
                   enrmec)
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
@@ -44,7 +44,7 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 ! DECLARATIONS POUR XFEM
     integer :: nnop, nnopm, nnops, in, j
     integer :: yaenrm, adenme, nse, ise, ino, enrmec(3)
-    integer :: igeom, jpintt, jpmilt
+    integer :: igeom, jpintt, jpmilt, jlsn
     integer :: lonch(10), cnset(4*32), heavt(36)
     real(kind=8) :: coorse(81), he, xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: ff(nnop), ff2(nnops), geom(ndim, nnop)
@@ -170,7 +170,7 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he)
+                        he, jlsn)
 ! ======================================================================
             call xfnoda(imate, mecani, press1, enrmec, dimenr,&
                         dimcon, ndim, dt, fnoevo, congem(npg*(ise-1)*dimcon+1),&

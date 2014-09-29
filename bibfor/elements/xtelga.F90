@@ -27,6 +27,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcalf_he.h"
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, nfh, nfe, jpintt
     integer :: lonch(10), cnset(4*32), heavt(36)
@@ -171,7 +172,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 ffenr(inp,1) = ff(inp)
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
-                    ffenr(inp,1+nfh) = he*ff(inp)
+                    ffenr(inp,1+nfh) = xcalf_he(he,lsn(inp))*ff(inp)
                 endif
 !           DDL CRACK-TIP (E1)
                 if (nfe .eq. 1) then

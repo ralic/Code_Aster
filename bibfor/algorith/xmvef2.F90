@@ -10,6 +10,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
 #include "asterfort/vecini.h"
 #include "asterfort/xadher.h"
 #include "asterfort/xmafr1.h"
+#include "asterfort/xcoef_he.h"
     integer :: ndim, nno, nnos, ddls, ddlm, nfh, singu, idepl
     integer :: algofr
     real(kind=8) :: vtmp(400), rr, nd(3)
@@ -78,10 +79,12 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
     integer :: i, j, k, in, ino
     real(kind=8) :: ptpb(3), p(3, 3), vitang(3), saut(3), rbid(3, 3)
     real(kind=8) :: r2bid(3, 3)
-    real(kind=8) :: r3bid(3, 3)
+    real(kind=8) :: r3bid(3, 3), coefh
     aster_logical :: adher
 !
 ! ----------------------------------------------------------------------
+!
+    coefh=xcoef_he()
 !
 !     P : OPÉRATEUR DE PROJECTION
     call xmafr1(ndim, nd, p)
@@ -91,7 +94,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
     do 175 ino = 1, nno
         call indent(ino, ddls, ddlm, nnos, in)
         do 176 j = 1, nfh*ndim
-            saut(j) = saut(j) - 2.d0 * ffp(ino) * zr(idepl-1+in+ndim+ j)
+            saut(j) = saut(j) - coefh * ffp(ino) * zr(idepl-1+in+ndim+ j)
 176     continue
         do 177 j = 1, singu*ndim
             saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepl-1+in+ ndim*(1+nfh)+j)
@@ -132,7 +135,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
         call indent(i, ddls, ddlm, nnos, in)
 !
         do 186 j = 1, nfh*ndim
-            vtmp(in+ndim+j) = vtmp(in+ndim+j) + 2.d0*mu*seuil* ptpb(j) *ffp(i)*jac
+            vtmp(in+ndim+j) = vtmp(in+ndim+j) + coefh*mu*seuil* ptpb(j) *ffp(i)*jac
 186     continue
         do 187 j = 1, singu*ndim
             vtmp(in+ndim*(1+nfh)+j) = vtmp(in+ndim*(1+nfh)+j) + 2.d0*rr*mu*seuil* ptpb(j)*ffp(i&

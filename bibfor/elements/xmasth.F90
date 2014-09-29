@@ -63,6 +63,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
+#include "asterfort/xcalf_he.h"
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrefp
@@ -235,7 +236,7 @@ subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                 ffenr(inp,1) = ff(inp)
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
-                    ffenr(inp,1+nfh) = he*ff(inp)
+                    ffenr(inp,1+nfh) = xcalf_he(he,lsn(inp))*ff(inp)
                 endif
 !           DDL CRACK-TIP (E1)
                 if (nfe .eq. 1) then

@@ -74,6 +74,9 @@ subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
 !
 ! --- INNITIALISATION
 !
+    call vecini(6,0.d0,iescl)
+    call vecini(6,0.d0,imait)
+!
     iescl(1) = 1
     iescl(2) =-1
     iescl(2+nfhe)=-rre

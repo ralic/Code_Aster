@@ -29,6 +29,7 @@ OPTION__
         PCFACE   N120_I
         PLONGCO  N120_I
         PLST     NEUT_R
+        PLSN     NEUT_R
         PSTANO   N120_I
         PBASECO  N120_R
 

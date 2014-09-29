@@ -23,6 +23,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
+#include "asterfort/xcalf_he.h"
     integer :: nnop, nfiss, codret, ddlc, ddlm, fisno(nnop, nfiss)
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
     integer :: lgpg, ndim, nfe, nfh, npg
@@ -212,7 +213,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 do n = 1, nnop
                     ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
                     do ig = 1, nfh
-                        ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *he(fisno(n,ig))
+                        ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1)&
+                                               *xcalf_he(he(fisno(n,ig)),&
+                                                          lsn((n-1)*nfiss+fisno(n,ig)))
                     end do
                     do ig = 1, nfe
                         ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
@@ -225,7 +228,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                         ndim, he, r, ur, fisno,&
                         nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f,&
-                        eps, rbid33)
+                        eps, rbid33, lsn)
 !
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then
@@ -268,7 +271,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 do i = 1, ndim
                     cpt = cpt+1
                     do m = 1, 2*ndim
-                        def(m,cpt,n) = def(m,i,n) * he(fisno(n,ig))
+                        def(m,cpt,n) = def(m,i,n) * xcalf_he(he(fisno(n,ig)),&
+                                                    lsn((n-1)*nfiss+fisno(n,ig)))
                     end do
                     if (ndim .eq. 2) then
                         def(3,cpt,n) = 0.d0
@@ -277,7 +281,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !   TERME DE CORRECTION (3,3) A PORTE SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3,1+ndim*ig,n) = f(3,3) * ff(n)/r * he(fisno( n,ig))
+                    def(3,1+ndim*ig,n) = f(3,3) * ff(n)/r * xcalf_he(he(fisno(n,ig)),&
+                                                            lsn((n-1)*nfiss+fisno(n,ig)))
                 endif
 !
             end do

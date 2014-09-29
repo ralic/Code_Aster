@@ -210,7 +210,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                         ndim, cmp, nbcmp, nfh, nfe,&
                         ddlc, ima, jconq1, jconq2, jcnsv1,&
                         jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                        nnn, contac, lmeca, pre1)
+                        nnn, contac, lmeca, pre1, jlsn)
         endif
 !
 410 continue

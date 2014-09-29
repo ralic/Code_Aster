@@ -49,7 +49,7 @@ subroutine xajpin(ndim, list, long, ipt, cpt,&
 !       LIST,AINTER
 !     ------------------------------------------------------------------
     real(kind=8) :: p(3), cridist
-    parameter(cridist=1.d-7)
+    parameter(cridist=1.d-9)
     integer :: i, j
     aster_logical :: deja
     integer :: zxain

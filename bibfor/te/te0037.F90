@@ -26,6 +26,7 @@ subroutine te0037(option, nomte)
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/xcalf_he.h"
 !
     character(len=16) :: option, nomte
 !
@@ -64,16 +65,16 @@ subroutine te0037(option, nomte)
 !
 !
     character(len=8) :: elref, typma, fpg, elc, nompar(4), lag, elrefc, enr
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, jlsn
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ier, ddlm
     integer :: igeom, ipres, itemps, ires, iadzi, iazk24
     integer :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
     integer :: i, j, ninter, nface, cface(5, 3), ifa, nli, in(3), nfiss, jfisno
     integer :: ar(12, 3), nbar, fac(6, 4), nbf, ibid2(12, 3), ibid, cpt, ino, ilev
-    integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf
+    integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
     integer :: compt, nddlm, nddls, iret
     real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
-    real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
+    real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r, lsn(27,4)
     aster_logical :: lbid, pre1, axi
     real(kind=8) :: thet
     data    he / -1.d0 , 1.d0/
@@ -163,6 +164,7 @@ subroutine te0037(option, nomte)
 !
 !     PARAMETRES PROPRES A X-FEM
     call jevech('PLST', 'L', jlst)
+    call jevech('PLSN', 'L', jlsn)
     call jevech('PPINTER', 'L', jptint)
     call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
@@ -170,6 +172,20 @@ subroutine te0037(option, nomte)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PBASECO', 'L', jbasec)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
+!
+!     RECUPERATION DES LEVETS-NORMALES
+    if (nfh .eq. 1) then
+      do ino=1,nno
+        lsn(ino,1)=zr(jlsn-1+ino)
+      enddo
+    else
+      ASSERT(nfh.le.4)
+      do ifh=1,nfh
+         do ino=1,nno
+           lsn(ino,ifh)=zr(jlsn-1+(ino-1)*nfiss+zi(jfisno-1+(ino-1)*nfh+ifh))
+         enddo
+      enddo
+    endif
 !
 !     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
     ninter=zi(jlonch-1+1)
@@ -355,8 +371,9 @@ subroutine te0037(option, nomte)
 !               TERME HEAVISIDE
                         do j = 1, nfh*ndim
                             pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + he(ilev) *forrep(j,ilev)*jac*ff(ino&
-                                             &)*mult
+                            zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(he(ilev),&
+                                             lsn(ino,j-nfh*int((j-1)/nfh)))&
+                                             *forrep(j,ilev)*jac*ff(ino)*mult
                         end do
                     end do
                 end do
@@ -376,7 +393,9 @@ subroutine te0037(option, nomte)
 !               TERME HEAVISIDE
                         do j = 1, nfh*ndim
                             pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + he(ilev) * forrep(j,ilev) * jac * f&
+                            zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(he(ilev),&
+                                             lsn(ino,j-nfh*int((j-1)/nfh)))&
+                                             * forrep(j,ilev) * jac * f&
                                              &f(ino) * mult
                         end do
 !

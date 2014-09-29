@@ -31,7 +31,7 @@ interface
                       compor, axi, modint, codret,&
                       nnop, nnops, nnopm, enrmec,&
                       dimenr, heavt, lonch, cnset, jpintt,&
-                      jpmilt, angmas,dimmat)
+                      jpmilt, jlsn, angmas,dimmat)
         integer :: dimmat
         integer :: dimenr
         integer :: nnops
@@ -94,6 +94,7 @@ interface
         integer :: cnset(128)
         integer :: jpintt
         integer :: jpmilt
+        integer :: jlsn
         real(kind=8) :: angmas(3)
     end subroutine xasshm
 end interface 
