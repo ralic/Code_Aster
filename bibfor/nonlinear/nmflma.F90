@@ -129,13 +129,12 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
     aster_logical :: reasma
     aster_logical :: lcrigi, lcfint, lmacr
-    aster_logical :: lamor
     aster_logical :: lsuiv
     character(len=16) :: optrig
     integer :: reincr, iterat
     character(len=8) :: tdiag, syme
     character(len=24) :: codere
-    character(len=19) :: rigi2, masse, amort, memass, megeom
+    character(len=19) :: rigi2, masse, memass, megeom
     character(len=19) :: depplu, vitplu, accplu, sigplu, varplu, valin2(zvalin)
     integer :: nmax
     integer :: nbmatr, jexx
@@ -172,14 +171,12 @@ subroutine nmflma(typmat, mod45, defo, parmet, modelz,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lamor = ndynlo(sddyna,'MAT_AMORT')
     lsuiv = isfonc(fonact,'FORCE_SUIVEUSE')
     lmacr = isfonc(fonact,'MACR_ELEM_STAT')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
     call nmchex(measse, 'MEASSE', 'MEMASS', masse)
-    call nmchex(measse, 'MEASSE', 'MEAMOR', amort)
     call nmchex(meelem, 'MEELEM', 'MEMASS', memass)
     call nmchex(meelem, 'MEELEM', 'MEGEOM', megeom)
 !
