@@ -61,6 +61,7 @@ subroutine nmdocn(parcri, parcon)
 !                8 : MOMENT
 !                9 : DEPL_REFE
 !               10 : LAGR_REFE
+!               11 : PI_REFE
 !
 ! ----------------------------------------------------------------------
 !
@@ -123,6 +124,8 @@ subroutine nmdocn(parcri, parcon)
         if (iret .le. 0) parcon(9)=r8nnem()
         call getvr8('CONVERGENCE', 'LAGR_REFE', iocc=1, scal=parcon(10), nbret=iret)
         if (iret .le. 0) parcon(10)=r8nnem()
+        call getvr8('CONVERGENCE', 'PI_REFE', iocc=1, scal=parcon(11), nbret=iret)
+        if (iret .le. 0) parcon(11)=r8nnem()
     endif
     call getvr8('CONVERGENCE', 'RESI_COMP_RELA', iocc=1, scal=parcri(7), nbret=ire4)
     if (ire4 .le. 0) parcri(7) = r8vide()

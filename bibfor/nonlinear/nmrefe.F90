@@ -79,7 +79,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     integer :: nbsig
-    parameter    (nbsig=10)
+    parameter    (nbsig=11)
     character(len=8) :: sigere(nbsig)
 !
     character(len=19) :: vecele
@@ -93,7 +93,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     character(len=16) :: option
 !
     data  sigere / 'SIGM','EPSI','FTHERM','FHYDR1','FHYDR2','VARI',&
-     &               'EFFORT','MOMENT','DEPL','LAG_GV' /
+     &               'EFFORT','MOMENT','DEPL','LAG_GV','PI' /
 ! ----------------------------------------------------------------------
 !
     call jemarq()

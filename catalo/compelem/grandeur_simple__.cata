@@ -1530,9 +1530,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPL :
        LAG_GV :
        DAMG
+       PI     :
 >>
     PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM   VARI
-                    EFFORT   MOMENT   DEPL     LAG_GV   DAMG
+                    EFFORT   MOMENT   DEPL     LAG_GV   DAMG     PI
 
 <<  PRAC_R Type:R Pression acoustique (phenomene Acoustique)
        PRES_R  partie reelle de la pression

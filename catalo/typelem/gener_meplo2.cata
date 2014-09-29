@@ -71,6 +71,7 @@ MODE_LOCAL__
                                         TERMN2   TERMSA   TERMS2   TAILLE   )
     EERRENO  = ERRE_R   ELNO__ IDEN__  (ERREST   NUEST    SIGCAL   TERMRE   TERMR2   TERMNO
                                         TERMN2   TERMSA   TERMS2   TAILLE   )
+    EREFCO   = PREC     ELEM__         (SIGM     EPSI     PI      )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )
@@ -249,8 +250,8 @@ OPTION__
                                 CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                                 ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  
                           OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
-    REFE_FORC_NODA    -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
+    REFE_FORC_NODA   598  IN__  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  EREFCO   PREFCO
+                          OUT__ MVECTUR  PVECTUR
     REPERE_LOCAL     133  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER  
                           OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  
     RICE_TRACEY       -1  IN__  

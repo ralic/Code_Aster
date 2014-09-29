@@ -64,7 +64,7 @@ subroutine op0070()
     integer :: zpmet, zpcri, zconv
     integer :: zpcon, znmeth
     parameter   (zpmet  = 9 ,zpcri  = 7 ,zconv = 4)
-    parameter   (zpcon  = 10,znmeth = 7 )
+    parameter   (zpcon  = 11,znmeth = 7 )
     real(kind=8) :: parmet(zpmet), parcri(zpcri), conv(zconv)
     real(kind=8) :: parcon(zpcon)
     character(len=16) :: method(znmeth)

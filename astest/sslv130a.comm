@@ -1226,6 +1226,10 @@ EVOLOS=STAT_NON_LINE(MODELE=MOOS,
                      COMPORTEMENT=_F(RELATION='ELAS',),
                      INCREMENT=_F(LIST_INST=INSTANTS,),
                      NEWTON=_F(REAC_ITER=1,),
+                     CONVERGENCE=_F(RESI_REFE_RELA=1.E-4,
+                                    SIGM_REFE=60.,
+                                    EPSI_REFE=1.E-4,
+                                    PI_REFE=1.E-4,),
                      SOLVEUR=_F(RENUM='MD',),);
 
 EVOLOS=CALC_CHAMP(reuse=EVOLOS,RESULTAT=EVOLOS,CRITERES=('SIEQ_ELNO','EPEQ_ELNO'),DEFORMATION=('EPSI_ELNO'),CONTRAINTE=('SIGM_ELNO'))

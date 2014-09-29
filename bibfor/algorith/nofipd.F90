@@ -69,8 +69,8 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 ! IN  VFF3    : VALEUR  DES FONCTIONS DE FORME LIES A LA PRESSION
 ! IN  IDFF1   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
 ! IN  VU      : TABLEAU DES INDICES DES DDL DE DEPLACEMENTS
-! IN  VG      : TABLEAU DES INDICES DES DDL DE GONFLEMENT
 ! IN  VP      : TABLEAU DES INDICES DES DDL DE PRESSION
+! IN  VIP     : TABLEAU DES INDICES DES DDL DE GRADIENT DE PRESSION PROJETE
 ! IN  GEOMI   : COORDONEES DES NOEUDS
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  OPTION  : OPTION DE CALCUL
@@ -165,13 +165,9 @@ subroutine nofipd(ndim, nno1, nno2, nno3, npg,&
 ! - CALCUL DES DEFORMATIONS
         call r8inir(6, 0.d0, epsm, 1)
         call r8inir(6, 0.d0, deps, 1)
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, deplm, fm, epsm)
-        call nmepsi(ndim, nno1, axi, grand, vff1(1, g),&
-                    r, dff1, depld, fm, deps)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, deplm, fm, epsm)
+        call nmepsi(ndim, nno1, axi, grand, vff1(1, g), r, dff1, depld, fm, deps)
 !
 ! - CALCUL DE LA PRESSION
         pm = ddot(nno2,vff2(1,g),1,presm,1)

@@ -24,6 +24,7 @@ subroutine te0598(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/niinit.h"
+#include "asterfort/norfpd.h"
 #include "asterfort/nurfgd.h"
 #include "asterfort/nurfpd.h"
 #include "asterfort/terefe.h"
@@ -44,7 +45,7 @@ subroutine te0598(option, nomte)
     integer :: iw, ivf1, ivf2, idf1, idf2
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, ivectu, icompo
-    real(kind=8) :: sigref, epsref
+    real(kind=8) :: sigref, epsref, piref
     character(len=8) :: lielrf(10), typmod(2)
     character(len=24) :: valk
 ! ----------------------------------------------------------------------
@@ -69,9 +70,6 @@ subroutine te0598(option, nomte)
         call utmess('F', 'ELEMENTS_34', sk=nomte)
     endif
 !
-! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
-!
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PVECTUR', 'E', ivectu)
     call jevech('PCOMPOR', 'L', icompo)
@@ -81,19 +79,34 @@ subroutine te0598(option, nomte)
 ! - CALCUL DE REFE_FORC_NODA
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
 !
-        if (.not.lteatt('INCO','C2 ')) then
+        if (lteatt('INCO','C2 ')) then
+!
+! - ACCES AUX COMPOSANTES DU VECTEUR DDL
+            call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
+!
+            call nurfpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
+                        typmod, zr(igeom), sigref, epsref, zr(ivectu))
+        elseif (lteatt('INCO','C2O')) then
+            call terefe('PI_REFE', 'MECA_INCO', piref)
+!
+! - ACCES AUX COMPOSANTES DU VECTEUR DDL
+            call niinit(nomte, typmod, ndim, nno1, 0, nno2, nno2, vu, vg, vp, vpi)
+!
+            call norfpd(ndim, nno1, nno2, nno2, npg, iw, zr(ivf1), zr(ivf2), zr(ivf2), idf1,&
+                        vu, vp, vpi, typmod, nomte, zr(igeom), sigref, epsref, piref, zr(ivectu))
+        else
             valk = zk16(icompo+2)
             call utmess('F', 'MODELISA10_17', sk=valk)
         endif
-!
-        call nurfpd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
-                    typmod, zr(igeom), sigref, epsref, zr(ivectu))
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
 !
         if (.not.lteatt('INCO','C2 ')) then
             valk = zk16(icompo+2)
             call utmess('F', 'MODELISA10_17', sk=valk)
         endif
+!
+! - ACCES AUX COMPOSANTES DU VECTEUR DDL
+        call niinit(nomte, typmod, ndim, nno1, 0, nno2, 0, vu, vg, vp, vpi)
 !
         call nurfgd(ndim, nno1, nno2, npg, iw, zr(ivf1), zr(ivf2), idf1, vu, vp,&
                     typmod, zr(igeom), sigref, epsref, zr(ivectu))

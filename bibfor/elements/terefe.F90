@@ -152,6 +152,12 @@ subroutine terefe(nomref, typele, valref)
         else
             ASSERT(.false.)
         endif
+    else if (nomref.eq.'PI_REFE') then
+        if (typele .eq. 'MECA_INCO') then
+            index = 3
+        else
+            ASSERT(.false.)
+        endif
     else
         ASSERT(.false.)
     endif
