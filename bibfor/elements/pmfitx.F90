@@ -45,12 +45,13 @@ subroutine pmfitx(icdmat, isw, casect, gto)
     integer :: lcage, labsc
     real(kind=8) :: rho, rhos, rhofi, rhofe, cm, phie, phii
     real(kind=8) :: val(1), e, nu, valres(4), absmoy
-    character(len=8) :: materi, nomre4(4)
+    character(len=16) :: nomre4(4)
+    character(len=32) :: materi
     integer :: codres(4)
     character(len=2) :: nomres(2)
     integer, pointer :: cpri(:) => null()
 !     ------------------------------------------------------------------
-    data nomre4/'RHO','RHO_F_IN','RHO_F_EX','CM'/
+    data nomre4/'RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     ------------------------------------------------------------------
 !
 !     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
@@ -64,12 +65,12 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !
     call jeveuo(zk16(icompo-1+7), 'L', isdcom)
 !
-    do 10 i = 1, 6
+    do i = 1, 6
         casect(i) = zero
-10  end do
+    end do
 ! --- BOUCLE SUR LES GROUPES DE FIBRE
     ipos=jacf
-    do 100 ig = 1, nbgf
+    do ig = 1, nbgf
         nugf=zi(inbf+1+ig)
         icp=isdcom-1+(nugf-1)*6
         read(zk24(icp+6),'(I24)')nbfig
@@ -116,18 +117,18 @@ subroutine pmfitx(icdmat, isw, casect, gto)
                         0)
             if (codres(1) .ne. 0) val(1) = zero
         endif
-        do 20 i = 1, 6
+        do i = 1, 6
             casect(i) = casect(i) + val(1)*casec1(i)
-20      continue
+        end do
         ipos=ipos+nbfig*ncarfi
-100  end do
+    end do
 !
 ! ---  SI ITO=1 ON RECUPERE LE MATERIAU DE TORSION
     if (isw .eq. 1) then
 !
         call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
         nbgfmx=cpri(3)
-        materi=zk24(isdcom-1+nbgfmx*6+1)
+        materi=zk24(isdcom-1+nbgfmx*6+1)(1:16)
         nomres(1) = 'E'
         nomres(2) = 'NU'
         call rcvalb('RIGI', 1, 1, '+', icdmat,&

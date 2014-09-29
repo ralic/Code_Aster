@@ -229,10 +229,6 @@ Solution : Il faut dédoubler le noeud.
  type sd non traité:  %(k1)s
 """),
 
-69 : _(u"""
- le mot-clé : %(k1)s  est identique (sur ses 8 premiers caractères) à un autre.
-"""),
-
 70 : _(u"""
  erreur lors de la définition de la courbe de traction, il manque le paramètre : %(k1)s
 """),

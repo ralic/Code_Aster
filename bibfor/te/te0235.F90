@@ -60,7 +60,7 @@ subroutine te0235(option, nomte)
     real(kind=8) :: pgl(3, 3), mlv(105), matp1(78)
     real(kind=8) :: carsec(6), rbid, casrho(6), casece(6)
 !     ------------------------------------------------------------------
-    data nomres/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
+    data nomres/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     ------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
@@ -144,13 +144,13 @@ subroutine te0235(option, nomte)
     omega(2) = zr(irota+2)*zr(irota)
     omega(3) = zr(irota+3)*zr(irota)
     call matrot(zr(lorien), pgl)
-    do 1 i = 1, 3
+    do  i = 1, 3
         s=0.d0
-        do 2 j = 1, 3
+        do  j = 1, 3
             s=s+pgl(i,j)*omega(j)
- 2      continue
+        end do
         omegl(i)=s
- 1  end do
+    end do
 !
 !CC     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---
     do 20 i = 1, 78

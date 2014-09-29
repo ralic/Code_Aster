@@ -74,7 +74,7 @@ subroutine te0141(option, nomte)
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), mlv(105)
     real(kind=8) :: matv(105), matp(14, 14)
 !     ------------------------------------------------------------------
-    data nomres/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
+    data nomres/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     ------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0

@@ -40,15 +40,15 @@ subroutine ef0142(nomte)
     parameter(nbres=3,nbref=6)
     real(kind=8) :: valres(nbres), valref(nbref)
     integer :: codres(nbres), codref(nbref)
-    character(len=8) :: nompar, nomref(nbref)
-    character(len=16) :: nomres(nbres)
+    character(len=8) :: nompar
+    character(len=16) :: nomres(nbres), nomref(nbref)
     real(kind=8) :: zero, e, nu, rho
     real(kind=8) :: klv(78), klc(12, 12)
     character(len=24) :: suropt
     integer :: iret
 !     ------------------------------------------------------------------
     data nomres/'E','NU','RHO'/
-    data nomref/'E','NU','RHO','RHO_F_IN','RHO_F_EX','CM'/
+    data nomref/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     --------------------------------------------------
     zero=0.d0
 !
