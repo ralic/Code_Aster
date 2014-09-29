@@ -47,7 +47,7 @@ subroutine execop()
     common /inf001/ nivuti,nivpgm,unite
 !
     integer :: nuoper, nuop2, imaav, imaap
-    real(kind=8) :: tpres, rval(12)
+    real(kind=8) :: tpres, rval(12), v0
     character(len=6) :: nommar
     character(len=8) :: k8tab(7)
     integer :: iret, iret2
@@ -90,6 +90,7 @@ subroutine execop()
     k8tab(6) = 'COUR_JV'
     k8tab(7) = 'VMPEAK'
     call utgtme(7, k8tab, rval, iret)
+    v0=rval(1)
     if (rval(5)+rval(6) .gt. rval(3)) then
 !
 ! --- ON AJUSTE LE RELIQUAT CAR IL A DIMINUE
@@ -103,7 +104,9 @@ subroutine execop()
                 k8tab(1) = 'RLQ_MEM'
                 k8tab(2) = 'LIMIT_JV'
                 call utgtme(2, k8tab, rval, iret2)
-                call utmess('I', 'JEVEUX1_74', nr=2, valr=rval)
+                if (abs(rval(2)-v0) .gt. v0*0.1d0) then 
+                   call utmess('I', 'JEVEUX1_73', nr=2, valr=rval)
+                endif   
             endif
         endif
     endif
