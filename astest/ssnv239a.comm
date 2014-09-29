@@ -1,0 +1,530 @@
+#  TITRE  TEST DES ROTATIONS DES CONTRAINTES PRINCIPALES (WILLAM)
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+#  TEST LOI DE TEST LOI KIT_RGI (module ENDO_PORO_BETON)
+# ________________________________________________________
+#  MAILLAGE : 1 CUB8
+#
+#  CHARGEMENT : 1 - direction (DEPSxx,DEPSyy,DEPSxy)=(1,-NU,0)jusqu a la contrainte max
+#               2 - direction (DEPSxx,DEPSyy,DEPSxy)=(1, 1.5, 1) jusqu a EPSxx=0.0015
+# ________________________________________________________
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+# SDVERI='NON' car la verification est trop couteuse en CPU
+mail=LIRE_MAILLAGE(FORMAT='MED',);
+mod=AFFE_MODELE(MAILLAGE=mail,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),);
+
+rc1=38.3;
+youn1=32000.;
+epc1=2.e-3;
+nu1=0.2;
+mu11=(youn1/2.)/(1.+nu1);
+k11=(youn1/3.)/(1.-(2.*nu1));
+rt1=3.;
+ept1=1.1*(rt1/youn1);
+
+t1=1.e-2;
+t2=10.e-2;
+
+E=DEFI_CONSTANTE(VALE=youn1,);
+
+Nu=DEFI_CONSTANTE(VALE=nu1,);
+
+ALPHA=DEFI_CONSTANTE(VALE=0,);
+
+mat=DEFI_MATERIAU(ELAS_FO =_F(     E     = E,
+                                   NU    = Nu,
+                                   TEMP_DEF_ALPHA=12.,
+                                   ALPHA   =ALPHA,
+                                   K_DESSIC=0.,
+                                   B_ENDOGE=0.,RHO=2300),
+                        PORO_BETON=_F(HYDS = 0.2,
+                                   F_C    = rc1,
+                                   F_T    = rt1,
+                                   EPS_COMP   = epc1,
+                                   EPS_TRAC   = ept1,
+                                   EKVP  = 2.e-3,
+                                   CBIO = 0.3,
+                                   MODU_EAU   = 0.,
+                                   SFLD  = 12.,
+                                   MODU_GEL    = 0.0,
+                                   VOL_GEL   = 0.01,
+                                   PORO  = 0.12,
+                                   TKVP  = 0.1,
+                                   NRJA  = 36500.,
+                                   MSHR  = 0.,
+                                   KD    = k11,
+                                   MU    = mu11,
+                                   DT80  = 0.3,
+                                   TREF  = 12.,
+                                   GFTL  = 10.e-4,
+                                   GFCL  = 10.e-2,
+                                   WREF  = 5e-6,
+                                   TPHI  = 1.0,
+                                   ANG_CRIT  = 1.,
+                                   SREF  = 5.,
+                                   VREF  = 1.0,
+                                   VMAX  = 1.0,
+                                   KWB   = 6.11,
+                                   COVS  = 0.0, 
+                                   STMP=1.,
+                                   KTMP=5.3),);
+
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=1.0,),);
+
+HYDR=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_VARC',
+               NOM_CHAM='HYDR_NOEU',
+               AFFE=(
+               _F(CHAM_GD=HYDRI,
+                  INST=0.0,),
+               _F(CHAM_GD=HYDRF,
+                  INST=350.,),),);
+
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=12,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=12,),);
+
+TEMP=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=TEMPI,
+                  INST=0.0,),
+               _F(CHAM_GD=TEMPF,
+                  INST=350.,),),);
+
+SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=0.12,),);
+
+SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=mail,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=0.12,),);
+
+SECH=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=SECHI,
+                  INST=0.0,),
+               _F(CHAM_GD=SECHF,
+                  INST=350.0,),),);
+
+afmat=AFFE_MATERIAU(MAILLAGE=mail,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=mat,),
+                      AFFE_VARC=(_F(TOUT='OUI',
+                                    NOM_VARC='HYDR',
+                                    EVOL=HYDR,
+                                    NOM_CHAM='HYDR_NOEU',),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='SECH',
+                                    EVOL=SECH,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=0.12,),
+                                 _F(TOUT='OUI',
+                                    NOM_VARC='TEMP',
+                                    EVOL=TEMP,
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=12,),
+                                ),
+                                    );
+
+D1=1.-(exp(-0.5));
+e1=3./(youn1*(1-D1));
+
+Fonc1=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(0.0,0.0,
+                          t1,e1,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+                   
+
+char=AFFE_CHAR_MECA(MODELE=mod,
+                      DDL_IMPO=_F(GROUP_NO='s23no',
+                                  DX=1.,),);
+
+CL=AFFE_CHAR_MECA(MODELE=mod,
+                  DDL_IMPO=(_F(GROUP_NO='s3no',
+                               DZ=0,),
+                            _F(GROUP_NO='s40no',
+                               DX=0,),
+                            _F(GROUP_NO='s10no',
+                               DY=0,),),
+);
+
+litps=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=(_F(JUSQU_A=t1,
+                                    NOMBRE=10,),
+                                 ),);
+
+liarc=DEFI_LIST_REEL(DEBUT=0,
+                     INTERVALLE=(_F(JUSQU_A=t1,
+                                    NOMBRE=10,),
+                                ),);
+RESU1=STAT_NON_LINE(MODELE=mod,
+                   CHAM_MATER=afmat,
+                   EXCIT=(_F(CHARGE=char,
+                               FONC_MULT=Fonc1,),
+                          _F(CHARGE=CL,),),
+                   COMPORTEMENT=_F(RELATION='ENDO_PORO_BETON',),
+                   INCREMENT=_F(LIST_INST=litps,
+                                INST_INIT=0,),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1e-5,
+                                 ITER_GLOB_MAXI=100,
+                                 ARRET='OUI',),
+          ARCHIVAGE=_F(LIST_INST = liarc),
+                   TITRE='BENCH-B LOI ENDO_PORO_BETON',);
+
+
+
+CL2=AFFE_CHAR_MECA(MODELE=mod,
+                  DDL_IMPO=(
+                            _F(GROUP_NO='d41no',
+                               DX=0,DZ=0.),
+                            _F(GROUP_NO='s10no',
+                               DY=0,),),
+);
+
+e2=(e1/t1)*t2;
+dxf=e2-e1;
+dzf=dxf*0.75;
+dxzf=dxf*0.5;
+litps2=DEFI_LIST_REEL(DEBUT=t1,
+                     INTERVALLE=(_F(JUSQU_A=t2,
+                                    PAS=0.001,),
+                                 ),);
+liarc2=DEFI_LIST_REEL(DEBUT=t1,
+                     INTERVALLE=(_F(JUSQU_A=t2,
+                                    PAS=0.001,),
+                                ),);
+Fonc85x=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(t1,0.0,
+                          t2,dxzf,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+Fonc85z=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(t1,0.0,
+                          t2,dzf,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+Fonc67x=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(t1,0.0,
+                          t2,dxzf+dxf,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+Fonc67z=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(t1,0.0,
+                          t2,dzf+dxzf,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+Fonc23x=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(t1,0.0,
+                          t2,dxf,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+Fonc23z=DEFI_FONCTION(
+                      NOM_PARA='INST',
+                     VALE=(t1,0.0,
+                          t2,dxzf,
+                          ),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+                   
+char85x=AFFE_CHAR_MECA(MODELE=mod,
+                      DDL_IMPO=_F(GROUP_NO='d85no',
+                                  DX=1.,),);
+char85z=AFFE_CHAR_MECA(MODELE=mod,
+                      DDL_IMPO=_F(GROUP_NO='d85no',
+                                  DZ=1.,),);
+char67x=AFFE_CHAR_MECA(MODELE=mod,
+                      DDL_IMPO=_F(GROUP_NO='d67no',
+                                  DX=1.,),);
+char67z=AFFE_CHAR_MECA(MODELE=mod,
+                      DDL_IMPO=_F(GROUP_NO='d67no',
+                                  DZ=1.,),);
+
+char23x=AFFE_CHAR_MECA(MODELE=mod,
+                      DDL_IMPO=_F(GROUP_NO='d23no',
+                                  DX=1.,),);
+char23z=AFFE_CHAR_MECA(MODELE=mod,
+                      DDL_IMPO=_F(GROUP_NO='d23no',
+                                  DZ=1.,),);
+
+RESU1=STAT_NON_LINE(reuse=RESU1,MODELE=mod,
+                   CHAM_MATER=afmat,
+                   EXCIT=(_F(CHARGE=char85x,TYPE_CHARGE = 'DIDI',
+                               FONC_MULT=Fonc85x,),
+              _F(CHARGE=char85z,TYPE_CHARGE = 'DIDI',
+                               FONC_MULT=Fonc85z,),
+              _F(CHARGE=char67x,TYPE_CHARGE = 'DIDI',
+                               FONC_MULT=Fonc67x,),
+              _F(CHARGE=char67z,TYPE_CHARGE = 'DIDI',
+                               FONC_MULT=Fonc67z,),
+              _F(CHARGE=char23x,TYPE_CHARGE = 'DIDI',
+                               FONC_MULT=Fonc23x,),
+              _F(CHARGE=char23z,TYPE_CHARGE = 'DIDI',
+                               FONC_MULT=Fonc23z,),
+                          _F(CHARGE=CL2,),),
+              ETAT_INIT=_F(EVOL_NOLI=RESU1,),
+                   COMPORTEMENT=_F(RELATION='ENDO_PORO_BETON',),
+                   INCREMENT=_F(LIST_INST=litps2,
+                                INST_INIT=t1,),
+                   NEWTON=_F(PREDICTION='ELASTIQUE',
+                             MATRICE='TANGENTE',),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1e-5,
+                                 ITER_GLOB_MAXI=100,
+                                 ARRET='OUI',),
+          ARCHIVAGE=_F(LIST_INST = liarc2),
+                   TITRE='BENCH-B LOI ENDO_PORO_BETON',);
+RESU1=CALC_CHAMP(reuse =RESU1,
+                 MODELE=mod,
+                 RESULTAT=RESU1,
+                 TOUT='OUI',
+                 CONTRAINTE='SIGM_NOEU',
+                 DEFORMATION='EPSI_NOEU',);
+TEST_RESU(RESU=(_F(NUME_ORDRE=7,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   GROUP_NO='v1no',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=8.3999999999999995E-05,
+                   VALE_REFE=8.3999999999999995E-05,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=23,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPZZ',
+                   VALE_CALC=0.000131780479072,
+                   VALE_REFE=0.000131780479072,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=13,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPXZ',
+                   VALE_CALC=2.31851428692E-05,
+                   VALE_REFE=2.31851428692E-05,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=7,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=3.24136136952,
+                   VALE_REFE=3.24136136952,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=23,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=2.94332430085,
+                   VALE_REFE=2.94332430085,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=13,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIXZ',
+                   VALE_CALC=0.193626880906,
+                   VALE_REFE=0.193626880906,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=39,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.0006028137146,
+                   VALE_REFE=0.0006028137146,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=39,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPZZ',
+                   VALE_CALC=0.000317261622026,
+                   VALE_REFE=0.000317261622026,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=39,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPXZ',
+                   VALE_CALC=0.000224123047736,
+                   VALE_REFE=0.000224123047736,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=39,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.657695477687,
+                   VALE_REFE=0.657695477687,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=39,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=1.99273110078,
+                   VALE_REFE=1.99273110078,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=39,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIXZ',
+                   VALE_CALC=-1.04783771671,
+                   VALE_REFE=-1.04783771671,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.00154567619128 ,
+                   VALE_REFE=0.00154567619128 ,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPZZ',
+                   VALE_CALC=0.00102440847956,
+                   VALE_REFE=0.00102440847956,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EPSI_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='EPXZ',
+                   VALE_CALC=0.000695554286077,
+                   VALE_REFE=0.000695554286077,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=0.187148526957,
+                   VALE_REFE=0.187148526957,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=0.371719440158,
+                   VALE_REFE=0.371719440158,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=100,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='SIGM_NOEU',
+                   REFERENCE='NON_DEFINI',
+                   NOEUD='N1',
+                   NOM_CMP='SIXZ',
+                   VALE_CALC=-0.246282451178,
+                   VALE_REFE=-0.246282451178,
+                   PRECISION=5.0E-5,
+                   MAILLE='M1',),
+                ),
+          )
+FIN() ;
