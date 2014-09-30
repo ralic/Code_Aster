@@ -116,12 +116,12 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
     call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
 !
-    if ((method.eq.'UPWIND') .and. (.not.grille)) then
+    if ((method.eq.'UPWIND' .or. method.eq.'UPW_FMM') .and. (.not.grille)) then
         call xprcnu(noma, cnxinv, 'V', vcn, grlr,&
                     lcmin)
     endif
 !
-    if ((method.ne.'UPWIND') .and. (.not.grille)) then
+    if ((method.ne.'UPWIND' .and. method.ne.'UPW_FMM' ) .and. (.not.grille)) then
         call xprcfl(model, lcmin)
     else
         write(ifm,*)'   LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE:'&

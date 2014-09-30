@@ -541,7 +541,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !        THE TORUS
         call wkvect(elecal, 'V V I', neleto, jeleca)
 !
-        if (method(1:6) .eq. 'UPWIND') then
+        if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
 !           CREATE THE VECTORS FOR THE NODAL CONNECTION TABLE OF THE
 !           TORUS
             call wkvect(vcnt, 'V V I', 6*nnodto, jvcnt)
@@ -572,7 +572,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !              STORE THE NUMBER OF THE NODE
                 zi(jnocal-1+j) = i
 !
-                if (method(1:6) .eq. 'UPWIND') then
+                if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
 !                 STORE THE CONNECTION TABLE FOR THE NODE
                     do k = 1, 6
                         zi(jvcnt-1+6*(j-1)+k) = zi(jvcn-1+6*(i-1)+k)
@@ -606,7 +606,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !        UPDATE THE NODAL CONNECTION TABLE FOR THE TORUS
 !        ***********************************************************
 !
-        if (method(1:6) .eq. 'UPWIND') then
+        if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
 !
             do i = 1, nnodto
 !

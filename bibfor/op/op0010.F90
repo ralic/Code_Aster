@@ -73,9 +73,10 @@ subroutine op0010()
 #include "asterfort/xprreo.h"
 #include "asterfort/xprtor.h"
 #include "asterfort/xprupw.h"
+#include "asterfort/xprupw_fmm.h"
 #include "asterfort/xprvit.h"
-    integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i, ima
-    integer :: j
+    integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i , ima
+    integer :: j, nbrinit
     integer :: iadrma
     real(kind=8) :: lcmin, deltat
     character(len=8) :: k8bid, noma, nomo, fiss, fispre, method, fisini, ncrack
@@ -472,9 +473,9 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !     INITIALISE THE SIMPLEXE OR THE UPWIND SCHEME
 !-----------------------------------------------------------------------
-!
     noesom = '&&OP0010.NOESOM'
     noresi = '&&OP0010.NORESI'
+
     if (.not.grille) then
         vcn = '&&OP0010.VCN'
         grlr = '&&OP0010.GRLR'
@@ -524,6 +525,9 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
 !-----------------------------------------------------------------------
+!
+! si locfom = false, on iniatilise la valeur de radtor à 0
+    radtor =  0.d0
 !
     if (locdom) then
         if (radimp .le. 0.d0) then
@@ -746,6 +750,14 @@ subroutine op0010()
                     eletor, liggrd)
     endif
 !
+    if (method.eq.'UPW_FMM') then
+            nbrinit = 1
+            call xprupw_fmm('REINITLN', dnoma, fispre, vcnt, grlrt,&
+                             noesom, lcmin, dcnsln, dgrln, dcnslt, &
+                             dgrlt, isozro, nodtor, eletor, liggrd,&
+                             vpoint ,cnsbl ,dttot ,cnsbet ,listp,nbrinit)
+    endif
+
 !-----------------------------------------------------------------------
 !     REORTHOGONALISATION DE LST
 !-----------------------------------------------------------------------
@@ -797,11 +809,25 @@ subroutine op0010()
     endif
 !
     call jedetr(isozro)
+! on réinitialise deux fois pour redresser l'iso zéro
+    if (method.eq.'UPW_FMM') then
+        do nbrinit = 1 , 2
+           call xprupw_fmm('REINITLT', dnoma, fispre, vcnt, grlrt,&
+                           noesom, lcmin, dcnsln, dgrln, dcnslt, &
+                           dgrlt, isozro, nodtor,eletor, liggrd, &
+                           vpoint ,cnsbl ,dttot ,cnsbet ,listp,nbrinit)
+           call jedetr(isozro)
+        enddo
+    endif
+
+!------------------------------------------------------------------!
+
+
 1000 continue
     call jedetr(vvit)
     call jedetr(vbeta)
     call jedetr(noesom)
-    if (method(1:6) .eq. 'UPWIND') then
+    if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
         if (.not.grille) then
             call jedetr(vcn)
             call jedetr(grlr)
