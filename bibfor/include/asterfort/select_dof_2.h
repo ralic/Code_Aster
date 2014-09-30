@@ -16,18 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine select_dof(list_equa, tabl_equa , list_idx_dof,&
-                          nume_ddlz, chamnoz   ,&
-                          nb_nodez , list_nodez,&
-                          nb_cmpz  , list_cmpz)
+    subroutine select_dof_2(list_equa, tabl_equa ,&
+                            nume_ddlz, chamnoz   ,&
+                            nb_cmpz  , list_cmpz)
         integer, pointer, optional, intent(inout) :: list_equa(:)
         integer, pointer, optional, intent(inout) :: tabl_equa(:,:)
-        integer, pointer, optional, intent(inout) :: list_idx_dof(:)
         character(len=*), optional, intent(in) :: nume_ddlz
         character(len=*), optional, intent(in) :: chamnoz
-        integer, optional, intent(in) :: nb_nodez
-        integer, optional, pointer, intent(in) :: list_nodez(:)
         integer, optional, intent(in) :: nb_cmpz
         character(len=8), optional, pointer, intent(in) :: list_cmpz(:)
-    end subroutine select_dof
+    end subroutine select_dof_2
 end interface

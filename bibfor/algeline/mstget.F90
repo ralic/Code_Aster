@@ -134,8 +134,7 @@ implicit none
 !
         call select_dof(list_equa = list_equa, &
                         nume_ddlz = nume_ddl  ,&
-                        only_mesh = .true., all_cmp = .true., &
-                        nb_nodez  = nb_node , list_node = p_list_node)
+                        nb_nodez  = nb_node , list_nodez = p_list_node)
 !
 ! ----- Get all components
 !

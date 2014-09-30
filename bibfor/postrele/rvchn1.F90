@@ -85,10 +85,9 @@ subroutine rvchn1(deplaz, nomjv, nbno, numnd, pgl)
         list_node(1) = numnd(ino)
         list_idx_dof(1:nb_cmp) = 0
         call select_dof(list_idx_dof = list_idx_dof,&
-                           chamnoz  = depla,&
-                           only_mesh = .true.,&
-                           nb_nodez = nb_node, list_node = list_node,&
-                           nb_cmpz  = nb_cmp , list_cmp  = list_cmp)
+                        chamnoz  = depla,&
+                        nb_nodez = nb_node, list_nodez = list_node,&
+                        nb_cmpz  = nb_cmp , list_cmpz  = list_cmp)
 
         numdx  = list_idx_dof(1)
         numdy  = list_idx_dof(2)

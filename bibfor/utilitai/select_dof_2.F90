@@ -1,7 +1,6 @@
-subroutine select_dof(list_equa, tabl_equa , list_idx_dof,&
-                      nume_ddlz, chamnoz   ,&
-                      nb_nodez , list_nodez,&
-                      nb_cmpz  , list_cmpz)
+subroutine select_dof_2(list_equa, tabl_equa ,&
+                        nume_ddlz, chamnoz   ,&
+                        nb_cmpz  , list_cmpz)
 !
 implicit none
 !
@@ -44,11 +43,8 @@ implicit none
 !
     integer, pointer, optional, intent(inout) :: list_equa(:)
     integer, pointer, optional, intent(inout) :: tabl_equa(:,:)
-    integer, pointer, optional, intent(inout) :: list_idx_dof(:)
     character(len=*), optional, intent(in) :: nume_ddlz
     character(len=*), optional, intent(in) :: chamnoz
-    integer, optional, intent(in) :: nb_nodez
-    integer, optional, pointer, intent(in) :: list_nodez(:)
     integer, optional, intent(in) :: nb_cmpz
     character(len=8), optional, pointer, intent(in) :: list_cmpz(:)
 !
@@ -68,18 +64,12 @@ implicit none
 !                      for icmp = [1:nb_cmp]
 !                         tabl_equa[ieq,icmp] = 0 if node+component not present
 !                         tabl_equa[ieq,icmp] = 1 if node+component is present
-!    list_idx_dof : vector on list of components [1:nb_cmp]
-!                   for icmp = [1:nb_cmp]
-!                      list_idx_dof[icmp] = 0   if node+component not present
-!                      list_idx_dof[icmp] = ieq if node+component present
 !
 ! IO  list_equa     : list of equations
 ! IO  tabl_equa     : table of equations by components
 ! IO  list_idx_dof  : list of index of dof
 ! In  nume_ddl      : name of numbering (NUME_DDL)
 ! In  chamno        : name of nodal field (CHAMNO)
-! In  nb_node       : number of nodes
-! In  list_node     : list of nodes (absolute index in mesh) 
 ! In  nb_cmp        : number of components
 ! In  list_cmp      : list of components (name)
 !
@@ -87,17 +77,13 @@ implicit none
 !
     integer :: desc_gran(10)
     character(len=24) :: lili, prno, nueq
-    character(len=24) :: lili_name
-    integer :: i_ligr_mesh
     character(len=8) :: name_cmp, mesh
     character(len=19) :: prof_chno, nume_equl, prof_gene
-    integer :: iexi
+    integer :: iexi, nume_node, idx_gd
     logical :: l_matr_dist, l_prof_gene
-    integer :: node_nume, idx_gd, length_prno
-    integer :: i_equ, i_node, i_cmp, i_dof, i_equ_l, i_cmp_glob, i_ec
-    integer :: nb_node, nb_ec, nb_cmp, nb_cmp_gd, nb_node_mesh, nb_cmp_node
+    integer :: i_equ, i_node, i_cmp, i_dof, i_equ_l, i_cmp_glob, i_ec, i_ligr
+    integer :: nb_ec, nb_cmp, nb_cmp_gd, nb_cmp_node, nb_ligr, nb_node
     integer, pointer :: cmp_sele(:) => null()
-    integer, pointer :: node_sele(:) => null()
     integer, pointer :: v_prno(:) => null()
     integer, pointer :: v_nueq(:) => null()
     integer, pointer :: v_nugl(:) => null()
@@ -110,17 +96,7 @@ implicit none
 !
 ! - Check output parameters
 !
-    ASSERT(EXCLUS2(tabl_equa, list_idx_dof))
     ASSERT(EXCLUS2(tabl_equa, list_equa))
-    ASSERT(EXCLUS2(list_equa, list_idx_dof))
-!
-! - Check input parameters 
-!
-    if (present(list_idx_dof)) then
-        ASSERT(present(nb_nodez))
-        ASSERT(present(list_nodez))
-        ASSERT(nb_nodez.eq.1)
-    endif
 !
 ! - Get name prof_chno
 !
@@ -206,16 +182,6 @@ implicit none
         ASSERT(.false.)
     endif
 !
-! - Get number of nodes
-!
-    nb_node = 0
-    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
-    if (present(list_nodez)) then
-        nb_node = nb_nodez
-    else
-        nb_node = nb_node_mesh
-    endif
-!
 ! - Create index for components
 !
     AS_ALLOCATE(vi=cmp_sele, size = nb_cmp_gd)
@@ -231,69 +197,67 @@ implicit none
         endif
     end do
 !
-! - Create index for nodes
+! - Loop on LIGRELs
 !
-    AS_ALLOCATE(vi=node_sele, size = nb_node)
-    if (present(list_nodez)) then
-        do i_node = 1, nb_node
-            node_nume = list_nodez(i_node)
-            node_sele(i_node) = node_nume
-        end do
-    else
-        do i_node = 1, nb_node
-            node_nume = i_node
-            node_sele(i_node) = node_nume
-        end do
-    endif
+    call jelira(prno, 'NMAXOC', nb_ligr)
+    do i_ligr = 1, nb_ligr
 !
-! - Get PRNO object for mesh
+! ----- Get number of nodes
 !
-    i_ligr_mesh = 1
-    call jenuno(jexnum(lili, i_ligr_mesh), lili_name)
-    ASSERT(lili_name .eq. '&MAILLA')
-    call jeveuo(jexnum(prno//'.PRNO', i_ligr_mesh), 'L', vi = v_prno)
-    call jelira(jexnum(prno, i_ligr_mesh), 'LONMAX', length_prno)
-    ASSERT(length_prno/(nb_ec+2).eq.nb_node_mesh)
+        call jelira(jexnum(prno, i_ligr), 'LONMAX', nb_node)
+        nb_node = nb_node/(nb_ec+2)
 !
-! - Loop on nodes
+! ----- Loop on nodes
 !
-    if (nb_node.ne.0) then
-        do i_node = 1, nb_node
-            node_nume   = node_sele(i_node)
-            i_dof       = v_prno((nb_ec+2)*(node_nume-1)+1) - 1
-            nb_cmp_node = v_prno((nb_ec+2)*(node_nume-1)+2)
-            desc_gran(1:10) = 0   
-            if (nb_cmp_node.ne.0) then
-                do i_ec = 1, nb_ec
-                    desc_gran(i_ec) = v_prno((nb_ec+2)*(node_nume-1)+2+i_ec)
-                end do
-            endif
-            do i_cmp_glob = 1, nb_cmp_gd
-                if (exisdg(desc_gran,i_cmp_glob)) then     
-                    i_dof      = i_dof + 1
-                    i_cmp      = cmp_sele(i_cmp_glob)
-                    if (i_cmp.ne.0) then
-                        i_equ = v_nueq(i_dof)
-                        if (l_matr_dist) then
-                            i_equ_l = v_nugl(i_equ)
-                        else
-                            i_equ_l = i_equ
-                        endif
-                        if (present(list_idx_dof)) then
-                            list_idx_dof(i_cmp) = i_equ_l
-                        elseif (present(list_equa)) then
-                            list_equa(i_equ_l) = 1
-                        elseif (present(tabl_equa)) then
-                            tabl_equa(i_equ_l, i_cmp) = 1
+        if (nb_node.ne.0) then
+            call jeveuo(jexnum(prno, i_ligr), 'L', vi = v_prno)
+
+            do i_node = 1, nb_node
+!
+! ------------- Current node
+!
+                nume_node = i_node
+!
+! ------------- Get informations on current node
+!
+                i_dof       = v_prno(((nb_ec+2)*(nume_node-1)+1)) - 1
+                nb_cmp_node = v_prno(((nb_ec+2)*(nume_node-1)+2))
+!
+! ------------- Vector containing active components on current node
+!
+                desc_gran(1:10) = 0
+                if (nb_cmp_node.ne.0) then
+                    do i_ec = 1, nb_ec
+                        desc_gran(i_ec) = v_prno(((nb_ec+2)*(nume_node-1)+2+i_ec))
+                    end do
+                endif
+!
+! ------------- Loop on components to seek
+!
+                do i_cmp_glob = 1, nb_cmp_gd
+                    i_cmp = cmp_sele(i_cmp_glob)
+                    if (exisdg(desc_gran, i_cmp_glob)) then
+                        i_dof = i_dof + 1
+                        if (i_cmp.ne.0) then
+                            i_equ      = v_nueq(i_dof)
+                            if (l_matr_dist) then
+                                i_equ_l = v_nugl(i_equ)
+                            else
+                                i_equ_l = i_equ
+                            endif
+                            if (present(list_equa)) then
+                                list_equa(i_equ_l) = 1
+                            elseif (present(tabl_equa)) then
+                                tabl_equa(i_equ_l, i_cmp) = 1
+                            endif
                         endif
                     endif
-                endif
+                end do
             end do
-        end do
-    endif
+        endif
+    end do
 !
     AS_DEALLOCATE(vi=cmp_sele)
-    AS_DEALLOCATE(vi=node_sele)
 !
 99  continue
 end subroutine

@@ -93,16 +93,14 @@ implicit none
 !
         if (typesd .eq. 'NUME_DDL') then
             call select_dof(list_idx_dof = list_idx_dof, &
-                               nume_ddlz = resu, &
-                               only_mesh = .true.  ,&
-                               nb_nodez  = nb_node, list_node = list_node,&
-                               nb_cmpz   = nb_cmp , list_cmp  = list_cmp)
+                            nume_ddlz = resu, &
+                            nb_nodez  = nb_node, list_nodez = list_node,&
+                            nb_cmpz   = nb_cmp , list_cmpz  = list_cmp)
         else if (typesd .eq. 'CHAM_NO') then
             call select_dof(list_idx_dof = list_idx_dof,&
-                               chamnoz   = resu,&
-                               only_mesh = .true.  ,&
-                               nb_nodez  = nb_node, list_node = list_node,&
-                               nb_cmpz   = nb_cmp , list_cmp  = list_cmp)
+                            chamnoz   = resu,&
+                            nb_nodez  = nb_node, list_nodez = list_node,&
+                            nb_cmpz   = nb_cmp , list_cmpz  = list_cmp)
         else
             ASSERT(.false.)
         endif

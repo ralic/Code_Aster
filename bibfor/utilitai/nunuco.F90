@@ -66,9 +66,8 @@ implicit none
 ! - Find components in list of equations
 !
     call select_dof(list_equa, &
-                       nume_ddlz = nume_ddl,&
-                       only_mesh = .true.  ,&
-                       nb_cmpz   = nb_cmp  , list_cmp  = list_cmp)
+                    nume_ddlz = nume_ddl,&
+                    nb_cmpz   = nb_cmp  , list_cmpz  = list_cmp)
 !
     AS_DEALLOCATE(vk8=list_cmp)
 !

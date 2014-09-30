@@ -64,10 +64,9 @@ implicit none
 ! - Find component in list of equations
 !
     call select_dof(list_idx_dof = list_idx_dof, &
-                       chamnoz      = chamno,&
-                       only_mesh    = .true.  ,&
-                       nb_nodez     = 1  , list_node = list_node_p,&
-                       nb_cmpz      = 1  , list_cmp  = list_cmp_p)
+                    chamnoz      = chamno,&
+                    nb_nodez     = 1  , list_nodez = list_node_p,&
+                    nb_cmpz      = 1  , list_cmpz  = list_cmp_p)
 !
 ! - Check
 !

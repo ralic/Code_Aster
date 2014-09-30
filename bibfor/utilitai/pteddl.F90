@@ -6,7 +6,7 @@ implicit none
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/select_dof.h"
+#include "asterfort/select_dof_2.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,23 +83,23 @@ implicit none
 !
     if (typesd .eq. 'NUME_DDL') then
         if (present(tabl_equa)) then
-            call select_dof(tabl_equa = tabl_equa_p, &
-                               nume_ddlz = resu, &
-                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
+            call select_dof_2(tabl_equa = tabl_equa_p, &
+                            nume_ddlz = resu, &
+                            nb_cmpz   = nb_cmp, list_cmpz  = list_cmp_p)
         else
-            call select_dof(list_equa = list_equa_p, &
-                               nume_ddlz = resu, &
-                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
+            call select_dof_2(list_equa = list_equa_p, &
+                            nume_ddlz = resu, &
+                            nb_cmpz   = nb_cmp, list_cmpz  = list_cmp_p)
         endif
     else if (typesd .eq. 'CHAM_NO') then
         if (present(tabl_equa)) then
-            call select_dof(tabl_equa = tabl_equa_p, &
-                               chamnoz   = resu,&
-                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
+            call select_dof_2(tabl_equa = tabl_equa_p, &
+                            chamnoz   = resu,&
+                            nb_cmpz   = nb_cmp, list_cmpz  = list_cmp_p)
         else
-            call select_dof(list_equa = list_equa_p, &
-                               chamnoz   = resu,&
-                               nb_cmpz   = nb_cmp, list_cmp  = list_cmp_p)
+            call select_dof_2(list_equa = list_equa_p, &
+                            chamnoz   = resu,&
+                            nb_cmpz   = nb_cmp, list_cmpz  = list_cmp_p)
         endif
     else
         ASSERT(.false.)
