@@ -85,11 +85,8 @@ subroutine nirfgd(ndim, nno1, nno2, nno3, npg,&
 !
     do g = 1, npg
 !
-        call dfdmip(ndim, nno1, axi, geomi, g,&
-                    iw, vff1(1, g), idff1, r, w,&
-                    dff1)
-        call nmmalu(nno1, axi, r, vff1(1, g), dff1,&
-                    lij)
+        call dfdmip(ndim, nno1, axi, geomi, g, iw, vff1(1, g), idff1, r, w, dff1)
+        call nmmalu(nno1, axi, r, vff1(1, g), dff1, lij)
 !
 ! - VECTEUR FINT:U
         do kl = 1, ndimsi

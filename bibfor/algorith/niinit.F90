@@ -230,6 +230,7 @@ subroutine niinit(nomte, typmod, ndim, nno1, nno2,&
             do n = 1, nno1-nno2
                 vu(1,n+nno2) = 1 + (n-1)*2 + os
                 vu(2,n+nno2) = 2 + (n-1)*2 + os
+                vu(3,n) = 0
             end do
             goto 100
         else if (iefm .eq. 2) then

@@ -1,4 +1,4 @@
-subroutine nifnsm(ndim, nno1, nno2, nno3, npg,&
+subroutine nbfnsm(ndim, nno1, nno2, nno3, npg,&
                   iw, vff1, vff2, vff3, idff1,&
                   idff2, vu, vg, vp, typmod,&
                   mate, geomi, sig, ddl, vect)
@@ -78,7 +78,7 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: dff1(nno1, 4), dff2(nno2, 3)
     real(kind=8) :: fm(3, 3)
     real(kind=8) :: w
-    real(kind=8) :: tau(6), taudv(6), tauhy, sig_ldc(2*ndim)
+    real(kind=8) :: tau(6), taudv(6), tauhy
     real(kind=8) :: gradgm(3), c(1)
     real(kind=8) :: t1, t2
     real(kind=8) :: kr(6), id(3, 3)
@@ -153,13 +153,8 @@ subroutine nifnsm(ndim, nno1, nno2, nno3, npg,&
         endif
 !
 ! - CONTRAINTE DE KIRCHHOFF
-        do ia = 1, 3
-            sig_ldc(ia) = sig(ia,g) + sig(2*ndim+1,g)
-        end do
-        do ia = 4, 2*ndim
-            sig_ldc(ia) = sig(ia,g)
-        end do
-        call dcopy(2*ndim, sig_ldc, 1, tau, 1)
+
+        call dcopy(2*ndim, sig(1,g), 1, tau, 1)
         call dscal(2*ndim, jm, tau, 1)
         tauhy = (tau(1)+tau(2)+tau(3))/3.d0
         do kl = 1, 6

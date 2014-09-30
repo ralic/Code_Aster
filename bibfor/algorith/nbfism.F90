@@ -1,4 +1,4 @@
-subroutine nifism(ndim, nno1, nno2, nno3, npg,&
+subroutine nbfism(ndim, nno1, nno2, nno3, npg,&
                   iw, vff1, vff2, vff3, idff1,&
                   idff2, vu, vg, vp, geomi,&
                   typmod, option, mate, compor, lgpg,&
@@ -234,7 +234,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
         cod(g) = 0
 !
         do ia = 1, 3
-            sigm_ldc(ia) = sigm(ia,g) + sigm(2*ndim+1,g)
+            sigm_ldc(ia) = sigm(ia,g)
         end do
         do ia = 4, 2*ndim
             sigm_ldc(ia) = sigm(ia,g)*rac2
@@ -242,7 +242,7 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 !
         call nmcomp('RIGI', g, 1, 3, typmod,&
                     mate, compor, crit, instm, instp,&
-                    9, ftm, ftd, 6, sigm_ldc,&
+                    9, ftm, ftd, 2*ndim, sigm_ldc,&
                     vim(1, g), option, angmas, 10, tampon,&
                     taup, vip( 1, g), 54, dsidep, 1,&
                     rbid, cod(g))
@@ -256,28 +256,27 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
         endif
 !
 ! - SUPPRESSION DES RACINES DE 2
-        if (resi) call dscal(3, 1/rac2, taup(4), 1)
+        if (resi) call dscal(3, 1.d0/rac2, taup(4), 1)
 !
 ! - MATRICE TANGENTE SANS LES RACINES DE 2
         if (rigi) then
-            call dscal(9, 1/rac2, dsidep(4, 1, 1), 6)
-            call dscal(9, 1/rac2, dsidep(5, 1, 1), 6)
-            call dscal(9, 1/rac2, dsidep(6, 1, 1), 6)
+            call dscal(9, 1.d0/rac2, dsidep(4, 1, 1), 6)
+            call dscal(9, 1.d0/rac2, dsidep(5, 1, 1), 6)
+            call dscal(9, 1.d0/rac2, dsidep(6, 1, 1), 6)
         endif
 !
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
         if (resi) then
+            call dcopy(2*ndim, taup, 1, sigp(1,g),1)
+            call dscal(2*ndim, 1.d0/jp, sigp(1,g),1)
+            sigp(2*ndim+1,g) = 0.d0
+!
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0
             do ia = 1, 6
                 taudv(ia) = taup(ia) - tauhy*kr(ia)
             end do
-!
-            do ia = 1, 2*ndim
-                sigp(ia,g) = (taudv(ia) + pp*bb*kr(ia))/jp
-            end do
-            sigp(2*ndim+1,g) = (tauhy - pp*bb)/jp
 !
 ! - VECTEUR FINT:U
             do na = 1, nno1
@@ -320,12 +319,8 @@ subroutine nifism(ndim, nno1, nno2, nno3, npg,&
 ! - MATRICE TANGENTE
         if (rigi) then
             if (.not. resi) then
-                do ia = 1, 3
-                    taup(ia) = (sigm(ia,g) + sigm(2*ndim+1,g))*jm
-                end do
-                do ia = 4, 2*ndim
-                    taup(ia) = sigm(ia,g)*jm
-                end do
+                call dcopy(2*ndim, sigm(1,g), 1, taup, 1)
+                call dscal(2*ndim, jm, taup, 1)
             endif
 !
 ! - CALCUL DU TENSEUR DE CONTRAINTE : TRACE ET PARTIE DEVIATORIQUE

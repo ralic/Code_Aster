@@ -24,6 +24,8 @@ subroutine te0590(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/nbfilg.h"
+#include "asterfort/nbfism.h"
 #include "asterfort/nifilg.h"
 #include "asterfort/nifipd.h"
 #include "asterfort/nifism.h"
@@ -54,7 +56,8 @@ subroutine te0590(option, nomte)
     integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     integer :: igeom, imate, icontm, ivarim
     integer :: iinstm, iinstp, iddlm, iddld, icompo, icarcr, ivarix
-    integer :: ivectu, icontp, ivarip, imatuu, nddl
+    integer :: ivectu, icontp, ivarip, imatuu
+    integer :: idbg, nddl, ia, ja
     real(kind=8) :: angmas(7), bary(3)
     character(len=8) :: lielrf(10), typmod(2)
 !
@@ -63,6 +66,8 @@ subroutine te0590(option, nomte)
     real(kind=8) :: epsilo, epsilp, epsilg
     real(kind=8) :: varia(2*135*135)
 ! ----------------------------------------------------------------------
+!
+    idbg=0
 !
 ! - FONCTIONS DE FORME
     call elref2(nomte, 10, lielrf, ntrou)
@@ -90,9 +95,7 @@ subroutine te0590(option, nomte)
     codret = 0
 !
 ! - ACCES AUX COMPOSANTES DU VECTEUR DDL
-    call niinit(nomte, typmod, ndim, nno1, nno2,&
-                nno3, 0, vu, vg, vp,&
-                vpi)
+    call niinit(nomte, typmod, ndim, nno1, nno2, nno3, 0, vu, vg, vp, vpi)
 !
 ! - OPTION
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
@@ -111,8 +114,7 @@ subroutine te0590(option, nomte)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
-                itab=jtab)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     lgpg = max(jtab(6),1)*jtab(7)
 !
 ! - ORIENTATION DU MASSIF
@@ -144,6 +146,9 @@ subroutine te0590(option, nomte)
 100 continue
 ! - PETITES DEFORMATIONS
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
+        if (lteatt('INCO','C3B')) then
+            call utmess('F', 'MODELISA10_17', sk=zk16(icompo+2))
+        endif
 !
 ! - PARAMETRES EN SORTIE
         if (rigi) then
@@ -166,13 +171,24 @@ subroutine te0590(option, nomte)
         else
             imatuu=1
         endif
-        call nifilg(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    vu, vg, vp, zr(igeom), typmod,&
-                    option, zi(imate), zk16(icompo), lgpg, zr(icarcr),&
-                    zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angmas,&
-                    zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), resi,&
-                    rigi, zr(ivectu), zr(imatuu), matsym, codret)
+!
+        if (lteatt('INCO','C3B')) then
+            call nbfilg(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        vu, vg, vp, zr(igeom), typmod,&
+                        option, zi(imate), zk16(icompo), lgpg, zr(icarcr),&
+                        zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angmas,&
+                        zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), resi,&
+                        rigi, zr(ivectu), zr(imatuu), matsym, codret)
+        else
+            call nifilg(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        vu, vg, vp, zr(igeom), typmod,&
+                        option, zi(imate), zk16(icompo), lgpg, zr(icarcr),&
+                        zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld), angmas,&
+                        zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), resi,&
+                        rigi, zr(ivectu), zr(imatuu), matsym, codret)
+        endif
     else if (zk16(icompo+2) (1:10).eq.'SIMO_MIEHE') then
 !
 ! - PARAMETRES EN SORTIE
@@ -182,13 +198,24 @@ subroutine te0590(option, nomte)
         else
             imatuu=1
         endif
-        call nifism(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    idf2, vu, vg, vp, zr(igeom),&
-                    typmod, option, zi(imate), zk16(icompo), lgpg,&
-                    zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
-                    angmas, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip),&
-                    resi, rigi, zr(ivectu), zr(imatuu), codret)
+!
+        if (lteatt('INCO','C3B')) then
+            call nbfism(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        idf2, vu, vg, vp, zr(igeom),&
+                        typmod, option, zi(imate), zk16(icompo), lgpg,&
+                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
+                        angmas, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip),&
+                        resi, rigi, zr(ivectu), zr(imatuu), codret)
+        else
+            call nifism(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        idf2, vu, vg, vp, zr(igeom),&
+                        typmod, option, zi(imate), zk16(icompo), lgpg,&
+                        zr(icarcr), zr(iinstm), zr(iinstp), zr(iddlm), zr(iddld),&
+                        angmas, zr(icontm), zr(ivarim), zr(icontp), zr(ivarip),&
+                        resi, rigi, zr(ivectu), zr(imatuu), codret)
+        endif
     else
         call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
     endif
@@ -208,6 +235,19 @@ subroutine te0590(option, nomte)
     if (resi) then
         call jevech('PCODRET', 'E', icoret)
         zi(icoret) = codret
+    endif
+!
+    if (idbg .eq. 1) then
+        if (rigi) then
+            write(6,*) 'MATRICE TANGENTE'
+            do ia = 1, nddl
+                write(6,'(108(1X,E11.4))') (zr(imatuu+(ia*(ia-1)/2)+ja-1),ja=1,ia)
+            enddo
+        endif
+        if (resi) then
+            write(6,*) 'FORCE INTERNE'
+            write(6,'(108(1X,E11.4))') (zr(ivectu+ja-1),ja=1,nddl)
+        endif
     endif
 !
 end subroutine

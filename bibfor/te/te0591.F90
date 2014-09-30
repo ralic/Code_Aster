@@ -16,6 +16,7 @@ subroutine te0591(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
+! aslint: disable=W0104
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -23,6 +24,8 @@ subroutine te0591(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/nbfnlg.h"
+#include "asterfort/nbfnsm.h"
 #include "asterfort/nifnlg.h"
 #include "asterfort/nifnpd.h"
 #include "asterfort/nifnsm.h"
@@ -79,6 +82,9 @@ subroutine te0591(option, nomte)
 !
 ! - CALCUL DES FORCES INTERIEURES
     if (zk16(icompo+2) (1:6) .eq. 'PETIT ') then
+        if (lteatt('INCO','C3B')) then
+            call utmess('F', 'MODELISA10_17', sk=zk16(icompo+2))
+        endif
 !
         call nifnpd(ndim, nno1, nno2, nno3, npg,&
                     iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
@@ -87,17 +93,31 @@ subroutine te0591(option, nomte)
     else if (zk16(icompo+2) (1:8).eq.'GDEF_LOG') then
 !
         call jevech('PMATERC', 'L', imate)
-        call nifnlg(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    idf2, vu, vg, vp, typmod,&
-                    zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+        if (lteatt('INCO','C3B')) then
+            call nbfnlg(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        idf2, vu, vg, vp, typmod,&
+                        zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+        else
+            call nifnlg(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        idf2, vu, vg, vp, typmod,&
+                        zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+        endif
     else if (zk16(icompo+2) (1:10).eq.'SIMO_MIEHE') then
 !
         call jevech('PMATERC', 'L', imate)
-        call nifnsm(ndim, nno1, nno2, nno3, npg,&
-                    iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
-                    idf2, vu, vg, vp, typmod,&
-                    zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+        if (lteatt('INCO','C3B')) then
+            call nbfnsm(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        idf2, vu, vg, vp, typmod,&
+                        zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+        else
+            call nifnsm(ndim, nno1, nno2, nno3, npg,&
+                        iw, zr(ivf1), zr(ivf2), zr(ivf3), idf1,&
+                        idf2, vu, vg, vp, typmod,&
+                        zi(imate), zr(igeom), zr(icontm), zr(iddlm), zr(ivectu))
+        endif
     else
         call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
     endif

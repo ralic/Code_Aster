@@ -1,0 +1,308 @@
+# TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (PENTA15) 3D
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ----------------------------------------------------------------------
+#
+# CYLINDRE CREUX EN INCOMPRESSIBLE GRANDES DEFORMATIONS(NU=0.4999)
+# SOUS DEPLACEMENT RADIAL (U0=6.10E-5)
+#
+# MODELISATION : ELEMENTS MECANIQUE 3D INCOMP.(PENTA15)
+# MAILLAGE     : MED
+# ----------------------------------------------------------------------
+# GROUPES DE NOEUDS ET MAILLES :
+# GRNO: A B C D E F  NOEUMI
+# GRMA: FACEEF     FACEAE   FACEAB   FACSUP   FACINF VOLUME
+# ----------------------------------------------------------------------
+
+DEBUT(CODE=_F(
+NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+M=LIRE_MAILLAGE(FORMAT='MED');
+
+MO=AFFE_MODELE(MAILLAGE=M,
+               
+               AFFE=_F(GROUP_MA=('VOLUME','FACEEF','FACEAE','FACEAB','FACSUP','FACINF'),
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D_INCO_UPGB'));
+
+M=MODI_MAILLAGE(reuse =M,
+                MAILLAGE=M,
+                ORIE_PEAU_3D=_F(GROUP_MA=('FACEAB','FACSUP','FACINF','FACEEF','FACEAE')));
+
+
+MA=DEFI_MATERIAU(ELAS=_F(E=200000.,
+                         NU=0.49999,
+                         ALPHA=0.),
+                 ECRO_LINE=_F(D_SIGM_EPSI=1000.,
+                              SY=1.E9));
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MA));
+
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_MA='FACEAB',
+                               DX=0.),
+                            _F(GROUP_MA='FACSUP',
+                               DZ=0.),
+                            _F(GROUP_MA='FACINF',
+                               DZ=0.)),
+                  FACE_IMPO=(_F(GROUP_MA='FACEEF',
+                                DNOR=0.),
+                             _F(GROUP_MA='FACEAE',
+                                DNOR=-6.E-5)));
+
+INSTANTS=DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=_F(JUSQU_A=1.,
+                                      NOMBRE=1));
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                          1.,1.,
+                          ));
+# LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
+# ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
+# CORRIGE LES EVENTUELLES DERIVES.
+EVOL=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH,
+                            FONC_MULT=RAMPE),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
+                                DEFORMATION='SIMO_MIEHE'),
+                   INCREMENT=_F(LIST_INST=INSTANTS),
+                   NEWTON=_F(REAC_ITER=1),
+                   CONVERGENCE=_F(SIGM_REFE=60.0,
+                                  EPSI_REFE=3.E-4,
+                                  RESI_REFE_RELA=1.E-3),
+                   SOLVEUR=_F(METHODE='MUMPS',NPREC=-1,
+   ));
+
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERME_ELEM EST FAUX CAR
+#            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
+#            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
+#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
+EVOL=CALC_CHAMP(reuse =EVOL,
+                RESULTAT=EVOL,
+                CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'),
+                CRITERES=('SIEQ_ELNO','SIEQ_NOEU'),);
+
+EVOL=CALC_ERREUR(reuse =EVOL,
+                 RESULTAT=EVOL,
+                 OPTION=('ERME_ELEM','ERME_ELNO'));
+
+#--------------------------------------------------------------
+#       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
+#        POUR UN  SOLIDE INCOMPRESSIBLE NU = 0.5
+#---------------------------------------------------------------
+
+TEST_RESU(RESU=(_F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-05,),
+                _F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=6.00000000069E-05,
+                   VALE_REFE=6.E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-5,),
+                _F(GROUP_NO='F',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=-2.126062317E-05,
+                   VALE_REFE=-2.1217941E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=3.E-3,),
+                _F(GROUP_NO='F',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=2.126062317E-05,
+                   VALE_REFE=2.1217941E-05,
+                   CRITERE='RELATIF',
+                   PRECISION=3.E-3,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=97.9022247355,
+                   VALE_REFE=99.9566,
+                   CRITERE='RELATIF',
+                   PRECISION=0.03,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-55.1186065185,
+                   VALE_REFE=-59.9955,
+                   CRITERE='RELATIF',
+                   PRECISION=0.09,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=21.3567172821,
+                   VALE_REFE=19.9326,
+                   CRITERE='RELATIF',
+                   PRECISION=0.08,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-0.044307096859,
+                   VALE_REFE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.5,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='F',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=20.68331538,
+                   VALE_REFE=20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.04,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='F',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=16.7384008086,
+                   VALE_REFE=20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.17,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='F',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=18.6995644642,
+                   VALE_REFE=20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=0.07,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='F',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=20.1514630758,
+                   VALE_REFE=20.003,
+                   CRITERE='RELATIF',
+                   PRECISION=8.E-3,),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='VMIS',
+                   VALE_CALC=132.519954041,
+                   VALE_REFE=138.5226,
+                   CRITERE='RELATIF',
+                   PRECISION=0.05,
+                   MAILLE='M543',),
+                _F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='TRESCA',
+                   VALE_CALC=153.020856912,
+                   VALE_REFE=159.9521,
+                   CRITERE='RELATIF',
+                   PRECISION=0.05,
+                   MAILLE='M543',),
+                _F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='PRIN_1',
+                   VALE_CALC=-55.1186193476,
+                   VALE_REFE=-59.9955,
+                   CRITERE='RELATIF',
+                   PRECISION=0.09,
+                   MAILLE='M543',),
+                _F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='PRIN_2',
+                   VALE_CALC=21.3567172821,
+                   VALE_REFE=19.9326,
+                   CRITERE='RELATIF',
+                   PRECISION=0.08,
+                   MAILLE='M543',),
+                _F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='PRIN_3',
+                   VALE_CALC=97.9022375646,
+                   VALE_REFE=99.9566,
+                   CRITERE='RELATIF',
+                   PRECISION=0.03,
+                   MAILLE='M543',),
+                _F(GROUP_NO='A',
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='SIEQ_NOEU',
+                   NOM_CMP='VMIS_SG',
+                   VALE_CALC=132.519954041,
+                   VALE_REFE=138.5226,
+                   CRITERE='RELATIF',
+                   PRECISION=0.05,
+                   MAILLE='M543',),
+                ),
+          )
+
+FIN();
+
+#

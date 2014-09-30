@@ -107,6 +107,7 @@ PHENOMENE_MODELISATION__
 %  INCO =  Cxk
 %          x  = nombre de champ : 3 champs UPG ou 2 champs UP
 %          k  = stabilisation de l'element : O (OSGS)
+%               version ne respectant pas la LBB : B
 %
 %  LUMPE = 'OUI' : elements "lumpes" (R3.06.07):
 %           - Ce sont des elements de thermique
@@ -510,6 +511,15 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
 
+       MODELISATION__ '3D_INCO_UPGB'     DIM__ 3 3   CODE__ '3DB'
+              ATTRIBUT__  NBSIGM=X6  INCO=C3B  TYPMOD=COMP3D
+              MAILLE__ HEXA20    ELEMENT__ MBNC_HEXA20
+              MAILLE__ PENTA15   ELEMENT__ MBNC_PENTA15
+              MAILLE__ TETRA10   ELEMENT__ MBNC_TETRA10
+              MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
+              MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
+              MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
+
        MODELISATION__ '3D_INCO_UP'          DIM__ 3 3   CODE__ '3UP'
               ATTRIBUT__  NBSIGM=X6  INCO=C2  TYPMOD=COMP3D
               MAILLE__ HEXA20    ELEMENT__ MIUP_HEXA20
@@ -592,6 +602,12 @@ PHENOMENE_MODELISATION__
               ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C3
               MAILLE__ TRIA6     ELEMENT__ MIAXTR6
               MAILLE__ QUAD8     ELEMENT__ MIAXQU8
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3
+
+       MODELISATION__ 'AXIS_INCO_UPGB'    DIM__ 2 2   CODE__ 'AXB'
+              ATTRIBUT__  AXIS=OUI  NBSIGM=X4   TYPMOD=AXIS INCO=C3B
+              MAILLE__ TRIA6     ELEMENT__ MBAXTR6
+              MAILLE__ QUAD8     ELEMENT__ MBAXQU8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'AXIS_INCO_UP'        DIM__ 2 2   CODE__ 'AUP'
@@ -1046,6 +1062,12 @@ PHENOMENE_MODELISATION__
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=C3
               MAILLE__ TRIA6     ELEMENT__ MIPLTR6
               MAILLE__ QUAD8     ELEMENT__ MIPLQU8
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3
+
+       MODELISATION__ 'D_PLAN_INCO_UPGB' DIM__ 2 2   CODE__ 'PLB'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=C3B
+              MAILLE__ TRIA6     ELEMENT__ MBPLTR6
+              MAILLE__ QUAD8     ELEMENT__ MBPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3
 
        MODELISATION__ 'D_PLAN_INCO_UP'      DIM__ 2 2   CODE__ 'PUP'

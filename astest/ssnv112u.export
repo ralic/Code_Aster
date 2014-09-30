@@ -3,8 +3,8 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist C
 
-F comm ssnv112p.comm D 1
+F comm ssnv112u.comm D 1
 F datg ssnv112a.datg D 16
 F mmed ssnv112a.mmed D 20
