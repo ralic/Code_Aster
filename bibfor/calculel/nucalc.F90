@@ -27,15 +27,15 @@ function nucalc(opt, te, memoir)
 #include "asterfort/jexatr.h"
     integer :: opt, te, memoir
 ! ----------------------------------------------------------------------
-!     ENTREES:
-!        OPT : OPTION
-!         TE : TYPE_ELEMENT
-!     MEMOIR : 1 : ON MET EN MEMOIRE LES OBJETS CATALOGUE NECESSAIRES
-!              0 : ON NE FAIT PAS DE JEVEUX CAR LES OBJETS SONT DEJA LA
-!                  (POUR ETRE PLUS RAPIDE DANS CALCUL).
+!     entrees:
+!        opt : option
+!         te : type_element
+!     memoir : 1 : on met en memoire les objets catalogue necessaires
+!              0 : on ne fait pas de jeveux car les objets sont deja la
+!                  (pour etre plus rapide dans calcul).
 !
-!     SORTIES:
-!     NUCALC : NUMERO DU CALCUL ELEMENTAIRE A LANCER
+!     sorties:
+!     nucalc : numero du calcul elementaire a lancer
 !
 ! ----------------------------------------------------------------------
     integer :: iaoptt, lgco, iaopmo, ilopmo, iaopno, ilopno, iaopds
@@ -58,10 +58,9 @@ function nucalc(opt, te, memoir)
         lgco = nbligcol(1)
     endif
 !
-!     JJ = IOPTTE(OPT,TE)
     jj = zi(iaoptt-1+ (te-1)*lgco+opt)
     if (jj .eq. 0) then
-!        -- LE TYPE_ELEMENT TE NE SAURA JAMAIS CALCULER L'OPTION OPT:
+!        -- le type_element te n'est pas concerne par l'option opt:
         nucalc = 0
     else
         optmod = iaopmo + zi(ilopmo-1+jj) - 1

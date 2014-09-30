@@ -92,8 +92,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
                           OUT__ EGGEOP_R PCOORPG  
-    FULL_MECA         99  IN__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   
-                          OUT__ MVECTUR  PVECTUR  
+    INI_XFEM_ELNO     99  IN__    OUT__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                           OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI PLONCHA  E12NEUTR PPINTTO  
                                 E33NEUTR PPMILTO

@@ -200,7 +200,7 @@ subroutine xfisno(noma, modelx)
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !
-    call cescel(ces, ligrel, 'FULL_MECA', 'PFISNO', 'NON',&
+    call cescel(ces, ligrel, 'INI_XFEM_ELNO', 'PFISNO', 'OUI',&
                 nncp, 'G', fissno, 'F', ibid)
     call detrsd('CHAM_ELEM_S', ces)
     if (lcont) then

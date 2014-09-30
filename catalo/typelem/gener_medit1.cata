@@ -92,6 +92,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_ROTA_R  43  IN__  CCINFDI  PCINFDI  CROTATR  PROTATR
                               OUT__  MVECTUR  PVECTUR
+%   -- les elements discrets ne peuvent pas calculer de dilatation thermique => te0099
     CHAR_MECA_TEMP_R  99  IN__  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER

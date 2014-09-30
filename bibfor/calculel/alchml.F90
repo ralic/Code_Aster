@@ -42,6 +42,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/nucalc.h"
 !
     character(len=*) :: ligrez, dcelz, celz, basz, optioz, nompaz
     character(len=19) :: ligrel, cel, dcel
@@ -90,7 +91,7 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
     character(len=24) :: valk(3)
     integer :: ngrel, igrel, te, te1, mode, long, jceld, ncmpv, debgrl
     integer :: gd, jcelk, iopt, iprem, nel, iel, lgcata, nbspt
-    integer :: ncdyn, lgchel
+    integer :: ncdyn, lgchel,numc
     integer :: ibid, modmx, iamolo, itych, itych1, neltot
     integer :: illiel, jdcesd, jdcesl
     integer :: ima, ncmpv2, kk, ityplo, nbpoin
@@ -217,6 +218,19 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
         zi(jceld-1+debgrl+1) = nel
         zi(jceld-1+debgrl+2) = mode
         ncmpv2 = ncmpv
+        
+!       -- faut-il verifier que numc != -1 ?
+        if (igrel.eq.1) then
+            numc=nucalc(iopt,te,1)
+        else
+            numc=nucalc(iopt,te,0)
+        endif
+        if (numc .eq. -1) then
+            call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
+            valk(1)=nomte
+            valk(2)=option
+            call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
+        endif
 !
         if (mode .gt. 0) then
             iprem = iprem + 1

@@ -5,6 +5,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8prem.h"
+#include "asterfort/alchml.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
@@ -421,12 +422,10 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     vk24(2) = kiord
                     call utmess('F', 'UTILITAI3_79', nk=2, valk=vk24)
                 else
-! CREATION D'UN CHAMP DE VARIABLES INTERNES NUL
+!                   -- creation d'un champ de variables internes nul
                     ivari=0
                     chbid='&&PEINGL.VARINUL'
-                    call calcul('S', 'TOU_INI_ELGA', ligrmo, 1, chgeom,&
-                                'PGEOMER', 1, chbid, 'PVARI_R', 'V',&
-                                'OUI')
+                    call alchml(ligrmo,'TOU_INI_ELGA','PVARI_R','V',chbid,iret,' ')
                 endif
             endif
         endif

@@ -78,8 +78,7 @@ OPTION__
                                 N1NEUT_R PLSN     N1NEUT_R PLST     E6NEUTR  PPINTTO  E4NEUTR  PPMILTO
                                 EPRESNO  PPRESSR  STANO_I  PSTANO
                           OUT__ MVECTUR  PVECTUR
-    FULL_MECA         99  IN__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
-                              OUT__  MVECTUR  PVECTUR
+    INI_XFEM_ELNO     99  IN__    OUT__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                           OUT__ E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  E6NEUTR  PPINTTO
                                      E4NEUTR  PPMILTO

@@ -112,3 +112,5 @@ OPTION__
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
                           OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E9NEUTI  PLONCHA  E06NEUR  PPINTTO  
                                 E22NEUTR PPMILTO
+    INI_XFEM_ELNO     99  IN__
+                          OUT__  STANO_I  PSTANO   N1NEUT_R PLSN   N1NEUT_R  PLST  N6NEUT_R  PBASLOR

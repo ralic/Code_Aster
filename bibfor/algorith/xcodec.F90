@@ -30,7 +30,6 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 #include "asterfort/xfisco.h"
 #include "asterfort/xfisno.h"
 #include "asterfort/xoripe.h"
-#include "asterfort/xpheop.h"
 #include "asterfort/xstan2.h"
 #include "asterfort/xtopoc.h"
 #include "asterfort/xtopoi.h"
@@ -58,7 +57,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !
 !
     character(len=19) :: ltno, lnno, stno, basloc, grlnno, grltno
-    character(len=9) :: optrig
+    character(len=16) :: optrig
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,7 +65,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !
 ! --- CONCATENER LES CHAMPS NODAUX POUR DES FISSURES DU MODELE
 !
-    optrig = xpheop(modelx)
+    optrig = 'INI_XFEM_ELNO'
     ltno = modelx(1:8)//'.LTNO'
     lnno = modelx(1:8)//'.LNNO'
     stno = modelx(1:8)//'.STNO'

@@ -152,16 +152,16 @@ subroutine xcpmo2(modx1, modx2)
     ligr2 = modx2//'.MODELE'
 !
     do iopt = 1,ntopos
-        lopti(iopt) = 'TOPOSE          '
+        lopti(iopt) = 'TOPOSE'
     enddo
     do iopt = 1,ntopof
-        lopti(ntopos+iopt) = 'TOPOFA          '
+        lopti(ntopos+iopt) = 'TOPOFA'
     enddo
     do iopt = 1,noptri
-        lopti(ntopos+ntopof+iopt) = 'FULL_MECA       '
+        lopti(ntopos+ntopof+iopt) = 'INI_XFEM_ELNO'
     enddo
 !
-    k8blan = '        '
+    k8blan = ' '
 !
 !   pour option == TOPOSE dans alchml
     lcham(1)  = k8blan//'.TOPOSE.PIN'

@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/megeom.h"
+#include "asterfort/alchml.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,11 +54,10 @@ implicit none
     integer, pointer :: v_io_info(:) => null()
     character(len=24) :: field_type, field_name_init
     character(len=24) :: sief_init, vari_init, strx_init
-    integer :: i_field, nb_field, zioch
+    integer :: i_field, nb_field, zioch, iret
     character(len=8) :: lpain(1), lpaout(2)
     character(len=24) :: lchin(1), lchout(2)
     character(len=19) :: ligrmo
-    character(len=24) :: chgeom
     aster_logical :: l_sief, l_vari, l_strx
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,18 +100,8 @@ implicit none
 !
     if (l_vari .or. l_sief) then
         call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
-        call copisd('CHAM_ELEM_S', 'V', compor, sief_init)
-        call copisd('CHAM_ELEM_S', 'V', compor, vari_init)
-        call megeom(model, chgeom)
-        lpain(1)  = 'PGEOMER'
-        lchin(1)  = chgeom
-        lpaout(1) = 'PVARI_R'
-        lchout(1) = vari_init
-        lpaout(2) = 'PSIEF_R'
-        lchout(2) = sief_init
-        call calcul('S', 'TOU_INI_ELGA', ligrmo, 1, lchin,&
-                    lpain, 2, lchout, lpaout, 'V',&
-                    'OUI')
+        call alchml(ligrmo,'TOU_INI_ELGA','PSIEF_R','V',sief_init,iret,compor)
+        call alchml(ligrmo,'TOU_INI_ELGA','PVARI_R','V',vari_init,iret,compor)
     endif
 !
 ! - Initial fields: special multifibers field

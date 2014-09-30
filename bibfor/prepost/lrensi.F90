@@ -4,7 +4,7 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/calcul.h"
+#include "asterfort/alchml.h"
 #include "asterfort/celver.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
@@ -87,19 +87,17 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
     integer :: i21, nlig, ipres, nbgr, nfacha
     integer :: idec,  nbelgr, iel, ima, liel
     integer :: ino, nno, ii, iadno, iad, jcelv
-    integer :: ibid, nstar, j, irest
+    integer :: nstar, j, irest
     integer :: te, igr
     integer :: jinst, itps
 !
     character(len=8) :: k8b, chaine
-    character(len=8) :: lpain(1), lpaout(1)
     character(len=16) :: dir, nomte
     character(len=19) :: nomch, ligrmo, chpres
-    character(len=24) :: lchin(1), lchout(1)
     character(len=24) :: valk(2)
     character(len=24) :: noliel
     character(len=80) :: k80b, fires, fipres, figeom, fic80b
-    character(len=24) :: chgeom, option, connex
+    character(len=24) :: connex
     integer, pointer :: celd(:) => null()
 !
 ! ----------------------------------------------------------------------
@@ -168,27 +166,15 @@ subroutine lrensi(fich, long, linoch, ndim, nomo,&
         call utmess('F', 'UTILITAI8_25', si=vali(1))
     endif
 !
-    chgeom = noma//'.COORDO'
 !
-    lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom
 !
-    lpaout(1) = 'PPRES_R'
     chpres = '&&CHPRES'
-    lchout(1) = chpres
     ligrmo = nomo//'.MODELE'
-    option = 'TOU_INI_ELNO'
-    call calcul('S', option, ligrmo, 1, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
-                'OUI')
-!
-!
-!     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
-    call celver(chpres, 'NBVARI_CST', 'STOP', ibid)
-    call celver(chpres, 'NBSPT_1', 'STOP', ibid)
-!
+    call alchml(ligrmo,'TOU_INI_ELNO','PPRES_R','V',chpres,iret,' ')
     call jeveuo(chpres//'.CELD', 'L', vi=celd)
     call jeveuo(chpres//'.CELV', 'E', jcelv)
+
+
 !
 !  BOUCLE SUR LES PAS DE TEMPS ET LECTURE DES PRESSIONS
 !  ----------------------------------------------------

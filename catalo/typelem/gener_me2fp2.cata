@@ -101,7 +101,7 @@ OPTION__
                           OUT__ XXXXXX   XXXXXX   
     NORME_L2          -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
-    NSPG_NBVA         99  IN__  CCOMPO2  PCOMPOR  
+    NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR  
                           OUT__ EDCEL_I  PDCEL_I  
     PAS_COURANT      405  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
                           OUT__ ECOURAN  PCOURAN  

@@ -45,7 +45,6 @@ subroutine xstan2(crimax, noma, modele)
 #include "asterfort/panbno.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcrvol.h"
-#include "asterfort/xpheop.h"
 !
     character(len=8) :: modele, noma
     real(kind=8) :: crimax
@@ -318,7 +317,7 @@ subroutine xstan2(crimax, noma, modele)
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM POUR MODELE.STNO
 !
-    call cescel(ces(2), ligrel, xpheop(modele), 'PSTANO', 'OUI',&
+    call cescel(ces(2), ligrel, 'INI_XFEM_ELNO', 'PSTANO', 'OUI',&
                 nncp, 'G', cel(2), 'F', ibid)
 !
 ! --- MENAGE

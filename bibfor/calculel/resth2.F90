@@ -56,7 +56,7 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterfort/assert.h"
-#include "asterfort/calcul.h"
+#include "asterfort/alchml.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/etenca.h"
 #include "asterfort/exisd.h"
@@ -73,12 +73,9 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     character(len=24) :: ligrel, chgeom, chsour
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: i, ier, iretf, ireth, irett, irets, nbin, nbout, iretep
+    integer :: i, ier, iret, iretf, ireth, irett, irets, iretep
     character(len=1) :: base
-    character(len=8) :: lpain(1), lpaout(1)
-    character(len=16) :: opt
     character(len=19) :: cartf, carth, cartt, carts, cartep
-    character(len=24) :: lchin(1), lchout(1)
 !
 ! DEBUT DE LA SUBROUTINE
     call jemarq()
@@ -92,18 +89,9 @@ subroutine resth2(modele, ligrel, lchar, nchar, ma,&
     base = 'V'
     call megeom(modele, chgeom)
 !
-! RECHERCHE DES ELTS FINIS CONTIGUS ET REMPLISSAGE DU CHAMELEM DE TYPE
-! VOISIN VIA L'OPTION DE CALCUL 'INIT_MAIL_VOIS'.
-    lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom
-    lpaout(1) = 'PVOISIN'
-    lchout(1) = '&&RESTHER.VOISIN'
-    opt = 'INIT_MAIL_VOIS'
-    nbin = 1
-    nbout = 1
-    call calcul('S', opt, ligrel, nbin, lchin,&
-                lpain, nbout, lchout, lpaout, base,&
-                'OUI')
+!   RECHERCHE DES ELTS FINIS CONTIGUS ET REMPLISSAGE DU CHAMELEM DE TYPE
+!   VOISIN VIA L'OPTION DE CALCUL 'INIT_MAIL_VOIS'.
+    call alchml(ligrel,'INIT_MAIL_VOIS','PVOISIN',base,'&&RESTHER.VOISIN',iret,' ')
 !
 ! SURCOUCHE DE DISMMO RENVOYANT LE NOM DU MAILLAGE (MA) VIA UN JEVEUO
 ! SUR MODELE//'.MODELE.NOMA'

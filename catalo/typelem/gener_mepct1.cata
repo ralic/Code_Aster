@@ -193,7 +193,7 @@ OPTION__
     M_GAMMA          141  IN__  DDL_MECA PACCELR  CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR
-    NSPG_NBVA         99  IN__  CCOMPO2  PCOMPOR
+    NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR
                           OUT__ EDCEL_I  PDCEL_I
     PAS_COURANT      404  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC
                           OUT__ ECOURAN  PCOURAN

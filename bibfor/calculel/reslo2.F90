@@ -2,6 +2,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     implicit none
 #include "jeveux.h"
 #include "asterfort/calcul.h"
+#include "asterfort/alchml.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jeexin.h"
@@ -103,9 +104,7 @@ subroutine reslo2(modele, ligrel, chvois, cvoisx, tabido)
     chvois = '&&'//nompro//'.CH_VOISIN'
     lchout(1) = chvois
     opt = 'INIT_MAIL_VOIS'
-    call calcul('C', opt, ligrel, 1, lchin,&
-                lpain, 1, lchout, lpaout, base,&
-                'OUI')
+    call alchml(ligrel,opt,'PVOISIN',base,lchout(1),iret,' ')
     call exisd('CHAMP_GD', lchout(1), iret)
     if (iret .eq. 0) then
         call utmess('F', 'CALCULEL2_88', sk=opt)

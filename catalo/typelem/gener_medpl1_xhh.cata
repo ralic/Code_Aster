@@ -91,8 +91,7 @@ OPTION__
                                 E9NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E24NEUTR PPINTTO  
                                 E16NEUTR PPMILTO  EPRESNO  PPRESSR  STANO_I  PSTANO   
                               OUT__  MVECTUR  PVECTUR
-    FULL_MECA         99  IN__  FISNO_I  PFISNO   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   
-                          OUT__ MVECTUR  PVECTUR  
+    INI_XFEM_ELNO     99  IN__    OUT__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO    FISNO_I  PFISNO  
     TOPOSE           514  IN__  FISCO_I  PFISCO   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
                           OUT__ E24NEUI  PCNSETO  E8NEUTI  PHEAVTO  E9NEUTI  PLONCHA  E24NEUTR PPINTTO  
                                      E16NEUTR PPMILTO
