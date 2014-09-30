@@ -1,5 +1,5 @@
-subroutine nueffe(nb_ligr, list_ligr, base, nume_ddlz, renumz,&
-                  solver , modelocz)
+subroutine nueffe(nb_ligr, list_ligr, base         , nume_ddlz   , renumz,&
+                  solver , modelocz , sd_iden_relaz)
 !
 implicit none
 !
@@ -26,6 +26,7 @@ implicit none
 #include "asterfort/nddl.h"
 #include "asterfort/nudeeq.h"
 #include "asterfort/nulili.h"
+#include "asterfort/nunueq.h"
 #include "asterfort/nuno1.h"
 #include "asterfort/renuno.h"
 #include "asterfort/utmess.h"
@@ -57,6 +58,7 @@ implicit none
     character(len=*), intent(in) :: renumz
     character(len=19),optional, intent(in) :: solver
     character(len=*), optional, intent(in) :: modelocz
+    character(len=*), optional, intent(in) :: sd_iden_relaz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +70,7 @@ implicit none
 !
 ! In  nb_ligr        : number of LIGREL in list
 ! In  list_ligr      : pointer to list of LIGREL
-! In  nume_ddl       : name of nume_ddl object
+! In  nume_ddl       : name of numbering object (NUME_DDL)
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => PROF_CHNO objects
 !                      base(2:2) => NUME_DDL objects
@@ -76,6 +78,7 @@ implicit none
 !                       SANS/RCMK/MD/MDA/METIS
 ! In  solver         : name of solver datastructure
 ! In  modelocz       : local mode for GRANDEUR numbering
+! In  sd_iden_rela   : name of object for identity relations between dof
 !
 !-----------------------------------------------------------------------
 ! ATTENTION : NE PAS FAIRE JEMARQ/JEDEMA CAR NULILI
@@ -93,18 +96,19 @@ implicit none
     character(len=24) :: nnli, psuiv, lsuiv, vsuiv, num21, nuno, nomli
     character(len=24) :: derli, num2, dsclag, exi1, newn, oldn
     character(len=19) :: nume_equa
-    character(len=24) :: nequ, refn
+    character(len=24) :: nequ, refn, sd_iden_rela
     character(len=19) :: prof_chno
-    character(len=24) :: lili, prno, nueq, deeq
-    integer :: nb_node_mesh, ilim, itypel, nequa, jdeeq
+    character(len=24) :: lili, prno, nueq, deeq, delg
+    integer :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg,  nb_equa
+    integer :: nb_iden_rela, nb_iden_dof, nb_iden_term
     integer :: i, iad,   ianueq,  icddlb
     integer :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
-    integer :: idnequ, idnocm, idprn1, idprn2, idref
+    integer :: idnocm, idprn1, idprn2, idref
     integer :: iec, iel, iexi1, ifm, igr, ilag, ilag2, ilag3
     integer :: ili, ilsuiv, inewn, ino, inulag, inum2, inum21
     integer :: inuno1, inuno2, ioldn, iprnm,  ipsuiv, ire, iret
     integer :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
-    integer :: n0re, n1, n1m1re, n1re, n2, n21, n3, nbcmp, nbn, nb_lagr_mesh
+    integer :: n0re, n1, n1m1re, n1re, n2, n21, n3, nbcmp, nbn, nb_node_subs
     integer :: nb_node, nbnonu, nbnore, nddl1, nddlb
     integer :: nel, niv, nlag, nma, nn
     integer :: ns, numa, nunoel
@@ -114,7 +118,9 @@ implicit none
     integer, pointer :: bid(:) => null()
     integer, pointer :: adne(:) => null()
     integer, pointer :: qrns(:) => null()
+    integer, pointer :: p_nequ(:) => null()
     character(len=24), pointer :: slvk(:) => null()
+    integer, pointer :: v_sdiden_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -222,6 +228,22 @@ implicit none
     if (present(modelocz)) then
         moloc = modelocz
     endif
+!
+! - Identity relations between dof
+!
+    nb_iden_rela = 0
+    nb_iden_dof  = 0
+    nb_iden_term = 0
+    sd_iden_rela = ' '
+    if (present(sd_iden_relaz)) then
+        sd_iden_rela = sd_iden_relaz
+        if (sd_iden_rela.ne.' ') then
+            call jeveuo(sd_iden_rela(1:19)//'.INFO', 'L', vi = v_sdiden_info)
+            nb_iden_rela = v_sdiden_info(1)
+            nb_iden_term = v_sdiden_info(2)
+            nb_iden_dof  = v_sdiden_info(3)
+        endif
+    endif
 
 ! --- SI LE CONCEPT : NU EXISTE DEJA, ON LE DETRUIT COMPLETEMENT :
 !     ----------------------------------------------------------
@@ -235,6 +257,7 @@ implicit none
     nueq      = prof_chno(1:19)//'.NUEQ'
     deeq      = prof_chno(1:19)//'.DEEQ'
     nume_equa = nume_ddl//'.NUME'
+    delg      = nume_equa(1:19)//'.DELG'
     nequ      = nume_equa(1:19)//'.NEQU'
     refn      = nume_equa(1:19)//'.REFN'
     nnli      = nume_ddl//'.NNLI'
@@ -265,8 +288,8 @@ implicit none
         call jeveuo(jexatr(mesh(1:8)//'.CONNEX', 'LONCUM'), 'L', iconx2)
     endif
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
-    call dismoi('NB_NL_MAILLA', mesh, 'MAILLAGE', repi=nb_lagr_mesh)
-    nb_node = nb_node_mesh + nb_lagr_mesh
+    call dismoi('NB_NL_MAILLA', mesh, 'MAILLAGE', repi=nb_node_subs)
+    nb_node = nb_node_mesh + nb_node_subs
 
 ! --- LILI(1)='&MAILLA'
 !     -----------------
@@ -275,12 +298,11 @@ implicit none
 ! --- ALLOCATION DE L'OBJET NU.NNLI NOMBRE DE NOEUDS DECLARES DANS
 ! --- LE LIGREL ILI DE LILI :
 !     ---------------------
-    call jecreo(nnli, 'V V I')
-    call jeecra(nnli, 'LONMAX', nlili)
-    call jeveuo(nnli, 'E', vi = v_nnli)
+    call wkvect(nnli, 'V V I', nlili, vi = v_nnli)
+    v_nnli(1) = nb_node
     call jecrec(nuno, 'V V I ', 'NU', 'CONTIG', 'VARIABLE',&
                 nlili)
-    v_nnli(1) = nb_node
+    
 
 ! --- ALLOCATION DE PRNO :
 !     -------------------------------------------------
@@ -294,7 +316,7 @@ implicit none
 !     ------------------------------------------
 
     call jeecra(jexnum(nuno, 1), 'LONMAX', nb_node)
-    call jeecra(jexnum(prno, 1), 'LONMAX', nb_node* (nec+2))
+    call jeecra(jexnum(prno, 1), 'LONMAX', nb_node*(nec+2))
 
 
 ! --- N CONTIENDRA LE NOMBRE TOTAL (MAX) DE NOEUDS DE NUME_DDL
@@ -956,11 +978,29 @@ implicit none
             iad = iad + nddl1
         endif
     end do
-
-    nequa = iad - 1
-    call wkvect(nequ, base(1:1)//' V I', 2, idnequ)
-    zi(idnequ) = nequa
-
+!
+! - Total number of dof (physical and NOT physical)
+!
+    nb_dof = iad - 1
+!
+! - Number of dof in identity relations
+!
+    nb_iden_dof = nb_iden_term - nb_iden_rela
+!
+! - Create NEQU object
+!
+    call jedetr(nequ)
+    call wkvect(nequ, base(1:1)//' V I', 2, vi=p_nequ)
+!
+! - Number of dof for computation (number of equations in system)
+!
+    nb_equa   = nb_dof-nb_iden_dof
+    p_nequ(1) = nb_equa
+!
+! - Total number of dof (with identity relations)
+!
+    p_nequ(2) = nb_dof
+!
     if (niv .ge. 1) then
 
 ! ---   CALCUL DE NMA : NOMBRE DE NOEUDS DU MAILLAGE PORTEURS DE DDLS :
@@ -970,8 +1010,8 @@ implicit none
         do ino = 1, nb_node
             if (zi(jprno-1+ (ino-1)* (2+nec)+2) .gt. 0) nma = nma + 1
         end do
-        vali(1) = nequa
-        vali(2) = nequa - nlag
+        vali(1) = nb_dof
+        vali(2) = nb_dof - nlag
         vali(3) = nma
         vali(4) = nlag
         vali(5) = nlag/2
@@ -991,20 +1031,26 @@ implicit none
 ! - Create NUEQ object
 !
     call jedetr(nueq)
-    call wkvect(nueq, base(2:2)//' V I', nequa, ianueq)
-    do i = 1, nequa
-        zi(ianueq-1+i) = i
-    end do
+    call wkvect(nueq, base(2:2)//' V I', nb_dof, ianueq)
 !
-! - Create .DEEQ object
+! - Set NUEQ object
+!
+    call nunueq(mesh, prof_chno, nb_dof, igds, sd_iden_rela)
+!
+! - Create DEEQ object
 !
     call jedetr(deeq)
-    call wkvect(deeq, base(2:2)//' V I', 2*nequa, jdeeq)
+    call wkvect(deeq, base(2:2)//' V I', 2*nb_equa, jdeeq)
+!
+! - Create DELG object
+!
+    call jedetr(delg)
+    call wkvect(delg, base(1:1)//' V I', nb_equa, jdelg)
 !
 ! - Set DEEQ and DELG objects with non-physical nodes
 !
-    call nudeeq(mesh , nb_node_mesh, nb_lagr_mesh, base, nume_ddl,&
-                nequa, igds        , iddlag)
+    call nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
+                igds, iddlag)
 
 
 ! --- DESTRUCTION DES .PRNM ET DES .PRNS DE CHAQUE LIGREL :

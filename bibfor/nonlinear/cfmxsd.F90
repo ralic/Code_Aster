@@ -1,10 +1,9 @@
-subroutine cfmxsd(meshz , modelz, numedd, fonact, sddyna,&
-                  defico, resoco, ligrcf, ligrxf)
+subroutine cfmxsd(mesh_      , model_     , nume_ddl        , list_func_acti  , sddyna,&
+                  sdcont_defi, sdcont_solv, ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/cfcrsd.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
@@ -15,8 +14,6 @@ implicit none
 #include "asterfort/cfmxme.h"
 #include "asterfort/cfmxr0.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xxmxme.h"
 !
@@ -38,158 +35,161 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=*), intent(in) :: meshz
-    character(len=*), intent(in) :: modelz
-    character(len=24) :: numedd
-    integer :: fonact(*)
-    character(len=19) :: sddyna
-    character(len=24) :: defico, resoco
-    character(len=19) :: ligrcf, ligrxf
+    character(len=*), intent(in) :: mesh_
+    character(len=*), intent(in) :: model_
+    character(len=24), intent(in) :: nume_ddl
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    character(len=19), intent(in) :: ligrel_link_cont
+    character(len=19), intent(in) :: ligrel_link_xfem
+    character(len=24), intent(in) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES)
+! Contact - Solve
 !
-! CREATION DES SDS DE RESOLUTION DU CONTACT (RESOCO)
+! Prepare contact solving datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  nume_ddl         : name of numbering object (NUME_DDL)
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! IN  NUMEDD : NUME_DDL DE LA MATRICE TANGENTE GLOBALE
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
-! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
-! IN  LIGRCF : NOM DU LIGREL TARDIF POUR ELEMENTS DE CONTACT CONTINUE
-! IN  LIGRXF : NOM DU LIGREL TARDIF POUR ELEMENTS DE CONTACT XFEM GG
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact solving datastructure
+! In  list_func_acti   : list of active functionnalities
+! In  ligrel_link_cont : name of LIGREL for contact
+! In  ligrel_link_xfem : name of LIGREL for contact with xfem
+! In  sd_iden_rela     : name of object for identity relations between dof
+! In  sddyna           : name of dynamic solving datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: zbouc, ztaco
-    integer :: nzoco
     integer :: ifm, niv
-    aster_logical :: lctcd, lctcc, lxfcm, lmail, lallv
-    character(len=24) :: mboucl, tabcof
-    integer :: jmbouc, jtabco
-    character(len=24) :: nosdco
-    integer :: jnosdc
-    character(len=14) :: numedf
-    character(len=24) :: crnudd, maxdep
-    integer :: jcrnud, jmaxde
     character(len=8) :: model, mesh
+    integer :: zbouc, ztaco
+    integer :: nb_cont_zone
+    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_cont_mail, l_cont_allv
+    character(len=14) :: nume_ddl_frot
+    character(len=24) :: crnudd
+    aster_logical, pointer :: v_crnudd(:) => null()
+    character(len=24) :: maxdep
+    real(kind=8), pointer :: v_maxdep(:) => null()
+    character(len=24) :: nosdco
+    character(len=24), pointer :: v_nosdco(:) => null()
+    character(len=24) :: mboucl
+    integer, pointer :: v_mboucl(:) => null()
+    character(len=24) :: tabcof
+    real(kind=8), pointer :: v_tabcof(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('CONTACT', ifm, niv)
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Initializations
 !
-    lmail = cfdisl(defico,'FORMUL_MAILLEE')
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    lallv = cfdisl(defico,'ALL_VERIF')
+    nume_ddl_frot = '&&CFMXSD.NUMDF'
+    nb_cont_zone  = cfdisi(sdcont_defi,'NZOCO')
+    model = model_
+    mesh  = mesh_
 !
-! --- INITIALISATIONS
+! - Contact method
 !
-    zbouc = cfmmvd('ZBOUC')
-    ztaco = cfmmvd('ZTACO')
-! --- NUME_DDL MATRICE FROTTEMENT
-    numedf = '&&CFMXSD.NUMDF'
-    nzoco = cfdisi(defico,'NZOCO')
-    model = modelz
-    mesh  = meshz
+    l_cont_mail = cfdisl(sdcont_defi,'FORMUL_MAILLEE')
+    l_cont_xfem = cfdisl(sdcont_defi,'FORMUL_XFEM')
+    l_cont_cont = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_allv = cfdisl(sdcont_defi,'ALL_VERIF')
 !
-! --- CREATION DES SD RESULTATS: VALE_CONT ET PERCUSSIONS
+! - Create VALE_CONT datastructure
 !
-    call cfmxr0(defico, resoco, mesh)
+    call cfmxr0(sdcont_defi, sdcont_solv, mesh)
 !
-! --- CREATION DE LA SD APPARIEMENT
+! - Create pairing datastructure
 !
-    if (lmail) then
-        call cfmmap(mesh, defico, resoco)
+    if (l_cont_mail) then
+        call cfmmap(mesh, sdcont_defi, sdcont_solv)
     endif
 !
-! --- CREATION DES COMPTEURS DE BOUCLE
+! - Create loop counters datastructure
 !
-    mboucl = resoco(1:14)//'.MBOUCL'
-    call wkvect(mboucl, 'V V I', zbouc, jmbouc)
+    zbouc  = cfmmvd('ZBOUC')
+    mboucl = sdcont_solv(1:14)//'.MBOUCL'
+    call wkvect(mboucl, 'V V I', zbouc, vi = v_mboucl)
 !
-! --- STOCKAGE NOM DES SD DE DONNEES TYPE LIGREL ET CARTE
+! - Create datastructure for datastructure names
 !
-    nosdco = resoco(1:14)//'.NOSDCO'
-    call wkvect(nosdco, 'V V K24', 5, jnosdc)
-    zk24(jnosdc+1-1) = numedf
-    zk24(jnosdc+2-1) = ligrcf
-    zk24(jnosdc+3-1) = ligrxf
+    nosdco = sdcont_solv(1:14)//'.NOSDCO'
+    call wkvect(nosdco, 'V V K24', 5, vk24 = v_nosdco)
+    v_nosdco(1) = nume_ddl_frot
+    v_nosdco(2) = ligrel_link_cont
+    v_nosdco(3) = ligrel_link_xfem
+    v_nosdco(4) = sd_iden_rela
 !
-! --- TABLEAU DES COEFFICIENTS
+! - Create datastructure for coefficients
 !
-    tabcof = resoco(1:14)//'.TABL.COEF'
-    call wkvect(tabcof, 'V V R', nzoco*ztaco, jtabco)
+    ztaco = cfmmvd('ZTACO')
+    tabcof = sdcont_solv(1:14)//'.TABL.COEF'
+    call wkvect(tabcof, 'V V R', nb_cont_zone*ztaco, vr = v_tabcof)
 !
-! --- INITIALISE LES COEFFICIENTS VARIABLES
+! - Init coefficients
 !
-    call cfmmci(defico, resoco)
+    call cfmmci(sdcont_defi, sdcont_solv)
 !
-! --- LOGICAL POUR DECIDER DE REFAIRE LE NUME_DDL OU NON
+! - Create datastructure for renumbering flag
 !
-    if (lctcc) then
-        crnudd = resoco(1:14)//'.NUDD'
-        call wkvect(crnudd, 'V V L', 1, jcrnud)
-        if (lallv) then
-            zl(jcrnud) = .false.
+    if (l_cont_cont) then
+        crnudd = sdcont_solv(1:14)//'.NUDD'
+        call wkvect(crnudd, 'V V L', 1, vl = v_crnudd)
+        if (l_cont_allv) then
+            v_crnudd(1) = .false.
         else
-            zl(jcrnud) = .true.
+            v_crnudd(1) = .true.
         endif
     endif
 !
-! --- PARAMETRE POUR LA REACTUALISATION AUTOMATIQUE
+! - Create datastructure for geometric loop parameter
 !
-    maxdep = resoco(1:14)//'.MAXD'
-    call wkvect(maxdep, 'V V R', 1, jmaxde)
-    zr(jmaxde) = -1.d0
+    maxdep = sdcont_solv(1:14)//'.MAXD'
+    call wkvect(maxdep, 'V V R', 1, vr = v_maxdep)
+    v_maxdep(1) = -1.d0
 !
-! --- MODE ALL VERIF
+! - Create datastructures for solving
 !
-    if (lallv) then
-        goto 99
+    if (.not.l_cont_allv) then
+!
+! ---- Print
+!
+        if (niv .ge. 2) then
+            write (ifm,*) '<CONTACT> CREATION SD DE RESOLUTION'
+        endif
+!
+! ---- Create datastructure for "meshed" method
+!
+        if (l_cont_mail) then
+            call cfmmma(sdcont_defi, sdcont_solv)
+        endif
+!
+! ---- Create datastructure for "DISCRET" method
+!
+        if (l_cont_disc) then
+            call cfcrsd(mesh, nume_ddl, sdcont_defi, sdcont_solv)
+        endif
+!
+! ---- Create datastructure for "CONTINUE" method
+!
+        if (l_cont_cont) then
+            call cfmxme(nume_ddl, sddyna, sdcont_defi, sdcont_solv)
+        endif
+!
+! ---- Create datastructure for "XFEM" method
+!
+        if (l_cont_xfem) then
+            call xxmxme(mesh, model, list_func_acti, sdcont_defi, sdcont_solv)
+        endif
+!
     endif
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> CREATION SD DE RESOLUTION'
-    endif
-!
-! --- CREATION DES SD POUR METHODES MAILLEES
-!
-    if (lmail) then
-        call cfmmma(defico, resoco)
-    endif
-!
-! --- CONTACT DISCRET
-!
-    if (lctcd) then
-        call cfcrsd(mesh, numedd, defico, resoco)
-    endif
-!
-! --- CONTACT CONTINU
-!
-    if (lctcc) then
-        call cfmxme(numedd, sddyna, defico, resoco)
-    endif
-!
-! --- CONTACT XFEM
-!
-    if (lxfcm) then
-        call xxmxme(mesh, model, fonact, defico, resoco)
-    endif
-!
- 99 continue
-!
-    call jedema()
 !
 end subroutine

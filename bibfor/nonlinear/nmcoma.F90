@@ -174,8 +174,8 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
 ! --- RE-CREATION DU NUME_DDL OU PAS
 !
-    call nmrenu(modelz, fonact, numedd, lischa, solveu,&
-                resoco, renume)
+    call nmrenu(modelz, fonact, lischa, solveu, defico,&
+                resoco, numedd, renume)
 !
 ! --- OPTION DE CALCUL POUR MERIMO
 !
@@ -194,7 +194,7 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (ldccvg .eq. 1) goto 9999
+    if (ldccvg .eq. 1) goto 999
 !
 ! --- ASSEMBLAGE DES FORCES INTERNES
 !
@@ -261,7 +261,7 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
-    if (ldccvg .eq. 1) goto 9999
+    if (ldccvg .eq. 1) goto 999
 !
 ! --- CALCUL DE LA MATRICE ASSEMBLEE GLOBALE
 !
@@ -290,6 +290,6 @@ subroutine nmcoma(modelz, mate, carele, compor, carcri,&
         call nmrinc(sdstat, 'FACTOR')
     endif
 !
-9999 continue
+999 continue
 !
 end subroutine

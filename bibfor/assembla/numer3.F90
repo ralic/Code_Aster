@@ -1,4 +1,15 @@
-subroutine numer3(modele, lischa, solveu, nu)
+subroutine numer3(modelz, list_loadz, solverz, nume_ddlz, sd_iden_relaz)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/idenob.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
+#include "asterfort/numero.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,68 +26,50 @@ subroutine numer3(modele, lischa, solveu, nu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/idenob.h"
-#include "asterfort/infbav.h"
-#include "asterfort/infmue.h"
-#include "asterfort/iunifi.h"
-#include "asterfort/jeimpo.h"
-#include "asterfort/numero.h"
-#include "asterfort/utmess.h"
-    character(len=*) :: modele, solveu, lischa
-    character(len=*) :: nu
 !
+    character(len=*), intent(in) :: modelz
+    character(len=*), intent(inout) :: nume_ddlz
+    character(len=*), intent(in) :: list_loadz
+    character(len=*), intent(in) :: solverz
+    character(len=*), intent(in) :: sd_iden_relaz
 !
-! ----------------------------------------------------------------------
-! ROUTINE APPELLEE PAR : CONLIG
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! MODIFIE LE NUME_DDL NU POUR TENIR COMPTE DES ELEMENTS FINIS DE
-! CONTACT (LIGRCF)
+! Factor
 !
-! IN  MODELE : NOM DU MODELE
-! IN  SOLVEU : OBJET SOLVEUR
-! IN  LISCHA : L_CHARGES CONTENANT LES CHARGES APPLIQUEES
-! IN  NUMEDD : NOM DU NUME_DDL
+! (Re)-Numbering - Used for variable element topology (contact)
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! IO  nume_ddl       : name of numbering object (NUME_DDL)
+! In  solver         : name of solver datastructure
+! In  model          : name of model datastructure
+! In  list_load      : list of loads
+! In  sd_iden_rela   : name of object for identity relations between dof
 !
-    integer :: iul
-    character(len=14) :: nu2, nuav
-    character(len=24) :: ob1, ob2
-    character(len=2) :: base
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    character(len=14) :: nume_ddl_old, nume_ddl_save
 !
-! --- BASE(1:1) : BASE POUR CREER LE NUME_DDL (SAUF LE PROF_CHNO)
-! --- BASE(2:2) : BASE POUR CREER LE PROF_CHNO
-!
-    base = 'VG'
+! --------------------------------------------------------------------------------------------------
 !
     call infmue()
-    nu2=nu
-    nuav='&&NUMER3.NUAV'
+    nume_ddl_old  = nume_ddlz
+    nume_ddl_save = '&&NUMER3.NUAV'
+    call copisd('NUME_DDL', 'V', nume_ddlz, nume_ddl_save)
+    call detrsd('NUME_DDL', nume_ddlz)
 !
-    call copisd('NUME_DDL', 'V', nu, nuav)
-    call detrsd('NUME_DDL', nu)
+! - Numbering
 !
-    call numero(nu, solveu, base,&
-                modelz = modele , list_loadz = lischa)
-
+    call numero(nume_ddlz, solverz, 'VG',&
+                modelz = modelz , list_loadz = list_loadz,&
+                sd_iden_relaz = sd_iden_relaz)
 !
-    ob1=nu2//'.NUME.DEEQ'
-    ob2=nuav//'.NUME.DEEQ'
-    if (.not. idenob(ob1,ob2)) then
-        iul = iunifi('MESSAGE')
-        call jeimpo(iul, ob1, ' ')
-        call jeimpo(iul, ob2, ' ')
-        call utmess('F', 'ASSEMBLA_31')
-    endif
+! - Same equations ! The re-numbering works only with MUMPS/MULT_FRONT/PETSc, not with LDLT
 !
-    call detrsd('NUME_DDL', nuav)
+    ASSERT(idenob(nume_ddl_old//'.NUME.DEEQ',nume_ddl_save//'.NUME.DEEQ'))
+!
+    call detrsd('NUME_DDL', nume_ddl_save)
     call infbav()
 !
 end subroutine

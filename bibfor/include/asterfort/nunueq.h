@@ -16,15 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine numer2(nb_ligr      , list_ligr, solverz      , base, nume_ddlz,&
-                      nume_ddl_oldz, modelocz , sd_iden_relaz)
-        integer, intent(in) :: nb_ligr
-        character(len=24), pointer, intent(in) :: list_ligr(:)
-        character(len=*), intent(in) :: solverz
-        character(len=2), intent(in) :: base
-        character(len=*), intent(inout) :: nume_ddlz
-        character(len=*), intent(in) :: nume_ddl_oldz
-        character(len=*), intent(in) :: modelocz
+    subroutine nunueq(mesh, prof_chno, nb_equa, igds, sd_iden_relaz)
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: prof_chno
+        integer, intent(in) :: nb_equa
+        integer, intent(in) :: igds
         character(len=*), optional, intent(in) :: sd_iden_relaz
-    end subroutine numer2
+    end subroutine nunueq
 end interface

@@ -1,5 +1,5 @@
-subroutine nmdoct(list_load       , sdcont_defi     , sdunil_defi, l_cont, l_unil,&
-                  ligrel_link_cont, ligrel_link_xfem)
+subroutine nmdoct(list_load       , sdcont_defi     , sdunil_defi , l_cont, l_unil,&
+                  ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
 !
 implicit none
 !
@@ -42,6 +42,7 @@ implicit none
     aster_logical, intent(out) :: l_unil
     character(len=19), intent(out) :: ligrel_link_cont
     character(len=19), intent(out) :: ligrel_link_xfem
+    character(len=24), intent(out) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,6 +93,7 @@ implicit none
     l_unil           = .false.
     rel_lin_xfem     = 0
     rel_lin_disc     = 0
+    sd_iden_rela     = ' '
 !
 ! - Read previous list of load
 !

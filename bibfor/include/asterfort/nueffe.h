@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nueffe(nb_ligr, list_ligr, base, nume_ddlz, renumz,&
-                      solver, modelocz)
+    subroutine nueffe(nb_ligr, list_ligr, base         , nume_ddlz   , renumz,&
+                      solver , modelocz , sd_iden_relaz)
         integer, intent(in) :: nb_ligr
         character(len=24), pointer, intent(in) :: list_ligr(:)
         character(len=2), intent(in) :: base
@@ -25,5 +25,6 @@ interface
         character(len=*), intent(in) :: renumz
         character(len=19), optional, intent(in) :: solver
         character(len=*), optional, intent(in) :: modelocz
+        character(len=*), optional, intent(in) :: sd_iden_relaz
     end subroutine nueffe
 end interface

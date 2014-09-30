@@ -16,11 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmprof(modele, result, lischa, solveu, numedd)
-        character(len=24) :: modele
-        character(len=8) :: result
-        character(len=19) :: lischa
-        character(len=19) :: solveu
-        character(len=24) :: numedd
+    subroutine nmprof(model        , result, list_load, solver, nume_ddl,&
+                      sd_iden_relaz)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(out) :: nume_ddl
+        character(len=8), intent(in) :: result
+        character(len=19), intent(in) :: list_load
+        character(len=19), intent(in) :: solver
+        character(len=*), optional, intent(in) :: sd_iden_relaz
     end subroutine nmprof
 end interface

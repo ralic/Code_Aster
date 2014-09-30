@@ -112,12 +112,6 @@ cata_msg = {
  de noeuds à numéroter
 """),
 
-
-31 : _(u"""
- les DDL du NUME_DDL ont bougé
-"""),
-
-
 35 : _(u"""
  il n y a pas de modèle dans la liste  %(k1)s .NUME.LILI
 """),

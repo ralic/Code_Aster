@@ -19,7 +19,8 @@ interface
     subroutine numero(nume_ddlz    , solverz     , base,&
                       old_nume_ddlz, modelocz    ,&
                       modelz       , list_loadz  ,&
-                      nb_matr_elem , list_matr_elem)
+                      nb_matr_elem , list_matr_elem,&
+                      sd_iden_relaz)
         character(len=*), intent(in) :: solverz
         character(len=*), intent(inout) :: nume_ddlz
         character(len=2), intent(in) :: base
@@ -29,5 +30,6 @@ interface
         integer, optional, intent(in) :: nb_matr_elem
         character(len=*), optional, intent(in) :: old_nume_ddlz
         character(len=*), optional, intent(in) :: modelocz
+        character(len=*), optional, intent(in) :: sd_iden_relaz
     end subroutine numero
 end interface

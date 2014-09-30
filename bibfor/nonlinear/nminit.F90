@@ -127,7 +127,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, ibid, numreo
+    integer :: iret, ibid
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: instin
     character(len=19) :: varc_prev, disp_prev, strx_prev
@@ -136,6 +136,7 @@ implicit none
     aster_logical :: lcont, lunil
     character(len=19) :: ligrcf, ligrxf
     integer, pointer :: slvi(:) => null()
+    character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -157,13 +158,14 @@ implicit none
 !
 ! --- SAISIE ET VERIFICATION DE LA COHERENCE DU CHARGEMENT CONTACT
 !
-    call nmdoct(lischa, sdcont_defi, sdunil_defi, lcont, lunil,&
-                ligrcf, ligrxf)
+    call nmdoct(lischa, sdcont_defi, sdunil_defi , lcont, lunil,&
+                ligrcf, ligrxf     , sd_iden_rela)
 !
 ! --- CREATION DE LA NUMEROTATION ET PROFIL DE LA MATRICE
 !
     call nmnume(model , result, lischa, lcont, sdcont_defi,&
-                compor, solveu, numedd, sdnume)
+                compor, solveu, numedd, sdnume,&
+                sd_iden_rela)
 !
 ! --- CREATION DE VARIABLES "CHAPEAU" POUR STOCKER LES NOMS
 !
@@ -201,8 +203,8 @@ implicit none
 ! --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT DU CONTACT
 !
     if (lcont) then
-        call cfmxsd(mesh, model, numedd, fonact, sddyna,&
-                    sdcont_defi, resoco, ligrcf, ligrxf)
+        call cfmxsd(mesh       , model , numedd, fonact, sddyna      ,&
+                    sdcont_defi, resoco, ligrcf, ligrxf, sd_iden_rela)
     endif
 !
 ! --- CREATION DE LA STRUCTURE DE LIAISON_UNILATERALE

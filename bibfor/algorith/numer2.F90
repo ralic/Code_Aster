@@ -1,5 +1,5 @@
-subroutine numer2(nb_ligr      , list_ligr    , solverz, base, nume_ddlz,&
-                  nume_ddl_oldz, modelocz)
+subroutine numer2(nb_ligr      , list_ligr, solverz      , base, nume_ddlz,&
+                  nume_ddl_oldz, modelocz , sd_iden_relaz)
 !
 implicit none
 !
@@ -40,6 +40,7 @@ implicit none
     character(len=*), intent(inout) :: nume_ddlz
     character(len=*), intent(in) :: nume_ddl_oldz
     character(len=*), intent(in) :: modelocz
+    character(len=*), optional, intent(in) :: sd_iden_relaz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,9 +56,10 @@ implicit none
 !                      base(1:1) => PROF_CHNO objects
 !                      base(2:2) => NUME_DDL objects
 ! In  solver         : name of solver datastructure
-! IO  nume_ddl       : name of nume_ddl object
-! In  modelocz       : local mode for GRANDEUR numbering
+! IO  nume_ddl       : name of numbering object (NUME_DDL)
+! In  modeloc        : local mode for GRANDEUR numbering
 ! In  nume_ddl_old   : name of previous nume_ddl object
+! In  sd_iden_rela   : name of object for identity relations between dof
 !
 ! If nume_ddl_old is present
 !   -> try to know if PROF_CHNO in nume_ddl_old can be reuse
@@ -68,7 +70,8 @@ implicit none
     character(len=19) :: prof_chno, prof_chno_old
     character(len=19) :: solver
     character(len=14) :: nume_ddl , nume_ddl_old, moloc
-    character(len=24) :: renum
+    character(len=24) :: renum, sd_iden_rela
+    logical :: l_matr_dist
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: nslv(:) => null()
 !
@@ -85,19 +88,27 @@ implicit none
 !
     call detrsd('NUME_DDL', nume_ddl)
 !
+! - Identity relations between dof
+!
+    sd_iden_rela = ' '
+    if (present(sd_iden_relaz)) then
+        sd_iden_rela = sd_iden_relaz
+    endif
+!
 ! - Method for renumbering equation
 !
     call jeveuo(solver//'.SLVK', 'L', vk24=slvk)
-    renum = slvk(4)
+    renum       = slvk(4)
+    l_matr_dist = slvk(10) .eq. 'OUI'
 !
 ! - Create NUME_EQUA objects
 !
     call nueffe(nb_ligr, list_ligr, base, nume_ddl, renum,&
-                solver , modelocz = moloc)
+                solver , modelocz = moloc, sd_iden_relaz = sd_iden_rela)
 !
 ! - Create NUML_EQUA objects
 !
-    if (slvk(10)(1:3) .eq. 'OUI') then
+    if (l_matr_dist) then
         call nugllo(nume_ddlz, base, solver)
     endif
 !

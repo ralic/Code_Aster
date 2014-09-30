@@ -1,7 +1,8 @@
 subroutine numero(nume_ddlz    , solverz     , base,&
                   old_nume_ddlz, modelocz    ,&
                   modelz       , list_loadz  ,&
-                  nb_matr_elem , list_matr_elem)
+                  nb_matr_elem , list_matr_elem,&
+                  sd_iden_relaz)
 !
 implicit none
 !
@@ -40,6 +41,7 @@ implicit none
     integer, optional, intent(in) :: nb_matr_elem
     character(len=*), optional, intent(in) :: old_nume_ddlz
     character(len=*), optional, intent(in) :: modelocz
+    character(len=*), optional, intent(in) :: sd_iden_relaz
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +51,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  nume_ddl       : name of nume_ddl object
+! IO  nume_ddl       : name of numbering object (NUME_DDL)
 ! In  solver         : name of solver datastructure
 ! In  base           : JEVEUX base to create objects
 !                      base(1:1) => PROF_CHNO objects
@@ -60,6 +62,7 @@ implicit none
 ! In  list_load      : list of loads
 ! In  list_matr_elem : list of elementary matrixes
 ! In  nb_matr_elem   : number of elementary matrixes
+! In  sd_iden_rela   : name of object for identity relations between dof
 !
 ! If old_nume_ddl is present
 !   -> try to know if PROF_CHNO in old_nume_ddl can be reuse
@@ -70,11 +73,19 @@ implicit none
     integer :: nb_ligr
     character(len=24) :: modeloc, old_nume_ddl
     character(len=24), pointer :: list_ligr(:) => null()
+    character(len=24) :: sd_iden_rela
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call uttcpu('CPU.RESO.1', 'DEBUT', ' ')
     call uttcpu('CPU.RESO.2', 'DEBUT', ' ')
+!
+! - Identity relations between dof
+!
+    sd_iden_rela = ' '
+    if (present(sd_iden_relaz)) then
+        sd_iden_rela = sd_iden_relaz
+    endif
 !
 ! - Local mode
 !
@@ -97,8 +108,8 @@ implicit none
 !
 ! - Create numbering
 !
-    call numer2(nb_ligr     , list_ligr, solverz, base, nume_ddlz,&
-                old_nume_ddl, modeloc)
+    call numer2(nb_ligr     , list_ligr, solverz     , base, nume_ddlz,&
+                old_nume_ddl, modeloc  , sd_iden_rela)
 !
     AS_DEALLOCATE(vk24 = list_ligr)
     call uttcpu('CPU.RESO.1', 'FIN', ' ')

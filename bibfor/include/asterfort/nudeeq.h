@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nudeeq(mesh, nb_node_mesh, nb_lagr_mesh, base, nume_ddl,&
-                      neq , igds        , iddlag)
+    subroutine nudeeq(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa,&
+                      igds, iddlag)
         character(len=8), intent(in) :: mesh
         integer, intent(in) :: nb_node_mesh
-        integer, intent(in) :: nb_lagr_mesh
-        character(len=2), intent(in) :: base
+        integer, intent(in) :: nb_node_subs
         character(len=14), intent(in) :: nume_ddl
-        integer, intent(in) :: neq
+        integer, intent(in) :: nb_equa
         integer, intent(in) :: igds
         integer, intent(in) :: iddlag
     end subroutine nudeeq

@@ -35,11 +35,9 @@ class sd_prof_chno(AsBase):
         if not self.exists() : return
         nueq = self.NUEQ.get()
         deeq = self.DEEQ.get()
-        neq=len(nueq)
-        assert len(deeq)==2*neq
+        neq=len(deeq)/2
         for x in nueq :
            assert 1<= x and x <= neq
-        sdu_tous_differents(self.NUEQ,checker)
 
         for k in range(neq):
            nuno=deeq[2*k]

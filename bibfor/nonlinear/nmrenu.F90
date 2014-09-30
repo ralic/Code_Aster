@@ -1,5 +1,16 @@
-subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
-                  resoco, renume)
+subroutine nmrenu(modelz     , list_func_acti, list_load, solver, sdcont_defi,&
+                  sdcont_solv, nume_ddl      , l_renumber)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/cfdisl.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/numer3.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,89 +30,93 @@ subroutine nmrenu(modelz, fonact, numedd, lischa, solveu,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/numer3.h"
-    character(len=*) :: modelz
-    character(len=24) :: numedd
-    character(len=19) :: lischa, solveu
-    character(len=24) :: resoco
-    integer :: fonact(*)
-    aster_logical :: renume
+    character(len=*), intent(in) :: modelz
+    character(len=24), intent(inout) :: nume_ddl
+    character(len=19), intent(in) :: list_load
+    character(len=19), intent(in) :: solver
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    integer, intent(in) :: list_func_acti(*)
+    aster_logical, intent(out) :: l_renumber
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! Non-linear algorithm
 !
-! CHOIX DE RE-CREATION DU NUME_DDL
+! Renumbering equations ?
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! IO  nume_ddl       : name of numbering object (NUME_DDL)
+! In  solver         : name of solver datastructure
+! In  model          : name of model datastructure
+! In  list_load      : list of loads
+! In  sdcont_defi    : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv    : name of contact solving datastructure
+! In  list_func_acti : list of active functionnalities
+! Out l_renumber     : .true. if renumber
 !
-! IN  MODELE : MODELE
-! IN  NUMEDD : NUME_DDL
-! IN  FONACT : FONCTIONNALITES ACTIVEES (vOIR NMFONC)
-! IN  LISCHA : LISTE DES CHARGES
-! IN  SOLVEU : SOLVEUR
-! IN  RESOCO : SD RESOLUTION CONTACT
-! OUT RENUME : .TRUE. SI RECREER NUMEDDL
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    aster_logical :: leltc, lxfcm, lctcc
-    character(len=24) :: crnudd
-    integer :: jcrnud
     integer :: ifm, niv
+    aster_logical :: l_cont, l_cont_cont, l_cont_xfem, l_cont_elem, l_cont_xfem_gg
+    character(len=24) :: sd_iden_rela
+    character(len=24) :: crnudd
+    aster_logical, pointer :: v_crnudd(:) => null()
+    character(len=24) :: nosdco
+    character(len=24), pointer :: v_nosdco(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
 !
-! --- ACCES OBJETS
+! - Initializations
 !
-    crnudd = resoco(1:14)//'.NUDD'
+    crnudd       = sdcont_solv(1:14)//'.NUDD'
+    nosdco       = sdcont_solv(1:14)//'.NOSDCO'
+    l_renumber   = .false.
+    l_cont       = isfonc(list_func_acti,'CONTACT')
+    if (.not.l_cont) then
+        goto 999
+    endif
 !
-! --- INITIALISATIONS
+! - Get identity relation datastructure
 !
-    renume = .false.
+    call jeveuo(nosdco, 'L', vk24 = v_nosdco)
+    sd_iden_rela = v_nosdco(4)
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Contact method
 !
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    lxfcm = isfonc(fonact,'CONT_XFEM')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
+    l_cont_elem = isfonc(list_func_acti,'ELT_CONTACT')
+    l_cont_xfem = isfonc(list_func_acti,'CONT_XFEM')
+    l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
 !
-! --- SI ELT_CONTACT: NUMEDDL PEUT AVOIR BOUGE - REASSEMBLAGE ?
+! - Numbering to change ?
 !
-    if (leltc) then
-        if (lxfcm) then
-            renume = .true.
+    if (l_cont_elem) then
+        if (l_cont_xfem) then
+            l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
+            if (l_cont_xfem_gg) then
+               l_renumber = .true.
+            else
+               l_renumber = .false.
+            endif
         else
-            call jeveuo(crnudd, 'E', jcrnud)
-            renume = zl(jcrnud)
+            call jeveuo(crnudd, 'E', vl = v_crnudd)
+            l_renumber = v_crnudd(1)
+            v_crnudd(1) = .false.
         endif
     endif
 !
-! --- RE-CREATION NUME_DDL SI NECESSAIRE
+! - Re-numbering
 !
-    if (renume) then
+    if (l_renumber) then
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ...... RE-CREATION DU NUME_DDL '
         endif
-        call numer3(modelz, lischa, solveu, numedd)
-    endif
-    if (lctcc) then
-        zl(jcrnud) = .false.
+        call numer3(modelz, list_load, solver, nume_ddl, sd_iden_rela)
     endif
 !
-    call jedema()
+999 continue
 !
 end subroutine
