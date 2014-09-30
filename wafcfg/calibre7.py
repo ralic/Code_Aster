@@ -11,7 +11,7 @@ waf install -p
 
 import os
 ASTER_ROOT = os.environ['ASTER_ROOT']
-YAMMROOT = ASTER_ROOT + '/yamm/V7_3_0_201402'
+YAMMROOT = ASTER_ROOT + '/public/V7_3_0_201402'
 
 import intel
 
@@ -26,7 +26,6 @@ def configure(self):
     self.env.append_value('OPT_ENV', [
         '. ' + ASTER_ROOT + '/etc/codeaster/profile.sh',
         '. ' + ASTER_ROOT + '/etc/codeaster/profile_intel-12.sh',
-        '. ' + ASTER_ROOT + '/etc/codeaster/profile_zmat.sh',
         '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront2.sh'])
 
     self.env.append_value('LIBPATH', [
