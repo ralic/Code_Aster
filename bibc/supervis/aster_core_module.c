@@ -754,9 +754,11 @@ PyObject *args;
         Py_DECREF(tupl);
     }
 
+    /* `buff` is unchanged without MPI and directly used to create `res` */
     DEBUG_MPI("Broadcast from %d for %d values\n", root, count);
     iret = aster_mpi_bcast(buff, count, type, root, aster_get_current_comm());
     if ( iret != 0 ) {
+        free(buff);
         return NULL;
     }
     if ( type == MPI_INTEGER8 ) {
@@ -791,6 +793,7 @@ PyObject *args;
 
     if ( !PyArg_ParseTuple(args, "s#i:MPI_GatherStr", &instr, &count, &root) ) return NULL;
 
+#ifdef _USE_MPI
     // root gathers the size of the string on each processor
     node = aster_get_current_comm();
     aster_get_mpi_info(node, &rank, &size);
@@ -799,6 +802,7 @@ PyObject *args;
                             (void *)length, 1, MPI_INTEGER4,
                             root, node);
     if ( iret != 0 ) {
+        free(length);
         return NULL;
     }
 
@@ -821,6 +825,8 @@ PyObject *args;
                              (void *)arraystr, length, displ, MPI_CHAR,
                              root, node);
     if ( iret != 0 ) {
+        free(displ);
+        free(length);
         return NULL;
     }
 
@@ -833,6 +839,9 @@ PyObject *args;
             DEBUG_MPI("arraystr: %s (len=%d)\n", wrk, (int)strlen(wrk));
             if( PyTuple_SetItem(res, i, PyString_FromString(wrk))) {
                 Py_DECREF(res);
+                free(wrk);
+                free(displ);
+                free(length);
                 return NULL;
             }
             free(wrk);
@@ -843,6 +852,14 @@ PyObject *args;
     }
     free(length);
     free(arraystr);
+#else
+    // without MPI, create a tuple with in input string
+    res = PyTuple_New((Py_ssize_t)1);
+    if( PyTuple_SetItem(res, 0, PyString_FromString(instr))) {
+        Py_DECREF(res);
+        return NULL;
+    }
+#endif
     return res;
 }
 
