@@ -175,7 +175,7 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  des noeuds sur des mailles (par exemple LIAISON_MAIL).
  Il y a %(i1)d noeuds qui ont été projetés sur des mailles distantes.
  Pour ces noeuds, la distance à la maille la plus proche est supérieure à 1/10ème
- du diamètre de cette maille.
+ de la taille de cette maille.
  Les %(i2)d noeuds les plus éloignés ont été imprimés ci-dessus.
 
 Risques et conseils :

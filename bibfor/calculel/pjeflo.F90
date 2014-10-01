@@ -28,11 +28,11 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! ----------------------------------------------------------------------
 ! BUT :
 !   * calculer disprj : distance de projection d'un point
-!                       (normee par le diametre de la maille)
+!                       (normee par le "diametre" de la maille)
 !  disprj =   0. => le point est interieur a la maille
 !  disprj = 999. => la routine reereg n'a pas converge
 !  disprj = a>0  => le point est exterieur a la maille.
-!   La distance du point a la maille est de l'ordre de a*diametre(maille)
+!   La distance du point a la maille est de l'ordre de a*diametre_reel(maille)
 ! ----------------------------------------------------------------------
 !
 ! in  elrefa   : elrefa de l'element
@@ -43,7 +43,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 ! out disprj   : distance de projection (en relatif)
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: x, y, z
+    real(kind=8) :: x, y, z, diam
 ! --------------------------------------------------------------------------------------------------
     disprj = 0.0d0
 !   SI REEREG N'A PAS CONVERGE, ON N'A PAS CONFIANCE DANS XR2 :
@@ -72,6 +72,9 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         disprj=max(disprj,abs(x)-1.d0)
         disprj=max(disprj,abs(y)-1.d0)
         disprj=max(disprj,abs(z)-1.d0)
+!       -- diam : "dimension" de l'elrefe :
+        diam=2.
+        disprj=disprj/diam
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES TETRA :
     elseif (elrefa.eq.'TE4' .or. elrefa.eq.'T10') then
@@ -91,6 +94,9 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         disprj=max(disprj,-y)
         disprj=max(disprj,-z)
         disprj=max(disprj,x+y+z-1.d0)
+!       -- diam : "dimension" de l'elrefe :
+        diam=1.
+        disprj=disprj/diam
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES PYRAM :
@@ -113,6 +119,9 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         disprj=max(disprj,x-y+z-1.d0)
         disprj=max(disprj,-x+y+z-1.d0)
         disprj=max(disprj,-x-y+z-1.d0)
+!       -- diam : "dimension" de l'elrefe :
+        diam=2.
+        disprj=disprj/diam
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES PENTA :
@@ -134,6 +143,9 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         disprj=max(disprj,-y)
         disprj=max(disprj,-z)
         disprj=max(disprj,+y+z-1.d0)
+!       -- diam : "dimension" de l'elrefe :
+        diam=2.
+        disprj=disprj/diam
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES TRIA :
@@ -152,6 +164,9 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         disprj=max(disprj,-x)
         disprj=max(disprj,-y)
         disprj=max(disprj,+x+y-1.d0)
+!       -- diam : "dimension" de l'elrefe :
+        diam=1.
+        disprj=disprj/diam
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES QUAD :
@@ -172,6 +187,9 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
         disprj=max(disprj,-1.d0-y)
         disprj=max(disprj,x-1.d0)
         disprj=max(disprj,y-1.d0)
+!       -- diam : "dimension" de l'elrefe :
+        diam=2.
+        disprj=disprj/diam
     else
         ASSERT(.false.)
     endif
