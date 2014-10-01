@@ -158,14 +158,13 @@ class MCFACT:
         """
 
         self.nom = nom
-        self.fonction = None
+        #self.fonction = None
         self.mots_cles_simples = []
 #------------------------------------------------------------------------
     def add_bloc(self, bloc):
         """
             Ajoute un bloc de données.
         """
-        # EC : ajouter une verif sur le type
         self.mots_cles_simples.append(bloc)
 #------------------------------------------------------------------------
     def write(self, decal):
@@ -178,8 +177,8 @@ class MCFACT:
         for bloc in self.mots_cles_simples:
             liste_ligne.extend(bloc.write(decal))
         # fonction
-        if self.fonction is not None:
-            liste_ligne.extend(self.fonction.write(decal))
+        #if self.fonction is not None:
+            #liste_ligne.extend(self.fonction.write(decal))
         return liste_ligne
 #------------------------------------------------------------------------
 #------------------------------------------------------------------------

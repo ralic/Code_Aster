@@ -319,7 +319,6 @@ ELEM = AFFE_CARA_ELEM(MODELE = MO,
 
 CH_PI=AFFE_CHAR_MECA(MODELE=MO,
                      FORCE_COQUE=(_F(PRES = 0.01,GROUP_MA = ('DALT3','DALQ1','DALQ2'),),),
-#                     DDL_IMPO=_F( DX= #0.,DY=0.,DZ=0.,DRX=0.,DRY=0.,DRZ=0.,GROUP_MA = ('APPS'),),
                     );
 
 #

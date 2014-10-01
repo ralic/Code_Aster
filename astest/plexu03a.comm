@@ -103,8 +103,7 @@ CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
                                RECUL_ANCRAGE=0. )
 
 #
-
-CHARMECA=AFFE_CHAR_MECA(
+LIAISON=AFFE_CHAR_MECA(
                       MODELE=MODELE,DDL_IMPO=(
                     _F(  GROUP_NO='ENCAST',
                                DX = 0.,
@@ -117,7 +116,18 @@ CHARMECA=AFFE_CHAR_MECA(
                 RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
                                SIGM_BPEL = 'NON',
                                RELA_CINE = 'OUI'),
-                FORCE_COQUE=_F(PRES = -1.E7,GROUP_MA = 'GROUPE_____VOILE',),
+                        INFO=1 )
+
+
+PRESVT3=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                FORCE_COQUE=(_F(PRES = -1.E7,GROUP_MA = 'VT3',),
+                            ),
+                        INFO=1 )
+PRESVQ4=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                FORCE_COQUE=(_F(PRES = -1.E7,GROUP_MA = 'VQ4',),
+                            ),
                         INFO=1 )
 #
 # -----------------------------------------------------------
@@ -147,7 +157,10 @@ U = CALC_EUROPLEXUS(
                  ),
               ),
    CARA_ELEM=CARAELEM,
-   EXCIT=(_F(CHARGE=CHARMECA,FONC_MULT=FONCCB,),),
+   EXCIT=(_F(CHARGE=LIAISON,),
+          _F(CHARGE=PRESVT3,FONC_MULT=FONCCB,),
+          _F(CHARGE=PRESVQ4,FONC_MULT=FONCCB,),
+         ),
    LANCEMENT ='OUI',
    CALCUL = _F(TYPE_DISCRETISATION  ='UTIL',
                INST_INIT = 0,
@@ -182,7 +195,10 @@ U_ASTER=DYNA_NON_LINE(MODELE=MODELE,
                       CARA_ELEM=CARAELEM,
                       MASS_DIAG='OUI',
                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',FORMULATION='ACCELERATION'),
-                      EXCIT=_F(CHARGE=CHARMECA,FONC_MULT=FONCCB),
+                      EXCIT=(_F(CHARGE=LIAISON,),
+                              _F(CHARGE=PRESVT3,FONC_MULT=FONCCB,),
+                              _F(CHARGE=PRESVQ4,FONC_MULT=FONCCB,),
+                             ),
                       COMPORTEMENT=(_F(RELATION='ELAS',GROUP_MA='GROUPE_____VOILE',DEFORMATION='GROT_GDEP',),
                                  _F(RELATION='ELAS',GROUP_MA='GROUPE__CABLE001',DEFORMATION='PETIT_REAC',),
                                 ),

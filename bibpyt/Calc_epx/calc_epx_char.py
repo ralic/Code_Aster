@@ -22,17 +22,16 @@ Traitement des chargements et des relations cinématiques
 """
 import aster
 from Calc_epx.calc_epx_utils import recupere_structure, tolist, get_group_ma
-from Calc_epx.calc_epx_cata import cata_charge
 from Utilitai.Utmess import UTMESS
 #-----------------------------------------------------------------------
 def ecri_rela_cine(cabl_precont, MAILLAGE):
     """
     Ecriture des relations cinematiques contenues dans le concept cabl_precont
     """
+    from Calc_epx.calc_epx_cata import cata_compo
+    
     l_cara = []
-    dic_ddl_impo = {}
-    for i, cle in enumerate(cata_charge['DDL_IMPO']['ASTER']):
-        dic_ddl_impo[cle] = cata_charge['DDL_IMPO']['EPX'][i]
+    dic_ddl_impo = cata_compo['DEPL']
 
     nomnoe = aster.getvectjev(MAILLAGE.nom.ljust(8)+".NOMNOE")
     dic_nomnoe = {}
@@ -72,7 +71,7 @@ def ecri_rela_cine(cabl_precont, MAILLAGE):
                 nomnoe_coef = vec_nomnoe[adr-nb_coef+i_coef]
                 nomddl_coef = vec_nomddl[adr-nb_coef+i_coef]
                 l_cara.append(' '*4 +str(coeff)+' '
-                              +dic_ddl_impo[nomddl_coef.rstrip()]
+                              +str(dic_ddl_impo[nomddl_coef.rstrip()])
                               +' '+str(dic_nomnoe[nomnoe_coef])+' 0')
     return nb_rela, l_cara
 #-----------------------------------------------------------------------
@@ -83,65 +82,87 @@ def export_charge(epx, EXCIT, MAILLAGE):
     """
 
     from Calc_epx.calc_epx_struc import FONCTION, BLOC_DONNEES
+    from Calc_epx.calc_epx_cata import cata_charge, cata_liais
 
     excit_list = EXCIT.List_F()
+    ifonc = epx['FONC'].len_mcs()
 
     for excit in excit_list:
         concept_charge = excit['CHARGE']
         if excit.has_key('FONC_MULT'):
             fonction = excit['FONC_MULT']
+            nom_fonc_aster = fonction.get_name()
         else:
             fonction = None
+        l_char = False
+        l_link_fonc = False
 
         list_char = recupere_structure(concept_charge)
         list_char = list_char.keys()
+        # mots-clé de AFFE_CHAR_MECA
         for char in list_char:
-            if not cata_charge.has_key(char):
-                UTMESS('F', 'PLEXUS_19', char)
-            if cata_charge[char] == False:
+            if char in ['INFO','MODELE']:
                 continue
+            elif char in cata_charge.keys():
+                directive = 'CHARGE'
+                cata = cata_charge
+                l_char = True
+                if fonction is None:
+                    UTMESS('F', 'PLEXUS_7', valk=char)
+                type_char = recu_val('o', cata, char, 'TYPE_CHAR', None)
+                if not epx[directive].get_mcfact(type_char):
+                    objet = epx[directive].add_mcfact(type_char)
+                else:
+                    objet = epx[directive].get_mcfact(type_char)
+            elif char in cata_liais.keys():
+                directive = 'LINK'
+                cata = cata_liais
+                objet = epx[directive]
+            else:
+                UTMESS('F', 'PLEXUS_19', char)
+
             char_list = recupere_structure(concept_charge, char)
             char_list = tolist(char_list)
-            directive = cata_charge[char]['DIRECTIVE']
-            mot_cle_epx = cata_charge[char]['MOT_CLE_EPX']
-
+            
+            mot_cle_epx = recu_val('o', cata, char, 'MOT_CLE_EPX', None)
             if len(mot_cle_epx) > 1:
-                if len(mot_cle_epx) > 2:
-                    raise Exception(
-                "La liste MOT_CLE_EPX ne peut pas avoir plus de 2 éléments")
-                mot_cle = mot_cle_epx[0]
-                if not epx[directive].get_mcfact(mot_cle):
-                    objet = epx[directive].add_mcfact(mot_cle)
-                else:
-                    UTMESS('F', 'PLEXUS_29', valk=(char))
+                # choix du mot-clé :
+                #if char == 'DDL_IMPO':
+                    #if fonction:
+                        #mot_cle_epx = mot_cle_epx[1]
+                    #else:
+                        #mot_cle_epx = mot_cle_epx[0]
+                #else:
+                    #raise Exception('cas non traité')
+                raise Exception('cas non traité')
             else:
-                objet = epx[directive]
+                mot_cle_epx = mot_cle_epx[0]
 
-            nom_fonc = False
-            if cata_charge[char].has_key('FONC_MULT'):
-                nom_fonc = cata_charge[char]['FONC_MULT']
-                nom_fonc_aster = fonction.get_name()
-            vale_impo = False
-            cle_aster = cata_charge[char]['ASTER']
-            cle_epx = cata_charge[char]['EPX']
-            entite = []
-            if cata_charge[char].has_key('ENTITE'):
-                entite = cata_charge[char]['ENTITE']
-            if cata_charge[char].has_key('VALE_IMPO'):
-                vale_impo = cata_charge[char]['VALE_IMPO']
-            coef_mult = False
-            if cata_charge[char].has_key('COEF_MULT'):
-                coef_mult = cata_charge[char]['COEF_MULT']
-            mot_cle_verif = []
-            if cata_charge[char].has_key('MOT_CLE_VERIF'):
-                mot_cle_verif = cata_charge[char]['MOT_CLE_VERIF']
-                vale_verif = cata_charge[char]['VALE_VERIF']
-            if nom_fonc and fonction is None:
-                UTMESS('F', 'PLEXUS_7', valk=char)
-            elif nom_fonc:
-                (temps, valeurs) = fonction.Valeurs()
-                objet.fonction = FONCTION(nom_fonc, temps, valeurs,
-                                          nom_aster=nom_fonc_aster)
+            if directive =='LINK':
+                l_fonc = False
+                if recu_val('o', cata, char, 'FONC_MULT', mot_cle_epx):
+                    l_link_fonc = True
+                    l_fonc = True
+                    if fonction is None:
+                        UTMESS('F', 'PLEXUS_7', valk=char)
+
+            cle_aster = recu_val('o', cata, char, 'ASTER', mot_cle_epx)
+            cle_epx = recu_val('o', cata, char, 'EPX', mot_cle_epx)
+            entite = recu_val('f', cata, char, 'ENTITE', mot_cle_epx)
+            if not entite: entite =[]
+            vale_impo = recu_val('f', cata, char, 'VALE_IMPO', mot_cle_epx)
+            coef_mult = recu_val('f', cata, char, 'COEF_MULT', mot_cle_epx)
+            mot_cle_verif = recu_val('f', cata, char, 'MOT_CLE_VERIF', mot_cle_epx)
+            if not mot_cle_verif:
+                mot_cle_verif = []
+                vale_verif = False
+            else:
+                vale_verif = recu_val('o', cata, char, 'VALE_VERIF', mot_cle_epx)
+            nb_cle_max = recu_val('f', cata, char, 'NB_CLE_MAX', mot_cle_epx)
+            if not nb_cle_max: nb_cle_max = 1
+            
+            
+            # occurrences des mots-clé facteurs
             for ch in char_list:
                 # EC pour l'instant on a que des cas a une valeur
                 # li_vale = []
@@ -149,6 +170,7 @@ def export_charge(epx, EXCIT, MAILLAGE):
                 l_group = None
                 l_cara = []
                 l_vale = []
+                nb_cle = 0
                 for cle in ch.keys():
                     if cle in mot_cle_verif:
                         ind = mot_cle_verif.index(cle)
@@ -168,6 +190,9 @@ def export_charge(epx, EXCIT, MAILLAGE):
                         vale_tmp = ''
                     else:
                         vale_tmp = ch[cle]
+                    if nb_cle > nb_cle_max:
+                        UTMESS('F', 'PLEXUS_29', valk=(char, ','.join(cle_aster)),
+                                           vali=(nb_cle, nb_cle_max))
                     ind = cle_aster.index(cle)
                     vale = ''
                     if vale_impo is not False:
@@ -176,11 +201,51 @@ def export_charge(epx, EXCIT, MAILLAGE):
                                            valr=(vale_tmp, vale_impo))
                     else:
                         vale = vale_tmp
-                        if coef_mult is not False:
+                        if coef_mult:
                             vale = coef_mult*vale
-                    if cle_epx is not None:
+                    if cle_epx:
                         info_epx += cle_epx[ind]
-                bloc_donnees = BLOC_DONNEES(mot_cle_epx[-1], l_group=l_group,
+                    nb_cle +=1
+                if directive == 'LINK' and l_fonc:  
+                    l_cara.append('FONC')
+                    l_vale.append(ifonc+1)
+                bloc_donnees = BLOC_DONNEES(mot_cle_epx, l_group=l_group,
                                             cle=info_epx, val_cle=vale,
                                             cara=l_cara, vale=l_vale)
                 objet.add_bloc(bloc_donnees)
+        if l_char:
+            # ajout de la fonction
+            (temps, valeurs) = fonction.Valeurs()
+            bloc_fonc = FONCTION('TABLE', temps, valeurs,
+                                          nom_aster=nom_fonc_aster)
+            objet.add_bloc(bloc_fonc)
+        if l_link_fonc:
+            ifonc +=1
+            (temps, valeurs) = fonction.Valeurs()
+            bloc_fonc = FONCTION('%s TABL'%ifonc, temps, valeurs,
+                                          nom_aster=nom_fonc_aster)
+            epx['FONC'].add_bloc(bloc_fonc)
+#-----------------------------------------------------------------------
+def recu_val(ch, cata, char, key, mot_cle_epx):
+    """
+        Récupère la valeur dans le cata.
+        ch = 'o' si la clé key est forcément présente
+    """
+    if cata[char].has_key(key):
+        if type(cata[char][key]) is dict:
+            if mot_cle_epx is None:
+                raise Exception("""Cas non prévu : pas de dictionnaire
+                pour la clé %s
+                """%key)
+            val = cata[char][key][mot_cle_epx]
+            if val is None : val = False
+        else:
+            val = cata[char][key]
+    else:
+        if ch == 'o':
+            raise Exception("""Mot-clé %s manquant dans cata_liais ou
+            cata_charge pour la clé %s
+            """%(key, char))
+        else:
+            val = False
+    return val

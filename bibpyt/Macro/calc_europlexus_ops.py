@@ -425,6 +425,7 @@ class EUROPLEXUS:
         mode_from_cara = {}
         dic_cont_2_eff = {}
 
+        self.dicOrthotropie = None
         # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
         if self.CARA_ELEM is not None:
             cara_elem_struc = recupere_structure(self.CARA_ELEM)

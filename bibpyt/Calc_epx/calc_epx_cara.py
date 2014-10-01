@@ -337,7 +337,7 @@ def get_FONC_PARASOL(epx, FONC_PARASOL):
             ifonc += 1
             dic_fonc[cle] = ifonc
             (temps, valeurs) = fonction.Valeurs()
-            cle_fonc = 'NOPA %i TABLE ' %(ifonc)
+            cle_fonc = '%i TABL' %(ifonc)
             nom_aster = fonction.get_name()
             bloc_fonc = FONCTION(cle_fonc, temps, valeurs, nom_aster)
             epx[directive].add_bloc(bloc_fonc)

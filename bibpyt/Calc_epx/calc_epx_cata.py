@@ -503,50 +503,78 @@ cata_cara_elem = {
                  }
 
 """
-    CHARGEMENTS
+    CHARGEMENTS ET LIAISONS
 
-    DIRECTIVE : Nom de la directive dans laquelle transcrire les informations.
-    MOT_CLE_EPX : Liste des mots-clés EPX correspondant au mot-clé facteur
-                  aster.
-    FONC_MULT : Si une fonction multiplicatrice est associée au chargement on
-                donne le mot-clé définissant cette fonction dans EPX.
+    Mots-clés communs à cata_charge et cata_liais
+    ---------------------------------------------
+    
+    MOT_CLE_EPX : Liste des mots-clés EPX pouvant correspondre au chargement aster.
+                  Plusieurs éléments dans la liste signifie que le chargement aster
+                  peut correspondre à plusieurs choses dans EPX.
+                  Dans ce cas une routine spéciale doit être ajoutée pour
+                  traiter le cas.
+                  Dans ce cas quand pour certains mots-clé la valeur diffère
+                  selon les cas possibles la valeur du mot-clé doit être un
+                  dictionnaire (voir DDL_IMPO)
+    
     ASTER : Nom du ou des mot-clés aster.
     EPX   : Nom du mot-clé EPX correspondant si besoin.
+    NB_CLE_MAX : Quand la longueur de la liste est supérieure à 1, cela
+                 indique le nombre maximum de valeur de cette liste
+                 que l'on peut accepter dans une occurence. 
+                 Valeur par défaut : 1
     COEF_MULT : Coefficient multiplicateur pour passer de Aster à EPX.
     VALE_IMPO : Valeur imposée dans Code_Aster pour avoir la correspondance
                 dans EPX.
     ENTITE : Sur quoi s'appuie de chargement (GROUP_MA ou GROUP_NO).
+    
+    Rq : chaque mot-clé présent dans le mot-clé facteur de AFFE_CHAR_MECA
+         doit être présent dans une des listes suivantes sans quoi un message
+         d'erreur est émis : ASTER, MOT_CLE_VERIF, ENTITE
+
+    Mots-clé pour cata_liais uniquement
+    -----------------------------------
+    
+    FONC_MULT : True si une fonction doit être associée à la liaison.
+
+    Mots-clé pour cata_charge uniquement
+    -----------------------------------
+    
+    TYPE_CHAR : Type de chargement dans EPX
+                Pour l'instant seul FACTO est utilisé mais il y a aussi 
+                le type CONST (chargement constant au cours du temps).
 
 """
 
-cata_charge = {
-    'INFO'   : False,
-    'MODELE' : False,
-    'FORCE_COQUE' : {
-        'DIRECTIVE'  : 'CHARGE',
-        'MOT_CLE_EPX': ['1 FACTO 2', 'PRES COQU'],
-        'FONC_MULT'  : 'TABLE',
-        'ASTER'      : ['PRES'],
-        'EPX'        : None,
-        'COEF_MULT'  : -1,
-        'ENTITE'     : ['GROUP_MA'],
-                  },
+cata_liais = {
     'DDL_IMPO' : {
-        'DIRECTIVE' : 'LINK',
-        'MOT_CLE_EPX': ['BLOQ'],
+        'MOT_CLE_EPX': ['BLOQ',],
         'ASTER'     : ['DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'],
         'EPX'       : ['1', '2', '3', '4', '5', '6'],
-        'VALE_IMPO' : 0.,
         'ENTITE'    : ['GROUP_MA', 'GROUP_NO'],
+        'NB_CLE_MAX' : 6,
+        'VALE_IMPO' : 0.,
+        'FONC_MULT' : False,
                   },
     'RELA_CINE_BP' : {
-        'DIRECTIVE' : 'LINK',
         'MOT_CLE_EPX': ['RELA'],
         'ASTER'      : ['CABLE_BP'],
         'EPX'        : None,
         'MOT_CLE_VERIF' : ['SIGM_BPEL', 'RELA_CINE'],
         'VALE_VERIF' : ['NON', 'OUI'],
+        'FONC_MULT' : False,
                },
+              }
+
+cata_charge = {
+    'FORCE_COQUE' : {
+        'TYPE_CHAR' : 'FACTO',
+        'MOT_CLE_EPX': ['PRES COQU'],
+        'ASTER'      : ['PRES'],
+        'EPX'        : None,
+        'COEF_MULT'  : -1,
+        'ENTITE'     : ['GROUP_MA'],
+                  },
               }
 
 

@@ -121,10 +121,19 @@ Valeur imposée : %(r2)f
 """),
 
 29 : _(u"""
-Vous avez donné plusieurs charges contenant le type de charge %(k1)s. Ceci est interdit dans EUROPLEXUS.
-Conseil :
-Si les deux charges ont la même fonction multiplicatrice (FONC_MULT) alors vous pouvez fusionner ces
-deux charges.
+CALC_EUROPLEXUS : CHARGEMENTS/LIAISONS
+
+CALC_EUROPLEXUS ne sait pas traiter une occurrence du mot-clé %(k1)s de AFFE_CHAR_MECA. 
+Au moins %(i1)d mots-clé sont présents dans la même occurrence alors qu'il en faut au plus %(i2)d
+parmi la liste suivante :
+%(k2)s
+
+Solution de contournement : séparez les différents mots-clé dans plusieurs occurrences de %(k1)s.
+
+Remarque : Si vous souhaitez faire un blocage avec DDL_IMPO et que ce message vous arrête, c'est que
+vous avez associé une fonction multiplicatrice au chargement en question. Le problème doit disparaître
+si vous enlevez cette fonction (FONC_MULT de EXCIT).
+
 """),
 
 30 : _(u"""

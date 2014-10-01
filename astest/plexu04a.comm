@@ -277,13 +277,6 @@ RES2 = DYNA_NON_LINE(ETAT_INIT=_F(EVOL_NOLI=RES1),
 #------------------------------------------------------------------------
 # Calcul CALC_EUROPLEXUS
 #------------------------------------------------------------------------
-FONCCB1=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,  1.0,
-                           10.0,  1.0,
-                           ),
-                     PROL_DROITE='CONSTANT',
-                     PROL_GAUCHE='CONSTANT',
-                     );
 
 FONCCB2=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0, 0.0,
@@ -295,8 +288,8 @@ FONCCB2=DEFI_FONCTION(NOM_PARA='INST',
                      );
 
 l_excit_europlexus = []
-l_excit_europlexus.append(_F(CHARGE=CHARBLOQ, FONC_MULT=FONCCB1))
-l_excit_europlexus.append(_F(CHARGE=CINE_CAB, FONC_MULT=FONCCB1))
+l_excit_europlexus.append(_F(CHARGE=CHARBLOQ,))
+l_excit_europlexus.append(_F(CHARGE=CINE_CAB,))
 l_excit_europlexus.append(_F(CHARGE=CHARPRES, FONC_MULT=FONCCB2))
 
 U = CALC_EUROPLEXUS(ETAT_INIT=_F(RESULTAT=RES1,CONTRAINTE='OUI',EQUILIBRE='OUI'),

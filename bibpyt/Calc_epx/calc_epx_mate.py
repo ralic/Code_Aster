@@ -183,7 +183,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
         val = dic_fonc['VALE']
         ifo = dic_fonc['NUME']
         nom_aster = dic_fonc['NOM_FONC']
-        cle_fonc = '%i LSQU 2 TABLE' %(ifo)
+        cle_fonc = '%i LSQU 2 TABL' %(ifo)
         bloc_fonc = FONCTION(cle_fonc, val[0], val[1], nom_aster=nom_aster)
         epx['FONC'].add_bloc(bloc_fonc)
 
