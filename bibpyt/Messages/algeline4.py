@@ -221,7 +221,9 @@ Risques & conseils :
 """),
 
 43 : _(u"""
- la maille de nom  %(k1)s  existe déjà %(k2)s
+Erreur utilisateur dans CREA_MAILLAGE / CREA_POI1 :
+ On cherche à créer une maille de type POI1 de nom %(k1)s.
+ Mais il existe déjà dans le maillage une maille de même nom.
 """),
 
 55 : _(u"""

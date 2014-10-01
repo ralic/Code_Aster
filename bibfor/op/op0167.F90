@@ -679,8 +679,7 @@ subroutine op0167()
                 zk8(jnono-1+nbmaj3)=newmai
             else
                 valk(1)=newmai
-                valk(2)=newmai
-                call utmess('A', 'ALGELINE4_43', nk=2, valk=valk)
+                call utmess('F', 'ALGELINE4_43', nk=1, valk=valk)
             endif
 110         continue
         end do

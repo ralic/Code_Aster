@@ -209,4 +209,20 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      VALE_REFE=11.875,),
           )
 
+#-----------------------------------------------------------------------------------------------------------
+# Suite issue23085 : Comment creer plusieurs POI1 sur les memes noeuds :
+#-----------------------------------------------------------------------------------------------------------
+
+# 1) On cree le groupe de mailles GMAB1 contenant autant de mailles POI1 qu'il y a de noeuds dans les
+#    groupes A et B.
+#    Les mailles POI1 crees ont le meme nom que les noeuds designes.
+MA1_1=CREA_MAILLAGE(MAILLAGE=MA1,
+                    CREA_POI1 = _F(NOM_GROUP_MA = 'GMAB1',   GROUP_NO = ('A','B'),))
+
+# 2) Pour creer un autre groupe de mailles GMAB2 contenant de nouvelles mailles POI1 sur les memes noeuds :
+MA1_2=CREA_MAILLAGE(MAILLAGE=MA1_1,
+                 CREA_GROUP_MA=_F(NOM='GMAB2', GROUP_MA='GMAB1', PREF_MAILLE='S',))
+IMPR_RESU(RESU=_F(MAILLAGE=MA1_2), UNITE=6)
+
+
 FIN();
