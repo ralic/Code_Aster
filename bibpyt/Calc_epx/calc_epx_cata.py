@@ -563,9 +563,9 @@ cata_courbe = {
                  }
 
 cata_champs = {
-    'DEPL'     :'DEPLACEMENT',
-    'VITE'     :'VITESSE',
-    'ACCE'     :'ACCELERATION',
+    'DEPL'     :'DEPL',
+    'VITE'     :'VITE',
+    'ACCE'     :'ACCE',
     'SIEF_ELGA':'CONT',
     'EPSI_ELGA':'EPST',
     'VARI_ELGA':'ECRO'

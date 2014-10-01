@@ -402,11 +402,6 @@ U = CALC_EUROPLEXUS(
                NMAX      = 9000000,
                CSTAB     = 0.5
                ),
-   OBSERVATION = _F(PAS_NBRE=500,
-                    #TOUT_GROUP_NO = 'OUI',
-                    #TOUT_GROUP_MA = 'OUI',
-                    #NOM_CHAM = ('DEPL','VITE','ACCE','SIEF_ELGA','VARI_ELGA'),
-                    ),
    PAS_NBRE_COURBE=500,
    TABLE_COURBE    = TAB1,
    COURBE = (_F(

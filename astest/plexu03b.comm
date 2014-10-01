@@ -163,7 +163,6 @@ U = CALC_EUROPLEXUS(
                ),
    OBSERVATION = _F(PAS_NBRE=1,
                     TOUT_GROUP_NO = 'OUI',
-                    TOUT_GROUP_MA = 'OUI',
                     NOM_CHAM = ('DEPL','VITE','ACCE'),
                     ),
    ARCHIVAGE   = _F(PAS_INST=0.1,),

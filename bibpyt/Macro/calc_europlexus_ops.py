@@ -482,28 +482,47 @@ class EUROPLEXUS:
         epx = self.epx
 
         directive = 'ECRITURE'
+        # blocs d'écriture de tous les noeuds et toutes les mailles
+        [bloc_poin, bloc_elem] = self.write_all_gr()
 
-        # Traitement du mot-cle facteur OBSERVATION (EPX = LISTING)
-        listing_fact = self.OBSERVATION
-        nom_cham = tolist(listing_fact['NOM_CHAM'])
-        cle_freq_listing, vale_freq_listing = get_val_exclu(listing_fact,
-                                                            cata_inst)
-
-      # Ecriture LISTING
-
-        for cham_aster in nom_cham:
-            cham_epx = cata_champs[cham_aster]
-            bloc_champ = BLOC_DONNEES(cham_epx)
-            epx[directive].add_bloc(bloc_champ)
-        bloc_freq = BLOC_DONNEES(cle_freq_listing, cle=vale_freq_listing)
-        epx[directive].add_bloc(bloc_freq)
-        # on souhaite ne rien écrire dans le listing
-        # EC : à confirmer.
-        bloc = BLOC_DONNEES('NOPO')
-        epx[directive].add_bloc(bloc)
-        bloc = BLOC_DONNEES('NOEL')
-        epx[directive].add_bloc(bloc)
-
+        # Traitement du mot-cle facteur OBSERVATION (EPX = LISTING) 
+        # Ecriture LISTING
+        if self.OBSERVATION is not None:
+            listing_fact = self.OBSERVATION.List_F()[0]
+            nom_cham = tolist(listing_fact['NOM_CHAM'])
+            cle_freq_listing, vale_freq_listing = get_val_exclu(listing_fact,
+                                                                cata_inst)
+            # champs
+            for cham_aster in nom_cham:
+                cham_epx = cata_champs[cham_aster]
+                bloc_champ = BLOC_DONNEES(cham_epx)
+                epx[directive].add_bloc(bloc_champ)
+            bloc_freq = BLOC_DONNEES(cle_freq_listing, cle=vale_freq_listing)
+            epx[directive].add_bloc(bloc_freq)
+            
+            # noeuds
+            if listing_fact.has_key('TOUT_GROUP_NO'):
+                # tous les noeuds du modèle
+                epx[directive].add_bloc(bloc_poin)
+            elif listing_fact.has_key('GROUP_NO'):
+                gr_no = tolist(listing_fact['GROUP_NO'])
+                bloc = BLOC_DONNEES('POIN', l_group=gr_no,)
+                epx[directive].add_bloc(bloc)
+            else:
+                bloc = BLOC_DONNEES('NOPO')
+                epx[directive].add_bloc(bloc)
+            
+            # mailles
+            if listing_fact.has_key('TOUT_GROUP_MA'):
+                # toutes les mailles du modèle
+                epx[directive].add_bloc(bloc_elem)
+            elif listing_fact.has_key('GROUP_MA'):
+                gr_ma = tolist(listing_fact['GROUP_MA'])
+                bloc = BLOC_DONNEES('ELEM', l_group=gr_ma,)
+                epx[directive].add_bloc(bloc)
+            else:
+                bloc = BLOC_DONNEES('NOEL')
+                epx[directive].add_bloc(bloc)
 
 
         # Ecriture FICHIER ALICE utilisé par le mot-cle facteur COURBE
@@ -545,7 +564,7 @@ class EUROPLEXUS:
                     raise Exception('Erreur : ni noeud ni maille')
 
             if lnoeuds:
-                bloc = BLOC_DONNEES('POINT', l_group=lnoeuds,)
+                bloc = BLOC_DONNEES('POIN', l_group=lnoeuds,)
                 objet.add_bloc(bloc)
             if lmailles:
                 bloc = BLOC_DONNEES('ELEM', l_group=lmailles,)
@@ -566,21 +585,9 @@ class EUROPLEXUS:
             bloc_freq = BLOC_DONNEES(cle_freq_champ, cle=vale_freq_champ)
             objet.add_bloc(bloc_freq)
 
-            # groupes de mailles du modèle
-            entite_geo = {}
-            entite_geo['ELEM'] = []
-            for model in self.dic_epx_geom.keys():
-                if self.dic_epx_geom[model]['RESU_ELEM']:
-                    entite_geo['ELEM'].extend(self.dic_epx_geom[model]
-                                                         ['GROUP_MA'])
-            entite_geo['POINT'] = []
-            for model in self.dic_epx_geom.keys():
-                if self.dic_epx_geom[model]['RESU_POIN']:
-                    entite_geo['POINT'].extend(self.dic_epx_geom[model]
-                                                           ['GROUP_MA'])
-            for cle in ['POINT', 'ELEM']:
-                bloc = BLOC_DONNEES(cle, l_group=entite_geo[cle],)
-                objet.add_bloc(bloc)
+            # tous les groupes de mailles du modèle
+            objet.add_bloc(bloc_poin)
+            objet.add_bloc(bloc_elem)
 
         # FICHIER SAUV
         mot_cle = 'FICHIER SAUV'
@@ -901,7 +908,7 @@ class EUROPLEXUS:
             DEFI_FICHIER(UNITE=unite, ACTION='LIBERER')
 
 
-  #-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
     def get_resu(self,):
         """
             Construit un concept aster evol_noli à partir des résultats du
@@ -936,7 +943,7 @@ class EUROPLEXUS:
                             EXCIT=self.EXCIT,
                             INFO=self.INFO,
                             )
-
+#-----------------------------------------------------------------------
     def lancer_calcul(self):
         """Lancement du calcul EPX"""
         from Cata.cata import EXEC_LOGICIEL
@@ -945,3 +952,29 @@ class EUROPLEXUS:
                       ARGUMENT=(fichier_epx, self.REPE_epx),
                       CODE_RETOUR_MAXI=-1,
                       INFO=2)
+#-----------------------------------------------------------------------
+    def write_all_gr(self,):
+        """
+            Renvoie deux blocs de données indiquand que la commande
+            s'applique à tous les noeuds et mailles du modèle.
+        """
+
+        from Calc_epx.calc_epx_struc import BLOC_DONNEES
+
+        entite_geo = {}
+        entite_geo['ELEM'] = []
+        for model in self.dic_epx_geom.keys():
+            if self.dic_epx_geom[model]['RESU_ELEM']:
+                entite_geo['ELEM'].extend(self.dic_epx_geom[model]
+                                                     ['GROUP_MA'])
+        entite_geo['POIN'] = []
+        for model in self.dic_epx_geom.keys():
+            if self.dic_epx_geom[model]['RESU_POIN']:
+                entite_geo['POIN'].extend(self.dic_epx_geom[model]
+                                                       ['GROUP_MA'])
+        li_blocs = [] 
+        for cle in ['POIN', 'ELEM']:
+            bloc = BLOC_DONNEES(cle, l_group=entite_geo[cle],)
+            li_blocs.append(bloc)
+
+        return li_blocs

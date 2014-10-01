@@ -297,9 +297,9 @@ EPX1 = CALC_EUROPLEXUS(
                CSTAB     = 0.4
                ),
    OBSERVATION = _F(PAS_NBRE=nbpasepx,
-                    #TOUT_GROUP_NO = 'OUI',
-                    #GROUP_MA = ('DGT3','DGQ4',),
-                    #NOM_CHAM = ('DEPL','VITE','ACCE','SIEF_ELGA','VARI_ELGA'),
+                    TOUT_GROUP_NO = 'OUI',
+                    GROUP_MA = ('DGT3','DGQ4',),
+                    NOM_CHAM = ('DEPL','VITE','ACCE','SIEF_ELGA','VARI_ELGA'),
                     ),
    PAS_NBRE_COURBE=5,
    TABLE_COURBE    = TAB1,

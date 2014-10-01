@@ -81,14 +81,12 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
            ),
 
 
-        OBSERVATION     =FACT(statut='f',max='**',
-           SUIVI_DDL       = SIMP(statut='o',typ='TXM',defaut="OUI",max=1,into=("OUI","NON")),
-        b_suivi          =BLOC(condition = "SUIVI_DDL == 'OUI' ",
-                               regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',),
-                                        EXCLUS('PAS_NBRE','PAS_INST',),
+        OBSERVATION     =FACT(statut='f',max=1,
+                            regles=( UN_PARMI('PAS_NBRE','PAS_INST',),
+                                     AU_MOINS_UN('GROUP_NO','TOUT_GROUP_NO','GROUP_MA','TOUT_GROUP_MA',),
                                         EXCLUS('GROUP_NO','TOUT_GROUP_NO',),
                                         EXCLUS('GROUP_MA','TOUT_GROUP_MA',), ),
-           NOM_CHAM        = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',defaut=('DEPL',),into=('DEPL'
+           NOM_CHAM        = SIMP(statut='f',typ='TXM',validators=NoRepeat(),min=1, max='**',defaut=('DEPL',),into=('DEPL'
                                          ,'VITE','ACCE','SIEF_ELGA','EPSI_ELGA','VARI_ELGA'),),
            PAS_INST        = SIMP(statut='f',typ='R'),
            PAS_NBRE        = SIMP(statut='f',typ='I'),
@@ -96,11 +94,10 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
            GROUP_MA        = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
            TOUT_GROUP_NO   = SIMP(statut='f',typ='TXM',into=('OUI',),),
            TOUT_GROUP_MA   = SIMP(statut='f',typ='TXM',into=('OUI',),),
-                             ),
         ),
 
 
-        ARCHIVAGE        =FACT(statut='o', regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
+        ARCHIVAGE        =FACT(statut='o', regles=( UN_PARMI('PAS_NBRE','PAS_INST',),),
            PAS_INST     = SIMP(statut='f',typ='R'),
            PAS_NBRE     = SIMP(statut='f',typ='I'),
                              ),

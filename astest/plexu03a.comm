@@ -158,9 +158,10 @@ U = CALC_EUROPLEXUS(
    OBSERVATION = _F(PAS_NBRE=1,
                     TOUT_GROUP_NO = 'OUI',
                     TOUT_GROUP_MA = 'OUI',
-                    NOM_CHAM = ('DEPL','VITE','ACCE'),
+                    NOM_CHAM = ('DEPL','VITE','ACCE','SIEF_ELGA',
+                                'EPSI_ELGA','VARI_ELGA'),
                     ),
-   ARCHIVAGE   = _F(PAS_NBRE=1,),
+   ARCHIVAGE   = _F(PAS_NBRE=10,),
    );
 
 

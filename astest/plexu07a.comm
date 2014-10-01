@@ -388,9 +388,6 @@ RESU1 = CALC_EUROPLEXUS(
                NMAX      = 1000,
                PASFIX    = dt,
                ),
-   OBSERVATION = _F(PAS_NBRE=1,
-                    NOM_CHAM = ('DEPL','VITE','ACCE'),
-                    ),
    ARCHIVAGE   = _F(PAS_INST=1.90E-05,),
    );
 
