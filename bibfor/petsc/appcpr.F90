@@ -147,7 +147,7 @@ subroutine appcpr(kptsc)
         call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',ier=iret)
         if (iret .eq. 0) then
             if (exilag .eq. 'OUI') then
-                call utmess('F', 'PETSC_17')
+                call utmess('F', 'PETSC_18')
             endif
         endif
 !       -- NOMBRE CONSTANT DE DDLS PAR NOEUD
