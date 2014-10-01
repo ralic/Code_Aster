@@ -1,5 +1,5 @@
 subroutine assvec(base, vec, nbvec, tlivec, licoef,&
-                  nu, vecpro, motcle, type)
+                  nume_ddlz, vecpro, motcle, type)
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=*) :: vec, tlivec(*), vecpro, base, nu
+    character(len=*) :: vec, tlivec(*), vecpro, base, nume_ddlz
     character(len=4) :: motcle
     integer :: nbvec, type
     real(kind=8) :: licoef(*), rcoef, r
@@ -97,9 +97,9 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !
     character(len=1) :: bas, ktyp
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco, nomcas, partit
-    character(len=14) :: nudev
-    character(len=19) :: vecas, vprof, vecel, a19, b19, c19, resu
-    character(len=24) :: kmaila, k24prn, knueq
+    character(len=14) :: nume_ddl
+    character(len=19) :: vecas, vprof, vecel, a19, b19, c19, resu, nume_equa
+    character(len=24) :: kmaila, k24prn, knueq, knequ
     character(len=24) :: knulil, kvelil, kveref, kvedsc, nomli, kvale
     aster_logical :: ldist, ldgrel, dbg
     integer :: i, i1, iad, iad1, ialcha
@@ -110,7 +110,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     integer :: ilinu, ilive, ilivec, ima, imat, inold
     integer :: iresu, iret, j, jec, jvale, k1
     integer :: lgncmp, mode, n1, nbchar, nbelm, nbnoss
-    integer :: nbresu, nbsma, nbssa, ncmp, ncmpel, nddl1, nel, nequa
+    integer :: nbresu, nbsma, nbssa, ncmp, ncmpel, nddl1, nel, nb_equa, nb_dof
     integer :: nm, nmxcmp, nnoe, nugd, numa, iexi, k, jvale1
     integer :: icodla(nbecmx), icodge(nbecmx), lshift
     integer :: admodl, lcmodl, ifm, niv, rang, nbproc
@@ -132,6 +132,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     character(len=8), pointer :: vnomacr(:) => null()
     integer, pointer :: prti(:) => null()
     mpi_int :: mrank, msize
+    integer, pointer :: v_nequ(:) => null()
 !
 ! --- DEBUT ------------------------------------------------------------
     call jemarq()
@@ -168,12 +169,13 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     kmaila='&MAILLA'
     kvelil=vecas//'.LILI'
 !
-    nudev=nu
-    if (nudev(1:1) .eq. ' ') then
+    nume_ddl=nume_ddlz
+    if (nume_ddl(1:1) .eq. ' ') then
         vprof=vecpro
         call jeveuo(vprof//'.REFE', 'L', vk24=refe)
-        nudev=refe(2)(1:14)
+        nume_ddl=refe(2)(1:14)
     endif
+    nume_equa = nume_ddl(1:14)//'.NUME'
 !
 !
 ! --- CALCUL D UN LILI POUR VECAS
@@ -185,11 +187,10 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     if (nlili .eq. 1) then
 !         -- IL N'Y A AUCUN RESUELEM A ASSEMBLER MAIS IL PEUT
 !            Y AVOIR DES CHAM_NO (VECT_ASSE):
-        knueq=nudev//'.NUME.NUEQ'
-        call jelira(knueq, 'LONMAX', nequa)
         call vtcreb(vecas, base, 'R',&
-                    nume_ddlz = nu,&
-                    nb_equa_outz = nequa)
+                    nume_ddlz = nume_ddlz,&
+                    nb_equa_outz = nb_equa)
+        nb_dof  = nb_equa
         goto 270
 !
     endif
@@ -261,8 +262,8 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         endif
     endif
 !
-    call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
-    call dismoi('NOM_MAILLA', nudev, 'NUME_DDL', repk=ma)
+    call dismoi('NOM_MODELE', nume_ddl, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=ma)
     call dismoi('NB_NO_SS_MAX', ma, 'MAILLAGE', repi=nbnoss)
 !
 !     100 EST SUPPOSE ETRE LA + GDE DIMENSION D'UNE MAILLE STANDARD:
@@ -270,7 +271,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
 !     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
     call wkvect('&&ASSVEC.NUMLOC', 'V V I', 3*nbnoss, ianulo)
 !
-    call dismoi('NOM_GD', nudev, 'NUME_DDL', repk=nogdco)
+    call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=nogdco)
     call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
     call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
     call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
@@ -311,14 +312,30 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
         call uttcpu('CPU.ASSVEC', 'DEBUT', ' ')
     endif
 !
-    k24prn=nudev//'.NUME.PRNO'
-    knulil=nudev//'.NUME.LILI'
-    knueq=nudev//'.NUME.NUEQ'
+    k24prn=nume_equa(1:19)//'.PRNO'
+    knulil=nume_equa(1:19)//'.LILI'
+    knueq=nume_equa(1:19)//'.NUEQ'
+    knequ=nume_equa(1:19)//'.NEQU'
 !
     call jeveuo(k24prn, 'L', idprn1)
     call jeveuo(jexatr(k24prn, 'LONCUM'), 'L', idprn2)
     call jeveuo(knueq, 'L', ianueq)
-    call jelira(knueq, 'LONMAX', nequa)
+!
+! - Get number of equations
+!
+    call jeexin(knequ, iexi)
+    if (iexi.eq.0) then
+        call jelira(knueq, 'LONMAX', nb_equa)
+        nb_dof  = nb_equa
+    else
+        call jeveuo(knequ, 'L', vi = v_nequ)
+        nb_equa = v_nequ(1)
+        nb_dof  = v_nequ(2)
+
+    endif
+    if (nb_dof.eq.0) then
+        nb_dof = nb_equa
+    endif
 !
     kveref=vecas//'.REFE'
     kvale=vecas//'.VALE'
@@ -344,7 +361,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     else
         call utmess('F', 'ASSEMBLA_11')
     endif
-    call jeecra(kvale, 'LONMAX', nequa)
+    call jeecra(kvale, 'LONMAX', nb_equa)
     call jeveuo(kvale, 'E', jvale)
 !
 !
@@ -511,15 +528,15 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                         vali(1)=n1
                                         valk(1)=resu
                                         valk(2)=vecel
-                                        valk(3)=nudev
+                                        valk(3)=nume_ddl
                                         call utmess('F', 'ASSEMBLA_41', nk=3, valk=valk,&
                                                     si=vali(1))
                                     endif
 !
-                                    if (iad1 .gt. nequa) then
+                                    if (iad1 .gt. nb_dof) then
                                         vali(1)=n1
                                         vali(2)=iad1
-                                        vali(3)=nequa
+                                        vali(3)=nb_dof
                                         valk(1)=resu
                                         valk(2)=vecel
                                         call utmess('F', 'ASSEMBLA_42', nk=2, valk=valk, ni=3,&
@@ -591,7 +608,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                             valk(1)=nomli
                                             valk(2)=resu
                                             valk(3)=vecel
-                                            valk(4)=nudev
+                                            valk(4)=nume_ddl
                                             valk(5)=nomli(1:8)
                                             vali(1)=n1
                                             vali(2)=numa
@@ -627,14 +644,14 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                                         vali(1)=n1
                                         valk(1)=resu
                                         valk(2)=vecel
-                                        valk(3)=nudev
+                                        valk(3)=nume_ddl
                                         call utmess('F', 'ASSEMBLA_48', nk=3, valk=valk,&
                                                     si=vali(1))
                                     endif
-                                    if (iad1 .gt. nequa) then
+                                    if (iad1 .gt. nb_dof) then
                                         vali(1)=n1
                                         vali(2)=iad1
-                                        vali(3)=nequa
+                                        vali(3)=nb_dof
                                         valk(1)=resu
                                         valk(2)=vecel
                                         call utmess('F', 'ASSEMBLA_49', nk=2, valk=valk, ni=3,&
@@ -713,12 +730,13 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
                 ASSERT(type.eq.1)
                 c19='&&ASSVEC.CHAMNO'
                 call vtcreb(c19, 'V', ktyp,&
-                            nume_ddlz = nu,&
-                            nb_equa_outz = nequa)
+                            nume_ddlz = nume_ddlz,&
+                            nb_equa_outz = nb_equa)
+                nb_dof  = nb_equa
 !
                 call vtcopy(b19, c19, 'F', iret)
                 call jeveuo(c19//'.VALE', 'L', vr=vale)
-                do j = 1, nequa
+                do j = 1, nb_equa
                     zr(jvale1-1+j)=zr(jvale1-1+j)+vale(j)
                 end do
                 call detrsd('CHAM_NO', c19)

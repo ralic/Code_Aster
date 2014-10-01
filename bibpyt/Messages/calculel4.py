@@ -46,7 +46,7 @@ Conseils :
 Erreur utilisateur (ou programmeur) :
  On veut imposer la numérotation des ddls du CHAM_NO %(k1)s
  avec le NUME_DDL %(k2)s.
- Mais ces 2 structures de données sont incompatibles.
+ Mais ces deux structures de données sont incompatibles.
  Par exemple :
     - ce n'est pas le même maillage sous-jacent
     - ce n'est pas la même grandeur sous-jacente.

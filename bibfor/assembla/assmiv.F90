@@ -93,7 +93,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
     character(len=8) :: partit
-    character(len=14) :: nudev
+    character(len=14) :: nume_ddl
     character(len=19) :: vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, kvedsc, nomli
     character(len=24) :: knequa, kvale
@@ -108,12 +108,12 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! --- DEBUT ------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iad1, iadnem
-    integer :: ianulo, iconx2, idnequ
+    integer :: ianulo, iconx2
     integer :: idprn1, idprn2, idveds, idverf, iel
     integer :: igr, il, ilim, ilimnu, ilinu, ilive
     integer :: ilivec, imat, iresu, jresl, jvale
-    integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp
-    integer :: ncmpel, nddl1, nel, nequa, nm, nmxcmp, nnoe
+    integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp, nb_equa, nb_dof
+    integer :: ncmpel, nddl1, nel, nm, nmxcmp, nnoe
     integer :: nugd, numa
     integer, pointer :: posddl(:) => null()
     integer, pointer :: desc(:) => null()
@@ -121,6 +121,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     integer, pointer :: connex(:) => null()
     character(len=24), pointer :: prtk(:) => null()
     integer, pointer :: nueq(:) => null()
+    integer, pointer :: v_nequ(:) => null()
     integer, pointer :: maille(:) => null()
     integer, pointer :: adli(:) => null()
     character(len=24), pointer :: refe(:) => null()
@@ -211,20 +212,28 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! --- IL FAUT ESPERER QUE LE CHAM_NO EST EN INDIRECTION AVEC UN
 !     PROF_CHNO APPARTENANT A UNE NUMEROTATION SINON CA VA PLANTER
 !     DANS LE JEVEUO SUR KNEQUA
-    nudev=nu
-    if (nudev(1:1) .eq. ' ') then
+    nume_ddl=nu
+    if (nume_ddl(1:1) .eq. ' ') then
         vprof=vecpro
         call jeveuo(vprof//'.REFE', 'L', vk24=refe)
-        nudev=refe(2)(1:14)
+        nume_ddl=refe(2)(1:14)
     endif
 !
-    knequa=nudev//'.NUME.NEQU'
-    k24prn=nudev//'.NUME.PRNO'
-    knulil=nudev//'.NUME.LILI'
-    call jeveuo(nudev//'.NUME.NUEQ', 'L', vi=nueq)
+    knequa=nume_ddl//'.NUME.NEQU'
+    k24prn=nume_ddl//'.NUME.PRNO'
+    knulil=nume_ddl//'.NUME.LILI'
+    call jeveuo(nume_ddl//'.NUME.NUEQ', 'L', vi=nueq)
+
 !
-    call dismoi('NOM_MODELE', nudev, 'NUME_DDL', repk=mo)
-    call dismoi('NOM_MAILLA', nudev, 'NUME_DDL', repk=ma)
+! - Get number of equations
+!
+    call jeveuo(knequa, 'L', vi = v_nequ)
+    nb_equa = v_nequ(1)
+    nb_dof  = v_nequ(2)
+
+!
+    call dismoi('NOM_MODELE', nume_ddl, 'NUME_DDL', repk=mo)
+    call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=ma)
     call dismoi('NB_NO_SS_MAX', ma, 'MAILLAGE', repi=nbnoss)
 !
 !     100 EST SUPPOSE ETRE LA + GDE DIMENSION D'UNE MAILLE STANDARD:
@@ -232,7 +241,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !     -- NUMLOC(K,INO) (K=1,3)(INO=1,NBNO(MAILLE))
     call wkvect('&&ASSMIV.NUMLOC', 'V V I', 3*nbnoss, ianulo)
 !
-    call dismoi('NOM_GD', nudev, 'NUME_DDL', repk=nogdco)
+    call dismoi('NOM_GD', nume_ddl, 'NUME_DDL', repk=nogdco)
     call dismoi('NOM_GD_SI', nogdco, 'GRANDEUR', repk=nogdsi)
     call dismoi('NB_CMP_MAX', nogdsi, 'GRANDEUR', repi=nmxcmp)
     call dismoi('NUM_GD_SI', nogdsi, 'GRANDEUR', repi=nugd)
@@ -251,8 +260,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     call jeveuo(jexatr(k24prn, 'LONCUM'), 'L', idprn2)
 !
 ! ---  RECUPERATION DE NEQUA
-    call jeveuo(knequa, 'L', idnequ)
-    nequa=zi(idnequ)
+
 !
 ! ---  REMPLISSAGE DE REFE ET DESC
     zk24(idverf)=ma
@@ -263,9 +271,9 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 ! --- ALLOCATION VALE
     ASSERT(type.eq.1)
-    call wkvect(kvale, bas//' V R8', nequa, jvale)
+    call wkvect(kvale, bas//' V R8', nb_equa, jvale)
 !
-    do i = 1, nequa
+    do i = 1, nb_equa
         zr(jvale+i-1)=r8maem()
     end do
 !
@@ -335,14 +343,14 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
                                     vali(1)=n1
                                     valk(1)=resu
                                     valk(2)=vecel
-                                    valk(3)=nudev
+                                    valk(3)=nume_ddl
                                     call utmess('F', 'ASSEMBLA_41', nk=3, valk=valk, si=vali(1))
                                 endif
 !
-                                if (iad1 .gt. nequa) then
+                                if (iad1 .gt. nb_dof) then
                                     vali(1)=n1
                                     vali(2)=iad1
-                                    vali(3)=nequa
+                                    vali(3)=nb_dof
                                     valk(1)=resu
                                     valk(2)=vecel
                                     call utmess('F', 'ASSEMBLA_42', nk=2, valk=valk, ni=3,&
@@ -387,7 +395,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 !
 !        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
     if (ldist) then
-        call asmpi_comm_vect('MPI_MIN', 'R', nbval=nequa, vr=zr(jvale))
+        call asmpi_comm_vect('MPI_MIN', 'R', nbval=nb_equa, vr=zr(jvale))
     endif
 !
 !

@@ -16,13 +16,13 @@
 !
 interface
     subroutine assvec(base, vec, nbvec, tlivec, licoef,&
-                      nu, vecpro, motcle, type)
+                      nume_ddlz, vecpro, motcle, type)
         character(len=*) :: base
         character(len=*) :: vec
         integer :: nbvec
         character(len=*) :: tlivec(*)
         real(kind=8) :: licoef(*)
-        character(len=*) :: nu
+        character(len=*) :: nume_ddlz
         character(len=*) :: vecpro
         character(len=4) :: motcle
         integer :: type
