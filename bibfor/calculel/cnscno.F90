@@ -350,18 +350,58 @@ subroutine cnscno(cnsz, prchnz, prol0, basez, cnoz,&
 !
             if (zl(jcnsl-1+(ino-1)*ncmp1+icmp1)) then
                 if (tsca .eq. 'R') then
+!
+! ----------------- Test for protect when nb_equa.ne.nb_dof
+!
+                    if (zr(jvale-1+ieq2).ne.0.d0) then
+                        if (zr(jcnsv-1+(ino-1)*ncmp1+icmp1).ne.zr(jvale-1+ieq2)) then
+                            ASSERT(.false.)
+                        endif
+                    endif
                     zr(jvale-1+ieq2)=zr(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca.eq.'C') then
+!
+! ----------------- Test for protect when nb_equa.ne.nb_dof
+!
+                    if (zc(jvale-1+ieq2).ne.(0.d0,0.d0)) then
+                        if (zc(jvale-1+ieq2).ne.zc(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
+                            ASSERT(.false.)
+                        endif
+                    endif
                     zc(jvale-1+ieq2)=zc(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca.eq.'I') then
+!
+! ----------------- Test for protect when nb_equa.ne.nb_dof
+!
+                    if (zi(jvale-1+ieq2).ne.0) then
+                        if (zi(jvale-1+ieq2).ne.zi(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
+                            ASSERT(.false.)
+                        endif
+                    endif
                     zi(jvale-1+ieq2)=zi(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca.eq.'L') then
+!
+! ----------------- Test for protect when nb_equa.ne.nb_dof
+!
+                    if (.not.zl(jvale-1+ieq2)) then
+                        if (zl(jvale-1+ieq2).neqv.zl(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
+                            ASSERT(.false.)
+                        endif
+                    endif
                     zl(jvale-1+ieq2)=zl(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else if (tsca.eq.'K8') then
+!
+! ----------------- Test for protect when nb_equa.ne.nb_dof
+!
+                    if (zk8(jvale-1+ieq2).ne.' ') then
+                        if (zk8(jvale-1+ieq2).ne.zk8(jcnsv-1+(ino-1)*ncmp1+icmp1)) then
+                            ASSERT(.false.)
+                        endif
+                    endif
                     zk8(jvale-1+ieq2)=zk8(jcnsv-1+(ino-1)*ncmp1+icmp1)
 !
                 else
