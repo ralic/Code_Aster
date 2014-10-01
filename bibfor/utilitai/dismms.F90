@@ -30,6 +30,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/nueq_chck.h"
 !
     integer :: repi, ierd
     character(len=*) :: questi
@@ -105,6 +106,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         endif
 !
     else if (questi.eq.'NB_DDL_NOEUD') then
+        call nueq_chck(prno, l_error = .true.)
         prno = refa(2)(1:14)//'.NUME'
         call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
         call jeveuo(prno//'.DEEQ', 'L', vi=deeq)
