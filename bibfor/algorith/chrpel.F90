@@ -86,12 +86,13 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     !
     integer :: i, ii, ino, iad, ipt, isp
     integer :: jcesd, jcesv, jcesl, nbpt, ncmp
-    integer :: jconx2, nbsp, inel, npain
+    integer :: ilcnx1, nbsp, inel, npain
+    integer :: mnogal, mnogad
     integer :: ibid, nbma, iret, inbno
-    integer :: ndim, nbm, idmail, nbmail, imai
+    integer :: ndim, nbm, idmail, nbmail, imai, imaref
     integer :: inoeu, iret0, iret1, nbgno, igno, nncp
-    integer :: ierk, mnogav, iadr, ipaxe, ipaxe2
-    integer :: nbno, nbpg, nuno, ipg
+    integer :: ierk, ipaxe, ipaxe2
+    integer :: nbno, nbpg, nbno2, nbpg2, nuno, ipg
     integer :: type_pt
     integer, parameter :: type_unknown = 0, type_noeud = 1, type_gauss = 2
 ! nb max de points (noeuds|gauss) par élément
@@ -104,6 +105,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     real(kind=8), dimension(3, 3) :: pgl, pgcyl, pgu
     real(kind=8), dimension(3, nptmax), target :: xno, xpg
     real(kind=8), dimension(:, :), pointer :: xpt => null()
+    real(kind=8), pointer :: nmnoga(:) => null()
     character(len=3) :: tsca
     character(len=8) :: ma, k8b, typmcl(2), nomgd, tych, param
     character(len=8) :: lpain(5), paout, licmp(9), nomgdr, paoutc
@@ -206,7 +208,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     call jeexin(ma//'.CONNEX', iret)
     ASSERT(iret.ne.0)
     call jeveuo(ma//'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', jconx2)
+    call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
     call jeveuo(chams1//'.CESV', 'E', jcesv)
     call jeveuo(chams1//'.CESL', 'L', jcesl)
     !
@@ -330,7 +332,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         !
         manoga='&&CHRPEL.MANOGA'
         !
-        if (nomch(1:4) .eq. 'SIEF' .or. nomch(1:4) .eq. 'SIGM') then
+        if ( nomch(1:9) .eq. 'SIGM_ELGA') then 
+            param = 'PSIEFR'
+        elseif  ((nomch(1:4) .eq. 'SIEF').or.(nomch(1:4) .eq. 'SIGM'))   then
             param='PCONTRR'
         else if (nomch(1:2).eq.'EP') then
             param='PDEFOPG'
@@ -370,26 +374,52 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         !
         ASSERT(type_pt /= type_unknown ) 
         !
-        call jeveuo(manoga//'.CESV', 'L', mnogav)
-        !
+! mnoga est la matrice de passage noeuds -> points de gauss
+        call jeveuo(manoga//'.CESD', 'L', mnogad)        
+        call jeveuo(manoga//'.CESL', 'L', mnogal)
+        call jeveuo(manoga//'.CESV', 'L', vr=nmnoga)
+! Boucle sur les mailles à transformer
         do inel = 1, nbmail
+! Récupération de l'indice de la maille courante
             if (nbm .ne. 0) then
                 imai = zi(idmail+inel-1)
             else
                 imai = inel
             endif
-! Nombre de noeuds de la maille courante 
-            nbno = zi(jcesd-1+5+4* (imai-1)+1)
-! Nombre de sous-points 
+! imaref est l'indice de la maille de référence 
+! (particularité de mnoga)            
+            call cesexi('C', mnogad, mnogal, imai, 1,&
+                        1, 1, iad)
+            if (iad .le. 0) goto 20
+            if (nint(nmnoga(iad)) .gt. 0) then
+                imaref=imai
+            else
+                imaref=-nint(nmnoga(iad))
+            endif
+! Récupération de l'adresse de la matrice mnoga pour la maille courante
+            call cesexi('C', mnogad, mnogal, imaref, 1,&
+                        1, 1, iad)
+            
+            if (iad .le. 0) goto 20
+! Les deux premiers termes sont le nombre de noeuds et le nombre de 
+! points de Gauss
+            nbno2 = nint(nmnoga(iad))
+            nbpg2 = nint(nmnoga(iad+1))
+! On vérifie que les valeurs sont cohérentes avec celles du champ simple
+! à transformer                         
+            nbpg = zi(jcesd-1+5+4* (imai-1)+1)
             nbsp = zi(jcesd-1+5+4* (imai-1)+2)
-! Nombre de composantes du champ à transformer 
             nbcmp = zi(jcesd-1+5+4* (imai-1)+3)
-            !
+! et de la connectivité du maillage 
+            nbno = zi(ilcnx1+imai) - zi(ilcnx1-1+imai)
+            ASSERT(nbno.eq.nbno2)
+!            ASSERT(nbpg.eq.nbpg2)
+!
 ! Coordonnées des noeuds de la maille courante
 !
             xno(:,:) = 0.d0
             do ino = 1, nbno
-                nuno = connex(zi(jconx2+imai-1)+ino-1)
+                nuno = connex(zi(ilcnx1+imai-1)+ino-1)
                 xno(1,ino) = vale(1+3*(nuno-1)-1+1)
                 xno(2,ino) = vale(1+3*(nuno-1)-1+2)
                 if (ndim == 3) then
@@ -404,15 +434,12 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
                 xpt => xno(:,:)
             case (type_gauss)
 ! On se place aux points de Gauss de la maille 
-                nbpg = zi(jcesd-1+5+4* (imai-1)+1)
-                !
 !  Coordonnées des points de Gauss de la maille courante 
                 !
                 do ipg = 1, nbpg
                     xpg(:,ipg) = 0.d0
-                    iadr=mnogav-1+iad+1+nbno*(ipg-1)
                     do ino = 1, nbno
-                        xpg(:,ipg) = xpg(:,ipg) + xno(:,ino)*zr(iadr+ino)
+                        xpg(:,ipg) = xpg(:,ipg) + xno(:,ino)*nmnoga(iad+1+nbno* (ipg-1)+ ino)
                     end do
                 end do
                 nbpt = nbpg
