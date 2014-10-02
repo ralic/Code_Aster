@@ -70,7 +70,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       REAC_GEOM      = 'AUTOMATIQUE',
                       ITER_FROT_MAXI = 10,
                       ITER_CONT_MAXI = 10,
-                      ITER_GEOM_MAXI = 10,
+                      ITER_GEOM_MAXI = 10,ELIM_ARETE     = 'ELIM',
                       FROTTEMENT     = 'COULOMB',
                       ZONE = (_F(
                                  INTEGRATION   = 'NOEUD',

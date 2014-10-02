@@ -57,7 +57,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
-                      ITER_CONT_MAXI = 10,
+                      ITER_CONT_MAXI = 10,ELIM_ARETE     = 'ELIM',
                       ZONE = (_F(
                                  INTEGRATION   = 'NOEUD',
                                  CONTACT_INIT  = 'OUI',

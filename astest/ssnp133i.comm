@@ -108,7 +108,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
-            FROTTEMENT     = 'SANS',
+            FROTTEMENT     = 'SANS',ELIM_ARETE     = 'ELIM',
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ORDRE_INT=2,

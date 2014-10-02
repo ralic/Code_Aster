@@ -76,7 +76,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
-                      REAC_GEOM      = 'SANS',
+                      REAC_GEOM      = 'SANS',ELIM_ARETE     = 'ELIM',
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS,

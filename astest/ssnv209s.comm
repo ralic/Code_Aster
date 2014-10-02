@@ -205,7 +205,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 5,
                       REAC_GEOM      = 'CONTROLE',
-                      NB_ITER_GEOM   = 2,
+                      NB_ITER_GEOM   = 2,ELIM_ARETE     = 'ELIM',
                       ZONE=(
                             _F(
                                FISS_MAIT      = FISS,

@@ -88,7 +88,7 @@ CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
             FROTTEMENT     = 'SANS',
-            ITER_CONT_MAXI=4,
+            ITER_CONT_MAXI=4,ELIM_ARETE     = 'ELIM',
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ALGO_CONT='CZM',

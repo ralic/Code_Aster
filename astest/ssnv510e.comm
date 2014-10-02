@@ -62,7 +62,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
                       REAC_GEOM='CONTROLE',
                       NB_ITER_GEOM = 1,
-                      ITER_CONT_MAXI = 10,
+                      ITER_CONT_MAXI = 10,ELIM_ARETE     = 'ELIM',
                       ZONE = (_F(
                                  INTEGRATION   = 'NOEUD',
                                  CONTACT_INIT  = 'OUI',

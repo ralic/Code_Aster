@@ -69,7 +69,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ITER_FROT_MAXI = 10,
                       ITER_CONT_MAXI = 10,
                       ITER_GEOM_MAXI = 10,
-                      REAC_GEOM      = 'AUTOMATIQUE',
+                      REAC_GEOM      = 'AUTOMATIQUE',ELIM_ARETE     = 'ELIM',
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS1,
