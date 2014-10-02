@@ -198,6 +198,15 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                   RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
                                   ),
 
+
+# Automatic elimiantion for non-vital edges
+           b_arete_xfem= BLOC(condition = "FORMULATION == 'XFEM' ",
+                              ELIM_ARETE  =SIMP(statut='f',
+                                                typ='TXM',
+                                                defaut="DUAL",
+                                                into=("DUAL","ELIM"),),
+                          ),
+
 # PARAMETRES GENERAUX : METHODES DISCRETES
 
            b_para_discret  = BLOC(condition = "FORMULATION == 'DISCRETE' ",

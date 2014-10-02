@@ -1,9 +1,8 @@
-subroutine cazocp(char)
+subroutine cazocp(sdcont)
 !
     implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/getvis.h"
@@ -32,283 +31,278 @@ subroutine cazocp(char)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: char
+    character(len=8), intent(in) :: sdcont
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - LECTURE DONNEES)
+! Contact
 !
-! LECTURE DES PARAMETRES PRINCIPAUX QUI NE DEPENDENT PAS DE LA ZONE
-! DE CONTACT
+! Read main parameters (not depending on contact zone)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont         : name of contact datastructure
 !
-! IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    character(len=24) :: defico
-    character(len=24) :: paracr, paraci
-    integer :: jparcr, jparci
+    character(len=24) :: sdcont_defi
+
     integer :: nbreac, lgbloc, gcpmax, premax
     integer :: reacca, reacbs, reacbg
-    character(len=16) :: rech, prec, reac, typcon, isto
+    character(len=16) :: rech, prec, reac, typcon, isto, elim_edge
     character(len=16) :: algoco, algofr, algoge
     integer :: noc
     real(kind=8) :: precis, coefrs
     real(kind=8) :: resige, resifr
-    aster_logical :: lgcp, l_newt_fr
-    aster_logical :: lctcd, lctcc, lxfcm, lfrot, lmail
+    aster_logical :: l_cont_gcp, l_newt_fr
+    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_frot, l_cont_mesh
     character(len=16) :: lissa, coef_adap
+    character(len=24) :: sdcont_para_r
+    real(kind=8), pointer :: v_para_r(:) => null()
+    character(len=24) :: sdcont_para_i
+    integer, pointer :: v_para_i(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    defico = char(1:8)//'.CONTACT'
-    reac = 'AUTOMATIQUE'
-    algoco = ' '
-    algofr = ' '
-    algoge = ' '
-    nbreac = 2
-    lgbloc = 10
-    resige = 1.d-2
-    resifr = 1.d-2
+    sdcont_defi  = sdcont(1:8)//'.CONTACT'
+    elim_edge = 'DUAL'
+    reac      = 'AUTOMATIQUE'
+    algoco    = ' '
+    algofr    = ' '
+    algoge    = ' '
+    nbreac    = 2
+    lgbloc    = 10
+    resige    = 1.d-2
+    resifr    = 1.d-2
     l_newt_fr = .false.
 !
-! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
+! - Access to datastructure
 !
-    paracr = defico(1:16)//'.PARACR'
-    paraci = defico(1:16)//'.PARACI'
-    call jeveuo(paracr, 'E', jparcr)
-    call jeveuo(paraci, 'E', jparci)
+    sdcont_para_r = sdcont_defi(1:16)//'.PARACR'
+    sdcont_para_i = sdcont_defi(1:16)//'.PARACI'
+    call jeveuo(sdcont_para_r, 'E', vr = v_para_r)
+    call jeveuo(sdcont_para_i, 'E', vi = v_para_i)
 !
-! --- DRAPEAUX
+! - Active functionnalites
 !
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lmail = lctcd.or.lctcc
-    lxfcm = cfdisl(defico,'FORMUL_XFEM')
-    lgcp = cfdisl(defico,'CONT_GCP' )
-    lfrot = cfdisl(defico,'FROTTEMENT')
+    l_cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
+    l_cont_cont = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_mesh = l_cont_disc.or.l_cont_cont
+    l_cont_xfem = cfdisl(sdcont_defi,'FORMUL_XFEM')
+    l_cont_gcp  = cfdisl(sdcont_defi,'CONT_GCP' )
+    l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
 !
-! --- ALGORITHME GEOMETRIE
+! - Geometric algorithm
 !
-    if (lctcc) then
-        call getvtx(' ', 'ALGO_RESO_GEOM', scal=algoge, nbret=noc)
-    else if (lxfcm) then
+    if (l_cont_cont) then
+        call getvtx(' ', 'ALGO_RESO_GEOM', scal=algoge)
+    else if (l_cont_xfem) then
         algoge = 'POINT_FIXE'
-    else if (lctcd) then
+    else if (l_cont_disc) then
         algoge = 'POINT_FIXE'
     else
         ASSERT(.false.)
     endif
 !
     if (algoge .eq. 'POINT_FIXE') then
-        zi(jparci+9-1) = 0
+        v_para_i(9) = 0
     else if (algoge.eq.'NEWTON') then
-        zi(jparci+9-1) = 1
+        v_para_i(9) = 1
     else
         ASSERT(.false.)
     endif
 !
-! --- PARAMETRES BOUCLE GEOMETRIQUE
+! - Geometric parameters
 !
     if (algoge .eq. 'POINT_FIXE') then
-        call getvtx(' ', 'REAC_GEOM', scal=reac, nbret=noc)
+        call getvtx(' ', 'REAC_GEOM', scal=reac)
         if (reac .eq. 'SANS') then
-            zi(jparci+1-1) = 0
-            zr(jparcr+1-1) = resige
+            v_para_i(1) = 0
+            v_para_r(1) = resige
         else if (reac .eq. 'AUTOMATIQUE') then
-            zi(jparci+1-1) = -1
-            call getvis(' ', 'ITER_GEOM_MAXI', scal=reacbg, nbret=noc)
-            zi(jparci+6-1) = reacbg
-            call getvr8(' ', 'RESI_GEOM', scal=resige, nbret=noc)
-            zr(jparcr+1-1) = resige
+            v_para_i(1) = -1
+            call getvis(' ', 'ITER_GEOM_MAXI', scal=reacbg)
+            v_para_i(6) = reacbg
+            call getvr8(' ', 'RESI_GEOM', scal=resige)
+            v_para_r(1) = resige
         else if (reac .eq. 'CONTROLE') then
-            call getvis(' ', 'NB_ITER_GEOM', scal=nbreac, nbret=noc)
-            zi(jparci+1-1) = nbreac
-            zr(jparcr+1-1) = resige
+            call getvis(' ', 'NB_ITER_GEOM', scal=nbreac)
+            v_para_i(1) = nbreac
+            v_para_r(1) = resige
         else
             ASSERT(.false.)
         endif
     else if (algoge .eq. 'NEWTON') then
-        call getvr8(' ', 'RESI_GEOM', scal=resige, nbret=noc)
-        zi(jparci+1-1) = 0
-        zr(jparcr+1-1) = resige
+        call getvr8(' ', 'RESI_GEOM', scal=resige)
+        v_para_i(1) = 0
+        v_para_r(1) = resige
     else
         ASSERT(.false.)
     endif
 !
-! --- ALGORITHMES FROTTEMENT
+! - Friction algorithm
 !
-    if (lfrot) then
-        if (lctcc) then
-            call getvtx(' ', 'ALGO_RESO_FROT', scal=algofr, nbret=noc)
-        else if (lxfcm) then
-            if (zi(jparci+1-1) .eq. 0) then
+    if (l_frot) then
+        if (l_cont_cont) then
+            call getvtx(' ', 'ALGO_RESO_FROT', scal=algofr)
+        else if (l_cont_xfem) then
+            if (v_para_i(1) .eq. 0) then
                 algofr = 'POINT_FIXE'
             else
                 algofr = 'NEWTON'
             endif
-        else if (lctcd) then
+        else if (l_cont_disc) then
             algofr = 'POINT_FIXE'
         else
             ASSERT(.false.)
         endif
     endif
 !
-    if (lfrot) then
+    if (l_frot) then
         if (algofr .eq. 'POINT_FIXE') then
-            zi(jparci+28-1) = 0
+            v_para_i(28) = 0
         else if (algofr.eq.'NEWTON') then
-            zi(jparci+28-1) = 1
+            v_para_i(28) = 1
             l_newt_fr = .true.
         else
             ASSERT(.false.)
         endif
     endif
 !
-! --- PARAMETRES BOUCLE FROTTEMENT
+! - Friction parameters
 !
-    if (lfrot) then
-        if (lctcc) then
+    if (l_frot) then
+        if (l_cont_cont) then
             if (algofr .eq. 'POINT_FIXE') then
-                call getvis(' ', 'ITER_FROT_MAXI', scal=reacbs, nbret=noc)
-                zi(jparci+7-1) = reacbs
-                call getvr8(' ', 'RESI_FROT', scal=resifr, nbret=noc)
-                zr(jparcr+2-1) = resifr
+                call getvis(' ', 'ITER_FROT_MAXI', scal=reacbs)
+                v_para_i(7) = reacbs
+                call getvr8(' ', 'RESI_FROT', scal=resifr)
+                v_para_r(2) = resifr
             else
-                call getvr8(' ', 'RESI_FROT', scal=resifr, nbret=noc)
-                zr(jparcr+2-1) = resifr
+                call getvr8(' ', 'RESI_FROT', scal=resifr)
+                v_para_r(2) = resifr
             endif
-        else if (lxfcm) then
-            call getvis(' ', 'ITER_FROT_MAXI', scal=reacbs, nbret=noc)
-            zi(jparci+7-1) = reacbs
-            call getvr8(' ', 'RESI_FROT', scal=resifr, nbret=noc)
-            zr(jparcr+2-1) = resifr
+        else if (l_cont_xfem) then
+            call getvis(' ', 'ITER_FROT_MAXI', scal=reacbs)
+            v_para_i(7) = reacbs
+            call getvr8(' ', 'RESI_FROT', scal=resifr)
+            v_para_r(2) = resifr
         endif
     endif
 !
-! --- ALGORITHME CONTACT
+! - Contact algorithm
 !
-    if (lctcc) then
-        call getvtx(' ', 'ALGO_RESO_CONT', scal=algoco, nbret=noc)
-    else if (lxfcm) then
+    if (l_cont_cont) then
+        call getvtx(' ', 'ALGO_RESO_CONT', scal=algoco)
+    else if (l_cont_xfem) then
         algoco = 'POINT_FIXE'
-    else if (lctcd) then
+    else if (l_cont_disc) then
         algoco = 'POINT_FIXE'
     else
         ASSERT(.false.)
     endif
 !
     if (algoco .eq. 'POINT_FIXE') then
-        zi(jparci+27-1) = 0
+        v_para_i(27) = 0
     else if (algoco.eq.'NEWTON') then
-        zi(jparci+27-1) = 1
+        v_para_i(27) = 1
     else
         ASSERT(.false.)
     endif
 !
-! --- PARAMETRES BOUCLE CONTACT
+! - Contact parameters
 !
     if (algoco .eq. 'POINT_FIXE') then
-        if (lxfcm .or. lctcc) then
-            call getvis(' ', 'ITER_CONT_MULT', scal=reacca, nbret=noc)
-            call getvtx(' ', 'ITER_CONT_TYPE', scal=typcon, nbret=noc)
+        if (l_cont_xfem .or. l_cont_cont) then
+            call getvis(' ', 'ITER_CONT_MULT', scal=reacca)
+            call getvtx(' ', 'ITER_CONT_TYPE', scal=typcon)
             if (typcon .eq. 'MULT') then
                 reacca = 4
-                call getvis(' ', 'ITER_CONT_MULT', scal=reacca, nbret=noc)
-                zi(jparci+5-1) = reacca
-                zi(jparci+10-1) = -1
+                call getvis(' ', 'ITER_CONT_MULT', scal=reacca)
+                v_para_i(5)  = reacca
+                v_para_i(10) = -1
             else if (typcon.eq.'MAXI') then
                 reacca = 30
-                call getvis(' ', 'ITER_CONT_MAXI', scal=reacca, nbret=noc)
-                zi(jparci+10-1) = reacca
-                zi(jparci+5-1) = -1
+                call getvis(' ', 'ITER_CONT_MAXI', scal=reacca)
+                v_para_i(10) = reacca
+                v_para_i(5)  = -1
             else
                 ASSERT(.false.)
             endif
-        else if (lctcd) then
-            call getvis(' ', 'ITER_CONT_MULT', scal=reacca, nbret=noc)
-            zi(jparci+5-1) = reacca
-            zi(jparci+10-1) = -1
+        else if (l_cont_disc) then
+            call getvis(' ', 'ITER_CONT_MULT', scal=reacca)
+            v_para_i(5)  = reacca
+            v_para_i(10) = -1
         else
             ASSERT(.false.)
         endif
     else if (algoco.eq.'NEWTON') then
-! PAS DE PARAMETRES
+! ----- No parameters
     else
         ASSERT(.false.)
     endif
 !
+! - Discrete formulation
 !
-! --- FORMULATION DISCRETE
-!
-    if (lctcd) then
-! ---   ARRET OU PAS SI MATRICE DE CONTACT SINGULIERE
-        call getvtx(' ', 'STOP_SINGULIER', scal=isto, nbret=noc)
+    if (l_cont_disc) then
+        call getvtx(' ', 'STOP_SINGULIER', scal=isto)
         if (isto .eq. 'OUI') then
-            zi(jparci+2-1) = 0
+            v_para_i(2) = 0
         else if (isto .eq. 'NON') then
-            zi(jparci+2-1) = 1
+            v_para_i(2) = 1
         else
             ASSERT(.false.)
         endif
-! ---   NOMBRE DE PAQUETS POUR LA RESOLUTION DES SYSTEMES LINEAIRES
-        call getvis(' ', 'NB_RESOL', scal=lgbloc, nbret=noc)
-        zi(jparci+3-1) = lgbloc
 !
-! --- PARAMETRE GCP
-!
-        if (lgcp) then
+        call getvis(' ', 'NB_RESOL', scal=lgbloc)
+        v_para_i(3) = lgbloc
+! 
+        if (l_cont_gcp) then
             call getvr8(' ', 'RESI_ABSO', scal=precis, nbret=noc)
             if (noc .eq. 0) then
                 call utmess('F', 'CONTACT_4')
             endif
-            zr(jparcr+4-1) = precis
+            v_para_r(4) = precis
 !
-! ---     NON UTILISE
-            zi(jparci+11-1) = 0
+            call getvis(' ', 'ITER_GCP_MAXI', scal=gcpmax)
+            v_para_i(12) = gcpmax
 !
-            call getvis(' ', 'ITER_GCP_MAXI', scal=gcpmax, nbret=noc)
-            zi(jparci+12-1) = gcpmax
-!
-            call getvtx(' ', 'PRE_COND', scal=prec, nbret=noc)
+            call getvtx(' ', 'PRE_COND', scal=prec)
             if (prec .eq. 'SANS') then
-                zi(jparci+13-1) = 0
+                v_para_i(13) = 0
             else if (prec.eq.'DIRICHLET') then
-                zi(jparci+13-1) = 1
-                call getvr8(' ', 'COEF_RESI', scal=coefrs, nbret=noc)
-                zr(jparcr+5-1) = coefrs
-                call getvis(' ', 'ITER_PRE_MAXI', scal=premax, nbret=noc)
-                zi(jparci+14-1) = premax
+                v_para_i(13) = 1
+                call getvr8(' ', 'COEF_RESI', scal=coefrs)
+                v_para_r(5)  = coefrs
+                call getvis(' ', 'ITER_PRE_MAXI', scal=premax)
+                v_para_i(14) = premax
             else
                 ASSERT(.false.)
             endif
 !
-            call getvtx(' ', 'RECH_LINEAIRE', scal=rech, nbret=noc)
+            call getvtx(' ', 'RECH_LINEAIRE', scal=rech)
             if (rech .eq. 'ADMISSIBLE') then
-                zi(jparci+15-1) = 0
+                v_para_i(15) = 0
             else if (rech.eq.'NON_ADMISSIBLE') then
-                zi(jparci+15-1) = 1
+                v_para_i(15) = 1
             else
                 ASSERT(.false.)
             endif
         endif
     endif
 !
-! --- LISSAGE
+! - Smoothing
 !
-    if (lmail) then
-        call getvtx(' ', 'LISSAGE', scal=lissa, nbret=noc)
+    if (l_cont_mesh) then
+        call getvtx(' ', 'LISSAGE', scal=lissa)
         if (lissa(1:3) .eq. 'NON') then
-            zi(jparci+19-1) = 0
+            v_para_i(19) = 0
         else if (lissa(1:3) .eq. 'OUI') then
-            zi(jparci+19-1) = 1
+            v_para_i(19) = 1
         else
             ASSERT(.false.)
         endif
@@ -316,25 +310,38 @@ subroutine cazocp(char)
 !
 ! - Auto-adaptation 
 !
-    if (l_newt_fr .and. lctcc) then
-        call getvtx(' ', 'ADAPT_COEF', scal=coef_adap, nbret=noc)
+    if (l_newt_fr .and. l_cont_cont) then
+        call getvtx(' ', 'ADAPT_COEF', scal=coef_adap)
         if (coef_adap .eq. 'NON') then
-            zi(jparci+20-1) = 0
+            v_para_i(20) = 0
         else if (coef_adap .eq. 'OUI') then
-            zi(jparci+20-1) = 1
+            v_para_i(20) = 1
         else
             ASSERT(.false.)
         endif
     endif
 !
-! --- METHODE VERIF
+! - XFEM formulation
 !
-    if (lmail) then
-        call getvtx(' ', 'STOP_INTERP', scal=isto, nbret=noc)
+    if (l_cont_xfem) then
+        call getvtx(' ', 'ELIM_ARETE', scal=elim_edge)
+        if (elim_edge .eq. 'DUAL') then
+            v_para_i(29) = 0
+        else if (elim_edge .eq. 'ELIM') then
+            v_para_i(29) = 1
+        else
+            ASSERT(.false.)
+        endif
+    endif
+!
+! - Verification method
+!
+    if (l_cont_mesh) then
+        call getvtx(' ', 'STOP_INTERP', scal=isto)
         if (isto .eq. 'OUI') then
-            zi(jparci+25-1) = 1
+            v_para_i(25) = 1
         else if (isto.eq.'NON') then
-            zi(jparci+25-1) = 0
+            v_para_i(25) = 0
         else
             ASSERT(.false.)
         endif

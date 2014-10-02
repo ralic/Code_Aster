@@ -170,6 +170,10 @@ function cfdisi(deficz, questz)
         call jeveuo(paraci, 'L', jparci)
         cfdisi = zi(jparci+28-1)
 !
+    else if (questi.eq.'ELIM_ARETE_TYPE') then
+        call jeveuo(paraci, 'L', jparci)
+        cfdisi = zi(jparci+29-1)
+!
     else if (questi.eq.'ALGO_RESO_GEOM') then
         call jeveuo(paraci, 'L', jparci)
         cfdisi = zi(jparci+9-1)

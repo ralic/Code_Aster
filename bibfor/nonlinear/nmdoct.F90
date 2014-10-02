@@ -80,7 +80,7 @@ implicit none
     character(len=24) :: lload_info
     character(len=8) :: load_name, load_func, func_const
     real(kind=8) :: coef
-    aster_logical :: l_cont_xfem_gg, l_cont_cont, l_cont_xfem, l_cont_disc
+    aster_logical :: l_cont_xfem_gg, l_cont_cont, l_cont_xfem, l_cont_disc, l_edge_elim
     character(len=8), pointer :: load_type(:) => null()
     integer, pointer :: v_load_info(:) => null()
 !
@@ -131,6 +131,7 @@ implicit none
     else
         l_cont = .true.
     endif
+    l_edge_elim    = cfdisl(sdcont_defi,'ELIM_ARETE')
     l_cont_xfem_gg = cfdisl(sdcont_defi,'CONT_XFEM_GG')
     l_cont_disc    = iform.eq.1 
     l_cont_cont    = iform.eq.2 
@@ -181,14 +182,15 @@ implicit none
 ! -- Contact - XFEM: list of linear relations
 !
     if (l_cont_xfem) then
-! <XZX> Lignes suivantes: relations lineaires
-!        ligrel_link = load_cont(1:8)
-!        call jeexin(ligrel_link//'.CHME.LIGRE.LGRF', rel_lin_xfem)
-!        if (rel_lin_xfem .ne. 0) then
-!            nb_load_new = nb_load_new+1
-!        endif
-! <XZX> Lignes suivantes: elimination
-        call xrela_elim(mesh, sdcont_defi, sd_iden_rela)
+        if (l_edge_elim) then
+            call xrela_elim(mesh, sdcont_defi, sd_iden_rela)
+        else
+            ligrel_link = load_cont(1:8)
+            call jeexin(ligrel_link//'.CHME.LIGRE.LGRF', rel_lin_xfem)
+            if (rel_lin_xfem .ne. 0) then
+                nb_load_new = nb_load_new+1
+            endif
+        endif
     endif
 !
 ! - Add LIGREL to list of loads

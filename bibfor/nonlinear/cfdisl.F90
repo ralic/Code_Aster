@@ -120,6 +120,9 @@ function cfdisl(deficz, questz)
     else if (questi .eq.'STOP_INTERP') then
         cfdisl = cfdisi(defico,'STOP_INTERP').eq.1
 !
+    else if (questi .eq.'ELIM_ARETE') then
+        cfdisl = cfdisi(defico,'ELIM_ARETE_TYPE').eq.1
+!
     else if (questi .eq.'FORMUL_MAILLEE') then
         iform = cfdisi(defico,'FORMULATION')
         cfdisl = (iform.eq.1).or.(iform.eq.2)

@@ -2,7 +2,9 @@ subroutine xfem_rel_lin(sdcont, mesh, model, nb_dim)
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/aflrch.h"
+#include "asterfort/cfdisl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
@@ -36,7 +38,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! XFEM
+! XFEM - Contact
 !
 ! Linear relation between contact unknows for LBB condition
 !
@@ -57,6 +59,7 @@ implicit none
     character(len=24) :: sdcont_defi, sdline
     character(len=19) :: list_rela_line
     character(len=14) :: sdline_crack
+    aster_logical :: l_edge_elim
     integer, pointer :: v_crack_nb(:) => null()
     character(len=24), pointer :: v_sdline(:) => null()
 !
@@ -69,6 +72,7 @@ implicit none
     sdcont_defi    = sdcont(1:8)//'.CONTACT'
     list_rela_line = '&&CAXFEM.RLISTE'
     nb_rela_line   = 0
+    l_edge_elim    = cfdisl(sdcont_defi,'ELIM_ARETE')
 !
 ! - Access to cracks datastructure
 !
@@ -95,8 +99,9 @@ implicit none
 !
     if (nb_edge .ne. 0) then
         call utmess('I','XFEM2_4', si = nb_edge)
-! <XZX> Mettre la ligne suivante en commentaire pour ne pas activer les relations lineaires
-!        call aflrch(list_rela_line, sdcont)
+        if (.not.l_edge_elim) then
+            call aflrch(list_rela_line, sdcont)
+        endif
     endif
 !
     call jedema()
