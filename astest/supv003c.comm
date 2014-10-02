@@ -73,7 +73,7 @@ def execute(err_on, wait_on):
     """Main"""
     import time
     from random import random
-    rank, size = aster_core.mpi_info()
+    rank, size = aster_core.MPI_CommRankSize()
     ts = MAXSLEEP * random()
     if rank in wait_on:
         # must be greater than 20% of the remaining time (=time limit)
