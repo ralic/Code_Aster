@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-18 11:14+0200\n"
-"PO-Revision-Date: 2014-09-18 05:12-0400\n"
+"POT-Creation-Date: 2014-10-02 14:50+0200\n"
+"PO-Revision-Date: 2014-09-25 14:58-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Czech\n"
 "Language: cs_CZ\n"
@@ -62,2110 +62,2523 @@ msgid "affaiblissement relatif de raideur en membrane en traction"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:33
-msgid "contrainte de rupture par amorçage,"
+msgid "afm"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:34
-msgid "écrouissage cinématique non linéaire variable interne 2  composante XX"
+msgid "aft"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:35
-msgid "écrouissage cinématique non linéaire variable interne 2  composante XY"
+msgid "contrainte de rupture par amorçage,"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:36
-msgid "écrouissage cinématique non linéaire variable interne 2  composante XZ"
+msgid "alu fixes  reversible"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:37
-msgid "écrouissage cinématique non linéaire variable interne 2  composante YY"
+msgid "alu libre"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:38
-msgid "écrouissage cinématique non linéaire variable interne 2  composante YZ"
+msgid "écrouissage cinématique non linéaire variable interne 2  composante XX"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:39
-msgid "écrouissage cinématique non linéaire variable interne 2  composante ZZ"
+msgid "écrouissage cinématique non linéaire variable interne 2  composante XY"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:40
-msgid "écrouissage cinématique non linéaire variable interne 1  composante XX"
+msgid "écrouissage cinématique non linéaire variable interne 2  composante XZ"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:41
-msgid "écrouissage cinématique non linéaire variable interne 1  composante XY"
+msgid "écrouissage cinématique non linéaire variable interne 2  composante YY"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:42
-msgid "écrouissage cinématique non linéaire variable interne 1  composante XZ"
+msgid "écrouissage cinématique non linéaire variable interne 2  composante YZ"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:43
-msgid "écrouissage cinématique non linéaire variable interne 1  composante YY"
+msgid "écrouissage cinématique non linéaire variable interne 2  composante ZZ"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:44
-msgid "écrouissage cinématique non linéaire variable interne 1  composante YZ"
+msgid "écrouissage cinématique non linéaire variable interne 1  composante XX"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:45
-msgid "écrouissage cinématique non linéaire variable interne 1  composante ZZ"
+msgid "écrouissage cinématique non linéaire variable interne 1  composante XY"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:46
-msgid "GLRC_DAMAGE : angle d'orthotropie 1"
+msgid "écrouissage cinématique non linéaire variable interne 1  composante XZ"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:47
-msgid "GLRC_DAMAGE : angle d'orthotropie 2"
+msgid "écrouissage cinématique non linéaire variable interne 1  composante YY"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:48
-msgid "GLRC_DAMAGE : angle d'orthotropie 3"
+msgid "écrouissage cinématique non linéaire variable interne 1  composante YZ"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:49
-msgid "angle du seuil déviatoire (CJS)"
+msgid "écrouissage cinématique non linéaire variable interne 1  composante ZZ"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:50
-msgid "BETON_RAG : avancement de la réaction"
+msgid "GLRC_DAMAGE : angle d'orthotropie 1"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:51
-msgid "assemblage cornière, variable interne 1"
+msgid "GLRC_DAMAGE : angle d'orthotropie 2"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:52
-msgid "assemblage cornière, variable interne 2"
+msgid "GLRC_DAMAGE : angle d'orthotropie 3"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:53
-msgid "assemblage cornière, variable interne 3"
+msgid "angle du seuil déviatoire (CJS)"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:54
-msgid "assemblage cornière, variable interne 4"
+msgid "BETON_RAG : avancement de la réaction"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:55
-msgid "assemblage cornière, variable interne 5"
+msgid "assemblage cornière, variable interne 1"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:56
-msgid "assemblage cornière, variable interne 6"
+msgid "assemblage cornière, variable interne 2"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:57
-msgid "assemblage cornière, variable interne 7"
+msgid "assemblage cornière, variable interne 3"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:58
-msgid "BETON_RAG : Endommagement macroscopique en compression"
+msgid "assemblage cornière, variable interne 4"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:59
-msgid ""
-"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
-"composante 1"
+msgid "assemblage cornière, variable interne 5"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:60
-msgid ""
-"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
-"composante 2"
+msgid "assemblage cornière, variable interne 6"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:61
-msgid ""
-"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
-"composante 3"
+msgid "assemblage cornière, variable interne 7"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:62
-msgid ""
-"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
-"composante 4"
+msgid "BETON_RAG : Endommagement macroscopique en compression"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:63
 msgid ""
 "BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
-"composante 5"
+"composante 1"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:64
 msgid ""
 "BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
-"composante 6"
+"composante 2"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:65
-msgid "cohésion"
+msgid ""
+"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
+"composante 3"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:66
-msgid "itération de Newton courante,"
+msgid ""
+"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
+"composante 4"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:67
-msgid "itération de Newton de rupture,"
+msgid ""
+"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
+"composante 5"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:68
-msgid "Critère en contrainte, utilisé en Génie Civil"
+msgid ""
+"BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  "
+"composante 6"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:69
-msgid "Critère en déformation, utilisé en Génie Civil"
+msgid "calcium libre"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:70
+msgid "C-A-S-H"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:71
+msgid "coeff de consolidation fin de pas"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:72
+msgid "cohésion"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:73
+msgid "itération de Newton courante,"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:74
+msgid "itération de Newton de rupture,"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:75
+msgid "Critère en contrainte, utilisé en Génie Civil"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:76
+msgid "Critère en déformation, utilisé en Génie Civil"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:77
 msgid ""
 "Critère de Hill : pour Hujeux : densité normalisée pour le travail du second "
 "ordre"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:71
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:78
 msgid "Critère de rupture pour CRIT_RUPT"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:72
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:79
+msgid "CSH"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:80
+msgid "CSH capable de fixer les alu reversibles"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:81
 msgid "c_plan ou 1d algo Deborst, variable interne 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:73
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:82
 msgid "c_plan ou 1d algo Deborst, variable interne 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:74
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:83
 msgid "c_plan ou 1d algo Deborst, variable interne 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:75
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:84
 msgid "c_plan ou 1d algo Deborst, variable interne 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:76
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:85
+msgid "endommagement de compression"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:86
 msgid "Vitesse de dissipation mécanique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:77
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:87
 msgid ""
 "JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de "
 "départ, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:78
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:88
 msgid ""
 "JOINT_MECA_FROT  déplacement tangentiel plastique par rapport au point de "
 "départ, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:79
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:89
 msgid "PINTO-MENEGOTTO V5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:80
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:90
 msgid "incrément de déformation plastique équivalente"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:81
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:91
 msgid "Hujeux : déterminant de la matrice tangente"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:82
-msgid "Incrément de temps"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:83
-msgid "éléments discrets, variable interne 1"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:84
-msgid "éléments discrets, variable interne 10"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:85
-msgid "éléments discrets, variable interne 11"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:86
-msgid "éléments discrets, variable interne 12"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:87
-msgid "éléments discrets, variable interne 13"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:88
-msgid "éléments discrets, variable interne 14"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:89
-msgid "éléments discrets, variable interne 15"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:90
-msgid "éléments discrets, variable interne 16"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:91
-msgid "éléments discrets, variable interne 17"
-msgstr ""
-
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:92
-msgid "éléments discrets, variable interne 18"
+msgid "endommagement de fluage"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:93
-msgid "éléments discrets, variable interne 2"
-msgstr ""
-
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:94
-msgid "éléments discrets, variable interne 3"
-msgstr ""
-
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:95
-msgid "éléments discrets, variable interne 4"
+msgid "endommagement principaux induit par la def plast de gel"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:96
-msgid "éléments discrets, variable interne 5"
+msgid "Incrément de temps"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:97
-msgid "éléments discrets, variable interne 6"
+msgid "éléments discrets, variable interne 1"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:98
-msgid "éléments discrets, variable interne 7"
+msgid "éléments discrets, variable interne 10"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:99
-msgid "éléments discrets, variable interne 8"
+msgid "éléments discrets, variable interne 11"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:100
-msgid "éléments discrets, variable interne 9"
+msgid "éléments discrets, variable interne 12"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:101
-msgid "dissipation d'endommagement"
+msgid "éléments discrets, variable interne 13"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:102
-msgid "dissipation plastique"
+msgid "éléments discrets, variable interne 14"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:103
-msgid "dissipation de glissement"
+msgid "éléments discrets, variable interne 15"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:104
-msgid "dissipation Thermodynamique"
+msgid "éléments discrets, variable interne 16"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:105
-msgid "CJS distance normalisée au seuil déviatoire"
+msgid "éléments discrets, variable interne 17"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:106
-msgid "CJS distance normalisée au seuil isotrope"
+msgid "éléments discrets, variable interne 18"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:107
-msgid "LETK : domaine de comportement de la roche"
+msgid "éléments discrets, variable interne 2"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:108
-msgid "Laigle : domaine de comportement de la roche"
+msgid "éléments discrets, variable interne 3"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:109
-msgid "LIQU_AD_GAZ v1"
+msgid "éléments discrets, variable interne 4"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:110
-msgid "LIQU_AD_GAZ v2"
+msgid "éléments discrets, variable interne 5"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:111
-msgid "valeur maximale de la différence déplacement local-déplacement limite"
+msgid "éléments discrets, variable interne 6"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:112
-msgid "énergie bloquée"
+msgid "éléments discrets, variable interne 7"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:113
-msgid "énergie dissipée pour CRIT_RUPT"
+msgid "éléments discrets, variable interne 8"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:114
-msgid "énergie dissipée cumulée à chaque pas pour CRIT_RUPT"
+msgid "éléments discrets, variable interne 9"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:115
+msgid "dissipation d'endommagement"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:116
+msgid "dissipation plastique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:117
+msgid "dissipation de glissement"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:118
+msgid "dissipation Thermodynamique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:119
+msgid "CJS distance normalisée au seuil déviatoire"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:120
+msgid "CJS distance normalisée au seuil isotrope"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:121
+msgid "LETK : domaine de comportement de la roche"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:122
+msgid "Laigle : domaine de comportement de la roche"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:123
+msgid "LIQU_AD_GAZ v1"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:124
+msgid "LIQU_AD_GAZ v2"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:125
+msgid "endommagement thermique isotrope"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:126
+msgid "endommagement thermique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:129
+msgid "densite de fissuration diffuse de traction"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:130
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:132
+msgid "endommagement principaux localises pour Poisson"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:133
+msgid "valeur maximale de la différence déplacement local-déplacement limite"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:134
+msgid "variation de volume cumulee"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:135
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:137
+msgid "endommagements principaux induits par la def plastique hydrique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:138
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:150
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:546
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:553
+msgid "variables internes pour le fluage direction 1"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:139
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:145
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:151
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:547
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:554
+msgid "variables internes pour le fluage direction 2"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:146
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:152
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:548
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:555
+msgid "variables internes pour le fluage direction 3"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:141
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:147
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:549
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:556
+msgid "variables internes pour le fluage direction 4"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:142
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:154
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:550
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:557
+msgid "variables internes pour le fluage direction 5"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:143
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:155
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:551
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:558
+msgid "variables internes pour le fluage direction 6"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:156
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:158
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:552
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:559
+msgid "variables internes pour le fluage spherique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:159
+msgid "énergie bloquée"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:160
+msgid "énergie dissipée pour CRIT_RUPT"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:161
+msgid "énergie dissipée cumulée à chaque pas pour CRIT_RUPT"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:162
 msgid ""
 "JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement "
 "en mode 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:116
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:163
 msgid ""
 "JOINT_BA : variable scalaire de l'écrouissage isotrope pour l'endommagement "
 "en mode 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:117
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:164
 msgid ""
 "JOINT_BA : valeur de l'écrouissage cinématique par frottement des fissures"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:118
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:165
 msgid "Variable d'écrouissage isotrope"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:119
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:125
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:172
 msgid "déformation seuil déviatorique irréversible, composante 11"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:120
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:167
 msgid "déformation seuil déviatorique irréversible, composante 12"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:121
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:168
 msgid "déformation seuil déviatorique irréversible, composante 13"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:122
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:169
 msgid "déformation seuil déviatorique irréversible, composante 22"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:123
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:170
 msgid "déformation seuil déviatorique irréversible, composante 23"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:124
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:171
 msgid "déformation seuil déviatorique irréversible, composante 33"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:126
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:173
 msgid "déformation seuil déviatorique réversible, composante 12"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:174
 msgid "déformation seuil déviatorique réversible, composante 13"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:175
 msgid "déformation seuil déviatorique réversible, composante 22"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:129
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:176
 msgid "déformation seuil déviatorique réversible, composante 23"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:130
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:177
 msgid "déformation seuil déviatorique réversible, composante 33"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:178
 msgid "déformation déviatorique irréversible, composante 11"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:132
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:179
 msgid "déformation déviatorique irréversible, composante 12"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:133
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:180
 msgid "déformation déviatorique irréversible, composante 31"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:134
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:181
 msgid "déformation déviatorique irréversible, composante 22"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:135
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:182
 msgid "déformation déviatorique irréversible, composante 23"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:183
 msgid "déformation déviatorique irréversible, composante 33"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:137
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:184
 msgid "déformation équivalente irréversible maximale"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:138
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:185
 msgid "déformation déviatorique réversible, composante 11"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:139
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:186
 msgid "déformation déviatorique réversible, composante 12"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:187
 msgid "déformation déviatorique réversible, composante 31"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:141
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:188
 msgid "déformation déviatorique réversible, composante 22"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:142
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:189
 msgid "déformation déviatorique réversible, composante 23"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:143
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:190
 msgid "déformation déviatorique réversible, composante 33"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:191
 msgid "retrait de dessiccation, composante 11"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:145
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:192
 msgid "retrait de dessiccation, composante 12"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:146
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:193
 msgid "retrait de dessiccation, composante 31"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:147
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:194
 msgid "retrait de dessiccation, composante 22"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:195
 msgid "retrait de dessiccation, composante 23"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:196
 msgid "retrait de dessiccation, composante 33"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:150
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:151
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:198
 msgid "déformation sphérique irréversible"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:152
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:199
 msgid "numéro de l'élément pointé numéro 1,"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:200
 msgid "numéro de l'élément pointé numéro 2 (quand amorçage),"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:154
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:201
 msgid "endommagement scalaire"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:155
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:202
 msgid "BETON_RAG : Endommagement intrinsèque de compression"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:156
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:203
 msgid "endommagement scalaire en compression"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:204
 msgid "variable d'endommagement pour la flexion négative"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:158
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:205
 msgid "variable d'endommagement pour la flexion positive"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:159
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:206
 msgid "variable d'endommagement pour la moitié supérieure de la plaque"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:160
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:207
 msgid "variable d'endommagement pour la moitié inférieure de la plaque"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:161
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:208
 msgid "endommagement normal"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:162
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:209
 msgid "rigidité résiduelle"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:163
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:210
 msgid "endommagement tangentiel"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:164
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:211
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:165
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:212
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:213
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:167
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:214
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:168
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:215
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:169
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:216
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:170
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:217
 msgid "tenseur endommagement, direction XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:171
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:218
 msgid "tenseur endommagement, direction XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:172
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:219
 msgid "tenseur endommagement, direction XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:173
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:220
 msgid "tenseur endommagement, direction YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:174
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:221
 msgid "tenseur endommagement, direction YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:175
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:222
 msgid "tenseur endommagement, direction ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:176
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:223
 msgid "énegie résiduelle"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:177
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:224
 msgid "épaisseur du joint clavé"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:178
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:225
+msgid "deformation equivalente de fluage"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:226
 msgid "déformation plastique équivalente d'irradiation"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:179
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:227
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:228
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:230
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:231
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:232
+msgid "deformation plastique due au gel"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:233
 msgid "déformation équivalente, au sens de Mazars"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:180
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:234
 msgid "déformation de compression équivalente, au sens de Mazars"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:181
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:235
 msgid "déformation de traction équivalente, au sens de Mazars"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:236
 msgid "déformation élastique composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:183
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:237
 msgid "déformation élastique composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:184
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:238
 msgid "déformation élastique composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:185
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:239
 msgid "déformation élastique composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:186
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:240
 msgid "déformation élastique composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:187
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:241
 msgid "déformation élastique composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:242
 msgid "déformation de grandissement."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:189
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:243
 msgid " Pinto-Menegotto, déformation totale"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:190
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:244
 msgid "GLRC_DAMAGE : extension membranaire plastique 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:191
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:245
 msgid "GLRC_DAMAGE : extension membranaire plastique 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:192
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:246
 msgid "GLRC_DAMAGE : extension membranaire plastique 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:193
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:247
 msgid "déformation plastique équivalente (déviatorique)  cumulée"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:194
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:248
 msgid ""
 "déformation plastique équivalente (déviatorique)  cumulée en compression"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:195
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:249
 msgid "déformation plastique équivalente (déviatorique)  cumulée en traction"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:196
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:250
 msgid "Vitesse de déformation plastique mécanique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:251
 msgid "déformation plastique équivalente volumique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:198
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:252
 msgid "déformation plastique composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:199
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:253
 msgid "déformation plastique composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:200
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:254
 msgid "déformation plastique composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:201
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:255
 msgid "déformation plastique composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:202
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:256
 msgid "déformation plastique composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:203
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:257
 msgid "déformation plastique composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:204
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:258
 msgid "déformation élastique endommagée composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:259
 msgid "déformation élastique endommagée composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:206
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:260
 msgid "déformation élastique endommagée composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:207
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:261
 msgid "déformation élastique endommagée composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:208
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:262
 msgid "déformation élastique endommagée composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:263
 msgid "déformation élastique endommagée composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:210
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:264
 msgid "déformation du cycle actuel, Pinto-Menegotto"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:265
 msgid "déformation du cycle précédent  Pinto-Menegotto"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:212
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:266
+msgid "indicateur d erreur sur la taille des mailles"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:267
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:268
 msgid "Déformation sphérique réversible"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:214
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:215
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:269
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:270
 msgid "BETON_RAG : déformation seuil viscoplastique sphérique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:216
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:271
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:272
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:273
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:276
+msgid ""
+"deformation visco elastique due aux contraintes de traction dans la zone "
+"endommagee"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:277
 msgid "BETON_RAG : déformation  viscoplastique composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:217
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:278
 msgid "BETON_RAG : déformation  viscoplastique composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:218
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:279
 msgid "BETON_RAG : déformation  viscoplastique composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:219
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:280
 msgid "BETON_RAG : déformation  viscoplastique composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:220
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:281
 msgid "BETON_RAG : déformation  viscoplastique composante 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:282
 msgid "BETON_RAG : déformation  viscoplastique composante 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:222
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:223
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:224
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:283
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:285
 msgid "Hujeux : facteur de mobilisation du mécanisme déviatoire cyclique, k= 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:286
 msgid "Hujeux : facteur de mobilisation du mécanisme déviatoire monotone, k= 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:226
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:287
 msgid "Hujeux : facteur de mobilisation du mécanisme déviatoire monotone, k= 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:227
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:288
 msgid "Hujeux : facteur de mobilisation du mécanisme déviatoire monotone, k= 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:228
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:289
 msgid "Hujeux : facteur de mobilisation du mécanisme de consolidation cyclique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:290
 msgid "Hujeux : facteur de mobilisation du mécanisme de consolidation monotone"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:230
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:291
 msgid "Force"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:231
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:292
 msgid "flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:232
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:293
 msgid "flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:294
 msgid "flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:234
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:295
 msgid "fraction volumique de porosité"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:235
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:296
 msgid ""
 "le paramètre d'écrouissage correspondant à la déformation irréversible "
 "majeure."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:297
 msgid "LETK : déformation déviatorique plastique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:237
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:298
 msgid "LETK : déformation déviatorique viscoplastique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:238
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:299
 msgid "GAZ : v1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:239
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:300
 msgid ""
 "JOINT_BA : déformation de glissement cumulée par frottement des fissures"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:240
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:301
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon X dans la "
 "partie inférieure de la plaque"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:241
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:302
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon X dans la "
 "partie supérieure de la plaque"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:242
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:303
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon Y dans la "
 "partie inférieure de la plaque"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:243
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:304
 msgid ""
 "DHRC : déformation de glissement le long des aciers orientés selon Y dans la "
 "partie supérieure de la plaque"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:244
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:305
 msgid "gonflement"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:245
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:306
 msgid "elas_poutre_GR v1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:246
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:307
 msgid "elas_poutre_GR v2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:247
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:308
 msgid "elas_poutre_GR v3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:248
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:309
 msgid ""
 "gradient de pression dans le repère global ( xxx_JOINT_HYME)  Composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:249
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:310
 msgid ""
 "gradient de pression dans le repère global ( xxx_JOINT_HYME)  Composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:250
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:311
 msgid ""
 "gradient de pression dans le repère global ( xxx_JOINT_HYME)  Composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:251
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:312
 msgid "Hayhurst : variable d'écrouissage H1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:313
 msgid "Hayhurst : variable d'écrouissage H2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:253
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:314
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "1, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:254
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:315
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "1, composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:316
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "1, composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:256
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:317
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "2, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:257
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:318
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "2, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:258
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:319
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "2, composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:259
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:320
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "2, composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:260
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:321
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "3, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:261
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:322
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "3, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:262
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:323
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "3, composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:263
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:324
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "3, composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:264
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:325
 msgid "Hujeux : variable mémoratrice discontinue du mécanisme de consolidation"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:265
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:326
 msgid ""
 "Hujeux : variable mémoratrice discontinue de normale à la surface de charge "
 "du mécanisme de consolidation"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:266
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:327
 msgid "Hujeux : Indicateur d'état des mécanismes actifs après convergence"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:267
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:328
 msgid ""
 "Hujeux : variable mémoratrice pour le mécanisme déviatoire cyclique du plan "
 "1, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:268
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:329
+msgid "degre d hydratation"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:330
+msgid "degres d hydratation moyen"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:331
 msgid "HYDR : v1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:269
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:332
 msgid "HYDRENDO : v1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:333
 msgid "HYDR_UTIL : v1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:271
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:334
+msgid "indice de degrdation des ppte de trsport au jeune age"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:335
 msgid "JOINT_MECA_FROT : indicateur d'ouverture complète =0 fermé, =1 ouvert"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:272
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:336
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, "
 "composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:273
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:337
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, "
 "composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:338
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, "
 "composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:339
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes cycliques, "
 "composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:276
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:340
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou "
 "de passage au cyclique, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:277
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:341
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou "
 "de passage au cyclique, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:278
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:342
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou "
 "de passage au cyclique, composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:279
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:343
 msgid ""
 "Hujeux : indicateur d'activation (1) ou non (0) des mécanismes monotones ou "
 "de passage au cyclique, composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:280
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:344
 msgid ""
 "LETK : indicateur de la position de l'etat de contrainte par rapport aux "
 "seuils viscoplastiques"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:281
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:345
 msgid "LETK : indicateur de contractance ou de dilatance"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:282
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:346
 msgid " Pinto-Menegotto, indicateur d'activation du comportement cyclique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:283
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:347
 msgid ""
 "Indicateur de dissipation =0 si régime linéaire, =1 si régime dissipatif."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:348
 msgid "indicateur d'endommagement pour la flexion positive"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:285
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:349
 msgid "indicateur d'endommagement pour la flexion négative"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:286
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:350
 msgid "indicateur d'endommagement"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:287
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:351
 msgid "indicateur d'endommagement normal =0 sain, =1 endommagé, =2 cassé"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:288
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:352
 msgid "indicateur d'endommagement tangentiel =0 sain, =1 endommagé, =2 cassé"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:289
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:353
 msgid "indicateur de flambement"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:290
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:354
 msgid "indicateur d'irréversibilité hydrique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:291
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:355
 msgid ""
 "indicateur de plasticité en compression  (0 : seuil non atteint, 1 ou > 1 : "
 "seuil atteint)"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:292
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:356
 msgid ""
 "indicateur de plasticité (0 : seuil non atteint, 1 ou > 1 : seuil atteint)"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:357
 msgid ""
 "indicateur de plasticité en traction  (0 : seuil non atteint, 1 ou > 1 : "
 "seuil atteint)"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:294
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:358
 msgid "indice des vides"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:295
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:359
 msgid "indicateur de viscoplasticité"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:296
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:360
 msgid "irradiation"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:361
+msgid "indicateur de passage du pic de la loi de traction"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:362
 msgid "mémorisation de l'historique d'irradiation (fluence),"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:298
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:363
 msgid "Beton_umlv_fp : v21"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:299
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:364
 msgid "GLRC_DAMAGE : courbure plastique 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:300
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:365
 msgid "GLRC_DAMAGE : courbure plastique 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:366
 msgid "GLRC_DAMAGE : courbure plastique 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:302
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:367
 msgid "tenseur de rappel pour l'effet de mémoire, composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:303
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:368
 msgid "tenseur de rappel pour l'effet de mémoire, composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:304
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:369
 msgid "tenseur de rappel pour l'effet de mémoire, composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:305
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:370
 msgid "tenseur de rappel pour l'effet de mémoire, composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:306
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:371
 msgid "tenseur de rappel pour l'effet de mémoire, composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:307
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:372
 msgid "tenseur de rappel pour l'effet de mémoire, composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:308
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:373
 msgid ""
 "JOINT_MECA_FROT : paramètre croissant indiquant le déplacement tangentiel "
 "plastique cumulé (sans orientation)."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:374
 msgid "LIQADGV1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:310
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:375
 msgid "LIQADGV2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:311
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:376
 msgid "LIQADGV3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:312
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:377
 msgid "LIQGATM1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:378
 msgid "LIQGATM2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:314
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:379
 msgid "LIQGAZ1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:315
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:380
 msgid "LIQGAZ2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:316
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:381
 msgid "LIQSAT1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:317
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:382
 msgid "LIQVAP1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:318
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:383
 msgid "LIQVAP2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:319
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:384
 msgid "LIQVAP3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:320
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:385
 msgid "LIQVG1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:321
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:386
 msgid "LIQVG2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:387
 msgid "LIQVG3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:323
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:388
+msgid "CIN2_MEMO : variable relative à la mémoire d'écrouissage q"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:389
+msgid "quantite d eau apporte depuis le debut du calcul"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:390
+msgid "quantite deau apporte depuis le debut du calcul"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:391
 msgid "nombre d'itérations internes"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:324
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:392
 msgid "nombre de redécoupages locaux du pas de temps"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:325
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:393
+msgid "nasol pour verif"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:394
 msgid "cam_clay : contrainte de confinement"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:326
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:395
+msgid "premier passage vrai"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:396
 msgid "pourcentage d'endommagement normal (dans la zone adoucissante)"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:327
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:397
 msgid "pourcentage d'endommagement tangentiel"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:328
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:398
 msgid "BETON_RAG : pression chimique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:329
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:399
 msgid "pression critique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:330
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:400
 msgid "puissance dissipée pour CRIT_RUPT"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:401
 msgid "puissance dissipée cumulée à chaque pas pour CRIT_RUPT"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:332
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:402
 msgid "BETON_RAG : pression effective due à la RAG"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:333
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:403
 msgid "perméabilité longitudinale de la fissure"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:334
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:404
+msgid "pression de gel"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:405
 msgid "Hayhurst : variable PHI"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:335
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:406
+msgid "Dissipation par fluage spherique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:407
+msgid "Dissipation par fluage deviatoire"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:408
 msgid "porosité"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:336
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:409
 msgid "VISC_DRUC_PRAG : position du point de charge par rapport au seuil"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:410
 msgid "LIQU_AD_GAZ v4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:338
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:411
 msgid "LIQU_AD_GAZ v5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:339
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:412
 msgid "pression de fluide"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:340
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:413
 msgid "proportion matrice tangente/sécante"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:341
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:414
 msgid "BETON_RAG : pression hydrique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:342
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:415
+msgid "pression hydrique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:416
 msgid "cam_clay : contrainte équivalente"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:343
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:417
 msgid "DIS_ZENER : Raideur du discret"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:344
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:418
 msgid "valeur du test local d'arrêt des itérations internes"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:345
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:419
 msgid ""
 "Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant "
 "le décharge du mécanisme déviatoire du plan 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:346
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:420
 msgid ""
 "Hujeux : rayon du seuil déviatoire atteint par  la surface de charge avant "
 "le décharge du mécanisme déviatoire du plan 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:347
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:421
 msgid "Facteur de triaxialité des contraintes, modèle Mazars"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:348
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:422
 msgid "LIQU_AD_GAZ v3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:349
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:423
 msgid "saut normal"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:350
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:424
 msgid "saut tangentiel 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:351
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:425
 msgid "saut tangentiel 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:352
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:426
 msgid "CJS rapport entre le seuil déviatoire et le seuil déviatorique critique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:353
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:427
 msgid ""
 "CJS signe du produit contracté de la contrainte déviatorique par la "
 "déformation plastique déviatorique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:428
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:429
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:430
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:431
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:432
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:433
+msgid "contrainte dans le squelette solide"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:434
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique,  composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:355
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:435
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique,  composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:356
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:436
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique,  composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:437
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique,  composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:358
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:438
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique,  composante 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:359
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:439
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique,  composante 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:360
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:440
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:441
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:442
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:443
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:444
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:445
+msgid "contraintes effectives dans le squelette solide"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:446
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:447
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:448
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:449
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:450
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:451
+msgid "Contraintes effectives issues du modele de fluage"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:452
 msgid "seuil"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:361
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:453
 msgid "CZM  seuil correspondant au plus grand saut de déplacement (en norme)"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:362
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:454
 msgid "seuil hydrique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:363
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:455
 msgid "seuil isotrope"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:364
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:456
 msgid "gdef_hypo_elas, variable interne 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:365
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:457
 msgid "gdef_hypo_elas, variable interne 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:366
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:458
 msgid "gdef_hypo_elas, variable interne 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:367
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:459
 msgid "gdef_hypo_elas, variable interne 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:368
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:460
 msgid "gdef_hypo_elas, variable interne 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:369
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:461
 msgid "gdef_hypo_elas, variable interne 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:370
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:462
 msgid "gdef_hypo_elas, variable interne 7"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:371
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:463
 msgid "gdef_hypo_elas, variable interne 8"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:372
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:464
 msgid "gdef_hypo_elas, variable interne 9"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:373
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:465
 msgid "contrainte normale"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:374
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:466
 msgid "contrainte tangentielle"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:375
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:467
 msgid "contrainte de pic"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:376
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:468
 msgid "contrainte mécanique normale (sans pression de fluide)"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:377
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:469
 msgid " Pinto-Menegotto, contrainte cycle N"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:378
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:470
 msgid "norme de la contrainte tangente"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:379
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:471
 msgid "SIMO_MIEHE, variable interne 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:472
 msgid "SIMO_MIEHE, variable interne 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:381
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:473
 msgid "SIMO_MIEHE, variable interne 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:382
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:474
 msgid "SIMO_MIEHE, variable interne 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:383
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:475
 msgid "SIMO_MIEHE, variable interne 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:384
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:476
 msgid "SIMO_MIEHE, variable interne 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:385
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:477
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:478
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:479
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:480
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:481
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:482
+msgid "contrainte plastique dans les fissures de traction localisee"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:483
+msgid "seuil de compression"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:484
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:485
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:486
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:487
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:488
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:489
+msgid "contraintes seuil pour les endo diffus dus au gel"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:490
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:491
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:492
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:493
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:494
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:495
+msgid "seuils de traction dans l endo localise macro"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:496
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:497
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:498
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:499
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:500
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:501
+msgid "seuils de traction dans l endo localise Poisson"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:502
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:503
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:504
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:505
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:506
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:507
+msgid "contraintes seuil pour pour les endo diffus du a l eau"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:508
 msgid "BETON_RAG : contraintes seuil de compression"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:386
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:509
+msgid "sulfates fixes"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:510
+msgid "sulfate libre"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:511
 msgid "contrainte de rupture par propagation,"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:387
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:512
 msgid "BETON_RAG : contraintes seuil de traction,  composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:513
 msgid "BETON_RAG : contraintes seuil de traction,  composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:389
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:514
 msgid "BETON_RAG : contraintes seuil de traction,  composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:390
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:515
 msgid "BETON_RAG : contraintes seuil de traction,  composante 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:391
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:516
 msgid "BETON_RAG : contraintes seuil de traction,  composante 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:392
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:517
 msgid "BETON_RAG : contraintes seuil de traction,  composante 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:393
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:518
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:519
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:520
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:521
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:522
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:523
+msgid "contraintes effectives de traction dues au chargement exterieur"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:524
+msgid "taux de chargement local de Weibull"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:525
 msgid "température"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:394
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:526
 msgid "température maximum"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:395
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:527
+msgid "temps de chargement cumule"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:528
 msgid ""
 "Hujeux : normale entrante à la surface de charge du mécanisme père du "
 "mécanisme déviatoire du plan 3, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:396
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:529
 msgid ""
 "Hujeux : normale entrante à la surface de charge du mécanisme père du "
 "mécanisme déviatoire du plan 3, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:397
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:530
 msgid ""
 "Hujeux : normale entrante à la surface de charge du mécanisme père du "
 "mécanisme déviatoire du plan 2, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:398
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:531
 msgid ""
 "Hujeux : normale entrante à la surface de charge du mécanisme père du "
 "mécanisme déviatoire du plan 2, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:399
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:532
 msgid ""
 "Hujeux : normale entrante à la surface de charge du mécanisme père du "
 "mécanisme déviatoire du plan 1, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:400
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:533
 msgid ""
 "Hujeux : normale entrante à la surface de charge du mécanisme père du "
 "mécanisme déviatoire du plan 1, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:401
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:534
+msgid "temps caracteristique de micro diffusion des reactions"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:535
+msgid "Temperature finale pour verification"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:536
+msgid "tau de chargement equivalent"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:537
+msgid "tau de chragement temporel sur la duree de reference"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:538
 msgid "GDEF_LOG  contrainte T, composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:402
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:539
 msgid "GDEF_LOG  contrainte T, composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:403
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:540
 msgid "GDEF_LOG  contrainte T, composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:404
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:541
 msgid "GDEF_LOG  contrainte T, composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:405
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:542
 msgid "GDEF_LOG  contrainte T, composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:406
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:543
 msgid "GDEF_LOG  contrainte T, composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:407
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:544
 msgid "Déplacement concernant la partie visqueuse"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:408
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:545
+msgid "volume d ett secondaire"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:560
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:409
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:561
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 10"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:410
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:562
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 11"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:411
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:563
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 12"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:412
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:564
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 13"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:413
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:565
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 14"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:414
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:566
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 15"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:415
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:567
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 16"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:416
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:568
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 17"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:417
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:569
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 18"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:418
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:570
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 19"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:419
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:571
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:420
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:572
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 20"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:421
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:573
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 21"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:422
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:574
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 22"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:423
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:575
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 23"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:424
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:576
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 24"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:425
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:577
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 25"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:426
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:578
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 26"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:427
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:579
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 27"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:428
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:580
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 28"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:429
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:581
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 29"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:430
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:582
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:431
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:583
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 30"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:432
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:584
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 31"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:433
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:585
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 32"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:434
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:586
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 33"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:435
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:587
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 34"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:436
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:588
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 35"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:437
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:589
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 36"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:438
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:590
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 37"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:439
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:591
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 38"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:440
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:592
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 39"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:441
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:593
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:442
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:594
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 40"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:443
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:595
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 41"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:444
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:596
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 42"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:445
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:597
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 43"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:446
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:598
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 44"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:447
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:599
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 45"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:448
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:600
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 46"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:449
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:601
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 47"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:450
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:602
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 48"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:451
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:603
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 49"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:452
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:604
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:453
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:605
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 50"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:454
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:606
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 51"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:455
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:607
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 52"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:456
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:608
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 53"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:457
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:609
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 54"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:458
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:610
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 55"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:459
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:611
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:460
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:612
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 7"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:461
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:613
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 8"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:462
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:614
 msgid "comportement GRANGER_FP, voir R7.01.01, variable interne 9"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:463
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:615
 msgid "variable interne vide"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:464
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:616
 msgid "VISCOCHAB, voir R5.03.12, variable interne 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:465
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:617
 msgid "VISCOCHAB, voir R5.03.12, variable interne 10"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:466
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:618
 msgid "VISCOCHAB, voir R5.03.12, variable interne 11"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:467
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:619
 msgid "VISCOCHAB, voir R5.03.12, variable interne 12"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:468
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:620
 msgid "VISCOCHAB, voir R5.03.12, variable interne 13"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:469
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:621
 msgid "VISCOCHAB, voir R5.03.12, variable interne 14"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:470
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:622
 msgid "VISCOCHAB, voir R5.03.12, variable interne 15"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:471
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:623
 msgid "VISCOCHAB, voir R5.03.12, variable interne 16"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:472
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:624
 msgid "VISCOCHAB, voir R5.03.12, variable interne 17"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:473
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:625
 msgid "VISCOCHAB, voir R5.03.12, variable interne 18"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:474
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:626
 msgid "VISCOCHAB, voir R5.03.12, variable interne 19"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:475
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:627
 msgid "VISCOCHAB, voir R5.03.12, variable interne 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:476
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:628
 msgid "VISCOCHAB, voir R5.03.12, variable interne 20"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:477
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:629
 msgid "VISCOCHAB, voir R5.03.12, variable interne 21"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:478
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:630
 msgid "VISCOCHAB, voir R5.03.12, variable interne 22"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:479
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:631
 msgid "VISCOCHAB, voir R5.03.12, variable interne 23"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:480
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:632
 msgid "VISCOCHAB, voir R5.03.12, variable interne 24"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:481
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:633
 msgid "VISCOCHAB, voir R5.03.12, variable interne 25"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:482
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:634
 msgid "VISCOCHAB, voir R5.03.12, variable interne 26"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:483
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:635
 msgid "VISCOCHAB, voir R5.03.12, variable interne 27"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:484
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:636
 msgid "VISCOCHAB, voir R5.03.12, variable interne 28"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:485
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:637
 msgid "VISCOCHAB, voir R5.03.12, variable interne 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:486
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:638
 msgid "VISCOCHAB, voir R5.03.12, variable interne 4"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:487
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:639
 msgid "VISCOCHAB, voir R5.03.12, variable interne 5"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:488
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:640
 msgid "VISCOCHAB, voir R5.03.12, variable interne 6"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:489
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:641
 msgid "VISCOCHAB, voir R5.03.12, variable interne 7"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:490
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:642
 msgid "VISCOCHAB, voir R5.03.12, variable interne 8"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:491
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:643
 msgid "VISCOCHAB, voir R5.03.12, variable interne 9"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:492
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:644
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:645
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:646
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:647
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:648
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:649
+msgid ""
+"vitesse de fluage de Maxwell dans les fissures utile pour le calcul des "
+"ouvertures de fissures en presence de fluage"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:650
+msgid "volume du gel de rag"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:651
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:652
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:653
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:654
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:655
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:656
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:657
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:658
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:659
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:660
+msgid ""
+"stockage des vecteurs propre des tailles des elements pour eviter le "
+"recalcul a chaque sous iteration"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:661
+msgid "variation volumique"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:662
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:663
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:664
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:665
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:666
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:667
+msgid ""
+"Vitesse de fluage de Kelvin au droit des fissure localisee utile pour le "
+"calcul des ouvertures de fissures en presence de fluage"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:668
+msgid "volume d eau"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:669
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:670
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:671
+msgid "ouvertures suivant les axes principaux de l endo de traction localise"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:672
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:673
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:674
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:675
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:676
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:677
+msgid "ouverture maxi des fissures localisees"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:678
 msgid "coordonnée X de la pointe de fissure après rupture par propagation,"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:493
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:679
 msgid "coordonnée X de la pointe de fissure 2 lors de l'amorçage,"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:494
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:680
 msgid "tenseur cinématique 1, composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:495
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:681
 msgid "tenseur cinématique 1, composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:496
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:682
 msgid "tenseur cinématique 1, composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:497
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:683
 msgid "tenseur cinématique 1, composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:498
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:684
 msgid "tenseur cinématique 1, composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:499
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:685
 msgid "tenseur cinématique 1, composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:500
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:686
 msgid "tenseur cinématique 2, composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:501
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:687
 msgid "tenseur cinématique 2, composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:502
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:688
 msgid "tenseur cinématique 2, composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:503
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:689
 msgid "tenseur cinématique 2, composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:504
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:690
 msgid "tenseur cinématique 2, composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:505
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:691
 msgid "tenseur cinématique 2, composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:506
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:692
 msgid "tenseur cinématique, composante XX"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:507
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:693
 msgid "tenseur cinématique, composante XY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:508
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:694
 msgid "tenseur cinématique, composante XZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:509
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:695
 msgid "tenseur cinématique, composante YY"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:510
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:696
 msgid "tenseur cinématique, composante YZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:511
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:697
 msgid "tenseur cinématique, composante ZZ"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:512
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:698
 msgid "GLRC_DAMAGE : tenseur d'écrouissage cinématique en flexion composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:513
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:699
 msgid "GLRC_DAMAGE : tenseur d'écrouissage cinématique en flexion composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:514
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:700
 msgid "GLRC_DAMAGE : tenseur d'écrouissage cinématique en flexion composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:515
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:701
+msgid "coeff d affinite probabiliste sur l energie de fissuration"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:702
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 3, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:516
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:703
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 3, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:517
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:704
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 2, composante1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:518
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:705
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 2, composante2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:519
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:706
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 1, composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:520
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:707
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 1, composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:521
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:708
 msgid "LETK : variable d'écrouissage élastoplastique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:522
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:709
 msgid "LETK : variable d'écrouissage viscoplastique"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:523
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:710
 msgid ""
 "GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:524
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:711
 msgid ""
 "GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:525
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:712
 msgid ""
 "GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 3"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:526
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:713
+msgid "variable de calcul non local pour Weibull"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:714
+msgid "coeff multiplicateur pour effet d echelle temporelle"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:715
+msgid "coeff de modif de la resistane a la traction par effet de Weibull"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:716
 msgid "coordonnée Y de la pointe de fissure après rupture par propagation,"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:527
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:717
 msgid "coordonnée Y de la pointe de fissure 2 lors de l'amorçage,"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:528
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:718
 msgid "phase métallurgique zirconium variable interne 1"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:529
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:719
 msgid "phase métallurgique zirconium variable interne 2"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:530
+#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:720
 msgid "phase métallurgique zirconium variable interne 3"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:531
-msgid "CIN2_MEMO : variable relative à la mémoire d'écrouissage q"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_JDC.py:102
@@ -19459,6 +19872,25 @@ msgid ""
 "MU_MOY.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:405
+msgid ""
+"\n"
+"Loi d'endommagement de Sellier utilise une régularisation en énergie de "
+"fissuration qui n'est valide ici que sur des éléments cubiques à 8 points de "
+"gauss.\n"
+"Les résultats obtenus ne sont pas exactes avec un autre type d'élément.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:410
+msgid ""
+"\n"
+"La loi d'endommagement de Sellier est mal utilisée ou bien il y a un "
+"problème\n"
+"d'intégration local d'un phénomène.\n"
+"\n"
+"Vérifiez les propriétés matériaux et que la modélisation est 3D.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:22
 #, python-format
 msgid ""
@@ -20181,6 +20613,12 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor3.py:39
+msgid ""
+"Dans le KIT_DDI, FLUA_PORO_BETON ne peux être couplé qu’avec le modèle "
+"d’endommagement ENDO_PORO_BETON. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor3.py:42
 #, python-format
 msgid ""
 "\n"
@@ -20188,7 +20626,7 @@ msgid ""
 "comportement <%(k1)s> avec <%(k2)s>.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor3.py:43
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor3.py:46
 msgid ""
 "\n"
 " Vous utilisez le modèle BETON_UMLV_FP avec un modèle d'endommagement.\n"
@@ -20196,7 +20634,7 @@ msgid ""
 "déformations totales et non pas suivant un schéma incrémental.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor3.py:48
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor3.py:51
 msgid ""
 "\n"
 "   La loi métallurgique META_LEMA_ANI n'est utilisable qu'avec le "
@@ -29564,17 +30002,30 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:445
 #, python-format
 msgid ""
+"  \n"
 "  La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.\n"
 "  La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.\n"
+"  Cette valeur limite a été réactualisée entre les appels aux différentes "
+"commandes\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:449
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:451
+#, python-format
+msgid ""
+"  \n"
+"  La mémoire consommée actuellement hors JEVEUX est de %(r1).2f Mo.\n"
+"  La limite de l'allocation dynamique JEVEUX est fixée à %(r2).2f Mo.\n"
+"  Cette valeur limite a été réactualisée lors de la mise en oeuvre d'un "
+"processus de libération \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:457
 msgid ""
 "\n"
 " La plate-forme utilisée ne permet pas d'avoir accès à la valeur de VmPeak.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:454
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:462
 #, python-format
 msgid ""
 "\n"
@@ -29584,7 +30035,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:460
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:468
 #, python-format
 msgid ""
 "\n"
@@ -32431,6 +32882,16 @@ msgid ""
 "En interaction sol, structure, fluide (ISSF='OUI'), les propriétés du "
 "fluide\n"
 "doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/miss0.py:127
+#, python-format
+msgid "La fréquence numéro %(i1)d sera calculée par le processeur #%(i2)d.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/miss0.py:130
+#, python-format
+msgid "Calcul de la fréquence numéro %(i1)d sur le processeur #%(i2)d.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:22
@@ -35987,19 +36448,11 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-" le mot-clé : %(k1)s  est identique (sur ses 8 premiers caractères) à un "
-"autre.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:236
-#, python-format
-msgid ""
-"\n"
 " erreur lors de la définition de la courbe de traction, il manque le "
 "paramètre : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:240
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:236
 #, python-format
 msgid ""
 "\n"
@@ -36007,7 +36460,7 @@ msgid ""
 "points < 2  !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:244
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:240
 #, python-format
 msgid ""
 "\n"
@@ -36015,20 +36468,20 @@ msgid ""
 "points < 1  !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:248
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:244
 msgid ""
 "\n"
 " erreurs rencontrées.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:248
 msgid ""
 "\n"
 " erreur lors de la définition de la nappe des courbes de traction: nombre de "
 "points < 2 !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:256
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:252
 #, python-format
 msgid ""
 "\n"
@@ -36036,110 +36489,110 @@ msgid ""
 "nombre de points < 1 !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:260
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:256
 msgid ""
 "\n"
 "  erreur lors de la définition de la courbe de traction: FONCTION ou "
 "NAPPE !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:264
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:260
 msgid ""
 "\n"
 " comportement TRACTION non trouvé\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:266
 msgid ""
 "\n"
 " comportement META_TRACTION non trouvé\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:270
 msgid ""
 "\n"
 " fonction SIGM_F1 non trouvée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:278
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:274
 msgid ""
 "\n"
 " fonction SIGM_F2 non trouvée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:282
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:278
 msgid ""
 "\n"
 " fonction SIGM_F3 non trouvée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:286
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:282
 msgid ""
 "\n"
 " fonction SIGM_F4 non trouvée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:290
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:286
 msgid ""
 "\n"
 " fonction SIGM_C non trouvée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:294
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:290
 #, python-format
 msgid ""
 "\n"
 " fonction constante interdite pour la courbe de traction %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:298
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:294
 #, python-format
 msgid ""
 "\n"
 " prolongement à gauche EXCLU pour la courbe  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:302
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:298
 #, python-format
 msgid ""
 "\n"
 " prolongement à droite EXCLU pour la courbe  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:306
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:302
 #, python-format
 msgid ""
 "\n"
 " concept de type :  %(k1)s  interdit pour la courbe de traction %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:310
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:306
 #, python-format
 msgid ""
 "\n"
 " matériau : %(k1)s  non affecté par la commande AFFE_MATERIAU.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:314
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:310
 msgid ""
 "\n"
 "  les fonctions complexes ne sont pas implémentées\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:318
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:314
 #, python-format
 msgid ""
 "\n"
 " Le nombre de paramètres est supérieur à 30 pour le matériau  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:318
 msgid ""
 "\n"
 " mauvaise définition de la plage de fréquence, aucun mode pris en compte\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:326
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:322
 #, python-format
 msgid ""
 "\n"
@@ -36147,19 +36600,19 @@ msgid ""
 " et pourtant elles ont été affectées dans le mot-clé facteur : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:327
 msgid ""
 "\n"
 " FREQ INIT plus grande que FREQ FIN\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:335
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:331
 msgid ""
 "\n"
 " FREQ INIT nécessaire avec CHAMNO\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:339
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:335
 msgid ""
 "\n"
 " FREQ FIN nécessaire avec CHAMNO\n"
@@ -37245,8 +37698,8 @@ msgid ""
 "   n'est pas le nom d'une composante de la grandeur.\n"
 "\n"
 " Conseil :\n"
-"   Si la table fournie provient de la commande CREA_TABLE / RESU, il faut \n"
-"   probablement utiliser la commande CALC_TABLE + OPERATION='EXTR' pour \n"
+"   Si la table fournie provient de la commande CREA_TABLE / RESU, il faut\n"
+"   probablement utiliser la commande CALC_TABLE + OPERATION='EXTR' pour\n"
 "   éliminer les colonnes RESULTAT, NUME_ORDRE, ....\n"
 msgstr ""
 
@@ -37301,7 +37754,7 @@ msgid ""
 "\n"
 "Erreur utilisateur :\n"
 "   Comportement 'HUJEUX'\n"
-"   Non convergence pour le calcul de la loi de comportement (NB_ITER_MAX \n"
+"   Non convergence pour le calcul de la loi de comportement (NB_ITER_MAX\n"
 "atteint).\n"
 "\n"
 "Conseil :\n"
@@ -37557,7 +38010,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-" Courbe de traction : %(k1)s points presque alignés. Risque de PB dans \n"
+" Courbe de traction : %(k1)s points presque alignés. Risque de PB dans\n"
 " STAT_NON_LINE en particulier en C_PLAN\n"
 "  pente initiale :     %(r1)f\n"
 "  pente courante:      %(r2)f\n"
@@ -37623,9 +38076,9 @@ msgstr ""
 msgid ""
 "\n"
 " Il n'y a aucun mot clé défini sous le comportement %(k1)s dans le fichier "
-"de \n"
+"de\n"
 " commandes.\n"
-" Ce mot clé facteur n'apparaît donc pas dans l'écho des commandes. \n"
+" Ce mot clé facteur n'apparaît donc pas dans l'écho des commandes.\n"
 " Ce mot clé facteur est inutile.\n"
 msgstr ""
 
@@ -37644,38 +38097,55 @@ msgid ""
 "  GROUP_MA : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:352
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:350
+#, python-format
+msgid ""
+"\n"
+" Le nom du comportement >>%(k1)s<< est trop long, il dépasse les 10 "
+"caractères autorisés.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:354
+#, python-format
+msgid ""
+"\n"
+" Le nom du paramètre >>%(k1)s<< est trop long, il dépasse les 8 caractères "
+"autorisés, \n"
+" Le nom sera tronqué à 8 caractères.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:359
 msgid ""
 "\n"
 "Erreur Europlexus\n"
 "   Le mot-clé GROUP_MA_SEG2 est incompatible avec EUROPLEXUS = 'OUI'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:364
 #, python-format
 msgid ""
 "\n"
 "Erreur Europlexus\n"
 "   Toutes les occurrences de RIGI_PARASOL doivent avoir la même valeur pour "
-"le \n"
+"le\n"
 "   mot clef EUROPLEXUS. La valeur du mot clef EUROPLEXUS à l'occurrence "
-"%(i1)d \n"
+"%(i1)d\n"
 "   est différente de sa valeur à l'occurrence numéro 1.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:364
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:371
 msgid ""
 "\n"
 "     On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:367
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:374
 msgid ""
 "\n"
 "     ERREUR: l'auto-spectre est a valeurs négatives\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:370
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:377
 #, python-format
 msgid ""
 "\n"
@@ -37684,22 +38154,22 @@ msgid ""
 "   Le problème vient de la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:376
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:383
 msgid ""
 "\n"
 "Erreur Europlexus\n"
 "   Données incorrectes. Les dimensions des objets ne sont pas cohérentes "
-"(Erreur \n"
+"(Erreur\n"
 "   Fortran : acearp)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:382
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:389
 msgid ""
 "\n"
 "Erreur Europlexus\n"
-"   Pour accéder aux valeurs nécessaires à Europlexus, il faut que dans la \n"
+"   Pour accéder aux valeurs nécessaires à Europlexus, il faut que dans la\n"
 "   commande AFFE_CARA_ELEM, pour le mot clef facteur RIGI_PARASOL, la "
-"valeur \n"
+"valeur\n"
 "   du mot clef EUROPLEXUS soit 'OUI' dans toutes les occurrences.\n"
 msgstr ""
 
@@ -37791,6 +38261,16 @@ msgstr ""
 msgid ""
 "\n"
 "  Observations: pas de réalisation pour ce pas de temps\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/parallel.py:22
+#, python-format
+msgid "Le processeur #%(i1)d/%(i2)d travaille dans le répertoire '%(k1)s'.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/parallel.py:25
+#, python-format
+msgid "Copie du fichier '%(k1)s' vers '%(k2)s'.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/partition.py:25
@@ -38548,6 +39028,29 @@ msgid ""
 "\n"
 "Le résultat %(k1)s donné en état initial comporte plusieurs %(k2)s.\n"
 "CALC_EUROPLEXUS ne sait pas traiter de tels cas.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:177
+#, python-format
+msgid ""
+"\n"
+"CALC_EUROPLEXUS/COURBE :\n"
+"Le champ %(k1)s ne possède pas de composante %(k2)s.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:182
+msgid ""
+"\n"
+"CALC_EUROPLEXUS/COURBE :\n"
+"La quantité de données présente dans le fichier de sortie de suivi de point "
+"ne concorde\n"
+"pas avec les instructions du fichier de commande.\n"
+"Une erreur s'est certainement produite lors du traitement de ce mot-clé par "
+"EPX.\n"
+"\n"
+"Conseil : regarder le message de sortie d'EPX dans le fichier .mess pour "
+"comprendre \n"
+"ou le problème se situe.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/post0.py:21
@@ -50509,10 +51012,11 @@ msgid ""
 "MODELE_IN.\n"
 "     Il faut que les (ou la) fissure sous le mot-clé FISSURE soient toutes "
 "définies à\n"
-"     partir du même modèle.\n"
+"     partir du même maillage.\n"
 "     Or :\n"
-"     - la fissure %(k1)s est définie à partir du modèle %(k2)s\n"
-"     - le modèle renseigné sous MODELE_IN est %(k3)s.\n"
+"     - la fissure %(k1)s est définie à partir du maillage %(k2)s\n"
+"     - le modèle renseigné sous MODELE_IN est défini à partir du maillage "
+"%(k3)s.\n"
 "     Conseil :\n"
 "     Veuillez revoir la définition de la fissure %(k1)s ou bien changer "
 "MODELE_IN.\n"
@@ -50863,13 +51367,17 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"  -> DEFI_FISS_XFEM :\n"
-"     La jonction de fissures n'est pas une fonctionnalité disponible pour "
-"les modèles\n"
-"     thermiques. Or le modèle %(k1)s est un modèle thermique.\n"
+"     La jonction de fissures est une fonctionnalité disponible uniquement "
+"pour les\n"
+"     modélisations mécaniques. Or le modèle %(k1)s est soit un modèle "
+"thermique,\n"
+"     soit un modèle mécanique supportant une modélisation hydro-mécanique.\n"
+"  -> Conseil:\n"
+"     Revoyez la définition de votre modèle, ou celle de la fissure (ou des "
+"fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:479
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:481
 #, python-format
 msgid ""
 "\n"
@@ -50881,7 +51389,7 @@ msgid ""
 "modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:486
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:488
 #, python-format
 msgid ""
 "\n"
@@ -50894,20 +51402,20 @@ msgid ""
 "     présentes dans le modèle ou revoyez la définition de votre modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:494
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:496
 #, python-format
 msgid ""
 "\n"
 "     Nombre de points du fond de fissure sur la grille : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:498
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:500
 msgid ""
 "\n"
 "     Coordonnées des points du fond de fissure sur la grille\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:502
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:504
 msgid ""
 "\n"
 "  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le "
@@ -50918,7 +51426,7 @@ msgid ""
 "     Veuillez utiliser un maillage linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:511
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:513
 msgid ""
 "\n"
 "  -> Il y a éventuellement des créations de mailles\n"
@@ -50936,7 +51444,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:523
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:525
 #, python-format
 msgid ""
 "\n"
@@ -50946,7 +51454,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:529
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:531
 #, python-format
 msgid ""
 "\n"
@@ -50959,7 +51467,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:537
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:539
 #, python-format
 msgid ""
 "\n"
@@ -50971,7 +51479,7 @@ msgid ""
 "     Revoyez la définition de ce modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:544
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:546
 #, python-format
 msgid ""
 "\n"
@@ -50984,7 +51492,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:552
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:554
 #, python-format
 msgid ""
 "\n"
@@ -50995,7 +51503,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:559
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:561
 #, python-format
 msgid ""
 "\n"
@@ -51008,7 +51516,7 @@ msgid ""
 "     Revoyez la définition de ces modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:567
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:569
 msgid ""
 "\n"
 "  On ne peut pas créer un modèle X-FEM avec contact dans le cas où le mot "
@@ -51017,7 +51525,7 @@ msgid ""
 "     Vous devez renseigner CONTACT='NON' pour ne pas activer le contact.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:573
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:575
 #, python-format
 msgid ""
 "\n"
@@ -51029,7 +51537,7 @@ msgid ""
 "     Revoyez la définition de ces deux modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:580
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:582
 msgid ""
 "\n"
 "  -> Il n'est pas possible de réaliser la propagation d'une fissure en "
