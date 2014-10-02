@@ -129,7 +129,7 @@ def _print_header():
     UTMESS('I', 'SUPERVIS2_23',
         valk=(__version__,
               date_build,
-              aster_pkginfo.version_info.parentid,
+              aster_pkginfo.version_info.parentid[:12],
               aster_pkginfo.version_info.branch),)
     UTMESS('I', 'SUPERVIS2_10',
         valk=("1991", time.strftime('%Y'),

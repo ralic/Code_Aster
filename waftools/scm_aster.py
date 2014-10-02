@@ -16,7 +16,7 @@ def configure(self):
 
 def build(self):
     env = self.all_envs[self.variant]
-    
+
     self(
        features = 'pkginfo py',
            name = 'pkginfo',
@@ -65,7 +65,7 @@ def check_aster_version(self):
         pass
     def revid(ctx):
         """how to show the revision id"""
-        return ctx.hex()[:8]
+        return ctx.hex()
     # add revision id if hg is available
     try:
         from mercurial import hg, ui as UI
