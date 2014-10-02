@@ -16,12 +16,14 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=
+! aslint: disable=W1303
+! for the path name
     implicit none
 #include "asterf_types.h"
 #include "jeveux_private.h"
 #include "asterc/readdr.h"
 #include "asterfort/codent.h"
+#include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
     integer :: ic, iaddi, iadmo, lso
 ! ----------------------------------------------------------------------
@@ -67,8 +69,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
     common /jiacce/  jiacce(n),nbacce(2*n)
 !     ------------------------------------------------------------------
     aster_logical :: lrab
-    character(len=8) :: nom
-    character(len=128) :: nom128
+    character(len=512) :: nom512
     integer :: lgbl, vali(3)
 ! DEB ------------------------------------------------------------------
     ierr = 0
@@ -77,20 +78,12 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
     lrab = ( mod (lso,lgbl) .ne. 0 )
 !
     if (kstini(ic) .ne. 'DUMMY   ') then
-        nom = nomfic(ic)(1:4)//'.   '
         do 10 i = 1, nblent
             numext = (iaddi+i-2)/nbenrg(ic)
             iadloc = (iaddi+i-1)-(numext*nbenrg(ic))
-            call codent(numext+1, 'G', nom(6:7))
-            if (nom(1:4) .eq. 'glob') then
-                nom128=repglo(1:lrepgl)//'/'//nom
-            else if (nom(1:4) .eq. 'vola') then
-                nom128=repvol(1:lrepvo)//'/'//nom
-            else
-                nom128='./'//nom
-            endif
+            call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
             jiecr = (jk1zon+iadmo-1+lgbl*(i-1))/lois+1
-            call readdr(nom128, iszon(jiecr), lgbl, iadloc, ierr)
+            call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
             if (ierr .ne. 0) then
                 vali(1) = iaddi+i-1
                 vali(2) = numext
@@ -103,19 +96,12 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
         if (lrab) then
             numext = (iaddi+nblent-1)/nbenrg(ic)
             iadloc = (iaddi+nblent)-(numext*nbenrg(ic))
-            call codent(numext+1, 'G', nom(6:7))
-            if (nom(1:4) .eq. 'glob') then
-                nom128=repglo(1:lrepgl)//'/'//nom
-            else if (nom(1:4) .eq. 'vola') then
-                nom128=repvol(1:lrepvo)//'/'//nom
-            else
-                nom128='./'//nom
-            endif
+            call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
             jiecr = (jk1zon+iadmo-1+lso-lgbl)/lois+1
             if (lso .lt. lgbl) then
                 jiecr = (jk1zon+iadmo-1)/lois+1
             endif
-            call readdr(nom128, iszon(jiecr), lgbl, iadloc, ierr)
+            call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
             if (ierr .ne. 0) then
                 vali(1) = iaddi+i-1
                 vali(2) = numext

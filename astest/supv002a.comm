@@ -83,7 +83,7 @@ previous_errors = [
     'NBMECA', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
     'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
     'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL',
-    'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA', 'OPENDR',
+    'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'NaN', 'OMEGA',
     'PARAMETER', 'PATH', 'PFACY', 'PHYSICAL', 'PMAX',
     'PREML', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF',
     'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',

@@ -38,11 +38,11 @@ subroutine ibcael(type)
         call jelibf('SAUVE', 'C', info)
         call utmess('I', 'SUPERVIS_16')
     else
-        call jeinif('POURSUITE', 'SAUVE', nomf, 'C', 300,&
+        call jeinif('POURSUITE', 'LIBERE', nomf, 'C', 300,&
                     512, 100)
         call jedupc('C', '&BATA', 1, 'G', '&CATA',&
                     .false._1)
-        call jelibf('SAUVE', 'C', info)
+        call jelibf('LIBERE', 'C', info)
         call utmess('I', 'SUPERVIS_17')
     endif
 end subroutine

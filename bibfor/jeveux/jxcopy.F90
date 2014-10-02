@@ -16,7 +16,8 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=
+! aslint: disable=W1303
+! for the path name
     implicit none
 #include "jeveux_private.h"
 #include "asterc/cpfile.h"
@@ -24,6 +25,7 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 #include "asterc/rmfile.h"
 #include "asterc/writdr.h"
 #include "asterfort/codent.h"
+#include "asterfort/get_jvbasename.h"
 #include "asterfort/jeinif.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlidy.h"
@@ -53,7 +55,7 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     common /istaje/  istat(4)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadloc, iadyn, ib, ici, ico, ierr, k
+    integer :: iadloc, iadyn, ici, ico, ierr, k
     integer :: lbloc, n, nbext, nbloc, nrep, numext
 !-----------------------------------------------------------------------
     parameter  ( n = 5 )
@@ -80,9 +82,9 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     common /balvje/  lrepgl,lrepvo
 !     ------------------------------------------------------------------
     character(len=1) :: kclas
-    character(len=8) :: nomba1, nomba2, nom
-    character(len=128) :: noml1, noml2
-    integer :: itp(1), jitp, iaditp, lgbl1, lgbl2, info, l1, l2
+    character(len=8) :: nomba1, nomba2
+    character(len=512) :: noml1, noml2
+    integer :: itp(1), jitp, iaditp, lgbl1, lgbl2, info
 ! DEB ------------------------------------------------------------------
     nomin = nominz
     clasin = clsinz
@@ -97,15 +99,7 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     nrep = nremax(ici)
     nbloc= nbenrg(ici)
     lbloc= longbl(ici)
-    nom = nomout(1:4)//'.?  '
-    call lxmins(nom)
-    if (nom(1:4) .eq. 'glob') then
-        noml1=repglo(1:lrepgl)//'/'//nom
-    else if (nom(1:4) .eq. 'vola') then
-        noml1=repvol(1:lrepvo)//'/'//nom
-    else
-        noml1='./'//nom
-    endif
+    call get_jvbasename(nomout(1:4), -1, noml1)
     info = 1
     call rmfile(noml1, info)
     call jeinif('DEBUT', 'SAUVE', nomout, kclas, nrep,&
@@ -127,37 +121,16 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
         iext(ico) = iext(ico) + 1
 50  end do
 !
-    if (nomba1(1:4) .eq. 'glob') then
-        noml1=repglo(1:lrepgl)//'/'//nomba1
-        l1=lrepgl+1
-    else if (nomba1(1:4) .eq. 'vola') then
-        noml1=repvol(1:lrepvo)//'/'//nomba1
-        l1=lrepvo+1
-    else
-        noml1='./'//nomba1
-        l1=2
-    endif
-    if (nomba2(1:4) .eq. 'glob') then
-        noml2=repglo(1:lrepgl)//'/'//nomba2
-        l2=lrepgl+1
-    else if (nomba2(1:4) .eq. 'vola') then
-        noml2=repvol(1:lrepvo)//'/'//nomba2
-        l2=lrepvo+1
-    else
-        noml2='./'//nomba2
-        l2=2
-    endif
     do 100 k = 1, nbluti(ici)
         numext = (k-1)/nbenrg(ici)
         iadloc = k - (numext*nbenrg(ici))
-        call codent(numext+1, 'G', noml1(l1+6:l1+7))
+        call get_jvbasename(nomba1, numext + 1, noml1)
         call readdr(noml1, iszon(jiszon+iaditp), lgbl1, iadloc, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'JEVEUX_47')
         endif
-        call codent(numext+1, 'G', noml2(l2+6:l2+7))
-        call writdr(noml2, iszon(jiszon + iaditp), lgbl2, iadloc, - 1,&
-                    ib, ierr)
+        call get_jvbasename(nomba2, numext + 1, noml2)
+        call writdr(noml2, iszon(jiszon + iaditp), lgbl2, iadloc, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'JEVEUX_48')
         endif
@@ -171,12 +144,12 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 !
 ! Destruction de tous les receptacles avant recopie.
 !
-    noml1(l2+6:l2+7)='.*'
+    call get_jvbasename(nomba1, -2, noml1)
     call rmfile(noml1, info)
 !
     do 300 k = 1, nbext
-        call codent(k, 'G', noml2(l2+6:l2+7))
-        call codent(k, 'G', noml1(l1+6:l1+7))
+        call get_jvbasename(nomba1, k, noml1)
+        call get_jvbasename(nomba1, k, noml2)
         call cpfile('M', noml2, noml1)
 300  end do
 ! FIN ------------------------------------------------------------------

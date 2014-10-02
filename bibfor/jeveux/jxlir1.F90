@@ -16,13 +16,15 @@ subroutine jxlir1(ic, caralu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=
+! aslint: disable=W1303
+! for the path name
     implicit none
 #include "asterf_types.h"
 #include "asterc/closdr.h"
 #include "asterc/opendr.h"
 #include "asterc/readdr.h"
 #include "asterfort/codent.h"
+#include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
     integer :: ic, caralu(*)
 ! ----------------------------------------------------------------------
@@ -33,7 +35,7 @@ subroutine jxlir1(ic, caralu)
 ! ----------------------------------------------------------------------
     integer :: n
 !-----------------------------------------------------------------------
-    integer :: ierr, k, np2
+    integer :: ierr, k
 !-----------------------------------------------------------------------
     parameter      ( n = 5 )
     character(len=2) :: dn2
@@ -50,37 +52,41 @@ subroutine jxlir1(ic, caralu)
     integer :: lbis, lois, lols, lor8, loc8
     common /ienvje/  lbis , lois , lols , lor8 , loc8
 !     ------------------------------------------------------------------
-    integer :: lindex, npar
-    parameter      ( lindex = 11, npar = 11, np2 = npar+3 )
-    integer :: index(lindex), tampon(np2)
+    integer :: npar, np2
+    parameter ( npar = 11, np2 = npar+3 )
+    integer :: tampon(np2), mode
     aster_logical :: lexist
     character(len=8) :: nom
-    character(len=128) :: nom128
+    character(len=512) :: nom512, valk(2)
 ! DEB ------------------------------------------------------------------
     ierr = 0
+    mode = 1
+    if ( kstout(ic) == 'LIBERE' .and. kstini(ic) == 'POURSUIT' ) then
+        mode = 0
+    endif
+    if ( kstini(ic) == 'DEBUT' ) then
+        mode = 2
+    endif
+    print *, 'jxlir1: ', nomfic(ic), ' in: ', kstini(ic), ' out: ', kstout(ic)
     nom = nomfic(ic)(1:4)//'.   '
-    call codent(1, 'G', nom(6:7))
-    if (nom(1:4) .eq. 'glob') then
-        nom128=repglo(1:lrepgl)//'/'//nom
-    else if (nom(1:4) .eq. 'vola') then
-        nom128=repvol(1:lrepvo)//'/'//nom
-    else
-        nom128='./'//nom
-    endif
-    inquire (file=nom128,exist=lexist)
+    call get_jvbasename(nomfic(ic)(1:4), 1, nom512)
+    inquire (file=nom512,exist=lexist)
     if (.not. lexist) then
-        call utmess('F', 'JEVEUX_12', sk=nombas(ic))
+        valk(1) = nombas(ic)
+        valk(2) = nom512
+        call utmess('F', 'JEVEUX_12', valk=valk)
     endif
-    call opendr(nom128, index, lindex, 0, ierr)
+    call opendr(nom512, mode, ierr)
 !
 !   SUR CRAY L'APPEL A READDR EST EFFECTUE AVEC UNE LONGUEUR EN
 !   ENTIER, A MODIFIER LORSQUE L'ON PASSERA AUX ROUTINES C
 !
-    call readdr(nom128, tampon, np2*lois, 1, ierr)
+    call readdr(nom512, tampon, np2*lois, 1, ierr)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_13', sk=nombas(ic))
     endif
-    call closdr(nom128, ierr)
+    print *, 'Lu: ', tampon
+    call closdr(nom512, ierr)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_14', sk=nombas(ic))
     endif

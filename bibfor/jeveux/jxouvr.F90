@@ -15,10 +15,12 @@ subroutine jxouvr(iclas, idn)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=
+! aslint: disable=W1303
+! for the path name
     implicit none
 #include "asterc/opendr.h"
 #include "asterfort/codent.h"
+#include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
     integer :: iclas, idn
 !     ==================================================================
@@ -39,23 +41,21 @@ subroutine jxouvr(iclas, idn)
     integer :: lrepgl, lrepvo
     common /balvje/  lrepgl,lrepvo
 !     ------------------------------------------------------------------
-    character(len=8) :: nom
-    character(len=128) :: nom128
-    integer :: indx(1), nbl
+    character(len=512) :: nom512
+    integer :: mode
 ! DEB ------------------------------------------------------------------
-    nbl = 1
+    mode = 1
+    if ( kstout(iclas) == 'LIBERE' .and. kstini(iclas) == 'POURSUIT' ) then
+        mode = 0
+    endif
+    if ( kstini(iclas) == 'DEBUT' ) then
+        mode = 2
+    endif
+    print *, 'jxouvr: ', nomfic(iclas), ' in: ', kstini(iclas), ' out: ', kstout(iclas)
     if (kstini(iclas) .ne. 'DUMMY   ') then
         ierr = 0
-        nom = nomfic(iclas)(1:4)//'.   '
-        call codent(idn, 'G', nom(6:7))
-        if (nom(1:4) .eq. 'glob') then
-            nom128=repglo(1:lrepgl)//'/'//nom
-        else if (nom(1:4) .eq. 'vola') then
-            nom128=repvol(1:lrepvo)//'/'//nom
-        else
-            nom128='./'//nom
-        endif
-        call opendr(nom128, indx, nbl, 0, ierr)
+        call get_jvbasename(nomfic(iclas)(1:4), idn, nom512)
+        call opendr(nom512, mode, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'JEVEUX_43', sk=nombas(iclas), si=ierr)
         endif

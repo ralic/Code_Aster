@@ -15,10 +15,12 @@ subroutine jxferm(iclas)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=
+! aslint: disable=W1303
+! for the path name
     implicit none
 #include "asterc/closdr.h"
 #include "asterfort/codent.h"
+#include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
     integer :: iclas
 !     ------------------------------------------------------------------
@@ -41,22 +43,13 @@ subroutine jxferm(iclas)
     integer :: lrepgl, lrepvo
     common /balvje/  lrepgl,lrepvo
 !     ------------------------------------------------------------------
-    character(len=8) :: nom
-    character(len=128) :: nom128
+    character(len=512) :: nom512
     integer :: ier
 ! DEB ------------------------------------------------------------------
     ier = 0
-    nom = nomfic(iclas)(1:4)//'.   '
     do 1 k = 1, iext(iclas)
-        call codent(k, 'G', nom(6:7))
-        if (nom(1:4) .eq. 'glob') then
-            nom128=repglo(1:lrepgl)//'/'//nom
-        else if (nom(1:4) .eq. 'vola') then
-            nom128=repvol(1:lrepvo)//'/'//nom
-        else
-            nom128='./'//nom
-        endif
-        call closdr(nom128, ier)
+        call get_jvbasename(nomfic(iclas)(1:4), k, nom512)
+        call closdr(nom512, ier)
         if (ier .ne. 0) then
             call utmess('F', 'JEVEUX_11', sk=nombas(iclas))
         endif

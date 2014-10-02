@@ -17,7 +17,7 @@
 !
 interface
     subroutine readdr(dfname, buff, nbytes, irec, ierr)
-        character(len=128) :: dfname
+        character(len=*) :: dfname
         integer :: buff(*)
         integer :: nbytes
         integer :: irec

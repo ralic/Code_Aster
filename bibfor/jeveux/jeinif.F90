@@ -149,7 +149,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     ASSERT(index (classe, kclas) .eq. 0)
 !
     ASSERT(kstin .eq. 'DEBUT   ' .or. kstin .eq. 'POURSUIT' .or. kstin .eq. 'DUMMY   ')
-    ASSERT(kstou .eq. 'SAUVE   ' .or. kstou .eq. 'DETRUIT ')
+    ASSERT(kstou .eq. 'SAUVE   ' .or. kstou .eq. 'DETRUIT ' .or. kstou .eq. 'LIBERE ')
     ASSERT(kstin .ne. 'DUMMY   ' .or. kstou .ne. 'SAUVE   ')
     ASSERT(nrep .gt. 0)
     ASSERT(lbloc .gt. 0)

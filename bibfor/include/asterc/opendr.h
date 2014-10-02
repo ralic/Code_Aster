@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine opendr(dfname, indx, lgti, indic, ierr)
-        character(len=128) :: dfname
-        integer :: indx(lgti)
-        integer :: lgti
-        integer :: indic
+    subroutine opendr(dfname, mode, ierr)
+        character(len=*) :: dfname
+        integer :: mode
         integer :: ierr
     end subroutine opendr
 end interface

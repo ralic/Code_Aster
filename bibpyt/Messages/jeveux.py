@@ -31,6 +31,15 @@ Conseil :
  Pointeur de longueur externe interdit maintenant.
 """),
 
+3 : _(u"""
+Le chemin d'accès au catalogue d'éléments est trop long. Il doit être inférieur
+à %(i1)d caractères. Il est défini par la variable d'environnement '%(k1)s'.
+
+Conseil :
+    Installer Code_Aster dans un chemin plus accessible, ou bien, créer
+    un lien symbolique pour réduire la longueur du chemin.
+"""),
+
 6 : _(u"""
  Erreur de programmation :
 
@@ -57,7 +66,9 @@ Conseil :
 """),
 
 12 : _(u"""
- Fichier associé à la base  %(k1)s  inexistant
+ Fichier associé à la base  %(k1)s n'existe pas.
+ Nom du fichier :
+    %(k2)s
 """),
 
 13 : _(u"""
@@ -186,7 +197,7 @@ Conseil :
 """),
 
 43 : _(u"""
-     Erreur d'ouverture du fichier %(k1)s , code retour OPENDR = %(i1)d
+     Erreur d'ouverture du fichier %(k1)s , code retour %(i1)d
 """),
 
 47 : _(u"""
