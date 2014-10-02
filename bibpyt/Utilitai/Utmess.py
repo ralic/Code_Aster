@@ -760,6 +760,8 @@ def __fake__():
     UTMESS('I', 'SUPERVIS_40')    # surcharge émis par asrun
     UTMESS('I', 'SUPERVIS_96')    # émis depuis le C (inisig)
     UTMESS('I', 'SUPERVIS_97')    # émis depuis le C (inisig)
+    UTMESS('I', 'JEVEUX_44')      # émis depuis le C (iodr)
+    UTMESS('I', 'JEVEUX_45')      # émis depuis le C (iodr)
     UTMESS('I', 'GENERIC_1')      # dans des tests pour traiter les exceptions
     UTMESS('I', 'CATAMESS_1')     # pour supv002a
     UTMESS('I', 'CATAMESS_55')    # pour u2mesg.f via UTPRIN

@@ -88,9 +88,6 @@ La vérification de syntaxe seule n'est pas disponible en mode PAR_LOT='NON'.
   Trop de catalogues (maximum = 10)
 """),
 
-19: _(u"""
-  Début de lecture..."""),
-
 20: _(u"""
   "%(k1)s" argument invalide du mot clé "FICHIER" du mot clé facteur "CATALOGUE"
 """),

@@ -197,6 +197,7 @@ int aster_set_mpi_barrier(aster_comm_t *node) {
         valk = MakeTabFStr(1, VALK_SIZE);
         SetTabFStr(valk, 0, "MPI_Barrier", VALK_SIZE);
         CALL_UTMESS_CORE("I", "APPELMPI_83", &n1, valk, &n0, &ibid, &n0, &rbid, " ");
+        FreeStr(valk);
         return 1;
     }
 

@@ -51,7 +51,6 @@ subroutine jxouvr(iclas, idn)
     if ( kstini(iclas) == 'DEBUT' ) then
         mode = 2
     endif
-    print *, 'jxouvr: ', nomfic(iclas), ' in: ', kstini(iclas), ' out: ', kstout(iclas)
     if (kstini(iclas) .ne. 'DUMMY   ') then
         ierr = 0
         call get_jvbasename(nomfic(iclas)(1:4), idn, nom512)

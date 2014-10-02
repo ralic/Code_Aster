@@ -89,9 +89,6 @@ Conseil :
 """),
 
 21 : _(u"""
-
-     Réouverture de la base
-
      Nom de la base                          :  %(k1)s
      Créée avec la version                   :  %(k2)s
      Nombre d'enregistrements utilisés       :  %(i1)d
@@ -103,8 +100,6 @@ Conseil :
 """),
 
 22 : _(u"""
-
-     Fermeture de la base
 
      Nom de la base                          :  %(k1)s
      Nombre d'enregistrements utilisés       :  %(i1)d
@@ -198,6 +193,14 @@ Conseil :
 
 43 : _(u"""
      Erreur d'ouverture du fichier %(k1)s , code retour %(i1)d
+"""),
+
+44 : _(u"""
+  Ouverture en lecture du fichier %(k1)s
+"""),
+
+45 : _(u"""
+  Ouverture en écriture du fichier %(k1)s
 """),
 
 47 : _(u"""

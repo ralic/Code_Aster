@@ -18,6 +18,7 @@
 
 #include "aster.h"
 #include "aster_utils.h"
+#include "aster_fort.h"
 
 #define MAX_FAC         256
 #define LONG_NOM_FIC    513
@@ -80,8 +81,10 @@ void DEFSPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname,
         mode = 2 : write
      */
     long iu, nbread;
-    char *fname, smode[4];
+    char *fname, smode[4], *valk;
     int imode;
+    INTEGER n0=0, n1=1, ibid=0;
+    DOUBLE rbid=0.;
 
     imode = (int)(*mode);
     *ierr = 0;
@@ -99,20 +102,25 @@ void DEFSPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname,
     } else {
         strncpy(smode, "wb+", 3);
     }
-    printf("trying open file '%s' using mode '%s'...\n", fname, smode);
+    DEBUG_IODR("trying open file '%s' using mode '%s'...\n", fname, smode);
     fpfile[iu] = fopen(fname, smode);
     if (fpfile[iu] != NULL  ) {
+        valk = MakeTabFStr(1, VALK_SIZE);
+        SetTabFStr(valk, 0, fname, VALK_SIZE);
         if ( imode == 2 ) {
-            printf("open in write mode: %s\n", fname);
+            DEBUG_IODR("open in %s mode: %s\n", "write", fname);
+            CALL_UTMESS_CORE("I", "JEVEUX_45", &n1, valk, &n0, &ibid, &n0, &rbid, " ");
             nenr[iu] = -1;
             *ierr = 0;
         } else {
-            printf("open in read mode: %s\n", fname);
+            DEBUG_IODR("open in %s mode: %s\n", "read", fname);
+            CALL_UTMESS_CORE("I", "JEVEUX_44", &n1, valk, &n0, &ibid, &n0, &rbid, " ");
             nbread=fread(&nenr[iu], OFF_INIT, 1, fpfile[iu]);
         }
+        FreeStr(valk);
     }
     else {
-        printf("open failed: %s\n", fname);
+        DEBUG_IODR("%s failed: %s\n", "open", fname);
         *ierr = -2;
     }
     FreeStr(fname);

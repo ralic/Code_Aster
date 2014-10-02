@@ -77,22 +77,32 @@ to add all traces
 
 /*! debug MPI communicator as aster_comm_t */
 #if defined(__DEBUG_MPICOM__) || defined(__DEBUG_ALL__)
-    #define COMM_DEBUG(c) { DEBUG_LOC; \
-            printf("%-8s #%d (%d/@", (c).name, (int)MPI_Comm_c2f((c).id), (c).level); \
-            if ((c).parent) { printf("%-8s", (c).parent->name); } \
-            else { printf("        "); } \
-            printf(")\n"); fflush(stdout); }
+#   define COMM_DEBUG(c) { DEBUG_LOC; \
+           printf("%-8s #%d (%d/@", (c).name, (int)MPI_Comm_c2f((c).id), (c).level); \
+           if ((c).parent) { printf("%-8s", (c).parent->name); } \
+           else { printf("        "); } \
+           printf(")\n"); fflush(stdout); }
 #else
-    #define COMM_DEBUG(c)
+#   define COMM_DEBUG(c)
 #endif
 
 /*! debug MPI communications */
 #if defined(__DEBUG_MPI__) || defined(__DEBUG_ALL__)
-    #define DEBUG_MPI(fmt, a, b) DBGVV(fmt, a, b)
+#   define DEBUG_MPI(fmt, a, b) DBGVV(fmt, a, b)
 #else
-    #define DEBUG_MPI(fmt, a, b)
+#   define DEBUG_MPI(fmt, a, b)
 #endif
 
 /*! enable DEBUG_ASTER_FONCTIONS */
+#if defined(__DEBUG_ALL__)
+#   define __DEBUG_ASTER_FONCTIONS__
+#endif
+
+/*! enable DEBUG_IODR */
+#if defined(__DEBUG_IODR__) || defined(__DEBUG_ALL__)
+#   define DEBUG_IODR(fmt, a, b) DBGVV(fmt, a, b)
+#else
+#   define DEBUG_IODR
+#endif
 
 #endif

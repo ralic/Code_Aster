@@ -67,7 +67,6 @@ subroutine jxlir1(ic, caralu)
     if ( kstini(ic) == 'DEBUT' ) then
         mode = 2
     endif
-    print *, 'jxlir1: ', nomfic(ic), ' in: ', kstini(ic), ' out: ', kstout(ic)
     nom = nomfic(ic)(1:4)//'.   '
     call get_jvbasename(nomfic(ic)(1:4), 1, nom512)
     inquire (file=nom512,exist=lexist)
@@ -85,7 +84,6 @@ subroutine jxlir1(ic, caralu)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_13', sk=nombas(ic))
     endif
-    print *, 'Lu: ', tampon
     call closdr(nom512, ierr)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_14', sk=nombas(ic))

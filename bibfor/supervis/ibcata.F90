@@ -98,7 +98,6 @@ subroutine ibcata(ier)
 !
 !     --- CATALOGUE DES ELEMENTS ---
     nbcata = 0
-    call utmess('I', 'SUPERVIS_19')
     call uttcpu('CPU.IBCATA', 'INIT', ' ')
     call uttcpu('CPU.IBCATA', 'DEBUT', ' ')
     do 300 icata = 1, nbocc
