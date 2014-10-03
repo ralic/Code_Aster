@@ -3,6 +3,8 @@ subroutine xrela_elim(mesh, sdcont_defi, sd_iden_rela)
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
@@ -13,6 +15,7 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/cfdisi.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -50,18 +53,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbddl
-    parameter  (nbddl=12)
+    integer :: nbddl, nb_term_maxi
+    parameter  (nbddl=12, nb_term_maxi=6)
     character(len=8) :: ddlc(nbddl)
+    integer :: node_nume(nb_term_maxi)
+    character(len=8) :: node_name(nb_term_maxi), cmp_name(nb_term_maxi)
 !
-    integer :: node_nume(2)
-    character(len=8) :: node_name(2), cmp_name(2)
+    character(len=8) :: old_node_name, old_cmp_name
+    character(len=8) :: new_node_name, new_cmp_name
     integer :: iret
-    integer :: nb_crack, nb_dim, nb_edge, nb_iden_rela, nb_iden_term, nb_iden_dof, nb_node
-    integer :: i_rela, i_dim, i_edge, i_crack
-    aster_logical :: l_mult_crack
+    integer :: nb_crack, nb_dim, nb_edge, nb_iden_rela, nb_iden_term, nb_iden_dof, nb_term
+    integer :: nb_rela_init
+    integer :: i_rela, i_dim, i_edge, i_crack, i_term, i_rela_find, i_rela_idx, i_rela_old
+    aster_logical :: l_mult_crack, l_rela_find
     character(len=14) :: sdline_crack
     character(len=24) :: sdline
+    character(len=8), pointer :: list_rela(:) => null()
     character(len=24), pointer :: v_sdline(:) => null()
     integer, pointer :: v_rela_node(:) => null()
     integer, pointer :: v_rela_cmp(:) => null()
@@ -76,6 +83,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    nb_rela_init = 0
     nb_iden_rela = 0
     nb_iden_term = 0
     nb_iden_dof  = 0
@@ -93,9 +101,8 @@ implicit none
 !
     call jelira(sdline, 'LONMAX', nb_crack)
     call jeveuo(sdline, 'L', vk24 = v_sdline)
-    WRITE(6,*) 'Nb_crack:' ,nb_crack
 !
-! - Number of linear relations
+! - Initial number of linear relations
 !
     do i_crack = 1, nb_crack
 !
@@ -108,47 +115,23 @@ implicit none
         call jeexin(sdline_crack, iret)
         if (iret.ne.0) then
             call jelira(sdline_crack, 'LONMAX', nb_edge)
-            nb_edge = nb_edge/2
-            WRITE(6,*) 'Nb_edge:' ,i_crack,nb_edge
-!
-! --------- Multi-cracks or not ?
-!
-            call jeexin(sdline_crack(1:14)//'_LAGR', iret)
-            if (iret .eq. 0) then
-                l_mult_crack = .false.
-            else
-                l_mult_crack = .true.
-            endif
-!
-! --------- Total number of linear relations
-!
-            nb_iden_rela = nb_iden_rela + nb_dim*nb_edge
-!
-! --------- Total number of terms (egality A=B -> 2 terms by identity relation)
-!
-            nb_iden_term = nb_iden_term + 2*nb_edge*nb_dim
+            nb_edge      = nb_edge/2
+            nb_rela_init = nb_rela_init + nb_dim*nb_edge
         endif
     end do
 !
 ! - End of treatment if no relations found
 !
-    if (nb_iden_rela .eq. 0) then
+    if (nb_rela_init .eq. 0) then
         goto 999
     end if
-    WRITE(6,*) 'Nb_iden_rela:' ,nb_iden_rela
-    WRITE(6,*) 'Nb_iden_term:' ,nb_iden_term,l_mult_crack
 !
-! - Create object for identity relations - Informations
+! - Create working vector
 !
-    sd_iden_rela = '&&IDENRELA'
-    call wkvect(sd_iden_rela(1:19)//'.INFO', 'V V I', 4, vi = v_sdiden_info)
-    call wkvect(sd_iden_rela(1:19)//'.DIME', 'V V I', nb_iden_rela, vi = v_sdiden_dime)
+    AS_ALLOCATE(vk8=list_rela, size=nb_rela_init*nb_term_maxi*2)
 !
-! - Create object for identity relations - Collection
-!
-    call jecrec(sd_iden_rela(1:19)//'.COLL', 'V V K8', 'NU', 'CONTIG', 'VARIABLE',&
-                nb_iden_rela)
-    call jeecra(sd_iden_rela(1:19)//'.COLL', 'LONT', ival=nb_iden_term*2)
+! - Eliminate double
+
     i_rela = 0
     do i_crack = 1, nb_crack
 !
@@ -163,7 +146,6 @@ implicit none
 !
 ! ----- Access to nodes
 !
-        nb_node = 2
         call jeveuo(sdline_crack, 'L', vi = v_rela_node)
 !
 ! ----- For multi-cracks
@@ -201,25 +183,114 @@ implicit none
                     cmp_name(2) = ddlc(i_dim)
                 endif
 !
+! ------------- Looking for previous relations
+!
+                l_rela_find = .false.
+                i_rela_find = 0
+                do i_rela_old = 1, i_rela
+                    do i_term = 1, nb_term_maxi
+                        old_node_name = list_rela(2*nb_term_maxi*(i_rela_old-1)+2*(i_term-1)+1)
+                        old_cmp_name  = list_rela(2*nb_term_maxi*(i_rela_old-1)+2*(i_term-1)+2)
+                        if ((old_node_name.eq.node_name(1)).and.(old_cmp_name.eq.cmp_name(1))) then
+                            l_rela_find   = .true.
+                            i_rela_find   = i_rela_old
+                            new_node_name = node_name(2)
+                            new_cmp_name  = cmp_name(2)
+                            goto 20
+                        endif
+                        if ((old_node_name.eq.node_name(2)).and.(old_cmp_name.eq.cmp_name(2))) then
+                            l_rela_find   = .true.
+                            i_rela_find   = i_rela_old
+                            new_node_name = node_name(1)
+                            new_cmp_name  = cmp_name(1)
+                            goto 20
+                        endif
+                    end do
+                end do
+!
+! ------------- Existing relation
+!
+ 20             continue
+                if (l_rela_find) then
+                    if (i_rela_idx.eq.nb_term_maxi) then
+                        call utmess('F','XFEM_53')
+                    endif
+                    i_rela_idx = 0
+                    do i_term = 1, nb_term_maxi
+                        node_name(i_term) = list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_term-1)+1)
+                        if (node_name(i_term).ne.' ') then
+                            i_rela_idx = i_rela_idx + 1
+                        endif
+                    end do
+                    old_node_name = list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_rela_idx-1)+1)
+                    old_cmp_name  = list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_rela_idx-1)+2)
+                    if ((old_node_name.ne.new_node_name).and.&
+                        (old_cmp_name.ne.new_cmp_name)) then
+                        i_rela_idx = i_rela_idx + 1
+                        list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_rela_idx-1)+1) = new_node_name
+                        list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_rela_idx-1)+2) = new_cmp_name
+                        nb_iden_term = nb_iden_term + 1
+                    endif
+                endif
+!
 ! ------------- New relation
 !
-                i_rela = i_rela + 1
-!
-! ------------- Create object in collection
-!
-                call jecroc(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela))
-                call jeecra(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela), 'LONMAX',4)
-                call jeveuo(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela), 'E', vk8 = v_sdiden_term)
-                WRITE(6,*) 'Relation: ',i_rela,node_name(1),cmp_name(1),node_name(2),cmp_name(2)
-!
-! ------------- Set object in collection
-!
-                v_sdiden_dime(i_rela) = nb_node
-                v_sdiden_term(1) = node_name(1)
-                v_sdiden_term(2) = cmp_name(1)
-                v_sdiden_term(3) = node_name(2)
-                v_sdiden_term(4) = cmp_name(2)
+                if (.not.l_rela_find) then
+                    i_rela = i_rela + 1
+                    list_rela(2*nb_term_maxi*(i_rela-1)+1) = node_name(1)
+                    list_rela(2*nb_term_maxi*(i_rela-1)+2) = cmp_name(1)    
+                    list_rela(2*nb_term_maxi*(i_rela-1)+3) = node_name(2)
+                    list_rela(2*nb_term_maxi*(i_rela-1)+4) = cmp_name(2)
+                    nb_iden_term = nb_iden_term + 2            
+                endif
             end do
+        end do
+    end do
+!
+! - Total number of linear relations
+!
+    nb_iden_rela = i_rela
+!
+! - Create object for identity relations - Informations
+!
+    sd_iden_rela = '&&IDENRELA'
+    call wkvect(sd_iden_rela(1:19)//'.INFO', 'V V I', 4, vi = v_sdiden_info)
+    call wkvect(sd_iden_rela(1:19)//'.DIME', 'V V I', nb_iden_rela, vi = v_sdiden_dime)
+!
+! - Create object for identity relations - Collection
+!
+    call jecrec(sd_iden_rela(1:19)//'.COLL', 'V V K8', 'NU', 'CONTIG', 'VARIABLE',&
+                nb_iden_rela)
+    call jeecra(sd_iden_rela(1:19)//'.COLL', 'LONT', ival=nb_iden_term*2)
+!
+! - Set objects
+!
+    do i_rela = 1, nb_iden_rela
+!
+! ----- Terms of relation
+!
+        nb_term = 0
+        do i_term = 1, nb_term_maxi
+            node_name(i_term) = list_rela(2*nb_term_maxi*(i_rela-1)+2*(i_term-1)+1)
+            cmp_name(i_term)  = list_rela(2*nb_term_maxi*(i_rela-1)+2*(i_term-1)+2)
+            if (node_name(i_term).ne.' ') then
+                nb_term = nb_term + 1
+            endif
+        end do
+!
+! ----- Create object in collection
+!
+        call jecroc(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela))
+        call jeecra(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela), 'LONMAX',nb_term*2)
+        call jeveuo(jexnum(sd_iden_rela(1:19)//'.COLL', i_rela), 'E', vk8 = v_sdiden_term)
+!
+! ----- Set object in collection
+!
+        ASSERT(nb_term.ge.2)
+        v_sdiden_dime(i_rela) = nb_term
+        do i_term = 1, nb_term
+            v_sdiden_term(2*(i_term-1)+1) = node_name(i_term)
+            v_sdiden_term(2*(i_term-1)+2) = cmp_name(i_term)
         end do
     end do
 !
@@ -227,12 +298,11 @@ implicit none
 !
     nb_iden_dof  = nb_iden_term-nb_iden_rela
 !
-    ASSERT(i_rela.eq.nb_iden_rela)
-!
     v_sdiden_info(1) = nb_iden_rela
     v_sdiden_info(2) = nb_iden_term
     v_sdiden_info(3) = nb_iden_dof
-    WRITE(6,*) 'XRELA_ELEIm:' ,nb_iden_rela,nb_iden_term,nb_iden_dof
+!
+    AS_DEALLOCATE(vk8=list_rela)
 !
 999 continue
 

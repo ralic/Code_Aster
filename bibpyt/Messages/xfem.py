@@ -344,6 +344,11 @@ cata_msg={
      Par conséquent le post-traitement avec la commande CALC_G n'est pas possible.
 """),
 
+53: _(u"""
+Il y a trop de termes dans la relation d'égalité.
+Utilisez ELIM_ARETE='DUAL'.
+"""),
+
 57: _(u"""
   -> La fissure (ou l'interface) définie dans DEFI_FISS_XFEM ne coupe aucune des mailles
      du maillage. La fissure (ou l'interface) se trouve donc en dehors de la structure ou
