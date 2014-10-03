@@ -1,7 +1,7 @@
 # Configuration file created by waf using data/wscript
-# Libraries, compilers are not relevant 
+# Libraries, compilers are not relevant
 #
-BUILD_TYPE     | env     | -     | waf
+BUILD_TYPE     | env     | -     | waf nocopy
 ENV_SH         | env     | -     | profile.sh
 ADDMEM         | memory  | -     | @ADDMEM@
 DEFS           | defined | -     | @DEFINES@
@@ -11,7 +11,7 @@ PYTHON         | python  | -     | @PYTHON@
 BIN_NODBG      | bin     | -     | @PREFIX@/bin/aster@astervers@
 BIN_DBG        | bin     | -     | @PREFIX@/bin/asterd@astervers@
 BINCMDE        | bin     | -     | @ASTERLIBDIR@/Cata
-BINELE         | bin     | -     | @ASTERLIBDIR@/elements
+BINELE         | bin     | -     | @ASTERLIBDIR@/elem.1
 BINPICKLED     | bin     | -     | @SRC@/build/release/catalo/cata_ele.pickled
 #
 # for as_run --make_shared...
