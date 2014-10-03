@@ -548,13 +548,22 @@ cata_cara_elem = {
 
 cata_liais = {
     'DDL_IMPO' : {
-        'MOT_CLE_EPX': ['BLOQ',],
+        'MOT_CLE_EPX': ['BLOQ','DEPL'],
+        # le choix entre BLOQ et DEPL est fait en dur dans calc_epx_cata
+        # il est fait selon la présence d'une fonction ou non
+        # si fonction => DEPL , sinon BLOQ
         'ASTER'     : ['DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'],
         'EPX'       : ['1', '2', '3', '4', '5', '6'],
         'ENTITE'    : ['GROUP_MA', 'GROUP_NO'],
-        'NB_CLE_MAX' : 6,
-        'VALE_IMPO' : 0.,
-        'FONC_MULT' : False,
+        'NB_CLE_MAX' : {'BLOQ' : 6,
+                        'DEPL' : 1,
+                      },
+        'VALE_IMPO' : {'BLOQ' : 0.,
+                       'DEPL' : None,
+                      },
+        'FONC_MULT' : {'BLOQ' : False,
+                       'DEPL' : True,
+                      },
                   },
     'RELA_CINE_BP' : {
         'MOT_CLE_EPX': ['RELA'],
@@ -658,7 +667,7 @@ for ii in range(1, 25):
 
     
 # Format med des champs depl, vite et acce
-format_med = [
+format_med_6ddl = [
     {
     'NOM_CHAM_MED' : 'DEPL_001',
     'NOM_CMP' : ('DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'),
@@ -678,3 +687,26 @@ format_med = [
     'NOM_CHAM' : 'ACCE'
      },
              ]
+
+format_med_3ddl = [
+    {
+    'NOM_CHAM_MED' : 'DEPL_001',
+    'NOM_CMP' : ('DX', 'DY', 'DZ',),
+    'NOM_CMP_MED' : ('UX', 'UY', 'UZ',),
+    'NOM_CHAM' :'DEPL'
+     },
+    {
+    'NOM_CHAM_MED' : 'VITE_001',
+    'NOM_CMP' : ('DX', 'DY', 'DZ',),
+    'NOM_CMP_MED' : ('VX', 'VY', 'VZ',),
+    'NOM_CHAM' : 'VITE'
+     },
+    {
+    'NOM_CHAM_MED' : 'ACCE_001',
+    'NOM_CMP' : ('DX', 'DY', 'DZ',),
+    'NOM_CMP_MED' : ('GX', 'GY', 'GZ',),
+    'NOM_CHAM' : 'ACCE'
+     },
+             ]
+
+

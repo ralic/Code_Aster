@@ -1,0 +1,215 @@
+# TITRE VALIDATION DES DEPLACEMENTS IMPOSES DANS CALC_EUROPLEXUS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),ERREUR=_F(ERREUR_F='EXCEPTION',),);
+
+MPa = 1000000.0;
+
+
+# ------------------- Lecture du maillage
+
+MAILLAGE=LIRE_MAILLAGE(UNITE=20 )
+
+#
+
+MODELE=AFFE_MODELE(
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = 'GROUPE__CABLE001',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE')
+                            ) )
+
+CARAELEM=AFFE_CARA_ELEM(
+                      MODELE=MODELE,
+                       BARRE=_F(  GROUP_MA = 'GROUPE__CABLE001',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 1.5E-4, ))
+                               )
+
+
+ACIER = DEFI_MATERIAU(ELAS=_F(
+                    E = 200000*MPa,
+                    NU = 0.3,
+                    RHO = 7500,
+                   ),
+                  );
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = 'GROUPE__CABLE001',
+                              MATER = ACIER)
+                              )
+                              )
+
+#
+BLOQ=AFFE_CHAR_MECA(
+            MODELE=MODELE,
+            DDL_IMPO=(
+                      _F(GROUP_MA='GROUPE__CABLE001',
+                         DY = 0.,DZ = 0.,),
+                      _F(GROUP_NO='GRNC1',
+                         DX = 0.,),
+                      ),
+            INFO=1 )
+
+TRAC=AFFE_CHAR_MECA(
+            MODELE=MODELE,
+            DDL_IMPO=(
+                      _F(GROUP_NO='GRNC2',
+                         DX = 0.025,),
+                      _F(GROUP_NO='GRNC3',
+                         DX = 0.05,),
+                      _F(GROUP_NO='GRNC4',
+                         DX = 0.075,),
+                      _F(GROUP_NO='GRNC5',
+                         DX = 0.1,),
+                      ),
+            INFO=1 )
+
+#
+# -----------------------------------------------------------
+# DEFINITION DE LA FORCE D'IMPACT LINEAIRE
+# -----------------------------------------------------------
+
+FONCCB=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    0,
+                           2e-3,  1.0,
+                           3e-3,  1.0,
+                           ),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     );
+
+
+U = CALC_EUROPLEXUS(
+   MODELE=MODELE,
+   CHAM_MATER=CHMATER,
+   COMPORTEMENT =(_F(
+                  RELATION = 'ELAS',
+                  GROUP_MA = ('GROUPE__CABLE001',),
+                 ),
+              ),
+   CARA_ELEM=CARAELEM,
+   EXCIT=(_F(CHARGE=BLOQ,),
+          _F(CHARGE=TRAC,FONC_MULT=FONCCB,),
+         ),
+   LANCEMENT ='OUI',
+   CALCUL = _F(TYPE_DISCRETISATION  ='UTIL',
+               INST_INIT = 0,
+               INST_FIN  = 2e-3,
+               NMAX      = 100,
+               PASFIX    = 2e-5,
+               ),
+   ARCHIVAGE   = _F(PAS_NBRE=10,),
+   );
+
+
+IMPR_RESU(RESU=_F(RESULTAT=U,NUME_ORDRE=(100),NOM_CHAM=('DEPL','SIEF_ELGA')))
+
+
+
+temps=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=2e-3,NOMBRE=1,),
+                                    ),);
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),)
+
+
+
+U_ASTER=STAT_NON_LINE(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELEM,
+                      EXCIT=(_F(CHARGE=BLOQ,),
+                      _F(CHARGE=TRAC,FONC_MULT=FONCCB,),
+                     ),
+                      COMPORTEMENT=(
+                                 _F(RELATION='ELAS',GROUP_MA='GROUPE__CABLE001',DEFORMATION='PETIT_REAC',),
+                                ),
+                      INCREMENT   =_F(LIST_INST=DEFLIST,),
+                      )
+
+IMPR_RESU(RESU=_F(RESULTAT=U_ASTER,NUME_ORDRE=(1),
+          NOM_CHAM=('DEPL','SIEF_ELGA')))
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 1,
+                  RESULTAT=U_ASTER,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NC001005',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.1,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 1,
+                  RESULTAT=U_ASTER,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NC001003',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.05,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 1,
+                  RESULTAT=U_ASTER,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='SG001004',
+                  POINT = 1,
+                  NOM_CMP='N',
+                  VALE_CALC=1428571.42857,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 100,
+                  REFERENCE ='AUTRE_ASTER',
+                  VALE_REFE = 0.1,
+                  RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NC001005',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.1,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 100,
+                  RESULTAT=U,
+                  REFERENCE ='AUTRE_ASTER',
+                  VALE_REFE = 0.05,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NC001003',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.05,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 100,
+                  RESULTAT=U,
+                  REFERENCE ='AUTRE_ASTER',
+                  VALE_REFE = 1428571.42857,
+                  PRECISION = 0.025,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='SG001004',
+                  POINT = 1,
+                  NOM_CMP='N',
+                  VALE_CALC=1463347.84033,
+                  ),
+          )
+
+FIN()

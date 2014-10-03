@@ -127,14 +127,13 @@ def export_charge(epx, EXCIT, MAILLAGE):
             mot_cle_epx = recu_val('o', cata, char, 'MOT_CLE_EPX', None)
             if len(mot_cle_epx) > 1:
                 # choix du mot-clé :
-                #if char == 'DDL_IMPO':
-                    #if fonction:
-                        #mot_cle_epx = mot_cle_epx[1]
-                    #else:
-                        #mot_cle_epx = mot_cle_epx[0]
-                #else:
-                    #raise Exception('cas non traité')
-                raise Exception('cas non traité')
+                if char == 'DDL_IMPO':
+                    if fonction:
+                        mot_cle_epx = mot_cle_epx[1]
+                    else:
+                        mot_cle_epx = mot_cle_epx[0]
+                else:
+                    raise Exception('cas non traité')
             else:
                 mot_cle_epx = mot_cle_epx[0]
 

@@ -211,9 +211,6 @@ le mot-clé %s"""%mc_cara)
                                                         VALE_F=vale_f),
                                                     )
                     dic_mc_cara[mc_cara]['CH_FONC'] = __CH_FON[icar]
-        print 'dic_mc_cara', dic_mc_cara
-        print 'self.dic_mc_cara', self.dic_mc_cara
-        
     # -------------------------------------------------------------------------
     def lire_champs_noeud(self, resu):
         """
@@ -221,18 +218,26 @@ le mot-clé %s"""%mc_cara)
             Création d'un résultat ASTER avec ces champs.
         """
         from Cata.cata import DEFI_FICHIER, LIRE_RESU
-        from Calc_epx.calc_epx_cata import format_med
+        from Calc_epx.calc_epx_cata import format_med_6ddl, format_med_3ddl
+        import med_aster
         
         # RECUPERATION DES DEPL, VITE et ACCE DANS LE FICHIER MED
         self.unite = get_unite_libre()
         #DEFI_FICHIER(UNITE=unite, ACTION='LIBERER')
         fort = 'fort.%i' %self.unite
         if os.path.isfile(fort):
-            print 'remove fort ',fort
             os.remove(fort)
 
         os.symlink(self.FICHIER_MED, fort)
         self.fort = fort
+        dic_champ_med = med_aster.get_nom_champ_med(self.FICHIER_MED)
+        nb_ddl = len(dic_champ_med['DEPL_001'])
+        if nb_ddl == 3:
+            format_med = format_med_3ddl
+        elif nb_ddl == 6:
+            format_med = format_med_6ddl
+        else:
+            raise Exception('%s ddls pour les noeuds du fichier med EPX non prévu')
         
         lire_resu = {
                      'TYPE_RESU' : 'EVOL_NOLI',
@@ -672,12 +677,14 @@ def build_info_mode_epx():
             type_modi = dic_mode['MODI_REPERE']
         else:
             type_modi = None
+
         for typ_ma in dic_mode['MODE_EPX']:
             for mode_epx in dic_mode['MODE_EPX'][typ_ma]:
                 info_mode_epx[mode_epx] = {'NOM_CMP' : nom_cmp,
                                          'NOM_CMP_MED' : nom_cmp_med,
                                          'MC_CARA':mc_cara,
-                                         'MODI_REPERE':type_modi}
+                                         'MODI_REPERE':type_modi,
+                                         }
     return info_mode_epx, dic_mc_cara
     
 def build_info_comp_epx():
