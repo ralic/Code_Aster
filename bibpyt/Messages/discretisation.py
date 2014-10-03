@@ -75,15 +75,6 @@ Conseils :
  Attention : MODE_CALCUL_TPLUS = 'IMPLEX' ne permet qu'un mot clé ADAPTATION
 """),
 
-41 : _(u"""
-  Le préconditionneur <%(k1)s> ne supporte pas la réactualisation automatique.
-"""),
-
-42 : _(u"""
-  Le solveur <%(k1)s> n'est pas un solveur itératif.
-  La réactualisation du préconditionneur n'est donc pas possible.
-"""),
-
 43 : _(u"""
   Vous n'avez pas activé la détection de singularité (NPREC est négatif).
   La découpe du pas de temps en cas d'erreur sur matrice singulière (pivot nul) ne sera

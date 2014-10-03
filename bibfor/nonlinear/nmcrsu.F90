@@ -24,7 +24,6 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 #include "jeveux.h"
 #include "asterc/gettco.h"
 #include "asterc/r8vide.h"
-#include "asterfort/crsvit.h"
 #include "asterfort/crsvsi.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
