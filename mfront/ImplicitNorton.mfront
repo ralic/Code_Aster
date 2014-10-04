@@ -1,13 +1,13 @@
 /*!
  * \file   implicit.mfront
- * \brief  
- * 
+ * \brief
+ *
  * \author Helfer Thomas
  * \date   21 sep 2008
  */
 
 @Parser Implicit;
-@Behaviour NortonJprog;
+@Behaviour ImplicitNorton;
 @Description{
   This file implements the Norton law, described as:
   "$$"
@@ -43,7 +43,7 @@ nu.setGlossaryName("PoissonRatio");
 @LocalVariable real     lambda;
 @LocalVariable real     mu;
 
-// store for the Von Mises stress 
+// store for the Von Mises stress
 // for the tangent operator
 @LocalVariable real seq;
 // store the derivative of the creep function

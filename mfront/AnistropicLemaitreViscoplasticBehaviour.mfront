@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour metalemani;
+@Behaviour AnistropicLemaitreViscoplastic;
 @Author    jmp;
 @Date      03/2014;
 @Description{
@@ -149,7 +149,7 @@ seq.setGlossaryName("HillStress");
   }
   // normale à l'écoulement
   Stensor  n(0.);
-  real inv_sigeq(0);     
+  real inv_sigeq(0);
   if(sigeq > 1.e-10*young){
     inv_sigeq = 1/sigeq;
     n  = (H*sig)*inv_sigeq;

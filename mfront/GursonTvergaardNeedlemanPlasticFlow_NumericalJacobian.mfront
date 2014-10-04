@@ -1,6 +1,5 @@
 @Parser    Implicit;
-//@Behaviour GursonTvergaardNeedlemanPlasticFlow_NumericalJacobian;
-@Behaviour Gurson ;
+@Behaviour GursonTvergaardNeedlemanPlasticFlow_NumericalJacobian;
 @Author    Jeremy Hure;
 @Date      10 Février 2014;
 
@@ -51,7 +50,7 @@ Temp.setEntryName("MaterialTemperature");
 @Parameter  q1    = 1.5;
 @Parameter  q2    = 1.0;
 
-@InitLocalVariables{ 
+@InitLocalVariables{
   using namespace tfel::material::lame;
   /* Calcul des paramètres matériaux */
   lambda = computeLambda(young,nu);

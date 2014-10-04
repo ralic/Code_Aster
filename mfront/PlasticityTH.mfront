@@ -1,5 +1,5 @@
 @Parser IsotropicPlasticMisesFlow;
-@Behaviour Plasticity;
+@Behaviour PlasticityTH;
 @Author Helfer Thomas;
 @Date 23/11/06;
 
@@ -9,7 +9,7 @@ alpha.setGlossaryName("ThermalExpansion");
 @MaterialProperty stress ET;
 @MaterialLaw{"Plasticity_Sy.mfront"};
 
-@LocalVariable stress s0; 
+@LocalVariable stress s0;
 @InitLocalVars{
   T_ = T + theta * dT ;
 s0 = Acier_ElasticYield(T_);

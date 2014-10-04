@@ -1,5 +1,5 @@
 @Parser Implicit;
-@Behaviour mazars;
+@Behaviour ImplicitMazars;
 
 @Algorithm NewtonRaphson_NumericalJacobian;
 @MaximumIncrementValuePerIteration 1.e-3;
@@ -45,7 +45,7 @@ PlaneStress::etozz.setGlossaryName("AxialStrain");
 @InitLocalVars{
   using namespace tfel::material::lame;
   lambda = computeLambda(young,nu);
-  mu = computeMu(young,nu);  
+  mu = computeMu(young,nu);
   e  = eto+deto;
   tr = trace(e);
   s0 = lambda*tr*Stensor::Id()+2*mu*e;
@@ -73,14 +73,14 @@ PlaneStress::etozz.setGlossaryName("AxialStrain");
       }
       for(unsigned short i=0;i!=e.size();++i){
 	      eplus[i]=max(0.,e[i]);
-      }    
+      }
       Dt = (1.-d)*Hooke-COEF*(s0^eplus);
   }
 }
 
 @ComputeStress{
     sig = (1.-d)*(lambda*trace(eel)*Stensor::Id()+2*mu*eel);
-} 
+}
 
 @Integrator{
   //e  = eto+deto;
@@ -114,20 +114,20 @@ PlaneStress::etozz.setGlossaryName("AxialStrain");
   const real eeqc= sqrt(ppe1*ppe1+ppe2*ppe2+ppe3*ppe3);
   eeqcor=max(gam*eeqc,eeqcor);
    A=At*(2*r*r*(1.-2*k)-r*(1-4*k))+Ac*(2*r*r-3*r+1);
-   B=r*r*Bt+(1-r*r)*Bc;    
+   B=r*r*Bt+(1-r*r)*Bc;
   const real Y1=max(ed0,eeqcor);
   Y=max(Y1,Y);
   real dnew=1-(1-A)*ed0/Y-A*exp(-B*(Y-ed0));
   dnew=min(dmax,dnew);
 
-  feel -= deto;    
-  fd = dd-dnew+d;    
+  feel -= deto;
+  fd = dd-dnew+d;
 }
 
 @UpdateAuxiliaryStateVars{
   Tmax=max(Tmax,T);
 }
-  
+
 @Integrator<PlaneStress,Append,AtEnd>{
   // the plane stress equation is satisfied at the end of the time
   // step
@@ -143,5 +143,3 @@ PlaneStress::etozz.setGlossaryName("AxialStrain");
   //dfetozz_ddeel(0) = lambda/young;
   //dfetozz_ddeel(1) = lambda/young;
 }
-
- 

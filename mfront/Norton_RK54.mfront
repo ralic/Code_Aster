@@ -1,6 +1,6 @@
 @Parser RungeKutta;
 @Algorithm rk54;
-@Behaviour NortonExpl;
+@Behaviour Norton_RK54;
 @RequireStiffnessTensor;
 
 @MaterialProperty real A;
@@ -20,4 +20,3 @@
   dp   = A*pow(sigeq,m);
   deel = deto - dp*n;
 }
-  

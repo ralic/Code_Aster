@@ -1,5 +1,5 @@
 @Parser Implicit;
-@Behaviour NortonJNum;
+@Behaviour Norton_Jacnum;
 @Algorithm NewtonRaphson_NumericalJacobian;
 @RequireStiffnessTensor;
 @Epsilon 1.e-12;
@@ -14,7 +14,7 @@
   Dt = D*Je;
 }
 
-@ComputeStress{  sig = D*eel;} 
+@ComputeStress{  sig = D*eel;}
 
 @Integrator{
   real seq = sigmaeq(sig);
@@ -25,4 +25,3 @@
   feel += dp*n-deto;
   fp   -= dt*A*pow(seq,m);
 }
-

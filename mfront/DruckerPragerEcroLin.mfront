@@ -6,7 +6,7 @@
  */
 
 @Parser    Implicit;
-@Behaviour DruckPrag;
+@Behaviour DruckerPragerEcroLin;
 @Algorithm NewtonRaphson_NumericalJacobian;
 
 @Theta 1.;
@@ -54,7 +54,7 @@ p.setGlossaryName("EquivalentPlasticStrain");
   seqel = sigmaeq(sigel);
   Rpel  = sy + H* min(p, p_ult) ;
   Fel   = a*i1el + seqel - Rpel ;
-} 
+}
 
 @ComputeStress{
   sig = lambda*trace(eel)*StrainStensor::Id()+2*mu*eel;
@@ -76,9 +76,9 @@ p.setGlossaryName("EquivalentPlasticStrain");
               Dp =  Fel/(3.*mu+9.*K*a*a) ;
           }
      } else {
-          // projection au sommet        
+          // projection au sommet
           ind = 2 ;
-          Dp = (a*i1el - Rpel) /(9.*K*a*a+H) ;            
+          Dp = (a*i1el - Rpel) /(9.*K*a*a+H) ;
           // verification finale
           if ((p+Dp) > p_ult) {
               Dp = (a*i1el-Rpel)/(9.*K*a*a) ;

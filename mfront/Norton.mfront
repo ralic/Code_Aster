@@ -1,5 +1,5 @@
 @Parser IsotropicMisesCreep;
-@Behaviour NortonSpec;
+@Behaviour Norton;
 @Author Helfer Thomas;
 @Date 23/11/06;
 

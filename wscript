@@ -145,6 +145,7 @@ def configure(self):
     self.recurse('bibc')
     self.recurse('i18n')
     self.recurse('data')
+    self.recurse('mfront')
     # keep compatibility for as_run
     if self.get_define('HAVE_MPI'):
         self.env.ASRUN_MPI_VERSION = 1
@@ -181,6 +182,7 @@ def build(self):
     self.recurse('bibc')
     self.recurse('bibpyt')
     self.recurse('i18n')
+    self.recurse('mfront')
     lsub = ['materiau', 'datg', 'catapy', 'catalo']
     if self.env.install_tests:
         lsub.extend(['astest', '../validation/astest'])

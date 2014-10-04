@@ -1,13 +1,13 @@
 /*!
- * \file   burger.mfront
- * \brief  
+ * \file   BurgerAgeing.mfront
+ * \brief
  *   resolution implicite
  * \author FH
  * \date   13 05 2013
  */
 
 @Parser Implicit;
-@Behaviour burger;
+@Behaviour BurgerAgeing;
 @Algorithm NewtonRaphson_NumericalJacobian;
 @Theta 1.;
 @Epsilon 1.E-11 ;
@@ -15,8 +15,8 @@
 @Includes{
 #include"TFEL/Material/Lame.hxx"
 }
-@MaterialProperty stress young; 
-@MaterialProperty real nu;    
+@MaterialProperty stress young;
+@MaterialProperty real nu;
 @MaterialProperty real KRS;
 @MaterialProperty real NRS;
 @MaterialProperty real NIS;
@@ -53,7 +53,7 @@
   using namespace tfel::material::lame;
   lambda = computeLambda(young,nu);
   mu = computeMu(young,nu);
-} 
+}
 @TangentOperator{
   using namespace tfel::material::lame;
   StiffnessTensor Hooke;
@@ -65,7 +65,7 @@
 
 @ComputeStress{
     sig = lambda*trace(eel)*Stensor::Id()+2*mu*eel;
-} 
+}
 
 @Integrator{
     real stresP=trace(sig)/3.;
@@ -100,7 +100,4 @@
   t0 = t0+dt;
   EF=EF+dEDEVR+dEDEVI+(dESPHR+dESPHI)*Stensor::Id();
  // cout << "temps = " << t0 << endl;
-} 
-  
-  
-
+}

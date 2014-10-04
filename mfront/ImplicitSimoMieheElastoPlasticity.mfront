@@ -1,14 +1,13 @@
 /*!
  * \file   ImplicitFiniteSimoMieheElastoPlasticity.mfront
- * \brief  
- * 
+ * \brief
+ *
  * \author Helfer Thomas
  * \date   23 oct 2013
  */
 
 @Parser    ImplicitFiniteStrain;
-//@Behaviour ImplicitSimoMieheElastoPlasticity;
-@Behaviour Plasimo;
+@Behaviour ImplicitSimoMieheElastoPlasticity;
 @Author T. Helfer;
 @Description{
   J.C. Simo and C. Miehe
@@ -78,7 +77,7 @@ Tref.setDefaultValue(293.15);
   be_tr = push_forward(be,dJ_m1o3*dF);
   StressStensor dev_tK_tr  = mu*deviator(be_tr);
   tKeq_tr = sigmaeq(dev_tK_tr);
-  // check 
+  // check
   b = (tKeq_tr>s_y+R*p);
 } // end of @InitLocalVars
 

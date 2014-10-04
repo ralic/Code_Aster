@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour dd_cfc;
+@Behaviour MonoCristal_DD_CFC;
 @Author    Jean-Michel Proix;
 @Date      11/06/2013;
 @Description{
@@ -84,7 +84,7 @@
   if (alpha>0.){
     C=0.2+0.8*log(alpha*sqrt(sum))/log(alpha*beta*sqrt(rhoref));
   }
-  const real dCdomega = 0.4/log(alpha*beta*sqrt(rhoref))/sum ;  
+  const real dCdomega = 0.4/log(alpha*beta*sqrt(rhoref))/sum ;
   for(unsigned short i=0;i!=Nss;++i){
 
     taufor2[i]=0.0;
@@ -93,7 +93,7 @@
       taufor2[i] +=mh(i,j)*ppomega[j];
     }
     taufor[i]=Mu*C*sqrt(taufor2[i]);
-    
+
     // calcul du terme Hs
     hs[i]=0.;
     hforest[i]=0.0;
@@ -107,8 +107,8 @@
       }
       htot[i]+=sqrt(mh(i,j)*ppomega[j]);
     }
-    hs[i]=a*hforest[i]/htot[i]+b*C*hcopla[i]-y/beta*ppomega[i];    
-      
+    hs[i]=a*hforest[i]/htot[i]+b*C*hcopla[i]-y/beta*ppomega[i];
+
     // cission resolue
     tau[i] = ss.mus[i] | sig ;
     terme[i]=abs(tau[i])/(tauf+taufor[i]);
@@ -124,9 +124,9 @@
       Depsp+=Dg[i]*ss.mus[i] ;
       // termes de la jacobienne
       real dpdtau = pn * (Dp[i] + dt*gamma0)/tau[i] ;
-      dfeel_ddeel  += dpdtau* sgn[i] *( (ss.mus[i]) ^ (ss.mus[i]) ) *D *theta;     
+      dfeel_ddeel  += dpdtau* sgn[i] *( (ss.mus[i]) ^ (ss.mus[i]) ) *D *theta;
       dfomega_ddeel(i)  =  -dpdtau*hs[i]*D*ss.mus[i]*theta ;
-        
+
     } else {
       Dp[i]=0.;
       Dg[i]=0.;
@@ -134,7 +134,7 @@
     fomega[i] = domega[i]-Dp[i]*hs[i];
   }
   feel += Depsp-deto;
-  
+
   // autres termes de la jacobienne
 
   for(unsigned short i=0;i!=Nss;++i){
@@ -148,7 +148,7 @@
     }
     for(unsigned short j=0;j!=Nss;++j){
       real dpidomegaj   = 0.;
-      real dtauidomegaj = 0. ;            
+      real dtauidomegaj = 0. ;
       if (terme[i]>= 1.) {
 	dtauidomegaj = 0.5*Mu*Mu*C/taufor[i]*( 2.*dCdomega*taufor2[i]+C*mh(i,j)) ;
 	dpidomegaj = -pn *(Dp[i]+dt*gamma0)/(tauf+taufor[i])*dtauidomegaj ;
@@ -170,7 +170,7 @@
       }
     }
   }
-} 
+}
 
 @UpdateAuxiliaryStateVars{
   for(unsigned short k=0;k!=Nss;++k){

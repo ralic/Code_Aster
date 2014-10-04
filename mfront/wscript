@@ -1,0 +1,80 @@
+# coding=utf-8
+
+import os
+import os.path as osp
+from glob import glob
+
+from waflib import TaskGen, Task, Errors, Logs, Node
+
+def options(self):
+    group = self.get_option_group('Code_Aster options')
+
+def configure(self):
+    self.find_program('mfront')
+
+def build(self):
+    get_srcs = self.path.get_src().ant_glob
+    excl = (
+        'MonoCristal_DD_CC_InteractionMatrix.mfront',
+        'MonoCristal_DD_CFC_InteractionMatrix.mfront',
+        'MonoCristal_DD_CC_SlidingSystems.mfront',
+        'Plasticity_Sy.mfront',
+        'PolyCristal_Orientation.mfront',
+    )
+    self(
+        features = 'mfront',
+            name = 'mfront',
+      mfront_src = get_srcs('**/*.mfront', excl=excl),
+          target = 'src/libAsterBehaviour.so',
+    install_path = self.env.ASTERLIBDIR,
+    )
+
+###############################################################################
+class CaptureTask(Task.Task):
+    """Capture stderr/stdout and logs them only in case of failure"""
+
+    def exec_command(self, cmd, **kw):
+        try:
+            self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
+        except Errors.WafError, err:
+            if hasattr(err, 'stdout'):
+                Logs.warn('stdout: %s' % err.stdout)
+                Logs.warn('stderr: %s' % err.stderr)
+            raise
+
+###############################################################################
+@TaskGen.feature('mfront')
+def process_mfront(self):
+    """compile .mfront files into libAsterbehaviour.so.
+
+    :param source: mfront source files
+    :type source: strings
+    :param target: name of the shared library
+    :type target: string
+    :param install_path: installation directory
+    :type install_path: string
+    """
+    inst = getattr(self, 'install_path')
+    tgt = self.target
+    if not isinstance(tgt, Node.Node):
+        tgt = self.path.find_or_declare(tgt)
+    task = self.create_task('compile_mfront',
+                            src=self.mfront_src,
+                            tgt=tgt)
+    self.bld.install_files(inst, tgt)
+
+class compile_mfront(CaptureTask):
+    """Build the libAsterBehaviour library"""
+    shell = True
+    color   = 'BLUE'
+
+    def run(self):
+        """Build a .so with all behaviours"""
+        mfr = self.inputs[0].parent
+        cmd = '%s --obuild --interface=aster --search-path=%s %s' % (
+            self.env.MFRONT,
+            mfr.get_src().abspath(),
+            ' '.join([i.abspath() for i in self.inputs])
+        )
+        wrkdir = mfr.get_bld().abspath()
+        return self.exec_command(cmd, cwd=wrkdir)

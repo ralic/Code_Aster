@@ -1,6 +1,6 @@
 @Parser RungeKutta;
 @Algorithm rk54;
-@Behaviour PolyCristal;
+@Behaviour PolyCristals;
 @OrthotropicBehaviour;
 @RequireStiffnessTensor;
 
@@ -52,7 +52,7 @@
 @InitLocalVariables<Append>{
   // fractions volumiques
   for(unsigned short i=0;i!=Np;++i){
-    fv[i]=1.0/static_cast<real>(Np) ; 
+    fv[i]=1.0/static_cast<real>(Np) ;
   }
   // matrice d'interaction
   const real h1 = 1.;
@@ -74,14 +74,14 @@
     PCSlidingSystems::getPolyCristalsSlidingSystems("PolyCristal_Orientation.mfront");
   StressStensor sigg(real(0)) ;
   depsp=Stensor(real(0)) ;
-  // boucle sur le nombre de phases (ou grains) 
+  // boucle sur le nombre de phases (ou grains)
   real pe[Nss] ;
-  for(unsigned short k=0;k!=Np;++k){  
+  for(unsigned short k=0;k!=Np;++k){
     // localisation BZ
     real seq=sigmaeq(sig);
     if (seq>0){
       real alph=1./(1.0+1.5*Mu*pg/seq) ;
-      sigg=sig+Mu*alph*(epsp-epsg[k]);        
+      sigg=sig+Mu*alph*(epsp-epsg[k]);
     }
     for(unsigned short i=0;i!=Nss;++i){
       pe[i] = Q*(1.-exp(-b*p[Nss*k+i])) ;

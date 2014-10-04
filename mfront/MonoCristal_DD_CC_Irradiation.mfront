@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour dd_cc_irra;
+@Behaviour MonoCristal_DD_CC_Irradiation;
 @MaximumIncrementValuePerIteration 1.e-4;
 
 @Author    Jean-Michel Proix;
@@ -72,7 +72,7 @@
 
 @InitLocalVariables<Append>{
   Lc = 500.*b* (T/300.)*(T/300.);
-} 
+}
 
 @Integrator{
   const real deuxpi = 6.2831853071795862;
@@ -103,7 +103,7 @@
       omegap[k]=omega[k]+theta*domega[k];
       if(omegap[k] < 0.) {
           throw(runtime_error("omega négatif"));
-      } 
+      }
   }
 
   for(unsigned short i=0;i!=12;++i){
@@ -114,7 +114,7 @@
           }
       }
       // la dependance a omega_irr est explicite ici
-      omega_tot[i] += omega_irr[i] ;      
+      omega_tot[i] += omega_irr[i] ;
 
       DG_app[i] = k_b*T*log(omega_mob*H/sqrt(omega_tot[i])/epsi_1) ;
       real t1 = 1.0-DG_app[i]/DeltaG_0 ;
@@ -136,10 +136,10 @@
               alphat[i] += mh(i,j)*omegap[j] ;
           }
       }
-      alphat[i] += a_irr * omega_irr[i]  ;      
+      alphat[i] += a_irr * omega_irr[i]  ;
       if(alphat[i] < 0.) {
           throw(runtime_error("alphat[i] négatif"));
-      } 
+      }
       alphat[i] = sqrt(alphat[i]/omega_tot[i]) ;
       ls[i] = max ( (lambda[i] - 2.0 * alphat[i] * Rs[i]) , Lc );
 
@@ -151,10 +151,10 @@
       tau_eff[i] = abs ( tau [i] ) - tau_c[i]  ;
 
       real sgn_tau = 0.0 ;
-      if (abs(tau[i]) > 0. ) { 
-          sgn_tau =tau[i]/abs(tau[i]) ; 
+      if (abs(tau[i]) > 0. ) {
+          sgn_tau =tau[i]/abs(tau[i]) ;
       }
-      
+
       if(tau_eff[i] > tau_0) {
           throw(runtime_error("tau_eff[i] > tau_0"));
       }
@@ -168,39 +168,39 @@
       ostringstream msg;
       msg << "invalid value for tau_c (" << tau_c[i] << ")";
       throw(runtime_error(msg.str()));
-    }      
+    }
       gammap[i] = dt * gamma0 * pow( ( abs(tau[i]) / tau_c[i] ), pn) * sgn_tau ;
-      
+
       inv_gamman[i] = 0. ;
       if (abs(gamman[i]) > 0. ) {
           inv_gamman[i] = 1.0 / gamman[i] ;
       }
-      
+
       inv_gammap[i] = 0. ;
       if (abs(gammap[i]) > 0. ) {
           inv_gammap[i] = 1.0 / gammap[i] ;
       }
-      
+
       Dg[i]=0. ;
       if (abs( inv_gammap[i] + inv_gamman[i]) > 0. ) {
          Dg[i] = 1. / ( inv_gammap[i] + inv_gamman[i] ) ;
       }
-        
+
       Depsp+=Dg[i]* mus[i] ;
 
       ys[i] = 1.0 / (1.0 / y_at + deuxpi * tau_eff[i] / Mu / b) ;
-          
+
       c_eff[i] = 1.0 ;
       if (tau_eff[i] > 0.0){
           c_eff[i] = 1.0 - tau_eff[i] / tau_0  ;
       }
-      
+
       Hs[i]=b/d_lath + c_eff[i] *( sqrt(mh(i,i)*omegap[i])/K_self +alphat[i]*lambda[i]*omega_tot[i]/K_f/b ) - ys[i]*omegap[i]/b;
-      
+
       fomega[i] = domega[i] - abs(Dg[i]) *  Hs[i]  ;
-      
+
       real dgpdtau = 0. ;
-      if (abs(tau[i]) > 0.) { 
+      if (abs(tau[i]) > 0.) {
           dgpdtau = pn * gammap[i] / tau[i] ;
       }
       real dgndtau = 0. ;
@@ -212,19 +212,19 @@
            dgamdtau =  Dg[i]*Dg[i]* (inv_gammap[i]*inv_gammap[i]*dgpdtau +inv_gamman[i] *inv_gamman[i]*dgndtau) ;
       }
       real dydtau = - ys[i]*ys[i]* deuxpi* sgn_tau / (Mu *b ) ;
-      real dhsdtau = -omegap[i]/b* dydtau ; 
+      real dhsdtau = -omegap[i]/b* dydtau ;
       real dceffdtau = 0. ;
       if (tau_eff[i] > 0.0) {
           dceffdtau = - sgn_tau / tau_0 ;
       }
       dhsdtau += ( sqrt ( mh(i,i)*omegap[i] ) / K_self + alphat[i] * lambda[i] * omega_tot[i] / ( K_f*b ) ) * dceffdtau ;
 
-      dfeel_ddeel  += dgamdtau* ( (mus[i]) ^ (mus[i]) ) *D *theta;     
+      dfeel_ddeel  += dgamdtau* ( (mus[i]) ^ (mus[i]) ) *D *theta;
       dfomega_ddeel(i)  =  -(sgn_tau*dgamdtau* Hs[i]+abs(Dg[i])*dhsdtau)*D*mus[i]*theta ;
-      
+
     }
     feel += Depsp-deto;
-  
+
   // autres termes de la jacobienne
 
   for(unsigned short i=0;i!=12;++i){
@@ -247,7 +247,7 @@
           if (abs(DeltaG_0 - DG_app[j]) > 0.) {
               dRjdomegai = 2.*Rs[j] / (DeltaG_0 - DG_app[j] ) *dGappdomegai ;
           }
-          
+
           real dlambdajdomegai = 0. ;
           if (icas[j] < 0.){
               if (i!=j) {
@@ -257,7 +257,7 @@
                   dlambdajdomegai = -2.*b*b/(d+2.*Rs[j])/(d+2.*Rs[j])*dRjdomegai/omega_tot[j] ;
                   if (i!=j) {
                       dlambdajdomegai -= b*b/(d+2.*Rs[j])/omega_tot[j]/omega_tot[j] ;
-                  }          
+                  }
           }
           real dtaultjdomegai=0. ;
           if (tau_LT[j] > 0. ) {
@@ -284,20 +284,20 @@
                dgjdomegai   = Dg[j]*Dg[j]* (inv_gammap[j]*inv_gammap[j]*dgpdomegai +inv_gamman[j] *inv_gamman[j]*dgndomegai) ;
           }
           dfeel_ddomega(i) +=  dgjdomegai *  mus[j] ;
-          
+
           real dceffdomegai = 0.;
           if (tau_eff[j] > 0.) {
               dceffdomegai = dtaucjdomegai / tau_0 ;
           }
           real dyjdomegai = ys[j]*ys[j] *deuxpi / Mu / b *dtaucjdomegai ;
           real dHjdomegai = dceffdomegai * sqrt(mh(j,j)*omegap[j]) / K_self - dyjdomegai * omegap[j]/b ;
-          
+
           dHjdomegai += (dalphatjdomegai*c_eff[j]*lambda[j]*omega_tot[j])/b/K_f;
-          
+
           dHjdomegai += (alphat[j]*dceffdomegai*lambda[j]*omega_tot[j])/b/K_f;
-          
+
           dHjdomegai += (alphat[j]*c_eff[j]*dlambdajdomegai*omega_tot[j])/b/K_f;
-          
+
           if (i!=j){
               dHjdomegai += (alphat[j]*c_eff[j]*lambda[j])/b/K_f;
           }
@@ -307,7 +307,7 @@
           if ( abs(Dg[j]) > small ) {
              dfomega_ddomega(j,i) +=  -Dg[j]/abs(Dg[j])*dgjdomegai*Hs[j] - abs(Dg[j])* dHjdomegai  ;
           }
-      }            
+      }
      }
 }
 
@@ -317,5 +317,3 @@
     omega_irr[i] -= omega_irr[i]*xi_irr*abs(Dg[i]);
   }
 }
-
-

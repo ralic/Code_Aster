@@ -1,13 +1,12 @@
 /*!
  * \file   FiniteSingleCrystal_NumericalJacobian.mfront
- * \brief  
+ * \brief
  * \author Jean-Michel Proix - Helfer Thomas
  * \date   20 mars 2014
  */
 
 @Parser    ImplicitFiniteStrain;
-//@Behaviour FiniteStrainSingleCrystal_NumericalJacobian;
-@Behaviour gdefmonojn;
+@Behaviour FiniteStrainSingleCrystal_NumericalJacobian;
 @Author TH/JMP;
 @Description{
   "Test d'implantation d'une loi "
@@ -187,7 +186,7 @@
    * \[
    * \deriv{\tenseur{\tau}}{\Delta\,\tns{F}}=\deriv{\tenseur{\tau}}{\tns{F}_{e}}\deriv{\tns{F}_{e}}{\Delta\,\tns{F}}
    * \]
-   * 
+   *
    * Nous calculons maintenant chacun des termes du produit.
    */
 
@@ -219,7 +218,7 @@
   const t2tost2<N,stress> dC_dFe = t2tost2<N,real>::dCdF(Fe);
   const t2tost2<N,stress> dS_dFe = 0.5*D*dC_dFe;
   t2tost2<N,stress> dtau_dFe;
-  computePushForwardDerivative(dtau_dFe,dS_dFe,S,Fe); 
+  computePushForwardDerivative(dtau_dFe,dS_dFe,S,Fe);
   /*!
    * Il nous fait maintenant calculer le terme \(\deriv{\tns{F}_{e}}{\Delta\,\tns{F}}\).
    *
@@ -306,7 +305,7 @@
   st2tost2<N,real> Je;
   tvector<12u,Stensor> Jg;
   getPartialJacobianInvert(Je,Jg);
-  // calcul de dinv_Fp_dDF  
+  // calcul de dinv_Fp_dDF
   t2tot2<N,real> dinv_Fp_dDF((ss.mu[0])^(Jg[0]|dfeel_dDF));
   for(unsigned short i=1;i!=12;++i){
     dinv_Fp_dDF += (ss.mu[i])^(Jg[i]|dfeel_dDF);

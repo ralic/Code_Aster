@@ -1,6 +1,5 @@
 @Parser DefaultFiniteStrainParser;
-@Behaviour elasgdef ;
-//@Behaviour SaintVenantKirchhoffElasticity;
+@Behaviour SaintVenantKirchhoffElasticity;
 @Author T. Helfer;
 @Date 19/10/2013;
 @Description{
@@ -27,11 +26,11 @@ nu.setGlossaryName("PoissonRatio");
 }
 
 /*!
- * Nous décrivons ici l'intégration de la loi. 
+ * Nous décrivons ici l'intégration de la loi.
  */
 @Integrator{
   using namespace tfel::material::lame;
-  /*! 
+  /*!
    * Nous commençons par calculer les coefficients de Lame \(\lambda\)
    * et \(\mu\)~:
    * \begin{aligned}
@@ -71,6 +70,6 @@ nu.setGlossaryName("PoissonRatio");
   StiffnessTensor De = lambda*Stensor4::IxI()+2*mu*Stensor4::Id();
   t2tost2<N,stress> dS = 0.5*De*t2tost2<N,strain>::dCdF(F1);
   t2tost2<N,stress> dtau;
-  computePushForwardDerivative(dtau,dS,s,F1); 
+  computePushForwardDerivative(dtau,dS,s,F1);
   Dt = dtau;
 }

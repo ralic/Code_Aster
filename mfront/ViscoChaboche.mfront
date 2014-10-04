@@ -7,7 +7,7 @@
  */
 
 @Parser Implicit;
-@Behaviour Viscochab;
+@Behaviour ViscoChaboche;
 
 @Theta 1.;
 @Epsilon 1.e-12;
@@ -20,11 +20,11 @@
 #include"TFEL/Material/Lame.hxx"
 }
 
-@MaterialProperty stress young; 
+@MaterialProperty stress young;
 young.setGlossaryName("YoungModulus");
-@MaterialProperty real nu;   
+@MaterialProperty real nu;
 nu.setGlossaryName("PoissonRatio");
-@MaterialProperty real alpha; 
+@MaterialProperty real alpha;
 
 @MaterialProperty stress Rinf;
 @MaterialProperty stress R0;
@@ -42,7 +42,7 @@ nu.setGlossaryName("PoissonRatio");
   using namespace tfel::material::lame;
   lambda = computeLambda(young,nu);
   mu     = computeMu(young,nu);
-} 
+}
 
 @TangentOperator{
   using namespace tfel::material::lame;
@@ -61,7 +61,7 @@ nu.setGlossaryName("PoissonRatio");
 
 @ComputeStress{
   sig = lambda*trace(eel)*Stensor::Id()+2*mu*eel;
-} 
+}
 
 
 @Integrator{
@@ -77,11 +77,11 @@ nu.setGlossaryName("PoissonRatio");
      scin                    -= X_;
   }
   const stress seq = sigmaeq(scin);
-  const stress Rp = Rinf + (R0-Rinf)*exp(-b*p_) ;  
+  const stress Rp = Rinf + (R0-Rinf)*exp(-b*p_) ;
   const real F = seq - Rp ;
-  real vp=0.;  
+  real vp=0.;
   real inv_seq = 0. ;
-  
+
   if(F > 0){
     const real Fexp   = UNsurK*pow(F*UNsurK,m-1) ;
     if(seq>eps*young){
@@ -95,14 +95,14 @@ nu.setGlossaryName("PoissonRatio");
       fa[i] = da[i] - dp*(n-g[i]*a_[i]);
     }
     // jacobienne
-    const Stensor4 Jmn  = Stensor4::M() - (n^n);    
+    const Stensor4 Jmn  = Stensor4::M() - (n^n);
     dfeel_ddeel += 2.*mu*theta*dp*Jmn*inv_seq ;
     dfeel_ddp    = n;    // ajouter termes dn/dp si C fonction de p
     dfp_ddeel    = - Fexp*m*dt* 2.*mu*theta*(n| Stensor4::M() )/1.5;
     dfp_ddp      = 1 + theta* Fexp *m *dt*b*(Rinf-Rp);
     for(unsigned short i=0;i!=2;++i){
        dfeel_dda(i)   = -C[i]*dp*theta* inv_seq/1.5*Jmn ;
-       dfp_dda(i)     =  Fexp*m*dt*C[i]*theta/1.5*n;  
+       dfp_dda(i)     =  Fexp*m*dt*C[i]*theta/1.5*n;
        dfa_ddeel(i)   = -2.*mu*theta*dp*Jmn *inv_seq;
        dfa_ddp(i)     = -n + g[i]*a_[i];
        dfa_dda(i,i)   =  (1+dp*g[i]*theta)*Stensor4::Id()+C[i]*dp*theta*inv_seq/1.5*Jmn;
@@ -110,6 +110,6 @@ nu.setGlossaryName("PoissonRatio");
     dfa_dda(0,1)   =  C[1]*dp*theta*inv_seq/1.5*Jmn;
     dfa_dda(1,0)   =  C[0]*dp*theta*inv_seq/1.5*Jmn;
   } else {
-    feel = deel - deto;    
+    feel = deel - deto;
   }
-} 
+}
