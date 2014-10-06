@@ -29,8 +29,8 @@ subroutine aniver(mater)
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
 #include "jeveux.h"
-#include "asterc/indik8.h"
 #include "asterfort/dortvp.h"
+#include "asterfort/indk16.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rccome.h"
@@ -126,17 +126,17 @@ subroutine aniver(mater)
 ! ---     A L'ORTHOTROPIE ET A L'ISOTROPIE TRANSVERSE DANS
 ! ---     LE TABLEAU DU NOM DES COMPOSANTES :
 !         ---------------------------------
-                iel = indik8(valk,'E_L',1,nbr)
-                iet = indik8(valk,'E_T',1,nbr)
-                ien = indik8(valk,'E_N',1,nbr)
+                iel = indk16(valk,'E_L',1,nbr)
+                iet = indk16(valk,'E_T',1,nbr)
+                ien = indk16(valk,'E_N',1,nbr)
 !
-                iglt = indik8(valk,'G_LT',1,nbr)
-                igtn = indik8(valk,'G_TN',1,nbr)
-                igln = indik8(valk,'G_LN',1,nbr)
+                iglt = indk16(valk,'G_LT',1,nbr)
+                igtn = indk16(valk,'G_TN',1,nbr)
+                igln = indk16(valk,'G_LN',1,nbr)
 !
-                inult = indik8(valk,'NU_LT',1,nbr)
-                inutn = indik8(valk,'NU_TN',1,nbr)
-                inuln = indik8(valk,'NU_LN',1,nbr)
+                inult = indk16(valk,'NU_LT',1,nbr)
+                inutn = indk16(valk,'NU_TN',1,nbr)
+                inuln = indk16(valk,'NU_LN',1,nbr)
 !
 ! ---     RECUPERATION DES COMPOSANTES RELATIVES A L'ORTHOTROPIE
 ! ---     ET A L'ISOTROPIE TRANSVERSE :
