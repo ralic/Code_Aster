@@ -223,8 +223,6 @@ OPTION__
                                      ZVARIPG  PVARIMR  CCAMASS  PCAMASS
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
-                              OUT__  N3NEUT_R PGNEUTR
     GRAD_NEUT9_R        398   IN__   NGEOMER  PGEOMER  N9NEUT_R PNEUTER
                               OUT__  G27NEUTR PGNEUTR
     INDIC_ENER          -1    IN__

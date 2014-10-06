@@ -280,8 +280,6 @@ OPTION__
                           OUT__ EKTHETA  PGTHETA  
     CARA_GEOM         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
-    CFL_XFEM         118  IN__  NGEOMER  PGEOMER  
-                          OUT__ E1NEUTR  PLONCAR  
     CHAR_LIMITE       -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_EPSA_R 426  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  
@@ -426,8 +424,6 @@ OPTION__
                                 ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     GRAD_NEUT9_R     398  IN__  NGEOMER  PGEOMER  N9NEUT_R PNEUTER  
                           OUT__ G27NEUTR PGNEUTR  
-    GRAD_NEUT_R       24  IN__  NGEOMER  PGEOMER  N1NEUT_R PNEUTER  
-                          OUT__ E3NEUT_R PGNEUTR  
     G_BILI            95  IN__  DDL_MECA PDEPLAU  DDL_MECA PDEPLAV  NGEOMER  PGEOMER  CMATERC  PMATERC  
                                 DDL_MECA PTHETAR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                                 CEPSINR  UEPSINR  CPESANR  UPESANR  NFORCER  UPFRVOL  CROTATR  UROTATR  
@@ -461,8 +457,6 @@ OPTION__
                           OUT__ MMATZZR  PMATZZR  
     MECA_GYRO        159  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CROTATR  PROTATR  ZVARCPG  PVARCPR
                           OUT__ MMATUNS  PMATUNS
-    MOY_NOEU_S       118  IN__  N1NEUT_R PNEUTR   
-                          OUT__ E1NEUTR  PMOYEL   
     M_GAMMA           12  IN__  DDL_MECA PACCELR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  
                           OUT__ MVECTUR  PVECTUR  
     NORME_FROB       563  IN__  EMNEUT_I PCALCI   EGNEUT_R PCHAMPG  EMNEUT_R PCOEFR   EGGEOP_R PCOORPG  
@@ -567,7 +561,3 @@ OPTION__
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  CSOUSOP  PSOUSOP  ZVARCPG  PVARCPR  
                                 ZVARIPG  PVARIPG  
                           OUT__ EDOMGGA  PSIGISG  EWEIBUL  PWEIBUL  
-    XFEM_SMPLX_CALC  118  IN__  E1NEUTR  PGRANDF  E3NEUT_R PGRLS    N1NEUT_R PLSNO    E3NEUT_R PNIELNO  
-                          OUT__ N1NEUT_R PALPHA   E1NEUTR  PDPHI    
-    XFEM_SMPLX_INIT  118  IN__  NGEOMER  PGEOMER  
-                          OUT__ E1NEUTR  PMEAST   E3NEUT_R PNIELNO

@@ -7,7 +7,7 @@ subroutine xgrals(noma, ln, lt, grlt, grln)
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/xgrals_ligr.h"
+#include "asterfort/x_tmp_ligr.h"
     character(len=8) :: noma
     character(len=19) :: ln, lt, grlt, grln
 !
@@ -54,7 +54,7 @@ subroutine xgrals(noma, ln, lt, grlt, grln)
 ! - creation d'un LIGREL temporaire pour calcul / option GRAD_NEUT_R 
 !
     ligrel = '&&XGRALS.LIGREL    '
-    call xgrals_ligr(noma,ligrel)
+    call x_tmp_ligr(noma, ligrel)
 !
     chgrlt = '&&OP0112.CHGRLT'
     chgrln = '&&OP0112.CHGRLN'

@@ -1,4 +1,4 @@
-subroutine xprini(model, noma, cnxinv, grille, fispre,&
+subroutine xprini(ligrel, noma, cnxinv, grille, fispre,&
                   fiss, cnsln, cnslt, cnsgls, noesom,&
                   noresi, vcn, grlr, lcmin)
     implicit none
@@ -25,7 +25,8 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 #include "asterfort/xprcfl.h"
 #include "asterfort/xprcnu.h"
 !
-    character(len=8) :: model, noma, fispre, fiss
+    character(len=8) :: noma, fispre, fiss
+    character(len=19) :: ligrel
     character(len=19) :: cnsln, cnslt, cnsgls, noesom, noresi, cnxinv
     character(len=24) :: vcn, grlr
     aster_logical :: grille
@@ -55,11 +56,11 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
 !                                                  XPRUPW
 !
 !    ENTREE
-!        MODEL   : NOM DU CONCEPT MODELE
+!        ligrel  : nom du ligrel pour appel a calcul
 !        NOMA    : NOM DU CONCEPT MAILLAGE
 !        CNXINV  : CONNECTIVITE INVERSEE DU MAILLAGE NOMA
-!        GRILLE  : .TRUE. SI MODEL EST UNE GRILLE AUXILIAIRE
-!                  .FALSE. SI MODEL N'EST PAS UNE GRILLE AUXILIAIRE
+!        GRILLE  : .TRUE. SI NOMA EST UNE GRILLE AUXILIAIRE
+!                  .FALSE. SI NOMA N'EST PAS UNE GRILLE AUXILIAIRE
 !        FISPRE  : NOM DE LA FISSURE PRECEDENTE
 !        FISS    : NOM DE LA FISSURE CALCULEE
 !        CNSLN   : CHAM_NO_S DES VALEURS DE LEVEL SET NORMALE
@@ -89,7 +90,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     integer :: nbnoma, inoa, inob, nunoa, nunob, ibid
     character(len=8) :: lpain(4), lpaout(2), method, nomno
     character(len=19) :: celmt, maiff
-    character(len=24) :: ligrel, lchin(1), lchout(2)
+    character(len=24) :: lchin(1), lchout(2)
     real(kind=8) :: p(3), ff(3), dist, lsna, lsnb, lsta, lstb, rayon
     aster_logical :: coupln, couplt
     real(kind=8) :: damax
@@ -105,8 +106,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     call infmaj()
     call infniv(ifm, niv)
 !
-!  RECUPERATION DU MODELE ET DU MAILLAGE
-    ligrel = model//'.MODELE'
+!  RECUPERATION INFOS DU MAILLAGE
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
@@ -122,7 +122,7 @@ subroutine xprini(model, noma, cnxinv, grille, fispre,&
     endif
 !
     if ((method.ne.'UPWIND' .and. method.ne.'UPW_FMM' ) .and. (.not.grille)) then
-        call xprcfl(model, lcmin)
+        call xprcfl(ligrel, lcmin)
     else
         write(ifm,*)'   LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE:'&
      &               //' ',lcmin

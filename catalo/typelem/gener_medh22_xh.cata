@@ -247,8 +247,6 @@ OPTION__
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      -1    IN__
                               OUT__  XXXXXX   XXXXXX
-    GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
-                              OUT__  N2NEUT_R PGNEUTR
     INDIC_ENER          -1    IN__
                               OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__

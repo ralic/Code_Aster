@@ -38,6 +38,7 @@ subroutine op0010()
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscno.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -60,6 +61,7 @@ subroutine op0010()
 #include "asterfort/xajuls.h"
 #include "asterfort/xbaslo.h"
 #include "asterfort/xenrch.h"
+#include "asterfort/x_tmp_ligr.h"
 #include "asterfort/xlenri.h"
 #include "asterfort/xpraju.h"
 #include "asterfort/xprdis.h"
@@ -99,14 +101,14 @@ subroutine op0010()
     integer :: numfis
 !
 !     LEVELSET AUXILIARY MESH
-    character(len=8) :: unomo, unoma, griaux
+    character(len=8) :: unoma
     integer :: jlisno
     character(len=19) :: ucnslt, ucnsln, ugrlt, ugrln, ucnxin, disfr, nodtor
-    character(len=19) :: eletor, liggrd
+    character(len=19) :: eletor, liggrd, ligr_dnoma, ligr_noma
     aster_logical :: grille, locdom
 !
-!     DUMMY MODEL
-    character(len=8) :: dnoma, dnomo
+!     DUMMY MESH
+    character(len=8) :: dnoma
     character(len=19) :: dcnslt, dcnsln, dgrlt, dgrln, dcnxin
 !
 !     FIELD PROJECTION
@@ -184,17 +186,15 @@ subroutine op0010()
         call utmess('F', 'XFEM2_89', nk=2, valk=msgout)
     endif
 !
-! --- RETRIEVE THE NAME OF THE MODEL THAT SHOULD BE USED AS AN AUXILIARY
+! --- RETRIEVE THE NAME OF THE MESH THAT SHOULD BE USED AS AN AUXILIARY
 !     GRID FOR THE EVALUATION OF THE LEVELSETS.
 !
     call jeexin(fispre//'.GRI.MAILLA', ibid)
     if (ibid .eq. 0) then
 !        NO AUXILIARY GRID USED
-        griaux=' '
         grille=.false.
     else
 !        AUXILIARY GRID USED
-        call getvid(' ', 'MODELE_GRILLE', scal=griaux, nbret=ibid)
         grille=.true.
     endif
 !
@@ -342,10 +342,8 @@ subroutine op0010()
 !-----------------------------------------------------------------------
     if (grille) then
 !
-        unomo = griaux
-!
 !        RETRIEVE THE NAME OF THE MAILLAGE
-        call jeveuo(unomo//'.MODELE    .LGRF', 'L', iadrma)
+        call jeveuo(fispre//'.GRI.MAILLA', 'L', iadrma)
         unoma = zk8(iadrma)
 !
 !        RETRIEVE THE LEVELSETS AND THEIR GRADIENTS ON THE AUXILIARY
@@ -451,7 +449,6 @@ subroutine op0010()
     if (grille) then
 !
         dnoma = unoma
-        dnomo = unomo
         dcnslt = ucnslt
         dcnsln = ucnsln
         dgrlt = ugrlt
@@ -461,7 +458,6 @@ subroutine op0010()
     else
 !
         dnoma = noma
-        dnomo = nomo
         dcnslt = cnslt
         dcnsln = cnsln
         dgrlt = grlt
@@ -469,6 +465,9 @@ subroutine op0010()
         dcnxin = cnxinv
 !
     endif
+!
+    ligr_dnoma='&&OP0010.LIGDMA'
+    call x_tmp_ligr(dnoma, ligr_dnoma)
 !
 !-----------------------------------------------------------------------
 !     INITIALISE THE SIMPLEXE OR THE UPWIND SCHEME
@@ -494,7 +493,8 @@ subroutine op0010()
 !     FISPRE AND FISS ARE NOT USED BY THE UPWIND SCHEMA. HOWEVER THEY
 !     ARE PASSED TO THE SUBROUTINE IN ORDER TO USE THE SAME SUBROUTINE
 !     FOR THE SIMPLEXE AND UPWIND SCHEMA.
-    call xprini(dnomo, dnoma, dcnxin, grille, fispre,&
+!
+    call xprini(ligr_dnoma, dnoma, dcnxin, grille, fispre,&
                 fiss, dcnsln, dcnslt, dgrlt, noesom,&
                 noresi, vcn, grlr, lcmin)
 !
@@ -607,7 +607,7 @@ subroutine op0010()
     eletor='&&OP0010.ELETOR'
     liggrd='&&OP0010.LIGGRD'
 !
-    call xprtor(method, dnomo, dnoma, dcnxin, fispre,&
+    call xprtor(method, dnoma, dcnxin, fispre,&
                 fiss, vcn, grlr, dcnsln, dgrln,&
                 dcnslt, dgrlt, locdom, radtor, radimp,&
                 cnsdis, disfr, cnsbl, nodtor, eletor,&
@@ -640,7 +640,7 @@ subroutine op0010()
     endif
 !
     if ((.not.locdom) .and. (niv.ge.0)) then
-        if (griaux .eq. ' ') then
+        if (.not.grille) then
             write(ifm,*)'   LE DOMAINE DE CALCUL COINCIDE AVEC LE'//&
      &                  ' MODELE PHYSIQUE ',nomo
         else
@@ -840,7 +840,6 @@ subroutine op0010()
     call jedetr(cnsdis)
     call jedetr(nodtor)
     call jedetr(eletor)
-    call jedetr(liggrd)
     call jedetr(vpoint)
     call jedetr(cnsbet)
     call jedetr(listp)
@@ -852,6 +851,9 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !
     if (grille) then
+!
+        ligr_noma ='&&OP0010.LIGMAI'
+        call x_tmp_ligr(noma, ligr_noma)
 !
 !       CREATE THE CHAMP_NO WITH THE NEW VALUES OF THE LEVELSETS AND
 !       THEIR GRADIENTS. THE EXISTING CHAMP_NO ARE AUTOMATICALLY
@@ -866,7 +868,7 @@ subroutine op0010()
                     'F', ibid)
 !
 !       PROJECT THE LEVEL SETS
-        call xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
+        call xprpls(ligr_noma, dnoma, dcnsln, dcnslt, noma,&
                     cnsln, cnslt, grln, grlt, corres,&
                     ndim, ndomp, edomg)
 !
@@ -1044,6 +1046,11 @@ subroutine op0010()
 !     FIN
 !-----------------------------------------------------------------------
     call jedetr(cnxinv)
+    call detrsd('LIGREL', liggrd)
+    call detrsd('LIGREL', ligr_dnoma)
+    if (grille) then
+        call detrsd('LIGREL', ligr_noma)
+    endif
 !
     901 format (10x,37('-'))
     903 format (10x,35('-'))

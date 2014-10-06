@@ -1,4 +1,4 @@
-subroutine xprcfl(model, lcmin)
+subroutine xprcfl(ligrel, lcmin)
     implicit none
 !
 #include "jeveux.h"
@@ -8,10 +8,10 @@ subroutine xprcfl(model, lcmin)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/megeom.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/memaxm.h"
     real(kind=8) :: lcmin, lcmin1(1)
-    character(len=8) :: model
+    character(len=19) :: ligrel
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ subroutine xprcfl(model, lcmin)
 !    MINIMALE DES ARETES DU MAILLAGE
 !
 !    ENTREE
-!        MODEL   : NOM DU CONCEPT MODELE
+!        ligrel  : nom du ligrel pour appel a calcul
 !
 !    SORTIE
 !        LCMIN   : LONGUEUR CARACTERISTIQUE MINIMALE DU MAILLAGE
@@ -50,7 +50,8 @@ subroutine xprcfl(model, lcmin)
     integer :: ifm, niv
     character(len=8) :: lpain(1), lpaout(1)
     character(len=19) :: cellc
-    character(len=24) :: ligrel, chgeom, lchin(1), lchout(1)
+    character(len=24) :: chgeom, lchin(1), lchout(1)
+    character(len=8), pointer :: lgrf(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -62,8 +63,9 @@ subroutine xprcfl(model, lcmin)
 !
     cellc='&&XPRCFL.CELLC'
 !
-    call megeom(model, chgeom)
-    ligrel=model//'.MODELE'
+    call jeveuo(ligrel(1:19)//'.LGRF', 'L', vk8=lgrf)
+    chgeom = lgrf(1)//'.COORDO'
+!
     lpain(1)='PGEOMER'
     lchin(1)=chgeom
     lpaout(1)='PLONCAR'

@@ -1,4 +1,4 @@
-subroutine xprtor(method, model, noma, cnxinv, fispre,&
+subroutine xprtor(method, noma, cnxinv, fispre,&
                   fiss, vcn, grlr, cnsln, grln,&
                   cnslt, grlt, tore, radtor, radimp,&
                   cnsdis, disfr, cnsbl, nodcal, elecal,&
@@ -29,8 +29,9 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/x_tmp_ligr.h"
 !
-    character(len=8) :: method, model, noma, fispre, fiss
+    character(len=8) :: method, noma, fispre, fiss
     character(len=19) :: cnsln, grln, cnslt, grlt, nodcal, elecal, cnsdis, disfr
     character(len=19) :: cnsbl, cnxinv, liggrd
     character(len=24) :: vcn, grlr, vcnt, grlrt
@@ -70,8 +71,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !    ------
 !      METHOD = METHODE UTILISE POUR LA REINITIALISATION ET LA
 !               REORTHOGONALISATION DES LEVEL SETS (UPWIND/SIMPLEXE)
-!      MODEL  = NOM DU MODELE SUR LEQUEL LES LEVEL SETS SONT DEFINIES
-!      NOMA   = NOM DU MAILLAGE DU MODELE
+!      NOMA   = NOM DU MAILLAGE
 !      CNXINV = CONNECTIVITE INVERSEE DU MAILLAGE NOMA
 !      FISPRE = NOM DU CONCEPT FISSURE X-FEM DE LA FISSURE A PROPAGER
 !      FISS   = NOM DU CONCEPT FISSURE X-FEM DE LA NOUVELLE FISSURE
@@ -200,7 +200,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
         do i = 1, nbma
 !
 !           WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
-!           THE MODEL
+!           THE MESH
             itypma=typmail(i)
             eldim=tmdim(itypma)
 !
@@ -252,7 +252,8 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
         end do
 !
 !        CREATE THE LIGREL
-        call exlim1(zi(jeleca), neleto, model, 'V', liggrd)
+        call x_tmp_ligr(noma, liggrd, list_cells=elecal,&
+                           n_list_cells=neleto)
 !
         call wkvect(fiss//'.PRO.NOEUD_TORE', 'G V L', nnodgr, jnocal)
         do i = 1, nnodgr
@@ -305,7 +306,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !           PROPAGATION STEP. ALL THE NODES WERE CONSIDERED IN THE
 !           CALCULATION. A LIST WITH ALL THE NODES TO .TRUE. IS THEN
 !           CREATED.
-            call wkvect(lisold, 'G V L', nnodgr, jlisol)
+            call wkvect(lisold, 'V V L', nnodgr, jlisol)
 !
             do i = 1, nnodgr
                 zl(jlisol-1+i) = .true.
@@ -346,7 +347,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                     numelm=zi(jnoel-1+j)
 !
 !                 WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
-!                 THE MODEL
+!                 THE MESH
                     itypma=typmail(numelm)
                     eldim=tmdim(itypma)
 !
@@ -425,7 +426,7 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
                     numelm=zi(jnoel-1+j)
 !
 !                 WORK ONLY WITH THE ELEMENTS OF THE SAME DIMENSION OF
-!                 THE MODEL
+!                 THE MESH
                     itypma=typmail(numelm)
                     eldim=tmdim(itypma)
 !
@@ -637,7 +638,8 @@ subroutine xprtor(method, model, noma, cnxinv, fispre,&
 !        ***********************************************************
 !
 !        CREATE THE LIGREL
-        call exlim1(zi(jeleca), neleto, model, 'V', liggrd)
+        call x_tmp_ligr(noma, liggrd, list_cells=elecal,&
+                           n_list_cells=neleto)
 !
 !        ***********************************************************
 !        CALCULATE THE GRADIENTS OF THE LEVEL SETS

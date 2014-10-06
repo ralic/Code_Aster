@@ -1,4 +1,4 @@
-subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
+subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
                   cnsln, cnslt, grln, grlt, corres,&
                   ndim, ndomp, edomg)
     implicit none
@@ -22,8 +22,9 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/pj2dco.h"
 #include "asterfort/pj3dco.h"
-    character(len=8) :: dnomo, nomo, noma
+    character(len=8) :: dnoma, noma
     character(len=16) :: corres
+    character(len=19) :: ligrel
     character(len=19) :: dcnsln, dcnslt, cnsln, cnslt, grln, grlt, ndomp, edomg
     integer :: ndim
 !
@@ -59,9 +60,13 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !  ENTREE
 !  ------
 !
+!     ligrel = nom du ligrel construit sur l'ensemble des mailles 
+!              principales du maillage physique pour appel au calcul
+!              du gradient des levels-set
+!
 !    * MODELE POUR LA REPRESENTATION DES LEVEL SETS
 !      --------------------------------------------
-!     DNOMO  = NOM DU MODELE
+!     DNOMA  = NOM DU MAILLAGE
 !     DCNSLN = CHAMP_NO_S DES VALEURS DE LA LEVEL SET NORMALE
 !     DCNSLT = CHAMP_NO_S DES VALEURS DE LA LEVEL SET TANGENTE
 !     EDOMG  = VOIR XPRDOM.F
@@ -69,7 +74,6 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !
 !    * MODELE PHYSIQUE
 !      ---------------
-!     NOMO   = NOM DU MODELE
 !     NOMA   = NOME DU MAILLAGE
 !     CNSLN  = CHAMP_NO_S DES VALEURS DE LA LEVEL SET NORMALE
 !     CNSLT  = CHAMP_NO_S DES VALEURS DE LA LEVEL SET TANGENTE
@@ -77,7 +81,7 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !     GRLT   = CHAMP_NO_S DES VALEURS DU GRADIENT DE CNSLT
 !     NDOMP  = VOIR XPRDOM.F
 !
-!     NDIM   = DIMENSION DU MODELE (DNOMO OU NOMO)
+!     NDIM   = DIMENSION DU MAILLAGE
 !
 !
 !  SORTIE
@@ -110,7 +114,7 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
     real(kind=8) :: distma
     character(len=8) :: lpain(4), lpaout(2)
     character(len=19) :: cnols, celgls, chams
-    character(len=24) :: lchin(4), lchout(2), ligrel
+    character(len=24) :: lchin(4), lchout(2)
 !
 !     GENERAL PURPOSE
     integer :: i, ibid
@@ -151,11 +155,11 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
 !        CREATE THE "CONNECTION" TABLE BETWEEN THE PHYSICAL AND
 !        AUXILIARY MESHES
     if (ndim .eq. 2) then
-        call pj2dco('PARTIE', dnomo, nomo, nbelpr, zi(jefrom),&
+        call pj2dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom),&
                     nunopr, zi(jnto), ' ', ' ', corres,&
                     ldmax, distma)
     else
-        call pj3dco('PARTIE', dnomo, nomo, nbelpr, zi(jefrom),&
+        call pj3dco('PARTIE', dnoma, noma, nbelpr, zi(jefrom),&
                     nunopr, zi(jnto), ' ', ' ', corres,&
                     ldmax, distma)
     endif
@@ -223,7 +227,6 @@ subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
     endif
 !
 !        NORMAL LEVEL SET
-    ligrel = nomo//'.MODELE'
     cnols = '&&OP0010.GR.CNOLS'
     celgls = '&&OP0010.GR.CELGLS'
     chams = '&&OP0010.GR.CHAMS'

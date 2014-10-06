@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xprini(model, noma, cnxinv, grille, fispre,&
+    subroutine xprini(ligrel, noma, cnxinv, grille, fispre,&
                       fiss, cnsln, cnslt, cnsgls, noesom,&
                       noresi, vcn, grlr, lcmin)
-        character(len=8) :: model
+        character(len=19) :: ligrel
         character(len=8) :: noma
         character(len=19) :: cnxinv
         aster_logical :: grille

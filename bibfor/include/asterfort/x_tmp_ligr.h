@@ -16,8 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xgrals_ligr(mesh, ligrel)
+    subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(inout) :: ligrel
-    end subroutine xgrals_ligr
+        character(len=19), optional, intent(in) :: list_cells
+        integer, optional, intent(in) :: n_list_cells
+    end subroutine x_tmp_ligr
 end interface

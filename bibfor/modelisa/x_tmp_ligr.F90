@@ -1,4 +1,4 @@
-subroutine xgrals_ligr(mesh, ligrel)
+subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -22,6 +22,8 @@ subroutine xgrals_ligr(mesh, ligrel)
 #include "asterfort/wkvect.h"
     character(len=8), intent(in) :: mesh
     character(len=19), intent(inout) :: ligrel
+    character(len=19), optional, intent(in) :: list_cells
+    integer, optional, intent(in) :: n_list_cells
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,20 +44,37 @@ subroutine xgrals_ligr(mesh, ligrel)
 ! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
 !
-! DEFI_FISS_XFEM : creer un ligrel defini sur la liste des mailles 
-!                  principales du maillage
+! DEFI_FISS_XFEM / PROPA_FISS :
+! -----------------------------
+! - creer un ligrel temporaire (dans la base volatile) defini sur une
+!   liste de mailles principales du maillage "mesh"
+! - si les arguments optionnels "list_cells" et "n_list_cells" sont
+!   absents, on prend toutes les mailles principales de "mesh"
 !
 ! Version simplifiee de ce qui est fait dans op0018 (AFFE_MODELE)
 !
-!    in     : mesh   -> maillage renseigne sout le MCS MAILLAGE
+! ----------------------------------------------------------------------
+!
+!    in     : mesh   -> nom du maillage
+!
 !    in/out : ligrel -> ligrel cree uniquement a partir des mailles 
 !                       principales de "mesh"
+!
+!    optionnel, in : list_cells   -> nom d'un vecteur jeveux contenant 
+!                                    liste de numero de mailles 
+!
+!    optionnel, in : n_list_cells -> longueur du vecteur "list_cells"
+!
+! ----------------------------------------------------------------------
+!
+! Attention : "list_cells" doit etre une sous-liste de la liste
+! de toutes les mailles principales de "mesh"
 !
 ! ----------------------------------------------------------------------
 !
     integer :: nu_ma, nu_typ_ma, dim_ma, nu_typ_el1, nu_typ_el2
     integer :: i, nbma, ndim, nmaprin, idx_modeli, nb_grel, lont_liel
-    integer :: nume_grel, long_grel, idx_in_grel
+    integer :: ncells, nume_grel, long_grel, idx_in_grel
     integer, pointer :: p_ligrel_nbno(:) => null()
     integer, pointer :: lmatout(:) => null()
     integer, pointer :: lmatmp(:) => null()
@@ -64,14 +83,27 @@ subroutine xgrals_ligr(mesh, ligrel)
     integer, pointer :: p_mesh_type_geom(:) => null()
     integer, pointer :: p_dim_topo(:) => null()
     integer, pointer :: p_liel(:) => null()
+    integer, pointer :: p_list_cells(:) => null()
     character(len=8), pointer :: p_ligrel_lgrf(:) => null()
     character(len=16) :: phenom, modeli(3)
     character(len=24) :: liel, lgrf, nbno
-    aster_logical :: l_calc_rigi
+    aster_logical :: all_cells
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+!
+! - Check presence and coherence of optional arguments
+!
+    all_cells = .true.
+!
+    if (present(list_cells)) then
+        ASSERT(present(n_list_cells))
+        all_cells = .false.
+    endif
+    if (present(n_list_cells)) then
+        ASSERT(present(list_cells))
+    endif
 !
 ! - Give a name for temporary LIGREL used to compute GRAD_NEUT_R option
 !
@@ -81,12 +113,12 @@ subroutine xgrals_ligr(mesh, ligrel)
 !
 ! - Common definition for ligrel SD
 !
-    call wkvect(lgrf, 'G V K8', 2, vk8 = p_ligrel_lgrf)
-    call wkvect(nbno, 'G V I' , 1, vi  = p_ligrel_nbno)
+    call wkvect(lgrf, 'V V K8', 2, vk8 = p_ligrel_lgrf)
+    call wkvect(nbno, 'V V I' , 1, vi  = p_ligrel_nbno)
     call jeecra(lgrf, 'DOCU', cval='MECA')
     p_ligrel_lgrf(1) = mesh
 !   no sd_model => no sd_partition to get for this ligrel :
-!     -> GRAD_NEUT_R option is computed sequentially
+!     -> options will be computed sequentially
     p_ligrel_lgrf(2) = ''
     p_ligrel_nbno(1) = 0
 !
@@ -95,32 +127,53 @@ subroutine xgrals_ligr(mesh, ligrel)
     call dismoi('DIM_GEOM', mesh, 'MAILLAGE', repi=ndim)
     ASSERT(ndim .eq. 2 .or. ndim .eq. 3)
 !
-! - Get list of cells of dimension "ndim" that belong to mesh
+! - Get list of cells to treat
 !
-    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
-    ASSERT(nbma.gt.0)
-    AS_ALLOCATE(vi=lmatout, size=nbma)
-    AS_ALLOCATE(vi=lmatmp, size=nbma)
-    do i=1,nbma
-        lmatout(i) = i
-        lmatmp(i)  = 0
-    enddo
+    if (all_cells) then
 !
-    call utflm2(mesh, lmatout, nbma, ndim, ' ', nmaprin, lmatmp)
-    ASSERT(nmaprin .gt. 0)
-    AS_ALLOCATE(vi=lmaprin, size=nmaprin)
-    do i=1,nmaprin
-        lmaprin(i) = lmatmp(i)
-    enddo
-    AS_DEALLOCATE(vi=lmatout)
-    AS_DEALLOCATE(vi=lmatmp)
+! ----- Get list of all cells of dimension "ndim" that belong to mesh
+!
+        call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nbma)
+        ASSERT(nbma.gt.0)
+        AS_ALLOCATE(vi=lmatout, size=nbma)
+        AS_ALLOCATE(vi=lmatmp, size=nbma)
+        do i=1,nbma
+            lmatout(i) = i
+            lmatmp(i)  = 0
+        enddo
+!
+        call utflm2(mesh, lmatout, nbma, ndim, ' ', nmaprin, lmatmp)
+        ASSERT(nmaprin .gt. 0)
+        AS_ALLOCATE(vi=lmaprin, size=nmaprin)
+        do i=1,nmaprin
+            lmaprin(i) = lmatmp(i)
+        enddo
+        AS_DEALLOCATE(vi=lmatout)
+        AS_DEALLOCATE(vi=lmatmp)
+!
+    else
+!
+! ----- Get list of all cells "p_list_cells" (optional argument)
+!
+        call jeveuo(list_cells, 'L', vi=p_list_cells)
+!
+    endif
+!
+! - Get number of cells to treat
+!
+    if (all_cells) then
+        ncells = nmaprin
+    else
+        ncells = n_list_cells
+    endif
+    ASSERT(ncells .gt. 0)
 !
 ! - Set modelisation type acording to dimension "ndim"
-!
-    phenom    = 'MECANIQUE       '
+!                
+    phenom    = 'PRESENTATION    '
     modeli(1) = '                '
-    modeli(2) = 'D_PLAN          '
-    modeli(3) = '3D              '
+    modeli(2) = '2D_GEOM         '
+    modeli(3) = '3D_GEOM         '
 !
 ! - Get cell type ids in mesh
 !
@@ -135,8 +188,14 @@ subroutine xgrals_ligr(mesh, ligrel)
 !
     nb_grel    = 0
     nu_typ_el2 = 0
-    do i=1,nmaprin
-        nu_ma = lmaprin(i)
+    do i=1,ncells
+!
+        if (all_cells) then
+            nu_ma = lmaprin(i)
+        else
+            nu_ma = p_list_cells(i)
+        endif
+!
         nu_typ_ma = p_mesh_type_geom(nu_ma)
 !       current cell dimension != mesh dimension => fatal error
         call jeveuo(jexnum('&CATA.TM.TMDIM', nu_typ_ma), 'L', vi=p_dim_topo)
@@ -153,7 +212,7 @@ subroutine xgrals_ligr(mesh, ligrel)
 !
 ! - Create LIEL
 !
-    lont_liel = nb_grel+nmaprin
+    lont_liel = nb_grel+ncells
     call jecrec(liel, 'V V I', 'NU', 'CONTIG', 'VARIABLE', nb_grel)
     call jeecra(liel, 'LONT', lont_liel)
     call jeveuo(liel, 'E', vi=p_liel)
@@ -164,8 +223,14 @@ subroutine xgrals_ligr(mesh, ligrel)
     nume_grel   = 0
     long_grel   = 0
     idx_in_grel = 0
-    do i=1,nmaprin
-        nu_ma = lmaprin(i)
+    do i=1,ncells
+!
+        if (all_cells) then
+            nu_ma = lmaprin(i)
+        else
+            nu_ma = p_list_cells(i)
+        endif
+!
         nu_typ_ma = p_mesh_type_geom(nu_ma)
         nu_typ_el1 = p_cata_typ_el(nu_typ_ma)
 !
@@ -190,7 +255,7 @@ subroutine xgrals_ligr(mesh, ligrel)
 !
 ! ----- Last element
 !
-        if (i .eq. nmaprin) then
+        if (i .eq. ncells) then
             nume_grel   = nume_grel+1
             long_grel   = long_grel+1
             idx_in_grel = idx_in_grel+1
@@ -199,7 +264,6 @@ subroutine xgrals_ligr(mesh, ligrel)
             call jeecra(jexnum(liel, nume_grel), 'LONMAX', long_grel)
         endif
     end do
-    AS_DEALLOCATE(vi=lmaprin)
 !
 ! - Automatic GREL size adaptation
 !
@@ -211,8 +275,13 @@ subroutine xgrals_ligr(mesh, ligrel)
 !
 ! - Init elements for this LIGREL
 !
-    call initel(ligrel, l_calc_rigi)
-    ASSERT(l_calc_rigi)
+    call initel(ligrel)
+!
+! - De-allocation of tmp arrays
+!
+    if (all_cells) then
+        AS_DEALLOCATE(vi=lmaprin)
+    endif
 !
     call jedema()
 !

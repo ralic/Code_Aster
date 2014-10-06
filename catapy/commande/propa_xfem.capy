@@ -22,8 +22,6 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
     
     MODELE        =SIMP(statut='o',typ=modele_sdaster),
 
-    MODELE_GRILLE =SIMP(statut='f',typ=modele_sdaster),
-
     TEST_MAIL     =SIMP(statut='f',typ='TXM',into=("NON","OUI",),defaut="NON"),
 
     DA_MAX        =SIMP(statut='o',typ='R'),

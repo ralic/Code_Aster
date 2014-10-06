@@ -18,13 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xprtor(method, model, noma, cnxinv, fispre,&
+    subroutine xprtor(method, noma, cnxinv, fispre,&
                       fiss, vcn, grlr, cnsln, grln,&
                       cnslt, grlt, tore, radtor, radimp,&
                       cnsdis, disfr, cnsbl, nodcal, elecal,&
                       liggrd, vcnt, grlrt)
         character(len=8) :: method
-        character(len=8) :: model
         character(len=8) :: noma
         character(len=19) :: cnxinv
         character(len=8) :: fispre

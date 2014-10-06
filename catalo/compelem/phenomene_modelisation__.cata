@@ -2132,9 +2132,10 @@ PHENOMENE_MODELISATION__
 
 %=============================================================================================
 % le phenomene / modelisation  suivant est "neutre"
-% Il sert actuellement dans IMPR_RESU
 
    PHENOMENE__  PRESENTATION       CODE__  'PR'
+
+% La modelisation suivante sert dans IMPR_RESU
 
        MODELISATION__ 'TOUT'             DIM__ 3 3   CODE__ 'TOU'
               MAILLE__ HEXA27    ELEMENT__ PR_HEXA27
@@ -2157,3 +2158,22 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ PR_SEG3
               MAILLE__ SEG2      ELEMENT__ PR_SEG2
               MAILLE__ POI1      ELEMENT__ PR_POI1
+
+% Les deux modelisations suivantes servent pour des calculs purement
+% geometriques lies a XFEM
+
+       MODELISATION__ '3D_GEOM'             DIM__ 3 3   CODE__ 'G3D'
+              MAILLE__ HEXA20    ELEMENT__ PR_G_HEXA20
+              MAILLE__ HEXA8     ELEMENT__ PR_G_HEXA8
+              MAILLE__ PENTA15   ELEMENT__ PR_G_PENTA15
+              MAILLE__ PENTA6    ELEMENT__ PR_G_PENTA6
+              MAILLE__ TETRA10   ELEMENT__ PR_G_TETRA10
+              MAILLE__ TETRA4    ELEMENT__ PR_G_TETRA4
+              MAILLE__ PYRAM13   ELEMENT__ PR_G_PYRAM13
+              MAILLE__ PYRAM5    ELEMENT__ PR_G_PYRAM5
+
+       MODELISATION__ '2D_GEOM'             DIM__ 2 2   CODE__ 'G2D'
+              MAILLE__ QUAD8     ELEMENT__ PR_G_QUAD8
+              MAILLE__ QUAD4     ELEMENT__ PR_G_QUAD4
+              MAILLE__ TRIA6     ELEMENT__ PR_G_TRIA6
+              MAILLE__ TRIA3     ELEMENT__ PR_G_TRIA3

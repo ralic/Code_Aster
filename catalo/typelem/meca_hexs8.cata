@@ -361,8 +361,6 @@ OPTION__
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     GRAD_NEUT9_R        398   IN__   NGEOMER  PGEOMER  N9NEUT_R PNEUTER
                               OUT__  G27NEUTR PGNEUTR
-    GRAD_NEUT_R         24    IN__   NGEOMER  PGEOMER  N1NEUT_R PNEUTER
-                              OUT__  E3NEUT_R PGNEUTR
     INDIC_ENER          491   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR
                               OUT__  EENERR   PENERD1  EENERR   PENERD2

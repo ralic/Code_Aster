@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xprpls(dnomo, dcnsln, dcnslt, nomo, noma,&
+    subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma,&
                       cnsln, cnslt, grln, grlt, corres,&
                       ndim, ndomp, edomg)
-        character(len=8) :: dnomo
+        character(len=19) :: ligrel
+        character(len=8) :: dnoma
         character(len=19) :: dcnsln
         character(len=19) :: dcnslt
-        character(len=8) :: nomo
         character(len=8) :: noma
         character(len=19) :: cnsln
         character(len=19) :: cnslt
