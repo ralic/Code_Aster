@@ -60,7 +60,6 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
 #include "asterfort/mnlbil.h"
 #include "asterfort/mnlcir.h"
 #include "asterfort/mnluil.h"
-#include "asterfort/nmop45.h"
 #include "asterc/r8depi.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/vprecu.h"
@@ -143,12 +142,12 @@ subroutine mnlali(reprise, modini, imat, xcdl, parcho,&
     clnm='&&MNLALI.RECUP     '
     if (reprise) then
         call vprecu(modini, 'DEPL', -1, [0], clnm,&
-                    0, '', '', '', '',&
+                    0, ' ', ' ', ' ', ' ',&
                     neqv, nbmode, typmod, nbpari, nbparr,&
                     nbpark)
     else
         call vprecu(lnm, 'DEPL', -1, [0], clnm,&
-                    0, '', '', '', '',&
+                    0, ' ', ' ', ' ', ' ',&
                     neqv, nbmode, typmod, nbpari, nbparr,&
                     nbpark)
     endif

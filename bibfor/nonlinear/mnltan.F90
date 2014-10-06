@@ -106,9 +106,9 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- ON RESOUD TANGENTE=DRDV\[0 ... 0 1]
 ! ----------------------------------------------------------------------
-    call resoud(matdrv, '', '', '', 1,&
-                '', '', 'v', zr(ib), [cbid],&
-                '', .false._1, 0, iret)
+    call resoud(matdrv, ' ', ' ', ' ', 1,&
+                ' ', ' ', 'v', zr(ib), [cbid],&
+                ' ', .false._1, 0, iret)
     call dcopy(ninc, zr(ib), 1, zr(itang), 1)
 ! ----------------------------------------------------------------------
 ! --- ON NORMALISE LE VECTEUR TANGENT

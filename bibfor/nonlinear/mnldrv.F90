@@ -76,7 +76,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
     aster_logical :: lcal
     integer :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
-    character(len=19) :: matdrv
+    character(len=19) :: matdrv, solveu
     real(kind=8) :: vecplu(ninc)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
@@ -314,7 +314,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
         call jedetr(numdrv//'.SMOS.SMHC')
 ! ---   AU CAS OU LA MATRICE A ETE FACTORISEE
         call jeveuo(matdrv//'.REFA', 'E', irefa)
-        zk24(irefa-1+8)=''
+        zk24(irefa-1+8)=' '
 ! ---   REMPLISSAGE CHAMP SMDI, SMHC ET VALE
         call jecrec(matdrv//'.VALM', 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
                     2)
@@ -346,7 +346,7 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
     else
         call jeveuo(matdrv//'.REFA', 'E', irefa)
-        zk24(irefa-1+8)=''
+        zk24(irefa-1+8)=' '
         call jeveuo(numdrv//'.SMOS.SMDI', 'L', ismdi)
         call jeveuo(jexnum(matdrv//'.VALM', 1), 'E', ival1)
         call jeveuo(jexnum(matdrv//'.VALM', 2), 'E', ival2)
@@ -356,7 +356,9 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
 ! ----------------------------------------------------------------------
 ! --- FACTORISATION DE LA MATRICE
 ! ----------------------------------------------------------------------
-    call preres(' ', 'V', iret, ' ', matdrv,&
+    call jeveuo(matdrv//'.REFA', 'L', irefa)
+    solveu=zk24(irefa-1+7)(1:19)
+    call preres(solveu, 'V', iret, ' ', matdrv,&
                 ibid, -9999)
 !
     call jedema()

@@ -1,7 +1,6 @@
 subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
                   nbpt, neq, nbhar, imat, numedd,&
                   parcho, nbchoc, vk8, modrep)
-! aslint: disable=W1306
 !
 !
 ! ======================================================================
@@ -60,7 +59,9 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/vtcrem.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+
     aster_logical :: reprise, suite
     character(len=4) :: nomsym(1)
     character(len=8) :: nomres, nomrep, baseno, k8b, nomtab, modrep
@@ -76,10 +77,11 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
     integer :: nbchoc
     integer :: harmaxa, harmax, inspec
     real(kind=8) :: rvide, valr(2), freq, energ, xnorm, valrt(6)
-    real(kind=8) :: espec(nbhar+1), nspec(neq)
+    real(kind=8) :: espec(nbhar+1)
     complex(kind=8) :: cvide
     character(len=8), pointer :: cmp(:) => null()
     real(kind=8), pointer :: orig(:) => null()
+    real(kind=8), pointer :: nspec(:) => null()
     integer, pointer :: bif(:) => null()
     character(len=8), pointer :: noeu(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -91,10 +93,14 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
     call jemarq()
     call getres(nomres, typres, nomcmd)
 !
-    if (nomres .ne. modrep) then
+    if (reprise) then
+      if (nomres .ne. modrep) then
         suite = .true.
-    else
+      else
         suite = .false.
+      endif
+    else
+      suite = .false.
     endif
 !
     rvide = r8vide()
@@ -150,6 +156,7 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
 !
     nmodes = 2*nbhar+1
 !
+    AS_ALLOCATE(vr=nspec,size=neq)
 !
 !     BOUCLE SUR LES NUMEROS D ORDRE    
     do 100 iordr = 1, nbordr
@@ -263,6 +270,8 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr,&
 !
 100 continue
 !
+    AS_DEALLOCATE(vr=nspec)
+
     if (.not. reprise) then
 ! TABLE POUR LES CARACTERISTIQUES DE CHOC
         call tbcrsd(nomtab, 'G')

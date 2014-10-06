@@ -83,10 +83,12 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     integer :: j, nunoe, iadim, pdlmax, neq, iei, ier2, i, iorig
     integer :: icmp, icmp1, icmp2, iorigx, iorigy, iorigz
     character(len=19) :: matk, matm, nomcmp1, nomcmp2, origx, origy, origz
+    character(len=19) :: solveu
     character(len=8) :: tchoc, kvide, typval, mailla
     character(len=8) :: noeud(2)
     character(len=8) :: cmp(6)
     character(len=24) :: magrno, manono, grno
+    character(len=24), pointer :: refa(:) => null()
     real(kind=8) :: orig(3)
     complex(kind=8) :: cbid
     real(kind=8), pointer :: ei2(:) => null()
@@ -160,6 +162,8 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 ! --- RECUPERATION : NOM DE LA MATRICE DE RAIDEUR ET DU VECTEUR D'INDICE
 ! ----------------------------------------------------------------------
     matk=zk24(zi(imat(1)+1))(1:19)
+    call jeveuo(matk(1:19)//'.REFA', 'L', vk24=refa)
+    solveu = refa(7)(1:19)
     matm=zk24(zi(imat(2)+1))(1:19)
     call jeveuo(xcdl, 'L', iind)
 ! ----------------------------------------------------------------------
@@ -273,22 +277,10 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     call jeveuo(adime, 'E', iadim)
     neq = zi(imat(1)+2)
     call wkvect('&&MNLCHO.EI', 'V V R', neq, iei)
-! --- ON CREE DEUX MATRICES DE SUBSTITUTION POUR LA FACTORISATION
-!        call mtdefs('&&mnlcho.adime.matk', matk, 'V', ' ')
-!        call mtcmbl(1, 'R', 1.d0, matk, '&&mnlcho.adime.matk',&
-!                ' ', ' ', 'ELIM1')
-!        call mtdefs('&&mnlcho.adime.matm', matm, 'V', ' ')
-!        call mtcmbl(1, 'R', 1.d0, matm, '&&mnlcho.adime.matm',&
-!                ' ', ' ', 'ELIM1')
-! --- ON FACTORISE LES DEUX MATRICES DE SUBSTITUTION
-!        call preres(' ', 'V', ier, '', '&&mnlcho.adime.matm',&
-!                ier2, 0)
-!        zr(iei-1+pdlmax)=1.d0
-!
 ! ------------------------------------------------------------------
 ! --- ON RECUPERE KUi (POUR ADIMENSIONNE LA MATRICE DE RAIDEUR)
     zr(iei-1+pdlmax)=1.d0
-    call preres(' ', 'V', ier, '', matk,&
+    call preres(solveu, 'V', ier, ' ', matk,&
                 ier2, 0)
     call resoud(matk, ' ', ' ', ' ', 1,&
                 ' ', ' ', 'V', zr(iei), [cbid],&
@@ -296,7 +288,7 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
     zr(iadim-1+1)=1.d0/zr(iei-1+pdlmax)
 ! --- ON RECUPERE MUi (POUR ADIMENSIONNE LA MATRICE DE MASSE)
     if (lcine) then
-        call preres(' ', 'V', ier, '', matm,&
+        call preres(solveu, 'V', ier, ' ', matm,&
                     ier2, 0)
         call dscal(neq, 0.d0, zr(iei), 1)
         zr(iei-1+pdlmax)=1.d0
@@ -309,8 +301,6 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
             zr(iei-1+k)=1.d0
         end do
         AS_ALLOCATE(vr=ei2, size=neq)
-!        call mrmult('ZERO', imat(1), zr(iei), ei2, 1, .true._1)
-!        zr(iadim-1+1)=ddot(neq,zr(iei),1,ei2,1)
         call dscal(neq, 0.d0, ei2, 1)
         call mrmult('ZERO', imat(2), zr(iei), ei2, 1,&
                     .true._1)
@@ -328,7 +318,9 @@ subroutine mnlcho(reprise, imat, numedd, xcdl, nd,&
 !    call detrsd('MATR_ASSE','&&mnlcho.adime.matk')
 !    call detrsd('MATR_ASSE','&&mnlcho.adime.matm')
     call jedetr('&&MNLCHO.EI')
-    AS_DEALLOCATE(vr=ei2)
+    if (.not. lcine) then
+        AS_DEALLOCATE(vr=ei2)
+    endif
 !
     call jedema()
 !

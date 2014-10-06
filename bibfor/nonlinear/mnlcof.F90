@@ -146,9 +146,9 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho,&
         end do
         fpnl(ninc)=0.d0
 ! ---   RESOLUTION DU SYSTEME LINEAIRE UPS(:,P) = K\FPNL
-        call resoud(matdrv, '', '', '', 1,&
-                    '', '', 'v', fpnl, [cbid],&
-                    '', .false._1, 0, iret)
+        call resoud(matdrv, ' ', ' ', ' ', 1,&
+                    ' ', ' ', 'v', fpnl, [cbid],&
+                    ' ', .false._1, 0, iret)
         call dcopy(ninc, fpnl, 1, zr(iups+p*ninc), 1)
     end do
 ! ----------------------------------------------------------------------
