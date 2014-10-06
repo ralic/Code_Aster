@@ -6,7 +6,6 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/utfk16.h"
     character(len=8) :: chmat, nommat(*)
     character(len=16) :: nomrc
     integer :: nbmtrc
@@ -85,7 +84,6 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
                   ipos=k
                endif   
             end do
-!            call utfk16(zk32(arc), nbrc, nomrc, ipos)
             if (ipos .gt. 0) then
                 nbmtrc = nbmtrc + 1
                 nommat(nbmtrc) = kmat
