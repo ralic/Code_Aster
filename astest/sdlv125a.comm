@@ -1,4 +1,4 @@
-# TITRE CREATION D'UNE SD RESULTAT A PARTIR DE MESURES AVEC OBSERVATION
+# TITRE IDENTIFICATION DE CHARGEMENT A PARTIR DE REPONSE INTERSPECTRALE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -477,7 +477,7 @@ for ind in range(len(test_no)):
                        ACTION = _F(OPERATION = 'OPER', FORMULE = RAPPORT, NOM_PARA='DELTA/REFE'))
 
     TEST_TABLE(CRITERE='ABSOLU',
-               REFERENCE='AUTRE_ASTER',
+               REFERENCE='ANALYTIQUE',
                PRECISION=0.2,
                VALE_CALC=l_vale_calc[ind],
                VALE_REFE=0.0,
