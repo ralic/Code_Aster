@@ -63,7 +63,6 @@ subroutine mnlgen(numdrv, matdrv, ninc)
     integer :: i_ligr_link, i_ligr_sstr
     integer, pointer :: prgene_orig(:) => null()
     integer, pointer :: prgene_prno(:) => null()
-    integer :: jnslv
     integer :: ibid, mrefa, mdesc, ismde
 !
 ! ----------------------------------------------------------------------
@@ -71,8 +70,6 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! ----------------------------------------------------------------------
     solveu=numdrv//'.SOLV'
     call cresol(solveu)
-    call wkvect(numdrv//'.NSLV', 'V V K24', 1, jnslv)
-    zk24(jnslv)=solveu
 ! ----------------------------------------------------------------------
 ! --- CREATION DU NUME_DDL_GENE ASSOCIEE A LA MATRICE JACOBIENNE
 ! ----------------------------------------------------------------------
@@ -116,15 +113,15 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! ----------------------------------------------------------------------
 ! --- REFA
     call wkvect(matdrv//'.REFA', 'V V K24', 20, mrefa)
-    zk24(mrefa-1+1)=''
+    zk24(mrefa-1+1)=' '
     zk24(mrefa-1+2)=numdrv
-    zk24(mrefa-1+3)=''
+    zk24(mrefa-1+3)=' '
     zk24(mrefa-1+4)='&&MELANGE'
-    zk24(mrefa-1+5)=''
-    zk24(mrefa-1+6)=''
+    zk24(mrefa-1+5)=' '
+    zk24(mrefa-1+6)=' '
     zk24(mrefa-1+7)=solveu
 !    numdrv//'.SOLV'
-    zk24(mrefa-1+8)=''
+    zk24(mrefa-1+8)=' '
     zk24(mrefa-1+9)='MR'
     zk24(mrefa-1+10)='GENE'
     zk24(mrefa-1+11)='MPI_COMPLET'
