@@ -55,6 +55,14 @@ Comportement - Occurrence  %(i1)d"""),
   Pour les kits métallurgiques en grandes déformations, on n'affiche pas d'informations sur le nom des variables internes.
 """),
 
+13: _(u"""
+  Il y a deux types de modélisations différents pour une même affectation du comportement MFRONT.
+  Chaque occurrence de COMPORTEMENT avec relation MFRONT doit contenir un seul type de modélisation.
+  Par exemple, une occurrence pour les groupes de mailles contenant des éléments 3D (et comportement MFRONT),
+  puis une occurrence pour les groupes de mailles contenant des éléments discrets (et comportement ELAS).
+  
+  Les types de modélisation rencontrés à l'occurrence numéro %(i1)d sont : %(k1)s et %(k2)s.
+"""),
 
 20: _(u"""         V%(i1)d : %(k1)s"""),
 

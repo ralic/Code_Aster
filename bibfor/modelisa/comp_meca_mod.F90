@@ -13,6 +13,8 @@ subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/teattr.h"
+#include "asterfort/utmess.h"
+
 !
 ! ======================================================================
 ! COPYRIGHT (C) 2091 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +33,7 @@ subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc, ndime_model
+    integer :: iocc, ndime_model
     character(len=8), intent(in) :: model
     character(len=16), intent(out) :: nom_mod_mfront
 !
@@ -54,19 +56,18 @@ subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
     integer :: nt, nb_elem_affe, nb_elem, j_elem_affe, ielem, nume_elem
-    integer :: nutyel, iret, itypma, ndime
+    integer :: nutyel, iret
     logical :: l_affe_all
     character(len=24) :: list_elem_affe
-    character(len=16) :: motcle(2), notype, type_elem, type_elem_save
-    character(len=8) :: typmcl(2), mesh, typma
+    character(len=16) :: motcle(2), notype, type_elem, type_elem_save,principal
+    character(len=8) :: typmcl(2), mesh
+    character(len=1) :: d1
     integer, pointer :: maille(:) => null()
-    integer, pointer :: typmail(:) => null()
 
     call jemarq()
 !
     call jeveuo(model//'.MAILLE', 'L', vi=maille)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
-    call jeveuo(mesh//'.TYPMAIL', 'L', vi=typmail)
 !
     list_elem_affe = '&&COMPMECASAVE.LIST'
     motcle(1)   = 'GROUP_MA'
@@ -101,38 +102,45 @@ subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
         else
             nume_elem = zi(j_elem_affe-1+ielem)
         endif
-        itypma = typmail(nume_elem)
-        call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-!
-        call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
-        if ( ndime.eq.ndime_model ) then
 !
 ! --------- Recherche du type d'element
 !
-            nutyel = maille(nume_elem)
+        nutyel = maille(nume_elem)
+        if (nutyel.ne.0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
 !
 ! --------- Type de modelisation
 !
             call teattr('C', 'TYPMOD', type_elem, iret, typel=notype)
+            call teattr('C', 'PRINCIPAL', principal, iret, typel=notype)
+            call teattr('C', 'DIM_TOPO_MODELI', d1, iret, typel=notype)
+            read(d1,'(I1)') ndime_model
+
+            if (principal(1:3) .eq. 'OUI') then
 !
-            if ( type_elem_save.eq.' ' ) type_elem_save = type_elem
-            ASSERT(type_elem_save.eq.type_elem)
+                if ( type_elem_save.eq.' ' ) type_elem_save = type_elem
+
+                if (type_elem_save.ne.type_elem) then
+                  call utmess('F','COMPOR4_13', si=iocc, nk=2, &
+                              valk=[type_elem_save, type_elem])
+                endif
 !
-            if ( type_elem.eq.'COMP3D' ) then
-                nom_mod_mfront = '_Tridimensional'
-            elseif ( type_elem.eq.'C_PLAN' ) then
-                nom_mod_mfront = '_PlaneStress'
-            elseif ( type_elem.eq.'D_PLAN' ) then
-                nom_mod_mfront = '_PlaneStrain'
-            elseif ( type_elem.eq.'AXIS' ) then
-                nom_mod_mfront = '_Axisymmetrical'
-            elseif ( type_elem.eq.'NON_DEFINI' ) then
-!  dasn phenomes_modelisation.cata, il manque l'attribut TYPMOD pour la THM
-                nom_mod_mfront = '_Tridimensional'
-            else
-                ASSERT(.false.)
+                if ( type_elem.eq.'COMP3D' ) then
+                    nom_mod_mfront = '_Tridimensional'
+                elseif ( type_elem.eq.'C_PLAN' ) then
+                    nom_mod_mfront = '_PlaneStress'
+                elseif ( type_elem.eq.'D_PLAN' ) then
+                    nom_mod_mfront = '_PlaneStrain'
+                elseif ( type_elem.eq.'AXIS' ) then
+                    nom_mod_mfront = '_Axisymmetrical'
+                elseif ( type_elem.eq.'NON_DEFINI' ) then
+! dans phenomene_modelisation.cata, il manque l'attribut TYPMOD pour la THM
+                    nom_mod_mfront = '_Tridimensional'
+                else
+                    ASSERT(.false.)
+                endif
             endif
+
         endif
 !
     enddo

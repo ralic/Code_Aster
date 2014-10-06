@@ -95,14 +95,11 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: ddsddt(6), drplde(6), celent, stran(9), dsidep(6, 6)
     real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt
     real(kind=8) :: depsth(6), epsth(6), rac2, usrac2, drott(3, 3),detf
-    character(len=16) :: compor(*), option, nom_mod_mfront
+    character(len=16) :: compor(*), option
     character(len=8) :: typmod(*), lvarc(npred)
     character(len=*) :: fami
     character(len=80) :: cmname
     common/tdim/  ntens  , ndi
-    integer :: ii, dimaki
-!     DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
-    parameter (dimaki=9)
     data idbg/1/
 !
 !     NTENS  :  NB TOTAL DE COMPOSANTES TENSEURS
@@ -111,8 +108,8 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !
 !     NUMERO D'ELEMENT SEULEMENT SI ON N'EST PAS DANS CALC_POINT_MAT
     noel=0
-!    if (compor(17) .ne. 'POINT') then
-    if (crit(17) .ne. 1) then
+
+    if (nint(crit(17)) .ne. 1) then
 !        NUMERO D'ELEMENT
         call tecael(iadzi, iazk24)
         noel=zi(iadzi)
@@ -155,9 +152,14 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
     call mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, lvarc, nbvarc, &
                      nwkin, wkin, temp, dtemp, predef, dpred, neps, epsth, depsth )
 !
+    czm=0
+    call r8inir(9, 0.d0, stran, 1)
+    call r8inir(9, 0.d0, dstran, 1)
+    call r8inir(9, 0.d0, dfgrd0, 1)
+    call r8inir(9, 0.d0, dfgrd1, 1)
+
 ! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
 !
-    czm=0
     if (neps .eq. 9) then
         call dcopy(neps, epsm, 1, dfgrd0, 1)
         if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -168,7 +170,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
         call dcopy(neps, dfgrd0, 1, stran, 1)
         call dcopy(neps, dfgrd1, 1, dstran, 1)
 !
-    else if (neps.eq.6) then
+    else if ((neps.eq.6).or.(neps.eq.4)) then
 !
 ! PETITES DEFORMATIONS : DEFORMATION - DEFORMATION THERMIQUE
         if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
@@ -176,15 +178,11 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
             call daxpy(neps, -1.d0, depsth, 1, dstran,1)
 ! TRAITEMENT DES COMPOSANTES 4,5,6 : DANS MFRONT, GAMMAXY,XZ,YZ
             call dscal(3, rac2, dstran(4), 1)
-        else
-            call r8inir(neps, 0.d0, dstran, 1)
         endif
 !
         call dcopy(neps, epsm, 1, stran, 1)
         call daxpy(neps, -1.d0, epsth, 1, stran, 1)
         call dscal(3, rac2, stran(4), 1)
-        call r8inir(9, 0.d0, dfgrd0, 1)
-        call r8inir(9, 0.d0, dfgrd1, 1)
 
     else if ((neps.eq.3).and.(typmod(2).eq.'ELEMJOIN')) then
 ! PETITES DEFORMATIONS : CZM
@@ -194,8 +192,6 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
             call r8inir(neps, 0.d0, dstran, 1)
         endif
         call dcopy(neps, epsm, 1, stran, 1)
-        call r8inir(9, 0.d0, dfgrd0, 1)
-        call r8inir(9, 0.d0, dfgrd1, 1)
         ntens=6
         nshr=3
         czm=1
@@ -274,7 +270,8 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !        ddsdde(1)=-3.d0 disponible a partir de la version 2.584 de mfront
         ddsdde(1)=4.d0
     else if (option .eq. 'RIGI_MECA_ELAS') then
-        ddsdde(1)=-2.d0
+!        ddsdde(1)=-2.d0
+        ddsdde(1)=1.d0
     else if (option .eq. 'FULL_MECA_ELAS') then
         ddsdde(1)= 2.d0
     else if (option .eq. 'FULL_MECA') then

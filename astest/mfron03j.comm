@@ -152,9 +152,10 @@ MAIL = MODI_MAILLAGE(reuse = MAIL,
                      );
 
 TROISD = AFFE_MODELE(MAILLAGE = MAIL,
-                     AFFE=(_F(TOUT='OUI',
+                     AFFE=(_F(
+                            #TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                            #  MODELISATION='3D_SI',
+                              GROUP_MA='VOL',
                               MODELISATION='3D',
                               ),
                            _F(GROUP_MA=('PX1',),
@@ -399,6 +400,7 @@ SOLMF=STAT_NON_LINE(
                                 DEFORMATION='SIMO_MIEHE',
                                 RESI_INTE_MAXI=1.E-10,
                                 ITER_INTE_MAXI=100,
+                                GROUP_MA='VOL',
                                 ),
                         
                                _F(RELATION='ELAS',
@@ -528,7 +530,8 @@ SOLMFn=STAT_NON_LINE(
                                 LIBRAIRIE='monocristal.so',
                                 NOM_ROUTINE='astergdefmonojn',
                                 DEFORMATION='SIMO_MIEHE',
-                                ),
+                                 GROUP_MA='VOL',
+                               ),
                         
                                _F(RELATION='ELAS',
                                   GROUP_MA=('PX1'),),

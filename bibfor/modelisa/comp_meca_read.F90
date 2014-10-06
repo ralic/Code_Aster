@@ -159,7 +159,6 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
                 nom_mod_mfront = '_Tridimensional'
             else
 ! ------------- STAT_NON_LINE case
-                call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
                 call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
             endif
             call mfront_get_nbvari(libr_name, subr_name, nom_mod_mfront, ndim, nb_vari_exte)

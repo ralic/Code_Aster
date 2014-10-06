@@ -18,7 +18,7 @@
 interface
     subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc, ndime_model
+        integer :: iocc, ndime_model
         character(len=8), intent(in) :: model
         character(len=16), intent(out) :: nom_mod_mfront
     end subroutine comp_meca_mod
