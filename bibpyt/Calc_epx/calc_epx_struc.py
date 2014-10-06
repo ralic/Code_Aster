@@ -442,15 +442,16 @@ class BLOC_MATE:
                     else:
                         continue
                     val = self.vale[i]
-                liste_ligne.append((decal+decal3)*' '+'%s %s'%(car, val))
+                line = wr_line_cara(decal+decal3, car, val)
+                liste_ligne.append(line)
                 if car == self.cle_bs:
                     for bs in self.l_bs:
                         lignes = bs.write(decal+decal3)
                         liste_ligne.extend(lignes)
         else:
             for i, car in enumerate(self.cara):
-                liste_ligne.append((decal+decal3)*' '+'%s %s'
-                                             %(car, self.vale[i]))
+                line = wr_line_cara(decal+decal3, car, self.vale[i])
+                liste_ligne.append(line)
 
         liste_ligne.append((decal+decal3)*' '+'LECT')
         for gr in self.groupes:
@@ -458,3 +459,18 @@ class BLOC_MATE:
         liste_ligne.append((decal+decal3)*' '+'TERM')
 
         return liste_ligne
+#------------------------------------------------------------------------
+#------------------------------------------------------------------------
+def wr_line_cara(decal, car, val):
+    """
+    Ecrit une ligne de type "caractérique" "valeur".
+    """
+    if type(val) is not list:
+        line = decal*' '+'%s %s'%(car, val)
+    else:
+        line = decal*' '+'%s'%(car)
+        for v in val:
+            line += ' %s'%v
+    return line
+    
+    

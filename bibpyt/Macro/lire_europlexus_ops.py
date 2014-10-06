@@ -23,7 +23,6 @@
     à partir de celui-ci.
 """
 
-
 import aster
 from Accas import _F
 import os
@@ -97,7 +96,10 @@ class LireEPX():
         dic_compo_gr = {}
         for dic in self.COMPORTEMENT:
             compo = dic['RELATION']
-            comp_epx = cata_compor[compo]['NOM_EPX'][:4]
+            if cata_compor[compo].has_key('NOM_EPX_CH_MED'):
+                comp_epx = cata_compor[compo]['NOM_EPX_CH_MED'][:4]
+            else:
+                comp_epx = cata_compor[compo]['NOM_EPX'][:4]
             if not dic_compo_gr.has_key(comp_epx):
                 dic_compo_gr[comp_epx] = []
             dic_compo_gr[comp_epx].extend(dic['GROUP_MA'])
@@ -321,7 +323,10 @@ le mot-clé %s"""%mc_cara)
                 if nbcomp != nbcomp_ref:
                     raise Exception("""
     Le champ de type %s pour la loi %s ne comporte pas le bon nombre de
-    composantes"""%(type_cham, loi))
+    composantes.
+    Nombre de composantes trouvées  : %s
+    Nombre de composantes attendues : %s
+    """%(type_cham, loi, nbcomp, nbcomp_ref))
                 if info_comp_epx[loi]['TRANSFO']:
                     if not dic_champ_var_int.has_key(loi):
                         dic_champ_var_int[loi] = {}
@@ -335,11 +340,10 @@ le mot-clé %s"""%mc_cara)
         """
             Création des champs pour transformation des variables internes
         """
-        from Cata.cata import CREA_CHAMP, FORMULE
+        from Calc_epx.trans_var_int import *
         
         dic_transfo = {}
         nb_compo = len(dic_champ_var_int.keys())-1
-        __CH_CAV = [None]*nb_compo
         __CH_FOV = [None]*nb_compo
         ico = 0
         
@@ -354,45 +358,23 @@ le mot-clé %s"""%mc_cara)
             if compo == 'SANS':
                 continue
 
-            dic_transfo[compo] = {}
+            nb_comp = self.info_comp_epx[compo]['NB_VAR_ASTER']
+            var_aster = self.info_comp_epx[compo]['VAR_ASTER']
+            gr_ma = self.compor[compo]
+            # glrc_damage
             if compo == 'GLRC':
-                ccc = cc.copy()
-                ccc.update(TYPE_CHAM='ELGA_NEUT_R',
-                        AFFE={'VALE' : (1., 1./2.),
-                              'TOUT' : 'OUI',
-                              'NOM_CMP':('X1', 'X2'),})
-                __CH_CAV[ico] = CREA_CHAMP(**ccc)
-                dic_transfo[compo]['CH_CARA'] = __CH_CAV[ico]
-                nb_comp = self.info_comp_epx[compo]['NB_VAR_ASTER']
-                __F_V_GL = [None]*nb_comp
-                XI = ['X1']*nb_comp
-                XI[2] = 'X2'
-                XI[5] = 'X2'
-                li_fonc = []
-                nom_cmp_f = []
-                for ivar, var in enumerate(self.info_comp_epx[compo]
-                                            ['VAR_ASTER'][:nb_comp]):
-                    xi = XI[ivar]
-                    xi_f = 'X%s'%(ivar+1)
-                    nom_cmp_f.append(xi_f)
-                    __F_V_GL[ivar] = FORMULE(VALE=var+'*'+xi, NOM_PARA=(var, xi))
-                    li_fonc.append(__F_V_GL[ivar])
-
-                ccc = cc.copy()
-                ccc.update(TYPE_CHAM='ELGA_NEUT_F',
-                           AFFE={'GROUP_MA' : self.compor[compo],
-                                 'NOM_CMP'  : nom_cmp_f,
-                                 'VALE_F'   : li_fonc,})
-                __CH_FOV[ico] = CREA_CHAMP(**ccc)
-                dic_transfo[compo]['CH_FONC'] = __CH_FOV[ico]
-                ico += 1
-                dic_transfo[compo]['NOM_CMP_F'] = nom_cmp_f
-                dic_transfo[compo]['NOM_CMP'] = (self.info_comp_epx[compo]
-                                                   ['VAR_ASTER'][:nb_comp])
+                dic_transfo[compo] = tr_e2a_glrc_damage(__CH_FOV, ico, cc,
+                                               nb_comp, var_aster, gr_ma)
+            # vmis_isot_trac
+            elif compo == 'ISOT':
+                dic_transfo[compo] = tr_e2a_vmis_isot_trac(__CH_FOV, ico, cc,
+                                               nb_comp, var_aster, gr_ma)
             else:
                 raise Exception("""
 Les transformations à apporter aux variables internes pour la loi ne sont pas
 présentes%s"""%compo)
+
+            ico +=1
         
         return dic_transfo
     # -------------------------------------------------------------------------
@@ -580,7 +562,7 @@ présentes%s"""%compo)
                                    ASSE=dicAsse_transfo,)
                         __ECR_AS = CREA_CHAMP(**ccc)
                     dicDetr_transfo.append({'NOM' : __ECR_AS})
-                    cham_para = (dic_transfo[compo]['CH_CARA'], __ECR_AS)
+                    cham_para = __ECR_AS
                     cham_fonc = dic_transfo[compo]['CH_FONC']
                     # EVAL : passage des contraintes aux efforts
                     __ECR1[j] = CREA_CHAMP(OPERATION='EVAL',
@@ -710,7 +692,10 @@ def build_info_comp_epx():
         comp_aster = cata_compor[nom_comp]
         if not comp_aster.has_key('NOM_EPX'):
             continue
-        nom_epx = comp_aster['NOM_EPX'][:4]
+        if comp_aster.has_key('NOM_EPX_CH_MED'):
+            nom_epx = comp_aster['NOM_EPX_CH_MED'][:4]
+        else:
+            nom_epx = comp_aster['NOM_EPX'][:4]
         if not info_comp_epx.has_key(nom_epx):
             nb_var_aster = comp_aster['NB_VAR_ASTER']
             nb_var_epx = comp_aster['NB_VAR_EPX']
@@ -727,6 +712,8 @@ Pour la loi %s, Aster possède plus de variables internes que EPX,
 or vous n'avez pas activer le mot-clé TRANSFO pour indiqué comment
 retrouver les variables internes Aster"""%nom_comp)
 
+            # attention la longueur de var_aster peut ne pas être égale
+            # a nb_var_aster . Idem pour epx
             dic = {
                   'NB_VAR_ASTER' : nb_var_aster,
                   'NB_VAR_EPX'   : nb_var_epx,

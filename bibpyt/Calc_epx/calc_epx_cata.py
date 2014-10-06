@@ -80,6 +80,10 @@ cata_directives = {
     REPEAT : y/n , précise si le mot-clé peut être répeté
     rq ; LOI, BESOIN et REPEAT sont des listes de mêmes longueurs
     NOM_EPX : nom EPX du comportement
+    NOM_EPX_CH_MED : Nom de la loi EPX en 4 caractères utilisé dans le
+                     nommage des champs du fichier MED.
+                     A renseigner que s'il est différent des 4 premiers 
+                     caractères de NOM_EPX
     NB_VAR_ASTER : nombre de var. int. pour ce comportement dans aster
     NB_VAR_EPX   : nombre de var. int. pour ce comportement dans EPX
     TRANSFO      : True si une transformation est nécessaire (donc programmée)
@@ -98,6 +102,16 @@ cata_compor = {
         'NB_VAR_ASTER' : 1,
         'NB_VAR_EPX'   : 2,
         'TRANSFO'      : False,
+            },
+    'VMIS_ISOT_TRAC' : {
+        'LOI'    : ['ELAS', 'TRACTION'],
+        'BESOIN' : ['o', 'o',],
+        'REPEAT' : ['n', 'n'],
+        'NOM_EPX' : 'VMIS ISOT',
+        'NOM_EPX_CH_MED' : 'ISOT',
+        'NB_VAR_ASTER' : 2,
+        'NB_VAR_EPX'   : 5,
+        'TRANSFO'      : True,
             },
     'GLRC_DAMAGE' : {
         'LOI'    : ['RELATION', 'BETON', 'NAPPE', 'CABLE_PREC',
@@ -144,6 +158,9 @@ cata_compor = {
 
     PARA : noms des paramètres de la loi dans Code_Aster
     PARA_EPX : noms des paramètres de la loi correspondant dans EPX
+               si c'est une ligne cela signifie qu'un traitement est
+               a faire sur les données Aster pour les mettre en forme
+               pour EPX
     BESOIN   : o/f , précise si le paramètre est obligatoire ou non
     TYPE     : reel, fonc(fonction) ou mfac(comme mot-clé facteur)
 
@@ -163,6 +180,18 @@ cata_lois = {
         'PARA_EPX' : ['YOUNG', 'NU', 'RO', 'KRAY', 'MRAY'],
         'BESOIN'   : ['o', 'o', 'o', 'f', 'f'],
         'TYPE'     : ['reel', 'reel', 'reel', 'reel', 'reel'],
+                   },
+    'VMIS_ISOT_TRAC/ELAS' : {
+        'PARA'     : ['E', 'NU', 'RHO',],
+        'PARA_EPX' : ['YOUNG', 'NU', 'RO',],
+        'BESOIN'   : ['o', 'o', 'o',],
+        'TYPE'     : ['reel', 'reel', 'reel',],
+                   },
+    'VMIS_ISOT_TRAC/TRACTION' : {
+        'PARA'     : ['SIGM',],
+        'PARA_EPX' : [['ELAS', 'TRAC'],],
+        'BESOIN'   : ['o',],
+        'TYPE'     : ['fonc',],
                    },
     # SPECIAL GLRC_DAMAGE
     'GLRC_DAMAGE/CISAIL_NL' : {
@@ -574,7 +603,8 @@ cata_compo['SIEF_ELGA'] = {
     'MYY'  : 5,
     'MXY'  : 6,
     'QX'   : 7,
-    'QY'   : 8
+    'QY'   : 8,
+    'N'    : 1,
                            }
 
 cata_compo['EPSI_ELGA'] = {

@@ -188,4 +188,13 @@ Une erreur s'est certainement produite lors du traitement de ce mot-clé par EPX
 Conseil : regarder le message de sortie d'EPX dans le fichier .mess pour comprendre 
 ou le problème se situe.
 """),
+
+40 : _(u"""
+CALC_EUROPLEXUS : Traitement des matériaux associés au comportement VMIS_ISOT_TRAC
+
+Les premières valeurs issues de la fonction %(k1)s, argument du paramètre %(k2)s
+de mot-clé TRACTION de DEFI_MATERIAU sont incompatibles avec le module d'Young donné dans ELAS.
+Contrainte divisée par le module = %(r1)f
+Déformation                      = %(r2)f
+"""),
 }

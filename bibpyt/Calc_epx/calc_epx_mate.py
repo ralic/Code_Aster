@@ -279,11 +279,19 @@ def get_para_all(loi, relation, l_para, l_vale, l_bs,
         l_posi = False
     for ipar, para in enumerate(cata_lois[rel_loi]['PARA']):
         if donnees.has_key(para):
-            para_epx = cata_lois[rel_loi]['PARA_EPX'][ipar]
             type_para = cata_lois[rel_loi]['TYPE'][ipar]
+            para_epx = cata_lois[rel_loi]['PARA_EPX'][ipar]
             if l_posi:
                 posi_para = cata_lois[rel_loi]['POSI_PARA'][ipar]
-            if type_para == 'fonc':
+            if type(para_epx) is list:
+                if rel_loi == 'VMIS_ISOT_TRAC/TRACTION':
+                    l_para, l_vale = vmis_isot_trac(donnees, para, para_epx,
+                                                 type_para, l_para, l_vale)
+                else:
+                    raise Exception("""
+Pas de traitement special présent pour le couple relation/loi %s."""
+                                    %rel_loi)
+            elif type_para == 'fonc':
                 car_temp = donnees[para]
                 nom_fonc = car_temp.get_name()
                 ifonc = len(liste_fonc)+1
@@ -345,3 +353,41 @@ def get_para_all(loi, relation, l_para, l_vale, l_bs,
         bloc_s = BLOC_DONNEES(nom_epx, cara=l_para1, vale=l_vale1)
         l_bs.append(bloc_s)
     return l_para, l_vale, l_bs, liste_fonc
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+#                Routines de traitements spécifiques
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+
+def vmis_isot_trac(donnees, para, para_epx,type_para, l_para, l_vale):
+    """
+        Transforme la fonction associée au paramètre SIGM de TRACTION afin
+        d'obtenir les données attendues par EPX pour les mots-clés
+        ELAS et TRAC du matériau VMIS ISOT. 
+    """
+#   ajout des mots-clés
+    l_para.extend(para_epx)
+#   recuperation de la fonction associé à SIGM
+    car_temp = donnees[para]
+    val = car_temp.Valeurs()
+    eps = val[0]
+    sigm = val[1]
+#   verif de la compatibilité de eps[0] et sigm[0] avec E
+    if l_para[0][:4]!='YOUN':
+        raise Exception('Erreur de programmation')
+    E = l_vale[0]
+    diff = abs(sigm[0]/E-eps[0])
+    if diff> 0.001*eps[0]:
+        nom_fonc = car_temp.get_name()
+        UTMESS('F','PLEXUS_40', valk=[nom_fonc, para], valr=[sigm[0]/E,eps[0]])
+    # ajout de la valeur de ELAS (limite élastique)
+    l_vale.append(sigm[0])
+    # préparation des valeurs de trac
+    nb = len(eps)
+    trac = [nb,]
+    for i in range(nb):
+        trac.extend([sigm[i], eps[i]])
+    l_vale.append(trac)
+
+    return l_para, l_vale
+    
