@@ -57,7 +57,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 4,
                       ITER_FROT_MAXI = 6,
-                      REAC_GEOM      = 'SANS',ELIM_ARETE     = 'ELIM',
+                      REAC_GEOM      = 'SANS',
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS,
