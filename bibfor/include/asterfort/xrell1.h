@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xrell1(tabnoz, ndim, nar, pickno, nbpino,&
-                      nliseq)
-        integer :: nbpino
-        integer :: nar
-        integer :: ndim
-        integer :: tabnoz(3, nar)
-        integer :: pickno(nbpino)
-        character(len=19) :: nliseq
+    subroutine xrell1(tabl_node   , nb_edge, node_sele, nb_node_sele, sdline_crack)
+        integer, intent(in) :: nb_edge
+        integer, intent(in) :: nb_node_sele
+        integer, intent(in) :: tabl_node(3, nb_edge)
+        integer, intent(inout) :: node_sele(nb_edge)
+        character(len=14), intent(in) :: sdline_crack
     end subroutine xrell1
 end interface

@@ -1,5 +1,16 @@
-subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
-                  nbno, gro1, gro2, ndim, compo)
+subroutine nmmein(mesh    , model       , crack      , nb_dim  , list_node   ,&
+                  list_cmp, list_node_1 , list_node_2, cmp_name, nb_node_sele)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmaret.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xlagsp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,91 +29,82 @@ subroutine nmmein(fiss, noma, nno, numnod, liscmp,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmaret.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/xlagsp.h"
-    character(len=8) :: fiss, noma
-    integer :: nno, nbno, ndim
-    character(len=24) :: gro1, gro2, numnod, liscmp
-    character(len=8) :: compo
+    integer, intent(in) :: nb_dim
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in)  :: crack
+    character(len=24), intent(in) :: list_node
+    character(len=24), intent(in) :: list_cmp
+    character(len=24), intent(in) :: list_node_1
+    character(len=24), intent(in) :: list_node_2
+    character(len=8), intent(out) :: cmp_name
+    integer, intent(out) :: nb_node_sele
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! INITIALISATION DU PILOTAGE DDL_IMPO OU LONG_ARC - FORMULATION XFEM
+! Non-linear algorithm - Initializations
 !
-! RENVOIE L'ENSEMBLE DES ARETES PILOTEES ET INITIALISE LES COMPOSANTES
-! PILOTEES DANS LE CAS DTAN OU DNOR
+! Select edges and component for continuation method in XFEM
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesh           : name of mesh
+! In  model          : name of model
+! In  crack          : name of crack 
+! In  nb_dim         : dimension of space
+! In  list_node      : list of nodes to apply continuation
+! In  list_cmp       : list of components to apply continuation
+! In  list_node_1    : name of list for first node of edges
+! In  list_node_2    : name of list for second node of edges
+! Out cmp_name       : name of component to apply continuation
+! Out nb_node_sele   : final number of nodes to use in continuation 
 !
-! IN  FISS   : SD FISSURE
-! IN  NOMA   : NOM DU MAILLAGE
-! IN NNO     : NOMBRE DE NOEUDS ENTRES PAR L UTILISATEUR
-! IN  NUMNOD : LISTE DES NOEUDS ENTREE PAR L UTILISATEUR
-! IN/OUT LISCMP : LISTE DES COMPOSANTES PILOTEES
-! OUT NBNO   : NOMBRE D ARETES FINALEMENT PILOTEES
-! OUT GRO1   : LISTE DES NOEUDS EXTREMITE 1 DES ARETES PILOTEES
-! OUT GRO2   : LISTE DES NOEUDS EXTREMITE 2 DES ARETES PILOTEES
-! OUT NDIM   : DIMENSION DE L ESPACE
-! OUT COMPO  : NOM DE LA COMPOSANTE UTILISATEUR
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: algo_lagr, i_cmp, nb_cmp, nb_node, iret
+    character(len=14) :: sdline_crack
+    integer :: nb_edge
+    character(len=8), pointer :: v_list_cmp(:) => null()
+    aster_logical :: l_pilo
 !
+! --------------------------------------------------------------------------------------------------
 !
+    sdline_crack = '&&NMMEIN.LISEQ'
+    algo_lagr    = 2
+    nb_node_sele = 0
+    l_pilo       = .true.
+    call jelira(list_cmp , 'LONMAX', ival=nb_cmp)
 !
-    integer :: alglag, i, nddl
-    character(len=8) :: nomap, nomo
-    character(len=19) :: nlisco, nliseq, nlisrl, nbasco
-    integer :: jlicmp
-    integer :: nbarvi, ibid
-    character(len=8), pointer :: lgrf(:) => null()
+! - Lagrange multiplier space selection for contact
 !
-! ----------------------------------------------------------------------
+    call xlagsp(mesh        , model , crack, algo_lagr, nb_dim,&
+                sdline_crack, l_pilo)
 !
-    call jeveuo(liscmp, 'E', jlicmp)
-    call jelira(liscmp, 'LONMAX', ival=nddl)
-    call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
-    call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', vk8=lgrf)
-    nomap = lgrf(1)
-    call dismoi('DIM_GEOM', nomap, 'MAILLAGE', repi=ndim)
+! - Init continuation method for XFEM
 !
-    nliseq = '&&NMMEIN.LISEQ'
-    nlisrl = '&&NMMEIN.LISRL'
-    nlisco = '&&NMMEIN.LISCO'
-    nbasco = '&&NMMEIN.BASCO'
-    alglag = 2
-    call xlagsp(noma, nomo, fiss, alglag, ndim,&
-                nliseq)
+    call jelira(sdline_crack, 'LONMAX', ival=nb_edge)
+    nb_edge=nb_edge/2
+    call nmaret(nb_edge  , nb_node    , nb_dim     , sdline_crack, nb_node_sele,&
+                list_node, list_node_1, list_node_2) 
 !
+! - Modification of list of components
 !
-    call jelira(nliseq, 'LONMAX', ival=nbarvi)
-    nbarvi=nbarvi/2
-    call nmaret(nbarvi, nno, ndim, nliseq, nbno,&
-                numnod, gro1, gro2)
-    do i = 1, nddl
-        compo = zk8(jlicmp-1+i)
-        if (compo .eq. 'DX') zk8(jlicmp-1+i)='H1X'
-        if (compo .eq. 'DY') zk8(jlicmp-1+i)='H1Y'
-        if (compo .eq. 'DZ') zk8(jlicmp-1+i)='H1Z'
-        if (compo(1:4) .eq. 'DTAN' .or. compo .eq. 'DNOR') then
-            call jedetr(liscmp)
-            call wkvect(liscmp, 'V V K8', ndim, jlicmp)
-            zk8(jlicmp)='H1X'
-            zk8(jlicmp+1)='H1Y'
-            if (ndim .eq. 3) zk8(jlicmp+2)='H1Z'
+    call jeveuo(list_cmp, 'E', vk8 = v_list_cmp)
+    do i_cmp = 1, nb_cmp
+        cmp_name = v_list_cmp(i_cmp)
+        if (cmp_name .eq. 'DX') v_list_cmp(i_cmp)='H1X'
+        if (cmp_name .eq. 'DY') v_list_cmp(i_cmp)='H1Y'
+        if (cmp_name .eq. 'DZ') v_list_cmp(i_cmp)='H1Z'
+        if (cmp_name(1:4).eq. 'DTAN' .or. cmp_name .eq. 'DNOR') then
+            call jedetr(list_cmp)
+            call wkvect(list_cmp, 'V V K8', nb_dim, vk8 = v_list_cmp)
+            v_list_cmp(1) = 'H1X'
+            v_list_cmp(2) ='H1Y'
+            if (nb_dim .eq. 3) v_list_cmp(3) = 'H1Z'
             goto 2
         endif
     end do
   2 continue
-    call jedetr(nliseq)
-    call jedetr(nlisrl)
-    call jedetr(nlisco)
-    call jedetr(nbasco)
+!
+    call jedetr(sdline_crack)
 end subroutine

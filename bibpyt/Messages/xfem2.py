@@ -34,6 +34,10 @@ cata_msg = {
 On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques.
 """),
 
+4 : _(u"""
+Nombre d'arêtes vitales : %(i1)d
+"""),
+
 5 : _(u"""
   -> Avec GROT_GDEP, la modélisation axisymétrique n'est pas disponible.
 """),

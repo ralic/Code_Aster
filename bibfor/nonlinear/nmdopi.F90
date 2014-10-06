@@ -90,7 +90,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
 !
 !
-    integer :: nbno, numequ, nddl, nb_node_mesh
+    integer :: nbno, numequ, nddl, nb_node_mesh, nb_node_sele
     integer :: nume_node, nume_node_1, nume_node_2, numequ_1, numequ_2
     integer :: ino, iddl
     integer :: jvale
@@ -109,7 +109,7 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
     integer :: nbmocl
     character(len=16) :: limocl(2), tymocl(2)
     integer :: ifm, niv
-    integer :: jlino1, jlino2, nbnom
+    integer :: jlino1, jlino2
     integer :: jeq2, ierm
     character(len=8) :: compo
     character(len=19) :: grln, cnsln, grlt
@@ -337,11 +337,14 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
         call cnocns(fiss//'.GRLNNO', 'V', grln)
         call cnocns(fiss//'.GRLTNO', 'V', grlt)
 !
-        call nmmein(fiss, mesh, nbno, lisnoe, liscmp,&
-                    nbnom, lisno1, lisno2, ndim, compo)
+! ----- Select edges and component for continuation method in XFEM
+!
+        call nmmein(mesh  , modele, fiss  , ndim , lisnoe      ,&
+                    liscmp, lisno1, lisno2, compo, nb_node_sele)
+
         call jeveuo(lisno1, 'L', jlino1)
         call jeveuo(lisno2, 'L', jlino2)
-        nbno=nbnom
+        nbno = nb_node_sele
         liseq2='&&NMDOPI.LISEQ2'
         call wkvect(liseq2, 'V V I', nbno, jeq2)
         chapic = sdpilo(1:14)//'.PLCI'

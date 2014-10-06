@@ -1,4 +1,17 @@
-subroutine xrelco(noma, nliseq, lisrel, nrel)
+subroutine xrelco(mesh   , nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
+                  nb_edge)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/afrela.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,118 +31,112 @@ subroutine xrelco(noma, nliseq, lisrel, nrel)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/afrela.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: nb_dim
+    character(len=14), intent(in) :: sdline_crack
+    character(len=19), intent(in) :: list_rela_line
+    integer, intent(out) :: nb_rela_line
+    integer, intent(out) :: nb_edge
 !
-    integer :: nrel
-    character(len=8) :: noma
-    character(len=19) :: nliseq
-    character(len=19) :: lisrel
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! XFEM - Contact definition
 !
-! ROUTINE XFEM (PREPARATION - AFFE_CHAR_MECA)
+! Create kinematic load
 !
-! CREER DES RELATIONS ENTRE LES INCONNUES DE CONTACT POUR
-! SATISFAIRE LA LBB CONDITION
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  mesh           : name of mesh
+! In  nb_dim         : dimension of space
+! In  sdline_crack   : name of datastructure of linear relations for crack
+! In  list_rela_line : name of linear relation object
+! Out nb_rela_line   : number of linear relation
+! Out nb_edge        : number of "VITAL" edge
 !
-!
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NLISEQ : LISTE REL. LIN. POUR V2 SEULEMENT
-! IN  NBASCO : CHAM_NO POUR BASE COVARIANTE
-! OUT NREL   : NOMBRE DE RELATIONS À IMPOSER
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbddl
     parameter  (nbddl=12)
     character(len=8) :: ddlc(nbddl)
 !
-    real(kind=8) :: betar, coefr(6)
-    integer :: ier, jlis1, ndime(8), neq, i, jlis2
-    integer :: nuno(8), ndim, j
-    character(len=8) :: noeud(8), k8bid, ddl(8)
-    complex(kind=8) :: cbid
-    aster_logical :: lmulti
+    real(kind=8) :: vale_real, coef_real(6)
+    integer :: ier, repe_type(8), i_edge
+    integer :: node_nume(8), i_dim
+    character(len=8) :: node_name(8), vale_func_dumm, cmp_name(8)
+    complex(kind=8) :: coef_cplx_dumm, vale_cplx_dumm
+    aster_logical :: l_mult_crack
+    integer, pointer :: v_rela_node(:) => null()
+    integer, pointer :: v_rela_cmp(:) => null()
 !
     data ddlc /'LAGS_C','LAGS_F1','LAGS_F2',&
-     &            'LAG2_C','LAG2_F1','LAG2_F2',&
-     &            'LAG3_C','LAG3_F1','LAG3_F2',&
-     &            'LAG4_C','LAG4_F1','LAG4_F2'/
+               'LAG2_C','LAG2_F1','LAG2_F2',&
+               'LAG3_C','LAG3_F1','LAG3_F2',&
+               'LAG4_C','LAG4_F1','LAG4_F2'/
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- INTIALISATIONS
+! - Initializations
 !
-    betar = 0.d0
-    do i = 1, 8
-        ndime(i) = 0
-    end do
+    vale_real      = 0.d0
+    repe_type(1:8) = 0
+    nb_rela_line   = 0
+    nb_edge        = 0
 !
-! --- DONNÉES RELATIVES AU MAILLAGE
+! - Get access 
 !
-    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
-!
-! --- 1) RELATIONS D'EGALITE
-!
-    call jeexin(nliseq, ier)
+    call jeexin(sdline_crack, ier)
     if (ier .eq. 0) then
-        goto 100
+        nb_edge = 0
     else
-        call jeveuo(nliseq, 'L', jlis1)
-        call jelira(nliseq, 'LONMAX', neq)
-        call jeexin(nliseq(1:14)//'_LAGR', ier)
+        call jeveuo(sdline_crack, 'L', vi = v_rela_node)
+        call jelira(sdline_crack, 'LONMAX', nb_edge)
+        call jeexin(sdline_crack(1:14)//'_LAGR', ier)
         if (ier .eq. 0) then
-            lmulti = .false.
+            l_mult_crack = .false.
         else
-            lmulti = .true.
-            call jeveuo(nliseq(1:14)//'_LAGR', 'L', jlis2)
+            l_mult_crack = .true.
+            call jeveuo(sdline_crack(1:14)//'_LAGR', 'L', vi = v_rela_cmp)
         endif
     endif
 !
-    do i = 1, neq/2
-        nuno(1) = zi(jlis1-1+2*(i-1)+1)
-        nuno(2) = zi(jlis1-1+2*(i-1)+2)
+! - Total number of "VITAL" edges
 !
-        call jenuno(jexnum(noma(1:8)//'.NOMNOE', nuno(1)), noeud(1))
-        call jenuno(jexnum(noma(1:8)//'.NOMNOE', nuno(2)), noeud(2))
+    nb_edge = nb_edge/2
 !
-        coefr(1) = 1.d0
-        coefr(2) = -1.d0
+! - Create kinematic load
 !
-! --- RELATION POUR LES MULTIPLICATEURS DE CONTACT ET FROTTEMENT
+    do i_edge = 1, nb_edge
 !
-        do j = 1, ndim
-            if (.not.lmulti) then
-                ddl(1) = ddlc(j)
-                ddl(2) = ddlc(j)
+! ----- Get nodes of linear relation
+!
+        node_nume(1) = v_rela_node(2*(i_edge-1)+1)
+        node_nume(2) = v_rela_node(2*(i_edge-1)+2)
+        call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(1)), node_name(1))
+        call jenuno(jexnum(mesh(1:8)//'.NOMNOE', node_nume(2)), node_name(2))
+!
+! ----- Coefficients of linear relation
+!
+        coef_real(1) = 1.d0
+        coef_real(2) = -1.d0
+!
+! ----- Set linear relation
+!
+        do i_dim = 1, nb_dim
+            if (l_mult_crack) then
+                cmp_name(1) = ddlc(3*(v_rela_cmp(2*(i_edge-1)+1)-1)+i_dim)
+                cmp_name(2) = ddlc(3*(v_rela_cmp(2*(i_edge-1)+2)-1)+i_dim)
             else
-                ddl(1) = ddlc(3*(zi(jlis2-1+2*(i-1)+1)-1)+j)
-                ddl(2) = ddlc(3*(zi(jlis2-1+2*(i-1)+2)-1)+j)
+                cmp_name(1) = ddlc(i_dim)
+                cmp_name(2) = ddlc(i_dim)
             endif
-            call afrela(coefr, [cbid], ddl, noeud, ndime,&
-                        [0.d0], 2, betar, cbid, k8bid,&
-                        'REEL', 'REEL', '12', 0.d0, lisrel)
-            nrel = nrel + 1
+            call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
+                        [0.d0]   , 2, vale_real, vale_cplx_dumm, vale_func_dumm,&
+                        'REEL', 'REEL', '12', 0.d0, list_rela_line)
+            nb_rela_line = nb_rela_line + 1
         end do
     end do
-100 continue
-!
 !
     call jedema()
 end subroutine

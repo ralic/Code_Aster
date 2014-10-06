@@ -15,14 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine xrelco(mesh   , nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
-                      nb_edge)
+    subroutine xrela_elim(mesh, sdcont_defi, sd_iden_rela)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_dim
-        character(len=14), intent(in) :: sdline_crack
-        character(len=19), intent(in) :: list_rela_line
-        integer, intent(out) :: nb_rela_line
-        integer, intent(out) :: nb_edge
-    end subroutine xrelco
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=24), intent(out) :: sd_iden_rela
+    end subroutine xrela_elim
 end interface

@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xsella(fiss, nbno, narz, tabnoz, pickno,&
-                      nbpino)
-        integer :: narz
-        character(len=8) :: fiss
-        integer :: nbno
-        integer :: tabnoz(3, narz)
-        integer :: pickno(narz)
-        integer :: nbpino
+    subroutine xsella(crack       , nb_node_mesh, nb_edge, tabl_node, node_sele,&
+                      nb_node_sele)
+        character(len=8), intent(in) :: crack
+        integer, intent(in) :: nb_node_mesh
+        integer, intent(in) :: nb_edge
+        integer, intent(in) :: tabl_node(3, nb_edge)
+        integer, intent(inout) :: node_sele(nb_edge)
+        integer, intent(out) :: nb_node_sele
     end subroutine xsella
 end interface

@@ -1,4 +1,15 @@
-subroutine xfem_rel_lin(char, noma, nomo)
+subroutine xfem_rel_lin(sdcont, mesh, model, nb_dim)
+!
+implicit none
+!
+#include "asterfort/aflrch.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/xrelco.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,45 +29,36 @@ subroutine xfem_rel_lin(char, noma, nomo)
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/aflrch.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/xrelco.h"
-    character(len=8), intent(in) :: char
-    character(len=8), intent(in) :: noma
-    character(len=8), intent(in) :: nomo
+    character(len=8), intent(in) :: sdcont
+    integer, intent(in) :: nb_dim
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! XFEM
 !
-! Linear relation between cotnact unknows for LBB condition
+! Linear relation between contact unknows for LBB condition
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! In  noma   : name of mesh
-! In  nomo   : name of model
-! In  char   : name of load
+! In  model          : name of model
+! In  mesh           : name of mesh
+! In  nb_dim         : dimension of space
+! In  sdcont         : name of contact datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nfismx
-    parameter    (nfismx=100)
-    integer :: ier, ifiss
-    integer :: nfiss, nrel
-    character(len=19) :: lisrel
-    character(len=24) :: sd_cont_defi
-    character(len=24) :: xnrell
-    integer :: jxnrel
-    character(len=19) :: nliseq
-    integer, pointer :: nfis(:) => null()
+    integer :: nb_crack_max
+    parameter    (nb_crack_max=100)
+!
+    integer :: i_crack
+    integer :: nb_crack, nb_rela_line, nb_edge
+    character(len=24) :: sdcont_defi, sdline
+    character(len=19) :: list_rela_line
+    character(len=14) :: sdline_crack
+    integer, pointer :: v_crack_nb(:) => null()
+    character(len=24), pointer :: v_sdline(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,38 +66,37 @@ subroutine xfem_rel_lin(char, noma, nomo)
 !
 ! - Initializations
 !
-    lisrel = '&&CAXFEM.RLISTE'
-    nrel = 0
+    sdcont_defi    = sdcont(1:8)//'.CONTACT'
+    list_rela_line = '&&CAXFEM.RLISTE'
+    nb_rela_line   = 0
 !
-! - Cracks access
+! - Access to cracks datastructure
 !
-    call exixfe(nomo, ier)
-    if (ier .eq. 0) then
-        call utmess('F', 'XFEM2_8', sk=nomo)
-    endif
-    call jeveuo(nomo(1:8)//'.NFIS', 'L', vi=nfis)
-    nfiss = nfis(1)
-    if (nfiss .gt. nfismx) then
-        call utmess('F', 'XFEM_2', si=nfismx)
+    call jeveuo(model(1:8)//'.NFIS', 'L', vi=v_crack_nb)
+    nb_crack = v_crack_nb(1)
+    if (nb_crack .gt. nb_crack_max) then
+        call utmess('F', 'XFEM_2', si=nb_crack_max)
     endif
 !
-! - Contact data structure access
+! - Access to datastructure for linear relation
 !
-    sd_cont_defi = char(1:8)//'.CONTACT'
-    xnrell = sd_cont_defi(1:16)//'.XNRELL'
-    call jeveuo(xnrell, 'L', jxnrel)
+    sdline = sdcont_defi(1:16)//'.XNRELL'
+    call jeveuo(sdline, 'L', vk24 = v_sdline)
 !
-! - Loop on cracks
+! - Create linear relation for "VITAL" edges
 !
-    do ifiss = 1, nfiss
-        nliseq = zk24(jxnrel+ifiss-1)(1:19)
-        call xrelco(noma, nliseq, lisrel, nrel)
+    do i_crack = 1, nb_crack
+        sdline_crack = v_sdline(i_crack)(1:14)
+        call xrelco(mesh   , nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
+                    nb_edge)
     end do
 !
 ! - Afffectation of linear relations
 !
-    if (nrel .ne. 0) then
-        call aflrch(lisrel, char)
+    if (nb_edge .ne. 0) then
+        call utmess('I','XFEM2_4', si = nb_edge)
+! <XZX> Mettre la ligne suivante en commentaire pour ne pas activer les relations lineaires
+!        call aflrch(list_rela_line, sdcont)
     endif
 !
     call jedema()

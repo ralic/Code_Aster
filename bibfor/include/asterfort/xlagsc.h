@@ -15,18 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine xlagsc(ndim, nbno, nbarto, mxar, algola,&
-                      jtabno, jtabin, jtabcr, fiss, nliseq)
-        integer :: ndim
-        integer :: nbno
-        integer :: nbarto
-        integer :: mxar
-        integer :: algola
-        integer :: jtabno
-        integer :: jtabin
-        integer :: jtabcr
-        character(len=8) :: fiss
-        character(len=19) :: nliseq
+    subroutine xlagsc(nb_dim, nb_node_mesh, nb_edge, nb_edge_max, algo_lagr   ,&
+                      jtabno, jtabin      , jtabcr , crack      , sdline_crack,&
+                      l_pilo)
+        integer, intent(in) :: jtabno
+        integer, intent(in) :: jtabin
+        integer, intent(in) :: jtabcr
+        integer, intent(in) :: nb_node_mesh
+        integer, intent(in) :: nb_edge
+        integer, intent(in) :: nb_dim
+        integer, intent(in) :: nb_edge_max
+        integer, intent(in) :: algo_lagr
+        character(len=14), intent(in) :: sdline_crack
+        character(len=8), intent(in) :: crack
+        aster_logical, intent(in) :: l_pilo
     end subroutine xlagsc
 end interface

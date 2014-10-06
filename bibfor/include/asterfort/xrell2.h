@@ -18,14 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
-                      lgroup, nliseq)
-        integer :: narz
-        integer :: ndim
-        integer :: tabnoz(3, narz)
-        real(kind=8) :: tabcoz(ndim, narz)
-        real(kind=8) :: tabcrz(narz)
-        aster_logical :: lgroup
-        character(len=19) :: nliseq
+    subroutine xrell2(tabl_node     , nb_dim      , nb_edgez, tabl_ptin, tabl_scor,&
+                      l_create_group, sdline_crack, l_pilo)
+        integer, intent(in) :: nb_edgez
+        integer, intent(in) :: nb_dim
+        integer, intent(in) :: tabl_node(3, nb_edgez)
+        real(kind=8), intent(in) :: tabl_ptin(nb_dim, nb_edgez)
+        real(kind=8), intent(in) :: tabl_scor(nb_edgez)
+        character(len=14), intent(in) :: sdline_crack
+        aster_logical, intent(in) :: l_create_group
+        aster_logical, intent(in) :: l_pilo
     end subroutine xrell2
 end interface

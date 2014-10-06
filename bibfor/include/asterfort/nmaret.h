@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmaret(nbarvz, nno, ndim, nliseq, nbno,&
-                      numnod, gro1, gro2)
-        integer :: ndim
+    subroutine nmaret(nbarvz, nb_node, nb_dim, sdline_crack, nb_node_sele,&
+                      list_node, list_node_1, list_node_2)
+        integer :: nb_dim
         integer :: nbarvz
-        integer :: nno
-        character(len=19) :: nliseq
-        integer :: nbno
-        character(len=24) :: numnod
-        character(len=24) :: gro1
-        character(len=24) :: gro2
+        integer :: nb_node
+        character(len=14) :: sdline_crack
+        integer :: nb_node_sele
+        character(len=24) :: list_node
+        character(len=24) :: list_node_1
+        character(len=24) :: list_node_2
     end subroutine nmaret
 end interface

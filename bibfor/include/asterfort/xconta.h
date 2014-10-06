@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xconta(char, noma, nomo, ndim)
-        character(len=8) :: char
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        integer :: ndim
+    subroutine xconta(sdcont, mesh, model, nb_dim)
+        character(len=8), intent(in) :: sdcont
+        integer, intent(in) :: nb_dim
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
     end subroutine xconta
 end interface

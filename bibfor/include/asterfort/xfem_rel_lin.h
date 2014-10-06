@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xfem_rel_lin(char, noma, nomo)
-        character(len=8), intent(in) :: char
-        character(len=8), intent(in) :: noma
-        character(len=8), intent(in) :: nomo
+    subroutine xfem_rel_lin(sdcont, mesh, model, nb_dim)
+        character(len=8), intent(in) :: sdcont
+        integer, intent(in) :: nb_dim
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
     end subroutine xfem_rel_lin
 end interface

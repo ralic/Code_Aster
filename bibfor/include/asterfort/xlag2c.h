@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xlag2c(nomo, nliseq, jnbpt)
-        character(len=8) :: nomo
-        character(len=19) :: nliseq
+    subroutine xlag2c(model, sdline_crack, jnbpt)
+        character(len=8) :: model
+        character(len=14) :: sdline_crack
         integer :: jnbpt
     end subroutine xlag2c
 end interface

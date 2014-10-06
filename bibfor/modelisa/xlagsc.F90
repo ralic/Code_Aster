@@ -1,5 +1,17 @@
-subroutine xlagsc(ndim, nbno, nbarto, mxar, algola,&
-                  jtabno, jtabin, jtabcr, fiss, nliseq)
+subroutine xlagsc(nb_dim, nb_node_mesh, nb_edge, nb_edge_max, algo_lagr,&
+                  jtabno, jtabin      , jtabcr , crack      , sdline_crack,&
+                  l_pilo)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xrell1.h"
+#include "asterfort/xrell2.h"
+#include "asterfort/xsella.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,90 +30,76 @@ subroutine xlagsc(ndim, nbno, nbarto, mxar, algola,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/xrell1.h"
-#include "asterfort/xrell2.h"
-#include "asterfort/xsella.h"
-    integer :: jtabno, jtabin, jtabcr
-    integer :: nbno, nbarto, ndim, mxar
-    integer :: algola
-    character(len=19) :: nliseq
-    character(len=8) :: fiss
+    integer, intent(in) :: jtabno
+    integer, intent(in) :: jtabin
+    integer, intent(in) :: jtabcr
+    integer, intent(in) :: nb_node_mesh
+    integer, intent(in) :: nb_edge
+    integer, intent(in) :: nb_dim
+    integer, intent(in) :: nb_edge_max
+    integer, intent(in) :: algo_lagr
+    character(len=14), intent(in) :: sdline_crack
+    character(len=8), intent(in) :: crack
+    aster_logical, intent(in) :: l_pilo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE XFEM (PREPARATION)
+! XFEM - Contact definition
 !
-! CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT:
-!                    (VOIR BOOK VI 15/07/05)
+! Create list of linear relations for equality between Lagrange
+!
+! --------------------------------------------------------------------------------------------------
+!
+! (VOIR BOOK VI 15/07/05) :
 !    - DETERMINATION DES NOEUDS
 !    - CREATION DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  crack          : name of crack 
+! In  nb_dim         : dimension of space
+! In  nb_node_mesh   : number of (physical) nodes in mesh
+! In  nb_edge        : number of cut edges
+! In  nb_edge_max    : number maximum of edges
+! In  algo_lagr      : type of Lagrange multiplier space selection
+! In  sdline_crack   : name of datastructure of linear relations for crack
+! In  jtabno         : adress of table of nodes for edges (middle et vertex nodes)
+! In  jtabin         : adress of table of intersection points
+! In  jtabcr         : adress of table of score
+! In  l_pilo         : .true. if creation of linear relations for continuation method (PILOTAGE)
 !
-! IN  MXAR   : NOMBRE MAXIMUM D'ARETES COUPEES PAR LA FISSURE
-! IN  JTABNO : ADRESSE DU TABLEAU DES NOEUDS EXTREMITES ET NOEUD MILIEU
-! IN  JTABIN : ADRESSE DU TABLEAU DES COORDONNEES DES NOEUDS MILIEU
-! IN  NBNO   : NOMBRE DE NOEUDS DU MAILLAGE
-! IN  FISS   : NOM DE LA FISSURE
-! IN  ALGOLA : TYPE DE CREATION DES RELATIONS DE LIAISONS ENTRE LAGRANGE
-! I/O NBARTO : IN   NOMBRE D'ARETES INITIALES
-!              OUT  NOMBRE D'ARETES COUPEES
-! IN  MXAR   : NOMBRE MAXIMUM D'ARETES COUPEES PAR LA FISSURE
-! OUT NLISRL : LISTE REL. LIN. POUR V1 ET V2
-! OUT NLISCO : LISTE REL. LIN. POUR V1 ET V2
-! OUT NLISEQ : LISTE REL. LIN. POUR V2 SEULEMENT
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    character(len=19) :: pickno
     integer :: jpino
-    integer :: nbpino
+    integer :: nb_node_sele
+    aster_logical :: l_create_group
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    l_create_group = .false.
+    if (algo_lagr .eq. 1) then
 !
-! --- INITIALISATIONS
+! ----- Table of nodes
 !
-    pickno = '&&XLAGSP.PICKNO'
+        call wkvect('&&XLAGSP.PICKNO', 'V V I', nb_edge_max, jpino)
 !
-! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
+! ----- Selection of edges
 !
-    if (algola .eq. 1) then
+        call xsella(crack       , nb_node_mesh, nb_edge, zi(jtabno), zi(jpino),&
+                    nb_node_sele)
 !
-! --- CREATION TABLEAU DES NOEUDS EXTREMITES ET NOEUD MILIEU
+! ----- Create list of linear relations (algorithm 1)
 !
-        call wkvect(pickno, 'V V I', mxar, jpino)
+        call xrell1(zi(jtabno)  , nb_edge, zi(jpino), nb_node_sele, sdline_crack)
+
+    else if (algo_lagr.eq.2) then
 !
-! --- SELECTION DES NOEUDS
+! ----- Create list of linear relations (algorithm 2)
 !
-        call xsella(fiss, nbno, nbarto, zi(jtabno), zi(jpino),&
-                    nbpino)
-!
-! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
-!
-        call xrell1(zi(jtabno), ndim, nbarto, zi(jpino), nbpino,&
-                    nliseq)
-!
-! --- MENAGE
-!
-        call jedetr(pickno)
-!
-    else if (algola.eq.2) then
-!
-! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
-!
-        call xrell2(zi(jtabno), ndim, nbarto, zr(jtabin), zr(jtabcr),&
-                    .false._1, nliseq)
+        call xrell2(zi(jtabno)    , nb_dim      , nb_edge, zr(jtabin), zr(jtabcr),&
+                    l_create_group, sdline_crack, l_pilo)
     endif
 !
-    call jedema()
+    call jedetr('&&XLAGSP.PICKNO')
+
 end subroutine

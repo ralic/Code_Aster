@@ -1,5 +1,12 @@
-subroutine xdefco(noma, nomo, fiss, algola, ndim,&
-                  nliseq)
+subroutine xdefco(mesh        , model, crack, algo_lagr, nb_dim,&
+                  sdline_crack)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/xlagsp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,62 +25,46 @@ subroutine xdefco(noma, nomo, fiss, algola, ndim,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+    integer, intent(in) :: nb_dim
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in)  :: crack
+    integer, intent(in) :: algo_lagr
+    character(len=14), intent(in) :: sdline_crack
 !
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/xlagsp.h"
-    integer :: ndim, i, ier
-    character(len=8) :: fiss, noma, nomo
-    integer :: algola
-    character(len=19) :: nliseq
-    character(len=24) :: grma(3)
-    aster_logical :: lxfem
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! XFEM - Contact definition
 !
-! ROUTINE XFEM (MODIF. DU MODELE)
+! Lagrange multiplier space selection for contact
 !
-! CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  model          : name of model
+! In  mesh           : name of mesh
+! In  crack          : name of crack 
+! In  algo_lagr      : type of Lagrange multiplier space selection
+! In  nb_dim         : dimension of space
+! In  sdline_crack   : name of datastructure of linear relations for crack
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NDIM   : DIMENSION DE L'ESPACE
-! IN  NOMA   : NOM DE L'OBJET MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  ALGOLA : TYPE DE CREATION DES RELATIONS DE LIAISONS ENTRE LAGRANGE
-! IN  FISS   : SD FISS_XFEM
-! OUT NLISRL : LISTE REL. LIN. POUR V1 ET V2
-! OUT NLISCO : LISTE REL. LIN. POUR V1 ET V2
-! OUT NLISEQ : LISTE REL. LIN. POUR V2 SEULEMENT
+    aster_logical :: l_xfem, l_pilo
+    integer :: ier
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+    l_xfem = .false.
+    l_pilo = .false.
+    call jeexin(crack//'.MAILFISS.HEAV', ier)
+    if (ier .ne. 0) l_xfem=.true.
+    call jeexin(crack//'.MAILFISS.CTIP', ier)
+    if (ier .ne. 0) l_xfem=.true.
+    call jeexin(crack//'.MAILFISS.HECT', ier)
+    if (ier .ne. 0) l_xfem=.true.
+    ASSERT(l_xfem)
 !
-    call jemarq()
-!
-! --- ACCES AUX OBJETS
-!
-    grma(1)=fiss//'.MAILFISS.HEAV'
-    grma(2)=fiss//'.MAILFISS.CTIP'
-    grma(3)=fiss//'.MAILFISS.HECT'
-!
-    lxfem=.false.
-    do 10 i = 1, 3
-        call jeexin(grma(i), ier)
-        if (ier .ne. 0) lxfem=.true.
-10  continue
-    ASSERT(lxfem)
-!
-! --- CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT
-!
-    call xlagsp(noma, nomo, fiss, algola, ndim,&
-                nliseq)
-!
-    call jedema()
+    call xlagsp(mesh        , model, crack, algo_lagr, nb_dim,&
+                sdline_crack, l_pilo)
+
 end subroutine

@@ -1,5 +1,5 @@
-subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
-                  noeud, nliseq)
+subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
+                  noeud, sdline_crack)
 !
 ! aslint: disable=W1306
     implicit none
@@ -7,9 +7,9 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: narz, nar, nbno
-    integer :: tabdir(narz, 2), scorno(2*narz), noeud(2*narz)
-    character(len=19) :: nliseq
+    integer :: nb_edgez, nb_edge, nbno
+    integer :: tabdir(nb_edgez, 2), scorno(2*nb_edgez), noeud(2*nb_edgez)
+    character(len=14) :: sdline_crack
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,13 +44,13 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
 !
 ! ----------------------------------------------------------------------
 !
-! IN  NARZ   : NOMBRE D'ARETES COUPEES
+! IN  nb_edgez   : NOMBRE D'ARETES COUPEES
 ! IN  NAR    : NBRE D'ARETES COUPEES NON HYPERSTATIQUES (NH DANS XRELL2)
 ! IN  NBNO   : NOMBRE DE NOEUDS APARTENANTS AU MOINS A UNE ARETE COUPEE
 ! IN  TABDIR : TABLEAU DES NOEUDS DES ARETES NH
 ! IN  SCORNO : REDONE LE SCORE DES NOEUDS DES ARETES
 ! IN  NOEUD  : REDONE LE NUMERO GLOBAL DES NOEUDS DES ARETES
-! IN  NLISEQ : NOM DE LA LISTE DE RELATION D'EGALITE (SERT A
+! IN  sdline_crack : NOM DE LA LISTE DE RELATION D'EGALITE (SERT A
 !              RECUPERER LE NOM DE LA FISSURE)
 !
 !
@@ -70,30 +70,30 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
     nncone = 0
 !
 ! --- ON COMPTE ET ON SELECTIONNE LES NOEUDS CONECTANTS
-    do 10 i = 1, nbno
+    do i = 1, nbno
         if (scorno(i) .gt. 1) then
             nnovit = nnovit + 1
             novit(nnovit) = i
         endif
-10  end do
+    end do
 !
 ! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTANTS
     if (nnovit .ne. 0) then
-        call wkvect(nliseq(1:8)//'.CONNECTANT', 'G V I', 3*nnovit, jcntan)
-        do 20 i = 1, nnovit
+        call wkvect(sdline_crack(1:8)//'.CONNECTANT', 'G V I', 3*nnovit, jcntan)
+        do i = 1, nnovit
 ! --- POUR CHAQUE NOEUD VITAL, ON STOQUE SON NUMERO, LE NOMBRE DE NOEUDS
 ! --- QU'IL CONNECTE ET LEPOINTEUR SUR LES NOEUDS QU'IL CONECTE
             zi(jcntan-1+3*(i-1)+1) = noeud(novit(i))
             zi(jcntan-1+3*(i-1)+2) = scorno(novit(i))
             zi(jcntan-1+3*(i-1)+3) = nncone
             nncone = nncone + scorno(novit(i))
-20      continue
+        end do
 ! --- ON CONSTRUIT LE VECTEUR DES NOEUDS CONNECTÉS
-        call wkvect(nliseq(1:8)//'.CONNECTES ', 'G V I', nncone, jcntes)
+        call wkvect(sdline_crack(1:8)//'.CONNECTES ', 'G V I', nncone, jcntes)
         k=0
-        do 30 i = 1, nnovit
+        do i = 1, nnovit
 ! --- POUR CHAQUE NOEUD VITAL, ON STOQUE SES NOEUDS CONECTÉS
-            do 40 ia = 1, nar
+            do ia = 1, nb_edge
                 if (tabdir(ia,1) .eq. novit(i)) then
                     k = k+1
                     zi(jcntes-1+k) = noeud(tabdir(ia,2))
@@ -101,8 +101,8 @@ subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
                     k = k+1
                     zi(jcntes-1+k) = noeud(tabdir(ia,1))
                 endif
-40          continue
-30      continue
+            end do
+        end do
     endif
 !
     call jedema()

@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xdefco(noma, nomo, fiss, algola, ndim,&
-                      nliseq)
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=8) :: fiss
-        integer :: algola
-        integer :: ndim
-        character(len=19) :: nliseq
+    subroutine xdefco(mesh        , model, crack, algo_lagr, nb_dim,&
+                      sdline_crack)
+        integer, intent(in) :: nb_dim
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        character(len=8), intent(in)  :: crack
+        integer, intent(in) :: algo_lagr
+        character(len=14), intent(in) :: sdline_crack
     end subroutine xdefco
 end interface

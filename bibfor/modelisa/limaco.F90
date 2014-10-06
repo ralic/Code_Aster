@@ -186,7 +186,7 @@ subroutine limaco(char, motfac, noma, nomo, ndim,&
                 call xmacon(char, noma, nomo)
             endif
             call xconta(char, noma, nomo, ndim)
-            call xfem_rel_lin(char, noma, nomo)
+            call xfem_rel_lin(char, noma, nomo, ndim)
         else
             ASSERT(.false.)
         endif

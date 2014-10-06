@@ -1,4 +1,4 @@
-subroutine xlag2c(nomo, nliseq, jnbpt)
+subroutine xlag2c(model, sdline_crack, jnbpt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +30,8 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: nomo
-    character(len=19) :: nliseq
+    character(len=8) :: model
+    character(len=14) :: sdline_crack
     integer :: jnbpt
 !
 ! ----------------------------------------------------------------------
@@ -63,31 +63,31 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
 !
 ! --- RECUPERATION DE NLISEQ
 !
-    call jeexin(nliseq, ier)
+    call jeexin(sdline_crack, ier)
     if (ier .eq. 0) goto 999
-    call jeveuo(nliseq, 'L', jliseq)
-    call jelira(nliseq, 'LONMAX', neq)
+    call jeveuo(sdline_crack, 'L', jliseq)
+    call jelira(sdline_crack, 'LONMAX', neq)
 !
 ! --- RECUPÉRATION DE NOXFEM
 !
     noxfem = '&&XLAG2S.NOXFEM'
-    call cnocns(nomo//'.NOXFEM', 'V', noxfem)
+    call cnocns(model//'.NOXFEM', 'V', noxfem)
     call jeveuo(noxfem//'.CNSL', 'L', jcnsl)
     call jeveuo(noxfem//'.CNSV', 'L', vi=cnsv)
 !
 ! --- RECUPÉRATION DE HEAVNO
 !
     heavno = '&&XLAG2S.HEAVNO'
-    call celces(nomo//'.HEAVNO', 'V', heavno)
+    call celces(model//'.HEAVNO', 'V', heavno)
     call jeveuo(heavno//'.CESD', 'L', jcesd)
     call jeveuo(heavno//'.CESV', 'L', vi=cesv)
     call jeveuo(heavno//'.CESL', 'L', jcesl)
 !
 ! --- CREATION DE LA SD FISS.LISEQ_LAGR
 !
-    call wkvect(nliseq(1:14)//'_LAGR', 'G V I', neq, jlisla)
+    call wkvect(sdline_crack(1:14)//'_LAGR', 'G V I', neq, jlisla)
 !
-    do 10 i = 1, neq
+    do i = 1, neq
         nuno = zi(jliseq-1+i)
         ASSERT(zl(jcnsl-1+2*nuno))
         ima = cnsv(2*(nuno-1)+1)
@@ -100,11 +100,11 @@ subroutine xlag2c(nomo, nliseq, jnbpt)
         else
             zi(jlisla-1+i) = 1
         endif
-10  end do
+    end do
 !
     call detrsd('CHAM_NO_S', noxfem)
     call detrsd('CHAM_ELEM_S', heavno)
-999  continue
+999 continue
 !
     call jedema()
 end subroutine

@@ -1,5 +1,17 @@
-subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
-                  lgroup, nliseq)
+subroutine xrell2(tabl_node     , nb_dim      , nb_edgez, tabl_ptin, tabl_scor,&
+                  l_create_group, sdline_crack, l_pilo)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/getexm.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xneuvi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,83 +30,73 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: samuel.geniaut at edf.fr
-!
 ! aslint: disable=W1306
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getexm.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/xneuvi.h"
-    integer :: narz, ndim
-    integer :: tabnoz(3, narz)
-    real(kind=8) :: tabcoz(ndim, narz), tabcrz(narz)
-    character(len=19) :: nliseq
-    aster_logical :: lgroup
 !
-! ----------------------------------------------------------------------
+    integer, intent(in) :: nb_edgez
+    integer, intent(in) :: nb_dim
+    integer, intent(in) :: tabl_node(3, nb_edgez)
+    real(kind=8), intent(in) :: tabl_ptin(nb_dim, nb_edgez)
+    real(kind=8), intent(in) :: tabl_scor(nb_edgez)
+    character(len=14), intent(in) :: sdline_crack
+    aster_logical, intent(in) :: l_create_group
+    aster_logical, intent(in) :: l_pilo
 !
-! ROUTINE XFEM (PREPARATION)
+! --------------------------------------------------------------------------------------------------
 !
-!     CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT - V2:
-!                    (VOIR BOOK VI 30/09/05)
+! XFEM - Contact definition
+!
+! Create list of linear relations (algorithm 2)
+!
+! --------------------------------------------------------------------------------------------------
+!
+! (VOIR BOOK VI 30/09/05)
 !    - CREATION DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !
-! IN  NAR    : NOMBRE D'ARETES COUPEES
-! IN  TABNOZ : TABLEAU DES NOEUDS EXTREMITES ET NOEUD MILIEU
-! IN  TABCOZ : TABLEAU DES COORDONNEES DES POINTS D'INTERSECTION
-! IN  NDIM   : DIMENSION DU PROBLEME
-! IN  LGROUP : .TRUE. SI CONSTRUCTION GROUPES ARETES
-! OUT NLISRL : LISTE REL. LIN. POUR V1 ET V2
-! OUT NLISCO : LISTE REL. LIN. POUR V1 ET V2
-! OUT NLISEQ : LISTE REL. LIN. POUR V2 SEULEMENT
+! In  nb_dim         : dimension of space
+! In  sdline_crack   : name of datastructure of linear relations for crack
+! In  nb_edgez       : number of cut edges
+! In  tabl_node      : table of nodes for edges (middle et vertex nodes)
+! In  tabl_ptin      : table of intersection points
+! In  tabl_scor      : table of score
+! In  l_create_group : .true. if create group
+! In  l_pilo         : .true. if creation of linear relations for continuation method (PILOTAGE)
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: nar, i, j, tabno(narz, 3), nbarvi, nbarhy, scorno(2*narz)
-    integer :: cpt, deja, k, noeud(2*narz), ik, tabdir(narz, 2), nbno, ii, ia
-    integer :: scorar(narz), bestar, maxi, ir, t1(2*narz)
-    integer :: mi, ma, npaq, t2(narz), nreleq, ip, dimeq, eq(narz), ie, ipaq
-    integer :: liseqt(narz, 2), jlis1
+    integer :: nb_edge, i, j, tabno(nb_edgez, 3), nbarvi, nbarhy, scorno(2*nb_edgez)
+    integer :: cpt, deja, k, noeud(2*nb_edgez), ik, tabdir(nb_edgez, 2), nbno, ii, ia
+    integer :: scorar(nb_edgez), bestar, maxi, ir, t1(2*nb_edgez)
+    integer :: mi, ma, npaq, t2(nb_edgez), nreleq, ip, dimeq, eq(nb_edgez), ie, ipaq
+    integer :: liseqt(nb_edgez, 2), jlis1
     integer :: npil
-    integer :: ifm, niv
-    real(kind=8) :: tabco(narz, ndim), tabcr(narz)
+    real(kind=8) :: tabco(nb_edgez, nb_dim), tabcr(nb_edgez)
     integer :: nunoa, nunob
-    aster_logical :: pilo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('XFEM', ifm, niv)
 !
 ! --- INITIALISATIONS
 !
-    nar = narz
-    pilo = .false.
-    do 100 i = 1, nar
-        do 101 j = 1, 3
-            tabno(i,j)=tabnoz(j,i)
-101     continue
-        do 102 j = 1, ndim
-            tabco(i,j)=tabcoz(j,i)
-102     continue
-        tabcr(i)=tabcrz(i)
-100 end do
+    nb_edge = nb_edgez
+    do i = 1, nb_edge
+        do j = 1, 3
+            tabno(i,j)=tabl_node(j,i)
+        end do
+        do j = 1, nb_dim
+            tabco(i,j)=tabl_ptin(j,i)
+        end do
+        tabcr(i)=tabl_scor(i)
+    end do
 !     COMPTEUR D'ARETES HYPERSTATIQUES
     nbarhy = 0
-    do 200 i = 1, 2*nar
+    do i = 1, 2*nb_edge
         scorno(i)=0
         noeud(i)=0
-200 end do
+    end do
 !
 ! --- SELECTION DES ARETES VITALES
 !
@@ -102,15 +104,15 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 ! --- CALCUL DE SCORNO : NB D'ARETES CONNECTEES AU NOEUD
 !
     cpt=0
-    do 201 i = 1, nar
-        do 202 j = 1, 2
+    do i = 1, nb_edge
+        do j = 1, 2
             deja=0
-            do 203 k = 1, cpt
+            do k = 1, cpt
                 if (tabno(i,j) .eq. noeud(k)) then
                     deja=1
                     ik=k
                 endif
-203         continue
+            end do
             if (deja .eq. 0) then
                 cpt=cpt+1
                 noeud(cpt)=tabno(i,j)
@@ -119,37 +121,36 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                 tabdir(i,j)=ik
             endif
             scorno(tabdir(i,j))=scorno(tabdir(i,j))+1
-202     continue
-201 end do
+        end do
+    end do
 !
 ! --- NOMBRE DE NOEUDS
 !
     nbno=cpt
 !
 !     BOUCLE TANT QU'IL RESTE DES ARETES HYPERSTATIQUES
-    do 210 ii = 1, narz
+    do ii = 1, nb_edgez
 !
 !       CALCUL SCORAR : MIN DE SCORE POUR CHAQUE NOEUD
 !       CALCUL SCOAR2 : LONGUEUR DE L'ARETE
-        do 211 ia = 1, nar
+        do ia = 1, nb_edge
             scorar(ia) = min(scorno(tabdir(ia,1)),scorno(tabdir(ia,2)) )
 !
 !     SI PILOTAGE, ON AFFECTE UN SCORE DE 1 AUX NOEUDS INTERSECTES
-            if (getexm('PILOTAGE','DIRE_PILO') .eq. 1) then
+            if (l_pilo) then
                 call getvtx('PILOTAGE', 'DIRE_PILO', iocc=1, nbval=0, nbret=npil)
                 npil=-npil
                 if (npil .ge. 1) then
-                    pilo = .true.
                     if (tabdir(ia,1) .eq. tabdir(ia,2)) then
                         scorar(ia)=1
                     endif
                 endif
             endif
-211     continue
+        end do
 !
 !       ARETE AU SCORE MAX
         maxi=-1
-        do 212 ia = 1, nar
+        do ia = 1, nb_edge
             if (scorar(ia) .gt. maxi) then
                 maxi =scorar(ia)
                 bestar=ia
@@ -160,7 +161,7 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
                     endif
                 endif
             endif
-212     continue
+        end do
 !
 !       SI SCORE DE LA MEILLEURE ARETE =1 ALORS IL RESTE QUE DES ARETES
 !       VITALES ET DONC ON SORT DE LA BOUCLE 210
@@ -175,59 +176,58 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
             scorno(tabdir(bestar,2))=scorno(tabdir(bestar,2))-1
 !
 !         ON SUPPRIME EFFECTIVEMENT LA MEILLEURE ARETE
-            do 220 i = bestar, nar-1
+            do i = bestar, nb_edge-1
                 tabno(i,1) = tabno(i+1,1)
                 tabno(i,2) = tabno(i+1,2)
                 tabno(i,3) = tabno(i+1,3)
                 tabdir(i,1)= tabdir(i+1,1)
                 tabdir(i,2)= tabdir(i+1,2)
-                do 230 j = 1, ndim
+                do j = 1, nb_dim
                     tabco(i,j) = tabco(i+1,j)
-230             continue
+                end do
                 tabcr(i)=tabcr(i+1)
-220         continue
-            tabno(nar,1)=0
-            tabno(nar,2)=0
-            tabno(nar,3)=0
-            tabdir(nar,1)=0
-            tabdir(nar,2)=0
-            do 240 j = 1, ndim
-                tabco(nar,j)=0
-240         continue
-            tabcr(nar) = 0.d0
-            nar=nar-1
+            end do
+            tabno(nb_edge,1)=0
+            tabno(nb_edge,2)=0
+            tabno(nb_edge,3)=0
+            tabdir(nb_edge,1)=0
+            tabdir(nb_edge,2)=0
+            do j = 1, nb_dim
+                tabco(nb_edge,j)=0
+            end do
+            tabcr(nb_edge) = 0.d0
+            nb_edge=nb_edge-1
         endif
-!
-210 end do
+    end do
 !
 299 continue
 !
-    if (.not.pilo) then
-        call xneuvi(narz, nar, nbno, tabdir, scorno,&
-                    noeud, nliseq)
+    if (.not.l_pilo) then
+        call xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
+                    noeud, sdline_crack)
     endif
 !
 !     NOMBRE D'ARETES VITALES : NB D'ARETES RESTANTES
-    nbarvi=nar
+    nbarvi=nb_edge
 !
 !     VERIF SI NB ARETES HYPERS + NB ARETES VITALES = NB ARETES INITIAL
-    ASSERT(nbarhy+nbarvi.eq.narz)
+    ASSERT(nbarhy+nbarvi.eq.nb_edgez)
 !
 !
 !     ATTENTION : MAINTENANT, TABNO ET TABDIR SONT DE LONGUEUR NBARVI
 !
 !
-    if (lgroup) goto 600
+    if (l_create_group) goto 600
 !     CREATION DU TABLEAU TEMPORAIRE DES RELATIONS D'EGALITE : LISEQT
 !     UNIQUEMENT AVEC LES ARETES VITALES
     nreleq=0
-    do 602 ir = 1, nbarvi
+    do  ir = 1, nbarvi
         nunoa=noeud(tabdir(ir,1))
         nunob=noeud(tabdir(ir,2))
         nreleq=nreleq+1
         liseqt(nreleq,1)=nunoa
         liseqt(nreleq,2)=nunob
-602 end do
+    end do
     goto 700
 !
 ! --- DETECTION PAQUETS D ARETES
@@ -237,10 +237,10 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
 !
 600 continue
     ipaq=0
-    do 400 i = 1, 2*narz
+    do i = 1, 2*nb_edgez
         t1(i)=0
-400 end do
-    do 401 ir = 1, nbarvi
+    end do
+    do ir = 1, nbarvi
         if (t1(tabdir(ir,1)) .eq. 0 .and. t1(tabdir(ir,2)) .eq. 0) then
             ipaq=ipaq+1
             t1(tabdir(ir,1))=ipaq
@@ -258,53 +258,51 @@ subroutine xrell2(tabnoz, ndim, narz, tabcoz, tabcrz,&
             if (t1(tabdir(ir,1)) .ne. t1(tabdir(ir,2))) then
                 mi=min(t1(tabdir(ir,1)) , t1(tabdir(ir,2)))
                 ma=max(t1(tabdir(ir,1)) , t1(tabdir(ir,2)))
-                do 402 i = 1, nbno
+                do i = 1, nbno
                     if (t1(i) .eq. ma) t1(i)=mi
-402             continue
+                end do
             endif
         endif
-401 end do
+    end do
 !     NOMBRE DE PAQUETS
     npaq=ipaq
 !
 !     TABLEAU T2 : PAQUETS D'ARETES  (DIM : NBARVI)
-    do 410 ia = 1, nbarvi
+    do ia = 1, nbarvi
         ASSERT(t1(tabdir(ia, 1)) .eq. t1(tabdir(ia, 2)))
         t2(ia)=t1(tabdir(ia,1))
-410 end do
+    end do
 !
 !     CREATION DU TABLEAU TEMPORAIRE DES RELATIONS D'EGALITE : LISEQT
     nreleq=0
-    do 440 ip = 1, npaq
+    do ip = 1, npaq
         dimeq=0
 !       RECHERCHE DES ARETES DU PAQUET
-        do 441 ia = 1, nbarvi
+        do ia = 1, nbarvi
             if (ip .eq. t2(ia)) then
                 dimeq=dimeq+1
                 eq(dimeq)=tabno(ia,3)
             endif
-441     continue
+        end do
         ASSERT(dimeq-1.ge.0)
-        do 442 ie = 1, dimeq-1
+        do  ie = 1, dimeq-1
             nreleq=nreleq+1
             liseqt(nreleq,1)=eq(ie)
             liseqt(nreleq,2)=eq(ie+1)
-442     continue
-440 end do
+        end do
+    end do
 !
 ! --- FIN DETECTION DES PAQUETS
 !
 700 continue
 !
-    write(ifm,*)'NOMBRE DE RELATIONS D''EGALITE : ',nreleq
-!
 !     STOCKAGE DE LISEQT
     if (nreleq .gt. 0) then
-        call wkvect(nliseq, 'G V I', nreleq*2, jlis1)
-        do 450 ie = 1, nreleq
+        call wkvect(sdline_crack, 'G V I', nreleq*2, jlis1)
+        do ie = 1, nreleq
             zi(jlis1-1+2*(ie-1)+1)=liseqt(ie,1)
             zi(jlis1-1+2*(ie-1)+2)=liseqt(ie,2)
-450     continue
+        end do
     endif
     call jedema()
 end subroutine

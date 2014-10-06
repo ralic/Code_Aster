@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xneuvi(narz, nar, nbno, tabdir, scorno,&
-                      noeud, nliseq)
+    subroutine xneuvi(nb_edgez, nb_edge, nbno, tabdir, scorno,&
+                      noeud, sdline_crack)
         integer :: nbno
-        integer :: narz
-        integer :: nar
-        integer :: tabdir(narz, 2)
-        integer :: scorno(2*narz)
-        integer :: noeud(2*narz)
-        character(len=19) :: nliseq
+        integer :: nb_edgez
+        integer :: nb_edge
+        integer :: tabdir(nb_edgez, 2)
+        integer :: scorno(2*nb_edgez)
+        integer :: noeud(2*nb_edgez)
+        character(len=14) :: sdline_crack
     end subroutine xneuvi
 end interface

@@ -1,26 +1,8 @@
-subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
-                  nliseq)
+subroutine xlagsp(mesh        , model , crack, algo_lagr, nb_dim,&
+                  sdline_crack, l_pilo)
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
+implicit none
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: samuel.geniaut at edf.fr
-!
-! aslint: disable=W1306
-    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
@@ -49,41 +31,64 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 #include "asterfort/xxmmvd.h"
 #include "asterfort/xelfis_lists.h"
 !
-    character(len=8) :: noma, nomo, fiss
-    integer :: ndim
-    integer :: algola
-    character(len=19) :: nliseq
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! ----------------------------------------------------------------------
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-! ROUTINE XFEM (PREPARATION)
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: samuel.geniaut at edf.fr
 !
-! CHOIX DE L'ESPACE DES LAGRANGES POUR LE CONTACT
-!                   (VOIR BOOK VI 15/07/05) :
+    integer, intent(in) :: nb_dim
+    character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
+    character(len=8), intent(in)  :: crack
+    integer, intent(in) :: algo_lagr
+    character(len=14), intent(in) :: sdline_crack
+    aster_logical, intent(in) :: l_pilo
+!
+! --------------------------------------------------------------------------------------------------
+!
+! XFEM - Contact definition
+!
+! Lagrange multiplier space selection for contact
+!
+! --------------------------------------------------------------------------------------------------
+!
+! (VOIR BOOK VI 15/07/05) :
 !    - DETERMINATION DES NOEUDS
 !    - CREATION DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !
-! ----------------------------------------------------------------------
+! In  model          : name of model
+! In  mesh           : name of mesh
+! In  crack          : name of crack 
+! In  algo_lagr      : type of Lagrange multiplier space selection
+! In  nb_dim         : dimension of space
+! In  sdline_crack   : name of datastructure of linear relations for crack
+! In  l_pilo         : .true. if creation of linear relations for continuation method (PILOTAGE)
 !
-!
-! IN  NDIM   : DIMENSION DE L'ESPACE
-! IN  NOMA   : NOM DE L'OBJET MAILLAGE
-! IN  ALGOLA : TYPE DE CREATION DES RELATIONS DE LIAISONS ENTRE LAGRANGE
-! OUT NLISEQ : LISTE RELATIONS EGALITE
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbcmp
     parameter    (nbcmp = 12)
 !
-    integer :: nbno, nbar, nbarto, itypma
-    integer :: ar(12, 3), na, nb, nunoa, mxar
+    integer :: nb_node_mesh, nbar, nbarto, itypma
+    integer :: ar(12, 3), na, nb, nunoa, nb_edge_max
     integer :: nunob, nunom, nunoaa, nunobb
     integer :: ia, iia, ia1, ia2, i, k, iret, ima
     integer :: jconx2, jmail
     integer :: npil
-    real(kind=8) :: c(ndim), cc(ndim)
+    real(kind=8) :: c(3), cc(3)
     character(len=8) :: typma
     integer :: ifm, niv
     character(len=19) :: tabno, tabint, tabcri
@@ -106,7 +111,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     integer, pointer :: typmail(:) => null()
     integer, pointer :: connex(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
@@ -117,10 +122,11 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     chslo = '&&XLAGSP.CHSLO'
     chsba = '&&XLAGSP.CHSBA'
     chsai = '&&XLAGSP.CHSAI'
+    ASSERT(nb_dim.le.3)
 !
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.LO EN CHAMP SIMPLE
 !
-    call celces(nomo//'.TOPOFAC.LO', 'V', chslo)
+    call celces(model//'.TOPOFAC.LO', 'V', chslo)
     call jeveuo(chslo//'.CESD', 'L', jcesd2)
     call jeveuo(chslo//'.CESV', 'L', vi=cesv2)
     call jeveuo(chslo//'.CESL', 'L', jcesl2)
@@ -128,14 +134,14 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.AI EN CHAMP SIMPLE
 !
     zxain = xxmmvd('ZXAIN')
-    call celces(nomo//'.TOPOFAC.AI', 'V', chsai)
+    call celces(model//'.TOPOFAC.AI', 'V', chsai)
     call jeveuo(chsai//'.CESD', 'L', jcesd3)
     call jeveuo(chsai//'.CESV', 'L', vr=cesv3)
     call jeveuo(chsai//'.CESL', 'L', jcesl3)
 !
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.OE EN CHAMP SIMPLE
 !
-    call celces(nomo//'.TOPOFAC.OE', 'V', chsoe)
+    call celces(model//'.TOPOFAC.OE', 'V', chsoe)
     call jeveuo(chsoe//'.CESD', 'L', jcesd4)
     call jeveuo(chsoe//'.CESV', 'L', vr=cesv4)
     call jeveuo(chsoe//'.CESL', 'L', jcesl4)
@@ -143,21 +149,21 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- ON TRANSFORME LE CHAMP TOPOFAC.BA EN CHAMP SIMPLE
 !
     zxbas = xxmmvd('ZXBAS')
-    call celces(nomo//'.TOPOFAC.BA', 'V', chsba)
+    call celces(model//'.TOPOFAC.BA', 'V', chsba)
     call jeveuo(chsba//'.CESD', 'L', jcesd5)
     call jeveuo(chsba//'.CESV', 'L', jcesv5)
     call jeveuo(chsba//'.CESL', 'L', jcesl5)
 !
 ! --- RECUPERATION DE DONNEES RELATIVES AU MAILLAGE
 !
-    call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
-    call jeveuo(noma(1:8)//'.TYPMAIL', 'L', vi=typmail)
-    call jeveuo(noma(1:8)//'.CONNEX', 'L', vi=connex)
-    call jeveuo(jexatr(noma(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
+    call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', repi=nb_node_mesh)
+    call jeveuo(mesh(1:8)//'.TYPMAIL', 'L', vi=typmail)
+    call jeveuo(mesh(1:8)//'.CONNEX', 'L', vi=connex)
+    call jeveuo(jexatr(mesh(1:8)//'.CONNEX', 'LONCUM'), 'L', jconx2)
 ! --- RECUPERATION DES MAILLES DU MODELE
-    call jeveuo(nomo//'.MAILLE', 'L', jmail)
+    call jeveuo(model//'.MAILLE', 'L', jmail)
 ! --- LE MULTI-HEAVISIDE EST-IL ACTIF ?
-    call jeexin(nomo//'.FISSNO    .CELD', ier)
+    call jeexin(model//'.FISSNO    .CELD', ier)
     if (ier .ne. 0) then
         lmulti = .true.
     else
@@ -170,7 +176,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- DIMENSIONNEMENT DU NOMBRE MAXIMUM D'ARETES COUPEES PAR LA FISSURE
 ! --- PAR LE NOMBRE DE NOEUDS DU MAILLAGE (AUGMENTER SI NECESSAIRE)
 !
-    mxar = nbno
+    nb_edge_max = nb_node_mesh
 !
     nbarto = 0
     ASSERT(nbcmp.eq.zxbas)
@@ -184,18 +190,17 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !            : COL 3       : NOEUD MILIEU
 ! --- TABINT : COL 1,2(,3) : COORDONNEES DU POINT D'INTERSECTION
 !
-    call wkvect(tabno, 'V V I', 3*mxar, jtabno)
-    call wkvect(tabint, 'V V R', ndim*mxar, jtabin)
-    call wkvect(tabcri, 'V V R', 1*mxar, jtabcr)
+    call wkvect(tabno, 'V V I', 3*nb_edge_max, jtabno)
+    call wkvect(tabint, 'V V R', nb_dim*nb_edge_max, jtabin)
+    call wkvect(tabcri, 'V V R', nb_edge_max, jtabcr)
 !
 ! --- CREATION DE LA LISTE DES ARETES COUPEES
-!
 !
     elfis_heav='&&'//nompro//'.ELEMFISS.HEAV'
     elfis_ctip='&&'//nompro//'.ELEMFISS.CTIP'
     elfis_hect='&&'//nompro//'.ELEMFISS.HECT'
-    call xelfis_lists(fiss, nomo, elfis_heav,&
-                          elfis_ctip, elfis_hect)
+    call xelfis_lists(crack, model, elfis_heav,&
+                      elfis_ctip, elfis_hect)
     grp(1)=elfis_heav
     grp(2)=elfis_ctip
     grp(3)=elfis_hect
@@ -221,14 +226,14 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
     end do
 !
 !   menage
-    do k = 1, 3
-        call jeexin(grp(k), iret)
-        if (iret .ne. 0) call jedetr(grp(k)) 
-    enddo
+!
+    call jedetr(grp(1))
+    call jedetr(grp(2))
+    call jedetr(grp(3))
 !
 ! --- RECUP MAILLES DE CONTACT
 !
-    gr = fiss//'.MAILFISS.CONT'
+    gr = crack//'.MAILFISS.CONT'
     call jeexin(gr, iret)
     if (iret .eq. 0) goto 99
     call jeveuo(gr, 'L', jgrp)
@@ -241,7 +246,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
         if (lmulti) ifiss = zi(jnbpt-1+ima)
         itypma = typmail(ima)
         call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-        call jeveuo(nomo(1:8)//'.XFEM_CONT', 'L', jxc)
+        call jeveuo(model(1:8)//'.XFEM_CONT', 'L', jxc)
 !
 ! --- RECUPERATION DU NOMBRE DE POINT D'INTERSECTIONS
 !
@@ -311,16 +316,16 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 ! --- NOUVELLE ARETE
 !
             nbarto = nbarto+1
-            ASSERT(nbarto.lt.mxar)
+            ASSERT(nbarto.lt.nb_edge_max)
             zi(jtabno-1+3*(nbarto-1)+1) = nunoa
             zi(jtabno-1+3*(nbarto-1)+2) = nunob
             zi(jtabno-1+3*(nbarto-1)+3) = nunom
-            do i = 1, ndim
+            do i = 1, nb_dim
                 call cesexi('S', jcesd4, jcesl4, ima, 1,&
-                            ifiss, ndim*(pint- 1)+i, iad4)
+                            ifiss, nb_dim*(pint- 1)+i, iad4)
                 ASSERT(iad4.gt.0)
                 c(i) = cesv4(iad4)
-                zr(jtabin-1+ndim*(nbarto-1)+i) = c(i)
+                zr(jtabin-1+nb_dim*(nbarto-1)+i) = c(i)
             end do
 !
 110         continue
@@ -339,8 +344,8 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
         nunoa = zi(jtabno-1+3*(ia-1)+1)
         nunob = zi(jtabno-1+3*(ia-1)+2)
         nunom = zi(jtabno-1+3*(ia-1)+3)
-        do i = 1, ndim
-            c(i)=zr(jtabin-1+ndim*(ia-1)+i)
+        do i = 1, nb_dim
+            c(i)=zr(jtabin-1+nb_dim*(ia-1)+i)
         end do
         dist1=r8maem()
         dist2=r8maem()
@@ -353,11 +358,11 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
             if ((nunoa.eq.nunoaa.and.nunob.ne.nunobb) .or.&
                 ( nunoa.eq.nunobb.and.nunob.ne.nunoaa)) then
 !           NUNOA CONNECTE LES DEUX ARETES
-                do i = 1, ndim
-                    cc(i)=zr(jtabin-1+ndim*(iia-1)+i)
+                do i = 1, nb_dim
+                    cc(i)=zr(jtabin-1+nb_dim*(iia-1)+i)
                 end do
                 lon=0.d0
-                do i = 1, ndim
+                do i = 1, nb_dim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
                 end do
                 lon=sqrt(lon)
@@ -369,11 +374,11 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
             if ((nunoa.ne.nunoaa.and.nunob.eq.nunobb) .or.&
                 ( nunoa.ne.nunobb.and.nunob.eq.nunoaa)) then
 !           NUNOB CONNECTE LES DEUX ARETES
-                do i = 1, ndim
-                    cc(i)=zr(jtabin-1+ndim*(iia-1)+i)
+                do i = 1, nb_dim
+                    cc(i)=zr(jtabin-1+nb_dim*(iia-1)+i)
                 end do
                 lon=0.d0
-                do i = 1, ndim
+                do i = 1, nb_dim
                     lon = lon+(cc(i)-c(i))*(cc(i)-c(i))
                 end do
                 lon=sqrt(lon)
@@ -397,13 +402,14 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
 ! --- CREATION DES LISTES DES RELATIONS DE LIAISONS ENTRE LAGRANGE
 !
-    call xlagsc(ndim, nbno, nbarto, mxar, algola,&
-                jtabno, jtabin, jtabcr, fiss, nliseq)
+    call xlagsc(nb_dim, nb_node_mesh, nbarto, nb_edge_max, algo_lagr,&
+                jtabno, jtabin      , jtabcr, crack      , sdline_crack,&
+                l_pilo)
 !
 ! --- SI LE MULTI-HEAVISIDE EST ACTIF, ON CREE UNE SD SUPPLEMENTAIRE
 ! --- CONTENANT LE NUMÉROS DE LAGRANGIEN CORESPONDANT.
 !
-    if (lmulti) call xlag2c(nomo, nliseq, jnbpt)
+    if (lmulti) call xlag2c(model, sdline_crack, jnbpt)
 !
 ! --- DESTRUCTION DES OBJETS TEMPORAIRES
 !
@@ -418,7 +424,7 @@ subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
 !
     if (niv .ge. 2) then
         write(ifm,*) '<XFEM  > LISTE DES RELATIONS LINEAIRES'
-        call utimsd(ifm, -1, .true._1, .true._1, nliseq,&
+        call utimsd(ifm, -1, .true._1, .true._1, sdline_crack,&
                     1, ' ', perm='OUI')
     endif
 !

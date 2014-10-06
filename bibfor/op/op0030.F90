@@ -25,6 +25,8 @@ subroutine op0030()
 #include "asterfort/jemarq.h"
 #include "asterfort/lgtlgr.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/utmess.h"
+#include "asterfort/exixfe.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,6 +112,15 @@ subroutine op0030()
         iform = 4
     else
         ASSERT(.false.)
+    endif
+!
+! - Check model
+!
+    if (formul.eq.'XFEM') then
+        call exixfe(model, iret)
+        if (iret .eq. 0) then
+            call utmess('F', 'XFEM2_8', sk=model)
+        endif
     endif
 !
 ! - Read data

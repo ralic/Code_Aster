@@ -15,14 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine xlagsp(noma, nomo, fiss, algola, ndim,&
-                      nliseq)
-        integer :: ndim
-        character(len=8) :: noma
-        character(len=8) :: nomo
-        character(len=8) :: fiss
-        integer :: algola
-        character(len=19) :: nliseq
+    subroutine xlagsp(mesh        , model, crack, algo_lagr, nb_dim,&
+                      sdline_crack, l_pilo)
+        integer, intent(in) :: nb_dim
+        character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
+        character(len=8), intent(in)  :: crack
+        integer, intent(in) :: algo_lagr
+        character(len=14), intent(in) :: sdline_crack
+        aster_logical, intent(in) :: l_pilo
     end subroutine xlagsp
 end interface

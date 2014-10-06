@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoct(list_load       , sdcont_defi     , sdunil_defi , l_cont, l_unil,&
-                      ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
+    subroutine nmdoct(mesh  , list_load       , sdcont_defi     , sdunil_defi , l_cont,&
+                      l_unil, ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
+        character(len=8), intent(in) :: mesh
         character(len=24), intent(out) :: sdcont_defi
         character(len=24), intent(out) :: sdunil_defi
         character(len=19), intent(in) :: list_load

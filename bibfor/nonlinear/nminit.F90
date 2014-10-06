@@ -158,8 +158,8 @@ implicit none
 !
 ! --- SAISIE ET VERIFICATION DE LA COHERENCE DU CHARGEMENT CONTACT
 !
-    call nmdoct(lischa, sdcont_defi, sdunil_defi , lcont, lunil,&
-                ligrcf, ligrxf     , sd_iden_rela)
+    call nmdoct(mesh  , lischa, sdcont_defi, sdunil_defi , lcont, &
+                lunil , ligrcf, ligrxf     , sd_iden_rela)
 !
 ! --- CREATION DE LA NUMEROTATION ET PROFIL DE LA MATRICE
 !

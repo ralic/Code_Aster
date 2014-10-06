@@ -1,5 +1,5 @@
-subroutine nmdoct(list_load       , sdcont_defi     , sdunil_defi , l_cont, l_unil,&
-                  ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
+subroutine nmdoct(mesh  , list_load       , sdcont_defi     , sdunil_defi , l_cont,&
+                  l_unil, ligrel_link_cont, ligrel_link_xfem, sd_iden_rela)
 !
 implicit none
 !
@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/lisccr.h"
 #include "asterfort/liscli.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xrela_elim.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +36,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: list_load
     character(len=24), intent(out) :: sdcont_defi
     character(len=24), intent(out) :: sdunil_defi
@@ -52,6 +54,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
 ! In  list_load        : list of loads
 ! Out sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
 ! Out sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
@@ -178,11 +181,14 @@ implicit none
 ! -- Contact - XFEM: list of linear relations
 !
     if (l_cont_xfem) then
-        ligrel_link = load_cont(1:8)
-        call jeexin(ligrel_link//'.CHME.LIGRE.LGRF', rel_lin_xfem)
-        if (rel_lin_xfem .ne. 0) then
-            nb_load_new = nb_load_new+1
-        endif
+! <XZX> Lignes suivantes: relations lineaires
+!        ligrel_link = load_cont(1:8)
+!        call jeexin(ligrel_link//'.CHME.LIGRE.LGRF', rel_lin_xfem)
+!        if (rel_lin_xfem .ne. 0) then
+!            nb_load_new = nb_load_new+1
+!        endif
+! <XZX> Lignes suivantes: elimination
+        call xrela_elim(mesh, sdcont_defi, sd_iden_rela)
     endif
 !
 ! - Add LIGREL to list of loads
@@ -252,3 +258,4 @@ implicit none
 !
 999 continue
 end subroutine
+
