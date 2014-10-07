@@ -72,7 +72,7 @@ subroutine pevolu(resu, modele, nbocc)
     parameter(nbpmax=13)
     character(len=4) :: tych, ki
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd
-    character(len=8) :: typmcl(1), tout, nomcmp, infoma, ncpini, cara
+    character(len=8) :: typmcl(1), tout, nomcmp, infoma, ncpini
     character(len=8) :: nopar, norme
     real(kind=8) :: prec, inst, borne(2), voltot, seuil
     complex(kind=8) :: c16b
@@ -342,10 +342,6 @@ subroutine pevolu(resu, modele, nbocc)
                 AS_DEALLOCATE(vk8=cmp2)
             endif
 !
-!      -- 4.2.1 RECUPERATION DU CARA_ELEM --
-!
-            call getvid('VOLUMOGRAMME', 'CARA_ELEM', iocc=iocc, scal=cara, nbret=iret)
-!
 !      -- 4.3 RECUPERATION DES MAILLES --
 !
             call getvtx('VOLUMOGRAMME', 'TOUT', iocc=iocc, scal=tout, nbret=iret)
@@ -419,7 +415,7 @@ subroutine pevolu(resu, modele, nbocc)
             call wkvect(borpct, 'V V R', 3*nbint, jbpct)
             call pebpct(modele, nbma, mesmae, cham, nomcmp,&
                         3*nbint, bfix, borne, norme, seuil,&
-                        lseuil, zr(jbpct), voltot, cara)
+                        lseuil, zr(jbpct), voltot)
 !
 !      -- 4.5 ON REMPLIT LA TABLE --
 !

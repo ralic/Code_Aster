@@ -31,7 +31,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),);
 MATER=DEFI_MATERIAU(ELAS=_F(E=1.,
                             NU=0.3,),);
 
-MAILL=LIRE_MAILLAGE(FORMAT='MED');
+MAILL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAILL=DEFI_GROUP(reuse =MAILL,
                  MAILLAGE=MAILL,
@@ -720,116 +720,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    MAILLE='M76',),
                 ),
           )
-
-coord=CALC_CHAM_ELEM(MODELE=MODEL, OPTION='COOR_ELGA',CARA_ELEM=CARELEM,)
-
-
-VOLUM1=POST_ELEM( RESULTAT=RESU,
-                  VOLUMOGRAMME=  _F(NOM_CMP='SIYY',
-                                    CARA_ELEM=CARELEM,
-                                    TOUT='OUI',
-                                    NOM_CHAM='SIEF_ELGA',
-                                    NORME='RELATIF',
-                                    NB_INTERV=8),
-                  MODELE=MODEL,
-              )
-
-IMPR_TABLE(TABLE=VOLUM1)
-
-TEST_TABLE(
-           VALE_CALC=35.9405610091,
-           VALE_REFE=35.9405610091,
-           REFERENCE = 'NON_DEFINI',
-           PRECISION=1.E-3,
-           NOM_PARA='DISTRIBUTION',
-           TABLE=VOLUM1,
-           FILTRE=(_F(NOM_PARA='NOM_CMP',
-                      VALE_K='SIYY',),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INTERVALLE',
-                      VALE_I=5,),
-                   ),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.315642305452,
-           VALE_REFE=0.315642305452,
-           REFERENCE = 'NON_DEFINI',
-           PRECISION=1.E-3,
-           NOM_PARA='DISTRIBUTION',
-           TABLE=VOLUM1,
-           FILTRE=(_F(NOM_PARA='NOM_CMP',
-                      VALE_K='SIYY',),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INTERVALLE',
-                      VALE_I=8,),
-                   ),
-           )
-#=================================================
-#
-# Test SIGM_ELNO
-# 
-#=================================================
-
-
-VOLUM2=POST_ELEM( RESULTAT=RESU,
-                  MODELE=MODEL,
-                  VOLUMOGRAMME=  _F(NOM_CMP='SIYY',
-                                    GROUP_MA = 'COQUE',
-                                    CARA_ELEM=CARELEM,
-                                    NOM_CHAM='SIGM_ELNO',
-                                    NORME='ABSOLU',
-                                    NB_INTERV=8),
-                )
-
-IMPR_TABLE(TABLE=VOLUM2)
-
-TEST_TABLE(
-           VALE_CALC=0.0202219627739 ,
-           VALE_REFE=0.0202219627739 ,
-           REFERENCE = 'NON_DEFINI',
-           PRECISION=1.E-3,
-           NOM_PARA='DISTRIBUTION',
-           TABLE=VOLUM2,
-           FILTRE=(_F(NOM_PARA='NOM_CMP',
-                      VALE_K='SIYY',),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INTERVALLE',
-                      VALE_I=4,),
-                   ),
-           )
-
-TEST_TABLE(
-           VALE_CALC=0.0376035707525 ,
-           VALE_REFE=0.0376035707525 ,
-           REFERENCE = 'NON_DEFINI',
-           PRECISION=1.E-3,
-           NOM_PARA='DISTRIBUTION',
-           TABLE=VOLUM2,
-           FILTRE=(_F(NOM_PARA='NOM_CMP',
-                      VALE_K='SIYY',),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
-                   _F(NOM_PARA='INTERVALLE',
-                      VALE_I=5,),
-                   ),
-           )
-
-#=================================================
-#
-# Test du volume
-# 
-#=================================================
-
-TEST_TABLE(TABLE=VOLUM2,  
-           NOM_PARA='DISTRIBUTION',
-           TYPE_TEST='SOMM_ABS',
-           VALE_CALC=0.0782172359038)
-
-
-FIN();
 
 FIN();

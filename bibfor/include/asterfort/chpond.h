@@ -17,13 +17,12 @@
 !
 interface
     subroutine chpond(tych, dejain, chin, cesout, cespoi,&
-                      modele,cara)
+                      modele)
         character(len=4) :: tych
         character(len=4) :: dejain
         character(len=19) :: chin
         character(len=19) :: cesout
         character(len=19) :: cespoi
         character(len=8) :: modele
-        character(len=8) :: cara
     end subroutine chpond
 end interface

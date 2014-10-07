@@ -1,5 +1,5 @@
 subroutine chpond(tych, dejain, chin, cesout, cespoi,&
-                  modele,cara)
+                  modele)
 !
     implicit none
 !
@@ -8,7 +8,6 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
-#include "asterfort/cesvar.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cesred.h"
@@ -22,7 +21,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 #include "asterfort/megeom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: modele, cara
+    character(len=8) :: modele
     character(len=19) :: chin, cesout, cespoi
     character(len=4) :: tych, dejain
 !    -------------------------------------------------------------------
@@ -60,11 +59,10 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
 !     ------------------------------------------------------------------
 !
     integer :: iret, nbchin, nbma, nbpt, nbsp, nbcmp, joutl, joutd
-    integer :: nbspmx
     integer :: iad1, iad2, iad3, isp, ima, icmp, ipt, jchsl, jchsd, iexi
     integer :: jpoid, jpoil, jpoic, jch2, jch1, iret1, iret2, jpdsm
     real(kind=8) :: poids
-    parameter(nbchin=6)
+    parameter(nbchin=2)
     character(len=8) :: lpain(nbchin), lpaout(1), noma, valk
     character(len=19) :: chins
     character(len=24) :: ligrel, chgeom, lchin(nbchin), lchout(2), vefch1
@@ -100,22 +98,10 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
         call megeom(modele, chgeom)
         lchin(1)=chgeom(1:19)
         lpain(1)='PGEOMER'
-        lchin(2)= cara//'.CANBSP'
-        lpain(2)='PNBSP_I'
-        lchin(3)= cara//'.CAFIBR'
-        lpain(3)='PFIBRES'
-        lchin(4)= cara//'.CARORIEN'
-        lpain(4)='PCAORIE'
-        lchin(5)= cara//'.CARGEOPO'
-        lpain(5)='PCAGEPO'
-        lchin(6)=cara//'.CARCOQUE'
-        lpain(6)='PCACOQU'
         lchout(1)='&&PEECAL.PGCOOR'
         lpaout(1)='PCOORPG'
 !
-        call cesvar(cara, ' ', ligrel, lchout(1))
-!
-        call calcul('S', 'COOR_ELGA', ligrel, 6, lchin,&
+        call calcul('S', 'COOR_ELGA', ligrel, 1, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
 !
@@ -186,31 +172,20 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
     if (tych .ne. 'ELGA') then
         call jeexin(cespoi//'.PDSM', iexi)
         if (iexi .eq. 0) then
-            nbspmx = 0
-            do ima = 1, nbma
-              if(zi(jpoid-1+5+4*(ima-1)+2).gt.nbspmx) then
-                 nbspmx = zi(jpoid-1+5+4*(ima-1)+2)
-              end if
-            end do
-
-            call wkvect(cespoi//'.PDSM', 'V V R', nbma*nbspmx, jpdsm)
-
+            call wkvect(cespoi//'.PDSM', 'V V R', nbma, jpdsm)
             do ima = 1, nbma
                 ltest = .false.
                 if (peecal) then
                     if (maille(ima) .eq. 1) ltest=.true.
                 endif
                 if ((.not.peecal) .or. ltest) then
-                    nbpt   =zi(jpoid-1+5+4*(ima-1)+1)
-                    nbsp   =zi(jpoid-1+5+4*(ima-1)+2)
-                    do isp = 1, nbsp
-                       do ipt = 1, nbpt
-                          call cesexi('C', jpoid, jpoil, ima, ipt,&
-                                      isp, 1, iad2)
-                          ASSERT(iad2.gt.0)
-                          zr(jpdsm-1+(ima-1)*nbsp+isp)=zr(jpdsm-1+(ima-1)*nbsp+isp)+&
-                                                          poiv(iad2)
-                       end do
+                    nbpt=zi(jpoid-1+5+4*(ima-1)+1)
+                    do ipt = 1, nbpt
+                        call cesexi('C', jpoid, jpoil, ima, ipt,&
+                                    1, 1, iad2)
+                        ASSERT(iad2.gt.0)
+                        zr(jpdsm-1+ima)=zr(jpdsm-1+ima)+poiv(&
+                        iad2)
                     end do
                 endif
             end do
@@ -265,11 +240,7 @@ subroutine chpond(tych, dejain, chin, cesout, cespoi,&
                             goto 40
                         else
                             ASSERT(iad3.gt.0)
-                            if (tych.eq.'ELNO') then
-                               outv(iad3)=chsv(iad1)*zr(jpdsm-1+(ima-1)*nbsp+isp)/nbpt
-                            else
-                               outv(iad3)=chsv(iad1)*poids
-                            endif
+                            outv(iad3)=chsv(iad1)*poids
                         endif
  40                     continue
                     end do

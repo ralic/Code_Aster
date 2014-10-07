@@ -84,7 +84,6 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     real(kind=8) :: vol, val, inst, volpt
     complex(kind=8) :: cbid
     character(len=8) :: noma, k8b, typmcl(3), nomgd, nomva, infoma
-    character(len=8) :: cara
     character(len=4) :: dejain
     character(len=16) :: motcle(3)
     character(len=19) :: cesout, cespoi
@@ -193,7 +192,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     cesout='&&PEECAL.CESOUT'
     cespoi='&&PEECAL_POIDS_'//nomcha(1:4)
     call chpond(tych, dejain, chpost, cesout, cespoi,&
-                modele,cara)
+                modele)
     call jeveuo(cesout//'.CESV', 'L', vr=cesv)
     call jeveuo(cesout//'.CESL', 'L', jcesl)
     call jeveuo(cesout//'.CESD', 'L', jcesd)
