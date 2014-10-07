@@ -55,7 +55,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     character(len=2) :: typmat
 !-----------------------------------------------------------------------
     integer :: i, ibid, ier, nec, ieq, neq
-    integer ::  nblime, nbddl, nbddlc, numno, icmp 
+    integer ::  nblime, nbddl, nbddlc, numno, icmp
     character(len=24), pointer :: lime(:) => null()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: deeq(:) => null()
@@ -106,8 +106,8 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         endif
 !
     else if (questi.eq.'NB_DDL_NOEUD') then
-        call nueq_chck(prno, l_error = .true.)
         prno = refa(2)(1:14)//'.NUME'
+        call nueq_chck(prno, l_error = .true.)
         call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
         call jeveuo(prno//'.DEEQ', 'L', vi=deeq)
 !
@@ -117,7 +117,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         if (ierd .ne. 0) goto 999
         call dismnu('NB_EQUA', refa(2)(1:14), neq, kbid, ierd)
         if (ierd .ne. 0) goto 999
-! 
+!
        nbddl = zi(jprno-1+2)
         do ieq = 2, neq
             numno = deeq((ieq -1)* 2 +1)
@@ -143,7 +143,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !
     else if (questi.eq.'XFEM_PC_INV') then
         repk=refa(16)(1:19)
-!      
+!
     else if (questi.eq.'SOLVEUR') then
         if (refa(7) .ne. ' ') then
             repk=refa(7)
