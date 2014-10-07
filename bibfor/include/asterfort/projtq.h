@@ -16,13 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine projtq(nbcnx, xyzma, icnx, x3dp, itria,&
-                      xbar, iproj)
+    subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
+                      itria, inoeu, icote, xbar, iproj)
         integer :: nbcnx
         real(kind=8) :: xyzma(3, *)
         integer :: icnx
         real(kind=8) :: x3dp(*)
+        real(kind=8) :: excent
         integer :: itria
+        integer :: inoeu
+        integer :: icote
         real(kind=8) :: xbar(*)
         integer :: iproj
     end subroutine projtq

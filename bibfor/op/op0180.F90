@@ -462,8 +462,8 @@ subroutine op0180()
 !
         if (mail2d) then
             call projca(nomt19, lirela, nmabet, nbmabe, mailla,&
-                        nbnobi, nunobi, icabl, zi(jnbno), xnoca,&
-                        ynoca, znoca)
+                        caelem, nbnobi, nunobi, icabl, zi(jnbno),&
+                        xnoca, ynoca, znoca)
 !
 !......  REPRESENTATION DE LA STRUCTURE BETON PAR DES MAILLES 3D :
 !......  IMMERSION DU CABLE DANS LE MAILLAGE BETON

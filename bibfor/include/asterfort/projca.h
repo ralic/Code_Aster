@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,13 +17,14 @@
 !
 interface
     subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
-                      nbnobe, nunobe, icabl, nbnoca, xnoca,&
-                      ynoca, znoca)
+                      caelem, nbnobe, nunobe, icabl, nbnoca,&
+                      xnoca, ynoca, znoca)
         character(len=19) :: tablca
         character(len=19) :: lirela
         character(len=24) :: nmabet
         integer :: nbmabe
         character(len=8) :: mailla
+        character(len=8) :: caelem
         integer :: nbnobe
         character(len=19) :: nunobe
         integer :: icabl

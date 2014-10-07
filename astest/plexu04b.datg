@@ -1,5 +1,0 @@
-﻿Pour obtenir la maillage plexu04b.mmed il faut :
-
-- charger le script python plexu04a.datg
-- convertir en quadratique le maillage des cables en prenant les points milieux sur la geométrie.
-- créer le mailage complet à partir du maillage béton et de ce maillage de cable.

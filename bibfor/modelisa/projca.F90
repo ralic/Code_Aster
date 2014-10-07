@@ -1,10 +1,10 @@
 subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
-                  nbnobe, nunobe, icabl, nbnoca, xnoca,&
-                  ynoca, znoca)
+                  caelem, nbnobe, nunobe, icabl, nbnoca,&
+                  xnoca, ynoca, znoca)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,6 +42,8 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 !                    NOMBRE DE MAILLES BETON
 !  IN     : MAILLA : CHARACTER*8 , SCALAIRE
 !                    NOM DU CONCEPT MAILLAGE ASSOCIE A L'ETUDE
+!  IN     : CAELEM : CHARACTER*8 , SCALAIRE
+!                    NOM DU CONCEPT CARA_ELEM ASSOCIE A L'ETUDE
 !  IN     : NBNOBE : INTEGER , SCALAIRE
 !                    NOMBRE DE NOEUDS APPARTENANT A LA STRUCTURE BETON
 !  IN     : NUNOBE : CHARACTER*19 , SCALAIRE
@@ -77,15 +79,13 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/projkb.h"
 #include "asterfort/projkm.h"
-#include "asterfort/projkn.h"
 #include "asterfort/reci2d.h"
 #include "asterfort/tbajli.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    character(len=8) :: mailla
+    character(len=8) :: mailla, caelem
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
     integer :: nbnobe, icabl, nbmabe, nbnoca(*)
     character(len=24) :: nmabet
@@ -98,7 +98,6 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     real(kind=8) :: d2, d2min, dx, dy, dz, excent, normal(3), x3dca(3), xbar(3)
     complex(kind=8) :: cbid
     character(len=8) :: nnoeca, voisin(2)
-    character(len=19) :: licnx, lnuma
     character(len=24) :: coorno, nomama, nonoca, nonoma
     aster_logical :: encore
 !
@@ -142,13 +141,13 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     nblign = tbnp(2)
     ideca = nblign - nbno
     call jeveuo(tablca//'.TBLP', 'L', vk24=tblp)
-    do 10 ipara = 1, nbpara
+    do ipara = 1, nbpara
         if (tblp(1+4*(ipara-1)) .eq. parcr) then
             nonoca = tblp(1+4*(ipara-1)+2)
             call jeveuo(nonoca, 'L', jnoca)
             goto 11
         endif
- 10 end do
+    end do
  11 continue
 !
 !.... COORDONNEES DES NOEUDS
@@ -175,16 +174,10 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
     nnomax = 9
     AS_ALLOCATE(vr=xyz_noemai, size=3*nnomax)
     AS_ALLOCATE(vi=cnx_maille, size=nnomax)
-    write(lnuma,'(A19)') '&&PROJCA.NUMA_NOEBE'
-    call jecreo(lnuma, 'V V I')
-    call jeecra(lnuma, 'LONMAX', nbmabe)
-    write(licnx,'(A19)') '&&PROJCA.ICNX_NOEBE'
-    call jecreo(licnx, 'V V I')
-    call jeecra(licnx, 'LONMAX', nbmabe)
 !
 ! 2.2 BOUCLE SUR LE NOMBRE DE NOEUDS DU CABLE
 ! ---
-    do 100 inoca = 1, nbno
+    do inoca = 1, nbno
 !
         nnoeca = zk8(jnoca+ideca+inoca-1)
         x3dca(1) = zr(jxca+ideca+inoca-1)
@@ -201,7 +194,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
         dy = x3dca(2) - zr(jcoor+3*(noebe-1)+1)
         dz = x3dca(3) - zr(jcoor+3*(noebe-1)+2)
         d2min = dx * dx + dy * dy + dz * dz
-        do 110 inobe = 2, nbnobe
+        do inobe = 2, nbnobe
             noe = zi(jnunob+inobe-1)
             dx = x3dca(1) - zr(jcoor+3*(noe-1) )
             dy = x3dca(2) - zr(jcoor+3*(noe-1)+1)
@@ -211,43 +204,16 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
                 d2min = d2
                 noebe = noe
             endif
-110     continue
+        enddo
 !
-! 2.2.2  TENTATIVE DE PROJECTION DU NOEUD CABLE SUR LES MAILLES
-! .....  AUXQUELLES APPARTIENT LE NOEUD BETON LE PLUS PROCHE
+! 2.2.2  TENTATIVE DE PROJECTION DU NOEUD CABLE
 !
-        call projkm(nmabet, nbmabe, nbnobe, mailla, x3dca(1),&
-                    noebe, lnuma, licnx, numail, nbcnx,&
+        call projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
+                    nnoeca, x3dca(1), noebe, numail, nbcnx,&
                     cnx_maille, xyz_noemai, normal(1), itria, xbar(1),&
                     iproj, excent)
-        if (iproj .ge. 0) encore = .false.
-!
-! SI LA GEOMETRIE DU BETON N'EST PAS PLANE (PAR EXEMPLE UN CYLINDRE),
-! LA PROJECTION SUR LES MAILLES PEUT ECHOUER
-!
-! 2.2.3  EN CAS D'ECHEC DE LA PROJECTION SUR LES MAILLES, TENTATIVE DE
-! .....  PROJECTION DU NOEUD CABLE SUR LES BORDS DES MAILLES AUXQUELLES
-!        APPARTIENT LE NOEUD BETON LE PLUS PROCHE
-!
-        if (encore) then
-            call projkb(mailla, x3dca(1), lnuma, licnx, numail,&
-                        nbcnx, cnx_maille, xyz_noemai, normal(1), itria,&
-                        xbar(1), iproj, excent)
-            if (iproj .gt. 0) encore = .false.
-        endif
-!
-! EN CAS D'UNE DOUBLE COURBURE (PAR EXEMPLE UNE COUPOLE), LA PROJECTION
-! SUR LES BORDS DES MAILLES PEUT EGALEMENT ECHOUER.
-!
-! 2.2.4  EN CAS D'ECHEC DES DEUX TENTATIVES PRECEDENTES, LE NOEUD CABLE
-! .....  SE PROJETTE SUR LE NOEUD BETON LE PLUS PROCHE
-!
-        if (encore) then
-! ON PEUT VERIFIER LE PASSAGE PAR PROJKN AVEC:
-!            PRINT*,'projca.f: On utilise PROJKN.'
-            call projkn(mailla, x3dca(1), lnuma, licnx, numail,&
-                        nbcnx, cnx_maille, xyz_noemai, normal(1), itria,&
-                        iproj, excent)
+        if (iproj .eq. -1) then
+            call utmess('F', 'MODELISA5_82', si = icabl ,sk=nnoeca)
         endif
 !
 ! 2.2.5  DETERMINATION DES RELATIONS CINEMATIQUES
@@ -263,13 +229,11 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla,&
         call tbajli(tablca, 4, param, [iproj], [excent],&
                     [cbid], voisin(1), ideca+ inoca)
 !
-100 end do
+    end do
 !
 ! --- MENAGE
     AS_DEALLOCATE(vr=xyz_noemai)
     AS_DEALLOCATE(vi=cnx_maille)
-    call jedetr('&&PROJCA.NUMA_NOEBE')
-    call jedetr('&&PROJCA.ICNX_NOEBE')
 !
     call jedema()
 !

@@ -126,7 +126,16 @@ Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
   la grandeur associée du champ doit être:  %(k2)s  mais elle est:  %(k3)s
 """),
 
+51 : _(u"""
+DEFI_CABLE_BP : Échec de projection du noeud de câble %(k1)s.
 
+La projection du noeud %(k1)s devrait très certainement être faite sur
+la maille %(k2)s, cependant cette action est refusée car la distance
+entre le noeud et la maille n'est pas compatible avec l'épaisseur 
+et l'excentricité de la maille.
+Cette distance (orientée) doit être comprise entre %(r3)f et %(r2)f, or
+la valeur calculée est %(r1)f.
+"""),
 
 
 55 : _(u"""
@@ -233,9 +242,9 @@ Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
  la table de réponse modale ne contient que des auto spectres. le calcul demande n est donc pas réalisable.
 """),
 
-
-
-
+82 : _(u"""
+ mot-clé <DEFI_CABLE>, occurrence no  %(i1)d , le noeud de câble  %(k1)s n'appartient pas au béton (modélisé en coque).
+"""),
 
 83 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <NOEUD_ANCRAGE> : il faut définir 2 noeuds d'ancrage

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,21 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine projkb(mailla, x3dca, lnuma, licnx, numail,&
-                      nbcnx, cxma, xyzma, normal, itria,&
-                      xbar, iproj, excent)
+    subroutine veri_noe(mailla, lnuma, liproj, limano, nbmaok,&
+                                    x3dca, iproj, noe, numail )
         character(len=8) :: mailla
-        real(kind=8) :: x3dca(*)
-        character(len=19) :: lnuma
-        character(len=19) :: licnx
-        integer :: numail
-        integer :: nbcnx
-        integer :: cxma(*)
-        real(kind=8) :: xyzma(3, *)
-        real(kind=8) :: normal(*)
-        integer :: itria
-        real(kind=8) :: xbar(*)
+        integer :: lnuma(*)
+        integer :: liproj(*)
+        integer :: limano(*)
+        integer :: nbmaok
+        real(kind=8) :: x3dca(3)
         integer :: iproj
-        real(kind=8) :: excent
-    end subroutine projkb
+        integer :: noe
+        integer :: numail
+    end subroutine veri_noe
 end interface
