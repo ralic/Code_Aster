@@ -19,6 +19,7 @@
 from SD import *
 from SD.sd_titre import sd_titre
 from SD.sd_util import *
+from SD.sd_fonction import sd_fonction
 
 class sd_carte(sd_titre):
     nomj = SDNom(fin=19)
@@ -73,3 +74,16 @@ class sd_carte(sd_titre):
         numgd    =desc[0]
         ncmp_max=len(sdu_licmp_gd(numgd))
         assert n1==ncmp_max*n_gd_max , (n1, ncmp_max, n_gd_max)
+
+        # parfois, la carte contient des fonctions crees pendant la commande :
+        if self.VALE.type == 'K' :
+            nom_concept=self.nomj()[:8]
+            vale=self.VALE.get()
+            for nom in vale :
+                if len(nom.strip())==0 : continue
+                nom8=nom[:8]
+                if nom8 == nom_concept :
+                    sd2=sd_fonction(nom)
+                    if sd2.PROL.exists :
+                        sd2.check(checker)
+
