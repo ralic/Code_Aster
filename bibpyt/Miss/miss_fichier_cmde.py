@@ -317,9 +317,6 @@ class MissCmdeGenerator(object):
         args = 'IMPEdance FORCe'
         if self.param['_hasPC']:
             args = 'UD0 CHAMP IMPEdance FORCe'
-        # cas du calcul sous la boucle LAPLACE_TEMPS
-        if self.param['FREQ_IMAG'] is not None:
-            args = "IMPEdance"
         lines.extend(['*',
             '* Calcul des forces et impedances',
             '* -------------------------------',
