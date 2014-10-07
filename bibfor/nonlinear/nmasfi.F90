@@ -138,7 +138,8 @@ subroutine nmasfi(fonact, sddyna, veasse, cnffdo, cnffpi)
         call nmchex(veasse, 'VEASSE', 'CNSSTF', cnsstf)
         ifdo = ifdo+1
         cndonn(ifdo) = cnsstf
-        codonn(ifdo) = 1.d0
+!        codonn(ifdo) = 1.d0
+        codonn(ifdo) = coeex2
     endif
 !
 ! --- FORCES VEC_ISS
@@ -147,7 +148,8 @@ subroutine nmasfi(fonact, sddyna, veasse, cnffdo, cnffpi)
         call nmchex(veasse, 'VEASSE', 'CNVISS', cnviss)
         ifdo = ifdo+1
         cndonn(ifdo) = cnviss
-        codonn(ifdo) = 1.d0
+!        codonn(ifdo) = 1.d0
+        codonn(ifdo) = coeex2
     endif
 !
 ! --- AJOUT FORCES EXTERNES PAS PRECEDENT
@@ -167,6 +169,18 @@ subroutine nmasfi(fonact, sddyna, veasse, cnffdo, cnffpi)
             call ndynkk(sddyna, 'OLDP_CNONDP', cnondp)
             ifdo = ifdo+1
             cndonn(ifdo) = cnondp
+            codonn(ifdo) = coeext
+        endif
+        if (lviss) then
+            call ndynkk(sddyna, 'OLDP_CNVISS', cnviss)
+            ifdo = ifdo+1
+            cndonn(ifdo) = cnviss
+            codonn(ifdo) = coeext
+        endif
+        if (lsstf) then
+            call ndynkk(sddyna, 'OLDP_CNSSTF', cnsstf)
+            ifdo = ifdo+1
+            cndonn(ifdo) = cnsstf
             codonn(ifdo) = coeext
         endif
     endif

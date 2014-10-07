@@ -310,6 +310,8 @@ subroutine nmcrch(numedd, fonact, sddyna, defico, valinc,&
             call vtcreb(cnsstf, 'V', 'R', nume_ddlz = numedd)
             call ndynkk(sddyna, 'OLDP_CNCINE', cncine)
             call vtcreb(cncine, 'V', 'R', nume_ddlz = numedd)
+            call ndynkk(sddyna, 'OLDP_CNVISS', cnviss)
+            call vtcreb(cnviss, 'V', 'R', nume_ddlz = numedd)
         endif
     endif
 !

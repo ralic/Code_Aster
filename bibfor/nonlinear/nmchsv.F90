@@ -48,10 +48,10 @@ subroutine nmchsv(fonact, veasse, sddyna)
 !
 !
     character(len=19) :: olfedo, olfsdo, oldido, oldidi, olfint
-    character(len=19) :: olondp, ollapl, olcine
+    character(len=19) :: olondp, ollapl, olcine, olviss, olsstf
     character(len=19) :: cnfedo, cnfsdo, cndido, cndidi, cnfint
-    character(len=19) :: cnondp, cnlapl, cncine
-    aster_logical :: londe, llapl, ldidi
+    character(len=19) :: cnondp, cnlapl, cncine, cnviss, cnsstf
+    aster_logical :: londe, llapl, ldidi, lviss, lsstf
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,6 +60,8 @@ subroutine nmchsv(fonact, veasse, sddyna)
 ! --- FONCTIONNALITES ACTIVEES
 !
     londe = ndynlo(sddyna,'ONDE_PLANE')
+    lviss = ndynlo(sddyna,'VECT_ISS')
+    lsstf = isfonc(fonact,'SOUS_STRUC')
     llapl = isfonc(fonact,'LAPLACE')
     ldidi = isfonc(fonact,'DIDI')
 !
@@ -73,6 +75,8 @@ subroutine nmchsv(fonact, veasse, sddyna)
     call ndynkk(sddyna, 'OLDP_CNONDP', olondp)
     call ndynkk(sddyna, 'OLDP_CNLAPL', ollapl)
     call ndynkk(sddyna, 'OLDP_CNCINE', olcine)
+    call ndynkk(sddyna, 'OLDP_CNVISS', olviss)
+    call ndynkk(sddyna, 'OLDP_CNSSTF', olsstf)
 !
 ! --- NOM DES CHAMPS PAS COURANT
 !
@@ -84,6 +88,8 @@ subroutine nmchsv(fonact, veasse, sddyna)
     call nmchex(veasse, 'VEASSE', 'CNONDP', cnondp)
     call nmchex(veasse, 'VEASSE', 'CNLAPL', cnlapl)
     call nmchex(veasse, 'VEASSE', 'CNCINE', cncine)
+    call nmchex(veasse, 'VEASSE', 'CNVISS', cnviss)
+    call nmchex(veasse, 'VEASSE', 'CNSSTF', cnsstf)
 !
 ! --- RECOPIE DES CHAMPS
 !
@@ -100,6 +106,12 @@ subroutine nmchsv(fonact, veasse, sddyna)
     endif
     if (llapl) then
         call copisd('CHAMP_GD', 'V', cnlapl, ollapl)
+    endif
+    if (lviss) then
+        call copisd('CHAMP_GD', 'V', cnviss, olviss)
+    endif
+    if (lsstf) then
+        call copisd('CHAMP_GD', 'V', cnsstf, olsstf)
     endif
 !
     call jedema()

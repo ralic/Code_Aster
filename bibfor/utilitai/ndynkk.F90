@@ -138,6 +138,8 @@ subroutine ndynkk(sddyna, chaine, nomsd)
         cham24 = zk24(jvaol+8-1)
     else if (chaine(1:11).eq.'OLDP_CNCINE') then
         cham24 = zk24(jvaol+9-1)
+    else if (chaine(1:11).eq.'OLDP_CNVISS') then
+        cham24 = zk24(jvaol+10-1)
 !
     else if (chaine(1:6).eq.'CHONDP') then
         cham24 = zk24(jtcha+1-1)

@@ -74,15 +74,15 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !
 !
 !
-    aster_logical :: londe, llapl, ldidi, lreuse
+    aster_logical :: londe, llapl, ldidi, lreuse, lviss, lsstf
     character(len=8) :: result, k8bid
     character(len=16) :: k16bla, k16bid
     character(len=19) :: matass
     character(len=19) :: vefint, vedido
-    character(len=19) :: vefedo, veondp, vedidi, velapl
+    character(len=19) :: vefedo, veondp, vedidi, velapl, vesstf
     character(len=19) :: cnfedo, cndidi, cnfint
-    character(len=19) :: cndido, cncine
-    character(len=19) :: cnondp, cnlapl
+    character(len=19) :: cndido, cncine, cnviss
+    character(len=19) :: cnondp, cnlapl, cnsstf
     character(len=24) :: codere
     character(len=19) :: commoi, complu, insmoi, insplu
     complex(kind=8) :: c16bid
@@ -104,6 +104,8 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 ! --- FONCTIONNALITES ACTIVEES
 !
     londe = ndynlo(sddyna,'ONDE_PLANE')
+    lviss = ndynlo(sddyna,'VECT_ISS')
+    lsstf = isfonc(fonact,'SOUS_STRUC')
     llapl = isfonc(fonact,'LAPLACE')
     ldidi = isfonc(fonact,'DIDI')
     lreuse = isfonc(fonact,'REUSE')
@@ -148,6 +150,7 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
     call ndynkk(sddyna, 'OLDP_VEFINT', vefint)
     call ndynkk(sddyna, 'OLDP_VEONDP', veondp)
     call ndynkk(sddyna, 'OLDP_VELAPL', velapl)
+    call ndynkk(sddyna, 'OLDP_VESSTF', vesstf)
     call ndynkk(sddyna, 'OLDP_CNFEDO', cnfedo)
     call ndynkk(sddyna, 'OLDP_CNDIDO', cndido)
     call ndynkk(sddyna, 'OLDP_CNDIDI', cndidi)
@@ -155,6 +158,8 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
     call ndynkk(sddyna, 'OLDP_CNONDP', cnondp)
     call ndynkk(sddyna, 'OLDP_CNLAPL', cnlapl)
     call ndynkk(sddyna, 'OLDP_CNCINE', cncine)
+    call ndynkk(sddyna, 'OLDP_CNVISS', cnviss)
+    call ndynkk(sddyna, 'OLDP_CNSSTF', cnsstf)
     matass = ' '
 !
 ! --- CALCUL DES FORCES INTERIEURES
@@ -214,6 +219,28 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
                     compor, numedd, instam, instap, resoco,&
                     resocu, sddyna, sdtime, valinc, comref,&
                     matass, veondp, cnondp)
+    endif
+!
+! --- CHARGEMENTS SOUS_STRUC
+!
+    if (lsstf) then
+        call nmcalv('CNSSTF', modele, lischa, mate, carele,&
+                    compor, carcri, numedd, comref, sdtime,&
+                    parcon, instam, instap, valinc, solalg,&
+                    sddyna, k16bla, vesstf)
+        call nmassv('CNSSTF', modele, lischa, mate, carele,&
+                    compor, numedd, instam, instap, resoco,&
+                    resocu, sddyna, sdtime, valinc, comref,&
+                    matass, vesstf, cnsstf)
+    endif
+!
+! --- CHARGEMENTS FORCE_SOL
+!
+    if (lviss) then
+        call nmassv('CNVISS', modele, lischa, mate, carele,&
+                    compor, numedd, instam, instap, resoco,&
+                    resocu, sddyna, sdtime, valinc, comref,&
+                    matass, ' ', cnviss)
     endif
 !
 ! --- CHARGEMENTS MECANIQUES FIXES DONNES

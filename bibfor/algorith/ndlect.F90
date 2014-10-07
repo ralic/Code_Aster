@@ -100,14 +100,14 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     character(len=19) :: cnfedo, cnfsdo, cndidi, cnfint
     character(len=19) :: cndido, cncine
     character(len=19) :: cnondp, cnlapl
-    character(len=19) :: cnsstf
+    character(len=19) :: cnsstf, cnviss
 !
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
 !
     data cnfedo,cnfsdo    /'&&NDLECT.CNFEDO','&&NDLECT.CNFSDO'/
     data cndido,cndidi    /'&&NDLECT.CNDIDO','&&NDLECT.CNDIDI'/
-    data cnfint           /'&&NDLECT.CNFINT'/
+    data cnfint,cnviss    /'&&NDLECT.CNFINT','&&NDLECT.CNVISS'/
     data cnondp,cnlapl    /'&&NDLECT.CNONDP','&&NDLECT.CNLAPL'/
     data cncine,cnsstf    /'&&NDLECT.CNCINE','&&NDLECT.CNSSTF'/
 !
@@ -191,13 +191,14 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     call dismoi('EXI_AMOR_ALPHA', mate, 'CHAM_MATER', repk=rep1)
     call dismoi('EXI_AMOR_BETA', mate, 'CHAM_MATER', repk=rep2)
     call dismoi('EXI_AMOR_NOR', mate, 'CHAM_MATER', repk=rep3)
-    call dismoi('EXI_AMOR_TAN', mate, 'CHAM_MATER', repk=rep4)
+    call dismoi('EXI_AMOR_TAN', mate, 'CHAM_MATER', repk=rep4) 
     if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI') .or. (rep3(1:3).eq.'OUI') .or.&
         (rep4(1:3).eq.'OUI')) then
         lamor = .true.
         call getvtx(' ', 'AMOR_RAYL_RIGI', scal=rigiam, nbret=iret)
         if (rigiam .eq. 'TANGENTE') lktan = .true.
     endif
+
     lamra = lamor
 !
     if ((rep1(1:3).eq.'OUI') .or. (rep2(1:3).eq.'OUI')) then
@@ -402,6 +403,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         zk24(jvaol+7-1) = cnlapl
         zk24(jvaol+8-1) = cnsstf
         zk24(jvaol+9-1) = cncine
+        zk24(jvaol+10-1) = cnviss
     endif
 !
 ! --- CARTE STADYN POUR POUTRES
