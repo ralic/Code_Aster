@@ -98,6 +98,8 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     cbid=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
+    k8b='        '
+!
     mesmai = '&&PEECAL.MES_MAILLES'
     mesmaf = '&&PEECAL.MAILLES_FILTRE'
 !
@@ -192,7 +194,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
     cesout='&&PEECAL.CESOUT'
     cespoi='&&PEECAL_POIDS_'//nomcha(1:4)
     call chpond(tych, dejain, chpost, cesout, cespoi,&
-                modele)
+                modele,k8b)
     call jeveuo(cesout//'.CESV', 'L', vr=cesv)
     call jeveuo(cesout//'.CESL', 'L', jcesl)
     call jeveuo(cesout//'.CESD', 'L', jcesd)

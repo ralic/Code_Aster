@@ -286,6 +286,119 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=17,
                 ),
           )
 
+#=================================================
+# Test sur SIEF_ELGA
+#=================================================
+
+RESUL=CALC_CHAMP(reuse =RESUL,
+             RESULTAT=RESUL,
+             CONTRAINTE='SIGM_ELNO');
+
+coor3d=CALC_CHAM_ELEM(MODELE=MO, OPTION='COOR_ELGA',CARA_ELEM=CAREL,)
+
+
+VOLUM1=POST_ELEM( RESULTAT=RESUL,
+                  VOLUMOGRAMME=  _F(NOM_CMP='SIXY',
+                                    CARA_ELEM=CAREL,
+                                    TOUT='OUI',
+                                    NOM_CHAM='SIEF_ELGA',
+                                    NORME='RELATIF',
+                                    BORNES=(-1.91865E+08,1.91865E+08),
+                                    NB_INTERV=4),
+                  MODELE=MO,
+              )
+
+IMPR_TABLE(TABLE=VOLUM1)
+
+TEST_TABLE(
+           VALE_CALC=3.93167889118,
+           VALE_REFE=3.93167889118,
+           REFERENCE = 'NON_DEFINI',
+           PRECISION=1.E-3,
+           NOM_PARA='DISTRIBUTION',
+           TABLE=VOLUM1,
+           FILTRE=(_F(NOM_PARA='NOM_CMP',
+                      VALE_K='SIXY',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=22,),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=1,),
+                   ),
+           )
+
+TEST_TABLE(
+           VALE_CALC=46.4739871399,
+           VALE_REFE=46.4739871399,
+           REFERENCE = 'NON_DEFINI',
+           PRECISION=1.E-3,
+           NOM_PARA='DISTRIBUTION',
+           TABLE=VOLUM1,
+           FILTRE=(_F(NOM_PARA='NOM_CMP',
+                      VALE_K='SIXY',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=22,),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=2,),
+                   ),
+           )
+
+#=================================================
+# Test sur SIGM_ELNO
+#=================================================
+
+VOLUM2=POST_ELEM( RESULTAT=RESUL,
+                  VOLUMOGRAMME=  _F(NOM_CMP='SIXY',
+                                    CARA_ELEM=CAREL,
+                                    TOUT='OUI',
+                                    NOM_CHAM='SIGM_ELNO',
+                                    NORME='ABSOLU',
+                                    NB_INTERV=4),
+                  MODELE=MO,
+              )
+
+TEST_TABLE(
+           VALE_CALC=0.0192497393512,
+           VALE_REFE=0.0192497393512,
+           REFERENCE = 'NON_DEFINI',
+           PRECISION=1.E-3,
+           NOM_PARA='DISTRIBUTION',
+           TABLE=VOLUM2,
+           FILTRE=(_F(NOM_PARA='NOM_CMP',
+                      VALE_K='SIXY',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=22,),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=2,),
+                   ),
+           )
+
+IMPR_TABLE(TABLE=VOLUM2)
+
+#=================================================
+#
+# Test VOLUME
+# 
+#=================================================
+
+VOLUM3=POST_ELEM( RESULTAT=RESUL,
+                  MODELE=MO,
+                  VOLUMOGRAMME=  _F(NOM_CMP='SIXX',
+                                    CARA_ELEM=CAREL,
+                                    TOUT='OUI',
+                                    NOM_CHAM='SIGM_ELNO',
+                                    NORME='ABSOLU',
+                                    NB_INTERV=5),
+                )
+
+IMPR_TABLE(TABLE=VOLUM3)
+TEST_TABLE(TABLE=VOLUM3,
+           NOM_PARA='DISTRIBUTION',
+           TYPE_TEST='SOMM_ABS',
+           VALE_CALC=0.0440334211393,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=22,),
+                   ),
+ 
 FIN();
 
 #

@@ -1,4 +1,4 @@
-subroutine pevolu(resu, modele, nbocc)
+subroutine pevolu(resu, modele, carele, nbocc)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -40,7 +40,7 @@ subroutine pevolu(resu, modele, nbocc)
 #include "asterfort/as_allocate.h"
 !
     integer :: nbocc
-    character(len=8) :: modele
+    character(len=8) :: modele, carele
     character(len=19) :: resu
 !
 ! ======================================================================
@@ -415,7 +415,7 @@ subroutine pevolu(resu, modele, nbocc)
             call wkvect(borpct, 'V V R', 3*nbint, jbpct)
             call pebpct(modele, nbma, mesmae, cham, nomcmp,&
                         3*nbint, bfix, borne, norme, seuil,&
-                        lseuil, zr(jbpct), voltot)
+                        lseuil, zr(jbpct), voltot, carele)
 !
 !      -- 4.5 ON REMPLIT LA TABLE --
 !

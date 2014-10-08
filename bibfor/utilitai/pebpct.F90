@@ -1,6 +1,6 @@
 subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                   dim, bfix, borne, norme, seuil,&
-                  lseuil, borpct, voltot)
+                  lseuil, borpct, voltot, carele)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -21,7 +21,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 #include "asterfort/wkvect.h"
     integer :: dim, nbma, bfix
     real(kind=8) :: borpct(dim), borne(2), seuil, voltot
-    character(len=8) :: modele, nomcmp, norme
+    character(len=8) :: modele, nomcmp, norme, carele
     character(len=19) :: cham
     character(len=24) :: lma
     aster_logical :: lseuil
@@ -79,7 +79,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
     integer :: nbmat, i, nbintv
     integer :: jcesl, jcesd, jcesk, jpoil, jpoid, jval
-    integer :: jvol
+    integer :: jvol, ispt, nbpspt
     integer :: ima, nbsp, nbpt, iad, ipt, j, jnuma, nbptmx, k
     real(kind=8) :: volpt, pas, p0, valmin, valmax, pdiv
     integer :: ncmpm, nucmp, nbval
@@ -116,12 +116,13 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     call jeveuo(chams//'.CESC', 'L', vk8=cesc)
     call jeveuo(chams//'.CESK', 'L', jcesk)
     nbptmx=zi(jcesd+2)
+    nbpspt=zi(jcesd+3)
 !
 !     DETERMINATION DES POIDS DES POINTS DE GAUSS
     non='NON'
     call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
     call chpond(tych, non, cham, cesout, cespoi,&
-                modele)
+                modele, carele)
     call jeveuo(cespoi//'.CESV', 'L', vr=poiv)
     call jeveuo(cespoi//'.CESL', 'L', jpoil)
     call jeveuo(cespoi//'.CESD', 'L', jpoid)
@@ -129,8 +130,8 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
 !     CREATION DES TABLEAUX RECENSANT LES VALEURS DE LA COMPOSANTE
 !     (VAL) ET LE VOLUME*POIDS (VOL) ASSOCIE
-    call wkvect(tabval, 'V V R', nbma*nbptmx, jval)
-    call wkvect(tabvol, 'V V R', nbma*nbptmx, jvol)
+    call wkvect(tabval, 'V V R', nbma*nbptmx*nbpspt, jval)
+    call wkvect(tabvol, 'V V R', nbma*nbptmx*nbpspt, jvol)
 !
     call jelira(chams//'.CESC', 'LONMAX', ncmpm)
     nucmp=indik8(cesc,nomcmp,1,ncmpm)
@@ -152,14 +153,12 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
         ima=zi(jnuma+i-1)
         nbpt=zi(jcesd-1+5+4*(ima-1)+1)
         nbsp=zi(jcesd-1+5+4*(ima-1)+2)
-        if (nbsp .gt. 1) then
-            call utmess('F', 'UTILITAI8_60')
-        endif
 !
         do ipt = 1, nbpt
+          do ispt = 1, nbsp
 !
             call cesexi('C', jcesd, jcesl, ima, ipt,&
-                        1, nucmp, iad)
+                        ispt, nucmp, iad)
 !
             if ((iad.gt.0) .and. (bfix.eq.0)) then
 !
@@ -168,7 +167,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
                 if (tych .eq. 'ELGA') then
                     call cesexi('C', jpoid, jpoil, ima, ipt,&
-                                1, 1, iad)
+                                ispt, 1, iad)
                     ASSERT(iad.gt.0)
                     volpt=poiv(iad)
                 else if (tych.eq.'ELEM') then
@@ -176,7 +175,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                     volpt=pdsm(ima)
                 else if (tych.eq.'ELNO') then
                     ASSERT(nbpt.ge.1)
-                    volpt=pdsm(ima)/nbpt
+                    volpt=pdsm((ima-1)*nbsp+ispt)/nbpt
                 endif
 !
                 zr(jvol+k-1)=volpt
@@ -217,6 +216,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
             endif
 !
+          end do
         end do
 !
     end do
@@ -287,7 +287,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     if (norme(1:7) .eq. 'RELATIF') then
         pdiv=voltot
     else
-        pdiv=1.d0
+        pdiv=1.d2
     endif
 !
     do i = 1, nbintv

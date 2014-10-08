@@ -157,7 +157,7 @@ subroutine op0107()
     call getfac('VOLUMOGRAMME', nbocc)
     if (nbocc .ne. 0) then
         call medomp(resuco, modele, mate, carele, nh)
-        call pevolu(resu, modele, nbocc)
+        call pevolu(resu, modele, carele, nbocc)
     endif
 !
     call getfac('MINMAX', nbocc)

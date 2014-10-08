@@ -20,7 +20,7 @@
 interface
     subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                       dim, bfix, borne, norme, seuil,&
-                      lseuil, borpct, voltot)
+                      lseuil, borpct, voltot, carele)
         integer :: dim
         character(len=8) :: modele
         integer :: nbma
@@ -34,5 +34,6 @@ interface
         aster_logical :: lseuil
         real(kind=8) :: borpct(dim)
         real(kind=8) :: voltot
+        character(len=8) :: carele
     end subroutine pebpct
 end interface

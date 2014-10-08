@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pevolu(resu, modele, nbocc)
+    subroutine pevolu(resu, modele, carele, nbocc)
         character(len=19) :: resu
         character(len=8) :: modele
+        character(len=8) :: carele
         integer :: nbocc
     end subroutine pevolu
 end interface
