@@ -1,4 +1,4 @@
-subroutine jxouvr(iclas, idn)
+subroutine jxouvr(iclas, idn, mode)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ subroutine jxouvr(iclas, idn)
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
     integer :: iclas, idn
+    integer, optional :: mode
 !     ==================================================================
     character(len=2) :: dn2
     character(len=5) :: classe
@@ -42,19 +43,22 @@ subroutine jxouvr(iclas, idn)
     common /balvje/  lrepgl,lrepvo
 !     ------------------------------------------------------------------
     character(len=512) :: nom512
-    integer :: mode
+    integer :: mode_
 ! DEB ------------------------------------------------------------------
-    mode = 1
+    mode_ = 1
+    if ( present(mode) ) then
+        mode_ = mode
+    endif
     if ( kstout(iclas) == 'LIBERE' .and. kstini(iclas) == 'POURSUIT' ) then
-        mode = 0
+        mode_ = 0
     endif
     if ( kstini(iclas) == 'DEBUT' ) then
-        mode = 2
+        mode_ = 2
     endif
     if (kstini(iclas) .ne. 'DUMMY   ') then
         ierr = 0
         call get_jvbasename(nomfic(iclas)(1:4), idn, nom512)
-        call opendr(nom512, mode, ierr)
+        call opendr(nom512, mode_, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'JEVEUX_43', sk=nombas(iclas), si=ierr)
         endif

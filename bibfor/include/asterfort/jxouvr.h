@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine jxouvr(iclas, idn)
+    subroutine jxouvr(iclas, idn, mode)
         integer :: iclas
         integer :: idn
+        integer, optional :: mode
     end subroutine jxouvr
 end interface

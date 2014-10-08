@@ -117,7 +117,7 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
     svuse = svuse + (iszon(jiszon+iaditp-4) - iaditp + 4)
     smxuse = max(smxuse,svuse)
     do 50 k = 1, (nbluti(ici)-1)/nbenrg(ici)
-        call jxouvr(ico, k+1)
+        call jxouvr(ico, k+1, mode=2)
         iext(ico) = iext(ico) + 1
 50  end do
 !

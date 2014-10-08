@@ -127,7 +127,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                     if (numext .gt. iext(ic)-1) then
                         numdeb = iext(ic)
                         do 103 k = numdeb, numext
-                            call jxouvr(ic, k+1)
+                            call jxouvr(ic, k+1, mode=2)
                             iext(ic) = iext(ic)+1
 103                     continue
                     endif
@@ -151,7 +151,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                         if (numext .gt. iext(ic)-1) then
                             numdeb = iext(ic)
                             do 203 k = numdeb, numext
-                                call jxouvr(ic, k+1)
+                                call jxouvr(ic, k+1, mode=2)
                                 iext(ic) = iext(ic)+1
 203                         continue
                         endif
@@ -201,7 +201,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco,&
                 if (numext .gt. iext(ic)-1) then
                     numdeb = iext(ic)
                     do 303 k = numdeb, numext
-                        call jxouvr(ic, k+1)
+                        call jxouvr(ic, k+1, mode=2)
                         iext(ic) = iext(ic)+1
 303                 continue
                 endif
