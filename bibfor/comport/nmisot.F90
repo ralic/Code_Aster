@@ -212,6 +212,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
             lgpg = 8
             call rupmat(fami, kpg, ksp, imate, vim,&
                         lgpg, em, sigm)
+!       Si il y a rupture            
         endif
 !
         if (inco) then
@@ -491,6 +492,10 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         vip(1) = vim(1) + dp
         plasti=(vip(2).ge.0.5d0)
 !
+
+
+
+
 !         -- 7.2 CALCUL DE SIGP :
 !         -----------------------
         if (cplan .and. plasti) then
@@ -519,9 +524,6 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 rp = rp + sigdv(k)**2
             end do
             rp = sqrt(1.5d0*rp)
-            !write (6,*) " rp      :  ",  rp
-            !write (6,*) " sigmdv  :  ",  sigmdv
-!            condition sur sigeps inoperante pour RIGI_MECA_TANG car deps=0             
             sigeps=1.d0
         else
 !         - - OPTION='FULL_MECA' => SIGMA(T+DT)
@@ -541,9 +543,15 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
             end do
         end do
 !
+!      S'il YA RUPTURE ALORS INTERDIRE PLASTICITE CAR LES CONTRAINTES ONT ETE MIS A ZERO
+        if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
+           plasti = .FALSE.
+        endif      
+
+
         a=1.d0
         if (.not.dech) then
-            if (plasti .and. sigeps .ge. 0.d0) then
+            if (plasti .and. (sigeps .ge. 0.d0) ) then
                 if (rp .le. 1.d-15) then
                   call utmess('F', 'ALGORITH4_46', sk=option(1:14))                
                 endif
