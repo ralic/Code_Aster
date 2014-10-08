@@ -40,7 +40,7 @@ subroutine te0322(option, nomte)
     integer :: ndim, nno1, nno2, nnos, npg, nddl, ntrou
     integer :: iw, ivf1, ivf2, idf1, idf2, jgn
     integer :: igeom, imater, icarcr, icomp, iddlm, iddld
-    integer :: icontm, icontp, ivect, imatr, iu(3, 16), ip(4)
+    integer :: icontm, icontp, ivect, imatr, iu(3, 16), ip(8)
     integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
     integer :: lgpg1, lgpg
     character(len=8) :: typmod(2), lielrf(10)
@@ -53,7 +53,7 @@ subroutine te0322(option, nomte)
     call elref2(nomte, 2, lielrf, ntrou)
     call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
 !
 ! LA DIMENSION DE L'ESPACE EST CELLE DE L'ELEM DE REF SURFACIQUE PLUS 1

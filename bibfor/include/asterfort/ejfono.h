@@ -36,7 +36,7 @@ interface
         real(kind=8) :: dffr2(ndim-1, nno2, npg)
         real(kind=8) :: geom(ndim, nno2)
         integer :: iu(3, 16)
-        integer :: ip(4)
+        integer :: ip(8)
         real(kind=8) :: sigm(2*ndim-1, npg)
         real(kind=8) :: vect(nddl)
     end subroutine ejfono

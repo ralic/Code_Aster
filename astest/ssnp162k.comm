@@ -54,10 +54,15 @@ sigma_min = sigma_max/3.
 # PARAMETRE DE L'INCLINAISON DE JOINT (NE PAS MODIFIER, LIE AU MAILLAGE)
 angle=30./180*pi
 L_cube=1.
-# SCALING POUR AVOIR SIGMA ET FLUX HYDRO DU MEME ORDRE DE GRANDEUR
-# rho_fluide/12/visc_fluide*ouv_min**3*grad(p) =equivalent= sigma
-scale = sigma_max*12*visc_fluide*L_cube/rho_fluide/press/ouv_min**3
-print "totototoiqetuoiqeutgfioq=", scale
+
+# FLUX_MIN (FLUX DU JOINT FERME) 
+# flux_min = rho_fluide/12/visc_fluide*ouv_min**3*grad(p)
+flux_min =  rho_fluide/12/visc_fluide*ouv_min**3*press/L_cube
+# FLUX_MAX (JOINT_OUVERT)
+flux_max =  rho_fluide/12/visc_fluide*(sigma_max/k_n)**3*press/L_cube
+# FLUX_REFE POUR RESI_REFE_RELA
+flux_refe = 10*sqrt(flux_min*flux_max)
+
 # L'OUVERTURE ELASTIQUE DU JOINT + CUBE
 delta_elas = sigma_max/k_n + (sigma_max-press)*L_cube/young
 # L'OUVERTURE OU LE JOINT S'OUVRE COMPLETEMENT
@@ -88,6 +93,8 @@ MA=MODI_MAILLAGE(reuse =MA,
                    MAILLAGE=MA,
                    ORIE_FISSURE=_F(GROUP_MA='G_CUBE_D'),
                    INFO=2)
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=MA),INFO=2)
 
 MO=AFFE_MODELE(
 
@@ -150,14 +157,18 @@ LIAISON=AFFE_CHAR_MECA(
 #----------------------------------------------------------------------------------
 ###################################################################################
 
-# LE MAILLAGE COMPORTE QUATRE NOEUDS DE PRESSION : NS17-NS20
-# ON IMPOSE UNE PRESSION SUR NS19 ET NS20 ET ON TESTE LA VALEUR DE LA PRESSION SUR NS17 ET NS18
+# LE MAILLAGE COMPORTE QUATRE NOEUDS DE PRESSION : NS17-NS20, NS12, NS8, NS4, NS5
+# ON IMPOSE UNE PRESSION SUR LES DEUX FACES, PUIS TESTE LA PRESSION SUR NS5, NS8
 
 PAM_J = AFFE_CHAR_CINE(
   MODELE = MO,
   MECA_IMPO = (
-                _F(NOEUD='NS19', PRE1=press ),
-                _F(NOEUD='NS20', PRE1=press ),
+                _F(NOEUD='NS17', PRE1=press ),
+                _F(NOEUD='NS12', PRE1=press*1.0000001 ),
+                _F(NOEUD='NS18', PRE1=press ),
+                _F(NOEUD='NS19', PRE1=press*1.0000002 ),
+                _F(NOEUD='NS4' , PRE1=press*1.0000003 ),
+                _F(NOEUD='NS20', PRE1=press*1.0000004 ),
               )
   );
 
@@ -185,7 +196,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
 
 # CALCUL MECANIQUE AVEC FROTTEMENT (JOINT_MECA_FROT)
 U_F=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS', NPREC=-1),
+  SOLVEUR=_F(METHODE='MUMPS', NPREC=12),
   MODELE     = MO,
   CHAM_MATER = CM_F,
   EXCIT      = (
@@ -200,7 +211,11 @@ U_F=STAT_NON_LINE(
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
-  CONVERGENCE= _F(ITER_GLOB_MAXI = 40),
+  CONVERGENCE = _F(
+                    ITER_GLOB_MAXI = 20,
+                    RESI_REFE_RELA = 1.E-6,
+                    SIGM_REFE      = sigma_max,
+                    FLUX_HYD1_REFE = flux_refe),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -294,8 +309,8 @@ IMPR_FONCTION(FORMAT='TABLEAU',
                         LEGENDE='Force Deplacement',),
              );
 
-# EN MODE INTERACTIF SEULEMENT
-#IMPR_FONCTION(FORMAT='XMGRACE',
+# # EN MODE INTERACTIF SEULEMENT
+# IMPR_FONCTION(FORMAT='XMGRACE',
 #              PILOTE='INTERACTIF',
 #              COURBE=_F(FONC_X=DN,
 #                        FONC_Y=FN,
@@ -339,7 +354,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=150000.0786,
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FN,),
-                      _F(VALE_CALC=-5.005902039e-9,
+                      _F(VALE_CALC=-9.1636E-03,
                          VALE_REFE=sigma_max*1e-8,
                          CRITERE='ABSOLU',
                          VALE_PARA=linst[4],
@@ -351,7 +366,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=150000.0786,
               )
 
 
-# TEST DE LA PRESSION SUR DEUXIEME NOEUD DE PRESSION (NS17)
+# TEST DE LA PRESSION SUR LE NOEUD (NS5, NS8)
 TEST_RESU (
   RESU = (
     _F(
@@ -361,7 +376,7 @@ TEST_RESU (
       NOM_CMP   = 'PRE1',
       VALE_REFE = press,
       VALE_CALC = 50000.0068,
-      NOEUD     = 'NS17',
+      NOEUD     = 'NS5',
       INST      = insfin,
       ),
     )
@@ -371,7 +386,7 @@ TEST_RESU(RESU=_F(INST=insfin,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=U_F,
                   NOM_CHAM='DEPL',
-                  NOEUD='NS18',
+                  NOEUD='NS8',
                   NOM_CMP='PRE1',
                   VALE_CALC=50000.000000065,
                   VALE_REFE=press,),
@@ -400,6 +415,36 @@ TEST_RESU(RESU=_F(INST=insfin,
                   VALE_CALC=50000.0000000002,
                   VALE_REFE=press,),
           )
+# TEST DE FLUX (NS17)
+TEST_RESU (
+  RESU = (
+    _F(
+      RESULTAT  = U_F,
+      NOM_CHAM  = 'VARI_NOEU',
+      NOM_CMP   = 'V15',
+      VALE_CALC = 0.0588099274448, 
+      NOEUD     = 'NS17',
+      INST      = linst[2],
+      ),
+    _F(
+      RESULTAT  = U_F,
+      NOM_CHAM  = 'VARI_NOEU',
+      NOM_CMP   = 'V16',
+      VALE_CALC = -0.101861782324, 
+      NOEUD     = 'NS17',
+      INST      = linst[2],
+      ),
+    _F(
+      RESULTAT  = U_F,
+      NOM_CHAM  = 'VARI_NOEU',
+      NOM_CMP   = 'V17',
+      VALE_CALC = -0.0543233967518, 
+      NOEUD     = 'NS17',
+      INST      = linst[2],
+      ),
+    )
+  )
+
 ###################################################################################
 #----------------------------------------------------------------------------------
 # ALLER-ROUTOUR EN MODE II AVEC UNE FERMETURE PARTIELLE
@@ -456,7 +501,11 @@ U_2=STAT_NON_LINE(
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
-  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  CONVERGENCE = _F(
+                    ITER_GLOB_MAXI = 20,
+                    RESI_REFE_RELA = 1.E-6,
+                    SIGM_REFE      = sigma_max,
+                    FLUX_HYD1_REFE = flux_min*1e6),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -564,8 +613,8 @@ DT=RECU_FONCTION(TABLE=TDELTA_T,
                   PARA_Y='V8',);
 
 
-# EN MODE INTERACTIF SEULEMENT
-#IMPR_FONCTION(FORMAT='XMGRACE',
+# # EN MODE INTERACTIF SEULEMENT
+# IMPR_FONCTION(FORMAT='XMGRACE',
 #              PILOTE='INTERACTIF',
 #              COURBE=_F(FONC_X=DT,
 #                        FONC_Y=FT,
@@ -620,6 +669,20 @@ TEST_RESU (
       VALE_CALC = 50000.012,
       NOEUD     = 'NS17',
       INST      = insfin,
+      ),
+    )
+  )
+
+# TEST DE FLUX (NS17, NS19)
+TEST_RESU (
+  RESU = (
+    _F(
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'VARI_NOEU',
+      NOM_CMP   = 'V15',
+      VALE_CALC = 1.56160780633E-13, 
+      NOEUD     = 'NS12',
+      INST      = linst2[1],
       ),
     )
   )

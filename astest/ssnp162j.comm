@@ -38,6 +38,9 @@ ecrouissage=k_t*1.E-6
 # PARAMETRES PHYSIQUES
 young=3.E10
 poiss=0.0
+rho_fluide=1000. #kg/m^3
+visc_fluide=1.E-3 #pa.s
+ouv_min=1.E-10     #m
 
 # PRESSION D'EAU DANS LE JOINT
 press=5.e4
@@ -50,11 +53,19 @@ sigma_min = sigma_max/3.
 # PARAMETRE DE L'INCLINAISON DE JOINT (NE PAS MODIFIER, LIE AU MAILLAGE)
 angle=30./180*pi
 L_cube=1.
+# FLUX_MIN (FLUX DU JOINT FERME) 
+# flux_min = rho_fluide/12/visc_fluide*ouv_min**3*grad(p)
+flux_min =  rho_fluide/12/visc_fluide*ouv_min**3*press/L_cube
+# FLUX_MAX (JOINT_OUVERT)
+flux_max =  rho_fluide/12/visc_fluide*(sigma_max/k_n)**3*press/L_cube
+# FLUX_REFE POUR RESI_REFE_RELA
+flux_refe = 10*sqrt(flux_min*flux_max)
+
 # L'OUVERTURE ELASTIQUE DU JOINT + CUBE
 delta_elas = sigma_max/k_n + (sigma_max-press)*L_cube/young
 # L'OUVERTURE OU LE JOINT S'OUVRE COMPLETEMENT
 delta_endo = 2*delta_elas
-# L'OUVERTURE 0DU JOINT A CONTRAINTE NULLE
+# L'OUVERTURE DU JOINT A CONTRAINTE NULLE
 delta_equi = press/k_n
 # FERMETURE DU JOINT (POUR LE TEST EN MODE1 et MODE2)
 delta_ferm = (sigma_min-press)/k_n + sigma_min*L_cube/young
@@ -115,9 +126,9 @@ MAT_JF=DEFI_MATERIAU(
                                      PENA_TANG=ecrouissage,
                                      MU=mu,
                                      ADHESION=adhe,
-                                     RHO_FLUIDE=1000., #kg/m^3
-                                     VISC_FLUIDE=1.E-3, #Pa.s
-                                     OUV_MIN=1.E-10 #m
+                                     RHO_FLUIDE=rho_fluide, #kg/m^3
+                                     VISC_FLUIDE=visc_fluide, #Pa.s
+                                     OUV_MIN=ouv_min #m
                                 ),);
 
 
@@ -143,13 +154,14 @@ LIAISON=AFFE_CHAR_MECA(
 #----------------------------------------------------------------------------------
 ###################################################################################
 
-# LE MAILLAGE COMPORTE DEUX NOEUD DE PRESSION : NS5 ET NS7
-# ON IMPOSE UNE PRESSION SUR LE NS5 ET ON TESTE LA VALEUR DE LA PRESSION SUR NS7
+# LE MAILLAGE COMPORTE TROIS NOEUDS DE PRESSION : NS5, NS6 et NS7
+# ON IMPOSE UNE PRESSION SUR LES NS5 et NS6 PUIS ON TESTE LA PRESSION SUR NS7
 
 PAM_J = AFFE_CHAR_CINE(
   MODELE = MO,
   MECA_IMPO = (
                 _F(NOEUD='NS5', PRE1=press ),
+                _F(NOEUD='NS6', PRE1=press*1.000001 ),
               )
   );
 
@@ -192,7 +204,11 @@ U_F=STAT_NON_LINE(
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
-  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  CONVERGENCE = _F(
+                    ITER_GLOB_MAXI = 20,
+                    RESI_REFE_RELA = 1.E-6,
+                    SIGM_REFE      = sigma_max,
+                    FLUX_HYD1_REFE = flux_refe),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -291,7 +307,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 # PLAFONNEMENT DE SIGMA_N
 # DECHARGE ELASTIQUE SIGMA(delta_ferm)=sigma_max/3
 # CHARGEMENT JUSQU'AU POINT D'EQUILIBRE
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=150000.0786,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=150000.0186,
                          VALE_REFE=sigma_max-press,
                          VALE_PARA=linst[1],
                          REFERENCE='ANALYTIQUE',
@@ -309,14 +325,14 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=150000.0786,
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=DN,),
-                      _F(VALE_CALC=-66666.667,
+                      _F(VALE_CALC=-66666.71,
                          VALE_REFE=-sigma_min,
                          VALE_PARA=linst[3],
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FN,),
-                      _F(VALE_CALC=-5.005902039e-9,
-                         VALE_REFE=sigma_max*1e-8,
+                      _F(VALE_CALC=-0.0428429,
+                         VALE_REFE=sigma_max*1e-7,
                          CRITERE='ABSOLU',
                          VALE_PARA=linst[4],
                          REFERENCE='ANALYTIQUE',
@@ -336,12 +352,32 @@ TEST_RESU (
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'PRE1',
       VALE_REFE = press,
-      VALE_CALC = 50000.0068,
+      VALE_CALC = 50000.057,
       NOEUD     = 'NS7',
       INST      = insfin,
       ),
     )
   )
+
+# TEST DE FLUX (NS7)
+U_F=CALC_CHAMP(reuse =U_F,
+            RESULTAT=U_F,
+            VARI_INTERNE='VARI_NOEU',
+            );
+
+TEST_RESU (
+  RESU = (
+    _F(
+      RESULTAT  = U_F,
+      NOM_CHAM  = 'VARI_NOEU',
+      NOM_CMP   = 'V15',
+      VALE_CALC = -0.076219051747, 
+      NOEUD     = 'NS7',
+      INST      = linst[2],
+      ),
+    )
+  )
+
 
 ###################################################################################
 #----------------------------------------------------------------------------------
@@ -381,7 +417,7 @@ TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
 #--------------------------------------
 
 U_2=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS',),
+  SOLVEUR=_F(METHODE='MUMPS'),
   MODELE     = MO,
   CHAM_MATER = CM_F,
   EXCIT      = (
@@ -396,7 +432,11 @@ U_2=STAT_NON_LINE(
              MAILLE = 'CUBE',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
-  CONVERGENCE= _F(ITER_GLOB_MAXI = 20),
+  CONVERGENCE = _F(
+                    ITER_GLOB_MAXI = 20,
+                    RESI_REFE_RELA = 1.E-6,
+                    SIGM_REFE      = sigma_max,
+                    FLUX_HYD1_REFE = flux_min),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -557,13 +597,26 @@ TEST_RESU (
       NOM_CHAM  = 'DEPL',
       NOM_CMP   = 'PRE1',
       VALE_REFE = press,
-      VALE_CALC = 50000.012,
+      VALE_CALC = 50000.057,
       NOEUD     = 'NS7',
       INST      = insfin,
       ),
     )
   )
 
+# TEST DE FLUX (NS7)
+TEST_RESU (
+  RESU = (
+    _F(
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'VARI_NOEU',
+      NOM_CMP   = 'V15',
+      VALE_CALC = 5.95238E-27, 
+      NOEUD     = 'NS5',
+      INST      = insfin,
+      ),
+    )
+  )
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_F,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY')))),
 #########################################################################################################

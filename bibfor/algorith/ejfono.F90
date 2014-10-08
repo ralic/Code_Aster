@@ -23,7 +23,7 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 #include "asterfort/ejcine.h"
 #include "asterfort/r8inir.h"
     aster_logical :: axi
-    integer :: ndim, idf2, ipg, nddl, nno1, nno2, npg, iu(3, 16), ip(4)
+    integer :: ndim, idf2, ipg, nddl, nno1, nno2, npg, iu(3, 16), ip(8)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
     real(kind=8) :: wref(npg)
     real(kind=8) :: dffr2(ndim-1, nno2, npg)
@@ -52,7 +52,7 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 !
     call r8inir(nddl, 0.d0, vect, 1)
 !
-    do 1000 kpg = 1, npg
+    do 999 kpg = 1, npg
 !
         call ejcine(ndim, axi, nno1, nno2, vff1(1, kpg),&
                     vff2(1, kpg), wref(kpg), dffr2(1, 1, kpg), geom, wg,&
@@ -65,9 +65,9 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 !
                 kk = iu(i,n)
                 temp = 0.d0
-                do 320 j = 1, ndim
+                do j = 1, ndim
                     temp = temp + b(j,i,n)*sigm(j,kpg)
-320             continue
+                enddo
 !
                 vect(kk) = vect(kk) + wg*temp
 !
@@ -79,13 +79,13 @@ subroutine ejfono(ndim, nddl, axi, nno1, nno2,&
 !
             kk = ip(n)
             temp = 0.d0
-            do 321 i = ndim+1, 2*ndim-1
+            do i = ndim+1, 2*ndim-1
                 temp = temp + b(i,ndim+1,2*nno1+n)*sigm(i,kpg)
-321         continue
+            enddo
 !
             vect(kk) = vect(kk) + wg*temp
 !
 302     continue
 !
-1000 end do
+999 continue
 end subroutine

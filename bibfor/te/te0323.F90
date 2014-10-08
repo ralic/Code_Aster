@@ -39,13 +39,13 @@ subroutine te0323(option, nomte)
     aster_logical :: axi
     integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn, nddl
     integer :: iw, ivf1, idf1, igeom, ivectu, icontm, ndim, ntrou
-    integer :: iu(3, 16), ip(4)
+    integer :: iu(3, 16), ip(8)
     real(kind=8) :: sigref, fhyref
 !
     call elref2(nomte, 2, lielrf, ntrou)
     call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno1, nnos=nnos,&
                      npg=npg, jpoids=iw, jvf=ivf1, jdfde=idf1, jgano=jgn)
-    call elrefe_info(elrefe=lielrf(2), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
+    call elrefe_info(elrefe=lielrf(1), fami='RIGI', ndim=ndim, nno=nno2, nnos=nnos,&
                      npg=npg, jpoids=iw, jvf=ivf2, jdfde=idf2, jgano=jgn)
     ndim = ndim + 1
     nddl = 2*ndim*nno1 + nno2

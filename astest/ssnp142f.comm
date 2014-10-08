@@ -22,25 +22,33 @@ tfin=4
 tfin_SNL=4.0
 
 # PARAMETRES MECANIQUES DU BARRAGE DE LA TERRE ET DE L'EAU (VALEURS TESTS)
-young=3.E12
+young=3.E12 # Pa
 poiss=0.25
-rho_b=2400.
-rho_t=0.
-rho_e=1000.
-ap=9.81
-h=10.
-long=5.
+rho_b=2400. #kg/m^3
+rho_t=0.    #kg/m^3
+rho_e=1000. #kg/m^3
+ap=9.81     #m/s^2
+h=10.       # m
+long=5.     # m
 
 # NIVEAU D'EAU
 niv_am=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AM',VALE=(0,0, 1,3, 2,6, 3,8, 4,9));
 niv_av=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AV',VALE=(0,0, 1,0, 2,0, 3,0, 4,0));
 
 # PARAMETRES MECANIQUES DES JOINTS
-k_n=1E12
-sig_m=1.E2
+k_n=1E12   # Pa/m
+sig_m=1.E2 # Pa
 alpha=1.0
 penrup=0.2
 
+# PARAMETRES HYDRO DES JOINTS
+ouv_min=1.E-8  # m
+visc_flu=1.E-3 # Pa.s
+
+# PARAMETRE POUR LE CRITERE DE CONVERGENCE
+# flux minimale pour le joint ferme = rho_e/12./visc_flu*ouv_min**3*(grad p)
+flux_min = rho_e/12./visc_flu*ouv_min**3*(rho_e*ap*h)/long
+sigma_refe= max(sig_m, rho_e*ap*h)
 ##################################
 
 MA0=LIRE_MAILLAGE(FORMAT='MED');
@@ -59,9 +67,9 @@ MA=DEFI_GROUP(reuse =MA,
 
 # SURFACES
     _F(NOM = 'TER_BORD', UNION = ('G_2D_130','G_2D_131','G_2D_132')),
-    _F(NOM = 'BAR_AM',  GROUP_MA = 'G_2D_127'),
+    _F(NOM = 'BAR_AM',   GROUP_MA = 'G_2D_127'),
     _F(NOM = 'BAR_AV',   GROUP_MA = 'G_2D_128'),
-
+    _F(NOM = 'SYMM',     GROUP_MA = 'G_2D_150'), 
 # LIGNES
     _F(NOM = 'JOINT_H'  ,  GROUP_MA = 'G_1D_133'),
     _F(NOM = 'JOINT_B'  ,  GROUP_MA = 'G_1D_134')),
@@ -70,15 +78,16 @@ MA=DEFI_GROUP(reuse =MA,
 # LIGNES
     _F(NOM = 'JOINT_H'  ,  GROUP_MA = 'JOINT_H',OPTION='NOEUD_ORDO'),
     _F(NOM = 'JOINT_B'  ,  GROUP_MA = 'JOINT_B',OPTION='NOEUD_ORDO'),
-    _F(NOM = 'J_PRE'    ,  OPTION='PLAN',POINT=(0.0,-5.0E-04 ,0.0),VECT_NORMALE=(0.,1.,0.),PRECISION=1.0E-06),
+    _F(NOM = 'JOINT'    ,  GROUP_MA = 'JOINT'),
 
     _F(NOM = 'TMP_AM' ,   OPTION='PLAN',POINT=(0.0,0.0 ,0.0),VECT_NORMALE=(1.,0.,0.),PRECISION=1.0E-06),
     _F(NOM = 'TMP_AV' ,   OPTION='PLAN',POINT=(5.0,0.0 ,0.0),VECT_NORMALE=(1.,0.,0.),PRECISION=1.0E-06),
     _F(NOM = 'TMP_CURV' , OPTION='PLAN',POINT=(0.0,0.0 ,0.0),VECT_NORMALE=(0.,0.,1.),PRECISION=1.0E-06),
+    _F(NOM = 'TMP_POST'   ,  OPTION='PLAN',POINT=(0.0,-5.0E-04 ,0.0),VECT_NORMALE=(0.,1.,0.),PRECISION=1.0E-06),
 
-    _F(NOM = 'J_AMONT'  ,  INTERSEC=('J_PRE','TMP_AM')),
-    _F(NOM = 'J_AVAL'  ,   INTERSEC=('J_PRE','TMP_AV')),
-    _F(NOM = 'J_CURV'  ,   INTERSEC=('J_PRE','TMP_CURV')),
+    _F(NOM = 'J_AMONT'  ,  INTERSEC=('JOINT','TMP_AM')),
+    _F(NOM = 'J_AVAL'  ,   INTERSEC=('JOINT','TMP_AV')),
+    _F(NOM = 'J_CURV'  ,   INTERSEC=('TMP_POST','TMP_CURV')),
 
                                ));
 
@@ -124,9 +133,9 @@ MAT_JHM=DEFI_MATERIAU(
                                        ALPHA=alpha,
                                        SIGM_MAX=sig_m,
                                        PENA_RUPTURE=penrup,
-                                       RHO_FLUIDE=1000.,
-                                       VISC_FLUIDE=1.E-3,
-                                       OUV_MIN=1.E-8,
+                                       RHO_FLUIDE=rho_e,
+                                       VISC_FLUIDE=visc_flu,
+                                       OUV_MIN=ouv_min,
                                        ))
 
 CM_HM=AFFE_MATERIAU(MAILLAGE=MA,
@@ -137,7 +146,10 @@ CM_HM=AFFE_MATERIAU(MAILLAGE=MA,
                  );
 
 # CONDITION AUX LIMITES SUR LA TERRE
-TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TER_BORD',DX=0.0,DY=0.0,DZ=0.0));
+TERRE=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=_F(GROUP_MA='TER_BORD',DX=0.0,DY=0.0));
+
+# CONDITION AUX LIMITES SYMMETRIE
+SYMM=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=_F(GROUP_MA='SYMM',DZ=0.0,),);
 
 # POIDS
 PESBAR = AFFE_CHAR_MECA(
@@ -167,7 +179,10 @@ P_AV_J = AFFE_CHAR_CINE_F(MODELE = MO,MECA_IMPO = (_F(GROUP_NO='J_AVAL',  PRE1=p
 
 
 # LISTE D'INSTANTS
-LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=tfin, NOMBRE=1)));
+list_reel=[0,3.1,3.2,3.3,3.45,3.55,3.75,3.875,tfin]
+list_reel=[0,3.1,3.3,3.45,3.6,3.75,3.875,tfin]
+LR=DEFI_LIST_REEL(VALE=list_reel);
+
 
 L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),
                         ECHEC=_F(
@@ -182,6 +197,7 @@ U_HM=STAT_NON_LINE(MODELE=MO,
                   CHAM_MATER=CM_HM,
                   EXCIT=(
                          _F(CHARGE=TERRE),
+                         _F(CHARGE=SYMM),                         
                          _F(CHARGE=PESBAR),
                          _F(CHARGE=PESTER),
                          _F(CHARGE=PAMONT),
@@ -196,11 +212,13 @@ U_HM=STAT_NON_LINE(MODELE=MO,
                   INCREMENT=_F(LIST_INST=L_INST,INST_FIN=tfin_SNL),
                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
                   CONVERGENCE = _F(
-                                   ITER_GLOB_MAXI = 45,
+                                   ITER_GLOB_MAXI = 20,
                                    RESI_REFE_RELA = 1.E-6,
-                                   SIGM_REFE      = 1.E5,
-                                   FLUX_HYD1_REFE = 1.E-14),
+                                   SIGM_REFE      = sigma_refe,
+                                   FLUX_HYD1_REFE = flux_min),
                   SOLVEUR=_F(METHODE='MUMPS',NPREC=-1),
+                  AFFICHAGE =_F(INFO_RESIDU='OUI'),
+                  #RECH_LINEAIRE=_F(METHODE='MIXTE',ITER_LINE_MAXI=3,),
                   ARCHIVAGE = _F(LIST_INST = LR)
                   );
 
@@ -276,8 +294,8 @@ P_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 # C'EST POURQUOI ON AUTORISE DES ECARTS (ET NON DES ERREURS) DE 15%
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
-           PRECISION=0.06,
-           VALE_CALC= 1.43362462E-06,
+           PRECISION=0.07,
+           VALE_CALC= 1.41381558586E-06,
            VALE_REFE=1.52E-06,
            NOM_PARA='V7',
            TABLE=SAUTHM,
@@ -297,7 +315,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.15,
-           VALE_CALC=-5.86895395E-07,
+           VALE_CALC=-5.830702854E-07,
            VALE_REFE=-5.23E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
@@ -307,7 +325,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.15,
-           VALE_CALC=-5.86895395E+05,
+           VALE_CALC=-583070.2854,
            VALE_REFE=-5.23E5,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
@@ -319,7 +337,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 # SAUT ET CONTRAINTE NORMALE
 TEST_TABLE(
-           VALE_CALC=8.58200353333E-07,
+           VALE_CALC=8.46439704197E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -335,7 +353,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.7675589968519E-08,
+           VALE_CALC=5.73893178875E-08,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -343,7 +361,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-88275.202766363,
+           VALE_CALC=-88276.2853133,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -351,7 +369,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.6077746089702E-07,
+           VALE_CALC=-3.61851192864E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -359,7 +377,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.8262028781015E5,
+           VALE_CALC=-383376.010144,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -384,7 +402,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=32764.240369734,
+           VALE_CALC=32287.2259204,
            NOM_PARA='PRE1',
            TABLE=PRE_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -392,7 +410,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=32764.240369734,
+           VALE_CALC=32287.2259204,
            NOM_PARA='V18',
            TABLE=P_HM,
            FILTRE=_F(NOM_PARA='COOR_X',

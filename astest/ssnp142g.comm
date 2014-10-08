@@ -259,7 +259,7 @@ PRE_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 ################### TESTS U_HM  NON REGRESSION #######################
 
 TEST_TABLE(
-           VALE_CALC=7.2374621436867E-07,
+           VALE_CALC=7.23503158718E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -267,7 +267,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-85782.60659684,
+           VALE_CALC=-85782.6126704,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -275,7 +275,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-6.0690846862332E-09,
+           VALE_CALC=-6.18406267458E-09,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -283,7 +283,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-89302.403414383,
+           VALE_CALC=-89356.8007827,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -291,7 +291,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.5134858230051E-07,
+           VALE_CALC=-3.51377452476E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -299,7 +299,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.6995482447699E+05,
+           VALE_CALC=-369956.042737,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -307,7 +307,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-4.2267593243636E-13,
+           VALE_CALC=-4.83817454677E-13,
            NOM_PARA='V15',
            TABLE=FLUXHM,
            FILTRE=_F(NOM_PARA='COOR_X',

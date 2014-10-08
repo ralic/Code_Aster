@@ -32,7 +32,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
     integer :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
-    integer :: ip(4)
+    integer :: ip(8)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), dffr2(ndim-1, nno2, npg)
     real(kind=8) :: wref(npg), geom(ndim, nno2), ddlm(nddl), ddld(nddl), tm, tp
     real(kind=8) :: sigm(2*ndim-1, npg), sigp(2*ndim-1, npg)
@@ -123,27 +123,27 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
         do 150 i = 1, ndim
             do 160 j = 1, ndim
-                do 161 n = 1, 2*nno1
+                do n = 1, 2*nno1
                     epsm(i) = epsm(i) + b(i,j,n)*ddlm(iu(j,n))
                     deps(i) = deps(i) + b(i,j,n)*ddld(iu(j,n))
-161             continue
+                enddo
 160         continue
 150     continue
 !
         do 151 i = ndim+1, 2*ndim-1
-            do 163 n = 1, nno2
+            do n = 1, nno2
                 epsm(i) = epsm(i) + b(i,ndim+1,2*nno1+n)*ddlm(ip(n))
                 deps(i) = deps(i) + b(i,ndim+1,2*nno1+n)*ddld(ip(n))
-163         continue
+            enddo
 151     continue
 !
 !       CALCUL DE LA PRESSION AU POINT DE GAUSS
         presgm = 0.d0
         presgd = 0.d0
-        do 164 n = 1, nno2
+        do n = 1, nno2
             presgm = presgm + ddlm(ip(n))*vff2(n,kpg)
             presgd = presgd + ddld(ip(n))*vff2(n,kpg)
-164     continue
+        enddo
 !
 !       STOCKAGE DE LA PRESSION DE FLUIDE AU PG
 !       POUR LA VI DE POST-TRAITEMENT DANS LA LDC
@@ -152,19 +152,19 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
 !       COOROT : COORDONNEES DU PG + MATRICE DE ROTATION
 !       (MATRICE UTILE POUR LES VI DE POST-TRAITEMENT DANS LA LDC)
-        do 165 j = 1, ndim
+        do j = 1, ndim
             coorot(j,kpg)=coopg(j,kpg)
-165     continue
-        do 166 j = 1, ndim*ndim
+        enddo
+        do j = 1, ndim*ndim
             coorot(ndim+j,kpg)=rot(j)
-166     continue
+        enddo
         ncooro=ndim+ndim*ndim
 !
 !       CONTRAINTES -
         call r8inir(6, 0.d0, sigmo, 1)
-        do 13 n = 1, 2*ndim-1
+        do n = 1, 2*ndim-1
             sigmo(n) = sigm(n,kpg)
- 13     continue
+        enddo
 !
 ! - APPEL A LA LOI DE COMPORTEMENT
         call nmcomp('RIGI', kpg, 1, ndim, typmod,&
@@ -179,9 +179,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
         if (resi) then
 !
 !         CONTRAINTES +
-            do 12 n = 1, 2*ndim-1
+            do n = 1, 2*ndim-1
                 sigp(n,kpg) = sigma(n)
- 12         continue
+            enddo
 !
 !         VECTEUR FINT : U
             do 300 n = 1, 2*nno1
@@ -189,9 +189,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
                     kk = iu(i,n)
                     temp = 0.d0
-                    do 320 j = 1, ndim
+                    do j = 1, ndim
                         temp = temp + b(j,i,n)*sigp(j,kpg)
-320                 continue
+                    enddo
 !
                     vect(kk) = vect(kk) + wg*temp
 !
@@ -203,9 +203,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
                 kk = ip(n)
                 temp = 0.d0
-                do 321 i = ndim+1, 2*ndim-1
+                do i = ndim+1, 2*ndim-1
                     temp = temp + b(i,ndim+1,2*nno1+n)*sigp(i,kpg)
-321             continue
+                enddo
                 if (ifhyme) then
                     vect(kk) = vect(kk) + wg*temp
                 else
@@ -234,9 +234,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                             temp = 0.d0
 !
                             do 540 p = 1, ndim
-                                do 550 q = 1, ndim
+                                do q = 1, ndim
                                     temp = temp + b(p,i,n)*dsidep(p,q) *b(q,j,m)
-550                             continue
+                                enddo
 540                         continue
 !
                             matr(kk) = matr(kk) + wg*temp
@@ -258,9 +258,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                     temp = 0.d0
 !
                     do 542 p = ndim+1, 2*ndim-1
-                        do 552 q = ndim+1, 2*ndim-1
+                        do q = ndim+1, 2*ndim-1
                             temp = temp + b(p,ndim+1,2*nno1+n)*dsidep( p,q) *b(q,ndim+1,2*nno1+m)
-552                     continue
+                        enddo
 542                 continue
                     if (ifhyme) then
                         matr(kk) = matr(kk) + wg*temp
@@ -289,11 +289,11 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                         temp = 0.d0
 !
                         do 543 p = ndim+1, 2*ndim-1
-                            do 553 q = 1, ndim
-!
-                                temp = temp + b(p,ndim+1,2*nno1+n) *dsidep(p,q)*b(q,j,m)*0.d0
-553                         continue
-543                     continue
+                            do q = 1, ndim
+!                               A ANNULE AFIN DE PASSER VERS LA MINIMISATION ALTERNEE
+                                temp = temp + b(p,ndim+1,2*nno1+n) *dsidep(p,q)*b(q,j,m)
+                            enddo
+543                      continue
 !
                         if (ifhyme) then
                             matr(kk) = matr(kk) + wg*temp
@@ -312,7 +312,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
 !
                     os = (iu(i,n)-1)*nddl
 !
-                    do 524 m = 1, nno2
+                    do m = 1, nno2
 !
                         kk = os + ip(m)
                         temp = -b(1,i,n)*vff2(m,kpg)
@@ -324,13 +324,13 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg,&
                             matr(kk)=0.d0
                         endif
 !
-524                 continue
+                    enddo
 !
 514             continue
 504         continue
 !
         endif
 !
- 11 end do
+11  continue
 !
 end subroutine

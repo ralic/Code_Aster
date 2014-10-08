@@ -28,7 +28,7 @@ rho_t=0.
 rho_e=1000.
 ap=9.81
 h=10.
-long=5.
+longueur=5.
 
 # NIVEAU D'EAU
 niv_am=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AM',VALE=(0,0, 1,3, 2,6, 3,8, 4,9));
@@ -42,6 +42,19 @@ k_t=2*k_n
 ecrouissage=k_t*0.1
 mu=0.35
 adhe=1000
+
+# RESISTANCE A LA TRACTION (VALEUR EFFECTIVE, CAR IL N'Y PAS DE RUPTURE)
+sigma_trac = adhe/mu
+press_max  = rho_e*10*h
+sigma_max = max(sigma_trac,press_max) # valeur pour RESI_REFE_RELA
+# PARA HYDRO
+visc_fluide=1.E-3 #Pa.s
+ouv_min=1.E-7     #m
+# FLUX_MIN (FLUX DU JOINT FERME) 
+# flux_min = rho_fluide/12/visc_fluide*ouv_min**3*grad(p)
+flux_min =  rho_e/12/visc_fluide*ouv_min**3*rho_e*10*h/longueur
+# FLUX_MAX (JOINT_OUVERT)
+flux_max =  rho_e/12/visc_fluide*(sigma_max/k_n)**3*rho_e*10*h/longueur
 
 
 ##################################
@@ -62,9 +75,9 @@ MA=DEFI_GROUP(reuse =MA,
 
 # SURFACES
     _F(NOM = 'TER_BORD', UNION = ('G_2D_130','G_2D_131','G_2D_132')),
-    _F(NOM = 'BAR_AM',  GROUP_MA = 'G_2D_127'),
+    _F(NOM = 'BAR_AM',   GROUP_MA = 'G_2D_127'),
     _F(NOM = 'BAR_AV',   GROUP_MA = 'G_2D_128'),
-
+    _F(NOM = 'SYMM',     GROUP_MA = 'G_2D_150'), 
 # LIGNES
     _F(NOM = 'JOINT_H'  ,  GROUP_MA = 'G_1D_133'),
     _F(NOM = 'JOINT_B'  ,  GROUP_MA = 'G_1D_134')),
@@ -73,15 +86,16 @@ MA=DEFI_GROUP(reuse =MA,
 # LIGNES
     _F(NOM = 'JOINT_H'  ,  GROUP_MA = 'JOINT_H',OPTION='NOEUD_ORDO'),
     _F(NOM = 'JOINT_B'  ,  GROUP_MA = 'JOINT_B',OPTION='NOEUD_ORDO'),
-    _F(NOM = 'J_PRE'    ,  OPTION='PLAN',POINT=(0.0,-5.0E-04 ,0.0),VECT_NORMALE=(0.,1.,0.),PRECISION=1.0E-06),
+    _F(NOM = 'JOINT'    ,  GROUP_MA = 'JOINT'),
 
     _F(NOM = 'TMP_AM' ,   OPTION='PLAN',POINT=(0.0,0.0 ,0.0),VECT_NORMALE=(1.,0.,0.),PRECISION=1.0E-06),
     _F(NOM = 'TMP_AV' ,   OPTION='PLAN',POINT=(5.0,0.0 ,0.0),VECT_NORMALE=(1.,0.,0.),PRECISION=1.0E-06),
     _F(NOM = 'TMP_CURV' , OPTION='PLAN',POINT=(0.0,0.0 ,0.0),VECT_NORMALE=(0.,0.,1.),PRECISION=1.0E-06),
+    _F(NOM = 'TMP_POST'   ,  OPTION='PLAN',POINT=(0.0,-5.0E-04 ,0.0),VECT_NORMALE=(0.,1.,0.),PRECISION=1.0E-06),
 
-    _F(NOM = 'J_AMONT'  ,  INTERSEC=('J_PRE','TMP_AM')),
-    _F(NOM = 'J_AVAL'  ,   INTERSEC=('J_PRE','TMP_AV')),
-    _F(NOM = 'J_CURV'  ,   INTERSEC=('J_PRE','TMP_CURV')),
+    _F(NOM = 'J_AMONT'  ,  INTERSEC=('JOINT','TMP_AM')),
+    _F(NOM = 'J_AVAL'  ,   INTERSEC=('JOINT','TMP_AV')),
+    _F(NOM = 'J_CURV'  ,   INTERSEC=('TMP_POST','TMP_CURV')),
 
                                ));
 
@@ -126,9 +140,9 @@ MAT_JHM=DEFI_MATERIAU(
                                      PENA_TANG=ecrouissage,
                                      MU=mu,
                                      ADHESION=adhe,
-                                     RHO_FLUIDE=1000., #kg/m^3
-                                     VISC_FLUIDE=1.E-3, #Pa.s
-                                     OUV_MIN=1.E-10 #m
+                                     RHO_FLUIDE=rho_e, #kg/m^3
+                                     VISC_FLUIDE=visc_fluide, #Pa.s
+                                     OUV_MIN=ouv_min #m
                                 ),);
 
 
@@ -140,7 +154,10 @@ CM_HM=AFFE_MATERIAU(MAILLAGE=MA,
                  );
 
 # CONDITION AUX LIMITES SUR LA TERRE
-TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TER_BORD',DX=0.0,DY=0.0,DZ=0.0));
+TERRE=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=_F(GROUP_MA='TER_BORD',DX=0.0,DY=0.0));
+
+# CONDITION AUX LIMITES SYMMETRIE
+SYMM=AFFE_CHAR_CINE(MODELE=MO,MECA_IMPO=_F(GROUP_MA='SYMM',DZ=0.0,),);
 
 # POIDS
 PESBAR = AFFE_CHAR_MECA(
@@ -157,7 +174,7 @@ p_am = FORMULE(VALE='max(rho_e*ap*(niv_am(INST)-Y),0)',NOM_PARA=('Y','INST'));
 p_av = FORMULE(VALE='max(rho_e*ap*(niv_av(INST)-Y),0)',NOM_PARA=('Y','INST'));
 
 PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AM') ,PRES=p_am));
-PAVAL =AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AV'),PRES=p_av));
+PAVAL =AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AV') ,PRES=p_av));
 
 
 # PRESSION EN AMONT ET AVAL DE FISSURE
@@ -170,7 +187,9 @@ P_AV_J = AFFE_CHAR_CINE_F(MODELE = MO,MECA_IMPO = (_F(GROUP_NO='J_AVAL',  PRE1=p
 
 
 # LISTE D'INSTANTS
-LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=tfin, NOMBRE=1)));
+list_reel=[0,3.,tfin]
+LR=DEFI_LIST_REEL(VALE=list_reel);
+#LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=tfin/50., NOMBRE=1),_F(JUSQU_A=tfin, NOMBRE=1)));
 
 L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),
                         ECHEC=_F(
@@ -185,6 +204,7 @@ U_HM=STAT_NON_LINE(MODELE=MO,
                   CHAM_MATER=CM_HM,
                   EXCIT=(
                          _F(CHARGE=TERRE),
+                         _F(CHARGE=SYMM),                              
                          _F(CHARGE=PESBAR),
                          _F(CHARGE=PESTER),
                          _F(CHARGE=PAMONT),
@@ -198,12 +218,14 @@ U_HM=STAT_NON_LINE(MODELE=MO,
                                 GROUP_MA=('TERRE','BARRAGE'))),
                   INCREMENT=_F(LIST_INST=L_INST,INST_FIN=tfin),
                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1),
+                  #RECH_LINEAIRE=_F(METHODE='MIXTE',ITER_LINE_MAXI=3,),
                   CONVERGENCE = _F(
-                                   ITER_GLOB_MAXI = 45,
+                                   ITER_GLOB_MAXI = 25,
                                    RESI_REFE_RELA = 1.E-6,
-                                   SIGM_REFE      = 1.E5,
-                                   FLUX_HYD1_REFE = 1.E-14),
-                  SOLVEUR=_F(METHODE='MUMPS',NPREC=-1),
+                                   SIGM_REFE      = sigma_max,
+                                   FLUX_HYD1_REFE = flux_min),
+                  SOLVEUR=_F(METHODE='MUMPS',NPREC=12),
+                  AFFICHAGE =_F(INFO_RESIDU='OUI'),
                   ARCHIVAGE = _F(LIST_INST = LR)
                   );
 
@@ -278,7 +300,7 @@ P_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 # SAUT ET CONTRAINTE NORMALE
 TEST_TABLE(
-           VALE_CALC=7.3519882975888E-07,
+           VALE_CALC=6.83960761997E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -286,7 +308,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-85432.857142788,
+           VALE_CALC=-85378.6981636,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -294,7 +316,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-6.0114128817803E-09,
+           VALE_CALC=-2.06650161828E-08,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -302,7 +324,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-92720.889035844,
+           VALE_CALC=-98817.8680763,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -310,7 +332,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.4848392020949E-07,
+           VALE_CALC=-3.50177420506E-07,
            NOM_PARA='V7',
            TABLE=SAUTHM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -318,7 +340,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.6810391934694E+05,
+           VALE_CALC=-367543.476157,
            NOM_PARA='SIGN',
            TABLE=SNT_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -327,7 +349,7 @@ TEST_TABLE(
 
 # PRESSION
 TEST_TABLE(
-           VALE_CALC=88289.999999825,
+           VALE_CALC=88163.6299154,
            NOM_PARA='PRE1',
            TABLE=PRE_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -335,7 +357,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=88289.999999825,
+           VALE_CALC=88163.9084283,
            NOM_PARA='V18',
            TABLE=P_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -343,7 +365,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=29429.998706221,
+           VALE_CALC=26049.083476,
            NOM_PARA='PRE1',
            TABLE=PRE_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -351,11 +373,14 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=29429.998706221,
+           VALE_CALC=26049.083476,
            NOM_PARA='V18',
            TABLE=P_HM,
            FILTRE=_F(NOM_PARA='COOR_X',
                      VALE=4.4,),
            )
+
+#IMPR_RESU(FORMAT='MED',RESU=(_F(RESULTAT=U_HM,NOM_CHAM='VARI_ELGA',GROUP_MA='JOINT',NOM_CMP=('V18')))),
+#IMPR_TABLE(TABLE=PRE_HM,TRI=(_F(NOM_PARA='COOR_X',ORDRE='CROISSANT')))
 
 FIN(FORMAT_HDF='OUI')

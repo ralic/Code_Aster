@@ -37,7 +37,7 @@ ecrouissage=k_t*1.E-6
 
 # PARAMETRES PHYSIQUES
 young=3.E10
-poiss=0.0
+poiss=0.01
 rho_fluide=1000. #kg/m^3
 visc_fluide=1.e-3 #pa.s
 ouv_min=1.E-10     #m
@@ -57,9 +57,13 @@ angle=30./180*pi
 L_cube=1.
 A_tri=0.5
 
-# SCALING POUR AVOIR SIGMA ET FLUX HYDRO DU MEME ORDRE DE GRANDEUR
-# rho_fluide/12/visc_fluide*ouv_min**3*grad(p) =equivalent= sigma
-scale = sigma_max*12*visc_fluide*L_cube/rho_fluide/press/ouv_min**3
+# FLUX_MIN (FLUX DU JOINT FERME) 
+# flux_min = rho_fluide/12/visc_fluide*ouv_min**3*grad(p)
+flux_min =  rho_fluide/12/visc_fluide*ouv_min**3*press/L_cube
+# FLUX_MAX (JOINT_OUVERT)
+flux_max =  rho_fluide/12/visc_fluide*(sigma_max/k_n)**3*press/L_cube
+
+
 # L'OUVERTURE ELASTIQUE DU JOINT + CUBE
 delta_elas = sigma_max/k_n + (sigma_max-press)*L_cube/young
 # L'OUVERTURE OU LE JOINT S'OUVRE COMPLETEMENT
@@ -136,9 +140,9 @@ CM_F=AFFE_MATERIAU(MAILLAGE=MA,
                  );
 
 # ENCASTREMENT D'UNE DES LEVRES DU JOINT
-LIAISON=AFFE_CHAR_MECA(
+LIAISON=AFFE_CHAR_CINE(
   MODELE=MO,
-  FACE_IMPO= (
+  MECA_IMPO= (
     _F(MAILLE='GAUCHE2', DX=0, DY=0, DZ=0),
     )
   )
@@ -150,22 +154,23 @@ LIAISON=AFFE_CHAR_MECA(
 #----------------------------------------------------------------------------------
 ###################################################################################
 
-# LE MAILLAGE COMPORTE QUATRE NOEUDS DE PRESSION : NS17-NS20
+# LE MAILLAGE COMPORTE CES NOEUDS DE PRESSION : NS1-NS3, NS13-NS15
 # ON IMPOSE UNE PRESSION SUR NS13 ET ON TESTE LA VALEUR DE LA PRESSION SUR LES AUTRES NOEUDS
 PAM_J = AFFE_CHAR_CINE(
   MODELE = MO,
   MECA_IMPO = (
                 _F(NOEUD='NS13', PRE1=press ),
-#                _F(NOEUD='NS20', PRE1=press ),
+#                _F(NOEUD='NS1',  PRE1=press*1.0000001 ),
+                _F(NOEUD='NS15', PRE1=press*1.0000002 ),
               )
   );
 
 
 # CHARGEMENT MODE I PUR
-TRAC_1=AFFE_CHAR_MECA(
+TRAC_1=AFFE_CHAR_CINE(
   MODELE=MO,
-  FACE_IMPO= (
-    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.),
+  MECA_IMPO= (
+    _F(MAILLE='DROITE', DX=cos(angle), DY= sin(angle), DZ=0.), 
     )
   )
 
@@ -175,7 +180,7 @@ L_INST=DEFI_LIST_REEL(VALE=range(insfin+1))
 # LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
 linst=[0,insfin/4,insfin/2,3*insfin/4,insfin]
 FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
-                                        linst[1], delta_elas,              # TRACTION ELASTIQUE
+                                        linst[1], delta_elas*0.9999,       # TRACTION ELASTIQUE
                                         linst[2], delta_endo,              # TRACTION JUSQU'A L'OUVERTURE COMPLETE
                                         linst[3], -delta_ferm,             # DECHARGEMENT COMPRESSION
                                         linst[4], delta_equi),             # TRACTION JUSQU'A POINT D'EQUILIBRE
@@ -184,7 +189,7 @@ FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
 
 # CALCUL MECANIQUE AVEC FROTTEMENT (JOINT_MECA_FROT)
 U_F=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS', NPREC=-1),
+  SOLVEUR=_F(METHODE='MUMPS',NPREC=8),
   MODELE     = MO,
   CHAM_MATER = CM_F,
   EXCIT      = (
@@ -199,7 +204,11 @@ U_F=STAT_NON_LINE(
              MAILLE = 'PRISM',),
           ),
   INCREMENT  = _F(LIST_INST = L_INST, INST_INIT=0,INST_FIN = insfin),
-  CONVERGENCE= _F(ITER_GLOB_MAXI = 40),
+  CONVERGENCE = _F(
+                    ITER_GLOB_MAXI = 20,
+                    RESI_REFE_RELA = 1.E-6,
+                    SIGM_REFE      = sigma_max,
+                    FLUX_HYD1_REFE = flux_max*1e-11),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
@@ -314,7 +323,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 # PLAFONNEMENT DE SIGMA_N
 # DECHARGE ELASTIQUE SIGMA(delta_ferm)=sigma_max/3
 # CHARGEMENT JUSQU'AU POINT D'EQUILIBRE
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=75000.0006,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=74990.00012335,
                          VALE_REFE= (sigma_max-press)*A_tri,
                          VALE_PARA=linst[1],
                          REFERENCE='ANALYTIQUE',
@@ -338,7 +347,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=75000.0006,
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FN,),
-                      _F(VALE_CALC=-5.005902039e-9,
+                      _F(VALE_CALC=-1.6663E-03,
                          VALE_REFE=sigma_max*1e-8,
                          CRITERE='ABSOLU',
                          VALE_PARA=linst[4],
@@ -440,7 +449,7 @@ TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
 #--------------------------------------
 
 U_2=STAT_NON_LINE(
-  SOLVEUR=_F(METHODE='MUMPS'),
+  SOLVEUR=_F(METHODE='MUMPS', NPREC=8),
   MODELE     = MO,
   CHAM_MATER = CM_F,
   EXCIT      = (
@@ -587,7 +596,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=49996.38453,
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FT,),
-                      _F(VALE_CALC=0.0599812,
+                      _F(VALE_CALC=0.05998111793,
                          VALE_REFE=delta_max_tan,
                          VALE_PARA=linst2[2],
                          REFERENCE='ANALYTIQUE',
@@ -619,6 +628,19 @@ TEST_RESU (
       VALE_CALC = 50000.012,
       NOEUD     = 'NS15',
       INST      = insfin,
+      ),
+    )
+  )
+# TEST DE FLUX (NS2, NS3)
+TEST_RESU (
+  RESU = (
+    _F(
+      RESULTAT  = U_2,
+      NOM_CHAM  = 'VARI_NOEU',
+      NOM_CMP   = 'V15',
+      VALE_CALC = -3.16535589618E-14,
+      NOEUD     = 'NS2',
+      INST      = linst2[1],
       ),
     )
   )
