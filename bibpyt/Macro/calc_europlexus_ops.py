@@ -940,7 +940,6 @@ class EUROPLEXUS:
                             CHAM_MATER=self.CHAM_MATER,
                             CONT_2_EFF=liste_cont_2_eff,
                             COMPORTEMENT=self.COMPORTEMENT,
-                            ARCHIVAGE=self.ARCHIVAGE,
                             EXCIT=self.EXCIT,
                             INFO=self.INFO,
                             )

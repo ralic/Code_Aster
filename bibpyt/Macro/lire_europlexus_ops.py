@@ -40,7 +40,7 @@ def get_unite_libre():
     return unite
 
 def lire_europlexus_ops(self, FICHIER_MED, MAILLAGE, MODELE,
-                        COMPORTEMENT, CONT_2_EFF, ARCHIVAGE,
+                        COMPORTEMENT, CONT_2_EFF,
                         INFO=1, CHAM_MATER=None, CARA_ELEM=None, EXCIT=None,
                         **args):
     """Fonction d'appel de la macro CALC_MAC3COEUR"""
@@ -52,7 +52,7 @@ def lire_europlexus_ops(self, FICHIER_MED, MAILLAGE, MODELE,
     #global resu
 
     analysis = LireEPX(FICHIER_MED, MAILLAGE, MODELE, CARA_ELEM,
-                       CHAM_MATER, COMPORTEMENT, EXCIT, CONT_2_EFF, ARCHIVAGE,
+                       CHAM_MATER, COMPORTEMENT, EXCIT, CONT_2_EFF,
                        INFO)
     analysis.read_compor()
     analysis.info_mode_epx, analysis.dic_mc_cara = build_info_mode_epx()
@@ -67,7 +67,7 @@ class LireEPX():
         et sa transformation en objet evol_noli
     """
     def __init__(self, FICHIER_MED, MAILLAGE, MODELE, CARA_ELEM,
-                       CHAM_MATER, COMPORTEMENT, EXCIT, CONT_2_EFF, ARCHIVAGE,
+                       CHAM_MATER, COMPORTEMENT, EXCIT, CONT_2_EFF,
                        INFO):
         """
             Initialisation
@@ -80,7 +80,6 @@ class LireEPX():
         self.COMPORTEMENT = COMPORTEMENT
         self.EXCIT = EXCIT
         self.CONT_2_EFF = CONT_2_EFF
-        self.ARCHIVAGE = ARCHIVAGE
         self.INFO = INFO
     # -------------------------------------------------------------------------
     def read_compor(self):
@@ -425,7 +424,6 @@ présentes%s"""%compo)
             
             lc['NUME_PT'] = resu.LIST_PARA()['NUME_ORDRE'][i]
 
-            pas = self.ARCHIVAGE['PAS_NBRE']
             dicAsse = []
             dicAsse3 = []
             dicDetr = []
