@@ -18,6 +18,7 @@ def options(self):
                          'not enabled by embed-all)')
 
 def configure(self):
+    self.check_system_libs()
     self.configure_pythonpath()
     # require to force static libs if --embed-python is present
     embed_py = self.options.embed_python
@@ -32,6 +33,13 @@ def configure(self):
             del self.env['LIB_PYEMBED']
 
 ###############################################################################
+@Configure.conf
+def check_system_libs(self):
+    """check for system libs"""
+    # may be required for non-system python installation (never in static)
+    self.check_cc(uselib_store='PYEMBED', lib='pthread', mandatory=False)
+    self.check_cc(uselib_store='PYEMBED', lib='dl', mandatory=False)
+    self.check_cc(uselib_store='PYEMBED', lib='util', mandatory=False)
 
 @Configure.conf
 def configure_pythonpath(self):
