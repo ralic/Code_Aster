@@ -202,9 +202,9 @@ class EUROPLEXUS:
             iret, ibid, nomsd = aster.dismoi('CARA_ELEM', nom_RESU_INIT,
                                              'RESULTAT', 'F')
             nomsd = nomsd.strip()
-            if nomsd[0] == '#':
-                UTMESS('F', 'PLEXUS_37', valk='CARA_ELEM')
-            if nomsd[0] == ' ':
+            if nomsd[:8] == '#PLUSIEU':
+                UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT,'CARA_ELEM'])
+            elif nomsd[:6] == '#AUCUN':
                 self.CARA_ELEM = None
             else:
                 self.CARA_ELEM = macro.get_concept(nomsd)
@@ -213,8 +213,8 @@ class EUROPLEXUS:
             iret, ibid, nomsd = aster.dismoi('CHAM_MATER', nom_RESU_INIT,
                                              'RESULTAT', 'F')
             nomsd = nomsd.strip()
-            if nomsd[0] == '#':
-                UTMESS('F', 'PLEXUS_37', valk='CHAM_MATER')
+            if nomsd[:8] == '#PLUSIEU':
+                UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT,'CHAM_MATER'])
             self.CHAM_MATER = macro.get_concept(nomsd)
         else:
             self.MODELE = MODELE

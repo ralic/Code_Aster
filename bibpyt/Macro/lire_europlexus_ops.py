@@ -420,7 +420,7 @@ présentes%s"""%compo)
             'PROL_ZERO' : 'OUI',
             'OPERATION' : 'ASSE',
              }
-
+        MasquerAlarme('MED_4')
         for i in xrange(itot):
             
             lc['NUME_PT'] = resu.LIST_PARA()['NUME_ORDRE'][i]
@@ -611,7 +611,9 @@ présentes%s"""%compo)
             dicAffe3.append(dic2)
 
             DETRUIRE(CONCEPT=dicDetr, INFO=1)
-
+        RetablirAlarme('MED_4')
+        
+        
         MasquerAlarme('COMPOR2_26')
         MasquerAlarme('COMPOR2_23')
         resu = CREA_RESU(reuse=resu,

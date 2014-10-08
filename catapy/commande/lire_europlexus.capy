@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: aimery.assire at edf.fr
+# person_in_charge: serguei.potapov at edf.fr
 
 LIRE_EUROPLEXUS = MACRO(nom="LIRE_EUROPLEXUS",
                         op=OPS('Macro.lire_europlexus_ops.lire_europlexus_ops'),
@@ -26,8 +26,8 @@ LIRE_EUROPLEXUS = MACRO(nom="LIRE_EUROPLEXUS",
         FICHIER_MED = SIMP(statut='o', typ='TXM',),
         MAILLAGE    = SIMP(statut='o',typ=maillage_sdaster),
         MODELE      = SIMP(statut='o',typ=modele_sdaster),
-        CARA_ELEM   = SIMP(statut='o',typ=cara_elem),
-        CHAM_MATER  = SIMP(statut='o',typ=cham_mater),
+        CARA_ELEM   = SIMP(statut='f',typ=cara_elem),
+        CHAM_MATER  = SIMP(statut='f',typ=cham_mater),
         COMPORTEMENT  =C_COMPORTEMENT('CALC_EUROPLEXUS'),
         EXCIT       = FACT(statut='o',max='**',
            CHARGE         = SIMP(statut='o',typ=(char_meca,)),

@@ -341,6 +341,8 @@ cata_ordre_para = {
                 fichier med de sortie.
     CONT_ASTER : Noms des composantes de contraintes dans Code_Aster si
                  contraintes il y a.
+                 Attention, elles doivent être écrites dans l'ordre des
+                 composantes de contraintes dans EPX.
     MC_CARA    : Nom du mot-clé de AFFE_CARA_ELEM lié à la modélisation si
                  celle-ci en a besoin.
     MODI_REPERE : Type de changement de repère si besoin d'un changement de
@@ -392,6 +394,15 @@ cata_modelisa = {
                     },
         'ETAT_INIT' : False,
         'RESU_ELEM' : False,
+              },
+    '3D' : {
+        'MODE_EPX': {
+            'TETRA4' : ['TETR'],
+            'HEXA8'  : ['CUB8'],
+                     },
+        'ETAT_INIT' : True,
+        'RESU_ELEM' : True,
+        'CONT_ASTER' : ['SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIYZ', 'SIXZ',],
               },
                 }
 
