@@ -35,6 +35,17 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
  la modélisation 1d n'est pas autorisée
 """),
 
+
+46 : _(u"""
+  -> Le calcul de l opérateur tangent dans la phase %(k1)s  car le critère rp est nul. 
+     1. RIGI_MECA_TANG=première itération de prédiction tangente dans un pas de temps
+     2. FULL_MECA=itérations de correction de Newton
+  -> Risque & Conseil :
+     1. On conseille l'utilisation de la PREDICTION=ELASTIQUE, REAC_ITER=n, avec n>1
+     2. Vérifiez les paramètres d'entrée comme le matériau.
+"""),
+
+
 48 : _(u"""
  élément à discontinuité avec une loi CZM_EXP : la matrice H est non inversible
 """),
@@ -211,5 +222,10 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 99 : _(u"""
  nature du champ dans le fichier UNV DATASET 58 non identique
 """),
+
+
+
+
+
 
 }

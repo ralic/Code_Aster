@@ -519,6 +519,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                 rp = rp + sigdv(k)**2
             end do
             rp = sqrt(1.5d0*rp)
+            !write (6,*) " rp      :  ",  rp
+            !write (6,*) " sigmdv  :  ",  sigmdv
 !            condition sur sigeps inoperante pour RIGI_MECA_TANG car deps=0             
             sigeps=1.d0
         else
@@ -542,6 +544,9 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         a=1.d0
         if (.not.dech) then
             if (plasti .and. sigeps .ge. 0.d0) then
+                if (rp .le. 1.d-15) then
+                  call utmess('F', 'ALGORITH4_46', sk=option(1:14))                
+                endif
                 a = 1.d0+1.5d0*deuxmu*dp/rp
                 coef = - (1.5d0 * deuxmu)**2/(1.5d0*deuxmu+rprim)/rp** 2 *(1.d0 - dp*rprim/rp )/a
                 do k = 1, ndimsi
