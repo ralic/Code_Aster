@@ -4,13 +4,19 @@ import os
 import os.path as osp
 from glob import glob
 
-from waflib import TaskGen, Task, Errors, Logs, Node
+from waflib import Configure, Context, TaskGen, Task, Utils
 
 def options(self):
     group = self.get_option_group('Code_Aster options')
 
 def configure(self):
     self.find_program('mfront')
+    self.find_program('tfel-config')
+    self.check_cfg(path='tfel-config',
+                   args='--cppflags --includes --oflags --libs',
+                   package='', uselib_store='MFRONT', mandatory=True)
+    self.env.append_value('DEFINES_MFRONT',
+        'ASTER_ARCH=64' if 'TFEL_ARCH64' else 'ASTER_ARCH=32')
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob
@@ -22,59 +28,84 @@ def build(self):
         'PolyCristal_Orientation.mfront',
     )
     self(
-        features = 'mfront',
-            name = 'mfront',
-      mfront_src = get_srcs('**/*.mfront', excl=excl),
-          target = 'src/libAsterBehaviour.so',
+        features = 'cxx cxxshlib',
+            name = 'asterbehaviour',
+          source = get_srcs('**/*.mfront', excl=excl),
+          target = 'AsterBehaviour',
     install_path = self.env.ASTERLIBDIR,
+             use = ('MFRONT', ),
     )
 
 ###############################################################################
-class CaptureTask(Task.Task):
-    """Capture stderr/stdout and logs them only in case of failure"""
+@TaskGen.extension('.mfront')
+def process_mfront(self, node):
+    tsk = self.create_task('mfront2cxx', node)
 
-    def exec_command(self, cmd, **kw):
-        try:
-            self.generator.bld.cmd_and_log(cmd, quiet=0, **kw)
-        except Errors.WafError, err:
-            if hasattr(err, 'stdout'):
-                Logs.warn('stdout: %s' % err.stdout)
-                Logs.warn('stderr: %s' % err.stderr)
-            raise
-
-###############################################################################
-@TaskGen.feature('mfront')
-def process_mfront(self):
-    """compile .mfront files into libAsterbehaviour.so.
-
-    :param source: mfront source files
-    :type source: strings
-    :param target: name of the shared library
-    :type target: string
-    :param install_path: installation directory
-    :type install_path: string
-    """
-    inst = getattr(self, 'install_path')
-    tgt = self.target
-    if not isinstance(tgt, Node.Node):
-        tgt = self.path.find_or_declare(tgt)
-    task = self.create_task('compile_mfront',
-                            src=self.mfront_src,
-                            tgt=tgt)
-    self.bld.install_files(inst, tgt)
-
-class compile_mfront(CaptureTask):
-    """Build the libAsterBehaviour library"""
-    shell = True
-    color   = 'BLUE'
+class mfront2cxx(Task.Task):
+    """Convert a MFront source file into C++"""
+    color   = 'PINK'
 
     def run(self):
-        """Build a .so with all behaviours"""
-        mfr = self.inputs[0].parent
-        cmd = '%s --obuild --interface=aster --search-path=%s %s' % (
+        """Call MFront to convert `.mfront` to C++"""
+        name = osp.splitext(self.inputs[0].name)[0]
+        mfrdir = self.inputs[0].parent
+        wrknode = mfrdir.get_bld().find_or_declare(name)
+        wrknode.mkdir()
+        wrkdir = wrknode.abspath()
+        cmd = '%s --interface=aster --search-path=%s %s' % (
             self.env.MFRONT,
-            mfr.get_src().abspath(),
-            ' '.join([i.abspath() for i in self.inputs])
+            mfrdir.get_src().abspath(),
+            self.inputs[0].abspath()
         )
-        wrkdir = mfr.get_bld().abspath()
-        return self.exec_command(cmd, cwd=wrkdir)
+        self.generator.bld.cmd_and_log(cmd, cwd=wrkdir, quiet=Context.STDOUT)
+
+        # read list of generated files
+        root = mfrdir.get_bld().abspath()
+        srcfiles = glob(osp.join(wrkdir, 'src/*.src'))
+        outputs = []
+        for fsrc in srcfiles:
+            outputs.extend(open(fsrc, 'r').read().split())
+        outputs = [osp.join(wrknode.path_from(mfrdir), 'src', i) for i in outputs]
+        assert len(outputs) > 0, 'no outputs for %s' % name
+        self.outputs = [self.generator.path.find_or_declare(i) for i in outputs]
+        self.generator.bld.raw_deps[self.uid()] = [self.signature()] + self.outputs
+        self.add_cxx_tasks(self.outputs)
+
+    def add_cxx_tasks(self, lst):
+        """Create cxx tasks"""
+        self.more_tasks = []
+        for node in lst:
+            if not node.name.endswith('.cxx'):
+                continue
+            tsk = self.generator.create_compiled_task('cxx', node)
+            incpath = node.parent.parent.find_node('include')
+            tsk.env.append_value('INCPATHS', [incpath.abspath()])
+            self.more_tasks.append(tsk)
+
+            if getattr(self.generator, 'link_task', None):
+                # print "#DEBUG link_task after", id(tsk)
+                self.generator.link_task.set_run_after(tsk)
+                if tsk.outputs[0] not in self.generator.link_task.inputs:
+                    self.generator.link_task.inputs.append(tsk.outputs[0])
+                else:
+                    assert False, "%r: already on link: %s" % (node.name, tsk.outputs[0])
+
+    def runnable_status(self):
+        """Add cxx tasks if Mfront conversion is skipped"""
+        ret = super(mfront2cxx, self).runnable_status()
+        if ret == Task.SKIP_ME:
+            lst = self.generator.bld.raw_deps[self.uid()]
+            if lst[0] != self.signature():
+                # print "#DEBUG status for", self, "RUN_ME"
+                return Task.RUN_ME
+            nodes = lst[1:]
+            for x in nodes:
+                try:
+                    os.stat(x.abspath())
+                except:
+                    # print "#DEBUG status for", x, "RUN_ME"
+                    return Task.RUN_ME
+            nodes = lst[1:]
+            self.set_outputs(nodes)
+            self.add_cxx_tasks(nodes)
+        return ret

@@ -141,11 +141,11 @@ def configure(self):
     paths = [d.abspath() for d in paths]
     self.env.append_value('INCLUDES', paths)
 
+    self.recurse('mfront')
     self.recurse('bibfor')
     self.recurse('bibc')
     self.recurse('i18n')
     self.recurse('data')
-    self.recurse('mfront')
     # keep compatibility for as_run
     if self.get_define('HAVE_MPI'):
         self.env.ASRUN_MPI_VERSION = 1
@@ -178,11 +178,11 @@ def build(self):
                 os.remove(i)
 
     self.load('ext_aster', tooldir='waftools')
+    self.recurse('mfront')
     self.recurse('bibfor')
     self.recurse('bibc')
     self.recurse('bibpyt')
     self.recurse('i18n')
-    self.recurse('mfront')
     lsub = ['materiau', 'datg', 'catapy', 'catalo']
     if self.env.install_tests:
         lsub.extend(['astest', '../validation/astest'])
