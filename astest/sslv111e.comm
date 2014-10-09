@@ -26,7 +26,7 @@ DEBUT(CODE=_F(
 M=LIRE_MAILLAGE(FORMAT='MED',);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
@@ -420,7 +420,23 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    MAILLE='M1',),
                 ),
           )
+#
+#==================================================================
+# Impressions pour couverture de code (irdrca.F90 )
+
+
+IMPR_RESU(FORMAT= 'CASTEM',
+          UNITE  = 33,
+          RESU=(_F(MAILLAGE= M ,
+                  # RESULTAT = RESU ,
+                  # NOM_CHAM= 'SIZ1_NOEU',
+                  # NUME_ORDRE = 1,
+                   CHAM_GD = SIGZZ1 ,
+                   SOUS_TITRE='CONTRAINTES AUX NOEUDS ZZ1',),),
+                );
+
+
+
 
 FIN();
-
 #

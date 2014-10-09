@@ -532,6 +532,7 @@ UUU2=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               UNITE=83,
               TOUT_ORDRE='OUI',);
 
+
 IMPR_RESU(UNITE=84, FORMAT='GMSH',
           RESU=(_F(RESULTAT=UUU2,
                    NOM_CHAM='DEPL',NOM_CMP=('DX','DY'),),
@@ -1017,5 +1018,29 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    VALE_CALC=1.0,),
                 ),
           )
+#-----------------------------------------------------------------------
+# TESTS DE VALIDATION DE IMPR_RESU FORMAT CAST3M & IDEAS & GMSH
+#-----------------------------------------------------------------------
+#===>couverture IRGME2
+
+IMPR_RESU(UNITE=18, FORMAT='GMSH',
+          RESU=(_F(RESULTAT=UUU2,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
+                   TYPE_CHAM='TENS_2D',
+                   NUME_ORDRE= 1,),),);
+
+#-----------------------------------------------------------------------
+#===> couverture IRGNTE
+
+IMPR_RESU(UNITE=30,
+          FORMAT='GMSH',
+          RESU=(_F(RESULTAT=U,
+                   NOM_CHAM='SIGM_NOEU',
+                   TYPE_CHAM='TENS_2D',
+                   NOM_CMP=('SIXX','SIYY','SIXY','SIZZ',),
+                   NUME_ORDRE= 1,),),
+                   INFO=2);
+
 
 FIN();

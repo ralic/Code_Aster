@@ -56,7 +56,6 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
@@ -111,7 +110,7 @@ subroutine ircmva(numcmp, ncmpve, ncmprf, nvalec, nbpg,&
         else if (part(1:4).eq.'IMAG') then
             itype=3
         else
-            ASSERT(.false.)
+            call utmess('F','PREPOST3_69')
         endif
     else
         valk(1) = gd
