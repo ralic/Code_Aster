@@ -96,11 +96,11 @@ void DEFSPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname,
        return;
     }
     if ( imode == 0 ) {
-        strncpy(smode, "rb", 2);
+        strcpy(smode, "rb");
     } else if ( imode == 1 ) {
-        strncpy(smode, "rb+", 3);
+        strcpy(smode, "rb+");
     } else {
-        strncpy(smode, "wb+", 3);
+        strcpy(smode, "wb+");
     }
     DEBUG_IODR("trying open file '%s' using mode '%s'...\n", fname, smode);
     fpfile[iu] = fopen(fname, smode);
