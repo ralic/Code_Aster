@@ -38,6 +38,7 @@ subroutine te0435(option, nomte)
 !                                  - RIGI_MECA
 !                                  - RIGI_MECA_ELAS
 !                                  - RIGI_MECA_TANG
+!                                  - RIGI_MECA_IMPLEX
 !                          POUR LES MEMBRANES
 !    - ARGUMENTS :
 !        DONNEES :      OPTION       -->  OPTION DE CALCUL
@@ -50,7 +51,7 @@ subroutine te0435(option, nomte)
     integer :: ipoids, ivf, idfde, jgano, jtab(7)
     integer :: igeom, icacoq, imate, icompo, icarcr
     integer :: iinstm, iinstp, icontm, ideplm, ideplp, ivarim, ivarix
-    integer :: ivectu, icontp, ivarip, jcret, imatuu
+    integer :: ivectu, icontp, ivarip, jcret, imatuu, icontx
     real(kind=8) :: dff(2, 8), alpha, beta, b(3, 3, 8), jac
     real(kind=8) :: epsm(3), deps(3), epsth(3), epsthe, sigp(3), tmp, rig(3, 3)
     aster_logical :: vecteu, matric
@@ -110,6 +111,13 @@ subroutine te0435(option, nomte)
 !
     if ((option(1:4).eq.'FULL') .or. (option(1:4).eq.'RIGI')) then
         call jevech('PMATUUR', 'E', imatuu)
+    endif
+!
+! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX    
+    if (option .eq. 'RIGI_MECA_IMPLEX') then
+        call jevech('PCONTXR', 'E', icontx)
+! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM        
+        call dcopy(npg*ncomp, zr(icontm), 1, zr(icontx), 1)      
     endif
 !
 ! - INITIALISATION CODES RETOURS

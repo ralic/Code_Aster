@@ -42,6 +42,7 @@ subroutine te0431(option, nomte)
 !                                  - RIGI_MECA
 !                                  - RIGI_MECA_ELAS
 !                                  - RIGI_MECA_TANG
+!                                  - RIGI_MECA_IMPLEX
 !                          POUR LES GRILLES MEMBRANES EXCENTREES OU NON
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
@@ -55,7 +56,7 @@ subroutine te0431(option, nomte)
     integer :: cod(9)
     integer :: imatuu, ipoids, ivf, idfde, igeom, imate, icamas, icontm, ivarim
     integer :: jgano, jtab(7), jcret, ideplm, ideplp, icompo, icarcr, iret
-    integer :: ivectu, icontp, ivarip, ivarix
+    integer :: ivectu, icontp, ivarip, ivarix, icontx
     real(kind=8) :: dff(2, 8), b(6, 8), p(3, 6), jac
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: epsm, deps, sigm, sig, tmp, rig, valres(2)
@@ -121,6 +122,13 @@ subroutine te0431(option, nomte)
         call dcopy(npg*lgpg, zr(ivarix), 1, zr(ivarip), 1)
     else
         ivarip=1
+    endif
+!
+! - PARAMETRES EN SORTIE SUPPLEMENTAIE POUR LA METHODE IMPLEX    
+    if (option .eq. 'RIGI_MECA_IMPLEX') then
+        call jevech('PCONTXR', 'E', icontx)
+! ------ INITIALISATION DE LA CONTRAINTE INTERPOLE CONTX=CONTM        
+        call dcopy(npg, zr(icontm), 1, zr(icontx), 1)      
     endif
 !
     if ((option(1:4).eq.'FULL') .or. (option(1:4).eq.'RIGI')) then
