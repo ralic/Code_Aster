@@ -35,6 +35,7 @@ import traceback
 import os.path as osp
 import socket
 from math import cos, sin, pi
+import numpy as NP
 
 import aster_core
 import aster
@@ -379,6 +380,8 @@ class CalculMissFichierTemps(CalculMiss):
 
         self.dt = self.param['PAS_INST']
         N_inst = int(self.param['INST_FIN']/self.param['PAS_INST'])
+        self.reducFactor = self.param['FACTEUR_INTERPOL']
+        self.cutOffValue = self.param['PCENT_FREQ_CALCUL']/100.0
         if N_inst % 2 != 0 :
             UTMESS('F','MISS0_18')
         eps = self.param['PRECISION']
@@ -423,12 +426,20 @@ class CalculMissFichierTemps(CalculMiss):
         L_points = self.L_points
         dt = self.dt
         rho = self.rho
+        reduc_factor = self.reducFactor
         #TODO la règle UN_PARMI(FREQ_MIN, LIST_FREQ, FREQ_IMAG) ne convient pas!
         # au moins mettre FREQ_MIN à None
         self.param.set('FREQ_MIN', None)
+        if self.cutOffValue == 1:
+            fc = self.cutOffValue*self.nbr_freq/float(reduc_factor) 
+        else:
+            fc = NP.int_(NP.ceil(self.cutOffValue*self.nbr_freq/float(reduc_factor))) 
+        freq_list1 = NP.arange(0,fc*reduc_factor)
+        freq_list2 = NP.arange(fc*reduc_factor, self.nbr_freq, reduc_factor)
+        self.freq_list = freq_list1.tolist() + freq_list2.tolist()
         rank, size = aster_core.MPI_CommRankSize()
 
-        for k in range(self.nbr_freq):
+        for k in self.freq_list:
             # round-robin partition
             if k % size != rank:
                 UTMESS('I', 'MISS0_24', vali=(k, k % size))
@@ -464,7 +475,7 @@ class CalculMissFichierTemps(CalculMiss):
         if rank == 0:
             fimpe = self._fichier_tmp("impe_Laplace")
             fd = open(fimpe, 'w')
-            for k in range(self.nbr_freq):
+            for k in self.freq_list:
                 resname = self._fichier_tmp('resu_impe_%04d' % k)
                 fd.write(open(resname, 'r').read())
             fd.close()

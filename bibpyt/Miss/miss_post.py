@@ -769,6 +769,8 @@ class PostMissFichierTemps(PostMissFichier):
         self.rho = eps**(1./(2.*N_inst))
         self.nrows = self.param['NB_MODE']
         self.ncols = self.param['NB_MODE']
+        self.reducFactor = self.param['FACTEUR_INTERPOL']
+        self.cutOffValue = self.param['PCENT_FREQ_CALCUL']/100.0
         self.Mg = 0
         self.Kg = 0
         self.Cg = 0
@@ -790,11 +792,18 @@ class PostMissFichierTemps(PostMissFichier):
     def calc_impe_temps(self):
         """Calcul de l'impédance dans le domaine temporel"""
         fid = open(self.fname("impe_Laplace"), 'r')
-
+        reduc_factor = self.reducFactor
+        angle_seuil = self.cutOffValue
+        if angle_seuil == 1:
+            fc = self.cutOffValue*self.nbr_freq/float(reduc_factor) % self.nbr_freq
+        else:
+            fc = NP.int_(NP.ceil(self.cutOffValue*self.nbr_freq/float(reduc_factor)))
+        freq_list1 = NP.arange(0,fc*reduc_factor)
+        freq_list2 = NP.arange(fc*reduc_factor, self.nbr_freq, reduc_factor)
+        real_size = len(freq_list1.tolist() + freq_list2.tolist())
         impe_Laplace = NP.zeros((self.nrows, self.ncols, self.nbr_freq), complex)
-        k = -1
 
-        while (k < self.nbr_freq - 1):
+        for k in range(0,real_size):
             for n in range(0,self.nrows):
                 for m in range(0,self.ncols):
                     txt = fid.readline()
@@ -802,13 +811,48 @@ class PostMissFichierTemps(PostMissFichier):
                         tmp = fid.readline()
                         k = k + 1
                     data = fid.readline().split()
-                    impe_Laplace[n,m,k] = float(data[1]) + 1j*float(data[2])
+                    impe_Laplace[n,m,k-1] = float(data[1]) + 1j*float(data[2])
 
         fid.close()
 
-        Z_Laplace = NP.zeros((self.nrows, self.ncols, self.L_points), complex)
-        Z_Laplace[:,:,0:self.nbr_freq] = NP.conj(impe_Laplace[:,:,0:self.nbr_freq])
-        Z_Laplace[:,:,self.nbr_freq:] = impe_Laplace[:,:,self.nbr_freq-2:0:-1]
+        freq_vect  = NP.arange(0,self.L_points)
+        Z_Laplace    = NP.zeros((self.nrows, self.ncols, self.L_points), complex)
+        Z_Laplace_re = NP.zeros((self.nrows, self.ncols, self.L_points), complex)
+        Z_Laplace_im = NP.zeros((self.nrows, self.ncols, self.L_points), complex)
+
+        # Ce ne sont pas des vecteurs de fréquences mais des vecteurs d'indices
+        freq_list1 = list(NP.arange(0,reduc_factor*fc))
+        freq_list2 = list(NP.arange(reduc_factor*fc,self.L_points - fc*reduc_factor,reduc_factor))
+        if reduc_factor is not 1 and angle_seuil < 1:
+            freq_list3 = list(NP.arange(self.L_points - fc*reduc_factor,self.L_points)) 
+        else: 
+            freq_list3 = []
+        freq_reduc = freq_list1 + freq_list2 + freq_list3
+        
+        if len(freq_list2) % 2 == 0: 
+            length = len(freq_list1) + len(freq_list2)/2
+        else:
+            length = len(freq_list1) + (len(freq_list2)-1)/2 + 1
+        print "fc=", fc
+        print "len(freq_list1)=", len(freq_list1)
+        print "len(freq_list2)=", len(freq_list2)
+        print "len(freq_list3)=", len(freq_list3)
+        print "fin list2 = ", self.L_points - fc*reduc_factor
+        print "length=", length
+        Z_reduced = NP.zeros((self.nrows, self.ncols, len(freq_reduc)), complex)
+        Z_reduced[:,:,0:length+1] = NP.conj(impe_Laplace[:,:,0:length+1])
+        Z_reduced[:,:,length+1:] = impe_Laplace[:,:,length-1:0:-1]
+
+        Z_redu_r = NP.real(Z_reduced)
+        Z_redu_i = NP.imag(Z_reduced)
+
+        for n in range(0,self.nrows):
+            for m in range(0,self.ncols):
+                Z_Laplace_re[n,m,:] = NP.interp(freq_vect, freq_reduc, Z_redu_r[n,m,:]);
+                Z_Laplace_im[n,m,:] = NP.interp(freq_vect, freq_reduc, Z_redu_i[n,m,:]);
+
+        for k in range(0,self.L_points):
+            Z_Laplace[:,:,k] = Z_Laplace_re[:,:,k] + 1j*Z_Laplace_im[:,:,k];
 
         MATR_GENE = self.param['MATR_GENE']
         if MATR_GENE:
