@@ -33,6 +33,9 @@ d_sigm_epsi = 0.
 #--------------------------------
 T_FIN = 1.
 
+#-----valeur de chargement ou on arrete le calcul pour le post-traitement
+etaMax=11.0972
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('MODELISA4_6',))
 
@@ -127,14 +130,16 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                            _F(CHARGE=PRES,
                               TYPE_CHARGE='FIXE_PILO',),),
 
-COMPORTEMENT=(_F(RELATION='VMIS_ISOT_LINE',TOUT='OUI',),
+                    COMPORTEMENT=(_F(RELATION='VMIS_ISOT_LINE',TOUT='OUI',),
                                _F(RELATION='ELAS',GROUP_MA='MA_P2',),),
                     INCREMENT=_F(LIST_INST=DEFLIST,),
                     PILOTAGE=_F(TYPE='LONG_ARC',
                                 COEF_MULT=1.,
                                 SELECTION='ANGL_INCR_DEPL',
                                 GROUP_NO='PILO',
-                                NOM_CMP=('DX','DY','DZ',),),
+                                NOM_CMP=('DX','DY','DZ',),
+                                ETA_PILO_MAX=etaMax,
+                                PROJ_BORNES = 'OUI',),
                     NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                     SOLVEUR=_F(METHODE = 'MUMPS'),
                     SUIVI_DDL=(_F(NOM_CMP='DZ',
@@ -144,6 +149,11 @@ COMPORTEMENT=(_F(RELATION='VMIS_ISOT_LINE',TOUT='OUI',),
                                   ),
 
                    );
+
+RESU1=CALC_CHAMP(reuse = RESU1,
+                RESULTAT=RESU1,
+                FORCE = 'FORC_NODA');
+
 
 ETA_PILO=RECU_FONCTION(RESULTAT=RESU1,
                        TOUT_ORDRE='OUI',
@@ -164,11 +174,34 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 #          RESU=(
 #                _F(RESULTAT=RESU1,),),);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=11.09720,
-                        VALE_PARA=1.0,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=11.09720000000,
+                        VALE_PARA=T_FIN,
                         NOM_PARA='INST',
                         FONCTION=ETA_PILO,
                         ),
               )
+
+
+TEST_RESU(RESU=(_F(INST=T_FIN,
+                  TYPE_TEST='MAX',
+                  CRITERE='RELATIF',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='FORC_NODA',
+                  NOM_CMP='DZ',
+                  VALE_CALC=194514.321678,
+                  GROUP_NO=('PILO',),
+                  ),
+               _F(INST=T_FIN,
+                  TYPE_TEST='MAX',
+                  CRITERE='RELATIF',
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  VALE_CALC=2.35607043394,
+                  GROUP_NO=('PILO',),
+                  ),
+                ),
+          )
+
 
 FIN(FORMAT_HDF='OUI');

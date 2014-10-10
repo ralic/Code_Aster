@@ -661,6 +661,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                                      ITER_GLOB_MAXI=NBGL,),
                       );
 
+
 ETA_PILO=RECU_FONCTION(RESULTAT=MEKEFOR,
                        NOM_PARA_RESU='ETA_PILOTAGE',);
 
@@ -668,6 +669,52 @@ DEP_TETE=RECU_FONCTION(RESULTAT=MEKEFOR,
                        NOM_CHAM='DEPL',
                        NOM_CMP='DY',
                        NOEUD='H00101',);
+
+
+
+
+T_ETA=CREA_TABLE(FONCTION=_F(FONCTION=ETA_PILO,),);
+
+T_DEPL=CREA_TABLE(FONCTION=_F(FONCTION=DEP_TETE,),);
+
+TAB_COMB=CALC_TABLE(TABLE=T_ETA,
+                    ACTION=(_F(OPERATION='COMB', TABLE=T_DEPL, NOM_PARA='INST'),),
+                    );
+
+DEPL_ETA=RECU_FONCTION(TABLE=TAB_COMB,
+                     PARA_X='DY',
+                     PARA_Y='ETA_PILO',
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
+
+IMPR_TABLE(TABLE=TAB_COMB,);
+
+# NON REGRESSION
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=9789.764253130,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.011,
+                         FONCTION=DEPL_ETA,
+                         ),
+                      _F(VALE_CALC=11267.81094772,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.02,
+                         FONCTION=DEPL_ETA,
+                         ),
+                      _F(VALE_CALC=13544.23834033,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.05,
+                         FONCTION=DEPL_ETA,
+                         ),
+                      _F(VALE_CALC=18681.51360963,
+                         CRITERE='RELATIF',
+                         VALE_PARA=0.13,
+                         FONCTION=DEPL_ETA,
+                         ),
+                       ),
+              )
+
+
 
 # --------------- RESULTATS EXPERIMENTAUX ---------------
 ETA_REF=DEFI_LIST_REEL(VALE=(0.,2100.,2440.,3700.,5100.,6600.,6600.,8140.,9600.,11100.,12700.,14100.,14600.,
@@ -690,10 +737,12 @@ TAB_PILO=RECU_TABLE(CO=MEKEFOR,
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.2,
-           VALE_CALC=18800.430972023,
+           VALE_CALC=18800.4312719,
            VALE_REFE=1.6200E4,
            NOM_PARA='ETA_PILOTAGE',
            TYPE_TEST='MAX',
            TABLE=TAB_PILO,)
 
 FIN();
+
+

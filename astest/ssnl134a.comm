@@ -30,6 +30,8 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
 
 M_SECT=LIRE_MAILLAGE(UNITE=18,FORMAT='MED',);
 #Corps du fichier de commandes : modele, materiau, caracteristiques de la poutre.
+#-----valeur de chargement ou on arrete le calcul pour le post-traitement
+etaMax=2.0
 
 MOD_TGM=AFFE_MODELE(MAILLAGE=MAILLAGE,
                     AFFE=_F(GROUP_MA='OMEGA',
@@ -130,7 +132,8 @@ RESO=STAT_NON_LINE(MODELE=MOD_TGM,
                                 COEF_MULT=0.01,
                                 GROUP_NO='OMEGA',
                                 NOM_CMP=('DX','DY',),
-                                ETA_PILO_MAX=2.0,),
+                                ETA_PILO_MAX=etaMax,
+                                PROJ_BORNES = 'OUI',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-5,
                                    ITER_GLOB_MAXI=10,),
                     );
@@ -304,7 +307,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.937235395674,
                       ),
               )
 
-# Les 2 derniers tests ont des tolerances tres elevees uniquement car il est impossible de tester proprement un calcul pilote
+# Les 2 derniers tests ont des tolerances tres elevees uniquement car la variation de la courbe a cette endroit est tres importante 
 # La superposition des courbes de references et des courbes calculees montre une superposition quasi-parfaite.
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.964528504574,
