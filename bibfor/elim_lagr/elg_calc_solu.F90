@@ -19,14 +19,14 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/dismoi.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/nudlg2.h"
-# include "asterfort/utmess.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nudlg2.h"
+#include "asterfort/utmess.h"
 !
     character(len=19) :: matas1
     integer :: nsecm
@@ -48,8 +48,8 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-# include "asterfort/elg_allocvr.h"
-# include "asterfort/elg_calcxl.h"
+#include "asterfort/elg_allocvr.h"
+#include "asterfort/elg_calcxl.h"
 !
 !================================================================
     character(len=1) :: kbid

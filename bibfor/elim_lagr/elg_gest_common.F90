@@ -19,9 +19,9 @@ subroutine elg_gest_common(action, mat1, mat2, rigi1)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-# include "asterfort/as_deallocate.h"
-# include "asterfort/assert.h"
-# include "asterfort/utmess.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 !
     character(len=*) :: action, mat1, mat2, rigi1
 !--------------------------------------------------------------

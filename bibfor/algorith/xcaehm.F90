@@ -61,10 +61,10 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
-# include "asterfort/modthm.h"
-# include "asterfort/typthm.h"
-# include "asterfort/xgrdhm.h"
-# include "asterfort/xitghm.h"
+#include "asterfort/modthm.h"
+#include "asterfort/typthm.h"
+#include "asterfort/xgrdhm.h"
+#include "asterfort/xitghm.h"
     aster_logical :: axi, perman, vf
     integer :: typvf
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel

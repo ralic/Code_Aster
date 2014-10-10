@@ -22,13 +22,13 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 !
     implicit none
 #include "asterf_types.h"
-# include "asterfort/assert.h"
-# include "asterfort/hmdeca.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterc/r8maem.h"
-# include "asterfort/teattr.h"
-# include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/hmdeca.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterc/r8maem.h"
+#include "asterfort/teattr.h"
+#include "jeveux.h"
     aster_logical :: matsym
     integer :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm
     character(len=16) :: option, nomte

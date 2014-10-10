@@ -27,10 +27,10 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
 !--  IN : CTEMP  : VECTEUR CONTENANT LES TERMES DE LA COMBINAISON LIN.
 !--  IN : NOMMAT : NOM DU CONCEPT RECEVANT LA BASE DU NOYAU
 !--
-# include "jeveux.h"
-# include "asterc/r8prem.h"
-# include "asterfort/assert.h"
-# include "blas/ddot.h"
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "blas/ddot.h"
 !
 !
     integer :: nbnz

@@ -68,12 +68,12 @@ subroutine xcomhm(option, imate, compor, instap, ndim,&
 !
 ! aslint: disable=W1306
 #include "asterf_types.h"
-# include "asterfort/kitdec.h"
-# include "asterfort/nvithm.h"
-# include "asterfort/thmlec.h"
-# include "asterfort/xcalfh.h"
-# include "asterfort/xcalme.h"
-# include "asterfort/xhmsat.h"
+#include "asterfort/kitdec.h"
+#include "asterfort/nvithm.h"
+#include "asterfort/thmlec.h"
+#include "asterfort/xcalfh.h"
+#include "asterfort/xcalme.h"
+#include "asterfort/xhmsat.h"
     aster_logical :: yachai
     integer :: retcom, kpi, npg, vicpr1, vicpr2
     integer :: ndim, dimdef, dimcon, nbvari, imate, yamec, yap1

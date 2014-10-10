@@ -33,19 +33,19 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     implicit none
 !
 #include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/lceqvn.h"
-# include "asterfort/matini.h"
-# include "asterfort/pmathm.h"
-# include "asterc/r8prem.h"
-# include "asterfort/rcvala.h"
-# include "asterfort/reeref.h"
-# include "asterfort/utmess.h"
-# include "asterfort/vecini.h"
-# include "asterfort/xcabhm.h"
-# include "asterfort/xdefhm.h"
-# include "asterfort/xequhm.h"
-# include "asterfort/xlinhm.h"
+#include "jeveux.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/matini.h"
+#include "asterfort/pmathm.h"
+#include "asterc/r8prem.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/reeref.h"
+#include "asterfort/utmess.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcabhm.h"
+#include "asterfort/xdefhm.h"
+#include "asterfort/xequhm.h"
+#include "asterfort/xlinhm.h"
     integer :: dimmat, npg, dimuel
 !     DIMENSION DE LA MATRICE DE RIGIDITE DIMMAT=NDDLS*NNOP
 !    parameter    (dimmat=8*5)

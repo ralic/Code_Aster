@@ -18,16 +18,16 @@ subroutine xfem_pc_sol(matas1, nsolu, solu)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/dismoi.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jelira.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/jedetr.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/mrmult.h"
-# include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mrmult.h"
+#include "asterfort/wkvect.h"
 !
     character(len=19) :: matas1
     integer :: nsolu

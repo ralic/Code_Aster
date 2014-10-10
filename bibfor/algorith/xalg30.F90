@@ -6,18 +6,18 @@ subroutine xalg30(ndim, elrefp, nnop, it, nnose,&
     implicit none
 !
 #include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/detefa.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/vecini.h"
-# include "asterfort/xajpmi.h"
-# include "asterfort/xmilar.h"
-# include "asterfort/xmilfa.h"
-# include "asterfort/xmifis.h"
-# include "asterfort/xstudo.h"
-# include "asterfort/xxmmvd.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/detefa.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xajpmi.h"
+#include "asterfort/xmilar.h"
+#include "asterfort/xmilfa.h"
+#include "asterfort/xmifis.h"
+#include "asterfort/xstudo.h"
+#include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
     integer :: ndim, ndime, nnop, it, nnose, cnset(*), igeom, jlsn
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)

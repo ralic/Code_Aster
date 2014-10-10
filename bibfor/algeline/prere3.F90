@@ -60,7 +60,7 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-# include "asterfort/prere2.h"
+#include "asterfort/prere2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xfem_precond.h"
 !

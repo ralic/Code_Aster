@@ -19,16 +19,16 @@ subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "asterf_types.h"
-# include "jeveux.h"
-# include "asterc/asmpi_comm.h"
-# include "asterc/r8prem.h"
-# include "asterfort/assert.h"
-# include "asterfort/elg_nllspc.h"
-# include "asterfort/infniv.h"
-# include "asterfort/jedetr.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/wkvect.h"
-# include "blas/dgemv.h"
+#include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/elg_nllspc.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
+#include "blas/dgemv.h"
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"

@@ -17,14 +17,14 @@ function xxishm(mailc, mailx, mo)
 ! ======================================================================
 !
     implicit none
-# include "asterf_types.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jelira.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/jenuno.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/jexnum.h"
-# include "jeveux.h" 
+#include "asterf_types.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "jeveux.h" 
     aster_logical :: xxishm
 !
 ! BUT : POST_CHAM_XFEM : LE RESULTAT A POST-TRAITER EST-IL HM?

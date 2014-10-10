@@ -17,13 +17,13 @@ subroutine elg_calcxl(x1, vlag)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-# include "asterf_types.h"
-# include "jeveux.h"
-# include "asterc/asmpi_comm.h"
-# include "asterfort/assert.h"
-# include "asterfort/infniv.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 !----------------------------------------------------------------
 ! Calcul des coefficients de Lagrange pour ELIM_LAGR='OUI'
 !     IN  : Vec X1    (solution sur les dds physiques)

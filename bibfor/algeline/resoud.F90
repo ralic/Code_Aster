@@ -3,13 +3,13 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
                   criter, prepos, istop, iret)
     implicit none
 #include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/dismoi.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/resou2.h"
-# include "asterfort/resou3.h"
-# include "asterfort/uttcpu.h"
+#include "jeveux.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/resou2.h"
+#include "asterfort/resou3.h"
+#include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
 !
     character(len=*) :: matass, matpre, solveu, chcine

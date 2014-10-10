@@ -19,14 +19,14 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/dismoi.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/utmess.h"
-# include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
     character(len=19) :: matas1
     integer :: nsecm
@@ -48,8 +48,8 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
-# include "asterfort/elg_calcx0.h"
-# include "asterfort/elg_allocvr.h"
+#include "asterfort/elg_calcx0.h"
+#include "asterfort/elg_allocvr.h"
 !
 !================================================================
     character(len=1) :: kbid

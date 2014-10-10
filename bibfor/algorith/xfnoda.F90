@@ -20,7 +20,7 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
 ! ======================================================================
     implicit none
 #include "asterf_types.h"
-# include "asterfort/rcvalb.h"
+#include "asterfort/rcvalb.h"
     aster_logical :: fnoevo
     integer :: mecani(5), press1(7), enrmec(3), dimenr, dimcon
     integer :: ndim, imate, yaenrm, adenme

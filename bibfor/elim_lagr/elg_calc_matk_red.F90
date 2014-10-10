@@ -19,18 +19,18 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 #include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/apetsc.h"
-# include "asterfort/asmpi_info.h"
-# include "asterfort/assert.h"
-# include "asterfort/detrsd.h"
-# include "asterfort/elg_calc_matm_red.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jeexin.h"
-# include "asterfort/jelira.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/utmess.h"
+#include "jeveux.h"
+#include "asterfort/apetsc.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/elg_calc_matm_red.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
     character(len=*) :: mat1z, mat2z, solv1z
     character(len=1) :: bas1
     aster_logical :: lqr

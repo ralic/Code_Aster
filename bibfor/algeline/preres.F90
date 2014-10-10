@@ -1,15 +1,15 @@
 subroutine preres(solveu, base, iret, matpre, matass,&
                   npvneg, istop)
     implicit none
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/dismoi.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/prere3.h"
-# include "asterfort/prere2.h"
-# include "asterfort/xfem_ksolv.h"
-# include "asterfort/uttcpu.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/prere3.h"
+#include "asterfort/prere2.h"
+#include "asterfort/xfem_ksolv.h"
+#include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
     integer :: npvneg, istop, iret
     character(len=1) :: base

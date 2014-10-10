@@ -21,9 +21,9 @@ subroutine elg_allocvr(vect1, n1)
 !--------------------------------------------------------------
 ! BUT : allouer un vecteur PETSc réel de longueur n1
 !---------------------------------------------------------------
-# include "asterc/asmpi_comm.h"
-# include "asterfort/assert.h"
-# include "asterfort/utmess.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"

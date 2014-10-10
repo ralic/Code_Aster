@@ -32,14 +32,14 @@ subroutine elg_comptt(c, t, nworkt)
 !----------------------------------------------------!
 !
 #include "asterf_types.h"
-# include "jeveux.h"
-# include "asterc/asmpi_comm.h"
-# include "asterc/r8prem.h"
-# include "asterfort/as_allocate.h"
-# include "asterfort/as_deallocate.h" 
-# include "asterfort/assert.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/wkvect.h"
+#include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h" 
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
 !
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"

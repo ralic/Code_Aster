@@ -27,12 +27,12 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 ! ======================================================================
     implicit none
 #include "asterf_types.h"
-# include "asterfort/reeref.h"
-# include "asterfort/vecini.h"
-# include "asterfort/xcabhm.h"
-# include "asterfort/xfnoda.h"
-# include "asterfort/xlinhm.h"
-# include "jeveux.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcabhm.h"
+#include "asterfort/xfnoda.h"
+#include "asterfort/xlinhm.h"
+#include "jeveux.h"
     aster_logical :: fnoevo, axi
     integer :: nno, npg, imate, dimenr, dimcon, nddls, nddlm
     integer :: dimuel, nmec, np1, ndim, ipoids, ivf, kpi, i, n

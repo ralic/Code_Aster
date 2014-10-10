@@ -32,15 +32,15 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !
     implicit none
 #include "asterf_types.h"
-# include "asterfort/dfdm2d.h"
-# include "asterfort/dfdm3d.h"
-# include "asterfort/elref1.h"
-# include "asterfort/hmdeca.h"
-# include "asterfort/indent.h"
-# include "asterfort/reeref.h"
-# include "asterfort/vecini.h"
-# include "asterfort/xcalf_he.h"
-# include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elref1.h"
+#include "asterfort/hmdeca.h"
+#include "asterfort/indent.h"
+#include "asterfort/reeref.h"
+#include "asterfort/vecini.h"
+#include "asterfort/xcalf_he.h"
+#include "jeveux.h"
     aster_logical :: axi
     integer :: nse, ise, in, ino, nno, j, ndim
     integer :: nnop, nnops, n, nddls, nddlm, ipi, npg

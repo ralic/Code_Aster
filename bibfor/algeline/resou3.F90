@@ -2,21 +2,21 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
                   chsecm, chsolu, base, rsolu, csolu,&
                   criter, prepos, istop, iret)
     implicit none
-# include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/copisd.h"
-# include "asterfort/dismoi.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jedetr.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/resou2.h"
-# include "asterfort/wkvect.h"
-# include "asterfort/xfem_pc.h"
-# include "asterfort/xfem_pc_rhs.h"
-# include "asterfort/xfem_pc_sol.h"
-!# include "asterfort/xfem_precond.h"
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/resou2.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/xfem_pc.h"
+#include "asterfort/xfem_pc_rhs.h"
+#include "asterfort/xfem_pc_sol.h"
+!#include "asterfort/xfem_precond.h"
 !-----------------------------------------------------------------------
 !
     character(len=*) :: matass, matpre, solveu, chcine

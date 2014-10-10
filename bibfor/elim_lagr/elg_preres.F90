@@ -2,18 +2,18 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
                       npvneg, istop)
 !
     implicit none
-# include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/copisd.h"
-# include "asterfort/elg_calc_matk_red.h"
-# include "asterfort/elg_gest_common.h"
-# include "asterfort/gcncon.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jedetr.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/jeveuo.h"
-# include "asterfort/prere1.h"
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/copisd.h"
+#include "asterfort/elg_calc_matk_red.h"
+#include "asterfort/elg_gest_common.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/prere1.h"
 !-----------------------------------------------------------------------
 ! But : faire "preres" si ELIM_MAGR='OUI'
 !-----------------------------------------------------------------------

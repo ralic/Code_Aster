@@ -17,12 +17,12 @@ subroutine elg_calcx0()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-# include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/assert.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterc/asmpi_comm.h"
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterc/asmpi_comm.h"
 !----------------------------------------------------------------
 !
 !     Résolution de x0 = A \ c par la méthode des moindres carrés.

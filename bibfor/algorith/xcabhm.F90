@@ -67,12 +67,12 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! =====================================================================================
 ! =====================================================================================
 #include "asterf_types.h"
-# include "asterfort/dfdm2d.h"
-# include "asterfort/dfdm3d.h"
-# include "asterfort/matini.h"
-# include "asterfort/assert.h"
-# include "asterfort/xcalf_he.h"
-# include "jeveux.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/matini.h"
+#include "asterfort/assert.h"
+#include "asterfort/xcalf_he.h"
+#include "jeveux.h"
     aster_logical :: axi
     integer :: nddls, nddlm, nmec, np1, ndim, nnop, i, n, kk, yamec
     integer :: nnops, nnopm, kpi, dimuel

@@ -3,12 +3,12 @@ subroutine resou2(matass, matpre, solveu, chcine, nsecm,&
                   criter, prepos, istop, iret)
     implicit none
 #include "asterf_types.h"
-# include "jeveux.h"
-# include "asterfort/elg_kellag.h"
-# include "asterfort/elg_resoud.h"
-# include "asterfort/jedema.h"
-# include "asterfort/jemarq.h"
-# include "asterfort/resou1.h"
+#include "jeveux.h"
+#include "asterfort/elg_kellag.h"
+#include "asterfort/elg_resoud.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/resou1.h"
 !-----------------------------------------------------------------------
 !
     character(len=*) :: matass, matpre, solveu, chcine

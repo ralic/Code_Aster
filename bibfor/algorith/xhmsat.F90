@@ -41,19 +41,19 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
 !
 ! aslint: disable=W1306
 #include "asterf_types.h"
-# include "asterfort/appmas.h"
-# include "asterfort/dmdepv.h"
-# include "asterfort/dmwdp1.h"
-# include "asterfort/dspdp1.h"
-# include "asterfort/inithm.h"
-# include "asterfort/netbis.h"
-# include "asterfort/sigmap.h"
-# include "asterfort/dilata.h"
-# include "asterfort/thmrcp.h"
-# include "asterfort/utmess.h"
-# include "asterfort/unsmfi.h"
-# include "asterfort/viporo.h"
-# include "asterfort/virhol.h"
+#include "asterfort/appmas.h"
+#include "asterfort/dmdepv.h"
+#include "asterfort/dmwdp1.h"
+#include "asterfort/dspdp1.h"
+#include "asterfort/inithm.h"
+#include "asterfort/netbis.h"
+#include "asterfort/sigmap.h"
+#include "asterfort/dilata.h"
+#include "asterfort/thmrcp.h"
+#include "asterfort/utmess.h"
+#include "asterfort/unsmfi.h"
+#include "asterfort/viporo.h"
+#include "asterfort/virhol.h"
     integer :: ndim, dimcon, nbvari, imate, yamec
     integer :: adcome, adcp11, vihrho, vicphi
     integer :: addeme, addep1, advihy, advico, retcom
