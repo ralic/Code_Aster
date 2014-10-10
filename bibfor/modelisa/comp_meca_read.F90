@@ -124,7 +124,10 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
         call comp_meca_l(rela_comp, 'ZMAT'       , l_zmat)
         call comp_meca_l(rela_comp, 'UMAT'       , l_umat)
         call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
-        call comp_meca_l(rela_comp, 'MFRONT'     , l_mfront)
+        l_mfront = l_mfront_offi
+        if (.not. l_mfront) then
+            call comp_meca_l(rela_comp, 'MFRONT'     , l_mfront)
+        endif
 !
 ! ----- Get multi-comportment *CRISTAL
 !

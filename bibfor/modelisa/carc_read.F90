@@ -19,6 +19,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 #include "asterc/mfront_get_pointers.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_rkit.h"
+#include "asterfort/get_mfront_libname.h"
+#include "asterfort/get_mfront_function.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
@@ -66,9 +68,9 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max,ipostiter
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
-    aster_logical :: l_kit_thm, l_mfront, l_umat
+    aster_logical :: l_kit_thm, l_mfront, l_mfront_offi, l_umat
     character(len=16) :: texte(3), subr_name, nom_mod_mfront
-    character(len=128) :: libr_name
+    character(len=256) :: libr_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -229,17 +231,26 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
         cpointer_nbvarext = 0
         cpointer_namevarext = 0
         cpointer_fct_ldc = 0
-        call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
+        call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
+        l_mfront = l_mfront_offi
+        if (.not. l_mfront) then
+            call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
+        endif
         if (l_kit_thm) then
             call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
             if (kit_comp(4).eq.'MFRONT') then
                 l_mfront=.true.
-            endif 
+            endif
         endif
         call comp_meca_l(rela_comp, 'UMAT', l_umat)
         if ( l_mfront ) then
-            call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
-            call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+            if (l_mfront_offi) then
+                call get_mfront_libname(libr_name)
+                call get_mfront_function(rela_comp, subr_name)
+            else
+                call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
+                call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+            endif
             if ( .not. present(model) ) then
 ! ------------- CALC_POINT_MAT case
                 ndim = 3
