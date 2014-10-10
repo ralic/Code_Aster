@@ -692,8 +692,14 @@ subroutine op0037()
 !
     else if (typmod .eq. 'C') then
 !
-        call wpnorm(norm, 'OUI', lmat, neq, nbmode,&
-                    zi(lddl), zc(lmod), zr(lvalr), zr(lcoef))
+        if (lparam) then
+            call wpnorm(norm, 'OUI', lmat, neq, nbmode,&
+                        zi(lddl), zc(lmod), zr(lvalr), zr(lcoef))
+        else
+            call wpnorm(norm, 'NON', lmat, neq, nbmode,&
+                        zi(lddl), zc(lmod), zr(lvalr), zr(lcoef))
+        endif
+
         call vpstor(-1, typmod, modeou, nbmode, neq,&
                     zr(1), zc(lmod), nbmode, nbpari, nbparr,&
                     nbpark, nopara, '    ', zi(lvali), zr(lvalr),&
