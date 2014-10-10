@@ -192,6 +192,11 @@ class Base(object):
       """Représentation par défaut"""
       return self.long_repr()
 
+   @property
+   def ldctype(self):
+       """Return the class type"""
+       return self._ldctype
+
    def getPropertiesNames(self):
        """Return the names of the properties"""
        return self.__properties__
@@ -204,6 +209,8 @@ class LoiComportement(Base):
    mc_mater : besoin de regles ENSEMBLE, AU_MOINS_UN, UN_PARMI
    modelisation, deformation, nom_varc, algo_inte, type_matr_tang : listes des
    valeurs acceptees"""
+   _ldctype = 'std'
+
    def __init__(self, nom, num_lc, doc='', **kwargs):
       """Initialisations"""
       self.nom    = nom
@@ -273,6 +280,7 @@ class LoiComportementMFront(LoiComportement):
    symbol_mfront : nom de la fonction dans la bibliothèque MFront
    modelisation, deformation, algo_inte : listes des valeurs acceptees
    """
+   _ldctype = 'mfront'
    __properties__ = tuple(list(LoiComportement.__properties__) + \
                           ['symbol_mfront'])
 
@@ -292,6 +300,8 @@ class LoiComportementMFront(LoiComportement):
          doc=doc,
          **kwargs)
 
+   symbol_mfront = Base.gen_property('symbol_mfront', (str, unicode), "Fonction MFront")
+
    def long_repr(self):
       template = """Loi de comportement : %(nom)s
 '''%(doc)s'''
@@ -306,6 +316,8 @@ class LoiComportementMFront(LoiComportement):
 class KIT(Base):
    """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
    liste de comportements"""
+   _ldctype = 'kit'
+
    def __init__(self, nom, *list_comport):
       """Initialisations"""
       if not type(nom) in (str, unicode):
@@ -330,6 +342,14 @@ class KIT(Base):
    algo_inte      = property(Base.gen_getfunc(intersection, 'algo_inte'))
    type_matr_tang = property(Base.gen_getfunc(intersection, 'type_matr_tang'))
    proprietes     = property(Base.gen_getfunc(intersection, 'proprietes'))
+   symbol_mfront  = property(Base.gen_getfunc(first,        'symbol_mfront'))
+
+   @property
+   def ldctype(self):
+      """Return the class type"""
+      if len(self.list_comport) == 1:
+          return self.list_comport[0].ldctype
+      return self._ldctype
 
 
 class KIT_META(KIT):
@@ -423,7 +443,7 @@ class CataLoiComportement(Singleton):
 
       CALL LCCREE(NBKIT, LKIT, COMPOR)
       ==> comport = catalc.create(*list_kit)"""
-      if self.debug:
+      if True or self.debug:
          print 'catalc.create - args =', list_kit
       nom = self._name()
       list_comport = [self.get(kit) for kit in list_kit]
@@ -473,6 +493,26 @@ class CataLoiComportement(Singleton):
          print 'catalc.get_algo - args =', loi
       comport = self.get(loi)
       return comport.algo_inte
+
+   def get_type(self, loi):
+      """Retourne le type de Comportement (std, mfront ou kit)
+
+      CALL LCTYPE(COMPOR, TYPE)
+      ==> ldctype = catalc.get_type(COMPOR)"""
+      if self.debug:
+         print 'catalc.get_type - args =', loi
+      comport = self.get(loi)
+      return comport.ldctype
+
+   def get_symbol(self, loi):
+      """Retourne le nom de la fonction dans la bibliothèque MFront
+
+      CALL LCSYMB(COMPOR, NAME)
+      ==> name = catalc.get_symbol(COMPOR)"""
+      if self.debug:
+         print 'catalc.get_symbol - args =', loi
+      comport = self.get(loi)
+      return comport.symbol_mfront
 
    def __repr__(self):
       """Représentation du catalogue"""

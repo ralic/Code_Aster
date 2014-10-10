@@ -1,0 +1,41 @@
+subroutine get_mfront_function(rela_comp, name)
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+    implicit none
+    character(len=*), intent(in) :: rela_comp
+    character(len=*), intent(out) :: name
+!
+! Retourne le nom de la fonction associée à la loi de comportement `rela_comp`
+! dans la bibliothèque MFront officielle
+!        in  rela_comp: nom de la relation de comportement
+!       out  name: nom de la fonction à appeler
+!
+#include "asterc/lccree.h"
+#include "asterc/lcsymb.h"
+!
+    character(len=16) :: rela_comp_py
+    character(len=128) :: symbol
+    integer :: nchar
+!
+    name = ' '
+    call lccree(1, rela_comp, rela_comp_py)
+    call lcsymb(rela_comp_py, symbol)
+!
+    name = symbol
+    print *, '#DEBUG: symbol name ', name
+!
+end

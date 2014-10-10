@@ -1,9 +1,11 @@
-subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
+recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
 !
     implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterc/lccree.h"
+#include "asterc/lctype.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 2091 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +47,7 @@ subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: what
+    character(len=16) :: what, rela_comp_py, ldctyp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,10 +69,21 @@ subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
         l_detec = (rela_comp .eq. 'ZMAT')
     else if (what .eq. 'UMAT') then
         l_detec = (rela_comp .eq. 'UMAT')
+    else if (what .eq. 'MFRONT_OFFI') then
+        call lccree(1, rela_comp, rela_comp_py)
+        call lctype(rela_comp_py, ldctyp)
+        l_detec = ldctyp == 'mfront'
+        print *, 'MFRON_OFFI Type LDC ', ldctyp, l_detec
     else if (what .eq. 'MFRONT') then
         l_detec = (rela_comp .eq. 'MFRONT')
+        if (.not. l_detec) then
+            call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_detec)
+        endif
     else if (what .eq. 'EXTE_COMP') then
         l_detec = (rela_comp .eq. 'MFRONT').or.(rela_comp .eq. 'ZMAT').or.(rela_comp .eq. 'UMAT')
+        if (.not. l_detec) then
+            call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_detec)
+        endif
     else if (what .eq. 'PMF') then
         l_detec = (rela_comp .eq. 'MULTIFIBRE')
     else if (what .eq. 'MATR_TGSC') then
@@ -79,7 +92,7 @@ subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
     else if (what .eq. 'CRIT_RUPT') then
         ASSERT(present(post_iter))
         l_detec = post_iter .eq. 'CRIT_RUPT'
-    else 
+    else
         write(6,*) 'What: ',rela_comp,what,whatz
         ASSERT(.false.)
     endif

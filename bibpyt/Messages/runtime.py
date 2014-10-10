@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,22 +15,21 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: josselin.delmas at edf.fr
 
-from cata_comportement import LoiComportement
+cata_msg = {
 
-loi = LoiComportement(
-   nom            = 'MFRONT',
-   doc = """Loi de comportement utilisateur dont l'intégration
-            est réalisée par MFront.""",
-   num_lc         = 58,
-   nb_vari        = 0,
-   nom_vari       = None, # leur nombre est donné sous COMPORTEMENT/NB_VARI
-   mc_mater       = ('UMAT'),
-   modelisation   = ('3D', 'AXIS', 'D_PLAN', 'C_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC','GDEF_LOG','SIMO_MIEHE'),
-   nom_varc       = ('TEMP', 'IRRA', 'CORR', 'HYDR', 'SECH','NEUT1','NEUT2'),
-   algo_inte      = ('SANS_OBJET'),
-   type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-   proprietes     = None,
-)
+1 : _(u"""
+La variable d'environnement %(k1)s n'est pas définie.
+"""),
+
+2 : _(u"""
+Le chemin d'accès aux bibliothèques est trop long. Il doit être inférieur
+à %(i1)d caractères. Il est défini par la variable d'environnement '%(k1)s'.
+
+Conseil :
+    Installer Code_Aster dans un chemin plus accessible, ou bien, créer
+    un lien symbolique pour réduire la longueur du chemin.
+"""),
+
+}

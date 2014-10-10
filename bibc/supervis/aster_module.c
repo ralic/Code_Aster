@@ -2317,7 +2317,6 @@ void DEFPSS(LCCREE, lccree, _IN INTEGER *nbkit,
    Py_XDECREF(catalc);
 }
 
-/* ------------------------------------------------------------------ */
 void DEFSS(LCALGO, lcalgo, _IN char *compor, STRING_SIZE lcompor,
                            _OUT char *algo, STRING_SIZE lalgo
                             )
@@ -2343,7 +2342,6 @@ void DEFSS(LCALGO, lcalgo, _IN char *compor, STRING_SIZE lcompor,
    Py_XDECREF(catalc);
 }
 
-/* ------------------------------------------------------------------ */
 void DEFSPP(LCINFO, lcinfo, _IN char *compor, STRING_SIZE lcompor,
                             _OUT INTEGER *numlc,
                             _OUT INTEGER *nbvari)
@@ -2370,7 +2368,6 @@ void DEFSPP(LCINFO, lcinfo, _IN char *compor, STRING_SIZE lcompor,
    Py_XDECREF(catalc);
 }
 
-/* ------------------------------------------------------------------ */
 void DEFSPS(LCVARI, lcvari, _IN char *compor, STRING_SIZE lcompor,
                             _IN INTEGER *nbvari,
                             _OUT char *nomvar, STRING_SIZE lnomvar)
@@ -2396,7 +2393,6 @@ void DEFSPS(LCVARI, lcvari, _IN char *compor, STRING_SIZE lcompor,
    Py_XDECREF(catalc);
 }
 
-/* ------------------------------------------------------------------ */
 void DEFSSSP(LCTEST, lctest, _IN char *compor, STRING_SIZE lcompor,
                              _IN char *prop, STRING_SIZE lprop,
                              _IN char *valeur, STRING_SIZE lvaleur,
@@ -2417,6 +2413,53 @@ void DEFSSSP(LCTEST, lctest, _IN char *compor, STRING_SIZE lcompor,
    }
 
    *iret = (INTEGER)PyInt_AsLong(res);
+
+   Py_XDECREF(res);
+   Py_XDECREF(catalc);
+}
+
+void DEFSS(LCTYPE, lctype, _IN char *compor, STRING_SIZE lcompor,
+                          _OUT char *typ, STRING_SIZE ltyp)
+{
+/*
+   Retourne le type de comportement
+         CALL LCTYPE(COMPOR, TYPE)
+         ==> ldctype = catalc.get_type(COMPOR)
+*/
+   PyObject *catalc, *res;
+   char *styp;
+
+   catalc = GetJdcAttr("catalc");
+   res = PyObject_CallMethod(catalc, "get_type", "s#", compor, lcompor);
+   if (res == NULL) {
+      MYABORT("Echec lors du test d'une propriete du comportement (lctype/get_type) !");
+   }
+
+   styp = PyString_AsString(res);
+   CopyCStrToFStr(typ, styp, ltyp);
+
+   Py_XDECREF(res);
+   Py_XDECREF(catalc);
+}
+
+void DEFSS(LCSYMB, lcsymb, _IN char *compor, STRING_SIZE lcompor,
+                          _OUT char *name, STRING_SIZE lname)
+{
+/*
+   Retourne le nom de la fonction dans la bibliothèque MFront
+
+      CALL LCFUNC(COMPOR, NAME)
+      ==> name = catalc.get_symbol(COMPOR)
+*/
+   PyObject *catalc, *res;
+
+   catalc = GetJdcAttr("catalc");
+   res = PyObject_CallMethod(catalc, "get_symbol", "s#", compor, lcompor);
+   if (res == NULL) {
+      MYABORT("Echec lors de la recuperation du nom de la fonction " \
+              "d'integration dans MFront (lcsymb/get_symbol) !");
+   }
+   convertxt(1, res, name, lname);
 
    Py_XDECREF(res);
    Py_XDECREF(catalc);
