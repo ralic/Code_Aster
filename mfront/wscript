@@ -3,6 +3,7 @@
 import os
 import os.path as osp
 from glob import glob
+from functools import partial
 
 from waflib import Configure, Context, TaskGen, Task, Utils
 
@@ -13,10 +14,11 @@ def configure(self):
     self.find_program('mfront')
     self.find_program('tfel-config')
     self.check_cfg(path='tfel-config',
-                   args='--cppflags --includes --oflags --libs',
+                   args='--cppflags --includes --oflags --libs --material --utilities',
                    package='', uselib_store='MFRONT', mandatory=True)
     self.env.append_value('DEFINES_MFRONT',
         'ASTER_ARCH=64' if 'TFEL_ARCH64' else 'ASTER_ARCH=32')
+    self.check_mfront_libs()
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob
@@ -37,6 +39,13 @@ def build(self):
     )
 
 ###############################################################################
+@Configure.conf
+def check_mfront_libs(self):
+    check_mfront = partial(self.check_cc, mandatory=True, uselib_store='MFRONT', use='MFRONT')
+    check_lib = lambda lib: check_mfront(lib=lib)
+    libs = ['AsterInterface', ]
+    map(check_lib, Utils.to_list(libs))
+
 @TaskGen.extension('.mfront')
 def process_mfront(self, node):
     tsk = self.create_task('mfront2cxx', node)
