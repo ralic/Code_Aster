@@ -36,6 +36,5 @@ subroutine get_mfront_function(rela_comp, name)
     call lcsymb(rela_comp_py, symbol)
 !
     name = symbol
-    print *, '#DEBUG: symbol name ', name
 !
 end

@@ -444,7 +444,7 @@ class CataLoiComportement(Singleton):
 
       CALL LCCREE(NBKIT, LKIT, COMPOR)
       ==> comport = catalc.create(*list_kit)"""
-      if True or self.debug:
+      if self.debug:
          print 'catalc.create - args =', list_kit
       nom = self._name()
       list_comport = [self.get(kit) for kit in list_kit]

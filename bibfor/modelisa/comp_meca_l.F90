@@ -73,7 +73,6 @@ recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter
         call lccree(1, rela_comp, rela_comp_py)
         call lctype(rela_comp_py, ldctyp)
         l_detec = ldctyp == 'mfront'
-        print *, 'MFRON_OFFI Type LDC ', ldctyp, l_detec
     else if (what .eq. 'MFRONT') then
         l_detec = (rela_comp .eq. 'MFRONT')
         if (.not. l_detec) then

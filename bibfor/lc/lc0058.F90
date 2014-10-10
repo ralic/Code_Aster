@@ -127,7 +127,6 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
     call infniv(ifm, niv)
 
 !   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)
-    print *, '#DEBUG: Nom relation', compor(1)
     call get_mfront_mater_value(fami, kpg, ksp, imate, ifm, &
                                 niv, idbg, nprops, props)
 

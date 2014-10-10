@@ -39,6 +39,5 @@ subroutine get_mfront_libname(libname)
         call utmess('F', 'RUNTIME_1', sk='ASTER_LIBDIR')
     endif
     libname = dir(1:lxlgut(dir))//'/libAsterBehaviour.so'
-    print *, '#DEBUG: libname ', libname
 !
 end
