@@ -69,8 +69,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
     aster_logical :: l_kit_thm, l_mfront, l_mfront_offi, l_umat
-    character(len=16) :: texte(3), subr_name, nom_mod_mfront
-    character(len=256) :: libr_name
+    character(len=16) :: texte(3), nom_mod_mfront
+    character(len=256) :: libr_name, subr_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
