@@ -238,8 +238,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
         endif
         if (l_kit_thm) then
             call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
-            if (kit_comp(4).eq.'MFRONT') then
-                l_mfront=.true.
+            if (.not. l_mfront) then
+                call comp_meca_l(kit_comp(4), 'MFRONT', l_mfront)
             endif
         endif
         call comp_meca_l(rela_comp, 'UMAT', l_umat)

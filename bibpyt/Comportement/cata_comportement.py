@@ -347,8 +347,9 @@ class KIT(Base):
    @property
    def ldctype(self):
       """Return the class type"""
-      if len(self.list_comport) == 1:
-          return self.list_comport[0].ldctype
+      typs = [i.ldctype for i in self.list_comport]
+      if 'mfront' in typs:
+          return 'mfront'
       return self._ldctype
 
 
