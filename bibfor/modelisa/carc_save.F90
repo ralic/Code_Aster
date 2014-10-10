@@ -12,8 +12,8 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
-#include "asterfort/get_mfront_libname.h"
-#include "asterfort/get_mfront_function.h"
+#include "asterfort/mfront_get_libname.h"
+#include "asterfort/mfront_get_function.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
@@ -152,8 +152,8 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
         endif
         if (l_mfront) then
             if (l_mfront_offi) then
-                call get_mfront_libname(libr_name)
-                call get_mfront_function(rela_comp, subr_name)
+                call mfront_get_libname(libr_name)
+                call mfront_get_function(rela_comp, subr_name)
             else
                 call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
                 call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)

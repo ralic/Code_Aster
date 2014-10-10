@@ -1,4 +1,4 @@
-subroutine get_mfront_function(rela_comp, name)
+subroutine mfront_get_function(rela_comp, name)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

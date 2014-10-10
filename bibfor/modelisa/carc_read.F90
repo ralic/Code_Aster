@@ -19,8 +19,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 #include "asterc/mfront_get_pointers.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_rkit.h"
-#include "asterfort/get_mfront_libname.h"
-#include "asterfort/get_mfront_function.h"
+#include "asterfort/mfront_get_libname.h"
+#include "asterfort/mfront_get_function.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
@@ -245,8 +245,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
         call comp_meca_l(rela_comp, 'UMAT', l_umat)
         if ( l_mfront ) then
             if (l_mfront_offi) then
-                call get_mfront_libname(libr_name)
-                call get_mfront_function(rela_comp, subr_name)
+                call mfront_get_libname(libr_name)
+                call mfront_get_function(rela_comp, subr_name)
             else
                 call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
                 call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)

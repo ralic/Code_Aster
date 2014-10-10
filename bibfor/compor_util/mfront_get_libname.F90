@@ -1,4 +1,4 @@
-subroutine get_mfront_libname(libname)
+subroutine mfront_get_libname(libname)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

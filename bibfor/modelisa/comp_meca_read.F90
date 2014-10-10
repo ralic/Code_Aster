@@ -16,8 +16,8 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 #include "asterfort/comp_meca_mod.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_meca_l.h"
-#include "asterfort/get_mfront_libname.h"
-#include "asterfort/get_mfront_function.h"
+#include "asterfort/mfront_get_libname.h"
+#include "asterfort/mfront_get_function.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -158,8 +158,8 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
         endif
         if (l_mfront) then
             if (l_mfront_offi) then
-                call get_mfront_libname(libr_name)
-                call get_mfront_function(rela_comp, subr_name)
+                call mfront_get_libname(libr_name)
+                call mfront_get_function(rela_comp, subr_name)
             else
                 call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
                 call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)

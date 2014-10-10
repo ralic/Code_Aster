@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine get_mfront_libname(libname)
+    subroutine mfront_get_libname(libname)
         character(len=*), intent(out) :: libname
-    end subroutine get_mfront_libname
+    end subroutine mfront_get_libname
 end interface

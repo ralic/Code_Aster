@@ -1,4 +1,4 @@
-subroutine get_mfront_mater_value(fami, kpg, ksp, imate, ifm, &
+subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
                                   niv, idbg, nprops, props)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
