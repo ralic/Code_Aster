@@ -121,32 +121,41 @@ char* test_mfront_symbol(const char* libname, char* name1, char* name2)
 }
 
 /**
- * \brief Return the two function names with and without modelization.
- *        Both name1 and name2 must be freed by the caller.
+ * \brief Return the symbol name of the MFront lib after testing if it should
+ *        contain the modelization or not.
+ * @param libname   Name of library
+ * @param symbol    Name of the main function (ex. asterbehaviourname)
+ * @param model     Name of the modelization
+ * @param basename  Basename/suffix of the symbol to find
+ * @param name      Pointer on the string containing the found symbol name,
+ *                  it must be freed by the caller.
  */
-void mfront_names(
-         _IN char* nomsub, STRING_SIZE lnomsub,
-         _IN char* nommod, STRING_SIZE lnommod,
-         _IN char* basename,
-        _OUT char** name1,
-        _OUT char** name2)
+void mfront_name(
+         _IN char* libname, _IN char* symbol, _IN char* model,
+         _IN char* basename, _OUT char** name)
 {
-    char *sym, *mod;
+    char *name1, *name2;
 
-    sym = MakeCStrFromFStr(nomsub, lnomsub);
-    mod = MakeCStrFromFStr(nommod, lnommod);
+    name1 = (char *)malloc(strlen(symbol) + strlen(model) + strlen(basename) + 1);
+    strcpy(name1, symbol);
+    strcat(name1, model);
+    strcat(name1, basename);
 
-    *name1 = (char *)malloc(strlen(sym) + strlen(mod) + strlen(basename) + 1);
-    strcpy(*name1, sym);
-    strcat(*name1, mod);
-    strcat(*name1, basename);
+    name2 = (char *)malloc(strlen(symbol) + strlen(basename) + 1);
+    strcpy(name2, symbol);
+    strcat(name2, basename);
+    DEBUG_DLL_VV("#DEBUG: name1: '%s' name2: '%s'\n", name1, name2);
 
-    *name2 = (char *) malloc(strlen(sym) + strlen(basename) + 1);
-    strcpy(*name2, sym);
-    strcat(*name2, basename);
-    DEBUG_DLL_VV("#DEBUG: name1: '%s' name2: '%s'\n", *name1, *name2);
-    FreeStr(sym);
-    FreeStr(mod);
+    *name = test_mfront_symbol(libname, name1, name2);
+    if ( *name == NULL ) {
+        DEBUG_DLL_VV(" libname = >%s<%s\n", libname, " ")
+        DEBUG_DLL_VV(" symbol1 = >%s<, symbol2 = >%s<\n", name1, name2)
+    }
+    if ( strcmp(*name, name1) == 0 ) {
+        free(name2);
+    } else if ( strcmp(*name, name2) == 0 ) {
+        free(name1);
+    }
 }
 
 void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_parameter,
@@ -158,31 +167,26 @@ void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_param
     /* MFRONT Wrapper : wrapper to the MFRONT set function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    char *libname, *symb_set_param, *symb_set_param_m, *nom_param, *tmp = NULL;
-    char* set_param = "_setParameter";
+    char *libname, *symbol, *model, *symbname=NULL, *nom_param;
     FUNC_MFRONT_SET_DOUBLE(f_mfront) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
     nom_param = MakeCStrFromFStr(nomparam, lnomparam);
 
-    mfront_names(nomsub, lnomsub, nommod, lnommod,
-                 "_setParameter",
-                 &symb_set_param_m, &symb_set_param);
+    mfront_name(libname, symbol, model, "_setParameter", &symbname);
+    if ( symbname == NULL ) return;
 
-    tmp = test_mfront_symbol(libname, symb_set_param_m, symb_set_param);
-    if ( tmp == NULL ) return;
-
-        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", tmp, (int)strlen(tmp))
-
-    f_mfront = (FUNC_MFRONT_SET_DOUBLE())libsymb_get_symbol(DLL_DICT, libname, tmp);
+    f_mfront = (FUNC_MFRONT_SET_DOUBLE())libsymb_get_symbol(DLL_DICT, libname, symbname);
     CALLMFRONTSETDOUBLE(f_mfront, nom_param, *value);
     FreeStr(libname);
-    FreeStr(symb_set_param);
-    FreeStr(symb_set_param_m);
+    FreeStr(symbol);
+    FreeStr(model);
     FreeStr(nom_param);
+    FreeStr(symbname);
 #else
     printf("Not available under Windows.\n");
     abort();
@@ -198,31 +202,26 @@ void DEFMFRONTSETINTEGERWRAP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_pa
     /* MFRONT Wrapper : wrapper to the MFRONT set function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    char *libname, *symb_set_param_m, *symb_set_param, *nom_param, *tmp = NULL;
-    char* set_param = "_setUnsignedShortParameter";
+    char *libname, *symbol, *model, *symbname=NULL, *nom_param;
     FUNC_MFRONT_SET_INTEGER(f_mfront) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
     nom_param = MakeCStrFromFStr(nomparam, lnomparam);
 
-    mfront_names(nomsub, lnomsub, nommod, lnommod,
-                 "_setUnsignedShortParameter",
-                 &symb_set_param_m, &symb_set_param);
+    mfront_name(libname, symbol, model, "_setUnsignedShortParameter", &symbname);
+    if ( symbname == NULL ) return;
 
-    tmp = test_mfront_symbol(libname, symb_set_param_m, symb_set_param);
-    if ( tmp == NULL ) return;
-
-        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", tmp, (int)strlen(tmp))
-
-    f_mfront = (FUNC_MFRONT_SET_INTEGER())libsymb_get_symbol(DLL_DICT, libname, tmp);
+    f_mfront = (FUNC_MFRONT_SET_INTEGER())libsymb_get_symbol(DLL_DICT, libname, symbname);
     CALLMFRONTSETINTEGER(f_mfront, nom_param, (unsigned short)(*value));
     FreeStr(libname);
-    FreeStr(symb_set_param);
-    FreeStr(symb_set_param_m);
+    FreeStr(symbol);
+    FreeStr(model);
     FreeStr(nom_param);
+    FreeStr(symbname);
 #else
     printf("Not available under Windows.\n");
     abort();
@@ -265,10 +264,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
 #ifdef _POSIX
     /* MFRONT Wrapper
     */
-    char *libname, *symbol, *symb_txt_get_ext_var, *symb_txt_nb_ext_var, *tmp = NULL;
-    char *symb_txt_get_ext_var_m, *symb_txt_nb_ext_var_m;
-    char* txt_get_ext_var = "_ExternalStateVariables";
-    char* txt_nb_ext_var = "_nExternalStateVariables";
+    char *libname, *symbol, *model, *symbname=NULL;
     char *valk;
     int retour = 0;
     INTEGER ibid=0, n0=0, nk=0;
@@ -278,6 +274,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
     symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
 
     if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
         retour = load_mfront_lib(libname, symbol);
@@ -294,46 +291,32 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     }
     *pfcmfr = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbol);
 
-    mfront_names(nomsub, lnomsub, nommod, lnommod,
-                 "_ExternalStateVariables",
-                 &symb_txt_get_ext_var_m, &symb_txt_get_ext_var);
-    mfront_names(nomsub, lnomsub, nommod, lnommod,
-                 "_nExternalStateVariables",
-                 &symb_txt_nb_ext_var_m, &symb_txt_nb_ext_var);
-
-    tmp = test_mfront_symbol(libname, symb_txt_get_ext_var_m, symb_txt_get_ext_var);
-    if ( tmp == NULL )
+    mfront_name(libname, symbol, model, "_ExternalStateVariables", &symbname);
+    if ( symbname == NULL )
     {
         nk = 3;
         valk = MakeTabFStr(nk, VALK_SIZE);
         SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
         SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-        SetTabFStr(valk, 2, (char *)symb_txt_nb_ext_var_m, VALK_SIZE);
+        SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
         CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
         FreeStr(valk);  // uncallable
     }
 
-        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", tmp, (int)strlen(tmp))
+//     char** test_char = libsymb_get_symbol(DLL_DICT, libname, symbname);
+    *pliesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
-//     char** test_char = libsymb_get_symbol(DLL_DICT, libname, tmp);
-    *pliesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, tmp);
-
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", symbol, (int)strlen(symb_txt_nb_ext_var))
-
-    tmp = test_mfront_symbol(libname, symb_txt_nb_ext_var_m, symb_txt_nb_ext_var);
-//     int* test_int = libsymb_get_symbol(DLL_DICT, libname, tmp);
-    *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, tmp);
+    mfront_name(libname, symbol, model, "_nExternalStateVariables", &symbname);
+//     int* test_int = libsymb_get_symbol(DLL_DICT, libname, symbname);
+    *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     *pgetmprop = (INTEGER)0;
     *pgetnbprop = (INTEGER)0;
 
     FreeStr(libname);
+    FreeStr(model);
     FreeStr(symbol);
-    FreeStr(symb_txt_get_ext_var_m);
-    FreeStr(symb_txt_nb_ext_var_m);
-    FreeStr(symb_txt_get_ext_var);
-    FreeStr(symb_txt_nb_ext_var);
+    FreeStr(symbname);
 #else
     printf("Not available under Windows.\n");
     abort();
@@ -348,10 +331,7 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
 #ifdef _POSIX
     /* MFRONT Wrapper
     */
-    char *libname, *symb_txt_int_var_type, *symb_nb_int_var;
-    char *symb_txt_int_var_type_m, *symb_nb_int_var_m, *tmp = NULL;
-    char* txt_int_var_type = "_InternalStateVariablesTypes";
-    char* txt_nb_int_var = "_nInternalStateVariables";
+    char *libname, *symbol, *model, *symbname=NULL;
     char *valk;
     INTEGER ibid=0, n0=0, nk=0;
     DOUBLE rbid=0.;
@@ -359,37 +339,25 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     DLL_DICT = get_dll_register_dict();
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
 
-    mfront_names(nomsub, lnomsub, nommod, lnommod,
-                 "_InternalStateVariablesTypes",
-                 &symb_txt_int_var_type_m, &symb_txt_int_var_type);
-
-    mfront_names(nomsub, lnomsub, nommod, lnommod,
-                 "_nInternalStateVariables",
-                 &symb_nb_int_var_m, &symb_nb_int_var);
-
-    tmp = test_mfront_symbol(libname, symb_txt_int_var_type_m, symb_txt_int_var_type);
-    if ( tmp == NULL )
+    mfront_name(libname, symbol, model, "_InternalStateVariablesTypes", &symbname);
+    if ( symbname == NULL )
     {
         nk = 3;
         valk = MakeTabFStr(nk, VALK_SIZE);
         SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
         SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-        SetTabFStr(valk, 2, (char *)symb_txt_int_var_type_m, VALK_SIZE);
+        SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
         CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
         FreeStr(valk);  // uncallable
     }
 
-        DEBUG_DLL_VV(" libname = >%s<, len = %d\n", libname, (int)strlen(libname))
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", tmp, (int)strlen(tmp))
+    int* int_var = (int*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
-    int* int_var = (int*)libsymb_get_symbol(DLL_DICT, libname, tmp);
-
-    tmp = test_mfront_symbol(libname, symb_nb_int_var_m, symb_nb_int_var);
-
-        DEBUG_DLL_VV("  symbol = >%s<, len = %d\n", tmp, (int)strlen(tmp))
-
-    unsigned short* nb_int_var = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, tmp);
+    mfront_name(libname, symbol, model, "_nInternalStateVariables", &symbname);
+    unsigned short* nb_int_var = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     *nbvari = 0;
     unsigned short i;
@@ -425,10 +393,9 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     }
 
     FreeStr(libname);
-    FreeStr(symb_txt_int_var_type);
-    FreeStr(symb_nb_int_var);
-    FreeStr(symb_txt_int_var_type_m);
-    FreeStr(symb_nb_int_var_m);
+    FreeStr(symbol);
+    FreeStr(model);
+    FreeStr(symbname);
 #else
     printf("Not available under Windows.\n");
     abort();
