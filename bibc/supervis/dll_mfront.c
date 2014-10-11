@@ -120,6 +120,35 @@ char* test_mfront_symbol(const char* libname, char* name1, char* name2)
     return NULL;
 }
 
+/**
+ * \brief Return the two function names with and without modelization.
+ *        Both name1 and name2 must be freed by the caller.
+ */
+void mfront_names(
+         _IN char* nomsub, STRING_SIZE lnomsub,
+         _IN char* nommod, STRING_SIZE lnommod,
+         _IN char* basename,
+        _OUT char** name1,
+        _OUT char** name2)
+{
+    char *sym, *mod;
+
+    sym = MakeCStrFromFStr(nomsub, lnomsub);
+    mod = MakeCStrFromFStr(nommod, lnommod);
+
+    *name1 = (char *)malloc(strlen(sym) + strlen(mod) + strlen(basename) + 1);
+    strcpy(*name1, sym);
+    strcat(*name1, mod);
+    strcat(*name1, basename);
+
+    *name2 = (char *) malloc(strlen(sym) + strlen(basename) + 1);
+    strcpy(*name2, sym);
+    strcat(*name2, basename);
+    DEBUG_DLL_VV("#DEBUG: name1: '%s' name2: '%s'\n", *name1, *name2);
+    FreeStr(sym);
+    FreeStr(mod);
+}
+
 void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_parameter,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
@@ -129,25 +158,18 @@ void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_param
     /* MFRONT Wrapper : wrapper to the MFRONT set function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    char *libname, *symbol, *symb_set_param, *symb_set_param_m, *nom_param, *modelis, *tmp = NULL;
+    char *libname, *symb_set_param, *symb_set_param_m, *nom_param, *tmp = NULL;
     char* set_param = "_setParameter";
     FUNC_MFRONT_SET_DOUBLE(f_mfront) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
-    symbol = MakeCStrFromFStr(nomsub, lnomsub);
-    modelis = MakeCStrFromFStr(nommod, lnommod);
     nom_param = MakeCStrFromFStr(nomparam, lnomparam);
 
-    symb_set_param_m = (char *) malloc( strlen(symbol) + strlen(modelis) + strlen(set_param) + 1 );
-    strcpy(symb_set_param_m, symbol);
-    strcat(symb_set_param_m, modelis);
-    strcat(symb_set_param_m, set_param);
-
-    symb_set_param = (char *) malloc( strlen(symbol) + strlen(set_param) + 1 );
-    strcpy(symb_set_param, symbol);
-    strcat(symb_set_param, set_param);
+    mfront_names(nomsub, lnomsub, nommod, lnommod,
+                 "_setParameter",
+                 &symb_set_param_m, &symb_set_param);
 
     tmp = test_mfront_symbol(libname, symb_set_param_m, symb_set_param);
     if ( tmp == NULL ) return;
@@ -158,8 +180,6 @@ void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_param
     f_mfront = (FUNC_MFRONT_SET_DOUBLE())libsymb_get_symbol(DLL_DICT, libname, tmp);
     CALLMFRONTSETDOUBLE(f_mfront, nom_param, *value);
     FreeStr(libname);
-    FreeStr(symbol);
-    FreeStr(modelis);
     FreeStr(symb_set_param);
     FreeStr(symb_set_param_m);
     FreeStr(nom_param);
@@ -178,25 +198,18 @@ void DEFMFRONTSETINTEGERWRAP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_pa
     /* MFRONT Wrapper : wrapper to the MFRONT set function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    char *libname, *symbol, *symb_set_param_m, *symb_set_param, *nom_param, *modelis, *tmp = NULL;
+    char *libname, *symb_set_param_m, *symb_set_param, *nom_param, *tmp = NULL;
     char* set_param = "_setUnsignedShortParameter";
     FUNC_MFRONT_SET_INTEGER(f_mfront) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
-    symbol = MakeCStrFromFStr(nomsub, lnomsub);
-    modelis = MakeCStrFromFStr(nommod, lnommod);
     nom_param = MakeCStrFromFStr(nomparam, lnomparam);
 
-    symb_set_param_m = (char *) malloc( strlen(symbol) + strlen(modelis) + strlen(set_param) + 1 );
-    strcpy(symb_set_param_m, symbol);
-    strcat(symb_set_param_m, modelis);
-    strcat(symb_set_param_m, set_param);
-
-    symb_set_param = (char *) malloc( strlen(symbol) + strlen(set_param) + 1 );
-    strcpy(symb_set_param, symbol);
-    strcat(symb_set_param, set_param);
+    mfront_names(nomsub, lnomsub, nommod, lnommod,
+                 "_setUnsignedShortParameter",
+                 &symb_set_param_m, &symb_set_param);
 
     tmp = test_mfront_symbol(libname, symb_set_param_m, symb_set_param);
     if ( tmp == NULL ) return;
@@ -207,8 +220,6 @@ void DEFMFRONTSETINTEGERWRAP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_pa
     f_mfront = (FUNC_MFRONT_SET_INTEGER())libsymb_get_symbol(DLL_DICT, libname, tmp);
     CALLMFRONTSETINTEGER(f_mfront, nom_param, (unsigned short)(*value));
     FreeStr(libname);
-    FreeStr(symbol);
-    FreeStr(modelis);
     FreeStr(symb_set_param);
     FreeStr(symb_set_param_m);
     FreeStr(nom_param);
@@ -244,16 +255,17 @@ void DEFMFRONTGETEXTSTVARWRAP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
 #endif
 }
 
-void DEFMFRONTGETFCTEXTSTVAR(MFRONT_GET_POINTERS,
-                             mfront_get_pointers,
+void DEFSSSPPPPP(MFRONT_GET_POINTERS,
+                 mfront_get_pointers,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
-    INTEGER* pliesv, INTEGER* pnbesv, INTEGER* pfcmfr)
+    INTEGER* pliesv, INTEGER* pnbesv, INTEGER* pfcmfr,
+    INTEGER* pgetmprop, INTEGER* pgetnbprop)
 {
 #ifdef _POSIX
     /* MFRONT Wrapper
     */
-    char *libname, *symbol, *modelis, *symb_txt_get_ext_var, *symb_txt_nb_ext_var, *tmp = NULL;
+    char *libname, *symbol, *symb_txt_get_ext_var, *symb_txt_nb_ext_var, *tmp = NULL;
     char *symb_txt_get_ext_var_m, *symb_txt_nb_ext_var_m;
     char* txt_get_ext_var = "_ExternalStateVariables";
     char* txt_nb_ext_var = "_nExternalStateVariables";
@@ -266,7 +278,6 @@ void DEFMFRONTGETFCTEXTSTVAR(MFRONT_GET_POINTERS,
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
     symbol = MakeCStrFromFStr(nomsub, lnomsub);
-    modelis = MakeCStrFromFStr(nommod, lnommod);
 
     if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
         retour = load_mfront_lib(libname, symbol);
@@ -283,23 +294,12 @@ void DEFMFRONTGETFCTEXTSTVAR(MFRONT_GET_POINTERS,
     }
     *pfcmfr = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbol);
 
-    symb_txt_get_ext_var_m = (char *) malloc( strlen(symbol) + strlen(modelis) \
-                                              + strlen(txt_get_ext_var) + 1 );
-    strcpy(symb_txt_get_ext_var_m, symbol);
-    strcat(symb_txt_get_ext_var_m, modelis);
-    strcat(symb_txt_get_ext_var_m, txt_get_ext_var);
-    symb_txt_nb_ext_var_m = (char *) malloc( strlen(symbol) + strlen(modelis) \
-                                             + strlen(txt_nb_ext_var) + 1 );
-    strcpy(symb_txt_nb_ext_var_m, symbol);
-    strcat(symb_txt_nb_ext_var_m, modelis);
-    strcat(symb_txt_nb_ext_var_m, txt_nb_ext_var);
-
-    symb_txt_get_ext_var = (char *) malloc( strlen(symbol) + strlen(txt_get_ext_var) + 1 );
-    strcpy(symb_txt_get_ext_var, symbol);
-    strcat(symb_txt_get_ext_var, txt_get_ext_var);
-    symb_txt_nb_ext_var = (char *) malloc( strlen(symbol) + strlen(txt_nb_ext_var) + 1 );
-    strcpy(symb_txt_nb_ext_var, symbol);
-    strcat(symb_txt_nb_ext_var, txt_nb_ext_var);
+    mfront_names(nomsub, lnomsub, nommod, lnommod,
+                 "_ExternalStateVariables",
+                 &symb_txt_get_ext_var_m, &symb_txt_get_ext_var);
+    mfront_names(nomsub, lnomsub, nommod, lnommod,
+                 "_nExternalStateVariables",
+                 &symb_txt_nb_ext_var_m, &symb_txt_nb_ext_var);
 
     tmp = test_mfront_symbol(libname, symb_txt_get_ext_var_m, symb_txt_get_ext_var);
     if ( tmp == NULL )
@@ -325,9 +325,11 @@ void DEFMFRONTGETFCTEXTSTVAR(MFRONT_GET_POINTERS,
 //     int* test_int = libsymb_get_symbol(DLL_DICT, libname, tmp);
     *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, tmp);
 
+    *pgetmprop = (INTEGER)0;
+    *pgetnbprop = (INTEGER)0;
+
     FreeStr(libname);
     FreeStr(symbol);
-    FreeStr(modelis);
     FreeStr(symb_txt_get_ext_var_m);
     FreeStr(symb_txt_nb_ext_var_m);
     FreeStr(symb_txt_get_ext_var);
@@ -346,7 +348,7 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
 #ifdef _POSIX
     /* MFRONT Wrapper
     */
-    char *libname, *symbol, *modelis, *symb_txt_int_var_type, *symb_nb_int_var;
+    char *libname, *symb_txt_int_var_type, *symb_nb_int_var;
     char *symb_txt_int_var_type_m, *symb_nb_int_var_m, *tmp = NULL;
     char* txt_int_var_type = "_InternalStateVariablesTypes";
     char* txt_nb_int_var = "_nInternalStateVariables";
@@ -357,26 +359,14 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     DLL_DICT = get_dll_register_dict();
 
     libname = MakeCStrFromFStr(nomlib, lnomlib);
-    symbol = MakeCStrFromFStr(nomsub, lnomsub);
-    modelis = MakeCStrFromFStr(nommod, lnommod);
 
-    symb_txt_int_var_type_m = (char *) malloc( strlen(symbol) + strlen(modelis) \
-                                               + strlen(txt_int_var_type) + 1 );
-    strcpy(symb_txt_int_var_type_m, symbol);
-    strcat(symb_txt_int_var_type_m, modelis);
-    strcat(symb_txt_int_var_type_m, txt_int_var_type);
-    symb_nb_int_var_m = (char *) malloc( strlen(symbol) + strlen(modelis) \
-                                         + strlen(txt_nb_int_var) + 1 );
-    strcpy(symb_nb_int_var_m, symbol);
-    strcat(symb_nb_int_var_m, modelis);
-    strcat(symb_nb_int_var_m, txt_nb_int_var);
+    mfront_names(nomsub, lnomsub, nommod, lnommod,
+                 "_InternalStateVariablesTypes",
+                 &symb_txt_int_var_type_m, &symb_txt_int_var_type);
 
-    symb_txt_int_var_type = (char *) malloc( strlen(symbol) + strlen(txt_int_var_type) + 1 );
-    strcpy(symb_txt_int_var_type, symbol);
-    strcat(symb_txt_int_var_type, txt_int_var_type);
-    symb_nb_int_var = (char *) malloc( strlen(symbol) + strlen(txt_nb_int_var) + 1 );
-    strcpy(symb_nb_int_var, symbol);
-    strcat(symb_nb_int_var, txt_nb_int_var);
+    mfront_names(nomsub, lnomsub, nommod, lnommod,
+                 "_nInternalStateVariables",
+                 &symb_nb_int_var_m, &symb_nb_int_var);
 
     tmp = test_mfront_symbol(libname, symb_txt_int_var_type_m, symb_txt_int_var_type);
     if ( tmp == NULL )
@@ -435,8 +425,6 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     }
 
     FreeStr(libname);
-    FreeStr(symbol);
-    FreeStr(modelis);
     FreeStr(symb_txt_int_var_type);
     FreeStr(symb_nb_int_var);
     FreeStr(symb_txt_int_var_type_m);

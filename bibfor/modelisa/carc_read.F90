@@ -62,7 +62,9 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
     integer, parameter :: carsiz=20
     character(len=16) :: keywordfact
-    integer :: iocc, iret, nbocc, ndim, cpointer_nbvarext, cpointer_namevarext, cpointer_fct_ldc
+    integer :: iocc, iret, nbocc, ndim
+    integer :: cpointer_nbvarext, cpointer_namevarext, cpointer_fct_ldc
+    integer :: cpointer_matprop, cpointer_nbprop
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter
     real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
@@ -263,7 +265,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
             endif
             call mfront_get_pointers(libr_name, subr_name, nom_mod_mfront,&
                                      cpointer_nbvarext, cpointer_namevarext,&
-                                     cpointer_fct_ldc)
+                                     cpointer_fct_ldc,&
+                                     cpointer_matprop, cpointer_nbprop)
         elseif ( l_umat ) then
             call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
             call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)

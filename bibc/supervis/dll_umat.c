@@ -29,9 +29,9 @@ PyObject* get_dll_register_dict();
 
 
 /* *********************************************************************
- * 
+ *
  *                          UMAT interface
- * 
+ *
  * *********************************************************************/
 
 /* declarations of pointers on UMAT functions */
@@ -103,7 +103,7 @@ void load_umat_lib(const char* libname, const char* symbol)
 #endif
 
 
-void DEFUMATGETFCT(UMAT_GET_FUNCTION, umat_get_function,
+void DEFSSP(UMAT_GET_FUNCTION, umat_get_function,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     INTEGER* pfumat)
 {
@@ -139,9 +139,9 @@ void DEFUMATWRAP(UMATWP, umatwp, INTEGER* pfumat,
     DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse, DOUBLE* spd, DOUBLE* scd,
     DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde, DOUBLE* drpldt,
     DOUBLE* stran, DOUBLE* dstran, DOUBLE* time, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp,
-        DOUBLE* predef, DOUBLE* dpred, char* cmname, STRING_SIZE lcmname, 
+        DOUBLE* predef, DOUBLE* dpred, char* cmname, STRING_SIZE lcmname,
     INTEGER* ndi, INTEGER* nshr, INTEGER* ntens, INTEGER* nstatv, DOUBLE* props, INTEGER* nprops,
-        DOUBLE* coords, DOUBLE* drot, DOUBLE* pnewdt, 
+        DOUBLE* coords, DOUBLE* drot, DOUBLE* pnewdt,
     DOUBLE* celent, DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER* noel, INTEGER* npt, INTEGER* layer,
         INTEGER* kspt, INTEGER* kstep, INTEGER* kinc )
 {
@@ -155,8 +155,8 @@ void DEFUMATWRAP(UMATWP, umatwp, INTEGER* pfumat,
 
     CALLUMAT(*f_umat,
         stress, statev, ddsdde, sse, spd, scd, rpl, ddsddt, drplde, drpldt,
-        stran, dstran, time, dtime, temp, dtemp, predef, dpred, cmname, 
-        ndi, nshr, ntens, nstatv, props, nprops, coords, drot, pnewdt, 
+        stran, dstran, time, dtime, temp, dtemp, predef, dpred, cmname,
+        ndi, nshr, ntens, nstatv, props, nprops, coords, drot, pnewdt,
         celent, dfgrd0, dfgrd1, noel, npt, layer, kspt, kstep, kinc );
 #else
     printf("Not available under Windows.\n");

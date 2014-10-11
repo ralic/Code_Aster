@@ -165,6 +165,8 @@
 #define CALLSPPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(d))
 #define DEFSSPSPPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,h)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lb,ld)
 #define CALLSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(b),strlen(d))
+#define DEFSSSPPPPP(UN,LN,a,la,b,lb,c,lc,d,e,f,g,h)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,la,lb,lc)
+#define CALLSSSPPPPP(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,strlen(a),strlen(b),strlen(c))
 #define DEFSSPSPPPPS(UN,LN,a,la,b,lb,c,d,ld,e,f,g,h,i,li)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,la,lb,ld,li)
 #define CALLSSPSPPPPS(UN,LN,a,b,c,d,e,f,g,h,i)                          F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,strlen(a),strlen(b),strlen(d),strlen(i))
 #define DEFPPPPPSPPSP(UN,LN,a,b,c,d,e,f,lf,g,h,i,li,j)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,lf,li)
@@ -191,14 +193,12 @@
 #define CALLSSPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n)                    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,strlen(a),strlen(b))
 /* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
 #define DEFUMATWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,lu)
-#define DEFUMATGETFCT(UN,LN,a,la,b,lb,c)               STDCALL(UN,LN)(a,b,c,la,lb)
 /* spécial pour l'interface mfront */
 #define DEFMFRONTBEHAVIOURWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)
 #define DEFMFRONTSETDOUBLEWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc,ld)
 #define DEFMFRONTSETINTEGERWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc,ld)
 #define DEFMFRONTGETEXTSTVARWRAP(UN,LN,a,b,c,lc,d)               STDCALL(UN,LN)(a,b,c,d,lc)
 #define DEFMFRONTGETNBVARIWRAP(UN,LN,a,la,b,lb,c,lc,d,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc)
-#define DEFMFRONTGETFCTEXTSTVAR(UN,LN,a,la,b,lb,c,lc,d,e,f)               STDCALL(UN,LN)(a,b,c,d,e,f,la,lb,lc)
 
 
 /* Appels et signatures avec strlen juste après le pointeur de chaine */
@@ -300,6 +300,8 @@
 #define CALLSPPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                    F_FUNC(UN,LN)(a,strlen(a),b,c,d,strlen(d),e,f,g,h)
 #define DEFSSPSPPPP(UN,LN,a,la,b,lb,c,d,ld,e,f,g,h)               STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f,g,h)
 #define CALLSSPSPPPP(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,h)
+#define DEFSSSPPPPP(UN,LN,a,la,b,lb,c,lc,d,e,f,g,h)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e,f,g,h)
+#define CALLSSSPPPPP(UN,LN,a,b,c,d,e,f,g,h)                       F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,e,f,g,h)
 #define DEFSSPSPPPPS(UN,LN,a,la,b,lb,c,d,ld,e,f,g,h,i,li)               STDCALL(UN,LN)(a,la,b,lb,c,d,ld,e,f,g,h,i,li)
 #define CALLSSPSPPPPS(UN,LN,a,b,c,d,e,f,g,h,i)                          F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,h,i,strlen(i))
 #define DEFPPPPPSPPSP(UN,LN,a,b,c,d,e,f,lf,g,h,i,li,j)               STDCALL(UN,LN)(a,b,c,d,e,f,lf,g,h,i,li,j)
@@ -326,14 +328,12 @@
 #define CALLSSPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n)                    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,g,h,i,j,k,l,m,n)
 /* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
 #define DEFUMATWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)
-#define DEFUMATGETFCT(UN,LN,a,la,b,lb,c)               STDCALL(UN,LN)(a,la,b,lb,c)
 /* spécial pour l'interface mfront */
 #define DEFMFRONTBEHAVIOURWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)
 #define DEFMFRONTSETDOUBLEWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e)
 #define DEFMFRONTSETINTEGERWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e)
 #define DEFMFRONTGETEXTSTVARWRAP(UN,LN,a,b,c,lc,d)               STDCALL(UN,LN)(a,b,c,lc,d)
 #define DEFMFRONTGETNBVARIWRAP(UN,LN,a,la,b,lb,c,lc,d,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e)
-#define DEFMFRONTGETFCTEXTSTVAR(UN,LN,a,la,b,lb,c,lc,d,e,f)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e,f)
 
 #endif
 

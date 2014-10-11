@@ -17,12 +17,14 @@
 !
 interface
     subroutine mfront_get_pointers(nomlib, nomsub, nommod, pliesv, pnbesv,&
-                                   pfcmfr)
+                                   pfcmfr, pgetmprop, pgetnbprop)
         character(len=*) :: nomlib
         character(len=*) :: nomsub
         character(len=*) :: nommod
         integer          :: pliesv
         integer          :: pnbesv
         integer          :: pfcmfr
+        integer          :: pgetmprop
+        integer          :: pgetnbprop
     end subroutine mfront_get_pointers
 end interface
