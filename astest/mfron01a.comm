@@ -45,23 +45,20 @@ MAT=DEFI_MATERIAU(
                                             G2_0 = g2,
                                              ))
 
-MATF=DEFI_MATERIAU(
-                      ELAS=_F(E=young, NU=0.3),
-                      UMAT=_F( C1 = young ,
-                               C2 = 0.3 ,
-                               NB_VALE=12,
-                               C3  = 151.,   #R_I
-                               C4  = 87.,    #R_0
-                               C5  = 2.3,    #B
-                               C6  = k,      #K
-                               C7  = w,     #W
-                               C8 = C1_I,   #C1_I
-                               C9 = C2_I,   #C2_I
-                               C10 = g1,    #G1_0
-                               C11 = g2,    #G2_0
-                               C12 = 1.,    #a_inf
-                               ),
-                               )
+MATF=DEFI_MATERIAU(ELAS=_F(E=young,
+                           NU=0.3),
+                   Chaboche=_F(YoungModulus = young ,
+                               PoissonRatio = 0.3 ,
+                               R_inf  = 151.,
+                               R_0  = 87.,
+                               b  = 2.3,
+                               k  = k,
+                               w  = w,
+                               C_inf_0 = C1_I,
+                               C_inf_1 = C2_I,
+                               g_0_0 = g1,
+                               g_0_1 = g2,
+                               a_inf = 1.,),)
 
 
 

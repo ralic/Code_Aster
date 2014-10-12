@@ -133,8 +133,8 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !
 !   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)
     call mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
-                                niv, idbg, pmatprop, pnbprop, nprops, &
-                                props)
+                                niv, idbg, pmatprop, pnbprop, compor(1), &
+                                nprops, props)
 
 !   LECTURE DES VARIABLES DE COMMANDE ET DEFORMATIONS ASSOCIEES
     if ( typmod(1)(1:4).eq.'AXIS' ) then

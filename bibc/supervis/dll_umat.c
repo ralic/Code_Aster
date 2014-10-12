@@ -134,16 +134,15 @@ void DEFSSP(UMAT_GET_FUNCTION, umat_get_function,
 #endif
 }
 
-
-void DEFUMATWRAP(UMATWP, umatwp, INTEGER* pfumat,
-    DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse, DOUBLE* spd, DOUBLE* scd,
-    DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde, DOUBLE* drpldt,
-    DOUBLE* stran, DOUBLE* dstran, DOUBLE* time, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp,
-        DOUBLE* predef, DOUBLE* dpred, char* cmname, STRING_SIZE lcmname,
-    INTEGER* ndi, INTEGER* nshr, INTEGER* ntens, INTEGER* nstatv, DOUBLE* props, INTEGER* nprops,
-        DOUBLE* coords, DOUBLE* drot, DOUBLE* pnewdt,
-    DOUBLE* celent, DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER* noel, INTEGER* npt, INTEGER* layer,
-        INTEGER* kspt, INTEGER* kstep, INTEGER* kinc )
+void DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(UMATWP, umatwp,
+    INTEGER* pfumat, DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse,
+    DOUBLE* spd, DOUBLE* scd, DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde,
+    DOUBLE* drpldt, DOUBLE* stran, DOUBLE* dstran, DOUBLE* time, DOUBLE* dtime,
+    DOUBLE* temp, DOUBLE* dtemp, DOUBLE* predef, DOUBLE* dpred, char* cmname, STRING_SIZE lcmname,
+    INTEGER* ndi, INTEGER* nshr, INTEGER* ntens, INTEGER* nstatv, DOUBLE* props,
+    INTEGER* nprops, DOUBLE* coords, DOUBLE* drot, DOUBLE* pnewdt, DOUBLE* celent,
+    DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER* noel, INTEGER* npt, INTEGER* layer,
+    INTEGER* kspt, INTEGER* kstep, INTEGER* kinc )
 {
 #ifdef _POSIX
     /* UMAT WraPper : wrapper to the UMAT function through the function pointer

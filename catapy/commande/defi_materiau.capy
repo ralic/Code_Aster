@@ -4308,4 +4308,5 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 #
 
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
-)  ;
+           **C_MFRONT_OFFICIAL()
+)

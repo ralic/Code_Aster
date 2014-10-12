@@ -121,6 +121,10 @@
 #define CALLSPSPP(UN,LN,a,b,c,d,e)                    F_FUNC(UN,LN)(a,b,c,d,e,strlen(a),strlen(c))
 #define DEFSSPPP(UN,LN,a,la,b,lb,c,d,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb)
 #define CALLSSPPP(UN,LN,a,b,c,d,e)                    F_FUNC(UN,LN)(a,b,c,d,e,strlen(a),strlen(b))
+#define DEFSSSPP(UN,LN,a,la,b,lb,c,lc,d,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc)
+#define CALLSSSPP(UN,LN,a,b,c,d,e)                       F_FUNC(UN,LN)(a,b,c,d,e,strlen(a),strlen(b),strlen(c))
+#define DEFSSSSP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc,ld)
+#define CALLSSSSP(UN,LN,a,b,c,d,e)                          F_FUNC(UN,LN)(a,b,c,d,e,strlen(a),strlen(b),strlen(c),strlen(d))
 #define DEFPPPSPP(UN,LN,a,b,c,d,ld,e,f)               STDCALL(UN,LN)(a,b,c,d,e,f,ld)
 #define CALLPPPSPP(UN,LN,a,b,c,d,e,f)                 F_FUNC(UN,LN)(a,b,c,d,e,f,strlen(d))
 #define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)               STDCALL(UN,LN)(a,b,c,d,e,f,la,ld,le)
@@ -191,15 +195,10 @@
 #define CALLSSPSPPSPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)                          F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,strlen(a),strlen(b),strlen(d),strlen(g))
 #define DEFSSPPPPPPPPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,la,lb)
 #define CALLSSPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n)                    F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,strlen(a),strlen(b))
-/* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
-#define DEFUMATWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M,lu)
-/* spécial pour l'interface mfront */
-#define DEFMFRONTBEHAVIOURWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)
-#define DEFMFRONTSETDOUBLEWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc,ld)
-#define DEFMFRONTSETINTEGERWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc,ld)
-#define DEFMFRONTGETEXTSTVARWRAP(UN,LN,a,b,c,lc,d)               STDCALL(UN,LN)(a,b,c,d,lc)
-#define DEFMFRONTGETNBVARIWRAP(UN,LN,a,la,b,lb,c,lc,d,e)               STDCALL(UN,LN)(a,b,c,d,e,la,lb,lc)
-
+#define DEFPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)
+#define CALLPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)
+#define DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,lt,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,lt)
+#define CALLPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L)                 F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,strlen(t))
 
 /* Appels et signatures avec strlen juste après le pointeur de chaine */
 #else
@@ -256,6 +255,10 @@
 #define CALLSPSPP(UN,LN,a,b,c,d,e)                    F_FUNC(UN,LN)(a,strlen(a),b,c,strlen(c),d,e)
 #define DEFSSPPP(UN,LN,a,la,b,lb,c,d,e)               STDCALL(UN,LN)(a,la,b,lb,c,d,e)
 #define CALLSSPPP(UN,LN,a,b,c,d,e)                    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e)
+#define DEFSSSPP(UN,LN,a,la,b,lb,c,lc,d,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e)
+#define CALLSSSPP(UN,LN,a,b,c,d,e)                       F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,e)
+#define DEFSSSSP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e)
+#define CALLSSSSP(UN,LN,a,b,c,d,e)                          F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,strlen(d),e)
 #define DEFPPPSPP(UN,LN,a,b,c,d,ld,e,f)               STDCALL(UN,LN)(a,b,c,d,ld,e,f)
 #define CALLPPPSPP(UN,LN,a,b,c,d,e,f)                 F_FUNC(UN,LN)(a,b,c,d,strlen(d),e,f)
 #define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)               STDCALL(UN,LN)(a,la,b,c,d,ld,e,le,f)
@@ -326,14 +329,10 @@
 #define CALLSSPSPPSPPP(UN,LN,a,b,c,d,e,f,g,h,i,j)                          F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,strlen(d),e,f,g,strlen(g),h,i,j)
 #define DEFSSPPPPPPPPPPPP(UN,LN,a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n)               STDCALL(UN,LN)(a,la,b,lb,c,d,e,f,g,h,i,j,k,l,m,n)
 #define CALLSSPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n)                    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,d,e,f,g,h,i,j,k,l,m,n)
-/* spécial pour l'interface umat : PPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP */
-#define DEFUMATWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,lu,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L,M)
-/* spécial pour l'interface mfront */
-#define DEFMFRONTBEHAVIOURWRAP(UN,LN,a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)               STDCALL(UN,LN)(a,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s)
-#define DEFMFRONTSETDOUBLEWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e)
-#define DEFMFRONTSETINTEGERWRAP(UN,LN,a,la,b,lb,c,lc,d,ld,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld,e)
-#define DEFMFRONTGETEXTSTVARWRAP(UN,LN,a,b,c,lc,d)               STDCALL(UN,LN)(a,b,c,lc,d)
-#define DEFMFRONTGETNBVARIWRAP(UN,LN,a,la,b,lb,c,lc,d,e)               STDCALL(UN,LN)(a,la,b,lb,c,lc,d,e)
+#define DEFPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)
+#define CALLPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)              F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r)
+#define DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,lt,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L)               STDCALL(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,lt,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L)
+#define CALLPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(UN,LN,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L)                 F_FUNC(UN,LN)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,strlen(t),u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,L)
 
 #endif
 

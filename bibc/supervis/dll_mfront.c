@@ -15,7 +15,6 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* person_in_charge: nicolas.sellenet at edf.fr */
-
 #include "Python.h"
 #include "aster.h"
 #include "aster_fort.h"
@@ -23,6 +22,7 @@
 #include "definition_pt.h"
 
 #include "dll_register.h"
+#include "dll_mfront.h"
 
 #ifdef _POSIX
 #include <dlfcn.h>
@@ -35,146 +35,7 @@ PyObject* get_dll_register_dict();
  *
  * *********************************************************************/
 
-/* declarations of pointers on MFRONT functions */
-#define FUNC_MFRONT(NAME)  void DEFMFRONTBEHAVIOUR(*NAME, \
-        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
-            DOUBLE*, DOUBLE*, INTEGER*, INTEGER*, DOUBLE*, INTEGER*, \
-            DOUBLE*, DOUBLE*, INTEGER*)
-#define FUNC_MFRONT_SET_DOUBLE(NAME)  void DEFMFRONTSETDOUBLE(*NAME, char*, DOUBLE, STRING_SIZE)
-#define FUNC_MFRONT_SET_INTEGER(NAME)  void DEFMFRONTSETINTEGER(*NAME, char*, INTEGER, STRING_SIZE)
-
-int load_mfront_lib(const char* libname, const char* symbol)
-{
-    /* load MFRONT library and initialize pointers to MFRONT functions
-     */
-    void *mfront_handle;
-    char *error;
-    char symbol_[256], *valk;
-    INTEGER ibid=0, n0=0, nk=0;
-    DOUBLE rbid=0.;
-    FUNC_MFRONT(f_mfront) = NULL;
-    PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
-
-    AS_ASSERT(strlen(symbol) < 255);
-    strcpy(symbol_, symbol);
-
-    DEBUG_DLL_VV("Loading '%s'%s ", libname, "...");
-    mfront_handle = dlopen(libname, RTLD_NOW);
-    if ( ! mfront_handle ) {
-        printf("\n%s\n", dlerror());
-        nk = 2;
-        valk = MakeTabFStr(nk, VALK_SIZE);
-        SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
-        SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-        CALL_UTMESS_CORE("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
-        FreeStr(valk);  // uncallable
-    }
-    DEBUG_DLL_VV("searching symbol '%s'%s ", symbol, "...");
-    dlerror();    /* Clear any existing error */
-
-    *(void **) (&f_mfront) = dlsym(mfront_handle, symbol);
-    if ((error = dlerror()) != NULL)  {
-        dlerror();
-        strcat(symbol_, "_");
-        DEBUG_DLL_VV("trying symbol '%s'%s ", symbol_, "...");
-        *(void **) (&f_mfront) = dlsym(mfront_handle, symbol_);
-    }
-
-    if ((error = dlerror()) != NULL)  {
-        return 1;
-    }
-    DEBUG_DLL_VV("found: %s %p", "address", (char *)f_mfront);
-
-    /* register these MFRONT lib */
-    if ( libsymb_register(DLL_DICT, libname, symbol,
-                            mfront_handle, (FUNC_PTR)f_mfront) ) {
-        printf("Registering of '%s' and '%s' failed!\n", libname, symbol);
-    }
-    return 0;
-}
-#endif
-
-char* test_mfront_symbol(const char* libname, char* name1, char* name2)
-{
-    int retour = 0;
-    PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
-
-    if ( ! libsymb_is_known(DLL_DICT, libname, name1) )
-    {
-        retour = load_mfront_lib(libname, name1);
-        if ( retour == 0 )
-            return name1;
-    }
-    else
-        return name1;
-    if ( ! libsymb_is_known(DLL_DICT, libname, name2) )
-    {
-        retour = load_mfront_lib(libname, name2);
-        if ( retour == 0 )
-            return name2;
-    }
-    else
-        return name2;
-    return NULL;
-}
-
-/**
- * \brief Return the symbol name of the MFront lib after testing if it should
- *        contain the modelization or not.
- * @param libname   Name of library
- * @param symbol    Name of the main function (ex. asterbehaviourname)
- * @param model     Name of the modelization
- * @param basename  Basename/suffix of the symbol to find
- * @param name      Pointer on the string containing the found symbol name,
- *                  it must be freed by the caller.
- */
-void mfront_name(
-         _IN char* libname, _IN char* symbol, _IN char* model,
-         _IN char* basename, _OUT char** name)
-{
-    char *name1, *name2;
-
-    name1 = (char *)malloc(strlen(symbol) + strlen(model) + strlen(basename) + 1);
-    strcpy(name1, symbol);
-    strcat(name1, model);
-    strcat(name1, basename);
-
-    name2 = (char *)malloc(strlen(symbol) + strlen(basename) + 1);
-    strcpy(name2, symbol);
-    strcat(name2, basename);
-    DEBUG_DLL_VV("name1: '%s' name2: '%s'", name1, name2);
-
-    *name = test_mfront_symbol(libname, name1, name2);
-    if ( *name == NULL ) {
-        DEBUG_DLL_VV(" libname = >%s<%s", libname, " ")
-        DEBUG_DLL_VV(" symbol1 = >%s<, symbol2 = >%s<", name1, name2)
-    }
-    if ( strcmp(*name, name1) == 0 ) {
-        free(name2);
-    } else if ( strcmp(*name, name2) == 0 ) {
-        free(name1);
-    }
-}
-
-/**
- * \brief Raise an error 'symbol not found'
- */
-void error_symbol_not_found(const char* libname, const char* symbname)
-{
-    char *valk;
-    INTEGER ibid=0, n0=0, nk=0;
-    DOUBLE rbid=0.;
-    valk = MakeTabFStr(nk, VALK_SIZE);
-    SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
-    SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-    SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
-    CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
-    FreeStr(valk);  // uncallable
-}
-
-void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_parameter,
+void DEFSSSSP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_parameter,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
     char* nomparam, STRING_SIZE lnomparam, DOUBLE* value)
@@ -209,7 +70,7 @@ void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_param
 #endif
 }
 
-void DEFMFRONTSETINTEGERWRAP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_parameter,
+void DEFSSSSP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_parameter,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
     char* nomparam, STRING_SIZE lnomparam, INTEGER* value)
@@ -244,10 +105,10 @@ void DEFMFRONTSETINTEGERWRAP(MFRONT_SET_INTEGER_PARAMETER, mfront_set_integer_pa
 #endif
 }
 
-void DEFMFRONTGETEXTSTVARWRAP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
-                              mfront_get_external_state_variable,
-                              INTEGER* pliesv, INTEGER* pnbesv,
-                              char* txval, STRING_SIZE ltx, INTEGER* nbvarc)
+void DEFPPSP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
+             mfront_get_external_state_variable,
+             INTEGER* pliesv, INTEGER* pnbesv,
+             char* txval, STRING_SIZE ltx, INTEGER* nbvarc)
 {
 #ifdef _POSIX
     /* MFRONT Wrapper
@@ -336,7 +197,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
 #endif
 }
 
-void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
+void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
     INTEGER* ndim, INTEGER* nbvari)
@@ -406,12 +267,11 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
 #endif
 }
 
-void DEFMFRONTBEHAVIOURWRAP(MFRONT_BEHAVIOUR, mfront_behaviour, INTEGER* pfcmfr,
-    DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* stran,
-    DOUBLE* dstran, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp,
-    DOUBLE* predef, DOUBLE* dpred, INTEGER* ntens, INTEGER* nstatv,
-    DOUBLE* props, INTEGER* nprops, DOUBLE* drot, DOUBLE* pnewdt,
-    INTEGER* nummod)
+void DEFPPPPPPPPPPPPPPPPPP(MFRONT_BEHAVIOUR, mfront_behaviour,
+    INTEGER* pfcmfr, DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* stran,
+    DOUBLE* dstran, DOUBLE* dtime, DOUBLE* temp, DOUBLE* dtemp, DOUBLE* predef,
+    DOUBLE* dpred, INTEGER* ntens, INTEGER* nstatv, DOUBLE* props, INTEGER* nprops,
+    DOUBLE* drot, DOUBLE* pnewdt, INTEGER* nummod)
 {
 #ifdef _POSIX
     /* MFRONT Wrapper : wrapper to the MFRONT function through the function pointer
@@ -462,17 +322,156 @@ void DEFPPS(MFRONT_GET_MATER_PROP,
     /* MFRONT Wrapper
     */
     char** names = (char**)*pmatprop;
+    char *cleaned;
     DEBUG_DLL_VV("get_mater_prop: nbprop=%d   matprop=%s", (int)*nbval, names[0])
-    // AS_ASSERT(*nbext <= ltx);  ??? * nbprop
     AS_ASSERT(ltx == 16);
 
     unsigned short i;
     for ( i = 0; i < *nbval; ++i )
     {
-        SetTabFStr( txval, i, names[i], 16 );
+        clean_parameter(names[i], &cleaned);
+        SetTabFStr( txval, i, cleaned, 16 );
+        free(cleaned);
     }
 #else
     printf("Not available under Windows.\n");
     abort();
 #endif
+}
+
+int load_mfront_lib(const char* libname, const char* symbol)
+{
+    void *mfront_handle;
+    char *error;
+    char symbol_[256], *valk;
+    INTEGER ibid=0, n0=0, nk=0;
+    DOUBLE rbid=0.;
+    FUNC_MFRONT(f_mfront) = NULL;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+
+    AS_ASSERT(strlen(symbol) < 255);
+    strcpy(symbol_, symbol);
+
+    DEBUG_DLL_VV("Loading '%s'%s ", libname, "...");
+    mfront_handle = dlopen(libname, RTLD_NOW);
+    if ( ! mfront_handle ) {
+        printf("\n%s\n", dlerror());
+        nk = 2;
+        valk = MakeTabFStr(nk, VALK_SIZE);
+        SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
+        SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
+        CALL_UTMESS_CORE("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
+        FreeStr(valk);  // uncallable
+    }
+    DEBUG_DLL_VV("searching symbol '%s'%s ", symbol, "...");
+    dlerror();    /* Clear any existing error */
+
+    *(void **) (&f_mfront) = dlsym(mfront_handle, symbol);
+    if ((error = dlerror()) != NULL)  {
+        dlerror();
+        strcat(symbol_, "_");
+        DEBUG_DLL_VV("trying symbol '%s'%s ", symbol_, "...");
+        *(void **) (&f_mfront) = dlsym(mfront_handle, symbol_);
+    }
+
+    if ((error = dlerror()) != NULL)  {
+        return 1;
+    }
+    DEBUG_DLL_VV("found: %s %p", "address", (char *)f_mfront);
+
+    /* register these MFRONT lib */
+    if ( libsymb_register(DLL_DICT, libname, symbol,
+                            mfront_handle, (FUNC_PTR)f_mfront) ) {
+        printf("Registering of '%s' and '%s' failed!\n", libname, symbol);
+    }
+    return 0;
+}
+#endif
+
+char* test_mfront_symbol(const char* libname, char* name1, char* name2)
+{
+    int retour = 0;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+
+    if ( ! libsymb_is_known(DLL_DICT, libname, name1) )
+    {
+        retour = load_mfront_lib(libname, name1);
+        if ( retour == 0 )
+            return name1;
+    }
+    else
+        return name1;
+    if ( ! libsymb_is_known(DLL_DICT, libname, name2) )
+    {
+        retour = load_mfront_lib(libname, name2);
+        if ( retour == 0 )
+            return name2;
+    }
+    else
+        return name2;
+    return NULL;
+}
+
+void mfront_name(
+         _IN char* libname, _IN char* symbol, _IN char* model,
+         _IN char* basename, _OUT char** name)
+{
+    char *name1, *name2;
+
+    name1 = (char *)malloc(strlen(symbol) + strlen(model) + strlen(basename) + 1);
+    strcpy(name1, symbol);
+    strcat(name1, model);
+    strcat(name1, basename);
+
+    name2 = (char *)malloc(strlen(symbol) + strlen(basename) + 1);
+    strcpy(name2, symbol);
+    strcat(name2, basename);
+    DEBUG_DLL_VV("name1: '%s' name2: '%s'", name1, name2);
+
+    *name = test_mfront_symbol(libname, name1, name2);
+    if ( *name == NULL ) {
+        DEBUG_DLL_VV(" libname = >%s<%s", libname, " ")
+        DEBUG_DLL_VV(" symbol1 = >%s<, symbol2 = >%s<", name1, name2)
+    }
+    if ( strcmp(*name, name1) == 0 ) {
+        free(name2);
+    } else if ( strcmp(*name, name2) == 0 ) {
+        free(name1);
+    }
+}
+
+void error_symbol_not_found(const char* libname, const char* symbname)
+{
+    char *valk;
+    INTEGER ibid=0, n0=0, nk=0;
+    DOUBLE rbid=0.;
+    valk = MakeTabFStr(nk, VALK_SIZE);
+    SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
+    SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
+    SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
+    CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
+    FreeStr(valk);  // uncallable
+}
+
+void clean_parameter(_IN const char* src, _OUT char** dest)
+{
+    int i, j;
+    size_t len;
+    len = strlen(src);
+    *dest = (char *)malloc(len + 1);
+    j = 0;
+    for (i = 0; i < len; ++i) {
+        if ( src[i] == '[' ) {
+            (*dest)[j] = '_';
+            ++j;
+        } else if ( src[i] == ']' ) {
+            // remove it
+        } else {
+            (*dest)[j] = src[i];
+            ++j;
+        }
+    }
+    (*dest)[j] = '\0';
 }
