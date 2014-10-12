@@ -158,6 +158,22 @@ void mfront_name(
     }
 }
 
+/**
+ * \brief Raise an error 'symbol not found'
+ */
+void error_symbol_not_found(const char* libname, const char* symbname)
+{
+    char *valk;
+    INTEGER ibid=0, n0=0, nk=0;
+    DOUBLE rbid=0.;
+    valk = MakeTabFStr(nk, VALK_SIZE);
+    SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
+    SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
+    SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
+    CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
+    FreeStr(valk);  // uncallable
+}
+
 void DEFMFRONTSETDOUBLEWRAP(MFRONT_SET_DOUBLE_PARAMETER, mfront_set_double_parameter,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
@@ -265,10 +281,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL;
-    char *valk;
     int retour = 0;
-    INTEGER ibid=0, n0=0, nk=0;
-    DOUBLE rbid=0.;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
@@ -280,13 +293,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
         retour = load_mfront_lib(libname, symbol);
         if (retour == 1)
         {
-            nk = 3;
-            valk = MakeTabFStr(nk, VALK_SIZE);
-            SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
-            SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-            SetTabFStr(valk, 2, (char *)symbol, VALK_SIZE);
-            CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
-            FreeStr(valk);  // uncallable
+            error_symbol_not_found(libname, symbname);
         }
     }
     *pfcmfr = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbol);
@@ -294,13 +301,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     mfront_name(libname, symbol, model, "_ExternalStateVariables", &symbname);
     if ( symbname == NULL )
     {
-        nk = 3;
-        valk = MakeTabFStr(nk, VALK_SIZE);
-        SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
-        SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-        SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
-        CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
-        FreeStr(valk);  // uncallable
+        error_symbol_not_found(libname, symbname);
     }
 
 //     char** test_char = libsymb_get_symbol(DLL_DICT, libname, symbname);
@@ -332,9 +333,6 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL;
-    char *valk;
-    INTEGER ibid=0, n0=0, nk=0;
-    DOUBLE rbid=0.;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
@@ -345,13 +343,7 @@ void DEFMFRONTGETNBVARIWRAP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     mfront_name(libname, symbol, model, "_InternalStateVariablesTypes", &symbname);
     if ( symbname == NULL )
     {
-        nk = 3;
-        valk = MakeTabFStr(nk, VALK_SIZE);
-        SetTabFStr(valk, 0, "MFRONT", VALK_SIZE);
-        SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
-        SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
-        CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
-        FreeStr(valk);  // uncallable
+        error_symbol_not_found(libname, symbname);
     }
 
     int* int_var = (int*)libsymb_get_symbol(DLL_DICT, libname, symbname);
