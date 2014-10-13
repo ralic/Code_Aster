@@ -71,7 +71,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/pmat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecael.h"
-#include "asterfort/matumat.h"
+#include "asterfort/get_mfront_mater_value.h"
 #include "asterfort/mfront_varc.h"
 #include "asterfort/lcdetf.h"
 #include "blas/daxpy.h"
@@ -127,7 +127,9 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
     call infniv(ifm, niv)
 
 !   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)
-    call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
+    print *, '#DEBUG: Nom relation', compor(1)
+    call get_mfront_mater_value(fami, kpg, ksp, imate, ifm, &
+                                niv, idbg, nprops, props)
 
 !   LECTURE DES VARIABLES DE COMMANDE ET DEFORMATIONS ASSOCIEES
     if ( typmod(1)(1:4).eq.'AXIS' ) then

@@ -68,10 +68,6 @@ from Noyau.N_utils import Singleton
 from Execution.strfunc import convert, ufmt
 from cata_vari import DICT_NOM_VARI
 
-__properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
-                  'nom_varc', 'nom_vari', 'proprietes', 'algo_inte',
-                  'type_matr_tang',
-                  'symbol_mfront')
 
 class CataComportementError(Exception):
    """Error"""
@@ -130,6 +126,11 @@ def first(args):
 
 class Base(object):
    """Classe de base : partie commune loi de comportement/kit."""
+
+   __properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
+                     'nom_varc', 'nom_vari', 'proprietes', 'algo_inte',
+                     'type_matr_tang')
+
    def copy(self):
       """Copie d'un objet LoiComportement"""
       import copy
@@ -164,7 +165,7 @@ class Base(object):
          'num_lc' : self.num_lc,
          'doc'    : self.doc,
       }
-      for attr in __properties__:
+      for attr in self.__properties__:
          dico[attr] = getattr(self, attr)
       return dico
 
@@ -191,6 +192,10 @@ class Base(object):
       """Représentation par défaut"""
       return self.long_repr()
 
+   def getPropertiesNames(self):
+       """Return the names of the properties"""
+       return self.__properties__
+
 
 class LoiComportement(Base):
    """Définition d'une loi de comportement.
@@ -204,10 +209,10 @@ class LoiComportement(Base):
       self.nom    = nom
       self.num_lc = num_lc
       self.doc    = doc
-      for prop in __properties__:
+      for prop in self.__properties__:
          setattr(self, '_' + prop, None)
       # propriétés fournies
-      for prop in [k for k in kwargs.keys() if k in __properties__]:
+      for prop in [k for k in kwargs.keys() if k in self.__properties__]:
          setattr(self, prop, kwargs.get(prop))
 
    def get_nb_vari(self):
@@ -268,6 +273,8 @@ class LoiComportementMFront(LoiComportement):
    symbol_mfront : nom de la fonction dans la bibliothèque MFront
    modelisation, deformation, algo_inte : listes des valeurs acceptees
    """
+   __properties__ = tuple(list(LoiComportement.__properties__) + \
+                          ['symbol_mfront'])
 
    def __init__(self, nom, symbol_mfront, doc='', **kwargs):
       """Initialisations"""
@@ -284,6 +291,17 @@ class LoiComportementMFront(LoiComportement):
          type_matr_tang=None,
          doc=doc,
          **kwargs)
+
+   def long_repr(self):
+      template = """Loi de comportement : %(nom)s
+'''%(doc)s'''
+   routine                    : %(num_lc)r
+   modélisations disponibles  : %(modelisation)r
+   types de déformations      : %(deformation)r
+   schémas d'intégration      : %(algo_inte)r
+   nom du symbole             : %(symbol_mfront)r
+"""
+      return template % self.dict_info()
 
 class KIT(Base):
    """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
@@ -441,7 +459,7 @@ class CataLoiComportement(Singleton):
          print 'catalc.query - args =', loi, ':', attr, ':', valeur.strip(),':'
       attr = attr.lower()
       comport = self.get(loi)
-      if not attr in __properties__:
+      if not attr in comport.getPropertiesNames():
          raise CataComportementError(ufmt(u"Propriete invalide : %s", attr))
       # retourner 1 si (valeur est dans comport.attr), 0 sinon.
       return int(valeur.strip() in getattr(comport, attr))

@@ -32,7 +32,7 @@ def C_RELATION( COMMAND ):
                                         #"VMIS_ISOT_PUIS",
                                      )
     elif COMMAND in ('MACR_ASCOUF_CALC','MACR_ASPIC_CALC',):
-                   return (             "ELAS",           
+                   return (             "ELAS",
                                         "ELAS_VMIS_TRAC",
                                      )
     elif COMMAND =='DEFI_COMPOR' :
@@ -54,8 +54,9 @@ def C_RELATION( COMMAND ):
                                         "VMIS_ISOT_TRAC",
                                         "VMIS_ISOT_PUIS",
                                      )
-    else :
-                   return (             "ELAS",            
+    else:
+        native = [
+                                        "ELAS",
                                         "ELAS_VMIS_LINE",
                                         "ELAS_VMIS_TRAC",
                                         "ELAS_VMIS_PUIS",
@@ -210,4 +211,6 @@ def C_RELATION( COMMAND ):
                                         "ZMAT",
                                         "UMAT",
                                         "MFRONT",
-                                     )
+        ]
+        mfront = ["Chaboche", ]
+        return tuple(native + mfront)

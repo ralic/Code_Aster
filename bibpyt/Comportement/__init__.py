@@ -43,7 +43,7 @@ def _init_cata(debug):
             # liste des lois de comportements définies dans le module
             for objname in dir(mod):
                 obj = getattr(mod, objname)
-                if type(obj) == LoiComportement:
+                if isinstance(obj, LoiComportement):
                     if debug:
                         print '<Comportement> Module "%s" - ajout objet "%s"' % (modname, objname)
                     catalc.add(obj)
