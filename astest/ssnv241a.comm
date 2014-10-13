@@ -1,0 +1,602 @@
+#  TITRE  TEST Essai de gonflement empecher
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# MODELISATION 3D : RAG
+# -----------------------------------------------------
+DEBUT(PAR_LOT = 'NON',CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+#-----------------------------------------------------------------------#
+#                        DEFINITION DU MAILLAGE         #
+#-----------------------------------------------------------------------#
+
+M=LIRE_MAILLAGE(FORMAT='MED',);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_INF',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_SUP',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_ARR',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='S_AVT',),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=_F(GROUP_MA='SEC1',),);
+
+M=MODI_MAILLAGE(reuse =M,
+                MAILLAGE=M,
+                ORIE_PEAU_3D=_F(GROUP_MA=('SEC1','S_SUP',),),);
+
+#-----------------------------------------------------------------------#
+#                       DEFINITION DES MODELES                          #
+#-----------------------------------------------------------------------#
+
+MODTHER=AFFE_MODELE(MAILLAGE=M,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='3D',),);
+
+MODMECA=AFFE_MODELE(MAILLAGE=M,
+               AFFE=(_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA=('CERC1','CERC2'),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='BARRE',),),);
+
+#attention modification de la section en cas de modif du maillage
+#c5 cerc1:0.2e-3, cerc2:0.1e-3
+#c3 cerc1:0.12e-3, cerc2:0.06e-3
+
+SA=AFFE_CARA_ELEM(MODELE=MODMECA,
+                       BARRE=(_F(GROUP_MA='CERC1',
+                                 SECTION='GENERALE',
+                                 CARA='A',
+                                 VALE=0.12e-3,),
+                              _F(GROUP_MA='CERC2',
+                                 SECTION='GENERALE',
+                                 CARA='A',
+                                 VALE=0.06e-3,),),);
+
+#---------------------------------------------------------------------------------#
+#        DEFINITION DES CHAMPS DE TEMPERATURE, D'HYDRATATION                      #
+#---------------------------------------------------------------------------------#
+
+HYDRI=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=0.9999,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='HYDR',
+                         VALE=0.9999,),);
+
+HYDR=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_VARC',
+               NOM_CHAM='HYDR_NOEU',
+               AFFE=(
+               _F(CHAM_GD=HYDRI,
+                  INST=-1.0,),
+               _F(CHAM_GD=HYDRF,
+                  INST=1000.,),),);
+
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=20,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=38,),);
+
+TEMP=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(_F(CHAM_GD=TEMPI,
+                        INST=0.0,),
+                     _F(CHAM_GD=TEMPI,
+                        INST=28.0,),
+                     _F(CHAM_GD=TEMPF,
+                        INST=29.0,),
+                     _F(CHAM_GD=TEMPF,
+                        INST=500.0,),),);
+
+
+#---------------------------------------------------------------------------------#
+#                        CALCUL DU CHAMP DE TENEUR EN EAU                         #
+#---------------------------------------------------------------------------------#
+# CONDITIONS AUX LIMITES DE SECHAGE
+# TENEUR EN EAU INITIALE DANS LE MAILLAGE [L/M3]
+C_sr83 = 121.18;
+
+C_sr1 = 146;
+
+C_sr54 = 78.84;
+C_sr63 = 91.98;
+
+
+SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=C_sr83,),);
+
+SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                 OPERATION='AFFE',
+                 MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP='TEMP',
+                         VALE=C_sr63,),);
+
+SECH=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_THER',
+               NOM_CHAM='TEMP',
+               AFFE=(
+               _F(CHAM_GD=SECHI,
+                  INST=0.0,),
+               _F(CHAM_GD=SECHF,
+                  INST=500.0,),),);
+
+#-----------------------------------------------------------------------#
+#                  CALCUL DU VOLUME DE GEL                              #
+#-----------------------------------------------------------------------#
+# DEFINITION DES CONSTANTES
+
+rc1=38.3;
+tref0=120./86400.;
+youn1=38000.;
+nu1=0.13;
+mu11=(youn1/2.)/(1.+nu1);
+k11=(youn1/3.)/(1.-(2.*nu1));
+
+e2lim1=-100./k11;
+
+E0=DEFI_CONSTANTE(VALE=youn1,);
+
+NU0=DEFI_CONSTANTE(VALE=nu1,);
+
+ALPH0=DEFI_CONSTANTE(VALE=0.0000,);
+
+mg=27700.0;
+#mg=00.0;
+taar=120;
+vaar=0.0055;
+#vaar=0.00;
+vvaar=0.15*vaar;
+
+#les propriétés matériaux ne correspondent pas à un béton réél
+
+mshr=0.3;
+
+f1=10.00000001;
+
+y1s1=0.9;
+tau1=55;
+tau2=440;
+ekfl=1.25e-4;
+
+BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E0,
+                               NU=NU0,
+                               RHO=0.,
+                               TEMP_DEF_ALPHA=20.,
+                               ALPHA=ALPH0,),
+                   PORO_BETON =_F(ALUC    = 540,
+                                SULC    = 177.,
+                                SILC    = 1354.,
+                                TDEF    = 20.0,
+                                SSDE    = 0.95,
+                                VETT    = 715.e-6,
+                                VVDE    = 0.0001,
+                                BDEF    = 1.,
+                                MDEF    = 0.,
+                                DT80    = 0.2,
+                                COTH    = 0.0,
+                                CORG    = 0.0,
+                                ID0     = 0,
+                                ID1     = 6.2,
+                                ID2     = 11,
+                                PORO    = 146,
+                                HYDS    = 0.01,
+                                TAAR    = taar,
+                                SSAR    = 0.2,
+                                VAAR    = vaar,
+                                VVAR    = vvaar,
+                                BAAR    = 0.23,
+                                MAAR    = mg,),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000.0,
+                            NU=0.3,
+                            RHO=0.,
+                            ALPHA=0.0,),);
+
+MAT_RGI=AFFE_MATERIAU(MAILLAGE=M,
+                      AFFE=(_F(GROUP_MA= 'VE1',
+                              MATER=BETON,),
+                       _F(GROUP_MA= ('CERC1','CERC2'),
+                         MATER=ACIER,),),
+                      AFFE_VARC=(_F(GROUP_MA= 'VE1',
+                                    NOM_VARC='TEMP',
+                                    EVOL=TEMP,
+                                    NOM_CHAM='TEMP',
+                                    PROL_DROITE='CONSTANT',
+                                    PROL_GAUCHE='CONSTANT',
+                                    VALE_REF=20.0,),
+                                 _F(GROUP_MA= 'VE1',
+                                    NOM_VARC='HYDR',
+                                    EVOL=HYDR,
+                                    NOM_CHAM='HYDR_NOEU',
+                                    PROL_DROITE='CONSTANT',
+                                    PROL_GAUCHE='CONSTANT',),
+                                 _F(GROUP_MA= 'VE1',
+                                    NOM_VARC='SECH',
+                                    EVOL=SECH,
+                                    NOM_CHAM='TEMP',
+                                    PROL_DROITE='LINEAIRE',
+                                    PROL_GAUCHE='CONSTANT',
+                                    VALE_REF=146,),),);
+
+POIDS=AFFE_CHAR_MECA(MODELE=MODMECA,
+                     PESANTEUR=_F(GROUP_MA='VE1',
+                                    GRAVITE=9.81,
+                                    DIRECTION=(0,0,-1,),),);
+                                    
+FORC1=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.00,0.00001,
+                          28.0,0.00001,
+                          28.1,f1,
+                          500.0,f1,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+CH10=AFFE_CHAR_MECA(MODELE=MODMECA,
+                    DDL_IMPO=_F(GROUP_NO='S_INF',
+                                DZ=0.0,),);
+
+CH11=AFFE_CHAR_MECA(MODELE=MODMECA,
+                    FACE_IMPO=_F(GROUP_MA='S_ARR',
+                                 DNOR=0.0,),);
+
+CH12=AFFE_CHAR_MECA(MODELE=MODMECA,
+                    DDL_IMPO=_F(GROUP_NO='S_AVT',
+                                DY=0.0,),);
+
+CH20=AFFE_CHAR_MECA_F(MODELE=MODMECA,
+                      PRES_REP=_F(GROUP_MA='S_SUP',
+                                  PRES=FORC1,),);
+                                                                        
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=28.0,
+                                     NOMBRE=28,),
+                                  _F(JUSQU_A=40.0,
+                                     NOMBRE=12,),
+                                  _F(JUSQU_A=100.0,
+                                     NOMBRE=60,),
+                                  _F(JUSQU_A=200.0,
+                                     NOMBRE=100,),
+                                  _F(JUSQU_A=500.0,
+                                     NOMBRE=300,),),);
+
+L_SAUV=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=28.0,
+                                     NOMBRE=7,),
+                                  _F(JUSQU_A=40.0,
+                                     NOMBRE=6,),
+                                  _F(JUSQU_A=100.0,
+                                     NOMBRE=6,),
+                                  _F(JUSQU_A=200.0,
+                                     NOMBRE=10,),
+                                  _F(JUSQU_A=500.0,
+                                     NOMBRE=10,),),);
+U=STAT_NON_LINE(MODELE=MODMECA,
+                CHAM_MATER=MAT_RGI,
+                 CARA_ELEM=SA,
+                EXCIT=(_F(CHARGE = CH10),
+                       _F(CHARGE = CH11),
+                       _F(CHARGE = CH12),
+                       _F(CHARGE = CH20),),
+                     COMPORTEMENT=(_F(RELATION='RGI_BETON',
+                                   GROUP_MA='VE1',),
+                            _F(RELATION='ELAS',
+                               GROUP_MA=('CERC1','CERC2'),),),
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_INIT=0.,
+                                  INST_FIN=500.0,),
+                     NEWTON=_F(PREDICTION='ELASTIQUE',
+                           MATRICE='TANGENTE',),
+                     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-7,
+                               RESI_GLOB_RELA=1e-5,
+                               ITER_GLOB_MAXI=150,),
+                ARCHIVAGE = _F(LIST_INST=L_SAUV),);
+
+
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             GROUP_MA='VE1',
+             DEFORMATION='EPSI_NOEU',
+             VARI_INTERNE='VARI_NOEU',);
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=U,),);
+
+tab10=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='EPSI',
+                             RESULTAT=U,
+                             NOM_CHAM='EPSI_NOEU',
+                             GROUP_NO='P5',
+                             TOUT_CMP='OUI',),);
+
+tab20=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='VARI',
+                             RESULTAT=U,
+                             NOM_CHAM='VARI_NOEU',
+                             GROUP_NO='P5',
+                             NOM_CMP='V22',),);
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=8,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U,
+                   NOM_CHAM='VARI_NOEU',
+                   NOEUD='N5',
+                   NOM_CMP='V22',
+                   VALE_CALC=0.158774823948,
+                   VALE_REFE=0.158774823948,
+                   PRECISION=1.0000000000000001E-3,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=39,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=U,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC= -1.04520327357E-05,
+                   VALE_REFE=-1.04520327357E-05,
+                   PRECISION=1.0000000000000001E-3,
+                   MAILLE='M1',),
+                ),
+          );
+
+
+dico = U.LIST_VARI_ACCES()
+
+list_bouc = dico['INST'];
+
+for ii in range(len(list_bouc)):
+  
+  VAR2 = CREA_CHAMP(TYPE_CHAM = 'NOEU_VAR2_R',
+                    OPERATION='EXTR',
+                    RESULTAT = U,
+                    NOM_CHAM='VARI_NOEU',
+                    NUME_ORDRE=ii,)
+
+  VAR3 = CREA_CHAMP(INFO=1,
+                    OPERATION='ASSE',
+                    TYPE_CHAM='NOEU_TEMP_R',
+                    MODELE = MODMECA,
+                    ASSE=_F(TOUT='OUI',
+                            CHAM_GD = VAR2,
+                            NOM_CMP = 'V23',
+                            NOM_CMP_RESU = 'TEMP',
+                            CUMUL = 'NON'),);
+
+  if(ii==0):
+    
+    RESU = CREA_RESU( OPERATION = 'AFFE',
+                      TYPE_RESU = 'EVOL_THER',
+                      NOM_CHAM  = 'TEMP',
+                      AFFE=_F(CHAM_GD = VAR3,
+                              INST = list_bouc[ii],),);
+
+  else:
+    
+    RESU = CREA_RESU(reuse = RESU,
+                     OPERATION = 'AFFE',
+                     TYPE_RESU = 'EVOL_THER',
+                     NOM_CHAM  = 'TEMP',
+                     AFFE=_F(CHAM_GD = VAR3,
+                     INST = list_bouc[ii],),);
+    
+  DETRUIRE(CONCEPT=_F(NOM=(VAR2,VAR3)));
+
+MAT_MEC=DEFI_MATERIAU(ELAS_FO=_F(E=E0,
+                               NU=NU0,
+                               TEMP_DEF_ALPHA=20.0,
+                               RHO=0.002363,
+                               ALPHA=ALPH0,
+                               K_DESSIC=0.,
+                               B_ENDOGE=0.,),
+PORO_BETON =_F(HYDS =0.0001
+                         ,F_C =rc1
+                         ,F_T =3.7
+                         ,EPS_COMP =2.e-3
+                         ,EPS_TRAC=2.0e-4
+                         ,EKVP=3.5e-3
+                         ,CBIO =0.23
+                         ,MODU_EAU=0
+                         ,SFLD =27.
+                         ,MODU_GEL=mg
+                         ,VOL_GEL=vvaar
+                         ,PORO=146
+                         ,TKVP=1.0
+                         ,NRJA=36500.
+                         ,MSHR=mshr
+                         ,KD=k11
+                         ,MU=mu11
+                         ,DT80=0.3
+                         ,STMP=1.0
+                         ,KTMP=4.5,
+                          Y1SY= y1s1,
+                          TAU1= tau1,
+                          TAU2=tau2,
+                          EKFL=ekfl,
+                          DFMX=0.2,
+                          TREF  = tref0,
+                          GFTL  = 10.e-4,
+                          GFCL  = 10.e-2,
+                          WREF  = 5e-6,
+                          TPHI  = 1.0,
+                          ANG_CRIT  = 0.15,
+                          SREF  = 5.,
+                          VREF  = 3.17e-4,
+                          VMAX  = 3.17e-4,
+                          KWB   = 10,
+                          COVS  = 0.0,),);
+
+MAT_MECA=AFFE_MATERIAU(MAILLAGE=M,
+                      AFFE=(_F(GROUP_MA= 'VE1',
+                              MATER=MAT_MEC,),
+                       _F(GROUP_MA= ('CERC1','CERC2'),
+                         MATER=ACIER,),),
+                      AFFE_VARC=(_F(GROUP_MA= 'VE1',
+                                    NOM_VARC='TEMP',
+                                    EVOL=TEMP,
+                                    NOM_CHAM='TEMP',
+                                    PROL_DROITE='CONSTANT',
+                                    PROL_GAUCHE='CONSTANT',
+                                    VALE_REF=20.0,),
+                                 _F(GROUP_MA= 'VE1',
+                                    NOM_VARC='HYDR',
+                                    EVOL=HYDR,
+                                    NOM_CHAM='HYDR_NOEU',
+                                    PROL_DROITE='CONSTANT',
+                                    PROL_GAUCHE='CONSTANT',),
+                                 _F(GROUP_MA= 'VE1',
+                                    NOM_VARC='SECH',
+                                    EVOL=SECH,
+                                    NOM_CHAM='TEMP',
+                                    PROL_DROITE='LINEAIRE',
+                                    PROL_GAUCHE='CONSTANT',
+                                    VALE_REF=146,),
+                                 _F(GROUP_MA= 'VE1',
+                                    NOM_VARC='NEUT1',
+                                    EVOL=RESU,
+                                    NOM_CHAM='TEMP',
+                                    PROL_DROITE='CONSTANT',
+                                    PROL_GAUCHE='CONSTANT',),),
+                      VARC_NEUT1=_F(NOM_VARC='NEUT1',
+                                    GRANDEUR='TEMP_R',
+                                    CMP_GD='TEMP',
+                                    CMP_VARC='X1',),);
+
+RESUMECA=STAT_NON_LINE(MODELE=MODMECA,
+                     CHAM_MATER=MAT_MECA,
+                     CARA_ELEM=SA,
+                EXCIT=(_F(CHARGE = CH10),
+                       _F(CHARGE = CH11),
+                       _F(CHARGE = CH12),
+                       _F(CHARGE = CH20),),
+                     COMPORTEMENT=(_F(RELATION='ELAS',
+                                   TOUT='OUI',),
+                    _F(RELATION='KIT_DDI',
+                                   RELATION_KIT=('FLUA_PORO_BETON',
+                                                 'ENDO_PORO_BETON'),
+                                   GROUP_MA=('VE1'),),
+                   ),        
+                     INCREMENT=_F(LIST_INST=L_INST,
+                                  INST_INIT=0.,
+                                  INST_FIN=500.0,),
+                     NEWTON=_F(PREDICTION='ELASTIQUE',
+                           MATRICE='TANGENTE',),
+                     CONVERGENCE=_F(RESI_GLOB_MAXI=1e-7,
+                               RESI_GLOB_RELA=1e-5,
+                               ITER_GLOB_MAXI=150,
+                               ARRET='NON',),
+                ARCHIVAGE = _F(LIST_INST=L_SAUV),);
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(RESULTAT=RESUMECA,),);
+
+RESUMECA=CALC_CHAMP(reuse=RESUMECA,
+                    RESULTAT=RESUMECA,
+            GROUP_MA='VE1',
+            CONTRAINTE=('SIGM_ELNO'),
+            VARI_INTERNE=('VARI_ELNO'),
+            DEFORMATION=('EPSI_ELNO'),);
+
+tab=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                   INTITULE='deformation',
+                   RESULTAT=RESUMECA,
+                   NOM_CHAM='EPSI_ELNO',
+                   NOEUD='N5',
+                   NOM_CMP=('EPXX'),),)
+IMPR_TABLE(TABLE=tab,
+           UNITE=8,);
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=3,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUMECA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N6',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-3.57382250077E-06,
+                   VALE_REFE=-3.57382250077E-06,
+                   PRECISION=1.E-2,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=39,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUMECA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N5',
+                   NOM_CMP='DZ',
+                   VALE_CALC=-3.0107681647E-06,
+                   VALE_REFE=-3.0107681647E-06,
+                   PRECISION=1.E-2,
+                   MAILLE='M2',),
+                _F(NUME_ORDRE=39,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUMECA,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N12',
+                   NOM_CMP='DX',
+                   VALE_CALC=6.4431821356E-05,
+                   VALE_REFE=6.4431821356E-05,
+                   PRECISION=1.E-2,
+                   MAILLE='M3',),
+                _F(NUME_ORDRE=39,
+                   REFERENCE='NON_DEFINI',
+                   RESULTAT=RESUMECA,
+                   NOM_CHAM='VARI_ELNO',
+                   NOEUD='N5',
+                   NOM_CMP='V18',
+                   VALE_CALC=26.1412298767,
+                   VALE_REFE=26.1412298767,
+                   PRECISION=1.E-2,
+                   MAILLE='M2',),
+                ),
+          );
+
+FIN();

@@ -1,0 +1,122 @@
+ TITRE
+ %  GIBI FECIT                                                                  
+ FINSF
+ %
+ COOR_3D
+ N1        6.47526553759635D-02  5.66512327859778D-03  0.00000000000000D+00
+ N2        0.00000000000000D+00  0.00000000000000D+00  0.00000000000000D+00
+ N3        6.50000000000000D-02  0.00000000000000D+00  0.00000000000000D+00
+ N4        6.47526553759635D-02  5.66512327859778D-03  1.20000000000000D-01
+ N5        0.00000000000000D+00  0.00000000000000D+00  1.20000000000000D-01
+ N6        6.50000000000000D-02  0.00000000000000D+00  1.20000000000000D-01
+ FINSF
+ %
+ PENTA6  
+ M1       N1       N2       N3       N4       N5       N6      
+ FINSF
+ %
+ TRIA3   
+ M2       N1       N2       N3      
+ FINSF
+ %
+ SEG2    
+ M7       N2       N3      
+ M8       N3       N1      
+ M9       N2       N1      
+ M14      N3       N6      
+ FINSF
+ %
+ QUAD4   
+ M17      N2       N3       N6       N5      
+ M21      N2       N1       N4       N5      
+ FINSF
+ %
+ TRIA3   
+ M25      N4       N5       N6      
+ FINSF
+ %
+ QUAD4   
+ M29      N3       N6       N4       N1      
+ FINSF
+ %
+ GROUP_NO
+ P1      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ P2      
+ N3      
+ FINSF
+ %
+ GROUP_NO
+ P3      
+ N6      
+ FINSF
+ %
+ GROUP_NO
+ P4      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ P5      
+ N5      
+ FINSF
+ %
+ GROUP_MA
+ VE1     
+ M1      
+ FINSF
+ %
+ GROUP_MA
+ S_INF   
+ M2      
+ FINSF
+ %
+ GROUP_MA
+ D_INF   
+ M7       M8       M9      
+ FINSF
+ %
+ GROUP_MA
+ D12     
+ M7      
+ FINSF
+ %
+ GROUP_MA
+ D23     
+ M14     
+ FINSF
+ %
+ GROUP_MA
+ D24     
+ M8      
+ FINSF
+ %
+ GROUP_MA
+ D14     
+ M9      
+ FINSF
+ %
+ GROUP_MA
+ S_AVT   
+ M17     
+ FINSF
+ %
+ GROUP_MA
+ S_ARR   
+ M21     
+ FINSF
+ %
+ GROUP_MA
+ S_SUP   
+ M25     
+ FINSF
+ %
+ GROUP_MA
+ SEC1    
+ M29     
+ FINSF
+ %
+ FIN
