@@ -50,9 +50,9 @@ subroutine ibbase(ier, fichdf)
 !     --- VARIABLES LOCALES --------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibase, ideb, indbas, indcas, ltt
-    integer :: mxbase, mxcas, nb, nbbase
+    integer :: mxbase, mxcas, nb, nbbase, n
 !-----------------------------------------------------------------------
-    parameter   ( mxbase = 2 )
+    parameter   ( mxbase = 2 , n = 5 )
     integer :: banbbl(mxbase), balgbl(mxbase), balgre(mxbase)
 !
 !     --- VALEURS PAR DEFAUTS DES BASES --------------------------------
@@ -69,6 +69,9 @@ subroutine ibbase(ier, fichdf)
     integer :: nbblca(mxbase, mxcas), lgblca(mxbase, mxcas)
     integer :: lgreca(mxbase, mxcas)
     integer :: vali(2), info
+!
+    integer :: lfic, mfic
+    common /fenvje/  lfic(n),mfic
 !
     data      nomba  /'GLOBALE '   , 'VOLATILE'   /
     data      presba /    0        ,     0        /
@@ -101,17 +104,17 @@ subroutine ibbase(ier, fichdf)
     stin(1) = nomcmd
 !
     indcas = 1
-    do 12 indbas = 1, mxbase
+    do indbas = 1, mxbase
         banbbl(indbas) = nbblca(indbas,indcas)
         balgbl(indbas) = lgblca(indbas,indcas)
         balgre(indbas) = lgreca(indbas,indcas)
-12  end do
+    end do
 !
 !     --- NOMBRE DE BASES SPECIFIEES PAR L'UTILISATEUR -----------------
     motfac = 'BASE'
     call getfac(motfac, nbbase)
 !
-    do 100 ibase = 1, nbbase
+    do ibase = 1, nbbase
 !
 !        --- MOT CLE "FICHIER" ANCIENNEMENT "NOM" ---------------------
         call getvtx(motfac, 'FICHIER', iocc=ibase, scal=nom, nbret=nb)
@@ -156,6 +159,8 @@ subroutine ibbase(ier, fichdf)
 !        --- LONGUEUR D'UN BLOC D'ENREGISTREMENT -----------------------
         balgbl(indbas) = lgblca(indbas,indcas)
         call getvis(motfac, 'LONG_ENRE', iocc=ibase, scal=balgbl(indbas), nbret=nb)
+
+        call getvis(motfac, 'TAILLE', iocc=ibase, scal=lfic(indbas))
 !
         ltt = banbbl(indbas)*balgbl(indbas)*loisem()
         if (ltt .gt. mofiem()) then
@@ -172,7 +177,7 @@ subroutine ibbase(ier, fichdf)
 !        --- MOT CLE "TITRE" -------------------------------------------
         call getvtx(motfac, 'TITRE', iocc=ibase, scal=titrba(indbas), nbret=nb)
 !
-100  end do
+     end do
 !
 !
 !     --- QUELQUES CONTROLES SUPPLEMENTAIRES SUR LA GLOBALE EN POURSUITE

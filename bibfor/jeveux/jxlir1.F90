@@ -53,7 +53,7 @@ subroutine jxlir1(ic, caralu)
     common /ienvje/  lbis , lois , lols , lor8 , loc8
 !     ------------------------------------------------------------------
     integer :: npar, np2
-    parameter ( npar = 11, np2 = npar+3 )
+    parameter ( npar = 12, np2 = npar+3 )
     integer :: tampon(np2), mode
     aster_logical :: lexist
     character(len=8) :: nom
@@ -88,8 +88,8 @@ subroutine jxlir1(ic, caralu)
     if (ierr .ne. 0) then
         call utmess('F', 'JEVEUX_14', sk=nombas(ic))
     endif
-    do 1 k = 1, npar
+    do k = 1, npar
         caralu(k) = tampon(k+3)
-  1 end do
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

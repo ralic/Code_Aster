@@ -106,7 +106,7 @@ subroutine jelihd(nomf, fichdf, clas)
     integer :: lbis, lois, lols, lor8, loc8
     common /ienvje/  lbis , lois , lols , lor8 , loc8
     integer :: lfic, mfic
-    common /fenvje/  lfic,mfic
+    common /fenvje/  lfic(n),mfic
 !
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
@@ -118,7 +118,7 @@ subroutine jelihd(nomf, fichdf, clas)
     parameter      ( z = 'INIT' )
     character(len=8) :: knom, knomf, cversb, cversu
     integer :: ncar, itlec(1), itecr(1)
-    parameter      ( ncar = 11 )
+    parameter      ( ncar = 12 )
 ! ----------------------------------------------------------------------
     character(len=1) :: kclas, typei, genri, typeb
     character(len=80) :: nhdf
@@ -187,10 +187,10 @@ subroutine jelihd(nomf, fichdf, clas)
     nomoc = d32
     ltypb = 0
     typeb = ' '
-    do 1001 i = 1, 5
+    do i = 1, 5
         kattr(i) = ' '
         kattrg(i) = ' '
-1001  end do
+    end do
 !
 ! ----- OPEN FICHIER
 ! ----- LECTURE DE L'OBJET ________GLOBALE ________$$CARA
@@ -233,8 +233,9 @@ subroutine jelihd(nomf, fichdf, clas)
     nreuti(ic) = cara(jcara(ic) + 1 )
     nrhcod(ic) = cara(jcara(ic) + 2 )
     nblmax(ic) = cara(jcara(ic) + 3 )
-    nbluti(ic) = cara(jcara(ic) + 4 )
+    nbluti(ic) = cara(jcara(ic) + 4 ) 
     longbl(ic) = cara(jcara(ic) + 5 )
+    lfic(ic)   = cara(jcara(ic) + 11 )
     if (cversu .ne. cversb) then
         valk(1) = nombas(ic)
         valk(2) = cversb
@@ -273,7 +274,7 @@ subroutine jelihd(nomf, fichdf, clas)
                 imarq(jmarq(ic)+2*1-1))
     call jjhrsv(idts, ncar, kat(1))
 !
-    nbenrg(ic) = min ( lfic/(longbl(ic)*lois) , nblmax(ic) )
+    nbenrg(ic) = min ( lfic(ic)/(longbl(ic)*lois) , nblmax(ic) )
 !
 ! ----OPEN DU FICHIER BINAIRE ASSOCIE A LA BASE JEVEUX
 !
@@ -309,9 +310,9 @@ subroutine jelihd(nomf, fichdf, clas)
     jindir(ic) = iadrs - 1
     call jjecrs(kat(17), ic, 17, 0, 'E',&
                 imarq(jmarq(ic)+2*17-1))
-    do 345 ind = 1, nremax(ic)
+    do ind = 1, nremax(ic)
         indir(jindir(ic)+ind) = ind
-345  end do
+    end do
 !
 !
 !     CES DEUX OBJETS SYSTEME NE DOIVENT PAS ETRE RELUS SUR FICHIER HDF
@@ -456,36 +457,36 @@ subroutine jelihd(nomf, fichdf, clas)
 !     LA BASE ETANT RECREE, IL FAUT RETABLIR L'ETAT D'USAGE DES
 !     ENREGISTREMENTS A -1
 !
-    do 14 i = 1, nblma2
+    do i = 1, nblma2
         iusadi( iadrs + (3*i-2) - 1 ) = -1
         iusadi( iadrs + (3*i-1) - 1 ) = -1
         iusadi( iadrs + (3*i ) - 1 ) = 0
-14  end do
-    do 20 i = 1, lidbas
+    end do
+    do i = 1, lidbas
         iadm(jiadm(ic) + 2*i-1 ) = kat(i)
         iadm(jiadm(ic) + 2*i ) = kdy(i)
-20  end do
+    end do
 !
 !     IL FAUT AJUSTER LA LONGUEUR DU TYPE ENTIER AVANT ECRITURE
 !
 !
-    do 49 k = 1, lideff
+    do k = 1, lideff
         if (type(jtype(ic)+k) .eq. 'I') then
             ltyp(jltyp(ic)+k) = lois
         endif
-49  end do
+    end do
 !
     iadd (jiadd(ic)+1) = 0
     iadd (jiadd(ic)+2) = 0
     call jxecro(ic, kat(1), iadd(jiadd(ic)+1), ncar*lois, 0,&
                 1)
-    do 21 i = 2, lideff
+    do i = 2, lideff
         iadd (jiadd(ic)+2*i-1) = 0
         iadd (jiadd(ic)+2*i ) = 0
         lso(i) = lono(jlono(ic)+i) * ltyp(jltyp(ic)+i)
         call jxecro(ic, kat(i), iadd(jiadd(ic)+2*i-1), lso(i), 0,&
                     i)
-21  end do
+    end do
     cara(jcara(ic)+6) = iadd(jiadd(ic) + 2*2-1 )
     cara(jcara(ic)+7) = iadd(jiadd(ic) + 2*2 )
 !
@@ -513,7 +514,7 @@ subroutine jelihd(nomf, fichdf, clas)
 !     REPERTOIRE
 !
     irt = 0
-    do 51 k = lideff+1, nremax(ic)
+    do k = lideff+1, nremax(ic)
         if (type(jtype(ic)+k) .eq. 'I') then
             ltyp(jltyp(ic)+k) = lois
         endif
@@ -528,12 +529,12 @@ subroutine jelihd(nomf, fichdf, clas)
             endif
             lono(jlono(ic)+k) = lonok
         endif
-51  end do
+    end do
 !
 !     ON TRAITE EN PREMIER LES COLLECTIONS AFIN DE POUVOIR LES LIBERER
 !
     call jemarq()
-    do 101 k = 1, nbobj
+    do k = 1, nbobj
         if (k8(jk8+k-1) .eq. 'dataset') then
             idts=hdfopd(idfic,ngrp,k32(jk32+k-1))
             iret1=hdfrat(idts,nomatr,5,kattr)
@@ -544,11 +545,11 @@ subroutine jelihd(nomf, fichdf, clas)
             iret3=hdfcld(idts)
             ASSERT(iret3 .eq. 0)
         endif
-101  end do
+    end do
 !
 !     ON TRAITE MAINTENANT LES OBJETS SIMPLES (OBJETS SYSTEMES EXCLUS)
 !
-    do 201 k = 1, nbobj
+    do k = 1, nbobj
         if (k8(jk8+k-1) .eq. 'dataset') then
             idts=hdfopd(idfic,ngrp,k32(jk32+k-1))
             iret1=hdftsd(idts,typeb,ltypb,nbval)
@@ -623,7 +624,7 @@ subroutine jelihd(nomf, fichdf, clas)
             endif
             iret1=hdfclg(idgr)
         endif
-201  end do
+    end do
     iret1 = hdfclf (idfic)
     if (iret1 .ne. 0) then
         call utmess('F', 'JEVEUX_55', sk=nhdf)

@@ -106,7 +106,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     integer :: lbis, lois, lols, lor8, loc8
     common /ienvje/  lbis , lois , lols , lor8 , loc8
     integer :: lfic, mfic
-    common /fenvje/  lfic,mfic
+    common /fenvje/  lfic(n),mfic
 !
     integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common /iadmje/  ipgc,kdesma,   lgd,lgduti,kposma,   lgp,lgputi
@@ -120,14 +120,14 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     character(len=24) :: valk(3)
     integer :: ncar, itlec(1), itecr(1), iadadd(2), lgbl
     integer :: vali(7), irt, ind
-    parameter      ( ncar = 11 )
+    parameter      ( ncar = 12 )
 ! ----------------------------------------------------------------------
     aster_logical :: lenrg
     integer :: lidbas, lideff
     parameter      ( lidbas = 20 , lideff = 15 )
     character(len=8) :: cidbas(lidbas)
     integer :: kat(lidbas), lso(lidbas), kdy(lidbas)
-    data cidbas  / '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,&
+    data cidbas  /   '$$CARA  ' , '$$IADD  ' , '$$GENR  ' , '$$TYPE  ' ,&
      &               '$$DOCU  ' , '$$ORIG  ' , '$$RNOM  ' , '$$LTYP  ' ,&
      &               '$$LONG  ' , '$$LONO  ' , '$$DATE  ' , '$$LUTI  ' ,&
      &               '$$HCOD  ' , '$$USADI ' , '$$ACCE  ' , '$$MARQ  ' ,&
@@ -215,7 +215,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         call jjecrs(kat(1), ic, 1, 0, 'E',&
                     imarq(jmarq(ic)+1))
 !
-        nbenrg(ic) = min(lfic/(longbl(ic)*lois),nblmax(ic))
+        nbenrg(ic) = min(lfic(ic)/(longbl(ic)*lois),nblmax(ic))
 !
         nbloco = nblmax(ic) * lois
         call jjalls(nbloco, ic, 'V', 'I', lois,&
@@ -276,6 +276,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         call gtopti('versMAJ', cara(jcara(ic) +8 ), iret)
         call gtopti('versMIN', cara(jcara(ic) +9 ), iret)
         call gtopti('versSUB', cara(jcara(ic) +10), iret)
+        cara(jcara(ic) +11 ) = lfic(ic)
         lon = 2 * nremax(ic) * lois
         call jjalls(lon, ic, 'V', 'I', lois,&
                     z, iadd, iadrs, kat( 2), kdy(2))
@@ -452,6 +453,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         longbl(ic) = cara(jcara(ic) + 5 )
         iadadd(1) = cara(jcara(ic) + 6 )
         iadadd(2) = cara(jcara(ic) + 7 )
+        lfic(ic) = cara(jcara(ic) + 11 )
         if (cversu .ne. cversb) then
             valk(1) = nombas(ic)
             valk(2) = cversb
@@ -504,7 +506,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         call jjecrs(kat(1), ic, 1, 0, 'E',&
                     imarq(jmarq(ic)+2*1-1))
 !
-        nbenrg(ic) = min ( lfic/(longbl(ic)*lois) , nblma2 )
+        nbenrg(ic) = min ( lfic(ic)/(longbl(ic)*lois) , nblma2 )
 !
 ! ----- NOUVEL OPEN DE LA BASE
         nbext = (nbluti(ic)/nbenrg(ic))+1

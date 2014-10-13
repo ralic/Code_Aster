@@ -115,7 +115,7 @@ subroutine jedebu(nbfi, mxzon, idb)
     integer :: idn, iext, nbenrg
     common /iextje/  idn(n) , iext(n) , nbenrg(n)
     integer :: lfic, mfic
-    common /fenvje/  lfic,mfic
+    common /fenvje/  lfic(n),mfic
     character(len=128) :: repglo, repvol
     common /banvje/  repglo,repvol
     integer :: lrepgl, lrepvo
@@ -147,7 +147,9 @@ subroutine jedebu(nbfi, mxzon, idb)
     zr(1)=r8nnem()
     zc(1)=dcmplx(zr(1),zr(1))
 ! -----------------  ENVIRONNEMENT MACHINE -----------------------------
-    lfic = lofiem()
+    do k=1,n
+       lfic(k) = lofiem()
+    end do   
     call gtoptr('maxbase', val, iret)
     if (val .le. 0 .or. iret .ne. 0) then
         mfic = mofiem()
@@ -200,9 +202,9 @@ subroutine jedebu(nbfi, mxzon, idb)
 ! -----------------  CONSTANTES DE STATUT DES SEGMENTS DE VALEURS ------
     kstat = 'XUAD'
     isstat = ispbem( lbis - 3 )
-    do 2 k = 1, 4
+    do k = 1, 4
         istat(k) = k * isstat
-  2 end do
+    end do
     idebug = idb
 ! -----------------  ZONE MEMOIRE  -------------------------------------
     vmxdyn = mxzon
@@ -239,10 +241,10 @@ subroutine jedebu(nbfi, mxzon, idb)
     jk1zon = jiszon * lois
     iloc = loc ( iszon(jiszon) )
 ! -------------------  POINTEURS D'ATTRIBUTS  --------------------------
-    do 5 i = 1, len(classe)
+    do i = 1, len(classe)
         classe(i:i) = '$'
-  5 end do
-    do 10 i = 1, nbfic
+    end do
+    do i = 1, nbfic
         jgenr(i) = 0
         jtype(i) = 0
         jltyp(i) = 0
@@ -279,24 +281,24 @@ subroutine jedebu(nbfi, mxzon, idb)
         dn2(i) = ' '
         nbacce(2*i-1) = 0
         nbacce(2*i ) = 0
- 10 end do
+    end do
 ! -------------------  CONSTANTES DE GESTION  --------------------------
     lsstat = lbis-4
     msstat = 0
-    do 20 k = 1, lbis-4
+    do k = 1, lbis-4
         msstat = msstat + ispbem(k)
- 20 end do
+    end do
     bl32 = ' '
 !
     call jxdate(datei)
 !
     illici = -1
-    do 30 k = 0, 255
+    do k = 0, 255
         jclass(k) = illici
- 30 end do
-    do 31 k = 1, mxlici
+    end do
+    do k = 1, mxlici
         jclass(ichar( clicit(k:k) ) ) = k
- 31 end do
+    end do
 !
     kdesma(1) = 0
     kdesma(2) = 0
