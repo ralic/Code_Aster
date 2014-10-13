@@ -80,9 +80,11 @@ def calc_modes_multi_bandes(self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL
     # Cependant si le solveur est autre que MUMPS on s'arrete en erreur.
     if (args['NIVEAU_PARALLELISME']=='COMPLET'):
         rang, nbproc = aster_core.MPI_CommRankSize()
+        niv_par='COMPLET'
     elif (args['NIVEAU_PARALLELISME']=='PARTIEL'):
         rang = 0
         nbproc = 1
+        niv_par='PARTIEL'
         nbproc_real = aster_core.MPI_CommRankSize()[1]
         if ((nbproc_real>1)&(solveur_lineaire!='MUMPS')):
             aster.affiche('MESSAGE',72*'-')
@@ -143,6 +145,7 @@ def calc_modes_multi_bandes(self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL
                        MATR_MASS  =MATR_MASS,
                        INFO       =INFO,
                        FREQ       =lborne,
+                       NIVEAU_PARALLELISME  = niv_par,
                        SOLVEUR    =dSolveur_infomode,
                        **motfaci)
 
@@ -352,6 +355,7 @@ def calc_modes_multi_bandes(self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL
                                MATR_MASS  =MATR_MASS,
                                INFO       =INFO,
                                FREQ       = (freq_ini,freq_fin),
+                               NIVEAU_PARALLELISME  = niv_par,
                                SOLVEUR    =dSolveur_infomode,
                                **motfaci)
 

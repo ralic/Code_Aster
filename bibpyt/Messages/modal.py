@@ -87,9 +87,12 @@ Opérateur MACRO_MODE_MECA en mode parallèle:
   Avec les autres solveurs linéaires ces deux paramètres doivent être rigoureusement égaux.
   Ici le solveur linéaire utilisé est %(k1)s.
   
-  Conseil:
-    * Ajuster le nombre de processeurs et/ou la distribution des sous-bandes et/ou
-      le solveur linéaire en conséquence.
+  Conseils:
+    * Ajuster le nombre de processeurs et/ou la distribution des sous-bandes et/ou le solveur linéaire
+      en conséquence.
+    * Sans toucher aux nombres de processeurs et de sous-bandes, vous pouvez profiter quand même du parallélisme.
+      Il suffit de le limiter au seul solveur linéaire. Pour cela paramétrer le mot-clé NIVEAU_PARALLELISME à
+      'PARTIEL' et choisissez le solveur linéaire MUMPS.
 """),
 10: _(u"""
 Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
@@ -99,9 +102,12 @@ Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:
   Avec les autres solveurs linéaires ces deux paramètres doivent être rigoureusement égaux.
   Ici le solveur linéaire utilisé est %(k1)s.
 
-  Conseil:
+  Conseils:
     * Ajuster le nombre de processeurs et/ou la distribution des sous-bandes et/ou
       le solveur linéaire en conséquence.
+    * Sans toucher aux nombres de processeurs et de sous-bandes, vous pouvez profiter quand même du parallélisme.
+      Il suffit de le limiter au seul solveur linéaire. Pour cela paramétrer le mot-clé NIVEAU_PARALLELISME à
+      'PARTIEL' et choisissez le solveur linéaire MUMPS.
 """),
 11: _(u"""
 Opérateurs INFO_MODE ou MACRO_MODE_MECA en mode parallèle:

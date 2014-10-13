@@ -147,10 +147,10 @@ subroutine op0032()
     if (l .ne. 1) then
         ASSERT(.false.)
     endif
-    if ((typpar.ne.'COMPLET') .and. (typpar.ne.'PARTIEL')) then
+    if ((typpar(1:7).ne.'COMPLET') .and. (typpar(1:7).ne.'PARTIEL')) then
         ASSERT(.false.)
     endif
-    if ((typpar.eq.'COMPLET') .and. (nbproc.gt.1) .and. (.not.lcomod)) then
+    if ((typpar(1:7).eq.'COMPLET') .and. (nbproc.gt.1) .and. (.not.lcomod)) then
         lcoinf=.true.
         typeco=1
     else
@@ -387,12 +387,12 @@ subroutine op0032()
 !
 !      --- INFO_MODE PARALLELE: INCOMPATIBILITES FONCTIONNELLES ET
 !      --- DESEQUILIBRAGE DE CHARGE POTENTIEL.
-    if (lcoinf) then
-        if ((typpar.eq.'PARTIEL') .and. (metres(1:5).ne.'MUMPS') .and. (nbproc.gt.1)) then
-            vali(1)=nbproc
-            valk(1)=metres
-            call utmess('F', 'MODAL_14', sk=valk(1), si=vali(1))
-        endif
+   if ((typpar(1:7).eq.'PARTIEL') .and. (metres(1:5).ne.'MUMPS') .and. (nbproc.gt.1)) then
+       vali(1)=nbproc
+       valk(1)=metres
+       call utmess('F', 'MODAL_14', sk=valk(1), si=vali(1))
+   endif
+   if (lcoinf) then
         if ((nbproc.lt.(nbmod-1)) .or.&
             ((nbproc.gt.(nbmod-1)).and.( metres(1:5).ne.'MUMPS'))) then
             vali(1)=nbproc
