@@ -119,7 +119,7 @@ class MISS_PARAMETER(object):
     def check(self):
         """Vérification des règles impossible à écrire dans le .capy"""
         # tâches à la demande
-        if self['TYPE_RESU'] in ('HARM_GENE', 'TRAN_GENE', 'TABLE'):
+        if self['TYPE_RESU'] in ('HARM_GENE', 'TRAN_GENE', 'TABLE', 'CHARGE'):
             self.set('_calc_impe', True)
             self.set('_calc_forc', True)
         elif self['TYPE_RESU'] in ('FICHIER', 'TABLE_CONTROL'):
@@ -140,12 +140,14 @@ class MISS_PARAMETER(object):
             self['UNITE_RESU_FORC'] = self.UL.Libre(action='ASSOCIER')
 
         # fréquences
-        if self['LIST_FREQ'] is not None \
-        and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE', 'TABLE_CONTROL'):
+        if self['TYPE_RESU'] not in ('CHARGE'):
+         if self['LIST_FREQ'] is not None \
+         and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE', 'TABLE_CONTROL'):
             raise aster.error('MISS0_17')
 
         # si base modale, vérifier/compléter les amortissements réduits
-        if self['BASE_MODALE']:
+        if self['TYPE_RESU'] not in ('CHARGE'):
+         if self['BASE_MODALE']:
             res = aster.dismoi('NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT','C')
             ASSERT(res[0] == 0)
             self['_NBM_DYN'] = res[1]
@@ -169,7 +171,8 @@ class MISS_PARAMETER(object):
                 UTMESS('F', 'MISS0_22')
             if self['MATER_FLUIDE'] is None:
                 UTMESS('F', 'MISS0_23')
-        if self.get('GROUP_MA_CONTROL') is not None:
+        if self['TYPE_RESU'] not in ('CHARGE'):
+         if self.get('GROUP_MA_CONTROL') is not None:
             assert self['INST_FIN'] is not None, "INST_FIN obligatoire"
 
     def __iter__(self):

@@ -219,7 +219,7 @@ ASSEMBLAGE(MODELE=STICKMOD,
 #
 MODE=MACRO_MODE_MECA(MATR_RIGI=MATRRIGI,
                      MATR_MASS=MATRMASS,
-                     CALC_FREQ=_F(FREQ=(0.10000000000000001,10.0,20.0,30.0,40.0,),),
+                     CALC_FREQ=_F(FREQ=(0.10000000000000001,10.0,),),
                      IMPRESSION=_F(),);
 
 #
@@ -252,6 +252,7 @@ MODSTA=MODE_STATIQUE(  MATR_RIGI=MATRRIGI,
                      GROUP_NO = 'CENT_RAD', 
                      AVEC_CMP = ('DX','DY','DZ','DRX','DRY','DRZ'),
                                  ));
+                                 
 
 BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=MODE,
                                 NMAX_MODE=0,),
@@ -308,7 +309,31 @@ ACCEX=CALC_FONCTION(COMB=_F(FONCTION=LBNS,
                        
 ACCEY=CALC_FONCTION(COMB=_F(FONCTION=LBEW,
                                COEF=1.5,),
-                       LIST_PARA=linst,);                     
+                       LIST_PARA=linst,);
+                       
+vitex=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEX,));
+
+deplx0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitex,));
+
+deplxF=FORMULE(NOM_PARA='INST',
+            VALE='deplx0(INST)-(INST*deplx0(TFIN-dt)/(TFIN-dt))')
+            
+deplx=CALC_FONC_INTERP(FONCTION=deplxF, NOM_PARA = 'INST',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=linst);
+
+vitey=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEY,));
+
+deply0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitey,));
+
+deplyF=FORMULE(NOM_PARA='INST',
+            VALE='deply0(INST)-(INST*deply0(TFIN-dt)/(TFIN-dt))')
+            
+deply=CALC_FONC_INTERP(FONCTION=deplyF, NOM_PARA = 'INST',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=linst);                     
     
 tabsol= DEFI_SOL_EQUI(MAILLAGE=mailcol,
                        GROUP_MA_DROITE='DR8',GROUP_MA_GAUCHE='GA8',
@@ -459,7 +484,7 @@ MAEL0=MACR_ELEM_DYNA(BASE_MODALE=BAMO,
                       MATR_MASS=MATRMASS,
                       SANS_GROUP_NO='RADIER',);
                       
-
+'''
 CALC_MISS(
     TYPE_RESU='FICHIER',
     TABLE_SOL=tabsol, #TABSOL,
@@ -472,9 +497,9 @@ CALC_MISS(
     UNITE_RESU_FORC= 29,
     VERSION='V6.5',
     PARAMETRE=_F(
-        FREQ_MIN=0.3,
-        FREQ_MAX=3.0,
-        FREQ_PAS=2.7,
+        FREQ_MIN=0.1, #0.3,
+        FREQ_MAX=10., #3.0,
+        FREQ_PAS=0.1, #2.7,
         Z0= -5.80,
         DREF=5.,
         SURF='OUI',
@@ -485,7 +510,7 @@ CALC_MISS(
         SPEC_NB=16384,
     ),
 );
-
+'''
         
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31,);
  
@@ -734,6 +759,21 @@ PESAX=AFFE_CHAR_MECA(MODELE=MODELB,
 PESAY=AFFE_CHAR_MECA(MODELE=MODELB,
                     PESANTEUR=_F(GRAVITE=1.0,
                                  DIRECTION=(0.0,-1.0,0.0,),),);
+                             
+FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
+                        FONC_SIGNAL=deplx,
+                        NOM_CMP='DX',
+                        FREQ_MAX=10.,
+                        UNITE_RESU_FORC=29,
+                        NOEUD_AFFE=('N257',),
+                        );
+                     
+FSEISY=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
+                        FONC_SIGNAL=deply,
+                        NOM_CMP='DY',
+                        UNITE_RESU_FORC=29,
+                        NOEUD_AFFE=('N257',),
+                        );
                      
 CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                  FORCE_SOL=_F(SUPER_MAILLE='STAT1',
@@ -749,8 +789,10 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,
                  CHAM_MATER=CHMATB,
                  CARA_ELEM=ELEMB,
                  EXCIT=(
-                        _F(CHARGE=PESAX,FONC_MULT=ACCEX,),
-                        _F(CHARGE=PESAY,FONC_MULT=ACCEY,),
+                        _F(CHARGE=FSEISX,),
+                        _F(CHARGE=FSEISY,),
+                        #_F(CHARGE=PESAX,FONC_MULT=ACCEX,),
+                        #_F(CHARGE=PESAY,FONC_MULT=ACCEY,),
                         _F(CHARGE=CHSOL),
                         _F(CHARGE=COND_LIB),
                         ),
@@ -839,13 +881,13 @@ GARADBRX=RECU_FONCTION(RESULTAT=DYNA,
                        TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
 
 
-GARADB_X=CALC_FONCTION(LIST_PARA=L_INST,
-                    COMB=(_F(FONCTION=GARADBRX,
-                             COEF=1.,),
-                          _F(FONCTION=ACCEX,
-                             COEF=1.,),
-                          ),
-                       ); 
+## GARADB_X=CALC_FONCTION(LIST_PARA=L_INST,
+##                     COMB=(_F(FONCTION=GARADBRX,
+##                              COEF=1.,),
+##                           _F(FONCTION=ACCEX,
+##                              COEF=1.,),
+##                           ),
+##                        ); 
                        
 GARADBRY=RECU_FONCTION(RESULTAT=DYNA,
                        NOM_CHAM='ACCE',
@@ -855,13 +897,13 @@ GARADBRY=RECU_FONCTION(RESULTAT=DYNA,
                        TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
 
 
-GARADB_Y=CALC_FONCTION(LIST_PARA=L_INST,
-                    COMB=(_F(FONCTION=GARADBRY,
-                             COEF=1.,),
-                          _F(FONCTION=ACCEY,
-                             COEF=1.,),
-                          ),
-                       ); 
+## GARADB_Y=CALC_FONCTION(LIST_PARA=L_INST,
+##                     COMB=(_F(FONCTION=GARADBRY,
+##                              COEF=1.,),
+##                           _F(FONCTION=ACCEY,
+##                              COEF=1.,),
+##                           ),
+##                        ); 
                        
 
 #
@@ -880,13 +922,13 @@ GABKRX=RECU_FONCTION(RESULTAT=DYNA,
                      TITRE='ACCELERATION ABSOLUE AU SOMMET',);
                      
                      
-GABK_X=CALC_FONCTION(LIST_PARA=L_INST,
-                    COMB=(_F(FONCTION=GABKRX,
-                             COEF=1.,),
-                          _F(FONCTION=ACCEX,
-                             COEF=1.,),
-                          ),
-                       );  
+## GABK_X=CALC_FONCTION(LIST_PARA=L_INST,
+##                     COMB=(_F(FONCTION=GABKRX,
+##                              COEF=1.,),
+##                           _F(FONCTION=ACCEX,
+##                              COEF=1.,),
+##                           ),
+##                        );  
                        
 GABKRY=RECU_FONCTION(RESULTAT=DYNA,
                      NOM_CHAM='ACCE',
@@ -896,13 +938,13 @@ GABKRY=RECU_FONCTION(RESULTAT=DYNA,
                      TITRE='ACCELERATION ABSOLUE AU SOMMET',);
                      
                      
-GABK_Y=CALC_FONCTION(LIST_PARA=L_INST,
-                    COMB=(_F(FONCTION=GABKRY,
-                             COEF=1.,),
-                          _F(FONCTION=ACCEY,
-                             COEF=1.,),
-                          ),
-                       );  
+## GABK_Y=CALC_FONCTION(LIST_PARA=L_INST,
+##                     COMB=(_F(FONCTION=GABKRY,
+##                              COEF=1.,),
+##                           _F(FONCTION=ACCEY,
+##                              COEF=1.,),
+##                           ),
+##                        );  
 
 #
 #======================================================================
@@ -923,7 +965,7 @@ GABK_Y=CALC_FONCTION(LIST_PARA=L_INST,
 #
 
 
-SRADBX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_X, LIST_FREQ = freqspec,
+SRADBX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBRX, LIST_FREQ = freqspec,
                                    NORME=9.81, AMOR_REDUIT=(0.05),),);
 
 #
@@ -936,7 +978,7 @@ SRADBX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_X, LIST_FREQ = freqspec,
 #
 
 
-SRADBY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_Y, LIST_FREQ = freqspec,
+SRADBY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBRY, LIST_FREQ = freqspec,
                                    NORME=9.81, AMOR_REDUIT=(0.05),),);
 
 #
@@ -948,7 +990,7 @@ SRADBY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADB_Y, LIST_FREQ = freqspec,
 #
 
 
-SBKX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABK_X, LIST_FREQ = freqspec,
+SBKX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKRX, LIST_FREQ = freqspec,
                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
 
 # EN Y
@@ -957,13 +999,13 @@ SBKX5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABK_X, LIST_FREQ = freqspec,
 #
 
 
-SBKY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABK_Y, LIST_FREQ = freqspec,
+SBKY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKRY, LIST_FREQ = freqspec,
                                  NORME=9.81, AMOR_REDUIT=(0.05),),);                                  
-SIMPOX=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEX, LIST_FREQ = freqspec,
-                                 NORME=9.81, AMOR_REDUIT=(0.05),),);
-                                 
-SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, LIST_FREQ = freqspec,
-                                 NORME=9.81, AMOR_REDUIT=(0.05),),);
+## SIMPOX=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEX, LIST_FREQ = freqspec,
+##                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
+##                                  
+## SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, LIST_FREQ = freqspec,
+##                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
                                  
 
 #======================================================
@@ -1003,28 +1045,28 @@ SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, LIST_FREQ = freqspec,
 # LA SOURCE DES RESULTATS PROVIENT DE CLASSI POUR LA VALIDATION DU CHAINAGE ASTER_MISS3D 
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=0.54208616,
+                      _F(VALE_CALC=0.53235224,
                          VALE_REFE=0.60,
                          VALE_PARA=(0.05, 2.9),
                          REFERENCE='SOURCE_EXTERNE',
-                         PRECISION=1.E-1,
+                         PRECISION=1.2E-1,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBX5,),
-                      _F(VALE_CALC=0.56184758,
+                      _F(VALE_CALC=0.53494460,
                          VALE_REFE=0.687,
                          VALE_PARA=(0.05, 2.8),
                          REFERENCE='SOURCE_EXTERNE',
-                         PRECISION=2.E-1,
+                         PRECISION=2.5E-1,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBY5,),
-                      _F(VALE_CALC=1.63908283,
+                      _F(VALE_CALC=1.60293263,
                          VALE_REFE=2.57,
                          VALE_PARA=(0.05, 1.4),
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.4,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SBKX5,),
-                      _F(VALE_CALC=2.10284866,
+                      _F(VALE_CALC=2.06536539,
                          VALE_REFE=3.37,
                          VALE_PARA=(0.05, 1.3),
                          REFERENCE='SOURCE_EXTERNE',

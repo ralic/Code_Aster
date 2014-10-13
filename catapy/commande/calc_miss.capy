@@ -23,7 +23,9 @@ def calc_miss_sdprod(self, TYPE_RESU, **kwargs):
     elif TYPE_RESU == 'HARM_GENE':
         return harm_gene
     elif TYPE_RESU == 'TRAN_GENE':
-        return tran_gene
+        return tran_gene        
+    elif TYPE_RESU == 'CHARGE':
+        return char_meca
     else:
         return None
 
@@ -32,11 +34,11 @@ CALC_MISS = MACRO(nom="CALC_MISS",
                   sd_prod=calc_miss_sdprod,
                   fr=tr("Préparation des données, exécution du logiciel Miss3D, et post-traitement"),
                   UIinfo={"groupes":("Résolution","Outils-métier",)},
-                  regles=(UN_PARMI('TABLE_SOL', 'MATER_SOL'),),
+                  regles=(EXCLUS('TABLE_SOL', 'MATER_SOL'),),
 
     TYPE_RESU   = SIMP(statut='o', typ='TXM',
                        into=('HARM_GENE', 'TRAN_GENE', 'TABLE', 'TABLE_CONTROL',
-                             'FICHIER', 'FICHIER_TEMPS'),
+                             'FICHIER', 'FICHIER_TEMPS','CHARGE'),
                        fr=tr("Type de résultat produit en post-traitement. FICHIER : pas de post-traitement")),
     PROJET      = SIMP(statut='f', typ='TXM', defaut='MODELE',
                        fr=tr("Nom de l'étude Miss")),
@@ -165,7 +167,7 @@ CALC_MISS = MACRO(nom="CALC_MISS",
                                ),
     ),
     # si post-traitement
-    b_donnees   = BLOC(condition="TYPE_RESU not in ('FICHIER', 'FICHIER_TEMPS', 'TABLE_CONTROL')",
+    b_donnees   = BLOC(condition="TYPE_RESU not in ('FICHIER', 'FICHIER_TEMPS', 'TABLE_CONTROL', 'CHARGE')",
                        regles=(ENSEMBLE('GROUP_MA_FLU_STR', 'GROUP_MA_FLU_SOL', 'GROUP_MA_SOL_SOL'),
                                UN_PARMI('MATR_AMOR', 'AMOR_REDUIT'),),
         MACR_ELEM_DYNA  = SIMP(statut='f', typ=macr_elem_dyna,
@@ -192,7 +194,7 @@ CALC_MISS = MACRO(nom="CALC_MISS",
                                 fr=tr("Unité logique des forces sismiques à relire")),
     ),
     # Paramètres du calcul Miss
-    PARAMETRE   = FACT(statut='o',
+    PARAMETRE   = FACT(statut='f',
                        regles=(PRESENT_PRESENT('OFFSET_MAX', 'OFFSET_NB'),
                                PRESENT_PRESENT('FREQ_MIN', 'FREQ_MAX','FREQ_PAS'),
                                UN_PARMI('FREQ_MIN', 'LIST_FREQ', 'FREQ_IMAG'),
@@ -306,6 +308,17 @@ CALC_MISS = MACRO(nom="CALC_MISS",
                                    fr=tr("Amortissement du spectre d'oscillateur")),
         LIST_FREQ_SPEC_OSCI = SIMP(statut='f', typ=listr8_sdaster,
                                    fr=tr("Fréquences utilisées pour le calcul du spectre d'oscillateur")),
+    ),
+   # post-traitement : creation d'une charge sismique temporelle
+    b_charge   = BLOC(condition="TYPE_RESU == 'CHARGE'",
+        MODELE        =SIMP(statut='o',typ=(modele_sdaster) ),
+        FONC_SIGNAL   =SIMP(statut='o',typ=(fonction_sdaster) ),
+        NOM_CMP       =SIMP(statut='o',typ='TXM',into=("DX","DY","DZ") ),
+        ISSF          =SIMP(statut='f',typ='TXM',into=("OUI","NON",),defaut="NON"),
+        NOEUD_AFFE    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+        UNITE_RESU_FORC = SIMP(statut='o',typ='I'),
+        UNITE_RESU_IMPE = SIMP(statut='f',typ='I',defaut=25),
+        FREQ_MAX      =SIMP(statut='f',typ='R' ),
     ),
 
     INFO        = SIMP(statut='f', typ='I', defaut=1, into=(1,2)),
