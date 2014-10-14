@@ -1,0 +1,208 @@
+# -*- coding: utf-8 -*-
+# TITRE VALIDATION POLYCRISTAL LOI DD_CC THERMIQUE + A-THERMIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('COMPOR4_62',),);
+
+
+os.system( "mfront --obuild --interface=aster PolyCristal_DD_CC.mfront")
+
+
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+# IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-4 suffit pour une bonne precision
+
+from numpy.linalg import norm
+from numpy import *
+
+TEMP=50
+
+format_courbe='TABLEAU'
+
+#coef=1.e3 # Pa, m
+coef=1.   # MPa, mm
+
+E=(236-0.0459*TEMP)*1000.*coef*coef  # Pa
+Nu=0.35
+MU=E/2./(1.+Nu)
+G=MU
+
+tau_f  = 0.                # Pa
+tau_0  = 363.0*coef*coef   # Pa
+y_at   = 2.e-6/coef        # m
+N      = 50.
+gamma0 = 1.E-6             # s**-1
+GH     = 1.e11             # s**-1
+b      = 2.48e-7/coef      # m
+DeltaG0= 0.84              # eV
+epsi_1 = 3.e-4             # s**-1
+D      = 10.e-6/coef       # m
+d_lat  = 0.25/coef
+K_self = 100.
+k      = 8.62E-5  # "Constante de Boltzmann, en eV/K"
+K_self_sur_K_f=3.
+denom= min( K_self_sur_K_f, 1.+ (K_self_sur_K_f -1.)*TEMP/300.)
+K_f= K_self/denom
+l_c = 500.*b*(TEMP/300.)**2
+a_coli=0.7
+a_ncol=0.1
+a_self=0.1
+rho_ini= 6.E5*b*b    # en m**-2
+
+ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=Nu,
+                            ALPHA=0.),
+                      UMAT=_F( NB_VALE=31,
+                              C1 = E ,
+                              C2 = E ,
+                              C3 = E,
+                              C4 = Nu,
+                              C5 = Nu,   
+                              C6 = Nu,    
+                              C7 = G,  
+                              C8 = G,  
+                              C9 = G,  
+                              C10 = b,   
+                              C11 = GH,    
+                              C12 = DeltaG0,  
+                              C13 = tau_0,  
+                              C14 = tau_f,  
+                              C15 = gamma0,   
+                              C16 = N,  
+                              C17 = rho_ini,
+                              C18 = D,
+                              C19 = d_lat,
+                              C20 = y_at,
+                              C21 = K_f,
+                              C22 = K_self ,
+                              C23 = k,
+                              C24 = epsi_1,
+                              C25 = G,
+                              C26 = a_self,
+                              C27 = a_coli, 
+                              C28 = a_ncol,
+                              C29 = a_ncol,
+                              C30 = a_ncol,
+                              C31 = a_ncol,
+                              ),
+                                     
+                    );
+
+
+
+##chargement
+EpsMax=0.1
+viteps=3.e-4
+tmax=EpsMax/viteps
+
+EPSZZ=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='EPSI',
+                       VALE=(  0. , 0., tmax , EpsMax),
+                       PROL_DROITE='LINEAIRE',
+                        )
+
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=tmax,NOMBRE=500,),
+                                    ),);
+
+DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),)
+
+nbgr=30
+nb_syst=12
+nvarit=7+nbgr*(6+nb_syst)+6
+
+# densites de dislocation initiales : variables internes de 0 a 44
+avari = zeros(nvarit)
+for i in range(12*nbgr):
+  avari[7+nbgr*6+i]=rho_ini
+lvari=list(avari)
+
+
+
+TIMP=DEFI_CONSTANTE(VALE=TEMP)
+
+SOLNL=SIMU_POINT_MAT(INFO=1,
+                      COMPORTEMENT=_F(RELATION='MFRONT',
+                        LIBRAIRIE='./src/libAsterBehaviour.so',
+                        NOM_ROUTINE='asterpoly_dd_cc',
+                        ),
+                   NEWTON=_F(
+                             MATRICE='ELASTIQUE',
+                             PREDICTION='EXTRAPOLE',
+                             REAC_ITER=0
+                             ),
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                  RESI_GLOB_RELA=1.E-5,
+                                     ),
+                   MATER      = ACIERDD,
+
+                   #NB_VARI_TABLE=7,
+
+                   VARI_INIT=_F(VALE=lvari,
+                                  ),
+
+                   INCREMENT=_F(LIST_INST=DEFLIST1),
+                   ARCHIVAGE=_F(LIST_INST=LINST),
+                   EPSI_IMPOSE=_F(EPZZ=EPSZZ),
+                      AFFE_VARC=_F(  NOM_VARC='TEMP',
+                                     VALE_FONC=TIMP,
+                                     VALE_REF=TEMP),
+                        );
+
+
+F_SI=RECU_FONCTION(TABLE=SOLNL,
+                           PARA_X='INST',
+                           PARA_Y='SIZZ',);
+
+F_EP=RECU_FONCTION(TABLE=SOLNL,
+                           PARA_X='INST',
+                           PARA_Y='EPZZ',);
+
+
+IMPR_FONCTION(
+FORMAT ='XMGRACE',
+UNITE=38,
+COURBE=(
+_F(FONC_X=F_EP, FONC_Y=F_SI),
+))
+
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10000000,
+                        VALE_PARA=333.33333333333337,
+                        NOM_PARA='INST',
+                        FONCTION=F_EP,
+                        ),
+              )
+              
+# reference SSNV194D
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=814.5609711554,
+                        VALE_REFE=815.4568495137,REFERENCE='AUTRE_ASTER',
+                        VALE_PARA=333.33333333333337,
+                        NOM_PARA='INST',
+                        FONCTION=F_SI,
+                        PRECISION=0.002,
+                        ),
+              )
+              
+              
+
+FIN()
+
