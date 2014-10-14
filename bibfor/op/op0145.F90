@@ -46,7 +46,7 @@ subroutine op0145()
 !
 !-----------------------------------------------------------------------
     integer :: iangl, ifo, ifonct, iinter, imc, imcf, imci
-    integer :: inat, inatur, inoeud, iocc, ispect, jvavf
+    integer :: inat, inatur, inoeud, iocc, ispect
     integer :: lfon, lnat, lnnoe, lnom, long, lvain, lvare
     integer :: lvate, nbmcl, nnap
 !-----------------------------------------------------------------------
@@ -160,7 +160,6 @@ subroutine op0145()
         call wkvect(vare, 'G V R', nbmcl, lvare)
         long = nbmcl + 1
         call wkvect(vate, 'G V K16', long, lvate)
-        call wkvect(nomu//'.VAVF', 'G V K8', 1, jvavf)
 !
 ! ------1.2.CREATION D'OBJETS SUR LA BASE VOLATILE
 !
@@ -235,7 +234,6 @@ subroutine op0145()
             if (zk16(lnom+imc-1) .eq. 'PROF_VITE_FLUI  ') then
                 call getvid(nommcf, 'PROF_VITE_FLUI', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon
-                zk8(jvavf)=nomzon
             else if (zk16(lnom+imc-1).eq.'METHODE         ') then
                 call getvtx(nommcf, 'METHODE', iocc=1, scal=nomzon, nbret=ibid)
                 zk16(lvate+imc) = nomzon

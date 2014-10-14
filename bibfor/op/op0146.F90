@@ -74,7 +74,6 @@ subroutine op0146()
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     integer :: mxval
     character(len=16), pointer :: vate(:) => null()
-    character(len=8), pointer :: vavf(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()
@@ -201,8 +200,8 @@ subroutine op0146()
             call wkvect('&&OP0146.TEMP.NOZ', 'V V K16', nbspec, lnozo)
             do 11 is = 1, nbspec
                 spectr = zk8(lspec+is-1)
-                call jeveuo(spectr//'.VAVF', 'L', vk8=vavf)
-                zk16(lnozo+is-1) = vavf(1)
+                call jeveuo(spectr//'.VATE', 'L', vk16=vate)
+                zk16(lnozo+is-1) = vate(3)
  11         continue
 !
 !
