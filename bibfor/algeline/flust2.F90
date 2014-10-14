@@ -154,7 +154,18 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
         lwork(1) = 2*nt*nt + 10*nt + 2
         call wkvect('&&FLUST2.TEMP.WORK', 'V V R', lwork(1), iwork)
 !
-!-------5.2.OPERATIONS SIMULTANEES :
+!-------5.2.TYPE DE CONFIGURATION GRAPPE --> VARIABLE INDIC ---
+!           RECUPERATION DU DIAMETRE EXTERIEUR DU TUBE
+!           RECUPERATION DES GRANDEURS GEOMETRIQUES CARACTERISTIQUES
+!           DEDUCTION DE COEFFICIENTS DE DIMENSIONNEMENT
+!           CALCUL DES PONDERATIONS DUES AUX DEFORMEES MODALES
+!           CALCUL DES MASSES MODALES EN EAU
+!
+        call mdconf(typflu, base, noma, nbm, ibid,&
+                    nuor, 0, igrap, lwork, masg,&
+                    zr(icodim), zr(ipoids), phie, vecr5)
+!
+!-------5.3.OPERATIONS SIMULTANEES :
 !           - RECUPERATION DES MASSES MODALES INITIALES
 !           - RECUPERATION DES FREQUENCES INITIALES
 !           - CALCUL DES AMORTISSEMENTS MODAUX INITIAUX
@@ -182,17 +193,6 @@ subroutine flust2(melflu, typflu, base, noma, nuor,&
             fact(3*(imod-1)+3) = zr(lfact+2) * masg(imod)
 !
         end do
-!
-!-------5.3.TYPE DE CONFIGURATION GRAPPE --> VARIABLE INDIC ---
-!           RECUPERATION DU DIAMETRE EXTERIEUR DU TUBE
-!           RECUPERATION DES GRANDEURS GEOMETRIQUES CARACTERISTIQUES
-!           DEDUCTION DE COEFFICIENTS DE DIMENSIONNEMENT
-!           CALCUL DES PONDERATIONS DUES AUX DEFORMEES MODALES
-!           CALCUL DES MASSES MODALES EN EAU
-!
-        call mdconf(typflu, base, noma, nbm, ibid,&
-                    nuor, 0, igrap, lwork, masg,&
-                    zr(icodim), zr(ipoids), phie, vecr5)
 !
 !
 !-------5.4.CALCUL DES PARAMETRES MODAUX SOUS ECOULEMENT
