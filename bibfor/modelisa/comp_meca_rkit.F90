@@ -68,7 +68,7 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
             if (rela_meta.ne.'ZIRC') then
                 call utmess('F','COMPOR3_91')
             endif
-            kit_comp(1) = 'VIDE'
+            kit_comp(1) = 'ZIRC'
         endif
 
     else if (rela_comp.eq.'KIT_DDI') then

@@ -15,16 +15,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine get_meta_phasis(fami     , poum  , ipg   , ispg       , meta_type, &
-                               nb_phasis, phasis, zalpha, zalpha_comp)
-        character(len=*), intent(in) :: fami
+    subroutine get_meta_mixd(poum  , fami     , kpg      , ksp   , j_mater,&
+                             l_visc, meta_type, nb_phasis, zalpha, fmel   ,&
+                             sy)
         character(len=1), intent(in) :: poum
-        integer, intent(in) :: ipg
-        integer, intent(in) :: ispg
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: j_mater
         integer, intent(in) :: meta_type
         integer, intent(in) :: nb_phasis
-        real(kind=8), intent(out) :: phasis(*)
-        real(kind=8), optional, intent(out) :: zalpha
-        real(kind=8), optional, intent(out) :: zalpha_comp
-    end subroutine get_meta_phasis
+        logical, intent(in) :: l_visc
+        real(kind=8), intent(in) :: zalpha
+        real(kind=8), intent(out) :: fmel
+        real(kind=8), optional, intent(out) :: sy(*)
+    end subroutine get_meta_mixd
 end interface

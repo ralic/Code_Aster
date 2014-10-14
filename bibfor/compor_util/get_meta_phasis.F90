@@ -24,13 +24,13 @@ implicit none
 ! ======================================================================
 !
     character(len=*), intent(in) :: fami
-    character(len=*), intent(in) :: poum
+    character(len=1), intent(in) :: poum
     integer, intent(in) :: ipg
     integer, intent(in) :: ispg
     integer, intent(in) :: meta_type
     integer, intent(in) :: nb_phasis
     real(kind=8), intent(out) :: phasis(*)
-    real(kind=8), intent(out) :: zalpha
+    real(kind=8), optional, intent(out) :: zalpha
     real(kind=8), optional, intent(out) :: zalpha_comp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,31 +58,39 @@ implicit none
 !
     character(len=8) :: steel(4), zirc(2)
     integer :: i_phasis, iret
+    real(kind=8) :: zalpha_in
 !
     data steel /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
     data zirc  /'ALPHPUR','ALPHBETA'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    zalpha      = 0.d0
-    zalpha_comp = 0.d0
-!
     do i_phasis = 1, nb_phasis
         if (meta_type.eq.1) then
-            call rcvarc(' ', steel(i_phasis), poum, fami, ipg,&
+            call rcvarc('F', steel(i_phasis), poum, fami, ipg,&
                         ispg, phasis(i_phasis), iret)
+            if (iret .eq. 1) then
+                phasis(i_phasis) = 0.d0
+            endif
         elseif (meta_type.eq.2) then
-            call rcvarc(' ', zirc(i_phasis), poum, fami, ipg,&
+            call rcvarc('F', zirc(i_phasis), poum, fami, ipg,&
                         ispg, phasis(i_phasis), iret)
+            if (iret .eq. 1) then
+                phasis(i_phasis) = 0.d0
+            endif
         else
             ASSERT(.false.)
         endif
     end do
 !
+    zalpha_in = 0.d0
     do i_phasis = 1, nb_phasis
-        zalpha = zalpha + phasis(i_phasis)
+        zalpha_in = zalpha_in + phasis(i_phasis)
     end do
 !
+    if (present(zalpha)) then
+        zalpha      = zalpha_in
+    endif
     if (present(zalpha_comp)) then
         zalpha_comp = 1.d0 - zalpha 
     endif
