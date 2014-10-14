@@ -138,7 +138,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
 #-------------------------------------------------------------------
          SOLVEUR         =C_SOLVEUR('DYNA_NON_LINE'),
 #-------------------------------------------------------------------
-         OBSERVATION     =C_OBSERVATION(),
+         OBSERVATION     =C_OBSERVATION('MECANIQUE'),
 #-------------------------------------------------------------------
          ENERGIE         =FACT(statut='f',max=1),
 #-------------------------------------------------------------------

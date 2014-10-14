@@ -121,7 +121,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
 #-------------------------------------------------------------------
          SOLVEUR         =C_SOLVEUR('DYNA_NON_LINE'),
 #-------------------------------------------------------------------
-         OBSERVATION     =C_OBSERVATION(),
+         OBSERVATION     =C_OBSERVATION('MECANIQUE'),
 #-------------------------------------------------------------------
          ENERGIE         =FACT(statut='f',max=1,
            CALCUL          =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),
