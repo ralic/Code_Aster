@@ -88,7 +88,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     character(len=19) :: xdonco, xindco, xseuco, xcohes
     aster_logical :: lctcc, lxfcm, ltfcm, lexip, lallv, lxczm
     character(len=24) :: nosdco
-    integer :: jnosdc
+    integer :: jnosdc, jxc
 !
 ! ----------------------------------------------------------------------
 !
@@ -117,13 +117,6 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
         debug = .false.
     endif
     base = 'V'
-    if (phase .eq. 'CONT') then
-        option = 'RIGI_CONT'
-    else if (phase.eq.'FROT') then
-        option = 'RIGI_FROT'
-    else
-        ASSERT(.false.)
-    endif
 !
 ! --- TYPE DE CONTACT
 !
@@ -132,6 +125,23 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
     ltfcm = cfdisl(defico,'CONT_XFEM_GG')
     lexip = cfdisl(defico,'EXIS_PENA')
     lxczm = cfdisl(defico,'EXIS_XFEM_CZM')
+!
+! --- OPTION A CALCULER
+!
+    if(lxfcm) call jeveuo(modele(1:8)//'.XFEM_CONT','L',jxc)
+!
+    if (phase .eq. 'CONT') then
+        if(lxfcm) then
+            if(zi(jxc).eq.2) option = 'RIGI_CONT_M'
+            if(zi(jxc).eq.1.or.zi(jxc).eq.3) option = 'RIGI_CONT'
+        else
+            option = 'RIGI_CONT'
+        endif
+    else if (phase.eq.'FROT') then
+        option = 'RIGI_FROT'
+    else
+        ASSERT(.false.)
+    endif
 !
 ! --- RECUPERATION DE LA GEOMETRIE
 !
@@ -212,7 +222,13 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
         heavfa = modele(1:8)//'.TOPOFAC.HE'
         if (lxczm) then
             ccohes = '&&NMELCM.CCOHES'
-            call xmchex(noma, nbma, xcohes, ccohes)
+!
+!           SI COHESIF CLASSIQUE APPEL A XMCHEX
+!           POUR CREER LA STRUCTURE DU CHAMP
+!
+            if(zi(jxc).eq.1.or.zi(jxc).eq.3) then
+                call xmchex(noma, nbma, xcohes, ccohes)
+            endif
         endif
     endif
 !
@@ -309,7 +325,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
         if (option .eq. 'RIGI_FROT') then
             lpaout(2) = 'PMATUNS'
             lchout(2) = mectce(1:15)//'.M02'
-        else if (option.eq.'RIGI_CONT'.and.lxczm) then
+        else if (option(1:9).eq.'RIGI_CONT'.and.lxczm) then
             lpaout(3) = 'PCOHESO'
             lchout(3) = ccohes
         endif
@@ -325,7 +341,7 @@ subroutine nmelcm(phase, modele, defico, resoco, mate,&
         call reajre(mectce, lchout(2), base)
     endif
 !
-    if (lxczm .and. (option.eq.'RIGI_CONT')) then
+    if (lxczm .and. (option(1:9).eq.'RIGI_CONT')) then
         call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
     endif
 !

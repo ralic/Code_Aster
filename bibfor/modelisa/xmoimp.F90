@@ -21,10 +21,10 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nh8(14), nh20(7), np6(14), np15(7), np5(14), np13(7)
-    integer :: nt4(14), nt10(7)
-    integer :: ncpq4(14), ncpq8(7), ncpt3(14), ncpt6(7), ndpq4(14)
-    integer :: ndpq8(7), ndpt3(14), ndpt6(7), nf4(11), nf8(7), nf3(11)
+    integer :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
+    integer :: nt4(15), nt10(7)
+    integer :: ncpq4(15), ncpq8(7), ncpt3(15), ncpt6(7), ndpq4(15)
+    integer :: ndpq8(7), ndpt3(15), ndpt6(7), nf4(11), nf8(7), nf3(11)
     integer :: nf6(7), npf2(11), npf3(7)
     integer :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
     integer :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
@@ -74,33 +74,33 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
 !
     write(ifm,*)'IMPRESSION DES ELEMENTS X-FEM '
     write(ifm,807)'TYPE','XH','XT','XHT','XHC','XTC','XHTC',&
-     &'XH1','XH2','XH3','XH4','XH2C','XH3C','XH4C'
+     &'XH1','XH2','XH3','XH4','XH2C','XH3C','XH4C','XHC3'
 !
 !     ELEMENTS MECANIQUES
     if (nh8(7) .ne. 0) write(ifm, 810)'HEXA8', nh8(1), nh8(2), nh8(3), nh8(4), nh8(5), nh8(6),&
-                       nh8(8), nh8(9), nh8(10), nh8(11), nh8(12), nh8(13), nh8(14)
+                       nh8(8), nh8(9), nh8(10), nh8(11), nh8(12), nh8(13), nh8(14), nh8(15)
     if (nh20(7) .ne. 0) write(ifm, 808)'HEXA20', nh20(1), nh20(2), nh20(3), nh20(4), nh20(5),&
                         nh20(6)
     if (np6(7) .ne. 0) write(ifm, 810)'PENTA6', np6(1), np6(2), np6(3), np6(4), np6(5), np6(6),&
-                       np6(8), np6(9), np6(10), np6(11), np6(12), np6(13), np6(14)
+                       np6(8), np6(9), np6(10), np6(11), np6(12), np6(13), np6(14), np6(15)
     if (np15(7) .ne. 0) write(ifm, 808)'PENTA15', np15(1), np15(2), np15(3), np15(4), np15(5),&
                         np15(6)
     if (np5(7) .ne. 0) write(ifm, 810)'PYRAM5', np5(1), np5(2), np5(3), np5(4), np5(5), np5(6),&
-                       np5(8), np5(9), np5(10), np5(11), np5(12), np5(13), np5(14)
+                       np5(8), np5(9), np5(10), np5(11), np5(12), np5(13), np5(14), np5(15)
     if (np13(7) .ne. 0) write(ifm, 808)'PYRAM13', np13(1), np13(2), np13(3), np13(4), np13(5),&
                         np13(6)
     if (nt4(7) .ne. 0) write(ifm, 810)'TETRA4', nt4(1), nt4(2), nt4(3), nt4(4), nt4(5), nt4(6),&
-                       nt4(8), nt4(9), nt4(10), nt4(11), nt4(12), nt4(13), nt4(14)
+                       nt4(8), nt4(9), nt4(10), nt4(11), nt4(12), nt4(13), nt4(14), nt4(15)
     if (nt10(7) .ne. 0) write(ifm, 808)'TETRA10', nt10(1), nt10(2), nt10(3), nt10(4), nt10(5),&
                         nt10(6)
     if (ncpq4(7) .ne. 0) write(ifm, 810)'CP QUAD4', ncpq4(1), ncpq4(2), ncpq4(3), ncpq4(4),&
                          ncpq4(5), ncpq4(6), ncpq4(8), ncpq4(9), ncpq4(10), ncpq4(11), ncpq4(12),&
-                         ncpq4(13), ncpq4(14)
+                         ncpq4(13), ncpq4(14), ncpq4(15)
     if (ncpq8(7) .ne. 0) write(ifm, 808)'CP QUAD8', ncpq8(1), ncpq8(2), ncpq8(3), ncpq8(4),&
                          ncpq8(5), ncpq8(6)
     if (ncpt3(7) .ne. 0) write(ifm, 810)'CP TRIA3', ncpt3(1), ncpt3(2), ncpt3(3), ncpt3(4),&
                          ncpt3(5), ncpt3(6), ncpt3(8), ncpt3(9), ncpt3(10), ncpt3(11), ncpt3(12),&
-                         ncpt3(13), ncpt3(14)
+                         ncpt3(13), ncpt3(14), ncpt3(15)
     if (ncpt6(7) .ne. 0) write(ifm, 808)'CP TRIA6', ncpt6(1), ncpt6(2), ncpt6(3), ncpt6(4),&
                          ncpt6(5), ncpt6(6)
     if (ndpq4(7) .ne. 0) write(ifm, 810)'DP QUAD4', ndpq4(1), ndpq4(2), ndpq4(3), ndpq4(4),&
@@ -110,7 +110,7 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
                          ndpq8(5), ndpq8(6)
     if (ndpt3(7) .ne. 0) write(ifm, 810)'DP TRIA3', ndpt3(1), ndpt3(2), ndpt3(3), ndpt3(4),&
                          ndpt3(5), ndpt3(6), ndpt3(8), ndpt3(9), ndpt3(10), ndpt3(11), ndpt3(12),&
-                         ndpt3(13), ndpt3(14)
+                         ndpt3(13), ndpt3(14), ndpt3(15)
     if (ndpt6(7) .ne. 0) write(ifm, 808)'DP TRIA6', ndpt6(1), ndpt6(2), ndpt6(3), ndpt6(4),&
                          ndpt6(5), ndpt6(6)
     if (naxq4(7) .ne. 0) write(ifm, 809)'AXI QUAD4', naxq4(1), naxq4(2), naxq4(3), naxq4(4),&
@@ -225,16 +225,16 @@ subroutine xmoimp(nh8, nh20, np6, np15, np5,&
             &ntes10(7) + nhed20(7) + nped15(7) + nted10(7) +nbhm(7) + nchm(7)
 !
     if (nbelx .eq. 0) then
-        call utmess('F', 'XFEM_16')
+        call utmess('A', 'XFEM_16')
     endif
 !
     807 format (5x,a19,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,&
-     &        2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6)
+     &        2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6,2x,a6)
     808 format (5x,a19,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6)
     809 format (5x,a19,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,&
      &        i6,2x,i6,2x,i6,2x,i6,2x,i6)
     810 format (5x,a19,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,&
-     &        i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6)
+     &        i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6,2x,i6)
 !
     call jedema()
 end subroutine

@@ -24,6 +24,7 @@ subroutine cazocx(char, nomo, motfac, izone)
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -64,7 +65,7 @@ subroutine cazocx(char, nomo, motfac, izone)
     real(kind=8) :: coeffr, coeffp
     real(kind=8) :: algocr, algofr
     real(kind=8) :: coefff, reacsi, coef, tolj
-    character(len=16) :: valk(2)
+    character(len=16) :: valk(2), modeli
     integer :: iret
     aster_logical :: lfrot
     integer, pointer :: xfem_cont(:) => null()
@@ -260,8 +261,19 @@ subroutine cazocx(char, nomo, motfac, izone)
             zr(jcmxf+zcmxf*(izone-1)+16-1) = 3.d0
         else if (rela.eq.'CZM_OUV_MIX') then
             zr(jcmxf+zcmxf*(izone-1)+16-1) = 4.d0
+        else if (rela.eq.'CZM_LIN_MIX') then
+            zr(jcmxf+zcmxf*(izone-1)+16-1) = 5.d0
         else
             zr(jcmxf+zcmxf*(izone-1)+16-1) = 0.d0
+        endif
+!
+! --- COMPATIBILITE TYPE DE CONTACT/LOI COHESIVE
+!
+        if(rela.eq.'CZM_LIN_MIX'.and.xfem_cont(1).ne.2) then
+            call utmess('F', 'XFEM_93', sk=nomo)
+        else if(rela.ne.'CZM_LIN_MIX'.and.xfem_cont(1).ne.1.and.&
+                                          xfem_cont(1).ne.3) then
+            call utmess('F', 'XFEM_93', sk=nomo)
         endif
     endif
 !

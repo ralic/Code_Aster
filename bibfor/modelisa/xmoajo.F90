@@ -62,6 +62,9 @@ subroutine xmoajo(jj, nfiss, itypx, ntypx)
         else if (zi(jj+1).eq.1) then
             zi(jj+5) = itypx(4)
             ntypx(4) = ntypx(4) + 1
+        else if (zi(jj+1).eq.2) then
+            zi(jj+5) = itypx(14)
+            ntypx(15) = ntypx(15) + 1
         else if (zi(jj+2).eq.1) then
             zi(jj+5) = itypx(5)
             ntypx(5) = ntypx(5) + 1

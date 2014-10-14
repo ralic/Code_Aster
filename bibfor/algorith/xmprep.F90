@@ -80,7 +80,7 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 !
 ! --- CALCUL DES FONCTIONS DE FORMES DE CONTACT
 !
-    if (contac .eq. 1) then
+    if ((contac.eq.1).or.(contac.eq.2)) then
         call xmoffc(lact, nlact, nno, ffp, ffc)
     else if (contac.eq.3) then
         call xmoffc(lact, nlact, nnos, ffpc, ffc)

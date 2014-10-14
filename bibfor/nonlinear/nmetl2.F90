@@ -138,7 +138,8 @@ implicit none
                     valk(2) = field_algo
                     call utmess('A', 'MECANONLINE_2', nk=2, valk=valk)
                 endif
-            else if ((field_disc_out.eq.'ELGA').or.(field_disc_out.eq.'ELEM')) then
+            else if ((field_disc_out.eq.'ELGA').or.(field_disc_out.eq.'ELEM').or.&
+                     (field_disc_out.eq.'ELNO')) then
                 call copisd('CHAMP_GD', 'V', field_resu_cv, field_algo)
             else
                 write(6,*) 'DISCRETISATION NON TRAITEE: ',field_disc_in

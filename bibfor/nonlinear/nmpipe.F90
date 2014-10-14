@@ -108,6 +108,7 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
     aster_logical :: lcontx
     integer :: ier
     real(kind=8), pointer :: cesv(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !
     data copilo, copils  /'&&NMPIPE.COPILO','&&NMPIPE.COPILS'/
     data ctau            /'&&NMPIPE.CTAU'/
@@ -131,7 +132,12 @@ subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
 !
     if (typpil .eq. 'PRED_ELAS') then
         if (lcontx) then
-            option = 'PILO_PRED_XLAS'
+            call jeveuo(modele(1:8)//'.XFEM_CONT','L',vi=xfem_cont)
+            if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) then
+                option = 'PILO_PRED_ELAS'
+            else
+                option = 'PILO_PRED_ELAS_M'
+            endif
         else
             option = 'PILO_PRED_ELAS'
         endif

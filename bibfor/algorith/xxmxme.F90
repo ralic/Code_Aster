@@ -33,6 +33,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmele1.h"
+#include "asterfort/xmele3.h"
     integer :: fonact(*)
     character(len=24) :: defico, resoco
     character(len=8) :: noma, nomo
@@ -60,7 +61,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
     character(len=24) :: tabfin
     integer :: jtabf
     integer :: ntpc
-    integer :: ztabf
+    integer :: ztabf, jxc, contac
     character(len=19) :: ligrel
     character(len=19) :: xindc0, xseuc0, xcohe0
     aster_logical :: lxffm, lxczm, lxfcm
@@ -94,6 +95,11 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
         call utmess('F', 'XFEM_3')
     endif
 !
+! --- TYPE DE CONTACT : CLASSIQUE OU MORTAR?
+!
+    call jeveuo(nomo//'.XFEM_CONT','L',jxc)
+    contac = zi(jxc)
+!
 ! --- NOM DES CHAMPS
 !
     xindc0 = resoco(1:14)//'.XFI0'
@@ -119,8 +125,21 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
     call xmele1(noma, nomo, defico, ligrel, nfiss,&
                 xindc0, 'PINDCOI', 'RIGI_CONT')
     if (lxczm) then
-        call xmele1(noma, nomo, defico, ligrel, nfiss,&
-                    xcohe0, 'PCOHES', 'RIGI_CONT')
+!
+!       SI CONTACT CLASSIQUE, CHAMP AUX PTS GAUSS
+!
+        if(contac.eq.1.or.contac.eq.3) then
+            call xmele1(noma, nomo, defico, ligrel, nfiss,&
+                        xcohe0, 'PCOHES', 'RIGI_CONT')
+!
+!       SI CONTACT MORTAR, CHAMP ELNO
+!
+        else if(contac.eq.2) then
+            call xmele3(noma, nomo, ligrel, nfiss,&
+                        xcohe0, 'PCOHES', 'RIGI_CONT_M')
+        else
+            ASSERT(.false.)
+        endif
     endif
     if (lxffm) then
         call xmele1(noma, nomo, defico, ligrel, nfiss,&

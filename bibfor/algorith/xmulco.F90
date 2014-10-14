@@ -73,6 +73,7 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
     endif
 ! --- NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
     if (contac .eq. 1) nnol=nno
+    if (contac .eq. 2) nnol=nno
     if (contac .eq. 3) nnol=nnos
     do 15 i = 1, nnol
         call xplmat(ndim, nfh, nfe, ddlc, ddlm,&

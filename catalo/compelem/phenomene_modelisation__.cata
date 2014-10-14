@@ -472,6 +472,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ PENTA6    ELEMENT__ MECA_XH4C_PENTA6
               MAILLE__ PYRAM5    ELEMENT__ MECA_XH4C_PYRAM5
               MAILLE__ TETRA4    ELEMENT__ MECA_XH4C_TETRA4
+
+       MODELISATION__ '3DXHC3'           DIM__ 3 3   CODE__ '3XH'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XHC3_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XHC3_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XHC3_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XHC3_TETRA4
 %-------------------------------------------------------------------
 
        MODELISATION__ 'SHB'             DIM__ 3 3   CODE__ 'SHB'
@@ -841,6 +848,11 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH4C
               MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH4C
 
+       MODELISATION__ 'C_PLAN_XHC3'         DIM__ 2 2   CODE__ 'CXH'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XHC3
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XHC3
+
        MODELISATION__ 'D_PLAN_XH1'         DIM__ 2 2   CODE__ 'DXA'
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH1
@@ -879,6 +891,11 @@ PHENOMENE_MODELISATION__
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH4C
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH4C
+
+       MODELISATION__ 'D_PLAN_XHC3'         DIM__ 2 2   CODE__ 'DXH'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XHC3
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XHC3
 %-------------------------------------------------------------------
 %ajout des elements 2d HM_XFEM non affectables par AFFE_MODELE
        MODELISATION__ 'D_PLAN_HM_XH'       DIM__ 2 2   CODE__ 'DXH'

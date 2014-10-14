@@ -68,9 +68,9 @@ subroutine te0533(option, nomte)
     real(kind=8) :: ffp(27), ffc(8), coefcp, coefcr, coeffp
     real(kind=8) :: mmat(216, 216), jac, mu, coeffr, rela
     real(kind=8) :: tau1(3), tau2(3)
-    real(kind=8) :: nd(3), seuil, cohes(3)
-    real(kind=8) :: rr, coheo(3)
-    integer :: jheano, ifiss, jheafa, ncomph
+    real(kind=8) :: nd(3), seuil, cohes(3), coheo(3)
+    real(kind=8) :: rr, rbid
+    integer :: jheano, ifiss, jheafa, ncomph,jta2(3)
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
     aster_logical :: matsym, lelim
     character(len=8) :: elref, elrefc, typma
@@ -181,10 +181,15 @@ subroutine te0533(option, nomte)
         if (algocr .eq. 3) then
             call jevech('PMATERC', 'L', jmate)
             call jevech('PCOHES', 'L', jcohes)
-            call tecach('OOO', 'PCOHES', 'L', iret, nval=2,&
-                        itab=jtab)
-            ncompv = jtab(2)
-            if (option .eq. 'RIGI_CONT') then
+            call tecach('OOO', 'PCOHES', 'L', iret, nval=3,&
+                        itab=jta2)
+!
+!           CAS COLLOCATION AUX POINTS DE GAUSS
+            if(contac.eq.1.or.contac.eq.3) ncompv = jta2(2)
+!
+!           CAS CHAMP ELNO
+            if(contac.eq.2) ncompv = jta2(2)/jta2(3)
+            if (option(1:9) .eq. 'RIGI_CONT') then
                 call jevech('PCOHESO', 'E', jcoheo)
             endif
         endif
@@ -210,7 +215,7 @@ subroutine te0533(option, nomte)
                 isspg = npgf*(ifa-1)+ipgf
                 indco = zi(jindco-1+nbspg+isspg)
                 if (algofr .ne. 0) seuil = zr(jseuil-1+nbspg+isspg)
-                if (algocr .eq. 3) then
+                if (algocr .eq. 3.and.contac.ne.2) then
                     do i = 1, ncompv
                         cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
                     end do
@@ -228,9 +233,10 @@ subroutine te0533(option, nomte)
 ! --- CALCUL DES MATRICES DE CONTACT
 !     ..............................
 !
-                if (option .eq. 'RIGI_CONT') then
+                if (option(1:9) .eq. 'RIGI_CONT') then
 !
                     call xmcont(algocr, coefcr, coefcp, cohes, coheo,&
+                                jcohes, jcoheo, ncompv,&
                                 ddlm, ddls, ffc, ffp, idepd,&
                                 idepm, ifa, ifiss, jmate, indco,&
                                 ipgf, jac, jfisno, jheafa, mmat,&
@@ -239,15 +245,15 @@ subroutine te0533(option, nomte)
                                 nvit, pla, rela, rr, singu,&
                                 tau1, tau2)
 !
-! --- ACTUALISATION VARIABLE INTERNE
+! --- SI COHESIF CLASSIQUE ON ACTUALISE LA VARIABLE INTERNE
 !
-                    if (algocr .eq. 3) then
+                    if (algocr .eq. 3.and.(contac.eq.1.or.contac.eq.3)) then
                         do i = 1, ncompv
                             zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) = coheo(i)
                         end do
                     endif
-!
-                else if (option.eq.'RIGI_FROT' .and. rela.ne.3.d0 .and. rela.ne.4.d0) then
+                elseif (option.eq.'RIGI_FROT'.and.&
+                        (rela.eq.0.d0.or.rela.eq.1.d0.or.rela.eq.2.d0)) then
 !
                     call xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
                                 ffc, ffp, idepd, idepm, indco,&
@@ -256,8 +262,6 @@ subroutine te0533(option, nomte)
                                 nnos, nvit, pla, rr, seuil,&
                                 singu, tau1, tau2)
 !
-                else
-                    ASSERT(rela.eq.3.d0.or.rela.eq.4.d0)
                 endif
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
             end do
@@ -277,7 +281,8 @@ subroutine te0533(option, nomte)
 !     COPIE DES CHAMPS DE SORTIES ET FIN
 !-----------------------------------------------------------------------
 !
-    if (algocr .eq. 2 .or. algofr .eq. 2 .or. (algocr.eq.3.and.option.eq.'RIGI_FROT')) then
+    if (algocr .eq. 2 .or. algofr .eq. 2 .or. &
+        (algocr.eq.3.and.option.eq.'RIGI_FROT')) then
 ! --- RECUPERATION DE LA MATRICE 'OUT' NON SYMETRIQUE
         matsym=.false.
         call jevech('PMATUNS', 'E', imatt)

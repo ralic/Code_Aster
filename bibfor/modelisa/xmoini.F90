@@ -19,10 +19,10 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nh8(14), nh20(7), np6(14), np15(7), np5(14), np13(7)
-    integer :: nt4(14), nt10(7)
-    integer :: ncpq4(14), ncpq8(7), ncpt3(14), ncpt6(7), ndpq4(14)
-    integer :: ndpq8(7), ndpt3(14), ndpt6(7), nf4(11), nf8(7), nf3(11)
+    integer :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
+    integer :: nt4(15), nt10(7)
+    integer :: ncpq4(15), ncpq8(7), ncpt3(15), ncpt6(7), ndpq4(15)
+    integer :: ndpq8(7), ndpt3(15), ndpt6(7), nf4(11), nf8(7), nf3(11)
     integer :: nf6(7), npf2(11), npf3(7)
     integer :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
     integer :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
@@ -148,7 +148,7 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
         nf3(i)=0
         npf2(i)=0
     end do
-    do i = 12, 14
+    do i = 12, 15
         nh8(i)=0
         np6(i)=0
         np5(i)=0

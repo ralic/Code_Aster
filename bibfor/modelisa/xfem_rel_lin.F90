@@ -91,7 +91,7 @@ implicit none
 !
     do i_crack = 1, nb_crack
         sdline_crack = v_sdline(i_crack)(1:14)
-        call xrelco(mesh   , nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
+        call xrelco(mesh   , model, nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
                     nb_edge)
     end do
 !

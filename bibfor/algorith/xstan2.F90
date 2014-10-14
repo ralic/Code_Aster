@@ -81,8 +81,7 @@ subroutine xstan2(crimax, noma, modele)
     integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
     integer :: itypel, nbelr, igeom, nuno2, inoloc, cpt
     integer :: i, j, nheav, iheav, nfiss, ifiss, nse, nnose, nnot(3)
-    aster_logical :: lelim, ancien
-    integer, pointer :: xfem_cont(:) => null()
+    aster_logical :: lelim
     integer, pointer :: connex(:) => null()
     integer, pointer :: cnsv(:) => null()
     integer, pointer :: nbsp(:) => null()
@@ -120,8 +119,6 @@ subroutine xstan2(crimax, noma, modele)
 !      CALL CNOCNS(MODELE//'.NOXFEM','V',NOXFEM)
     call jeveuo(cns2//'.CNSL', 'E', jnoxfl)
     call jeveuo(cns2//'.CNSV', 'E', vi=cnsv)
-    call jeveuo(modele//'.XFEM_CONT', 'L', vi=xfem_cont)
-    ancien = xfem_cont(1).eq.2
 !
 !     RECUPERATION DES DONNEES ELEMENTAIRES XFEM
 !
@@ -185,7 +182,7 @@ subroutine xstan2(crimax, noma, modele)
                 if (ndime .lt. ndim) goto 50
                 itypma = typmail(numa2)
                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
-                if ((.not.ancien) .and. (.not.ismali(typma) )) then
+                if (.not.ismali(typma)) then
                     if (ndim .eq. 2) then
                         nnose = 6
                     else
@@ -202,11 +199,6 @@ subroutine xstan2(crimax, noma, modele)
                 elrefp = lirefe(1)
 !           NOMBRE DE NOEUDS
                 nbnoma = zi(jconx2+numa2) - zi(jconx2+numa2-1)
-                if (ancien) then
-                    call panbno(itypma, nnot)
-                    nbnoma = nnot(1)
-                    if (ino .gt. nbnoma) goto 20
-                endif
 !           RECUP DU NUM DE FISS CORRESPONDANT À IHEAV DE NUNO DS NUMA2
 !           ET DU NUMERO LOCALE INOLOC DANS LA MAILLE
                 do ino2 = 1, nbnoma

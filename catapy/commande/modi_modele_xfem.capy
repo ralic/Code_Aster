@@ -28,6 +28,6 @@ MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu
     CRITERE         =SIMP(statut='f',typ='R',defaut=1.1E-9),
     INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,)),
     CONTACT        
-     =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON"),min=1,max=1,),
+     =SIMP(statut='f',typ='TXM',defaut='SANS',into=("SANS","STANDARD","MORTAR"),min=1,max=1,),
     PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('AUTO','SANS','FORCE')),
 )  ;

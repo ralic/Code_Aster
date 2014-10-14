@@ -2,7 +2,7 @@ subroutine te0532(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
+!
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
@@ -10,6 +10,7 @@ subroutine te0532(option, nomte)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
+#include "asterc/r8prem.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/vecini.h"
@@ -17,9 +18,12 @@ subroutine te0532(option, nomte)
 #include "asterfort/xmmsa2.h"
 #include "asterfort/xmmsa3.h"
 #include "asterfort/xmmsa5.h"
+#include "asterfort/xmmsa6.h"
 #include "asterfort/xmprep.h"
 #include "asterfort/xmulco.h"
 #include "asterfort/xteini.h"
+#include "asterfort/xxmmvd.h"
+#include "asterfort/xxlan5.h"
 #include "asterfort/xxlag2.h"
 #include "asterfort/xxlagm.h"
 !
@@ -55,7 +59,7 @@ subroutine te0532(option, nomte)
 !
 !......................................................................
 !
-    integer :: algocr, i, j, ifa, ipgf, isspg
+    integer :: algocr, i, j, ifa, ipgf, isspg, ino
     integer :: jindco, jdonco, jlst, ipoids, ivf, idfde, jgano, igeom
     integer :: idepl, jptint, jaint, jcface, jlonch, jgliss
     integer :: ivff, iadzi, iazk24, ibid, jout1, jout2
@@ -66,19 +70,20 @@ subroutine te0532(option, nomte)
     integer :: contac, jbasec, nddl, nfiss, jfisno
     integer :: jmate, singu, jcohes, jcoheo, jheano, ifiss, jheafa, ncomph
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
-    integer :: nbspg, nspfis, nvit, ncompv
+    integer :: nbspg, nspfis, nvit, ncompv, jta2(3)
     integer :: nptf
     character(len=8) :: elref, typma, elrefc, job
-    character(len=8) :: elc, fpg
-    real(kind=8) :: ffpc(27), rela, eps, rhon
+    character(len=8) :: elc, fpg, champ
+    real(kind=8) :: ffpc(27), rela, eps, zpt, xpt, ypt, rhon
     real(kind=8) :: reac, ffp(27), ffc(8), r3bid(3), jac
     real(kind=8) :: prec, nd(3), dn, saut(3), rr, rbid, r3bd(3)
-    real(kind=8) :: coefcp, coeffp, coefcr, coeffr, r6bid(6)
+    real(kind=8) :: coefcp, coeffp, coefcr, coeffr, r6bid(6), wsaut(3)
     real(kind=8) :: p(3, 3), pp(3, 3), dsidep(6, 6), tau1(3), lamb(3)
     real(kind=8) :: tau2(3), alpha(3), dnor(3), dtang(3), am3(3), sigma(6)
     real(kind=8) :: cohes(3), mat3bd(3, 3), mat6bd(6, 6)
     parameter    (prec=1.d-16)
     aster_logical :: imprim, lbid
+    integer :: zxain, noc
 !......................................................................
 !
     call jemarq()
@@ -86,6 +91,7 @@ subroutine te0532(option, nomte)
     imprim=.false.
     incoca=0
     nbspg=0
+    zxain = xxmmvd('ZXAIN')
     call vecini(27, 0.d0, ffpc)
     call vecini(27, 0.d0, ffp)
     call vecini(8, 0.d0, ffc)
@@ -166,7 +172,13 @@ subroutine te0532(option, nomte)
                     rbid, nspfis, ncompd, ndim, nface,&
                     ninter, nnof, nomte, npgf, nptf,&
                     rela)
-        if (ninter .eq. 0) goto 91
+        if (ninter .eq. 0.and.(contac.eq.1.or.contac.eq.3)) then
+            jbasec = jbasec + ncompb
+            jptint = jptint + ncompp
+            jaint = jaint + ncompa
+            jcface = jcface + ncompc
+        endif
+        if (ninter .eq. 0) goto 90
 !
 ! --- RECUPERATION MATERIAU ET VARIABLES INTERNES COHESIF
 !
@@ -174,9 +186,10 @@ subroutine te0532(option, nomte)
             call jevech('PMATERC', 'L', jmate)
             call jevech('PCOHES', 'L', jcohes)
             call jevech('PCOHESO', 'E', jcoheo)
-            call tecach('OOO', 'PCOHES', 'L', iret, nval=2,&
-                        itab=jtab)
-            ncompv = jtab(2)
+            call tecach('OOO', 'PCOHES', 'L', iret, nval=3,&
+                        itab=jta2)
+            if(contac.eq.2) ncompv = jta2(2)/jta2(3)
+            if(contac.eq.1.or.contac.eq.3) ncompv = jta2(2)
         endif
 !
 !       IMPRESSION (1ERE PARTIE)
@@ -195,148 +208,187 @@ subroutine te0532(option, nomte)
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)
 !
+!       SI CONTACT "MORTAR"
+!
+        if(contac.eq.2) then
+!
+            call xmprep(cface, contac, elref, elrefc, elc,&
+                        ffc, ffp, fpg, jaint, jbasec,&
+                        jptint, 1, igeom, 1, jac,&
+                        jlst, lact, nd, ndim, ninter,&
+                        nlact, nno, nnos, nptf, nvit,&
+                        rr, singu, tau1, tau2)
+            do 200 ino = 1, nnol
+                do 5 i = 1, ncompv
+                    cohes(i) = zr(jcohes+ncompv*(ino-1)-1+i)
+5               continue
+                nvec = 1
+                champ = 'W'
+                call xxlan5(ino, idepl, ibid, ibid, lact, ndim,&
+                            pla, wsaut, nvec, champ)
+                nvec = 1
+                champ = 'LAMBDA'
+                call xxlan5(ino, idepl, ibid, ibid, lact, ndim,&
+                            pla, lamb, nvec, champ)
+                job='ACTU_VI'
+                call xmmsa6(ndim, ipgf, zi(jmate), lamb, wsaut, nd,&
+                            tau1, tau2, cohes, job, rela,&
+                            alpha, dsidep, sigma, p, am3, rbid)
+                do 3 i = 1, ncompv
+                    zr(jcoheo+ncompv*(ino-1)-1+i) = alpha(i)
+3               continue
+                eps = r8prem()
+                ASSERT((alpha(1)+eps).ge.cohes(1))
+!
+200          continue
+!
+!        SI CONTACT CLASSIQUE
+!
+         else if(contac.eq.3.or.contac.eq.1) then
 ! --- BOUCLE SUR LES FACETTES
 !
-        do ifa = 1, nface
+             do ifa = 1, nface
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !
-            do ipgf = 1, npgf
+                do ipgf = 1, npgf
 !
 ! --- RECUPERATION DES STATUTS POUR LE POINT DE GAUSS
 !
-                isspg = npgf*(ifa-1)+ipgf
-                indco = zi(jindco-1+nbspg+isspg)
-                dn = 0.d0
-                if (algocr .eq. 3) then
-                    do i = 1, ncompv
-                        cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
-                    end do
-                endif
+                    isspg = npgf*(ifa-1)+ipgf
+                    indco = zi(jindco-1+nbspg+isspg)
+                    dn = 0.d0
+                    if (algocr .eq. 3) then
+                        do i = 1, ncompv
+                            cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
+                        end do
+                    endif
 !
 ! --- PREPARATION DU CALCUL
 !
-                call xmprep(cface, contac, elref, elrefc, elc,&
-                            ffc, ffp, fpg, jaint, jbasec,&
-                            jptint, ifa, igeom, ipgf, jac,&
-                            jlst, lact, nd, ndim, ninter,&
-                            nlact, nno, nnos, nptf, nvit,&
-                            rr, singu, tau1, tau2)
+                    call xmprep(cface, contac, elref, elrefc, elc,&
+                                ffc, ffp, fpg, jaint, jbasec,&
+                                jptint, ifa, igeom, ipgf, jac,&
+                                jlst, lact, nd, ndim, ninter,&
+                                nlact, nno, nnos, nptf, nvit,&
+                                rr, singu, tau1, tau2)
 !
 !            CALCUL COMPOSANTE NORMALE SAUT DE DEPLACEMENT
 !
-                nvec=1
-                call xmmsa3(ndim, nno, nnos, ffp, nddl,&
-                            nvec, zr(idepl), zr(idepl), zr(idepl), nfh,&
-                            singu, rr, ddls, ddlm, jfisno,&
-                            nfiss, ifiss, jheafa, ncomph, ifa,&
-                            saut)
+                    nvec=1
+                    call xmmsa3(ndim, nno, nnos, ffp, nddl,&
+                                nvec, zr(idepl), zr(idepl), zr(idepl), nfh,&
+                                singu, rr, ddls, ddlm, jfisno,&
+                                nfiss, ifiss, jheafa, ncomph, ifa,&
+                                saut)
 !
-                if (algocr .eq. 1 .or. algocr .eq. 2) then
-                    gliss = zi(jgliss-1+nbspg+isspg)
-                    memco = zi(jmemco-1+nbspg+isspg)
-                    do j = 1, ndim
-                        dn = dn + saut(j)*nd(j)
-                    end do
-                    nvec = 1
-                    call xxlagm(ffc, idepl, ibid, lact, ndim,&
-                                nnol, pla, reac, r3bid, tau1,&
-                                tau2, nvec)
+                    if (algocr .eq. 1 .or. algocr .eq. 2) then
+                        gliss = zi(jgliss-1+nbspg+isspg)
+                        memco = zi(jmemco-1+nbspg+isspg)
+                        do j = 1, ndim
+                            dn = dn + saut(j)*nd(j)
+                        end do
+                        nvec = 1
+                        call xxlagm(ffc, idepl, ibid, lact, ndim,&
+                                    nnol, pla, reac, r3bid, tau1,&
+                                    tau2, nvec)
 !
-                    if (indco .eq. 0) then
+                        if (indco .eq. 0) then
 !
 !              ON REGARDE LA DISTANCE DN DES POINTS SUPPOSÉS
 !              NON CONTACTANTS :
 !              INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
 !
-                        if (dn .gt. prec) then
-                            zi(jout2-1+nbspg+isspg) = 1
-                            zi(jout3-1+nbspg+isspg) = 1
-                            incoca = 1
-                        else
-                            zi(jout2-1+nbspg+isspg) = 0
-                        endif
+                            if (dn .gt. prec) then
+                                zi(jout2-1+nbspg+isspg) = 1
+                                zi(jout3-1+nbspg+isspg) = 1
+                                incoca = 1
+                            else
+                                zi(jout2-1+nbspg+isspg) = 0
+                            endif
 !
 !                ON REGARDE LA REACTION POUR LES POINTS
 !                SUPPOSES CONTACTANT :
-                    else if (indco.eq.1) then
-                        if (coefcr .eq. 0.d0) rhon = 100.d0
-                        if (coefcr .ne. 0.d0) rhon = coefcr
-                        if ((reac-rhon*dn) .gt. r8prem()) then
+                        else if (indco.eq.1) then
+                            if (coefcr .eq. 0.d0) rhon = 100.d0
+                            if (coefcr .ne. 0.d0) rhon = coefcr
+                            if ((reac-rhon*dn) .gt. r8prem()) then
 !                  SI GLISSIERE=OUI ET IL Y A EU DU CONTACT DEJA SUR CE
 !                  POINT (MEMCON=1), ALORS ON FORCE LE CONTACT
-                            if ((gliss.eq.1) .and. (memco.eq.1)) then
+                                if ((gliss.eq.1) .and. (memco.eq.1)) then
+                                    zi(jout2-1+nbspg+isspg) = 1
+                                    zi(jout3-1+nbspg+isspg) = 1
+                                else if (gliss.eq.0) then
+                                    zi(jout2-1+nbspg+isspg) = 0
+                                    incoca = 1
+                                endif
+                            else
                                 zi(jout2-1+nbspg+isspg) = 1
                                 zi(jout3-1+nbspg+isspg) = 1
-                            else if (gliss.eq.0) then
-                                zi(jout2-1+nbspg+isspg) = 0
-                                incoca = 1
                             endif
-                        else
-                            zi(jout2-1+nbspg+isspg) = 1
-                            zi(jout3-1+nbspg+isspg) = 1
-                        endif
 !
-                    else
+                        else
 !                SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1:
 !                PROBLEME DE STATUT DE CONTACT.
-                        ASSERT(indco.eq.0.or.indco.eq.1)
-                    endif
+                            ASSERT(indco.eq.0.or.indco.eq.1)
+                        endif
 !
 !           IMPRESSION (2EME PARTIE)
-                    if (imprim) then
-                        write(6,698)indco,dn,reac, zi(jout2-1+nbspg+&
-                        isspg)
-                        698            format(5x,i1,4x,1pe12.5,4x,1pe12.5,4x,i1)
-                    endif
+                        if (imprim) then
+                            write(6,698)indco,dn,reac, zi(jout2-1+nbspg+&
+                            isspg)
+                            698            format(5x,i1,4x,1pe12.5,4x,1pe12.5,4x,i1)
+                        endif
 !
-                else if (algocr.eq.3) then
+                    else if (algocr.eq.3) then
 !
 !              CALCUL SAUT DE DEPLACEMENT EQUIVALENT
-                    if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
-                        job='ACTU_VI'
-                        call xmmsa2(ndim, ipgf, zi(jmate), saut, nd,&
-                                    tau1, tau2, cohes, job, rela,&
-                                    alpha, dsidep, sigma, pp, dnor,&
-                                    dtang, p, am3)
-                    else if (rela.eq.3.d0.or.rela.eq.4.d0) then
+                        if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
+                            job='ACTU_VI'
+                            call xmmsa2(ndim, ipgf, zi(jmate), saut, nd,&
+                                        tau1, tau2, cohes, job, rela,&
+                                        alpha, dsidep, sigma, pp, dnor,&
+                                        dtang, p, am3)
+                        else if (rela.eq.3.d0.or.rela.eq.4.d0) then
 ! NOUVEAUTE, IL FAUT RENSEIGNER LAMBDA
-                        nvec = 1
-                        call xxlag2(ffc, idepl, ibid, lact, ndim,&
-                                    nnol, pla, lamb, nvec)
-                        job='ACTU_VI'
-                        call xmmsa5(ndim, ipgf, zi(jmate), saut, lamb,&
-                                    nd, tau1, tau2, cohes, job,&
-                                    rela, alpha, mat6bd, r6bid, mat3bd,&
-                                    r3bd, rbid)
-                    endif
+                            nvec = 1
+                            call xxlag2(ffc, idepl, ibid, lact, ndim,&
+                                        nnol, pla, lamb, nvec)
+                            job='ACTU_VI'
+                            call xmmsa5(ndim, ipgf, zi(jmate), saut, lamb,&
+                                        nd, tau1, tau2, cohes, job,&
+                                        rela, alpha, mat6bd, r6bid, mat3bd,&
+                                        r3bd, rbid)
+                        endif
 !
 ! --- ACTUALISATION VARIABLE INTERNE
 !
-                    if (algocr .eq. 3) then
-                        do i = 1, ncompv
-                            zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) =&
-                            alpha(i)
-                        end do
-                        eps = r8prem()
-                        ASSERT((alpha(1)+eps).ge.cohes(1))
-                    endif
+                        if (algocr .eq. 3) then
+                            do i = 1, ncompv
+                                zr(jcoheo+ncompv*(nbspg+isspg-1)-1+i) =&
+                                alpha(i)
+                            end do
+                            eps = r8prem()
+                            ASSERT((alpha(1)+eps).ge.cohes(1))
+                        endif
 !
 ! CHAMPS LIES AU CONTACT INUTILES POUR LE COHESIF
 !
-                    zi(jout2-1+nbspg+isspg) = 0
-                    zi(jout3-1+nbspg+isspg) = 0
-                    incoca = 0
-                endif
+                        zi(jout2-1+nbspg+isspg) = 0
+                        zi(jout3-1+nbspg+isspg) = 0
+                        incoca = 0
+                    endif
 !
+                 end do
             end do
-        end do
-        nbspg = nbspg + nspfis
- 91     continue
-        jbasec = jbasec + ncompb
-        jptint = jptint + ncompp
-        jaint = jaint + ncompa
-        jcface = jcface + ncompc
+            nbspg = nbspg + nspfis
+91          continue
+            jbasec = jbasec + ncompb
+            jptint = jptint + ncompp
+            jaint = jaint + ncompa
+            jcface = jcface + ncompc
+        endif
+90      continue
     end do
 !
 !     ENREGISTREMENT DES CHAMPS DE SORTIE

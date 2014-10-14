@@ -158,9 +158,11 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
         icont(ifiss)=0
     end do
 !
-    do ifiss = 1, nfiss
-        call wkvect(maicon(ifiss), 'V V I', ncont, jcont(ifiss))
-    end do
+    if(ncont.gt.0) then
+        do ifiss = 1, nfiss
+            call wkvect(maicon(ifiss), 'V V I', ncont, jcont(ifiss))
+        end do
+    endif
 !
     do ifiss = 1, nfiss
         call cnocns(fiss(ifiss)//'.LNNO', 'V', clsn)
@@ -439,7 +441,11 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                     endif
                     if (zi(jtab-1+5*(ima-1)+4) .eq. 1) then
                         if (lcont) then
-                            zi(jtab-1+5*(ima-1)+kk) = 1
+                            if(contac.eq.2) then
+                                zi(jtab-1+5*(ima-1)+kk) = 2
+                            else
+                                zi(jtab-1+5*(ima-1)+kk) = 1
+                            endif
                         else
                             zi(jtab-1+5*(ima-1)+kk) = -1
                         endif
@@ -490,7 +496,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                 zi(jco2-1+l)=zi(jcont(ifiss)-1+l)
             end do
         endif
-        call jedetr(maicon(ifiss))
+        if(ncont.gt.0) call jedetr(maicon(ifiss))
         call jedetr(cstn(ifiss))
         do kk = 1, 3
             call jeexin(grp(4*(ifiss-1)+kk), iret)

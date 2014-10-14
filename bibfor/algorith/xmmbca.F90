@@ -100,7 +100,6 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     xcoheo = resoco(1:14)//'.XCOP'
 !
     mmcvca = .false.
-    option = 'XCVBCA'
     if (nivdbg .ge. 2) then
         debug = .true.
     else
@@ -121,6 +120,11 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
         mmcvca = .true.
         goto 999
     endif
+!
+! --- DETERMINATION DE L OPTION
+!
+    if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) option='XCVBCA'
+    if(xfem_cont(1).eq.2) option='XCVBCA_MORTAR' 
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -147,7 +151,8 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 !
     call xmchex(noma, nbma, xindco, cindoo)
     call xmchex(noma, nbma, xmemco, cmemco)
-    call xmchex(noma, nbma, xcoheo, ccohes)
+    if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3)&
+        call xmchex(noma, nbma, xcohes, ccohes)
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
 !

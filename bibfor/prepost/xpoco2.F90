@@ -149,8 +149,8 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
         do i = 1, nbno
             if (dirno(i) .ne. 0) then
                 if (lmeca) then
-                    idecv2 = jcnsv2-1+2*ndimc*(dirno(i)-1)
-                    idecl2 = jcnsl2-1+2*ndimc*(dirno(i)-1)
+                    idecv2 = jcnsv2-1+4*ndimc*(dirno(i)-1)
+                    idecl2 = jcnsl2-1+4*ndimc*(dirno(i)-1)
                 else
                     idecv2 = jcnsv2-1+ndimc*(dirno(i)-1)
                     idecl2 = jcnsl2-1+ndimc*(dirno(i)-1)

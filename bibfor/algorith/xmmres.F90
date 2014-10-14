@@ -84,7 +84,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
     character(len=19) :: faclon, ainter, pinter, baseco
     character(len=19) :: lst, lstno
     character(len=24) :: dejcal
-    integer :: jdejca
+    integer :: jdejca, jlagl
 !
     real(kind=8) :: xyz(3), jeu, ff(2), mult, cont, coefh
     real(kind=8) :: saut(3), glit(3), p(3, 3), n(3), gli, lagfro(3)
@@ -203,6 +203,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 ! --- ACCES CHAM_NO
 !
     call jeveuo(lagcn//'.CNSV', 'L', vr=lagv)
+    call jeveuo(lagcn//'.CNSL', 'L', jlagl)
     call jeveuo(depcn//'.CNSV', 'L', vr=depv)
     call jeveuo(depcn//'.CNSL', 'L', jdepl)
     call jeveuo(fctcn//'.CNSV', 'L', vr=vcont)
@@ -288,7 +289,7 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
             endif
 !
 !         RECUPERATION DU NUMERO DU NOEUD OU EST STOCKE LE LAGS_C
-            if (xfem_cont(1) .eq. 1 .or. xfem_cont(1) .eq. 3) then
+            if (xfem_cont(1) .eq. 1 .or. xfem_cont(1).eq.2 .or. xfem_cont(1) .eq. 3) then
 !           CAS LAGRANGES AUX NOEUDS
 !           VALE_CONT SUR LE PREMIER NOEUD DE L'ARETE
                 if (ia .ne. 0) then
@@ -378,9 +379,11 @@ subroutine xmmres(depdel, modele, veasse, cnsinr)
 !
             do j = 1, ndim
                 do k = 1, nsom
-                    lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*( nosom(k)-1)+2) * tau1(j)
-                    if (ndim .eq. 3) lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*(nosom(k)-1)&
+                    if(zl(jlagl-1+ndim*(nosom(k)-1)+1)) then
+                        lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*( nosom(k)-1)+2) * tau1(j)
+                        if (ndim .eq. 3) lagfro(j) = lagfro(j) + ff(k) * lagv(ndim*(nosom(k)-1)&
                                                  &+3) * tau2(j)
+                    endif
                 end do
             end do
 !

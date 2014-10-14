@@ -101,10 +101,10 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     character(len=8) :: elrefc, elref2
     integer :: nnops
     real(kind=8) :: ff(nnop), ffc(nnop), fe(4), crilsn, minlsn
-    real(kind=8) :: r, theta, chpri(3), lagrs(3)
+    real(kind=8) :: r, theta, chpri(3), lagrs(9)
     real(kind=8) :: ff2(4), press
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
-    integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8)
+    integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
     integer :: lact(8), nlact
     aster_logical :: lpint, lcont, pre1
     parameter    (crilsn = 1.d-4)
@@ -276,13 +276,13 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !     CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
 !     SEULEMENT POUR LES POINTS D'INTERSECTION
 !
-    call vecini(ndim, 0.d0, lagrs)
+    call vecini(3*ndim, 0.d0, lagrs)
     if (lpint .and. lcont) then
 !
 !       NOEUD(S) GLOBAUX PORTANT LE(S) LAMBDA(S)
         call xlacti(typma, ninter, iainc, lact, nlact)
         ASSERT(nlact.gt.0)
-        if (contac .eq. 1) then
+        if (contac .eq. 1.or.contac.eq.2) then
             nnol = nnop
         else if (contac.eq.3) then
 ! --- FONCTIONS DE FORMES LINEAIRES POUR LE P2P1
@@ -320,8 +320,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     else
         if (lmeca) then
 !         POUR LA MECA
-            idecv2 = jcnsv2-1+2*ndimc*(ino2-1)
-            idecl2 = jcnsl2-1+2*ndimc*(ino2-1)
+            idecv2 = jcnsv2-1+4*ndimc*(ino2-1)
+            idecl2 = jcnsl2-1+4*ndimc*(ino2-1)
         else
 !         POUR LA THERMIQUE
             idecv2 = jcnsv2-1+ndimc*(ino2-1)
@@ -331,9 +331,12 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             zr(idecv2+i)=chpri(i)
             zl(idecl2+i)=.true.
             if (lpint .and. lcont) then
-!           POUR LES LAGRANGES DE CONTACT EN MECA
-                zr(idecv2+ndimc+i)=lagrs(i)
-                zl(idecl2+ndimc+i)=.true.
+!             POUR LES LAGRANGES DE CONTACT EN MECA
+                nlag = ddlc/ndimc
+                do j=1,nlag
+                    zr(idecv2+ndimc*j+i)=lagrs(ndimc*(j-1)+i)
+                    zl(idecl2+ndimc*j+i)=.true.
+                end do
             endif
 400     continue
     endif

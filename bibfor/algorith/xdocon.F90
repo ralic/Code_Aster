@@ -115,9 +115,9 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
         ASSERT(coefcr.eq.0.d0.and.coefcp.ne.0.d0)
     else if (algocr.eq.3) then
         call teattr('S', 'XFEM', enr, ibid, typel=nomte)
-        ASSERT(enr.eq.'XHC')
+        ASSERT(enr(1:3).eq.'XHC')
         rela = zr(jdonco-1+(ifiss-1)*ncompd+10)
-        ASSERT(rela .eq. 1.d0 .or. rela .eq. 2.d0 .or. rela .eq. 3.d0 .or. rela .eq. 4.d0)
+        ASSERT(rela .gt.0.d0)
         coefcr = 1.d0
     else
         ASSERT(.false.)

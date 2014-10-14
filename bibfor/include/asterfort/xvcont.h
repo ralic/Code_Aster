@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
+    subroutine xvcont(algocr, cohes, jcohes, ncompv,&
+                      coefcp, coefcr, ddlm,&
                       ddls, ffc, ffp, idepl, idepm,&
                       ifa, ifiss, imate, indco, ipgf,&
                       jac, jfisno, jheafa, lact, ncomph,&
@@ -26,6 +27,8 @@ interface
                       tau2, vtmp)
         integer :: algocr
         real(kind=8) :: cohes(3)
+        integer :: jcohes
+        integer :: ncompv
         real(kind=8) :: coefcp
         real(kind=8) :: coefcr
         integer :: ddlm

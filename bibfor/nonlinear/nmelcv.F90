@@ -83,7 +83,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
     character(len=19) :: xdonco, xindco, xseuco, xcohes
     aster_logical :: lctcc, lxfcm, ltfcm, lallv
     character(len=24) :: nosdco
-    integer :: jnosdc
+    integer :: jnosdc, jxc
 !
 ! ----------------------------------------------------------------------
 !
@@ -112,19 +112,28 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
         debug = .false.
     endif
     base = 'V'
-    if (phase .eq. 'CONT') then
-        option = 'CHAR_MECA_CONT'
-    else if (phase.eq.'FROT') then
-        option = 'CHAR_MECA_FROT'
-    else
-        ASSERT(.false.)
-    endif
 !
 ! --- TYPE DE CO NTACT
 !
     lctcc = cfdisl(defico,'FORMUL_CONTINUE')
     lxfcm = cfdisl(defico,'FORMUL_XFEM')
     ltfcm = cfdisl(defico,'CONT_XFEM_GG')
+!
+! --- OPTION A CALCULER
+!
+    if (phase .eq. 'CONT') then
+        if(lxfcm) then
+            call jeveuo(modele(1:8)//'.XFEM_CONT','L',jxc)
+            if(zi(jxc).eq.1.or.zi(jxc).eq.3) option = 'CHAR_MECA_CONT'
+            if(zi(jxc).eq.2) option = 'CHAR_MECA_CONT_M'
+        else
+            option = 'CHAR_MECA_CONT'
+        endif
+    else if (phase.eq.'FROT') then
+        option = 'CHAR_MECA_FROT'
+    else
+        ASSERT(.false.)
+    endif
 !
 ! --- RECUPERATION DE LA GEOMETRIE
 !

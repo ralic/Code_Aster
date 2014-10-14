@@ -66,7 +66,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
     integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
     integer :: ifh, fisno(nno, nfiss)
     parameter    (ddlmax=1053)
-    integer :: posddl(ddlmax)
+    integer :: posddl(ddlmax), ddlc, nlag
     character(len=8) :: tyenel
     aster_logical :: lelim, lmultc, lmat, lvec
     real(kind=8) :: dmax, dmin, codia
@@ -85,7 +85,8 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !   OPTIONS RELATIVES A UNE MATRICE
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_GE' .or. option .eq.&
         'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA' .or. option .eq. 'RIGI_CONT' .or. option&
-        .eq. 'RIGI_FROT' .or. option .eq. 'MASS_MECA') lmat = .true.
+        .eq. 'RIGI_FROT' .or. option .eq. 'MASS_MECA'&
+        .or. option .eq. 'RIGI_CONT_M') lmat = .true.
 !
 !   OPTIONS RELATIVES A UN VECTEUR
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq. 'FORC_NODA' .or.&
@@ -96,7 +97,8 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
         .or. option .eq. 'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FF3D3D' .or. option&
         .eq. 'CHAR_MECA_FF2D2D' .or. option .eq. 'CHAR_MECA_PESA_R' .or. option .eq.&
         'CHAR_MECA_ROTA_R' .or. option .eq. 'CHAR_MECA_TEMP_R' .or. option .eq.&
-        'CHAR_MECA_EFON_R' .or. option .eq. 'CHAR_MECA_EFON_F') lvec = .true.
+        'CHAR_MECA_EFON_R' .or. option .eq. 'CHAR_MECA_EFON_F'&
+        .or. option .eq. 'CHAR_MECA_CONT_M') lvec = .true.
 !
     ASSERT(lmat .or. lvec)
 !
@@ -228,10 +230,13 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
         else if (ielim.eq.4) then
 !         4) CAS DU CONTACT
 !         ------------------------------
+            ddlc = ddls-ndim*(1+nfh+nfe)
+            nlag = ddlc/ndim
+            if(lmultc) nlag=1
             if (ino .le. nnos) then
-!
-                do ifh = 1, max(1, nfh)
-                    istatu = stano((ino-1)*max(1,nfh)+ifh)
+                do ifh = 1, nlag*max(1, nfh)
+                    if(lmultc) istatu = stano((ino-1)*max(1,nfh)+ifh)
+                    if(.not.lmultc) istatu = stano((ino-1)*max(1,nfh)+1)
                     if (istatu .eq. 0) then
 !             ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
                         do k = 1, ndim

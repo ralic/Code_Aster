@@ -564,7 +564,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                        b_cont_czm=BLOC(condition = "ALGO_CONT == 'CZM'",
                                                 fr=tr("Parametres de la formulation cohesive"),
                                                 RELATION       = SIMP(statut='o',typ='TXM',
-                                                                 into=("CZM_EXP_REG","CZM_LIN_REG","CZM_TAC_MIX","CZM_OUV_MIX"),)
+                                                                 into=("CZM_EXP_REG","CZM_LIN_REG","CZM_TAC_MIX","CZM_OUV_MIX","CZM_LIN_MIX"),)
                                                 ),
 
                                        b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' and  ALGO_CONT != 'CZM' ",

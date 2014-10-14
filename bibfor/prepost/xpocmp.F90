@@ -130,7 +130,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
             nfe = nfe +1
             cmp(ipos)=i
         endif
-        if (nomcmp(1:4) .eq. 'LAGS') then
+        if (nomcmp(1:3) .eq. 'LAG') then
             ipos=ipos+1
             ddlc=ddlc+1
             cmp(ipos)=i

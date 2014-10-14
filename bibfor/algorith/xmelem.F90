@@ -20,6 +20,7 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -27,6 +28,7 @@ subroutine xmelem(noma, modele, defico, resoco)
 #include "asterfort/utmess.h"
 #include "asterfort/xmele1.h"
 #include "asterfort/xmele2.h"
+#include "asterfort/xmele3.h"
     character(len=8) :: modele, noma
     character(len=24) :: resoco, defico
 !
@@ -48,7 +50,7 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 !
 !
-    integer :: ifm, niv, nfiss,  nfismx
+    integer :: ifm, niv, nfiss,  nfismx, jxc, contac
     character(len=19) :: ligrel
     character(len=19) :: xdonco, xindco, xseuco, xmemco, xgliss, xcohes
     character(len=19) :: xindcp, xmemcp, xseucp, xcohep
@@ -81,6 +83,11 @@ subroutine xmelem(noma, modele, defico, resoco)
         call utmess('F', 'XFEM_3')
     endif
 !
+! --- ON VA CHERCHER LE TYPE DE CONTACT: STANDARD OU MORTAR?
+!
+    call jeveuo(modele//'.XFEM_CONT','L',jxc)
+    contac = zi(jxc)
+!
 !
 !
     xindco = resoco(1:14)//'.XFIN'
@@ -110,10 +117,25 @@ subroutine xmelem(noma, modele, defico, resoco)
                 xseucp, 'PSEUIL', 'XREACL')
     call xmele1(noma, modele, defico, ligrel, nfiss,&
                 xgliss, 'PGLISS', 'XCVBCA')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xcohes, 'PCOHES', 'RIGI_CONT')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xcohep, 'PCOHES', 'XCVBCA')
+!
+! --- SI CONTACT CLASSIQUE, CHAMPS COHESIFS COLLOCATION PTS GAUSS
+!
+    if(contac.eq.1.or.contac.eq.3) then
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xcohes, 'PCOHES', 'RIGI_CONT')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xcohep, 'PCOHES', 'XCVBCA')
+!
+! --- SI CONTACT MORTAR, CHAMPS ELNO
+!
+    else if (contac.eq.2) then
+        call xmele3(noma, modele, ligrel, nfiss,&
+                    xcohes, 'PCOHES', 'RIGI_CONT_M')
+        call xmele3(noma, modele, ligrel, nfiss,&
+                    xcohep, 'PCOHES', 'XCVBCA_MORTAR')
+    else
+        ASSERT(.false.)
+    endif
 !
 ! ---
 !

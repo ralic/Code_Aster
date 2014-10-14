@@ -106,7 +106,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     integer :: jresc1, nbcmp
     aster_logical :: pre1
     character(len=3) :: tsca
-    character(len=8) :: k8b, ldep3(6), ldep2(4), ltemp(1), ldep1(3), ldep4(4)
+    character(len=8) :: k8b, ldep3(12), ldep2(8), ltemp(1), ldep1(3), ldep4(4)
     character(len=16) :: k16b, nomcmd
     character(len=19) :: coord2, ligrel, chn1, chsig1
     character(len=19) :: nomgd
@@ -122,8 +122,10 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     character(len=8), pointer :: cnsk1(:) => null()
     character(len=8), pointer :: cnsk2(:) => null()
     integer, pointer :: cnsd(:) => null()
-    data          ldep3/ 'DX','DY','DZ','LAGS_C','LAGS_F1','LAGS_F2'/
-    data          ldep2/ 'DX','DY',     'LAGS_C','LAGS_F1'          /
+    data          ldep3/ 'DX','DY','DZ','LAGS_C','LAGS_F1','LAGS_F2',&
+                         'LAG2_C','LAG2_F1','LAG2_F2','LAG3_C','LAG3_F1','LAG3_F2'/
+    data          ldep2/ 'DX','DY','LAGS_C','LAGS_F1','LAG2_C','LAG2_F1',&
+                         'LAG3_C', 'LAG3_F1'/
     data          ldep1/ 'DX','DY','PRE1'                           /
     data          ldep4/ 'DX','DY','DZ','PRE1'                      /
     data          ltemp/ 'TEMP'                                     /
@@ -293,11 +295,11 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
             else
 !         CAS DE LA MECANIQUE
                 if (ndim .eq. 2) then
-                    call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep2, 'V',&
+                    call cnscre(maxfem, 'DEPL_R', 4*ndim, ldep2, 'V',&
                                 cns2)
                 else
                     ASSERT(ndim.eq.3)
-                    call cnscre(maxfem, 'DEPL_R', 2*ndim, ldep3, 'V',&
+                    call cnscre(maxfem, 'DEPL_R', 4*ndim, ldep3, 'V',&
                                 cns2)
                 endif
             endif
@@ -326,8 +328,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                 end do
             else
 !           CAS DE LA MECANIQUE
-                cnsd(2)=2*ndim
-                do i = 1, 2*ndim
+                cnsd(2)=4*ndim
+                do i = 1, 4*ndim
                     if (ndim .eq. 3) cnsc(i)=ldep3(i)
                     if (ndim .eq. 2) cnsc(i)=ldep2(i)
                 end do

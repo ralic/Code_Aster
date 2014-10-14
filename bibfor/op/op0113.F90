@@ -149,9 +149,11 @@ subroutine op0113()
 !
     call getvtx(motfac, 'CONTACT', iocc=1, scal=k8cont, nbret=ibid)
     call wkvect(modelx//'.XFEM_CONT', 'G V I', 1, jxc)
-    if (k8cont .eq. 'NON') then
+    if (k8cont .eq. 'SANS') then
         zi(jxc) = 0
-    else if (k8cont.eq.'OUI') then
+    else if (k8cont .eq. 'MORTAR') then
+        zi(jxc) = 2
+    else if (k8cont.eq.'STANDARD') then
         call dismoi('LINE_QUAD', ligr1, 'LIGREL', repk = line_quad)
         if (line_quad .eq. 'LINE') then
             zi(jxc) = 1

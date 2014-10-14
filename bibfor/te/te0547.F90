@@ -2,7 +2,8 @@ subroutine te0547(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8vide.h"
+!
+#include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -10,8 +11,10 @@ subroutine te0547(option, nomte)
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pipeba.h"
+#include "asterfort/pipel2.h"
 #include "asterfort/pipeou.h"
 #include "asterfort/pipetc.h"
+#include "asterc/r8vide.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -24,7 +27,7 @@ subroutine te0547(option, nomte)
 #include "asterfort/xmulco.h"
 #include "asterfort/xteini.h"
 #include "asterfort/xxlag3.h"
-!
+#include "asterfort/xxlan5.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================
@@ -61,7 +64,7 @@ subroutine te0547(option, nomte)
 !
 !
 !
-    integer :: i, j, ibid, nfe, ib, iret
+    integer :: i, j, ibid, nfe, ib, iret, ino
     integer :: ndim, ddlc, ddls, nddl
     integer :: nno, nnos, nnom, nnof
     integer :: ipoids, ivf, idfde, jgano, ddlm
@@ -72,10 +75,10 @@ subroutine te0547(option, nomte)
     integer :: jdonco, jlsn, jlst, igeom, jptint, vstnc(1)
     integer :: jaint, jcface, jlonch, jbasec, icopil, ictau
     integer :: idepl0, idepl1, ideplm, iddepl, jcohes, imate
-    integer :: nfh, nfiss, contac, jtab(2)
+    integer :: nfh, nfiss, contac, jtab(2), jta2(3)
     character(len=8) :: elref, typma, fpg, elc, elrefc
     character(len=16) :: enr
-    real(kind=8) :: rela
+    real(kind=8) :: rela, lup(3), lud(3)
 !
     real(kind=8) :: cohes, copilo(5), dtau, ffc(8), ffp(27)
     real(kind=8) :: mat3bd(3, 3), mat6bd(6, 6), alpha(3), cohes2(3)
@@ -84,7 +87,7 @@ subroutine te0547(option, nomte)
     real(kind=8) :: rr, rbid, sud(3), sud2d(2), sudd(3), sup(3)
     real(kind=8) :: sup2d(2), supp(3), tau1(3), tau2(3), vim(9)
     integer :: ifa, ipgf, isspg, mate, nnol, nvec, pla(27)
-    character(len=8) :: job
+    character(len=8) :: job, champ
     aster_logical :: lbid
 !......................................................................
     call jemarq()
@@ -130,7 +133,7 @@ subroutine te0547(option, nomte)
     dtau = zr(ictau)
 !
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr .eq. 'XHC') then
+    if (enr(1:3) .eq. 'XHC') then
         rela = zr(jdonco-1+10)
     else
         rela=0.0d0
@@ -139,9 +142,10 @@ subroutine te0547(option, nomte)
     if (rela .ne. 0.d0) then
         call jevech('PMATERC', 'L', imate)
         call jevech('PCOHES', 'L', jcohes)
-        call tecach('OOO', 'PCOHES', 'L', iret, nval=2,&
-                    itab=jtab)
-        ncompv = jtab(2)
+        call tecach('OOO', 'PCOHES', 'L', iret, nval=3,&
+                    itab=jta2)
+        if(contac.eq.2) ncompv = jta2(2)/jta2(3)
+        if(contac.eq.1.or.contac.eq.3) ncompv = jta2(2)
     endif
     mate = zi(imate)
 !
@@ -189,28 +193,28 @@ subroutine te0547(option, nomte)
 !
     call jevech('PCOPILO', 'E', icopil)
 !
-! BOUCLE SUR LE NOMBRE DE FACETTES DE CONTACT
+! SI COHESIF TYPE "MORTAR"
 !
-    do ifa = 1, nface
+    if(contac.eq.2) then
 !
-        do ipgf = 1, npgf
+        ASSERT(rela.eq.5.d0)
+        call xmprep(cface, contac, elref, elrefc, elc,&
+                    ffc, ffp, fpg, jaint, jbasec,&
+                    jptint, 1, igeom, 1, jac,&
+                    jlst, lact, nd, ndim, ninter,&
+                    nlact, nno, nnos, nptf, ibid,&
+                    rr, singu, tau1, tau2)
+!
+        do 120 ino = 1, nnol
 !         INDICE DE CE POINT DE GAUSS DANS INDCO
-            isspg = npgf*(ifa-1)+ipgf
-            cohes = zr(jcohes+ncompv*(isspg-1))
-            call xmprep(cface, contac, elref, elrefc, elc,&
-                        ffc, ffp, fpg, jaint, jbasec,&
-                        jptint, ifa, igeom, ipgf, jac,&
-                        jlst, lact, nd, ndim, ninter,&
-                        nlact, nno, nnos, nptf, ibid,&
-                        rr, singu, tau1, tau2)
+            cohes = zr(jcohes+ncompv*(ino-1))
 !
 !           INITIALISATION
 !
-            call vecini(2, 0.d0, sup2d)
-            call vecini(2, 0.d0, sud2d)
             call vecini(3, 0.d0, mup)
             call vecini(3, 0.d0, mud)
-            call vecini(9, 0.d0, vim)
+            call vecini(3, 0.d0, lup)
+            call vecini(3, 0.d0, lud)
             call vecini(5, 0.d0, copilo)
 !
 ! CODE ERREUR A UNDEF. UNE VALEUR INDIQUE UN PLANTAGE
@@ -223,80 +227,141 @@ subroutine te0547(option, nomte)
 !           COMPOSANTE FIXE DU SAUT A ITERATION N+1 SUPP
 !
             nvec = 3
-            call xmmsa4(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(ideplm), zr( iddepl), zr(idepl0), nfh,&
-                        singu, rr, ddls, ddlm, supp)
+            champ = 'W'
+            call xxlan5(ino, ideplm, iddepl, idepl0, lact,&
+                        ndim, pla, sup, nvec, champ)
+            nvec = 3
+            champ = 'LAMBDA'
+            call xxlan5(ino, ideplm, iddepl, idepl0, lact,&
+                        ndim, pla, lup, nvec, champ)
             nvec = 1
-            call xmmsa4(ndim, nno, nnos, ffp, nddl,&
-                        nvec, zr(idepl1), [0.d0], [0.d0], nfh,&
-                        singu, rr, ddls, ddlm, sudd)
+            champ = 'W'
+            call xxlan5(ino, idepl1, ibid, ib, lact,&
+                        ndim, pla, sud, nvec, champ)
+            nvec = 1
+            champ = 'LAMBDA'
+            call xxlan5(ino, idepl1, ibid, ib, lact,&
+                        ndim, pla, lud, nvec, champ)
+            call pipel2(mate, sup, sud, lup, lud, cohes,&
+                        dtau, copilo)
 !
-            if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
-                job='SAUT_LOC'
-                call xmmsa2(ndim, ipgf, mate, sudd, nd,&
-                            tau1, tau2, cohes2, job, r8bid,&
-                            alpha, mat6bd, r6bid, mat3bd, r3bid,&
-                            r3bd, ma3bd, sud)
+            do 130 i = 1, 5
+                zr(icopil-1+5*(ino-1)+i) = copilo(i)
+130         continue
 !
-                call xmmsa2(ndim, ipgf, mate, supp, nd,&
-                            tau1, tau2, cohes2, job, r8bid,&
-                            alpha, mat6bd, r6bid, mat3bd, r3bid,&
-                            r3bd, ma3bd, sup)
+120      continue
+!
+!   SI COHESIF CLASSIQUE
+!
+    else if(contac.eq.1.or.contac.eq.3) then
+!
+        do ifa = 1, nface
+!
+            do ipgf = 1, npgf
+!         INDICE DE CE POINT DE GAUSS DANS INDCO
+                isspg = npgf*(ifa-1)+ipgf
+                cohes = zr(jcohes+ncompv*(isspg-1))
+                call xmprep(cface, contac, elref, elrefc, elc,&
+                            ffc, ffp, fpg, jaint, jbasec,&
+                            jptint, ifa, igeom, ipgf, jac,&
+                            jlst, lact, nd, ndim, ninter,&
+                            nlact, nno, nnos, nptf, ibid,&
+                            rr, singu, tau1, tau2)
+!
+!           INITIALISATION
+!
+                call vecini(2, 0.d0, sup2d)
+                call vecini(2, 0.d0, sud2d)
+                call vecini(3, 0.d0, mup)
+                call vecini(3, 0.d0, mud)
+                call vecini(9, 0.d0, vim)
+                call vecini(5, 0.d0, copilo)
+!
+! CODE ERREUR A UNDEF. UNE VALEUR INDIQUE UN PLANTAGE
+!
+                copilo(5) = r8vide()
+!
+!           SAUT PILOTE AU POINT DE GAUSS : SU(ETA) = SUPP + ETA * SUDD
+!           COMPOSANTE PILOTEE DU SAUT SUDD
+!           SAUT A T- SAUTM
+!           COMPOSANTE FIXE DU SAUT A ITERATION N+1 SUPP
+!
+                nvec = 3
+                call xmmsa4(ndim, nno, nnos, ffp, nddl,&
+                            nvec, zr(ideplm), zr( iddepl), zr(idepl0), nfh,&
+                            singu, rr, ddls, ddlm, supp)
+                nvec = 1
+                call xmmsa4(ndim, nno, nnos, ffp, nddl,&
+                            nvec, zr(idepl1), [0.d0], [0.d0], nfh,&
+                            singu, rr, ddls, ddlm, sudd)
+!
+                if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
+                    job='SAUT_LOC'
+                    call xmmsa2(ndim, ipgf, mate, sudd, nd,&
+                                tau1, tau2, cohes2, job, r8bid,&
+                                alpha, mat6bd, r6bid, mat3bd, r3bid,&
+                                r3bd, ma3bd, sud)
+!
+                    call xmmsa2(ndim, ipgf, mate, supp, nd,&
+                                tau1, tau2, cohes2, job, r8bid,&
+                                alpha, mat6bd, r6bid, mat3bd, r3bid,&
+                                r3bd, ma3bd, sup)
 !           APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE
 !           A LA LOI DE COMPORTEMENT
-                if (ndim .eq. 2) then
-                    sup2d(1)=sup(1)
-                    sup2d(2)=sup(2)
-                    sud2d(1)=sud(1)
-                    sud2d(2)=sud(2)
-                    call pipeba(ndim, mate, sup2d, sud2d, cohes,&
-                                dtau, copilo)
-                else if (ndim.eq.3) then
-                    call pipeba(ndim, mate, sup, sud, cohes,&
-                                dtau, copilo)
-                endif
-            else if (rela.eq.3.d0.or.rela.eq.4.d0) then
+                    if (ndim .eq. 2) then
+                        sup2d(1)=sup(1)
+                        sup2d(2)=sup(2)
+                        sud2d(1)=sud(1)
+                        sud2d(2)=sud(2)
+                        call pipeba(ndim, mate, sup2d, sud2d, cohes,&
+                                    dtau, copilo)
+                    else if (ndim.eq.3) then
+                        call pipeba(ndim, mate, sup, sud, cohes,&
+                                    dtau, copilo)
+                    endif
+                else if (rela.eq.3.d0.or.rela.eq.4.d0) then
 !
 ! ON RECUPERE LAMBDA FIXE PUIS PILOTE
 !
-                vim(4) = cohes
-                nvec = 3
-                call xxlag3(ffc, ideplm, iddepl, idepl0, lact,&
-                            ndim, nnol, pla, mup, nvec)
-                nvec = 1
-                call xxlag3(ffc, idepl1, ibid, ib, lact,&
-                            ndim, nnol, pla, mud, nvec)
+                    vim(4) = cohes
+                    nvec = 3
+                    call xxlag3(ffc, ideplm, iddepl, idepl0, lact,&
+                                ndim, nnol, pla, mup, nvec)
+                    nvec = 1
+                    call xxlag3(ffc, idepl1, ibid, ib, lact,&
+                                ndim, nnol, pla, mud, nvec)
 !
 ! ON RECUPERE [U] FIXE PUIS PILOTE
 !
-                job='SAUT_LOC'
-                call xmmsa5(ndim, ipgf, mate, sudd, r3bid,&
-                            nd, tau1, tau2, cohes2, job,&
-                            rela, alpha, mat6bd, r6bid, mat3bd,&
-                            sud, rbid)
-                call xmmsa5(ndim, ipgf, mate, supp, r3bid,&
-                            nd, tau1, tau2, cohes2, job,&
-                            rela, alpha, mat6bd, r6bid, mat3bd,&
-                            sup, rbid)
+                    job='SAUT_LOC'
+                    call xmmsa5(ndim, ipgf, mate, sudd, r3bid,&
+                                nd, tau1, tau2, cohes2, job,&
+                                rela, alpha, mat6bd, r6bid, mat3bd,&
+                                sud, rbid)
+                    call xmmsa5(ndim, ipgf, mate, supp, r3bid,&
+                                nd, tau1, tau2, cohes2, job,&
+                                rela, alpha, mat6bd, r6bid, mat3bd,&
+                                sup, rbid)
 !
 ! APPEL DU PILOTAGE PRED_ELAS SPECIFIQUE LOI DE COMPORTEMENT
 !
-                if (rela .eq. 3.d0) then
-                    call pipetc(mate, sup, sud, mup, mud,&
-                                vim, dtau, copilo)
-                else if (rela.eq.4.d0) then
-                    call pipeou(mate, sup, sud, mup, mud,&
-                                vim, dtau, copilo)
+                    if (rela .eq. 3.d0) then
+                        call pipetc(mate, sup, sud, mup, mud,&
+                                    vim, dtau, copilo)
+                    else if (rela.eq.4.d0) then
+                        call pipeou(mate, sup, sud, mup, mud,&
+                                    vim, dtau, copilo)
 !
+                    endif
                 endif
-            endif
 !
-            do i = 1, 5
-                zr(icopil-1+5*(isspg-1)+i) = copilo(i)
-            end do
+                do i = 1, 5
+                    zr(icopil-1+5*(isspg-1)+i) = copilo(i)
+                end do
 !
+             end do
         end do
-    end do
+    endif
 !
     call jedema()
 end subroutine

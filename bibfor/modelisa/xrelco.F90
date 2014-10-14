@@ -1,4 +1,4 @@
-subroutine xrelco(mesh   , nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
+subroutine xrelco(mesh   , model, nb_dim, sdline_crack, nb_rela_line, list_rela_line,&
                   nb_edge)
 !
 implicit none
@@ -32,6 +32,7 @@ implicit none
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
     integer, intent(in) :: nb_dim
     character(len=14), intent(in) :: sdline_crack
     character(len=19), intent(in) :: list_rela_line
@@ -47,6 +48,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh           : name of mesh
+! In  model          : name of model
 ! In  nb_dim         : dimension of space
 ! In  sdline_crack   : name of datastructure of linear relations for crack
 ! In  list_rela_line : name of linear relation object
@@ -55,23 +57,32 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbddl
+    integer :: nbddl, nbddl2
     parameter  (nbddl=12)
+    parameter  (nbddl2=8)
     character(len=8) :: ddlc(nbddl)
+    character(len=8) :: ddlc2(nbddl2)
 !
     real(kind=8) :: vale_real, coef_real(6)
     integer :: ier, repe_type(8), i_edge
     integer :: node_nume(8), i_dim
+    integer :: nlag, contac
     character(len=8) :: node_name(8), vale_func_dumm, cmp_name(8)
-    complex(kind=8) :: coef_cplx_dumm, vale_cplx_dumm
+    complex(kind=8) :: coef_cplx_dumm, value_cplx_dumm
     aster_logical :: l_mult_crack
     integer, pointer :: v_rela_node(:) => null()
     integer, pointer :: v_rela_cmp(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !
     data ddlc /'LAGS_C','LAGS_F1','LAGS_F2',&
                'LAG2_C','LAG2_F1','LAG2_F2',&
                'LAG3_C','LAG3_F1','LAG3_F2',&
                'LAG4_C','LAG4_F1','LAG4_F2'/
+!
+    data ddlc2 /'LAGS_C','LAGS_F1',&
+                'LAG2_C','LAG2_F1',&
+                'LAG3_C','LAG3_F1',&
+                'LAG4_C','LAG4_F1'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,8 +94,19 @@ implicit none
     repe_type(1:8) = 0
     nb_rela_line   = 0
     nb_edge        = 0
+    value_cplx_dumm=cmplx(0.d0,0.d0)
+    coef_cplx_dumm=cmplx(0.d0,0.d0)
 !
 ! - Get access 
+!
+! --- TYPE DE CONTACT ET NOMBRE DE MULTIPLICATEURS
+!
+    call jeveuo(model(1:8)//'.XFEM_CONT','L',vi=xfem_cont)
+    contac = xfem_cont(1)
+    if(contac.eq.2) nlag = 3
+    if(contac.eq.1.or.contac.eq.3) nlag = 1
+!
+! --- 1) RELATIONS D'EGALITE
 !
     call jeexin(sdline_crack, ier)
     if (ier .eq. 0) then
@@ -123,16 +145,21 @@ implicit none
 !
 ! ----- Set linear relation
 !
-        do i_dim = 1, nb_dim
+        do i_dim = 1, nlag*nb_dim
             if (l_mult_crack) then
                 cmp_name(1) = ddlc(3*(v_rela_cmp(2*(i_edge-1)+1)-1)+i_dim)
                 cmp_name(2) = ddlc(3*(v_rela_cmp(2*(i_edge-1)+2)-1)+i_dim)
             else
-                cmp_name(1) = ddlc(i_dim)
-                cmp_name(2) = ddlc(i_dim)
+                if(nb_dim.eq.3) then
+                    cmp_name(1) = ddlc(i_dim)
+                    cmp_name(2) = ddlc(i_dim)
+                else
+                    cmp_name(1) = ddlc2(i_dim)
+                    cmp_name(2) = ddlc2(i_dim)
+                endif
             endif
             call afrela(coef_real, [coef_cplx_dumm], cmp_name, node_name, repe_type,&
-                        [0.d0]   , 2, vale_real, vale_cplx_dumm, vale_func_dumm,&
+                        [0.d0]   , 2, vale_real, value_cplx_dumm, vale_func_dumm,&
                         'REEL', 'REEL', '12', 0.d0, list_rela_line)
             nb_rela_line = nb_rela_line + 1
         end do

@@ -102,7 +102,7 @@ subroutine xcpmod(modmes, modthx, modmex)
 !
 !   on interdit le contact
     call getvtx(' ', 'CONTACT', iocc=1, scal=k8cont)
-    if (k8cont .ne. 'NON') call utmess('F', 'XFEM_84')
+    if (k8cont .ne. 'SANS') call utmess('F', 'XFEM_84')
 !
 !   on interdit les objets associes aux mailles tardives,
 !   noeuds tardifs, ou sd voisinage

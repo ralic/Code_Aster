@@ -43,6 +43,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
     integer :: iret, ifiss, ifon
     integer :: ndim, nfiss, nfond, nbnol
     character(len=8) :: fiss, mo, malini
+    character(len=16) :: typdis
     character(len=19) :: nomta1, nomta2
     character(len=24) :: nom
     integer, pointer :: tbnp(:) => null()
@@ -89,8 +90,9 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
         do ifiss = 1, nfiss
 !
             fiss = zk8(jnom)
+            call dismoi('TYPE_DISCONTINUITE',fiss,'FISS_XFEM',repk=typdis)
             call jeexin(fiss//'.FONDFISS', iret)
-            if (iret .ne. 0) then
+            if (iret .ne. 0.and.typdis.eq.'FISSURE') then
 !
                 call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
 !

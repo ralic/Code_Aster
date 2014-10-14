@@ -17,6 +17,7 @@
 !
 interface
     subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
+                      jcohes, jcoheo, ncompv,&
                       ddlm, ddls, ffc, ffp, idepd,&
                       idepm, ifa, ifiss, jmate, indco,&
                       ipgf, jac, jfisno, jheafa, mmat,&
@@ -29,6 +30,9 @@ interface
         real(kind=8) :: coefcp
         real(kind=8) :: cohes(3)
         real(kind=8) :: coheo(3)
+        integer :: jcohes
+        integer :: jcoheo
+        integer :: ncompv
         integer :: ddlm
         integer :: ddls
         real(kind=8) :: ffc(8)

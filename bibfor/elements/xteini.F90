@@ -92,8 +92,11 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
 !
 ! --- DDL DE CONTACT
 !
-    if (enr(1:3) .eq. 'XHC' .or. enr(1:3) .eq. 'XTC' .or. enr(1:4) .eq. 'XHTC') ddlc = &
-                                                                                ndim
+    if (enr(1:4) .eq. 'XHC3') then
+        ddlc = 3*ndim
+    else if (enr(1:3) .eq. 'XHC' .or. enr(1:3) .eq. 'XTC' .or. enr(1:4) .eq. 'XHTC') then
+        ddlc = ndim
+    endif
     if (enr(1:4) .eq. 'XH2C') ddlc = 2*ndim
     if (enr(1:4) .eq. 'XH3C') ddlc = 3*ndim
     if (enr(1:4) .eq. 'XH4C') ddlc = 4*ndim
@@ -113,7 +116,11 @@ subroutine xteini(nomte, nfh, nfe, singu, ddlc,&
 !
     if (ier .eq. 0) then
         if (ismali(typma)) then
-            contac=1
+            if(enr(1:4).eq.'XHC3') then
+                contac=2
+            else
+                contac=1
+            endif
             ddlm=0
         else
             contac=3

@@ -10,6 +10,7 @@ implicit none
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nmetac.h"
 #include "asterfort/nmetc0.h"
@@ -71,6 +72,7 @@ implicit none
     integer :: nb_field, nb_field_in, nb_field_out
     character(len=24) :: io_lcha, io_info
     character(len=24), pointer :: v_io_para(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
     integer, pointer :: v_io_info(:) => null()
     integer :: i_field, i_field_maxi
     aster_logical :: list_field_acti(nb_field_maxi), l_find
@@ -110,7 +112,7 @@ implicit none
 ! - Spatial discretization of field
     data field_disc       /'NOEU','ELGA','ELGA',&
                            'ELGA','NOEU','NOEU',&
-                           'ELEM','ELEM','ELEM',&
+                           'ELEM','ELEM','ELNO',&
                            'NOEU','NOEU','NOEU',&
                            'NOEU','NOEU','NOEU',&
                            'NOEU','ELGA','NOEU',&
@@ -156,6 +158,14 @@ implicit none
 ! - Select fields depending on active functionnalities
 !
     call nmetac(list_func_acti, sddyna, sdcont_defi, nb_field_maxi, list_field_acti)
+!
+! Localization for cohesive XFEM fields
+!
+    if(list_field_acti(9)) then
+        call jeveuo(model(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
+        if(xfem_cont(1).eq.2) field_disc(9) = 'ELNO'
+        if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) field_disc(9) = 'ELEM'
+    endif
 !
 ! - Count active fields (input/output)
 !

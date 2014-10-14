@@ -70,11 +70,11 @@ subroutine te0534(option, nomte)
     integer :: jmate, nfiss, jfisno, contac, nbspg, nspfis
     integer :: jheano, ifiss, ncomph, ncompv, vstnc(32)
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
-    integer :: jheafa, nptf
+    integer :: jheafa, nptf, jta2(3)
     real(kind=8) :: vtmp(400), reac, reac12(3), jac
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
     real(kind=8) :: mu, tau1(3), tau2(3), coeffr
-    real(kind=8) :: rr, cohes(3), rela
+    real(kind=8) :: rr, rbid, cohes(3), rela
     aster_logical :: lbid, lelim
     character(len=8) :: elref, typma, elrefc
     character(len=8) :: elc, fpg
@@ -191,9 +191,14 @@ subroutine te0534(option, nomte)
         if (algocr .eq. 3) then
             call jevech('PMATERC', 'L', jmate)
             call jevech('PCOHES', 'L', jcohes)
-            call tecach('OOO', 'PCOHES', 'L', iret, nval=2,&
-                        itab=jtab)
-            ncompv = jtab(2)
+            call tecach('OOO', 'PCOHES', 'L', iret, nval=3,&
+                        itab=jta2)
+!
+!           CAS CONTACT TYPE "MORTAR"
+            if(contac.eq.2) ncompv = jta2(2)/jta2(3)
+!
+!           CAS CONTACT CLASSIQUE
+            if(contac.eq.1.or.contac.eq.3) ncompv = jta2(2)
         endif
 !
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
@@ -217,7 +222,9 @@ subroutine te0534(option, nomte)
                 isspg = npgf*(ifa-1)+ipgf
                 indco = zi(jindco-1+nbspg+isspg)
                 if (algofr .ne. 0) seuil = zr(jseuil-1+nbspg+isspg)
-                if (algocr .eq. 3) then
+!
+!               SI COHESIF CLASSIQUE, ON LIT LES VARIABLES INTERNES
+                if (algocr .eq. 3 .and. (contac.eq.1.or.contac.eq.3)) then
                     do i = 1, ncompv
                         cohes(i) = zr(jcohes+ncompv*(nbspg+isspg-1)-1+ i)
                     end do
@@ -242,8 +249,9 @@ subroutine te0534(option, nomte)
 ! --- CALCUL DES SECONDS MEMBRES DE CONTACT
 !     .....................................
 !
-                if (option .eq. 'CHAR_MECA_CONT') then
-                    call xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
+                if (option(1:14) .eq. 'CHAR_MECA_CONT') then
+                    call xvcont(algocr, cohes, jcohes, ncompv,&
+                                coefcp, coefcr, ddlm,&
                                 ddls, ffc, ffp, idepl, idepm,&
                                 ifa, ifiss, zi( jmate), indco, ipgf,&
                                 jac, jfisno, jheafa, lact, ncomph,&
@@ -255,8 +263,8 @@ subroutine te0534(option, nomte)
 ! --- CALCUL DES SECONDS MEMBRES DE FROTTEMENT
 !     ........................................
 !
-                    elseif (option.eq.'CHAR_MECA_FROT' .and.rela.ne.3.d0&
-                .and.rela.ne.4.d0) then
+                elseif (option.eq.'CHAR_MECA_FROT' .and.&
+                       (rela.eq.0.d0.or.rela.eq.1.d0.or.rela.eq.2.d0)) then
                     call xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
                                 ffc, ffp, idepl, idepm, ifa,&
                                 ifiss, indco, jac, jfisno, jheafa,&
@@ -266,7 +274,7 @@ subroutine te0534(option, nomte)
                                 seuil, singu, tau1, tau2, vtmp)
 !
                 else
-                    ASSERT(option .eq. 'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_CONT')
+                    ASSERT(option .eq. 'CHAR_MECA_FROT' .or. option(1:14) .eq. 'CHAR_MECA_CONT')
                 endif
 !
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS

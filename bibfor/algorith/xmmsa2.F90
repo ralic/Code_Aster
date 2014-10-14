@@ -111,16 +111,12 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
 !
     if (job .ne. 'SAUT_LOC') then
         vim(1)=cohes(1)
-        if(rela.eq.1.d0) then
-            vim(2) = cohes(2)
+        if (cohes(2) .le. 0.d0) then
+            vim(2)=0.d0
         else
-            if (cohes(2) .le. 0.d0) then
-                vim(2)=0.d0
-            else
-                vim(2)=1.d0
-            endif
-            vim(3) = abs(cohes(2)) - 1.d0
+            vim(2)=1.d0
         endif
+        vim(3) = abs(cohes(2)) - 1.d0
 !
 ! PREDICTION: COHES(3)=1 ; CORRECTION: COHES(3)=2
 !
@@ -166,16 +162,12 @@ subroutine xmmsa2(ndim, ipgf, imate, saut, nd,&
         endif
 !
         alpha(1) = vip(1)
-        if(rela.eq.1.d0) then
-            alpha(2) = vip(2)
+        if (vip(2) .eq. 0.d0) then
+            alpha(2) = -vip(3)-1.d0
+        else if (vip(2).eq.1.d0) then
+            alpha(2) = vip(3) + 1.d0
         else
-            if (vip(2) .eq. 0.d0) then
-                alpha(2) = -vip(3)-1.d0
-            else if (vip(2).eq.1.d0) then
-                alpha(2) = vip(3) + 1.d0
-            else
-                ASSERT(.false.)
-            endif
+            ASSERT(.false.)
         endif
 ! ici on a enleve la securite numerique
 !

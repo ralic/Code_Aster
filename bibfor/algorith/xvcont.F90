@@ -1,11 +1,12 @@
-subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
-                  ddls, ffc, ffp, idepl, idepm,&
-                  ifa, ifiss, imate, indco, ipgf,&
-                  jac, jfisno, jheafa, lact, ncomph,&
-                  nd, nddl, ndim, nfh, nfiss,&
-                  nno, nnol, nnos, nvit, pla,&
-                  rela, reac, rr, singu, tau1,&
-                  tau2, vtmp)
+subroutine xvcont(algocr, cohes, jcohes, ncompv,&
+                  coefcp, coefcr,&
+                  ddlm, ddls, ffc, ffp, idepl,&
+                  idepm, ifa, ifiss, imate, indco,&
+                  ipgf, jac, jfisno, jheafa, lact,&
+                  ncomph, nd, nddl, ndim, nfh,&
+                  nfiss, nno, nnol, nnos, nvit,&
+                  pla, rela, reac, rr, singu,&
+                  tau1, tau2, vtmp)
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
@@ -65,26 +66,33 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
 #include "asterfort/xmmsa2.h"
 #include "asterfort/xmmsa3.h"
 #include "asterfort/xmmsa5.h"
+#include "asterfort/xmmsa6.h"
 #include "asterfort/xmvco1.h"
 #include "asterfort/xmvco2.h"
+#include "asterfort/xmvco4.h"
+#include "asterfort/xmvco5.h"
 #include "asterfort/xmvec2.h"
 #include "asterfort/xmvec3.h"
 #include "asterfort/xmvep2.h"
 #include "asterfort/xxlag2.h"
-    integer :: algocr
-    integer :: ddlm, ddls
+#include "asterfort/xxlag4.h"
+#include "asterfort/xxlan5.h"
+    integer :: jcohes, ncompv
+    integer :: algocr, ibid
+    integer :: ddlm, ddls, i, ino
     integer :: idepl, idepm, ifa, ifiss
     integer :: imate, indco, ipgf
     integer :: jfisno, jheafa, lact(8), ncomph
     integer :: nddl, ndim, nfh, nfiss, nno
     integer :: nnol, nnos, nvec, nvit, pla(27)
     integer :: singu
-    real(kind=8) :: alpha(3), am(3), dnor(3), dsidep(6, 6), cohes(3)
-    real(kind=8) :: dtang(3), coefcr, coefcp, ffc(8), ffp(27), jac
-    real(kind=8) :: nd(3), p(3, 3), pp(3, 3), reac, rr, saut(3)
-    real(kind=8) :: sigma(6), tau1(3), tau2(3), vtmp(400), un, rela
-    real(kind=8) :: delta(6), lamb(3), r
-    character(len=8) :: job
+    real(kind=8) :: alpha(3), am(3), dsidep(6, 6), cohes(3)
+    real(kind=8) :: coefcr, coefcp, ffc(8), ffp(27), jac, raug
+    real(kind=8) :: nd(3), p(3, 3), reac, rr, saut(3), mu(3)
+    real(kind=8) :: sigma(6), tau1(3), tau2(3), vtmp(400), rela
+    real(kind=8) :: delta(6), lamb(3), r, wsaut(3)
+    real(kind=8) :: dtang(3), dnor(3), pp(3,3), un
+    character(len=8) :: job, champ
 !
 ! --- CAS COHESIF
 !
@@ -93,7 +101,6 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
 ! --- SI LOI COHESIVE REGULARISEE CZM_XXX_REG
 !
         if (rela .eq. 1.d0 .or. rela .eq. 2.d0) then
-!
             un = 1.d0
             if (nvit .ne. 0) then
                 call xmvec3(nnol, pla, ffc, reac, jac,&
@@ -121,6 +128,58 @@ subroutine xvcont(algocr, cohes, coefcp, coefcr, ddlm,&
                         lact, dtang, nfh, ddls, jac,&
                         ffc, ffp, singu, rr, un,&
                         nd, tau1, tau2, vtmp)
+!
+! --- SI FORMULATION "MORTAR" LOI CZM_LIN
+!
+        else if(rela.eq.5.d0) then
+!
+! --- CALCUL DU SAUT DE DEPLACEMENT [[U]]
+!
+            nvec=2
+            call xmmsa3(ndim, nno, nnos, ffp, nddl,&
+                        nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
+                        singu, rr, ddls, ddlm, jfisno,&
+                        nfiss, ifiss, jheafa, ncomph, ifa,&
+                        saut)
+!
+!           CALCUL W AU POINT DE GAUSS
+            nvec = 2
+            champ = 'W'
+            call xxlag4(ffc, idepl, idepm, lact, ndim,&
+                        nnol, pla, wsaut, nvec, champ)
+!
+!           CALCUL MU AU POINT DE GAUSS
+            nvec = 2
+            champ = 'MU'
+            call xxlag4(ffc, idepl, idepm, lact, ndim,&
+                        nnol, pla, mu, nvec, champ)
+!
+! --- CALCUL DES SECONDS MEMBRES DE COHESION
+!
+            call xmvco5(ndim, nno, nnol, pla, nd,&
+                        tau1, tau2, mu, ddls, jac,&
+                        ffc, ffp, nnos, ddlm, wsaut,&
+                        saut, vtmp)
+!
+            do 10 ino = 1, nnol
+                do 2 i = 1, ncompv
+                    cohes(i) = zr(jcohes+ncompv*(ino-1)-1+i)
+ 2              continue
+                nvec = 2
+                champ = 'LAMBDA'
+                call xxlan5(ino, idepl, idepm, ibid, lact, ndim,&
+                            pla, lamb, nvec, champ)
+                nvec = 2
+                champ = 'W'
+                call xxlan5(ino, idepl, idepm, ibid, lact, ndim,&
+                            pla, wsaut, nvec, champ)
+                job='VECTEUR'
+                call xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
+                            tau1, tau2, cohes, job, rela,&
+                            alpha, dsidep, sigma, p, am, raug)
+                call xmvco4(ino, ndim, nnol, sigma, lamb, pla,&
+                            lact, jac, ffc, p, raug, vtmp)
+10          continue
 !
         else if (rela.eq.3.d0.or.rela.eq.4.d0) then
 !
