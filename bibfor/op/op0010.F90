@@ -35,6 +35,7 @@ subroutine op0010()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscno.h"
@@ -83,7 +84,7 @@ subroutine op0010()
     real(kind=8) :: lcmin, deltat
     character(len=8) :: k8bid, noma, nomo, fiss, fispre, method, fisini, ncrack
     character(len=8) :: ma_grill_pre
-    character(len=16) :: k16bid, typdis
+    character(len=16) :: k16bid, typdis, operation
     character(len=19) :: cnsvt, cnsvn, grlt, grln, cnslt, cnsln, cnsen, cnsenr
     character(len=19) :: noesom, isozro, noresi, cnxinv, cnsbl, cnsdis, cnslj
     character(len=19) :: vpoint, delta, mai
@@ -150,9 +151,17 @@ subroutine op0010()
 !
     call getvid(' ', 'FISS_PROP', scal=fispre, nbret=ibid)
 !
-!     VERIFICATION QUE L'ON TRAITE UNE FISSURE ET NON UNE INTERFACE
+!   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
+!
+    call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
+!
+!   VERIFICATION QUE L'ON TRAITE UNE FISSURE ET NON UNE INTERFACE
     call dismoi('TYPE_DISCONTINUITE', fispre, 'FISS_XFEM', repk=typdis)
-    if (typdis .ne. 'FISSURE') then
+!
+!   OPERATION DEMANDEE
+    call getvtx(' ', 'OPERATION', scal=operation, nbret=ibid)
+!
+    if (typdis .ne. 'FISSURE'.and.typdis.ne.'COHESIF') then
         call utmess('F', 'XFEM2_1')
     endif
 !
@@ -161,29 +170,32 @@ subroutine op0010()
 !
     call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
 !
-!     CHECK THAT A CRACK HAS BEEN DEFINED ON THE MODEL
-!     AND RETRIEVE THE NUMBER OF CRACKS IN THE MODEL
-    call dismoi('NB_FISS_XFEM', nomo, 'MODELE', repi=nfiss)
-    if (nfiss .eq. 0) then
-        call utmess('F', 'XFEM2_93', sk=nomo)
-    endif
+!     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
+    if(operation.ne.'PROPA_COHESIF') then
+        call dismoi('NB_FISS_XFEM', nomo, 'MODELE', repi=nfiss)
+        if (nfiss .eq. 0) then
+            call utmess('F', 'XFEM2_93', sk=nomo)
+        endif
 !
 !     RETRIEVE THE NAME OF THE DATA STRUCTURE CONTAINING EACH CRACK
-    call jeveuo(nomo//'.FISS', 'L', vk8=vfiss)
+      call jeveuo(nomo//'.FISS', 'L', vk8=vfiss)
 !
-    numfis=0
-!     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
-    do crack = 1, nfiss
+        numfis=0
+        do crack = 1, nfiss
 !
-        ncrack = vfiss(crack)
-        if (ncrack .eq. fispre) numfis=crack
+            ncrack = vfiss(crack)
+            if (ncrack .eq. fispre) numfis=crack
 !
-    end do
+        end do
 !
-    if (numfis .eq. 0) then
-        msgout(1) = fispre
-        msgout(2) = nomo
-        call utmess('F', 'XFEM2_89', nk=2, valk=msgout)
+        if (numfis .eq. 0) then
+            msgout(1) = fispre
+            msgout(2) = nomo
+            call utmess('F', 'XFEM2_89', nk=2, valk=msgout)
+        endif
+    else
+        numfis = 1
+        ncrack = fispre
     endif
 !
 ! --- RETRIEVE THE NAME OF THE MESH THAT SHOULD BE USED AS AN AUXILIARY
@@ -265,9 +277,23 @@ subroutine op0010()
 !
     cnxinv = '&&XPRREO.CNCINV'
     call cncinv(noma, [ibid], 0, 'V', cnxinv)
+!  COMPATIBILITE ENTRE LA METHODE ET LE TYPE DE FISSURE
+!
+    if(typdis.eq.'COHESIF') then
+      ASSERT(operation.eq.'DETECT_COHESIF'.or.operation.eq.'PROPA_COHESIF')
+    endif
+    if(operation.eq.'DETECT_COHESIF') then
+        ASSERT(typdis.eq.'COHESIF')
+    endif
+!
+    if(operation.eq.'PROPA_COHESIF') then
+        ASSERT(typdis.eq.'COHESIF')
+    endif
 !
 !     RETRIEVE THE MAXIMUM ADVANCEMENT OF THE CRACK FRONT
-    call getvr8(' ', 'DA_MAX', scal=damax, nbret=ibid)
+    if(operation.ne.'DETECT_COHESIF') then
+        call getvr8(' ', 'DA_MAX', scal=damax, nbret=ibid)
+    endif
 !
 !     RETRIEVE THE VALUE FOR THE "TEST_MAIL" PARAMETER
     call getvtx(' ', 'TEST_MAIL', scal=test, nbret=ibid)
@@ -294,10 +320,12 @@ subroutine op0010()
     call getvr8(' ', 'ANGLE', nbval=-nbval, vect=zr(jbeta), nbret=ibid)
     call getvr8(' ', 'VITESSE', nbval=-nbval, vect=zr(jvit), nbret=ibid)
 !
-    call getvr8(' ', 'DA_FISS', scal=dafiss, nbret=ibid)
+    if(operation.ne.'DETECT_COHESIF') then
+        call getvr8(' ', 'DA_FISS', scal=dafiss, nbret=ibid)
 !
 !     RECUPERATION DU NOMBRE DE CYCLES
-    call getvr8(' ', 'NB_CYCLES', scal=dttot, nbret=ibid)
+        call getvr8(' ', 'NB_CYCLES', scal=dttot, nbret=ibid)
+    endif
 !
 ! --- RECUPERATION DES LEVEL SETS ET GRADIENTS
 !
@@ -323,16 +351,27 @@ subroutine op0010()
     call jedupo(fispre//'.INFO', 'G', fiss//'.INFO', .false._1)
     call jedupo(fispre//'.MAILLAGE', 'G', fiss//'.MAILLAGE', .false._1)
 !
+!
+    if(operation.eq.'PROPA_COHESIF') then
+        call jedupo(fispre//'.FONDFISS','G',fiss//'.FONDFISS',.false._1)
+        call jedupo(fispre//'.BASEFOND','G',fiss//'.BASEFOND',.false._1)
+        call jedupo(fispre//'.FONDMULT','G',fiss//'.FONDMULT',.false._1)
+    endif
+    if(operation.eq.'PROPA_COHESIF'.or.operation.eq.'DETECT_COHESIF') then
+        call jedupo(fispre(1:8)//'.LISEQ     ','G',&
+                   fiss(1:8)//'.LISEQ     ',.false._1)
+    endif
+!
 ! --- RECUPERATION DES CARACTERISTIQUES DU FOND DE FISSURE
 !
-    call jedupo(fispre//'.CARAFOND', 'G', fiss//'.CARAFOND', .false._1)
-    call jeveuo(fiss//'.CARAFOND', 'L', jcaraf)
+    if(typdis.ne.'COHESIF') then
+        call jedupo(fispre//'.CARAFOND', 'G', fiss//'.CARAFOND', .false._1)
+        call jeveuo(fiss//'.CARAFOND', 'L', jcaraf)
 !
-!   RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
-    call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
 !
 !   RETRIEVE THE RADIUS THAT MUST BE USED TO ASSESS THE LOCAL RESIDUAL
-    call getvr8(' ', 'RAYON', scal=rayon, nbret=ibid)
+        call getvr8(' ', 'RAYON', scal=rayon, nbret=ibid)
+    endif
 !
 !     SET THE DEFAULT VALUES FOR THE DOMAIN RESTRICTION FLAG
     ldpre = .false.
@@ -584,7 +623,7 @@ subroutine op0010()
         edomg = '&&OP0010.EDOMG'
         call xprdom(dnoma, dcnxin, disfr, noma, cnxinv,&
                     fispre, damax, ndomp, edomg, radtor)
-    else
+    else if(operation.ne.'DETECT_COHESIF') then
 !        IF THE PROJECTION HAS NOT BEEN SELECTED, THE ESTIMATION OF THE
 !        RADIUS OF THE TORUS DEFINING THE LOCAL DOMAIN TO BE USED FOR
 !        THE LEVEL SET UPDATE CALCULATIONS MUST BE ESTIMATED HERE
@@ -653,20 +692,22 @@ subroutine op0010()
 !
 !     THE VALUE OF RAYON MUST BE GREATER THAN THE SHORTEST EDGE IN THE
 !     MESH IN ORDER TO BE ABLE TO CALCULATE THE LOCAL RESIDUAL
-    if (rayon .lt. lcmin) then
-        meserr(1)=rayon
-        meserr(2)=lcmin
-        call utmess('F', 'XFEM2_64', nr=2, valr=meserr)
-    endif
-!
-!     THE VALUE OF DAMAX SHOULD BE GREATER THAN THE SHORTEST EDGE IN THE
-!     MESH. IF THIS IS NOT TRUE, THE MESH COULD FAIL TO CORRECTLY
-!     REPRESENT THE LEVEL SETS. THIS IS NOT A FATAL ERROR AND A WARNING
-!     MESSAGE IS ISSUED.
-    if (lcmin .gt. damax) then
-        meserr(1)=damax
-        meserr(2)=lcmin
-        call utmess('A', 'XFEM2_63', nr=2, valr=meserr)
+    if(typdis.ne.'COHESIF') then
+        if (rayon .lt. lcmin) then
+            meserr(1)=rayon
+            meserr(2)=lcmin
+            call utmess('F', 'XFEM2_64', nr=2, valr=meserr)
+        endif
+!    
+!       THE VALUE OF DAMAX SHOULD BE GREATER THAN THE SHORTEST EDGE IN THE
+!       MESH. IF THIS IS NOT TRUE, THE MESH COULD FAIL TO CORRECTLY
+!       REPRESENT THE LEVEL SETS. THIS IS NOT A FATAL ERROR AND A WARNING
+!       MESSAGE IS ISSUED.
+        if (lcmin .gt. damax) then
+            meserr(1)=damax
+            meserr(2)=lcmin
+            call utmess('A', 'XFEM2_63', nr=2, valr=meserr)
+        endif
     endif
 !
 !-----------------------------------------------------------------------
@@ -710,7 +751,7 @@ subroutine op0010()
         write(ifm,*)'   UTILISATION DE LA METHODE GEOMETRIQUE.'
         call xprgeo(dnoma, dcnsln, dcnslt, dgrln, dgrlt,&
                     vpoint, cnsbl, dttot, nodtor, liggrd,&
-                    cnsbet, listp)
+                    cnsbet, listp, operation)
         goto 1000
     endif
 !
@@ -1011,7 +1052,7 @@ subroutine op0010()
     goinop=.false.
     call xenrch(noma, cnslt, cnsln, cnslj,&
                 cnsen, cnsenr, ndim, fiss, goinop,&
-                lismae, lisnoe)
+                lismae, lisnoe, operation_opt=operation)
 !
     call cnscno(cnsenr, ' ', 'NON', 'G', fiss//'.STNOR',&
                 'F', ibid)

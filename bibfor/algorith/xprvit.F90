@@ -21,11 +21,15 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/normev.h"
+#include "asterfort/prmave.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xmafr1.h"
 #include "asterfort/xprfon.h"
 #include "asterfort/xprvir.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "blas/ddot.h"
     character(len=8) :: noma, fiss
 !
     character(len=19) :: cnsvt, cnsvn, vpoint, disfr, cnsbl, cnsdis, cnsbet
@@ -109,7 +113,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     real(kind=8) :: xij, yij, zij, xim, yim, zim, s, norm2, xn, yn, zn, d
     real(kind=8) :: radimp, radtor
     character(len=8) :: typcmp(6), method
-    integer :: jbasef, k
+    character(len=16) :: operation
+    integer :: jbasef, k, ier
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, pi(3), normij
     real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
@@ -131,6 +136,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !     BISECTION METHOD AND VELOCITY INTERPOLATION
     real(kind=8) :: tolld, dprec, ds, vp, betap
+    real(kind=8) :: ptang(3,3), sens, npp(3), tpp(3), norme
     integer :: maxite, jlimsx, jlimdx
     real(kind=8), pointer :: euler(:) => null()
     real(kind=8), pointer :: vn_propa_ff(:) => null()
@@ -165,6 +171,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !     RECUPERATION DE LA METHODE DE REINITIALISATION A EMPLOYER
     call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
+!
+!     RECUPERATION DE L OPERATION DEMANDEE
+    call getvtx(' ', 'OPERATION', scal=operation, nbret=ibid)
 !
 !     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbno)
@@ -1058,7 +1067,68 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
 !           CORRECTION OF THE LOCAL BASE FOR THE POINTS PROJECTED ON
 !           ONE END OF THE CRACK FRONT
-            if ((method.eq.'GEOMETRI') .and. endpnt) then
+            if ((operation.eq.'PROPA_COHESIF'&
+                .or.operation.eq.'DETECT_COHESIF') .and. endpnt) then
+!
+               n(1) = bl(2*ndim*(i-1)+1)
+               n(2) = bl(2*ndim*(i-1)+2)
+               n(3) = bl(2*ndim*(i-1)+3)
+               t(1) = bl(2*ndim*(i-1)+4)
+               t(2) = bl(2*ndim*(i-1)+5)
+               t(3) = bl(2*ndim*(i-1)+6)
+               call normev(n,norme)
+               ASSERT(norme.ne.0.d0)
+               call normev(t,norme)
+               ASSERT(norme.ne.0.d0)
+!
+!              ON COMMENCE PAR CORRIGER LE VECTEUR NORMAL
+               call xmafr1(ndim,t,ptang)
+               bi(1) = xm - xn
+               bi(2) = ym - yn
+               bi(3) = zm - zn
+               call prmave(0, ptang, 3, ndim, ndim,&
+                           bi, ndim, npp, ndim, ier)
+               call normev(npp, norme)
+               if(norme.eq.0.d0) then
+                   npp(1) = n(1)
+                   npp(2) = n(2)
+                   npp(3) = n(3)
+               endif
+               sens = ddot(ndim,npp,1,n,1)
+               if(sens.lt.0.d0) then
+                  sens = -1.d0
+               else
+                  sens = 1.d0
+               endif
+               ASSERT(sens.ne.0.d0)
+               bl(2*ndim*(i-1)+1) = sens*npp(1)
+               bl(2*ndim*(i-1)+2) = sens*npp(2)
+               bl(2*ndim*(i-1)+3) = sens*npp(3)
+!
+!              ENSUITE, ON CORRIGE LE VECTEUR TANGENT
+               call xmafr1(ndim,npp,ptang)
+               call prmave(0, ptang, 3, ndim, ndim,&
+                           bi, ndim, tpp, ndim, ier)
+               call normev(tpp, norme)
+               if(norme.eq.0.d0) then
+                   tpp(1) = t(1)
+                   tpp(2) = t(2)
+                   tpp(3) = t(3)
+               endif
+               sens = ddot(ndim,tpp,1,t,1)
+               if(sens.lt.0.d0) then
+                  sens = -1.d0
+               else
+                  sens = 1.d0
+               endif
+               bl(2*ndim*(i-1)+4) = sens*tpp(1)
+               bl(2*ndim*(i-1)+5) = sens*tpp(2)
+               bl(2*ndim*(i-1)+6) = sens*tpp(3)
+!
+            endif
+!
+            if ((method.eq.'GEOMETRI'.and.operation.eq.'RIEN')&
+                .and. endpnt) then
 !
 !              NORMAL AXIS OF THE LOCAL BASE
                 n(1) = bl(2*ndim*(i-1)+1)

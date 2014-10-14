@@ -1,7 +1,7 @@
 subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                   cnxinv, jmafon, nxptff, jfon, nfon,&
                   jbas, jtail, fiss, goinop, listpt,&
-                  orient, typdis, nbmai)
+                  orient, typdis, nbmai, operation_opt)
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -51,6 +51,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
     character(len=16) :: typdis
+    character(len=16), intent(in), optional :: operation_opt
     character(len=19) :: cnslt, cnsln, cnxinv, listpt
     aster_logical :: orient, goinop
 !     ------------------------------------------------------------------
@@ -90,9 +91,10 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
     integer :: nbmai, nuno1, nuno2, jlism
     real(kind=8) :: m(3), p(3), gln(3), glt(3), coorg(3), vectn(12)
-    real(kind=8) :: normi, rbid3(3)
+    real(kind=8) :: normi, rbid3(3), r3bid(3)
     character(len=8) :: typma, nommai, alias
     character(len=19) :: grlt, chgrt, grln, chgrn, lismai
+    character(len=16) :: operation
     aster_logical :: fabord, indic
     real(kind=8), pointer :: lsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
@@ -106,6 +108,12 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     call jemarq()
     call infdbg('XFEM', ifm, niv)
 !
+    if(present(operation_opt)) then
+        operation = operation_opt
+    else
+        operation = 'RIEN'
+    endif
+!
     call jeveuo(noma//'.COORDO    .VALE', 'L', jcoor)
     call jeveuo(noma//'.CONNEX', 'L', jconx1)
     call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconx2)
@@ -114,53 +122,60 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     call jeveuo(cnslt//'.CNSV', 'L', vr=ltsv)
     call jeveuo(cnsln//'.CNSV', 'L', vr=lnsv)
 !
-!     GRADIENT LST
-    if (goinop) then
-        grlt = fiss//'.GRI.GRLTNO'
-    else
-        grlt = fiss//'.GRLTNO'
+    if(operation.ne.'FRONT_COHE_BRUT') then
+!
+!       GRADIENT LST
+        if (goinop) then
+            grlt = fiss//'.GRI.GRLTNO'
+        else
+            grlt = fiss//'.GRLTNO'
+        endif
+        chgrt = '&&XPTFON.GRLN'
+        call cnocns(grlt, 'V', chgrt)
+        call jeveuo(chgrt//'.CNSV', 'L', vr=gt)
+!
+!       GRADIENT LSN
+        if (goinop) then
+            grln = fiss//'.GRI.GRLNNO'
+        else
+            grln = fiss//'.GRLNNO'
+        endif
+        chgrn = '&&XPTFON.GRLT'
+        call cnocns(grln, 'V', chgrn)
+        call jeveuo(chgrn//'.CNSV', 'L', vr=gn)
+!
+!       Initialisation de fissure cohesive
+        if(typdis.eq.'COHESIF'.and.operation.eq.'RIEN') then
+            call xfocoh(jbas,jconx1,jconx2,jcoor,jfon,&
+                        cnsln,chgrn, chgrt,noma,listpt,ndim,nfon,&
+                        nxptff,orient,nbmai)
+        endif
+!
+!       on refait le test pour eviter un Warning à la compilation
+        if(typdis.eq.'COHESIF'.and.operation.eq.'RIEN') goto 999
+!
+        AS_ALLOCATE(vl=ptbord, size=nxptff)
+!
+!       VECTEUR PERMETTANT DE SAVOIR SI LE VECTEUR DE DIRECTION DE
+!       PROPAGATION (VDIR) A ETE RECALCULE OU NON AUX POINTS
+!       EXTREMITES DE FONFIS
+        call wkvect('&&XPTFON.LBORD', 'V V L', nxptff, jborl)
+!
+!         VECTEUR CONTENANT LES VDIR INITIAUX (CAD SANS MODIFICATION
+!         DES VECTEURS AUX POINTS EXTREMITES DE FONFIS)
+        call wkvect('&&XPTFON.VDIROL', 'V V R', 3*nxptff, jdirol)
+!
+!         VECTEUR CONTENANT 0 OU 1 AUX POINTS EXTREMITES DE FONFIS:
+!         0: LE PRODUIT SCALAIRE ENTRE LA NORMALE A LA FACE DE BORD ET
+!            LE VDIR INITIAL ESI INFERIEUR A 0
+!         1: LE PRODUIT SCALAIRE EST SUPERIEUR OU EGAL A 0
+        call wkvect('&&XPTFON.NVDIR', 'V V I', nxptff, jnvdir)
+!
+        do i = 1, nxptff
+            ptbord(i) = .false.
+            zl(jborl-1+i) = .false.
+        end do
     endif
-    chgrt = '&&XPTFON.GRLN'
-    call cnocns(grlt, 'V', chgrt)
-    call jeveuo(chgrt//'.CNSV', 'L', vr=gt)
-!
-!     GRADIENT LSN
-    if (goinop) then
-        grln = fiss//'.GRI.GRLNNO'
-    else
-        grln = fiss//'.GRLNNO'
-    endif
-    chgrn = '&&XPTFON.GRLT'
-    call cnocns(grln, 'V', chgrn)
-    call jeveuo(chgrn//'.CNSV', 'L', vr=gn)
-    if(typdis.eq.'COHESIF'.and.cnsln(3:8).eq.'OP0041') then
-        call xfocoh(jbas,jconx1,jconx2,jcoor,jfon,&
-                    cnsln,chgrn, chgrt,noma,listpt,ndim,nfon,&
-                    nxptff,orient,nbmai)
-    endif
-    if(typdis.eq.'COHESIF'.and.cnsln(3:8).eq.'OP0041') goto 999
-!
-    AS_ALLOCATE(vl=ptbord, size=nxptff)
-!
-!     VECTEUR PERMETTANT DE SAVOIR SI LE VECTEUR DE DIRECTION DE
-!     PROPAGATION (VDIR) A ETE RECALCULE OU NON AUX POINTS
-!     EXTREMITES DE FONFIS
-    call wkvect('&&XPTFON.LBORD', 'V V L', nxptff, jborl)
-!
-!     VECTEUR CONTENANT LES VDIR INITIAUX (CAD SANS MODIFICATION
-!     DES VECTEURS AUX POINTS EXTREMITES DE FONFIS)
-    call wkvect('&&XPTFON.VDIROL', 'V V R', 3*nxptff, jdirol)
-!
-!     VECTEUR CONTENANT 0 OU 1 AUX POINTS EXTREMITES DE FONFIS:
-!     0: LE PRODUIT SCALAIRE ENTRE LA NORMALE A LA FACE DE BORD ET
-!        LE VDIR INITIAL ESI INFERIEUR A 0
-!     1: LE PRODUIT SCALAIRE EST SUPERIEUR OU EGAL A 0
-    call wkvect('&&XPTFON.NVDIR', 'V V I', nxptff, jnvdir)
-!
-    do i = 1, nxptff
-        ptbord(i) = .false.
-        zl(jborl-1+i) = .false.
-    end do
 !
 !     COMPTEUR : NOMBRE DE POINTS DE FONFIS TROUVES
     ipt = 0
@@ -183,16 +198,20 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         nbnoma = zi(jconx2+nmaabs) - zi(jconx2+nmaabs-1)
         AS_ALLOCATE(vr=lsn, size=nbnoma)
         AS_ALLOCATE(vr=lst, size=nbnoma)
-        call wkvect('&&XPTFON.GRLSN', 'V V R', nbnoma*ndim, jglsn)
-        call wkvect('&&XPTFON.GRLST', 'V V R', nbnoma*ndim, jglst)
+        if(operation.ne.'FRONT_COHE_BRUT') then
+            call wkvect('&&XPTFON.GRLSN', 'V V R', nbnoma*ndim, jglsn)
+            call wkvect('&&XPTFON.GRLST', 'V V R', nbnoma*ndim, jglst)
+        endif
         call wkvect('&&XPTFON.IGEOM', 'V V R', nbnoma*ndim, igeom)
         do ino = 1, nbnoma
             nuno=zi(jconx1-1+zi(jconx2+nmaabs-1)+ino-1)
             lsn(ino) = lnsv(nuno)
             lst(ino) = ltsv(nuno)
             do j = 1, ndim
-                zr(jglsn-1+ndim*(ino-1)+j) = gn(ndim*(nuno-1)+j)
-                zr(jglst-1+ndim*(ino-1)+j) = gt(ndim*(nuno-1)+j)
+                if(operation.ne.'FRONT_COHE_BRUT') then
+                    zr(jglsn-1+ndim*(ino-1)+j) = gn(ndim*(nuno-1)+j)
+                    zr(jglst-1+ndim*(ino-1)+j) = gt(ndim*(nuno-1)+j)
+                endif
                 zr(igeom-1+ndim*(ino-1)+j) = zr(jcoor-1+3*(nuno-1)+j)
             end do
         end do
@@ -222,10 +241,17 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
             indipt=0
 !         RECHERCHE DES INTERSECTION ENTRE LE FOND DE FISSURE ET LA FACE
-            call intfac(noma, nmaabs, ifq, fa, nbnoma,&
-                        lst, lsn, ndim, 'OUI', jglsn,&
-                        jglst, igeom, m, indptf, gln,&
-                        glt, codret)
+            if(operation.ne.'FRONT_COHE_BRUT') then
+                call intfac(noma, nmaabs, ifq, fa, nbnoma,&
+                            lst, lsn, ndim, 'OUI', jglsn,&
+                            jglst, igeom, m, indptf, gln,&
+                            glt, codret)
+            else
+                call intfac(noma, nmaabs, ifq, fa, nbnoma,&
+                            lst, lsn, ndim, 'NON', ibid,&
+                            ibid, igeom, m, indptf, r3bid,&
+                            r3bid, codret)
+            endif
 !
             if (codret .eq. 0) goto 200
 !
@@ -288,10 +314,12 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                 endif
 !
                 if (indic) then
+                    if(operation.ne.'FRONT_COHE_BRUT') then
 !               CALCUL DE LA TAILLE MAX DE LA MAILLE IMA ET MISE A
 !               JOUR DU VECTEUR DES TAILLES DE MAILLES
-                    call xtailm(ndim, glt, nmaabs, typma, jcoor,&
-                                jconx1, jconx2, j, jtail)
+                        call xtailm(ndim, glt, nmaabs, typma, jcoor,&
+                                    jconx1, jconx2, j, jtail)
+                    endif
                     if (ndim .ne. 3) goto 200
                     indipt = j
                     goto 300
@@ -308,8 +336,10 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !         DES NUMEROS DES SOMMETS DE LA FACE CONTENANT M
             do k = 1, ndim
                 zr(jfon-1+11*(ipt-1)+k) = m(k)
-                zr(jbas-1+2*ndim*(ipt-1)+k) = gln(k)
-                zr(jbas-1+2*ndim*(ipt-1)+k+ndim)= glt(k)
+                if(operation.ne.'FRONT_COHE_BRUT') then
+                    zr(jbas-1+2*ndim*(ipt-1)+k) = gln(k)
+                    zr(jbas-1+2*ndim*(ipt-1)+k+ndim)= glt(k)
+                endif
             end do
             do k = 1, 3
                 zr(jfon-1+11*(ipt-1)+4+k) = zi( jconx1-1+zi(jconx2+ nmaabs-1)+fa(ifq,k)-1 )
@@ -324,26 +354,30 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
             indipt = ipt
 !
 !         CALCUL DE LA TAILLE MAX DE LA MAILLE IMA
-            call xtailm(ndim, glt, nmaabs, typma, jcoor,&
-                        jconx1, jconx2, ipt, jtail)
+            if(operation.ne.'FRONT_COHE_BRUT') then
+                call xtailm(ndim, glt, nmaabs, typma, jcoor,&
+                            jconx1, jconx2, ipt, jtail)
+            endif
 !
             if (ndim .ne. 3) goto 200
 !
 300         continue
 !
-!         ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
-!         CELA N'A DE SENS QU'EN 3D
-            call xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
-                        fabord)
-!
-!         SI LA FACE EST UNE FACE DE BORD ON PREND SA NORMALE
-            if (fabord) then
-                if (.not. ptbord(indipt)) then
-                    ptbord(indipt) = .true.
-                endif
-                if (ndim .eq. 3) then
-                    call xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
-                                nunob, nunoc, jcoor, coorg)
+!           ON VERIFIE SI LA FACE COURANTE EST UNE FACE DE BORD
+!           CELA N'A DE SENS QU'EN 3D
+            if(operation.ne.'FRONT_COHE_BRUT') then
+                call xfabor(noma, cnxinv, nunoa, nunob, nunoc,&
+                            fabord)
+!    
+!               SI LA FACE EST UNE FACE DE BORD ON PREND SA NORMALE
+                if (fabord) then
+                    if (.not. ptbord(indipt)) then
+                        ptbord(indipt) = .true.
+                    endif
+                    if (ndim .eq. 3) then
+                        call xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
+                                    nunob, nunoc, jcoor, coorg)
+                    endif
                 endif
             endif
 !
@@ -394,7 +428,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         end do
 !
 !       CALCUL DES VECTEURS DE PROPAGATION AUX EXTREMITES
-        if ((ndim.eq.3) .and. (nbfacb.ne.0)) then
+        if ((ndim.eq.3) .and. (nbfacb.ne.0).and.&
+             operation.ne.'FRONT_COHE_BRUT') then
             call xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                         jdirol, jnvdir)
         endif
@@ -411,7 +446,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
 !     NORMALISATION DES NOUVEAUX VECTEURS DE DIRECTION DE
 !     PROPAGATION
-    if (ndim .eq. 3) then
+    if (operation.ne.'FRONT_COHE_BRUT'.and.ndim .eq. 3) then
         do k = 1, nxptff
             if (ptbord(k)) then
                 call normev(zr(jbas-1+6*(k-1)+4), normi)
@@ -438,13 +473,28 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
         end do
     endif
 !
+!   IMPRESSION DU FRONT BRUT EN MODE DETECTION
+    if(operation.eq.'FRONT_COHE_BRUT'.and.niv.gt.1) then
+    do i=1,nfon
+            p(1) = zr(jfon-1+11*(i-1)+1)
+            p(2) = zr(jfon-1+11*(i-1)+2)
+            p(3) = zr(jfon-1+11*(i-1)+3)
+            write(6,899)(p(k),k=1,3)
+            899     format(2x,3(e12.5,2x))
+    enddo
+    endif
 !
-    call jedetr(chgrn)
-    call jedetr(chgrt)
+!
+    if(operation.ne.'FRONT_COHE_BRUT') then
+        call jedetr('&&XPTFON.LBORD')
+        call jedetr('&&XPTFON.VDIROL')
+        call jedetr('&&XPTFON.NVDIR')
+    endif
     AS_DEALLOCATE(vl=ptbord)
-    call jedetr('&&XPTFON.LBORD')
-    call jedetr('&&XPTFON.VDIROL')
-    call jedetr('&&XPTFON.NVDIR')
 999 continue
+    if(operation.ne.'FRONT_COHE_BRUT') then
+        call jedetr(chgrn)
+        call jedetr(chgrt)
+    endif
     call jedema()
 end subroutine

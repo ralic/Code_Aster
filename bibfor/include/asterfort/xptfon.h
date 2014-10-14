@@ -21,7 +21,7 @@ interface
     subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                       cnxinv, jmafon, nxptff, jfon, nfon,&
                       jbas, jtail, fiss, goinop, listpt,&
-                      orient, typdis, nbmai)
+                      orient, typdis, nbmai, operation_opt)
         character(len=8) :: noma
         integer :: ndim
         integer :: nmafon
@@ -40,5 +40,6 @@ interface
         aster_logical :: orient
         character(len=16) :: typdis
         integer :: nbmai
+        character(len=16), intent(in), optional :: operation_opt
     end subroutine xptfon
 end interface

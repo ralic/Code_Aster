@@ -126,7 +126,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
                 zr(jfono-1+11*(indipt-1)+4) = absc + padist(3,m,p)
 !
 !---      LE DEUXIEME INDICE CORRESPOND A CELUI RECHERCHE
-                elseif (zi(jlistp-1+2*(ima-1)+2).eq.zi(jtabpt-1+ipt))&
+           elseif (zi(jlistp-1+2*(ima-1)+2).eq.zi(jtabpt-1+ipt))&
             then
                 if (ipt .gt. 2) then
                     if (zi(jtabpt-1+ipt-2) .eq. zi(jlistp-1+2*(ima-1)+1)) then

@@ -20,6 +20,7 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
 !
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
@@ -70,7 +71,7 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
         zr(jfon-1+4*(ipt-1)+4) = zr(jfono-1+11*(indipt-1)+4)
         zr(jtail-1+ipt) = zr(jtailo-1+indipt)
 !
-10  end do
+10  continue
 !
 !     CAS D'UN FOND FERME: PREMIER POINT DU FOND = DERNIER POINT
     if (typfon .eq. 'FERME') then

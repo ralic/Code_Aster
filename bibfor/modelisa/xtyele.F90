@@ -227,7 +227,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
                             if (lsna .gt. maxlsn) maxlsn=lsna
                             if (lsnb .gt. maxlsn) maxlsn=lsnb
 ! --- ARETE OU NOEUD COUPÉ AVEC STATUT NUL -> MAILLE MULTI-H NON COUPÉE
-                            if (lsna*lsnb .le. 0) then
+                            if (lsna*lsnb .le. 0.and.nfiss.gt.1) then
                                 if (lsna*lsnb .lt. 0 .and. ( stna.eq.0.or.stnb.eq.0) .or. lsna&
                                     .eq. 0 .and. stna .eq. 0 .or. lsnb .eq. 0 .and. stnb .eq. 0) &
                                 goto 110

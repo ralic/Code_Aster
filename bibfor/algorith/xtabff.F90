@@ -1,4 +1,4 @@
-subroutine xtabff(nbfond, nfon, ndim, fiss)
+subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ltcrsd.h"
 #include "asterfort/ltnotb.h"
@@ -32,6 +33,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
 #include "asterfort/tbcrsd.h"
     integer :: ndim, nbfond, nfon
     character(len=8) :: fiss
+    character(len=16) :: operation
 !
 !
 ! ----------------------------------------------------------------------
@@ -78,11 +80,17 @@ subroutine xtabff(nbfond, nfon, ndim, fiss)
     call infdbg('XFEM', ifm, niv)
 !
 !     S'IL N'Y A PAS DE FOND DE FISSURE ON SORT
-    if (nbfond .eq. 0) goto 999
+    if (nbfond .eq. 0.and.operation.ne.'PROPA_COHESIF') goto 999
 !
     call jeveuo(fiss//'.FONDMULT', 'L', vi=fondmult)
     call jeveuo(fiss//'.FONDFISS', 'L', vr=fondfiss)
 !
+    if(operation.eq.'PROPA_COHESIF') then
+        call jelira(fiss//'.FONDMULT','LONUTI',nbfond,k8bid)
+        nbfond = nbfond/2
+        call jelira(fiss//'.FONDFISS','LONUTI',nfon,k8bid)
+        nfon = nfon/6
+    endif
     call ltcrsd(fiss, 'G')
 !
 !     ------------------------------------------------------------------

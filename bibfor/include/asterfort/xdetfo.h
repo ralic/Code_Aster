@@ -15,23 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine xenrch(noma, cnslt, cnsln, cnslj,&
-                      cnsen, cnsenr, ndim, fiss, goinop,&
-                      lismae, lisnoe, operation_opt)
-        character(len=8) :: noma
-        character(len=19) :: cnslt
+    subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
+                      nmafon, noma, nomfis, nomo, resuco)
+        character(len=19) :: cnsdet
         character(len=19) :: cnsln
-        character(len=19) :: cnslj
-        character(len=19) :: cnsen
-        character(len=19) :: cnsenr
+        character(len=19) :: cnslt
+        integer :: jmafon
         integer :: ndim
-        character(len=8) :: fiss
-        aster_logical :: goinop
-        character(len=24) :: lismae
-        character(len=24) :: lisnoe
-        character(len=16), intent(in), optional :: operation_opt
-    end subroutine xenrch
+        integer :: nmafon
+        character(len=8) :: noma
+        character(len=8) :: nomfis
+        character(len=8) :: nomo
+        character(len=8) :: resuco
+    end subroutine xdetfo
 end interface

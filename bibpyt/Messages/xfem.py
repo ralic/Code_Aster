@@ -596,4 +596,8 @@ Utilisez ELIM_ARETE='DUAL'.
          dans le modèle %(k1)s. En revanche, les autres lois cohésives et de contact-frottement
          doivent être définies avec un contact STANDARD.
 """),
+94: _(u"""
+     --> L algorithme de détection a détecté un front qui va au delà de
+         la zone de fissuration potentielle. Il faut agrandir celle-ci.
+"""),
 }

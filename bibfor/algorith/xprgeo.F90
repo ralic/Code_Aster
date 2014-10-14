@@ -1,6 +1,6 @@
 subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
                   vpoint, cnsbl, deltat, nodtor, liggrd,&
-                  cnsbet, listp)
+                  cnsbet, listp, operation)
 !
 ! aslint: disable=
     implicit none
@@ -20,6 +20,7 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 #include "asterfort/jeveuo.h"
     real(kind=8) :: deltat
     character(len=8) :: noma
+    character(len=16) :: operation
     character(len=19) :: cnsln, cnslt, grln, grlt, cnsbl, nodtor, liggrd, cnsbet
     character(len=19) :: listp, vpoint
 !
@@ -131,7 +132,11 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
         node = zi(jnodto-1+i)
 !
 !         PROPAGATION VECTOR DELTA_A
-        deltaa=zr(jvp-1+node)*deltat
+        if(operation.eq.'PROPA_COHESIF'.or.operation.eq.'DETECT_COHESIF') then
+            deltaa=zr(jvp-1+node)
+        else 
+            deltaa=zr(jvp-1+node)*deltat
+        endif
 !
 !         STORE THE COS AND SIN OF THE PROPAGATION ANGLE
         cbeta = cos(zr(jbeta-1+node))
@@ -159,7 +164,9 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
 !
 !         MODIFY THE NORMAL LEVEL SET ONLY IN THE POINTS WHERE THE
 !         TANGENTIAL LEVEL SET IS POSITIVE
-        if (ltno(node) .gt. 0.d0) lnno(node) = newlsn
+        if (ltno(node) .gt. 0.d0.and.operation.ne.'DETECT_COHESIF') then
+            lnno(node) = newlsn
+        endif
 !
 !         STORE THE NEW VALUE OF THE TANTENGIAL LEVEL SET
         ltno(node) = newlst
@@ -197,30 +204,32 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt,&
                 ier)
 !
 !  GRADIENT DE LN
-    call cnscno(cnsln, ' ', 'NON', 'V', cnoln,&
-                'F', ibid)
+    if(operation.ne.'DETECT_COHESIF') then
+        call cnscno(cnsln, ' ', 'NON', 'V', cnoln,&
+        'F', ibid)
 !
-    lpain(1) = 'PGEOMER'
-    lchin(1) = noma//'.COORDO'
-    lpain(2) = 'PNEUTER'
-    lchin(2) = cnoln
-    lpaout(1)= 'PGNEUTR'
-    lchout(1)= chgrln
+        lpain(1) = 'PGEOMER'
+        lchin(1) = noma//'.COORDO'
+        lpain(2) = 'PNEUTER'
+        lchin(2) = cnoln
+        lpaout(1)= 'PGNEUTR'
+        lchout(1)= chgrln
 !
-    call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
-                lpain, 1, lchout, lpaout, 'V',&
-                'OUI')
+        call calcul('S', 'GRAD_NEUT_R', liggrd, 2, lchin,&
+        lpain, 1, lchout, lpaout, 'V',&
+        'OUI')
 !
-    call celces(chgrln, 'V', chams)
-    call cescns(chams, ' ', 'V', grln, ' ',&
-                ier)
+        call celces(chgrln, 'V', chams)
+        call cescns(chams, ' ', 'V', grln, ' ',&
+        ier)
 !
 !  DESTRUCTION DES OBJETS VOLATILES
+        call jedetr(chgrln)
+        call jedetr(cnoln)
+    endif
     call jedetr(chgrlt)
-    call jedetr(chgrln)
     call jedetr(chams)
     call jedetr(cnolt)
-    call jedetr(cnoln)
 !
 !-----------------------------------------------------------------------
 !     FIN

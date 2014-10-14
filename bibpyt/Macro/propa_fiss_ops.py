@@ -225,6 +225,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   from Accas import _F
   from Utilitai.Utmess     import  UTMESS
   from Utilitai.partition import MAIL_PY
+  from Internal.detec_front import DETEC_FRONT
 
   EnumTypes = (ListType, TupleType)
 
@@ -251,13 +252,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
      TEST_MAIL = args['TEST_MAIL']
   except KeyError:
      TEST_MAIL = None
+  OPERATION = args['OPERATION']
 
 #------------------------------------------------------------------
 # CAS 1 : METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE'
 #         TEST_MAIL = 'OUI'
 #
 
-  if (((METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND') or (METHODE_PROPA == 'GEOMETRIQUE'))
+  if (((METHODE_PROPA == 'SIMPLEXE') or (METHODE_PROPA == 'UPWIND') or (METHODE_PROPA == 'GEOMETRIQUE' and OPERATION =='RIEN'))
      and TEST_MAIL == 'OUI'):
 
 #      Ok. I should make several crack propagation and check for the
@@ -357,8 +359,50 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 
 # CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET TEST_MAIL = 'NON'
 # CAS 3: METHODE_PROPA = 'MAILLAGE'
+# CAS 4: METHODE_PROPA = 'DETECTION'
+  if(OPERATION == 'DETECT_COHESIF') :
+    Fissures = args['FISSURE']
+    Nbfissure = len(Fissures)
+    resultat = args['RESULTAT']
+    tab_BETA   = [None]*Nbfissure
+    TABLE_BETA   = [None]*Nbfissure
+    TABLE_VIT    = [None]*Nbfissure
 #
-  if (TEST_MAIL == 'NON' ) or METHODE_PROPA == 'MAILLAGE' :
+    for numfis, Fiss in enumerate(Fissures) :
+      tab_BETA[numfis] = {}
+      fiss0 = Fiss['FISS_ACTUELLE']
+      nb_pts_fo = Fiss['NB_POINT_FOND']
+      __TABDIR = DETEC_FRONT(RESULTAT=resultat,FISSURE=fiss0,NB_POINT_FOND=nb_pts_fo,)
+#
+#     Conversion table_sdaster > table langage Python
+      tab_conv = __TABDIR.EXTR_TABLE()
+      table_vit = tab_conv.VIT.values()
+#
+#     cas d'un fond unique
+      TABLE_VIT[numfis]  = table_vit
+#     on recupere la table pour BETA
+      __SIF = Fiss['TABLE']
+      tab_sif = __SIF.EXTR_TABLE()
+      table_beta = tab_sif.BETA.values()
+      n = len(table_beta)
+#
+#     debut bloc de conversion de la table
+      if ('ABSC_CURV' in tab_sif.para) :
+        absc = tab_sif.ABSC_CURV.values()
+        presence_colonne_absc = True
+      else :
+#       si la colonne ABSC_CURV n'existe pas, les abscisses curvilignes
+#       sont recalculees plus tard
+        absc = [0.]*len(tab_sif)
+        presence_colonne_absc = False
+#
+#       pour l'instant fond unique seulement
+      tab_BETA[numfis][1] = [[absc[j],table_beta[j]] for j in range(n)]
+#     calcul de beta aux points physiques
+#     effectué juste avant le calcul
+       
+
+  elif (TEST_MAIL == 'NON') or (METHODE_PROPA == 'MAILLAGE') :
 
     Fissures = args['FISSURE']
     Nbfissure = len(Fissures)
@@ -370,14 +414,14 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     print '-------------------------------------------'
 
 # Recuperation des donnees
-
-    LOI_PROPA = args['LOI_PROPA']
-    coef_M =  LOI_PROPA['M']
-    coef_C =  LOI_PROPA['C']
-    MATER  =  LOI_PROPA['MATER']
+    if (OPERATION != 'PROPA_COHESIF') :
+        LOI_PROPA = args['LOI_PROPA']
+        coef_M =  LOI_PROPA['M']
+        coef_C =  LOI_PROPA['C']
+        MATER  =  LOI_PROPA['MATER']
+        COMP_LINE     = args['COMP_LINE']
 
     Damax         = args['DA_MAX']
-    COMP_LINE     = args['COMP_LINE']
     CRITERE_ANGLE = args['CRIT_ANGL_BIFURCATION']
 
 # Initialisations
@@ -443,42 +487,45 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                                    OPERATION='ANGLE_BIFURCATION',
                                    CRITERE=CRITERE_ANGLE,
                                    NOM_PARA='ANGLE_BETA')
+#
+      if (OPERATION != 'PROPA_COHESIF') :
+#         Keq
+          __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
+                                     reuse=__COPIE_SIF,
+                                     OPERATION='K_EQ',
+                                     CUMUL='CUMUL_G',
+                                     NOM_PARA='K_EQ',
+                                     MATER=MATER)
 
-#     Keq
-      __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
-                                 reuse=__COPIE_SIF,
-                                 OPERATION='K_EQ',
-                                 CUMUL='CUMUL_G',
-                                 NOM_PARA='K_EQ',
-                                 MATER=MATER)
+#         DKeq
+          CMIN = COMP_LINE['COEF_MULT_MINI']
+          CMAX = COMP_LINE['COEF_MULT_MAXI']
 
-#     DKeq
-      CMIN = COMP_LINE['COEF_MULT_MINI']
-      CMAX = COMP_LINE['COEF_MULT_MAXI']
+          __TAB_DKEQ_VIT=POST_RUPTURE(TABLE=__COPIE_SIF,
+                                      OPERATION='COMPTAGE_CYCLES',
+                                      NOM_PARA=('K_EQ'),
+                                      COMPTAGE='UNITAIRE',
+                                      COEF_MULT_MINI=CMIN,
+                                      COEF_MULT_MAXI=CMAX)
 
-      __TAB_DKEQ_VIT=POST_RUPTURE(TABLE=__COPIE_SIF,
-                                 OPERATION='COMPTAGE_CYCLES',
-                                 NOM_PARA=('K_EQ'),
-                                 COMPTAGE='UNITAIRE',
-                                 COEF_MULT_MINI=CMIN,
-                                 COEF_MULT_MAXI=CMAX)
+#         Da/Dt
+          __TAB_DKEQ_VIT=POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
+                                      reuse=__TAB_DKEQ_VIT,
+                                      OPERATION='LOI_PROPA',
+                                      LOI='PARIS',
+                                      C=coef_C,
+                                      M=coef_M)
 
-#     Da/Dt
-      __TAB_DKEQ_VIT=POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
-                                  reuse=__TAB_DKEQ_VIT,
-                                  OPERATION='LOI_PROPA',
-                                  LOI='PARIS',
-                                  C=coef_C,
-                                  M=coef_M)
+#         somme Da/Dt
+          __TAB_CUMUL[numfis]=POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
+                                           OPERATION='CUMUL_CYCLES')
 
-#     somme Da/Dt
-      __TAB_CUMUL[numfis]=POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
-                                       OPERATION='CUMUL_CYCLES')
+          tab_cumul = __TAB_CUMUL[numfis].EXTR_TABLE()
 
-      tab_cumul = __TAB_CUMUL[numfis].EXTR_TABLE()
-
-#     recuperation des vitesses Da/Dt et des angles de bifurcation beta
-      table_vit = tab_cumul.DELTA_A.values()
+#         recuperation des vitesses Da/Dt et des angles de bifurcation beta
+          table_vit = tab_cumul.DELTA_A.values()
+      else :
+          tab_cumul = __COPIE_SIF.EXTR_TABLE()
 
       if CRITERE_ANGLE != 'ANGLE_IMPO' :
         table_temp = tab_cumul.ANGLE_BETA.values()
@@ -487,6 +534,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         table_beta = __tabsif.BETA.values()
 
       n = len(table_beta)
+      if OPERATION == 'PROPA_COHESIF' :
+          table_vit = [Damax for i in range(n)]
 
 #     vitesse maximale de la fissure numfis
       Vmfiss[numfis] = max(table_vit)
@@ -556,8 +605,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 #           cas d'un fond unique
           tab_BETA[numfis][1]= [[absc[j],table_beta[j]] for j in range(n)]
           tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]
-
-      DETRUIRE(CONCEPT=_F(NOM=__TAB_DKEQ_VIT),INFO=1)
+      if OPERATION != 'PROPA_COHESIF' :
+         DETRUIRE(CONCEPT=_F(NOM=__TAB_DKEQ_VIT),INFO=1)
       DETRUIRE(CONCEPT=_F(NOM=__COPIE_SIF),INFO=1)
 
 #   verification que la vitesse maximale est superieure a 0
@@ -565,115 +614,122 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       UTMESS('F','XFEM2_74')
 
 #     CALCUL DU NOMBRE DE CYCLES EQUIVALENTS
-    __TAB_PILO=POST_RUPTURE(OPERATION='PILO_PROPA',
-                           TABLE=[__TAB_CUMUL[i] for i in range(Nbfissure)],
-                           DELTA_A_MAX = Damax)
+    if OPERATION != 'PROPA_COHESIF' :
+        __TAB_PILO=POST_RUPTURE(OPERATION='PILO_PROPA',
+                                TABLE=[__TAB_CUMUL[i] for i in range(Nbfissure)],
+                                DELTA_A_MAX = Damax)
 
-    NBCYCLE =__TAB_PILO.EXTR_TABLE().DELTA_CYCLE.values()[0]
+        NBCYCLE =__TAB_PILO.EXTR_TABLE().DELTA_CYCLE.values()[0]
 
-    DETRUIRE(CONCEPT=_F(NOM=__TAB_PILO),INFO=1)
+        DETRUIRE(CONCEPT=_F(NOM=__TAB_PILO),INFO=1)
 
 ########
 ######## PROPAGATION
 ########
 
 # CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET TEST_MAIL = 'NON'
-    if TEST_MAIL == 'NON':
+  if TEST_MAIL == 'NON':
 
-      for numfis, Fiss in enumerate(Fissures) :
+    for numfis, Fiss in enumerate(Fissures) :
 
-        Coorfo = Fiss['FISS_ACTUELLE'].sdj.FONDFISS.get()
+      Coorfo = Fiss['FISS_ACTUELLE'].sdj.FONDFISS.get()
 
-#       Si NB_POINT_FOND: calcul de beta et Da/Dt aux points "physiques"
-        if Fiss['NB_POINT_FOND']!=None :
+#     Si NB_POINT_FOND: calcul de beta et Da/Dt aux points "physiques"
+      if (Fiss['NB_POINT_FOND']!=None) :
 
-          TABLE_BETA[numfis] = []
+        TABLE_BETA[numfis] = []
+        if (OPERATION!='DETECT_COHESIF') :
           TABLE_VIT[numfis]  = []
 
-          NbPointFond = Fiss['NB_POINT_FOND']
+        NbPointFond = Fiss['NB_POINT_FOND']
 
-          Fondmult = Fiss['FISS_ACTUELLE'].sdj.FONDMULT.get()
-          Nbfond = len(Fondmult)/2
+        Fondmult = Fiss['FISS_ACTUELLE'].sdj.FONDMULT.get()
+        Nbfond = len(Fondmult)/2
 
-          if (len(Fiss['NB_POINT_FOND']) != Nbfond) :
-            UTMESS('F','XFEM2_78')
+        if (len(Fiss['NB_POINT_FOND']) != Nbfond) :
+          UTMESS('F','XFEM2_78')
 
-          for i in range(Nbfond) :
-            NI = Fondmult[2*i]
-            NF = Fondmult[2*i+1]
+        for i in range(Nbfond) :
+          NI = Fondmult[2*i]
+          NF = Fondmult[2*i+1]
 
-            absmax = Coorfo[4*NF-1]
+          absmax = Coorfo[4*NF-1]
 
 #           verification de la coherence entre le nombre de valeurs de beta pour chaque fond et
 #           le nombre de points indiques dans NB_POINT_FOND
-            if len(tab_BETA[numfis][i+1]) != NbPointFond[i] :
-              UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())
+          if len(tab_BETA[numfis][i+1]) != NbPointFond[i] :
+            UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())
 
-            if not presence_colonne_absc :
+          if not presence_colonne_absc :
 #             cas ou la colonne ABSC_CURV n'existe pas la table SIF: calcul des abscisses curvilignes
-              for j in range(NbPointFond[i]):
-                tab_BETA[numfis][i+1][j][0] = absmax/(NbPointFond[i]-1)*j
+            for j in range(NbPointFond[i]):
+              tab_BETA[numfis][i+1][j][0] = absmax/(NbPointFond[i]-1)*j
+              if (OPERATION!='DETECT_COHESIF') :
                 tab_VIT[numfis][i+1][j][0]  = absmax/(NbPointFond[i]-1)*j
 
 #           interpolation lineaire
-            for j in range(NF-NI+1) :
-              abscurv_pt = Coorfo[4*(NI+j)-1]
-              TABLE_BETA[numfis].append(InterpolationLineaire(abscurv_pt,tab_BETA[numfis][i+1]))
+          for j in range(NF-NI+1) :
+            abscurv_pt = Coorfo[4*(NI+j)-1]
+            TABLE_BETA[numfis].append(InterpolationLineaire(abscurv_pt,tab_BETA[numfis][i+1]))
+            if (OPERATION!='DETECT_COHESIF') :
               TABLE_VIT[numfis].append(InterpolationLineaire(abscurv_pt,tab_VIT[numfis][i+1]))
 
-        else :
+      else :
 #         il doit y avoir autant de valeurs de beta que de points au fond de fissure
-          if (len(TABLE_BETA[numfis]) != len(Coorfo)/4) :
-            UTMESS('F','XFEM2_80')
+        if (len(TABLE_BETA[numfis]) != len(Coorfo)/4) :
+          UTMESS('F','XFEM2_80')
 
 #       Si 2D: verification de l'orientation du repere (VNOR,VDIR)
-        if not 'K3' in __tabsif.para :
-          Basefond = Fiss['FISS_ACTUELLE'].sdj.BASEFOND.get()
-          for fond in range(len(Basefond)/4):
-            VNOR = (Basefond[4*fond+0],Basefond[4*fond+1])
-            VDIR = (Basefond[4*fond+2],Basefond[4*fond+3])
-#           produit vectoriel
-            ZLOC = VDIR[0]*VNOR[1] - VDIR[1]*VNOR[0]
-            if ZLOC < 0. :
-#               correction de l'angle beta
-              TABLE_BETA[numfis][fond] = - TABLE_BETA[numfis][fond]
+      if (OPERATION != 'DETECT_COHESIF') :
+          if not 'K3' in __tabsif.para :
+              Basefond = Fiss['FISS_ACTUELLE'].sdj.BASEFOND.get()
+              for fond in range(len(Basefond)/4):
+                VNOR = (Basefond[4*fond+0],Basefond[4*fond+1])
+                VDIR = (Basefond[4*fond+2],Basefond[4*fond+3])
+    #           produit vectoriel
+                ZLOC = VDIR[0]*VNOR[1] - VDIR[1]*VNOR[0]
+                if ZLOC < 0. :
+    #               correction de l'angle beta
+                  TABLE_BETA[numfis][fond] = - TABLE_BETA[numfis][fond]
 
 
 
 #     APPEL A PROPA_XFEM pour la propagation
-      mcsimp = {}
-      mcsimp['MODELE']   = args['MODELE']
-      mcsimp['RAYON']    = args['RAYON']
-      mcsimp['DA_MAX']   = args['DA_MAX']
-      mcsimp['TEST_MAIL']= TEST_MAIL
-      mcsimp['ZONE_MAJ'] = args['ZONE_MAJ']
-      if mcsimp['ZONE_MAJ'] == 'TORE' :
-        if args['RAYON_TORE']!=None :
-          mcsimp['RAYON_TORE']=args['RAYON_TORE']
+    mcsimp = {}
+    mcsimp['OPERATION']= OPERATION
+    mcsimp['MODELE']   = args['MODELE']
+    mcsimp['TEST_MAIL']= TEST_MAIL
+    mcsimp['ZONE_MAJ'] = args['ZONE_MAJ']
+    if mcsimp['ZONE_MAJ'] == 'TORE' :
+      if args['RAYON_TORE']!=None :
+        mcsimp['RAYON_TORE']=args['RAYON_TORE']
 
-      FissAct = [Fiss['FISS_ACTUELLE'] for Fiss in Fissures]
+    FissAct = [Fiss['FISS_ACTUELLE'] for Fiss in Fissures]
 
-      mcsimp['LISTE_FISS'] = FissAct
-      mcsimp['NB_CYCLES']  = NBCYCLE
+    mcsimp['LISTE_FISS'] = FissAct
+    if OPERATION != 'DETECT_COHESIF' :
+        mcsimp['DA_MAX']   = args['DA_MAX']
+        if OPERATION != 'PROPA_COHESIF' :
+              mcsimp['NB_CYCLES']  = NBCYCLE
+              mcsimp['RAYON']    = args['RAYON']
 
-      FissNou = [Fiss['FISS_PROPAGEE'] for Fiss in Fissures]
+    FissNou = [Fiss['FISS_PROPAGEE'] for Fiss in Fissures]
 
-      for numfis in range(0,len(FissAct)) :
-
-        mcsimp['FISS_PROP']   = FissAct[numfis]
-        mcsimp['ANGLE']       = TABLE_BETA[numfis]
-        mcsimp['VITESSE']     = TABLE_VIT[numfis]
-        mcsimp['DA_FISS']     = Vmfiss[numfis] * NBCYCLE
-
-        self.DeclareOut('nomfiss',FissNou[numfis])
-        nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
+    for numfis in range(0,len(FissAct)) :
+      mcsimp['FISS_PROP']   = FissAct[numfis]
+      mcsimp['ANGLE']       = TABLE_BETA[numfis]
+      mcsimp['VITESSE']     = TABLE_VIT[numfis]
+      if (OPERATION != 'PROPA_COHESIF') and (OPERATION != 'DETECT_COHESIF') :
+            mcsimp['DA_FISS']     = Vmfiss[numfis] * NBCYCLE
+      self.DeclareOut('nomfiss',FissNou[numfis])
+      nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
 
 
 #------------------------------------------------------------------
 # CAS 3 : METHODE_PROPA = 'MAILLAGE'
 #
 
-    if METHODE_PROPA == 'MAILLAGE' :
+  if METHODE_PROPA == 'MAILLAGE' :
 
       print 'AVANCE MAXIMALE DU FOND DE FISSURE',Damax
       print 'NOMBRE DE CYCLES DE FATIGUE',NBCYCLE

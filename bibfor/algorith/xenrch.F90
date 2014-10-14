@@ -1,6 +1,6 @@
 subroutine xenrch(noma, cnslt, cnsln, cnslj,&
                   cnsen, cnsenr, ndim, fiss, goinop,&
-                  lismae, lisnoe)
+                  lismae, lisnoe, operation_opt)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 #include "asterfort/xtabff.h"
     integer :: ndim
     character(len=8) :: noma, fiss
+    character(len=16), intent(in), optional :: operation_opt
     character(len=19) :: cnslt, cnsln, cnslj
     character(len=19) :: cnsen, cnsenr
     character(len=24) :: lismae, lisnoe
@@ -82,9 +83,9 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     integer :: i, nmafis
     integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
     integer :: nbfond, numfon
-    integer :: ifm, niv
+    integer :: ifm, niv, ibid
     integer :: nmaen1, nmaen2, nmaen3, ncouch, nfono
-    character(len=16) :: typdis
+    character(len=16) :: typdis, operation
     character(len=19) :: cnxinv, info, listpt
     character(len=24) :: mafis, stano, xcarfo, fonmul
     real(kind=8) :: q(4)
@@ -96,6 +97,12 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
     call jemarq()
     call infdbg('XFEM', ifm, niv)
+!   Securite argument facultatif
+    if(present(operation_opt)) then
+        operation = operation_opt
+    else
+        operation = 'RIEN'
+    endif
 !
 ! --- ACCES AU MAILLAGE
 !
@@ -212,7 +219,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
         zl(jensl-1+(ino-1)+1)=.true.
     end do
 !
-!     ENREGISTREMENT DU CHAM_NO SIMPLE REEL (POUR VISUALISATION)
+!   ENREGISTREMENT DU CHAM_NO SIMPLE REEL (POUR VISUALISATION)
     call cnscre(noma, 'NEUT_R', 1, 'X1', 'V',&
                 cnsenr)
     call jeveuo(cnsenr//'.CNSV', 'E', vr=ensvr)
@@ -222,15 +229,15 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
         zl(jenslr-1+(ino-1)+1)=.true.
     end do
 !
-!     POUR UNE INTERFACE, ON PASSE DIRECTEMENT A LA CREATION DE LA SD
-    if (typdis .eq. 'INTERFACE') then
+!   POUR UNE INTERFACE, ON PASSE DIRECTEMENT A LA CREATION DE LA SD
+    if (typdis .eq. 'INTERFACE'.or.operation.eq.'PROPA_COHESIF') then
         ASSERT(nmaen2+nmaen3.eq.0)
         nfon = 0
         nbfond = 0
         goto 800
-!     DE MEME POUR UNE FISSURE DONT LE FOND SE SITUE EN DEHORS DE LA
-!     MATIERE (EX: FISSURE QUI DEBOUCHE EN FIN DE PROPAGATION)
-    else if (nmafon.eq.0) then
+!       DE MEME POUR UNE FISSURE DONT LE FOND SE SITUE EN DEHORS DE LA
+!       MATIERE (EX: FISSURE QUI DEBOUCHE EN FIN DE PROPAGATION)
+    else if (nmafon.eq.0.and.typdis.ne.'COHESIF') then
         call utmess('A', 'XFEM_58')
         if (rayon .gt. 0.d0) then
             call utmess('A', 'XFEM_59')
@@ -250,7 +257,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
 !     ON RAJOUTE +1 POUR LES CAS PARTICULIER OU TOUS LES ELTS
 !     CONTIENNENT LE FOND DE FISSURE
-    nxptff = nmaen1 + nmaen2 + nmaen3 +1
+    nxptff = max(nmaen1 + nmaen2 + nmaen3 +1,nmafis)
 !
     call wkvect('&&XENRCH.FONFIS', 'V V R', 11*nxptff, jfono)
     call wkvect('&&XENRCH.BASFON', 'V V R', 2*ndim*nxptff, jbaso)
@@ -262,7 +269,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     call xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                 cnxinv, jmafon, nxptff, jfono, nfon,&
                 jbaso, jtailo, fiss, goinop, listpt,&
-                orient,typdis,nbmai)
+                orient,typdis,nbmai, operation_opt=operation)
     ASSERT(nfon.gt.0)
 !
     if (.not.goinop) then
@@ -298,10 +305,11 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
         info = fiss//'.INFO'
 !
-        if(cnsln(3:8).eq.'OP0041'.and.typdis.eq.'COHESIF') then
+        if(operation.eq.'RIEN'.and.typdis.eq.'COHESIF') then
             call xoriff(info, nfon, jfono, jbaso, jtailo,&
                         nbmai, listpt, goinop, jfon, jbas,&
                         jtail, fonmul, nbfond)
+            nmafon = nbmai
         else
             call xoriff(info, nfon, jfono, jbaso, jtailo,&
                         nmafon, listpt, goinop, jfon, jbas,&
@@ -380,7 +388,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
 !     CONSTRUCTION DES TABLES SUR LES FONDS DE FISSURES
 !
-        call xtabff(nbfond, nfon, ndim, fiss)
+        call xtabff(nbfond, nfon, ndim, fiss, operation)
 !
     endif
 ! --- MENAGE

@@ -20,11 +20,17 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
                 UIinfo={"groupes":("Post-traitements","Rupture",)},
                 fr=tr("Propagation de fissure avec X-FEM"),
     
+    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND","GEOMETRIQUE","UPW_FMM"),defaut="UPWIND"),
+
+    OPERATION =SIMP(statut='f',typ='TXM',into=("RIEN","DETECT_COHESIF","PROPA_COHESIF"),defaut="RIEN"),
+
     MODELE        =SIMP(statut='o',typ=modele_sdaster),
 
     TEST_MAIL     =SIMP(statut='f',typ='TXM',into=("NON","OUI",),defaut="NON"),
 
+    b_detec =BLOC( condition = "OPERATION != 'DETECT_COHESIF' ",
     DA_MAX        =SIMP(statut='o',typ='R'),
+    ),
 
     FISS_PROP     =SIMP(statut='o',typ=fiss_xfem),
 
@@ -36,18 +42,17 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
 
     ANGLE         =SIMP(statut='f',typ='R',max='**'),
     VITESSE       =SIMP(statut='f',typ='R',max='**'),
-    DA_FISS       =SIMP(statut='f',typ='R'),
-    NB_CYCLES     =SIMP(statut='f',typ='R'),        
+    b_pas_cohe    =BLOC(condition = "(OPERATION!= 'PROPA_COHESIF') and (OPERATION != 'DETECT_COHESIF')",
+        DA_FISS       =SIMP(statut='f',typ='R'),
+        NB_CYCLES     =SIMP(statut='f',typ='R'),        
+        RAYON          =SIMP(statut='o',typ='R',),
+    ),
 
     b_test_mail_const =BLOC( condition = "TEST_MAIL == 'OUI' ",
                              FISS_INITIALE =SIMP(statut='o',typ=fiss_xfem,max=1),
                              DISTANCE      =SIMP(statut='o',typ='R',max=1),
                              TOLERANCE     =SIMP(statut='o',typ='R',max=1),
                            ),
-            
-    RAYON          =SIMP(statut='o',typ='R',),
           
-    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND","GEOMETRIQUE","UPW_FMM"),defaut="UPWIND"),
-
     INFO           =SIMP(statut='f',typ='I',defaut= 0,into=(0,1,2) ),
 )  ;

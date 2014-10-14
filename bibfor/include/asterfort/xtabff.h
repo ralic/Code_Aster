@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xtabff(nbfond, nfon, ndim, fiss)
+    subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
         integer :: nbfond
         integer :: nfon
         integer :: ndim
         character(len=8) :: fiss
+        character(len=16) :: operation
     end subroutine xtabff
 end interface
