@@ -17,11 +17,12 @@
 !
 interface
     subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
-                      typmai)
+                      typmai, abscis)
         integer :: nbrma
         integer :: nbrma2
         integer :: chemin(nbrma2)
         integer :: limail(nbrma)
+        real(kind=8) :: abscis(2)
         character(len=*) :: connex
         character(len=*) :: typmai
     end subroutine i2sens

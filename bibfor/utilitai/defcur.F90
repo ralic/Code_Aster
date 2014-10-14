@@ -82,12 +82,13 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     if (iexi .eq. 0) then
         call utmess('F', 'UTILITAI_46')
     endif
+    call jeveuo(cooabs, 'L', labs)
 !     --- CREATION D OBJETS TEMPORAIRES ---
 !
     call wkvect('&&DEFOCU.TEMP      ', 'V V I', nbrma, iagm)
-    do 60 ii = 1, nbrma
+    do ii = 1, nbrma
         zi(iagm+ii-1) = ii
-60  end do
+    end do
     nbrma2 = 2*nbrma
     nbrma1 = nbrma + 1
     call wkvect('&&DEFOCU.TEMP.VOIS1', 'V V I', nbrma, iav1)
@@ -103,7 +104,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     nbseg2=0
     nbpoi1=0
     kseg=0
-    do 12 im = 1, nbrma
+    do im = 1, nbrma
         call jeveuo(typmai, 'L', itypm)
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(itypm+im-1)), typm)
         if (typm .eq. 'SEG2') then
@@ -116,13 +117,13 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
         else
             call utmess('F', 'MODELISA_2')
         endif
-12  end do
+    end do
     conseg='&&DEFOCU.CONNEX'
     typseg='&&DEFOCU.TYPMAI'
     call wkvect(typseg, 'V V I', nbrma, itym)
-    do 13 im = 1, nbrma
+    do im = 1, nbrma
         zi(itym-1+im)=kseg
-13  end do
+    end do
 !     IL FAUT CREER UNE TABLE DE CONNECTIVITE POUR LES SEG2
 !
     nbnoma=2*nbseg2
@@ -132,27 +133,27 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
     call jecrec(conseg, 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
                 nbseg2)
     call jeecra(conseg, 'LONT', nbnoma)
-    do 14 iseg2 = 1, nbseg2
+    do iseg2 = 1, nbseg2
         im=zi(ima2+iseg2-1)
         call jelira(jexnum(connex, im ), 'LONMAX', nbnoma)
         call jeveuo(jexnum(connex, im ), 'L', iacnex)
         call jeecra(jexnum(conseg, iseg2), 'LONMAX', nbnoma)
         call jeveuo(jexnum(conseg, iseg2), 'E', jgcnx)
-        do 3 ino = 1, nbnoma
+        do ino = 1, nbnoma
             numno=zi(iacnex-1+ino)
             zi(jgcnx+ino-1)=numno
- 3      continue
-14  end do
+        end do
+    end do
 !
     call i2vois(conseg, typseg, zi(iagm), nbrseg, zi(iav1),&
                 zi(iav2))
     call i2tgrm(zi(iav1), zi(iav2), nbrseg, zi(iach), zi(ptch),&
                 nbchm)
     call i2sens(zi(iach), nbrse2, zi(iagm), nbrseg, conseg,&
-                typseg)
+                typseg, zr(labs))
 !
 !     --- CREATION D UNE LISTE ORDONNEE DE NOEUDS ---
-    do 10 i = 1, nbrseg
+    do i = 1, nbrseg
         isens = 1
         mi = zi(iach+i-1)
         if (mi .lt. 0) then
@@ -168,7 +169,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
             zi(lnoe+i) = ing
             zi(lnoe+i-1) = ind
         endif
-10  end do
+    end do
 !
 !
 !     --- VERIFICATION DE LA DEFINITION DE LA FONCTION ---
@@ -177,32 +178,31 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
                 nomnoe)
 !
 !
-    call jeveuo(cooabs, 'L', labs)
     call wkvect('&&DEFOCU.TEMP.VALE', 'V V R8', nv, lvali)
 !
-    do 30 i = 1, nbrseg
-        zr(lvali+2*(i-1)) = zr(labs+4*(i-1))
-30  end do
+    do i = 1, nbrseg
+        zr(lvali+2*(i-1)) = min(zr(labs+4*(i-1)),zr(labs+4*(i-1)+1))
+    end do
 !
-    zr(lvali+2*nbrseg) = zr(labs+4*(nbrseg-1)+1)
+    zr(lvali+2*nbrseg) = max(zr(labs+4*(nbrseg-1)),zr(labs+4*(nbrseg-1)+1))
 !
-    do 40 i = 1, nb
+    do i = 1, nb
         kk = 2*(zi(pnoe+i-1)-1)+1
         zr(lvali+kk) = vecr1(i)
-40  end do
+    end do
 !
-    do 80 i = 1, nb
+    do i = 1, nb
         jp = zi(pnoe+i-1)
         ji = i
-        do 70 jj = i, nb
+        do jj = i, nb
             if (zi(pnoe+jj-1) .lt. jp) then
                 ji = jj
                 jp = zi(pnoe+jj-1)
             endif
-70      continue
+        end do
         zi(pnoe+ji-1) = zi(pnoe+i-1)
         zi(pnoe+i-1) = jp
-80  end do
+    end do
 !
 !     ------------- INTERPOLATION DE LA FONCTION -------------
 !     --- PROLONGEMENT DE LA FONCTION A GAUCHE ET A DROITE ---
@@ -212,10 +212,10 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv,&
 !
 !     --- REMPLISSAGE DE L OBJET .VALE ---
 !
-    do 50 i = 1, nbrse1
+    do i = 1, nbrse1
         vecr2(i) = zr(lvali+2*(i-1))
         vecr2(nbrse1+i) = zr(lvali+2*(i-1)+1)
-50  end do
+    end do
 !
 !     --- MENAGE ---
     call jedetr('&&DEFOCU.TEMP      ')

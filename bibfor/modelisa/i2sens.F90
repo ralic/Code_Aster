@@ -1,5 +1,5 @@
 subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
-                  typmai)
+                  typmai, abscis)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,41 +19,37 @@ subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
 ! ======================================================================
 !-----------------------------------------------------------------------
     implicit none
+#include "asterfort/assert.h"
 #include "asterfort/i2extf.h"
     integer :: nbrma, nbrma2
     integer :: chemin(nbrma2), limail(nbrma)
     character(len=*) :: connex, typmai
+    real(kind=8) :: abscis(2), delta
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, mi, mj, nid, nig, njd
+    integer :: j, mi, mj, nid, nig, njd
     integer :: njg
 !-----------------------------------------------------------------------
-    i = chemin(1)
-    mi = limail(i)
-    chemin(1) = mi
+!
+    mi = limail(chemin(1))
     call i2extf(mi, 1, connex, typmai, nig,&
                 nid)
-    do 10 i = 2, nbrma
-        j = chemin(i)
-        mj = limail(j)
+    delta = abscis(2)-abscis(1)
+    mi = int(sign(1.d0*mi,delta))
+    chemin(1) = mi
+
+    do j = 2, nbrma
+        mj = limail(chemin(j))
         call i2extf(mj, 1, connex, typmai, njg,&
                     njd)
 !
-        if (mi .gt. 0) then
-            if (nid .eq. njd) then
-                mj = -mj
-            endif
-!
-        else if (mi.lt.0) then
-            if (nig .eq. njd) then
-                mj = -mj
-            endif
-!
+        if ((nid .eq. njd) .or. (nig .eq. njg)) then
+            mj = -mj*mi/abs(mi) 
         endif
 !
         mi = mj
         nig = njg
         nid = njd
-        chemin(i) = mi
-10  end do
+        chemin(j) = mi
+    end do
 end subroutine
