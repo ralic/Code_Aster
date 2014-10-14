@@ -212,5 +212,5 @@ def C_RELATION( COMMAND ):
                                         "UMAT",
                                         "MFRONT",
         ]
-        mfront = ["Chaboche", ]
+        mfront = C_MFRONT_OFFICIAL().keys()
         return tuple(native + mfront)
