@@ -1,0 +1,357 @@
+# TITRE PROPAGATION PLANE D'UNE FISSURE SEMI-ELLIPTIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# MODELISATION C : METHODE GEOMETRIQUE
+
+
+DEBUT(CODE =_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_18',
+#      PAR_LOT='NON'
+      )
+
+type_cas = 'cas_test'
+
+
+# REMARQUE 1 : 
+# le PAR_LOT='NON' est necessaire pour :
+# - EXTR_TABLE, qui permet de s'arreter en cas dons multiples (facultatif pour le cas test)
+# - EXTR_TABLE, qui permet de recuperer les coordonnees des points du fond pour
+#               le calcul exact des DTAN (facultatif pour le cas test)
+#
+#
+# REMARQUE 2 : 
+# POUR LE CAS TEST : ON BLOQUE LES POINTS A B C QUI SE TROUVE DANS LE PLAN MILIEU (PLAN DE PROPA)
+# CELA N'EST PAS GENANT CAR ON PROPAGE JUSTE UN PAS
+# SI ON VEUT SIMULER LA PROPA COMPLETE ALORS IL VAUT MIEUX BLOQUER LES POINTS D E F 
+# QUI SE TROUVENT SUR LA SURFACE INFERIEURE
+
+
+# unite du maillage : metres
+
+#---------------------------------------------------------------------
+#                 PARAMETRES UTILISATEUR
+#---------------------------------------------------------------------
+
+# parametres de la fissure initiale
+# ---------------------------------
+PRE_GMSH();
+# demi-grand axe
+a=0.119E-3
+
+# demi-petit axe
+b=0.100E-3
+
+
+# on enleve les parametres lies au raffinement
+# pas encore ouvert avec X-FEM cohesif
+#
+
+
+# parametres pour la propagation
+#-------------------------------
+
+# nombre de pas de propagation a simuler
+nb_pas = 1
+
+# pas de parametres loi de Paris
+# car on n est pas en fatigue ms en propagation brutale
+
+
+#--------------------------------------------------------------------
+#     CONCEPT INDEPENDANT DE L'ITERATION DE PROPAGATION
+#--------------------------------------------------------------------
+
+# MATERIAU
+E = 2.1E11
+nu = 0.3
+
+# parametres materiau: longueur cohesive de 300 um
+Sc = 200.E6
+Gc = 52.5
+pena_lag = 1.01
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),
+                  RUPT_FRAG=_F(SIGM_C=Sc,GC=Gc,PENA_LAGR=pena_lag,),);
+
+
+#--------------------------------------------------------------------
+#                 RAFFINEMENT INITIAL
+#--------------------------------------------------------------------
+L_INS1=[0., 0.3]
+FISS = [None]*(nb_pas+1)
+LINST = [None]*(nb_pas+1)
+COHE = [None]*(nb_pas+1)
+RESU = [None]*(nb_pas+1)
+#
+# pas de tables pour LSN ni LST
+c_mult_pilo=1.
+#
+MAIT=LIRE_MAILLAGE(INFO=1,)
+
+MAIT=DEFI_GROUP(reuse =MAIT,
+                MAILLAGE=MAIT,
+                CREA_GROUP_MA=(_F(NOM='A',GROUP_MA='GM421'),
+                               _F(NOM='B',GROUP_MA='GM422'),
+                               _F(NOM='C',GROUP_MA='GM423'),
+                               _F(NOM='FACEINF',GROUP_MA='GM425'),
+                               _F(NOM='FACESUP',GROUP_MA='GM426'),
+                               _F(NOM='VOL',GROUP_MA='GM427'),
+                               _F(NOM='FONDINI',GROUP_MA='GM428'),),
+                );
+#
+MAIT=DEFI_GROUP(reuse =MAIT,
+                MAILLAGE=MAIT,
+                CREA_GROUP_NO=_F(GROUP_MA=('A','B','C'),),
+                );
+#
+MAIT=MODI_MAILLAGE(reuse=MAIT,
+                   MAILLAGE=MAIT,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('FACESUP','FACEINF')))
+
+# on enleve l etape de raffinement de maillage
+MODELE=AFFE_MODELE(MAILLAGE=MAIT,
+                   AFFE=(_F(GROUP_MA=('VOL',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA=('FACESUP','FACEINF',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),),);
+
+#--------------------------------------------------------------------
+#           BOUCLE SUR LES PAS DE PROPAGATIONS
+#--------------------------------------------------------------------
+LN = FORMULE(VALE='Z',
+             NOM_PARA=('X','Y','Z'));
+
+LT = FORMULE(VALE='+X*X/(a*a)+Y*Y/(b*b)-500.',
+             NOM_PARA=('X','Y','Z'));
+# on definit une fissure elliptique initiale
+# cf modelisation B
+FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAIT,
+                       TYPE_DISCONTINUITE='COHESIF',
+                       DEFI_FISS=_F(FONC_LN=LN,
+                                    FONC_LT=LT,
+                                    GROUP_MA_BORD = 'FONDINI',),);
+#
+# on modifie le modele
+MODELX=MODI_MODELE_XFEM(MODELE_IN=MODELE,
+                        FISSURE=FISS[0],
+                        CONTACT='MORTAR',
+                        INFO=1,);
+#
+# on definit le contact
+CTX = DEFI_CONTACT(MODELE         = MODELX,
+                   FORMULATION    = 'XFEM',
+                   FROTTEMENT     = 'SANS',
+                   ZONE=(_F(INTEGRATION='GAUSS',
+                            ORDRE_INT=4,
+                            ALGO_CONT='CZM',
+                            FISS_MAIT=FISS[0],
+                            ALGO_LAGR='VERSION2',
+                            RELATION='CZM_LIN_MIX',
+                   )));
+#
+# on definit les chargements
+# si interface non debouchante, on laisse DDL_IMPO
+# AFFE=AFFE_CHAR_MECA(MODELE=MODELX,
+#                     DDL_IMPO=(_F(GROUP_NO='A',DY=0,DZ=0,),
+#                               _F(GROUP_NO='B',DY=0,DZ=0,),
+#                               _F(GROUP_NO='C',DX=0,DZ=0,)
+#                               )
+#                   );
+AFFE=AFFE_CHAR_MECA(MODELE=MODELX,
+                    LIAISON_GROUP=(_F(GROUP_NO_1='A',
+                                     GROUP_NO_2='A',
+                                     DDL_1='DY',
+                                     DDL_2='DY',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='A',
+                                     GROUP_NO_2='A',
+                                     DDL_1='DZ',
+                                     DDL_2='DZ',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='B',
+                                     GROUP_NO_2='B',
+                                     DDL_1='DY',
+                                     DDL_2='DY',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='B',
+                                     GROUP_NO_2='B',
+                                     DDL_1='DZ',
+                                     DDL_2='DZ',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='C',
+                                     GROUP_NO_2='C',
+                                     DDL_1='DX',
+                                     DDL_2='DX',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='C',
+                                     GROUP_NO_2='C',
+                                     DDL_1='DZ',
+                                     DDL_2='DZ',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                 ),);
+PRESS=AFFE_CHAR_MECA(MODELE=MODELX,
+                     FORCE_FACE=(_F(GROUP_MA='FACESUP',FZ=220,),
+                                 _F(GROUP_MA='FACEINF',FZ=-220,)
+                                 )
+                     );
+#
+# creation table bidon pour test de la detection
+SIFB=CREA_TABLE(LISTE=(_F(LISTE_R=(0.,1.),PARA='ABSC_CURV'),
+                       _F(LISTE_R=(1.,1.),PARA='K1'),
+                       _F(LISTE_R=(0.,0.),PARA='K2'),
+                       _F(LISTE_R=(0.,0.),PARA='K3'),
+                       _F(LISTE_R=(1.,1.),PARA='G'),
+                       _F(LISTE_R=(0.,0.),PARA='BETA'),
+                       _F(LISTE_R=(1.,1.),PARA='G_IRWIN'),
+                       _F(LISTE_I=(1,1),PARA='NUME_FOND'),
+                       _F(LISTE_I=(1,1),PARA='NUME_ORDRE'),
+                       _F(LISTE_I=(1,2),PARA='NUM_PT'),));
+
+MAIT=DEFI_GROUP(reuse=MAIT,
+                MAILLAGE=MAIT,
+                CREA_GROUP_MA=_F(FISSURE=FISS[0],
+                                 NOM='HEAVI',
+                                 OPTION='FISS_XFEM',
+                                 TYPE_GROUP='HEAVISIDE',
+                                 TYPE_MAILLE='3D'));
+
+CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAIT,
+                      MODELE=MODELX,
+                      AFFE=_F(TOUT = 'OUI',
+                               MATER=MAT,
+                               ),
+                      );
+for i in range(nb_pas) :
+
+# calcul mecanique avec pilotage
+    LINST[i] = DEFI_LIST_REEL(VALE=(L_INS1[i], L_INS1[i+1]),);
+#
+    if(i==0):
+        RESU[i]=STAT_NON_LINE(MODELE=MODELX,
+                              CHAM_MATER=CHAMPMA,
+                              EXCIT=(_F(CHARGE=AFFE,),
+                                     _F(CHARGE=PRESS,
+                                        TYPE_CHARGE='FIXE_PILO',
+                                        ),
+                                     ),
+                              CONTACT=CTX,
+                              COMPORTEMENT = _F(RELATION = 'ELAS' , GROUP_MA = 'VOL',),
+                              INCREMENT = _F(LIST_INST = LINST[i],),
+                              PILOTAGE  = _F(TYPE = 'PRED_ELAS',
+                                             SELECTION='RESIDU',
+                                             GROUP_MA = 'HEAVI',
+                                             COEF_MULT = c_mult_pilo,
+                                             ETA_PILO_R_MIN=0.0,
+                                             ),
+                              NEWTON  = _F(REAC_ITER = 1),
+                              CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                               ITER_GLOB_MAXI = 15),
+                              SOLVEUR    = _F(METHODE = 'MUMPS',
+                                              NPREC=-1,
+                                              ),
+                              ARCHIVAGE = _F(CHAM_EXCLU=('VARI_ELGA',),INST=L_INS1[i+1]),
+                              INFO=1,);
+    if(i!=0):
+        RESU[i]=STAT_NON_LINE(ETAT_INIT=_F(COHE=COHE[i-1]),
+                              MODELE=MODELX,
+                              CHAM_MATER=CHAMPMA,
+                              EXCIT=(_F(CHARGE=AFFE,),
+                                     _F(CHARGE=PRESS,
+                                        TYPE_CHARGE='FIXE_PILO',
+                                        ),
+                                     ),
+                              CONTACT=CTX,
+                              COMP_ELAS = _F(RELATION = 'ELAS' , GROUP_MA = 'VOL',),
+                              INCREMENT = _F(LIST_INST = LINST[i],),
+                              PILOTAGE  = _F(TYPE = 'PRED_ELAS',
+                                             SELECTION='RESIDU',
+                                             GROUP_MA = 'HEAVI',
+                                             COEF_MULT = c_mult_pilo,
+                                             ETA_PILO_R_MIN=0.0,
+                                             ),
+                              NEWTON  = _F(REAC_ITER = 1),
+                              CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                               ITER_GLOB_MAXI = 15),
+                              SOLVEUR    = _F(METHODE = 'MUMPS',
+                                              ELIM_LAGR2='OUI',
+                                              NPREC=-1,
+                                              ),
+                              ARCHIVAGE = _F(CHAM_EXCLU=('VARI_ELGA',),INST=L_INS1[i+1]),
+                              INFO=1,);
+#
+    COHE[i]= CREA_CHAMP(OPERATION= 'EXTR',
+                        TYPE_CHAM='ELNO_NEUT_R',
+                        RESULTAT= RESU[i], 
+                        NOM_CHAM= 'COHE_ELEM',
+                        INST = L_INS1[i+1]);
+#
+# etape de detection
+# normalement, on peut faire une detection avec une fissure qui n est pas dans le modele
+# il faut creer une table de SIF bidon pour propagation rectiligne
+    FISS[i+1] = CO('FISS_%d'%(i+1))
+    PROPA_FISS(MODELE=MODELX,
+               OPERATION='DETECT_COHESIF',
+               METHODE_PROPA='GEOMETRIQUE',
+               RESULTAT=RESU[i],
+               ZONE_MAJ='TOUT',
+               FISSURE=_F(FISS_ACTUELLE=FISS[i],
+                          FISS_PROPAGEE=FISS[i+1],
+                          NB_POINT_FOND=2,
+                          TABLE=SIFB,),
+               INFO=1,);
+
+
+#-----------------------------------------------------------------------------------------
+#           FIN DE LA BOUCLE SUR LES PAS DE PROPAGATIONS
+#-----------------------------------------------------------------------------------------
+# on teste la position du front a la fin du calcul
+# materialise par la LST
+
+#LST=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+#               OPERATION='EXTR',
+#               FISSURE=FISS[nb_pas],
+#               NOM_CHAM='LTNO');
+
+# en fait on peut recuperer direct le front
+# extraction des coordonnees max du fond de fissure
+TB_FOND=RECU_TABLE(CO=FISS[nb_pas],NOM_TABLE='FOND_FISS')   
+
+# test
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.001,
+           VALE_CALC=0.000161097048478,
+           VALE_REFE=0.000161097048478,
+           NOM_PARA='COOR_Y',
+           TYPE_TEST='MAX',
+           TABLE=TB_FOND,)
+
+FIN();

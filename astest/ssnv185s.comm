@@ -1,0 +1,390 @@
+# TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('CALCULEL2_63'))
+
+# <CALCULEL2_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" 
+#                  QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
+#                  LE MODELE PROVOQUANT CES ALARMES NE SERT QU'A LA VISUALISATION
+
+# MODELISATION B : X-FEM FISSURE COINCIDENTE - TRACTION (FACE SUP)
+
+#----------------------------------------------
+#                MAILLAGE : hexa_5_30_50.mgib
+#----------------------------------------------
+
+PRE_GMSH();
+
+MAILLAG1=LIRE_MAILLAGE(INFO=1,);
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_MA=(_F(NOM='VOL',GROUP_MA='GM254',),
+                                   _F(NOM='SURFINF',GROUP_MA='GM251',),
+                                   _F(NOM='SURFSUP',GROUP_MA='GM252',),
+                                   _F(NOM='FONDINI',GROUP_MA='GM253',),),);
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(NOM='PTA',GROUP_MA='GM255',),
+                                   _F(NOM='PTB',GROUP_MA='GM256',),
+                                   _F(NOM='PTC',GROUP_MA='GM257',),
+                                   _F(GROUP_MA='VOL',),),);
+                    
+                    
+#----------------------------------------------
+#                   MODELE ET FISSURE
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
+                     AFFE=(_F(GROUP_MA=('VOL',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),
+                           _F(GROUP_MA=('SURFINF','SURFSUP',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),);
+
+MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
+                       MAILLAGE=MAILLAG1,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
+                       );
+
+# PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
+#                            b = 10.
+a=5.
+b=10.
+#LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
+#LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
+# on introduit une fissure cohesive
+# que l on definit debouchante
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
+                    INFO=1,
+                    TYPE_DISCONTINUITE='COHESIF',
+                    DEFI_FISS=_F(GROUP_MA_BORD = 'FONDINI',
+                                 FORM_FISS = 'DEMI_PLAN',
+                                 PFON      =(0. , -1. ,15.),
+                                 NORMALE   =(0. , 0. , 1.),
+                                 DTAN      =(0. ,-1. , 0.)),);
+
+# on met du contact dans le modele
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='MORTAR',
+                         INFO=1,);
+
+CTX = DEFI_CONTACT(MODELE         = MODELEK,
+                   FORMULATION    = 'XFEM',
+                   FROTTEMENT     = 'SANS',
+                   ZONE=(_F(INTEGRATION='GAUSS',
+                            ORDRE_INT=4,
+                            ALGO_CONT='CZM',
+                            FISS_MAIT=FISS,
+                            ALGO_LAGR='VERSION2',
+                            RELATION='CZM_LIN_MIX',
+                   )));
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+# dans le materiau, on ajoute la partie cohesive
+E=205000.0E6
+nu=0.
+rho=7800.
+
+# contrainte critique qui empeche une rupture complete
+# ms zone cohesive de taille 1 ou 2
+Gc=1097.
+Sc=30.E6
+pena_lagr=10.
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),
+                    RUPT_FRAG=_F(GC=Gc,SIGM_C=Sc,PENA_LAGR=pena_lagr,),);
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MODELEK,
+                       AFFE=_F(TOUT = 'OUI',
+                                MATER=ACIER,
+                                ),
+                             );
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+# en fait il faut imposer uniquement les DDLs classiques a 0
+PRES=-1.E6
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   LIAISON_GROUP=(_F(GROUP_NO_1='PTA',
+                                     GROUP_NO_2='PTA',
+                                     DDL_1='DX',
+                                     DDL_2='DX',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='PTA',
+                                     GROUP_NO_2='PTA',
+                                     DDL_1='DY',
+                                     DDL_2='DY',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='PTA',
+                                     GROUP_NO_2='PTA',
+                                     DDL_1='DZ',
+                                     DDL_2='DZ',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='PTB',
+                                     GROUP_NO_2='PTB',
+                                     DDL_1='DZ',
+                                     DDL_2='DZ',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='PTC',
+                                     GROUP_NO_2='PTC',
+                                     DDL_1='DX',
+                                     DDL_2='DX',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                  _F(GROUP_NO_1='PTC',
+                                     GROUP_NO_2='PTC',
+                                     DDL_1='DZ',
+                                     DDL_2='DZ',
+                                     COEF_MULT_1=0.5,
+                                     COEF_MULT_2=0.5,
+                                     COEF_IMPO=0.0),
+                                 ),);
+
+# forces opposees d intensite egales sur les deux bords
+CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),PRES=PRES,),);
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+# on definit une liste d instants et une fonction multiplicatrice
+LINST = DEFI_LIST_REEL(VALE=(0., 0.5, 1.),);
+FONC=DEFI_FONCTION(NOM_PARA='INST',
+                   PROL_GAUCHE='LINEAIRE',
+                   PROL_DROITE='LINEAIRE',
+                   VALE=( 0., 0.,
+                          1., 1.));
+# le MECA_STATIQUE est remplace par un STAT_NON_LINE
+# sans PILOTAGE pour le moment
+RESU=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMAT,
+                   EXCIT=(_F(CHARGE=CH1,),
+                          _F(CHARGE=CH2,
+                             FONC_MULT=FONC),
+                          ),
+                   CONTACT=CTX,
+                   COMPORTEMENT = _F(RELATION = 'ELAS' , GROUP_MA = 'VOL',),
+                   INCREMENT = _F(LIST_INST = LINST,),
+                   NEWTON  = _F(REAC_ITER = 1),
+                   CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                    ITER_GLOB_MAXI = 15),
+                   SOLVEUR    = _F(METHODE = 'MUMPS',
+                                   NPREC=-1,
+                                   ),
+                   ARCHIVAGE = _F(CHAM_EXCLU=('VARI_ELGA',),INST=1.0),
+                   INFO=1,);
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : ON FAIT UN CALCUL PAR LA METHODE COHESIVE
+#------------------------------------------------------------------------
+# debut ajout
+# on fait un CALC_G en methode cohesive
+# mot cle NB_POINT_FOND ds mot-cle facteur THETA a enlever
+SIF=CALC_G(RESULTAT=RESU,
+           OPTION='CALC_K_G',
+           INST=1.0,
+           THETA=_F(FISSURE=FISS,NUME_FOND=1,NB_POINT_FOND=2,),
+           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                      LISSAGE_G='LAGRANGE',),);
+IMPR_TABLE(TABLE=SIF,UNITE=6);
+#
+# fin ajout
+# la soluction analytique
+# SOLUTION ANALYTIQUE (chaboche p.53)
+coef=(pi*a)/(2.*b)
+fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
+K1REF=-PRES*sqrt(pi*a)*fab
+GREF = (1-nu**2)/E*K1REF**2
+
+
+prec=0.04
+
+VAL_CALC = [1.1643586672024E+07 ,
+            1.1643586672024E+07 ,
+            661.33224677535     ,
+            661.33224677535     ];
+
+# on fait des tests sur K1 et GIRWIN
+# on enleve la boucle sur les couronnes
+TEST_TABLE(TABLE=SIF,
+           NOM_PARA='K1',
+           TYPE_TEST='MAX',
+           VALE_CALC=VAL_CALC[0], VALE_REFE=K1REF,    
+           CRITERE='RELATIF',
+           PRECISION=prec,    
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=SIF,
+           NOM_PARA='K1',
+           TYPE_TEST='MIN',
+           VALE_CALC=VAL_CALC[1], VALE_REFE=K1REF,    
+           CRITERE='RELATIF',
+           PRECISION=prec,    
+           REFERENCE='ANALYTIQUE',);
+
+# calcul legendre pas ouvert avec le cohesif
+           
+GLAGR=CALC_G(RESULTAT=RESU,
+             OPTION='CALC_K_G',
+             INST=1.0,
+             THETA=_F(FISSURE=FISS,NUME_FOND=1,),
+             LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                        LISSAGE_G='LAGRANGE',),);
+
+IMPR_TABLE(TABLE=SIF,UNITE=6);
+
+TEST_TABLE(TABLE=GLAGR,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           VALE_CALC=661.33224677535, 
+           VALE_REFE=GREF,    
+           CRITERE='RELATIF',
+           PRECISION=0.09,    
+           REFERENCE='ANALYTIQUE')
+
+TEST_TABLE(TABLE=GLAGR,
+           NOM_PARA='G',
+           TYPE_TEST='MIN',
+           VALE_CALC=661.33224677535, 
+           VALE_REFE=GREF,    
+           CRITERE='RELATIF',
+           PRECISION=0.09,    
+           REFERENCE='ANALYTIQUE')
+
+# on a enleve la partie POST_K1_K2_K3
+# qui n a pas vraiment de sens pour le cohesif
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : MAILLAGE FISSURE
+# TESTS de NON REGRESSION SUR LES VALEURS DU DEPLACEMENT
+#------------------------------------------------------------------------
+
+MA_VISU=POST_MAIL_XFEM(MODELE = MODELEK)
+
+TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                               GROUP_NO='VOL',
+                               RESULTAT=RESU,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=1,
+                               NOM_CMP='DX',
+                               OPERATION='EXTRACTION',),);
+
+# TESTS DE NON REGRESSION PAR RAPPORT A LA VERSION 8.2.14
+
+DXREF=2668.5
+DYREF=24990.
+DZREF=80055.
+PREC=1.e-10
+
+TEST_TABLE(TABLE=TABDEP,
+           NOM_PARA='COOR_X',
+           TYPE_TEST='SOMM_ABS',
+           VALE_CALC=DXREF,
+           CRITERE='RELATIF',
+           
+           )
+
+TEST_TABLE(TABLE=TABDEP,
+           NOM_PARA='COOR_Y',
+           TYPE_TEST='SOMM_ABS',
+           VALE_CALC=DYREF,
+           CRITERE='RELATIF',
+           
+           )
+
+TEST_TABLE(TABLE=TABDEP,
+           NOM_PARA='COOR_Z',
+           TYPE_TEST='SOMM_ABS',
+           VALE_CALC=DZREF,
+           CRITERE='RELATIF',
+           
+           )
+
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT DES DEPLACEMENTS, CONTRAINTES ET DEFORMATIONS POUR VISU
+#------------------------------------------------------------------------
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D')) 
+
+RES_VISU=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
+                        RESULTAT = RESU)
+
+MAT_VISU=AFFE_MATERIAU(MAILLAGE=MA_VISU,
+                       AFFE=_F(TOUT = 'OUI',
+                               MATER=ACIER))
+
+RES_VISU=CALC_CHAMP(reuse =RES_VISU,
+                    RESULTAT=RES_VISU,
+                    CHAM_MATER=MAT_VISU,
+                    DEFORMATION='EPSI_ELGA',
+                    )
+
+# on enleve l impression du resultat
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_VISU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC=4.3392028143818E-13,                  
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_VISU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.92815725572923,                   
+                   CRITERE='ABSOLU',
+                   ),
+                _F(NUME_ORDRE=1,
+                   TYPE_TEST='SOMM_ABS',
+                   RESULTAT=RES_VISU,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.54612495462764,                   
+                   CRITERE='ABSOLU',
+                   ),
+                ),
+          )
+
+FIN()

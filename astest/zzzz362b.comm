@@ -156,7 +156,7 @@ MLMECPX  = MODI_MODELE_XFEM(MODELE_IN = MLMECPS,
 # MLMECPXC : Modele Lineaire MEcanique Contraintes Planes Xfem Contact
 MLMECPXC = MODI_MODELE_XFEM(MODELE_IN = MLMECPS,
                             FISSURE = (FISSLI1,FISSLI2,FISSLI3),
-                            CONTACT = 'OUI')
+                            CONTACT = 'STANDARD')
 
 # MLMEDPX  : Modele Lineaire MEcanique Deformations Planes Xfem
 MLMEDPX  = MODI_MODELE_XFEM(MODELE_IN = MLMEDPS,
@@ -165,7 +165,7 @@ MLMEDPX  = MODI_MODELE_XFEM(MODELE_IN = MLMEDPS,
 # MLMEDPXC : Modele Lineaire MEcanique Deformations Planes Xfem Contact
 MLMEDPXC = MODI_MODELE_XFEM(MODELE_IN = MLMEDPS,
                             FISSURE = (FISSLI1C,FISSLI2C,FISSLI3C),
-                            CONTACT = 'OUI')
+                            CONTACT = 'STANDARD')
 
 # MLMEAXX : Modele Lineaire MEcanique AXis Xfem
 MLMEAXX  = MODI_MODELE_XFEM(MODELE_IN = MLMEAXS,

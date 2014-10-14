@@ -48,7 +48,7 @@ FISS1=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1),
-                         CONTACT='NON',
+                         CONTACT='SANS',
                          INFO=1);
 
 E=100.0E6

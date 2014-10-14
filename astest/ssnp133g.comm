@@ -86,7 +86,7 @@ MA=DEFI_GROUP(reuse=MA,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
-                         CONTACT='OUI',
+                         CONTACT='STANDARD',
                          );
 
 CTXFEM = DEFI_CONTACT(
@@ -94,7 +94,6 @@ CTXFEM = DEFI_CONTACT(
             FORMULATION    = 'XFEM',
             FROTTEMENT     = 'SANS',
             ITER_CONT_MAXI = 4,
-            ELIM_ARETE     = 'ELIM',
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ORDRE_INT=3,

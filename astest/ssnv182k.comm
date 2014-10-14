@@ -48,7 +48,7 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='OUI');
+                         CONTACT='STANDARD');
 
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,

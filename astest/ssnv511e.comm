@@ -51,7 +51,7 @@ FISS3=DEFI_FISS_XFEM(MAILLAGE=MAILLAG,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2,FISS3),
-                         CONTACT = 'OUI',
+                         CONTACT='STANDARD',
                          INFO=1);
 
 

@@ -139,7 +139,7 @@ for num_calc in range(nb_raff+1):
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=(FISS1,FISS2,FISS3,FISS4,
                          FISS5,FISS6,FISS7,FISS8,),
-                         CONTACT='OUI',
+                         CONTACT='STANDARD',
                          INFO=1,);
 
 CTXFEM = DEFI_CONTACT(MODELE             = MODELEK,

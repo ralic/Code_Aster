@@ -101,7 +101,7 @@ MA=DEFI_GROUP(reuse=MA,
 # definition du contact : P2P1
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
-                         CONTACT='OUI',
+                         CONTACT='STANDARD',
                          );
 
 # on met un algo de type CZM

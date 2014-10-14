@@ -131,7 +131,7 @@ MLMEX  = MODI_MODELE_XFEM(MODELE_IN = MLMES,
 # MLMEXC : Modele Lineaire MEcanique Xfem Contact
 MLMEXC = MODI_MODELE_XFEM(MODELE_IN = MLMES,
                           FISSURE = (FISSLI,INTELI),
-                          CONTACT = 'OUI')
+                          CONTACT = 'STANDARD')
 
 # MLTHX  : Modele Lineaire THermique Xfem
 MLTHX  = MODI_MODELE_XFEM(MODELE_IN = MLTHS,
