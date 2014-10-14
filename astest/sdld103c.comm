@@ -215,6 +215,7 @@ L_INST1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1., PAS = 0.1) )
 #
 PGP_MOA= POST_GENE_PHYS(RESU_GENE=TRANMONO,
+                        MODE_MECA=MODE_MEC,
                           OBSERVATION=(
                                       _F(LIST_INST=L_INST1,
                                          NOM_CHAM = 'ACCE_ABSOLU',

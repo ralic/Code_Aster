@@ -21,13 +21,14 @@ POST_GENE_PHYS  = OPER( nom="POST_GENE_PHYS",op=  58,sd_prod=table_sdaster,
                         fr="Post-traiter dans la base physique des résultats dyanmiques en coordonnées généralisées",
                         reentrant='n',
                         UIinfo={"groupes":("Matrices et vecteurs",)},
-                        regles=(EXCLUS('INST','LIST_INST','TOUT_INST','NUME_ORDRE','TOUT_ORDRE','FREQ','LIST_FREQ'),
-                                EXCLUS('NOEUD','GROUP_NO','MAILLE','GROUP_MA'),),
    
                   RESU_GENE   = SIMP(statut = 'o', typ = (tran_gene,harm_gene) ), 
                   MODE_MECA   = SIMP(statut = 'f', typ = mode_meca ),
    
                   OBSERVATION = FACT(statut = 'o', min = 1, max = '**',
+                                     regles=(EXCLUS('INST','LIST_INST','TOUT_INST','NUME_ORDRE','TOUT_ORDRE','FREQ','LIST_FREQ'),
+                                             EXCLUS('NOEUD','GROUP_NO','MAILLE','GROUP_MA'),
+                                             AU_MOINS_UN('NOEUD','GROUP_NO','MAILLE','GROUP_MA'),),
 
                       NOM_CHAM   = SIMP(statut = 'o', typ = 'TXM', validators = NoRepeat(), max = 1, defaut = 'DEPL',
                                         into   = ('DEPL'      ,'VITE'      ,'ACCE'        , 
@@ -54,8 +55,6 @@ POST_GENE_PHYS  = OPER( nom="POST_GENE_PHYS",op=  58,sd_prod=table_sdaster,
                       GROUP_NO   = SIMP(statut = 'f', typ=grno, validators = NoRepeat(), max = '**'),
                       MAILLE     = SIMP(statut = 'f', typ=ma  , validators = NoRepeat(), max = '**'),
                       GROUP_MA   = SIMP(statut = 'f', typ=grma, validators = NoRepeat(), max = '**'),
-
-                      MULT_APPUI = SIMP(statut = 'f', typ='TXM',into = ("OUI",) ),
 
                       b_acce_abs      = BLOC(condition = "(NOM_CHAM == 'ACCE_ABSOLU')",
                                              regles    = (PRESENT_PRESENT('ACCE_MONO_APPUI','DIRECTION'),),

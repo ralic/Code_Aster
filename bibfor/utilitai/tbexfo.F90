@@ -106,8 +106,8 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
     nojvly = tblp(1+4*(ipary-1)+3)
 !
     if (typex .ne. typey) then
-        if ((typex(1:1).eq.'I' .and. typey(1:1).eq.'R') .or.&
-            (typex( 1:1).eq.'R' .and. typey(1:1).eq.'I')) goto 17
+        if ((typex(1:1).eq.'I' .and. ((typey(1:1).eq.'R').or.(typey(1:1).eq.'C'))) .or. &
+           (typex(1:1).eq.'R' .and. ((typey(1:1).eq.'I').or.(typey(1:1).eq.'C')))) goto 17
         call utmess('F', 'UTILITAI4_77')
     endif
 17  continue
@@ -150,7 +150,18 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
                     zr(kvale+nbfon+iv-1) = zr(jvaley+i-1)
                 endif
 300          continue
-        else
+        else if (typey(1:1) .eq. 'C') then
+            zk24(lpro) = 'FONCT_C'
+            call wkvect(nomfon//'.VALE', base//' V R', nbfon*3, kvale)
+            do i = 1, nblign
+                if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
+                    iv = iv + 1
+                    zr(kvale+iv-1) = zi(jvalex+i-1)*1.d0
+                    zr(kvale+nbfon+iv-1) = dble(zc(jvaley+i-1))
+                    zr(kvale+2*nbfon+iv-1) = dimag(zc(jvaley+i-1))
+                endif
+            end do
+        else if (typey(1:1) .eq. 'I') then
             call wkvect(nomfon//'.VALE', base//' V I', nbval, kvale)
             do 30 i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
@@ -172,7 +183,19 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp,&
                     zr(kvale+nbfon+iv-1) = zi(jvaley+i-1)*1.d0
                 endif
 311          continue
-        else
+        else if (typey(1:1) .eq. 'C') then
+            zk24(lpro) = 'FONCT_C'
+            call wkvect(nomfon//'.VALE', base//' V R', 3*nbfon, kvale)
+            do i = 1, nblign
+                if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then
+                    iv = iv + 1
+                    zr(kvale+iv-1) = zr(jvalex+i-1)
+                    zr(kvale+nbfon+iv-1) = dble(zc(jvaley+i-1))
+                    zr(kvale+2*nbfon+iv-1) = dimag(zc(jvaley+i-1))
+
+                endif
+            end do
+        else if (typey(1:1) .eq. 'R') then
             call wkvect(nomfon//'.VALE', base//' V R', nbval, kvale)
             do 31 i = 1, nblign
                 if (zi(jvallx+i-1) .eq. 1 .and. zi(jvally+i-1) .eq. 1) then

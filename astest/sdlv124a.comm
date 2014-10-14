@@ -323,10 +323,21 @@ DGX2=RECU_FONCTION (   RESU_GENE = DYNHGEN,
                       NOEUD = 'N433',
                       NOM_CHAM = 'DEPL')
 
+# TEST DE POST_GENE_PHYS SUR UN HARM_GENE
+PGP_DGX2=POST_GENE_PHYS(RESU_GENE=DYNHGEN, 
+                       OBSERVATION=(_F(NOM_CHAM = 'DEPL',
+                                       NOM_CMP='DX',
+                                       NOEUD = 'N433',
+                                       FREQ=freq),),)
+
+FON_DGX2 = RECU_FONCTION(TABLE=PGP_DGX2,PARA_X='FREQ',PARA_Y='VALE_C',)
+
+
 # CALCUL DE LA VALEUR MAX SUR N PERIODE
 DHX11=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHX1,PARTIE='MODULE'),);
 DHX21=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHX2,PARTIE='MODULE'),);
 DGX21=CALC_FONCTION(EXTRACTION=_F(FONCTION=DGX2,PARTIE='MODULE'),);
+DGX22=CALC_FONCTION(EXTRACTION=_F(FONCTION=FON_DGX2,PARTIE='MODULE'),);
 
 DTX11=CALC_FONCTION(ABS=_F(FONCTION=DTX1),);
 DTX111=INFO_FONCTION(MAX=_F(FONCTION=DTX11));
@@ -366,6 +377,15 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=8.96432120282e-07,
                         PRECISION=1.E-2,
                         NOM_PARA='FREQ',
                         FONCTION=DGX21,),
+              )
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=8.96432120282e-07,
+                        VALE_REFE=9.0386294594453288E-07,
+                        VALE_PARA=1500.0,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-2,
+                        NOM_PARA='FREQ',
+                        FONCTION=DGX22,),
               )
 
 #########################################################
