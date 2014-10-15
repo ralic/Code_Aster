@@ -83,7 +83,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
     integer :: i, nmafis
     integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
     integer :: nbfond, numfon
-    integer :: ifm, niv, ibid
+    integer :: ifm, niv
     integer :: nmaen1, nmaen2, nmaen3, ncouch, nfono
     character(len=16) :: typdis, operation
     character(len=19) :: cnxinv, info, listpt

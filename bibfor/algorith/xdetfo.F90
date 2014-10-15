@@ -79,7 +79,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
     integer :: jmafon, jmaifo, jnscov, jnsdl, jnsdv, jvale
     integer :: jvalk, jvalm, k
     character(len=19) :: k19b
-    character(len=8) :: k8b, k8bid, kbid
+    character(len=8) :: k8b, k8bid
     character(len=24) :: lismae
     character(len=19) :: lisno
     real(kind=8) :: lsna, lsnb, lsta, lstb
@@ -91,7 +91,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
     integer :: na, nb, nbar, nbls, nbma, nbno, ncmpa, ndim
     integer :: nmaco, nmafis, nmafon, nmaifo
     character(len=8) :: noma, nomfis, nommat, nomo
-    integer :: nunoa, nunob
+    integer :: nunoa, nunob, ib2
     real(kind=8) :: rbid, d1, crilst
     character(len=8) :: resuco
     real(kind=8) :: sc, rr
@@ -134,7 +134,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 !   POUR L INSTANT LA DETECTION SE FAIT A PARTIR DU DERNIER NUMERO D ORDRE
     call rsorac(resuco, 'DERNIER', ibid, rbid, k8bid,&
                 cbid, 0.d0, 'ABSOLU', iord, 1,&
-                ibid)
+                ib2)
 ! 
 ! --- RECUP CHAMP VARIABLES INTERNES COHESIVES
 ! 
@@ -158,7 +158,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 !   RECUP PREMIER NUMERO ORDRE
     call rsorac(resuco, 'PREMIER', ibid, rbid, k8bid,&
                 cbid, 0.d0, 'ABSOLU', iord, 1,&
-                ibid)
+                ib2)
     adrbid = '&&XDETFO.BID'
     k8b = 'CARACTER'
 !

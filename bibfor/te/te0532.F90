@@ -74,7 +74,7 @@ subroutine te0532(option, nomte)
     integer :: nptf
     character(len=8) :: elref, typma, elrefc, job
     character(len=8) :: elc, fpg, champ
-    real(kind=8) :: ffpc(27), rela, eps, zpt, xpt, ypt, rhon
+    real(kind=8) :: ffpc(27), rela, eps, rhon
     real(kind=8) :: reac, ffp(27), ffc(8), r3bid(3), jac
     real(kind=8) :: prec, nd(3), dn, saut(3), rr, rbid, r3bd(3)
     real(kind=8) :: coefcp, coeffp, coefcr, coeffr, r6bid(6), wsaut(3)
@@ -83,7 +83,7 @@ subroutine te0532(option, nomte)
     real(kind=8) :: cohes(3), mat3bd(3, 3), mat6bd(6, 6)
     parameter    (prec=1.d-16)
     aster_logical :: imprim, lbid
-    integer :: zxain, noc
+    integer :: zxain
 !......................................................................
 !
     call jemarq()
@@ -382,7 +382,6 @@ subroutine te0532(option, nomte)
                  end do
             end do
             nbspg = nbspg + nspfis
-91          continue
             jbasec = jbasec + ncompb
             jptint = jptint + ncompp
             jaint = jaint + ncompa

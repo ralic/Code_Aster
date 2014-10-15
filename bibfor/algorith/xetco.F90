@@ -34,7 +34,7 @@ subroutine xetco(champ, nomcha, nomch0)
     integer :: iad1, iad2, ibid, ima, ispt, icmp
     integer :: jcelk, jcesv0, jcesvi, jcl0, jcli
     integer :: jco0, jcoi, nbcmp0, nbcmpi, nbma, nbma0, nbsp0
-    integer :: nbspi, ircp, iarcp
+    integer :: nbspi
     integer :: jcesk, jconx1, jconx2, jcnli, jcnsvi, jfiss, neq
     integer :: nuno, jlis, nuno2, ieq
     character(len=8) :: noma, nomo, fiss, kbid

@@ -66,8 +66,6 @@ subroutine xtopoc(modele)
     integer :: jmofis, jnfiss, nfiss, ifiss, ityp
     character(len=16) :: typdis, memtyp
     character(len=19) :: typenr
-    real(kind=8) :: rbid
-    complex(kind=8) :: cbid
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: nbsp(:) => null()

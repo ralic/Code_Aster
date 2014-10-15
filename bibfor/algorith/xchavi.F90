@@ -52,9 +52,8 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
     real(kind=8) :: loncar, m(3), mi(3), mtast, pi
     integer :: ndim, nfonn
     real(kind=8) :: n(3), t(3)
-    real(kind=8) :: p(3)
     integer :: sifval, nbptfo, ibid
-    real(kind=8) :: sinb, spint, tast(3), vecv(3)
+    real(kind=8) :: sinb, tast(3), vecv(3)
     real(kind=8) :: vitn, vnor, vpnt, linf, lprop, lcalc
     aster_logical :: linter
 ! --------------------------------------------------------------

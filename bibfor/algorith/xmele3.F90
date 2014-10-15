@@ -64,14 +64,14 @@ subroutine xmele3(noma, modele, ligrel, nfiss, chelem,&
 !
     integer :: ifm, niv
     character(len=8) :: k8bid
-    integer :: ibid, iad, i, ima, ifis, ier
+    integer :: ibid, iad, i, ima, ifis
     integer :: ino, itypma, nno
     integer :: ndim
     integer :: nbma, nmaenr
     character(len=8) :: nomfis, nomgd, typma, licmp3(3)
-    integer :: jcesl, jcesd, jmofis, ncmp, icmp
+    integer :: jcesl, jcesd, ncmp, icmp
     character(len=24) :: grp
-    integer :: mminfi, jgrp, iret, ib1
+    integer ::  jgrp, iret, ib1
     character(len=19) :: chelsi
     real(kind=8) :: valr
     character(len=8), pointer :: fiss(:) => null()

@@ -42,7 +42,7 @@ subroutine pipel2(mat, sup, sud, mup, mud,&
 !                COPILO(5) <> R8VIDE => PAS DE SOLUTION
 ! ----------------------------------------------------------------------
     integer :: nrac, i
-    real(kind=8) :: sc, gc, dc, h, r, ka, ga, sk, val(3), tmp
+    real(kind=8) :: sc, gc, dc, h, r, val(3)
     real(kind=8) :: tt2, tp(3), td(3), tpn, tdn, c0, c1, c2, n0, n1, n2, rac(4)
     real(kind=8) :: eta, pente, tpa
     integer :: cod(3), kpg, spt

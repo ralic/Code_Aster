@@ -69,7 +69,7 @@ subroutine te0533(option, nomte)
     real(kind=8) :: mmat(216, 216), jac, mu, coeffr, rela
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: nd(3), seuil, cohes(3), coheo(3)
-    real(kind=8) :: rr, rbid
+    real(kind=8) :: rr
     integer :: jheano, ifiss, jheafa, ncomph,jta2(3)
     integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
     aster_logical :: matsym, lelim

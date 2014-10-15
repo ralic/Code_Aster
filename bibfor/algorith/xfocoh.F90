@@ -57,11 +57,10 @@ subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
 !   
     real(kind=8) :: a(3), b(3), gln(2,3), glt(2,3), glna(3)
     real(kind=8) :: glnb(3), glta(3), gltb(3), beta
-    integer :: i, ima, indipt, ino, ipt, iret, itypma
+    integer ::  ima, indipt, ino, ipt, itypma
     integer :: j, jbas, jconx1, jconx2, jcoor
-    integer :: jfon, jlism, jma, k, ia, nbar, nuno_av
-    character(len=8) :: k8b
-    integer :: l, i_inter, ar(12,3)
+    integer :: jfon, jlism, k, ia, nbar, nuno_av
+    integer ::  i_inter, ar(12,3)
     character(len=19) :: lismai, listpt, listpt_temp
     character(len=19) :: chgrn, chgrt, cnsln
     real(kind=8) :: loncar, m(2,3), mm(3)

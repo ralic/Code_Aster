@@ -53,12 +53,12 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
     aster_logical :: resi, rigi, elas
     integer :: i, j, diss, cass
-    real(kind=8) :: sc, gc, lc, k0, val(3), rtan, kapp, zero, un
-    real(kind=8) :: na, ka, kap, r0, rc, beta, rk, ra, coef, coef2
+    real(kind=8) :: sc, gc, lc, val(3), rtan, kapp, zero
+    real(kind=8) :: na, ka, kap, rk, ra, coef, coef2
     integer :: cod(3)
     character(len=16) :: nom(3)
     character(len=1) :: poum
-    parameter  (zero = 0.d0, un = 1.d0)
+    parameter  (zero = 0.d0)
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !

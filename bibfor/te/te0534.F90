@@ -74,7 +74,7 @@ subroutine te0534(option, nomte)
     real(kind=8) :: vtmp(400), reac, reac12(3), jac
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
     real(kind=8) :: mu, tau1(3), tau2(3), coeffr
-    real(kind=8) :: rr, rbid, cohes(3), rela
+    real(kind=8) :: rr, cohes(3), rela
     aster_logical :: lbid, lelim
     character(len=8) :: elref, typma, elrefc
     character(len=8) :: elc, fpg

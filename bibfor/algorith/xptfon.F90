@@ -89,11 +89,11 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
     integer :: nbfacb, iptbor(2), nbptma, ndime, indptf(3), codret
     integer :: nunopa, nunopb, nunopc, nunopd
     integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
-    integer :: nbmai, nuno1, nuno2, jlism
+    integer :: nbmai
     real(kind=8) :: m(3), p(3), gln(3), glt(3), coorg(3), vectn(12)
-    real(kind=8) :: normi, rbid3(3), r3bid(3)
+    real(kind=8) :: normi, r3bid(3)
     character(len=8) :: typma, nommai, alias
-    character(len=19) :: grlt, chgrt, grln, chgrn, lismai
+    character(len=19) :: grlt, chgrt, grln, chgrn
     character(len=16) :: operation
     aster_logical :: fabord, indic
     real(kind=8), pointer :: lsn(:) => null()

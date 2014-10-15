@@ -51,7 +51,7 @@ subroutine xmvco4(ino, ndim, nnol, sigma, lamb, pla,&
 !
 !
 !
-    integer :: i, k, pli, ier
+    integer :: k, pli, ier
     real(kind=8) :: ptr(3, 3), sigglo(3)
 !
 ! ---------------------------------------------------------------------

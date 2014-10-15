@@ -94,7 +94,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
     real(kind=8) :: dfdi(nnop, ndim)
     real(kind=8) :: he(2)
 !
-    integer :: l, nnos, nno
+    integer :: nnos, nno
     real(kind=8) :: ffc(27)
     character(len=8) :: elref, typma, fpg, elc, elrefc
     real(kind=8) :: tau1(3), tau2(3)

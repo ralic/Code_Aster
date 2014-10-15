@@ -52,7 +52,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
     character(len=8) :: nompar(4)
     real(kind=8) :: norme
     character(len=16) :: option
-    real(kind=8) :: p(3, 3), pres, presn(27), rb, rb9(3, 3), rr(2)
+    real(kind=8) :: p(3, 3), pres, presn(27), rb9(3, 3), rr(2)
     integer :: singu
     real(kind=8) :: theta(3), u1(3), u1l(3), u2(3), u2l(3), u3(3)
     real(kind=8) :: u3l(3), xg(4), rb33(3,3,3)

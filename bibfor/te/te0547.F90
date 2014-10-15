@@ -75,7 +75,7 @@ subroutine te0547(option, nomte)
     integer :: jdonco, jlsn, jlst, igeom, jptint, vstnc(1)
     integer :: jaint, jcface, jlonch, jbasec, icopil, ictau
     integer :: idepl0, idepl1, ideplm, iddepl, jcohes, imate
-    integer :: nfh, nfiss, contac, jtab(2), jta2(3)
+    integer :: nfh, nfiss, contac, jta2(3)
     character(len=8) :: elref, typma, fpg, elc, elrefc
     character(len=16) :: enr
     real(kind=8) :: rela, lup(3), lud(3)

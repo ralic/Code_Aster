@@ -104,7 +104,7 @@ subroutine op0041()
     character(len=19) :: lnnofa, grltfa, grlnfa
     character(len=24) :: lismae, lisnoe
     aster_logical :: grille, ldmax, goinop
-    character(len=8) :: fisgri, method
+    character(len=8) :: fisgri
 !
 ! ----------------------------------------------------------------------
 !

@@ -80,7 +80,7 @@ subroutine xstan2(crimax, noma, modele)
     integer :: jconx2, adrma, ndime, ndim, nbno
     integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
     integer :: itypel, nbelr, igeom, nuno2, inoloc, cpt
-    integer :: i, j, nheav, iheav, nfiss, ifiss, nse, nnose, nnot(3)
+    integer :: i, j, nheav, iheav, nfiss, ifiss, nse, nnose
     aster_logical :: lelim
     integer, pointer :: connex(:) => null()
     integer, pointer :: cnsv(:) => null()

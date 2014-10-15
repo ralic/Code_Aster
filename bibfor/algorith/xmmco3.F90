@@ -49,7 +49,7 @@ subroutine xmmco3(ino, ndim, dsidep, pla, p,&
 !
 !
 !
-    integer :: i, j, k, l, pli, plj
+    integer :: i, j, k, l, pli
     real(kind=8) :: dside2(3, 3), ptr(3, 3), temp(3, 3), au(3, 3)
 !
 ! ----------------------------------------------------------------------

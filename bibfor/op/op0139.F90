@@ -51,11 +51,10 @@ subroutine op0139()
 ! AJOUT OP
 !
 !     JEVEUX AND GENERAL PURPOSE
-    integer :: ibid, ifm, niv, vali(2), iret, i, ib
+    integer :: ibid, ifm, niv, vali(2), i
     real(kind=8) :: vale(3)
     complex(kind=8) :: cbid
     character(len=8) :: k8b
-    character(len=1) :: k1b
 !
 !     INPUT DATA
     integer :: nfiss, jfiss
@@ -67,28 +66,26 @@ subroutine op0139()
 !
 !     POPAGATION DATA
     integer :: jvit, jbeta, iadrma
-    integer :: jvitem, jdeb, jfin, j
+    integer :: jvitem
 !
 !     OPTION NB_POINT_FOND
     integer :: sifval
 !
 !     OPTION COMP_LINE
-    integer :: iarg
 !     AJOUTS
-    character(len=8) :: k8bid, model
+    character(len=8) :: k8bid
     character(len=16) :: typdis, k16bid
     character(len=19) :: k19b
     character(len=19) :: cnsdet, cnxinv
     character(len=19) :: listpt
     character(len=24) :: mater
     integer :: iord(1)
-    integer :: jbasc
-    integer :: jfon, jfono, jmafon
-    integer :: nmafis, nmafon, nxptff
+    integer :: jbasc, ib2
+    integer ::  jfono, jmafon
+    integer ::  nmafon, nxptff
     integer :: nfonn, npara
     aster_logical :: lbid
     real(kind=8) :: rbid
-    real(kind=8) :: ac(3)
     complex(kind=8) :: c16b(1)
     character(len=12) :: nopar3(5)
     character(len=16) :: operation(1)
@@ -115,7 +112,7 @@ subroutine op0139()
 !   RECUPERATION DU PREMIER NUMERO D'ORDRE
     call rsorac(resuco, 'PREMIER', ibid, rbid, k8bid,&
                 cbid, 0.d0, 'ABSOLU', iord, 1,&
-                ibid)
+                ib2)
     k8b = 'CARACTER'
 !
 !   RECUPERATION DU NOM DU MODELE

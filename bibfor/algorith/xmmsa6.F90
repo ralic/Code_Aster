@@ -62,11 +62,11 @@ subroutine xmmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
 !
 !
 !
-    integer :: i, k, ier
+    integer :: i
 !
-    real(kind=8) :: vim(9), vip(9), jeu
-    real(kind=8) :: am2d(2), dam2d(2), dsid2d(6, 6), dam(3)
-    real(kind=8) :: sigma(6), sqrnor, sqrtan, r8prem, eps
+    real(kind=8) :: vim(9), vip(9)
+    real(kind=8) ::  dsid2d(6, 6), dam(3)
+    real(kind=8) :: sigma(6)
 !
     character(len=16) :: option
 !

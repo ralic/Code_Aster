@@ -68,7 +68,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     real(kind=8) :: jac, jm, k1, k2, k3, lamb(3), lamb1, lamb2
     real(kind=8) :: lamb3, lambl(3), mult
     integer :: nnos
-    real(kind=8) :: norme, p(3, 3), pm(3, 3), ptr(3, 3), theta(3)
+    real(kind=8) :: norme, pm(3, 3), ptr(3, 3), theta(3)
     real(kind=8) :: tau1(3), tau2(3), nd(3), temp(3), xg(3)
     real(kind=8) :: ptp(3), vec(3), sens
 !     BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS

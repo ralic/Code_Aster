@@ -92,8 +92,8 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
     character(len=2) :: licmp(3)
 !
     integer :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
-    integer :: imodu, nbre, iret, numa, ndimte
-    integer :: nbno, ifon, i, idesc, irefe, j, jresu, k, jgtl
+    integer :: imodu, nbre, iret, ndimte
+    integer :: nbno, ifon, i, j, jresu, k, jgtl
 !
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, eps, d, grtx, grty, grtz
