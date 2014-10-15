@@ -43,8 +43,8 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: hft2(2, 6)
-    real(kind=8) :: bf(3, 12), bm(3, 8)
-    real(kind=8) :: bdf(3), bdm(3), dcis(2)
+    real(kind=8) :: bf1(3, 12),bf2(3, 12), bf(3, 12),bm(3, 8)
+    real(kind=8) :: bdf1(3),bdf2(3),bdf(3), bdm(3), dcis(2)
     real(kind=8) :: vf(3), vm(3), vt(2), qsi, eta, caraq4(25), jacob(5)
     real(kind=8) :: vfm(3), vmf(3), t2iu(4), t2ui(4), t1ve(9)
     aster_logical :: coupmf
@@ -79,8 +79,8 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
         do i = 1, 2
             depm(i+2* (j-1)) = depl(i+6*(j-1))
         end do
-        depf(1+3* (j-1)) = depl(1+2+6*(j-1))
-        depf(2+3* (j-1)) = depl(3+2+6*(j-1))
+        depf(1+3* (j-1)) =  depl(1+2+6*(j-1))
+        depf(2+3* (j-1)) =  depl(3+2+6*(j-1))
         depf(3+3* (j-1)) = -depl(2+2+6*(j-1))
     end do
 !
@@ -133,9 +133,12 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
             call dsxhft(df, jacob(2), hft2)
 !           ----- CALCUL DES MATRICES BM ET BF AU POINT QSI ETA --------
             call dxqbm(qsi, eta, jacob(2), bm)
-            call dkqbf(qsi, eta, jacob(2), caraq4, bf)
+            call dkqbf(qsi, eta, jacob(2), caraq4, bf1)
+            call dsqbfb(qsi, eta, jacob(2), bf2)
+
             do k = 1, 3
-                bdf(k) = 0.d0
+                bdf1(k) = 0.d0
+                bdf2(k) = 0.d0
                 bdm(k) = 0.d0
                 vf(k) = 0.d0
                 vm(k) = 0.d0
@@ -146,7 +149,8 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 !           ------ VM = DM.BM.DEPM , VMF = DMF.BF.DEPF ----------------
             do i = 1, 3
                 do j = 1, 12
-                    bdf(i) = bdf(i) + bf(i,j)*depf(j)
+                    bdf1(i) = bdf1(i) + bf1(i,j)*depf(j)
+                    bdf2(i) = bdf2(i) + bf2(i,j)*depf(j)
                 end do
                 do j = 1, 8
                     bdm(i) = bdm(i) + bm(i,j)*depm(j)
@@ -154,10 +158,10 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
             end do
             do i = 1, 3
                 do j = 1, 3
-                    vf(i) = vf(i) + df(i,j)*bdf(j)
+                    vf(i) = vf(i) + df(i,j)*bdf1(j)
                     vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
                     vm(i) = vm(i) + dm(i,j)*bdm(j)
-                    vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
+                    vmf(i) = vmf(i) + dmf(i,j)*bdf2(j)
                 end do
             end do
 !           ------ VT = HFT2.TKQ.DEPF ---------------------------------
