@@ -66,6 +66,7 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: carsiz=20
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
     integer :: nb_elem_affe, ndim
@@ -104,18 +105,18 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
 !
 ! ----- Get infos
 !
-        type_matr_t = int(info_carc_valr(18*(iocc-1) + 2))
-        parm_theta = info_carc_valr(18*(iocc-1) + 4)
-        iter_inte_pas = int(info_carc_valr(18*(iocc-1) + 5))
-        algo_inte_r = info_carc_valr(18*(iocc-1) + 6)
-        vale_pert_rela = info_carc_valr(18*(iocc-1) + 7)
-        resi_deborst_max = info_carc_valr(18*(iocc-1) + 8)
-        iter_deborst_max = int(info_carc_valr(18*(iocc-1) + 9))
-        seuil = info_carc_valr(18*(iocc-1) + 10)
-        amplitude = info_carc_valr(18*(iocc-1) + 11)
-        taux_retour = info_carc_valr(18*(iocc-1) + 12)
-        post_iter  = info_carc_valr(18*(iocc-1) + 13)
-        parm_alpha = info_carc_valr(18*(iocc-1) + 18)
+        type_matr_t = int(info_carc_valr(carsiz*(iocc-1) + 2))
+        parm_theta = info_carc_valr(carsiz*(iocc-1) + 4)
+        iter_inte_pas = int(info_carc_valr(carsiz*(iocc-1) + 5))
+        algo_inte_r = info_carc_valr(carsiz*(iocc-1) + 6)
+        vale_pert_rela = info_carc_valr(carsiz*(iocc-1) + 7)
+        resi_deborst_max = info_carc_valr(carsiz*(iocc-1) + 8)
+        iter_deborst_max = int(info_carc_valr(carsiz*(iocc-1) + 9))
+        seuil = info_carc_valr(carsiz*(iocc-1) + 10)
+        amplitude = info_carc_valr(carsiz*(iocc-1) + 11)
+        taux_retour = info_carc_valr(carsiz*(iocc-1) + 12)
+        post_iter  = info_carc_valr(carsiz*(iocc-1) + 13)
+        parm_alpha = info_carc_valr(carsiz*(iocc-1) + 18)
         rela_comp = info_carc_valk(2*(iocc-1) + 1)
         algo_inte = info_carc_valk(2*(iocc-1) + 2)
 !
@@ -185,9 +186,9 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
         p_carc_valv(12) = taux_retour
         p_carc_valv(13) = post_iter
 !       exte_comp UMAT / MFRONT
-        p_carc_valv(14) = info_carc_valr(18*(iocc-1) + 14)
-        p_carc_valv(15) = info_carc_valr(18*(iocc-1) + 15)
-        p_carc_valv(16) = info_carc_valr(18*(iocc-1) + 16)
+        p_carc_valv(14) = info_carc_valr(carsiz*(iocc-1) + 14)
+        p_carc_valv(15) = info_carc_valr(carsiz*(iocc-1) + 15)
+        p_carc_valv(16) = info_carc_valr(carsiz*(iocc-1) + 16)
 !       cf. CALC_POINT_MAT / PMDORC
         p_carc_valv(17) = 0
         p_carc_valv(18) = parm_alpha

@@ -60,6 +60,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: carsiz=20
     character(len=16) :: keywordfact
     integer :: iocc, iret, nbocc, ndim, cpointer_nbvarext, cpointer_namevarext, cpointer_fct_ldc
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter
@@ -271,23 +272,23 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! ----- Save options in list
 !
-        info_carc_valr(18*(iocc-1) + 1) = 0.d0
-        info_carc_valr(18*(iocc-1) + 2) = type_matr_t
-        info_carc_valr(18*(iocc-1) + 3) = 0.d0
-        info_carc_valr(18*(iocc-1) + 4) = parm_theta
-        info_carc_valr(18*(iocc-1) + 5) = iter_inte_pas
-        info_carc_valr(18*(iocc-1) + 6) = 0.d0
-        info_carc_valr(18*(iocc-1) + 7) = vale_pert_rela
-        info_carc_valr(18*(iocc-1) + 8) = resi_deborst_max
-        info_carc_valr(18*(iocc-1) + 9) = iter_deborst_max
-        info_carc_valr(18*(iocc-1) + 10) = seuil
-        info_carc_valr(18*(iocc-1) + 11) = amplitude
-        info_carc_valr(18*(iocc-1) + 12) = taux_retour
-        info_carc_valr(18*(iocc-1) + 13) = ipostiter
-        info_carc_valr(18*(iocc-1) + 14) = dble(cpointer_nbvarext)
-        info_carc_valr(18*(iocc-1) + 15) = dble(cpointer_namevarext)
-        info_carc_valr(18*(iocc-1) + 16) = dble(cpointer_fct_ldc)
-        info_carc_valr(18*(iocc-1) + 18) = parm_alpha
+        info_carc_valr(carsiz*(iocc-1) + 1) = 0.d0
+        info_carc_valr(carsiz*(iocc-1) + 2) = type_matr_t
+        info_carc_valr(carsiz*(iocc-1) + 3) = 0.d0
+        info_carc_valr(carsiz*(iocc-1) + 4) = parm_theta
+        info_carc_valr(carsiz*(iocc-1) + 5) = iter_inte_pas
+        info_carc_valr(carsiz*(iocc-1) + 6) = 0.d0
+        info_carc_valr(carsiz*(iocc-1) + 7) = vale_pert_rela
+        info_carc_valr(carsiz*(iocc-1) + 8) = resi_deborst_max
+        info_carc_valr(carsiz*(iocc-1) + 9) = iter_deborst_max
+        info_carc_valr(carsiz*(iocc-1) + 10) = seuil
+        info_carc_valr(carsiz*(iocc-1) + 11) = amplitude
+        info_carc_valr(carsiz*(iocc-1) + 12) = taux_retour
+        info_carc_valr(carsiz*(iocc-1) + 13) = ipostiter
+        info_carc_valr(carsiz*(iocc-1) + 14) = dble(cpointer_nbvarext)
+        info_carc_valr(carsiz*(iocc-1) + 15) = dble(cpointer_namevarext)
+        info_carc_valr(carsiz*(iocc-1) + 16) = dble(cpointer_fct_ldc)
+        info_carc_valr(carsiz*(iocc-1) + 18) = parm_alpha
         info_carc_valk(2*(iocc-1) + 1) = rela_comp
         info_carc_valk(2*(iocc-1) + 2) = algo_inte
     end do

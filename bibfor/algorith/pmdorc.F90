@@ -42,7 +42,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 ! person_in_charge: jean-michel.proix at edf.fr
 !
     character(len=16), intent(out) :: compor(20)
-    real(kind=8), intent(out) :: carcri(18)
+    real(kind=8), intent(out) :: carcri(20)
     integer, intent(out) :: nb_vari
     integer, intent(out) :: incela
 !
@@ -59,6 +59,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer, parameter :: carsiz=20
     character(len=19) :: list_vari_name
     integer :: iocc, unit_comp, i, nume_comp, nbocc_compor, nbocc_carcri
     integer :: nbocc1, nbocc2, nbocc3
@@ -184,29 +185,32 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     algo_inte = p_info_carc_valk(2*(iocc-1) + 2)
     if (rela_comp.eq.'MFRONT') then
         call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
-    else 
+    else
         call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
     endif
     call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
     call utlcal('NOM_VALE', algo_inte, algo_inte_r)
 !
     carcri(1) = iter_inte_maxi
-    carcri(2) = p_info_carc_valr(18*(iocc-1) + 2)
+    carcri(2) = p_info_carc_valr(carsiz*(iocc-1) + 2)
     carcri(3) = resi_inte_rela
-    carcri(4) = p_info_carc_valr(18*(iocc-1) + 4)
-    carcri(5) = p_info_carc_valr(18*(iocc-1) + 5)
+    carcri(4) = p_info_carc_valr(carsiz*(iocc-1) + 4)
+    carcri(5) = p_info_carc_valr(carsiz*(iocc-1) + 5)
     carcri(6) = algo_inte_r
-    carcri(7) = p_info_carc_valr(18*(iocc-1) + 7)
-    carcri(8) = p_info_carc_valr(18*(iocc-1) + 8)
-    carcri(9) = p_info_carc_valr(18*(iocc-1) + 9)
-    carcri(10) = p_info_carc_valr(18*(iocc-1) + 10)
-    carcri(11) = p_info_carc_valr(18*(iocc-1) + 11)
-    carcri(12) = p_info_carc_valr(18*(iocc-1) + 12)
-    carcri(13) = p_info_carc_valr(18*(iocc-1) + 13)
-    carcri(14) = p_info_carc_valr(18*(iocc-1) + 14)
-    carcri(15) = p_info_carc_valr(18*(iocc-1) + 15)
-    carcri(16) = p_info_carc_valr(18*(iocc-1) + 16)
+    carcri(7) = p_info_carc_valr(carsiz*(iocc-1) + 7)
+    carcri(8) = p_info_carc_valr(carsiz*(iocc-1) + 8)
+    carcri(9) = p_info_carc_valr(carsiz*(iocc-1) + 9)
+    carcri(10) = p_info_carc_valr(carsiz*(iocc-1) + 10)
+    carcri(11) = p_info_carc_valr(carsiz*(iocc-1) + 11)
+    carcri(12) = p_info_carc_valr(carsiz*(iocc-1) + 12)
+    carcri(13) = p_info_carc_valr(carsiz*(iocc-1) + 13)
+    carcri(14) = p_info_carc_valr(carsiz*(iocc-1) + 14)
+    carcri(15) = p_info_carc_valr(carsiz*(iocc-1) + 15)
+    carcri(16) = p_info_carc_valr(carsiz*(iocc-1) + 16)
     carcri(17) = 1
+    carcri(18) = 0
+    carcri(19) = p_info_carc_valr(carsiz*(iocc-1) + 19)
+    carcri(20) = p_info_carc_valr(carsiz*(iocc-1) + 20)
 !
     AS_DEALLOCATE(vk16 = p_info_comp_valk)
     AS_DEALLOCATE(vi   = p_info_comp_vali)

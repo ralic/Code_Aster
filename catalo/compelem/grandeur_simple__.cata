@@ -303,8 +303,8 @@ GRANDEUR_SIMPLE__
        ALPHA    : PARM_ALPHA pour les volumes finis
 >>
     CARCRI   = R    ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC PERTURB
-                    TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
-                    POSTITER LC_EXT[3] MODECALC ALPHA
+                    TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR
+                    POSTITER LC_EXT[3] MODECALC ALPHA   LC_EXT2[2]
 
 <<  CASECT Type:K8 Nom d'un objet de type cara-poutre contenant le
     caracteristiques d'une section de poutre
@@ -362,7 +362,7 @@ GRANDEUR_SIMPLE__
        NVI_H : nombre de variables internes associees a la relation hydraulique
        NVI_M : nombre de variables internes associees a la relation mecanique
 >>
-    COMPOR   = K16  RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC  SD_COMP  
+    COMPOR   = K16  RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC  SD_COMP
                     KIT[9]  NVI_C    NVI_T    NVI_H    NVI_M
 
 <<  CORR_R Type:R Corrosion

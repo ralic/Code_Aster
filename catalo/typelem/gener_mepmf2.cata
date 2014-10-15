@@ -41,7 +41,7 @@ MODE_LOCAL__
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     GAMMA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
-                                       POSTITER LC_EXT[3] MODECALC )
+                                       POSTITER LC_EXT[3] MODECALC ALPHA LC_EXT2[2] )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
                                         SD_COMP    KIT1     KIT2     KIT3     KIT4     KIT5
