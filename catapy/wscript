@@ -2,7 +2,7 @@
 
 import os
 import os.path as osp
-from waflib import TaskGen, Utils
+from waflib import TaskGen, Task, Utils
 
 def build(self):
     get_srcs = self.path.get_src().ant_glob
@@ -36,15 +36,24 @@ def capy(self, node):
     pass
 
 @TaskGen.feature('catapy')
-def catapy(self):
-    """Merge capy files to cata.py and install it."""
-    # doing merge in python as it is multi-plateform
+def make_cata(self):
+    """Create the cata.py"""
     target = self.bld.bldnode.make_node(self.target)
-    with open(target.abspath(), 'w') as fid:
-        for node in self.source:
-            with open(node.abspath()) as subfid:
-                fid.write(subfid.read())
-                fid.write(os.linesep)
-                fid.flush()
-    target.sig = Utils.h_file(target.abspath())
+    tsk = self.create_task('make_capy', src=self.source, tgt=target)
     self.process_py(target)
+
+class make_capy(Task.Task):
+    color   = 'PINK'
+    ext_out = ['.py']
+
+    def run(self):
+        """Merge capy files to cata.py and install it."""
+        # doing merge in python as it is multi-plateform
+        target = self.outputs[0]
+        with open(target.abspath(), 'w') as fid:
+            for node in self.inputs:
+                with open(node.abspath()) as subfid:
+                    fid.write(subfid.read())
+                    fid.write(os.linesep)
+                    fid.flush()
+        target.sig = Utils.h_file(target.abspath())
