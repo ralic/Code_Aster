@@ -78,7 +78,7 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
     integer :: nt
     real(kind=8), pointer :: p_carc_valv(:) => null()
     character(len=16) :: algo_inte, rela_comp, nom_mod_mfront
-    character(len=256) :: libr_name, subr_name
+    character(len=255) :: libr_name, subr_name
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, post_iter
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max

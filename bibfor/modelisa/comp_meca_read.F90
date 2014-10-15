@@ -66,7 +66,7 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
     character(len=16) :: type_matg, post_iter, nom_mod_mfront
     character(len=16) :: kit_comp(9)
-    character(len=256) :: libr_name, subr_name
+    character(len=255) :: libr_name, subr_name
     integer :: unit_comp, nb_vari_exte
     aster_logical :: l_cristal, l_zmat, l_umat, l_mfront, l_mfront_offi
     aster_logical :: l_kit
