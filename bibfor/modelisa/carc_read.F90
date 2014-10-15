@@ -292,6 +292,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
         info_carc_valr(carsiz*(iocc-1) + 15) = dble(cpointer_namevarext)
         info_carc_valr(carsiz*(iocc-1) + 16) = dble(cpointer_fct_ldc)
         info_carc_valr(carsiz*(iocc-1) + 18) = parm_alpha
+        info_carc_valr(carsiz*(iocc-1) + 19) = dble(cpointer_matprop)
+        info_carc_valr(carsiz*(iocc-1) + 20) = dble(cpointer_nbprop)
         info_carc_valk(2*(iocc-1) + 1) = rela_comp
         info_carc_valk(2*(iocc-1) + 2) = algo_inte
     end do

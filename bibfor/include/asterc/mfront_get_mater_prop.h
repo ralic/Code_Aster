@@ -16,19 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
-                                      niv, idbg, pmatprop, pnbprop, nprops, &
-                                      props)
-        character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: imate
-        integer, intent(in) :: ifm
-        integer, intent(in) :: niv
-        integer, intent(in) :: idbg
+    subroutine mfront_get_mater_prop(pmatprop, nbval, txval)
         integer, intent(in) :: pmatprop
-        integer, intent(in) :: pnbprop
-        integer, intent(in) :: nprops
-        real(kind=8), intent(out) :: props(*)
-    end subroutine mfront_get_mater_value
+        integer, intent(in) :: nbval
+        character(len=16), intent(out) :: txval(*)
+    end subroutine mfront_get_mater_prop
 end interface

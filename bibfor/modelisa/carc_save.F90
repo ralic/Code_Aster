@@ -192,6 +192,9 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
 !       cf. CALC_POINT_MAT / PMDORC
         p_carc_valv(17) = 0
         p_carc_valv(18) = parm_alpha
+!       exte_comp UMAT / MFRONT
+        p_carc_valv(19) = info_carc_valr(carsiz*(iocc-1) + 19)
+        p_carc_valv(20) = info_carc_valr(carsiz*(iocc-1) + 20)
 
 !
 ! ----- Affect in <CARTE>

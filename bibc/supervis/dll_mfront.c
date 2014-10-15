@@ -84,7 +84,7 @@ int load_mfront_lib(const char* libname, const char* symbol)
     if ((error = dlerror()) != NULL)  {
         return 1;
     }
-    DEBUG_DLL_VV("found%s%s", "", "");
+    DEBUG_DLL_VV("found: %s %p", "address", (char *)f_mfront);
 
     /* register these MFRONT lib */
     if ( libsymb_register(DLL_DICT, libname, symbol,
@@ -144,12 +144,12 @@ void mfront_name(
     name2 = (char *)malloc(strlen(symbol) + strlen(basename) + 1);
     strcpy(name2, symbol);
     strcat(name2, basename);
-    DEBUG_DLL_VV("#DEBUG: name1: '%s' name2: '%s'\n", name1, name2);
+    DEBUG_DLL_VV("name1: '%s' name2: '%s'", name1, name2);
 
     *name = test_mfront_symbol(libname, name1, name2);
     if ( *name == NULL ) {
-        DEBUG_DLL_VV(" libname = >%s<%s\n", libname, " ")
-        DEBUG_DLL_VV(" symbol1 = >%s<, symbol2 = >%s<\n", name1, name2)
+        DEBUG_DLL_VV(" libname = >%s<%s", libname, " ")
+        DEBUG_DLL_VV(" symbol1 = >%s<, symbol2 = >%s<", name1, name2)
     }
     if ( strcmp(*name, name1) == 0 ) {
         free(name2);
@@ -275,7 +275,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
     char* nommod, STRING_SIZE lnommod,
     INTEGER* pliesv, INTEGER* pnbesv, INTEGER* pfcmfr,
-    INTEGER* pgetmprop, INTEGER* pgetnbprop)
+    INTEGER* pmatprop, INTEGER* pnbprop)
 {
 #ifdef _POSIX
     /* MFRONT Wrapper
@@ -311,8 +311,20 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
 //     int* test_int = libsymb_get_symbol(DLL_DICT, libname, symbname);
     *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
-    *pgetmprop = (INTEGER)0;
-    *pgetnbprop = (INTEGER)0;
+    mfront_name(libname, symbol, model, "_MaterialProperties", &symbname);
+    *pmatprop = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
+    if ( symbname == NULL )
+    {
+        error_symbol_not_found(libname, symbname);
+    }
+
+    mfront_name(libname, symbol, model, "_nMaterialProperties", &symbname);
+    *pnbprop = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
+    if ( symbname == NULL ) {
+        error_symbol_not_found(libname, symbname);
+    }
+    unsigned short* nb = (unsigned short*)*pnbprop;
+    DEBUG_DLL_VV("material prop size: %d (addr: %ld)", (int)*nb, *pnbprop)
 
     FreeStr(libname);
     FreeStr(model);
@@ -414,6 +426,51 @@ void DEFMFRONTBEHAVIOURWRAP(MFRONT_BEHAVIOUR, mfront_behaviour, INTEGER* pfcmfr,
         dtime, temp, dtemp, predef, dpred,
         ntens, nstatv, props, nprops, drot,
         pnewdt, nummod);
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
+/**
+ * \brief Return the number of material properties
+ * @param pnbprop   Pointer on the data in the library
+ * @param nbval     Number of values of material properties
+ */
+void DEFPP(MFRONT_GET_MATER_PROP_SIZE,
+           mfront_get_mater_prop_size,
+            _IN INTEGER* pnbprop,
+           _OUT INTEGER* nbval)
+{
+    unsigned short* nbext = (unsigned short*)*pnbprop;
+    *nbval = (INTEGER)*nbext;
+}
+
+/**
+ * \brief Fill the array of the material properties names
+ * @param pmatprop  Pointer on the data in the library
+ * @param nbval     Number of values of material properties
+ * @param txval     Array of strings
+ */
+void DEFPPS(MFRONT_GET_MATER_PROP,
+            mfront_get_mater_prop,
+             _IN INTEGER* pmatprop,
+             _IN INTEGER* nbval,
+            _OUT char* txval, STRING_SIZE ltx)
+{
+#ifdef _POSIX
+    /* MFRONT Wrapper
+    */
+    char** names = (char**)*pmatprop;
+    DEBUG_DLL_VV("get_mater_prop: nbprop=%d   matprop=%s", (int)*nbval, names[0])
+    // AS_ASSERT(*nbext <= ltx);  ??? * nbprop
+    AS_ASSERT(ltx == 16);
+
+    unsigned short i;
+    for ( i = 0; i < *nbval; ++i )
+    {
+        SetTabFStr( txval, i, names[i], 16 );
+    }
 #else
     printf("Not available under Windows.\n");
     abort();

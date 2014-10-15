@@ -80,7 +80,8 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !
     integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, czm, nbvarc
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
-    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, pfcmfr
+    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin
+    integer ::      pfcmfr, pmatprop, pnbprop
     integer ::      nummod
     parameter     ( npropmax = 197)
     parameter     ( npred = 8)
@@ -126,9 +127,14 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !     IMPRESSIONS EVENTUELLES EN DEBUG
     call infniv(ifm, niv)
 
+!   Adresse des fonctions/data MFront
+    pmatprop = nint(crit(19))
+    pnbprop = nint(crit(20))
+!
 !   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)
     call mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
-                                niv, idbg, nprops, props)
+                                niv, idbg, pmatprop, pnbprop, nprops, &
+                                props)
 
 !   LECTURE DES VARIABLES DE COMMANDE ET DEFORMATIONS ASSOCIEES
     if ( typmod(1)(1:4).eq.'AXIS' ) then
