@@ -46,7 +46,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
          #  affectation des variables de commande :
          #  --------------------------------------------------
          # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
-         LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
+         LIST_NOM_VARC =SIMP(statut='c',typ='TXM', max='**', defaut=("TEMP","GEOM","CORR","IRRA","HYDR","SECH","EPSA",
                                                            "M_ACIER","M_ZIRC","NEUT1","NEUT2","PTOT","DIVU",)),
 
          AFFE_VARC    =FACT(statut='f',max='**',
