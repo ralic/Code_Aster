@@ -45,6 +45,7 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
 #include "asterc/mfront_get_mater_prop_size.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
+#include "asterfort/matumat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 !
@@ -53,34 +54,37 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
     character(len=16) :: nomres(npropmax)
     real(kind=8) :: propl(npropmax)
 !
-!   Get the number of material proporties
-    call mfront_get_mater_prop_size(pnbprop, nbcoef)
+    if (rela_comp .eq. 'MFRONT') then
+!       Usermaterial: parameters are defined using UMAT in DEFI_MATERIAU
+        call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
+    else
+!       Get the number of material proporties
+        call mfront_get_mater_prop_size(pnbprop, nbcoef)
 
-!   Get the names of the material properties
-    ASSERT(nbcoef <= npropmax)
-    call mfront_get_mater_prop(pmatprop, nbcoef, nomres)
+!       Get the names of the material properties
+        ASSERT(nbcoef <= npropmax)
+        call mfront_get_mater_prop(pmatprop, nbcoef, nomres)
 
-!   Lecture des proprietes materiau (mot-cle umat de defi_materiau)
-    call r8inir(nbcoef, r8nnem(), props, 1)
-!
-!     lecture des autres parametres
-    call rcvalb(fami, kpg, ksp, '+', imate, &
-                ' ', rela_comp, 0, ' ', [0.d0], &
-    &           nbcoef, nomres, propl, codrel, 1)
-!   Comptage du nombre de proprietes
-!   codrel(I)=0 si le parametre existe, 1 sinon
-    if ((niv.ge.2) .and. (idbg.eq.1)) then
-        write(ifm,*)' '
-        write(ifm,*)'COEFFICIENTS MATERIAU'
-    endif
-    nprops = 0
-    do i = 1, nbcoef
-        if (codrel(i) .eq. 0) then
-            nprops = nprops+1
-            props(nprops) = propl(i)
-            if ((niv.ge.2) .and. (idbg.eq.1)) then
-                write(ifm,*) nomres(i), props(nprops)
-            endif
+!       Get the properties values (enter under 'rela_comp' in DEFI_MATERIAU)
+        call r8inir(nbcoef, r8nnem(), props, 1)
+        call rcvalb(fami, kpg, ksp, '+', imate, &
+                    ' ', rela_comp, 0, ' ', [0.d0], &
+        &           nbcoef, nomres, propl, codrel, 1)
+!       Count the number of properties (but there are all compulsory)
+!       codrel(I)=0 if the parameter exists, else 1
+        if ((niv.ge.2) .and. (idbg.eq.1)) then
+            write(ifm,*)' '
+            write(ifm,*)'COEFFICIENTS MATERIAU'
         endif
-    end do
+        nprops = 0
+        do i = 1, nbcoef
+            if (codrel(i) .eq. 0) then
+                nprops = nprops+1
+                props(nprops) = propl(i)
+                if ((niv.ge.2) .and. (idbg.eq.1)) then
+                    write(ifm,*) nomres(i), props(nprops)
+                endif
+            endif
+        end do
+    endif
 end
