@@ -70,7 +70,8 @@ from cata_vari import DICT_NOM_VARI
 
 __properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
                   'nom_varc', 'nom_vari', 'proprietes', 'algo_inte',
-                  'type_matr_tang')
+                  'type_matr_tang',
+                  'symbol_mfront')
 
 class CataComportementError(Exception):
    """Error"""
@@ -260,6 +261,29 @@ class LoiComportement(Base):
               msg = ufmt(u"Comportement '%s', nom de variables internes non "
                          u"autorisés : %s", self.nom, strerr)
               raise CataComportementError(msg)
+
+class LoiComportementMFront(LoiComportement):
+   """Définition d'une loi de comportement MFront.
+
+   symbol_mfront : nom de la fonction dans la bibliothèque MFront
+   modelisation, deformation, algo_inte : listes des valeurs acceptees
+   """
+
+   def __init__(self, nom, symbol_mfront, doc='', **kwargs):
+      """Initialisations"""
+      # fixes les valeurs sans objet pour MFront (elles ne peuvent donc
+      # pas être fournies dans kwargs)
+      super(LoiComportementMFront, self).__init__(
+         nom,
+         symbol_mfront=symbol_mfront,
+         num_lc=58,
+         mc_mater=nom,
+         nb_vari=0,
+         nom_vari=None,
+         nom_varc=None,
+         type_matr_tang=None,
+         doc=doc,
+         **kwargs)
 
 class KIT(Base):
    """Définit un assemblage de loi de comportement par KIT par un 'nom' et une
