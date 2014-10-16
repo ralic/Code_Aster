@@ -123,7 +123,7 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
     integer :: nbmaok, noe, ntyma, jconx1, jconx2, nblinobet2, jlinob2
     integer :: nblinoold, nblinobet1, jlinob1, inob, imabok, jno, kno
     integer :: nbmaok1, jliproj, jlinoma, inoeu, icote, inoeu2, n1, n2, iproj2
-    real(kind=8) :: d, dmax, dx, dy, dz, epsg, x3dp(3), ep_ma, exc_ma
+    real(kind=8) :: d, dmax, dx, dy, dz, epsg, x3dp(3), ep_ma, exc_ma, xbar2(2)
     character(len=8) :: nomma
     character(len=19) :: carte
     character(len=24) :: conxma, coorno, tymama, linobet2, linobet1, nomama
@@ -406,18 +406,41 @@ subroutine projkm(nmabet, nbmabe, nbnobe, mailla, caelem,&
             xyzma(1,inoma) = zr(jcoor+3*(noe-1) )
             xyzma(2,inoma) = zr(jcoor+3*(noe-1)+1)
             xyzma(3,inoma) = zr(jcoor+3*(noe-1)+2)
-            if (n1.eq.noe .or. n2 .eq. noe) then
-                if (jno .eq.0) then
-                    jno = inoma
-                else
-                    kno = inoma
-                endif
+            if (n1.eq.noe) then
+                jno = inoma
             endif
         enddo
+        kno = jno + 1
+        if (kno .gt.nbcnx) kno = 1
+        if (n2 .ne. cxma(kno))then
+            kno = jno
+            jno = kno -1
+            if (jno .eq. 0) jno = nbcnx
+            ASSERT(cxma(jno).eq. n2)
+        endif
         iproj = 10 + jno
+        if (nbcnx .eq. 3) then 
+            itria = 1
+        else
+            if (jno .eq. 1 .or. jno .eq. 2) itria = 1
+            if (jno .eq. 3 .or. jno .eq. 4) itria = 2
+        endif
 !
         call projsg(x3dca, xyzma(1, jno), xyzma(1, kno), normal, x3dp,&
-                        xbar, iproj2, excent)
+                        xbar2, iproj2, excent)
+        if (jno.eq.1 .or. (jno.eq.3 .and. nbcnx .eq. 4)) then
+            xbar(1) = xbar2(1)
+            xbar(2) = xbar2(2)
+            xbar(3) = 0.d0
+        elseif (jno.eq.2 .or. (jno.eq.4 .and. nbcnx .eq. 4)) then
+            xbar(1) = 0.d0
+            xbar(2) = xbar2(1)
+            xbar(3) = xbar2(2)
+        elseif (jno.eq.3) then
+            xbar(1) = xbar2(2)
+            xbar(2) = 0.d0
+            xbar(3) = xbar2(1)
+        endif
         ASSERT(iproj2 .ne. -1)
     endif
 !
