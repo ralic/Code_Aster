@@ -1,6 +1,6 @@
 subroutine xfem_mult_r(action, matass, maxi_ddl, iglob_ddl, nbnoxfem,&
                        neq_mloc, nblig_pc, cumul_ilig, cumul_kterm, deca,&
-                       tab_mloc, smhc_pc, smhc_adr, vect_adr, vect_col)
+                       tab_mloc, smhc_pc, smhc_adr, vect_adr, vect_col, xvalm)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,19 @@ subroutine xfem_mult_r(action, matass, maxi_ddl, iglob_ddl, nbnoxfem,&
 ! ======================================================================
 !
 !-----------------------------------------------------------------------
-! BUT : ACTION DU PRE-CONDITIONNEUR A DROITE
+! BUT : MULTIPLICATION A DROITE D UNE MATRICE ASTER < MATR_ASSE > 
+!       PAR LE PRECONDITIONNEUR < TAB_MLOC >
+!       ET STOCKAGE DANS UN ZR < VECT_COL >
+!      ***********************************************************
+!   REMARQUES :
+!     1- POUR MAITRISER L ESPACE MEMOIRE A ALLOUER (WORKING SPACE) 
+!        LA MULTIPLICATION PROCEDE EN 2 PHASES:
+!          * UNE ETAPE DE "COMPTAGE" QUI SIMULE TOUTES LES BOUCLES DE CALCUL
+!            ET COMPTE LE NOMBRE D EMPLACEMENTS MEMOIRE NECESSAIRES
+!          * UNE  ETAPE DE "REMPLISSAGE" QUI REMPLIT EFFECTIVEMENT LES EMPLACEMENTS
+!            MEMOIRE APRES ALLOCATION DYNAMIQUE
+!     2- LA LECTURE/ECRITURE DANS VECT_COL DEPEND D UN STOCKAGE MORSE DONT LE 
+!          DECALLAGE EST CALCULE A PARTIR DE NBLIG_PC
 !-----------------------------------------------------------------------
 !
 ! ARGUMENTS :
@@ -46,6 +58,7 @@ subroutine xfem_mult_r(action, matass, maxi_ddl, iglob_ddl, nbnoxfem,&
     integer, optional :: smhc_pc(cumul_ilig)
     integer, optional :: smhc_adr(nbnoxfem), vect_adr(nbnoxfem)
     real(kind=8), optional :: vect_col(cumul_kterm), tab_mloc(deca*nbnoxfem)
+    integer, optional :: xvalm
 !-----------------------------------------------------------------------
     character(len=14) :: nonu
     integer :: ddlmax
@@ -141,7 +154,11 @@ subroutine xfem_mult_r(action, matass, maxi_ddl, iglob_ddl, nbnoxfem,&
     ASSERT(cumul_ilig .gt. 0)
     ASSERT(cumul_kterm .gt. 0)
 !
-    call jeveuo(jexnum(matass//'.VALM', 1), 'L', jvale)
+    if ( present(xvalm) )  then 
+      call jeveuo(jexnum(matass//'.VALM', xvalm), 'L', jvale)
+    else
+      call jeveuo(jexnum(matass//'.VALM', 1), 'L', jvale)
+    endif
 !
     call veiini(ddlmax,0,count_col)
     call veiini(ddlmax,0,ladr)

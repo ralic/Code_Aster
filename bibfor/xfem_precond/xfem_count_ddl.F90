@@ -64,7 +64,7 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
        nuno=deeq(2*(ieq-1)+1)
        nucmp=deeq(2*(ieq-1)+2)
        nocmp=k8cmp(nucmp)
-!       write(32,*) ieq, nuno, nocmp
+!       write(31,*) ieq, nuno, nocmp
        if(nuno .lt. 1) goto 20
        if(.not. is_xfem(nuno)) goto 20
        if(.not. xfem_cmps(nocmp,'OUI')) goto 20

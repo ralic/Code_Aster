@@ -2,7 +2,7 @@ subroutine xfem_mult_l(action, matass, nbnomax, ino_xfem, nbnoxfem,&
                        neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
                        nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr,&
                        size_vect, deca, is_connec, nz_raw, adr_raw,&
-                       cumul_kterm, vect_raw, vect_col, tab_mloc)
+                       cumul_kterm, vect_raw, vect_col, tab_mloc, xvalm)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,11 +22,26 @@ subroutine xfem_mult_l(action, matass, nbnomax, ino_xfem, nbnoxfem,&
 ! ======================================================================
 !
 !-----------------------------------------------------------------------
-! BUT : CALCUL DU PRE-CONDITIONNEUR XFEM
+! BUT : MULTIPLICATION A GAUCHE D UNE MATRICE ASTER < MATR_ASSE > 
+!       PAR LE PRECONDITIONNEUR < TAB_MLOC >
+!       ET STOCKAGE DANS UN ZR < VECT_RAW >
+!      ***********************************************************
+!   REMARQUES :
+!     1- POUR MAITRISER L ESPACE MEMOIRE A ALLOUER (WORKING SPACE) 
+!        LA MULTIPLICATION PROCEDE EN 2 PHASES:
+!          * UNE ETAPE DE "COMPTAGE" QUI SIMULE TOUTES LES BOUCLES DE CALCUL
+!            ET COMPTE LE NOMBRE D EMPLACEMENTS MEMOIRE NECESSAIRES
+!          * UNE  ETAPE DE "REMPLISSAGE" QUI REMPLIT EFFECTIVEMENT LES EMPLACAMENTS
+!            MEMOIRE APRES ALLOCATION DYNAMIQUE
+!     2- LA LECTURE/ECRITURE DANS VECT_RAW DEPEND:
+!          * D UN COMPTEUR DE DECALLAGE < COUNT_RAW >
+!          * D UN VECTEUR D ADRESSE < ADR_RAW >
+!       C EST UN STOCKAGE MORSE ANALOGUE A LA MATRICE ASTER ...
 !-----------------------------------------------------------------------
 !
 ! ARGUMENTS :
 !------------
+!
 !
 !-----------------------------------------------------------------------
     implicit none
@@ -52,6 +67,7 @@ subroutine xfem_mult_l(action, matass, nbnomax, ino_xfem, nbnoxfem,&
     real(kind=8), optional :: vect_col(size_vect), tab_mloc(deca*nbnoxfem), vect_raw(cumul_kterm)
     integer :: neq_mloc(nbnoxfem), iglob_ddl(maxi_ddl*nbnoxfem)
     aster_logical :: is_connec(neq)
+    integer, optional :: xvalm
 !-----------------------------------------------------------------------
     character(len=14) :: nonu
     integer, pointer :: smdi(:) => null()
@@ -146,7 +162,11 @@ subroutine xfem_mult_l(action, matass, nbnomax, ino_xfem, nbnoxfem,&
 !
     ASSERT(cumul_kterm .gt. 0)
 !
-    call jeveuo(jexnum(matass//'.VALM', 1), 'L', jvale)
+    if ( present(xvalm) )  then 
+      call jeveuo(jexnum(matass//'.VALM', xvalm), 'L', jvale)
+    else
+      call jeveuo(jexnum(matass//'.VALM', 1), 'L', jvale)
+    endif
 !
     AS_ALLOCATE(vi=count_raw,size=nbnoxfem)
     adr_vect=0

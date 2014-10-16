@@ -30,13 +30,13 @@ cata_msg = {
   La résolution se poursuit sans pré-conditionneur XFEM.
 """),
 
-2 : _(u"""
-  Erreur de programmation :
-  On essaie d'activer le préconditionneur <<NODAL>> 
-  alors que l'ordonnancement des numéros d'équation stockées dans le
-  NUME_DDL associé à la  matrice en cours de factorisation 
-  ne correspond pas l'application identité.   
-"""),
+#2 : _(u"""
+#  Erreur de programmation :
+#  On essaie d'activer le préconditionneur <<NODAL>> 
+#  alors que l'ordonnancement des numéros d'équation stockées dans le
+#  NUME_DDL associé à la  matrice en cours de factorisation 
+#  ne correspond pas l'application identité.   
+#"""),
 
 3 : _(u"""
   Erreur calcul matriciel:

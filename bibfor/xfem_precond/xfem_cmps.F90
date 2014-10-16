@@ -57,7 +57,8 @@ function xfem_cmps(nocmp, phys)
 ! ON TESTE LES DDLS DE PHYSIQUES 
     elseif( present(phys)) then 
        if (phys .eq. 'OUI' .and. &
-        (nocmp .eq. 'TEMP'.or. nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ'  &
+        (nocmp .eq. 'TEMP'.or. nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ' .or. &
+         nocmp .eq. 'PRE1' &
         )) goto 99
 !        .or. nocmp .eq. 'LAGS_C')) goto 99
     endif

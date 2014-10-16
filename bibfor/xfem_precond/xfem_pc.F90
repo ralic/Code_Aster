@@ -60,6 +60,7 @@ subroutine xfem_pc(matass, base, filtrage)
 #include "asterfort/xfem_mult_l.h"
 #include "asterfort/xfem_mult_r.h"
 #include "asterfort/xfem_over_write.h"
+#include "asterfort/xfem_over_write_2.h"
 !-----------------------------------------------------------------------
     character(len=*) :: matass
     character(len=1) :: base
@@ -72,28 +73,29 @@ subroutine xfem_pc(matass, base, filtrage)
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refn(:) => null()
     real(kind=8), pointer :: tab_mloc(:) => null()
-    real(kind=8), pointer :: vect_col(:) => null()
-    real(kind=8), pointer :: vect_raw(:) => null()
+    real(kind=8), pointer :: vect_col(:) => null(), vect_col_2(:) => null()
+    real(kind=8), pointer :: vect_raw(:) => null(), vect_raw_2(:) => null()
     integer, pointer :: ino_xfem(:) => null()
     integer, pointer :: neq_mloc(:) => null()
     integer, pointer :: iglob_ddl(:) => null()
     integer, pointer :: nnz_mloc(:) => null()
     integer, pointer :: ieq_loc(:) => null()
-    integer, pointer :: nblig_pc(:) => null()
-    integer, pointer :: nz_raw(:) => null()
-    integer, pointer :: smhc_pc(:) => null()
-    integer, pointer :: smhc_adr(:) => null()
-    integer, pointer :: vect_adr(:) => null()
-    integer, pointer :: adr_raw(:) => null()
+    integer, pointer :: nblig_pc(:) => null(), nblig_pc_2(:) => null()
+    integer, pointer :: nz_raw(:) => null(), nz_raw_2(:) => null()
+    integer, pointer :: smhc_pc(:) => null(), smhc_pc_2(:) => null()
+    integer, pointer :: smhc_adr(:) => null(), smhc_adr_2(:) => null()
+    integer, pointer :: vect_adr(:) => null(), vect_adr_2(:) => null()
+    integer, pointer :: adr_raw(:) => null(), adr_raw_2(:) => null()
     integer, pointer :: count_raw(:) => null()
     aster_logical, pointer :: is_xfem(:) => null()
-    aster_logical, pointer :: is_connec(:) => null()
+    aster_logical, pointer :: is_connec(:) => null(), is_connec_2(:) => null()
     aster_logical, pointer :: is_svd(:) => null()
     integer :: nuno, neq, ieq, jcmp, jnueq, jdeeq
-    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm
+    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm, incr, iret
     real(kind=8) :: kmin, kmax, coef, scal, seuil
     aster_logical :: lmd
-    integer :: incr, iret, size_smhc, size_vect_col, size_vect_raw
+    integer :: size_smhc, size_vect_col, size_vect_raw
+    integer :: size_smhc_2, size_vect_col_2, size_vect_raw_2
      parameter    (pc_1='&&XFEM_PC_1')
 !-----------------------------------------------------------------------
 !
@@ -117,7 +119,7 @@ subroutine xfem_pc(matass, base, filtrage)
     nonu=refa(2)(1:14)
 !
     call jelira(matas1//'.VALM', 'NMAXOC', nvale)
-    if (nvale.ne.1) then
+    if (nvale.ne.1 .and. nvale.ne.2) then
         call utmess('A', 'XFEMPRECOND_1')
         goto 999
     endif
@@ -130,14 +132,6 @@ subroutine xfem_pc(matass, base, filtrage)
 ! VERIFICATION DU NUEQ
     call jeveuo(nonu//'.NUME.NUEQ', 'L', jnueq)
     incr=0
-    do ieq=1,neq
-       if (zi(jnueq-1+ieq) .ne. ieq) incr=incr+1
-    enddo
-    if (incr .gt. 0) then 
-         call utmess('F', 'XFEMPRECOND_2')
-         goto 999
-    endif
-!  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  - MARQUAGE DES NOEUDS XFEM
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -265,6 +259,37 @@ subroutine xfem_pc(matass, base, filtrage)
                      size_vect_col, deca, is_connec, nz_raw, adr_raw,&
                      size_vect_raw, vect_raw, vect_col, tab_mloc)
 !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!   CAS DES MATRICES NON SYMETRIQUES
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if ( nvale.eq.2) then
+      AS_ALLOCATE(vi=nblig_pc_2,size=nbnoxfem)
+      call xfem_mult_r('COMPTAGE', matas1, maxi_ddl, iglob_ddl, nbnoxfem,&
+                     neq_mloc, nblig_pc_2, size_smhc_2, size_vect_col_2, deca)
+      AS_ALLOCATE(vr=vect_col_2,size=size_vect_col_2)
+      AS_ALLOCATE(vi=smhc_pc_2,size=size_smhc_2)
+      AS_ALLOCATE(vi=smhc_adr_2,size=nbnoxfem)
+      AS_ALLOCATE(vi=vect_adr_2,size=nbnoxfem)
+      call xfem_mult_r('REMPLISSAGE', matas1, maxi_ddl, iglob_ddl, nbnoxfem,&
+                     neq_mloc, nblig_pc_2, size_smhc_2, size_vect_col_2, deca,&
+                     tab_mloc, smhc_pc_2, smhc_adr_2, vect_adr_2, vect_col_2, 2)
+!
+      AS_ALLOCATE(vi=nz_raw_2,size=nbnoxfem)
+      AS_ALLOCATE(vl=is_connec_2,size=neq)
+      AS_ALLOCATE(vi=adr_raw_2,size=nbnoxfem)
+      call xfem_mult_l('COMPTAGE', matas1, nbnomax, ino_xfem, nbnoxfem,&
+                     neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
+                     nblig_pc_2, size_smhc_2, smhc_pc_2, smhc_adr_2, vect_adr_2,&
+                     size_vect_col_2, deca, is_connec_2, nz_raw_2, adr_raw_2,&
+                     size_vect_raw_2)
+      AS_ALLOCATE(vr=vect_raw_2,size=size_vect_raw_2)
+      call xfem_mult_l('REMPLISSAGE', matas1, nbnomax, ino_xfem, nbnoxfem,&
+                     neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
+                     nblig_pc_2, size_smhc_2, smhc_pc_2, smhc_adr_2, vect_adr_2,&
+                     size_vect_col_2, deca, is_connec_2, nz_raw_2, adr_raw_2,&
+                     size_vect_raw_2, vect_raw_2, vect_col_2, tab_mloc, 2)
+    endif
+!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   COMPRESSION ET REMPLACEMENT DE LA MATRICE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -272,11 +297,25 @@ subroutine xfem_pc(matass, base, filtrage)
 !  CALCUL D UN SEUIL DE FILTRAGE DES TERMES DES MATRICES CALCULEES: SEUIL=10E-16*SCAL^2
     seuil=r8prem()*coef
 !
-    call xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
-                         ieq_loc, nbnoxfem, neq_mloc, maxi_ddl, iglob_ddl,&
-                         nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr, &
-                         size_vect_col, vect_col, adr_raw, size_vect_raw, &
-                         vect_raw, is_connec, coef, filtrage, seuil)
+    if (nvale .eq. 1) then 
+      call xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
+                           ieq_loc, nbnoxfem, neq_mloc, maxi_ddl, iglob_ddl,&
+                           nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr, &
+                           size_vect_col, vect_col, adr_raw, size_vect_raw, &
+                           vect_raw, is_connec, coef, filtrage, seuil)
+    else
+!      call xfem_matimp(matas1, 32, 'MATLAB')
+      call xfem_over_write_2(matas1, bas1, nbnomax, ino_xfem, neq, &
+                             ieq_loc, nbnoxfem, neq_mloc, maxi_ddl, iglob_ddl,&
+                             nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr, &
+                             size_vect_col, vect_col, adr_raw, size_vect_raw, &
+                             vect_raw, is_connec, coef, filtrage, seuil, nvale,&
+                             size_vect_col_2, vect_col_2,size_vect_raw_2, vect_raw_2)
+!      call xfem_matimp(pc_1, 33, 'MATLAB')
+!      call xfem_matimp(matas1, 34, 'MATLAB')
+!      ASSERT(.false.)
+    endif
+ 
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! STOCKAGE DU NOUVEL ETAT DE LA MATRICE ASTER
@@ -291,6 +330,9 @@ subroutine xfem_pc(matass, base, filtrage)
     refa(18)(1:19)=pc_1
     call mtdscr(pc_1)
 !
+! EN CAS DE SORTIE BRUTALE
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+999 continue
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! NETTOYAGES ...
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -313,8 +355,15 @@ subroutine xfem_pc(matass, base, filtrage)
     AS_DEALLOCATE(vi=nnz_mloc)
     AS_DEALLOCATE(vi=ieq_loc)
     AS_DEALLOCATE(vr=tab_mloc)
-!
-999 continue
+    AS_DEALLOCATE(vi=nblig_pc_2)
+    AS_DEALLOCATE(vr=vect_col_2)
+    AS_DEALLOCATE(vi=nz_raw_2)
+    AS_DEALLOCATE(vl=is_connec_2)
+    AS_DEALLOCATE(vi=adr_raw_2)
+    AS_DEALLOCATE(vi=smhc_pc_2)
+    AS_DEALLOCATE(vi=smhc_adr_2)
+    AS_DEALLOCATE(vr=vect_raw_2)
+    AS_DEALLOCATE(vi=vect_adr_2) 
 !
     call jedema()
 !

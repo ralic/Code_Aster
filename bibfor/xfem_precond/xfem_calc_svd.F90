@@ -105,13 +105,17 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
     seuil_mloc=sqrt(ech*5.d-17)
     do i=1,nm
        if (diag(i) .lt. seuil_mloc) then
-!         write(6,*) '<SVD> Elimination forcée: ',diag(i),seuil_mloc
+         info=-1
+         goto 99
          diag(i)=sqrt(ech)*r8gaem()
        endif
     enddo
     if ( info .eq. 0) then
        do j=1,nm
-          ASSERT(s(j) .ge. 0.d0)         
+          if(s(j) .lt. 0.d0)  then
+             info=-1
+             goto 99
+          endif
           lambda_j=s(j)/s(1)
           if (lambda_j .lt. seuil_svd) then
              coef_j=sqrt(s(1))*r8gaem()
@@ -124,6 +128,8 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
           enddo
        enddo  
     endif
+!
+99  continue
 !
     deallocate(diag)
     deallocate(ab)

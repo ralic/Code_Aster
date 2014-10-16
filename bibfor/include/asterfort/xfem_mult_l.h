@@ -21,7 +21,7 @@ interface
                            neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
                            nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr,&
                            size_vect, deca, is_connec, nz_raw, adr_raw,&
-                           cumul_kterm, vect_raw, vect_col, tab_mloc)
+                           cumul_kterm, vect_raw, vect_col, tab_mloc, xvalm)
         character(len=*) :: action
         character(len=19) :: matass
         integer :: nbnomax
@@ -46,5 +46,6 @@ interface
         integer :: neq_mloc(nbnoxfem)
         integer :: iglob_ddl(maxi_ddl*nbnoxfem)
         aster_logical :: is_connec(neq)
+        integer, optional :: xvalm
     end subroutine xfem_mult_l
 end interface

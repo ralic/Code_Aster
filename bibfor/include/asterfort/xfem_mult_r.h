@@ -17,7 +17,7 @@
 interface
     subroutine xfem_mult_r(action, matass, maxi_ddl, iglob_ddl, nbnoxfem,&
                        neq_mloc, nblig_pc, cumul_ilig, cumul_kterm,&
-                       deca, tab_mloc, smhc_pc, smhc_adr, vect_adr, vect_col)
+                       deca, tab_mloc, smhc_pc, smhc_adr, vect_adr, vect_col, xvalm)
         character(len=*) :: action
         character(len=19) :: matass
         integer :: maxi_ddl
@@ -33,5 +33,6 @@ interface
         integer, optional :: vect_adr(nbnoxfem)
         real(kind=8), optional :: tab_mloc(deca*nbnoxfem)
         real(kind=8), optional :: vect_col(cumul_kterm)
+        integer, optional :: xvalm
     end subroutine xfem_mult_r
 end interface
