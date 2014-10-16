@@ -155,11 +155,12 @@ subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
             if (l_mfront_offi) then
                 call mfront_get_libname(libr_name)
                 call mfront_get_function(rela_comp, subr_name)
+                call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
             else
                 call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
                 call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+                call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
             endif
-            call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
             call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
             call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
             call mfront_set_double_parameter(libr_name, subr_name, nom_mod_mfront,&
