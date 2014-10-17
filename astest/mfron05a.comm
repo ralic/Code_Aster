@@ -20,15 +20,6 @@
 
 import os
 
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild chaboche.mfront --interface=aster     
-# avant de lancer l'etude.
-
-os.system("mfront --obuild ImplicitHayhurst.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so hayhurst.so")
-
-
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
@@ -97,21 +88,21 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=145000.0,
 
 MATFRONT=DEFI_MATERIAU( 
                       ELAS=_F(E=145000., NU=0.3,ALPHA=1e-5,),                      
-                      UMAT=_F( C1 = 145000. , 
-                               C2 = 0.3 ,     
-                               C3 = Kcoef,    
-                               C4 = ep0val,   
-                               C5 = sig0val,  
-                               C6 = h1,
-                               C7 = h2,
-                               C8 = H1star,
-                               C9 = H2star,
-                               C10= A0,       
-                               C11= alphaD,
-                               C12= delta1,
-                               C13= delta2,
-                               C14=0.,
-                               NB_VALE=14,
+                      ImplicitHayhurst=_F( 
+                               YoungModulus = 145000. , 
+                               PoissonRatio = 0.3 ,     
+                               K     = Kcoef,    
+                               epsi0 = ep0val,   
+                               sigma0= sig0val,  
+                               h1    = h1,
+                               h2    = h2,
+                               H1star= H1star,
+                               H2star= H2star,
+                               A0    = A0,       
+                               alphaD= alphaD,
+                               delta1= delta1,
+                               delta2= delta2,
+                               sequid=0.,
                                ),
                                )
 
@@ -139,10 +130,9 @@ listarch=DEFI_LIST_REEL(DEBUT=0,
 
 soluce=SIMU_POINT_MAT(MATER=MATFRONT,INFO=1,
                      SIGM_IMPOSE=_F(SIYY=char,),                      
-                     COMPORTEMENT=_F(RELATION='MFRONT',
-                                  LIBRAIRIE='hayhurst.so',
-                                  NOM_ROUTINE='asterhayhurstimp',
+                     COMPORTEMENT=_F(RELATION='ImplicitHayhurst',
                                   DEFORMATION='GDEF_LOG',
+                                  RESI_INTE_RELA=1.E-8,
                                   ),
                      SUPPORT='ELEMENT',
                      INCREMENT=_F(LIST_INST=listtps,),

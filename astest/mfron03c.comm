@@ -1,34 +1,22 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: jean-michel.proix at edf.fr
-# TITRE MFRONT MONOCRISTAL + MATRCE D'INTERACTION SUR 10 GRAINS 
+# TITRE MFRONT MONOCRISTAL + MATRCE D'INTERACTION SUR 10 GRAINS
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-import os
-
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild MonoCristal.mfront --interface=aster     
-# avant de lancer l'etude.
-
-os.system("mfront --obuild ImplicitMonoCristal.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so monocristal.so")
-    
-
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -89,25 +77,25 @@ Nu=0.3
 E_L=210000.
 G=E_L/2./(1.+Nu)
 # test  orthotropie
-MATFRONT=DEFI_MATERIAU( 
+MATFRONT=DEFI_MATERIAU(
                       ELAS=_F(E=210000.0, NU=0.3,),
-                      UMAT=_F( C1 = E_L ,
-                               C2 = E_L ,
-                               C3 = E_L,
-                               C4 = Nu,
-                               C5 = Nu,   
-                               C6 = Nu,    
-                               C7 = G,  
-                               C8 = G,  
-                               C9 = G,  
-                               C10 = 12.,   
-                               C11 = 5.,    
-                               C12 = 0.,  
-                               C13 = 250.,  
-                               C14 = 55.,  
-                               C15= 12.,   
-                               C16= 0.,   
-                               NB_VALE=16,
+                      MonoCristal_CFC=_F(
+                           YoungModulus1 = E_L ,
+                           YoungModulus2 = E_L ,
+                           YoungModulus3 = E_L,
+                           PoissonRatio12 = Nu,
+                           PoissonRatio23 = Nu,
+                           PoissonRatio13 = Nu,
+                           ShearModulus12 = G,
+                           ShearModulus23 = G,
+                           ShearModulus13 = G,
+                           m = 12.,
+                           K = 5.,
+                           C = 0.,
+                           R0= 250.,
+                           Q = 55.,
+                           b = 12.,
+                           d1= 0.,
                                ),
                                )
 
@@ -118,7 +106,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
 CHMATF=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=MATFRONT,),);
-                            
+
 COMPORT=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
                                    ECOULEMENT='MONO_VISC1',
                                    ECRO_ISOT='MONO_ISOT1',
@@ -271,10 +259,9 @@ MFRONT=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=CHME4,
                              FONC_MULT=COEF),
                           ),
-                    COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='monocristal.so',
-                        NOM_ROUTINE='astermonocristal',
-                        RESI_INTE_MAXI=1e-11,
+                    COMPORTEMENT=_F(RELATION='MonoCristal_CFC',
+                        RESI_INTE_RELA=1e-11,
+                        ITER_INTE_MAXI=100,
                         ),
                   INCREMENT=_F(LIST_INST=LINSTOP,
                                INST_FIN=TFIN),
@@ -297,7 +284,7 @@ TEST_RESU(RESU=(_F(INST=3.0,
                    NOM_CMP='SIXX',
                    VALE_CALC=-16.1122077334,
                    VALE_REFE=-16.112,
-                   PRECISION=2.E-5, 
+                   PRECISION=2.E-5,
                    MAILLE='M1',),
                 _F(INST=3.0,
                    REFERENCE='AUTRE_ASTER',
@@ -307,7 +294,7 @@ TEST_RESU(RESU=(_F(INST=3.0,
                    NOM_CMP='EPXX',
                    VALE_CALC=-1.02500755E-03,
                    VALE_REFE=-1.025E-3,
-                   PRECISION=1.E-4, 
+                   PRECISION=1.E-4,
                    MAILLE='M1',),
                 _F(INST=3.0,
                    REFERENCE='AUTRE_ASTER',
@@ -317,7 +304,7 @@ TEST_RESU(RESU=(_F(INST=3.0,
                    NOM_CMP='EPYY',
                    VALE_CALC=-0.000937146720034,
                    VALE_REFE=-9.37146E-4,
-                   PRECISION=1.E-5, 
+                   PRECISION=1.E-5,
                    MAILLE='M1',),
                 _F(INST=3.0,
                    REFERENCE='AUTRE_ASTER',

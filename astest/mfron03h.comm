@@ -23,10 +23,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 from numpy.linalg import norm
 from numpy import *
 
-os.system("mfront --obuild --interface=aster MonoCristal_DD_CC.mfront ")
-#os.system("CXXFLAGS='-g' mfront --obuild mono_dd_cc.mfront --interface=aster --@AsterErrorReport=false --@AsterGenerateMTestFileOnFailure=true --debug ")
-os.system("mv src/libAsterBehaviour.so mono_dd_cc.so")
-
 TEMP=50
 #TEMP=300.
 
@@ -66,43 +62,43 @@ rho_ini5 = rho_ini5 *b*b
 E_L=E
 G=Mu
 
-ACIERDDI=DEFI_MATERIAU( 
+ACIERDDI=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=Nu, ALPHA=0.),
-                  UMAT=_F( NB_VALE=31,
-                           C1 = E_L ,
-                           C2 = E_L ,
-                           C3 = E_L,
-                           C4 = Nu,
-                           C5 = Nu,   
-                           C6 = Nu,    
-                           C7 = G,  
-                           C8 = G,  
-                           C9 = G,  
-                           C10 = b,   
-                           C11 = GH,    
-                           C12 = DeltaG0,  
-                           C13 = tau_0,  
-                           C14 = tau_f,  
-                           C15 = gamma0,   
-                           C16 = N,  
-                           C17 = rho_ini,
-                           C18 = D,
-                           C19 = d_lat,
-                           C20 = y_at,
-                           C21 = K_f,
-                           C22 = K_self ,
-                           C23 = k_b,
-                           C24 = epsi_1,
-                           C25 = G,
-                           C26 = a_self,
-                           C27 = a_coli, 
-                           C28 = a_ncol,
-                           C29 = a_ncol,
-                           C30 = a_ncol,
-                           C31 = a_ncol,
+                  MonoCristalDDCC=_F(
+                           YoungModulus1 = E_L ,
+                           YoungModulus2 = E_L ,
+                           YoungModulus3 = E_L,
+                           PoissonRatio12 = Nu,
+                           PoissonRatio23 = Nu,
+                           PoissonRatio13 = Nu,
+                           ShearModulus12 = G,
+                           ShearModulus23 = G,
+                           ShearModulus13 = G,
+                           b = b,
+                           H = GH,
+                           DeltaG_0 = DeltaG0,
+                           tau_0 = tau_0,
+                           tau_f = tau_f,
+                           gamma0 = gamma0,
+                           pn = N,
+                           omega_mob = rho_ini,
+                           d = D,
+                           d_lath = d_lat,
+                           y_at = y_at,
+                           K_f = K_f,
+                           K_self = K_self ,
+                           k_b = k_b,
+                           epsi_1 = epsi_1,
+                           Mu = G,
+                           h0 = a_self,
+                           h1 = a_coli,
+                           h2 = a_ncol,
+                           h3 = a_ncol,
+                           h4 = a_ncol,
+                           h5 = a_ncol,
                            ),
                            )
-                           
+
 
 # vecteurs direction de chargement
 l_orient=[[0.,0.,1.],[0.,1.,1.],[1.,1.,1.],[-1.,4.,9.],[0.,1.,2.],[-1.,2.,5.]]
@@ -193,10 +189,8 @@ angles=(phi1,phi,phi2)
 
 IMPLDD=SIMU_POINT_MAT(MATER=ACIERDDI,
                       MASSIF=_F(ANGL_EULER=angles),
-                      COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='mono_dd_cc.so',
-                        NOM_ROUTINE='asterdd_cc',
-                        RESI_INTE_MAXI=1e-10,
+                      COMPORTEMENT=_F(RELATION='MonoCristalDDCC',
+                        RESI_INTE_RELA=1e-10,
                         ),
                       INCREMENT=(_F(LIST_INST=LIS2DDI,),),
                       NEWTON=(_F(PREDICTION='EXTRAPOLE',
@@ -395,5 +389,3 @@ TEST_FONCTION(VALEUR=_F(VALE_REFE=9.086727E+06*b*b,
               )
 
 FIN()
-
-

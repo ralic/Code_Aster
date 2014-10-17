@@ -21,14 +21,6 @@ import os
 import numpy as NP
 from numpy.linalg import norm
 
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild monocristal.mfront --interface=aster     
-# avant de lancer l'etude.
-
-
-os.system("mfront --obuild MonoCristal_DD_CFC.mfront --interface=aster ")
-os.system("mv src/libAsterBehaviour.so mono_dd_cfc.so")
 
 # solution analytique python
 # os.rename("fort.30", "soluce.py")
@@ -48,13 +40,13 @@ MU       = 80000. ;
 NU       = 0.3    ;
 E        =  MU*2*(1.+NU)   ;
 
-TAU_F  = 105. ;  
-RHO_0  = 1.E6;   
-RHOREF = 1.E6;   
+TAU_F  = 105. ;
+RHO_0  = 1.E6;
+RHOREF = 1.E6;
 N      = 5.  ;
 GAMMA0 = 1.E-3;
 ALPHA  = 0.35 ;
-BETA   = 2.54E-7;     
+BETA   = 2.54E-7;
 A      = 0.13   ;
 B      = 0.005  ;
 Y      = 2.5E-7 ;
@@ -65,15 +57,15 @@ RHO_0_AS = RHO_0*BETA*BETA
 MATER = DEFI_MATERIAU(ELAS=_F(E=E,
                                     NU=NU,
                                     ALPHA=0.),
-                            MONO_DD_CFC=_F(TAU_F  = TAU_F,   
-                                           Y      = Y      , 
+                            MONO_DD_CFC=_F(TAU_F  = TAU_F,
+                                           Y      = Y      ,
                                            N      = N,
                                            GAMMA0 = GAMMA0,
                                            A      = A,
                                            B      = B,
-                                           RHO_REF= RHOREF,  
+                                           RHO_REF= RHOREF,
                                            ALPHA=ALPHA,
-                                           BETA=BETA,        
+                                           BETA=BETA,
                                            H1      = 0.124,   # AETOIL = 0.124 ;
                                            H2      = 0.625,   # ACOLIN = 0.625 ;
                                            H3      = 0.137,   # AGLISS = 0.137 ;
@@ -94,59 +86,31 @@ G=E/2./(1.+NU)
 
 # orthotropie possible
 
-MATF=DEFI_MATERIAU( 
+MATF=DEFI_MATERIAU(
                       ELAS=_F( E=E, NU=NU,),
-                      UMAT=_F( C1 = E ,
-                               C2 = E ,
-                               C3 = E,
-                               C4 = NU,
-                               C5 = NU,   
-                               C6 = NU,    
-                               C7 = G,  
-                               C8 = G,  
-                               C9 = G,  
-                               C10=  TAU_F,    
-                               C11 = Y,   
-                               C12 = N,    
-                               C13 = GAMMA0,  
-                               C14 = A,  
-                               C15 = B,  
-                               C16 = RHOREF,   
-                               C17 = ALPHA,   
-                               C18 = BETA,  
-                               C19 = G,  
-                               NB_VALE=19,
+                      MonoCristalDDCFC=_F(
+                              YoungModulus1 = E ,
+                              YoungModulus2 = E ,
+                              YoungModulus3 = E,
+                              PoissonRatio12 = NU,
+                              PoissonRatio23 = NU,
+                              PoissonRatio13 = NU,
+                              ShearModulus12 = G,
+                              ShearModulus23 = G,
+                              ShearModulus13 = G,
+                               rhoref = RHOREF,
+                               alpha = ALPHA,
+                               beta = BETA,
+                               tauf=  TAU_F,
+                               y = Y,
+                               pn = N,
+                               gamma0 = GAMMA0,
+                               a = A,
+                               b = B,
+                               Mu = G,
                                ),
                                )
 
-MATF2=DEFI_MATERIAU( 
-                      ELAS=_F( E=E, NU=NU,),
-                      UMAT=_F( C1 = E ,
-                               C2 = E ,
-                               C3 = E,
-                               C4 = NU,
-                               C5 = NU,   
-                               C6 = NU,    
-                               C7 = G,  
-                               C8 = G,  
-                               C9 = G,  
-                               C10= 0.,    
-                               C11 =0.,   
-                               C12 =0.,    
-                               C13 =0.,  
-                               C14=  TAU_F,    
-                               C15 = Y,   
-                               C16 = N,    
-                               C17 = GAMMA0,  
-                               C18 = A,  
-                               C19 = B,  
-                               C20 = RHOREF,   
-                               C21 = ALPHA,   
-                               C22 = BETA,  
-                               C23 = G,  
-                               NB_VALE=23,
-                               ),
-                               )
 
 tmax=1.
 
@@ -156,7 +120,7 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                                       NOMBRE=1000,),
                                   ),
                       );
-                      
+
 LISTDD=DEFI_LIST_INST(INFO=1,
                         DEFI_LIST=_F(LIST_INST=LINSTDD,
                                      METHODE='MANUEL',
@@ -165,9 +129,9 @@ LISTDD=DEFI_LIST_INST(INFO=1,
                                  SUBD_PAS=10,
                                  ),
                         );
-                        
 
-                        
+
+
 # densites de dislocation initiales : variables internes de 0 a 44
 avari = NP.zeros(6+3*12+12+3)
 for i in range(12):
@@ -175,7 +139,7 @@ for i in range(12):
 lvari=list(avari)
 
 # Calcul des angles d'Euler correspondant a
-# une orientation cristallographique (h,k,l) donnee       
+# une orientation cristallographique (h,k,l) donnee
 h=0.;
 k=0.;
 l=1.;
@@ -224,23 +188,23 @@ RES1=SIMU_POINT_MAT(INFO=info,
 
 #IMPR_TABLE(TABLE=RES1,UNITE=38)
 
-                   
+
 EZZAS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
                    INTERPOL='LIN');
-                   
-                   
+
+
 SZZAS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
                    INTERPOL='LIN');
-                   
+
 OME1AS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
                    PARA_Y='V7',
                    INTERPOL='LIN');
-                   
+
 
 OME2AS=RECU_FONCTION( TABLE=RES1,
                    PARA_X='INST',
@@ -257,10 +221,8 @@ lvar2=list(avar2)
 
 RES2=SIMU_POINT_MAT( INFO=info,
                      MATER=MATF,
-                     COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='mono_dd_cfc.so',
-                        NOM_ROUTINE='asterdd_cfc',
-                        RESI_INTE_MAXI=1e-10,
+                     COMPORTEMENT=_F(RELATION='MonoCristalDDCFC',
+                        RESI_INTE_RELA=1e-10,
                         ),
                       MASSIF=_F(ANGL_EULER=(phi1,phi,phi2)),
                       INCREMENT=_F(LIST_INST=LISTDD, INST_FIN=tmax),
@@ -272,17 +234,17 @@ RES2=SIMU_POINT_MAT( INFO=info,
 
 IMPR_TABLE(TABLE=RES2)
 
-                   
+
 EZZMF=RECU_FONCTION( TABLE=RES2,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
                    INTERPOL='LIN');
-                   
+
 SZZMF=RECU_FONCTION( TABLE=RES2,
                    PARA_X='INST',
                    PARA_Y='SIZZ',
                    INTERPOL='LIN');
-                   
+
 OME1MF=RECU_FONCTION( TABLE=RES2,
                    PARA_X='INST',
                    PARA_Y='V7',
@@ -297,12 +259,12 @@ DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = EZZAS, COEF =  1.),
                           _F( FONCTION = EZZMF, COEF = -1.),
                           ) );
-                   
+
 DIF2=CALC_FONCTION(COMB=(
                           _F( FONCTION = OME1MF, COEF =  1.),
                           _F( FONCTION = OME1AS, COEF = -1.),
-                          ) );                   
-                   
+                          ) );
+
 
 TINT1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
 
@@ -312,9 +274,9 @@ TEPS1=CREA_TABLE(FONCTION= _F(FONCTION = EZZAS,PARA = ('INST','EPZZ')),);
 
 TOME1=CREA_TABLE(FONCTION= _F(FONCTION = OME1AS,PARA = ('INST','V7')),);
 
-                   
+
 pilote=''
-                   
+
 IMPR_FONCTION(FORMAT='XMGRACE',UNITE=40,PILOTE=pilote,
                   COURBE=(
                    _F(FONC_X=EZZAS, FONC_Y=SZZAS),
@@ -328,7 +290,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',UNITE=41,PILOTE=pilote,
                    _F(FONCTION=OME2AS),
                    _F(FONCTION=OME2MF),
                   ),);
-                  
+
 
 def ecart_relatif(diff, ref):
     if abs(ref) == 0 :
@@ -336,7 +298,7 @@ def ecart_relatif(diff, ref):
     else :
        err=diff/ref
     return err
-    
+
 TEST1=CALC_TABLE(TABLE=TEPS1,
 ACTION= _F(OPERATION='COMB',TABLE= TINT1, NOM_PARA ='INST')
 )
@@ -357,9 +319,9 @@ TEST2=CALC_TABLE(TABLE=TEST2,reuse=TEST2,
 ACTION= _F(OPERATION='OPER',FORMULE=ecarela2, NOM_PARA ='ECART')
 )
 
-IMPR_TABLE(TABLE=TEST1)   
-IMPR_TABLE(TABLE=TEST2)   
-               
+IMPR_TABLE(TABLE=TEST1)
+IMPR_TABLE(TABLE=TEST2)
+
 TEST_TABLE(TABLE=TEST1,NOM_PARA='ECART',FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',VALE_REFE=0.,PRECISION=1.E-4,VALE_CALC=1.E-5)
 
 TEST_TABLE(TABLE=TEST2,NOM_PARA='ECART',FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',VALE_REFE=0.,PRECISION=1.E-4,VALE_CALC=-7.5E-6)

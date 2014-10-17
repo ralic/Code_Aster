@@ -19,9 +19,6 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
-os.system("mfront --obuild Tvergaard.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so Tvergaard.so")
-
 
 MA=LIRE_MAILLAGE( )
 
@@ -47,13 +44,13 @@ Youn=0.5
 delta=2*0.9/1.1*0.6/1.6
 rigin=1.1*1.1/0.9/pena
 
-MATF=DEFI_MATERIAU( 
-                      ELAS=_F(E=Youn, NU=0.0),                      
-                      UMAT=_F( NB_VALE=4,
-                               C1 = rigin ,
-                               C2 = 1.e4 ,
-                               C3 = 1.1 ,
-                               C4 = delta ,
+MATF=DEFI_MATERIAU(
+                      ELAS=_F(E=Youn, NU=0.0),
+                      Tvergaard=_F(
+                               NormalStiffness = rigin ,
+                               TangentStiffness = 1.e4 ,
+                               UltTensStrength = 1.1 ,
+                               MaxOpeningDispl = delta ,
                                ),
                                )
 
@@ -115,15 +112,14 @@ U_1F=STAT_NON_LINE( MODELE     = MO,
                     ),
                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,METHODE='MIXTE'),
                     COMPORTEMENT  = (
-                                      _F(RELATION='MFRONT',MAILLE = 'CUBEDEG',
-                                              LIBRAIRIE='Tvergaard.so',
-                                              NOM_ROUTINE='astertvergaard',
+                                      _F(RELATION='Tvergaard',MAILLE = 'CUBEDEG',
+                                              RESI_INTE_RELA=1.E-8,
                                               ),
                                       _F(RELATION = 'ELAS',
                                         GROUP_MA = 'G_CUBE',),
                             ),
                     INCREMENT  = _F(LIST_INST = DEF2, ),
-                    NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1, 
+                    NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1,
                     ),
                     SUIVI_DDL=(_F(NOM_CMP    ='SIGN',
                                 NOM_CHAM   ='SIEF_ELGA',
@@ -134,24 +130,24 @@ U_1F=STAT_NON_LINE( MODELE     = MO,
                                 NOM_CHAM   ='VARI_ELGA',
                                 MAILLE='CUBEDEG',
                                 EVAL_ELGA  ='MAX',
-                                EVAL_CHAM ='MAX',), 
+                                EVAL_CHAM ='MAX',),
                                 ),
 )
 
 F_DX=RECU_FONCTION( INTERPOL='LIN', RESULTAT=U_1F,
               NOM_CHAM='DEPL',NOM_CMP='DX',GROUP_NO='TOUTSEUL')
-              
+
 T_DX=CREA_TABLE(FONCTION=_F(FONCTION=F_DX))
 
 F_SIGN=RECU_FONCTION( INTERPOL='LIN', RESULTAT=U_1F, NOM_CHAM = 'SIEF_ELGA',
           NOM_CMP = 'SIGN',
           MAILLE  = 'CUBEDEG',POINT=1)
-          
+
 T_SIGN=CREA_TABLE(FONCTION=_F(FONCTION=F_SIGN))
 
 IMPR_TABLE(TABLE=T_SIGN)
 
-IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38, 
+IMPR_FONCTION(FORMAT='XMGRACE',UNITE=38,
             COURBE=(_F(FONC_X=F_DX, FONC_Y=F_SIGN),),);
 
 TEST_TABLE(VALE_CALC=2.1650635257,

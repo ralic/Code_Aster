@@ -21,9 +21,6 @@
 import os
 
 
-os.system("mfront --obuild GursonTvergaardNeedlemanPlasticFlow_NumericalJacobian.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so gurson.so")
-    
 # avec SIMU_POINT_MAT
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -31,9 +28,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MATF=DEFI_MATERIAU( 
                       ELAS=_F(E=20000., NU=0.3),                      
-                      UMAT=_F( C1 = 200000. ,
-                               C2 = 0.3 ,
-                               NB_VALE=2,
+                      GTN=_F( YoungModulus = 200000. ,
+                               PoissonRatio = 0.3 ,
                                ),
                                )
 
@@ -60,9 +56,8 @@ E2=DEFI_FONCTION( NOM_PARA='INST',
 zero=DEFI_CONSTANTE(VALE=0.)
 
 SOLMF=SIMU_POINT_MAT( MATER=MATF, INFO=1,
-                COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='gurson.so',
-                        NOM_ROUTINE='astergurson',
+                COMPORTEMENT=_F(RELATION='GTN',
+                        RESI_INTE_RELA=1.E-8,
                         ),
                 INCREMENT=_F(  LIST_INST = LINST),
                 NEWTON=_F(REAC_ITER = 1,PREDICTION='ELASTIQUE' ),

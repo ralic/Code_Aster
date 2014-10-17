@@ -20,11 +20,6 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
 import os
-
-os.system("mfront --obuild FiniteStrainSingleCrystal.mfront FiniteStrainSingleCrystal_NumericalJacobian.mfront --interface=aster")
-os.system("mv src/libAsterBehaviour.so monocristal.so")
-    
-
 import numpy as NP
 
 
@@ -79,7 +74,7 @@ MATA=DEFI_MATERIAU(
                                     #G_LN =y1212,
                                     #G_TN =y1212,
                                  #),
-                    
+
                     MONO_VISC1=_F(N=N__,
                                   K=K__,
                                   C=C__,),
@@ -95,7 +90,7 @@ MATA=DEFI_MATERIAU(
 
                     MONO_CINE1=_F(D=D__,),
                     );
-                    
+
 COMPORA=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATA,
                                    ECOULEMENT='MONO_VISC1',
                                    ECRO_ISOT='MONO_ISOT1',
@@ -105,36 +100,43 @@ COMPORA=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATA,
                                    );
 
 
-MATF=DEFI_MATERIAU( 
+MATF=DEFI_MATERIAU(
                   ELAS=_F(E=E_L, NU=Nu,),
-                      #ELAS_ORTH =_F(E_L  =E_L,
-                                    #E_T  =E_L,
-                                    #E_N  =E_L,
-                                    #NU_LT=Nu,
-                                    #NU_LN=Nu,
-                                    #NU_TN=Nu,
-                                    #G_LT =y1212,
-                                    #G_LN =y1212,
-                                    #G_TN =y1212,
-                                 #),
-                    
-                  UMAT=_F( NB_VALE=16,
-                           C1 = E_L ,
-                           C2 = E_L ,
-                           C3 = E_L,
-                           C4 = Nu,
-                           C5 = Nu,   
-                           C6 = Nu,    
-                           C7 = G,  
-                           C8 = G,  
-                           C9 = G,  
-                           C10 = N__,   
-                           C11 = K__,    
-                           C12 = C__,  
-                           C13 = R_0__,  
-                           C14 = Q__,  
-                           C15 = B__,   
-                           C16 = D__,  
+                  GdefMonoCristal=_F(
+                           YoungModulus1 = E_L ,
+                           YoungModulus2 = E_L ,
+                           YoungModulus3 = E_L,
+                           PoissonRatio12 = Nu,
+                           PoissonRatio23 = Nu,
+                           PoissonRatio13 = Nu,
+                           ShearModulus12 = G,
+                           ShearModulus23 = G,
+                           ShearModulus13 = G,
+                           m = N__,
+                           K = K__,
+                           C = C__,
+                           R0 = R_0__,
+                           Q = Q__,
+                           b = B__,
+                           d1 = D__,  
+                           ),
+                  GdefMono_Jacnum=_F(
+                           YoungModulus1 = E_L ,
+                           YoungModulus2 = E_L ,
+                           YoungModulus3 = E_L,
+                           PoissonRatio12 = Nu,
+                           PoissonRatio23 = Nu,
+                           PoissonRatio13 = Nu,
+                           ShearModulus12 = G,
+                           ShearModulus23 = G,
+                           ShearModulus13 = G,
+                           m = N__,
+                           K = K__,
+                           C = C__,
+                           R0 = R_0__,
+                           Q = Q__,
+                           b = B__,
+                           d1 = D__,
                            ),
                            )
 
@@ -393,20 +395,18 @@ SOLMF=STAT_NON_LINE(
                     EXCIT=(_F(CHARGE=TRAC,
                               FONC_MULT=COEF,),),
                     COMPORTEMENT=(
-                    
-                            _F(RELATION='MFRONT',
-                                LIBRAIRIE='monocristal.so',
-                                NOM_ROUTINE='astergdefmonojp',
+
+                            _F(RELATION='GdefMonoCristal',
                                 DEFORMATION='SIMO_MIEHE',
-                                RESI_INTE_MAXI=1.E-10,
+                                RESI_INTE_RELA=1.E-10,
                                 ITER_INTE_MAXI=100,
                                 GROUP_MA='VOL',
                                 ),
-                        
+
                                _F(RELATION='ELAS',
                                   GROUP_MA=('PX1'),),
                               ),
-                        
+
                      INCREMENT=(_F(LIST_INST=LIS2DD, ),),
 
                      NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOLE',  ),),
@@ -525,18 +525,17 @@ SOLMFn=STAT_NON_LINE(
                     EXCIT=(_F(CHARGE=TRAC,
                               FONC_MULT=COEF,),),
                     COMPORTEMENT=(
-                    
-                            _F(RELATION='MFRONT',
-                                LIBRAIRIE='monocristal.so',
-                                NOM_ROUTINE='astergdefmonojn',
+
+                            _F(RELATION='GdefMono_Jacnum',
                                 DEFORMATION='SIMO_MIEHE',
+                                RESI_INTE_RELA=1.E-8,
                                  GROUP_MA='VOL',
                                ),
-                        
+
                                _F(RELATION='ELAS',
                                   GROUP_MA=('PX1'),),
                               ),
-                        
+
                      INCREMENT=(_F(LIST_INST=LIS2DD, ),),
 
                      NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOLE',  ),),
@@ -572,8 +571,8 @@ sigMFn=RECU_FONCTION(RESULTAT=SOLMFn,
                    MAILLE='CUBE',
                    POINT=numpg,
                    INTERPOL='LIN');
-                   
-                   
+
+
 
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10666524516254,

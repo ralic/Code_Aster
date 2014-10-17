@@ -17,9 +17,6 @@
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # TITRE polycristal homogeneise DD_CFC 30 grains
 
-os.system("mfront --obuild --interface=aster PolyCristal_DD_CFC.mfront")
-os.system("mv src/libAsterBehaviour.so polycristal.so")
-
 import numpy as NP
 from numpy.linalg import norm
 
@@ -32,14 +29,14 @@ MU       = 80000. ;
 NU       = 0.3    ;
 E        =  MU*2*(1.+NU)   ;
 
-TAU_F  = 80. ;  
+TAU_F  = 80. ;
 Y      = 2.5E-7 ;
 N      = 20.  ;
 GAMMA0 = 1.E-3;
-RHO_0  = 1.E5;   
-RHOREF = 1.E6;   
+RHO_0  = 1.E5;
+RHOREF = 1.E6;
 ALPHA  = 0.35 ;
-BETA   = 2.54E-7;     
+BETA   = 2.54E-7;
 A      = 0.13   ;
 B      = 0.005  ;
 
@@ -49,15 +46,15 @@ RHO_0 = RHO_0*BETA*BETA
 ACIER = DEFI_MATERIAU(ELAS=_F(E=E,
                                     NU=NU,
                                     ALPHA=0.),
-                            MONO_DD_CFC=_F(TAU_F  = TAU_F,   
-                                           Y      = Y      , 
+                            MONO_DD_CFC=_F(TAU_F  = TAU_F,
+                                           Y      = Y      ,
                                            N      = N,
                                            GAMMA0 = GAMMA0,
                                            A      = A,
                                            B      = B,
-                                           RHO_REF= RHOREF,  
+                                           RHO_REF= RHOREF,
                                            ALPHA=ALPHA,
-                                           BETA=BETA,        
+                                           BETA=BETA,
                                            H1      = 0.124,   # AETOIL = 0.124 ;
                                            H2      = 0.625,   # ACOLIN = 0.625 ;
                                            H3      = 0.137,   # AGLISS = 0.137 ;
@@ -78,25 +75,25 @@ G=E/2./(1.+NU)
 
 # orthotropie possible
 
-MATF=DEFI_MATERIAU( 
+MATF=DEFI_MATERIAU(
                       ELAS=_F( E=E, NU=NU,),
-                      UMAT=_F( C1 = E ,
-                               C2 = E ,
-                               C3 = E,
-                               C4 = NU,
-                               C5 = NU,   
-                               C6 = NU,    
-                               C7 = G,  
-                               C8 = G,  
-                               C9 = G,  
-                               C10=  TAU_F,    
-                               C11 = Y,   
-                               C12 = N,    
-                               C13 = GAMMA0,  
-                               C14 = A,  
-                               C15 = B,  
-                               C16 = G,  
-                               NB_VALE=16,
+                      PolyCristalDDCFC=_F(
+                              YoungModulus1 = E ,
+                              YoungModulus2 = E ,
+                              YoungModulus3 = E,
+                              PoissonRatio12 = NU,
+                              PoissonRatio23 = NU,
+                              PoissonRatio13 = NU,
+                              ShearModulus12 = G,  
+                              ShearModulus23 = G,
+                              ShearModulus13 = G,
+                               tauf=  TAU_F,
+                               y = Y,
+                               pn = N,
+                               gamma0 = GAMMA0,
+                               a = A,
+                               b = B,
+                               Mu = G,
                                ),
                                )
 
@@ -125,7 +122,7 @@ def DEFI_ANGLES(Ng,COMPMONO,**args):
 #LISTE_GROUP : MOT-CLE FACTEUR MASSIF de DEFI_COMPOR / POLYCRISTAL
 ###################################################################
    import copy, math
-   from random import *   
+   from random import *
    coef=360.
    LISTE_ANGLES=[]
    for ig in range(Ng):
@@ -262,10 +259,8 @@ lvari=list(avari)
 
 
 SOLMF=SIMU_POINT_MAT(INFO=1,
-                     COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='polycristal.so',
-                        NOM_ROUTINE='asterpolycristal',
-                        RESI_INTE_MAXI=1e-9,                   
+                     COMPORTEMENT=_F(RELATION='PolyCristalDDCFC',
+                        RESI_INTE_RELA=1e-9,
                         ),
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
@@ -289,7 +284,7 @@ IMPR_TABLE(TABLE=SOLMF,FILTRE=_F(NOM_PARA='INST',VALE=tfin))
 nbgr=NGR
 nb_syst=12
 nvarit=7+nbgr*(6+3*nb_syst+6)+1
-nvarpargr=3*nb_syst                     
+nvarpargr=3*nb_syst
 # densites de dislocation initiales : variables internes de 0 a 44
 avari = NP.zeros(nvarit)
 for igr in range(nbgr):
@@ -353,11 +348,11 @@ FEPZZ=RECU_FONCTION(TABLE=SOLNL,
                    PARA_X='INST',
                    PARA_Y='EPZZ',
                    INTERPOL='LIN');
-                   
+
 
 #pilote='INTERACTIF'
 pilote=''
-                   
+
 
 IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
             COURBE=(
@@ -371,7 +366,7 @@ DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = FSIZZ, COEF =  1.),
                           _F( FONCTION = MFSIZZ, COEF = -1.),
                           ) );
-                   
+
 
 TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
 
@@ -384,7 +379,7 @@ def ecart_relatif(diff, ref):
     else :
        err=diff/ref
     return err
-    
+
 TEST1=CALC_TABLE(TABLE=TDIF1,
 ACTION= _F(OPERATION='COMB',TABLE= TSIG1, NOM_PARA ='INST')
 )
@@ -395,8 +390,8 @@ TEST1=CALC_TABLE(TABLE=TEST1,reuse=TEST1,
 ACTION= _F(OPERATION='OPER',FORMULE=ecarela1, NOM_PARA ='ECART')
 )
 
-IMPR_TABLE(TABLE=TEST1)   
-               
+IMPR_TABLE(TABLE=TEST1)
+
 TEST_TABLE(TABLE=TEST1,NOM_PARA='ECART',
 FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
 CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',

@@ -3,32 +3,20 @@
 # TITRE TEST MFRONT ELASTICITE ORTHOTROPE CF. SSLV131A
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-import os
-
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild elasorth.mfront --interface=aster     
-# avant de lancer l'etude.
-
-os.system("mfront --obuild OrthotropicElastic.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so elasorth.so")
-    
-
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -39,7 +27,7 @@ MA=LIRE_MAILLAGE( )
 DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
             CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
-                         
+
 MOD3D=AFFE_MODELE(  MAILLAGE=MA,
            AFFE=_F( MAILLE = 'TET1', MODELISATION = '3D',
            PHENOMENE = 'MECANIQUE'))
@@ -78,35 +66,35 @@ CHMATORT=AFFE_MATERIAU(  MAILLAGE=MA,
            AFFE=_F(  TOUT = 'OUI',   MATER = MATORTH) )
 
 
-MATFRONT=DEFI_MATERIAU( 
+MATFRONT=DEFI_MATERIAU(
                  ELAS_ORTH=_F(
-                               E_L = 11000.,     
-                               E_T = 5000.,   
+                               E_L = 11000.,
+                               E_T = 5000.,
                                E_N = 8000.,
                                NU_LT = 0.396,
-                               NU_TN = 0.11,       
-                               NU_LN = 0.15,    
+                               NU_TN = 0.11,
+                               NU_LN = 0.15,
                                G_LT = 10500.,
-                               G_TN = 13000.,     
-                               G_LN = 7000.,   
+                               G_TN = 13000.,
+                               G_LN = 7000.,
                                ) ,
-                      UMAT=_F( C1 = 11000. ,
-                               C2 = 5000. ,
-                               C3 = 8000.,
-                               C4 = 0.396,
-                               C5 = 0.11,   
-                               C6 = 0.15,    
-                               C7 = 10500.,  
-                               C8 = 13000.,  
-                               C9 = 7000.,  
-                               NB_VALE=9,
+                 OrthotropicElast=_F(
+                               YoungModulus1 = 11000. ,
+                               YoungModulus2 = 5000. ,
+                               YoungModulus3 = 8000.,
+                               PoissonRatio12 = 0.396,
+                               PoissonRatio23 = 0.11,
+                               PoissonRatio13 = 0.15,
+                               ShearModulus12 = 10500.,
+                               ShearModulus23 = 13000.,
+                               ShearModulus13 = 7000.,
                                ),
                                )
 
 CHMATF=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MATFRONT,),);
-                            
+
 LISTE2=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1,),);
@@ -124,10 +112,8 @@ MFRONT=STAT_NON_LINE(INFO=1,
                     CHAM_MATER=CHMATF,
                     CARA_ELEM=CAREL3D,
                     EXCIT=_F( CHARGE = CHAR3D),
-                    COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='elasorth.so',
-                        NOM_ROUTINE='asterelasorth',
-                        ),
+                    COMPORTEMENT=_F(RELATION='OrthotropicElast',
+                                    RESI_INTE_RELA=1.E-8,),
                     INCREMENT=_F(LIST_INST=LISTE),);
 
 CALC_CHAMP(reuse=MEST2,RESULTAT=MEST2,DEFORMATION=('EPSI_ELGA'),ENERGIE=('ENEL_ELGA','ENEL_ELNO'))

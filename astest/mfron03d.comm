@@ -21,12 +21,6 @@
 import numpy as NP
 from numpy.linalg import norm
 
-os.system("mfront --obuild PolyCristals.mfront --interface=aster")
-os.system("mv src/libAsterBehaviour.so polycristal.so")
-
-# os.system("export TFELHOME=/home/H37018/data/MFRONT/tfel-1.1/install")
-# os.system("export LD_LIBRARY_PATH=$TFELHOME/lib:$LD_LIBRARY_PATH")
-
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -55,56 +49,28 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
 Nu=0.3
 E_L=145200.
 G=E_L/2./(1.+Nu)
-# test  orthotropie
-MATFROLD=DEFI_MATERIAU( 
-                      ELAS=_F(E=145200.0, NU=0.3,),
-                      UMAT=_F( C1 = E_L ,
-                               C2 = E_L ,
-                               C3 = E_L,
-                               C4 = Nu,
-                               C5 = Nu,   
-                               C6 = Nu,    
-                               C7 = G,  
-                               C8 = G,  
-                               C9 = G,  
-                               C10= 0.,   
-                               C11= 0.,   
-                               C12= 0.,  
-                               C13= 0.,
-                               NB_VALE=22,
-                               C14 = 10.,   # N
-                               C15 = 40.,   # K
-                               C16 = 0.,    # C  
-                               C17 = 75.5,  # R0
-                               C18 = 9.77,  # Q
-                               C19 = 19.34, # b  
-                               C20 = 1.,    # H   
-                               C21 = 36.68, # D  
-                               C22 = G, # Mu  
-                               ),
-                               )
 
 MATFRONT=DEFI_MATERIAU( 
                       ELAS=_F(E=145200.0, NU=0.3,),
-                      UMAT=_F( C1 = E_L ,
-                               C2 = E_L ,
-                               C3 = E_L,
-                               C4 = Nu,
-                               C5 = Nu,   
-                               C6 = Nu,    
-                               C7 = G,  
-                               C8 = G,  
-                               C9 = G,  
-                               NB_VALE=18,
-                               C10 = 10.,   # N
-                               C11 = 40.,   # K
-                               C12 = 0.,    # C  
-                               C13 = 75.5,  # R0
-                               C14 = 9.77,  # Q
-                               C15 = 19.34, # b  
-                               C16 = 1.,    # H   
-                               C17 = 36.68, # D  
-                               C18 = G, # Mu  
+                      PolyCristal_MC=_F( 
+                           YoungModulus1 = E_L ,
+                           YoungModulus2 = E_L ,
+                           YoungModulus3 = E_L,
+                           PoissonRatio12 = Nu,
+                           PoissonRatio23 = Nu,   
+                           PoissonRatio13 = Nu,    
+                           ShearModulus12 = G,  
+                           ShearModulus23 = G,  
+                           ShearModulus13 = G,  
+                               m = 10.,   # N
+                               K = 40.,   # K
+                               C = 0.,    # C  
+                               R0 = 75.5,  # R0
+                               Q = 9.77,  # Q
+                               b = 19.34, # b  
+                               H = 1.,    # H   
+                               d1 = 36.68, # D  
+                               Mu = G, # Mu  
                                ),
                                )
 
@@ -298,10 +264,8 @@ FEPZZ=RECU_FONCTION(TABLE=SOLNL,
                    INTERPOL='LIN');
 
 SOLMF=SIMU_POINT_MAT(INFO=1,
-                     COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='polycristal.so',
-                        NOM_ROUTINE='asterpolycristal',
-                        RESI_INTE_MAXI=1e-6,
+                     COMPORTEMENT=_F(RELATION='PolyCristal_MC',
+                        RESI_INTE_RELA=1e-6,
                         ),
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',

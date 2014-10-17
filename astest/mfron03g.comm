@@ -21,9 +21,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 import numpy as NP
 from numpy.linalg import norm
 
-os.system("mfront --obuild MonoCristal_DD_CFC_Irradiation.mfront --interface=aster")
-os.system("mv src/libAsterBehaviour.so monocristal.so")
-
 # MATERIAU DEFINI POUR LE COMPORTEMENT  DD_CFC. Unites : MPa, mm, N
 
 MU=80000. # MPa
@@ -74,7 +71,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU, ),
                                      H2      = 0.625,
                                      H3      = 0.137,
                                      H4      = 0.122,
-                                     H5      = 0.07,                                       
+                                     H5      = 0.07,
                                      RHO_VOID =ome_void,
                                      PHI_LOOP =PHI_LOOP,
                                      ALP_VOID =ALP_VOID,
@@ -83,38 +80,38 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU, ),
                                      PHI_SAT  =PHI_SAT ,
                                      XI_IRRA  =XI_IRRA ,
                                      DZ_IRRA  =DZ_IRRA ,
-                                   ),);                                    
+                                   ),);
 G=E/2./(1.+NU)
-MATFR=DEFI_MATERIAU( 
+MATFR=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=NU, ),
-                  UMAT=_F( C1 = E ,
-                           C2 = E ,
-                           C3 = E,
-                           C4 = NU,
-                           C5 = NU,   
-                           C6 = NU,    
-                           C7 = G,  
-                           C8 = G,  
-                           C9 = G, 
-                           C10=  TAU_F,    
-                           C11 = Y,   
-                           C12 = N,    
-                           C13 = GAMMA0,  
-                           C14 = A,  
-                           C15 = B,  
-                           C16 = RHOREF,   
-                           C17 = ALPHA,   
-                           C18 = BETA,  
-                           C19 = G,  
-                           C20 = ome_void,
-                           C21 = PHI_LOOP,
-                           C22 = ALP_VOID,
-                           C23 = ALP_LOOP,
-                           C24 = ome_sat ,
-                           C25 = PHI_SAT ,
-                           C26 = XI_IRRA ,
-                           C27 = DZ_IRRA ,
-                           NB_VALE=27,
+                  MonoDDCFC_Irra=_F(
+                           YoungModulus1 = E ,
+                           YoungModulus2 = E ,
+                           YoungModulus3 = E,
+                           PoissonRatio12 = NU,
+                           PoissonRatio23 = NU,
+                           PoissonRatio13 = NU,
+                           ShearModulus12 = G,
+                           ShearModulus23 = G,
+                           ShearModulus13 = G,
+                           tauf=  TAU_F,
+                           y = Y,
+                           pn = N,
+                           gamma0 = GAMMA0,
+                           a = A,
+                           b = B,
+                           rhoref = RHOREF,
+                           alpha = ALPHA,
+                           beta = BETA,
+                           Mu = G,
+                           RHO_VOID = ome_void,
+                           PHI_LOOP = PHI_LOOP,
+                           ALP_VOID = ALP_VOID,
+                           ALP_LOOP = ALP_LOOP,
+                           RHO_SAT = ome_sat ,
+                           PHI_SAT = PHI_SAT ,
+                           XI_IRRA = XI_IRRA ,
+                           DZ_IRRA = DZ_IRRA ,
                            ),
                            )
 
@@ -146,29 +143,29 @@ LIS2DD=DEFI_LIST_INST(INFO=1,
                         );
 
 
-# deformation imposee                   
+# deformation imposee
 E3=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,0.05),
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
 
 
-# densites de dislocation initiales : variables internes 
+# densites de dislocation initiales : variables internes
 nbvari=6 + 3 * 12 + (12 + 12) + 12 +  3
 avari = NP.zeros(nbvari)
 
 for i in range(12):
   avari[6+i*3]=ome_0
-  
+
 for i in range(12):
   avari[6+12*3+i]=ome_loop
-  
+
 for i in range(12):
   avari[6+12*4+i]=PHI_VOIDS
 
 lvari=list(avari)
 
-#rotation du repere 
+#rotation du repere
 h=1
 k=5
 l=9
@@ -201,8 +198,8 @@ IMPLAS=SIMU_POINT_MAT(INFO=1,
                                   ),
                       EPSI_IMPOSE=_F(EPZZ=E3,),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );      
-                       
+                       );
+
 #IMPR_TABLE(TABLE=IMPLAS)
 
 epsXXi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='EPXX',INTERPOL='LIN');
@@ -218,7 +215,7 @@ sigZZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIZZ',INTERPOL='LIN');
 sigXYi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXY',INTERPOL='LIN');
 sigXZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIXZ',INTERPOL='LIN');
 sigYZi=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='SIYZ',INTERPOL='LIN');
-                                      
+
 rho1as=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='V7',INTERPOL='LIN');
 rhl1as=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='V43',INTERPOL='LIN');
 
@@ -226,28 +223,27 @@ rhl1as=RECU_FONCTION(TABLE=IMPLAS,PARA_X='INST',PARA_Y='V43',INTERPOL='LIN');
 
 # MFRONT
 
-# densites de dislocation initiales : variables internes 
+# densites de dislocation initiales : variables internes
 nbvari=6+36
 avari = NP.zeros(nbvari)
 
 for i in range(12):
   avari[6+i]=ome_0
-  
+
 for i in range(12):
   avari[6+12+i]=ome_loop
-  
+
 for i in range(12):
   avari[6+12*2+i]=PHI_VOIDS
-  
+
 lvari=list(avari)
 
 IMPLMF=SIMU_POINT_MAT(INFO=1,
                       MATER=MATFR,
                       MASSIF=_F(ANGL_EULER=angles),
-                      COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='monocristal.so',
-                        NOM_ROUTINE='asterdd_cfc_irra',
-                        RESI_INTE_MAXI=1e-12,
+                      COMPORTEMENT=_F(RELATION='MonoDDCFC_Irra',
+                        RESI_INTE_RELA=1e-12,
+                        ITER_INTE_MAXI=100,
                         ),
                       INCREMENT=(_F(LIST_INST=LIS2DD,),),
                       NEWTON=(_F(REAC_ITER=1, PREDICTION='ELASTIQUE' ),),
@@ -256,8 +252,8 @@ IMPLMF=SIMU_POINT_MAT(INFO=1,
                                   ),
                       EPSI_IMPOSE=_F(EPZZ=E3,),
                       ARCHIVAGE=_F(LIST_INST=LISTARCH),
-                       );      
-                       
+                       );
+
 #IMPR_TABLE(TABLE=IMPLMF)
 
 
@@ -283,26 +279,26 @@ pilote=''
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
-            PILOTE=pilote, 
+            PILOTE=pilote,
             UNITE=29,
             LEGENDE_X='\\f{Symbol}e\\f{}\\s33',
             LEGENDE_Y='\\f{Symbol}s\\f{}\\s33 (MPa)',
             COURBE=(
             _F(FONC_X=epsZZ,FONC_Y=sigZZ, ),
             _F(FONC_X=epsZZi,FONC_Y=sigZZi, ),
-            ),           
+            ),
             );
 
 IMPR_FONCTION(
             FORMAT='XMGRACE',
-            PILOTE=pilote, 
+            PILOTE=pilote,
             UNITE=29,
             LEGENDE_X='t',
             LEGENDE_Y='\\f{Symbol}r\\f{}\\s1 ',
             COURBE=(
             _F(FONCTION=rho1as, ),
             _F(FONCTION=rho1mf, ),
-            ),           
+            ),
             );
 
 
@@ -311,20 +307,20 @@ DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = sigZZ, COEF =  1.),
                           _F( FONCTION = sigZZi, COEF = -1.),
                           ) );
-                   
+
 DIF2=CALC_FONCTION(COMB=(
                           _F( FONCTION = rho1as, COEF =  1.),
                           _F( FONCTION = rho1mf, COEF = -1.),
                           ) );
-                          
+
 TDIF1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
 
 TDIF2=CREA_TABLE(FONCTION= _F(FONCTION = DIF2,PARA = ('INST','NEUT1')),);
-                   
+
 TREF1=CREA_TABLE(FONCTION= _F(FONCTION = sigZZi,PARA = ('INST','SIZZ')),);
 
 TREF2=CREA_TABLE(FONCTION= _F(FONCTION = rho1as,PARA = ('INST','V7')),);
-                   
+
 
 def ecart_relatif(diff, ref):
     if abs(ref) == 0 :
@@ -332,7 +328,7 @@ def ecart_relatif(diff, ref):
     else :
        err=diff/ref
     return err
-    
+
 TEST1=CALC_TABLE(TABLE=TDIF1,ACTION= _F(OPERATION='COMB',TABLE= TREF1, NOM_PARA ='INST'))
 
 TEST2=CALC_TABLE(TABLE=TDIF2,ACTION= _F(OPERATION='COMB',TABLE= TREF2, NOM_PARA ='INST'))
@@ -349,7 +345,7 @@ TEST2=CALC_TABLE(TABLE=TEST2,reuse=TEST2,
 ACTION= _F(OPERATION='OPER',FORMULE=ecarela2, NOM_PARA ='ECART')
 )
 
-               
+
 TEST_TABLE(TABLE=TEST1,NOM_PARA='ECART',
 FILTRE=_F(NOM_PARA='ECART',CRIT_COMP='MAXI_ABS'),
 CRITERE='ABSOLU',REFERENCE='AUTRE_ASTER',
