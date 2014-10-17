@@ -170,13 +170,15 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     *pliesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     mfront_name(libname, symbol, model, "_nExternalStateVariables", &symbname);
+    if ( symbname == NULL ) {
+        error_symbol_not_found(libname, symbname);
+    }
 //     int* test_int = libsymb_get_symbol(DLL_DICT, libname, symbname);
     *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     mfront_name(libname, symbol, model, "_MaterialProperties", &symbname);
     *pmatprop = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
-    if ( symbname == NULL )
-    {
+    if ( symbname == NULL ) {
         error_symbol_not_found(libname, symbname);
     }
 
@@ -215,14 +217,16 @@ void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
     model = MakeCStrFromFStr(nommod, lnommod);
 
     mfront_name(libname, symbol, model, "_InternalStateVariablesTypes", &symbname);
-    if ( symbname == NULL )
-    {
+    if ( symbname == NULL ) {
         error_symbol_not_found(libname, symbname);
     }
 
     int* int_var = (int*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     mfront_name(libname, symbol, model, "_nInternalStateVariables", &symbname);
+    if ( symbname == NULL ) {
+        error_symbol_not_found(libname, symbname);
+    }
     unsigned short* nb_int_var = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     *nbvari = 0;
@@ -435,10 +439,13 @@ void mfront_name(
     if ( *name == NULL ) {
         DEBUG_DLL_VV(" libname = >%s<%s", libname, " ")
         DEBUG_DLL_VV(" symbol1 = >%s<, symbol2 = >%s<", name1, name2)
-    }
-    if ( strcmp(*name, name1) == 0 ) {
+        free(name1);
         free(name2);
-    } else if ( strcmp(*name, name2) == 0 ) {
+    }
+    else if ( strcmp(*name, name1) == 0 ) {
+        free(name2);
+    }
+    else if ( strcmp(*name, name2) == 0 ) {
         free(name1);
     }
 }
