@@ -1,11 +1,11 @@
-// fichier de données pour mtest avec comportement BuurgerAgeing.mfront
+// fichier de données pour mtest avec comportement BurgerAgeing.mfront
 // données similaires a mfron02c : fluage a 28 jours
 
-@Behaviour<aster> 'src/libAsterBehaviour.so' 'asterburger';
-@MaterialProperty<constant> 'young' 31000. ; 
-@MaterialProperty<constant> 'nu'    0.2 ;    
-@MaterialProperty<constant> 'KRS'   1.956e+5 ;   
-@MaterialProperty<constant> 'NRS'   4.797e+10 ; 
+@Behaviour<aster> 'src/libAsterBehaviour.so' 'asterburgerageing';
+@MaterialProperty<constant> 'young' 31000. ;
+@MaterialProperty<constant> 'nu'    0.2 ;
+@MaterialProperty<constant> 'KRS'   1.956e+5 ;
+@MaterialProperty<constant> 'NRS'   4.797e+10 ;
 @MaterialProperty<constant> 'NIS'   1.570e+5 ;
 @MaterialProperty<constant> 'KRD'   5.0E4 ;
 @MaterialProperty<constant> 'NRD'   1.0E10;
@@ -26,4 +26,3 @@
 @ImposedStress 'SZZ' {0.: 0., 't1' : 0., 't2' : -1., 'tf' : -1.};
 
 @Times {0., 't1' in 1, 't2' in 10, 'tf'  in 10 };
-

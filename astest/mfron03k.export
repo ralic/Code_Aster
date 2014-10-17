@@ -6,8 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron03k.comm D 1
-F nom MonoCristal_DD_CC_InteractionMatrix.mfront D 0
-F nom PolyCristal_DD_CC.mfront D 0
-F nom PolyCristal_Orientation_100grains.mfront D 0
-F nom SlidingSystemsCC.mfront D 0
-

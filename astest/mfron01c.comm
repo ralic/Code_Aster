@@ -17,12 +17,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-import os
-
-os.system("mfront --obuild --interface=aster ViscoChaboche.mfront ViscoMemoNrad.mfront")
-os.system("cp src/libAsterBehaviour.so mfront.so")
-    
-
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI');
 
 pilote=''
@@ -88,59 +82,59 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
 ACIER[1] =DEFI_MATERIAU( 
                      ELAS=_F(E=YOUNG,
                              NU=POISSON,),
-                      UMAT=_F( NB_VALE=12,
-                               C1 = YOUNG ,
-                               C2 = POISSON ,
-                               C3 = 0., #coef dila ther
-                               C4  = R_I,  #R_I 
-                               C5  = R_0,  #R_0 
-                               C6  = B,     #B   
-                               C7  = C1_I,   #C1_I
-                               C8  = C2_I,   #C1_I
-                               C9  = G1_0,   #G1_0
-                               C10 = G2_0,  #C2_I
-                               C11 = N ,  #n
-                               C12 = UN_SUR_K ,  #1/K
-                               ),
+                    ViscoChaboche=_F(
+                                YoungModulus = YOUNG,
+                                PoissonRatio = POISSON,
+                                alpha = 0.,
+                                Rinf = R_I,
+                                R0 = R_0,
+                                b = B,
+                                C_0 = C1_I,
+                                C_1 = C2_I,
+                                g_0 = G1_0,
+                                g_1 = G2_0,
+                                m = N,
+                                UNsurK = UN_SUR_K,
+                    )
                                )
 
 # ViscMemoNrad
 ACIER[2] =DEFI_MATERIAU( 
                      ELAS=_F(E=YOUNG,
                              NU=POISSON,),
-                      UMAT=_F( C1 = YOUNG ,
-                               C2 = POISSON,
-                               C3 = delta[2][0], #delta1
-                               C4 = delta[2][1], #delta2
-                               C5  = R_I,     #R_0+Q_0
-                               C6  = R_0,     #R_0 
-                               C7  = B,        #b   
-                               C8  = K,        #k   
-                               C9  = W,        #w   
-                               C10 = C1_I,     #C1inf
-                               C11 = G1_0,     #g1
-                               C12 = C2_I,     #C2inf
-                               C13 = G2_0 ,    #g2
-                               C14 = N ,       #m
-                               C15 = UN_SUR_K ,#1/K
-                               C16 = A_I ,     #ainf
-                               C17 = ETA,
-                               C18 = Q_M ,
-                               C19 = Q_0 ,
-                               C20 = MU , 
-                               NB_VALE=20,
-                               ),
+                    ViscoMemoNrad=_F(
+                                YoungModulus = YOUNG,
+                                PoissonRatio = POISSON,
+                                delta1 = delta[2][0],
+                                delta2 = delta[2][1],
+                                Rinf = R_I,
+                                R0 = R_0,
+                                b = B,
+                                k = K,
+                                w = W,
+                                C1inf = C1_I,
+                                g1 = G1_0,
+                                C2inf = C2_I,
+                                g2 = G2_0,
+                                m = N,
+                                UNsurK = UN_SUR_K,
+                                ainf = A_I,
+                                Eta = ETA,
+                                Qm = Q_M,
+                                Q0 = Q_0,
+                                Mu = MU,
+                    )
                                )
 
 typcal= [None]*ncal
 typcal[0]=['VISC_MEMO_NRAD','BRENT',0]
-typcal[1]=['MFRONT','asterviscochab',1]
-typcal[2]=['MFRONT','asterviscmemonr',2]
+typcal[1]=['ViscoChaboche',' ',1]
+typcal[2]=['ViscoMemoNrad',' ',2]
 
 compor=[None]*ncal
 compor[0]=[{'RELATION':typcal[0][0],'ALGO_INTE':typcal[0][1],'RESI_INTE_RELA':1.E-8,'ITER_INTE_MAXI':50,'ITER_INTE_PAS':10}]
-compor[1]=[{'RELATION':typcal[1][0],'NOM_ROUTINE':typcal[1][1],'ITER_INTE_PAS':10,'LIBRAIRIE':'mfront.so','RESI_INTE_MAXI':1e-12}]
-compor[2]=[{'RELATION':typcal[2][0],'NOM_ROUTINE':typcal[2][1],'ITER_INTE_PAS':10,'LIBRAIRIE':'mfront.so','RESI_INTE_MAXI':1e-8}]
+compor[1]=[{'RELATION':typcal[1][0], 'ITER_INTE_PAS':10,'RESI_INTE_RELA':1e-12}]
+compor[2]=[{'RELATION':typcal[2][0], 'ITER_INTE_PAS':10 }]
 
 
 legende= [None]*ncal

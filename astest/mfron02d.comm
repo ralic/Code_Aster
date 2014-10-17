@@ -3,31 +3,20 @@
 # TITRE TEST MFRONT LOI DE MAZARS CF.TEST SSLA103C
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-import os
-
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild mazars.mfront --interface=aster     
-# avant de lancer l'etude.
-
-os.system("mfront --obuild Mazars.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so mazars.so")
-    
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
@@ -89,19 +78,19 @@ MATFRONT=DEFI_MATERIAU(
                                B_ENDOGE = 1.5E-5,
                                TEMP_DEF_ALPHA = 20.,
                                ALPHA=ALPHA ),
-                    UMAT_FO=_F(  NB_VALE=8,
-                                 C1=E,
-                                 C2=NU,
-                                 C3  =AC, #AC
-                                 C4  =AT,
-                                 C5  =BC,
-                                 C6  =BT,
-                                 C7  =K,
-                                 C8  =EPSD0,
-                                 ),
+                    Mazars_FO=_F(
+                                 YoungModulus = E,
+                                 PoissonRatio = NU,
+                                 Ac = AC,
+                                 At = AT,
+                                 Bc = BC,
+                                 Bt = BT,
+                                 k = K,
+                                 ed0 = EPSD0,
+                    )
                        );
-                       
-                       
+
+
 SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
@@ -235,9 +224,8 @@ CMF=AFFE_MATERIAU(MAILLAGE=M,
 MF=STAT_NON_LINE( MODELE=MO,
                 CHAM_MATER=CMF,
                 EXCIT=_F(CHARGE=CH1,),
-                COMPORTEMENT=_F(RELATION='MFRONT',
-                                LIBRAIRIE='mazars.so',
-                                NOM_ROUTINE='astermazars',
+                COMPORTEMENT=_F(RELATION='Mazars',
+                                RESI_INTE_RELA=1.e-8,
                                   ),
                 INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='ELASTIQUE',),
@@ -271,6 +259,6 @@ TEST_RESU(RESU=(_F(INST=3600.0,
                    PRECISION=5.0000000000000001E-3,),
                 ),
           )
-          
+
 
 FIN();

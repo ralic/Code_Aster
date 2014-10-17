@@ -6,6 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron05b.comm D 1
-F nom Hayhurst.mfront   D 0
-F nom ImplicitHayhurst.mfront   D 0
-

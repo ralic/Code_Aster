@@ -46,11 +46,6 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
-
-import os
-os.system("mfront --obuild Chaboche.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so chaboche.so")
-
 CARRE=LIRE_MAILLAGE(     )
 
 CPLAN=AFFE_MODELE(             MAILLAGE=CARRE,
@@ -77,20 +72,20 @@ ACIER=DEFI_MATERIAU(
                                             C2_I = C2_I,
                                             G2_0 = 17184.,
                                              ),
-                      UMAT=_F( C1 = 145200 ,
-                               C2 = 0.3 ,
-                               NB_VALE=12,
-                               C3  = 151.,   #R_I 
-                               C4  = 87.,    #R_0 
-                               C5  = 2.3,    #B   
-                               C6  = .43,      #K   
-                               C7  = 6.09,     #W   
-                               C8 = C1_I,   #C1_I
-                               C9 = C2_I,   #C2_I
-                               C10 = 341.,    #G1_0
-                               C11 = 17184.,    #G2_0
-                               C12 = 1.,    #a_inf
-                               ),
+                    Chaboche=_F(
+                                YoungModulus = 145200.,
+                                PoissonRatio = 0.3,
+                                R_inf = 151.,
+                                R_0 = 87.,
+                                b = 2.3,
+                                k = 0.43,
+                                w = 6.09,
+                                C_inf_0 = C1_I,
+                                C_inf_1 = C2_I,
+                                g_0_0 = 341.,
+                                g_0_1 = 17184.,
+                                a_inf = 1.,
+                    )
 
                                              )
 
@@ -128,10 +123,8 @@ SOLNL=STAT_NON_LINE(
                 CHARGE = TR_CS,
                 FONC_MULT = COEF,
                 TYPE_CHARGE = 'FIXE_CSTE'),
-                COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='chaboche.so',
-                        NOM_ROUTINE='asterchaboche',
-                        ),
+                COMPORTEMENT=_F(RELATION='Chaboche',
+                                RESI_INTE_RELA=1.e-8),
                          INCREMENT=_F(
                 LIST_INST = LINST),
                             NEWTON=_F(

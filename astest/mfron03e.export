@@ -6,6 +6,6 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron03e.comm D 1
-F nom  MonoCristal_DD_CFC.mfront  D 0
-F nom  MonoCristal_DD_CFC_InteractionMatrix.mfront D 0
+
+
 F libr mfron03e.30   D 30

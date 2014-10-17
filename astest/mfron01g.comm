@@ -3,26 +3,20 @@
 # TITRE  MFRONT loi elastoplastique de Von Mises avec Sy =f(T) cf hsnv100j
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-import os
-
-os.system("mfront --obuild PlasticityTH.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so vmis.so")
-    
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
 
@@ -61,18 +55,17 @@ CTRACB=DEFI_NAPPE(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
 
 #
 
-MATER=DEFI_MATERIAU(
-          THER=_F( RHO_CP = 0.0E-3,LAMBDA = 1.0E-3),
-          ELAS=_F( E = 200.E+3, NU = .3,ALPHA = 10.0E-6),
-          TRACTION=_F( SIGM = CTRACB),                           
-          UMAT=_F( C1 = 200.E+3,
-                   C2 = 0.3 ,
-                   C3 = 10.0E-6,
-                   C4 = 50000.,
-                   NB_VALE=4,
+MATER=DEFI_MATERIAU(THER=_F( RHO_CP = 0.0E-3,LAMBDA = 1.0E-3),
+                    ELAS=_F( E = 200.E+3, NU = .3,ALPHA = 10.0E-6),
+                    TRACTION=_F( SIGM = CTRACB),
+                    PlasticityTH=_F(
+                                YoungModulus = 200.e3,
+                                PoissonRatio = 0.3,
+                                ThermalExpansion = 10.e-6,
+                                ET = 50000.,
                     ),
            )
-                      
+
 TIMPVAR=DEFI_FONCTION(
                              NOM_PARA='INST',  NOM_RESU='TEMP',
                              VALE=(  0.E0,   0.E0,
@@ -90,9 +83,7 @@ L_INST=DEFI_LIST_REEL(
          )
 
 RESU1=SIMU_POINT_MAT(INFO=2,
-                COMPORTEMENT=_F(RELATION='MFRONT',
-                                LIBRAIRIE='vmis.so',
-                                NOM_ROUTINE='asterplasticity',
+                COMPORTEMENT=_F(RELATION='PlasticityTH',
                         ),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    MATER      = MATER,

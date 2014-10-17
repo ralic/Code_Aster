@@ -6,6 +6,6 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron02e.comm D 1
-F nom  Mazars.mfront   D 0
-F nom  ImplicitMazars.mfront   D 0
+
+
 F mmed ssnp161a.mmed D 20

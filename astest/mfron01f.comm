@@ -21,34 +21,16 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-os.system("mfront --obuild --interface=aster ImplicitNorton.mfront")
-os.system("cp src/libAsterBehaviour.so mfront.so")
-
-
-
-
 MA = LIRE_MAILLAGE(FORMAT='MED',);
 
 
-MAT = DEFI_MATERIAU(
-            ELAS=_F( E = 1., NU = 0.3, ALPHA = 0.),
-            CIN1_CHAB=_F( R_0 = 0.,
-                          R_I = 0.,
-                          B   = 0.,
-                          C_I = 0.,
-                          K   = 0.,
-                          W   = 0.,
-                          G_0 = 0.,
-                          A_I = 0.),
-            LEMAITRE=_F( N = 2.,UN_SUR_K = 1.,UN_SUR_M = 0.),
-            
-                      UMAT=_F( NB_VALE=4,
-                               C1 = 1. ,
-                               C2 = 0.3 ,
-                               C3 = 1., 
-                               C4  = 2.,
-                               ),
-           )
+MAT = DEFI_MATERIAU(ELAS=_F(E = 1., NU = 0.3, ALPHA = 0.),
+                    ImplicitNorton=_F(
+                                YoungModulus = 1.,
+                                PoissonRatio = 0.3,
+                                A = 1.,
+                                E = 2.,),)
+
 CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
                        AFFE =_F(TOUT='OUI',
                                 MATER = MAT,
@@ -94,12 +76,7 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
                                      )
                       )
 
-
-
-
-
 # resolution AXIS
-
 MOAX = AFFE_MODELE( MAILLAGE =MA,
                   AFFE=_F(
                        TOUT ='OUI',
@@ -122,10 +99,8 @@ RESUAX = STAT_NON_LINE (MODELE = MOAX,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
                          _F( CHARGE = CHARAX),),
-                      COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='mfront.so',
-                        NOM_ROUTINE='asternortonjprog',
-                        RESI_INTE_MAXI=1e-11,
+                      COMPORTEMENT=_F(RELATION='ImplicitNorton',
+                                      RESI_INTE_RELA=1e-11,
                         ),
                       INCREMENT =_F(LIST_INST =L_INST,  ),
                       NEWTON    =_F(
@@ -136,7 +111,7 @@ RESUAX = STAT_NON_LINE (MODELE = MOAX,
 RESUAX = CALC_CHAMP ( reuse= RESUAX,
                   RESULTAT = RESUAX,
                   CONTRAINTE='SIGM_NOEU',)
-                  
+
 # reference SSNA107A
 
 TEST_RESU(RESU=(_F(INST=4.,
@@ -194,10 +169,8 @@ RESUCP = STAT_NON_LINE (MODELE = MOCP,
                       CHAM_MATER = CHMAT,
                       EXCIT =(
                          _F( CHARGE = CHARCP),),
-                      COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='mfront.so',
-                        NOM_ROUTINE='asternortonjprog',
-                        RESI_INTE_MAXI=1e-11,
+                      COMPORTEMENT=_F(RELATION='ImplicitNorton',
+                                      RESI_INTE_RELA=1e-11,
                         ),
                       INCREMENT =_F(LIST_INST =L_INST,  ),
                       NEWTON    =_F(

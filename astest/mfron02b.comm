@@ -16,17 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # TITRE PRISE EN COMPTE DU RETRAIT DANS LE MODELE BETON_BURGER_FP cf. SSNV174B
-import os
-
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild burger.mfront --interface=aster     
-# avant de lancer l'etude.
-
-
-
-os.system("mfront --obuild Burger.mfront --interface=aster ")
-os.system("cp src/libAsterBehaviour.so burger.so")
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -94,18 +83,19 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                   K_DESSIC = 10.0E-6,
                                   B_ENDOGE = 60.0E-6,
                                   FONC_DESORP = FONC1, ),
-                    UMAT =_F(C1   =31000, 
-                                       C2=0.2,
-                                        C3 = 1.2E+05,
-                                       C4= 2.21E+10,
-                                        C5  = 3E-3,
-                                        C6 = 4.16E+10,
-                                        C7   = 3.86E+04,
-                                        C8 = 6.19E+10,
-                                        C9= 1.64e+12,
-                                        C10=0,
-                                        C11=100.
-                                      ),
+                    Burger=_F(
+                                YoungModulus = 31000.,
+                                PoissonRatio = 0.2,
+                                KRS = 1.2e5,
+                                NRS = 2.21e10,
+                                KAPPA = 3.e-3,
+                                NIS = 4.16e10,
+                                KRD = 3.86e4,
+                                NRD = 6.19e10,
+                                NID = 1.64e12,
+                                NFD = 0.,
+                                Cini = 100.,
+                    )
                   );
 
 
@@ -228,10 +218,8 @@ U=STAT_NON_LINE( MODELE=MO,
                                        _F(CHARGE = CH12),
                                        _F(CHARGE = CH22),
                                       ),
-                   COMPORTEMENT=_F(RELATION='MFRONT',
-                                LIBRAIRIE='burger.so',
-                                NOM_ROUTINE='asterburger',
-                                RESI_INTE_MAXI=1e-10,
+                   COMPORTEMENT=_F(RELATION='Burger',
+                                   RESI_INTE_RELA=1e-10,
                                   ),
                  INCREMENT=_F(LIST_INST = L_INST,
                               NUME_INST_FIN = 82),
@@ -306,4 +294,3 @@ TEST_RESU(RESU=(
 
 FIN()
 #
-

@@ -16,18 +16,6 @@
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # TITRE ESSAI DE FLUAGE PROPRE MODELE BETON_BURGER_FP MFRONT CF.SSNV163D
 
-import os
-
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild burger.mfront --interface=aster     
-# avant de lancer l'etude.
-
-os.system("mfront --obuild Burger.mfront --interface=aster ")
-os.system("cp src/libAsterBehaviour.so burger.so")
-
-
-
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 E=DEFI_CONSTANTE(VALE=31000.)
@@ -40,18 +28,19 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                B_ENDOGE = 0.,
                                TEMP_DEF_ALPHA = 20.,
                                ALPHA=ALPHA ),
-                    UMAT =_F(           C1  = 31000,   #E
-                                        C2  = 0.2,     #nu
-                                        C3  = 2.0E+5,  #K_RS
-                                        C4  = 4.0E+10, #ETA_RS
-                                        C5  = 3.E-3,   # KAPPA
-                                        C6  = 1.0E+11, # ETA_IS
-                                        C7  = 5.0E+4,  # K_RD
-                                        C8  = 1.0E+10, # ETA_RD
-                                        C9  = 1.0e+11, # ETA_ID
-                                        C10 = 0.,      # ETA_FD
-                                        C11 = 1.       # Cini
-                                      ),
+                    Burger=_F(
+                                YoungModulus = 31000.,
+                                PoissonRatio = 0.2,
+                                KRS = 2.e5,
+                                NRS = 4.e10,
+                                KAPPA = 3.e-3,
+                                NIS = 1.e11,
+                                KRD = 5.e4,
+                                NRD = 1.e10,
+                                NID = 1.e11,
+                                NFD = 0.,
+                                Cini = 1.,
+                    ),
                   )
 
 TEMP= DEFI_CONSTANTE(VALE=20.)
@@ -77,9 +66,8 @@ L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,INTERVALLE=(
 
 
 TABRES=SIMU_POINT_MAT(  MATER=BETON,
-                   COMPORTEMENT=_F(RELATION='MFRONT',
-                                LIBRAIRIE='burger.so',
-                                NOM_ROUTINE='asterburger',
+                   COMPORTEMENT=_F(RELATION='Burger',
+                                RESI_INTE_RELA=1.e-8,
                                   ),
                    AFFE_VARC=(
                    _F(  NOM_VARC='TEMP',
@@ -94,7 +82,7 @@ TABRES=SIMU_POINT_MAT(  MATER=BETON,
                            REAC_ITER = 1),
                  CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-8,
                                 ITER_GLOB_MAXI = 50),
-                 SIGM_IMPOSE=_F(SIZZ=FORCE,),                      
+                 SIGM_IMPOSE=_F(SIZZ=FORCE,),
               )
 
 IMPR_TABLE(TABLE=TABRES,UNITE=38)
@@ -107,7 +95,7 @@ TEST_TABLE (FILTRE=_F(NOM_PARA='INST',VALE=1.0),
                    VALE_REFE=-3.22581E-05,
                    PRECISION=2.E-4,
                    )
-                   
+
 TEST_TABLE (FILTRE=_F(NOM_PARA='INST',VALE=9.7041E4),
                    REFERENCE='SOURCE_EXTERNE',
                    TABLE=TABRES,
@@ -116,7 +104,7 @@ TEST_TABLE (FILTRE=_F(NOM_PARA='INST',VALE=9.7041E4),
                    VALE_REFE=-3.89947E-05,
                    PRECISION=4.E-3,
                    )
-                   
+
 TEST_TABLE (FILTRE=_F(NOM_PARA='INST',VALE=1.8389035E6),
                    REFERENCE='SOURCE_EXTERNE',
                    TABLE=TABRES,
@@ -125,7 +113,7 @@ TEST_TABLE (FILTRE=_F(NOM_PARA='INST',VALE=1.8389035E6),
                    VALE_REFE=-6.55895E-05,
                    PRECISION=5.E-3,
                    )
-                   
+
 TEST_TABLE (FILTRE=_F(NOM_PARA='INST',VALE=8.640000E6),
                    REFERENCE='SOURCE_EXTERNE',
                    TABLE=TABRES,

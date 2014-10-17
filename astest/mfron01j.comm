@@ -23,10 +23,6 @@
 #---------------------------------------------------------------------
 #
 
-
-os.system("mfront --obuild Chaboche.mfront --interface=aster")
-
-
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 MAIL_B=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), )
@@ -59,27 +55,21 @@ MAT_B=DEFI_MATERIAU(        ELAS=_F( E = 2.E+11,
                                     NU = 0.3),
                          ECRO_LINE=_F( D_SIGM_EPSI = 0.,
                                     SY = 2.35E+08),
-                      #UMAT=_F( C1 = 2.E+11,
-                               #C2 = 0.3 ,
-                               #C3=0.,
-                               #C4=2.35E+08,
-                               #NB_VALE=4,
-                               #),
-                      UMAT=_F( C1 = 2.E+11,
-                               C2 = 0.3 ,
-                               C3=2.35E+08,
-                               C4=2.35E+08,
-                               C5=0.,
-                               C6=0.,
-                               C7=0.,
-                               C8=0.,
-                               C9=0.,
-                               C10=0.,
-                               C11=0.,
-                               C12=0.,
-                               NB_VALE=12,
-                               ),
-                                    
+                    Chaboche=_F(
+                                YoungModulus = 2.e11,
+                                PoissonRatio = 0.3,
+                                R_inf = 2.35e8,
+                                R_0 = 2.35e8,
+                                b = 0.,
+                                k = 0.,
+                                w = 0.,
+                                C_inf_0 = 0.,
+                                C_inf_1 = 0.,
+                                g_0_0 = 0.,
+                                g_0_1 = 0.,
+                                a_inf = 0.,
+                    )
+
                        )
 
 #
@@ -120,7 +110,7 @@ LIS_INST=DEFI_LIST_REEL(        DEBUT=0.,INTERVALLE=(
                              _F( JUSQU_A = 15., NOMBRE = 20),
                              _F( JUSQU_A = 25., NOMBRE = 30))
                            )
-                           
+
 
 RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
                             CHAM_MATER=CH_MAT_B,
@@ -128,11 +118,9 @@ RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
                                  _F( CHARGE = CHAR0),
                                        _F( CHARGE = PRES_LIM,
                                         TYPE_CHARGE = 'FIXE_PILO')),
-                                        
-                             COMPORTEMENT=_F( RELATION = 'MFRONT',
-                                              LIBRAIRIE='./src/libAsterBehaviour.so',
-                                              NOM_ROUTINE='asterchaboche',
-                                              RESI_INTE_MAXI=1.E-12,
+
+                             COMPORTEMENT=_F( RELATION = 'Chaboche',
+                                              RESI_INTE_RELA=1.E-12,
                                             ),
                              INCREMENT=_F( LIST_INST = LIS_INST),
 

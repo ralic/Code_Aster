@@ -6,7 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron03d.comm D 1
-F nom PolyCristals.mfront   D 0
-F nom PolyCristal_Orientation.mfront   D 0
-
-

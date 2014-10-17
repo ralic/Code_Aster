@@ -6,4 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron01i.comm D 1
-F nom SaintVenantKirchhoffElasticity.mfront D 0

@@ -3,31 +3,20 @@
 # TITRE TEST MFRONT LOI DE MAZARS CF.TEST SSNP113A
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-import os
-
-# Juste pour les besoins du cas-test.
-# Il est preferable d'utiliser :
-#    mfront --obuild mazars.mfront --interface=aster     
-# avant de lancer l'etude.
-
-os.system("mfront --obuild Mazars.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so mazars.so")
-    
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
@@ -45,19 +34,19 @@ MATERIAU=DEFI_MATERIAU(MAZARS=_F(K =0.7,
                                  BT   =10000.),
                        ELAS     =_F(NU=0.2,
                                     E=3.20000000000E10),);
-MATFRONT=DEFI_MATERIAU(UMAT=_F(  
-                                 NB_VALE=8,
-                                 C1=3.2E10,
-                                 C2=0.2,
-                                 C3=1.15,
-                                 C4=0.8,
-                                 C5=1391.3,
-                                 C6=10000.,
-                                 C7=0.7,
-                                 C8=9.375e-5,
-                                 ),
+MATFRONT=DEFI_MATERIAU(
+                    Mazars=_F(
+                                YoungModulus = 3.2e10,
+                                PoissonRatio = 0.2,
+                                Ac = 1.15,
+                                At = 0.8,
+                                Bc = 1391.3,
+                                Bt = 10000.,
+                                k = 0.7,
+                                ed0 = 9.375e-5,
+                    ),
                        ELAS     =_F(NU=0.2,
-                                    E=3.20000000000E10),);
+                                    E=3.2e10),);
 
 CAR_MAT=AFFE_MATERIAU(AFFE=_F(MATER=MATERIAU,
                               TOUT='OUI'),
@@ -111,9 +100,8 @@ RES1=STAT_NON_LINE(CHAM_MATER=CHMATF,
                    TITRE='BENCH-B LOI MAZARS',
                    CONVERGENCE=_F(ITER_GLOB_MAXI=20,
                                   RESI_GLOB_RELA=1.E-06),
-                   COMPORTEMENT=_F(RELATION='MFRONT',
-                                NOM_ROUTINE='astermazars',
-                                LIBRAIRIE='mazars.so',
+                   COMPORTEMENT=_F(RELATION='Mazars',
+                                RESI_INTE_RELA=1.e-8,
                                   ),
                    INCREMENT  =_F(LIST_INST=L_INS1,
                                   INST_FIN = 1.0 ),
@@ -121,16 +109,15 @@ RES1=STAT_NON_LINE(CHAM_MATER=CHMATF,
                    EXCIT      =(_F(CHARGE=CLIM),
                                 _F(CHARGE=CHAR1,
                                    FONC_MULT=FCT_MUL1),), );
-                                   
+
 RES1=STAT_NON_LINE(reuse     = RES1,
                    CHAM_MATER=CHMATF,
                    MODELE    =MODELE,
                    TITRE     ='BENCH-A LOI MAZARS',
                    CONVERGENCE=_F(ITER_GLOB_MAXI=30,
                                   RESI_GLOB_RELA=1.E-4),
-                   COMPORTEMENT=_F(RELATION='MFRONT',
-                                NOM_ROUTINE='astermazars',
-                                LIBRAIRIE='mazars.so',
+                   COMPORTEMENT=_F(RELATION='Mazars',
+                                RESI_INTE_RELA=1.e-8,
                                   ),
                    INCREMENT  =_F(
                                   LIST_INST=L_INS1,),
@@ -145,7 +132,7 @@ RES1=STAT_NON_LINE(reuse     = RES1,
                   ETAT_INIT= _F( EVOL_NOLI=RES1 ),
                   ARCHIVAGE= _F(LIST_INST = L_INS1), );
 
-                  
+
 RES1=CALC_CHAMP(reuse=RES1,RESULTAT=RES1,NUME_ORDRE=(10,25,310),CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSI_ELNO'))
 
 RES1=CALC_CHAMP  ( reuse  = RES1,

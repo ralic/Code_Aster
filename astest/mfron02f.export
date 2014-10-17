@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron02f.comm D 1
-F nom  Mazars.mfront   D 0
 F mail mfron02f.mail D 20

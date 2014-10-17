@@ -1,28 +1,24 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: jean-michel.proix at edf.fr
-# TITRE TEST MFRONT LOI DE NORTON  
+# TITRE TEST MFRONT LOI DE NORTON
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
-
-os.system("mfront --obuild --interface=aster Norton.mfront Norton_Jacnum.mfront ImplicitNorton.mfront Norton_RK54.mfront")
-os.system("cp src/libAsterBehaviour.so norton.so")
-
 
 #parametres elastiques cf ssnp02e
 YOUNG = 178600.0E6;
@@ -37,22 +33,30 @@ A=8.e-67
 m=8.2
 UNsurK=A**(1./m)
 
-                                 
-
-MATFRONT=DEFI_MATERIAU( 
-                      ELAS=_F(E=YOUNG, NU=POISSON),                      
-                      UMAT=_F( C1 = YOUNG ,
-                               C2 = POISSON ,
-                               C3=A,
-                               C4=m,
-                               NB_VALE=4,
-                               ),
-                               )
 
 
-          
-ACIER=DEFI_MATERIAU( 
-                      ELAS=_F(E=YOUNG, NU=POISSON),                      
+MATFRONT=DEFI_MATERIAU(
+                      ELAS=_F(E=YOUNG, NU=POISSON),
+                      Norton=_F(YoungModulus = YOUNG ,
+                                PoissonRatio = POISSON ,
+                                A=A,
+                                E=m,),
+                      Norton_Jacnum=_F(YoungModulus = YOUNG ,
+                                       PoissonRatio = POISSON ,
+                                       A=A,
+                                       m=m,),
+                      Norton_RK54=_F(YoungModulus = YOUNG ,
+                                     PoissonRatio = POISSON ,
+                                     A=A,
+                                     m=m,),
+                      ImplicitNorton=_F(YoungModulus = YOUNG ,
+                                        PoissonRatio = POISSON ,
+                                        A=A,
+                                        E=m,),)
+
+
+ACIER=DEFI_MATERIAU(
+                      ELAS=_F(E=YOUNG, NU=POISSON),
                       LEMAITRE=_F(
                                 UN_SUR_K=UNsurK,
                                 N=m,
@@ -71,7 +75,7 @@ TRAC_FO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                             10980.,-SIGMAX,
                             11010.,0.,
                             ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
-                            
+
 TAUMAX=40.E6/sqrt(2.)
 CISA_FO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                            #30.,0.,
@@ -92,13 +96,13 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                    _F(JUSQU_A=30.,NOMBRE=300,),
                   # _F(JUSQU_A=3630.,NOMBRE=2000,),
                                   ),);
-                                  
+
 LINST0=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=(
                    _F(JUSQU_A=30.,NOMBRE=3000,),
                   # _F(JUSQU_A=3630.,NOMBRE=2000,),
                                   ),);
-                                  
+
 listtps=DEFI_LIST_INST( DEFI_LIST=_F(LIST_INST=LINST0),
                            ECHEC=_F(SUBD_NIVEAU=10,
                                     SUBD_PAS=4,
@@ -114,7 +118,7 @@ astimpl=SIMU_POINT_MAT(
            NEWTON    =_F(PREDICTION='EXTRAPOLE',REAC_ITER=1,),
            MATER     = ACIER,
            INCREMENT=_F(LIST_INST=listtps,),
-           SIGM_IMPOSE=_F(SIXX=TRAC_FO, 
+           SIGM_IMPOSE=_F(SIXX=TRAC_FO,
                           SIXY=CISA_FO,
                          ),
               INFO=1,  );
@@ -125,39 +129,38 @@ epxx1=RECU_FONCTION(TABLE=astimpl,
                     PARA_X='INST',
                     PARA_Y='EPXX',
                     INTERPOL='LIN');
-                    
+
 epxy1=RECU_FONCTION(TABLE=astimpl,
                     PARA_X='INST',
                     PARA_Y='EPXY',
                     INTERPOL='LIN');
-                    
+
 sixx1=RECU_FONCTION(TABLE=astimpl,
                     PARA_X='INST',
                     PARA_Y='SIXX',
                     INTERPOL='LIN');
-                    
+
 sixy1=RECU_FONCTION(TABLE=astimpl,
                     PARA_X='INST',
                     PARA_Y='SIXY',
                     INTERPOL='LIN');
-                    
+
 nbiter1=RECU_FONCTION(TABLE=astimpl,
                     PARA_X='INST',
                     PARA_Y='NB_ITER',
                     INTERPOL='LIN');
-                    
+
 
 # comportement MFRONT implicite specfique
 
 mfr2=SIMU_POINT_MAT(
-           COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='norton.so',
-                        NOM_ROUTINE='asternortonspec',
+           COMPORTEMENT=_F(RELATION='Norton',
+                        RESI_INTE_RELA=1.e-8,
                         ),
            NEWTON    =_F(PREDICTION='EXTRAPOLE',REAC_ITER=1,),
            MATER     = MATFRONT,
            INCREMENT=_F(LIST_INST=listtps,),
-           SIGM_IMPOSE=_F(SIXX=TRAC_FO, 
+           SIGM_IMPOSE=_F(SIXX=TRAC_FO,
                           SIXY=CISA_FO,
                          ),
               INFO=1,  );
@@ -168,17 +171,17 @@ epxx2=RECU_FONCTION(TABLE=mfr2,
                     PARA_X='INST',
                     PARA_Y='EPXX',
                     INTERPOL='LIN');
-                    
+
 epxy2=RECU_FONCTION(TABLE=mfr2,
                     PARA_X='INST',
                     PARA_Y='EPXY',
                     INTERPOL='LIN');
-                    
+
 sixx2=RECU_FONCTION(TABLE=mfr2,
                     PARA_X='INST',
                     PARA_Y='SIXX',
                     INTERPOL='LIN');
-                    
+
 sixy2=RECU_FONCTION(TABLE=mfr2,
                     PARA_X='INST',
                     PARA_Y='SIXY',
@@ -189,21 +192,19 @@ nbiter2=RECU_FONCTION(TABLE=mfr2,
                     PARA_X='INST',
                     PARA_Y='NB_ITER',
                     INTERPOL='LIN');
-                    
+
 
 
 # comportement MFRONT implicite jacobienne numérique
 
 mfr3=SIMU_POINT_MAT(
-           COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='norton.so',
-                        NOM_ROUTINE='asternortonjnum',
-                        RESI_INTE_MAXI=1e-12,
+           COMPORTEMENT=_F(RELATION='Norton_Jacnum',
+                        RESI_INTE_RELA=1e-12,
                         ),
            NEWTON    =_F(PREDICTION='EXTRAPOLE',REAC_ITER=1,),
            MATER     = MATFRONT,
            INCREMENT=_F(LIST_INST=listtps,),
-           SIGM_IMPOSE=_F(SIXX=TRAC_FO, 
+           SIGM_IMPOSE=_F(SIXX=TRAC_FO,
                           SIXY=CISA_FO,
                          ),
               INFO=1,  );
@@ -214,17 +215,17 @@ epxx3=RECU_FONCTION(TABLE=mfr3,
                     PARA_X='INST',
                     PARA_Y='EPXX',
                     INTERPOL='LIN');
-                    
+
 epxy3=RECU_FONCTION(TABLE=mfr3,
                     PARA_X='INST',
                     PARA_Y='EPXY',
                     INTERPOL='LIN');
-                    
+
 sixx3=RECU_FONCTION(TABLE=mfr3,
                     PARA_X='INST',
                     PARA_Y='SIXX',
                     INTERPOL='LIN');
-                    
+
 sixy3=RECU_FONCTION(TABLE=mfr3,
                     PARA_X='INST',
                     PARA_Y='SIXY',
@@ -235,19 +236,17 @@ nbiter3=RECU_FONCTION(TABLE=mfr3,
                     PARA_X='INST',
                     PARA_Y='NB_ITER',
                     INTERPOL='LIN');
-                    
+
 # comportement MFRONT implicite jacobienne analytique
 
 mfr4=SIMU_POINT_MAT(
-           COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='norton.so',
-                        NOM_ROUTINE='asternortonjprog',
-                        RESI_INTE_MAXI=1e-11,
+           COMPORTEMENT=_F(RELATION='ImplicitNorton',
+                        RESI_INTE_RELA=1e-11,
                         ),
            NEWTON    =_F(PREDICTION='EXTRAPOLE',REAC_ITER=1,),
            MATER     = MATFRONT,
            INCREMENT=_F(LIST_INST=listtps,),
-           SIGM_IMPOSE=_F(SIXX=TRAC_FO, 
+           SIGM_IMPOSE=_F(SIXX=TRAC_FO,
                           SIXY=CISA_FO,
                          ),
               INFO=1,  );
@@ -258,17 +257,17 @@ epxx4=RECU_FONCTION(TABLE=mfr4,
                     PARA_X='INST',
                     PARA_Y='EPXX',
                     INTERPOL='LIN');
-                    
+
 epxy4=RECU_FONCTION(TABLE=mfr4,
                     PARA_X='INST',
                     PARA_Y='EPXY',
                     INTERPOL='LIN');
-                    
+
 sixx4=RECU_FONCTION(TABLE=mfr4,
                     PARA_X='INST',
                     PARA_Y='SIXX',
                     INTERPOL='LIN');
-                    
+
 sixy4=RECU_FONCTION(TABLE=mfr4,
                     PARA_X='INST',
                     PARA_Y='SIXY',
@@ -279,18 +278,17 @@ nbiter4=RECU_FONCTION(TABLE=mfr4,
                     PARA_X='INST',
                     PARA_Y='NB_ITER',
                     INTERPOL='LIN');
-                    
+
 # comportement MFRONT explicite
 
 mfr5=SIMU_POINT_MAT(
-           COMPORTEMENT=_F(RELATION='MFRONT',
-                        LIBRAIRIE='norton.so',
-                        NOM_ROUTINE='asternortonexpl',
+           COMPORTEMENT=_F(RELATION='Norton_RK54',
+                        RESI_INTE_RELA=1.e-8,
                         ),
            NEWTON    =_F(PREDICTION='EXTRAPOLE',REAC_ITER=1,),
            MATER     = MATFRONT,
            INCREMENT=_F(LIST_INST=listtps,),
-           SIGM_IMPOSE=_F(SIXX=TRAC_FO, 
+           SIGM_IMPOSE=_F(SIXX=TRAC_FO,
                           SIXY=CISA_FO,
                          ),
               INFO=1,  );
@@ -301,17 +299,17 @@ epxx5=RECU_FONCTION(TABLE=mfr5,
                     PARA_X='INST',
                     PARA_Y='EPXX',
                     INTERPOL='LIN');
-                    
+
 epxy5=RECU_FONCTION(TABLE=mfr5,
                     PARA_X='INST',
                     PARA_Y='EPXY',
                     INTERPOL='LIN');
-                    
+
 sixx5=RECU_FONCTION(TABLE=mfr5,
                     PARA_X='INST',
                     PARA_Y='SIXX',
                     INTERPOL='LIN');
-                    
+
 sixy5=RECU_FONCTION(TABLE=mfr5,
                     PARA_X='INST',
                     PARA_Y='SIXY',
@@ -322,9 +320,9 @@ nbiter5=RECU_FONCTION(TABLE=mfr5,
                     PARA_X='INST',
                     PARA_Y='NB_ITER',
                     INTERPOL='LIN');
-                    
 
-                    
+
+
 
 IMPR_FONCTION(
 FORMAT ='XMGRACE',
@@ -345,33 +343,31 @@ _F(FONC_X=epxy5,FONC_Y=sixy5,  LEGENDE='xy,Norton_Mfront'),
 ))
 
 # reference Aster
-TEST_TABLE(TABLE=astimpl, NOM_PARA='EPXX',VALE_CALC=0.0155665675643 , 
-           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5), 
+TEST_TABLE(TABLE=astimpl, NOM_PARA='EPXX',VALE_CALC=0.0155665675643 ,
+           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5),
               );
-              
-TEST_TABLE(TABLE=astimpl, NOM_PARA='EPXY',VALE_CALC=0.0164791649107 , 
-           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5), 
+
+TEST_TABLE(TABLE=astimpl, NOM_PARA='EPXY',VALE_CALC=0.0164791649107 ,
+           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5),
               );
-              
+
 TEST_TABLE(TABLE=mfr2, NOM_PARA='EPXX',VALE_CALC=0.0155665676439, VALE_REFE=0.0155665675643,REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5), 
+           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5),
               );
 TEST_TABLE(TABLE=mfr3, NOM_PARA='EPXX',VALE_CALC=0.0155665650274 ,  VALE_REFE=0.0155665675643,REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5), 
+           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5),
               );
-TEST_TABLE(TABLE=mfr4, NOM_PARA='EPXX',VALE_CALC=0.0155665602229 , VALE_REFE=0.0155665675643,REFERENCE='AUTRE_ASTER', 
-           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5), 
+TEST_TABLE(TABLE=mfr4, NOM_PARA='EPXX',VALE_CALC=0.0155665602229 , VALE_REFE=0.0155665675643,REFERENCE='AUTRE_ASTER',
+           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5),
               );
 TEST_TABLE(TABLE=mfr5, NOM_PARA='EPXX',VALE_CALC=0.0155692163635 ,  VALE_REFE=0.0155665675643,REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5), 
+           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5),
               );
-              
+
 TEST_TABLE(TABLE=mfr2, NOM_PARA='EPXY',VALE_CALC=0.0164791649951 ,  VALE_REFE=0.0164791649107,REFERENCE='AUTRE_ASTER',
-           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5), 
+           FILTRE=_F(NOM_PARA='INST',VALE=30., PRECISION=1.E-5),
               );
 
 
 
 FIN();
-
-

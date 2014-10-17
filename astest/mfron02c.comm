@@ -22,9 +22,8 @@
 # -----------------------------------------------------
 
 
-os.rename("BurgerAgeing.mfront", "burger.mfront")
-os.system("mfront --obuild burger.mfront --interface=aster")
-os.system("cp src/libAsterBehaviour.so burger.so")
+os.system("mfront --obuild BurgerAgeing.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so BurgerAgeing.so")
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -252,8 +251,8 @@ UREF28=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CHARG28),
                  ),
                    COMPORTEMENT=_F(RELATION='MFRONT',
-                                NOM_ROUTINE='asterburger',
-                                LIBRAIRIE='burger.so',
+                                NOM_ROUTINE='asterburgerageing',
+                                LIBRAIRIE='BurgerAgeing.so',
                                 RESI_INTE_MAXI=1e-11,
                                   ),
                  INCREMENT=_F(LIST_INST = LINST28,
@@ -367,8 +366,8 @@ UREF90=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CHARG90),
                  ),
                    COMPORTEMENT=_F(RELATION='MFRONT',
-                                NOM_ROUTINE='asterburger',
-                                LIBRAIRIE='burger.so',
+                                NOM_ROUTINE='asterburgerageing',
+                                LIBRAIRIE='BurgerAgeing.so',
                                 RESI_INTE_MAXI=1e-11,
                                   ),
                  INCREMENT=_F(LIST_INST = LINST90,

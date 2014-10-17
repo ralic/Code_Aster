@@ -6,4 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron05c.comm D 1
-F nom GursonTvergaardNeedlemanPlasticFlow_NumericalJacobian.mfront D 0

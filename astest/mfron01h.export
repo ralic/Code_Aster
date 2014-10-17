@@ -6,8 +6,7 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron01h.comm D 1
-F nom ImplicitSimoMieheElastoPlasticity.mfront D 0
-F nom Plasticity.mfront D 0
-F nom SaintVenantKirchhoffElasticity.mfront D 0
-F mail mfron01h.mail D 20
 
+
+
+F mail mfron01h.mail D 20

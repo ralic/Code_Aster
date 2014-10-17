@@ -6,6 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron03h.comm D 1
-F nom MonoCristal_DD_CC.mfront D 0
-F nom MonoCristal_DD_CC_InteractionMatrix.mfront D 0
-F nom MonoCristal_DD_CC_SlidingSystems.mfront D 0

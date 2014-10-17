@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron02d.comm D 1
-F nom  Mazars.mfront   D 0
+
 F mmed ssla103c.mmed D 20

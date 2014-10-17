@@ -6,8 +6,3 @@ P mpi_nbnoeud 1
 P testlist C
 
 F comm mfron01e.comm D 1
-F nom Norton_RK54.mfront D 0
-F nom ImplicitNorton.mfront D 0
-F nom Norton_Jacnum.mfront D 0
-F nom Norton.mfront D 0
-
