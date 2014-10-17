@@ -320,7 +320,12 @@ Risques et conseils :
 """),
 
 75 : _(u"""
- comportement %(k1)s non trouvé pour la maille  %(k2)s
+Le matériau '%(k1)s' n'a pas été affecté à la maille %(k2)s.
+
+Conseil:
+    Vérifiez que le mot-clé facteur '%(k1)s' a bien été renseigné dans
+    DEFI_MATERIAU et que ce matériau a bien été affecté (par AFFE_MATERIAU)
+    sur cette partie du modèle.
 """),
 
 77 : _(u"""
@@ -348,12 +353,12 @@ Risques et conseils :
 """),
 
 83 : _(u"""
- Le nom du comportement >>%(k1)s<< est trop long, il dépasse les 10 caractères autorisés.
+Le nom du comportement '%(k1)s' est trop long, il dépasse les 32 caractères autorisés.
 """),
 
 84 : _(u"""
- Le nom du paramètre >>%(k1)s<< est trop long, il dépasse les 8 caractères autorisés, 
- Le nom sera tronqué à 8 caractères.
+Le nom du paramètre >>%(k1)s<< est trop long, il dépasse les 16 caractères autorisés,
+Le nom sera tronqué à 16 caractères.
 """),
 
 92 : _(u"""
