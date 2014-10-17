@@ -42,13 +42,12 @@ def pre_seisme_nonl_sdprod(self, RESULTAT, PARAMETRE, **args):
 
 def affe_char_meca_regles(**args):
        # ONLY if PRE_CALC_MISS is not None
-       print "args=", args
        AFFE_CHAR_MECA.entites['MODELE'].statut = 'f'   
        return AFFE_CHAR_MECA.regles
 
 def affe_cara_elem_regles(**args):
        # ONLY if PRE_CALC_MISS is not None
-       AFFE_CARA_ELEM.entites['MODELE'].statut = 'f'   
+       AFFE_CARA_ELEM.entites['MODELE'].statut = 'f'
        return AFFE_CARA_ELEM.regles
 
 PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
@@ -56,7 +55,7 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                  sd_prod=pre_seisme_nonl_sdprod,
                  fr=tr("description"),
                  reentrant='n',
-                 UIinfo={"groupes":("Fonctions",)}, 
+                 UIinfo={"groupes":("Fonctions",)},
                  AFFE_MODELE = FACT(statut='d',
                      regles=AFFE_MODELE.regles,
                      **AFFE_MODELE.entites
@@ -74,9 +73,9 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                      regles=affe_char_meca_regles(),
                      **AFFE_CHAR_MECA.entites
                                     ),
-                 PARAMETRE = FACT( statut = 'o', min = 1, max = 1,  
+                 PARAMETRE = FACT( statut = 'o', min = 1, max = 1,
                                    regles = UN_PARMI('PRE_CALC_MISS','POST_CALC_MISS'),
-                                   PRE_CALC_MISS = FACT(statut = 'f', max = 1, 
+                                   PRE_CALC_MISS = FACT(statut = 'f', max = 1,
                                                          REDUC_DYNA_ISS = SIMP(statut='f', typ='TXM', into=('OUI','NON',), defaut='NON'),
                                                          REDUC_DYNA_IFS = SIMP(statut='f', typ='TXM', into=('OUI','NON',), defaut='NON'),
                                                          NMAX_MODE_ISS = SIMP(statut='o', typ='I'),
@@ -86,7 +85,7 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                                                          CALC_MISS_OPTION = SIMP(statut='o',typ='TXM', into=('ISS','ISFS')),
                                                          GROUP_NO_INTERF = SIMP(statut='o', typ=grno, max='**'),
                                                          ),
-                                    POST_CALC_MISS = FACT(statut = 'f', max = 1, 
+                                    POST_CALC_MISS = FACT(statut = 'f', max = 1,
                                                           MACR_ELEM_DYNA  = SIMP(statut='o', typ=macr_elem_dyna,
                                                                            fr=tr("Macro élément produit en amont")),
                                                           UNITE_RESU_RIGI = SIMP(statut='f', typ='I'),
@@ -94,19 +93,19 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                                                           UNITE_RESU_AMOR = SIMP(statut='f', typ='I'),
                                                          ),
                                   ),
-                 RESULTAT = FACT(statut='o', min = 1, max = 1, 
+                 RESULTAT = FACT(statut='o', min = 1, max = 1,
                                      MODELE = SIMP(statut='f',typ=CO),
-                                     MAILLAGE = SIMP(statut='f',typ=CO), 
+                                     MAILLAGE = SIMP(statut='f',typ=CO),
                                      CHAM_MATER = SIMP(statut='f',typ=CO),
-                                     CARA_ELEM = SIMP(statut='f',typ=CO), 
-                                     # ONLY when PRE_CALC_MISS is not None 
-                                     BASE_MODALE = SIMP(statut='f',typ=CO),  
-                                     # ONLY when PRE_CALC_MISS is not None  
-                                     MACR_ELEM_DYNA = SIMP(statut='f',typ=CO), 
-                                     CHARGE = FACT( statut='f', max = '**', 
+                                     CARA_ELEM = SIMP(statut='f',typ=CO),
+                                     # ONLY when PRE_CALC_MISS is not None
+                                     BASE_MODALE = SIMP(statut='f',typ=CO),
+                                     # ONLY when PRE_CALC_MISS is not None
+                                     MACR_ELEM_DYNA = SIMP(statut='f',typ=CO),
+                                     CHARGE = FACT( statut='f', max = '**',
                                                    OPTION = SIMP(statut='o',typ='TXM',
                                                             into=('COND_LIM', 'LAPL_TEMPS') ),
-                                                   NOM = SIMP(statut='o',typ=CO), 
+                                                   NOM = SIMP(statut='o',typ=CO),
                                                   ),
                                     ),
 
