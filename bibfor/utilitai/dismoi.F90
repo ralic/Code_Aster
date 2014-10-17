@@ -24,7 +24,6 @@ subroutine dismoi(questi, nomob, typeco, repi, repk,&
 #include "asterfort/dismml.h"
 #include "asterfort/dismmo.h"
 #include "asterfort/dismms.h"
-#include "asterfort/dismne.h"
 #include "asterfort/dismns.h"
 #include "asterfort/dismnu.h"
 #include "asterfort/dismph.h"
@@ -156,8 +155,6 @@ subroutine dismoi(questi, nomob, typeco, repi, repk,&
         call dismre(quest1, nomo1(1:19), repi1, repk1, ier1)
     else if (typec1.eq.'INTERF_DYNA') then
         call dismli(quest1, nomo1(1:8), repi1, repk1, ier1)
-    else if (typec1.eq.'NUME_EQUA') then
-        call dismne(quest1, nomo1(1:19), repi1, repk1, ier1)
     else if (typec1.eq.'TYPE_ELEM') then
         call dismte(quest1, nomo1(1:16), repi1, repk1, ier1)
     else if (typec1.eq.'TYPE_MAILLE') then
