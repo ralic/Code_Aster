@@ -21,7 +21,7 @@ from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
    nom            = 'SimoMieheVmis',
-   symbol_mfront  = 'asterimplicitsimomieheelastoplasticity',
+   symbol_mfront  = 'astersimomiehevmis',
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('SIMO_MIEHE',),
    algo_inte      = ('NEWTON',),

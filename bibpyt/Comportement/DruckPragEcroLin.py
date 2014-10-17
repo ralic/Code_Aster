@@ -21,7 +21,7 @@ from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
    nom            = 'DruckPragEcroLin',
-   symbol_mfront  = 'asterdruckerpragerecrolin',
+   symbol_mfront  = 'asterdruckpragecrolin',
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
    algo_inte      = ('NEWTON_PERT',),

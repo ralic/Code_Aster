@@ -21,7 +21,7 @@ from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
    nom            = 'GdefMono_Jacnum',
-   symbol_mfront  = 'asterfinitestrainsinglecrystal_numericaljacobian',
+   symbol_mfront  = 'astergdefmono_jacnum',
    modelisation   = ('3D',),
    deformation    = ('SIMO_MIEHE',),
    algo_inte      = ('NEWTON_PERT',),

@@ -21,7 +21,7 @@ from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
    nom            = 'MonoDDCC_Irra',
-   symbol_mfront  = 'astermonocristal_dd_cc_irradiation',
+   symbol_mfront  = 'astermonoddcc_irra',
    modelisation   = ('3D',),
    deformation    = ('PETIT',),
    algo_inte      = ('NEWTON',),
