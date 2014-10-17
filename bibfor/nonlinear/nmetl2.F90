@@ -121,7 +121,7 @@ implicit none
 !
 ! --------- Discretization of input field
 !
-            call dismoi('TYPE_CHAMP', field_resu, 'CHAMP', repk=field_disc_in, arret='C')
+            call dismoi('TYPE_CHAMP', field_resu, 'CHAMP', repk=field_disc_in, arret='C', ier=iret)
             if (iret .eq. 1) then
                 call utmess('F', 'ETATINIT_50', sk=field_resu)
             endif
