@@ -42,6 +42,14 @@ class MFrontBehaviour
         void fillMaterialPropertiesNames();
 };
 
+/**
+ * \brief Convert a vector of strings into a char** and size
+ * \param[in] svect : vector of strings
+ * \param[out] size : number of elements in the vector
+ * \return char**
+ */
+char** vectorOfStringsAsChar(const std::vector<std::string> &, unsigned int *);
+
 extern "C"
 {
 #endif // __cplusplus
@@ -55,6 +63,15 @@ extern "C"
  */
 char** getMaterialPropertiesNames(const char*, const char*, const char*,
                                   unsigned int *);
+
+/**
+ * \brief Return an array of strings of the properties names
+ *        using the default library name and Tridimensional hypothesis
+ * @param behaviour name
+ * @param size      Size of the array, number of properties
+ */
+char** getTridimMaterialPropertiesNames(const char*,
+                                        unsigned int *);
 
 #ifdef __cplusplus
 }

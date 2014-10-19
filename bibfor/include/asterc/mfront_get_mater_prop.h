@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mfront_get_mater_prop(pmatprop, nbval, txval)
-        integer, intent(in) :: pmatprop
+    subroutine mfront_get_mater_prop(rela_comp, nbval, txval)
+        character(len=*), intent(in) :: rela_comp
         integer, intent(in) :: nbval
         character(len=16), intent(out) :: txval(*)
     end subroutine mfront_get_mater_prop

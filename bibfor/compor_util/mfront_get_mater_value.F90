@@ -42,7 +42,6 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
 ! aslint: disable=W1504,W0104
 #include "asterc/r8nnem.h"
 #include "asterc/mfront_get_mater_prop.h"
-#include "asterc/mfront_get_mater_prop_size.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/matumat.h"
@@ -58,12 +57,9 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
 !       Usermaterial: parameters are defined using UMAT in DEFI_MATERIAU
         call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
     else
-!       Get the number of material proporties
-        call mfront_get_mater_prop_size(pnbprop, nbcoef)
-
-!       Get the names of the material properties
+!       Get the number and the names of the material properties
+        call mfront_get_mater_prop(rela_comp, nbcoef, nomres)
         ASSERT(nbcoef <= npropmax)
-        call mfront_get_mater_prop(pmatprop, nbcoef, nomres)
 
 !       Get the properties values (enter under 'rela_comp' in DEFI_MATERIAU)
         call r8inir(nbcoef, r8nnem(), props, 1)

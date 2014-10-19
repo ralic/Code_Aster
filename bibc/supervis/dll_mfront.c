@@ -24,6 +24,7 @@
 
 #include "dll_register.h"
 #include "dll_mfront.h"
+#include "MFrontBehaviour.h"
 
 #ifdef _POSIX
 #include <dlfcn.h>
@@ -175,20 +176,13 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     }
 //     int* test_int = libsymb_get_symbol(DLL_DICT, libname, symbname);
     *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
-
-    mfront_name(libname, symbol, model, "_MaterialProperties", &symbname);
-    *pmatprop = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
     if ( symbname == NULL ) {
         error_symbol_not_found(libname, symbname);
     }
 
-    mfront_name(libname, symbol, model, "_nMaterialProperties", &symbname);
-    *pnbprop = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
-    if ( symbname == NULL ) {
-        error_symbol_not_found(libname, symbname);
-    }
-    unsigned short* nb = (unsigned short*)*pnbprop;
-    DEBUG_DLL_VV("material prop size: %d (addr: %ld)", (int)*nb, *pnbprop)
+    // may be used for performance reason: pointers in a cache
+    *pmatprop = (INTEGER)0;
+    *pnbprop = (INTEGER)0;
 
     FreeStr(libname);
     FreeStr(model);
@@ -298,46 +292,38 @@ void DEFPPPPPPPPPPPPPPPPPP(MFRONT_BEHAVIOUR, mfront_behaviour,
 }
 
 /**
- * \brief Return the number of material properties
- * @param pnbprop   Pointer on the data in the library
- * @param nbval     Number of values of material properties
- */
-void DEFPP(MFRONT_GET_MATER_PROP_SIZE,
-           mfront_get_mater_prop_size,
-            _IN INTEGER* pnbprop,
-           _OUT INTEGER* nbval)
-{
-    unsigned short* nbext = (unsigned short*)*pnbprop;
-    *nbval = (INTEGER)*nbext;
-}
-
-/**
  * \brief Fill the array of the material properties names
  * @param pmatprop  Pointer on the data in the library
  * @param nbval     Number of values of material properties
  * @param txval     Array of strings
  */
-void DEFPPS(MFRONT_GET_MATER_PROP,
+void DEFSPS(MFRONT_GET_MATER_PROP,
             mfront_get_mater_prop,
-             _IN INTEGER* pmatprop,
-             _IN INTEGER* nbval,
+             _IN char* rela, STRING_SIZE lrela,
+            _OUT INTEGER* nbval,
             _OUT char* txval, STRING_SIZE ltx)
 {
 #ifdef _POSIX
     /* MFRONT Wrapper
     */
-    char** names = (char**)*pmatprop;
-    char *cleaned;
-    DEBUG_DLL_VV("get_mater_prop: nbprop=%d   matprop=%s", (int)*nbval, names[0])
+    char *cleaned, *crela;
+    char library[] = "lib" ASTERBEHAVIOUR;
+    unsigned int i, size;
+    char **props;
     AS_ASSERT(ltx == 16);
 
-    unsigned short i;
-    for ( i = 0; i < *nbval; ++i )
-    {
-        clean_parameter(names[i], &cleaned);
+    crela = MakeCStrFromFStr(rela, lrela);
+    props = getTridimMaterialPropertiesNames(crela, &size);
+    for (i = 0; i < size; ++i) {
+        clean_parameter(props[i], &cleaned);
+        DEBUG_DLL_VV("parameter: '%s' --> '%s'\n", props[i], cleaned)
         SetTabFStr( txval, i, cleaned, 16 );
         free(cleaned);
+        free(props[i]);
     }
+    *nbval = (INTEGER)size;
+    free(props);
+    FreeStr(crela);
 #else
     printf("Not available under Windows.\n");
     abort();

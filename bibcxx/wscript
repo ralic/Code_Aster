@@ -16,6 +16,9 @@ def configure(self):
 def build(self):
     buildenv = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
+    paths = get_srcs('mfront', src=True, dir=True)
+    paths = [d.abspath() for d in paths]
+    self.env.append_value('INCLUDES', paths)
 
     self(
         features = 'cxx',

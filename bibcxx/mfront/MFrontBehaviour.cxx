@@ -4,7 +4,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <algorithm>
 
+#include "asterc_config.h"
 #include "MFrontBehaviour.h"
 
 using namespace std;
@@ -121,20 +123,44 @@ void MFrontBehaviour::fillMaterialPropertiesNames()
     _mpnames_computed = true;
 }
 
+char** vectorOfStringsAsChar(const vector<string> &svect, unsigned int *size)
+{
+    char **res;
+    *size = (unsigned int)(svect.size());
+    res = (char **)malloc((size_t)*size * sizeof(char*));
+    for (unsigned int i = 0; i < *size; ++i) {
+        res[i] = (char *)malloc( ((size_t)svect[i].size() + 1) * sizeof(char));
+        strcpy(res[i], svect[i].c_str());
+    }
+    return res;
+}
+
 /* for a simple C access */
-char** getMaterialPropertiesNames(const char* hyp, const char* lib, const char* behav,
+char** getMaterialPropertiesNames(const char* hyp, const char* lib, const char* funct,
                                   unsigned int* size)
 {
     char **res;
 
-    MFrontBehaviour behaviour(hyp, lib, behav);
+    MFrontBehaviour behaviour(hyp, lib, funct);
     vector<string> names = behaviour.getMaterialPropertiesNames();
 
-    *size = (unsigned int)(names.size());
-    res = (char **)malloc( (size_t)*size * sizeof(char*));
-    for (unsigned int i = 0; i < *size; ++i) {
-        res[i] = (char *)malloc( ((size_t)names[i].size() + 1) * sizeof(char));
-        strcpy(res[i], names[i].c_str());
-    }
+    res = vectorOfStringsAsChar(names, size);
+    return res;
+}
+
+char** getTridimMaterialPropertiesNames(const char* behav,
+                                        unsigned int *size)
+{
+    char **res;
+    string bname(behav);
+    transform(bname.begin(), bname.end(), bname.begin(), ::tolower);
+    bname.insert(0, "aster");
+
+    MFrontBehaviour behaviour("Tridimensional",
+                              "lib" + string(ASTERBEHAVIOUR) + ".so",
+                              bname.c_str());
+    vector<string> names = behaviour.getMaterialPropertiesNames();
+
+    res = vectorOfStringsAsChar(names, size);
     return res;
 }

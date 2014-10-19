@@ -263,6 +263,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
                 call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
                 call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
             endif
+!           The keywords in DEFI_MATERIAU are those for Tridimensional hypothesis
+!FIXME      ASSERT(nom_mod_mfront == '_Tridimensional' .or. .not. l_mfront_offi)
             call mfront_get_pointers(libr_name, subr_name, nom_mod_mfront,&
                                      cpointer_nbvarext, cpointer_namevarext,&
                                      cpointer_fct_ldc,&
