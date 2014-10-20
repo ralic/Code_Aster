@@ -79,12 +79,14 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
             lgeom = [False]*nb_type_ma
             l_ma_gr = MAILLAGE.sdj.GROUPEMA.get()[gr.ljust(24)]
             for m in l_ma_gr:
+                typ_ok = False
+                typ_m = ltyma[ltyma_maya[m-1]-1].strip()
                 for i_typ, typma in enumerate(li_ty_ma_mode):
-                    if ltyma[ltyma_maya[m-1]-1].strip() == typma:
+                    if typ_m == typma:
                         lgeom[i_typ] = True
+                        typ_ok = True
                         break
-                if lgeom == [True]*nb_type_ma:
-                    break
+                if not typ_ok: UTMESS('F', 'PLEXUS_23', valk=(typ_m, gr, modelisation))
             if lgeom.count(True) == 0:
                 UTMESS('F', 'PLEXUS_25', valk=(gr, modelisation))
 

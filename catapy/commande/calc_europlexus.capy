@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: aimery.assire at edf.fr
+# person_in_charge: serguei.potapov at edf.fr
 
 def calc_europlexus_prod(self,COURBE=None,**args):
   if COURBE is not None:
@@ -46,13 +46,13 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
         MODELE     = SIMP(statut='f',typ=modele_sdaster),
         CARA_ELEM  = SIMP(statut='f',typ=cara_elem),
 
-        FONC_PARASOL = FACT(statut='f',max=1,
-           regles=(PRESENT_PRESENT('NFKT','NFKR'),),
+        FONC_PARASOL = FACT(statut='f',max='**',
+           regles=(PRESENT_PRESENT('NFKT','NFKR'),AU_MOINS_UN('NFKT','NFAT'),),
            NFKT       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFKR       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFAT       = SIMP(statut='f',typ=(fonction_sdaster,)),
            NFAR       = SIMP(statut='f',typ=(fonction_sdaster,)),
-           GROUP_MA   = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           GROUP_MA   = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
            ),
 
 

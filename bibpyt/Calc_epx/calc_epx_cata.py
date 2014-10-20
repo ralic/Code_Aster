@@ -343,8 +343,9 @@ cata_ordre_para = {
                  contraintes il y a.
                  Attention, elles doivent être écrites dans l'ordre des
                  composantes de contraintes dans EPX.
-    MC_CARA    : Nom du mot-clé de AFFE_CARA_ELEM lié à la modélisation si
-                 celle-ci en a besoin.
+    MC_CARA    : Si RESU_ELEM, nom du mot-clé de AFFE_CARA_ELEM lié à la
+                 modélisation si celle-ci en a besoin d'une transformation
+                 contrainte/effort. 
     MODI_REPERE : Type de changement de repère si besoin d'un changement de
                   .repère
 """
@@ -430,8 +431,6 @@ cata_modelisa = {
 
 """
 cata_cara_elem = {
-    'INFO' : None,
-    'MODELE' : None,
     'DISCRET' : [
         {
         'TITRE' :'MASSES AJOUTEES',
@@ -554,13 +553,15 @@ cata_cara_elem = {
     TYPE_CHAR : Type de chargement dans EPX
                 Pour l'instant seul FACTO est utilisé mais il y a aussi 
                 le type CONST (chargement constant au cours du temps).
+    Remarque : les chargements FACTO sont obligatoirement associés à une
+               fonction. Donc pas besoin de mot-clé FONC_MULT.
 
 """
 
 cata_liais = {
     'DDL_IMPO' : {
         'MOT_CLE_EPX': ['BLOQ','DEPL'],
-        # le choix entre BLOQ et DEPL est fait en dur dans calc_epx_cata
+        # le choix entre BLOQ et DEPL est fait en dur dans calc_epx_char
         # il est fait selon la présence d'une fonction ou non
         # si fonction => DEPL , sinon BLOQ
         'ASTER'     : ['DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'],

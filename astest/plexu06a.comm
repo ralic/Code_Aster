@@ -288,6 +288,7 @@ EPX1 = CALC_EUROPLEXUS(
    CARA_ELEM=ELEM,
    FONC_PARASOL = _F(NFKT = NFKT,
                      NFKR = NFKR,
+                     GROUP_MA = 'PLINE',
                     ),
    EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
    CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',

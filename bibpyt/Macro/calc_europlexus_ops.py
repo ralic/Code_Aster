@@ -44,10 +44,11 @@ except:
 #-----------------------------------------------------------------------
 
 
-def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, MODELE=None, CARA_ELEM=None,
+def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL, 
+                        CARA_ELEM=None, MODELE=None, 
                         CHAM_MATER=None, FONC_PARASOL=None,
-                        OBSERVATION=None, ARCHIVAGE=None, COURBE=None,
-                        CALCUL=None, DOMAINES=None, INTERFACES=None,
+                        OBSERVATION=None, COURBE=None,
+                        DOMAINES=None, INTERFACES=None,
                         ETAT_INIT=None, INFO=1, **args):
     """
         Macro-commande CALC_EUROPLEXUS.
@@ -412,18 +413,22 @@ class EUROPLEXUS:
 
         from Calc_epx.calc_epx_cata import cata_cara_elem
         from Calc_epx.calc_epx_cara import export_cara, get_FONC_PARASOL
-        from Calc_epx.calc_epx_utils import recupere_structure
+        from Calc_epx.calc_epx_utils import recupere_structure, angle2vectx
+        from Calc_epx.calc_epx_utils import get_group_ma, tolist
+        from Calc_epx.calc_epx_poutre import POUTRE
         epx = self.epx
 
-        # Récuperer s'il a lieu les fonctions de ressorts de sol
+        dic_gr_cara_supp = {}
+        # Récuperer s'il a lieu les fonctions de ressorts de sol et discrets
         if self.FONC_PARASOL is not None:
-            dic_fonc_parasol = get_FONC_PARASOL(epx, self.FONC_PARASOL)
-        else:
-            dic_fonc_parasol = None
+            dic_gr_cara_supp = get_FONC_PARASOL(epx, self.FONC_PARASOL, 
+                                                dic_gr_cara_supp)
+        # récupérer les orientations des poutres
+        if self.CARA_ELEM:
+            class_poutre = POUTRE(MAILLAGE=self.MAILLAGE, CARA_ELEM=self.CARA_ELEM)
+            dic_gr_cara_supp = class_poutre.get_orie_poutre(dic_gr_cara_supp)
 
-        dic_cara_elem = {}
         mode_from_cara = {}
-        dic_cont_2_eff = {}
 
         self.dicOrthotropie = None
         # Recuperer la structure du concept sorti de AFFE_CARA_ELEM
@@ -431,22 +436,37 @@ class EUROPLEXUS:
             cara_elem_struc = recupere_structure(self.CARA_ELEM)
 
             for cle in cara_elem_struc.keys():
+                if cle in ['INFO', 'MODELE']:
+                    continue
                 if not cata_cara_elem.has_key(cle):
                     UTMESS('F', 'PLEXUS_18', valk=cle)
                 if cata_cara_elem[cle] == None:
                     continue
-                [epx, dic_cara_elem[cle], mode_from_cara,
-                dic_cont_2_eff] = export_cara(cle, epx,
+                [epx, mode_from_cara] = export_cara(cle, epx,
                                               cara_elem_struc[cle],
                                               self.MAILLAGE, self.CARA_ELEM,
-                                              dic_fonc_parasol, mode_from_cara,
-                                              dic_cont_2_eff)
+                                              dic_gr_cara_supp, mode_from_cara)
 
-            if dic_cara_elem.has_key('COQUE'):
-                self.dicOrthotropie = dic_cara_elem['COQUE']['DICT'][0]
+                if cle == 'COQUE':
+                    # récupérer les orientations des coques
+                    # utilisées pour GLRC_DAMAGE
+                    dicOrthotropie = {}
+                    donnees_coque = tolist(cara_elem_struc[cle])
+                    for elem in donnees_coque:
+                        l_group = get_group_ma(elem)
 
+                        if elem.has_key('VECTEUR'):
+                            for group in l_group:
+                                dicOrthotropie[group] = elem['VECTEUR']
+                        elif elem.has_key('ANGL_REP'):
+                            alpha, beta = elem['ANGL_REP']
+                            vect = angle2vectx(alpha, beta)
+                            for group in l_group:
+                                dicOrthotropie[group] = vect
+
+                    self.dicOrthotropie = dicOrthotropie
+                            
         self.mode_from_cara = mode_from_cara
-        self.dic_cont_2_eff = dic_cont_2_eff
 
 
     #-----------------------------------------------------------------------
@@ -925,24 +945,28 @@ class EUROPLEXUS:
         dic_champ_med = med_aster.get_nom_champ_med(fichier_med)
         if len(dic_champ_med.keys()) == 0:
             UTMESS('F', 'PLEXUS_14')
-
-        # préparation pour passage contrainte à effort.
-        liste_cont_2_eff = []
-        for gr in self.dic_cont_2_eff.keys():
-            dic = self.dic_cont_2_eff[gr]
-            dic['GROUP_MA'] = gr
-            liste_cont_2_eff.append(dic)
-
-        resu = LIRE_EUROPLEXUS(FICHIER_MED=fichier_med,
-                            MAILLAGE=self.MAILLAGE,
+        
+        unite = self.get_unite_libre()
+        # ca ne marche pas avec ca :
+        #DEFI_FICHIER(UNITE=unite, FICHIER=fichier_med, ACTION='ASSOCIER')
+        
+        # mais ca marche avec ca
+        fort = 'fort.%i' %unite
+        if os.path.isfile(fort):
+            os.remove(fort)
+        os.symlink(fichier_med, fort)
+        
+        
+        resu = LIRE_EUROPLEXUS(UNITE_MED=unite,
                             MODELE=self.MODELE,
                             CARA_ELEM=self.CARA_ELEM,
                             CHAM_MATER=self.CHAM_MATER,
-                            CONT_2_EFF=liste_cont_2_eff,
                             COMPORTEMENT=self.COMPORTEMENT,
                             EXCIT=self.EXCIT,
                             INFO=self.INFO,
                             )
+        DEFI_FICHIER(UNITE=unite, ACTION='LIBERER')
+        os.remove(fort)
 #-----------------------------------------------------------------------
     def lancer_calcul(self):
         """Lancement du calcul EPX"""

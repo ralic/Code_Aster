@@ -94,7 +94,7 @@ def export_charge(epx, EXCIT, MAILLAGE):
             nom_fonc_aster = fonction.get_name()
         else:
             fonction = None
-        l_char = False
+        l_char_fact = False
         l_link_fonc = False
 
         list_char = recupere_structure(concept_charge)
@@ -106,10 +106,22 @@ def export_charge(epx, EXCIT, MAILLAGE):
             elif char in cata_charge.keys():
                 directive = 'CHARGE'
                 cata = cata_charge
-                l_char = True
-                if fonction is None:
-                    UTMESS('F', 'PLEXUS_7', valk=char)
+                l_char_fact = True
                 type_char = recu_val('o', cata, char, 'TYPE_CHAR', None)
+                if type_char[:4] == 'FACT':
+                    l_char_fact = True
+                    if fonction is None:
+                        UTMESS('F', 'PLEXUS_7', valk=char)
+                elif type_char[:4] == 'CONS':
+                    raise Exception("""Type de charge pas encore testé
+                            des aménagements non certainement à faire.
+                            Cette exeption peut être supprimée suite à cela.
+                                    """)
+                    if fonction:
+                        UTMESS('F', 'PLEXUS_5', valk=char)
+                else:
+                    raise Exception("""Type de charge EPX non pris en 
+                                       compte : %s"""%type_char)
                 if not epx[directive].get_mcfact(type_char):
                     objet = epx[directive].add_mcfact(type_char)
                 else:
@@ -147,6 +159,10 @@ def export_charge(epx, EXCIT, MAILLAGE):
 
             cle_aster = recu_val('o', cata, char, 'ASTER', mot_cle_epx)
             cle_epx = recu_val('o', cata, char, 'EPX', mot_cle_epx)
+            if cle_epx is False and len(cle_aster)!=1:
+                raise Exception("""Préciser EPX dans %s car la liste ASTER 
+                                possède plusieurs éléments.
+                                """)
             entite = recu_val('f', cata, char, 'ENTITE', mot_cle_epx)
             if not entite: entite =[]
             vale_impo = recu_val('f', cata, char, 'VALE_IMPO', mot_cle_epx)
@@ -212,7 +228,7 @@ def export_charge(epx, EXCIT, MAILLAGE):
                                             cle=info_epx, val_cle=vale,
                                             cara=l_cara, vale=l_vale)
                 objet.add_bloc(bloc_donnees)
-        if l_char:
+        if l_char_fact:
             # ajout de la fonction
             (temps, valeurs) = fonction.Valeurs()
             bloc_fonc = FONCTION('TABLE', temps, valeurs,

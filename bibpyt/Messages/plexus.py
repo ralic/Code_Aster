@@ -38,6 +38,10 @@ Voici la liste des valeurs permises :
  %(k4)s
 """),
 
+5 : _(u"""
+Le chargement de type %(k1)s ne doit pas être associé à une fonction multiplicatrice,
+car il correspond à un chargement EPX de type constant.      
+"""),
 
 6 : _(u"""La modélisation %(k1)s n'est pas disponible dans CALC_EUROPLEXUS"""),
 
@@ -53,36 +57,35 @@ Il y a de grandes chances que vous ayez affecté une rigidité ou un amortisseme
 lequel une masse est déjà affectée."""),
 
 10: _(u"""
-Les vecteurs y_local des GROUP_MA %(k1)s
-calculés à partir des angles nautiques ne sont pas identiques.
-Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous
-êtes sur de l'orientation
+Le mot-clé ANGL_NAUT n'est pas autorisé pour définir les orientations des poutres.
 """),
 
 11: _(u"""
 Les vecteurs y_local des mailles du GROUP_MA %(k1)s
 calculés à partir des angles nautiques ne sont pas identiques.
 Veuillez imposer directement VECT_Y dans AFFE_CARA_ELEM si vous
-êtes sur de l'orientation
+êtes sur de l'orientation.
 """),
 
 12: _(u"""
-On ne trouve pas de valeur à associer à la caractéristique %(k1)s pour le mot-clé %(k1)s de AFFE_CARA_ELEM.
+On ne trouve pas de valeur à associer à la caractéristique %(k1)s pour le mot-clé %(k2)s de AFFE_CARA_ELEM
+sur le groupe de maille %(k3)s.
 Conseil : s'il s'agit d'éléments discrets de type raideur ou amortissement, vérifiez que vous
-avez bien renseigné le mot-clé FONC_PARASOL à CALC_EUROPLEXUS.
+avez bien renseigné une occurrence de FONC_PARASOL avec ce groupe dans GROUP_MA.
+S'il s'agit de poutres, vérifiez que vous avez bien déclaré une orientation au groupe de mailles
+et explicitement à celui-ci.
+Une déclaration d'une de ces informations sur un groupe de mailles contenant les mailles du groupe %(k3)s
+ne permet pas à CALC_EUROPLEXUS de retrouver les informations.
 """),
 
 14 : _(u"""
 Le fichier MED contenant les résultats d'Europlexus est introuvable ou vide.
-L'exécution d'Europlexus s'est probablement mal déroulée
+L'exécution d'Europlexus s'est probablement mal déroulée.
 """),
 
 15 : _(u"""Les différentes occurrences de RIGI_PARASOL dans AFFE_CARA_ELEM n'ont pas la même
 liste de caractéristiques (mot-clé CARA).
 CALC_EUROPLEXUS ne sait pas traiter de tels cas.
-"""),
-
-16 : _(u"""Vous n'avez pas donné le mot-clé %(k1)s à FONC_PARASOL de CALC_EUROPLEXUS.
 """),
 
 17 : _(u"""
@@ -95,13 +98,19 @@ n'est pas développée pour certains éléments du modèle.
 19 : _(u"""Le type de charge %(k1)s n'est pas pris en compte par CALC_EUROPLEXUS'
 """),
 
-22 : _(u"""La valeur du mot-clé %(k1)s du matériau %(k2)s est différente de %(k2)s.
+22 : _(u"""La valeur du mot-clé %(k1)s du matériau %(k2)s est différente de %(k3)s.
+"""),
+
+23 : _(u"""
+Il existe une ou plusieurs mailles de type %(k1)s dans le groupe %(k2)s auquel
+la modélisation %(k3)s est affectée.
+Or ce type de maille n'est pas accepté pour cette modélisation dans CALC_EUROPLEXUS.
 """),
 
 24 : _(u"""CALC_EUROPLEXUS ne traite aucune modélisation du phénomène %(k1)s.
 """),
 25 : _(u"""
-Aucun type de maille contenu dans le groupe %(k1)s n'est disponible dans CALC_EUROPLEXUS
+Aucun type de mailles contenu dans le groupe %(k1)s n'est disponible dans CALC_EUROPLEXUS
 pour la modélisation %(k2)s.
 """),
 26 : _(u"""
@@ -206,4 +215,33 @@ de mot-clé TRACTION de DEFI_MATERIAU sont incompatibles avec le module d'Young 
 Contrainte divisée par le module = %(r1)f
 Déformation                      = %(r2)f
 """),
+
+41 : _(u"""
+CALC_EUROPLEXUS : FONC_PARASOL
+
+Le groupe de maille %(k1)s est présent dans plusieurs occurrence de FONC_PARASOL.
+Ceci est interdit. Toutes les informations relatives à ce groupe doivent être
+données dans la même occurrence.
+"""),
+
+42 : _(u"""
+CALC_EUROPLEXUS : RIGI_PARASOL
+
+Il ne peut pas encore y avoir plusieurs occurrences de RIGI_PARASOL dans
+le CARA_ELEM donné à CALC_EUROPLEXUS.
+"""),
+
+
+43 : _(u"""
+CALC_EUROPLEXUS : RIGI_PARASOL
+
+Il ne peut pas encore y avoir plusieurs groupes de mailles pour le mot-clé
+GROUP_MA_POI1 de RIGI_PARASOL.
+"""),
+
+44 : _(u"""
+CALC_EUROPLEXUS/LIRE_EUROPLEXUS ne sait pas encore traiter le mot-clé %(k1)s
+d'AFFE_CARA_ELEM.
+"""),
+
 }

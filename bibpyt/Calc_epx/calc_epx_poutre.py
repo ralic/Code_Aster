@@ -48,25 +48,17 @@ class POUTRE:
         self.dic_gma = self.orientation_cara_elem()
 
 #------------------------------------------------------------------------
-    def getvecteurs(self, groupes_poutres, verif='non'):
+    def get_orie_poutre(self, dic_gr_cara_supp):
         """
             Calcul le vecteur d'orientation de section des poutres
+            groupe par groupe.
         """
-        vecteurs = {}
-        ig = 0
-        vect_old = None
-        for gr in groupes_poutres:
-            ig += 1
-            if not self.dic_gma.has_key(gr):
-                self.dic_gma[gr] = {'ANGL_VRIL':0.0}
-            vecteurs[gr] = self.get_vecty_group_ma(gr)
-            if verif == 'oui':
-                if ig > 1:
-                    if not vecteurs_egaux(vecteurs[gr], vect_old):
-                        UTMESS('F', 'PLEXUS_10', valk=groupes_poutres)
-            vect_old = vecteurs[gr]
 
-        return vecteurs
+        for gr in self.dic_gma.keys():
+             vect = self.get_vecty_group_ma(gr)
+             dic_orie = {'VX': vect[0], 'VY': vect[1], 'VZ': vect[2], }
+             dic_gr_cara_supp[gr] = dic_orie
+        return dic_gr_cara_supp
 
 #------------------------------------------------------------------------
     def orientation_cara_elem(self,):
@@ -97,19 +89,15 @@ class POUTRE:
                 if not dic_gma[gr].has_key('ANGL_VRIL'):
                     dic_gma[gr]['ANGL_VRIL'] = 0.0
                 if dic_gma[gr].has_key('ANGL_NAUT'):
-                    if len(dic_gma[gr]['ANGL_NAUT']) == 2:
-                        # EC : surement du code jamais testé
-                        raise Exception('cas non testé')
-                    #dic_gma[gr]['ANGL_NAUT'] = list(dic_gma[gr]['ANGL_NAUT'])
-                                               #+ [dic_gma[gr]['ANGL_VRIL']]
-
+                    UTMESS('F','PLEXUS_10')
         return dic_gma
 
 #------------------------------------------------------------------------
     def get_vecty_group_ma(self, group_ma):
         """
             Renvoie le vecteur d'orientation des poutres pour un groupe
-            de maille.
+            de maille, en vérifiant que c'est bien le même pour toutes 
+            les mailles du groupe.
         """
         from Calc_epx.calc_epx_utils import angle2vecty
         # VECT_Y : les données sont déjà sous la bonne forme
@@ -117,28 +105,18 @@ class POUTRE:
         if self.dic_gma[group_ma].has_key('VECT_Y'):
             vect_y = self.dic_gma[group_ma]['VECT_Y']
         else:
-            if not self.dic_gma[group_ma].has_key('ANGL_NAUT'):
-                calcul_angle = 1
-            else:
-                calcul_angle = 0
-
             mailles = self.MApyt.gma[group_ma.strip()]
 
             for imaille in range(len(mailles)):
                 maille = mailles[imaille]
-                if calcul_angle:
-                    alpha, beta = self.calcul_angles_naut(maille)
-                    angl = [alpha, beta, self.dic_gma[group_ma]['ANGL_VRIL']]
-                else:
-                    angl = self.dic_gma[group_ma]['ANGL_NAUT']
+                alpha, beta = self.calcul_angles_naut(maille)
+                angl = [alpha, beta, self.dic_gma[group_ma]['ANGL_VRIL']]
 
                 vect_y = angle2vecty(angl)
                 if imaille > 1:
                     if not vecteurs_egaux(vect_y0, vect_y):
                         UTMESS('F', 'PLEXUS_11', valk=group_ma)
                 vect_y0 = vect_y
-            # EC : a quoi ça sert ?
-            self.dic_gma[group_ma]['VECT_Y'] = vect_y
 
         return vect_y
 #------------------------------------------------------------------------

@@ -119,6 +119,7 @@ POUTRE.append(poutre1)
 ORIENTATION = []
 ORIENTATION.append(_F(GROUP_MA='POUTRE_X',CARA = 'ANGL_VRIL',VALE=90))
 ORIENTATION.append(_F(GROUP_MA='POUTRE_Y',CARA = 'ANGL_VRIL',VALE= 90))
+ORIENTATION.append(_F(GROUP_MA='POTEAUX',CARA = 'ANGL_VRIL',VALE= 0.))
 
 #ORIENTATION.append(_F(GROUP_MA='POUTRE_Y',CARA = 'VECT_Y',VALE= [1,1,1]))
 
@@ -203,7 +204,9 @@ U = CALC_EUROPLEXUS(
                  ),
               ),
    CARA_ELEM=ELEM,
-   FONC_PARASOL = _F(NFKT = NFKT,
+   FONC_PARASOL = _F(
+                     GROUP_MA ='PDALLE',
+                     NFKT = NFKT,
                      NFKR = NFKR,
                      NFAT = NFAT,
 #                     NFAR = NFAR,
