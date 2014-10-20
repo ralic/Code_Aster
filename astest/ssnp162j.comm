@@ -61,6 +61,8 @@ flux_max =  rho_fluide/12/visc_fluide*(sigma_max/k_n)**3*press/L_cube
 # FLUX_REFE POUR RESI_REFE_RELA
 flux_refe = 10*sqrt(flux_min*flux_max)
 
+print "xxxxx=", flux_refe, flux_min
+
 # L'OUVERTURE ELASTIQUE DU JOINT + CUBE
 delta_elas = sigma_max/k_n + (sigma_max-press)*L_cube/young
 # L'OUVERTURE OU LE JOINT S'OUVRE COMPLETEMENT
@@ -436,7 +438,7 @@ U_2=STAT_NON_LINE(
                     ITER_GLOB_MAXI = 20,
                     RESI_REFE_RELA = 1.E-6,
                     SIGM_REFE      = sigma_max,
-                    FLUX_HYD1_REFE = flux_min),
+                    FLUX_HYD1_REFE = flux_refe),
   NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1),
   )
 
