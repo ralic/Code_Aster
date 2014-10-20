@@ -34,6 +34,7 @@ import N_CR
 from N_Exception import AsException, InterruptParsingError
 from N_ASSD import ASSD
 from N_info import message, SUPERV
+from strfunc import get_encoding
 
 
 MemoryErrorMsg = """MemoryError :
@@ -142,7 +143,10 @@ NONE = None
       try:
          if self.appli != None :
             self.appli.affiche_infos('Compilation du fichier de commandes en cours ...')
-         self.proc_compile=compile(self.procedure,self.nom,'exec')
+         # Python 2.7 compile function does not accept unicode filename, so we encode it
+         # with the current locale encoding in order to have a correct traceback
+         encoded_filename = self.nom.encode(get_encoding())
+         self.proc_compile = compile(self.procedure, encoded_filename, 'exec')
       except SyntaxError, e:
          if CONTEXT.debug : traceback.print_exc()
          l=traceback.format_exception_only(SyntaxError,e)
@@ -256,10 +260,11 @@ Causes possibles :
         # (tuple de 3 éléments)
         if CONTEXT.debug : traceback.print_exc()
 
+        traceback.print_exc()
+
         exc_typ,exc_val,exc_fr=sys.exc_info()
         l=traceback.format_exception(exc_typ,exc_val,exc_fr)
-        self.cr.exception("erreur non prevue et non traitee prevenir la maintenance "+
-                           self.nom+'\n'+ string.join(l))
+        self.cr.exception("erreur non prevue et non traitee prevenir la maintenance "+'\n'+ string.join(l))
         del exc_typ,exc_val,exc_fr
         CONTEXT.unset_current_step()
 

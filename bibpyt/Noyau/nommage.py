@@ -42,6 +42,7 @@ from functools import partial
 
 # Modules EFICAS
 import N_utils
+from strfunc import get_encoding
 
 regex1='=?\s*%s\s*\('
 #commentaire standard precede d'un nombre quelconque de blancs (pas multiligne)
@@ -68,7 +69,7 @@ def _GetNomConceptResultat(ope, level=2):
   lineno = f.f_lineno     # XXX Too bad if -O is used
   #lineno = f_lineno(f)  # Ne marche pas toujours
   co = f.f_code
-  filename = co.co_filename
+  filename = unicode(co.co_filename, get_encoding())
   name = co.co_name
   #pattern pour identifier le debut de la commande
   pattern_oper=re.compile(regex1 % ope)

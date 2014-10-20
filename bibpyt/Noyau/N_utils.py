@@ -27,7 +27,8 @@ import sys
 
 # Modules EFICAS
 from N_Exception import AsException
-from N_types import is_int, is_float, is_complex, is_str, is_sequence, is_assd
+from N_types     import is_int, is_float, is_complex, is_str, is_sequence, is_assd
+from strfunc import get_encoding
 
 SEP='_'
 
@@ -59,7 +60,11 @@ def callee_where(niveau=4):
    frame=cur_frame(niveau)
    if frame == None: return 0,"inconnu",0,{}
    try:
-     return frame.f_lineno,frame.f_code.co_filename,frame.f_code.co_firstlineno,frame.f_locals
+     # Python 2.7 compile function does not accept unicode filename, so we encode it
+     # with the current locale encoding in order to have a correct traceback.
+     # Here, we convert it back to unicode.
+     filename = unicode(frame.f_code.co_filename, get_encoding())
+     return frame.f_lineno,filename,frame.f_code.co_firstlineno,frame.f_locals
    except:
      return 0,"inconnu",0,{}
 
