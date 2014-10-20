@@ -25,6 +25,8 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
+#include "blas/dscal.h"
+
     integer :: imate, kpg, ksp, iret1, iret2, iret3, codret, icodre(4), iret
     integer :: ndim
     integer :: ndimsi
@@ -64,8 +66,8 @@ subroutine lcvali(fami, kpg, ksp, imate, compor,&
     if (icodre(2) .eq. 0) then
         vepsm=valres(2)
         dt=instap-instam
-        call daxpy(ndimsi, 1.d0/dt, deps, 1, veps,&
-                   1)
+        call dcopy(ndimsi, deps, 1, veps, 1)
+        call dscal(ndimsi, 1.d0/dt, veps, 1)
         veps2=sqrt(ddot(ndimsi,veps,1,veps,1))
         if (veps2 .gt. vepsm) then
             iret2=4

@@ -82,6 +82,7 @@ implicit none
     name_cmp  = ' '
     name_cmp_lagr = ' '
     name_subs = ' '
+    nb_node_lagr = 0
 
     call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
     call dismoi('NUM_GD_SI', nume_ddlz, 'NUME_DDL', repi=idx_gd)
