@@ -36,7 +36,6 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/nueq_chck.h"
     character(len=19) :: matas1, matas2
     character(len=1) :: bas1
 !--------------------------------------------------------------
@@ -215,7 +214,6 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 !     nu2.NUEQ :
 !     -----------
     call jedetr(nu2//'.NUME.NUEQ')
-    call nueq_chck(nu2//'.NUME', l_error=.true.)
     call wkvect(nu2//'.NUME.NUEQ', bas1//' V I', neq2, j1)
     do k = 1, neq2
         zi(j1-1+k)=k

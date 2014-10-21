@@ -25,6 +25,8 @@ subroutine apbloc(matass, solveu, tbloc)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/nueq_chck.h"
     character(len=19) :: matass, solveu
     integer :: tbloc
 !----------------------------------------------------------------
@@ -41,9 +43,12 @@ subroutine apbloc(matass, solveu, tbloc)
 !
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
+    character(len=19) :: prof_chno
     character(len=24) :: precon
+    integer :: iret
     aster_logical :: leliml
     character(len=24), pointer :: slvk(:) => null()
+    character(len=24), pointer :: refa(:) => null()
 !
 !----------------------------------------------------------------
     call jemarq()
@@ -57,6 +62,13 @@ subroutine apbloc(matass, solveu, tbloc)
 !
     if ((precon.ne.'ML') .and. (precon.ne.'BOOMER') .and. (precon.ne.'GAMG')) then
         tbloc = 1
+    else
+        call jeveuo(matass//'.REFA', 'L', vk24=refa)
+        prof_chno = refa(2)(1:14)//'.NUME'
+        call jeexin(prof_chno, iret)
+        if (iret.ne.0) then
+            call nueq_chck(prof_chno, l_error = .true.)
+        endif
     endif
 !
 !   -- Si ELIM_LAGR='OUI', comme on va eliminer certains ddls,
