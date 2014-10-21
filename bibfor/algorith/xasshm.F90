@@ -218,7 +218,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! ======================================================================
     loi = ' '
     call rcvala(imate, ' ', 'THM_INIT', 0, ' ',&
-                [0.d0], 1, 'COMP_THM', rthmc, codmes,&
+                [0.d0], 1, 'COMP_THM', rthmc(1), codmes,&
                 1)
     thmc = compor(8)
     if ((rthmc(1)-1.0d0) .lt. r8prem()) then
@@ -227,7 +227,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     if (thmc .ne. loi) then
         valk(1) = loi
         valk(2) = thmc
-        call utmess('F', 'ALGORITH_34', 2, valk)
+        call utmess('F', 'ALGORITH_34', nk=2, valk=valk)
     endif
 ! =====================================================================
 ! --- MISE EN OEUVRE DE LA METHODE XFEM -------------------------------

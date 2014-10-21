@@ -113,6 +113,11 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
 #----------------------------------------------
 #                   CHARGEMENTS
 #----------------------------------------------
+def depn(x,y) :
+   return 0.
+
+DEPL_N = FORMULE(VALE='depn(X,Y)',
+                  NOM_PARA=('X','Y',),);
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                   DDL_IMPO=(_F(GROUP_NO='Face_inf',DX=0.,DY=0.,DZ=0.,),
@@ -136,8 +141,8 @@ CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    );
 
 
-FLUH=AFFE_CHAR_MECA(MODELE=MODELEK,
-                    FLUX_THM_REP=_F(TOUT='OUI',FLUN_HYDR1=0.,),
+FLUH=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                    FLUX_THM_REP=_F(TOUT='OUI',FLUN_HYDR1=DEPL_N,),
                    );
 
 #----------------------------------------------

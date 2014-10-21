@@ -34,7 +34,9 @@ subroutine xlinhm(elrefp, elref2)
 !     ON RECUPERE L'ELEMENT PARENT PRINCIPAL
     call elref1(elrefp)
 !
-    if (elrefp .eq. 'QU8') then
+    if (elrefp .eq. 'SE3') then
+        elref2='SE2'
+    else if (elrefp .eq. 'QU8') then
         elref2='QU4'
     else if (elrefp.eq.'TR6') then
         elref2='TR3'

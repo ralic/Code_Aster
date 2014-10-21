@@ -81,6 +81,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     epsabs = epsmax/100.d0
     epsrel = epsmax
     dmin = r8gaem()
+    dist = 0.d0
 !
     if (present(dekker)) then
         call xintva(elrefp, n, ptxx, ndime, intinf,&
@@ -142,7 +143,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     endif
 !
     do i = 1, ndim
-        dist = delta(i)*delta(i)
+        dist = dist+delta(i)*delta(i)
     end do
     dist = sqrt(dist)
 !

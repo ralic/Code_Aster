@@ -325,6 +325,11 @@ cata_msg={
       JONCTION=_F(FISSURE=%(k2)s,POINT=...) lorsqu'on appelle DEFI_FISS_XFEM pour définir %(k3)s.
 """),
 
+48: _(u"""
+      Les flux correspondant a PRE2 et TEMP sont interdits pour les
+      éléments HM-XFEM.
+"""),
+
 49: _(u"""
      Le calcul de G avec X-FEM est impossible en grandes déformations.
 """),

@@ -173,19 +173,19 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! ======================================================================
 ! --- CALCUL DE EPSXZ --------------------------------------------------
 ! ======================================================================
-                b(addeme+ndim+4,(n-1)*nddls+1)= b(addeme+ndim+4,(n-1)*&
-            nddls+1)+dfdi(n,3)/rac
+               b(addeme+ndim+4,(n-1)*nddls+1)= b(addeme+ndim+4,(n-1)*&
+               nddls+1)+dfdi(n,3)/rac
 !
-                b(addeme+ndim+4,(n-1)*nddls+3)= b(addeme+ndim+4,(n-1)*&
-            nddls+3)+dfdi(n,1)/rac
+               b(addeme+ndim+4,(n-1)*nddls+3)= b(addeme+ndim+4,(n-1)*&
+               nddls+3)+dfdi(n,1)/rac
 ! ======================================================================
 ! --- CALCUL DE EPSYZ --------------------------------------------------
 ! ======================================================================
-                b(addeme+ndim+5,(n-1)*nddls+2)= b(addeme+ndim+5,(n-1)*&
-            nddls+2)+dfdi(n,3)/rac
+               b(addeme+ndim+5,(n-1)*nddls+2)= b(addeme+ndim+5,(n-1)*&
+               nddls+2)+dfdi(n,3)/rac
 !
-                b(addeme+ndim+5,(n-1)*nddls+3)= b(addeme+ndim+5,(n-1)*&
-            nddls+3)+dfdi(n,2)/rac
+               b(addeme+ndim+5,(n-1)*nddls+3)= b(addeme+ndim+5,(n-1)*&
+               nddls+3)+dfdi(n,2)/rac
             endif
         endif
 ! ======================================================================
@@ -233,16 +233,16 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 !
             if (ndim .eq. 3) then
                 b(addeme+ndim+4,(n-1)*nddls+nmec+np1+1)= b(addeme+ndim+4,(&
-            n-1)*nddls+nmec+np1+1)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,3)/rac
+                n-1)*nddls+nmec+np1+1)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,3)/rac
 !
                 b(addeme+ndim+4,(n-1)*nddls+nmec+np1+3)= b(addeme+ndim+4,(&
-            n-1)*nddls+nmec+np1+3)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,1)/rac
+                n-1)*nddls+nmec+np1+3)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,1)/rac
 !
                 b(addeme+ndim+5,(n-1)*nddls+nmec+np1+2)= b(addeme+ndim+5,(&
-            n-1)*nddls+nmec+np1+2)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,3)/rac
+                n-1)*nddls+nmec+np1+2)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,3)/rac
 !
                 b(addeme+ndim+5,(n-1)*nddls+nmec+np1+3)= b(addeme+ndim+5,(&
-            n-1)*nddls+nmec+np1+3)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,2)/rac
+                n-1)*nddls+nmec+np1+3)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,2)/rac
             endif
         endif
 ! ======================================================================
@@ -300,18 +300,18 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! --- CALCUL DE EPSXZ POUR LES NOEUDS MILIEUX --------------------------
 ! ======================================================================
                 b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+1)= b(addeme+ndim+&
-            4,nnops*nddls+(n-1)*nddlm+1) +dfdi(n+nnops,3)/rac
+                4,nnops*nddls+(n-1)*nddlm+1) +dfdi(n+nnops,3)/rac
 !
                 b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+3)= b(addeme+ndim+&
-            4,nnops*nddls+(n-1)*nddlm+3) +dfdi(n+nnops,1)/rac
+                4,nnops*nddls+(n-1)*nddlm+3) +dfdi(n+nnops,1)/rac
 ! ======================================================================
 ! --- CALCUL DE EPSYZ POUR LES NOEUDS MILIEUX --------------------------
 ! ======================================================================
                 b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+2)= b(addeme+ndim+&
-            5,nnops*nddls+(n-1)*nddlm+2) +dfdi(n+nnops,3)/rac
+                5,nnops*nddls+(n-1)*nddlm+2) +dfdi(n+nnops,3)/rac
 !
                 b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+3)= b(addeme+ndim+&
-            5,nnops*nddls+(n-1)*nddlm+3) +dfdi(n+nnops,2)/rac
+                5,nnops*nddls+(n-1)*nddlm+3) +dfdi(n+nnops,2)/rac
             endif
         endif
 ! ======================================================================

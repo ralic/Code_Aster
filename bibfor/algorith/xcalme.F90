@@ -45,20 +45,20 @@ subroutine xcalme(option, meca, imate, ndim, dimenr,&
     real(kind=8) :: d(6, 6), mdal(6), dalal
     character(len=8) :: ncra1(nelas), fami, poum
     integer :: icodre(nresma)
-    integer :: spt, ipi
+    integer :: spt, ipi, kpg
 !
     data ncra1 / 'E','NU','ALPHA','RHO' /
 ! ======================================================================
 ! --- RECUPERATION DES DONNEES MATERIAU DANS DEFI_MATERIAU -------------
 ! ======================================================================
     fami='XFEM'
-    ipi=idecpg+kpi
+    kpg=1
     spt=1
     poum='+'
 !
     rac2 = sqrt(2.0d0)
 !
-    call rcvalb(fami, ipi, spt, poum, imate,&
+    call rcvalb(fami, kpg, spt, poum, imate,&
                 ' ', 'ELAS', 1, 'TEMP', [t],&
                 3, ncra1(1), elas(1), icodre, 0)
     young = elas(1)

@@ -149,7 +149,8 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
             endif
             if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA' .or. option .eq.&
                 'FORC_NODA' .or. option .eq. 'CHAR_MECA_PRES_R' .or. option .eq.&
-                'CHAR_MECA_PRES_F' .or. option .eq. 'CHAR_MECA_FR2D3D' .or. option .eq.&
+                'CHAR_MECA_PRES_F' .or. option .eq. 'CHAR_MECA_FLUX_R' .or. option .eq.&
+                'CHAR_MECA_FLUX_F' .or. option .eq. 'CHAR_MECA_FR2D3D' .or. option .eq.&
                 'CHAR_MECA_FR1D2D' .or. option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq.&
                 'CHAR_MECA_FF1D2D' .or. option .eq. 'CHAR_MECA_CONT' .or. option .eq.&
                 'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_FR3D3D' .or. option .eq.&

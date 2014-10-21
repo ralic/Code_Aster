@@ -59,6 +59,7 @@ subroutine te0036(option, nomte)
 #include "asterfort/tefrep.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
+#include "asterfort/xhmddl.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xcalf_he.h"
 #include "blas/ddot.h"
@@ -75,10 +76,10 @@ subroutine te0036(option, nomte)
     real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
     real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
     real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(12), geomlo(81)
-    real(kind=8) :: ad(3), ae(3), af(3)
-    aster_logical :: lbid, axi
+    real(kind=8) :: ad(3), ae(3), af(3), rbid(1)
+    aster_logical :: lbid, axi, pre1
     real(kind=8) :: rb3, rb4, ksib, ksig(1), dx, dy, dff(1, 3), seg(3), jac
-    integer :: kk
+    integer :: kk, ddlm, nnopm
     data          elrese /'SE2','TR3','SE3','TR6'/
 !
 !-----------------------------------------------------------------------
@@ -91,6 +92,12 @@ subroutine te0036(option, nomte)
     ASSERT(ndime.eq.1.or.ndime.eq.2)
 !
     axi = lteatt('AXIS','OUI')
+
+      pre1 = .false.
+!     SI ON EST DANS LE CAS HM-XFEM, PRE1=.TRUE.
+      if (nomte(1:2).eq.'HM') then
+        pre1=.true.
+      endif
 !
 !     DIMENSION DE L'ESPACE
     call tecael(iadzi, iazk24)
@@ -123,9 +130,13 @@ subroutine te0036(option, nomte)
         ncomp = jtab(2)
         nfiss = jtab(7)
         nfh = 1
-        if (enr .eq. 'XH2') nfh = 2
-        if (enr .eq. 'XH3') nfh = 3
-        if (enr .eq. 'XH4') nfh = 4
+        if (enr .eq. 'XH2') then
+           nfh = 2
+        else if (enr .eq. 'XH3') then
+           nfh = 3
+        else if (enr .eq. 'XH4') then
+           nfh = 4
+        endif
     endif
 !
     if (enr(1:2) .eq. 'XT' .or. enr(3:3) .eq. 'T') then
@@ -137,6 +148,7 @@ subroutine te0036(option, nomte)
 !-----------------------------------------------------------------------
 !     RECUPERATION DES ENTREES / SORTIE
 !-----------------------------------------------------------------------
+!
     call jevech('PGEOMER', 'L', igeom)
 !
     if (option .eq. 'CHAR_MECA_PRES_R') then
@@ -149,19 +161,26 @@ subroutine te0036(option, nomte)
         call jevech('PPRESSF', 'L', ipres)
         call jevech('PTEMPSR', 'L', itemps)
 !
-        elseif (option.eq.'CHAR_MECA_FR2D3D'.or.&
+    elseif (option.eq.'CHAR_MECA_FR2D3D'.or.&
      &        option.eq.'CHAR_MECA_FR1D2D') then
-        if (ndim .eq. 3) call tefrep(option, nomte, 'PFR2D3D', iforc)
-        if (ndim .eq. 2) call tefrep(option, nomte, 'PFR1D2D', iforc)
+        if (ndim .eq. 3) then
+           call tefrep(option, nomte, 'PFR2D3D', iforc)
+        else if (ndim .eq. 2) then
+           call tefrep(option, nomte, 'PFR1D2D', iforc)
+        endif
 !
-        elseif (option.eq.'CHAR_MECA_FF2D3D'.or.&
+    elseif (option.eq.'CHAR_MECA_FF2D3D'.or.&
      &        option.eq.'CHAR_MECA_FF1D2D') then
 !
-        if (ndim .eq. 3) call jevech('PFF2D3D', 'L', iforc)
-        if (ndim .eq. 2) call jevech('PFF1D2D', 'L', iforc)
+        if (ndim .eq. 3) then
+           call jevech('PFF2D3D', 'L', iforc)
+        else if (ndim .eq. 2) then
+           call jevech('PFF1D2D', 'L', iforc)
+        endif
         call jevech('PTEMPSR', 'L', itemps)
 !
     endif
+!
 !     PARAMETRES PROPRES A X-FEM
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
@@ -465,15 +484,18 @@ subroutine te0036(option, nomte)
 !
 !         CALCUL EFFECTIF DU SECOND MEMBRE
 !         --------------------------------
-            pos=0
-            do ino = 1, nnop
+            if (pre1) then
+               pos=0
+               do ino = 1, nnop
 !
 !           TERME CLASSIQUE
-                do j = 1, ndim
-                    pos=pos+1
-                    zr(ires-1+pos) = zr(ires-1+pos) + forrep(j) * poids * ff(ino)
-                end do
+                   do j = 1, ndim
+                       pos=pos+1
+                       zr(ires-1+pos) = zr(ires-1+pos) + forrep(j) * poids * ff(ino)
+                   end do
 !
+!           ON ZAPPE LES TERMES DE PRESSION CLASSIQUE SI ON ES SUR UN NOEUD SOMMET
+                   if (ino.le.nnops) pos = pos+1
 !           TERME HEAVISIDE
                 do ig = 1, nfh
                     if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ ig)
@@ -485,14 +507,40 @@ subroutine te0036(option, nomte)
                     end do
                 end do
 !
+!           ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON ES SUR UN NOEUD SOMMET
+                   if (ino.le.nnops) then
+                      pos = pos+1
+                   endif
+               end do
+            else
+               pos=0
+               do ino = 1, nnop
+!
+!           TERME CLASSIQUE
+                   do j = 1, ndim
+                       pos=pos+1
+                       zr(ires-1+pos) = zr(ires-1+pos) + forrep(j) * poids * ff(ino)
+                   end do
+!
+!           TERME HEAVISIDE
+                   do ig = 1, nfh
+                       if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ ig)
+                       do j = 1, ndim
+                           pos=pos+1
+                           zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(real(zi(jheavt-1+&
+                                            (ifiss-1)*ncomp+ise),8),zr(jlsn-1+(ino-1)*&
+                                            nfiss+ifiss))*forrep(j)*poids*ff(ino)
+                       end do
+                   end do
 !           TERME SINGULIER
-                do ig = 1, nfe
-                    do j = 1, ndim
-                        pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + fe(ig) * forrep(j) * poids * ff(ino)
-                    end do
-                end do
-            end do
+                   do ig = 1, nfe
+                       do j = 1, ndim
+                           pos=pos+1
+                           zr(ires-1+pos) = zr(ires-1+pos) + fe(ig) * forrep(j) * poids * ff(ino)
+                       end do
+                   end do
+               end do
+            endif
         end do
 !
 !-----------------------------------------------------------------------
@@ -502,16 +550,25 @@ subroutine te0036(option, nomte)
     end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
-    ddls = ndim*(1+nfh+nfe)
-    nddl = nnop*ddls
-    call teattr('C', 'XLAG', lag, ibid)
-    if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
-        nnop = nnos
+    if (pre1) then
+       ddls = ndim*(1+nfh+nfe)+(1+nfh)
+       ddlm = ndim*(1+nfh+nfe)
+       nnopm= nnop-nnops
+       nddl = nnops*ddls + nnopm*ddlm
+       call xhmddl(ndim, ddls, nddl, nnop, nnops, zi(jstno),.false._1,&
+                   option, nomte, rbid, zr(ires), ddlm)
+    else
+       ddls = ndim*(1+nfh+nfe)
+       nddl = nnop*ddls
+       call teattr('C', 'XLAG', lag, ibid)
+       if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
+           nnop = nnos
+       endif
+       call xteddl(ndim, nfh, nfe, ddls, nddl,&
+                   nnop, nnops, zi(jstno), .false._1, lbid,&
+                   option, nomte, ddls,&
+                   nfiss, jfisno, vect=zr(ires))
     endif
-    call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                nnop, nnops, zi(jstno), .false._1, lbid,&
-                option, nomte, ddls, nfiss, jfisno,&
-                vect=zr(ires))
 !
 !-----------------------------------------------------------------------
 !     FIN
