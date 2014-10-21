@@ -19,8 +19,8 @@ interface
     subroutine xcalfh(option, thmc, ndim, dimcon, yamec,&
                       addep1, adcp11, addeme, congep, dsde,&
                       grap1, rho11, pesa, tperm, cliq,&
-                      viscl, dviscl, yaenrm, dimenr,&
-                      adenme)
+                      viscl, dviscl, dimenr,&
+                      adenhy)
         integer :: dimenr
         integer :: dimcon
         character(len=16) :: option
@@ -39,7 +39,6 @@ interface
         real(kind=8) :: cliq
         real(kind=8) :: viscl
         real(kind=8) :: dviscl
-        integer :: yaenrm
-        integer :: adenme
+        integer :: adenhy
     end subroutine xcalfh
 end interface 

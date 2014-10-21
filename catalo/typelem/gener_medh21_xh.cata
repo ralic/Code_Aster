@@ -1,5 +1,5 @@
 %& LIBRARY TYPELEM
-% person_in_charge: sylvie.granet at edf.fr
+% person_in_charge: daniele.colombo at ifpen.fr
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ ENTETE__ ELEMENT__ HM_D_PLAN_SE3_XH    MAILLE__ SEG3
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ DIFF__
-                                 EN1   (DX       DY       PRE1       H1X       H1Y    )
+                                 EN1   (DX       DY       PRE1       H1X       H1Y    HPRE1     )
                                  EN2   (DX       DY       H1X        H1Y       )
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    )
     EFLUXE   = FTHM_R   ELGA__ RIGI   (PFLU1    )

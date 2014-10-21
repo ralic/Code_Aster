@@ -444,6 +444,7 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
+       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -491,7 +492,8 @@ GRANDEUR_SIMPLE__
                     H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
                     LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
-                    LAG4_C  LAG4_F1   LAG4_F2  UI2      VI2      WI2      UI3      VI3
+                    LAG4_C  LAG4_F1   LAG4_F2  HPRE1
+                    UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
@@ -524,6 +526,7 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
+       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -571,7 +574,8 @@ GRANDEUR_SIMPLE__
                     H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
                     LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
-                    LAG4_C  LAG4_F1   LAG4_F2  UI2      VI2      WI2      UI3      VI3
+                    LAG4_C  LAG4_F1   LAG4_F2  HPRE1
+                    UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
@@ -604,6 +608,7 @@ GRANDEUR_SIMPLE__
                    E4X, E4Y, E4Z : DDLS enrichis (CRACKTIP4) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
+       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -650,7 +655,8 @@ GRANDEUR_SIMPLE__
                     H4Z      LAGR     E1X      E1Y      E1Z      E2X
                     E2Y      E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
                     LAGS_C   LAGS_F1  LAGS_F2  LAG2_C   LAG2_F1  LAG2_F2  LAG3_C   LAG3_F1  LAG3_F2
-                    LAG4_C  LAG4_F1   LAG4_F2  UI2      VI2      WI2      UI3      VI3
+                    LAG4_C  LAG4_F1   LAG4_F2  HPRE1
+                    UI2      VI2      WI2      UI3      VI3
                     WI3      UI4      VI4      WI4      UI5      VI5      WI5      UI6
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6

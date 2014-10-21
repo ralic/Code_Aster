@@ -17,7 +17,7 @@
 !
 interface 
     subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
-                      ndim, degem1, degep1, defgem, defgep)
+                      ndim, degem1, degep1, defgem, defgep, adenhy)
         integer :: dimenr
         integer :: dimdef
         integer :: addeme
@@ -28,5 +28,6 @@ interface
         real(kind=8) :: degep1(dimenr)
         real(kind=8) :: defgem(dimdef)
         real(kind=8) :: defgep(dimdef)
+        integer :: adenhy
     end subroutine xdefhm
 end interface 

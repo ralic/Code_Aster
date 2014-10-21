@@ -1,7 +1,7 @@
 subroutine xitghm(modint, mecani, press1, ndim, nno,&
                   nnos, nnom, npi, npg, nddls,&
                   nddlm, dimuel, ddld, ddlm, nnop,&
-                  nnops, nnopm, ipoids, ivf, idfde)
+                  nnops, nnopm, ipoids, ivf, idfde, ddlp)
     implicit none
 !
 #   include "asterfort/elrefe_info.h"
@@ -12,7 +12,7 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
     character(len=3) :: modint
 !
 ! DECLARATION POUR XFEM
-    integer :: ddld, ddlm
+    integer :: ddld, ddlm, ddlp
     integer :: nnop, nnops, nnopm
     character(len=8) :: fami(3), elrese(3)
 !
@@ -35,6 +35,7 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
@@ -71,7 +72,7 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
 ! --- POUR METHODES CLASSIQUE ET LUMPEE NPG=NPI
 ! ======================================================================
     npg = npi
-    nddls = mecani(1)*ddld + press1(1)
+    nddls = mecani(1)*ddld + press1(1)*ddlp
     nddlm = mecani(1)*ddlm
     nnopm = nnop - nnops
     dimuel = nnops*nddls + nnopm*nddlm

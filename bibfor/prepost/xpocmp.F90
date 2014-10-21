@@ -32,7 +32,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 #include "asterfort/jeveuo.h"
     integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(nbcmp)
     integer :: ddlc
-    aster_logical :: lmeca, pre1, press
+    aster_logical :: lmeca, pre1, press, press1
     character(len=8) :: elrefp
     character(len=19) :: cns1
 !
@@ -83,6 +83,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
     ddlc=0
     contas=.true.
     press=.true.
+    press1 = .true.
     call elelin(1, elrefp, k8bid, ibid, nnos)
 !
     do 21 i = 1, nbcmp
@@ -102,9 +103,16 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
             if (press) goto 1
         endif
 !
-        do 24 j = 1, n
+        if (nomcmp(1:5).eq.'HPRE1') then
+           do 24 k = 1, nnos
+              if (.not.exist(k,i)) press1 = .false.
+ 24        continue
+             if (press1) goto 1
+        endif
+!
+        do 25 j = 1, n
             if (.not.exist(j,i)) goto 21
- 24     continue
+ 25     continue
 !
   1     continue
 !
@@ -119,10 +127,16 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                 cmp(ipos)=i
             endif
         endif
-        if (nomcmp(1:1) .eq. 'H') then
+        if (nomcmp(1:1) .eq. 'H'.and.nomcmp(2:2).ne.'P') then
             ipos = ipos +1
             nfh = nfh +1
             cmp(ipos)=i
+        endif
+        if (pre1) then
+           if (nomcmp(1:5).eq.'HPRE1') then
+             ipos = ipos + 1
+             cmp(ipos) = i
+           endif
         endif
         if (nomcmp(1:2) .eq. 'E1' .or. nomcmp(1:2) .eq. 'E2' .or. nomcmp(1:2) .eq. 'E3'&
             .or. nomcmp(1:2) .eq. 'E4') then

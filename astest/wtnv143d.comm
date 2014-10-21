@@ -121,6 +121,10 @@ HYDR=AFFE_CHAR_MECA(MODELE=MODELEK,
                     INFO=1,
                    );
 
+HYDR2=AFFE_CHAR_MECA(MODELE=MODELEK,
+                     DDL_IMPO=(_F(NOEUD=('N10','N11','N14','N15','N18','N19','N22','N23',),HPRE1=0.0,),),
+                     INFO=2,
+                    );
 
 CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
                    PRES_REP=_F(FISSURE=FISS,PRES=10E6,),                            
@@ -150,6 +154,7 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     CHAM_MATER  = CHAMPMAT,
                     EXCIT       = (_F(CHARGE = CH   ),
                                    _F(CHARGE = HYDR ),
+                                   _F(CHARGE = HYDR2 ),
                                    _F(CHARGE = CH1,  FONC_MULT = MULT ),
                                    _F(CHARGE = FLUH ),),
                     COMPORTEMENT   = _F(RELATION       = 'KIT_HM',

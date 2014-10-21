@@ -1,4 +1,4 @@
-subroutine xhmini(nomte, nfh, ddld, ddlm)
+subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp)
 !
     implicit none
 !
@@ -10,7 +10,7 @@ subroutine xhmini(nomte, nfh, ddld, ddlm)
 #   include "jeveux.h"
 !
     character(len=16) :: nomte
-    integer :: nfh, ddlm
+    integer :: nfh, ddlm, ddlp
     integer :: nfiss
 !
 ! ======================================================================
@@ -29,18 +29,17 @@ subroutine xhmini(nomte, nfh, ddld, ddlm)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: samuel.geniaut at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 !
 !          BUT : INITIALISER LES DIMENSIONS DES DDL DANS UN TE
-!                POUR LES ELEMENTS X-FEM
+!                POUR LES ELEMENTS HM-XFEM
 !
 !
 ! IN   NOMTE  : NOM DU TYPE ELEMENT
 ! OUT  NFH    : NOMBRE DE FONCTIONS HEAVISIDES
-! OUT  NNOM   : NB DE NOEUDS MILIEU
-! OUT  DDLS   : NOMBRE DE DDL (DEPL) À CHAQUE NOEUD SOMMET
-! OUT  NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
-! OUT  DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
+! OUT  DDLD   : NOMBRE DE DDL (DEPL) A CHAQUE NOEUD SOMMET
+! OUT  DDLM   : NOMBRE DE DDL (DEPL) A CHAQUE NOEUD MILIEU
+! OUT  DDLP   : NOMBRE DE DDL (PRES) A CHAQUE NOEUD SOMMET
 ! OUT  NFISS  : NOMBRE DE FISSURES
 !     ------------------------------------------------------------------
 !
@@ -57,6 +56,8 @@ subroutine xhmini(nomte, nfh, ddld, ddlm)
 !
     nfh = 0
     ddlm = 0
+    ddld = 0
+    ddlp = 0
     nfiss = 1
 !
     call teattr('S', 'XFEM', enr, ier, typel=nomte)
@@ -81,4 +82,7 @@ subroutine xhmini(nomte, nfh, ddld, ddlm)
 !
     ddlm=ddld
 !
+! --- NOMBRE DE DDL AUX NOEUDS SOMMETS (HYDRAULIQUES)
+!
+    ddlp=1+nfh
 end subroutine

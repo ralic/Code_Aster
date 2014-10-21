@@ -4,11 +4,11 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
                   addeme, yap1, addep1, np1, axi,&
                   ivf, ipoids, idfde, poids, coorse,&
                   nno, geom, yaenrm, adenme, dimenr,&
-                  he, jlsn)
+                  he, jlsn, yaenrh, adenhy)
 !
     implicit none
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,22 +47,23 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! DIMCON    DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
 ! DIMENR    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES ENRICHI
 !
-!                                sommets           |         milieux
-!           u v w p H1X H1Y H1Z u v w p H1X HIY H1Z u v w H1X H1Y H1Z u v w H1X HIY H1Z
-!          ----------------------------------------------------------------------------
-!        u|                                        |                                  |
-!        v|          Fonctions de forme            |                                  |
-!        w|                                        |                                  |
-!        E|                   P2                   |                P2                |
-!          ----------------------------------------------------------------------------
-!        P|                                        |                                  |
-!       DP|                   P1                   |                 0                |
-!          ----------------------------------------------------------------------------
-!      H1X|                                        |                                  |
-!      H1Y|                   P2                   |                P2                |
-!      H1Z|                                        |                                  |
-!        E|                                        |                                  |
-!          ----------------------------------------------------------------------------
+!                   sommets           |       milieux
+!           u v w p H1X H1Y H1Z HPRE1   u v w H1X H1Y H1Z
+!          --------------------------------------------------
+!        u|                           |                     |
+!        v|   Fonctions de forme      |                     |
+!        w|                           |                     |
+!        E|           P2              |          P2         |
+!          --------------------------------------------------
+!        P|                           |                     |
+!       DP|           P1              |           0         |
+!          --------------------------------------------------
+!      H1X|                           |                     |
+!      H1Y|           P2              |          P2         |
+!      H1Z|                           |                     |
+!          --------------------------------------------------
+!    HPRE1|                           |                     |
+!          --------------------------------------------------
 !
 ! =====================================================================================
 ! =====================================================================================
@@ -78,10 +79,11 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
     integer :: nnops, nnopm, kpi, dimuel
     integer :: addeme, yap1, addep1
     integer :: yaenrm, adenme, dimenr
+    integer :: yaenrh, adenhy
     integer :: ipoids, idfde, ivf, nno, jlsn
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
     real(kind=8) :: ff(nnop), ff2(nnops)
-    real(kind=8) :: b(dimenr, dimuel), rac, r, rmax, geom(ndim, nnop)
+    real(kind=8) :: b(dimenr, dimuel), rac, r, geom(ndim, nnop)
     real(kind=8) :: rbid1(nno), rbid2(nno), rbid3(nno)
     real(kind=8) :: he, poids, coorse(81)
 ! ======================================================================
@@ -118,15 +120,15 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! --- EN UN POINT DE GAUSS, ON PREND LE MAX DU RAYON -------------------
 ! --- SUR L ELEMENT MULTIPLIE PAR 1E-3 ---------------------------------
 ! ======================================================================
-        if (r .eq. 0.d0) then
-            rmax=geom(1,1)
-            do 15 n = 2, nnop
-                rmax=max(geom(1,n),rmax)
- 15         continue
-            poids = poids*1.d-03*rmax
-        else
-            poids = poids*r
-        endif
+!        if (r .eq. 0.d0) then
+!            rmax=geom(1,1)
+!            do 15 n = 2, nnop
+!                rmax=max(geom(1,n),rmax)
+! 15         continue
+!            poids = poids*1.d-03*rmax
+!        else
+!            poids = poids*r
+!        endif
     endif
 ! ======================================================================
 ! --- REMPLISSAGE DE L OPERATEUR B -------------------------------------
@@ -152,11 +154,11 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! --- TERME U/R DANS EPSZ EN AXI ---------------------------------------
 ! ======================================================================
             if (axi) then
-                if (r .eq. 0.d0) then
-                    b(addeme+4,(n-1)*nddls+1)=dfdi(n,1)
-                else
+!                if (r .eq. 0.d0) then
+!                    b(addeme+4,(n-1)*nddls+1)=dfdi(n,1)
+!                else
                     b(addeme+4,(n-1)*nddls+1)=ff(n)/r
-                endif
+!                endif
             endif
 ! ======================================================================
 ! --- CALCUL DE EPSXY --------------------------------------------------
@@ -202,6 +204,8 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! ======================================================================
 ! --- TERMES ENRICHIS PAR FONCTIONS HEAVISIDE (XFEM) -------------------
 ! ======================================================================
+! --- SI ENRICHISSEMENT MECANIQUE (FONCTIONS DE FORME P2) --------------
+! ======================================================================
         if (yaenrm .eq. 1) then
             do 106 i = 1, ndim
                 b(adenme-1+i,(n-1)*nddls+nmec+np1+i)= b(adenme-1+i,(n-&
@@ -209,37 +213,48 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 106         continue
 !
             do 107 i = 1, ndim
-                b(adenme-1+ndim+i,(n-1)*nddls+nmec+np1+i)= b(adenme-1+&
+                b(addeme-1+ndim+i,(n-1)*nddls+nmec+np1+i)= b(addeme-1+&
                 ndim+i,(n-1)*nddls+nmec+np1+i)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,i)
 107         continue
 !
             if (axi) then
-                if (r .eq. 0.d0) then
-                    b(adenme+4,(n-1)*nddls+nmec+np1+1)=xcalf_he(he,zr(jlsn-1+n))*dfdi(n,1)
-                else
-                    b(adenme+4,(n-1)*nddls+nmec+np1+1)=xcalf_he(he,zr(jlsn-1+n))*ff(n)/r
-                endif
+!                if (r .eq. 0.d0) then
+!                    b(addeme+4,(n-1)*nddls+nmec+np1+1)=xcalf_he(he,zr(jlsn-1+n))*dfdi(n,1)
+!                else
+                    b(addeme+4,(n-1)*nddls+nmec+np1+1)=xcalf_he(he,zr(jlsn-1+n))*ff(n)/r
+!                endif
             endif
 !
-            b(adenme+ndim+3,(n-1)*nddls+nmec+np1+1)= b(adenme+ndim+3,(&
+            b(addeme+ndim+3,(n-1)*nddls+nmec+np1+1)= b(addeme+ndim+3,(&
             n-1)*nddls+nmec+np1+1)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,2)/rac
 !
-            b(adenme+ndim+3,(n-1)*nddls+nmec+np1+2)= b(adenme+ndim+3,(&
+            b(addeme+ndim+3,(n-1)*nddls+nmec+np1+2)= b(addeme+ndim+3,(&
             n-1)*nddls+nmec+np1+2)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,1)/rac
 !
             if (ndim .eq. 3) then
-                b(adenme+ndim+4,(n-1)*nddls+nmec+np1+1)= b(adenme+ndim+4,(&
+                b(addeme+ndim+4,(n-1)*nddls+nmec+np1+1)= b(addeme+ndim+4,(&
             n-1)*nddls+nmec+np1+1)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,3)/rac
 !
-                b(adenme+ndim+4,(n-1)*nddls+nmec+np1+3)= b(adenme+ndim+4,(&
+                b(addeme+ndim+4,(n-1)*nddls+nmec+np1+3)= b(addeme+ndim+4,(&
             n-1)*nddls+nmec+np1+3)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,1)/rac
 !
-                b(adenme+ndim+5,(n-1)*nddls+nmec+np1+2)= b(adenme+ndim+5,(&
+                b(addeme+ndim+5,(n-1)*nddls+nmec+np1+2)= b(addeme+ndim+5,(&
             n-1)*nddls+nmec+np1+2)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,3)/rac
 !
-                b(adenme+ndim+5,(n-1)*nddls+nmec+np1+3)= b(adenme+ndim+5,(&
+                b(addeme+ndim+5,(n-1)*nddls+nmec+np1+3)= b(addeme+ndim+5,(&
             n-1)*nddls+nmec+np1+3)+xcalf_he(he,zr(jlsn-1+n))*dfdi(n,2)/rac
             endif
+        endif
+! ======================================================================
+! --- SI ENRICHISSEMENT HYDRAULIQUE (FONCTIONS DE FORME P1) ------------
+! ======================================================================
+        if (yaenrh.eq.1) then
+            b(adenhy,(n-1)*nddls+nmec+np1+ndim+1)=&
+            b(adenhy,(n-1)*nddls+nmec+np1+ndim+1)+xcalf_he(he,zr(jlsn-1+n))*ff2(n)
+            do 108 i=1,ndim
+               b(addep1+i,(n-1)*nddls+nmec+np1+ndim+1)=&
+               b(addep1+i,(n-1)*nddls+nmec+np1+ndim+1)+xcalf_he(he,zr(jlsn-1+n))*dfdi2(n,i)
+ 108        continue
         endif
 102 continue
 ! ======================================================================
@@ -264,13 +279,13 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 ! --- TERME U/R DANS EPSZ EN AXI ---------------------------------------
 ! ======================================================================
             if (axi) then
-                if (r .eq. 0.d0) then
-                    b(addeme+4,nnops*nddls+(n-1)*nddlm+1)=dfdi(n+&
-                    nnops,1)
-                else
+!                if (r .eq. 0.d0) then
+!                    b(addeme+4,nnops*nddls+(n-1)*nddlm+1)=dfdi(n+&
+!                    nnops,1)
+!                else
                     b(addeme+4,nnops*nddls+(n-1)*nddlm+1)=ff(n+nnops)/&
                     r
-                endif
+!                endif
             endif
 ! ======================================================================
 ! --- CALCUL DE EPSXY POUR LES NOEUDS MILIEUX --------------------------
@@ -310,43 +325,43 @@ subroutine xcabhm(nddls, nddlm, nnop, nnops, nnopm,&
 306         continue
 !
             do 307 i = 1, ndim
-                b(adenme-1+ndim+i,nnops*nddls+(n-1)*nddlm+nmec+i)=&
-                b(adenme-1+ndim+i,nnops*nddls+(n-1)*nddlm+nmec+i)&
+                b(addeme-1+ndim+i,nnops*nddls+(n-1)*nddlm+nmec+i)=&
+                b(addeme-1+ndim+i,nnops*nddls+(n-1)*nddlm+nmec+i)&
                +xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,i)
 307         continue
 !
             if (axi) then
-                if (r .eq. 0.d0) then
-                    b(adenme+4,nnops*nddls+(n-1)*nddlm+nmec+1)=&
-                    xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,1)
-                else
-                    b(adenme+4,nnops*nddls+(n-1)*nddlm+nmec+1)=&
+!                if (r .eq. 0.d0) then
+!                    b(addeme+4,nnops*nddls+(n-1)*nddlm+nmec+1)=&
+!                    xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,1)
+!                else
+                    b(addeme+4,nnops*nddls+(n-1)*nddlm+nmec+1)=&
                     xcalf_he(he,zr(jlsn-1+n+nnops))*ff(n+nnops)/r
-                endif
+!                endif
             endif
 !
-            b(adenme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec+1)= b(adenme+&
+            b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec+1)= b(addeme+&
           ndim+3,nnops*nddls+(n-1)*nddlm+nmec+1) +xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,2)&
             /rac
 !
-            b(adenme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec+2)= b(adenme+&
+            b(addeme+ndim+3,nnops*nddls+(n-1)*nddlm+nmec+2)= b(addeme+&
           ndim+3,nnops*nddls+(n-1)*nddlm+nmec+2) +xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,1)&
             /rac
 !
             if (ndim .eq. 3) then
-                b(adenme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+1)= b(adenme+&
+                b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+1)= b(addeme+&
           ndim+4,nnops*nddls+(n-1)*nddlm+nmec+1) +xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,3)&
             /rac
 !
-                b(adenme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+3)= b(adenme+&
+                b(addeme+ndim+4,nnops*nddls+(n-1)*nddlm+nmec+3)= b(addeme+&
           ndim+4,nnops*nddls+(n-1)*nddlm+nmec+3) +xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,1)&
             /rac
 !
-                b(adenme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+2)= b(adenme+&
+                b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+2)= b(addeme+&
           ndim+5,nnops*nddls+(n-1)*nddlm+nmec+2) +xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,3)&
             /rac
 !
-                b(adenme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+3)= b(adenme+&
+                b(addeme+ndim+5,nnops*nddls+(n-1)*nddlm+nmec+3)= b(addeme+&
           ndim+5,nnops*nddls+(n-1)*nddlm+nmec+3) +xcalf_he(he,zr(jlsn-1+n+nnops))*dfdi(n+nnops,2)&
             /rac
             endif

@@ -22,7 +22,7 @@ interface
                       congem, vintm, defgep, congep, vintp,&
                       mecani, press1, press2, tempe,&
                       rinstp, dt, r, drds,&
-                      dsde, retcom, idecpg, angmas)
+                      dsde, retcom, idecpg, angmas, enrhyd)
         integer :: nbvari
         integer :: dimcon
         integer :: dimdef
@@ -54,5 +54,6 @@ interface
         integer :: retcom
         integer :: idecpg
         real(kind=8) :: angmas(3)
+        integer :: enrhyd(3)
     end subroutine xequhm
 end interface 

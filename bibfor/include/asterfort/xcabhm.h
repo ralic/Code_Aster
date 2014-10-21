@@ -24,7 +24,7 @@ interface
                       addeme, yap1, addep1, np1, axi,&
                       ivf, ipoids, idfde, poids, coorse,&
                       nno, geom, yaenrm, adenme, dimenr,&
-                      he, jlsn)
+                      he, jlsn, yaenrh, adenhy)
         integer :: dimenr
         integer :: ndim
         integer :: dimuel
@@ -57,5 +57,7 @@ interface
         integer :: adenme
         integer :: jlsn
         real(kind=8) :: he
+        integer :: yaenrh
+        integer :: adenhy
     end subroutine xcabhm
 end interface 

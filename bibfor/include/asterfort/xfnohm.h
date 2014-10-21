@@ -25,7 +25,7 @@ interface
                       dimcon, nddls, nddlm, dimuel, nmec,&
                       np1, ndim, axi, dimenr, nnop,&
                       nnops, nnopm, igeom, jpintt, jpmilt,&
-                      jlsn, lonch, cnset, heavt, enrmec)
+                      jlsn, lonch, cnset, heavt, enrmec, enrhyd)
         integer :: nnops
         integer :: nnop
         integer :: dimenr
@@ -63,5 +63,6 @@ interface
         integer :: cnset(128)
         integer :: heavt(36)
         integer :: enrmec(3)
+        integer :: enrhyd(3)
     end subroutine xfnohm
 end interface 

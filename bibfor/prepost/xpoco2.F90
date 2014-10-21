@@ -69,10 +69,13 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
     character(len=16) :: tysd
     integer :: iviex, iret
 !
-    integer :: jresd1, jresl1, iadr1
-    integer :: jresd2, jresl2, iadr2
-    integer :: jcnsl1
-    aster_logical :: exist(nbno, 7)
+    integer :: jresd1,  jresl1, iadr1
+    integer :: jresd2,  jresl2, iadr2
+    integer :: jcnsl1, nbcmp2
+!   ON INDIQUE EN DUR LE NOMBRE DE COMPOSANTE A VERIFIER EN HM-XFEM
+!   A CAUSE DES DDLS DE PRESSION
+    parameter (nbcmp2=8)
+    aster_logical :: exist(nbno, nbcmp2)
     real(kind=8), pointer :: cnsv1(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     real(kind=8), pointer :: cesv1(:) => null()

@@ -5,9 +5,9 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                   dimuel, nmec, np1, ndim, axi,&
                   dimenr, nnop, nnops, nnopm, igeom,&
                   jpintt, jpmilt, jlsn, lonch, cnset, heavt,&
-                  enrmec)
+                  enrmec, enrhyd)
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 ! DECLARATIONS POUR XFEM
     integer :: nnop, nnopm, nnops, in, j
     integer :: yaenrm, adenme, nse, ise, ino, enrmec(3)
+    integer :: yaenrh, enrhyd(3), adenhy
     integer :: igeom, jpintt, jpmilt, jlsn
     integer :: lonch(10), cnset(4*32), heavt(36)
     real(kind=8) :: coorse(81), he, xg(ndim), xe(ndim), bid3(ndim)
@@ -92,6 +93,8 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
     addep1 = press1(3)
     yaenrm = enrmec(1)
     adenme = enrmec(2)
+    yaenrh = enrhyd(1)
+    adenhy = enrhyd(2)
     dt = deltat
 ! ======================================================================
 ! --- INITIALISATION DE VECTU ------------------------------------------
@@ -170,11 +173,11 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he, jlsn)
+                        he, jlsn, yaenrh, adenhy)
 ! ======================================================================
             call xfnoda(imate, mecani, press1, enrmec, dimenr,&
                         dimcon, ndim, dt, fnoevo, congem(npg*(ise-1)*dimcon+1),&
-                        r)
+                        r, enrhyd)
 ! ======================================================================
 ! --- CONTRIBUTION DU POINT D'INTEGRATION KPI AU RESIDU ----------------
 ! ======================================================================

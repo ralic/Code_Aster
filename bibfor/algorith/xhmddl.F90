@@ -18,7 +18,7 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: samuel.geniaut at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 !
     implicit none
 #include "asterf_types.h"
@@ -55,7 +55,7 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
 !
     aster_logical :: lelim
     integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
-    parameter    (ddlmax=20*7)
+    parameter    (ddlmax=20*8)
     integer :: posddl(ddlmax)
     real(kind=8) :: dmax, dmin, codia
     character(len=8) :: tyenel
@@ -90,6 +90,10 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
                 do 10 k = 1, ndim
                     posddl(in+ndim+k)=1
  10             continue
+!              ON SUPPRIME LES DDL H (HYDRO) AUX NOEUDS SOMMETS
+                if (ino.le.nnos) then 
+                   posddl(in+ndim+ndim+1)=1
+                endif 
                 lelim=.true.
             endif
         endif
@@ -117,7 +121,7 @@ subroutine xhmddl(ndim, ddls, nddl, nno, nnos,&
                 endif
 110         continue
             codia=(dmax+dmin)/2.0d0
-            if (codia .eq. 0) codia = 1
+            if (codia .eq. 0.d0) codia = 1
         endif
 !
 !     POUR LES OPTIONS CONCERNANT DES MATRICES :

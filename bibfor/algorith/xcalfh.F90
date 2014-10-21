@@ -1,8 +1,8 @@
 subroutine xcalfh(option, thmc, ndim, dimcon, yamec,&
                   addep1, adcp11, addeme, congep, dsde,&
                   grap1, rho11, pesa, tperm, cliq,&
-                  viscl, dviscl, yaenrm, dimenr,&
-                  adenme)
+                  viscl, dviscl, dimenr,&
+                  adenhy)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ subroutine xcalfh(option, thmc, ndim, dimcon, yamec,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! ROUTINE CALC_FLUX_HYDRO
 ! CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE DES FLUX
@@ -29,8 +29,8 @@ subroutine xcalfh(option, thmc, ndim, dimcon, yamec,&
     implicit none
 !
     integer :: ndim, dimcon, yamec
-    integer :: addeme, addep1, adcp11
-    integer :: bdcp11, yaenrm, dimenr, adenme
+    integer :: addeme, addep1, adcp11, adenhy
+    integer :: bdcp11, dimenr
     real(kind=8) :: congep(1:dimcon)
     real(kind=8) :: dsde(1:dimcon, 1:dimenr), grap1(3)
     real(kind=8) :: rho11, pesa(3), tperm(ndim,ndim)
@@ -40,7 +40,7 @@ subroutine xcalfh(option, thmc, ndim, dimcon, yamec,&
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
     integer :: i, j, k
-    real(kind=8) :: lambd1(5), visco, dvisco
+    real(kind=8) :: lambd1(3), visco, dvisco
     real(kind=8) :: krel1, dkrel1
     real(kind=8) :: dr11p1
 !
@@ -66,14 +66,10 @@ subroutine xcalfh(option, thmc, ndim, dimcon, yamec,&
 ! --- LAMBD1(1) = CONDUC_HYDRO_LIQ -------------------------------------
 ! --- LAMBD1(2) = D(CONDUC_HYDRO_LIQ)/DEPSV ----------------------------
 ! --- LAMBD1(3) = D(CONDUC_HYDRO_LIQ)/DP1 ------------------------------
-! --- LAMBD1(4) = D(CONDUC_HYDRO_LIQ)/DP2 ------------------------------
-! --- LAMBD1(5) = D(CONDUC_HYDRO_LIQ)/DT -------------------------------
 ! ======================================================================
     lambd1(1) = krel1/visco
     lambd1(2) = 0.0d0
     lambd1(3) = dkrel1/visco
-    lambd1(4) = 0.0d0
-    lambd1(5) = - krel1/visco/visco*dvisco
 !
 ! ======================================================================
 ! CALCUL DES DERIVEES DES MASSES VOLUMIQUES
@@ -135,22 +131,18 @@ subroutine xcalfh(option, thmc, ndim, dimcon, yamec,&
 ! ======================================================================
 ! CALCUL DES FLUX HYDRAULIQUES POUR XFEM
 !
-    if (yaenrm .eq. 1) then
         if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
             if (thmc .eq. 'LIQU_SATU') then
-                if (yamec .eq. 1) then
-                do 122 i=1, ndim
-                    do 109 j = 1, 3
-                       do 133 k=1, ndim
-                                    dsde(bdcp11+i,adenme+ndim-1+i)=&
-                                    dsde(bdcp11+i,adenme+ndim-1+i)&
-                                    +rho11*lambd1(2)*tperm(i,k)&
-                                    *(-grap1(k)+rho11*pesa(k))
-133                   continue
-109                 continue
-122             continue
-                endif
+               do 109 i = 1, ndim
+                  do 209 j = 1, ndim
+                      dsde(bdcp11+i,adenhy)=dsde(bdcp11+i,adenhy)&
+                      +dr11p1*lambd1(1)*(-grap1(j)+rho11*pesa(j))*tperm(i,j)
+                      dsde(bdcp11+i,adenhy)=dsde(bdcp11+i,adenhy)&
+                      +rho11*lambd1(3)*(-grap1(j)+rho11*pesa(j))*tperm(i,j)
+                      dsde(bdcp11+i,adenhy)=dsde(bdcp11+i,adenhy)&
+                      +rho11*lambd1(1)*(dr11p1*pesa(j))*tperm(i,j)
+209               continue
+109            continue
             endif
         endif
-    endif
 end subroutine

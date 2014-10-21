@@ -20,6 +20,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: daniele.colombo at ifpen.fr
 !
 ! IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
 ! IN  NDIM    : DIMENSION DE L'ESPACE

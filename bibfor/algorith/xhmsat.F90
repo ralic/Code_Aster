@@ -1,14 +1,14 @@
 subroutine xhmsat(yachai, option, meca, thmc, ther,&
                   hydr, imate, ndim, yaenrm, dimenr,&
-                  adenme, dimcon, nbvari, yamec, addeme,&
+                  dimcon, nbvari, yamec, addeme,&
                   adcome, advihy, advico, vihrho, vicphi,&
                   addep1, adcp11, congem, congep, vintm,&
                   vintp, dsde, epsv, depsv, p1,&
                   dp1, t, phi, rho11, phi0,&
                   sat, retcom, tbiot, rinstp, angmas,&
-                  aniso, phenom)
+                  aniso, phenom, yaenrh, adenhy)
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,12 +66,12 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     aster_logical :: yachai
 !
 ! DECLARATION POUR XFEM
-    integer :: yaenrm, dimenr, adenme
+    integer :: yaenrm, dimenr
     real(kind=8) :: dsde(dimcon, dimenr)
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, aniso
+    integer :: i, aniso, yaenrh, adenhy
     real(kind=8) :: epsvm, phim, rho11m, rho110, rho0, csigm
     real(kind=8) :: tbiot(6), cs, alpha0, alpliq, cliq, cp11, sat
     real(kind=8) :: bid, dpad
@@ -241,17 +241,30 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
         endif
         if (yaenrm .eq. 1) then
 ! ======================================================================
-! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES AVEC XFEM --------------
+! --- CALCUL DES DERIVEES DE SIGMAP AVEC XFEM --------------------------
 ! ======================================================================
-            do 40 i = 1, 6
-                dsde(adcp11,adenme+ndim-1+i) = dsde(adcp11,adenme+ ndim-1+i) + dmdeps(i)
- 40         continue
+            do i = 1, 3
+            dsde(adcome+6-1+i,adenhy)=dsde(adcome+6-1+i,adenhy)+&
+                                      dsdp1(i)
+            end do
+!
+            do i = 4, 6
+            dsde(adcome+6-1+i,adenhy)=dsde(adcome+6-1+i,adenhy)+&
+                                      dsdp1(i)*rac2
+            end do
         endif
 ! ======================================================================
 ! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 ! ======================================================================
         dsde(adcp11,addep1) = dsde(adcp11,addep1) + dmwdp1(rho11, signe,sat,dsatp1,phi,cs,cliq,1.&
                               &0d0, emmag,bid)
+        if (yaenrh.eq.1) then
+! ======================================================================
+! --- CALCUL DES DERIVEES DES APPORTS MASSIQUES AVEC XFEM --------------
+! ======================================================================
+            dsde(adcp11,adenhy) = dsde(adcp11,adenhy) + dmwdp1(rho11, signe,sat,dsatp1,phi,cs,cli&
+                                  &q,1.0d0, emmag,bid)
+        endif
     endif
 ! ======================================================================
  30 continue

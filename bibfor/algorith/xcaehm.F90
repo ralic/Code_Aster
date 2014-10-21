@@ -3,11 +3,11 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
                   dimcon, nmec, np1, np2, ndim,&
                   nno, nnos, nnom, npi, npg,&
                   nddls, nddlm, dimuel, ipoids, ivf,&
-                  idfde, ddld, ddlm, enrmec, nenr,&
-                  dimenr, nnop, nnops, nnopm)
+                  idfde, ddld, ddlm, ddlp, enrmec, nenr,&
+                  dimenr, nnop, nnops, nnopm, enrhyd)
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,8 +76,8 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
     character(len=16) :: nomte
 !
 ! DECLARATION POUR XFEM
-    integer :: ddld, ddlm, dimenr
-    integer :: enrmec(3), nenr
+    integer :: ddld, ddlm, ddlp, dimenr
+    integer :: enrmec(3), enrhyd(3), nenr
     integer :: nnop, nnops, nnopm
 !
 ! --- INITIALISATIONS --------------------------------------------------
@@ -101,7 +101,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
 ! ======================================================================
     call xgrdhm(nomte, ndim, mecani, press1, press2,&
                 tempe, enrmec, dimdef, dimcon, nmec,&
-                np1, np2, nenr, dimenr)
+                np1, np2, nenr, dimenr, enrhyd)
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
@@ -109,6 +109,6 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
     call xitghm(modint, mecani, press1, ndim, nno,&
                 nnos, nnom, npi, npg, nddls,&
                 nddlm, dimuel, ddld, ddlm, nnop,&
-                nnops, nnopm, ipoids, ivf, idfde)
+                nnops, nnopm, ipoids, ivf, idfde, ddlp)
 ! ======================================================================
 end subroutine

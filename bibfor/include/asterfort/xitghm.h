@@ -19,7 +19,7 @@ interface
     subroutine xitghm(modint, mecani, press1, ndim, nno,&
                       nnos, nnom, npi, npg, nddls,&
                       nddlm, dimuel, ddld, ddlm, nnop,&
-                      nnops, nnopm, ipoids, ivf, idfde)
+                      nnops, nnopm, ipoids, ivf, idfde, ddlp)
         character(len=3) :: modint
         integer :: mecani(5)
         integer :: press1(7)
@@ -40,5 +40,6 @@ interface
         integer :: ipoids
         integer :: ivf
         integer :: idfde
+        integer :: ddlp
     end subroutine xitghm
 end interface 

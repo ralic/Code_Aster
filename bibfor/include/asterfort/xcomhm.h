@@ -24,7 +24,7 @@ interface
                       defgep, congem, congep, vintm,&
                       vintp, dsde, pesa, retcom, kpi,&
                       npg, p10, p20, yaenrm, dimenr,&
-                      adenme, idecpg, angmas)
+                      idecpg, angmas, yaenrh, adenhy)
         integer :: dimenr
         integer :: nbvari
         integer :: dimcon
@@ -58,8 +58,9 @@ interface
         real(kind=8) :: p10
         real(kind=8) :: p20
         integer :: yaenrm
-        integer :: adenme
         integer :: idecpg
         real(kind=8) :: angmas(3)
+        integer :: yaenrh
+        integer :: adenhy
     end subroutine xcomhm
 end interface 

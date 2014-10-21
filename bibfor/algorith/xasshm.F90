@@ -10,9 +10,9 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                   np1, ndim, compor, axi, modint,&
                   codret, nnop, nnops, nnopm, enrmec,&
                   dimenr, heavt, lonch, cnset, jpintt,&
-                  jpmilt, jlsn, angmas, dimmat)
+                  jpmilt, jlsn, angmas,dimmat, enrhyd)
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,9 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! DECLARATION POUR XFEM
     integer :: nnops, nnopm
     integer :: nno
-    integer :: heavt(36), enrmec(3), dimenr
+    integer :: heavt(36), enrmec(3), dimenr, enrhyd(3)
     integer :: ise, yaenrm, adenme, nse, idecpg
+    integer :: adenhy, yaenrh
     integer :: lonch(10), ino, cnset(4*32)
     integer :: jpintt, jpmilt, igeom
     real(kind=8) :: he, coorse(81), xg(ndim), xe(ndim), bid3(ndim)
@@ -149,6 +150,8 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     addep1 = press1(3)
     yaenrm = enrmec(1)
     adenme = enrmec(2)
+    yaenrh = enrhyd(1)
+    adenhy = enrhyd(2)
 ! =====================================================================
 ! --- CALCUL DE CONSTANTES TEMPORELLES --------------------------------
 ! =====================================================================
@@ -190,7 +193,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
         endif
     endif
 ! ======================================================================
-! --- FIN CALCUL C,D,F -------------------------------------------------
+! --- FIN CALCUL C,CS --------------------------------------------------
 ! ======================================================================
 ! --- INITIALISATION DE VECTU, MATUU A 0 SUIVANT OPTION ----------------
 ! ======================================================================
@@ -211,7 +214,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 !
     endif
 ! ======================================================================
-! --- CALCUL POUR CHAQUE POINT D'INTEGRATION: BOUCLE SUR KPI -----------
+! --- VERIFICATION DE LA LOI DE COUPLAGE UTILISEE ----------------------
 ! ======================================================================
     loi = ' '
     call rcvala(imate, ' ', 'THM_INIT', 0, ' ',&
@@ -296,7 +299,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he, jlsn)
+                        he, jlsn, yaenrh, adenhy)
 ! =====================================================================
 ! --- CALCUL INTERMEDIAIRE POUR LES DEF GENERALISEES AVEC XFEM --------
 ! =====================================================================
@@ -312,7 +315,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! --- CALCUL DES DEFORMATIONS GENERALISEES ----------------------------
 ! =====================================================================
             call xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
-                        ndim, degem1, degep1, defgem, defgep)
+                        ndim, degem1, degep1, defgem, defgep, adenhy)
 ! ======================================================================
 ! --- APPEL A LA ROUTINE EQUTHM ----------------------------------------
 ! ======================================================================
@@ -326,7 +329,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                         varim(npi*(ise-1)*nbvari+1), defgep, contp(npi*(ise-1)*dimcon+1),&
                         varip(npi*(ise-1)* nbvari+1), mecani, press1, press2, tempe,&
                         rinstp, dt, r, drds, dsde,&
-                        codret, idecpg, angmas)
+                        codret, idecpg, angmas, enrhyd)
 ! ======================================================================
 ! --- ATTENTION CI-DESSOUS IL N'Y A PAS D'IMPACT DE CALCUL -------------
 ! --- ON RECOPIE POUR LA METHODE D'INTEGRATION SELECTIVE LES CONTRAINTES

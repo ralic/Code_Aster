@@ -72,10 +72,10 @@ subroutine te0037(option, nomte)
     integer :: i, j, ninter, nface, cface(5, 3), ifa, nli, in(3), nfiss, jfisno
     integer :: ar(12, 3), nbar, fac(6, 4), nbf, ibid2(12, 3), ibid, cpt, ino, ilev
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
-    integer :: compt, nddlm, nddls, iret
     real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r, lsn(27,4)
     aster_logical :: lbid, pre1, axi
+    integer :: compt, nddlm, nddls, nddlp, iret
     real(kind=8) :: thet
     data    he / -1.d0 , 1.d0/
 !
@@ -130,12 +130,12 @@ subroutine te0037(option, nomte)
 !     SI PRE1=.FALSE. -> MODELISATION MECA XFEM CLASSIQUE
 !     SI PRE1=.TRUE.  -> MODELISATION HM XFEM
     if (pre1) then
-        call xhmini(nomte, nfh, ddls, ddlm)
+        call xhmini(nomte, nfh, ddls, ddlm, nddlp)
 !
         nfiss = 1
         contac = 0
         singu = 0
-        nddls = ddls + 1
+        nddls = ddls + nddlp
         nddlm = ddlm
         nnom = nno - nnos
         nddl = nnos*nddls + nnom*nddlm
@@ -364,7 +364,7 @@ subroutine te0037(option, nomte)
                             zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)*mult
                         end do
 !
-!               ON ZAPPE LES TERMES DE PRESSION SI ON EST SUR UN
+!               ON ZAPPE LES TERMES DE PRESSION CLASSIQUE SI ON EST SUR UN
 !               NOEUD SOMMET
                         if (ino .le. nnos) pos=pos+1
 !
@@ -375,7 +375,10 @@ subroutine te0037(option, nomte)
                                              lsn(ino,j-nfh*int((j-1)/nfh)))&
                                              *forrep(j,ilev)*jac*ff(ino)*mult
                         end do
-                    end do
+!               ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON 
+!               EST SUR UN NOEUD SOMMET
+                if (ino.le.nnos) pos=pos+1 
+                   end do
                 end do
             else
                 do ilev = 1, 2

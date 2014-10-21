@@ -1,6 +1,6 @@
 subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
                   tempe, enrmec, dimdef, dimcon, nmec,&
-                  np1, np2, nenr, dimenr)
+                  np1, np2, nenr, dimenr, enrhyd)
     implicit none
 !
 #   include "asterfort/teattr.h"
@@ -12,7 +12,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     character(len=16) :: nomte
 !
 ! DECLARATIONS POUR XFEM
-    integer :: enrmec(3), dimenr
+    integer :: enrmec(3), enrhyd(3), dimenr
     integer :: nenr
 !
 ! =====================================================================
@@ -31,6 +31,8 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: daniele.colombo at ifpen.fr
+!
 !   TABLEAU MECANI :
 !   MECANI(1) = 1 : IL Y A UNE EQUATION MECANIQUE
 !               0 : SINON
@@ -58,12 +60,20 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 !   PRESS1(6) = NOMBRE DE DEFORMATIONS PRESSION
 !   PRESS1(7) = NOMBRE DE CONTRAINTES POUR CHAQUE PHASE DU CONSTITUANT 1
 !
-!   TABLEAU ENRMEC :
+!   TABLEAU ENRMEC : (POUR LA MECANIQUE)
 !   ENRMEC(1) = 1 : IL Y A ENRICHISSEMENT PAS FONCTION HEAVISIDE
 !   ENRMEC(2) = ADRESSE DANS LES TABLEAUX DES DEFORMATIONS
 !               GENERALISEES AU POINT DE GAUSS
 !   ENRMEC(3) = NOMBRE DE DEFORMATIONS POUR L'ENRICHISSEMENT
 !               MECANIQUE (TYPE HEAVISIDE)
+!
+!   TABLEAU ENRHYD : (POUR L'HYDRAULIQUE)
+!   ENRHYD(1) = 1 : IL Y A ENRICHISSEMENT PAR FONCTION HEAVISIDE
+!   ENRHYD(2) = ADRESSE DANS LES TABLEAUX DES DEFORMATIONS
+!               GENERALISEES AU POINT DE GAUSS
+!   ENRHYD(3) = NOMBRE DE DEFORMATIONS POUR L'ENRICHISSEMENT 
+!               HYDRAULIQUE (TYPE HEAVISIDE)
+!
     integer :: iaux
 !
 !====
@@ -72,7 +82,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 !
 ! =====================================================================
 ! --- INITIALISATION DES GRANDEURS PRESENTES SELON LA MODELISATION ----
-! --- EN THM ----------------------------------------------------------
+! --- EN HM-XFEM ----------------------------------------------------------
 !======================================================================
     do i = 1, 5
         mecani(i)=0
@@ -84,6 +94,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     end do
     do i = 1, 3
         enrmec(i)=0
+        enrhyd(i)=0
     end do
     np2=0
 ! =====================================================================
@@ -103,6 +114,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     call teattr('S', 'XFEM', enr, ier, typel=nomte)
     if (enr(1:2) .eq. 'XH') then
         enrmec(1)=1
+        enrhyd(1)=1
     endif
 !
 ! 2. CALCUL PREALABLE DES ADRESSES LOCALES DES VARIABLES
@@ -131,8 +143,12 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     endif
 !
     if (enrmec(1) .eq. 1) then
-        enrmec(3) = ndim + 6
+        enrmec(3) = ndim
         nenr=ndim
+    endif
+!
+    if (enrhyd(1).eq.1) then
+        enrhyd(3) = 1
     endif
 !
 ! =====================================================================
@@ -154,11 +170,17 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
         press1(4) = mecani(5) + 1
     endif
 !
-! 2.2.3. ==> DEFORMATIONS POUR L'ENRICHISSEMENT HEAVISIDE (XFEM)
+! 2.2.3. ==> DEFORMATIONS POUR L'ENRICHISSEMENT HEAVISIDE (MECA)
 !
     if (enrmec(1) .eq. 1) then
         enrmec(2) = mecani(4) + press1(6) + 1
     endif
+!
+! 2.2.4. ==> DEFORMATIONS POUR L'ENRICHISSEMENT HEAVISIDE (HYDRO)
+!
+      if (enrhyd(1).eq.1) then
+         enrhyd(2) = mecani(4) + press1(6) + enrmec(3) + 1
+      endif
 !
 ! =====================================================================
 ! 2.3. DIMENSION DES DEFORMATIONS ET CONTRAINTES ----------------------
@@ -166,7 +188,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     dimdef = mecani(4) + press1(6)
     dimcon = mecani(5) + press1(2)*press1(7)
 ! DIMENSION INTERMEDIAIRE UTILISEE POUR L'ASSEMBLAGE EN XFEM
-    dimenr = mecani(4) + press1(6) + enrmec(3)
+    dimenr = mecani(4) + press1(6) + enrmec(3) + enrhyd(3)
 !=====================================================================
 !
 ! =====================================================================

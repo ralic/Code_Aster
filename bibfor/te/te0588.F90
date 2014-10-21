@@ -27,7 +27,7 @@ subroutine te0588(option, nomte)
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! =====================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! =====================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,9 +65,9 @@ subroutine te0588(option, nomte)
     integer :: nmec, np1, np2, i, ncmp, nnos, ichg, ichn
     integer :: jtab(7), igau, isig, nnom
     real(kind=8) :: defgep(13), defgem(13)
-    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(22, 20*7)
-    real(kind=8) :: drds(22, 11+5), drdsr(22, 11+5), dsde(11+5, 22)
-    real(kind=8) :: r(22), sigbar(22), c(22), ck(22), cs(22)
+    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(17, 20*8)
+    real(kind=8) :: drds(17, 11+5), drdsr(17, 11+5), dsde(11+5, 17)
+    real(kind=8) :: r(17), sigbar(17), c(17), ck(17), cs(17)
     real(kind=8) :: epsm(405)
     real(kind=8) :: angmas(7), coor(3), angnau(3), angleu(3)
     character(len=3) :: modint
@@ -80,7 +80,7 @@ subroutine te0588(option, nomte)
     aster_logical :: axi, perman
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HM AVEC XFEM
-!  22 = (9 DEF MECA) + (9 DEF HEAV MECA) + 4 POUR P1
+!  17 = (9 DEF MECA) + (3 DEF HEAV MECA) + 4 POUR P1 + 1 pour P1 HEAV
 !  16 = 12 MECA + 4 POUR P1
 ! =====================================================================
 !  POUR LES TABLEAUX DEFGEP ET DEFGEM ON A DANS L'ORDRE :
@@ -90,7 +90,7 @@ subroutine te0588(option, nomte)
 !                                      PRE1 P1DX P1DY P1DZ
 !                                      (PARTIE ENRICHIE)
 !                                      H1X  H1Y H1Z
-!                                      EPXX EPYY EPZZ EPXY EPXZ EPYZ
+!                                      HPRE1 
 !            EPSXY = RAC2/2*(DU/DY+DV/DX)
 ! =====================================================================
 !    POUR LES CHAMPS DE CONTRAINTE
@@ -133,8 +133,8 @@ subroutine te0588(option, nomte)
 ! DECLARATION POUR XFEM
 !
     integer :: nfh
-    integer :: ddld, ddlm, nnop, nnops, nnopm
-    integer :: enrmec(3), nenr, dimenr
+    integer :: ddld, ddlm, ddlp, nnop, nnops, nnopm
+    integer :: enrmec(3), nenr, dimenr, enrhyd(3)
     integer :: jpintt, jcnset, jheavt, jpmilt
     integer :: jlonch, jbaslo, jlsn, jlst, jstno
     character(len=8) :: enr
@@ -147,15 +147,14 @@ subroutine te0588(option, nomte)
 ! =====================================================================
 ! INITIALISATION POUR XFEM
 !
-    call xhmini(nomte, nfh, ddld, ddlm)
-!
+    call xhmini(nomte, nfh, ddld, ddlm, ddlp)
     call xcaehm(nomte, axi, perman, typmod, modint,&
                 mecani, press1, press2, tempe, dimdef,&
                 dimcon, nmec, np1, np2, ndim,&
                 nno, nnos, nnom, npi, npg,&
                 nddls, nddlm, dimuel, ipoids, ivf,&
-                idfde, ddld, ddlm, enrmec, nenr,&
-                dimenr, nnop, nnops, nnopm)
+                idfde, ddld, ddlm, ddlp, enrmec, nenr,&
+                dimenr, nnop, nnops, nnopm, enrhyd)
 ! =====================================================================
 ! --- PARAMETRES PROPRES A XFEM ---------------------------------------
 ! =====================================================================
@@ -269,7 +268,7 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, jlsn, angnau, dimmat)
+                        jpmilt, jlsn, angnau,dimmat, enrhyd)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
@@ -286,7 +285,7 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, jlsn, angnau, dimmat)
+                        jpmilt, jlsn, angnau,dimmat, enrhyd)
             zi(jcret) = retloi
         endif
 ! =====================================================================
@@ -361,7 +360,7 @@ subroutine te0588(option, nomte)
                     dimuel, nmec, np1, ndim, axi,&
                     dimenr, nnop, nnops, nnopm, igeom,&
                     jpintt, jpmilt, jlsn, zi(jlonch), zi( jcnset), zi(jheavt),&
-                    enrmec)
+                    enrmec, enrhyd)
 !
 ! =====================================================================
 ! --- SUPRESSION DES DDLS HEAVISIDE SUPERFLUS -------------------------

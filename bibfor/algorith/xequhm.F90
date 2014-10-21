@@ -4,9 +4,9 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
                   congem, vintm, defgep, congep, vintp,&
                   mecani, press1, press2, tempe,&
                   rinstp, dt, r, drds,&
-                  dsde, retcom, idecpg, angmas)
+                  dsde, retcom, idecpg, angmas, enrhyd)
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,8 +70,9 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
     character(len=16) :: option, compor(*)
 !
 ! DECLARATIONS POUR XFEM
-    integer :: dimenr, enrmec(3)
+    integer :: dimenr, enrmec(3), enrhyd(3)
     integer :: yaenrm, adenme, idecpg
+    integer :: yaenrh, adenhy
     real(kind=8) :: r(1:dimenr), drds(1:dimenr, 1:dimcon)
     real(kind=8) :: dsde(1:dimcon, 1:dimenr)
 ! ======================================================================
@@ -93,6 +94,8 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
 !
     yaenrm = enrmec(1)
     adenme = enrmec(2)
+    yaenrh = enrhyd(1)
+    adenhy = enrhyd(2)
 !
     p10 = 0.d0
     p20 = 0.d0
@@ -137,7 +140,7 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
                 defgem, defgep, congem, congep, vintm,&
                 vintp, dsde, pesa, retcom, kpi,&
                 npg, p10, p20, yaenrm, dimenr,&
-                adenme, idecpg, angmas)
+                idecpg, angmas, yaenrh, adenhy)
 !
     if (retcom .ne. 0) then
         goto 900
@@ -184,16 +187,6 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
 ! ======================================================================
         if (yaenrm .eq. 1) then
             if (yamec .eq. 1) then
-                do 13 i = 1, 6
-                    r(adenme+ndim+i-1)= r(adenme+ndim+i-1) +congep(&
-                    adcome-1+i)
- 13             continue
-!
-                do 14 i = 1, 6
-                    r(adenme+ndim-1+i)=r(adenme+ndim-1+i) +congep(&
-                    adcome+6-1+i)
- 14             continue
-!
                 if (yap1 .eq. 1) then
                     do 15 i = 1, ndim
                         r(adenme+i-1)=r(adenme+i-1) - pesa(i)*congep(&
@@ -202,6 +195,16 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
                 endif
             endif
         endif
+! ======================================================================
+! --- SI PRESENCE DE PRESS1 AVEC XFEM ----------------------------------
+! ======================================================================
+         if(yaenrh.eq.1) then
+            if(yap1.eq.1) then
+
+               r(adenhy)=r(adenhy)-congep(adcp11)+congem(adcp11)
+
+            endif
+         endif
     endif
 ! ======================================================================
 ! --- CALCUL DES MATRICES DERIVEES CONSTITUTIVES DE DF -----------------
@@ -239,33 +242,16 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
  28         continue
         endif
 ! ======================================================================
-! --- SI PRESENCE DE MECANIQUE AVEC XFEM -------------------------------
-! ======================================================================
-        if (yaenrm .eq. 1) then
-            if (yamec .eq. 1) then
-                do 29 i = 1, 6
-                    drds(adenme+ndim-1+i,adcome+i-1)= drds(adenme+&
-                    ndim-1+i,adcome+i-1)+1.d0
- 29             continue
-!
-                do 30 i = 1, 6
-                    drds(adenme+ndim-1+i,adcome+6+i-1)= drds(adenme+ndim-&
-                    1+i,adcome+6+i-1)+1.d0
- 30             continue
-            endif
-        endif
-! ======================================================================
 ! --- SI PRESENCE DE PRESS1 AVEC XFEM ----------------------------------
 ! ======================================================================
-        if (yaenrm .eq. 1) then
-            if (yap1 .eq. 1) then
-                if (yamec .eq. 1) then
+        if ((yap1.eq.1).and.(yaenrh.eq.1)) then
+            if ((yamec.eq.1).and.(yaenrm.eq.1)) then
                     do 31 i = 1, ndim
                         drds(adenme+i-1,adcp11)= drds(adenme+i-1,&
                         adcp11)-pesa(i)
  31                 continue
-                endif
             endif
+            drds(adenhy,adcp11)=drds(adenhy,adcp11)-1.d0
         endif
     endif
 ! ======================================================================
@@ -279,6 +265,8 @@ subroutine xequhm(imate, option, ta, ta1, ndim,&
         do 110 i = 4, 6
             congep(adcome+i-1)= congep(adcome+i-1)/rac2
             congep(adcome+6+i-1)= congep(adcome+6+i-1)/rac2
+            congem(adcome+i-1)= congem(adcome+i-1)/rac2
+            congem(adcome+6+i-1)= congem(adcome+6+i-1)/rac2
 110     continue
     endif
 ! ======================================================================

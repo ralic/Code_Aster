@@ -6,6 +6,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -46,11 +47,13 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !
 !      TRAITEMENT DE DDL_IMPO SUR UN NOEUD X-FEM
 !             (POUR MOTCLE = DX, DY ,DZ)
+!      TRAITEMENT DE DDL_IMPO SUR UN NOEUD HM-XFEM
+!             (POUR MOTCLE = DX, DY, DZ ET/OU PRE1)
 !      TRAITEMENT DE FACE_IMPO SUR UN NOEUD X-FEM
 !             (POUR DNOR OU DTAN : MOTCLE = DEPL )
 !
 ! IN  MODELE : NOM DE L'OBJET MODELE ASSOCIE AU LIGREL DE CHARGE
-! IN  MOTCLE : NOM DE LA COMPOSANTE DU DEPLACEMENT A IMPOSER
+! IN  MOTCLE : NOM DE LA COMPOSANTE DU DEPLACEMENT/PRESSION A IMPOSER
 ! IN  NOMN   : NOM DU NOEUD INO OU EST EFFECTUE LE BLOCAGE
 ! IN  INO    : NUMERO DU NOEUD OU EST EFFECTUE LE BLOCAGE
 ! IN  VALIMR : VALEUR DE BLOCAGE SUR CE DDL (FONREE = 'REEL')
@@ -88,7 +91,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     real(kind=8), pointer :: lstv(:) => null()
     integer, pointer :: stnov(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-    data        axes /'X','Y','Z'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,6 +99,9 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! --- RECUP DU NUMERO LOCAL NUMO DU NOEUD INO DANS LA MAILLE X-FEM NUMA
     numa = zi(jnoxfv-1+2*(ino-1)+1)
     nuno = zi(jnoxfv-1+2*(ino-1)+2)
+    axes(1) = 'X'
+    axes(2) = 'Y'
+    axes(3) = 'Z'
 !
 !       REMARQUE : FAIRE DES CALL JEVEUO AU COEUR DE LA BOUCLE SUR
 !      LES NOEUDS ET SUR LES DDLS BLOQUES N'EST PAS OPTIMAL DU POINT
@@ -147,7 +152,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! --- GROUPE AFFECTÉ) DE PART ET D'AUTRE DE LA LEVRE : 2 RELATIONS
 ! --- SINON IL FAUT IMPOSER QUE D'UN SEUL COTÉ        : 1 RELATION
     if (nfiss .eq. 1) then
-        if (lsn(1) .eq. 0.d0 .and. lst(1) .lt. 0.d0) then
+        if (lsn(1) .eq. 0.d0 .and. lst(1) .lt. r8prem()) then
             minlsn = r8maem()
             maxlsn = -1*r8maem()
 ! ---     RECUPERATION DE LA LISTE DES NOEUDS AFFECTÉS PAR LA CONDITION
@@ -193,17 +198,17 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                 end do
             end do
 !
-            if ((minlsn.eq.0.d0) .and. (maxlsn.gt.0.d0)) then
+            if ((minlsn.eq.0.d0) .and. (maxlsn.gt.r8prem())) then
 ! ---       ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE MAITRE
                 nrel = 1
                 theta(1) = r8pi()
                 he(1,1) = 1.d0
-            else if ((minlsn.lt.0.d0).and.(maxlsn.eq.0.d0)) then
+            else if ((minlsn.lt.r8prem()).and.(maxlsn.eq.0.d0)) then
 ! ---       ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE ESCLAVE
                 nrel = 1
                 theta(1) = r8pi()
                 he(1,1) = -1.d0
-                elseif (((minlsn.lt.0.d0).and.(maxlsn.gt.0.d0)) .or.(&
+            elseif (((minlsn.lt.r8prem()).and.(maxlsn.gt.r8prem())) .or.(&
             nbno.eq.0)) then
 ! ---       ON AFFECTE LA RELATION SUR LES DEUX PARTIES
                 nrel = 2
@@ -284,15 +289,13 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                 endif
             end do
 !
-!       CAS DDL_IMPO DX DY DZ
-            elseif (motcle.eq.'DX'.or.motcle.eq.'DY'.or.motcle.eq.'DZ')&
-        then
-!
+!       CAS DDL_IMPO DX DY DZ (ET/OU PRE1 => POUR HM-XFEM ONLY)
+        elseif (motcle.eq.'DX'.or.motcle.eq.'DY'.or.motcle.eq.'DZ') then
 !         COEFFICIENTS ET DDLS DE LA RELATION
-            ddl(1) = 'D'//motcle(2:2)
-            coef(1)=1.d0
-            i = 1
-            if (nfiss .eq. 1) then
+              ddl(1) = 'D'//motcle(2:2)
+              coef(1)=1.d0
+              i = 1
+              if (nfiss .eq. 1) then
                 if (stano(1) .eq. 1 .or. stano(1) .eq. 3) then
                     i = i+1
                     ddl(i) = 'H1'//motcle(2:2)
@@ -312,7 +315,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     ddl(i) = 'E4'//motcle(2:2)
                     coef(i)=sqrt(r)*cos(t/2.d0)*sin(t)
                 endif
-            else
+              else
                 do ifh = 1, nfh
                     if (stano(fisno(ifh)) .eq. 1) then
                         i = i+1
@@ -321,7 +324,19 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                         coef(i)=xcalf_he(he(irel,ifh),lsn(fisno(ifh)))
                     endif
                 end do
-            endif
+              endif
+        elseif (motcle.eq.'PRE1') then
+!           COEFFICIENTS ET DDLS DE LA RELATION
+              ddl(1) = 'PRE1'
+              coef(1) = 1.d0
+              i=1
+              if (nfiss.eq.1) then
+                if (stano(1).eq.1.or.stano(1).eq.3) then
+                  i = i + 1
+                  ddl(i) = 'H'//motcle
+                  coef(i) = he(irel,1)
+                endif
+              endif  
         endif
         nterm = i
         call afrela(coef, [cbid], ddl, noeud, dimens,&

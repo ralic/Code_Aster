@@ -1,13 +1,14 @@
-subroutine xcomhm(option, imate, compor, instap, ndim,&
-                  dimdef, dimcon, nbvari, yamec, yap1,&
-                  yap2, yate, addeme, adcome, addep1,&
-                  adcp11, addep2, addete, defgem, defgep,&
-                  congem, congep, vintm, vintp, dsde,&
-                  pesa, retcom, kpi, npg, p10,&
-                  p20, yaenrm, dimenr, adenme, idecpg,&
-                  angmas)
+subroutine xcomhm(option, imate, compor,instap,&
+                  ndim, dimdef, dimcon,nbvari,&
+                  yamec, yap1, yap2, yate,&
+                  addeme, adcome, addep1, adcp11,&
+                  addep2, addete, defgem,&
+                  defgep, congem, congep, vintm,&
+                  vintp, dsde, pesa, retcom, kpi,&
+                  npg, p10, p20, yaenrm, dimenr,&
+                  idecpg, angmas, yaenrh, adenhy)
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -85,7 +86,8 @@ subroutine xcomhm(option, imate, compor, instap, ndim,&
     character(len=16) :: compor(*), option
 !
 ! DECLARATION POUR XFEM
-    integer :: yaenrm, dimenr, adenme, idecpg
+    integer :: yaenrm, dimenr, idecpg
+    integer :: yaenrh, adenhy
     real(kind=8) :: dsde(1:dimcon, 1:dimenr)
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
@@ -137,13 +139,13 @@ subroutine xcomhm(option, imate, compor, instap, ndim,&
 ! ======================================================================
     call xhmsat(yachai, option, meca, thmc, ther,&
                 hydr, imate, ndim, yaenrm, dimenr,&
-                adenme, dimcon, nbvari, yamec, addeme,&
+                dimcon, nbvari, yamec, addeme,&
                 adcome, advihy, advico, vihrho, vicphi,&
                 addep1, adcp11, congem, congep, vintm,&
                 vintp, dsde, epsv, depsv, p1,&
                 dp1, t, phi, rho11, phi0,&
-                sat, retcom, tbiot, instap, angmas,&
-                aniso, phenom)
+                sat, retcom, tbiot, instap,&
+                angmas, aniso, phenom, yaenrh, adenhy)
     if (retcom .ne. 0) then
         goto 900
     endif
@@ -154,8 +156,8 @@ subroutine xcomhm(option, imate, compor, instap, ndim,&
 ! ======================================================================
     if (yamec .eq. 1 .and. kpi .le. npg) then
         call xcalme(option, meca, imate, ndim, dimenr,&
-                    dimcon, addeme, adcome, congep, yaenrm,&
-                    adenme, dsde, deps, t, idecpg,&
+                    dimcon, addeme, adcome, congep,&
+                    dsde, deps, t, idecpg,&
                     kpi, angmas, aniso, phenom)
         if (retcom .ne. 0) then
             goto 900
@@ -177,11 +179,12 @@ subroutine xcomhm(option, imate, compor, instap, ndim,&
 ! ======================================================================
 ! --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------
 ! ======================================================================
-    if (yap1 .eq. 1) then
+    if ((yap1.eq.1).and.(yaenrh.eq.1)) then
         call xcalfh(option, thmc, ndim, dimcon, yamec,&
                     addep1, adcp11, addeme, congep, dsde,&
                     grap1, rho11, pesa, tperm, unsurk,&
-                    viscl, dviscl, yaenrm, dimenr, adenme)
+                    viscl, dviscl, dimenr,&
+                    adenhy)
         if (retcom .ne. 0) then
             goto 900
         endif

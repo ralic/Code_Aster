@@ -23,8 +23,8 @@ interface
                       dimcon, nmec, np1, np2, ndim,&
                       nno, nnos, nnom, npi, npg,&
                       nddls, nddlm, dimuel, ipoids, ivf,&
-                      idfde, ddld, ddlm, enrmec, nenr,&
-                      dimenr, nnop, nnops, nnopm)
+                      idfde, ddld, ddlm, ddlp, enrmec, nenr,&
+                      dimenr, nnop, nnops, nnopm, enrhyd)
         character(len=16) :: nomte
         aster_logical :: axi
         aster_logical :: perman
@@ -53,11 +53,13 @@ interface
         integer :: idfde
         integer :: ddld
         integer :: ddlm
+        integer :: ddlp
         integer :: enrmec(3)
         integer :: nenr
         integer :: dimenr
         integer :: nnop
         integer :: nnops
         integer :: nnopm
+        integer :: enrhyd(3)
     end subroutine xcaehm
 end interface 

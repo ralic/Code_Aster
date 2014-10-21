@@ -20,7 +20,7 @@
 interface 
     subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
                       dimcon, ndim, dt, fnoevo, congem,&
-                      r)
+                      r, enrhyd)
         integer :: dimcon
         integer :: dimenr
         integer :: imate
@@ -32,5 +32,6 @@ interface
         aster_logical :: fnoevo
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimenr)
+        integer :: enrhyd(3)
     end subroutine xfnoda
 end interface 

@@ -1,5 +1,5 @@
 subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
-                  ndim, degem1, degep1, defgem, defgep)
+                  ndim, degem1, degep1, defgem, defgep, adenhy)
 !
     implicit none
 !
@@ -19,7 +19,7 @@ subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
+! person_in_charge: daniele.colombo at ifpen.fr
 !
 !          BUT : ASSEMBLER LES DEFORMATIONS GENERALISEES DU MODELE
 !                HM EN XFEM
@@ -31,7 +31,7 @@ subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
 ! OUT  DEFGEM  : TABLEAU ASSEMBLE A L'INSTANT -
 ! OUT  DEFGEP  : TABLEAU ASSEMBLE A L'INSTANT +
 !     ------------------------------------------------------------------
-    integer :: dimdef, dimenr, addeme, adenme, ndim, addep1, i
+    integer :: dimdef, dimenr, addeme, adenme, ndim, addep1, i, adenhy
     real(kind=8) :: degem1(dimenr), degep1(dimenr)
     real(kind=8) :: defgem(dimdef), defgep(dimdef)
 !
@@ -46,14 +46,13 @@ subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
     end do
 !
     do i = 1, 6
-        defgem(addeme-1+ndim+i)=degem1(addeme-1+ndim+i)+ degem1(&
-        adenme-1+ndim+i)
+        defgem(addeme-1+ndim+i)=degem1(addeme-1+ndim+i)
     end do
 !
-    defgem(addep1)=degem1(addep1)
+    defgem(addep1)=degem1(addep1) + degem1(adenhy)
 !
     do i = 1, ndim
-        defgem(addep1+i)=degem1(addep1+i)
+        defgem(addep1+i)=degem1(addep1+i) 
     end do
 !
 ! ASSEMBLAGE (DEF CLASSIQUES + DEF HEAVISIDE) A L'INSTANT +
@@ -62,11 +61,10 @@ subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
     end do
 !
     do i = 1, 6
-        defgep(addeme-1+ndim+i)=degep1(addeme-1+ndim+i)+ degep1(&
-        adenme-1+ndim+i)
+        defgep(addeme-1+ndim+i)=degep1(addeme-1+ndim+i)
     end do
 !
-    defgep(addep1)=degep1(addep1)
+    defgep(addep1)=degep1(addep1) + degep1(adenhy)
 !
     do i = 1, ndim
         defgep(addep1+i)=degep1(addep1+i)

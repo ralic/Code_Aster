@@ -1,6 +1,6 @@
 subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
                   dimcon, ndim, dt, fnoevo, congem,&
-                  r)
+                  r, enrhyd)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
     implicit none
 #include "asterf_types.h"
@@ -24,6 +25,7 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
     aster_logical :: fnoevo
     integer :: mecani(5), press1(7), enrmec(3), dimenr, dimcon
     integer :: ndim, imate, yaenrm, adenme
+    integer :: enrhyd(3), yaenrh, adenhy
     real(kind=8) :: dt, congem(dimcon), r(dimenr)
 ! ======================================================================
     integer :: nhom, yamec, yap1, addeme, adcome
@@ -54,6 +56,8 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
     adcome = mecani(3)
     yaenrm = enrmec(1)
     adenme = enrmec(2)
+    yaenrh = enrhyd(1)
+    adenhy = enrhyd(2)
 ! ======================================================================
 ! --- COMME CONGEM CONTIENT LES VRAIES CONTRAINTES ET ------------------
 ! --- COMME PAR LA SUITE ON TRAVAILLE AVEC SQRT(2)*SXY -----------------
@@ -87,14 +91,6 @@ subroutine xfnoda(imate, mecani, press1, enrmec, dimenr,&
 ! ======================================================================
     if (yaenrm .eq. 1) then
         if (yamec .eq. 1) then
-            do 9 i = 1, 6
-                r(adenme+ndim+i-1)=r(adenme+ndim+i-1) +congem(&
-                adcome-1+i)
-  9         continue
-            do 10 i = 1, 6
-                r(adenme+ndim-1+i)=r(adenme+ndim-1+i)+congem(adcome+6+i-1)
- 10         continue
-!
             if (yap1 .eq. 1) then
                 do 11 i = 1, ndim
                     r(adenme+i-1)=r(adenme+i-1)-pesa(i)*congem(adcp11)
