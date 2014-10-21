@@ -89,7 +89,6 @@ subroutine q4grig(nomte, xyzl, option, pgl, rig,&
 ! --- Q4G EXCENTRE, ON S'ARRETE EN ERREUR FATALE :
 !     ------------------------------------------
     if (excent .ne. zero) then
-!        call utmess('F', 'ELEMENTS2_57')
          coupmf =.true.
     endif
 !
