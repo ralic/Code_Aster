@@ -1044,12 +1044,15 @@ SBKY5=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKRY, LIST_FREQ = freqspec,
 #
 # LA SOURCE DES RESULTATS PROVIENT DE CLASSI POUR LA VALIDATION DU CHAINAGE ASTER_MISS3D 
 
+# AJOUT TOLE_MACHINE DE 3E-6 POUR SATISFAIRE CLAP0F0Q EN DYNAMIQUE TRANSITOIRE
+
 TEST_FONCTION(VALEUR=(
                       _F(VALE_CALC=0.53235224,
                          VALE_REFE=0.60,
                          VALE_PARA=(0.05, 2.9),
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=1.2E-1,
+                         TOLE_MACHINE=3.E-06,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBX5,),
                       _F(VALE_CALC=0.53494460,
@@ -1057,6 +1060,7 @@ TEST_FONCTION(VALEUR=(
                          VALE_PARA=(0.05, 2.8),
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=2.5E-1,
+                         TOLE_MACHINE=3.E-06,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBY5,),
                       _F(VALE_CALC=1.60293263,
