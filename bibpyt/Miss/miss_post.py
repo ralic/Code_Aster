@@ -833,12 +833,6 @@ class PostMissFichierTemps(PostMissFichier):
             length = len(freq_list1) + len(freq_list2)/2
         else:
             length = len(freq_list1) + (len(freq_list2)-1)/2 + 1
-        print "fc=", fc
-        print "len(freq_list1)=", len(freq_list1)
-        print "len(freq_list2)=", len(freq_list2)
-        print "len(freq_list3)=", len(freq_list3)
-        print "fin list2 = ", self.L_points - fc*reduc_factor
-        print "length=", length
         Z_reduced = NP.zeros((self.nrows, self.ncols, len(freq_reduc)), complex)
         Z_reduced[:,:,0:length+1] = NP.conj(impe_Laplace[:,:,0:length+1])
         Z_reduced[:,:,length+1:] = impe_Laplace[:,:,length-1:0:-1]

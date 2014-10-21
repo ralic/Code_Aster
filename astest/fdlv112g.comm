@@ -34,11 +34,11 @@ mat1= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10,
                             ),
                        ) ;
 
-Npf = 205*2
+Npf = 205
 
 kxp=3.55E13/Npf
 kyp=3.33E13/Npf
-kzp=3.41E14/Npf
+kzp=3.41E13/Npf
 
 PRE_SEISME_NONL(
                  RESULTAT = _F(
@@ -119,8 +119,6 @@ PRE_SEISME_NONL(
 
 );
 
-#FIN();
-#IMPR_CO(CHAINE='MAEL0   .LINO', UNITE = 6);  
 
 TABSOL = DEFI_SOL_MISS(
    TITRE="SOL HOMOGENE",
@@ -150,9 +148,9 @@ TABSOL = DEFI_SOL_MISS(
    ),
    INFO=2,
 );
-                     
-CALC_MISS(TYPE_RESU='FICHIER_TEMPS',
-          PROJET='FDLV112E2',
+'''
+CALC_MISS(TYPE_RESU='FICHIER',
+          PROJET='FDLV112G',
           VERSION='V6.6',
           TABLE_SOL=TABSOL,
           MATER_FLUIDE=_F(RHO=1000.,
@@ -164,12 +162,38 @@ CALC_MISS(TYPE_RESU='FICHIER_TEMPS',
           GROUP_MA_FLU_SOL='IFLUSOL2',
           GROUP_MA_SOL_SOL='SLIBREM2',
           UNITE_IMPR_ASTER=26,
-          INST_FIN = 2.0,
-          #INST_FIN = 0.1,
-          #PCENT_FREQ_CALCUL=40,
-          #FACTEUR_INTERPOL=10,
+          UNITE_RESU_IMPE=25,
+          UNITE_RESU_FORC=28,
+          PARAMETRE=_F(FREQ_MIN=0.5,
+                       FREQ_MAX=25.,
+                       FREQ_PAS=0.5,
+                       Z0=5.0,
+                       SURF='NON',
+                       ISSF='OUI',
+                       ALGO='REGU',
+                       OFFSET_MAX=1000,
+                       OFFSET_NB=5000,),);
+                       
+'''
+                     
+CALC_MISS(TYPE_RESU='FICHIER_TEMPS',
+          PROJET='FDLV112G2',
+          VERSION='V6.6',
+          TABLE_SOL=TABSOL,
+          MATER_FLUIDE=_F(RHO=1000.,
+                          CELE=1500.,
+                          AMOR_BETA=0.),
+          MACR_ELEM_DYNA=MAEL0,
+          GROUP_MA_INTERF='SURFBAS2',
+          GROUP_MA_FLU_STR='IFLUSTR2',
+          GROUP_MA_FLU_SOL='IFLUSOL2',
+          GROUP_MA_SOL_SOL='SLIBREM2',
+          UNITE_IMPR_ASTER=26,
+          INST_FIN = 2.10,
+          PCENT_FREQ_CALCUL=0,
+          FACTEUR_INTERPOL=7,
           PRECISION = 1E-10,
-          PAS_INST = 0.05,
+          PAS_INST = 0.01,
           UNITE_RESU_RIGI=35,
           PARAMETRE=_F(FREQ_IMAG=0.1,
                        Z0=5.0,
@@ -243,6 +267,8 @@ PRE_SEISME_NONL(
                                     ),
 
            );
+           
+#IMPR_RESU(RESU=_F(MAILLAGE=MAILB));
  
 
 PESAX=AFFE_CHAR_MECA(MODELE=MODELB,
@@ -251,28 +277,71 @@ PESAX=AFFE_CHAR_MECA(MODELE=MODELB,
 
 INCLUDE(UNITE=31,);
 
-dt=0.05
-TFIN=4                          
-N=27
+
+N=200 
+dt=0.01
+TFIN=2.0                         
+
+linst = DEFI_LIST_REEL ( DEBUT = 0.,
+                          INTERVALLE = (
+                                      _F( 
+                                         JUSQU_A = (N-1)*dt,
+                                         PAS=1*dt,
+                                         ),
+                                       ),
+                           );                           
+                      
+
+ACCEX= CALC_FONCTION( COMB=_F( FONCTION = acc_x, COEF = 1.),
+                        INTERPOL='LIN',
+                        PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                      LIST_PARA=linst);
+                      
+
+
+vitex=CALC_FONCTION(INTEGRE=_F(FONCTION=ACCEX,));
+
+deplx0=CALC_FONCTION(INTEGRE=_F(FONCTION=vitex,));
+
+deplxF=FORMULE(NOM_PARA='INST',
+            VALE='deplx0(INST)-(INST*deplx0(TFIN-dt)/(TFIN-dt))')
+            
+deplx=CALC_FONC_INTERP(FONCTION=deplxF, NOM_PARA = 'INST',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=linst);
+                        
+dt=0.01
+
+N=131
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=_F(
                                    JUSQU_A=(N-1)*dt,
                                    PAS=dt,),
                      );
+                     
 
-ACCEX= CALC_FONCTION( COMB=_F( FONCTION = acc_x, COEF = 1.),
-                        INTERPOL='LIN',
-                        PROL_DROITE='LINEAIRE',
-                        PROL_GAUCHE='LINEAIRE',
-                      LIST_PARA=L_INST);
+                     
+FSEISX0=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE', #INFO=2,
+                        FONC_SIGNAL=deplx,
+                        FREQ_MAX=25, 
+                        NOM_CMP='DX',
+                        UNITE_RESU_FORC=28,
+                        ISSF='OUI',
+                        NOEUD_AFFE=('N2591','N2592','N2593','N2594','N2595',
+                                    'N2596','N2597','N2598','N2599','N2600',
+                                    ),
+                        );
+
                         
 DYNA=DYNA_NON_LINE(MODELE=MODELB,
                  CHAM_MATER=CHMATB,
                  CARA_ELEM=ELEMB,
                  EXCIT=(
-                        #_F(CHARGE=FSEISX0,),
-                        _F(CHARGE=PESAX,FONC_MULT=ACCEX,),
+                        _F(CHARGE=FSEISX0,),
+                        #_F(CHARGE=PESAX,FONC_MULT=ACCEX,),
                         _F(CHARGE=CHSOL),
                         _F(CHARGE=COND_LIB),
                         ),
@@ -286,8 +355,8 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,
                            ),
                  SCHEMA_TEMPS = _F(SCHEMA='HHT', 
                                    #ALPHA=-0.0,
-                                   #ALPHA=-0.1,
-                                   ALPHA=-0.02,
+                                   ALPHA=-0.1,
+                                   #ALPHA=-0.05,
                                    MODI_EQUI='OUI',
                                    FORMULATION='DEPLACEMENT',),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
@@ -315,56 +384,89 @@ ax11i = RECU_FONCTION ( RESULTAT = DYNA, NOM_CHAM = 'ACCE',
                         PROL_GAUCHE='LINEAIRE',
                         NOEUD = 'N11', NOM_CMP = 'DX', );
                         
-ax253ia=CALC_FONCTION(LIST_PARA=L_INST,
-                    COMB=(_F(FONCTION=ax253i,
-                             COEF=1.,),
-                          _F(FONCTION=ACCEX,
-                             COEF=1.,),
-                          ),
-                       );
-                       
-ax316ia=CALC_FONCTION(LIST_PARA=L_INST,
-                    COMB=(_F(FONCTION=ax316i,
-                             COEF=1.,),
-                          _F(FONCTION=ACCEX,
-                             COEF=1.,),
-                          ),
-                       );        
-                       
-ax11ia=CALC_FONCTION(LIST_PARA=L_INST,
-                    COMB=(_F(FONCTION=ax11i,
-                             COEF=1.,),
-                          _F(FONCTION=ACCEX,
-                             COEF=1.,),
-                          ),
-                       );                        
-                                
 
+freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
+                          INTERVALLE = (
+                                      _F(
+                                         JUSQU_A = 15.,
+                                         NOMBRE = 149,
+                                       ),
+                                      _F(
+                                         JUSQU_A = 35.,
+                                         NOMBRE = 80,
+                                       ),
+                                      _F(
+                                         JUSQU_A = 100.,
+                                         NOMBRE = 65,
+                                       ),
+                                       ),
+                           );
+
+
+sro_axi=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ax253i, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),);
+                                 
+sro11xi=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ax11i, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),);
+                                 
+sro316xi=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ax316i, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),);
+                                 
+SACCEX=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEX, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),);
+                                 
+SACCEX0=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),);
+                                 
+IMPR_FONCTION( FORMAT='AGRAF',UNITE=21,
+              COURBE=(
+                      _F(FONCTION=ax253i),
+                      _F(FONCTION=ax316i),
+                      _F(FONCTION=ax11i),
+                      ),
+             );
+             
+IMPR_FONCTION( FORMAT='AGRAF',UNITE=22,
+              COURBE=(
+                      _F(FONCTION=sro_axi),
+                      _F(FONCTION=sro316xi),
+                      _F(FONCTION=sro11xi),
+                      _F(FONCTION=SACCEX),
+                      _F(FONCTION=SACCEX0),
+                      ),
+             );                                 
+                                 
+# AJOUT TOLE_MACHINE DE 3E-6 POUR SATISFAIRE CLAP0F0Q EN DYNAMIQUE TRANSITOIRE
+ 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=-6.0407335E-01,
-                         #VALE_REFE=4.885,
-                         #PRECISION=0.015,
-                         #REFERENCE = 'AUTRE_ASTER',
-                         VALE_PARA=1.25,
-                         FONCTION=ax253ia,
+                      _F(VALE_CALC=4.684936613651,
+                         VALE_REFE=4.885,
+                         PRECISION=0.05,
+                         TOLE_MACHINE=3.E-06,
+                         REFERENCE = 'AUTRE_ASTER',
+                         VALE_PARA=1.00,
+                         FONCTION=ax253i,
                          ),
-##                       _F(VALE_CALC=4.884638426062,
-##                          VALE_REFE=4.885,
-##                          PRECISION=0.13,
-##                          REFERENCE = 'AUTRE_ASTER',
-##                          VALE_PARA=1.00,
-##                          FONCTION=ax253i,
-##                          ),
-##                       _F(VALE_CALC=17.39874712248,
-##                          VALE_REFE=17.40,
-##                          PRECISION=0.015,
-##                          REFERENCE = 'AUTRE_ASTER',
-##                          VALE_PARA=(10.7, 0.05),
-##                          NOM_PARA=('FREQ', 'AMOR'),
-##                          FONCTION=sro_axi,
-##                          ),
+                      _F(VALE_CALC=14.93492844330,
+                         VALE_REFE=17.40,
+                         PRECISION=0.15,
+                         TOLE_MACHINE=3.E-06,
+                         REFERENCE = 'AUTRE_ASTER',
+                         VALE_PARA=(10.7, 0.05),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=sro_axi,
+                         ),
                       ),
               );
-
 
 FIN( );

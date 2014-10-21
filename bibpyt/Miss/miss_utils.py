@@ -166,13 +166,13 @@ class MISS_PARAMETER(object):
                     # on ajoute 0.
                     self._keywords['AMOR_REDUIT'].append(0.)
         # la règle ENSEMBLE garantit que les 3 GROUP_MA_xxx sont tous absents ou tous présents
-        if self['ISSF'] != 'NON':
+        if self['TYPE_RESU'] not in ('CHARGE'):
+          if self['ISSF'] != 'NON':
             if self['GROUP_MA_FLU_STR'] is None:
                 UTMESS('F', 'MISS0_22')
             if self['MATER_FLUIDE'] is None:
                 UTMESS('F', 'MISS0_23')
-        if self['TYPE_RESU'] not in ('CHARGE'):
-         if self.get('GROUP_MA_CONTROL') is not None:
+          if self.get('GROUP_MA_CONTROL') is not None:
             assert self['INST_FIN'] is not None, "INST_FIN obligatoire"
 
     def __iter__(self):
