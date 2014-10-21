@@ -116,23 +116,23 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
                 flex(i,j) = flex(i,j) + wq4(i)*wq4(j)*wgt
 30          continue
 40      continue
-50  end do
+50  continue
 !
 !     ----- CALCUL DE LA MATRICE MASSE EN MEMBRANE ---------------------
     coefm = caraq4(21)*roe/9.d0
     do 60 k = 1, 64
         amemb(k) = 0.d0
-60  end do
+60  continue
     do 70 k = 1, 8
         amemb(ii(k)) = 1.d0
         amemb(jj(k)) = 0.25d0
-70  end do
+70  continue
     do 80 k = 1, 16
         amemb(ll(k)) = 0.5d0
-80  end do
+80  continue
     do 90 k = 1, 64
         memb(k,1) = coefm*amemb(k)
-90  end do
+90  continue
 !
     if (( option .eq. 'MASS_MECA' ) .or. (option.eq.'M_GAMMA')) then
         call dxqloc(flex, memb, mefl, ctor, mas)

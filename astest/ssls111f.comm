@@ -61,7 +61,7 @@ fz=-1000. # force lineique selon z (N/m)
 
 PRE_GIBI();
 MA1=LIRE_MAILLAGE();
-
+IMPR_RESU(RESU=_F(MAILLAGE=MA1,  ))
 # On force la normale de la plaque vers z>0 :
 MA1=MODI_MAILLAGE(MAILLAGE=MA1,reuse=MA1,
                   ORIE_NORM_COQUE=_F(GROUP_MA=('PLAQ1',), VECT_NORM=(0.0,0.0,1.0), GROUP_NO='A1',))
@@ -69,7 +69,7 @@ MA1=MODI_MAILLAGE(MAILLAGE=MA1,reuse=MA1,
 
 MO1=AFFE_MODELE(MAILLAGE=MA1,
                 AFFE=_F(GROUP_MA=('PLAQ1', 'L12',),
-                        PHENOMENE='MECANIQUE', MODELISATION='Q4G',),);
+                        PHENOMENE='MECANIQUE', MODELISATION='DKT',),);
 
 EP1=AFFE_CARA_ELEM(MODELE=MO1,
                    COQUE=_F(GROUP_MA=('PLAQ1','L12'),
@@ -125,7 +125,7 @@ vref3=fz*L/(G*h*5/6)             # du a l'effort tranchant de la force fx
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A3', RESULTAT=RESU1A, NOM_CHAM='DEPL', NOM_CMP='DZ',
                   REFERENCE='ANALYTIQUE', VALE_REFE=(vref1+vref2+vref3), PRECISION=5.e-3,
-                  VALE_CALC=-2.98130859374E-05 ))
+                  VALE_CALC=-2.96691894471E-05 ))
 
 
 # validation de la densité d'effort sur le bord A1 A4
@@ -139,7 +139,7 @@ mxx=-fz*L - e*fx
 mxx=-fz*L
 TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A1', RESULTAT=RESU1A, NOM_CHAM='EFGE_NOEU', NOM_CMP='MXX',
                   REFERENCE='ANALYTIQUE', VALE_REFE=mxx, PRECISION=3.e-2,
-                  VALE_CALC=9749.99999996,))
+                  VALE_CALC=9999.99999843,))
 
 qx=fz
 TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A1', RESULTAT=RESU1A, NOM_CHAM='EFGE_NOEU', NOM_CMP='QX',
@@ -156,7 +156,7 @@ mxx=-fz*L
 mxx=-fz*L - e*fx
 TEST_RESU(RESU=_F(NUME_ORDRE=1, MAILLE='M1', NOEUD='N11', RESULTAT=RESU1B, NOM_CHAM='EFGE_ELNO', NOM_CMP='MXX',
                   REFERENCE='ANALYTIQUE', VALE_REFE=mxx, PRECISION=3.0e-2,
-                  VALE_CALC=8149.99999996,))
+                  VALE_CALC=8399.99999844,))
 
 
 
@@ -184,7 +184,7 @@ MODE0=CALC_MODES(MATR_RIGI=MATASS0,
                  MATR_MASS=MATASM0,
                  )
 
-TEST_RESU(RESU=_F(NUME_ORDRE=1, PARA='FREQ',  RESULTAT=MODE0,  VALE_CALC=18.2307742712))
+TEST_RESU(RESU=_F(NUME_ORDRE=1, PARA='FREQ',  RESULTAT=MODE0,  VALE_CALC=18.2535552097))
 
 # 2.2) calcul avec excentrement :
 #---------------------------------
@@ -200,8 +200,8 @@ MODE1=CALC_MODES(MATR_RIGI=MATASS1,
                  )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1, PARA='FREQ',  RESULTAT=MODE1,
-                  REFERENCE='AUTRE_ASTER', VALE_REFE=18.2307742712, PRECISION=4.e-2,
-                  VALE_CALC=18.1638966817 ))
+                  REFERENCE='AUTRE_ASTER', VALE_REFE=18.2535552097, PRECISION=5.e-2,
+                  VALE_CALC=18.2601709107 ))
 
 
 

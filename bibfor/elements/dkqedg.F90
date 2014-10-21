@@ -3,6 +3,7 @@ subroutine dkqedg(xyzl, option, pgl, depl, edgl)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dkqbf.h"
+#include "asterfort/dsqbfb.h"
 #include "asterfort/dkqtxy.h"
 #include "asterfort/dsxhft.h"
 #include "asterfort/dxmate.h"

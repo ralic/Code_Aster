@@ -50,7 +50,7 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
     real(kind=8) :: hft2(2, 6), an(4, 12), hmft2(2, 6), dfc(3, 2)
     real(kind=8) :: bfb(3, 12), bfa(3, 4), bfn(3, 12), bf(3, 12)
     real(kind=8) :: bcb(2, 12), bca(2, 4), bcn(2, 12), bc(2, 12), bcm(2, 8)
-    real(kind=8) :: bm(3, 8), am(4, 8), bdf(3), bdm(3), dcis(2), btm(2, 8)
+    real(kind=8) :: bm(3, 8), am(4, 8), bdf(3), bdm(3), dcis(2), btm(2, 8), bdf2(3)
     real(kind=8) :: bdfm(3), bdm1(3)
     real(kind=8) :: vf(3), vm(3), vt(2), excent, bfam(3, 8), bcam(2, 8)
     real(kind=8) :: vfm(3), vmf(3), vmc(3), vfc(3), vcm(2), vcf(2)
@@ -96,7 +96,7 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
         depf(1+3* (j-1)) = depl(1+2+6*(j-1))
         depf(2+3* (j-1)) = depl(3+2+6*(j-1))
         depf(3+3* (j-1)) = -depl(2+2+6*(j-1))
- 20 end do
+ 20 continue
 !     ---- CALCUL DE LA MATRICE AN -------------------------------------
     call dsqdi2(xyzl, df, dci, dmf, dfc,&
                 dmc, an, am)
@@ -277,6 +277,7 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
 281         continue
             do 290 k = 1, 3
                 bdf(k) = 0.d0
+                bdf2(k)= 0.0d0
                 bdfm(k) = 0.d0
                 bdm(k) = 0.d0
                 bdm1(k) = 0.d0
@@ -296,6 +297,7 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
             do 320 i = 1, 3
                 do 300 j = 1, 12
                     bdf(i) = bdf(i) + bf(i,j)*depf(j)
+                    bdf2(i) = bdf2(i) +bfb(i,j)*depf(j)
 300             continue
                 do 310 j = 1, 8
                     bdfm(i) = bdfm(i) + bfam(i,j)*depm(j)
@@ -308,7 +310,7 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
                     vf(i) = vf(i) + df(i,j)*bdf(j)
                     vfm(i) = vfm(i) + dmf(i,j)*bdm(j)
                     vm(i) = vm(i) + dm(i,j)*bdm1(j)
-                    vmf(i) = vmf(i) + dmf(i,j)*bdf(j)
+                    vmf(i) = vmf(i) + dmf(i,j)*bdf2(j)
 330             continue
 340         continue
             if (excen) then
