@@ -2,7 +2,7 @@
 
 import os.path as osp
 
-from waflib import Configure, Logs, Utils
+from waflib import TaskGen, Configure, Logs, Utils
 
 def options(self):
     self.load('compiler_c')
@@ -18,6 +18,7 @@ def options(self):
                     help='build each aster component as a shared python module')
 
 def configure(self):
+    self.load('compiler_c')
     opts = self.options
     # preserve symbols in the dyn table for stdcalls
     self.env.append_unique('LINKFLAGS', ['-Wl,--export-dynamic'])
@@ -71,11 +72,15 @@ def build(self):
     )
     # install generated headers (C + fortran)
     bld = self.path.get_bld().parent
-    config_includes = bld.ant_glob('aster*_config.h', quiet=True)
+    config_includes = bld.ant_glob('*.h', quiet=True)
     self.install_files(
         env.ASTERINCLUDEDIR,
         config_includes
     )
+
+@TaskGen.extension('.h')
+def process_h(self, node):
+    pass
 
 def build_as_shared(self, shenv):
     get_srcs = self.path.get_src().ant_glob

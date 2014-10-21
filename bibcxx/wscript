@@ -1,0 +1,46 @@
+# coding=utf-8
+
+import os.path as osp
+
+from waflib import Configure, Utils
+
+def options(self):
+    self.load('compiler_cxx')
+
+def configure(self):
+    self.load('compiler_cxx')
+    self.check_bibcxx_depends()
+    cxxpath = self.path.get_src().abspath()
+    self.env.append_value('INCLUDES', cxxpath)
+
+def build(self):
+    buildenv = self.all_envs[self.variant]
+    get_srcs = self.path.get_src().ant_glob
+
+    self(
+        features = 'cxx',
+            name = 'asterbibcxx',
+          source = get_srcs('**/*.cxx'),
+             env = buildenv,
+             use = self.env['all_dependencies'],
+    )
+
+###############################################################################
+@Configure.conf
+def check_bibcxx_depends(self):
+    """check dependencies of bibc"""
+    self.check_cc(uselib_store='CXX', lib='stdc++')
+
+@Configure.conf
+def check_optimization_cxxflags(self):
+    self.setenv('debug')
+    flags = ['-g'] + Utils.to_list(self.env['CXXFLAGS_ASTER_DEBUG'])
+    self.start_msg('Setting C++ debug flags')
+    self.env.append_unique('CXXFLAGS', flags)
+    self.end_msg(flags)
+
+    self.setenv('release')
+    flags = ['-O2']
+    self.start_msg('Setting C++ optimization flags')
+    self.env.append_unique('CXXFLAGS', flags)
+    self.end_msg(flags)

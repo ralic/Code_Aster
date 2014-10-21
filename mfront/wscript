@@ -3,9 +3,10 @@
 import os
 import os.path as osp
 from glob import glob
+import subprocess
 from functools import partial
 
-from waflib import Configure, Context, TaskGen, Task, Utils
+from waflib import Configure, Context, Build, TaskGen, Task, Utils, Errors
 
 def options(self):
     group = self.get_option_group('Code_Aster options')
@@ -14,13 +15,37 @@ def configure(self):
     self.find_program('mfront')
     self.find_program('tfel-config')
     self.check_cfg(path='tfel-config',
-                   args='--cppflags --includes --oflags --libs --material --utilities',
+                   args='--cppflags --includes --oflags ' \
+                        '--libs --material --utilities --system',
                    package='', uselib_store='MFRONT', mandatory=True)
     self.env.append_value('DEFINES_MFRONT',
         'ASTER_ARCH=64' if 'TFEL_ARCH64' else 'ASTER_ARCH=32')
+    # remove C++ specific option from CFLAGS
+    try:
+        self.env.CFLAGS_MFRONT.remove('-fvisibility-inlines-hidden')
+    except ValueError:
+        pass
     self.check_mfront_libs()
 
 def build(self):
+    # POST_LAZY: Groups are processed sequentially: all tasks from previous
+    # groups are executed before the task generators from the next group
+    # are processed
+    self.post_mode = Build.POST_LAZY
+
+    # build mfront_request
+    self(
+        features = 'c cxx cxxprogram',
+            name = 'mfront_request',
+             idx = 2,     # use a different target for source shared with bibcxx
+          source = ['../bibcxx/mfront/MFrontBehaviour.cxx',
+                    '../bibcxx/mfront/MFrontBehaviour.h',
+                    'mfront_request.c'],
+        includes = '../bibcxx/mfront',
+          target = 'mfront_request',
+             use = ('MFRONT', ),
+    )
+
     get_srcs = self.path.get_src().ant_glob
     excl = (
         'MonoCristal_DD_CC_InteractionMatrix.mfront',
@@ -32,12 +57,31 @@ def build(self):
         'Plasticity_Sy.mfront',
     )
     self(
+            name = 'mfront_convert',
+          source = get_srcs('**/*.mfront', excl=excl),
+             use = ('MFRONT', ),
+    )
+
+    # force
+    self.add_group()
+
+    self(
         features = 'cxx cxxshlib',
             name = 'asterbehaviour',
-          source = get_srcs('**/*.mfront', excl=excl),
+  dynamic_source = '**/*.cxx',
+dynamic_incpaths = '../include',
           target = 'AsterBehaviour',
     install_path = self.env.ASTERLIBDIR,
              use = ('MFRONT', ),
+    )
+    lst = [i.name for i in get_srcs('**/*.mfront', excl=excl)]
+    self(
+        features = 'mfront_mater',
+            name = 'mfront_mater',
+             lst = lst,
+            path = self.path,
+          target = 'c_mfront_official.capy',
+             use = 'asterbehaviour',
     )
 
 ###############################################################################
@@ -61,62 +105,96 @@ class mfront2cxx(Task.Task):
         name = osp.splitext(self.inputs[0].name)[0]
         mfrdir = self.inputs[0].parent
         wrknode = mfrdir.get_bld().find_or_declare(name)
+        wrknode.delete()
         wrknode.mkdir()
+        if len(name) > 16:
+            msg = "The behaviour name is too long, max. 16 characters: " \
+                  "'%s'" % name
+            raise Errors.WafError(msg)
         wrkdir = wrknode.abspath()
         cmd = '%s --interface=aster --search-path=%s %s' % (
             self.env.MFRONT,
             mfrdir.get_src().abspath(),
             self.inputs[0].abspath()
         )
-        self.generator.bld.cmd_and_log(cmd, cwd=wrkdir, quiet=Context.STDOUT)
+        # self.generator.bld.cmd_and_log(cmd, cwd=wrkdir, quiet=Context.STDOUT)
+        self.exec_command(cmd, cwd=wrkdir)
 
-        # read list of generated files
-        root = mfrdir.get_bld().abspath()
-        srcfiles = glob(osp.join(wrkdir, 'src/*.src'))
-        outputs = []
-        for fsrc in srcfiles:
-            outputs.extend(open(fsrc, 'r').read().split())
-        outputs = [osp.join(wrknode.path_from(mfrdir), 'src', i) for i in outputs]
-        assert len(outputs) > 0, 'no outputs for %s' % name
-        self.outputs = [self.generator.path.find_or_declare(i) for i in outputs]
-        self.generator.bld.raw_deps[self.uid()] = [self.signature()] + self.outputs
-        self.add_cxx_tasks(self.outputs)
+@TaskGen.feature('mfront_mater')
+@TaskGen.before('catapy')
+def mater_capy(self):
+    """Create the capy for MFront materials"""
+    gen = self.bld.get_tgen_by_name('mfront_request')
+    req = gen.link_task.outputs[0]
+    link_task = self.bld.get_tgen_by_name('asterbehaviour').link_task
+    target = self.bld.bldnode.make_node(self.target)
+    tsk = self.create_task('mfront_capy', src=[req] + link_task.outputs, tgt=target)
 
-    def add_cxx_tasks(self, lst):
-        """Create cxx tasks"""
-        self.more_tasks = []
-        for node in lst:
-            if not node.name.endswith('.cxx'):
-                continue
-            tsk = self.generator.create_compiled_task('cxx', node)
-            incpath = node.parent.parent.find_node('include')
-            tsk.env.append_value('INCPATHS', [incpath.abspath()])
-            self.more_tasks.append(tsk)
+class mfront_capy(Task.Task):
+    color   = 'PINK'
+    ext_out = ['.capy']
 
-            if getattr(self.generator, 'link_task', None):
-                # print "#DEBUG link_task after", id(tsk)
-                self.generator.link_task.set_run_after(tsk)
-                if tsk.outputs[0] not in self.generator.link_task.inputs:
-                    self.generator.link_task.inputs.append(tsk.outputs[0])
-                else:
-                    assert False, "%r: already on link: %s" % (node.name, tsk.outputs[0])
+    def run(self):
+        """Create a .capy file for the MFront behaviours"""
+        req = self.inputs[0].abspath()
+        # open libAsterBehaviour.so
+        libpath = self.inputs[1].abspath()
+        lst = self.generator.lst
+        target = self.outputs[0]
+        lines = [capy_header]
+        for comport in lst:
+            comport = osp.splitext(comport)[0]
+            try:
+                props = getMaterialProperties(req, libpath, comport)
+            except ValueError:
+                raise ValueError("Behaviour '%(nam)s': not found in library. "
+                    "Please check that '%(nam)s.mfront' defines a behaviour "
+                    "named '%(nam)s'." % { 'nam' : comport })
+            lines.extend(_capy_comport(comport, props, "'R'", " " * 8))
+            lines.extend(_capy_comport(comport + '_FO', props,
+                                       "fonction_sdaster", " " * 8))
+        lines.append(capy_footer)
+        open(target.abspath(), 'w').write(os.linesep.join(lines))
+        target.sig = Utils.h_file(target.abspath())
 
-    def runnable_status(self):
-        """Add cxx tasks if Mfront conversion is skipped"""
-        ret = super(mfront2cxx, self).runnable_status()
-        if ret == Task.SKIP_ME:
-            lst = self.generator.bld.raw_deps[self.uid()]
-            if lst[0] != self.signature():
-                # print "#DEBUG status for", self, "RUN_ME"
-                return Task.RUN_ME
-            nodes = lst[1:]
-            for x in nodes:
-                try:
-                    os.stat(x.abspath())
-                except:
-                    # print "#DEBUG status for", x, "RUN_ME"
-                    return Task.RUN_ME
-            nodes = lst[1:]
-            self.set_outputs(nodes)
-            self.add_cxx_tasks(nodes)
-        return ret
+###############################################################################
+def getMaterialProperties(binary, libpath, behav):
+    """Return the list of material properties"""
+    symb = 'aster%s' % behav.lower()
+    try:
+        out = subprocess.check_output([binary, "Tridimensional", libpath, symb])
+    except subprocess.CalledProcessError, exc:
+        msg = "%r exits with status %s" % (exc.cmd, exc.returncode)
+        raise Errors.WafError(msg)
+    return [toAsterParameter(p) for p in out.split()]
+
+def toAsterParameter(param):
+    """Convert parameter names: convert 'name[i]' into 'name_i'"""
+    # must be consistent with dll_mfront.c/clean_parameter
+    return param.replace('[', '_').replace(']', '')
+
+def _capy_comport(comport, properties, typ, indent):
+    """Return the lines for the catalog for `comport`"""
+    assert typ in ("'R'", "fonction_sdaster"), 'unknown type: %s' % typ
+    lines = ["'%s' : FACT(statut='f'," % comport]
+    for i in properties:
+        lines.append("    %s = SIMP(statut='o', typ=%s)," % (i, typ))
+        if len(i) > 16:
+            msg = "Behaviour  '%s': The material property '%s' exceeds " \
+                  "16 characters." % (comport, i)
+            raise Errors.WafError(msg)
+    lines.append('),')
+    return [indent + k for k in lines]
+
+capy_header = """#
+# Automatically-generated file. Do not edit!
+#
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+#
+def C_MFRONT_OFFICIAL():
+    keywords = {
+"""
+
+capy_footer = """    }
+    return keywords
+"""

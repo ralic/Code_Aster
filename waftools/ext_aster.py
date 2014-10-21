@@ -89,6 +89,38 @@ customize_configure_output()
 customize_task_output()
 
 ###############################################################################
+# support for the "dynamic_source" attribute
+from waflib import Build, Utils, TaskGen
+
+@TaskGen.feature('c', 'cxx')
+@TaskGen.before('process_source', 'process_rule')
+def dynamic_post(self):
+    """
+    bld(dynamic_source='*.c', ...)
+        will search for source files to add to the attribute 'source'.
+
+    bld(dynamic_source='*.c', dynamic_incpaths='include', ...)
+        will search for 'include' in the parent of every new source and
+        add it in INCLUDES paths.
+    """
+    if not getattr(self, 'dynamic_source', None):
+        return
+    self.source = Utils.to_list(self.source)
+    get_srcs = self.path.get_bld().ant_glob
+    added = get_srcs(self.dynamic_source, remove=False)
+    self.source.extend(added)
+    for node in added:
+        node.sig = Utils.h_file(node.abspath())
+        if getattr(self, 'dynamic_incpaths', None):
+            incpath = node.parent.find_node(self.dynamic_incpaths)
+            if incpath:
+                incpath.sig = incpath.abspath()
+                self.env.append_value('INCLUDES', [incpath.abspath()])
+                incs = incpath.get_bld().ant_glob('**/*.h*')
+                for node in incs:
+                    node.sig = Utils.h_file(node.abspath())
+
+###############################################################################
 # Force static libs
 CHECK = '_check'
 

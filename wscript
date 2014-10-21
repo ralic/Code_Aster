@@ -85,6 +85,7 @@ def options(self):
         'subdirectories (example: X.Y will use aster/X.Y/...), '
         "[Default: '']")
     self.recurse('bibfor')
+    self.recurse('bibcxx')
     self.recurse('bibc')
     self.recurse('i18n')
     self.recurse('data')
@@ -140,10 +141,14 @@ def configure(self):
     paths = self.srcnode.ant_glob('bibc/include', src=True, dir=True)
     paths = [d.abspath() for d in paths]
     self.env.append_value('INCLUDES', paths)
+    paths = self.srcnode.ant_glob('bibcxx/include', src=True, dir=True)
+    paths = [d.abspath() for d in paths]
+    self.env.append_value('INCLUDES', paths)
 
-    self.recurse('mfront')
     self.recurse('bibfor')
+    self.recurse('bibcxx')
     self.recurse('bibc')
+    self.recurse('mfront')
     self.recurse('i18n')
     self.recurse('data')
     # keep compatibility for as_run
@@ -161,7 +166,7 @@ def build(self):
     # shared the list of dependencies between bibc/bibfor
     # the order may be important
     self.env['all_dependencies'] = [
-        'MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH',
+        'MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH', 'MFRONT',
         'PETSC', 'MATH', 'MPI', 'OPENMP', 'CLIB', 'SYS']
     get_srcs = self.path.get_src().ant_glob
     if not self.variant:
@@ -178,10 +183,11 @@ def build(self):
                 os.remove(i)
 
     self.load('ext_aster', tooldir='waftools')
-    self.recurse('mfront')
     self.recurse('bibfor')
+    self.recurse('bibcxx')
     self.recurse('bibc')
     self.recurse('bibpyt')
+    self.recurse('mfront')
     self.recurse('i18n')
     lsub = ['materiau', 'datg', 'catapy', 'catalo']
     if self.env.install_tests:
@@ -288,6 +294,7 @@ def check_optimization_options(self):
     self.setenv('release', env=self.all_envs['default'])
     # these functions must switch between each environment
     self.check_optimization_cflags()
+    self.check_optimization_cxxflags()
     self.check_optimization_fcflags()
     self.check_optimization_python()
 
