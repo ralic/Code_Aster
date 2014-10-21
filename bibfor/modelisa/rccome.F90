@@ -1,4 +1,4 @@
-subroutine rccome(nommat, pheno, icodre, k11_ind_nomrc)
+subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,12 +17,14 @@ subroutine rccome(nommat, pheno, icodre, k11_ind_nomrc)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nommat, pheno
     integer, intent(out) :: icodre
+    integer, intent(in), optional :: iarret
     character(len=11), intent(out), optional :: k11_ind_nomrc
 ! ----------------------------------------------------------------------
 !     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
@@ -34,13 +36,24 @@ subroutine rccome(nommat, pheno, icodre, k11_ind_nomrc)
 !        PHENO  : NOM DU PHENOMENE EVENTUELLEMENT INCOMPLET 
 !     ARGUMENTS DE SORTIE:
 !        ICODRE : 0 SI ON A TROUVE, 1 SINON
+!        IARRET : 0 RETOURNE LE CODE RETOUR ICODRE SANS EMISSION DE MESSAGE (PAR DEFAUT)
+!                 1 EMISSION D'UNE ERREUR FATALE
 !        INDI   : INDICE DE PHENO DANS nommat//'.MATERIAU.NOMRC
 !  
 ! DEB ------------------------------------------------------------------
     character(len=32) :: ncomp
     character(len=6) :: k6
-    integer :: i, icomp, nbcomp
+    integer :: i, icomp, nbcomp, iarret_in
 !-----------------------------------------------------------------------
+!
+    if (present(iarret)) then
+        iarret_in = iarret
+    else
+        iarret_in = 0
+    endif
+!
+    ASSERT((iarret_in.eq.0) .or. (iarret_in.eq.1))
+!
     icodre = 1
     ncomp = nommat//'.MATERIAU.NOMRC         '
     call jelira(ncomp, 'LONUTI', nbcomp)
@@ -54,8 +67,8 @@ subroutine rccome(nommat, pheno, icodre, k11_ind_nomrc)
             icodre = 0
         endif
     end do
-    if (icodre .eq. 1) then 
-        call utmess('A', 'ELEMENTS2_63')
+    if (( icodre .eq. 1 ) .and. ( iarret_in .eq. 1 )) then
+        call utmess('F', 'ELEMENTS2_63', sk=pheno)
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

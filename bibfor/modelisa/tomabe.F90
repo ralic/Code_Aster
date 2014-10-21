@@ -61,6 +61,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/copisd.h"
@@ -92,7 +93,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! -----------------
     integer :: ias, icste, idecal, imail, ino, iret, jconx, jncoch, jnumab
     integer :: jnunob, jptma, jtyma, jvalk, jvalr, nbconx, nbcste, ntyma, numail
-    integer :: numnoe, jcesd, jcesl, iad
+    integer :: numnoe, jcesd, jcesl, iad, icodn, iretbb, ireteb
 !
     integer :: ntri3, ntri6, nqua4, nqua8, nqua9, ntet4, ntet10, npyr5, npyr13
     integer :: npen6, npen15, nhex8, nhex20, nhex27
@@ -136,7 +137,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
     call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD8'), nqua8)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD9'), nqua9)
     mail2d = .true.
-    do 10 imail = 1, nbmabe
+    do imail = 1, nbmabe
         numail = zi(jnumab+imail-1)
         ntyma = zi(jtyma+numail-1)
         if ((ntyma.ne.ntri3) .and. (ntyma.ne.ntri6) .and. ( ntyma.ne.nqua4) .and.&
@@ -144,7 +145,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
             mail2d = .false.
             goto 11
         endif
- 10 end do
+    end do
  11 continue
 !
 ! 1.3 SAISIE DES TYPES DE MAILLES ACCEPTABLES POUR UNE REPRESENTATION 3D
@@ -163,7 +164,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
         call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA20' ), nhex20)
         call jenonu(jexnom('&CATA.TM.NOMTM', 'HEXA27' ), nhex27)
         mail3d = .true.
-        do 20 imail = 1, nbmabe
+        do imail = 1, nbmabe
             numail = zi(jnumab+imail-1)
             ntyma = zi(jtyma+numail-1)
             if ((ntyma.ne.ntet4) .and. (ntyma.ne.ntet10) .and. (ntyma.ne.npyr5) .and.&
@@ -172,7 +173,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                 mail3d = .false.
                 goto 21
             endif
- 20     continue
+        end do
  21     continue
     endif
 !
@@ -189,13 +190,13 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 ! 2.1 CREATION D'UN OBJET DE TRAVAIL
 ! ---
     call wkvect('&&TOMABE.NOE_COCHES', 'V V I', nbnoma, jncoch)
-    do 30 ino = 1, nbnoma
+    do ino = 1, nbnoma
         zi(jncoch+ino-1) = 0
- 30 end do
+    end do
 !
 ! 2.2 LECTURE DES CONNECTIVITES DES MAILLES
 ! ---
-    do 40 imail = 1, nbmabe
+    do imail = 1, nbmabe
         numail = zi(jnumab+imail-1)
         call jelira(jexnum(conxma, numail), 'LONMAX', nbconx)
         call jeveuo(jexnum(conxma, numail), 'L', jconx)
@@ -203,24 +204,24 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
             numnoe = zi(jconx+ino-1)
             zi(jncoch+numnoe-1) = zi(jncoch+numnoe-1) + 1
  41     continue
- 40 end do
+    end do
 !
 ! 2.3 DECOMPTE DES NOEUDS ET RELEVE DE LEUR NUMERO
 ! ---
     nbnobe = 0
-    do 50 ino = 1, nbnoma
+    do ino = 1, nbnoma
         if (zi(jncoch+ino-1) .gt. 0) nbnobe = nbnobe + 1
- 50 end do
+    end do
 !
     call jeecra(nunobe, 'LONUTI', nbnobe)
     call jeveuo(nunobe, 'E', jnunob)
     idecal = 0
-    do 60 ino = 1, nbnoma
+    do ino = 1, nbnoma
         if (zi(jncoch+ino-1) .gt. 0) then
             idecal = idecal + 1
             zi(jnunob+idecal-1) = ino
         endif
- 60 end do
+    end do
 !
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 4   RECUPERATION DU MATERIAU CONSTITUTIF DE LA STRUCTURE BETON
@@ -271,18 +272,24 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !      ON TESTE D'ABORD SI BPEL_BETON EST DONNE (ON A IMPOSE DANS
 !     LE CATALOGUE QU'UN SEUL COMPORTEMENT ETAIT POSSIBLE)
 !
+    iretbb=0
+    ireteb=0
     regl='BPEL'
     beton=cesv(iad)
-    call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)
-    rcvalk = beton//k11a//'.VALK'
-    call jeexin(rcvalk, iret)
-    if (iret .eq. 0) then
+    call rccome(beton, 'BPEL_BETON', icodn, k11_ind_nomrc=k11a)
+    if (icodn .eq. 0) then
+        rcvalk = beton//k11a//'.VALK'
+        call jeexin(rcvalk, iretbb)
+    endif
+    if (iretbb .eq. 0) then
 !       ON TESTE SI ETCC_BETON EST RENSEIGNE
         regl='ETCC'
-        call rccome(beton, 'ETCC_BETON', iret, k11_ind_nomrc=k11b)    
-        rcvalk = beton//k11b//'.VALK'
-        call jeexin(rcvalk, iret)
-        if (iret .eq. 0) then
+        call rccome(beton, 'ETCC_BETON', icodn, k11_ind_nomrc=k11b)    
+        if (icodn .eq. 0) then
+            rcvalk = beton//k11b//'.VALK'
+            call jeexin(rcvalk, ireteb)
+        endif
+        if (ireteb .eq. 0) then
             call utmess('F', 'MODELISA7_48')
         endif
     endif
@@ -317,12 +324,13 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
         crite=1.d-07
         if (nbmabe .gt. 1) then
-            do 200 imail = 2, nbmabe
+            do imail = 2, nbmabe
                 numail = zi(jnumab+imail-1)
                 call cesexi('C', jcesd, jcesl, numail, 1,&
                             1, 1, iad)
                 beton=cesv(iad)
-                call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)   
+                call rccome(beton, 'BPEL_BETON', iret, k11_ind_nomrc=k11a)
+                ASSERT(iret.eq.0)  
                 rcvalk = beton//k11a//'.VALK'
                 rcvalr = beton//k11a//'.VALR'
                 call jeveuo(rcvalk, 'L', jvalk)
@@ -335,7 +343,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                     call utmess('F', 'MODELISA7_47', sk=k3mai)
                 endif
 !
-                do 250 icste = 1, nbcste
+                do icste = 1, nbcste
 !
                     if (zk16(jvalk+icste-1) .eq. bpelb(1)) then
                         if (abs(xflu) .lt. crite) then
@@ -358,8 +366,8 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
                             endif
                         endif
                     endif
-250             continue
-200         continue
+                end do
+            end do
         endif
 !
         if (.not. ( trouv1 .and. trouv2 )) then
@@ -369,9 +377,6 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
             call utmess('F', 'MODELISA7_53')
         endif
 !
-!        CALL JELIRA(RCVALR,'LONMAX',NBCSTE,K1B)
-!        write(6,*)'tomabe',RCVALK,RCVALR,NBCSTE
-!        CALL JEVEUO(RCVALR,'L',JVALR)
     endif
 !
 !
