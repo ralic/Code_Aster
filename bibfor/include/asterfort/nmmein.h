@@ -16,12 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmmein(mesh    , model       , crack      , nb_dim  , list_node   ,&
-                      list_cmp, list_node_1 , list_node_2, cmp_name, nb_node_sele)
+    subroutine nmmein(mesh        , model   , crack      , nb_dim     , list_node,&
+                      nb_node     , list_cmp, list_node_1, list_node_2, cmp_name ,&
+                      nb_node_sele)
         integer, intent(in) :: nb_dim
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=8), intent(in)  :: crack
+        integer, intent(in) :: nb_node
         character(len=24), intent(in) :: list_node
         character(len=24), intent(in) :: list_cmp
         character(len=24), intent(in) :: list_node_1

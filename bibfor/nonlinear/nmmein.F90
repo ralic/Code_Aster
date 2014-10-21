@@ -1,5 +1,6 @@
-subroutine nmmein(mesh    , model       , crack      , nb_dim  , list_node   ,&
-                  list_cmp, list_node_1 , list_node_2, cmp_name, nb_node_sele)
+subroutine nmmein(mesh        , model   , crack      , nb_dim     , list_node,&
+                  nb_node     , list_cmp, list_node_1, list_node_2, cmp_name ,&
+                  nb_node_sele)
 !
 implicit none
 !
@@ -33,6 +34,7 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=8), intent(in)  :: crack
+    integer, intent(in) :: nb_node
     character(len=24), intent(in) :: list_node
     character(len=24), intent(in) :: list_cmp
     character(len=24), intent(in) :: list_node_1
@@ -52,6 +54,7 @@ implicit none
 ! In  model          : name of model
 ! In  crack          : name of crack 
 ! In  nb_dim         : dimension of space
+! In  nb_node        : number of nodes in list_node
 ! In  list_node      : list of nodes to apply continuation
 ! In  list_cmp       : list of components to apply continuation
 ! In  list_node_1    : name of list for first node of edges
@@ -61,7 +64,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: algo_lagr, i_cmp, nb_cmp, nb_node, iret
+    integer :: algo_lagr, i_cmp, nb_cmp
     character(len=14) :: sdline_crack
     integer :: nb_edge
     character(len=8), pointer :: v_list_cmp(:) => null()

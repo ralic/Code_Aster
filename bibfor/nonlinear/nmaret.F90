@@ -82,7 +82,7 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
         end do
         tabcrz(i)=i
     end do
-!
+    
 !
     if (nb_node .ge. 1 .and. iret .ne. 0) then
         do i = 1, nb_node
@@ -91,6 +91,7 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
         if (nb_node .gt. nbarvi) then
             call utmess('F', 'PILOTAGE_62')
         endif
+
         do j = 1, nb_node
             noeuad=.false.
             do i = 1, nbarvi
@@ -130,6 +131,7 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
         end do
         nbarvi=nb_node
     endif
+
 !
     l_create_group = .true.
     l_pilo = .true.

@@ -339,8 +339,9 @@ subroutine nmdopi(modelz, numedd, method, lreli, sdpilo)
 !
 ! ----- Select edges and component for continuation method in XFEM
 !
-        call nmmein(mesh  , modele, fiss  , ndim , lisnoe      ,&
-                    liscmp, lisno1, lisno2, compo, nb_node_sele)
+        call nmmein(mesh        , modele, fiss  , ndim  , lisnoe,&
+                    nbno        , liscmp, lisno1, lisno2, compo ,&
+                    nb_node_sele)
 
         call jeveuo(lisno1, 'L', jlino1)
         call jeveuo(lisno2, 'L', jlino2)
