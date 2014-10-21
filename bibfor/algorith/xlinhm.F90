@@ -42,6 +42,8 @@ subroutine xlinhm(elrefp, elref2)
         elref2='HE8'
     else if (elrefp.eq.'P15') then
         elref2='PE6'
+    else if (elrefp.eq.'P13') then
+        elref2='PY5'
     else if (elrefp.eq.'T10') then
         elref2='TE4'
     endif

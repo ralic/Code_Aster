@@ -62,7 +62,8 @@ subroutine xmolig(liel1, trav)
     integer :: ihyq8(1), ihyt6(1), ihymq8(1), ihymt6(1), ihysq8(1)
     integer :: ihyst6(1), ihydq8(1), ihydt6(1), iphm(1)
     integer :: ihe20(1), ihem20(1), ihed20(1), ihes20(1), ipe15(1)
-    integer :: ipem15(1), ipes15(1), iped15(1), ite10(1), ites10(1)
+    integer :: ipem15(1), ipes15(1), iped15(1), ipy13(1), ipym13(1)
+    integer :: ipys13(1), ipyd13(1), ite10(1), ites10(1)
     integer :: ited10(1), item10(1), ibhm(1), ichm(1)
 !
     integer :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
@@ -73,8 +74,9 @@ subroutine xmolig(liel1, trav)
     integer :: nhyq8(7), nhyt6(7), nhymq8(7), nhymt6(7), nhysq8(7)
     integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(7)
     integer :: nhe20(7), nhem20(7), nhed20(7), nhes20(7), npe15(7)
-    integer :: npem15(7), npes15(7), nped15(7), nte10(7), ntes10(7)
-    integer :: nted10(7), ntem10(7), nbhm(7), nchm(7)
+    integer :: npem15(7), npes15(7), nped15(7), npy13(7), npym13(7)
+    integer :: npys13(7), npyd13(7), nte10(7), ntem10(7), ntes10(7)
+    integer :: nted10(7), nbhm(7), nchm(7)
 !
     integer :: iaxt3(6), iaxq4(6), iaxq8(6), iaxt6(6), iax2(3), iax3(3)
     integer :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
@@ -104,8 +106,9 @@ subroutine xmolig(liel1, trav)
                 ntat3, ntf4, ntf3, ntpf2, ntax2,&
                 nhyq8, nhyt6, nhymq8, nhymt6, nhysq8,&
                 nhyst6, nhydq8, nhydt6, nphm, nhe20,&
-                npe15, nte10, nhem20, npem15,ntem10,&
-                nhes20, npes15, ntes10, nhed20,nped15,&
+                npe15, npy13, nte10, nhem20, npem15,&
+                npym13, ntem10, nhes20, npes15, npys13,&
+                ntes10, nhed20,nped15, npyd13,&
                 nted10, nbhm, nchm)
 !
 ! ----------------------------------------------------------------------
@@ -333,6 +336,11 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15M_XH' ), ipem15(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15S_XH' ), ipes15(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15D_XH' ), iped15(1))
+!
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH' ), ipy13(1))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13M_XH' ), ipym13(1))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13S_XH' ), ipys13(1))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13D_XH' ), ipyd13(1))
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH' ), ite10(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10M_XH' ), item10(1))
@@ -591,6 +599,14 @@ subroutine xmolig(liel1, trav)
                     call xmoajo(jj, nfiss, ipes15, npes15)
                 else if (notype.eq.'HM_PENTA15D') then
                     call xmoajo(jj, nfiss, iped15, nped15)
+                else if (notype.eq.'HM_PYRAM13') then
+                    call xmoajo(jj, nfiss, ipy13, npy13)
+                else if (notype.eq.'HM_PYRAM13M') then
+                    call xmoajo(jj, nfiss, ipym13, npym13)
+                else if (notype.eq.'HM_PYRAM13S') then
+                    call xmoajo(jj, nfiss, ipys13, npys13)
+                else if (notype.eq.'HM_PYRAM13D') then
+                    call xmoajo(jj, nfiss, ipyd13, npyd13)
                 else if (notype.eq.'HM_TETRA10') then
                     call xmoajo(jj, nfiss, ite10, nte10)
                 else if (notype.eq.'HM_TETRA10M') then
@@ -700,8 +716,9 @@ subroutine xmolig(liel1, trav)
                 ntat3, ntf4, ntf3, ntpf2, ntax2,&
                 nhyq8, nhyt6, nhymq8, nhymt6, nhysq8,&
                 nhyst6, nhydq8, nhydt6, nphm, nhe20,&
-                npe15, nte10, nhem20, npem15,ntem10,&
-                nhes20, npes15, ntes10, nhed20,nped15,&
+                npe15, npy13, nte10, nhem20, npem15,&
+                npym13, ntem10, nhes20, npes15, npys13,&
+                ntes10, nhed20,nped15, npyd13,&
                 nted10, nbhm, nchm)
 !
     call jedema()

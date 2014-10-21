@@ -8,8 +8,9 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
                   ntat3, ntf4, ntf3, ntpf2, ntax2,&
                   nhyq8, nhyt6, nhymq8, nhymt6, nhysq8,&
                   nhyst6, nhydq8, nhydt6, nphm, nhe20,&
-                  npe15, nte10, nhem20, npem15,ntem10,&
-                  nhes20, npes15, ntes10, nhed20,nped15,&
+                  npe15, npy13, nte10, nhem20, npem15,&
+                  npym13, ntem10, nhes20, npes15, npys13,&
+                  ntes10, nhed20,nped15, npyd13,&
                   nted10, nbhm, nchm)
 
 !
@@ -31,7 +32,8 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
     integer :: nhyq8(7), nhyt6(7), nhymq8(7), nhymt6(7), nhysq8(7)
     integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(7)
     integer :: nhe20(7), nhem20(7), nhed20(7), nhes20(7), npe15(7)
-    integer :: npem15(7), npes15(7), nped15(7), nte10(7), ntes10(7)
+    integer :: npem15(7), npes15(7), nped15(7), npy13(7), npym13(7)
+    integer :: npys13(7), npyd13(7), nte10(7), ntes10(7)
     integer :: nted10(7), ntem10(7), nbhm(7), nchm(7)
 !
 ! ======================================================================
@@ -127,6 +129,10 @@ subroutine xmoini(nh8, nh20, np6, np15, np5,&
         npem15(i)=0
         nped15(i)=0
         npes15(i)=0
+        npy13(i)=0
+        npym13(i)=0
+        npys13(i)=0
+        npyd13(i)=0
         nte10(i)=0
         ntem10(i)=0
         nted10(i)=0

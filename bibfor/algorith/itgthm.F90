@@ -77,6 +77,8 @@ subroutine itgthm(vf, typvf, modint, mecani, press1,&
             elref2 = 'HE8'
         else if (elrefe.eq.'P15') then
             elref2 = 'PE6'
+        else if (elrefe.eq.'P13') then
+            elref2 = 'PY5'
         else if (elrefe.eq.'T10') then
             elref2 = 'TE4'
         else

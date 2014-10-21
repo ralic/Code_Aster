@@ -26,8 +26,9 @@ interface
                       ntat3, ntf4, ntf3, ntpf2, ntax2,&
                       nhyq8, nhyt6, nhymq8, nhymt6, nhysq8,&
                       nhyst6, nhydq8, nhydt6, nphm, nhe20,&
-                      npe15, nte10, nhem20, npem15,ntem10,&
-                      nhes20, npes15, ntes10, nhed20,nped15,&
+                      npe15, npy13, nte10, nhem20, npem15,&
+                      npym13, ntem10, nhes20, npes15, npys13,&
+                      ntes10, nhed20, nped15, npyd13,&
                       nted10, nbhm, nchm)
         integer :: nh8(15)
         integer :: nh20(7)
@@ -86,6 +87,10 @@ interface
         integer :: npem15(7)
         integer :: npes15(7)
         integer :: nped15(7)
+        integer :: npy13(7)
+        integer :: npym13(7)
+        integer :: npys13(7)
+        integer :: npyd13(7)
         integer :: nte10(7)
         integer :: ntem10(7)
         integer :: ntes10(7)
