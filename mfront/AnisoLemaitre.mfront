@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour AnistropicLemaitreViscoplastic;
+@Behaviour AnisoLemaitre;
 @Author    jmp;
 @Date      03/2014;
 @Description{

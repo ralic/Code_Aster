@@ -1,5 +1,5 @@
 /*!
- * \file   ImplicitFiniteSimoMieheElastoPlasticity.mfront
+ * \file   SimoMieheVmis.mfront
  * \brief
  *
  * \author Helfer Thomas
@@ -7,7 +7,7 @@
  */
 
 @Parser    ImplicitFiniteStrain;
-@Behaviour ImplicitSimoMieheElastoPlasticity;
+@Behaviour SimoMieheVmis;
 @Author T. Helfer;
 @Description{
   J.C. Simo and C. Miehe

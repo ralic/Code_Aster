@@ -1,6 +1,6 @@
 @Parser RungeKutta;
 @Algorithm rk54;
-@Behaviour Polycristal_DD_CFC;
+@Behaviour PolyCristalDDCFC;
 @ModellingHypothesis Tridimensional;
 
 @Author Jean-Michel Proix;

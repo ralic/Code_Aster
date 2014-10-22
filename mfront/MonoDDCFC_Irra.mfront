@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour MonoCristal_DD_CFC_Irradiation;
+@Behaviour MonoDDCFC_Irra;
 @Author    Jean-Michel Proix;
 @Date      26/11/2013;
 @Description{

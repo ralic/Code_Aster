@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour GursonTvergaardNeedlemanPlasticFlow_NumericalJacobian;
+@Behaviour GTN;
 @Author    Jeremy Hure;
 @Date      10 Février 2014;
 

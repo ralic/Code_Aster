@@ -1,12 +1,12 @@
 /*!
- * \file   FiniteSingleCrystal_NumericalJacobian.mfront
+ * \file   GdefMono_Jacnum.mfront
  * \brief
  * \author Jean-Michel Proix - Helfer Thomas
  * \date   20 mars 2014
  */
 
 @Parser    ImplicitFiniteStrain;
-@Behaviour FiniteStrainSingleCrystal_NumericalJacobian;
+@Behaviour GdefMono_Jacnum;
 @Author TH/JMP;
 @Description{
   "Test d'implantation d'une loi "

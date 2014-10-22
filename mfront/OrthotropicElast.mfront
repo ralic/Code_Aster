@@ -1,5 +1,5 @@
 @Parser    DefaultParser;
-@Behaviour OrthotropicElastic;
+@Behaviour OrthotropicElast;
 @Author    Helfer Thomas;
 @Date      10/03/11;
 

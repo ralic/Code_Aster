@@ -1,6 +1,6 @@
 @Parser RungeKutta;
 @Algorithm rk54;
-@Behaviour PolyCristals;
+@Behaviour PolyCristal_MC;
 @OrthotropicBehaviour;
 @RequireStiffnessTensor;
 

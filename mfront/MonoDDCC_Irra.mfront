@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour MonoCristal_DD_CC_Irradiation;
+@Behaviour MonoDDCC_Irra;
 @MaximumIncrementValuePerIteration 1.e-4;
 
 @Author    Jean-Michel Proix;

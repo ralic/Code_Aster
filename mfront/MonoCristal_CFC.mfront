@@ -1,5 +1,5 @@
 @Parser    Implicit;
-@Behaviour ImplicitMonoCristal;
+@Behaviour MonoCristal_CFC;
 
 @ModellingHypothesis Tridimensional;
 

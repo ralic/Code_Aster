@@ -6,7 +6,7 @@
  */
 
 @Parser    ImplicitFiniteStrain;
-@Behaviour FiniteStrainSingleCrystal;
+@Behaviour GdefMonoCristal;
 @Author TH/JMP;
 @Description{
   "Test d'implantation d'une loi "

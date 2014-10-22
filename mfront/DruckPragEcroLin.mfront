@@ -1,12 +1,12 @@
 /*!
- * \file   DruckerPragerEcroLin.mfront
+ * \file   DruckPragEcroLin.mfront
  * \brief  loi de Drucker-Prager avec écrouissage linéaire, cf. R7.01.16
  * \author JMP
  * \date   05/09/2014
  */
 
 @Parser    Implicit;
-@Behaviour DruckerPragerEcroLin;
+@Behaviour DruckPragEcroLin;
 @Algorithm NewtonRaphson_NumericalJacobian;
 
 @Theta 1.;

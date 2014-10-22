@@ -14,12 +14,12 @@
 @MaterialProperty real kn;
 kn.setGlossaryName("NormalStiffness");
 @MaterialProperty real ks;
-ks.setGlossaryName("TangentialStiffness");
+ks.setGlossaryName("TangentStiffness");
 
 @MaterialProperty stress smax;
-smax.setGlossaryName("UltimateTensileStrength");
+smax.setGlossaryName("UltTensStrength");
 @MaterialProperty real delta;
-delta.setEntryName("MaximumOpeningDisplacement");
+delta.setEntryName("MaxOpeningDispl");
 
 @StateVariable real d;
 d.setGlossaryName("Damage");
