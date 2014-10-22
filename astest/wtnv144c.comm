@@ -61,7 +61,6 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAIL,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,
                          FISSURE=FISS,
-                         PRETRAITEMENTS='SANS',
                          INFO=1,
                         );
 

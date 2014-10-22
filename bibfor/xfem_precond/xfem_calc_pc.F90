@@ -38,6 +38,7 @@ subroutine xfem_calc_pc(action, nbnoxfem, neq_mloc, nnz_mloc, deca,&
 #include "asterfort/xfem_calc_inv.h"
 #include "asterfort/xfem_calc_svd.h"
 #include "asterfort/xfem_calc_mult.h"
+#include "asterfort/xfem_is_syme.h"
 !-----------------------------------------------------------------------
     character(len=*) :: action
     integer :: nbnoxfem, deca, iret
@@ -48,12 +49,15 @@ subroutine xfem_calc_pc(action, nbnoxfem, neq_mloc, nnz_mloc, deca,&
 !-----------------------------------------------------------------------
     integer :: j, nm, jadr
     character(len=8) :: methode
+    aster_logical :: test_action
 !-----------------------------------------------------------------------
 !
     call jemarq()
 !
     ASSERT(scal .gt. 0.d0)
-    ASSERT((action.eq.'CHOLESKY').or.(action.eq.'INV_TRI_SUP').or.(action.eq.'INV_AND_SCAL'))
+    test_action=(action.eq.'CHOLESKY').or.(action.eq.'INV_TRI_SUP')&
+            .or.(action.eq.'INV_AND_SCAL').or.(action.eq.'IS_SYME')
+    ASSERT(test_action)
     iret=0
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -114,6 +118,18 @@ subroutine xfem_calc_pc(action, nbnoxfem, neq_mloc, nnz_mloc, deca,&
                 goto 99
             endif
         enddo
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    else if (action .eq. 'IS_SYME') then
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        do j = 1, nbnoxfem
+            nm=neq_mloc(j)
+            jadr=deca*(j-1)
+            call xfem_is_syme(tab_mloc, jadr, nm, iret)
+            if (iret .ne. 0) then
+                call utmess('A', 'XFEMPRECOND_5')
+                goto 99
+            endif
+        enddo   
 !
     endif 
 !

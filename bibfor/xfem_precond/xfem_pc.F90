@@ -86,12 +86,11 @@ subroutine xfem_pc(matass, base, filtrage)
     integer, pointer :: smhc_adr(:) => null(), smhc_adr_2(:) => null()
     integer, pointer :: vect_adr(:) => null(), vect_adr_2(:) => null()
     integer, pointer :: adr_raw(:) => null(), adr_raw_2(:) => null()
-    integer, pointer :: count_raw(:) => null()
     aster_logical, pointer :: is_xfem(:) => null()
     aster_logical, pointer :: is_connec(:) => null(), is_connec_2(:) => null()
     aster_logical, pointer :: is_svd(:) => null()
     integer :: nuno, neq, ieq, jcmp, jnueq, jdeeq
-    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm, incr, iret
+    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm, incr, iret_pc
     real(kind=8) :: kmin, kmax, coef, scal, seuil
     aster_logical :: lmd
     integer :: size_smhc, size_vect_col, size_vect_raw
@@ -185,21 +184,27 @@ subroutine xfem_pc(matass, base, filtrage)
 ! FACTORISATION DE CHOLESKY DES MATRICES LOCALES
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
+    if (nvale.eq.2) then
+      call xfem_calc_pc('IS_SYME', nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
+                        1.d0, iret_pc)
+      if ( iret_pc .ne. 0) goto 999
+    endif
+!
     AS_ALLOCATE(vl=is_svd,size=nbnoxfem)
 !
     call xfem_calc_pc('CHOLESKY', nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
-                        1.d0, iret, is_svd)
+                        1.d0, iret_pc, is_svd)
 !
-    if ( iret .ne. 0) goto 999
+    if ( iret_pc .ne. 0) goto 999
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! INVERSE DES MATICES CHOLESKY DES MATRICES LOCALES
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
     call xfem_calc_pc('INV_AND_SCAL', nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
-                        scal, iret, is_svd)
+                        scal, iret_pc, is_svd)
 !
-    if ( iret .ne. 0) goto 999
+    if ( iret_pc .ne. 0) goto 999
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! STOCKAGE DES MATRICES BLOC INVERSE DANS UNE MATR_ASSE (PRE CONDITIONNEUR)
@@ -332,38 +337,40 @@ subroutine xfem_pc(matass, base, filtrage)
 !
 ! EN CAS DE SORTIE BRUTALE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
 999 continue
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! NETTOYAGES ...
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-    AS_DEALLOCATE(vi=count_raw)
-    AS_DEALLOCATE(vi=adr_raw)
-    AS_DEALLOCATE(vi=nblig_pc)
-    AS_DEALLOCATE(vi=nz_raw)
-    AS_DEALLOCATE(vi=smhc_pc)
-    AS_DEALLOCATE(vi=smhc_adr)
-    AS_DEALLOCATE(vi=vect_adr)
-    AS_DEALLOCATE(vl=is_connec)
-    AS_DEALLOCATE(vr=vect_col)  
-    AS_DEALLOCATE(vr=vect_raw) 
-    AS_DEALLOCATE(vl=is_svd)
     AS_DEALLOCATE(vl=is_xfem)
     AS_DEALLOCATE(vi=ino_xfem)
     AS_DEALLOCATE(vi=neq_mloc)
-    AS_DEALLOCATE(vi=iglob_ddl)
-    AS_DEALLOCATE(vi=nnz_mloc)
     AS_DEALLOCATE(vi=ieq_loc)
+    AS_DEALLOCATE(vi=iglob_ddl)
     AS_DEALLOCATE(vr=tab_mloc)
-    AS_DEALLOCATE(vi=nblig_pc_2)
-    AS_DEALLOCATE(vr=vect_col_2)
-    AS_DEALLOCATE(vi=nz_raw_2)
-    AS_DEALLOCATE(vl=is_connec_2)
-    AS_DEALLOCATE(vi=adr_raw_2)
-    AS_DEALLOCATE(vi=smhc_pc_2)
-    AS_DEALLOCATE(vi=smhc_adr_2)
-    AS_DEALLOCATE(vr=vect_raw_2)
-    AS_DEALLOCATE(vi=vect_adr_2) 
+    AS_DEALLOCATE(vi=nnz_mloc)
+    AS_DEALLOCATE(vl=is_svd)
+    AS_DEALLOCATE(vi=nblig_pc)
+    AS_DEALLOCATE(vr=vect_col)
+    AS_DEALLOCATE(vi=smhc_pc)
+    AS_DEALLOCATE(vi=smhc_adr)
+    AS_DEALLOCATE(vi=vect_adr)
+    AS_DEALLOCATE(vi=nz_raw)
+    AS_DEALLOCATE(vl=is_connec)
+    AS_DEALLOCATE(vi=adr_raw)
+    AS_DEALLOCATE(vr=vect_raw)
+    if (nvale.eq.2) then
+      AS_DEALLOCATE(vi=nblig_pc_2)
+      AS_DEALLOCATE(vr=vect_col_2)
+      AS_DEALLOCATE(vi=smhc_pc_2)
+      AS_DEALLOCATE(vi=smhc_adr_2)
+      AS_DEALLOCATE(vi=vect_adr_2)
+      AS_DEALLOCATE(vi=nz_raw_2)
+      AS_DEALLOCATE(vl=is_connec_2)
+      AS_DEALLOCATE(vi=adr_raw_2)
+      AS_DEALLOCATE(vr=vect_raw_2)
+    endif
 !
     call jedema()
 !
