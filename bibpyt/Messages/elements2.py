@@ -132,10 +132,6 @@ cata_msg = {
  section circulaire uniquement
 """),
 
-56 : _(u"""
- pour l'instant on ne fait pas le calcul de la  matrice de masse d'un élément de plaque q4g excentre.
-"""),
-
 57 : _(u"""
        La modélisation T3G ne permet pas de bien prendre en compte l'excentrement à cause de son interpolation de la flèche. 
 """),
