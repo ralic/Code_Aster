@@ -137,7 +137,7 @@ cata_msg = {
 """),
 
 57 : _(u"""
- pour l'instant on ne peut pas excentrer les éléments q4g .
+       La modélisation T3G ne permet pas de bien prendre en compte l'excentrement à cause de son interpolation de la flèche. 
 """),
 
 58 : _(u"""

@@ -87,9 +87,9 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
 ! --- ON NE CALCULE PAS ENCORE LA MATRICE DE MASSE D'UN ELEMENT
 ! --- DE PLAQUE EXCENTRE, ON S'ARRETE EN ERREUR FATALE :
 !     ------------------------------------------------
-    if (excent .ne. zero) then
-        call utmess('F', 'ELEMENTS2_56')
-    endif
+!    if (excent .ne. zero) then
+!        call utmess('F', 'ELEMENTS2_56')
+!    endif
 !
 !     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
     call gquad4(xyzl, caraq4)

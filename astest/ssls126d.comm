@@ -203,7 +203,7 @@ TEST_TABLE(TABLE=tab2,
            FILTRE=_F(NOM_PARA='COOR_X',
                      CRIT_COMP='MINI',),
            NOM_PARA='MXY',
-           VALE_CALC=1.20058264504E-11,);
+           VALE_CALC=1.81101975865E-11,);
 
 tab3=POST_COQUE(RESULTAT=RESU,
                 CHAM='DEFORMATION',

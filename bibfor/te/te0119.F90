@@ -45,9 +45,9 @@ subroutine te0119(option, nomte)
 !     2. VERIFICATION QUE L'EXCENTREMENT EST NUL POUR
 !        CERTAINES MODELISATIONS:
 !     --------------------------------------------------
-    if (cmod .eq. 'Q4G' .or. cmod .eq. 'DTG' .or. cmod .eq. 'CQ3') then
+    if (cmod .eq. 'DTG' .or. cmod .eq. 'CQ3') then
         call jevech('PCACOQU', 'L', j1)
-        if (cmod .eq. 'Q4G' .or. cmod .eq. 'DTG') then
+        if (cmod .eq. 'DTG') then
             excent=zr(j1-1+5)
         else
             excent=zr(j1-1+6)
