@@ -297,6 +297,17 @@ def check_optimization_options(self):
     self.check_optimization_cxxflags()
     self.check_optimization_fcflags()
     self.check_optimization_python()
+    self.check_variant_vars()
+
+@Configure.conf
+def check_variant_vars(self):
+    self.setenv('debug')
+    self.env['_ASTERBEHAVIOUR'] = 'AsterBehaviourDebug'
+    self.define('ASTERBEHAVIOUR', self.env['_ASTERBEHAVIOUR'])
+
+    self.setenv('release')
+    self.env['_ASTERBEHAVIOUR'] = 'AsterBehaviour'
+    self.define('ASTERBEHAVIOUR', self.env['_ASTERBEHAVIOUR'])
 
 # same idea than waflib.Tools.c_config.write_config_header
 # but defines are not removed from `env`

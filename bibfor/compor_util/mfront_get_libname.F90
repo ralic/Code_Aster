@@ -21,6 +21,7 @@ subroutine mfront_get_libname(libname)
 ! Retourne le chemin vers la bibliothèque MFront officielle
 !       out  libname: chemin
 !
+#include "asterf_config.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lxlgut.h"
 !
@@ -38,6 +39,6 @@ subroutine mfront_get_libname(libname)
     else if (nchar == 0) then
         call utmess('F', 'RUNTIME_1', sk='ASTER_LIBDIR')
     endif
-    libname = dir(1:lxlgut(dir))//'/libAsterBehaviour.so'
+    libname = dir(1:lxlgut(dir))//'/lib'//ASTERBEHAVIOUR//'.so'
 !
 end

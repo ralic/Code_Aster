@@ -70,7 +70,7 @@ def build(self):
             name = 'asterbehaviour',
   dynamic_source = '**/*.cxx',
 dynamic_incpaths = '../include',
-          target = 'AsterBehaviour',
+          target = self.env['_ASTERBEHAVIOUR'],
     install_path = self.env.ASTERLIBDIR,
              use = ('MFRONT', ),
     )
