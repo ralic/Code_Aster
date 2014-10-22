@@ -50,7 +50,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
     call jelira(nomd2//'.ORDR', 'LONUTI', nbordr)
     if (nbordr .eq. 0) then
         irang = 0
-        goto 20
+        goto 999
     endif
     call jeveuo(nomd2//'.ORDR', 'L', vi=ordr)
 !
@@ -58,7 +58,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
     if ((iordr.ge.1) .and. (iordr.le.nbordr)) then
         if (ordr(iordr) .eq. iordr) then
             irang = iordr
-            goto 20
+            goto 999
         endif
     endif
 !
@@ -66,7 +66,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
     if ((iordr.ge.0) .and. (iordr.le.nbordr-1)) then
         if (ordr(iordr+1) .eq. iordr) then
             irang = iordr + 1
-            goto 20
+            goto 999
         endif
     endif
 !
@@ -78,7 +78,7 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
         else
             irang = 0
         endif
-        goto 20
+        goto 999
     endif
 !
 !
@@ -89,12 +89,12 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
     debut = 0
     fin = nbordr-1
     maxit = int(1+log(1.d0*nbordr+1.d0)/log(2.d0))
-    do 10 i = 1, maxit
+    do i = 1, maxit
         diff = (fin-debut)/2
         milieu = debut+diff
         if (ordr(milieu+1) .eq. iordr) then
             irang = milieu+1
-            goto 20
+            goto 999
         else if (ordr(milieu+1).gt.iordr) then
             fin = milieu-1
         else
@@ -104,12 +104,12 @@ subroutine rsutrg(nomsd, iordr, irang, nbordr)
             diff = (fin-debut)/2
             milieu = debut+diff
             if (ordr(milieu+1) .eq. iordr) irang = milieu+1
-            goto 20
+            goto 999
         endif
-10  end do
+    end do
     ASSERT(.false.)
 !
-20  continue
+999 continue
     ASSERT(irang.ge.0)
     call jedema()
 end subroutine

@@ -83,23 +83,23 @@ subroutine rsrusd(nomsd, iordr)
 !        ET ON RESSORT SANS RIEN FAIRE :
     if (irang .eq. 0) then
         ASSERT(iordr.gt.ordr(nbordr))
-        goto 40
+        goto 999
     endif
 !
 !
 !     -- ON DETRUIT ET ON EFFACE LES CHAMPS :
 !     ---------------------------------------
-    do 20 k = 1, nbcham
+    do k = 1, nbcham
         call jenuno(jexnum(noms2//'.DESC', k), nomsy)
         call jenonu(jexnom(noms2//'.DESC', nomsy), ibid)
         call jeveuo(jexnum(noms2//'.TACH', ibid), 'E', jtach)
-        do 10 krang = irang, nbordr
+        do krang = irang, nbordr
             kordr=ordr(krang)
             call rsutch(nomsd, nomsy, kordr, chextr, .true._1)
             call detrsd('CHAMP_GD', chextr)
             zk24(jtach-1+krang) = ' '
-10      continue
-20  end do
+        end do
+    end do
 !
 !
 !     -- ON EFFACE LES PARAMETRES :
@@ -111,9 +111,9 @@ subroutine rsrusd(nomsd, iordr)
         n2=n1/nbormx
         ASSERT(n1.eq.n2*nbormx)
         call jeveuo(nomobj, 'E', jpara)
-        do 1, kk=n2*irang, n2*nbormx
-        zr(jpara-1+kk)=rundef
- 1      continue
+        do kk=n2*irang, n2*nbormx
+            zr(jpara-1+kk)=rundef
+        end do
     endif
 !
 !
@@ -123,9 +123,9 @@ subroutine rsrusd(nomsd, iordr)
         call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do 2, kk=n2*irang, n2*nbormx
-        zc(jpara-1+kk) = dcmplx(rundef,rundef)
- 2      continue
+        do kk=n2*irang, n2*nbormx
+            zc(jpara-1+kk) = dcmplx(rundef,rundef)
+        end do
     endif
 !
 !
@@ -135,9 +135,9 @@ subroutine rsrusd(nomsd, iordr)
         call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do 3, kk=n2*irang, n2*nbormx
-        zi(jpara-1+kk)=iundef
- 3      continue
+        do kk=n2*irang, n2*nbormx
+            zi(jpara-1+kk)=iundef
+        end do
     endif
 !
 !
@@ -147,9 +147,9 @@ subroutine rsrusd(nomsd, iordr)
         call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do 4, kk=n2*irang, n2*nbormx
-        zk8(jpara-1+kk)=' '
- 4      continue
+        do kk=n2*irang, n2*nbormx
+            zk8(jpara-1+kk)=' '
+        end do
     endif
 !
 !
@@ -159,9 +159,9 @@ subroutine rsrusd(nomsd, iordr)
         call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do 5, kk=n2*irang, n2*nbormx
-        zk16(jpara-1+kk)=' '
- 5      continue
+        do kk=n2*irang, n2*nbormx
+            zk16(jpara-1+kk)=' '
+        end do
     endif
 !
 !
@@ -171,9 +171,9 @@ subroutine rsrusd(nomsd, iordr)
         call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do 6, kk=n2*irang, n2*nbormx
-        zk24(jpara-1+kk)=' '
- 6      continue
+        do kk=n2*irang, n2*nbormx
+            zk24(jpara-1+kk)=' '
+        end do
     endif
 !
 !
@@ -183,9 +183,9 @@ subroutine rsrusd(nomsd, iordr)
         call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do 7, kk=n2*irang, n2*nbormx
-        zk32(jpara-1+kk)=' '
- 7      continue
+        do kk=n2*irang, n2*nbormx
+            zk32(jpara-1+kk)=' '
+        end do
     endif
 !
 !
@@ -195,17 +195,17 @@ subroutine rsrusd(nomsd, iordr)
         call jelira(nomobj, 'LONMAX', n1)
         n2=n1/nbormx
         call jeveuo(nomobj, 'E', jpara)
-        do 8, kk=n2*irang, n2*nbormx
-        zk80(jpara-1+kk)=' '
- 8      continue
+        do kk=n2*irang, n2*nbormx
+            zk80(jpara-1+kk)=' '
+        end do
     endif
 !
 !     -- ON EFFACE .ORDR :
     call jeecra(noms2//'.ORDR', 'LONUTI', irang-1)
-    do 30 krang = irang, nbormx
+    do krang = irang, nbormx
         ordr(krang)=0
-30  end do
+    end do
 !
-40  continue
+999 continue
     call jedema()
 end subroutine

@@ -78,9 +78,9 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
     call jeexin('&&RSUTN1.PARA.ACCES', iret)
     if (iret .gt. 0) then
         call jeveuo('&&RSUTN1.PARA.ACCES', 'L', vk16=acces)
-        do 10 iordr = 1, nbpar
+        do iordr = 1, nbpar
             if (nopara .eq. acces(iordr)) goto 12
-10      continue
+        end do
         k8b = resu
         valk (1) = nopara
         valk (2) = k8b
@@ -92,11 +92,12 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
     call jedetr('&&RSUTN1.PARA.ACCES')
 !
     ii = 0
-    do 20 iordr = 1, nbtord
+    do iordr = 1, nbtord
         call rsutrg(resu, zi(lordr+iordr-1), irang, nrang)
-        if (irang .eq. 0) goto 20
-        ii = ii + 1
-20  end do
+        if (irang .ne. 0) then
+            ii = ii + 1
+        endif
+    end do
     if (ii .eq. 0) then
         call utmess('F', 'UTILITAI4_51', sk=nopara)
     endif
@@ -105,13 +106,13 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu,&
 !
     nbordr = 0
     call wkvect(objveu, 'V V I', ii, jordr)
-    do 30 iordr = 1, nbtord
+    do iordr = 1, nbtord
         call rsutrg(resu, zi(lordr+iordr-1), irang, nrang)
         if (irang .ne. 0) then
             nbordr = nbordr + 1
             zi(jordr+nbordr-1) = zi(lordr+iordr-1)
         endif
-30  end do
+    end do
 !
     call jedetr('&&RSUTN1.NUME_ORDR')
 !

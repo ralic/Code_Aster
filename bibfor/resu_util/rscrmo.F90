@@ -58,7 +58,7 @@ subroutine rscrmo(iocc, nomsd, nomjv)
     call getvtx('RESU', 'CRITERE', iocc=iocc, scal=crit, nbret=nc)
     call rsutnu(nomsd, 'RESU', iocc, knum, nbordt,&
                 prec, crit, iret)
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
     call jeveuo(knum, 'L', jnume)
 !
     call getvtx('RESU', 'NOM_CHAM', iocc=iocc, nbval=0, nbret=n22)
@@ -69,11 +69,11 @@ subroutine rscrmo(iocc, nomsd, nomjv)
                     nbret=n22)
     else
         call jelira(nomd2//'.DESC', 'NOMMAX', nbnosy)
-        if (nbnosy .eq. 0) goto 9999
+        if (nbnosy .eq. 0) goto 999
         call wkvect('&&RSCRMO.NOM_SYMBOL', 'V V K16', nbnosy, jnosy)
-        do 10 isy = 1, nbnosy
+        do isy = 1, nbnosy
             call jenuno(jexnum(nomd2//'.DESC', isy), zk16(jnosy-1+isy))
-10      continue
+        end do
     endif
 !
     call jeexin(nomjv, iret)
@@ -88,8 +88,8 @@ subroutine rscrmo(iocc, nomsd, nomjv)
         call jelira(nomjv, 'LONMAX', nbmmod)
     endif
 !
-    do 20 i = 1, nbordt
-        do 24 isy = 1, nbnosy
+    do i = 1, nbordt
+        do isy = 1, nbnosy
             nomsym = zk16(jnosy+isy-1)
             call rsexch(' ', nomsd, nomsym, zi(jnume+i-1), noch19,&
                         iret)
@@ -103,9 +103,11 @@ subroutine rscrmo(iocc, nomsd, nomjv)
 !
                 if (docu(1:4) .eq. 'CHML') then
                     call jeveuo(noch19//'.CELK', 'L', vk24=celk)
-                    do 26 im = 1, nbmodl
-                        if (zk24(jmodl+im-1) .eq. celk(1)) goto 28
-26                  continue
+                    do im = 1, nbmodl
+                        if (zk24(jmodl+im-1) .eq. celk(1)) then
+                            goto 28
+                        endif
+                    end do
                     nbmodl = nbmodl + 1
                     if (nbmodl .gt. nbmmod) then
                         nbmmod = 2 * nbmmod
@@ -117,12 +119,12 @@ subroutine rscrmo(iocc, nomsd, nomjv)
 28                  continue
                 endif
             endif
-24      continue
-20  end do
+        end do
+    end do
 !
     call jedetr(knum)
     call jedetr('&&RSCRMO.NOM_SYMBOL')
 !
-9999  continue
+999 continue
     call jedema()
 end subroutine

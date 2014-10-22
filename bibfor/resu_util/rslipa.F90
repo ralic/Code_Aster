@@ -65,7 +65,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
     call jenonu(jexnom(noms2//'.NOVA', nompar), i1)
     ASSERT(i1.gt.0)
     call jeveuo(jexnum(noms2//'.TAVA', i1), 'L', jtava)
-    nom1 = zk8(jtava-1+1)
+    nom1 = zk8(jtava-1+1)(1:5)
     call jelira(noms2//nom1, 'TYPE', cval=tsca)
     if (tsca .eq. 'K') then
         call jelira(noms2//nom1, 'LTYP', l1)
@@ -89,7 +89,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !
     call wkvect(nomk24, 'V V '//tsca, n1, j1)
 !
-    do 1 kk = 1, n1
+    do kk = 1, n1
         call rsadpa(noms2, 'L', 1, nompar, ordr(kk),&
                     0, sjv=jpara, styp=k8b)
         if (tsca .eq. 'R') then
@@ -111,7 +111,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
         else
             ASSERT(.false.)
         endif
- 1  end do
+    end do
 !
 !     -- pour eviter les effets de bord (,ibid,ibid):
     jadd=j1

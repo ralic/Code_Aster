@@ -45,7 +45,7 @@ subroutine rsnume(resu, nomsy, nu)
     call jeexin(resu2//'.ORDR', iret)
     if (iret .gt. 0) then
         call jelira(resu2//'.ORDR', 'LONUTI', luti)
-        if (luti .eq. 0) goto 9999
+        if (luti .eq. 0) goto 999
         call rsorac(resu, 'DERNIER', 0, rbid, k8bid,&
                     cbid, rbid, 'ABSOLU', dernie, 1,&
                     ibid)
@@ -59,6 +59,6 @@ subroutine rsnume(resu, nomsy, nu)
             if (iret2 .gt. 0) nu=refe(2)(1:14)
         endif
     endif
-9999  continue
+999 continue
 !
 end subroutine

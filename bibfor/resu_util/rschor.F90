@@ -106,15 +106,13 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 !          VOULU, ON LE MEMORISE
 !
     nbordr = 0
-    do 20 , iaux = 0 , nbtono - 1
-!
-    chextr = zk24(jtach+iaux)
-    if (chextr .ne. ' ') then
-        zi(adtabo+nbordr) = ordr(iaux+1)
-        nbordr = nbordr + 1
-    endif
-!
-    20 end do
+    do iaux = 0 , nbtono - 1
+        chextr = zk24(jtach+iaux)
+        if (chextr .ne. ' ') then
+            zi(adtabo+nbordr) = ordr(iaux+1)
+            nbordr = nbordr + 1
+        endif
+    end do
 !
 !====
 ! 3. BILAN

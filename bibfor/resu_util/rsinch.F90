@@ -111,7 +111,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     call jenonu(jexnom(noms2//'.NOVA', acce2), iacces)
     if (iacces .eq. 0) then
         ier = 20
-        goto 9998
+        goto 998
     endif
 !
     call jeveuo(jexnum(noms2//'.TAVA', iacces), 'L', iatava)
@@ -123,7 +123,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     ASSERT((abs(ier1)+abs(ier2)).eq.0)
     if (ier2 .ne. 0) then
         ier = 20
-        goto 9998
+        goto 998
     endif
 !
     call jelira(noms2//nomobj, 'TYPE', cval=type)
@@ -132,7 +132,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     tysca = type(1:1)//k8ent(1:3)
     if (tysca .ne. 'R8  ') then
         ier = 20
-        goto 9998
+        goto 998
     endif
 !
     call rslipa(noms2, acces, '&&RSINCH.LIR8', iaobj, nbordr)
@@ -143,7 +143,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     call jenonu(jexnom(noms2//'.DESC', nomc2), inomch)
     if (inomch .eq. 0) then
         ier = 21
-        goto 9998
+        goto 998
     endif
 !
 !     -- ON INTERPOLE :
@@ -154,20 +154,20 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     call jenonu(jexnom(noms2//'.DESC', nomc2), ibid)
     call jeveuo(jexnum(noms2//'.TACH', ibid), 'L', iatach)
     nbord2=0
-    do 1 i = 1, nbordr
+    do i = 1, nbordr
         if (zk24(iatach-1+i) (1:1) .eq. ' ') then
             lexi(i) = .false.
         else
             lexi(i) = .true.
             nbord2=nbord2+1
         endif
-  1 end do
+    end do
 !
     call rsbary(zr(iaobj), nbordr, .false._1, lexi, rval,&
                 i1, i2, iposit)
     if (iposit .eq. -2) then
         ier = 10
-        goto 9998
+        goto 998
     endif
     call rsutro(nomsd, i1, ip1, ierr1)
     call rsutro(nomsd, i2, ip2, ierr2)
@@ -186,7 +186,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         if (iposit .eq. 0) then
             call copisd('CHAMP_GD', base2, ch1(1:19), chext2(1:19))
             ier = 0
-            goto 9998
+            goto 998
         else
 !         -- CAS DE L'EVOL_XXX QUI N'A QU'UN SEUL INSTANT :
 !            ON AUTORISE LE PROLONGEMENT CONSTANT ET ON ALARME
@@ -212,7 +212,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         call barych(ch1, ch2, r1, r2, chext2,&
                     base2)
         ier = 0
-        goto 9998
+        goto 998
 !
 !        -- PROLONGEMENT A GAUCHE:
 !        -------------------------
@@ -226,7 +226,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         else
             ier = 11
         endif
-        goto 9998
+        goto 998
 !
 !        -- PROLONGEMENT A DROITE:
 !        -------------------------
@@ -240,15 +240,15 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
         else
             ier = 12
         endif
-        goto 9998
+        goto 998
 !
     endif
-9998 continue
+998 continue
 !
 !     -- MESSAGES, ARRET?
 !     -------------------
     if (istop .eq. 0) then
-        goto 9999
+        goto 999
     else if (istop.eq.1) then
         stp = 'A'
     else if (istop.eq.2) then
@@ -280,7 +280,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr,&
     endif
 !
 !
-9999 continue
+999 continue
     call jedetr('&&RSINCH.LIR8')
     AS_DEALLOCATE(vl=lexi)
 !

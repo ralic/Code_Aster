@@ -116,15 +116,15 @@ subroutine rsinfo(nomcon, ifi)
     nbordt=tord(1)
 !
     if (nbordt .eq. 1) then
-        write (ifi,10001) nomd2(1:8)
+        write (ifi,101) nomd2(1:8)
     else
-        write (ifi,10002) nomd2(1:8), nbordt
+        write (ifi,102) nomd2(1:8), nbordt
     endif
 !
-    10001 format(/,1x,'STRUCTURE DU CONCEPT ',a,' CALCULE POUR 1',&
-     &            ' NUMERO D''ORDRE')
-    10002 format(/,1x,'STRUCTURE DU CONCEPT ',a,' CALCULE POUR ',i10,&
-     &            ' NUMEROS D''ORDRE')
+101 format(/,1x,'STRUCTURE DU CONCEPT ',a,' CALCULE POUR 1',&
+           ' NUMERO D''ORDRE')
+102 format(/,1x,'STRUCTURE DU CONCEPT ',a,' CALCULE POUR ',i10,&
+           ' NUMEROS D''ORDRE')
 !
     call wkvect('&&'//nompro//'.NUME_ORDRE', 'V V I', nbordt, lres)
     call rsorac(nomd2, 'TOUT_ORDRE', 0, r8b, k8b,&
@@ -155,7 +155,7 @@ subroutine rsinfo(nomcon, ifi)
 !
     if (inomsy .eq. 0) then
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS SYMBOLIQUES: AUCUN'
-        goto 2430
+        goto 243
     endif
 !
     call codent(inomsy, 'D', nomb1)
@@ -262,7 +262,7 @@ subroutine rsinfo(nomcon, ifi)
 !
     write (ifi,form1) '----------', ( zk16(ltirt+j-1), j=1,inomsy )
 !
-2430 continue
+243 continue
 !
     call jedetr('&&'//nompro//'.POINTEUR')
     call jedetr('&&'//nompro//'.COMPT')
@@ -317,21 +317,21 @@ subroutine rsinfo(nomcon, ifi)
                             1, sjv=iad, styp=ctype)
                 if (ctype(1:1) .eq. 'I') then
                 else if (ctype(1:1) .eq. 'R') then
-                    if (zr(iad) .eq. rundf) goto 2611
+                    if (zr(iad) .eq. rundf) goto 261
                 else if (ctype(1:1) .eq. 'K') then
                 else
-                    goto 2611
+                    goto 261
                 endif
                 lg = lxlgut( nopara )
                 lb = ( 16 - lg ) / 2
                 nopar2 = blanc(1:lb)//nopara
                 do k = 1, ipar
-                    if (zk16(lnopa+k-1) .eq. nopar2) goto 2611
+                    if (zk16(lnopa+k-1) .eq. nopar2) goto 261
                 end do
                 ipar = ipar + 1
                 zk16(lnopa+ipar-1) = nopar2
                 zk16(lnupa+ipar-1) = nopara
-2611             continue
+261             continue
             end do
         end do
 !

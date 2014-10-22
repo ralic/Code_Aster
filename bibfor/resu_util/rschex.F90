@@ -58,13 +58,13 @@ subroutine rschex(noresz, nomsym, codret)
 ! --- ON PARCOURT TOUS LES NUMEROS D'ORDRE DE LA STRUCTURE RESULTAT
 !     QUAND ON TROUVE UN CHAMP ENREGISTRE, ON SORT
 !
-    do 10 , iaux = 0 , nbtono - 1
-    if (zk24(jtach+iaux) .ne. ' ') then
-        codret = 7
-        goto 9999
-    endif
-    10 end do
+    do iaux = 0 , nbtono - 1
+        if (zk24(jtach+iaux) .ne. ' ') then
+            codret = 7
+            goto 999
+        endif
+    end do
 !
-9999  continue
+999 continue
 !
 end subroutine

@@ -64,10 +64,10 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
         ctype = 2
         call jeveuo(nomsd // '.ORDR', 'L', iord)
         call jelira(nomsd // '.ORDR', 'LONUTI', nbord)
-        do 5 i = 1, nbord
+        do i = 1, nbord
             ival(i) = zi(iord-1 + i)
- 5      continue
-        goto 9999
+        end do
+        goto 999
     endif
 !     ACCES AU NOM DU CHAMP
     call jenuno(jexnum(nomsd//'.NOVA', numva), nomva)
@@ -75,12 +75,12 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
     call rsexpa(nomsd, icode, nomva, iret)
     if (iret .eq. 0) then
         ier = 1
-        goto 9999
+        goto 999
     endif
 !     ACCES AUX VALEURS DE LA VARIABLE
     call jeveuo(nomsd // '.ORDR', 'L', iord)
     call jelira(nomsd // '.ORDR', 'LONUTI', nbord)
-    do 10 i = 1, nbord
+    do i = 1, nbord
         numord = zi(iord-1 + i)
         call rsadpa(nomsd, 'L', 1, nomva, numord,&
                     1, sjv=iad, styp=ktype)
@@ -116,9 +116,9 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
             kval(i) = zk80(iad)
         else
             ier = 1
-            goto 9999
+            goto 999
         endif
-10  end do
-9999  continue
+    end do
+999 continue
     call jedema()
 end subroutine

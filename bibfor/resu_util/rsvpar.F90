@@ -54,10 +54,12 @@ subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
 !
     call rsnopa(nomsd, 1, '&&RSVPAR.NOMS_PARA', nbacc, nbpar)
     call jeveuo('&&RSVPAR.NOMS_PARA', 'L', vk16=noms_para)
-    do 10 ipa = 1, nbpar
-        if (nompar .eq. noms_para(ipa)) goto 12
-10  end do
-    goto 9999
+    do ipa = 1, nbpar
+        if (nompar .eq. noms_para(ipa)) then
+            goto 12
+        endif
+    end do
+    goto 999
 !
 12  continue
     ier = 110
@@ -79,7 +81,7 @@ subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
         if (zk8(jadr) .eq. kpar) ier = 100
     endif
 !
-9999  continue
+999 continue
     call jedetr('&&RSVPAR.NOMS_PARA')
     call jedema()
 end subroutine

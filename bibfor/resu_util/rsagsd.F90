@@ -78,7 +78,7 @@ subroutine rsagsd(nomsd, ilong)
     else
         newnb = ilong
     endif
-    if (newnb .le. nbordr) goto 9999
+    if (newnb .le. nbordr) goto 999
     neword = min(newnb,nbordr)
     neworl = min(newnb,nborlu)
 !
@@ -95,35 +95,35 @@ subroutine rsagsd(nomsd, ilong)
     AS_ALLOCATE(vk24=tach, size=neword*nbcham)
     call jeveuo(nomd2//'.ORDR', 'L', jordrg)
     call wkvect('&&RSAGSD.ORDR', 'V V I', max(neworl, 1), jordrv)
-    do 10 i = 0, neworl - 1
+    do i = 0, neworl - 1
         zi(jordrv+i) = zi(jordrg+i)
-10  end do
-    do 30 i = 0, nbcham - 1
-        do 20 j = 0, neword - 1
+    end do
+    do i = 0, nbcham - 1
+        do j = 0, neword - 1
             tach(1+j+i*neword) = zk24(jtachg+j+i*nbordr)
-20      continue
-30  end do
+        end do
+    end do
     call jedetr(nomd2//'.TACH')
     call jedetr(nomd2//'.ORDR')
     call jecrec(nomd2//'.TACH', 'G V K24', 'NU', 'CONTIG', 'CONSTANT',&
                 nbcham)
     call jeecra(nomd2//'.TACH', 'LONMAX', newnb)
     call jeveuo(nomd2//'.TACH', 'E', jtachg)
-    do 40,k = 1,nbcham
-    call jecroc(jexnum(nomd2//'.TACH', k))
-    40 end do
+    do k = 1,nbcham
+        call jecroc(jexnum(nomd2//'.TACH', k))
+    end do
 !
     call wkvect(nomd2//'.ORDR', 'G V I', newnb, jordrg)
     call jeecra(nomd2//'.ORDR', 'LONUTI', neworl)
 !
-    do 50 i = 0, neworl - 1
+    do i = 0, neworl - 1
         zi(jordrg+i) = zi(jordrv+i)
-50  end do
-    do 70 i = 0, nbcham - 1
-        do 60 j = 0, neword - 1
+    end do
+    do i = 0, nbcham - 1
+        do j = 0, neword - 1
             zk24(jtachg+j+i*newnb) = tach(1+j+i*neword)
-60      continue
-70  end do
+        end do
+    end do
 !
     AS_DEALLOCATE(vk24=tach)
     call jedetr('&&RSAGSD.ORDR')
@@ -142,9 +142,9 @@ subroutine rsagsd(nomsd, ilong)
         ASSERT(n1.eq.n2*nbordr)
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
-        do 1, kk=n2*nbordr+1, n2*newnb
-        zr(jpara-1+kk)=rundef
- 1      continue
+        do kk=n2*nbordr+1, n2*newnb
+            zr(jpara-1+kk)=rundef
+        end do
     endif
 !
 !
@@ -155,9 +155,9 @@ subroutine rsagsd(nomsd, ilong)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
-        do 2, kk=n2*nbordr+1, n2*newnb
-        zc(jpara-1+kk) = dcmplx(rundef,rundef)
- 2      continue
+        do kk=n2*nbordr+1, n2*newnb
+            zc(jpara-1+kk) = dcmplx(rundef,rundef)
+        end do
     endif
 !
 !
@@ -168,9 +168,9 @@ subroutine rsagsd(nomsd, ilong)
         n2=n1/nbordr
         call juveca(nomobj, n2*newnb)
         call jeveuo(nomobj, 'E', jpara)
-        do 3, kk=n2*nbordr+1, n2*newnb
-        zi(jpara-1+kk)=iundef
- 3      continue
+        do kk=n2*nbordr+1, n2*newnb
+            zi(jpara-1+kk)=iundef
+        end do
     endif
 !
 !
@@ -218,7 +218,7 @@ subroutine rsagsd(nomsd, ilong)
         call juveca(nomobj, n2*newnb)
     endif
 !
-9999  continue
+999 continue
 !
     call jedema()
 !

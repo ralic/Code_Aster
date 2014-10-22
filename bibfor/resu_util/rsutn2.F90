@@ -70,11 +70,11 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
 !     --- VERIFICATION QUE LE NOMCHA EXISTE DANS LA SD RESULTAT ---
 !
     ii = 0
-    do 10 iordr = 1, nbtord
+    do iordr = 1, nbtord
         call rsexch(' ', resu, nomcha, zi(lordr+iordr-1), cham19,&
                     iret)
         if (iret .eq. 0) ii = ii + 1
-10  end do
+    end do
     if (ii .eq. 0) then
         k16b = nomcha
         call utmess('F', 'UTILITAI4_52', sk=k16b)
@@ -84,14 +84,14 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu,&
 !
     nbordr = 0
     call wkvect(objveu, 'V V I', ii, jordr)
-    do 20 iordr = 1, nbtord
+    do iordr = 1, nbtord
         call rsexch(' ', resu, nomcha, zi(lordr+iordr-1), cham19,&
                     iret)
         if (iret .eq. 0) then
             nbordr = nbordr + 1
             zi(jordr+nbordr-1) = zi(lordr+iordr-1)
         endif
-20  end do
+    end do
 !
     call jedetr('&&RSUTN2.NUME_ORDR')
 !
