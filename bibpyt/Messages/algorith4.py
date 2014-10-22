@@ -37,12 +37,13 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 
 
 46 : _(u"""
-  -> Le calcul de l opérateur tangent dans la phase %(k1)s  car le critère rp est nul. 
+  -> Le calcul de l opérateur tangent dans la phase %(k1)s a échoué. 
      1. RIGI_MECA_TANG=première itération de prédiction tangente dans un pas de temps
      2. FULL_MECA=itérations de correction de Newton
   -> Risque & Conseil :
      1. On conseille l'utilisation de la PREDICTION=ELASTIQUE, REAC_ITER=n, avec n>1
-     2. Vérifiez les paramètres d'entrée comme le matériau.
+     2. Vérifiez les paramètres d'entrée comme le matériau,... .
+     3. Contactez l'assistance si le problème persiste
 """),
 
 

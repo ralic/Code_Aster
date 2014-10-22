@@ -136,7 +136,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
     call r8inir(10, 0.d0, tampon, 1)
     do 9 i = 1, 27
         cod(i)=0
-  9 end do
+  9 continue
 !
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
@@ -308,12 +308,11 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
 !
         endif
 !
- 10 end do
+ 10 continue
 !
 !
 !     POST_ITER='CRIT_RUPT'
     if (crit(13) .gt. 0.d0) then
-        ndim = 3
         call crirup(fami, mate, ndim, npg, lgpg,&
                     option, compor, sigp, vip, vim,&
                     instm, instp)

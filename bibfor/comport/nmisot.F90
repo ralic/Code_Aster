@@ -545,7 +545,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !
 !      S'il YA RUPTURE ALORS INTERDIRE PLASTICITE CAR LES CONTRAINTES ONT ETE MIS A ZERO
         if ((crit(13).gt.0.d0) .and. (vim(8).gt.0.d0)) then
-           plasti = .FALSE.
+           plasti = .false.
         endif      
 
 
