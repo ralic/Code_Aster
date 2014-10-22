@@ -44,8 +44,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ----------------------------------------------------------------
-!     COMMUNICATION DES VECTEURS PROPRES ET SD ASSOCIEES POUR MACRO_MODE_MECA //
-!     IN  LCOMOD      :  LOG  : MACRO_MODE_MECA// OR NOT
+!     COMMUNICATION DES VECTEURS PROPRES ET SD ASSOCIEES POUR
+!     CALC_MODES SUR PLUSIEURS SOUS-BANDES //
+!     IN  LCOMOD      :  LOG  : CALC_MODES SUR PLUSIEURS SOUS-BANDES // OR NOT
 !     IN  ICOM1/ICOM2 :  IN   : PARAMETRES // ASSOCIES A LCOMOD=.TRUE.
 !     IN/OUT RESUI/RESUR/RESUK: VECTEURS I/R/K : VECTEURS ASSOCIES A LA
 !                               SD_MODE_MECA A PRODUIRE.

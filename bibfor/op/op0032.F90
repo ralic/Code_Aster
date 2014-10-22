@@ -103,7 +103,9 @@ subroutine op0032()
     call getres(table, concep, nomcmd)
 !
 !     ------------------------------------------------------------------
-!     ------- INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART I)  --------
+!     ------- INFO_MODE // SEUL
+!     -------              OU DANS CALC_MODES SUR PLUSIEURS SOUS-BANDES
+!     ------- (PART I)
 !     ------------------------------------------------------------------
 !     --- RECUPERATION ET TEST DE VALIDITE DES PARAMETRES
 !     ------------------------------------------------------------------
@@ -116,7 +118,7 @@ subroutine op0032()
     rang = to_aster_int(mrang)
     nbproc = to_aster_int(mnbproc)
 !
-!     INFO // DS MACRO_MODE_MECA
+!     INFO // DANS CALC_MODES SUR PLUSIEURS SOUS-BANDES
     typeco=-999
     call getvis('PARALLELISME_MACRO', 'TYPE_COM', iocc=1, scal=typeco, nbret=l)
     valk(1)='TYPE_COM'
@@ -377,7 +379,7 @@ subroutine op0032()
 !
 !      --- SCHEMAS PARALLELES
 !
-!      --- INFO_MODE OU MACRO_MODE_MECA // VALIDES QU'AVEC STURM
+!      --- INFO_MODE OU CALC_MODES SUR PLUSIEURS SOUS-BANDES // VALIDES QU'AVEC STURM
     if (lcomod .or. lcoinf) then
 !      --- PROBABLEMENT MAUVAISE PROGRAMMATION EN AMONT
         if (typmet(1:5) .ne. 'STURM') then
@@ -453,7 +455,9 @@ subroutine op0032()
         nbrow=nbmod-1
 !
 !     ------------------------------------------------------------------
-!     ------- INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART II)  -------
+!     ------- INFO_MODE // SEUL
+!     -------              OU DANS CALC_MODES SUR PLUSIEURS SOUS-BANDES
+!     ------- (PART II)
 !     ------------------------------------------------------------------
 !     --- SI TYPECO=1 OU 2 ON PASSE EN COM LOCAL + DISTRIBUTION DES
 !     ---     TESTS DE STURM + ON REVIENT AU COMM_WORLD.
@@ -628,7 +632,9 @@ subroutine op0032()
  20     continue
 !
 !     ------------------------------------------------------------------
-!     ------ INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART III)  -------
+!     ------- INFO_MODE // SEUL
+!     -------              OU DANS CALC_MODES SUR PLUSIEURS SOUS-BANDES
+!     ------- (PART III)
 !     ------------------------------------------------------------------
 !     --- SI TYPECO=1/2 ON COMMUNIQUE TOUS LES RESULTATS DES CALCULS.
 !     ------------------------------------------------------------------
@@ -735,7 +741,9 @@ subroutine op0032()
     call detrsd('MATR_ASSE', dynam)
 !
 !     ------------------------------------------------------------------
-!     ------- INFO_MODE // SEUL OU DS MACRO_MODE_MECA (PART IV)  -------
+!     ------- INFO_MODE // SEUL
+!     -------              OU DANS CALC_MODES SUR PLUSIEURS SOUS-BANDES
+!     ------- (PART IV)
 !     ------------------------------------------------------------------
 !     --- AVANT DE QUITTER L'OP. ON REMET LE COM WORLD (AU CAS OU)
 !     --- DESTRUCTION DES SOUS-COMMUNICATEURS EVENTUELLEMENT ASSOCIES A

@@ -405,8 +405,7 @@ de fréquences demandées (%(i2)d).
 
     Conseils :
     Pour améliorer la convergence des algorithmes modaux vous pouvez par exemple :
-     - Diminuer le nombre de modes recherchés à chaque fois en découpant votre calcul modal en plusieurs bandes
-       (avec l'opérateur MACRO_MODE_MECA, ou à la main).
+     - Diminuer le nombre de modes recherchés à chaque fois en découpant votre calcul modal en plusieurs bandes.
        Cela améliore aussi souvent grandement les performances des calculs.
      - Avec la méthode de 'SORENSEN', augmenter la taille de l'espace de projection (DIM_SOUS_ESPACE/COEF_DIM_ESPACE)
        ou jouer sur les paramètres numériques qui pilotent la convergence (PREC_SOREN et NMAX_ITER_SOREN).

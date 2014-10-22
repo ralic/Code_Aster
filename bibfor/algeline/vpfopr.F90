@@ -352,7 +352,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
         omemax=omgmax
 !
 !     ------------------------------------------------------------------
-!     ---------INFO_MODE OU MACRO_MODE_MECA PARALLELE (PART I) ---------
+!     -------- INFO_MODE OU CALC_MODES SUR PLUSIEURS SOUS-BANDES
+!     -------- EN PARALLELE (PART I)
 !     ------------------------------------------------------------------
 !     --- COMMUNICATION DES PIVOTS POUR LE BON CALCUL DE STURM
         if ((option.eq.'STURML1P') .or. (option.eq.'STURMLNP') .or. (option.eq.'STURML10')&
@@ -421,7 +422,8 @@ subroutine vpfopr(option, typres, lmasse, lraide, ldynam,&
                     0.d0, dcmplx(0.d0, 0.d0))
 !
 !     ------------------------------------------------------------------
-!     ---------INFO_MODE OU MACRO_MODE_MECA PARALLELE (PART II) --------
+!     -------- INFO_MODE OU CALC_MODES SUR PLUSIEURS SOUS-BANDES
+!     -------- EN PARALLELE (PART II)
 !     ------------------------------------------------------------------
 !     --- SEULS CERTAINS PROCS REMONTENT LES OUTPUTS SINON LA COMM
 !     --- EN FIN DE OP0032 VA CUMULER DES INFOS REDONDANTES.

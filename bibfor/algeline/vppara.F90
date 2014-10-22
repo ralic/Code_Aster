@@ -75,7 +75,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
 ! IN/OUT VECTC : C   : VECTEURS PROPRES COMPLEXES
 ! OUT RESUR    : R   : STRUTURE DE DONNEES RESULTAT CONTENANT TOUS LES
 !                      PARAMETRES MODAUX
-! IN LCOMOD   : LOG  : MACRO_MODE_MECA// OR NOT
+! IN LCOMOD   : LOG  : CALC_MODES SUR PLUSIEURS SOUS-BANDES // OR NOT
 ! IN ICOM1/ICOM2 :  IN   : PARAMETRES // ASSOCIES A LCOMOD=.TRUE.
 ! IN TYPRES    :  IN  : TYPE DE RESULTATS (DYNAMIQUE OU FLAMB)
 ! IN NFREQG    : IN   : NBRE TOTAL DE MODES
@@ -144,7 +144,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse,&
                         dbloq, omecor, resur(3*mxresf+1))
 !
         endif
-!        - SI PARALLELISME MACRO_MODE_MECA, COM DES DONNEES:
+!        - SI PARALLELISME CALC_MODES SUR PLUSIEURS SOUS-BANDES, COM DES DONNEES:
 !        - VECTEURS PROPRES ET DES RESUI/R/K
         call vppcom(lcomod, icom1, icom2, resui, resur,&
                     resuk, nbpari, nbparr, nbpark, mxresf,&
