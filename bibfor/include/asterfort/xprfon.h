@@ -16,8 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
-        character(len=8) :: noma
+    subroutine xprfon(fiss, numfon, nvit, nbeta)
         character(len=8) :: fiss
         integer :: numfon
         character(len=24) :: nvit

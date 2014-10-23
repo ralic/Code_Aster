@@ -1,4 +1,4 @@
-subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
+subroutine xprfon(fiss, numfon, nvit, nbeta)
 !
     implicit none
 #include "jeveux.h"
@@ -15,7 +15,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    character(len=8) :: fiss, noma
+    character(len=8) :: fiss
 !
     character(len=24) :: nvit, nbeta
     integer :: numfon
@@ -44,7 +44,6 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
 !    LA METHODE UPWIND AVEC PLUSIEURS FOND DE FISSURE
 !
 !    ENTREE
-!        NOMA    : NOM DU CONCEPT MAILLAGE
 !        FISS    : NOM DU CONCEPT FISSURE X-FEM
 !                  (FISSURE INITIALE DONT ON EXTRAIT LE FOND DE FISSURE)
 !        NVIT    : VECTEUR DES VITESSES DE PROPAGATION POUR CHAQUE POINT
@@ -137,15 +136,15 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             2
 !   ON EXTRAIT LES COORDONNEES DU PREMIER POINT DU FOND DE FISSURE
             if (i .eq. 1) then
-                npoin=vjfmulo(1-1)
-                m1(1)=fondfiss(4*(npoin)+1)
-                m1(2)=fondfiss(4*(npoin)+2)
-                m1(3)=fondfiss(4*(npoin)+3)
+                npoin=vjfmulo(1)
+                m1(1)=fondfiss(4*(npoin-1)+1)
+                m1(2)=fondfiss(4*(npoin-1)+2)
+                m1(3)=fondfiss(4*(npoin-1)+3)
             else
-                npoin=vjfmulo(2*(i-1))
-                m1(1)=fondfiss(4*(npoin)+1)
-                m1(2)=fondfiss(4*(npoin)+2)
-                m1(3)=fondfiss(4*(npoin)+3)
+                npoin=vjfmulo(2*(i-1)+1)
+                m1(1)=fondfiss(4*(npoin-1)+1)
+                m1(2)=fondfiss(4*(npoin-1)+2)
+                m1(3)=fondfiss(4*(npoin-1)+3)
             endif
             coeffk=((b1(1)-a1(1))*(m1(1)-a1(1))+(b1(2)-a1(2))*&
             (m1(2)-a1(2))+(b1(3)-a1(3))*(m1(3)-a1(3)))/normab
@@ -180,7 +179,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
             2
 !  ON EXTRAIT LES COORDONNEES DU DERNIER POINT DU FOND DE FISSURE
             if (i .eq. 1) then
-                npoin=vjfmulo(1+1)
+                npoin=vjfmulo(2)
                 m2(1)=fondfiss(4*(npoin-1)+1)
                 m2(2)=fondfiss(4*(npoin-1)+2)
                 m2(3)=fondfiss(4*(npoin-1)+3)
@@ -189,7 +188,7 @@ subroutine xprfon(noma, fiss, numfon, nvit, nbeta)
                 m2(2)=fondfiss(4*(nbptff-1)+2)
                 m2(3)=fondfiss(4*(nbptff-1)+3)
             else
-                npoin=vjfmulo(2*i)
+                npoin=vjfmulo(2*(i-1)+2)
                 m2(1)=fondfiss(4*(npoin-1)+1)
                 m2(2)=fondfiss(4*(npoin-1)+2)
                 m2(3)=fondfiss(4*(npoin-1)+3)

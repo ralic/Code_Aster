@@ -244,7 +244,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         if (numfon .gt. 1) then
 !        ON VERIFIE QUE LE FOND DE FISSURE EST BIEN ORIENTE
 !        SINON ON MODIFIE LA NUMEROTATION DU FOND DE FISSURE
-            call xprfon(noma, fiss, numfon, nvit, nbeta)
+            call xprfon(fiss, numfon, nvit, nbeta)
         endif
 !
 !       DEFINITION DU FOND VIRTUEL
