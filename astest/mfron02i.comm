@@ -24,8 +24,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 import os
 
-os.system("mfront --obuild DruckerPragerEcroLin.mfront --interface=aster")
+os.system("mfront --obuild DruckPragEcroLin.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so druckprag.so")
+assert os.path.isfile("druckprag.so")
 
 MAILIN=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -75,12 +76,12 @@ SOL  = DEFI_MATERIAU( ELAS      = _F( E           = 5800.0E6,
                                       P_ULTM      =    0.000     ,
                                       SY          =    2.11E6    ,
                                       H           =    0.000     ,),
-                      # données de DruckerPragerEcroLine.mfront
+                      # données de DruckPragEcroLin.mfront
                       UMAT=_F( C1 = 5800.0E6,
                                C2 = 0.3 ,
                                NB_VALE=6,
-                               C3  = 0.328 , 
-                               C4  = 0, 
+                               C3  = 0.328 ,
+                               C4  = 0,
                                C5  = 2.11E6,
                                C6  = 0,
                                ),
@@ -146,7 +147,7 @@ U1 = STAT_NON_LINE(
                                   ),
                     COMPORTEMENT=_F( RELATION = 'KIT_HM',
                                   RELATION_KIT =  ('MFRONT', 'LIQU_SATU','HYDR_UTIL',),
-                                 NOM_ROUTINE='asterdruckprag',
+                                 NOM_ROUTINE='asterdruckpragecrolin',
                                  LIBRAIRIE='druckprag.so',
                                       RESI_INTE_RELA = 1.E-6,
                                       ITER_INTE_PAS  = -10,
