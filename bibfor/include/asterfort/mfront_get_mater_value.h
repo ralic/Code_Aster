@@ -29,7 +29,7 @@ interface
         integer, intent(in) :: pmatprop
         character(len=16), intent(in) :: rela_comp
         integer, intent(in) :: pnbprop
-        integer, intent(in) :: nprops
+        integer, intent(out) :: nprops
         real(kind=8), intent(out) :: props(*)
     end subroutine mfront_get_mater_value
 end interface

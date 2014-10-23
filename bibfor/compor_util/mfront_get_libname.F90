@@ -21,6 +21,8 @@ subroutine mfront_get_libname(libname)
 ! Retourne le chemin vers la bibliothèque MFront officielle
 !       out  libname: chemin
 !
+! for define
+! aslint: disable=C1510
 #include "asterf_config.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lxlgut.h"
