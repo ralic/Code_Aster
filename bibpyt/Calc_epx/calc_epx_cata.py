@@ -473,6 +473,13 @@ cata_cara_elem = {
         'DIRECTIVE' : 'COMPLEMENT',
         'MOT_CLE_EPX': 'EPAIS',
         'MOT_CLE_ASTER' : 'EPAIS',
+        'VERIF' : {'EXCENTREMENT': [0.],
+                   'INER_ROTA'   : ['NON'],
+                   'VECTEUR'     : None, # pris en compte ailleurs
+                   'ANGL_REP'    : None, # pris en compte ailleurs
+                   'COQUE_NCOU'  : [1],
+                   'INER_ROTA'   : ['OUI',],
+                   },
          }
                ],
     'POUTRE' : [

@@ -244,4 +244,10 @@ CALC_EUROPLEXUS/LIRE_EUROPLEXUS ne sait pas encore traiter le mot-clé %(k1)s
 d'AFFE_CARA_ELEM.
 """),
 
+45 : _(u"""
+Le mot-clé %(k1)s n'est pas autorisé dans CALC_EUROPLEXUS pour le mot-clé
+facteur %(k2)s d'AFFE_CARA_ELEM.
+"""),
+
+
 }

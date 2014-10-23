@@ -43,20 +43,23 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
     mot_cle_epx_select = None
     l_cara = []
     l_vale = []
+    mot_cle_ignor=['GROUP_MA']
     for elem in l_elem:
         for i_dic in range(len(directive)):
-
+            mot_cle_ok = []
             if mot_cle_aster[i_dic]:
                 if elem.has_key(mot_cle_aster[i_dic]):
                     val_cle = elem[mot_cle_aster[i_dic]]
                     vale = []
                     cara = []
+                    mot_cle_ok.append(mot_cle_aster[i_dic])
                 else:
                     cara_in = tolist(elem['CARA'])
                     if len(cara_in) != 1:
                         raise Exception('CARA_ELEM : cas non prevu')
                     if cara_in[0] != mot_cle_aster[i_dic]:
                         continue
+                    mot_cle_ok.extend(['CARA','VALE'])
                     valeur = tolist(elem['VALE'])
                     if is_vale_aster[i_dic]:
                         cara = cara_epx[i_dic]
@@ -74,6 +77,7 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
             else:
                 # pour l'instant il n'est pas nécessaire de boucler
                 # si echec dans ce cas la
+                mot_cle_ok.extend(['CARA','VALE'])
                 val_cle = ''
                 cara_in = tolist(elem['CARA'])
                 vale_in = tolist(elem['VALE'])
@@ -85,6 +89,19 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                     val = vale_in[i]
                     index = cara_aster[i_dic].index(car)
                     vale[index] = val
+#           verif des mots-clés autorisés
+            mc_verif = []
+            if verif[i_dic]: mc_verif = verif[i_dic].keys()
+            for key in elem.keys():
+                if key in mot_cle_ok:
+                    continue
+                elif key in mot_cle_ignor:
+                    continue
+                elif key in mc_verif:
+                    continue
+                else:
+                    UTMESS('F','PLEXUS_45', valk = [key, typ_carel])
+
             if None in vale:
                 for i, val in enumerate(vale):
                     if val is None:
@@ -105,9 +122,12 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                 cle = ''
             if verif[i_dic]:
                 for mc_aster in verif[i_dic].keys():
-                    if elem[mc_aster] not in  verif[i_dic][mc_aster]:
-                        liste_ok = ', '.join(verif[i_dic][mc_aster])
-                        UTMESS('F', 'PLEXUS_4', valk=(typ_carel, mc_aster,
+                    if verif[i_dic][mc_aster] is None:
+                        continue
+                    elif elem.has_key(mc_aster):
+                        if elem[mc_aster] not in verif[i_dic][mc_aster]:
+                            liste_ok = ', '.join(verif[i_dic][mc_aster])
+                            UTMESS('F', 'PLEXUS_4', valk=(typ_carel, mc_aster,
                                                      elem[mc_aster], liste_ok))
             if mot_cle_epx_select == None:
                 mot_cle_epx_select = mot_cle_epx[i_dic]
