@@ -1,0 +1,865 @@
+# CAS TEST : SSNP167E
+# TITRE INCLUSION DE DEUX COURONNES SOUS PRESSION NON UNIFORME
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
+
+import math
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI',DEBUG=_F(JXVERI='OUI',JEVEUX='OUI'),)
+
+MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'),);
+
+#+----------------------------------------+
+#| noms des groupes de noeuds et mailles  |
+#+----------------------------------------+
+
+MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,
+      CREA_GROUP_MA=_F(UNION=('C1','C2'),NOM='C'));
+
+MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU_3D=(
+            _F(GROUP_MA = 'S1R1',),
+            _F(GROUP_MA = 'S1R2',),
+            _F(GROUP_MA = 'S2R2',),
+            _F(GROUP_MA = 'S2R3',),
+            _F(GROUP_MA = 'S1LX',),
+            _F(GROUP_MA = 'S1LY',),
+            _F(GROUP_MA = 'S2LX',),
+            _F(GROUP_MA = 'S2LY',),                  
+                                                    ),);
+
+
+#+----------------------------------------+
+#|        proprietes des materiaux        |
+#+----------------------------------------+
+E1=1.0e9
+E2=1.0e9
+nu1=0.2
+nu2=0.2
+
+
+MAT1=DEFI_MATERIAU(ELAS = _F(E=E1,NU = nu1,));
+MAT2=DEFI_MATERIAU(ELAS = _F(E=E2,NU = nu2,));
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(_F(GROUP_MA = 'C1',MATER = MAT1,),
+                                      _F(GROUP_MA = 'C2',MATER = MAT2,),),);
+#+----------------------------------------+
+#|                modele                  |
+#+----------------------------------------+
+
+MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D'));
+
+
+#=================================================
+#  generation des fonctions de rayons et de theta
+#=================================================
+def radius(x,y):
+    return (x**2+y**2)**0.5
+    
+def theta(x,y):
+    return atan2(y,x)
+
+def zero_f(x,y):
+    return 0. 
+zero = FORMULE(NOM_PARA=('X','Y',), VALE='zero_f(X,Y)');
+    
+#=================================================
+#  Calcul des coefficients de Lame
+#=================================================
+lambda1=E1*nu1 / ( (1+nu1)*(1-2*nu1) )
+mu1=E1 / ( 2*(1+nu1) )
+
+lambda2=E2*nu2 / ( (1+nu2)*(1-2*nu2) )
+mu2=E2 / ( 2*(1+nu2) )
+
+
+#=================================================
+# geometrie
+#=================================================
+
+R1 = 1.0;
+R2 = 0.6;
+R3 = 0.2;
+
+#=================================================
+#|       conditions aux limites           |
+#=================================================
+alpha=1.0e5;
+p=1.e7;
+
+#================================================================================
+#| on notera dans la suite par '_c' la contribution du chargement constant
+#  et par '_v' la contribution du chargement variable fonction de theta        |
+#================================================================================
+
+    
+#=================================================
+#|       pour le chargement constant         |
+#=================================================
+
+#pression de contact
+
+pres_cont_c = 2*p*((R1*R1*(1-nu1)/(R1*R1-R2*R2))/((R1*R1+R2*R2*(1-2*nu1))/(R1*R1-R2*R2)+(E1*(1+nu2)*(R2*R2*(1-2*nu2)+R3*R3))/(E2*(1+nu1)*(R2*R2-R3*R3)))) 
+
+def press_c(x,y):
+    return pres_cont_c
+
+# constantes couronne externe
+
+eps_r_11 = (1+nu1)*(1-2*nu1)*(pres_cont_c*R2*R2-p*R1*R1) / ( E1*(R1*R1-R2*R2) )
+eps_r_12 = (pres_cont_c-p)*(1+nu1)*R1*R1*R2*R2 / ( E1*(R1*R1-R2*R2) )
+
+
+# constantes couronne interne
+
+eps_r_21 = -(1+nu2)*(1-2*nu2)*pres_cont_c*R2*R2 / ( E2*(R2*R2-R3*R3) )
+eps_r_22 = -pres_cont_c*(1+nu2)*R2*R2*R3*R3 / ( E2*(R2*R2-R3*R3) )
+
+# deplacements couronne externe
+
+def ux1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (eps_r_11*r+eps_r_12/r)*cos(th)
+
+def uy1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (eps_r_11*r+eps_r_12/r)*sin(th)
+
+# deplacements couronne interne
+
+def ux2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (eps_r_21*r+eps_r_22/r)*cos(th)
+
+def uy2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return (eps_r_21*r+eps_r_22/r)*sin(th)
+
+
+# deformations couronne externe
+
+def EPSI_XX_1(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return eps_r_11 - eps_r_12*cos(2*th)/(r**2)
+
+def EPSI_YY_1(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return eps_r_11 + eps_r_12*cos(2*th)/(r**2)
+    
+def EPSI_XY_1(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return -eps_r_12*sin(2*th)/(r**2)
+
+# deformations couronne interne
+
+def EPSI_XX_2(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return eps_r_21 - eps_r_22*cos(2*th)/(r**2)
+
+def EPSI_YY_2(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return eps_r_21 + eps_r_22*cos(2*th)/(r**2)
+    
+def EPSI_XY_2(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return -eps_r_22*sin(2*th)/(r**2)
+
+
+# contraintes couronnes externe
+
+def SIGMA_XX_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return lambda1*( EPSI_XX_1(x,y)+EPSI_YY_1(x,y) ) + 2*mu1*EPSI_XX_1(x,y)
+    
+def SIGMA_YY_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return lambda1*( EPSI_XX_1(x,y)+EPSI_YY_1(x,y) ) + 2*mu1*EPSI_YY_1(x,y)
+
+def SIGMA_ZZ_1_c(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu1*( SIGMA_XX_1_c(x,y) + SIGMA_YY_1_c(x,y) )
+
+def SIGMA_XY_1_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return 2*mu1*EPSI_XY_1(x,y)
+
+# contraintes couronnes interne
+
+def SIGMA_XX_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return lambda2*( EPSI_XX_2(x,y)+EPSI_YY_2(x,y) ) + 2*mu2*EPSI_XX_2(x,y)
+    
+def SIGMA_YY_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return lambda2*( EPSI_XX_2(x,y)+EPSI_YY_2(x,y) ) + 2*mu2*EPSI_YY_2(x,y)
+
+def SIGMA_ZZ_2_c(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu2*( SIGMA_XX_2_c(x,y) + SIGMA_YY_2_c(x,y) )
+
+def SIGMA_XY_2_c(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return 2*mu1*EPSI_XY_1(x,y)
+
+
+#==========================================
+#  pour le chargement fonction de theta
+#==========================================
+
+#Calcul des constantes
+
+def deter(f):
+    return (2*f**2+f+1)*(f+3)-(f**2+f+2)*(3*f+1)
+
+def calc(pe,pi,Re,Ri):
+
+    f=(Ri/Re)**2
+
+    det=deter(f)
+
+    A= ( pe*(2*f**2+f+1) -pi*(f**3+f**2+2*f) )/(2*det)
+    b=-( pe*(3*f**2+f)-pi*(f**3+3*f**2) )/(6*det)
+    c= ( pe*(f+3)-pi*(3*f+1) )/(6*det)
+    d=-( pe*(f**2+f+2)-pi*(2*f**2+f+1) )/(2*det)
+
+    B=b/Ri**2
+    C=c*Ri**4
+    D=d*Ri**2
+
+    return A,B,C,D
+
+f1=(R2/R1)**2
+det1=deter(f1)
+f2=(R3/R2)**2
+det2=deter(f2)
+
+term1=(1+nu1)/(E1*6*det1)* \
+( -3*(2*f1**2+f1+1)+(f1+3)+6*(-f1**2-f1-2)-nu1*(2*(-3*f1**2-f1)+6*(-f1**2-f1-2)) )
+
+term2=(1+nu1)/(E1*6*det1)*\
+( -3*(f1**3+f1**2+2*f1)+(3*f1+1)+6*(-2*f1**2-f1-1)-nu1*(2*(-f1**3-3*f1**2)+6*(-2*f1**2-f1-1)) )
+
+term3=(1+nu2)/(E2*6*det2)*\
+( -3*(2*f2**2+f2+1)+(f2+3)*f2**2+6*(-f2**2-f2-2)*f2-nu2*(2*(-3*f2**2-f2)/f2+6*(-f2**2-f2-2)*f2) )
+
+pc=term1/(term3+term2)*alpha
+
+A1=0.
+B1=0.
+C1=0.
+D1=0.
+
+A2=0.
+B2=0.
+C2=0.
+D2=0.
+
+A1,B1,C1,D1=calc(alpha,pc,R1,R2)
+A2,B2,C2,D2=calc(pc,0.,R2,R3)
+
+
+#pression de contact
+
+def press_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return ( 2*A2 + 6*C2/r**4 + 4*D2/r**2 )*cos(2*th)
+
+
+# deplacements polaires couronne externe
+def Ur1(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu1)/E1 * ( (-2*A1*r + 2*C1/r**3 + 4*D1/r) - nu1*(4*B1*r**3 + 4*D1/r) ) * cos(2*th)
+
+def Uth1(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu1)/E1 * ( (2*A1*r + 6*B1*r**3 + 2*C1/r**3 - 2*D1/r) - nu1*(4*B1*r**3 - 4*D1/r) ) * sin(2*th)
+
+# deplacements polaires couronne interne
+def Ur2(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu2)/E2 * ( (-2*A2*r + 2*C2/r**3 + 4*D2/r) - nu2*(4*B2*r**3 + 4*D2/r) ) * cos(2*th)
+
+def Uth2(x,y):
+    r=radius(x,y)
+    th=theta(x,y)    
+    return (1+nu2)/E2 * ( (2*A2*r + 6*B2*r**3 + 2*C2/r**3 - 2*D2/r) - nu2*(4*B2*r**3 - 4*D2/r) ) * sin(2*th)
+
+
+# deplacements couronne externe
+
+def ux1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur1(x,y)*cos(th) - Uth1(x,y)*sin(th)
+
+def uy1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur1(x,y)*sin(th) + Uth1(x,y)*cos(th)
+
+# deplacements couronne interne
+
+def ux2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur2(x,y)*cos(th) - Uth2(x,y)*sin(th)
+
+def uy2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y)
+    return Ur2(x,y)*sin(th) + Uth2(x,y)*cos(th)
+
+# contraintes polaires couronne externe
+def SIGMA_rr_1(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( -2*A1 - 6*C1/r**4 - 4*D1/r**2 )*cos(2*th)
+    
+def SIGMA_thth_1(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( 2*A1 + 12*B1*r**2 + 6*C1/r**4 )*cos(2*th)
+
+def SIGMA_rth_1(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return 2*( A1 + 3*B1*r**2 - 3*C1/r**4 - D1/r**2 )*sin(2*th)
+    
+    
+# contraintes polaires couronne interne
+def SIGMA_rr_2(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( -2*A2 - 6*C2/r**4 - 4*D2/r**2 )*cos(2*th)
+    
+def SIGMA_thth_2(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return ( 2*A2 + 12*B2*r**2 + 6*C2/r**4 )*cos(2*th)
+
+def SIGMA_rth_2(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    return 2*( A2 + 3*B2*r**2 - 3*C2/r**4 - D2/r**2 )*sin(2*th)
+
+
+# contrainte couronne externe
+def SIGMA_XX_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1(x,y)*c*c + SIGMA_thth_1(x,y)*s*s - SIGMA_rth_1(x,y)*2*s*c
+    
+def SIGMA_YY_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1(x,y)*s*s + SIGMA_thth_1(x,y)*c*c + SIGMA_rth_1(x,y)*2*s*c
+    
+def SIGMA_ZZ_1_v(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu1*( SIGMA_XX_1_v(x,y) + SIGMA_YY_1_v(x,y) )
+
+def SIGMA_XY_1_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_1(x,y)*s*c - SIGMA_thth_1(x,y)*s*c + SIGMA_rth_1(x,y)*(c*c - s*s)
+
+# contrainte couronne interne
+
+def SIGMA_XX_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2(x,y)*c*c + SIGMA_thth_2(x,y)*s*s - SIGMA_rth_2(x,y)*2*s*c
+    
+def SIGMA_YY_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2(x,y)*s*s + SIGMA_thth_2(x,y)*c*c + SIGMA_rth_2(x,y)*2*s*c
+
+def SIGMA_ZZ_2_v(x,y):    
+    r=radius(x,y)
+    th=theta(x,y) 
+    return nu2*( SIGMA_XX_2_v(x,y) + SIGMA_YY_2_v(x,y) )
+
+def SIGMA_XY_2_v(x,y):
+    r=radius(x,y)
+    th=theta(x,y) 
+    c=cos(th)
+    s=sin(th)     
+    return SIGMA_rr_2(x,y)*s*c - SIGMA_thth_2(x,y)*s*c + SIGMA_rth_2(x,y)*(c*c - s*s)
+
+
+
+#=============================================
+# calcul des champs pour le chargement total
+#==============================================
+
+# deplacement couronne externe
+
+ux1s = FORMULE(NOM_PARA=('X','Y','Z'), VALE='ux1_c(X,Y)+ux1_v(X,Y)');
+
+uy1s = FORMULE(NOM_PARA=('X','Y','Z'), VALE='uy1_c(X,Y)+uy1_v(X,Y)');
+
+uz1s = FORMULE(NOM_PARA=('X','Y','Z'), VALE='zero_f(X,Y)');
+
+# deplacement couronne interne
+
+ux2s = FORMULE(NOM_PARA=('X','Y','Z'), VALE='ux2_c(X,Y)+ux2_v(X,Y)');
+
+uy2s = FORMULE(NOM_PARA=('X','Y','Z'), VALE='uy2_c(X,Y)+uy2_v(X,Y)');
+
+uz2s = FORMULE(NOM_PARA=('X','Y','Z'), VALE='zero_f(X,Y)');
+
+# contraintes couronne externe
+
+SIG_XX_1=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_XX_1_c(X,Y)+SIGMA_XX_1_v(X,Y)')
+SIG_YY_1=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_YY_1_c(X,Y)+SIGMA_YY_1_v(X,Y)')
+SIG_ZZ_1=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_ZZ_1_c(X,Y)+SIGMA_ZZ_1_v(X,Y)')
+SIG_XY_1=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_XY_1_c(X,Y)+SIGMA_XY_1_v(X,Y)')
+SIG_XZ_1=FORMULE(NOM_PARA=('X','Y','Z'), VALE='zero_f(X,Y)');
+SIG_YZ_1=FORMULE(NOM_PARA=('X','Y','Z'), VALE='zero_f(X,Y)');
+
+# contraintes couronne interne
+
+SIG_XX_2=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_XX_2_c(X,Y)+SIGMA_XX_2_v(X,Y)')
+SIG_YY_2=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_YY_2_c(X,Y)+SIGMA_YY_2_v(X,Y)')
+SIG_ZZ_2=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_ZZ_2_c(X,Y)+SIGMA_ZZ_2_v(X,Y)')
+SIG_XY_2=FORMULE(NOM_PARA=('X','Y','Z'), VALE='SIGMA_XY_2_c(X,Y)+SIGMA_XY_2_v(X,Y)')
+SIG_XZ_2=FORMULE(NOM_PARA=('X','Y','Z'), VALE='zero_f(X,Y)');
+SIG_YZ_2=FORMULE(NOM_PARA=('X','Y','Z'), VALE='zero_f(X,Y)');
+
+# pression
+pression = FORMULE(NOM_PARA=('X','Y','Z'), VALE=' -press_c(X,Y)-press_v(X,Y)');
+
+#=======================================================
+# fusion des deux declarations de chargement en un seul
+#=======================================================
+
+CH=AFFE_CHAR_MECA_F(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_MA='S1R1',DX=ux1s,DY=uy1s),      
+                              _F(GROUP_MA='S2R3',DX=ux2s,DY=uy2s), 
+                              _F(GROUP_MA='S1LX',DY=zero),
+                              _F(GROUP_MA='S1LY',DX=zero),
+                              _F(GROUP_MA='S2LX',DY=zero),
+                              _F(GROUP_MA='S2LY',DX=zero), 
+                              _F(GROUP_MA='up_down',DZ=zero),
+                             ),
+                   );
+                   
+#+----------------------------------------+
+#|               contact                  |
+#+----------------------------------------+
+ 
+CONT_S  = DEFI_CONTACT(MODELE = MO,
+                       FORMULATION    = 'CONTINUE',
+                       REAC_GEOM      = 'SANS',
+                       ALGO_RESO_CONT = 'POINT_FIXE',
+                       ALGO_RESO_GEOM = 'POINT_FIXE',
+                       ITER_CONT_MAXI = 50,
+                       LISSAGE        = 'OUI',
+                       ZONE =(
+                           _F(GROUP_MA_ESCL = 'S2R2',
+                              GROUP_MA_MAIT = 'S1R2',
+                              APPARIEMENT   = 'MAIT_ESCL',
+                              NORMALE       = 'MAIT',
+                              INTEGRATION   = 'SIMPSON',
+                              ORDRE_INT     =4,
+                              TOLE_PROJ_EXT = 0.0001,
+                              ALGO_CONT     = 'STANDARD',
+                              COEF_CONT     = E1,
+                              CONTACT_INIT  = 'OUI',
+                              GLISSIERE     = 'NON',),),);          
+                                                      
+#+----------------------------------------+
+#|               calcul                   |
+#+----------------------------------------+
+
+INSTS=DEFI_LIST_REEL(DEBUT       = 0.0,
+                      INTERVALLE = _F(JUSQU_A = 1.0,
+                                      NOMBRE  = 1,),);
+
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT       = _F(CHARGE = CH),
+                    CONTACT     = CONT_S,
+                    COMPORTEMENT   = (_F(RELATION    = 'ELAS',
+                                         DEFORMATION = 'PETIT',),),                  
+                    NEWTON      = _F(REAC_INCR=1,REAC_ITER=1),
+                    INCREMENT   = _F(LIST_INST=INSTS,),
+                    CONVERGENCE = _F(ITER_GLOB_MAXI = 30,
+                                     ),
+                    SOLVEUR     = _F(METHODE     = 'MUMPS',
+                                     PCENT_PIVOT = 250,
+                                     SYME = 'NON',),
+                    ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),);
+
+IMPR_RESU(FORMAT='MED',
+          RESU=(_F(RESULTAT=RESU,),
+               ),
+          );
+
+#+----------------------------------------+
+#|          tests de validation           |
+#+----------------------------------------+
+
+##
+## Premier groupe de noeuds: N47, N103, N412
+##
+    
+DEP_1 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                NOEUD=('N47','N103','N412'),
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',
+                                ),
+                      );    
+
+##tests
+                     
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DX',
+                  VALE_CALC=-0.00505517006413,
+                  VALE_REFE=-0.00505265122522,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DY',
+                  VALE_CALC=-0.00208247615148,
+                  VALE_REFE=-0.00207854205265,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DZ',
+                  VALE_CALC=-1.29380673974E-17,
+                  VALE_REFE=0.0,
+                  TYPE_TEST='MIN',
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='LAGS_C',
+                  VALE_CALC=-9322771.7978,
+                  VALE_REFE=-9355226.31353,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DX',
+                  VALE_CALC=-0.00505517006413,
+                  VALE_REFE=-0.00505265122522,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DY',
+                  VALE_CALC=-0.00208247615148,
+                  VALE_REFE=-0.00207854205265,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DZ',
+                  VALE_CALC=2.82126280354E-19,
+                  VALE_REFE=0.0,
+                  TYPE_TEST='MAX',
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_1,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='LAGS_C',
+                  VALE_CALC=-9322771.7978,
+                  VALE_REFE=-9355226.31353,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+
+##
+## Deuxieme groupe de noeuds: N50, N106, N403
+##
+    
+DEP_2 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                NOEUD=('N50','N106','N403'),
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',
+                                ),
+                      );    
+
+##tests
+                     
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DX',
+                  VALE_CALC=-0.00378737355536,
+                  VALE_REFE=-0.00378447961982,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DY',
+                  VALE_CALC=-0.00376055940142,
+                  VALE_REFE=-0.00375799271283,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DZ',
+                  VALE_CALC=-6.54271716089E-19,
+                  VALE_REFE=0.0,
+                  TYPE_TEST='MIN',
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='LAGS_C',
+                  VALE_CALC=-9230027.02688,
+                  VALE_REFE=-9259259.25926,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DX',
+                  VALE_CALC=-0.00378737355536,
+                  VALE_REFE=-0.00378447961982,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DY',
+                  VALE_CALC=-0.00376055940142,
+                  VALE_REFE=-0.00375799271283,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DZ',
+                  VALE_CALC=2.39715380275E-17,
+                  VALE_REFE=0.0,
+                  TYPE_TEST='MAX',
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_2,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='LAGS_C',
+                  VALE_CALC=-9230027.02687,
+                  VALE_REFE=-9259259.25926,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+
+##
+## Troisieme groupe de noeuds: N53, N109, N394
+##
+    
+DEP_3 = POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                NOEUD=('N53','N109','N394'),
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                NUME_ORDRE=1,
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',
+                                ),
+                      );    
+
+##tests
+                     
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DX',
+                  VALE_CALC=-0.00200737243434,
+                  VALE_REFE=-0.00200341455922,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DY',
+                  VALE_CALC=-0.00480391637864,
+                  VALE_REFE=-0.00480206378824,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DZ',
+                  VALE_CALC=-1.29597771583E-20,
+                  VALE_REFE=0.0,
+                  TYPE_TEST='MIN',
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='LAGS_C',
+                  VALE_CALC=-9134036.06986,
+                  VALE_REFE=-9163292.20499,
+                  TYPE_TEST='MIN',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DX',
+                  VALE_CALC=-0.00200737243434,
+                  VALE_REFE=-0.00200341455922,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DY',
+                  VALE_CALC=-0.00480391637864,
+                  VALE_REFE=-0.00480206378824,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DZ',
+                  VALE_CALC=3.71759998262E-18,
+                  VALE_REFE=0.0,
+                  TYPE_TEST='MAX',
+                  CRITERE='ABSOLU',
+                  PRECISION=1.E-8,
+                  VALE_ABS='OUI',
+           );
+
+TEST_TABLE(       TABLE=DEP_3,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='LAGS_C',
+                  VALE_CALC=-9134036.06986,
+                  VALE_REFE=-9163292.20499,
+                  TYPE_TEST='MAX',
+                  PRECISION=0.02,
+                  VALE_ABS='OUI',
+           );
+
+FIN();
+
+
+
+
+

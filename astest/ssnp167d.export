@@ -1,0 +1,9 @@
+P time_limit 30
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist C
+
+F comm ssnp167d.comm D 1
+F mmed ssnp167d.mmed D 20
