@@ -1,10 +1,10 @@
 #include <string>
 #include <vector>
 #include <stdexcept>
+#include <algorithm>
 
 #include <stdlib.h>
 #include <string.h>
-#include <algorithm>
 
 #include "asterc_config.h"
 #include "MFrontBehaviour.h"
@@ -123,7 +123,29 @@ void MFrontBehaviour::fillMaterialPropertiesNames()
     _mpnames_computed = true;
 }
 
-char** vectorOfStringsAsChar(const vector<string> &svect, unsigned int *size)
+string toAsterParameter(const string &param)
+{
+    string buff;
+    for (string::const_iterator it = param.begin(); it != param.end(); ++it) {
+        if ( *it == '[') {
+            buff.push_back('_');
+        } else if ( *it != ']') {
+            buff.push_back(*it);
+        }
+    }
+    return buff;
+}
+
+vector<string> toAsterParameterVect(const vector<string> &svect)
+{
+    vector<string> res;
+    for (vector<string>::const_iterator it = svect.begin(); it != svect.end(); ++it) {
+        res.push_back(toAsterParameter(*it));
+    }
+    return res;
+}
+
+char** vectorOfStringsAsCharArray(const vector<string> &svect, unsigned int *size)
 {
     char **res;
     *size = (unsigned int)(svect.size());
@@ -143,8 +165,8 @@ char** getMaterialPropertiesNames(const char* hyp, const char* lib, const char* 
 
     MFrontBehaviour behaviour(hyp, lib, funct);
     vector<string> names = behaviour.getMaterialPropertiesNames();
-
-    res = vectorOfStringsAsChar(names, size);
+    vector<string> conv = toAsterParameterVect(names);
+    res = vectorOfStringsAsCharArray(conv, size);
     return res;
 }
 
@@ -160,7 +182,7 @@ char** getTridimMaterialPropertiesNames(const char* behav,
                               "lib" + string(ASTERBEHAVIOUR) + ".so",
                               bname.c_str());
     vector<string> names = behaviour.getMaterialPropertiesNames();
-
-    res = vectorOfStringsAsChar(names, size);
+    vector<string> conv = toAsterParameterVect(names);
+    res = vectorOfStringsAsCharArray(conv, size);
     return res;
 }

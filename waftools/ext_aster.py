@@ -107,7 +107,7 @@ def dynamic_post(self):
         return
     self.source = Utils.to_list(self.source)
     get_srcs = self.path.get_bld().ant_glob
-    added = get_srcs(self.dynamic_source, remove=False)
+    added = get_srcs(self.dynamic_source, remove=False, quiet=True)
     self.source.extend(added)
     for node in added:
         node.sig = Utils.h_file(node.abspath())
@@ -116,7 +116,7 @@ def dynamic_post(self):
             if incpath:
                 incpath.sig = incpath.abspath()
                 self.env.append_value('INCLUDES', [incpath.abspath()])
-                incs = incpath.get_bld().ant_glob('**/*.h*')
+                incs = incpath.get_bld().ant_glob('**/*.h*', quiet=True)
                 for node in incs:
                     node.sig = Utils.h_file(node.abspath())
 

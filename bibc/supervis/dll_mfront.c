@@ -306,7 +306,7 @@ void DEFSPS(MFRONT_GET_MATER_PROP,
 #ifdef _POSIX
     /* MFRONT Wrapper
     */
-    char *cleaned, *crela;
+    char *crela;
     char library[] = "lib" ASTERBEHAVIOUR;
     unsigned int i, size;
     char **props;
@@ -315,10 +315,7 @@ void DEFSPS(MFRONT_GET_MATER_PROP,
     crela = MakeCStrFromFStr(rela, lrela);
     props = getTridimMaterialPropertiesNames(crela, &size);
     for (i = 0; i < size; ++i) {
-        clean_parameter(props[i], &cleaned);
-        DEBUG_DLL_VV("parameter: '%s' --> '%s'\n", props[i], cleaned)
-        SetTabFStr( txval, i, cleaned, 16 );
-        free(cleaned);
+        SetTabFStr( txval, i, props[i], 16 );
         free(props[i]);
     }
     *nbval = (INTEGER)size;
@@ -447,25 +444,4 @@ void error_symbol_not_found(const char* libname, const char* symbname)
     SetTabFStr(valk, 2, (char *)symbname, VALK_SIZE);
     CALL_UTMESS_CORE("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid, " ");
     FreeStr(valk);  // uncallable
-}
-
-void clean_parameter(_IN const char* src, _OUT char** dest)
-{
-    int i, j;
-    size_t len;
-    len = strlen(src);
-    *dest = (char *)malloc(len + 1);
-    j = 0;
-    for (i = 0; i < len; ++i) {
-        if ( src[i] == '[' ) {
-            (*dest)[j] = '_';
-            ++j;
-        } else if ( src[i] == ']' ) {
-            // remove it
-        } else {
-            (*dest)[j] = src[i];
-            ++j;
-        }
-    }
-    (*dest)[j] = '\0';
 }

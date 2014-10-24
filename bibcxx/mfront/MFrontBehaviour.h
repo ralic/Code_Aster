@@ -43,12 +43,25 @@ class MFrontBehaviour
 };
 
 /**
+ * \brief Convert a MFront parameter name to a Code_Aster one
+ *        Example: 'name[i]' into 'name_i'
+ */
+std::string toAsterParameter(const std::string &);
+
+/**
+ * \brief Apply toAsterParameter to the elements of a vector
+ * \return a new vector
+ */
+std::vector<std::string> toAsterParameterVect(const std::vector<std::string> &);
+
+/**
  * \brief Convert a vector of strings into a char** and size
+ *        Warning: each char* must be freed.
  * \param[in] svect : vector of strings
  * \param[out] size : number of elements in the vector
  * \return char**
  */
-char** vectorOfStringsAsChar(const std::vector<std::string> &, unsigned int *);
+char** vectorOfStringsAsCharArray(const std::vector<std::string> &, unsigned int *);
 
 extern "C"
 {

@@ -169,12 +169,7 @@ def getMaterialProperties(binary, libpath, behav):
     except subprocess.CalledProcessError, exc:
         msg = "%r exits with status %s" % (exc.cmd, exc.returncode)
         raise Errors.WafError(msg)
-    return [toAsterParameter(p) for p in out.split()]
-
-def toAsterParameter(param):
-    """Convert parameter names: convert 'name[i]' into 'name_i'"""
-    # must be consistent with dll_mfront.c/clean_parameter
-    return param.replace('[', '_').replace(']', '')
+    return [p for p in out.split()]
 
 def _capy_comport(comport, properties, typ, indent):
     """Return the lines for the catalog for `comport`"""
