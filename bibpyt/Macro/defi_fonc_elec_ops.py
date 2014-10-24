@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 from math import cos,exp,pi
@@ -76,7 +76,7 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
         self.set_icmd(1)
         self.DeclareOut('C_out',self.sd)
 #
-        if COUR : 
+        if COUR :
                 TINI =COUR[ 0]['INST_CC_INIT']
                 TFIN =COUR[-1]['INST_CC_FIN']
                 pas_t=1./(40.*FREQ)
@@ -108,7 +108,6 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                         t_k_cour=t_k_cour*pas_t
                         t_k_cour=t_k_cour+T1
                         t_k_cour=t_k_cour.tolist()
-                        print T1,T2,FREQ
                         temps=temps+t_k_cour
                         if   SIGNAL=='CONTINU' :
                                 for t in t_k_cour :
@@ -164,7 +163,7 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                                   if temps[i]<TFIN :
                                      fff[i]=fff[i]+FcontinuGR2(temps[i],I1,I2,TR,PHI1,PHI2,TAU1,TAU2,DIST)
                                if temps[i]>TINIR :
-                                  if temps[i]<TFINR : 
+                                  if temps[i]<TFINR :
                                      fff[i]=fff[i]+FcontinuGR2R(temps[i],I1R,I2R,TRR,PHI1R,PHI2R,TAU1R,TAU2R,DIST)
 #
                         if SIGNAL=='COMPLET' :
@@ -173,7 +172,7 @@ def defi_fonc_elec_ops(self,FREQ,SIGNAL,COUR,COUR_PRIN,COUR_SECO,**args):
                                   if temps[i]<TFIN :
                                      fff[i]=fff[i]+FcompletGR2(temps[i],I1,I2,TR,PHI1,PHI2,TAU1,TAU2,DIST)
                                if temps[i]>TINIR :
-                                  if temps[i]<TFINR : 
+                                  if temps[i]<TFINR :
                                      fff[i]=fff[i]+FcompletGR2R(temps[i],I1R,I2R,TRR,PHI1R,PHI2R,TAU1R,TAU2R,DIST)
 #
         vale=[]
