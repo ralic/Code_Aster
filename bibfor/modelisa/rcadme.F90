@@ -57,9 +57,11 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
     nomphe = phenom
 !
     call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
-!    ASSERT (iret .eq. 0)
+    if (iret .eq. 1) then
+        icodre = 1
+        goto 9999
+    endif
     noobrc = nommat//k11
-    
     call jeexin(noobrc//'.VALR', iret)
     if (iret .eq. 0) then
         icodre = 1
