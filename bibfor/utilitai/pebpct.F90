@@ -198,7 +198,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !
                     if (tych .eq. 'ELGA') then
                         call cesexi('C', jpoid, jpoil, ima, ipt,&
-                                    1, 1, iad)
+                                    ispt, 1, iad)
                         ASSERT(iad.gt.0)
                         volpt=poiv(iad)
                     else if (tych.eq.'ELEM') then
@@ -206,7 +206,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
                         volpt=pdsm(ima)
                     else if (tych.eq.'ELNO') then
                         ASSERT(nbpt.ge.1)
-                        volpt=pdsm(ima)/nbpt
+                        volpt=pdsm((ima-1)*nbsp+ispt)/nbpt
                     endif
 !
                     zr(jvol+k-1)=volpt

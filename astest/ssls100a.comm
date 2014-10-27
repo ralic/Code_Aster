@@ -787,8 +787,8 @@ VOLUM2=POST_ELEM( RESULTAT=RESU,
 IMPR_TABLE(TABLE=VOLUM2)
 
 TEST_TABLE(
-           VALE_CALC=0.0202219627739 ,
-           VALE_REFE=0.0202219627739 ,
+           VALE_CALC=0.00820413805787 ,
+           VALE_REFE=0.00820413805787 ,
            REFERENCE = 'NON_DEFINI',
            PRECISION=1.E-3,
            NOM_PARA='DISTRIBUTION',
@@ -798,13 +798,13 @@ TEST_TABLE(
                    _F(NOM_PARA='NUME_ORDRE',
                       VALE_I=1,),
                    _F(NOM_PARA='INTERVALLE',
-                      VALE_I=4,),
+                      VALE_I=6,),
                    ),
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0376035707525 ,
-           VALE_REFE=0.0376035707525 ,
+           VALE_CALC=0.00174403398535 ,
+           VALE_REFE=0.00174403398535 ,
            REFERENCE = 'NON_DEFINI',
            PRECISION=1.E-3,
            NOM_PARA='DISTRIBUTION',
@@ -814,7 +814,7 @@ TEST_TABLE(
                    _F(NOM_PARA='NUME_ORDRE',
                       VALE_I=1,),
                    _F(NOM_PARA='INTERVALLE',
-                      VALE_I=5,),
+                      VALE_I=2,),
                    ),
            )
 
