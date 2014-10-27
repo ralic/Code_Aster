@@ -121,6 +121,22 @@ def dynamic_post(self):
                     node.sig = Utils.h_file(node.abspath())
 
 ###############################################################################
+@Configure.conf
+def safe_remove(self, var, value):
+    """Remove 'value' from the variable, remove duplicates"""
+    self.env[var] = self.remove_duplicates(self.env[var])
+    while value in self.env[var]:
+        self.env[var].remove(value)
+
+@Configure.conf
+def remove_duplicates(self, list_in):
+    """Return the list by removing the duplicated elements
+    and by keeping the order"""
+    dset = set()
+    # relies on the fact that dset.add() always returns None.
+    return [ l for l in list_in if
+             l not in dset and not dset.add(l) ]
+
 # Force static libs
 CHECK = '_check'
 

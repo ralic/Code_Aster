@@ -27,11 +27,11 @@ def configure(self):
     if opts.embed_all or opts.embed_aster:
         self.env.append_value('ASTER_EMBEDS', ['bibc'])
     if 'ifort' in self.env.get_flat('LINK_FC'):
-        self.env.append_value('LINKFLAGS', ['-nofor_main'])
+        self.env.append_value('LINKFLAGS_fcprogram', ['-nofor_main'])
         if opts.embed_all or opts.embed_aster:
-            self.env.append_value('LINKFLAGS', ['-static-intel'])
+            self.env.append_value('LINKFLAGS_fcprogram', ['-static-intel'])
             if self.get_define('HAVE_MPI'):
-                self.env.append_value('LINKFLAGS', ['-static_mpi'])
+                self.env.append_value('LINKFLAGS_fcprogram', ['-static_mpi'])
     self.check_cflags()
     self.check_bibc_depends()
 
@@ -163,18 +163,12 @@ def build_as_embeded(self, stenv):
 @Configure.conf
 def check_cflags(self):
     self.start_msg('Getting C compiler flags')
-    def safe_remove(var, value):
-        try:
-            self.env[var].remove(value)
-        except ValueError:
-            pass
     if 'icc' in self.env.CC_NAME:
-        safe_remove('CFLAGS_PYEXT', '-fwrapv')
-        safe_remove('CFLAGS_PYEMBED', '-fwrapv')
-        safe_remove('CXXFLAGS_PYEXT', '-fwrapv')
-        safe_remove('CXXFLAGS_PYEMBED', '-fwrapv')
+        self.safe_remove('CFLAGS_PYEXT', '-fwrapv')
+        self.safe_remove('CFLAGS_PYEMBED', '-fwrapv')
+        self.safe_remove('CXXFLAGS_PYEXT', '-fwrapv')
+        self.safe_remove('CXXFLAGS_PYEMBED', '-fwrapv')
     self.end_msg(self.env['CFLAGS'])
-
 
 @Configure.conf
 def check_optimization_cflags(self):

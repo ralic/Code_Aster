@@ -30,7 +30,7 @@ def build(self):
     if not self.env.legacy:
         return
     src = osp.dirname(self.path.abspath())
-    dict_conv = _env2dict(src, self.env, self.env.install_tests)
+    dict_conv = _env2dict(self, src, self.env, self.env.install_tests)
     self(
         features = 'subst',
             name = 'data_files',
@@ -44,17 +44,17 @@ def build(self):
      **dict_conv
     )
 
-def _env2dict(src, env, install_tests):
+def _env2dict(self, src, env, install_tests):
     """build dict informations"""
     env = env.derive()
     env['LD_LIBRARY_PATH'] = os.environ.get('LD_LIBRARY_PATH', '').split(os.pathsep)
-    ld_path = remove_duplicates(chain(*[Utils.to_list(env[name])
+    ld_path = self.remove_duplicates(chain(*[Utils.to_list(env[name])
                 for name in ('LIBPATH', 'LIBDIR', 'LD_LIBRARY_PATH',
                              'ASTERLIBDIR') if env[name]]))
     sep = os.pathsep + '\\\n'
     dico = {}
     dico['DEFINES'] = ' '.join([d.split('=')[0] for d in env['DEFINES']])
-    py_path = remove_duplicates(Utils.to_list(env['CFG_PYTHONPATH']))
+    py_path = self.remove_duplicates(Utils.to_list(env['CFG_PYTHONPATH']))
     dico['PYTHONHOME'] = sys.prefix + '' if sys.prefix == sys.exec_prefix \
                                          else ':' + sys.exec_prefix
     dico['PYTHON_DIRNAME'] = osp.dirname(env['PYTHON'][0])
@@ -77,13 +77,3 @@ def _env2dict(src, env, install_tests):
             srctest_tmpl % '%(SRC)s/astest' % dico,
             srctest_tmpl % '%(SRC)s/../validation/astest' % dico])
     return dico
-
-def remove_duplicates(list_in):
-    """Return the list by removing the duplicated elements
-    and by keeping the order"""
-    list_out = []
-    for i in list_in:
-        if i and i not in list_out:
-            list_out.append(i)
-    return list_out
-
