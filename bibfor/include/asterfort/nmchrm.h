@@ -18,20 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
-                      sddyna, numins, iterat, defico, metpre,&
-                      metcor, reasma)
-        character(len=10), intent(in) :: phase
+    subroutine nmchrm(phasis   , parmet     , method   , list_func_acti, sddisc   ,&
+                      sddyna   , nume_inst  , iter_newt, sdcont_defi   , type_pred,&
+                      type_corr, l_matr_asse)
+        character(len=10), intent(in) :: phasis
         real(kind=8), intent(in) :: parmet(*)
         character(len=16), intent(in) :: method(*)
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
-        integer, intent(in) :: numins
-        integer, intent(in) :: iterat
-        character(len=24), intent(in) :: defico
-        integer, intent(in) :: fonact(*)
-        character(len=16), intent(out) :: metcor
-        character(len=16), intent(out) :: metpre
-        aster_logical, intent(out) :: reasma
+        integer, intent(in) :: nume_inst
+        integer, intent(in) :: iter_newt
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: list_func_acti(*)
+        character(len=16), intent(out) :: type_corr
+        character(len=16), intent(out) :: type_pred
+        aster_logical, intent(out) :: l_matr_asse
     end subroutine nmchrm
 end interface

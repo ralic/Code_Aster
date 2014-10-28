@@ -1,18 +1,15 @@
-subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
-                  sddyna, numins, iterat, defico, metpre,&
-                  metcor, reasma)
+subroutine nmchrm(phasis   , parmet     , method   , list_func_acti, sddisc   ,&
+                  sddyna   , nume_inst  , iter_newt, sdcont_defi   , type_pred,&
+                  type_corr, l_matr_asse)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/utmess.h"
 !
@@ -34,200 +31,196 @@ subroutine nmchrm(phase, parmet, method, fonact, sddisc,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=10), intent(in) :: phase
+    character(len=10), intent(in) :: phasis
     real(kind=8), intent(in) :: parmet(*)
     character(len=16), intent(in) :: method(*)
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
-    integer, intent(in) :: numins
-    integer, intent(in) :: iterat
-    character(len=24), intent(in) :: defico
-    integer, intent(in) :: fonact(*)
-    character(len=16), intent(out) :: metcor
-    character(len=16), intent(out) :: metpre
-    aster_logical, intent(out) :: reasma
+    integer, intent(in) :: nume_inst
+    integer, intent(in) :: iter_newt
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: list_func_acti(*)
+    character(len=16), intent(out) :: type_corr
+    character(len=16), intent(out) :: type_pred
+    aster_logical, intent(out) :: l_matr_asse
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! Nonlinear mechanics (algorithm)
 !
-! CHOIX DE REASSEMBLAGE DE LA MATRICE GLOBALE
+! Options for assembling global matrix
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  phasis           : phasis in non-linear algorithm
+!                            'PREDICTION'
+!                            'CORRECTION'
+!                            'FORCES_INT'
+! In  sddisc           : datastructure for discretization
+! In  nume_inst        : index of current time step
+! In  iter_newt        : index of current Newton iteration
+! In  list_func_acti   : list of active functionnalities
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  method           : method options for non-linear solver
+! In  parmet           : method parameters for non-linear solver
+! In  sddyna           : name of dynamic parameters datastructure
+! Out type_corr        : type of matrix for correction (Newton)
+! Out type_pred        : type of matrix for prediction (Euler)
+! Out l_matr_asse      : .true. if re-compute matrix
 !
-! IN  PHASE  : PHASE DE CALCUL
-!                'PREDICTION'
-!                'CORRECTION'
-!                'FORCES_INT'
-! IN  FONACT : FONCTIONNALITES ACTIVEES (vOIR NMFONC)
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
-!                 VOIR DETAIL DES COMPOSANTES DANS NMLECT
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
-!                 VOIR DETAIL DES COMPOSANTES DANS NMLECT
-! IN  SDDISC : SD DISC_INST
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  NUMINS : NUMERO D'INSTANT
-! IN  ITERAT : NUMERO D'ITERATION
-! IN  DEFICO : SD DEF. CONTACT
-! OUT METCOR : TYPE DE MATRICE DE CORRECTION
-! OUT METPRE : TYPE DE MATRICE DE PREDICTION
-! OUT REASMA  : .TRUE. SI ASSEMBLAGE MATRICE GLOBALE
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    real(kind=8) :: instam, instap, pasmin, deltat
-    integer :: reincr, reiter
-    aster_logical :: lmodim
-    aster_logical :: leltc, lctcd, lelas
-    aster_logical :: lprem, ldyna, lamor, lchoc, lvarc, l_elas_fo
+    real(kind=8) :: time_prev, time_curr, pas_mini_elas, time_incr
+    integer :: reac_incr, reac_iter
+    aster_logical :: l_matr_cont
+    aster_logical :: l_cont_elem, l_cont_disc, l_matr_elas
+    aster_logical :: l_first_step, l_dyna, l_amor, l_dischoc, l_varc, l_elas_fo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><CALC> CHOIX D''ASSEMBLAGE DE '//&
-        'MATRICE GLOBALE'
+        write (ifm,*) '<MECANONLINE><CALC> CHOIX D''ASSEMBLAGE DE MATRICE GLOBALE'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    reasma = .false.
-    lmodim = .false.
+    l_matr_asse = .false.
+    l_matr_cont      = .false.
 !
-! --- PARAMETRES
+! - Parameters
 !
+    reac_incr     = nint(parmet(1))
+    reac_iter     = nint(parmet(2))
+    type_corr     = method(2)
+    type_pred     = method(5)
+    time_prev     = diinst(sddisc, nume_inst-1)
+    time_curr     = diinst(sddisc, nume_inst )
+    time_incr     = time_curr-time_prev
+    pas_mini_elas = parmet(3)
 !
+! - First step ?
 !
+    l_first_step = nume_inst.le.1
 !
-    reincr = nint(parmet(1))
-    reiter = nint(parmet(2))
-    metcor = method(2)
-    metpre = method(5)
-    instam = diinst(sddisc, numins-1)
-    instap = diinst(sddisc, numins )
-    deltat = instap-instam
-    pasmin = parmet(3)
+! - Active functionnalities
 !
-! --- PREMIER PAS DE TEMPS ?
+    l_dyna      = ndynlo(sddyna,'DYNAMIQUE')
+    l_amor      = ndynlo(sddyna,'MAT_AMORT')
+    l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
+    l_cont_elem = isfonc(list_func_acti,'ELT_CONTACT')
+    l_dischoc   = isfonc(list_func_acti,'DIS_CHOC')
+    l_varc      = isfonc(list_func_acti,'EXI_VARC' )
+    l_elas_fo   = isfonc(list_func_acti,'ELAS_FO' )
 !
-    lprem = numins.le.1
+! - Add contact matrix in global matrix ?
 !
-! --- FONCTIONNALITES ACTIVEES
-!
-    ldyna = ndynlo(sddyna,'DYNAMIQUE')
-    lamor = ndynlo(sddyna,'MAT_AMORT')
-    lctcd = isfonc(fonact,'CONT_DISCRET')
-    leltc = isfonc(fonact,'ELT_CONTACT')
-    lchoc = isfonc(fonact,'DIS_CHOC')
-    lvarc = isfonc(fonact,'EXI_VARC' )
-    l_elas_fo = isfonc(fonact,'ELAS_FO' )
-!
-! --- AJOUTE-T-ON UNE CONTRIBUTION DU CONTACT DISCRET DANS LA MATRICE ?
-!
-    if (lctcd) then
-        lmodim = cfdisl(defico,'MODI_MATR_GLOB')
+    if (l_cont_disc) then
+        l_matr_cont = cfdisl(sdcont_defi,'MODI_MATR_GLOB')
     endif
 !
-! --- PASSAGE A LA MATRICE ELASTIQUE EN-DESSOUS DE PAS_MINI_ELAS
+! - Elastic matrix for time_incr < PAS_MINI_ELAS
 !
-    if (abs(deltat) .lt. pasmin) then
-        reincr = 1
-        reiter = nint(parmet(4))
-        metpre = 'SECANTE'
-        metcor = 'SECANTE'
+    if (abs(time_incr) .lt. pas_mini_elas) then
+        reac_incr = 1
+        reac_iter = nint(parmet(4))
+        type_pred = 'SECANTE'
+        type_corr = 'SECANTE'
     endif
 !
-! --- REASSEMBLAGE DE LA MATRICE GLOBALE
+! - Re-compute matrix ?
 !
-    if (phase .eq. 'CORRECTION' .or. phase .eq. 'FORCES_INT') then
-        if ((metcor.eq.'TANGENTE') .or. (metcor.eq.'SECANTE')) then
-            reasma = .false.
-            if (reiter .ne. 0) then
-                reasma = mod(iterat+1,reiter) .eq. 0
+    if (phasis .eq. 'CORRECTION' .or. phasis .eq. 'FORCES_INT') then
+        if ((type_corr.eq.'TANGENTE') .or. (type_corr.eq.'SECANTE')) then
+            l_matr_asse = .false.
+            if (reac_iter .ne. 0) then
+                l_matr_asse = mod(iter_newt+1,reac_iter) .eq. 0
             endif
         else
-            reasma = .false.
+            l_matr_asse = .false.
         endif
-    else if (phase.eq.'PREDICTION') then
-        if ((reincr.eq.0) .and. (numins.ne.1)) then
-            reasma = .false.
+    else if (phasis.eq.'PREDICTION') then
+        if ((reac_incr.eq.0) .and. (nume_inst.ne.1)) then
+            l_matr_asse = .false.
         endif
-        if (numins .eq. 1) then
-            reasma = .true.
+        if (nume_inst .eq. 1) then
+            l_matr_asse = .true.
         endif
-        if ((reincr.ne.0) .and. (numins.ne.1)) then
-            reasma = mod(numins-1,reincr) .eq. 0
+        if ((reac_incr.ne.0) .and. (nume_inst.ne.1)) then
+            l_matr_asse = mod(nume_inst-1,reac_incr) .eq. 0
         endif
     else
         ASSERT(.false.)
     endif
 !
-! --- ELASTICITE ?
+! - Is matrix is elastic ?
 !
-    if ((metcor.eq.'ELASTIQUE') .or. (metpre.eq.'ELASTIQUE')) then
-        lelas = .true.
+    if ((type_corr.eq.'ELASTIQUE') .or. (type_pred.eq.'ELASTIQUE')) then
+        l_matr_elas = .true.
     else
-        lelas = .false.
+        l_matr_elas = .false.
     endif
 !
-! --- DYNAMIQUE: REACTUALISATION DE LA MATRICE
-! --- D AMORTISSEMENT DE RAYLEIGH
+! - Re-compute matrix if Rayleigh damping
 !
-    if (phase .eq. 'PREDICTION' .and. ldyna .and. lamor) then
-        if (lprem) reasma = .true.
+    if (phasis .eq. 'PREDICTION' .and. l_dyna .and. l_amor) then
+        if (l_first_step) then
+            l_matr_asse = .true.
+        endif
     endif
 !
-! --- SI ELEMENTS DE CONTACT XFEM/CONTACT_CONTINU - REASSEMBL. OBLIG.
+! - Re-compute matrix if elementary contact
 !
-    if (leltc) then
-        if (.not.reasma) then
-            if (.not.lelas) then
+    if (l_cont_elem) then
+        if (.not.l_matr_asse) then
+            if (type_corr.ne.'ELASTIQUE') then
                 call utmess('A', 'MECANONLINE5_4')
             endif
-            reasma = .true.
+            l_matr_asse = .true.
         endif
     endif
 !
-! --- CONTACT DISCRET OU CHOC - CONTRIBUTION MATRICE TANGENTE
+! - Re-compute matrix if DIS_CHOC elements
 !
-    if (lmodim .or. lchoc) then
-        if (.not.reasma) then
+    if (l_dischoc) then
+        if (.not.l_matr_asse) then
             call utmess('A', 'MECANONLINE5_5')
-            reasma = .true.
+            l_matr_asse = .true.
         endif
     endif
 !
-! --- CHOC - MATRICE EN CORRECTION
+! - Re-compute matrix if contact matrix in global matrix
 !
-    if (lchoc) then
-        metcor = 'TANGENTE'
-    endif
-!
-! --- VARIABLES COMMANDES: LA MATRICE ELASTIQUE DOIT ETRE REACTUALISEE
-!
-    if (lelas .and. phase .eq. 'PREDICTION') then
-        if (lvarc .and. l_elas_fo) then
-            reasma = .true.
+    if (l_matr_cont) then
+        if (.not.l_matr_asse) then
+            call utmess('A', 'MECANONLINE5_5')
+            l_matr_asse = .true.
         endif
     endif
 !
-! --- AFFICHAGE
+! - Change matrix if DIS_CHOC
+!
+    if (l_dischoc) then
+        type_corr = 'TANGENTE'
+    endif
+!
+! - Re-compute matrix if command variables and elastic function
+!
+    if (l_matr_elas .and. phasis .eq. 'PREDICTION') then
+        if (l_varc .and. l_elas_fo) then
+            l_matr_asse = .true.
+        endif
+    endif
+!
+! - Print
 !
     if (niv .ge. 2) then
-        if (reasma) then
+        if (l_matr_asse) then
             write (ifm,*) '<MECANONLINE><CALC> ON ASSEMBLE LA MATRICE'
         else
-            write (ifm,*) '<MECANONLINE><CALC> ON N''ASSEMBLE PAS '//&
-            'LA MATRICE'
+            write (ifm,*) '<MECANONLINE><CALC> ON N''ASSEMBLE PAS LA MATRICE'
         endif
     endif
-!
-    call jedema()
 !
 end subroutine
