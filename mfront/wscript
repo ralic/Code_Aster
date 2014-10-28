@@ -9,9 +9,99 @@ from functools import partial
 from waflib import Configure, Context, Build, TaskGen, Task, Utils, Errors
 
 def options(self):
-    group = self.get_option_group('Code_Aster options')
+    group = self.add_option_group('MFront library options')
+    group.add_option('--disable-mfront', dest='enable_mfront',
+                    default=None, action='store_false',
+                    help='disable the MFRONT support')
+    group.add_option('--enable-mfront', dest='enable_mfront',
+                    default=None, action='store_true',
+                    help='force the MFRONT support')
 
 def configure(self):
+    opts = self.options
+    try:
+        self.check_mfront()
+    except Errors.ConfigurationError:
+        if opts.enable_mfront == True:
+            raise
+        self.define('_DISABLE_MFRONT', 1)
+        self.undefine('HAVE_MFRONT')
+    else:
+        self.define('HAVE_MFRONT', 1)
+        self.env.BUILD_MFRONT = True
+
+def build(self):
+    if self.env.BUILD_MFRONT:
+        # POST_LAZY: Groups are processed sequentially: all tasks from previous
+        # groups are executed before the task generators from the next group
+        # are processed
+        self.post_mode = Build.POST_LAZY
+
+        # build mfront_request
+        self(
+            features = 'c cxx cxxprogram',
+                name = 'mfront_request',
+                 idx = 2,     # use a different target for source shared with bibcxx
+              source = ['../bibcxx/mfront/MFrontBehaviour.cxx',
+                        '../bibcxx/mfront/MFrontBehaviour.h',
+                        'mfront_request.c'],
+            includes = '../bibcxx/mfront',
+              target = 'mfront_request',
+                 use = ('MFRONT', ),
+        )
+
+        get_srcs = self.path.get_src().ant_glob
+        excl = (
+            'MonoCristal_DD_CC_InteractionMatrix.mfront',
+            'MonoCristal_DD_CFC_InteractionMatrix.mfront',
+            'MonoCristal_DD_CC_SlidingSystems.mfront',
+            'PolyCristal_DD_CC_SlidingSystems.mfront',
+            'PolyCristal_Orientation.mfront',
+            'PolyCristal_Orientation_100grains.mfront',
+            'Plasticity_Sy.mfront',
+        )
+        self(
+                name = 'mfront_convert',
+              source = get_srcs('**/*.mfront', excl=excl),
+                 use = ('MFRONT', ),
+        )
+
+        # wait mfront conversion before creating the list of cxx source files
+        self.add_group()
+
+        self(
+            features = 'cxx cxxshlib',
+                name = 'asterbehaviour',
+      dynamic_source = '**/*.cxx',
+    dynamic_incpaths = '../include',
+              target = self.env['_ASTERBEHAVIOUR'],
+        install_path = self.env.ASTERLIBDIR,
+                 use = ('MFRONT', ),
+        )
+        lst = [i.name for i in get_srcs('**/*.mfront', excl=excl)]
+        self(
+            features = 'mfront_mater',
+                name = 'mfront_mater',
+                 lst = lst,
+                path = self.path,
+              target = 'c_mfront_official.capy',
+                 use = 'asterbehaviour',
+        )
+    else:
+        self(
+            features = 'fake_mfront_mater',
+                name = 'mfront_mater',
+                path = self.path,
+              target = 'c_mfront_official.capy',
+        )
+
+###############################################################################
+@Configure.conf
+def check_mfront(self):
+    opts = self.options
+    if opts.enable_mfront == False:
+        raise Errors.ConfigurationError('MFRONT disabled')
+
     self.find_program('mfront')
     self.find_program('tfel-config')
     self.check_cfg(path='tfel-config',
@@ -31,64 +121,6 @@ def configure(self):
         self.safe_remove('CXXFLAGS_MFRONT', '-ftree-vectorize')
     self.check_mfront_libs()
 
-def build(self):
-    # POST_LAZY: Groups are processed sequentially: all tasks from previous
-    # groups are executed before the task generators from the next group
-    # are processed
-    self.post_mode = Build.POST_LAZY
-
-    # build mfront_request
-    self(
-        features = 'c cxx cxxprogram',
-            name = 'mfront_request',
-             idx = 2,     # use a different target for source shared with bibcxx
-          source = ['../bibcxx/mfront/MFrontBehaviour.cxx',
-                    '../bibcxx/mfront/MFrontBehaviour.h',
-                    'mfront_request.c'],
-        includes = '../bibcxx/mfront',
-          target = 'mfront_request',
-             use = ('MFRONT', ),
-    )
-
-    get_srcs = self.path.get_src().ant_glob
-    excl = (
-        'MonoCristal_DD_CC_InteractionMatrix.mfront',
-        'MonoCristal_DD_CFC_InteractionMatrix.mfront',
-        'MonoCristal_DD_CC_SlidingSystems.mfront',
-        'PolyCristal_DD_CC_SlidingSystems.mfront',
-        'PolyCristal_Orientation.mfront',
-        'PolyCristal_Orientation_100grains.mfront',
-        'Plasticity_Sy.mfront',
-    )
-    self(
-            name = 'mfront_convert',
-          source = get_srcs('**/*.mfront', excl=excl),
-             use = ('MFRONT', ),
-    )
-
-    # force
-    self.add_group()
-
-    self(
-        features = 'cxx cxxshlib',
-            name = 'asterbehaviour',
-  dynamic_source = '**/*.cxx',
-dynamic_incpaths = '../include',
-          target = self.env['_ASTERBEHAVIOUR'],
-    install_path = self.env.ASTERLIBDIR,
-             use = ('MFRONT', ),
-    )
-    lst = [i.name for i in get_srcs('**/*.mfront', excl=excl)]
-    self(
-        features = 'mfront_mater',
-            name = 'mfront_mater',
-             lst = lst,
-            path = self.path,
-          target = 'c_mfront_official.capy',
-             use = 'asterbehaviour',
-    )
-
-###############################################################################
 @Configure.conf
 def check_mfront_libs(self):
     check_mfront = partial(self.check_cc, mandatory=True, uselib_store='MFRONT', use='MFRONT')
@@ -158,6 +190,24 @@ class mfront_capy(Task.Task):
             lines.extend(_capy_comport(comport + '_FO', props,
                                        "fonction_sdaster", " " * 8))
         lines.append(capy_footer)
+        open(target.abspath(), 'w').write(os.linesep.join(lines))
+        target.sig = Utils.h_file(target.abspath())
+
+@TaskGen.feature('fake_mfront_mater')
+@TaskGen.before('catapy')
+def fake_mater_capy(self):
+    """Create an 'empty' capy when MFront is not available"""
+    target = self.bld.bldnode.make_node(self.target)
+    tsk = self.create_task('fake_mfront_capy', src=[], tgt=target)
+
+class fake_mfront_capy(Task.Task):
+    color   = 'PINK'
+    ext_out = ['.capy']
+
+    def run(self):
+        """Create a .capy file for the MFront behaviours"""
+        target = self.outputs[0]
+        lines = [capy_header, capy_footer]
         open(target.abspath(), 'w').write(os.linesep.join(lines))
         target.sig = Utils.h_file(target.abspath())
 

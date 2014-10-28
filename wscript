@@ -87,6 +87,7 @@ def options(self):
     self.recurse('bibfor')
     self.recurse('bibcxx')
     self.recurse('bibc')
+    self.recurse('mfront')
     self.recurse('i18n')
     self.recurse('data')
 

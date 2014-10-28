@@ -24,7 +24,10 @@
 
 #include "dll_register.h"
 #include "dll_mfront.h"
+
+#ifdef HAVE_MFRONT
 #include "MFrontBehaviour.h"
+#endif
 
 #ifdef _POSIX
 #include <dlfcn.h>
@@ -303,7 +306,7 @@ void DEFSPS(MFRONT_GET_MATER_PROP,
             _OUT INTEGER* nbval,
             _OUT char* txval, STRING_SIZE ltx)
 {
-#ifdef _POSIX
+#ifdef HAVE_MFRONT
     /* MFRONT Wrapper
     */
     char *crela;
@@ -322,7 +325,7 @@ void DEFSPS(MFRONT_GET_MATER_PROP,
     free(props);
     FreeStr(crela);
 #else
-    printf("Not available under Windows.\n");
+    printf("MFront library is required for this functionnality.\n");
     abort();
 #endif
 }
