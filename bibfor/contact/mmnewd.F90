@@ -176,19 +176,19 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 ! - Solve system
 !
     if (nb_dim .eq. 2) then
-        dksi1 = (residu(1)*matrix(2,2)-residu(2)*matrix(2,1))/det
+        dksi1 = (residu(1)*matrix(2,2)-residu(2)*matrix(1,2))/det
         dksi2 = 0.d0
-        dbeta = (residu(2)*matrix(1,1)-residu(1)*matrix(1,2))/det
+        dbeta = (residu(2)*matrix(1,1)-residu(1)*matrix(2,1))/det
     else if (nb_dim.eq.3) then
-        dksi1 = residu(1)*(matrix(2,2)*matrix(3,3)-matrix(3,2)*matrix(2,3))+&
-                residu(2)*(matrix(3,2)*matrix(1,3)-matrix(1,2)*matrix(3,3))+&
-                residu(3)*(matrix(1,2)*matrix(2,3)-matrix(2,2)*matrix(1,3))/det
-        dksi2 = residu(1)*(matrix(3,1)*matrix(2,3)-matrix(2,1)*matrix(3,3))+&
-                residu(2)*(matrix(1,1)*matrix(3,3)-matrix(3,1)*matrix(1,3))+&
-                residu(3)*(matrix(2,1)*matrix(1,3)-matrix(2,3)*matrix(1,1))/det
-        dbeta = residu(1)*(matrix(2,1)*matrix(3,2)-matrix(3,1)*matrix(2,2))+&
-                residu(2)*(matrix(3,1)*matrix(1,2)-matrix(1,1)*matrix(3,2))+&
-                residu(3)*(matrix(1,1)*matrix(2,2)-matrix(2,1)*matrix(1,2))/det
+        dksi1 = (residu(1)*(matrix(2,2)*matrix(3,3)-matrix(3,2)*matrix(2,3))+&
+                 residu(2)*(matrix(3,2)*matrix(1,3)-matrix(1,2)*matrix(3,3))+&
+                 residu(3)*(matrix(1,2)*matrix(2,3)-matrix(2,2)*matrix(1,3)))/det
+        dksi2 = (residu(1)*(matrix(3,1)*matrix(2,3)-matrix(2,1)*matrix(3,3))+&
+                 residu(2)*(matrix(1,1)*matrix(3,3)-matrix(3,1)*matrix(1,3))+&
+                 residu(3)*(matrix(2,1)*matrix(1,3)-matrix(2,3)*matrix(1,1)))/det
+        dbeta = (residu(1)*(matrix(2,1)*matrix(3,2)-matrix(3,1)*matrix(2,2))+&
+                 residu(2)*(matrix(3,1)*matrix(1,2)-matrix(1,1)*matrix(3,2))+&
+                 residu(3)*(matrix(1,1)*matrix(2,2)-matrix(2,1)*matrix(1,2)))/det
     else
         ASSERT(.false.)
     endif
