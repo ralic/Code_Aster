@@ -17,7 +17,7 @@
 !
 interface
     subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
-                      nmafon, noma, nomfis, nomo, resuco)
+                      nmafon, noma, nomfis, resuco)
         character(len=19) :: cnsdet
         character(len=19) :: cnsln
         character(len=19) :: cnslt
@@ -26,7 +26,6 @@ interface
         integer :: nmafon
         character(len=8) :: noma
         character(len=8) :: nomfis
-        character(len=8) :: nomo
         character(len=8) :: resuco
     end subroutine xdetfo
 end interface

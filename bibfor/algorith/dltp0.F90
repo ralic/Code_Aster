@@ -13,6 +13,7 @@ subroutine dltp0(t0, nume)
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/rs_getlast.h"
     real(kind=8) :: t0
     integer :: nume
 !     ------------------------------------------------------------------
@@ -61,14 +62,8 @@ subroutine dltp0(t0, nume)
         call getvis('ETAT_INIT', 'NUME_ORDRE', iocc=1, scal=nume, nbret=nni)
         if (nni .eq. 0) then
             call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=temps, nbret=nt)
-            if (nt .eq. 0) then
-                call rsorac(dyna, 'DERNIER', ibid, temps, k8b,&
-                            c16b, prec, crit, tnume, 1,&
-                            nbtrou)
-                nume=tnume(1)            
-                if (nbtrou .ne. 1) then
-                    call utmess('F', 'ALGORITH3_24')
-                endif
+            if (nt .eq. 0) then    
+                call rs_getlast(dyna, nume)     
             else
                 call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
                 call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)

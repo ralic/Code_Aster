@@ -33,6 +33,7 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
+#include "asterfort/rs_getfirst.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: sddyna
@@ -69,9 +70,9 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
     character(len=8) :: k8bid
     complex(kind=8) :: c16bid
     integer :: neq
-    integer :: nume0, nume, nbtro1, nbtro2
+    integer :: nume0, nume, nbtro2
     real(kind=8) :: instd, inst, pas, coef1, coef2
-    real(kind=8) :: impe12, r8bid
+    real(kind=8) :: impe12
     integer :: iordr, iarc, iarc2, iret, ibid
     integer :: id1, id2, ifreq
     integer :: jinst, ldnew
@@ -136,15 +137,12 @@ subroutine nmviss(numedd, sddyna, instam, instap, vecasz)
     if (iret .eq. 0) then
         goto 99
     else
-        call rsorac(result, 'PREMIER', ibid, r8bid, k8bid,&
-                    c16bid, prec, criter, tnum, 1,&
-                    nbtro1)
-        nume0=tnum(1)
+        call rs_getfirst(result, nume0)
         call rsorac(result, 'INST', ibid, inst, k8bid,&
                     c16bid, prec, criter, tnum, 1,&
                     nbtro2)
         nume=tnum(1)
-        if ((abs(nbtro1).ne.1) .or. (abs(nbtro2).ne.1)) then
+        if (abs(nbtro2).ne.1) then
             call utmess('F', 'DYNAMIQUE_25')
         endif
     endif

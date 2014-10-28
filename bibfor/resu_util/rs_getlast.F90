@@ -1,10 +1,11 @@
-subroutine nmdide(l_reuse, result, nume_last, inst_last)
+subroutine rs_getlast(result_, nume_last, inst_last)
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterc/r8vide.h"
-#include "asterfort/rs_getlast.h"
+#include "jeveux.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,37 +21,49 @@ implicit none
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: jacques.pellet at edf.fr
 !
-    character(len=8), intent(in) :: result
-    aster_logical, intent(in) :: l_reuse
+    character(len=*), intent(in) :: result_
     integer, intent(out) :: nume_last
-    real(kind=8), intent(out) :: inst_last
+    real(kind=8), optional, intent(out) :: inst_last
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Non-linear algorithm - Initial state management
+! Results datastructure - Utility
 !
-! Last time in result datastructure if initial state given
+! Get last index stored in results datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  result           : name of result datastructure (EVOL_NOLI)
-! In  l_reuse          : .true. if reuse results datastructure
+! In  result           : name of results datastructure
 ! Out nume_last        : last index stored in results datastructure
-!                        0 if not reuse
 ! Out inst_last        : last time stored in results datastructure
-!                        r8vide if not reuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=8) :: result
+    character(len=8) :: k8bid
+    complex(kind=8) :: c16bid
+    integer :: list(1), iret, jinst
+    real(kind=8) :: r8bid
+!
+! --------------------------------------------------------------------------------------------------
+!
+    result    = result_
     nume_last = 0
-    inst_last = r8vide()
-!
-    if (l_reuse) then
-        call rs_getlast(result, nume_last, inst_last = inst_last)
+    call rsorac(result, 'DERNIER', 0  , r8bid, k8bid,&
+                c16bid, 0.d0     , ' ', list , 1    ,&
+                iret)
+    if (iret .eq. 0) then
+        call utmess('F', 'RESULTAT1_1', sk=result)
     endif
-!
+    nume_last = list(1)
+    if (present(inst_last)) then
+        call rsadpa(result, 'L', 1, 'INST', nume_last,&
+                    0, sjv=jinst)
+        inst_last = zr(jinst)
+    endif
+
 end subroutine

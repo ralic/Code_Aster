@@ -32,7 +32,6 @@ subroutine op0139()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rslesd.h"
-#include "asterfort/rsorac.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
@@ -42,6 +41,7 @@ subroutine op0139()
 #include "asterfort/xdetfo.h"
 #include "asterfort/xoriff.h"
 #include "asterfort/xptfon.h"
+#include "asterfort/rs_getfirst.h"
 #include "jeveux.h"
     character(len=8) :: nomo, nomfis, resuco, noma
     integer :: ndim
@@ -53,7 +53,6 @@ subroutine op0139()
 !     JEVEUX AND GENERAL PURPOSE
     integer :: ibid, ifm, niv, vali(2), i
     real(kind=8) :: vale(3)
-    complex(kind=8) :: cbid
     character(len=8) :: k8b
 !
 !     INPUT DATA
@@ -79,13 +78,11 @@ subroutine op0139()
     character(len=19) :: cnsdet, cnxinv
     character(len=19) :: listpt
     character(len=24) :: mater
-    integer :: iord(1)
-    integer :: jbasc, ib2
-    integer ::  jfono, jmafon
+    integer :: nume_first
+    integer :: jbasc, jfono, jmafon
     integer ::  nmafon, nxptff
     integer :: nfonn, npara
     aster_logical :: lbid
-    real(kind=8) :: rbid
     complex(kind=8) :: c16b(1)
     character(len=12) :: nopar3(5)
     character(len=16) :: operation(1)
@@ -110,13 +107,11 @@ subroutine op0139()
     call getvid(' ', 'RESULTAT', scal=resuco, nbret=ibid)
 !
 !   RECUPERATION DU PREMIER NUMERO D'ORDRE
-    call rsorac(resuco, 'PREMIER', ibid, rbid, k8bid,&
-                cbid, 0.d0, 'ABSOLU', iord, 1,&
-                ib2)
+    call rs_getfirst(resuco, nume_first)
     k8b = 'CARACTER'
 !
 !   RECUPERATION DU NOM DU MODELE
-    call rslesd(resuco, iord(1), nomo, mater, k8b,&
+    call rslesd(resuco, nume_first, nomo, mater, k8b,&
                 k19b, ibid)
 !
 !   RECUPERATION DU MAILLAGE ASSOCIE AU MODELE
@@ -152,7 +147,7 @@ subroutine op0139()
 !
     cnsdet = '&&OP0049.CNSDET'
     call xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
-                nmafon, noma, nomfis, nomo, resuco)
+                nmafon, noma, nomfis, resuco)
 !
 ! --- PREPARATION DETERMINATION DES POINTS DU FRONT
 !
@@ -192,7 +187,7 @@ subroutine op0139()
 !
 ! --- BOUCLE SUR LES MORCEAUX DE L ANCIEN FRONT
 !
-    do 500 piece = 1, nfon
+    do piece = 1, nfon
 !
 !       RECUP INFOS ANCIEN FRONT
         ni=zi(jnfon-1+2*(piece-1)+1)
@@ -218,18 +213,10 @@ subroutine op0139()
         do i = 1,sifval
             zr(jvit-1+i) = zr(jvitem-1+i)
         end do
-
-!         do i =1,sifval
-!             jdeb = max(1,i-5)
-!             jfin = min(sifval,i+5)
-!             do j = jdeb,jfin
-!                zr(jvit-1+i) = zr(jvit-1+i) + zr(jvitem-1+j)/(jfin-jdeb)
-!             end do
-!         end do
 !
 ! STOCKAGE DANS UNE TABLE
 !
-        do 550 i = 1, sifval
+        do i = 1, sifval
             vali(1) = piece
             vali(2) = i
             vale(1) = zr(jffis-1+4*(actpoi+i-1)+4)
@@ -237,14 +224,14 @@ subroutine op0139()
             vale(3) = zr(jbeta-1+i)
             call tbajli(table, npara, nopar3, vali, vale,&
                         c16b, k8bid, 0)
-550      continue
+        end do
         actpoi = actpoi+sifval
         ASSERT(actpoi.le.maxact)
         call jedetr(vvit)
         call jedetr(vbeta)
         call jedetr(vitemp)
 !
-500  continue
+    end do
 !
 !-----------------------------------------------------------------------
 !     FIN

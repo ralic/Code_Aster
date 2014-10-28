@@ -4,6 +4,29 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
                   valinc, sddisc, parcon, solalg, veasse,&
                   sdnume)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/diinst.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/mecact.h"
+#include "asterfort/ndynkk.h"
+#include "asterfort/ndynlo.h"
+#include "asterfort/ndynre.h"
+#include "asterfort/nmaint.h"
+#include "asterfort/nmassv.h"
+#include "asterfort/nmcalv.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmfint.h"
+#include "asterfort/nmvcaf.h"
+#include "asterfort/nmvcex.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rs_getlast.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,30 +44,8 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/diinst.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mecact.h"
-#include "asterfort/ndynkk.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/ndynre.h"
-#include "asterfort/nmaint.h"
-#include "asterfort/nmassv.h"
-#include "asterfort/nmcalv.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmfint.h"
-#include "asterfort/nmvcaf.h"
-#include "asterfort/nmvcex.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsorac.h"
+!
     integer :: fonact(*)
     character(len=19) :: sddyna, sdnume
     character(len=19) :: lischa
@@ -85,21 +86,12 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
     character(len=19) :: cnondp, cnlapl, cnsstf
     character(len=24) :: codere
     character(len=19) :: commoi, complu, insmoi, insplu
-    complex(kind=8) :: c16bid
-    real(kind=8) :: instap, instam, r8bid
-    integer :: iterat, ldccvg, numder(1)
-    integer :: ifm, niv, ibid, jinst
+    real(kind=8) :: instap, instam
+    integer :: iterat, ldccvg, nume_last, jinst
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CALCUL CHARGEMENT'
-    endif
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -118,11 +110,9 @@ subroutine nmchht(modele, numedd, mate, compor, carele,&
 !
     if (lreuse) then
         call getres(result, k16bid, k16bid)
-        call rsorac(result, 'DERNIER', 0, r8bid, k8bid,&
-                    c16bid, 0.d0, 'ABSOLU', numder, 1,&
-                    ibid)
-        call rsadpa(result, 'L', 1, 'INST_PREC', numder(1),&
-                    0, sjv=jinst, styp=k8bid)
+        call rs_getlast(result, nume_last, inst_last = instam)
+        call rsadpa(result, 'L', 1, 'INST_PREC', nume_last,&
+                    0, sjv=jinst)
         instam = zr(jinst)
     endif
     instap = diinst(sddisc,0)

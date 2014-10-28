@@ -1,4 +1,19 @@
-subroutine nmdoin(evol, evonol, instin, numein)
+subroutine nmdoin(evol_noli, l_etat_init, inst_init, nume_init)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8vide.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/rsorac.h"
+#include "asterfort/utmess.h"
+#include "asterfort/rs_getlast.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,117 +33,96 @@ subroutine nmdoin(evol, evonol, instin, numein)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsorac.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: evol
-    aster_logical :: evonol
-    integer :: numein
-    real(kind=8) :: instin
+    character(len=24), intent(in) :: evol_noli
+    aster_logical, intent(in) :: l_etat_init
+    integer, intent(out) :: nume_init
+    real(kind=8), intent(out) :: inst_init
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (INITIALISATION)
+! Non-linear algorithm - Time management
 !
-! INSTANT ET NUME_ORDRE INITIAL
+! Initial storing index and time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  evol_noli        : name of result datastructure in initial state
+! In  l_reuse          : .true. if result datastructure in initial state
+! Out nume_init        : initial storing index
+!                        -1 if not defined
+! Out inst_init        : initial time
+!                        r8vide if not defined
 !
-! IN  EVOL   : NOM DU CONCEPT EVOL DANS ETAT_INIT
-! IN  EVONOL : .TRUE. SI CONCEPT EVOL DANS ETAT_INIT
-! OUT INSTIN : INSTANT INITIAL
-!                R8VIDE SI NON DEFINI
-! OUT NUMEIN : NUMERO ORDRE INSTANT INITIAL
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: ibid, dernie(1), nume, tnum(1)
+    integer :: ibid, nume_last, nume, tnum(1)
     integer :: n1, n2, n3
     integer :: jinst
-    real(kind=8) :: r8bid, prec, inst
+    real(kind=8) :: prec, inst, inst_last
     complex(kind=8) :: c16bid
     character(len=8) :: k8bid, criter
-    character(len=16) :: motfac
+    character(len=16) :: keyw_fact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    instin = r8vide()
-    numein = -1
-    motfac = 'ETAT_INIT'
+    inst_init = r8vide()
+    nume_init = -1
+    keyw_fact = 'ETAT_INIT'
 !
-! --- RECHERCHE INSTANT INITIAL
+! - Initial time search
 !
-    if (evonol) then
+    if (l_etat_init) then
 !
-! ----- NUMERO D'ACCES ET INSTANT CORRESPONDANT
+! ----- Read storing index and time by user
 !
-        call getvr8(motfac, 'INST', iocc=1, scal=inst, nbret=n1)
-        call getvis(motfac, 'NUME_ORDRE', iocc=1, scal=nume, nbret=n2)
+        call getvr8(keyw_fact, 'INST'      , iocc=1, scal=inst, nbret=n1)
+        call getvis(keyw_fact, 'NUME_ORDRE', iocc=1, scal=nume, nbret=n2)
 !
-! ----- NUME_ORDRE ET INST ABSENTS, ON PREND LE DERNIER PAS ARCHIVE
+! ----- No storing index/time by user => last one in results datastructure
 !
         if (n1+n2 .eq. 0) then
-            call rsorac(evol, 'DERNIER', ibid, r8bid, k8bid,&
-                        c16bid, r8bid, k8bid, dernie, 1,&
-                        n3)
-            if (n3 .eq. 0) then
-                call utmess('F', 'ETATINIT_2', sk=evol)
-            else
-                numein = dernie(1)
-                call rsadpa(evol, 'L', 1, 'INST', numein,&
-                            0, sjv=jinst, styp=k8bid)
-                instin = zr(jinst)
-            endif
+            call rs_getlast(evol_noli, nume_last, inst_last)
+            nume_init = nume_last
+            inst_init = inst_last
         endif
 !
-! ----- ACCES PAR INSTANT
+! ----- Time by user
 !
         if (n1 .ne. 0) then
-            instin = inst
-            call getvr8(motfac, 'PRECISION', iocc=1, scal=prec, nbret=ibid)
-            call getvtx(motfac, 'CRITERE', iocc=1, scal=criter, nbret=ibid)
-            call rsorac(evol, 'INST', ibid, instin, k8bid,&
+            inst_init = inst
+            call getvr8(keyw_fact, 'PRECISION', iocc=1, scal=prec, nbret=ibid)
+            call getvtx(keyw_fact, 'CRITERE', iocc=1, scal=criter, nbret=ibid)
+            call rsorac(evol_noli, 'INST', ibid, inst_init, k8bid,&
                         c16bid, prec, criter, tnum, 1,&
                         n3)
-            numein=tnum(1)            
+            nume_init=tnum(1)            
             if (n3 .eq. 0) then
-                call utmess('F', 'ETATINIT_3', sk=evol)
+                call utmess('F', 'ETATINIT_3', sk=evol_noli)
             endif
             if (n3 .lt. 0) then
-                call utmess('F', 'ETATINIT_4', sk=evol)
+                call utmess('F', 'ETATINIT_4', sk=evol_noli)
             endif
         endif
 !
-! ----- ACCES PAR NUMERO D'ORDRE
+! ----- Storing index by user
 !
         if (n2 .ne. 0) then
-            numein = nume
-            call rsadpa(evol, 'L', 1, 'INST', numein,&
+            nume_init = nume
+            call rsadpa(evol_noli, 'L', 1, 'INST', nume_init,&
                         0, sjv=jinst, styp=k8bid)
-            instin = zr(jinst)
+            inst_init = zr(jinst)
         endif
     endif
 !
-! --- DEFINITION INSTANT INITIAL
+! - Initial time defined by user
 !
-    call getvr8(motfac, 'INST_ETAT_INIT', iocc=1, scal=inst, nbret=n2)
+    call getvr8(keyw_fact, 'INST_ETAT_INIT', iocc=1, scal=inst, nbret=n2)
     if (n2 .ne. 0) then
-        instin = inst
+        inst_init = inst
     endif
 !
     call jedema()

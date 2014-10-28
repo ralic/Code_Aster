@@ -22,6 +22,7 @@ subroutine rsnume(resu, nomsy, nu)
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
+#include "asterfort/rs_getlast.h"
     character(len=*) :: nu, resu, nomsy
 ! ----------------------------------------------------------------------
 ! BUT : RECUPERER  UN NUME_DDL DANS UNE SD_RESULTAT
@@ -31,10 +32,7 @@ subroutine rsnume(resu, nomsy, nu)
 ! OUT  K14  NU      : NOM DU NUME_DDL  TROUVE (OU ' ' SINON)
 ! ----------------------------------------------------------------------
 !
-    integer :: dernie(1), ibid, icode, iret, luti, iret2
-    real(kind=8) :: rbid
-    complex(kind=8) :: cbid
-    character(len=8) :: k8bid
+    integer :: nume_last, icode, iret, luti, iret2
     character(len=19) :: chamno, resu2
     character(len=24), pointer :: refe(:) => null()
 !
@@ -46,11 +44,9 @@ subroutine rsnume(resu, nomsy, nu)
     if (iret .gt. 0) then
         call jelira(resu2//'.ORDR', 'LONUTI', luti)
         if (luti .eq. 0) goto 999
-        call rsorac(resu, 'DERNIER', 0, rbid, k8bid,&
-                    cbid, rbid, 'ABSOLU', dernie, 1,&
-                    ibid)
+        call rs_getlast(resu, nume_last)
 !
-        call rsexch(' ', resu, nomsy, dernie(1), chamno,&
+        call rsexch(' ', resu, nomsy, nume_last, chamno,&
                     icode)
 !
         if (icode .eq. 0) then

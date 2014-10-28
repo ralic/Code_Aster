@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdide(lreuse, result, numder, insder)
-        aster_logical :: lreuse
-        character(len=8) :: result
-        integer :: numder
-        real(kind=8) :: insder
+    subroutine nmdide(l_reuse, result, nume_last, inst_last)
+        character(len=8), intent(in) :: result
+        aster_logical, intent(in) :: l_reuse
+        integer, intent(out) :: nume_last
+        real(kind=8), intent(out) :: inst_last
     end subroutine nmdide
 end interface

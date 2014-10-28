@@ -25,10 +25,6 @@ cata_msg = {
  Mais on ne définit pas d'état initial: on prend un état initial nul.
 """),
 
-2 : _(u"""
- On ne trouve aucun numéro d'ordre dans la structure de données résultat de nom <%(k1)s> 
-"""),
-
 3 : _(u"""
  L'instant spécifié sous ETAT_INIT/INST n'est pas trouvé dans la structure de données
  résultat de nom <%(k1)s>.

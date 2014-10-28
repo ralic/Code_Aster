@@ -43,6 +43,7 @@ subroutine bamo78(nomres, trange, typres)
 #include "asterfort/vrcref.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/rs_getlast.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
@@ -151,11 +152,6 @@ subroutine bamo78(nomres, trange, typres)
 !
 ! --- NOUVELLE NUMEROTATION PAS NECESSAIRE ENCORE DANS REST_COND_TRAN
 !
-!      CALL GETVID(' ','NUME_DDL',1,IARG,1,K8BID,IBID  )
-!      IF (IBID.NE.0) THEN
-!        CALL GETVID(' ','NUME_DDL',1,1,1,NUMEDD,IBID)
-!        NUMEDD = NUMEDD(1:14)//'.NUME'
-!      ENDIF
     numddl = numedd(1:14)
 !
 ! --- RECOPIE DES MODES PROPRES DANS UN VECTEUR DE TRAVAIL
@@ -212,10 +208,7 @@ subroutine bamo78(nomres, trange, typres)
     if (ievnew .eq. 0) then
         call rscrsd('G', nomres, typres, nbinst)
     else
-        call rsorac(nomres, 'DERNIER', ibid, r8bid, k8bid,&
-                    c16bid, epsi, crit, tmod, 1,&
-                    nbtrou)
-        nume0=tmod(1)
+        call rs_getlast(nomres, nume0)
         call rsorac(nomres, 'INST', ibid, zr(jinst), k8bid,&
                     c16bid, epsi, crit, tmod, 1,&
                     nbtrou)

@@ -34,6 +34,7 @@ subroutine charci(chcine, mfact, mo, type)
 #include "asterfort/wkvect.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/rs_getfirst.h"
 !
     character(len=*) :: chcine, mfact, mo
     character(len=1) :: type
@@ -67,13 +68,11 @@ subroutine charci(chcine, mfact, mo, type)
 !                                          ACOU_IMPO
 ! IN   MO      K*      : NOM DU MODELE
 ! IN   TYPE    K*1     : 'R','C' OU 'F' TYPE DES MOTS CLES
-    real(kind=8) :: rbid
-    complex(kind=8) :: cbid
-    integer :: ibid, ifm, niv, icmp, cmp, ier, ino, nbno, nuno
+    integer :: ifm, niv, icmp, cmp, ier, ino, nbno, nuno
     integer :: ioc, jcnsv, jcnsl, idino, nbobm
     integer :: idnddl, idvddl, nbddl, iddl, i, idprol
-    integer :: ila, nbcmp, jcmp, noc, n1, iord(1), iret
-    integer :: jnoxfl, nlicmp, mxcmp, icmpmx
+    integer :: ila, nbcmp, jcmp, noc, n1, iret
+    integer :: jnoxfl, nlicmp, mxcmp, icmpmx, nume_first
     parameter (mxcmp=100)
 !
     character(len=2) :: typ
@@ -138,15 +137,16 @@ subroutine charci(chcine, mfact, mo, type)
         afck(3)=evoim
 !
 !       -- C'EST LE CHAMP DU 1ER NUMERO D'ORDRE QUI IMPOSE SA LOI:
-        call rsorac(evoim, 'PREMIER', ibid, rbid, k8b,&
-                    cbid, 0.d0, 'ABSOLU', iord, 1,&
-                    iret)
-        ASSERT(iret.eq.1)
+        !call rsorac(evoim, 'PREMIER', ibid, rbid, k8b,&
+        !            cbid, 0.d0, 'ABSOLU', iord, 1,&
+        !            iret)
+        !ASSERT(iret.eq.1)
+        call rs_getfirst(evoim, nume_first)
         if (mfac .eq. 'MECA_IMPO') then
-            call rsexch('F', evoim, 'DEPL', iord(1), depla,&
+            call rsexch('F', evoim, 'DEPL', nume_first, depla,&
                         iret)
         else
-            call rsexch('F', evoim, 'TEMP', iord(1), depla,&
+            call rsexch('F', evoim, 'TEMP', nume_first, depla,&
                         iret)
         endif
         call cnocns(depla, 'V', cns)

@@ -15,13 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine nmdoin(evol_noli, l_etat_init, inst_init, nume_init)
-        character(len=24), intent(in) :: evol_noli
-        aster_logical, intent(in) :: l_etat_init
-        integer, intent(out) :: nume_init
-        real(kind=8), intent(out) :: inst_init
-    end subroutine nmdoin
+    subroutine rs_getlast(result_, nume_last, inst_last)
+        character(len=*), intent(in) :: result_
+        integer, intent(out) :: nume_last
+        real(kind=8), optional, intent(out) :: inst_last
+    end subroutine rs_getlast
 end interface

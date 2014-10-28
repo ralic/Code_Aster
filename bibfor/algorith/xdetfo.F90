@@ -1,5 +1,5 @@
 subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
-                  nmafon, noma, nomfis, nomo, resuco)
+                  nmafon, noma, nomfis, resuco)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,8 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xmafis.h"
+#include "asterfort/rs_getfirst.h"
+#include "asterfort/rs_getlast.h"
 !
 ! Propagation de fissures cohésives avec XFEM
 ! Calculer la fonction pour détecter le nouveau front
@@ -60,7 +62,6 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 ! In noma => nom du maillage
 ! In nomfis => nom de la fissure d'où l'ancien front
 !              est déduit
-! In nomo => nom du modèle
 ! In resuco => nom du résultat à post-traiter
 !
     real(kind=8) :: a(3), ab(3), ac(3)
@@ -68,18 +69,17 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
     integer :: ar(12, 3)
     real(kind=8) :: b(3), c(3)
     character(len=19) :: carmat
-    complex(kind=8) :: cbid
     character(len=19) :: cesco, cnsco, cnsdet, cnsln, cnslt, cnsto
     character(len=24) :: cohee
     real(kind=8) :: deta, detb, detc, gc
-    integer :: i, ia, ibid, ils, ima, imafon, ino, iord(1)
+    integer :: i, ia, ibid, ils, ima, imafon, ino, nume_last, nume_first
     integer :: iret, itypma, j, jcesd, jcesl, jcesv, jcnsd
     integer :: jcnsl, jcnto, jconx1, jconx2, jcoor
     integer :: jlisno, jlnsv, jltsv, jma, jmaco, jmafis
     integer :: jmafon, jmaifo, jnscov, jnsdl, jnsdv, jvale
     integer :: jvalk, jvalm, k
     character(len=19) :: k19b
-    character(len=8) :: k8b, k8bid
+    character(len=8) :: k8b
     character(len=24) :: lismae
     character(len=19) :: lisno
     real(kind=8) :: lsna, lsnb, lsta, lstb
@@ -90,9 +90,9 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
     character(len=8) :: model
     integer :: na, nb, nbar, nbls, nbma, nbno, ncmpa, ndim
     integer :: nmaco, nmafis, nmafon, nmaifo
-    character(len=8) :: noma, nomfis, nommat, nomo
-    integer :: nunoa, nunob, ib2
-    real(kind=8) :: rbid, d1, crilst
+    character(len=8) :: noma, nomfis, nommat
+    integer :: nunoa, nunob
+    real(kind=8) :: d1, crilst
     character(len=8) :: resuco
     real(kind=8) :: sc, rr
     character(len=8) :: typma
@@ -132,13 +132,12 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 !
 !   RECUP DERNIER NUMERO D ORDRE
 !   POUR L INSTANT LA DETECTION SE FAIT A PARTIR DU DERNIER NUMERO D ORDRE
-    call rsorac(resuco, 'DERNIER', ibid, rbid, k8bid,&
-                cbid, 0.d0, 'ABSOLU', iord, 1,&
-                ib2)
+!
+    call rs_getlast(resuco, nume_last)
 ! 
 ! --- RECUP CHAMP VARIABLES INTERNES COHESIVES
 ! 
-    call rsexch('F', resuco, 'COHE_ELEM', iord(1), cohee,&
+    call rsexch('F', resuco, 'COHE_ELEM', nume_last, cohee,&
                 iret)
 !
 !   TRANSFO CHAM_ELNO --> CHAM_ELEM_S (EXEMPLE XGRALS)
@@ -156,14 +155,15 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
                 ibid)
 !
 !   RECUP PREMIER NUMERO ORDRE
-    call rsorac(resuco, 'PREMIER', ibid, rbid, k8bid,&
-                cbid, 0.d0, 'ABSOLU', iord, 1,&
-                ib2)
+    !call rsorac(resuco, 'PREMIER', ibid, rbid, k8bid,&
+    !            cbid, 0.d0, 'ABSOLU', iord, 1,&
+    !            ib2)
+    call rs_getfirst(resuco, nume_first)
     adrbid = '&&XDETFO.BID'
     k8b = 'CARACTER'
 !
 !   RECUP DU MATERIAU 
-    call rslesd(resuco, iord(1), model, mater, k8b,&
+    call rslesd(resuco, nume_first, model, mater, k8b,&
                 k19b, ibid)
 !
 !   RECUP CONTRAINTE CRITIQUE ET TENACITE
@@ -187,11 +187,11 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
     call jelira(nommat//'.CPT.'//k6//'.VALK', 'LONMAX', ncmpa)
     ncmpa = ncmpa/2
     call jeveuo(nommat//'.CPT.'//k6//'.VALR', 'L', jvale)
-    do 215 j = 1, ncmpa
+    do j = 1, ncmpa
         if (zk16(jvalk-1+j) .eq. 'GC') gc = zr(jvale-1+j)
         if (zk16(jvalk-1+j) .eq. 'SIGM_C') sc = zr(jvale-1+j)
         if (zk16(jvalk-1+j) .eq. 'PENA_LAGR') rr = zr(jvale-1+j)
-215  end do
+    end do
     rr = rr*sc*sc/gc
 !
 !   REDUCTION CHAMP VARIABLES INTERNES
@@ -205,12 +205,12 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
     lisno = '&&XDETFO.LISNO'
     call wkvect(lisno, 'V V I', nbno, jlisno)
     ils = 0
-    do 120 ino = 1, nbno
+    do ino = 1, nbno
         if (zl(jcnsl-1+ino)) then
             ils = ils + 1
             zi(jlisno-1+ils)=ino
         endif
-120  end do
+    end do
     nbls = ils
 !
 !   REDUCTION SUR LES NOEUDS
@@ -225,12 +225,12 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
     call jeveuo(cnsdet(1:19)//'.CNSL', 'E', jnsdl)
     call jeveuo(cnsdet(1:19)//'.CNSV', 'E', jnsdv)
 !
-    do 130 i = 1, nbls
+    do i = 1, nbls
         ino = zi(jlisno-1+i)
         zl(jnsdl-1+ino) = .true.
         zr(jnsdv-1+ino) =&
         min(zr(jnscov-1+ino)-sc,0.d0)+(sc*sc/gc)/rr*max(zr(jnscov-1+ino)-sc,0.d0)
-130  end do
+    end do
 !
 !   ON REPREND UNE PARTIE DE LA STRUCTURE DE XENRCH
 !   POUR TROUVER LE FRONT
@@ -247,7 +247,7 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 !   BOUCLE SUR LES MAILLES DE CONTACT
 !   (TOUTES LES VARIABLES INTERNES Y SONT DEFINIES)
 !
-    do 152 j = 1, nmaco
+    do j = 1, nmaco
 !
         mindet = r8maem()
         maxdet = -1*r8maem()
@@ -314,14 +314,14 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
                 if (detb .gt. maxdet) maxdet=detb
 !           CAS ARETE NON CONFORME
             else if ((lsna*lsnb).le.0.d0) then
-                do 21 k = 1, ndim
+                do k = 1, ndim
                     a(k)=zr(jcoor-1+3*(nunoa-1)+k)
                     b(k)=zr(jcoor-1+3*(nunob-1)+k)
                     ab(k)=b(k)-a(k)
 !                   COORDONNEE PT INTERSECTION
                     c(k)=a(k)-lsna/(lsnb-lsna)*ab(k)
                     ac(k)=c(k)-a(k)
-21              continue
+                end do
                 ASSERT(ddot(ndim, ab, 1, ab, 1).gt.0.d0)
 !
 !               FONCTION DE DETECTION AU POINT D INTERSECTION
@@ -334,21 +334,21 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, jmafon, ndim,&
 !               VERIF STANO A REPORTER?
             endif
 !
-153      continue
+153     continue
 !
         if (mindet*maxdet .le. r8prem()) then
 !           ALARME UTILISATEUR SI MAILLE DE FOND
-            do 171 i = 1, nmaifo
+            do i = 1, nmaifo
                 if (zi(jmaco-1+j) .eq. zi(jmaifo-1+i)) then
 !
                     call utmess('A', 'XFEM_94')
                 endif
-171         continue
+            end do
             imafon = imafon + 1
             zi(jmafon-1+imafon) = ima
         endif
 !
-152  continue
+    end do
     nmafon = imafon
     ASSERT(nmafon.le.nmaco)
     call jedema()

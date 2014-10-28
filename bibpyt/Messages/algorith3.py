@@ -102,10 +102,6 @@ Nombre d'itérations     : %(i2)d
  vous calculez une impédance absorbante
 """),
 
-24 : _(u"""
- on n'a pas pu trouver le dernier instant sauvé.
-"""),
-
 25 : _(u"""
  le champ "DEPL" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s
 """),
