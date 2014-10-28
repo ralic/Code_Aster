@@ -17,7 +17,7 @@
 !
 interface
     subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
-                      epsmat, mixpre, kmd)
+                      epsmat, mixpre, kmd, kellag, kxfem)
         character(len=16) :: motfac
         character(len=19) :: solveu
         integer :: istop
@@ -26,5 +26,7 @@ interface
         real(kind=8) :: epsmat
         character(len=3) :: mixpre
         character(len=3) :: kmd
+        character(len=3) :: kellag
+        character(len=8) :: kxfem
     end subroutine crsvmu
 end interface

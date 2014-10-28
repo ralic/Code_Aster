@@ -1,5 +1,5 @@
 subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
-                  epsmat, mixpre, kmd)
+                  epsmat, mixpre, kmd, kellag, kxfem)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -10,7 +10,8 @@ subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
 !
     integer :: istop, nprec
     real(kind=8) :: epsmat
-    character(len=3) :: syme, mixpre, kmd
+    character(len=3) :: syme, mixpre, kmd, kellag
+    character(len=8) :: kxfem
     character(len=16) :: motfac
     character(len=19) :: solveu
 ! ======================================================================
@@ -40,6 +41,8 @@ subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
 ! IN  R8 EPSMAT  :                           FILTRAGE_MATRICE
 ! IN  K3 MIXPRE  :                           MIXER_PRECISION
 ! IN  K3 KMD     :                           MATR_DISTRIBUEE
+! IN  K3 KELLAG  :                           ELIM_LAGR
+! IN  K8 KXFEM   :                           PRE_COND_XFEM
 ! ----------------------------------------------------------
 !
 !
@@ -76,6 +79,8 @@ subroutine crsvmf(motfac, solveu, istop, nprec, syme,&
     slvk(10)= 'XXXX'
     slvk(11)= 'XXXX'
     slvk(12)= 'XXXX'
+    slvk(13)= kellag
+    slvk(14)= kxfem
 !
     slvr(1) = 0.d0
     slvr(2) = 0.d0

@@ -70,6 +70,8 @@ subroutine cresol(solveu)
     mixpre='NON'
     kmd='NON'
     modele = ' '
+    kellag='NON'
+    kxfem=' '
 !
     call getfac(nomsol, nsolve)
     if (nsolve .eq. 0) goto 10
@@ -127,6 +129,26 @@ subroutine cresol(solveu)
         endif
     endif
 !
+! ------ ELIM_LAGR
+    eximc=getexm(nomsol,'ELIM_LAGR')
+    if (eximc .eq. 1) then
+        call getvtx(nomsol, 'ELIM_LAGR', iocc=1, scal=kellag, nbret=n1)
+        if (n1 .eq. 1) then
+            if (kellag .ne. 'OUI') kellag='NON'
+        else
+            kellag='NON'
+        endif
+    endif
+!
+! ------ PRE_COND_XFEM
+    eximc=getexm(' ','MODELE')
+    if (eximc .eq. 1) then
+        call getvid(' ', 'MODELE', scal=modele, nbret=n1)
+            if (n1 .eq. 1 .and. modele .ne. ' ') then
+               call dismoi('PRE_COND_XFEM', modele, 'MODELE', repk=kxfem)
+            endif
+    endif
+!
     zslvk = sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')
     zslvi = sdsolv('ZSLVI')
@@ -142,55 +164,30 @@ subroutine cresol(solveu)
     if (method .eq. 'MUMPS') then
 !     -----------------------------
         call crsvmu(nomsol, solveu, istop, nprec, syme,&
-                    epsmat, mixpre, kmd)
+                    epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'PETSC') then
 !     -----------------------------
         call crsvpe(nomsol, solveu, istop, nprec, syme,&
-                    epsmat, mixpre, kmd)
+                    epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'LDLT') then
 !     -----------------------------
         call crsvld(nomsol, solveu, istop, nprec, syme,&
-                    epsmat, mixpre, kmd)
+                    epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'GCPC') then
 !     -----------------------------
         call crsvgc(nomsol, solveu, istop, nprec, syme,&
-                    epsmat, mixpre, kmd)
+                    epsmat, mixpre, kmd, kellag, kxfem)
 !
     else if (method.eq.'MULT_FRONT') then
 !     -----------------------------
         call crsvmf(nomsol, solveu, istop, nprec, syme,&
-                    epsmat, mixpre, kmd)
+                    epsmat, mixpre, kmd, kellag, kxfem)
 !
     else
         ASSERT(.false.)
-    endif
-!
-!
-!   --  ELIM_LAGR='OUI' ? :
-!   -----------------------
-    if (getexm(nomsol,'ELIM_LAGR') .eq. 1) then
-        call getvtx(nomsol, 'ELIM_LAGR', iocc=1, scal=kellag, nbret=n1)
-        if (n1 .eq. 1) then
-            if (kellag .ne. 'OUI') kellag='NON'
-        else
-            kellag='NON'
-        endif
-        zk24(islvk-1+13) = kellag
-    endif
-!
-!   --  PRE_COND_XFEM='OUI' ? :
-!   -----------------------
-    if (method .eq. 'MUMPS' .or. method.eq.'MULT_FRONT' .or. method.eq.'LDLT') then
-        eximc=getexm(' ','MODELE')
-        if (eximc .eq. 1) then 
-          call getvid(' ', 'MODELE', scal=modele, nbret=n1)
-          if (n1 .eq. 1 .and. modele .ne. ' ') &
-               call dismoi('PRE_COND_XFEM', modele, 'MODELE', repk=kxfem) 
-          zk24(islvk-1+14) = kxfem
-        endif
     endif
 !
  10 continue

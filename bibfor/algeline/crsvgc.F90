@@ -1,5 +1,5 @@
 subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
-                  epsmat, mixpre, kmd)
+                  epsmat, mixpre, kmd, kellag, kxfem)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -13,7 +13,8 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
 !
     integer :: istop, nprec
     real(kind=8) :: epsmat
-    character(len=3) :: syme, mixpre, kmd
+    character(len=3) :: syme, mixpre, kmd, kellag
+    character(len=8) :: kxfem
     character(len=16) :: motfac
     character(len=19) :: solveu
 ! ======================================================================
@@ -43,6 +44,8 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
 ! IN  R8 EPSMAT  :                           FILTRAGE_MATRICE
 ! IN  K3 MIXPRE  :                           MIXER_PRECISION
 ! IN  K3 KMD     :                           MATR_DISTRIBUEE
+! IN  K3 KELLAG  :                           ELIM_LAGR
+! IN  K8 KXFEM   :                           PRE_COND_XFEM
 ! ----------------------------------------------------------
 !
 !
@@ -114,6 +117,8 @@ subroutine crsvgc(motfac, solveu, istop, nprec, syme,&
     slvk(10)= 'XXXX'
     slvk(11)= 'XXXX'
     slvk(12)= 'XXXX'
+    slvk(13)= kellag
+    slvk(14)= 'XXXX'
 !
 !     POUR NEWTON_KRYLOV LE RESI_RELA VARIE A CHAQUE
 !     ITERATION DE NEWTON, CEPENDANT LE RESI_RELA DONNE
