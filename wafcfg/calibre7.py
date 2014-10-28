@@ -51,5 +51,6 @@ def configure(self):
     opts.enable_metis = True
     opts.enable_mumps = True
     opts.enable_scotch = True
+    opts.enable_mfront = True
 
     opts.enable_petsc = False

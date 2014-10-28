@@ -19,7 +19,7 @@ def configure(self):
     opts = self.options
 
     intel.configure(self)
-    
+
     self.env.append_value('CFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env.append_value('FCFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env['ADDMEM'] = 280
@@ -51,5 +51,6 @@ def configure(self):
     opts.enable_metis = True
     opts.enable_mumps = True
     opts.enable_scotch = True
-    
+
     opts.enable_petsc = False
+    opts.enable_mfront = False
