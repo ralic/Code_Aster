@@ -369,7 +369,7 @@ implicit none
                     lischa, carcri, varc_refe, fonact, sdstat,&
                     sddyna, sdtime, sdnume, sdcont_defi, resoco,&
                     resocu, valinc, sddisc, parcon, solalg,&
-                    veasse)
+                    veasse, result)
     endif
 !
 ! --- INITIALISATIONS TIMERS ET STATISTIQUES

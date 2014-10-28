@@ -63,11 +63,12 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
 !
     aster_logical :: ldyna, lmpas
     aster_logical :: lpilo
-    integer :: jcfsc
+
     character(len=19) :: depmoi, varmoi, sigmoi, commoi, vitmoi, accmoi
     character(len=19) :: depplu, varplu, sigplu, complu, vitplu, accplu
     character(len=19) :: depdel, depold, strmoi, strplu
     character(len=24) :: cfsc
+    real(kind=8), pointer :: coef_sch(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -131,12 +132,14 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, nbiter,&
 !
     if (lmpas) then
         call nmchsv(fonact, veasse, sddyna)
+    endif
 !
-!   Sauvegarde de INSTAM pour poursuite
+! - Save previous time
 !
+    if (ldyna) then
         cfsc = sddyna(1:15)//'.COEF_SCH'
-        call jeveuo(cfsc, 'E', jcfsc)
-        zr(jcfsc-1+24) = diinst(sddisc,numins-1)
+        call jeveuo(cfsc, 'E', vr=coef_sch)
+        coef_sch(24) = diinst(sddisc,numins-1)
     endif
 !
     call jedema()

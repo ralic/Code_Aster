@@ -121,7 +121,6 @@ function ndynre(sddyna, chaine)
 !
     else if (chaine.eq.'COEF_FORC_INER') then
         ndynre = coef_sch(23)
-!
     else if (chaine.eq.'INST_PREC') then
         ndynre = coef_sch(24)
 !

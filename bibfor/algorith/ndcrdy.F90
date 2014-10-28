@@ -106,7 +106,7 @@ subroutine ndcrdy(result, sddyna)
     call wkvect(vecent, 'V V K24', 3, jvecen)
     call wkvect(vecabs, 'V V K24', 3, jvecab)
 !
-999  continue
+999 continue
 !
     call jedema()
 !

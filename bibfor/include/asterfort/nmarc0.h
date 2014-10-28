@@ -18,7 +18,7 @@
 interface
     subroutine nmarc0(result, modele, mate, carele, fonact,&
                       sdcrit, sddyna, sdpost, carcri, sdcriq,&
-                      sdpilo, lisch2, numarc, instan)
+                      sdpilo, lisch2, numarc, time_curr)
         character(len=8) :: result
         character(len=24) :: modele
         character(len=24) :: mate
@@ -32,6 +32,6 @@ interface
         character(len=19) :: sdpilo
         character(len=19) :: lisch2
         integer :: numarc
-        real(kind=8) :: instan
+        real(kind=8) :: time_curr
     end subroutine nmarc0
 end interface

@@ -112,7 +112,6 @@ modele=AFFE_MODELE( MAILLAGE= mail,
 mat1= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10,
                               RHO= 2400.,
                               NU= 0.2,
-#                             AMOR_HYST = 0.1,
                             ),
                        ) ;
 #
@@ -160,8 +159,6 @@ ASSEMBLAGE(MODELE=modele,
                               OPTION='RIGI_MECA',),
                            _F(MATRICE=CO('MATMASS'),
                               OPTION='MASS_MECA',),
-                           #_F(MATRICE=CO('MATRAMOR'),
-                           #   OPTION='AMOR_MECA',),
                            ),
                  );
 #
@@ -188,7 +185,6 @@ mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
                                  ),
                     OPTION='PLUS_PETITE',
                     CALC_FREQ=_F(NMAX_FREQ=70),
-                    #FILTRE_MODE=_F(SEUIL=0.0000003,),
                     MATR_MASS=MATMASS,
                     NORM_MODE=_F(INFO=1,
                               NORME='TRAN_ROTA',),
@@ -200,10 +196,8 @@ C_LIM0=AFFE_CHAR_MECA(MODELE=modele,
                                    DX=0.0,
                                    DY=0.0,
                                    DZ=0.0,
-                                        ),
-
-                           INFO = 1,                            
-                                   );
+                                        ),                    
+                      );
                                    
 NUME0=NUME_DDL(MODELE=modele,
                CHARGE=C_LIM0,);
@@ -355,7 +349,6 @@ CALC_MISS(TYPE_RESU='FICHIER_TEMPS',
           PCENT_FREQ_CALCUL=0,
           FACTEUR_INTERPOL=7,
           UNITE_RESU_RIGI=35,
-          #UNITE_RESU_FORC=28,
           PARAMETRE=_F(FREQ_IMAG=0.1,
                        Z0=5.0,
                        SURF='NON',
@@ -376,9 +369,6 @@ MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO,
                        MATR_IMPE_RIGI = MATK,
                        SANS_GROUP_NO='NISFS',
                        );
-                       
-IMPR_CO(CHAINE='MAEL    .LINO');
-
                                               
 MAYADYN=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=(
                           _F(MACR_ELEM=MAEL,
@@ -406,7 +396,8 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                      );
                      
 ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,                                           
-                        DISCRET=(                                                                            _F(GROUP_MA=('MFICTIF'), 
+                        DISCRET=(                                                                            
+                             _F(GROUP_MA=('MFICTIF'), 
                                 CARA='M_TR_D_N',
                                 VALE=(1.E-10,1.E-10,1.E-10,1.E-10,0.,0.,
                                       0.,0.,0.,0.,),
@@ -416,14 +407,16 @@ ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,
                                 VALE=(1.E-3,1.E-3,1.E-3,
                                       1.E-3,1.E-3,1.E-3,),
                                 ),
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='A_TR_D_N',
+                                VALE=(0.,0.,0.,
+                                      0.,0.,0.,),
+                                ),                                
                                  ),
                      );
                      
 COND_LIB=AFFE_CHAR_MECA(MODELE=MODELB,
-                        #INFO=2,
                         LIAISON_INTERF=(_F(MACR_ELEM_DYNA=MAEL,),),
-                        #LIAISON_SOLIDE=(_F(GROUP_NO='NISFS'),),
-                        #LIAISON_SOLIDE=(_F(GROUP_NO='ISOLSTR'),),
                         );
                         
 CHMATB=AFFE_MATERIAU(MAILLAGE=MAILB,
@@ -470,30 +463,49 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,
                  CARA_ELEM=ELEMB,
                  EXCIT=(
                         _F(CHARGE=FSEISX0,),
-                        #_F(CHARGE=PESAX,FONC_MULT=ACCEX,),
                         _F(CHARGE=CHSOL),
                         _F(CHARGE=COND_LIB),
                         ),
                  COMPORTEMENT=(_F(RELATION='ELAS',
                                     TOUT='OUI',),
                                 ),
-                 NEWTON=_F(#PREDICTION='ELASTIQUE',
-                           MATRICE='ELASTIQUE',
-                           #MATRICE='TANGENTE',
+                 NEWTON=_F(MATRICE='ELASTIQUE',
                            REAC_INCR=0,REAC_ITER=0,
                            ),
                  SCHEMA_TEMPS = _F(SCHEMA='HHT', 
-                                   #ALPHA=-0.0,
                                    ALPHA=-0.1,
-                                   #ALPHA=-0.02,
+                                   MODI_EQUI='NON',
+                                   FORMULATION='DEPLACEMENT',),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
+                                ITER_GLOB_MAXI = 20,
+                                ARRET='OUI',),
+                 INCREMENT=_F(LIST_INST=L_INST,INST_FIN=0.15),         
+                          );
+                          
+DYNA=DYNA_NON_LINE(MODELE=MODELB,reuse=DYNA,
+                 CHAM_MATER=CHMATB,
+                 CARA_ELEM=ELEMB,
+                                 ETAT_INIT=_F(EVOL_NOLI=DYNA),
+                 EXCIT=(
+                        _F(CHARGE=FSEISX0,),
+                        _F(CHARGE=CHSOL),
+                        _F(CHARGE=COND_LIB),
+                        ),
+                 COMPORTEMENT=(_F(RELATION='ELAS',
+                                    TOUT='OUI',),
+                                ),
+                 NEWTON=_F(MATRICE='ELASTIQUE',
+                           REAC_INCR=0,REAC_ITER=0,
+                           ),
+                 SCHEMA_TEMPS = _F(SCHEMA='HHT', 
+                                   ALPHA=-0.1,
                                    MODI_EQUI='OUI',
                                    FORMULATION='DEPLACEMENT',),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
                                 ITER_GLOB_MAXI = 20,
                                 ARRET='OUI',),
-                 INCREMENT=_F(LIST_INST=L_INST,),
-                 #ARCHIVAGE=_F(PAS_ARCH=1,),             
-                          );
+                 INCREMENT=_F(LIST_INST=L_INST,),         
+                          );                          
                           
 ax253i = RECU_FONCTION ( RESULTAT = DYNA, NOM_CHAM = 'ACCE',
                         INTERPOL='LIN',
@@ -561,7 +573,7 @@ SACCEX0=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
 # AJOUT TOLE_MACHINE DE 2E-4 POUR SATISFAIRE CLAP0F0Q EN DYNAMIQUE TRANSITOIRE
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=5.256986572378,
+                      _F(VALE_CALC=5.227864843330,
                          VALE_REFE=4.885,
                          PRECISION=0.08,
                          TOLE_MACHINE=2.E-04,
@@ -569,9 +581,9 @@ TEST_FONCTION(VALEUR=(
                          VALE_PARA=1.00,
                          FONCTION=ax253i,
                          ),
-                      _F(VALE_CALC=17.60499943121,
+                      _F(VALE_CALC=17.73428238221,
                          VALE_REFE=17.40,
-                         PRECISION=0.015,
+                         PRECISION=0.02,
                          TOLE_MACHINE=2.E-04,
                          REFERENCE = 'AUTRE_ASTER',
                          VALE_PARA=(10.7, 0.05),
@@ -583,3 +595,4 @@ TEST_FONCTION(VALEUR=(
 
 
 FIN( );
+

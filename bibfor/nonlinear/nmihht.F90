@@ -2,7 +2,7 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
                   lischa, carcri, comref, fonact, sdstat,&
                   sddyna, sdtime, sdnume, defico, resoco,&
                   resocu, valinc, sddisc, parcon, solalg,&
-                  veasse)
+                  veasse, result)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
     real(kind=8) :: parcon(*)
     character(len=24) :: defico, resoco, resocu
     character(len=19) :: solalg(*), veasse(*), valinc(*)
+    character(len=8) :: result
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,7 +93,7 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
                         lischa, carcri, comref, fonact, sdstat,&
                         sddyna, sdtime, defico, resoco, resocu,&
                         valinc, sddisc, parcon, solalg, veasse,&
-                        sdnume)
+                        sdnume, result)
         endif
     endif
 !

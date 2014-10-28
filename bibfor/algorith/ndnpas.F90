@@ -71,8 +71,8 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     parameter    (un   = 1.d0,deux = 2.d0)
     parameter    (zero = 0.d0)
 !
-    integer :: jcfsc, jcfs2
     character(len=24) :: cfsc
+    real(kind=8), pointer :: coef_sch(:) => null()
     real(kind=8) :: alpha, beta, gamma, theta, phi, unthet, kappa
     real(kind=8) :: instam, instap, deltat
     aster_logical :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
@@ -121,7 +121,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 ! --- ACCES SD DYNA
 !
     cfsc = sddyna(1:15)//'.COEF_SCH'
-    call jeveuo(cfsc, 'E', jcfsc)
+    call jeveuo(cfsc, 'E', vr=coef_sch)
 !
 ! --- TYPE DE FORMULATION SCHEMA DYNAMIQUE GENERAL
 !
@@ -212,9 +212,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         ASSERT(.false.)
     endif
 !
-    zr(jcfsc-1+1) = coerig
-    zr(jcfsc-1+2) = coeamo
-    zr(jcfsc-1+3) = coemas
+    coef_sch(1) = coerig
+    coef_sch(2) = coeamo
+    coef_sch(3) = coemas
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... COEF. RIGI.: ',coerig
@@ -264,9 +264,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     else
         ASSERT(.false.)
     endif
-    zr(jcfsc-1+13) = coedep
-    zr(jcfsc-1+14) = coevit
-    zr(jcfsc-1+15) = coeacc
+    coef_sch(13) = coedep
+    coef_sch(14) = coevit
+    coef_sch(15) = coeacc
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... COEF. DEPL.: ',coedep
@@ -376,15 +376,15 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         ASSERT(.false.)
     endif
 !
-    zr(jcfsc-1+4) = coefd(1)
-    zr(jcfsc-1+5) = coefd(2)
-    zr(jcfsc-1+6) = coefd(3)
-    zr(jcfsc-1+7) = coefv(1)
-    zr(jcfsc-1+8) = coefv(2)
-    zr(jcfsc-1+9) = coefv(3)
-    zr(jcfsc-1+10) = coefa(1)
-    zr(jcfsc-1+11) = coefa(2)
-    zr(jcfsc-1+12) = coefa(3)
+    coef_sch(4)  = coefd(1)
+    coef_sch(5)  = coefd(2)
+    coef_sch(6)  = coefd(3)
+    coef_sch(7)  = coefv(1)
+    coef_sch(8)  = coefv(2)
+    coef_sch(9)  = coefv(3)
+    coef_sch(10) = coefa(1)
+    coef_sch(11) = coefa(2)
+    coef_sch(12) = coefa(3)
 !
 ! --- CALCUL DES PREDICTEURS
 !
@@ -431,21 +431,17 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         coeequ = un
         coeex2 = un
     endif
-    zr(jcfsc-1+16) = coeext
-    zr(jcfsc-1+17) = coeequ
-    zr(jcfsc-1+18) = coeint
-    zr(jcfsc-1+19) = coeex2
+    coef_sch(16) = coeext
+    coef_sch(17) = coeequ
+    coef_sch(18) = coeint
+    coef_sch(19) = coeex2
 !
     if (lmpas) then
         if (niv .ge. 2) then
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N-1: ',&
-            coeext
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N  : ',&
-     &                    coeex2
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. INT. N-1: ',&
-            coeint
-            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EQU.    : ',&
-     &                    coeequ
+            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N-1: ',coeext
+            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N  : ',coeex2
+            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. INT. N-1: ',coeint
+            write (ifm,*) '<MECANONLINE> ... MULTI-PAS F. EQU.    : ',coeequ
         endif
     endif
 !
@@ -472,7 +468,7 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     else
         coiner = un/deltat
     endif
-    zr(jcfsc-1+23) = coiner
+    coef_sch(23) = coiner
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... COEF. FORC. INERTIE REF: ',&
         coiner
@@ -512,9 +508,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         coeram = un
         coerri = un
     endif
-    zr(jcfsc-1+20) = coerma
-    zr(jcfsc-1+21) = coeram
-    zr(jcfsc-1+22) = coerri
+    coef_sch(20) = coerma
+    coef_sch(21) = coeram
+    coef_sch(22) = coerri
 !
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... COEF. FDYNA RIGI: ',coerri
@@ -522,11 +518,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         write (ifm,*) '<MECANONLINE> ... COEF. FDYNA MASS: ',coerma
     endif
 !
-!   Sauvegarde de INSTAM pour poursuite
+! - Save previous time
 !
-!      ZR(JCFSC-1+24) = INSTAM
-    call jeveuo(cfsc, 'L', jcfs2)
-    zr(jcfsc-1+24) = instam
+    coef_sch(24) = instam
 !
 ! --- INITIALISATION DES CHAMPS D'ENTRAINEMENT EN MULTI-APPUI
 !

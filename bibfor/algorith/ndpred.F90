@@ -52,8 +52,6 @@ subroutine ndpred(sddyna, valinc, solalg)
 !
 !
 !
-    integer :: jcfsc
-    character(len=24) :: cfsc
     aster_logical :: ldepl, lvite, lacce
     integer :: n
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
@@ -74,11 +72,6 @@ subroutine ndpred(sddyna, valinc, solalg)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CALCUL PREDICTEURS'
     endif
-!
-! --- ACCES SD DYNA
-!
-    cfsc = sddyna(1:15)//'.COEF_SCH'
-    call jeveuo(cfsc, 'L', jcfsc)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -131,25 +124,25 @@ subroutine ndpred(sddyna, valinc, solalg)
     if (ldepl) then
         call vtzero(vitplu)
         call vtzero(accplu)
-        do 10 n = 1, 3
+        do n = 1, 3
             call vtaxpy(coefv(n), vect(n), vitplu)
             call vtaxpy(coefa(n), vect(n), accplu)
- 10     continue
+        end do
     else if (lvite) then
         call vtzero(depplu)
         call vtzero(accplu)
         call copisd('CHAMP_GD', 'V', vitkm1, vitplu)
-        do 11 n = 1, 3
+        do n = 1, 3
             call vtaxpy(coefd(n), vect(n), depplu)
             call vtaxpy(coefa(n), vect(n), accplu)
- 11     continue
+        end do
     else if (lacce) then
         call vtzero(vitplu)
         call vtzero(depplu)
-        do 12 n = 1, 3
+        do n = 1, 3
             call vtaxpy(coefv(n), vect(n), vitplu)
             call vtaxpy(coefd(n), vect(n), depplu)
- 12     continue
+        end do
         call copisd('CHAMP_GD', 'V', acckm1, accplu)
     else
         ASSERT(.false.)
@@ -167,9 +160,9 @@ subroutine ndpred(sddyna, valinc, solalg)
 !
     call vtzero(depdel)
     if (lacce) then
-        do 14 n = 1, 3
+        do n = 1, 3
             call vtaxpy(coefd(n), vect(n), depdel)
- 14     continue
+        end do
         call vtaxpy(-1.d0, depkm1, depdel)
     endif
 !

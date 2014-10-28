@@ -20,7 +20,7 @@ interface
                       lischa, carcri, comref, fonact, sdstat,&
                       sddyna, sdtime, sdnume, defico, resoco,&
                       resocu, valinc, sddisc, parcon, solalg,&
-                      veasse)
+                      veasse, result)
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
@@ -42,5 +42,6 @@ interface
         real(kind=8) :: parcon(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veasse(*)
+        character(len=8) :: result
     end subroutine nmihht
 end interface
