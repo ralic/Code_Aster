@@ -98,6 +98,12 @@ implicit none
     call jevech('PCOMPOR', 'L', j_compor)
     rela_comp = zk16(j_compor)
 !
+! - Cannot evaluate command variables effect for Mfront behaviors
+!
+    if ((rela_comp.eq.'MFRONT').or.(rela_comp.eq.'AnisoLemaitre')) then
+        goto 99 
+    endif
+!
 ! - Type of phasis
 !
     type_phas = zk16(j_compor+7)
