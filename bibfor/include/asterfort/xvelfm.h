@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xvelfm(nfiss, fiss, modx)
-        integer :: nfiss
-        character(len=8) :: fiss(nfiss)
-        character(len=8) :: modx
+    subroutine xvelfm(nb_cracks, cracks, model_xfem)
+        character(len=8), intent(in) :: model_xfem
+        integer, intent(in) :: nb_cracks
+        character(len=8), intent(in) :: cracks(nb_cracks)
     end subroutine xvelfm
 end interface

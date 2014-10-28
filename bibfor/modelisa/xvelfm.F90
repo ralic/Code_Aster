@@ -1,4 +1,13 @@
-subroutine xvelfm(nfiss, fiss, modx)
+subroutine xvelfm(nb_cracks, cracks, model_xfem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/utmess.h"
+#include "asterfort/xvfimo.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,65 +24,59 @@ subroutine xvelfm(nfiss, fiss, modx)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
-#include "asterfort/xvfimo.h"
-    integer :: nfiss
-    character(len=8) :: fiss(nfiss), modx
+    character(len=8), intent(in) :: model_xfem
+    integer, intent(in) :: nb_cracks
+    character(len=8), intent(in) :: cracks(nb_cracks)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE XFEM (VERIFICATION DES SD)
+! XFEM (Loads)
 !
-! VERIFICATION QUE LES FISSURES OBTENUES EN SCRUTANT UN MOT-CLE ET
-! STOCKEES DANS LA LISTE FISS(1:NFISS), APPARTIENNENT BIEN AU MODELE
-! MODX
+! Some checks
 !
-!   -> ON S'ASSURE AU PREALABLE QUE MODX EST UN MODELE X-FEM
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  model_xfem     : name of XFEM model
+! In  nb_cracks      : number of cracks
+! In  cracks         : list of cracks
 !
-! IN  NFISS  : NOMBRE DE FISSURES
-! IN  FISS   : LISTE DES NOMS DES FISSURES
-! IN  MODX   : NOM DU MODELE EN ENTREE
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: ifiss, iret
+    integer :: i_crack, iret
     aster_logical :: ltrouv
     character(len=8) :: valk(2)
+    character(len=16) :: typdis
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
-!     SI LE MODELE N'EST PAS UN MODELE X-FEM -> ERREUR FATALE
-    call exixfe(modx, iret)
+! - XFEM model checking
+!
+    call exixfe(model_xfem, iret)
     if (iret .eq. 0) then
-        valk(1)=modx
-        call utmess('F', 'XFEM_72', sk=valk(1))
+        call utmess('F', 'XFEM_72', sk=model_xfem)
     endif
 !
-!     BOUCLE SUR LES FISSURES IN
-    do 100 ifiss = 1, nfiss
+! - Loop on cracks
 !
-        ltrouv=xvfimo(modx,fiss(ifiss))
+    do i_crack = 1, nb_cracks
 !
-!       SI FISS(IFISS) EST ABSENTE DU MODELE -> ERREUR FATALE
+! ----- Crack in model ?
+!
+        ltrouv = xvfimo(model_xfem,cracks(i_crack))
         if (.not.ltrouv) then
-            valk(1)=fiss(ifiss)
-            valk(2)=modx
+            valk(1)=cracks(i_crack)
+            valk(2)=model_xfem
             call utmess('F', 'XFEM_73', nk=2, valk=valk)
         endif
 !
-100 end do
+! ----- No PRES_REP on lips if CZM
 !
-    call jedema()
+        call dismoi('TYPE_DISCONTINUITE', cracks(i_crack), 'FISS_XFEM', repk=typdis)
+        if (typdis .eq. 'COHESIF') then
+            call utmess('F', 'XFEM2_7', sk=cracks(i_crack))
+        endif
+    end do
+!
 end subroutine

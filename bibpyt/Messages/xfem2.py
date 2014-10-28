@@ -47,6 +47,10 @@ Nombre d'arêtes vitales : %(i1)d
      Veuillez contacter votre assistance technique.
 """),
 
+7 : _(u"""
+La fissure %(k1)s est de type CZM.
+On ne peut pas appliquer de chargement de pression ou de condition d'échange thermique sur ses lèvres.
+"""),
 
     8 : _(u"""
   -> Le modèle %(k1)s transmis dans DEFI_CONTACT n'est pas un modèle
