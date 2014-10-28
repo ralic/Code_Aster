@@ -283,7 +283,7 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar,&
 !      COINCIDENCE AVEC NOEUD MILIEU SI MAILLE HEXA20 OU HEXA27
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 !
-        if (ktest .gt. 9) then
+        if (ktest .gt. 6) then
 !
             if (nbcnx .eq. 20) then
                 do 20 j = 9, 20, 1
