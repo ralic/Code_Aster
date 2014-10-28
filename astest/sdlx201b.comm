@@ -1,0 +1,638 @@
+# TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
+# person_in_charge: jacques.pellet at edf.fr
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),
+      MESURE_TEMPS=_F(NIVE_DETAIL=2,),)
+
+# ================================================
+#
+#      TEST SDLX201A DE NON_REGRESSION ASTER POUR VALIDER:
+#        - LES DIFFERENTS SOLVEURS MODAUX EN GEP ET QEP SYMETRIQUE REELS
+#        - LEUR INTER-OPERABILITE AVEC LES SOLVEURS LINEAIRES DIRECTS
+#        - CERTAINES COMMANDES DE PRE ET POSTTRAITEMENTS MODAUX (INFO_MODE,
+#             NORM_MODE...)
+#
+#      MECANIQUE 3D + COQUE + POUTRE + MODES PROPRES
+#
+#      ATTENTION :
+#      LES VALEURS DE REFERENCE ONT ETE OBTENUES
+#      PAR UN PASSAGE PRECEDENT DU CODE_ASTER.
+# ================================================
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(MAILLE='HE1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA='GRMA1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(GROUP_MA='GRMA2',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='POU_D_E',),),)
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                          NU=0.3,
+                          RHO=8000.0,
+                          ALPHA=0.0,),)
+
+CHMA=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MAT,),)
+
+CARA=AFFE_CARA_ELEM(MODELE=MO,
+                    POUTRE=_F(GROUP_MA='GRMA2',
+                              SECTION='RECTANGLE',
+                              CARA=('HZ','HY',),
+                              VALE=(3.0,1.0,),),
+                    COQUE=_F(GROUP_MA='GRMA1',
+                             EPAIS=1.0,),)
+
+CHM1=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(NOEUD=('N10','N11','N26','N23',),
+                                 DZ=0.0,),),)
+
+CHM2=AFFE_CHAR_MECA(MODELE=MO,
+                    LIAISON_DDL=(_F(NOEUD=('N22','N23',),
+                                    DDL=('DRZ','DRZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(NOEUD=('N23','N24',),
+                                    DDL=('DRZ','DRZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),),
+                    LIAISON_GROUP=(_F(NOEUD_1=('N4','N16',),
+                                      NOEUD_2=('N21','N25',),
+                                      DDL_1='DX',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DX',
+                                      COEF_MULT_2=-1.0,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N4','N16',),
+                                      NOEUD_2=('N21','N25',),
+                                      DDL_1='DY',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DY',
+                                      COEF_MULT_2=-1.0,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N4','N16',),
+                                      NOEUD_2=('N21','N25',),
+                                      DDL_1='DZ',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DZ',
+                                      COEF_MULT_2=-1.0,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N5','N11','N17',),
+                                      GROUP_NO_2='GRNO3',
+                                      DDL_1='DX',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DRZ',
+                                      COEF_MULT_2=0.5,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N3','N15','N10',),
+                                      GROUP_NO_2='GRNO3',
+                                      DDL_1='DX',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DRZ',
+                                      COEF_MULT_2=-0.5,
+                                      COEF_IMPO=0.0,),),
+                    FORCE_NODALE=_F(NOEUD='N29',
+                                    FY=-1.0,),)
+
+#
+#      MATRICES ELEMENTAIRES ET ASSEMBLAGE
+#      ----------------------------------------------------
+
+RIGEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MO,
+                     CHAM_MATER=CHMA,
+                     CARA_ELEM=CARA,
+                     CHARGE=(CHM1,CHM2,),)
+
+MASEL=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MO,
+                     CHAM_MATER=CHMA,
+                     CARA_ELEM=CARA,)
+
+NU=NUME_DDL(MATR_RIGI=RIGEL,)
+
+RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,
+                   NUME_DDL=NU,)
+
+MASAS=ASSE_MATRICE(MATR_ELEM=MASEL,
+                   NUME_DDL=NU,)
+
+AMORT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGAS,
+                                COEF_R=0.015,),
+                             _F(MATR_ASSE=MASAS,
+                                COEF_R=0.015,),),)
+
+#-----------------------------------------------------------------------
+# SOLVEUR : 'MUMPS' :
+# ---------------------
+# VALEUR ATTENDUE: 66
+
+NBMOD3=INFO_MODE(MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 FREQ=(0.0,100.0,),
+                 COMPTAGE=_F(METHODE='STURM',),
+                 SOLVEUR=_F(METHODE='MUMPS',),
+                 NIVEAU_PARALLELISME='PARTIEL',)
+
+TEST_TABLE(TABLE=NBMOD3,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=66,
+           VALE_REFE_I=66,
+           REFERENCE='ANALYTIQUE',)
+
+# VALEURS ATTENDUES: 3, 3, 1, 0 ET 3
+
+NBMOD31=INFO_MODE(MATR_RIGI=RIGAS,
+                  MATR_MASS=MASAS,
+                  FREQ=(0.0,0.01,0.05,0.055,0.06,0.1,),
+                  COMPTAGE=_F(METHODE='STURM',
+                              SEUIL_FREQ=0.001,),
+                  SOLVEUR=_F(METHODE='MUMPS',),
+                  NIVEAU_PARALLELISME='PARTIEL',)
+
+IMPR_TABLE(TABLE=NBMOD31,
+           UNITE=6,)
+
+TEST_TABLE(TABLE=NBMOD31,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=10,
+           TYPE_TEST='SOMM',
+           VALE_REFE_I=10,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD31,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=0,
+           TYPE_TEST='MIN',
+           VALE_REFE_I=0,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD31,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=3,
+           TYPE_TEST='MAX',
+           VALE_REFE_I=3,
+           REFERENCE='ANALYTIQUE',)
+
+#
+# POUR TEST COUPLAGE INFO_MODE+CALC_MODES
+# ON SELECTIONNE UNE BANDE FREQUENTIELLE REGROUPANT LES DEUX PREMIERS
+# INTERVALLES REGOUPANT 1 + 0 MODES
+
+MOMI0=CALC_MODES(OPTION='BANDE',
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 CALC_FREQ=_F(FREQ=(0.05,0.06,),
+                              TABLE_FREQ=NBMOD31,),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
+
+#       3.1 CALC_MODES
+#       ---------------------
+
+MOM0=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
+
+MOM1=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',),
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
+
+MOM2=CALC_MODES(OPTION='CENTRE',
+                SOLVEUR_MODAL=_F(METHODE='JACOBI',
+                                 NMAX_ITER_BATHE=30,),
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=0.02,
+                             NMAX_FREQ=10,),
+                SOLVEUR=_F(METHODE='MUMPS',),)
+
+MOM1_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_SIMPLE',),
+                   MATR_RIGI=RIGAS,
+                   MATR_MASS=MASAS,
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='MUMPS',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
+
+MOM2_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_EQUI',),
+                   MATR_RIGI=RIGAS,
+                   MATR_MASS=MASAS,
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='MUMPS',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
+
+#       3.2 CALC_MODES, METHODE DES ITERATIONS INVERSES:
+#       ---------------------
+
+MOM4=CALC_MODES(OPTION='PROCHE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                INFO=1,)
+
+MOM5=CALC_MODES(OPTION='SEPARE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                INFO=1,)
+
+MOM6=CALC_MODES(OPTION='AJUSTE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                INFO=1,)
+
+#       5.3. SOLVEUR : 'MUMPS' :
+#       ---------------------
+
+MOC0M=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(APPROCHE='REEL',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MUMPS',),)
+
+MOC1M=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  MODE_RIGIDE='NON',
+                                  APPROCHE='REEL',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MUMPS',),)
+
+MOC2M=CALC_MODES(OPTION='PROCHE',
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                 SOLVEUR=_F(METHODE='MUMPS',),
+                 VERI_MODE=_F(STOP_ERREUR='OUI',),)
+
+MOC3M=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  TYPE_QZ='QZ_EQUI',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MUMPS',),
+                 VERI_MODE=_F(SEUIL=1e-05,),
+                 INFO=1,)
+
+# ENGENDRE_TEST(CO=(MOM0,MOM1,MOM2,MOM1_QZ,MOM2_QZ,MOM4,MOM5,MOM6,),)
+#
+# ENGENDRE_TEST(CO=(MOC0M,MOC1M,MOC2M,MOC3M,),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM0,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=1.90343867088,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=7.35259672572,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=4.80263926735,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=4,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.92699860089,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=5,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.80988079739,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.1325468358,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.17887589716,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=1.90343867088,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=7.35259672567,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=4.80263926734,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=4,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.92699860096,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=5,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.80988079676,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.13254683533,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.17887589951,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=1.90349750108,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=7.3525715425,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=4.80262324883,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=4,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.92699259245,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=5,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.80988028073,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.13254449202,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.17887573958,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=8,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=5.35506384324,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=9,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.90845860151,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.47842908254,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=1.90343866881,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=7.35259668234,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=4.80263768579,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=4,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.9269927545,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=5,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.80988005102,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.13253544491,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.17887481808,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=1.90343874808,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=7.35259672286,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=4.80263769268,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=4,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.92699275397,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=5,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.80988005192,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.13253544524,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.17887481744,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM4,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=4.80263814375,),
+                _F(RESULTAT=MOM4,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=5.35504809393,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM5,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.92739082632,),
+                _F(RESULTAT=MOM5,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.8082260727,),
+                _F(RESULTAT=MOM5,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.13294471692,),
+                _F(RESULTAT=MOM5,
+                   NUME_ORDRE=4,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.17886625206,),),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MOM6,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.92704133585,),
+                _F(RESULTAT=MOM6,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=2.80987990527,),
+                _F(RESULTAT=MOM6,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.13253534366,),
+                _F(RESULTAT=MOM6,
+                   NUME_ORDRE=4,
+                   NOM_CHAM='DEPL',
+                   TYPE_TEST='SOMM_ABS',
+                   TOLE_MACHINE=1e-10,
+                   VALE_CALC=3.17887481746,),),)
+
+FIN()

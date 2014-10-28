@@ -1,7 +1,7 @@
 # TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
 # person_in_charge: jacques.pellet at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,8 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-      MESURE_TEMPS=_F(NIVE_DETAIL=2))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),
+      MESURE_TEMPS=_F(NIVE_DETAIL=2,),)
 
 # ================================================
 #
@@ -27,7 +28,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
 #        - LEUR INTER-OPERABILITE AVEC LES SOLVEURS LINEAIRES DIRECTS
 #        - CERTAINES COMMANDES DE PRE ET POSTTRAITEMENTS MODAUX (INFO_MODE,
 #             NORM_MODE...)
-
 #
 #      MECANIQUE 3D + COQUE + POUTRE + MODES PROPRES
 #
@@ -36,1389 +36,1312 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
 #      PAR UN PASSAGE PRECEDENT DU CODE_ASTER.
 # ================================================
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE()
 
-MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
-     _F(  MAILLE = 'HE1',    PHENOMENE = 'MECANIQUE',MODELISATION = '3D'),
-          _F(  GROUP_MA = 'GRMA1',PHENOMENE = 'MECANIQUE',MODELISATION = 'DKT'),
-          _F(  GROUP_MA = 'GRMA2',PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_E'))
-     )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(MAILLE='HE1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA='GRMA1',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(GROUP_MA='GRMA2',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='POU_D_E',),),)
 
-MAT=DEFI_MATERIAU(  ELAS=_F( E = 2.E5, NU = 0.3, RHO = 8000., ALPHA = 0.))
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                          NU=0.3,
+                          RHO=8000.0,
+                          ALPHA=0.0,),)
 
-CHMA=AFFE_MATERIAU(  MAILLAGE=MA, AFFE=_F( TOUT = 'OUI', MATER = MAT))
+CHMA=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MAT,),)
 
-CARA=AFFE_CARA_ELEM(  MODELE=MO,
-       COQUE=_F(  GROUP_MA = 'GRMA1',EPAIS = 1.),
-       POUTRE=_F(  GROUP_MA = 'GRMA2',
-                SECTION = 'RECTANGLE',CARA = ('HZ','HY',),VALE = (3.,1.,))
-       )
+CARA=AFFE_CARA_ELEM(MODELE=MO,
+                    POUTRE=_F(GROUP_MA='GRMA2',
+                              SECTION='RECTANGLE',
+                              CARA=('HZ','HY',),
+                              VALE=(3.0,1.0,),),
+                    COQUE=_F(GROUP_MA='GRMA1',
+                             EPAIS=1.0,),)
 
-CHM1=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-       _F( GROUP_NO = 'GRNO1', DX = 0., DY = 0., DZ = 0.),
-                _F( NOEUD = ('N10','N11','N26','N23',), DZ = 0.))
-       )
+CHM1=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,),
+                              _F(NOEUD=('N10','N11','N26','N23',),
+                                 DZ=0.0,),),)
 
-CHM2=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_GROUP=(
-
-        _F(   NOEUD_1 = ('N4','N16',),
-           NOEUD_2 = ('N21','N25',),
-           DDL_1 = 'DX',
-           DDL_2 = 'DX',
-           COEF_MULT_1 = 1.,
-           COEF_MULT_2 = -1.,
-           COEF_IMPO = 0.),
-        _F(   NOEUD_1 = ('N4','N16',),
-           NOEUD_2 = ('N21','N25',),
-           DDL_1 = 'DY',
-           DDL_2 = 'DY',
-           COEF_MULT_1 = 1.,
-           COEF_MULT_2 = -1.,
-           COEF_IMPO = 0.),
-        _F(   NOEUD_1 = ('N4','N16',),
-           NOEUD_2 = ('N21','N25',),
-           DDL_1 = 'DZ',
-           DDL_2 = 'DZ',
-           COEF_MULT_1 = 1.,
-           COEF_MULT_2 = -1.,
-           COEF_IMPO = 0.),
-        _F(   NOEUD_1 = ('N5','N11','N17',),
-           GROUP_NO_2 = 'GRNO3',
-           DDL_1 = 'DX',
-           DDL_2 = 'DRZ',
-           COEF_MULT_1 = 1.,
-           COEF_MULT_2 = 0.5,
-           COEF_IMPO = 0.),
-        _F(   NOEUD_1 = ('N3','N15','N10',),
-           GROUP_NO_2 = 'GRNO3',
-           DDL_1 = 'DX',
-           DDL_2 = 'DRZ',
-           COEF_MULT_1 = 1.,
-           COEF_MULT_2 = -0.5,
-           COEF_IMPO = 0.)),LIAISON_DDL=(
-
-        _F( NOEUD = ('N22','N23',), DDL = ('DRZ','DRZ',),
-         COEF_MULT = (1.,-1.,), COEF_IMPO = 0.),
-        _F( NOEUD = ('N23','N24',), DDL = ('DRZ','DRZ',),
-         COEF_MULT = (1.,-1.,), COEF_IMPO = 0.)),
-       FORCE_NODALE=_F( NOEUD = 'N29',FY = -1.)
-      )
+CHM2=AFFE_CHAR_MECA(MODELE=MO,
+                    LIAISON_DDL=(_F(NOEUD=('N22','N23',),
+                                    DDL=('DRZ','DRZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),
+                                 _F(NOEUD=('N23','N24',),
+                                    DDL=('DRZ','DRZ',),
+                                    COEF_MULT=(1.0,-1.0,),
+                                    COEF_IMPO=0.0,),),
+                    LIAISON_GROUP=(_F(NOEUD_1=('N4','N16',),
+                                      NOEUD_2=('N21','N25',),
+                                      DDL_1='DX',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DX',
+                                      COEF_MULT_2=-1.0,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N4','N16',),
+                                      NOEUD_2=('N21','N25',),
+                                      DDL_1='DY',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DY',
+                                      COEF_MULT_2=-1.0,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N4','N16',),
+                                      NOEUD_2=('N21','N25',),
+                                      DDL_1='DZ',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DZ',
+                                      COEF_MULT_2=-1.0,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N5','N11','N17',),
+                                      GROUP_NO_2='GRNO3',
+                                      DDL_1='DX',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DRZ',
+                                      COEF_MULT_2=0.5,
+                                      COEF_IMPO=0.0,),
+                                   _F(NOEUD_1=('N3','N15','N10',),
+                                      GROUP_NO_2='GRNO3',
+                                      DDL_1='DX',
+                                      COEF_MULT_1=1.0,
+                                      DDL_2='DRZ',
+                                      COEF_MULT_2=-0.5,
+                                      COEF_IMPO=0.0,),),
+                    FORCE_NODALE=_F(NOEUD='N29',
+                                    FY=-1.0,),)
 
 #
 #      MATRICES ELEMENTAIRES ET ASSEMBLAGE
 #      ----------------------------------------------------
-RIGEL=CALC_MATR_ELEM(  MODELE=MO,  CHAM_MATER=CHMA,
-               CHARGE=( CHM1,CHM2,),
-               OPTION='RIGI_MECA',
-                        CARA_ELEM=CARA  )
 
-MASEL=CALC_MATR_ELEM(  MODELE=MO,   CHAM_MATER=CHMA,
-           OPTION='MASS_MECA',  CARA_ELEM=CARA  )
+RIGEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MO,
+                     CHAM_MATER=CHMA,
+                     CARA_ELEM=CARA,
+                     CHARGE=(CHM1,CHM2,),)
+
+MASEL=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MO,
+                     CHAM_MATER=CHMA,
+                     CARA_ELEM=CARA,)
 
 #-----------------------------------------------------------------------
 #    GEP SYMETRIQUE REEL
 #-----------------------------------------------------------------------
-
 #       1. SOLVEUR : 'LDLT' :
 #       ---------------------
 
-NU=NUME_DDL(MATR_RIGI=RIGEL)
-RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
-MASAS=ASSE_MATRICE(MATR_ELEM=MASEL,NUME_DDL=NU)
+NU=NUME_DDL(MATR_RIGI=RIGEL,)
 
+RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,
+                   NUME_DDL=NU,)
+
+MASAS=ASSE_MATRICE(MATR_ELEM=MASEL,
+                   NUME_DDL=NU,)
 
 # VALEUR ATTENDUE: 66
-NBMOD10 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,FREQ=(0.,100.0),
-          COMPTAGE=_F(SEUIL_FREQ=1.E-3,METHODE='STURM'),
-          SOLVEUR=_F(METHODE='LDLT'),NIVEAU_PARALLELISME='PARTIEL')
-TEST_TABLE(TABLE=NBMOD10,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', VALE_CALC_I=66, VALE_REFE_I=66)
+
+NBMOD10=INFO_MODE(MATR_RIGI=RIGAS,
+                  MATR_MASS=MASAS,
+                  FREQ=(0.0,100.0,),
+                  COMPTAGE=_F(METHODE='STURM',
+                              SEUIL_FREQ=0.001,),
+                  SOLVEUR=_F(METHODE='LDLT',),
+                  NIVEAU_PARALLELISME='PARTIEL',)
+
+TEST_TABLE(TABLE=NBMOD10,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=66,
+           VALE_REFE_I=66,
+           REFERENCE='ANALYTIQUE',)
 
 # VALEURS ATTENDUES: 3, 3, 1, 0 ET 3
-NBMOD11 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,
-             FREQ=(0.,1.E-2,5.E-2,5.5E-2,6.E-2,10.E-2),
-             COMPTAGE=_F(SEUIL_FREQ=1.E-3,METHODE='STURM'),
-             SOLVEUR=_F(METHODE='LDLT'),NIVEAU_PARALLELISME='PARTIEL')
-IMPR_TABLE(TABLE=NBMOD11,UNITE=6)
-TEST_TABLE(TABLE=NBMOD11,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='SOMM',
-           VALE_CALC_I=10,VALE_REFE_I=10)
-TEST_TABLE(TABLE=NBMOD11,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='MIN',
-           VALE_CALC_I=0,VALE_REFE_I=0,)
-TEST_TABLE(TABLE=NBMOD11,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='MAX',
-           VALE_CALC_I=3,VALE_REFE_I=3)
+
+NBMOD11=INFO_MODE(MATR_RIGI=RIGAS,
+                  MATR_MASS=MASAS,
+                  FREQ=(0.0,0.01,0.05,0.055,0.06,0.1,),
+                  COMPTAGE=_F(METHODE='STURM',
+                              SEUIL_FREQ=0.001,),
+                  SOLVEUR=_F(METHODE='LDLT',),
+                  NIVEAU_PARALLELISME='PARTIEL',)
+
+IMPR_TABLE(TABLE=NBMOD11,
+           UNITE=6,)
+
+TEST_TABLE(TABLE=NBMOD11,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=10,
+           TYPE_TEST='SOMM',
+           VALE_REFE_I=10,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD11,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=0,
+           TYPE_TEST='MIN',
+           VALE_REFE_I=0,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD11,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=3,
+           TYPE_TEST='MAX',
+           VALE_REFE_I=3,
+           REFERENCE='ANALYTIQUE',)
 
 #
 # POUR TEST COUPLAGE INFO_MODE+CALC_MODES
 # ON SELECTIONNE UNE BANDE FREQUENTIELLE REGROUPANT LES DEUX PREMIERS
 # INTERVALLES REGOUPANT 3 + 3 MODES
 # ON VALIDE PAR UN CALC_MODES OPTION 'BANDE' STANDARD
-MODI0=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(FREQ=(0.,0.05),
-                              TABLE_FREQ=NBMOD11,
-                              ),
-                 OPTION='BANDE',
-                 SOLVEUR=_F(METHODE='LDLT',
-                            ),
-                 MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                  ),
-                 )
 
-MODI1=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(FREQ=(0.,0.05),
-                              ),
-                 OPTION='BANDE',
-                 SOLVEUR=_F(METHODE='LDLT',
-                            ),
+MODI0=CALC_MODES(OPTION='BANDE',
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                 MATR_RIGI=RIGAS,
                  MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                  ),
-                 )
+                 CALC_FREQ=_F(FREQ=(0.0,0.05,),
+                              TABLE_FREQ=NBMOD11,),
+                 SOLVEUR=_F(METHODE='LDLT',),)
 
+MODI1=CALC_MODES(OPTION='BANDE',
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 CALC_FREQ=_F(FREQ=(0.0,0.05,),),
+                 SOLVEUR=_F(METHODE='LDLT',),)
 
 #       1.1 CALC_MODES
-
 #       ---------------------
 
-
-MOD0=CALC_MODES(MATR_RIGI=RIGAS,
-                VERI_MODE=_F(PREC_SHIFT=0.008,
-                             STOP_ERREUR='OUI',
-                             SEUIL=1.5E-2,
-                             ),
-                CALC_FREQ=_F(NMAX_FREQ=7,
-                             ),
-                OPTION='PLUS_PETITE',
-                SOLVEUR=_F(METHODE='LDLT',
-                           ),
+MOD0=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                MATR_RIGI=RIGAS,
                 MATR_MASS=MASAS,
-                SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                 ),
-                )
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='LDLT',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
 
-
-MOD1=CALC_MODES(MATR_RIGI=RIGAS,
-                VERI_MODE=_F(PREC_SHIFT=0.008,
-                             STOP_ERREUR='OUI',
-                             SEUIL=1.5E-2,
-                             ),
-                CALC_FREQ=_F(NMAX_FREQ=7,
-                             ),
-                OPTION='PLUS_PETITE',
-                SOLVEUR=_F(METHODE='LDLT',
-                           ),
+MOD1=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',),
+                MATR_RIGI=RIGAS,
                 MATR_MASS=MASAS,
-                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
-                                 ),
-                )
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='LDLT',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
 
-
-MOD2=CALC_MODES(MATR_RIGI=RIGAS,
-                CALC_FREQ=_F(NMAX_FREQ=10,
-                             FREQ=2.E-2,
-                             ),
-                OPTION='CENTRE',
-                SOLVEUR=_F(METHODE='LDLT',
-                           ),
-                MATR_MASS=MASAS,
+MOD2=CALC_MODES(OPTION='CENTRE',
                 SOLVEUR_MODAL=_F(METHODE='JACOBI',
-                                 NMAX_ITER_BATHE=30,
-                                 ),
-                )
+                                 NMAX_ITER_BATHE=30,),
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=0.02,
+                             NMAX_FREQ=10,),
+                SOLVEUR=_F(METHODE='LDLT',),)
 
-
-MOD1_QZ=CALC_MODES(MATR_RIGI=RIGAS,
-                   VERI_MODE=_F(PREC_SHIFT=0.008,
-                                STOP_ERREUR='OUI',
-                                SEUIL=1.5E-2,
-                                ),
-                   OPTION='PLUS_PETITE',
-                   CALC_FREQ=_F(NMAX_FREQ=7,
-                                ),
-                   SOLVEUR=_F(METHODE='LDLT',
-                              ),
+MOD1_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_SIMPLE',),
+                   MATR_RIGI=RIGAS,
                    MATR_MASS=MASAS,
-                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_SIMPLE',
-                                    METHODE='QZ',
-                                    ),
-                   )
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='LDLT',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
 
-MOD2_QZ=CALC_MODES(MATR_RIGI=RIGAS,
-                   VERI_MODE=_F(PREC_SHIFT=0.008,
-                                STOP_ERREUR='OUI',
-                                SEUIL=1.5E-2,
-                                ),
-                   OPTION='PLUS_PETITE',
-                   CALC_FREQ=_F(NMAX_FREQ=7,
-                                ),
-                   SOLVEUR=_F(METHODE='LDLT',
-                              ),
+MOD2_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_EQUI',),
+                   MATR_RIGI=RIGAS,
                    MATR_MASS=MASAS,
-                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
-                                    METHODE='QZ',
-                                    ),
-                   )
-
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='LDLT',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
 
 #       1.2 CALC_MODES, METHODE DES ITERATIONS INVERSES:
-
 #       ---------------------
 
-MOD4=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='PROCHE',
-                 CALC_FREQ=_F( FREQ = (6.2E-3, 6.14E-2) ),
-                 SOLVEUR=_F(METHODE='LDLT'),
-                )
+MOD4=CALC_MODES(OPTION='PROCHE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                SOLVEUR=_F(METHODE='LDLT',),)
 
+MOD5=CALC_MODES(OPTION='SEPARE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='LDLT',),)
 
-MOD5=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='SEPARE',
-                 CALC_FREQ=_F( FREQ = (1.E-2, 6.E-2) ),
-                 SOLVEUR=_F(METHODE='LDLT'),
-               )
-
-
-MOD6=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='AJUSTE',
-                 CALC_FREQ=_F( FREQ = (1.E-2, 6.E-2) ),
-                 SOLVEUR=_F(METHODE='LDLT'),
-                )
-
+MOD6=CALC_MODES(OPTION='AJUSTE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='LDLT',),)
 
 #-----------------------------------------------------------------------
-
 #       2. SOLVEUR : 'MULT_FRONT' :
 #       ---------------------
-
 # VALEUR ATTENDUE: 66
-NBMOD2 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,FREQ=(0.,100.),
-                   COMPTAGE=_F(METHODE='STURM'),
-                   SOLVEUR=_F(METHODE='MULT_FRONT'),NIVEAU_PARALLELISME='PARTIEL')
-TEST_TABLE(TABLE=NBMOD2,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', VALE_CALC_I=66,VALE_REFE_I=66)
+
+NBMOD2=INFO_MODE(MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 FREQ=(0.0,100.0,),
+                 COMPTAGE=_F(METHODE='STURM',),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),
+                 NIVEAU_PARALLELISME='PARTIEL',)
+
+TEST_TABLE(TABLE=NBMOD2,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=66,
+           VALE_REFE_I=66,
+           REFERENCE='ANALYTIQUE',)
 
 # VALEURS ATTENDUES: 3, 3, 1, 0 ET 3
-NBMOD21 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,
-             FREQ=(0.,1.E-2,5.E-2,5.5E-2,6.E-2,10.E-2),
-             COMPTAGE=_F(SEUIL_FREQ=1.E-3,METHODE='STURM'),
-             SOLVEUR=_F(METHODE='MULT_FRONT'),NIVEAU_PARALLELISME='PARTIEL')
-IMPR_TABLE(TABLE=NBMOD21,UNITE=6)
-TEST_TABLE(TABLE=NBMOD21,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='SOMM',
-           VALE_CALC_I=10,VALE_REFE_I=10)
-TEST_TABLE(TABLE=NBMOD21,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='MIN',
-           VALE_CALC_I=0,VALE_REFE_I=0)
-TEST_TABLE(TABLE=NBMOD21,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='MAX',
-           VALE_CALC_I=3,VALE_REFE_I=3)
+
+NBMOD21=INFO_MODE(MATR_RIGI=RIGAS,
+                  MATR_MASS=MASAS,
+                  FREQ=(0.0,0.01,0.05,0.055,0.06,0.1,),
+                  COMPTAGE=_F(METHODE='STURM',
+                              SEUIL_FREQ=0.001,),
+                  SOLVEUR=_F(METHODE='MULT_FRONT',),
+                  NIVEAU_PARALLELISME='PARTIEL',)
+
+IMPR_TABLE(TABLE=NBMOD21,
+           UNITE=6,)
+
+TEST_TABLE(TABLE=NBMOD21,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=10,
+           TYPE_TEST='SOMM',
+           VALE_REFE_I=10,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD21,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=0,
+           TYPE_TEST='MIN',
+           VALE_REFE_I=0,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD21,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=3,
+           TYPE_TEST='MAX',
+           VALE_REFE_I=3,
+           REFERENCE='ANALYTIQUE',)
+
 #
 # POUR TEST COUPLAGE INFO_MODE+CALC_MODES
 # ON SELECTIONNE UNE BANDE FREQUENTIELLE REGROUPANT LES DEUX PREMIERS
 # INTERVALLES REGOUPANT 3 + 3 + 1 MODES
-MOFI0=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(FREQ=(0.,0.055),
-                              TABLE_FREQ=NBMOD21,
-                              ),
-                 OPTION='BANDE',
-                 SOLVEUR=_F(METHODE='MULT_FRONT',
-                            ),
+
+MOFI0=CALC_MODES(OPTION='BANDE',
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                 MATR_RIGI=RIGAS,
                  MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                  ),
-                 )
+                 CALC_FREQ=_F(FREQ=(0.0,0.055,),
+                              TABLE_FREQ=NBMOD21,),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
 #       2.1 CALC_MODES
-
 #       ---------------------
 
-MOF0=CALC_MODES(MATR_RIGI=RIGAS,
-                VERI_MODE=_F(PREC_SHIFT=0.008,
-                             STOP_ERREUR='OUI',
-                             SEUIL=1.5E-2,
-                             ),
-                CALC_FREQ=_F(NMAX_FREQ=7,
-                             ),
-                OPTION='PLUS_PETITE',
-                SOLVEUR=_F(METHODE='MULT_FRONT',
-                           ),
+MOF0=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                MATR_RIGI=RIGAS,
                 MATR_MASS=MASAS,
-                SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                 ),
-                )
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='MULT_FRONT',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
 
-
-MOF1=CALC_MODES(MATR_RIGI=RIGAS,
-                VERI_MODE=_F(PREC_SHIFT=0.008,
-                             STOP_ERREUR='OUI',
-                             SEUIL=1.5E-2,
-                             ),
-                CALC_FREQ=_F(NMAX_FREQ=7,
-                             ),
-                OPTION='PLUS_PETITE',
-                SOLVEUR=_F(METHODE='MULT_FRONT',
-                           ),
+MOF1=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',),
+                MATR_RIGI=RIGAS,
                 MATR_MASS=MASAS,
-                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
-                                 ),
-                )
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='MULT_FRONT',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
 
-
-MOF2=CALC_MODES(MATR_RIGI=RIGAS,
-                CALC_FREQ=_F(NMAX_FREQ=10,
-                             FREQ=2.E-2,
-                             ),
-                OPTION='CENTRE',
-                SOLVEUR=_F(METHODE='MULT_FRONT',
-                           ),
-                MATR_MASS=MASAS,
+MOF2=CALC_MODES(OPTION='CENTRE',
                 SOLVEUR_MODAL=_F(METHODE='JACOBI',
-                                 NMAX_ITER_BATHE=30,
-                                 ),
-                )
+                                 NMAX_ITER_BATHE=30,),
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=0.02,
+                             NMAX_FREQ=10,),
+                SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
-
-MOF1_QZ=CALC_MODES(MATR_RIGI=RIGAS,
-                   VERI_MODE=_F(PREC_SHIFT=0.008,
-                                STOP_ERREUR='OUI',
-                                SEUIL=1.5E-2,
-                                ),
-                   OPTION='PLUS_PETITE',
-                   CALC_FREQ=_F(NMAX_FREQ=7,
-                                ),
-                   SOLVEUR=_F(METHODE='MULT_FRONT',
-                              ),
+MOF1_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_SIMPLE',),
+                   MATR_RIGI=RIGAS,
                    MATR_MASS=MASAS,
-                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_SIMPLE',
-                                    METHODE='QZ',
-                                    ),
-                   )
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
 
-
-MOF2_QZ=CALC_MODES(MATR_RIGI=RIGAS,
-                   VERI_MODE=_F(PREC_SHIFT=0.008,
-                                STOP_ERREUR='OUI',
-                                SEUIL=1.5E-2,
-                                ),
-                   OPTION='PLUS_PETITE',
-                   CALC_FREQ=_F(NMAX_FREQ=7,
-                                ),
-                   SOLVEUR=_F(METHODE='MULT_FRONT',
-                              ),
+MOF2_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_EQUI',),
+                   MATR_RIGI=RIGAS,
                    MATR_MASS=MASAS,
-                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
-                                    METHODE='QZ',
-                                    ),
-                   )
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
 
 #       2.2 CALC_MODES, METHODE DES ITERATIONS INVERSES:
-
 #       ---------------------
 
-MOF4=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='PROCHE',
-                 CALC_FREQ=_F( FREQ = (6.2E-3, 6.14E-2) ),
-                 SOLVEUR=_F( METHODE='MULT_FRONT' ),
-                )
+MOF4=CALC_MODES(OPTION='PROCHE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
-MOF5=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='SEPARE',
-                 CALC_FREQ=_F( FREQ = (1.E-2, 6.E-2) ),
-                 SOLVEUR=_F( METHODE='MULT_FRONT' ),
-                )
+MOF5=CALC_MODES(OPTION='SEPARE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
-MOF6=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='AJUSTE',
-                 CALC_FREQ=_F( FREQ = (1.E-2, 6.E-2) ),
-                 SOLVEUR=_F( METHODE='MULT_FRONT' ),
-                )
-
-
+MOF6=CALC_MODES(OPTION='AJUSTE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
 #-----------------------------------------------------------------------
-
 #       3. SOLVEUR : 'MUMPS' :
 #       ---------------------
-
 # VALEUR ATTENDUE: 66
-NBMOD3 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,FREQ=(0.,100.),
-                   COMPTAGE=_F(METHODE='STURM'),
-                   SOLVEUR=_F(METHODE='MUMPS',),NIVEAU_PARALLELISME='PARTIEL',)
-TEST_TABLE(TABLE=NBMOD3,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', VALE_CALC_I=66, VALE_REFE_I=66)
 
+NBMOD3=INFO_MODE(MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 FREQ=(0.0,100.0,),
+                 COMPTAGE=_F(METHODE='STURM',),
+                 SOLVEUR=_F(METHODE='MUMPS',),
+                 NIVEAU_PARALLELISME='PARTIEL',)
+
+TEST_TABLE(TABLE=NBMOD3,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=66,
+           VALE_REFE_I=66,
+           REFERENCE='ANALYTIQUE',)
 
 # VALEURS ATTENDUES: 3, 3, 1, 0 ET 3
-NBMOD31 = INFO_MODE(MATR_RIGI=RIGAS,MATR_MASS=MASAS,
-             FREQ=(0.,1.E-2,5.E-2,5.5E-2,6.E-2,10.E-2),
-             COMPTAGE=_F(SEUIL_FREQ=1.E-3,METHODE='STURM'),
-             SOLVEUR=_F(METHODE='MUMPS'),NIVEAU_PARALLELISME='PARTIEL',)
-IMPR_TABLE(TABLE=NBMOD31,UNITE=6)
-TEST_TABLE(TABLE=NBMOD31,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='SOMM',
-           VALE_CALC_I=10,VALE_REFE_I=10)
-TEST_TABLE(TABLE=NBMOD31,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='MIN',
-           VALE_CALC_I=0,VALE_REFE_I=0)
-TEST_TABLE(TABLE=NBMOD31,REFERENCE='ANALYTIQUE',
-           NOM_PARA='NB_MODE', TYPE_TEST='MAX',
-           VALE_CALC_I=3,VALE_REFE_I=3)
+
+NBMOD31=INFO_MODE(MATR_RIGI=RIGAS,
+                  MATR_MASS=MASAS,
+                  FREQ=(0.0,0.01,0.05,0.055,0.06,0.1,),
+                  COMPTAGE=_F(METHODE='STURM',
+                              SEUIL_FREQ=0.001,),
+                  SOLVEUR=_F(METHODE='MUMPS',),
+                  NIVEAU_PARALLELISME='PARTIEL',)
+
+IMPR_TABLE(TABLE=NBMOD31,
+           UNITE=6,)
+
+TEST_TABLE(TABLE=NBMOD31,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=10,
+           TYPE_TEST='SOMM',
+           VALE_REFE_I=10,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD31,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=0,
+           TYPE_TEST='MIN',
+           VALE_REFE_I=0,
+           REFERENCE='ANALYTIQUE',)
+
+TEST_TABLE(TABLE=NBMOD31,
+           NOM_PARA='NB_MODE',
+           VALE_CALC_I=3,
+           TYPE_TEST='MAX',
+           VALE_REFE_I=3,
+           REFERENCE='ANALYTIQUE',)
+
 #
 # POUR TEST COUPLAGE INFO_MODE+CALC_MODES
 # ON SELECTIONNE UNE BANDE FREQUENTIELLE REGROUPANT LES DEUX PREMIERS
 # INTERVALLES REGOUPANT 1 + 0 MODES
-MOMI0=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(FREQ=(0.05,0.06),
-                              TABLE_FREQ=NBMOD31,
-                              ),
-                 OPTION='BANDE',
-                 SOLVEUR=_F(METHODE='MULT_FRONT',
-                            ),
+
+MOMI0=CALC_MODES(OPTION='BANDE',
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                 MATR_RIGI=RIGAS,
                  MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                  ),
-                 )
+                 CALC_FREQ=_F(FREQ=(0.05,0.06,),
+                              TABLE_FREQ=NBMOD31,),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
 #       3.1 CALC_MODES
-
 #       ---------------------
 
-MOM0=CALC_MODES(MATR_RIGI=RIGAS,
-                VERI_MODE=_F(PREC_SHIFT=0.008,
-                             STOP_ERREUR='OUI',
-                             SEUIL=1.5E-2,
-                             ),
-                CALC_FREQ=_F(NMAX_FREQ=7,
-                             ),
-                OPTION='PLUS_PETITE',
-                SOLVEUR=_F(METHODE='MUMPS',
-                           ),
+MOM0=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='SORENSEN',),
+                MATR_RIGI=RIGAS,
                 MATR_MASS=MASAS,
-                SOLVEUR_MODAL=_F(METHODE='SORENSEN',
-                                 ),
-                )
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
 
-
-MOM1=CALC_MODES(MATR_RIGI=RIGAS,
-                VERI_MODE=_F(PREC_SHIFT=0.008,
-                             STOP_ERREUR='OUI',
-                             SEUIL=1.5E-2,
-                             ),
-                CALC_FREQ=_F(NMAX_FREQ=7,
-                             ),
-                OPTION='PLUS_PETITE',
-                SOLVEUR=_F(METHODE='MUMPS',
-                           ),
+MOM1=CALC_MODES(OPTION='PLUS_PETITE',
+                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',),
+                MATR_RIGI=RIGAS,
                 MATR_MASS=MASAS,
-                SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
-                                 ),
-                )
+                CALC_FREQ=_F(NMAX_FREQ=7,),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                VERI_MODE=_F(STOP_ERREUR='OUI',
+                             SEUIL=0.015,
+                             PREC_SHIFT=0.008,),)
 
-
-MOM2=CALC_MODES(MATR_RIGI=RIGAS,
-                CALC_FREQ=_F(NMAX_FREQ=10,
-                             FREQ=2.E-2,
-                             ),
-                OPTION='CENTRE',
-                SOLVEUR=_F(METHODE='MUMPS',
-                           ),
-                MATR_MASS=MASAS,
+MOM2=CALC_MODES(OPTION='CENTRE',
                 SOLVEUR_MODAL=_F(METHODE='JACOBI',
-                                 NMAX_ITER_BATHE=30,
-                                 ),
-                )
+                                 NMAX_ITER_BATHE=30,),
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=0.02,
+                             NMAX_FREQ=10,),
+                SOLVEUR=_F(METHODE='MUMPS',),)
 
-
-MOM1_QZ=CALC_MODES(MATR_RIGI=RIGAS,
-                   VERI_MODE=_F(PREC_SHIFT=0.008,
-                                STOP_ERREUR='OUI',
-                                SEUIL=1.5E-2,
-                                ),
-                   OPTION='PLUS_PETITE',
-                   CALC_FREQ=_F(NMAX_FREQ=7,
-                                ),
-                   SOLVEUR=_F(METHODE='MUMPS',
-                              ),
+MOM1_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_SIMPLE',),
+                   MATR_RIGI=RIGAS,
                    MATR_MASS=MASAS,
-                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_SIMPLE',
-                                    METHODE='QZ',
-                                    ),
-                   )
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='MUMPS',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
 
-MOM2_QZ=CALC_MODES(MATR_RIGI=RIGAS,
-                   VERI_MODE=_F(PREC_SHIFT=0.008,
-                                STOP_ERREUR='OUI',
-                                SEUIL=1.5E-2,
-                                ),
-                   OPTION='PLUS_PETITE',
-                   CALC_FREQ=_F(NMAX_FREQ=7,
-                                ),
-                   SOLVEUR=_F(METHODE='MUMPS',
-                              ),
+MOM2_QZ=CALC_MODES(OPTION='PLUS_PETITE',
+                   SOLVEUR_MODAL=_F(METHODE='QZ',
+                                    TYPE_QZ='QZ_EQUI',),
+                   MATR_RIGI=RIGAS,
                    MATR_MASS=MASAS,
-                   SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
-                                    METHODE='QZ',
-                                    ),
-                   )
-
+                   CALC_FREQ=_F(NMAX_FREQ=7,),
+                   SOLVEUR=_F(METHODE='MUMPS',),
+                   VERI_MODE=_F(STOP_ERREUR='OUI',
+                                SEUIL=0.015,
+                                PREC_SHIFT=0.008,),)
 
 #       3.2 CALC_MODES, METHODE DES ITERATIONS INVERSES:
-
 #       ---------------------
 
-MOM4=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='PROCHE',
-                 CALC_FREQ=_F( FREQ = (6.2E-3, 6.14E-2) ),
-                 SOLVEUR=_F(METHODE='MUMPS'),
-                 INFO=1,
-               )
+MOM4=CALC_MODES(OPTION='PROCHE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                INFO=1,)
 
+MOM5=CALC_MODES(OPTION='SEPARE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                INFO=1,)
 
-MOM5=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='SEPARE',
-                 CALC_FREQ=_F( FREQ = (1.E-2, 6.E-2) ),
-                 SOLVEUR=_F(METHODE='MUMPS'),
-                 INFO=1,
-               )
-
-
-MOM6=CALC_MODES( MATR_RIGI=RIGAS,
-                 MATR_MASS=MASAS,
-                 OPTION='AJUSTE',
-                 CALC_FREQ=_F( FREQ = (1.E-2, 6.E-2) ),
-                 SOLVEUR=_F(METHODE='MUMPS'),
-                 INFO=1,
-               )
-
-
+MOM6=CALC_MODES(OPTION='AJUSTE',
+                MATR_RIGI=RIGAS,
+                MATR_MASS=MASAS,
+                CALC_FREQ=_F(FREQ=(0.01,0.06,),),
+                SOLVEUR=_F(METHODE='MUMPS',),
+                INFO=1,)
 
 #-----------------------------------------------------------------------
 #    PRE ET POST-TRAITEMENTS MODAUX
 #-----------------------------------------------------------------------
-
 #       4. NORM_MODE :
 #       ---------------------
 
-MODN1=NORM_MODE(   MODE=MOD1,   NORME='MASS_GENE' )
+MODN1=NORM_MODE(MODE=MOD1,
+                NORME='MASS_GENE',)
 
-MODN2=NORM_MODE(   MODE=MOD1,   NORME='RIGI_GENE' )
+MODN2=NORM_MODE(MODE=MOD1,
+                NORME='RIGI_GENE',)
 
-MODN3=NORM_MODE(   MODE=MOD1,   NORME='TRAN' )
+MODN3=NORM_MODE(MODE=MOD1,
+                NORME='TRAN',)
 
-MODN4=NORM_MODE(   MODE=MOD1,   NORME='TRAN_ROTA' )
+MODN4=NORM_MODE(MODE=MOD1,
+                NORME='TRAN_ROTA',)
 
-MODN5=NORM_MODE(   MODE=MOD1,   NORME='EUCL' )
+MODN5=NORM_MODE(MODE=MOD1,
+                NORME='EUCL',)
 
-MODN6=NORM_MODE(   MODE=MOD1,
-              NOEUD='N21', NOM_CMP='DRY' )
+MODN6=NORM_MODE(MODE=MOD1,
+                NOEUD='N21',
+                NOM_CMP='DRY',)
 
-MODN7=NORM_MODE(   MODE=MOD1,
-            MODE_SIGNE=_F(  NOEUD = 'N21', NOM_CMP = 'DY', SIGNE = 'POSITIF'),
-             SANS_CMP=('DY', 'DZ', 'DRX', 'DRY', 'DRZ', ))
+MODN7=NORM_MODE(MODE=MOD1,
+                SANS_CMP=('DY','DZ','DRX','DRY','DRZ',),
+                MODE_SIGNE=_F(NOEUD='N21',
+                              NOM_CMP='DY',
+                              SIGNE='POSITIF',),)
 
-MODN8=NORM_MODE(   MODE=MOD1,
-             AVEC_CMP=('DX', 'DZ', 'DRZ', ))
-
+MODN8=NORM_MODE(MODE=MOD1,
+                AVEC_CMP=('DX','DZ','DRZ',),)
 
 BASMOD=DEFI_BASE_MODALE(RITZ=_F(MODE_MECA=MOD1,),)
 
-DEBUG(SDVERI='OUI') # fiche 9158
-MODB1=NORM_MODE(   MODE=BASMOD,   NORME='MASS_GENE', MASSE=MASAS, RAIDE=RIGAS, )
+DEBUG(SDVERI='OUI',)
 
-MODB2=NORM_MODE(   MODE=BASMOD,   NORME='RIGI_GENE', MASSE=MASAS, RAIDE=RIGAS, )
+MODB1=NORM_MODE(MODE=BASMOD,
+                NORME='MASS_GENE',
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
 
-MODB3=NORM_MODE(   MODE=BASMOD,   NORME='TRAN', MASSE=MASAS, RAIDE=RIGAS,)
+MODB2=NORM_MODE(MODE=BASMOD,
+                NORME='RIGI_GENE',
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
 
-MODB4=NORM_MODE(   MODE=BASMOD,   NORME='TRAN_ROTA', MASSE=MASAS, RAIDE=RIGAS,)
+MODB3=NORM_MODE(MODE=BASMOD,
+                NORME='TRAN',
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
 
-MODB5=NORM_MODE(   MODE=BASMOD,   NORME='EUCL', MASSE=MASAS, RAIDE=RIGAS,)
+MODB4=NORM_MODE(MODE=BASMOD,
+                NORME='TRAN_ROTA',
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
 
-MODB6=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
-              NOEUD='N21', NOM_CMP='DRY' )
+MODB5=NORM_MODE(MODE=BASMOD,
+                NORME='EUCL',
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
 
-MODB7=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
-            MODE_SIGNE=_F(  NOEUD = 'N21', NOM_CMP = 'DY', SIGNE = 'POSITIF'),
-             SANS_CMP=('DY', 'DZ', 'DRX', 'DRY', 'DRZ', ))
+MODB6=NORM_MODE(MODE=BASMOD,
+                NOEUD='N21',
+                NOM_CMP='DRY',
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
 
-MODB8=NORM_MODE(   MODE=BASMOD, MASSE=MASAS, RAIDE=RIGAS,
-             AVEC_CMP=('DX', 'DZ', 'DRZ', ))
-DEBUG(SDVERI='OUI') # fiche 9158
+MODB7=NORM_MODE(MODE=BASMOD,
+                SANS_CMP=('DY','DZ','DRX','DRY','DRZ',),
+                MODE_SIGNE=_F(NOEUD='N21',
+                              NOM_CMP='DY',
+                              SIGNE='POSITIF',),
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
 
+MODB8=NORM_MODE(MODE=BASMOD,
+                AVEC_CMP=('DX','DZ','DRZ',),
+                MASSE=MASAS,
+                RAIDE=RIGAS,)
+
+DEBUG(SDVERI='OUI',)
 
 #-----------------------------------------------------------------------
 #    QEP SYMETRIQUE REEL
 #-----------------------------------------------------------------------
-
 #       5. MODE_ITER_XXX /MATR_C
 #       -------------------------
 
-AMORT=COMB_MATR_ASSE(COMB_R=(
-         _F(  MATR_ASSE = RIGAS, COEF_R = 0.015),
-         _F(  MATR_ASSE = MASAS, COEF_R = 0.015)))
+AMORT=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGAS,
+                                COEF_R=0.015,),
+                             _F(MATR_ASSE=MASAS,
+                                COEF_R=0.015,),),)
 
 #       5.1. SOLVEUR : 'LDLT' :
 #       ---------------------
 
-MOC0L=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 OPTION='CENTRE',
-                 SOLVEUR=_F(METHODE='LDLT',
-                            ),
-                 MATR_AMOR=AMORT,
-                 MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(APPROCHE='REEL',
-                                  METHODE='SORENSEN',
-                                  ),
-                 )
-
-
-MOC1L=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 OPTION='CENTRE',
-                 SOLVEUR=_F(METHODE='LDLT',
-                            ),
-                 MATR_AMOR=AMORT,
-                 MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
-                                  APPROCHE='REEL',
-                                  METHODE='TRI_DIAG',
-                                  ),
-                 )
-
-
-MOC2L=CALC_MODES( MATR_RIGI=RIGAS,
-                  MATR_MASS=MASAS,
-                  MATR_AMOR=AMORT,
-                  OPTION='PROCHE',
-                  CALC_FREQ=_F( FREQ = (6.2E-3, 6.14E-2) ),
-                  SOLVEUR=_F(METHODE='LDLT'),
-                  VERI_MODE=_F(  STOP_ERREUR = 'OUI'))
-
-
-MOC3L=CALC_MODES(INFO=1,
+MOC0L=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='SORENSEN',
+                                  APPROCHE='REEL',),
                  MATR_RIGI=RIGAS,
-                 VERI_MODE=_F(SEUIL=1.E-05,
-                              ),
-                 OPTION='CENTRE',
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 SOLVEUR=_F(METHODE='LDLT',
-                            ),
-                 MATR_AMOR=AMORT,
                  MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
-                                  METHODE='QZ',
-                                  ),
-                 )
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='LDLT',),)
 
+MOC1L=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  MODE_RIGIDE='NON',
+                                  APPROCHE='REEL',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='LDLT',),)
+
+MOC2L=CALC_MODES(OPTION='PROCHE',
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                 SOLVEUR=_F(METHODE='LDLT',),
+                 VERI_MODE=_F(STOP_ERREUR='OUI',),)
+
+MOC3L=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  TYPE_QZ='QZ_EQUI',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='LDLT',),
+                 VERI_MODE=_F(SEUIL=1e-05,),
+                 INFO=1,)
 
 #       5.2. SOLVEUR : 'MULT_FRONT' :
 #       ---------------------
 
-MOC0F=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 OPTION='CENTRE',
-                 SOLVEUR=_F(METHODE='MULT_FRONT',
-                            ),
-                 MATR_AMOR=AMORT,
-                 MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(APPROCHE='REEL',
-                                  ),
-                 )
-
-MOC1F=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 OPTION='CENTRE',
-                 SOLVEUR=_F(METHODE='MULT_FRONT',
-                            ),
-                 MATR_AMOR=AMORT,
-                 MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
-                                  APPROCHE='REEL',
-                                  METHODE='TRI_DIAG',
-                                  ),
-                 )
-
-
-MOC2F=CALC_MODES( MATR_RIGI=RIGAS,
-                  MATR_MASS=MASAS,
-                  MATR_AMOR=AMORT,
-                  OPTION='PROCHE',
-                  CALC_FREQ=_F( FREQ = (6.2E-3, 6.14E-2) ),
-                  SOLVEUR=_F(METHODE='MULT_FRONT'),
-                  VERI_MODE=_F(  STOP_ERREUR = 'OUI'))
-
-
-MOC3F=CALC_MODES(INFO=1,
+MOC0F=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(APPROCHE='REEL',),
                  MATR_RIGI=RIGAS,
-                 VERI_MODE=_F(SEUIL=1.E-05,
-                              ),
-                 OPTION='CENTRE',
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 SOLVEUR=_F(METHODE='MULT_FRONT',
-                            ),
-                 MATR_AMOR=AMORT,
                  MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
-                                  METHODE='QZ',
-                                  ),
-                 )
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
+MOC1F=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  MODE_RIGIDE='NON',
+                                  APPROCHE='REEL',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),)
+
+MOC2F=CALC_MODES(OPTION='PROCHE',
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),
+                 VERI_MODE=_F(STOP_ERREUR='OUI',),)
+
+MOC3F=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  TYPE_QZ='QZ_EQUI',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MULT_FRONT',),
+                 VERI_MODE=_F(SEUIL=1e-05,),
+                 INFO=1,)
 
 #       5.3. SOLVEUR : 'MUMPS' :
 #       ---------------------
 
-MOC0M=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 OPTION='CENTRE',
-                 SOLVEUR=_F(METHODE='MUMPS',
-                            ),
-                 MATR_AMOR=AMORT,
-                 MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(APPROCHE='REEL',
-                                  ),
-                 )
-
-
-MOC1M=CALC_MODES(MATR_RIGI=RIGAS,
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 OPTION='CENTRE',
-                 SOLVEUR=_F(METHODE='MUMPS',
-                            ),
-                 MATR_AMOR=AMORT,
-                 MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(MODE_RIGIDE='NON',
-                                  APPROCHE='REEL',
-                                  METHODE='TRI_DIAG',
-                                  ),
-                 )
-
-
-MOC2M=CALC_MODES( MATR_RIGI=RIGAS,
-                  MATR_MASS=MASAS,
-                  MATR_AMOR=AMORT,
-                  OPTION='PROCHE',
-                  CALC_FREQ=_F( FREQ = (6.2E-3, 6.14E-2) ),
-                  SOLVEUR=_F(METHODE='MUMPS'),
-                  VERI_MODE=_F(  STOP_ERREUR = 'OUI'))
-
-
-MOC3M=CALC_MODES(INFO=1,
+MOC0M=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(APPROCHE='REEL',),
                  MATR_RIGI=RIGAS,
-                 VERI_MODE=_F(SEUIL=1.E-05,
-                              ),
-                 OPTION='CENTRE',
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              FREQ=(0.1,),
-                              ),
-                 SOLVEUR=_F(METHODE='MUMPS',
-                            ),
-                 MATR_AMOR=AMORT,
                  MATR_MASS=MASAS,
-                 SOLVEUR_MODAL=_F(TYPE_QZ='QZ_EQUI',
-                                  METHODE='QZ',
-                                  ),
-                 )
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MUMPS',),)
+
+MOC1M=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='TRI_DIAG',
+                                  MODE_RIGIDE='NON',
+                                  APPROCHE='REEL',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MUMPS',),)
+
+MOC2M=CALC_MODES(OPTION='PROCHE',
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=(0.0062,0.0614,),),
+                 SOLVEUR=_F(METHODE='MUMPS',),
+                 VERI_MODE=_F(STOP_ERREUR='OUI',),)
+
+MOC3M=CALC_MODES(OPTION='CENTRE',
+                 SOLVEUR_MODAL=_F(METHODE='QZ',
+                                  TYPE_QZ='QZ_EQUI',),
+                 MATR_RIGI=RIGAS,
+                 MATR_MASS=MASAS,
+                 MATR_AMOR=AMORT,
+                 CALC_FREQ=_F(FREQ=0.1,
+                              NMAX_FREQ=2,),
+                 SOLVEUR=_F(METHODE='MUMPS',),
+                 VERI_MODE=_F(SEUIL=1e-05,),
+                 INFO=1,)
 
 #-----------------------------------------------------------------------
-ENGENDRE_TEST (  CO = (MODI0, MODI1, MOFI0, MOMI0) )
 
-ENGENDRE_TEST (  CO = (MOD0, MOD1, MOD2, MOD1_QZ, MOD2_QZ, MOD4, MOD5, MOD6) )
-ENGENDRE_TEST (  CO = (MOF0, MOF1, MOF2, MOF1_QZ, MOF2_QZ, MOF4, MOF5, MOF6) )
-ENGENDRE_TEST (  CO = (MOM0, MOM1, MOM2, MOM1_QZ, MOM2_QZ, MOM4, MOM5, MOM6) )
+ENGENDRE_TEST(CO=(MODI0,MODI1,MOFI0,MOMI0,),)
 
-ENGENDRE_TEST (  CO = (MODN1, MODN2, MODN3, MODN4, MODN5, MODN6, MODN7, MODN8) )
-ENGENDRE_TEST (  CO = (MODB1, MODB2, MODB3, MODB4, MODB5, MODB6, MODB7, MODB8) )
-ENGENDRE_TEST (  CO = (MOC0L, MOC1L, MOC2L, MOC3L) )
-ENGENDRE_TEST (  CO = (MOC0F, MOC1F, MOC2F, MOC3F) )
-ENGENDRE_TEST (  CO = (MOC0M, MOC1M, MOC2M, MOC3M) )
+ENGENDRE_TEST(CO=(MOD0,MOD1,MOD2,MOD1_QZ,MOD2_QZ,MOD4,MOD5,MOD6,),)
 
-TEST_RESU(RESU=(
-                _F(
-                   RESULTAT = MODI0,
-                   NUME_ORDRE = 1,
-                   PARA = 'FREQ',
-                   VALE_CALC =2.0288239984985E-05,
-                   CRITERE = 'RELATIF'),
-                _F(
-                   RESULTAT = MODI0,
-                   NUME_ORDRE = 6,
-                   PARA = 'FREQ',
-                   VALE_CALC =0.044092029312027,
-                   CRITERE = 'RELATIF'),
-                _F(
-                   RESULTAT = MODI1,
-                   NUME_ORDRE = 1,
-                   PARA = 'FREQ',
-                   VALE_CALC =2.0288240028302E-05,
-                   CRITERE = 'RELATIF'),
-                _F(
-                   RESULTAT = MODI1,
-                   NUME_ORDRE = 6,
-                   PARA = 'FREQ',
-                   VALE_CALC =0.044092029312027,
-                   CRITERE = 'RELATIF'),
-                _F(NUME_ORDRE=2,
+ENGENDRE_TEST(CO=(MOF0,MOF1,MOF2,MOF1_QZ,MOF2_QZ,MOF4,MOF5,MOF6,),)
+
+ENGENDRE_TEST(CO=(MOM0,MOM1,MOM2,MOM1_QZ,MOM2_QZ,MOM4,MOM5,MOM6,),)
+
+ENGENDRE_TEST(CO=(MODN1,MODN2,MODN3,MODN4,MODN5,MODN6,MODN7,MODN8,),)
+
+ENGENDRE_TEST(CO=(MODB1,MODB2,MODB3,MODB4,MODB5,MODB6,MODB7,MODB8,),)
+
+ENGENDRE_TEST(CO=(MOC0L,MOC1L,MOC2L,MOC3L,),)
+
+ENGENDRE_TEST(CO=(MOC0F,MOC1F,MOC2F,MOC3F,),)
+
+ENGENDRE_TEST(CO=(MOC0M,MOC1M,MOC2M,MOC3M,),)
+
+TEST_RESU(RESU=(_F(RESULTAT=MODI0,
+                   NUME_ORDRE=1,
                    PARA='FREQ',
-                   RESULTAT=MOD0,
-                   VALE_CALC=9.2529719800592E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD0,
+                   CRITERE='RELATIF',
+                   VALE_CALC=2.0288239985e-05,),
+                _F(RESULTAT=MODI0,
+                   NUME_ORDRE=6,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.044092029312,),
+                _F(RESULTAT=MODI1,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=2.02882400283e-05,),
+                _F(RESULTAT=MODI1,
+                   NUME_ORDRE=6,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.044092029312,),
+                _F(RESULTAT=MOD0,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198006,),
+                _F(RESULTAT=MOD0,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
-                   NOEUD='N21',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238781336E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOD1,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD1,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387813e-05,),
+                _F(RESULTAT=MOD1,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MOD1,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238782104E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOD2,
-                   VALE_CALC=9.2529719800395E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD2,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387821e-05,),
+                _F(RESULTAT=MOD2,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198004,),
+                _F(RESULTAT=MOD2,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.12297631847471,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOD1_QZ,
-                   VALE_CALC=9.2529719802067E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD1_QZ,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.122976318475,),
+                _F(RESULTAT=MOD1_QZ,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198021,),
+                _F(RESULTAT=MOD1_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238761133E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOD2_QZ,
-                   VALE_CALC=9.2529719818252E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD2_QZ,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387611e-05,),
+                _F(RESULTAT=MOD2_QZ,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198183,),
+                _F(RESULTAT=MOD2_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.12297631878771,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOD4,
-                   VALE_CALC=0.061527821252518,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD4,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.122976318788,),
+                _F(RESULTAT=MOD4,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0615278212525,),
+                _F(RESULTAT=MOD4,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.011496542317958,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOD5,
-                   VALE_CALC=0.024022786475233,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD5,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=0.011496542318,),
+                _F(RESULTAT=MOD5,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0240227864752,),
+                _F(RESULTAT=MOD5,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-5.7321699386472E-04,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOD6,
-                   VALE_CALC=0.024022776705885,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOD6,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.000573216993865,),
+                _F(RESULTAT=MOD6,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0240227767059,),
+                _F(RESULTAT=MOD6,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-2.9242875932009E-07,
-                   ),
-               _F(
-                   RESULTAT = MOFI0,
-                   NUME_ORDRE = 1,
-                   PARA = 'FREQ',
-                   VALE_CALC =2.0288239881025E-05,
-                   CRITERE = 'RELATIF'),
-                _F(
-                   RESULTAT = MOFI0,
-                   NUME_ORDRE = 7,
-                   PARA = 'FREQ',
-                   VALE_CALC =0.052341491860932,
-                   CRITERE = 'RELATIF'),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF0,
-                   VALE_CALC=9.2529719800539E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF0,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-2.9242875932e-07,),
+                _F(RESULTAT=MOFI0,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=2.0288239881e-05,),
+                _F(RESULTAT=MOFI0,
+                   NUME_ORDRE=7,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0523414918609,),
+                _F(RESULTAT=MOF0,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198005,),
+                _F(RESULTAT=MOF0,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238781424E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF1,
-                   VALE_CALC=9.2529719800041E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF1,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387814e-05,),
+                _F(RESULTAT=MOF1,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MOF1,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238782144E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF2,
-                   VALE_CALC=9.2529719800314E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF2,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387821e-05,),
+                _F(RESULTAT=MOF2,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198003,),
+                _F(RESULTAT=MOF2,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.12297631846621,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF1_QZ,
-                   VALE_CALC=9.2529719802067E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF1_QZ,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.122976318466,),
+                _F(RESULTAT=MOF1_QZ,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198021,),
+                _F(RESULTAT=MOF1_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238761133E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF2_QZ,
-                   VALE_CALC=9.2529719818252E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF2_QZ,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387611e-05,),
+                _F(RESULTAT=MOF2_QZ,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198183,),
+                _F(RESULTAT=MOF2_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.12297631878771,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF4,
-                   VALE_CALC=0.061527821252518,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF4,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.122976318788,),
+                _F(RESULTAT=MOF4,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0615278212525,),
+                _F(RESULTAT=MOF4,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.011496542317958,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF5,
-                   VALE_CALC=0.024022786475233,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF5,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=0.011496542318,),
+                _F(RESULTAT=MOF5,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0240227864752,),
+                _F(RESULTAT=MOF5,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-5.7321699385875E-04,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOF6,
-                   VALE_CALC=0.024022776705885,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOF6,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.000573216993859,),
+                _F(RESULTAT=MOF6,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0240227767059,),
+                _F(RESULTAT=MOF6,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-2.9242875932027E-07,
-                   ),
-                _F(
-                   RESULTAT = MOMI0,
-                   NUME_ORDRE = 1,
-                   PARA = 'FREQ',
-                   VALE_CALC =0.052341491860932,
-                   CRITERE = 'RELATIF'),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM0,
-                   VALE_CALC=9.2529719799734E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM0,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-2.9242875932e-07,),
+                _F(RESULTAT=MOMI0,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0523414918609,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297197997,),
+                _F(RESULTAT=MOM0,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238782906E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM1,
-                   VALE_CALC=9.2529719800193E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM1,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387829e-05,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198002,),
+                _F(RESULTAT=MOM1,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238781951E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM2,
-                   VALE_CALC=9.2529719800433E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM2,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.5496238782e-05,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198004,),
+                _F(RESULTAT=MOM2,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.12297631846196,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM1_QZ,
-                   VALE_CALC=9.2529719802067E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM1_QZ,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.122976318462,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198021,),
+                _F(RESULTAT=MOM1_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=6.5496238761133E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM2_QZ,
-                   VALE_CALC=9.2529719818252E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM2_QZ,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=6.54962387611e-05,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198183,),
+                _F(RESULTAT=MOM2_QZ,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.12297631878771,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM4,
-                   VALE_CALC=0.061527821252518,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM4,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.122976318788,),
+                _F(RESULTAT=MOM4,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0615278212525,),
+                _F(RESULTAT=MOM4,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=0.011496542317958,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM5,
-                   VALE_CALC=0.024022786475233,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM5,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=0.011496542318,),
+                _F(RESULTAT=MOM5,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0240227864752,),
+                _F(RESULTAT=MOM5,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-5.7321699386127E-04,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOM6,
-                   VALE_CALC=0.024022776708436,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MOM6,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.000573216993861,),
+                _F(RESULTAT=MOM6,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0240227767084,),
+                _F(RESULTAT=MOM6,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-2.9242884038595E-07,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB1,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB1,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-2.92428840386e-07,),
+                _F(RESULTAT=MODB1,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB1,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=1.8125780447906E-07,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB2,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB2,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=1.81257804479e-07,),
+                _F(RESULTAT=MODB2,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB2,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.058538383646662,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB3,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB3,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.0585383836467,),
+                _F(RESULTAT=MODB3,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB3,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-1.0978418784058E-06,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB4,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB4,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-1.09784187841e-06,),
+                _F(RESULTAT=MODB4,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB4,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=-0.12297631847072,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB5,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB5,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-0.122976318471,),
+                _F(RESULTAT=MODB5,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB5,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=3.2937824246605E-05,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB6,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB6,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=3.29378242466e-05,),
+                _F(RESULTAT=MODB6,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB6,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-1.7337287157564E-06,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB7,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB7,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=-1.73372871576e-06,),
+                _F(RESULTAT=MODB7,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB7,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=9.8354732768984,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MODB8,
-                   VALE_CALC=9.2529719799994E-04,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   RESULTAT=MODB8,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
+                   VALE_CALC=9.8354732769,),
+                _F(RESULTAT=MODB8,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000925297198,),
+                _F(RESULTAT=MODB8,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=-1.5800983901332E-03,
-                   ),
-                _F(NUME_ORDRE=2,
-                   PARA='FREQ',
-                   RESULTAT=MOC0L,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585383712237E-04+3.8556939759016E-18j,
-                   RESULTAT=MOC0L,
-                   NOM_CHAM='DEPL',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC=-0.00158009839013,),
+                _F(RESULTAT=MOC0L,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC1L,
-                   VALE_CALC=0.10700678025431,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585176529955E-04-2.0804706190168E-09j,
-                   RESULTAT=MOC1L,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC0L,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585383712237+3.8556939759016e-18j),),
+                _F(RESULTAT=MOC1L,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC2L,
-                   VALE_CALC=0.061512521048556,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=-0.026754771724033+3.0802578022959E-10j,
-                   RESULTAT=MOC2L,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC1L,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DZ',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585176529955-2.0804706190168e-09j),),
+                _F(RESULTAT=MOC2L,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC3L,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585381741497E-04+5.9434159254291E-12j,
-                   RESULTAT=MOC3L,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0615125210486,),
+                _F(RESULTAT=MOC2L,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(-0.026754771724033+3.0802578022959e-10j),),
+                _F(RESULTAT=MOC3L,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC0F,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585383712232E-04-2.0464316005664E-18j,
-                   RESULTAT=MOC0F,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC3L,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585381741497+5.9434159254291e-12j),),
+                _F(RESULTAT=MOC0F,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC1F,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585176510542E-04-2.0797133971898E-09j,
-                   RESULTAT=MOC1F,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC0F,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585383712232-2.0464316005664e-18j),),
+                _F(RESULTAT=MOC1F,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC2F,
-                   VALE_CALC=0.061512521048556,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=-0.026754771724033+3.0802579237266E-10j,
-                   RESULTAT=MOC2F,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC1F,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DZ',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585176510542-2.0797133971898e-09j),),
+                _F(RESULTAT=MOC2F,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC3F,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585381741497E-04+5.9434159254291E-12j,
-                   RESULTAT=MOC3F,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0615125210486,),
+                _F(RESULTAT=MOC2F,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(-0.026754771724033+3.0802579237266e-10j),),
+                _F(RESULTAT=MOC3F,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC0M,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585383712233E-04+1.7347234759768E-18j,
-                   RESULTAT=MOC0M,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC3F,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585381741497+5.9434159254291e-12j),),
+                _F(RESULTAT=MOC0M,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC1M,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585176487884E-04-2.0793528917614E-09j,
-                   RESULTAT=MOC1M,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC0M,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585383712233+1.7347234759768e-18j),),
+                _F(RESULTAT=MOC1M,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC2M,
-                   VALE_CALC=0.061512521048556,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=-0.026754771722386+3.0792805458257E-10j,
-                   RESULTAT=MOC2M,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC1M,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
                    NOEUD='N21',
-                   NOM_CMP='DZ',),
-                _F(NUME_ORDRE=2,
+                   VALE_CALC_C=(0.00065585176487884-2.0793528917614e-09j),),
+                _F(RESULTAT=MOC2M,
+                   NUME_ORDRE=2,
                    PARA='FREQ',
-                   RESULTAT=MOC3M,
-                   VALE_CALC=0.10700678025430,
-                   CRITERE='RELATIF',),
-                _F(NUME_ORDRE=2,
-                   VALE_CALC_C=6.5585381741497E-04+5.9434159254291E-12j,
-                   RESULTAT=MOC3M,
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.0615125210486,),
+                _F(RESULTAT=MOC2M,
+                   NUME_ORDRE=2,
                    NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
                    NOEUD='N21',
-                   NOM_CMP='DY',),
-                ),
-          )
+                   VALE_CALC_C=(-0.026754771722386+3.0792805458257e-10j),),
+                _F(RESULTAT=MOC3M,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.107006780254,),
+                _F(RESULTAT=MOC3M,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N21',
+                   VALE_CALC_C=(0.00065585381741497+5.9434159254291e-12j),),),)
 
 FIN()
