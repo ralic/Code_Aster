@@ -317,6 +317,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   VALE_CALC=0.148713977416,
                   CRITERE='RELATIF',
                   MAILLE='M1',
+                  TOLE_MACHINE=1.1E-6, #EF qui ne respecte pas la lbb
                   ),
           )
 
@@ -328,6 +329,7 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   VALE_CALC=9.52297116499E-05,
                   CRITERE='RELATIF',
                   MAILLE='M1',
+                  TOLE_MACHINE=1.1E-6, #EF qui ne respecte pas la lbb
                   ),
           )
 
