@@ -144,7 +144,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
-   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO)
+   code = None if CODE == 'NON' else 'TEST'
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, code, DEBUG, IGNORE_ALARM, LANG, INFO)
    if aster_exists:
        self.jdc.set_poursuite(True)
    only_syntax = self.jdc.syntax_check()
