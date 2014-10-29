@@ -131,6 +131,7 @@ def configure(self):
 
     self.env.append_value('FCFLAGS', ['-fPIC'])
     self.env.append_value('CFLAGS', ['-fPIC'])
+    self.env.append_value('CXXFLAGS', ['-fPIC'])
 
     self.load('med', tooldir='waftools')
     self.load('metis', tooldir='waftools')

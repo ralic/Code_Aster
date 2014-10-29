@@ -93,7 +93,7 @@ def build_as_shared(self, shenv):
           source = get_srcs('**/*.c', excl=['supervis/python.c']),
          defines = '_WITHOUT_PYMOD_',
              env = shenv.derive(),
-             use = ['PYEMBED', 'NUMPY', 'asterbibfor', 'asterbibcxx'] + uses,
+             use = ['PYEMBED', 'NUMPY', 'asterbibfor', 'asterbibcxx'] + uses + ['CXX'],
     install_path = shenv.ASTERLIBDIR,
     )
 
