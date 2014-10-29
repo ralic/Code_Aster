@@ -26,9 +26,9 @@ class sd_surface(AsBase):
     NSDS = AsVK24(lonmax=1, )
     NOMA = AsVK8(lonmax=1, )
 
-
     # indirection vers sd_surface_1d :
     def check_surface_i_NSDS(self, checker):
         lnom = self.NSDS.get()
-        #if not lnom:  return
-        sd2=sd_surface_1d(lnom[0]); sd2.check(checker)
+        # if not lnom:  return
+        sd2 = sd_surface_1d(lnom[0])
+        sd2.check(checker)

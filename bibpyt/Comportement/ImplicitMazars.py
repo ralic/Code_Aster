@@ -20,9 +20,9 @@
 from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-   nom            = 'ImplicitMazars',
-   symbol_mfront  = 'asterimplicitmazars',
-   modelisation   = ('3D', 'AXIS', 'D_PLAN', 'C_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
-   algo_inte      = ('NEWTON',),
+    nom='ImplicitMazars',
+    symbol_mfront='asterimplicitmazars',
+    modelisation=('3D', 'AXIS', 'D_PLAN', 'C_PLAN'),
+    deformation = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
+    algo_inte = ('NEWTON',),
 )

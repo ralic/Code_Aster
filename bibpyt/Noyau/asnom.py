@@ -2,19 +2,19 @@
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 """
@@ -35,7 +35,9 @@ c'est ce comportement qui est capturé dans la classe StructType
 
 from basetype import Type
 
+
 class SDNom(Type):
+
     """Objet représentant une sous-partie de nom
     d'objet jeveux"""
     nomj = None
@@ -44,7 +46,7 @@ class SDNom(Type):
     just = None
     justtype = None
 
-    def __init__(self, nomj=None, debut=None, fin=None, just='l', **kwargs ):
+    def __init__(self, nomj=None, debut=None, fin=None, just='l', **kwargs):
         """
         Configure un objet nom
         nomj : la partie du nom fixée (par ex .TITR) ou '' si non précisée
@@ -59,13 +61,14 @@ class SDNom(Type):
         nom est alors la valeur du suffixe pour une sous-structure ou None pour
         une structure principale.
         """
-        super( SDNom, self ).__init__( nomj=nomj, debut=debut, fin=fin, just=just, **kwargs )
-        self.update( (nomj, debut, fin, just) )
+        super(SDNom, self).__init__(
+            nomj=nomj, debut=debut, fin=fin, just=just, **kwargs)
+        self.update((nomj, debut, fin, just))
 
     def __call__(self):
         if self._parent is None or self._parent._parent is None:
             debut = self.debut or 0
-            prefix = ' '*debut
+            prefix = ' ' * debut
         else:
             # normalement
             # assert self._parent.nomj is self
@@ -74,37 +77,36 @@ class SDNom(Type):
             debut = self.debut or nomparent.fin or len(prefix)
         fin = self.fin or 24
         nomj = self.nomj or ''
-        nomj = self.just( nomj, fin-debut )
+        nomj = self.just(nomj, fin - debut)
         prefix = prefix.ljust(24)
-        res = prefix[:debut]+nomj+prefix[fin:]
+        res = prefix[:debut] + nomj + prefix[fin:]
         return res[:24]
 
     def fcata(self):
-        return self.just(self.nomj,self.fin-self.debut).replace(' ','?')
+        return self.just(self.nomj, self.fin - self.debut).replace(' ', '?')
 
     def __repr__(self):
-        return "<SDNom(%r,%s,%s)>" % (self.nomj,self.debut,self.fin)
+        return "<SDNom(%r,%s,%s)>" % (self.nomj, self.debut, self.fin)
 
     # On utilise pickle pour les copies, et pickle ne sait pas gérer la
     # sauvegarde de str.ljust ou str.rjust (c'est une méthode non liée)
 
     def __getstate__(self):
-        return (self.nomj, self.debut, self.fin, self.justtype )
+        return (self.nomj, self.debut, self.fin, self.justtype)
 
-    def __setstate__( self, (nomj,debut,fin,just) ):
+    def __setstate__(self, (nomj, debut, fin, just)):
         self.nomj = nomj
         self.debut = debut
         self.fin = fin
-        if just=='l' or just is None:
+        if just == 'l' or just is None:
             self.just = str.ljust
-        elif just=='r':
+        elif just == 'r':
             self.just = str.rjust
         else:
-            raise ValueError("Justification '%s' invalide" % just )
+            raise ValueError("Justification '%s' invalide" % just)
         self.justtype = just
 
-
-    def update( self, (nomj,debut,fin,just) ):
+    def update(self, (nomj, debut, fin, just)):
         if nomj is not None:
             self.nomj = nomj
         if self.debut is None:
@@ -112,19 +114,19 @@ class SDNom(Type):
         if self.fin is None:
             self.fin = fin
         if self.justtype is None and just is not None:
-            if just=='l':
+            if just == 'l':
                 self.just = str.ljust
-            elif just=='r':
+            elif just == 'r':
                 self.just = str.rjust
             else:
-                raise ValueError("Justification '%s' invalide" % just )
+                raise ValueError("Justification '%s' invalide" % just)
             self.justtype = just
 
-    def reparent( self, parent, new_name ):
+    def reparent(self, parent, new_name):
         self._parent = parent
         self._name = new_name
         for nam in self._subtypes:
-            obj = getattr( self, nam )
-            obj.reparent( self, nam )
+            obj = getattr(self, nam)
+            obj.reparent(self, nam)
         if self.nomj is None and self._parent._name is not None:
             self.nomj = "." + self._parent._name

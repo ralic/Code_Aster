@@ -1,9 +1,9 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 # (AT YOUR OPTION) ANY LATER VERSION.
 #
 # THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
@@ -21,10 +21,10 @@ from Cata.cata import OPER, SIMP, carte_sdaster, evol_noli
 
 POST_VOISIN_CZM = OPER(
 
-  nom="POST_VOISIN_CZM", op=189,
-  docu="...", fr="...", UIinfo={"groupes":("Post traitements",)},
-  reentrant='n',
-  sd_prod=carte_sdaster,
-  RESULTAT = SIMP(statut='o', typ=evol_noli, max=1,),
+    nom="POST_VOISIN_CZM", op=189,
+    docu="...", fr="...", UIinfo={"groupes": ("Post traitements",)},
+    reentrant='n',
+    sd_prod=carte_sdaster,
+    RESULTAT=SIMP(statut='o', typ=evol_noli, max=1,),
 
-                      );
+)

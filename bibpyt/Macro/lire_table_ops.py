@@ -25,7 +25,7 @@ def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, RENOMME_PARA,
     """Méthode corps de la macro LIRE_TABLE
     """
     import aster
-    from Utilitai.Utmess     import UTMESS, raise_UTMESS
+    from Utilitai.Utmess import UTMESS, raise_UTMESS
     from Utilitai.UniteAster import UniteAster
     from Utilitai.TableReader import TableReaderFactory, unique_parameters
 
@@ -42,7 +42,7 @@ def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, RENOMME_PARA,
     if not osp.isfile(nomfich):
         UTMESS('F', 'FONCT0_41', valk=nomfich)
 
-    texte = open(nomfich,'r').read()
+    texte = open(nomfich, 'r').read()
     # remet UNITE dans son état initial
     UL.EtatInit()
 
@@ -59,7 +59,7 @@ def lire_table_ops(self, UNITE, FORMAT, SEPARATEUR, NUME_TABLE, RENOMME_PARA,
         raise_UTMESS(exc)
 
     UTMESS('I', 'TABLE0_44', valk=(self.sd.nom, tab.titr),
-                             vali=(len(tab.rows), len(tab.para)))
+           vali=(len(tab.rows), len(tab.para)))
 
     # création de la table ASTER :
     self.DeclareOut('ut_tab', self.sd)

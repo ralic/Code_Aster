@@ -17,13 +17,14 @@
 # ======================================================================
 # person_in_charge: nicolas.brie at edf.fr
 
+
 def calc_modes_ops(self, TYPE_RESU, OPTION,
-                         SOLVEUR_MODAL, SOLVEUR, VERI_MODE, INFO, TITRE, **args):
+                   SOLVEUR_MODAL, SOLVEUR, VERI_MODE, INFO, TITRE, **args):
     """
        Macro-command CALC_MODES, main file
     """
 
-    ier=0
+    ier = 0
 
     import aster
     from Noyau.N_utils import AsType
@@ -32,13 +33,12 @@ def calc_modes_ops(self, TYPE_RESU, OPTION,
     from Modal.calc_modes_multi_bandes import calc_modes_multi_bandes
     from Modal.calc_modes_post import calc_modes_post
 
-
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
-    self.DeclareOut('modes',self.sd)
+    self.DeclareOut('modes', self.sd)
 
-    l_multi_bandes = False # logical indicating if the computation is performed
+    l_multi_bandes = False  # logical indicating if the computation is performed
                            # for DYNAMICAL modes on several bands
 
     if (TYPE_RESU == 'DYNAMIQUE'):
@@ -54,44 +54,44 @@ def calc_modes_ops(self, TYPE_RESU, OPTION,
                 del args['CALC_FREQ']
                 # modes computation over several frequency bands,
                 # with optionnal parallelization of the bands
-                modes = calc_modes_multi_bandes(self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL,
-                                                      SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+                modes = calc_modes_multi_bandes(
+                    self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL,
+                    SOLVEUR, VERI_MODE, INFO, TITRE, **args)
 
     if not l_multi_bandes:
         if OPTION in ('PLUS_PETITE', 'PLUS_GRANDE', 'CENTRE', 'BANDE', 'TOUT'):
             # call the MODE_ITER_SIMULT command
             modes = calc_modes_simult(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
-                                            SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+                                      SOLVEUR, VERI_MODE, INFO, TITRE, **args)
 
         elif OPTION in ('SEPARE', 'AJUSTE', 'PROCHE'):
             # call the MODE_ITER_INV command
             modes = calc_modes_inv(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
-                                         SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+                                   SOLVEUR, VERI_MODE, INFO, TITRE, **args)
 
-
-    ##################
+    #
     # post-traitements
-    ##################
+    #
     if (TYPE_RESU == 'DYNAMIQUE'):
 
-        lmatphys = False # logical indicating if the matrices are physical or not (generalized)
-        nom_matrrigi = aster.getcolljev(modes.nom.ljust(19)+'.REFD')[1][2]
+        lmatphys = False  # logical indicating if the matrices are physical or not (generalized)
+        nom_matrrigi = aster.getcolljev(modes.nom.ljust(19) + '.REFD')[1][2]
         matrrigi = self.get_concept(nom_matrrigi.strip())
         if AsType(matrrigi).__name__ == 'matr_asse_depl_r':
             lmatphys = True
 
-        if lmatphys :
+        if lmatphys:
             norme_mode = None
             if args['NORM_MODE'] != None:
                 norme_mode = args['NORM_MODE']
             filtre_mode = None
             if args['FILTRE_MODE'] != None:
-                filtre_mode= args['FILTRE_MODE']
+                filtre_mode = args['FILTRE_MODE']
             impression = None
             if args['IMPRESSION'] != None:
                 impression = args['IMPRESSION']
             if (norme_mode != None) or (filtre_mode != None) or (impression != None):
-                modes = calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression)
-
+                modes = calc_modes_post(
+                    self, modes, lmatphys, norme_mode, filtre_mode, impression)
 
     return ier

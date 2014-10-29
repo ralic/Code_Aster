@@ -19,15 +19,17 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-   nom            = 'GRILLE_PINTO_MEN',
-   doc = """Relation de comportement des grilles d'armatures de béton armé, à comportement cyclique phénoménologique de Pinto et Menegotto""",
-   num_lc         = 9999,
-   nb_vari        = 16,
-   nom_vari       = ('EPSRN-1','EPSRN','SIGRN','EPSM+V5','DEPS-TH','INDICYCL','INDIPLAS','INDIFLAM','VIDE','VIDE','VIDE','VIDE','VIDE','VIDE','VIDE','VIDE',),
-   modelisation   = ('GRILLE_MEMBRANE','GRILLE_EXCENTRE','1D'),
-   deformation    = ('PETIT',),
-   nom_varc       = ('TEMP'),
-   algo_inte         = ('ANALYTIQUE'),
-   type_matr_tang = None,
-   proprietes     = None,
+    nom='GRILLE_PINTO_MEN',
+    doc="""Relation de comportement des grilles d'armatures de béton armé, à comportement cyclique phénoménologique de Pinto et Menegotto""",
+    num_lc=9999,
+    nb_vari=16,
+    nom_vari=(
+        'EPSRN-1', 'EPSRN', 'SIGRN', 'EPSM+V5', 'DEPS-TH', 'INDICYCL',
+        'INDIPLAS', 'INDIFLAM', 'VIDE', 'VIDE', 'VIDE', 'VIDE', 'VIDE', 'VIDE', 'VIDE', 'VIDE',),
+    modelisation = ('GRILLE_MEMBRANE', 'GRILLE_EXCENTRE', '1D'),
+    deformation = ('PETIT',),
+    nom_varc = ('TEMP'),
+    algo_inte = ('ANALYTIQUE'),
+    type_matr_tang = None,
+    proprietes = None,
 )

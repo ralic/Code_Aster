@@ -20,9 +20,9 @@
 from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-   nom            = 'GTN',
-   symbol_mfront  = 'astergtn',
-   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
-   algo_inte      = ('NEWTON_PERT',),
+    nom='GTN',
+    symbol_mfront='astergtn',
+    modelisation=('3D', 'AXIS', 'D_PLAN'),
+    deformation = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
+    algo_inte = ('NEWTON_PERT',),
 )

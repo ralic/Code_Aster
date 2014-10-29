@@ -27,41 +27,51 @@ import numpy
 #----------------------------- Precision -------------------------------
 tst = 1.0E-10
 #-----------------------------------------------------------------------
+
+
 def float2str(x_float):
     """
         Imprime un float avec 6 chiffres significatifs dans le fichier EPX
     """
-    return "%.6e"%x_float
+    return "%.6e" % x_float
 #-----------------------------------------------------------------------
+
+
 def norme(vect):
     """
         Calcul la norme euclidienne d'un vecteur.
     """
     return numpy.sqrt(numpy.dot(vect, vect))
 #-----------------------------------------------------------------------
+
+
 def vecteurs_egaux(vect1, vect2):
     """
         Renseigne si deux vecteurs sont égaux à la précision 'tst' près
         au sens de la norme infinie.
     """
-    diff = vect1-vect2
+    diff = vect1 - vect2
     for comp in diff:
         if abs(comp) > tst:
             return False
     return True
 #-----------------------------------------------------------------------
+
+
 def tolist(obj):
     """
         Transforme l'objet obj en un objet de type list sauf si obj est None
     """
-    if    type(obj) == list or obj is None:
+    if type(obj) == list or obj is None:
         pass
-    elif  type(obj) == tuple or type(obj) == set:
+    elif type(obj) == tuple or type(obj) == set:
         obj = list(obj)
     else:
         obj = [obj]
     return obj
 #-----------------------------------------------------------------------
+
+
 def recupere_structure(concept, mot_cle=None):
     """
         Renvoie les mots-clés de mise en données à partir desquels concept
@@ -80,12 +90,14 @@ def recupere_structure(concept, mot_cle=None):
             return None
     return structure
 #-----------------------------------------------------------------------
+
+
 def get_motcle(fact, mot_cle, code_mess='F'):
     """
         Renvoie la valeur associée à mot_cle dans l'objet fact.
     """
     if code_mess != 'F' and code_mess != 'A' and code_mess is not None:
-        raise Exception('Valeur de code_mess non autorisée : %s'%code_mess)
+        raise Exception('Valeur de code_mess non autorisée : %s' % code_mess)
     try:
         out = fact[mot_cle]
     except:
@@ -94,6 +106,8 @@ def get_motcle(fact, mot_cle, code_mess='F'):
             UTMESS(code_mess, 'PLEXUS_2', valk=mot_cle)
     return out
 #-----------------------------------------------------------------------
+
+
 def get_group_ma(fact, mot_cle='GROUP_MA'):
     """
         Renvoie la liste des groupes de mailles de l'instance 'fact'
@@ -103,6 +117,8 @@ def get_group_ma(fact, mot_cle='GROUP_MA'):
     group_ma = tolist(group_ma)
     return group_ma
 #-----------------------------------------------------------------------
+
+
 def lire_fichier(fichier):
     """
         Lecture d'un fichier et renvoie des valeurs contenues.
@@ -123,6 +139,8 @@ def lire_fichier(fichier):
             valeurs.append(data)
     return valeurs
 #-----------------------------------------------------------------------
+
+
 def lire_pun(fichier):
     """
         Lecture d'un fichier de type pun
@@ -141,6 +159,8 @@ def lire_pun(fichier):
         courbes[courbe] = numpy.transpose(numpy.array(courbes[courbe]))
     return courbes
 #-----------------------------------------------------------------------
+
+
 def get_val_exclu(fact, dic_aster2epx):
     """
     Recherche parmi les clés de dic_aster2epx celle qui est présente dans
@@ -155,6 +175,8 @@ def get_val_exclu(fact, dic_aster2epx):
             break
     return cle_epx, val
 #------------------------------------------------------------------------
+
+
 def angle2vectx(alpha, beta):
     """
         A partir d'une direction de l'espace définie par deux angles,
@@ -166,14 +188,16 @@ def angle2vectx(alpha, beta):
     sina = numpy.sin(alpha)
     cosb = numpy.cos(beta)
     sinb = numpy.sin(beta)
-    vect = [cosb*cosa, cosb*sina, -sinb]
+    vect = [cosb * cosa, cosb * sina, -sinb]
     for comp in range(len(vect)):
         if abs(vect[comp]) <= tst:
             vect[comp] = 0.0
     vect = numpy.array(vect)
-    vect = vect/norme(vect)
+    vect = vect / norme(vect)
     return vect
 #------------------------------------------------------------------------
+
+
 def angle2vecty(angl):
     """
         A partir d'un repère orthonormé de l'espace défini par trois
@@ -188,21 +212,23 @@ def angle2vecty(angl):
     sinb = numpy.sin(angl[1])
     cosg = numpy.cos(angl[2])
     sing = numpy.sin(angl[2])
-    vect = [sing*sinb*cosa - cosg*sina,
-            cosg*cosa + sing*sinb*sina,
-            sing*cosb]
+    vect = [sing * sinb * cosa - cosg * sina,
+            cosg * cosa + sing * sinb * sina,
+            sing * cosb]
     for comp in range(len(vect)):
         if abs(vect[comp]) <= tst:
             vect[comp] = 0.0
     vect = numpy.array(vect)
-    vect = vect/norme(vect)
+    vect = vect / norme(vect)
     return vect
 #-----------------------------------------------------------------------
+
+
 def get_unite_libre():
     """
         Retoune une unité de fichier libre.
     """
     _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-    unite=_UL['UNITE_LIBRE',1]
+    unite = _UL['UNITE_LIBRE', 1]
     DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
     return(unite)

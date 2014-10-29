@@ -19,7 +19,7 @@
 from SD import *
 from SD.sd_maillage import sd_maillage
 from SD.sd_interf_dyna_clas import sd_interf_dyna_clas
-#from SD.sd_base_modale import sd_base_modale
+# from SD.sd_base_modale import sd_base_modale
 from SD.sd_mode_meca import sd_mode_meca
 from SD.sd_util import *
 
@@ -36,56 +36,63 @@ class sd_mode_cycl(AsBase):
     CYCL_FREQ = AsVR()
     CYCL_NUIN = AsVI(lonmax=3, )
 
-
-    def u_dime(self) :
-        desc=self.CYCL_DESC.get()
-        nb_mod  = desc[0] ; assert nb_mod   >  0
-        nb_ddl  = desc[1] ; assert nb_ddl   >  0
-        nb_ddli = desc[2] ; assert nb_ddli  >= 0
-        nb_freq = desc[3] ; assert nb_freq  >  0
-        nb_diam=self.CYCL_DIAM.lonmax / 2  ; assert nb_diam > 0
-        assert self.CYCL_DIAM.lonmax == 2*nb_diam
+    def u_dime(self):
+        desc = self.CYCL_DESC.get()
+        nb_mod = desc[0]
+        assert nb_mod > 0
+        nb_ddl = desc[1]
+        assert nb_ddl > 0
+        nb_ddli = desc[2]
+        assert nb_ddli >= 0
+        nb_freq = desc[3]
+        assert nb_freq > 0
+        nb_diam = self.CYCL_DIAM.lonmax / 2
+        assert nb_diam > 0
+        assert self.CYCL_DIAM.lonmax == 2 * nb_diam
         return (nb_mod, nb_ddl, nb_ddli, nb_freq, nb_diam)
 
-    def check_REFE(self,checker) :
-        refe=self.CYCL_REFE.get_stripped()
-        sd2=sd_maillage(refe[0]); sd2.check
-        sd2=sd_interf_dyna_clas(refe[1]); sd2.check
+    def check_REFE(self, checker):
+        refe = self.CYCL_REFE.get_stripped()
+        sd2 = sd_maillage(refe[0])
+        sd2.check
+        sd2 = sd_interf_dyna_clas(refe[1])
+        sd2.check
 #        sd2=sd_base_modale(refe[2]); sd2.check
-        sd2=sd_mode_meca(refe[2]); sd2.check
+        sd2 = sd_mode_meca(refe[2])
+        sd2.check
 
-    def check_NUIN(self,checker) :
-        nuin=self.CYCL_NUIN.get()
-        assert nuin[0] >  0 , nuin
-        assert nuin[1] >  0 , nuin
-        assert nuin[2] >= 0 , nuin
+    def check_NUIN(self, checker):
+        nuin = self.CYCL_NUIN.get()
+        assert nuin[0] > 0, nuin
+        assert nuin[1] > 0, nuin
+        assert nuin[2] >= 0, nuin
 
+    def check_NBSC(self, checker):
+        nbsc = self.CYCL_NBSC.get()
+        assert nbsc[0] > 0, nbsc
 
-    def check_NBSC(self,checker) :
-        nbsc=self.CYCL_NBSC.get()
-        assert nbsc[0] > 0 , nbsc
+    def check_TYPE(self, checker):
+        type = self.CYCL_TYPE.get_stripped()
+        assert type[0] in ('MNEAL', 'CRAIGB', 'CB_HARMO', 'AUCUN'), type
 
-
-    def check_TYPE(self,checker) :
-        type=self.CYCL_TYPE.get_stripped()
-        assert type[0] in ('MNEAL', 'CRAIGB', 'CB_HARMO', 'AUCUN') ,type
-
-
-    def check_CMODE(self,checker) :
+    def check_CMODE(self, checker):
         nb_mod, nb_ddl, nb_ddli, nb_freq, nb_diam = self.u_dime()
-        assert self.CYCL_CMODE.lonmax== nb_diam*nb_freq*(nb_mod+nb_ddl+nb_ddli)
+        assert self.CYCL_CMODE.lonmax == nb_diam * \
+            nb_freq * (nb_mod + nb_ddl + nb_ddli)
 
+    def check_DIAM(self, checker):
+        diam = self.CYCL_DIAM.get()
+        nb_diam = len(diam) / 2
+        for x in diam[:nb_diam]:
+            assert x >= 0, diam
+        for x in diam[nb_diam:]:
+            assert x > 0, diam
+        sdu_tous_differents(self.CYCL_DIAM, checker, diam[:nb_diam])
 
-    def check_DIAM(self,checker) :
-        diam=self.CYCL_DIAM.get()
-        nb_diam=len(diam)/2
-        for x in diam[:nb_diam] : assert x >= 0 , diam
-        for x in diam[nb_diam:] : assert x >  0 , diam
-        sdu_tous_differents(self.CYCL_DIAM,checker,diam[:nb_diam])
-
-
-    def check_FREQ(self,checker) :
+    def check_FREQ(self, checker):
         nb_mod, nb_ddl, nb_ddli, nb_freq, nb_diam = self.u_dime()
-        freq=self.CYCL_FREQ.get()
-        assert len(freq) == nb_diam*nb_freq ,(self.CYCL_DESC.get(),len(freq))
-        for x in freq : assert x >= 0 , freq
+        freq = self.CYCL_FREQ.get()
+        assert len(freq) == nb_diam * nb_freq, (
+            self.CYCL_DESC.get(), len(freq))
+        for x in freq:
+            assert x >= 0, freq

@@ -17,33 +17,33 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
-1: _(u"""
+cata_msg = {
+    1: _(u"""
 Cette macro-commande est inconnue.
 """),
 
-2: _(u"""
+    2: _(u"""
 Erreur : %(k1)s
 """),
 
-3: _(u"""
+    3: _(u"""
 Impossible de tuer le fichier %(k1)s
 """),
 
-4: _(u"""
+    4: _(u"""
 Impossible de créer le répertoire de travail pour HOMARD : %(k1)s
 """),
 
-5: _(u"""
+    5: _(u"""
 Impossible de détruire le fichier :%(k1)s
 """),
 
-6: _(u"""
+    6: _(u"""
 La vérification de l'interpénétration peut être très longue.
 Il ne faut l'utiliser que volontairement. Voir la documentation.
 """),
 
-7: _(u"""
+    7: _(u"""
 Dès que le nombre de mailles est important, la vérification de l'interpénétration peut devenir très longue.
 En principe, on ne devrait l'utiliser que dans les cas suivants :
   . Informations sur un maillage avec MACR_INFO_MAIL
@@ -53,12 +53,12 @@ Pour un usage courant de l'adaptation, il est recommandé de passer à NON toute
 options de contrôle ; autrement dit, laisser les options par défaut.
 """),
 
-8: _(u"""
+    8: _(u"""
 Impossible de trouver le répertoire de travail pour HOMARD : %(k1)s
 Certainement un oubli dans le lancement de la poursuite.
 """),
 
-9: _(u"""
+    9: _(u"""
 Vous demandez une adaptation du maillage %(k1)s vers %(k2)s
 Auparavant, vous aviez déjà fait une adaptation qui a produit le maillage %(k3)s
 Ce maillage %(k3)s est le résultat de %(i1)d adaptation(s) à partir du maillage initial %(k4)s
@@ -69,7 +69,7 @@ Pour poursuivre la séquence, il faudrait partir maintenant de %(k3)s.
 
 """),
 
-10: _(u"""
+    10: _(u"""
 Le fichier %(k1)s est inconnu.
 """),
 

@@ -19,7 +19,7 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
   Erreur d'utilisation :
     Pour la méthodes itérative GCPC, on ne peut pas encore utiliser
     de matrice non-symétrique.
@@ -27,12 +27,12 @@ cata_msg = {
   Conseil : Changer de solveur
 """),
 
-3: _(u"""
+    3: _(u"""
  Le calcul est séquentiel, on ne peut donc pas utiliser MATR_DISTRIBUEE='OUI'.
  On force MATR_DISTRIBUEE='NON'.
 """),
 
-4: _(u"""
+    4: _(u"""
  L'utilisation de MATR_DISTRIBUEE='OUI' nécessite que chaque processeur ait
  au moins 1 degré de liberté qui lui soit alloué.
  Ici, le processeur %(i1)d ne s'est vu attribué aucun ddl.
@@ -41,7 +41,7 @@ cata_msg = {
            AFFE_MODELE/PARTITION/PARALLELISME ou diminuez le nombre de processeurs.
 """),
 
-5 : _(u"""
+    5 : _(u"""
  modèles discordants
 """),
 
@@ -49,105 +49,105 @@ cata_msg = {
 
 
 
-8 : _(u"""
+    8 : _(u"""
  le mot-clé :  %(k1)s  est incorrect.
  on attend : "CUMU" ou "ZERO"
 """),
 
 
-11 : _(u"""
+    11 : _(u"""
  on ne peut assembler que des vecteurs réels ou complexes
 """),
 
 
 
 
-13 : _(u"""
+    13 : _(u"""
  ICHIN = 0
 """),
 
-14 : _(u"""
+    14 : _(u"""
  ICHIN < -2
 """),
 
-15 : _(u"""
+    15 : _(u"""
  S => ICHIN=/0
 """),
 
-16 : _(u"""
+    16 : _(u"""
  action : E/L/S
 """),
 
-18 : _(u"""
+    18 : _(u"""
  Erreur développeur dans l'assemblage.
  Les vecteurs élémentaires ou les matrices élémentaires sont incohérentes: ils ne portent pas sur le même modèle ou ils ne calculent pas la même option.
 """),
 
-19 : _(u"""
+    19 : _(u"""
  Erreur développeur dans l'assemblage.
  Les vecteurs élémentaires ou les matrices élémentaires ne contiennent ni sous-structures, ni objet LISTE_RESU.
 """),
 
-20 : _(u"""
+    20 : _(u"""
   Erreur programmeur :
     lors d'un assemblage, dans la liste des MATR_ELEM (ou VECT_ELEM) que l'on veut
     assembler, on ne trouve aucun resuelem.
 """),
 
-21 : _(u"""
+    21 : _(u"""
  modèles différents
 """),
 
 
-26 : _(u"""
+    26 : _(u"""
  le noeud:  %(k1)s composante:  %(k2)s  est bloqué plusieurs fois.
 """),
 
-27 : _(u"""
+    27 : _(u"""
  l'entier décrivant la position du premier Lagrange ne peut être égal qu'à +1 ou -1 .
 """),
 
-28 : _(u"""
+    28 : _(u"""
  le nombre de noeuds effectivement numérotés ne correspond pas au nombre
  de noeuds à numéroter
 """),
 
-35 : _(u"""
+    35 : _(u"""
  il n y a pas de modèle dans la liste  %(k1)s .NUME.LILI
 """),
 
-36 : _(u"""
+    36 : _(u"""
  noeud inexistant
 """),
 
-37 : _(u"""
+    37 : _(u"""
  méthode :  %(k1)s  inconnue.
 """),
 
-38 : _(u"""
+    38 : _(u"""
  noeud incorrect
 """),
 
-39 : _(u"""
+    39 : _(u"""
  le phénomène  %(k1)s  n'est pas admis pour la symétrisation des matrices.
  seuls sont admis les phénomènes "MECANIQUE" et "THERMIQUE"
 """),
 
-41 : _(u"""
+    41 : _(u"""
  le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s
  n'a pas d'adresse dans : %(k3)s
 """),
 
-42 : _(u"""
+    42 : _(u"""
  le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s
    a une adresse  : %(i2)d  > NEQUA : %(i3)d
 """),
 
-43 : _(u"""
+    43 : _(u"""
  NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
-44 : _(u"""
+    44 : _(u"""
  --- VECT_ELEM     : %(k1)s
  --- RESU          : %(k2)s
  --- NOMLI         : %(k3)s
@@ -157,7 +157,7 @@ cata_msg = {
  --- NNOE par NODE : %(i4)d
 """),
 
-45 : _(u"""
+    45 : _(u"""
 Erreur Programmeur ou utilisateur :
 -----------------------------------
  Le LIGREL    : %(k1)s  référencé par le noeud supplémentaire. : %(i1)d
@@ -177,37 +177,37 @@ Risques & conseils :
    de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?
 """),
 
-46 : _(u"""
+    46 : _(u"""
  --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
-47 : _(u"""
+    47 : _(u"""
  --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
 """),
 
-48 : _(u"""
+    48 : _(u"""
  --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s
  --- n'a pas d''adresse  dans la numérotation : %(k3)s
 """),
 
-49 : _(u"""
+    49 : _(u"""
  --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s
  --- a une adresse : %(i2)d   > NEQUA : %(i3)d
 """),
 
-63 : _(u"""
+    63 : _(u"""
  erreur sur le premier Lagrange d'une LIAISON_DDL
  on a mis 2 fois le premier  Lagrange :  %(i1)d
  derrière le noeud :  %(i2)d
 """),
 
-64 : _(u"""
+    64 : _(u"""
  erreur sur le  2ème Lagrange d'une LIAISON_DDL
  on a mis 2 fois le 2ème  Lagrange :  %(i1)d
  derrière le noeud :  %(i2)d
 """),
 
-65 : _(u"""
+    65 : _(u"""
  incohérence dans le dénombrement des ddls
  nombre de ddl a priori    : %(i1)d
  nombre de ddl a posteriori: %(i2)d

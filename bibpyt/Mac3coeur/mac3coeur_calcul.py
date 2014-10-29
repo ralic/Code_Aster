@@ -46,6 +46,7 @@ def calc_mac3coeur_ops(self, **args):
 # decorator to cache values of properties
 NULL = object()
 
+
 def cached_property(method):
     """Decorator for the 'getter' method of a property
     It returns directly the value without calling the 'getter' method itself if
@@ -55,7 +56,7 @@ def cached_property(method):
     @wraps(method)
     def wrapper(inst):
         """Real wrapper function"""
-        attr = '_' +  method.__name__
+        attr = '_' + method.__name__
         cached = getattr(inst, attr)
         if cached is not NULL:
             return cached
@@ -67,6 +68,7 @@ def cached_property(method):
 
 
 class Mac3CoeurCalcul(object):
+
     """Base class of an analysis, intended to be inherited
 
     Its factory builds the proper object according to the passed keywords.
@@ -270,16 +272,16 @@ class Mac3CoeurCalcul(object):
     def cham_mater_free(self):
         """Return the field of material (without contact)"""
         return self.coeur.definition_materiau(
-                            self.mesh, self.geofib, self.evol_fluence,
-                            self.evol_temp, CONTACT='NON')
+            self.mesh, self.geofib, self.evol_fluence,
+            self.evol_temp, CONTACT='NON')
 
     @property
     @cached_property
     def cham_mater_contact(self):
         """Return the field of material (with contact enabled)"""
         return self.coeur.definition_materiau(
-                            self.mesh, self.geofib, self.evol_fluence,
-                            self.evol_temp, CONTACT='OUI')
+            self.mesh, self.geofib, self.evol_fluence,
+            self.evol_temp, CONTACT='OUI')
 
     # loadings
     @property
@@ -298,10 +300,10 @@ class Mac3CoeurCalcul(object):
         """Compute the Archimede loadings"""
         fmult_arch = self.coeur.definition_temp_archimede(self.use_archimede)
         load = [
-            _F(CHARGE    = self.coeur.definition_archimede_nodal(self.model),
-               FONC_MULT = fmult_arch,),
-            _F(CHARGE    = self.coeur.definition_archimede_poutre(self.model),
-               FONC_MULT = fmult_arch,), ]
+            _F(CHARGE=self.coeur.definition_archimede_nodal(self.model),
+               FONC_MULT=fmult_arch,),
+            _F(CHARGE=self.coeur.definition_archimede_poutre(self.model),
+               FONC_MULT=fmult_arch,), ]
         return load
 
     @property
@@ -352,6 +354,7 @@ class Mac3CoeurCalcul(object):
     def symetric_cond(self):
         """Define the boundary conditions of symetry"""
         from Cata.cata import AFFE_CHAR_MECA
+
         def block(grma=None, grno=None, ddl=None):
             """Block 'ddl' of 'grma/grno' to zero"""
             kddl = {}.fromkeys(ddl, 0.)
@@ -371,6 +374,7 @@ class Mac3CoeurCalcul(object):
     def periodic_cond(self):
         """Define the boundary conditions of periodicity"""
         from Cata.cata import AFFE_CHAR_MECA
+
         def equal(ddl, grno1, grno2):
             """Return keyword to set ddl(grno1) = ddl(grno2)"""
             return _F(GROUP_NO_1=grno1,
@@ -386,7 +390,7 @@ class Mac3CoeurCalcul(object):
                          equal('DY', 'PSUP', 'PEBO_S'),
                          equal('DZ', 'PSUP', 'PEBO_S'),
                          equal('DY', 'PINF', 'FIX'),
-                         equal('DZ', 'PINF', 'FIX'),]
+                         equal('DZ', 'PINF', 'FIX'), ]
         _excit = AFFE_CHAR_MECA(MODELE=self.model,
                                 LIAISON_GROUP=liaison_group)
         return [_F(CHARGE=_excit), ]
@@ -395,30 +399,30 @@ class Mac3CoeurCalcul(object):
         """Return the common keywords for STAT_NON_LINE
         All keywords can be overridden using `kwds`."""
         keywords = {
-            'MODELE' : self.model,
-            'CARA_ELEM' : self.carael,
-            'CHAM_MATER' : self.cham_mater_free,
-            'COMPORTEMENT' : (_F(RELATION='MULTIFIBRE',
-                                 GROUP_MA=('CRAYON', 'T_GUIDE'),
-                                 PARM_THETA=0.5,
-                                 DEFORMATION='GROT_GDEP',),
-                              _F(RELATION='DIS_GRICRA',
-                                 GROUP_MA='ELA',),
-                              _F(RELATION='DIS_CHOC',
-                                 GROUP_MA='RES_TOT',),
-                              _F(RELATION='ELAS',
-                                 GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
-                              _F(RELATION='VMIS_ISOT_TRAC',
-                                 GROUP_MA='MAINTIEN',
-                                 DEFORMATION='PETIT'),),
-            'NEWTON' : _F(MATRICE='TANGENTE',
-                          REAC_ITER=1,),
-            'SOLVEUR' : _F(METHODE='MUMPS',
-                           RENUM='AMF',
-                           GESTION_MEMOIRE='OUT_OF_CORE',
-                           ELIM_LAGR='NON',
-                           PCENT_PIVOT=200,),
-            'AFFICHAGE' : _F(INFO_RESIDU='OUI'),
+            'MODELE': self.model,
+            'CARA_ELEM': self.carael,
+            'CHAM_MATER': self.cham_mater_free,
+            'COMPORTEMENT': (_F(RELATION='MULTIFIBRE',
+                                GROUP_MA=('CRAYON', 'T_GUIDE'),
+                                PARM_THETA=0.5,
+                                DEFORMATION='GROT_GDEP',),
+                             _F(RELATION='DIS_GRICRA',
+                                GROUP_MA='ELA',),
+                             _F(RELATION='DIS_CHOC',
+                                GROUP_MA='RES_TOT',),
+                             _F(RELATION='ELAS',
+                                GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
+                             _F(RELATION='VMIS_ISOT_TRAC',
+                                GROUP_MA='MAINTIEN',
+                                DEFORMATION='PETIT'),),
+            'NEWTON': _F(MATRICE='TANGENTE',
+                         REAC_ITER=1,),
+            'SOLVEUR': _F(METHODE='MUMPS',
+                          RENUM='AMF',
+                          GESTION_MEMOIRE='OUT_OF_CORE',
+                          ELIM_LAGR='NON',
+                          PCENT_PIVOT=200,),
+            'AFFICHAGE': _F(INFO_RESIDU='OUI'),
         }
         keywords.update(kwds)
         return keywords
@@ -426,13 +430,14 @@ class Mac3CoeurCalcul(object):
     def set_from_resu(self, what, resu):
         """Extract a parameter from a result"""
         assert what in ('mesh', 'model')
-        key, typ = { 'mesh' : ('NOM_MAILLA', maillage_sdaster),
-                     'model' : ('NOM_MODELE', modele_sdaster) }[what]
+        key, typ = {'mesh': ('NOM_MAILLA', maillage_sdaster),
+                    'model': ('NOM_MODELE', modele_sdaster)}[what]
         nom_co = aster.dismoi(key, resu.nom, 'RESULTAT', 'F')[2].strip()
         return self.macro.get_concept_by_type(nom_co, typ)
 
 
 class Mac3CoeurDeformation(Mac3CoeurCalcul):
+
     """Compute the strain of the assemblies"""
     mcfact = 'DEFORMATION'
 
@@ -486,15 +491,15 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         else:
             chmat_contact = self.cham_mater_contact
         constant_load = self.rigid_load + self.archimede_load + \
-                        self.gravity_load + self.vessel_dilatation_load + \
-                        self.symetric_cond + self.periodic_cond
+            self.gravity_load + self.vessel_dilatation_load + \
+            self.symetric_cond + self.periodic_cond
         # T0 - T8
         RESULT = STAT_NON_LINE(**self.snl(
                                CHAM_MATER=chmat_contact,
                                INCREMENT=_F(LIST_INST=self.times,
                                             INST_FIN=coeur.temps_simu['T8']),
-                               EXCIT=constant_load + self.vessel_head_load + \
-                                     self.thyc_load,
+                               EXCIT=constant_load + self.vessel_head_load +
+                               self.thyc_load,
                                ETAT_INIT=self.etat_init,
                                ))
         # T8 - T8b
@@ -517,6 +522,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
+
     """Compute the thinkness of water from deformed assemblies"""
     mcfact = 'LAME'
 
@@ -568,10 +574,11 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         # calcul de deformation d'apres DAMAC / T0 - T1
         _snl_lame = STAT_NON_LINE(**self.snl(
                                   INCREMENT=_F(LIST_INST=self.times,
-                                               INST_FIN=coeur.temps_simu['T1']),
-                                  EXCIT=self.archimede_load + self.vessel_head_load + \
-                                        self.vessel_dilatation_load + self.gravity_load + \
-                                        self.layer_load + self.periodic_cond,
+                                               INST_FIN=coeur.temps_simu[
+                                                   'T1']),
+                                  EXCIT=self.archimede_load + self.vessel_head_load +
+                                  self.vessel_dilatation_load + self.gravity_load +
+                                  self.layer_load + self.periodic_cond,
                                   ))
         _debug(_snl_lame, "result STAT_NON_LINE 1")
         # updated coeur
@@ -587,12 +594,12 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         keywords = self.snl(CHAM_MATER=self.cham_mater_contact,
                             INCREMENT=_F(LIST_INST=self.times,
                                          INST_FIN=coeur.temps_simu['T4']),
-                            EXCIT=self.rigid_load + self.archimede_load + \
-                                  self.vessel_head_load + \
-                                  self.vessel_dilatation_load + \
-                                  self.gravity_load + \
-                                  self.symetric_cond + self.periodic_cond + \
-                                  self.thyc_load,
+                            EXCIT=self.rigid_load + self.archimede_load +
+                            self.vessel_head_load +
+                            self.vessel_dilatation_load +
+                            self.gravity_load +
+                            self.symetric_cond + self.periodic_cond +
+                            self.thyc_load,
                             )
         self.deform_mesh(__resuf)
         RESULT = STAT_NON_LINE(**keywords)
@@ -611,6 +618,7 @@ def _build_coeur(typ_coeur, macro, sdtab):
     coeur = factory.get(typ_coeur)(name, typ_coeur, macro, datg)
     coeur.init_from_table(tab)
     return coeur
+
 
 def read_thyc(coeur, model, unit):
     """Read a file containing THYC results"""

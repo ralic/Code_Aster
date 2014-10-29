@@ -26,6 +26,7 @@ from Calc_epx.calc_epx_utils import recupere_structure, tolist, get_group_ma
 from Utilitai.Utmess import UTMESS
 from Calc_epx.calc_epx_struc import BLOC_DONNEES, BLOC_MATE, FONCTION
 
+
 def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
     """
         Traitement des données matériaux et comportements
@@ -50,17 +51,17 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
     for comp in COMPORTEMENT:
         if comp['RELATION'] not in relations_autorisees:
             raise Exception("""La relation %s n'est pas programmée"""
-                            %(comp['RELATION']))
+                            % (comp['RELATION']))
         for gr in comp['GROUP_MA']:
             # EC refonte : on peut supprimer cela si on considère la loi
             # des surcharges
             if gr in dic_comportement:
                 raise Exception('Une relation existe déjà pour le groupe %s'
-                                                                        %gr)
+                                % gr)
             # FIN EC
-            dic_comportement[gr] = {'RELATION'  : comp['RELATION'],
-                                    'MATER'     : None,
-                                    'NOM_MATER' : None,
+            dic_comportement[gr] = {'RELATION': comp['RELATION'],
+                                    'MATER': None,
+                                    'NOM_MATER': None,
                                     }
             if comp['RELATION'] == 'GLRC_DAMAGE':
                 # GLRC impose de définir l'orientation :
@@ -80,7 +81,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
             if gr in dic_comportement:
                 dic_comportement[gr]['MATER'] = concept_mater
                 dic_comportement[gr]['NOM_MATER'] = nom_mater
-            #else :
+            # else :
             # EC : emet-on un message d'alarme ?
 
     # ETAPE 3 : Verification que tous les GROUP_MA ont un materiau
@@ -91,7 +92,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
             UTMESS('F', 'PLEXUS_32', gr)
         relation = dic_comportement[gr]['RELATION']
         nom_mater = dic_comportement[gr]['NOM_MATER']
-        nom_mate_rela = nom_mater+'/'+relation
+        nom_mate_rela = nom_mater + '/' + relation
         if not dic_mate_rela.has_key(nom_mate_rela):
             dic_mate_rela[nom_mate_rela] = dic_comportement[gr]
             dic_mate_rela[nom_mate_rela]['GROUP_MA'] = []
@@ -102,7 +103,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
     nb_fonc = epx['FONC'].len_mcs()
     # EC : pas trop joli, sert a savoir le nombre de fonction deja declarees
     # en evitant de passer un argument supplémentaire
-    liste_fonc = [' ']*nb_fonc
+    liste_fonc = [' '] * nb_fonc
     mate_ordo = dic_mate_rela.keys()
     mate_ordo.sort()
     for mate_rela in mate_ordo:
@@ -136,7 +137,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
                     UTMESS('F', 'PLEXUS_22', valk=(loi, nom_mater, relation))
                 continue
 
-            rel_loi = relation+'/'+loi
+            rel_loi = relation + '/' + loi
             if cata_lois[rel_loi].has_key('NOM_EPX'):
                 mot_cle_fact = True
                 mot_cle_epx = cata_lois[rel_loi]['NOM_EPX']
@@ -144,22 +145,22 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
                 mot_cle_fact = False
 
             if (cata_compor[relation]['REPEAT'][i_loi] == 'n'
-                                    and len(donnees_loi) > 1):
+               and len(donnees_loi) > 1):
                 raise Exception(
-                'Erreur de programmation, le mot cle ne peut pas etre repete')
+                    'Erreur de programmation, le mot cle ne peut pas etre repete')
             elif (cata_compor[relation]['REPEAT'][i_loi] == 'y'
-                                         and not mot_cle_fact):
+                  and not mot_cle_fact):
                 raise Exception(
-             'Erreur dev : un motclé repetable doit avoir NOM_EPX dans sa loi')
+                    'Erreur dev : un motclé repetable doit avoir NOM_EPX dans sa loi')
 
             # lecture des parametres
             if relation == 'GLRC_DAMAGE' and loi == 'CISAIL_NL':
                 l_cisail = True
             for donnees in donnees_loi:
                 l_para, l_vale, l_bs, liste_fonc = get_para_all(loi, relation,
-                                                       l_para, l_vale, l_bs,
-                                                       nom_mater, donnees,
-                                                       liste_fonc)
+                                                                l_para, l_vale, l_bs,
+                                                                nom_mater, donnees,
+                                                                liste_fonc)
 
         if cata_ordre_para.has_key(relation):
             ordre_para = cata_ordre_para[relation]
@@ -175,7 +176,6 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
                          titre=titre)
         epx[directive].add_bloc(bloc)
 
-
     # traiter les fonctions
     for dic_fonc in liste_fonc:
         if type(dic_fonc) is not dict:
@@ -183,7 +183,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
         val = dic_fonc['VALE']
         ifo = dic_fonc['NUME']
         nom_aster = dic_fonc['NOM_FONC']
-        cle_fonc = '%i LSQU 2 TABL' %(ifo)
+        cle_fonc = '%i LSQU 2 TABL' % (ifo)
         bloc_fonc = FONCTION(cle_fonc, val[0], val[1], nom_aster=nom_aster)
         epx['FONC'].add_bloc(bloc_fonc)
 
@@ -204,7 +204,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
             UTMESS('F', 'PLEXUS_36', valk=(gma))
         vale = dicOrthotropie[gma]
         mot_cle_epx = 'COMP ORTS'
-        val_cle = '%s %s %s'%(vale[0], vale[1], vale[2])
+        val_cle = '%s %s %s' % (vale[0], vale[1], vale[2])
         bloc = BLOC_DONNEES(mot_cle_epx, l_group=gma, val_cle=val_cle,)
         epx[directive2].add_bloc(bloc)
 
@@ -217,7 +217,7 @@ def get_para_loi(loi, relation, l_para, l_vale, l_para1, l_vale1,
     """
         Lecture des paramètres de la loi 'loi'
     """
-    cle = relation+'/'+loi
+    cle = relation + '/' + loi
     if not cata_lois[cle].has_key('POSI_PARA'):
         posi_para = False
     else:
@@ -229,7 +229,7 @@ def get_para_loi(loi, relation, l_para, l_vale, l_para1, l_vale1,
             if type_donnee == 'fonc':
                 car_temp = donnees[para]
                 nom_fonc = car_temp.get_name()
-                ifonc = len(liste_fonc)+1
+                ifonc = len(liste_fonc) + 1
                 for dic_fonc in liste_fonc:
                     if type(dic_fonc) is dict:
                         nom = dic_fonc['NOM_FONC']
@@ -238,15 +238,15 @@ def get_para_loi(loi, relation, l_para, l_vale, l_para1, l_vale1,
                             break
                 if ifonc > len(liste_fonc):
                     val = car_temp.Valeurs()
-                    dic_fonc = {'VALE' : val,
-                            'NUME' : ifonc,
-                            'NOM_FONC' : nom_fonc
-                            }
+                    dic_fonc = {'VALE': val,
+                                'NUME': ifonc,
+                                'NOM_FONC': nom_fonc
+                                }
                     liste_fonc.append(dic_fonc)
-                vale = 'FONC %i'%ifonc
+                vale = 'FONC %i' % ifonc
             elif type_donnee == 'mfac':
                 raise Exception(
-            'Erreur de programmation : type de donnees mfac impossible')
+                    'Erreur de programmation : type de donnees mfac impossible')
             else:
                 vale = donnees[para]
             if not posi_para:
@@ -264,13 +264,15 @@ def get_para_loi(loi, relation, l_para, l_vale, l_para1, l_vale1,
                 UTMESS('F', 'PLEXUS_31', valk=(para, loi, nom_mater))
     return l_para, l_vale, l_para1, l_vale1, liste_fonc
 #-----------------------------------------------------------------------
+
+
 def get_para_all(loi, relation, l_para, l_vale, l_bs,
                  nom_mater, donnees, liste_fonc):
     """
         Lecture des parametres de la loi 'loi'
         + traitement des parametres facteurs
     """
-    rel_loi = relation+'/'+loi
+    rel_loi = relation + '/' + loi
     l_posi = True
     l_para1 = []
     l_vale1 = []
@@ -286,15 +288,15 @@ def get_para_all(loi, relation, l_para, l_vale, l_bs,
             if type(para_epx) is list:
                 if rel_loi == 'VMIS_ISOT_TRAC/TRACTION':
                     l_para, l_vale = vmis_isot_trac(donnees, para, para_epx,
-                                                 type_para, l_para, l_vale)
+                                                    type_para, l_para, l_vale)
                 else:
                     raise Exception("""
 Pas de traitement special présent pour le couple relation/loi %s."""
-                                    %rel_loi)
+                                    % rel_loi)
             elif type_para == 'fonc':
                 car_temp = donnees[para]
                 nom_fonc = car_temp.get_name()
-                ifonc = len(liste_fonc)+1
+                ifonc = len(liste_fonc) + 1
                 for dic_fonc in liste_fonc:
                     if type(dic_fonc) is dict:
                         nom = dic_fonc['NOM_FONC']
@@ -303,12 +305,12 @@ Pas de traitement special présent pour le couple relation/loi %s."""
                             break
                 if ifonc > len(liste_fonc):
                     val = car_temp.Valeurs()
-                    dic_fonc = {'VALE' : val,
-                            'NUME' : ifonc,
-                            'NOM_FONC' : nom_fonc
-                            }
+                    dic_fonc = {'VALE': val,
+                                'NUME': ifonc,
+                                'NOM_FONC': nom_fonc
+                                }
                     liste_fonc.append(dic_fonc)
-                vale = 'FONC %i'%ifonc
+                vale = 'FONC %i' % ifonc
                 if posi_para == 0:
                     l_para.append(para_epx)
                     l_vale.append(vale)
@@ -337,13 +339,13 @@ Pas de traitement special présent pour le couple relation/loi %s."""
                         else:
                             continue
                     l_para, l_vale, l_para1, l_vale1, liste_fonc = get_para_loi(
-                                                loi2, loi, l_para,
-                                                l_vale, l_para1, l_vale1,
-                                                nom_concept2, donnees2,
-                                                liste_fonc)
+                        loi2, loi, l_para,
+                        l_vale, l_para1, l_vale1,
+                        nom_concept2, donnees2,
+                        liste_fonc)
             else:
                 raise Exception(
-            'Erreur de programmation, TYPE = %s est interdit'%type_para)
+                    'Erreur de programmation, TYPE = %s est interdit' % type_para)
         else:
             bes_para = cata_lois[rel_loi]['BESOIN'][ipar]
             if bes_para == 'o':
@@ -359,11 +361,12 @@ Pas de traitement special présent pour le couple relation/loi %s."""
 #-----------------------------------------------------------------------
 #-----------------------------------------------------------------------
 
-def vmis_isot_trac(donnees, para, para_epx,type_para, l_para, l_vale):
+
+def vmis_isot_trac(donnees, para, para_epx, type_para, l_para, l_vale):
     """
         Transforme la fonction associée au paramètre SIGM de TRACTION afin
         d'obtenir les données attendues par EPX pour les mots-clés
-        ELAS et TRAC du matériau VMIS ISOT. 
+        ELAS et TRAC du matériau VMIS ISOT.
     """
 #   ajout des mots-clés
     l_para.extend(para_epx)
@@ -373,21 +376,21 @@ def vmis_isot_trac(donnees, para, para_epx,type_para, l_para, l_vale):
     eps = val[0]
     sigm = val[1]
 #   verif de la compatibilité de eps[0] et sigm[0] avec E
-    if l_para[0][:4]!='YOUN':
+    if l_para[0][:4] != 'YOUN':
         raise Exception('Erreur de programmation')
     E = l_vale[0]
-    diff = abs(sigm[0]/E-eps[0])
-    if diff> 0.001*eps[0]:
+    diff = abs(sigm[0] / E - eps[0])
+    if diff > 0.001 * eps[0]:
         nom_fonc = car_temp.get_name()
-        UTMESS('F','PLEXUS_40', valk=[nom_fonc, para], valr=[sigm[0]/E,eps[0]])
+        UTMESS('F', 'PLEXUS_40', valk=[
+               nom_fonc, para], valr=[sigm[0] / E, eps[0]])
     # ajout de la valeur de ELAS (limite élastique)
     l_vale.append(sigm[0])
     # préparation des valeurs de trac
     nb = len(eps)
-    trac = [nb,]
+    trac = [nb, ]
     for i in range(nb):
         trac.extend([sigm[i], eps[i]])
     l_vale.append(trac)
 
     return l_para, l_vale
-    

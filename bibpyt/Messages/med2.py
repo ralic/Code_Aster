@@ -19,7 +19,7 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
   -> Les groupes '%(k1)s' et '%(k2)s'
      ont les mêmes vingt quatre premiers caractères, leur nom
      court est donc '%(k3)s'.
@@ -32,15 +32,15 @@ cata_msg = {
      les 8 caractères.
 """),
 
-2 : _(u"""
+    2 : _(u"""
      '%(k1)s'
 """),
 
-3 : _(u"""
+    3 : _(u"""
      Fichier MED introuvable.
 """),
 
-4 : _(u"""
+    4 : _(u"""
 Le champ '%(k1)s' est déjà présent
 dans le fichier MED pour l'instant %(r1)G.
   -> Conseil :
@@ -48,7 +48,7 @@ dans le fichier MED pour l'instant %(r1)G.
      nommer le champ différemment.
 """),
 
-5 : _(u"""
+    5 : _(u"""
 Le champ '%(k1)s' dont vous avez demandé l'impression au format MED
 est défini sur des éléments utilisant la famille de points de Gauss
 '%(k2)s'. Or l'impression de cette famille n'est pas possible au
@@ -58,11 +58,11 @@ format MED.
      la famille de point de Gauss incriminée.
 """),
 
-6 : _(u"""
+    6 : _(u"""
     Les mots-clés %(k1)s et %(k2)s sont incompatibles.
 """),
 
-7 : _(u"""
+    7 : _(u"""
   Il n'a pas été possible d'imprimer le champ %(k1)s en utilisant
   IMPR_NOM_VARI='OUI'. Cela est dû au fait que certains comportements
   dans votre modèle ne sont pas imprimables avec cette option.
@@ -74,7 +74,7 @@ format MED.
 """),
 
 
-9 : _(u"""
+    9 : _(u"""
   Vous demandez l'impression du champ %(k1)s issu de la commande
   PROJ_CHAMP utilisant la méthode 'SOUS_POINT'.
 
@@ -82,7 +82,7 @@ format MED.
 """),
 
 
-11 : _(u"""
+    11 : _(u"""
   Votre champ repose sur un modèle comportant des éléments joints
   ou interfaces non encore imprimables au format MED.
 

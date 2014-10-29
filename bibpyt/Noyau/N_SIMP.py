@@ -30,77 +30,79 @@ import N_ENTITE
 import N_MCSIMP
 from strfunc import ufmt
 
+
 class SIMP(N_ENTITE.ENTITE):
-   """
-    Classe pour definir un mot cle simple
 
-    Cette classe a deux attributs de classe
+    """
+     Classe pour definir un mot cle simple
 
-    - class_instance qui indique la classe qui devra etre utilisée
-            pour créer l'objet qui servira à controler la conformité d'un
-            mot-clé simple avec sa définition
+     Cette classe a deux attributs de classe
 
-    - label qui indique la nature de l'objet de définition (ici, SIMP)
+     - class_instance qui indique la classe qui devra etre utilisée
+             pour créer l'objet qui servira à controler la conformité d'un
+             mot-clé simple avec sa définition
 
-   """
-   class_instance = N_MCSIMP.MCSIMP
-   label = 'SIMP'
+     - label qui indique la nature de l'objet de définition (ici, SIMP)
 
-   def __init__(self,typ,fr="",statut='f',into=None,defaut=None,
-                     min=1,max=1,homo=1,position='local',
-                     val_min='**',val_max='**',docu="",validators=None,
-                     sug=None):
-      """
-          Un mot-clé simple est caractérisé par les attributs suivants :
-          - type : cet attribut est obligatoire et indique le type de valeur attendue
-          - fr : chaîne documentaire en français
-          - statut : obligatoire ou facultatif ou caché
-          - into : valeurs autorisées
-          - defaut : valeur par défaut
-          - min : nombre minimal de valeurs
-          - max : nombre maximal de valeurs
-          - homo : ?
-          - position : si global, le mot-clé peut-être lu n'importe où dans la commande
-          - val_min : valeur minimale autorisée
-          - val_max : valeur maximale autorisée
-          - docu : ?
-          - sug : ?
-      """
-      N_ENTITE.ENTITE.__init__(self,validators)
-      # Initialisation des attributs
-      if type(typ) == types.TupleType :
-          self.type=typ
-      else :
-          self.type=(typ,)
-      self.fr=fr
-      self.statut=statut
-      self.into=into
-      self.defaut=defaut
-      self.min=min
-      self.max=max
-      self.homo=homo
-      self.position = position
-      self.val_min=val_min
-      self.val_max=val_max
-      self.docu = docu
-      self.sug = sug
+    """
+    class_instance = N_MCSIMP.MCSIMP
+    label = 'SIMP'
 
-   def verif_cata(self):
-      """
-          Cette methode sert à valider les attributs de l'objet de définition
-          de la classe SIMP
-      """
-      self.check_min_max()
-      self.check_fr()
-      self.check_statut()
-      self.check_homo()
-      self.check_into()
-      self.check_position()
-      self.check_validators()
+    def __init__(self, typ, fr="", statut='f', into=None, defaut=None,
+                 min=1, max=1, homo=1, position='local',
+                 val_min='**', val_max='**', docu="", validators=None,
+                 sug=None):
+        """
+            Un mot-clé simple est caractérisé par les attributs suivants :
+            - type : cet attribut est obligatoire et indique le type de valeur attendue
+            - fr : chaîne documentaire en français
+            - statut : obligatoire ou facultatif ou caché
+            - into : valeurs autorisées
+            - defaut : valeur par défaut
+            - min : nombre minimal de valeurs
+            - max : nombre maximal de valeurs
+            - homo : ?
+            - position : si global, le mot-clé peut-être lu n'importe où dans la commande
+            - val_min : valeur minimale autorisée
+            - val_max : valeur maximale autorisée
+            - docu : ?
+            - sug : ?
+        """
+        N_ENTITE.ENTITE.__init__(self, validators)
+        # Initialisation des attributs
+        if type(typ) == types.TupleType:
+            self.type = typ
+        else:
+            self.type = (typ,)
+        self.fr = fr
+        self.statut = statut
+        self.into = into
+        self.defaut = defaut
+        self.min = min
+        self.max = max
+        self.homo = homo
+        self.position = position
+        self.val_min = val_min
+        self.val_max = val_max
+        self.docu = docu
+        self.sug = sug
 
-   def __call__(self,val,nom,parent=None):
-      """
-          Construit un objet mot cle simple (MCSIMP) a partir de sa definition (self)
-          de sa valeur (val), de son nom (nom) et de son parent dans l arboresence (parent)
-      """
-      return self.class_instance(nom=nom,definition=self,val=val,parent=parent)
+    def verif_cata(self):
+        """
+            Cette methode sert à valider les attributs de l'objet de définition
+            de la classe SIMP
+        """
+        self.check_min_max()
+        self.check_fr()
+        self.check_statut()
+        self.check_homo()
+        self.check_into()
+        self.check_position()
+        self.check_validators()
+
+    def __call__(self, val, nom, parent=None):
+        """
+            Construit un objet mot cle simple (MCSIMP) a partir de sa definition (self)
+            de sa valeur (val), de son nom (nom) et de son parent dans l arboresence (parent)
+        """
+        return self.class_instance(nom=nom, definition=self, val=val, parent=parent)

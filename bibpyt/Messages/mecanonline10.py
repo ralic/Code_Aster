@@ -19,107 +19,107 @@
 
 cata_msg = {
 
-1  : _(u"""
+    1  : _(u"""
  <Erreur> Échec dans l'intégration de la loi de comportement
 """),
 
-2 : _(u"""
+    2 : _(u"""
  <Erreur> Échec dans le pilotage
 """),
 
-3 : _(u"""
+    3 : _(u"""
  <Erreur> Le nombre maximum d'itérations de Newton est atteint
 """),
 
-4 : _(u"""
+    4 : _(u"""
  <Erreur> Échec dans le traitement du contact discret
 """),
 
-5 : _(u"""
+    5 : _(u"""
  <Erreur> Il n'y a pas assez de temps CPU pour continuer les pas de temps
 """),
 
-6 : _(u"""
+    6 : _(u"""
  <Erreur> La matrice du système est singulière
 """),
 
-7 : _(u"""
+    7 : _(u"""
  <Erreur> Il n'y a pas assez de temps CPU pour continuer les itérations de Newton
 """),
 
-8 : _(u"""
+    8 : _(u"""
  <Erreur> Arrêt demandé par l'utilisateur.
 """),
 
-9 : _(u"""
+    9 : _(u"""
  <Erreur> On dépasse le nombre de boucles de point fixe de géométrie.
  """),
 
-10 : _(u"""
+    10 : _(u"""
  <Erreur> On dépasse le nombre de boucles de point fixe de frottement.
  """),
 
-11 : _(u"""
+    11 : _(u"""
  <Erreur> On dépasse le nombre de boucles de point fixe de contact.
  """),
 
-12 : _(u"""
+    12 : _(u"""
  <Erreur> Nombre maximum d'itérations atteint dans le solveur linéaire itératif.
  """),
 
-20 : _(u"""
+    20 : _(u"""
  <Évènement> Instabilité détectée.
  """),
 
-21 : _(u"""
+    21 : _(u"""
  <Évènement> Collision détectée.
  """),
 
-22 : _(u"""
+    22 : _(u"""
  <Évènement> Interpénétration détectée.
  """),
 
-23 : _(u"""
+    23 : _(u"""
  <Évènement> Divergence du résidu (DIVE_RESI).
  """),
 
-24 : _(u"""
+    24 : _(u"""
  <Évènement> Valeur atteinte (DELTA_GRANDEUR).
  """),
 
-25 : _(u"""
+    25 : _(u"""
  <Évènement> La loi de comportement est utilisée en dehors de son domaine de validité (VERI_BORNE).
  """),
 
-30 : _(u"""
+    30 : _(u"""
  <Action> On arrête le calcul.
  """),
 
-32: _(u"""
+    32: _(u"""
  <Action> On essaie d'autoriser des itérations de Newton supplémentaires.
 """),
 
-33: _(u"""
+    33: _(u"""
  <Action> On essaie de découper le pas de temps.
 """),
 
-34 : _(u"""
+    34 : _(u"""
  <Action> On essaie d'utiliser la solution de pilotage rejetée initialement.
  """),
 
-35 : _(u"""
+    35 : _(u"""
  <Action> On essaie d'adapter le coefficient de pénalisation.
  """),
 
-42 : _(u""" <Action><Échec> On a déjà choisi l'autre solution de pilotage."""),
+    42 : _(u""" <Action><Échec> On a déjà choisi l'autre solution de pilotage."""),
 
-43 : _(u""" <Action> On choisit l'autre solution de pilotage."""),
+    43 : _(u""" <Action> On choisit l'autre solution de pilotage."""),
 
-44 : _(u""" <Action><Échec> On ne peut plus adapter le coefficient de pénalisation (on atteint COEF_MAXI)."""),
+    44 : _(u""" <Action><Échec> On ne peut plus adapter le coefficient de pénalisation (on atteint COEF_MAXI)."""),
 
-45 : _(u""" <Action> On a adapté le coefficient de pénalisation."""),
+    45 : _(u""" <Action> On a adapté le coefficient de pénalisation."""),
 
-46 : _(u"""          Sur la zone <%(i1)d>, le coefficient de pénalisation adapté vaut <%(r1)13.6G>.
+    46 : _(u"""          Sur la zone <%(i1)d>, le coefficient de pénalisation adapté vaut <%(r1)13.6G>.
  """),
 
 }

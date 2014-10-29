@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 """
@@ -29,24 +29,26 @@ import traceback
 
 DELIMITER = '---delimiter---'
 
+
 def testcase_post():
     """Post-run script"""
     change_test_resu()
+
 
 def change_test_resu():
     """Fill the TEST_xxxx/VALE_CALC of the .comm file with the computed value"""
     print 'try to add new values in the .comm file...'
     howto = os.linesep.join(['', 'HOWTO:', '',
-        'To extract automatically the new command files, use:',
-        '',
-        '   python bibpyt/Contrib/testcase_tools.py extract RESDIR NEWDIR "*.mess"',
-        '',
-        'Replace RESDIR by the directory containing the .mess files',
-        'and NEWDIR by a directory in which the new comm files will be written',
-        '("*.mess" may be omitted).'
-        '', ''])
+                             'To extract automatically the new command files, use:',
+                             '',
+                             '   python bibpyt/Contrib/testcase_tools.py extract RESDIR NEWDIR "*.mess"',
+                             '',
+                             'Replace RESDIR by the directory containing the .mess files',
+                             'and NEWDIR by a directory in which the new comm files will be written',
+                             '("*.mess" may be omitted).'
+                             '', ''])
     reval = re.compile('^ *(OK|NOOK|SKIP) +NON_REGRESSION +(?P<leg>.+?) +'
-        '(?P<refe>.+?) +(?P<calc>.+?) +(?P<err>.+?) +(?P<tole>.+?) *$', re.M)
+                       '(?P<refe>.+?) +(?P<calc>.+?) +(?P<err>.+?) +(?P<tole>.+?) *$', re.M)
     fort8 = open('fort.8', 'rb').read()
     results = reval.findall(fort8)
     fort1 = open('fort.1', 'rb').read()
@@ -69,6 +71,7 @@ def change_test_resu():
     append_to_file('fort.6', howto, stdout=True)
     append_to_file('fort.6', changed, delimiter=DELIMITER, stdout=True)
 
+
 def append_to_file(fname, txt, delimiter=None, stdout=None):
     """Append a text at the end of a file"""
     if delimiter:
@@ -77,6 +80,7 @@ def append_to_file(fname, txt, delimiter=None, stdout=None):
     if stdout:
         print txt
 
+
 def read_keyword_value(kw, txt):
     """Read all values of a keyword
     Return a list of positions and a list of couples (keyword, value)."""
@@ -84,14 +88,16 @@ def read_keyword_value(kw, txt):
     found = []
     for mat in re_vale.finditer(txt):
         found.append({
-            'start' : mat.start(),
-            'end' : mat.end(),
-            'key' : mat.group('key'),
-            'val' : mat.group('val'),
+            'start': mat.start(),
+            'end': mat.end(),
+            'key': mat.group('key'),
+            'val': mat.group('val'),
         })
     return found
 
 _re_comm = re.compile('F +comm +(.*) +D', flags=re.M)
+
+
 def get_dest_filename(fname, nb):
     """Return 'nb' destination filenames
     Try to use filename found in .export"""
@@ -100,7 +106,7 @@ def get_dest_filename(fname, nb):
         return []
     dname, root = osp.split(osp.splitext(fname)[0])
     lexp = glob(osp.join('astest', root + '.export')) \
-         + glob(osp.join('../validation/astest', root + '.export'))
+        + glob(osp.join('../validation/astest', root + '.export'))
     if lexp:
         export = open(lexp[0], 'rb').read()
         lres = _re_comm.findall(export)
@@ -115,10 +121,12 @@ def get_dest_filename(fname, nb):
     return lres
 
 # helper functions run manually
+
+
 def extract_from(from_dir, to_dir, pattern='*.mess'):
     """Extract content from files matching 'pattern' in 'from_dir'
     and write the extracted text into 'to_dir'.
-    
+
     Example:
     python bibpyt/Contrib/testcase_tools.py extract /path/to/resutest /path/to/changed '*.mess'
     """
@@ -148,7 +156,8 @@ if __name__ == '__main__':
     try:
         assert len(args) >= 1, 'usage: testcase_tools.py action [args]'
         if args[0] == 'extract':
-            assert 2 <= len(args[1:]) <= 3, 'invalid arguments for "testcase_tools.py extract"'
+            assert 2 <= len(
+                args[1:]) <= 3, 'invalid arguments for "testcase_tools.py extract"'
             extract_from(*args[1:])
         else:
             assert False, 'unsupported action: %s' % args[0]

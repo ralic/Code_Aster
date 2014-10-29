@@ -20,39 +20,39 @@
 
 cata_msg = {
 
-1: _(u"""
+    1: _(u"""
   Alarme émise par le pré-conditionneur XFEM:
-  La matrice n'est pas symétrique ou à une structure 
-  non symétrique. Le calcul du pré-conditionneur 
+  La matrice n'est pas symétrique ou à une structure
+  non symétrique. Le calcul du pré-conditionneur
   XFEM <<NODAL>> ne supporte pas encore ce type de
   matrices.
-  Par précaution, on ne modifie pas le problème de départ. 
+  Par précaution, on ne modifie pas le problème de départ.
   La résolution se poursuit sans pré-conditionneur XFEM.
 """),
 
-#2 : _(u"""
-#  Erreur de programmation :
-#  On essaie d'activer le préconditionneur <<NODAL>> 
-#  alors que l'ordonnancement des numéros d'équation stockées dans le
-#  NUME_DDL associé à la  matrice en cours de factorisation 
-#  ne correspond pas l'application identité.   
-#"""),
+    # 2 : _(u"""
+    #  Erreur de programmation :
+    #  On essaie d'activer le préconditionneur <<NODAL>>
+    #  alors que l'ordonnancement des numéros d'équation stockées dans le
+    #  NUME_DDL associé à la  matrice en cours de factorisation
+    #  ne correspond pas l'application identité.
+    #"""),
 
-3 : _(u"""
+    3 : _(u"""
   Erreur calcul matriciel:
   La matrice %(i1)d est pré-conditionnée sur les noeuds
   XFEM.
   Vous pourriez obtenir des résultats inattendus.
 """),
 
-4 : _(u"""
+    4 : _(u"""
   Erreur lors d'un produit matrice-vecteur:
   La matrice %(i1)d est pré-conditionnée sur les noeuds
   XFEM.
   Vous pourriez obtenir des résultats inattendus.
 """),
 
-5 : _(u"""
+    5 : _(u"""
   Alarme émise par le pré-conditionneur XFEM:
   Le calcul d'une matrice locale de pré-conditionnement a
   échoué.
@@ -60,9 +60,9 @@ cata_msg = {
   La résolution se poursuit sans le pré-conditionneur XFEM.
 """),
 
-6 : _(u"""
-  Le pré-conditionneur XFEM <<NODAL>> sera activé pour la 
-  suite de la résolution. 
+    6 : _(u"""
+  Le pré-conditionneur XFEM <<NODAL>> sera activé pour la
+  suite de la résolution.
 """),
 
 }

@@ -26,20 +26,22 @@ from glob import glob
 
 from cata_comportement import CataComportementError, LoiComportement, KIT, catalc
 
+
 def _init_cata(debug):
     """Import de tous les comportements"""
     from Execution.strfunc import ufmt
     from cata_vari import DICT_NOM_VARI
     pkgdir = osp.dirname(__file__)
     pkg = osp.basename(pkgdir)
-    l_mod = [osp.splitext(osp.basename(modname))[0] \
-                for modname in glob(osp.join(pkgdir, '*.py'))]
-    l_mod = [modname for modname in l_mod \
-                if modname not in ('__init__', 'cata_comportement')]
+    l_mod = [osp.splitext(osp.basename(modname))[0]
+             for modname in glob(osp.join(pkgdir, '*.py'))]
+    l_mod = [modname for modname in l_mod
+             if modname not in ('__init__', 'cata_comportement')]
     all_vari = set()
     for modname in l_mod:
         try:
-            mod = __import__('%s.%s' % (pkg, modname), globals(), locals(), [modname])
+            mod = __import__('%s.%s' %
+                             (pkg, modname), globals(), locals(), [modname])
             # liste des lois de comportements définies dans le module
             for objname in dir(mod):
                 obj = getattr(mod, objname)
@@ -58,7 +60,7 @@ def _init_cata(debug):
     if unused:
         unused.sort()
         msg = u"Variables déclarées dans cata_vari mais non utilisées: %s" \
-           % ', '.join(unused)
+            % ', '.join(unused)
         raise CataComportementError(msg)
 
 _init_cata(debug=False)

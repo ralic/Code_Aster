@@ -15,20 +15,19 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge : ayaovi-dzifa.kudawoo at edf.fr  
+# person_in_charge : ayaovi-dzifa.kudawoo at edf.fr
 
 
-
-cata_msg={
-1 : _(u"""
-Le mot-clef MODELE est absent dans CALC_PRESSION. 
+cata_msg = {
+    1 : _(u"""
+Le mot-clef MODELE est absent dans CALC_PRESSION.
 """),
 
-2 : _(u"""
-Il y a plusieurs modélisations. Il est donc impossible d'effectuer le calcul. 
+    2 : _(u"""
+Il y a plusieurs modélisations. Il est donc impossible d'effectuer le calcul.
 """),
 
-3 : _(u"""
+    3 : _(u"""
 CALC_PRESSION n'est pas programmé sur des éléments de structures (poutre, plaque, coque, tuyau, poutre multifibre).
 """),
 

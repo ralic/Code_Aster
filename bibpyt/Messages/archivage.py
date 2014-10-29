@@ -21,20 +21,20 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
  Vous risquez d'écraser des données déjà stockées dans la structure de données résultat.
  Dernier instant stocké dans la structure de données résultat: %(r1)19.12e
  Premier instant du calcul: %(r2)19.12e
 """),
 
-4 : _(u"""
+    4 : _(u"""
  Archivage de l'état initial"""),
 
-5 : _(u"""
+    5 : _(u"""
   Archivage des champs
 """),
 
-6 : _(u"""    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d"""),
+    6 : _(u"""    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d"""),
 
 
 }

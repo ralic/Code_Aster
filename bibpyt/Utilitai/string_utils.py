@@ -48,6 +48,8 @@ def clean_string(chaine):
     return ''.join(txt)
 
 # existe dans asrun.mystring
+
+
 def cut_long_lines(txt, maxlen, sep=os.linesep,
                    l_separ=(' ', ',', ';', '.', ':')):
     """Coupe les morceaux de `txt` (isolés avec `sep`) de plus de `maxlen`
@@ -73,6 +75,7 @@ def cut_long_lines(txt, maxlen, sep=os.linesep,
         newlines = os.linesep.join(newlines)
     return newlines
 
+
 def maximize_lines(l_fields, maxlen, sep):
     """Construit des lignes dont la longueur est au plus de `maxlen` caractères.
     Les champs sont assemblés avec le séparateur `sep`.
@@ -81,16 +84,18 @@ def maximize_lines(l_fields, maxlen, sep):
     if len(l_fields) == 0:
         return newlines
     # ceinture
-    assert max([len(f) for f in l_fields]) <= maxlen, 'lignes trop longues : %s' % l_fields
+    assert max([len(f)
+               for f in l_fields]) <= maxlen, 'lignes trop longues : %s' % l_fields
     while len(l_fields) > 0:
         cur = []
-        while len(l_fields) > 0 and len(sep.join(cur + [l_fields[0],])) <= maxlen:
+        while len(l_fields) > 0 and len(sep.join(cur + [l_fields[0], ])) <= maxlen:
             cur.append(l_fields.pop(0))
         # bretelle
         assert len(cur) > 0, l_fields
         newlines.append(sep.join(cur))
     newlines = [l for l in newlines if l != '']
     return newlines
+
 
 def force_split(txt, maxlen):
     """Force le découpage de la ligne à 'maxlen' caractères.
@@ -101,6 +106,7 @@ def force_split(txt, maxlen):
         txt = txt[maxlen:]
     l_res.append(txt)
     return l_res
+
 
 def copy_text_to(text, files):
     """Imprime le texte dans les fichiers.

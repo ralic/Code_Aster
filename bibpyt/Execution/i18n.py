@@ -30,6 +30,7 @@ from Noyau.N_utils import Singleton
 from Noyau.N_types import force_list
 from strfunc import get_encoding
 
+
 def get_language():
     """Return default language (2 letters)"""
     lang = locale.getdefaultlocale()[0]
@@ -39,9 +40,12 @@ def get_language():
         lang = ""
     return lang
 
+
 class Language(Singleton):
+
     """Simple class to switch between languages."""
     _singleton_id = 'i18n.Language'
+
     def __init__(self):
         """Initialization"""
         self.localedir = os.environ.get('ASTER_LOCALEDIR') or \
@@ -68,7 +72,8 @@ class Language(Singleton):
         self.current_lang = (lang or self.default_lang).lower()
         if lang:
             lang = force_list(lang.lower())
-        tr = gettext.translation(self.domain, self.localedir, languages=lang, fallback=True)
+        tr = gettext.translation(
+            self.domain, self.localedir, languages=lang, fallback=True)
         tr.install(unicode=True)
         return tr
 

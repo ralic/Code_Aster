@@ -26,11 +26,11 @@ class sd_l_table(AsBase):
     nomj = SDNom(fin=19)
 
     # la SD l_table (liste de tables) est une SD destinée à stocker un ensemble de tables
-    # les tables stockées dans la l_table sont identifiées par un "petit nom" (K16)
+    # les tables stockées dans la l_table sont identifiées par un "petit nom"
+    # (K16)
 
     LTNT = AsVK16()
     LTNS = AsVK24()
-
 
     # existence possible de la SD :
     def exists(self):
@@ -38,15 +38,17 @@ class sd_l_table(AsBase):
 
     # indirection vers les tables :
     def check_l_table_i_LTNS(self, checker):
-        if not self.exists() : return
+        if not self.exists():
+            return
         ltnt = self.LTNT.get()
         ltns = self.LTNS.get()
-        nbtable=self.LTNT.lonuti
+        nbtable = self.LTNT.lonuti
         sdu_compare(self.LTNT, checker, nbtable, '>', 0, 'NBUTI(LTNT)>0')
-        sdu_compare(self.LTNS, checker, self.LTNS.lonuti, '==', nbtable, 'NBUTI(LTNS)==NBUTI(LTNT)')
-        for k in range(nbtable) :
-            petinom=ltnt[k].strip()
-            nomtabl=ltns[k].strip()
+        sdu_compare(self.LTNS, checker, self.LTNS.lonuti,
+                    '==', nbtable, 'NBUTI(LTNS)==NBUTI(LTNT)')
+        for k in range(nbtable):
+            petinom = ltnt[k].strip()
+            nomtabl = ltns[k].strip()
             sdu_compare(self.LTNT, checker, petinom, '!=', '', "LTNT[k]!=''")
             sdu_compare(self.LTNS, checker, nomtabl, '!=', '', "LTNS[k]!=''")
             sd2 = sd_table(nomtabl)

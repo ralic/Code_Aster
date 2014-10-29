@@ -459,7 +459,7 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
             'PROL_GAUCHE'   : 'EXCLU',
             'NOM_RESU'      : kw['NATURE'] }
         para_fonc = {
-            'INTERPOL' : ['LOG','LOG'],
+            'INTERPOL' : ['LOG', 'LOG'],
             'NOM_PARA'    : 'FREQ',
             'PROL_DROITE' : 'CONSTANT',
             'PROL_GAUCHE' : 'EXCLU',
@@ -477,7 +477,7 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
             deuxpi = 2. * math.pi
             f_dsp = t_fonction(f_in.vale_x * deuxpi, f_in.vale_y / deuxpi, f_in.para)
             for iamor in l_amor:
-                spectr = DSP2SRO(f_dsp, iamor, kw['DUREE'],l_freq, ideb)
+                spectr = DSP2SRO(f_dsp, iamor, kw['DUREE'], l_freq, ideb)
                 vale_y = spectr.vale_y / kw['NORME']
                 l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         elif kw['METHODE'] == 'NIGAM':
@@ -485,7 +485,7 @@ class CalcFonction_SPEC_OSCI(CalcFonctionOper):
             ASSERT(kw['NATURE_FONC'] == 'ACCE')
             spectr = aster_fonctions.SPEC_OSCI(f_in.vale_x, f_in.vale_y, l_freq, l_amor)
             for iamor in range(len(l_amor)):
-                vale_y = spectr[iamor, ideb, :] / kw['NORME']
+                vale_y = spectr[iamor, ideb,:] / kw['NORME']
                 l_fonc_f.append(t_fonction(l_freq, vale_y, para_fonc))
         elif kw['METHODE'] == 'HARMO':
             # appel à ACCE2DSP
@@ -511,15 +511,15 @@ class CalcFonction_DSP(CalcFonctionOper):
         deuxpi = 2. * math.pi
         freq_coup = deuxpi * kw['FREQ_COUP']
         SRO_args = {
-            'DUREE_PHASE_FORTE' : kw['DUREE'], 'FREQ_COUP' : freq_coup, 
+            'DUREE_PHASE_FORTE' : kw['DUREE'], 'FREQ_COUP' : freq_coup,
             'NORME' : kw['NORME'], 'AMORT' : kw['AMOR_REDUIT'],
             'FMIN' : f_min, 'FONC_SPEC':  f_in}
         if kw['FREQ_PAS'] != None:
             SRO_args['PAS'] = kw['FREQ_PAS']
         elif kw['LIST_FREQ'] != None:
             l_freq = kw['LIST_FREQ'].Valeurs()
-            if l_freq[0] <= 0.0: 
-               UTMESS('F', 'FONCT0_43')
+            if l_freq[0] <= 0.0:
+                UTMESS('F', 'FONCT0_43')
             SRO_args['LIST_FREQ'] = l_freq
             SRO_args['PAS'] = None
         f_dsp, f_sro_ref = SRO2DSP(**SRO_args)
@@ -594,8 +594,8 @@ class Context(object):
         if len(nomf) > 1:
             pluriel = 's'
         res = """Fonction%(s)s concernée%(s)s : %(nomf)s""" % {
-            's'    : pluriel,
-            'nomf' : ', '.join(nomf),
+            's': pluriel,
+            'nomf': ', '.join(nomf),
         }
         return res
 

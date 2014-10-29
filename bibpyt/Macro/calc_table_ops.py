@@ -19,18 +19,19 @@
 # person_in_charge: mathieu.courtois at edf.fr
 import os
 
+
 def calc_table_ops(self, TABLE, ACTION, INFO, **args):
     """
     Macro CALC_TABLE permettant de faire des opérations sur une table
     """
     import aster
 
-    from Accas           import _F
-    from Noyau.N_types   import force_list
-    from Cata.cata       import table_fonction, table_jeveux, table_container
+    from Accas import _F
+    from Noyau.N_types import force_list
+    from Cata.cata import table_fonction, table_jeveux, table_container
     from Utilitai.Utmess import UTMESS
-    from Utilitai.Table  import merge
-    from Utilitai.utils  import get_titre_concept
+    from Utilitai.Table import merge
+    from Utilitai.utils import get_titre_concept
 
     ier = 0
     # La macro compte pour 1 dans la numerotation des commandes
@@ -47,8 +48,8 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
     # On importe les definitions des commandes a utiliser dans la macro
     # Le nom de la variable doit etre obligatoirement le nom de la commande
-    CREA_TABLE    = self.get_cmd('CREA_TABLE')
-    DETRUIRE      = self.get_cmd('DETRUIRE')
+    CREA_TABLE = self.get_cmd('CREA_TABLE')
+    DETRUIRE = self.get_cmd('DETRUIRE')
 
     tab = TABLE.EXTR_TABLE()
 
@@ -68,7 +69,8 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
         form_filtre = '\nFILTRE -> NOM_PARA: %-16s CRIT_COMP: %-4s VALE: %s'
         if occ['OPERATION'] == 'FILTRE':
             # peu importe le type, c'est la meme méthode d'appel
-            opts = [occ[k] for k in ('VALE', 'VALE_I', 'VALE_C', 'VALE_K') if occ.has_key(k)]
+            opts = [occ[k]
+                    for k in ('VALE', 'VALE_I', 'VALE_C', 'VALE_K') if occ.has_key(k)]
             kargs = {}
             for k in ('CRITERE', 'PRECISION'):
                 if occ.has_key(k):
@@ -78,9 +80,9 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
             tab = getattr(col, occ['CRIT_COMP'])(*opts, **kargs)
 
             # trace l'operation dans le titre
-            #if FORMAT in ('TABLEAU', 'ASTER'):
-            tab.titr += form_filtre % (occ['NOM_PARA'], occ['CRIT_COMP'], \
-                ' '.join([str(v) for v in opts]))
+            # if FORMAT in ('TABLEAU', 'ASTER'):
+            tab.titr += form_filtre % (occ['NOM_PARA'], occ['CRIT_COMP'],
+                                       ' '.join([str(v) for v in opts]))
 
         # 2. Traitement de EXTR
         if occ['OPERATION'] == 'EXTR':
@@ -120,7 +122,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                     if not p in tab.para:
                         UTMESS('F', 'TABLE0_2', valk=[p, TABLE.nom])
                     if not p in tab2.para:
-                        UTMESS('F', 'TABLE0_2', valk=[p, occ['TABLE'].nom] )
+                        UTMESS('F', 'TABLE0_2', valk=[p, occ['TABLE'].nom])
             restrict = occ.get('RESTREINT') == 'OUI'
             format_r = occ.get('FORMAT_R')
             tab = merge(tab, tab2, lpar, restrict=restrict, format_r=format_r)
@@ -128,15 +130,15 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
         # 7. Traitement de OPER
         if occ['OPERATION'] == 'OPER':
             if occ.get('NOM_COLONNE') \
-                and len(occ['NOM_COLONNE']) != len(occ['FORMULE'].nompar):
+                    and len(occ['NOM_COLONNE']) != len(occ['FORMULE'].nompar):
                 UTMESS('F', 'TABLE0_19', vali=len(occ['FORMULE'].nompar))
             # ajout de la colonne dans la table
             tab.fromfunction(occ['NOM_PARA'], occ['FORMULE'],
                              l_para=occ.get('NOM_COLONNE'))
             if INFO == 2:
                 vectval = getattr(tab, occ['NOM_PARA']).values()
-                aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s' \
-                    % (occ['NOM_PARA'], repr(vectval)))
+                aster.affiche('MESSAGE', 'Ajout de la colonne %s : %s'
+                              % (occ['NOM_PARA'], repr(vectval)))
 
         # 8. Traitement de AJOUT_LIGNE
         if occ['OPERATION'] == 'AJOUT_LIGNE':
@@ -166,9 +168,9 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
     dprod = tab.dict_CREA_TABLE()
     if INFO == 2:
         echo_mess = ['']
-        echo_mess.append( repr(tab) )
+        echo_mess.append(repr(tab))
         from pprint import pformat
-        echo_mess.append( pformat(dprod) )
+        echo_mess.append(pformat(dprod))
         echo_mess.append('')
         texte_final = os.linesep.join(echo_mess)
         aster.affiche('MESSAGE', texte_final)
@@ -181,6 +183,6 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
         dprod['TITRE'] = tuple(['%-80s' % lig for lig in tit])
     # type de la table de sortie à passer à CREA_TABLE
     tabout = CREA_TABLE(TYPE_TABLE=typ_tabout,
-                       **dprod)
+                        **dprod)
 
     return ier

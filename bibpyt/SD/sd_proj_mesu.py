@@ -17,8 +17,7 @@
 # ======================================================================
 
 from SD import *
-from sd_modele  import sd_modele
-
+from sd_modele import sd_modele
 
 
 class sd_proj_mesu(AsBase):
@@ -33,52 +32,53 @@ class sd_proj_mesu(AsBase):
     PJMOR = Facultatif(AsVR())
 
     # si MACR_ELEM_STAT :
-    PJMIG    = Facultatif(AsVR())
-    PJMMM    = Facultatif(AsObject(genr='V',type=Parmi('C', 'R')))
-
+    PJMIG = Facultatif(AsVR())
+    PJMMM = Facultatif(AsObject(genr='V', type=Parmi('C', 'R')))
 
     def exists(self):
     #  retourne .true. si la SD semble exister
         return self.PJMNO.exists
 
-
     def check_1(self, checker):
     #------------------------------------
-        if not self.exists() : return
+        if not self.exists():
+            return
 
-        nbutil=self.PJMNO.lonuti
-        assert nbutil > 0 , nbutil
+        nbutil = self.PJMNO.lonuti
+        assert nbutil > 0, nbutil
 
         # vérifications communes :
         assert self.PJMRG.lonmax >= nbutil
-        n1=self.PJMBP.lonuti
-        nbmode=n1/nbutil
-        assert n1==nbutil*nbmode , (nbmode,nbutil,n1)
+        n1 = self.PJMBP.lonuti
+        nbmode = n1 / nbutil
+        assert n1 == nbutil * nbmode, (nbmode, nbutil, n1)
         assert self.PJMRF.exists
-        pjmrf=self.PJMRF.get_stripped()
-        sd2=sd_modele(pjmrf[0]) ; sd2.check(checker)
-        assert pjmrf[1] != '' , pjmrf
-        assert pjmrf[2] != '' , pjmrf
+        pjmrf = self.PJMRF.get_stripped()
+        sd2 = sd_modele(pjmrf[0])
+        sd2.check(checker)
+        assert pjmrf[1] != '', pjmrf
+        assert pjmrf[2] != '', pjmrf
 
         # quel cas de figure : PROJ_MESU_MODAL ou MACR_ELEM_STAT ?
-        lproj=self.PJMOR.exists
+        lproj = self.PJMOR.exists
 
         # si PROJ_MESU_MODAL :
-        if lproj :
-            nbcapt=nbutil
-            assert self.PJMOR.lonmax >= 3*nbcapt
+        if lproj:
+            nbcapt = nbutil
+            assert self.PJMOR.lonmax >= 3 * nbcapt
             assert not self.PJMIG.exists
-            assert pjmrf[3] == '' , pjmrf
-            assert pjmrf[4] == '' , pjmrf
+            assert pjmrf[3] == '', pjmrf
+            assert pjmrf[4] == '', pjmrf
 
         # si MACR_ELEM_STAT :
-        else :
-            nbddle=nbutil
+        else:
+            nbddle = nbutil
             assert self.PJMIG.exists
             assert self.PJMMM.exists
-            n1=self.PJMIG.lonmax
-            nbmoid=n1/nbddle
-            assert n1==nbddle*nbmoid , (nbmodi,nbddle,n1)
+            n1 = self.PJMIG.lonmax
+            nbmoid = n1 / nbddle
+            assert n1 == nbddle * nbmoid, (nbmodi, nbddle, n1)
 
-            assert pjmrf[3] != '' , pjmrf
-            sd2=sd_proj_mesu(pjmrf[4]) ; sd2.check(checker)
+            assert pjmrf[3] != '', pjmrf
+            sd2 = sd_proj_mesu(pjmrf[4])
+            sd2.check(checker)

@@ -19,36 +19,36 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
   -> On ne peut pas faire propager une interface.
      Seule les fissures (possédant un fond de fissure) peuvent être propagées.
 """),
 
 
-2 : _(u"""
+    2 : _(u"""
   -> GROT_GDEP n'est pas disponible pour un comportement élastique non linéaire.
   -> Conseils : Utilisez un comportement élastique linéaire.
 """),
 
-3 : _(u"""
+    3 : _(u"""
 On ne peut pas définir du contact X-FEM sur un maillage contenant à la fois des mailles linéaires et quadratiques.
 """),
 
-4 : _(u"""
+    4 : _(u"""
 Nombre d'arêtes vitales : %(i1)d
 """),
 
-5 : _(u"""
+    5 : _(u"""
   -> Avec GROT_GDEP, la modélisation axisymétrique n'est pas disponible.
 """),
 
-6 : _(u"""
+    6 : _(u"""
   -> Le nombre de fissures est limité à %(i1)d, or vous en avez définies %(i2)d !
      Veuillez contacter votre assistance technique.
 """),
 
 
-8 : _(u"""
+    8 : _(u"""
   -> Le modèle %(k1)s transmis dans DEFI_CONTACT n'est pas un modèle
      XFEM.
   -> Risque & Conseil:
@@ -56,32 +56,32 @@ Nombre d'arêtes vitales : %(i1)d
      DEFI_CONTACT un modèle XFEM.
 """),
 
-9 : _(u"""
+    9 : _(u"""
   -> Le modèle %(k1)s transmis dans DEFI_CONTACT n'est pas un modèle
      XFEM avec contact.
   -> Risque & Conseil:
      Veuillez activer CONTACT dans MODI_MODELE_XFEM.
 """),
 
-10 : _(u"""
+    10 : _(u"""
   -> Toutes les fissures ne sont pas rattachées au même maillage.
-     La fissure %(k1)s est rattachée au maillage %(k2)s alors que 
+     La fissure %(k1)s est rattachée au maillage %(k2)s alors que
      la fissure %(k3)s est rattachée au maillage %(k4)s.
 """),
 
-15 : _(u"""
+    15 : _(u"""
   -> Point de FOND_FISS sans maille de surface rattachée.
   -> Risque & Conseil:
      Veuillez revoir la définition des level-sets.
 """),
 
-17 : _(u"""
+    17 : _(u"""
   -> Segment de FOND_FISS sans maille de surface rattachée
   -> Risque & Conseil:
      Veuillez revoir la définition des level-sets.
 """),
 
-18 : _(u"""
+    18 : _(u"""
   -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' et le tableau
      des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s contient
      une colonne 'BETA'.
@@ -92,18 +92,18 @@ Nombre d'arêtes vitales : %(i1)d
      CRITERE='ANGLE_IMPO'.
 """),
 
-19 : _(u"""
+    19 : _(u"""
   -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO' et le tableau
      des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s ne contient
      pas de colonne 'BETA'.
   -> Risque & Conseil:
-     Si vous souhaitez imposer les valeurs de l'angle de bifurcation aux points 
+     Si vous souhaitez imposer les valeurs de l'angle de bifurcation aux points
      du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO' et ajouter
      une colonne 'BETA' au tableau de SIF manuellement ou si le modèle est en 3D,
      en utilisant l'option 'CALC_K_G' de la commande CALC_G.
 """),
 
-20 : _(u"""
+    20 : _(u"""
   -> En 3D, si METHODE_PROPA='MAILLAGE' dans PROPA_FISS il faut absolument une
      colonne 'ABSC_CURV' contenant les abscisses curvilignes des points du fond
      dans le tableau des facteurs d'intensité de contraintes (SIF).
@@ -113,7 +113,7 @@ Nombre d'arêtes vitales : %(i1)d
 
 
 
-50 : _(u"""
+    50 : _(u"""
   -> Le maillage utilisé pour la représentation des level-sets est 2D
      mais il contient des éléments 1D aussi.
   -> La méthode UPWIND sélectionnée dans PROPA_FISS peut gérer des
@@ -123,13 +123,13 @@ Nombre d'arêtes vitales : %(i1)d
      QUAD4.
   """),
 
-51 : _(u"""
+    51 : _(u"""
   -> Il n'y a aucune maille enrichie.
   -> Risque & Conseil:
      Veuillez vérifier les définitions des level-sets.
   """),
 
-52 : _(u"""
+    52 : _(u"""
   -> Le maillage utilisé pour la représentation des level-sets est 3D
      mais il contient des éléments 2D et/ou 1D aussi.
   -> La méthode UPWIND sélectionnée dans PROPA_FISS peut gérer des
@@ -139,7 +139,7 @@ Nombre d'arêtes vitales : %(i1)d
      HEXA8.
   """),
 
-53 : _(u"""
+    53 : _(u"""
   -> Dans le maillage utilisé pour la représentation des level-sets,
      il y a des éléments qui ne sont pas disponibles pour la méthode
      UPWIND (PROPA_FISS).
@@ -148,7 +148,7 @@ Nombre d'arêtes vitales : %(i1)d
      QUAD4 en 2D et HEXA8 en 3D.
   """),
 
-54 : _(u"""
+    54 : _(u"""
   -> Il n'y a pas d'éléments disponibles pour la méthode UPWIND
      (PROPA_FISS) dans le maillage utilisé pour la représentation
      des level-sets.
@@ -157,7 +157,7 @@ Nombre d'arêtes vitales : %(i1)d
      QUAD4 en 2D et HEXA8 en 3D.
   """),
 
-55 : _(u"""
+    55 : _(u"""
   -> Dans le maillage utilisé pour la représentation des level-sets
      (PROPA_FISS), il y a des arêtes qui ne sont pas orthogonales aux
      autres arêtes.
@@ -167,7 +167,7 @@ Nombre d'arêtes vitales : %(i1)d
      soient orthogonales entre elles.
   """),
 
-56 : _(u"""
+    56 : _(u"""
   -> Aucun noeud n'a été trouvé pour le calcul du résidu local.
   -> Le calcul du résidu local n'est pas possible.
   -> Risque & Conseil:
@@ -175,7 +175,7 @@ Nombre d'arêtes vitales : %(i1)d
      maillage après la propagation actuelle.
   """),
 
-57 : _(u"""
+    57 : _(u"""
   -> La définition de un ou plusieurs éléments du maillage utilisé pour
      la représentation des level-sets (PROPA_FISS) n'est pas correcte.
   -> Risque & Conseil:
@@ -185,7 +185,7 @@ Nombre d'arêtes vitales : %(i1)d
      d'un élément; il n'y a pas de noeuds doubles...)
   """),
 
-58 : _(u"""
+    58 : _(u"""
   -> La dimension (2D ou 3D) du modèle physique et la dimension (2D ou
      3D) du modèle utilisé pour la grille auxiliaire ne sont pas égales.
   -> Risque & Conseil:
@@ -193,7 +193,7 @@ Nombre d'arêtes vitales : %(i1)d
      ou les deux 3D).
   """),
 
-60 : _(u"""
+    60 : _(u"""
   -> L'opérande TEST_MAIL a été utilisée dans l'opérateur PROPA_FISS.
      La même vitesse d'avancée est utilisée pour tous les points du
      fond de fissure et l'angle de propagation est fixé égal à zéro.
@@ -206,7 +206,7 @@ Nombre d'arêtes vitales : %(i1)d
      des level-sets.
   """),
 
-63 : _(u"""
+    63 : _(u"""
   -> La valeur de l'avancée DA_MAX utilisée est petite par rapport à la
      longueur de la plus petite arrête du maillage utilisé pour
      la représentation des level-sets:
@@ -218,7 +218,7 @@ Nombre d'arêtes vitales : %(i1)d
      level-sets.
   """),
 
-64 : _(u"""
+    64 : _(u"""
   -> La valeur du RAYON est plus petite que la longueur de la plus petite
      arrête du maillage utilisé pour la représentation des level-sets:
      RAYON = %(r1)f
@@ -228,13 +228,13 @@ Nombre d'arêtes vitales : %(i1)d
      Veuillez utiliser une valeur du RAYON plus grande.
   """),
 
-65 : _(u"""
+    65 : _(u"""
   -> Le nombre maximal d'itérations a été atteint.
   -> Risque & Conseil:
      Essayer d'utiliser un maillage plus raffiné, ou bien une grille auxiliaire.
   """),
 
-70 : _(u"""
+    70 : _(u"""
   -> La macro-commande PROPA_FISS ne peut traiter qu'un seul instant de calcul.
   -> Risque & Conseil:
      Veuillez vérifier que les tableaux des facteurs d'intensité de contraintes
@@ -244,7 +244,7 @@ Nombre d'arêtes vitales : %(i1)d
 
 
 
-73 : _(u"""
+    73 : _(u"""
   -> L'option NB_POINT_FOND a été utilisé dans PROPA_FISS mais le
      modèle est 2D.
   -> Risque & Conseil:
@@ -252,14 +252,14 @@ Nombre d'arêtes vitales : %(i1)d
      Ce mot-clé n'est pas pris en compte.
   """),
 
-74 : _(u"""
+    74 : _(u"""
   -> Aucune fissure du modèle ne se propage.
   -> Risque & Conseil:
      Veuillez vérifier les conditions du chargement du modèle et les
      constantes de la loi de propagation données à PROPA_FISS.
   """),
 
-75 : _(u"""
+    75 : _(u"""
   -> Une valeur de la liste de NB_POINT_FOND ne correspond pas au nombre de
      lignes du tableau des facteurs d'intensité de contraintes (SIF) pour
      le fond %(i1)d de la fissure %(k1)s.
@@ -270,7 +270,7 @@ Nombre d'arêtes vitales : %(i1)d
 
 
 
-78 : _(u"""
+    78 : _(u"""
   -> L'option NB_POINT_FOND a été utilisée dans PROPA_FISS
      mais le nombre de valeurs données n'est pas égale au nombre total
      des morceaux des fissures dans le modèle.
@@ -283,7 +283,7 @@ Nombre d'arêtes vitales : %(i1)d
 
 
 
-80 : _(u"""
+    80 : _(u"""
   -> Le nombre des valeurs dans un des tableaux des facteurs
      d'intensité de contraintes (SIF) est supérieur au nombre des
      points du fond de la fissure correspondante.
@@ -293,7 +293,7 @@ Nombre d'arêtes vitales : %(i1)d
      vérifier aussi que la liste donnée pour chaque fissure est correcte.
   """),
 
-81 : _(u"""
+    81 : _(u"""
   -> Les valeurs de COEF_MULT_MAXI et COEF_MULT_MINI de COMP_LINE sont
      égales à zéro.
   -> Risque & Conseil:
@@ -304,13 +304,13 @@ Nombre d'arêtes vitales : %(i1)d
 
 
 
-85 : _(u"""
+    85 : _(u"""
    Les propriétés matériaux dépendent de la température. La température en fond
    de fissure n'étant pas connue, le calcul se poursuit en prenant la température
    de référence du matériau (TEMP = %(r1)f).
 """),
 
-86 : _(u"""
+    86 : _(u"""
  -> Le maillage/la grille sur lequel/laquelle vous voulez créer le group
     n'est pas associé/associée à la fissure donnée.
 
@@ -319,14 +319,14 @@ Nombre d'arêtes vitales : %(i1)d
     la bonne fissure.
 """),
 
-87 : _(u"""
+    87 : _(u"""
   -> L'opérande TEST_MAIL a été utilisé dans l'opérateur PROPA_FISS.
   -> Cet opérande n'a de sens que pour un modèle 3D.
   -> Risque & Conseil:
      Ne pas utiliser TEST_MAIL pour un modèle 2D.
   """),
 
-88 : _(u"""
+    88 : _(u"""
   -> La valeur du rayon du tore de localisation de la zone de mise à
      jour est supérieure à la valeur limite. Cette dernière est
      déterminée par la valeur du rayon du tore utilisée à la propagation
@@ -357,7 +357,7 @@ Nombre d'arêtes vitales : %(i1)d
      (ZONE_MAJ='TOUT').
   """),
 
-89 : _(u"""
+    89 : _(u"""
   -> La fissure à propager n'existe pas dans le modèle:
      FISS_ACTUELLE = %(k1)s
      MODELE        = %(k2)s
@@ -367,7 +367,7 @@ Nombre d'arêtes vitales : %(i1)d
   """),
 
 
-91 : _(u"""
+    91 : _(u"""
   -> Le nouveau fond de fissure n'est pas très régulier. Cela signifie
      que le maillage ou la grille auxiliaire utilisés pour la
      représentation de la fissure par level-sets ne sont pas
@@ -379,7 +379,7 @@ Nombre d'arêtes vitales : %(i1)d
      auxiliaire plus raffinés.
   """),
 
-92 : _(u"""
+    92 : _(u"""
   -> Vous avez demandé la création d'un group de noeuds dans un tore
      construit autour du fond de la fissure suivante:
 
@@ -396,7 +396,7 @@ Nombre d'arêtes vitales : %(i1)d
   """),
 
 
-93 : _(u"""
+    93 : _(u"""
   -> Aucune fissure n'est définie sur le modèle spécifié:
      MODELE = %(k1)s
   -> Risque & Conseil:
@@ -405,7 +405,7 @@ Nombre d'arêtes vitales : %(i1)d
      l'utilisation de PROPA_FISS.
   """),
 
-94 : _(u"""
+    94 : _(u"""
   -> L'avancée donnée (DA_MAX) pour la propagation courante est
      inférieure à la valeur minimale conseillée.
 
@@ -428,7 +428,7 @@ Nombre d'arêtes vitales : %(i1)d
      utilisant un maillage plus raffiné.
   """),
 
-95 : _(u"""
+    95 : _(u"""
   -> Le modèle grille donné est défini sur un maillage (%(k1)s)
      et pas sur une grille.
 
@@ -437,7 +437,7 @@ Nombre d'arêtes vitales : %(i1)d
      grille doit être définie par DEFI_GRILLE à partir d'un maillage.
   """),
 
-96 : _(u"""
+    96 : _(u"""
  -> Le maillage sur lequel vous voulez créer le group n'est pas associé à
     la fissure donnée.
 
@@ -449,7 +449,7 @@ Nombre d'arêtes vitales : %(i1)d
     Veuillez vérifier d'avoir spécifié le bon maillage et/ou la bonne fissure.
 """),
 
-97 : _(u"""
+    97 : _(u"""
   -> La localisation de la zone de mise à jour a été utilisé pour la
      détermination de la configuration actuelle des fissures du modèle.
      Par contre, pour la propagation courante, la localisation n'a pas
@@ -459,7 +459,7 @@ Nombre d'arêtes vitales : %(i1)d
      (ZONE_MAJ='TORE') pour la propagation courante aussi.
   """),
 
-98 : _(u"""
+    98 : _(u"""
   -> Aucune grille auxiliaire n'est utilisée pour la représentation de
      la fissure donnée.
   -> Risque & Conseil:
@@ -467,7 +467,7 @@ Nombre d'arêtes vitales : %(i1)d
      fissure.
   """),
 
-99 : _(u"""
+    99 : _(u"""
   -> La valeur du rayon du tore de localisation de la zone de mise à
      jour est plus petite que celle qui est nécessaire pour la bonne
      mise à jour des level-sets.

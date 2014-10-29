@@ -22,36 +22,38 @@
 
 import UserDict
 
+
 class _F(UserDict.UserDict):
-   """
-       Cette classe a un comportement semblable à un
-       dictionnaire Python et permet de donner
-       la valeur d'un mot-clé facteur avec pour les sous
-       mots-clés la syntaxe motcle=valeur
-   """
 
-   def __init__(self, *pos, **args):
-      if len(pos) != 0:
-         raise SyntaxError("Valeur invalide pour '_F('. "\
-            "On attend cette syntaxe : _F(MOTCLE=valeur, ...)")
-      self.data=args
+    """
+        Cette classe a un comportement semblable à un
+        dictionnaire Python et permet de donner
+        la valeur d'un mot-clé facteur avec pour les sous
+        mots-clés la syntaxe motcle=valeur
+    """
 
-   def supprime(self):
-      self.data={}
+    def __init__(self, *pos, **args):
+        if len(pos) != 0:
+            raise SyntaxError("Valeur invalide pour '_F('. "
+                              "On attend cette syntaxe : _F(MOTCLE=valeur, ...)")
+        self.data = args
 
-   def __cmp__(self, dict):
-      if type(dict) == type(self.data):
-        return cmp(self.data, dict)
-      elif hasattr(dict,"data"):
-        return cmp(self.data, dict.data)
-      else:
-        return cmp(self.data, dict)
+    def supprime(self):
+        self.data = {}
 
-   def __iter__(self):
-      return iter(self.data)
+    def __cmp__(self, dict):
+        if type(dict) == type(self.data):
+            return cmp(self.data, dict)
+        elif hasattr(dict, "data"):
+            return cmp(self.data, dict.data)
+        else:
+            return cmp(self.data, dict)
 
-   def copy(self):
-      import copy
-      c= copy.copy(self)
-      c.data=self.data.copy()
-      return c
+    def __iter__(self):
+        return iter(self.data)
+
+    def copy(self):
+        import copy
+        c = copy.copy(self)
+        c.data = self.data.copy()
+        return c

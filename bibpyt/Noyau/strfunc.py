@@ -24,6 +24,8 @@ de chaines de caractères
 import locale
 
 _encoding = None
+
+
 def get_encoding():
     """Return local encoding
     """
@@ -60,6 +62,7 @@ def to_unicode(string):
             pass
     return unicode(string, 'utf-8', 'replace')
 
+
 def from_unicode(ustring, encoding, errors='replace'):
     """Try to encode a unicode string using encoding."""
     try:
@@ -68,6 +71,7 @@ def from_unicode(ustring, encoding, errors='replace'):
         pass
     return ustring.encode(encoding, errors)
 
+
 def convert(content, encoding=None, errors='replace'):
     """Convert content using encoding or default encoding if None."""
     if type(content) not in (str, unicode):
@@ -75,6 +79,7 @@ def convert(content, encoding=None, errors='replace'):
     if type(content) == str:
         content = to_unicode(content)
     return from_unicode(content, encoding or get_encoding(), errors)
+
 
 def ufmt(uformat, *args):
     """Helper function to format a string by converting all its arguments to unicode"""

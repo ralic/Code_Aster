@@ -26,10 +26,13 @@ class sd_matr_asse_gd(sd_matr_asse_com):
 #--------------------------------------------
     nomj = SDNom(fin=19)
 
-
-    # indirection vers sd_nume_ddl_gd à faire car FACT_LDLT modifie le sd_nume_ddl_gd de la sd_matr_asse :
+    # indirection vers sd_nume_ddl_gd à faire car FACT_LDLT modifie le
+    # sd_nume_ddl_gd de la sd_matr_asse :
     def check_matr_asse_gd_i_REFA(self, checker):
-        # on est obligé de se protéger dans le cas des Facultatif(sd_matr_asse) :
-        if not self.REFA.get() : return
-        nom=self.REFA.get()[1]
-        sd2=sd_nume_ddl_gd(nom) ; sd2.check(checker)
+        # on est obligé de se protéger dans le cas des Facultatif(sd_matr_asse)
+        # :
+        if not self.REFA.get():
+            return
+        nom = self.REFA.get()[1]
+        sd2 = sd_nume_ddl_gd(nom)
+        sd2.check(checker)

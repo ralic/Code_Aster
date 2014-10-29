@@ -19,16 +19,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-   nom            = 'CABLE_GAINE_FROT',
-   doc = """Relation de comportement cohésive d'adherence Cable/Gaine""",
-   num_lc         = 52,
-   nb_vari        = 2,
-   nom_vari       = ('GLIS','INDIC'),
-   mc_mater       = ('CABLE_GAINE_FROT'),
-   modelisation   = ('1D'),
-   deformation    = ('PETIT'),
-   nom_varc       = None,
-   algo_inte         = ('ANALYTIQUE'),
-   type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-   proprietes     = None,
+    nom='CABLE_GAINE_FROT',
+    doc="""Relation de comportement cohésive d'adherence Cable/Gaine""",
+    num_lc=52,
+    nb_vari=2,
+    nom_vari=('GLIS', 'INDIC'),
+    mc_mater = ('CABLE_GAINE_FROT'),
+    modelisation = ('1D'),
+    deformation = ('PETIT'),
+    nom_varc = None,
+    algo_inte = ('ANALYTIQUE'),
+    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
+    proprietes = None,
 )

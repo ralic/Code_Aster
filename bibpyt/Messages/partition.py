@@ -17,12 +17,12 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
+cata_msg = {
 
 
 
 
-3: _(u"""
+    3: _(u"""
 Le modèle contient des noeuds (AFFE_MODELE/AFFE/GROUP_NO). On ne peut pas partitionner.
 
 Conseil : il faut créer des mailles POI1 avec l'opérateur CREA_MAILLAGE/CREA_POI1

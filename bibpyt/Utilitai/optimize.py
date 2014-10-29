@@ -42,7 +42,7 @@ import numpy as Num
 max = Num.max
 min = Num.min
 abs = Num.absolute
-__version__="0.3.1"
+__version__ = "0.3.1"
 
 def rosen(x):  # The Rosenbrock function
     return Num.sum(100.0*(x[1:len(x)]-x[0:-1]**2.0)**2.0 + (1-x[0:-1])**2.0)
@@ -51,16 +51,16 @@ def rosen_der(x):
     xm = x[1:-1]
     xm_m1 = x[0:-2]
     xm_p1 = x[2:len(x)]
-    der = Num.zeros(x.shape,x.dtype.char)
+    der = Num.zeros(x.shape, x.dtype.char)
     der[1:-1] = 200*(xm-xm_m1**2) - 400*(xm_p1 - xm**2)*xm - 2*(1-xm)
     der[0] = -400*x[0]*(x[1]-x[0]**2) - 2*(1-x[0])
     der[-1] = 200*(x[-1]-x[-2]**2)
     return der
 
-def rosen3_hess_p(x,p):
-    assert(len(x)==3)
-    assert(len(p)==3)
-    hessp = Num.zeros((3,),x.dtype.char)
+def rosen3_hess_p(x, p):
+    assert(len(x) == 3)
+    assert(len(p) == 3)
+    hessp = Num.zeros((3,), x.dtype.char)
     hessp[0] = (2 + 800*x[0]**2 - 400*(-x[0]**2 + x[1])) * p[0] \
                - 400*x[0]*p[1] \
                + 0
@@ -74,11 +74,11 @@ def rosen3_hess_p(x,p):
     return hessp
 
 def rosen3_hess(x):
-    assert(len(x)==3)
-    hessp = Num.zeros((3,3),x.dtype.char)
-    hessp[0,:] = [2 + 800*x[0]**2 -400*(-x[0]**2 + x[1]), -400*x[0], 0]
-    hessp[1,:] = [-400*x[0], 202+800*x[1]**2 -400*(-x[1]**2 + x[2]), -400*x[1]]
-    hessp[2,:] = [0,-400*x[1], 200]
+    assert(len(x) == 3)
+    hessp = Num.zeros((3, 3), x.dtype.char)
+    hessp[0,:] = [2 + 800*x[0]**2 - 400*(-x[0]**2 + x[1]), -400*x[0], 0]
+    hessp[1,:] = [-400*x[0], 202+800*x[1]**2 - 400*(-x[1]**2 + x[2]), -400*x[1]]
+    hessp[2,:] = [0, -400*x[1], 200]
     return hessp
     
         
@@ -90,36 +90,39 @@ def fmin(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None, maxfun=None, ful
     of one or more variables.
     """
     x0 = Num.asarray(x0)
-    assert (len(x0.shape)==1)
+    assert (len(x0.shape) == 1)
     N = len(x0)
     if maxiter is None:
         maxiter = N * 200
     if maxfun is None:
         maxfun = N * 200
 
-    rho = 1; chi = 2; psi = 0.5; sigma = 0.5;
-    one2np1 = range(1,N+1)
+    rho = 1
+    chi = 2
+    psi = 0.5
+    sigma = 0.5
+    one2np1 = range(1, N+1)
 
-    sim = Num.zeros((N+1,N),x0.dtype.char)
-    fsim = Num.zeros((N+1,),'d')
+    sim = Num.zeros((N+1, N), x0.dtype.char)
+    fsim = Num.zeros((N+1,), 'd')
     sim[0] = x0
-    fsim[0] = apply(func,(x0,)+args)
+    fsim[0] = apply(func, (x0,)+args)
     nonzdelt = 0.05
     zdelt = 0.00025
-    for k in range(0,N):
-        y = Num.array(x0,copy=1)
+    for k in range(0, N):
+        y = Num.array(x0, copy=1)
         if y[k] != 0:
             y[k] = (1+nonzdelt)*y[k]
         else:
             y[k] = zdelt
 
         sim[k+1] = y
-        f = apply(func,(y,)+args)
+        f = apply(func, (y,)+args)
         fsim[k+1] = f
 
     ind = Num.argsort(fsim)
-    fsim = Num.take(fsim,ind)     # sort so sim[0,:] has the lowest function value
-    sim = Num.take(sim,ind,0)
+    fsim = Num.take(fsim, ind)     # sort so sim[0,:] has the lowest function value
+    sim = Num.take(sim, ind, 0)
     
     iterations = 1
     funcalls = N+1
@@ -129,15 +132,15 @@ def fmin(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None, maxfun=None, ful
             and max(abs(fsim[0]-fsim[1:len(fsim)])) <= ftol):
             break
 
-        xbar = Num.add.reduce(sim[0:-1],0) / N
+        xbar = Num.add.reduce(sim[0:-1], 0) / N
         xr = (1+rho)*xbar - rho*sim[-1]
-        fxr = apply(func,(xr,)+args)
+        fxr = apply(func, (xr,)+args)
         funcalls = funcalls + 1
         doshrink = 0
 
         if fxr < fsim[0]:
             xe = (1+rho*chi)*xbar - rho*chi*sim[-1]
-            fxe = apply(func,(xe,)+args)
+            fxe = apply(func, (xe,)+args)
             funcalls = funcalls + 1
 
             if fxe < fxr:
@@ -154,18 +157,18 @@ def fmin(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None, maxfun=None, ful
                 # Perform contraction
                 if fxr < fsim[-1]:
                     xc = (1+psi*rho)*xbar - psi*rho*sim[-1]
-                    fxc = apply(func,(xc,)+args)
+                    fxc = apply(func, (xc,)+args)
                     funcalls = funcalls + 1
 
                     if fxc <= fxr:
                         sim[-1] = xc
                         fsim[-1] = fxc
                     else:
-                        doshrink=1
+                        doshrink = 1
                 else:
                     # Perform an inside contraction
                     xcc = (1-psi)*xbar + psi*sim[-1]
-                    fxcc = apply(func,(xcc,)+args)
+                    fxcc = apply(func, (xcc,)+args)
                     funcalls = funcalls + 1
 
                     if fxcc < fsim[-1]:
@@ -177,12 +180,12 @@ def fmin(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None, maxfun=None, ful
                 if doshrink:
                     for j in one2np1:
                         sim[j] = sim[0] + sigma*(sim[j] - sim[0])
-                        fsim[j] = apply(func,(sim[j],)+args)
+                        fsim[j] = apply(func, (sim[j],)+args)
                     funcalls = funcalls + N
 
         ind = Num.argsort(fsim)
-        sim = Num.take(sim,ind,0)
-        fsim = Num.take(fsim,ind)
+        sim = Num.take(sim, ind, 0)
+        fsim = Num.take(fsim, ind)
         iterations = iterations + 1
 
     x = sim[0]
@@ -226,11 +229,11 @@ def line_search(f, fprime, xk, pk, gfk, args=(), c1=1e-4, c2=0.9, amax=50):
     fc = 0
     gc = 0
     alpha0 = 1.0
-    phi0  = apply(f,(xk,)+args)
-    phi_a0 = apply(f,(xk+alpha0*pk,)+args)
+    phi0  = apply(f, (xk,)+args)
+    phi_a0 = apply(f, (xk+alpha0*pk,)+args)
     fc = fc + 2
-    derphi0 = Num.dot(gfk,pk)
-    derphi_a0 = Num.dot(apply(fprime,(xk+alpha0*pk,)+args),pk)
+    derphi0 = Num.dot(gfk, pk)
+    derphi_a0 = Num.dot(apply(fprime, (xk+alpha0*pk,)+args), pk)
     gc = gc + 1
 
     # check to see if alpha0 = 1 satisfies Strong Wolfe conditions.
@@ -249,7 +252,7 @@ def line_search(f, fprime, xk, pk, gfk, args=(), c1=1e-4, c2=0.9, amax=50):
            ((phi_a1 >= phi_a0) and (i > 1)):
             return zoom(alpha0, alpha1)
 
-        derphi_a1 = Num.dot(apply(fprime,(xk+alpha1*pk,)+args),pk)
+        derphi_a1 = Num.dot(apply(fprime, (xk+alpha1*pk,)+args), pk)
         gc = gc + 1
         if (abs(derphi_a1) <= -c2*derphi0):
             return alpha1
@@ -262,7 +265,7 @@ def line_search(f, fprime, xk, pk, gfk, args=(), c1=1e-4, c2=0.9, amax=50):
         alpha0 = alpha1
         alpha1 = alpha2
         phi_a0 = phi_a1
-        phi_a1 = apply(f,(xk+alpha1*pk,)+args)
+        phi_a1 = apply(f, (xk+alpha1*pk,)+args)
 
     
 
@@ -276,10 +279,10 @@ def line_search_BFGS(f, xk, pk, gfk, args=(), c1=1e-4, alpha0=1):
     """
 
     fc = 0
-    phi0 = apply(f,(xk,)+args)               # compute f(xk)
-    phi_a0 = apply(f,(xk+alpha0*pk,)+args)     # compute f
+    phi0 = apply(f, (xk,)+args)               # compute f(xk)
+    phi_a0 = apply(f, (xk+alpha0*pk,)+args)     # compute f
     fc = fc + 2
-    derphi0 = Num.dot(gfk,pk)
+    derphi0 = Num.dot(gfk, pk)
 
     if (phi_a0 <= phi0 + c1*alpha0*derphi0):
         return alpha0, fc, 0
@@ -287,7 +290,7 @@ def line_search_BFGS(f, xk, pk, gfk, args=(), c1=1e-4, alpha0=1):
     # Otherwise compute the minimizer of a quadratic interpolant:
 
     alpha1 = -(derphi0) * alpha0**2 / 2.0 / (phi_a0 - phi0 - derphi0 * alpha0)
-    phi_a1 = apply(f,(xk+alpha1*pk,)+args)
+    phi_a1 = apply(f, (xk+alpha1*pk,)+args)
     fc = fc + 1
 
     if (phi_a1 <= phi0 + c1*alpha1*derphi0):
@@ -307,7 +310,7 @@ def line_search_BFGS(f, xk, pk, gfk, args=(), c1=1e-4, alpha0=1):
         b = b / factor
 
         alpha2 = (-b + Num.sqrt(abs(b**2 - 3 * a * derphi0))) / (3.0*a)
-        phi_a2 = apply(f,(xk+alpha2*pk,)+args)
+        phi_a2 = apply(f, (xk+alpha2*pk,)+args)
         fc = fc + 1
 
         if (phi_a2 <= phi0 + c1*alpha2*derphi0):
@@ -324,18 +327,18 @@ def line_search_BFGS(f, xk, pk, gfk, args=(), c1=1e-4, alpha0=1):
 epsilon = 1e-8
 
 def approx_fprime(xk,f,*args):
-    f0 = apply(f,(xk,)+args)
-    grad = Num.zeros((len(xk),),'d')
-    ei = Num.zeros((len(xk),),'d')
+    f0 = apply(f, (xk,)+args)
+    grad = Num.zeros((len(xk),), 'd')
+    ei = Num.zeros((len(xk),), 'd')
     for k in range(len(xk)):
         ei[k] = 1.0
-        grad[k] = (apply(f,(xk+epsilon*ei,)+args) - f0)/epsilon
+        grad[k] = (apply(f, (xk+epsilon*ei,)+args) - f0)/epsilon
         ei[k] = 0.0
     return grad
 
 def approx_fhess_p(x0,p,fprime,*args):
-    f2 = apply(fprime,(x0+epsilon*p,)+args)
-    f1 = apply(fprime,(x0,)+args)
+    f2 = apply(fprime, (x0+epsilon*p,)+args)
+    f1 = apply(fprime, (x0,)+args)
     return (f2 - f1)/epsilon
 
 
@@ -364,39 +367,39 @@ def fminBFGS(f, x0, fprime=None, args=(), avegtol=1e-5, maxiter=None, fulloutput
     Hk = I
 
     if app_fprime:
-        gfk = apply(approx_fprime,(x0,f)+args)
+        gfk = apply(approx_fprime, (x0, f)+args)
         func_calls = func_calls + len(x0) + 1
     else:
-        gfk = apply(fprime,(x0,)+args)
+        gfk = apply(fprime, (x0,)+args)
         grad_calls = grad_calls + 1
     xk = x0
     sk = [2*gtol]
     while (Num.add.reduce(abs(gfk)) > gtol) and (k < maxiter):
-        pk = -Num.dot(Hk,gfk)
-        alpha_k, fc, gc = line_search_BFGS(f,xk,pk,gfk,args)
+        pk = -Num.dot(Hk, gfk)
+        alpha_k, fc, gc = line_search_BFGS(f, xk, pk, gfk, args)
         func_calls = func_calls + fc
         xkp1 = xk + alpha_k * pk
         sk = xkp1 - xk
         xk = xkp1
         if app_fprime:
-            gfkp1 = apply(approx_fprime,(xkp1,f)+args)
+            gfkp1 = apply(approx_fprime, (xkp1, f)+args)
             func_calls = func_calls + gc + len(x0) + 1
         else:
-            gfkp1 = apply(fprime,(xkp1,)+args)
+            gfkp1 = apply(fprime, (xkp1,)+args)
             grad_calls = grad_calls + gc + 1
 
         yk = gfkp1 - gfk
         k = k + 1
 
-        rhok = 1 / Num.dot(yk,sk)
-        A1 = I - sk[:,Num.newaxis] * yk[Num.newaxis,:] * rhok
-        A2 = I - yk[:,Num.newaxis] * sk[Num.newaxis,:] * rhok
-        Hk = Num.dot(A1,Num.dot(Hk,A2)) + rhok * sk[:,Num.newaxis] * sk[Num.newaxis,:]
+        rhok = 1 / Num.dot(yk, sk)
+        A1 = I - sk[:, Num.newaxis] * yk[Num.newaxis,:] * rhok
+        A2 = I - yk[:, Num.newaxis] * sk[Num.newaxis,:] * rhok
+        Hk = Num.dot(A1, Num.dot(Hk, A2)) + rhok * sk[:, Num.newaxis] * sk[Num.newaxis,:]
         gfk = gfkp1
 
 
     if printmessg or fulloutput:
-        fval = apply(f,(xk,)+args)
+        fval = apply(f, (xk,)+args)
     if k >= maxiter:
         warnflag = 1
         if printmessg:
@@ -446,33 +449,33 @@ def fminNCG(f, x0, fprime, fhess_p=None, fhess=None, args=(), avextol=1e-5, maxi
     while (Num.add.reduce(abs(update)) > xtol) and (k < maxiter):
         # Compute a search direction pk by applying the CG method to
         #  del2 f(xk) p = - grad f(xk) starting from 0.
-        b = -apply(fprime,(xk,)+args)
+        b = -apply(fprime, (xk,)+args)
         gcalls = gcalls + 1
         maggrad = Num.add.reduce(abs(b))
-        eta = min([0.5,Num.sqrt(maggrad)])
+        eta = min([0.5, Num.sqrt(maggrad)])
         termcond = eta * maggrad
         xsupi = 0
         ri = -b
         psupi = -ri
         i = 0
-        dri0 = Num.dot(ri,ri)
+        dri0 = Num.dot(ri, ri)
 
         if fhess is not None:               # you want to compute hessian once.
-            A = apply(fhess,(xk,)+args)
+            A = apply(fhess, (xk,)+args)
             hcalls = hcalls + 1
 
         while Num.add.reduce(abs(ri)) > termcond:
             if fhess is None:
                 if approx_hessp:
-                    Ap = apply(approx_fhess_p,(xk,psupi,fprime)+args)
+                    Ap = apply(approx_fhess_p, (xk, psupi, fprime)+args)
                     gcalls = gcalls + 2
                 else:
-                    Ap = apply(fhess_p,(xk,psupi)+args)
+                    Ap = apply(fhess_p, (xk, psupi)+args)
                     hcalls = hcalls + 1
             else:
-                Ap = Num.dot(A,psupi)
+                Ap = Num.dot(A, psupi)
             # check curvature
-            curv = Num.dot(psupi,Ap)
+            curv = Num.dot(psupi, Ap)
             if (curv <= 0):
                 if (i > 0):
                     break
@@ -482,7 +485,7 @@ def fminNCG(f, x0, fprime, fhess_p=None, fhess=None, args=(), avextol=1e-5, maxi
             alphai = dri0 / curv
             xsupi = xsupi + alphai * psupi
             ri = ri + alphai * Ap
-            dri1 = Num.dot(ri,ri)
+            dri1 = Num.dot(ri, ri)
             betai = dri1 / dri0
             psupi = -ri + betai * psupi
             i = i + 1
@@ -490,7 +493,7 @@ def fminNCG(f, x0, fprime, fhess_p=None, fhess=None, args=(), avextol=1e-5, maxi
     
         pk = xsupi  # search direction is solution to system.
         gfk = -b    # gradient at xk
-        alphak, fc, gc = line_search_BFGS(f,xk,pk,gfk,args)
+        alphak, fc, gc = line_search_BFGS(f, xk, pk, gfk, args)
         fcalls = fcalls + fc
         gcalls = gcalls + gc
 
@@ -499,7 +502,7 @@ def fminNCG(f, x0, fprime, fhess_p=None, fhess=None, args=(), avextol=1e-5, maxi
         k = k + 1
 
     if printmessg or fulloutput:
-        fval = apply(f,(xk,)+args)
+        fval = apply(f, (xk,)+args)
     if k >= maxiter:
         warnflag = 1
         if printmessg:
@@ -533,9 +536,9 @@ if __name__ == "__main__":
     
     times = []
     algor = []
-    x0 = [0.8,1.2,0.7]
+    x0 = [0.8, 1.2, 0.7]
     start = time.time()
-    x = fmin(rosen,x0)
+    x = fmin(rosen, x0)
     print x
     times.append(time.time() - start)
     algor.append('Nelder-Mead Simplex\t')

@@ -21,57 +21,57 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
   Temps CPU consommé dans ce pas de temps  : %(k1)s
 """),
 
-2 : _(u"""    * Temps moyen par itération de Newton  : %(k1)s ( %(i1)d itérations     )"""),
+    2 : _(u"""    * Temps moyen par itération de Newton  : %(k1)s ( %(i1)d itérations     )"""),
 
-3 : _(u"""    * Temps total factorisation matrice    : %(k1)s ( %(i1)d factorisations )"""),
+    3 : _(u"""    * Temps total factorisation matrice    : %(k1)s ( %(i1)d factorisations )"""),
 
-4 : _(u"""    * Temps total intégration comportement : %(k1)s ( %(i1)d intégrations   )"""),
+    4 : _(u"""    * Temps total intégration comportement : %(k1)s ( %(i1)d intégrations   )"""),
 
-5 : _(u"""    * Temps total résolution K.U=F         : %(k1)s ( %(i1)d résolutions    )"""),
+    5 : _(u"""    * Temps total résolution K.U=F         : %(k1)s ( %(i1)d résolutions    )"""),
 
-6 : _(u"""    * Temps autres opérations              : %(k1)s"""),
+    6 : _(u"""    * Temps autres opérations              : %(k1)s"""),
 
-7 : _(u"""    * Temps post-traitement                : %(k1)s"""),
+    7 : _(u"""    * Temps post-traitement                : %(k1)s"""),
 
-8 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
+    8 : _(u"""    * Nombre d'itérations de recherche linéaire   : %(i1)d"""),
 
 
-10 : _(u"""    * Temps résolution contact             : %(k1)s ( %(i1)d itérations     )"""),
+    10 : _(u"""    * Temps résolution contact             : %(k1)s ( %(i1)d itérations     )"""),
 
-11 : _(u"""    * Temps appariement contact            : %(k1)s ( %(i1)d appariements   )"""),
+    11 : _(u"""    * Temps appariement contact            : %(k1)s ( %(i1)d appariements   )"""),
 
-12 : _(u"""    * Temps construction second membre     : %(k1)s"""),
+    12 : _(u"""    * Temps construction second membre     : %(k1)s"""),
 
-13 : _(u"""    * Temps assemblage matrice             : %(k1)s"""),
+    13 : _(u"""    * Temps assemblage matrice             : %(k1)s"""),
 
-20 : _(u"""    * Temps construction matrices contact  : %(k1)s ( %(i1)d constructions  )"""),
+    20 : _(u"""    * Temps construction matrices contact  : %(k1)s ( %(i1)d constructions  )"""),
 
-22 : _(u"""    * Temps frottement                     : %(k1)s ( %(i1)d boucles        )"""),
+    22 : _(u"""    * Temps frottement                     : %(k1)s ( %(i1)d boucles        )"""),
 
-23 : _(u"""    * Temps contact                        : %(k1)s ( %(i1)d boucles        )"""),
+    23 : _(u"""    * Temps contact                        : %(k1)s ( %(i1)d boucles        )"""),
 
-24 : _(u"""    * Temps préparation données contact    : %(k1)s ( %(i1)d préparations   )"""),
+    24 : _(u"""    * Temps préparation données contact    : %(k1)s ( %(i1)d préparations   )"""),
 
-25 : _(u"""    * Temps construction vecteurs contact  : %(k1)s ( %(i1)d constructions  )"""),
+    25 : _(u"""    * Temps construction vecteurs contact  : %(k1)s ( %(i1)d constructions  )"""),
 
-30 :_(u"""
+    30 : _(u"""
   Statistiques du contact dans ce pas de temps
 """),
 
-31 : _(u"""    * Nombre de liaisons de contact                     : %(i1)d"""),
+    31 : _(u"""    * Nombre de liaisons de contact                     : %(i1)d"""),
 
-32 : _(u"""    * Nombre de liaisons de frottement adhérentes       : %(i1)d"""),
+    32 : _(u"""    * Nombre de liaisons de frottement adhérentes       : %(i1)d"""),
 
-33 : _(u"""    * Nombre de cycles de type contact/pas contact      : %(i1)d"""),
+    33 : _(u"""    * Nombre de cycles de type contact/pas contact      : %(i1)d"""),
 
-34 : _(u"""    * Nombre de cycles de type glissement/adhérence     : %(i1)d"""),
+    34 : _(u"""    * Nombre de cycles de type glissement/adhérence     : %(i1)d"""),
 
-35 : _(u"""    * Nombre de cycles de type glissement avant/arrière : %(i1)d"""),
+    35 : _(u"""    * Nombre de cycles de type glissement avant/arrière : %(i1)d"""),
 
-36 : _(u"""    * Nombre de cycles de type point fixe contact       : %(i1)d"""),
+    36 : _(u"""    * Nombre de cycles de type point fixe contact       : %(i1)d"""),
 
 }

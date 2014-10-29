@@ -16,6 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+
 def dyna_vibra_ops(self, TYPE_CALCUL, BASE_CALCUL, **args):
     from Accas import MCList
     from Utilitai.Utmess import UTMESS
@@ -32,7 +33,7 @@ def dyna_vibra_ops(self, TYPE_CALCUL, BASE_CALCUL, **args):
     motscle = {}
 
     try:
-        motscle['EXCIT']   = args['EXCIT'].List_F()
+        motscle['EXCIT'] = args['EXCIT'].List_F()
         for k in range(len(motscle['EXCIT'])):
             if motscle['EXCIT'][k].has_key('CHARGE'):
                 charge = 1
@@ -40,9 +41,10 @@ def dyna_vibra_ops(self, TYPE_CALCUL, BASE_CALCUL, **args):
             del motscle['EXCIT'][k]['BASE_CALCUL']
         del args['EXCIT']
     except AttributeError:
-       pass
+        pass
 
-    liste=['FLAMBAGE', 'CHOC', 'ANTI_SISM', 'DIS_VISC', 'RELA_EFFO_DEPL', 'RELA_TRANSIS', 'RELA_EFFO_VITE']
+    liste = ['FLAMBAGE', 'CHOC', 'ANTI_SISM', 'DIS_VISC',
+             'RELA_EFFO_DEPL', 'RELA_TRANSIS', 'RELA_EFFO_VITE']
     for i in range(len(liste)):
         if args.has_key(liste[i]):
             try:
@@ -77,12 +79,14 @@ def dyna_vibra_ops(self, TYPE_CALCUL, BASE_CALCUL, **args):
         if BASE_CALCUL == 'PHYS':
             if not motscle['SCHEMA_TEMPS'][0]['SCHEMA'] \
                in ['NEWMARK', 'WILSON', 'ADAPT_ORDRE2', 'DIFF_CENTRE']:
-                UTMESS('F', 'ALGORITH3_19', motscle['SCHEMA_TEMPS'][0]['SCHEMA'])
+                UTMESS('F', 'ALGORITH3_19', motscle[
+                       'SCHEMA_TEMPS'][0]['SCHEMA'])
             dyna = DYNA_LINE_TRAN(**motscle)
         else:
             if not motscle['SCHEMA_TEMPS'][0]['SCHEMA'] \
-               in ['NEWMARK', 'EULER', 'ADAPT_ORDRE2', 'DEVOGE', 'ADAPT_ORDRE1', 'ITMI', 'RUNGE_KUTTA_54','RUNGE_KUTTA_32']:
-                UTMESS('F', 'ALGORITH3_15', motscle['SCHEMA_TEMPS'][0]['SCHEMA'])
+               in ['NEWMARK', 'EULER', 'ADAPT_ORDRE2', 'DEVOGE', 'ADAPT_ORDRE1', 'ITMI', 'RUNGE_KUTTA_54', 'RUNGE_KUTTA_32']:
+                UTMESS('F', 'ALGORITH3_15', motscle[
+                       'SCHEMA_TEMPS'][0]['SCHEMA'])
             dyna = DYNA_TRAN_MODAL(**motscle)
     else:
         dyna = DYNA_LINE_HARM(**motscle)

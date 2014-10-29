@@ -33,36 +33,39 @@ from Noyau.strfunc import ufmt
 
 
 class PROC_ETAPE(V_ETAPE.ETAPE):
-   """
-      On réutilise les méthodes report,verif_regles
-      de ETAPE par héritage.
-   """
 
-   def isvalid(self,sd='oui',cr='non'):
-      """
-         Methode pour verifier la validité de l'objet PROC_ETAPE. Cette méthode
-         peut etre appelée selon plusieurs modes en fonction de la valeur
-         de sd et de cr (sd n'est pas utilisé).
+    """
+       On réutilise les méthodes report,verif_regles
+       de ETAPE par héritage.
+    """
 
-         Si cr vaut oui elle crée en plus un compte-rendu.
+    def isvalid(self, sd='oui', cr='non'):
+        """
+           Methode pour verifier la validité de l'objet PROC_ETAPE. Cette méthode
+           peut etre appelée selon plusieurs modes en fonction de la valeur
+           de sd et de cr (sd n'est pas utilisé).
 
-         Cette méthode a plusieurs fonctions :
+           Si cr vaut oui elle crée en plus un compte-rendu.
 
-          - retourner un indicateur de validité 0=non, 1=oui
+           Cette méthode a plusieurs fonctions :
 
-          - produire un compte-rendu : self.cr
+            - retourner un indicateur de validité 0=non, 1=oui
 
-          - propager l'éventuel changement d'état au parent
-      """
-      if CONTEXT.debug : print "ETAPE.isvalid ",self.nom
-      if self.state == 'unchanged' :
-        return self.valid
-      else:
-        valid=self.valid_child()
-        valid=valid * self.valid_regles(cr)
-        if self.reste_val != {}:
-          if cr == 'oui' :
-            self.cr.fatal(_(u"Mots clés inconnus : %s"), ','.join(self.reste_val.keys()))
-          valid=0
-        self.set_valid(valid)
-        return self.valid
+            - produire un compte-rendu : self.cr
+
+            - propager l'éventuel changement d'état au parent
+        """
+        if CONTEXT.debug:
+            print "ETAPE.isvalid ", self.nom
+        if self.state == 'unchanged':
+            return self.valid
+        else:
+            valid = self.valid_child()
+            valid = valid * self.valid_regles(cr)
+            if self.reste_val != {}:
+                if cr == 'oui':
+                    self.cr.fatal(
+                        _(u"Mots clés inconnus : %s"), ','.join(self.reste_val.keys()))
+                valid = 0
+            self.set_valid(valid)
+            return self.valid

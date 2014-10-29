@@ -25,8 +25,8 @@ from SD.sd_reperage_omega import sd_reperage_omega
 class sd_surface_1d(AsBase):
 #--------------------------------
     nomj = SDNom(fin=13)
-    sgtel      = sd_reperage_1d(SDNom(nomj='.SGTEL'))
-    repom      = sd_reperage_omega(SDNom(nomj=''))
+    sgtel = sd_reperage_1d(SDNom(nomj='.SGTEL'))
+    repom = sd_reperage_omega(SDNom(nomj=''))
     CONEX_ORIG = AsVI(SDNom(nomj='.CONEX.ORIG'))
     CONEX_EXTR = AsVI(SDNom(nomj='.CONEX.EXTR'))
-    DESC       = AsVR(SDNom(debut=13), lonmax=6, )
+    DESC = AsVR(SDNom(debut=13), lonmax=6, )

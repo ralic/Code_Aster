@@ -18,7 +18,9 @@
 
 from N_utils import import_object
 
+
 class OPS:
+
     """Wrapper to ops functions.
     This allows to import them only when they are needed."""
 
@@ -34,6 +36,7 @@ class OPS:
 
 # utilisé par exemple par des macros où tout est fait dans l'init.
 class NOTHING(OPS):
+
     """OPS which does nothing."""
 
     def __call__(self, macro, *args, **kwargs):

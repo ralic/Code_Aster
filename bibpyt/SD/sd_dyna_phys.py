@@ -21,6 +21,7 @@ from SD import *
 from SD.sd_resultat import sd_resultat
 from SD.sd_resu_dyna import sd_resu_dyna
 
-class sd_dyna_phys(sd_resultat,sd_resu_dyna) :
+
+class sd_dyna_phys(sd_resultat, sd_resu_dyna):
 #---------------------------------------------
     pass

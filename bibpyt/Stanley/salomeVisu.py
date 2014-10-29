@@ -18,10 +18,15 @@
 
 debug = False
 
-import os, commands, string, sys, socket, getpass
+import os
+import commands
+import string
+import sys
+import socket
+import getpass
 import os.path as osp
 from Utilitai.Utmess import UTMESS
-#from pylotage.TOOLS import *
+# from pylotage.TOOLS import *
 from graphiqueTk import *
 import cata_champs
 cata = cata_champs.CATA_CHAMPS()
@@ -33,16 +38,18 @@ import Templates
 TEMPLATESDIR = osp.dirname(Templates.__file__)
 
 # Type de visualisation
-DeformedShape        = 'DEPL'
+DeformedShape = 'DEPL'
 DeformedShapeOnField = 'ON_DEFORMED'
-GaussPoints          = 'GAUSS'
-GaussPointsOnField   = 'ON_DEFORMED'
-ScalarMap            = 'ISO'
+GaussPoints = 'GAUSS'
+GaussPointsOnField = 'ON_DEFORMED'
+ScalarMap = 'ISO'
 
 # =========================================================================
 
+
 class VISU:
-    def __init__( self,  param ) :
+
+    def __init__(self,  param):
         """
         param : dictionnaire pouvant contenir( optionnel ):
         machine_salome      : nom de la machine Salome dans laquelle on souhaite faire la VISU
@@ -53,10 +60,11 @@ class VISU:
         le service NS Salome peut egalement etre specifie dans les arguments de la ligne de commande ( ORBInitRef )
 
         """
-        self.param         = param              # parametres Stanley
-        self.studyName     = None               # nom de l'etude SALOME dans laquelle on fait la visualisation
+        self.param = param              # parametres Stanley
+        self.studyName = None               # nom de l'etude SALOME dans laquelle on fait la visualisation
 
-        if debug: print "AA1/param=", self.param, dir(self.param)
+        if debug:
+            print "AA1/param=", self.param, dir(self.param)
 
         if param['Visualiseur'] == 'POSTPRO':
             self.chemin_script = osp.join(TEMPLATESDIR, 'salomeScript.py')
@@ -64,104 +72,106 @@ class VISU:
             self.chemin_script = osp.join(TEMPLATESDIR, 'salomeParaviz.py')
 
         # Construction paramètre pour SALOME
-        self.salome_host           = param['machine_salome']
-        self.salome_port           = int(param['machine_salome_port'])
-        self.salome_runscript      = param['machine_salome_runscript']
-        self.machine_salome_login  = param['machine_salome_login']
-        self.mode                  = param['mode']
+        self.salome_host = param['machine_salome']
+        self.salome_port = int(param['machine_salome_port'])
+        self.salome_runscript = param['machine_salome_runscript']
+        self.machine_salome_login = param['machine_salome_login']
+        self.mode = param['mode']
 
-        if debug: print "AA1/", self.salome_host, self.salome_port, self.salome_runscript, self.machine_salome_login, self.mode
+        if debug:
+            print "AA1/", self.salome_host, self.salome_port, self.salome_runscript, self.machine_salome_login, self.mode
 
-        if self.mode == 'LOCAL' :
+        if self.mode == 'LOCAL':
             self.salome_host = 'localhost'
-
 
         # selection de l'étude SALOME ( parmi celles ouvertes )
         try:
-            studyList = self.__studyList( param )
+            studyList = self.__studyList(param)
         except:
-            UTMESS('A','STANLEY_14')
+            UTMESS('A', 'STANLEY_14')
             return
 
         if studyList:
-            if len( studyList ) == 1:           # une seule etude -> on publie dans celle-ci
+            if len(studyList) == 1:           # une seule etude -> on publie dans celle-ci
                 self.studyName = studyList[0]
             else:                               # plusieurs études -> l'utilisateur doit en selectionner une
                 studyList.extend(["New"])
-                self.studyName = SAISIE_MODE( studyList, _("Choix de l'etude SALOME pour visualisation"), vbar=1 )
+                self.studyName = SAISIE_MODE(
+                    studyList, _("Choix de l'etude SALOME pour visualisation"), vbar=1)
         else:
-            UTMESS('A','STANLEY_19', valk=[self.salome_host, str(self.salome_port), self.salome_runscript])
+            UTMESS('A', 'STANLEY_19', valk=[
+                   self.salome_host, str(self.salome_port), self.salome_runscript])
             return
 
-
-    # --------------------------------------------------------------------------
-    def __studyList( self, param ):
+    # ------------------------------------------------------------------------
+    def __studyList(self, param):
         """
         Retourne la liste des études
         """
 
         result = []
 
-        _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-        unite=_UL['UNITE_LIBRE',1]
+        _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+        unite = _UL['UNITE_LIBRE', 1]
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
-                    'SALOME_HOST'      : self.salome_host,
-                    'SALOME_PORT'      : self.salome_port,
-                    'FICHIERS_SORTIE'  : [ './fort.%s' % unite ],
-                    'SALOME_RUNAPPLI'  : self.salome_runscript,
-                  }
+        dSALOME = {
+            'CHEMIN_SCRIPT': osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
+            'SALOME_HOST': self.salome_host,
+            'SALOME_PORT': self.salome_port,
+            'FICHIERS_SORTIE': ['./fort.%s' % unite],
+            'SALOME_RUNAPPLI': self.salome_runscript,
+        }
 
         if self.mode == 'LOCAL':
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
-                          );
+                          )
         else:
             dMACHINE_DISTANTE = {
-                    'SSH_ADRESSE'      : self.salome_host,
-                    'SSH_LOGIN'        : self.machine_salome_login
-                  }
+                'SSH_ADRESSE': self.salome_host,
+                'SSH_LOGIN': self.machine_salome_login
+            }
 
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          );
+                          )
 
         try:
-           f=open('./fort.%s' % unite, 'r')
-           result=[ study.strip() for study in f.readlines() ]
-           f.close()
-        except: pass
-        if debug: print 'AA1/Studies list=', result
-        if len(result)==0:
-            UTMESS('A','STANLEY_19', valk=[self.salome_host, str(self.salome_port), self.salome_runscript])
+            f = open('./fort.%s' % unite, 'r')
+            result = [study.strip() for study in f.readlines()]
+            f.close()
+        except:
+            pass
+        if debug:
+            print 'AA1/Studies list=', result
+        if len(result) == 0:
+            UTMESS('A', 'STANLEY_19', valk=[
+                   self.salome_host, str(self.salome_port), self.salome_runscript])
 
-        DEFI_FICHIER(ACTION='LIBERER',UNITE=unite)
+        DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 
         return result
 
-
-    # --------------------------------------------------------------------------
-    def Terminal_ouvert(self) :
+    # ------------------------------------------------------------------------
+    def Terminal_ouvert(self):
         """
             Retourne 1 si le terminal est ouvert, 0 sinon
         """
         return 0
 
-
-    # --------------------------------------------------------------------------
-    def Fermer(self) :
+    # ------------------------------------------------------------------------
+    def Fermer(self):
         """
             Ferme le terminal (si necessaire)
             Fais le menage dans l'objet
         """
         pass
 
-
-    # --------------------------------------------------------------------------
-    def Show( self ) :
+    # ------------------------------------------------------------------------
+    def Show(self):
         """
         Lance la visualisation dans SALOME
         """
@@ -170,35 +180,40 @@ class VISU:
 
 # =========================================================================
 
-class ISOVALEURS( VISU ):
-    def __init__( self, fichier, param,  selection, options ) :
-        if not os.path.exists( fichier ):
-            raise _("Fichier MED résultat de Stanley non accessible par SALOME : ") + fichier
+class ISOVALEURS(VISU):
 
-        VISU .__init__( self,  param )
+    def __init__(self, fichier, param,  selection, options):
+        if not os.path.exists(fichier):
+            raise _(
+                "Fichier MED résultat de Stanley non accessible par SALOME : ") + fichier
+
+        VISU .__init__(self,  param)
 
         # Si on n'a pas trouvé de session Salome ouverte on sort
-        if not self.studyName: return
-        if self.studyName=="New": self.studyName=''
+        if not self.studyName:
+            return
+        if self.studyName == "New":
+            self.studyName = ''
 
-        self.fichier       = os.path.abspath( fichier )         # chemin absolu du fichier MED fourni par Stanley
-        self.visuType      = None                               # type de visualisation
-        self.selection     = selection
-        self.options       = options
+        self.fichier = os.path.abspath(
+            fichier)         # chemin absolu du fichier MED fourni par Stanley
+        self.visuType = None                               # type de visualisation
+        self.selection = selection
+        self.options = options
 
         # parsing fichier MED (nom maillage + nom champ)
-        self.medInfo = MEDInfo( selection )
+        self.medInfo = MEDInfo(selection)
 
         # selection d'un type de visualisation ( parmi celles possibles )
-        self.visuType = self.__visuType( self.selection )
+        self.visuType = self.__visuType(self.selection)
 
-        if debug: print "AA3/", self.fichier, self.visuType, self.selection
+        if debug:
+            print "AA3/", self.fichier, self.visuType, self.selection
 
         # et enfin la visualisation..
         self.Show(self.fichier, self.visuType)
 
-
-    # --------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     def __visuType(self, selection):
         """
         selection du type de visualisation selon le nom du champ de la selection donnée en paramètre
@@ -207,8 +222,8 @@ class ISOVALEURS( VISU ):
         GaussPointsOnField
         """
         nom_champ = cata[selection.nom_cham].nom
-        nom_type  = cata[selection.nom_cham].type
-        options   = self.options
+        nom_type = cata[selection.nom_cham].type
+        options = self.options
 
         if nom_champ == 'DEPL':
             if selection.nom_cmp[0] == 'TOUT_CMP':
@@ -217,21 +232,20 @@ class ISOVALEURS( VISU ):
                 result = ScalarMap
         elif nom_type == 'ELGA':
             result = GaussPoints
-#             # Champ sur la deformee  # pas encore gere
+# Champ sur la deformee  # pas encore gere
 #             if options.has_key( 'case_sur_deformee' ):
 #                 if options['case_sur_deformee'] == 1:
 #                     result = GaussPointsOnField
         else:
             result = ScalarMap
             # Champ sur la deformee
-            if options.has_key( 'case_sur_deformee' ):
+            if options.has_key('case_sur_deformee'):
                 if options['case_sur_deformee'] == 1:
                     result = DeformedShapeOnField
         return result
 
-
-    # --------------------------------------------------------------------------
-    def Show(self, medFilePath, visuType) :
+    # ------------------------------------------------------------------------
+    def Show(self, medFilePath, visuType):
         """
         Lecture d'un fichier MED par le composant VISU de SALOME.
 
@@ -242,32 +256,31 @@ class ISOVALEURS( VISU ):
         @param  visuType:      type de visualisation
         """
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : self.chemin_script,
-                    'SALOME_HOST'      : self.salome_host,
-                    'SALOME_PORT'      : self.salome_port,
-                    'FICHIERS_ENTREE'  : [ medFilePath ],
-                    'SALOME_RUNAPPLI'  : self.salome_runscript,
-                    'NOM_PARA'         : [ 'CHOIX', 'STUDY' ],
-                    'VALE'             : [ self.visuType, self.studyName ],
-                  }
+        dSALOME = {'CHEMIN_SCRIPT': self.chemin_script,
+                   'SALOME_HOST': self.salome_host,
+                   'SALOME_PORT': self.salome_port,
+                   'FICHIERS_ENTREE': [medFilePath],
+                   'SALOME_RUNAPPLI': self.salome_runscript,
+                   'NOM_PARA': ['CHOIX', 'STUDY'],
+                   'VALE': [self.visuType, self.studyName],
+                   }
 
         if self.mode == 'LOCAL':
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
-                          );
+                          )
         else:
             dMACHINE_DISTANTE = {
-                    'SSH_ADRESSE'      : self.salome_host,
-                    'SSH_LOGIN'        : self.machine_salome_login
-                  }
+                'SSH_ADRESSE': self.salome_host,
+                'SSH_LOGIN': self.machine_salome_login
+            }
 
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          );
-
+                          )
 
         if not debug:
             try:
@@ -275,30 +288,30 @@ class ISOVALEURS( VISU ):
             except:
                 pass
 
-        UTMESS('I','STANLEY_20')
-
+        UTMESS('I', 'STANLEY_20')
 
 
 # =========================================================================
+class COURBES(VISU):
 
-class COURBES( VISU ):
-    def __init__( self,  l_courbes, param, selection, datafile ):
+    def __init__(self,  l_courbes, param, selection, datafile):
 
         VISU .__init__(self, param)
 
         # Si on n'a pas trouvé de session Salome ouverte on sort
-        if not self.studyName: return
-        if self.studyName=="New": self.studyName=''
+        if not self.studyName:
+            return
+        if self.studyName == "New":
+            self.studyName = ''
 
-        self.tables     = {}
-        self.l_courbes  = l_courbes
-        self.selection  = selection
-        self.datafile   = datafile
+        self.tables = {}
+        self.l_courbes = l_courbes
+        self.selection = selection
+        self.datafile = datafile
 
         self.Show(self.datafile)
 
-
-#     # --------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 #     def __writeSalomeTables( self, l_courbes, selection ):
 #         """
 #         """
@@ -315,7 +328,7 @@ class COURBES( VISU ):
 #                     ordre = courbe[1].split('=')[1].strip()
 #
 #                 if not tabList.has_key(  composantName ):
-#                     tabList[ composantName ] = []  # un tableau par composante
+# tabList[ composantName ] = []  # un tableau par composante
 #                 tabList[ composantName ].insert( int(float(ordre)), str( courbe[0] ))
 #
 #             for composantName, liste  in tabList.items():
@@ -333,7 +346,7 @@ class COURBES( VISU ):
 #
 #                 theTableName += ' '+selection.nom_va+' : ' + str( selection.vale_va )
 #
-#                 prefix  = '#TITLE: ' + theTableName + os.linesep
+# prefix  = '#TITLE: ' + theTableName + os.linesep
 #                 data += prefix
 #
 #                 for a in m :
@@ -354,40 +367,37 @@ class COURBES( VISU ):
 #
 #
 #         return result
-
-
-
-    # --------------------------------------------------------------------------
-    def Show(self, datafile) :
+    # ------------------------------------------------------------------------
+    def Show(self, datafile):
         """
         Lecture d'un fichier MED par le composant VISU de SALOME.
         """
 
-        dSALOME = { 'CHEMIN_SCRIPT'    : self.chemin_script,
-                    'SALOME_HOST'      : self.salome_host,
-                    'SALOME_PORT'      : self.salome_port,
-                    'FICHIERS_ENTREE'  : [ datafile ],
-                    'SALOME_RUNAPPLI'  : self.salome_runscript,
-                    'NOM_PARA'         : [ 'CHOIX', 'STUDY' ],
-                    'VALE'             : [ 'COURBE', self.studyName ],
-                  }
+        dSALOME = {'CHEMIN_SCRIPT': self.chemin_script,
+                   'SALOME_HOST': self.salome_host,
+                   'SALOME_PORT': self.salome_port,
+                   'FICHIERS_ENTREE': [datafile],
+                   'SALOME_RUNAPPLI': self.salome_runscript,
+                   'NOM_PARA': ['CHOIX', 'STUDY'],
+                   'VALE': ['COURBE', self.studyName],
+                   }
 
         if self.mode == 'LOCAL':
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
-                          );
+                          )
         else:
             dMACHINE_DISTANTE = {
-                    'SSH_ADRESSE'      : self.salome_host,
-                    'SSH_LOGIN'        : self.machine_salome_login
-                  }
+                'SSH_ADRESSE': self.salome_host,
+                'SSH_LOGIN': self.machine_salome_login
+            }
 
             EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          );
+                          )
 
         if not debug:
             try:
@@ -396,23 +406,23 @@ class COURBES( VISU ):
                 pass
 
 
-
 # =========================================================================
-
 class MEDInfo:
+
     """
     """
-    def __init__( self, selection ):
+
+    def __init__(self, selection):
         """
         Recupère les informations( nom maillage, champ ) du fichier MED resultat en sortie de Stanley
         """
-        self.name           = selection.contexte.maillage.nom
-        self.fieldName      = selection.contexte.resultat.nom
-        tailSize            = 8 - len( self.fieldName)
+        self.name = selection.contexte.maillage.nom
+        self.fieldName = selection.contexte.resultat.nom
+        tailSize = 8 - len(self.fieldName)
         if tailSize > 0:
             self.fieldName += tailSize * '_'
-        self.fieldName     += selection.nom_cham
+        self.fieldName += selection.nom_cham
 
-        tailSize            = 32 - len( self.fieldName )
+        tailSize = 32 - len(self.fieldName)
         if tailSize > 0:
             self.fieldName += tailSize * '_'

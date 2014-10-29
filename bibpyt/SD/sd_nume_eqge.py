@@ -19,9 +19,12 @@
 from SD import *
 
 from SD.sd_prof_vgen import sd_prof_vgen
+
+
 class sd_nume_eqge(sd_prof_vgen):
     nomj = SDNom(fin=19)
     REFN = AsVK24(SDNom(debut=19), lonmax=4, )
     DESC = AsVI(SDNom(debut=19), lonmax=1, )
     NEQU = AsVI(SDNom(debut=19), lonmax=1, )
-    ORIG = AsColl(SDNom(debut=19), acces='NU', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    ORIG = AsColl(SDNom(debut=19), acces='NU',
+                  stockage='DISPERSE', modelong='VARIABLE', type='I', )

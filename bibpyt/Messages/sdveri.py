@@ -19,25 +19,25 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
  Impossible d'importer le catalogue de la structure de données '%(k1)s'
 """),
 
-2 : _(u"""
+    2 : _(u"""
  Objet %(k1)s inexistant.
 """),
 
-4 : _(u"""
+    4 : _(u"""
  Arguments incohérents :
       Nom des paramètres : %(k1)s
    Valeur des paramètres : %(k2)s
 """),
 
-5 : _(u"""
+    5 : _(u"""
  Arguments invalide : 'nomres' vide !
 """),
 
-30 : _(u"""
+    30 : _(u"""
  Erreur de programmation (catalogue des SD) :
    Vérification de la structure de donnée %(k1)s
    produite (ou modifiée) par la commande %(k2)s
@@ -45,17 +45,17 @@ cata_msg = {
    Certains objets JEVEUX sont incorrects :
 """),
 
-31 : _(u"""
+    31 : _(u"""
       Objet : '%(k1)s'    Message : %(k2)s
 """),
 
-40 : _(u"""
+    40 : _(u"""
  Erreur de programmation (catalogue des SD) :
    Vérification d'une structure de donnée :
    Les objets suivants sont interdits dans les SD de type : %(k1)s
 """),
 
-41 : _(u"""
+    41 : _(u"""
    Objet '%(k1)s'   INTERDIT
 """),
 

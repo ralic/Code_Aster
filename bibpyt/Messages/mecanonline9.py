@@ -19,7 +19,7 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
    Arrêt par manque de temps CPU pendant les itérations de Newton, au numéro d'instant < %(i1)d >
       - Temps moyen par itération de Newton : %(r1)f
       - Temps CPU restant                   : %(r2)f
@@ -29,7 +29,7 @@ cata_msg = {
       - Augmentez le temps CPU.
 """),
 
-2 : _(u"""
+    2 : _(u"""
    Arrêt par manque de temps CPU au numéro d'instant < %(i1)d >
       - Temps moyen par pas de temps        : %(r1)f
       - Temps CPU restant                   : %(r2)f
@@ -39,7 +39,7 @@ cata_msg = {
       - Augmentez le temps CPU.
 """),
 
-3 : _(u"""
+    3 : _(u"""
    Arrêt suite à l'échec de l'intégration de la loi de comportement.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 
@@ -48,7 +48,7 @@ cata_msg = {
       - Essayez d'augmenter ITER_INTE_MAXI, ou de subdiviser le pas de temps localement via ITER_INTE_PAS.
 """),
 
-4 : _(u"""
+    4 : _(u"""
    Arrêt pour cause de matrice non inversible.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 
@@ -58,17 +58,17 @@ cata_msg = {
       - Si vous faites du contact, il ne faut pas que la structure ne "tienne" que par le contact.
 """),
 
-5 : _(u"""
+    5 : _(u"""
    Arrêt pour cause d'échec lors du traitement du contact discret.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-6 : _(u"""
+    6 : _(u"""
    Arrêt pour cause de matrice de contact singulière.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-7 : _(u"""
+    7 : _(u"""
    Arrêt pour cause d'absence de convergence avec le nombre d'itérations requis dans l'algorithme non-linéaire de Newton.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 
@@ -79,27 +79,27 @@ cata_msg = {
    - Essayez d'activer la gestion des événements (découpe du pas de temps par exemple) dans la commande DEFI_LIST_INST.
 """),
 
-8  : _(u"""
+    8  : _(u"""
    Arrêt par échec dans le pilotage.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-9  : _(u"""
+    9  : _(u"""
    Arrêt par échec dans la boucle de point fixe sur la géométrie.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-10  : _(u"""
+    10  : _(u"""
    Arrêt par échec dans la boucle de point fixe sur le seuil de frottement.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-11  : _(u"""
+    11  : _(u"""
    Arrêt par échec dans la boucle de point fixe sur le statut de contact.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
-12 : _(u"""
+    12 : _(u"""
    Arrêt pour cause d'absence de convergence avec le nombre d'itérations requis dans le solveur linéaire itératif.
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 
@@ -108,30 +108,30 @@ cata_msg = {
    - Utilisez un préconditionneur plus précis ou changez d'algorithme.
 """),
 
-50 : _(u"""Arrêt par échec de l'action <%(k1)s>  pour le traitement de l'évènement <%(k2)s>. """),
-51 : _(u"""Arrêt demandé pour le déclenchement de l'évènement <%(k1)s>. """),
+    50 : _(u"""Arrêt par échec de l'action <%(k1)s>  pour le traitement de l'évènement <%(k2)s>. """),
+    51 : _(u"""Arrêt demandé pour le déclenchement de l'évènement <%(k1)s>. """),
 
-60 : _(u"""
+    60 : _(u"""
    Les forces de contact sont mal définies dans le domaine de Fourier.
 
    Conseil :
    - Augmenter le nombre d'harmoniques des forces de contact (NB_HARM_NONL).
 """),
 
-61 : _(u"""
+    61 : _(u"""
    Le dernier terme de la série entière est nul. On force le rayon de convergence à 1.
 """),
 
-62 : _(u"""
+    62 : _(u"""
    Correction échouée !!!
 """),
 
-63 : _(u"""
+    63 : _(u"""
    Le nombre d'harmoniques des forces de contact doit être supérieur ou égale au nombre d'harmoniques des autres variables.
    NB_HARM_NONL >= NB_HARM_LINE
 """),
 
-64 : _(u"""
+    64 : _(u"""
    -----------------------------------------------------------------------
    ||    Erreur absolue   ||    Erreur relative  || Max. coefficient   ||
    -----------------------------------------------------------------------
@@ -139,20 +139,20 @@ cata_msg = {
    -----------------------------------------------------------------------
 """),
 
-65 : _(u"""
+    65 : _(u"""
    La solution périodique est stable
    --------------------------------------------------------------------------
 """),
 
-66 : _(u"""
+    66 : _(u"""
    La solution périodique est instable
    --------------------------------------------------------------------------
 """),
 
-67 : _(u"""
+    67 : _(u"""
    --------------------- Numéro ordre : %(i1)d -----------------------------------
 """),
 
-68 : _(u"""Le mot-clé GROUP_NO du mot-clé facteur CHOC ne doit contenir qu'un noeud."""),
+    68 : _(u"""Le mot-clé GROUP_NO du mot-clé facteur CHOC ne doit contenir qu'un noeud."""),
 
 }

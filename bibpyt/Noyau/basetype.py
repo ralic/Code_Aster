@@ -42,13 +42,12 @@ import cPickle
 __docformat__ = "restructuredtext"
 
 
-
-
 class MetaType(type):
+
     """Métaclasse d'un type représentant une structure de données.
     Les méthodes spéciales __new__ et __call__ sont réimplémentées
     """
-    def __new__( mcs, name, bases, classdict ):
+    def __new__(mcs, name, bases, classdict):
         """Création d'une nouvelle 'classe' dérivant de Type.
 
         Cette méthode permet de calculer certains attributs automatiquement:
@@ -64,19 +63,19 @@ class MetaType(type):
         de cette classe sont des attributs associés à la classe feuille. Ces attributs
         ont eux-meme un attribut parent qui pointe sur la classe qui les contient.
         """
-        new_cls = type.__new__( mcs, name, bases, classdict )
+        new_cls = type.__new__(mcs, name, bases, classdict)
         new_cls._subtypes = []
         for b in bases:
-            if hasattr(b,'_subtypes'):
+            if hasattr(b, '_subtypes'):
                 new_cls._subtypes += b._subtypes
         # affecte la classe comme parent des attributs de classe
         # et donne l'occasion aux attributs de se renommer à partir
         # du nom utilisé.
         for k, v in classdict.items():
-            if not isinstance( v, BaseType ):
+            if not isinstance(v, BaseType):
                 continue
-            v.reparent( new_cls, k )
-            new_cls._subtypes.append( k )
+            v.reparent(new_cls, k)
+            new_cls._subtypes.append(k)
         return new_cls
 
     def dup_attr(cls, inst):
@@ -85,12 +84,12 @@ class MetaType(type):
         """
         # reinstantiate and reparent subtypes
         for nam in cls._subtypes:
-           obj = getattr( cls, nam )
-           # permet de dupliquer completement l'instance
-           cpy = cPickle.dumps(obj)
-           newobj = cPickle.loads( cpy )
-           newobj.reparent( inst, None )
-           setattr( inst, nam, newobj )
+            obj = getattr(cls, nam)
+            # permet de dupliquer completement l'instance
+            cpy = cPickle.dumps(obj)
+            newobj = cPickle.loads(cpy)
+            newobj.reparent(inst, None)
+            setattr(inst, nam, newobj)
 
     def __call__(cls, *args, **kwargs):
         """Instanciation d'un Type structuré.
@@ -103,12 +102,12 @@ class MetaType(type):
         """
         inst = cls.__new__(cls, *args, **kwargs)
         # reinstantiate and reparent subtypes
-        cls.dup_attr( inst )
+        cls.dup_attr(inst)
         type(inst).__init__(inst, *args, **kwargs)
         return inst
 
     def mymethod(cls):
-       pass
+        pass
 
 
 class BaseType(object):
@@ -122,12 +121,12 @@ class BaseType(object):
         self._name = None
         self._parent = None
 
-    def reparent( self, parent, new_name ):
+    def reparent(self, parent, new_name):
         self._parent = parent
         self._name = new_name
         for nam in self._subtypes:
-            obj = getattr( self, nam )
-            obj.reparent( self, nam )
+            obj = getattr(self, nam)
+            obj.reparent(self, nam)
 
     def supprime(self, delete=False):
         """Permet de casser les boucles de références pour que les ASSD
@@ -139,19 +138,19 @@ class BaseType(object):
         for nam in self._subtypes:
             obj = getattr(self, nam)
             obj.supprime(delete)
-        #XXX MC : avec ce code, j'ai l'impression qu'on supprime aussi
+        # XXX MC : avec ce code, j'ai l'impression qu'on supprime aussi
         # des attributs de classe, ce qui pose problème pour une
         # instanciation future...
         # Supprimer les références remontantes devrait suffir.
-        #if delete:
-            #while len(self._subtypes):
-                #nam = self._subtypes.pop(0)
-                #try:
-                    #delattr(self, nam)
-                #except AttributeError:
-                    #pass
+        # if delete:
+            # while len(self._subtypes):
+                # nam = self._subtypes.pop(0)
+                # try:
+                    # delattr(self, nam)
+                # except AttributeError:
+                    # pass
 
-    def base( self ):
+    def base(self):
         if self._parent is None:
             return self
         return self._parent.base()

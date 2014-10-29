@@ -19,16 +19,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-   nom            = 'KIT_CG',
-   doc = """Loi d'adherence cable/gaine et loi comportement cable""",
-   num_lc         = 9999,
-   nb_vari        = 0,
-   nom_vari       = None,
-   mc_mater       = None,
-   modelisation   = ('1D'),
-   deformation    = ('PETIT', 'PETIT_REAC',),
-   nom_varc       = (None),
-   algo_inte         = ('SANS_OBJET',),
-   type_matr_tang = ('PERTURBATION', 'VERIFICATION',),
-   proprietes     = None,
+    nom='KIT_CG',
+    doc="""Loi d'adherence cable/gaine et loi comportement cable""",
+    num_lc=9999,
+    nb_vari=0,
+    nom_vari=None,
+    mc_mater=None,
+    modelisation=('1D'),
+    deformation = ('PETIT', 'PETIT_REAC',),
+    nom_varc = (None),
+    algo_inte = ('SANS_OBJET',),
+    type_matr_tang = ('PERTURBATION', 'VERIFICATION',),
+    proprietes = None,
 )

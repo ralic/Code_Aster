@@ -38,8 +38,9 @@ def fichier_option(param):
         fmt = (sfmt * nb).strip()
         content.append(fmt % tuple(param['LIST_FREQ']))
     else:
-        fmt = "FREQ" + 3*sfmt
-        content.append(fmt % (param['FREQ_MIN'], param['FREQ_MAX'], param['FREQ_PAS']))
+        fmt = "FREQ" + 3 * sfmt
+        content.append(fmt %
+                       (param['FREQ_MIN'], param['FREQ_MAX'], param['FREQ_PAS']))
     # Z0
     content.append(("Z0" + sfmt) % param['Z0'])
     # SURF / ISSF

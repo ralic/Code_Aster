@@ -20,20 +20,19 @@ from SD import *
 
 from SD.sd_prof_chno import sd_prof_chno
 from SD.sd_maillage import sd_maillage
-from SD.sd_util      import *
+from SD.sd_util import *
 
 
 class sd_nume_equa(sd_prof_chno):
     nomj = SDNom(fin=19)
     NEQU = AsVI(lonmax=2,)
-    DELG = AsVI( )
+    DELG = AsVI()
     REFN = AsVK24(lonmax=4,)
-
 
     def check_REFN(self, checker):
         assert self.REFN.exists
         refn = self.REFN.get_stripped()
-        assert refn[3] in ('','XXXX') # non-information
+        assert refn[3] in ('', 'XXXX')  # non-information
 
         # nom de la grandeur :
         assert refn[1] != ''
@@ -41,15 +40,15 @@ class sd_nume_equa(sd_prof_chno):
 
         # nom du maillage :
         assert refn[0] != ''
-        sd2=sd_maillage(refn[0]); sd2.check(checker)
-
+        sd2 = sd_maillage(refn[0])
+        sd2.check(checker)
 
     def check_1(self, checker):
         nequ = self.NEQU.get()
         delg = self.DELG.get()
-        neq=nequ[0]
+        neq = nequ[0]
         assert neq > 0
-        assert nequ[1]>=0
-        assert len(delg)==neq
-        for x in delg :
-           assert x in (-2,-1,0)
+        assert nequ[1] >= 0
+        assert len(delg) == neq
+        for x in delg:
+            assert x in (-2, -1, 0)

@@ -16,24 +16,24 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-## \package calc_essai_ops Implémentation de la macro CALC_ESSAI
+# \package calc_essai_ops Implémentation de la macro CALC_ESSAI
 #
 # Ce module contient la partie controle de la macro CALC_ESSAI
 # les autres fichiers sources sont situes dans ../Calc_essai
 
 
-def calc_essai_ops( self,
-                    INTERACTIF          = None,
-                    UNITE_RESU          = None,
-                    EXPANSION           = None,
-                    IDENTIFICATION      = None,
-                    MODIFSTRUCT         = None,
-                    TRAITEMENTSIG       = None,
-                    GROUP_NO_CAPTEURS   = None,
-                    GROUP_NO_EXTERIEUR  = None,
-                    RESU_IDENTIFICATION = None,
-                    RESU_MODIFSTRU      = None,
-                    **args):
+def calc_essai_ops(self,
+                   INTERACTIF=None,
+                   UNITE_RESU=None,
+                   EXPANSION=None,
+                   IDENTIFICATION=None,
+                   MODIFSTRUCT=None,
+                   TRAITEMENTSIG=None,
+                   GROUP_NO_CAPTEURS=None,
+                   GROUP_NO_EXTERIEUR=None,
+                   RESU_IDENTIFICATION=None,
+                   RESU_MODIFSTRU=None,
+                   **args):
 
     from Calc_essai.cata_ce import CalcEssaiObjects
     import aster
@@ -49,23 +49,20 @@ def calc_essai_ops( self,
     table_fonction = []
     mode_mec = []
 
-
     if not RESU_MODIFSTRU:
         out_modifstru = {}
     else:
-        out_modifstru = RESU_MODIFSTRU[0] # max=1 dans le capy
-
+        out_modifstru = RESU_MODIFSTRU[0]  # max=1 dans le capy
 
     if not RESU_IDENTIFICATION:
         RESU_IDENTIFICATION = []
     else:
         for res in RESU_IDENTIFICATION:
             table_fonction.append(res['TABLE'])
-    out_identification = {"DeclareOut" : self.DeclareOut,
-                          "TypeTables" : 'TABLE_FONCTION',
-                          "ComptTable" : 0,
-                          "TablesOut"  : table_fonction}
-
+    out_identification = {"DeclareOut": self.DeclareOut,
+                          "TypeTables": 'TABLE_FONCTION',
+                          "ComptTable": 0,
+                          "TablesOut": table_fonction}
 
     # Mode interactif : ouverture d'une fenetre Tk
     if INTERACTIF == "OUI":
@@ -101,8 +98,7 @@ def calc_essai_ops( self,
     return ier
 
 
-
-def create_tab_mess_widgets(tk,tabskeys):
+def create_tab_mess_widgets(tk, tabskeys):
     """Construits les objects table et boîte à messages."""
     try:
         from Pmw import PanedWidget
@@ -129,6 +125,7 @@ def create_tab_mess_widgets(tk,tabskeys):
 
 
 class FermetureCallback:
+
     """Opérations à appliquer lors de la fermeture de la
     fenêtre Tk.
     """
@@ -156,24 +153,23 @@ def create_interactive_window(macro,
     from Calc_essai.ce_ihm_expansion import InterfaceCorrelation
     from Calc_essai.ce_ihm_modifstruct import InterfaceModifStruct
     from Calc_essai.ce_ihm_identification import InterfaceIdentification
-    from Calc_essai.ce_ihm_parametres import InterfaceParametres#, InterfaceParametres_init
+    from Calc_essai.ce_ihm_parametres import InterfaceParametres  # , InterfaceParametres_init
     from Calc_essai.ce_calc_spec import InterfaceCalcSpec
-##    from Calc_essai.ce_ihm_expansion import InterfaceVisual
-
+# from Calc_essai.ce_ihm_expansion import InterfaceVisual
 
     # fenetre principale
     tk = Tk()
     tk.title("CALC_ESSAI")
-    tk.rowconfigure(0,weight=1)
-    tk.rowconfigure(1,weight=20)
-    tk.rowconfigure(2,weight=1)
+    tk.rowconfigure(0, weight=1)
+    tk.rowconfigure(1, weight=20)
+    tk.rowconfigure(2, weight=1)
 
     tabskeys = ["Expansion de modeles",
                 "Modification structurale",
                 "Identification de chargement",
                 "Traitement du signal",
                 u"Paramètres et visualisation"]
-##                "Visualisation"]
+# "Visualisation"]
 
     tabs, mess = create_tab_mess_widgets(tk, tabskeys)
     main = tabs.root()
@@ -182,24 +178,27 @@ def create_interactive_window(macro,
     objects = CalcEssaiObjects(macro, mess)
     tabs.set_objects(objects)
 
-    param_visu = InterfaceParametres(main,objects,macro,mess)
-    iface = InterfaceCorrelation(main, objects, macro, mess,param_visu)
-    imodifstruct = InterfaceModifStruct(main, objects, macro,mess, out_modifstru, param_visu)
-    identification = InterfaceIdentification(main, objects, mess, out_identification, param_visu)
-    calc_spec= InterfaceCalcSpec(main,objects,mess,param_visu)
+    param_visu = InterfaceParametres(main, objects, macro, mess)
+    iface = InterfaceCorrelation(main, objects, macro, mess, param_visu)
+    imodifstruct = InterfaceModifStruct(
+        main, objects, macro, mess, out_modifstru, param_visu)
+    identification = InterfaceIdentification(
+        main, objects, mess, out_identification, param_visu)
+    calc_spec = InterfaceCalcSpec(main, objects, mess, param_visu)
 #
     tabs.set_tab(tabskeys[0], iface)
     tabs.set_tab(tabskeys[1], imodifstruct.main)
     tabs.set_tab(tabskeys[2], identification)
     tabs.set_tab(tabskeys[3], calc_spec)
     tabs.set_tab(tabskeys[4], param_visu)
-##    tabs.set_tab(tabskeys[5], visual)
+# tabs.set_tab(tabskeys[5], visual)
 
     tabs.set_current_tab(tabskeys[4])
 
-    tk.protocol("WM_DELETE_WINDOW", FermetureCallback(tk, identification).apply)
+    tk.protocol("WM_DELETE_WINDOW",
+                FermetureCallback(tk, identification).apply)
 
     try:
         tk.mainloop()
-    except :
+    except:
         print "CALC_ESSAI : *ERREUR*"

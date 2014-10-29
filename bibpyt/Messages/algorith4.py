@@ -19,25 +19,25 @@
 
 cata_msg = {
 
-10 : _("""
+    10 : _("""
 Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
-35 : _(u"""
+    35 : _(u"""
  rang supérieur a dimension vecteur
 """),
 
-36 : _(u"""
+    36 : _(u"""
  <LCDPPA> il faut redécouper
 """),
 
-45 : _(u"""
+    45 : _(u"""
  la modélisation 1d n'est pas autorisée
 """),
 
 
-46 : _(u"""
-  -> Le calcul de l opérateur tangent dans la phase %(k1)s a échoué. 
+    46 : _(u"""
+  -> Le calcul de l opérateur tangent dans la phase %(k1)s a échoué.
      1. RIGI_MECA_TANG=première itération de prédiction tangente dans un pas de temps
      2. FULL_MECA=itérations de correction de Newton
   -> Risque & Conseil :
@@ -47,180 +47,180 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
 
-48 : _(u"""
+    48 : _(u"""
  élément à discontinuité avec une loi CZM_EXP : la matrice H est non inversible
 """),
 
 
-50 : _(u"""
+    50 : _(u"""
   comportement inattendu :  %(k1)s
 """),
 
-51 : _(u"""
+    51 : _(u"""
   SYT et D_SIGM_EPSI doivent être spécifiés sous l'opérande BETON_ECRO_LINE dans DEFI_MATERIAU pour utiliser la loi ENDO_ISOT_BETON
 """),
 
-52 : _(u"""
+    52 : _(u"""
   SYC ne doit pas être valorisé pour NU nul dans DEFI_MATERIAU
 """),
 
-53 : _(u"""
+    53 : _(u"""
   SYC doit être supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
   dans DEFI_MATERIAU pour prendre en compte le confinement
 """),
 
-54 : _(u"""
+    54 : _(u"""
  loi ENDO_ORTH_BETON : le paramètre KSI n'est pas inversible
 """),
 
-57 : _(u"""
+    57 : _(u"""
  Problème de convergence (l'accroissement de déformation plastique est négatif).
  On active le redécoupage du pas de temps.
 """),
 
-58 : _(u"""
+    58 : _(u"""
  pas de solution
 """),
 
-59 : _(u"""
+    59 : _(u"""
  erreur: Problème de convergence. Le nombre d'itération maximal est atteint. On active le redécoupage du pas de temps.
 """),
 
-60 : _(u"""
+    60 : _(u"""
  Problème de convergence (l'accroissement de déformation plastique est négatif).
  Pensez à activer le redécoupage du pas de temps.
 """),
 
-61 : _(u"""
+    61 : _(u"""
  erreur: Problème de convergence. Le nombre d'itération maximal est atteint. Pensez à activer le redécoupage du pas de temps.
 """),
 
-62 : _(u"""
+    62 : _(u"""
  loi BETON_REGLE_PR utilisable uniquement en modélisation C_PLAN ou D_PLAN
 """),
 
-63 : _(u"""
+    63 : _(u"""
  la méthode de localisation  %(k1)s  est indisponible actuellement
 """),
 
-65 : _(u"""
+    65 : _(u"""
   %(k1)s  impossible actuellement
 """),
 
 
-72 : _(u"""
+    72 : _(u"""
   jacobien du système non linéaire à résoudre nul
   lors de la projection au sommet du cône de traction
   les paramètres matériaux sont sans doute mal définis
 """),
 
-73 : _(u"""
+    73 : _(u"""
   non convergence à itération max  %(k1)s
   - erreur calculée  %(k2)s  >  %(k3)s
   mais très faibles incréments de Newton pour la loi BETON_DOUBLE_DP
   - on accepte la convergence.
 """),
 
-74 : _(u"""
+    74 : _(u"""
   non convergence à itération max  %(k1)s
   - erreur calculée  %(k2)s  >  %(k3)s
   - pour la loi BETON_DOUBLE_DP
   - redécoupage du pas de temps
 """),
 
-75 : _(u"""
+    75 : _(u"""
  état converge non conforme
  lors de la projection au sommet du cône de traction
 """),
 
-76 : _(u"""
+    76 : _(u"""
  état converge non conforme en compression
  lors de la projection au sommet du cône de traction
 """),
 
-77 : _(u"""
+    77 : _(u"""
  jacobien du système non linéaire à résoudre nul
  lors de la projection au sommet des cônes de compression et traction
  - les paramètres matériaux sont sans doute mal définis.
 """),
 
-78 : _(u"""
+    78 : _(u"""
  état convergé non conforme en traction
  lors de la projection au sommet des deux cônes
 """),
 
-79 : _(u"""
+    79 : _(u"""
  état convergé non conforme en compression
  lors de la projection au sommet des deux cônes
 """),
 
-80 : _(u"""
+    80 : _(u"""
   jacobien du système non linéaire à résoudre nul
   lors de la projection au sommet du cône de compression
   - les paramètres matériaux sont sans doute mal définis.
 """),
 
-81 : _(u"""
+    81 : _(u"""
  état convergé non conforme
  lors de la projection au sommet du cône de compression
 """),
 
-82 : _(u"""
+    82 : _(u"""
  état convergé non conforme en traction
  lors de la projection au sommet du cône de compression
 """),
 
-83 : _(u"""
+    83 : _(u"""
   jacobien du système non linéaire a résoudre nul
   - les paramètres matériaux sont sans doute mal définis.
 """),
 
-84 : _(u"""
+    84 : _(u"""
  intégration élastoplastique de loi multicritère : erreur de programmation
 """),
 
-85 : _(u"""
+    85 : _(u"""
   erreur de programmation : valeur de NSEUIL incorrecte.
 """),
 
-86 : _(u"""
+    86 : _(u"""
   état convergé non conforme en traction et en compression
   pour la loi de comportement BETON_DOUBLE_DP
   pour les deux critères en même temps.
   il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
-87 : _(u"""
+    87 : _(u"""
   état converge non conforme en compression
   pour la loi de comportement BETON_DOUBLE_DP
   pour les deux critères en même temps.
   il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
-88 : _(u"""
+    88 : _(u"""
   état convergé non conforme en traction
   pour la loi de comportement BETON_DOUBLE_DP
   pour les deux critères en même temps.
   il faut un saut élastique plus petit, ou redécouper le pas de temps
 """),
 
-89 : _(u"""
+    89 : _(u"""
  état convergé non conforme en traction
 """),
 
-90 : _(u"""
+    90 : _(u"""
  état convergé non conforme en compression
 """),
 
-94 : _(u"""
+    94 : _(u"""
  il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage propre                                avec SECH comme paramètre
 """),
 
-98 : _(u"""
+    98 : _(u"""
  nombre de valeurs dans le fichier UNV DATASET 58 non identique
 """),
 
-99 : _(u"""
+    99 : _(u"""
  nature du champ dans le fichier UNV DATASET 58 non identique
 """),
 

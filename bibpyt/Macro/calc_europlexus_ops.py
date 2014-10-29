@@ -204,7 +204,7 @@ class EUROPLEXUS:
                                              'RESULTAT', 'F')
             nomsd = nomsd.strip()
             if nomsd[:8] == '#PLUSIEU':
-                UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT,'CARA_ELEM'])
+                UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT, 'CARA_ELEM'])
             elif nomsd[:6] == '#AUCUN':
                 self.CARA_ELEM = None
             else:
@@ -215,7 +215,7 @@ class EUROPLEXUS:
                                              'RESULTAT', 'F')
             nomsd = nomsd.strip()
             if nomsd[:8] == '#PLUSIEU':
-                UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT,'CHAM_MATER'])
+                UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT, 'CHAM_MATER'])
             self.CHAM_MATER = macro.get_concept(nomsd)
         else:
             self.MODELE = MODELE
@@ -276,11 +276,11 @@ class EUROPLEXUS:
             self.epx[direc] = DIRECTIVE(direc, titre, type_dir)
 
         # Nom des fichiers de Europlexus (commande et sorties)
-        nom_fichiers = {'COMMANDE' : 'commandes_%s.epx'%NOM_RESU,
-                        'MAILLAGE' : 'commandes_%s.msh'%NOM_RESU,
-                        'SAUV'     : 'resu_%s.sau'%NOM_RESU,
-                        'MED'      : 'champ_%s.e2m'%NOM_RESU,
-                        'PUN'      : 'courbes_%s.pun'%NOM_RESU,
+        nom_fichiers = {'COMMANDE': 'commandes_%s.epx'%NOM_RESU,
+                        'MAILLAGE': 'commandes_%s.msh'%NOM_RESU,
+                        'SAUV': 'resu_%s.sau'%NOM_RESU,
+                        'MED': 'champ_%s.e2m'%NOM_RESU,
+                        'PUN': 'courbes_%s.pun'%NOM_RESU,
                         }
         for fic in nom_fichiers.keys():
             nom_fic = nom_fichiers[fic]
@@ -646,7 +646,7 @@ class EUROPLEXUS:
         directive = 'INFO_SORTIE'
         if self.UNITE_COURBE:
             fichier_courbes = os.path.join(self.REPE_epx, 'fort.%s'
-                                           %str(self.UNITE_COURBE))
+                                           % str(self.UNITE_COURBE))
         else:
             fichier_courbes = self.nom_fichiers['PUN']
 
@@ -677,7 +677,7 @@ class EUROPLEXUS:
                     cmp_aster = table['NOM_CMP']
                     cham_epx = cata_champs[cham_aster]
                     if not cata_compo[cham_aster].has_key(cmp_aster):
-                        UTMESS('F', 'PLEXUS_38', valk=[cham_aster,cmp_aster])
+                        UTMESS('F', 'PLEXUS_38', valk=[cham_aster, cmp_aster])
                     cmp_epx = cata_compo[cham_aster][cmp_aster]
                     ylabel = cham_aster + '_' + cmp_aster
                     entite = tolist(entite)
@@ -688,8 +688,8 @@ class EUROPLEXUS:
                         if entite_type == 'GROUP_MA':
                             label = label+'_%s'%table['NUM_GAUSS']
                         mot_cle = 'COURBE'
-                        cara = [cham_epx, 'COMP',]
-                        vale = ['', cmp_epx,]
+                        cara = [cham_epx, 'COMP', ]
+                        vale = ['', cmp_epx, ]
                         if entite_type == 'GROUP_MA':
                             cara.append('GAUSS')
                             num_gauss = table['NUM_GAUSS']
@@ -840,12 +840,12 @@ class EUROPLEXUS:
 
         # Excecution des differentes modules
         for module in modules_exe:
-            fct = 'export_%s' %module
+            fct = 'export_%s' % module
             if hasattr(self, fct):
                 eval('self.'+fct+'()')
             else:
                 raise Exception("La classe EUROPLEXUS n'a pas de méthode %s"
-                                                                       %fct)
+                                                                       % fct)
 
         # Ecriture des directives
         fd = open(fichier, 'w')
@@ -885,29 +885,32 @@ class EUROPLEXUS:
                 print 'icourbe = %s ; valeurs = %s'%(icourbe, valeurs)
             if nc == 0:
                 para_abscisse = self.legend_courbes[icourbe][0]
-                vale_abscisse = valeurs[0, :].tolist()
-                if len(para_abscisse ) > 16: para_abscisse  =  para_abscisse[:17]
-                dico.append({'TYPE_K':'K16', 'LISTE_R' : vale_abscisse,
+                vale_abscisse = valeurs[0,:].tolist()
+                if len(para_abscisse ) > 16:
+                    para_abscisse  =  para_abscisse[:17]
+                dico.append({'TYPE_K': 'K16', 'LISTE_R' : vale_abscisse,
                            'PARA' : para_abscisse})
                 para_ordonnee = self.legend_courbes[icourbe][1]
-                vale_ordonnee = valeurs[1, :].tolist()
-                if len(para_ordonnee) > 16: para_ordonnee =  para_ordonnee[:17]
+                vale_ordonnee = valeurs[1,:].tolist()
+                if len(para_ordonnee) > 16:
+                    para_ordonnee =  para_ordonnee[:17]
                 dico.append({'TYPE_K':'K16', 'LISTE_R' : vale_ordonnee,
                            'PARA' : para_ordonnee})
                 nc = 1
             else:
                 if ((self.legend_courbes[icourbe][0] == para_abscisse) and
-                  (vale_abscisse == valeurs[0, :].tolist())):
+                  (vale_abscisse == valeurs[0,:].tolist())):
                     para_ordonnee = self.legend_courbes[icourbe][1]
-                    vale_ordonnee = valeurs[1, :].tolist()
-                    if len(para_ordonnee) > 16: para_ordonnee =  para_ordonnee[:17]
+                    vale_ordonnee = valeurs[1,:].tolist()
+                    if len(para_ordonnee) > 16:
+                        para_ordonnee =  para_ordonnee[:17]
                     dico.append({'TYPE_K':'K16', 'LISTE_R' : vale_ordonnee,
                                'PARA' : para_ordonnee})
                 else:
                     raise Exception('Table non compatible')
 
         if len(dico)-1 != self.nb_COURBE:
-            UTMESS('A','PLEXUS_39')
+            UTMESS('A', 'PLEXUS_39')
         table = CREA_TABLE(LISTE=dico)
 
         # test d'impression de la table
@@ -924,7 +927,7 @@ class EUROPLEXUS:
                      LEGENDE='test'
                  )
 
-            os.system('xmgrace fort.%i' %unite)
+            os.system('xmgrace fort.%i' % unite)
 
             DEFI_FICHIER(UNITE=unite, ACTION='LIBERER')
 
@@ -948,10 +951,10 @@ class EUROPLEXUS:
         
         unite = self.get_unite_libre()
         # ca ne marche pas avec ca :
-        #DEFI_FICHIER(UNITE=unite, FICHIER=fichier_med, ACTION='ASSOCIER')
+        # DEFI_FICHIER(UNITE=unite, FICHIER=fichier_med, ACTION='ASSOCIER')
         
         # mais ca marche avec ca
-        fort = 'fort.%i' %unite
+        fort = 'fort.%i' % unite
         if os.path.isfile(fort):
             os.remove(fort)
         os.symlink(fichier_med, fort)

@@ -26,111 +26,127 @@
 # Modules Python
 import string
 
-class error(Exception):pass
-class FatalError(error):pass
+
+class error(Exception):
+    pass
+
+
+class FatalError(error):
+    pass
+
 
 def argv(args):
-   """
-      Cette fonction sert a initialiser le code avec les paramètres
-      de la ligne de commande passes dans args
-      Interface avec le C
-   """
-   #print "codex.argv : ",args
+    """
+       Cette fonction sert a initialiser le code avec les paramètres
+       de la ligne de commande passes dans args
+       Interface avec le C
+    """
+    # print "codex.argv : ",args
+
 
 def init(debug):
-   """
-      Deuxième fonction d'initialisation interfacee avec le FORTRAN
-   """
-   #print "codex.init : ", debug
+    """
+       Deuxième fonction d'initialisation interfacee avec le FORTRAN
+    """
+    # print "codex.init : ", debug
+
 
 def impers():
-   return None
+    return None
 
-def opsexe(cmd,op):
-   """
-      Fonction d'execution de l'ops d'une macro
-      cmd est l'objet Python representant de la commande
-      op est le numero de la macro
-      icmd le numero de la commande dans le jeu de commandes
-   """
-   #print "codex.opsexe : ",cmd.nom,cmd,op
-   ops[op](cmd)
-   return 0
 
-def oper(cmd,jxvrf):
-   """
-      Fonction d'execution de l'operateur d'un operateur ou d'une
-      procedure
-   """
-   #print "codex.oper : ",cmd.nom,jxvrf
+def opsexe(cmd, op):
+    """
+       Fonction d'execution de l'ops d'une macro
+       cmd est l'objet Python representant de la commande
+       op est le numero de la macro
+       icmd le numero de la commande dans le jeu de commandes
+    """
+    # print "codex.opsexe : ",cmd.nom,cmd,op
+    ops[op](cmd)
+    return 0
+
+
+def oper(cmd, jxvrf):
+    """
+       Fonction d'execution de l'operateur d'un operateur ou d'une
+       procedure
+    """
+    # print "codex.oper : ",cmd.nom,jxvrf
+
 
 def debut(cmd):
-   """
-      Fonction d'execution de la macro-commande debut
-   """
-   print "codex.debut : ",cmd
-   concept,type_concept,nom_cmd=cmd.getres()
-   print "codex.debut : ",concept,type_concept,nom_cmd
-   taille=cmd.getfac("IMPRESSION  ")
-   print "codex.debut : ",taille
+    """
+       Fonction d'execution de la macro-commande debut
+    """
+    print "codex.debut : ", cmd
+    concept, type_concept, nom_cmd = cmd.getres()
+    print "codex.debut : ", concept, type_concept, nom_cmd
+    taille = cmd.getfac("IMPRESSION  ")
+    print "codex.debut : ", taille
 
-   taille=cmd.getfac("CODE")
-   print "codex.debut : ",taille
-   if taille == 1:
-      valeur=cmd.getvtx("CODE","NOM",1,1,1)
-      print "codex.debut : ",valeur
+    taille = cmd.getfac("CODE")
+    print "codex.debut : ", taille
+    if taille == 1:
+        valeur = cmd.getvtx("CODE", "NOM", 1, 1, 1)
+        print "codex.debut : ", valeur
 
-   print cmd.retnom()
+    print cmd.retnom()
 
-   l,longueurs=cmd.getltx("CODE","NOM",1,1,1)
-   print "codex.debut : ",longueurs
+    l, longueurs = cmd.getltx("CODE", "NOM", 1, 1, 1)
+    print "codex.debut : ", longueurs
 
-   if taille == 1:
-      valeur=cmd.getvis("CODE","UNITE",1,1,1)
-      print "codex.debut : ",valeur
+    if taille == 1:
+        valeur = cmd.getvis("CODE", "UNITE", 1, 1, 1)
+        print "codex.debut : ", valeur
 
-   print cmd.getoper()
+    print cmd.getoper()
 
-   cmd.getvtx("","PAR_LOT",1,1,1)
-   print "MCS: ",cmd.getvtx("DEBUG","ENVIMA",1,1,1)
-   print "MCS: ",cmd.getvtx("MEMOIRE","GESTION",1,1,1)
-   print "MCS: ",cmd.getvis("MEMOIRE","TYPE_ALLOCATION",1,1,1)
-   print "MCS: ",cmd.getvr8("MEMOIRE","PARTITION",1,1,1)
+    cmd.getvtx("", "PAR_LOT", 1, 1, 1)
+    print "MCS: ", cmd.getvtx("DEBUG", "ENVIMA", 1, 1, 1)
+    print "MCS: ", cmd.getvtx("MEMOIRE", "GESTION", 1, 1, 1)
+    print "MCS: ", cmd.getvis("MEMOIRE", "TYPE_ALLOCATION", 1, 1, 1)
+    print "MCS: ", cmd.getvr8("MEMOIRE", "PARTITION", 1, 1, 1)
 
-   return
+    return
+
 
 def ops1(cmd):
-   """
-      Fonction OPS de la macro INCLUDE
-   """
-   print cmd.getres()
-   return 0
+    """
+       Fonction OPS de la macro INCLUDE
+    """
+    print cmd.getres()
+    return 0
 
-ops={
-     1:ops1,
-     2:ops1,
-     }
+ops = {
+    1: ops1,
+    2: ops1,
+}
 
-_count=0
+_count = 0
+
 
 def gcncon(type):
-   """
-          Entrees:
-            type vaut soit
-                    '.' : le concept sera detruit en fin de job
-                    '_' : le concept ne sera pas detruit
-          Sorties:
-            resul  nom d'un concept delivre par le superviseur (longueur=8)
-          Fonction:
-                   Delivrer un nom de concept non encore utilise et unique
-                   Ce nom est de la forme : type // 'ijklmn' ou ijklmn est un nombre
-                   incremente a chaque appel pour garantir l unicite des noms
-   """
-   global _count
-   _count=_count+1
-   return type + string.zfill(str(_count),7)
+    """
+           Entrees:
+             type vaut soit
+                     '.' : le concept sera detruit en fin de job
+                     '_' : le concept ne sera pas detruit
+           Sorties:
+             resul  nom d'un concept delivre par le superviseur (longueur=8)
+           Fonction:
+                    Delivrer un nom de concept non encore utilise et unique
+                    Ce nom est de la forme : type // 'ijklmn' ou ijklmn est un nombre
+                    incremente a chaque appel pour garantir l unicite des noms
+    """
+    global _count
+    _count = _count + 1
+    return type + string.zfill(str(_count), 7)
 
-def affiche(msg,text):
+
+def affiche(msg, text):
     pass
+
+
 def fclose(unit):
     pass

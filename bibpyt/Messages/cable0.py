@@ -17,16 +17,16 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
-1: _(u"""
+cata_msg = {
+    1: _(u"""
 INST_FIN plus petit que INST_INIT.
 """),
 
-2: _(u"""
+    2: _(u"""
 Le mot-clé MAILLE est interdit, utilisez GROUP_MA.
 """),
 
-3: _(u"""
+    3: _(u"""
 Parmi les occurrences de CABLE_BP, le mot-clé ADHERENT renseigné dans DEFI_CABLE_BP
 est 'OUI' pour certaines et 'NON' pour d'autres.
 CALC_PRECONT ne peut pas traiter ce type de cas

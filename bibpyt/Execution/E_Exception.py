@@ -25,10 +25,13 @@ depuis le fortran.
 import os
 from strfunc import convert
 
+
 class error(Exception):
+
     """Exception levée par toutes les erreurs.
     Arguments = (id_message, valk, vali, valr) ou bien une liste de 'error'.
     """
+
     def __init__(self, arg0, valk=(), vali=(), valr=()):
         """Initialization."""
         Exception.__init__(self)
@@ -68,8 +71,8 @@ class error(Exception):
             from Utilitai.Utmess import message_exception
             txt = []
             for err in self.related:
-                txt.append( message_exception(code, err) )
-            txt.append( message_exception(code, self) )
+                txt.append(message_exception(code, err))
+            txt.append(message_exception(code, self))
             txt = os.linesep.join(txt)
         except:
             txt = self.basic_format()
@@ -81,54 +84,86 @@ class error(Exception):
 
 
 class FatalError(error):
+
     """Uniquement définie pour assurer la compatibilité.
     Utiliser plutôt error"""
 
+
 class NonConvergenceError(error):
+
     """Levée en cas de non convergence"""
 
+
 class EchecComportementError(error):
+
     """En cas d'échec d'intégration du comportement"""
 
+
 class BandeFrequenceVideError(error):
+
     """Aucune fréquence trouvée"""
 
+
 class MatriceSinguliereError(error):
+
     """Matrice Singulière"""
 
+
 class TraitementContactError(error):
+
     """Echec dans le traitement du contact"""
 
+
 class MatriceContactSinguliereError(error):
+
     """Matrice de contact singulière"""
 
+
 class ArretCPUError(error):
+
     """Arrêt par manque de temps CPU"""
 
+
 class PilotageError(error):
+
     """Echec du pilotage"""
 
+
 class BoucleGeometrieError(error):
+
     """Echec dans la boucle de point fixe sur la géométrie"""
 
+
 class BoucleFrottementError(error):
+
     """Echec dans la boucle de point fixe sur le seuil de frottement"""
 
+
 class BoucleContactError(error):
+
     """Echec dans la boucle de point fixe sur le statut de contact"""
 
+
 class EventError(error):
+
     """Arrêt par évènement déclenché"""
 
+
 class ActionError(error):
+
     """Arrêt par échec de l'action"""
 
+
 class ResolutionError(error):
+
     """Échec lors de la résolution du système linéaire"""
 
+
 class ExceptionsStore(object):
+
     """Class to store the exceptions of 'aster' module.
     """
+
     def __init__(self):
         """Intialization."""
         self._dict_exc = {}
@@ -162,7 +197,7 @@ ST = ExceptionsStore()
 
 # register exceptions
 # (the first two numbers are defined in astermodule.c but not used elsewhere)
-#ST.register(19, None, EOFError)
+# ST.register(19, None, EOFError)
 ST.register(18, "FatalError", FatalError)  # for backward compatibility only
 ST.register(21, "error", error, default=True)
 ST.register(22, "NonConvergenceError", NonConvergenceError)
@@ -180,9 +215,11 @@ ST.register(33, "EventError", EventError)
 ST.register(34, "ActionError", ActionError)
 ST.register(35, "ResolutionError", ResolutionError)
 
+
 def add_to_dict_module(dictmodule):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""
     return ST.add_to_dict_module(dictmodule)
+
 
 def get_exception(code):
     """Wrapper to ExceptionsStore method to simplify call from astermodule."""

@@ -18,34 +18,34 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 
-cata_msg={
+cata_msg = {
 
-1: _(u"""
+    1: _(u"""
  Un instant demandé dans POST_ELEM, option CHAR_LIMITE n'est pas présent dans le résultat <%(k1)s>.
 """),
 
-2: _(u"""
+    2: _(u"""
  L'utilisation d'une liste de coefficients COEF_MULT dans POST_ELEM option NORME n'est valable que pour un
  champ de type NEUT_R.
 """),
 
-3: _(u"""
+    3: _(u"""
  Le résultat <%(k1)s> utilisé dans POST_ELEM, option CHAR_LIMITE n'a pas été produit par un STAT_NON_LINE avec pilotage.
  Vérifiez que vous utilisez le bon résultat.
 """),
 
-4: _(u"""
+    4: _(u"""
  Avec le mot-clé RESULTAT, il faut renseigner NOM_CHAM pour identifier le champ sur lequel réaliser le post-traitement.
 """),
 
-10: _(u"""Pour le calcul de l'option MASS_INER sur la géométrie déformée, il faut que le résultat contienne plus d'un numéro d'ordre"""),
+    10: _(u"""Pour le calcul de l'option MASS_INER sur la géométrie déformée, il faut que le résultat contienne plus d'un numéro d'ordre"""),
 
-11: _(u"""
+    11: _(u"""
  Un instant demandé dans POST_ELEM, option TRAV_EXT n'est pas présent dans le résultat <%(k1)s>.
 """),
 
-20: _(u"""Il faut renseigner le MODELE"""),
+    20: _(u"""Il faut renseigner le MODELE"""),
 
-23: _(u"""Les chargements reposent Le modèle n'est pas le même sur les chargements"""),
+    23: _(u"""Les chargements reposent Le modèle n'est pas le même sur les chargements"""),
 
 }

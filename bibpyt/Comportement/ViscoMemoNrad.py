@@ -20,9 +20,9 @@
 from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-   nom            = 'ViscoMemoNrad',
-   symbol_mfront  = 'asterviscomemonrad',
-   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
-   algo_inte      = ('NEWTON_PERT',),
+    nom='ViscoMemoNrad',
+    symbol_mfront='asterviscomemonrad',
+    modelisation=('3D', 'AXIS', 'D_PLAN'),
+    deformation = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
+    algo_inte = ('NEWTON_PERT',),
 )

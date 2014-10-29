@@ -56,9 +56,9 @@ from Miss.miss_resu_miss import MissCsolReader
 
 # correspondance
 FKEY = {
-    'DX' : 'FONC_X',
-    'DY' : 'FONC_Y',
-    'DZ' : 'FONC_Z',
+    'DX': 'FONC_X',
+    'DY': 'FONC_Y',
+    'DZ': 'FONC_Z',
 }
 
 class PostMiss(object):
@@ -116,18 +116,18 @@ class PostMiss(object):
                                      LIST_PARA=__linst)
                 self.acce_z = _acz
             if self.param.get('GROUP_NO') is None:
-              if self.param.get('DEPL_X'):
-                _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_X'], COEF=1.0,),
-                                     LIST_PARA=__linst)
-                self.depl_x = _acx
-              if self.param.get('DEPL_Y'):
-                _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Y'], COEF=1.0,),
-                                     LIST_PARA=__linst)
-                self.depl_y = _acy
-              if self.param.get('DEPL_Z'):
-                _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Z'], COEF=1.0,),
-                                     LIST_PARA=__linst)
-                self.depl_z = _acz
+                if self.param.get('DEPL_X'):
+                    _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_X'], COEF=1.0,),
+                                         LIST_PARA=__linst)
+                    self.depl_x = _acx
+                if self.param.get('DEPL_Y'):
+                    _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Y'], COEF=1.0,),
+                                         LIST_PARA=__linst)
+                    self.depl_y = _acy
+                if self.param.get('DEPL_Z'):
+                    _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Z'], COEF=1.0,),
+                                         LIST_PARA=__linst)
+                    self.depl_z = _acz
 
     def execute(self):
         """Lance le post-traitement"""
@@ -152,10 +152,10 @@ class PostMiss(object):
                                    MATR_ASSE=self.param['MATR_MASS'])
         self.massgen = __massgen
         if self.param['MATR_AMOR']:
-           __amorgen = PROJ_MATR_BASE(BASE=self.param['BASE_MODALE'],
-                                   NUME_DDL_GENE=self.nddlgen,
-                                   MATR_ASSE=self.param['MATR_AMOR'])
-           self.amorgen = __amorgen
+            __amorgen = PROJ_MATR_BASE(BASE=self.param['BASE_MODALE'],
+                                    NUME_DDL_GENE=self.nddlgen,
+                                    MATR_ASSE=self.param['MATR_AMOR'])
+            self.amorgen = __amorgen
         self.set_fft_accelero()
         self.set_freq_dlh()
 
@@ -290,7 +290,7 @@ class PostMissTran(PostMiss):
         """Prépare et produit les concepts de sortie."""
         self.parent.DeclareOut('resugene', self.parent.sd)
         self._to_delete.append(self.dyge)
-        #XXX on pensait qu'il fallait utiliser PROL_ZERO mais miss01a
+        # XXX on pensait qu'il fallait utiliser PROL_ZERO mais miss01a
         #    devient alors NOOK. A clarifier/vérifier en passant
         #    d'autres tests avec ce post-traitement.
         resugene = REST_SPEC_TEMP(RESU_GENE = self.dyge,
@@ -398,20 +398,20 @@ class PostMissTran(PostMiss):
         if len(self.excit_harmo) > 0:
             excit.extend( self.excit_harmo )
         if self.amorgen :
-          dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
-                                   MATR_AMOR=self.amorgen,
-                                   MATR_RIGI=rigtot,
-                                   FREQ=freq,
-                                   EXCIT=excit,
-                                   **opts)
+            dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
+                                     MATR_AMOR=self.amorgen,
+                                     MATR_RIGI=rigtot,
+                                     FREQ=freq,
+                                     EXCIT=excit,
+                                     **opts)
         else :
-          dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
-                                   MATR_RIGI=rigtot,
-                                   FREQ=freq,
-                                   AMOR_MODAL=_F(
-                                   AMOR_REDUIT=self.param['AMOR_REDUIT'],),
-                                   EXCIT=excit,
-                                   **opts)
+            dyge = self.dyna_line_harm(MATR_MASS=self.massgen,
+                                     MATR_RIGI=rigtot,
+                                     FREQ=freq,
+                                     AMOR_MODAL=_F(
+                                     AMOR_REDUIT=self.param['AMOR_REDUIT'],),
+                                     EXCIT=excit,
+                                     **opts)
         return dyge
 
 
@@ -492,7 +492,7 @@ class PostMissTabl(PostMiss):
         self.tab.OrdreColonne(self._torder)
         dprod = self.tab.dict_CREA_TABLE()
         if self.verbose:
-          aster.affiche('MESSAGE', repr(self.tab))
+            aster.affiche('MESSAGE', repr(self.tab))
 
         # type de la table de sortie
         tabout = CREA_TABLE(TYPE_TABLE='TABLE',
@@ -798,106 +798,106 @@ class PostMissFichierTemps(PostMissFichier):
             fc = self.cutOffValue*self.nbr_freq/float(reduc_factor) % self.nbr_freq
         else:
             fc = NP.int_(NP.ceil(self.cutOffValue*self.nbr_freq/float(reduc_factor)))
-        freq_list1 = NP.arange(0,fc*reduc_factor)
+        freq_list1 = NP.arange(0, fc*reduc_factor)
         freq_list2 = NP.arange(fc*reduc_factor, self.nbr_freq, reduc_factor)
         real_size = len(freq_list1.tolist() + freq_list2.tolist())
         impe_Laplace = NP.zeros((self.nrows, self.ncols, self.nbr_freq), complex)
 
-        for k in range(0,real_size):
-            for n in range(0,self.nrows):
-                for m in range(0,self.ncols):
+        for k in range(0, real_size):
+            for n in range(0, self.nrows):
+                for m in range(0, self.ncols):
                     txt = fid.readline()
                     if( txt[0:7] == 'MATRICE' ):
                         tmp = fid.readline()
                         k = k + 1
                     data = fid.readline().split()
-                    impe_Laplace[n,m,k-1] = float(data[1]) + 1j*float(data[2])
+                    impe_Laplace[n, m, k-1] = float(data[1]) + 1j*float(data[2])
 
         fid.close()
 
-        freq_vect  = NP.arange(0,self.L_points)
+        freq_vect  = NP.arange(0, self.L_points)
         Z_Laplace    = NP.zeros((self.nrows, self.ncols, self.L_points), complex)
         Z_Laplace_re = NP.zeros((self.nrows, self.ncols, self.L_points), complex)
         Z_Laplace_im = NP.zeros((self.nrows, self.ncols, self.L_points), complex)
 
         # Ce ne sont pas des vecteurs de fréquences mais des vecteurs d'indices
-        freq_list1 = list(NP.arange(0,reduc_factor*fc))
-        freq_list2 = list(NP.arange(reduc_factor*fc,self.L_points - fc*reduc_factor,reduc_factor))
+        freq_list1 = list(NP.arange(0, reduc_factor*fc))
+        freq_list2 = list(NP.arange(reduc_factor*fc, self.L_points - fc*reduc_factor, reduc_factor))
         if reduc_factor is not 1 and angle_seuil < 1:
-            freq_list3 = list(NP.arange(self.L_points - fc*reduc_factor,self.L_points)) 
-        else: 
+            freq_list3 = list(NP.arange(self.L_points - fc*reduc_factor, self.L_points))
+        else:
             freq_list3 = []
         freq_reduc = freq_list1 + freq_list2 + freq_list3
-        
-        if len(freq_list2) % 2 == 0: 
+
+        if len(freq_list2) % 2 == 0:
             length = len(freq_list1) + len(freq_list2)/2
         else:
             length = len(freq_list1) + (len(freq_list2)-1)/2 + 1
         Z_reduced = NP.zeros((self.nrows, self.ncols, len(freq_reduc)), complex)
-        Z_reduced[:,:,0:length+1] = NP.conj(impe_Laplace[:,:,0:length+1])
-        Z_reduced[:,:,length+1:] = impe_Laplace[:,:,length-1:0:-1]
+        Z_reduced[:,:, 0:length+1] = NP.conj(impe_Laplace[:,:, 0:length+1])
+        Z_reduced[:,:, length+1:] = impe_Laplace[:,:, length-1:0:-1]
 
         Z_redu_r = NP.real(Z_reduced)
         Z_redu_i = NP.imag(Z_reduced)
 
-        for n in range(0,self.nrows):
-            for m in range(0,self.ncols):
-                Z_Laplace_re[n,m,:] = NP.interp(freq_vect, freq_reduc, Z_redu_r[n,m,:]);
-                Z_Laplace_im[n,m,:] = NP.interp(freq_vect, freq_reduc, Z_redu_i[n,m,:]);
+        for n in range(0, self.nrows):
+            for m in range(0, self.ncols):
+                Z_Laplace_re[n, m,:] = NP.interp(freq_vect, freq_reduc, Z_redu_r[n, m,:]);
+                Z_Laplace_im[n, m,:] = NP.interp(freq_vect, freq_reduc, Z_redu_i[n, m,:]);
 
-        for k in range(0,self.L_points):
-            Z_Laplace[:,:,k] = Z_Laplace_re[:,:,k] + 1j*Z_Laplace_im[:,:,k];
+        for k in range(0, self.L_points):
+            Z_Laplace[:,:, k] = Z_Laplace_re[:,:, k] + 1j*Z_Laplace_im[:,:, k];
 
         MATR_GENE = self.param['MATR_GENE']
         if MATR_GENE:
-           z_complex = NP.exp(1j*2*pi/self.L_points)  # 'pi' imported from math
-           GammaZ = NP.zeros(self.L_points, complex)
-           order = 2
-           for k in range(0,self.L_points):
-               for m in range(1,order+1):
-                   GammaZ[k] = GammaZ[k] + 1./m * (1 - self.rho*z_complex**(-k))**m
-           s_laplace = GammaZ / self.dt
+            z_complex = NP.exp(1j*2*pi/self.L_points)  # 'pi' imported from math
+            GammaZ = NP.zeros(self.L_points, complex)
+            order = 2
+            for k in range(0, self.L_points):
+                for m in range(1, order+1):
+                    GammaZ[k] = GammaZ[k] + 1./m * (1 - self.rho*z_complex**(-k))**m
+            s_laplace = GammaZ / self.dt
 
-           if MATR_GENE['MATR_AMOR']:
-               self.Cg = MATR_GENE['MATR_AMOR'].EXTR_MATR_GENE()
+            if MATR_GENE['MATR_AMOR']:
+                self.Cg = MATR_GENE['MATR_AMOR'].EXTR_MATR_GENE()
 
-           if MATR_GENE['MATR_RIGI']:
-               self.Kg = MATR_GENE['MATR_RIGI'].EXTR_MATR_GENE()
+            if MATR_GENE['MATR_RIGI']:
+                self.Kg = MATR_GENE['MATR_RIGI'].EXTR_MATR_GENE()
 
-           if MATR_GENE['DECOMP_IMPE'] == 'PRODUIT':
-               if MATR_GENE['MATR_MASS']:
-                   self.Mg = MATR_GENE['MATR_MASS'].EXTR_MATR_GENE()
-               Hyst = NP.imag(Z_Laplace[:,:,0])
-               for r in range(0,self.L_points):
-                   mat = self.Mg*(s_laplace[r]**2) + self.Cg*s_laplace[r] + self.Kg
-                   mat_inv = NP.linalg.inv(mat)
-                   if MATR_GENE['AMOR_HYST'] == 'DANS_MATR_AMOR':
-                       Z_Laplace[:,:,r] = Z_Laplace[:,:,r] - 1j*Hyst*NP.sign(NP.imag(s_laplace[r]))
-                   Z_Laplace[:,:,r] = Z_Laplace[:,:,r]*mat_inv
-           else:
-               if MATR_GENE['MATR_MASS'] or MATR_GENE['AMOR_HYST']:
-                   UTMESS('A','MISS0_19')
-               for r in range(0,self.L_points):
-                   Z_Laplace[:,:,r] = Z_Laplace[:,:,r] - self.Cg*s_laplace[r] - self.Kg
+            if MATR_GENE['DECOMP_IMPE'] == 'PRODUIT':
+                if MATR_GENE['MATR_MASS']:
+                    self.Mg = MATR_GENE['MATR_MASS'].EXTR_MATR_GENE()
+                Hyst = NP.imag(Z_Laplace[:,:, 0])
+                for r in range(0, self.L_points):
+                    mat = self.Mg*(s_laplace[r]**2) + self.Cg*s_laplace[r] + self.Kg
+                    mat_inv = NP.linalg.inv(mat)
+                    if MATR_GENE['AMOR_HYST'] == 'DANS_MATR_AMOR':
+                        Z_Laplace[:,:, r] = Z_Laplace[:,:, r] - 1j*Hyst*NP.sign(NP.imag(s_laplace[r]))
+                    Z_Laplace[:,:, r] = Z_Laplace[:,:, r]*mat_inv
+            else:
+                if MATR_GENE['MATR_MASS'] or MATR_GENE['AMOR_HYST']:
+                    UTMESS('A', 'MISS0_19')
+                for r in range(0, self.L_points):
+                    Z_Laplace[:,:, r] = Z_Laplace[:,:, r] - self.Cg*s_laplace[r] - self.Kg
 
         rhoinv = 1./self.rho
-        for r in range(0,self.nrows):
-            for l in range(0,self.ncols):
+        for r in range(0, self.nrows):
+            for l in range(0, self.ncols):
                 fact = 1
-                x_lapl = Z_Laplace[r,l,:]
+                x_lapl = Z_Laplace[r, l,:]
                 x_t = NP.real(ifft(x_lapl))
-                for k in range(0,len(x_t)):
+                for k in range(0, len(x_t)):
                     x_t[k] = fact * x_t[k]  # x_t[k] = rho**(-k) * x_t[k]
                     fact = fact*rhoinv
-                self.Z_temps[r,l,:] = x_t
+                self.Z_temps[r, l,:] = x_t
 
-        termes_diag = NP.diag(self.Z_temps[:,:,0])
+        termes_diag = NP.diag(self.Z_temps[:,:, 0])
         liste_ddl_pb = ''
-        for k in range(0,len(termes_diag)):
+        for k in range(0, len(termes_diag)):
             if termes_diag[k] <= 0:
-                liste_ddl_pb = liste_ddl_pb + str(k)+ ', '
+                liste_ddl_pb = liste_ddl_pb + str(k) + ', '
         if ( len(liste_ddl_pb) > 0 ):
-            UTMESS('A','MISS0_20', valk = liste_ddl_pb )
+            UTMESS('A', 'MISS0_20', valk = liste_ddl_pb )
 
 
     def calc_forc_temps(self):
@@ -907,34 +907,34 @@ class PostMissFichierTemps(PostMissFichier):
         F_sism_temps3 = NP.zeros((self.nrows, self.L_points), float)
 
         __linst = DEFI_LIST_REEL(DEBUT=0.,
-                    INTERVALLE=_F(JUSQU_A= self.param['INST_FIN'] - self.dt,PAS=self.dt),)
+                    INTERVALLE=_F(JUSQU_A= self.param['INST_FIN'] - self.dt, PAS=self.dt),)
         # Rq. Même UL que le fichier effort sismique de MISS
         unit = self.param['EXCIT_SOL']['UNITE_RESU_FORC']
         nbmod = self.param['NB_MODE']
 
         if self.param['EXCIT_SOL']['CHAM_X']:
-              deplx_aster = self.calc_depl('CHAM_X', __linst)
-              __fdpx = CALC_FONCTION( FFT=_F(FONCTION= deplx_aster,METHODE='COMPLET'))
-              for mode in range(0, nbmod):
-                  F_sism_temps1[mode,:] = self.calc_forc_comp_temps(unit,
-                                                __linst, __fdpx, mode + 1)
-              DETRUIRE(CONCEPT=_F(NOM=__fdpx))
+            deplx_aster = self.calc_depl('CHAM_X', __linst)
+            __fdpx = CALC_FONCTION( FFT=_F(FONCTION= deplx_aster, METHODE='COMPLET'))
+            for mode in range(0, nbmod):
+                F_sism_temps1[mode,:] = self.calc_forc_comp_temps(unit,
+                                              __linst, __fdpx, mode + 1)
+            DETRUIRE(CONCEPT=_F(NOM=__fdpx))
 
         if self.param['EXCIT_SOL']['CHAM_Y']:
-              deply_aster = self.calc_depl('CHAM_Y', __linst)
-              __fdpy = CALC_FONCTION( FFT=_F(FONCTION= deply_aster,METHODE='COMPLET'))
-              for mode in range(0, nbmod):
-                  F_sism_temps2[mode,:] = self.calc_forc_comp_temps(unit,
-                                                __linst, __fdpy, nbmod + mode + 1)
-              DETRUIRE(CONCEPT=_F(NOM=__fdpy))
+            deply_aster = self.calc_depl('CHAM_Y', __linst)
+            __fdpy = CALC_FONCTION( FFT=_F(FONCTION= deply_aster, METHODE='COMPLET'))
+            for mode in range(0, nbmod):
+                F_sism_temps2[mode,:] = self.calc_forc_comp_temps(unit,
+                                              __linst, __fdpy, nbmod + mode + 1)
+            DETRUIRE(CONCEPT=_F(NOM=__fdpy))
 
         if self.param['EXCIT_SOL']['CHAM_Z']:
-              deplz_aster = self.calc_depl('CHAM_Z', __linst)
-              __fdpz = CALC_FONCTION( FFT=_F(FONCTION= deplz_aster,METHODE='COMPLET'))
-              for mode in range(0, nbmod):
-                  F_sism_temps3[mode,:] = self.calc_forc_comp_temps(unit,
-                                                __linst, __fdpz, 2*nbmod + mode + 1)
-              DETRUIRE(CONCEPT=_F(NOM=__fdpz))
+            deplz_aster = self.calc_depl('CHAM_Z', __linst)
+            __fdpz = CALC_FONCTION( FFT=_F(FONCTION= deplz_aster, METHODE='COMPLET'))
+            for mode in range(0, nbmod):
+                F_sism_temps3[mode,:] = self.calc_forc_comp_temps(unit,
+                                              __linst, __fdpz, 2*nbmod + mode + 1)
+            DETRUIRE(CONCEPT=_F(NOM=__fdpz))
 
         self.Fs_temps = F_sism_temps1 + F_sism_temps2 + F_sism_temps3
 
@@ -945,24 +945,24 @@ class PostMissFichierTemps(PostMissFichier):
                        INTERVALLE=_F(JUSQU_A=1./self.param['PAS_INST']/2.0,
                        PAS=1./self.param['PAS_INST']/self.L_points,),)
 
-        __fHr = LIRE_FONCTION(UNITE=unit,NOM_PARA='FREQ',
-                       INDIC_PARA=[1,1],INDIC_RESU=[indice,2],
+        __fHr = LIRE_FONCTION(UNITE=unit, NOM_PARA='FREQ',
+                       INDIC_PARA=[1, 1], INDIC_RESU=[indice, 2],
                          )
 
-        __fHi = LIRE_FONCTION(UNITE=unit,NOM_PARA='FREQ',
-                       INDIC_PARA=[1,1],INDIC_RESU=[indice,3],
+        __fHi = LIRE_FONCTION(UNITE=unit, NOM_PARA='FREQ',
+                       INDIC_PARA=[1, 1], INDIC_RESU=[indice, 3],
                          )
 
         __fH = CALC_FONCTION(COMB_C=(
-                       _F(FONCTION=__fHr,COEF_C=1+0j),
-                       _F(FONCTION=__fHi,COEF_C=0-1j),
+                       _F(FONCTION=__fHr, COEF_C=1+0j),
+                       _F(FONCTION=__fHi, COEF_C=0-1j),
                              ),
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
                          )
 
         self.parent.update_const_context({ '__fH' : __fH, '__fdepl' : fdepl })
-        __fF = FORMULE(NOM_PARA='FREQ',VALE_C='__fdepl(FREQ) * __fH(FREQ)')
+        __fF = FORMULE(NOM_PARA='FREQ', VALE_C='__fdepl(FREQ) * __fH(FREQ)')
 
         __fT0 = CALC_FONC_INTERP(FONCTION=__fF, NOM_PARA = 'FREQ',
                         PROL_DROITE='CONSTANT',
@@ -970,11 +970,11 @@ class PostMissFichierTemps(PostMissFichier):
                         LIST_PARA=__lfreq)
 
 
-        __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0,METHODE='COMPLET',
+        __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0, METHODE='COMPLET',
                             SYME='NON'))
 
         self.parent.update_const_context({'__fTT' : __fTT})
-        __fTTF = FORMULE(NOM_PARA='INST',VALE='__fTT(INST) - __fTT(0)')
+        __fTTF = FORMULE(NOM_PARA='INST', VALE='__fTT(INST) - __fTT(0)')
 
         __fT1 = CALC_FONC_INTERP(FONCTION=__fTTF, NOM_PARA = 'INST',
                         PROL_DROITE='CONSTANT',
@@ -982,36 +982,36 @@ class PostMissFichierTemps(PostMissFichier):
                         LIST_PARA=linst)
 
         force = __fT1.Valeurs()[1]
-        DETRUIRE(CONCEPT=_F(NOM=(__fHr,__fHi,__fH,__fF,__fT0,__fTT,__fTTF,__fT1,__lfreq)))
+        DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fF, __fT0, __fTT, __fTTF, __fT1, __lfreq)))
         return force
 
 
     def ecri_impe(self, Z_temps):
         """Ecriture des 3 types d'impédance dans les 3 fichiers de sortie"""
-        for n in range(0,self.L_points):
-           # Symmetric impedance
-           Z_temps[:,:,n] = (Z_temps[:,:,n] + Z_temps[:,:,n].transpose())/2.
+        for n in range(0, self.L_points):
+            # Symmetric impedance
+            Z_temps[:,:, n] = (Z_temps[:,:, n] + Z_temps[:,:, n].transpose())/2.
 
         if self.param['MATR_GENE']:
-           if self.param['MATR_GENE']['MATR_MASS']:
-             Z_temps_M = NP.zeros((self.nrows, self.ncols, self.L_points), float)
-             for n in range(0, self.L_points):
-                Z_temps_M[:,:,n] = NP.dot(Z_temps[:,:,n],self.Mg)
-             self.impr_impe(Z_temps_M,self.param['UNITE_RESU_MASS'])
+            if self.param['MATR_GENE']['MATR_MASS']:
+                Z_temps_M = NP.zeros((self.nrows, self.ncols, self.L_points), float)
+                for n in range(0, self.L_points):
+                    Z_temps_M[:,:, n] = NP.dot(Z_temps[:,:, n], self.Mg)
+                self.impr_impe(Z_temps_M, self.param['UNITE_RESU_MASS'])
 
-           if self.param['MATR_GENE']['MATR_AMOR']:
-             Z_temps_C = NP.zeros((self.nrows, self.ncols, self.L_points), float)
-             for n in range(0, self.L_points):
-                Z_temps_C[:,:,n] = NP.dot(Z_temps[:,:,n],self.Cg)
-             self.impr_impe(Z_temps_C,self.param['UNITE_RESU_AMOR'])
+            if self.param['MATR_GENE']['MATR_AMOR']:
+                Z_temps_C = NP.zeros((self.nrows, self.ncols, self.L_points), float)
+                for n in range(0, self.L_points):
+                    Z_temps_C[:,:, n] = NP.dot(Z_temps[:,:, n], self.Cg)
+                self.impr_impe(Z_temps_C, self.param['UNITE_RESU_AMOR'])
 
-           if self.param['MATR_GENE']['MATR_RIGI']:
-             Z_temps_K = NP.zeros((self.nrows, self.ncols, self.L_points), float)
-             for n in range(0, self.L_points):
-                Z_temps_K[:,:,n] = NP.dot(Z_temps[:,:,n],self.Kg)
-             self.impr_impe(Z_temps_K,self.param['UNITE_RESU_RIGI'])
+            if self.param['MATR_GENE']['MATR_RIGI']:
+                Z_temps_K = NP.zeros((self.nrows, self.ncols, self.L_points), float)
+                for n in range(0, self.L_points):
+                    Z_temps_K[:,:, n] = NP.dot(Z_temps[:,:, n], self.Kg)
+                self.impr_impe(Z_temps_K, self.param['UNITE_RESU_RIGI'])
         else:
-           self.impr_impe(Z_temps,self.param['UNITE_RESU_RIGI'])
+            self.impr_impe(Z_temps, self.param['UNITE_RESU_RIGI'])
 
 
     def impr_impe(self, Zdt, unite_type_impe):
@@ -1032,9 +1032,9 @@ class PostMissFichierTemps(PostMissFichier):
         txt.append('%s %s' % (str(self.L_points), str(self.dt)))
         for n in range(0, self.L_points):
             txt.append('%s' % str(n*self.dt))
-            for l in range(0,self.nrows):
-                for c in range(0,self.ncols,nb_colonne):
-                    txt.append(fmt_ligne % tuple(Zdt[l,c:c+nb_colonne,n]))
+            for l in range(0, self.nrows):
+                for c in range(0, self.ncols, nb_colonne):
+                    txt.append(fmt_ligne % tuple(Zdt[l, c:c+nb_colonne, n]))
         fid.write(os.linesep.join(txt))
         fid.close()
         shutil.copyfile(fname, osp.join( self.param['_INIDIR'], 'fort' + '.' + str(unite_type_impe) ))
@@ -1057,10 +1057,10 @@ class PostMissFichierTemps(PostMissFichier):
 
         txt = []
         txt.append('%s %s' % (str(self.L_points), str(self.dt)))
-        for n in range(0,self.L_points):
+        for n in range(0, self.L_points):
             txt.append('%s' % str(n*self.dt))
-            for mode in range(0,self.param['NB_MODE'], nb_colonne):
-                txt.append(fmt_ligne % tuple(fs_temps[mode:mode+nb_colonne,n]))
+            for mode in range(0, self.param['NB_MODE'], nb_colonne):
+                txt.append(fmt_ligne % tuple(fs_temps[mode:mode+nb_colonne, n]))
         fid.write(os.linesep.join(txt))
         fid.close()
         shutil.copyfile(fname, osp.join( self.param['_INIDIR'], 'fort' + '.' + str(ul)))
@@ -1071,7 +1071,7 @@ class PostMissFichierTemps(PostMissFichier):
         length = len(a)
         b = NP.zeros(length, float)
         for k in range(0, length - 1):
-           b[k+1] = NP.add(a[k], a[k+1])/2.
+            b[k+1] = NP.add(a[k], a[k+1])/2.
         c = NP.add.accumulate(b)
         return c
 
@@ -1103,24 +1103,24 @@ class PostMissFichierTemps(PostMissFichier):
         return osp.join(self.param['_WRKDIR'], fich)
 class PostMissChar(PostMiss):
     """Post-traitement avec sortie charge"""
-        
+
     def argument(self):
         """Initialisations"""
 
         self.MODELE = self.param['MODELE']
         self.fonc_depl  =  self.param['FONC_SIGNAL']
         self.List_Noeu_Fictif = self.param['NOEUD_AFFE']
-        self.nbno=len(self.List_Noeu_Fictif)
+        self.nbno = len(self.List_Noeu_Fictif)
         self.ncols = 6*self.nbno
         self.dt = self.param['PAS_INST']
         fonc_signal = self.param['FONC_SIGNAL']
-        tt, vale_s=fonc_signal.Valeurs()
-        self.dt=tt[1]-tt[0]
-        NBTIME= len(vale_s)
-        self.tmax=tt[NBTIME-1]
-        self.df =1.0/(self.tmax+self.dt)
-        self.fmax =1.0/(2.0*self.dt)
-        self.Force_Nodale =[]
+        tt, vale_s = fonc_signal.Valeurs()
+        self.dt = tt[1]-tt[0]
+        NBTIME = len(vale_s)
+        self.tmax = tt[NBTIME-1]
+        self.df = 1.0/(self.tmax+self.dt)
+        self.fmax = 1.0/(2.0*self.dt)
+        self.Force_Nodale = []
 
     def execute(self):
         """Lance le post-traitement"""
@@ -1129,80 +1129,80 @@ class PostMissChar(PostMiss):
     def sortie(self):
         """Prépare et produit les concepts de sortie."""
         self.parent.DeclareOut('Force_no', self.parent.sd)
-        Force_no = AFFE_CHAR_MECA_F(MODELE=self.MODELE,FORCE_NODALE=self.Force_Nodale,);
+        Force_no = AFFE_CHAR_MECA_F(MODELE=self.MODELE, FORCE_NODALE=self.Force_Nodale,);
 
     def calc_forc_temps(self):
         """Calcul de l'effort sismique dans le domaine temporel"""
 
         __linst = DEFI_LIST_REEL(DEBUT=0.,
-                    INTERVALLE=_F(JUSQU_A= self.tmax,PAS=self.dt),)
+                    INTERVALLE=_F(JUSQU_A= self.tmax, PAS=self.dt),)
         # Rq. Même UL que le fichier effort sismique de MISS
         unit = self.param['UNITE_RESU_FORC']
         nbmod = self.ncols
-        __fdep = CALC_FONCTION( FFT=_F(FONCTION= self.fonc_depl,METHODE='COMPLET'))
+        __fdep = CALC_FONCTION( FFT=_F(FONCTION= self.fonc_depl, METHODE='COMPLET'))
 
-        if self.param['NOM_CMP']=='DX':
-           ndeca = 0
-        elif self.param['NOM_CMP']=='DY':
-           ndeca = nbmod
-        elif self.param['NOM_CMP']=='DZ':
-           ndeca = 2*nbmod
-                                                
+        if self.param['NOM_CMP'] == 'DX':
+            ndeca = 0
+        elif self.param['NOM_CMP'] == 'DY':
+            ndeca = nbmod
+        elif self.param['NOM_CMP'] == 'DZ':
+            ndeca = 2*nbmod
+
         for ino in range(0, self.nbno):
-          no = self.List_Noeu_Fictif[ino]
-          fx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+1)
-          fy = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+2)
-          fz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+3)
-          frx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+4)
-          fry = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+5)
-          frz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+6)
-          
-          self.Force_Nodale.append(_F(NOEUD=no,
-                                FX= fx,
-                                FY= fy,
-                                FZ= fz,
-                                MX= frx,
-                                MY= fry,
-                                MZ= frz,),);
+            no = self.List_Noeu_Fictif[ino]
+            fx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+1)
+            fy = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+2)
+            fz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+3)
+            frx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+4)
+            fry = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+5)
+            frz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+6)
+
+            self.Force_Nodale.append(_F(NOEUD=no,
+                                  FX= fx,
+                                  FY= fy,
+                                  FZ= fz,
+                                  MX= frx,
+                                  MY= fry,
+                                  MZ= frz,),);
 
         DETRUIRE(CONCEPT=_F(NOM=__fdep))
 
     def calc_forc_comp_temps(self, unit, linst, fdepl, indice):
         """???"""
-        
+
         __lfreq = DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=self.fmax, PAS=self.df,),)
-                       
-        if self.param['FREQ_MAX'] is None :
-          __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
-                     VALE_C=(0.,1.,0.,self.fmax,1.,0.),
-                     INTERPOL='LIN',PROL_DROITE = 'CONSTANT',PROL_GAUCHE = 'CONSTANT',);
-                     
-        else:
-          fcoup = self.param['FREQ_MAX']
-          fcou2 = fcoup + self.df
-          __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
-                     VALE_C=(0.,1.,0.,fcoup,1.,0.,fcou2,0.,0.),
-                     INTERPOL='LIN',PROL_DROITE = 'CONSTANT',PROL_GAUCHE = 'CONSTANT',);
 
-        __fHr = LIRE_FONCTION(UNITE=unit,NOM_PARA='FREQ',
-                       INDIC_PARA=[1,1],INDIC_RESU=[indice,2],
+        if self.param['FREQ_MAX'] is None :
+            __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
+                       VALE_C=(0., 1., 0., self.fmax, 1., 0.),
+                       INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',);
+
+        else:
+            fcoup = self.param['FREQ_MAX']
+            fcou2 = fcoup + self.df
+            __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
+                       VALE_C=(0., 1., 0., fcoup, 1., 0., fcou2, 0., 0.),
+                       INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',);
+
+        __fHr = LIRE_FONCTION(UNITE=unit, NOM_PARA='FREQ',
+                       INDIC_PARA=[1, 1], INDIC_RESU=[indice, 2],
                          )
 
-        __fHi = LIRE_FONCTION(UNITE=unit,NOM_PARA='FREQ',
-                       INDIC_PARA=[1,1],INDIC_RESU=[indice,3],
+        __fHi = LIRE_FONCTION(UNITE=unit, NOM_PARA='FREQ',
+                       INDIC_PARA=[1, 1], INDIC_RESU=[indice, 3],
                          )
 
         __fH = CALC_FONCTION(COMB_C=(
-                       _F(FONCTION=__fHr,COEF_C=1+0j),
-                       _F(FONCTION=__fHi,COEF_C=0-1j),
+                       _F(FONCTION=__fHr, COEF_C=1+0j),
+                       _F(FONCTION=__fHi, COEF_C=0-1j),
                              ),
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
                          )
 
         self.parent.update_const_context({ '__fH' : __fH, '__fdepl' : fdepl })
-        self.parent.update_const_context({'FILTRE': __FILTRE }) 
+        self.parent.update_const_context({'FILTRE': __FILTRE })
         __fF = FORMULE(NOM_PARA='FREQ',
                        VALE_C='__fdepl(FREQ)*__fH(FREQ)*FILTRE(FREQ)')
 
@@ -1212,18 +1212,18 @@ class PostMissChar(PostMiss):
                         LIST_PARA=__lfreq)
 
 
-        __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0,METHODE='COMPLET',
+        __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0, METHODE='COMPLET',
                             SYME='NON'))
 
         self.parent.update_const_context({'__fTT' : __fTT})
-        __fTTF = FORMULE(NOM_PARA='INST',VALE='__fTT(INST) - __fTT(0)')
+        __fTTF = FORMULE(NOM_PARA='INST', VALE='__fTT(INST) - __fTT(0)')
 
         __fT1 = CALC_FONC_INTERP(FONCTION=__fTTF, NOM_PARA = 'INST',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
                         LIST_PARA=linst)
 
-        DETRUIRE(CONCEPT=_F(NOM=(__fHr,__fHi,__fH,__fF,__fT0,__fTT,__fTTF,__lfreq)))
+        DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fF, __fT0, __fTT, __fTTF, __lfreq)))
         return __fT1
 
 

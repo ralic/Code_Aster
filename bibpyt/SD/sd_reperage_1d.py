@@ -18,16 +18,18 @@
 
 from SD import *
 
+
 class sd_reperage_1d(AsBase):
     nomj = SDNom(fin=19)
     TYPE = AsVI(SDNom(debut=19), )
     EXTR = AsVR(SDNom(debut=19), )
     ORIG = AsVR(SDNom(debut=19), )
-    def check_1(self,checker):
-      type=self.TYPE.get()
-      extr=self.EXTR.get()
-      orig=self.ORIG.get()
-      assert len(extr) == len(orig)
-      assert len(extr) == len(type)
-      for k in range(len(type)):
-         assert  (type[k] <= 3) and (type[k] >= 1)
+
+    def check_1(self, checker):
+        type = self.TYPE.get()
+        extr = self.EXTR.get()
+        orig = self.ORIG.get()
+        assert len(extr) == len(orig)
+        assert len(extr) == len(type)
+        for k in range(len(type)):
+            assert (type[k] <= 3) and (type[k] >= 1)

@@ -20,7 +20,7 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -31,7 +31,7 @@ cata_msg = {
    Il faut utiliser la version MPI avec un seul processeur.
 """),
 
-2 : _(u"""
+    2 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -40,7 +40,7 @@ cata_msg = {
    Il faut utiliser la version MPI avec un seul processeur.
 """),
 
-3 : _(u"""
+    3 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -50,7 +50,7 @@ cata_msg = {
    Il faut ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
 """),
 
-4 : _(u"""
+    4 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -60,7 +60,7 @@ cata_msg = {
    Il faut remplacer AFFE_CHAR_CINE par AFFE_CHAR_MECA..
 """),
 
-5 : _(u"""
+    5 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -70,7 +70,7 @@ cata_msg = {
    Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
 """),
 
-6 : _(u"""
+    6 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -80,7 +80,7 @@ cata_msg = {
    Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
 """),
 
-7 : _(u"""
+    7 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -92,7 +92,7 @@ cata_msg = {
 """),
 
 
-9 : _(u"""
+    9 : _(u"""
  Erreur d'utilisation :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -102,7 +102,7 @@ cata_msg = {
    Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
 """),
 
-10 : _(u"""
+    10 : _(u"""
  Erreur :
    On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
    (ou la commande ELIM_LAGR).
@@ -113,7 +113,7 @@ cata_msg = {
    une matrice de masse.
 """),
 
-11 : _(u"""
+    11 : _(u"""
  Erreur utilisateur :
    On veut utiliser la commande ELIM_LAGR pour éliminer les équations
    de Lagrange dans une matrice qui n'est pas une matrice de rigidité.

@@ -17,20 +17,21 @@
 # ======================================================================
 from SD import *
 
+
 class sd_proj_modal(AsBase):
 #------------------------------------
     nomj = SDNom(fin=19)
 
-    MASG=AsVR()
+    MASG = AsVR()
 
-    AGEM=AsVR()
-    AGEP=AsVR()
-    VGEM=AsVR()
-    VGEP=AsVR()
-    DGEM=AsVR()
-    DGEP=AsVR()
-    RIGG=AsVR()
-    AMOG=AsVR()
-    BASM=AsVR()
-    FONG=Facultatif(AsVK24())
-    FORG=Facultatif(AsVR())
+    AGEM = AsVR()
+    AGEP = AsVR()
+    VGEM = AsVR()
+    VGEP = AsVR()
+    DGEM = AsVR()
+    DGEP = AsVR()
+    RIGG = AsVR()
+    AMOG = AsVR()
+    BASM = AsVR()
+    FONG = Facultatif(AsVK24())
+    FORG = Facultatif(AsVR())

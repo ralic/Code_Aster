@@ -20,12 +20,12 @@ from Accas import ASSD
 
 # pour utilisation du catalogue hors aster
 try:
-   import aster
+    import aster
 except:
-   pass
+    pass
 
-from Noyau.asnom      import SDNom
+from Noyau.asnom import SDNom
 from Noyau.ascheckers import Parmi
 from Noyau.asojb      import AsBase, AsVK8, AsVK16, AsVK24, AsVK32, AsVK80, \
-                             AsVI, AsVS, AsVL, AsVR, AsVC, \
-                             AsColl, AsObject, Facultatif, OJBVect, AsPn, AsVect
+    AsVI, AsVS, AsVL, AsVR, AsVC, \
+    AsColl, AsObject, Facultatif, OJBVect, AsPn, AsVect

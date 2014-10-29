@@ -46,7 +46,9 @@ def check_value(option, opt, value, parser):
             parser.error("option '%s' expects an existing file" % opt)
     setattr(parser.values, option.dest, value)
 
+
 class CoreOptions(object):
+
     """Classe de stockage des arguments et options de la ligne de commande
     afin de permettre une interrogation ultérieure depuis n'importe quelle
     partie du code.
@@ -66,57 +68,67 @@ The ASTERDATADIR environment variable changes the data directory.
         self.args = None
         self.info = {}
         self.parser = parser = OptionParser(usage=self.doc,
-            prog=osp.basename(sys.executable))
-        parser.add_option('--commandes', dest='fort1', type='str', metavar='FILE',
+                                            prog=osp.basename(sys.executable))
+        parser.add_option(
+            '--commandes', dest='fort1', type='str', metavar='FILE',
             action='callback', callback=check_value,
             help="Code_Aster command file")
-        parser.add_option('--memjeveux', dest='memjeveux', type='float', action='store',
+        parser.add_option(
+            '--memjeveux', dest='memjeveux', type='float', action='store',
             help="maximum size of the memory taken by the execution (in Mw)")
-        parser.add_option('--memory', dest='memory', type='float', action='store',
+        parser.add_option(
+            '--memory', dest='memory', type='float', action='store',
             help="maximum size of the memory taken by the execution (in MB)")
-        parser.add_option('--tpmax', dest='tpmax', type='float', action='store',
+        parser.add_option(
+            '--tpmax', dest='tpmax', type='float', action='store',
             help="limit of the time of the execution (in seconds)")
-        parser.add_option('--max_base', dest='maxbase', type='float', action='store',
+        parser.add_option(
+            '--max_base', dest='maxbase', type='float', action='store',
             help="limit of the size of the results database")
 
         parser.add_option('--dbgjeveux', dest='dbgjeveux',
-            action='store_true',
-            help="maximum size of the memory taken by the execution in Mw")
+                          action='store_true',
+                          help="maximum size of the memory taken by the execution in Mw")
 
         parser.add_option('--num_job', dest='jobid', action='store',
-            help="job ID of the current execution")
+                          help="job ID of the current execution")
         parser.add_option('--mode', dest='mode', action='store',
-            help="execution mode (interactive or batch)")
+                          help="execution mode (interactive or batch)")
         parser.add_option('--interact', dest='interact',
-            action='store_true', default=False,
-            help="as 'python -i' works, it allows to enter commands after the "
-                 "execution of the command file.")
+                          action='store_true', default=False,
+                          help="as 'python -i' works, it allows to enter commands after the "
+                          "execution of the command file.")
 
-        parser.add_option('--rep_outils', dest='repout', type='str', metavar='DIR',
+        parser.add_option(
+            '--rep_outils', dest='repout', type='str', metavar='DIR',
             action='store',
             help="directory of Code_Aster tools (ex. $ASTER_ROOT/outils)")
-        parser.add_option('--rep_mat', dest='repmat', type='str', metavar='DIR',
+        parser.add_option(
+            '--rep_mat', dest='repmat', type='str', metavar='DIR',
             action='store',
             help="directory of materials properties")
-        parser.add_option('--rep_dex', dest='repdex', type='str', metavar='DIR',
+        parser.add_option(
+            '--rep_dex', dest='repdex', type='str', metavar='DIR',
             action='store',
             help="directory of external datas (geometrical datas or properties...)")
-        parser.add_option('--rep_glob', dest='repglob', type='str', metavar='DIR',
+        parser.add_option(
+            '--rep_glob', dest='repglob', type='str', metavar='DIR',
             action='store', default='.',
             help="directory of the results database")
-        parser.add_option('--rep_vola', dest='repvola', type='str', metavar='DIR',
+        parser.add_option(
+            '--rep_vola', dest='repvola', type='str', metavar='DIR',
             action='store', default='.',
             help="directory of the temporary database")
 
         parser.add_option('--suivi_batch', dest='suivi_batch',
-            action='store_true', default=False,
-            help="force to flush of the output after each line")
+                          action='store_true', default=False,
+                          help="force to flush of the output after each line")
         parser.add_option('--totalview', dest='totalview',
-            action='store_true', default=False,
-            help="required to run Code_Aster through the Totalview debugger")
+                          action='store_true', default=False,
+                          help="required to run Code_Aster through the Totalview debugger")
         parser.add_option('--syntax', dest='syntax',
-            action='store_true', default=False,
-            help="only check the syntax of the command file is done")
+                          action='store_true', default=False,
+                          help="only check the syntax of the command file is done")
 
     def parse_args(self, argv):
         """Analyse les arguments de la ligne de commmande."""
@@ -145,19 +157,22 @@ The ASTERDATADIR environment variable changes the data directory.
         version = aster_pkginfo.version_info.version
         self.info['versionSTA'] = None
         self.info['versLabel'] = None
-        keys = ('parentid', 'branch', 'date', 'from_branch', 'changes', 'uncommitted')
+        keys = ('parentid', 'branch', 'date',
+                'from_branch', 'changes', 'uncommitted')
         self.info.update(zip(keys, aster_pkginfo.version_info[1:]))
         self.info['version'] = '.'.join(str(i) for i in version)
         self.info['versMAJ'] = version[0]
         self.info['versMIN'] = version[1]
         self.info['versSUB'] = version[2]
-        self.info['exploit'] = aster_pkginfo.version_info.branch.startswith('v')
+        self.info[
+            'exploit'] = aster_pkginfo.version_info.branch.startswith('v')
         self.info['versionD0'] = '%d.%02d.%02d' % version
         self.info['versLabel'] = aster_pkginfo.get_version_desc()
 
     def set_info(self, key, value):
         """Définit la valeur d'une information générale."""
-        assert self.info.has_key(key), "general information '%s' not defined" % key
+        assert self.info.has_key(
+            key), "general information '%s' not defined" % key
         self.info[key] = value
 
     def default_values(self):
@@ -192,6 +207,7 @@ The ASTERDATADIR environment variable changes the data directory.
             print "<CoreOptions.get_option> option=%r value=%r" % (option, value)
         return value
 
+
 def getargs(argv=None):
     """
     Récupération des arguments passés à la ligne de commande
@@ -199,6 +215,7 @@ def getargs(argv=None):
     coreopts = CoreOptions()
     coreopts.parse_args(argv or sys.argv)
     return coreopts
+
 
 def _bwc_arguments(argv):
     """Fonction de compatibilité de transition vers des options "GNU".
@@ -223,7 +240,7 @@ def _bwc_arguments(argv):
                     'type_alloc', 'taille', 'partition',
                     'origine', 'ORBInitRef', 'eficas_path')
     # renamed options
-    long_opts_mv = {'verif' : 'syntax'}
+    long_opts_mv = {'verif': 'syntax'}
     orig = argv[:]
     new = []
     buffer = ''

@@ -25,134 +25,130 @@ from SD.sd_mater import sd_mater
 # C'est pourquoi, on fera appel parfois pour la décrire au vocabulaire de cette
 # commande.
 
+
 class sd_compor(AsBase):
     nomj = SDNom(fin=8)
     CPRK = AsVK24()
     CPRI = AsVI()
     CPRR = Facultatif(AsVR())
 
-
-    def check_tout(self,checker) :
+    def check_tout(self, checker):
     #-------------------------------
-        cpri=self.CPRI.get()
-        type=cpri[0]
-        assert type in (1,2,3) , CPRI
-        if type == 1 :
-            self.monocristal(cpri,checker)
-        if type == 2 :
-            self.polycristal(cpri,checker)
-        if type == 3 :
-            self.multifibres(cpri,checker)
+        cpri = self.CPRI.get()
+        type = cpri[0]
+        assert type in (1, 2, 3), CPRI
+        if type == 1:
+            self.monocristal(cpri, checker)
+        if type == 2:
+            self.polycristal(cpri, checker)
+        if type == 3:
+            self.multifibres(cpri, checker)
 
-
-
-    def monocristal(self,cpri,checker) :
+    def monocristal(self, cpri, checker):
     #------------------------------------
-        nboccm=cpri[4]
-        nvi   =cpri[2]
-        if cpri[5] > 0 :
-            nbsys=(nvi-25)/4
-            assert nvi==25+4*nbsys , (nvi, nbsys, cpri)
-        else :
-            nbsys=(nvi-9)/4
-            assert nvi==9+4*nbsys , (nvi, nbsys, cpri)
-        cprk=self.CPRK.get_stripped()
+        nboccm = cpri[4]
+        nvi = cpri[2]
+        if cpri[5] > 0:
+            nbsys = (nvi - 25) / 4
+            assert nvi == 25 + 4 * nbsys, (nvi, nbsys, cpri)
+        else:
+            nbsys = (nvi - 9) / 4
+            assert nvi == 9 + 4 * nbsys, (nvi, nbsys, cpri)
+        cprk = self.CPRK.get_stripped()
 
         # vérif existence et longueur
-        assert len(cpri)==13, cpri
-        assert len(cprk)==5*nboccm+1, (cpri,cprk)
+        assert len(cpri) == 13, cpri
+        assert len(cprk) == 5 * nboccm + 1, (cpri, cprk)
 #        assert not self.CPRR.get()
 
         # vérif CPRI :
         #-------------
-        assert cpri[1] == 1   ,cpri
-        assert cpri[2] == nvi ,cpri
-        assert cpri[3] >= 0   ,cpri
-        assert cpri[4] > 0    ,cpri
-        assert cpri[5] >= 0   ,cpri
-        assert cpri[6] == nvi ,cpri
+        assert cpri[1] == 1, cpri
+        assert cpri[2] == nvi, cpri
+        assert cpri[3] >= 0, cpri
+        assert cpri[4] > 0, cpri
+        assert cpri[5] >= 0, cpri
+        assert cpri[6] == nvi, cpri
 
         # vérif CPRK :
         #-------------
-        elas=cprk[5*nboccm]
-        assert elas in ('ELAS', 'ELAS_ORTH')  ,cprk
+        elas = cprk[5 * nboccm]
+        assert elas in ('ELAS', 'ELAS_ORTH'), cprk
         for k in range(nboccm):
-            famil     =cprk[5*k+0]
-            mater     =cprk[5*k+1]
-            ecoul     =cprk[5*k+2]
-            MONO_isot =cprk[5*k+3]
-            MONO_cine =cprk[5*k+4]
-            sd2=sd_mater(mater) ; sd2.check(checker)
+            famil = cprk[5 * k + 0]
+            mater = cprk[5 * k + 1]
+            ecoul = cprk[5 * k + 2]
+            MONO_isot = cprk[5 * k + 3]
+            MONO_cine = cprk[5 * k + 4]
+            sd2 = sd_mater(mater)
+            sd2.check(checker)
 
-
-
-    def polycristal(self,cpri,checker) :
+    def polycristal(self, cpri, checker):
     #------------------------------------
-        nbphases=cpri[1]
-        assert nbphases > 0 , cpri
-        lgcprk  =cpri[6+3*nbphases-2]
-        assert lgcprk > 0 , cpri
-        cprk=self.CPRK.get_stripped()
-        cprr=self.CPRR.get()
+        nbphases = cpri[1]
+        assert nbphases > 0, cpri
+        lgcprk = cpri[6 + 3 * nbphases - 2]
+        assert lgcprk > 0, cpri
+        cprk = self.CPRK.get_stripped()
+        cprr = self.CPRR.get()
 
         # vérif existence et longueur
         #------------------------------
-        assert len(cpri)==7+3*nbphases, (cpri,nbphases)
-        assert len(cprr)>=2+4*nbphases, (cpri,cprr,nbphases)
-        assert len(cprk)==lgcprk, (cpri,cprk)
+        assert len(cpri) == 7 + 3 * nbphases, (cpri, nbphases)
+        assert len(cprr) >= 2 + 4 * nbphases, (cpri, cprr, nbphases)
+        assert len(cprk) == lgcprk, (cpri, cprk)
 
         # vérif CPRI :
         #-------------
-        nvitot=cpri[2]
-        assert nvitot >= 0        ,cpri
-        nbmono=cpri[3]
-        assert nbmono > 0         ,cpri
-        nbpara  =cpri[6+3*nbphases-1]
-        assert nbpara in (0,1,2,3)  ,cpri
+        nvitot = cpri[2]
+        assert nvitot >= 0, cpri
+        nbmono = cpri[3]
+        assert nbmono > 0, cpri
+        nbpara = cpri[6 + 3 * nbphases - 1]
+        assert nbpara in (0, 1, 2, 3), cpri
         for k in range(nbphases):
-            nbfam1 = cpri[4+3*k+0]
-            numono = cpri[4+3*k+1]
-            nvi1   = cpri[4+3*k+2]
-            assert nbfam1 > 0     ,cpri
-            assert numono > 0  and numono <= nbmono   ,(cpri,nbmono)
-            assert nvi1   >=0     ,cpri
+            nbfam1 = cpri[4 + 3 * k + 0]
+            numono = cpri[4 + 3 * k + 1]
+            nvi1 = cpri[4 + 3 * k + 2]
+            assert nbfam1 > 0, cpri
+            assert numono > 0 and numono <= nbmono, (cpri, nbmono)
+            assert nvi1 >= 0, cpri
 
         # vérif CPRR :
         #-------------
-        frac_tot=0.
+        frac_tot = 0.
         for k in range(nbphases):
-            frac     =cprr[4*k+0]
-            assert frac >= 0. and frac <= 1.  ,(cprr,k)
-            frac_tot=frac_tot+frac
-            for dir in range(1,4):
-                angl     =cprr[4*k+dir]
-                assert angl >=0. and angl <=360. , (angl,dir)
+            frac = cprr[4 * k + 0]
+            assert frac >= 0. and frac <= 1., (cprr, k)
+            frac_tot = frac_tot + frac
+            for dir in range(1, 4):
+                angl = cprr[4 * k + dir]
+                assert angl >= 0. and angl <= 360., (angl, dir)
         assert frac_tot > 0.99 and frac_tot < 1.01
 
         # vérif CPRK :
         #-------------
-        locali   =cprk[0]
-        assert locali in ('BZ','BETA')  ,(locali,cprk)
-        decal=0
+        locali = cprk[0]
+        assert locali in ('BZ', 'BETA'), (locali, cprk)
+        decal = 0
         for k in range(nbmono):
-            mono1 =cprk[0+decal+1]
-            sd2=sd_compor(mono1) ; sd2.check(checker)
-            nbfam1=int(cprk[0+decal+2])
-            assert nbfam1 > 0 , (nbfam1,k,decal,cprk)
-            decal=decal+2+5*nbfam1+1
+            mono1 = cprk[0 + decal + 1]
+            sd2 = sd_compor(mono1)
+            sd2.check(checker)
+            nbfam1 = int(cprk[0 + decal + 2])
+            assert nbfam1 > 0, (nbfam1, k, decal, cprk)
+            decal = decal + 2 + 5 * nbfam1 + 1
             # on pourrait encore vérifier que le .CPRK de mono1 a bien été recopié
             # mais il faut bien s'arreter ...
 
-
-
-    def multifibres(self,cpri,checker) :
+    def multifibres(self, cpri, checker):
     #------------------------------------
-        nbgmax=cpri[2]
-        cprk=self.CPRK.get_stripped()
+        nbgmax = cpri[2]
+        cprk = self.CPRK.get_stripped()
 
         # vérif existence et longueur
-        assert len(cpri)==3, cpri
-        assert len(cprk)==6*nbgmax+1, (cpri,cprk)
+        assert len(cpri) == 3, cpri
+        assert len(cprk) == 6 * nbgmax + 1, (cpri, cprk)
         assert not self.CPRR.get()
 
         # vérif CPRI :
@@ -162,27 +158,29 @@ class sd_compor(AsBase):
 
         # vérif CPRK :
         #-------------
-        mater=cprk[6*nbgmax]
+        mater = cprk[6 * nbgmax]
         assert mater != '', cprk
-        sd2=sd_mater(mater) ; sd2.check(checker)
+        sd2 = sd_mater(mater)
+        sd2.check(checker)
         for k in range(nbgmax):
-            grfib1     =cprk[6*k+0]
-            assert grfib1 != '' , cprk
-            mater1     =cprk[6*k+1]
-            assert mater1 != '' , cprk
-            loifib1    =cprk[6*k+2]
-            algo1d     =cprk[6*k+3]
-            deform     =cprk[6*k+4]
+            grfib1 = cprk[6 * k + 0]
+            assert grfib1 != '', cprk
+            mater1 = cprk[6 * k + 1]
+            assert mater1 != '', cprk
+            loifib1 = cprk[6 * k + 2]
+            algo1d = cprk[6 * k + 3]
+            deform = cprk[6 * k + 4]
             if mater1 != 'VIDE':
-                nbfib=    int(cprk[6*k+5])
-                sd2=sd_mater(mater1) ; sd2.check(checker)
-                assert loifib1 != '' , cprk
-                assert algo1d  in ('ANALYTIQUE','DEBORST') , cprk
-                assert deform  == 'VIDE' , cprk
-                assert nbfib > 0      , cprk
-            else :
-                nbfib=    cprk[6*k+5]
-                assert loifib1 == '' , cprk
-                assert algo1d  == '' , cprk
-                assert deform  == '' , cprk
-                assert nbfib   == '' , cprk
+                nbfib = int(cprk[6 * k + 5])
+                sd2 = sd_mater(mater1)
+                sd2.check(checker)
+                assert loifib1 != '', cprk
+                assert algo1d in ('ANALYTIQUE', 'DEBORST'), cprk
+                assert deform == 'VIDE', cprk
+                assert nbfib > 0, cprk
+            else:
+                nbfib = cprk[6 * k + 5]
+                assert loifib1 == '', cprk
+                assert algo1d == '', cprk
+                assert deform == '', cprk
+                assert nbfib == '', cprk

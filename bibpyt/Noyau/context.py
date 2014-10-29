@@ -19,9 +19,9 @@
 #
 # ======================================================================
 
-_root=None
-_cata=None
-debug=0
+_root = None
+_cata = None
+debug = 0
 from Noyau.N_info import message, SUPERV
 
 # Le "current step" est l'étape courante.
@@ -30,45 +30,54 @@ from Noyau.N_info import message, SUPERV
 # Les étapes simples le font aussi : dans Execute et BuildExec.
 # (Build ne fait rien pour une étape)
 
+
 def set_current_step(step):
-   """
-      Fonction qui permet de changer la valeur de l'étape courante
-   """
-   global _root
-   if _root : raise Exception("Impossible d'affecter _root. Il devrait valoir None")
-   _root=step
-   #message.debug(SUPERV, "current_step = %s", step and step.nom, stack_id=-1)
+    """
+       Fonction qui permet de changer la valeur de l'étape courante
+    """
+    global _root
+    if _root:
+        raise Exception("Impossible d'affecter _root. Il devrait valoir None")
+    _root = step
+    # message.debug(SUPERV, "current_step = %s", step and step.nom,
+    # stack_id=-1)
+
 
 def get_current_step():
-   """
-      Fonction qui permet d'obtenir la valeur de l'étape courante
-   """
-   return _root
+    """
+       Fonction qui permet d'obtenir la valeur de l'étape courante
+    """
+    return _root
+
 
 def unset_current_step():
-   """
-      Fonction qui permet de remettre à None l'étape courante
-   """
-   global _root
-   _root=None
+    """
+       Fonction qui permet de remettre à None l'étape courante
+    """
+    global _root
+    _root = None
+
 
 def set_current_cata(cata):
-   """
-      Fonction qui permet de changer l'objet catalogue courant
-   """
-   global _cata
-   if _cata : raise Exception("Impossible d'affecter _cata. Il devrait valoir None")
-   _cata=cata
+    """
+       Fonction qui permet de changer l'objet catalogue courant
+    """
+    global _cata
+    if _cata:
+        raise Exception("Impossible d'affecter _cata. Il devrait valoir None")
+    _cata = cata
+
 
 def get_current_cata():
-   """
-      Fonction qui retourne l'objet catalogue courant
-   """
-   return _cata
+    """
+       Fonction qui retourne l'objet catalogue courant
+    """
+    return _cata
+
 
 def unset_current_cata():
-   """
-      Fonction qui permet de remettre à None le catalogue courant
-   """
-   global _cata
-   _cata=None
+    """
+       Fonction qui permet de remettre à None le catalogue courant
+    """
+    global _cata
+    _cata = None

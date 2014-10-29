@@ -30,6 +30,7 @@ try:
     aster_exists = True
 except:
     aster_exists = False
+
     class error(Exception):
         pass
 
@@ -63,9 +64,9 @@ def list_unit(code):
     # 'D' pour afficher un diagnostic 'F' sans les effets
     # 'Z' levée d'exception
     d = {
-        'E' : ('ERREUR', 'MESSAGE', 'RESULTAT'),
-        'I' : ('MESSAGE',),
-        'A' : ('MESSAGE', 'RESULTAT'),
+        'E': ('ERREUR', 'MESSAGE', 'RESULTAT'),
+        'I': ('MESSAGE',),
+        'A': ('MESSAGE', 'RESULTAT'),
     }
     d['F'] = d['S'] = d['Z'] = d['D'] = d['E']
     d['X'] = d['A']
@@ -73,11 +74,13 @@ def list_unit(code):
 
 
 class MESSAGE_LOGGER(Singleton):
+
     """Classe gérant l'impression de messages.
     On ne crée qu'une instance de ce type (singleton).
     Cette instance est accessible dans le module aster_core pour les appels
     depuis le fortran.
     """
+
     def __init__(self):
         """Initialisation
         """
@@ -88,14 +91,16 @@ class MESSAGE_LOGGER(Singleton):
 
         # compteur des alarmes émises { 'id_alarm' : count }
         self.nmax_alarm = 5
-        self.count_alarm = {}         # dans la commande courante (pour arret à 5)
+        self.count_alarm = {}
+            # dans la commande courante (pour arret à 5)
         self.count_alarm_tot = {}     # au total
 
         # alarmes à ignorer, à masquer (on ne les compte pas temporairement)
         self._ignored_alarm = {}
-        self._hidden_alarm  = {}
+        self._hidden_alarm = {}
 
-        # on prépare le dictionnaire des valeurs par défaut des arguments (dicarg) :
+        # on prépare le dictionnaire des valeurs par défaut des arguments
+        # (dicarg) :
         self.default_args = {}
         # initialisation des 50 premiers
         for i in range(1, 51):
@@ -122,9 +127,9 @@ class MESSAGE_LOGGER(Singleton):
         """
         self.print_message(*args, **kwargs)
 
-
-    def print_message(self, code, idmess, valk=(), vali=(), valr=(), exc_num=None,
-                      exception=False, print_as=None, files=None, cc=True):
+    def print_message(
+        self, code, idmess, valk=(), vali=(), valr=(), exc_num=None,
+            exception=False, print_as=None, files=None, cc=True):
         """Appelé par la routine fortran U2MESG ou à la fonction python UTMESS
         pour afficher un message.
         L'impression de ce message est différée si le `code` est suivi d'un "+".
@@ -135,7 +140,7 @@ class MESSAGE_LOGGER(Singleton):
         c'est l'appelant qui devra s'en charger (dans le C a priori).
         'print_as', 'files', 'cc' : cf. print_buffer_content.
         """
-        idmess  = idmess.strip()
+        idmess = idmess.strip()
         # le '+' n'a pas de sens pour les messages 'I'.
         if code == "I+":
             code = "I"
@@ -143,10 +148,12 @@ class MESSAGE_LOGGER(Singleton):
             msg = self._cache_txt.get(idmess)
             if msg:
                 try:
-                    self.affiche('MESSAGE', msg % self.build_dict_args(valk, vali, valr))
+                    self.affiche('MESSAGE', msg %
+                                 self.build_dict_args(valk, vali, valr))
                     return
                 except:
-                    # le formattage 'brut' échoue, on passera par une conversion complète
+                    # le formattage 'brut' échoue, on passera par une
+                    # conversion complète
                     pass
         if self._parent is None:
             self.set_parent(idmess)
@@ -171,7 +178,8 @@ class MESSAGE_LOGGER(Singleton):
                     aster_core.MPI_Warn()
                 if self._mpi_rank == 0:
                     l_unit = list_unit('F')
-                    txt = _(u"On ne peut pas lever d'exception dans une exécution MPI.")
+                    txt = _(
+                        u"On ne peut pas lever d'exception dans une exécution MPI.")
                     for unite in l_unit:
                         self.affiche(unite, txt)
                 exc_typ = dictmess.get('exc_typ')
@@ -180,34 +188,33 @@ class MESSAGE_LOGGER(Singleton):
                 raise error(idmess, valk, vali, valr)
         return None
 
-
     def build_dict_args(self, valk, vali, valr):
         """Construit le dictionnaire de formatage du message.
         """
-        # homogénéisation : uniquement des tuples + strip des chaines de caractères
+        # homogénéisation : uniquement des tuples + strip des chaines de
+        # caractères
         valk, vali, valr = map(force_list, (valk, vali, valr))
-        valk    = [k.strip() for k in valk]
+        valk = [k.strip() for k in valk]
 
         # variables passées au message
         dicarg = self.default_args.copy()
-        for i in range(1, len(valk)+1):
-            dicarg['k%d' % i] = to_unicode(valk[i-1])
-        for i in range(1, len(vali)+1):
-            dicarg['i%d' % i] = vali[i-1]
-        for i in range(1, len(valr)+1):
-            dicarg['r%d' % i] = valr[i-1]
+        for i in range(1, len(valk) + 1):
+            dicarg['k%d' % i] = to_unicode(valk[i - 1])
+        for i in range(1, len(vali) + 1):
+            dicarg['i%d' % i] = vali[i - 1]
+        for i in range(1, len(valr) + 1):
+            dicarg['r%d' % i] = valr[i - 1]
         # valeur spéciale : ktout = concaténation de toutes les chaines
         dicarg['ktout'] = ' '.join(valk)
 
         return dicarg
-
 
     def get_message(self, code, idmess, valk=(), vali=(), valr=(), exc_num=None):
         """Retourne le texte du message dans un dictionnaire dont les clés sont :
             'code', 'id_message', 'corps_message'
         """
         # décodage : idmess => (catamess, numess)
-        idmess  = idmess.strip()
+        idmess = idmess.strip()
         x = idmess.split("_")
         assert len(x) > 1, idmess
         catamess = '_'.join(x[0:-1]).lower()
@@ -216,13 +223,17 @@ class MESSAGE_LOGGER(Singleton):
 
         # import catamess => cata_msg
         try:
-            mod = __import__('Messages.%s' % catamess, globals(), locals(), [catamess])
-            # si le dictionnaire n'existe pas, on alertera au moment du formatage.
+            mod = __import__('Messages.%s' %
+                             catamess, globals(), locals(), [catamess])
+            # si le dictionnaire n'existe pas, on alertera au moment du
+            # formatage.
             cata_msg = getattr(mod, 'cata_msg', {})
         except Exception, msg:
-            # doit permettre d'éviter la récursivité (catamess réservé à Utmess)
+            # doit permettre d'éviter la récursivité (catamess réservé à
+            # Utmess)
             if catamess != 'catamess':
-                self.print_message('A', 'CATAMESS_57', valk=(catamess, str(msg)))
+                self.print_message(
+                    'A', 'CATAMESS_57', valk=(catamess, str(msg)))
             cata_msg = {}
 
         # corps du message
@@ -235,20 +246,20 @@ class MESSAGE_LOGGER(Singleton):
             #                   'flags' : 'DECORATED | CENTER',
             #                   'context' : 'éléments de contexte' }
             if type(cata_msg[numess]) == dict:
-                fmt_msg  = cata_msg[numess]['message']
-                flags = eval( cata_msg[numess].get('flags', 0) )
+                fmt_msg = cata_msg[numess]['message']
+                flags = eval(cata_msg[numess].get('flags', 0))
                 ctxt_msg = cata_msg[numess].get('context', None)
             else:
-                fmt_msg  = cata_msg[numess]
+                fmt_msg = cata_msg[numess]
                 flags = 0
                 ctxt_msg = None
 
             dictmess = {
-                'code'          : code,
-                'flags'         : flags,
-                'id_message'    : idmess,
-                'corps_message' : ufmt(fmt_msg, dicarg),
-                'context_info'  : self.get_context(ctxt_msg, idmess, dicarg),
+                'code': code,
+                'flags': flags,
+                'id_message': idmess,
+                'corps_message': ufmt(fmt_msg, dicarg),
+                'context_info': self.get_context(ctxt_msg, idmess, dicarg),
             }
             if code == 'I':
                 self._cache_txt[idmess] = convert(fmt_msg)
@@ -256,9 +267,9 @@ class MESSAGE_LOGGER(Singleton):
             if code == 'I':
                 code = 'A'
             dictmess = {
-                'code'          : code,
-                'flags'         : 0,
-                'id_message'    : idmess,
+                'code': code,
+                'flags': 0,
+                'id_message': idmess,
                 'corps_message' : _(u"""Erreur de programmation.
 Le message %s n'a pas pu être formaté correctement.
 Arguments :
@@ -273,7 +284,7 @@ Exception : %s
 --------------------------------------------------------------------------
 
 %s"""),
-                'context_info'  : '',
+                'context_info': '',
             }
             args = (idmess, vali, valr, valk, fmt_msg,
                     ''.join(traceback.format_tb(sys.exc_traceback)),
@@ -284,12 +295,13 @@ Exception : %s
             except Exception, exc:
                 dictmess['corps_message'] = repr(args)
         # limite la longueur des lignes
-        dictmess['corps_message'] = cut_long_lines(dictmess['corps_message'], MAXLENGTH)
+        dictmess['corps_message'] = cut_long_lines(
+            dictmess['corps_message'], MAXLENGTH)
         # type d'exception
         if exc_num:
-            dictmess['exc_name'], dictmess['exc_typ'] = ST.get_exception_name(exc_num)
+            dictmess['exc_name'], dictmess[
+                'exc_typ'] = ST.get_exception_name(exc_num)
         return dictmess
-
 
     def GetText(self, *args, **kwargs):
         """Retourne le texte du message pret a etre imprime.
@@ -316,8 +328,8 @@ Exception : %s
         """Retourne le code du message du buffer = code du message le plus grave
         (cf. dgrav)
         """
-        dgrav = { '?' : -9, 'I' : 0, 'A' : 1, 'S' : 4, 'Z' : 4, 'E' : 6,
-                  'D' :  9, 'F' : 10 }
+        dgrav = {'?': -9, 'I': 0, 'A': 1, 'S': 4, 'Z': 4, 'E': 6,
+                 'D':  9, 'F': 10}
 
         current = '?'
         exc_name = None
@@ -360,12 +372,13 @@ Exception : %s
 
         # construction du dictionnaire du message global
         dglob = {
-            'flags'         : self.get_current_flags(),
-            'id_message'    : self.get_current_id(),
-            'liste_message' : [],
-            'liste_context' : [],
+            'flags': self.get_current_flags(),
+            'id_message': self.get_current_id(),
+            'liste_message': [],
+            'liste_context': [],
         }
-        dglob['code'], dglob['exc_name'], dglob['exc_typ'] = self.get_current_code()
+        dglob['code'], dglob['exc_name'], dglob[
+            'exc_typ'] = self.get_current_code()
         for dictmess in self._buffer:
             dglob['liste_message'].append(dictmess['corps_message'])
             dglob['liste_context'].append(dictmess['context_info'])
@@ -395,16 +408,19 @@ Exception : %s
         if hide:
             self._hidden_alarm[idmess] = self._hidden_alarm.get(idmess, 0) + 1
         else:
-            self._ignored_alarm[idmess] = self._ignored_alarm.get(idmess, 0) + 1
+            self._ignored_alarm[
+                idmess] = self._ignored_alarm.get(idmess, 0) + 1
 
     def reset_alarm(self, idmess, hide=False):
         """Réactive l'alarme "idmess".
         """
         idmess = idmess.strip()
         if hide:
-            self._hidden_alarm[idmess] = min(self._hidden_alarm.get(idmess, 0) - 1, 0)
+            self._hidden_alarm[idmess] = min(
+                self._hidden_alarm.get(idmess, 0) - 1, 0)
         else:
-            self._ignored_alarm[idmess] = min(self._ignored_alarm.get(idmess, 0) - 1, 0)
+            self._ignored_alarm[idmess] = min(
+                self._ignored_alarm.get(idmess, 0) - 1, 0)
 
     def is_alarm_disabled(self, idmess):
         """Doit-on ignorer l'alarme "idmess" ?
@@ -447,7 +463,8 @@ Exception : %s
         res = self.get_info_alarm(only_ignored)
         for idmess, nb, masq in res:
             mark = ' ' + '(*)' * masq
-            dictmess = self.get_message('I', 'CATAMESS_90', valk=(mark, idmess), vali=nb)
+            dictmess = self.get_message(
+                'I', 'CATAMESS_90', valk=(mark, idmess), vali=nb)
             self.add_to_buffer(dictmess)
         if not res:
             dictmess = self.get_message('I', 'CATAMESS_92')
@@ -461,9 +478,10 @@ Exception : %s
             parent = self._parent
             if parent == idmess and self._hidden_alarm.get(idmess, 0) == 0:
                 self.count_alarm[idmess] = self.count_alarm.get(idmess, 0) + 1
-                self.count_alarm_tot[idmess] = self.count_alarm_tot.get(idmess, 0) + 1
+                self.count_alarm_tot[
+                    idmess] = self.count_alarm_tot.get(idmess, 0) + 1
             if self.is_alarm_disabled(parent) \
-                or self.count_alarm.get(parent, 0) > self.nmax_alarm:
+                    or self.count_alarm.get(parent, 0) > self.nmax_alarm:
                 # ignorer l'alarme ou count_alarm > max, on passe
                 if is_last_message(code):
                     self.set_parent(None)
@@ -474,7 +492,7 @@ Exception : %s
         """Vérifications des compteurs et réaction si besoin."""
         code = self.get_current_code()[0]
         idmess = self.get_current_id().strip()
-        if   code == 'E':
+        if code == 'E':
             self.erreur_E = True
         elif code == 'F':
             self.erreur_E = False
@@ -483,7 +501,7 @@ Exception : %s
             # de la dernière alarme
             self.print_buffer_content()
             dictmess = self.get_message(code, 'CATAMESS_41',
-                                    valk=idmess, vali=self.nmax_alarm)
+                                        valk=idmess, vali=self.nmax_alarm)
             self.add_to_buffer(dictmess)
 
     def check_counter(self, info_alarm=0, silent=0):
@@ -535,9 +553,9 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
 
         # format complet
         format_general = {
-            'decal'  : u'   ',
+            'decal': u'   ',
             'header' : u"""<%(type_message)s> %(str_id_message)s""",
-            'ligne'  : u'%(charv)s %%-%(maxlen)ds %(charv)s',
+            'ligne': u'%(charv)s %%-%(maxlen)ds %(charv)s',
             'corps'  : u"""%(header)s
 
 %(corps_message)s
@@ -554,9 +572,9 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         }
         # format light pour les infos
         format_light = {
-            'decal'  : u'',
+            'decal': u'',
             'header' : u"""<%(type_message)s> """,
-            'ligne'  : u'%%s',
+            'ligne': u'%%s',
             'corps'  : u"""%(corps_message)s
 %(context_info)s""",
             'final'  : u"""%(corps)s""",
@@ -589,17 +607,16 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         if format is format_general:
             dmsg['corps'] = dmsg['corps'].strip()
 
-
         # longueur de la ligne la plus longue
         l_line = dmsg['corps'].splitlines()
         maxlen = max([len(line) for line in l_line])
 
         # format des lignes sur maxlen caractères
         dlin = {
-            'charh'  : charh,
-            'charv'  : charv,
-            'charc'  : charc,
-            'maxlen' : maxlen
+            'charh': charh,
+            'charv': charv,
+            'charc': charc,
+            'maxlen': maxlen
         }
         fmt_line = ufmt(format['ligne'], dlin)
 
@@ -616,7 +633,6 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         l_txt = [format['decal'] + line for line in newtxt.splitlines()]
 
         return clean_string(os.linesep.join(l_txt))
-
 
     def get_type_message(self, dictmess):
         """Retourne le type du message affiché.
@@ -646,10 +662,12 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         if not ctxt_msg:
             return ''
         msg = []
-        # tout dans un try/except car c'est du bonus, il ne faudrait pas planter !
+        # tout dans un try/except car c'est du bonus, il ne faudrait pas
+        # planter !
         try:
             if ctxt_msg.has_key('CONCEPT'):
-                l_co =  [dicarg[arg] for arg in force_list(ctxt_msg['CONCEPT'])]
+                l_co = [dicarg[arg]
+                        for arg in force_list(ctxt_msg['CONCEPT'])]
                 for co in l_co:
                     msg.append(message_context_concept(co))
         except:
@@ -672,6 +690,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         else:
             return 'EXCEPTION'
 
+
 def is_last_message(code):
     """Tell if a message 'code' is the last message or not."""
     return len(code) < 2 or code[1] != '+'
@@ -693,12 +712,14 @@ def raise_UTMESS(exc):
 
     """
     for err in exc.related:
-        UTMESS('F+', err.id_message, valk=err.valk, vali=err.vali, valr=err.valr)
+        UTMESS('F+', err.id_message, valk=err.valk,
+               vali=err.vali, valr=err.valr)
     UTMESS('F', exc.id_message, valk=exc.valk, vali=exc.vali, valr=exc.valr)
 
 
 # unique instance du MESSAGE_LOGGER
 MessageLog = MESSAGE_LOGGER()
+
 
 def UTMESS(code, idmess, valk=(), vali=(), valr=(),
            exc_num=None, print_as=None, files=None, cc=True):

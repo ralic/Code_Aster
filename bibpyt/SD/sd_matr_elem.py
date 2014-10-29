@@ -32,18 +32,19 @@ class sd_matr_elem(AsBase):
 
     # indirection par RELR :
     def check_matr_elem_i_RELR(self, checker):
-        if not self.RELR.exists : return
+        if not self.RELR.exists:
+            return
         lnom = self.RELR.get_stripped()
         for nom in lnom:
-            if nom != '' :
-                # le nom est celui d'un resuelem ou parfois d'un cham_no (VECT_ASSE):
+            if nom != '':
+                # le nom est celui d'un resuelem ou parfois d'un cham_no
+                # (VECT_ASSE):
                 sd2 = sd_resuelem(nom)
-                if sd2.RESL.exists :
+                if sd2.RESL.exists:
                     sd2.check(checker)
-                else :
+                else:
                     sd2 = sd_cham_no(nom)
                     sd2.check(checker)
-
 
     def check_1(self, checker):
         refe = self.RERR.get_stripped()
@@ -55,10 +56,13 @@ class sd_matr_elem(AsBase):
 
         assert refe[1] != '', refe
 
-        sd2=sd_modele(refe[0]) ; sd2.check(checker)
+        sd2 = sd_modele(refe[0])
+        sd2.check(checker)
 
-        if refe[3] != '' :
-            sd2=sd_cham_mater(refe[3]) ; sd2.check(checker)
+        if refe[3] != '':
+            sd2 = sd_cham_mater(refe[3])
+            sd2.check(checker)
 
-        if refe[4] != '' :
-            sd2=sd_cara_elem(refe[4]) ; sd2.check(checker)
+        if refe[4] != '':
+            sd2 = sd_cara_elem(refe[4])
+            sd2.check(checker)

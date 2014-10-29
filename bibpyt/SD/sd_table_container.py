@@ -22,13 +22,12 @@ from SD.sd_table import sd_table
 from SD.sd_vect_elem import sd_vect_elem
 from SD.sd_matr_elem import sd_matr_elem
 from SD.sd_cham_elem import sd_cham_elem
-#from SD.sd_mode_meca import sd_mode_meca
+# from SD.sd_mode_meca import sd_mode_meca
 from SD.sd_dyna_phys import sd_dyna_phys
 # --------------------------------------------------------------------
 # sd_table contenant les colonnes nommée "NOM_OBJET","TYPE_OBJET",
 # et "NOM_SD"
 # --------------------------------------------------------------------
-
 
 
 class sd_table_container(sd_table):
@@ -38,54 +37,53 @@ class sd_table_container(sd_table):
     def check_table_container(self, checker):
 
         # vérification de l'existence de la table
-        if not self.exists() :
-           checker.err(self,"La sd_table_container %s ne semble"
-                             +"pas exister" %(nomj))
+        if not self.exists():
+            checker.err(self, "La sd_table_container %s ne semble"
+                              + "pas exister" % (nomj))
 
         # on vérifie la présence des paramètres
         # 'NOM_OBJET','TYPE_OBJET','NOM_SD'
-        param=['NOM_OBJET','TYPE_OBJET','NOM_SD']
+        param = ['NOM_OBJET', 'TYPE_OBJET', 'NOM_SD']
         shape = self.TBNP.get()
-        assert shape[0]>2 # la table à au moins 3 paramètres
+        assert shape[0] > 2  # la table à au moins 3 paramètres
         for n in param:
-          col, dummy = self.get_column_name(n)
-          if col == None:
-             checker.err(self,"Paramètre %s manquant!" %(n))
+            col, dummy = self.get_column_name(n)
+            if col == None:
+                checker.err(self, "Paramètre %s manquant!" % (n))
 
-          # on vérifie que les colonnes ne sont pas vides
-          data = col.data.get()
-          if data is not None:
-             if col.data.lonuti != shape[1]:
-                  checker.err(self,"Taille inconsitante %d!=%d" %
-                                (col.data.lonuti,shape[1]))
-
+            # on vérifie que les colonnes ne sont pas vides
+            data = col.data.get()
+            if data is not None:
+                if col.data.lonuti != shape[1]:
+                    checker.err(self, "Taille inconsitante %d!=%d" %
+                               (col.data.lonuti, shape[1]))
 
         # on vérifie le contenu de la colonne NOM_SD
-        col1, dummy =self.get_column_name('TYPE_OBJET')
-        col2, dummy =self.get_column_name('NOM_SD')
+        col1, dummy = self.get_column_name('TYPE_OBJET')
+        col2, dummy = self.get_column_name('NOM_SD')
         # CARA_CHOC pour MODE_NON_LINE
-        col3, dummy =self.get_column_name('CARA_CHOC')
-        nbli=col1.data.lonuti
-        lnom1=col1.data.get_stripped()
-        lnom2=col2.data.get_stripped()
+        col3, dummy = self.get_column_name('CARA_CHOC')
+        nbli = col1.data.lonuti
+        lnom1 = col1.data.get_stripped()
+        lnom2 = col2.data.get_stripped()
         if col3 is not None:
-          lnom3=col3.data.get_stripped()
+            lnom3 = col3.data.get_stripped()
         for k in range(nbli):
-          if lnom1[k][:9]=='VECT_ELEM':
-             sd5=sd_vect_elem(lnom2[k])
-             sd5.check(checker)
-          elif lnom1[k][:9]=='MATR_ELEM':
-             sd5=sd_matr_elem(lnom2[k])
-             sd5.check(checker)
-          elif lnom1[k][:9]=='CHAM_ELEM':
-             sd5=sd_cham_elem(lnom2[k])
-             sd5.check(checker)
-          elif lnom1[k][:11]=='MODE_MECA':
-             sd5=sd_dyna_phys(lnom2[k])
-             sd5.check(checker)
-             if col3 is not None:
-             # si CARA_CHOC existe, on vérifie que son contenu est une table
-               sdc = sd_table(lnom3[k])
-               sdc.check(checker)
-          else:
-             assert 0,lnom1[k]
+            if lnom1[k][:9] == 'VECT_ELEM':
+                sd5 = sd_vect_elem(lnom2[k])
+                sd5.check(checker)
+            elif lnom1[k][:9] == 'MATR_ELEM':
+                sd5 = sd_matr_elem(lnom2[k])
+                sd5.check(checker)
+            elif lnom1[k][:9] == 'CHAM_ELEM':
+                sd5 = sd_cham_elem(lnom2[k])
+                sd5.check(checker)
+            elif lnom1[k][:11] == 'MODE_MECA':
+                sd5 = sd_dyna_phys(lnom2[k])
+                sd5.check(checker)
+                if col3 is not None:
+                # si CARA_CHOC existe, on vérifie que son contenu est une table
+                    sdc = sd_table(lnom3[k])
+                    sdc.check(checker)
+            else:
+                assert 0, lnom1[k]

@@ -28,6 +28,7 @@ from ce_calcul_identification import CalcEssaiIdentification, CalculInverse
 from Utilitai.Utmess import UTMESS
 from numpy import take
 
+
 def TestCalcEssai(macro,
                   mess,
                   out_identification,
@@ -40,22 +41,21 @@ def TestCalcEssai(macro,
                   GROUP_NO_EXTERIEUR,
                   ):
 
-    #####################################################
+    #
     # Transformation des objets Aster en classes python #
-    #              Test de ces classes                  #
-    #####################################################
+    # Test de ces classes                  #
+    #
 
     # classe CalcEssaiObject
     # La classe MO recupere tous les concepts aster disponibles et
     # les range dans des classes python telles que Resultat, InterSpectre
     # Modele, CaraElem...
 
-
-    ########################################
+    #
     # 1) Test des fonctions de correlation #
-    ########################################
+    #
     if EXPANSION:
-        calc_essai = CalcEssaiExpansion(macro,mess,objects)
+        calc_essai = CalcEssaiExpansion(macro, mess, objects)
         norm_num = None
         norm_exp = None
 
@@ -81,22 +81,20 @@ def TestCalcEssai(macro,
             parametres['EPS'] = EXPANSION['EPS']
 
         calc_essai.setup(resu_num, nume_mode_calcul, resu_exp,
-                         nume_mode_mesure,parametres)
+                         nume_mode_mesure, parametres)
         # Les concepts resultats sont srockes sous le nom RESU_+type de resu
-        suffix = ['_NX','_EX','_ET','_RD']
-        calc_essai.calc_proj_resu(suffix,"RESU")
+        suffix = ['_NX', '_EX', '_ET', '_RD']
+        calc_essai.calc_proj_resu(suffix, "RESU")
 
         resu_et = objects.resultats["RESU_ET"]
         resu_nx = objects.resultats["RESU_NX"]
         resu_rd = objects.resultats["RESU_RD"]
 
-        calc_essai.calc_mac_mode( resu_et, resu_nx, resu_num.mass )
+        calc_essai.calc_mac_mode(resu_et, resu_nx, resu_num.mass)
 
-
-
-    ####################################################
+    #
     # 4) Test des fonctions de l'onglet identification #
-    ####################################################
+    #
     if IDENTIFICATION:
         calcturb = CalcEssaiIdentification(objects, mess)
 
@@ -117,29 +115,31 @@ def TestCalcEssai(macro,
         calcturb.calculate_force()
 
         calcturb.Sff.make_inte_spec(titre="Resultat identification : efforts",
-                                    paras_out = out_identification)
+                                    paras_out=out_identification)
         calcturb.Syy.make_inte_spec(titre="Resultat identification : mesure",
-                                      paras_out = out_identification)
-        calcturb.Syy_S.make_inte_spec(titre="Resultat identification : synthese",
-                                      paras_out = out_identification)
+                                    paras_out=out_identification)
+        calcturb.Syy_S.make_inte_spec(
+            titre="Resultat identification : synthese",
+            paras_out=out_identification)
 
-    ##################################################
+    #
     # 5) Test des fonctions de l'onglet modif struct #
-    ##################################################
+    #
     if MODIFSTRUCT:
-       lance_modif_struct_calcul(macro, objects,
-                                 MODIFSTRUCT,
-                                 GROUP_NO_CAPTEURS,
-                                 GROUP_NO_EXTERIEUR,
-                                 out_modifstru)
-
+        lance_modif_struct_calcul(macro, objects,
+                                  MODIFSTRUCT,
+                                  GROUP_NO_CAPTEURS,
+                                  GROUP_NO_EXTERIEUR,
+                                  out_modifstru)
 
 
 class MessageBox:
+
     """!Classe qui permet d'ecrire dans un .mess separe"""
+
     def __init__(self, unite):
-        self.unite = unite #unite d'ecriture
-        self.mess_file = open('fort.'+str(unite),'w')
+        self.unite = unite  # unite d'ecriture
+        self.mess_file = open('fort.' + str(unite), 'w')
 
     def disp_mess(self, new_mess):
         """!Ecriture des messages dans le fichier sortie
@@ -151,18 +151,17 @@ class MessageBox:
         self.mess_file.close()
 
 
-
-
 def to_dict_lst(groups):
     """Transforme la liste renvoyée par le superviseur
     en une liste de dictionaires. Il est important que
     les degrés de liberté soient dans une liste."""
     res_lst = []
     for grp in groups:
-        rdict = {"NOM" : grp["GROUP_NO"],
-                 "NOM_CMP" : list(grp["NOM_CMP"])}
+        rdict = {"NOM": grp["GROUP_NO"],
+                 "NOM_CMP": list(grp["NOM_CMP"])}
         res_lst.append(rdict)
     return res_lst
+
 
 def lance_modif_struct_calcul(macro, ce_objects,
                               MODIFSTRUCT,
@@ -193,7 +192,7 @@ def lance_modif_struct_calcul(macro, ce_objects,
     from Accas import _F
     from Calc_essai.ce_calcul_modifstruct import CalcEssaiModifStruct
     modif_struct = CalcEssaiModifStruct(macro, ce_objects,
-                               ce_objects.mess, out_modifstru)
+                                        ce_objects.mess, out_modifstru)
 
     modif_struct.find_experimental_result_from(MODIFSTRUCT["MESURE"].nom)
     modif_struct.find_support_modele_from(MODIFSTRUCT["MODELE_SUP"].nom)
@@ -213,7 +212,8 @@ def lance_modif_struct_calcul(macro, ce_objects,
     modif_struct.get_modele_support()
     modif_struct.calc_base_proj()
 
-    modif_struct.set_param_condens({'METHODE':'SVD','EPS':1.0E-5,'REGUL':'NON'})
+    modif_struct.set_param_condens(
+        {'METHODE': 'SVD', 'EPS': 1.0E-5, 'REGUL': 'NON'})
     modif_struct.creation_modele_couple()
 
     mode_simult = 1  # methode utilisee : MODE_ITER_SIMULT
@@ -238,12 +238,12 @@ def get_ddl_extract(nom_resu):
         if nom_etape == nom_resu:
             grp_no_ma = etape.valeur['FILTRE']
             if type(grp_no_ma) != list and type(grp_no_ma) != tuple:
-                grp_no_ma =  [grp_no_ma]
+                grp_no_ma = [grp_no_ma]
             else:
                 pass
             for dico in grp_no_ma:
-                for ind1,ind2 in dico.items():
-                    if type(ind2) != list and type(ind2) != tuple :
+                for ind1, ind2 in dico.items():
+                    if type(ind2) != list and type(ind2) != tuple:
                         dico[ind1] = [ind2]
 
             return grp_no_ma

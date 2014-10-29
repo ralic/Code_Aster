@@ -33,9 +33,9 @@ from Utilitai.utils import set_debug, _printDBG
 
 # Aster type : regular expression
 FMT = {
-    'I' : '([0-9\-\+]+)',
-    'R' : '([0-9\.,\-\+eEdD]+)',
-    'K' : '(.{%(len)s})'
+    'I': '([0-9\-\+]+)',
+    'R': '([0-9\.,\-\+eEdD]+)',
+    'K': '(.{%(len)s})'
 }
 
 
@@ -44,6 +44,7 @@ def msplit(chaine, separ):
     of the separator.
     """
     return re.split('%s+' % re.escape(separ), chaine.strip(separ))
+
 
 def convert(valk):
     """Try to convert a string to an integer or float... or a string."""
@@ -62,6 +63,7 @@ def convert(valk):
 
 
 class TableReader(object):
+
     """Standard reader of a Table."""
     id_vide = ''
 
@@ -103,11 +105,13 @@ class TableReader(object):
 
 
 class TableReaderFree(TableReader):
+
     """Table reader in a free format."""
 
     def split_tab(self, nblock):
         """Split the text to extract the 'nblock'-th block."""
-        all_lines = [line for line in self.text.splitlines() if line.strip() != '']
+        all_lines = [
+            line for line in self.text.splitlines() if line.strip() != '']
         stat = [[], ]
         nbcol = 0
         curblock = 0
@@ -146,7 +150,8 @@ class TableReaderFree(TableReader):
             else:
                 ltit.append(line)
         ltit = cut_long_lines(os.linesep.join(ltit), 80)
-        self.title = os.linesep.join(maximize_lines(ltit.splitlines(), 80, ' '))
+        self.title = os.linesep.join(
+            maximize_lines(ltit.splitlines(), 80, ' '))
         _printDBG("TITLE:", self.title)
         _printDBG("LINES:", '\n', self.lines)
         return nbcol
@@ -175,17 +180,18 @@ class TableReaderFree(TableReader):
 
 
 class TableReaderTableau(TableReaderFree):
+
     """Table reader in TABLEAU format."""
     id_vide = '-'
 
     def is_comment(self, line):
         """Tell if 'line' is a comment"""
-        #_printDBG('is_comment : %s : %s' % (line.startswith('#'), line))
+        # _printDBG('is_comment : %s : %s' % (line.startswith('#'), line))
         return line.startswith('#')
 
 
-
 class TableReaderAster(TableReader):
+
     """Table reader in ASTER format."""
     idt_deb = '#DEBUT_TABLE\n'
     idt_fin = '#FIN_TABLE\n'
@@ -206,13 +212,14 @@ class TableReaderAster(TableReader):
     def set_title(self):
         """Extract the title"""
         exp = re.compile(re.escape(self.idt_tit) + '(.*)$', re.M)
-        self.title = os.linesep.join([s.strip(self.sep) for s in exp.findall(self.text)])
+        self.title = os.linesep.join(
+            [s.strip(self.sep) for s in exp.findall(self.text)])
         _printDBG("TITLE:", self.title)
 
     def extract_lines(self):
         """Extract the text of the lines"""
-        self.lines = [line for line in self.text.splitlines() \
-             if line.strip(self.sep) != '' and not line.startswith(self.idt_tit)]
+        self.lines = [line for line in self.text.splitlines()
+                      if line.strip(self.sep) != '' and not line.startswith(self.idt_tit)]
         _printDBG("LINES:", '\n', self.lines)
 
     def read_line_i(self, i, line):
@@ -222,7 +229,7 @@ class TableReaderAster(TableReader):
         _printDBG(line, len(para), mat)
         if mat is None or len(para) != len(mat.groups()):
             lerr = [error('TABLE0_11', vali=i + 1),
-                    error('TABLE0_13', vali=len(para)) ]
+                    error('TABLE0_13', vali=len(para))]
             if mat is not None:
                 lerr.append(error('TABLE0_12', vali=len(mat.groups())))
             else:
@@ -246,7 +253,7 @@ class TableReaderAster(TableReader):
         _printDBG("TYPES:", types)
         self.tab = Table(para=para, typ=types, titr=self.title)
 
-        lfmt = [FMT[typ[0]] % { 'len' : typ[1:] } for typ in types]
+        lfmt = [FMT[typ[0]] % {'len': typ[1:]} for typ in types]
         self.re_line = ('%s+' % re.escape(self.sep)).join(lfmt)
         _printDBG("REGEXP:", self.re_line)
 

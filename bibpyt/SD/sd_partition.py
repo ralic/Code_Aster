@@ -29,36 +29,33 @@ class sd_partition(AsBase):
     # si PRTK(1) /= 'GROUP_ELEM' :
     NUPROC_MAILLE = Facultatif(AsVI(SDNom(nomj='.NUPROC.MAILLE')))
 
+    def check_1(self, checker):
+        prti = self.PRTI.get()
+        assert prti[0] > 0, prti
 
-    def check_1(self,checker):
-        prti=self.PRTI.get()
-        assert prti[0] > 0 , prti
+        prtk = self.PRTK.get_stripped()
+        assert prtk[0] in (
+            'SOUS_DOMAINE', 'GROUP_ELEM', 'MAIL_DISPERSE', 'MAIL_CONTIGU'), prtk
 
-        prtk=self.PRTK.get_stripped()
-        assert prtk[0] in ('SOUS_DOMAINE','GROUP_ELEM','MAIL_DISPERSE', 'MAIL_CONTIGU')  , prtk
+        if prtk[0] == 'SOUS_DOMAINE':
+            assert prtk[1] != '', prtk
+        else:
+            assert prtk[1] == '', prtk
 
-        if  prtk[0] == 'SOUS_DOMAINE' :
-            assert prtk[1] != ''  , prtk
-        else :
-            assert prtk[1] == ''  , prtk
-
-        if  prtk[0] != 'GROUP_ELEM' :
+        if prtk[0] != 'GROUP_ELEM':
             assert self.NUPROC_MAILLE.exists
-
 
 
 # sd_partit (cree par la commande DEFI_PARTITION :
 #----------------------------------------------------
-
 # AJACOT_PB en attendant la correction de la fiche 10475 :
 # on dédouble la SD pour la rendre facultative.
-
-
 class sd_partit1(AsBase):
     nomj = SDNom(fin=19)
     FDIM = AsVI(lonmax=1, )
     FREF = AsVK8(lonmax=1, )
-    FETA = AsColl(acces='NO', stockage='DISPERSE', modelong='VARIABLE', type='I', )
+    FETA = AsColl(acces='NO', stockage='DISPERSE',
+                  modelong='VARIABLE', type='I', )
 
 
 class sd_partit(AsBase):

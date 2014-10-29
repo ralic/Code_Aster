@@ -20,9 +20,9 @@
 from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-   nom            = 'PlasticityTH',
-   symbol_mfront  = 'asterplasticityth',
-   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
-   algo_inte      = ('SPECIFIQUE',),
+    nom='PlasticityTH',
+    symbol_mfront='asterplasticityth',
+    modelisation=('3D', 'AXIS', 'D_PLAN'),
+    deformation = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
+    algo_inte = ('SPECIFIQUE',),
 )

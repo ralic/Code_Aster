@@ -24,31 +24,35 @@ from SD.sd_prof_chno import sd_prof_chno
 
 class sd_cham_no(sd_titre):
     nomj = SDNom(fin=19)
-    VALE = AsVect(ltyp=Parmi(4,8,16,24), type=Parmi('C', 'I', 'K', 'R'), docu=Parmi('', '2', '3'), )
+    VALE = AsVect(ltyp=Parmi(4, 8, 16, 24), type=Parmi(
+        'C', 'I', 'K', 'R'), docu=Parmi('', '2', '3'), )
     REFE = AsVK24(lonmax=4)
     DESC = AsVI(docu='CHNO', )
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
+        # vérifiée)
         return self.REFE.exists
 
     def u_desc(self):
-        desc=self.DESC.get()
-        gd  = desc[0]
+        desc = self.DESC.get()
+        gd = desc[0]
         num = desc[1]
-        return gd,num
+        return gd, num
 
     def u_refe(self):
-        refe=self.REFE.get_stripped()
-        mail      = refe[0]
+        refe = self.REFE.get_stripped()
+        mail = refe[0]
         prof_chno = refe[1]
         assert refe[2] == '', refe
         assert refe[3] == '', refe
-        return mail,prof_chno
+        return mail, prof_chno
 
     def check_cham_no_i_REFE(self, checker):
-        if not self.exists() : return
-        if checker.names.has_key(self.REFE): return
+        if not self.exists():
+            return
+        if checker.names.has_key(self.REFE):
+            return
 
         mail, prof_chno = self.u_refe()
 
@@ -59,18 +63,21 @@ class sd_cham_no(sd_titre):
         sd2 = sd_maillage(mail)
         sd2.check(checker)
 
-        if prof_chno :
-            if checker.names.has_key(prof_chno[:14]+'.NUME.PRNO'):  return
+        if prof_chno:
+            if checker.names.has_key(prof_chno[:14] + '.NUME.PRNO'):
+                return
             sd2 = sd_prof_chno(prof_chno)
             sd2.check(checker)
 
     def check_cham_no_DESC(self, checker):
-        if not self.exists(): return
-        if checker.names.has_key(self.DESC): return
+        if not self.exists():
+            return
+        if checker.names.has_key(self.DESC):
+            return
 
         gd, num = self.u_desc()
         if (num < 0):
-           nb_ec = sdu_nb_ec(gd)
-           assert self.DESC.lonmax == 2 + nb_ec
+            nb_ec = sdu_nb_ec(gd)
+            assert self.DESC.lonmax == 2 + nb_ec
         else:
-           assert self.DESC.lonmax == 2
+            assert self.DESC.lonmax == 2

@@ -46,7 +46,8 @@ def check(checker, co, l_before, etape):
 
     type_concept = type(co).__name__
     sd = co.sdj
-    if 0: print "AJACOT checksd "+type_concept+" >"+sd.nomj.nomj+'<'
+    if 0:
+        print "AJACOT checksd " + type_concept + " >" + sd.nomj.nomj + '<'
 
     # l_new = objets créés par la commande courante
     l_after = get_list_objects()
@@ -62,32 +63,34 @@ def check(checker, co, l_before, etape):
         # On vérifie que le "checksum" des objets qui existaient déjà n'a pas changé:
         # Remarque : il faut bien le faire sur l_after car c'est checkSumOJB qui
         #             initialise la valeur pour les objets nouveaux
-        for nom in l_after :
+        for nom in l_after:
             if nom[0:1] == '&':
                 # à cause des objets "&&SYS.*" et du cout des objets "&CATA.*"
                 continue
-            obj=OJB(nom)
+            obj = OJB(nom)
             if etape.reuse:
-                # les commandes réentrantes ont le droit de modifier leur concept "reuse"
+                # les commandes réentrantes ont le droit de modifier leur
+                # concept "reuse"
                 if nom[0:8].strip() == sd.nomj.nomj.strip():
-                    checker.checkSumOJB(obj,sd,'maj')
+                    checker.checkSumOJB(obj, sd, 'maj')
                     continue
-            checker.checkSumOJB(obj,sd)
+            checker.checkSumOJB(obj, sd)
 
     # on imprime les messages d'erreur stockés dans le checker
-    lerreur=[(obj, msg) for level, obj, msg in checker.msg if level == 0]
+    lerreur = [(obj, msg) for level, obj, msg in checker.msg if level == 0]
     lerreur.sort()
-    if len(lerreur) > 0 :
+    if len(lerreur) > 0:
         # pour "ouvrir" le message
-        nom_concept=sd.nomj.nomj.strip()
-        nom_commande=etape.definition.nom.strip()
-        UTMESS("E+", 'SDVERI_30', valk=(nom_concept,nom_commande))
-        for obj, msg in lerreur :
+        nom_concept = sd.nomj.nomj.strip()
+        nom_commande = etape.definition.nom.strip()
+        UTMESS("E+", 'SDVERI_30', valk=(nom_concept, nom_commande))
+        for obj, msg in lerreur:
             UTMESS("E+", 'SDVERI_31', valk=(obj, msg))
         UTMESS("E", 'VIDE_1')
 
-    # on détruit les messages déjà imprimés pour ne pas les réimprimer avec la SD suivante
-    checker.msg=[]
+    # on détruit les messages déjà imprimés pour ne pas les réimprimer avec la
+    # SD suivante
+    checker.msg = []
 
     # on vérifie que la commande n'a pas créé d'objets interdits
     l_possible = set(checker.names.keys())
@@ -95,9 +98,9 @@ def check(checker, co, l_before, etape):
     l_interdit.sort()
     if len(l_interdit) > 0:
         # pour "ouvrir" le message :
-        UTMESS("E+", 'SDVERI_40',valk=type_concept)
+        UTMESS("E+", 'SDVERI_40', valk=type_concept)
         for x in l_interdit:
-            UTMESS('E+', 'SDVERI_41',valk=x)
+            UTMESS('E+', 'SDVERI_41', valk=x)
         UTMESS("E", 'VIDE_1')
 
     return checker

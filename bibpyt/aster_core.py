@@ -61,6 +61,7 @@ __version__ = '.'.join(str(i) for i in aster_pkginfo.version_info.version)
 def _is_initialized():
     return getattr(_aster_core, 'get_option', None) is not None
 
+
 def get_option(option, default=None):
     '''return the setting parameter value.
 
@@ -72,9 +73,11 @@ def get_option(option, default=None):
             'aster_core must be initialized before (see aster_core.register) ')
     return _aster_core.get_option(option, default)
 
+
 def get_version():
     '''Return the version number as string'''
     return __version__
+
 
 def set_info(option, value):
     '''modify the setting parameter value.
@@ -87,6 +90,7 @@ def set_info(option, value):
             'aster_core must be initialized before (see aster_core.register) ')
     _aster_core.set_option(option, value)
 
+
 def register(catalog, settings, logger=None):
     '''Register the catalog and the settings in order to share them with
     every aster component.
@@ -98,9 +102,10 @@ def register(catalog, settings, logger=None):
     :logger: the message logger (default: Utilitai.Utmess.MessageLog)
     '''
     if logger is None:
-        from Utilitai.Utmess import MessageLog # prevent cycling import
+        from Utilitai.Utmess import MessageLog  # prevent cycling import
         logger = MessageLog
     _aster_core.register(catalog, settings, logger, sys.modules[__name__])
+
 
 def _print_alarm():
     import aster_core
@@ -116,6 +121,7 @@ def _print_alarm():
                valk=(aster_pkginfo.version_info.parentid, fnames),)
     UTMESS('I', 'VIDE_1')
 
+
 def _print_header():
     """Appelé par entete.F90 pour afficher des informations sur
     la machine."""
@@ -127,19 +133,19 @@ def _print_header():
     UTMESS('I', 'SUPERVIS2_4',
            valk=aster_pkginfo.get_version_desc())
     UTMESS('I', 'SUPERVIS2_23',
-        valk=(__version__,
-              date_build,
-              aster_pkginfo.version_info.parentid[:12],
-              aster_pkginfo.version_info.branch),)
+           valk=(__version__,
+                 date_build,
+                 aster_pkginfo.version_info.parentid[:12],
+                 aster_pkginfo.version_info.branch),)
     UTMESS('I', 'SUPERVIS2_10',
-        valk=("1991", time.strftime('%Y'),
-              time.strftime('%c'),
-              get_option('hostname'),
-              get_option('architecture'),
-              get_option('processor'),
-              get_option('system') + ' ' + get_option('osname') \
-                  + ' '  + get_option('osrelease'),
-              lang_settings,),)
+           valk=("1991", time.strftime('%Y'),
+                 time.strftime('%c'),
+                 get_option('hostname'),
+                 get_option('architecture'),
+                 get_option('processor'),
+                 get_option('system') + ' ' + get_option('osname')
+                 + ' ' + get_option('osrelease'),
+                 lang_settings,),)
     pyvers = '%s.%s.%s' % tuple(sys.version_info[:3])
     UTMESS('I', 'SUPERVIS2_9', valk=(pyvers, numpy.__version__))
     # avertissement si la version a plus de 15 mois
@@ -153,6 +159,7 @@ def _print_header():
                 UTMESS('A', 'SUPERVIS2_2')
         except ValueError:
             pass
+
 
 def print_header(part):
     """Appelé par entete.F90 pour afficher des informations sur la machine.
@@ -169,6 +176,7 @@ def print_header(part):
     else:
         raise ValueError("unknown value for 'part'")
 
+
 def checksd(nomsd, typesd):
     """
     Vérifie la validité de la SD `nom_sd` (nom jeveux) de type `typesd`.
@@ -181,7 +189,7 @@ def checksd(nomsd, typesd):
     """
     from Utilitai.Utmess import UTMESS
     import aster
-    nomsd  = nomsd.strip()
+    nomsd = nomsd.strip()
     typesd = typesd.strip().lower()
     # import
     iret = 4
@@ -197,22 +205,24 @@ def checksd(nomsd, typesd):
 
     objsd = clas(nomj=nomsd)
     chk = objsd.check()
-    ichk = min([1,] + [level for level, obj, msg in chk.msg])
+    ichk = min([1, ] + [level for level, obj, msg in chk.msg])
     if ichk == 0:
         iret = 1
     else:
         iret = 0
     # on imprime les messages d'erreur (level=0):
     for level, obj, msg in chk.msg:
-        if level == 0 :
-            aster.affiche('MESSAGE',repr(obj)+msg)
+        if level == 0:
+            aster.affiche('MESSAGE', repr(obj) + msg)
     return iret
 
 _trans = maketrans('e', 'E')
 
+
 def _fortran(srepr):
     """for fortran look"""
     return srepr.translate(_trans, '()')
+
 
 def testresu_print(type_ref, legend, label, skip, relative,
                    tole, ref, val, compare=1.):
@@ -233,9 +243,13 @@ def testresu_print(type_ref, legend, label, skip, relative,
         from Utilitai.Utmess import UTMESS
         prresu = partial(aster.affiche, 'RESULTAT')
     except ImportError:
-        def prresu(x): print x
-        def UTMESS(a, b): print '<%s> message %s' % (a, b)
+        def prresu(x):
+            print x
+
+        def UTMESS(a, b):
+            print '<%s> message %s' % (a, b)
     lines = []
+
     def _print(wid, *args):
         """shortcut to print in the RESULTAT file"""
         fmtval = '%%-%ds' % wid
@@ -312,5 +326,5 @@ if __name__ == '__main__':
     print
 
     testresu_print('ANALYTIQUE', 'DEPL_C', True, False, True,
-                   1.e-4, 1.+1.j, -0.5+0.99j)
+                   1.e-4, 1. + 1.j, -0.5 + 0.99j)
     print

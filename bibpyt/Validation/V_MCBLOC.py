@@ -32,45 +32,48 @@
 import V_MCCOMPO
 from Noyau.strfunc import ufmt
 
+
 class MCBLOC(V_MCCOMPO.MCCOMPO):
-   """
-      Cette classe a un attribut de classe :
 
-      - txt_nat qui sert pour les comptes-rendus liés à cette classe
-   """
+    """
+       Cette classe a un attribut de classe :
 
-   txt_nat = u"Bloc :"
+       - txt_nat qui sert pour les comptes-rendus liés à cette classe
+    """
 
-   def isvalid(self,sd='oui',cr='non'):
-      """
-         Methode pour verifier la validité du MCBLOC. Cette méthode
-         peut etre appelée selon plusieurs modes en fonction de la valeur
-         de sd et de cr.
+    txt_nat = u"Bloc :"
 
-         Si cr vaut oui elle crée en plus un compte-rendu
-         sd est présent pour compatibilité de l'interface mais ne sert pas
-      """
-      if self.state == 'unchanged' :
-        return self.valid
-      else:
-        valid = 1
-        if hasattr(self,'valid'):
-          old_valid = self.valid
+    def isvalid(self, sd='oui', cr='non'):
+        """
+           Methode pour verifier la validité du MCBLOC. Cette méthode
+           peut etre appelée selon plusieurs modes en fonction de la valeur
+           de sd et de cr.
+
+           Si cr vaut oui elle crée en plus un compte-rendu
+           sd est présent pour compatibilité de l'interface mais ne sert pas
+        """
+        if self.state == 'unchanged':
+            return self.valid
         else:
-          old_valid = None
-        for child in self.mc_liste :
-          if not child.isvalid():
-            valid = 0
-            break
-        # Après avoir vérifié la validité de tous les sous-objets, on vérifie
-        # la validité des règles
-        text_erreurs,test_regles = self.verif_regles()
-        if not test_regles :
-          if cr == 'oui':
-              self.cr.fatal(_(u"Règle(s) non respectée(s) : %s"), text_erreurs)
-          valid = 0
-        self.valid = valid
-        self.state = 'unchanged'
-        if not old_valid or old_valid != self.valid :
-           self.init_modif_up()
-        return self.valid
+            valid = 1
+            if hasattr(self, 'valid'):
+                old_valid = self.valid
+            else:
+                old_valid = None
+            for child in self.mc_liste:
+                if not child.isvalid():
+                    valid = 0
+                    break
+            # Après avoir vérifié la validité de tous les sous-objets, on vérifie
+            # la validité des règles
+            text_erreurs, test_regles = self.verif_regles()
+            if not test_regles:
+                if cr == 'oui':
+                    self.cr.fatal(
+                        _(u"Règle(s) non respectée(s) : %s"), text_erreurs)
+                valid = 0
+            self.valid = valid
+            self.state = 'unchanged'
+            if not old_valid or old_valid != self.valid:
+                self.init_modif_up()
+            return self.valid

@@ -34,7 +34,8 @@
 # get_current_step, set_current_step et unset_current_step de n'importe où
 import context
 import __builtin__
-__builtin__.CONTEXT=context
+__builtin__.CONTEXT = context
+
 
 def _(msg):
     """Differs translation."""

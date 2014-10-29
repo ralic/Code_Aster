@@ -20,9 +20,9 @@
 from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-   nom            = 'SVenantKirchhoff',
-   symbol_mfront  = 'astersvenantkirchhoff',
-   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
-   deformation    = ('SIMO_MIEHE',),
-   algo_inte      = ('ANALYTIQUE',),
+    nom='SVenantKirchhoff',
+    symbol_mfront='astersvenantkirchhoff',
+    modelisation=('3D', 'AXIS', 'D_PLAN'),
+    deformation = ('SIMO_MIEHE',),
+    algo_inte = ('ANALYTIQUE',),
 )

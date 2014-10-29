@@ -35,6 +35,7 @@ import tempfile
 import shutil
 import optparse
 
+
 def parse_args(argv=None):
     '''Parse the command line and return (rep_cata_offi, nom_capy_offi)'''
     usage = ('This script build a pickled version of the elements catalog '
@@ -49,7 +50,7 @@ def parse_args(argv=None):
                       help='file path use as output (default: %default)')
 
     opts, args = parser.parse_args(argv)
-    if len(args) == 4 and opts.rep_cata_offi is None: # legacy style
+    if len(args) == 4 and opts.rep_cata_offi is None:  # legacy style
         opts.rep_scripts = args[0]
         opts.rep_cata_offi = args[2]
         opts.nom_capy_offi = args[3]
@@ -63,7 +64,8 @@ def parse_args(argv=None):
 
     return opts.rep_cata_offi, opts.nom_capy_offi
 
-###############################################################################
+#
+
 
 def main(rep_cata_offi, nom_capy_offi):
     """
@@ -79,14 +81,15 @@ def main(rep_cata_offi, nom_capy_offi):
     try:
         _main(rep_cata_offi, nom_capy_offi)
     except:
-        print 60*'-'+' debut trace back'
+        print 60 * '-' + ' debut trace back'
         traceback.print_exc(file=sys.stdout)
-        print 60*'-'+' fin   trace back'
+        print 60 * '-' + ' fin   trace back'
         raise
     finally:
         os.chdir(dirav)
         shutil.rmtree(trav)
     print "(I/U) creation du fichier '%s' terminee." % nom_capy_offi
+
 
 def _main(rep_cata_offi, nom_capy_offi):
     """Script pour construire le catalogue officiel cata_ele.picked"""
@@ -110,7 +113,7 @@ def _main(rep_cata_offi, nom_capy_offi):
     liste_morceaux = utilit.cata_split('tou.cata', 'morceau', 5000)
 
     capy = lire_cata(liste_morceaux[0])
-    for k in range(len(liste_morceaux)-1) :
+    for k in range(len(liste_morceaux) - 1):
         capy2 = lire_cata(liste_morceaux[k + 1])
         utilit.concat_capy(capy, capy2)
 

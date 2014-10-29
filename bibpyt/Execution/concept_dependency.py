@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
@@ -34,8 +34,11 @@ from E_Visitor import JDCVisitor
 STAT = Enum('NBCMD', 'NBRES', 'NBDEP', 'NBUNUSED', 'NBNODE',
             'UNUSED', 'CMD', 'RESULT', 'DEPEND')
 
+
 class Node(object):
+
     """A dependency"""
+
     def __init__(self, name):
         self.name = name
 
@@ -47,8 +50,11 @@ class Node(object):
         """Keep the dependency if conditions are verified"""
         return True
 
+
 class NodeSD(Node):
+
     """A dependency of type ASSD."""
+
     def label(self):
         """Return the graphviz label"""
         return '    %s [label="%s"];' % (self.nodename(), self.name)
@@ -62,8 +68,11 @@ class NodeSD(Node):
         else:
             graph.result.add(resk)
 
+
 class NodeKeyword(Node):
+
     """A dependency of type MCSIMP."""
+
     def __init__(self, name, value):
         self.name = '%s=%s' % (name, value)
 
@@ -76,13 +85,18 @@ class NodeKeyword(Node):
         graph.label.add(self.label())
         graph.keyword.add(self.nodename())
 
+
 class NodeKeywordUL(NodeKeyword):
+
     """A dependency for the keyword UNITE(_xxx)."""
+
     def condition(self, command):
         """Keep the dependency if conditions are verified"""
         return not (command.startswith('IMPR_') or command in ('FIN', ))
 
+
 class DependStore(Node):
+
     """Store the dependencies of a command."""
     _count = 0
 
@@ -121,9 +135,13 @@ class DependStore(Node):
         """Return a tuple of (sd_res, sd_deps, kw_deps)"""
         return self.result, self.deps
 
+
 class GraphData(object):
+
     """Object to store the data for graphviz"""
-    __slots__ = ('label', 'result', 'unused', 'keyword', 'command', 'link', 'unused_sd')
+    __slots__ = ('label', 'result', 'unused',
+                 'keyword', 'command', 'link', 'unused_sd')
+
     def __init__(self, unused):
         """Initialization"""
         self.label = set()
@@ -174,19 +192,21 @@ digraph "%(title)s" {
         lines = list(self.label)
         lines.extend(self.link)
         dfmt = {
-            'title' : kwargs.get('title', "Graph"),
-            'options' : kwargs.get('options', ""),
-            'links' : os.linesep.join(lines),
-            'SDs' : '; '.join(self.result),
-            'unused' : '; '.join(self.unused),
-            'keywords' : '; '.join(self.keyword),
-            'commands' : '; '.join(self.command),
+            'title': kwargs.get('title', "Graph"),
+            'options': kwargs.get('options', ""),
+            'links': os.linesep.join(lines),
+            'SDs': '; '.join(self.result),
+            'unused': '; '.join(self.unused),
+            'keywords': '; '.join(self.keyword),
+            'commands': '; '.join(self.command),
         }
         return mask % dfmt
 
 
 class ConceptTree(object):
+
     """This class represents the graph of dependency between Code_Aster 'concepts'."""
+
     def __init__(self):
         """Initialization
         _data : list of DependStore
@@ -198,8 +218,8 @@ class ConceptTree(object):
 
     def start_dependency(self, depobj):
         """Start a new list of dependencies."""
-        self._data.append( depobj )
-        self._cursor.append( depobj )
+        self._data.append(depobj)
+        self._cursor.append(depobj)
 
     def add_dependency(self, *deps):
         """Add one or more dependencies to the current cursor."""
@@ -265,15 +285,15 @@ class ConceptTree(object):
         s_deps = ', '.join(deps)
         # key : order, level, value
         self._stats = {
-            STAT.NBCMD    : (0, len(commands),    _(u'Nombre de commandes')),
-            STAT.NBRES    : (0, len(all_results), _(u"Nombre de résultats")),
-            STAT.NBDEP    : (0, len(all_deps),    _(u"Nombre de dépendances")),
-            STAT.NBUNUSED : (0, len(never_used),  _(u"Nombre de résultats non utilisés")),
-            STAT.NBNODE   : (0, len(all_nodes),   _(u"Nombre de noeuds")),
-            STAT.UNUSED   : (1, s_unused,         _(u"Concepts jamais utilisés")),
-            STAT.CMD      : (2, s_commands,       _(u"Commandes utilisées")),
-            STAT.RESULT   : (2, s_results,        _(u"Résultats")),
-            STAT.DEPEND   : (2, s_deps,           _(u"Dépendances")),
+            STAT.NBCMD: (0, len(commands),    _(u'Nombre de commandes')),
+            STAT.NBRES: (0, len(all_results), _(u"Nombre de résultats")),
+            STAT.NBDEP: (0, len(all_deps),    _(u"Nombre de dépendances")),
+            STAT.NBUNUSED: (0, len(never_used),  _(u"Nombre de résultats non utilisés")),
+            STAT.NBNODE: (0, len(all_nodes),   _(u"Nombre de noeuds")),
+            STAT.UNUSED: (1, s_unused,         _(u"Concepts jamais utilisés")),
+            STAT.CMD: (2, s_commands,       _(u"Commandes utilisées")),
+            STAT.RESULT: (2, s_results,        _(u"Résultats")),
+            STAT.DEPEND: (2, s_deps,           _(u"Dépendances")),
         }
 
     def get_stats(self, level=1):
@@ -292,8 +312,10 @@ class ConceptTree(object):
 
 
 class ConceptDependenciesVisitor(JDCVisitor):
+
     """This class walks the tree of JDC object and build
        the graph of dependencies of the results."""
+
     def __init__(self, with_default=True):
         """Initialization.
         with_default : if True, visit the default values of undefined keywords
@@ -341,7 +363,7 @@ class ConceptDependenciesVisitor(JDCVisitor):
 
     def visitPROC_ETAPE(self, step):
         """Visit the PROC_ETAPE object."""
-        #print "visit PROC_ETAPE", step.definition.nom
+        # print "visit PROC_ETAPE", step.definition.nom
         store = DependStore(step.nom)
         self.tree.start_dependency(store)
         JDCVisitor.visitPROC_ETAPE(self, step, reuse=None)
@@ -349,7 +371,7 @@ class ConceptDependenciesVisitor(JDCVisitor):
 
     def visitMACRO_ETAPE(self, step):
         """Visit the MACRO_ETAPE object."""
-        #print "visit MACRO_ETAPE", step.definition.nom
+        # print "visit MACRO_ETAPE", step.definition.nom
         store = DependStore(step.nom)
         self.tree.start_dependency(store)
         JDCVisitor.visitMACRO_ETAPE(self, step, reuse=step.reuse)
@@ -362,7 +384,7 @@ class ConceptDependenciesVisitor(JDCVisitor):
 
     def visitETAPE(self, step):
         """Visit the ETAPE object."""
-        #print "visit ETAPE", step.definition.nom
+        # print "visit ETAPE", step.definition.nom
         store = DependStore(step.nom)
         self.tree.start_dependency(store)
         JDCVisitor.visitETAPE(self, step, reuse=step.reuse)
@@ -373,18 +395,19 @@ class ConceptDependenciesVisitor(JDCVisitor):
 
     def visitMCSIMP(self, mcsimp):
         """Visit the MCSIMP object."""
-        #print "visit MCSIMP", mcsimp.nom
+        # print "visit MCSIMP", mcsimp.nom
         for value in force_list(mcsimp.valeur):
             if isinstance(value, ASSD):
                 value.accept(self)
             elif mcsimp.nom.startswith('UNITE'):
                 self.tree.add_dependency(NodeKeywordUL(mcsimp.nom, value))
-            #else:
-                #print "<DBG> Value ignored: (type %s), %s = %s" % (type(value), mcsimp.nom, value)
+            # else:
+                # print "<DBG> Value ignored: (type %s), %s = %s" %
+                # (type(value), mcsimp.nom, value)
 
     def visitASSD(self, sd):
         """Visit the ASSD object."""
-        #print "visit ASSD", sd.nom
+        # print "visit ASSD", sd.nom
         self.tree.add_dependency(NodeSD(sd.nom))
 
 
@@ -414,4 +437,4 @@ if __name__ == '__main__':
     print txt
     cnt = tree.build_graph()
     open('/tmp/graph.dot', 'w').write(cnt)
-    #dot -Tpng -o /tmp/graph.png /tmp/graph.dot ; eog /tmp/graph.png
+    # dot -Tpng -o /tmp/graph.png /tmp/graph.dot ; eog /tmp/graph.png

@@ -19,11 +19,11 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
 La variable d'environnement %(k1)s n'est pas définie.
 """),
 
-2 : _(u"""
+    2 : _(u"""
 Le chemin d'accès aux bibliothèques est trop long. Il doit être inférieur
 à %(i1)d caractères. Il est défini par la variable d'environnement '%(k1)s'.
 

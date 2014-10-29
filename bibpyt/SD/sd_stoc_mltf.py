@@ -18,6 +18,7 @@
 
 from SD import *
 
+
 class sd_stoc_mltf(AsBase):
     nomj = SDNom(fin=19)
     ADNT = AsVI()

@@ -33,7 +33,9 @@ from math import pi
 
 from mac3coeur_factory import Mac3Factory
 
+
 class Assemblage(object):
+
     """Classe définissant un assemblage combustible."""
     typeAC = None
     required_parameters = [
@@ -46,7 +48,7 @@ class Assemblage(object):
         'KNAXE', 'KY_CE', 'KE1', 'KE2',
         # Caractéristiques géométriques
         # des grilles
-        'altitude','epaisseur','longueur',
+        'altitude', 'epaisseur', 'longueur',
         # des tubes-guides
         'NBTG', 'RAY1GU', 'EP1GU', 'RAY2GU', 'EP2GU', 'EPMOY',
         'LONTU', 'XINFT', 'XSUPT',
@@ -62,24 +64,24 @@ class Assemblage(object):
         # des crayons
         'S_CR', 'I_CR',
         # Perte de charges
-        'K_EBSU','K_GRE','K_GRM','K_TUB','K_EBIN',
+        'K_EBSU', 'K_GRE', 'K_GRM', 'K_TUB', 'K_EBIN',
         # Poussee d Archimede de chaque élément
-        'AFEBSU_1','AFGRE_1','AFGRM_1','AFTG_1','AFCRA_1','AFEBIN_1',
+        'AFEBSU_1', 'AFGRE_1', 'AFGRM_1', 'AFTG_1', 'AFCRA_1', 'AFEBIN_1',
     ]
     optionnal_parameters = []
 
     def __init__(self, typ_coeur):
         """Initialisation d'un type d'assemblage."""
-        self._posdam    = None
-        self._posast    = None
-        self.typ_coeur  = typ_coeur
-        self._cycle     = None
-        self._checked   = False
-        self.mate       = None
-        self.deforme    = None
-        self._para      = {}
-        self._keys      = {}.fromkeys(self.required_parameters + \
-                                      self.optionnal_parameters, True)
+        self._posdam = None
+        self._posast = None
+        self.typ_coeur = typ_coeur
+        self._cycle = None
+        self._checked = False
+        self.mate = None
+        self.deforme = None
+        self._para = {}
+        self._keys = {}.fromkeys(self.required_parameters +
+                                 self.optionnal_parameters, True)
         self._init_from_attrs()
         self._position_toaster = None
         self._position_todamac = None
@@ -150,8 +152,8 @@ class Assemblage(object):
 
     def _check_00_parameters(self):
         """Vérification des caractéristiques obligatoires."""
-        req = [key for key in self.required_parameters \
-                   if self._para.get(key) is None]
+        req = [key for key in self.required_parameters
+               if self._para.get(key) is None]
         assert len(req) == 0, "Missing parameters: %s" % repr(req)
 
     def check(self):
@@ -161,7 +163,7 @@ class Assemblage(object):
         self.post_definition()
         # call all '_check_*' methods
         for name in dir(self):
-            if name.startswith( '_check_' ):
+            if name.startswith('_check_'):
                 fcheck = getattr(self, name)
                 if callable(fcheck):
                     fcheck()
@@ -182,10 +184,11 @@ class Assemblage(object):
     def mcf_geom_fibre(self):
         """Retourne les mots-clés facteurs pour DEFI_GEOM_FIBRE."""
         from Cata.cata import _F
+
         def vale_4fibres(surf, iner):
             """Retourne les triplets (y, z, val) pour les 4 fibres."""
             squart = surf / 4.
-            excent = (iner/(2*squart))**0.5
+            excent = (iner / (2 * squart)) ** 0.5
             return (0., excent, squart,
                     0., -excent, squart,
                     excent, 0., squart,
@@ -200,17 +203,17 @@ class Assemblage(object):
             _F(GROUP_FIBRE='LG_' + self.idAST,
                COOR_AXE_POUTRE=(0., 0.),
                CARA="SURFACE",
-               VALE=vale_4fibres(self.S_TG_C,self.I_TG_C,),),
+               VALE=vale_4fibres(self.S_TG_C, self.I_TG_C,),),
             # biais des tubes-guides
             _F(GROUP_FIBRE='BI_' + self.idAST,
                COOR_AXE_POUTRE=(0., 0.),
                CARA="SURFACE",
-               VALE=vale_4fibres(self.S_TG_B,self.I_TG_B,),),
+               VALE=vale_4fibres(self.S_TG_B, self.I_TG_B,),),
             # retreint des tubes-guides
             _F(GROUP_FIBRE='RE_' + self.idAST,
                COOR_AXE_POUTRE=(0., 0.),
                CARA="SURFACE",
-               VALE=vale_4fibres(self.S_TG_R,self.I_TG_R,),),
+               VALE=vale_4fibres(self.S_TG_R, self.I_TG_R,),),
         )
         return mcf
 
@@ -232,28 +235,30 @@ class Assemblage(object):
     def mcf_cara_barre(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/BARRE."""
         from Cata.cata import _F
-        #On donne une section unitaire
+        # On donne une section unitaire
         mcf = (
             _F(GROUP_MA='MNT_' + self.idAST,
-               SECTION = 'GENERALE',
-               CARA = 'A',
-               VALE= 1.,),)
+               SECTION='GENERALE',
+               CARA='A',
+               VALE=1.,),)
         return mcf
-
 
     def mcf_AC_mater(self):
         """Retourne les mots-clés facteurs pour AFFE_MATERIAU/AFFE."""
         from Cata.cata import _F
         mcf = (
-            _F(GROUP_MA = 'CR_' + self.idAST, MATER = self.mate.mate['CR'],),
-            _F(GROUP_MA = 'TG_' + self.idAST, MATER = self.mate.mate['TG'],),
-            _F(GROUP_MA = 'ES_' + self.idAST, MATER = self.mate.mate['ES'],),
-            _F(GROUP_MA = 'EI_' + self.idAST, MATER = self.mate.mate['EI'],),
-            _F(GROUP_MA = 'MNT_' + self.idAST, MATER = self.mate.mate['MNT'],),
-            _F(GROUP_MA = 'GC_' + self.idAST + '_B', MATER = self.mate.mate['GC_EB'],),
-            _F(GROUP_MA = 'GC_' + self.idAST + '_T', MATER = self.mate.mate['GC_EH'],),
-            _F(GROUP_MA = 'GC_' + self.idAST + '_M', MATER = self.mate.mate['GC_ME'],),
-    )
+            _F(GROUP_MA='CR_' + self.idAST, MATER=self.mate.mate['CR'],),
+            _F(GROUP_MA='TG_' + self.idAST, MATER=self.mate.mate['TG'],),
+            _F(GROUP_MA='ES_' + self.idAST, MATER=self.mate.mate['ES'],),
+            _F(GROUP_MA='EI_' + self.idAST, MATER=self.mate.mate['EI'],),
+            _F(GROUP_MA='MNT_' + self.idAST, MATER=self.mate.mate['MNT'],),
+            _F(GROUP_MA='GC_' + self.idAST + '_B',
+               MATER=self.mate.mate['GC_EB'],),
+            _F(GROUP_MA='GC_' + self.idAST +
+               '_T', MATER=self.mate.mate['GC_EH'],),
+            _F(GROUP_MA='GC_' + self.idAST + '_M',
+               MATER=self.mate.mate['GC_ME'],),
+        )
 
         return mcf
 
@@ -265,22 +270,26 @@ class Assemblage(object):
             _F(GROUP_MA='CR_' + self.idAST,
                SECTION='GENERALE',
                CARA=('A', 'IZ', 'IY', 'JX', 'AY', 'AZ', 'EY', 'EZ'),
-               VALE=(self.S_CR, self.I_CR, self.I_CR, self.I_CR * 2., 1., 1., 0., 0.),),
+               VALE=(
+                   self.S_CR, self.I_CR, self.I_CR, self.I_CR * 2., 1., 1., 0., 0.),),
             # partie courante des tubes-guides
             _F(GROUP_MA='LG_' + self.idAST,
                SECTION='GENERALE',
                CARA=('A', 'IZ', 'IY', 'JX', 'AY', 'AZ'),
-               VALE=(self.S_TG_C, self.I_TG_C, self.I_TG_C, self.I_TG_C * 2., 1., 1.),),
+               VALE=(
+                   self.S_TG_C, self.I_TG_C, self.I_TG_C, self.I_TG_C * 2., 1., 1.),),
             # biais des tubes-guides
             _F(GROUP_MA='BI_' + self.idAST,
                SECTION='GENERALE',
                CARA=('A', 'IZ', 'IY', 'JX', 'AY', 'AZ'),
-               VALE=(self.S_TG_B, self.I_TG_B, self.I_TG_B, self.I_TG_B * 2., 1., 1.),),
+               VALE=(
+                   self.S_TG_B, self.I_TG_B, self.I_TG_B, self.I_TG_B * 2., 1., 1.),),
             # retreint des tubes-guides
             _F(GROUP_MA='RE_' + self.idAST,
                SECTION='GENERALE',
                CARA=('A', 'IZ', 'IY', 'JX', 'AY', 'AZ'),
-               VALE=(self.S_TG_R, self.I_TG_R, self.I_TG_R, self.I_TG_R * 2., 1., 1.),),
+               VALE=(
+                   self.S_TG_R, self.I_TG_R, self.I_TG_R, self.I_TG_R * 2., 1., 1.),),
             # embouts inférieurs
             _F(GROUP_MA='EI_' + self.idAST,
                SECTION='RECTANGLE',
@@ -297,6 +306,7 @@ class Assemblage(object):
     def mcf_cara_discret(self):
         """Retourne les mots-clés facteurs pour AFFE_CARA_ELEM/DISCRET."""
         from Cata.cata import _F
+
         def vale_K_TR_D_L(nb, kr):
             """Retourne les valeurs pour un K_TR_D_L."""
             kx = ky = kry = 1.e9 * nb / 4.
@@ -306,19 +316,19 @@ class Assemblage(object):
 
         def vale_K_TR_L(kn_ax, ky_c, k1, k2, nbcr):
             """Retourne les valeurs pour un K_TR_L."""
-            carel   = [0.]*78
-            carel[1-1]  =  kn_ax * nbcr
-            carel[3-1]  =  ky_c * nbcr / 4.
-            carel[10-1] =  nbcr * (k1 - k2) / 2.
-            carel[21-1] =  nbcr * k2 / 2.
-            carel[28-1] =  kn_ax * nbcr
-            carel[36-1] =  ky_c *nbcr / 4.
-            carel[55-1] =  nbcr * (k1 - k2) / 2.
-            carel[78-1] =  nbcr * k2 / 2.
-            carel[22-1] = -1.* kn_ax * nbcr
-            carel[30-1] = -1.* ky_c * nbcr / 4.
-            carel[49-1] = -1.* nbcr * (k1 - k2) / 2.
-            carel[72-1] = -1.* nbcr * k2 / 2.
+            carel = [0.] * 78
+            carel[1 - 1] = kn_ax * nbcr
+            carel[3 - 1] = ky_c * nbcr / 4.
+            carel[10 - 1] = nbcr * (k1 - k2) / 2.
+            carel[21 - 1] = nbcr * k2 / 2.
+            carel[28 - 1] = kn_ax * nbcr
+            carel[36 - 1] = ky_c * nbcr / 4.
+            carel[55 - 1] = nbcr * (k1 - k2) / 2.
+            carel[78 - 1] = nbcr * k2 / 2.
+            carel[22 - 1] = -1. * kn_ax * nbcr
+            carel[30 - 1] = -1. * ky_c * nbcr / 4.
+            carel[49 - 1] = -1. * nbcr * (k1 - k2) / 2.
+            carel[72 - 1] = -1. * nbcr * k2 / 2.
             return carel
 
         mcf = (
@@ -327,31 +337,33 @@ class Assemblage(object):
             _F(GROUP_MA='GC_' + self.idAST + '_M',
                REPERE='LOCAL',
                CARA='K_TR_L',
-               VALE=vale_K_TR_L(self.KNAXM, self.KY_CM, self.KM1, self.KM2, self.NBCR),),
+               VALE=vale_K_TR_L(
+                   self.KNAXM, self.KY_CM, self.KM1, self.KM2, self.NBCR),),
             _F(GROUP_MA='GC_' + self.idAST + '_M',
                REPERE='LOCAL',
                CARA='M_TR_D_L',
-               VALE=(0.,0.,0.,0.,),),
+               VALE=(0., 0., 0., 0.,),),
             # --- Pour les grilles extremites
-            _F(GROUP_MA=('GC_' + self.idAST + '_B','GC_' + self.idAST + '_T',),
+            _F(GROUP_MA=('GC_' + self.idAST + '_B', 'GC_' + self.idAST + '_T',),
                REPERE='LOCAL',
                CARA='K_TR_L',
-               VALE=vale_K_TR_L(self.KNAXE, self.KY_CE, self.KE1, self.KE2, self.NBCR),),
-            _F(GROUP_MA=('GC_' + self.idAST + '_B','GC_' + self.idAST + '_T',),
+               VALE=vale_K_TR_L(
+                   self.KNAXE, self.KY_CE, self.KE1, self.KE2, self.NBCR),),
+            _F(GROUP_MA=('GC_' + self.idAST + '_B', 'GC_' + self.idAST + '_T',),
                REPERE='LOCAL',
                CARA='M_TR_D_L',
-               VALE=(0.,0.,0.,0.,),),
+               VALE=(0., 0., 0., 0.,),),
 
-        # discrets des liaisons grilles / tubes-guide
+            # discrets des liaisons grilles / tubes-guide
             # grilles de mélanges
-            _F(GROUP_MA='GT_' + self.idAST+ '_M',
+            _F(GROUP_MA='GT_' + self.idAST + '_M',
                REPERE='LOCAL',
                CARA='K_TR_D_L',
                VALE=vale_K_TR_D_L(self.NBTG, self.KR_GM),),
-            _F(GROUP_MA='GT_' + self.idAST+ '_M',
+            _F(GROUP_MA='GT_' + self.idAST + '_M',
                REPERE='LOCAL',
                CARA='M_TR_D_L',
-               VALE=(0.,0.,0.,0.,),),
+               VALE=(0., 0., 0., 0.,),),
             # grilles extrémités
             _F(GROUP_MA='GT_' + self.idAST + '_E',
                REPERE='LOCAL',
@@ -360,7 +372,7 @@ class Assemblage(object):
             _F(GROUP_MA='GT_' + self.idAST + '_E',
                REPERE='LOCAL',
                CARA='M_TR_D_L',
-               VALE=(0.,0.,0.,0.,),),
+               VALE=(0., 0., 0., 0.,),),
             # poids des grilles
             _F(GROUP_MA='GR_' + self.idAST,
                REPERE='LOCAL',
@@ -383,18 +395,21 @@ class Assemblage(object):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA/FORCE_NODALE
             dans la prise en compte de la poussée d Archimede."""
         from Cata.cata import _F
-        mcf=[]
-        mcf.append(_F(GROUP_NO='PS_' + self.idAST,FX=self.AFEBSU_1,),)
-        mcf.append(_F(GROUP_NO='PI_' + self.idAST,FX=self.AFEBIN_1,),)
+        mcf = []
+        mcf.append(_F(GROUP_NO='PS_' + self.idAST, FX=self.AFEBSU_1,),)
+        mcf.append(_F(GROUP_NO='PI_' + self.idAST, FX=self.AFEBIN_1,),)
 
-        mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(1), FX=self.AFGRE_1/4.,),)
-        for igr in range(1,self.NBGR-1):
-            mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(igr+1), FX=self.AFGRM_1/4.,),)
+        mcf.append(
+            _F(GROUP_NO='G_' + self.idAST + '_' + str(1), FX=self.AFGRE_1 / 4.,),)
+        for igr in range(1, self.NBGR - 1):
+            mcf.append(
+                _F(GROUP_NO='G_' + self.idAST + '_' + str(igr + 1), FX=self.AFGRM_1 / 4.,),)
 
-        mcf.append(_F(GROUP_NO='G_' + self.idAST + '_' + str(self.NBGR), FX=self.AFGRE_1/4.,),)
+        mcf.append(
+            _F(GROUP_NO='G_' + self.idAST + '_' + str(self.NBGR), FX=self.AFGRE_1 / 4.,),)
         return mcf
 
-    def mcf_archimede_poutre(self,FXTG,FXCR):
+    def mcf_archimede_poutre(self, FXTG, FXCR):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
             dans la prise en compte de la poussée d Archimede."""
         from Cata.cata import _F
@@ -404,14 +419,14 @@ class Assemblage(object):
         )
         return mcf
 
-    def chargement_transverse_crayons(self,FYCR,FZCR):
+    def chargement_transverse_crayons(self, FYCR, FZCR):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
            dans la prise en compte des efforts transverses."""
         from Cata.cata import _F
-        mcf = (_F(GROUP_MA='CR_' + self.idAST, FY=FYCR,FZ=FZCR,),)
+        mcf = (_F(GROUP_MA='CR_' + self.idAST, FY=FYCR, FZ=FZCR,),)
         return mcf
 
-    def chargement_fct_hydro_axiale(self,FXCR,FXTG):
+    def chargement_fct_hydro_axiale(self, FXCR, FXTG):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
            dans la prise en compte des efforts hydrodynamiques axiaux."""
         from Cata.cata import _F
@@ -421,6 +436,7 @@ class Assemblage(object):
 
 
 class AssemblageAFAXL(Assemblage):
+
     """Particularités du type AFAXL."""
 
     def post_definition(self):
@@ -428,24 +444,33 @@ class AssemblageAFAXL(Assemblage):
         Définition des caractéristiques déterminées à partir des
         autres"""
         self.definition(
-            EPMOY = (self.EP1GU + self.EP2GU) / 2,
-            Heinf = ((self.Leinf * self.Keinf) / self.EEI0)**0.5,
-            Hesup = ((self.Lesup * self.Kesup) / self.EES0)**0.5,
+            EPMOY=(self.EP1GU + self.EP2GU) / 2,
+            Heinf = ((self.Leinf * self.Keinf) / self.EEI0) ** 0.5,
+            Hesup = ((self.Lesup * self.Kesup) / self.EES0) ** 0.5,
         )
 
         self.definition(
-            S_TG_C  = pi * (self.RAY1GU**2 - (self.RAY1GU - self.EP1GU)**2),
-            I_TG_C  = pi / 4 * (self.RAY1GU**4 - (self.RAY1GU - self.EP1GU)**4),
-            S_TG_R  = pi * (self.RAY2GU**2 - (self.RAY2GU - self.EP2GU)**2),
-            I_TG_R  = pi / 4 * (self.RAY2GU**4 - (self.RAY2GU - self.EP2GU)**4),
-            S_TG_B  = pi * (self.RAY2GU**2 - (self.RAY2GU - self.EPMOY)**2),
-            I_TG_B  = pi / 4 * (self.RAY2GU**4 - (self.RAY2GU - self.EPMOY)**4),
+            S_TG_C=pi *
+            (self.RAY1GU ** 2 - (self.RAY1GU - self.EP1GU) ** 2),
+            I_TG_C=pi / 4 *
+            (self.RAY1GU ** 4 - (self.RAY1GU - self.EP1GU) ** 4),
+            S_TG_R=pi *
+            (self.RAY2GU ** 2 - (self.RAY2GU - self.EP2GU) ** 2),
+            I_TG_R=pi / 4 *
+            (self.RAY2GU ** 4 - (self.RAY2GU - self.EP2GU) ** 4),
+            S_TG_B=pi *
+            (self.RAY2GU ** 2 - (self.RAY2GU - self.EPMOY) ** 2),
+            I_TG_B=pi / 4 *
+            (self.RAY2GU ** 4 - (self.RAY2GU - self.EPMOY) ** 4),
 
-            S_CR  = pi * (self.RAYCRA**2 - (self.RAYCRA - self.EPCRA)**2),
-            I_CR  = pi / 4 * (self.RAYCRA**4 - (self.RAYCRA - self.EPCRA)**4),
+            S_CR=pi * (self.RAYCRA ** 2 - (self.RAYCRA - self.EPCRA) ** 2),
+            I_CR=pi / 4 *
+            (self.RAYCRA ** 4 - (self.RAYCRA - self.EPCRA) ** 4),
         )
 
+
 class ACFactory(Mac3Factory):
+
     """Classe pour construire les objets Assemblage."""
 
     def build_supported_types(self):

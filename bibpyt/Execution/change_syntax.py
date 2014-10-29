@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
@@ -41,9 +41,12 @@ STX.set_header(LEVEL.DEBUG, '#DEBUG')
 message.add(STX)
 message.set_level(STX, LEVEL.DEBUG)
 
+
 class SyntaxVisitor(CommandTextVisitor):
+
     """Visitor to mass-convert command files.
     """
+
     def __init__(self, with_default=False):
         """Initialization.
         with_default : if True, visit the default values of undefined keywords
@@ -73,7 +76,7 @@ class SyntaxVisitor(CommandTextVisitor):
 
     def visitMCFACT(self, fact):
         """Visit the MCFACT object."""
-        #print "visit MCFACT", fact.nom
+        # print "visit MCFACT", fact.nom
         self.command.set_current_mcfact(fact)
         if self._pass == 2:
             self.command.init_pass2()
@@ -90,7 +93,7 @@ class SyntaxVisitor(CommandTextVisitor):
                 svalues = svalues[0]
             self.command.set_value(mcsimp.nom, svalues)
         if self._pass == 2:
-            #print "visit MCSIMP", mcsimp.nom
+            # print "visit MCSIMP", mcsimp.nom
             newvalues = self.command.get_value(mcsimp.nom)
             for i, couple in enumerate(newvalues):
                 key, val = couple
@@ -123,7 +126,8 @@ class SyntaxVisitor(CommandTextVisitor):
         prof = AsterProfil(exp[0])
         comm = prof.get_type('comm')
         num = len(glob(FILENAME + '.*')) + 1
-        lfn = [fname for fname in self.text.keys() if fname.startswith('fort.')]
+        lfn = [
+            fname for fname in self.text.keys() if fname.startswith('fort.')]
         assert len(lfn) <= 1, lfn
         if len(lfn) == 0:
             fname = 'fort.1'
@@ -139,7 +143,7 @@ class SyntaxVisitor(CommandTextVisitor):
             start, end, indent, txt = chg
             offset = ' ' * indent
             nlin = [offset + lin for lin in txt.splitlines()]
-            new = new[:start] + nlin + new[end+1:]
+            new = new[:start] + nlin + new[end + 1:]
             txt = ["### filename : %s ###" % fname,
                    "### lines range: %d-%d (indent: %d)" % tuple(chg[:3]),
                    chg[-1], ]
@@ -147,10 +151,13 @@ class SyntaxVisitor(CommandTextVisitor):
             new.append('')
         open(modified, 'w').write(os.linesep.join(new))
         shutil.copy(modified, osp.join(DEST, final))
-        #shutil.copy(fname, osp.join(DEST, final + '.orig'))
+        # shutil.copy(fname, osp.join(DEST, final + '.orig'))
+
 
 class ChangeCommand(object):
+
     """Functions to change a command."""
+
     def __init__(self):
         """Initialization"""
         self.kwval = {}
@@ -188,70 +195,83 @@ class ChangeCommand(object):
         Extract the 'vale_calc' values for the current MCFACT."""
         self.vale_calc = vale_calc.get()
         message.debug(STX, "vale_calc = %s", self.vale_calc)
-        self.cur_vale_calc = self.vale_calc and self.vale_calc.pop(0) or 0.123456
+        self.cur_vale_calc = self.vale_calc and self.vale_calc.pop(
+            0) or 0.123456
+
 
 class NoChange(ChangeCommand):
+
     """Does nothing"""
+
     def init_pass2(self):
         pass
 
+
 class ChangeTestFonction(ChangeCommand):
+
     """Change TEST_FONCTION syntax"""
+
     def get_value(self, keyword):
         """Return the couples (new keyword, new value)."""
         dico = self._cur_dict()
         value = dico[keyword]
         reference = dico.get('REFERENCE', repr('NON_REGRESSION'))
         precision = dico.get('PRECISION', 1.e-3)
-        really_nonreg = reference == repr('NON_REGRESSION') and float(precision) <= 1.e-6
+        really_nonreg = reference == repr(
+            'NON_REGRESSION') and float(precision) <= 1.e-6
         if really_nonreg:
             dconv = {
-                'REFERENCE' : [], # NON_REGRESSION is implicit
-                'PRECISION' : [],
-                'VALE_REFE' : [('VALE_CALC', dico['VALE_REFE']), ],
+                'REFERENCE': [],  # NON_REGRESSION is implicit
+                'PRECISION': [],
+                'VALE_REFE': [('VALE_CALC', dico['VALE_REFE']), ],
             }
             if float(precision) < 1.e-6:  # more severe than by default
                 dconv['PRECISION'] = [('TOLE_MACHINE', value), ]
         else:
             dconv = {
-                'VALE_REFE' : [('VALE_REFE', dico['VALE_REFE']),
-                               ('VALE_CALC', repr_float(self.cur_vale_calc))],
+                'VALE_REFE': [('VALE_REFE', dico['VALE_REFE']),
+                              ('VALE_CALC', repr_float(self.cur_vale_calc))],
             }
             if reference == repr('NON_REGRESSION'):
                 dconv['REFERENCE'] = [('REFERENCE', repr('NON_DEFINI')), ]
         res = dconv.get(keyword, [(keyword, value), ])
-        #print "  return:", res
+        # print "  return:", res
         return res
 
+
 class ChangeTestResu(ChangeCommand):
+
     """Change TEST_RESU syntax"""
+
     def get_value(self, keyword):
         """Return the couples (new keyword, new value)."""
         dico = self._cur_dict()
         value = dico[keyword]
         reference = dico.get('REFERENCE', repr('NON_REGRESSION'))
         precision = dico.get('PRECISION', 1.e-3)
-        really_nonreg = reference == repr('NON_REGRESSION') and float(precision) <= 1.e-6
+        really_nonreg = reference == repr(
+            'NON_REGRESSION') and float(precision) <= 1.e-6
         message.info(STX, 'NON_REGRESSION ? %s', really_nonreg)
         val = dico.get('VALE') or dico.get('VALE_I') or dico.get('VALE_R')
         if really_nonreg:
             dconv = {
-                'REFERENCE' : [], # NON_REGRESSION is implicit
-                'PRECISION' : [],
-                'VALE' : [('VALE_CALC', dico['VALE']), ],
+                'REFERENCE': [],  # NON_REGRESSION is implicit
+                'PRECISION': [],
+                'VALE': [('VALE_CALC', dico['VALE']), ],
             }
             if float(precision) < 1.e-6:  # more severe than by default
                 dconv['PRECISION'] = [('TOLE_MACHINE', value), ]
         else:
             dconv = {
-                'VALE' : [('VALE_REFE', dico['VALE']),
-                          ('VALE_CALC', repr_float(self.cur_vale_calc))],
+                'VALE': [('VALE_REFE', dico['VALE']),
+                         ('VALE_CALC', repr_float(self.cur_vale_calc))],
             }
             if reference == repr('NON_REGRESSION'):
                 dconv['REFERENCE'] = [('REFERENCE', repr('NON_DEFINI')), ]
         res = dconv.get(keyword, [(keyword, value), ])
-        #print "  return:", res
+        # print "  return:", res
         return res
+
 
 def ChangeFactory(cmdname):
     if cmdname == 'TEST_FONCTION':
@@ -261,7 +281,9 @@ def ChangeFactory(cmdname):
     else:
         return NoChange()
 
+
 class StoreValeCalc(object):
+
     def __init__(self):
         self._vale = None
 

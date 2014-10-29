@@ -29,35 +29,33 @@ class sd_listis(sd_titre):
     NBPA = AsVI()
     VALE = AsVI()
 
-
-    def check_1(self,checker):
-        nbpa=self.NBPA.get()
-        bint=self.BINT.get()
-        lpas=self.LPAS.get()
-        vale=self.VALE.get()
+    def check_1(self, checker):
+        nbpa = self.NBPA.get()
+        bint = self.BINT.get()
+        lpas = self.LPAS.get()
+        vale = self.VALE.get()
 
         # cas général :
-        if len(vale) > 1 :
-            assert len(bint) == len(nbpa)+1
+        if len(vale) > 1:
+            assert len(bint) == len(nbpa) + 1
             assert len(nbpa) == len(lpas)
 
-            n1=0
-            assert  vale[0] == bint[0]
-            for k in range(len(nbpa)) :
-                npas=nbpa[k]
+            n1 = 0
+            assert vale[0] == bint[0]
+            for k in range(len(nbpa)):
+                npas = nbpa[k]
                 assert npas > 0
                 n1 = n1 + npas
-                assert  vale[n1] == bint[k+1]
+                assert vale[n1] == bint[k + 1]
 
-            assert len(vale) == n1+1
-            assert sdu_monotone(vale) in (1,) , vale
-
+            assert len(vale) == n1 + 1
+            assert sdu_monotone(vale) in (1,), vale
 
         # cas particulier :
-        if len(vale) == 1 :
+        if len(vale) == 1:
             assert len(bint) == 1
             assert len(nbpa) == 1
             assert len(lpas) == 1
-            assert  vale[0] == bint[0]
-            assert  nbpa[0] == 0, nbpa
-            assert  lpas[0] == 0, lpas
+            assert vale[0] == bint[0]
+            assert nbpa[0] == 0, nbpa
+            assert lpas[0] == 0, lpas

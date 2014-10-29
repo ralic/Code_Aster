@@ -22,7 +22,8 @@ Traitement special des poutres
 """
 from Utilitai.partition import MAIL_PY
 from Utilitai.Utmess import UTMESS
-import numpy, math
+import numpy
+import math
 from Calc_epx.calc_epx_utils import norme, vecteurs_egaux, tolist
 
 #----------------------------- Precision -------------------------------
@@ -31,10 +32,13 @@ tst = 1.0E-10
 #----------------------------- class POUTRE -----------------------------
 #------------------------------------------------------------------------
 
+
 class POUTRE:
+
     """
         Classe POUTRE pour gérer les orientation.
     """
+
     def __init__(self, MAILLAGE, CARA_ELEM):
         """
             Initialisation d'une instance de la classe POUTRE
@@ -55,9 +59,9 @@ class POUTRE:
         """
 
         for gr in self.dic_gma.keys():
-             vect = self.get_vecty_group_ma(gr)
-             dic_orie = {'VX': vect[0], 'VY': vect[1], 'VZ': vect[2], }
-             dic_gr_cara_supp[gr] = dic_orie
+            vect = self.get_vecty_group_ma(gr)
+            dic_orie = {'VX': vect[0], 'VY': vect[1], 'VZ': vect[2], }
+            dic_gr_cara_supp[gr] = dic_orie
         return dic_gr_cara_supp
 
 #------------------------------------------------------------------------
@@ -89,14 +93,14 @@ class POUTRE:
                 if not dic_gma[gr].has_key('ANGL_VRIL'):
                     dic_gma[gr]['ANGL_VRIL'] = 0.0
                 if dic_gma[gr].has_key('ANGL_NAUT'):
-                    UTMESS('F','PLEXUS_10')
+                    UTMESS('F', 'PLEXUS_10')
         return dic_gma
 
 #------------------------------------------------------------------------
     def get_vecty_group_ma(self, group_ma):
         """
             Renvoie le vecteur d'orientation des poutres pour un groupe
-            de maille, en vérifiant que c'est bien le même pour toutes 
+            de maille, en vérifiant que c'est bien le même pour toutes
             les mailles du groupe.
         """
         from Calc_epx.calc_epx_utils import angle2vecty
@@ -120,6 +124,7 @@ class POUTRE:
 
         return vect_y
 #------------------------------------------------------------------------
+
     def get_coor_nodes_maille(self, maille):
         """
             Renvoie les coordonnées des deux noeuds de la maille 'maille'.
@@ -138,14 +143,14 @@ class POUTRE:
 
         a, b = self.get_coor_nodes_maille(maille)
 
-        gx = [b[0]-a[0], b[1]-a[1], b[2]-a[2]]
+        gx = [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
 
         if abs(gx[1]) < tst and abs(gx[0]) <= tst:
             alpha = 0.0
         else:
             alpha = math.atan2(gx[1], gx[0])
 
-        p = numpy.sqrt(gx[0]*gx[0] + gx[1]*gx[1])
+        p = numpy.sqrt(gx[0] * gx[0] + gx[1] * gx[1])
         if abs(gx[2]) < tst and abs(p) <= tst:
             beta = 0.0
         else:

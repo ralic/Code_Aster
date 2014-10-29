@@ -18,13 +18,13 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
+cata_msg = {
 
-1: _(u"""
+    1: _(u"""
  La somme de matrices distribuées n'ayant pas le même profil est impossible
 """),
 
-4: _(u"""
+    4: _(u"""
  erreur LAPACK (ou BLAS) au niveau de la routine  %(k1)s
   le paramètre numéro  %(i1)d
   n'a pas une valeur cohérente %(i2)d
@@ -35,13 +35,13 @@ cata_msg={
 
 
 
-6: _(u"""
+    6: _(u"""
  Résolution MULTI_FRONTALE :
  problème dans le traitement des résultats de AMDBAR
  tous les NDS du SN %(i1)d ont NV nul
 """),
 
-10: _(u"""
+    10: _(u"""
   le nombre de noeuds de la structure   :  %(i1)d
   la base utilisée est              :  %(k1)s
   les caractéristiques élémentaires :  %(k2)s
@@ -49,12 +49,12 @@ cata_msg={
   type de pas                       :  %(i2)d
 """),
 
-11: _(u"""
+    11: _(u"""
   le profil de vitesse de la zone :  %(k1)s
   type de réseau de la zone       :  %(i1)d
 """),
 
-13: _(u"""
+    13: _(u"""
   le noeud d'application            :  %(k1)s
   la base utilisée est              :  %(k2)s
   les caractéristiques élémentaires :  %(k3)s
@@ -64,67 +64,67 @@ cata_msg={
   le profil de masse volumique      :  %(r3)f
 """),
 
-14: _(u"""
+    14: _(u"""
     pas de couplage pris en compte
 """),
 
-15: _(u"""
+    15: _(u"""
    pour le concept  %(k1)s, le mode numéro  %(i1)d
 """),
 
-16: _(u"""
+    16: _(u"""
   de fréquence  %(r1)f
 """),
 
-17: _(u"""
+    17: _(u"""
   de charge critique  %(r1)f
 """),
 
-18: _(u"""
+    18: _(u"""
   a une norme d'erreur de  %(r1)f  supérieure au seuil admis  %(r2)f.
 """),
 
 
 
-20: _(u"""
+    20: _(u"""
   est en dehors de l'intervalle de recherche : [ %(r1)f,  %(r2)f ].
 """),
 
 
 
-23: _(u"""
+    23: _(u"""
    pour le concept  %(k1)s,
 """),
 
-24: _(u"""
+    24: _(u"""
   dans l'intervalle [%(r1)f  ,  %(r2)f]
   il y a théoriquement  %(i1)d fréquence(s) propres()
   et on en a calculé  %(i2)d.
 """),
 
-25: _(u"""
+    25: _(u"""
   dans l'intervalle [%(r1)f  ,  %(r2)f]
   il y a théoriquement  %(i1)d charge(s) critique(s)
   et on en a calculé  %(i2)d.
 """),
 
-26: _(u"""
+    26: _(u"""
  Ce problème peut apparaître lorsqu'il y a des modes multiples (structure avec symétries)
  ou une forte densité modale.
 """),
 
-27: _(u"""
+    27: _(u"""
  La valeur du SHIFT %(r1)f coïncide avec une fréquence propre.
 """),
 
-28: _(u"""
+    28: _(u"""
  les nombres de termes des matrices RIGI et MASSE différent
  celui de la matrice MASSE vaut :  %(i1)d
  celui de la matrice RIGI  vaut :  %(i2)d
 
 """),
 
-29: _(u"""
+    29: _(u"""
  le nombre d'amortissements réduits est trop grand
  le nombre de modes propres vaut  %(i1)d
  et le nombre de coefficients :   %(i2)d
@@ -132,13 +132,13 @@ cata_msg={
 
 """),
 
-30: _(u"""
+    30: _(u"""
  le nombre d'amortissements réduits est insuffisant, il en manque :  %(i1)d,
  car le nombre de modes vaut :  %(i2)d
  on rajoute  %(i3)d amortissements réduits avec la valeur du dernier mode propre.
 """),
 
-31: _(u"""
+    31: _(u"""
   incohérence :
    DEEQ I      =  %(i1)d
    DEEQ(2*I-1) =  %(i2)d
@@ -146,63 +146,63 @@ cata_msg={
 
 """),
 
-32: _(u"""
+    32: _(u"""
   erreur de type DELG(IDDL) différent de -1 ou -2  %(i1)d
 """),
 
-33: _(u"""
+    33: _(u"""
  un ddl bloqué a au moins 2 LAMBDA1 ou 2 LAMBDA2
  le ddl bloqué est  %(i1)d
 
 """),
 
-34: _(u"""
+    34: _(u"""
  incohérence des multiplicateurs de Lagrange
  DDL %(i1)d
  LAMBDA1 %(i2)d
  LAMBDA2 %(i3)d
 """),
 
-35: _(u"""
+    35: _(u"""
  erreur programmeur
  le LAMBDA2  %(i1)d a moins de 2 voisins
  il faut le LAMBDA1 et au moins un DDL
 
 """),
 
-36: _(u"""
+    36: _(u"""
  Problème dans le calcul des DDL :
  NUM devrait être égal à n1 :
  NUM = %(i1)d , n1 = %(i2)d
  impression des multiplicateurs de Lagrange
 """),
 
-37: _(u"""
+    37: _(u"""
  NUME_DDL incohérence des multiplicateurs de Lagrange
   DDL     %(i1)d
   LAMBDA1 %(i2)d
   LAMBDA2 %(i3)d
 """),
 
-38: _(u"""
+    38: _(u"""
  nombre de relations linéaires %(i1)d
 """),
 
-39: _(u"""
+    39: _(u"""
  LAMBDA1 de R linéaire : %(i1)d
  LAMBDA2 de R linéaire : %(i2)d
 """),
 
-40: _(u"""
+    40: _(u"""
  Données erronées
 """),
 
-41: _(u"""
+    41: _(u"""
  pas de mode statique pour  le noeud :  %(k1)s  et sa composante :  %(k2)s
 
 """),
 
-42: _(u"""
+    42: _(u"""
  pour les modes statiques :
  on attend un :  %(k1)s
  noeud :  %(k2)s
@@ -210,7 +210,7 @@ cata_msg={
 
 """),
 
-43: _(u"""
+    43: _(u"""
  champ inexistant.
  champ :  %(k1)s
  noeud :  %(k2)s
@@ -218,27 +218,27 @@ cata_msg={
 
 """),
 
-48: _(u"""
+    48: _(u"""
  incohérence de certains paramètres modaux propres à ARPACK
   numéro d'erreur  %(i1)d
 
 """),
 
-49: _(u"""
+    49: _(u"""
 Le nombre de modes propres calculés (%(i1)d) est inférieur au nombre
 de fréquences demandées (%(i2)d).
  --> Le calcul continue, on ne prend que les %(i1)d premiers modes.
 
 Conseil
 -------
-La prochaine fois, relancez en augmentant la taille de l'espace de projection (mots-clés 
+La prochaine fois, relancez en augmentant la taille de l'espace de projection (mots-clés
 COEF_DIM_ESPACE ou DIM_SOUS_ESPACE).
 Vous pouvez aussi relancer en demandant moins de modes.
 Si votre problème est fortement amorti, il est possible que des modes propres non calculés soient
 sur amortis, diminuez alors le nombre de modes demandés.
 """),
 
-50: _(u"""
+    50: _(u"""
 Le nombre de modes propres calculés (%(i1)d) est supérieur au nombre
 de fréquences demandées (%(i2)d).
 
@@ -246,7 +246,7 @@ de fréquences demandées (%(i2)d).
 
 """),
 
-51: _(u"""
+    51: _(u"""
  La valeur propre numéro %(i1)d a une partie imaginaire non négligeable.
  Partie réelle     = %(r1)12.5E
  Partie imaginaire = %(r2)12.5E
@@ -259,42 +259,42 @@ de fréquences demandées (%(i2)d).
   taille de l'espace de projection (mots-clés COEF_DIM_ESPACE ou DIM_SOUS_ESPACE).
 """),
 
-52: _(u"""
+    52: _(u"""
  LAIGLE: Erreur
    - Non convergence à l'itération max : %(i1)d
    - Convergence irrégulière & erreur >   %(r1)f
    - Diminuer la taille d'incrément.
 """),
 
-53: _(u"""
+    53: _(u"""
  Erreur de programmation MULT_FRONT (NUME_DDL / PREML0) :
    * Sur connexité des Lagrange Lambda1
 """),
 
-54: _(u"""
+    54: _(u"""
      ==== Type de maille Aster / Type de maille GMSH ====
 """),
 
-55: _(u"""
+    55: _(u"""
     %(i1)d  éléments %(k1)s découpés en %(i2)d  éléments %(k2)s a %(i3)d noeuds
 """),
 
-56: _(u"""
+    56: _(u"""
     La matrice factorisée produit par l'opérateur FACTOR ne peut faire l'objet
     d'un concept réentrant car la méthode de résolution définie dans NUME_DDL
     est 'GCPC'.
 """),
 
-57: _(u"""
+    57: _(u"""
     Le préconditionnement d'une matrice assemblée complexe n'est pas permis.
 """),
 
-58: _(u"""
+    58: _(u"""
     La masse du modèle est nulle.
     On ne peut donc pas normer par rapport à la masse.
 """),
 
-59: _(u"""
+    59: _(u"""
  MULT_FRONT: Erreur dans la renumérotation
    - Le super noeud : %(i1)d
    - devrait être le fils de   %(i2)d
@@ -304,32 +304,32 @@ de fréquences demandées (%(i2)d).
    - Essayez un autre algorithme pour la renumérotation : 'MD', 'MDA', ...
 """),
 
-60: _(u"""
+    60: _(u"""
     La variante 'QZ_QR' de la méthode 'QZ' ne fonctionne qu'avec une matrice %(k1)s symétrique réelle
     et %(k2)s symétrique réelle définie positive. Donc elle ne traite pas les problèmes de flambement,
     les Lagrange issus de AFFE_CHAR_MECA, des matrices complexes ou non symétriques,
     ni les problèmes modaux quadratiques.
 """),
 
-61: _(u"""
+    61: _(u"""
     Méthode 'QZ' : propriété spectrale non respectée sur la valeur propre numéro %(i1)d.
     Les relations |alpha| < ||A|| et |bêta| < ||B|| ne sont pas vérifiées :
           |alpha|=%(r1)f,  ||A||=%(r2)f
           |bêta| =%(r3)f,  ||B||=%(r4)f
 """),
 
-62: _(u"""
+    62: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT: On trouve un nombre de valeurs propres
     %(i1)d différent du nombre de ddls physiques actifs %(i2)d !
 """),
 
-63: _(u"""
+    63: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT + OPTION='BANDE': On trouve un nombre de
     valeurs propres %(i1)d différent du nombre de valeurs propres détectées
     dans la bande %(i2)d !
 """),
 
-64: _(u"""
+    64: _(u"""
     La méthode de 'JACOBI' n'est pas utilisable pour un problème modal quadratique
     (présence d'une matrice %(k1)s).
 
@@ -337,23 +337,23 @@ de fréquences demandées (%(i2)d).
     Utiliser la méthode 'SORENSEN' ou 'TRI_DIAG'.
 """),
 
-65: _(u"""
+    65: _(u"""
     L'option de calcul 'TOUT' (sous le mot-clé facteur %(k1)s)
     est licite seulement avec METHODE='QZ'.
 """),
 
-66: _(u"""
+    66: _(u"""
     Méthode QZ dans MODE_ITER_SIMULT : On souhaite un nombre de valeurs
     propres %(i1)d supérieur au nombre de valeurs propres détectées %(i2)d !
 """),
 
 
 
-68: _(u"""
+    68: _(u"""
     Méthode 'QZ' dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
 """),
 
-69: _(u"""
+    69: _(u"""
     Au moins une des matrices est non symétrique.
     Pour l'instant, seules les méthodes 'SORENSEN' et 'QZ' peuvent traiter le cas de
     matrices non symétriques.
@@ -364,12 +364,12 @@ de fréquences demandées (%(i2)d).
     - Sinon, utiliser 'SORENSEN'.
 """),
 
-70: _(u"""
+    70: _(u"""
     Au moins une des matrices est non symétrique, et la matrice %(k1)s est complexe.
     Pour l'instant, ce cas n'a pas été développé dans le code.
 """),
 
-71: _(u"""
+    71: _(u"""
     Cette fonctionnalité requiert un solveur linéaire permettant de
     détecter les éventuelles singularités des matrices.
 
@@ -378,7 +378,7 @@ de fréquences demandées (%(i2)d).
     utiliser 'MULT_FRONT' ou 'MUMPS'.
 """),
 
-73: _(u"""
+    73: _(u"""
     On a besoin d'effectuer un calcul de déterminant.
     Pour l'instant seuls les solveurs linéaires directs 'MULT_FRONT', 'LDLT'
     et MUMPS (à partir de la version 4.10.0) peuvent effectuer ce type de calcul.
@@ -390,7 +390,7 @@ de fréquences demandées (%(i2)d).
     (X-FEM, incompressibilité, THM, ...).
 """),
 
-74: _(u"""
+    74: _(u"""
     Vous utilisez une fonctionnalité qui nécessite de connaître le degré de singularité de matrices associées à
     des systèmes linéaires. Or, vous avez désactivé la détection de singularité avec le mot-clé NPREC.
 
@@ -399,7 +399,7 @@ de fréquences demandées (%(i2)d).
       - S'il vous est indispensable de désactiver la détection de singularité, essayez d'utiliser un autre solveur linéaire, comme MULT_FRONT par exemple.
 """),
 
-75: _(u"""
+    75: _(u"""
     Le solveur modal n'a pas réussi à capturer tous les modes propres souhaités
     avec le niveau de convergence requis.
 
@@ -415,7 +415,7 @@ de fréquences demandées (%(i2)d).
      ou en utilisant l'option STOP_ERREUR='NON' sous le mot-clé facteur VERI_MODE.
 """),
 
-76 : _(u"""
+    76 : _(u"""
    Solveur GCPC :
    la création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
 
@@ -423,14 +423,14 @@ de fréquences demandées (%(i2)d).
    augmenter la valeur du paramètre PCENT_PIVOT sous le mot-clé facteur SOLVEUR.
 """),
 
-77 : _(u"""
+    77 : _(u"""
 Conseils :
 Si vous utilisez METHODE='SORENSEN' ou 'TRI_DIAG' ou 'JACOBI', vous pouvez améliorer cette norme :
  - en augmentant la valeur de COEF_DIM_ESPACE (la valeur par défaut est 4 pour 'TRI_DIAG' et 2 pour 'SORENSEN' et 'JACOBI'),
  - en réduisant le nombre de valeurs propres recherchées (%(k1)s ou taille de la BANDE).
 """),
 
-78 : _(u"""
+    78 : _(u"""
 Conseils :
 Vous pouvez améliorer cette norme :
  - en augmentant les nombres d'itérations des algorithmes
@@ -444,16 +444,16 @@ Vous pouvez améliorer cette norme :
      et/ou mot-clé OPTION sous le mot-clé facteur CALC_MODE).
 """),
 
-79: _(u"""
+    79: _(u"""
     On souhaite un nombre de valeurs propres NMAX_%(k1)s=%(i1)d
     supérieur au nombre de valeurs propres détectées NUM=%(i2)d !
 """),
 
-80: _(u"""
+    80: _(u"""
     Pour poursuivre le calcul, on impose NMAX_%(k1)s=NUM.
 """),
 
-81: _(u"""
+    81: _(u"""
     Ce problème peut être dû :
     - à un mauvais tri dans les valeurs propres complexes conjuguées.
       Contacter l'équipe de développement.
@@ -469,7 +469,7 @@ Vous pouvez améliorer cette norme :
     Sinon utiliser METHODE='QZ' pour les problèmes de petites tailles (<500 ddls).
 """),
 
-82 : _(u"""
+    82 : _(u"""
 L'option 'PLUS_GRANDE' n'est pas utilisable en présence d'une matrice d'amortissement,
 d'une matrice de rigidité complexe, ou de matrices non symétriques.
 """),

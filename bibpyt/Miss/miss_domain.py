@@ -17,7 +17,9 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
+
 class MissDomains(object):
+
     """A MissDomain instance assigns the identifiers of the domains and
     the different groups they contains"""
 
@@ -25,7 +27,7 @@ class MissDomains(object):
         """Initialization"""
         self.use_pc = use_pc
         self.use_issf = use_issf
-        #XXX by defining all the domains, even for issf, fdlv112b fails
+        # XXX by defining all the domains, even for issf, fdlv112b fails
         self.def_all_domains = (not use_issf) or use_pc
         self.domain = {}
         self.group = {}
@@ -46,7 +48,7 @@ class MissDomains(object):
           'sol-fluide', 'sol libre', 'pc', 'struct'
         - Keys of 'domain' are strings: 'struct', 'sol', 'fluide'.
           A domain is defined by its number and the groups that belong to it.
-        
+
              groupes                   ISS    ISS+PC  ISFS    ISFS+PC
         . interface sol-structure       1       1       1       1
         . interface fluide-structure                    2       2

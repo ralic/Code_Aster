@@ -61,35 +61,38 @@ class sd_char_chme(AsBase):
     FELEC = Facultatif(sd_carte())
     FL101 = Facultatif(sd_carte())
     FL102 = Facultatif(sd_carte())
-    FLUX  = Facultatif(sd_carte())
+    FLUX = Facultatif(sd_carte())
     FORNO = Facultatif(sd_carte())
-    IMPE  = Facultatif(sd_carte())
-    ONDE  = Facultatif(sd_carte())
+    IMPE = Facultatif(sd_carte())
+    ONDE = Facultatif(sd_carte())
     PESAN = Facultatif(sd_carte())
     PRESS = Facultatif(sd_carte())
     PREFF = Facultatif(sd_carte())
     ROTAT = Facultatif(sd_carte())
     SIGIN = Facultatif(sd_carte())
     SIINT = Facultatif(sd_carte())
-    VNOR  = Facultatif(sd_carte())
+    VNOR = Facultatif(sd_carte())
     ONDPL = Facultatif(sd_carte())
     ONDPR = Facultatif(sd_carte())
     EFOND = Facultatif(sd_carte())
 
     VEASS = Facultatif(AsVK8(lonmax=1, ))
     VEISS = Facultatif(AsVK24(lonmax=6, ))
-    EVOL_CHAR  = Facultatif(AsVK8(SDNom(nomj='.EVOL.CHAR'), lonmax=1, ))
+    EVOL_CHAR = Facultatif(AsVK8(SDNom(nomj='.EVOL.CHAR'), lonmax=1, ))
     TEMPE_TEMP = Facultatif(AsVK8(SDNom(nomj='.TEMPE.TEMP'), lonmax=1, ))
 
-    RCLIN = Facultatif(AsColl(stockage='DISPERSE',modelong='VARIABLE', type='I', ))
-    RCNOM = Facultatif(AsColl(stockage='CONTIG',modelong='CONSTANT', type='K', ))
+    RCLIN = Facultatif(
+        AsColl(stockage='DISPERSE', modelong='VARIABLE', type='I', ))
+    RCNOM = Facultatif(
+        AsColl(stockage='CONTIG', modelong='CONSTANT', type='K', ))
     RCTYR = Facultatif(AsVK8(SDNom(nomj='.RCTYR'),))
     NMATA = Facultatif(AsVI(SDNom(nomj='.NMATA'),))
+
 
 class sd_char_meca(AsBase):
     nomj = SDNom(fin=8)
 
-    TYPE            = AsVK8(lonmax=1)
+    TYPE = AsVK8(lonmax=1)
 
     CHME = Facultatif(sd_char_chme())
 

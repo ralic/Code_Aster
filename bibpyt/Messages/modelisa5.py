@@ -19,92 +19,92 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
  erreur fortran de dimensionnement de tableau (nbmmai>nbmmax)
 """),
 
-2 : _(u"""
+    2 : _(u"""
  lecture 1 : il manque les coordonnées !
 """),
 
-3 : _(u"""
+    3 : _(u"""
  lecture 1 : il manque les mailles !
 """),
 
-4 : _(u"""
+    4 : _(u"""
  transcodage : le noeud  %(k1)s  déclaré dans la connectivité de la maille  %(k2)s  n existe pas dans les coordonnées
 """),
 
-5 : _(u"""
+    5 : _(u"""
  transcodage : le noeud  %(k1)s  déclare dans le GROUP_NO:  %(k2)s  n'existe pas dans les coordonnées
 """),
 
-6 : _(u"""
+    6 : _(u"""
  le noeud :  %(k1)s  est en double dans le GROUP_NO:  %(k2)s . on élimine les doublons
 """),
 
-7 : _(u"""
+    7 : _(u"""
  transcodage : la maille  %(k1)s  déclaré dans le GROUP_MA:  %(k2)s  n'existe pas dans les connectivités
 """),
 
-8 : _(u"""
+    8 : _(u"""
  la maille :  %(k1)s  est en double dans le GROUP_MA:  %(k2)s . on élimine les doublons
 """),
 
-9 : _(u"""
+    9 : _(u"""
  transcodage : une incohérence a été détectée entre les déclarations de noms de noeuds ou de mailles lors du transcodage des objets groupes et connectivités
 """),
 
-10 : _(u"""
+    10 : _(u"""
  Erreur utilisateur dans CREA_CHAMP / COMB :
    Les champs que l'on cherche à combiner doivent tous être des champs aux noeuds.
 """),
 
-11 : _(u"""
+    11 : _(u"""
  Erreur utilisateur dans CREA_CHAMP / COMB :
    Les champs que l'on cherche à combiner doivent tous avoir la même grandeur (DEPL_R, ...).
    Ce doit être la même que celle donnée dans TYPE_CHAM).
 """),
 
-12 : _(u"""
+    12 : _(u"""
  Erreur utilisateur dans CREA_CHAMP / COMB :
    Les champs que l'on cherche à combiner doivent tous avoir la même numérotation.
 """),
 
-13 : _(u"""
+    13 : _(u"""
  Erreur utilisateur dans CREA_CHAMP / COMB :
    Les champs que l'on cherche à combiner doivent tous s'appuyer sur le même maillage.
 """),
 
-36 : _(u"""
+    36 : _(u"""
  un GROUP_MA n'a pas de nom, suppression de ce groupe.
 """),
 
-37 : _(u"""
+    37 : _(u"""
  un GROUP_NO n'a pas de nom, suppression de ce groupe.
 """),
 
-40 : _(u"""
+    40 : _(u"""
  absence de convergence j
 """),
 
-41 : _(u"""
+    41 : _(u"""
  absence de convergence i
 """),
 
-42 : _(u"""
+    42 : _(u"""
  pas de convergence
 """),
 
-44 : _(u"""
+    44 : _(u"""
  paramètre bêta non trouve
 """),
 
-45 : _(u"""
+    45 : _(u"""
  paramètre lambda non trouve
 """),
 
-47 : _(u"""
+    47 : _(u"""
  paramètre AFFINITE non trouve
 """),
 
@@ -112,7 +112,7 @@ cata_msg = {
 
 
 
-49 : _(u"""
+    49 : _(u"""
   -> La phase de vérification du maillage a été volontairement désactivée.
 
   -> Risque & Conseil :
@@ -120,189 +120,189 @@ cata_msg = {
      ne seront pas détectées. Cela pourra nuire à la qualité des résultats.
 """),
 
-50 : _(u"""
+    50 : _(u"""
 Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
   Pour la variable de commande %(k1)s
   la grandeur associée du champ doit être:  %(k2)s  mais elle est:  %(k3)s
 """),
 
-51 : _(u"""
+    51 : _(u"""
 DEFI_CABLE_BP : Échec de projection du noeud de câble %(k1)s.
 
 La projection du noeud %(k1)s devrait très certainement être faite sur
 la maille %(k2)s, cependant cette action est refusée car la distance
-entre le noeud et la maille n'est pas compatible avec l'épaisseur 
+entre le noeud et la maille n'est pas compatible avec l'épaisseur
 et l'excentricité de la maille.
 Cette distance (orientée) doit être comprise entre %(r3)f et %(r2)f, or
 la valeur calculée est %(r1)f.
 """),
 
 
-55 : _(u"""
+    55 : _(u"""
  VERIF : 2 arguments max
 """),
 
-56 : _(u"""
+    56 : _(u"""
  il manque le mot clé facteur POUTRE.
 """),
 
-57 : _(u"""
+    57 : _(u"""
  erreur(s) rencontrée(s) lors de la vérification des affectations.
 """),
 
-59 : _(u"""
+    59 : _(u"""
  une erreur d affectation a été détectée : certaines mailles demandées possèdent un type élément incompatible avec les données a affecter
 """),
 
-60 : _(u"""
+    60 : _(u"""
  des poutres ne sont pas affectées
 """),
 
-61 : _(u"""
+    61 : _(u"""
  des barres ne sont pas affectées
 """),
 
-62 : _(u"""
+    62 : _(u"""
  des câbles ne sont pas affectes
 """),
 
-63 : _(u"""
+    63 : _(u"""
  le paramètre "RHO" n'est pas défini pour toutes les couches.
 """),
 
-64 : _(u"""
+    64 : _(u"""
  Il ne faut qu'un comportement élastique.
 """),
 
-65 : _(u"""
+    65 : _(u"""
  <FAISCEAU_TRANS> deux zones d excitation du fluide ont même nom
 """),
 
-66 : _(u"""
+    66 : _(u"""
  SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour nature, ANGLE et noeud
 """),
 
-67 : _(u"""
+    67 : _(u"""
  SPEC_EXCI_POINT : si grappe_2 alors un seul noeud
 """),
 
-68 : _(u"""
+    68 : _(u"""
  SPEC_FONC_FORME : le nombre de fonctions fournies doit être égal a la dimension de la matrice interspectrale
 """),
 
-69 : _(u"""
+    69 : _(u"""
  SPEC_EXCI_POINT : le nombre d arguments pour nature, ANGLE et noeud doit être égal a la dimension de la matrice interspectrale
 """),
 
-70 : _(u"""
+    70 : _(u"""
  mauvaise définition de la plage  de fréquence.
 """),
 
-71 : _(u"""
+    71 : _(u"""
  mauvaise définition de la plage de fréquence. les modèles ne tolèrent pas des valeurs négatives ou nulles.
 """),
 
-72 : _(u"""
+    72 : _(u"""
  le nombre de points pour la discrétisation fréquentielle doit être une puissance de 2.
 """),
 
-73 : _(u"""
+    73 : _(u"""
  les spectres de type "longueur de corrélation"  ne peuvent être combines avec des spectres d un autre type.
 """),
 
-74 : _(u"""
+    74 : _(u"""
  le spectre de nom  %(k1)s  est associe a la zone  %(k2)s  qui n existe pas dans le concept  %(k3)s
 """),
 
-75 : _(u"""
+    75 : _(u"""
  le spectre de nom  %(k1)s  est associe a la zone de nom  %(k2)s
 """),
 
-76 : _(u"""
+    76 : _(u"""
  deux spectres sont identiques
 """),
 
-77 : _(u"""
+    77 : _(u"""
  les spectres de noms  %(k1)s  et  %(k2)s  sont associes au même profil de vitesse, de nom  %(k3)s
 """),
 
-78 : _(u"""
+    78 : _(u"""
  pas le bon numéro de mode
 """),
 
-79 : _(u"""
+    79 : _(u"""
  le calcul de tous les interspectres de réponse modale n est pas possible car seuls les auto spectres d excitation ont été calcules.
 """),
 
-80 : _(u"""
+    80 : _(u"""
  la composante sélectionnée pour la restitution en base physique des interspectres est différente de celle choisie pour le couplage fluide-structure.
 """),
 
-81 : _(u"""
+    81 : _(u"""
  la table de réponse modale ne contient que des auto spectres. le calcul demande n est donc pas réalisable.
 """),
 
-82 : _(u"""
+    82 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(i1)d , le noeud de câble  %(k1)s n'appartient pas au béton (modélisé en coque).
 """),
 
-83 : _(u"""
+    83 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <NOEUD_ANCRAGE> : il faut définir 2 noeuds d'ancrage
 """),
 
-84 : _(u"""
+    84 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <GROUP_NO_ANCRAGE> : il faut définir 2 GROUP_NO d'ancrage
 """),
 
-85 : _(u"""
+    85 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <NOEUD_ANCRAGE> : les 2 noeuds d'ancrage doivent être distincts
 """),
 
-86 : _(u"""
+    86 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande <GROUP_NO_ANCRAGE> : les 2 GROUP_NO d'ancrage doivent être distincts
 """),
 
-87 : _(u"""
+    87 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande type ancrage : les 2 extrémités sont passives -> armature passive
 """),
 
-88 : _(u"""
+    88 : _(u"""
  mot-clé <DEFI_CABLE>, occurrence no  %(k1)s , opérande type ancrage : les 2 extrémités sont passives et la tension que vous voulez imposer est non nulle : impossible !
 """),
 
-89 : _(u"""
+    89 : _(u"""
  la carte des caractéristiques matérielles des éléments n existe pas. il faut préalablement affecter ces caractéristiques en utilisant la commande <AFFE_MATERIAU>
 """),
 
-90 : _(u"""
+    90 : _(u"""
  la carte des caractéristiques géométriques des éléments de barre de section générale n existe pas. il faut préalablement affecter ces caractéristiques en utilisant la commande <AFFE_CARA_ELEM>
 """),
 
-91 : _(u"""
+    91 : _(u"""
  problème pour déterminer le rang de la composante <a1> de la grandeur <cagnba>
 """),
 
-94 : _(u"""
+    94 : _(u"""
  impossibilité, la maille  %(k1)s  doit être une maille de peau, i.e. de type "QUAD" ou "tria" en 3d ou de type "SEG" en 2d, et elle est de type :  %(k2)s
 """),
 
-95 : _(u"""
+    95 : _(u"""
  vous avez utilise le mot clé ORIE_PEAU_2d alors que le problème est 3d. utilisez ORIE_PEAU_3d
 """),
 
-96 : _(u"""
+    96 : _(u"""
  vous avez utilise le mot clé ORIE_PEAU_3d alors que le problème est 2d. utilisez ORIE_PEAU_2d
 """),
 
-97 : _(u"""
+    97 : _(u"""
  erreur données : le noeud  %(k1)s  n'existe pas
 """),
 
-98 : _(u"""
+    98 : _(u"""
  impossibilité de mélanger des "SEG" et des "tria" ou "QUAD" !
 """),
 
-99 : _(u"""
+    99 : _(u"""
  Lors de la vérification automatique de l'orientation des mailles de bord, une erreur a été rencontrée : les groupes de mailles de bord ne forment pas un ensemble connexe.
 
  Conseils :

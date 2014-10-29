@@ -19,7 +19,7 @@
 
 cata_msg = {
 
-1: _(u"""
+    1: _(u"""
  Il y a moins de sous-domaines (%(i1)d) que de processeurs participant au calcul (%(i2)d).
 
  Conseils :
@@ -27,21 +27,21 @@ cata_msg = {
    - diminuez le nombre de processeurs du calcul
 """),
 
-17 : _(u"""
+    17 : _(u"""
   La partition %(k1)s que vous utilisez pour partitionner le modèle %(k2)s en sous-domaines a été construite sur un autre modèle (%(k3)s).
 
   Conseil : vérifiez la cohérence des modèles.
 """),
 
 
-91 : _(u"""
+    91 : _(u"""
    La sous-structuration n'est compatible qu'avec un mode de parallélisme centralisé.
 
    Conseil :
      - Renseignez le mot-clé PARTITION/PARALLELISME de AFFE_MODELE (ou MODI_MODELE) avec 'CENTRALISE'
   """),
 
-93 : _(u"""
+    93 : _(u"""
  Il y a moins de mailles (%(i1)d) dans le modèle que de processeurs participant au calcul (%(i2)d).
 
  Conseils :
@@ -49,7 +49,7 @@ cata_msg = {
    - diminuez le nombre de processeurs du calcul
 """),
 
-97 : _(u"""
+    97 : _(u"""
 Erreur d'utilisation pour le parallélisme :
  Le mode de répartition des éléments entre les différents processeurs (PARTITION / PARALLELISME='GROUP_ELEM')
  ne peut pas être utilisé ici car il y a moins de groupes d'éléments (%(i1)d) que de processeurs (%(i2)d).
@@ -61,11 +61,11 @@ Erreur d'utilisation pour le parallélisme :
      AFFE_MODELE (ou MODI_MODELE)
 """),
 
-98: _(u"""
+    98: _(u"""
   La maille de numéro:  %(i1)d appartient à plusieurs sous-domaines !
 """),
 
-99 : _(u"""
+    99 : _(u"""
  Le paramètre CHARGE_PROC0_SD du mot-clé facteur PARTITION est mal renseigné.
  Il faut qu'il reste au moins un sous domaine par processeur une fois affectés tous les sous-domaines du processeur 0.
 

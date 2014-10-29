@@ -24,12 +24,14 @@ from Calc_epx.calc_epx_cata import cata_modelisa
 from Calc_epx.calc_epx_struc import BLOC_DONNEES
 from Calc_epx.calc_epx_utils import recupere_structure, tolist, get_group_ma
 from Utilitai.partition import MAIL_PY
-import aster, string
+import aster
+import string
 from Utilitai.Utmess import UTMESS
 from Accas import _F
 from Cata.cata import DEFI_GROUP
-def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
 
+
+def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
     """
         Traitement du concept MODELE et traduction pour EPX
         Traitement de l'objet INTERFACES
@@ -51,14 +53,14 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
     gr_cr_noms_coupes = []
     veri_gr_from_cara = []
     ltyma = aster.getvectjev("&CATA.TM.NOMTM")
-    modi_repere = {'COQUE' : False}
+    modi_repere = {'COQUE': False}
     etat_init_cont = True
     for affe in affe_modele:
         modelisation = affe['MODELISATION']
         phenomene = affe['PHENOMENE']
         if phenomene != 'MECANIQUE':
             UTMESS('A', 'PLEXUS_24', valk=phenomene)
-        if  modelisation not in cata_modelisa.keys():
+        if modelisation not in cata_modelisa.keys():
             UTMESS('A', 'PLEXUS_6', valk=modelisation)
         if not affe.has_key('GROUP_MA'):
             UTMESS('A', 'PLEXUS_3', valk=modelisation)
@@ -76,17 +78,18 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
         # vérification de la présence des différents type de mailles possibles
         # dans le groupe
         for gr in group_ma:
-            lgeom = [False]*nb_type_ma
+            lgeom = [False] * nb_type_ma
             l_ma_gr = MAILLAGE.sdj.GROUPEMA.get()[gr.ljust(24)]
             for m in l_ma_gr:
                 typ_ok = False
-                typ_m = ltyma[ltyma_maya[m-1]-1].strip()
+                typ_m = ltyma[ltyma_maya[m - 1] - 1].strip()
                 for i_typ, typma in enumerate(li_ty_ma_mode):
                     if typ_m == typma:
                         lgeom[i_typ] = True
                         typ_ok = True
                         break
-                if not typ_ok: UTMESS('F', 'PLEXUS_23', valk=(typ_m, gr, modelisation))
+                if not typ_ok:
+                    UTMESS('F', 'PLEXUS_23', valk=(typ_m, gr, modelisation))
             if lgeom.count(True) == 0:
                 UTMESS('F', 'PLEXUS_25', valk=(gr, modelisation))
 
@@ -94,20 +97,21 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
             for i_typ, typma in enumerate(li_ty_ma_mode):
                 if lgeom[i_typ] and lgeom.count(True) > 1:
                     ll = len(typma)
-                    if l_gr <= len_str_gr_med_max-ll:
-                        nom_gr = gr+typma
+                    if l_gr <= len_str_gr_med_max - ll:
+                        nom_gr = gr + typma
                     else:
-                        nom_gr = gr[:len_str_gr_med_max-ll]+typma
+                        nom_gr = gr[:len_str_gr_med_max - ll] + typma
                         num = 1
                         # traitement d'un cas vraiment peu probable mais pas
                         # impossible
                         while nom_gr in gr_cr_noms_coupes:
-                            suffi = typma + "%s"%num
-                            nom_gr = gr[:len_str_gr_med_max-len(suffi)] + suffi
+                            suffi = typma + "%s" % num
+                            nom_gr = gr[
+                                :len_str_gr_med_max - len(suffi)] + suffi
                             num += 1
                             if num == 20:
                                 raise Exception(
-                            'Problème de noms de groupes de mailles')
+                                    'Problème de noms de groupes de mailles')
                         gr_cr_noms_coupes.append(nom_gr)
 
                     if not MApyt.gma.has_key(string.rstrip(nom_gr)):
@@ -115,17 +119,19 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
                                    CREA_GROUP_MA=(
                                    _F(NOM=nom_gr, GROUP_MA=gr,
                                       TYPE_MAILLE=typma),
-                                    ))
+                                   ))
                 elif lgeom[i_typ]:
                     nom_gr = gr
                 else:
                     continue
 
                 if len(cata_modelisa[modelisation]['MODE_EPX'][typma]) == 1:
-                    mode_epx = cata_modelisa[modelisation]['MODE_EPX'][typma][0]
+                    mode_epx = cata_modelisa[
+                        modelisation]['MODE_EPX'][typma][0]
                 else:
                     # cas ou la modelisation dépend du CARA_ELEM
-                    mode_epx_dispo = cata_modelisa[modelisation]['MODE_EPX'][typma]
+                    mode_epx_dispo = cata_modelisa[
+                        modelisation]['MODE_EPX'][typma]
                     if not gr in mode_from_cara.keys():
                         UTMESS('F', 'PLEXUS_26', valk=gr)
                     else:
@@ -133,8 +139,8 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
                     mode_epx = mode_from_cara[gr]
                     if mode_epx not in mode_epx_dispo:
                         raise Exception(
-                      "Modélisation epx %s non permise pour la modélidation %s"
-                                                      %(mode_epx, modelisation))
+                            "Modélisation epx %s non permise pour la modélidation %s"
+                            % (mode_epx, modelisation))
 
                 if not epx_geom.has_key(mode_epx):
                     if cata_modelisa[modelisation].has_key('RESU_POIN'):
@@ -142,12 +148,11 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
                     else:
                         resu_poin = True
                     epx_geom[mode_epx] = {
-                        'GROUP_MA' : [],
+                        'GROUP_MA': [],
                         'RESU_ELEM': cata_modelisa[modelisation]['RESU_ELEM'],
                         'RESU_POIN': resu_poin,
-                                         }
+                    }
                 epx_geom[mode_epx]['GROUP_MA'].append(nom_gr)
-
 
     # verif mode_from_cara
     for gr in mode_from_cara:
@@ -156,11 +161,12 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
 
     # liste comportant les modelisations definis dans le module GEOMETRIE
     # Ecriture sous format europlexus
-    for mode_epx in  epx_geom.keys():
+    for mode_epx in epx_geom.keys():
         len_groups = len(epx_geom[mode_epx]['GROUP_MA'])
         if len_groups == 0:
             raise Exception('Erreur de programmation : liste de groupe vide')
-        bloc_simple = BLOC_DONNEES(mode_epx, cara=epx_geom[mode_epx]['GROUP_MA'])
+        bloc_simple = BLOC_DONNEES(
+            mode_epx, cara=epx_geom[mode_epx]['GROUP_MA'])
         epx[directive].add_bloc(bloc_simple)
 
     # INTERFACES

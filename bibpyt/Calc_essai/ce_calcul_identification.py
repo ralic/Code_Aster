@@ -182,13 +182,13 @@ class CalculInverse:
         self.CPhi = CPhi
         self.PhiT_B = PhiT_B
         self.Syy = Syy.matr_inte_spec
-        self.SQQ = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
-        self.Syy_R = zeros((self.nb_freq,self.nb_mes,self.nb_mes), dtype=complex)
-        self.val_sing = zeros((self.nb_mod,self.nb_freq), dtype=complex)
-        self.regul = zeros((self.nb_mod,self.nb_freq), dtype=complex)
-        self.Syy_S = zeros((self.nb_freq,self.nb_mes,self.nb_mes), dtype=complex)
-        self.SQQ_R = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
-        self.Sff = zeros((self.nb_freq,self.nb_act,self.nb_act), dtype=complex)
+        self.SQQ = zeros((self.nb_freq, self.nb_mod, self.nb_mod), dtype=complex)
+        self.Syy_R = zeros((self.nb_freq, self.nb_mes, self.nb_mes), dtype=complex)
+        self.val_sing = zeros((self.nb_mod, self.nb_freq), dtype=complex)
+        self.regul = zeros((self.nb_mod, self.nb_freq), dtype=complex)
+        self.Syy_S = zeros((self.nb_freq, self.nb_mes, self.nb_mes), dtype=complex)
+        self.SQQ_R = zeros((self.nb_freq, self.nb_mod, self.nb_mod), dtype=complex)
+        self.Sff = zeros((self.nb_freq, self.nb_act, self.nb_act), dtype=complex)
         self.Z, self.Zm1 = self.calc_Z(type_intsp)
 
 
@@ -198,16 +198,20 @@ class CalculInverse:
         self.mcoeff  = float(calcturb.mcoeff)
 
 
-    def calc_Z(self,type_intsp):
+    def calc_Z(self, type_intsp):
         """ Calcul de la matrice d'impedence"""
-        Z = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
-        Zm1 = zeros((self.nb_freq,self.nb_mod,self.nb_mod), dtype=complex)
+        Z = zeros((self.nb_freq, self.nb_mod, self.nb_mod), dtype=complex)
+        Zm1 = zeros((self.nb_freq, self.nb_mod, self.nb_mod), dtype=complex)
 
         # exposant : selon que l'inter-spectre soit en depl, vite ou acce, on change l'exposant
-        if type_intsp == 'DEPL':exp = 0
-        elif type_intsp == 'VITE':exp = 1
-        elif type_intsp == 'ACCE':exp = 2
-        else: exp = 0
+        if type_intsp == 'DEPL':
+            exp = 0
+        elif type_intsp == 'VITE':
+            exp = 1
+        elif type_intsp == 'ACCE':
+            exp = 2
+        else:
+            exp = 0
         cara_mod = self.modele_mod.get_modes_data()
         l_freq_i = array(cara_mod['FREQ'])           # frequences propres
         l_omega_i = 2*pi*l_freq_i                    # pulsations propres equivalentes
@@ -216,10 +220,11 @@ class CalculInverse:
         for ind_freq in range(self.nb_freq):
             omega = 2*pi*self.f[ind_freq]
             for ind_mod in range(self.nb_mod):
-                Zm1[ind_freq,ind_mod,ind_mod] = omega**exp/(l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2 ,
+                Zm1[ind_freq, ind_mod, ind_mod] = omega**exp/(l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2,
                                                                              2*omega*l_omega_i[ind_mod]*l_xsi_i[ind_mod]))
-                if omega == 0 : omega = 2*pi*self.f[ind_freq+1] # eviter la division par 0
-                Z[ind_freq,ind_mod,ind_mod] = 1/(omega**exp)*l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2 ,
+                if omega == 0 :
+                    omega = 2*pi*self.f[ind_freq+1] # eviter la division par 0
+                Z[ind_freq, ind_mod, ind_mod] = 1/(omega**exp)*l_mass_i[ind_mod]*complex(-omega**2 + l_omega_i[ind_mod]**2,
                                                                         2*omega*l_omega_i[ind_mod]*l_xsi_i[ind_mod])
 
         self.l_omega_i = l_omega_i
@@ -239,23 +244,23 @@ class CalculInverse:
                 CPhiZm1 = CPhi*Zm1
             except ValueError:
                 # produits matriciels impossibles
-                self.mess_err("SQQ",{"CPhi":str(shape(CPhi)),"d'impedance mecanique":str(shape(Zm1))})
+                self.mess_err("SQQ", {"CPhi": str(shape(CPhi)),"d'impedance mecanique":str(shape(Zm1))})
                 raise TypeError
-            U,S,VH = linalg.svd(CPhiZm1, full_matrices=False)
+            U, S, VH = linalg.svd(CPhiZm1, full_matrices=False)
             Smax = max(S)
             U = matrix(U)
             V = matrix(conjugate(transpose(VH)))
             l = len(S)
             S = array(S)
             inv_S = zeros(S.shape, dtype=complex)
-            self.val_sing[:,ind_freq] = S
-            alpha = self.choix_alpha(self.alpha,VH,omega)
+            self.val_sing[:, ind_freq] = S
+            alpha = self.choix_alpha(self.alpha, VH, omega)
             for ind in range(l):
                 if S[ind] > self.epsilon*Smax:
-                    inv_S[ind] = S[ind]/(S[ind]**2+alpha[ind,0])
+                    inv_S[ind] = S[ind]/(S[ind]**2+alpha[ind, 0])
                 else:
                     inv_S[ind] = 0
-                self.regul[ind,ind_freq] = alpha[ind,0]
+                self.regul[ind, ind_freq] = alpha[ind, 0]
             inv_S = matrix(array(inv_S)*identity(l))
             inv_CPhiZm1 = V*inv_S*conjugate(transpose(U))
             inv_CPhiZm1_H = conjugate(transpose(inv_CPhiZm1))
@@ -304,7 +309,7 @@ class CalculInverse:
         deplacements physiques : [Sqq(om)] = ([CPhi]+)[Syy(om)]([CPhi]+)^H"""
 
         PhiT_B = matrix(self.PhiT_B)
-        U,S,VH = linalg.svd(PhiT_B, full_matrices=False)
+        U, S, VH = linalg.svd(PhiT_B, full_matrices=False)
         Smax = max(S)
         U = matrix(U)
         V = matrix(conjugate(transpose(VH)))
@@ -313,7 +318,7 @@ class CalculInverse:
         self.mess.disp_mess("Valeurs singulieres de la matrice de commande")
         val_sing = "  "
         for s in S:
-            val_sing = val_sing + '%5.3Ee' %s + ' ; '
+            val_sing = val_sing + '%5.3Ee' % s + ' ; '
         self.mess.disp_mess(val_sing)
         for ind in range(l):
             if S[ind] > self.epsilon*Smax:
@@ -328,7 +333,7 @@ class CalculInverse:
             try:
                 Sff_f = inv_PhiT_B*SQQ_f*inv_PhiT_B_H
             except ValueError:
-                self.mess_err("Sff",{"PhiT_B":str(PhiT_B.shape),"SQQ":str(SQQ_f.shape)})
+                self.mess_err("Sff", {"PhiT_B":str(PhiT_B.shape),"SQQ":str(SQQ_f.shape)})
                 raise TypeError
             self.Sff[ind_freq,:,:] = Sff_f
 
@@ -390,7 +395,7 @@ class CalculInverse:
         return Syy_S
 
 
-    def choix_alpha(self, alpha,VH,omega):
+    def choix_alpha(self, alpha, VH, omega):
         """
         Creation pour un pas de frequence donne (omega), en fonction des pulsation
         propres du modele (omdega_i), de la matrice V de la SVD, du parametre alpha
@@ -408,9 +413,9 @@ class CalculInverse:
 
         for om in omega_i:
             if omega <= om or m == 0.0:
-                vect.append([vect1[ind,0]*1.])
+                vect.append([vect1[ind, 0]*1.])
             else:
-                vect.append([vect1[ind,0]*(omega-om)**m+1.])
+                vect.append([vect1[ind, 0]*(omega-om)**m+1.])
             ind = ind+1
         vect = alpha*matrix(vect)
         regul = VH*vect
@@ -423,6 +428,6 @@ class CalculInverse:
         self.mess.disp_mess("!! Problemes dans les produits de matrices   !!")
         self.mess.disp_mess("!! pour le calcul de " + res + "                     !!")
         for arg in args.items():
-            self.mess.disp_mess("La matrice "+arg[0]+ " a pour taille "+arg[1])
+            self.mess.disp_mess("La matrice "+arg[0] + " a pour taille "+arg[1])
         self.mess.disp_mess(" ")
-        UTMESS('A','CALCESSAI0_4')
+        UTMESS('A', 'CALCESSAI0_4')

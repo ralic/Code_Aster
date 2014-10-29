@@ -31,30 +31,33 @@ class sd_matr_asse_gene(sd_matr_asse_com):
     def exists(self):
         return self.REFA.exists
 
-
-    # indirection vers sd_nume_ddl à faire car FACT_LDLT modifie le sd_nume_ddl_gene de la sd_matr_asse :
+    # indirection vers sd_nume_ddl à faire car FACT_LDLT modifie le
+    # sd_nume_ddl_gene de la sd_matr_asse :
     def check_gene_REFA(self, checker):
-        if not self.exists : return
-        nom=self.REFA.get()[1]
-        sd2=sd_nume_ddl_gene(nom) ; sd2.check(checker)
+        if not self.exists:
+            return
+        nom = self.REFA.get()[1]
+        sd2 = sd_nume_ddl_gene(nom)
+        sd2.check(checker)
 
     def check_gene_DESC(self, checker):
-        if not self.exists : return
-        desc=self.DESC.get()
-        assert desc[0]==2, desc
-        nbvec=desc[1]
-        assert nbvec > 0 , desc
-        type_sto=desc[2]
-        assert type_sto in (1,2,3) , desc
-        valm=self.VALM.get()[1]
-        n1=len(valm)
-        if type_sto == 1 :
+        if not self.exists:
+            return
+        desc = self.DESC.get()
+        assert desc[0] == 2, desc
+        nbvec = desc[1]
+        assert nbvec > 0, desc
+        type_sto = desc[2]
+        assert type_sto in (1, 2, 3), desc
+        valm = self.VALM.get()[1]
+        n1 = len(valm)
+        if type_sto == 1:
             # stockage diagonal
-            assert n1==nbvec , desc
-        elif type_sto == 2 :
+            assert n1 == nbvec, desc
+        elif type_sto == 2:
             # stockage plein (mais symetrique) :
-            assert n1==nbvec*(nbvec+1)/2 , desc
-        elif type_sto == 3 :
+            assert n1 == nbvec * (nbvec + 1) / 2, desc
+        elif type_sto == 3:
             # stockage quelconque :
             assert n1 >= nbvec
-            assert n1 <= nbvec*(nbvec+1)/2 , desc
+            assert n1 <= nbvec * (nbvec + 1) / 2, desc

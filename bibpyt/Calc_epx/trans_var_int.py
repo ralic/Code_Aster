@@ -27,9 +27,11 @@ from Cata.cata import CREA_CHAMP, FORMULE
 #             récupérés d'EPX ne sont plus nommées VAR1, VAR2,... mais
 #             déjà V1, V2 ...
 #             Mais le nombre de variables internes présentes est bien celui
-#             d'EPX. 
+#             d'EPX.
 
 #-----------------------------------------------------------------------
+
+
 def tr_e2a_glrc_damage(__CH_FOV, ico, cc, nb_comp, var_aster, gr_ma):
     """
         Transformation pour GLRC_DAMAGE
@@ -37,24 +39,24 @@ def tr_e2a_glrc_damage(__CH_FOV, ico, cc, nb_comp, var_aster, gr_ma):
 
     dic_transfo = {}
 
-    __F_V_GL = [None]*nb_comp
-    coef = [1.]*nb_comp
+    __F_V_GL = [None] * nb_comp
+    coef = [1.] * nb_comp
     coef[2] = 0.5
     coef[5] = 0.5
     li_fonc = []
     nom_cmp_f = []
     for ivar, var in enumerate(var_aster[:nb_comp]):
         co = coef[ivar]
-        xi_f = 'X%s'%(ivar+1)
+        xi_f = 'X%s' % (ivar + 1)
         nom_cmp_f.append(xi_f)
-        __F_V_GL[ivar] = FORMULE(VALE=var+'*'+str(co), NOM_PARA=(var))
+        __F_V_GL[ivar] = FORMULE(VALE=var + '*' + str(co), NOM_PARA=(var))
         li_fonc.append(__F_V_GL[ivar])
 
     ccc = cc.copy()
     ccc.update(TYPE_CHAM='ELGA_NEUT_F',
-               AFFE={'GROUP_MA' : gr_ma,
-                     'NOM_CMP'  : nom_cmp_f,
-                     'VALE_F'   : li_fonc,})
+               AFFE={'GROUP_MA': gr_ma,
+                     'NOM_CMP': nom_cmp_f,
+                     'VALE_F': li_fonc, })
     __CH_FOV[ico] = CREA_CHAMP(**ccc)
     dic_transfo['CH_FONC'] = __CH_FOV[ico]
     dic_transfo['NOM_CMP_F'] = nom_cmp_f
@@ -62,6 +64,8 @@ def tr_e2a_glrc_damage(__CH_FOV, ico, cc, nb_comp, var_aster, gr_ma):
 
     return dic_transfo
 #-----------------------------------------------------------------------
+
+
 def tr_e2a_vmis_isot_trac(__CH_FOV, ico, cc, nb_comp, var_aster, gr_ma):
     """
         Transformation pour VMIS_ISOT_TRAC
@@ -69,28 +73,27 @@ def tr_e2a_vmis_isot_trac(__CH_FOV, ico, cc, nb_comp, var_aster, gr_ma):
 
     dic_transfo = {}
 
-    __F_V_GL = [None]*nb_comp
+    __F_V_GL = [None] * nb_comp
     li_fonc = []
     nom_cmp_f = []
 
     # V1 = VAR3
     var = 'V3'
-    xi_f = 'X%s'%(1)
+    xi_f = 'X%s' % (1)
     nom_cmp_f.append(xi_f)
     __F_V_GL[0] = FORMULE(VALE=var, NOM_PARA=(var))
     li_fonc.append(__F_V_GL[0])
     # V2 on met 0 tout le temps
-    xi_f = 'X%s'%(2)
+    xi_f = 'X%s' % (2)
     nom_cmp_f.append(xi_f)
     __F_V_GL[1] = FORMULE(VALE='0.', NOM_PARA=(var))
     li_fonc.append(__F_V_GL[1])
-    
 
     ccc = cc.copy()
     ccc.update(TYPE_CHAM='ELGA_NEUT_F',
-               AFFE={'GROUP_MA' : gr_ma,
-                     'NOM_CMP'  : nom_cmp_f,
-                     'VALE_F'   : li_fonc,})
+               AFFE={'GROUP_MA': gr_ma,
+                     'NOM_CMP': nom_cmp_f,
+                     'VALE_F': li_fonc, })
     __CH_FOV[ico] = CREA_CHAMP(**ccc)
     dic_transfo['CH_FONC'] = __CH_FOV[ico]
     dic_transfo['NOM_CMP_F'] = nom_cmp_f

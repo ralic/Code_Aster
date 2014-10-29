@@ -20,7 +20,7 @@
 cata_msg = {
 
 
-1 : _(u"""
+    1 : _(u"""
  Erreur de maillage :
    La maille %(k1)s de type %(k2)s est trop distordue.
    Le jacobien de la transformation géométrique n'a pas le même signe sur tous les
@@ -31,11 +31,11 @@ cata_msg = {
    La connectivité respecte-t-elle bien la convention Aster ?
 """),
 
-2: _(u"""
+    2: _(u"""
 Pour le noeud %(k1)s de la maille %(k2)s, la coordonnée X est négative (x=%(r1)G).
 """),
 
-3: _(u"""
+    3: _(u"""
 Pour une modélisation axisymétrique, la coordonnée X doit être positive, nulle ou
 très faiblement négative ( > -1.d-6 * X_MAX)
 

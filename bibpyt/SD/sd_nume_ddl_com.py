@@ -30,5 +30,7 @@ class sd_nume_ddl_com(sd_stockage):
     # indirection vers SOLVEUR :
     def check_nume_ddl_com_i_NSLV(self, checker):
         lnom = self.NSLV.get()
-        if not lnom:  return
-        sd2=sd_solveur(lnom[0]); sd2.check(checker)
+        if not lnom:
+            return
+        sd2 = sd_solveur(lnom[0])
+        sd2.check(checker)

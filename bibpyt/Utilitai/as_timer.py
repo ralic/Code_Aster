@@ -24,24 +24,27 @@
 import os
 import time
 
+
 def _dtimes():
     """Return a dict of cpu, system and total times.
     """
     l_t = os.times()
-    return { 'cpu'   : (l_t[0], l_t[2]),
-             'sys'   : (l_t[1], l_t[3]),
-             'tot'   : l_t[4], }
+    return {'cpu': (l_t[0], l_t[2]),
+            'sys': (l_t[1], l_t[3]),
+            'tot': l_t[4], }
+
 
 def _conv_hms(t):
     """Convert a number of seconds in hours, minutes, seconds.
     """
-    h = int(t/3600)
-    m = int(t % 3600)/60
+    h = int(t / 3600)
+    m = int(t % 3600) / 60
     s = (t % 3600) % 60
     return h, m, s
 
 
 class ASTER_TIMER:
+
     """This class provides methods to easily measure time spent during
     different steps.
     Methods :
@@ -87,31 +90,32 @@ class ASTER_TIMER:
         if format == 'as_run':
             self.fmtlig = '   %(name)-33s  %(cpu_dt)9.2f  %(sys_dt)9.2f  %(cpu_sys)9.2f  %(tot_dt)9.2f'
             self.fmtstr = '   %(title)-33s  %(cpu)9s  %(sys)9s  %(cpu+sys)9s  %(elapsed)9s'
-            self.sepa   = ' ' + '-'*81
+            self.sepa = ' ' + '-' * 81
             self.TotalKey = _('Total time')
             self.d_labels = {
-               'title'   : '',
-               'cpu'     : _('cpu'),
-               'sys'     : _('system'),
-               'cpu+sys' : _('cpu+sys'),
-               'elapsed' : _('elapsed'),
+                'title': '',
+                'cpu': _('cpu'),
+                'sys': _('system'),
+                'cpu+sys': _('cpu+sys'),
+                'elapsed': _('elapsed'),
             }
         elif format == 'aster':
             self.fmtlig = ' * %(name)-24s : %(cpu_dt)10.2f : %(sys_dt)10.2f : %(cpu_sys)10.2f : %(tot_dt)10.2f *'
             self.fmtstr = ' * %(title)-24s : %(cpu)10s : %(sys)10s : %(cpu+sys)10s : %(elapsed)10s *'
-            self.sepa   = ' ' + '*'*80
+            self.sepa = ' ' + '*' * 80
             self.TotalKey = 'TOTAL_JOB'
             self.d_labels = {
-               'title'   : 'COMMAND',
-               'cpu'     : 'USER',
-               'sys'     : 'SYSTEM',
-               'cpu+sys' : 'USER+SYS',
-               'elapsed' : 'ELAPSED',
+                'title': 'COMMAND',
+                'cpu': 'USER',
+                'sys': 'SYSTEM',
+                'cpu+sys': 'USER+SYS',
+                'elapsed': 'ELAPSED',
             }
 
         self.total_key = id(self)
         if self.add_total:
-            self.Start(self.total_key, name=self.TotalKey, num=self.MaxNumTimer)
+            self.Start(
+                self.total_key, name=self.TotalKey, num=self.MaxNumTimer)
 
     def Start(self, timer, mode='CONT', num=None, hide=None, name=None):
         """Start a new timer or restart one
@@ -119,7 +123,8 @@ class ASTER_TIMER:
         if len(self.timers) > self.MaxSize and name != self._oversize_name:
             if not self._oversize:
                 self._oversize = True
-                self.Start(self._oversize_name, num=num, name=self._oversize_name)
+                self.Start(
+                    self._oversize_name, num=num, name=self._oversize_name)
             return
         name = name or str(timer)
         isnew = self.timers.get(timer) is None
@@ -130,23 +135,23 @@ class ASTER_TIMER:
         dico = _dtimes()
         if isnew or mode == 'INIT':
             self.timers[timer] = {
-                'name'   : name,
-                'state'  : 'start',
-                'cpu_t0' : dico['cpu'],
-                'cpu_dt' : 0.,
-                'sys_t0' : dico['sys'],
-                'sys_dt' : 0.,
-                'tot_t0' : dico['tot'],
-                'tot_dt' : 0.,
-                'num'    : num,
-                'hide'   : hide,
+                'name': name,
+                'state': 'start',
+                'cpu_t0': dico['cpu'],
+                'cpu_dt': 0.,
+                'sys_t0': dico['sys'],
+                'sys_dt': 0.,
+                'tot_t0': dico['tot'],
+                'tot_dt': 0.,
+                'num': num,
+                'hide': hide,
             }
         elif mode == 'CONT' and self.timers[timer]['state'] == 'stop':
             self.timers[timer].update({
-                'state'  : 'start',
-                'cpu_t0' : dico['cpu'],
-                'sys_t0' : dico['sys'],
-                'tot_t0' : dico['tot'],
+                'state': 'start',
+                'cpu_t0': dico['cpu'],
+                'sys_t0': dico['sys'],
+                'tot_t0': dico['tot'],
             })
 
     def Add(self, timer, cpu_dt=0., sys_dt=0., to_total=False):
@@ -167,15 +172,15 @@ class ASTER_TIMER:
             if len(self.timers) > self.MaxSize:
                 return
             self.timers[timer] = {
-                'name'   : str(timer),
-                'hide'   : hide,
-                'state'  : 'stop',
-                'cpu_t0' : 0.,
-                'cpu_dt' : 0.,
-                'sys_t0' : 0.,
-                'sys_dt' : 0.,
-                'tot_t0' : 0.,
-                'tot_dt' : 0.,
+                'name': str(timer),
+                'hide': hide,
+                'state': 'stop',
+                'cpu_t0': 0.,
+                'cpu_dt': 0.,
+                'sys_t0': 0.,
+                'sys_dt': 0.,
+                'tot_t0': 0.,
+                'tot_dt': 0.,
                 'num': len(self.timers),
             }
         elif self.timers[timer]['state'] == 'start':
@@ -190,7 +195,7 @@ class ASTER_TIMER:
                     dico['sys'][i] - self.timers[timer]['sys_t0'][i]
             self.timers[timer]['sys_t0'] = dico['sys']
             self.timers[timer]['tot_dt'] = self.timers[timer]['tot_dt'] + \
-                    dico['tot'] - self.timers[timer]['tot_t0']
+                dico['tot'] - self.timers[timer]['tot_t0']
             self.timers[timer]['tot_t0'] = dico['tot']
             if hide is not None:
                 self.timers[timer]['hide'] = hide
@@ -201,9 +206,9 @@ class ASTER_TIMER:
         self.Stop(timer, *args, **kwargs)
         if self.timers.get(timer) is None:
             return 0., 0., 0.
-        cpu_dt  = self.timers[timer]['cpu_dt']
-        sys_dt  = self.timers[timer]['sys_dt']
-        tot_dt  = self.timers[timer]['tot_dt']
+        cpu_dt = self.timers[timer]['cpu_dt']
+        sys_dt = self.timers[timer]['sys_dt']
+        tot_dt = self.timers[timer]['tot_dt']
         return cpu_dt, sys_dt, tot_dt
 
     def StopAndGetTotal(self):
@@ -214,7 +219,8 @@ class ASTER_TIMER:
     def getsortedtimers(self):
         """Return timers list sorted by timer number.
         """
-        lnum = [[timer['num'], timer] for timer in self.timers.values() if timer['hide'] is not True]
+        lnum = [[timer['num'], timer]
+                for timer in self.timers.values() if timer['hide'] is not True]
         lnum.sort()
         return lnum
 
@@ -247,7 +253,7 @@ class ASTER_TIMER:
         for num, timer in lnum:
             d_info = timer.copy()
             d_info['cpu_sys'] = d_info['cpu_dt'] + d_info['sys_dt']
-            if self.add_total and num == self.MaxNumTimer and len(lnum)>1:
+            if self.add_total and num == self.MaxNumTimer and len(lnum) > 1:
                 out.append(self.sepa)
             out.append(self.fmtlig % d_info)
         if lnum:

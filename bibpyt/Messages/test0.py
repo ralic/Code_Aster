@@ -17,23 +17,23 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
-1 : _(u"""
+cata_msg = {
+    1 : _(u"""
 Expression régulière invalide : %(k2)s
 
 Exception retournée :
    %(k1)s
 """),
 
-2 : _(u"""
+    2 : _(u"""
 Le fichier n'a pas été fermé : %(k1)s
 """),
 
-3 : _(u"""
+    3 : _(u"""
 TEST_FICHIER impossible, fichier inexistant : %(k1)s
 """),
 
-4 : _(u"""
+    4 : _(u"""
     Nom du fichier   : %(k3)s
 
     Valeurs de références :
@@ -47,37 +47,37 @@ TEST_FICHIER impossible, fichier inexistant : %(k1)s
      - Somme de contrôle : %(k1)s
 """),
 
-5 : _(u"""
+    5 : _(u"""
       Fichier de configuration                    : %(k1)s
       Identifiant pour la mesure des performances : %(k2)s
 """),
 
-6 : {  'message' : _(u"""
+    6 : {  'message' : _(u"""
 Test strict activé.
 TOLE_MACHINE est pris égal à %(r1)e quelle que soit la valeur renseignée pour le mot-clé.
 """),
-       'flags' : 'DECORATED',
-},
+           'flags': 'DECORATED',
+           },
 
-7 : _(u"""
+    7 : _(u"""
 La commande '%(k1)s' n'a pas été exécutée %(i1)d fois.
 """),
 
-8 : _(u"""
+    8 : _(u"""
 - soit PRECISION contient une seule valeur, et alors, celle-ci sera utilisée
   pour toutes les machines,
 - soit PRECISION contient autant de valeurs qu'il y a de machines.
 """),
 
-9 : _(u"""Les temps de référence ne sont pas connus pour l'identifiant '%(k1)s'.
+    9 : _(u"""Les temps de référence ne sont pas connus pour l'identifiant '%(k1)s'.
 On utilise les valeurs de '%(k2)s'.
 """),
 
-10 : _(u"""
+    10 : _(u"""
 Les listes fournies aux mots-clés MACHINE et VALE doivent avoir le même cardinal.
 """),
 
-11 : _(u"""
+    11 : _(u"""
 Le test n'a pas de sens quand la valeur de non régression (VALE_CALC) est nulle.
 
 Il faut :
@@ -86,7 +86,7 @@ Il faut :
   (mots-clés REFERENCE et VALE_REFE).
 """),
 
-12 : _(u"""
+    12 : _(u"""
 Pour les tests de non régression de valeurs nulles, il faut définir un ordre de grandeur.
 Dans le cas contraire, le test de non régression est ignoré.
 """),

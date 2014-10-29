@@ -31,9 +31,10 @@ class sd_char_chth(AsBase):
 
     CONVE_VALE = Facultatif(AsVK8(SDNom(nomj='.CONVE.VALE'), lonmax=1))
     MODEL_NOMO = AsVK8(SDNom(nomj='.MODEL.NOMO'), lonmax=1)
-    LIGRE      = Facultatif(sd_ligrel())
+    LIGRE = Facultatif(sd_ligrel())
 
-    SOURE = Facultatif(sd_champ(SDNom(nomj='.SOURE')))  # pour l'instant : sd_carte ou sd_cham_elem
+    SOURE = Facultatif(sd_champ(SDNom(nomj='.SOURE')))
+                       # pour l'instant : sd_carte ou sd_cham_elem
 
     CIMPO = Facultatif(sd_carte())
     CMULT = Facultatif(sd_carte())
@@ -44,20 +45,21 @@ class sd_char_chth(AsBase):
     FLURE = Facultatif(sd_carte())
     GRAIN = Facultatif(sd_carte())
     HECHP = Facultatif(sd_carte())
-    RAYO  = Facultatif(sd_carte())
+    RAYO = Facultatif(sd_carte())
     T_EXT = Facultatif(sd_carte())
-
 
     # parfois, TEMP_IMPO crée une carte de sd_fonction :
     # il faut alors vérifier ces sd_fonction
     def check_CIMPO_FONC(self, checker):
-        if self.CIMPO.VALE.ltyp != 24 : return
-        vale=self.CIMPO.VALE.get()
-        for x in vale :
-            if x.strip()=='' : continue
-            nomfon=x[:19]
-            sd2=sd_fonction(nomfon) ; sd2.check(checker)
-
+        if self.CIMPO.VALE.ltyp != 24:
+            return
+        vale = self.CIMPO.VALE.get()
+        for x in vale:
+            if x.strip() == '':
+                continue
+            nomfon = x[:19]
+            sd2 = sd_fonction(nomfon)
+            sd2.check(checker)
 
 
 class sd_char_ther(AsBase):

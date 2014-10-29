@@ -18,13 +18,14 @@
 
 from SD import *
 
+
 class sd_list_inst(AsBase):
     nomj = SDNom(fin=8)
 
 # 1) objets relatifs a la liste
 
-    LIST_INFOR = AsVR(SDNom(nomj='.LIST.INFOR'),lonmax=11,)
-    LIST_DITR  = AsVR(SDNom(nomj='.LIST.DITR'))
+    LIST_INFOR = AsVR(SDNom(nomj='.LIST.INFOR'), lonmax=11,)
+    LIST_DITR = AsVR(SDNom(nomj='.LIST.DITR'))
 
     ECHE_EVENR = AsVR(SDNom(nomj='.ECHE.EVENR'))
     ECHE_EVENK = AsVK16(SDNom(nomj='.ECHE.EVENK'))
@@ -33,4 +34,4 @@ class sd_list_inst(AsBase):
     ADAP_EVENR = Facultatif(AsVR(SDNom(nomj='.ADAP.EVENR')))
     ADAP_EVENK = Facultatif(AsVK8(SDNom(nomj='.ADAP.EVENK')))
     ADAP_TPLUR = Facultatif(AsVR(SDNom(nomj='.ADAP.TPLUR')))
-    ADAP_TPLUK =Facultatif( AsVK16(SDNom(nomj='.ADAP.TPLUK')))
+    ADAP_TPLUK = Facultatif(AsVK16(SDNom(nomj='.ADAP.TPLUK')))

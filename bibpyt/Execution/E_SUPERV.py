@@ -50,15 +50,18 @@ from strfunc import convert, ufmt
 from decorators import jdc_required, stop_on_returncode, never_fail
 import aster_core
 
+
 class Interrupt(Exception):
+
     """Local exception"""
+
     def __init__(self, returncode):
         """Store the returncode"""
         self.returncode = returncode
 
 
 class SUPERV:
-    usage="""
+    usage = """
     asteru JDC.py --commandes="fic_commandes"
                 [--memjeveux=taille_en_Mw | --memory=taille_en_Mo]
                 [--rep_mat=repertoire_materiau] [--rep_dex=repertoire_datg]
@@ -88,9 +91,9 @@ class SUPERV:
         """
         sys.stdout.flush()
         sortie = sys.stdout
-        sortie.write( "JDC.py : " )
-        sortie.write( convert(chaine) )
-        sortie.write( '\n' )
+        sortie.write("JDC.py : ")
+        sortie.write(convert(chaine))
+        sortie.write('\n')
         sortie.flush()
 
     def format_CR(self, cr):
@@ -114,7 +117,8 @@ class SUPERV:
         """
         try:
             from Utilitai.as_timer import ASTER_TIMER
-            self.timer = ASTER_TIMER(format='aster', maxlabel=_(u"> %d commandes..."))
+            self.timer = ASTER_TIMER(
+                format='aster', maxlabel=_(u"> %d commandes..."))
             self.timer.Start('init (jdc)')
             self.timer.Start(' . part Superviseur', num=1.1e6)
             ier = 0
@@ -124,14 +128,14 @@ class SUPERV:
         return ier
 
     def imports(self):
-        try :
+        try:
             import Cata
             from Cata import cata
             from Cata.cata import JdC
-            self.cata=cata
-            self.JdC=JdC
+            self.cata = cata
+            self.JdC = JdC
             CONTEXT.unset_current_step()
-        except :
+        except:
             print traceback.print_exc()
             return 1
 
@@ -140,8 +144,9 @@ class SUPERV:
          Verifie que le catalogue de commandes est valide
         """
         cr = self.JdC.report()
-        if not cr.estvide() :
-            self.error(_(u"ERREUR A LA VERIFICATION DU CATALOGUE - INTERRUPTION"))
+        if not cr.estvide():
+            self.error(
+                _(u"ERREUR A LA VERIFICATION DU CATALOGUE - INTERRUPTION"))
             self.error(self.format_CR(cr))
             return 1
 
@@ -195,13 +200,15 @@ class SUPERV:
         j.timer.Start(" . exec_compile")
         j.exec_compile()
         j.timer.Stop(" . exec_compile")
-        ier=0
+        ier = 0
         if not j.cr.estvide():
-            self.error(_(u"ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION"))
+            self.error(
+                _(u"ERREUR A L'INTERPRETATION DANS ACCAS - INTERRUPTION"))
             self.error(self.format_CR(j.cr))
-            ier=1
+            ier = 1
         if self.coreopts.get_option('interact'):
-            # Si l'option -interact est positionnée on ouvre un interpreteur interactif
+            # Si l'option -interact est positionnée on ouvre un interpreteur
+            # interactif
             j.interact()
         return ier
 
@@ -214,7 +221,8 @@ class SUPERV:
         cr = j.report()
         j.timer.Stop(" . report")
         if not cr.estvide():
-            self.error(_(u"ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION"))
+            self.error(
+                _(u"ERREUR A LA VERIFICATION SYNTAXIQUE - INTERRUPTION"))
             self.error(self.format_CR(cr))
             return 1
         self.SyntaxCheck()
@@ -224,13 +232,14 @@ class SUPERV:
         """Print information about the syntax check"""
         if self.jdc.syntax_check():
             self.jdc.traiter_fin_exec("commande")
-            self.MESSAGE(_(u"\n  Sortie immédiatement après la vérification de syntaxe.\n"))
+            self.MESSAGE(
+                _(u"\n  Sortie immédiatement après la vérification de syntaxe.\n"))
             # markers for as_run status
             for fname in ('fort.8', 'fort.9'):
                 open(fname, 'ab').write('\n'
-                    '-- CODE_ASTER -- VERSION \n'
-                    'only the syntax was checked\n'
-                    '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".\n')
+                                        '-- CODE_ASTER -- VERSION \n'
+                                        'only the syntax was checked\n'
+                                        '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".\n')
             raise Interrupt(0)
 
     @jdc_required
@@ -253,28 +262,30 @@ class SUPERV:
         # not used for Code_Aster
         j = self.jdc
         try:
-            ier=j.Build()
+            ier = j.Build()
             if ier or not j.cr.estvide():
-                self.MESSAGE(_(u"ERREUR A LA CONSTRUCTION DES MACROS - INTERRUPTION"))
+                self.MESSAGE(
+                    _(u"ERREUR A LA CONSTRUCTION DES MACROS - INTERRUPTION"))
                 print convert(self.format_CR(j.cr))
                 return 1
-        except :
+        except:
             self.MESSAGE(_(u"ERREUR INOPINEE - INTERRUPTION"))
             traceback.print_exc()
             return 1
-        cr=j.report()
+        cr = j.report()
         if not cr.estvide():
-            self.MESSAGE(_(u"ERREUR A LA VERIFICATION DES MACROS - INTERRUPTION"))
+            self.MESSAGE(
+                _(u"ERREUR A LA VERIFICATION DES MACROS - INTERRUPTION"))
             print convert(self.format_CR(cr))
             return 1
         try:
-            ier=j.Exec()
-            if ier :
+            ier = j.Exec()
+            if ier:
                 self.MESSAGE(_(u"ERREUR A L'EXECUTION - INTERRUPTION"))
                 return 1
         except EOFError:
                 return 0
-        except :
+        except:
             self.MESSAGE(_(u"ERREUR INOPINEE - INTERRUPTION"))
             traceback.print_exc()
             return 1
@@ -282,15 +293,15 @@ class SUPERV:
     @jdc_required
     def ParLotMixte(self):
         """Execute the JDC using BuildExec"""
-        from Noyau.N_JDC    import MemoryErrorMsg
+        from Noyau.N_JDC import MemoryErrorMsg
         j = self.jdc
         j.set_par_lot("NON")
         try:
             j.BuildExec()
-            ier=0
+            ier = 0
             if not j.cr.estvide():
                 self.MESSAGE(_(u"ERREUR A L'EXECUTION - INTERRUPTION"))
-                ier=1
+                ier = 1
                 print convert(self.format_CR(j.cr))
             return ier
         except MemoryError:
@@ -298,7 +309,7 @@ class SUPERV:
             self.MESSAGE(MemoryErrorMsg)
             traceback.print_exc()
             return 1
-        except :
+        except:
             self.MESSAGE("ERREUR INOPINEE - INTERRUPTION")
             traceback.print_exc()
             return 1
@@ -373,7 +384,7 @@ class SUPERV:
         assert iret == 0
         self._mem_ini = rval[0]
         aster_core.set_mem_stat(('MEM_INIT', ), (self._mem_ini, ))
-        
+
     def _mem_stat_jdc(self, tag=None):
         """Set the memory"""
         import aster_core
@@ -381,6 +392,7 @@ class SUPERV:
         assert iret == 0
         mjdc = rval[0] - self._mem_ini
         aster_core.set_mem_stat(('MEM_JDC', ), (mjdc, ))
+
 
 def main():
     """Main."""

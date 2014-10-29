@@ -17,33 +17,36 @@
 # ======================================================================
 
 from SD import *
-from SD.sd_util      import *
+from SD.sd_util import *
+
 
 class sd_prof_chno(AsBase):
     nomj = SDNom(fin=19)
-    PRNO = AsColl( acces='NU', stockage='CONTIG', modelong=Parmi('CONSTANT', 'VARIABLE'), type='I', )
-    LILI = AsObject( genr='N', xous='S', type='K', ltyp=24, )
-    NUEQ = AsVI( )
-    DEEQ = AsVI( )
-
+    PRNO = AsColl(acces='NU', stockage='CONTIG',
+                  modelong=Parmi('CONSTANT', 'VARIABLE'), type='I', )
+    LILI = AsObject(genr='N', xous='S', type='K', ltyp=24, )
+    NUEQ = AsVI()
+    DEEQ = AsVI()
 
     def exists(self):
-        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre vérifiée)
+        # retourne "vrai" si la SD semble exister (et donc qu'elle peut etre
+        # vérifiée)
         return self.PRNO.exists
 
     def check_1(self, checker):
-        if not self.exists() : return
+        if not self.exists():
+            return
         nueq = self.NUEQ.get()
         deeq = self.DEEQ.get()
-        neq=len(deeq)/2
-        for x in nueq :
-           assert 1<= x and x <= neq
+        neq = len(deeq) / 2
+        for x in nueq:
+            assert 1 <= x and x <= neq
 
         for k in range(neq):
-           nuno=deeq[2*k]
-           nucmp=deeq[2*k+1]
-           assert nuno >= 0
-           if nuno==0 :
-               assert nucmp==0
-           else :
-               assert nucmp!=0
+            nuno = deeq[2 * k]
+            nucmp = deeq[2 * k + 1]
+            assert nuno >= 0
+            if nuno == 0:
+                assert nucmp == 0
+            else:
+                assert nucmp != 0

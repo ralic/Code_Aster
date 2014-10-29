@@ -19,51 +19,51 @@
 
 cata_msg = {
 
-35 : _(u"""
+    35 : _(u"""
 La loi de couplage <%(k1)s> n'est pas compatible avec la modélisation choisie <%(k2)s>.
 """),
 
-36 : _(u"""
+    36 : _(u"""
 Il y a déjà une loi de couplage.
 """),
 
-37 : _(u"""
+    37 : _(u"""
 Il y a déjà une loi hydraulique.
 """),
 
-38 : _(u"""
+    38 : _(u"""
 Il y a déjà une loi de mécanique.
 """),
 
-39 : _(u"""
+    39 : _(u"""
 Il manque la loi de couplage pour définir le kit <%(k1)s> .
 """),
 
-40 : _(u"""
+    40 : _(u"""
 Il manque la loi hydraulique pour définir le kit <%(k1)s> .
 """),
 
-41 : _(u"""
+    41 : _(u"""
 Il manque la loi mécanique pour définir le kit <%(k1)s> .
 """),
 
-42 : _(u"""
+    42 : _(u"""
 La loi de couplage <%(k1)s> est incorrecte pour une modélisation <%(k2)s>.
 """),
 
-43 : _(u"""
+    43 : _(u"""
 La loi hydraulique <%(k1)s> n'est pas compatible avec la loi mécanique <%(k2)s>.
 """),
 
-44 : _(u"""
+    44 : _(u"""
 La loi mécanique <%(k1)s> est incorrecte pour une modélisation <%(k2)s>.
 """),
 
-46 : _(u"""
+    46 : _(u"""
 Il y a une loi mécanique définie dans la relation, ce n'est pas possible avec la modélisation <%(k1)s> .
 """),
 
-59 : _(u"""
+    59 : _(u"""
 La loi de couplage doit être LIQU_SATU ou GAZ pour une modélisation <%(k1)s>.
 """),
 

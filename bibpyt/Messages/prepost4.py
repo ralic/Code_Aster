@@ -19,71 +19,71 @@
 
 cata_msg = {
 
-5 : _(u"""
+    5 : _(u"""
  l'option  %(k1)s n'a pas été calculée pour la SD  %(k2)s
 """),
 
-6 : _(u"""
+    6 : _(u"""
  le champ " %(k1)s " ( %(k2)s ) n'a pas été noté dans la SD  %(k3)s
 """),
 
-7 : _(u"""
+    7 : _(u"""
  "TUBE_NEUF" n'a de sens que pour une table d'usure existante
 """),
 
-8 : _(u"""
+    8 : _(u"""
  angle initial différent de -180. degrés.
 """),
 
-9 : _(u"""
+    9 : _(u"""
  les angles ne sont pas croissants.
 """),
 
-10 : _(u"""
+    10 : _(u"""
  angle final différent de 180. degrés.
 """),
 
-11 : _(u"""
+    11 : _(u"""
  rayon mobile obligatoire avec secteur.
 """),
 
-12 : _(u"""
+    12 : _(u"""
  rayon obstacle obligatoire avec secteur.
 """),
 
-13 : _(u"""
+    13 : _(u"""
  la table usure en sortie est différente de celle en entrée
 """),
 
-14 : _(u"""
+    14 : _(u"""
  le nombre de secteurs en sortie est différent de celui en entrée
 """),
 
-15 : _(u"""
+    15 : _(u"""
  problème extraction pour la table  %(k1)s
 """),
 
-17 : _(u"""
+    17 : _(u"""
  aucune valeur de moment présente
 """),
 
-18 : _(u"""
+    18 : _(u"""
  y a un bogue: récupération des fréquences
 """),
 
-19 : _(u"""
+    19 : _(u"""
  il faut au moins un GROUP_MA_RADIER
 """),
 
-20 : _(u"""
+    20 : _(u"""
  rigidité de translation non nulle
 """),
 
-21 : _(u"""
+    21 : _(u"""
  rigidité de rotation non nulle
 """),
 
-22 : _(u"""
+    22 : _(u"""
 Le nombre de composantes des "raideurs" et le nombre de composantes du MODE_MECA porté par les noeuds du
 GROUP_MA_RADIER sont différents :
  - Vous avez donné pour les raideurs KX, KY, KZ, KRX, KRY, KRZ.
@@ -91,27 +91,27 @@ GROUP_MA_RADIER sont différents :
 On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés sont incompatibles.
 """),
 
-23 : _(u"""
+    23 : _(u"""
  nombres de GROUP_MA et AMOR_INTERNE différents
 """),
 
-24 : _(u"""
+    24 : _(u"""
  nombres de composantes amortissements et mode différents
 """),
 
-26 : _(u"""
+    26 : _(u"""
  le type du concept résultat  n'est ni EVOL_ELAS, ni EVOL_NOLI.
 """),
 
-27 : _(u"""
+    27 : _(u"""
  vous avez probablement archive l état initial dans la commande STAT_NON_LINE. cela correspond au numéro d ordre 0. nous ne tenons pas compte du résultat a ce numéro d ordre pour le calcul de de la fatigue.
 """),
 
-29 : _(u"""
+    29 : _(u"""
  les champs de  contraintes aux points de gauss n'existent pas.
 """),
 
-30 : _(u"""
+    30 : _(u"""
  le champ simple qui contient les valeurs des contraintes n existe pas.
 """),
 
@@ -123,11 +123,11 @@ On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés son
 
 
 
-34 : _(u"""
+    34 : _(u"""
  les champs de déformations aux points de gauss n'existent pas.
 """),
 
-35 : _(u"""
+    35 : _(u"""
  le champ simple qui contient les valeurs des déformations n existe pas.
 """),
 
@@ -136,11 +136,11 @@ On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés son
 
 
 
-37 : _(u"""
+    37 : _(u"""
  le champ simple qui contient les valeurs des déformations plastiques n'existe pas.
 """),
 
-38 : _(u"""
+    38 : _(u"""
  le champ de contraintes aux noeuds SIEF_NOEU ou SIEF_NOEU n'a pas été calculé.
 """),
 
@@ -148,11 +148,11 @@ On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés son
 
 
 
-40 : _(u"""
+    40 : _(u"""
  le champ de contraintes aux noeuds n'existe pas.
 """),
 
-41 : _(u"""
+    41 : _(u"""
  le champ de déformations aux noeuds n'existe pas.
 """),
 
@@ -160,24 +160,24 @@ On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés son
 
 
 
-43 : _(u"""
+    43 : _(u"""
  le champ de déformations plastiques aux noeuds n'existe pas.
 """),
 
-45 : _(u"""
+    45 : _(u"""
  Pour calculer la déformation élastique, la déformation totale est obligatoire.
 """),
 
-46: _(u"""
+    46: _(u"""
  On note que déformation élastique  = déformation TOTALE - déformation PLASTIQUE. Si la déformation
  plastique n'est pas calculée dans le resultat, on prendre la valeur zéro.
 """),
 
-47 : _(u"""
+    47 : _(u"""
  INST_INI plus grand que INST_FIN
 """),
 
-48 : _(u"""
+    48 : _(u"""
  Instant initial du cycle ne se trouve pas dans la liste des instants calculés. On prend l'instant initial stocké
  comme instant initial pour la partie du chargement cyclique.
  Risques et conseils: On peut modifier la liste des instants fournie dans STAT_NON_LINE en utilisant une liste d'instant manuelle
@@ -185,71 +185,71 @@ On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés son
 """),
 
 
-57 : _(u"""
+    57 : _(u"""
   erreur données.
 """),
 
-58 : _(u"""
+    58 : _(u"""
  présence de point(s) que dans un secteur.
 """),
 
-59 : _(u"""
+    59 : _(u"""
  aucun cercle n'est circonscrit aux quatre points.
 """),
 
 
-76 : _(u"""
+    76 : _(u"""
  le champ demandé n'est pas prévu
 """),
 
-77 : _(u"""
+    77 : _(u"""
  NOM_CHAM:  %(k1)s  interdit.
 """),
 
-82 : _(u"""
+    82 : _(u"""
  type  %(k1)s  non implante.
 """),
 
-83 : _(u"""
+    83 : _(u"""
  profondeur > rayon du tube
 """),
 
-84 : _(u"""
+    84 : _(u"""
  pas d'informations dans le "RESU_GENE" sur l'option "choc".
 """),
 
-85 : _(u"""
+    85 : _(u"""
  modèle non valide.
 """),
 
-86 : _(u"""
+    86 : _(u"""
   seuil / v0  > 1
 """),
 
-87 : _(u"""
+    87 : _(u"""
   ***** arrêt du calcul *****
 """),
 
-89 : _(u"""
+    89 : _(u"""
  type non traite  %(k1)s
 """),
 
-90 : _(u"""
+    90 : _(u"""
  les tables TABL_MECA_REV et TABL_MECA_MDB n'ont pas les mêmes dimensions
 """),
 
-91 : _(u"""
+    91 : _(u"""
  les tables n'ont pas les mêmes instants de calculs
 """),
 
-92 : _(u"""
+    92 : _(u"""
  les tables n'ont pas les mêmes dimensions
 """),
 
 
 
 
-94 : _(u"""
+    94 : _(u"""
 Élément inconnu.
    Type d'élément GIBI          : %(i1)d
    Nombre de sous objet         : %(i2)d
@@ -261,7 +261,7 @@ La ligne lue dans le fichier doit ressembler à ceci :
 %(i1)8d%(i2)8d%(i3)8d%(i4)8d%(i5)8d
 """),
 
-95 : _(u"""
+    95 : _(u"""
 On a lu un objet dit composé (car type d'élément = 0) qui serait
 composé de 0 sous objet !
 """),
@@ -269,7 +269,7 @@ composé de 0 sous objet !
 
 
 
-97 : _(u"""
+    97 : _(u"""
  La maille de peau : %(k1)s ne peut pas être réorientée.
  Car elle est insérée entre 2 mailles "support" placées de part et d'autre : %(k2)s et %(k3)s.
 

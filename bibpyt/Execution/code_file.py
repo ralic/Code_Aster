@@ -31,9 +31,12 @@ from E_utils import repr_float
 
 MCFACT_VIDE = '--'
 
+
 class CodeVisitor(JDCVisitor):
+
     """Visitor to print the text of the keywords used.
     """
+
     def __init__(self, filename, with_default=True):
         """Initialization.
         filename : name of the testcase
@@ -49,8 +52,8 @@ class CodeVisitor(JDCVisitor):
 
     def get_text(self):
         """Return the text"""
-        #fmt = ' %-10s%-20s %-20s%-20s%-20s'
-        #fmt = '%r,%r,%r,%r,%r'
+        # fmt = ' %-10s%-20s %-20s%-20s%-20s'
+        # fmt = '%r,%r,%r,%r,%r'
         fmt = '%s %s %s %s %s'
         lines = [fmt % args for args in self.args]
         return os.linesep.join(lines)
@@ -62,14 +65,15 @@ class CodeVisitor(JDCVisitor):
 
     def visitMCFACT(self, fact):
         """Visit the MCFACT object."""
-        #print "visit MCFACT", fact.nom
+        # print "visit MCFACT", fact.nom
         self.mcfact = fact.nom
         self._visitMCCOMPO(fact)
         self.mcfact = MCFACT_VIDE
 
     def add_args(self):
         """Add the keyword"""
-        self.args.append((self.fname, self.cmdname, self.mcfact, self.mcsimp, self.value))
+        self.args.append(
+            (self.fname, self.cmdname, self.mcfact, self.mcsimp, self.value))
 
     def visitMCSIMP(self, mcsimp):
         """Visit the MCSIMP object."""

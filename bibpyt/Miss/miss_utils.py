@@ -46,11 +46,11 @@ from Utilitai.transpose import transpose
 from Utilitai.utils import _printDBG
 
 dict_format = {
-    'R'  : "15.6E",
-    'sR' : "%15.6E",
-    'I'  : "6d",
-    'sI' : "%6d",
-    'F'  : "6.6f",
+    'R': "15.6E",
+    'sR': "%15.6E",
+    'I': "6d",
+    'sI': "%6d",
+    'F': "6.6f",
 }
 
 
@@ -66,8 +66,10 @@ def get_max_dabsc(fonction):
 
 
 class MISS_PARAMETER(object):
+
     """Stocke les paramètres nécessaires au calcul à partir des mots-clés.
     """
+
     def __init__(self, initial_dir, **kwargs):
         """Enregistrement des valeurs des mots-clés.
         - Comme il n'y a qu'une occurrence de PARAMETRE, cela permet de
@@ -77,28 +79,28 @@ class MISS_PARAMETER(object):
         """
         # defauts hors du mot-clé PARAMETRE
         self._defaults = {
-            '_INIDIR'    : initial_dir,
-            '_WRKDIR'    : osp.join(initial_dir, 'tmp_miss3d'),
-            '_NBM_DYN'   : None,
-            '_NBM_STAT'  : None,
-            '_exec_Miss' : False,
-            'EXCIT_HARMO' : None,
-            'INST_FIN' : None,
-            'PAS_INST' : None,
-            'FICHIER_SOL_INCI' : 'NON',
+            '_INIDIR': initial_dir,
+            '_WRKDIR': osp.join(initial_dir, 'tmp_miss3d'),
+            '_NBM_DYN': None,
+            '_NBM_STAT': None,
+            '_exec_Miss': False,
+            'EXCIT_HARMO': None,
+            'INST_FIN': None,
+            'PAS_INST': None,
+            'FICHIER_SOL_INCI': 'NON',
             # tâches élémentaires à la demande
-            '_calc_impe' : False,
-            '_calc_forc' : False,
-            '_hasPC' : False,
-            '_nbPC' : 0,
-            '_nbfreq' : 0,
+            '_calc_impe': False,
+            '_calc_forc': False,
+            '_hasPC': False,
+            '_nbPC': 0,
+            '_nbfreq': 0,
         }
         self._keywords = {}
         # une seule occurence du mcfact
         mcfact = kwargs.get('PARAMETRE')
         if mcfact is not None:
             mcfact = mcfact[0]
-            self._keywords.update( mcfact.cree_dict_valeurs(mcfact.mc_liste) )
+            self._keywords.update(mcfact.cree_dict_valeurs(mcfact.mc_liste))
         # autres mots-clés
         others = kwargs.keys()
         others.remove('PARAMETRE')
@@ -141,39 +143,43 @@ class MISS_PARAMETER(object):
 
         # fréquences
         if self['TYPE_RESU'] not in ('CHARGE'):
-         if self['LIST_FREQ'] is not None \
-         and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE', 'TABLE_CONTROL'):
-            raise aster.error('MISS0_17')
+            if self['LIST_FREQ'] is not None \
+                    and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE', 'TABLE_CONTROL'):
+                raise aster.error('MISS0_17')
 
         # si base modale, vérifier/compléter les amortissements réduits
         if self['TYPE_RESU'] not in ('CHARGE'):
-         if self['BASE_MODALE']:
-            res = aster.dismoi('NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT','C')
-            ASSERT(res[0] == 0)
-            self['_NBM_DYN'] = res[1]
-            res = aster.dismoi('NB_MODES_STA', self['BASE_MODALE'].nom, 'RESULTAT','C')
-            ASSERT(res[0] == 0)
-            self['_NBM_STAT'] = res[1]
-            if self['AMOR_REDUIT']:
-                self.set('AMOR_REDUIT', force_list(self['AMOR_REDUIT']))
-                nval = len(self['AMOR_REDUIT'])
-                if nval < self['_NBM_DYN']:
-                    # complète avec le dernier
-                    nadd = self['_NBM_DYN'] - nval
-                    self._keywords['AMOR_REDUIT'].extend([self['AMOR_REDUIT'][-1],] * nadd)
-                    nval = self['_NBM_DYN']
-                if nval < self['_NBM_DYN'] + self['_NBM_STAT']:
-                    # on ajoute 0.
-                    self._keywords['AMOR_REDUIT'].append(0.)
-        # la règle ENSEMBLE garantit que les 3 GROUP_MA_xxx sont tous absents ou tous présents
+            if self['BASE_MODALE']:
+                res = aster.dismoi(
+                    'NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT', 'C')
+                ASSERT(res[0] == 0)
+                self['_NBM_DYN'] = res[1]
+                res = aster.dismoi(
+                    'NB_MODES_STA', self['BASE_MODALE'].nom, 'RESULTAT', 'C')
+                ASSERT(res[0] == 0)
+                self['_NBM_STAT'] = res[1]
+                if self['AMOR_REDUIT']:
+                    self.set('AMOR_REDUIT', force_list(self['AMOR_REDUIT']))
+                    nval = len(self['AMOR_REDUIT'])
+                    if nval < self['_NBM_DYN']:
+                        # complète avec le dernier
+                        nadd = self['_NBM_DYN'] - nval
+                        self._keywords['AMOR_REDUIT'].extend(
+                            [self['AMOR_REDUIT'][-1], ] * nadd)
+                        nval = self['_NBM_DYN']
+                    if nval < self['_NBM_DYN'] + self['_NBM_STAT']:
+                        # on ajoute 0.
+                        self._keywords['AMOR_REDUIT'].append(0.)
+        # la règle ENSEMBLE garantit que les 3 GROUP_MA_xxx sont tous absents
+        # ou tous présents
         if self['TYPE_RESU'] not in ('CHARGE'):
-          if self['ISSF'] != 'NON':
-            if self['GROUP_MA_FLU_STR'] is None:
-                UTMESS('F', 'MISS0_22')
-            if self['MATER_FLUIDE'] is None:
-                UTMESS('F', 'MISS0_23')
-          if self.get('GROUP_MA_CONTROL') is not None:
-            assert self['INST_FIN'] is not None, "INST_FIN obligatoire"
+            if self['ISSF'] != 'NON':
+                if self['GROUP_MA_FLU_STR'] is None:
+                    UTMESS('F', 'MISS0_22')
+                if self['MATER_FLUIDE'] is None:
+                    UTMESS('F', 'MISS0_23')
+            if self.get('GROUP_MA_CONTROL') is not None:
+                assert self['INST_FIN'] is not None, "INST_FIN obligatoire"
 
     def __iter__(self):
         """Itérateur simple sur le dict des mots-clés"""
@@ -207,7 +213,8 @@ def lire_nb_valeurs(file_object, nb, extend_to, conversion,
     if max_per_line < 0:
         max_per_line = nb
     ln = 0
-    _printDBG("LIRE_NB_VALEURS nb=", nb, ", nb_bloc=", nb_bloc, ", nb_ignore=", nb_ignore)
+    _printDBG("LIRE_NB_VALEURS nb=", nb,
+              ", nb_bloc=", nb_bloc, ", nb_ignore=", nb_ignore)
     for i in range(nb_bloc):
         val = []
         j = 0
@@ -237,10 +244,12 @@ def lire_nb_valeurs(file_object, nb, extend_to, conversion,
                 continue
             add = [conversion(v) for v in line.split()[:max_per_line]]
             val.extend(add)
-        ASSERT(len(val) == nb, "%d valeurs attendues, %d valeurs lues" % (nb, len(val)))
+        ASSERT(len(val) == nb, "%d valeurs attendues, %d valeurs lues" %
+               (nb, len(val)))
         extend_to.extend(val)
         _printDBG("BLOC", i, ",", nb, "valeurs lues, debut :", repr(val[:3]))
     return ln
+
 
 def en_ligne(valeurs, format, cols, separateur=" ", format_ligne="%(valeurs)s"):
     """Formatte valeurs en cols colonnes en utilisant le format.
@@ -255,12 +264,13 @@ def en_ligne(valeurs, format, cols, separateur=" ", format_ligne="%(valeurs)s"):
             lv.append(format % valeurs.pop(0))
         ind += 1
         line = format_ligne % {
-            "valeurs" : separateur.join(lv),
-            "index"   : ind,
-            "index_1" : ind + 1,
+            "valeurs": separateur.join(lv),
+            "index": ind,
+            "index_1": ind + 1,
         }
         res.append(line)
     return res
+
 
 def convert_double(fich1, fich2):
     """Convertit les 1.D+09 en 1.E+09"""
@@ -270,10 +280,12 @@ def convert_double(fich1, fich2):
     new = expr.sub("\\1E\\4", txt)
     open(fich2, "w").write(new)
 
+
 def double(string):
     """Convertit la chaine en réelle (accepte le D comme exposant)"""
     string = re.sub('([0-9]+)([\-\+][0-9])', '\\1e\\2', string)
     return float(string.replace("D", "e"))
+
 
 def get_puis2(nval):
     """Retourne N, la plus grande puissance de 2 telle que 2**N <= nval"""

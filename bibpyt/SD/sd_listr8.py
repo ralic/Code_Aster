@@ -28,45 +28,44 @@ class sd_listr8(sd_titre):
     NBPA = AsVI()
     VALE = AsVR()
 
-
-    def proche(self,a,b):
+    def proche(self, a, b):
         # retourne  1  si a est proche de b
         # retourne -1  si a est loin de b
         # retourne  0  si a = 0. (ou b = 0.)
-        if  a != 0. and b != 0. :
-           erreur= abs(a-b)/(abs(a)+abs(b))
-           if erreur < 1.e-12 :
-               return 1
-           else :
-               return -1
-        else :
-               return 0
+        if a != 0. and b != 0.:
+            erreur = abs(a - b) / (abs(a) + abs(b))
+            if erreur < 1.e-12:
+                return 1
+            else:
+                return -1
+        else:
+            return 0
 
-
-    def check_1(self,checker):
-        nbpa=self.NBPA.get()
-        bint=self.BINT.get()
-        lpas=self.LPAS.get()
-        vale=self.VALE.get()
+    def check_1(self, checker):
+        nbpa = self.NBPA.get()
+        bint = self.BINT.get()
+        lpas = self.LPAS.get()
+        vale = self.VALE.get()
 
         # cas général :
-        if len(vale) > 1 :
-            assert len(bint) == len(nbpa)+1
+        if len(vale) > 1:
+            assert len(bint) == len(nbpa) + 1
             assert len(nbpa) == len(lpas)
 
-            n1=0
-            assert self.proche(vale[0], bint[0]) in (1,0)
-            for k in range(len(nbpa)) :
-                npas=nbpa[k]
+            n1 = 0
+            assert self.proche(vale[0], bint[0]) in (1, 0)
+            for k in range(len(nbpa)):
+                npas = nbpa[k]
                 assert npas > 0
                 n1 = n1 + npas
-                assert self.proche(vale[n1],bint[k+1]) in (1,0) , (k+1,vale[n1], bint[k+1],)
+                assert self.proche(vale[n1], bint[k + 1]) in (
+                    1, 0), (k + 1, vale[n1], bint[k + 1],)
 
-            assert len(vale) == n1+1
+            assert len(vale) == n1 + 1
 
         # cas particulier :
-        if len(vale) == 1 :
+        if len(vale) == 1:
             assert len(bint) == 1
             assert len(nbpa) == 1
             assert len(lpas) == 1
-            assert  vale[0] == bint[0]
+            assert vale[0] == bint[0]

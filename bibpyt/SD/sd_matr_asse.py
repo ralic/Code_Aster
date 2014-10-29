@@ -24,21 +24,22 @@ from SD.sd_matr_asse_com import sd_matr_asse_com
 
 #---------------------------------------------------------------------------------
 # classe "chapeau" à sd_matr_asse_gene et sd_matr_asse_gd ne servant que pour "check"
-#---------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
 
 
 class sd_matr_asse(sd_matr_asse_com):
 #--------------------------------------------
     nomj = SDNom(fin=19)
 
-
     # pour orienter vers sd_matr_asse_gene ou sd_matr_asse_gd :
     def check_matr_asse_1(self, checker):
-        # on est obligé de se protéger dans le cas des Facultatif(sd_matr_asse) :
-        if not self.REFA.get() : return
-        gene=self.REFA.get()[9].strip()=='GENE'
-        if  gene  :
-           sd2=sd_matr_asse_gene(self.nomj)
-        else :
-           sd2=sd_matr_asse_gd(self.nomj)
+        # on est obligé de se protéger dans le cas des Facultatif(sd_matr_asse)
+        # :
+        if not self.REFA.get():
+            return
+        gene = self.REFA.get()[9].strip() == 'GENE'
+        if gene:
+            sd2 = sd_matr_asse_gene(self.nomj)
+        else:
+            sd2 = sd_matr_asse_gd(self.nomj)
         sd2.check(checker)

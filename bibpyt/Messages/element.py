@@ -19,24 +19,24 @@
 
 cata_msg = {
 
-68: _(u"""
+    68: _(u"""
  Erreur lors du calcul de la pression: la maille n'est que partiellement affectée.
 """),
 
-15 : _(u"""   Maille concernée : %(k1)s
+    15 : _(u"""   Maille concernée : %(k1)s
 """),
 
-16 : _(u"""   Option de calcul : %(k1)s
+    16 : _(u"""   Option de calcul : %(k1)s
    Commentaire:"""),
-17 : _(u"""%(k1)s"""),
+    17 : _(u"""%(k1)s"""),
 
-18 : _(u"""     Paramètre d'entrée : %(k1)s
+    18 : _(u"""     Paramètre d'entrée : %(k1)s
       Commentaire:"""),
 
-19 : _(u"""     Paramètre de sortie : %(k1)s
+    19 : _(u"""     Paramètre de sortie : %(k1)s
       Commentaire:"""),
 
-22 : _(u"""     Grandeur associée au champ : %(k1)s
+    22 : _(u"""     Grandeur associée au champ : %(k1)s
       Commentaire:"""),
 
 }

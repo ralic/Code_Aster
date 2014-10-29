@@ -19,15 +19,15 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-   nom            = 'GRILLE_ISOT_LINE',
-   doc = """Relation de comportement des grilles d'armatures de béton armé, à écrouissage isotrope linéaire""",
-   num_lc         = 9999,
-   nb_vari        = 4,
-   nom_vari       = ('EPSPEQ','INDIPLAS','VIDE','VIDE'),
-   modelisation   = ('GRILLE_MEMBRANE','GRILLE_EXCENTRE','1D'),
-   deformation    = ('PETIT',),
-   nom_varc       = ('TEMP'),
-   algo_inte         = ('ANALYTIQUE'),
-   type_matr_tang = None,
-   proprietes     = None,
+    nom='GRILLE_ISOT_LINE',
+    doc="""Relation de comportement des grilles d'armatures de béton armé, à écrouissage isotrope linéaire""",
+    num_lc=9999,
+    nb_vari=4,
+    nom_vari=('EPSPEQ', 'INDIPLAS', 'VIDE', 'VIDE'),
+    modelisation = ('GRILLE_MEMBRANE', 'GRILLE_EXCENTRE', '1D'),
+    deformation = ('PETIT',),
+    nom_varc = ('TEMP'),
+    algo_inte = ('ANALYTIQUE'),
+    type_matr_tang = None,
+    proprietes = None,
 )

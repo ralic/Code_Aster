@@ -62,31 +62,32 @@ COMMANDES = [
     'DETRUIRE',
 ]
 
+
 def build_context(unite, temp, prol):
     """Construit le contexte pour exécuter un catalogue matériau."""
     # définition du coefficient multiplicatif selon l'unité.
     unite = unite.lower()
     assert unite in ("m", "mm")
     if unite == "m":
-        coef_unit = lambda expo : 1.
+        coef_unit = lambda expo: 1.
     else:
-        coef_unit = lambda expo : pow(10., expo)
+        coef_unit = lambda expo: pow(10., expo)
 
     # extraction à une température donnée
     if temp is not None:
-        func_temp = lambda f : f(temp)
+        func_temp = lambda f: f(temp)
     else:
-        func_temp = lambda x : x
+        func_temp = lambda x: x
 
     # fonction pour récupérer les mots clés
     def defi_motscles(**kwargs):
         return kwargs
 
     context = {
-        FCOEF : coef_unit,
-        DPROL : prol,
-        FTEMP : func_temp,
-        DEFI_MOTSCLES : defi_motscles,
+        FCOEF: coef_unit,
+        DPROL: prol,
+        FTEMP: func_temp,
+        DEFI_MOTSCLES: defi_motscles,
     }
     return context
 
@@ -100,7 +101,7 @@ def include_materiau_ops(self,
     from Cata.cata import formule
     from Utilitai.Utmess import UTMESS
 
-    DEFI_MATERIAU  = self.get_cmd('DEFI_MATERIAU')
+    DEFI_MATERIAU = self.get_cmd('DEFI_MATERIAU')
     self.set_icmd(1)
     self.DeclareOut('MAT', self.sd)
 
@@ -118,15 +119,15 @@ def include_materiau_ops(self,
     extract = EXTRACTION is not None
     if extract:
         TEMP_EVAL = EXTRACTION['TEMP_EVAL']
-        keep_compor = lambda compor : compor in EXTRACTION['COMPOR']
+        keep_compor = lambda compor: compor in EXTRACTION['COMPOR']
     else:
         TEMP_EVAL = None
-        keep_compor = lambda compor : True
+        keep_compor = lambda compor: True
 
     # définition du prolongement des fonctions
     dict_prol = {
-        'droite' : PROL_DROITE,
-        'gauche' : PROL_GAUCHE,
+        'droite': PROL_DROITE,
+        'gauche': PROL_GAUCHE,
     }
 
     context = build_context(UNITE_LONGUEUR, TEMP_EVAL, dict_prol)
@@ -140,13 +141,16 @@ def include_materiau_ops(self,
     kwcata = context.get(MOTSCLES)
     if kwcata is None:
         UTMESS('F', 'SUPERVIS2_6', valk=bnmat)
-    # certains concepts cachés doivent être connus plus tard (au moins les objets FORMULE)
-    to_add = dict([(v.nom, v) for k, v in context.items() if isinstance(v, formule)])
+    # certains concepts cachés doivent être connus plus tard (au moins les
+    # objets FORMULE)
+    to_add = dict([(v.nom, v)
+                  for k, v in context.items() if isinstance(v, formule)])
     self.sdprods.extend(to_add.values())
     if INFO == 2:
-        aster.affiche('MESSAGE', " Mots-clés issus du catalogue : \n%s" \
-            % pprint.pformat(kwcata))
-        aster.affiche('MESSAGE', 'Concepts transmis au contexte global :\n%s' % to_add)
+        aster.affiche('MESSAGE', " Mots-clés issus du catalogue : \n%s"
+                      % pprint.pformat(kwcata))
+        aster.affiche(
+            'MESSAGE', 'Concepts transmis au contexte global :\n%s' % to_add)
 
     # filtre des mots-clés
     for mcf, value in kwcata.items():

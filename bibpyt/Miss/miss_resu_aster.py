@@ -37,8 +37,11 @@ try:
 except ImportError:
     from Execution.E_Exception import error as AsterError
 
+
 class ResuAsterReader(object):
+
     """Lit le fichier issu de IMPR_MACR_ELEM"""
+
     def __init__(self, nbgrp):
         """Initialisation
         `nbgrp` est le nombre de groupes de mailles décrits
@@ -68,11 +71,11 @@ class ResuAsterReader(object):
             struct.check()
         except AssertionError, err:
             raise AsterError('MISS0_8', valk=traceback.format_exc(limit=2))
-    
+
     def post(self):
         """arrangements"""
         self.struct.post()
-    
+
     def _read_all(self):
         """Read the file line per line."""
         self._read_mode_dyna_para()
@@ -125,7 +128,7 @@ class ResuAsterReader(object):
     def _read_noeuds_coord(self):
         """noeuds : coordonnées"""
         self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.noeud_nb * 3, 
+                                   self.struct.noeud_nb * 3,
                                    self.struct.noeud_coor, double)
 
     def _read_mailles_connect(self):
@@ -173,6 +176,7 @@ class ResuAsterReader(object):
                                    self.struct.mode_dyna_nb,
                                    self.struct.mode_dyna_amor,
                                    double, 1, 1)
+
     def _read_mode_dyna_mass(self):
         """modes dynamiques : masse"""
         self.ln += lire_nb_valeurs(self.fobj,
@@ -226,26 +230,32 @@ class ResuAsterReader(object):
     def _read_mode_coupl_mass(self):
         """modes couplés : masse"""
         self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+                                   self.struct.mode_dyna_nb *
+                                   self.struct.mode_stat_nb,
                                    self.struct.coupl_mass,
                                    double, 1, 1)
 
     def _read_mode_coupl_rigi(self):
         """modes couplés : rigidité"""
         self.ln += lire_nb_valeurs(self.fobj,
-                                   self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+                                   self.struct.mode_dyna_nb *
+                                   self.struct.mode_stat_nb,
                                    self.struct.coupl_rigi,
                                    double, 1, 1)
 
     def _read_mode_coupl_amor(self):
         """modes couplés : amortissements (facultatifs)"""
         unused = lire_nb_valeurs(self.fobj,
-                                 self.struct.mode_dyna_nb * self.struct.mode_stat_nb,
+                                 self.struct.mode_dyna_nb *
+                                 self.struct.mode_stat_nb,
                                  self.struct.coupl_amor,
                                  double, 1, 1, regexp_label="COUPL +AMOR")
 
+
 class STRUCT_RESULTAT:
+
     """Simple conteneur."""
+
     def __init__(self):
         self.titre = ""
         self.noeud_nb = 0
@@ -309,10 +319,11 @@ class STRUCT_RESULTAT:
         nbgrp = len(self.maille_nb)
         for idx in range(nbgrp):
             dime = self.maille_dime[idx]
-            add = [0,] * (20 - dime)
+            add = [0, ] * (20 - dime)
             new = []
             for i in range(self.maille_nb[idx]):
-                new.extend(self.maille_connec[idx][i * dime : (i+1) * dime] + add)
+                new.extend(
+                    self.maille_connec[idx][i * dime: (i + 1) * dime] + add)
             self.maille_connec[idx] = new
 
     def repr(self):
@@ -332,10 +343,11 @@ class STRUCT_RESULTAT:
 
 
 class TestMissInterface(unittest.TestCase):
+
     """test interface functions to create miss datafiles"""
     faster = 'ZZZZ108B.aster'
-    
-    #unittest.skipIf(not osp.isfile(faster),   # decorator requires python 2.7
+
+    # unittest.skipIf(not osp.isfile(faster),   # decorator requires python 2.7
                      #"requires %s" % faster)
     def test01_ext(self):
         """test creation of the .ext file"""
@@ -348,6 +360,6 @@ class TestMissInterface(unittest.TestCase):
         assert data.maille_nb == [96, 3], data.maille_nb
         assert data.mode_dyna_nb == 0, data.mode_dyna_nb
         assert data.mode_stat_nb == 291, data.mode_stat_nb
-        
+
 if __name__ == '__main__':
     unittest.main()

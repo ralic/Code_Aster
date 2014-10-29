@@ -20,7 +20,7 @@
 cata_msg = {
 
 
-2 : _(u"""
+    2 : _(u"""
  Votre modèle contient des variables de commandes (température, irradiation, etc.)
  or on utilise une matrice élastique constante au cours du temps.
  Si vous faites de l'amortissement de Rayleigh, il y a un risque de résultats faux
@@ -32,18 +32,18 @@ cata_msg = {
 
 
 
-88 : _(u"""
+    88 : _(u"""
   -> Vous utilisez l'algorithme de contact 'GCP' avec un préconditionneur qui n'est pas adapté.
 
   -> Conseil :
      Utilisez le préconditionneur 'LDLT_SP' en spécifiant PRE_COND='LDLT_SP' sous le mot-clé SOLVEUR.
 """),
 
-89 : _(u"""
+    89 : _(u"""
  contact et recherche linéaire peuvent poser des problèmes de convergence
 """),
 
-90 : _(u"""
+    90 : _(u"""
   -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linéaire '%(k1)s'.
      Le solveur '%(k1)s' n'est actuellement autorisé qu'avec les algorithmes de contact 'GCP','VERIF' et 'PENALISATION'.
 
@@ -52,15 +52,15 @@ cata_msg = {
      en utilisant le mot-clé METHODE de SOLVEUR.
 """),
 
-91 : _(u"""
+    91 : _(u"""
 Contact méthode continue et recherche linéaire sont incompatibles
 """),
 
-92 : _(u"""
+    92 : _(u"""
 Contact méthode continue et pilotage sont incompatibles
 """),
 
-93 : _(u"""
+    93 : _(u"""
   -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linéaire '%(k1)s' et le renuméroteur 'RCMK'.
      Le renuméroteur 'RCMK' n'est actuellement pas autorisé avec la formulation 'CONTINUE'.
 
@@ -68,15 +68,15 @@ Contact méthode continue et pilotage sont incompatibles
      Il ne faut pas utiliser de renuméroteur (renseignez RENUM='SANS' sous le mot-clé facteur SOLVEUR).
 """),
 
-94 : _(u"""
+    94 : _(u"""
  Le contact de type liaison unilatérale (sans appariement) et le pilotage sont des fonctionnalités incompatibles
 """),
 
-95 : _(u"""
+    95 : _(u"""
  Le contact de type liaison unilatérale (sans appariement) et la recherche linéaire peuvent poser des problèmes de convergence
 """),
 
-96 : _(u"""
+    96 : _(u"""
   -> Vous utilisez la formulation 'LIAISON_UNIL' conjointement avec le solveur linéaire '%(k1)s'.
      Ce dernier n'est pas compatible avec le traitement de conditions unilatérales.
 
@@ -84,7 +84,7 @@ Contact méthode continue et pilotage sont incompatibles
      Changez de solveur linéaire en utilisant le mot-clé METHODE de SOLVEUR.
 """),
 
-97 : _(u"""
+    97 : _(u"""
   -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec un solveur itératif et le préconditionneur '%(k1)s'.
      Le préconditionneur '%(k1)s' ne supporte pas les matrices issues de cette formulation du contact.
 
@@ -92,7 +92,7 @@ Contact méthode continue et pilotage sont incompatibles
      Changez de préconditionneur.
 """),
 
-98 : _(u"""
+    98 : _(u"""
   -> Vous utilisez la formulation 'CONTINUE' de contact avec le solveur linéaire 'PETSC' et vous demandez la distribution de la matrice (MATR_DISTRIBUEE='OUI').
      La distribution de la matrice n'est pas possible dans ce cas d'utilisation.
 

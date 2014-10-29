@@ -17,12 +17,12 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
+cata_msg = {
 
-1 : _(u"""Le processeur #%(i1)d/%(i2)d travaille dans le répertoire '%(k1)s'.
+    1 : _(u"""Le processeur #%(i1)d/%(i2)d travaille dans le répertoire '%(k1)s'.
 """),
 
-2 : _(u"""Copie du fichier '%(k1)s' vers '%(k2)s'.
+    2 : _(u"""Copie du fichier '%(k1)s' vers '%(k2)s'.
 """),
 
 }

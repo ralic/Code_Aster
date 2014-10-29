@@ -32,7 +32,8 @@
 # permet de se proteger de l'oubli de carte coding
 # ce warning deviendra fatal en python 2.4
 import warnings
-warnings.filterwarnings('error','Non-ASCII character.*pep-0263',DeprecationWarning)
+warnings.filterwarnings(
+    'error', 'Non-ASCII character.*pep-0263', DeprecationWarning)
 
 from A_JDC_CATA import JDC_CATA
 from A_OPER import OPER
@@ -63,8 +64,8 @@ from A_ENSEMBLE import ENSEMBLE
 from A_A_CLASSER import A_CLASSER
 
 from Noyau.N_ASSD import ASSD, assd, not_checked
-from Noyau.asojb  import AsBase
-from Noyau.N_GEOM import GEOM,geom
+from Noyau.asojb import AsBase
+from Noyau.N_GEOM import GEOM, geom
 from Noyau.N_FONCTION import FONCTION, formule, formule_c
 from Noyau.N_CO import CO
 from Noyau.N__F import _F
@@ -73,4 +74,4 @@ from Noyau.N_OPS import OPS, EMPTY_OPS
 from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType
 
-from Noyau.N_VALIDATOR import Valid,RangeVal,OrdList,NoRepeat,LongStr,EnumVal,CardVal,TypeVal,InstanceVal,OrVal,AndVal,PairVal
+from Noyau.N_VALIDATOR import Valid, RangeVal, OrdList, NoRepeat, LongStr, EnumVal, CardVal, TypeVal, InstanceVal, OrVal, AndVal, PairVal

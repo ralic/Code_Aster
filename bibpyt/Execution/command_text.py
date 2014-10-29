@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
@@ -33,8 +33,10 @@ from E_utils import repr_float
 
 
 class CommandTextVisitor(JDCVisitor):
+
     """Visitor to print the text of the commands.
     """
+
     def __init__(self, with_default=True, indent=2):
         """Initialization.
         with_default : if True, visit the default values of undefined keywords
@@ -46,7 +48,7 @@ class CommandTextVisitor(JDCVisitor):
         self.with_default = with_default
         self.lines = []
         self.curline = []
-        self.indent = [indent,]
+        self.indent = [indent, ]
         self.sdname = None
         self._saved = {}
         self._count = 0
@@ -54,10 +56,10 @@ class CommandTextVisitor(JDCVisitor):
     def save_buffer(self, obj):
         """Save the current state."""
         self._saved[id(obj)] = {
-            'lines' : self.lines[:],
-            'curline' : self.curline[:],
-            'indent' : self.indent[:],
-            'sdname' : self.sdname,
+            'lines': self.lines[:],
+            'curline': self.curline[:],
+            'indent': self.indent[:],
+            'sdname': self.sdname,
         }
 
     def restore_buffer(self, obj):
@@ -120,7 +122,7 @@ class CommandTextVisitor(JDCVisitor):
 
     def visitMCFACT(self, fact):
         """Visit the MCFACT object."""
-        #print "visit MCFACT", fact.nom
+        # print "visit MCFACT", fact.nom
         self.save_buffer(fact)
         self._count = 0
         self.curline.append("_F(")
@@ -135,7 +137,7 @@ class CommandTextVisitor(JDCVisitor):
 
     def visitMCList(self, mclist):
         """Visit the MCList object."""
-        #print 'visit MCList', mclist
+        # print 'visit MCList', mclist
         self.save_buffer(mclist)
         numb = len(mclist.data)
         if numb < 1:
@@ -171,7 +173,7 @@ class CommandTextVisitor(JDCVisitor):
                 self._break()
                 break
             has_default = getattr(obj, 'defaut', None) is not None \
-                        or getattr(obj, 'statut', None) == 'd'
+                or getattr(obj, 'statut', None) == 'd'
             if not key in seen and has_default:
                 to_add[key] = obj
         numb = len(to_add)
@@ -188,7 +190,7 @@ class CommandTextVisitor(JDCVisitor):
     def _visitMCCOMPO(self, compo):
         """Visit generic MCCOMPO objects (ETAPE, MCFACT, MCBLOC)
         (*private*, no 'accept' method in MCCOMPO class)."""
-        #print "visit MCCOMPO", compo.nom
+        # print "visit MCCOMPO", compo.nom
         seen = set()
         numb = len(compo.mc_liste)
         for i, obj in enumerate(compo.mc_liste):

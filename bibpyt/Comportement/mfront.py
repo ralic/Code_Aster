@@ -20,17 +20,17 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-   nom            = 'MFRONT',
-   doc = """Loi de comportement utilisateur dont l'intégration
+    nom='MFRONT',
+    doc="""Loi de comportement utilisateur dont l'intégration
             est réalisée par MFront.""",
-   num_lc         = 58,
-   nb_vari        = 0,
-   nom_vari       = None, # leur nombre est donné sous COMPORTEMENT/NB_VARI
-   mc_mater       = ('UMAT'),
-   modelisation   = ('3D', 'AXIS', 'D_PLAN', 'C_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC','GDEF_LOG','SIMO_MIEHE'),
-   nom_varc       = ('TEMP', 'IRRA', 'CORR', 'HYDR', 'SECH','NEUT1','NEUT2'),
-   algo_inte      = ('SANS_OBJET'),
-   type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-   proprietes     = None,
+    num_lc=58,
+    nb_vari=0,
+    nom_vari=None,  # leur nombre est donné sous COMPORTEMENT/NB_VARI
+    mc_mater=('UMAT'),
+    modelisation = ('3D', 'AXIS', 'D_PLAN', 'C_PLAN'),
+    deformation = ('PETIT', 'PETIT_REAC', 'GDEF_LOG', 'SIMO_MIEHE'),
+    nom_varc = ('TEMP', 'IRRA', 'CORR', 'HYDR', 'SECH', 'NEUT1', 'NEUT2'),
+    algo_inte = ('SANS_OBJET'),
+    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
+    proprietes = None,
 )

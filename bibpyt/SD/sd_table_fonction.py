@@ -26,22 +26,25 @@ from SD.sd_fonction import sd_fonction
 # --------------------------------------------------------------------
 
 
-
 class sd_table_fonction(sd_table):
 #-------------------------------------
     nomj = SDNom(fin=17)
 
-
     def check_table_fonction_i_COL_FONC(self, checker):
         shape = self.TBNP.get()
-        if shape is None: return
+        if shape is None:
+            return
         desc = self.TBLP.get()
         for n in range(shape[0]):
-            nomcol=desc[4*n].strip()
-            if not (nomcol == 'FONCTION' or nomcol == 'FONCTION_C') : continue
+            nomcol = desc[4 * n].strip()
+            if not (nomcol == 'FONCTION' or nomcol == 'FONCTION_C'):
+                continue
             col_d, col_m = self.get_column_name(nomcol)
             lnom = col_d.data.get()
-            if not lnom : return
-            for nom1 in lnom :
-                if not nom1.strip() : continue
-                sd2=sd_fonction(nom1) ; sd2.check(checker)
+            if not lnom:
+                return
+            for nom1 in lnom:
+                if not nom1.strip():
+                    continue
+                sd2 = sd_fonction(nom1)
+                sd2.check(checker)

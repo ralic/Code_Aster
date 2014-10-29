@@ -18,6 +18,7 @@
 
 from SD import *
 
+
 class sd_char_unilate(AsBase):
     nomj = SDNom(fin=16)
     DIMECU = AsVI()
@@ -26,5 +27,5 @@ class sd_char_unilate(AsBase):
     METHCU = AsVI(lonmax=1,)
     PARACU = AsVR(lonmax=1,)
     CMPGCU = AsVK8()
-    COEFD = AsVect(ltyp=8, type=Parmi('K','R'))
-    COEFG = AsVect(ltyp=8, type=Parmi('K','R'))
+    COEFD = AsVect(ltyp=8, type=Parmi('K', 'R'))
+    COEFG = AsVect(ltyp=8, type=Parmi('K', 'R'))

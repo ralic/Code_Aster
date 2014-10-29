@@ -20,17 +20,18 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-   nom            = 'VMIS_CINE_GC',
-   doc            = """Loi de Von Mises en 1D - Écrouissage cinématique linéaire.
+    nom='VMIS_CINE_GC',
+    doc="""Loi de Von Mises en 1D - Écrouissage cinématique linéaire.
    Application aux études en génie civil : armatures, trellis soudés""",
-   num_lc         = 9999,
-   nb_vari        = 6,
-   nom_vari       = ('CRITSIG','CRITEPS','XCINXX','INDIPLAS','DISSIP','DISSTHER'),
-   mc_mater       = ('ELAS', 'ECRO_LINE'),
-   modelisation   = ('1D','GRILLE_EXCENTRE'),
-   deformation    = ('PETIT', 'PETIT_REAC',),
-   nom_varc       = ('TEMP',),
-   algo_inte      = ('ANALYTIQUE',),
-   type_matr_tang = None,
-   proprietes     = None,
+    num_lc=9999,
+    nb_vari=6,
+    nom_vari=('CRITSIG', 'CRITEPS',
+              'XCINXX', 'INDIPLAS', 'DISSIP', 'DISSTHER'),
+    mc_mater = ('ELAS', 'ECRO_LINE'),
+    modelisation = ('1D', 'GRILLE_EXCENTRE'),
+    deformation = ('PETIT', 'PETIT_REAC',),
+    nom_varc = ('TEMP',),
+    algo_inte = ('ANALYTIQUE',),
+    type_matr_tang = None,
+    proprietes = None,
 )

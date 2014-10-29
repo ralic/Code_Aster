@@ -19,7 +19,7 @@
 
 cata_msg = {
 
-11 : _(u"""
+    11 : _(u"""
 Plus de %(i1)d faces touchent le noeud %(k1)s.
 
 Risque & conseils :
@@ -31,7 +31,7 @@ Risque & conseils :
 
 
 
-14 : _(u"""
+    14 : _(u"""
  Le mot-clé MAILLAGE est obligatoire avec le mot-clé %(k1)s.
 """),
 

@@ -18,12 +18,11 @@
 
 from SD import *
 
-from SD.sd_ligrel    import sd_ligrel
-from SD.sd_maillage  import sd_maillage
-from SD.sd_xfem      import sd_modele_xfem
-from SD.sd_l_table   import sd_l_table
+from SD.sd_ligrel import sd_ligrel
+from SD.sd_maillage import sd_maillage
+from SD.sd_xfem import sd_modele_xfem
+from SD.sd_l_table import sd_l_table
 from SD.sd_partition import sd_partition
-
 
 
 class sd_modele(AsBase):
@@ -35,27 +34,26 @@ class sd_modele(AsBase):
     MAILLE = Facultatif(AsVI())
     PARTIT = Facultatif(AsVK8(lonmax=1))
 
-    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractéristiques de l'étude :
+    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs
+    # caractéristiques de l'étude :
     lt = Facultatif(sd_l_table(SDNom(nomj='')))
 
     # Si le modèle vient de MODI_MODELE_XFEM :
     xfem = Facultatif(sd_modele_xfem(SDNom(nomj='')))
 
-
-    def check_existence(self,checker) :
-        exi_liel=self.MODELE.LIEL.exists
-        exi_maille=self.MAILLE.exists
-        exi_noeud=self.NOEUD.exists
+    def check_existence(self, checker):
+        exi_liel = self.MODELE.LIEL.exists
+        exi_maille = self.MAILLE.exists
+        exi_noeud = self.NOEUD.exists
 
         # si .LIEL => .MAILLE et .NOEUD
-        if exi_liel :
+        if exi_liel:
             assert exi_maille
             assert exi_noeud
 
-
-    def check_PARTIT(self,checker) :
-        if self.PARTIT.exists :
-           partit=self.PARTIT.get_stripped()
-           if partit[0] != '' :
-              sd2 = sd_partition(partit[0])
-              sd2.check(checker)
+    def check_PARTIT(self, checker):
+        if self.PARTIT.exists:
+            partit = self.PARTIT.get_stripped()
+            if partit[0] != '':
+                sd2 = sd_partition(partit[0])
+                sd2.check(checker)

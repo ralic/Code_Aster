@@ -28,9 +28,9 @@
       Veuillez contacter votre assistance technique.
 """
 
-cata_msg={
+cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
 Erreur de programmation.
 
 Condition non respectée:
@@ -38,20 +38,20 @@ Condition non respectée:
 Fichier %(k2)s, ligne %(i1)d
 """),
 
-2 : _(u"""
+    2 : _(u"""
 Erreur numérique (floating point exception).
 """),
 
-3 : _(u"""
+    3 : _(u"""
 Erreur de programmation : Nom de grandeur inattendu : %(k1)s
 Routine : %(k2)s
 """),
 
-4 : _(u"""
+    4 : _(u"""
 On ne sait pas traiter ce type d'élément : %(k1)s
 """),
 
-5 : _(u"""
+    5 : _(u"""
 Erreur de programmation :
     On ne trouve pas le triplet ( %(k1)s )
     correspondant à (terme élémentaire, élément de référence, famille).
@@ -60,7 +60,7 @@ Conseils :
     L'élément de référence ou la famille de points de Gauss ne sont pas définis.
 """),
 
-6 : _(u"""
+    6 : _(u"""
 Erreur de programmation :
   La mémoire allouée avec la routine AS_ALLOCATE n'a pas été totalement libérée
   (fuite mémoire).
@@ -71,7 +71,7 @@ Risques et conseils :
   Il faut émettre une fiche d'anomalie.
 """),
 
-7 : _(u"""
+    7 : _(u"""
 Erreur de programmation :
   Le nombre d'objet de travail créés par le mécanisme AS_ALLOCATE
   est supérieur au maximum autorisé.
@@ -82,14 +82,14 @@ Risques et conseils :
 
 
 
-9 : _(u"""
+    9 : _(u"""
 Erreur de programmation dans un module Python.
 Condition non respectée : %(k2)s
 
       %(k1)s
 """),
 
-97 : _(u"""
+    97 : _(u"""
 Erreur signalée dans la bibliothèque MED
      nom de l'utilitaire : %(k1)s
              code retour : %(i1)d

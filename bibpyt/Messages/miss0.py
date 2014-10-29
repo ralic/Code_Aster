@@ -17,27 +17,27 @@
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
-3 : _(u"""
+cata_msg = {
+    3 : _(u"""
 Il faut une et une seule couche avec SUBSTRATUM="OUI".
 """),
 
-4 : _(u"""
+    4 : _(u"""
 La définition de la couche numéro %(i1)d est incorrecte :
 Il y a %(i2)d matériaux, or NUME_MATE=%(i3)d.
 """),
 
-5 : _(u"""
+    5 : _(u"""
 La numérotation des couches est incorrectes.
 """),
 
-6 : _(u"""
+    6 : _(u"""
 Erreur lors de la copie de fichier pour MISS :
   source      : %(k1)s
   destination : %(k2)s
 """),
 
-7 : _(u"""
+    7 : _(u"""
 Erreur lors de la lecture du fichier de résultat Aster
 à la ligne numéro %(i1)d.
 
@@ -45,7 +45,7 @@ Message d'erreur :
 %(k1)s
 """),
 
-8 : _(u"""
+    8 : _(u"""
 Les données lues dans le fichier de résultat Aster ne sont pas cohérentes.
 La trace ci-dessous doit montrer l'incohérence relevée.
 
@@ -53,55 +53,55 @@ Message d'erreur :
 %(k1)s
 """),
 
-9 : _(u"""
+    9 : _(u"""
 Les abscisses de l'accélérogramme '%(k1)s' doivent être à pas constant.
 """),
 
-10 : (u"""
+    10 : (u"""
 Interpolation des accélérogrammes sur l'intervalle : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f, soit %(i1)d instants.
 """),
 
-11 : _(u"""
+    11 : _(u"""
 Les %(i1)d fréquences du calcul harmonique sont :
     %(k1)s
 """),
 
-12 : _(u"""
+    12 : _(u"""
 Plage de fréquence du calcul harmonique : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f Hz, soit %(i1)d fréquences.
 """),
 
-13 : _(u"""
+    13 : _(u"""
 Plage de fréquence du calcul Miss : [%(r1).4f, %(r2).4f]
 par pas de %(r3).4f Hz, soit %(i1)d fréquences.
 """),
 
-14 : _(u"""
+    14 : _(u"""
 Les %(i1)d fréquences du calcul Miss sont :
     %(k1)s
 """),
 
-17 : _(u"""
+    17 : _(u"""
 Fournir une plage de fréquence (mot-clé LIST_FREQ) n'est possible que si
 TYPE_RESU = 'FICHIER', 'HARM_GENE' ou 'TABLE_CONTROL'.
 Dans les autres cas, il est nécessaire d'avoir un pas de fréquences constant
 pour le calcul des FFT.
 """),
 
-18 : _(u"""
+    18 : _(u"""
 Le nombre de pas de temps (calculé avec INST_FIN et INST_PAS) n'est pas pair.
 Il faut donc corriger ces valeurs pour respecter cette condition.
 """),
 
-19 : _(u"""
+    19 : _(u"""
 Dans le cas présent (DECOMP_IMPE='SANS_PRODUIT'),
 les valeurs lues par les mots-clés MATR_MASS et AMOR_HYST (tous les deux sous MATR_GENE)
 ne sont pas utilisées.
 De plus, le fichier UNITE_RESU_MASS ne sera pas crée.
 """),
 
-20 : _(u"""
+    20 : _(u"""
 La matrice d'impédance correspondant à l'instant t = 0 n'est pas définie positive.
 La liste de DDL problématique(s) est : %(k1)s
 Il faut donc, soit :
@@ -110,24 +110,24 @@ Il faut donc, soit :
 - bloquer ce ou ces DDL.
 """),
 
-21 : _(u"""
+    21 : _(u"""
 Il faut au moins une couche avec EPAIS.
 """),
 
-22 : _(u"""
+    22 : _(u"""
 En interaction sol, structure, fluide (ISSF='OUI'), les mots-clés
 GROUP_MA_FLU_STR, GROUP_MA_FLU_SOL, GROUP_MA_SOL_SOL sont tous les trois obligatoires.
 """),
 
-23 : _(u"""
+    23 : _(u"""
 En interaction sol, structure, fluide (ISSF='OUI'), les propriétés du fluide
 doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.
 """),
 
-24 : _(u"""La fréquence numéro %(i1)d sera calculée par le processeur #%(i2)d.
+    24 : _(u"""La fréquence numéro %(i1)d sera calculée par le processeur #%(i2)d.
 """),
 
-25 : _(u"""Calcul de la fréquence numéro %(i1)d sur le processeur #%(i2)d.
+    25 : _(u"""Calcul de la fréquence numéro %(i1)d sur le processeur #%(i2)d.
 """),
 
 }

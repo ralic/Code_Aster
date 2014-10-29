@@ -19,20 +19,24 @@
 #
 # ======================================================================
 
-""" 
+"""
    Ce module contient la classe AsException
 """
 
 # Modules EFICAS
 from strfunc import get_encoding
 
-class AsException(Exception):
-  def __unicode__(self):
-    return " ".join([unicode(x) for x in self.args])
 
-  def __str__(self):
-    return unicode(self).encode(get_encoding())
+class AsException(Exception):
+
+    def __unicode__(self):
+        return " ".join([unicode(x) for x in self.args])
+
+    def __str__(self):
+        return unicode(self).encode(get_encoding())
+
 
 class InterruptParsingError(Exception):
+
     """Exception used to interrupt the parsing of the command file
     without raising an error (see N_JDC.exec_compile for usage)"""

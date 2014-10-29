@@ -1,19 +1,19 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
@@ -39,10 +39,11 @@ def fichier_sol(tab, param=None):
     tsubstr = (tab.SUBSTRATUM == "OUI")
     if len(tsubstr) != 1:
         raise aster.error('MISS0_3')
-    
+
     # complète la table
     tsol = tab.copy()
     # ... niveau récepteur
+
     def f_recep(v):
         res = ""
         if v.strip() == "OUI":
@@ -50,6 +51,7 @@ def fichier_sol(tab, param=None):
         return res
     tsol.fromfunction("s_RECEP", f_recep, "RECEPTEUR")
     # ... niveau source
+
     def f_force(num, v):
         res = 0
         if v.strip() == "OUI":
@@ -57,14 +59,14 @@ def fichier_sol(tab, param=None):
         return res
     tsol.fromfunction("s_FORCE", f_force, ("NUME_COUCHE", "SOURCE"))
     # ... êta
-    tsol.fromfunction("ETA", lambda x : 0., "NUME_COUCHE")
+    tsol.fromfunction("ETA", lambda x: 0., "NUME_COUCHE")
 
     content = []
     # titre de la table
     content.append("TITRE")
     content.append(tsol.titr)
     # materiaux
-    tsol.sort(CLES=["NUME_MATE",])
+    tsol.sort(CLES=["NUME_MATE", ])
     nb_mate = max(tsol.NUME_MATE.values())
     content.append("MATERIAU %8d" % nb_mate)
     content.append("RO           E            NU           BETA         ETA")
@@ -77,7 +79,7 @@ def fichier_sol(tab, param=None):
         last_id_mate = row['NUME_MATE']
         content.append(format % row)
     # couches
-    tsol.sort(CLES=["NUME_COUCHE",])
+    tsol.sort(CLES=["NUME_COUCHE", ])
     content.append("COUCHE %8d" % (nb_couche - 1))
     format = "%%(EPAIS)%(R)s MATE %%(NUME_MATE)8d %%(s_RECEP)s" % dict_format
     for ic, row in enumerate(tsol):
@@ -93,13 +95,13 @@ def fichier_sol(tab, param=None):
     # forces
     format = "FORCE HORIZ POSI %(s_FORCE)8d"
     if param and param.get('TYPE_RESU') == 'FICHIER_TEMPS' \
-             and param.get('FICHIER_SOL_INCI') is None:
+            and param.get('FICHIER_SOL_INCI') is None:
         # champ incident au substratum
         content.append("FORCE PLANE POSI   %8d" % nb_couche)
     else:
         for ic, row in enumerate(tsol):
             if row["s_FORCE"] != 0:
-                content.append(format % row)    
+                content.append(format % row)
     # complément des paramètres du calcul
     if param and param.get('OFFSET_MAX'):
         # ALGO
@@ -113,10 +115,12 @@ def fichier_sol(tab, param=None):
         if param['DREF']:
             content.append(("DREF" + sfmt) % param['DREF'])
         if param['SPEC_MAX']:
-            content.append(("SPEC" + sfmt + " / %d") % (param['SPEC_MAX'], param['SPEC_NB']))
+            content.append(("SPEC" + sfmt + " / %d") %
+                           (param['SPEC_MAX'], param['SPEC_NB']))
         else:
             content.append("SPEC AUTO")
-        content.append(("OFFSET" + sfmt + " / %d") % (param['OFFSET_MAX'], param['OFFSET_NB']))
+        content.append(("OFFSET" + sfmt + " / %d") %
+                       (param['OFFSET_MAX'], param['OFFSET_NB']))
 
     content.append("FIND")
 

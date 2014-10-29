@@ -21,18 +21,19 @@ from SD import *
 from SD.sd_cham_elem import sd_cham_elem
 from SD.sd_carte import sd_carte
 
+
 class sd_cara_elem(AsBase):
 #--------------------------
     nomj = SDNom(fin=8)
     MODELE = AsVK8(lonmax=1,)
     #
     CARGENBA = Facultatif(sd_carte())
-    CAFIBR   = Facultatif(sd_cham_elem())
+    CAFIBR = Facultatif(sd_cham_elem())
     CARMASSI = Facultatif(sd_carte())
     CARCABLE = Facultatif(sd_carte())
     CARCOQUE = Facultatif(sd_carte())
     CARGEOBA = Facultatif(sd_carte())
-    CANBSP   = Facultatif(sd_cham_elem())
+    CANBSP = Facultatif(sd_cham_elem())
     CARDISCK = Facultatif(sd_carte())
     CARARCPO = Facultatif(sd_carte())
     CARGENPO = Facultatif(sd_carte())

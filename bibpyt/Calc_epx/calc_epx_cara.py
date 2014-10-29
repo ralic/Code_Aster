@@ -25,8 +25,9 @@ from Calc_epx.calc_epx_utils import get_group_ma, tolist
 from Calc_epx.calc_epx_utils import float2str
 import string
 from Utilitai.Utmess import UTMESS
-from Calc_epx.calc_epx_struc import BLOC_DONNEES        
+from Calc_epx.calc_epx_struc import BLOC_DONNEES
 from Utilitai.partition import MAIL_PY
+
 
 def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
               mot_cle_epx, info_cle, cara_aster, cara_epx, is_vale_aster,
@@ -43,7 +44,7 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
     mot_cle_epx_select = None
     l_cara = []
     l_vale = []
-    mot_cle_ignor=['GROUP_MA']
+    mot_cle_ignor = ['GROUP_MA']
     for elem in l_elem:
         for i_dic in range(len(directive)):
             mot_cle_ok = []
@@ -59,11 +60,11 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                         raise Exception('CARA_ELEM : cas non prevu')
                     if cara_in[0] != mot_cle_aster[i_dic]:
                         continue
-                    mot_cle_ok.extend(['CARA','VALE'])
+                    mot_cle_ok.extend(['CARA', 'VALE'])
                     valeur = tolist(elem['VALE'])
                     if is_vale_aster[i_dic]:
                         cara = cara_epx[i_dic]
-                        vale = [None]*len(cara)
+                        vale = [None] * len(cara)
                         k_valeur = 0
                         for i_log, logi in enumerate(is_vale_aster[i_dic]):
                             if logi:
@@ -77,11 +78,11 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
             else:
                 # pour l'instant il n'est pas nécessaire de boucler
                 # si echec dans ce cas la
-                mot_cle_ok.extend(['CARA','VALE'])
+                mot_cle_ok.extend(['CARA', 'VALE'])
                 val_cle = ''
                 cara_in = tolist(elem['CARA'])
                 vale_in = tolist(elem['VALE'])
-                vale = [None]*len(cara_epx[i_dic])
+                vale = [None] * len(cara_epx[i_dic])
                 cara = cara_epx[i_dic]
                 for i, car in enumerate(cara_in):
                     if not car in cara_aster[i_dic]:
@@ -91,7 +92,8 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                     vale[index] = val
 #           verif des mots-clés autorisés
             mc_verif = []
-            if verif[i_dic]: mc_verif = verif[i_dic].keys()
+            if verif[i_dic]:
+                mc_verif = verif[i_dic].keys()
             for key in elem.keys():
                 if key in mot_cle_ok:
                     continue
@@ -100,20 +102,22 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                 elif key in mc_verif:
                     continue
                 else:
-                    UTMESS('F','PLEXUS_45', valk = [key, typ_carel])
+                    UTMESS('F', 'PLEXUS_45', valk=[key, typ_carel])
 
             if None in vale:
                 for i, val in enumerate(vale):
                     if val is None:
                         car = cara[i]
-                        if len(l_group)!=1:
+                        if len(l_group) != 1:
                             raise Exception("""Cas non traité. faire comme
                                             le cas else dans export_cara""")
                         gr_ma = l_group[0]
                         if not dic_gr_cara_supp.has_key(gr_ma):
-                            UTMESS('F', 'PLEXUS_12', valk=(car, typ_carel, gr_ma))
+                            UTMESS(
+                                'F', 'PLEXUS_12', valk=(car, typ_carel, gr_ma))
                         if not car in dic_gr_cara_supp[gr_ma]:
-                            UTMESS('F', 'PLEXUS_12', valk=(car, typ_carel, gr_ma))
+                            UTMESS(
+                                'F', 'PLEXUS_12', valk=(car, typ_carel, gr_ma))
                         vale[i] = dic_gr_cara_supp[gr_ma][car]
             #
             if info_cle[i_dic]:
@@ -128,7 +132,7 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                         if elem[mc_aster] not in verif[i_dic][mc_aster]:
                             liste_ok = ', '.join(verif[i_dic][mc_aster])
                             UTMESS('F', 'PLEXUS_4', valk=(typ_carel, mc_aster,
-                                                     elem[mc_aster], liste_ok))
+                                                          elem[mc_aster], liste_ok))
             if mot_cle_epx_select == None:
                 mot_cle_epx_select = mot_cle_epx[i_dic]
                 directive_select = directive[i_dic]
@@ -142,7 +146,7 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                     cle_select != cle or
                     val_cle_select != val_cle or
                     titre_select != titre[i_dic] or
-                    mode_epx_select != mode_epx[i_dic]):
+                        mode_epx_select != mode_epx[i_dic]):
                     raise Exception('Erreur dev : Incohérence des donnees')
             l_cara.extend(cara)
             l_vale.extend(vale)
@@ -162,8 +166,9 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
                                                   mode_epx_select, group))
     return epx, mode_from_cara
 
+
 def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
-                 dic_gr_cara_supp, mode_from_cara):
+                dic_gr_cara_supp, mode_from_cara):
     """
         Traite les données 'donnes_cle' contenues dans le mot clé facteur 'cle'
         de l'objet CARA_ELEM
@@ -173,8 +178,7 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
 
     # recuperation des parametres
     [titre, directive, mot_cle_epx, mot_cle_aster, cara_aster,
-    cara_epx, info_cle, is_vale_aster, mode_epx, verif] = recu_cara_cata(cle)
-
+     cara_epx, info_cle, is_vale_aster, mode_epx, verif] = recu_cara_cata(cle)
 
     if cle != 'RIGI_PARASOL':
         dic_gr_donnees = {}
@@ -188,21 +192,21 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
         for group in dic_gr_donnees.keys():
             l_elem = dic_gr_donnees[group]
             epx, mode_from_cara = bloc_cara(cle, l_elem, epx,
-                           group, directive, mot_cle_aster, mot_cle_epx,
-                           info_cle, cara_aster, cara_epx, is_vale_aster,
-                           mode_epx, mode_from_cara, titre, verif,
-                           dic_gr_cara_supp)
-    
+                                            group, directive, mot_cle_aster, mot_cle_epx,
+                                            info_cle, cara_aster, cara_epx, is_vale_aster,
+                                            mode_epx, mode_from_cara, titre, verif,
+                                            dic_gr_cara_supp)
+
     else:
         MApyt = MAIL_PY()
         MApyt.FromAster(MAILLAGE)
         cara_parasol = None
-        if len(donnees_cle)>1:
-            UTMESS('F','PLEXUS_42')
+        if len(donnees_cle) > 1:
+            UTMESS('F', 'PLEXUS_42')
         for elem in donnees_cle:
             group_ma_poi1 = get_group_ma(elem, 'GROUP_MA_POI1')
-            if len(group_ma_poi1) !=1:
-                UTMESS('F','PLEXUS_43')
+            if len(group_ma_poi1) != 1:
+                UTMESS('F', 'PLEXUS_43')
             cara_in = tolist(elem['CARA'])
             if cara_parasol is not None:
                 if cara_in != cara_parasol:
@@ -215,13 +219,14 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
                     mode_from_cara[group] = mode_epx[0]
                 else:
                     raise Exception(
-    'Une modélisation existe déjà pour le groupe %s dans mode_from_cara'%group)
+                        'Une modélisation existe déjà pour le groupe %s dans mode_from_cara' % group)
         # verif des caractéristiques
         group_ma_poi1 = group_ma_poi1[0]
         l_cara = []
         for car in cara_parasol:
-            if car not in mot_cle_aster[0]: UTMESS('F', 'PLEXUS_8',
-                                                   valk=(car, cle))
+            if car not in mot_cle_aster[0]:
+                UTMESS('F', 'PLEXUS_8',
+                       valk=(car, cle))
             l_cara.extend(cata_cara_elem[cle][0][car])
         if not dic_gr_cara_supp.has_key(group_ma_poi1):
             UTMESS('F', 'PLEXUS_12', valk=('NKFT ou NFAT', cle, group_ma_poi1))
@@ -236,16 +241,17 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
         li_mailles.extend(ressorts.keys())
         li_mailles.extend(amorts.keys())
         li_mailles = list(set(li_mailles))
-        
+
         for maille in li_mailles:
             # attention si pas d'amortissement (ou pas de raideurs)
             # amorts = {'        ': (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}
             # on supprime cela de la liste li_mailles
-            if maille.strip() == '': continue
+            if maille.strip() == '':
+                continue
             #
-            group_ma = 'G_%s' %maille
+            group_ma = 'G_%s' % maille
             if not MApyt.gma.has_key(string.rstrip(group_ma)):
-                crea_gr_ma.append({"MAILLE" : maille, "NOM" : group_ma})
+                crea_gr_ma.append({"MAILLE": maille, "NOM": group_ma})
             else:
                 UTMESS('A', 'PLEXUS_35', valk=(group_ma, maille))
 
@@ -275,11 +281,13 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
             DEFI_GROUP(reuse=MAILLAGE,
                        MAILLAGE=MAILLAGE,
                        CREA_GROUP_MA=crea_gr_ma
-                      )
+                       )
 
     return epx, mode_from_cara
 
 #-----------------------------------------------------------------------
+
+
 def get_FONC_PARASOL(epx, FONC_PARASOL, dic_gr_cara_supp):
     """
         Récupère les fonctions présentes dans FONC_PARASOL
@@ -305,19 +313,21 @@ def get_FONC_PARASOL(epx, FONC_PARASOL, dic_gr_cara_supp):
                     ifonc += 1
                     dic_fonc[nom_aster] = ifonc
                     (temps, valeurs) = fonction.Valeurs()
-                    cle_fonc = '%i TABL' %(ifonc)
+                    cle_fonc = '%i TABL' % (ifonc)
                     bloc_fonc = FONCTION(cle_fonc, temps, valeurs, nom_aster)
                     epx[directive].add_bloc(bloc_fonc)
                 dic_gr[cle] = dic_fonc[nom_aster]
         l_gr_ma = tolist(inst_fonc['GROUP_MA'])
         for gr in l_gr_ma:
             if dic_gr_cara_supp.has_key(gr):
-                UTMESS('F','PLEXUS_41',valk=gr)
+                UTMESS('F', 'PLEXUS_41', valk=gr)
             dic_gr_cara_supp[gr] = dic_gr
-        
+
     return dic_gr_cara_supp
 
 #-----------------------------------------------------------------------
+
+
 def recu_cara_cata(cle):
     """
         Récupère et met en forme les informations contenues dans le
@@ -325,7 +335,7 @@ def recu_cara_cata(cle):
     """
 
     if not cata_cara_elem.has_key(cle):
-        UTMESS('F','PLEXUS_44',valk = cle)
+        UTMESS('F', 'PLEXUS_44', valk=cle)
     titre = []
     directive = []
     mot_cle_epx = []
@@ -373,4 +383,4 @@ def recu_cara_cata(cle):
             verif.append(None)
 
     return [titre, directive, mot_cle_epx, mot_cle_aster, cara_aster,
-           cara_epx, info_cle, is_vale_aster, mode_epx, verif]
+            cara_epx, info_cle, is_vale_aster, mode_epx, verif]

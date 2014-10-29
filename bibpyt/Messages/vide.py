@@ -18,7 +18,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 cata_msg = {
-# message vide (pour fermeture de message avec suite, ex: 'A+')
-1 : "",
+    # message vide (pour fermeture de message avec suite, ex: 'A+')
+    1: "",
 
 }

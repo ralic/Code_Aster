@@ -32,17 +32,20 @@ from Utilitai.string_utils import maximize_lines
 from Execution.strfunc import convert
 
 try:
-   import aster
-   aster_exists = True
+    import aster
+    aster_exists = True
 except:
-   aster_exists = False
+    aster_exists = False
 
 
 DEBUG = False
+
+
 def set_debug(value):
     """Positionne la variable de déboggage"""
     global DEBUG
     DEBUG = value
+
 
 def _print(*args):
     """Fonction 'print'."""
@@ -57,11 +60,13 @@ def _print(*args):
     else:
         print text
 
+
 def _printDBG(*args):
     """Print debug informations."""
     if not DEBUG:
         return
     _print(*args)
+
 
 def _debug(arg, label, dest='RESULTAT'):
     """Generic function for debugging
@@ -98,22 +103,23 @@ def _debug(arg, label, dest='RESULTAT'):
 # les commandes fortran pourraient appeler cette fonction
 def get_titre_concept(co=None):
     """Retourne un titre automatique."""
-    # ASTER 10.01.25 CONCEPT tab0 CALCULE LE 21/05/2010 A 17:58:50 DE TYPE TABLE_SDASTER
+    # ASTER 10.01.25 CONCEPT tab0 CALCULE LE 21/05/2010 A 17:58:50 DE TYPE
+    # TABLE_SDASTER
     import aster_core
     from Noyau.N_ASSD import ASSD
     if not isinstance(co, ASSD):
         co = None
     fmt = {
-        "version" : "ASTER %(version)s",
-        "nomco" : "CONCEPT %(nom_concept)s",
-        "etatco" : "CALCULE",
-        "dateheure" : "%(dateheure)s",
-        "typeco" : "DE TYPE %(type_concept)s",
+        "version": "ASTER %(version)s",
+        "nomco": "CONCEPT %(nom_concept)s",
+        "etatco": "CALCULE",
+        "dateheure": "%(dateheure)s",
+        "typeco": "DE TYPE %(type_concept)s",
     }
     format = [fmt["version"], ]
     dfmt = {
-        "version" : aster_core.get_version(),
-        "dateheure" : time.strftime("LE %m/%d/%Y A %H:%M:%S"),
+        "version": aster_core.get_version(),
+        "dateheure": time.strftime("LE %m/%d/%Y A %H:%M:%S"),
     }
     if co:
         dfmt["nom_concept"] = co.nom
@@ -129,32 +135,36 @@ def get_titre_concept(co=None):
     ltit = maximize_lines(ltit, 80, " ")
     return os.linesep.join(ltit)
 
+
 def fmtF2PY(fformat):
-   """Convertit un format Fortran en format Python (printf style).
-   Gère uniquement les fortrans réels, par exemple : E12.5, 1PE13.6, D12.5...
-   """
-   fmt=''
-   matP=re.search('([0-9]+)P',fformat)
-   if matP:
-      fmt+=' '*int(matP.group(1))
-   matR=re.search('([eEdDfFgG]{1})([\.0-9]+)',fformat)
-   if matR:
-      fmt+='%'+matR.group(2)+re.sub('[dD]+','E',matR.group(1))
-   try:
-      s=fmt % -0.123
-   except (ValueError, TypeError), msg:
-      fmt='%12.5E'
-      print 'Error :',msg
-      print 'Format par défaut utilisé :',fmt
-   return fmt
+    """Convertit un format Fortran en format Python (printf style).
+    Gère uniquement les fortrans réels, par exemple : E12.5, 1PE13.6, D12.5...
+    """
+    fmt = ''
+    matP = re.search('([0-9]+)P', fformat)
+    if matP:
+        fmt += ' ' * int(matP.group(1))
+    matR = re.search('([eEdDfFgG]{1})([\.0-9]+)', fformat)
+    if matR:
+        fmt += '%' + matR.group(2) + re.sub('[dD]+', 'E', matR.group(1))
+    try:
+        s = fmt % -0.123
+    except (ValueError, TypeError), msg:
+        fmt = '%12.5E'
+        print 'Error :', msg
+        print 'Format par défaut utilisé :', fmt
+    return fmt
+
 
 def encode_str(string):
     """Convert a string in an array of int"""
     return [ord(i) for i in string]
 
+
 def decode_str(array):
     """Convert an array of int in a string"""
     return ''.join([chr(i) for i in array])
+
 
 def send_file(fname, dest):
     """Send a file into an existing remote destination directory using scp"""

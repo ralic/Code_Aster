@@ -20,22 +20,22 @@
 cata_msg = {
 
 
-7 : _(u"""
+    7 : _(u"""
  Il n'est pas possible d'utiliser les repères 'UTILISATEUR' et
  'CYLINDRIQUE' quand TYPE_CHAM vaut 'TENS_2D' ou 'TENS_3D' ou 'TORS_3D' et
  que le modèle contient des éléments plaques ou coques.
 """),
 
-8 : _(u"""
+    8 : _(u"""
  élément non traité
 """),
 
-9 : _(u"""
+    9 : _(u"""
  Vous avez choisie une méthode à pas de temps adaptatif. Il n'est pas possible de prendre en compte une
  liste d'instants de calcul définie a priori.
 """),
 
-10 : _(u"""
+    10 : _(u"""
   -> Contact avec DYNA_TRAN_MODAL : Il y a interpénétration d'une valeur supérieure à (DIST_MAIT + DIST_ESCL).
   -> Risque & Conseil :
      DIST_MAIT et DIST_ESCL permettent de tenir compte d'une épaisseur de matériau non représentée dans le maillage
@@ -45,129 +45,129 @@ cata_msg = {
      générer des erreurs dans l'orientation des forces de contact.
 """),
 
-11 : _(u"""
+    11 : _(u"""
  méthode à pas adaptatif : la donnée du pas est obligatoire
 """),
 
-12 : _(u"""
+    12 : _(u"""
  le pas de temps ne peut pas être nul
 """),
 
-13 : _(u"""
+    13 : _(u"""
  les matrices de masse élémentaires doivent obligatoirement avoir été calculées
  avec l'option MASS_MECA_DIAG
 """),
 
-14 : _(u"""
+    14 : _(u"""
  on archive au moins un champ.
 """),
 
-15 : _(u"""
+    15 : _(u"""
  La méthode d'intégration %(k1)s n'est pas disponible pour les analyses
  transitoires sur base modale
 """),
 
-16 : _(u"""
+    16 : _(u"""
 A l'instant %(r1)f, l'erreur vaut %(r2)f
 Cette erreur est supérieure à 1.
 Le pas de temps vaut %(r3)f
 On arrête de le réduire, car le nombre de réductions a atteint %(i1)d, qui est le maximum possible.
 """),
 
-17 : _(u"""
+    17 : _(u"""
  méthode à pas adaptatif : pas de temps minimal atteint
 """),
 
-18 : _(u"""
+    18 : _(u"""
  La liste des instants de calcul ne doit contenir qu'un seul pas
  Conseil: si vous avez défini une liste d'instants manuellement par des valeurs discrètes,
  veillez à ce que le pas soit constant dans tout l'intervalle.
 """),
 
-19 : _(u"""
+    19 : _(u"""
  La méthode d'intégration %(k1)s n'est pas disponible pour les analyses
  transitoires sur base physique
 """),
 
-20 : _(u"""
+    20 : _(u"""
  le chargement de type DIRICHLET nécessite la résolution par le schéma de NEWMARK
 """),
 
-21 : _(u"""
+    21 : _(u"""
 Nombre de pas de calcul : %(i1)d
 Nombre d'itérations     : %(i2)d
 """),
 
-23 : _(u"""
+    23 : _(u"""
  vous calculez une impédance absorbante
 """),
 
-25 : _(u"""
+    25 : _(u"""
  le champ "DEPL" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s
 """),
 
-26 : _(u"""
+    26 : _(u"""
  le champ "VITE" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s
 """),
 
-27 : _(u"""
+    27 : _(u"""
  le champ "ACCE" n'est pas trouve dans le concept DYNA_TRANS  %(k1)s
 """),
 
-28 : _(u"""
+    28 : _(u"""
  déplacements initiaux nuls.
 """),
 
-29 : _(u"""
+    29 : _(u"""
  vitesses initiales nulles.
 """),
 
-36 : _(u"""
+    36 : _(u"""
  NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s
 """),
 
-37 : _(u"""
+    37 : _(u"""
  incohérence sur H, ALPHA, ELAS
 """),
 
-38 : _(u"""
- L'état de contrainte fourni n'est pas cohérent avec le modèle de comportement de DRUCK_PRAGER. 
+    38 : _(u"""
+ L'état de contrainte fourni n'est pas cohérent avec le modèle de comportement de DRUCK_PRAGER.
  Vérifier les champs SIEF_ELGA et VARI_ELGA dans ETAT_INIT.
 """),
 
-40 : _(u"""
+    40 : _(u"""
  le NOM_CHAM  %(k1)s n'appartient pas à la structure de données
 """),
 
-41 : _(u"""
+    41 : _(u"""
  erreur(s) dans les données
 """),
 
-42 : _(u"""
+    42 : _(u"""
  critère inconnu :  %(k1)s
 """),
 
-43 :_(u"""
+    43 : _(u"""
  <DPMAT2> PLAS=2
 """),
 
-55 : _(u"""
+    55 : _(u"""
  ITER_INTE_MAXI insuffisant
 """),
 
-56 : _(u"""
+    56 : _(u"""
  la durée du transitoire est limitée par les possibilités de la transformée de Fourier rapide
 """),
 
-57 : _(u"""
+    57 : _(u"""
  la durée de la simulation temporelle est insuffisante pour le passage du transitoire
 """),
 
-58 : _(u"""
+    58 : _(u"""
  changement de signe de la vitesse --> on prend VITG0(I)
 """),
 
-60 : _(u"""
+    60 : _(u"""
  la matrice interspectrale possède un pivot nul.
 """),
 
@@ -178,50 +178,50 @@ Nombre d'itérations     : %(i2)d
 
 
 
-78 : _(u"""
+    78 : _(u"""
  pas de discrétisation de l'interspectre non constant.
 """),
 
-80 : _(u"""
+    80 : _(u"""
  "NB_POIN" n est pas une puissance de 2
  on prend la puissance de 2 supérieure
 """),
 
-81 : _(u"""
+    81 : _(u"""
  coefficient de dispersion trop grand
  consulter la documentation d'utilisation
 """),
 
-82 : _(u"""
+    82 : _(u"""
  matrice moyenne non définie positive
 """),
 
-83 : _(u"""
+    83 : _(u"""
  le pas tend vers 0 ...
 """),
 
-86 : _(u"""
+    86 : _(u"""
  pas d'interpolation possible pour les fréquences.
 """),
 
-87 : _(u"""
+    87 : _(u"""
  dérivée de F nulle
 """),
 
-88 : _(u"""
+    88 : _(u"""
  GM négatif
 """),
 
-89 : _(u"""
+    89 : _(u"""
  valeurs propres non ordonnées :
  %(k1)s  %(k2)s  %(k3)s
 """),
 
-90 : _(u"""
+    90 : _(u"""
  coefficients paraboliques pas compatibles
 """),
 
-92 : _(u"""
+    92 : _(u"""
  modélisations C_PLAN et 1D pas autorisées
 """),
 

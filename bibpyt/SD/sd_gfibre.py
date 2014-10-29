@@ -19,23 +19,24 @@
 from SD import *
 from SD.sd_titre import sd_titre
 
+
 class sd_gfibre(sd_titre):
 #-------------------------------------
     nomj = SDNom(fin=8)
-    POINTEUR          = AsVI()
-    CARFI             = AsVR()
-    NOMS_GROUPES      = AsPn(ltyp=24)
-    NB_FIBRE_GROUPE   = AsVI()
-    GFMA              = Facultatif(AsVK8(lonmax=1))
-    CARACSD           = AsVI(lonmax=2, )
+    POINTEUR = AsVI()
+    CARFI = AsVR()
+    NOMS_GROUPES = AsPn(ltyp=24)
+    NB_FIBRE_GROUPE = AsVI()
+    GFMA = Facultatif(AsVK8(lonmax=1))
+    CARACSD = AsVI(lonmax=2, )
 
     def u_caracsd(self):
-        caracsd    = self.CARACSD.get()
-        nbcarasd   = caracsd[0]
-        nbgfsd     = caracsd[1]
+        caracsd = self.CARACSD.get()
+        nbcarasd = caracsd[0]
+        nbgfsd = caracsd[1]
         return nbcarasd, nbgfsd
 
-    def check_dimension(self,checker):
+    def check_dimension(self, checker):
         nbcarasd, nbgfsd = self.u_caracsd()
         nbgf = self.NOMS_GROUPES.nommax
         # Vérif des dimensions des objets
@@ -43,23 +44,26 @@ class sd_gfibre(sd_titre):
         assert self.NB_FIBRE_GROUPE.lonmax == nbgf
         assert self.POINTEUR.lonmax == nbgf
 
-    def check_CARFI(self,checker) :
+    def check_CARFI(self, checker):
         nbcarasd, nbgfsd = self.u_caracsd()
         nbgf = self.NOMS_GROUPES.nommax
         #
-        assert nbgf == nbgfsd , (nbgf, nbgfsd)
+        assert nbgf == nbgfsd, (nbgf, nbgfsd)
         #
         pointeur = self.POINTEUR.get()
         nb_fibre = self.NB_FIBRE_GROUPE.get()
         nbfib_tot = 0
-        for igf in range(nbgf) :
-            assert pointeur[igf] == nbcarasd*nbfib_tot +1 , (nbcarasd, igf, nbfib_tot, pointeur[igf])
+        for igf in range(nbgf):
+            assert pointeur[igf] == nbcarasd * nbfib_tot + 1, (
+                nbcarasd, igf, nbfib_tot, pointeur[igf])
             nbfib_tot += nb_fibre[igf]
-        assert self.CARFI.lonmax == nbcarasd*nbfib_tot , (nbfib_tot, self.CARFI.lonmax)
+        assert self.CARFI.lonmax == nbcarasd * \
+            nbfib_tot, (nbfib_tot, self.CARFI.lonmax)
 
-    def check_GFMA(self,checker):
-        if not self.GFMA.exists: return
+    def check_GFMA(self, checker):
+        if not self.GFMA.exists:
+            return
         gfma = self.GFMA.get_stripped()
         from SD.sd_maillage import sd_maillage
-        sd2=sd_maillage(gfma[0])
+        sd2 = sd_maillage(gfma[0])
         sd2.check(checker)

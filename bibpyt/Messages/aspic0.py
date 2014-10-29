@@ -1,118 +1,118 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: josselin.delmas at edf.fr
 
-cata_msg={
-1: _(u"""
+cata_msg = {
+    1: _(u"""
 Vous affectez plus d'un matériau contenant l'option RCCM.
 """),
 
-2: _(u"""
+    2: _(u"""
 Pour les piquages sains, TUBULURE doit être renseigné.
 """),
 
-3: _(u"""
+    3: _(u"""
 EQUILIBRE[NOEUD] : on attend P1_CORP ou P2_CORP.
 """),
 
-4: _(u"""
+    4: _(u"""
 Il faut préciser un noeud pour EFFE_FOND.
 """),
 
-5: _(u"""
+    5: _(u"""
 PRES_REP[NOEUD] : on attend P1_CORP ou P2_CORP.
 """),
 
-6: _(u"""
+    6: _(u"""
 On ne peut appliquer un EFFE_FOND sur PRES_REP[NOEUD] car ce noeud est bloqué"
 """),
 
-7: _(u"""
+    7: _(u"""
 TORS_CORP[NOEUD] : on attend P1_CORP ou P2_CORP.
 """),
 
-8: _(u"""
+    8: _(u"""
 On ne peut appliquer un torseur sur TORS_CORP[NOEUD] car ce noeud est bloqué.
 """),
 
-9: _(u"""
+    9: _(u"""
 Si TYPE_MAILLAGE sain : mécanique de la rupture impossible.
 """),
 
-10: _(u"""
+    10: _(u"""
 Mot-clef <BORNES> obligatoire avec cette option.
 """),
 
-11: _(u"""
+    11: _(u"""
 Impression de résultats demandée sans préciser le nom des champs cf. la documentation utilisateur : U4.PC.20.
 """),
 
-12: _(u"""
+    12: _(u"""
 Les piquages pénétrants sont autorisés uniquement avec les soudures de type 1.
 """),
 
-13: _(u"""
- La valeur de Z_MAX (cote maximale de la tubulure) est inférieure à la longueur 
+    13: _(u"""
+ La valeur de Z_MAX (cote maximale de la tubulure) est inférieure à la longueur
  d'amortissement calculée :
  Z_MAX fournie   : %(r1)f
  Z_MAX calculée  : %(r2)f
 -> Risque et Conseil :
  La longueur d'amortissement est liée à l'onde de flexion se propageant depuis le piquage.
- Si la longueur de la tubulure est inférieure à cette longueur, le calcul des contraintes 
+ Si la longueur de la tubulure est inférieure à cette longueur, le calcul des contraintes
  dans le piquage ne sera pas indépendant du mode d'application des conditions aux limites.
 """),
 
-14: _(u"""
+    14: _(u"""
  Erreur données
  Dans le cas de fissures inclinées débouchant en peau interne avec
  piquage pénétrant, le jeu doit être nul.
 """),
 
-15: _(u"""
+    15: _(u"""
  Erreur données
  Dans le cas de fissures internes (NON_DEB) le ligament inférieur est obligatoire.
 """),
 
-16: _(u"""
+    16: _(u"""
 Dans le cas de fissures internes (NON_DEB) le ligament est trop petit.
 """),
 
-17: _(u"""
+    17: _(u"""
 Dans le cas de fissures internes (NON_DEB) le ligament est trop grand.
 """),
 
-18: _(u"""
+    18: _(u"""
 Dans le cas de fissures courte il faut préciser la longueur.
 """),
 
-19: _(u"""
+    19: _(u"""
 Dans le cas de la fissure longue il faut préciser la longueur ou axis=oui.
 """),
 
-20: _(u"""
+    20: _(u"""
 Fissure axisymétrique : le mot clef <LONGUEUR> ne doit pas être renseigné.
 """),
 
-21: _(u"""
+    21: _(u"""
 Seuls GIBI98 et GIBI2000 sont appelables.
 """),
 
-22: _(u"""
+    22: _(u"""
 Une interpénétration des lèvres est détectée pour le numéro d'ordre %(i1)d : sur les
 %(i2)d noeuds de chaque lèvre, %(i3)d noeuds s'interpénètrent.
 -> Risque et Conseil :
@@ -122,14 +122,14 @@ des résultats trop pénalisants.
 Pour prendre en compte le contact entre les lèvres, il faut lancer le calcul hors macro-commande.
 """),
 
-23: _(u"""
- La valeur de X_MAX (cote maximale du corps) est inférieure à la longueur d'amortissement 
+    23: _(u"""
+ La valeur de X_MAX (cote maximale du corps) est inférieure à la longueur d'amortissement
  calculée :
  X_MAX fournie   : %(r1)f
  X_MAX calculée  : %(r2)f
 -> Risque et Conseil :
  La longueur d'amortissement est liée à l'onde de flexion se propageant depuis le piquage.
- Si la longueur du corps est inférieure à cette longueur, le calcul des contraintes 
+ Si la longueur du corps est inférieure à cette longueur, le calcul des contraintes
  dans le piquage ne sera pas indépendant du mode d'application des conditions aux limites.
 """),
 

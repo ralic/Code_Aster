@@ -19,20 +19,20 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
  Pour calculer l'aire, les mailles décrivant le contour doivent être du type SEG2 ou SEG3.
  Or la maille  %(k1)s est de type  %(k2)s.
 """),
 
-2 : _(u"""
+    2 : _(u"""
  Le contour dont on doit calculer l'aire n'est pas fermé.
 """),
 
-3 : _(u"""
+    3 : _(u"""
  Il n'y a aucun élément lors de la lecture du mot-clef facteur %(k1)s.
 """),
 
-4 : _(u"""
+    4 : _(u"""
  Il n'y a aucun noeud lors de la lecture du mot-clef facteur %(k1)s.
 """),
 }

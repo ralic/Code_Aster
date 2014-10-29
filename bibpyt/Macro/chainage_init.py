@@ -19,25 +19,30 @@
 import aster
 from Accas import _F
 
-def CHAINAGE_INIT(self,args,motscles):
 
-   MODELE_MECA = args['MODELE_MECA']
-   MODELE_HYDR = args['MODELE_HYDR']
+def CHAINAGE_INIT(self, args, motscles):
 
-   # On importe les definitions des commandes a utiliser dans la macro
-   CREA_MAILLAGE   = self.get_cmd('CREA_MAILLAGE')
-   PROJ_CHAMP      = self.get_cmd('PROJ_CHAMP')
+    MODELE_MECA = args['MODELE_MECA']
+    MODELE_HYDR = args['MODELE_HYDR']
 
-   MATR_MH=PROJ_CHAMP(METHODE='COLLOCATION',MODELE_1=MODELE_MECA,MODELE_2=MODELE_HYDR,PROJECTION='NON',**motscles)
+    # On importe les definitions des commandes a utiliser dans la macro
+    CREA_MAILLAGE = self.get_cmd('CREA_MAILLAGE')
+    PROJ_CHAMP = self.get_cmd('PROJ_CHAMP')
 
-   iret,ibid,nom_mail = aster.dismoi('NOM_MAILLA',MODELE_HYDR.nom,'MODELE','F')
-   nom_mail=nom_mail.strip()
-   __maillage_h = self.get_concept(nom_mail)
+    MATR_MH = PROJ_CHAMP(METHODE='COLLOCATION', MODELE_1=MODELE_MECA,
+                         MODELE_2=MODELE_HYDR, PROJECTION='NON', **motscles)
 
-   _maillin=CREA_MAILLAGE(MAILLAGE=__maillage_h,
-                            QUAD_LINE=_F(TOUT='OUI',),**motscles);
+    iret, ibid, nom_mail = aster.dismoi(
+        'NOM_MAILLA', MODELE_HYDR.nom, 'MODELE', 'F')
+    nom_mail = nom_mail.strip()
+    __maillage_h = self.get_concept(nom_mail)
 
-   MATR_HM1=PROJ_CHAMP(METHODE='COLLOCATION',  MODELE_1=MODELE_HYDR, MAILLAGE_2=_maillin, PROJECTION='NON',**motscles)
-   MATR_HM2=PROJ_CHAMP(METHODE='COLLOCATION',  MAILLAGE_1=_maillin, MODELE_2=MODELE_MECA, PROJECTION='NON',**motscles)
+    _maillin = CREA_MAILLAGE(MAILLAGE=__maillage_h,
+                             QUAD_LINE=_F(TOUT='OUI',), **motscles)
 
-   return MATR_MH, MATR_HM1, MATR_HM2
+    MATR_HM1 = PROJ_CHAMP(METHODE='COLLOCATION',  MODELE_1=MODELE_HYDR,
+                          MAILLAGE_2=_maillin, PROJECTION='NON', **motscles)
+    MATR_HM2 = PROJ_CHAMP(METHODE='COLLOCATION',  MAILLAGE_1=_maillin,
+                          MODELE_2=MODELE_MECA, PROJECTION='NON', **motscles)
+
+    return MATR_MH, MATR_HM1, MATR_HM2

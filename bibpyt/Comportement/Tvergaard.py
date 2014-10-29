@@ -20,9 +20,9 @@
 from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-   nom            = 'Tvergaard',
-   symbol_mfront  = 'astertvergaard',
-   modelisation   = ('ELEMJOINT',),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
-   algo_inte      = ('SPECIFIQUE',),
+    nom='Tvergaard',
+    symbol_mfront='astertvergaard',
+    modelisation=('ELEMJOINT',),
+    deformation = ('PETIT', 'PETIT_REAC', 'GDEF_LOG'),
+    algo_inte = ('SPECIFIQUE',),
 )

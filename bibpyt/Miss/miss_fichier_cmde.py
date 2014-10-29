@@ -32,7 +32,9 @@ from Miss.miss_domain import MissDomains
 
 from Utilitai import test_utils
 
+
 class MissCmdeGenerator(object):
+
     """Construit un fichier de commandes Miss"""
     _dbg = False
 
@@ -42,17 +44,17 @@ class MissCmdeGenerator(object):
         type donné"""
         self.param = param
         self.fname = filename_callback
-        self.dinf =  {
-            "titre"  : struct.titre,
-            "fich_mvol" : self.fname('mvol'),
-            "fich_chp" : self.fname('chp'),
-            "fich_sol" : self.fname('sol'),
-            "fich_impe" : self.fname('resu_impe'),
-            "fich_forc" : self.fname('resu_forc'),
-            "fich_ext" : self.fname('ext'),
-            "binaire"  : "",
-            "surf"  : "",
-            "rfic"  : "",
+        self.dinf = {
+            "titre": struct.titre,
+            "fich_mvol": self.fname('mvol'),
+            "fich_chp": self.fname('chp'),
+            "fich_sol": self.fname('sol'),
+            "fich_impe": self.fname('resu_impe'),
+            "fich_forc": self.fname('resu_forc'),
+            "fich_ext": self.fname('ext'),
+            "binaire": "",
+            "surf": "",
+            "rfic": "",
         }
         if self.param["TYPE"] == "BINAIRE":
             self.dinf["binaire"] = "BINA"
@@ -103,7 +105,7 @@ class MissCmdeGenerator(object):
             '*', '* Lecture du maillage',
                  '*--------------------',
             'MVOL %s' % self.dinf['fich_mvol'],
-            ]
+        ]
         lines.extend(self.bloc_group())
         lines.extend(self.bloc_modes())
         lines.extend(self.bloc_integr())
@@ -125,7 +127,7 @@ class MissCmdeGenerator(object):
                 '*',
                 '* Boucle sur les frequences',
                 '* -------------------------',
-                'DOFReq TOUTES SAVE MVFD TOT UI TUI IMPD FORCE',])
+                'DOFReq TOUTES SAVE MVFD TOT UI TUI IMPD FORCE', ])
         lines.extend(self._chargement_domaine('sol'))
         lines.extend(self.calcul_fonction_green())
         lines.extend(self.calcul_champs())
@@ -145,39 +147,39 @@ class MissCmdeGenerator(object):
         if not self.param['_hasPC']:
             if self._impe_calc:
                 lines.extend(['*',
-                    '* Post-traitement des impédances',
-                    '* ------------------------------',
-                    'POST',
-                    'FICH %s  %s' \
-                        % (self.dinf['fich_impe'], self.dinf['binaire']),
-                    'IMPDC',
-                    'FREQ TOUTES',
-                    'CHPU TOUS',
-                    'CHPT TOUS',
-                    'FINP'])
+                              '* Post-traitement des impédances',
+                              '* ------------------------------',
+                              'POST',
+                              'FICH %s  %s'
+                              % (self.dinf['fich_impe'], self.dinf['binaire']),
+                              'IMPDC',
+                              'FREQ TOUTES',
+                              'CHPU TOUS',
+                              'CHPT TOUS',
+                              'FINP'])
             if self._forc_calc:
                 lines.extend(['*',
-                    '* Post-traitement des forces sismiques',
-                    '* ------------------------------------',
-                    'POST',
-                    'FICH %s' % self.dinf['fich_forc'],
-                    'FORCE',
-                    'FREQ TOUTES',
-                    'DDL TOUS',
-                    'UI TOUS',
-                    'FINP'])
+                              '* Post-traitement des forces sismiques',
+                              '* ------------------------------------',
+                              'POST',
+                              'FICH %s' % self.dinf['fich_forc'],
+                              'FORCE',
+                              'FREQ TOUTES',
+                              'DDL TOUS',
+                              'UI TOUS',
+                              'FINP'])
         else:
             lines.extend(['*',
-                '* Definition du signal',
-                '* --------------------',
-                'SIGNAL LIRE %s' % self.fname("01.sign")])
+                          '* Definition du signal',
+                          '* --------------------',
+                          'SIGNAL LIRE %s' % self.fname("01.sign")])
             lines.extend(self._chargement_domaine('sol'))
             lines.extend(['*',
-                '* Post-traitement aux points de controle',
-                '* --------------------------------------',
-                'POST',
-                ('SPEC NF=%%%(I)s FMAX=%%%(R)s' % dict_format) \
-                    % (self.param['_nbfreq'], self.param['FREQ_MAX']),
+                          '* Post-traitement aux points de controle',
+                          '* --------------------------------------',
+                          'POST',
+                        ('SPEC NF=%%%(I)s FMAX=%%%(R)s' % dict_format)
+                % (self.param['_nbfreq'], self.param['FREQ_MAX']),
                 'FICH %s' % self.fname("01.csol.a"),
                 'CSOL LEGENDE ACCELERATIONS',
                 'FREQ TOUTES',
@@ -197,10 +199,10 @@ class MissCmdeGenerator(object):
                       '* ----------------------',
                  'GROUP']
         group = self.domain.group
-        #for interf in ('sol-struct', 'fluide-struct', 'sol-fluide',
+        # for interf in ('sol-struct', 'fluide-struct', 'sol-fluide',
                        #'sol libre'):
-            #if group.get(interf):
-                #lines.extend(['%4d SURF' % group[interf], 'FIN'])
+            # if group.get(interf):
+                # lines.extend(['%4d SURF' % group[interf], 'FIN'])
         if self.domain.def_all_domains:
             for volu in ('pc', 'struct'):
                 if group.get(volu):
@@ -235,9 +237,9 @@ class MissCmdeGenerator(object):
         # formats possibles pour les fréquences
         assert (self.param["FREQ_MIN"],
                 self.param["LIST_FREQ"]).count(None) == 1, \
-                'expect FREQ_MIN xor LIST_FREQ, not together'
+            'expect FREQ_MIN xor LIST_FREQ, not together'
         if self.param["FREQ_MIN"] is not None:
-            lines.append(("FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s "\
+            lines.append(("FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s "
                           "PAS %%(freq_pas)%(R)s\n" % dict_format) % locals())
             _nbfreq = int((freq_max - freq_min) / freq_pas) + 2
         if self.param["LIST_FREQ"] is not None:
@@ -263,14 +265,14 @@ class MissCmdeGenerator(object):
             lines.extend([
                 '*', '* Definition du sous-domaine structure',
                      '* ------------------------------------',
-                'SDOMAINE %4d GROUPE ' % self.domain['struct'][0] + \
+                'SDOMAINE %4d GROUPE ' % self.domain['struct'][0] +
                 ''.join(['%4d' % i for i in self.domain['struct'][1]]),
                 'KCM',
                 'FINS'])
         lines.extend([
             '*', '* Definition du sous-domaine sol',
                  '* ------------------------------',
-            'SDOMAINE %4d GROUPE ' % self.domain['sol'][0] + \
+            'SDOMAINE %4d GROUPE ' % self.domain['sol'][0] +
             ''.join(['%4d' % i for i in self.domain['sol'][1]]),
             self._materiau_sol(),
             'FINS'])
@@ -281,20 +283,20 @@ class MissCmdeGenerator(object):
         lines = []
         if self.param['_hasPC']:
             lines.extend(['*',
-                '* Chargement du domaine structure',
-                '* -------------------------------',
-                'DOMAINE %4d' % self.domain['struct'][0],
-                'EXTERIEUR',
-                'LIRE %s' % self.dinf['fich_ext'],
-                'FINE'])
+                          '* Chargement du domaine structure',
+                          '* -------------------------------',
+                          'DOMAINE %4d' % self.domain['struct'][0],
+                          'EXTERIEUR',
+                          'LIRE %s' % self.dinf['fich_ext'],
+                          'FINE'])
         lines.extend(self._chargement_domaine('sol'))
         lines.extend(self._stratification_sol())
         lines.extend(self._source_sol())
         if self.param['_hasPC']:
             lines.extend(['*',
-                '* Calcul des champs incidents aux points de controle',
-                '* --------------------------------------------------',
-                'EXEC CONTROLE UI',])
+                          '* Calcul des champs incidents aux points de controle',
+                          '* --------------------------------------------------',
+                          'EXEC CONTROLE UI', ])
         return lines
 
     def calcul_fonction_green(self):
@@ -304,10 +306,10 @@ class MissCmdeGenerator(object):
         if strat:
             lines.extend(strat)
             lines.extend(['*',
-                '* Calcul des fonctions de Green',
-                '* -----------------------------',
-                'EXEC SPFR',
-            ])
+                          '* Calcul des fonctions de Green',
+                          '* -----------------------------',
+                          'EXEC SPFR',
+                          ])
         return lines
 
     def calcul_champs(self):
@@ -318,10 +320,10 @@ class MissCmdeGenerator(object):
         if self.param['_hasPC']:
             args = 'UD0 CHAMP IMPEdance FORCe'
         lines.extend(['*',
-            '* Calcul des forces et impedances',
-            '* -------------------------------',
-            'EXEC UGTG %s' % args + self._rfic(),
-        ])
+                      '* Calcul des forces et impedances',
+                      '* -------------------------------',
+                      'EXEC UGTG %s' % args + self._rfic(),
+                      ])
         self._impe_calc = "IMPEdance" in args
         self._forc_calc = "FORCe" in args
         return lines
@@ -331,20 +333,20 @@ class MissCmdeGenerator(object):
         lines = []
         if self.param['_hasPC'] or self.param['ISSF'] == 'OUI':
             lines.extend(['*',
-                '* Resolution du probleme d interaction',
-                '* ------------------------------------',
-                'EXEC GLOBAL'])
+                          '* Resolution du probleme d interaction',
+                          '* ------------------------------------',
+                          'EXEC GLOBAL'])
         if self.param['_hasPC']:
             lines.extend(self._chargement_domaine('sol'))
             lines.extend(['*',
-                '* Synthese des champs sur les interfaces',
-                '* --------------------------------------',
-                'EXEC DIFFracte UTOT TTOT'])
+                          '* Synthese des champs sur les interfaces',
+                          '* --------------------------------------',
+                          'EXEC DIFFracte UTOT TTOT'])
             lines.extend(self._stratification_sol())
             lines.extend(['*',
-                '* Synthese des champs sur les points de controle',
-                '* ----------------------------------------------',
-                'EXEC CONTrole UTOT TTOT NOGEO'])
+                          '* Synthese des champs sur les points de controle',
+                          '* ----------------------------------------------',
+                          'EXEC CONTrole UTOT TTOT NOGEO'])
         return lines
 
     def _materiau_sol(self):
@@ -356,7 +358,8 @@ class MissCmdeGenerator(object):
             rho = val['RHO']
             beta = val['AMOR_HYST'] or 0.
             mat = 'MATE RO %%%(R)s VP %%%(R)s VS %%%(R)s BETA %%%(R)s' % dict_format
-            vp = sqrt(young * (1. - vnu) / (rho * (1. + vnu) * (1. - 2. * vnu)))
+            vp = sqrt(young * (1. - vnu) / (
+                rho * (1. + vnu) * (1. - 2. * vnu)))
             vs = sqrt(young / (2. * rho * (1. + vnu)))
             line = mat % (rho, vp, vs, beta)
         else:
@@ -369,10 +372,11 @@ class MissCmdeGenerator(object):
             return []
         z0 = self.param['Z0']
         lines = ['*',
-            '* Definition de la stratification du sol',
-            '* --------------------------------------',
-            ('DOS2M Z0 %%%(R)s  %%s' % dict_format) % (z0, self.dinf['surf']),
-            'LIRE %s' % self.dinf['fich_sol'],]
+                 '* Definition de la stratification du sol',
+                 '* --------------------------------------',
+                 ('DOS2M Z0 %%%(R)s  %%s' %
+                  dict_format) % (z0, self.dinf['surf']),
+                 'LIRE %s' % self.dinf['fich_sol'], ]
         return lines
 
     def _source_sol(self):
@@ -382,37 +386,39 @@ class MissCmdeGenerator(object):
         if not src:
             z0 = self.param['Z0']
             lines.extend(['*',
-                '* Definition des champs incidents',
-                '* -------------------------------',
-                'INCI 3',
-                ('DPLANE SV 1. Z0 %%%(R)s' % dict_format ) % z0,
+                          '* Definition des champs incidents',
+                          '* -------------------------------',
+                          'INCI 3',
+                        ('DPLANE SV 1. Z0 %%%(R)s' % dict_format) % z0,
                 '0. 0. 1.',
-                ('DPLANE SH 1. Z0 %%%(R)s' % dict_format ) % z0,
+                ('DPLANE SH 1. Z0 %%%(R)s' % dict_format) % z0,
                 '0. 0. 1.',
-                ('DPLANE P 1. Z0 %%%(R)s' % dict_format ) % z0,
+                ('DPLANE P 1. Z0 %%%(R)s' % dict_format) % z0,
                 '0. 0. 1.',
-                ])
+            ])
         else:
             lines.extend(['*',
-                '* Definition de source dans le sol',
-                '* --------------------------------',
-                'INCI 1',
-                ('SOURCE %%%(R)s %%%(R)s %%%(R)s' % dict_format ) % src['POINT'],
-                ('       %%%(R)s %%%(R)s %%%(R)s' % dict_format ) % src['DIRECTION'],
+                          '* Definition de source dans le sol',
+                          '* --------------------------------',
+                          'INCI 1',
+                        ('SOURCE %%%(R)s %%%(R)s %%%(R)s' %
+                         dict_format) % src['POINT'],
+                ('       %%%(R)s %%%(R)s %%%(R)s' %
+                 dict_format) % src['DIRECTION'],
             ])
         lines.extend(['*',
-            '* Calcul des champs incidents',
-            '* ---------------------------',
-            'EXEC INCI',
-            ])
+                      '* Calcul des champs incidents',
+                      '* ---------------------------',
+                      'EXEC INCI',
+                      ])
         return lines
 
     def _chargement_domaine(self, dom):
         """Chargement d'un domaine"""
         lines = ['*',
-            '* Chargement du domaine %s' % dom,
-            '* -------------------------------',
-            'DOMAINE %4d' % self.domain[dom][0]]
+                 '* Chargement du domaine %s' % dom,
+                 '* -------------------------------',
+                 'DOMAINE %4d' % self.domain[dom][0]]
         return lines
 
     def _rfic(self):
@@ -424,6 +430,7 @@ class MissCmdeGenerator(object):
 
 
 class MissCmdeGeneratorInci(MissCmdeGenerator):
+
     """Construit un fichier de commandes Miss
     Calcul du champ incident pour la methode Laplace-temps"""
 
@@ -441,14 +448,15 @@ class MissCmdeGeneratorInci(MissCmdeGenerator):
     def calcul_champs(self):
         """Assemblage des forces sismiques induites"""
         lines = ['*',
-            '* Calcul des forces sismiques',
-            '* ---------------------------',
-            'EXEC UGTG FORCe' + self._rfic()]
+                 '* Calcul des forces sismiques',
+                 '* ---------------------------',
+                 'EXEC UGTG FORCe' + self._rfic()]
         self._forc_calc = True
         return lines
 
 
 class MissCmdeGeneratorISSF(MissCmdeGenerator):
+
     """Construit un fichier de commandes Miss dans le cas ISSF"""
 
     def bloc_domain(self):
@@ -457,7 +465,7 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
         lines.extend([
             '*', '* Definition du sous-domaine sol',
                  '* ------------------------------',
-            'SDOMAINE %4d GROUPE ' % self.domain['fluide'][0] + \
+            'SDOMAINE %4d GROUPE ' % self.domain['fluide'][0] +
             ''.join(['%4d' % i for i in self.domain['fluide'][1]]),
             self._materiau_fluide(),
             'FINS'])
@@ -476,10 +484,10 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
         lines = super(MissCmdeGeneratorISSF, self).calcul_champs()
         lines.extend(self._chargement_domaine('fluide'))
         lines.extend(['*',
-            '* Calcul des forces et impedances',
-            '* -------------------------------',
-            'EXEC UGTG IMPEdance FORCe' + self._rfic(),
-        ])
+                      '* Calcul des forces et impedances',
+                      '* -------------------------------',
+                      'EXEC UGTG IMPEdance FORCe' + self._rfic(),
+                      ])
         return lines
 
     def _source_sol(self):
@@ -510,16 +518,17 @@ class MissCmdeGeneratorISSF(MissCmdeGenerator):
         src = self.param.get('SOURCE_FLUIDE')
         if src:
             lines.extend(['*',
-                '* Definition de source dans le fluide',
-                '* -----------------------------------',
-                'INCI 1',
-                ('SOURCE %%%(R)s %%%(R)s %%%(R)s' % dict_format ) % src['POINT'],
+                          '* Definition de source dans le fluide',
+                          '* -----------------------------------',
+                          'INCI 1',
+                        ('SOURCE %%%(R)s %%%(R)s %%%(R)s' %
+                         dict_format) % src['POINT'],
                 '       1.',
                 '*',
                 '* Calcul des champs incidents',
                 '* ---------------------------',
                 'EXEC INCI',
-                ])
+            ])
         return lines
 
 
@@ -532,11 +541,13 @@ def MissCmdeGen(param, struct, filename_callback, lapl_temps=False):
     else:
         return MissCmdeGenerator(param, struct, filename_callback)
 
+
 def remove_empty_lines(text):
     """Remove empty lines from `text`"""
     lines = [line for line in text.splitlines() if line.strip()]
     lines.append('')
     return os.linesep.join(lines)
+
 
 def remove_comments(text):
     """Remove Miss comments from `text`"""
@@ -544,43 +555,49 @@ def remove_comments(text):
     lines = [line for line in text.splitlines() if not recmt.search(line)]
     return os.linesep.join(lines)
 
+
 class TestMissCmde(unittest.TestCase):
+
     """test generator of miss commands file"""
 
     def setUp(self):
         """set up parameters"""
         class Parameters(dict):
+
             """fake MISS_PARAMETERS for unittests"""
+
             def set(self, key, value):
                 """assign a value"""
                 self[key] = value
+
         class Struct(object):
+
             """fake structure"""
             titre = "PRODUIT PAR CALC_MISS"
         self.struct = Struct()
         self.par = Parameters()
         self.par.update({
             # valeurs par défaut des mots-clés, cf. calc_miss.capy
-            'PROJET' : "MODELE",
-            'FREQ_MIN' : None,
-            'FREQ_MAX' : None,
-            'FREQ_PAS' : None,
-            'LIST_FREQ' : None,
-            'FREQ_IMAG' : None,
-            'Z0' : 0.,
-            'SURF' : 'NON',
-            'ISSF' : 'NON',
-            'ALLU' : 0.,
-            'RFIC' : 0.,
-            'ALGO' : None,
-            'DREF' : None,
-            'SPEC_MAX' : None,
-            'SPEC_NB' : None,
-            'OFFSET_MAX' : None,
-            'OFFSET_NB' : None,
-            'TYPE' : 'ASCII',
-            '_hasPC' : False,
-            '_nbPC' : 0,
+            'PROJET': "MODELE",
+            'FREQ_MIN': None,
+            'FREQ_MAX': None,
+            'FREQ_PAS': None,
+            'LIST_FREQ': None,
+            'FREQ_IMAG': None,
+            'Z0': 0.,
+            'SURF': 'NON',
+            'ISSF': 'NON',
+            'ALLU': 0.,
+            'RFIC': 0.,
+            'ALGO': None,
+            'DREF': None,
+            'SPEC_MAX': None,
+            'SPEC_NB': None,
+            'OFFSET_MAX': None,
+            'OFFSET_NB': None,
+            'TYPE': 'ASCII',
+            '_hasPC': False,
+            '_nbPC': 0,
         })
         self._write = False
 
@@ -606,14 +623,14 @@ rzbePN2zVALgo+MbBL2zTNXugQUJozFeYGEix2rEDiPsQeFVUkeFG9EU8uNj8h1znZ9EJFJtesbM
 stwDncR5RevYR6cq/CqGI19Y6lvgN0yQXTY=
 """
         self.par.update({
-            'PROJET' : "SDLX103A",
-            'LIST_FREQ' : (12.25, 12.50, 12.75),
-            'TYPE' : 'BINAIRE',
-            'Z0' : 5.0,
-            'DREF' : 1.0,
-            'ALGO' : 'REGU',
-            'OFFSET_MAX' : 20,
-            'OFFSET_NB' : 200,
+            'PROJET': "SDLX103A",
+            'LIST_FREQ': (12.25, 12.50, 12.75),
+            'TYPE': 'BINAIRE',
+            'Z0': 5.0,
+            'DREF': 1.0,
+            'ALGO': 'REGU',
+            'OFFSET_MAX': 20,
+            'OFFSET_NB': 200,
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -640,16 +657,16 @@ i9IBgGBclqkHPvAg5jTCAyyM1VqveLfCCRTepXPStpZ1rj48Jp8y95gpPKJUphe8LMvtyMTOFanT
 DJ2q7FXuRr6t9JfAH4AuXdY=
 """
         self.par.update({
-            'FREQ_MIN' : 1.,
-            'FREQ_MAX' : 10.,
-            'FREQ_PAS' : 1.,
-            'Z0' : -6.05,
-            'SURF' : 'OUI',
-            'ALGO' : 'DEPL',
-            'OFFSET_MAX' : 60,
-            'OFFSET_NB' : 400,
-            'SPEC_MAX' : 0.03,
-            'SPEC_NB' : 2048,
+            'FREQ_MIN': 1.,
+            'FREQ_MAX': 10.,
+            'FREQ_PAS': 1.,
+            'Z0': -6.05,
+            'SURF': 'OUI',
+            'ALGO': 'DEPL',
+            'OFFSET_MAX': 60,
+            'OFFSET_NB': 400,
+            'SPEC_MAX': 0.03,
+            'SPEC_NB': 2048,
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -678,18 +695,18 @@ BWZSCnGuQ7QKtU+j0GGHskrkHvsvyPVGzJPr+kArL57wiaKd6muae/EuMfPeeJlAlpsnT27K4iFD
 bEoiaetIF5ltey0cVW72YG2767XsvvDfhYldqSF/Ac9u8B8=
 """
         self.par.update({
-            'PROJET' : "FDLV112B",
-            'FREQ_MIN' : 0.1,
-            'FREQ_MAX' : 3.0,
-            'FREQ_PAS' : 2.9,
-            'Z0' : 5.,
-            'SURF' : 'NON',
-            'ALGO' : 'REGU',
-            'OFFSET_MAX' : 1000,
-            'OFFSET_NB' : 5000,
-            'ISSF' : 'OUI',
-            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0.,
-                               'DEMI_ESPACE' : 'OUI' },
+            'PROJET': "FDLV112B",
+            'FREQ_MIN': 0.1,
+            'FREQ_MAX': 3.0,
+            'FREQ_PAS': 2.9,
+            'Z0': 5.,
+            'SURF': 'NON',
+            'ALGO': 'REGU',
+            'OFFSET_MAX': 1000,
+            'OFFSET_NB': 5000,
+            'ISSF': 'OUI',
+            'MATER_FLUIDE': {'RHO': 1000., 'CELE': 1500, 'AMOR_BETA': 0.,
+                             'DEMI_ESPACE': 'OUI'},
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -715,19 +732,19 @@ Wmce92AdM0ccu3a6DU9300OjujmKKTuTq2tD32wWp+bvCP2Il8QpxzHiPJxLjVtR/6RRiSZHzeQH
 HmecpsR1A32bksx/vuIcSoZD61ZCZ5JNfN6YDfgPEoFDsQ==
 """
         self.par.update({
-            'PROJET' : "Miss_Laplace",
-            'ALGO' : 'DEPL',
-            'DREF' : 5,
-            'FREQ_IMAG' : 1.0,
-            'INST_FIN' : 2.0,
-            'OFFSET_MAX' : 40,
-            'OFFSET_NB' : 400,
-            'PAS_INST' : 0.05,
-            'RFIC' : 0.0,
-            'SPEC_MAX' : 0.075,
-            'SPEC_NB' : 16384,
-            'SURF' : 'OUI',
-            'Z0' : -5.8,
+            'PROJET': "Miss_Laplace",
+            'ALGO': 'DEPL',
+            'DREF': 5,
+            'FREQ_IMAG': 1.0,
+            'INST_FIN': 2.0,
+            'OFFSET_MAX': 40,
+            'OFFSET_NB': 400,
+            'PAS_INST': 0.05,
+            'RFIC': 0.0,
+            'SPEC_MAX': 0.075,
+            'SPEC_NB': 16384,
+            'SURF': 'OUI',
+            'Z0': -5.8,
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname, lapl_temps=True)
         txt = gen.build()
@@ -754,22 +771,22 @@ wq+fI2MggR8xnCbG86XieAm1r1INABzngWmoqQ/MjxmN8C4LYrlWK3ZY4UwKbpI6KlyLOpfvI6Ov
 mvv8JCqRitMzdqbpHCjF9gW142wdq/JFHgdevNSrwW/+xHAQ
 """
         self.par.update({
-            'PROJET' : "Miss_Laplace",
-            'DREF' : 5,
-            'FICHIER_SOL_INCI' : './Miss_Laplace.sol.inci',
-            'FREQ_IMAG' : 64.97465,
-            'INST_FIN' : 2.0,
-            'LIST_FREQ' : (1.023383,),
-            'NB_MODE' : 6,
-            'OFFSET_MAX' : 40,
-            'OFFSET_NB' : 400,
-            'PAS_INST' : 0.05,
-            'PRECISION' : 1e-10,
-            'RFIC' : 0.0,
-            'SPEC_MAX' : 0.075,
-            'SPEC_NB' : 16384,
-            'SURF' : 'OUI',
-            'Z0' : -5.8,
+            'PROJET': "Miss_Laplace",
+            'DREF': 5,
+            'FICHIER_SOL_INCI': './Miss_Laplace.sol.inci',
+            'FREQ_IMAG': 64.97465,
+            'INST_FIN': 2.0,
+            'LIST_FREQ': (1.023383,),
+            'NB_MODE': 6,
+            'OFFSET_MAX': 40,
+            'OFFSET_NB': 400,
+            'PAS_INST': 0.05,
+            'PRECISION': 1e-10,
+            'RFIC': 0.0,
+            'SPEC_MAX': 0.075,
+            'SPEC_NB': 16384,
+            'SURF': 'OUI',
+            'Z0': -5.8,
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -800,17 +817,17 @@ JzC/fjkrKbGQsJ7OPMzQh2lKLI5fAT7FzxesTU3Loj7dVcdcl637xX1XiO/L133N+hF0pTpDK7Co
 5jcabdtXGPxQnuEl7ldpY9U9y5+B7zr9xfELc+l7sg==
 """
         self.par.update({
-            'PROJET' : "ZZZZ108B",
-            'FREQ_MIN' : 0.25,
-            'FREQ_MAX' : 50.0,
-            'FREQ_PAS' : 0.25,
-            'OFFSET_MAX' : 60,
-            'OFFSET_NB' : 600,
-            'SURF' : 'OUI',
-            'ALGO' : 'DEPL',
-            'Z0' : 0.0,
-            '_hasPC' : True,
-            '_nbPC' : 3,
+            'PROJET': "ZZZZ108B",
+            'FREQ_MIN': 0.25,
+            'FREQ_MAX': 50.0,
+            'FREQ_PAS': 0.25,
+            'OFFSET_MAX': 60,
+            'OFFSET_NB': 600,
+            'SURF': 'OUI',
+            'ALGO': 'DEPL',
+            'Z0': 0.0,
+            '_hasPC': True,
+            '_nbPC': 3,
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -842,20 +859,20 @@ DLvC0vaNr5/Pb2rbNV/OLEzRhlFCTI6tm0ex58Ti0zB1ralbGq57jf0ltOue9j3HZNdoYLGs2osJ
 aoGdEL8yaVmewuCHkhR/om5lOpTds/i504zrNvFvcCbg8g==
 """
         self.par.update({
-            'PROJET' : "FDLV112E",
-            'FREQ_MIN' : 4.0,
-            'FREQ_MAX' : 5.0,
-            'FREQ_PAS' : 1.0,
-            'Z0' : 5.,
-            'SURF' : 'NON',
-            'ALGO' : 'REGU',
-            'OFFSET_MAX' : 1000,
-            'OFFSET_NB' : 5000,
-            'ISSF' : 'OUI',
-            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 1500, 'AMOR_BETA' : 0.,
-                               'DEMI_ESPACE' : 'OUI'  },
-            '_hasPC' : True,
-            '_nbPC' : 3,
+            'PROJET': "FDLV112E",
+            'FREQ_MIN': 4.0,
+            'FREQ_MAX': 5.0,
+            'FREQ_PAS': 1.0,
+            'Z0': 5.,
+            'SURF': 'NON',
+            'ALGO': 'REGU',
+            'OFFSET_MAX': 1000,
+            'OFFSET_NB': 5000,
+            'ISSF': 'OUI',
+            'MATER_FLUIDE': {'RHO': 1000., 'CELE': 1500, 'AMOR_BETA': 0.,
+                             'DEMI_ESPACE': 'OUI'},
+            '_hasPC': True,
+            '_nbPC': 3,
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()
@@ -884,17 +901,17 @@ UQYSgMjbb6huuUsS7P9+KNdqxdsVFkz/LKHd5aiSKpPvale36PPcJCJpU7LLzDSdlo7M3ANau6J/
 rXffxK/nhVQeQ/4A5Lekkg==
 """
         self.par.update({
-            'PROJET' : "FDLV113A",
-            'FREQ_MIN' : 1.0,
-            'FREQ_MAX' : 21.0,
-            'FREQ_PAS' : 20.0,
-            'SURF' : 'NON',
-            'RFIC' : 0.5,
-            'ISSF' : 'OUI',
-            'MATER_SOL' : { 'E' : 7.e8, 'RHO' : 2500., 'NU' : 0.2, 'AMOR_HYST' : 0. },
-            'MATER_FLUIDE' : { 'RHO' : 1000., 'CELE' : 150, 'AMOR_BETA' : 0.,
-                               'DEMI_ESPACE' : 'NON'  },
-            'SOURCE_FLUIDE' : { 'POINT' : (0., 0., 0.) },
+            'PROJET': "FDLV113A",
+            'FREQ_MIN': 1.0,
+            'FREQ_MAX': 21.0,
+            'FREQ_PAS': 20.0,
+            'SURF': 'NON',
+            'RFIC': 0.5,
+            'ISSF': 'OUI',
+            'MATER_SOL': {'E': 7.e8, 'RHO': 2500., 'NU': 0.2, 'AMOR_HYST': 0.},
+            'MATER_FLUIDE': {'RHO': 1000., 'CELE': 150, 'AMOR_BETA': 0.,
+                             'DEMI_ESPACE': 'NON'},
+            'SOURCE_FLUIDE': {'POINT': (0., 0., 0.)},
         })
         gen = MissCmdeGen(self.par, self.struct, self.fname)
         txt = gen.build()

@@ -26,7 +26,8 @@ from SD.sd_resuelem import sd_resuelem
 
 #---------------------------------------------------------------------------------
 # classe "chapeau" à sd_cham_no, sd_cham_elem, sd_carte, ...
-#---------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
 
 class sd_champ(AsBase):
 #---------------------------
@@ -38,38 +39,44 @@ class sd_champ(AsBase):
         nom1 = nom + '.CELD'
         iexi = aster.jeveux_exists(nom1)
         if iexi:
-           nom2 = nom + '.CELD'
+            nom2 = nom + '.CELD'
         else:
-           nom2 = nom + '.DESC'
-           iexi2 = aster.jeveux_exists(nom2)
-           if not iexi2:
-               if not self.optional and not checker.optional :
-                   checker.err( self, "n'existe pas (%r)" % self._parent )
-               return
+            nom2 = nom + '.DESC'
+            iexi2 = aster.jeveux_exists(nom2)
+            if not iexi2:
+                if not self.optional and not checker.optional:
+                    checker.err(self, "n'existe pas (%r)" % self._parent)
+                return
 
-        docu=aster.jeveux_getattr(nom2, 'DOCU')[1].strip()
-        if docu == 'CHNO' :
+        docu = aster.jeveux_getattr(nom2, 'DOCU')[1].strip()
+        if docu == 'CHNO':
             sd2 = sd_cham_no(nom)
-        elif docu == 'CART' :
+        elif docu == 'CART':
             sd2 = sd_carte(nom)
-        elif docu == 'CHML' :
+        elif docu == 'CHML':
             sd2 = sd_cham_elem(nom)
-        elif docu == 'RESL' :
+        elif docu == 'RESL':
             sd2 = sd_resuelem(nom)
-        elif docu == 'VGEN' :
+        elif docu == 'VGEN':
             sd2 = sd_cham_gene(nom)
-        else :
+        else:
             assert 0, docu
         sd2.check(checker)
 
 # sd des cham_no
+
+
 class sd_cham_no_class(sd_champ, sd_cham_no):
     pass
 
 # sd des cham_elem
+
+
 class sd_cham_elem_class(sd_champ, sd_cham_elem):
     pass
 
 # sd des cartes
+
+
 class sd_carte_class(sd_champ, sd_carte):
     pass

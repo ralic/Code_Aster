@@ -31,6 +31,7 @@ import tempfile
 import shutil
 import optparse
 
+
 def parse_args(argv=None):
     'Parse the command line and return surch, unigest, nom_capy_offi, resu_ojb'
 
@@ -49,7 +50,7 @@ def parse_args(argv=None):
                       help='output object file')
 
     opts, args = parser.parse_args(argv)
-    if len(args) == 6 and opts.nom_capy_offi is None: # legacy style
+    if len(args) == 6 and opts.nom_capy_offi is None:  # legacy style
         opts.rep_scripts = args[0]
         opts.surch = args[2]
         opts.unigest = args[3]
@@ -62,7 +63,9 @@ def parse_args(argv=None):
 
     return opts.surch, opts.unigest, opts.nom_capy_offi, opts.resu_ojb
 
-###############################################################################
+#
+
+
 def main(surch, unigest, nom_capy_offi, resu_ojb):
     """
     Script pour surcharger les catalogues officiels
@@ -70,7 +73,7 @@ def main(surch, unigest, nom_capy_offi, resu_ojb):
     """
     abspath = lambda path: path and osp.abspath(path)
     surch, unigest, nom_capy_offi, resu_ojb = map(abspath,
-        (surch, unigest, nom_capy_offi, resu_ojb))
+                                                 (surch, unigest, nom_capy_offi, resu_ojb))
 
     trav = tempfile.mkdtemp(prefix='make_surch_offi_')
     dirav = os.getcwd()
@@ -78,13 +81,14 @@ def main(surch, unigest, nom_capy_offi, resu_ojb):
     try:
         _main(surch, unigest, nom_capy_offi, resu_ojb)
     except:
-        print 60*'-'+' debut trace back'
+        print 60 * '-' + ' debut trace back'
         traceback.print_exc(file=sys.stdout)
-        print 60*'-'+' fin   trace back'
+        print 60 * '-' + ' fin   trace back'
         raise
     finally:
         os.chdir(dirav)
         shutil.rmtree(trav)
+
 
 def _main(surch, unigest, nom_capy_offi, resu_ojb):
     """Script pour surcharger les catalogues officiels"""
@@ -98,7 +102,7 @@ def _main(surch, unigest, nom_capy_offi, resu_ojb):
         # le fichier pour la lecture :
         liste_morceaux = utilit.cata_split(surch, "morceau", 5000)
         capy_surch = lire_cata(liste_morceaux[0])
-        for k in range(len(liste_morceaux) - 1) :
+        for k in range(len(liste_morceaux) - 1):
             capy_surc2 = lire_cata(liste_morceaux[k + 1])
             utilit.concat_capy(capy_surch, capy_surc2)
 

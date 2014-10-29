@@ -19,13 +19,13 @@
 
 cata_msg = {
 
-1 : _(u"""
+    1 : _(u"""
  Le champ à tester comporte %(i1)d sous-points.
  Or vous n'avez pas donné de numéro de sous-point à tester.
  Il faut renseigner POINT et SOUS_POINT.
 """),
 
-2 : _(u"""
+    2 : _(u"""
 Erreur Utilisateur :
  Quand on utilise AFFE_CHAR_CINE/EVOL_IMPO, c'est le champ de l'EVOL_XXX correspondant
  au 1er instant qui impose sa "loi" : tous les ddls de ce champ seront imposés pour tous
@@ -38,22 +38,22 @@ Risques & conseils :
  Assurez-vous que l'évolution imposée %(k1)s concerne les mêmes ddls pour tous les instants.
 """),
 
-3 : _(u"""
+    3 : _(u"""
  La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.
 """),
 
-4 : _(u"""
+    4 : _(u"""
  incohérence des maillages : %(k1)s  et  %(k2)s
 """),
 
-5 : _(u"""
+    5 : _(u"""
  Erreur de programmation (ou d'utilisation ?) :
    Le changement de discrétisation : %(k1)s n'est pas encore programmé.
  Risques et conseils :
    Il y a peut-être une demande d'évolution à émettre ...
 """),
 
-6 : _(u"""
+    6 : _(u"""
  Erreur d'utilisation :
    On n'arrive pas à construire correctement le champ contenant le nombre de sous-points
    des éléments finis (coques multicouches, tuyaux, poutres multifibres, ...) du modèle %(k1)s.
@@ -67,7 +67,7 @@ Risques & conseils :
 
 
 
-9 : _(u"""
+    9 : _(u"""
  Erreur d'utilisation dans AFFE_CHAR_CINE :
    Aucun des ddls que l'on souhaite bloquer n'appartient au modèle.
    La charge cinématique produite est donc vide.
@@ -76,21 +76,21 @@ Risques & conseils :
    Vérifier le nom des ddls portés par les noeuds des éléments de votre modèle.
 """),
 
-10 : _(u"""
+    10 : _(u"""
 Erreur de programmation lors de l'assemblage :
    Les quantités que l'on cherche à assembler (MATR_ELEM ou VECT_ELEM) ont été calculées avec au
    moins 2 partitions différentes :  %(k1)s et %(k2)s
 """),
 
-11 : _(u"""
+    11 : _(u"""
  le mode_local:  %(k1)s  ne doit pas être vecteur ou matrice.
 """),
 
-12 : _(u"""
+    12 : _(u"""
  le mode_local:  %(k1)s  ne doit pas être "DIFF__".
 """),
 
-13 : _(u"""
+    13 : _(u"""
 Erreur utilisateur concernant le parallélisme des calculs élémentaires :
   La partition des éléments du modèle a été faite sur %(i1)d processeurs.
   Mais maintenant, le nombre de processeurs disponibles est de %(i2)d.
@@ -100,11 +100,11 @@ Conseil :
   afin qu'elle soit cohérente avec le nombre de processeurs disponibles pour les calculs.
 """),
 
-14 : _(u"""
+    14 : _(u"""
   incompatibilité des type_champ ("ELGA"/"ELNO")  pour l option :  %(k1)s  entre les 2 TYPE_ELEM :  %(k2)s  et  %(k3)s
 """),
 
-15 : _(u"""
+    15 : _(u"""
  Erreur Utilisateur :
  On cherche à calculer une déformation thermique mais on ne trouve pas toutes les
  quantités nécessaires :
@@ -113,16 +113,16 @@ Conseil :
     - coefficient de dilatation
 """),
 
-17 : _(u"""
+    17 : _(u"""
  type de champ inconnu
 """),
 
-18 : _(u"""
+    18 : _(u"""
  Vous utilisez CALC_CHAMP en reuse mais la structure de données en entrée est
  différente de celle en sortie. Ce n'est pas autorisé.
 """),
 
-19 : _(u"""
+    19 : _(u"""
 Erreur :
  Le CHAM_ELEM %(k1)s est incohérent :
    Il possède %(i1)d GREL.
@@ -134,32 +134,32 @@ Risques & Conseils :
  a été entre temps détruit et recréé sous le même nom.
 """),
 
-20 : _(u"""
+    20 : _(u"""
  le champ de grandeur  %(k1)s  ne respecte pas le format XXXX_r
 """),
 
-21 : _(u"""
+    21 : _(u"""
  les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
 """),
 
-22 : _(u"""
+    22 : _(u"""
  problème dans le catalogue des grandeurs simples
  la grandeur %(k1)s  ne possède pas le même nombre de champs que son homologue complexe %(k2)s
 """),
 
-23 : _(u"""
+    23 : _(u"""
  problème dans le catalogue des grandeurs simples
  la grandeur  %(k1)s  ne possède pas les mêmes champs que son homologue complexe  %(k2)s
 """),
 
-24 : _(u"""
+    24 : _(u"""
  Le modèle donné dans le mot-clé MODELE n'est pas le même que celui présent dans la
  structure de données résultat. Ce n'est pas autorisé.
  En effet, le mot-clé MODELE de CALC_CHAMP n'est utilisable que dans le cas où le
  modèle est manquant dans la structure de données résultat.
 """),
 
-25 : _(u"""
+    25 : _(u"""
 Erreur utilisateur dans PROJ_SPEC_BASE :
  La commande n'accepte que le parallélisme de type PARTITION='CENTRALISE'.
  Modèle impliqué : %(k1)s
@@ -168,7 +168,7 @@ Conseil :
  Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
 """),
 
-26 : _(u"""
+    26 : _(u"""
  Le modèle est peut-être trop grossier :
    Sur la maille %(k1)s et pour la composante %(k2)s de la grandeur %(k3)s,
    il y a une variation entre les points de la maille de %(r1)f
@@ -176,11 +176,11 @@ Conseil :
    Cela fait une variation sur la maille supérieure à %(r3)f%%.
 """),
 
-27 : _(u"""
+    27 : _(u"""
  CHAM_ELEM à combiner incompatible
 """),
 
-28 : _(u"""
+    28 : _(u"""
  Problème lors de l'utilisation de la structure de données %(k1)s.
  Cette structure de données est de type "évolution temporelle" et l'on n'a pas le droit
  de l'utiliser en dehors de l'intervalle [tmin, tmax].
@@ -190,7 +190,7 @@ Conseil :
 """),
 
 
-29 : _(u"""
+    29 : _(u"""
  Erreur utilisateur :
    Le programme a besoin d'accéder au champ %(k2)s de la structure sd_resultat %(k1)s
    pour le NUME_ORDRE: %(i1)d
@@ -201,7 +201,7 @@ Conseil :
  Vérifiez que la structure de données %(k1)s est bien celle qu'il faut utiliser.
 """),
 
-30 : _(u"""
+    30 : _(u"""
 Erreur utilisateur :
   -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'option:  %(k2)s.
 
@@ -215,11 +215,11 @@ Erreur utilisateur :
      S'il n'y en a pas, il faut faire une demande d'évolution.
 """),
 
-31 : _(u"""
+    31 : _(u"""
   La température n'est pas correctement renseignée
 """),
 
-32 : _(u"""
+    32 : _(u"""
 Erreur utilisateur :
   -> L'utilisation de la commande %(k1)s avec l'option %(k5)s pour
      les éléments du type %(k4)s n'est pas autorisée.
@@ -233,7 +233,7 @@ Pour information :
 """),
 
 
-33 : _(u"""
+    33 : _(u"""
 Vous utilisez CALC_CHAMP en reuse en surchargeant le mot-clé
 %(k1)s. Or ce paramètre déjà présent dans structure de données résultat sur laquelle
 vous travaillez est différent de celui donné (%(k2)s et %(k3)s).
@@ -244,34 +244,34 @@ Conseil :
   Relancez le calcul en créant une nouvelle structure de données résultat.
 """),
 
-34 : _(u"""
+    34 : _(u"""
  le calcul de l'option :  %(k1)s
  n'est possible pour aucun des types d'éléments du LIGREL.
 """),
 
-35 : _(u"""
+    35 : _(u"""
  Erreur utilisateur :
   On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le même nombre
   "points" (noeuds ou points de Gauss) pour la maille numéro : %(i1)d.
   Nombres de points :  %(i2)d et %(i3)d
 """),
 
-36 : _(u"""
+    36 : _(u"""
  Erreur utilisateur :
   On essaye de fusionner 2 CHAM_ELEM mais ils n'ont pas le même nombre
   de "sous-points" (fibres, couches, ...) pour la maille numéro : %(i1)d.
   Nombres de sous-points :  %(i2)d et %(i3)d
 """),
 
-37 : _(u"""
+    37 : _(u"""
  Erreur dans la lecture des CHAR_CINE ou dans les CHAR_CINE
 """),
 
-38 : _(u"""
+    38 : _(u"""
  la carte concerne aussi des mailles tardives qui sont oubliées
 """),
 
-39 : _(u"""
+    39 : _(u"""
 Le chargement (mot clé: EXCIT) fourni par l'utilisateur est différent de celui présent
 dans la structure de données Résultat. Dans ce cas, le reuse est interdit.
 
@@ -279,13 +279,13 @@ Conseil :
   Relancez le calcul en créant une nouvelle structure de données résultat.
 """),
 
-40 : _(u"""
+    40 : _(u"""
  Erreur possible d'utilisation:
    Vous avez affecté des données sur certaines mailles mais ces données
    n'ont pas de signification pour les éléments finis portés par ces mailles.
    Il s'agit peut-être d'une erreur d'affectation.
 
- Champ : '%(k1)s' 
+ Champ : '%(k1)s'
  Commentaire sur ce champ : %(k2)s
  Grandeur : %(k3)s   Composante non reconnue : %(k4)s
 
@@ -294,10 +294,10 @@ Conseil :
  Type de l'élément affecté sur la première maille imprimée : %(k5)s
 """),
 
-41 : _(u"""  Maille : %(k1)s. Cette maille appartient aux GROUP_MA : %(k2)s %(k3)s %(k4)s %(k5)s
+    41 : _(u"""  Maille : %(k1)s. Cette maille appartient aux GROUP_MA : %(k2)s %(k3)s %(k4)s %(k5)s
 """),
 
-42 : _(u"""
+    42 : _(u"""
  Erreur Programmeur:
  Incohérence fortran/catalogue
  TYPE_ELEMENT :  %(k1)s
@@ -307,20 +307,20 @@ Conseil :
 
 """),
 
-47 : _(u"""
+    47 : _(u"""
   le CHAM_ELEM:  %(k1)s  n'existe pas.
 """),
 
-48 : _(u"""
+    48 : _(u"""
  le CHAM_ELEM: %(k1)s  n'a pas le même nombre de composantes dynamiques sur tous ses éléments.
 """),
 
-49 : _(u"""
+    49 : _(u"""
  le CHAM_ELEM : %(k1)s a des sous-points.
 """),
 
 
-50 : _(u"""
+    50 : _(u"""
  Vous cherchez à projeter un champ inhabituel sur le modèle final.
  Vérifiez que les modélisations que vous utilisez sont compatibles.
 
@@ -329,22 +329,22 @@ Conseil :
  Champ : %(k4)s
 """),
 
-52 : _(u"""
+    52 : _(u"""
  La composante: %(k1)s  n'appartient pas à la grandeur: %(k2)s
  Champ : %(k4)s
 """),
 
-53 : _(u"""
+    53 : _(u"""
  Option : %(k1)s  inexistante dans les catalogues.
  Champ : %(k4)s
 """),
 
-54 : _(u"""
+    54 : _(u"""
  Le paramètre:  %(k1)s  de l'option:  %(k2)s  n'est pas connu des TYPE_ELEM du LIGREL:  %(k3)s
  Champ : %(k4)s
 """),
 
-55 : _(u"""
+    55 : _(u"""
  Erreur utilisateur :
    On cherche à créer un CHAM_ELEM mais sur certains points, on ne trouve pas la composante : %(k1)s
    Champ : %(k4)s
@@ -352,12 +352,12 @@ Conseil :
    Si la commande que vous exécutez comporte le mot clé PROL_ZERO='OUI', vous devriez peut-être l'utiliser.
 """),
 
-56 : _(u"""
+    56 : _(u"""
  Le LIGREL contient des mailles tardives
  Champ : %(k4)s
 """),
 
-57 : _(u"""
+    57 : _(u"""
  Erreur Utilisateur :
    On cherche à transformer un champ simple en CHAM_ELEM.
    Le nombre de "points" (points de Gauss ou noeuds) du champ simple (%(i2)d) est
@@ -368,7 +368,7 @@ Conseil :
 
 """),
 
-58 : _(u"""
+    58 : _(u"""
 Erreur lors de la fabrication d'un champ par éléments :
  Il manque la composante : %(k1)s  sur la maille : %(k2)s
  Champ : %(k4)s
@@ -378,33 +378,33 @@ Risques et conseils :
  il est possible de poursuivre le calcul en choisissant PROL_ZERO='OUI'
 """),
 
-67 : _(u"""
+    67 : _(u"""
  grandeur:  %(k1)s  inconnue au catalogue.
 """),
 
-68 : _(u"""
+    68 : _(u"""
  numéro de maille invalide     :  %(k1)s  (<1 ou > nombre de mailles)
 """),
 
-69 : _(u"""
+    69 : _(u"""
  numéro de point invalide      :  %(k1)s  (<1 ou > nombre de points)
  pour la maille                :  %(k2)s
 """),
 
-70 : _(u"""
+    70 : _(u"""
  numéro de sous-point invalide :  %(k1)s  (<1 ou > nombre de sous-points)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
 """),
 
-71 : _(u"""
+    71 : _(u"""
  numéro de composante invalide :  %(k1)s  (<1 ou > nombre de composantes)
  pour la maille                :  %(k2)s
  pour le point                 :  %(k3)s
  pour le sous-point            :  %(k4)s
 """),
 
-72 : _(u"""
+    72 : _(u"""
  Erreur commande CALC_FERRAILLAGE :
    On n'a pas réussi à calculer la carte de ferraillage sur un élément.
    Code_retour de la routine clcplq.f : %(i1)d
@@ -415,7 +415,7 @@ Risques et conseils :
    1050 : ELS : Dépassement contrainte béton;
 """),
 
-73 : _(u"""
+    73 : _(u"""
  Erreur utilisateur commande CALC_FERRAILLAGE :
    Certains mots clés de CALC_FERRAILLAGE / AFFE sont obligatoires :
      pour TYPE_COMB='ELU' :
@@ -424,39 +424,39 @@ Risques et conseils :
      pour TYPE_COMB='ELS' :
         CEQUI
 """),
-74 : _(u"""
+    74 : _(u"""
  Erreur utilisateur commande CALC_FERRAILLAGE :
    La valeur du module d'Young ES est de <%(r1)E>. Elle n'est pas correcte.
 """),
-75 : _(u"""
+    75 : _(u"""
  Votre modèle ne contient que des éléments 1D. Le lissage global n'est
  possible que pour les éléments 2D ou 3D.
 """),
 
-76 : _(u"""
+    76 : _(u"""
  Votre modèle contient un mélange d'éléments 1D,2D ou 3D.
  Le lissage global n'est possible que pour les éléments 2D soit 3D.
 """),
 
-90 : _(u"""
+    90 : _(u"""
  Le champ %(k2)s ne peut pas être créé à partir de %(k1)s car il est décrit sur des
  mailles n'existant pas dans %(k1)s et il est de type VARI_ELGA.
 """),
 
-91 : _(u"""
+    91 : _(u"""
  incohérence des familles de points de Gauss pour la maille  %(k1)s
  ( %(k2)s / %(k3)s )
 """),
 
-92 : _(u"""
+    92 : _(u"""
  type scalaire du CHAM_NO :  %(k1)s  non réel.
 """),
 
-93 : _(u"""
+    93 : _(u"""
  type scalaire du NUME_DDL :  %(k1)s  non réel.
 """),
 
-99 : _(u"""
+    99 : _(u"""
  mélange de CHAM_ELEM_S et CHAM_NO_S
 """),
 
