@@ -24,8 +24,10 @@ subroutine op9999()
 !     FIN OP9999
 !-----------------------------------------------------------------------
 #include "jeveux.h"
+#include "asterf_constant.h"
 #include "asterc/gettyp.h"
 #include "asterc/jdcset.h"
+#include "asterfort/assert.h"
 #include "asterfort/fin999.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
@@ -41,15 +43,17 @@ subroutine op9999()
 #include "asterfort/jxcopy.h"
 #include "asterfort/jxveri.h"
 #include "asterfort/rsinfo.h"
+#include "asterfort/ststat.h"
 #include "asterfort/uimpba.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: info, nbenre, nboct
+    integer :: info, nbenre, nboct, iret
     integer :: ifm, iunerr, iunres, iunmes
     integer :: i, jco, nbco
     integer :: nbext, nfhdf
+    aster_logical :: bool
     character(len=8) :: k8b, ouinon, infr
     character(len=16) :: fchier, fhdf, typres
     character(len=80) :: fich
@@ -57,7 +61,13 @@ subroutine op9999()
 !
     call jemarq()
     info = 1
-!
+
+    call getvis(' ', 'STATUT', scal=iret)
+    bool = iret == ST_ER .or. iret == ST_OK .or. iret == ST_ER_PR0 .or. &
+           iret == ST_ER_OTH .or. iret == ST_UN_OTH .or. iret == ST_EXCEPT
+    ASSERT(bool)
+    call ststat(iret)
+
 ! --- MENAGE DANS LES BIBLIOTHEQUES, ALARMES, ERREURS, MPI
 !
     call fin999()

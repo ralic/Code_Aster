@@ -16,7 +16,9 @@
 # ======================================================================
 # person_in_charge: j-pierre.lefebvre at edf.fr
 
+
 class FIN_ETAPE(PROC_ETAPE):
+
     """Particularisation pour FIN"""
 
     def Build_sd(self):
@@ -31,26 +33,35 @@ class FIN_ETAPE(PROC_ETAPE):
                 pass
         return None
 
+
 class FIN_PROC(PROC):
+
     """Procédure FIN"""
     class_instance = FIN_ETAPE
 
-FIN=FIN_PROC(nom="FIN",
-             op=9999,
-             repetable='n',
-             fr=tr("Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE"),
-             UIinfo={"groupes":("Gestion du travail",)},
-#
-# FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
-# NonConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
-# En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
-# Pour cela, on force certains mots-clés dans Execution/E_JDC.py.
-#
-         FORMAT_HDF      =SIMP(fr=tr("sauvegarde de la base GLOBALE au format HDF"),statut='f',
-                               typ='TXM',defaut="NON",into=("OUI","NON",) ),
-         RETASSAGE       =SIMP(fr=tr("provoque le retassage de la base GLOBALE"),
-                               statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-         INFO_RESU       =SIMP(fr=tr("provoque l'impression des informations sur les structures de données"),
-                               statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",) ),
-         UNITE           =SIMP(statut='f',typ='I',defaut=6),
+FIN = FIN_PROC(nom="FIN",
+               op=9999,
+               repetable='n',
+               fr=tr("Fin d'une étude, fin du travail engagé par une des commandes DEBUT ou POURSUITE"),
+               UIinfo={"groupes": ("Gestion du travail",)},
+
+        # FIN est appelé prématurément en cas d'exception ("SIGUSR1", ArretCPUError,
+        # NonConvergenceError..., erreurs <S> ou erreurs <F> récupérées).
+        # En cas d'ArretCPUError, on limite au maximum le travail à faire dans FIN.
+        # Pour cela, on force certains mots-clés dans Execution/E_JDC.py.
+        FORMAT_HDF=SIMP(
+            fr=tr("sauvegarde de la base GLOBALE au format HDF"),
+            statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
+        RETASSAGE=SIMP(
+            fr=tr("provoque le retassage de la base GLOBALE"),
+            statut='f', typ='TXM', defaut="NON", into=("OUI", "NON",)),
+        INFO_RESU=SIMP(
+            fr=tr("provoque l'impression des informations sur les structures de données"),
+            statut='f', typ='TXM', defaut="OUI", into=("OUI", "NON",)),
+        UNITE=SIMP(
+            statut='f', typ='I', defaut=6),
+        # hidden keyword used to ensure that the fortran knows that an error occurred
+        # because when an exception is raised, the global status is reset by utmess.
+        STATUT=SIMP(
+            statut='c', typ='I', defaut=0),
 )

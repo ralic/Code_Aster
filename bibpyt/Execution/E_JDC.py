@@ -366,12 +366,13 @@ class JDC:
             self.set_par_lot("NON")
             fin_cmd = self.get_cmd("FIN")
             try:
-                fin_cmd()
+                fin_cmd(STATUT=1)
             except:
                 pass
         else:
             # insertion de l'étape FIN du jdc juste après l'étape courante
             self.etapes.insert(self.index_etape_courante + 1, fin_etape)
+            fin_etape.valeur.update({'STATUT': 1})
             # si ArretCPUError, on supprime tout ce qui peut coûter
             if isinstance(exc_val, self.codex.ArretCPUError):
                 # faire évoluer avec fin.capy
@@ -450,8 +451,6 @@ class JDC:
                 self._sign = sha1(fobj.read(bufsize)).hexdigest()
         except (IOError, OSError):
             traceback.print_exc()
-        # print "#DBG signature of", base, "at", self.jeveux_sysaddr, ':',
-        # self._sign
         return self._sign
 
     def set_syntax_check(self, value):
