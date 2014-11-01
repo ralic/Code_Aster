@@ -1,7 +1,21 @@
-subroutine mpistp(imode)
-! person_in_charge: mathieu.courtois at edf.fr
+!> Brief A processor ask the others to stop.
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+!> If imode = 1, one of the procs did not answer in the delay,
+!> the execution must be interrupted by MPI_Abort.
+!>
+!> If imode = 2, all the processors synchronize themself and end with the
+!> same utmess('s').
+!> Should not be called in sequential.
+!XXX I wrote that but why does it not work ? (MC)
+!>
+!> The caller should execute nothing after the call to asmpi_stop().
+!
+!> @param[in]   imode   interruption mode
+!
+subroutine asmpi_stop(imode)
+! person_in_charge: mathieu.courtois at edf.fr
+
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +30,8 @@ subroutine mpistp(imode)
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-!
+
     implicit none
-!     ARGUMENT IN
 #include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
@@ -28,22 +41,9 @@ subroutine mpistp(imode)
 #include "asterfort/jefini.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/ststat.h"
-    integer :: imode
-!-----------------------------------------------------------------------
-!     FONCTION REALISEE : MPI COMM STOP
-!     UN PROC DEMANDE AUX AUTRES PROCESSEURS D'INTERROMPRE.
-!
-!     - IMODE = 1, UN DES PROCESSEURS N'A PAS REPONDU DANS LE DELAI,
-!       L'EXECUTION EST INTERROMPUE PAR MPI_ABORT
-!
-!     - IMODE = 2, TOUS LES PROCS SE SYNCHRONISENT ET TERMINENT AVEC
-!       LE MEME UTMESS('S').
-!       NE DEVRAIT PAS ETRE APPELE EN SEQUENTIEL.
-!
-!     L'APPELANT NE DEVRAIT RIEN EXECUTER APRES L'APPEL A MPISTP.
-!-----------------------------------------------------------------------
-!
 #include "asterf_constant.h"
+    integer :: imode
+
     integer :: lout, imod2
     character(len=16) :: compex
     aster_logical :: labort
@@ -51,23 +51,24 @@ subroutine mpistp(imode)
     call ststat(ST_ER_OTH)
     labort = .not. gtstat(ST_EXCEPT)
 !
-!     S'IL FAUT FAIRE UN ABORT, ON FORCE IMODE=1
+!   If an abort is required, force imode to 1
     imod2 = imode
-    if (labort) then
+    if (labort .and. imod2 == 2) then
         call onerrf(' ', compex, lout)
-        if (compex(1:lout) .eq. 'ABORT') then
+        if (compex(1:lout) == 'ABORT') then
             imod2 = 1
+            DEBUG_MPI('mpi_stop ', 'mode forced to', imod2)
         endif
     endif
     DEBUG_MPI('mpi_stop', imod2, ' (1:abort, 2:except)')
 !
-    if (imod2 .eq. 1) then
+    if (imod2 == 1) then
 #ifdef _USE_MPI
         call utmess('D', 'APPELMPI_99')
 #endif
         call jefini('ERREUR')
 !
-    else if (imod2 .eq. 2) then
+    else if (imod2 == 2) then
         if (labort) then
             call utmess('M', 'APPELMPI_95')
         endif

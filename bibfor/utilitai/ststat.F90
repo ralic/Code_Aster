@@ -18,6 +18,7 @@ subroutine ststat(istat)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
     implicit none
+#include "asterf_debug.h"
 #include "asterf_constant.h"
 !     ARGUMENT IN
     integer :: istat
@@ -34,4 +35,5 @@ subroutine ststat(istat)
     else
         iglbst = ior(istat, iglbst)
     endif
+    DEBUG_MPI('set status: istat/iglbst', istat, iglbst)
 end subroutine

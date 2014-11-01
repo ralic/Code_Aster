@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,7 @@
 !
 interface
     subroutine asmpi_status(istat, resp0)
-        integer :: istat
-        integer :: resp0
+        integer, intent(in) :: istat
+        integer, intent(out) :: resp0
     end subroutine asmpi_status
 end interface

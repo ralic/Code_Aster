@@ -73,7 +73,7 @@ subroutine asmpi_checkalarm()
     else
 !       DEMANDE LA LISTE DES ALARMES A CHAQUE PROCESSEUR
         vu = .false.
-        do 10 i = 1, np1
+        do i = 1, np1
             call asmpi_recv_i4(ival, nbv, i, ST_TAG_ALR, mpicou)
             if (ival(1) .ne. 0) then
                 vu = .true.
@@ -85,7 +85,7 @@ subroutine asmpi_checkalarm()
                     call utmess('A+', 'APPELMPI_2', ni=2, vali=vali)
                 endif
             endif
- 10     continue
+        end do
         if (vu) then
             call utmess('A', 'VIDE_1')
         endif
