@@ -148,7 +148,7 @@ def update_gettext(self):
 
 class xgettext(CaptureTask):
     """Build the .pot file from a list of source files"""
-    run_str = '${XGETTEXT} -o ${TGT[0].abspath()} --package-name=Code_Aster --package-version=default ${I18NFILES}'
+    run_str = '${XGETTEXT} -o ${TGT[0].abspath()} --from-code=utf-8 --package-name=Code_Aster --package-version=default ${I18NFILES}'
     color   = 'BLUE'
 
 class merge_po(CaptureTask):
