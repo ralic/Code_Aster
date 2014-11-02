@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pt-PT" sourcelanguage="fr">
+<TS version="2.0" language="nl" sourcelanguage="fr">
   <context>
     <name>@default</name>
     <message>
@@ -21,7 +21,7 @@
     <message>
       <location filename="../cata.py" line="3641"/>
       <source>Nombre de variables internes</source>
-      <translation type="unfinished">Nombre de variables internes</translation>
+      <translation type="unfinished">Aantal interne variabelen</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3641"/>
@@ -996,7 +996,7 @@
     <message>
       <location filename="../cata.py" line="9847"/>
       <source>Matrice de masse</source>
-      <translation type="unfinished">Matrice de masse</translation>
+      <translation type="unfinished">Massamatrix</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="9847"/>
@@ -1131,7 +1131,7 @@
     <message>
       <location filename="../cata.py" line="28514"/>
       <source>Air seul</source>
-      <translation type="unfinished">Air seul</translation>
+      <translation type="unfinished">Enkel lucht</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28514"/>
@@ -1171,7 +1171,7 @@
     <message>
       <location filename="../cata.py" line="28514"/>
       <source>Transfert de chaleur [ichal]</source>
-      <translation type="unfinished">Transfert de chaleur [ichal]</translation>
+      <translation type="unfinished">Warmte-overdracht [ichal]</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28514"/>
@@ -1791,7 +1791,7 @@
     <message>
       <location filename="../cata.py" line="12560"/>
       <source>Type d'analyse</source>
-      <translation type="unfinished">Type d'analyse</translation>
+      <translation type="unfinished">Analysetype</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12560"/>
@@ -2086,12 +2086,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13451"/>
       <source>Modèle mécanique</source>
-      <translation type="unfinished">Modèle mécanique</translation>
+      <translation type="unfinished">Mechanisch model</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13451"/>
       <source>Modèle hydraulique</source>
-      <translation type="unfinished">Modèle hydraulique</translation>
+      <translation type="unfinished">Hydraulisch model</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13522"/>
@@ -3056,7 +3056,7 @@
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Valeur du seuil</source>
-      <translation type="unfinished">Valeur du seuil</translation>
+      <translation type="unfinished">Drempelwaarde</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
@@ -4236,12 +4236,12 @@
     <message>
       <location filename="../cata.py" line="22276"/>
       <source>Coefficient d'amortissement</source>
-      <translation type="unfinished">Coefficient d'amortissement</translation>
+      <translation type="unfinished">Dempingscoëfficiënt</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22276"/>
       <source>Numéro du matériau</source>
-      <translation type="unfinished">Numéro du matériau</translation>
+      <translation type="unfinished">Materiaalnummer</translation>
     </message>
     <message>
       <location filename="../cata.py" line="22320"/>
@@ -5531,7 +5531,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Diamètre minimal des mailles</source>
-      <translation type="unfinished">Diamètre minimal des mailles</translation>
+      <translation type="unfinished">Minimumdiameter van de mazen</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
@@ -5821,7 +5821,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Fichier supplémentaire.</source>
-      <translation type="unfinished">Fichier supplémentaire.</translation>
+      <translation type="unfinished">Bijkomend bestand.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
@@ -5871,7 +5871,7 @@
     <message>
       <location filename="../cata.py" line="28167"/>
       <source>Format du fichier</source>
-      <translation type="unfinished">Format du fichier</translation>
+      <translation type="unfinished">Bestandsindeling</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28167"/>
@@ -6046,7 +6046,7 @@
     <message>
       <location filename="../cata.py" line="28327"/>
       <source>Epaisseur de la paroi (m) [epp]</source>
-      <translation type="unfinished">Epaisseur de la paroi (m) [epp]</translation>
+      <translation type="unfinished">Wanddikte (m) [epp]</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28327"/>
@@ -6166,7 +6166,7 @@
     <message>
       <location filename="../cata.py" line="28921"/>
       <source>Fichier supplementaire.</source>
-      <translation type="unfinished">Fichier supplementaire.</translation>
+      <translation type="unfinished">Bijkomend bestand.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28921"/>
@@ -7231,7 +7231,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32667"/>
       <source>temperature référence</source>
-      <translation type="unfinished">temperature référence</translation>
+      <translation type="unfinished">referentietemperatuur</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32947"/>
@@ -7676,7 +7676,7 @@
     <message>
       <location filename="../cata.py" line="35792"/>
       <source>temperature finale</source>
-      <translation type="unfinished">temperature finale</translation>
+      <translation type="unfinished">eindtemperatuur</translation>
     </message>
     <message>
       <location filename="../cata.py" line="35792"/>

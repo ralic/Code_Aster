@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-02 14:50+0200\n"
-"PO-Revision-Date: 2014-11-01 15:40-0400\n"
+"PO-Revision-Date: 2014-11-02 05:10-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
-"Language-Team: Portuguese\n"
-"Language: pt_PT\n"
+"Language-Team: Dutch\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,41 +17,41 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Build/B_MACRO_ETAPE.py:120
 #, python-format
 msgid "Erreur dans la macro %s\nligne : %s fichier : "
-msgstr "Erro na macro %s\nlinha: %s ficheiro: "
+msgstr "Erreur dans la macro %s\nligne : %s fichier : "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Build/B_MACRO_ETAPE.py:125
 #: /home/mc/dev/integration-default/src/bibpyt/Build/B_MACRO_ETAPE.py:131
 #, python-format
 msgid "Erreur dans la macro %s\n%s"
-msgstr "Erro na macro %s\n%s"
+msgstr "Fout in macro %s\n%s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:25
 msgid "phase métallurgique acier variable interne 1"
-msgstr "Variável interna para a metalúrgica de aço fase 1"
+msgstr "phase métallurgique acier variable interne 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:26
 msgid "phase métallurgique acier variable interne 2"
-msgstr "Variável interna para a metalúrgica de aço fase 2"
+msgstr "phase métallurgique acier variable interne 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:27
 msgid "phase métallurgique acier variable interne 3"
-msgstr "Variável interna para a metalúrgica de aço fase 3"
+msgstr "phase métallurgique acier variable interne 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:28
 msgid "phase métallurgique acier variable interne 4"
-msgstr "Variável interna para a metalúrgica de aço fase 4"
+msgstr "phase métallurgique acier variable interne 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:29
 msgid "phase métallurgique acier variable interne 5"
-msgstr "Variável interna para a metalúrgica de aço fase 5"
+msgstr "phase métallurgique acier variable interne 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:30
 msgid "affaiblissement relatif de raideur en membrane en compression"
-msgstr "atenuação relativa da rigidez da membrana em compressão"
+msgstr "affaiblissement relatif de raideur en membrane en compression"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:31
 msgid "affaiblissement relatif de raideur en flexion"
-msgstr "atenuação relativa da rigidez em flexão"
+msgstr "affaiblissement relatif de raideur en flexion"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:32
 msgid "affaiblissement relatif de raideur en membrane en traction"
@@ -143,7 +143,7 @@ msgstr "angle du seuil déviatoire (CJS)"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:54
 msgid "BETON_RAG : avancement de la réaction"
-msgstr "BETON_RAG: progresso da reação"
+msgstr "BETON_RAG : avancement de la réaction"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:55
 msgid "assemblage cornière, variable interne 1"
@@ -175,7 +175,7 @@ msgstr "assemblage cornière, variable interne 7"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:62
 msgid "BETON_RAG : Endommagement macroscopique en compression"
-msgstr "BETON_RAG: Dano macroscópico em compressão"
+msgstr "BETON_RAG : Endommagement macroscopique en compression"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:63
 msgid "BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  composante 1"
@@ -215,15 +215,15 @@ msgstr "coeff de consolidation fin de pas"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:72
 msgid "cohésion"
-msgstr "coesão"
+msgstr "cohésion"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:73
 msgid "itération de Newton courante,"
-msgstr "iteração atual de Newton,"
+msgstr "itération de Newton courante,"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:74
 msgid "itération de Newton de rupture,"
-msgstr "iteração de Newton da falha,"
+msgstr "itération de Newton de rupture,"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:75
 msgid "Critère en contrainte, utilisé en Génie Civil"
@@ -305,87 +305,87 @@ msgstr "endommagement principaux induit par la def plast de gel"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:96
 msgid "Incrément de temps"
-msgstr "Incremento de tempo"
+msgstr "Incrément de temps"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:97
 msgid "éléments discrets, variable interne 1"
-msgstr "elementos discretos, variável interna 1"
+msgstr "éléments discrets, variable interne 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:98
 msgid "éléments discrets, variable interne 10"
-msgstr "elementos discretos, variável interna 10"
+msgstr "éléments discrets, variable interne 10"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:99
 msgid "éléments discrets, variable interne 11"
-msgstr "elementos discretos, variável interna 11"
+msgstr "éléments discrets, variable interne 11"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:100
 msgid "éléments discrets, variable interne 12"
-msgstr "elementos discretos, variável interna 12"
+msgstr "éléments discrets, variable interne 12"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:101
 msgid "éléments discrets, variable interne 13"
-msgstr "elementos discretos, variável interna 13"
+msgstr "éléments discrets, variable interne 13"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:102
 msgid "éléments discrets, variable interne 14"
-msgstr "elementos discretos, variável interna 14"
+msgstr "éléments discrets, variable interne 14"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:103
 msgid "éléments discrets, variable interne 15"
-msgstr "elementos discretos, variável interna 15"
+msgstr "éléments discrets, variable interne 15"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:104
 msgid "éléments discrets, variable interne 16"
-msgstr "elementos discretos, variável interna 16"
+msgstr "éléments discrets, variable interne 16"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:105
 msgid "éléments discrets, variable interne 17"
-msgstr "elementos discretos, variável interna 17"
+msgstr "éléments discrets, variable interne 17"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:106
 msgid "éléments discrets, variable interne 18"
-msgstr "elementos discretos, variável interna 18"
+msgstr "éléments discrets, variable interne 18"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:107
 msgid "éléments discrets, variable interne 2"
-msgstr "elementos discretos, variável interna 2"
+msgstr "éléments discrets, variable interne 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:108
 msgid "éléments discrets, variable interne 3"
-msgstr "elementos discretos, variável interna 3"
+msgstr "éléments discrets, variable interne 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:109
 msgid "éléments discrets, variable interne 4"
-msgstr "elementos discretos, variável interna 4"
+msgstr "éléments discrets, variable interne 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:110
 msgid "éléments discrets, variable interne 5"
-msgstr "elementos discretos, variável interna 5"
+msgstr "éléments discrets, variable interne 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:111
 msgid "éléments discrets, variable interne 6"
-msgstr "elementos discretos, variável interna 6"
+msgstr "éléments discrets, variable interne 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:112
 msgid "éléments discrets, variable interne 7"
-msgstr "elementos discretos, variável interna 7"
+msgstr "éléments discrets, variable interne 7"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:113
 msgid "éléments discrets, variable interne 8"
-msgstr "elementos discretos, variável interna 8"
+msgstr "éléments discrets, variable interne 8"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:114
 msgid "éléments discrets, variable interne 9"
-msgstr "elementos discretos, variável interna 9"
+msgstr "éléments discrets, variable interne 9"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:115
 msgid "dissipation d'endommagement"
-msgstr "dissipação da falha"
+msgstr "dissipation d'endommagement"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:116
 msgid "dissipation plastique"
-msgstr "dissipação do plástico"
+msgstr "dissipation plastique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:117
 msgid "dissipation de glissement"
@@ -393,7 +393,7 @@ msgstr "dissipation de glissement"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:118
 msgid "dissipation Thermodynamique"
-msgstr "dissipação termodinâmica"
+msgstr "dissipation Thermodynamique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:119
 msgid "CJS distance normalisée au seuil déviatoire"
@@ -425,7 +425,7 @@ msgstr "endommagement thermique isotrope"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:126
 msgid "endommagement thermique"
-msgstr "endommagement thermique"
+msgstr "thermische schade"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:127
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:128
@@ -511,7 +511,7 @@ msgstr "variables internes pour le fluage spherique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:159
 msgid "énergie bloquée"
-msgstr "energia bloqueada"
+msgstr "énergie bloquée"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:160
 msgid "énergie dissipée pour CRIT_RUPT"
@@ -705,11 +705,11 @@ msgstr "endommagement normal"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:209
 msgid "rigidité résiduelle"
-msgstr "rigidez residual"
+msgstr "rigidité résiduelle"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:210
 msgid "endommagement tangentiel"
-msgstr "danos tangenciais"
+msgstr "endommagement tangentiel"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:211
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 1"
@@ -761,7 +761,7 @@ msgstr "tenseur endommagement, direction ZZ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:223
 msgid "énegie résiduelle"
-msgstr "energia residual"
+msgstr "énegie résiduelle"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:224
 msgid "épaisseur du joint clavé"
@@ -991,7 +991,7 @@ msgstr "Hujeux : facteur de mobilisation du mécanisme de consolidation monotone
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:291
 msgid "Force"
-msgstr "Force"
+msgstr "Kracht"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:292
 msgid "flux hydraulique dans le repère global ( xxx_JOINT_HYME) composante 1"
@@ -1267,7 +1267,7 @@ msgstr "indicateur de viscoplasticité"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:360
 msgid "irradiation"
-msgstr "irradiação"
+msgstr "irradiation"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:361
 msgid "indicateur de passage du pic de la loi de traction"
@@ -1443,7 +1443,7 @@ msgstr "perméabilité longitudinale de la fissure"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:404
 msgid "pression de gel"
-msgstr "pression de gel"
+msgstr "geldruk"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:405
 msgid "Hayhurst : variable PHI"
@@ -1459,7 +1459,7 @@ msgstr "Dissipation par fluage deviatoire"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:408
 msgid "porosité"
-msgstr "porosidade"
+msgstr "porosité"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:409
 msgid "VISC_DRUC_PRAG : position du point de charge par rapport au seuil"
@@ -1475,7 +1475,7 @@ msgstr "LIQU_AD_GAZ v5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:412
 msgid "pression de fluide"
-msgstr "pressão do fluido"
+msgstr "vloeistofdruk"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:413
 msgid "proportion matrice tangente/sécante"
@@ -1519,15 +1519,15 @@ msgstr "LIQU_AD_GAZ v3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:423
 msgid "saut normal"
-msgstr "salto normal"
+msgstr "saut normal"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:424
 msgid "saut tangentiel 1"
-msgstr "salto tangencial 1"
+msgstr "saut tangentiel 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:425
 msgid "saut tangentiel 2"
-msgstr "salto tangencial 2"
+msgstr "saut tangentiel 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:426
 msgid "CJS rapport entre le seuil déviatoire et le seuil déviatorique critique"
@@ -1590,7 +1590,7 @@ msgstr "Contraintes effectives issues du modele de fluage"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:452
 msgid "seuil"
-msgstr "seuil"
+msgstr "drempelwaarde"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:453
 msgid "CZM  seuil correspondant au plus grand saut de déplacement (en norme)"
@@ -1792,11 +1792,11 @@ msgstr "taux de chargement local de Weibull"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:525
 msgid "température"
-msgstr "temperatura"
+msgstr "temperatuur"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:526
 msgid "température maximum"
-msgstr "temperatura máxima"
+msgstr "maximumtemperatuur"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:527
 msgid "temps de chargement cumule"
@@ -2251,7 +2251,7 @@ msgstr "Vitesse de fluage de Kelvin au droit des fissure localisee utile pour le
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:668
 msgid "volume d eau"
-msgstr "volume d eau"
+msgstr "watervolume"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:669
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:670
@@ -2470,7 +2470,7 @@ msgstr ">> JDC.py : FIN RAPPORT"
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_JDC.py:404
 #, python-format
 msgid "Erreur de programmation :\nattribut '%s' non autorisé"
-msgstr "Erro de programação: \natributo '%s' não autorizado"
+msgstr "Erreur de programmation :\nattribut '%s' non autorisé"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_JDC.py:407
 #, python-format
@@ -2486,7 +2486,7 @@ msgstr "Erreurs à l'exécution de la macro %s"
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_MACRO_ETAPE.py:180
 #, python-format
 msgid "Erreurs dans la construction de la macro %s"
-msgstr "Erros na construção da macro %s"
+msgstr "Erreurs dans la construction de la macro %s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:98
 #, python-format
@@ -2496,7 +2496,7 @@ msgstr ">> JDC.py : DEBUT RAPPORT\n%s\n>> JDC.py : FIN RAPPORT"
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:117
 #, python-format
 msgid "> %d commandes..."
-msgstr "> %d comandos ..."
+msgstr "> %d commandes..."
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:144
 msgid "ERREUR A LA VERIFICATION DU CATALOGUE - INTERRUPTION"
@@ -2542,23 +2542,23 @@ msgstr "ERREUR A L'EXECUTION - INTERRUPTION"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:357
 msgid "--- Fin de l'exécution"
-msgstr "--- Fim da execução"
+msgstr "--- Fin de l'exécution"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:268
 msgid "Nombre de commandes"
-msgstr "Muitos comandos"
+msgstr "Nombre de commandes"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:269
 msgid "Nombre de résultats"
-msgstr "Muitos resultados"
+msgstr "Nombre de résultats"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:270
 msgid "Nombre de dépendances"
-msgstr "Muitas dependências"
+msgstr "Nombre de dépendances"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:271
 msgid "Nombre de résultats non utilisés"
-msgstr "Muitos resultados não utilizados"
+msgstr "Nombre de résultats non utilisés"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:272
 msgid "Nombre de noeuds"
@@ -2566,19 +2566,19 @@ msgstr "Nombre de noeuds"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:273
 msgid "Concepts jamais utilisés"
-msgstr "Conceitos nunca utilizados"
+msgstr "Concepts jamais utilisés"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:274
 msgid "Commandes utilisées"
-msgstr "Comandos utilizados"
+msgstr "Commandes utilisées"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:275
 msgid "Résultats"
-msgstr "Resultados"
+msgstr "Resultaten"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:276
 msgid "Dépendances"
-msgstr "Dependências"
+msgstr "Dépendances"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:281
 msgid "  <I> Dépendance des concepts - statistiques"
@@ -4819,7 +4819,7 @@ msgstr " On saute la valeur propre numéro %(i1)d .\n"
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:62
 #, python-format
 msgid " ALPHA = %(r1)12.5E\n BETA = %(r2)12.5E\n"
-msgstr " ALPHA = %(r1)12.5E\n BETA = %(r2)12.5E\n"
+msgstr " ALFA = %(r1)12.5E\n BETA = %(r2)12.5E\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:66
 #, python-format
@@ -4833,7 +4833,7 @@ msgstr " Elle correspond soit à un Lagrange soit à un DDL physique bloqué.\n"
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:72
 #, python-format
 msgid " Fréquence     = %(r1)12.5E\n Amortissement = %(r2)12.5E\n"
-msgstr " Fréquence     = %(r1)12.5E\n Amortissement = %(r2)12.5E\n"
+msgstr " Frequentie     = %(r1)12.5E\n Demping = %(r2)12.5E\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:76
 #, python-format
@@ -6923,7 +6923,7 @@ msgstr "\n la maille doit être de type TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:115
 #, python-format
 msgid "\n  %(k1)s  groupe inexistant\n"
-msgstr "\n  %(k1)s  groupe inexistant\n"
+msgstr "\n  %(k1)s onbekende groep\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:119
 #, python-format
@@ -7298,7 +7298,7 @@ msgstr "\n la méthode de localisation  %(k1)s  est indisponible actuellement\n"
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith4.py:94
 #, python-format
 msgid "\n  %(k1)s  impossible actuellement\n"
-msgstr "\n  %(k1)s  impossible actuellement\n"
+msgstr "\n %(k1)s  momenteel niet mogelijk\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith4.py:99
 msgid "\n  jacobien du système non linéaire à résoudre nul\n  lors de la projection au sommet du cône de traction\n  les paramètres matériaux sont sans doute mal définis\n"
@@ -7826,7 +7826,7 @@ msgstr "\n pas de convergence de l'algorithme de NEWTON :\n - en  %(k1)s  itéra
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith6.py:182
 msgid "\n THETA = 1 ou 0.5\n"
-msgstr "\n THETA = 1 ou 0.5\n"
+msgstr "\n THETA = 1 of 0,5\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith6.py:186
 msgid "\n fluence commandée et FLUX_PHI différent de 1\n"
@@ -7878,7 +7878,7 @@ msgstr "\n loi VISC_CINX_CHAB\n on doit obligatoirement avoir UN_SUR_M = zéro\n
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith6.py:241
 msgid "\n F reste toujours positive.\n"
-msgstr "\n F reste toujours positive.\n"
+msgstr "\n F blijft altijd positief.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith6.py:245
 msgid "\n Problème interprétation vari entière ??\n"
@@ -8026,7 +8026,7 @@ msgstr "\n F reste toujours négative\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:34
 msgid "\n F  reste toujours positive\n"
-msgstr "\n F  reste toujours positive\n"
+msgstr "\n F blijft altijd positief\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:38
 msgid "\n signe de SIGMA indéterminé\n"
@@ -8150,7 +8150,7 @@ msgstr "\n la méthode de Newmark est programmée sous sa forme implicite:\n le 
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith9.py:32
 msgid "\n valeur de THETA illicite\n"
-msgstr "\n valeur de THETA illicite\n"
+msgstr "\n ongeldige waarde voor THETA\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith9.py:36
 #, python-format
@@ -8960,7 +8960,7 @@ msgstr "\n noeud inexistant\n"
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:154
 #, python-format
 msgid "\n méthode :  %(k1)s  inconnue.\n"
-msgstr "\n méthode :  %(k1)s  inconnue.\n"
+msgstr "\n methode :  %(k1)s  onbekend.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:158
 msgid "\n noeud incorrect\n"
@@ -10659,7 +10659,7 @@ msgstr "\n  Problème d'extraction : Résultat généralisé %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:41
 msgid "\n  Le paramètre n'existe pas.\n"
-msgstr "\n  Le paramètre n'existe pas.\n"
+msgstr "\n  De parameter bestaat niet.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:45
 msgid "\n  0 ligne trouvée pour les NOM_PARA.\n"
@@ -10667,7 +10667,7 @@ msgstr "\n  0 ligne trouvée pour les NOM_PARA.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:49
 msgid "\n  Plusieurs lignes trouvées.\n"
-msgstr "\n  Plusieurs lignes trouvées.\n"
+msgstr "\n  Meerdere lijnen gevonden.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:53
 msgid "\n  Erreur de Programmation: code retour de 'TBLIVA' inconnu.\n"
@@ -12479,7 +12479,7 @@ msgstr " Dernière variable interne V%(i1)d : %(k1)s"
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:98
 #, python-format
 msgid " ... jusqu'à V%(i1)d "
-msgstr " ... jusqu'à V%(i1)d "
+msgstr " ... tot V%(i1)d "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:104
 msgid "\n  -> Le critère de convergence pour intégrer le comportement 'RESI_INTE_RELA'\n     est lâche (très supérieur à la valeur par défaut).\n  -> Risque & Conseil :\n     Cela peut nuire à la qualité de la solution et à la convergence.\n"
@@ -16032,7 +16032,7 @@ msgstr "\nErreur lors de l'évaluation de la formule.\nLa remontée d'erreur sui
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/generic.py:20
 #, python-format
 msgid "Erreur :\n%(k1)s\n"
-msgstr "Erreur :\n%(k1)s\n"
+msgstr "Fout :\n%(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/graph0.py:21
 #, python-format
@@ -16093,7 +16093,7 @@ msgstr "\nCette macro-commande est inconnue.\n"
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/homard0.py:25
 #, python-format
 msgid "\nErreur : %(k1)s\n"
-msgstr "\nErreur : %(k1)s\n"
+msgstr "\nFout : %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/homard0.py:29
 #, python-format
@@ -16810,7 +16810,7 @@ msgstr "\n\n Un objet de genre répertoire doit être de type K de longueur inf�
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux.py:430
 #, python-format
 msgid "\n\n Le type %(k1)s est invalide.\n\n"
-msgstr "\n\n Le type %(k1)s est invalide.\n\n"
+msgstr "\n\n Type %(k1)s is ongeldig.\n\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux.py:436
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux1.py:82
@@ -17410,7 +17410,7 @@ msgstr "\n <Évènement> La loi de comportement est utilisée en dehors de son d
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline10.py:94
 msgid "\n <Action> On arrête le calcul.\n "
-msgstr "\n <Action> On arrête le calcul.\n "
+msgstr "\n <Action> De berekening wordt gestopt.\n "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline10.py:98
 msgid "\n <Action> On essaie d'autoriser des itérations de Newton supplémentaires.\n"
@@ -18017,7 +18017,7 @@ msgstr "    * Temps frottement                            : %(k1)s"
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline8.py:72
 #, python-format
 msgid "    * Temps contact                               : %(k1)s"
-msgstr "    * Temps contact                               : %(k1)s"
+msgstr "    * Contacttijd                               : %(k1)s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline8.py:74
 #, python-format
@@ -21668,7 +21668,7 @@ msgstr "\nLes coupes mécanique et thermique doivent partager les mêmes absciss
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/oar0.py:25
 #, python-format
 msgid "\nErreur d'interpolation: %(k1)s\n"
-msgstr "\nErreur d'interpolation: %(k1)s\n"
+msgstr "\nInterpolatiefout: %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/oar0.py:29
 msgid "\nLes coupes du revêtement et de la structure doivent partager une abscisse commune.\n"

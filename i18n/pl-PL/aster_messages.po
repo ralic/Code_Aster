@@ -5,53 +5,53 @@ msgstr ""
 "POT-Creation-Date: 2014-10-02 14:50+0200\n"
 "PO-Revision-Date: 2014-11-01 15:40-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
-"Language-Team: Portuguese\n"
-"Language: pt_PT\n"
+"Language-Team: Polish\n"
+"Language: pl_PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: crowdin.com\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Build/B_MACRO_ETAPE.py:120
 #, python-format
 msgid "Erreur dans la macro %s\nligne : %s fichier : "
-msgstr "Erro na macro %s\nlinha: %s ficheiro: "
+msgstr "Erreur dans la macro %s\nligne : %s fichier : "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Build/B_MACRO_ETAPE.py:125
 #: /home/mc/dev/integration-default/src/bibpyt/Build/B_MACRO_ETAPE.py:131
 #, python-format
 msgid "Erreur dans la macro %s\n%s"
-msgstr "Erro na macro %s\n%s"
+msgstr "Erreur dans la macro %s\n%s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:25
 msgid "phase métallurgique acier variable interne 1"
-msgstr "Variável interna para a metalúrgica de aço fase 1"
+msgstr "phase métallurgique acier variable interne 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:26
 msgid "phase métallurgique acier variable interne 2"
-msgstr "Variável interna para a metalúrgica de aço fase 2"
+msgstr "phase métallurgique acier variable interne 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:27
 msgid "phase métallurgique acier variable interne 3"
-msgstr "Variável interna para a metalúrgica de aço fase 3"
+msgstr "phase métallurgique acier variable interne 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:28
 msgid "phase métallurgique acier variable interne 4"
-msgstr "Variável interna para a metalúrgica de aço fase 4"
+msgstr "phase métallurgique acier variable interne 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:29
 msgid "phase métallurgique acier variable interne 5"
-msgstr "Variável interna para a metalúrgica de aço fase 5"
+msgstr "phase métallurgique acier variable interne 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:30
 msgid "affaiblissement relatif de raideur en membrane en compression"
-msgstr "atenuação relativa da rigidez da membrana em compressão"
+msgstr "affaiblissement relatif de raideur en membrane en compression"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:31
 msgid "affaiblissement relatif de raideur en flexion"
-msgstr "atenuação relativa da rigidez em flexão"
+msgstr "affaiblissement relatif de raideur en flexion"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:32
 msgid "affaiblissement relatif de raideur en membrane en traction"
@@ -143,7 +143,7 @@ msgstr "angle du seuil déviatoire (CJS)"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:54
 msgid "BETON_RAG : avancement de la réaction"
-msgstr "BETON_RAG: progresso da reação"
+msgstr "BETON_RAG : avancement de la réaction"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:55
 msgid "assemblage cornière, variable interne 1"
@@ -175,7 +175,7 @@ msgstr "assemblage cornière, variable interne 7"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:62
 msgid "BETON_RAG : Endommagement macroscopique en compression"
-msgstr "BETON_RAG: Dano macroscópico em compressão"
+msgstr "BETON_RAG : Endommagement macroscopique en compression"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:63
 msgid "BETON_RAG : Endommagement macroscopique (indicateur de fissuration)  composante 1"
@@ -215,15 +215,15 @@ msgstr "coeff de consolidation fin de pas"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:72
 msgid "cohésion"
-msgstr "coesão"
+msgstr "cohésion"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:73
 msgid "itération de Newton courante,"
-msgstr "iteração atual de Newton,"
+msgstr "itération de Newton courante,"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:74
 msgid "itération de Newton de rupture,"
-msgstr "iteração de Newton da falha,"
+msgstr "itération de Newton de rupture,"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:75
 msgid "Critère en contrainte, utilisé en Génie Civil"
@@ -305,87 +305,87 @@ msgstr "endommagement principaux induit par la def plast de gel"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:96
 msgid "Incrément de temps"
-msgstr "Incremento de tempo"
+msgstr "Incrément de temps"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:97
 msgid "éléments discrets, variable interne 1"
-msgstr "elementos discretos, variável interna 1"
+msgstr "éléments discrets, variable interne 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:98
 msgid "éléments discrets, variable interne 10"
-msgstr "elementos discretos, variável interna 10"
+msgstr "éléments discrets, variable interne 10"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:99
 msgid "éléments discrets, variable interne 11"
-msgstr "elementos discretos, variável interna 11"
+msgstr "éléments discrets, variable interne 11"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:100
 msgid "éléments discrets, variable interne 12"
-msgstr "elementos discretos, variável interna 12"
+msgstr "éléments discrets, variable interne 12"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:101
 msgid "éléments discrets, variable interne 13"
-msgstr "elementos discretos, variável interna 13"
+msgstr "éléments discrets, variable interne 13"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:102
 msgid "éléments discrets, variable interne 14"
-msgstr "elementos discretos, variável interna 14"
+msgstr "éléments discrets, variable interne 14"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:103
 msgid "éléments discrets, variable interne 15"
-msgstr "elementos discretos, variável interna 15"
+msgstr "éléments discrets, variable interne 15"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:104
 msgid "éléments discrets, variable interne 16"
-msgstr "elementos discretos, variável interna 16"
+msgstr "éléments discrets, variable interne 16"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:105
 msgid "éléments discrets, variable interne 17"
-msgstr "elementos discretos, variável interna 17"
+msgstr "éléments discrets, variable interne 17"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:106
 msgid "éléments discrets, variable interne 18"
-msgstr "elementos discretos, variável interna 18"
+msgstr "éléments discrets, variable interne 18"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:107
 msgid "éléments discrets, variable interne 2"
-msgstr "elementos discretos, variável interna 2"
+msgstr "éléments discrets, variable interne 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:108
 msgid "éléments discrets, variable interne 3"
-msgstr "elementos discretos, variável interna 3"
+msgstr "éléments discrets, variable interne 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:109
 msgid "éléments discrets, variable interne 4"
-msgstr "elementos discretos, variável interna 4"
+msgstr "éléments discrets, variable interne 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:110
 msgid "éléments discrets, variable interne 5"
-msgstr "elementos discretos, variável interna 5"
+msgstr "éléments discrets, variable interne 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:111
 msgid "éléments discrets, variable interne 6"
-msgstr "elementos discretos, variável interna 6"
+msgstr "éléments discrets, variable interne 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:112
 msgid "éléments discrets, variable interne 7"
-msgstr "elementos discretos, variável interna 7"
+msgstr "éléments discrets, variable interne 7"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:113
 msgid "éléments discrets, variable interne 8"
-msgstr "elementos discretos, variável interna 8"
+msgstr "éléments discrets, variable interne 8"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:114
 msgid "éléments discrets, variable interne 9"
-msgstr "elementos discretos, variável interna 9"
+msgstr "éléments discrets, variable interne 9"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:115
 msgid "dissipation d'endommagement"
-msgstr "dissipação da falha"
+msgstr "dissipation d'endommagement"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:116
 msgid "dissipation plastique"
-msgstr "dissipação do plástico"
+msgstr "dissipation plastique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:117
 msgid "dissipation de glissement"
@@ -393,7 +393,7 @@ msgstr "dissipation de glissement"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:118
 msgid "dissipation Thermodynamique"
-msgstr "dissipação termodinâmica"
+msgstr "dissipation Thermodynamique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:119
 msgid "CJS distance normalisée au seuil déviatoire"
@@ -511,7 +511,7 @@ msgstr "variables internes pour le fluage spherique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:159
 msgid "énergie bloquée"
-msgstr "energia bloqueada"
+msgstr "énergie bloquée"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:160
 msgid "énergie dissipée pour CRIT_RUPT"
@@ -705,11 +705,11 @@ msgstr "endommagement normal"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:209
 msgid "rigidité résiduelle"
-msgstr "rigidez residual"
+msgstr "rigidité résiduelle"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:210
 msgid "endommagement tangentiel"
-msgstr "danos tangenciais"
+msgstr "endommagement tangentiel"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:211
 msgid "BETON_RAG : Endommagement intrinsèque de traction,  composante 1"
@@ -761,7 +761,7 @@ msgstr "tenseur endommagement, direction ZZ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:223
 msgid "énegie résiduelle"
-msgstr "energia residual"
+msgstr "énegie résiduelle"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:224
 msgid "épaisseur du joint clavé"
@@ -1023,7 +1023,7 @@ msgstr "LETK : déformation déviatorique viscoplastique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:299
 msgid "GAZ : v1"
-msgstr "GAS : v1"
+msgstr "GAZ : v1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:300
 msgid "JOINT_BA : déformation de glissement cumulée par frottement des fissures"
@@ -1267,7 +1267,7 @@ msgstr "indicateur de viscoplasticité"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:360
 msgid "irradiation"
-msgstr "irradiação"
+msgstr "irradiation"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:361
 msgid "indicateur de passage du pic de la loi de traction"
@@ -1459,7 +1459,7 @@ msgstr "Dissipation par fluage deviatoire"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:408
 msgid "porosité"
-msgstr "porosidade"
+msgstr "porosité"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:409
 msgid "VISC_DRUC_PRAG : position du point de charge par rapport au seuil"
@@ -1475,7 +1475,7 @@ msgstr "LIQU_AD_GAZ v5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:412
 msgid "pression de fluide"
-msgstr "pressão do fluido"
+msgstr "pression de fluide"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:413
 msgid "proportion matrice tangente/sécante"
@@ -1519,15 +1519,15 @@ msgstr "LIQU_AD_GAZ v3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:423
 msgid "saut normal"
-msgstr "salto normal"
+msgstr "saut normal"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:424
 msgid "saut tangentiel 1"
-msgstr "salto tangencial 1"
+msgstr "saut tangentiel 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:425
 msgid "saut tangentiel 2"
-msgstr "salto tangencial 2"
+msgstr "saut tangentiel 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:426
 msgid "CJS rapport entre le seuil déviatoire et le seuil déviatorique critique"
@@ -1792,11 +1792,11 @@ msgstr "taux de chargement local de Weibull"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:525
 msgid "température"
-msgstr "temperatura"
+msgstr "température"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:526
 msgid "température maximum"
-msgstr "temperatura máxima"
+msgstr "température maximum"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:527
 msgid "temps de chargement cumule"
@@ -2470,7 +2470,7 @@ msgstr ">> JDC.py : FIN RAPPORT"
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_JDC.py:404
 #, python-format
 msgid "Erreur de programmation :\nattribut '%s' non autorisé"
-msgstr "Erro de programação: \natributo '%s' não autorizado"
+msgstr "Erreur de programmation :\nattribut '%s' non autorisé"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_JDC.py:407
 #, python-format
@@ -2486,7 +2486,7 @@ msgstr "Erreurs à l'exécution de la macro %s"
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_MACRO_ETAPE.py:180
 #, python-format
 msgid "Erreurs dans la construction de la macro %s"
-msgstr "Erros na construção da macro %s"
+msgstr "Erreurs dans la construction de la macro %s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:98
 #, python-format
@@ -2496,7 +2496,7 @@ msgstr ">> JDC.py : DEBUT RAPPORT\n%s\n>> JDC.py : FIN RAPPORT"
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:117
 #, python-format
 msgid "> %d commandes..."
-msgstr "> %d comandos ..."
+msgstr "> %d commandes..."
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:144
 msgid "ERREUR A LA VERIFICATION DU CATALOGUE - INTERRUPTION"
@@ -2542,23 +2542,23 @@ msgstr "ERREUR A L'EXECUTION - INTERRUPTION"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/E_SUPERV.py:357
 msgid "--- Fin de l'exécution"
-msgstr "--- Fim da execução"
+msgstr "--- Fin de l'exécution"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:268
 msgid "Nombre de commandes"
-msgstr "Muitos comandos"
+msgstr "Nombre de commandes"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:269
 msgid "Nombre de résultats"
-msgstr "Muitos resultados"
+msgstr "Nombre de résultats"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:270
 msgid "Nombre de dépendances"
-msgstr "Muitas dependências"
+msgstr "Nombre de dépendances"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:271
 msgid "Nombre de résultats non utilisés"
-msgstr "Muitos resultados não utilizados"
+msgstr "Nombre de résultats non utilisés"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:272
 msgid "Nombre de noeuds"
@@ -2566,19 +2566,19 @@ msgstr "Nombre de noeuds"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:273
 msgid "Concepts jamais utilisés"
-msgstr "Conceitos nunca utilizados"
+msgstr "Concepts jamais utilisés"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:274
 msgid "Commandes utilisées"
-msgstr "Comandos utilizados"
+msgstr "Commandes utilisées"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:275
 msgid "Résultats"
-msgstr "Resultados"
+msgstr "Résultats"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:276
 msgid "Dépendances"
-msgstr "Dependências"
+msgstr "Dépendances"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Execution/concept_dependency.py:281
 msgid "  <I> Dépendance des concepts - statistiques"
