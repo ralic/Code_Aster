@@ -226,7 +226,7 @@ epYYimpl=RECU_FONCTION(TABLE=resuimpl,
 
 endoimpl=RECU_FONCTION(TABLE=resuimpl,
                    PARA_X='INST',
-                   PARA_Y='V10',
+                   PARA_Y='V7',
                    INTERPOL='LIN');
 
 

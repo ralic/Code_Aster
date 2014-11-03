@@ -66,26 +66,6 @@ delta1=1.0
 delta2=0.
 
 
-
-
-MAT=DEFI_MATERIAU(ELAS=_F(E=145000.0,
-                          NU=0.3,
-                          ALPHA=1e-5,),
-                   HAYHURST=_F(K=Kcoef,
-                               EPS0=ep0val,
-                               SIG0 = sig0val,
-                               H1=h1,
-                               H2=h2,
-                               H1ST=H1star,
-                               H2ST=H2star,
-                               BIGA = A0,
-                               ALPHAD = alphaD,
-                               DELTA1=delta1,
-                               DELTA2=delta2,
-                               S_EQUI_D=1.,
-                               KC=0.0,
-                               ),);
-
 MATFRONT=DEFI_MATERIAU( 
                       ELAS=_F(E=145000., NU=0.3,ALPHA=1e-5,),                      
                       ImplicitHayhurst=_F( 
@@ -145,9 +125,10 @@ epsYY=RECU_FONCTION(TABLE=soluce,
                    PARA_Y='EPYY',
                    INTERPOL='LIN');
 
+# d est la 7eme variable interne
 endo=RECU_FONCTION(TABLE=soluce,
                    PARA_X='INST',
-                   PARA_Y='V10',
+                   PARA_Y='V7',
                    INTERPOL='LIN');
 
 
@@ -175,7 +156,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03217489,
 
 # fluage tertiaire
 tter=4000
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05057491214303,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05057481603012,
                         VALE_REFE=0.05093,
                         REFERENCE='AUTRE_ASTER',
                         PRECISION=0.04,
