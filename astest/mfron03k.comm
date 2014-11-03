@@ -106,8 +106,8 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
 
 
 ##chargement
-EpsMax=0.1
-viteps=3.e-4
+EpsMax=0.04
+viteps=4.e-4
 tmax=EpsMax/viteps
 
 EPSZZ=DEFI_FONCTION(
@@ -149,11 +149,11 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                              REAC_ITER=0
                              ),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=50,
-                                  RESI_GLOB_RELA=1.E-5,
+                                 # RESI_GLOB_RELA=1.E-5,
                                      ),
                    MATER      = ACIERDD,
 
-                   #NB_VARI_TABLE=7,
+                   NB_VARI_TABLE=7,
 
                    VARI_INIT=_F(VALE=lvari,
                                   ),
@@ -184,8 +184,8 @@ _F(FONC_X=F_EP, FONC_Y=F_SI),
 ))
 
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10000000,
-                        VALE_PARA=333.33333333333337,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.04,
+                        VALE_PARA=tmax,
                         NOM_PARA='INST',
                         FONCTION=F_EP,
                         ),
@@ -193,12 +193,12 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.10000000,
 
 # reference SSNV194D
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=814.5609711554,
-                        VALE_REFE=815.4568495137,REFERENCE='AUTRE_ASTER',
-                        VALE_PARA=333.33333333333337,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=792.9033677809,
+                        VALE_REFE=790.51268,REFERENCE='AUTRE_ASTER',
+                        VALE_PARA=tmax,
                         NOM_PARA='INST',
                         FONCTION=F_SI,
-                        PRECISION=0.002,
+                        PRECISION=0.004,
                         ),
               )
 
