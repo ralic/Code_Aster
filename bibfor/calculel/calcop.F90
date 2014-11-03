@@ -30,6 +30,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 #include "asterfort/medom2.h"
 #include "asterfort/reliem.h"
 #include "asterfort/rsadpa.h"
+#include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
@@ -89,9 +90,9 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     aster_logical :: exitim, exipou, optdem
 !
     integer :: nopout, jlisop, iop, ibid, nbord2, lres, n0, n1, n2, n3, posopt
-    integer :: nbtrou, minord, maxord, jlinst, iordr, nbordl
+    integer :: nbtrou, minord, maxord, jlinst, iordr, nbordl, lcompo
     integer :: numord, iexcit, iret, npass, nbma, codre2, jliopg, nbopt
-    integer :: jacalc, nordm1, jpara, nbchre, ioccur
+    integer :: jacalc, nordm1, jpara, nbchre, ioccur, icompo
 !
     real(kind=8) :: r8b
 !
@@ -100,10 +101,10 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     character(len=1) :: basopt
     character(len=5) :: numopt
     character(len=8) :: modele, carael, k8b
-    character(len=8) :: nomail, nobase
+    character(len=8) :: nomail, nobase, modeli
     character(len=11) :: nobaop
-    character(len=16) :: optio2, typmcl(4), motcle(4)
-    character(len=19) :: excit, nonbor
+    character(len=16) :: optio2, typmcl(4), motcle(4),valk(2)
+    character(len=19) :: excit, nonbor, compor
     character(len=24) :: chaout, ligrel, mateco, ligres
     character(len=24) :: noliop, lisins, mesmai, lacalc, suropt
 !
@@ -128,6 +129,24 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
 !
     call ccliop('OPTION', option, nobase, noliop, nopout)
     if (nopout .eq. 0) goto 999
+!
+!
+    if (option(1:4).eq.'EPSI')then
+! ------get COMPORTEMENT from RESULT
+        call rsexch(' ', resuin, 'COMPORTEMENT', 1, compor, lcompo)
+        if (lcompo .eq.0) then
+! ------get DEFORMATION value from RESULT
+            call jeveuo(compor//'.VALE','L',icompo)
+! ------Coherence verification for large deformation
+            if ((zk16(icompo+43-1)(1:8) .eq. 'GDEF_LOG').or. &
+                (zk16(icompo+43-1)(1:10) .eq. 'SIMO_MIEHE').or. &
+                (zk16(icompo+43-1)(1:14) .eq. 'GDEF_HYPO_ELAS'))then
+                valk(1) = zk16(icompo+43-1)
+                valk(2) = option(6:10)
+                call utmess('A','CALCCHAMP_3',nk=2,valk=valk)
+            endif
+        endif
+    endif
 !
     nonbor = nobase//'.NB_ORDRE'
     lacalc = nobase//'.ACALCULER'
@@ -166,6 +185,16 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     endif
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=nomail)
+!
+    call dismoi('MODELISATION', modele, 'MODELE', repk=modeli)
+!
+    if ((modeli(1:6).eq.'C_PLAN').and.(option(1:4).eq.'EPSI')&
+        .and. (lcompo .eq. 0)) then
+        if (zk16(icompo+41-1)(1:4) .ne. 'ELAS' .and. &
+            zk16(icompo+41-1)(1:16) .ne. '                ') then
+            call utmess('A', 'ELEMENTS3_11')
+        endif
+    endif
 !
     call ccvepo(modele, resuin, lischa, ncharg, typesd,&
                 nbchre, ioccur, suropt, ligrel, exipou)

@@ -38,4 +38,12 @@ Conseil :
  L'option demandée n'est calculable sur les éléments du modèle.
 """),
 
+3 : _(u"""
+La sortie EPSI_%(k2)s de CALC_CHAMP est incorrecte pour décrire les
+composantes de la déformation en grandes déformations.
+
+Conseil:
+Avec des déformations de type %(k1)s,
+il est préférable d'utiliser EPSG_%(k2)s
+"""),
 }

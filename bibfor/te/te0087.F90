@@ -4,11 +4,9 @@ subroutine te0087(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -45,13 +43,12 @@ subroutine te0087(option, nomte)
     integer :: nnos, npg, ipoids, ivf, idfde, idim
     integer :: igau, isig, igeom, idepl, iret
     integer :: itemps, idefo, imate
-    integer :: icompo, jgano
+    integer :: jgano
 !
     real(kind=8) :: epsm(54), repere(7), bary(3)
     real(kind=8) :: nharm, instan, zero
 !
     character(len=4) :: fami
-    character(len=16) :: compor
 !
 !
 ! DEB ------------------------------------------------------------------
@@ -71,7 +68,6 @@ subroutine te0087(option, nomte)
     zero = 0.0d0
     instan = zero
     nharm = zero
-    compor = '                '
 !
     do 10 i = 1, nbsig2*npg
         epsm(i) = zero
@@ -111,18 +107,6 @@ subroutine te0087(option, nomte)
         instan = zr(itemps)
     endif
 !
-! ---- RECUPERATION DU COMPORTEMENT DANS LE CAS DES CONTRAINTES PLANES :
-!      ---------------------------------------------------------------
-    if (lteatt('C_PLAN','OUI')) then
-        call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
-        if (icompo .ne. 0) then
-            compor = zk16(icompo)
-            if (compor .ne. 'ELAS' .and. compor .ne. '                ') then
-                call utmess('A', 'ELEMENTS3_11')
-            endif
-        endif
-    endif
-!
 ! ---- RECUPERATION DU VECTEUR DES DEFORMATIONS EN SORTIE :
 !      --------------------------------------------------
     call jevech('PDEFOPG', 'E', idefo)
@@ -142,9 +126,10 @@ subroutine te0087(option, nomte)
 ! ---- AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
 ! ---- POINTS D'INTEGRATION :
 !      --------------------
-    do 80 igau = 1, npg
-        do 80 isig = 1, nbsig
+    do igau = 1, npg
+        do isig = 1, nbsig
             zr(idefo+nbsig*(igau-1)+isig-1) = epsm(nbsig*(igau-1)+ isig)
-80      continue
+        end do
+    end do
 !
 end subroutine

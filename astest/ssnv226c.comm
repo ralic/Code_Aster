@@ -143,7 +143,7 @@ SOLNL=STAT_NON_LINE( MODELE=TROISD,
 
 SOLNL=CALC_CHAMP(reuse =SOLNL,
                  RESULTAT=SOLNL,
-                 DEFORMATION=('EPSI_ELGA','EPSP_ELGA',),);
+                 DEFORMATION=('EPSP_ELGA',),);
 
 
 
