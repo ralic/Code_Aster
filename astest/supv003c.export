@@ -3,7 +3,7 @@ P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 3
 P mpi_nbnoeud 1
-P testlist I
+P testlist verification parallel
 
 F comm supv003c.comm D 1
 F libr supv003c.2 D 2

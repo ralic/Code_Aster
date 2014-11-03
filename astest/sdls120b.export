@@ -3,7 +3,7 @@ P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist verification sequential
 
 F comm sdls120b.comm D 1
 F datg sdls120b.datg D 16

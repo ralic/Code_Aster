@@ -3,7 +3,7 @@ P memory_limit 1000
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C 
+P testlist verification sequential
 
 F comm ssnp142j.comm D 1
 F mmed ssnp142c.mmed D 20

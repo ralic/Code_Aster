@@ -1,4 +1,4 @@
 P time_limit 150
 P memory_limit 256
-P testlist C
+P testlist verification sequential
 F comm ssnv232a.comm D 1

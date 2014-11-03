@@ -3,7 +3,7 @@ P memory_limit 768
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist verification sequential
 
 F comm ssnp152g.comm D 1
 F msh ssnp152g.msh D 19

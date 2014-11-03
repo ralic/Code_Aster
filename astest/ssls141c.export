@@ -3,7 +3,7 @@ P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C
+P testlist verification sequential
 
 F comm ssls141c.comm D 1
 F mail ssls141c.mail D 20

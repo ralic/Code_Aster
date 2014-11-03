@@ -3,7 +3,7 @@ P memory_limit 254
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C
+P testlist verification sequential
 
 F comm zzzz318e.comm D 1
 F mail zzzz318a.mail D 20

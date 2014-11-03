@@ -3,8 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C 
+P testlist verification sequential
 
 F mmed ssnp166a.mmed D 20
 F comm ssnp166a.comm D 1
-

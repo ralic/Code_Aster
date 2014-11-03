@@ -3,11 +3,10 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C
+P testlist verification sequential
 
 F comm sdll149c.comm D 1
 F mail sdll149c.mail D 20
 F mail sdll149c.21 D 21
 F mail sdll149c.22 D 22
 F libr sdll149a.21 D 33
-

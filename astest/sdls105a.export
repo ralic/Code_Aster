@@ -3,7 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist verification sequential
 
 F comm sdls105a.comm D 1
 F msup fdlv109a.msup D 19

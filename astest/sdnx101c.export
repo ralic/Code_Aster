@@ -3,7 +3,7 @@ P memory_limit 768
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C
+P testlist verification sequential
 
 F comm sdnx101c.comm D 1
 F mmed sdnx101a.mmed D 20

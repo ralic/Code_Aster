@@ -3,7 +3,7 @@ P memory_limit 1024
 P ncpus 1
 P mpi_nbcpu 2
 P mpi_nbnoeud 1
-P testlist I 
+P testlist verification parallel
 
 F comm wtna101a.comm D 1
 F mmed ssnv168c.mmed D 20

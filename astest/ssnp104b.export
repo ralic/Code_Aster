@@ -1,5 +1,5 @@
 P time_limit 250
 P memory_limit 256
-P testlist C
+P testlist verification sequential
 F comm ssnp104b.comm D 1
 F mail ssnp104b.mmed D 20

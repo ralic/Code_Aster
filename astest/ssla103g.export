@@ -3,7 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist verification sequential
 
 F comm ssla103g.comm D 1
 F mail erreu02a.mail D 20

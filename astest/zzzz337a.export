@@ -3,7 +3,7 @@ P memory_limit 1024
 P ncpus 1
 P mpi_nbcpu 4
 P mpi_nbnoeud 1
-P testlist I 
+P testlist verification parallel
 
 F comm zzzz337a.comm D 1
 F mmed fdlv112b.mmed D 20

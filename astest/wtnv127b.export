@@ -3,7 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist verification sequential
 
 F comm wtnv127b.comm D 1
 F mmed wtnv127a.mmed D 20

@@ -1,9 +1,10 @@
+# aslint: disable=C2002
 P time_limit 250
 P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C
+P testlist verification sequential
 
 F comm forma13a.comm D 1
 F mmed forma13a.20 D 20

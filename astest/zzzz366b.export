@@ -3,8 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist R 
+P testlist verification sequential
 
 F comm zzzz366b.comm D 1
 F mail zzzz366b.mail D 20
-

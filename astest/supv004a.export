@@ -1,5 +1,5 @@
 P time_limit 60
 P memory_limit 128
-P testlist C
+P testlist verification sequential
 
 F comm supv004a.comm D 1

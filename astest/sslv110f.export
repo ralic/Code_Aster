@@ -3,7 +3,7 @@ P memory_limit 1024
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist C
+P testlist verification sequential
 
 F comm sslv110f.comm D 1
 F datg sslv110f.datg D 16
