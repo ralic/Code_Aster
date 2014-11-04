@@ -18,6 +18,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
+#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/affdis.h"
 #include "asterfort/alcart.h"
@@ -63,7 +64,7 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
     integer :: jdc(3), jdv(3), dimcar, irgma, irgm2, irgm3, irpto
     integer :: irlto, itbmp, ndim, ixci, jdcinf, jdvinf, i, ixckma, ioc
     integer :: irep, isym, impris, nu, nfr, ngp, ngl, ifreq, nma, ldgm, nbpo
-    integer :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, ibid, icf
+    integer :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, ibid, icf, nbomp
     real(kind=8) :: eta, vale(3), r8bid, freq, coef, zero(5)
     character(len=1) :: kma(3)
     character(len=7) :: ledisc
@@ -284,12 +285,15 @@ subroutine acearm(noma, nomo, lmax, noemaf, nbocc,&
     call jedetr('&&TMPRILTO')
     call jedetr('&&TMPTABMP')
     call jedetr('&&ACEARM.RIGM')
-    do i = 1, 3
-        call jedetr(tmpnd(i))
-        call jedetr(tmpvd(i))
-    end do
-    call jedetr(tmcinf)
-    call jedetr(tmvinf)
+    call getfac('MASS_AJOU', nbomp)
+    if (nbomp .eq. 0) then
+        do i = 1, 3
+            call jedetr(tmpnd(i))
+            call jedetr(tmpvd(i))
+        end do
+        call jedetr(tmcinf)
+        call jedetr(tmvinf)
+    endif
 !
     call jedema()
 end subroutine

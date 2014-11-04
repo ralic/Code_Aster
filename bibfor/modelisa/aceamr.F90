@@ -33,7 +33,7 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
     character(len=8) :: noma, nomo
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -288,18 +288,6 @@ subroutine aceamr(noma, nomo, lmax, noemaf, nbocc,&
                     jn = itbno + i - 1
 !
                     call affdis(ndim, irep, eta, car(nc), zr(irgno+6*i-6),&
-                                jdc, jdv, ivr, iv, kma,&
-                                ncmp, l, jdcinf, jdvinf, isym,&
-                                ifm)
-                    call nocart(cartdi, 3, dimcar, mode='NOM', nma=1,&
-                                limano=[zk8(jd)])
-                    call nocart(cart(l), 3, ncmp, mode='NOM', nma=1,&
-                                limano=[zk8(jd)])
-!                 AFFECTATION DE MATRICE RIGIDITE NULLE
-                    iv = 1
-!
-                    call r8inir(nbval2, 0.0d0, vale, 1)
-                    call affdis(ndim, irep, eta, lamass, vale,&
                                 jdc, jdv, ivr, iv, kma,&
                                 ncmp, l, jdcinf, jdvinf, isym,&
                                 ifm)

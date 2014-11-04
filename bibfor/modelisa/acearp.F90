@@ -72,7 +72,7 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     integer :: irepn, irepv, iaepn, iaepv
     integer :: ixci, ixckma, ixnw, j, jd, jddi, jdls, jdnw, jj, jn, k, kk
     integer :: l, ldgm, ldnm, lokm, lorep, nbmtrd, nbnma
-    integer :: nbno, nbnoeu, nborm, nc, ncar, ncarac, ncmp
+    integer :: nbno, nbnoeu, nborm, nc, ncar, ncarac, ncmp, nbomp
     integer :: ndim, ng, ngp, nma, nrep, numnoe, nval, dimcar
     integer :: vali(2)
 !
@@ -547,7 +547,8 @@ subroutine acearp(noma, nomo, lmax, noemaf, nbocc,&
     call jedetr('&&TMPAMOTO')
     call jedetr('&&TMPTABMP')
     call getfac('RIGI_MISS_3D', nborm)
-    if (nborm .eq. 0) then
+    call getfac('MASS_AJOU', nbomp)
+    if (nborm .eq. 0 .and. nbomp .eq. 0) then
         do i = 1, 3
             call jedetr(tmpnd(i))
             call jedetr(tmpvd(i))

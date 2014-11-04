@@ -23,6 +23,7 @@ mail0 = LIRE_MAILLAGE(FORMAT='MED', VERI_MAIL=_F(VERIF='OUI'),);
 # Modification du maillage pour creer des mailles a un noeud pour
 # placer les impedances sous la fondation du barrages.
 #
+
 mail=CREA_MAILLAGE(MAILLAGE=mail0,
                       CREA_POI1 =(
                                   _F(NOM_GROUP_MA = 'PBASE',
@@ -33,20 +34,14 @@ mail=CREA_MAILLAGE(MAILLAGE=mail0,
                                     GROUP_MA = 'IFLUSTR2'),
                                  ),
                      );
-#
-# Modification du maillage pour creer des mailles a un noeud pour
-# placer les impedances sous la fondation du barrages.
-#
-
-
+                   
 mail=DEFI_GROUP(reuse =mail,
                 MAILLAGE=mail,
                 CREA_GROUP_NO=_F(NOM='ISOLSTR',
                                  GROUP_MA=('SURFBAS2'),
                                 ),
                );
-
-
+              
 #
 # Orientation des elements d interface.
 #
@@ -70,9 +65,9 @@ modele=AFFE_MODELE( MAILLAGE= mail,
                       AFFE=( _F(GROUP_MA=( 'STRVOU2' ),
                                 PHENOMENE= 'MECANIQUE',
                                 MODELISATION= '3D'),
-                             _F(GROUP_MA = 'PBASE',
+                             _F(GROUP_MA = 'PFONDAT',
                                 PHENOMENE = 'MECANIQUE',
-                                MODELISATION = 'DIS_TR'),
+                                MODELISATION = 'DIS_T'),
                              _F(GROUP_MA = 'PFLUSTR',
                                 PHENOMENE = 'MECANIQUE',
                                 MODELISATION = 'DIS_T'),
@@ -100,26 +95,37 @@ VALE = (-72.,63000.,0., 0.,) );
 
 cara_ele=AFFE_CARA_ELEM(MODELE=modele,
                         #INFO=2,
-                        DISCRET=(_F(GROUP_MA='PBASE',
+                        DISCRET=(_F(GROUP_MA='PFONDAT',
                                     REPERE='GLOBAL',
-                                    CARA='M_TR_D_N',
-                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
-                                 _F(GROUP_MA='PBASE',
-                                    REPERE='GLOBAL',
-                                    CARA='K_TR_D_N',
-                                    VALE=(0.,0.,0.,0.,0.,0.)),
+                                    CARA='M_T_D_N',
+                                    VALE=(0.,)),
                                  _F(GROUP_MA='PFLUSTR',
                                     REPERE='GLOBAL',
-                                    CARA='K_T_D_N',
+                                    CARA='A_T_D_N',
                                     VALE=(0.,0.,0.,)),
                                  ),
+                     RIGI_PARASOL=_F(
+                      GROUP_MA = 'SURFBAS2', 
+                      GROUP_MA_POI1 = 'PFONDAT',
+                      COEF_GROUP = 1., NOEUD_CENTRE = 'N316',
+                      CARA = ( 'K_T_D_N' ),
+                      VALE = (  1.0E+20, 1.0E+20, 1.0E+20,),
+                                    ),
                      MASS_AJOU=_F(
                                        FONC_GROUP=fonz,
                                        GROUP_MA='IFLUSTR2',
                                        GROUP_MA_POI1='PFLUSTR',
                                  ),     
                         );
-                        
+                     
+cond_lim = AFFE_CHAR_MECA( MODELE= modele,
+                           DDL_IMPO=_F(
+                                          GROUP_NO=('ISOLSTR',),
+                                          DX= 0.,
+                                          DY= 0.,
+                                          DZ= 0.,
+                                      ),
+                          );                        
 
 #
 #========================================
@@ -127,23 +133,6 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
 # --------
 #========================================
 #
-#
-# La structure est encastree a l interface
-#-----------------------------------------
-
-cond_lim = AFFE_CHAR_MECA( MODELE= modele,
-                           DDL_IMPO=_F(
-                                          #GROUP_NO=('ISOLSTR',),
-                                          NOEUD = 'N316',
-                                          DX= 0.,
-                                          DY= 0.,
-                                          DZ= 0.,
-                                          DRX= 0.,
-                                          DRY= 0.,
-                                          DRZ= 0.,
-                                      ),
-                           LIAISON_SOLIDE=_F(GROUP_NO=('ISOLSTR',),)
-                          );
 
 #
 #
@@ -152,14 +141,14 @@ cond_lim = AFFE_CHAR_MECA( MODELE= modele,
 rigi_ele = CALC_MATR_ELEM( MODELE= modele ,
                            OPTION= 'RIGI_MECA',
                            CHAM_MATER= champmat,
-                           CHARGE= cond_lim,
+                           #CHARGE= cond_lim,
                            CARA_ELEM=cara_ele,
                          );
 #
 mass_ele = CALC_MATR_ELEM( MODELE= modele ,
                            OPTION= 'MASS_MECA',
                            CHAM_MATER= champmat,
-                           CHARGE= cond_lim,
+                           #CHARGE= cond_lim,
                            CARA_ELEM=cara_ele,
                          );
 #
@@ -200,19 +189,19 @@ mode_rig =CALC_MODES( MATR_RIGI= MATRIGI,
 TEST_RESU(RESU=(
     _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
             CRITERE = 'RELATIF',
-            NUME_ORDRE = 1,         VALE_CALC = 3.5459030238661,
+            NUME_ORDRE = 1,         VALE_CALC = 3.54590291033,
              ),
     _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
             CRITERE = 'RELATIF',
-            NUME_ORDRE = 2,         VALE_CALC = 3.6501524570066,
+            NUME_ORDRE = 2,         VALE_CALC = 3.6501523882,
              ),
     _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
             CRITERE = 'RELATIF',
-            NUME_ORDRE = 3,         VALE_CALC = 4.9423358064125,
+            NUME_ORDRE = 3,         VALE_CALC = 4.94233567539,
              ),
     _F(   RESULTAT = mode_rig,        PARA = 'FREQ',
             CRITERE = 'RELATIF',
-            NUME_ORDRE = 4,         VALE_CALC = 6.0401945882866,
+            NUME_ORDRE = 4,         VALE_CALC = 6.04019437213,
              ),
                          ),
                );
