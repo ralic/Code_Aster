@@ -20,8 +20,6 @@ def configure(self):
 
     intel.configure(self)
 
-    self.env.append_value('CFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
-    self.env.append_value('FCFLAGS_ASTER_DEBUG', ['-D__DEBUG_ALL__'])
     self.env['ADDMEM'] = 280
     self.env.append_value('OPT_ENV', [
         '. ' + ASTER_ROOT + '/etc/codeaster/profile.sh',
