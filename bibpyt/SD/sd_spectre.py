@@ -142,7 +142,7 @@ class sd_spectre(sd_titre):
                 assert vate[4] in ('DEBIT_180', 'DEBIT_300')
             else:
                 for x in vate[4:]:
-                    sd2 = sd_fonction(x)
+                    sd2 = sd_table_fonction(x)
                     sd2.check(checker)
 
         elif type == 'SPEC_LONG_COR_1':
