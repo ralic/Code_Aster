@@ -35,7 +35,8 @@ def get_language():
     """Return default language (2 letters)"""
     lang = locale.getdefaultlocale()[0]
     if type(lang) is str:
-        lang = lang.split('_')[0]
+        # support en-US or en_US
+        lang = lang.split('_')[0].split('-')[0]
     else:
         lang = ""
     return lang
@@ -71,7 +72,16 @@ class Language(Singleton):
             self.set_domain()
         self.current_lang = (lang or self.default_lang).lower()
         if lang:
-            lang = force_list(lang.lower())
+            lang = force_list(lang)
+            low = lang[0].lower()
+            lang.append(low)
+            # add variants lang* (ex. en-UK, en-US...)
+            try:
+                variants = [i for i in os.listdir(self.localedir) \
+                            if i.startswith(low)]
+            except OSError:
+                variants = []
+            lang.extend(variants)
         tr = gettext.translation(
             self.domain, self.localedir, languages=lang, fallback=True)
         tr.install(unicode=True)
