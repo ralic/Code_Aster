@@ -39,6 +39,9 @@ cata_msg = {
     7 : _(u"""Dans le KIT_DDI, FLUA_PORO_BETON ne peux être couplé qu’avec le modèle d’endommagement ENDO_PORO_BETON. 
 """),
 
+    8 : _(u"""Vous avez demandé à utiliser un comportement avec des phases métallurgiques de type %(k1)s, mais le matériau est défini avec des variables de commande de type %(k2)s.
+"""),
+
     49: _(u"""
  Pour un modèle de type GRAD_VARI, le KIT_DDI ne peut pas coupler le comportement <%(k1)s> avec <%(k2)s>.
 """),

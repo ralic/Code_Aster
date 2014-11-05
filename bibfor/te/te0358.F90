@@ -1,4 +1,20 @@
 subroutine te0358(option, nomte)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dfdm3d.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/meta_vpta_coef.h"
+#include "asterfort/get_meta_phasis.h"
+#include "asterfort/get_meta_type.h"
+#include "asterfort/get_elas_para.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,427 +31,174 @@ subroutine te0358(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/dfdm3d.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/rcfonc.h"
-#include "asterfort/rctrac.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
+! aslint: disable=W0104
+! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
-!                          OPTION : 'CHAR_MECA_META_Z  '
-!                          POUR LES ELEMENTS 3D
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: icompo, icontr, icpg, ivari, j, lgpg, mater
-    integer :: nbres, nnos
-    real(kind=8) :: deltaz, sigmo, zalpha, zvarim, zvarip
-!-----------------------------------------------------------------------
-    parameter (nbres=21)
-    character(len=16) :: compor, nomres(nbres)
-    character(len=8) :: nomcle(5), acier(4), zirc(2)
+! Elementary computation
+!
+! Elements: 3D
+! Option: CHAR_MECA_META_Z
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer ::  i, k, lgpg, iret, ispg
+    real(kind=8) :: sigmo
     character(len=4) :: fami
-    integer :: icodre(nbres)
-    integer :: test
-    real(kind=8) :: valres(nbres), e, nu
-    real(kind=8) :: zfbm, sig(6), kpt(5), sigdv(6), deuxmu
-    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), tpg, poids
-    real(kind=8) :: kron(6), r8bid, phas(5), rprim, coef, r0(5), trans, vi(5)
-    real(kind=8) :: phasm(4), phasp(4)
+    integer :: j_compor
+    character(len=16) :: type_phas, rela_comp, valk(2)
+    integer :: j_mate, j_mater
+    integer :: meta_type, nb_phasis
+    real(kind=8) :: young, nu, deuxmu
+    integer :: j_sigm
+    integer :: nb_sigm, elas_type
+    integer :: j_poids, j_vf, j_dfde, j_geom
+    integer :: nno, ipg, npg, jtab(7)
+    integer :: j_vectu
+    integer :: j_vari
+    real(kind=8) :: sig(6), sigdv(6)
+    real(kind=8) :: dfdx(9), dfdy(9), dfdz(9), poids, kron(6)
+    real(kind=8) :: coef, trans
+    real(kind=8) :: zalpha_curr
+    real(kind=8) :: phas_prev(4), phas_curr(4), temp
+    logical :: l_temp
 !
-    integer :: jgano, nno, kp, l, npg1, i, ivectu, ndim
-    integer :: ipoids, ivf, idfde, jprol, jvale, nbval
-    integer :: igeom, imate, jtab(7), iret, iret1
+    data kron  /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
 !
-    data kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data acier /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
-    data zirc /'ALPHPUR','ALPHBETA'/
+! --------------------------------------------------------------------------------------------------
 !
-! ---------------------------------------------------------------------
-! --- FONCTIONS DE FORMES ET POINTS DE GAUSS
+    ispg = 1
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 !
-! PARAMETRES EN ENTREE
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PCOMPOR', 'L', icompo)
-    mater = zi(imate)
-    compor = zk16(icompo+7)
+! - Element reference
 !
-    call jevech('PCONTMR', 'L', icontr)
-    call jevech('PCOMPOR', 'L', icompo)
-    compor = zk16(icompo+7)
+    call elrefe_info(fami=fami,nno=nno,&
+                     npg=npg,jpoids=j_poids,jvf=j_vf,jdfde=j_dfde)
     call tecach('OON', 'PVARIPR', 'L', iret, nval=7,&
                 itab=jtab)
-    lgpg = max(jtab(6),1)*jtab(7)
-    call jevech('PVARIPR', 'L', ivari)
-    call jevech('PVECTUR', 'E', ivectu)
+    lgpg  = max(jtab(6),1)*jtab(7)
 !
-    if (compor(1:5) .eq. 'ACIER') then
+! - Geometry
 !
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        nomres(3) = 'F1_K'
-        nomres(4) = 'F2_K'
-        nomres(5) = 'F3_K'
-        nomres(6) = 'F4_K'
-        nomres(7) = 'F1_D_F_M'
-        nomres(8) = 'F2_D_F_M'
-        nomres(9) = 'F3_D_F_M'
-        nomres(10) = 'F4_D_F_M'
-        nomres(11) = 'SY_MELAN'
+    call jevech('PGEOMER', 'L', j_geom)
 !
-        if (zk16(icompo) (1:9) .eq. 'META_P_IL' .or. zk16(icompo) (1:9) .eq. 'META_V_IL'&
-            .or. zk16(icompo) (1:9) .eq. 'META_P_CL' .or. zk16(icompo) (1:9) .eq.&
-            'META_V_CL') then
-            nomres(12) = 'F1_D_SIGM'
-            nomres(13) = 'F2_D_SIGM'
-            nomres(14) = 'F3_D_SIGM'
-            nomres(15) = 'F4_D_SIGM'
-            nomres(16) = 'C_D_SIGM'
-        endif
-        if (zk16(icompo) (1:10) .eq. 'META_P_INL' .or. zk16(icompo) (1: 10) .eq.&
-            'META_V_INL') then
-            nomcle(1) = 'SIGM_F1'
-            nomcle(2) = 'SIGM_F2'
-            nomcle(3) = 'SIGM_F3'
-            nomcle(4) = 'SIGM_F4'
-            nomcle(5) = 'SIGM_C'
-        endif
-        nomres(17) = 'F1_ETA'
-        nomres(18) = 'F2_ETA'
-        nomres(19) = 'F3_ETA'
-        nomres(20) = 'F4_ETA'
-        nomres(21) = 'C_ETA'
+! - Comportement
 !
-    else if (compor(1:4).eq.'ZIRC') then
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        nomres(3) = 'F1_K'
-        nomres(4) = 'F2_K'
-        nomres(5) = 'F1_D_F_ME'
-        nomres(6) = 'F2_D_F_ME'
-        nomres(7) = 'SY_MELAN'
+    call jevech('PCOMPOR', 'L', j_compor)
+    rela_comp = zk16(j_compor)
 !
-        if (zk16(icompo) (1:9) .eq. 'META_P_IL' .or. zk16(icompo) (1:9) .eq. 'META_V_IL') then
-            nomres(8) = 'F1_D_SIGM'
-            nomres(9) = 'F2_D_SIGM'
-            nomres(10) = 'C_D_SIGM'
-        endif
-        if (zk16(icompo) (1:10) .eq. 'META_P_INL' .or. zk16(icompo) (1: 10) .eq.&
-            'META_V_INL') then
-            nomcle(1) = 'SIGM_F1'
-            nomcle(2) = 'SIGM_F2'
-            nomcle(3) = 'SIGM_C'
-        endif
-        nomres(14) = 'F1_ETA'
-        nomres(15) = 'F2_ETA'
-        nomres(16) = 'C_ETA'
+! - Type of phasis
 !
+    type_phas = zk16(j_compor+7)
+    call get_meta_type(meta_type, nb_phasis)
+    if ((meta_type.eq.0).or.(rela_comp.eq.'META_LEMA_ANI')) then
+        goto 99
     endif
-    do 10 i = 1, nbres
-10  end do
+    valk(1) = type_phas
+    if (type_phas.eq.'ACIER') then
+        if (meta_type.ne.1) then
+            valk(2) = 'ZIRC'
+            call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
+        endif
+    elseif (type_phas.eq.'ZIRC') then
+        if (meta_type.ne.2) then
+            valk(2) = 'ACIER'
+            call utmess('F', 'COMPOR3_8', nk = 2, valk = valk)
+        endif
+    else
+        ASSERT(.false.)
+    endif
 !
-    do 140 kp = 1, npg1
-        icpg = 6* (kp-1)
-        call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
+! - Stresses
+!
+    nb_sigm=6
+    call jevech('PCONTMR', 'L', j_sigm)
+!
+! - Internal variables
+!
+    call jevech('PVARIPR', 'L', j_vari)
+!    
+! - Material parameters
+!
+    call jevech('PMATERC', 'L', j_mate)
+    j_mater = zi(j_mate)
+!
+! - Output vector
+!
+    call jevech('PVECTUR', 'E', j_vectu)
+    do i = 1, nno
+        zr(j_vectu+3*i-3) = 0.d0
+        zr(j_vectu+3*i-2) = 0.d0
+        zr(j_vectu+3*i-1) = 0.d0
+    end do
+!
+    do ipg = 1, npg
+        k=(ipg-1)*nno 
+!
+! ----- Derived of shape functions
+!
+        call dfdm3d(nno, ipg, j_poids, j_dfde, zr(j_geom),&
                     poids, dfdx, dfdy, dfdz)
-        call rcvarc(' ', 'TEMP', '+', 'RIGI', kp,&
-                    1, tpg, iret1)
 !
-        if (compor(1:5) .eq. 'ACIER') then
-            do 7 l = 1, 4
-                call rcvarc(' ', acier(l), '-', 'RIGI', kp,&
-                            1, phasm(l), iret)
-                if (iret .eq. 1) phasm(l)=0.d0
-                call rcvarc(' ', acier(l), '+', 'RIGI', kp,&
-                            1, phasp(l), iret)
-                if (iret .eq. 1) phasp(l)=0.d0
- 7          continue
-        else if (compor(1:4) .eq. 'ZIRC') then
-            do 9 l = 1, 2
-                call rcvarc(' ', zirc(l), '-', 'RIGI', kp,&
-                            1, phasm(l), iret)
-                if (iret .eq. 1) phasm(l)=0.d0
-                call rcvarc(' ', zirc(l), '+', 'RIGI', kp,&
-                            1, phasp(l), iret)
-                if (iret .eq. 1) phasp(l)=0.d0
- 9          continue
-        endif
+! ----- Get current temperature
 !
-        call rcvalb(fami, kp, 1, '+', mater,&
-                    ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                    2, nomres, valres, icodre, 1)
-        e = valres(1)
-        nu = valres(2)
-        deuxmu = e/ (1.d0+nu)
+        call rcvarc(' ', 'TEMP', '+', fami, ipg,&
+                    1, temp, iret)
+        l_temp  = iret.eq.0
 !
-        if (compor(1:5) .eq. 'ACIER') then
+! ----- Get phasis
 !
-            call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_PT', 0, ' ', [0.d0],&
-                        4, nomres(3), valres(3), icodre(3), 0)
+        phas_prev(:) = 0.d0
+        phas_curr(:) = 0.d0
+        call get_meta_phasis(fami     , '-'      , ipg        , ispg, meta_type,&
+                             nb_phasis, phas_prev)
+        call get_meta_phasis(fami     , '+'      , ipg        , ispg, meta_type,&
+                             nb_phasis, phas_curr, zalpha = zalpha_curr)
 !
-            do 30 i = 3, 6
-                if (icodre(i) .ne. 0) then
-                    kpt(i-2) = 0.d0
-                else
-                    kpt(i-2) = valres(i)
-                endif
-30          continue
+! ----- Get elastic parameters
 !
-            zfbm = phasp(1)
-            do 40 i = 1, 3
-                zfbm = zfbm + phasp(1+i)
-40          continue
+        call get_elas_para(fami, j_mater , '+', ipg,&
+                           ispg, elas_type,&
+                           e  = young , nu = nu)
+        ASSERT(elas_type.eq.1)
+        deuxmu = young/(1.d0+nu)
 !
-            trans = 0.d0
-            do 50 i = 1, 4
-                zvarim = phasm(i)
-                zvarip = phasp(i)
-                deltaz = (zvarip-zvarim)
-                if (deltaz .gt. 0) then
-                    j = 6 + i
-                    call rcvalb('RIGI', 1, 1, '+', mater,&
-                                ' ', 'META_PT', 1, 'META', [zfbm],&
-                                1, nomres(j), valres(j), icodre(j), 0)
-                    if (icodre(j) .ne. 0) valres(j) = 0.d0
+! ----- Compute coefficients for second member
 !
-                    trans = trans + kpt(i)*valres(j)*deltaz
-                endif
-50          continue
+        call meta_vpta_coef(rela_comp, lgpg       , fami     , ipg      , j_mater  ,&
+                            l_temp   , temp       , meta_type, nb_phasis, phas_prev,&
+                            phas_curr, zalpha_curr, young    ,  deuxmu  , coef     ,&
+                            trans)
 !
-            call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_VISC', 0, ' ', [0.d0],&
-                        5, nomres(17), valres(17), icodre(17), 0)
-            test = 1
-            do 60 i = 17, 21
-                if (icodre(i) .eq. 0) test = 0
-60          continue
-            if ((zr(ivari+ (kp-1)*lgpg+5).gt.0.5d0) .and. (test.eq.1)) then
-!
-                call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'ELAS_META', 1, 'META', [zfbm],&
-                            1, nomres(11), valres(11), icodre(11), 0)
-                if (icodre(11) .ne. 0) then
-                    valres(11) = zfbm
-                endif
-!
-!
-                phas(1) = phasp(1)
-                phas(2) = phasp(2)
-                phas(3) = phasp(3)
-                phas(4) = phasp(4)
-                phas(5) = 1.d0 - (phas(1)+phas(2)+phas(3)+phas(4))
-!
-                if (zk16(icompo) (1:9) .eq. 'META_P_IL' .or. zk16( icompo) (1:9) .eq.&
-                    'META_V_IL') then
-!
-                    call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
-                                5, nomres(12), valres( 12), icodre(12), 1)
-                    r0(1) = valres(12)*e/ (e-valres(12))
-                    r0(2) = valres(13)*e/ (e-valres(13))
-                    r0(3) = valres(14)*e/ (e-valres(14))
-                    r0(4) = valres(15)*e/ (e-valres(15))
-                    r0(5) = valres(16)*e/ (e-valres(16))
-                endif
-                if (zk16(icompo) (1:9) .eq. 'META_P_CL' .or. zk16( icompo) (1:9) .eq.&
-                    'META_V_CL') then
-                    call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
-                                5, nomres(12), valres( 12), icodre(12), 1)
-                    r0(1) = (2.d0/3.d0)*valres(12)*e/ (e-valres(12))
-                    r0(2) = (2.d0/3.d0)*valres(13)*e/ (e-valres(13))
-                    r0(3) = (2.d0/3.d0)*valres(14)*e/ (e-valres(14))
-                    r0(4) = (2.d0/3.d0)*valres(15)*e/ (e-valres(15))
-                    r0(5) = (2.d0/3.d0)*valres(16)*e/ (e-valres(16))
-                endif
-!
-                if (zk16(icompo) (1:10) .eq. 'META_P_INL' .or. zk16( icompo) (1:10) .eq.&
-                    'META_V_INL') then
-                    vi(1) = zr(ivari+ (kp-1)*lgpg)
-                    vi(2) = zr(ivari+ (kp-1)*lgpg+1)
-                    vi(3) = zr(ivari+ (kp-1)*lgpg+2)
-                    vi(4) = zr(ivari+ (kp-1)*lgpg+3)
-                    vi(5) = zr(ivari+ (kp-1)*lgpg+4)
-!
-                    if (iret1 .eq. 1) then
-                        call utmess('F', 'CALCULEL_31')
-                    endif
-                    do 70 i = 1, 5
-                        call rctrac(mater, 2, nomcle(i), tpg, jprol,&
-                                    jvale, nbval, r8bid)
-                        call rcfonc('V', 2, jprol, jvale, nbval,&
-                                    p = vi(i), rprim = r0(i))
-70                  continue
-                endif
-!
-                if (zfbm .gt. 0.d0) then
-                    rprim = phas(1)*r0(1) + phas(2)*r0(2) + phas(3)* r0(3) + phas(4)*r0(4)
-                    rprim = rprim/zfbm
-                else
-                    rprim = 0.d0
-                endif
-                rprim = (1.d0-valres(11))*r0(5) + valres(11)*rprim
-                coef = 1.d0 - (1.5d0*deuxmu)/ (1.5d0*deuxmu+rprim)
-!
-            else
-                coef = 1.d0
-            endif
-!
-        else if (compor(1:4).eq.'ZIRC') then
-            call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_PT', 0, ' ', [0.d0],&
-                        2, nomres(3), valres(3), icodre(3), 0)
-!
-            do 80 i = 3, 4
-                if (icodre(i) .ne. 0) then
-                    kpt(i-2) = 0.d0
-                else
-                    kpt(i-2) = valres(i)
-                endif
-80          continue
-!
-            zalpha = phasp(1) + phasp(2)
-!
-!
-            zvarim = phasm(1)
-            zvarip = phasp(1)
-            deltaz = (zvarip-zvarim)
-!
-            trans = 0.d0
-            if (deltaz .gt. 0) then
-                call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'META_PT', 1, 'META', [zfbm],&
-                            1, nomres(5), valres(5), icodre(5), 0)
-                if (icodre(5) .ne. 0) valres(5) = 0.d0
-!
-                trans = trans + kpt(1)*valres(5)*deltaz
-            endif
-!
-!
-            zvarim = phasm(2)
-            zvarip = phasp(2)
-            deltaz = (zvarip-zvarim)
-            if (deltaz .gt. 0) then
-!
-                call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'META_PT', 1, 'META', [zfbm],&
-                            1, nomres(6), valres(6), icodre(6), 0)
-                if (icodre(6) .ne. 0) valres(6) = 0.d0
-!
-                trans = trans + kpt(2)*valres(6)*deltaz
-            endif
-!
-!
-            call rcvalb(fami, kp, 1, '+', mater,&
-                        ' ', 'META_VISC', 0, ' ', [0.d0],&
-                        3, nomres(14), valres(14), icodre(14), 0)
-            test = 1
-            do 90 i = 14, 16
-                if (icodre(14) .eq. 0) test = 0
-90          continue
-            if ((zr(ivari+ (kp-1)*lgpg+3).gt.0.5d0) .and. (test.eq.1)) then
-!
-                call rcvalb('RIGI', 1, 1, '+', mater,&
-                            ' ', 'ELAS_META', 1, 'META', [zalpha],&
-                            1, nomres(7), valres(7), icodre(7), 0)
-                if (icodre(7) .ne. 0) then
-                    valres(7) = zalpha
-                endif
-!
-                phas(1) = phasp(1)
-                phas(2) = phasp(2)
-!
-                phas(3) = 1.d0 - (phas(1)+phas(2))
-!
-                if (zk16(icompo) (1:9) .eq. 'META_P_IL' .or. zk16( icompo) (1:9) .eq.&
-                    'META_V_IL') then
-                    call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
-                                3, nomres(8), valres( 8), icodre(8), 1)
-                    r0(1) = valres(8)*e/ (e-valres(8))
-                    r0(2) = valres(9)*e/ (e-valres(9))
-                    r0(3) = valres(10)*e/ (e-valres(10))
-                endif
-                if (zk16(icompo) (1:9) .eq. 'META_P_CL' .or. zk16( icompo) (1:9) .eq.&
-                    'META_V_CL') then
-                    call rcvalb(fami, kp, 1, '+', mater,&
-                                ' ', 'META_ECRO_LINE', 0, ' ', [0.d0],&
-                                5, nomres(8), valres( 8), icodre(8), 1)
-                    r0(1) = (2.d0/3.d0)*valres(8)*e/ (e-valres(8))
-                    r0(2) = (2.d0/3.d0)*valres(9)*e/ (e-valres(9))
-                    r0(3) = (2.d0/3.d0)*valres(10)*e/ (e-valres(10))
-!
-                endif
-!
-                if (zk16(icompo) (1:10) .eq. 'META_P_INL' .or. zk16( icompo) (1:10) .eq.&
-                    'META_V_INL') then
-                    vi(1) = zr(ivari+ (kp-1)*lgpg)
-                    vi(2) = zr(ivari+ (kp-1)*lgpg+1)
-                    vi(3) = zr(ivari+ (kp-1)*lgpg+2)
-!
-                    do 100 i = 1, 3
-                        call rctrac(mater, 3, nomcle(i), tpg, jprol,&
-                                    jvale, nbval, r8bid)
-                        call rcfonc('V', 3, jprol, jvale, nbval,&
-                                    p = vi(i), rprim = r0(i))
-100                  continue
-                endif
-!
-                if (zalpha .gt. 0.d0) then
-                    rprim = phas(1)*r0(1) + phas(2)*r0(2)
-                    rprim = rprim/zalpha
-                else
-                    rprim = 0.d0
-                endif
-                rprim = (1.d0-valres(7))*r0(3) + valres(7)*rprim
-                coef = 1.d0 - (1.5d0*deuxmu)/ (1.5d0*deuxmu+rprim)
-!
-            else
-                coef = 1.d0
-            endif
-        endif
-!
+! ----- Compute stresses
 !
         sigmo = 0.d0
-        do 110 i = 1, 3
-            sigmo = sigmo + zr(icontr+icpg+i-1)
-110      continue
+        do i = 1, 3
+            sigmo = sigmo + zr(j_sigm+(ipg-1)*nb_sigm+i-1)
+        end do
         sigmo = sigmo/3.d0
-        do 120 i = 1, 6
-            sigdv(i) = zr(icontr+icpg+i-1) - sigmo*kron(i)
-            sig(i) = coef* (+1.5d0*trans*sigdv(i))
-            sig(i) = deuxmu*sig(i)
-120      continue
-        do 130 i = 1, nno
-            zr(ivectu+3* (i-1)) = zr(&
-                                  ivectu+3* (i-1)) + poids* (sig(1) *dfdx(i)+sig(4)*dfdy(i)+ sig(&
-                                  &5)*dfdz(i)&
-                                  )
-            zr(ivectu+3* (i-1)+1) = zr(&
-                                    ivectu+3* (i-1)+1) + poids* ( sig(2)*dfdy(i)+sig(4)*dfdx(i)+ &
-                                    &sig(6)*dfdz(i)&
-                                    )
-            zr(ivectu+3* (i-1)+2) = zr(&
-                                    ivectu+3* (i-1)+2) + poids* ( sig(3)*dfdz(i)+sig(5)*dfdx(i)+ &
-                                    &sig(6)*dfdy(i)&
-                                    )
-130      continue
-140  end do
+!
+        do i = 1, nb_sigm
+            sigdv(i) = zr(j_sigm+(ipg-1)*nb_sigm+i-1)-sigmo*kron(i)
+            sig(i)   = coef*(1.5d0*trans*sigdv(i))
+            sig(i)   = deuxmu*sig(i)
+        end do
+!
+! ----- Second member
+!
+        do i = 1, nno
+            zr(j_vectu+3*(i-1))   = zr(j_vectu+3*(i-1))   +&
+                                    poids*(sig(1)*dfdx(i)+sig(4)*dfdy(i)+sig(5)*dfdz(i))
+            zr(j_vectu+3*(i-1)+1) = zr(j_vectu+3*(i-1)+1) +&
+                                    poids*(sig(2)*dfdy(i)+sig(4)*dfdx(i)+sig(6)*dfdz(i))
+            zr(j_vectu+3*(i-1)+2) = zr(j_vectu+3*(i-1)+2) +&
+                                    poids*(sig(3)*dfdz(i)+sig(5)*dfdx(i)+sig(6)*dfdy(i))
+        end do
+    end do
+!
+99  continue
 end subroutine
