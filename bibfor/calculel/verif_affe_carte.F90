@@ -220,9 +220,15 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
                     if (zi(jcesv-1+iad1).eq.0) lnul=.true.
                 else if (tsca.eq.'L') then
                     if (.not.zl(jcesv-1+iad1)) lnul=.true.
-                else if (tsca(1:1).eq.'K') then
+                else if (tsca(1:2).eq.'K8') then
                     if (zk8(jcesv-1+iad1).eq.' ') lnul=.true.
                     if (zk8(jcesv-1+iad1).eq.'&FOZERO') lnul=.true.
+                else if (tsca(1:3).eq.'K16') then
+                    if (zk16(jcesv-1+iad1).eq.' ') lnul=.true.
+                    if (zk16(jcesv-1+iad1).eq.'&FOZERO') lnul=.true.
+                else if (tsca(1:3).eq.'K24') then
+                    if (zk24(jcesv-1+iad1).eq.' ') lnul=.true.
+                    if (zk24(jcesv-1+iad1).eq.'&FOZERO') lnul=.true.
                 else
                     ASSERT(.false.)
                 endif
