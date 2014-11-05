@@ -1,6 +1,14 @@
-subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
-                  lpaout, lchout, exitem, exihyd, exipto,&
-                  exisec, exiepa, exipha, vecel)
+subroutine nmvccc(model    , nbin     , nbout    , lpain    , lchin,&
+                  lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
+                  exis_sech, exis_epsa, calc_meta, vect_elem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/reajre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,150 +28,133 @@ subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/reajre.h"
-    integer :: nbout, nbin
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
-    character(len=8) :: modele
-    aster_logical :: exitem, exihyd, exipto, exisec, exiepa, exipha
-    character(len=19) :: vecel
+    character(len=8) :: model
+    integer, intent(in) :: nbout
+    integer, intent(in) :: nbin
+    character(len=8), intent(in) :: lpain(nbin)
+    character(len=19), intent(in) :: lchin(nbin)
+    character(len=8), intent(in) :: lpaout(nbout)
+    character(len=19), intent(inout) :: lchout(nbout)
+    aster_logical, intent(in) :: exis_temp
+    aster_logical, intent(in) :: exis_hydr
+    aster_logical, intent(in) :: exis_ptot
+    aster_logical, intent(in) :: exis_sech
+    aster_logical, intent(in) :: exis_epsa
+    aster_logical, intent(in) :: calc_meta
+    character(len=19), intent(in) :: vect_elem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! Nonlinear mechanics (algorithm)
 !
-! CALCUL DES VECT_ELEM DES VARIABLES DE COMMANDES
+! Command variables - Compute elementary vectors
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  model          : name of model
+! In  nbin           : number of input fields
+! In  nbout          : number of output fields
+! In  lpain          : list of input field parameters
+! In  lchin          : list of input fields
+! In  lpaout         : list of output field parameters
+! IO  lchout         : list of output fields
+! In  exis_temp      : .true. if temperature variable command exists
+! In  exis_hydr      : .true. if hydratation variable command exists
+! In  exis_ptot      : .true. if total pressure (THM) variable command exists
+! In  exis_sech      : .true. if drying variable command exists
+! In  exis_epsa      : .true. if non-elastic strain variable command exists
+! In  calc_meta      : .true. to compute metallurgy variable command
+! In  vect_elem      : name of elementary vectors
 !
-! IN  MODELE : NOM DU MODELE
-! IN  NBIN   : NOMBRE MAXI DE CHAMPS IN POUR CALCUL
-! IN  LPAIN  : NOM DES TYPES DE CHAMP D'ENTREE
-! IN  LCHIN  : NOM DES CHAMPS D'ENTREE
-! IN  NBOUT  : NOMBRE MAXI DE CHAMPS OUT POUR CALCUL
-! IN  LPAOUT : NOM DES TYPES DE CHAMP DE SORTIE
-! IN  LCHOUT : NOM DES CHAMPS DE SORTIE
-! IN  EXITEM : VARIABLE DE COMMANDE TEMPERATURE PRESENTE OU NON
-! IN  EXIHYD : VARIABLE DE COMMANDE HYDRATATION PRESENTE OU NON
-! IN  EXIPTO : VARIABLE DE COMMANDE PRESSION TOTALE DE FLUIDE
-!              PRESENTE OU NON
-! IN  EXISEC : VARIABLE DE COMMANDE SECHAGE PRESENTE OU NON
-! IN  EXIEPA : VARIABLE DE COMMANDE DEFO. ANEL. PRESENTE OU NON
-! IN  EXIPHA : VARIABLE DE COMMANDE PHASES META. PRESENTE OU NON
-! OUT VECEL  : NOM DU VECT_ELEM
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: ifm, niv
     character(len=6) :: masque
     character(len=16) :: option
     character(len=24) :: ligrmo
-    integer :: iret, nbr
+    integer :: nbr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
-    if (niv .ge. 2) then
-!
-    endif
-!
-! --- INITIALISATIONS
-!
-    nbr = 0
+    nbr    = 0
     masque = '.VEXXX'
-    ligrmo = modele(1:8)//'.MODELE'
+    ligrmo = model(1:8)//'.MODELE'
 !
-! --- THERMIQUE
+! - Temperature
 !
-    if (exitem) then
+    if (exis_temp) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vecel(1:8)// masque
+        lchout(1) = vect_elem(1:8)//masque
         option = 'CHAR_MECA_TEMP_R'
-        call calcul('C', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
+        call calcul('C'  , option, ligrmo, nbin  , lchin,&
+                    lpain, nbout , lchout, lpaout, 'V'  ,&
                     'OUI')
-        call jeexin(lchout(1)//'.RESL', iret)
-        call reajre(vecel, lchout(1), 'V')
+        call reajre(vect_elem, lchout(1), 'V')
     endif
 !
-! --- HYDRATATION
+! - Hydratation
 !
-    if (exihyd) then
+    if (exis_hydr) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vecel(1:8)// masque
+        lchout(1) = vect_elem(1:8)// masque
         option = 'CHAR_MECA_HYDR_R'
         call calcul('S', option, ligrmo, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, 'V',&
                     'OUI')
-        call reajre(vecel, lchout(1), 'V')
+        call reajre(vect_elem, lchout(1), 'V')
     endif
 !
-! --- THM - CHAINAGE HYDRAULIQUE VERS LA MECANIQUE
+! - Total pressure (THM)
 !
-    if (exipto) then
+    if (exis_ptot) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vecel(1:8)// masque
+        lchout(1) = vect_elem(1:8)// masque
         option = 'CHAR_MECA_PTOT_R'
         call calcul('S', option, ligrmo, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, 'V',&
                     'OUI')
-        call reajre(vecel, lchout(1), 'V')
+        call reajre(vect_elem, lchout(1), 'V')
     endif
 !
-! --- SECHAGE
+! - Drying
 !
-    if (exisec) then
+    if (exis_sech) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vecel(1:8)// masque
+        lchout(1) = vect_elem(1:8)// masque
         option = 'CHAR_MECA_SECH_R'
         call calcul('S', option, ligrmo, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, 'V',&
                     'OUI')
-        call reajre(vecel, lchout(1), 'V')
+        call reajre(vect_elem, lchout(1), 'V')
     endif
 !
-! --- DEFORMATION ANELASTIQUE
+! - Non-elastic strain
 !
-    if (exiepa) then
+    if (exis_epsa) then
         nbr = nbr+1
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vecel(1:8)// masque
+        lchout(1) = vect_elem(1:8)// masque
         option = 'CHAR_MECA_EPSA_R'
         call calcul('S', option, ligrmo, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, 'V',&
                     'OUI')
-        call reajre(vecel, lchout(1), 'V')
+        call reajre(vect_elem, lchout(1), 'V')
     endif
 !
-! --- PHASES METALLURGIQUES
+! - Metallurgy
 !
-    if (exipha) then
-        nbr = nbr+1
+    if (calc_meta) then
+        nbr = 6
         call codent(nbr, 'D0', masque(4:6))
-        lchout(1) = vecel(1:8)// masque
+        lchout(1) = vect_elem(1:8)// masque
         option = 'CHAR_MECA_META_Z'
         call calcul('S', option, ligrmo, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, 'V',&
                     'OUI')
-        call reajre(vecel, lchout(1), 'V')
+        call reajre(vect_elem, lchout(1), 'V')
     endif
 !
-    call jedema()
 end subroutine

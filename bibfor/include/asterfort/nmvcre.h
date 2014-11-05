@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmvcre(modelz, matz, carelz, comrez)
-        character(len=*) :: modelz
-        character(len=*) :: matz
-        character(len=*) :: carelz
-        character(len=*) :: comrez
+    subroutine nmvcre(model, mate, cara_elem, varc_refe)
+        character(len=24), intent(in) :: model
+        character(len=8), intent(in) :: mate
+        character(len=8), intent(in) :: cara_elem
+        character(len=24), intent(in) :: varc_refe
     end subroutine nmvcre
 end interface

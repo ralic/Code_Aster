@@ -1,5 +1,18 @@
-subroutine nmvcfo(modelz, mate, carele, compor, comref,&
-                  comval, vecelz)
+subroutine nmvcfo(type_comp, model    , mate     , cara_elem, compor,&
+                  varc_refe, hval_incr, vect_elem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmvarc_prep.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/nmvccc.h"
+#include "asterfort/memare.h"
+#include "asterfort/nmvcd2.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/reajre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,242 +32,92 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/alchml.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/mecara.h"
-#include "asterfort/megeom.h"
-#include "asterfort/memare.h"
-#include "asterfort/nmvcd2.h"
-#include "asterfort/nmvcex.h"
-#include "asterfort/reajre.h"
-#include "asterfort/xajcin.h"
-    character(len=*) :: modelz, vecelz
-    character(len=24) :: mate, comref, carele, compor
-    character(len=19) :: comval
+    character(len=1), intent(in) :: type_comp
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: varc_refe
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: compor
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: vect_elem
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (CALCUL)
+! Nonlinear mechanics (algorithm)
 !
-! ESTIMATION D'UNE FORCE DE REFERENCE LIEE A L'ACTION DES VAR. COMM.
+! Command variables - Vector for reference (residual evaluation)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  type_comp      : type of computation
+!                      '-' - Previous step
+!                      '+' - Current step
+! In  model          : name of model
+! In  mate           : name of material characteristics (field)
+! In  cara_elem      : name of elementary characteristics (field)
+! In  varc_refe      : name of reference command variables vector
+! In  compor         : name of comportment definition (field)
+! In  hval_incr      : hat-variable for incremental values
+! In  vect_elem      : name of elementary vectors
 !
-! IN  MODELE : MODELE
-! IN  MATE   : CHAMP MATERIAU
-! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMVAL : VARI_COM A L'INSTANT COURANT
-! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
-! OUT VECELE : VECT_ELEM FORCE DE REFERENCE (DFINT/DA * A)
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: mxchin, mxchout, nbin, nbout
+    parameter    (mxchout=2, mxchin=30)
+    character(len=8) :: lpaout(mxchout), lpain(mxchin)
+    character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
+    aster_logical :: exis_temp, exis_hydr, exis_ptot, exis_sech, exis_epsa
+    aster_logical :: exis_meta_zirc, exis_meta_acier, exis_meta, calc_meta
+    character(len=19) :: sigm_prev, vari_prev, varc_prev, varc_curr
+    integer :: iret
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
-    integer :: mxnbin, mxnbou, nbin, nbout
-    parameter    (mxnbou=2, mxnbin=26)
-    character(len=8) :: lpaout(mxnbou), lpain(mxnbin)
-    character(len=19) :: lchout(mxnbou), lchin(mxnbin)
+! - Get fields from hat-variables - Begin of time step
 !
-    aster_logical :: exitem, exihyd, exisec, exiepa
-    aster_logical :: lxfem
-    integer :: nbres, iret
-    character(len=6) :: masque
-    character(len=8) :: modele
-    character(len=19) :: vecele
-    character(len=19) :: chvref, vrcplu, insplu, chsith
-    character(len=24) :: ligrmo, chgeom, chcara(18)
-    character(len=16) :: option
-    integer :: ifmdbg, nivdbg
+    call nmchex(hval_incr, 'VALINC', 'SIGMOI', sigm_prev)
+    call nmchex(hval_incr, 'VALINC', 'VARMOI', vari_prev)
+    call nmchex(hval_incr, 'VALINC', 'COMMOI', varc_prev)
+    call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
 !
-! ----------------------------------------------------------------------
+! - Command variables affected
 !
-    call jemarq()
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
-!
-! --- INITIALISATIONS
-!
-    modele = modelz
-    ligrmo = modele(1:8)//'.MODELE'
-    masque = '.VEXXX'
-    vecele = vecelz
-    call exixfe(modele, iret)
-    lxfem = iret.ne.0
-!
-! --- INITIALISATION DES CHAMPS POUR CALCUL
-!
-    call inical(mxnbin, lpain, lchin, mxnbou, lpaout,&
-                lchout)
-!
-! --- CHAMP DE GEOMETRIE
-!
-    call megeom(modele, chgeom)
-!
-! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
-!
-    call mecara(carele(1:8), chcara)
-!
-! --- LECTURE DES VARIABLES DE COMMANDE EN T+ ET VAL. DE REF
-!
-    call nmvcex('TOUT', comref, chvref)
-    call nmvcex('TOUT', comval, vrcplu)
-    call nmvcex('INST', comval, insplu)
-!
-! --- VARIABLES DE COMMANDE PRESENTES
-!
-    call nmvcd2('TEMP', mate, exitem)
-    call nmvcd2('HYDR', mate, exihyd)
-    call nmvcd2('SECH', mate, exisec)
-    call nmvcd2('EPSA', mate, exiepa)
-!
-! --- CHAMPS D'ENTREE
-!
-    lpain(1) = 'PGEOMER'
-    lchin(1) = chgeom(1:19)
-    lpain(2) = 'PMATERC'
-    lchin(2) = mate(1:19)
-    lpain(3) = 'PCACOQU'
-    lchin(3) = chcara(7)(1:19)
-    lpain(4) = 'PCAGNPO'
-    lchin(4) = chcara(6)(1:19)
-    lpain(5) = 'PCAORIE'
-    lchin(5) = chcara(1)(1:19)
-    lpain(6) = 'PCAGNBA'
-    lchin(6) = chcara(11)(1:19)
-    lpain(7) = 'PCAARPO'
-    lchin(7) = chcara(9)(1:19)
-    lpain(8) = 'PCAMASS'
-    lchin(8) = chcara(12)(1:19)
-    lpain(9) = 'PCAGEPO'
-    lchin(9) = chcara(5)(1:19)
-    lpain(10) = 'PTEMPSR'
-    lchin(10) = insplu
-    lpain(11) = 'PVARCPR'
-    lchin(11) = vrcplu
-    lpain(12) = 'PVARCRR'
-    lchin(12) = chvref
-    lpain(13) = ' '
-    lchin(13) = ' '
-    lpain(14) = 'PNBSP_I'
-    lchin(14) = chcara(1) (1:8)//'.CANBSP'
-    lpain(15) = 'PFIBRES'
-    lchin(15) = chcara(1) (1:8)//'.CAFIBR'
-    lpain(16) = 'PCOMPOR'
-    lchin(16) = compor(1:19)
-    nbin = 16
-!
-!     CHAMPS IN SPECIFIQUE A X-FEM
-    if (lxfem .and. exitem) then
-        call xajcin(modele, 'CHAR_MECA_TEMP_R', mxnbin, lchin, lpain,&
-                    nbin)
+    call nmvcd2('HYDR'   , mate, exis_hydr)
+    call nmvcd2('PTOT'   , mate, exis_ptot)
+    call nmvcd2('SECH'   , mate, exis_sech)
+    call nmvcd2('EPSA'   , mate, exis_epsa)
+    call nmvcd2('M_ZIRC' , mate, exis_meta_zirc)
+    call nmvcd2('M_ACIER', mate, exis_meta_acier)
+    call nmvcd2('TEMP'   , mate, exis_temp)
+    exis_meta = exis_temp .and. (exis_meta_zirc.or.exis_meta_acier)
+    calc_meta = .false.
+    if (exis_meta.and.type_comp.eq.'+') then
+        calc_meta = .true.
     endif
 !
-! --- PREPARATION DES VECT_ELEM
+! - Prepare elementary vectors
 !
-    call jeexin(vecele(1:19)// '.RELR', iret)
+    call jeexin(vect_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        call memare('V', vecele, modele, mate, carele,&
+        call memare('V', vect_elem, model, mate, cara_elem,&
                     'CHAR_MECA')
     endif
-    call jedetr(vecele(1:19)// '.RELR')
-    call reajre(vecele, ' ', 'V')
+    call jedetr(vect_elem(1:19)// '.RELR')
+    call reajre(vect_elem, ' ', 'V')
 !
-! --- CALCUL DES OPTIONS EN T+
+! - Fields preparation of elementary vectors
 !
-    nbres = 0
+    call nmvarc_prep(type_comp, model    , cara_elem, mate     , varc_refe,&
+                     compor   , exis_temp, mxchin   , nbin     , lpain    ,&
+                     lchin    , mxchout  , nbout    , lpaout   , lchout   ,&
+                     sigm_prev, vari_prev, varc_prev, varc_curr)
 !
-! --- THERMIQUE
+! - Computation of elementary vectors
 !
-    if (exitem) then
-        nbres = nbres+1
-        call codent(nbres, 'D0', masque(4:6))
-        lpaout(1) = 'PVECTUR'
-        lchout(1) = vecele(1:8)//masque
-        nbout = 1
-        option = 'CHAR_MECA_TEMP_R'
-!       CHAMP OUT SPECIFIQUE A X-FEM
-        if (lxfem) then
-            chsith='&&NMVCFO.CHSITH'
-            call alchml(ligrmo, 'SIEF_ELGA', 'PCONTRR', 'V', chsith,&
-                        iret, ' ')
-            lpaout(2) = 'PCONTRT'
-            lchout(2) = chsith
-            nbout = nbout+1
-        endif
-        call calcul('C', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
-                    'OUI')
-        call jeexin(lchout(1)//'.RESL', iret)
-        if (iret .gt. 0) then
-            call reajre(vecele, lchout(1), 'V')
-        else
-            nbres = nbres-1
-        endif
-    endif
+    call nmvccc(model    , nbin     , nbout    , lpain    , lchin    ,&
+                lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
+                exis_sech, exis_epsa, calc_meta, vect_elem)
 !
-! --- HYDRATATION
-!
-    if (exihyd) then
-        nbres = nbres+1
-        call codent(nbres, 'D0', masque(4:6))
-        lpaout(1) = 'PVECTUR'
-        lchout(1) = vecele(1:8)//masque
-        nbout = 1
-        option = 'CHAR_MECA_HYDR_R'
-        call calcul('C', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
-                    'OUI')
-        call reajre(vecele, lchout(1), 'V')
-    endif
-!
-! --- SECHAGE
-!
-    if (exisec) then
-        nbres = nbres+1
-        call codent(nbres, 'D0', masque(4:6))
-        lpaout(1) = 'PVECTUR'
-        lchout(1) = vecele(1:8)// masque
-        nbout = 1
-        option = 'CHAR_MECA_SECH_R'
-        call calcul('C', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
-                    'OUI')
-        call reajre(vecele, lchout(1), 'V')
-    endif
-!
-! --- DEFORMATION ANELASTIQUE
-!
-    if (exiepa) then
-        nbres = nbres+1
-        call codent(nbres, 'D0', masque(4:6))
-        lpaout(1) = 'PVECTUR'
-        lchout(1) = vecele(1:8)// masque
-        nbout = 1
-        option = 'CHAR_MECA_EPSA_R'
-        call calcul('C', option, ligrmo, nbin, lchin,&
-                    lpain, nbout, lchout, lpaout, 'V',&
-                    'OUI')
-        call reajre(vecele, lchout(1), 'V')
-    endif
-!
-! --- MENAGE
-!
-    if (lxfem .and. exitem) then
-        call detrsd('CHAM_ELEM', chsith)
-    endif
-!
-    call jedema()
 end subroutine

@@ -18,22 +18,22 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmvccc(modele, nbin, nbout, lpain, lchin,&
-                      lpaout, lchout, exitem, exihyd, exipto,&
-                      exisec, exiepa, exipha, vecel)
-        integer :: nbout
-        integer :: nbin
-        character(len=8) :: modele
-        character(len=8) :: lpain(nbin)
-        character(len=19) :: lchin(nbin)
-        character(len=8) :: lpaout(nbout)
-        character(len=19) :: lchout(nbout)
-        aster_logical :: exitem
-        aster_logical :: exihyd
-        aster_logical :: exipto
-        aster_logical :: exisec
-        aster_logical :: exiepa
-        aster_logical :: exipha
-        character(len=19) :: vecel
+    subroutine nmvccc(model    , nbin     , nbout    , lpain    , lchin,&
+                      lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
+                      exis_sech, exis_epsa, calc_meta, vect_elem)
+        character(len=8) :: model
+        integer, intent(in) :: nbout
+        integer, intent(in) :: nbin
+        character(len=8), intent(in) :: lpain(nbin)
+        character(len=19), intent(in) :: lchin(nbin)
+        character(len=8), intent(in) :: lpaout(nbout)
+        character(len=19), intent(inout) :: lchout(nbout)
+        aster_logical, intent(in) :: exis_temp
+        aster_logical, intent(in) :: exis_hydr
+        aster_logical, intent(in) :: exis_ptot
+        aster_logical, intent(in) :: exis_sech
+        aster_logical, intent(in) :: exis_epsa
+        aster_logical, intent(in) :: calc_meta
+        character(len=19), intent(in) :: vect_elem
     end subroutine nmvccc
 end interface

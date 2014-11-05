@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmvcex(index, comz, chamz)
-        character(len=4) :: index
-        character(len=*) :: comz
-        character(len=*) :: chamz
+    subroutine nmvcex(index, varcz, chamz)
+        character(len=4), intent(in) :: index
+        character(len=*), intent(in) :: varcz
+        character(len=*), intent(out) :: chamz
     end subroutine nmvcex
 end interface

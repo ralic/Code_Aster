@@ -1,4 +1,9 @@
-subroutine nmvcre(modelz, matz, carelz, comrez)
+subroutine nmvcre(model, mate, cara_elem, varc_refe)
+!
+    implicit none
+!
+#include "asterfort/detrsd.h"
+#include "asterfort/vrcref.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,46 +22,32 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
+    character(len=24), intent(in) :: model
+    character(len=8), intent(in) :: mate
+    character(len=8), intent(in) :: cara_elem
+    character(len=24), intent(in) :: varc_refe
 !
-#include "jeveux.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmvcd2.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vrcref.h"
-    character(len=*) :: modelz, matz, carelz, comrez
-! ----------------------------------------------------------------------
-!  CREATION DES VALEURS DE REFERENCE DES VARIABLES DE COMMANDE
-! ----------------------------------------------------------------------
-! IN/JXIN   MODELZ  K8  SD MODELE
-! IN/JXIN   MATZ    K8  SD MATERIAU
-! IN        CARELE  K8  SD CARAELEM
-! IN/JXOUT  COMREZ  K14 SD VARI_COM
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! Command variables utility
 !
+! Computation of reference command variables vector
 !
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: modele, mate, carele
-    character(len=14) :: comref
+! In  model          : name of model
+! In  mate           : name of material characteristics (field)
+! In  cara_elem      : name of elementary characteristics (field)
+! In  varc_refe      : name of reference command variables vector
+!
+! --------------------------------------------------------------------------------------------------
+!
     character(len=19) :: champ
-    integer :: iret
 !
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    modele = modelz
-    mate = matz
-    carele = carelz
-    comref = comrez
-    champ=comref//'.TOUT'
-!
-    call detrsd('VARI_COM', comref)
-    call vrcref(modele, mate, carele, champ)
-    call exisd('CHAMP_GD', champ, iret)
-!
-    call jedema()
+    champ = varc_refe(1:14)//'.TOUT'
+    call detrsd('VARI_COM', varc_refe)
+    call vrcref(model, mate, cara_elem, champ)
 !
 end subroutine

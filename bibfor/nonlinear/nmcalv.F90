@@ -248,14 +248,14 @@ subroutine nmcalv(typvec, modelz, lischa, mate, carele,&
 ! --- FORCE DE REFERENCE POUR VARIABLES DE COMMANDE INITIALES
 !
     else if (typvec.eq.'CNVCF1') then
-        call nmvcfo(modele, mate, carele, compor, comref,&
-                    commoi, vecele)
+        call nmvcfo('-'   , modele   , mate     , carele, compor,&
+                    comref, valinc, vecele)
 !
 ! --- FORCE DE REFERENCE POUR VARIABLES DE COMMANDE COURANTES
 !
     else if (typvec.eq.'CNVCF0') then
-        call nmvcfo(modele, mate, carele, compor, comref,&
-                    complu, vecele)
+        call nmvcfo('+'   , modele   , mate     , carele, compor,&
+                    comref, valinc, vecele)
     else
         ASSERT(.false.)
     endif

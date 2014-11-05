@@ -1,4 +1,10 @@
-subroutine nmvcex(index, comz, chamz)
+subroutine nmvcex(index, varcz, chamz)
+!
+    implicit none
+!
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,36 +23,36 @@ subroutine nmvcex(index, comz, chamz)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
+    character(len=4), intent(in) :: index
+    character(len=*), intent(in) :: varcz
+    character(len=*), intent(out) :: chamz
 !
-#include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    character(len=4) :: index
-    character(len=*) :: comz, chamz
-    character(len=14) :: com
-    character(len=19) :: champ
+! --------------------------------------------------------------------------------------------------
 !
+! Command variables utility
 !
-! ----------------------------------------------------------------------
-!  EXTRACTION D'UNE VARIABLE DE COMMANDE
-! ----------------------------------------------------------------------
+! Extract command variable
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN   INDEX   K4  INDEX DE LA VARIABLE DE COMMANDE
 ! IN   COM     K14 SD VARI_COM
 ! OUT  CHAMP   K19 SD CHAMP_GD  DE LA VARIABLE DE COMMANDE EXTRAITE
 !                  ' ' SI INEXISTANT
-! ----------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=14) :: varc
+    character(len=19) :: champ
     integer :: iret
 !
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    com = comz
-!
-    champ = com // '.' // index
+    varc  = varcz
+    champ = varc//'.'// index
     call exisd('CHAMP_GD', champ, iret)
-    if (iret .eq. 0) champ = ' '
-!
+    if (iret .eq. 0) then
+        champ = ' '
+    endif
     chamz = champ
-    call jedema()
 end subroutine
