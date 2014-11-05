@@ -31,7 +31,8 @@ def configure(self):
         self.env.BUILD_MFRONT = True
 
 def build(self):
-    if self.env.BUILD_MFRONT:
+    env = self.all_envs[self.variant]
+    if env.BUILD_MFRONT:
         # POST_LAZY: Groups are processed sequentially: all tasks from previous
         # groups are executed before the task generators from the next group
         # are processed
@@ -47,6 +48,7 @@ def build(self):
                         'mfront_request.c'],
             includes = '../bibcxx/mfront',
               target = 'mfront_request',
+                 env = env.derive(),
                  use = ('MFRONT', ),
         )
 
@@ -63,6 +65,7 @@ def build(self):
         self(
                 name = 'mfront_convert',
               source = get_srcs('**/*.mfront', excl=excl),
+                 env = env.derive(),
                  use = ('MFRONT', ),
         )
 
@@ -74,8 +77,9 @@ def build(self):
                 name = 'asterbehaviour',
       dynamic_source = '**/*.cxx',
     dynamic_incpaths = '../include',
-              target = self.env['_ASTERBEHAVIOUR'],
-        install_path = self.env.ASTERLIBDIR,
+              target = env['_ASTERBEHAVIOUR'],
+        install_path = env.ASTERLIBDIR,
+                 env = env.derive(),
                  use = ('MFRONT', ),
         )
         lst = [i.name for i in get_srcs('**/*.mfront', excl=excl)]
@@ -85,6 +89,7 @@ def build(self):
                  lst = lst,
                 path = self.path,
               target = 'c_mfront_official.capy',
+                 env = env.derive(),
                  use = 'asterbehaviour',
         )
     else:
@@ -92,6 +97,7 @@ def build(self):
             features = 'fake_mfront_mater',
                 name = 'mfront_mater',
                 path = self.path,
+                 env = env.derive(),
               target = 'c_mfront_official.capy',
         )
 

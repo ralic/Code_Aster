@@ -33,15 +33,16 @@ def configure(self):
     self.check_optional_features()
 
 def build(self):
-    buildenv = self.all_envs[self.variant]
+    env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
 
+    uses = env['all_dependencies']
     self(
         features = 'fc',
             name = 'asterbibfor',
           source = get_srcs('**/*.F90'),
-             env = buildenv,
-             use = self.env['all_dependencies'],
+             env = env.derive(),
+             use = uses,
     )
 
 ###############################################################################

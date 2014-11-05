@@ -14,22 +14,23 @@ def configure(self):
     self.env.append_value('INCLUDES', cxxpath)
 
 def build(self):
-    buildenv = self.all_envs[self.variant]
+    env = self.all_envs[self.variant]
     get_srcs = self.path.get_src().ant_glob
     excl = []
-    if self.env.BUILD_MFRONT:
+    if env.BUILD_MFRONT:
         paths = get_srcs('mfront', src=True, dir=True)
         paths = [d.abspath() for d in paths]
-        self.env.append_value('INCLUDES', paths)
+        env.append_value('INCLUDES', paths)
     else:
         excl.append('mfront/*.cxx')
 
+    uses = env['all_dependencies']
     self(
         features = 'cxx',
             name = 'asterbibcxx',
           source = get_srcs('**/*.cxx', excl=excl),
-             env = buildenv,
-             use = self.env['all_dependencies'],
+             env = env.derive(),
+             use = ['PYEMBED'] + uses,
     )
 
 ###############################################################################
