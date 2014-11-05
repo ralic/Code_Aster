@@ -118,7 +118,14 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis,&
             okass=.false.
             if (idec(j) .gt. 0) then
                 icomp=icomp+1
+!-- Cas des diametres 0 et 1 :
+!--  En théorie, il n'y a pas besoin de bloquer "artificiellement"
+!--  des DDL qui doivent être nuls. On peut laisser le code gérer
+!--  tout seul, mais les solutions trouvées sont un peu plus souples.
+!--  Les DDL qui doivent être nuls le sont effectivement.
+!--  Cependant, pour conserver la non régression, on conserve les blocages
 !
+!                 okass=.true.
                 if (j .eq. 1 .and. nbdiam .eq. 1) okass=.true.
                 if (j .eq. 2 .and. nbdiam .eq. 1) okass=.true.
                 if (j .eq. 3 .and. nbdiam .eq. 0) okass=.true.

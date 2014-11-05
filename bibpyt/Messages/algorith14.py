@@ -280,9 +280,22 @@ cata_msg = {
   dimension max du problème :  %(i1)d
 """),
 
+    90 : _(u"""
+La mise en oeuvre de la méthode de Mac Neal en sous structuration cyclique
+n'est pas robuste dans le cas où des mouvements d'axe sont possibles
+Conseil et solution : Utilisez la méthode de Craig & Bampton
+"""),
+
+
     91 : _(u"""
  noeud sur l'AXE_Z
  noeud :  %(k1)s
+"""),
+
+    92 : _(u"""
+La mise en oeuvre de la méthode de Mac Neal en sous structuration cyclique
+conduit à un problème singulier pour le cas particulier où on a 2 ou 4 secteurs
+Conseil et solution : Utilisez la méthode de Craig & Bampton
 """),
 
     93 : _(u"""

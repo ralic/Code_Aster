@@ -56,6 +56,7 @@ subroutine prcymn(nomres, soumat, repmat)
 #include "asterfort/pmppr.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rsadpa.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
 #include "blas/daxpy.h"
@@ -93,8 +94,8 @@ subroutine prcymn(nomres, soumat, repmat)
 !
     call jemarq()
     call jeveuo(nomres//'.CYCL_REFE', 'L', vk24=cycl_refe)
-    intf  =cycl_refe(2)
-    basmod=cycl_refe(3)
+    intf  =cycl_refe(2)(1:8)
+    basmod=cycl_refe(3)(1:8)
     call jelibe(nomres//'.CYCL_REFE')
 !
 !
@@ -114,6 +115,32 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 ! --- ALLOCATION DU REPERTOIRE DES NOMS DES SOUS-MATRICES
 !
+
+!-- On a constaté que :
+!--   Si on a des DDL d'axe, le code plante (erreur jeveux - numéro d'objet invalide)
+!--   Si on a 2 ou 4 secteurs, le changement de variable introduit une singularité
+!--
+!-- Compte tenu de la faible utilisation de cette option, on s'arrête en erreur fatale
+!-- dans ces deux cas, et on propose d'utiliser la méthode "CRAIG BAMPTON" à la place. 
+
+     if (nbdax .gt.0 ) then
+       call utmess('F', 'ALGORITH14_90')
+     endif
+   
+!
+! --- RECUPERATION DU NOMBRE DE SECTEURS
+!
+    call jeveuo(nomres//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
+    nbsec=cycl_nbsc(1)
+    call jelibe(nomres//'.CYCL_NBSC')
+    
+    if (nbsec .eq. 2) then
+      call utmess('F', 'ALGORITH14_92')
+    endif
+    if (nbsec .eq. 4) then
+      call utmess('F', 'ALGORITH14_92')
+    endif
+    
     if (nbdax .gt. 0) then
         nbsma=13
     else
@@ -239,12 +266,7 @@ subroutine prcymn(nomres, soumat, repmat)
         call jelira(jexnum(noeint, numa), 'LONMAX', nbnoa)
         call jeveuo(jexnum(noeint, numa), 'L', llnoa)
     endif
-!
-! --- RECUPERATION DU NOMBRE DE SECTEURS
-!
-    call jeveuo(nomres//'.CYCL_NBSC', 'L', vi=cycl_nbsc)
-    nbsec=cycl_nbsc(1)
-    call jelibe(nomres//'.CYCL_NBSC')
+    
 !
 ! --- RECUPERATION RANGS DDL INTERFACE DANS VECTEUR ASSEMBLE
 !
