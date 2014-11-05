@@ -89,7 +89,7 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
     character(len=24) :: numedd, criter, modele, carele
     character(len=24) :: fomult, noojb
     aster_logical :: matcst, assmat
-    aster_logical :: lbid, ltemp, lhydr, lsech, lptot
+    aster_logical :: ltemp, lhydr, lsech, lptot
     real(kind=8), pointer :: vale(:) => null()
 !
 ! DEB------------------------------------------------------------------
@@ -129,10 +129,10 @@ subroutine mestat(modelz, fomulz, lischz, mate, caraz,&
 ! 1.4. ==> ON REGARDE SI LE MATERIAU EST UNE FONCTION DU TEMPS
 !     (DEPENDANCE AVEC LA TEMPERATURE, HYDRATATION, SECHAGE)
 !
-    call nmvcd2('HYDR', mate, lhydr, lbid)
-    call nmvcd2('SECH', mate, lsech, lbid)
-    call nmvcd2('PTOT', mate, lptot, lbid)
-    call nmvcd2('TEMP', mate, ltemp, lbid)
+    call nmvcd2('HYDR', mate, lhydr)
+    call nmvcd2('SECH', mate, lsech)
+    call nmvcd2('PTOT', mate, lptot)
+    call nmvcd2('TEMP', mate, ltemp)
 !
 !
 !     -- LE MATERIAU (ELAS) PEUT-IL CHANGER AU COURS DU TEMPS ?

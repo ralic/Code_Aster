@@ -1,4 +1,14 @@
-subroutine nmvcd2(indez, chmat, exivc, exiref)
+subroutine nmvcd2(name_varcz, matez, exis_varc)
+!
+    implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,59 +25,51 @@ subroutine nmvcd2(indez, chmat, exivc, exiref)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=*) :: indez
-    character(len=*) :: chmat
-    aster_logical :: exivc, exiref
+    character(len=*), intent(in) :: name_varcz
+    character(len=*), intent(in) :: matez
+    aster_logical, intent(out) :: exis_varc
 !
+! --------------------------------------------------------------------------------------------------
 !
-! ------------------------------------------------------------------
-!  TEST SI UNE VARIABLE DE COMMANDE EST PRESENTE
-! ------------------------------------------------------------------
-! IN   INDEX   K8  INDEX DE LA VARIABLE DE COMMANDE
-! IN   CHMAT   K*  SD CHMAT
-! OUT  EXIVC    L  TRUE : VARIABLE DE COMMANDE EST PRESENTE
-! OUT  EXIREF   L  TRUE :VARIABLE DE COMMANDE (VALE_REF) EST PRESENTE
-! ----------------------------------------------------------------------
+! Command variables
 !
+! Is command variable exists ?
 !
+! --------------------------------------------------------------------------------------------------
 !
+! In  name_varc : name of command variable
+! In  mate      : name of material field
+! Out exis_varc : .true. if this command variable has been affected
 !
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: nmax, i, iret1
-    character(len=8) :: index, chmat8
+    integer :: nmax,  i, iret
+    character(len=8) :: mate
+    character(len=8) :: name_varc
     character(len=8), pointer :: cvrcvarc(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-    chmat8=chmat
-    index=indez
-    exivc=.false.
-    call jeexin(chmat8// '.CVRCVARC', iret1)
-    if (iret1 .ne. 0) then
-        call jelira(chmat8// '.CVRCVARC', 'LONMAX', ival=nmax)
-        call jeveuo(chmat8// '.CVRCVARC', 'L', vk8=cvrcvarc)
-        do 1 i = 1, nmax
-            if (cvrcvarc(i) .eq. index) then
-                exivc=.true.
+!
+    mate      = matez
+    name_varc = name_varcz
+    exis_varc = .false.
+!
+    call jeexin(mate// '.CVRCVARC', iret)
+    if (iret .ne. 0) then
+        call jelira(mate// '.CVRCVARC', 'LONMAX', ival=nmax)
+        call jeveuo(mate// '.CVRCVARC', 'L'     , vk8 =cvrcvarc)
+        do i = 1, nmax
+            if (cvrcvarc(i) .eq. name_varc) then
+                exis_varc=.true.
                 goto 2
             endif
-  1     continue
-  2     continue
+        end do
+ 2      continue
     endif
-!
-!
-    exiref=.false.
-    call jeexin(chmat8//'.'//index//'.1.VALE', iret1)
-    if (iret1 .ne. 0) exiref=.true.
-!
 !
     call jedema()
 end subroutine
+

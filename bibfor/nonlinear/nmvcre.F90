@@ -19,7 +19,6 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
 !
     implicit none
 !
-#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
@@ -45,7 +44,6 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
     character(len=14) :: comref
     character(len=19) :: champ
     integer :: iret
-    aster_logical :: exi, exiref
 !
 !
     call jemarq()
@@ -58,11 +56,6 @@ subroutine nmvcre(modelz, matz, carelz, comrez)
     call detrsd('VARI_COM', comref)
     call vrcref(modele, mate, carele, champ)
     call exisd('CHAMP_GD', champ, iret)
-!
-    call nmvcd2('SECH', mate, exi, exiref)
-    if (exi .and. .not.exiref) then
-        call utmess('F', 'ALGORITH8_61')
-    endif
 !
     call jedema()
 !

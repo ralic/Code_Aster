@@ -114,7 +114,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=24) :: chharm
     character(len=19) :: chvarc, chvref
     integer :: i
-    aster_logical :: ltemp, ltref
+    aster_logical :: ltemp
 !
 !
     call jemarq()
@@ -661,7 +661,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 ! ====================================================================
 !       -- CHARGEMENT DE DILATATION THERMIQUE :
-    call nmvcd2('TEMP', mate, ltemp, ltref)
+    call nmvcd2('TEMP', mate, ltemp)
     if (ltemp) then
         call vrcins(modele, mate, cara, time, chvarc,&
                     codret)

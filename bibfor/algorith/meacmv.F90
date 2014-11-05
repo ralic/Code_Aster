@@ -96,7 +96,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
     character(len=24) :: k24bid, blan24, vediri, vadiri, velapl, valapl, vecham
     character(len=24) :: vacham, chlapl, chdiri, chcham, chths, charge, infoch
     character(len=24) :: vecths
-    aster_logical :: ass1er, lbid, lhydr, lsech, ltemp, lptot
+    aster_logical :: ass1er, lhydr, lsech, ltemp, lptot
 !
 ! DEB-------------------------------------------------------------------
 !====
@@ -136,10 +136,10 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
                 com, codret)
     call vrcref(modele(1:8), mate(1:8), carele(1:8), chvref)
     call nmvcex('TOUT', com, chvarc)
-    call nmvcd2('HYDR', mate, lhydr, lbid)
-    call nmvcd2('PTOT', mate, lptot, lbid)
-    call nmvcd2('SECH', mate, lsech, lbid)
-    call nmvcd2('TEMP', mate, ltemp, lbid)
+    call nmvcd2('HYDR', mate, lhydr)
+    call nmvcd2('PTOT', mate, lptot)
+    call nmvcd2('SECH', mate, lsech)
+    call nmvcd2('TEMP', mate, ltemp)
 !
     call jeveuo(charge, 'L', jchar)
     infoch = lischa//'.INFC'

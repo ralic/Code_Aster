@@ -85,10 +85,6 @@ cata_msg = {
  la viscosité UN_SUR_K doit être différente de zéro
 """),
 
-    61 : _(u"""
- Il manque le séchage de référence (AFFE_MATERIAU/AFFE_VARC/VALE_REF)
-"""),
-
     65 : _(u"""
 Arrêt suite à l'échec de l'intégration de la loi de comportement.
    Vérifiez vos paramètres, la cohérence des unités.

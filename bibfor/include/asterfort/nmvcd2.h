@@ -18,10 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmvcd2(indez, chmat, exivc, exiref)
-        character(len=*) :: indez
-        character(len=*) :: chmat
-        aster_logical :: exivc
-        aster_logical :: exiref
+    subroutine nmvcd2(name_varcz, matez, exis_varc)
+        character(len=*), intent(in) :: name_varcz
+        character(len=*), intent(in) :: matez
+        aster_logical, intent(out) :: exis_varc
     end subroutine nmvcd2
 end interface

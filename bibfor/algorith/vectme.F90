@@ -56,7 +56,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
     character(len=19) :: vecele, resuel, chvref, chsith
     character(len=24) :: chgeom, chcara(18), chtime, ligrmo, vrcplu
     character(len=24) :: lchin(mxnbin), lchout(mxnbou), modele, carele
-    aster_logical :: ltemp, lbid, lxfem
+    aster_logical :: ltemp, lxfem
 !
     call jemarq()
     newnom = '.0000000'
@@ -75,7 +75,7 @@ subroutine vectme(modelz, carelz, mate, compor, complz,&
 !
 !     -- S'IL N'Y A PAS DE TEMPERATURE, IL N'Y A RIEN A FAIRE :
 !     ---------------------------------------------------------
-    call nmvcd2('TEMP', mate, ltemp, lbid)
+    call nmvcd2('TEMP', mate, ltemp)
     if (.not.ltemp) goto 999
 !
 !     -- S'AGIT-IL D'UN MODELE X-FEM

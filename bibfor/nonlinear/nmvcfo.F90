@@ -70,7 +70,7 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
     character(len=19) :: lchout(mxnbou), lchin(mxnbin)
 !
     aster_logical :: exitem, exihyd, exisec, exiepa
-    aster_logical :: lbid, lxfem
+    aster_logical :: lxfem
     integer :: nbres, iret
     character(len=6) :: masque
     character(len=8) :: modele
@@ -115,10 +115,10 @@ subroutine nmvcfo(modelz, mate, carele, compor, comref,&
 !
 ! --- VARIABLES DE COMMANDE PRESENTES
 !
-    call nmvcd2('TEMP', mate, exitem, lbid)
-    call nmvcd2('HYDR', mate, exihyd, lbid)
-    call nmvcd2('SECH', mate, exisec, lbid)
-    call nmvcd2('EPSA', mate, exiepa, lbid)
+    call nmvcd2('TEMP', mate, exitem)
+    call nmvcd2('HYDR', mate, exihyd)
+    call nmvcd2('SECH', mate, exisec)
+    call nmvcd2('EPSA', mate, exiepa)
 !
 ! --- CHAMPS D'ENTREE
 !

@@ -74,7 +74,7 @@ subroutine nmvcpr(modelz, numedd, mate, carele, comref,&
     character(len=19) :: lchout(mxnbou), lchin(mxnbin)
 !
     aster_logical :: exitem, exihyd, exipto, exisec, exiepa, exipha
-    aster_logical :: lbid, exiph1, exiph2, lxfem
+    aster_logical :: exiph1, exiph2, lxfem
     integer :: iret
     real(kind=8) :: x(2)
     character(len=19) :: vecel(2), vecelp, vecelm
@@ -121,13 +121,13 @@ subroutine nmvcpr(modelz, numedd, mate, carele, comref,&
 !
 ! --- VARIABLES DE COMMANDE PRESENTES
 !
-    call nmvcd2('HYDR', mate, exihyd, lbid)
-    call nmvcd2('PTOT', mate, exipto, lbid)
-    call nmvcd2('SECH', mate, exisec, lbid)
-    call nmvcd2('EPSA', mate, exiepa, lbid)
-    call nmvcd2('META_ZIRC', mate, exiph1, lbid)
-    call nmvcd2('META_ACIER', mate, exiph2, lbid)
-    call nmvcd2('TEMP', mate, exitem, lbid)
+    call nmvcd2('HYDR', mate, exihyd)
+    call nmvcd2('PTOT', mate, exipto)
+    call nmvcd2('SECH', mate, exisec)
+    call nmvcd2('EPSA', mate, exiepa)
+    call nmvcd2('META_ZIRC', mate, exiph1)
+    call nmvcd2('META_ACIER', mate, exiph2)
+    call nmvcd2('TEMP', mate, exitem)
     exipha = exitem .and. (exiph1.or.exiph2)
 !
 ! --- CHAMP DE GEOMETRIE
