@@ -90,7 +90,7 @@ PHASINIT=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_VAR2_R',
                            AFFE=_F(  TOUT = 'OUI',
              NOM_CMP = ( 'V1', 'V2', 'V3', 'V4',  'V5',          ),
 
-    VALE = ( 0.7, 0.0, 0.3, 0.0,  0.,     ))
+    VALE = ( 0.7, 0.0, 0.3, 0.0,  0.0,     ))
                         )
 
 MOTH=AFFE_MODELE( MAILLAGE=MAIL,
@@ -99,16 +99,16 @@ MOTH=AFFE_MODELE( MAILLAGE=MAIL,
                            MODELISATION = 'AXIS'))
 
 ACIER=DEFI_MATERIAU(
-              THER=_F( RHO_CP = 5260000.0,
-                    LAMBDA = 33.5),
+              THER=_F( RHO_CP = 5.260000E-3,
+                    LAMBDA = 33.5E-3),
          META_ACIER=_F( TRC = TRC,
                     AR3 = 830.0,
-                    ALPHA = -0.0247,
-                    MS0 = 365.0,
-                    AC1 = 700.0,
-                    AC3 = 800.0,
-                    TAUX_1 = 0.5,
-                    TAUX_3 = 0.5))
+                    ALPHA = -0.0306,
+                    MS0 = 400.0,
+                    AC1 = 724.0,
+                    AC3 = 846.0,
+                    TAUX_1 = 0.034,
+                    TAUX_3 = 0.034))
 
 CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL,
                      AFFE=_F( TOUT = 'OUI', MATER = ACIER))
@@ -180,11 +180,7 @@ SIGY=DEFI_FONCTION(
            VALE=(20.,   100.,
                  120.,  100.,))
 
-YOUNG=DEFI_FONCTION(
-       NOM_PARA='TEMP',
-     PROL_DROITE='CONSTANT',
-           VALE=(20.,   25000.,
-                 120.,  20000.,))
+YOUNG=DEFI_CONSTANTE( VALE=200000.)
 
 NU=DEFI_CONSTANTE( VALE=0.3)
 
@@ -199,8 +195,8 @@ ALPHAA=DEFI_FONCTION(
              NOM_PARA='TEMP',
           PROL_GAUCHE='CONSTANT',
            PROL_DROITE='CONSTANT',
-                 VALE=(20.,  0.0001,
-                       120., 0.0001,))
+                 VALE=(20.,  10.E-05,
+                       120., 10.E-05,))
 
 MELANGE=DEFI_FONCTION(
               NOM_PARA='META',
@@ -341,70 +337,80 @@ CHVAR20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
 RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=2.)
 
-#------------------------------------------------------------------
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO3',
                       NOM_CMP='SIYY',
                       CHAM_GD=CHSIY11,
-                      VALE_CALC=60.0,
+                      VALE_CALC=1.20547945205479E+02,
+                      TOLE_MACHINE =1.E-12,
                       ),
                    _F(NOEUD='NO3',
                       NOM_CMP='SIYY',
                       CHAM_GD=CHSIY14,
-                      VALE_CALC=142.0,
+                      VALE_CALC=1.91762013729976E+02,
+                      TOLE_MACHINE=1.E-12,
                       ),
                    _F(NOEUD='NO3',
                       NOM_CMP='SIYY',
                       CHAM_GD=CHSIY20,
-                      VALE_CALC=218.0,
+                      VALE_CALC=2.49427917620137E+02,
+                      TOLE_MACHINE=1.E-12,
                       ),
                    _F(NOEUD='NO3',
                       NOM_CMP='DY',
                       CHAM_GD=CHUY11,
-                      VALE_CALC=4.0,
+                      VALE_CALC=3.99999999999994E+00,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
                       NOM_CMP='DY',
                       CHAM_GD=CHUY14,
-                      VALE_CALC=13.0,
+                      VALE_CALC=1.29999999999997E+01,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
                       NOM_CMP='DY',
                       CHAM_GD=CHUY20,
-                      VALE_CALC=31.0,
+                      VALE_CALC=3.10000000000000E+01,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='V1',
                       CHAM_GD=CHVAR11,
-                      VALE_CALC=0.0,),
+                      VALE_CALC=2.39726027397255E-03,
+                      TOLE_MACHINE = 1.E-12,
+                      ),
                    _F(NOEUD='NO3',
                       NOM_CMP='V1',
                       CHAM_GD=CHVAR14,
-                      VALE_CALC=4.8999999999999998E-3,
+                      VALE_CALC=1.10411899313499E-02,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
                       NOM_CMP='V1',
                       CHAM_GD=CHVAR20,
-                      VALE_CALC=0.019099999999999999,
+                      VALE_CALC=2.87528604118993E-02,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='V7',
                       CHAM_GD=CHVAR11,
-                      VALE_CALC=0.0,),
+                      VALE_CALC= 2.05479452054790E+01,
+                      TOLE_MACHINE = 1.E-12,
+                      ),
                    _F(NOEUD='NO3',
                       NOM_CMP='V7',
                       CHAM_GD=CHVAR14,
-                      VALE_CALC=42.0,
+                      VALE_CALC=9.17620137299763E+01,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
                       NOM_CMP='V7',
                       CHAM_GD=CHVAR20,
-                      VALE_CALC=118.0,
+                      VALE_CALC=1.49427917620137E+02,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    ),
           )
 
 FIN()
-#

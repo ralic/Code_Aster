@@ -17,7 +17,7 @@
 # ======================================================================
 # AVEC ECROUISSAGE NON LINEAIRE
 # BARREAU CYLINDRIQUE EN TRACTION
-# MODELISATION AXIS GRANDE DEFORMATION
+# MODELISATION AXIS GRANDES DEFORMATIONS
 #==================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
@@ -86,10 +86,11 @@ _F( VALE = (
      )
 
 PHASINIT=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_VAR2_R',
-                    MAILLAGE=MAIL,
-                    AFFE=_F( TOUT = 'OUI',
-                             NOM_CMP = ( 'V1', 'V2', 'V3', 'V4',  'V5',  ),
-                             VALE    = ( 0.7 , 0.0 , 0.3 , 0.0 ,  0.0 ,  ))
+                           MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',
+             NOM_CMP = ( 'V1', 'V2', 'V3', 'V4',  'V5',          ),
+
+    VALE = ( 0.7, 0.0, 0.3, 0.0,  0.0,     ))
                         )
 
 MOTH=AFFE_MODELE( MAILLAGE=MAIL,
@@ -98,67 +99,63 @@ MOTH=AFFE_MODELE( MAILLAGE=MAIL,
                            MODELISATION = 'AXIS'))
 
 ACIER=DEFI_MATERIAU(
-              THER=_F( RHO_CP = 5260000.0,
-                    LAMBDA = 33.5),
+              THER=_F( RHO_CP = 5.260000E-3,
+                    LAMBDA = 33.5E-3),
          META_ACIER=_F( TRC = TRC,
                     AR3 = 830.0,
-                    ALPHA = -0.0247,
-                    MS0 = 365.0,
-                    AC1 = 700.0,
-                    AC3 = 800.0,
-                    TAUX_1 = 0.5,
-                    TAUX_3 = 0.5))
+                    ALPHA = -0.0306,
+                    MS0 = 400.0,
+                    AC1 = 724.0,
+                    AC3 = 846.0,
+                    TAUX_1 = 0.034,
+                    TAUX_3 = 0.034))
 
 CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL,
                      AFFE=_F( TOUT = 'OUI', MATER = ACIER))
 
-TIMPO=DEFI_FONCTION( NOM_RESU='TEMP',
-                     NOM_PARA='INST',
-                     VALE=( 0.,    20.,
-                            1.,   120.,
-                            2.,   120.,
+TIMPO=DEFI_FONCTION(
+            NOM_RESU='TEMP',
+            NOM_PARA='INST',
+                VALE=(0.,    20.,
+                      1.,   120.,
+                      2.,   120.,
                ),
          PROL_DROITE='CONSTANT',
-        PROL_GAUCHE='LINEAIRE')
+         PROL_GAUCHE='LINEAIRE')
 
-LIST_T=DEFI_LIST_REEL(
-                DEBUT=0.,INTERVALLE=(
-          _F( JUSQU_A = 1.,  NOMBRE = 1),
-          _F( JUSQU_A = 2.,  NOMBRE = 200)))
+LIST_T=DEFI_LIST_REEL( DEBUT=0.,
+                       INTERVALLE=( _F( JUSQU_A = 1.,  NOMBRE = 1),
+                                    _F( JUSQU_A = 2.,  NOMBRE = 200)))
 
 CHTH=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
-        MAILLAGE=MAIL,
-            AFFE=_F( TOUT = 'OUI',
-                  NOM_CMP = 'TEMP',
-                  VALE_F = TIMPO))
+                MAILLAGE=MAIL,
+                AFFE=_F( TOUT = 'OUI',
+                         NOM_CMP = 'TEMP',
+                         VALE_F = TIMPO))
 
 TEMPE=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F( CHAM_GD = CHTH, LIST_INST = LIST_T))
 
 TEMPE=CALC_META(reuse=TEMPE,
+                RESULTAT=TEMPE,
                 MODELE=MOTH,
                 CHAM_MATER=CHMAT,
-                RESULTAT=TEMPE,
                 ETAT_INIT=_F(META_INIT_ELNO=PHASINIT),
                 COMPORTEMENT=_F(RELATION='ACIER',
                              TOUT='OUI'),
-                OPTION=('META_ELNO','META_NOEU'),);
+                OPTION='META_ELNO',);
 
 # CALCUL MECANIQUE
 
-MOMECA=AFFE_MODELE(
-          MAILLAGE=MAIL,
-              AFFE=_F( TOUT = 'OUI',
-             PHENOMENE = 'MECANIQUE',
-             MODELISATION = 'AXIS'))
+MOMECA=AFFE_MODELE( MAILLAGE=MAIL,
+                    AFFE=_F( TOUT = 'OUI',
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'AXIS'))
 
-COU_T20=DEFI_FONCTION(
-               NOM_PARA='EPSI',
-               PROL_DROITE='LINEAIRE',
-               VALE=(
-               0.99,    250.,
-               ))
+COU_T20=DEFI_FONCTION( NOM_PARA='EPSI',
+                       PROL_DROITE='LINEAIRE',
+                       VALE=( 0.99,    250.,  ))
 
 COU_T120=DEFI_FONCTION(
                NOM_PARA='EPSI',
@@ -177,35 +174,36 @@ COU_TRAC=DEFI_NAPPE(
             PROL_GAUCHE='CONSTANT',
              PROL_DROITE='CONSTANT')
 
-SIGY=DEFI_FONCTION( NOM_PARA='TEMP',
-                    PROL_DROITE='CONSTANT',
-                    VALE=( 20.,  100.,
-                          120.,  100.,))
+SIGY=DEFI_FONCTION(
+       NOM_PARA='TEMP',
+     PROL_DROITE='CONSTANT',
+           VALE=(20.,   100.,
+                 120.,  100.,))
 
-YOUNG=DEFI_FONCTION( NOM_PARA='TEMP',
-                     PROL_DROITE='CONSTANT',
-                     VALE=( 20.,  25000.,
-                           120.,  20000.,))
+YOUNG=DEFI_CONSTANTE( VALE=200000.)
 
 NU=DEFI_CONSTANTE( VALE=0.3)
 
-ALPHAF=DEFI_FONCTION( NOM_PARA='TEMP',
-                      PROL_GAUCHE='CONSTANT',
-                      PROL_DROITE='CONSTANT',
-                      VALE=( 20.,  10.E-06,
-                            120., 10.E-06,))
+ALPHAF=DEFI_FONCTION(
+             NOM_PARA='TEMP',
+          PROL_GAUCHE='CONSTANT',
+           PROL_DROITE='CONSTANT',
+                 VALE=(20.,  10.E-06,
+                       120., 10.E-06,))
 
-ALPHAA=DEFI_FONCTION( NOM_PARA='TEMP',
-                      PROL_GAUCHE='CONSTANT',
-                      PROL_DROITE='CONSTANT',
-                      VALE=( 20., 0.0001,
-                            120., 0.0001,))
+ALPHAA=DEFI_FONCTION(
+             NOM_PARA='TEMP',
+          PROL_GAUCHE='CONSTANT',
+           PROL_DROITE='CONSTANT',
+                 VALE=(20.,  10.E-05,
+                       120., 10.E-05,))
 
-MELANGE=DEFI_FONCTION( NOM_PARA='META',
-                       PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',
-                       VALE=(0.000,  0.0000,
-                             1.000,  1.0000,))
+MELANGE=DEFI_FONCTION(
+              NOM_PARA='META',
+            PROL_DROITE='LINEAIRE',
+           PROL_GAUCHE='LINEAIRE',
+                  VALE=(0.000,  0.0000,
+                        1.000,  1.0000,))
 
 ACIERM=DEFI_MATERIAU(
            ELAS_META_FO=_F(
@@ -232,16 +230,17 @@ ACIERM=DEFI_MATERIAU(
 CHP_MATL=AFFE_MATERIAU(
             MAILLAGE=MAIL,
                 AFFE=_F( TOUT = 'OUI',
-                      MATER = ACIERM),
+                      MATER = ACIERM,
+                      ),
                 AFFE_VARC=(_F(TOUT='OUI',
                              EVOL=TEMPE,
                              NOM_VARC='M_ACIER',
                              NOM_CHAM='META_ELNO'),
                           _F(TOUT='OUI',
                              EVOL=TEMPE,
+                             VALE_REF=20,
                              NOM_VARC='TEMP',
-                             NOM_CHAM='TEMP',
-                             VALE_REF=20),),);
+                             NOM_CHAM='TEMP'),),);
 
 INST_M=DEFI_LIST_REEL(
                 DEBUT=0.0,INTERVALLE=(
@@ -266,42 +265,43 @@ CHR_TRAC=AFFE_CHAR_MECA(
 
 U=STAT_NON_LINE(
             MODELE=MOMECA,
-            CHAM_MATER=CHP_MATL,EXCIT=_F( CHARGE = CHR_LIAI),
-            COMPORTEMENT=_F( RELATION = 'META_P_INL',
-                          RELATION_KIT = ('ACIER',),
-                          DEFORMATION = 'SIMO_MIEHE'),
-            INCREMENT=_F( LIST_INST = INST_M,
-                          NUME_INST_FIN = 1),
+        CHAM_MATER=CHP_MATL,EXCIT=_F( CHARGE = CHR_LIAI),
+         COMPORTEMENT=_F( RELATION = 'META_P_INL',
+                      RELATION_KIT = ('ACIER',),
+                      DEFORMATION = 'SIMO_MIEHE'),
+         INCREMENT=_F( LIST_INST = INST_M,
+                    NUME_INST_FIN = 1),
             NEWTON=_F( MATRICE = 'TANGENTE',
-                       REAC_ITER = 1),
-            CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                            ITER_GLOB_MAXI = 50),
-            RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3))
+                    REAC_ITER = 1),
+       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
+                    ITER_GLOB_MAXI = 50),
+     RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3))
 
 U=STAT_NON_LINE(reuse=U,
-                ETAT_INIT=_F( EVOL_NOLI = U, NUME_ORDRE = 1),
-                MODELE=MOMECA,
-                CHAM_MATER=CHP_MATL,
-                EXCIT=( _F( CHARGE = CHR_LIAI),
-                        _F( CHARGE = CHR_TRAC,
-                             FONC_MULT = F_CHAR,
-                             TYPE_CHARGE = 'DIDI')),
-                COMPORTEMENT=_F( RELATION = 'META_P_INL',
-                              RELATION_KIT = ('ACIER',),
-                              DEFORMATION = 'SIMO_MIEHE'),
-                INCREMENT=_F( LIST_INST = INST_M),
-                NEWTON=_F( MATRICE = 'TANGENTE',
-                           REAC_ITER = 1),
-                CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                ITER_GLOB_MAXI = 50),
-                RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3))
+        ETAT_INIT=_F( EVOL_NOLI = U,
+                   NUME_ORDRE = 1),
+           MODELE=MOMECA,
+       CHAM_MATER=CHP_MATL,EXCIT=(
+            _F( CHARGE = CHR_LIAI),
+                  _F( CHARGE = CHR_TRAC,
+                   FONC_MULT = F_CHAR,
+                   TYPE_CHARGE = 'DIDI')),
+        COMPORTEMENT=_F( RELATION = 'META_P_INL',
+                    RELATION_KIT = ('ACIER',),
+                    DEFORMATION = 'SIMO_MIEHE'),
+        INCREMENT=_F( LIST_INST = INST_M),
+           NEWTON=_F( MATRICE = 'TANGENTE',
+                   REAC_ITER = 1),
+      CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
+                   ITER_GLOB_MAXI = 50),
+     RECH_LINEAIRE=_F( ITER_LINE_MAXI = 3))
 
 U=CALC_CHAMP(reuse=U,RESULTAT=U,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'))
 
 
 U=CALC_CHAMP(reuse=U,
-             RESULTAT=U,
-             CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
+      RESULTAT=U,
+        CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU')
 
 CHSIY11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
 RESULTAT=U, NOM_CHAM='SIGM_NOEU',
@@ -339,78 +339,80 @@ CHVAR20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
 RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=2.)
 
-#------------------------------------------------------------------
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='SIYY',
                       CHAM_GD=CHSIY11,
-                      VALE_CALC=59.724891293855,
+                      VALE_CALC=1.20113910174925E+02,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='SIYY',
                       CHAM_GD=CHSIY14,
-                      VALE_CALC=140.9974996111,
+                      VALE_CALC=1.90879298791993E+02,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='SIYY',
                       CHAM_GD=CHSIY20,
-                      VALE_CALC=215.66273036229,
+                      VALE_CALC=2.47146107033488E+02,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='DY',
                       CHAM_GD=CHUY11,
-                      VALE_CALC=3.997513578839,
+                      VALE_CALC=3.99751358807048E+00,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='DY',
                       CHAM_GD=CHUY14,
-                      VALE_CALC=12.997513578839,
+                      VALE_CALC= 1.29975135880703E+01,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='DY',
                       CHAM_GD=CHUY20,
-                      VALE_CALC=30.997513578839,
+                      VALE_CALC=3.09975135880705E+01,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
                       NOM_CMP='V1',
                       CHAM_GD=CHVAR11,
-                      VALE_CALC=0.0E+00,),
-                   _F(NOEUD='NO3',
-                      CRITERE='RELATIF',
-                      NOM_CMP='V1',
-                      CHAM_GD=CHVAR14,
-                      VALE_CALC=4.8787703363342E-03,),
-                   _F(NOEUD='NO3',
-                      CRITERE='RELATIF',
-                      NOM_CMP='V1',
-                      CHAM_GD=CHVAR20,
-                      VALE_CALC=0.018866871352413,),
-                   _F(NOEUD='NO3',
-                      CRITERE='ABSOLU',
-                      NOM_CMP='V7',
-                      CHAM_GD=CHVAR11,
-                      VALE_CALC=0.0E+00,),
-                   _F(NOEUD='NO3',
-                      CRITERE='RELATIF',
-                      NOM_CMP='V7',
-                      CHAM_GD=CHVAR14,
-                      VALE_CALC=41.818031454293,
+                      VALE_CALC=2.39196685482699E-03,
+                      TOLE_MACHINE = 1.E-10,
                       ),
                    _F(NOEUD='NO3',
-                      CRITERE='RELATIF',
+                      NOM_CMP='V1',
+                      CHAM_GD=CHVAR14,
+                      VALE_CALC=1.09680756477477E-02,
+                      TOLE_MACHINE = 1.E-12,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='V1',
+                      CHAM_GD=CHVAR20,
+                      VALE_CALC=2.83169374338426E-02,
+                      TOLE_MACHINE = 1.E-12,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='V7',
+                      CHAM_GD=CHVAR11,
+                      VALE_CALC=2.05025730413742E+01,
+                      TOLE_MACHINE = 1.E-12,
+                      ),
+                   _F(NOEUD='NO3',
+                      NOM_CMP='V7',
+                      CHAM_GD=CHVAR14,
+                      VALE_CALC=9.15239672252249E+01,
+                      TOLE_MACHINE = 1.E-12,
+                      ),
+                   _F(NOEUD='NO3',
                       NOM_CMP='V7',
                       CHAM_GD=CHVAR20,
-                      VALE_CALC=117.24097649623,
+                      VALE_CALC=1.48008633505534E+02,
+                      TOLE_MACHINE = 1.E-12,
                       ),
                    ),
           )
 
 FIN()
-#
