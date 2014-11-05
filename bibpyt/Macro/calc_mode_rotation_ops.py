@@ -45,12 +45,13 @@ def calc_mode_rotation_ops(self, MATR_RIGI, MATR_MASS, MATR_AMOR, MATR_GYRO,
     self.set_icmd(1)
 
     motscit = {}
-    if METHODE == 'QZ':
+    
+    if  CALC_FREQ['OPTION']== 'PLUS_PETITE':
         motscit['CALC_FREQ'] = _F(OPTION='PLUS_PETITE',
                                   SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
                                   NMAX_FREQ=CALC_FREQ['NMAX_FREQ'])
 
-    if METHODE == 'SORENSEN':
+    else:
         motscit['CALC_FREQ'] = _F(OPTION='CENTRE',
                                   SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
                                   NMAX_FREQ=CALC_FREQ['NMAX_FREQ'],
