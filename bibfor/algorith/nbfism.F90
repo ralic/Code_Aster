@@ -46,7 +46,7 @@ subroutine nbfism(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: instm, instp
     real(kind=8) :: geomi(ndim, nno1), ddlm(*), ddld(*), angmas(*)
-    real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
+    real(kind=8) :: sigm(2*ndim, npg), sigp(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
     real(kind=8) :: crit(*)
@@ -162,6 +162,7 @@ subroutine nbfism(ndim, nno1, nno2, nno3, npg,&
     if (resi) call r8inir(nddl, 0.d0, vect, 1)
     if (rigi) call r8inir(nddl*nddl, 0.d0, matr, 1)
 !
+    call r8inir(2*ndim, 0.d0, sigm_ldc, 1)
     call r8inir(6, 0.d0, taup, 1)
     call r8inir(54, 0.d0, dsidep, 1)
 !
@@ -270,7 +271,6 @@ subroutine nbfism(ndim, nno1, nno2, nno3, npg,&
         if (resi) then
             call dcopy(2*ndim, taup, 1, sigp(1,g),1)
             call dscal(2*ndim, 1.d0/jp, sigp(1,g),1)
-            sigp(2*ndim+1,g) = 0.d0
 !
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0

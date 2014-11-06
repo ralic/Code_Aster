@@ -49,7 +49,7 @@ subroutine nbfilg(ndim, nno1, nno2, nno3, npg,&
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: instm, instp
     real(kind=8) :: geomi(ndim, nno1), ddlm(*), ddld(*), angmas(*)
-    real(kind=8) :: sigm(2*ndim+1, npg), sigp(2*ndim+1, npg)
+    real(kind=8) :: sigm(2*ndim, npg), sigp(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
     real(kind=8) :: vect(*), matr(*)
     real(kind=8) :: crit(*)
@@ -266,8 +266,6 @@ subroutine nbfilg(ndim, nno1, nno2, nno3, npg,&
             call dscal(2*ndim, exp(gp), sigp(1, g), 1)
             call dcopy(2*ndim, sigp(1, g), 1, taup, 1)
             call dscal(2*ndim, 1.d0/jp, sigp(1, g), 1)
-!
-            sigp(2*ndim+1,g) = 0.d0
 !
 ! - CONTRAINTE HYDROSTATIQUE ET DEVIATEUR
             tauhy = (taup(1)+taup(2)+taup(3))/3.d0

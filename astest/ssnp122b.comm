@@ -31,32 +31,17 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MA=LIRE_MAILLAGE(FORMAT='MED');
 
-
-
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_MA=_F(NOM= 'ESSAI', TOUT='OUI'),
-              CREA_GROUP_NO=(_F(GROUP_MA='AB'),
-                             _F(GROUP_MA='DA'),
-                             _F(GROUP_MA='CD')));
-
-MO_L=AFFE_MODELE(MAILLAGE=MA,
-               
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_SI'));
-
-# MO_NL=AFFE_MODELE(MAILLAGE=MA,
-#                
-#                AFFE=_F(TOUT='OUI',
-#                        PHENOMENE='MECANIQUE',
-#                        MODELISATION='D_PLAN_GRAD_VARI'));
+              CREA_GROUP_NO=(_F(GROUP_MA='AB',),
+                             _F(GROUP_MA='DA',),
+                             _F(GROUP_MA='CD',),),);
 
 MO_NLG=AFFE_MODELE(MAILLAGE=MA,
-               
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='D_PLAN_INCO_UPGB'));
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN_INCO_UPGB',),);
 
 TRACT= DEFI_FONCTION(
   NOM_PARA = 'EPSI',
@@ -65,74 +50,27 @@ TRACT= DEFI_FONCTION(
     1.002,  2400),
   PROL_DROITE = 'LINEAIRE');
 
-ACIER = DEFI_MATERIAU(
-  ELAS       = _F(E = 200000,  NU = 0.3),
-  TRACTION   = _F(SIGM = TRACT),
-  ROUSSELIER = _F(D = 2,  SIGM_1 = 500,  PORO_INIT = 0.01),
-  NON_LOCAL  = _F(
-                #   LONG_CARA=0.1,
-                   C_GONF=1
-                  ));
+ACIER = DEFI_MATERIAU(ELAS       = _F(E = 200000,  NU = 0.3),
+                      TRACTION   = _F(SIGM = TRACT),
+                      ROUSSELIER = _F(D = 2,  SIGM_1 = 500,  PORO_INIT = 0.01),
+                      NON_LOCAL  = _F(C_GONF=1,),);
 
 CHP_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
-                              MATER=ACIER));
+                              MATER=ACIER,),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=(_F(JUSQU_A=1.5,
-                                     NOMBRE=50)));
+                                     NOMBRE=50,),),);
 
 U_CHAR=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,1.5,1.5),
-                     PROL_DROITE='CONSTANT');
+                     PROL_DROITE='CONSTANT',);
 
-CHA_L=AFFE_CHAR_MECA(MODELE=MO_L,
-                      DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
-                                _F(GROUP_NO='A',DX=0.0),
-                                _F(GROUP_NO='CD',DY=1.0)));
-# CHA_NL=AFFE_CHAR_MECA(MODELE=MO_NL,
-#                       DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
-#                                 _F(GROUP_NO='A',DX=0.0),
-#                                 _F(GROUP_NO='CD',DY=1.0)));
 CHA_NLG=AFFE_CHAR_MECA(MODELE=MO_NLG,
-                      DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0),
-                                _F(GROUP_NO='A',DX=0.0),
-                                _F(GROUP_NO='CD',DY=1.0)));
-
-U_L=STAT_NON_LINE(MODELE=MO_L,
-                CHAM_MATER=CHP_MAT,
-                EXCIT=_F(CHARGE=CHA_L,
-                         FONC_MULT=U_CHAR),
-                COMPORTEMENT=_F(RELATION='ROUSSELIER',
-                             DEFORMATION='SIMO_MIEHE',
-                             RESI_INTE_RELA=1.E-06,
-                             ITER_INTE_MAXI=15),
-                INCREMENT=_F(LIST_INST=L_INST),
-                NEWTON=_F(MATRICE='TANGENTE',
-                          REAC_ITER=1),
-                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5),
-                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-                               ITER_GLOB_MAXI=15));
-
-# U_NL=STAT_NON_LINE(MODELE=MO_NL,
-#                 CHAM_MATER=CHP_MAT,
-#                 EXCIT=_F(CHARGE=CHA_NL,
-#                          FONC_MULT=U_CHAR),
-#                 COMPORTEMENT=_F(RELATION='ROUSSELIER',
-#                              DEFORMATION='SIMO_MIEHE',
-#                              RESI_INTE_RELA=1.E-06,
-#                              ITER_INTE_MAXI=15),
-#                 INCREMENT=_F(LIST_INST=L_INST),
-#                 NEWTON=_F(MATRICE='TANGENTE',
-#                           REAC_ITER=1),
-#                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
-#                                ITER_GLOB_MAXI=150),
-#                 LAGR_NON_LOCAL=_F(
-#                   ITER_DUAL_MAXI=25,
-#                   RESI_DUAL_ABSO=1.E-3,
-#                   RESI_PRIM_ABSO=1.E-5,
-#                   R=50.0,
-#                   ITER_PRIM_MAXI=10));
+                      DDL_IMPO=(_F(GROUP_NO='AB',DY=0.0,),
+                                _F(GROUP_NO='A',DX=0.0,),
+                                _F(GROUP_NO='CD',DY=1.0,),),);
 
 # LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
 # ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
@@ -140,68 +78,19 @@ U_L=STAT_NON_LINE(MODELE=MO_L,
 U_NLG=STAT_NON_LINE(MODELE=MO_NLG,
                 CHAM_MATER=CHP_MAT,
                 EXCIT=_F(CHARGE=CHA_NLG,
-                         FONC_MULT=U_CHAR),
+                         FONC_MULT=U_CHAR,),
                 COMPORTEMENT=_F(RELATION='ROUSSELIER',
-                             DEFORMATION='SIMO_MIEHE',
-                             RESI_INTE_RELA=1.E-06,
-                             ITER_INTE_MAXI=15),
-                INCREMENT=_F(LIST_INST=L_INST),
+                                DEFORMATION='SIMO_MIEHE',
+                                RESI_INTE_RELA=1.E-06,
+                                ITER_INTE_MAXI=15,),
+                INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',
-                          REAC_ITER=1),
+                          REAC_ITER=1,),
                 SOLVEUR=_F(METHODE='MUMPS',
-                           NPREC=-1),
+                           NPREC=-1,),
                 CONVERGENCE=_F(RESI_REFE_RELA=1.E-4,
                                SIGM_REFE = 500 ,
-                               EPSI_REFE = 1));
-
-
-TEST_RESU(RESU=(_F(INST=0.93,
-                   TYPE_TEST='MAX',
-                   RESULTAT=U_L,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=942.702064553,
-                   ),
-                _F(INST=0.93,
-                   TYPE_TEST='MAX',
-                   RESULTAT=U_L,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIZZ',
-                   VALE_CALC=135.667713608,
-                   ),
-                _F(INST=0.93,
-                   TYPE_TEST='MAX',
-                   RESULTAT=U_L,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V1',
-                   VALE_CALC=0.629858112589,
-                   ),
-                _F(INST=0.93,
-                   TYPE_TEST='MAX',
-                   RESULTAT=U_L,
-                   NOM_CHAM='VARI_ELGA',
-                   NOM_CMP='V2',
-                   VALE_CALC=0.224929813996,
-                   ),
-                ),
-          )
-
-TEST_RESU(RESU=(_F(INST=1.5,
-                   TYPE_TEST='MAX',
-                   RESULTAT=U_L,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=721.686839498,
-                   ),
-                _F(INST=1.5,
-                   TYPE_TEST='MIN',
-                   RESULTAT=U_L,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIYY',
-                   VALE_CALC=721.68682488,
-                   ),
-                ),
-          )
+                               EPSI_REFE = 1),);
 
 TEST_RESU(RESU=(_F(INST=0.93,
                    TYPE_TEST='MAX',
@@ -209,30 +98,28 @@ TEST_RESU(RESU=(_F(INST=0.93,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=942.70737512,
-                   ),
+                   TOLE_MACHINE=3.E-6,), #EF qui ne respecte pas la lbb
                 _F(INST=0.93,
                    TYPE_TEST='MAX',
                    RESULTAT=U_NLG,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
                    VALE_CALC=135.670388305,
-                   ),
+                   TOLE_MACHINE=2.E-5,),#EF qui ne respecte pas la lbb
                 _F(INST=0.93,
                    TYPE_TEST='MAX',
                    RESULTAT=U_NLG,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V1',
                    VALE_CALC=0.629860989615,
-                   ),
+                   TOLE_MACHINE=3.E-6,),#EF qui ne respecte pas la lbb
                 _F(INST=0.93,
                    TYPE_TEST='MAX',
                    RESULTAT=U_NLG,
                    NOM_CHAM='VARI_ELGA',
                    NOM_CMP='V2',
                    VALE_CALC=0.224931038687,
-                   ),
-                ),
-          )
+                   TOLE_MACHINE=8.E-6,),),);#EF qui ne respecte pas la lbb
 
 TEST_RESU(RESU=(_F(INST=1.5,
                    TYPE_TEST='MAX',
@@ -240,15 +127,13 @@ TEST_RESU(RESU=(_F(INST=1.5,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=721.692146856,
-                   ),
+                   TOLE_MACHINE=4.E-6,),#EF qui ne respecte pas la lbb
                 _F(INST=1.5,
                    TYPE_TEST='MIN',
                    RESULTAT=U_NLG,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    VALE_CALC=721.685377578,
-                   ),
-                ),
-          )
+                   TOLE_MACHINE=4.E-6,),),);#EF qui ne respecte pas la lbb
 
 FIN();

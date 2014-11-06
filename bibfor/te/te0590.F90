@@ -65,6 +65,8 @@ subroutine te0590(option, nomte)
     real(kind=8) :: sdepl(135), svect(135), scont(6*27), smatr(18225)
     real(kind=8) :: epsilo, epsilp, epsilg
     real(kind=8) :: varia(2*135*135)
+    real(kind=8) :: tab_out(27*3*27*3)
+    integer      :: na, os, nb, ib, kk
 ! ----------------------------------------------------------------------
 !
     idbg=0
@@ -240,9 +242,152 @@ subroutine te0590(option, nomte)
     if (idbg .eq. 1) then
         if (rigi) then
             write(6,*) 'MATRICE TANGENTE'
-            do ia = 1, nddl
-                write(6,'(108(1X,E11.4))') (zr(imatuu+(ia*(ia-1)/2)+ja-1),ja=1,ia)
-            enddo
+            if (matsym) then
+                do ia = 1, nddl
+                    write(6,'(108(1X,E11.4))') (zr(imatuu+(ia*(ia-1)/2)+ja-1),ja=1,ia)
+                enddo
+            else
+!
+! - TERME K:UU      KUU(NDIM,NNO1,NDIM,NNO1)
+!
+                write(6,*) 'KUU'
+                ja = 1
+                do na = 1, nno1
+                    do ia = 1, ndim
+                        os = (vu(ia,na)-1)*nddl
+                        do nb = 1, nno1
+                            do ib = 1, ndim
+                                kk = os+vu(ib,nb)
+                                tab_out(ja)=zr(imatuu+kk-1)
+                                ja=ja+1
+                            enddo
+                        enddo
+                    enddo
+                enddo
+                do ia = 1, nno1*ndim
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja),ja=1,nno1*ndim)
+                enddo
+!
+! - TERME K:GG      KGG(NNO2,NNO2)
+!
+                write(6,*) 'KGG'
+                ja = 1
+                do na = 1, nno2
+                    os = (vg(na)-1)*nddl
+                    do ia = 1, nno2
+                        kk = os + vg(ia)
+                        tab_out(ja)=zr(imatuu+kk-1)
+                        ja=ja+1
+                    end do
+                end do
+                do ia = 1, nno2
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja),ja=1,nno2)
+                enddo
+!
+! - TERME K:UP      KUP(NDIM,NNO1,NNO3)
+!
+                write(6,*) 'KUP'
+                ja = 1
+                do na = 1, nno1
+                    do ia = 1, ndim
+                        os = (vu(ia,na)-1)*nddl
+                        do nb = 1, nno3
+                            kk = os + vp(nb)
+                            tab_out(ja)=zr(imatuu+kk-1)
+                            ja=ja+1
+                        end do
+                    enddo
+                enddo
+                do ia = 1, nno1*ndim
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno3+ja),ja=1,nno3)
+                enddo
+!
+! - TERME K:PU      KPU(NDIM,NNO3,NNO1)
+!
+                write(6,*) 'KPU'
+                ja = 1
+                do ia = 1, nno3
+                    os = (vp(ia)-1)*nddl
+                    do nb = 1, nno1
+                        do ib = 1, ndim
+                            kk = os + vu(ib,nb)
+                            tab_out(ja)=zr(imatuu+kk-1)
+                            ja=ja+1
+                        end do
+                    end do
+                end do
+                do ia = 1, nno3
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja),ja=1,nno1*ndim)
+                enddo
+!
+! - TERME K:UG      KUG(NDIM,NNO1,NNO2)
+!
+                write(6,*) 'KUG'
+                ja = 1
+                do na = 1, nno1
+                    do ia = 1, ndim
+                        os = (vu(ia,na)-1)*nddl
+                        do nb = 1, nno2
+                            kk = os + vg(nb)
+                            tab_out(ja)=zr(imatuu+kk-1)
+                            ja=ja+1
+                        end do
+                    enddo
+                enddo
+                do ia = 1, nno1*ndim
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja),ja=1,nno2)
+                enddo
+!
+! - TERME K:GU      KGU(NDIM,NNO2,NNO1)
+!
+                write(6,*) 'KGU'
+                ja = 1
+                do ia = 1, nno2
+                    os = (vg(ia)-1)*nddl
+                    do nb = 1, nno1
+                        do ib = 1, ndim
+                            kk = os + vu(ib,nb)
+                            tab_out(ja)=zr(imatuu+kk-1)
+                            ja=ja+1
+                        end do
+                    enddo
+                enddo
+                do ia = 1, nno2
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno1*ndim+ja),ja=1,nno1*ndim)
+                enddo
+!
+! - TERME K:PG      KPG(NNO3,NNO2)
+!
+                write(6,*) 'KPG'
+                ja = 1
+                do ia = 1, nno3
+                    os = (vp(ia)-1)*nddl
+                    do ib = 1, nno2
+                        kk = os + vg(ib)
+                        tab_out(ja)=zr(imatuu+kk-1)
+                        ja=ja+1
+                    enddo
+                enddo
+                do ia = 1, nno3
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno2+ja),ja=1,nno2)
+                enddo
+!
+! - TERME K:GP      KPG(NNO2,NNO3)
+!
+                write(6,*) 'KGP'
+                ja = 1
+                do ia = 1, nno2
+                    os = (vg(ia)-1)*nddl
+                    do ib = 1, nno3
+                        kk = os + vp(ib)
+                        tab_out(ja)=zr(imatuu+kk-1)
+                        ja=ja+1
+                    enddo
+                enddo
+                do ia = 1, nno2
+                    write(6,'(108(1X,E11.4))') (tab_out((ia-1)*nno3+ja),ja=1,nno3)
+                enddo
+            endif
         endif
         if (resi) then
             write(6,*) 'FORCE INTERNE'
