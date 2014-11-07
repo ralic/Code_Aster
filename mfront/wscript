@@ -50,6 +50,7 @@ def build(self):
               target = 'mfront_request',
                  env = env.derive(),
                  use = ('MFRONT', ),
+        install_path = None,
         )
 
         get_srcs = self.path.get_src().ant_glob
