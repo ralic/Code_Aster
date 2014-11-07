@@ -255,20 +255,24 @@ TRAN1=REST_GENE_PHYS(RESU_GENE=TRAN_GE1,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',);
 
+CALC_CHAMP(reuse = TRAN1,
+           RESULTAT = TRAN1,
+           FORCE = 'REAC_NODA',
+           MODELE = BARRE,
+           CARA_ELEM = CARA ,
+           CHAM_MATER= CHMAT,);
 #
 
 TRAN2=REST_GENE_PHYS(RESU_GENE=TRAN_GE2,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',);
-
 #
 
 TRAN3=REST_GENE_PHYS(RESU_GENE=TRAN_GE3,
                      LIST_INST=LIST_R,
                      INTERPOL='LIN',
                      TOUT_CHAM='OUI',);
-
 #
 
 TEST_RESU(RESU=(

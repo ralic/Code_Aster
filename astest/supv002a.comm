@@ -96,7 +96,7 @@ previous_errors = [
     'deltat', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa',
     'er', 'error', 'etanca', 'etenca', 'exchml', 'exe', 'export',
     'flag', 'fointa', 'fonree', 'indn', 'ipos',
-    'ligrel', 'lkcaln', 'lmat', 'longt', 'majpad', 'mem',
+    'ligrel', 'lkcaln', 'longt', 'majpad', 'mem',
     'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp',
     'nomres', 'nomta', 'nomtyp', 'not', 'nt', 'number', 'nume',
     'numeli', 'overflow', 'phenomene', 'pnosym', 'pos',

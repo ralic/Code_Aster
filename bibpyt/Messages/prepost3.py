@@ -143,8 +143,9 @@ cata_msg = {
 """),
 
     81 : _(u"""
- lmat =0
-"""),
+ Il n'a pas été possible de récupérer d'information concernant la matrice de masse
+ assemblée de la structure. Le calcul de l'option %(k1)s n'est donc pas possible.
+ """),
 
     84 : _(u"""
  il faut autant de composantes en i et j

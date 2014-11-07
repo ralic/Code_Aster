@@ -82,7 +82,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume
     character(len=24) :: mater
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
-    character(len=24) :: strx, raide
+    character(len=24) :: strx
     character(len=24) :: bidon, chacce, k24b, modele, kstr
     aster_logical :: exitim, lbid, lstr, lstr2
     real(kind=8), pointer :: cgmp(:) => null()
@@ -138,11 +138,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         endif
     endif
     if (typesd .eq. 'MODE_MECA' .or. typesd .eq. 'DYNA_TRANS') then
-        numref=' '
-        call dismoi('REF_RIGI_PREM', resuin, 'RESU_DYNA', repk=raide)
-        if (raide .ne. ' ') then
-            call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numref)
-        endif
+        call dismoi('NUME_DDL', resuin, 'RESU_DYNA', repk=numref)
     endif
     carac=' '
     charge=' '
@@ -398,7 +394,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call jelira(chdepl(1:19)//'.VALE', 'LONMAX', lonc2)
             call wkvect('&&'//nompro//'.TRAV', 'V V R', lonc2, ltrav)
             if (lmat .eq. 0) then
-                call utmess('F', 'PREPOST3_81')
+                call utmess('F', 'PREPOST3_81', sk=option)
             endif
             call mrmult('ZERO', lmat, nldepl, zr(ltrav), 1,&
                         .true._1)
@@ -440,7 +436,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 end do
                 call wkvect('&&'//nompro//'.TRAV', 'V V R', lonc2, ltrav)
                 if (lmat .eq. 0) then
-                    call utmess('F', 'PREPOST3_81')
+                    call utmess('F', 'PREPOST3_81', sk=option)
                 endif
                 call mrmult('ZERO', lmat, zr(jddr), zr(ltrav), 1,&
                             .true._1)
@@ -460,7 +456,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
                 call wkvect('&&'//nompro//'.TRAV', 'V V R', lonch, ltrav)
                 if (lmat .eq. 0) then
-                    call utmess('F', 'PREPOST3_81')
+                    call utmess('F', 'PREPOST3_81', sk=option)
                 endif
                 call mrmult('ZERO', lmat, zr(lacce), zr(ltrav), 1,&
                             .true._1)
@@ -480,7 +476,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call jeveuo(chacce(1:19)//'.VALE', 'L', lacce)
                 call wkvect('&&'//nompro//'.TRAV', 'V V C', lonch, ltrav)
                 if (lmat .eq. 0) then
-                    call utmess('F', 'PREPOST3_81')
+                    call utmess('F', 'PREPOST3_81', sk=option)
                 endif
                 call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1,&
                             .true._1)
