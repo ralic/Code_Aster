@@ -176,6 +176,8 @@ class ASSD(object):
             if d.has_key(key):
                 del d[key]
         for key in d.keys():
+            if key in ('_as_co', ):
+                continue
             if key[0] == '_':
                 del d[key]
         return d
