@@ -74,9 +74,6 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
      s'arrête en erreur fatale.
 """),
 
-    14 : _(u"""
- champ %(k1)s non traité par le changement de repère cylindrique
-"""),
 
     15 : _(u"""
  les modélisations autorisées sont 3D et D_PLAN et AXIS

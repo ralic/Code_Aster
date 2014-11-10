@@ -25,6 +25,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
 #include "asterfort/angvxy.h"
 #include "asterfort/assach.h"
 #include "asterfort/assert.h"
+#include "asterfort/calc_coor_elga.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -87,12 +88,11 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     integer :: i, ii, ino, iad, ipt, isp
     integer :: jcesd, jcesv, jcesl, nbpt, ncmp
     integer :: ilcnx1, nbsp, inel, npain
-    integer :: mnogal, mnogad
     integer :: ibid, nbma, iret, inbno
-    integer :: ndim, nbm, idmail, nbmail, imai, imaref
+    integer :: ndim, nbm, idmail, nbmail, imai
     integer :: inoeu, iret0, iret1, nbgno, igno, nncp
     integer :: ierk, ipaxe, ipaxe2
-    integer :: nbno, nbpg, nbno2, nbpg2, nuno, ipg
+    integer :: nbno, nbpg, nuno, ipg
     integer :: type_pt
     integer, parameter :: type_unknown = 0, type_noeud = 1, type_gauss = 2
 ! nb max de points (noeuds|gauss) par élément
@@ -105,12 +105,11 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     real(kind=8), dimension(3, 3) :: pgl, pgcyl, pgu
     real(kind=8), dimension(3, nptmax), target :: xno, xpg
     real(kind=8), dimension(:, :), pointer :: xpt => null()
-    real(kind=8), pointer :: nmnoga(:) => null()
     character(len=3) :: tsca
-    character(len=8) :: ma, k8b, typmcl(2), nomgd, tych, param
+    character(len=8) :: ma, k8b, typmcl(2), nomgd, tych
     character(len=8) :: lpain(5), paout, licmp(9), nomgdr, paoutc
-    character(len=16) :: option, motcle(2), nomch2
-    character(len=19) :: chams1, chams0, ligrel, manoga, canbsp
+    character(len=16) :: option, motcle(2)
+    character(len=19) :: chams1, chams0, ligrel, canbsp
     character(len=19) :: changl, carte, chr, chi, ch1, ch2
     character(len=24) :: mesmai, chgeom, lchin(5), chaout
     character(len=24) :: valk(3), chcara(18)
@@ -118,6 +117,9 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: connex(:) => null()
+    integer :: iexist, jcesd_gauss, jcesl_gauss, icoo
+    character(len=19) :: celgauss, cesgauss
+    real(kind=8), pointer :: coo_gauss(:) => null()
     !
     call jemarq()
     ipaxe = 0
@@ -330,23 +332,7 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         call normev(axez, xnormr)
         call jeveuo(ma//'.COORDO    .VALE', 'L', vr=vale)
         !
-        manoga='&&CHRPEL.MANOGA'
-        !
-        if ( nomch(1:9) .eq. 'SIGM_ELGA') then 
-            param = 'PSIEFR'
-        elseif  ((nomch(1:4) .eq. 'SIEF').or.(nomch(1:4) .eq. 'SIGM'))   then
-            param='PCONTRR'
-        else if (nomch(1:2).eq.'EP') then
-            param='PDEFOPG'
-        else if (nomch(1:4).eq.'VARI') then
-            param='PVARIGR'
-        else
-            call utmess('F', 'ALGORITH2_14', sk=nomch)
-        endif
-        !
-        nomch2 = nomch
-        call manopg(ligrel, nomch2, param, manoga)
-        !
+
 ! Permutation des composantes en dimension 2
         !
 ! Initialisation à l'identité 
@@ -374,46 +360,44 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
         !
         ASSERT(type_pt /= type_unknown ) 
         !
-! mnoga est la matrice de passage noeuds -> points de gauss
-        call jeveuo(manoga//'.CESD', 'L', mnogad)        
-        call jeveuo(manoga//'.CESL', 'L', mnogal)
-        call jeveuo(manoga//'.CESV', 'L', vr=nmnoga)
+! Si le champ est un champ 'ELGA', on a besoin des 
+! coordonnées des points de Gauss dans chaque élément         
+        if ( type_pt == type_gauss) then 
+! On utilise calc_coor_elga qui retourne un champ par élément 
+! contenant les coordonnées des points de Gauss     
+          celgauss='&&CHRPEL.CEL_GAUSS'
+          call exisd('CHAMP', celgauss, iexist)
+          if (iexist .eq. 0) then
+            call megeom(modele, chgeom)
+            call calc_coor_elga(ligrel, chgeom, celgauss)
+          endif 
+! On transforme ce champ en champ simple 
+          cesgauss='&&CHRPEL.CES_GAUSS'
+          call celces( celgauss, 'V', cesgauss)
+          call jeveuo(cesgauss//'.CESD','L', jcesd_gauss)
+          call jeveuo(cesgauss//'.CESL','L', jcesl_gauss)
+          call jeveuo(cesgauss//'.CESV','L', vr=coo_gauss) 
+        endif 
+
 ! Boucle sur les mailles à transformer
         do inel = 1, nbmail
-! Récupération de l'indice de la maille courante
-            if (nbm .ne. 0) then
-                imai = zi(idmail+inel-1)
-            else
-                imai = inel
-            endif
-! imaref est l'indice de la maille de référence 
-! (particularité de mnoga)            
-            call cesexi('C', mnogad, mnogal, imai, 1,&
-                        1, 1, iad)
-            if (iad .le. 0) goto 20
-            if (nint(nmnoga(iad)) .gt. 0) then
-                imaref=imai
-            else
-                imaref=-nint(nmnoga(iad))
-            endif
-! Récupération de l'adresse de la matrice mnoga pour la maille courante
-            call cesexi('C', mnogad, mnogal, imaref, 1,&
-                        1, 1, iad)
-            
-            if (iad .le. 0) goto 20
-! Les deux premiers termes sont le nombre de noeuds et le nombre de 
-! points de Gauss
-            nbno2 = nint(nmnoga(iad))
-            nbpg2 = nint(nmnoga(iad+1))
-! On vérifie que les valeurs sont cohérentes avec celles du champ simple
-! à transformer                         
-            nbpg = zi(jcesd-1+5+4* (imai-1)+1)
-            nbsp = zi(jcesd-1+5+4* (imai-1)+2)
-            nbcmp = zi(jcesd-1+5+4* (imai-1)+3)
-! et de la connectivité du maillage 
-            nbno = zi(ilcnx1+imai) - zi(ilcnx1-1+imai)
-            ASSERT(nbno.eq.nbno2)
-!            ASSERT(nbpg.eq.nbpg2)
+! Récupération de :  
+! - imai : indice de la maille courante, imai
+          if (nbm .ne. 0) then
+            imai = zi(idmail+inel-1)
+          else
+            imai = inel
+          endif
+! - nbno : nombre de noeuds de la maille courante 
+          nbno = zi(ilcnx1+imai) - zi(ilcnx1-1+imai)
+! et de quelques caractéristiques du champ simple à transformer 
+! sur cette maille : 
+! - nbpg : nombre de points de Gauss                        
+           nbpg = zi(jcesd-1+5+4* (imai-1)+1)
+! - nbsp : nombre de sous-points
+           nbsp = zi(jcesd-1+5+4* (imai-1)+2)
+! - nbcmp : nombre de composantes
+           nbcmp = zi(jcesd-1+5+4* (imai-1)+3)
 !
 ! Coordonnées des noeuds de la maille courante
 !
@@ -433,30 +417,30 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
                 nbpt=nbno
                 xpt => xno(:,:)
             case (type_gauss)
-! On se place aux points de Gauss de la maille 
-!  Coordonnées des points de Gauss de la maille courante 
-                !
-                do ipg = 1, nbpg
-                    xpg(:,ipg) = 0.d0
-                    do ino = 1, nbno
-                        xpg(:,ipg) = xpg(:,ipg) + xno(:,ino)*nmnoga(iad+1+nbno* (ipg-1)+ ino)
-                    end do
-                end do
-                nbpt = nbpg
-                xpt => xpg(:,:) 
-                !
+! On se place aux points de Gauss de la maille, 
+! dont il faut récupérer les coordonnées :
+!
+             do ipg = 1, nbpg
+               do icoo = 1, 3
+                 call cesexi('S', jcesd_gauss, jcesl_gauss, imai, ipg,&
+                    1, icoo, iad)
+                 xpg(icoo,ipg) = coo_gauss(iad)
+               enddo
+             enddo
+             nbpt = nbpg
+             xpt => xpg(:,:) 
+!
             case default
                 ASSERT(.false.) 
             end select
-            !
+!
+! Boucle sur les points (cette partie est commune aux champs ELNO et ELGA) 
             do ipt = 1, nbpt
 ! Calcul de la matrice de passage vers le repère cylindrique 
                 call cylrep(ndim, xpt(:, ipt), axez, orig, pgcyl,&
                             ipaxe)
-!
 ! Si le point x appartient à l'axe du repère cylindrique 
                 if (ipaxe > 0) then
-                    call jenuno(jexnum(ma//'.NOMNOE', ino), k8b)
                     call utmess('A', 'ALGORITH2_13')
 ! on calcule la matrice de passage au centre de gravité de l'élément
                     xbary(:)=sum(xno(:,1:nbno), dim=2)
@@ -483,12 +467,10 @@ subroutine chrpel(champ1, repere, nbcmp, icham, type_cham,&
                     end do 
 ! si oui,  
                     if (exi_cmp) then
-                        !
 ! on applique le changement de base 
-                        !
-                        call chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
-                                   ipt, isp, type_cham, tsca, pgcyl,&
-                                   permvec)
+                       call chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
+                                  ipt, isp, type_cham, tsca, pgcyl,&
+                                  permvec)
 ! sinon on ne fait rien 
                     else
                         goto 20
