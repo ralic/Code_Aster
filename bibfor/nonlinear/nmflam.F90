@@ -197,11 +197,19 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
             freqm = freqa
             freqr = freqv
         endif
+        if (mod45 .eq. 'VIBR') then
+            call utmess('I', 'MECANONLINE6_10', si=i, sr=freqv)
+        else if (mod45 .eq. 'FLAM') then
+            call utmess('I', 'MECANONLINE6_11', si=i, sr=freqv)
+        else
+            ASSERT(.false.)
+        endif
  60 end do
     if (nsta .ne. 0) then
         call rsadpa(sdstab, 'L', 1, 'CHAR_STAB', 1,&
                     0, sjv=ljeve2, styp=k16bid)
         csta = zr(ljeve2)
+        call utmess('I', 'MECANONLINE6_12', si=1, sr=csta)
     endif
 !
 ! --- NOM DU MODE
@@ -234,11 +242,11 @@ subroutine nmflam(option, modele, numedd, numfix, carele,&
 ! --- AFFICHAGE DES MODES
 !
     if (mod45 .eq. 'VIBR') then
-        call utmess('I', 'MECANONLINE6_10', si=numord, sr=freqr)
+        call utmess('I', 'MECANONLINE6_14', sr=freqr)
     else if (mod45 .eq. 'FLAM') then
-        call utmess('I', 'MECANONLINE6_11', si=numord, sr=freqr)
+        call utmess('I', 'MECANONLINE6_15', sr=freqr)
         if (nsta .ne. 0) then
-            call utmess('I', 'MECANONLINE6_12', si=1, sr=csta)
+            call utmess('I', 'MECANONLINE6_16', sr=csta)
         endif
     else
         ASSERT(.false.)

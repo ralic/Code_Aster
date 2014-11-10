@@ -65,6 +65,18 @@ cata_msg = {
  On ne peut pas utiliser CRIT_STAB en calcul parallèle
 """),
 
+    14 : _(u"""
+  Le mode vibratoire stocké a pour fréquence %(r1)19.12e
+"""),
+
+    15 : _(u"""
+  Le mode de flambement stocké a pour charge critique %(r1)19.12e
+"""),
+
+    16 : _(u"""
+  Le mode de stabilité stocké a pour charge critique %(r1)19.12e
+"""),
+
     60 : _(u"""
   Critère(s) de convergence atteint(s)
 """),
