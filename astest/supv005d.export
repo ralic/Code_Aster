@@ -5,5 +5,7 @@ P mpi_nbcpu 3
 P mpi_nbnoeud 1
 P testlist verification parallel
 
-F comm supv003c.comm D 1
-F libr supv003c.2 D 2
+F comm supv005a.comm D 1
+F libr supv005d.2 D 2
+
+P expected_diag <F>_ERROR

@@ -1,0 +1,11 @@
+P time_limit 60
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 3
+P mpi_nbnoeud 1
+P testlist verification parallel
+
+F comm supv005a.comm D 1
+F libr supv005e.2 D 2
+
+P expected_diag <F>_ERROR

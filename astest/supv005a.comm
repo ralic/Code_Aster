@@ -21,13 +21,8 @@ wait_on = 999
 err_on = 999
 err_f = 'EXCEPTION'
 
-test = 0
-
-"""
-# Content of the `.distr` file, provided in supv003c.2
-ltest = range(1, 9 + 1) + [11, 12]
-VALE = [ { 'test' : i } for i in ltest]
-"""
+# read the value of 'test' in fort.2
+execfile('fort.2')
 
 if   test == 1:
     err_on = 0
