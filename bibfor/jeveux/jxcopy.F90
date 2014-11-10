@@ -149,7 +149,7 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 !
     do 300 k = 1, nbext
         call get_jvbasename(nomba1, k, noml1)
-        call get_jvbasename(nomba1, k, noml2)
+        call get_jvbasename(nomba2, k, noml2)
         call cpfile('M', noml2, noml1)
 300  end do
 ! FIN ------------------------------------------------------------------
