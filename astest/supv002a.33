@@ -129,7 +129,7 @@ class AspellCall(object):
         """Open the pipe"""
         cmd = ['aspell', 'pipe',
                '--encoding=%s' % encoding,'--lang=%s' % lang]
-        if osp.exists(personal_dict):
+        if personal_dict and osp.exists(personal_dict):
             cmd.append('--personal=%s' % personal_dict)
         logdbg and logdbg('command: ' + ' '.join(cmd))
         self.lang = lang
@@ -375,7 +375,7 @@ def supv002_ops(self, ERREUR, **kwargs):
         nbwrn = len(previous_errors)
         warns = ''
         torm = []
-    
+
     if kwargs.get('unittest'):
         print warns
         print errors
