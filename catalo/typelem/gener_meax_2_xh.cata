@@ -277,8 +277,8 @@ OPTION__
                           OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA    -1  IN__
                           OUT__ XXXXXX   XXXXXX
-    REPERE_LOCAL     133  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER
-                          OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2
+    REPERE_LOCAL      -1  IN__  XXXXXX   XXXXXX
+                          OUT__ XXXXXX   XXXXXX
     RICE_TRACEY       -1  IN__
                           OUT__ XXXXXX   XXXXXX
     RIGI_MECA        539  IN__  N6NEUT_R PBASLOR  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO

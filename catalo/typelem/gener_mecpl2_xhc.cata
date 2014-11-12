@@ -356,8 +356,8 @@ OPTION__
                                 N1NEUT_R PLST     E6NEUTR  PPINTER  E06NEUR  PPINTTO  E22NEUTR PPMILTO  
                                 EREFCO   PREFCO   
                               OUT__  MVECTUR  PVECTUR
-    REPERE_LOCAL     133  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER  
-                          OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  
+    REPERE_LOCAL      -1  IN__  XXXXXX   XXXXXX
+                          OUT__ XXXXXX   XXXXXX
     RICE_TRACEY       -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     RIGI_CONT        533  IN__  E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   E3NEUTR  PCOHES   
