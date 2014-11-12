@@ -297,8 +297,8 @@ OPTION__
     TOU_INI_ELGA        99    IN__
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
                                      EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
-    VERI_JACOBIEN       328   IN__  NGEOMER  PGEOMER
-                              OUT__  ECODRET  PCODRET
+    VERI_JACOBIEN        -1   IN__  XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     WEIBULL           -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     XCVBCA           532  IN__  E15NEUTR PAINTER  E12NEUTR PBASECO  E3NEUTI  PCFACE   DDL_MECA PDEPL_P  

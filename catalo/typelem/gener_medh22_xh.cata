@@ -326,7 +326,7 @@ OPTION__
                               OUT__  E1NNEUT  PVARINS
     VARI_ELNO           -1    IN__
                               OUT__  XXXXXX   XXXXXX
-    VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
-                              OUT__  ECODRET  PCODRET
+    VERI_JACOBIEN       -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     WEIBULL             -1    IN__  
                               OUT__  XXXXXX   XXXXXX
