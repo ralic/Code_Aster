@@ -38,6 +38,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/verif_bord.h"
     integer :: nbordr, ncharg
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou
@@ -325,13 +326,19 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         endif
 !
 !       --- CALCUL DES FORCES NODALES DE REACTION
+
         if (charge .ne. ' ') then
             partps(1)=time
 !
 ! --- CHARGES NON PILOTEES (TYPE_CHARGE: 'FIXE_CSTE')
 !
-            stop = 'S'
-            if (ligrel(1:8) .ne. modele) stop = 'C'
+            if (ligrel(1:8) .ne. modele) then
+                stop = 'C'
+!               -- on verifie que le ligrel contient bien les mailles de bord
+                call verif_bord(modele,ligrel)
+            else
+                stop = 'S'
+            endif
             call vechme(stop, modele, charge, infoch, partps,&
                         carac, mater, vechmp, varc_currz = chvarc, ligrel_calcz = ligrel)
 !

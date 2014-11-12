@@ -327,6 +327,16 @@ Erreur utilisateur dans la commande PROJ_CHAMP :
    est alors obligatoire.
 """),
 
+    74 : _(u"""
+Alarme utilisateur dans la commande CALC_CHAMP / REAC_NODA + GROUP_MA:
+   La maille %(k2)s du modèle %(k1)s ne fait pas partie des mailles
+   désignées par le mot clé GROUP_MA.
+   Pourtant, elle semble être une maille de bord de l'une de ces mailles.
+
+Risques et conseils :
+   Le calcul des réactions d'appui est faux si cette maille est affectée
+   par un chargement en "force" non nul.
+"""),
 
 
 
