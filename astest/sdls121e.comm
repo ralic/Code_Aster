@@ -1,0 +1,596 @@
+# TITRE RECALAGE MODAL PAR EXPLOITATION RELATION NORMES MODES COMPLEXES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+import numpy as NP
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
+      PAR_LOT='NON',
+      IGNORE_ALARM='SUPERVIS_1', #PAR_LOT = NON a cause de EXTR_TABLE
+      DEBUG=_F(SDVERI='OUI'));
+
+
+EP=0.5
+MP=50000.
+AM=20000.
+
+#********************************
+# CREATION MODELE "experimental"
+#********************************
+
+PRE_IDEAS(UNITE_IDEAS=21,UNITE_MAILLAGE=20,);
+
+MAILEXP2=LIRE_MAILLAGE(UNITE=20,);
+
+MODEXP=AFFE_MODELE(MAILLAGE=MAILEXP2,
+                  AFFE=(_F(GROUP_MA = 'TOUT_ELT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DST',),
+                        _F(GROUP_MA = 'MASS',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_T',),
+                          ),);
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES 
+#---------------------------------------------------------------------
+
+CAREXP=AFFE_CARA_ELEM(MODELE=MODEXP,
+                        COQUE=_F(GROUP_MA='SURF',
+                                 EPAIS=EP,),
+                        DISCRET=( _F(  GROUP_MA = 'MASS',
+                                     CARA = 'M_T_D_N',
+                                     VALE = MP,),
+                                  _F(  GROUP_MA = 'MASS',
+                                     CARA = 'K_T_D_N',
+                                     VALE = (0.,0.,0.,),)           
+                        ));
+                         
+
+#
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=7800.,
+                           ),);
+#
+
+MATEX=AFFE_MATERIAU(MAILLAGE=MAILEXP2,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIER,),);
+#
+
+ASSEMBLAGE(MODELE=MODEXP,
+           CHAM_MATER=MATEX,
+           CARA_ELEM=CAREXP,
+           NUME_DDL=CO('NUMEXP'),
+           MATR_ASSE=(_F(MATRICE=CO('KASSEXP'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSEXP'),
+                         OPTION='MASS_MECA',),),);
+
+#********************************
+# CREATION MODELE SUPPORT POUR L'EXPANSION DE LA MESURE
+#********************************
+
+# le modele support exact correspond a EP=0.5, MP=50000 et AM=20000
+# on peut simuler eventuellement une incertitude sur le modele support
+#EP=0.48
+#MP=48000.
+#AM=20000.
+
+PRE_GIBI(UNITE_GIBI=22,UNITE_MAILLAGE=23,);
+
+MAIL1=LIRE_MAILLAGE(UNITE=23,VERI_MAIL=_F(VERIF='OUI',),);
+
+
+MAIL1=DEFI_GROUP(reuse=MAIL1,
+                 MAILLAGE=MAIL1,
+                 CREA_GROUP_NO=(  #pour les amortissements discrets
+                               _F( NOM='NO_MA',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(2.0,3.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA1',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,1.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA2',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,2.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA3',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,3.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA4',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,4.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA5',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(0.0,0.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA6',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-1.0,-1.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA7',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-2.0,-2.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA8',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-3.0,-3.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA9',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-4.0,-4.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                                ),
+                )
+
+MAIL1=DEFI_GROUP(reuse =MAIL1,
+                   MAILLAGE=MAIL1,
+                   CREA_GROUP_NO=_F(GROUP_MA='BORDS',
+                                    NOM='BORDS',),);
+
+MAIL2= CREA_MAILLAGE(MAILLAGE=MAIL1,
+                     CREA_POI1 =(
+                              _F(NOM_GROUP_MA = 'MASS',
+                                GROUP_NO = 'NO_MA'),
+                              _F(NOM_GROUP_MA = 'AMO1',
+                                GROUP_NO = 'NO_MA1'),
+                              _F(NOM_GROUP_MA = 'AMO2',
+                                GROUP_NO = 'NO_MA2'),
+                              _F(NOM_GROUP_MA = 'AMO3',
+                                GROUP_NO = 'NO_MA3'),
+                              _F(NOM_GROUP_MA = 'AMO4',
+                                GROUP_NO = 'NO_MA4'),
+                              _F(NOM_GROUP_MA = 'AMO5',
+                                GROUP_NO = 'NO_MA5'),
+                              _F(NOM_GROUP_MA = 'AMO6',
+                                GROUP_NO = 'NO_MA6'),
+                              _F(NOM_GROUP_MA = 'AMO7',
+                                GROUP_NO = 'NO_MA7'),
+                              _F(NOM_GROUP_MA = 'AMO8',
+                                GROUP_NO = 'NO_MA8'),
+                              _F(NOM_GROUP_MA = 'AMO9',
+                                GROUP_NO = 'NO_MA9'),
+                                ),      
+                     )
+
+
+MODEL=AFFE_MODELE(MAILLAGE=MAIL2,
+                  AFFE=(_F(GROUP_MA = 'TOUT_ELT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DST',),
+                        _F(GROUP_MA = ('MASS','AMO1','AMO2','AMO3','AMO4',
+                                       'AMO5','AMO6','AMO7','AMO8','AMO9',),
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_T',),
+                          ),);
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES 
+#---------------------------------------------------------------------
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
+                        COQUE=_F(GROUP_MA='SURF',
+                                 EPAIS=EP,),
+                        DISCRET=( _F(  GROUP_MA = 'MASS',
+                                     CARA = 'M_T_D_N',
+                                     VALE = MP,),
+                                  _F(  GROUP_MA = ('MASS','AMO1','AMO2','AMO3','AMO4',
+                                       'AMO5','AMO6','AMO7','AMO8','AMO9',),
+                                     CARA = 'K_T_D_N',
+                                     VALE = (0.,0.,0.,),),           
+                                  _F(  GROUP_MA = ('MASS','AMO1','AMO2','AMO3','AMO4',
+                                       'AMO5','AMO6','AMO7','AMO8','AMO9',),
+                                     CARA = 'A_T_D_N',
+                                     VALE = (0.,0.,AM,),)           
+                        ),);
+                         
+
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX 
+#---------------------------------------------------------------------
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=7800.0,),);
+#
+
+MAT=AFFE_MATERIAU(MAILLAGE=MAIL2,
+                  AFFE=_F(GROUP_MA='SURF',
+                          MATER=ACIER2,),);
+
+#---------------------------------------------------------------------
+#                   CHARGEMENT
+#---------------------------------------------------------------------
+CHAR = AFFE_CHAR_MECA(MODELE=MODEL,
+                   DDL_IMPO=_F(GROUP_NO='BORDS',
+                    DX=0.,  DY=0. , DZ=0.,
+                    DRX=0., DRY=0., DRZ=0.,))
+
+ASSEMBLAGE(MODELE=MODEL,
+           CHAM_MATER=MAT,
+           CHARGE=CHAR,
+           CARA_ELEM=CARA_ELE,
+           NUME_DDL=CO('NU'),
+           MATR_ASSE=(_F(MATRICE=CO('M_AS_RIG'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('M_AS_MAS'),
+                         OPTION='MASS_MECA',),
+                      _F(MATRICE=CO('M_AS_AMO'),
+                         OPTION='AMOR_MECA',),),);
+
+
+#---------------------------------------------------------------------
+#                     RESOLUTION 
+#---------------------------------------------------------------------
+
+#
+nb_modes_calc = 8
+
+MODES=CALC_MODES(MATR_RIGI=M_AS_RIG,
+                 MATR_MASS=M_AS_MAS,
+                 MATR_AMOR=M_AS_AMO,
+                 OPTION='CENTRE',
+                 CALC_FREQ=_F(FREQ=20.,
+                              NMAX_FREQ=nb_modes_calc,),
+                 )
+
+l_modes_base = (1,2,3,4,5,6,7,8)
+nbmodes_base=len(l_modes_base)
+
+# creation de la sd_mode_meca pour les modes experimentaux
+
+crea_mesure = 0
+if crea_mesure:
+# simulation mesure par PROJ_CHAMP et ecriture resultats dans fort.30
+    MODMES = PROJ_CHAMP(INFO=1,
+                        METHODE='COLLOCATION',
+                        RESULTAT=MODES,
+                        MODELE_1=MODEL,
+                        MODELE_2=MODEXP,
+                        ALARME='OUI',
+                        PROL_ZERO='NON',
+                        TOUT_ORDRE='OUI',
+                        NOM_CHAM=('DEPL', ),
+                        PROJECTION='OUI',)
+
+    IMPR_RESU(FORMAT='IDEAS',
+          UNITE=30,
+          RESU=_F(RESULTAT=MODMES,),);
+
+    # l amortissement n est pas transmis, il faut l ecrire dans fort.30
+    FIN()
+
+else:
+    MODMES=LIRE_RESU(TYPE_RESU='MODE_MECA_C',
+                 FORMAT='IDEAS',
+                 MODELE=MODEXP,
+                 UNITE=30,
+                 NOM_CHAM='DEPL',
+                 MATR_RIGI =KASSEXP,
+                 MATR_MASS =MASSEXP,
+                 FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
+                                 NUME_DATASET=55,
+                                 RECORD_6=(1,2,3,8,5,6,),
+                                 POSI_ORDRE=(7,4,),
+                                 POSI_NUME_MODE=(7,4),
+                                 POSI_FREQ=(8,1,),
+                                 POSI_MASS_GENE=(8,2),
+                                 POSI_AMOR_GENE=(8,3),
+                                 NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
+                 TOUT_ORDRE='OUI',);
+
+TFREQ=RECU_TABLE(CO=MODMES,
+                    NOM_PARA='FREQ');
+
+t_freq_mes = TFREQ.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
+freq_mes = t_freq_mes[:,1]
+
+# les modes etendus exploites pour le recalage
+l_modes_exploit=(1,2,3,4,5,6,7,8,) 
+nbmodes_mes=len(l_modes_exploit)
+
+
+#********************************
+# EXPANSION MODES MESURES (IDENTIFIES)
+#********************************
+
+# expansion des modes identifies (mesure) sur modele support
+# separation partie reelle - partie imag (d abord pour la base)
+CHMC  = [None]*nbmodes_base
+VR  = [None]*nbmodes_base
+VI  = [None]*nbmodes_base
+for i in range(nbmodes_base):
+  CHMC[i]=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_C',
+                      RESULTAT=MODES,
+                      NUME_ORDRE= l_modes_base[i],
+                      NOM_CHAM='DEPL'   )
+  VR[i]=CREA_CHAMP(OPERATION='C2R',TYPE_CHAM='NOEU_DEPL_R',
+                   CHAM_GD=CHMC[i], PARTIE='REEL',   INFO=1)
+  VI[i]=CREA_CHAMP(OPERATION='C2R',TYPE_CHAM='NOEU_DEPL_R',
+                   CHAM_GD=CHMC[i], PARTIE='IMAG',   INFO=1)
+
+champr = []
+for i in range(nbmodes_base):
+    champr.append({ 'CHAM_GD':VR[i],
+                    'CARA_ELEM':CARA_ELE,
+                    'MODELE':MODEL,
+                    'CHAM_MATER':MAT,
+                    'NUME_MODE': l_modes_base[i],
+                     })
+
+BASER = CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='MODE_MECA',
+                  AFFE=champr,
+                  MATR_RIGI =M_AS_RIG,
+                  MATR_MASS =M_AS_MAS,
+                  NOM_CHAM='DEPL',)
+
+champi = []
+for i in range(nbmodes_base):
+    champi.append({ 'CHAM_GD':VI[i],
+                    'CARA_ELEM':CARA_ELE,
+                    'MODELE':MODEL,
+                    'CHAM_MATER':MAT,
+                    'NUME_MODE': l_modes_base[i],
+                    })
+
+BASEI = CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='MODE_MECA',
+                  AFFE=champi,
+                  MATR_RIGI =M_AS_RIG,
+                  MATR_MASS =M_AS_MAS,
+                  NOM_CHAM='DEPL',)
+
+#separation partie reelle - partie imag pour la mesure (MODMES)
+CHME  = [None]*nbmodes_mes
+VMR  = [None]*nbmodes_mes
+VMI  = [None]*nbmodes_mes
+for i in range(nbmodes_mes):
+  CHME[i]=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_C',
+                      RESULTAT=MODMES,
+                      NUME_MODE=l_modes_exploit[i],
+                      NOM_CHAM='DEPL'   )
+  VMR[i]=CREA_CHAMP(OPERATION='C2R',TYPE_CHAM='NOEU_DEPL_R',
+                    CHAM_GD=CHME[i], PARTIE='REEL',   INFO=1)
+  VMI[i]=CREA_CHAMP(OPERATION='C2R',TYPE_CHAM='NOEU_DEPL_R',
+                    CHAM_GD=CHME[i], PARTIE='IMAG',   INFO=1)
+
+chamer = []
+for i in range(nbmodes_mes):
+    chamer.append({ 'CHAM_GD':VMR[i],
+                    'CARA_ELEM':CAREXP,
+                    'MODELE':MODEXP,
+                    'CHAM_MATER':MATEX,
+                    'NUME_MODE':l_modes_exploit[i],
+                    'FREQ':freq_mes[l_modes_exploit[i]-1]})
+
+MODMESR = CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='MODE_MECA',
+                    AFFE=chamer,
+                    MATR_RIGI=KASSEXP,
+                    MATR_MASS=MASSEXP,
+                    NOM_CHAM='DEPL',)
+
+chamei = []
+for i in range(nbmodes_mes):
+    chamei.append({ 'CHAM_GD':VMI[i],
+                    'CARA_ELEM':CAREXP,
+                    'MODELE':MODEXP,
+                    'CHAM_MATER':MATEX,
+                    'NUME_MODE':l_modes_exploit[i],
+                    'FREQ':freq_mes[l_modes_exploit[i]-1]})
+
+MODMESI = CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='MODE_MECA',
+                    AFFE=chamei,
+                    MATR_RIGI=KASSEXP,
+                    MATR_MASS=MASSEXP,
+                    NOM_CHAM='DEPL',)
+
+#traitement partie reelle
+PROJR=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODEL,
+                                       BASE=BASER,),
+                      MODELE_MESURE=_F(MODELE=MODEXP,
+                                       MESURE=MODMESR,
+                                       NOM_CHAM='DEPL',),
+                    );
+
+MODETR=REST_GENE_PHYS(RESU_GENE=PROJR,
+                      TOUT_ORDRE='OUI',
+                      NOM_CHAM   ='DEPL');
+
+#traitement partie imag
+PROJI=PROJ_MESU_MODAL(MODELE_CALCUL=_F(MODELE=MODEL,
+                                       BASE=BASEI,),
+                      MODELE_MESURE=_F(MODELE=MODEXP,
+                                       MESURE=MODMESI,
+                                       NOM_CHAM='DEPL',),
+                     );
+
+MODETI=REST_GENE_PHYS(RESU_GENE=PROJI,
+                      TOUT_ORDRE='OUI',
+                      NOM_CHAM   ='DEPL');
+
+
+#assemblage partie reelle - partie imag
+CHMAR  = [None]*nbmodes_mes
+CHMAI  = [None]*nbmodes_mes
+VAR  = [None]*nbmodes_mes
+VAI  = [None]*nbmodes_mes
+for i in range(nbmodes_mes):
+  CHMAR[i]=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                       RESULTAT=MODETR,
+                       NUME_MODE=l_modes_exploit[i],
+                       NOM_CHAM='DEPL'   )
+  VAR[i]=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C',
+                       CHAM_GD=CHMAR[i],   INFO=1)
+
+  CHMAI[i]=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                       RESULTAT=MODETI,
+                       NUME_MODE=l_modes_exploit[i],
+                       NOM_CHAM='DEPL'   )
+  VAI[i]=CREA_CHAMP(OPERATION='R2C',TYPE_CHAM='NOEU_DEPL_C',
+                    CHAM_GD=CHMAI[i],   INFO=1)
+
+MOET  = [None]*nbmodes_mes
+for i in range(nbmodes_mes):
+  ddl_obs=[]
+  ddl_obs.append({'TOUT':'OUI','CHAM_GD':VAR[i],'CUMUL':'NON','COEF_C':1.0+0j})
+  ddl_obs.append({'TOUT':'OUI','CHAM_GD':VAI[i],'CUMUL':'OUI','COEF_C':0.0+1j})
+
+  MOET[i] = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_C',
+                       OPERATION='ASSE',
+                       MODELE=MODEL,
+                       ASSE=ddl_obs,
+                       INFO=1,)
+
+chamet = []
+for i in range(nbmodes_mes):
+    chamet.append({ 'CHAM_GD':MOET[i],
+                    'CARA_ELEM':CARA_ELE,
+                    'MODELE':MODEL,
+                    'CHAM_MATER':MAT,
+                    'NUME_MODE':l_modes_exploit[i],
+                    'FREQ':freq_mes[l_modes_exploit[i]-1]})
+
+MODET = CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='MODE_MECA',
+                  AFFE=chamet,
+                  MATR_RIGI =M_AS_RIG,
+                  MATR_MASS =M_AS_MAS,
+                  NOM_CHAM='DEPL',)
+
+# amortissement reduit a mettre a jour manuellement dans le fichier .unv
+# ou bien relire depuis le fichier de mesure dans calcul esclave
+
+IMPR_RESU(FORMAT='IDEAS',UNITE=38,
+          RESU=_F(RESULTAT =MODET,));
+
+
+l_resi = []
+for i in range(nbmodes_mes):
+    l_resi.append(0.0)
+RESI=CREA_TABLE(LISTE=(_F(PARA='ORDRE',LISTE_I=range(nbmodes_mes),),
+                          _F(PARA='RESI',LISTE_R=l_resi,),
+                       ),);
+
+resi = RESI.EXTR_TABLE().Array('ORDRE','RESI')
+
+l_resi2 = []
+for i in range(nbmodes_mes*2):
+    l_resi2.append(0.0)
+
+RESI2=CREA_TABLE(LISTE=(_F(PARA='ORDRE',LISTE_I=range(nbmodes_mes*2),),
+                          _F(PARA='RESI',LISTE_R=l_resi2,),
+                       ),);
+
+resi2 = RESI2.EXTR_TABLE().Array('ORDRE','RESI')
+
+parametres =[
+             ['EP__',0.3,0.1,1.0],
+             ['MP__',3.0E4,2.E4,7.E4],
+             ['AM__',5.0E6,1.E3,1.E8],
+            ]
+
+calcul = [
+           ['T1','ORDRE','TY_BM_Y'],
+           ['T2','ORDRE','TY_MK_Y'],
+           ['T3','ORDRE','TY_MBK_Y'],
+         ]
+
+
+experience= [
+              NP.array(resi),
+              NP.array(resi),
+              NP.array(resi2),
+            ]
+poids =NP.array([
+                  1.,
+                  1.,
+                  1.,
+               ])
+
+DETRUIRE(CONCEPT=_F(NOM=(MAIL1,MAIL2,MODEL,CARA_ELE,ACIER2,MAT,CHAR,NU,M_AS_RIG,M_AS_MAS,M_AS_AMO,MODET),),)
+
+for i in range(nbmodes_base):
+  DETRUIRE(CONCEPT=_F(NOM=(CHMC[i],VR[i],VI[i]),),)
+
+for i in range(nbmodes_mes):
+  DETRUIRE(CONCEPT=_F(NOM=(CHME[i],VMR[i],VMI[i],CHMAR[i],CHMAI[i],VAR[i],VAI[i],MOET[i]),),)
+
+DETRUIRE(CONCEPT=_F(NOM=(MODMESR,MODMESI,BASER,BASEI,PROJR,PROJI,MODES,MODETR,MODETI),),)
+
+
+RESU=MACR_RECAL(
+         UNITE_ESCL       = 3,
+         RESU_EXP         = experience,
+         LIST_PARA        = parametres,
+         RESU_CALC        = calcul,
+         LIST_POIDS       = poids,
+         UNITE_RESU       = 91,
+         CALCUL_ESCLAVE=_F(LANCEMENT='INCLUSION',),
+)  ;
+
+
+# On cree une liste bidon pour pouvoir
+# definir une fonction testable par TEST_RESU
+
+BIDON=DEFI_LIST_REEL(DEBUT=1.,
+                     INTERVALLE=_F(JUSQU_A = 3., NOMBRE=2));
+
+OPTIM=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE_PARA=BIDON,
+                    VALE_FONC=RESU);
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.50000012523551,
+                         VALE_REFE=EP,
+                         VALE_PARA=1.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=49999.88211997,
+                         VALE_REFE=MP,
+                         VALE_PARA=2.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=OPTIM,),
+                      _F(VALE_CALC=20000.00768440,
+                         VALE_REFE=AM,
+                         VALE_PARA=3.0,
+                         REFERENCE='ANALYTIQUE',
+                         FONCTION=OPTIM,),
+                      ),
+              )
+
+FIN();

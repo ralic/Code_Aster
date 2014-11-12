@@ -1,0 +1,375 @@
+
+DEBUT(PAR_LOT='NON',);  #PAR_LOT = NON a cause de getvectjev
+
+EP__=0.5
+MP__=50000.
+AM__=20000.
+
+PRE_GIBI(UNITE_GIBI=22);
+
+MAIL1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),);
+
+MAIL1=DEFI_GROUP(reuse=MAIL1,
+                 MAILLAGE=MAIL1,
+                 CREA_GROUP_NO=(
+                               _F( NOM='NO_MA',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(2.0,3.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA1',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,1.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA2',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,2.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA3',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,3.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA4',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(1.0,4.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA5',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(0.0,0.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA6',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-1.0,-1.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA7',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-2.0,-2.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA8',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-3.0,-3.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                               _F( NOM='NO_MA9',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(-4.0,-4.0),
+                                  RAYON=0.1,
+                                  PRECISION=0.1,),
+                                ),
+                )
+
+MAIL1=DEFI_GROUP(reuse =MAIL1,
+                   MAILLAGE=MAIL1,
+                   CREA_GROUP_NO=_F(GROUP_MA='BORDS',
+                                    NOM='BORDS',),);
+
+MAIL2= CREA_MAILLAGE(MAILLAGE=MAIL1,
+                     CREA_POI1 =(
+                              _F(NOM_GROUP_MA = 'MASS',
+                                GROUP_NO = 'NO_MA'),
+                              _F(NOM_GROUP_MA = 'AMO1',
+                                GROUP_NO = 'NO_MA1'),
+                              _F(NOM_GROUP_MA = 'AMO2',
+                                GROUP_NO = 'NO_MA2'),
+                              _F(NOM_GROUP_MA = 'AMO3',
+                                GROUP_NO = 'NO_MA3'),
+                              _F(NOM_GROUP_MA = 'AMO4',
+                                GROUP_NO = 'NO_MA4'),
+                              _F(NOM_GROUP_MA = 'AMO5',
+                                GROUP_NO = 'NO_MA5'),
+                              _F(NOM_GROUP_MA = 'AMO6',
+                                GROUP_NO = 'NO_MA6'),
+                              _F(NOM_GROUP_MA = 'AMO7',
+                                GROUP_NO = 'NO_MA7'),
+                              _F(NOM_GROUP_MA = 'AMO8',
+                                GROUP_NO = 'NO_MA8'),
+                              _F(NOM_GROUP_MA = 'AMO9',
+                                GROUP_NO = 'NO_MA9'),
+                                ),
+                     )
+
+MODEL=AFFE_MODELE(MAILLAGE=MAIL2,
+                  AFFE=(_F(GROUP_MA = 'TOUT_ELT',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DST',),
+                        _F(GROUP_MA = ('MASS','AMO1','AMO2','AMO3','AMO4',
+                                       'AMO5','AMO6','AMO7','AMO8','AMO9',),
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_T',),
+  
+                          ),);
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES 
+#---------------------------------------------------------------------
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
+                        COQUE=_F(GROUP_MA='SURF',
+                                 EPAIS=EP__,),
+                        DISCRET= (_F(  GROUP_MA = 'MASS',
+                                     CARA = 'M_T_D_N',
+                                     VALE = MP__,),
+                                  _F(  GROUP_MA = ('MASS','AMO1','AMO2','AMO3','AMO4',
+                                       'AMO5','AMO6','AMO7','AMO8','AMO9',),
+                                     CARA = 'K_T_D_N',
+                                     VALE = (0.0, 0.0, 0.0),),
+                                  _F(  GROUP_MA = ('MASS','AMO1','AMO2','AMO3','AMO4',
+                                       'AMO5','AMO6','AMO7','AMO8','AMO9',),
+                                     CARA = 'A_T_D_N',
+                                     VALE = (1.,1.,AM__,),)
+                        ),);
+                         
+
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX 
+#---------------------------------------------------------------------
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.3,
+                            RHO=7800.0,
+                            ),);
+#
+
+MAT=AFFE_MATERIAU(MAILLAGE=MAIL2,
+                  AFFE=_F(GROUP_MA='SURF',
+                          MATER=ACIER2,),);
+
+#---------------------------------------------------------------------
+#                   CHARGEMENT
+#---------------------------------------------------------------------
+CHAR = AFFE_CHAR_MECA(MODELE=MODEL,
+                   DDL_IMPO=_F(GROUP_NO='BORDS',
+                    DX=0.,  DY=0. , DZ=0.,
+                    DRX=0., DRY=0., DRZ=0.,))
+
+#---------------------------------------------------------------------
+#                     RESOLUTION 
+#---------------------------------------------------------------------
+
+# on deploie ASSEMBLAGE 
+# les macros ne passent pas dans les fichiers esclaves
+
+M_EL_RIG=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MODEL,
+                        CHAM_MATER=MAT,
+                        CARA_ELEM=CARA_ELE,
+                        CHARGE=CHAR,
+                        );
+
+M_EL_MAS=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MODEL,
+                        CHAM_MATER=MAT,
+                        CARA_ELEM=CARA_ELE,
+                        CHARGE=CHAR,
+                        );
+
+M_EL_AMO=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                        MODELE=MODEL,
+                        CHAM_MATER=MAT,RIGI_MECA=M_EL_RIG,MASS_MECA=M_EL_MAS,
+                        CARA_ELEM=CARA_ELE,
+                        CHARGE=CHAR,
+                        );
+
+NU=NUME_DDL(MATR_RIGI=M_EL_RIG,);
+
+M_AS_RIG=ASSE_MATRICE(MATR_ELEM=M_EL_RIG,
+                      NUME_DDL=NU,);
+
+M_AS_MAS=ASSE_MATRICE(MATR_ELEM=M_EL_MAS,
+                      NUME_DDL=NU,);
+#
+M_AS_AMO=ASSE_MATRICE(MATR_ELEM=M_EL_AMO,
+                      NUME_DDL=NU,);
+
+# les modes etendus ont ete calcules au prealable dans le fichier pilote
+# fort.38
+
+MODET=LIRE_RESU(TYPE_RESU='MODE_MECA_C',
+                 FORMAT='IDEAS',
+                 MODELE=MODEL,
+                 UNITE=38,
+                 NOM_CHAM='DEPL',
+                 MATR_RIGI =M_AS_RIG,
+                 MATR_MASS =M_AS_MAS,
+                 FORMAT_IDEAS=_F(NOM_CHAM='DEPL',
+                                 NUME_DATASET=55,
+                                 RECORD_6=(1,2,3,8,5,6,),
+                                 POSI_ORDRE=(7,4,),
+                                 POSI_NUME_MODE=(7,4),
+                                 POSI_FREQ=(8,1,),
+                                 POSI_MASS_GENE=(8,2),
+                                 POSI_AMOR_GENE=(8,3),
+                                 NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'),),
+                 TOUT_ORDRE='OUI',);
+
+######################
+#les modes identifies a exploiter 
+# numero ordre a mettre en coherence avec le fichier pilote
+l_modes_exploit=(1,2,3,4,5,6,7,8,)
+l_array = NP.array(l_modes_exploit)
+list_reca = l_array-1
+
+
+# recuperation frequences et amor_reduit depuis MODMES
+# car CREA_RESU(MODET) ne recupere pas l amor reduit pour l instant!
+
+tmodes = aster.getvectjev("MODMES             .RSPR        ")
+
+freq = []
+amor_red = []
+for i in list_reca:
+    freq.append(tmodes[24*i+14])      #14 : frequence
+    amor_red.append(tmodes[24*i+1])   #1  : amortissement reduit
+
+nbmodes_mes = len(l_modes_exploit)
+
+##########################
+# PROD_MATR_CHAMP ne sait pas faire le produit matrice reelle*champ complexe
+# solution : transformation de matrice reelle en matrice complexe
+
+RIG_C = COMB_MATR_ASSE(COMB_C = _F(MATR_ASSE = M_AS_RIG,
+                                   COEF_C = ('RI',1.,0.,),),
+                      )
+
+MAS_C = COMB_MATR_ASSE(COMB_C = _F(MATR_ASSE = M_AS_MAS,
+                                   COEF_C = ('RI',1.,0.,),),
+                      )
+
+AMO_C = COMB_MATR_ASSE(COMB_C = _F(MATR_ASSE = M_AS_AMO,
+                                   COEF_C = ('RI',1.,0.,),),
+                      )
+
+CHMC  = [None]*nbmodes_mes
+RV = [None]*nbmodes_mes
+MV = [None]*nbmodes_mes
+AV = [None]*nbmodes_mes
+
+v  = [None]*nbmodes_mes
+rv  = [None]*nbmodes_mes
+mv  = [None]*nbmodes_mes
+cv  = [None]*nbmodes_mes
+
+for i in range(nbmodes_mes):
+  CHMC[i]=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_C',
+                  RESULTAT=MODET,
+                     NUME_ORDRE= l_modes_exploit[i],
+                      NOM_CHAM='DEPL'   )
+
+  nom = CHMC[i].nom
+  vect = nom.ljust(19)+'.VALE'
+  vali1=aster.getvectjev(vect)
+  v[i] = NP.array(vali1)
+
+  RV[i]=PROD_MATR_CHAM(
+               MATR_ASSE=RIG_C,
+               CHAM_NO=CHMC[i]        )
+
+  MV[i]=PROD_MATR_CHAM(
+               MATR_ASSE=MAS_C,
+               CHAM_NO=CHMC[i]        )
+
+  AV[i]=PROD_MATR_CHAM(
+               MATR_ASSE=AMO_C,
+               CHAM_NO=CHMC[i]        )
+
+  nom = RV[i].nom
+  vect = nom.ljust(19)+'.VALE'
+  vali1=aster.getvectjev(vect)
+  rv[i] = NP.array(vali1)
+
+  nom = MV[i].nom
+  vect = nom.ljust(19)+'.VALE'
+  vali1=aster.getvectjev(vect)
+  mv[i] = NP.array(vali1)
+
+  nom = AV[i].nom
+  vect = nom.ljust(19)+'.VALE'
+  vali1=aster.getvectjev(vect)
+  cv[i] = NP.array(vali1)
+
+
+l_val_r = []
+l_val_r_conjg = []
+l_val_m = []
+l_val_m_conjg = []
+l_val_c = []
+l_val_c_conjg = []
+l_vect = []
+
+#vdot : produit hermitien : NP.vdot(x,y) = x.conjg * y
+#pour un produit classique il ne faut pas oublier d enlever le conj
+#     en appliquant la methode .conj()
+#prod_x_y = NP.vdot(x.conj(),y)
+
+for i in range(nbmodes_mes):
+  l_val_r.append(NP.vdot(v[i].conj(),rv[i]))
+  l_val_r_conjg.append(NP.vdot(v[i],rv[i]).conj())
+  l_val_m.append(NP.vdot(v[i].conj(),mv[i]))
+  l_val_m_conjg.append(NP.vdot(v[i],mv[i]).conj())
+  l_val_c.append(NP.vdot(v[i].conj(),cv[i]))
+  l_val_c_conjg.append(NP.vdot(v[i],cv[i]).conj())
+  l_vect.append(NP.vdot(v[i],v[i]))
+
+##########################
+
+s_nu = []
+import math
+for i in range(nbmodes_mes):
+    snu_r = -amor_red[i]*2*math.pi*freq[i]/math.sqrt(1.-amor_red[i]*amor_red[i])
+    snu_i = 2*math.pi*freq[i]
+    s_nu.append(complex(snu_r,snu_i))
+
+# tables pour le recalage
+l_1 = []
+for i in range(nbmodes_mes):
+    val = l_val_c_conjg[i]+2*s_nu[i].real*l_val_m_conjg[i]
+    val = val/l_vect[i]
+    l_1.append(val.real)
+# la partie imag de val est egale a zero
+    
+T1 = CREA_TABLE(LISTE=(_F(LISTE_I=range(len(l_1)),PARA='ORDRE',),
+                         _F(LISTE_R=l_1,PARA='TY_BM_Y',),),
+                 )
+
+#print 'l_1 : ',l_1
+
+l_2 = []
+for i in range(nbmodes_mes):
+    val = abs(s_nu[i])*abs(s_nu[i])*l_val_m_conjg[i]-l_val_r_conjg[i]
+    val = val/abs(s_nu[i]*l_vect[i])
+    l_2.append(val.real)
+# la partie imag de val est egale a zero
+
+T2 = CREA_TABLE(LISTE=(_F(LISTE_I=range(len(l_2)),PARA='ORDRE',),
+                         _F(LISTE_R=l_2,PARA='TY_MK_Y',),),
+                 )
+
+#print 'l_2 : ',l_2
+
+l_3 = []
+for i in range(nbmodes_mes):
+    val = s_nu[i]*s_nu[i]*l_val_m[i]+s_nu[i]*l_val_c[i]+l_val_r[i]
+    val = val/abs(s_nu[i]*l_vect[i])
+    l_3.append(val.real)
+    l_3.append(val.imag)
+
+T3 = CREA_TABLE(LISTE=(_F(LISTE_I=range(len(l_3)),PARA='ORDRE',),
+                         _F(LISTE_R=l_3,PARA='TY_MBK_Y',),),
+                 )
+
+#print 'l_3 : ',l_3
+
+#IMPR_TABLE(TABLE=T1)
+#IMPR_TABLE(TABLE=T2)
+#IMPR_TABLE(TABLE=T3)
+
+
+FIN();
