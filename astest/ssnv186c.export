@@ -6,5 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnv186c.comm D 1
-F datg ssnv186c.datg D 16
-F mmed ssnv186b.mmed D 20
+F mmed ssnv186c.mmed D 20

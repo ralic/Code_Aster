@@ -55,6 +55,7 @@ subroutine xmelem(noma, modele, defico, resoco)
     character(len=19) :: xdonco, xindco, xseuco, xmemco, xgliss, xcohes
     character(len=19) :: xindcp, xmemcp, xseucp, xcohep
     integer, pointer :: nfis(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
     parameter    (nfismx=100)
 !
 ! ----------------------------------------------------------------------
@@ -85,8 +86,8 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 ! --- ON VA CHERCHER LE TYPE DE CONTACT: STANDARD OU MORTAR?
 !
-    call jeveuo(modele//'.XFEM_CONT','L',jxc)
-    contac = zi(jxc)
+    call jeveuo(modele//'.XFEM_CONT','L',vi=xfem_cont)
+    contac = xfem_cont(1)
 !
 !
 !
@@ -103,20 +104,37 @@ subroutine xmelem(noma, modele, defico, resoco)
 !
 ! ---
 !
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xindco, 'PINDCOI', 'RIGI_CONT')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xmemco, 'PMEMCON', 'XCVBCA')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xindcp, 'PINDCOI', 'RIGI_CONT')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xmemcp, 'PMEMCON', 'XCVBCA')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xseuco, 'PSEUIL', 'RIGI_CONT')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xseucp, 'PSEUIL', 'XREACL')
-    call xmele1(noma, modele, defico, ligrel, nfiss,&
-                xgliss, 'PGLISS', 'XCVBCA')
+    if(contac.eq.1.or.contac.eq.3) then
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xindco, 'PINDCOI', 'RIGI_CONT')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xmemco, 'PMEMCON', 'XCVBCA')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xindcp, 'PINDCOI', 'RIGI_CONT')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xmemcp, 'PMEMCON', 'XCVBCA')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xseuco, 'PSEUIL', 'RIGI_CONT')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xseucp, 'PSEUIL', 'XREACL')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xgliss, 'PGLISS', 'XCVBCA')
+    else if(contac.eq.2) then
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xindco, 'PINDCOI', 'RIGI_CONT_M')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xmemco, 'PMEMCON', 'XCVBCA_MORTAR')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xindcp, 'PINDCOI', 'RIGI_CONT_M')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xmemcp, 'PMEMCON', 'XCVBCA_MORTAR')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xseuco, 'PSEUIL', 'RIGI_CONT_M')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xseucp, 'PSEUIL', 'RIGI_CONT_M')
+        call xmele1(noma, modele, defico, ligrel, nfiss,&
+                    xgliss, 'PGLISS', 'XCVBCA_MORTAR')
+    endif
 !
 ! --- SI CONTACT CLASSIQUE, CHAMPS COHESIFS COLLOCATION PTS GAUSS
 !

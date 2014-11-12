@@ -18,6 +18,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+Sc=5.E7
+Gc=1.E4
+
 MAILLAG2=LIRE_MAILLAGE(FORMAT='MED',INFO=1);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
@@ -42,42 +45,58 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='STANDARD',
+                         CONTACT='MORTAR',
                          INFO=1);
 
 CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FORMULATION    = 'XFEM',
-                      FROTTEMENT     = 'COULOMB',
-                      ITER_CONT_MAXI = 4,
-                      ITER_FROT_MAXI = 6,
-                      REAC_GEOM      = 'SANS',ELIM_ARETE     = 'ELIM',
+                      FROTTEMENT     = 'SANS',
+                      ELIM_ARETE     = 'ELIM',
                       ZONE=(
                             _F(
                                FISS_MAIT    = FISS,
                                INTEGRATION  = 'GAUSS',
-                               ORDRE_INT=3,
-                               CONTACT_INIT = 'OUI',
-                               COULOMB      = 1.0,
-                               SEUIL_INIT   = -1.E11,
-                               ALGO_CONT    = 'STANDARD',
-                               COEF_CONT    = 100.,
-                               ALGO_FROT    = 'STANDARD',
-                               COEF_FROT    = 1000.,
+                               ORDRE_INT    = 3,
+                               ALGO_CONT    = 'CZM',
+                               RELATION     = 'CZM_LIN_MIX',
                                ALGO_LAGR    = 'VERSION2',
                              ),
                          ),
                    );
 
 
-E=1.0E11
+E=1.0E10
 nu=0.
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0));
+CHABNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  FISSURE=FISS,
+                  NOM_CHAM='LNNO');
+
+E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
+                  VALE=(-20.0,9.E9,-1.E-5,9.E9,1.E-5,E,20.0,E));
+
+NU_F=DEFI_FONCTION(NOM_PARA='NEUT1',
+                  VALE=(-20.0,nu,-1.E-5,nu,1.E-5,nu,20.0,nu));
+
+ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=7800.0),
+                    RUPT_FRAG = _F(GC = Gc,
+                                    SIGM_C = Sc,
+                                    PENA_LAGR = 1.5,),
+);
+
+#ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0),
+#                    RUPT_FRAG = _F(GC = Gc,
+#                                   SIGM_C = Sc,
+#                                   PENA_LAGR = 1.5,),);
 
 CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP'),
                                 MATER=ACIER,
-                                ));
+                                ),
+                       AFFE_VARC=_F(NOM_VARC='NEUT1',
+                                    CHAM_GD=CHABNO)
+);
 
 PRES=100.
 FCTPRES=FORMULE(NOM_PARA=('X','Y','Z'),VALE='(PRES-(Y-10.)*(Y-10.)/2.)*E/1e6');
@@ -105,11 +124,11 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 GROUP_MA='VOL'),
                    INCREMENT=_F(LIST_INST=L_INST),
                    SOLVEUR=_F(METHODE='MUMPS',
+                              NPREC=-1,
                               ),
                               NEWTON=_F(REAC_ITER=1),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA'),
                    INFO=1);
-
 
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
@@ -127,6 +146,10 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
                         INFO          = 2)
+
+RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,
+                    RESULTAT=RES_XFEM,
+                    CRITERES='SIEQ_ELGA',);
 
 LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                              GROUP_NO='NFISSU',
@@ -150,8 +173,8 @@ TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.01,
            TYPE_TEST='MIN',
-           VALE_CALC=-9.5270090987841E+06,
-           VALE_REFE=-9.528440E6,
+           VALE_CALC=-949473.422467,
+           VALE_REFE=-9.528440E5,
            NOM_PARA='LAGS_C',
            TABLE=LAG,
            FILTRE=(_F(CRIT_COMP='EQ',
@@ -170,8 +193,8 @@ TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.01,
            TYPE_TEST='MAX',
-           VALE_CALC=-9.5270090987841E+06,
-           VALE_REFE=-9.528440E6,
+           VALE_CALC=-949473.422467,
+           VALE_REFE=-9.528440E5,
            NOM_PARA='LAGS_C',
            TABLE=LAG,
            FILTRE=(_F(CRIT_COMP='EQ',

@@ -246,8 +246,8 @@ OPTION__
                                 CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                                 E195NEUT PPMILTO
                           OUT__ ECONTPG  PCONTRT  MVECTUR  PVECTUR  
-    COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
+    COOR_ELGA         -1  IN__  XXXXXX   XXXXXX  
+                          OUT__ XXXXXX   XXXXXX  
     ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
     ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR  
@@ -303,8 +303,8 @@ OPTION__
                                 EREFCO   PREFCO   
                                 E195NEUT PPMILTO
                           OUT__ MVECTUR  PVECTUR  
-    REPERE_LOCAL     133  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER  
-                          OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3  
+    REPERE_LOCAL      -1  IN__  XXXXXX   XXXXXX
+                          OUT__ XXXXXX   XXXXXX
     RICE_TRACEY       -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     RIGI_MECA        539  IN__  N9NEUT_R PBASLOR  E320NEUI PCNSETO  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  
@@ -354,8 +354,8 @@ OPTION__
     TOU_INI_ELGA      99  IN__  
                           OUT__ EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R  
                                 EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
-    VERI_JACOBIEN    328  IN__  NGEOMER  PGEOMER  
-                          OUT__ ECODRET  PCODRET  
+    VERI_JACOBIEN     -1  IN__  XXXXXX   XXXXXX  
+                          OUT__ XXXXXX   XXXXXX  
     WEIBULL           -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     XFEM_XPG          46  IN__  E320NEUI PCNSETO  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  

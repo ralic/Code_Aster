@@ -190,8 +190,6 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Variables internes aux noeuds pas élément"), ),
             "VARI_NOEU":        ( ("nonlin",),
                                  _(u"Variables internes aux noeuds"), ),
-            "COHE_ELEM":        ( ("nonlin",),
-                                 _(u"Variables internes cohésives XFEM"), ),
         }
         d['HYDRAULIQUE'] = {
             "FLHN_ELGA":        ( ("nonlin",),
@@ -300,6 +298,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Vitesse absolue aux noeuds"), ),
         }
         d['AUTRES'] = {
+            "COHE_ELEM":        ( ("nonlin",),
+                                 _(u"Variables internes cohésives XFEM"), ),
             "COMPORTEMENT":     ( (),
                                  _(u"Carte de comportement mécanique"), ),
             "COMPORTHER":       ( (),

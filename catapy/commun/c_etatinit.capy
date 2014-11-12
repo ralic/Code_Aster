@@ -24,7 +24,9 @@ def C_ETAT_INIT( COMMAND, statut ) :  #COMMUN#
     kwargs['SIGM']           = SIMP(statut='f',typ=(cham_elem,carte_sdaster))
     kwargs['VARI']           = SIMP(statut='f',typ=cham_elem)
     kwargs['STRX']           = SIMP(statut='f',typ=cham_elem)
-    kwargs['COHE']      = SIMP(statut='f',typ=cham_elem)
+
+    if COMMAND == 'STAT_NON_LINE':
+        kwargs['COHE']      = SIMP(statut='f',typ=cham_elem)
 
     if COMMAND == 'DYNA_NON_LINE':
         kwargs['VITE']       = SIMP(statut='f',typ=cham_no_sdaster)

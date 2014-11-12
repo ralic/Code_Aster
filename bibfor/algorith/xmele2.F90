@@ -82,10 +82,11 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
     integer :: jgrp
     character(len=19) :: chelsi
     real(kind=8) :: coef(nbcmp)
-    integer :: jmail
+    integer :: jmail, contac
     integer, pointer :: nbsp(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: fiss(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !
     data licmp    /'RHON','MU','RHOTK','INTEG','COECH',&
      &    'COSTCO','COSTFR','COPECO','COPEFR','RELA'/
@@ -104,6 +105,8 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 ! --- INITIALISATIONS
 !
     chelsi = '&&XMELE2.CES'
+    call jeveuo(modele//'.XFEM_CONT','L',vi=xfem_cont)
+    contac = xfem_cont(1)
 !
 ! --- RECOPIE DU NOMBRE DE SOUS POINTS DE TOPOSE.HEA DANS LE CHAMP NBSP
 !
@@ -197,8 +200,13 @@ subroutine xmele2(noma, modele, defico, ligrel, nfiss,&
 !
 ! --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
 !
-    call cescel(chelsi, ligrel, 'XCVBCA', 'PDONCO', 'NON',&
-                ibid, 'V', chelem, 'F', ibid)
+    if(contac.eq.1.or.contac.eq.3) then
+        call cescel(chelsi, ligrel, 'XCVBCA', 'PDONCO', 'NON',&
+                    ibid, 'V', chelem, 'F', ibid)
+    else if(contac.eq.2) then
+        call cescel(chelsi, ligrel, 'RIGI_CONT_M', 'PDONCO', 'NON',&
+                    ibid, 'V', chelem, 'F', ibid)
+    endif
 !
 ! --- MENAGE
 !

@@ -38,7 +38,7 @@ MA=DEFI_GROUP(reuse=MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(GROUP_MA = ('G_CUBE','DROITE','GAUCHE'),
                        PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'C_PLAN'),
+                       MODELISATION = 'D_PLAN'),
                );
 # angle en radian
 THETA = 30.*pi/180.

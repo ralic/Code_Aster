@@ -66,6 +66,7 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
     character(len=19) :: xindc0, xseuc0, xcohe0
     aster_logical :: lxffm, lxczm, lxfcm
     integer, pointer :: nfis(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,8 +98,8 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 ! --- TYPE DE CONTACT : CLASSIQUE OU MORTAR?
 !
-    call jeveuo(nomo//'.XFEM_CONT','L',jxc)
-    contac = zi(jxc)
+    call jeveuo(nomo//'.XFEM_CONT','L',vi=xfem_cont)
+    contac = xfem_cont(1)
 !
 ! --- NOM DES CHAMPS
 !
@@ -122,8 +123,14 @@ subroutine xxmxme(noma, nomo, fonact, defico, resoco)
 !
 ! --- PREPARATION CHAM_ELEM VIERGES
 !
-    call xmele1(noma, nomo, defico, ligrel, nfiss,&
-                xindc0, 'PINDCOI', 'RIGI_CONT')
+    if(contac.eq.1.or.contac.eq.3) then
+        call xmele1(noma, nomo, defico, ligrel, nfiss,&
+                    xindc0, 'PINDCOI', 'RIGI_CONT')
+    else if(contac.eq.2) then
+        call xmele1(noma, nomo, defico, ligrel, nfiss,&
+                    xindc0, 'PINDCOI', 'RIGI_CONT_M')
+    endif
+!
     if (lxczm) then
 !
 !       SI CONTACT CLASSIQUE, CHAMP AUX PTS GAUSS
