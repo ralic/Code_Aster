@@ -273,8 +273,8 @@ OPTION__
                                 N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  E132NEUR PPINTTO  
                                 STANO_I  PSTANO   CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                           OUT__ ECONTPG  PCONTRT  MVECTUR  PVECTUR  
-    COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
+    COOR_ELGA         -1  IN__  XXXXXX   XXXXXX
+                          OUT__ XXXXXX   XXXXXX
     ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
     ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR  

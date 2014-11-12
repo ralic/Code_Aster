@@ -75,8 +75,8 @@ OPTION__
                                      E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
                                      STANO_I  PSTANO   E4NEUTR  PPMILTO  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           467   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG                              
+    COOR_ELGA           -1   IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     FLHN_ELGA           468   IN__   NGEOMER  PGEOMER  NSIEF_R  PCONTR
                               OUT__  EFLHN    PFLHN   
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET

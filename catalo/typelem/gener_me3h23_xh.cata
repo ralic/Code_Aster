@@ -241,8 +241,8 @@ OPTION__
                                      E15NEUTI PCFACE   E3NEUTI  PLONGCO  N1NEUT_R PLST     STANO_I  PSTANO
                                      E63NEUTR PBASECO  N1NEUT_R PLSN
                               OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           488   IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOP_R PCOORPG
+    COOR_ELGA           -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     ECIN_ELEM           -1    IN__
                               OUT__  XXXXXX   XXXXXX
     ENEL_ELEM           -1    IN__

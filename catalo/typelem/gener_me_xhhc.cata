@@ -264,8 +264,8 @@ OPTION__
                           OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_TEMP_R  -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
-    COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
+    COOR_ELGA         -1  IN__  XXXXXX   XXXXXX
+                          OUT__ XXXXXX   XXXXXX
     ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR  
                           OUT__ XXXXXX   XXXXXX   
     ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR  

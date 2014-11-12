@@ -111,8 +111,8 @@ OPTION__
                                 E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E48NEUTR  PPINTTO
                                 EPRESNO  PPRESSR  STANO_I  PSTANO
                               OUT__  MVECTUR  PVECTUR
-    COOR_ELGA        488  IN__  NGEOMER  PGEOMER
-                          OUT__ EGGEOP_R PCOORPG
+    COOR_ELGA         -1  IN__  XXXXXX   XXXXXX
+                          OUT__ XXXXXX   XXXXXX
     INI_XFEM_ELNO     99  IN__    OUT__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO   FISNO_I  PFISNO 
     TOPOSE           514  IN__  FISCO_I  PFISCO   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
                           OUT__ E72NEUI  PCNSETO  E24NEUI  PHEAVTO  E10NEUTI PLONCHA  E48NEUTR  PPINTTO
