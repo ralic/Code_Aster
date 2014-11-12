@@ -950,6 +950,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                             FONCTION=_F(FONCTION=__AX_CL, PARA=('INST', 'AX_CL')),)
                         __tabAXRA = CREA_TABLE(
                             FONCTION=_F(FONCTION=__AX_RA, PARA=('INST', 'AX_RA')),)
+                        __tabaccx = CALC_TABLE(TABLE=__tabaccx, reuse=__tabaccx,
+                                    ACTION=_F(OPERATION='COMB', TABLE=__tabAXRA, NOM_PARA='INST'),)
 
                         __tabadec = CALC_TABLE(TABLE=__tabaccx,
                                                ACTION=(
