@@ -289,6 +289,9 @@ subroutine exfonc(fonact, parmet, method, solveu, defico,&
         if (lmatdi) then
             call utmess('F', 'MECANONLINE5_8')
         endif
+        if (leltc) then
+            call utmess('F', 'MECANONLINE5_15')
+        endif
     endif
 !
     call jedema()

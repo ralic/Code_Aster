@@ -104,6 +104,10 @@ en accélération est possible
  méthode discrète du contact avec frottement ou la méthode pénalisée.
 """),
 
+    15 : _(u"""
+ Le calcul des énergies n'est pas disponible avec le contact en formulation continue ou XFEM.
+"""),
+
     19 : _(u"""
 Il y a plus d'amortissements modaux (AMOR_MODAL) que de modes.
 """),
