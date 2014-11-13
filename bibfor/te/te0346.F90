@@ -161,11 +161,11 @@ subroutine te0346(option, nomte)
             do i = 1, 7
                 b(i) = -b(i)
             enddo
-            a = zr(isect+1)
-            xiy = zr(isect+2)
-            xiz = zr(isect+3)
-            iyr2= zr(isect+10)
-            izr2= zr(isect+11)
+            a = zr(isect-1+1)
+            xiy = zr(isect-1+2)
+            xiz = zr(isect-1+3)
+            iyr2= zr(isect-1+10)
+            izr2= zr(isect-1+11)
             rgeom(:)=0.0d0
             call ptkg20(b, a, xiz, xiy, iyr2,&
                         izr2, xl, ey, ez, rgeom)

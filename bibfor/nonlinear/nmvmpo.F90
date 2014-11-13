@@ -127,7 +127,7 @@ subroutine nmvmpo(fami, npg, nno, option, nc,&
     alfay = sect(4)
     alfaz = sect(5)
     xjx = sect(8)
-    xjg = sect(12)
+    xjg = sect(9)
 !
 !   matériau integré sur la section
     hoel(1,1) = e*aa
