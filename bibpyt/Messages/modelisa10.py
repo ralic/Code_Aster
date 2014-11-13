@@ -86,7 +86,7 @@ Certains éléments à interpolation linéaires du modèle ne sont pas compatibl
 """),
 
     19 : _(u"""
-AFFE_CARA_ELEM Pour l'occurrence n° %(i1)d de BARRE le nombre de caractéristiques et de valeurs doivent être identique.
+AFFE_CARA_ELEM Pour l'occurrence n° %(i1)d de BARRE le nombre de caractéristiques et de valeurs doivent être identiques.
 """),
 
 }

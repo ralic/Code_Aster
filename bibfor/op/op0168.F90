@@ -67,6 +67,7 @@ subroutine op0168()
     parameter   ( nbpari=1 , nbparr=15 , nbpark=3, nbpara=19 )
     integer :: lpar(3)
     integer :: vali(2)
+    integer :: nbvect
     real(kind=8) :: r8b, prec, zero, mastot, valr(7)
     character(len=1) :: typmod
     character(len=3) :: ouinon
@@ -356,7 +357,8 @@ subroutine op0168()
             goto 102
         endif
         call jeveuo(jexnum(kmode, i), 'L', jordr)
-        call vprecu(modein, nomsy, nbmode, zi(jordr), kvec,&
+        nbvect=nbmode
+        call vprecu(modein, nomsy, nbvect, zi(jordr), kvec,&
                     nbpara, nopara(1), kvali, kvalr, kvalk,&
                     neq, nbmode, typmod, npari, nparr,&
                     npark)
