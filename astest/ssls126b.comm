@@ -247,6 +247,7 @@ TEST_TABLE(TABLE=tab2,
            FILTRE=_F(NOM_PARA='COOR_X',
                      CRIT_COMP='MINI',),
            NOM_PARA='MXY',
+           CRITERE='ABSOLU',
            VALE_CALC=-1.64520733456E-10,);
 
 tab3=POST_COQUE(RESULTAT=RESU,
@@ -268,6 +269,7 @@ TEST_TABLE(TABLE=tab3,
            FILTRE=_F(NOM_PARA='COOR_X',
                      CRIT_COMP='MINI',),
            NOM_PARA='EPXY',
+           CRITERE='ABSOLU',
            VALE_CALC=-2.07850407732E-17,);
 
 #
