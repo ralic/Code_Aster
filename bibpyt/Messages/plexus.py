@@ -249,5 +249,10 @@ Le mot-clé %(k1)s n'est pas autorisé dans CALC_EUROPLEXUS pour le mot-clé
 facteur %(k2)s d'AFFE_CARA_ELEM.
 """),
 
+    46 : _(u"""
+Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.
+Il n'existe pas de traduction dans le matériau EPX correspondant. Il n'est
+donc pas pris en compte. 
+"""),
 
 }

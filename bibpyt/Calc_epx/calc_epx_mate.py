@@ -262,6 +262,11 @@ def get_para_loi(loi, relation, l_para, l_vale, l_para1, l_vale1,
             bes_para = cata_lois[cle]['BESOIN'][ipar]
             if bes_para == 'o':
                 UTMESS('F', 'PLEXUS_31', valk=(para, loi, nom_mater))
+#   vérifcation que l'on utilise pas de mot-clé non pris en charge
+    for para in donnees.keys():
+        if para not in cata_lois[cle]['PARA']:
+            UTMESS('A', 'PLEXUS_46', valk=(para, loi, nom_mater))
+
     return l_para, l_vale, l_para1, l_vale1, liste_fonc
 #-----------------------------------------------------------------------
 
@@ -350,6 +355,11 @@ Pas de traitement special présent pour le couple relation/loi %s."""
             bes_para = cata_lois[rel_loi]['BESOIN'][ipar]
             if bes_para == 'o':
                 UTMESS('F', 'PLEXUS_31', valk=(para, loi, nom_mater))
+    #   vérifcation que l'on utilise pas de mot-clé non pris en charge
+    for para in donnees.keys():
+        if para not in cata_lois[rel_loi]['PARA']:
+            UTMESS('A', 'PLEXUS_46', valk=(para, loi, nom_mater))
+
     if cata_lois[rel_loi].has_key('NOM_EPX'):
         nom_epx = cata_lois[rel_loi]['NOM_EPX']
         bloc_s = BLOC_DONNEES(nom_epx, cara=l_para1, vale=l_vale1)
