@@ -81,6 +81,7 @@ subroutine ssdmgn(mag)
     call jeveuo(mag//'.DIME_2', 'L', vi=dime_2)
     call jeveuo(mag//'.NOMACR', 'L', vk8=vnomacr)
     nbsma= dime(4)
+    nomgng = ' '
 !
 !
 !

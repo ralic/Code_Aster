@@ -85,4 +85,8 @@ La valeur du mot clé DEFORMATION='%(k1)s' et incompatible avec la modélisation
 Certains éléments à interpolation linéaires du modèle ne sont pas compatibles avec le modèle de déformation DEFORMATION='%(k1)s'.
 """),
 
+    19 : _(u"""
+AFFE_CARA_ELEM Pour l'occurrence n° %(i1)d de BARRE le nombre de caractéristiques et de valeurs doivent être identique.
+"""),
+
 }

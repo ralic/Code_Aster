@@ -1,5 +1,5 @@
 subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
-                  car, val, exp, nbo, kioc,&
+                  car, val, exp, ncar, kioc,&
                   ier)
     implicit none
 #include "asterf_types.h"
@@ -15,7 +15,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: isec, nbo, ier
+    integer :: isec, ncar, ier
     real(kind=8) :: val(*)
     character(len=6) :: kioc
     character(len=8) :: fcx, nommai, car(*), exp(*)
@@ -72,7 +72,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
 ! --- TESTS D ECRASEMENT DE SECTION
     if (num .ne. 0) then
         call jeveuo(jexnom(tmp, nommai), 'E', jdge)
-        iisec = nint(zr(jdge+nbo-1))
+        iisec = nint(zr(jdge+ncar-1))
         if (iisec .ne. isec) then
             valk(1) = kioc
             valk(2) = nommai
@@ -83,7 +83,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
     else
         call jecroc(jexnom(tmp, nommai))
         call jeveuo(jexnom(tmp, nommai), 'E', jdge)
-        do 5 i = 1, nbo
+        do 5 i = 1, ncar
             zr(jdge+i-1) = tst
   5     continue
     endif
@@ -97,11 +97,11 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
     zk8(jdgef) = fcx
 !
     if (isec .eq. 0) then
-        do 20 j = 1, nbo
+        do 20 j = 1, ncar
             if (car(j) .eq. 'A       ') zr(jdge) = val(j)
  20     continue
     else if (isec.eq.1) then
-        do 22 j = 1, nbo
+        do 22 j = 1, ncar
             if (car(j) .eq. 'HY      ') then
                 zr(jdge+1) = val(j)
             else if (car(j).eq.'HZ      ') then
@@ -122,7 +122,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
             endif
  22     continue
     else if (isec.eq.2) then
-        do 24 j = 1, nbo
+        do 24 j = 1, ncar
             if (car(j) .eq. 'R       ') then
                 zr(jdge+5) = val(j)
             else if (car(j).eq.'EP      ') then
@@ -236,7 +236,7 @@ subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
         endif
         if (zr(jdge+6) .eq. tst) zr(jdge+6) = zr(jdge+5)
     endif
-    do 50 i = 1, nbo
+    do 50 i = 1, ncar
         if (zr(jdge+i-1) .eq. tst) zr(jdge+i-1) = zero
  50 end do
 !

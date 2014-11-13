@@ -261,7 +261,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !
 !     recuperation du coeff de compressibilite draine
     xk00=xmat(nmelast+19)
-    if (xk00 .ne. 0.) then
+    if (xk00 .ne. 0.d0) then
 !      print*,'coeff elastique recalcules a partir de k et mu endo3d'
 !      coefficient de cisaillement
         xmu00=xmat(nmelast+20)
@@ -323,19 +323,19 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
     aleas0=xmat(nmat0+10)
 !     exposant de leffet d echelle temporel
     xktemp=xmat(nmelast+23)
-    if (xktemp .eq. 0.) then
+    if (xktemp .eq. 0.d0) then
 !         print*,'il manque KTMP dans ENDO3D, on prend 2.5'
         xktmp=2.5d0
     end if
 !     seuil de l effet d echelle temporel
     xs1=xmat(nmelast+22)
-    if (xs1 .ge. 1.) then
+    if (xs1 .ge. 1.d0) then
 !         on ignore l effet dechelle temporel
         coefft=1.d0
     end if
 !     adaptation des donnees determinites pour le calcul probabiliste
 !     cf fichier maple drucker prager probabiliste
-    if (aleas0 .ne. 0.) then
+    if (aleas0 .ne. 0.d0) then
 !         aleas0=min(aleas0,0.49)
         aleas0=max(aleas0,0.)
 !        on peut forcer le critere de compression a ignorer l aleas
@@ -1477,7 +1477,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !
 !     ******************************************************************
 !     correction de la pression pour integrer l ouverture de fissure
-    if (pw1 .gt. 0.) then
+    if (pw1 .gt. 0.d0) then
         dpw1=-xwsat*(1.d0-bw1)*dvfiss0
 !       if(dpw1.ne.0.)then
 !         print*,'variation de pression dans endo3d',dpw1
@@ -1523,7 +1523,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
             dsw6(i)=0.d0
         end do
 !     retour en base fixe si non nul
-        if (pw1 .gt. 0.) then
+        if (pw1 .gt. 0.d0) then
             call x6x33(dsw6, x33)
             call b3d_chrep(dsw33, x33, vss33t)
             call x33x6(dsw33, dsw6)
@@ -1586,7 +1586,7 @@ subroutine endo3d(xmat, nmat, var0, varf, nvari,&
 !         formualtion poreuse
 !         on enleve -bw1pw1  car traite hors du module endo3d par le logiciel
             if (i .le. 3) then
-                if (pw1 .gt. 0.) then
+                if (pw1 .gt. 0.d0) then
 !            la surpression est deja prise en compte, on l enleve car dsw est non
 !            nul que pour les surpressions
 ! !!!!! siga6(i)=siga6(i)+bw1*pw1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

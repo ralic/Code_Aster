@@ -180,7 +180,7 @@ subroutine caddlp(load, mesh, ligrmo, vale_type)
 ! --------- Change components with local coordinate system
 !
             call char_beam_lcs(mesh, model, ncncin, keywordfact, iocc,&
-                               nume_node, name_node, keywordlist, valimr, cmp_name_glo,&
+                               nume_node, name_node, keywordlist,  n_keyword, valimr, cmp_name_glo,&
                                cmp_acti_glo, cmp_valr_glo)
 !
 ! --------- Final linear relation

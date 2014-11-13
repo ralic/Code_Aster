@@ -69,6 +69,7 @@ subroutine cresol(solveu)
     epsmat=-1.d0
     mixpre='NON'
     kmd='NON'
+    modele = ' '
 !
     call getfac(nomsol, nsolve)
     if (nsolve .eq. 0) goto 10

@@ -45,6 +45,9 @@ function xxishm(mailc, mailx, mo)
 !
     call jemarq()
 !
+    notype = ' '
+    notyp2 = ' '
+!
 !     SI IL N'Y A PAS DE MAILLES CLASSIQUES DANS LE MODELE ON PASSE
 !     DIRECTEMENT AUX MAILLES XFEM POUR SAVOIR SI ON EST EN HM
     if (mailc .eq. '&&OP0196.MAILC') goto 1

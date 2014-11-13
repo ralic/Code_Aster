@@ -98,7 +98,7 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
     optrig = ' '
     typmat = ' '
     nsta = 0
-!
+    modrig=' '
 ! --- TYPE DE DEFORMATIONS
 !
     call jeveuo(compor(1:19)//'.VALE', 'L', vk16=vale)

@@ -57,7 +57,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
     real(kind=8) :: tandam(6, 6), tanepl(6, 6), sigpd(6), deda(6), residu
-    real(kind=8) :: crbid(11), inbid, sigpp(6), rac2, emda(6)
+    real(kind=8) :: crbid(13), inbid, sigpp(6), rac2, emda(6)
     real(kind=8) :: empl(6), depzz, eps2d(6), deps2d(6), d22, d21eps
     real(kind=8) :: tan3d(6, 6)
     real(kind=8) :: sig2dm(6), sig2dp(6), scm(4), sigpeq, critcp, signul, prec
@@ -67,6 +67,9 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
     character(len=8) :: typmod(2)
 !
     rac2 = sqrt(2.d0)
+!
+    call r8inir(13,0.d0,crbid,1)
+!
 ! ---EPAISSEUR TOTALE :
     call jevech('PCACOQU', 'L', icara)
     ep = zr(icara)

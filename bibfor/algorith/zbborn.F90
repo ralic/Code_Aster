@@ -49,7 +49,7 @@ subroutine zbborn(rho, f)
 !
 ! --- C'EST UNE BORNE POTENTIELLE A VALEUR NEGATIVE
 !
-    if (f .lt. 0) then
+    if (f .lt. 0.d0) then
         rhoneg = rho
         fneg = f
 !

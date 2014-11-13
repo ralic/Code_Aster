@@ -17,14 +17,15 @@
 !
 interface
     subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc, node_nume,&
-                             node_name, cmp_name_loc, cmp_valr_loc, cmp_name_glo, &
-                             cmp_acti_glo, cmp_valr_glo)
+                             node_name, cmp_name_loc, n_keyword, cmp_valr_loc, &
+                             cmp_name_glo, cmp_acti_glo, cmp_valr_glo)
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=19), intent(in) :: connex_inv
         character(len=16), intent(in) :: keywordfact
         integer, intent(in) :: iocc
         integer, intent(in) :: node_nume
+        integer, intent(in) :: n_keyword
         character(len=8), intent(in) :: node_name
         character(len=16), intent(in) :: cmp_name_loc(6)
         real(kind=8), intent(in) :: cmp_valr_loc(6)

@@ -115,6 +115,9 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma,&
 !
     call jemarq()
 !
+    k11a = ' '
+    k11b = ' '
+!
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 ! 1   CARACTERISATION DE LA TOPOLOGIE DE LA STRUCTURE BETON :
 !     REPRESENTATION PAR DES MAILLES 2D OU 3D

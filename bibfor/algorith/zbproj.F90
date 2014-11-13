@@ -52,7 +52,7 @@ subroutine zbproj(rho, echec)
 !
     if (rho .lt. rhoneg) then
         if (bpos) then
-            rho = (rhoneg+rhopos)/2
+            rho = (rhoneg+rhopos)/2.d0
         else
             echec = .true.
         endif
@@ -62,7 +62,7 @@ subroutine zbproj(rho, echec)
 !
     if (bpos) then
         if (rho .gt. rhopos) then
-            rho = (rhoneg+rhopos)/2
+            rho = (rhoneg+rhopos)/2.d0
         endif
     endif
 !

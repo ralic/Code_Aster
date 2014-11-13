@@ -98,6 +98,7 @@ subroutine op0168()
     call infmaj()
 !
     zero = 0.d0
+    ouinon = ' '
     undf = r8vide( )
     call getres(modeou, typcon, nomcmd)
     ifr = iunifi('RESULTAT')

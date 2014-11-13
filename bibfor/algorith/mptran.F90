@@ -99,6 +99,8 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
 !
     call jemarq()
 !
+    kreg = ' '
+!
 ! RECUPERATION DU NOM DU CONCEPT RESULTAT
     call getres(nomres, typres, k16bid)
 ! RECUPERATION DU CHAMP MESURE : NOMMES

@@ -73,16 +73,16 @@ subroutine arlmol(nomo,mailar,modarl,tabcor)
 
     call jemarq()
 
+! --- INITIALISATIONS
+
+    ligarl = modarl(1:8)//'.MODELE'
+
 ! --- DESTRUCTION DU LIGREL S'IL EXISTE
 
     call exisd('LIGREL', ligarl, iret)
     if (iret .ne. 0) then
        call detrsd('LIGREL',ligarl)
     endif
-
-! --- INITIALISATIONS
-
-    ligarl = modarl(1:8)//'.MODELE'
 
 ! --- INFORMATIONS SUR LE MODELE ORIGINAL
 

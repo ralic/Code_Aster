@@ -334,7 +334,7 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb,&
                     endif
                 endif
             end do
-            ASSERT(dmax.gt.0)
+            ASSERT(dmax.gt.0.d0)
             ndeci1=int(log10(dmax))
             ndeci2=int(log10(1.d0/dmin))
             ndeci=ndeci1

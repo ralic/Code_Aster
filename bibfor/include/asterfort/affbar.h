@@ -17,7 +17,7 @@
 !
 interface
     subroutine affbar(tmp, tmpf, fcx, nommai, isec,&
-                      car, val, exp, nbo, kioc,&
+                      car, val, exp, ncar, kioc,&
                       ier)
         character(len=24) :: tmp
         character(len=24) :: tmpf
@@ -27,7 +27,7 @@ interface
         character(len=8) :: car(*)
         real(kind=8) :: val(*)
         character(len=8) :: exp(*)
-        integer :: nbo
+        integer :: ncar
         character(len=6) :: kioc
         integer :: ier
     end subroutine affbar

@@ -55,6 +55,7 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre,&
     call jemarq()
     nommat = nommaz
     nomphe = phenom
+    k11 = ' '
 !
     call rccome(nommat, nomphe, iret, k11_ind_nomrc=k11)
     if (iret .eq. 1) then

@@ -84,7 +84,7 @@ subroutine op0180()
     character(len=19) :: carsig, carte, ligrmo, lirela, numaca, nunobe, xnoca
     character(len=19) :: ynoca, znoca, nomt19, nunobi, nomg19
     character(len=24) :: cadesc, ncncin, nmabet, comima, gromai
-    character(len=8) :: aire, effnor(3), valk(7)
+    character(len=8) :: aire, effnor(3), valk(8)
     complex(kind=8) :: cbid
     integer :: nbpar, nbnobi, sens, nbpar2
     parameter    (nbpar=14)
@@ -150,6 +150,7 @@ subroutine op0180()
     valr(1)=f0
     valr(2)=delta
     valk(7)= adher
+    valk(8)= ' '
 !
     if (adher .eq. 'NON') then
         call utmess('I', 'MODELISA3_39')

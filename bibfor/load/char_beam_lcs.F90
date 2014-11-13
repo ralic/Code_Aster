@@ -1,6 +1,6 @@
 subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
-                         node_nume, node_name, cmp_name_loc, cmp_valr_loc, cmp_name_glo,&
-                         cmp_acti_glo, cmp_valr_glo)
+                         node_nume, node_name, cmp_name_loc,  n_keyword, cmp_valr_loc, &
+                         cmp_name_glo,cmp_acti_glo, cmp_valr_glo)
 !
     implicit none
 !
@@ -36,6 +36,7 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
     character(len=16), intent(in) :: keywordfact
     integer, intent(in) :: iocc
     integer, intent(in) :: node_nume
+    integer, intent(in) :: n_keyword
     character(len=8), intent(in) :: node_name
     character(len=16), intent(in) :: cmp_name_loc(6)
     real(kind=8), intent(in) :: cmp_valr_loc(6)
@@ -81,6 +82,8 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
 !
     call jemarq()
 !
+    ASSERT(n_keyword.le.6)
+!
 ! - Initializations
 !
     do i_cmp = 1, 6
@@ -115,7 +118,7 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
         dloc(i_direc) = 0.d0
         rln1(i_direc) = 0.d0
     enddo
-    do i_cmp = 1, 6
+    do i_cmp = 1, n_keyword
         cmp_name = cmp_name_loc(i_cmp)
         if (cmp_name .eq. 'DX') then
             rln1(1) = 1.d0
@@ -153,7 +156,7 @@ subroutine char_beam_lcs(mesh, model, connex_inv, keywordfact, iocc,&
         dloc(i_direc) = 0.d0
         rln1(i_direc) = 0.d0
     enddo
-    do i_cmp = 1, 6
+    do i_cmp = 1, n_keyword
         cmp_name = cmp_name_loc(i_cmp)
         if (cmp_name .eq. 'DRX') then
             rln1(1) = 1.d0

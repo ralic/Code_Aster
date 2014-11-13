@@ -205,6 +205,9 @@ implicit none
             call getvtx('BARRE', 'CARA', iocc=ioc, nbval=nbcar, vect=cara, nbret=ncar)
             call getvr8('BARRE', 'VALE', iocc=ioc, nbval=nbval, vect=vale, nbret=nval)
             ASSERT(ncar.gt.0)
+            if(ncar.ne.nval)then
+               call utmess('F','MODELISA10_19',si=ioc)
+            endif
         endif
         fcx = '.'
         call getvid('BARRE', 'FCX', iocc=ioc, scal=fcx, nbret=nfcx)
@@ -225,7 +228,7 @@ implicit none
                     do k = 1, nbtel
                         if (nutyel .eq. ntyele(k)) then
                             call affbar(tmpgen, tmpgef, fcx, nommai, isec,&
-                                        cara, vale, expbar, nbo, kioc,&
+                                        cara, vale, expbar, nbcar, kioc,&
                                         ier)
                             cycle groupe
                         endif
@@ -246,7 +249,7 @@ implicit none
                 do j = 1, nbtel
                     if (nutyel .eq. ntyele(j)) then
                         call affbar(tmpgen, tmpgef, fcx, nommai, isec,&
-                                    cara, vale, expbar, nbo, kioc,&
+                                    cara, vale, expbar, nbcar, kioc,&
                                     ier)
                         cycle maille
                     endif

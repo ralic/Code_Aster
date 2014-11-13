@@ -136,6 +136,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     call jemarq()
 !
+    codret = ' '
+!
 !     ------------------------------------------------------------------
 !     1) INITIALISATIONS
 !     ------------------------------------------------------------------

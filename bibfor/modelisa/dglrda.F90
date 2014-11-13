@@ -102,6 +102,7 @@ subroutine dglrda()
     nomres(3) = 'RHO'
 !
     k8b = ' '
+    r8b(1) = 0.d0
     call rcvale(mater, 'ELAS            ', 0, k8b, r8b(1), 3, nomres, valres, icodr2, 1)
 !
     eb = valres(1)
