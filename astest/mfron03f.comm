@@ -93,6 +93,9 @@ MATF=DEFI_MATERIAU(
                                gamma0 = GAMMA0,
                                a = A,
                                b = B,
+                               rhoref = RHOREF ,
+                               alpha = ALPHA ,
+                               beta = BETA ,
                                Mu = G,
                                ),
                                )

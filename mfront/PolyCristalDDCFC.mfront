@@ -24,6 +24,9 @@
 @MaterialProperty real gamma0;
 @MaterialProperty real a;
 @MaterialProperty real b;
+@MaterialProperty real rhoref;
+@MaterialProperty real alpha;
+@MaterialProperty real beta;
 @MaterialProperty real Mu;
 
 @StateVariable StrainStensor    epsp;
@@ -64,9 +67,6 @@ omega.setErrorNormalisationFactor(1.e-7);
 
 @Derivative{
   using tfel::math::stdfunctions::power;
-  static const real rhoref = 1.e6;
-  static const real alpha  = 0.35;
-  static const real beta   = 2.54e-7;
   static const real tmp1   = log(alpha);
   static const real tmp2   = log(alpha*beta*sqrt(rhoref));
   const PCSlidingSystems& gs =
@@ -112,9 +112,9 @@ omega.setErrorNormalisationFactor(1.e-7);
       Dp=0.;
       if (terme>1.){
          // pour gagner 30% de CPU
-	      Dp  = gamma0*power<20>(terme)-gamma0;
+	 // Dp  = gamma0*power<20>(terme)-gamma0;
          // si l'exposant n'est pas entier :
-         // Dp  = gamma0*pow(terme,pn)-gamma0;
+              Dp  = gamma0*pow(terme,pn)-gamma0;
 	      real sgn=tau/abs(tau);
 	      real Dg  = sgn*Dp;
 	      depsg[k]+=Dg*mu_ki ;
