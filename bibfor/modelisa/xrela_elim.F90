@@ -212,9 +212,6 @@ implicit none
 !
  20             continue
                 if (l_rela_find) then
-                    if (i_rela_idx.eq.nb_term_maxi) then
-                        call utmess('F','XFEM_53')
-                    endif
                     i_rela_idx = 0
                     do i_term = 1, nb_term_maxi
                         node_name(i_term) = list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_term-1)+1)
@@ -222,6 +219,9 @@ implicit none
                             i_rela_idx = i_rela_idx + 1
                         endif
                     end do
+                    if (i_rela_idx.ge.nb_term_maxi) then
+                        call utmess('F','XFEM_53')
+                    endif
                     old_node_name = list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_rela_idx-1)+1)
                     old_cmp_name  = list_rela(2*nb_term_maxi*(i_rela_find-1)+2*(i_rela_idx-1)+2)
                     if ((old_node_name.ne.new_node_name).and.&
