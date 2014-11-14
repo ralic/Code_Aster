@@ -1,7 +1,6 @@
 subroutine exisd(typesd, nomsd, iret)
     implicit none
 #include "jeveux.h"
-#include "asterfort/exisd2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
