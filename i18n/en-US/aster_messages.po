@@ -8805,10 +8805,8 @@ msgid ""
 "                Calcul modal par %(k1)s\n"
 "\n"
 msgstr ""
-"\n"
 "=======================================================================\n"
 " Modal computation by %(k1)s\n"
-"\n"
 "\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:31
@@ -43283,7 +43281,6 @@ msgid ""
 msgstr ""
 "\n"
 " You cannot use contact with continuation methods (PILOTAGE)\n"
-" "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline.py:61
 msgid ""
