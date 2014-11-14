@@ -218,8 +218,6 @@ OPTION__
                               OUT__  EKTHETA  PGTHETA
     CARA_GEOM         -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
-    CFL_XFEM            118   IN__   NGEOMER  PGEOMER
-                              OUT__  E1NEUTR  PLONCAR
     CHAR_LIMITE       -1  IN__  
                           OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_EPSA_R    426   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
@@ -458,7 +456,3 @@ OPTION__
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CSOUSOP  PSOUSOP  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIPG
                               OUT__  EDOMGGA  PSIGISG  EWEIBUL  PWEIBUL
-    XFEM_SMPLX_CALC  118  IN__  E1NEUTR  PGRANDF  E3NEUT_R PGRLS    N1NEUT_R PLSNO    E3NEUT_R PNIELNO  
-                          OUT__ N1NEUT_R PALPHA   E1NEUTR  PDPHI    
-    XFEM_SMPLX_INIT     118   IN__   NGEOMER  PGEOMER
-                              OUT__  E1NEUTR  PMEAST   E3NEUT_R PNIELNO
