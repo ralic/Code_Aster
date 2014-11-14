@@ -1626,7 +1626,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12157"/>
       <source>Propriétés du fluide (requis si ISSF='OUI')</source>
-      <translation type="unfinished">Propriétés du fluide (requis si ISSF='OUI')</translation>
+      <translation type="unfinished">Fluid properties (required if ISSF='OUI')</translation>
     </message>
     <message>
       <location filename="../cata.py" line="12157"/>
@@ -1716,7 +1716,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12157"/>
       <source>Valeur correspondante au ratio 100*Ns/Nt, où                  Ns est le nombre d'échantillons sans interpoler et Nt le nombre total d'échantillons</source>
-      <translation type="unfinished">Valeur correspondante au ratio 100*Ns/Nt, où                  Ns est le nombre d'échantillons sans interpoler et Nt le nombre total d'échantillons</translation>
+      <translation type="unfinished">Value corresponding to the ratio 100*Ns/Nt, where Ns is the number of samples without interpolating and Nt the total number of samples</translation>
     </message>
     <message>
       <location filename="../cata.py" line="12157"/>
@@ -3896,7 +3896,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17725"/>
       <source>Parametre materiau dépendant de la forme de l'obstacle</source>
-      <translation type="unfinished">Parametre materiau dépendant de la forme de l'obstacle</translation>
+      <translation type="unfinished">Material parameter depending on the shape of the obstacle</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -3906,7 +3906,7 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Contraintes , en unite de contraintes ex 20 MPa</source>
-      <translation type="unfinished">Contraintes , en unite de contraintes ex 20 MPa</translation>
+      <translation type="unfinished">Constraints, in constraint units e.g. 20 MPa</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17725"/>
@@ -3936,12 +3936,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17725"/>
       <source>ecrouissage, paramètre b, en unite de longueur</source>
-      <translation type="unfinished">ecrouissage, paramètre b, en unite de longueur</translation>
+      <translation type="unfinished">hardening, parameter b, in length units</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17725"/>
       <source>ecrouissage, paramètre rho_ref, en unité de longueur **-2</source>
-      <translation type="unfinished">ecrouissage, paramètre rho_ref, en unité de longueur **-2</translation>
+      <translation type="unfinished">hardening, parameter rho_ref, in length units **-2</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -4036,17 +4036,17 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>parametre H, en unite de 1/temps</source>
-      <translation type="unfinished">parametre H, en unite de 1/temps</translation>
+      <translation type="unfinished">parameter H, in 1/time units</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>energie d'activation, en unite d'energie (eV ou J)</source>
-      <translation type="unfinished">energie d'activation, en unite d'energie (eV ou J)</translation>
+      <translation type="unfinished">activation energy, in energy units (eV or J)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>contrainte ultime, en unite de contraintes </source>
-      <translation type="unfinished">contrainte ultime, en unite de contraintes </translation>
+      <translation type="unfinished">final constraint, in constraint units </translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -4121,7 +4121,7 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>E=E/COEF,si la contrainte principale max est atteinte dans l'element</source>
-      <translation type="unfinished">E=E/COEF,si la contrainte principale max est atteinte dans l'element</translation>
+      <translation type="unfinished">E=E/COEF, if the max main constraint is reached in the element</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22037"/>
@@ -4156,7 +4156,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22276"/>
       <source>Définition des données de sol pour Miss</source>
-      <translation type="unfinished">Définition des données de sol pour Miss</translation>
+      <translation type="unfinished">Definition of the floor data for Miss</translation>
     </message>
     <message>
       <location filename="../cata.py" line="22194"/>
@@ -4556,7 +4556,7 @@
     <message>
       <location filename="../cata.py" line="24634"/>
       <source>coef et erreur maxi ZPA</source>
-      <translation type="unfinished">coef et erreur maxi ZPA</translation>
+      <translation type="unfinished">ZPA coef and max error</translation>
     </message>
     <message>
       <location filename="../cata.py" line="24634"/>
@@ -4581,7 +4581,7 @@
     <message>
       <location filename="../cata.py" line="24634"/>
       <source>intensite d'Arias</source>
-      <translation type="unfinished">intensite d'Arias</translation>
+      <translation type="unfinished">Arias intensity</translation>
     </message>
     <message>
       <location filename="../cata.py" line="24634"/>
@@ -5271,7 +5271,7 @@
     <message>
       <location filename="../cata.py" line="26725"/>
       <source>Lecture d'un fichier contenant une table</source>
-      <translation type="unfinished">Lecture d'un fichier contenant une table</translation>
+      <translation type="unfinished">Reading a file containing a table</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26757"/>

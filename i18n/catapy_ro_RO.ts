@@ -21,7 +21,7 @@
     <message>
       <location filename="../cata.py" line="3641"/>
       <source>Nombre de variables internes</source>
-      <translation type="unfinished">Nombre de variables internes</translation>
+      <translation type="unfinished">Numărul de variabile interne</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3641"/>
@@ -31,7 +31,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3641"/>
       <source>Nom de la routine UMAT dans la bibliothèque</source>
-      <translation type="unfinished">Nom de la routine UMAT dans la bibliothèque</translation>
+      <translation type="unfinished">Numele rutinei UMAT în bibliotecă</translation>
     </message>
     <message>
       <location filename="../cata.py" line="3641"/>
@@ -46,7 +46,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3641"/>
       <source>Nom de la routine MFRONT dans la bibliothèque</source>
-      <translation type="unfinished">Nom de la routine MFRONT dans la bibliothèque</translation>
+      <translation type="unfinished">Numele rutinei MFRONT în bibliotecă</translation>
     </message>
     <message>
       <location filename="../cata.py" line="3641"/>
@@ -71,7 +71,7 @@
     <message>
       <location filename="../cata.py" line="3641"/>
       <source>nombre de phases metallurgiques</source>
-      <translation type="unfinished">nombre de phases metallurgiques</translation>
+      <translation type="unfinished">numărul de faze metalurgice</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="3641"/>
@@ -146,7 +146,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="9429"/>
       <source>Paramètres de la méthode PETSC</source>
-      <translation type="unfinished">Paramètres de la méthode PETSC</translation>
+      <translation type="unfinished">Parametrii metodei PETSC</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5444"/>
@@ -171,12 +171,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5709"/>
       <source>A,IY,IZ,JX sont des paramètres obligatoires</source>
-      <translation type="unfinished">A,IY,IZ,JX sont des paramètres obligatoires</translation>
+      <translation type="unfinished">A,IY,IZ,JX sunt parametrii obligatorii</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5709"/>
       <source>A1,A2,IY1,IY2,IZ1,IZ2,JX1,JX2 sont des paramètres obligatoires</source>
-      <translation type="unfinished">A1,A2,IY1,IY2,IZ1,IZ2,JX1,JX2 sont des paramètres obligatoires</translation>
+      <translation type="unfinished">A1,A2,IY1,IY2,IZ1,IZ2,JX1,JX2 sunt parametrii obligatorii</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5709"/>
@@ -186,7 +186,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5709"/>
       <source>R1, R2 sont des paramètres obligatoires</source>
-      <translation type="unfinished">R1, R2 sont des paramètres obligatoires</translation>
+      <translation type="unfinished">R1, R2 sunt parametrii obligatorii</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5709"/>
@@ -761,32 +761,32 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8813"/>
       <source>Longueur caractéristique</source>
-      <translation type="unfinished">Longueur caractéristique</translation>
+      <translation type="unfinished">Lungimea caracteristică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8813"/>
       <source>Pression caractéristique</source>
-      <translation type="unfinished">Pression caractéristique</translation>
+      <translation type="unfinished">Presiune caracteristică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8813"/>
       <source>Température caractéristique</source>
-      <translation type="unfinished">Température caractéristique</translation>
+      <translation type="unfinished">Temperatura caracteristică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8813"/>
       <source>modélisations mécaniques</source>
-      <translation type="unfinished">modélisations mécaniques</translation>
+      <translation type="unfinished">modelare mecanică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8813"/>
       <source>modélisations thermiques</source>
-      <translation type="unfinished">modélisations thermiques</translation>
+      <translation type="unfinished">modelare termică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8813"/>
       <source>modélisations acoustiques</source>
-      <translation type="unfinished">modélisations acoustiques</translation>
+      <translation type="unfinished">modelarea acustică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8813"/>
@@ -856,17 +856,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="9429"/>
       <source>chargement mécanique</source>
-      <translation type="unfinished">chargement mécanique</translation>
+      <translation type="unfinished">încărcare mecanică</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9429"/>
       <source>chargement thermique</source>
-      <translation type="unfinished">chargement thermique</translation>
+      <translation type="unfinished">încărcare termică</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9429"/>
       <source>chargement acoustique</source>
-      <translation type="unfinished">chargement acoustique</translation>
+      <translation type="unfinished">încărcare acustică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="9525"/>
@@ -886,7 +886,7 @@
     <message>
       <location filename="../cata.py" line="31111"/>
       <source>Resultat d'une commande globale</source>
-      <translation type="unfinished">Resultat d'une commande globale</translation>
+      <translation type="unfinished">Rezultatul unei  comenzi globale</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9650"/>
@@ -916,12 +916,12 @@
     <message>
       <location filename="../cata.py" line="9650"/>
       <source>Options pour le calcul de deformations</source>
-      <translation type="unfinished">Options pour le calcul de deformations</translation>
+      <translation type="unfinished">Opţiuni pentru calculul deformaţiilor</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9650"/>
       <source>Options pour le calcul d'energies</source>
-      <translation type="unfinished">Options pour le calcul d'energies</translation>
+      <translation type="unfinished">Opțiuni pentru calcularea energiilor</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9650"/>
@@ -931,7 +931,7 @@
     <message>
       <location filename="../cata.py" line="9650"/>
       <source>Options pour le calcul de variables internes</source>
-      <translation type="unfinished">Options pour le calcul de variables internes</translation>
+      <translation type="unfinished">Opțiuni pentru calcularea variabilelor interne</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9650"/>
@@ -941,17 +941,17 @@
     <message>
       <location filename="../cata.py" line="9650"/>
       <source>Options pour le calcul de flux hydraulique</source>
-      <translation type="unfinished">Options pour le calcul de flux hydraulique</translation>
+      <translation type="unfinished">Opțiuni pentru calculul fluxului hidraulic</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9650"/>
       <source>Options pour le calcul de champs en thermique</source>
-      <translation type="unfinished">Options pour le calcul de champs en thermique</translation>
+      <translation type="unfinished">Opțiuni de calcul al câmpurilor termice</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9650"/>
       <source>Options pour le calcul de champs en acoustique</source>
-      <translation type="unfinished">Options pour le calcul de champs en acoustique</translation>
+      <translation type="unfinished">Opțiuni pentru calculul câmpurilor acustice</translation>
     </message>
     <message>
       <location filename="../cata.py" line="9650"/>
@@ -1041,7 +1041,7 @@
     <message>
       <location filename="../cata.py" line="28514"/>
       <source>Type de section [is]</source>
-      <translation type="unfinished">Type de section [is]</translation>
+      <translation type="unfinished">Tip de secțiune [is]</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28514"/>
@@ -1131,7 +1131,7 @@
     <message>
       <location filename="../cata.py" line="28514"/>
       <source>Air seul</source>
-      <translation type="unfinished">Air seul</translation>
+      <translation type="unfinished">Numai aer</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28514"/>
@@ -1171,7 +1171,7 @@
     <message>
       <location filename="../cata.py" line="28514"/>
       <source>Transfert de chaleur [ichal]</source>
-      <translation type="unfinished">Transfert de chaleur [ichal]</translation>
+      <translation type="unfinished">Transfer de căldură [ichal]</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28514"/>
@@ -1326,7 +1326,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11062"/>
       <source>Valeur de la constante d intégration</source>
-      <translation type="unfinished">Valeur de la constante d intégration</translation>
+      <translation type="unfinished">Valoarea constantei de integrare</translation>
     </message>
     <message>
       <location filename="../cata.py" line="11062"/>
@@ -1356,7 +1356,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11062"/>
       <source>Densité spectrale</source>
-      <translation type="unfinished">Densité spectrale</translation>
+      <translation type="unfinished">Densitatea spectrală</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11062"/>
@@ -1456,7 +1456,7 @@
     <message>
       <location filename="../cata.py" line="11062"/>
       <source>Inverse d'une fonction</source>
-      <translation type="unfinished">Inverse d'une fonction</translation>
+      <translation type="unfinished">Inversul unei funcții</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26274"/>
@@ -1486,7 +1486,7 @@
     <message>
       <location filename="../cata.py" line="11313"/>
       <source>calcul de theta</source>
-      <translation type="unfinished">calcul de theta</translation>
+      <translation type="unfinished">calculul theta</translation>
     </message>
     <message>
       <location filename="../cata.py" line="11475"/>
@@ -1611,7 +1611,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12157"/>
       <source>Version de Miss utilisée</source>
-      <translation type="unfinished">Version de Miss utilisée</translation>
+      <translation type="unfinished">Versiune Miss utilizată</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12157"/>
@@ -1621,7 +1621,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12157"/>
       <source>Propriétés du sol homogène</source>
-      <translation type="unfinished">Propriétés du sol homogène</translation>
+      <translation type="unfinished">Proprietăţile solului omogene</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12157"/>
@@ -1791,7 +1791,7 @@
     <message>
       <location filename="../cata.py" line="12560"/>
       <source>Type d'analyse</source>
-      <translation type="unfinished">Type d'analyse</translation>
+      <translation type="unfinished">Tipul de analiză</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12560"/>
@@ -1966,7 +1966,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13146"/>
       <source>Valeurs des paramètres</source>
-      <translation type="unfinished">Valeurs des paramètres</translation>
+      <translation type="unfinished">Valorile parametrilor</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13146"/>
@@ -2086,12 +2086,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13451"/>
       <source>Modèle mécanique</source>
-      <translation type="unfinished">Modèle mécanique</translation>
+      <translation type="unfinished">Model mecanic</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13451"/>
       <source>Modèle hydraulique</source>
-      <translation type="unfinished">Modèle hydraulique</translation>
+      <translation type="unfinished">Model hidraulic</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13522"/>
@@ -2136,7 +2136,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13797"/>
       <source>Création d'un champ </source>
-      <translation type="unfinished">Création d'un champ </translation>
+      <translation type="unfinished">Crearea unui câmp </translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13797"/>
@@ -2151,7 +2151,7 @@
     <message>
       <location filename="../cata.py" line="14034"/>
       <source>Base de type Ritz</source>
-      <translation type="unfinished">Base de type Ritz</translation>
+      <translation type="unfinished">Baza de date de tip Ritz</translation>
     </message>
     <message>
       <location filename="../cata.py" line="14034"/>
@@ -2396,7 +2396,7 @@
     <message>
       <location filename="../cata.py" line="14680"/>
       <source>ne pas utiliser</source>
-      <translation type="unfinished">ne pas utiliser</translation>
+      <translation type="unfinished">nu utilizaţi</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="14680"/>
@@ -2406,7 +2406,7 @@
     <message>
       <location filename="../cata.py" line="33366"/>
       <source>comportement en cas d'erreur</source>
-      <translation type="unfinished">comportement en cas d'erreur</translation>
+      <translation type="unfinished">comportarea în caz de eroare</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33366"/>
@@ -2666,7 +2666,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15158"/>
       <source>Paramètres de la formulation Lagrangienne</source>
-      <translation type="unfinished">Paramètres de la formulation Lagrangienne</translation>
+      <translation type="unfinished">Parametrii formularea Lagrange</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15158"/>
@@ -3036,7 +3036,7 @@
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Type de l'evenement</source>
-      <translation type="unfinished">Type de l'evenement</translation>
+      <translation type="unfinished">Tip de eveniment</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
@@ -3046,7 +3046,7 @@
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Actions possibles</source>
-      <translation type="unfinished">Actions possibles</translation>
+      <translation type="unfinished">Acţiuni posibile</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
@@ -3056,22 +3056,22 @@
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Valeur du seuil</source>
-      <translation type="unfinished">Valeur du seuil</translation>
+      <translation type="unfinished">Valoarea de prag</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Nom du champ</source>
-      <translation type="unfinished">Nom du champ</translation>
+      <translation type="unfinished">Numele câmpului</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Nom de la composante</source>
-      <translation type="unfinished">Nom de la composante</translation>
+      <translation type="unfinished">Denumirea componentei</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Event: collision</source>
-      <translation type="unfinished">Event: collision</translation>
+      <translation type="unfinished">Eveniment: coliziune</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
@@ -3091,7 +3091,7 @@
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Event: instabilite</source>
-      <translation type="unfinished">Event: instabilite</translation>
+      <translation type="unfinished">Eveniment: instabilitate</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
@@ -3111,7 +3111,7 @@
     <message>
       <location filename="../cata.py" line="17192"/>
       <source>Valeur entiere</source>
-      <translation type="unfinished">Valeur entiere</translation>
+      <translation type="unfinished">Valoare întreagă</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17192"/>
@@ -3321,7 +3321,7 @@
     <message>
       <location filename="../cata.py" line="17626"/>
       <source>Coefficient de dilatation</source>
-      <translation type="unfinished">Coefficient de dilatation</translation>
+      <translation type="unfinished">Coeficientul de dilatare</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17725"/>
@@ -3661,7 +3661,7 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>pression atmospherique</source>
-      <translation type="unfinished">pression atmospherique</translation>
+      <translation type="unfinished">presiunea atmosferică</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -3796,7 +3796,7 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>pression de reference</source>
-      <translation type="unfinished">pression de reference</translation>
+      <translation type="unfinished">presiunea de referință</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -3871,7 +3871,7 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Vitesse d ecoulement initiale</source>
-      <translation type="unfinished">Vitesse d ecoulement initiale</translation>
+      <translation type="unfinished">Viteza de curgere iniţială</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -3901,7 +3901,7 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Vitesse d ecoulement initiale en s**-1</source>
-      <translation type="unfinished">Vitesse d ecoulement initiale en s**-1</translation>
+      <translation type="unfinished">Viteza de curgere inițială în s**-1</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -3976,37 +3976,37 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre xi pour irradiation</source>
-      <translation type="unfinished">Parametre xi pour irradiation</translation>
+      <translation type="unfinished">Parametru xi pentru iradiere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre rho_voids pour irradiation</source>
-      <translation type="unfinished">Parametre rho_voids pour irradiation</translation>
+      <translation type="unfinished">Parametrul rho_voids pentru iradiere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre phi_loops pour irradiation</source>
-      <translation type="unfinished">Parametre phi_loops pour irradiation</translation>
+      <translation type="unfinished">Parametrul phi_loops pentru iradiere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre alpha_voids pour irradiation</source>
-      <translation type="unfinished">Parametre alpha_voids pour irradiation</translation>
+      <translation type="unfinished">Parametrul alpha_voids pentru iradiere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre alpha_loops pour irradiation</source>
-      <translation type="unfinished">Parametre alpha_loops pour irradiation</translation>
+      <translation type="unfinished">Parametrul alpha_loops pentru iradiere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre rho_sat*b*b pour irradiation</source>
-      <translation type="unfinished">Parametre rho_sat*b*b pour irradiation</translation>
+      <translation type="unfinished">Parametrul rho_sat * b * b pentru iradiere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre phi_sat pour irradiation</source>
-      <translation type="unfinished">Parametre phi_sat pour irradiation</translation>
+      <translation type="unfinished">Parametrul phi_sat pentru iradiere</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17725"/>
@@ -4081,27 +4081,27 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre K_F</source>
-      <translation type="unfinished">Parametre K_F</translation>
+      <translation type="unfinished">Parametrul K_F</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre K_SELF</source>
-      <translation type="unfinished">Parametre K_SELF</translation>
+      <translation type="unfinished">Parametrul K_SELF</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre a_self</source>
-      <translation type="unfinished">Parametre a_self</translation>
+      <translation type="unfinished">Parametrul a_self</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre a_coli</source>
-      <translation type="unfinished">Parametre a_coli</translation>
+      <translation type="unfinished">Parametrul a_coli</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre a_ncol</source>
-      <translation type="unfinished">Parametre a_ncol</translation>
+      <translation type="unfinished">Parametrul a_ncol</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -4111,7 +4111,7 @@
     <message>
       <location filename="../cata.py" line="17725"/>
       <source>Parametre a_loops pour irradiation</source>
-      <translation type="unfinished">Parametre a_loops pour irradiation</translation>
+      <translation type="unfinished">Parametrul a_loops pentru iradiere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17725"/>
@@ -4366,7 +4366,7 @@
     <message>
       <location filename="../cata.py" line="24168"/>
       <source>Port SSH de la machien distante</source>
-      <translation type="unfinished">Port SSH de la machien distante</translation>
+      <translation type="unfinished">Portul SSH al mașinii distante</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24168"/>
@@ -4396,7 +4396,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24168"/>
       <source>Port de l'instance Salome (2810 ou supérieur)</source>
-      <translation type="unfinished">Port de l'instance Salome (2810 ou supérieur)</translation>
+      <translation type="unfinished">Portul instanței Salome (2810 sau mai sus)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="24168"/>
@@ -4506,7 +4506,7 @@
     <message>
       <location filename="../cata.py" line="24634"/>
       <source>nombre de points</source>
-      <translation type="unfinished">nombre de points</translation>
+      <translation type="unfinished">numărul de puncte</translation>
     </message>
     <message>
       <location filename="../cata.py" line="24634"/>
@@ -4536,7 +4536,7 @@
     <message>
       <location filename="../cata.py" line="24634"/>
       <source>frequence centrale</source>
-      <translation type="unfinished">frequence centrale</translation>
+      <translation type="unfinished">frecvența centrală</translation>
     </message>
     <message>
       <location filename="../cata.py" line="24634"/>
@@ -4581,7 +4581,7 @@
     <message>
       <location filename="../cata.py" line="24634"/>
       <source>intensite d'Arias</source>
-      <translation type="unfinished">intensite d'Arias</translation>
+      <translation type="unfinished">Intensitatea Arias</translation>
     </message>
     <message>
       <location filename="../cata.py" line="24634"/>
@@ -4806,12 +4806,12 @@
     <message>
       <location filename="../cata.py" line="25543"/>
       <source>Intervalles de variation des abscisses</source>
-      <translation type="unfinished">Intervalles de variation des abscisses</translation>
+      <translation type="unfinished">Intervalele de variaţie pentru abscisă</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25543"/>
       <source>Intervalles de variation des ordonnées</source>
-      <translation type="unfinished">Intervalles de variation des ordonnées</translation>
+      <translation type="unfinished">Intervalele de variaţie pentru ordonată</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25543"/>
@@ -4911,7 +4911,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Modèle</source>
-      <translation type="unfinished">Modèle</translation>
+      <translation type="unfinished">Model</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25347"/>
@@ -4966,7 +4966,7 @@
     <message>
       <location filename="../cata.py" line="25347"/>
       <source>renommage du champ</source>
-      <translation type="unfinished">renommage du champ</translation>
+      <translation type="unfinished">redenumirea câmpului</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25347"/>
@@ -5041,7 +5041,7 @@
     <message>
       <location filename="../cata.py" line="25784"/>
       <source>Valeur RMS d'une fonction</source>
-      <translation type="unfinished">Valeur RMS d'une fonction</translation>
+      <translation type="unfinished">Valoarea RMS a unei funcţii</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25784"/>
@@ -5066,7 +5066,7 @@
     <message>
       <location filename="../cata.py" line="25784"/>
       <source>Norme L2 d'une fonction</source>
-      <translation type="unfinished">Norme L2 d'une fonction</translation>
+      <translation type="unfinished">Norma L2 a unei funcții</translation>
     </message>
     <message>
       <location filename="../cata.py" line="25784"/>
@@ -5081,7 +5081,7 @@
     <message>
       <location filename="../cata.py" line="29920"/>
       <source>Type d analyse</source>
-      <translation type="unfinished">Type d analyse</translation>
+      <translation type="unfinished">Tipul de analiză</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25882"/>
@@ -5091,7 +5091,7 @@
     <message>
       <location filename="../cata.py" line="25882"/>
       <source>Liste de frequences</source>
-      <translation type="unfinished">Liste de frequences</translation>
+      <translation type="unfinished">Listă de frecvenţe</translation>
     </message>
     <message>
       <location filename="../cata.py" line="25882"/>
@@ -5421,7 +5421,7 @@
     <message>
       <location filename="../cata.py" line="26819"/>
       <source>Type de la zone</source>
-      <translation type="unfinished">Type de la zone</translation>
+      <translation type="unfinished">Tipul zonei</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
@@ -5456,7 +5456,7 @@
     <message>
       <location filename="../cata.py" line="26819"/>
       <source>Rayon</source>
-      <translation type="unfinished">Rayon</translation>
+      <translation type="unfinished">Rază</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
@@ -5476,12 +5476,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Rayon intérieur</source>
-      <translation type="unfinished">Rayon intérieur</translation>
+      <translation type="unfinished">Raza interioară</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Rayon extérieur</source>
-      <translation type="unfinished">Rayon extérieur</translation>
+      <translation type="unfinished">Raza exterioară</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26819"/>
@@ -5616,7 +5616,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Rayon numéro 2</source>
-      <translation type="unfinished">Rayon numéro 2</translation>
+      <translation type="unfinished">Raza numărul 2</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
@@ -5651,7 +5651,7 @@
     <message>
       <location filename="../cata.py" line="26819"/>
       <source>Rayon primaire</source>
-      <translation type="unfinished">Rayon primaire</translation>
+      <translation type="unfinished">Raza primară</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
@@ -5871,7 +5871,7 @@
     <message>
       <location filename="../cata.py" line="28167"/>
       <source>Format du fichier</source>
-      <translation type="unfinished">Format du fichier</translation>
+      <translation type="unfinished">Formatul de fişier</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28167"/>
@@ -5906,7 +5906,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28167"/>
       <source>Nom de la section, 8 caractères maximum.</source>
-      <translation type="unfinished">Nom de la section, 8 caractères maximum.</translation>
+      <translation type="unfinished">Numele secțiunii, maxim 8 caractere.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28167"/>
@@ -6166,7 +6166,7 @@
     <message>
       <location filename="../cata.py" line="28921"/>
       <source>Fichier supplementaire.</source>
-      <translation type="unfinished">Fichier supplementaire.</translation>
+      <translation type="unfinished">Fișier suplimentar.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28921"/>
@@ -6181,7 +6181,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32947"/>
       <source>extraction des résultats</source>
-      <translation type="unfinished">extraction des résultats</translation>
+      <translation type="unfinished">Extragerea rezultatelor</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29059"/>
@@ -6246,12 +6246,12 @@
     <message>
       <location filename="../cata.py" line="29201"/>
       <source>Nombre de cpu pour les calculs MPI</source>
-      <translation type="unfinished">Nombre de cpu pour les calculs MPI</translation>
+      <translation type="unfinished">Numărul de cpu pentru calculele MPI</translation>
     </message>
     <message>
       <location filename="../cata.py" line="29201"/>
       <source>Nombre de noeuds pour les calculs MPI</source>
-      <translation type="unfinished">Nombre de noeuds pour les calculs MPI</translation>
+      <translation type="unfinished">Numărul de noduri pentru calculele MPI</translation>
     </message>
     <message>
       <location filename="../cata.py" line="29201"/>
@@ -6631,7 +6631,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31429"/>
       <source>Analyse des relationsnon linéaires effort-déplacement</source>
-      <translation type="unfinished">Analyse des relationsnon linéaires effort-déplacement</translation>
+      <translation type="unfinished">Analiza relației neliniare forță-deplasare</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31472"/>
@@ -6656,7 +6656,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31472"/>
       <source>calcul de l'énergie dissipée</source>
-      <translation type="unfinished">calcul de l'énergie dissipée</translation>
+      <translation type="unfinished">calcularea energiei disipate</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31472"/>
@@ -6791,12 +6791,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32571"/>
       <source>Paramètres pour le format GRACE</source>
-      <translation type="unfinished">Paramètres pour le format GRACE</translation>
+      <translation type="unfinished">Parametri pentru formatul GRACE</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32571"/>
       <source>Paramètres pour le format TABLE</source>
-      <translation type="unfinished">Paramètres pour le format TABLE</translation>
+      <translation type="unfinished">Parametri pentru formatul TABLE</translation>
     </message>
     <message>
       <location filename="../cata.py" line="32571"/>
@@ -7081,7 +7081,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32667"/>
       <source>Situation séisme</source>
-      <translation type="unfinished">Situation séisme</translation>
+      <translation type="unfinished">Situație seismică</translation>
     </message>
     <message>
       <location filename="../cata.py" line="32667"/>
@@ -7101,7 +7101,7 @@
     <message>
       <location filename="../cata.py" line="32667"/>
       <source>nom de la situation</source>
-      <translation type="unfinished">nom de la situation</translation>
+      <translation type="unfinished">numele situației</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32667"/>
@@ -7116,7 +7116,7 @@
     <message>
       <location filename="../cata.py" line="32667"/>
       <source>Situation</source>
-      <translation type="unfinished">Situation</translation>
+      <translation type="unfinished">Situație</translation>
     </message>
     <message>
       <location filename="../cata.py" line="32667"/>
@@ -7231,7 +7231,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32667"/>
       <source>temperature référence</source>
-      <translation type="unfinished">temperature référence</translation>
+      <translation type="unfinished">temperatura de referință</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32947"/>
@@ -7381,7 +7381,7 @@
     <message>
       <location filename="../cata.py" line="33583"/>
       <source>description</source>
-      <translation type="unfinished">description</translation>
+      <translation type="unfinished">descriere</translation>
     </message>
     <message>
       <location filename="../cata.py" line="33664"/>
@@ -7711,7 +7711,7 @@
     <message>
       <location filename="../cata.py" line="35792"/>
       <source>module d'Young</source>
-      <translation type="unfinished">module d'Young</translation>
+      <translation type="unfinished">modulul lui Young</translation>
     </message>
     <message>
       <location filename="../cata.py" line="35792"/>

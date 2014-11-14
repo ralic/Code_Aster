@@ -336,7 +336,7 @@
     <message>
       <location filename="../cata.py" line="5709"/>
       <source>Les 2 vecteurs formant les axes X et Y locaux.</source>
-      <translation type="unfinished">Les 2 vecteurs formant les axes X et Y locaux.</translation>
+      <translation type="unfinished">De 2 vectoren die de locale X- en Y-as vormen.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="5709"/>
@@ -1486,7 +1486,7 @@
     <message>
       <location filename="../cata.py" line="11313"/>
       <source>calcul de theta</source>
-      <translation type="unfinished">calcul de theta</translation>
+      <translation type="unfinished">berekening van theta</translation>
     </message>
     <message>
       <location filename="../cata.py" line="11475"/>
@@ -5456,7 +5456,7 @@
     <message>
       <location filename="../cata.py" line="26819"/>
       <source>Rayon</source>
-      <translation type="unfinished">Rayon</translation>
+      <translation type="unfinished">Straal</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
@@ -5476,12 +5476,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Rayon intérieur</source>
-      <translation type="unfinished">Rayon intérieur</translation>
+      <translation type="unfinished">Binnenste straal</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Rayon extérieur</source>
-      <translation type="unfinished">Rayon extérieur</translation>
+      <translation type="unfinished">Buitenste straal</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26819"/>
@@ -5516,7 +5516,7 @@
     <message>
       <location filename="../cata.py" line="26819"/>
       <source>Hauteur</source>
-      <translation type="unfinished">Hauteur</translation>
+      <translation type="unfinished">Hoogte</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26819"/>
@@ -5606,7 +5606,7 @@
     <message>
       <location filename="../cata.py" line="26819"/>
       <source>Pour un cylindre, un cone ou un tore.</source>
-      <translation type="unfinished">Pour un cylindre, un cone ou un tore.</translation>
+      <translation type="unfinished">Voor een cylinder, een kegel of een torus.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26819"/>
@@ -5641,7 +5641,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26819"/>
       <source>Angle en degré</source>
-      <translation type="unfinished">Angle en degré</translation>
+      <translation type="unfinished">Hoek in graden</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26819"/>
@@ -5836,12 +5836,12 @@
     <message>
       <location filename="../cata.py" line="28069"/>
       <source>version Ideas</source>
-      <translation type="unfinished">version Ideas</translation>
+      <translation type="unfinished">Ideas-versie</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28069"/>
       <source>version Castem</source>
-      <translation type="unfinished">version Castem</translation>
+      <translation type="unfinished">Castem-versie</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="27757"/>
@@ -6186,7 +6186,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29059"/>
       <source>résultat mécanique</source>
-      <translation type="unfinished">résultat mécanique</translation>
+      <translation type="unfinished">mechanisch resultaat</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29059"/>
