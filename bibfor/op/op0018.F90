@@ -133,12 +133,9 @@ subroutine op0018()
     call getres(model, k16dummy, k16dummy)
     ligrel = model//'.MODELE'
 !
-! - Get mesh (or grid)
+! - Get mesh
 !
     call getvid(' ', 'MAILLAGE', scal=mesh, nbret=nbocc)
-    if (nbocc .eq. 0) then
-        call getvid(' ', 'GRILLE', scal=mesh)
-    endif
 !
 ! - Check jacobians
 !
