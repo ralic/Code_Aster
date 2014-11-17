@@ -61,8 +61,6 @@ OPTION__
                           OUT__ XXXXXX   XXXXXX   
     EPOT_ELEM         -1  IN__  XXXXXX   XXXXXX   
                           OUT__ XXXXXX   XXXXXX   
-    IMPE_ABSO         -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
     INDIC_ENER        -1  IN__  XXXXXX   XXXXXX   
                           OUT__ XXXXXX   XXXXXX   
     INDIC_SEUIL       -1  IN__  XXXXXX   XXXXXX   
