@@ -335,8 +335,8 @@ OPTION__
                               OUT__  ESIGMPG  PSIGMR   ESIGMPC  PSIGMC
     SIGM_ELNO           4     IN__   ESIGMPG  PCONTRR
                               OUT__  ESIGMNO  PSIEFNOR ESIGMNC  PSIEFNOC
-    SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
-                              OUT__  MMATUUR  PSYM
+    SYME_MDNS_R          -1   IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     TOPOFA              510   IN__   NGEOMER  PGEOMER  N1NEUT_R PLSN     N1NEUT_R PLST     N3NEUT_R PGRADLT
                                      N3NEUT_R PGRADLN  E1NEUTI  PTYPDIS
                               OUT__  E21NEUTR PPINTER  E35NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI  PLONGCO

@@ -180,7 +180,7 @@ OPTION__
     RIGI_FROT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
                                 DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PSTANO   
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
-    SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM   
-                          OUT__ MMATUUR  PSYM     
+    SYME_MDNS_R       -1  IN__  XXXXXX   XXXXXX
+                          OUT__ XXXXXX   XXXXXX
     XCVBCA           363  IN__  CCONAI   PCAR_AI  CCONPT   PCAR_PT  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  
                           OUT__ I3NEUT_I PINDCOO
