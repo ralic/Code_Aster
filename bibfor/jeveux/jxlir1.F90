@@ -73,7 +73,7 @@ subroutine jxlir1(ic, caralu)
     if (.not. lexist) then
         valk(1) = nombas(ic)
         valk(2) = nom512
-        call utmess('F', 'JEVEUX_12', valk=valk)
+        call utmess('F', 'JEVEUX_12', nk=2, valk=valk)
     endif
     call opendr(nom512, mode, ierr)
 !
