@@ -520,12 +520,12 @@ class Sampler(object):
         liste_temps = NP.arange(0., self.NB_POIN * self.DT, self.DT)
         l_w = NP.arange(-OM + DW / 2., OM + DW / 2., DW)
         l_w2 = NP.arange(DW / 2., OM + DW / 2., DW)
-        nbfreq = 2 * len(l_w2)
         # parfois les listes ne sont pas bien construites
         # pour cause d'erreur num si valeurs reeles
         liste_temps = liste_temps[0: self.NB_POIN]
         l_w = l_w[0: self.NB_POIN]
         l_w2 = l_w2[0: self.NB_POIN / 2]
+        nbfreq = 2 * len(l_w2)
         assert self.NB_POIN == nbfreq
         assert len(liste_temps) == self.NB_POIN
         assert len(l_w) == self.NB_POIN
