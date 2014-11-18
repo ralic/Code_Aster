@@ -249,6 +249,10 @@ def get_para_loi(loi, relation, l_para, l_vale, l_para1, l_vale1,
                     'Erreur de programmation : type de donnees mfac impossible')
             else:
                 vale = donnees[para]
+                if type(para_epx) == float or type(para_epx) == int:
+                    if vale != para_epx:
+                        UTMESS('F', 'PLEXUS_49', valk=(para, loi, nom_mater),
+                                                 valr=(para_epx, vale))
             if not posi_para:
                 l_para.append(para_epx)
                 l_vale.append(vale)
@@ -324,6 +328,10 @@ Pas de traitement special présent pour le couple relation/loi %s."""
                     l_vale1.append(vale)
             elif type_para == 'reel':
                 vale = donnees[para]
+                if type(para_epx) == float or type(para_epx) == int:
+                    if vale != para_epx:
+                        UTMESS('F', 'PLEXUS_49', valk=(para, loi, nom_mater),
+                                                 valr=(para_epx, vale))
                 if posi_para == 0:
                     l_para.append(para_epx)
                     l_vale.append(vale)

@@ -158,9 +158,12 @@ cata_compor = {
 
     PARA : noms des paramètres de la loi dans Code_Aster
     PARA_EPX : noms des paramètres de la loi correspondant dans EPX
-               si c'est une ligne cela signifie qu'un traitement est
+               si c'est une liste cela signifie qu'un traitement est
                a faire sur les données Aster pour les mettre en forme
-               pour EPX
+               pour EPX.
+               Si c'est un nombre, c'est que le paramètre n'a pas de 
+               traduction dans EPX. La valeur donnée est une valeur 
+               imposée au paramètre Aster.
     BESOIN   : o/f , précise si le paramètre est obligatoire ou non
     TYPE     : reel, fonc(fonction) ou mfac(comme mot-clé facteur)
 
@@ -257,10 +260,10 @@ cata_lois = {
         'TYPE': ['reel', 'reel', 'reel', 'reel', 'reel'],
     },
     'BETON/BETON_ECRO_LINE': {
-        'PARA': ['SYT', 'SYC', ],
-        'PARA_EPX': ['FT', 'FC', ],
-        'BESOIN': ['o', 'f', ],
-        'TYPE': ['reel', 'reel', ],
+        'PARA': ['SYT', 'SYC', 'D_SIGM_EPSI'],
+        'PARA_EPX': ['FT', 'FC', 0.],
+        'BESOIN': ['o', 'f', 'f'],
+        'TYPE': ['reel', 'reel', 'reel'],
     },
     'NAPPE/ELAS': {
         'PARA': ['E', ],
