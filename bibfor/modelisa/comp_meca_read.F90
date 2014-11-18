@@ -68,7 +68,7 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
     character(len=16) :: kit_comp(9)
     character(len=255) :: libr_name, subr_name
     integer :: unit_comp, nb_vari_exte
-    aster_logical :: l_cristal, l_zmat, l_umat, l_mfront, l_mfront_offi
+    aster_logical :: l_cristal, l_umat, l_mfront, l_mfront_offi
     aster_logical :: l_kit
     aster_logical :: l_matr_tgsc, l_crit_rupt
 !
@@ -121,7 +121,6 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
         call comp_meca_l(rela_comp, 'CRIT_RUPT'  , l_crit_rupt, post_iter = post_iter)
         call comp_meca_l(rela_comp, 'CRISTAL'    , l_cristal)
         call comp_meca_l(rela_comp, 'KIT'        , l_kit)
-        call comp_meca_l(rela_comp, 'ZMAT'       , l_zmat)
         call comp_meca_l(rela_comp, 'UMAT'       , l_umat)
         call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
         l_mfront = l_mfront_offi
@@ -147,10 +146,6 @@ subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
 !
 ! ----- Get external program
 !
-        if (l_zmat) then
-            call getvis(keywordfact, 'NB_VARI', iocc = iocc, scal = nb_vari_exte)
-            call getvis(keywordfact, 'UNITE', iocc = iocc, scal = unit_comp)
-        endif
         if (l_umat) then
             call getvis(keywordfact, 'NB_VARI', iocc = iocc, scal = nb_vari_exte)
             call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)

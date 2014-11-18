@@ -1064,9 +1064,9 @@ def find_ma(maya, mcsimp):
     return list_ma
 
 
-#************************************************************************************
-# Quelques utilitaires de calculs d'angles nautiques (viennent de zmat004a.comm
-#*************************************************************************
+#****************************************************
+# Quelques utilitaires de calculs d'angles nautiques
+#****************************************************
 
 def norm(x):
     """Calcul de la norme euclidienne d'un vecteur"""

@@ -28,7 +28,6 @@ subroutine te0100(option, nomte)
 #include "asterfort/nmel2d.h"
 #include "asterfort/nmgpfi.h"
 #include "asterfort/nmgr2d.h"
-#include "asterfort/nmgz2d.h"
 #include "asterfort/nmpl2d.h"
 #include "asterfort/nmsh1.h"
 #include "asterfort/nmtstm.h"
@@ -230,24 +229,6 @@ subroutine te0100(option, nomte)
                         angmas, zr(iinstm), zr(iinstp), zr(ideplm), zr( ideplp),&
                         zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), zr( ivectu),&
                         zr(imatuu), codret)
-!
-! 7.3 - CO-ROTATIONNELLE ZMAT
-!
-            else if (((zk16(icompo).eq.'ZMAT').and. zk16(icompo+2)&
-        .eq.'GDEF_HYPO_ELAS') ) then
-!
-            do 46 li = 1, 2*nno
-                zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
- 46         continue
-!
-            call nmgz2d(fami, nno, npg1, ipoids, ivf,&
-                        idfde, zr(igeom), typmod, option, zi(imate),&
-                        zk16(icompo), lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
-                        ideplm, ideplp, angmas, zr(icontm), zr(ivarim),&
-                        vect1, vect2, vect3, zr(icontp), zr(ivarip),&
-                        zr(imatuu), ivectu, codret)
-!
-! 7.3 - CO-ROTATIONNELLE ZMAT SUPPRIME  ATTENTE CORRECTION FICHE 14063
 !
 ! 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         else if (zk16(icompo+2) .eq.'GROT_GDEP') then

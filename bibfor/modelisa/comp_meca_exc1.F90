@@ -78,7 +78,7 @@ subroutine comp_meca_exc1(defo_comp, mult_comp, nb_vari_exte, l_kit_meta, l_cris
         if (defo_comp .eq. 'SIMO_MIEHE') nb_vari = nb_vari + 3 + 9
     endif
 !
-! - External comportment (UMAT/ZMAT/MFRONT)
+! - External comportment (UMAT/MFRONT)
 !
     if (l_exte_comp) then
         nb_vari = nb_vari_exte + nb_vari

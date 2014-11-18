@@ -34,14 +34,6 @@ La bibliothèque "MED" n'est pas installée dans cette version de Code_Aster.
 La bibliothèque "HDF5" n'est pas installée dans cette version de Code_Aster.
 """),
 
-    4: _(u"""
-La bibliothèque "ZMAT" n'est pas installée dans cette version de Code_Aster ou bien elle
-n'a pas été trouvée.
-
-Conseil : Vérifiez que l'environnement est correctement défini,
-          notamment la variable LD_LIBRARY_PATH.
-"""),
-
     5: _(u"""
 Erreur de programmation :
     On essaie d'utiliser un opérateur qui n'est pas encore programmé.

@@ -65,8 +65,6 @@ recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter
         l_detec = (rela_comp.eq.'KIT_CG')
     else if (what .eq. 'KIT') then
         l_detec = (rela_comp(1:4).eq.'KIT_').or.(rela_comp(1:4).eq.'META')
-    else if (what .eq. 'ZMAT') then
-        l_detec = (rela_comp .eq. 'ZMAT')
     else if (what .eq. 'UMAT') then
         l_detec = (rela_comp .eq. 'UMAT')
     else if (what .eq. 'MFRONT_OFFI') then
@@ -79,7 +77,7 @@ recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter
             call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_detec)
         endif
     else if (what .eq. 'EXTE_COMP') then
-        l_detec = (rela_comp .eq. 'MFRONT').or.(rela_comp .eq. 'ZMAT').or.(rela_comp .eq. 'UMAT')
+        l_detec = (rela_comp .eq. 'MFRONT').or.(rela_comp .eq. 'UMAT')
         if (.not. l_detec) then
             call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_detec)
         endif

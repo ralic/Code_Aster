@@ -123,10 +123,6 @@ cata_msg = {
  loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. Dans ces conditions le paramètre BETA doit être positif ou nul
 """),
 
-    96 : _(u"""
- comportement ZMAT obligatoire
-"""),
-
     98 : _(u"""
  il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation
  intrinsèque avec SECH comme paramètre

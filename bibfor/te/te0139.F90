@@ -26,7 +26,6 @@ subroutine te0139(option, nomte)
 #include "asterfort/nmel3d.h"
 #include "asterfort/nmgpfi.h"
 #include "asterfort/nmgr3d.h"
-#include "asterfort/nmgz3d.h"
 #include "asterfort/nmpl3d.h"
 #include "asterfort/nmsh1.h"
 #include "asterfort/nmtstm.h"
@@ -204,22 +203,6 @@ subroutine te0139(option, nomte)
                         angmas, zr(iinstm), zr(iinstp), zr(ideplm), zr( ideplp),&
                         zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), zr( ivectu),&
                         zr(imatuu), codret)
-!
-! 7.3 - CO-ROTATIONNELLE ZMAT
-!
-            else if (((zk16(icompo).eq.'ZMAT').and. zk16(icompo+2)&
-        .eq.'GDEF_HYPO_ELAS') ) then
-!
-            do 51 li = 1, 3*nno
-                zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
- 51         continue
-!
-            call nmgz3d(fami, nno, npg, ipoids, ivf,&
-                        idfde, zr(igeom), typmod, option, zi(imate),&
-                        zk16(icompo), lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
-                        zr(ideplm), zr(ideplp), angmas, zr(icontm), zr(ivarim),&
-                        dfdi, pff, def, zr(icontp), zr(ivarip),&
-                        zr(imatuu), zr(ivectu), codret)
 !
 ! 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         else if (zk16(icompo+2) .eq.'GROT_GDEP') then

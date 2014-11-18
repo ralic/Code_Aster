@@ -4,7 +4,6 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
-#include "asterc/zaswri.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/carc_info.h"
@@ -66,7 +65,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     character(len=16) :: keywordfact
     character(len=16) :: rela_comp, algo_inte, type_matg, post_iter, defo_comp, type_comp
     character(len=16) :: mult_comp
-    aster_logical :: l_cristal, l_zmat, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm
+    aster_logical :: l_cristal, l_exte_comp, l_matr_tgsc, l_crit_rupt, l_kit_thm
     aster_logical :: l_etat_init
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
     character(len=16), pointer :: p_info_comp_valk(:) => null()
@@ -121,7 +120,6 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     post_iter = p_info_comp_valk(16*(iocc-1) + 16)
     call comp_meca_l(rela_comp, 'MATR_TGSC', l_matr_tgsc, type_matg = type_matg)
     call comp_meca_l(rela_comp, 'CRIT_RUPT', l_crit_rupt, post_iter = post_iter)
-    call comp_meca_l(rela_comp, 'ZMAT', l_zmat)
     call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
     call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
     call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
@@ -217,10 +215,6 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     AS_DEALLOCATE(vi   = p_info_comp_nvar)
     AS_DEALLOCATE(vk16 = p_info_carc_valk)
     AS_DEALLOCATE(vr   = p_info_carc_valr)
-!
-! - Init ZASTER_HANDLER
-!
-    if (l_zmat) call zaswri()
 !
     call jedema()
 !

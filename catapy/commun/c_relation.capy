@@ -208,7 +208,6 @@ def C_RELATION( COMMAND ):
                                         "VMIS_ISOT_PUIS",
                                         "VMIS_ISOT_TRAC",
                                         "VMIS_JOHN_COOK",
-                                        "ZMAT",
                                         "UMAT",
                                         "MFRONT",
         ]

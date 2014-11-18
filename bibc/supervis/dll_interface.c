@@ -30,8 +30,7 @@
  * 
  * Utilities to Load Dynamically (optionnal) external Libraries
  * 
- * Supported components : ZMAT
- *                        UMAT
+ * Supported components : UMAT
  * 
  * *********************************************************************/
 

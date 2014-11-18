@@ -6,7 +6,6 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 #include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterc/zaswri.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
@@ -73,9 +72,9 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
     character(len=16), pointer :: p_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
     character(len=16) :: kit_comp(9), type_matg, post_iter
-    aster_logical :: l_cristal, l_zmat, l_umat, l_mfront, l_exte_comp
+    aster_logical :: l_cristal, l_umat, l_mfront, l_exte_comp
     aster_logical :: l_matr_tgsc, l_crit_rupt
-    aster_logical :: l_pmf, l_is_pmf, l_zmat_open
+    aster_logical :: l_pmf, l_is_pmf
     integer :: nume_comp, nb_vari, nb_vari_comp(9)
     integer :: nb_vari_exte, unit_comp
 !
@@ -90,7 +89,6 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
     l_is_pmf = .false.
-    l_zmat_open = .false.
 !
 ! - Access to COMPOR <CARTE>
 !
@@ -140,11 +138,6 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 !
         call comp_meca_l(rela_comp, 'PMF', l_pmf)
         if (l_pmf) l_is_pmf = .true.
-!
-! ----- Z-MAT
-!
-        call comp_meca_l(rela_comp, 'ZMAT', l_zmat)
-        if (l_zmat) l_zmat_open = .true.
 !
 ! ----- Get mesh
 !
@@ -202,10 +195,6 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 ! - Compor <CARTE> fusing
 !
     if (l_is_pmf) call nmdpmf(compor, chmate)
-!
-! - Init ZASTER_HANDLER
-!
-    if (l_zmat_open) call zaswri()
 !
     call jedetr(compor//'.NCMP')
     call jedetr(compor//'.VALV')

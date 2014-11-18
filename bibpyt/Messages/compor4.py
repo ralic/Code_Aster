@@ -27,7 +27,7 @@ Liste des comportements
 Comportement - Occurrence  %(i1)d"""),
 
     3: _(u"""
-  C'est un comportement de type PMF, un comportement externe (UMAT, ZMAT ou MFRONT) ou aucune maille n'est affectée.
+  C'est un comportement de type PMF, un comportement externe (UMAT ou MFRONT) ou aucune maille n'est affectée.
   On ne peut afficher aucune information.
 """),
 
