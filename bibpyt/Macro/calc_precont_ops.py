@@ -17,7 +17,7 @@
 # ======================================================================
 
 
-# person_in_charge: aimery.assire at edf.fr
+# person_in_charge: sylvie.michel-ponnelle@edf.fr
 
 def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
                      CABLE_BP, CABLE_BP_INACTIF,
@@ -347,7 +347,7 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
 
         # 1.6 Blocage de tous les noeuds des cables actifs
         # --------------------------------------------------
-        __GROUP_MA_A = __GROUP_MA_CABLES_SEG2 + __GROUP_MA_CABLES_SEG3
+        __GROUP_MA_A = __GROUP_MA_A_SEG2 + __GROUP_MA_A_SEG3
         _B_CA = AFFE_CHAR_MECA(MODELE=__M_CA,
                                DDL_IMPO=_F(GROUP_MA=__GROUP_MA_A,
                                            DX=0.,
