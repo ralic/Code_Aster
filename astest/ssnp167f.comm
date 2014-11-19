@@ -35,11 +35,7 @@ MA=MODI_MAILLAGE(reuse=MA,MAILLAGE=MA,ORIE_PEAU_3D=(
             _F(GROUP_MA = 'S1R1',),
             _F(GROUP_MA = 'S1R2',),
             _F(GROUP_MA = 'S2R2',),
-            _F(GROUP_MA = 'S2R3',),
-            _F(GROUP_MA = 'S1LX',),
-            _F(GROUP_MA = 'S1LY',),
-            _F(GROUP_MA = 'S2LX',),
-            _F(GROUP_MA = 'S2LY',),                  
+            _F(GROUP_MA = 'S2R3',),                
                                                     ),);
 
 
@@ -495,11 +491,7 @@ pression = FORMULE(NOM_PARA=('X','Y','Z'), VALE=' -press_c(X,Y)-press_v(X,Y)');
 CH=AFFE_CHAR_MECA_F(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_MA='S1R1',DX=ux1s,DY=uy1s),      
                               _F(GROUP_MA='S2R3',DX=ux2s,DY=uy2s), 
-                              _F(GROUP_MA='S1LX',DY=zero),
-                              _F(GROUP_MA='S1LY',DX=zero),
-                              _F(GROUP_MA='S2LX',DY=zero),
-                              _F(GROUP_MA='S2LY',DX=zero), 
-                              _F(GROUP_MA='up_down',DZ=zero),
+                              _F(TOUT='OUI',DZ=zero),
                              ),
                    );
                    
@@ -554,163 +546,163 @@ RESU=STAT_NON_LINE(MODELE=MO,
 IMPR_RESU(FORMAT='MED',
           RESU=(_F(RESULTAT=RESU,),
                ),
-          );
-
+          );       
+          
 #+----------------------------------------+
 #|          tests de validation           |
 #+----------------------------------------+
 
-## noeud 58  
-   
+## noeud 125
+  
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N58',
+                  NOEUD='N125',
                   NOM_CMP='DX',
-                  VALE_CALC=-3.51604936518900E-03,
-                  VALE_REFE=-0.00351463353709,
+                  VALE_CALC=-0.00376627600021,
+                  VALE_REFE=-0.00375570512497,
                   PRECISION=0.02,),
           );
           
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N58',
+                  NOEUD='N125',
                   NOM_CMP='DY',
-                  VALE_CALC=-3.98071101364258E-03,
-                  VALE_REFE=-0.00397950893152,
+                  VALE_CALC=-0.00379299801484,
+                  VALE_REFE=-0.00378304772755,
                   PRECISION=0.02,),
             
           );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N58',
+                  NOEUD='N125',
                   NOM_CMP='DZ',
-                  VALE_CALC=-9.83025550169756E-22,
+                  VALE_CALC=-2.65640508383E-19,
                   CRITERE='ABSOLU',
                   VALE_REFE=0.0,
                   PRECISION=1.E-8,),
           );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N58',
+                  NOEUD='N125',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC=-9.09573607528403E+06,
-                  VALE_REFE=-9241544.51729,
+                  VALE_CALC=-9233087.16553,
+                  VALE_REFE=-9257321.27791,
                   PRECISION=0.02,),
           );
 
-## noeud 112
+## noeud 285
       
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N112',
+                  NOEUD='N285',
                   NOM_CMP='DX',
-                  VALE_CALC=-3.51604937659101E-03,
-                  VALE_REFE=-0.00351463353709,
+                  VALE_CALC=-0.00376627600021,
+                  VALE_REFE=-0.00375570512497,
                   PRECISION=0.02,),
           );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N112',
+                  NOEUD='N285',
                   NOM_CMP='DY',
-                  VALE_CALC=-3.98071072952107E-03,
-                  VALE_REFE=-0.00397950893152,
+                  VALE_CALC=-0.00379299801484,
+                  VALE_REFE=-0.00378304772755,
                   PRECISION=0.02,),
           );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N112',
+                  NOEUD='N285',
                   NOM_CMP='DZ',
-                  VALE_CALC= 3.66370208059226E-19,
+                  VALE_CALC=3.95683964735E-19,
                   CRITERE='ABSOLU',
                   VALE_REFE=0.0,
                   PRECISION=1.E-8,),
            );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N112',
+                  NOEUD='N285',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC=-9.09572441496050E+06,
-                  VALE_REFE=-9241544.51729,
+                  VALE_CALC=-9233087.16553,
+                  VALE_REFE=-9257321.27791,
                   PRECISION=0.02,),
           );
 
-## noeud 422
+## noeud 790
                
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N422',
+                  NOEUD='N790',
                   NOM_CMP='DX',
-                  VALE_CALC=-3.51604945320991E-03,
-                  VALE_REFE=-0.00351463353709,
+                  VALE_CALC=-0.00376627600021,
+                  VALE_REFE=-0.00375570512497,
                   PRECISION=0.02,),
           );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N422',
+                  NOEUD='N790',
                   NOM_CMP='DY',
-                  VALE_CALC=-3.98071098099201E-03,
-                  VALE_REFE=-0.00397950893152,
+                  VALE_CALC=-0.00379299801484,
+                  VALE_REFE=-0.00378304772755,
                   PRECISION=0.02,),
           );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N422',
+                  NOEUD='N790',
                   NOM_CMP='DZ',
-                  VALE_CALC= 8.42454275681151E-12,
+                  VALE_CALC=-1.91032689859E-19,
                   CRITERE='ABSOLU',
                   VALE_REFE=0.0,
                   PRECISION=1.E-8,),
            );
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  VALE_ABS='OUI',
+                  VALE_ABS='NON',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=RESU,
                   NOM_CHAM='DEPL',
-                  NOEUD='N422',
+                  NOEUD='N790',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC=-9.09573820249981E+06,
-                  VALE_REFE=-9241544.51729,
+                  VALE_CALC=-9233087.16553,
+                  VALE_REFE=-9257321.27791,
                   PRECISION=0.02,),
           );
 
