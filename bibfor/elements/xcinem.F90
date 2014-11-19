@@ -87,6 +87,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 ! OUT F      : GRADIENT DE LA TRANSFORMATION
 ! OUT EPS    : DÉFORMATIONS
 ! OUT GRAD   : GRADIENT DES DÉPLACEMENTS
+! IN  LSN    : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 !
     real(kind=8) :: zero, un, rac2
     integer :: i, j, k, n, p, ig, cpt, nn

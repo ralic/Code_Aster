@@ -19,6 +19,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcinem.h"
+#include "asterfort/xcalf_he.h"
     integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
     integer :: nfh, ddlc, nfe, nfiss, fisno(nnop, nfiss)
     character(len=8) :: elrefp, elrese, typmod(*)
@@ -75,17 +76,17 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
     character(len=2) :: k2bid
     character(len=16) :: phenom
-    integer :: kpg, n, i, j, ino, iret, ipg
+    integer :: kpg, n, i, j, ino, iret, ipg, ig
     integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
     aster_logical :: grdepl, axi
     real(kind=8) :: f(3, 3), eps(6), baslog(6)
     real(kind=8) :: fe(4), instan, rac2
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), lsng, lstg
-    real(kind=8) :: rbid, r8bi7(7), r8bi3(3)
+    real(kind=8) :: r8bi7(7), r8bi3(3)
     real(kind=8) :: dfdi(nnop, ndim), dgdgl(4, 3)
     real(kind=8) :: grad(3, 3)
-    real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6)
+    real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6), ur
     integer :: nnops
 !
     data    zero / 0d0 /
@@ -151,16 +152,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 !-----------------------------------------------------------------------
-! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
-        if (axi) then
-            r = 0.d0
-            do ino = 1, nnop
-                r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-            end do
-            ASSERT(r.ge.0d0)
-!          ATTENTION : LE POIDS N'EST PAS X R
-!          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
-        endif
+!
         if (nfe .gt. 0) then
 !         BASE LOCALE AU POINT DE GAUSS
             call vecini(6, 0.d0, baslog)
@@ -174,7 +166,6 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                 end do
             end do
 !
-!
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DERIVEES
             call xcalf2(he(1), lsng, lstg, baslog, fe,&
                         dgdgl, iret)
@@ -183,11 +174,32 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
             ASSERT(iret.ne.0)
         endif
 !
+!       CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPLACEMENT 
+!       RADIAL SI AXI (NECESSAIRE POUR LE CALCUL DES DEFORMATIONS EPS)
+        r = 0.d0
+        ur = 0.d0
+        if (axi) then
+            do ino = 1, nnop
+                r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+                ur = ur + ff(ino)*zr(idepl-1+ddls*(ino-1)+1)
+                do ig = 1, nfh
+                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*ig+1)&
+                                           *xcalf_he(he(fisno(ino,ig)),&
+                                                      lsn((ino-1)*nfiss+fisno(ino,ig)))
+                end do
+                do ig = 1, nfe
+                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*(nfh+ ig)+1) *fe(ig)
+                end do
+            end do
+            ASSERT(r.ge.0d0)
+        endif
+!
 !       CALCUL DES DEFORMATIONS EPS
+!
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
         call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                    ndim, he, r, rbid, fisno,&
+                    ndim, he, r, ur, fisno,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
                     eps, grad, lsn)

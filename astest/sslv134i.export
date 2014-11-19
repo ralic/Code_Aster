@@ -1,4 +1,4 @@
-P time_limit 30
+P time_limit 60
 P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sslv134i.comm D 1
+F comm sslv134i.com1 D 1
 F mmed sslv134i.mmed D 20
