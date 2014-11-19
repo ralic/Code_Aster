@@ -1,0 +1,153 @@
+# TITRE VALIDATION DE LA LOI VMIS_JOHN_COOK DANS CALC_EUROPLEXUS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),ERREUR=_F(ERREUR_F='EXCEPTION',),);
+
+MPa = 1000000.0;
+
+
+# ------------------- Lecture du maillage
+
+MAILLAGE=LIRE_MAILLAGE(    UNITE=20 )
+
+#
+
+MODELE=AFFE_MODELE(INFO=1,
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('CUBE','FACE_SUP'),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = '3D'),
+                            ) )
+
+
+# ------------------- Definition des materiaux
+
+E_b = 30000*MPa
+Nu_b =0.3
+rho_b=2500
+
+A_cook = 90
+B_cook = 292
+N_cook = 0.31
+
+BETON = DEFI_MATERIAU(ELAS=_F(
+                    E = E_b,
+                    NU = Nu_b,
+                    RHO = rho_b,
+                   ),
+                     ECRO_COOK=_F(A=A_cook,
+                                 B=B_cook,
+                                 C=0.025,
+                                 N_PUIS=N_cook,
+                                 EPSP0=1.,
+                                 ),
+                  );
+
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = ('CUBE',),
+                              MATER = BETON),
+                              )
+                              )
+
+
+
+
+BLOQ=AFFE_CHAR_MECA(
+                      MODELE=MODELE,DDL_IMPO=(
+                    _F(  GROUP_NO='ENCAST',
+                               DX = 0.,
+                               DY = 0.,
+                               DZ = 0.,
+                               ),
+                               ),)
+PRESS=AFFE_CHAR_MECA(
+                      MODELE=MODELE,PRES_REP=(
+                    _F(  GROUP_MA='FACE_SUP',
+                               PRES = 50000000,
+                               ),
+                               ),)
+
+
+FOMU=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,   0.0,
+                           0.001,   0.3,
+                           0.002,   0.7,
+                           0.003,   1.,
+                           0.02,  1.0,
+                           ),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     );
+
+
+U_EPX = CALC_EUROPLEXUS(
+   MODELE = MODELE,
+   CHAM_MATER = CHMATER,
+   COMPORTEMENT =(_F(
+                  RELATION = 'VMIS_JOHN_COOK',
+                  GROUP_MA='CUBE',
+                 ),
+              ),
+   EXCIT=(_F(CHARGE=PRESS,FONC_MULT=FOMU),
+          _F(CHARGE=BLOQ,),),
+   LANCEMENT ='OUI',
+   CALCUL = _F(TYPE_DISCRETISATION  ='UTIL',
+               INST_INIT = 0,
+               INST_FIN  = 0.01,
+               NMAX      = 20000,
+               PASFIX    = 2e-5,
+               ),
+   ARCHIVAGE   = _F(PAS_NBRE=100,),
+   );
+
+
+TEST_RESU(RESU=_F(INST = 0.01,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M1',
+                  NOM_CMP='SIXX',
+                  POINT = 1,
+                  VALE_CALC=-150717574.84,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST = 0.01,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M1',
+                  NOM_CMP='SIYY',
+                  POINT = 3,
+                  VALE_CALC=-150717574.84,
+                  ),
+          )
+
+
+TEST_RESU(RESU=_F(INST = 0.01,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M1',
+                  NOM_CMP='SIZZ',
+                  POINT = 5,
+                  VALE_CALC=-150729740.859
+                  ),
+          )
+
+
+FIN()

@@ -254,6 +254,23 @@ Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.
 Il n'existe pas de traduction dans le matériau EPX correspondant.
 """),
 
+    47 : _(u"""
+Vous avez demandé à ce que le champ de variables internes soit pris en 
+compte dans l'état initial du calcul EPX. La transformation de ce champ
+de Code_Aster vers EPX n'est pas programmée pour le comportement  %(k1)s.
+Les valeurs de ce champ dans l'état initial sont donc nulles pour les mailles
+sur lesquelles ce comportement est affecté.
+"""),
+
+    48 : _(u"""
+Vous avez demandé à ce que le champ de variables internes soit pris en 
+compte dans l'état initial du calcul EPX. Cependant la transformation
+du champ de variables internes de Code_Aster vers EPX n'est programmée
+pour aucun des comportements présents dans le calcul. 
+
+La commande VARI_INT = 'OUI' n'a ici aucun effet et est donc inutile.
+"""),
+
     49 : _(u"""
 Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.
 Sa valeur est différente de la valeur imposée :

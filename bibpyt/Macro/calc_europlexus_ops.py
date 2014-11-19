@@ -338,6 +338,7 @@ class EUROPLEXUS:
             s'il y a un état initial.
         """
         from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
+        from Calc_epx.trans_var_int import var_int_a2e
         from Cata.cata import IMPR_RESU, MODI_REPERE
 
         epx = self.epx
@@ -350,25 +351,33 @@ class EUROPLEXUS:
 
         if self.ETAT_INIT is not None:
             RESULTAT = self.ETAT_INIT['RESULTAT']
+            res_imp = RESULTAT
             list_cham = ['DEPL']
             if self.ETAT_INIT['CONTRAINTE'] == 'OUI':
                 if not self.etat_init_cont:
                     UTMESS('F', 'PLEXUS_17')
                 list_cham.append('SIEF_ELGA')
+                nume_ordre = RESULTAT.LIST_PARA()['NUME_ORDRE'][-1]
                 if self.modi_repere['COQUE']:
                     MODI_REPERE(RESULTAT=RESULTAT, reuse=RESULTAT,
                                 REPERE='COQUE_UTIL_INTR',
+                                NUME_ORDRE = nume_ordre,
                                 MODI_CHAM=_F(TYPE_CHAM='COQUE_GENE',
                                              NOM_CHAM='SIEF_ELGA',
                                              NOM_CMP=('NXX', 'NYY', 'NXY',
                                                       'MXX', 'MYY', 'MXY',
                                                       'QX', 'QY')))
+                if self.ETAT_INIT['VARI_INT'] == 'OUI':
+                    list_cham.append('VARI_ELGA')
+                    res_imp = var_int_a2e(self.compor_gr, RESULTAT, self.MODELE,
+                                          nume_ordre)
+                    nume_ordre = 1
 
             # Impression des champs du dernier instant de calcul.
             nume_ordre = RESULTAT.LIST_PARA()['NUME_ORDRE'][-1]
             IMPR_RESU(UNITE=unite,
                       FORMAT='MED',
-                      RESU=_F(NUME_ORDRE=nume_ordre, RESULTAT=RESULTAT,
+                      RESU=_F(NUME_ORDRE=nume_ordre, RESULTAT=res_imp,
                               NOM_CHAM=list_cham)
                  )
 
@@ -378,6 +387,7 @@ class EUROPLEXUS:
                 if self.modi_repere['COQUE']:
                     MODI_REPERE(RESULTAT=RESULTAT, reuse=RESULTAT,
                                 REPERE='COQUE_INTR_UTIL',
+                                NUME_ORDRE = nume_ordre,
                                 MODI_CHAM=_F(TYPE_CHAM='COQUE_GENE',
                                              NOM_CHAM='SIEF_ELGA',
                                              NOM_CMP=('NXX', 'NYY', 'NXY',
@@ -478,8 +488,8 @@ class EUROPLEXUS:
         """
         from Calc_epx.calc_epx_mate import export_mate
 
-        self.epx = export_mate(self.epx, self.CHAM_MATER, self.COMPORTEMENT,
-                               self.gmaInterfaces, self.dicOrthotropie)
+        self.epx, self.compor_gr = export_mate(self.epx, self.CHAM_MATER,
+                  self.COMPORTEMENT,self.gmaInterfaces, self.dicOrthotropie)
 
 
   #-----------------------------------------------------------------------
@@ -733,6 +743,9 @@ class EUROPLEXUS:
             if self.ETAT_INIT['CONTRAINTE'] == 'OUI':
                 bloc = BLOC_DONNEES('CONT')
                 epx[directive].add_bloc(bloc)
+                if self.ETAT_INIT['VARI_INT'] == 'OUI':
+                    bloc = BLOC_DONNEES('ECRO')
+                    epx[directive].add_bloc(bloc)
             else:
                 niter = self.ETAT_INIT['NITER']
                 bloc = BLOC_DONNEES('NITER', cle=niter)
@@ -827,6 +840,8 @@ class EUROPLEXUS:
         # groupes uniquement).
         # Le module CARA_ELEM doit être exécuté avec MODELE pour connaître la
         # modelisation à affecter à certains éléments.
+        # Le module CHAM_MATER doit être exécuté avant MAILLAGE pour avoir
+        # les infos permettant de traduire les variables internes.
 
         modules_exe = ['DEBUT', 'CARA_ELEM', 'MODELE', 'CHAM_MATER',
                        'MAILLAGE', 'EXCIT', 'ECRITURE', 'CALCUL',

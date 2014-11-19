@@ -48,11 +48,17 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
 
     dic_comportement = {}
     gmaGLRC = []
+    # dic_compor_gr : pour les transformations des variables internes
+    # aster -> epx
+    dic_compor_gr = {}
     for comp in COMPORTEMENT:
         if comp['RELATION'] not in relations_autorisees:
             raise Exception("""La relation %s n'est pas programmée"""
                             % (comp['RELATION']))
+        if not comp in dic_compor_gr.keys():
+            dic_compor_gr[comp['RELATION']] = []
         for gr in comp['GROUP_MA']:
+            dic_compor_gr[comp['RELATION']].append(gr)
             # EC refonte : on peut supprimer cela si on considère la loi
             # des surcharges
             if gr in dic_comportement:
@@ -208,7 +214,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, gmaInterfaces, dicOrthotropie):
         bloc = BLOC_DONNEES(mot_cle_epx, l_group=gma, val_cle=val_cle,)
         epx[directive2].add_bloc(bloc)
 
-    return epx
+    return epx, dic_compor_gr
 
 
 #-----------------------------------------------------------------------

@@ -410,6 +410,10 @@ le mot-clé %s""" % mc_cara)
             elif compo == 'ISOT':
                 dic_transfo[compo] = tr_e2a_vmis_isot_trac(__CH_FOV, ico, cc,
                                                            nb_comp, var_aster, gr_ma)
+            # vmis_john_cook
+            elif compo == 'VMJC':
+                dic_transfo[compo] = tr_e2a_vmis_john_cook(__CH_FOV, ico, cc,
+                                                           nb_comp, var_aster, gr_ma)
             else:
                 raise Exception("""
 Les transformations à apporter aux variables internes pour la loi ne sont pas
