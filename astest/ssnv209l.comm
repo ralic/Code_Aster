@@ -41,6 +41,15 @@ MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO= (_F(GROUP_MA='P1'),
+                                    _F(GROUP_MA='P2'),
+                                    _F(GROUP_MA='P3'),
+                                    _F(GROUP_MA='P4'),
+                                   ),
+                    INFO=1,)
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
                     CREA_GROUP_NO= (_F(GROUP_MA='VOLU'),
                                     _F(GROUP_MA='LIG3'),
                                     _F(GROUP_MA='SUR1',
@@ -80,6 +89,26 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                        DIFFE=('BA','SURF','LIG1','LIG2','LIG3','LIG4')),
                                     ),
                     INFO=1);
+
+# ajout de groupes de neouds pour imposer DX=0, Dy=0 et DZ=0 dans le bati rigide
+
+y0=0.00210526
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO= (
+                                    _F(OPTION='PLAN',
+                                       NOM='BATIH',
+                                       POINT=(0.04,y0,0.),
+                                       VECT_NORMALE=(0.,1.,0.),
+                                       PRECISION=1.E-4),
+                                    _F(OPTION='PLAN',
+                                       NOM='BATIB',
+                                       POINT=(0.04,-y0,0.),
+                                       VECT_NORMALE=(0.,1.,0.),
+                                       PRECISION=1.E-4),
+                                   ),
+                   )
 
 MAILLAG2= COPIER(CONCEPT= MAILLAG1)
 
@@ -140,28 +169,15 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 #----------------------------------------------
 
 E=1.3E11
-E2=1.E16
 nu=0.2
 rho=7800.
 
-CHABNO=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
-                  OPERATION='EXTR',
-                  FISSURE=FISS,
-                  NOM_CHAM='LNNO');
-
-NU_F=DEFI_FONCTION(NOM_PARA='NEUT1',
-                   VALE=(-1.0,0.0,-1.E-9,0.0,1.E-9,nu,1.0,nu));
-
-E_F=DEFI_FONCTION(NOM_PARA='NEUT1',
-                  VALE=(-1.0,E2,-1.E-9,E2,1.E-9,E,1.0,E));
-
-MATVAR=DEFI_MATERIAU(ELAS_FO=_F(E=E_F,NU=NU_F,RHO=rho));
+MAT=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho));
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
                        AFFE=(_F(GROUP_MA=('VOLU'),
-                                MATER=MATVAR)),
-                       AFFE_VARC=_F(NOM_VARC='NEUT1',CHAM_GD=CHABNO),
+                                MATER=MAT)),
                        );
 
 #----------------------------------------------
@@ -175,7 +191,8 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       FROTTEMENT     = 'COULOMB',
                       ITER_CONT_MAXI = 5,
                       ITER_FROT_MAXI = 12,
-                      REAC_GEOM      = 'SANS',ELIM_ARETE     = 'ELIM',
+                      REAC_GEOM      = 'SANS',
+                      ELIM_ARETE     = 'ELIM',
                       ZONE=(
                             _F(
                                FISS_MAIT      = FISS,
@@ -191,19 +208,76 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                          ),
                    );
 
+# valeur de la fonction heaviside du cote concerne
+H=-1.
+
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                   DDL_IMPO=(
-#                            ENCASTREMENT DU BAS
-                             _F(GROUP_NO='NSUR1',
-                                    DX=0.,
-                                    DY=0.,
-                                    DZ=0.),
 #                            BLOCAGE CORPS RIGIDES
                              _F(GROUP_NO=('P3','P4','P4P','P3P'),
                                 DZ=0.),
                              _F(GROUP_NO=('BLOCAX'),
                                 DX=0.),
-                             ),
+                           ),
+#                             ENCASTREMENT DU BAS
+                  LIAISON_GROUP=(
+                                 # --- DX = 0 ---
+                                 # * mot clef-facteur pour imposer le ddl recompose a 0 sur le premier groupe
+                                 _F(GROUP_NO_1 = ('BATIB'),
+                                    GROUP_NO_2 = ('BATIH'),
+                                    SANS_GROUP_NO = 'BLOCAX',
+                                    DDL_1      = ('DX', 'H1X'),
+                                    DDL_2      = ('DX', 'H1X'),
+                                    COEF_MULT_1= (1., H),
+                                    COEF_MULT_2= (0., 0.),
+                                    COEF_IMPO= 0.),
+                                 # * mot clef-facteur pour imposer le ddl recompose a 0 sur l'interface,
+                                 #   sur la levre ou la fonction d'Heaviside vaut H
+                                 _F(GROUP_NO_1 = ('BATIB'),
+                                    GROUP_NO_2 = ('BATIH'),
+                                    SANS_GROUP_NO = 'BLOCAX',
+                                    DDL_1      = ('DX', 'H1X'),
+                                    DDL_2      = ('DX', 'H1X'),
+                                    COEF_MULT_1= (0.5, 0.5*H),
+                                    COEF_MULT_2= (0.5, 0.5*H),
+                                    COEF_IMPO= 0.),
+                                 # --- DY = 0 ---
+                                 # * mot clef-facteur pour imposer le ddl recompose a 0 sur le premier groupe
+                                 _F(GROUP_NO_1 = ('BATIB'),
+                                    GROUP_NO_2 = ('BATIH'),
+                                    DDL_1      = ('DY', 'H1Y'),
+                                    DDL_2      = ('DY', 'H1Y'),
+                                    COEF_MULT_1= (1., H),
+                                    COEF_MULT_2= (0., 0.),
+                                    COEF_IMPO= 0.),
+                                 # * mot clef-facteur pour imposer le ddl recompose a 0 sur l'interface,
+                                 #   sur la levre ou la fonction d'Heaviside vaut H
+                                 _F(GROUP_NO_1 = ('BATIB'),
+                                    GROUP_NO_2 = ('BATIH'),
+                                    DDL_1      = ('DY', 'H1Y'),
+                                    DDL_2      = ('DY', 'H1Y'),
+                                    COEF_MULT_1= (0.5, 0.5*H),
+                                    COEF_MULT_2= (0.5, 0.5*H),
+                                    COEF_IMPO= 0.),
+                                 # --- DZ = 0 ---
+                                 # * mot clef-facteur pour imposer le ddl recompose a 0 sur le premier groupe
+                                 _F(GROUP_NO_1 = ('BATIB'),
+                                    GROUP_NO_2 = ('BATIH'),
+                                    DDL_1      = ('DZ', 'H1Z'),
+                                    DDL_2      = ('DZ', 'H1Z'),
+                                    COEF_MULT_1= (1., H),
+                                    COEF_MULT_2= (0., 0.),
+                                    COEF_IMPO= 0.),
+                                 # * mot clef-facteur pour imposer le ddl recompose a 0 sur l'interface,
+                                 #   sur la levre ou la fonction d'Heaviside vaut H
+                                 _F(GROUP_NO_1 = ('BATIB'),
+                                    GROUP_NO_2 = ('BATIH'),
+                                    DDL_1      = ('DZ', 'H1Z'),
+                                    DDL_2      = ('DZ', 'H1Z'),
+                                    COEF_MULT_1= (0.5, 0.5*H),
+                                    COEF_MULT_2= (0.5, 0.5*H),
+                                    COEF_IMPO= 0.),
+                                ),
                   );
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -414,7 +488,7 @@ preci=1.0e-2;
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC= 3.07682554E-05,
+           VALE_CALC= 3.07848566664E-05,
            VALE_REFE=3.0697055365648997E-05,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
@@ -423,7 +497,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC= 3.07682554E-05,
+           VALE_CALC= 3.07848566664E-05,
            VALE_REFE=3.0697055365648997E-05,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
@@ -432,7 +506,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC= 2.47353978E-05,
+           VALE_CALC= 2.47559974596E-05,
            VALE_REFE=2.4735987440627999E-05,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
@@ -441,7 +515,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC= 2.47353978E-05,
+           VALE_CALC= 2.47559974596E-05,
            VALE_REFE=2.4735987440627999E-05,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
@@ -450,7 +524,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC= 2.15672938E-05,
+           VALE_CALC= 2.15758248356E-05,
            VALE_REFE=2.1587163322358999E-05,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
@@ -459,7 +533,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC= 2.15672938E-05,
+           VALE_CALC= 2.15758248356E-05,
            VALE_REFE=2.1587163322358999E-05,
            NOM_PARA='DX',
            TYPE_TEST='MIN',
