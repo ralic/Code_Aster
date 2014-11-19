@@ -73,7 +73,7 @@ subroutine pipeex(mat, sup, sud, mup, mud,&
     tmp = max(0.d0,tmp)
     tmp = min(dc,tmp)
     ka = tmp
-    sk = max(0.d0,sc*exp(-sc*ka/gc))
+    sk = max(0.d0,sc - h*ka)
 !
 !   CALCUL DU SEUIL
 !

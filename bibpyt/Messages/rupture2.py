@@ -47,4 +47,10 @@ Il y a trop de chargements de type fonction à gérer pour CALC_G.
  Une fissure XFEM de type cohésive n'est utilisable qu'avec les lissages LAGRANGE/LAGRANGE_NO_NO,
  en 3D, avec l'option CALC_K_G.
 """),
+
+    6 : _(u"""
+ La recherche du point d'intersection entre la loi cohésive et la pénalisation de Lagrange a demandé beaucoup d'itération.
+ Une modification des paramètres de la loi cohésive comme PENA_LAGR rendra le calcul plus rapide pour le même résultat.
+"""),
+
 }

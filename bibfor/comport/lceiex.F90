@@ -25,6 +25,9 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/zerofr.h"
+#include "asterfort/utmess.h"
+#include "asterc/r8prem.h"
+
     character(len=16) :: option
     integer :: mat, kpg, ksp, i, codret
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), bmin, bmax, res, deriv
@@ -59,6 +62,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
+
     resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
     rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
     elas = option(11:14).eq.'ELAS'
@@ -79,7 +83,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 !
     dc = 3.2*gc/sc
-    h=sc*exp(-sc*su(1)/gc)
+    h  = sc/dc
     r = h * val(3)
     c = h * val(4)
 !
@@ -171,12 +175,11 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 210     continue
 !
-        if (abs(res) .lt. 1.d-6 .and. i > 10) then
-            print *," Attention: + 50 iterations pour la methode de newton"
+        if (abs(res) .lt. 1.d-6 .and. i > 20) then
+            call utmess("I","RUPTURE2_6")
         endif
 !
         if (abs(res) .lt. 1.d-6 .and. i> 30) then
-            print *," Erreur : Algorithme de Newton non réussie"
 !          DIAGNOSTIC DE NON-CONVERGENCE
             if (i .ge. 30) then
                 codret = 1
@@ -222,7 +225,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     vip(1) = kap
     vip(2) = regime
 !
-    if (kap .eq. 0.d0) then
+    if (kap .eq. r8prem()) then
         vip(3) = 0.d0
     else if (kap.eq.dc) then
         vip(3) = 2.d0
@@ -239,7 +242,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !
 !
 ! -- MATRICE TANGENTE
-!
+
 5000 continue
     if (.not. rigi) goto 9999
 !
@@ -265,7 +268,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
         ddndtn = 0.d0
     endif
     ddedt(1,1) = ddndtn
-!
+
 9999 continue
 !
 end subroutine
