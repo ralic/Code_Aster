@@ -20,12 +20,12 @@ subroutine te0342(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jsd1ff.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 !
     character(len=*) :: option, nomte
@@ -42,17 +42,17 @@ subroutine te0342(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: i, igau, j, jdepl, jeffo, k, lmater
-    integer :: lorien, lsect, lx, nbpar, nbres, nc, nno
+    integer :: lorien, lx, nbpar, nbres, nc, nno
     integer :: npg
     real(kind=8) :: a, alfay, alfaz, deux, douze, e, g
     real(kind=8) :: phiy, phiz, un, valpar, xiy, xiz, xjg
     real(kind=8) :: xjx, xl, xl2, zero
 !-----------------------------------------------------------------------
     parameter   (       nbres=2)
-    integer :: iret, iadzi, iazk24
+    integer :: iret
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomail
+    character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
     real(kind=8) :: nu
     real(kind=8) :: b(7, 14)
@@ -61,6 +61,11 @@ subroutine te0342(option, nomte)
 !     ------------------------------------------------------------------
     data nomres / 'E' , 'NU' /
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 7
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','JX1','JG1'/
+!-----------------------------------------------------------------------
 !
 !
 !
@@ -78,9 +83,7 @@ subroutine te0342(option, nomte)
     nompar = '  '
     valpar = 0.d0
 !
-    do 10 i = 1, nbres
-        valres(i) = zero
-10  end do
+    valres(:) = zero
 !
 ! --- RECUPERATION DE LA TEMPERATURE :
 !     -----------------------------------------------
@@ -105,32 +108,25 @@ subroutine te0342(option, nomte)
 !
 ! --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS :
 !     --------------------------------------------------------
-    call jevech('PCAGNPO', 'L', lsect)
+    
 !
-    lsect = lsect - 1
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    alfay = zr(lsect+4)
-    alfaz = zr(lsect+5)
-    xjx = zr(lsect+8)
-    xjg = zr(lsect+12)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    alfay  = vale_cara(4)
+    alfaz  = vale_cara(5)
+    xjx    = vale_cara(6)
+    xjg    = vale_cara(7)
+!
     nno = 2
     nc = 7
 !
 ! --- RECUPERATION DES COORDONNEES DES NOEUDS
 ! --- ET CALCUL DE LA LONGUEUR DE LA POUTRE :
 !     -------------------------------------
-    call jevech('PGEOMER', 'L', lx)
-!
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-!
-    if (xl .eq. 0.d0) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
     xl2 = xl*xl
 !
@@ -152,9 +148,9 @@ subroutine te0342(option, nomte)
 !     --------------------------------------------------
     call jevech('PDEPLAR', 'L', jdepl)
 !
-    do 20 i = 1, 14
+    do i = 1, 14
         depglo(i) = zr(jdepl+i-1)
-20  end do
+    end do
 !
 ! --- PASSAGE DES DEPLACEMENTS DU REPERE GLOBAL AU REPERE LOCAL :
 !     ---------------------------------------------------------
@@ -162,7 +158,7 @@ subroutine te0342(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS :
 !     ------------------------------
-    do 30 igau = 1, 3
+    do igau = 1, 3
 !
 ! --- INITIALISATION :
 !     ---------------
@@ -177,11 +173,11 @@ subroutine te0342(option, nomte)
 ! --- CALCUL DES DEFORMATIONS GENERALISEES AU POINT D'INTEGRATION
 ! --- COURANT :
 !     -------
-        do 40 i = 1, 7
-            do 50 j = 1, 14
+        do i = 1, 7
+            do j = 1, 14
                 epsgen(i) = epsgen(i) + b(i,j)*depl(j)
-50          continue
-40      continue
+            enddo
+        enddo
 !
 ! --- CALCUL DES EFFORTS GENERALISES AU POINT D'INTEGRATION
 ! --- COURANT :
@@ -194,7 +190,7 @@ subroutine te0342(option, nomte)
         siggen(igau,6) = e*xiz*epsgen(6)
         siggen(igau,7) = e*xjg*epsgen(7)
 !
-30  end do
+    end do
 !
 ! --- RECUPERATION ET AFFECTATION DU VECTEUR DES EFFORTS
 ! --- GENERALISES EN SORTIE :
@@ -207,11 +203,11 @@ subroutine te0342(option, nomte)
     endif
 !
     k = 0
-    do 60 igau = 1, 3
-        do 70 i = 1, 7
+    do igau = 1, 3
+        do i = 1, 7
             k = k + 1
             zr(jeffo+k-1) = siggen(igau,i)
-70      continue
-60  end do
+        enddo
+    end do
 !
 end subroutine

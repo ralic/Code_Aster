@@ -6,7 +6,7 @@ subroutine te0148(option, nomte)
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/tecael.h"
+#include "asterfort/lonele.h"
 #include "asterfort/utmess.h"
 !
     character(len=*) :: option, nomte
@@ -38,7 +38,6 @@ subroutine te0148(option, nomte)
 !
 !
 !
-    character(len=8) :: nomail
     character(len=16) :: listma, ltrans
     character(len=19) :: chgeom
     real(kind=8) :: zero
@@ -49,7 +48,6 @@ subroutine te0148(option, nomte)
     real(kind=8) :: x0, y0, z0, x1, y1, z1, x2, y2, z2, a, b, c, lam1, lam2
     real(kind=8) :: force(12)
     integer :: ipt
-    integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -63,19 +61,10 @@ subroutine te0148(option, nomte)
 !
 !     --- INITIALISATION
 !
-    do 40 i = 1, 12
-        force(i) = zero
-40  end do
+    force(1:12) = zero
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
 !     ------------------- CALCUL DES VECTEURS ELEMENTAIRES ------------
 !
@@ -94,7 +83,7 @@ subroutine te0148(option, nomte)
     e1=e1/s
     e2=e2/s
     e3=e3/s
-    if (listma .eq. ' ' .or. ltrans .eq. ' ') goto 1000
+    if (listma .eq. ' ' .or. ltrans .eq. ' ') goto 999
     call jeveuo(listma, 'L', jlima)
     call jelira(listma, 'LONMAX', nbma2)
     nbma=nbma2/2
@@ -106,7 +95,7 @@ subroutine te0148(option, nomte)
     b=zr(jtran+4)
     c=zr(jtran+5)
 !C    2 BARRES EN POSITION QUELCONQUE
-    do 1 ima = 1, nbma
+    do ima = 1, nbma
         no1=zi(jlima+2*ima-2)
         no2=zi(jlima+2*ima-1)
         if (a .ne. 0.0d0 .or. b .ne. 0.0d0 .or. c .ne. 0.0d0) then
@@ -207,9 +196,9 @@ subroutine te0148(option, nomte)
                 force(j+9) = force(+j+9)+s*w(j)*an4(i)
  2          continue
 30      continue
- 1  end do
+     end do
 !
-1000  continue
+999  continue
 !
 !   --- STOCKAGE
 !
@@ -217,10 +206,10 @@ subroutine te0148(option, nomte)
     if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq.&
         'MECA_POU_D_TGM') ipt=7
 !
-    do 50 i = 1, 6
+    do i = 1, 6
         zr(ivect-1+i) = force(i)
         zr(ivect-1+i+ipt)= force(i+6)
-50  end do
+    end do
 !
     call jedema()
 end subroutine

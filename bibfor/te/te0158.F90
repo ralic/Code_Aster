@@ -25,13 +25,14 @@ subroutine te0158(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jpd1ff.h"
 #include "asterfort/jsd1ff.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmfdge.h"
 #include "asterfort/pmfpti.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verifm.h"
@@ -50,13 +51,12 @@ subroutine te0158(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jeffg, lmater, lsect, lx, iret, lorien, jdepl, i, j, kp, nc
+    integer :: jeffg, lmater, lx, iret, lorien, jdepl, i, j, kp, nc
     integer :: itemp, jtab(7), istrxr
 !
     character(len=4) :: fami
-    character(len=8) :: nomail
     character(len=16) :: ch16
-    integer :: lsect2, ipos, in, iadzi, iazk24
+    integer :: ipos, in
     integer :: npg, nno, ivf, ipoids
     real(kind=8) :: b(4), gg, xi, wi
     real(kind=8) :: ul(14), pgl(3, 3), d1b(6, 12), dege(3, 7), d1btg(7, 14)
@@ -65,6 +65,12 @@ subroutine te0158(option, nomte)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, phiy, phiz
     real(kind=8) :: ksi1, d1b3(2, 3), ey, ez
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 9
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1',&
+                    'EY2','EZ2'/
+!-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
@@ -81,14 +87,18 @@ subroutine te0158(option, nomte)
     endif
 !
 !   RECUPERATION DES COORDONNEES DES NOEUDS
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
+!
+!   RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a     = vale_cara(1)
+    xiy   = vale_cara(2)
+    xiz   = vale_cara(3)
+    alfay = vale_cara(4)
+    alfaz = vale_cara(5)
+    ey = (vale_cara(6) +vale_cara(8))/2.d0
+    ez = (vale_cara(7) +vale_cara(9))/2.d0
 !
 !   RECUPERATION DES ORIENTATIONS
     call jevech('PCAORIE', 'L', lorien)
@@ -112,23 +122,6 @@ subroutine te0158(option, nomte)
                     xnu)
 !
         g = e / ( deux * ( un + xnu ) )
-!
-!       CARACTERISTIQUES GENERALES DES SECTIONS
-        call jevech('PCAGNPO', 'L', lsect)
-        lsect = lsect-1
-!
-!       SECTION INITIALE
-        a = zr(lsect+ 1)
-        xiy = zr(lsect+ 2)
-        xiz = zr(lsect+ 3)
-        alfay = zr(lsect+ 4)
-        alfaz = zr(lsect+ 5)
-!
-        if ((nomte.eq.'MECA_POU_D_TG').or.(nomte.eq.'MECA_POU_D_TGM')) then
-            lsect2 = lsect + 11
-            ey = -(zr(lsect+6)+zr(lsect2+6))/deux
-            ez = -(zr(lsect+7)+zr(lsect2+7))/deux
-        endif
 !
         if (nomte.eq.'MECA_POU_D_E') then
             nc = 6

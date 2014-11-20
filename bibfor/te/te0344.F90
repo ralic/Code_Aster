@@ -19,17 +19,18 @@ subroutine te0344(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/porigi.h"
 #include "asterfort/posigr.h"
 #include "asterfort/posipr.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptforp.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
@@ -50,13 +51,13 @@ subroutine te0344(option, nomte)
     integer :: nbres
     parameter     (nbres=2)
     integer :: lmater, jmat, nbmat, imat, icomp, nbpar, i, j, npg, nno, nc
-    integer :: ncc, jeffo, iret, lsect, itype, lx
+    integer :: ncc, jeffo, iret, itype, lx
     integer :: lorien, jdepl, lforcr, lforcf
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
     character(len=8) :: nompar
     character(len=16) :: messk(2), nomres(nbres)
-    real(kind=8) :: valpar, zero, angs2, rad, e, g, a, rbid
+    real(kind=8) :: valpar, zero, angs2, rad, e, g, a
     real(kind=8) :: xl, epsith
     real(kind=8) :: nu, fe(12), fi(12), flr(14), klv(105)
     real(kind=8) :: ulr(14), ugr(14), pgl(14, 14), klc(14, 14)
@@ -65,6 +66,11 @@ subroutine te0344(option, nomte)
 !     ------------------------------------------------------------------
     data nomres/'E','NU'/
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 2
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','TVAR'/
+!-----------------------------------------------------------------------
 !
     okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
     ASSERT(okopt)
@@ -128,13 +134,12 @@ subroutine te0344(option, nomte)
     nno = 2
     nc = 7
     ncc = 6
-    call jevech('PCAGNPO', 'L', lsect)
     call jevech('PCAORIE', 'L', lorien)
-    call jevech('PGEOMER', 'L', lx)
-    call carapo(zr(lsect), zr(lx), zr(lorien), xl, pgl,&
-                itype, a, rbid, rbid, rbid,&
-                rbid, rbid, rbid, rbid, rbid,&
-                rbid, rbid, rbid, rbid, rbid)
+    call lonele(3, lx, xl)
+    call matrot(zr(lorien), pgl)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+    a = vale_cara(1)
+    itype = nint(vale_cara(2))
 ! --- ------------------------------------------------------------------
 ! --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE
     call porigi(nomte, e, nu, xl, klv)

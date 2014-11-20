@@ -3,13 +3,13 @@ subroutine porigi(nomte, e, xnu, xl, klv)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptka01.h"
 #include "asterfort/ptka02.h"
 #include "asterfort/ptka10.h"
 #include "asterfort/ptka21.h"
-#include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 !
     character(len=*) :: nomte
@@ -36,31 +36,49 @@ subroutine porigi(nomte, e, xnu, xl, klv)
 ! IN  NOMTE : NOM DU TYPE ELEMENT
 !             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_C_T' ...
 !-----------------------------------------------------------------------
-    integer :: istruc, itype, lrcou, lsect, igeom
+    integer :: istruc, itype, lrcou, lx
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, ang
     real(kind=8) :: angs2, deux, ey, ez, g, rad, un
     real(kind=8) :: xfl, xfly, xflz, xiy, xiy2, xiz, xiz2
-    real(kind=8) :: xjx, xjx2, xl_geom, zero, pgl_bid(3, 3), xl0
-    real(kind=8) :: xig, ang_bid(3)
+    real(kind=8) :: xjx, xjx2, xl_geom, zero, xl0
+    real(kind=8) :: xig
     aster_logical :: euler
 !-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 18
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1','JG1',&
+                    'A2','IY2','IZ2','AY2','AZ2','EY2','EZ2','JX2','TVAR'/
+!-----------------------------------------------------------------------
+
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
     g = e/ (deux* (un+xnu))
     euler=lteatt('EULER','OUI')
-    ang_bid(1)= 0.d0
-    ang_bid(2)= 0.d0
-    ang_bid(3)= 0.d0
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call jevech('PCAGNPO', 'L', lsect)
-    call jevech('PGEOMER', 'L', igeom)
-    call carapo(zr(lsect), zr(igeom), ang_bid, xl_geom, pgl_bid,&
-                itype, a, xiy, xiz, xjx,&
-                alfay, alfaz, ey, ez, a2,&
-                xiy2, xiz2, xjx2, alfay2, alfaz2)
+    call lonele(3, lx, xl_geom)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    alfay  = vale_cara(4)
+    alfaz  = vale_cara(5)
+    xjx    = vale_cara(8)
+    xig    = vale_cara(9)
+    a2     = vale_cara(10)
+    xiy2   = vale_cara(11)
+    xiz2   = vale_cara(12)
+    alfay2 = vale_cara(13)
+    alfaz2 = vale_cara(14)
+    xjx2   = vale_cara(17)
+    ey = (vale_cara(6) +vale_cara(15))/2.d0
+    ez = (vale_cara(7) +vale_cara(16))/2.d0
+    itype = nint(vale_cara(18))
+!
     if (xl .le. zero .or. (nomte.eq.'MECA_POU_C_T')) then
         xl0 = xl_geom
     else
@@ -96,8 +114,6 @@ subroutine porigi(nomte, e, xnu, xl, klv)
         xiz2 = xiz2/xflz
     else if (nomte.eq.'MECA_POU_D_TG') then
         itype = 30
-        xig = zr(lsect-1+12)
-    else
 !        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         istruc = 1
     endif

@@ -4,11 +4,13 @@ subroutine te0144(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/porigi.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utpvgl.h"
@@ -50,7 +52,7 @@ subroutine te0144(option, nomte)
     parameter  (zero = 0.d0,deux = 2.d0)
 !
     integer :: nbres, npg, nno, nc, nnoc, ncc, jeffo, lmater, iret
-    integer :: iret1, lsect, itype, lx, lrcou, lorien, jdepl, i, j
+    integer :: iret1, itype, lx, lrcou, lorien, jdepl, i, j
     parameter    (nbres=2)
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
@@ -58,7 +60,7 @@ subroutine te0144(option, nomte)
 !
     real(kind=8) :: ul(12), ug(12), pgl(3, 3), klc(12, 12), klv(78)
     real(kind=8) :: fl(12), pgl1(3, 3), pgl2(3, 3), epsith(1)
-    real(kind=8) :: x, temp
+    real(kind=8) :: x, temp, tvar
     real(kind=8) :: e, xnu, xl, rad, angarc, angs2, along
 !
 !
@@ -107,15 +109,12 @@ subroutine te0144(option, nomte)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect-1
-    itype = nint(zr(lsect+23))
+    call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar)
+    itype = nint(tvar)
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
 !
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
+    call lonele(3, lx, xl)
     if (itype .eq. 10) then
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)

@@ -30,6 +30,7 @@ subroutine turigi(nomte, nbrddl, k)
 #include "asterfort/matini.h"
 #include "asterfort/mavec.h"
 #include "asterfort/moytem.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
     character(len=16) :: nomte
@@ -59,7 +60,7 @@ subroutine turigi(nomte, nbrddl, k)
     parameter (nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: valres(nbres), valpar, theta
-    real(kind=8) :: e, nu, h, a, l
+    real(kind=8) :: e, nu, h, a, l, r1
     real(kind=8) :: pi, deuxpi, fi, sinfi
     real(kind=8) :: beta, cisail, g, poids, r, rayon
     real(kind=8) :: c(4, 4), xpg(4)
@@ -67,9 +68,15 @@ subroutine turigi(nomte, nbrddl, k)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
     integer :: nno, npg, nbcou, nbsec, m
     integer :: ipoids, ivf, iret
-    integer :: imate, imatuu, icagep, igeom, nbpar
+    integer :: imate, imatuu, igeom, nbpar
     integer :: igau, icou, isect, i, j, lorien, icoud2, mmt
     integer :: jcoopg
+!
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
@@ -87,25 +94,26 @@ subroutine turigi(nomte, nbrddl, k)
 !
 !     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
     poicou(1) = 1.d0/3.d0
-    do 10 i = 1, nbcou - 1
+    do i = 1, nbcou - 1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
-10  end do
+    end do
     poicou(2*nbcou) = 4.d0/3.d0
     poicou(2*nbcou+1) = 1.d0/3.d0
     poisec(1) = 1.d0/3.d0
-    do 20 i = 1, nbsec - 1
+    do i = 1, nbsec - 1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
-20  end do
+    end do
     poisec(2*nbsec) = 4.d0/3.d0
     poisec(2*nbsec+1) = 1.d0/3.d0
 !
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCAGEPO', 'L', icagep)
-    h = zr(icagep+1)
-    a = zr(icagep) - h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a  = r1-h/2.d0
 ! A= RMOY, H = EPAISSEUR
 !
 !
@@ -114,9 +122,9 @@ subroutine turigi(nomte, nbrddl, k)
 !
 !
 !
-    do 30 i = 1, npg
+    do i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
-30  end do
+    end do
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
     call carcou(zr(lorien), l, pgl, rayon, theta,&
@@ -188,7 +196,7 @@ subroutine turigi(nomte, nbrddl, k)
 !
 ! BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 90 igau = 1, npg
+    do igau = 1, npg
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
@@ -227,17 +235,17 @@ subroutine turigi(nomte, nbrddl, k)
                 call kcoude(nbrddl, poids, b, c, k)
 70          continue
 80      continue
-90  end do
+    end do
 !
 ! FIN DU CALCUL DE LA MATRICE DE RIGIDITE
 !
 ! MULTIPLICATION PAR LE MODULE DE YOUNG E
 !
-    do 110 i = 1, nbrddl
+    do i = 1, nbrddl
         do 100 j = 1, nbrddl
             k(i,j) = e*k(i,j)
 100      continue
-110  end do
+    end do
 !
 !  CHANGEMENT DE REPERE :
 !  PASSAGE DU REPERE LOCAL AU REPERE GLOBAL

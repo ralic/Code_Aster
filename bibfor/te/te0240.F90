@@ -2,6 +2,7 @@ subroutine te0240(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/ptktfv.h"
 #include "asterfort/ptktuf.h"
@@ -38,20 +39,19 @@ subroutine te0240(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, imate, itype, lmat, lorien, lsect, lsect2
+    integer :: imate, itype, lmat, lorien, lsect, lsect2
     integer :: lx, nbpar, nbres, nc, nno
     real(kind=8) :: rho
 !-----------------------------------------------------------------------
     parameter                 (nbres=2)
     real(kind=8) :: valpar, valres(nbres)
     integer :: codres(nbres), kpg, spt
-    character(len=8) :: nompar, nomail, fami, poum
+    character(len=8) :: nompar, fami, poum
     character(len=16) :: ch16, nomres(nbres)
     real(kind=8) :: zero, c1, c2, pgl(3, 3), mat(136)
     real(kind=8) :: e, nu, g, celer
     real(kind=8) :: a, ai, xiy, xiz, alfay, alfaz, xjx, xl
     real(kind=8) :: a2, ai2, xiy2, xiz2, alfay2, alfaz2, xjx2, ey, ez
-    integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
     zero = 0.d0
     c1 = 1.d0
@@ -67,9 +67,7 @@ subroutine te0240(option, nomte)
     kpg=1
     spt=1
     poum='+'
-    do 10 i = 1, nbres
-        valres(i) = zero
-10  end do
+    valres(1:nbres) = zero
     nomres(1) = 'E'
     nomres(2) = 'NU'
 !
@@ -125,18 +123,9 @@ subroutine te0240(option, nomte)
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
-    do 30 i = 1, 136
-        mat(i) = 0.d0
-30  end do
+    mat(:) = 0.d0
 !
 !     --- CALCUL DES MATRICES ELEMENTAIRES ----
     if (option .eq. 'RIGI_MECA') then

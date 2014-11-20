@@ -2,6 +2,7 @@ subroutine posigr(nomte, efge, sigm)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomte
     real(kind=8) :: sigm(*)
@@ -29,7 +30,7 @@ subroutine posigr(nomte, efge, sigm)
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: itsec, lrcou, lsecr, lsect, lsect2
+    integer :: itsec, lrcou
     real(kind=8) :: a, a2, hy1, hy2, hz1, hz2,r1, r2
     real(kind=8) :: zero, deux
     real(kind=8) :: smf1, smf2, smfy1, smfy2, smfz1, smfz2, sn1, sn2
@@ -37,23 +38,30 @@ subroutine posigr(nomte, efge, sigm)
     real(kind=8) :: xfl, xfly, xflz, xsi, xsiy, xsiz, xxy, xxz
 !
 !-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 6
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','A2','IY2','IZ2'/
+    integer, parameter :: nb_cara1 = 7
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'HY1','HZ1','HY2','HZ2','R1','R2','TSEC'/
+!-----------------------------------------------------------------------
     zero = 0.d0
     deux = 2.d0
 !     ------------------------------------------------------------------
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-!
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !     --- SECTION INITIALE ---
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+
 !     --- SECTION FINALE ---
-    lsect2 = lsect + 11
-    a2 = zr(lsect2+1)
-    xiy2 = zr(lsect2+2)
-    xiz2 = zr(lsect2+3)
+    a2     = vale_cara(4)
+    xiy2   = vale_cara(5)
+    xiz2   = vale_cara(6)
 !
     if (nomte .eq. 'MECA_POU_D_TG') then
         a2=a
@@ -89,31 +97,21 @@ subroutine posigr(nomte, efge, sigm)
 !
 !   --- caracteristiques des sections cercle et rectangle
 !
-    call jevech('PCAGEPO', 'L', lsecr)
-    lsecr = lsecr - 1
-    itsec = nint(zr(lsecr+13))
-    if (itsec .eq. 1) then
-!   --- section rectangulaire section initiale
-        hy1 = zr(lsecr+1)
-        hz1 = zr(lsecr+2)
-!   --- section rectangulaire section finale
-        hy2 = zr(lsecr+5)
-        hz2 = zr(lsecr+6)
-    else if (itsec.eq.2) then
-!   --- section circulaire sections initiale et finale
-        r1 = zr(lsecr+9)
-        r2 = zr(lsecr+11)
-    endif
+    call poutre_modloc('CAGEPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    itsec = nint(vale_cara1(7))
 !
 !   sxx calcule a partir des 2 flexions et de l'effort normal
 !
-
     sn1 = -efge(1)/a
     sn2 = efge(7)/a2
 !
 !   --- section rectangulaire: le max  et le min sont obtenus sur les coins
 !
     if (itsec .eq. 1) then
+        hy1 = vale_cara1(1)
+        hz1 = vale_cara1(2)
+        hy2 = vale_cara1(3)
+        hz2 = vale_cara1(4)
         smfy1 = abs(efge(5)/xiy*hz1/deux)
         smfz1 = abs(efge(6)/xiz*hy1/deux)
         smfy2 = abs(efge(11)/xiy2*hz2/deux)
@@ -130,6 +128,8 @@ subroutine posigr(nomte, efge, sigm)
 !                         avec R= sqrt(a^2+b^2) et tan(s)= b/a
 !       donc max de a cos(t) + b sin(t) = R
 !       et   min de a cos(t) + b sin(t) = -R
+        r1 = vale_cara1(5)
+        r2 = vale_cara1(6)
         smf1 = (r1/xiy)*sqrt(efge(5)**2+efge(6)**2)
         smf2 = (r2/xiy2)*sqrt(efge(11)**2+efge(12)**2)
         sigm(1) = sn1-smf1

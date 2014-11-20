@@ -18,19 +18,20 @@ subroutine te0151(option, nomte)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-#include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matrot.h"
 #include "asterfort/matro2.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmfrig.h"
 #include "asterfort/pomass.h"
 #include "asterfort/porigi.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptenci.h"
 #include "asterfort/ptenpo.h"
 #include "asterfort/ptenth.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
@@ -61,12 +62,12 @@ subroutine te0151(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, if, iret, istruc, itype, jdepl, jende
     integer :: jfreq, jmasd, jvite, kanl, lmater, lorien, lrcou
-    integer :: lsect, nbpar, nbres, nc, nno
-    integer :: npg, igeom
-    real(kind=8) :: ang
+    integer :: nbpar, nbres, nc, nno
+    integer :: npg, lx
+    real(kind=8) :: ang, tvar
     real(kind=8) :: angarc, angs2, deux, e, enerth
     real(kind=8) :: g, rad, rho, un, valpar
-    real(kind=8) :: xl, xnu, zero, rbid
+    real(kind=8) :: xl, xnu, zero
 !-----------------------------------------------------------------------
     parameter    (             nbres = 3 )
     real(kind=8) :: valres(nbres)
@@ -122,14 +123,11 @@ subroutine te0151(option, nomte)
     g = e / ( deux * ( un + xnu ) )
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-    call jevech('PCAGNPO', 'L', lsect)
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PCAORIE', 'L', lorien)
-    call carapo(zr(lsect), zr(igeom), zr(lorien), xl, pgl,&
-                itype, rbid, rbid, rbid, rbid,&
-                rbid, rbid, rbid, rbid, rbid,&
-                rbid, rbid, rbid, rbid, rbid)
-
+    call matrot(zr(lorien), pgl)
+    call lonele(3, lx, xl)
+    call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar)
+    itype = nint(tvar)
 !
     nc = 6
     if ( nomte(1:13) .eq. 'MECA_POU_D_TG') nc = 7

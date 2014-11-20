@@ -3,7 +3,7 @@ subroutine te0145(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
-#include "asterfort/tecael.h"
+#include "asterfort/lonele.h"
 #include "asterfort/utmess.h"
 !
     character(len=*) :: option, nomte
@@ -36,7 +36,6 @@ subroutine te0145(option, nomte)
 !
 !
 !
-    character(len=8) :: nomail
     real(kind=8) :: zero, deux, zcod
     real(kind=8) :: xl, e1, e2, e3, f1, f2, f3, r1, r2, r3, q1, q2, q3
     real(kind=8) :: b1, b2, b3, u(3), s, alp, d, um, an1, an2, an3, an4
@@ -44,7 +43,6 @@ subroutine te0145(option, nomte)
     real(kind=8) :: rad, ang, angs2
     real(kind=8) :: force(12)
     integer :: ipt
-    integer :: iadzi, iazk24
 !-----------------------------------------------------------------------
     integer :: i, iforc, ivect, j, lrcou, lx
     real(kind=8) :: dd
@@ -56,19 +54,10 @@ subroutine te0145(option, nomte)
 !
 !     --- INITIALISATION
 !
-    do 40 i = 1, 12
-        force(i) = zero
-40  end do
+    force(1:12) = zero
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
     if (nomte .eq. 'MECA_POU_C_T') then
         call utmess('F', 'ELEMENTS3_29')
         call jevech('PCAARPO', 'L', lrcou)
@@ -97,7 +86,7 @@ subroutine te0145(option, nomte)
                 force(j)=force(j)+xl*zr(iforc-1+j)/deux
                 force(j+6)=force(j+6)+xl*zr(iforc-1+j)/deux
 10          continue
-            goto 1000
+            goto 999
         endif
         w(1)=w(1)/wm
         w(2)=w(2)/wm
@@ -114,7 +103,7 @@ subroutine te0145(option, nomte)
             force(j+9)=force(j+9)-pf2*w(j)*xl**2/12.d0
 20      continue
 !
-        goto 1000
+        goto 999
     endif
 !
     e1=zr(lx+4)-zr(lx+1)
@@ -152,7 +141,7 @@ subroutine te0145(option, nomte)
             force(j+6)=force(j+6)+xl*u(j)/d/deux
             force(j+9)=force(j+9)-xl**2*w(j)/d/12.d0
 11      continue
-        goto 1000
+        goto 999
     endif
 !C    2 BARRES INFINIES PARALLELES DEFINIES PAR UNE DISTANCE ET 1 POINT
     if (zcod .eq. 12.d0) then
@@ -182,7 +171,7 @@ subroutine te0145(option, nomte)
             force(j+6)=force(j+6)+xl*u(j)/d/deux
             force(j+9)=force(j+9)-xl**2*w(j)/d/12.d0
 12      continue
-        goto 1000
+        goto 999
     endif
 !C    2 BARRES EN POSITION QUELCONQUE
     if (zcod .eq. 2.d0 .or. zcod .eq. 3.d0) then
@@ -248,7 +237,7 @@ subroutine te0145(option, nomte)
 30      continue
     endif
 !
-1000  continue
+999  continue
 !
 !   --- STOCKAGE
 !
@@ -256,8 +245,8 @@ subroutine te0145(option, nomte)
     if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq.&
         'MECA_POU_D_TGM') ipt=7
 !
-    do 50 i = 1, 6
+    do i = 1, 6
         zr(ivect-1+i) = force(i)
         zr(ivect-1+i+ipt)= force(i+6)
-50  end do
+    end do
 end subroutine

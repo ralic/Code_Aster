@@ -26,6 +26,7 @@ subroutine te0535(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lcsovn.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmfbkb.h"
@@ -39,6 +40,7 @@ subroutine te0535(option, nomte)
 #include "asterfort/pmfmcf.h"
 #include "asterfort/pmfpti.h"
 #include "asterfort/porea1.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptkg00.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
@@ -63,7 +65,7 @@ subroutine te0535(option, nomte)
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 !     NOMTE  : K16 : NOM DU TYPE ELEMENT
 ! --- ------------------------------------------------------------------
-    integer :: igeom, icompo, imate, isect, iorien, nd, nk, iret
+    integer :: igeom, icompo, imate, iorien, nd, nk, iret
     integer :: icarcr, icontm, ideplm, ideplp, imatuu
     integer :: ivectu, icontp, nno, nc, ivarim, ivarip, i
     parameter  (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
@@ -93,6 +95,11 @@ subroutine te0535(option, nomte)
     parameter  (zero=0.0d+0)
 !
 ! --- ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 3
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'EY1','EZ1','JX1'/
+!-----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', nno=nnoel, npg=npg, jpoids=ipoids, jvf=ivf)
     ASSERT(nno.eq.nnoel)
@@ -114,7 +121,6 @@ subroutine te0535(option, nomte)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCAGNPO', 'L', isect)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PDEPLMR', 'L', ideplm)
@@ -190,11 +196,7 @@ subroutine te0535(option, nomte)
 !
 !
 ! --- LONGUEUR DE L'ELEMENT
-    lx = igeom - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-    if (xl .eq. zero) then
-        call utmess('F', 'ELEMENTS_17')
-    endif
+    call lonele(3, lx, xl)
 !
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
@@ -225,6 +227,13 @@ subroutine te0535(option, nomte)
         call matrot(zr(iorien), pgl)
     endif
 !
+!   récupération des caractéristiques de section utiles
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    ey  = vale_cara(1)
+    ez  = vale_cara(2)
+    xjx = vale_cara(3)
+!
 ! --- CARACTERISTIQUES ELASTIQUES (PAS DE TEMPERATURE POUR L'INSTANT)
 !     ON PREND LE E ET NU DU MATERIAU TORSION (VOIR OP0059)
     call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
@@ -234,7 +243,7 @@ subroutine te0535(option, nomte)
                 nu)
     g = e/ (2.d0* (1.d0+nu))
 ! --- TORSION A PART
-    xjx = zr(isect+7)
+    
     gxjx = g*xjx
 !
 ! --- DEPLACEMENTS DANS LE REPERE LOCAL
@@ -399,8 +408,7 @@ subroutine te0535(option, nomte)
         a = cars1(1)
         xiy = cars1(5)
         xiz = cars1(4)
-        ey = -zr(isect+5)
-        ez = -zr(isect+6)
+
         call ptkg00(sigma, a, a, xiz, xiz,&
                     xiy, xiy, xl, ey, ez,&
                     rgeom)

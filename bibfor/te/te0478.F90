@@ -37,6 +37,7 @@ subroutine te0478(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ppga1d.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utpvlg.h"
@@ -44,13 +45,18 @@ subroutine te0478(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ndim, nno, nnos, npg, jgano, icopg, idfde, ipoids, ivf, igeom
-    integer :: tab(2), iret, ndim1, igepo
+    integer :: tab(2), iret, ndim1
     integer :: inbf, nbfib, jacf, iorien, nbsp, nbcou, nbsec, nbptcou, nbptsec
     integer :: ncarfi, isec, icou, isp, icoq
     integer :: ig, ifi, kk, ii, jadr
     real(kind=8) :: copg(4, 4), copg2(3, 4), pgl(3, 3), gm1(3), gm2(3), airesp
     real(kind=8) :: epcou, alpha, rayon, ep, yy, zz, hh, rr, rayonsp, wspicou,wspisec
     real(kind=8) :: dfdx(3), cour, jacp, cosa, sina, spoid
+!-----------------------------------------------------------------------    
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,9 +113,9 @@ subroutine te0478(option, nomte)
 !       nombre de sous points par point de gauss
         nbsp= nbptsec*nbptcou
 !       rayon et epaisseur du tuyau
-        call jevech('PCAGEPO', 'L', igepo)
-        rayon = zr(igepo)
-        ep    = zr(igepo+1)
+        call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+        rayon = vale_cara1(1)
+        ep    = vale_cara1(2)
 !
         call jevech('PCAORIE', 'L', iorien)
 !       position et poids des points de gauss

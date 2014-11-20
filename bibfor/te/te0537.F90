@@ -21,6 +21,7 @@ subroutine te0537(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmavec.h"
@@ -31,7 +32,6 @@ subroutine te0537(option, nomte)
 #include "asterfort/pmfrig.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/vecma.h"
@@ -61,9 +61,9 @@ subroutine te0537(option, nomte)
     parameter (zero=0.0d+0,deux=2.d+0,trois=3.d+0)
     parameter (quatre=4.d+0)
     real(kind=8) :: b(4), gg, xi, wi, valres(2), sign_noeu, alpha
-    integer :: ip, ipos, iadzi, iazk24, istrxr
+    integer :: ip, ipos, istrxr
     integer :: ipos1, ipos2, nbfig, nbgf, ig, nugf, ifb, icp, isdcom, icompo
-    character(len=8) :: materi, nomail
+    character(len=8) :: materi
     character(len=16) :: nomres(2)
     integer :: codres(2), ncomp
     integer :: npg, ndim, nnoel, nnos, ipoids, ivf
@@ -81,18 +81,11 @@ subroutine te0537(option, nomte)
     call jevech('PFIBRES', 'L', jacf)
     ncarfi = 3
     alpha = 0.d0
-    call jevech('PGEOMER', 'L', lx)
     call jevech('PCAORIE', 'L', lorien)
     call jevech('PDEPLAR', 'L', jdepl)
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
     call matrot(zr(lorien), pgl)

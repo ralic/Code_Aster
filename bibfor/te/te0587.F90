@@ -5,6 +5,7 @@ subroutine te0587(option, nomte)
 #include "asterfort/carcou.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/utmess.h"
 !
     character(len=16) :: option, nomte
@@ -35,7 +36,7 @@ subroutine te0587(option, nomte)
 ! ......................................................................
 !
     integer :: nbcoum, nbsecm, jnbspi
-    real(kind=8) :: h, a
+    real(kind=8) :: h, a, r1
     parameter(nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: pi, deuxpi, sig(6), fno(4, 6)
@@ -46,13 +47,18 @@ subroutine te0587(option, nomte)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta, l
     integer :: nno, nnos, jgano, ndim, npg, nbcou, nbsec, lorien
     integer :: ipoids, ivf, ic, kp, jin, jcoopg, jdfd2
-    integer :: icagep, idfdk
+    integer :: idfdk
     integer :: igau, icou, isect, i, jout
     integer :: indice, icoud2, mmt
     integer :: kpgs
 !
     integer :: vali
 !
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!----------------------------------------------------------------------- 
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
   jdfd2=jdfd2,jgano=jgano)
@@ -81,33 +87,34 @@ subroutine te0587(option, nomte)
 !
 !  LES POIDS POUR L'INTEGRATION DANS L'EPAISSEUR
     poicou(1)=1.d0/3.d0
-    do 20 i = 1, nbcou-1
+    do i = 1, nbcou-1
         poicou(2*i)=4.d0/3.d0
         poicou(2*i+1)=2.d0/3.d0
-20  end do
+    end do
     poicou(2*nbcou)=4.d0/3.d0
     poicou(2*nbcou+1)=1.d0/3.d0
 !
 !  LES POIDS POUR L'INTEGRATION SUR LA CIRCONFERENCE
     poisec(1)=1.d0/3.d0
-    do 30 i = 1, nbsec-1
+    do i = 1, nbsec-1
         poisec(2*i)=4.d0/3.d0
         poisec(2*i+1)=2.d0/3.d0
-30  end do
+    end do
     poisec(2*nbsec)=4.d0/3.d0
     poisec(2*nbsec+1)=1.d0/3.d0
 !
 !
     if (option .eq. 'EFGE_ELGA') then
 !     ---------------------------------
-        call jevech('PCAGEPO', 'L', icagep)
         call jevech('PCAORIE', 'L', lorien)
         call jevech('PSIEFR', 'L', jin)
         call jevech('PEFGER', 'E', jout)
 !
 !       -- A= RMOY, H = EPAISSEUR
-        h=zr(icagep+1)
-        a=zr(icagep)-h/2.d0
+        call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+        r1 = vale_cara1(1)
+        h  = vale_cara1(2)
+        a=r1-h/2.d0
 !
 !       -- ORIENTATION :
         call carcou(zr(lorien), l, pgl, rayon, theta,&
@@ -124,9 +131,9 @@ subroutine te0587(option, nomte)
 !       -- CALCUL DES EFFORTS SUR LES POINTS DE GAUSS (VFNO)
         do 180 igau = 1, npg
 !
-            do 140,i=1,6
-            efg(i)=0.d0
-140          continue
+            do i=1,6
+                efg(i)=0.d0
+            enddo
 !
 !         -- BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
             do 160 icou = 1, 2*nbcou+1
@@ -164,9 +171,9 @@ subroutine te0587(option, nomte)
 150              continue
 160          continue
 !
-            do 170,i=1,6
-            fno(igau,i)=efg(i)
-170          continue
+            do i=1,6
+                fno(igau,i)=efg(i)
+            enddo
 180      continue
 !
 !

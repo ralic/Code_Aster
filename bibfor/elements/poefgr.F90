@@ -4,11 +4,13 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/pmfmas.h"
 #include "asterfort/pomass.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptforp.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
@@ -46,10 +48,15 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iret, itype, j, jdepl, kanl, ldyna
-    integer :: lmater, lopt, lorien, lrcou, lsect, lsect2, lx
+    integer :: lmater, lopt, lorien, lrcou, lx
     integer :: mater, nc, ncc, nno, nnoc
     real(kind=8) :: a, a2, along, angarc, angs2, deux, f(1)
     real(kind=8) :: rad, xl, zero
+!-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 3
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','A2','TVAR'/
 !-----------------------------------------------------------------------
     zero = 0.d0
     deux = 2.d0
@@ -61,17 +68,13 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
-    lsect2 = lsect + 11
-    itype = nint(zr(lsect+23))
-    a = zr(lsect+1)
-    a2 = zr(lsect2+1)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+    a   = vale_cara(1)
+    a2  = vale_cara(2)
+    itype = nint(vale_cara(3))
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
+    call lonele(3, lx, xl)
     if (itype .eq. 10) then
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
@@ -109,9 +112,9 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
                 'ELAS', 1, f, iret)
 !
     if (f(1) .ne. zero) then
-        do 10 i = 1, 12
+        do i = 1, 12
             ul(i) = zero
-10      continue
+        enddo
 !
         if (itype .ne. 10) then
             ul(1) = -f(1)*xl
@@ -124,12 +127,12 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
             ul(8) = ul(2)
         endif
 !              --- CALCUL DES FORCES INDUITES ---
-        do 30 i = 1, 6
-            do 20 j = 1, 6
+        do i = 1, 6
+            do j = 1, 6
                 effo(i) = effo(i) - klc(i,j)*ul(j)
                 effo(i+6) = effo(i+6) - klc(i+6,j+6)*ul(j+6)
-20          continue
-30      continue
+            enddo
+        enddo
     endif
 !
 !     --- TENIR COMPTE DES EFFORTS REPARTIS/PESANTEUR ---
@@ -138,25 +141,25 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
                 xl, rad, angs2, 0, nno,&
                 nc, pgl, pgl1, pgl2, fe,&
                 fei)
-    do 40 i = 1, 12
+    do i = 1, 12
         effo(i) = effo(i) - fe(i)
-40  end do
+    end do
 !
     call ptforp(itype, 'CHAR_MECA_FR1D1D', nomte, a, a2,&
                 xl, rad, angs2, 0, nno,&
                 nc, pgl, pgl1, pgl2, fe,&
                 fei)
-    do 50 i = 1, 12
+    do i = 1, 12
         effo(i) = effo(i) - fe(i)
-50  end do
+    end do
 !
     call ptforp(itype, 'CHAR_MECA_FF1D1D', nomte, a, a2,&
                 xl, rad, angs2, 0, nno,&
                 nc, pgl, pgl1, pgl2, fe,&
                 fei)
-    do 60 i = 1, 12
+    do i = 1, 12
         effo(i) = effo(i) - fe(i)
-60  end do
+    end do
 !
 !      --- FORCE DYNAMIQUE ---
 !
@@ -188,9 +191,9 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
             call utpvgl(nno, nc, pgl, zr(ldyna), ul)
         endif
         call pmavec('ZERO', 12, mlc, ul, fe)
-        do 70 i = 1, 12
+        do i = 1, 12
             effo(i) = effo(i) + fe(i)
-70      continue
+        enddo
     endif
 !
 end subroutine

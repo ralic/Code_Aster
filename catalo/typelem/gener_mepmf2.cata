@@ -27,10 +27,11 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     ECAFIEL  = CAFI_R   ELEM__         (XG       YG       AIRE     )
     CCAGEPO  = CAGEPO   ELEM__         (R1       EP1      )
-    CCAGNPO  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1      EY1
-                                        EZ1      JX1      RY1      RZ1      RT1      JG1
-                                        IY2      IZ2      AY2      AZ2      EY2      EZ2
-                                        JX2      RY2      RZ2      RT2      TVAR     )
+    CCAGNPO  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1
+                                        EY1      EZ1      JX1      RY1      RZ1 
+                                        RT1      JG1      A2       IY2      IZ2
+                                        AY2      AZ2      EY2      EZ2      JX2
+                                        RY2      RZ2      RT2      JG2      TVAR     )
     CCAGNP1  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1      EY1
                                         EZ1      JX1      JG1      IYR21    IZR21    )
     CCAGNP2  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1      EY1

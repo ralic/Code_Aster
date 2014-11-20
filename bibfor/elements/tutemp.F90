@@ -25,6 +25,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/verifg.h"
@@ -41,7 +42,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
     integer :: nbrddl, nbsecm, nbcoum
     parameter (nbsecm=32,nbcoum=10)
-    real(kind=8) :: h, a, l, valpar, beta, r
+    real(kind=8) :: h, a, l, valpar, beta, r, r1
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: f(nbrddl), b(4, nbrddl), vout(nbrddl), sig(4)
     real(kind=8) :: pi, deuxpi, fi, e, nu, valres(3)
@@ -55,11 +56,16 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     character(len=32) :: phenom
     integer :: nno, npg, nbcou, nbsec, m, lorien, icoude, i
     integer :: ipoids, ivf, icou, nbpar
-    integer :: icagep, igeom, jout, imate, j
+    integer :: igeom, jout, imate, j
     integer :: igau, isect, icoud2, mmt, nspg
     integer :: jnbspi, iret, iret2
     integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
 !
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
   jdfd2=jdfd2,jgano=jgano)
@@ -73,10 +79,11 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
 !
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCAGEPO', 'L', icagep)
     call jevech('PCAORIE', 'L', lorien)
-    h = zr(icagep+1)
-    a = zr(icagep) - h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a  = r1-h/2.d0
 !
 ! A= RMOY, H = EPAISSEUR
 ! RINT = RAYON INTERIEUR
@@ -86,28 +93,28 @@ subroutine tutemp(option, nomte, nbrddl, f, b,&
     if (nomte .eq. 'MET6SEG3') m = 6
 !
 !
-    do 10 i = 1, npg
+    do i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
-10  end do
+    end do
 !
 !
 !     LES POIDS POUR L'INTEGRATION DANS L'EPAISSEUR
 !
     poicou(1) = 1.d0/3.d0
-    do 20 i = 1, nbcou - 1
+    do i = 1, nbcou - 1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
-20  end do
+    end do
     poicou(2*nbcou) = 4.d0/3.d0
     poicou(2*nbcou+1) = 1.d0/3.d0
 !
 !     LES POIDS POUR L'INTEGRATION SUR LA CIRCONFERENCE
 !
     poisec(1) = 1.d0/3.d0
-    do 30 i = 1, nbsec - 1
+    do i = 1, nbsec - 1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
-30  end do
+    end do
     poisec(2*nbsec) = 4.d0/3.d0
     poisec(2*nbsec+1) = 1.d0/3.d0
 !

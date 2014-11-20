@@ -5,6 +5,7 @@ subroutine ef0142(nomte)
 #include "asterfort/moytem.h"
 #include "asterfort/pmfrig.h"
 #include "asterfort/poefgr.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/porigi.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
@@ -32,7 +33,7 @@ subroutine ef0142(nomte)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, jeffo, labsc, lcage, lmater, lopt, nbpar
+    integer :: i, jeffo, labsc, lmater, lopt, nbpar
     integer :: nbref, nbres
     real(kind=8) :: absmoy, cm, phie, phii, rhofe, rhofi, rhos
     real(kind=8) :: valpar
@@ -50,6 +51,11 @@ subroutine ef0142(nomte)
     data nomres/'E','NU','RHO'/
     data nomref/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     --------------------------------------------------
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     zero=0.d0
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -64,7 +70,7 @@ subroutine ef0142(nomte)
     suropt=zk24(lopt)
     if (suropt .eq. 'MASS_FLUI_STRU') then
         call jevech('PABSCUR', 'L', labsc)
-        call jevech('PCAGEPO', 'L', lcage)
+        call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
         absmoy=(zr(labsc-1+1)+zr(labsc-1+2))/2.d0
         call rcvalb('NOEU', 1, 1, '+', zi(lmater),&
                     ' ', 'ELAS_FLUI', 1, 'ABSC', [absmoy],&
@@ -75,11 +81,11 @@ subroutine ef0142(nomte)
         rhofi=valref(4)
         rhofe=valref(5)
         cm=valref(6)
-        phie=zr(lcage-1+1)*2.d0
+        phie = vale_cara1(1)*2.d0
         if (phie .eq. 0.d0) then
             call utmess('F', 'ELEMENTS3_26')
         endif
-        phii=(phie-2.d0*zr(lcage-1+2))
+        phii=(phie-2.d0*vale_cara1(2))
         call rhoequ(rho, rhos, rhofi, rhofe, cm,&
                     phii, phie)
 !

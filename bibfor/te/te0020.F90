@@ -25,6 +25,7 @@ subroutine te0020(nomopt, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptka10.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecael.h"
@@ -48,7 +49,7 @@ subroutine te0020(nomopt, nomte)
     integer :: nbres
     parameter     (nbres=4)
     integer :: nbfib, i, codres(nbres)
-    integer :: lmater, inbfib, lsect, jacf, lsect2, idefi, ivectu
+    integer :: lmater, inbfib, jacf, idefi, ivectu
     integer :: lorien, nno, nc
     real(kind=8) :: valres(nbres), zero, un, deux, r8bid
     real(kind=8) :: e, xnu, g, carsec(6), fs(14)
@@ -59,13 +60,18 @@ subroutine te0020(nomopt, nomte)
     character(len=16) :: nomres(nbres)
     parameter (zero=0.0d0, un=1.0d0, deux = 2.0d0)
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 9
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','JX1',&
+                    'A2','IY2','IZ2'/
+!-----------------------------------------------------------------------
 !
     ASSERT(nomopt.eq.'CHAR_MECA_EPSI_R')
 !
     nc = 6
 !
     call jevech('PMATERC', 'L', lmater)
-    call jevech('PCAGNPO', 'L', lsect)
     call jevech('PEPSINR', 'L', idefi)
     call jevech('PVECTUR', 'E', ivectu)
     do  i = 1, nbres
@@ -87,8 +93,18 @@ subroutine te0020(nomopt, nomte)
     xnu = valres(2)
     g = e/ (deux* (un+xnu))
 !
-    lsect = lsect - 1
-!   --- SECTION INITIALE ---
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    alfay  = vale_cara(4)
+    alfaz  = vale_cara(5)
+    xjx    = vale_cara(6)
+    a2     = vale_cara(7)
+    xiy2   = vale_cara(8)
+    xiz2   = vale_cara(9)
+!
     if (nomte .eq. 'MECA_POU_D_TGM') then
         call jevech('PNBSP_I', 'L', inbfib)
         nbfib = zi(inbfib)
@@ -97,26 +113,12 @@ subroutine te0020(nomopt, nomte)
         a = carsec(1)
         xiy = carsec(5)
         xiz = carsec(4)
-    else
-        a = zr(lsect+1)
-        xiy = zr(lsect+2)
-        xiz = zr(lsect+3)
     endif
-    alfay = zr(lsect+4)
-    alfaz = zr(lsect+5)
-    xjx = zr(lsect+8)
 !
-    if ((nomte.ne.'MECA_POU_D_TG') .and. ( nomte.ne.'MECA_POU_D_TGM')) then
-!   --- SECTION FINALE ---
-        lsect2 = lsect + 11
-        a2 = zr(lsect2+1)
-        xiy2 = zr(lsect2+2)
-        xiz2 = zr(lsect2+3)
-    endif
     epx = zr(idefi)
     xky = zr(idefi+1)
     xkz = zr(idefi+2)
-
+!
     fs(1) = e*a*epx
     fs(2) = 0.d0
     fs(3) = 0.d0

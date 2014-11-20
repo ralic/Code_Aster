@@ -30,10 +30,11 @@ MODE_LOCAL__
                                         EPY2     EPZ2     R1       EP1      R2       EP2
                                         TSEC     )
     CCAGEPO  = CAGEPO   ELEM__         (R1       EP1      )
-    CCAGNPO  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1      EY1
-                                        EZ1      JX1      RY1      RZ1      RT1      A2
-                                        IY2      IZ2      AY2      AZ2      EY2      EZ2
-                                        JX2      RY2      RZ2      RT2      TVAR     )
+    CCAGNPO  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1
+                                        EY1      EZ1      JX1      RY1      RZ1 
+                                        RT1      JG1      A2       IY2      IZ2
+                                        AY2      AZ2      EY2      EZ2      JX2
+                                        RY2      RZ2      RT2      JG2      TVAR     )
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     GAMMA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
                                         TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 

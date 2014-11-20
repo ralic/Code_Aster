@@ -26,10 +26,12 @@ subroutine te0346(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jspgno.h"
 #include "asterfort/lcsovn.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/nmvmpo.h"
 #include "asterfort/porea1.h"
 #include "asterfort/pouex7.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptkg20.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
@@ -45,17 +47,21 @@ subroutine te0346(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nno, nc, i, j, jcret, npg, ipoids
-    integer :: igeom, imate, icontm, isect, iorien, icompo, iinstp
+    integer :: igeom, imate, icontm, iorien, icompo, iinstp
     integer :: ideplm, ideplp, iinstm, ivectu, icontp, imat
-    integer :: istrxm, istrxp, ldep
+    integer :: istrxm, istrxp, ldep, lx
     character(len=4) :: fami
     character(len=24) :: valk(3)
     aster_logical :: vecteu, matric, reactu
     real(kind=8) :: u(14), du(14), fl(14), pgl(3, 3), klv(105)
-    real(kind=8) :: xd(3)
-    real(kind=8) :: ey, ez, gamma, xl, xl2
+    real(kind=8) :: ey, ez, gamma, xl
     real(kind=8) :: b(14), rgeom(105), angp(3)
     real(kind=8) :: a, xiy, xiz, iyr2, izr2
+!-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 11
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1','JG1','IYR21','IZR21'/
 !
 ! --------------------------------------------------------------------------------------------------
 !   booléens pratiques
@@ -66,12 +72,14 @@ subroutine te0346(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCONTMR', 'L', icontm)
-    call jevech('PCAGNPO', 'L', isect)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
     call jevech('PDEPLMR', 'L', ideplm)
+!
+    call poutre_modloc('CAGNP1', noms_cara, nb_cara, lvaleur=vale_cara)
+!
 !
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)
@@ -118,9 +126,7 @@ subroutine te0346(option, nomte)
             zr(istrxp+3-1) = angp(3)
         endif
     else
-        call vdiff(3, zr(igeom-1+4), zr(igeom), xd)
-        xl2=ddot(3,xd,1,xd,1)
-        xl = sqrt(xl2)
+        call lonele(3, lx, xl)
         call matrot(zr(iorien), pgl)
     endif
 !
@@ -129,8 +135,8 @@ subroutine te0346(option, nomte)
     call utpvgl(nno, nc, pgl, zr(ideplm), u)
 !
 !   passage de G (centre de gravite) à C (centre de torsion)
-    ey = -zr(isect-1+6)
-    ez = -zr(isect-1+7)
+    ey = vale_cara(6)
+    ez = vale_cara(7)
     do i = 1, nno
         j=nc*(i-1)
         u(j+2) = u(j+2) - ez* u(j+4)
@@ -140,7 +146,7 @@ subroutine te0346(option, nomte)
     enddo
 !
     call nmvmpo(fami, npg, nno, option, nc,&
-                xl, zr(ipoids), zi(imate), zr(isect), u,&
+                xl, zr(ipoids), zi(imate), vale_cara, u,&
                 du, zr(icontm), zr(icontp), fl, klv)
 !   FL dans le repère global
     if (vecteu) then
@@ -161,11 +167,11 @@ subroutine te0346(option, nomte)
             do i = 1, 7
                 b(i) = -b(i)
             enddo
-            a = zr(isect-1+1)
-            xiy = zr(isect-1+2)
-            xiz = zr(isect-1+3)
-            iyr2= zr(isect-1+10)
-            izr2= zr(isect-1+11)
+            a = vale_cara(1)
+            xiy = vale_cara(2)
+            xiz = vale_cara(3)
+            iyr2= vale_cara(10)
+            izr2= vale_cara(11)
             rgeom(:)=0.0d0
             call ptkg20(b, a, xiz, xiy, iyr2,&
                         izr2, xl, ey, ez, rgeom)

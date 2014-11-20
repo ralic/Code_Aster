@@ -3,7 +3,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/tecach.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
@@ -56,7 +56,8 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
     character(len=20) :: kmess(5)
-    integer :: iadzi, iazk24, lsect, iret
+    integer :: iadzi, iazk24, iret
+    real(kind=8) :: tvar
 ! --- ------------------------------------------------------------------
 !
 !     ITYPE : DANS PTENPO
@@ -197,37 +198,37 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
-        if (iret .eq. 0) itype = nint(zr(lsect-1+23))
+        call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
+        if (iret .eq. 0) itype = nint(tvar)
     else if (nomte.eq.'MECA_POU_D_E') then
         nbterm = 78
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
-        if (iret .eq. 0) itype = nint(zr(lsect-1+23))
+        call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
+        if (iret .eq. 0) itype = nint(tvar)
     else if (nomte.eq.'MECA_POU_D_EM') then
         nbterm = 78
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
-        if (iret .eq. 0) itype = nint(zr(lsect-1+23))
+        call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
+        if (iret .eq. 0) itype = nint(tvar)
     else if (nomte.eq.'MECA_POU_C_T') then
         nbterm = 78
         nbnoeu = 2
         nbcomp = 6
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
-        if (iret .eq. 0) itype = nint(zr(lsect-1+23))
-        else if ( (nomte.eq.'MECA_POU_D_TG') .or. (&
-    nomte.eq.'MECA_POU_D_TGM') ) then
+        call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
+        if (iret .eq. 0) itype = nint(tvar)
+    else if ( (nomte.eq.'MECA_POU_D_TG') .or. (&
+               nomte.eq.'MECA_POU_D_TGM') ) then
         nbterm = 105
         nbnoeu = 2
         nbcomp = 7
         ndimen = 3
-        call tecach('NNN', 'PCAGNPO', 'L', iret, iad=lsect)
-        if (iret .eq. 0) itype = nint(zr(lsect-1+23))
+        call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar, arret='NNN', retour= iret)
+        if (iret .eq. 0) itype = nint(tvar)
 !
 !     L'ELEMENT N'EST PAS TRAITE
     else

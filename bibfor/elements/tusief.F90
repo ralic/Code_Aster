@@ -26,6 +26,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/prmave.h"
 #include "asterfort/promat.h"
@@ -53,7 +54,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
     character(len=16) :: nomres(nbres)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar, degg(24)
-    real(kind=8) :: h, a, l, e, nu, beta, cisail, g, omega, dhk
+    real(kind=8) :: h, a, l, e, nu, beta, cisail, g, omega, dhk, r1
     real(kind=8) :: sinfi, fi, deuxpi, r, at1, at2, vpg(4), vno(4)
     real(kind=8) :: b(4, nbrddl), c(4, 4), epsthe(1), hk, sigth(2), xpg(4)
     real(kind=8) :: pgl(3, 3), vin(nbrddl), vout(4), mat(4, nbrddl)
@@ -61,12 +62,17 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl), pgl4(3, 3)
     integer :: nno, npg, nbcou, nbsec, icoude, ndim, jcoopg, nspg
     integer :: ipoids, ivf, kpgs, k, nnos
-    integer :: imate, icagep, nbpar
+    integer :: imate, nbpar
     integer :: igau, icou, isect, i, j, jin, jout, iret, indice
     integer :: lorien, icoud2, mmt, jnbspi
     integer :: nddl, m, idfdk, jdfd2, jgano
 !
 !
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
   jdfd2=jdfd2,jgano=jgano)
@@ -77,17 +83,17 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
     nbcou = zi(jnbspi-1+1)
     nbsec = zi(jnbspi-1+2)
 !
-    call jevech('PCAGEPO', 'L', icagep)
-!     H = EPAISSEUR, A= RMOY
-    h = zr(icagep+1)
-    a = zr(icagep) - h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a  = r1-h/2.d0
 !
     m = 3
     if (nomte .eq. 'MET6SEG3') m = 6
 !
-    do 10 i = 1, npg
+    do i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
-10  end do
+    end do
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
 !
@@ -152,9 +158,9 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
     endif
 !
     call jevech('PDEPLAR', 'L', jin)
-    do 20 i = 1, nbrddl
+    do i = 1, nbrddl
         vin(i) = zr(jin-1+i)
-20  end do
+    end do
     if (icoude .eq. 0) then
         call vlggl(nno, nbrddl, pgl, vin, 'GL',&
                    pass, vtemp)
@@ -189,7 +195,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 ! ---- BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
-    do 120 igau = 1, npg
+    do igau = 1, npg
         if (option .eq. 'SIEF_ELGA') then
 !         ATTENTION IRET NON INITIALISE PAR VERIFG
             iret=0
@@ -290,7 +296,7 @@ subroutine tusief(option, nomte, nbrddl, b, vin,&
 !
         endif
 !
-120  end do
+    end do
 !
 !
 !

@@ -2,14 +2,14 @@ subroutine te0235(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/masstg.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/poriro.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 !
     character(len=*) :: option, nomte
@@ -45,12 +45,12 @@ subroutine te0235(option, nomte)
     parameter (nbres=6)
     real(kind=8) :: valres(nbres), r8b
     integer :: codres(nbres)
-    character(len=8) :: nomail, fami, poum
+    character(len=8) :: fami, poum
     character(len=16) :: nomres(nbres)
     integer :: i, lmater, j
     integer :: lorien, lmat
     integer :: nno, nc, kpg, spt
-    integer :: itype, lsect, lx, iadzi, iazk24, irota
+    integer :: itype, lx, irota
     integer :: inbfib, nbfib, jacf
     real(kind=8) :: omega(3), omegl(3), s
     real(kind=8) :: xl
@@ -62,6 +62,11 @@ subroutine te0235(option, nomte)
 !     ------------------------------------------------------------------
     data nomres/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 5
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1'/
+!-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
@@ -75,16 +80,21 @@ subroutine te0235(option, nomte)
     itype = 0
 !
 !     --- CARACTERISTIQUES GENERALES DES SECTIONS ---
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a     = vale_cara(1)
+    xiy   = vale_cara(2)
+    xiz   = vale_cara(3)
+    alfay = vale_cara(4)
+    alfaz = vale_cara(5)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)
 !
     if (nomte .eq. 'MECA_POU_D_TG') then
-        do 10 i = 1, nbres
+        do i = 1, nbres
             valres(i) = zero
-10      continue
+        enddo
 !
 !
         fami='FPG1'
@@ -98,10 +108,6 @@ subroutine te0235(option, nomte)
         xnu = valres(2)
         rho = valres(3)
         g = e / ( deux * ( un + xnu ) )
-!
-        a = zr(lsect+1)
-        xiy = zr(lsect+2)
-        xiz = zr(lsect+3)
 !
     else if (nomte.eq.'MECA_POU_D_TGM') then
 !       CALCUL DE E ET G
@@ -123,18 +129,8 @@ subroutine te0235(option, nomte)
         e = casece(1)/a
 !
     endif
-!
-    alfay = zr(lsect+4)
-    alfaz = zr(lsect+5)
 !     --- COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)

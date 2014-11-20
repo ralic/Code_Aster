@@ -6,6 +6,7 @@ subroutine te0149(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
 #include "asterfort/poefgr.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/porigi.h"
 #include "asterfort/posigr.h"
 #include "asterfort/posipr.h"
@@ -47,7 +48,7 @@ subroutine te0149(option, nomte)
 !
     integer :: nbres, nbref
     parameter     (nbres=3,nbref=6)
-    integer :: lmater, jmat, nbmat, imat, icomp, npg, lopt, lsecr, itsec
+    integer :: lmater, jmat, nbmat, imat, icomp, npg, lopt, itsec
     integer :: labsc, jeffo, iret, nbpar
     real(kind=8) :: valres(nbres), valref(nbref)
     integer :: codres(nbres), codref(nbref)
@@ -65,6 +66,11 @@ subroutine te0149(option, nomte)
     data nomref / 'E', 'NU' , 'RHO' , 'PROF_RHO_F_INT' , 'PROF_RHO_F_EXT' ,&
      &             'COEF_MASS_AJOU'/
 ! --- ------------------------------------------------------------------
+    integer, parameter :: nb_cara1 = 3
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1','TSEC'/
+!-----------------------------------------------------------------------
     okopt = (option.eq.'SIPM_ELNO') .or. (option.eq.'SIPO_ELNO')
     ASSERT(okopt)
 !
@@ -128,15 +134,12 @@ subroutine te0149(option, nomte)
     suropt = zk24(lopt)
 ! --- ------------------------------------------------------------------
     if (suropt .eq. 'MASS_FLUI_STRU') then
-        call jevech('PCAGEPO', 'L', lsecr)
-        lsecr = lsecr-1
-        itsec = nint(zr(lsecr+13))
+        call poutre_modloc('CAGEPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+        itsec = nint(vale_cara1(3))
         if (itsec .eq. 2) then
 ! ---       SECTION CIRCULAIRE SECTIONS INITIALE ET FINALE
-            r1 = zr(lsecr+ 9)
-            ep1 = zr(lsecr+10)
-!JMP            R2    =  ZR(LSECR+11)
-!JMP            EP2   =  ZR(LSECR+12)
+            r1 = vale_cara1(1)
+            ep1 = vale_cara1(2)
         else
             call utmess('F', 'ELEMENTS3_30')
         endif

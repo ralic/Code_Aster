@@ -20,6 +20,7 @@ subroutine te0048(nomopt, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
 #include "asterfort/jevech.h"
 #include "asterfort/terefe.h"
@@ -37,7 +38,6 @@ subroutine te0048(nomopt, nomte)
     integer :: ivectu, in, nc, i, icontg, lorien, lx, lrcou
     real(kind=8) :: forref, momref, xl, pgl1(3, 3), pgl2(3, 3)
     real(kind=8) :: fs(14), rad, angarc, angs2
-    character(len=16) :: ch16
 !     ------------------------------------------------------------------
     ASSERT(nomte .eq. 'MECA_POU_C_T')
     nc = 6
@@ -63,14 +63,7 @@ subroutine te0048(nomopt, nomte)
         call jevech('PCAORIE', 'L', lorien)
 !        MATRICE DE ROTATION MGL
 !        POUTRE COURBE DE TIMOSKENKO A 6 DDL: COORDONNEES DES NOEUDS
-        call jevech('PGEOMER', 'L', lx)
-        lx = lx - 1
-        xl = sqrt(( zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))** 2 + (zr(lx+6)-zr(lx+3) )**2&
-                )
-        if (xl .eq. 0.d0) then
-            ch16 = ' ?????????'
-            call utmess('F', 'ELEMENTS2_43', sk=ch16(:8))
-        endif
+        call lonele(3, lx, xl)
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angarc = zr(lrcou+1)

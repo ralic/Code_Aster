@@ -19,11 +19,12 @@ subroutine pmfrig(nomte, icdmat, klv)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/pmfk01.h"
 #include "asterfort/pmfk21.h"
-#include "asterfort/tecael.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomte
     integer :: icdmat
@@ -36,12 +37,16 @@ subroutine pmfrig(nomte, icdmat, klv)
 !             'MECA_POU_D_TGM'
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: nomail
     character(len=16) :: ch16
-    integer :: lx, lsect, iadzi, iazk24
+    integer :: lx
     integer :: inbfib, nbfib, jacf
     real(kind=8) :: g, xjx, gxjx, xl, casect(6)
     real(kind=8) :: cars1(6), a, alfay, alfaz, ey, ez, xjg
+!-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 6
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'AY1','AZ1','EY1','EZ1','JX1','JG1'/
 !     ------------------------------------------------------------------
 !
 !
@@ -52,15 +57,7 @@ subroutine pmfrig(nomte, icdmat, klv)
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-!
-    if (xl .le. r8prem()) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
 !    --- APPEL INTEGRATION SUR SECTION ET CALCUL G TORSION
     call pmfitx(icdmat, 1, casect, g)
@@ -68,11 +65,11 @@ subroutine pmfrig(nomte, icdmat, klv)
 !     --- RECUPERATION DE LA CONSTANTE DE TORSION
 !     --- (A PARTIR DES CARACTERISTIQUES GENERALES DES SECTIONS
 !          POUR L'INSTANT)
-    call jevech('PCAGNPO', 'L', lsect)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
 !
     if (nomte .eq. 'MECA_POU_D_EM') then
-        xjx = zr(lsect+7)
+        xjx = vale_cara(5)
         gxjx = g*xjx
 !       --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE
 !        --- POUTRE DROITE A SECTION CONSTANTE ---
@@ -83,13 +80,12 @@ subroutine pmfrig(nomte, icdmat, klv)
         call jevech('PFIBRES', 'L', jacf)
         call pmfitg(nbfib, 3, zr(jacf), cars1)
         a = cars1(1)
-        lsect = lsect-1
-        alfay = zr(lsect+4)
-        alfaz = zr(lsect+5)
-        xjx = zr(lsect+8)
-        ey = -zr(lsect+6)
-        ez = -zr(lsect+7)
-        xjg = zr(lsect+12)
+        alfay = vale_cara(1)
+        alfaz = vale_cara(2)
+        xjx   = vale_cara(5)
+        ey    = vale_cara(3)
+        ez    = vale_cara(4)
+        xjg   = vale_cara(6)
 !
         call pmfk21(klv, casect, a, xl, &
                     xjx, xjg, g, alfay,&

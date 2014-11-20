@@ -3,9 +3,10 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
-#include "asterfort/carapo.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/masstg.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptma01.h"
 #include "asterfort/ptma10.h"
 #include "asterfort/utmess.h"
@@ -39,13 +40,19 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: istruc, itype, kanl, lrcou, lsect, lx, i
+    integer :: istruc, itype, kanl, lrcou, lx, i
 !
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, ang
     real(kind=8) :: angs2, deux, e, ey, ez, rad, rho
     real(kind=8) :: un, x2iy, x2iz, xfl, xfly, xflz, xiy, xjx, xjx2
-    real(kind=8) :: xiy2, xiz, xiz2, xl, xnu, zero, ang_bid(3)
-    real(kind=8) :: pgl_bid(3, 3), mlv2(78)
+    real(kind=8) :: xiy2, xiz, xiz2, xl, xnu, zero
+    real(kind=8) :: mlv2(78)
+!-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 17
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1',&
+                    'A2','IY2','IZ2','AY2','AZ2','EY2','EZ2','JX2','TVAR'/
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
@@ -57,16 +64,24 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call jevech('PCAGNPO', 'L', lsect)
-    call jevech('PGEOMER', 'L', lx)
-    ang_bid(1)= 0.d0
-    ang_bid(2)= 0.d0
-    ang_bid(3)= 0.d0
-    call carapo(zr(lsect), zr(lx), ang_bid, xl, pgl_bid,&
-                itype, a, xiy, xiz, xjx,&
-                alfay, alfaz, ey, ez, a2,&
-                xiy2, xiz2, xjx2, alfay2, alfaz2)
-
+    call lonele(3, lx, xl)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    alfay  = vale_cara(4)
+    alfaz  = vale_cara(5)
+    xjx    = vale_cara(8)
+    a2     = vale_cara(9)
+    xiy2   = vale_cara(10)
+    xiz2   = vale_cara(11)
+    alfay2 = vale_cara(12)
+    alfaz2 = vale_cara(13)
+    xjx2   = vale_cara(16)
+    ey = (vale_cara(6) +vale_cara(14))/2.d0
+    ez = (vale_cara(7) +vale_cara(15))/2.d0
+    itype = nint(vale_cara(17))
 !
     istruc = 1
     if (nomte .eq. 'MECA_POU_D_E') then

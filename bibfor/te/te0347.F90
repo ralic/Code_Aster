@@ -22,15 +22,16 @@ subroutine te0347(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jsd1ff.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/porea2.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/vdiff.h"
 #include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! --- ------------------------------------------------------------------
@@ -57,21 +58,26 @@ subroutine te0347(option, nomte)
 ! --- ------------------------------------------------------------------
     integer :: jtab(7), nno, nc, ichg, icompo, ichn, lgpg, nbvar, i, k, npg
     integer :: lorien, icgp, icontn, icontg, ivectu, in, iret(2)
-    integer :: isect, igeom, kp, kk, imate
+    integer :: igeom, kp, kk, imate, lx
     integer :: istrxm, iretc
 !
     aster_logical :: lefgno, reactu, okelem
 !
     real(kind=8) :: pgl(3, 3), fs(14), d1b3(2, 3), ksi1, forref, momref
-    real(kind=8) :: sigp(7), d1b(7, 14), co(3), xd(3), ey, ez, xl, temp
+    real(kind=8) :: sigp(7), d1b(7, 14), co(3), ey, ez, xl, temp
     real(kind=8) :: valres(2), e, nu, g, aa, xiy, xiz, alfay, alfaz
-    real(kind=8) :: phiy, phiz, gamma, xl2
+    real(kind=8) :: phiy, phiz, gamma
 !
 !
     character(len=2) :: nomres(2)
     character(len=4) :: fami
     character(len=8) :: peffor
 ! --- ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 7
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1'/
+!-----------------------------------------------------------------------
 !
     okelem = (nomte.eq.'MECA_POU_D_TG') .or. (nomte.eq.'MECA_POU_D_T') .or.&
              (nomte.eq.'MECA_POU_D_E')
@@ -169,12 +175,9 @@ subroutine te0347(option, nomte)
 !
             if (nomte .eq. 'MECA_POU_D_TG') then
 !
-                call jevech('PCAGNPO', 'L', isect)
                 call jevech('PMATERC', 'L', imate)
 !
-                call vdiff(3, zr(igeom-1+4), zr(igeom), xd)
-                xl2=ddot(3,xd,1,xd,1)
-                xl = sqrt(xl2)
+                call lonele(3, lx, xl)
 !
                 call r8inir(2*nc, 0.d0, fs, 1)
                 co(1) = 5.d0/9.d0
@@ -193,13 +196,15 @@ subroutine te0347(option, nomte)
                 nu = valres(2)
                 g = e / (2.d0*(1.d0+nu))
 !
-                aa = zr(isect-1+1)
-                xiy = zr(isect-1+2)
-                xiz = zr(isect-1+3)
-                alfay = zr(isect-1+4)
-                alfaz = zr(isect-1+5)
+                call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
-!
+                aa     = vale_cara(1)
+                xiy    = vale_cara(2)
+                xiz    = vale_cara(3)
+                alfay  = vale_cara(4)
+                alfaz  = vale_cara(5)
+                ey     = vale_cara(6)
+                ez     = vale_cara(7)
 !
                 phiy = e*xiz*12.d0*alfay/ (xl*xl*g*aa)
                 phiz = e*xiy*12.d0*alfaz/ (xl*xl*g*aa)
@@ -218,8 +223,6 @@ subroutine te0347(option, nomte)
                     end do
                 end do
 !              PRENDRE EN COMPTE CENTRE DE TORSION
-                ey = -zr(isect-1+6)
-                ez = -zr(isect-1+7)
                 fs( 4)=fs( 4)-ez*fs(2)+ey*fs( 3)
                 fs(11)=fs(11)-ez*fs(9)+ey*fs(10)
             else

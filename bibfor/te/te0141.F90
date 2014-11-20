@@ -4,15 +4,16 @@ subroutine te0141(option, nomte)
 #include "asterfort/chgrep.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/pmfmas.h"
 #include "asterfort/pomass.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
-#include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
@@ -60,13 +61,13 @@ subroutine te0141(option, nomte)
     parameter (nbres=6)
     real(kind=8) :: valres(nbres), valpar
     integer :: codres(nbres)
-    character(len=8) :: nompar, nomail, fami, poum
+    character(len=8) :: nompar, fami, poum
     character(len=16) :: ch16, nomres(nbres)
     character(len=24) :: mator
-    integer :: i, lmater, iret, nbpar, lcage, labsc
+    integer :: i, lmater, iret, nbpar, labsc
     integer :: lorien, iacce, ivect, lrcou, lmat
     integer :: nno, nc, ntc, nbv, kanl, kpg, spt
-    integer :: lx, iadzi, iazk24
+    integer :: lx
     integer :: inbf, nbgf
     real(kind=8) :: xl, rad, angs2
     real(kind=8) :: zero, un, deux, absmoy, angarc
@@ -76,6 +77,11 @@ subroutine te0141(option, nomte)
 !     ------------------------------------------------------------------
     data nomres/'E','NU','RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0
     deux = 2.d0
@@ -110,7 +116,7 @@ subroutine te0141(option, nomte)
     nbpar = 1
 !
     if (option .eq. 'MASS_FLUI_STRU') then
-        call jevech('PCAGEPO', 'L', lcage)
+        call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
         call jevech('PABSCUR', 'L', labsc)
         absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/deux
         if (nomte .eq. 'MECA_POU_D_TGM') then
@@ -127,12 +133,12 @@ subroutine te0141(option, nomte)
         rhofi = valres(4)
         rhofe = valres(5)
         cm = valres(6)
-        phie = zr(lcage-1+1)*deux
+        phie = vale_cara1(1)*deux
         g = e / ( deux * ( un + xnu ) )
         if (phie .eq. 0.d0) then
             call utmess('F', 'ELEMENTS3_26')
         endif
-        phii = (phie-deux*zr(lcage-1+2))
+        phii = (phie-deux*vale_cara1(2))
         call rhoequ(rho, rhos, rhofi, rhofe, cm,&
                     phii, phie)
 !
@@ -152,14 +158,7 @@ subroutine te0141(option, nomte)
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !     --- COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
 !     --- CALCUL DE LA MATRICE DE MASSE LOCALE ---

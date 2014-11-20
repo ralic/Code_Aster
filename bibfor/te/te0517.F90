@@ -6,11 +6,13 @@ subroutine te0517(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jsd1ff.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/porea2.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
@@ -53,21 +55,25 @@ subroutine te0517(option, nomte)
 !
     real(kind=8) :: pgl(3, 3), fl(14), xiy, xiz
 !
-    integer :: nbfib, kp, ncomp, i, jacf
+    integer :: nbfib, kp, ncomp, i, jacf, lx
     integer :: icompo, iorien, ivectu
     integer :: jtab(7), ino, istrxm, nbsp
     integer :: nbgfmx, isdcom
 !
-    integer :: igeom, iret, isect, imate, k, npg, ifgm, iretc
-    real(kind=8) :: xd(3), ey, ez, temp
-    real(kind=8) :: xl, xl2, gamma
+    integer :: igeom, iret, imate, k, npg, ifgm, iretc
+    real(kind=8) :: ey, ez, temp
+    real(kind=8) :: xl, gamma
     real(kind=8) :: xls2, d1b(7, 14), co(3), aa, e, nu, g, alfay, alfaz, phiy
     real(kind=8) :: phiz
     real(kind=8) :: forref, momref, carsec(6)
     aster_logical :: reactu
     integer, pointer :: cpri(:) => null()
-!
 ! ----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 4
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'AY1','AZ1','EY1','EZ1'/
+!-----------------------------------------------------------------------
     nno = 2
     ncomp = 18
 !
@@ -126,9 +132,7 @@ subroutine te0517(option, nomte)
                         xl)
 !
         else
-            call vdiff(3, zr(igeom-1+4), zr(igeom), xd)
-            xl2=ddot(3,xd,1,xd,1)
-            xl = sqrt(xl2)
+            call lonele(3, lx, xl)
             call matrot(zr(iorien), pgl)
 !
         endif
@@ -144,18 +148,18 @@ subroutine te0517(option, nomte)
 !
         else if (nomte.eq.'MECA_POU_D_TGM') then
 !
-            call jevech('PCAGNPO', 'L', isect)
-!
 !           -- CARACTERISTIQUES DE LA SECTION
             call pmfitg(nbfib, 3, zr(jacf), carsec)
             aa = carsec(1)
             xiy = carsec(5)
             xiz = carsec(4)
-            alfay = zr(isect + 3)
-            alfaz = zr(isect + 4)
+!
+            call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+            alfay = vale_cara(1)
+            alfaz = vale_cara(2)
 !           -- PASSAGE DE G (CENTRE DE GRAVITE) A C (CENTRE DE TORSION)
-            ey = -zr(isect + 5)
-            ez = -zr(isect + 6)
+            ey = vale_cara(3)
+            ez = vale_cara(4)
 !
             call jevech('PMATERC', 'L', imate)
             call moytem('RIGI', npg, 1, '+', temp,&

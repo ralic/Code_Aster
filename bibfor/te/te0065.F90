@@ -6,6 +6,7 @@ subroutine te0065(option, nomte)
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
@@ -45,7 +46,7 @@ subroutine te0065(option, nomte)
     real(kind=8) :: poids, volume
     real(kind=8) :: x(27), y(27), z(27), xg, yg, zg, matine(6)
     real(kind=8) :: rhopou, rhoflu, tpg, valres(nbres), ayz, ycell, rapp, yf
-    integer :: ipoids, ivf, idfde, igeom, nbv, lsect, lcorr
+    integer :: ipoids, ivf, idfde, igeom, nbv, lcorr
     integer :: jgano, nno, kp, npg, i, j, imate, ntrou
 !     ------------------------------------------------------------------
     zero = 0.d0
@@ -94,8 +95,7 @@ subroutine te0065(option, nomte)
 !                 RAPP :=  COEF_ECH **2 / A_CELL
 !                 YF   :=  A_FLUI  / A_CELL
 !                 AYZ  := AIRE_SECTION_POUTRE
-        call jevech('PCAGNPO', 'L', lsect)
-        ayz = zr(lsect)
+        call poutre_modloc('CAGNPO', ['A1'], 1, valeur=ayz)
         call jevech('PCAPOUF', 'L', lcorr)
         ycell = zr(lcorr+4)
         rapp = zr(lcorr+5)

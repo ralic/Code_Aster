@@ -17,6 +17,7 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
 #include "asterfort/matini.h"
 #include "asterfort/mavec.h"
 #include "asterfort/nmcomp.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -72,10 +73,10 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     real(kind=8) :: pass(nbrddl, nbrddl)
     real(kind=8) :: pgl(3, 3), omega, vtemp(nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
-    real(kind=8) :: angmas(3)
+    real(kind=8) :: angmas(3), r1
     integer :: nno, npg, nbcou, nbsec, m, icompo, ndimv, ivarix
     integer :: ipoids, ivf, nbvari, lgpg, jtab(7)
-    integer :: imate, imatuu, icagep, igeom
+    integer :: imate, imatuu, igeom
     integer :: ivarip, ivarim, icontm, icontp, ivectu
     integer :: igau, icou, isect, i, lorien
     integer :: iinstm, iinstp, ideplm, ideplp, icarcr, nbv, icoude, k1, k2
@@ -83,6 +84,12 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     integer :: jnbspi, iret, ksp
     integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
     aster_logical :: vecteu, matric
+!
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
@@ -133,9 +140,10 @@ subroutine tufull(option, nomte, nbrddl, deplm, deplp,&
     lgpg = max(jtab(6),1)*jtab(7)
 !
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCAGEPO', 'L', icagep)
-    h = zr(icagep+1)
-    a = zr(icagep) - h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a  = r1-h/2.d0
 ! A= RMOY, H = EPAISSEUR, L = LONGUEUR
 !
 !

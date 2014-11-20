@@ -24,6 +24,7 @@ subroutine te0161(option, nomte)
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/provec.h"
 #include "asterfort/pscvec.h"
 #include "asterfort/rcvalb.h"
@@ -82,11 +83,11 @@ subroutine te0161(option, nomte)
                     ' ', 'ELAS', 0, ' ', [r8bid],&
                     1, 'RHO', rho, icodre, 1)
         if (nomte .eq. 'MECA_POU_D_T_GD') then
-            call jevech('PCAGNPO', 'L', lsect)
+            call poutre_modloc('CAGNPO', ['A1'], 1, valeur=a)
         else
             call jevech('PCACABL', 'L', lsect)
+            a = zr(lsect)
         endif
-        a = zr(lsect)
         c1 = a*rho(1)*zr(ipesa)
         c2(1) = zr(ipesa+1)
         c2(2) = zr(ipesa+2)
@@ -127,17 +128,17 @@ subroutine te0161(option, nomte)
     if (option .eq. 'CHAR_MECA_SR1D1D' .or. option .eq. 'CHAR_MECA_SF1D1D') then
         call jevech('PDEPLMR', 'L', idepla)
         call jevech('PDEPLPR', 'L', ideplp)
-        do 10 i = 1, 3
+        do i = 1, 3
             w(i) = zr(igeom+i-1) + zr(idepla-1+i) + zr(ideplp-1+i)
             w(i+3) = zr(igeom+i+2) + zr(idepla-1+i+nddl) + zr(ideplp- 1+i+nddl)
             w2(i) = w(i+3) - w(i)
- 10     continue
+        enddo
     else
-        do 20 i = 1, 3
+        do i = 1, 3
             w(i) = zr(igeom+i-1)
             w(i+3) = zr(igeom+i+2)
             w2(i) = w(i+3) - w(i)
- 20     continue
+        enddo
     endif
 !
 ! --- ------------------------------------------------------------------
@@ -170,7 +171,7 @@ subroutine te0161(option, nomte)
     endif
 !
 ! --- ------------------------------------------------------------------
-    do 80 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nordre*nordre
         l = (kp-1)*nno
         if (option .eq. 'CHAR_MECA_FF1D1D' .or. option .eq. 'CHAR_MECA_SF1D1D') then
@@ -250,5 +251,5 @@ subroutine te0161(option, nomte)
                 zr(jj) = zr(jj) + coef*c2(ic)*zr(ivf+l+neum1)
  60         continue
  70     continue
- 80 end do
+    end do
 end subroutine

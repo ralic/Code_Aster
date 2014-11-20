@@ -4,9 +4,10 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/pmfitx.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptgy02.h"
-#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 !
@@ -39,15 +40,20 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 !     ------------------------------------------------------------------
     integer :: nl
 !
-    character(len=8) :: nomail
     character(len=16) :: ch16
-    integer :: lsect, lsect2, lx, istruc, itype, iadzi, iazk24
+    integer :: lx, istruc, itype
     real(kind=8) :: zero, deux, rbid, casect(6)
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, xjx, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, xjx2, alfay2, alfaz2
     aster_logical :: euler
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 17
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1',&
+                    'A2','IY2','IZ2','AY2','AZ2','EY2','EZ2','JX2','TVAR'/
+!-----------------------------------------------------------------------
 !
     zero = 0.d0
     deux = 2.d0
@@ -57,32 +63,24 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
-    itype = nint(zr(lsect+23))
+    call lonele(3, lx, xl)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
-!     --- SECTION INITIALE ---
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    alfay = zr(lsect+4)
-    alfaz = zr(lsect+5)
-    xjx = zr(lsect+8)
-!
-!     --- SECTION FINALE ---
-    lsect2 = lsect + 11
-    ey = - (zr(lsect+6)+zr(lsect2+6))/deux
-    ez = - (zr(lsect+7)+zr(lsect2+7))/deux
-!
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    a = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
+    alfay = vale_cara(4)
+    alfaz = vale_cara(5)
+    xjx = vale_cara(8)
+    a2 = vale_cara(9)
+    xiy2 = vale_cara(10)
+    xiz2 = vale_cara(11)
+    alfay2 = vale_cara(12)
+    alfaz2 = vale_cara(13)
+    xjx2 = vale_cara(16)
+    ey = (vale_cara(6) +vale_cara(14))/2.d0
+    ez = (vale_cara(7) +vale_cara(15))/2.d0
+    itype = nint(vale_cara(17))
 !
     if (nomte .eq. 'MECA_POU_D_E') then
 !        --- POUTRE DROITE D'EULER A 6 DDL ---
@@ -111,14 +109,6 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 !
 !
     if (itype .eq. 1 .or. itype .eq. 2) then
-!     --- POUTRE DROITE A SECTION VARIABLE (TYPE 1 OU 2) ---
-        lsect2 = lsect + 11
-        a2 = zr(lsect2+1)
-        xiy2 = zr(lsect2+2)
-        xiz2 = zr(lsect2+3)
-        alfay2 = zr(lsect2+4)
-        alfaz2 = zr(lsect2+5)
-        xjx2 = zr(lsect2+8)
 !     ---- MOYENNAGE -------------------------------------
         a=(a+a2)/deux
         xiy=(xiy+xiy2)/deux

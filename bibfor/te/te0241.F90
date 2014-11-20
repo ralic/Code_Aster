@@ -2,11 +2,11 @@ subroutine te0241(option, nomte)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/ptmtfv.h"
 #include "asterfort/ptmtuf.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
     character(len=*) :: option, nomte
@@ -40,17 +40,15 @@ subroutine te0241(option, nomte)
 !        'MEFS_POU_D_T' : POUTRE DROITE DE TIMOSHENKO
 !                         (SECTION CONSTANTE OU NON)
 !
-!
-    integer :: iadzi, iazk24
 !-----------------------------------------------------------------------
-    integer :: i, isect, itype, lmat, lmater, lorien, lsect
+    integer :: isect, itype, lmat, lmater, lorien, lsect
     integer :: lsect2, lx, nbpar, nbres, nc, nno
     real(kind=8) :: ey, ez
 !-----------------------------------------------------------------------
     parameter                 (nbres=3)
     real(kind=8) :: valpar, valres(nbres)
     integer :: codres(nbres), kpg, spt
-    character(len=8) :: nompar, nomail, fami, poum
+    character(len=8) :: nompar, fami, poum
     character(len=16) :: ch16, nomres(nbres)
     real(kind=8) :: c1, c2, pgl(3, 3), mat(136)
     real(kind=8) :: e, nu, g, rho, rof, celer
@@ -66,9 +64,7 @@ subroutine te0241(option, nomte)
     nbpar = 0
     nompar = '  '
     valpar = 0.d0
-    do 10 i = 1, nbres
-        valres(i) = 0.d0
-10  end do
+    valres(1:nbres) = 0.d0
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
@@ -129,18 +125,9 @@ subroutine te0241(option, nomte)
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. 0.d0) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
-    do 30 i = 1, 136
-        mat(i) = 0.d0
-30  end do
+    mat(1:136) = 0.d0
 !
 !     --- CALCUL DES MATRICES ELEMENTAIRES ----
     if (option .eq. 'MASS_MECA') then

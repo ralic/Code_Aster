@@ -3,23 +3,23 @@ subroutine te0150(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/carapo.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
 #include "asterfort/pmfrig.h"
 #include "asterfort/porigi.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptfocp.h"
 #include "asterfort/ptforp.h"
 #include "asterfort/ptka21.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
-#include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
@@ -65,8 +65,8 @@ subroutine te0150(option, nomte)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !                         MULTI-FIBRES SECTION CONSTANTE
 !     ------------------------------------------------------------------
-    integer :: nbres, nbpar, lmater, iret, lsect
-    integer :: istruc, lorien, lrcou, lvect, igeom
+    integer :: nbres, nbpar, lmater, iret
+    integer :: istruc, lorien, lrcou, lvect, lx
     integer :: itype, nc, ind, i, j
     parameter                 (nbres=2)
     real(kind=8) :: valpar(3), valres(nbres)
@@ -75,7 +75,7 @@ subroutine te0150(option, nomte)
     character(len=8) :: nompar(3), materi
     character(len=16) :: ch16, nomres(nbres)
     real(kind=8) :: e, nu, g
-    real(kind=8) :: a, a2, xl, rbid
+    real(kind=8) :: a, a2, xl
     real(kind=8) :: ang, rad, angarc, angs2, along
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), de(14), ffe(14)
     real(kind=8) :: bsm(14, 14), matk(105)
@@ -88,6 +88,11 @@ subroutine te0150(option, nomte)
 !
     data nomres / 'E', 'NU' /
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 3
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','A2','TVAR'/
+!-----------------------------------------------------------------------
     call jemarq()
 !
     zero = 0.d0
@@ -119,13 +124,15 @@ subroutine te0150(option, nomte)
 !
     e = 0.d0
 !   -- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
-    call jevech('PCAGNPO', 'L', lsect)
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PCAORIE', 'L', lorien)
-    call carapo(zr(lsect), zr(igeom), zr(lorien), xl, pgl,&
-                itype, a, rbid, rbid, rbid,&
-                rbid, rbid, rbid, rbid, a2,&
-                rbid, rbid, rbid, rbid, rbid)
+    call lonele(3, lx, xl)
+!
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)         
+    a     = vale_cara(1)
+    a2    = vale_cara(2)
+    itype = nint(vale_cara(3))
+!
+    call matrot(zr(lorien), pgl)
 !
     materi=' '
     if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then

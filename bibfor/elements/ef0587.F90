@@ -5,6 +5,7 @@ subroutine ef0587(nomte)
 #include "asterfort/carcou.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/utmess.h"
 !
@@ -29,7 +30,7 @@ subroutine ef0587(nomte)
 !     ------------------------------------------------------------------
 !
     integer :: nbcoum, nbsecm, jnbspi
-    real(kind=8) :: h, a
+    real(kind=8) :: h, a, r1
     parameter(nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: pi, deuxpi, sig(6), fno(4, 6)
@@ -41,13 +42,18 @@ subroutine ef0587(nomte)
     real(kind=8) :: cp(2, 2), cv(2, 2), co(4, 4), si(4, 4), tk(4), xpg(4)
     integer :: nno, nnos, jgano, ndim, npg, nbcou, nbsec, lorien
     integer :: ipoids, ivf, icoude, ic, kp, jin, jcoopg, jdfd2
-    integer :: icagep, i1, i2, ih, idfdk
+    integer :: i1, i2, ih, idfdk
     integer :: igau, icou, isect, i, jout, ino
     integer :: indice, k, ip, icoud2, mmt
     integer :: kpgs
 !
     integer :: vali
 !
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
   jdfd2=jdfd2,jgano=jgano)
@@ -78,27 +84,27 @@ subroutine ef0587(nomte)
 !     PREMIERE FAMILLE DE POINTS DE GAUSS POUR LES CHAMPS
 !
 !
-    do 10 i = 1, npg
+    do i = 1, npg
         xpg(i)=zr(jcoopg-1+i)
-10  end do
+    end do
 !
 !  LES POIDS POUR L'INTEGRATION DANS L'EPAISSEUR
 !
     poicou(1)=1.d0/3.d0
-    do 20 i = 1, nbcou-1
+    do i = 1, nbcou-1
         poicou(2*i)=4.d0/3.d0
         poicou(2*i+1)=2.d0/3.d0
-20  end do
+    end do
     poicou(2*nbcou)=4.d0/3.d0
     poicou(2*nbcou+1)=1.d0/3.d0
 !
 !  LES POIDS POUR L'INTEGRATION SUR LA CIRCONFERENCE
 !
     poisec(1)=1.d0/3.d0
-    do 30 i = 1, nbsec-1
+    do i = 1, nbsec-1
         poisec(2*i)=4.d0/3.d0
         poisec(2*i+1)=2.d0/3.d0
-30  end do
+    end do
     poisec(2*nbsec)=4.d0/3.d0
     poisec(2*nbsec+1)=1.d0/3.d0
 !
@@ -108,22 +114,23 @@ subroutine ef0587(nomte)
 !  CONTRUCTION DE LA MATRICE H(I,J) = MATRICE DES VALEURS DES
 !  FONCTIONS DE FORMES AUX POINT DE GAUSS
 !
-    do 50,k=1,nno
+    do k=1,nno
     do 40,igau=1,npg
     hk(k,igau)=zr(ivf-1+nno*(igau-1)+k)
 40  continue
-    50 end do
+    end do
 !
 !
 !
-    call jevech('PCAGEPO', 'L', icagep)
     call jevech('PCAORIE', 'L', lorien)
     call jevech('PCONTRR', 'L', jin)
     call jevech('PEFFORR', 'E', jout)
 !
 !       -- A= RMOY, H = EPAISSEUR
-    h=zr(icagep+1)
-    a=zr(icagep)-h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a  = r1-h/2.d0
 !
 !       -- ORIENTATION :
     call carcou(zr(lorien), l, pgl, rayon, theta,&
@@ -151,7 +158,7 @@ subroutine ef0587(nomte)
 !
     kpgs=0
 !       -- CALCUL DES EFFORTS SUR LES POINTS DE GAUSS (VFNO)
-    do 100 igau = 1, npg
+    do igau = 1, npg
 !
         do 60,i=1,6
         efg(i)=0.d0
@@ -196,7 +203,7 @@ subroutine ef0587(nomte)
         do 90,i=1,6
         fno(igau,i)=efg(i)
 90      continue
-100  end do
+    end do
 !
 !
     if ((nno.eq.3) .and. (npg.eq.3)) then

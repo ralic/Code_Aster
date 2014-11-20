@@ -7,6 +7,7 @@ subroutine te0391(option, nomte)
 #include "asterfort/gdmmas.h"
 #include "asterfort/jevech.h"
 #include "asterfort/pmavec.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvalb.h"
 !
     character(len=16) :: option, nomte
@@ -44,9 +45,13 @@ subroutine te0391(option, nomte)
     real(kind=8) :: grani(4), mass(18, 18),  zero
     real(kind=8) :: a, xiy, xiz, xjx, pjacob, ajacob
     integer :: nno, nnos, jgano, ndim, npg, nord, ipoids, ivf, idfdk, kp, ne, ic
-    integer :: lsect
     integer :: igeom, k0, imate, lorien, imatuu, imat, iacce, ivect, i, j, ico
 ! ......................................................................
+    integer, parameter :: nb_cara = 4
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','JX1'/
+!-----------------------------------------------------------------------
 !
     call elref1(elrefe)
     zero = 0.0d0
@@ -59,23 +64,23 @@ subroutine te0391(option, nomte)
     poum='+'
 !
     ico = 0
-    do 20 kp = 1, npg
+    do kp = 1, npg
         do 10 ne = 1, nno
             ico = ico + 1
             en(ne,kp) = zr(ivf-1+ico)
             enprim(ne,kp) = zr(idfdk-1+ico)
 10      continue
-20  end do
+    end do
 !
     call jevech('PGEOMER', 'L', igeom)
     k0 = igeom - 1
 !
-    do 40 ne = 1, nno
+    do ne = 1, nno
         do 30 ic = 1, 3
             k0 = k0 + 1
             x00(ic,ne) = zr(k0)
 30      continue
-40  end do
+    end do
 !
     call jevech('PMATERC', 'L', imate)
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
@@ -83,14 +88,13 @@ subroutine te0391(option, nomte)
                 1, 'RHO', rho, icodre, 1)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
-!
 !     --- LA SECTION EST SUPPOSEE CONSTANTE ---
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    xjx = zr(lsect+8)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+    a   = vale_cara(1)
+    xiy = vale_cara(2)
+    xiz = vale_cara(3)
+    xjx = vale_cara(4)
+!
     grani(1) = rho(1)*xjx
     grani(2) = rho(1)*xiy
     grani(3) = rho(1)*xiz
@@ -102,21 +106,21 @@ subroutine te0391(option, nomte)
     y0(2) = zr(lorien+1)
     y0(3) = zr(lorien+2)
 !
-    do 60 j = 1, nord
+    do j = 1, nord
         do 50 i = 1, nord
             mass(i,j) = zero
 50      continue
-60  end do
+    end do
 !
 !* BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 70 kp = 1, npg
+    do kp = 1, npg
         call gdjrg0(kp, nno, enprim, x00, y0,&
                     ajacob, rot0)
         pjacob = zr(ipoids-1+kp)*ajacob
         call gdmmas(kp, nno, pjacob, en, grani,&
                     rot0, mass)
-70  end do
+    end do
 !
     if (option .eq. 'MASS_MECA') then
         call jevech('PMATUNS', 'E', imatuu)

@@ -7,12 +7,13 @@ subroutine te0143(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jspgno.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmfitg.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptkg00.h"
 #include "asterfort/ptkg20.h"
-#include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
@@ -51,7 +52,6 @@ subroutine te0143(option, nomte)
 !     ------------------------------------------------------------------
 !
 !
-    character(len=8) :: nomail
     character(len=16) :: ch16
     real(kind=8) :: a, xiy, xiz, ez, ey
     real(kind=8) :: a2, xiy2, xiz2, xl
@@ -59,19 +59,49 @@ subroutine te0143(option, nomte)
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), mat(105)
     real(kind=8) :: itype, iyr2, izr2, xfl, b(14), ksi1, d1b3(2, 3)
     real(kind=8) :: zero, sigma(14), carsec(6)
-    integer :: lsect, lsect2, lorien, nno, nc, i, lmat, ncomp
-    integer :: lrcou, ldep, kp, adr, lx, iadzi, iazk24, npg, istrxr
+    integer :: lorien, nno, nc, i, lmat, ncomp
+    integer :: lrcou, ldep, kp, adr, lx, npg, istrxr
     integer :: inbfib, nbfib, jacf
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 11
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','EY1','EZ1',&
+                    'A2','IY2','IZ2','EY2','EZ2','TVAR'/
+    integer, parameter :: nb_cara1 = 7
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'A1','IY1','IZ1','EY1','EZ1','IYR21','IZR21'/
+!-----------------------------------------------------------------------
 !
     zero = 0.0d0
-    itype= 0
+    nno = 2
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect-1
-    if (nomte .eq. 'MECA_POU_D_TG' .and. nomte .eq. 'MECA_POU_D_TGM') then
-        itype = nint(zr(lsect+23))
+    if (nomte(1:13).eq.'MECA_POU_D_TG') then
+        itype = 0
+        nc = 7
+        call poutre_modloc('CAGNP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+        a    = vale_cara1(1)
+        xiy  = vale_cara1(2)
+        xiz  = vale_cara1(3)
+        ey   = vale_cara1(4)
+        ez   = vale_cara1(5)
+        iyr2 = vale_cara1(6)
+        izr2 = vale_cara1(7)
+    else
+        call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+        nc = 6
+        a      = vale_cara(1)
+        xiy    = vale_cara(2)
+        xiz    = vale_cara(3)
+        a2     = vale_cara(6)
+        xiy2   = vale_cara(7)
+        xiz2   = vale_cara(8)
+        ey = (vale_cara(4) +vale_cara(9))/2.d0
+        ez = (vale_cara(5) +vale_cara(10))/2.d0
+        itype = nint(vale_cara(11))
     endif
 !
 !     --- SECTION INITIALE ---
@@ -83,53 +113,18 @@ subroutine te0143(option, nomte)
         a = carsec(1)
         xiy = carsec(5)
         xiz = carsec(4)
-    else
-        a = zr(lsect+1)
-        xiy = zr(lsect+2)
-        xiz = zr(lsect+3)
-    endif
-!
-    if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
-        ey = -zr(lsect+6)
-        ez = -zr(lsect+7)
-        iyr2= zr(lsect+10)
-        izr2= zr(lsect+11)
-    else
-!     --- SECTION FINALE ---
-        lsect2 = lsect + 11
-        a2 = zr(lsect2+1)
-        xiy2 = zr(lsect2+2)
-        xiz2 = zr(lsect2+3)
-        ey = -(zr(lsect+6)+zr(lsect2+6))/2.d0
-        ez = -(zr(lsect+7)+zr(lsect2+7))/2.d0
     endif
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. 0.d0) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
-    if (nomte .eq. 'MECA_POU_D_E') then
-!        --- POUTRE DROITE D'EULER A 6 DDL ---
-        nno = 2
-        nc = 6
+    if (itype .ne. 10) then
+!        --- POUTRE DROITE ---
         call matrot(zr(lorien), pgl)
-    else if (nomte .eq. 'MECA_POU_D_T') then
-!        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
-        nno = 2
-        nc = 6
-        call matrot(zr(lorien), pgl)
-    else if (nomte .eq. 'MECA_POU_C_T') then
-        nno = 2
-        nc = 6
+    else
 !        --- POUTRE COURBE DE TIMOSHENKO A 6 DDL ---
         call utmess('F', 'ELEMENTS3_28')
         call jevech('PCAARPO', 'L', lrcou)
@@ -151,19 +146,9 @@ subroutine te0143(option, nomte)
         xiz2 = xiz2 / xflz
         call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
 !
-        else if(nomte.eq.'MECA_POU_D_TG'.or. nomte.eq.'MECA_POU_D_TGM'&
-    ) then
-        nno = 2
-        nc = 7
-        call matrot(zr(lorien), pgl)
-    else
-        ch16 = nomte
-        call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
-    do 10 i = 1, 105
-        mat(i) = 0.d0
-10  end do
+    mat(:) = 0.d0
 !
 !     --- CALCUL DES MATRICES ELEMENTAIRES ----
     if (option .eq. 'RIGI_MECA_GE') then
@@ -171,21 +156,20 @@ subroutine te0143(option, nomte)
 !        --- CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE ---
         call jevech('PEFFORR', 'L', ldep)
         call jevech('PMATUUR', 'E', lmat)
-        if (nomte .eq. 'MECA_POU_D_T' .or. nomte .eq. 'MECA_POU_D_E' .or. nomte .eq.&
-            'MECA_POU_C_T') then
+        if (nc .eq. 6) then
 !           NOMBRE DE POINTS DE GAUSS
             call elrefe_info(fami='RIGI',npg=npg)
             ASSERT((npg.eq.2).or.(npg.eq.3))
             if (npg .eq. 2) then
-                do 15 i = 1, nc
+                do i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+i-1)
-15              continue
+                enddo
             else
-                do 17 i = 1, nc
+                do i = 1, nc
                     sigma(i) = zr(ldep+i-1)
                     sigma(i+nc) = zr(ldep+nc+nc+i-1)
-17              continue
+                enddo
             endif
             if (itype .ne. 10) then
                 call ptkg00(sigma, a, a2, xiz, xiz2,&
@@ -197,9 +181,7 @@ subroutine te0143(option, nomte)
 !
         else if (nomte.eq.'MECA_POU_D_TG') then
             call jspgno(xl, zr(ldep), b)
-            do 20 i = 1, 7
-                b(i) = -b(i)
-20          continue
+            b(1:7) = -b(1:7)
             call ptkg20(b, a, xiz, xiy, iyr2,&
                         izr2, xl, ey, ez, mat)
 !
@@ -226,15 +208,15 @@ subroutine te0143(option, nomte)
             ncomp = 18
 !       AU NOEUD 1 ON RECUPERE   -EFFORT STOCKE
 !       AU NOEUD 2 ON RECUPERE   +EFFORT STOCKE
-            do 210 i = 1, nc
+            do i = 1, nc
                 b(i) = zero
                 b(i+nc) = zero
-                do 212 kp = 1, 3
+                do kp = 1, 3
                     adr = istrxr+ncomp*(kp-1)+i-1
                     b(i) = b(i) -zr(adr)*d1b3(1,kp)
                     b(i+nc)= b(i+nc)+zr(adr)*d1b3(2,kp)
-212              continue
-210          continue
+                enddo
+            enddo
             call ptkg20(b, a, xiz, xiy, iyr2,&
                         izr2, xl, ey, ez, mat)
         endif

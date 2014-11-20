@@ -8,7 +8,7 @@ subroutine te0163(option, nomte)
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/tecael.h"
+#include "asterfort/lonele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vff3d.h"
 !
@@ -40,7 +40,7 @@ subroutine te0163(option, nomte)
 !
 !
 !
-    character(len=8) :: elrefe, nomail
+    character(len=8) :: elrefe
     character(len=16) :: listma, ltrans
     character(len=19) :: chgeom
     real(kind=8) :: zero
@@ -48,7 +48,6 @@ subroutine te0163(option, nomte)
     real(kind=8) :: q3, dd
     real(kind=8) :: b1, b2, b3, u(3), s, d
     real(kind=8) :: poids(20)
-    integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, idfdk, ilapl, ilist, ima, ipoids, ivect
@@ -71,14 +70,7 @@ subroutine te0163(option, nomte)
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-    if (xl .eq. zero) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
 !     ------------------- CALCUL DES VECTEURS ELEMENTAIRES ------------
 !
@@ -102,7 +94,7 @@ subroutine te0163(option, nomte)
     call jelira(listma, 'LONMAX', nbma2)
     nbma = nbma2/2
 !C    2 BARRES EN POSITION QUELCONQUE
-    do 50 ima = 1, nbma
+    do ima = 1, nbma
         no1 = zi(jlima+2*ima-2)
         no2 = zi(jlima+2*ima-1)
         g1 = vale(1+3*no2-3) - vale(1+3*no1-3)
@@ -157,7 +149,7 @@ subroutine te0163(option, nomte)
 20              continue
 30          continue
 40      continue
-50  end do
+    end do
 !
 60  continue
 !

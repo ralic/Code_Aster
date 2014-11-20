@@ -103,10 +103,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette 
  Seules sont considérées les natures : ELAS, ELAS_ISTR, ELAS_ORTH.
 """),
 
-    17 : _(u"""
- noeuds confondus pour un élément
-"""),
-
     18 : _(u"""
  le nombre de noeuds d'un tuyau est différent de 3 ou 4
 """),

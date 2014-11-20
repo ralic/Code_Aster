@@ -21,6 +21,7 @@ subroutine te0259(option, nomte)
 ! ======================================================================
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/masstg.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pogyro.h"
 #include "asterfort/rcvalb.h"
@@ -42,7 +43,7 @@ subroutine te0259(option, nomte)
 !                         MULTI-FIBRES (SECTION CONSTANTE)
 !
 !
-    integer :: nddl, nbres, i
+    integer :: nddl, nbres
     parameter (nbres=3)
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
@@ -51,7 +52,7 @@ subroutine te0259(option, nomte)
     real(kind=8) :: pgl(3, 3), klv(78), klw(78), mlv(105)
     real(kind=8) :: e, rho
     real(kind=8) :: valpar, xnu, zero
-    integer :: imate, lmat, lorien, lsect
+    integer :: imate, lmat, lorien
     integer :: nbpar, nc, nno, kpg, spt
 !     ------------------------------------------------------------------
     data nomres/'E','RHO','NU'/
@@ -93,8 +94,6 @@ subroutine te0259(option, nomte)
     rho = valres(2)
     xnu = valres(3)
 !
-    call jevech('PCAGNPO', 'L', lsect)
-!
     call jevech('PMATUNS', 'E', lmat)
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
@@ -110,42 +109,7 @@ subroutine te0259(option, nomte)
     call utpalg(nno, 6, pgl, klv, klw)
 !
     if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
-        do 100 i = 1, 21
-            mlv(i) = klw(i)
-100      continue
-        do 102 i = 22, 28
-            mlv(i) = 0.d0
-102      continue
-        do 104 i = 29, 34
-            mlv(i) = klw(i-7)
-104      continue
-        mlv(35) = 0.d0
-        do 106 i = 36, 42
-            mlv(i) = klw(i-8)
-106      continue
-        mlv(43) = 0.d0
-        do 108 i = 44, 51
-            mlv(i) = klw(i-9)
-108      continue
-        mlv(52) = 0.d0
-        do 110 i = 53, 61
-            mlv(i) = klw(i-10)
-110      continue
-        mlv(62) = 0.d0
-        do 112 i = 63, 72
-            mlv(i) = klw(i-11)
-112      continue
-        mlv(73) = 0.d0
-        do 114 i = 74, 84
-            mlv(i) = klw(i-12)
-114      continue
-        mlv(85) = 0.d0
-        do 116 i = 86, 91
-            mlv(i) = klw(i-13)
-116      continue
-        do 118 i = 92, 105
-            mlv(i) = 0.d0
-118      continue
+        call masstg(klw, mlv)
     endif
 !
 ! CONSITUER UNE MATRICE PLEINE A PARTIR DE LA TRIANGULAIRE SUPERIEURE

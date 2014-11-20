@@ -2,6 +2,7 @@ subroutine posipr(nomte, efge, sipo)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jevech.h"
+#include "asterfort/poutre_modloc.h"
     character(len=*) :: nomte
     real(kind=8) :: sipo(*)
 !     ------------------------------------------------------------------
@@ -28,7 +29,7 @@ subroutine posipr(nomte, efge, sipo)
     real(kind=8) :: efge(12)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: itsec, lrcou, lsecr, lsect, lsect2
+    integer :: itsec, lrcou
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, aredy
     real(kind=8) :: aredy2, aredz, aredz2, deux, hy1, hy2, hz1
     real(kind=8) :: hz2, r1, r2, rt, rt2, ry, ry2
@@ -36,35 +37,44 @@ subroutine posipr(nomte, efge, sipo)
     real(kind=8) :: xiz, xiz2, xjx, xjx2, xsi, xsiy, xsiz
     real(kind=8) :: xxy, xxz, zero
 !-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 18
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','JX1','RY1','RZ1','RT1',&
+                    'A2','IY2','IZ2','AY2','AZ2','JX2','RY2','RZ2','RT2'/
+    integer, parameter :: nb_cara1 = 7
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'HY1','HZ1','HY2','HZ2','R1','R2','TSEC'/
+!-----------------------------------------------------------------------
     zero = 0.d0
     deux = 2.d0
 !     ------------------------------------------------------------------
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
 !     --- SECTION INITIALE ---
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    alfay = zr(lsect+4)
-    alfaz = zr(lsect+5)
-    xjx = zr(lsect+8)
-    ry = zr(lsect+9)
-    rz = zr(lsect+10)
-    rt = zr(lsect+11)
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    alfay  = vale_cara(4)
+    alfaz  = vale_cara(5)
+    xjx    = vale_cara(6)
+    ry     = vale_cara(7)
+    rz     = vale_cara(8)
+    rt     = vale_cara(9)
 !     --- SECTION FINALE ---
-    lsect2 = lsect + 11
-    a2 = zr(lsect2+1)
-    xiy2 = zr(lsect2+2)
-    xiz2 = zr(lsect2+3)
-    alfay2 = zr(lsect2+4)
-    alfaz2 = zr(lsect2+5)
-    xjx2 = zr(lsect2+8)
-    ry2 = zr(lsect2+9)
-    rz2 = zr(lsect2+10)
-    rt2 = zr(lsect2+11)
+    a2     = vale_cara(10)
+    xiy2   = vale_cara(11)
+    xiz2   = vale_cara(12)
+    alfay2 = vale_cara(13)
+    alfaz2 = vale_cara(14)
+    xjx2   = vale_cara(15)
+    ry2    = vale_cara(16)
+    rz2    = vale_cara(17)
+    rt2    = vale_cara(18)
 !
     if (nomte .eq. 'MECA_POU_D_TG') a2=a
 !
@@ -95,21 +105,8 @@ subroutine posipr(nomte, efge, sipo)
 !
 !     --- CARACTERISTIQUES DES SECTIONS CERCLE ET RECTANGLE
 !
-    call jevech('PCAGEPO', 'L', lsecr)
-    lsecr = lsecr - 1
-    itsec = nint(zr(lsecr+13))
-    if (itsec .eq. 1) then
-!        --- SECTION RECTANGULAIRE SECTION INITIALE
-        hy1 = zr(lsecr+1)
-        hz1 = zr(lsecr+2)
-!        --- SECTION RECTANGULAIRE SECTION FINALE
-        hy2 = zr(lsecr+5)
-        hz2 = zr(lsecr+6)
-    else if (itsec.eq.2) then
-!        --- SECTION CIRCULAIRE SECTIONS INITIALE ET FINALE
-        r1 = zr(lsecr+9)
-        r2 = zr(lsecr+11)
-    endif
+    call poutre_modloc('CAGEPO', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    itsec = nint(vale_cara1(7))
 !
 !      --- CARACTERISTIQUES DES SECTIONS D EXTREMITE DE L ELEMENT
 !
@@ -147,6 +144,10 @@ subroutine posipr(nomte, efge, sipo)
 !                 ON DONNE LES VALEURS AUX POINTS (HY/2,0) ET (0,HZ/2)
 !
     if (itsec .eq. 1) then
+        hy1 = vale_cara1(1)
+        hz1 = vale_cara1(2)
+        hy2 = vale_cara1(3)
+        hz2 = vale_cara1(4)
         sipo(5) = - (efge(5)/xiy*hz1/deux)
         sipo(6) = + (efge(6)/xiz*hy1/deux)
         sipo(11) = + (efge(11)/xiy2*hz2/deux)
@@ -156,6 +157,8 @@ subroutine posipr(nomte, efge, sipo)
 !                 ON DONNE LES VALEURS AUX POINTS (HY/2,0) ET (0,HZ/2)
 !
     else if (itsec.eq.2) then
+        r1 = vale_cara1(5)
+        r2 = vale_cara1(6)
         sipo(5) = - (efge(5)/xiy*r1)
         sipo(6) = + (efge(6)/xiz*r1)
         sipo(11) = + (efge(11)/xiy2*r2)

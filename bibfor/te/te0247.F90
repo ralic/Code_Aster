@@ -3,12 +3,13 @@ subroutine te0247(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/carapo.h"
 #include "asterfort/chgrep.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lcsovn.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matela.h"
+#include "asterfort/matrot.h"
 #include "asterfort/matro2.h"
 #include "asterfort/moytem.h"
 #include "asterfort/nmfgas.h"
@@ -16,6 +17,7 @@ subroutine te0247(option, nomte)
 #include "asterfort/nmpoel.h"
 #include "asterfort/porea1.h"
 #include "asterfort/porigi.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ptkg00.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
@@ -58,7 +60,7 @@ subroutine te0247(option, nomte)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: igeom, icompo, imate, isect, iorien, nd, nk
+    integer :: igeom, icompo, imate, iorien, nd, nk, lx
     integer :: iinstm, iinstp, icarcr, icontm, ideplm, ideplp, imatuu
     integer :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
     integer :: jtab(7), jcret, kk, lgpg, iret, iretm, iretp, iret2
@@ -89,6 +91,12 @@ subroutine te0247(option, nomte)
     data nomlem / 'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K',&
      &              'BETA','PHI_ZERO','L'/
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 17
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1',&
+                    'A2','IY2','IZ2','AY2','AZ2','EY2','EZ2','JX2','TVAR'/
+!-----------------------------------------------------------------------
 !
 !
     zero = 0.d0
@@ -97,7 +105,6 @@ subroutine te0247(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PCAGNPO', 'L', isect)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
@@ -139,10 +146,25 @@ subroutine te0247(option, nomte)
         call jevech('PVARIPR', 'E', ivarip)
     endif
 !
-    call carapo(zr(isect), zr(igeom), zr(iorien), xl, pgl,&
-                itype, a, xiy, xiz, xjx,&
-                alfay, alfaz, ey, ez, a2,&
-                xiy2, xiz2, xjx2, alfay2, alfaz2)
+    call matrot(zr(iorien), pgl)
+    call lonele(3, lx, xl)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    alfay  = vale_cara(4)
+    alfaz  = vale_cara(5)
+    xjx    = vale_cara(8)
+    a2     = vale_cara(9)
+    xiy2   = vale_cara(10)
+    xiz2   = vale_cara(11)
+    alfay2 = vale_cara(12)
+    alfaz2 = vale_cara(13)
+    xjx2   = vale_cara(16)
+    ey = (vale_cara(6) +vale_cara(14))/2.d0
+    ez = (vale_cara(7) +vale_cara(15))/2.d0
+    itype = nint(vale_cara(17))        
 !
     if (nomte .eq. 'MECA_POU_C_T') then
         call jevech('PCAARPO', 'L', lrcou)

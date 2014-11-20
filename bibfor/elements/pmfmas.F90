@@ -18,14 +18,14 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/masstg.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfitx.h"
 #include "asterfort/pmfm01.h"
 #include "asterfort/pmfm21.h"
-#include "asterfort/tecael.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomte, option
     real(kind=8) :: mlv(*), rhoflu
@@ -40,13 +40,17 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
 !             'MECA_POU_D_TGM'
 !     ------------------------------------------------------------------
 !
-    character(len=8) :: nomail
     character(len=16) :: ch16
-    integer :: lx, iadzi, iazk24, i
-    integer :: inbfib, nbfib, jacf, lsect
+    integer :: lx, i
+    integer :: inbfib, nbfib, jacf
     real(kind=8) :: casrho(6), xl, rbid, cars1(6) ,co12, co13
     real(kind=8) :: matp1(78), a, xiy, xiz, casece(6), g
     real(kind=8) :: alfay, alfaz, ey, ez, casect(6)
+!     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 4
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'AY1','AZ1','EY1','EZ1'/
 !     ------------------------------------------------------------------
 !
 !
@@ -57,14 +61,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
     endif
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2+ (zr(lx+5)-zr(lx+2))**2+ (zr(lx+6)-zr(lx+3))**2 )
-    if (xl .le. r8prem()) then
-        call tecael(iadzi, iazk24)
-        nomail = zk24(iazk24-1+3)(1:8)
-        call utmess('F', 'ELEMENTS2_43', sk=nomail)
-    endif
+    call lonele(3, lx, xl)
 !
 !     --- APPEL INTEGRATION SUR SECTION
     call pmfitx(icdmat, 2, casrho, rbid)
@@ -83,13 +80,11 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl,&
         call jevech('PNBSP_I', 'L', inbfib)
         nbfib = zi(inbfib)
         call jevech('PFIBRES', 'L', jacf)
-        call jevech('PCAGNPO', 'L', lsect)
-        lsect = lsect - 1
-        alfay = zr(lsect+4)
-        alfaz = zr(lsect+5)
-        ey = -zr(lsect+6)
-        ez = -zr(lsect+7)
-!
+        call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+        alfay = vale_cara(1)
+        alfaz = vale_cara(2)
+        ey    = vale_cara(3)
+        ez    = vale_cara(4)
 !
         call pmfitg(nbfib, 3, zr(jacf), cars1)
         a = cars1(1)

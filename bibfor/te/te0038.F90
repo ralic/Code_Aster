@@ -8,10 +8,12 @@ subroutine te0038(option, nomte)
 #include "asterfort/carcou.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
 #include "asterfort/pmat.h"
 #include "asterfort/pmfitx.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/provec.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -68,9 +70,19 @@ subroutine te0038(option, nomte)
     real(kind=8) :: coo1(3), coo2(3), coo3(3), prec, omega
     real(kind=8) :: casect(6), yg, zg, p1gl(3),p1gg (3), rbid
 !
-    integer :: lmater, lx, lorien, nno, nc, lcastr, lsect, lsect2, itype, icoude
+    integer :: lmater, lx, lorien, nno, nc, lcastr, itype, icoude
     integer :: i, n1, n2, lrcou, iadzi, iazk24, nn2
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 9
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','RY1','RZ1','A2','RY2','RZ2','TVAR'/
+!-----------------------------------------------------------------------
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     prec = r8prem()
     zero = 0.0d0
     r8b = 0.0d0
@@ -95,13 +107,7 @@ subroutine te0038(option, nomte)
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
 !
-    call jevech('PGEOMER', 'L', lx)
-    lx = lx - 1
-    xl = sqrt( (zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-    if (xl .eq. 0.d0) then
-        ch16 = ' ?????????'
-        call utmess('F', 'ELEMENTS2_80', sk=ch16(:8))
-    endif
+    call lonele(3, lx, xl)
 !
 !
 !     --- ORIENTATION DE LA POUTRE ---
@@ -120,26 +126,25 @@ subroutine te0038(option, nomte)
 !
         if ((nomte.ne.'MET3SEG3') .and. (nomte.ne.'MET6SEG3') .and. (nomte.ne.'MET3SEG4')) then
 !           RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
-            call jevech('PCAGNPO', 'L', lsect)
-            lsect = lsect - 1
-            lsect2 = lsect + 11
-            itype = nint(zr(lsect+23))
-!           SECTION INITIALE
-            a1 = zr(lsect+1)
-            iy1 = zr(lsect+2)
-            iz1 = zr(lsect+3)
-            ry1 = zr(lsect+9)
-            rz1 = zr(lsect+10)
-!           SECTION FINALE
-            a2 = zr(lsect2+1)
-            ry2 = zr(lsect2+9)
-            rz2 = zr(lsect2+10)
+            
+            call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+            a1     = vale_cara(1)
+            iy1    = vale_cara(2)
+            iz1    = vale_cara(3)
+            ry1    = vale_cara(4)
+            rz1    = vale_cara(5)
+            a2     = vale_cara(6)
+            ry2    = vale_cara(7)
+            rz2    = vale_cara(8)
+            itype  = nint(vale_cara(9))
         else
 !           RECUPERATION DES CARACTERISTIQUES  DES TUYAUX
             itype = -999
-            call jevech('PCAGEPO', 'L', lsect)
-            rext = zr(lsect)
-            ep = zr(lsect+1)
+            call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+            rext  = vale_cara1(1)
+            ep    = vale_cara1(2)
+!
             rint = rext - ep
             rmoy = rext - ep/2.d0
             pi = r8pi()

@@ -21,6 +21,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/pmfitg.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rhoequ.h"
@@ -42,7 +43,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
     real(kind=8) :: zero, un, deux
     parameter (zero=0.0d+0,un=1.0d0,deux=2.d0)
     integer :: nbgf, inbf, icompo, isdcom, i, ipos, icp, nugf, ig, nbfig, nbgfmx
-    integer :: lcage, labsc
+    integer :: labsc
     real(kind=8) :: rho, rhos, rhofi, rhofe, cm, phie, phii
     real(kind=8) :: val(1), e, nu, valres(4), absmoy
     character(len=16) :: nomre4(4)
@@ -53,6 +54,11 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !     ------------------------------------------------------------------
     data nomre4/'RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
 !
 !     --- RECUPERATION DES CARACTERISTIQUES DES FIBRES :
     call jevech('PNBSP_I', 'L', inbf)
@@ -92,7 +98,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
                         [zero], 1, 'RHO', val, codres,&
                         0)
             if (codres(1) .eq. 1) then
-                call jevech('PCAGEPO', 'L', lcage)
+                call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
                 call jevech('PABSCUR', 'L', labsc)
                 absmoy = (zr(labsc-1+1)+zr(labsc-1+2))/deux
                 call rcvala(icdmat, materi, 'ELAS_FLUI', 1, 'ABSC',&
@@ -102,11 +108,11 @@ subroutine pmfitx(icdmat, isw, casect, gto)
                 rhofi = valres(2)
                 rhofe = valres(3)
                 cm = valres(4)
-                phie = zr(lcage-1+1)*deux
+                phie = vale_cara1(1)*deux
                 if (phie .eq. 0.d0) then
                     call utmess('F', 'ELEMENTS3_26')
                 endif
-                phii = (phie-deux*zr(lcage-1+2))
+                phii = (phie-deux*vale_cara1(2))
                 call rhoequ(rho, rhos, rhofi, rhofe, cm,&
                             phii, phie)
                 val(1) = rho

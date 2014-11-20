@@ -22,6 +22,7 @@ subroutine te0140(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/chgrep.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matro2.h"
 #include "asterfort/matrot.h"
 #include "asterfort/moytem.h"
@@ -29,7 +30,6 @@ subroutine te0140(option, nomte)
 #include "asterfort/porigi.h"
 #include "asterfort/ptka21.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/tecael.h"
 #include "asterfort/trigom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
@@ -52,15 +52,14 @@ subroutine te0140(option, nomte)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: iadzi, iazk24
-    integer :: i, imate, lmat, lorien, lrcou
+    integer :: imate, lmat, lorien, lrcou
     integer :: lx, nbpar, nbres, nc, nno, iret
     parameter (nbres=2)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: angarc, angs2, deux, e, rad
     real(kind=8) :: valpar, xl, xnu, g, un, zero
     integer :: codres(nbres), kpg, spt
-    character(len=8) :: nompar, nomail, fami, poum
+    character(len=8) :: nompar, fami, poum
     character(len=16) :: nomres(nbres)
     character(len=16) :: opti
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), klv(105)
@@ -109,9 +108,7 @@ subroutine te0140(option, nomte)
 !     --- RECUPERATION DES ORIENTATIONS ---
     call jevech('PCAORIE', 'L', lorien)
 !
-    do i = 1, 105
-        klv(i) = 0.d0
-    end do
+    klv(:) = 0.d0
 !
 !     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
     if ((nomte.eq.'MECA_POU_D_EM') .or. (nomte.eq.'MECA_POU_D_TGM')) then
@@ -126,14 +123,7 @@ subroutine te0140(option, nomte)
     if (nomte(1:13).eq.'MECA_POU_D_TG') nc = 7
 !
     if (nomte.eq.'MECA_POU_C_T') then
-        call jevech('PGEOMER', 'L', lx)
-        lx = lx - 1
-        xl = sqrt( ( zr(lx+4)-zr(lx+1))**2 + (zr(lx+5)-zr(lx+2))**2 + (zr(lx+6)-zr(lx+3) )**2 )
-        if (xl .eq. 0.d0) then
-            call tecael(iadzi, iazk24)
-            nomail=zk24(iazk24-1+3)(1:8)
-            call utmess('F', 'ELEMENTS2_43', sk=nomail)
-        endif
+        call lonele(3, lx, xl)
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angarc = zr(lrcou+1)

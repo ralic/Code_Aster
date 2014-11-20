@@ -196,10 +196,6 @@ cata_msg = {
  option :  %(k1)s  interdite
 """),
 
-    80 : _(u"""
- éléments de poutre noeuds confondus pour un élément:  %(k1)s
-"""),
-
     81 : _(u"""
  éléments de poutre section variable affine :seul une section rectangle plein est disponible.
 """),

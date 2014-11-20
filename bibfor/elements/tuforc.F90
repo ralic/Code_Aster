@@ -9,6 +9,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/moytem.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/ppgan2.h"
 #include "asterfort/prmave.h"
 #include "asterfort/promat.h"
@@ -47,7 +48,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     character(len=16) :: nomres(nbres)
     character(len=8) :: nompar
     integer :: icodre(nbres)
-    real(kind=8) :: valres(nbres), valpar, h, a, l, e, nu
+    real(kind=8) :: valres(nbres), valpar, h, a, l, e, nu, r1
     parameter (nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
     real(kind=8) :: pi, deuxpi, sig(4), fpg(4, 6)
@@ -60,7 +61,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     real(kind=8) :: cp(2, 2), cv(2, 2), co(4, 4), si(4, 4), tk(4), pgl4(3, 3)
     integer :: nno, npg, nbcou, nbsec, m, nspg
     integer :: ipoids, ivf, icoude, icoud2
-    integer :: imate, icagep, igeom, nbpar, i1, i2, ih, mmt
+    integer :: imate, igeom, nbpar, i1, i2, ih, mmt
     integer :: igau, icou, isect, i, j, jin, jout, iret, ino, kpgs, itab(7)
     integer :: lorien, indice, k
     integer :: ip, ic, kp
@@ -69,6 +70,12 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     real(kind=8) :: epsthe(1), alphaf, betaf
     real(kind=8) :: alpham, betam, xa, xb, xc, xd
     real(kind=8) :: sigtmp(4), sigref
+!
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
   jdfd2=jdfd2,jgano=jgano)
@@ -80,17 +87,17 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     nbsec = zi(jnbspi-1+2)
 !     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
     poicou(1) = 1.d0/3.d0
-    do 10 i = 1, nbcou - 1
+    do i = 1, nbcou - 1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
-10  end do
+    end do
     poicou(2*nbcou) = 4.d0/3.d0
     poicou(2*nbcou+1) = 1.d0/3.d0
     poisec(1) = 1.d0/3.d0
-    do 20 i = 1, nbsec - 1
+    do i = 1, nbsec - 1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
-20  end do
+    end do
     poisec(2*nbsec) = 4.d0/3.d0
     poisec(2*nbsec+1) = 1.d0/3.d0
 !
@@ -98,9 +105,9 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
     if (nomte .eq. 'MET6SEG3') m = 6
 !
 !
-    do 30 i = 1, npg
+    do i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
-30  end do
+    end do
     call jevech('PCAORIE', 'L', lorien)
     call carcou(zr(lorien), l, pgl, rayon, theta,&
                 pgl1, pgl2, pgl3, pgl4, nno,&
@@ -113,9 +120,10 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
         mmt = 1
     endif
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCAGEPO', 'L', icagep)
-    h = zr(icagep+1)
-    a = zr(icagep) - h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a  = r1-h/2.d0
     if (nno .eq. 3) then
         tk(1) = 0.d0
         tk(2) = theta
@@ -140,7 +148,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
             f(i) = 0.d0
 40      continue
         kpgs = 0
-        do 100 igau = 1, npg
+        do igau = 1, npg
             do 90 icou = 1, 2*nbcou + 1
                 if (mmt .eq. 0) then
                     r = a
@@ -184,7 +192,7 @@ subroutine tuforc(option, nomte, nbrddl, b, f,&
 70                  continue
 80              continue
 90          continue
-100      continue
+        enddo
 ! PASSAGE DU REPERE LOCAL AU REPERE GLOBAL
         if (icoude .eq. 0) then
             call vlggl(nno, nbrddl, pgl, f, 'LG',&

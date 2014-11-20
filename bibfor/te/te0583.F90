@@ -24,6 +24,7 @@ subroutine te0583(option, nomte)
 #include "asterfort/fointe.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
@@ -41,7 +42,7 @@ subroutine te0583(option, nomte)
 ! ......................................................................
     integer :: nbrddm
     parameter (nbrddm=156)
-    real(kind=8) :: h, a, l, presno(4), prespg(4), rint
+    real(kind=8) :: h, a, l, presno(4), prespg(4), rint, r1
     real(kind=8) :: vpesan(6), fpesan(6), pesan, f(nbrddm)
     real(kind=8) :: pi, deuxpi, fi, pass(nbrddm, nbrddm)
     real(kind=8) :: fpesa1(6), fpesa2(6), fpesa3(6), vtemp(nbrddm)
@@ -55,7 +56,7 @@ subroutine te0583(option, nomte)
     character(len=16) :: phenom
     integer :: nbcou, nbsec, m, lorien, icoude
     integer :: ipoids, ivf, i, icou, ibloc, ino, nbpar, icompx, niter, iter
-    integer :: icagep, igeom, lmater, jpesa, jout, lforc, iret
+    integer :: igeom, lmater, jpesa, jout, lforc, iret
     integer :: igau, isect, ipres, k, ivect, nbrddl, indic0
     integer :: indic1, indic2, indic3, indic4, indic5, j
     integer :: jnbspi, nbsecm, nbcoum, itemps, ier, labsc, itab(2)
@@ -63,6 +64,11 @@ subroutine te0583(option, nomte)
     parameter (nbsecm=32,nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1), abscn(4)
     aster_logical :: normal, global
+!-----------------------------------------------------------------------    
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
 !----------------------------------------------------------------------
     call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, jdfd2=jdfd2,&
@@ -99,26 +105,26 @@ subroutine te0583(option, nomte)
 !
 !     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
     poicou(1) = 1.d0/3.d0
-    do 10 i = 1, nbcou - 1
+    do i = 1, nbcou - 1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
- 10 end do
+    end do
     poicou(2*nbcou) = 4.d0/3.d0
     poicou(2*nbcou+1) = 1.d0/3.d0
     poisec(1) = 1.d0/3.d0
-    do 20 i = 1, nbsec - 1
+    do i = 1, nbsec - 1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
- 20 end do
+    end do
     poisec(2*nbsec) = 4.d0/3.d0
     poisec(2*nbsec+1) = 1.d0/3.d0
     m = 3
     if (nomte .eq. 'MET6SEG3') m = 6
 !
 !
-    do 30 i = 1, npg
+    do i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
- 30 end do
+    end do
     nbrddl = nno* (6+3+6* (m-1))
     if (nbrddl .gt. nbrddm) then
         call utmess('F', 'ELEMENTS4_40')
@@ -146,9 +152,10 @@ subroutine te0583(option, nomte)
         icoude = icoude - 10
     endif
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCAGEPO', 'L', icagep)
-    h = zr(icagep+1)
-    a = zr(icagep) - h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a = r1 - h/2.d0
     rint = a - h/2.d0
     rext = a + h/2.d0
     sec = pi* (rext**2-rint**2)

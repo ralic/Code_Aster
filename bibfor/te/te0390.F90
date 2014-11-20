@@ -33,6 +33,7 @@ subroutine te0390(option, nomte)
 #include "asterfort/gdsig.h"
 #include "asterfort/gdstag.h"
 #include "asterfort/jevech.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
@@ -68,11 +69,16 @@ subroutine te0390(option, nomte)
     integer :: istady, ivarim, ivarip, ivf, ivitkm, ivitp, j
     integer :: jcret, jefint, jgano, k0, k1, k2, k3
     integer :: k4, k5, k6, k7, kc, kp, ks
-    integer :: lorien, lsect, lsig, lsigma, ndim, ne, nno
+    integer :: lorien, lsig, lsigma, ndim, ne, nno
     integer :: nnos, nord, npg
     real(kind=8) :: a, ajacob, alfnmk, ay, az, delnmk, demi
     real(kind=8) :: deux, e, g, pas, pjacob, r8bid=0.d0, rho
     real(kind=8) :: stoudy, un, xiy, xiz, xjx, zero
+!-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 6
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','JX1'/
 !-----------------------------------------------------------------------
     call elref1(elrefe)
     if (option .eq. 'FORC_NODA') goto 210
@@ -97,13 +103,13 @@ subroutine te0390(option, nomte)
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
 !
     ico = 0
-    do 20 kp = 1, npg
+    do kp = 1, npg
         do 10 ne = 1, nno
             ico = ico + 1
             en(ne,kp) = zr(ivf-1+ico)
             enprim(ne,kp) = zr(idfdk-1+ico)
 10      continue
-20  end do
+    end do
 !
 !
 ! PARAMETRES EN ENTREE
@@ -139,16 +145,15 @@ subroutine te0390(option, nomte)
     g = e/ (deux* (un+nu))
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
-!
 !     --- LA SECTION EST SUPPOSEE CONSTANTE ---
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    ay = zr(lsect+4)
-    az = zr(lsect+5)
-    xjx = zr(lsect+8)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    ay     = vale_cara(4)
+    az     = vale_cara(5)
+    xjx    = vale_cara(6)
     granc(1) = e*a
 !     GRANC(1) = 1.D6
     granc(2) = g*a/ay
@@ -198,7 +203,7 @@ subroutine te0390(option, nomte)
     k2 = idepde - 1
     k3 = iddepl - 1
 !
-    do 100 ne = 1, nno
+    do ne = 1, nno
         do 80 kc = 1, 3
             k0 = k0 + 1
             k1 = k1 + 1
@@ -228,7 +233,7 @@ subroutine te0390(option, nomte)
             endif
 !
 90      continue
-100  end do
+    end do
 !
     call jevech('PVARIMP', 'L', ivarim)
     if (stoudy .gt. demi) then
@@ -292,7 +297,7 @@ subroutine te0390(option, nomte)
 !
 !* BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 160 kp = 1, npg
+    do kp = 1, npg
         call gdjrg0(kp, nno, enprim, x00, y0,&
                     ajacob, rot0)
         pjacob = zr(ipoids-1+kp)*ajacob
@@ -357,7 +362,7 @@ subroutine te0390(option, nomte)
 !
 !* FIN DE BOUCLE SUR LES POINTS DE GAUSS
 !
-160  end do
+    end do
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG') then
         imat = imatuu - 1

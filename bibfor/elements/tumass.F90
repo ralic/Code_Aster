@@ -25,6 +25,7 @@ subroutine tumass(nomte, nbrddl, mass)
 #include "asterfort/klg.h"
 #include "asterfort/klgcou.h"
 #include "asterfort/moytem.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/promat.h"
 #include "asterfort/rcvala.h"
     character(len=16) :: nomte
@@ -54,18 +55,23 @@ subroutine tumass(nomte, nbrddl, mass)
     real(kind=8) :: valres(nbres), valpar, theta
     real(kind=8) :: rho, h, a, l
     real(kind=8) :: pi, deuxpi, fi, sinfi, cosfi, sinmfi, cosmfi, hk
-    real(kind=8) :: poids, r, rayon, xpg(4)
+    real(kind=8) :: poids, r, rayon, xpg(4), r1
     real(kind=8) :: pgl(3, 3), ck, sk, pgl4(3, 3)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega, tk(4)
     integer :: nno, npg, nbcou, nbsec, m, ino, i1, n
     integer :: ipoids, ivf, ibloc, icolon
-    integer :: imate, icagep, igeom, nbpar, icoud2, mmt
+    integer :: imate, igeom, nbpar, icoud2, mmt
     integer :: igau, icou, isect, i, j, lorien
     integer :: jcoopg, jnbspi, iret
     integer :: ndim, nnos, idfdk, jdfd2, jgano
     real(kind=8) :: nvec(6, nbrddl), tnvec(nbrddl, 6)
     real(kind=8) :: mass1(nbrddl, nbrddl)
 ! --------------------------------------------------------------------
+    integer, parameter :: nb_cara1 = 2
+    real(kind=8) :: vale_cara1(nb_cara1)
+    character(len=8) :: noms_cara1(nb_cara1)
+    data noms_cara1 /'R1','EP1'/
+!-----------------------------------------------------------------------
     call elrefe_info(fami='MASS',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfdk,&
   jdfd2=jdfd2,jgano=jgano)
@@ -80,17 +86,17 @@ subroutine tumass(nomte, nbrddl, mass)
 !
 !     -- CALCUL DES POIDS DES COUCHES ET DES SECTEURS:
     poicou(1) = 1.d0/3.d0
-    do 10 i = 1, nbcou - 1
+    do i = 1, nbcou - 1
         poicou(2*i) = 4.d0/3.d0
         poicou(2*i+1) = 2.d0/3.d0
-10  end do
+    end do
     poicou(2*nbcou) = 4.d0/3.d0
     poicou(2*nbcou+1) = 1.d0/3.d0
     poisec(1) = 1.d0/3.d0
-    do 20 i = 1, nbsec - 1
+    do i = 1, nbsec - 1
         poisec(2*i) = 4.d0/3.d0
         poisec(2*i+1) = 2.d0/3.d0
-20  end do
+    end do
     poisec(2*nbsec) = 4.d0/3.d0
     poisec(2*nbsec+1) = 1.d0/3.d0
 !
@@ -100,15 +106,16 @@ subroutine tumass(nomte, nbrddl, mass)
 !
 !
 !
-    do 30 i = 1, npg
+    do i = 1, npg
         xpg(i) = zr(jcoopg-1+i)
-30  end do
+    end do
 !
 ! A= RMOY, H = EPAISSEUR
     call jevech('PGEOMER', 'L', igeom)
-    call jevech('PCAGEPO', 'L', icagep)
-    h = zr(icagep+1)
-    a = zr(icagep) - h/2.d0
+    call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
+    r1 = vale_cara1(1)
+    h  = vale_cara1(2)
+    a  = r1-h/2.d0
 !
 !     --- RECUPERATION DES ORIENTATIONS ---
 !
@@ -143,7 +150,7 @@ subroutine tumass(nomte, nbrddl, mass)
     call rcvala(zi(imate), ' ', 'ELAS', nbpar, nompar,&
                 [valpar], 1, nomres, valres, icodre,1)
     rho = valres(1)
-    do 70 i = 1, nbrddl
+    do i = 1, nbrddl
         do 50 j = 1, nbrddl
             mass(i,j) = 0.d0
 50      continue
@@ -151,7 +158,7 @@ subroutine tumass(nomte, nbrddl, mass)
             nvec(j,i) = 0.d0
             tnvec(i,j) = 0.d0
 60      continue
-70  end do
+    end do
 !
     if (nno .eq. 3) then
         tk(1) = 0.d0
@@ -166,7 +173,7 @@ subroutine tumass(nomte, nbrddl, mass)
 !
 ! BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 150 igau = 1, npg
+    do igau = 1, npg
 !
 ! BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
 !
@@ -266,7 +273,7 @@ subroutine tumass(nomte, nbrddl, mass)
 120              continue
 130          continue
 140      continue
-150  end do
+    end do
 !
     if (icoude .eq. 0) then
         call klg(nno, nbrddl, pgl, mass)

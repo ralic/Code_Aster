@@ -25,6 +25,7 @@ subroutine te0396(option, nomte)
 #include "asterfort/gdjrg0.h"
 #include "asterfort/jevech.h"
 #include "asterfort/marota.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/promat.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/verift.h"
@@ -39,7 +40,7 @@ subroutine te0396(option, nomte)
 ! ......................................................................
 !
     integer :: nno, npg, ipoids, ivf, idfdk, kp, ne, imate
-    integer :: lsect, lorien, jefint, kc, igeom, i, k0, ifint, ic
+    integer :: lorien, jefint, kc, igeom, i, k0, ifint, ic
     character(len=8) :: elrefe
     character(len=16) :: nomres(4)
     integer :: icodre(4)
@@ -53,6 +54,11 @@ subroutine te0396(option, nomte)
     integer :: ico, jgano, ndim, nnos
     real(kind=8) :: a, ajacob, ay, az, e, g, pjacob
     real(kind=8) :: r8bid, unsurj, xiy, xiz, xjx
+!-----------------------------------------------------------------------
+    integer, parameter :: nb_cara = 6
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','JX1'/
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !
@@ -86,18 +92,16 @@ subroutine te0396(option, nomte)
     g = e/ (2.d0* (1.0d0+nu))
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-!
-    call jevech('PCAGNPO', 'L', lsect)
-    lsect = lsect - 1
-!
 !     --- LA SECTION EST SUPPOSEE CONSTANTE ---
 !
-    a = zr(lsect+1)
-    xiy = zr(lsect+2)
-    xiz = zr(lsect+3)
-    ay = zr(lsect+4)
-    az = zr(lsect+5)
-    xjx = zr(lsect+8)
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    a      = vale_cara(1)
+    xiy    = vale_cara(2)
+    xiz    = vale_cara(3)
+    ay  = vale_cara(4)
+    az  = vale_cara(5)
+    xjx    = vale_cara(6)
     granc(1) = e*a
     granc(2) = g*a/ay
     granc(3) = g*a/az

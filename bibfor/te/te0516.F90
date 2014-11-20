@@ -31,6 +31,7 @@ subroutine te0516(option, nomte)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jsd1ff.h"
 #include "asterfort/lcsovn.h"
+#include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
 #include "asterfort/mavec.h"
@@ -42,6 +43,7 @@ subroutine te0516(option, nomte)
 #include "asterfort/pmfmcf.h"
 #include "asterfort/porea1.h"
 #include "asterfort/pouex7.h"
+#include "asterfort/poutre_modloc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
@@ -64,7 +66,7 @@ subroutine te0516(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nc, nno, dimklv, npg, iret, codrep
+    integer :: nc, nno, dimklv, npg, iret, codrep, lx
     parameter ( nc = 7 , dimklv = 2*nc*(2*nc+1)/2 ,nno = 2 , npg = 3)
     real(kind=8) :: hoel(nc), fl(2*nc), hota(nc, nc), d1b(nc, 2*nc)
     real(kind=8) :: rg0(2*nc, 2*nc), eps(nc), deps(nc), u(2*nc), du(2*nc)
@@ -73,11 +75,11 @@ subroutine te0516(option, nomte)
 !
 !
     real(kind=8) :: pgl(3, 3), ffp(3), matsct(6)
-    real(kind=8) :: xd(3), ang1(3)
-    real(kind=8) :: ey, ez, gamma, xl, xl2, xls2
+    real(kind=8) :: ang1(3)
+    real(kind=8) :: ey, ez, gamma, xl, xls2
     aster_logical :: vecteu, matric, reactu
     integer :: i, jcret, npge
-    integer :: igeom, imate, icontm, isect, iorien, icompo, ivarim, iinstp, ipoids
+    integer :: igeom, imate, icontm, iorien, icompo, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
     integer :: inbfib, ncarfi, nbfib, jacf, jtab(7), ivarmp, codret
 !
@@ -102,6 +104,11 @@ subroutine te0516(option, nomte)
     real(kind=8), pointer :: varfib(:) => null()
     integer, pointer :: cpri(:) => null()
 !     ------------------------------------------------------------------
+    integer, parameter :: nb_cara = 8
+    real(kind=8) :: vale_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara)
+    data noms_cara /'AY1','AZ1','EY1','EZ1','JX1','JG1','IYR21','IZR21'/
+!-----------------------------------------------------------------------
 !
     fami = 'RIGI'
     call elrefe_info(fami=fami, npg=npge, jpoids=ipoids)
@@ -153,7 +160,6 @@ subroutine te0516(option, nomte)
         call jevech('PSTRXMP', 'L', istrmp)
     endif
 !
-    call jevech('PCAGNPO', 'L', isect)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PINSTMR', 'L', iinstm)
@@ -220,9 +226,7 @@ subroutine te0516(option, nomte)
             zr(istrxp+18-1) = angp(3)
         endif
     else
-        call vdiff(3, zr(igeom-1+4), zr(igeom), xd)
-        xl2 = ddot(3,xd,1,xd,1)
-        xl = sqrt(xl2)
+        call lonele(3, lx, xl)
         ang1(1) = zr(iorien-1+1)
         ang1(2) = zr(iorien-1+2)
         ang1(3) = zr(iorien-1+3)
@@ -234,15 +238,18 @@ subroutine te0516(option, nomte)
     aa = carsec(1)
     xiy = carsec(5)
     xiz = carsec(4)
-    alfay = zr(isect + 3)
-    alfaz = zr(isect + 4)
-    xjx = zr(isect + 7)
-    xjg = zr(isect + 11)
-    xiyr2 = zr(isect + 12)
-    xizr2 = zr(isect + 13)
-!   PASSAGE DE G (CENTRE DE GRAVITE) A C (CENTRE DE TORSION)
-    ey = -zr(isect + 5)
-    ez = -zr(isect + 6)
+    
+    call poutre_modloc('CAGNP2', noms_cara, nb_cara, lvaleur=vale_cara)
+!
+    alfay = vale_cara(1)
+    alfaz = vale_cara(2)
+    ey    = vale_cara(3)
+    ez    = vale_cara(4)
+    xjx   = vale_cara(5)
+    xjg   = vale_cara(6)
+    xiyr2 = vale_cara(7)
+    xizr2 = vale_cara(8)
+!
 !   CALCUL DES DEPLACEMENTS ET DE LEURS INCREMENTS PASSAGE DANS LE REPERE LOCAL
     call utpvgl(nno, nc, pgl, zr(ideplm), u)
     call utpvgl(nno, nc, pgl, zr(ideplp), du)

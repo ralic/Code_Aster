@@ -50,7 +50,7 @@ subroutine te0262(option, nomte)
     real(kind=8) :: pgl(3, 3), klv(nl)
     real(kind=8) :: e, rho
     real(kind=8) :: valpar, xnu, zero
-    integer :: imate, lmat, lorien, lsect
+    integer :: imate, lmat, lorien
     integer :: nbpar, nno, kpg, spt
 !     ------------------------------------------------------------------
     data nomres/'E','RHO','NU'/
@@ -84,8 +84,6 @@ subroutine te0262(option, nomte)
     e = valres(1)
     rho = valres(2)
     xnu = valres(3)
-!
-    call jevech('PCAGNPO', 'L', lsect)
 !
     call jevech('PMATUNS', 'E', lmat)
 !
