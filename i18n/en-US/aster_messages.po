@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-14 10:34+0100\n"
-"PO-Revision-Date: 2014-11-14 04:33-0500\n"
+"POT-Creation-Date: 2014-11-20 17:33+0100\n"
+"PO-Revision-Date: 2014-11-20 11:33-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -468,9 +468,8 @@ msgstr "densite de fissuration diffuse de traction"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:130
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:131
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:132
-#, fuzzy
 msgid "endommagement principaux localisés pour Poisson"
-msgstr "endommagement principaux localises pour Poisson"
+msgstr "endommagement principaux localisés pour Poisson"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:133
 msgid "valeur maximale de la différence déplacement local-déplacement limite"
@@ -478,9 +477,8 @@ msgstr ""
 "maximum value of the difference limiting room-displacement displacement"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:134
-#, fuzzy
 msgid "variation de volume cumulée"
-msgstr "variation de volume cumulee"
+msgstr "variation de volume cumulée"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:135
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:136
@@ -541,9 +539,8 @@ msgstr "variables internes pour le fluage direction 6"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:158
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:552
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:559
-#, fuzzy
 msgid "variables internes pour le fluage sphérique"
-msgstr "variables internes pour le fluage spherique"
+msgstr "variables internes pour le fluage sphérique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:159
 msgid "énergie bloquée"
@@ -755,32 +752,26 @@ msgid "endommagement tangentiel"
 msgstr "tangential damage"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:211
-#, fuzzy
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 1"
 msgstr "BETON_RAG: Intrinsic damage of tension, component 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:212
-#, fuzzy
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 2"
 msgstr "BETON_RAG: Intrinsic damage of tension, component 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:213
-#, fuzzy
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 3"
 msgstr "BETON_RAG: Intrinsic damage of tension, component 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:214
-#, fuzzy
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 4"
 msgstr "BETON_RAG: Intrinsic damage of tension, component 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:215
-#, fuzzy
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 5"
 msgstr "BETON_RAG: Intrinsic damage of tension, component 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:216
-#, fuzzy
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 6"
 msgstr "BETON_RAG: Intrinsic damage of tension, component 6"
 
@@ -809,18 +800,16 @@ msgid "tenseur endommagement, direction ZZ"
 msgstr "tensor damage, direction ZZ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:223
-#, fuzzy
 msgid "énergie résiduelle"
-msgstr "énegie residual"
+msgstr "residual energy"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:224
 msgid "épaisseur du joint clavé"
 msgstr "thickness of the clavé joint"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:225
-#, fuzzy
 msgid "déformation équivalente de fluage"
-msgstr "deformation equivalente de fluage"
+msgstr "déformation équivalente de fluage"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:226
 msgid "déformation plastique équivalente d'irradiation"
@@ -832,9 +821,8 @@ msgstr "equivalent plastic strain of irradiation"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:230
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:231
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:232
-#, fuzzy
 msgid "déformation plastique due au gel"
-msgstr "deformation plastique due au gel"
+msgstr "déformation plastique due au gel"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:233
 msgid "déformation équivalente, au sens de Mazars"
@@ -989,13 +977,12 @@ msgstr "BETON_RAG: spherical strain viscoplastic threshold"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:274
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:275
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:276
-#, fuzzy
 msgid ""
 "déformation visco elastique due aux contraintes de traction dans la zone "
 "endommagée"
 msgstr ""
-"deformation visco elastique due aux contraintes de traction dans la zone "
-"endommagee"
+"déformation visco elastique due aux contraintes de traction dans la zone "
+"endommagée"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:277
 msgid "BETON_RAG : déformation  viscoplastique composante 1"
@@ -1622,7 +1609,7 @@ msgstr "critical pressure"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:400
 msgid "puissance dissipée pour CRIT_RUPT"
-msgstr "puissance dissipée pour CRIT_RUPT"
+msgstr "dissipated power for CRIT_RUPT"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:401
 msgid "puissance dissipée cumulée à chaque pas pour CRIT_RUPT"
@@ -1645,9 +1632,8 @@ msgid "Hayhurst : variable PHI"
 msgstr "Hayhurst: variable PHI"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:406
-#, fuzzy
 msgid "Dissipation par fluage sphérique"
-msgstr "Dissipation par fluage spherique"
+msgstr "Dissipation par fluage sphérique"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:407
 msgid "Dissipation par fluage deviatoire"
@@ -1758,40 +1744,40 @@ msgid "contrainte dans le squelette solide"
 msgstr "contrainte dans le squelette solide"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:434
-#, fuzzy
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 1"
-msgstr "BETON_RAG: effective stress in the rheological model, component 1"
+msgstr ""
+"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:435
-#, fuzzy
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 2"
-msgstr "BETON_RAG: effective stress in the rheological model, component 2"
+msgstr ""
+"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:436
-#, fuzzy
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 3"
-msgstr "BETON_RAG: effective stress in the rheological model, component 3"
+msgstr ""
+"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:437
-#, fuzzy
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 4"
-msgstr "BETON_RAG: effective stress in the rheological model, component 4"
+msgstr ""
+"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:438
-#, fuzzy
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 5"
-msgstr "BETON_RAG: effective stress in the rheological model, component 5"
+msgstr ""
+"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:439
-#, fuzzy
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 6"
-msgstr "BETON_RAG: effective stress in the rheological model, component 6"
+msgstr ""
+"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:440
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:441
@@ -1918,9 +1904,8 @@ msgstr "SIMO_MIEHE, intern variable 6"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:480
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:481
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:482
-#, fuzzy
 msgid "contrainte plastique dans les fissures de traction localisée"
-msgstr "contrainte plastique dans les fissures de traction localisee"
+msgstr "contrainte plastique dans les fissures de traction localisée"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:483
 msgid "seuil de compression"
@@ -1932,9 +1917,8 @@ msgstr "threshold of compression"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:487
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:488
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:489
-#, fuzzy
 msgid "contraintes seuil pour les endommagement diffus dus au gel"
-msgstr "contraintes seuil pour les endo diffus dus au gel"
+msgstr "contraintes seuil pour les endommagement diffus dus au gel"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:490
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:491
@@ -1942,9 +1926,8 @@ msgstr "contraintes seuil pour les endo diffus dus au gel"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:493
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:494
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:495
-#, fuzzy
 msgid "seuils de traction dans l'endommagement localisé macro"
-msgstr "seuils de traction dans l endo localise macro"
+msgstr "seuils de traction dans l'endommagement localisé macro"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:496
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:497
@@ -1952,9 +1935,8 @@ msgstr "seuils de traction dans l endo localise macro"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:499
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:500
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:501
-#, fuzzy
 msgid "seuils de traction dans l'endommagement localisé Poisson"
-msgstr "seuils de traction dans l endo localise Poisson"
+msgstr "seuils de traction dans l'endommagement localisé Poisson"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:502
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:503
@@ -1962,9 +1944,8 @@ msgstr "seuils de traction dans l endo localise Poisson"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:505
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:506
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:507
-#, fuzzy
 msgid "contraintes seuil pour pour les endommagement diffus dû à l'eau"
-msgstr "contraintes seuil pour pour les endo diffus du a l eau"
+msgstr "contraintes seuil pour pour les endommagement diffus dû à l'eau"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:508
 msgid "BETON_RAG : contraintes seuil de compression"
@@ -1983,34 +1964,28 @@ msgid "contrainte de rupture par propagation,"
 msgstr "breaking stress by propagation,"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:512
-#, fuzzy
 msgid "BETON_RAG : contraintes seuil de traction, composante 1"
-msgstr "BETON_RAG: stresses threshold of tension, component 1"
+msgstr "BETON_RAG : contraintes seuil de traction, composante 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:513
-#, fuzzy
 msgid "BETON_RAG : contraintes seuil de traction, composante 2"
-msgstr "BETON_RAG: stresses threshold of tension, component 2"
+msgstr "BETON_RAG : contraintes seuil de traction, composante 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:514
-#, fuzzy
 msgid "BETON_RAG : contraintes seuil de traction, composante 3"
-msgstr "BETON_RAG: stresses threshold of tension, component 3"
+msgstr "BETON_RAG : contraintes seuil de traction, composante 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:515
-#, fuzzy
 msgid "BETON_RAG : contraintes seuil de traction, composante 4"
-msgstr "BETON_RAG: stresses threshold of tension, component 4"
+msgstr "BETON_RAG : contraintes seuil de traction, composante 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:516
-#, fuzzy
 msgid "BETON_RAG : contraintes seuil de traction, composante 5"
-msgstr "BETON_RAG: stresses threshold of tension, component 5"
+msgstr "BETON_RAG : contraintes seuil de traction, composante 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:517
-#, fuzzy
 msgid "BETON_RAG : contraintes seuil de traction, composante 6"
-msgstr "BETON_RAG: stresses threshold of tension, component 6"
+msgstr "BETON_RAG : contraintes seuil de traction, composante 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:518
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:519
@@ -2018,9 +1993,8 @@ msgstr "BETON_RAG: stresses threshold of tension, component 6"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:521
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:522
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:523
-#, fuzzy
 msgid "contraintes effectives de traction dues au chargement extérieur"
-msgstr "contraintes effectives de traction dues au chargement exterieur"
+msgstr "contraintes effectives de traction dues au chargement extérieur"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:524
 msgid "taux de chargement local de Weibull"
@@ -2099,9 +2073,8 @@ msgid "tau de chargement equivalent"
 msgstr "tau de chargement equivalent"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:537
-#, fuzzy
 msgid "tau de chragement temporel sur la durée de référence"
-msgstr "tau de chragement temporel sur la duree de reference"
+msgstr "tau de chragement temporel sur la durée de référence"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:538
 msgid "GDEF_LOG  contrainte T, composante XX"
@@ -2477,13 +2450,12 @@ msgstr "VISCOCHAB, see R5.03.12, intern variable 9"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:647
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:648
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:649
-#, fuzzy
 msgid ""
 "vitesse de fluage de Maxwell dans les fissures utile pour le calcul des "
 "ouvertures de fissures en présence de fluage"
 msgstr ""
 "vitesse de fluage de Maxwell dans les fissures utile pour le calcul des "
-"ouvertures de fissures en presence de fluage"
+"ouvertures de fissures en présence de fluage"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:650
 msgid "volume du gel de rag"
@@ -2499,13 +2471,12 @@ msgstr "volume du gel de rag"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:658
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:659
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:660
-#, fuzzy
 msgid ""
 "stockage des vecteurs propre des tailles des éléments pour éviter le "
 "recalcul à chaque sous itération"
 msgstr ""
-"stockage des vecteurs propre des tailles des elements pour eviter le "
-"recalcul a chaque sous iteration"
+"stockage des vecteurs propre des tailles des éléments pour éviter le "
+"recalcul à chaque sous itération"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:661
 msgid "variation volumique"
@@ -2517,13 +2488,12 @@ msgstr "variation volumique"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:665
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:666
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:667
-#, fuzzy
 msgid ""
 "Vitesse de fluage de Kelvin au droit des fissure localisée utile pour le "
 "calcul des ouvertures de fissures en présence de fluage"
 msgstr ""
-"Vitesse de fluage de Kelvin au droit des fissure localisee utile pour le "
-"calcul des ouvertures de fissures en presence de fluage"
+"Vitesse de fluage de Kelvin au droit des fissure localisée utile pour le "
+"calcul des ouvertures de fissures en présence de fluage"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:668
 msgid "volume d eau"
@@ -2532,11 +2502,12 @@ msgstr "water volume"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:669
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:670
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:671
-#, fuzzy
 msgid ""
 "ouvertures suivant les axes principaux de l'endommagement de traction "
 "localisé"
-msgstr "ouvertures suivant les axes principaux de l endo de traction localise"
+msgstr ""
+"ouvertures suivant les axes principaux de l'endommagement de traction "
+"localisé"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:672
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:673
@@ -2544,9 +2515,8 @@ msgstr "ouvertures suivant les axes principaux de l endo de traction localise"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:675
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:676
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:677
-#, fuzzy
 msgid "ouverture maxi des fissures localisées"
-msgstr "ouverture maxi des fissures localisees"
+msgstr "ouverture maxi des fissures localisées"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:678
 msgid "coordonnée X de la pointe de fissure après rupture par propagation,"
@@ -11827,6 +11797,10 @@ msgid ""
 "n'est pas robuste dans le cas où des mouvements d'axe sont possibles\n"
 "Conseil et solution : Utilisez la méthode de Craig & Bampton\n"
 msgstr ""
+"\n"
+"La mise en oeuvre de la méthode de Mac Neal en sous structuration cyclique\n"
+"n'est pas robuste dans le cas où des mouvements d'axe sont possibles\n"
+"Conseil et solution : Utilisez la méthode de Craig & Bampton\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith14.py:290
 #, python-format
@@ -11847,6 +11821,11 @@ msgid ""
 "secteurs\n"
 "Conseil et solution : Utilisez la méthode de Craig & Bampton\n"
 msgstr ""
+"\n"
+"La mise en oeuvre de la méthode de Mac Neal en sous structuration cyclique\n"
+"conduit à un problème singulier pour le cas particulier où on a 2 ou 4 "
+"secteurs\n"
+"Conseil et solution : Utilisez la méthode de Craig & Bampton\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith14.py:301
 #, python-format
@@ -12801,8 +12780,8 @@ msgid ""
 " pas de temps nécessaire pour le calcul: %(r2)e\n"
 msgstr ""
 "\n"
-" pas de temps utilisateur trop grand   : %(r1)e\n"
-" pas de temps nécessaire pour le calcul: %(r2)e\n"
+" user time step too large:  %(r1)f \n"
+" time step necessary for calculation:  %(r2)f\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith16.py:112
 #, python-format
@@ -13887,8 +13866,8 @@ msgid ""
 "mot clé facteur %(k2)s (mot clé OPERATION)\n"
 msgstr ""
 "\n"
-"   Le type de résultat %(k1)s (mot clé TYPE_RESU) n'est pas autorisé pour le "
-"mot clé facteur %(k2)s (mot clé OPERATION)\n"
+"   Result type %(k1)s (keyword TYPE_RESU) is not allowed for keyword factor "
+"%(k2)s (keyword OPERATION)\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:176
 msgid ""
@@ -14455,7 +14434,7 @@ msgid ""
 " le pas de temps ne peut pas être nul\n"
 msgstr ""
 "\n"
-" le pas de temps ne peut pas être nul\n"
+" the time step cannot be null \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith3.py:56
 msgid ""
@@ -14572,7 +14551,7 @@ msgid ""
 " le champ \"DEPL\" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s\n"
 msgstr ""
 "\n"
-" le champ \"DEPL\" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s\n"
+" field\" DEPL\" is not found in concept DYNA_TRANS  %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith3.py:109
 #, python-format
@@ -14581,7 +14560,7 @@ msgid ""
 " le champ \"VITE\" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s\n"
 msgstr ""
 "\n"
-" le champ \"VITE\" n'est pas trouvé dans le concept DYNA_TRANS  %(k1)s\n"
+" field\" VITE\" is not found in concept DYNA_TRANS  %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith3.py:113
 #, python-format
@@ -14590,7 +14569,7 @@ msgid ""
 " le champ \"ACCE\" n'est pas trouve dans le concept DYNA_TRANS  %(k1)s\n"
 msgstr ""
 "\n"
-" le champ \"ACCE\" n'est pas trouve dans le concept DYNA_TRANS  %(k1)s\n"
+" field\" ACCE\" is not finds in concept DYNA_TRANS  %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith3.py:117
 msgid ""
@@ -14615,7 +14594,7 @@ msgid ""
 " NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s\n"
 msgstr ""
 "\n"
-" NUME_INIT: on n'a pas trouvé le NUME_INIT dans le résultat  %(k1)s\n"
+" NUME_INIT: the NUME_INIT was not found in the result %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith3.py:129
 msgid ""
@@ -16940,8 +16919,8 @@ msgid ""
 " or la maille est de type :  %(k1)s .\n"
 msgstr ""
 "\n"
-" la maille doit être de type SEG3, TRIA6, QUAD8 TETRA10, PENTA15 ou HEXA20.\n"
-" or la maille est de type :  %(k1)s .\n"
+" the mesh type has to be SEG3, TRIA6, QUAD8 TETRA10, PENTA15 or HEXA20.\n"
+" this mesh type is :  %(k1)s .\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith8.py:134
 #, python-format
@@ -17680,8 +17659,8 @@ msgid ""
 " Les détails de l'erreur devraient être affichés ci-dessus.\n"
 msgstr ""
 "\n"
-" Erreur lors de l'appel à une fonction MPI.\n"
-" Les détails de l'erreur devraient être affichés ci-dessus.\n"
+" Error while calling an MPI function.\n"
+" The error details should appear above.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/appelmpi.py:36
 #, python-format
@@ -19215,6 +19194,18 @@ msgstr ""
 " Le calcul de cette option n'est donc pas possible.\n"
 " L'option demandée n'est calculable sur les éléments du modèle.\n"
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calcchamp.py:41
+#, python-format
+msgid ""
+"\n"
+"La sortie EPSI_%(k2)s de CALC_CHAMP est incorrecte pour décrire les\n"
+"composantes de la déformation en grandes déformations.\n"
+"\n"
+"Conseil:\n"
+"Avec des déformations de type %(k1)s,\n"
+"il est préférable d'utiliser EPSG_%(k2)s\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcessai0.py:22
 msgid ""
 "\n"
@@ -19345,7 +19336,7 @@ msgid ""
 "Le mot-clef MODELE est absent dans CALC_PRESSION.\n"
 msgstr ""
 "\n"
-"Le mot-clef MODELE est absent dans CALC_PRESSION.\n"
+"Keyword MODELE is missing from CALC_PRESSION.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcpression0.py:26
 msgid ""
@@ -19909,17 +19900,16 @@ msgid ""
 "   Le type de concept produit : %(k2)s\n"
 msgstr ""
 "\n"
-"Erreur utilisateur :\n"
-"  -> L'utilisation de la commande %(k1)s avec l'option %(k5)s pour\n"
-"     les éléments du type %(k4)s n'est pas autorisée.\n"
-"  -> Vous utilisez la commande %(k1)s il n'y a pas moyen de contourner cette "
-"erreur.\n"
+"Usage error :\n"
+"  -> Using command %(k1)s with option %(k5)s for\n"
+"     the elements of type %(k4)s is not allowed.\n"
+"  -> You are using command %(k1)s there is no workaround for this error.\n"
 "\n"
-"La maille incriminée est %(k6)s.\n"
+"The offending mesh is  %(k6)s.\n"
 "\n"
-"Pour information :\n"
-"   Le nom du résultat         : %(k3)s\n"
-"   Le type de concept produit : %(k2)s\n"
+"For your information :\n"
+"   Result name         : %(k3)s\n"
+"   Generated concept type : %(k2)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:236
 #, python-format
@@ -21815,10 +21805,10 @@ msgid ""
 "   non pas sous la forme 'TEMP'.\n"
 msgstr ""
 "\n"
-" Erreur utilisateur :\n"
-"   Pour les modélisations DKTG et Q4GG, la température doit être\n"
-"   fournie sous le forme 'TEMP_SUP', 'TEMP_INF', ['TEMP_MIL'] et\n"
-"   non pas sous la forme 'TEMP'.\n"
+" User error :\n"
+"   For DKTG and Q4GG modelling, the temperature has to be\n"
+"   passed as 'TEMP_SUP', 'TEMP_INF', ['TEMP_MIL'] and\n"
+"   not as 'TEMP'.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel3.py:95
 #, python-format
@@ -22730,9 +22720,9 @@ msgid ""
 "   la méthode de projection est 'ECLA_PG'.\n"
 msgstr ""
 "\n"
-" Erreur d'utilisation :\n"
-"   Le mot-clé VIS_A_VIS de la commande PROJ_CHAMP est interdit si\n"
-"   la méthode de projection est 'ECLA_PG'.\n"
+" Use error :\n"
+"   Keyword VIS_A_VIS of command PROJ_CHAMP is not allowed when\n"
+"   the projection method is 'ECLA_PG'.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:141
 #, python-format
@@ -23134,7 +23124,21 @@ msgstr ""
 " One wants to project fields with elements (CHAM_ELEM), key word MODELE_2\n"
 " is then compulsory. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:334
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:330
+#, python-format
+msgid ""
+"\n"
+"Alarme utilisateur dans la commande CALC_CHAMP / REAC_NODA + GROUP_MA:\n"
+"   La maille %(k2)s du modèle %(k1)s ne fait pas partie des mailles\n"
+"   désignées par le mot clé GROUP_MA.\n"
+"   Pourtant, elle semble être une maille de bord de l'une de ces mailles.\n"
+"\n"
+"Risques et conseils :\n"
+"   Le calcul des réactions d'appui est faux si cette maille est affectée\n"
+"   par un chargement en \"force\" non nul.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:344
 #, python-format
 msgid ""
 "\n"
@@ -23157,7 +23161,7 @@ msgstr ""
 " It is necessary to check key words MESH or MODELE. \n"
 " Note: these key words are can be pointless for this use of CREA_CHAMP. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:343
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:353
 #, python-format
 msgid ""
 "\n"
@@ -23166,7 +23170,7 @@ msgstr ""
 "\n"
 " the name of the quantity %(k1)s does not respect the format \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:347
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:357
 #, python-format
 msgid ""
 "\n"
@@ -23179,7 +23183,7 @@ msgstr ""
 " problem in the catalogue of quantities simple, the complex quantity %(k1)s\n"
 " does not have the same component count as its counterpart real  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:352
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:362
 #, python-format
 msgid ""
 "\n"
@@ -23190,7 +23194,7 @@ msgstr ""
 " Problem in the catalogue of quantities simple, the quantity %(k1)s\n"
 " does not have the same fields as its counterpart real  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:367
 msgid ""
 "\n"
 " erreur: le calcul des contraintes ne fonctionne que pour le phénomène "
@@ -23200,7 +23204,7 @@ msgstr ""
 " error: the computation of the stresses functions only for the mechanical "
 "phenomenon \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:361
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:371
 msgid ""
 "\n"
 " erreur numéros des noeuds bords\n"
@@ -23208,7 +23212,7 @@ msgstr ""
 "\n"
 " numbers error of the nodes edges \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:365
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:375
 msgid ""
 "\n"
 " erreur: les éléments supportes sont tria3 ou tria6\n"
@@ -23216,7 +23220,7 @@ msgstr ""
 "\n"
 " error: the elements support are tria3 or tria6 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:369
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:379
 msgid ""
 "\n"
 " erreur: les éléments supportes sont QUAD4 ou QUAD8 ou QUAD9\n"
@@ -23224,7 +23228,7 @@ msgstr ""
 "\n"
 " error: the elements support are QUAD4 or QUAD8 or QUAD9 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:373
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:383
 msgid ""
 "\n"
 " maillage mixte TRIA-QUAD non supporte pour l estimateur ZZ2\n"
@@ -23232,7 +23236,7 @@ msgstr ""
 "\n"
 " mixed mesh TRIA-QUAD not supports for L estimator ZZ2 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:377
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:387
 msgid ""
 "\n"
 " erreur: les mailles supportées sont tria ou QUAD\n"
@@ -23240,7 +23244,7 @@ msgstr ""
 "\n"
 " error: the supported meshes are sorted or QUAD \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:381
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:391
 msgid ""
 "\n"
 " Erreur: un élément du maillage possède tous ses sommets sur une frontière.\n"
@@ -23255,7 +23259,7 @@ msgstr ""
 "that\n"
 " all the triangles have at least an interior top. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:398
 #, python-format
 msgid ""
 "\n"
@@ -23266,7 +23270,7 @@ msgstr ""
 " One does not find a routine te0NPQ. \n"
 " NPQ must be ranging between 1 and 600 here: NPQ =  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:393
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:403
 #, python-format
 msgid ""
 "\n"
@@ -23275,7 +23279,7 @@ msgstr ""
 "\n"
 " relation:  %(k1)s not established on the pulleys \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:397
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:407
 #, python-format
 msgid ""
 "\n"
@@ -23284,7 +23288,7 @@ msgstr ""
 "\n"
 " strain:  %(k1)s not established on the pulleys \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:401
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:411
 #, python-format
 msgid ""
 "\n"
@@ -23293,7 +23297,7 @@ msgstr ""
 "\n"
 " the attribute:  %(k1)s do not exist for the type:  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:405
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:415
 #, python-format
 msgid ""
 "\n"
@@ -23308,7 +23312,7 @@ msgstr ""
 "to associate\n"
 " with the parameter:  %(k1)s (option:  %(k2)s type_élément:  %(k3)s ) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:411
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:421
 #, python-format
 msgid ""
 "\n"
@@ -23323,7 +23327,7 @@ msgstr ""
 "associates\n"
 " with the parameter:  %(k1)s (option:  %(k2)s type_élément:  %(k3)s ) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:417
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:427
 #, python-format
 msgid ""
 "\n"
@@ -23540,7 +23544,7 @@ msgid ""
 msgstr ""
 "\n"
 "PROJ_CHAMP :\n"
-"  Le mot-clé %(k1)s est interdit avec la méthode SOUS_POINT."
+"  Keyword %(k1)s is not allowed for method SOUS_POINT."
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:118
 #, python-format
@@ -23650,8 +23654,8 @@ msgid ""
 "distance %(r4)e"
 msgstr ""
 "\n"
-"PROJ_CHAMP (ou LIAISON_MAILLE) :\n"
-"  Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à la "
+"PROJ_CHAMP (or LIAISON_MAILLE) :\n"
+"  Node %(k1)s with coordinates (%(r1)e,%(r2)e,%(r3)e) is projected at "
 "distance %(r4)e"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:161
@@ -24082,8 +24086,8 @@ msgid ""
 "utilisé.\n"
 msgstr ""
 "\n"
-"  Le type du paramètre (%(k1)s) ne correspond pas au mot-clé VALE_* "
-"utilisé.\n"
+"  The type of parameter (%(k1)s) does not correspond with the used keyword "
+"VALE_*.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:79
 #, python-format
@@ -24979,9 +24983,8 @@ msgid ""
 " n'est pas du bon type:  %(k4)s\n"
 msgstr ""
 "\n"
-" le paramètre :  %(k1)s  pour l option :  %(k2)s  et pour le TYPE_ELEMENT :  "
-"%(k3)s\n"
-" n'est pas du bon type:  %(k4)s\n"
+" parameter :  %(k1)s  for option :  %(k2)s  and for TYPE_ELEMENT :  %(k3)s\n"
+" is not the correct type:  %(k4)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/cataelem.py:57
 #, python-format
@@ -25028,7 +25031,7 @@ msgid ""
 "%(k2)s\n"
 msgstr ""
 "\n"
-"Erreur lors de la vérification des messages.\n"
+"Error while verifying the messages.\n"
 "%(k1)s\n"
 "\n"
 "%(k2)s\n"
@@ -25293,8 +25296,8 @@ msgid ""
 " La composante demandée %(k1)s n'est pas trouvée dans le champ.\n"
 msgstr ""
 "\n"
-"Erreur utilisateur :\n"
-" La composante demandée %(k1)s n'est pas trouvée dans le champ.\n"
+"User error :\n"
+" The requested component %(k1)s was not found in the field.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/champs.py:39
 msgid ""
@@ -26780,8 +26783,8 @@ msgid ""
 "           NVI > NVIMAX\n"
 msgstr ""
 "\n"
-" HUJEUX : nombre de variables internes incorrect:\n"
-"           NVI > NVIMAX\n"
+" HUJEUX: incorrect number of internal variables:\n"
+" NVI > NVIMAX\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:28
 msgid ""
@@ -27199,7 +27202,19 @@ msgstr ""
 " The type of tangent matrix selected  %(k1)s is incompatible with the "
 "behavior  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:246
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:244
+#, python-format
+msgid ""
+"\n"
+"  Option activée :  <%(k1)s>  pour les <%(k2)s>\n"
+"  Alarme :\n"
+"  L'algorithme de réactualisation des grandes rotations est tel que les "
+"rotations doivent être inférieures à 2 pi radians.\n"
+"  Assurez-vous que les rotations ne soient pas très grandes au risque de "
+"résultats faux.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:252
 #, python-format
 msgid ""
 "\n"
@@ -27217,7 +27232,7 @@ msgstr ""
 " To modelize linear elasticity, it is enough to choose SY large, and H < "
 "E. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:258
 #, python-format
 msgid ""
 "\n"
@@ -27258,7 +27273,7 @@ msgstr ""
 " Borne 1:  %(r11).15E\n"
 " Borne E:  %(r12).15E \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:271
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:277
 #, python-format
 msgid ""
 "\n"
@@ -27274,7 +27289,7 @@ msgstr ""
 " Irradiation has T:  %(r1).15E\n"
 " Irradiation has t+:  %(r2).15E \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:278
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:284
 #, python-format
 msgid ""
 "\n"
@@ -27287,7 +27302,7 @@ msgstr ""
 " Température has T:  %(r1)E\n"
 " Température has t+:  %(r2)E \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:290
 #, python-format
 msgid ""
 "\n"
@@ -27310,7 +27325,7 @@ msgstr ""
 "It should for that be authorized with key word SUBD_METHODE of command "
 "STAT_NON_LINE. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:294
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:300
 #, python-format
 msgid ""
 "\n"
@@ -27321,7 +27336,7 @@ msgstr ""
 " ATTENTION SR > 1 SR = %(r1)f\n"
 " SECHM %(r2)f SECHP %(r3)f W0  %(r4)f \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:299
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:305
 #, python-format
 msgid ""
 "\n"
@@ -27332,7 +27347,7 @@ msgstr ""
 " ATTENTION SR < 0 SR = %(r1)f\n"
 " SECHM %(r2)f SECHP %(r3)f W0  %(r4)f \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:304
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:310
 #, python-format
 msgid ""
 "\n"
@@ -27343,7 +27358,7 @@ msgstr ""
 " Attention in the routine majpad the dissolved air pressure becomes\n"
 " negative with the mesh %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:315
 msgid ""
 "\n"
 "La loi de comportement ENDO_SCALAIRE n'est disponible que pour la "
@@ -27361,7 +27376,7 @@ msgstr ""
 " - AXIS_GRAD_VARI\n"
 " - 3D_GRAD_VARI \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:316
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:322
 msgid ""
 "\n"
 "Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi "
@@ -27371,7 +27386,7 @@ msgstr ""
 "In the definition of material RUPT_DUCT the coefficients of form of model "
 "CZM_TRA_MIX must check: COEF_EXTR <= COEF_PLAS \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:320
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:326
 #, python-format
 msgid ""
 "\n"
@@ -27382,7 +27397,7 @@ msgstr ""
 "The type of strains %(k1)s is not compatible with modelizations SHB. Use "
 "PETIT or GROT_GDEP. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:324
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:330
 msgid ""
 "\n"
 "Erreur dans le calcul du tenseur équivalent au sens de HILL.\n"
@@ -27391,7 +27406,7 @@ msgstr ""
 "Error in the computation of the equivalent tensor within the meaning of "
 "HILL. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:328
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:334
 #, python-format
 msgid ""
 "\n"
@@ -27402,7 +27417,7 @@ msgstr ""
 " The number of initial intern variables is incorrect:  %(i1)d ; it should be "
 "worth  %(i2)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:332
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:338
 msgid ""
 "\n"
 "Lors d'un calcul avec des poutres multifibres, il est nécessaire de "
@@ -27414,7 +27429,7 @@ msgstr ""
 "renseigner le mot-clé\n"
 "AFFE_COMPOR dans AFFE_MATERIAU.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:343
 #, python-format
 msgid ""
 " == Paramètres de la loi %(k1)s ==\n"
@@ -27435,7 +27450,7 @@ msgstr ""
 "  %(k4)s \n"
 " =================================================="
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:346
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:352
 #, python-format
 msgid ""
 "\n"
@@ -27445,7 +27460,7 @@ msgstr ""
 "\n"
 "For the behavior %(k1)s the parameters %(k2)s and %(k3)s are compulsory. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:350
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:356
 #, python-format
 msgid ""
 "\n"
@@ -27454,7 +27469,7 @@ msgstr ""
 "\n"
 "The computation of ENEL_ELGA is not possible with DEFORMATION= %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:360
 #, python-format
 msgid ""
 "\n"
@@ -27463,7 +27478,7 @@ msgstr ""
 "\n"
 "The computation of ENER_TOTALE is not possible with DEFORMATION= %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:358
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:364
 #, python-format
 msgid ""
 "\n"
@@ -27472,7 +27487,7 @@ msgstr ""
 "\n"
 "The computation of ETOT_ELGA is not possible with DEFORMATION= %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:362
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:368
 #, python-format
 msgid ""
 "\n"
@@ -27481,7 +27496,7 @@ msgstr ""
 "\n"
 "DELTA1 = %(r1)f must always stay between 0 and 1.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:366
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:372
 #, python-format
 msgid ""
 "\n"
@@ -27490,7 +27505,7 @@ msgstr ""
 "\n"
 "DELTA2 = %(r1)f must always remain between 0 and 1. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:370
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:376
 #, python-format
 msgid ""
 "\n"
@@ -27499,7 +27514,7 @@ msgstr ""
 "\n"
 "The temperature is compulsory for the crystal behavior %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:374
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:380
 msgid ""
 "\n"
 "L'état initial des contraintes n'est pas compatible avec le mécanisme "
@@ -27513,7 +27528,7 @@ msgstr ""
 "Conseils: Vérifier l'état des contraintes initiales ou modifier les "
 "paramètres matériaux PC0 et/ou D du modèle de HUJEUX.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:379
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:385
 #, python-format
 msgid ""
 "\n"
@@ -27526,7 +27541,7 @@ msgstr ""
 "actuellement <%(r1).15E>.\n"
 "Conseils: modifiez sa valeur dans CIN1_CHAB / CIN2_CHAB.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:384
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:390
 msgid ""
 "\n"
 "Aucun groupe de fibres n'a de comportement.\n"
@@ -27534,7 +27549,7 @@ msgstr ""
 "\n"
 "Aucun groupe de fibres n'a de comportement.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:394
 #, python-format
 msgid ""
 "\n"
@@ -27547,7 +27562,7 @@ msgstr ""
 "cohésive si bien que\n"
 "m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:393
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:399
 #, python-format
 msgid ""
 "\n"
@@ -27558,7 +27573,7 @@ msgstr ""
 "Le ratio FC/FT (%(r1)E) est inférieur à 5.83 (valeur limite pour le modèle "
 "ENDO_FISS_BETON).\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:397
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:403
 msgid ""
 "\n"
 "L'identification numérique des paramètres SIG0 et TAU à partir de FT et FC a "
@@ -27568,7 +27583,7 @@ msgstr ""
 "L'identification numérique des paramètres SIG0 et TAU à partir de FT et FC a "
 "échoué : valeurs exotiques ?\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:401
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:407
 #, python-format
 msgid ""
 "\n"
@@ -27579,7 +27594,7 @@ msgstr ""
 "Comportement  %(k1)s : avec ELAS_ORTH, il faut renseigner le mot clé "
 "MU_MOY.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:405
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:411
 msgid ""
 "\n"
 "Loi d'endommagement de Sellier utilise une régularisation en énergie de "
@@ -27593,7 +27608,7 @@ msgstr ""
 "gauss.\n"
 "Les résultats obtenus ne sont pas exactes avec un autre type d'élément.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:410
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:416
 msgid ""
 "\n"
 "La loi d'endommagement de Sellier est mal utilisée ou bien il y a un "
@@ -28370,8 +28385,7 @@ msgid ""
 "Maille: %(k1)-8s - Comportement précédent: %(k2)-16s - Comportement courant: "
 "%(k3)-16s"
 msgstr ""
-"Maille: %(k1)-8s - Comportement précédent: %(k2)-16s - Comportement courant: "
-"%(k3)-16s"
+"Mesh: %(k1)-8s - Previous behaviour: %(k2)-16s - Current behaviour: %(k3)-16s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:319
 #, python-format
@@ -32373,7 +32387,7 @@ msgid ""
 "      YACS : Erreur de communication\n"
 msgstr ""
 "\n"
-"      YACS : Erreur de communication\n"
+" YACS: Communication error\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/edyos.py:189
 msgid ""
@@ -33736,7 +33750,7 @@ msgid ""
 " On ne trouve pas le comportement %(k1)s dans le matériau fourni.\n"
 msgstr ""
 "\n"
-" On ne trouve pas le comportement %(k1)s dans le matériau fourni.\n"
+" Behaviour %(k1)s not found in the supplied material.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:159
 #, python-format
@@ -33746,8 +33760,8 @@ msgid ""
 "le comportement %(k2)s.\n"
 msgstr ""
 "\n"
-" Le matériau contient le comportement thermique %(k1)s alors que l'on attend "
-"le comportement %(k2)s.\n"
+" The material contains thermal behaviour %(k1)s, while behaviour %(k2)s is "
+"expected.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:163
 #, python-format
@@ -37674,7 +37688,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/factor2.py:37
 #, python-format
 msgid "    Noeud %(k1)s"
-msgstr "    Noeud %(k1)s"
+msgstr "    Node %(k1)s"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/factor2.py:39
 #, python-format
@@ -37713,7 +37727,7 @@ msgid ""
 "  Matrice symétrique\n"
 msgstr ""
 "\n"
-"  Matrice symétrique\n"
+"  Symmetrical matrix\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/factor3.py:31
 #, python-format
@@ -37804,7 +37818,7 @@ msgid ""
 "  Matrice non-symétrique\n"
 msgstr ""
 "\n"
-"  Matrice non-symétrique\n"
+"  Non-symmetrical matrix\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/factor3.py:71
 msgid ""
@@ -40587,7 +40601,7 @@ msgid ""
 " trop de noeuds dans le GROUP_NO: %(k1)s, noeud utilisé: %(k2)s\n"
 msgstr ""
 "\n"
-" trop de noeuds dans le GROUP_NO: %(k1)s, noeud utilisé: %(k2)s\n"
+" too many nodes in GROUP_NO:  %(k1)s, node used:  %(k2)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/intemail.py:99
 #, python-format
@@ -40632,7 +40646,7 @@ msgid ""
 " face inconnue, maille numéro: %(i1)d  face: %(i2)d\n"
 msgstr ""
 "\n"
-" face inconnue, maille numéro: %(i1)d  face: %(i2)d\n"
+" unknown face, mesh number: %(i1)d face: %(i2)d\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/intemail.py:119
 #, python-format
@@ -41246,7 +41260,7 @@ msgid ""
 "     Erreur d'ouverture du fichier %(k1)s , code retour %(i1)d\n"
 msgstr ""
 "\n"
-"     Erreur d'ouverture du fichier %(k1)s , code retour %(i1)d\n"
+"     Error opening file %(k1)s , code returned %(i1)d\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/jeveux.py:198
 #, python-format
@@ -43535,7 +43549,7 @@ msgid ""
 " "
 msgstr ""
 "\n"
-" <Évènement> Instabilité détectée.\n"
+" <Event> An instability has been detected.\n"
 " "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline10.py:74
@@ -43545,7 +43559,7 @@ msgid ""
 " "
 msgstr ""
 "\n"
-" <Évènement> Collision détectée.\n"
+" <Event> A collision has been detected.\n"
 " "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline10.py:78
@@ -43575,7 +43589,7 @@ msgid ""
 " "
 msgstr ""
 "\n"
-" <Évènement> Valeur atteinte (DELTA_GRANDEUR).\n"
+" <Event> Value reached (DELTA_GRANDEUR).\n"
 " "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline10.py:90
@@ -44348,14 +44362,14 @@ msgstr ""
 " method of the contact with friction or the penalized method is used. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:107
-#, fuzzy
 msgid ""
 "\n"
 " Le calcul des énergies n'est pas disponible avec le contact en formulation "
 "continue ou XFEM.\n"
 msgstr ""
 "\n"
-" The computation of energies is not available with key word PROJ_MODAL. \n"
+" Le calcul des énergies n'est pas disponible avec le contact en formulation "
+"continue ou XFEM.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline5.py:111
 msgid ""
@@ -44807,34 +44821,31 @@ msgstr ""
 " One cannot use CRIT_STAB in parallel computation \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline6.py:68
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  Le mode vibratoire stocké a pour fréquence %(r1)19.12e\n"
 msgstr ""
 "\n"
-" The oscillatory mode of sequence number %(i1)d has as a frequency  "
-"%(r1)19.12e \n"
+"  Le mode vibratoire stocké a pour fréquence %(r1)19.12e\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline6.py:72
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  Le mode de flambement stocké a pour charge critique %(r1)19.12e\n"
 msgstr ""
 "\n"
-" The mode of buckling of sequence number %(i1)d has as a critical load  "
-"%(r1)19.12e \n"
+"  Le mode de flambement stocké a pour charge critique %(r1)19.12e\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline6.py:76
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  Le mode de stabilité stocké a pour charge critique %(r1)19.12e\n"
 msgstr ""
 "\n"
-" The mode of stability of sequence number %(i1)d has as a critical load  "
-"%(r1)19.12e \n"
+"  Le mode de stabilité stocké a pour charge critique %(r1)19.12e\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/mecanonline6.py:80
 msgid ""
@@ -49060,6 +49071,9 @@ msgid ""
 "AFFE_CARA_ELEM Pour l'occurrence n° %(i1)d de BARRE le nombre de "
 "caractéristiques et de valeurs doivent être identiques.\n"
 msgstr ""
+"\n"
+"AFFE_CARA_ELEM Pour l'occurrence n° %(i1)d de BARRE le nombre de "
+"caractéristiques et de valeurs doivent être identiques.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa2.py:22
 msgid ""
@@ -56279,13 +56293,31 @@ msgstr ""
 "facteur %(k2)s d'AFFE_CARA_ELEM.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:252
-#, python-format
+#, fuzzy, python-format
 msgid ""
+"\n"
+"Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.\n"
+"Il n'existe pas de traduction dans le matériau EPX correspondant.\n"
+msgstr ""
 "\n"
 "Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.\n"
 "Il n'existe pas de traduction dans le matériau EPX correspondant. Il n'est\n"
 "donc pas pris en compte. \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:257
+#, fuzzy, python-format
+msgid ""
+"\n"
+"Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.\n"
+"Sa valeur est différente de la valeur imposée :\n"
+"Valeur imposée  : %(r1)f\n"
+"Valeur présente : %(r2)f \n"
 msgstr ""
+"\n"
+"La valeur du mot-clé %(k1)s du type de chargement %(k2)s n'est pas égale à "
+"la valeur imposée :\n"
+"Valeur trouvée : %(r1)f\n"
+"Valeur imposée : %(r2)f\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/post0.py:21
 msgid ""
@@ -59629,6 +59661,12 @@ msgid ""
 "possible.\n"
 " "
 msgstr ""
+"\n"
+" Il n'a pas été possible de récupérer d'information concernant la matrice de "
+"masse\n"
+" assemblée de la structure. Le calcul de l'option %(k1)s n'est donc pas "
+"possible.\n"
+" "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost3.py:150
 msgid ""
@@ -64244,6 +64282,15 @@ msgstr ""
 " Une fissure XFEM de type cohésive n'est utilisable qu'avec les lissages "
 "LAGRANGE/LAGRANGE_NO_NO,\n"
 " en 3D, avec l'option CALC_K_G.\n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture2.py:51
+msgid ""
+"\n"
+" La recherche du point d'intersection entre la loi cohésive et la "
+"pénalisation de Lagrange a demandé beaucoup d'itération.\n"
+" Une modification des paramètres de la loi cohésive comme PENA_LAGR rendra "
+"le calcul plus rapide pour le même résultat.\n"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/sdveri.py:22
 #, python-format
@@ -76332,10 +76379,3 @@ msgstr ""
 #, python-format
 msgid "Mot-clé simple : %s %s"
 msgstr "Simple key word: %s %s"
-
-#~ msgid ""
-#~ "\n"
-#~ " lmat =0\n"
-#~ msgstr ""
-#~ "\n"
-#~ " lmat =0 \n"
