@@ -241,6 +241,12 @@ Ne renseignez pas le mot-clé COMPORTEMENT/%(k2)s, afin de sélectionner l'algor
  Le type de matrice tangente choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
 """),
 
+    47: _(u"""
+  Option activée :  <%(k1)s>  pour les <%(k2)s>
+  Alarme :
+  L'algorithme de réactualisation des grandes rotations est tel que les rotations doivent être inférieures à 2 pi radians.
+  Assurez-vous que les rotations ne soient pas très grandes au risque de résultats faux.
+"""),
 
 
     54: _(u"""

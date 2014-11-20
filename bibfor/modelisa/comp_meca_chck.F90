@@ -13,6 +13,7 @@ subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_va
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/nmdovd.h"
 #include "asterfort/nmdovm.h"
 #include "asterfort/thm_kit_chck.h"
@@ -73,7 +74,7 @@ subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_va
     integer :: iret
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
-    character(len=8) :: typmcl(2)
+    character(len=8) :: typmcl(2), repons
     character(len=16) :: motcle(2)
     integer :: nt
     aster_logical :: l_kit_thm
@@ -148,6 +149,17 @@ subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_va
 !
         call nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
                     defo_comp, defo_comp_py)
+
+!
+! Check if COQUE_3D+GROT_GDEP is activated
+!
+       call dismoi('EXI_COQ3D', model, 'MODELE', repk=repons)
+       if ( (repons .eq. 'OUI') .and. (defo_comp .eq. 'GROT_GDEP') ) then
+          texte(1) = defo_comp
+          texte(2) = 'COQUE_3D'
+          call utmess('A', 'COMPOR1_47', nk = 2, valk = texte)
+       endif
+
     end do
 !
 end subroutine
