@@ -77,7 +77,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     integer :: jalpha, jbeta, jgamma, jcesc, jcescc, jcesdd, jceslc, jcesvc
     integer :: adcar1(3), adcar2(3)
 !
-    real(kind=8) :: maxtol, maxdif, tabres(1), pi, angle1, angle2
+    real(kind=8) :: maxtol, maxdif, tabres(1), angle1, angle2
     real(kind=8) :: pgl(3, 3), vl(3), vg1(3), vg2(3), vg3(3), vg4(3)
 !
     character(len=8) :: nomail
@@ -88,7 +88,6 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
     aster_logical :: llimai, lprobm
     integer, pointer :: dime(:) => null()
     parameter    (maxtol = 8.7266463d-2)
-    parameter    (pi = 3.14159265358979d0)
 !
     call jemarq()
     codret = 0
@@ -329,7 +328,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames,&
 !
     if (lprobm) then
         if (cmperr .ne. ' ') then
-            tabres(1) = 180.d0*maxdif/pi
+            tabres(1) = 1.0d0*maxdif
             call utmess(cmperr, 'UTILITAI_4', sr=tabres(1))
         endif
         codret = 1
