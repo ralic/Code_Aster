@@ -37,6 +37,7 @@ subroutine sscgno(ma, nbgnin)
 #include "asterfort/cgnopl.h"
 #include "asterfort/cgnoso.h"
 #include "asterfort/cgnoxf.h"
+#include "asterfort/cgrcbp.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvis.h"
@@ -83,6 +84,7 @@ subroutine sscgno(ma, nbgnin)
     integer :: n7, n8, n9, nb, nbcol, nbgna2, nbgnaj
     integer :: nbgnin, nbgrmn, nbid, nbis, nbk8, nbline, nbno
     integer :: nbnot, nbocc, niv, ntrou, num
+    aster_logical :: l_write
     character(len=24), pointer :: lik8(:) => null()
     character(len=8), pointer :: l_noeud(:) => null()
     integer, pointer :: noeud2(:) => null()
@@ -380,6 +382,14 @@ subroutine sscgno(ma, nbgnin)
 !         ----------------------------------------
         else if (option.eq.'FISS_XFEM') then
             call cgnoxf(motfac, iocc, ma, lisno, nbno)
+!
+!         -- TRAITEMENT DE L'OPTION RELA_CINE_BP :
+!         ----------------------------------------
+        else if (option.eq.'RELA_CINE_BP') then
+            l_write = .true.
+            call cgrcbp(motfac, iocc, ma, l_write, nbgna2)
+            nbgnaj = nbgnaj + nbgna2
+            goto 100
 !
         else
             call utmess('F', 'CALCULEL6_10', sk=option)

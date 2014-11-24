@@ -76,6 +76,15 @@ CAB_BP1=DEFI_CABLE_BP(MODELE=MODELE,
                       TENSION_INIT=3.750000E5,
                       RECUL_ANCRAGE=0.00,);
 
+
+DEFI_GROUP(reuse = MAIL, MAILLAGE = MAIL, 
+           CREA_GROUP_NO = _F(OPTION = 'RELA_CINE_BP', CABLE_BP = CAB_BP1)
+          )
+
+IMPR_RESU(FORMAT = 'MED', UNITE = 85, RESU=_F(MAILLAGE = MAIL))
+
+
+
 CMCAB1=AFFE_CHAR_MECA(MODELE=MODELE,
                   RELA_CINE_BP=_F(CABLE_BP=CAB_BP1,
                                    SIGM_BPEL='NON',

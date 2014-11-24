@@ -109,6 +109,14 @@ CABLEPR=DEFI_CABLE_BP(            MODELE=MODELE,
                              'VALIDATION DE L OPERATEUR DEFI_CABLE_BP', )
                                            )
 
+
+DEFI_GROUP(reuse = MAILLAGE, MAILLAGE = MAILLAGE, 
+           CREA_GROUP_NO = _F(OPTION = 'RELA_CINE_BP', CABLE_BP = CABLEPR)
+          )
+
+IMPR_RESU(FORMAT = 'MED', UNITE = 85, RESU=_F(MAILLAGE = MAILLAGE))
+
+
 TABL_CA=RECU_TABLE(    CO=CABLEPR,
                          NOM_TABLE='CABLE_BP'  )
 

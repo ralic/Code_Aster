@@ -23,6 +23,7 @@ subroutine op0104()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/cgrcbp.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/detgnm.h"
 #include "asterfort/getvem.h"
@@ -48,11 +49,12 @@ subroutine op0104()
 !
 !
     integer :: n1, n2, nbgrma, nbgmin, iret, nbgma, nbgrmn, i, j, nbma, jgg, jvg
-    integer :: nbocc, nbgrno, iocc, nbgnin, nbgno, nbgrnn, nbno
+    integer :: nbocc, nbgrno, iocc, nbgnin, nbgno, nbgrnn, nbno, n3
     character(len=8) :: k8b, ma, ma2
-    character(len=16) :: nomcmd, typcon
+    character(len=16) :: nomcmd, typcon, option
     character(len=24) :: grpmai, grpnoe, grpmav, grpnov, gpptnm, gpptnn, nomg
     integer :: iarg
+    aster_logical :: l_write
 !     ------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -143,6 +145,16 @@ subroutine op0104()
         if (n2 .ne. 0) then
             nbgrno = nbgrno - n2
             goto 10
+        endif
+        call getvtx('CREA_GROUP_NO', 'OPTION', iocc=iocc, nbval=0, nbret=n3)
+        if (n3 .ne. 0) then
+            call getvtx('CREA_GROUP_NO', 'OPTION', iocc=iocc, scal=option, nbret=n3)
+            if (option.eq.'RELA_CINE_BP')then
+                l_write = .false.
+                call cgrcbp('CREA_GROUP_NO', iocc, ma, l_write, nbgma)
+                nbgrno = nbgrno + nbgma
+                goto 10
+            endif
         endif
 !        -- ON CREE UN GROUP_NO PAR MOT CLE FACTEUR --
         nbgrno = nbgrno + 1
