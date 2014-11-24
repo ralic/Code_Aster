@@ -91,6 +91,14 @@ cata_msg = {
    Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
 """),
 
+ 8 : _(u"""
+ Erreur d'utilisation :
+   On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'
+   (ou la commande ELIM_LAGR).
+   Mais une étape du calcul a échoué (calcul du noyau de la matrice des contraintes).
+ Risques & conseils :
+   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.
+"""),
 
     9 : _(u"""
  Erreur d'utilisation :

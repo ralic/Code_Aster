@@ -20,9 +20,12 @@ subroutine elg_calcx0()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 #include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 !----------------------------------------------------------------
 !
 !     Résolution de x0 = A \ c par la méthode des moindres carrés.
@@ -48,59 +51,81 @@ subroutine elg_calcx0()
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
 !================================================================
-    Vec :: vbid1
+    Vec :: vy
     Mat :: c
     KSP :: ksp
     PC  :: pc
-    mpi_int :: mpicomm
-    PetscInt :: its, ierr
+    integer :: ifm, niv
+    mpi_int :: mpicomm, rang, nbproc
+    PetscInt :: its, ierr, reason
     real(kind=8) :: norm
-    PetscScalar ::  neg_one
+    PetscScalar, parameter ::  neg_one = -1.d0
     aster_logical :: info 
 !----------------------------------------------------------------
-    neg_one = -1.d0
-    info    = .true. 
     call jemarq()
+    call infniv(ifm, niv)
+    info=niv.eq.2 
+    info=.true.
     !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
-    call asmpi_comm('GET', mpicomm)
+    call asmpi_comm('GET_WORLD', mpicomm)
+    call asmpi_info(rank=rang, size=nbproc)
 !
 !   C = transpose(Ctrans)
     call MatTranspose(melim(ke)%ctrans, MAT_INITIAL_MATRIX, c, ierr)
-!   Résolution de C Vx0 = Vec C (PETSc, solveur "least square" LSQR)
-!   Init solver context : ksp 
-    call KSPCreate(mpicomm, ksp, ierr)
-!   Choose LSQR solver
-    call KSPSetType(ksp, KSPLSQR, ierr)
-!   Set the linear system matrix 
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!         Create the linear solver and set options
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!  Create linear solver context
+      call KSPCreate(mpicomm,ksp,ierr)
+!  Set operators. Here the matrix that defines the linear system
+!  also serves as the preconditioning matrix.
 #ifdef ASTER_PETSC_VERSION_LEQ_34
     call KSPSetOperators(ksp, c, c, SAME_PRECONDITIONER, ierr)
 #else
     call KSPSetOperators(ksp, c, c, ierr)
 #endif
-    ASSERT(ierr==0)
-!   No precond : c is rectangular, Petsc default preconditioner ILU won't work
-    call KSPGetPC(ksp,pc,ierr)
-    call PCSetType(pc,PCNONE, ierr)
-!   Solve 
-    call KSPSolve( ksp, melim(ke)%vecc, melim(ke)%vx0, ierr)
+!  Set linear solver options
+!  No precond : c is rectangular, Petsc default preconditioner ILU won't work
+      call KSPGetPC(ksp,pc,ierr)
+      call PCSetType(pc,PCNONE, ierr)
+!  Choose LSQR solver
+      call KSPSetType(ksp, KSPLSQR, ierr)
 !
-!     -- Calcul de ||A*x0 - c||
-!     ---------------------------
-    if (info) then
-      call VecDuplicate(melim(ke)%vecc, vbid1, ierr)
-      call MatMult(c, melim(ke)%vx0, vbid1, ierr)
-      call VecAXPY(vbid1,neg_one,melim(ke)%vecc ,ierr)
-      call VecNorm(vbid1,norm_2,norm,ierr)
-      call KSPGetIterationNumber(ksp,its,ierr)
-      write(6,100) norm,its
-  100 format('CALCX0: Norm of error = ',e11.4,',  Number of iterations = ',i5)
-      call VecDestroy(vbid1, ierr)
-    endif
-!
-    call MatDestroy( c, ierr )
-    call KSPDestroy( ksp, ierr)
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!                      Solve the linear system
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+    call KSPSolve( ksp, melim(ke)%vecc, melim(ke)%vx0, ierr)
+    call KSPGetConvergedReason(ksp, reason, ierr)
+    if (reason<0) then 
+      call utmess('F','ELIMLAGR_8')
+    endif
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+!                     Check solution and clean up
+! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+!  Check the error ||A*x0 - c||
+!     
+      if (info) then 
+      call VecDuplicate(melim(ke)%vecc ,vy,ierr) 
+      call MatMult(c,  melim(ke)%vx0,vy, ierr)  
+      call VecAXPY(vy,neg_one,melim(ke)%vecc ,ierr)
+      call VecNorm(vy,norm_2,norm,ierr)
+      call KSPGetIterationNumber(ksp,its,ierr)
+
+      if (rang .eq. 0) then
+           write(6,100) norm,its
+      endif
+  100 format('CALCX0:Norm of error ',e11.4,' iterations ',i5)
+      call VecDestroy(vy,ierr)
+      endif
+!
+!  Free work space.  All PETSc objects should be destroyed when they
+!  are no longer needed.
+
+      call KSPDestroy(ksp,ierr)
+      call MatDestroy(c,ierr)
 !
     call jedema()
 !
