@@ -10,7 +10,7 @@ carre1= ab tran 2 (0. 2);
 c = carre1 poin proc (2. 2.);
 * trac carre1;
 
-opti sauv form 'zzzz242a.mgib' ;
+opti sauv form 'zzzz249a.mgib' ;
 sort carre1;
 sauv form carre1 ;
 fin;

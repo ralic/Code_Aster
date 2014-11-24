@@ -5,6 +5,4 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm zzzz242a.comm D 1
-F mail zzzz242a.mail D 20
-F datg zzzz242a.datg D 16
+F comm zzzz150a.comm D 1
