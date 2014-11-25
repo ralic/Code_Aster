@@ -13,13 +13,10 @@
 
 @MaterialProperty real kn;
 kn.setGlossaryName("NormalStiffness");
-@MaterialProperty real ks;
-ks.setGlossaryName("TangentStiffness");
+@MaterialProperty real TangentStiffness;
 
-@MaterialProperty stress smax;
-smax.setGlossaryName("UltTensStrength");
-@MaterialProperty real delta;
-delta.setEntryName("MaxOpeningDispl");
+@MaterialProperty stress UltTensStrength;
+@MaterialProperty real MaxOpeningDispl;
 
 @StateVariable real d;
 d.setGlossaryName("Damage");
@@ -29,9 +26,9 @@ di.setEntryName("DamageIndicator");
 @PredictionOperator{
   const real C        = real(27)/real(4);
   // initial stiffness
-  const real K1 = C*smax/delta;
+  const real K1 = C*UltTensStrength/MaxOpeningDispl;
   Dt_tn = Dt_nt = tvector<N-1,real>(real(0));
-  Dt_tt = ks*tmatrix<N-1,N-1,real>::Id();
+  Dt_tt = TangentStiffness*tmatrix<N-1,N-1,real>::Id();
   if((smt==ELASTIC)||(smt==SECANTOPERATOR)||(smt==TANGENTOPERATOR)){
     if(u_n<0){
       Dt_nn = kn;
@@ -59,9 +56,9 @@ di.setEntryName("DamageIndicator");
 @Integrator{
   const real C        = real(27)/real(4);
   // tagential behaviour
-  t_t = ks*(u_t+du_t);
+  t_t = TangentStiffness*(u_t+du_t);
   if(computeTangentOperator_){
-    Dt_tt = ks*tmatrix<N-1,N-1,real>::Id();
+    Dt_tt = TangentStiffness*tmatrix<N-1,N-1,real>::Id();
     Dt_tn = Dt_nt = tvector<N-1,real>(real(0));
   }
   // normal behaviour
@@ -74,14 +71,14 @@ di.setEntryName("DamageIndicator");
   } else {
     // traction
     // reduced opening displacement
-    const real rod = (u_n+du_n)/delta;
+    const real rod = (u_n+du_n)/MaxOpeningDispl;
     // previous damage
     const real d_1 = d;
     d   = min(max(d,rod),0.99);
     // damage indicator
     di  = ((d_1>d)&&(du_n>0)) ? 1. : 0.;
     // initial stiffness
-    const real K1 = C*smax/delta;
+    const real K1 = C*UltTensStrength/MaxOpeningDispl;
     // secant stiffness
     const real K  = K1*(1-d)*(1-d);
     t_n = K*(u_n+du_n);

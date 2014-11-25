@@ -64,7 +64,7 @@ G=Mu
 
 ACIERDDI=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=Nu, ALPHA=0.),
-                  MonoCristalDDCC=_F(
+                  MonoCrystalDDCC=_F(
                            YoungModulus1 = E_L ,
                            YoungModulus2 = E_L ,
                            YoungModulus3 = E_L,
@@ -189,7 +189,7 @@ angles=(phi1,phi,phi2)
 
 IMPLDD=SIMU_POINT_MAT(MATER=ACIERDDI,
                       MASSIF=_F(ANGL_EULER=angles),
-                      COMPORTEMENT=_F(RELATION='MonoCristalDDCC',
+                      COMPORTEMENT=_F(RELATION='MonoCrystalDDCC',
                         RESI_INTE_RELA=1e-10,
                         ),
                       INCREMENT=(_F(LIST_INST=LIS2DDI,),),

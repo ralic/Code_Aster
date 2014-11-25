@@ -1,6 +1,6 @@
 @Parser RungeKutta;
 @Algorithm rk54;
-@Behaviour PolyCristalDDCFC;
+@Behaviour PolyCrystalDDCFC;
 @ModellingHypothesis Tridimensional;
 
 @Author Jean-Michel Proix;
@@ -37,22 +37,22 @@ omega.setErrorNormalisationFactor(1.e-7);
 
 @Includes{
 #include"TFEL/Math/power.hxx"
-#include"TFEL/Material/PolyCristalsSlidingSystems.hxx"
+#include"TFEL/Material/PolyCrystalsSlidingSystems.hxx"
 #include"TFEL/Material/MetallicCFCSlidingSystems.hxx"
 }
 
 @Members{
-  // Mono cristal  sliding system
+  // Mono crystal  sliding system
   typedef MetallicCFCSlidingSystems<real> MCSlidingSystems;
-  // Poly cristals sliding system
-  typedef PolyCristalsSlidingSystems<Np,MCSlidingSystems,real> PCSlidingSystems;
+  // Poly crystals sliding system
+  typedef PolyCrystalsSlidingSystems<Np,MCSlidingSystems,real> PCSlidingSystems;
 }
 
 
 //! fraction volumique
 @LocalVariable real  fv[Np];
 
-@Import"MonoCristal_DD_CFC_InteractionMatrix.mfront";
+@Import"MonoCrystal_DD_CFC_InteractionMatrix.mfront";
 
 @InitLocalVariables<Append>{
   // fractions volumiques
@@ -70,7 +70,7 @@ omega.setErrorNormalisationFactor(1.e-7);
   static const real tmp1   = log(alpha);
   static const real tmp2   = log(alpha*beta*sqrt(rhoref));
   const PCSlidingSystems& gs =
-    PCSlidingSystems::getPolyCristalsSlidingSystems("PolyCristal_Orientation.mfront");
+    PCSlidingSystems::getPolyCrystalsSlidingSystems("PolyCrystal_Orientation.mfront");
   real ppomega[Nss];
   real Dp ;
   real h ;

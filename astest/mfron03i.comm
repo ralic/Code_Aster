@@ -19,11 +19,6 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
-#os.system( "mfront --obuild --interface=aster MonoCristal_DD_CC_Irradiation.mfront")
-#os.system("CXXFLAGS='-g' mfront --obuild --interface=aster --@AsterErrorReport=true  --@AsterGenerateMTestFileOnFailure=true --debug mono_dd_cc_irra.mfront  ")
-#os.system("mv src/libAsterBehaviour.so mono_dd_cc.so")
-
-
 
 from numpy.linalg import norm
 from numpy import *

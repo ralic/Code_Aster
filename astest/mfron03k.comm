@@ -20,9 +20,6 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),IGNORE_ALARM=('COMPOR4_62',),);
 
 
-#os.system( "mfront --obuild --interface=aster PolyCristal_DD_CC.mfront")
-
-
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-4 suffit pour une bonne precision
@@ -67,7 +64,7 @@ rho_ini= 6.E5*b*b    # en m**-2
 ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=Nu,
                             ALPHA=0.),
-                      PolyCristalDDCC=_F(
+                      PolyCrystalDDCC=_F(
                               YoungModulus1 = E ,
                               YoungModulus2 = E ,
                               YoungModulus3 = E,
@@ -139,7 +136,7 @@ lvari=list(avari)
 TIMP=DEFI_CONSTANTE(VALE=TEMP)
 
 SOLNL=SIMU_POINT_MAT(INFO=1,
-                      COMPORTEMENT=_F(RELATION='PolyCristalDDCC',
+                      COMPORTEMENT=_F(RELATION='PolyCrystalDDCC',
                       RESI_INTE_RELA=1.E-8,
                       ITER_INTE_MAXI=100,
                         ),

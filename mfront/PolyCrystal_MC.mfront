@@ -1,6 +1,6 @@
 @Parser RungeKutta;
 @Algorithm rk54;
-@Behaviour PolyCristal_MC;
+@Behaviour PolyCrystal_MC;
 @OrthotropicBehaviour;
 @RequireStiffnessTensor;
 
@@ -30,16 +30,16 @@
 @AuxiliaryStateVariable real    pg;
 
 @Includes{
-#include"TFEL/Material/PolyCristalsSlidingSystems.hxx"
+#include"TFEL/Material/PolyCrystalsSlidingSystems.hxx"
 #include"TFEL/Material/MetallicCFCSlidingSystems.hxx"
 #include"TFEL/Material/MetallicCFCGenericSlidingSystemsInteractionMatrix.hxx"
 }
 
 @Members{
-  // Mono cristal  sliding system
+  // Mono crystal  sliding system
   typedef MetallicCFCSlidingSystems<real> MCSlidingSystems;
-  // Poly cristals sliding system
-  typedef PolyCristalsSlidingSystems<Np,MCSlidingSystems,real> PCSlidingSystems;
+  // Poly crystals sliding system
+  typedef PolyCrystalsSlidingSystems<Np,MCSlidingSystems,real> PCSlidingSystems;
   // Interaction matrix
   typedef MetallicCFCGenericSlidingSystemsInteractionMatrix<real> InteractionMatrix;
 }
@@ -71,7 +71,7 @@
 
 @Derivative{
   const PCSlidingSystems& gs =
-    PCSlidingSystems::getPolyCristalsSlidingSystems("PolyCristal_Orientation.mfront");
+    PCSlidingSystems::getPolyCrystalsSlidingSystems("PolyCrystal_Orientation.mfront");
   StressStensor sigg(real(0)) ;
   depsp=Stensor(real(0)) ;
   // boucle sur le nombre de phases (ou grains)

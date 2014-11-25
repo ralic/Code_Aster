@@ -79,7 +79,7 @@ G=E_L/2./(1.+Nu)
 # test  orthotropie
 MATFRONT=DEFI_MATERIAU(
                       ELAS=_F(E=210000.0, NU=0.3,),
-                      MonoCristal_CFC=_F(
+                      MonoCrystal_CFC=_F(
                            YoungModulus1 = E_L ,
                            YoungModulus2 = E_L ,
                            YoungModulus3 = E_L,
@@ -259,7 +259,7 @@ MFRONT=STAT_NON_LINE(MODELE=MO,
                           _F(CHARGE=CHME4,
                              FONC_MULT=COEF),
                           ),
-                    COMPORTEMENT=_F(RELATION='MonoCristal_CFC',
+                    COMPORTEMENT=_F(RELATION='MonoCrystal_CFC',
                         RESI_INTE_RELA=1e-11,
                         ITER_INTE_MAXI=100,
                         ),

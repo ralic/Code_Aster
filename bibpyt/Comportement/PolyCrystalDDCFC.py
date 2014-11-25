@@ -20,9 +20,9 @@
 from cata_comportement import LoiComportementMFront
 
 loi = LoiComportementMFront(
-    nom='GdefMonoCristal',
-    symbol_mfront='astergdefmonocristal',
+    nom='PolyCrystalDDCFC',
+    symbol_mfront='asterpolycrystalddcfc',
     modelisation=('3D',),
-    deformation = ('SIMO_MIEHE',),
-    algo_inte = ('NEWTON',),
+    deformation = ('PETIT',),
+    algo_inte = ('RUNGE_KUTTA',),
 )

@@ -15,7 +15,7 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-# TITRE polycristal homogeneise DD_CFC 30 grains
+# TITRE polycrystal homogeneise DD_CFC 30 grains
 
 import numpy as NP
 from numpy.linalg import norm
@@ -77,7 +77,7 @@ G=E/2./(1.+NU)
 
 MATF=DEFI_MATERIAU(
                       ELAS=_F( E=E, NU=NU,),
-                      PolyCristalDDCFC=_F(
+                      PolyCrystalDDCFC=_F(
                               YoungModulus1 = E ,
                               YoungModulus2 = E ,
                               YoungModulus3 = E,
@@ -262,7 +262,7 @@ lvari=list(avari)
 
 
 SOLMF=SIMU_POINT_MAT(INFO=1,
-                     COMPORTEMENT=_F(RELATION='PolyCristalDDCFC',
+                     COMPORTEMENT=_F(RELATION='PolyCrystalDDCFC',
                         RESI_INTE_RELA=1e-9,
                         ),
                    NEWTON=_F(
@@ -359,8 +359,8 @@ pilote=''
 
 IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
             COURBE=(
-                    _F( FONC_X=FEPZZ,    FONC_Y=FSIZZ,  LEGENDE='polycristal aster'),
-                    _F( FONC_X=MFEPZZ,   FONC_Y=MFSIZZ, LEGENDE='polycristal mfront'),
+                    _F( FONC_X=FEPZZ,    FONC_Y=FSIZZ,  LEGENDE='polyCrystal aster'),
+                    _F( FONC_X=MFEPZZ,   FONC_Y=MFSIZZ, LEGENDE='polyCrystal mfront'),
                     ),
             );
 

@@ -1,11 +1,11 @@
 @Parser    Implicit;
-@Behaviour MonoCristalDDCC;
+@Behaviour MonoCrystalDDCC;
 @MaximumIncrementValuePerIteration 1.e-4;
 
 @Author    Jean-Michel Proix;
 @Date      28/11/2013;
 @Description{
-  "loi monocristalline MONO_DD_CC cf. R5.03.11 avec matrice jacobienne"
+  "loi monoCrystalline MONO_DD_CC cf. R5.03.11 avec matrice jacobienne"
   "adimensionnement omega=omega*b*b"
 }
 
@@ -47,8 +47,8 @@
 @LocalVariable real Dg[12];
 @LocalVariable real Lc ;
 
-@Import "MonoCristal_DD_CC_InteractionMatrix.mfront";
-@Import "MonoCristal_DD_CC_SlidingSystems.mfront";
+@Import "MonoCrystal_DD_CC_InteractionMatrix.mfront";
+@Import "MonoCrystal_DD_CC_SlidingSystems.mfront";
 
 @TangentOperator{
   if((smt==ELASTIC)||(smt==SECANTOPERATOR)){

@@ -68,10 +68,10 @@
 @Includes{
 #include"TFEL/Material/MetallicCFCSlidingSystems.hxx"
 }
-@Import"MonoCristal_DD_CFC_InteractionMatrix.mfront";
+@Import"MonoCrystal_DD_CFC_InteractionMatrix.mfront";
 
 @Members{
-  // Mono cristal gliding system
+  // Mono crystal gliding system
   typedef MetallicCFCSlidingSystems<real> SlidingSystems;
   // number of sliding systems
   static const unsigned short Nss = SlidingSystems::Nss;

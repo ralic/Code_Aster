@@ -1,13 +1,13 @@
 @Parser RungeKutta;
 @Algorithm rk54;
-@Behaviour PolyCristalDDCC;
+@Behaviour PolyCrystalDDCC;
 
 @Author Jean-Michel Proix;
 @Date   08/10/2014;
 @Description{
-  Polycristal BZ du modele DD_CC
+  PolyCrystal BZ du modele DD_CC
 }
-@Import "PolyCristal_DD_CC_SlidingSystems.mfront";
+@Import "PolyCrystal_DD_CC_SlidingSystems.mfront";
 //@Epsilon 1.e-9 ;
 
 // Number of phases
@@ -44,7 +44,6 @@
 @MaterialProperty real h4;
 @MaterialProperty real h5;
 
-//@AuxiliaryStateVariable real    pg;
 @StateVariable real    pg;
 @StateVariable StrainStensor    epsg[Np];
 @StateVariable strain           omega[Nss*Np];
@@ -53,17 +52,17 @@ omega.setErrorNormalisationFactor(1.e-7);
 
 // pour utiliser les sytemes de glissement CC
 // et aussi d'autres systemes de glissement (24)
-@Import "MonoCristal_DD_CC_InteractionMatrix.mfront";
+@Import "MonoCrystal_DD_CC_InteractionMatrix.mfront";
 
 @Includes{
-#include"TFEL/Material/PolyCristalsSlidingSystems.hxx"
+#include"TFEL/Material/PolyCrystalsSlidingSystems.hxx"
 }
 
 @Members{
-  // Mono cristal  sliding system
+  // Mono Crystal  sliding system
   typedef SlidingSystems<real> MCSlidingSystems;
-  // Poly cristals sliding system
-  typedef PolyCristalsSlidingSystems<Np,MCSlidingSystems,real> PCSlidingSystems;
+  // Poly Crystals sliding system
+  typedef PolyCrystalsSlidingSystems<Np,MCSlidingSystems,real> PCSlidingSystems;
 }
 
 //! fraction volumique
@@ -85,10 +84,10 @@ omega.setErrorNormalisationFactor(1.e-7);
 
 @Derivative{
   const PCSlidingSystems& gs =
-    PCSlidingSystems::getPolyCristalsSlidingSystems("PolyCristal_Orientation_100grains.mfront");
+    PCSlidingSystems::getPolyCrystalsSlidingSystems("PolyCrystal_Orientation_100grains.mfront");
 
   StressStensor sigg(real(0)) ;
-  // constantes monocristal
+  // constantes monoCrystal
   const real deuxpi = 6.2831853071795862;
   real omegap[Nss];
   real small = 1.e-20 ;

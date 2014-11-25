@@ -102,7 +102,7 @@ COMPORA=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATA,
 
 MATF=DEFI_MATERIAU(
                   ELAS=_F(E=E_L, NU=Nu,),
-                  GdefMonoCristal=_F(
+                  GdefMonoCrystal=_F(
                            YoungModulus1 = E_L ,
                            YoungModulus2 = E_L ,
                            YoungModulus3 = E_L,
@@ -396,7 +396,7 @@ SOLMF=STAT_NON_LINE(
                               FONC_MULT=COEF,),),
                     COMPORTEMENT=(
 
-                            _F(RELATION='GdefMonoCristal',
+                            _F(RELATION='GdefMonoCrystal',
                                 DEFORMATION='SIMO_MIEHE',
                                 RESI_INTE_RELA=1.E-10,
                                 ITER_INTE_MAXI=100,

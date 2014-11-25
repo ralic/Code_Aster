@@ -76,7 +76,7 @@ E_L=E
 G=MU
 MATF2=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=NU,),
-                      MonoCristal_CFC=_F(
+                      MonoCrystal_CFC=_F(
                            YoungModulus1 = E_L ,
                            YoungModulus2 = E_L ,
                            YoungModulus3 = E_L,
@@ -184,7 +184,7 @@ GAM1AS=RECU_FONCTION( TABLE=RES1,
 
 RES3=SIMU_POINT_MAT(
                      MATER=MATF2,
-                     COMPORTEMENT=_F(RELATION='MonoCristal_CFC',
+                     COMPORTEMENT=_F(RELATION='MonoCrystal_CFC',
                         RESI_INTE_RELA=1e-11,
                         ITER_INTE_MAXI=100,
                         ),

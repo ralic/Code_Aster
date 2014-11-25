@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron03d.comm D 1
-F nom PolyCristal_Orientation.mfront   D 0
+F nom PolyCrystal_Orientation.mfront   D 0

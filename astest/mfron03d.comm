@@ -52,7 +52,7 @@ G=E_L/2./(1.+Nu)
 
 MATFRONT=DEFI_MATERIAU( 
                       ELAS=_F(E=145200.0, NU=0.3,),
-                      PolyCristal_MC=_F( 
+                      PolyCrystal_MC=_F( 
                            YoungModulus1 = E_L ,
                            YoungModulus2 = E_L ,
                            YoungModulus3 = E_L,
@@ -264,7 +264,7 @@ FEPZZ=RECU_FONCTION(TABLE=SOLNL,
                    INTERPOL='LIN');
 
 SOLMF=SIMU_POINT_MAT(INFO=1,
-                     COMPORTEMENT=_F(RELATION='PolyCristal_MC',
+                     COMPORTEMENT=_F(RELATION='PolyCrystal_MC',
                         RESI_INTE_RELA=1e-6,
                         ),
                    NEWTON=_F(

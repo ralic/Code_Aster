@@ -88,7 +88,7 @@ G=E/2./(1.+NU)
 
 MATF=DEFI_MATERIAU(
                       ELAS=_F( E=E, NU=NU,),
-                      MonoCristalDDCFC=_F(
+                      MonoCrystalDDCFC=_F(
                               YoungModulus1 = E ,
                               YoungModulus2 = E ,
                               YoungModulus3 = E,
@@ -221,7 +221,7 @@ lvar2=list(avar2)
 
 RES2=SIMU_POINT_MAT( INFO=info,
                      MATER=MATF,
-                     COMPORTEMENT=_F(RELATION='MonoCristalDDCFC',
+                     COMPORTEMENT=_F(RELATION='MonoCrystalDDCFC',
                         RESI_INTE_RELA=1e-10,
                         ),
                       MASSIF=_F(ANGL_EULER=(phi1,phi,phi2)),
