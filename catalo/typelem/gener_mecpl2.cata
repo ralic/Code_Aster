@@ -396,6 +396,9 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     REPERE_LOCAL        133   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER
                               OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2
+    REST_ECRO           116   IN__  CMATERC  PMATERC  CCOMPOR  PCOMPOR  ZVARIPG  PVARIMR  ZVARCPG  PVARCMR
+                                    ZVARCPG  PVARCPR
+                              OUT__ ZVARIPG  PVARIPR
     RICE_TRACEY         332   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NGEOMER  PGEOMER  EGNEUT1R PSDRMR
                                      CSOUSOP  PSOUSOP  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR
                               OUT__  ERICTRA  PRICTRA  EGNEUT1R PSDRPR

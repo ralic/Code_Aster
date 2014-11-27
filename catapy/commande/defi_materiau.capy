@@ -4306,6 +4306,11 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              COEF             =SIMP(statut='o',typ='R',fr=tr("E=E/COEF,si la contrainte principale max est atteinte dans l'element")),
            ),
 #
+### RESTAURATION D'ECROUISSAGE (ANNEALING)
+           REST_ECRO      =FACT(statut='f',
+             REST_FONC =SIMP(statut='o',typ=(fonction_sdaster,formule)),
+           ),
+#
 
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
            **C_MFRONT_OFFICIAL()

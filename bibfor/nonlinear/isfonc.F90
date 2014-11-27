@@ -101,8 +101,9 @@ function isfonc(list_func_acti, func_name_z)
 !       LDLT_SP            :  PRECONDITIONNEUR LDLT_SP
 !       MATR_DISTRIBUEE    :  MATRICES DISTRIBUEES
 !       ELAS_FO            :  elastic properties are functions
+!       POST_INCR          :  post-treatment for comportment laws
 !
-! DERNIER NUMERO UTILISE: 57
+! DERNIER NUMERO UTILISE: 58
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -228,6 +229,8 @@ function isfonc(list_func_acti, func_name_z)
         isfonc = list_func_acti(56).eq.1
     else if (func_name.eq.'ELAS_FO') then
         isfonc = list_func_acti(57).eq.1
+    else if (func_name.eq.'POST_INCR') then
+        isfonc = list_func_acti(58).eq.1
 !
     else
         ASSERT(.false.)

@@ -41,7 +41,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
 ! person_in_charge: jean-michel.proix at edf.fr
 !
     character(len=16), intent(out) :: compor(20)
-    real(kind=8), intent(out) :: carcri(20)
+    real(kind=8), intent(out) :: carcri(21)
     integer, intent(out) :: nb_vari
     integer, intent(out) :: incela
 !
@@ -209,6 +209,7 @@ subroutine pmdorc(compor, carcri, nb_vari, incela)
     carcri(18) = 0
     carcri(19) = p_info_carc_valr(carsiz*(iocc-1) + 19)
     carcri(20) = p_info_carc_valr(carsiz*(iocc-1) + 20)
+    carcri(21) = p_info_carc_valr(carsiz*(iocc-1) + 21)
 !
     AS_DEALLOCATE(vk16 = p_info_comp_valk)
     AS_DEALLOCATE(vi   = p_info_comp_vali)

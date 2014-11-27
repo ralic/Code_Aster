@@ -1,7 +1,7 @@
 subroutine nmfonc(parcri, parmet, method, solveu, modele,&
                   defico, lischa, lcont, lunil, sdnume,&
                   sddyna, sdcriq, mate, compoz, result,&
-                  fonact)
+                  carcri, fonact)
 !
     implicit none
 !
@@ -64,6 +64,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
     character(len=24), intent(in) :: mate
     character(len=*), intent(in) :: compoz
     character(len=8), intent(in) :: result
+    character(len=24), intent(in) :: carcri
     integer, intent(inout) :: fonact(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -91,6 +92,7 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! IN  LISCHA : SD DE DEFINITION DES CHARGES
 ! IN  COMPOR : CARTE DE COMPORTEMENT
 ! IN  RESULT : STRUCTURE DONNEE RESULTAT
+! In  carcri : name of <CARTE> CARCRI
 ! OUT FONACT : FONCTIONNALITES SPECIFIQUES ACTIVEES (VOIR ISFONC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -440,7 +442,17 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! - Do elastic properties are functions ?
 !
     call dismoi('ELAS_FO', mate, 'CHAM_MATER', repk=repk)
-    if (repk .eq. 'OUI') fonact(57) = 1
+    if (repk .eq. 'OUI') then
+        fonact(57) = 1
+    endif
+!
+! - Post-treatment on comportment laws ?
+!
+    call dismoi('POST_INCR', carcri, 'CARTE_CARCRI', repk=repk)
+    if (repk .eq. 'OUI') then
+        fonact(58) = 1
+    endif
+
 !
 ! --- AFFICHAGE
 !
@@ -654,8 +666,11 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
             nbfonc = nbfonc + 1
         endif
         if (isfonc(fonact,'ERRE_TEMPS_THM')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL ERREUR TEMPS EN'//&
-     &                  ' THM'
+            write (ifm,*) '<MECANONLINE> ...... CALCUL ERREUR TEMPS EN THM'
+            nbfonc = nbfonc + 1
+        endif
+        if (isfonc(fonact,'POST_INCR')) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL POST_INCR'
             nbfonc = nbfonc + 1
         endif
         if (isfonc(fonact,'EXI_VARC')) then

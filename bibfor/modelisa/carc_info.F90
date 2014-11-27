@@ -43,7 +43,7 @@ subroutine carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_compor)
 !
     character(len=16) :: keywordfact
     integer :: nb_info_comp
-    integer, parameter :: carsiz=20
+    integer, parameter :: carsiz=21
 !
 ! --------------------------------------------------------------------------------------------------
 !

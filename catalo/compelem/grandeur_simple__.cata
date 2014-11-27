@@ -305,10 +305,12 @@ GRANDEUR_SIMPLE__
        LC_EXT[3]: pointeurs vers routines externes (UMAT / MFRONT)
        MODECALC : 1 (CALC_POINT_MAT) ou 0 (ELEMENTS FINIS)
        ALPHA    : PARM_ALPHA pour les volumes finis
+       POSTINCR : type de critere POST_INCR : 0=rien, 1=REST_ECRO
 >>
     CARCRI   = R    ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC PERTURB
                     TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR
                     POSTITER LC_EXT[3] MODECALC ALPHA   LC_EXT2[2]
+                    POSTINCR
 
 <<  CASECT Type:K8 Nom d'un objet de type cara-poutre contenant le
     caracteristiques d'une section de poutre

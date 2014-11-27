@@ -176,7 +176,7 @@ implicit none
     call nmfonc(parcri, parmet, method, solveu, model,&
                 sdcont_defi, lischa, lcont, lunil, sdnume,&
                 sddyna, sdcriq, mate, compor, result,&
-                fonact)
+                carcri, fonact)
     lpilo = isfonc(fonact,'PILOTAGE' )
     lmpas = ndynlo(sddyna,'MULTI_PAS' )
     lsstf = isfonc(fonact,'SOUS_STRUC')

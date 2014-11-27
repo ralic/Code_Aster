@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,11 +14,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine pmdorc(compor, carcri, nb_vari, incela)
-        character(len=16), intent(out) :: compor(20)
-        real(kind=8), intent(out) :: carcri(21)
-        integer, intent(out) :: nb_vari
-        integer, intent(out) :: incela
-    end subroutine pmdorc
-end interface
+interface 
+    subroutine dismoi_carcri(questi_, nomobj_, repi, repk, ierd)
+        character(len=*), intent(in) :: questi_
+        character(len=*), intent(in) :: nomobj_
+        integer, intent(out) :: repi
+        character(len=*), intent(out) :: repk
+        integer, intent(out) :: ierd
+    end subroutine dismoi_carcri
+end interface 

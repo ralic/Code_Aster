@@ -63,7 +63,7 @@ subroutine carc_init(mesh, carcri, nb_cmp)
     call jenonu(jexnom('&CATA.GD.NOMGD', name_gd), nume_gd)
     call jeveuo(jexnum('&CATA.GD.NOMCMP', nume_gd), 'L', vk8 = p_cata_nomcmp)
     call jelira(jexnum('&CATA.GD.NOMCMP', nume_gd), 'LONMAX', nb_cmp_max)
-    ASSERT(nb_cmp_max .le. 20)
+    ASSERT(nb_cmp_max .le. 21)
 !
 ! - Allocate <CARTE>
 !

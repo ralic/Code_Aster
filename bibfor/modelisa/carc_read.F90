@@ -60,15 +60,16 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: carsiz=20
+    integer, parameter :: carsiz=21
     character(len=16) :: keywordfact
     integer :: iocc, iret, nbocc, ndim
     integer :: cpointer_nbvarext, cpointer_namevarext, cpointer_fct_ldc
     integer :: cpointer_matprop, cpointer_nbprop
-    character(len=16) :: algo_inte, type_matr_tang, method, post_iter
+    character(len=16) :: algo_inte, type_matr_tang, method, post_iter, post_incr
     real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
-    integer :: type_matr_t, iter_inte_pas, iter_deborst_max,ipostiter
+    integer :: type_matr_t, iter_inte_pas, iter_deborst_max
+    real(kind=8) :: ipostiter, ipostincr
     character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
     character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
     aster_logical :: l_kit_thm, l_mfront, l_mfront_offi, l_umat
@@ -219,7 +220,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! ----- Get POST_ITER
 !
-        ipostiter=0.d0
+        ipostiter = 0.d0
+        post_iter = ' '
         if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
             call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter, nbret = iret)
             if (iret .eq. 1) then
@@ -228,6 +230,17 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
                endif
             endif
         endif
+!
+! ----- Get POST_INCR
+!
+        ipostincr = 0.d0
+        post_incr = ' '
+	    call getvtx(keywordfact, 'POST_INCR', iocc = iocc, scal = post_incr, nbret = iret)
+	    if (iret .eq. 1) then
+	       if (post_incr .eq. 'REST_ECRO') then
+		        ipostincr = 1.d0
+	       endif
+	    endif
 !
 ! ----- Get function pointers for mfront
 !
@@ -296,6 +309,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
         info_carc_valr(carsiz*(iocc-1) + 18) = parm_alpha
         info_carc_valr(carsiz*(iocc-1) + 19) = dble(cpointer_matprop)
         info_carc_valr(carsiz*(iocc-1) + 20) = dble(cpointer_nbprop)
+        info_carc_valr(carsiz*(iocc-1) + 21) = ipostincr
         info_carc_valk(2*(iocc-1) + 1) = rela_comp
         info_carc_valk(2*(iocc-1) + 2) = algo_inte
     end do

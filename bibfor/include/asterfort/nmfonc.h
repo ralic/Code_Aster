@@ -21,7 +21,7 @@ interface
     subroutine nmfonc(parcri, parmet, method, solveu, modele,&
                       defico, lischa, lcont, lunil, sdnume,&
                       sddyna, sdcriq, mate, compoz, result,&
-                      fonact)
+                      carcri, fonact)
         real(kind=8), intent(in) :: parcri(*)
         real(kind=8), intent(in) :: parmet(*)
         character(len=16), intent(in) :: method(*)
@@ -37,6 +37,7 @@ interface
         character(len=24), intent(in) :: mate
         character(len=*), intent(in) :: compoz
         character(len=8), intent(in) :: result
+        character(len=24), intent(in) :: carcri
         integer, intent(inout) :: fonact(*)
     end subroutine nmfonc
 end interface

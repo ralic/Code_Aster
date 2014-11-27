@@ -18,6 +18,7 @@ implicit none
 #include "asterfort/nmobsv.h"
 #include "asterfort/nmspec.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/nmrest_ecro.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,7 +90,7 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: lmvib, lflam, lerrt, lcont, lener
+    aster_logical :: lmvib, lflam, lerrt, lcont, lener, l_post_incr
     character(len=4) :: etfixe
 !
 ! ----------------------------------------------------------------------
@@ -102,6 +103,7 @@ implicit none
     lmvib = isfonc(fonact,'MODE_VIBR')
     lflam = isfonc(fonact,'CRIT_STAB')
     lener = isfonc(fonact,'ENERGIE')
+    l_post_incr = isfonc(fonact,'POST_INCR')
 !
 ! --- LE PAS FIXE A NECESSAIREMENT CONVERGE
 !
@@ -150,6 +152,13 @@ implicit none
                     compor, carcri, sdtime, sddisc, solalg,&
                     lischa, comref, resoco, resocu, parcon,&
                     veelem)
+    endif
+
+!
+! - Post-treatment for comportment laws.
+!
+    if (l_post_incr) then
+        call nmrest_ecro(modele, mate, compor, valinc)
     endif
 !
 ! - Make observation

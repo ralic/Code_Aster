@@ -362,6 +362,12 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                     POST_ITER    =SIMP(statut='f',typ='TXM',into=("CRIT_RUPT",), ),
                                   ),
 
+                b_anneal        = BLOC(condition =
+                    " RELATION in ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC',)",
+                                   fr=tr("Restauration d'écrouissage"),
+                    POST_INCR    =SIMP(statut='f',typ='TXM',into=("REST_ECRO",), ),
+                                  ),
+
                 PARM_THETA      =SIMP(statut='f',typ='R',val_min=0.,val_max=1., defaut= 1.),
                 PARM_ALPHA      =SIMP(statut='f',typ='R',defaut= 1. ),
 
