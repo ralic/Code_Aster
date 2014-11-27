@@ -36,10 +36,6 @@ TAB1=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
 TAB2=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
                        _F(PARA='DEMANDE',LISTE_R =di ,),),);
 
-TAB3=CREA_TABLE(LISTE=(_F(PARA='PARA_NOCI',LISTE_R = ai,),
-                           _F(PARA='DEFA',LISTE_I =xi ,),
-                       _F(PARA='DEMANDE',LISTE_R =di ,),),);
-
 
 # liste indicateurs pour tracer les courbes
 LISTEA=DEFI_LIST_REEL(DEBUT=0.1, INTERVALLE=_F(JUSQU_A = 1.0, PAS=0.1) )
