@@ -4,9 +4,10 @@ import os
 import os.path as osp
 from glob import glob
 import subprocess
+import shutil
 from functools import partial
 
-from waflib import Configure, Context, Build, TaskGen, Task, Utils, Errors
+from waflib import Configure, Context, Build, TaskGen, Task, Utils, Errors, Logs
 
 def options(self):
     group = self.add_option_group('MFront library options')
@@ -29,6 +30,16 @@ def configure(self):
     else:
         self.define('HAVE_MFRONT', 1)
         self.env.BUILD_MFRONT = True
+
+INCLUDES = (
+    'MonoCrystal_DD_CC_InteractionMatrix.mfront',
+    'MonoCrystal_DD_CFC_InteractionMatrix.mfront',
+    'MonoCrystal_DD_CC_SlidingSystems.mfront',
+    'PolyCrystal_DD_CC_SlidingSystems.mfront',
+    'PolyCrystal_Orientation.mfront',
+    'PolyCrystal_Orientation_100grains.mfront',
+    'Plasticity_Sy.mfront',
+)
 
 def build(self):
     env = self.all_envs[self.variant]
@@ -54,18 +65,11 @@ def build(self):
         )
 
         get_srcs = self.path.get_src().ant_glob
-        excl = (
-            'MonoCrystal_DD_CC_InteractionMatrix.mfront',
-            'MonoCrystal_DD_CFC_InteractionMatrix.mfront',
-            'MonoCrystal_DD_CC_SlidingSystems.mfront',
-            'PolyCrystal_DD_CC_SlidingSystems.mfront',
-            'PolyCrystal_Orientation.mfront',
-            'PolyCrystal_Orientation_100grains.mfront',
-            'Plasticity_Sy.mfront',
-        )
+        lmfront = get_srcs('**/*.mfront', excl=INCLUDES)
+
         self(
                 name = 'mfront_convert',
-              source = get_srcs('**/*.mfront', excl=excl),
+              source = lmfront,
                  env = env.derive(),
                  use = ('MFRONT', ),
         )
@@ -83,7 +87,7 @@ def build(self):
                  env = env.derive(),
                  use = ('MFRONT', ),
         )
-        lst = [i.name for i in get_srcs('**/*.mfront', excl=excl)]
+        lst = [i.name for i in lmfront]
         self(
             features = 'mfront_mater',
                 name = 'mfront_mater',
@@ -128,6 +132,7 @@ def check_mfront(self):
     if 'icpc' in self.env.CXX:
         self.safe_remove('CXXFLAGS_MFRONT', '-ftree-vectorize')
     self.check_mfront_libs()
+    self.check_mfront_obsolete_source()
 
 @Configure.conf
 def check_mfront_libs(self):
@@ -135,6 +140,36 @@ def check_mfront_libs(self):
     check_lib = lambda lib: check_mfront(lib=lib)
     libs = ['AsterInterface', ]
     map(check_lib, Utils.to_list(libs))
+
+
+def remove(path):
+    """Remove a file or a directory"""
+    try:
+        shutil.rmtree(path)
+    except OSError:
+        os.remove(path)
+
+@Configure.conf
+def check_mfront_obsolete_source(self):
+    src = self.path.get_src().abspath()
+    # clean obsolete behaviours (from a previous build)
+    bld, mfront = osp.split(self.path.get_bld().abspath())
+    excl = ['libAsterBehaviour.so', 'libAsterBehaviourDebug.so',
+            'include', 'mfront_request']
+    for variant in ('debug', 'release'):
+        build = osp.join(bld, variant, mfront)
+        if osp.exists(build):
+            cleaned = False
+            for node in os.listdir(build):
+                ignore = False
+                for excl_i in excl:
+                    if node.startswith(excl_i):
+                        ignore = True
+                if ignore:
+                    continue
+                if not osp.exists( osp.join(src, node + '.mfront') ):
+                    Logs.warn("remove obsolete build: %s" % node)
+                    remove( osp.join(build, node) )
 
 @TaskGen.extension('.mfront')
 def process_mfront(self, node):

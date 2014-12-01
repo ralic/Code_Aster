@@ -20,7 +20,7 @@ def configure(self):
     self.env.append_value('OPT_ENV', [
         '. ' + ASTER_ROOT + '/etc/codeaster/profile.sh',
         '. ' + ASTER_ROOT + '/etc/codeaster/profile_gcc47.sh',
-        '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront.sh'])
+        '. ' + ASTER_ROOT + '/etc/codeaster/profile_mfront2.0.1.sh'])
 
     self.env.append_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Python_273/lib',
