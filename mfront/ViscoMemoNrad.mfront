@@ -105,7 +105,7 @@ nu.setGlossaryName("PoissonRatio");
      feel += vp*rac32*n-deto;
      fp   -= vp;
      fa1  = da1 -vp*rac32*n + g1_*vp*(delta1*a1_+(1-delta1)*a1n*n);
-     fa2  = da2 -vp*rac32*n + g2_*vp*(delta1*a2_+(1-delta2)*a2n*n);
+     fa2  = da2 -vp*rac32*n + g2_*vp*(delta2*a2_+(1-delta2)*a2n*n);
      // effet de mémoire sur l'écrouissage isotrope
      Stensor eksi= epsp + vp*rac32*n -Ksi  ;
      real eksieq= sigmaeq(eksi) ;
