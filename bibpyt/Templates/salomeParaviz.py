@@ -46,10 +46,12 @@ if not os.path.isfile(INPUTFILE1):
     raise Exception("Fichier %s non present!" % INPUTFILE1)
 
 #%====================Initialisation Salome================================%
+import re
 import sys
 import salome
 import SALOMEDS
 import salome_kernel
+
 orb, lcc, naming_service, cm = salome_kernel.salome_kernel_init()
 obj = naming_service.Resolve('myStudyManager')
 myStudyManager = obj._narrow(SALOMEDS.StudyManager)
@@ -68,7 +70,7 @@ salome.salome_init()
 try:
     pvsimple
 except:
-    from pvsimple import*
+    from pvsimple import *
 
 #%===================Construction courbe======================%
 
@@ -78,17 +80,11 @@ try:
     # Cas vue active OK
     v = GetActiveView()
     if CHOIX == 'COURBE':
-        if v.GetProperty('AxisBehavior'):
+        if 'LineChartView' in str(type(v)):
             view = v
     else:
-        if v.GetProperty('CenterAxesVisibility'):
+        if 'RenderView' in str(type(v)):
             view = v
-    SetActiveView(view)
-    L = view.Representations
-    for i in L:
-        i.Visibility = 0
-    pass
-
 except:
     try:
         # Cas plusieurs vues
@@ -96,40 +92,63 @@ except:
         liste_view = anim.ViewModules
         for v in liste_view:
             if CHOIX == 'COURBE':
-                if v.GetProperty('AxisBehavior'):
+                if 'LineChartView' in str(type(v)):
                     view = v
             else:
-                if v.GetProperty('CenterAxesVisibility'):
+                if 'RenderView' in str(type(v)):
                     view = v
-        SetActiveView(view)
-        L = view.Representations
-        for i in L:
-            i.Visibility = 0
-        pass
 
     except:
         pass
 if view == None and CHOIX == 'COURBE':
     view = CreateXYPlotView()
+if view == None and CHOIX != 'COURBE':
+    view = CreateRenderView()
+SetActiveView(view)
+L = view.Representations
+for i in L:
+    i.Visibility = 0
+
+
+nocomment = re.compile('^[^#].*', re.M)
+title = re.compile('^#COLUMN_TITLES: *(.*)$', re.M)
+
+def convert(fname):
+    """Convert in place an output file from Stanley for Paravis"""
+    txt = open(fname, 'r').read()
+    mat = title.search(txt)
+    assert mat, "COLUMN_TITLES not found"
+    label = mat.group(1).split('|')
+    values = nocomment.findall(txt)
+    cont = [' '.join(label)]
+    cont.extend(values)
+    open(fname, 'w').write(os.linesep.join(cont))
+
 
 if CHOIX == 'COURBE':
     CHOIXF = 'COURBE'
 
     # reader Table
-    myResult = TableReader(FileName=INPUTFILE2)
+    convert(INPUTFILE2)
+    myResult = CSVReader(FileName=INPUTFILE2)
     if myResult is None:
         raise "Erreur de fichier"
-    myResult.FirstStringAsTitles = 0
+    myResult.FieldDelimiterCharacters = ' '
+    myResult.MergeConsecutiveDelimiters = 1
+    Render()
+
     courbe = PlotData()
 
     display = Show()
     display.AttributeType = 'Row Data'
     display.UseIndexForXAxis = 0
-    Render()
-    NAME_X = display.GetProperty('SeriesNamesInfo')[0]
-    display.XArrayName = NAME_X
-    display.UseIndexForXAxis = 0
-    display.SeriesVisibility = ['vtkOriginalIndices', '0', NAME_X, '0']
+
+    labels = display.GetProperty('SeriesLabel')
+
+    display.XArrayName = labels[0]
+
+    display.SeriesVisibility = labels[2:]
+
     Render()
 
 #%====================Construction isovaleurs====================%
