@@ -8,11 +8,14 @@
 Repositories
 ============
 
-Code_Aster source files are stored into three repositories:
+Code_Aster source files are stored into several repositories:
 
 - `src`_: source files (C, fortran, python) and build scripts (~350MB)
 - *validation*: a few testcase files with non-public data (~1GB)
 - *data*: data about materials that can not be freely distributed
+- `perf`_: this one containing some testcase files used for
+   performance benchmarking.
+
 
 Other independent repositories exist:
 
@@ -49,6 +52,7 @@ enhancements:
 * ``stable-updates``: the head of the maintenance branch
 
 .. _src: https://bitbucket.org/code_aster/codeaster-src
+.. _perf: https://bitbucket.org/code_aster/codeaster-perf
 .. _devtools: https://bitbucket.org/code_aster/codeaster-devtools
 .. _i18n: https://bitbucket.org/code_aster/codeaster-i18n
 
