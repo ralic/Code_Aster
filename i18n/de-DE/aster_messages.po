@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-20 17:33+0100\n"
-"PO-Revision-Date: 2014-11-14 13:53-0500\n"
+"POT-Creation-Date: 2014-12-02 17:03+0100\n"
+"PO-Revision-Date: 2014-11-20 12:57-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -14053,16 +14053,7 @@ msgstr ""
 "calcul\n"
 "     s'arrête en erreur fatale.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:77
-#, python-format
-msgid ""
-"\n"
-" champ %(k1)s non traité par le changement de repère cylindrique\n"
-msgstr ""
-"\n"
-" champ %(k1)s non traité par le changement de repère cylindrique\n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:81
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:78
 msgid ""
 "\n"
 " les modélisations autorisées sont 3D et D_PLAN et AXIS\n"
@@ -14070,7 +14061,7 @@ msgstr ""
 "\n"
 " les modélisations autorisées sont 3D et D_PLAN et AXIS\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:85
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:82
 msgid ""
 "\n"
 " le choix des paramètres ne correspond pas à l'un des modèles CJS\n"
@@ -14078,7 +14069,7 @@ msgstr ""
 "\n"
 " le choix des paramètres ne correspond pas à l'un des modèles CJS\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:89
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:86
 msgid ""
 "\n"
 " la loi CJS ne converge pas\n"
@@ -14086,7 +14077,7 @@ msgstr ""
 "\n"
 " la loi CJS ne converge pas\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:93
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:90
 msgid ""
 "\n"
 " la loi CJS ne converge pas avec le nombre maximal d'itérations (intégration "
@@ -14096,7 +14087,7 @@ msgstr ""
 " la loi CJS ne converge pas avec le nombre maximal d'itérations (intégration "
 "locale)\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:97
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:94
 msgid ""
 "\n"
 " modélisation inconnue\n"
@@ -14104,7 +14095,7 @@ msgstr ""
 "\n"
 " modélisation inconnue\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:101
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:98
 msgid ""
 "\n"
 " vecteur de norme nulle\n"
@@ -14112,7 +14103,7 @@ msgstr ""
 "\n"
 " vecteur de norme nulle\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:105
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:102
 #, python-format
 msgid ""
 "\n"
@@ -14121,7 +14112,7 @@ msgstr ""
 "\n"
 " Le type de maille %(k1)s n'est pas prévu.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:109
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:106
 #, python-format
 msgid ""
 "\n"
@@ -14136,7 +14127,7 @@ msgstr ""
 " ou TRIA3-6 ou QUAD4-8\n"
 " or la maille est de type :  %(k1)s .\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:115
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:112
 #, python-format
 msgid ""
 "\n"
@@ -14145,7 +14136,7 @@ msgstr ""
 "\n"
 "  %(k1)s  groupe inexistant\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:119
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:116
 #, python-format
 msgid ""
 "\n"
@@ -14154,7 +14145,7 @@ msgstr ""
 "\n"
 " La maille  %(k1)s  de type  %(k2)s  est invalide pour ORIE_FISSURE.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:123
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:120
 msgid ""
 "\n"
 " Le groupe de mailles pour ORIE_FISSURE est invalide.\n"
@@ -14162,7 +14153,7 @@ msgstr ""
 "\n"
 " Le groupe de mailles pour ORIE_FISSURE est invalide.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:124
 msgid ""
 "\n"
 " Dans le groupe à réorienter pour ORIE_FISSURE,\n"
@@ -14174,7 +14165,7 @@ msgstr ""
 " Il existe des mailles 2d et 3d.\n"
 " C'est interdit.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:133
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:130
 msgid ""
 "\n"
 "Erreur d'utilisation pour MODI_MAILLAGE / ORIE_FISSURE :\n"
@@ -14200,7 +14191,7 @@ msgstr ""
 "  pour pouvoir déterminer la direction transverse à la couche.\n"
 "  Consulter la documentation d'utilisation pour plus de détails.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:150
 msgid ""
 "\n"
 " pas de calcul sur le critère de Rice disponible\n"
@@ -14208,7 +14199,7 @@ msgstr ""
 "\n"
 " pas de calcul sur le critère de Rice disponible\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:154
 msgid ""
 "\n"
 " cette commande doit nécessairement avoir le type EVOL_THER.\n"
@@ -14216,7 +14207,7 @@ msgstr ""
 "\n"
 " cette commande doit nécessairement avoir le type EVOL_THER.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:161
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:158
 #, python-format
 msgid ""
 "\n"
@@ -14225,7 +14216,7 @@ msgstr ""
 "\n"
 " seuls les champs de fonctions aux noeuds sont évaluables:  %(k1)s\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:165
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:162
 #, python-format
 msgid ""
 "\n"
@@ -14234,7 +14225,7 @@ msgstr ""
 "\n"
 " nous traitons les champs de réels et de fonctions: . %(k1)s\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:169
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:166
 #, python-format
 msgid ""
 "\n"
@@ -14243,7 +14234,7 @@ msgstr ""
 "\n"
 " le nom symbolique du champ à chercher n'est pas licite. %(k1)s\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:173
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:170
 msgid ""
 "\n"
 " plusieurs instants correspondent à celui spécifié sous AFFE\n"
@@ -14251,7 +14242,7 @@ msgstr ""
 "\n"
 " plusieurs instants correspondent à celui spécifié sous AFFE\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:177
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:174
 msgid ""
 "\n"
 " NUME_FIN inférieur à NUME_INIT\n"
@@ -14259,7 +14250,7 @@ msgstr ""
 "\n"
 " NUME_FIN inférieur à NUME_INIT\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:181
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:178
 msgid ""
 "\n"
 " CMP non traitée\n"
@@ -14267,7 +14258,7 @@ msgstr ""
 "\n"
 " CMP non traitée\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:185
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:182
 #, python-format
 msgid ""
 "\n"
@@ -14276,7 +14267,7 @@ msgstr ""
 "\n"
 "  incrément de déformation cumulée (DP) = - %(k1)s\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:189
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:186
 #, python-format
 msgid ""
 "\n"
@@ -14293,7 +14284,7 @@ msgstr ""
 " - incrément de déformation cumulée négative = - %(k2)s\n"
 " - redécoupage du pas de temps\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:194
 #, python-format
 msgid ""
 "\n"
@@ -14310,7 +14301,7 @@ msgstr ""
 "  - erreur >  %(k2)s\n"
 "  - redécoupage du pas de temps\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:202
 #, python-format
 msgid ""
 "\n"
@@ -14325,7 +14316,7 @@ msgstr ""
 "  - convergence irrégulière & erreur >  %(k2)s\n"
 "  - redécoupage du pas de temps\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:212
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:209
 #, python-format
 msgid ""
 "\n"
@@ -14340,7 +14331,7 @@ msgstr ""
 "  - erreur >  %(k2)s\n"
 "  - redécoupage du pas de temps\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:219
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:216
 #, python-format
 msgid ""
 "\n"
@@ -14351,7 +14342,7 @@ msgstr ""
 "  la transformation géométrique est singulière pour la maille : %(k1)s\n"
 "  (jacobien = 0.)\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:232
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:229
 msgid ""
 "\n"
 " on n'imprime que des champs réels\n"
@@ -14359,7 +14350,7 @@ msgstr ""
 "\n"
 " on n'imprime que des champs réels\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:233
 #, python-format
 msgid ""
 "\n"
@@ -14368,7 +14359,7 @@ msgstr ""
 "\n"
 "  %(k1)s CHAM_NO déjà existant\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:240
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:237
 msgid ""
 "\n"
 " appel erroné a RSEXCH\n"
@@ -14376,7 +14367,7 @@ msgstr ""
 "\n"
 " appel erroné a RSEXCH\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:244
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:241
 msgid ""
 "\n"
 " calcul du transitoire : choc en phase transitoire - pas de solution "
@@ -14388,7 +14379,7 @@ msgstr ""
 "trouvée.\n"
 " utiliser l'option ETAT_STAT = NON\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:249
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:246
 msgid ""
 "\n"
 " pas de valeurs propres trouvées\n"
@@ -14396,7 +14387,7 @@ msgstr ""
 "\n"
 " pas de valeurs propres trouvées\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:254
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith2.py:251
 #, python-format
 msgid ""
 "\n"
@@ -19271,6 +19262,13 @@ msgid ""
 "Avec des déformations de type %(k1)s,\n"
 "il est préférable d'utiliser EPSG_%(k2)s\n"
 msgstr ""
+"\n"
+"La sortie EPSI_%(k2)s de CALC_CHAMP est incorrecte pour décrire les\n"
+"composantes de la déformation en grandes déformations.\n"
+"\n"
+"Conseil:\n"
+"Avec des déformations de type %(k1)s,\n"
+"il est préférable d'utiliser EPSG_%(k2)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calcessai0.py:22
 msgid ""
@@ -23230,6 +23228,15 @@ msgid ""
 "   Le calcul des réactions d'appui est faux si cette maille est affectée\n"
 "   par un chargement en \"force\" non nul.\n"
 msgstr ""
+"\n"
+"Alarme utilisateur dans la commande CALC_CHAMP / REAC_NODA + GROUP_MA:\n"
+"   La maille %(k2)s du modèle %(k1)s ne fait pas partie des mailles\n"
+"   désignées par le mot clé GROUP_MA.\n"
+"   Pourtant, elle semble être une maille de bord de l'une de ces mailles.\n"
+"\n"
+"Risques et conseils :\n"
+"   Le calcul des réactions d'appui est faux si cette maille est affectée\n"
+"   par un chargement en \"force\" non nul.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel4.py:344
 #, python-format
@@ -27340,6 +27347,13 @@ msgid ""
 "  Assurez-vous que les rotations ne soient pas très grandes au risque de "
 "résultats faux.\n"
 msgstr ""
+"\n"
+"  Option activée :  <%(k1)s>  pour les <%(k2)s>\n"
+"  Alarme :\n"
+"  L'algorithme de réactualisation des grandes rotations est tel que les "
+"rotations doivent être inférieures à 2 pi radians.\n"
+"  Assurez-vous que les rotations ne soient pas très grandes au risque de "
+"résultats faux.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:252
 #, python-format
@@ -35676,7 +35690,28 @@ msgstr ""
 " Risques & conseils :\n"
 "   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:95
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:94
+#, fuzzy
+msgid ""
+"\n"
+" Erreur d'utilisation :\n"
+"   On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'\n"
+"   (ou la commande ELIM_LAGR).\n"
+"   Mais une étape du calcul a échoué (calcul du noyau de la matrice des "
+"contraintes).\n"
+" Risques & conseils :\n"
+"   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.\n"
+msgstr ""
+"\n"
+" Erreur d'utilisation :\n"
+"   On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'\n"
+"   (ou la commande ELIM_LAGR).\n"
+"   Mais la matrice est une matrice généralisée.\n"
+"   C'est interdit.\n"
+" Risques & conseils :\n"
+"   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.\n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:103
 msgid ""
 "\n"
 " Erreur d'utilisation :\n"
@@ -35696,7 +35731,7 @@ msgstr ""
 " Risques & conseils :\n"
 "   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:105
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:113
 #, python-format
 msgid ""
 "\n"
@@ -35719,7 +35754,7 @@ msgstr ""
 "   Par exemple, il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI' avec\n"
 "   une matrice de masse.\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:116
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:124
 msgid ""
 "\n"
 " Erreur utilisateur :\n"
@@ -56567,7 +56602,7 @@ msgstr ""
 "facteur %(k2)s d'AFFE_CARA_ELEM.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:252
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.\n"
@@ -56575,11 +56610,10 @@ msgid ""
 msgstr ""
 "\n"
 "Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.\n"
-"Il n'existe pas de traduction dans le matériau EPX correspondant. Il n'est\n"
-"donc pas pris en compte. \n"
+"Il n'existe pas de traduction dans le matériau EPX correspondant.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:257
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.\n"
@@ -56588,10 +56622,10 @@ msgid ""
 "Valeur présente : %(r2)f \n"
 msgstr ""
 "\n"
-"La valeur du mot-clé %(k1)s du type de chargement %(k2)s n'est pas égale à "
-"la valeur imposée :\n"
-"Valeur trouvée : %(r1)f\n"
-"Valeur imposée : %(r2)f\n"
+"Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.\n"
+"Sa valeur est différente de la valeur imposée :\n"
+"Valeur imposée  : %(r1)f\n"
+"Valeur présente : %(r2)f \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/post0.py:21
 msgid ""
@@ -64598,6 +64632,11 @@ msgid ""
 " Une modification des paramètres de la loi cohésive comme PENA_LAGR rendra "
 "le calcul plus rapide pour le même résultat.\n"
 msgstr ""
+"\n"
+" La recherche du point d'intersection entre la loi cohésive et la "
+"pénalisation de Lagrange a demandé beaucoup d'itération.\n"
+" Une modification des paramètres de la loi cohésive comme PENA_LAGR rendra "
+"le calcul plus rapide pour le même résultat.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/sdveri.py:22
 #, python-format
@@ -76786,3 +76825,10 @@ msgstr ""
 #, python-format
 msgid "Mot-clé simple : %s %s"
 msgstr "Mot-clé simple : %s %s"
+
+#~ msgid ""
+#~ "\n"
+#~ " champ %(k1)s non traité par le changement de repère cylindrique\n"
+#~ msgstr ""
+#~ "\n"
+#~ " champ %(k1)s non traité par le changement de repère cylindrique\n"
