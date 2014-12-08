@@ -103,11 +103,11 @@ def Ordo(R, theta):
     """fonction pour connaitre l'ordonnee en fonction de theta"""
     return R * sin(math.radians(theta))
 
-COUPE = [None] * number_of_sensors
+COUPE_ORIG = [None] * number_of_sensors
+COUPE_EXTR = [None] * number_of_sensors
 for i, theta in enumerate(sensor_angle):
-    COUPE[i]=INTE_MAIL_2D(MAILLAGE=MAIL,
-                          DEFI_SEGMENT=_F(ORIGINE=(Absc(R_i, theta), Ordo(R_i, theta),),
-                                          EXTREMITE=(Absc(R_e, theta), Ordo(R_e, theta),),),)
+    COUPE_ORIG[i]=(Absc(R_i, theta), Ordo(R_i, theta),)
+    COUPE_EXTR[i]=(Absc(R_e, theta), Ordo(R_e, theta),)
 
 y_int = [Ordo(R_i, sensor_angle[i]) for i in range(number_of_sensors)]
 
@@ -165,14 +165,20 @@ TH1sf=THER_NON_LINE(MODELE=MO_THER,
 # --- Extract the temperature on the sensors
 T_out = []
 TAB = [None] * number_of_sensors
+TAB2 = [None] * number_of_sensors
 eps = 1.e-8
-for i, ch in enumerate(COUPE):
-    TAB[i]=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                   INTITULE='LIGNE',
-                                   RESULTAT=TH1sf,
-                                   NOM_CHAM='TEMP',
-                                   CHEMIN=ch,
-                                   TOUT_CMP='OUI',),);
+for i in range(len(COUPE_ORIG)):
+    TAB[i]=MACR_LIGN_COUPE(RESULTAT=TH1sf,
+                     LIST_INST=LS,
+                     LIGN_COUPE=_F(INTITULE='LIGNE',
+                                   NOM_CMP=('TEMP',),
+                                   TYPE='SEGMENT',
+                                   NB_POINTS=10.,
+                                   COOR_ORIG=COUPE_ORIG[i],
+                                   COOR_EXTR=COUPE_EXTR[i],
+                                  ),
+                    )
+
     tab = TAB[i].EXTR_TABLE()['COOR_X', 'COOR_Y', 'TEMP']
     #text = tab.COOR_Y == y_ext[i]
     #text = (tab.COOR_Y > (y_ext[i] - eps)).COOR_Y < (y_ext[i] + eps)
@@ -187,5 +193,4 @@ G_output = numpy.array(T_out)
 numpy.save('G_output.npy', G_output)
 os.rename('G_output.npy', 'fort.26')
 
-del ch
 FIN()
