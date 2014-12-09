@@ -58,7 +58,7 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, 
     global ipass
     ipass += 1
     # deux passages: build et exec
-    if ipass > 2:
+    if ipass > 2 and aster_exists:
         UTMESS('F', 'SUPERVIS_2')
     jdc.set_par_lot(PAR_LOT, user_value=True)
     jdc.impr_macro = int(IMPR_MACRO == 'OUI')
