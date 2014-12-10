@@ -7420,6 +7420,11 @@
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
+      <source>Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
+      <translation type="unfinished">Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
+    </message>
+    <message encoding="UTF-8">
+      <location filename="../cata.py" line="33787"/>
       <source>Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
       <translation type="unfinished">Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
     </message>
@@ -7822,11 +7827,6 @@
       <location filename="../cata.py" line="36328"/>
       <source>Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</source>
       <translation type="unfinished">Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</translation>
-    </message>
-    <message encoding="UTF-8">
-      <location filename="../cata.py" line="33787"/>
-      <source>Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
-      <translation type="unfinished">Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
     </message>
   </context>
 </TS>

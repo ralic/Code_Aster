@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-02 17:03+0100\n"
-"PO-Revision-Date: 2014-12-02 11:02-0500\n"
+"POT-Creation-Date: 2014-12-10 09:11+0100\n"
+"PO-Revision-Date: 2014-12-07 08:59-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -289,7 +289,7 @@ msgstr "c_plan または 1d アルゴリズム Deborst, 内部変数 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:85
 msgid "endommagement de compression"
-msgstr "endommagement de compression"
+msgstr "圧縮損傷"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:86
 msgid "Vitesse de dissipation mécanique"
@@ -321,7 +321,7 @@ msgstr "Hujeux : 接線マトリックスの決定"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:92
 msgid "endommagement de fluage"
-msgstr "endommagement de fluage"
+msgstr "クリープ損傷"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:93
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:94
@@ -447,11 +447,11 @@ msgstr "LIQU_AD_GAZ v2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:125
 msgid "endommagement thermique isotrope"
-msgstr "endommagement thermique isotrope"
+msgstr "等方性熱損傷"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:126
 msgid "endommagement thermique"
-msgstr "endommagement thermique"
+msgstr "熱損傷"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:127
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:128
@@ -485,7 +485,7 @@ msgstr "endommagements principaux induits par la def plastique hydrique"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:546
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:553
 msgid "variables internes pour le fluage direction 1"
-msgstr "variables internes pour le fluage direction 1"
+msgstr "クリープ方向1のための内部変数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:139
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:145
@@ -493,7 +493,7 @@ msgstr "variables internes pour le fluage direction 1"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:547
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:554
 msgid "variables internes pour le fluage direction 2"
-msgstr "variables internes pour le fluage direction 2"
+msgstr "クリープ方向2のための内部変数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:140
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:146
@@ -501,7 +501,7 @@ msgstr "variables internes pour le fluage direction 2"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:548
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:555
 msgid "variables internes pour le fluage direction 3"
-msgstr "variables internes pour le fluage direction 3"
+msgstr "クリープ方向3のための内部変数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:141
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:147
@@ -509,7 +509,7 @@ msgstr "variables internes pour le fluage direction 3"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:549
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:556
 msgid "variables internes pour le fluage direction 4"
-msgstr "variables internes pour le fluage direction 4"
+msgstr "クリープ方向4のための内部変数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:142
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:148
@@ -517,7 +517,7 @@ msgstr "variables internes pour le fluage direction 4"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:550
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:557
 msgid "variables internes pour le fluage direction 5"
-msgstr "variables internes pour le fluage direction 5"
+msgstr "クリープ方向5のための内部変数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:143
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:149
@@ -525,7 +525,7 @@ msgstr "variables internes pour le fluage direction 5"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:551
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:558
 msgid "variables internes pour le fluage direction 6"
-msgstr "variables internes pour le fluage direction 6"
+msgstr "クリープ方向6のための内部変数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:156
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:157
@@ -744,27 +744,27 @@ msgstr "接線方向の損傷"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:211
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 1"
-msgstr "BETON_RAG : Endommagement intrinsèque de traction, composante 1"
+msgstr "BETON_RAG : 内部引張り損傷, 成分 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:212
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 2"
-msgstr "BETON_RAG : Endommagement intrinsèque de traction, composante 2"
+msgstr "BETON_RAG : 内部引張り損傷, 成分 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:213
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 3"
-msgstr "BETON_RAG : Endommagement intrinsèque de traction, composante 3"
+msgstr "BETON_RAG : 内部引張り損傷, 成分 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:214
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 4"
-msgstr "BETON_RAG : Endommagement intrinsèque de traction, composante 4"
+msgstr "BETON_RAG : 内部引張り損傷, 成分 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:215
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 5"
-msgstr "BETON_RAG : Endommagement intrinsèque de traction, composante 5"
+msgstr "BETON_RAG : 内部引張り損傷, 成分 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:216
 msgid "BETON_RAG : Endommagement intrinsèque de traction, composante 6"
-msgstr "BETON_RAG : Endommagement intrinsèque de traction, composante 6"
+msgstr "BETON_RAG : 内部引張り損傷, 成分 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:217
 msgid "tenseur endommagement, direction XX"
@@ -792,7 +792,7 @@ msgstr "損傷テンソル ZZ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:223
 msgid "énergie résiduelle"
-msgstr "énergie résiduelle"
+msgstr "エネルギー残差"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:224
 msgid "épaisseur du joint clavé"
@@ -800,7 +800,7 @@ msgstr "ガスケットの暑さ"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:225
 msgid "déformation équivalente de fluage"
-msgstr "déformation équivalente de fluage"
+msgstr "クリープ相当変形"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:226
 msgid "déformation plastique équivalente d'irradiation"
@@ -1219,7 +1219,7 @@ msgstr "Hujeux : 計画1の周期的な偏差メカニズムのための記憶�
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:329
 msgid "degre d hydratation"
-msgstr "degre d hydratation"
+msgstr "水和の程度"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:330
 msgid "degres d hydratation moyen"
@@ -1676,38 +1676,32 @@ msgstr "contrainte dans le squelette solide"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:434
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 1"
-msgstr ""
-"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 1"
+msgstr "BETON_RAG : レオロジーモデルにおける有効応力,  成分 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:435
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 2"
-msgstr ""
-"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 2"
+msgstr "BETON_RAG : レオロジーモデルにおける有効応力,  成分 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:436
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 3"
-msgstr ""
-"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 3"
+msgstr "BETON_RAG : レオロジーモデルにおける有効応力,  成分 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:437
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 4"
-msgstr ""
-"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 4"
+msgstr "BETON_RAG : レオロジーモデルにおける有効応力,  成分 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:438
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 5"
-msgstr ""
-"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 5"
+msgstr "BETON_RAG : レオロジーモデルにおける有効応力,  成分 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:439
 msgid ""
 "BETON_RAG : contrainte effective dans le modèle rhéologique, composante 6"
-msgstr ""
-"BETON_RAG : contrainte effective dans le modèle rhéologique, composante 6"
+msgstr "BETON_RAG : レオロジーモデルにおける有効応力,  成分 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:440
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:441
@@ -1838,7 +1832,7 @@ msgstr "contrainte plastique dans les fissures de traction localisée"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:483
 msgid "seuil de compression"
-msgstr "seuil de compression"
+msgstr "圧縮のスレッショルド"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:484
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:485
@@ -1882,11 +1876,11 @@ msgstr "BETON_RAG : 圧縮応力しきい値"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:509
 msgid "sulfates fixes"
-msgstr "sulfates fixes"
+msgstr "固定の硫酸塩"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:510
 msgid "sulfate libre"
-msgstr "sulfate libre"
+msgstr "自由な硫酸塩"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:511
 msgid "contrainte de rupture par propagation,"
@@ -1894,27 +1888,27 @@ msgstr "破壊応力の伝播,"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:512
 msgid "BETON_RAG : contraintes seuil de traction, composante 1"
-msgstr "BETON_RAG : contraintes seuil de traction, composante 1"
+msgstr "BETON_RAG : 引張り応力のしきい値,  成分 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:513
 msgid "BETON_RAG : contraintes seuil de traction, composante 2"
-msgstr "BETON_RAG : contraintes seuil de traction, composante 2"
+msgstr "BETON_RAG : 引張り応力のしきい値,  成分 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:514
 msgid "BETON_RAG : contraintes seuil de traction, composante 3"
-msgstr "BETON_RAG : contraintes seuil de traction, composante 3"
+msgstr "BETON_RAG : 引張り応力のしきい値,  成分 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:515
 msgid "BETON_RAG : contraintes seuil de traction, composante 4"
-msgstr "BETON_RAG : contraintes seuil de traction, composante 4"
+msgstr "BETON_RAG : 引張り応力のしきい値,  成分 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:516
 msgid "BETON_RAG : contraintes seuil de traction, composante 5"
-msgstr "BETON_RAG : contraintes seuil de traction, composante 5"
+msgstr "BETON_RAG : 引張り応力のしきい値,  成分 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:517
 msgid "BETON_RAG : contraintes seuil de traction, composante 6"
-msgstr "BETON_RAG : contraintes seuil de traction, composante 6"
+msgstr "BETON_RAG : 引張り応力のしきい値,  成分 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:518
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:519
@@ -1939,7 +1933,7 @@ msgstr "最高温度"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:527
 msgid "temps de chargement cumule"
-msgstr "temps de chargement cumule"
+msgstr "累積荷重時間"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:528
 msgid ""
@@ -1995,7 +1989,7 @@ msgstr "temps caracteristique de micro diffusion des reactions"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:535
 msgid "Temperature finale pour verification"
-msgstr "Temperature finale pour verification"
+msgstr "検証のための最終的な温度"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:536
 msgid "tau de chargement equivalent"
@@ -2426,7 +2420,7 @@ msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:668
 msgid "volume d eau"
-msgstr "volume d eau"
+msgstr "水分量"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:669
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:670
@@ -2547,49 +2541,37 @@ msgstr "coeff d affinite probabiliste sur l energie de fissuration"
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 3, composante 1"
-msgstr ""
-"Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
-"déviatoire du plan 3, composante 1"
+msgstr "Hujeux : 機構偏差面3の表面電荷に接する点の座標, 成分 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:703
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 3, composante 2"
-msgstr ""
-"Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
-"déviatoire du plan 3, composante 2"
+msgstr "Hujeux : 機構偏差面3の表面電荷に接する点の座標, 成分 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:704
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 2, composante1"
-msgstr ""
-"Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
-"déviatoire du plan 2, composante1"
+msgstr "Hujeux : 機構偏差面2の表面電荷に接する点の座標, 成分 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:705
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 2, composante2"
-msgstr ""
-"Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
-"déviatoire du plan 2, composante2"
+msgstr "Hujeux : 機構偏差面2の表面電荷に接する点の座標, 成分 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:706
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 1, composante 1"
-msgstr ""
-"Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
-"déviatoire du plan 1, composante 1"
+msgstr "Hujeux : 機構偏差面1の表面電荷に接する点の座標, 成分 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:707
 msgid ""
 "Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
 "déviatoire du plan 1, composante 2"
-msgstr ""
-"Hujeux : coordonnée du point de tangence à la surface de charge du mécanisme "
-"déviatoire du plan 1, composante 2"
+msgstr "Hujeux : 機構偏差面1の表面電荷に接する点の座標, 成分 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:708
 msgid "LETK : variable d'écrouissage élastoplastique"
@@ -2602,20 +2584,17 @@ msgstr "LETK : variable d'écrouissage viscoplastique"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:710
 msgid ""
 "GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 1"
-msgstr ""
-"GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 1"
+msgstr "GLRC_DAMAGE : 膜の移動硬化テンソル 成分 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:711
 msgid ""
 "GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 2"
-msgstr ""
-"GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 2"
+msgstr "GLRC_DAMAGE : 膜の移動硬化テンソル 成分 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:712
 msgid ""
 "GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 3"
-msgstr ""
-"GLRC_DAMAGE : tenseur d'écrouissage cinématique en membrane composante 3"
+msgstr "GLRC_DAMAGE : 膜の移動硬化テンソル 成分 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:713
 msgid "variable de calcul non local pour Weibull"
@@ -7737,9 +7716,9 @@ msgid ""
 "\n"
 msgstr ""
 "  NUME_ORDRE : %(i1)d\n"
-"  Type       : Mode %(k1)s\n"
-"  Noeud      : %(k2)s\n"
-"  Composante : %(k3)s\n"
+"  タイプ       : モード %(k1)s\n"
+"  節点      : %(k2)s\n"
+"  成分 : %(k3)s\n"
 "\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:79
@@ -8640,14 +8619,14 @@ msgid ""
 "\n"
 msgstr ""
 "----------------------------------------------------\n"
-"                CALC_MODE_CYCL\n"
+"                CALC_MODE_CYCL \n"
 "\n"
-"Impressions de niveau :2\n"
+"表示レベル :2\n"
 "\n"
-"Définition du secteur\n"
+"セクターの定義\n"
 "---------------------\n"
-"Maillage    : %(k1)s\n"
-"Base modale : %(k2)s\n"
+"メッシュ    : %(k1)s\n"
+"基礎モーダル : %(k2)s\n"
 "INTERF_DYNA : %(k3)s\n"
 "\n"
 
@@ -11899,7 +11878,7 @@ msgid ""
 " la composante : %(k1)s  est une composante indéfinie\n"
 msgstr ""
 "\n"
-" la composante : %(k1)s  est une composante indéfinie\n"
+" コンポーネント : %(k1)s  未定義のコンポーネント\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith15.py:63
 msgid ""
@@ -21681,7 +21660,7 @@ msgid ""
 " La composante %(k1)s n'existe pas dans le champ sur la maille spécifiée.\n"
 msgstr ""
 "\n"
-" La composante %(k1)s n'existe pas dans le champ sur la maille spécifiée.\n"
+" コンポーネント %(k1)s 指定されたメッシュ上のフィールドには存在しない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel3.py:45
 #, python-format
@@ -35586,7 +35565,6 @@ msgstr ""
 "   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:94
-#, fuzzy
 msgid ""
 "\n"
 " Erreur d'utilisation :\n"
@@ -35601,8 +35579,8 @@ msgstr ""
 " Erreur d'utilisation :\n"
 "   On veut utiliser la fonctionnalité SOLVEUR / ELIM_LAGR='OUI'\n"
 "   (ou la commande ELIM_LAGR).\n"
-"   Mais la matrice est une matrice généralisée.\n"
-"   C'est interdit.\n"
+"   Mais une étape du calcul a échoué (calcul du noyau de la matrice des "
+"contraintes).\n"
 " Risques & conseils :\n"
 "   Il ne faut pas utiliser SOLVEUR / ELIM_LAGR='OUI'.\n"
 
@@ -46108,7 +46086,7 @@ msgid ""
 "     Il manque des composantes.\n"
 msgstr ""
 "\n"
-"     Il manque des composantes.\n"
+"     不足しているコンポーネント。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:224
 msgid ""
@@ -46473,7 +46451,7 @@ msgid ""
 "  -> Composante inconnue pour la grandeur.\n"
 msgstr ""
 "\n"
-"  -> Composante inconnue pour la grandeur.\n"
+"  -> サイズが、不明なコンポーネント\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:391
 #, python-format
@@ -46510,7 +46488,7 @@ msgid ""
 "  -> Trop de composantes pour la grandeur.\n"
 msgstr ""
 "\n"
-"  -> Trop de composantes pour la grandeur.\n"
+"  -> サイズが、あまににも多いコンポーネント\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:408
 msgid ""
@@ -46527,7 +46505,7 @@ msgid ""
 "  -> Nom de composante tronqué à 8 caractères ( %(k1)s  >>>  %(k2)s )\n"
 msgstr ""
 "\n"
-"  -> Nom de composante tronqué à 8 caractères ( %(k1)s  >>>  %(k2)s )\n"
+"  -> コンポーネント名は、８文字に切り捨てます ( %(k1)s  >>>  %(k2)s )\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:416
 #, python-format
@@ -58274,7 +58252,7 @@ msgid ""
 " la composante %(k1)s est en double.\n"
 msgstr ""
 "\n"
-" la composante %(k1)s est en double.\n"
+" コンポーネント %(k1)s が重複している。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/postrele.py:346
 #, python-format
@@ -58283,7 +58261,7 @@ msgid ""
 " la composante %(k1)s n'est pas une composante de %(k2)s\n"
 msgstr ""
 "\n"
-" la composante %(k1)s n'est pas une composante de %(k2)s\n"
+" コンポーネント %(k1)s は、コンポーネント %(k2)s ではない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/postrele.py:350
 #, python-format
@@ -59339,7 +59317,7 @@ msgid ""
 " nombre de composantes différent\n"
 msgstr ""
 "\n"
-" nombre de composantes différent\n"
+" コンポーネントの数が異なる\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost2.py:90
 #, python-format
@@ -59348,7 +59326,7 @@ msgid ""
 " composante inconnue %(k1)s\n"
 msgstr ""
 "\n"
-" composante inconnue %(k1)s\n"
+" 未知のコンポーネント %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost2.py:94
 #, python-format
@@ -70995,7 +70973,7 @@ msgid ""
 " table  %(k1)s  : n'existe pas\n"
 msgstr ""
 "\n"
-" table  %(k1)s  : n'existe pas\n"
+" テーブル  %(k1)s  : 存在しない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai4.py:285
 #, python-format
@@ -71528,7 +71506,7 @@ msgid ""
 " pas de composantes\n"
 msgstr ""
 "\n"
-" pas de composantes\n"
+" コンポーネントでない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:218
 msgid ""
@@ -76703,10 +76681,3 @@ msgstr ""
 #, python-format
 msgid "Mot-clé simple : %s %s"
 msgstr "単純なキーワード: %s %s"
-
-#~ msgid ""
-#~ "\n"
-#~ " champ %(k1)s non traité par le changement de repère cylindrique\n"
-#~ msgstr ""
-#~ "\n"
-#~ " champ %(k1)s non traité par le changement de repère cylindrique\n"

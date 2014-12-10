@@ -5111,7 +5111,7 @@
     <message>
       <location filename="../cata.py" line="29938"/>
       <source>Type de communication</source>
-      <translation type="unfinished">Type de communication</translation>
+      <translation type="unfinished">Tip de comunicare</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26010"/>
@@ -5341,7 +5341,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Numéro d ordre</source>
-      <translation type="unfinished">Numéro d ordre</translation>
+      <translation type="unfinished">Număr de ordine</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5401,7 +5401,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Critère de déraffinement.</source>
-      <translation type="unfinished">Critère de déraffinement.</translation>
+      <translation type="unfinished">Criteriu de rafinare a rețelei de discretizare.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5431,27 +5431,27 @@
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Abscisse minimum de la boite</source>
-      <translation type="unfinished">Abscisse minimum de la boite</translation>
+      <translation type="unfinished">Abscisa minimă pentru cutie</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Abscisse maximum de la boite</source>
-      <translation type="unfinished">Abscisse maximum de la boite</translation>
+      <translation type="unfinished">Coordonata y maximă pentru cutie</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Ordonnée minimum de la boite</source>
-      <translation type="unfinished">Ordonnée minimum de la boite</translation>
+      <translation type="unfinished">Coordonata y minimă pentru cutie</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Cote minimum de la boite</source>
-      <translation type="unfinished">Cote minimum de la boite</translation>
+      <translation type="unfinished">Coordonata z minimă pentru cutie</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Cote maximum de la boite</source>
-      <translation type="unfinished">Cote maximum de la boite</translation>
+      <translation type="unfinished">Coordonata z maximă pentru cutie</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
@@ -5471,7 +5471,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Cote du centre de la sphère</source>
-      <translation type="unfinished">Cote du centre de la sphère</translation>
+      <translation type="unfinished">Coordonata z a centrului sferei</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5531,7 +5531,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Diamètre minimal des mailles</source>
-      <translation type="unfinished">Diamètre minimal des mailles</translation>
+      <translation type="unfinished">Diametrul minimal al elementelor din rețeaua de dscretizare</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5576,12 +5576,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Nom de la frontière analytique</source>
-      <translation type="unfinished">Nom de la frontière analytique</translation>
+      <translation type="unfinished">Numele frontierei analitice</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Type de la frontière analytique</source>
-      <translation type="unfinished">Type de la frontière analytique</translation>
+      <translation type="unfinished">Tipul de limită analitică</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5591,17 +5591,17 @@
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Abscisse du centre</source>
-      <translation type="unfinished">Abscisse du centre</translation>
+      <translation type="unfinished">Abscisa centrului</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Ordonnée du centre</source>
-      <translation type="unfinished">Ordonnée du centre</translation>
+      <translation type="unfinished">Ordonata centrului</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Cote du centre</source>
-      <translation type="unfinished">Cote du centre</translation>
+      <translation type="unfinished">Coordonata z a centrului</translation>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
@@ -5636,7 +5636,7 @@
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>L'angle et le centre d'un cone.</source>
-      <translation type="unfinished">L'angle et le centre d'un cone.</translation>
+      <translation type="unfinished">Unghiul de la centrul unui con.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5711,7 +5711,7 @@
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Modification de maillage.</source>
-      <translation type="unfinished">Modification de maillage.</translation>
+      <translation type="unfinished">Modificarea rețelei de discretizare.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5731,12 +5731,12 @@
     <message>
       <location filename="../cata.py" line="28939"/>
       <source>Nombre de noeuds et de mailles du maillage</source>
-      <translation type="unfinished">Nombre de noeuds et de mailles du maillage</translation>
+      <translation type="unfinished">Numărul de noduri și elemente din rețeaua de discretizare</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28939"/>
       <source>Qualité des mailles du maillage.</source>
-      <translation type="unfinished">Qualité des mailles du maillage.</translation>
+      <translation type="unfinished">Calitatea elementelor din rețeaua de discretizare.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28939"/>
@@ -5756,7 +5756,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28939"/>
       <source>Propriétés du maillage de calcul.</source>
-      <translation type="unfinished">Propriétés du maillage de calcul.</translation>
+      <translation type="unfinished">Proprietățile rețelei de discretizare calculate.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28939"/>
@@ -5781,7 +5781,7 @@
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Gestions des historiques.</source>
-      <translation type="unfinished">Gestions des historiques.</translation>
+      <translation type="unfinished">Managementul istoric.</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5801,7 +5801,7 @@
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Gestion des pyramides.</source>
-      <translation type="unfinished">Gestion des pyramides.</translation>
+      <translation type="unfinished">Managementul piramidelor.</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28939"/>
@@ -6886,17 +6886,17 @@
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant x</source>
-      <translation type="unfinished">effort suivant x</translation>
+      <translation type="unfinished">forța după axa x</translation>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant y</source>
-      <translation type="unfinished">effort suivant y</translation>
+      <translation type="unfinished">forța după axa y</translation>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant z</source>
-      <translation type="unfinished">effort suivant z</translation>
+      <translation type="unfinished">forța după axa z</translation>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
@@ -6966,7 +6966,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>resultats mécaniques unitaires</source>
-      <translation type="unfinished">resultats mécaniques unitaires</translation>
+      <translation type="unfinished">rezultate mecanice unitare</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
@@ -7420,6 +7420,11 @@
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
+      <source>Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
+      <translation type="unfinished">Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
+    </message>
+    <message encoding="UTF-8">
+      <location filename="../cata.py" line="33787"/>
       <source>Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
       <translation type="unfinished">Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
     </message>
@@ -7471,7 +7476,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="34566"/>
       <source>Paramètres de la zone</source>
-      <translation type="unfinished">Paramètres de la zone</translation>
+      <translation type="unfinished">Parametrii ariei</translation>
     </message>
     <message>
       <location filename="../cata.py" line="34602"/>
@@ -7676,7 +7681,7 @@
     <message>
       <location filename="../cata.py" line="35810"/>
       <source>instant final</source>
-      <translation type="unfinished">instant final</translation>
+      <translation type="unfinished">sfârșit instantaneu</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35810"/>
@@ -7711,7 +7716,7 @@
     <message>
       <location filename="../cata.py" line="35810"/>
       <source>coef de Poisson</source>
-      <translation type="unfinished">coef de Poisson</translation>
+      <translation type="unfinished">coeficientul lui Poisson</translation>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
@@ -7822,11 +7827,6 @@
       <location filename="../cata.py" line="36328"/>
       <source>Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</source>
       <translation type="unfinished">Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</translation>
-    </message>
-    <message encoding="UTF-8">
-      <location filename="../cata.py" line="33787"/>
-      <source>Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
-      <translation type="unfinished">Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
     </message>
   </context>
 </TS>

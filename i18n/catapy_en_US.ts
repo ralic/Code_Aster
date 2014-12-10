@@ -681,7 +681,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7667"/>
       <source>Applique une pression à un domaine de milieu continu 2D ou 3D ou à un domaine de coques et tuyaux, dont les valeurs imposées (pression et/ou cisaillement) sont fournies par l'intermédiaire d'un concept fonction</source>
-      <translation type="unfinished">Applique une pression à un domaine de milieu continu 2D ou 3D ou à un domaine de coques et tuyaux, dont les valeurs imposées (pression et/ou cisaillement) sont fournies par l'intermédiaire d'un concept fonction</translation>
+      <translation type="unfinished">Applies a pressure to an area of continuous medium 2D or 3D or a field of shells and pipes, of which the imposed values (pressure and/or shear) are provided through a function concept</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7667"/>
@@ -711,7 +711,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7667"/>
       <source>Impose des vitesses normales à une face (phénomène ACOUSTIQUE) dont les valeurs sont fournies par l'intermédiaire d'un concept fonction</source>
-      <translation type="unfinished">Impose des vitesses normales à une face (phénomène ACOUSTIQUE) dont les valeurs sont fournies par l'intermédiaire d'un concept fonction</translation>
+      <translation type="unfinished">Affects speeds normal to a face (ACOUSTIC phenomenon), the values of which are provided through a concept function</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7667"/>
@@ -1566,7 +1566,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11805"/>
       <source>valeur de l'effort de maintien imposée</source>
-      <translation type="unfinished">valeur de l'effort de maintien imposée</translation>
+      <translation type="unfinished">value of the imposed maintaining effort</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11880"/>
@@ -1681,7 +1681,7 @@
     <message>
       <location filename="../cata.py" line="12164"/>
       <source>Source ponctuelle dans le sol</source>
-      <translation type="unfinished">Source ponctuelle dans le sol</translation>
+      <translation type="unfinished">Point source in the ground</translation>
     </message>
     <message>
       <location filename="../cata.py" line="12164"/>
@@ -1696,7 +1696,7 @@
     <message>
       <location filename="../cata.py" line="12164"/>
       <source>Source ponctuelle dans le fluide</source>
-      <translation type="unfinished">Source ponctuelle dans le fluide</translation>
+      <translation type="unfinished">Point source in the fluid</translation>
     </message>
     <message>
       <location filename="../cata.py" line="12164"/>
@@ -1721,7 +1721,7 @@
     <message>
       <location filename="../cata.py" line="12164"/>
       <source>Indique comment l'amortissement hysteretique est pris en compte</source>
-      <translation type="unfinished">Indique comment l'amortissement hysteretique est pris en compte</translation>
+      <translation type="unfinished">Indicates how the hysteretic damping is taken into account</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12164"/>
@@ -1946,7 +1946,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13153"/>
       <source>Noms des paramètres dont les valeurs doivent etre identiques dans les deux tables pour que les colonnes soient combinées</source>
-      <translation type="unfinished">Noms des paramètres dont les valeurs doivent etre identiques dans les deux tables pour que les colonnes soient combinées</translation>
+      <translation type="unfinished">Names of parameters whose values must be identical in the two tables for the columns to be combined</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13153"/>
@@ -2436,7 +2436,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33384"/>
       <source>affichage des moyennes et écart-types en parallèle</source>
-      <translation type="unfinished">affichage des moyennes et écart-types en parallèle</translation>
+      <translation type="unfinished">display of the averages and standard deviations in parallel</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33384"/>
@@ -2676,7 +2676,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Direction de frottement à exclure (uniquement dans le cas 3D)</source>
-      <translation type="unfinished">Direction de frottement à exclure (uniquement dans le cas 3D)</translation>
+      <translation type="unfinished">Direction of friction to exclude (only in the 3D case)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
@@ -2966,7 +2966,7 @@
     <message>
       <location filename="../cata.py" line="17118"/>
       <source>Duree de decoupe apres collision</source>
-      <translation type="unfinished">Duree de decoupe apres collision</translation>
+      <translation type="unfinished">Length of cutting after collision</translation>
     </message>
     <message>
       <location filename="../cata.py" line="17150"/>
@@ -7420,6 +7420,11 @@
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
+      <source>Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
+      <translation type="unfinished">Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
+    </message>
+    <message encoding="UTF-8">
+      <location filename="../cata.py" line="33787"/>
       <source>Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
       <translation type="unfinished">Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
     </message>
@@ -7822,11 +7827,6 @@
       <location filename="../cata.py" line="36328"/>
       <source>Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</source>
       <translation type="unfinished">Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</translation>
-    </message>
-    <message encoding="UTF-8">
-      <location filename="../cata.py" line="33787"/>
-      <source>Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
-      <translation type="unfinished">Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
     </message>
   </context>
 </TS>
