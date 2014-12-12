@@ -49,6 +49,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                       'THER_LINEAIRE',
                       'THER_NON_LINE',
                       'THER_NON_LINE_MO',
+                      'CALC_ERC_DYN',
                       )
 
    if BASE != None:
@@ -76,6 +77,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                   'INFO_MODE',
                   'MODE_ITER_SIMULT',
                   'MODE_ITER_INV',
+                  'CALC_ERC_DYN',
                   ):
       _type = 'SD'
    elif COMMAND in ('CALC_ERREUR',
@@ -212,10 +214,13 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    else:
       _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC", )
 
-   if COMMAND =='MODE_NON_LINE':
+   if COMMAND in ['MODE_NON_LINE']:
       _defaut = "MUMPS"
-      _into = ("MUMPS",)
+      _into = ("MUMPS")
 
+   if COMMAND in ['CALC_ERC_DYN']:
+      _defaut = "MUMPS"
+      _into = ("MUMPS","LDLT")
    _MotCleSimples['METHODE'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
 
 # ----------------------------------------------------------------------------------------------------------------------------------

@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine dpotrf(uplo, n, a, lda, info)
-
-        integer,intent(in) :: lda, n
-        integer,intent(out) :: info
-        real(kind=8),intent(inout) :: a(lda,*)
-        character(len=1),intent(in) :: uplo  
-
-    end subroutine dpotrf
+    subroutine archi_erc(result,ifreq,matmas,obsdim,vecterc,freq,eval,cout_fon,cout_uv)
+#include "asterf_types.h"
+           character(len=8),intent(in) :: result,matmas
+           integer,intent(in) :: ifreq,obsdim(3)
+           real(kind=8),intent(in) :: vecterc(*),freq,cout_fon,cout_uv
+           aster_logical,intent(in) :: eval
+    end subroutine archi_erc
 end interface 

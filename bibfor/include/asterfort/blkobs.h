@@ -16,12 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine dpotrf(uplo, n, a, lda, info)
-
-        integer,intent(in) :: lda, n
-        integer,intent(out) :: info
-        real(kind=8),intent(inout) :: a(lda,*)
-        character(len=1),intent(in) :: uplo  
-
-    end subroutine dpotrf
+    subroutine blkobs(matobs, obsdim,alpha,matprod)
+        integer,intent(in) :: obsdim(3)
+        character(len=24),intent(in) :: matobs(3)
+        real(kind=8),intent(in) :: alpha
+        character(len=24),intent(out) :: matprod(4)
+    end subroutine blkobs
 end interface 

@@ -1,0 +1,18 @@
+COOR_3D
+    NO1     0.1  0.   0.       
+    NO2     0.2  0.   0.
+FINSF
+%
+SEG2
+    S1     NO1      NO2
+FINSF
+%
+GROUP_MA NOM=MESURE
+  S1
+FINSF
+%
+GROUP_NO NOM=OBSPOINT
+  NO1 NO2
+FINSF
+%
+FIN

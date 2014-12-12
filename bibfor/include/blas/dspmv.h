@@ -15,13 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface 
-    subroutine dpotrf(uplo, n, a, lda, info)
 
-        integer,intent(in) :: lda, n
-        integer,intent(out) :: info
-        real(kind=8),intent(inout) :: a(lda,*)
+interface
+    subroutine dspmv(uplo, n, alpha, a, x ,incx,beta, y,incy)
+
+        integer,intent(in) :: n,incx,incy
+        real(kind=8),intent(in) :: x        
+        real(kind=8),intent(inout) :: y
+        real(kind=8),intent(in) :: a(n*(n+1)/2),alpha,beta
         character(len=1),intent(in) :: uplo  
 
-    end subroutine dpotrf
-end interface 
+    end subroutine dspmv
+end interface

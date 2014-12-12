@@ -16,12 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine dpotrf(uplo, n, a, lda, info)
-
-        integer,intent(in) :: lda, n
-        integer,intent(out) :: info
-        real(kind=8),intent(inout) :: a(lda,*)
-        character(len=1),intent(in) :: uplo  
-
-    end subroutine dpotrf
+    subroutine materc(matmas, matrig, matamo, numnu, amor, nommes,&
+                      lfreqs, nbfreq,matobs, obsdim, gamma, alpha,eval)
+#include "asterf_types.h"       
+        character(len=8),intent(out) :: matmas
+        character(len=8),intent(out) :: matrig
+        character(len=8),intent(out) :: matamo
+        character(len=8),intent(out) :: numnu
+        aster_logical,intent(out) :: amor
+        character(len=8),intent(out) :: nommes
+        character(len=24),intent(out) :: lfreqs
+        integer,intent(out) :: nbfreq
+        character(len=24),intent(out) :: matobs(3)
+        integer,intent(out) :: obsdim(3)
+        real(kind=8),intent(out) :: gamma, alpha
+        aster_logical,intent(out) :: eval
+    end subroutine materc
 end interface 

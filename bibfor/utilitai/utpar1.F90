@@ -402,6 +402,8 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         lipara(ico)='TYPE_DEFO#P#K16'
         ico=ico+1
         lipara(ico)='TYPE_MODE#P#K16'
+        ico=ico+1
+        lipara(ico)='ERC_EVAL_FONC#P#R'
         nbpara=ico
         ASSERT(nbpara.le.nbpamx)
 !

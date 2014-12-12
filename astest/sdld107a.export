@@ -1,0 +1,10 @@
+P time_limit 90
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm sdld107a.comm D 1
+F mail sdld107a.mail D 20
+F msup sdld107a.msup D 21

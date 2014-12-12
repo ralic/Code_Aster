@@ -191,15 +191,35 @@ cata_msg = {
     64 : _(u"""
  option symétrie : la dimension de POINT et AXE_2 doit être identique.
 """),
-
-
-
-
+    65 : _(u"""
+ La dimension de la matrice de norme n'est pas compatible 
+ avec la dimension de l'espace d'observation. Vérifiez la
+ cohérence dimensionnelle de vos informations.
+"""),
+    66 : _(u"""
+ La matrice de projection renseignée ne semble pas correspondre aux maillages
+ associés aux modèles numérique et expérimental. 
+"""),
+    67 : _(u"""
+ Les données expérimentales ne contiennent pas d'information quant au maillage
+ expérimental associé, où elles sont incohérentes. On ne peut pas construire la 
+ matrice d'observation.
+"""),
+    68 : _(u"""
+ Vos données expérimentales semblent comporter des degrés de liberté de Lagrange.
+ On ne peut pas traiter ce cas. Le code s'arrête.
+"""),
     69 : _(u"""
  on ne sait pas traiter le champ de type:  %(k1)s
  champ :  %(k2)s
 """),
-
+    70 : _(u"""
+ Vous n'avez pas assez de mesures correspondant à la liste de fréquences demandées.
+"""),
+    71 : _(u"""
+ Problème lors de la construction de la matrice d'observation. Le code s'arrête.
+ Contactez l'assistance technique.
+"""),
     74 : _(u"""
  attention, mode sur amorti
 """),
