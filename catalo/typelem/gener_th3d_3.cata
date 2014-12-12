@@ -134,10 +134,6 @@ MATRICE__
     MMATTSR = MTNS_R DDL_THER DDL_THER
 
 OPTION__
-    CARA_GEOM         -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    CHAR_LIMITE       -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
     CHAR_THER_EVOL    61  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                 CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                           OUT__ MVECTTR  PVECTTR
@@ -163,14 +159,6 @@ OPTION__
                           OUT__ EGGEOP_R PCOORPG
     DURT_ELNO        551  IN__  CMATERC  PMATERC  EPHASNO_ PPHASIN
                           OUT__ EDURTNO  PDURT_R
-    ECIN_ELEM         -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    ENEL_ELEM         -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    ENER_TOTALE       -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    EPOT_ELEM         -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
     ERTH_ELEM          3  IN__  CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
                                 CMATERC  PMATERC  CSOURCF  PSOURCF  ESOURCR  PSOURCR  DDL_THER PTEMP_M
                                 DDL_THER PTEMP_P  EVOISIN  PVOISIN
@@ -185,16 +173,10 @@ OPTION__
                           OUT__ EFLUXPG  PFLUXPG
     FLUX_ELNO          4  IN__  EFLUXPG  PFLUXPG
                           OUT__ EFLUXNO  PFLUXNO
-    INDIC_ENER        -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    INDIC_SEUIL       -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
     INIT_MAIL_VOIS    99  IN__
                           OUT__ EVOISIN  PVOISIN
     INIT_VARC         99  IN__
                           OUT__ ZVARCPG  PVARCPR
-    MASS_INER         -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
     MASS_THER         54  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                           OUT__ MMATTTR  PMATTTR
     META_ELNO         64  IN__  CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
@@ -219,8 +201,6 @@ OPTION__
                           OUT__ EHYDRNO  PHYDRPP  MVECTTR  PRESIDU
     RESI_THER_SOURNL 354  IN__  NGEOMER  PGEOMER  CSOURCF  PSOURNL  DDL_THER PTEMPEI  CTEMPSR  PTEMPSR
                           OUT__ MVECTTR  PRESIDU
-    RICE_TRACEY       -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
     RIGI_THER         51  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                                 ZVARCPG  PVARCPR
                           OUT__ MMATTTR  PMATTTR
@@ -244,5 +224,3 @@ OPTION__
                                 ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  NSOURCR  PSOUR_R
     VERI_JACOBIEN    328  IN__  NGEOMER  PGEOMER
                           OUT__ ECODRET  PCODRET
-    WEIBULL           -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX

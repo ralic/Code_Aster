@@ -27,3 +27,6 @@ OPTION__
         PDEPLPR  DEPL_R 
    OUT__
         PMATUNS  MDNS_R RESL__
+
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='-1'
+                PLUS__  PHENO='ME' BORD='0' COQUE='OUI'

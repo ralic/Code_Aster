@@ -256,10 +256,14 @@ subroutine calcul(stop, optio, ligrlz, nin, lchin,&
 !
 !        -- SI LE NUMERO DU TEOOIJ EST NEGATIF :
         if (numc .lt. 0) then
-            valk(1)=nomte
-            valk(2)=option
-            if (numc .eq. -1) then
-                call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
+            if (numc .eq. -1 .or. numc .eq. -2 ) then
+                valk(1)=nomte
+                valk(2)=option
+                if (numc .eq. -1) then
+                    call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
+                else
+                    call utmess('A', 'CALCULEL_43', nk=2, valk=valk)
+                endif
             else
                 ASSERT(.false.)
             endif

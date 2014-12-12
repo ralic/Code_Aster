@@ -135,8 +135,7 @@ MODE_LOCAL__
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     EGTHETA  = G        ELEM__         (GTHETA   )
-    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     FIC3
-                                        K1       K2       K3       BETA     )
+    EKTHETA  = G        ELEM__         (GTHETA  FIC1  FIC2  FIC3  K1  K2  K3  BETA  )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
@@ -278,10 +277,6 @@ OPTION__
                                 CFREQR   PPULPRO  CROTATR  PROTATR  ECONTNO  PSIGINR  CTEMPSR  PTEMPSR  
                                 DDL_MECA PTHETAR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                           OUT__ EKTHETA  PGTHETA  
-    CARA_GEOM         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_LIMITE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_EPSA_R 426  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  
                                 ZVARCPG  PVARCRR  
                           OUT__ MVECTUR  PVECTUR  

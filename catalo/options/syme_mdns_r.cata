@@ -28,3 +28,8 @@ OPTION__
         PNOSYM   MDNS_R      << MATRICE NON-SYMETRIQUE DE DEPL_R A SYMETRISER>>
    OUT__
         PSYM MDEP_R RESL__   << MATRICE SYMETRIQUE RESULTAT DE LA SYMETRISATION>>
+
+% AL_AR15.1 :
+% On aimerait que TOUS les elements mecaniques calculent SYME_MDNS_R.
+% Mais malheureusement il existe aussi des elements XFEM caches (et donc sans phenomene) qui calculent cette option ...
+% COND_CALCUL__  PLUS__  PHENO='ME'

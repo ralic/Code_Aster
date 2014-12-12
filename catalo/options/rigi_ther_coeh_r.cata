@@ -24,3 +24,5 @@ OPTION__
         PTEMPSR  INST_R
    OUT__
 PMATTTR MTEM_R RESL__
+COND_CALCUL__   PLUS__  PHENO='TH' BORD='-1'
+                PLUS__  PHENO='TH' BORD='0' COQUE='OUI'

@@ -45,14 +45,8 @@ VECTEUR__
 MATRICE__
 
 OPTION__
-    CHAR_MECA_FLUX_F  -1  IN__  CCAMASS  PCAMASS  DDL_MECA PDEPLMR  CFLUXF   PFLUXF   NGEOMER  PGEOMER  
-                                CTEMPSR  PTEMPSR  
-                          OUT__ MVECTUR  PVECTUR  
+
+    CHAR_MECA_PRES_R          -2 IN__ OUT__ XXXXXX XXXXXX 
+
     CHAR_MECA_FLUX_R 314  IN__  EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
                           OUT__ MVECTUR  PVECTUR  
-    COOR_ELGA         -1  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
-    REPERE_LOCAL     133  IN__  CCAMASS  PCAMASS  NGEOMER  PGEOMER  
-                          OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  
-    RIGI_MECA         -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX

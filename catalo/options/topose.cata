@@ -31,3 +31,8 @@ OPTION__
         PHEAVTO  N128_I ELEM__
         PLONCHA  N120_I ELEM__
         PPMILTO  N480_R ELEM__ 
+
+COND_CALCUL__  PLUS__ PHENO='ME' BORD='0'  LXFEM='OUI'
+               PLUS__ PHENO='ME' BORD='-1' LXFEM='OUI'
+               PLUS__ PHENO='TH' BORD='0'  LXFEM='OUI'
+               PLUS__ PHENO='TH' BORD='-1' LXFEM='OUI'

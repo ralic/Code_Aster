@@ -49,3 +49,8 @@ OPTION__
         PPMILTO  N480_R
         OUT__
 PVECTUR VDEP_R RESL__
+
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+                MOINS__ PHENO='ME' INTERFACE='OUI'
+                MOINS__ PHENO='ME' MODELI='D2D'
+                MOINS__ PHENO='ME' ABSO='OUI'

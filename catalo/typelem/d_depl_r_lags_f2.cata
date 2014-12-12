@@ -20,9 +20,12 @@ D_DEPL_R_LAGS_F2
 
 TYPE_ELEM__
 ENTETE__ ELEMENT__ D_DEPL_R_LAGS_F2      MAILLE__ SEG3
-   ELREFE__  V_SEG3
+   ELREFE__  V_SEG3   ATTRIBUT__  CL_DUAL='OUI'
    ENS_NOEUD__  EN1     =     2  3
    ENS_NOEUD__  EN2     =     1
+
+
+
 
 MODE_LOCAL__
     MALPHAR  = NEUT_R   ELEM__         (X1       )

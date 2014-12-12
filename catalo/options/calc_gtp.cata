@@ -59,3 +59,6 @@ OPTION__
 PGTHETA G ELEM__
 
 
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+                PLUS__  PHENO='ME' BORD='-1'
+                MOINS__ PHENO='ME' DISCRET='OUI'

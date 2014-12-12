@@ -225,11 +225,15 @@ subroutine alchml(ligrez, optioz, nompaz, basz, celz,&
         else
             numc=nucalc(iopt,te,0)
         endif
-        if (numc .eq. -1) then
+        if (numc .eq. -1 .or. numc .eq. -2 ) then
             call jenuno(jexnum('&CATA.TE.NOMTE', te), nomte)
             valk(1)=nomte
             valk(2)=option
-            call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
+            if (numc .eq. -1) then
+                call utmess('F', 'CALCULEL_30', nk=2, valk=valk)
+            else
+                call utmess('A', 'CALCULEL_43', nk=2, valk=valk)
+            endif
         endif
 !
         if (mode .gt. 0) then

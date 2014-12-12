@@ -26,3 +26,5 @@ OPTION__
         PCOEFHR  COEH_R
    OUT__
 PVECTTR VTEM_R RESL__
+COND_CALCUL__   PLUS__  PHENO='TH' BORD='-1'
+                PLUS__  PHENO='TH' BORD='0' COQUE='OUI'

@@ -46,28 +46,8 @@ MATRICE__
 OPTION__
     AMOR_MECA        553  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
                           OUT__ MMATUUR  PMATUUR  
-    CARA_GEOM         -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_LIMITE       -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
     COOR_ELGA        478  IN__  NGEOMER  PGEOMER  
                           OUT__ EGGEOP_R PCOORPG  
-    ECIN_ELEM         -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
-    ENEL_ELEM         -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
-    ENER_TOTALE       -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
-    EPOT_ELEM         -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
-    INDIC_ENER        -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
-    INDIC_SEUIL       -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
     ONDE_PLAN        499  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CONDPLA  PONDPLA  CONDPLR  PONDPLR  
                                 CTEMPSR  PTEMPSR  
                           OUT__ MVECTUR  PVECTUR  
-    RICE_TRACEY       -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX   
-    WEIBULL           -1  IN__  XXXXXX   XXXXXX   
-                          OUT__ XXXXXX   XXXXXX

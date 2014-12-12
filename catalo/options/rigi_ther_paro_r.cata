@@ -34,3 +34,7 @@ OPTION__
         PBASECO  N120_R
    OUT__
 PMATTTR MTEM_R RESL__
+
+ COND_CALCUL__   PLUS__  PHENO='TH' BORD='0'  MODELI='CL1'
+                 PLUS__  PHENO='TH' BORD='0'  MODELI='CL2'
+                 PLUS__  PHENO='TH' BORD='0'  LXFEM='OUI'

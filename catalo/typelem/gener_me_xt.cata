@@ -24,44 +24,44 @@ ENTETE__ ELEMENT__ MECA_XT_HEXA8       MAILLE__ HEXA8
    ELREFE__  HE8       GAUSS__  RIGI=FPG8    MASS=FPG8  NOEU=NOEU   XFEM=XFEM480  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6   FPG7=FPG7   XCON=FPG12
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8
 ENTETE__ ELEMENT__ MECA_XT_PENTA6      MAILLE__ PENTA6
    ELREFE__  PE6       GAUSS__  RIGI=FPG6    MASS=FPG6  NOEU=NOEU   XFEM=XFEM240 FPG1=FPG1 FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6   FPG7=FPG7   XCON=FPG12
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6
 ENTETE__ ELEMENT__ MECA_XT_PYRAM5      MAILLE__ PYRAM5
    ELREFE__  PY5       GAUSS__  RIGI=FPG5    MASS=FPG5  NOEU=NOEU   XFEM=XFEM180 FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  TE4       GAUSS__  XINT=FPG15   NOEU=NOEU
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4   5
 ENTETE__ ELEMENT__ MECA_XT_TETRA4      MAILLE__ TETRA4
    ELREFE__  TE4       GAUSS__  RIGI=FPG1    MASS=FPG1  NOEU=NOEU  XINT=FPG15  XFEM=XFEM90 FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6  FPG7=FPG7   XCON=FPG12
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4
 ENTETE__ ELEMENT__ MECA_XT_HEXA20      MAILLE__ HEXA20
    ELREFE__  H20       GAUSS__  RIGI=FPG27   MASS=FPG27 NOEU=NOEU   XFEM=XFEM480  FPG1=FPG1 FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  T10       GAUSS__  XINT=FPG15   NOEU=NOEU
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20
 ENTETE__ ELEMENT__ MECA_XT_PENTA15     MAILLE__ PENTA15
    ELREFE__  P15       GAUSS__  RIGI=FPG21   MASS=FPG21 NOEU=NOEU   XFEM=XFEM240 FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  T10       GAUSS__  XINT=FPG15   NOEU=NOEU
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
 ENTETE__ ELEMENT__ MECA_XT_PYRAM13     MAILLE__ PYRAM13
    ELREFE__  P13       GAUSS__  RIGI=FPG27   MASS=FPG27  NOEU=NOEU   XFEM=XFEM180 FPG1=FPG1 FPG_LISTE__ MATER=(RIGI XFEM NOEU FPG1)
    ELREFE__  T10       GAUSS__  XINT=FPG15   NOEU=NOEU
    ELREFE__  TR3       GAUSS__  FPG4=FPG4    NOEU=NOEU   FPG6=FPG6    FPG7=FPG7  XCON=FPG12
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8   9  10  11  12  13
 ENTETE__ ELEMENT__ MECA_XT_TETRA10     MAILLE__ TETRA10
    ELREFE__  T10       GAUSS__  RIGI=FPG5    MASS=FPG5  NOEU=NOEU   XINT=FPG15  XFEM=XFEM90 FPG1=FPG1 FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
-   ATTRIBUT__  XFEM=XT
+   ATTRIBUT__  XFEM='XT'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8   9  10
 
 MODE_LOCAL__
@@ -92,6 +92,8 @@ MODE_LOCAL__
                                         E2X      E2Y      E2Z      E3X      E3Y      E3Z
                                         E4X      E4Y      E4Z      )
     DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX       DY       DZ       )
+    EDEFOPG  = EPSI_R   ELGA__ XFEM    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
    
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
@@ -122,8 +124,7 @@ MODE_LOCAL__
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     EGNEUT_F = NEUT_F   ELGA__ XFEM    (X[30]    )
     EGNEUT_R = NEUT_R   ELGA__ XFEM    (X[30]    )
-    EKTHETA  = G        ELEM__         (GTHETA   FIC1      FIC2      FIC3
-                                        K1    K2   K3   BETA     )
+    EKTHETA  = G        ELEM__         (GTHETA  FIC1  FIC2  FIC3  K1  K2  K3  BETA  )
     EGTHETA  = G        ELEM__         (GTHETA         )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
@@ -141,6 +142,7 @@ MODE_LOCAL__
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        Z        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
     FISNO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+    ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -149,6 +151,12 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
+    EPSI_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX 
+    EPSP_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX 
+    EPSP_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX 
+    VARI_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX 
+    AMOR_MECA                 -2 IN__ OUT__ XXXXXX XXXXXX 
+
     CALC_G           288  IN__  E35NEUTR PAINTER  E63NEUTR PBASECO  N9NEUT_R PBASLOR  E15NEUTI PCFACE   
                                 E320NEUI PCNSETO  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU  
                                 NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  E3NEUTI  PLONGCO  
@@ -197,22 +205,12 @@ OPTION__
                                 CFREQR   PPULPRO  CROTATR  PROTATR  CTEMPSR  PTEMPSR  DDL_MECC PTHETAR  
                                 ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  E195NEUT PPMILTO  ECONTSE  PSIGISE
                           OUT__ EKTHETA  PGTHETA  
-    CARA_GEOM         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_LIMITE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_EPSA_R  -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_FF3D3D 440  IN__  CFORCEF  PFF3D3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  
                           OUT__ MVECTUR  PVECTUR  
     CHAR_MECA_FR3D3D 440  IN__  E320NEUI PCNSETO  NFORCER  PFR3D3D  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  
                                 E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E33NEUTR PPINTTO  
                                 STANO_I  PSTANO   
                           OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_HYDR_R  -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_MECA_META_Z  -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_PESA_R 441  IN__  E320NEUI PCNSETO  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
                                 N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR  
                                 E33NEUTR PPINTTO  STANO_I  PSTANO   ZVARCPG  PVARCPR  
@@ -225,30 +223,16 @@ OPTION__
                                 E3NEUTI  PLONGCO  N1NEUT_R PLST     E21NEUTR PPINTER  EPRESNO  PPRESSR  
                                 STANO_I  PSTANO   N1NEUT_R PLSN
                           OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_PTOT_R  -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_ROTA_R 441  IN__  E320NEUI PCNSETO  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  
                                 E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     
                                 CMATERC  PMATERC  E33NEUTR PPINTTO  CROTATR  PROTATR  STANO_I  PSTANO   
                           OUT__ MVECTUR  PVECTUR  
-    CHAR_MECA_SECH_R  -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_TEMP_R 541  IN__  N9NEUT_R PBASLOR  CCAMASS  PCAMASS  E320NEUI PCNSETO  CCOMPOR  PCOMPOR  
                                 NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  N1NEUT_R PLSN     
                                 N1NEUT_R PLST     CMATERC  PMATERC  E33NEUTR PPINTTO  STANO_I  PSTANO   
                                 CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
                                 E195NEUT PPMILTO
                           OUT__ ECONTPG  PCONTRT  MVECTUR  PVECTUR  
-    COOR_ELGA         -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    ENER_TOTALE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    EPOT_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
     FORC_NODA        542  IN__  N9NEUT_R PBASLOR  E320NEUI PCNSETO  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  
                                 DDL_MECA PDEPLMR  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
                                 N1NEUT_R PLSN     N1NEUT_R PLST     E33NEUTR PPINTTO  STANO_I  PSTANO   
@@ -266,10 +250,6 @@ OPTION__
                                 MVECTUR  PVECTUR  
     GRAD_NEUT9_R     398  IN__  NGEOMER  PGEOMER  N9NEUT_R PNEUTER  
                           OUT__ G27NEUTR PGNEUTR  
-    INDIC_ENER        -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    INDIC_SEUIL       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     INIT_VARC         99  IN__  
                           OUT__ ZVARCPG  PVARCPR  
     MASS_INER        285  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  
@@ -278,8 +258,6 @@ OPTION__
                                 E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
                                 E33NEUTR PPINTTO  STANO_I  PSTANO   ZVARCPG  PVARCPR  
                           OUT__ MMATUUR  PMATUUR  
-    NORME_L2          -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR  
                           OUT__ EDCEL_I  PDCEL_I  
     RAPH_MECA        539  IN__  N9NEUT_R PBASLOR  CCAMASS  PCAMASS  CCARCRI  PCARCRI  E320NEUI PCNSETO  
@@ -290,12 +268,6 @@ OPTION__
                                 ZVARCPG  PVARCRR  ZVARIPG  PVARIMP  ZVARIPG  PVARIMR 
                                 E195NEUT PPMILTO
                           OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
-    REFE_FORC_NODA    -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    REPERE_LOCAL      -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    RICE_TRACEY       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     RIGI_MECA        539  IN__  N9NEUT_R PBASLOR  E320NEUI PCNSETO  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  
                                 E10NEUTI PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  
                                 E33NEUTR PPINTTO  STANO_I  PSTANO
@@ -323,10 +295,6 @@ OPTION__
                           OUT__ ECONTPG  PCONTRR  
     SIEF_ELNO        289  IN__  E320NEUI PCNSETO  ECONTPG  PCONTRR  E10NEUTI PLONCHA  ZVARCPG  PVARCPR
                           OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
-    SIEQ_ELGA         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    SIEQ_ELNO         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     SIGM_ELGA        546  IN__  ECONTPG  PSIEFR   
                           OUT__ ECONTPC  PSIGMC   ECONTPG  PSIGMR   
     SIGM_ELNO        289  IN__  E320NEUI PCNSETO  ECONTPG  PCONTRR  E10NEUTI PLONCHA
@@ -343,10 +311,6 @@ OPTION__
     TOU_INI_ELGA      99  IN__  
                           OUT__ EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R  
                                 EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  
-    VERI_JACOBIEN     -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
-    WEIBULL           -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     XFEM_XPG          46  IN__  E320NEUI PCNSETO  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  E10NEUTI PLONCHA  
                                 E33NEUTR PPINTTO  
                                 E195NEUT PPMILTO

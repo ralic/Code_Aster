@@ -225,18 +225,18 @@ TEST_RESU(RESU=(_F(GROUP_NO='PMB',
                 ),
           )
 
-DEPA=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=DEP,GROUP_MA='GEOA')
+DEPA=CALC_CHAMP(CONTRAINTE=('SIEF_ELNO'),RESULTAT=DEP,GROUP_MA='GEOA')
 
 
 DEPA=CALC_CHAMP(reuse=DEPA,
                 RESULTAT=DEPA,
-                CONTRAINTE='SIGM_NOEU',);
+                CONTRAINTE='SIEF_NOEU',);
 
 TEST_RESU(RESU=_F(GROUP_NO='PMA',
                   INST=1.0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=DEPA,
-                  NOM_CHAM='SIGM_NOEU',
+                  NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='NXX',
                   VALE_CALC=-8.63879617E+05,
                   VALE_REFE=-8.5714290000000002E5,

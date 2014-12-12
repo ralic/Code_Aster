@@ -27,3 +27,7 @@ OPTION__
         PSOURCR  SOUR_R
    OUT__
 PVECTUR VDEP_R RESL__
+
+COND_CALCUL__  PLUS__ PHENO='ME'  MODELI='3FL'  BORD='-1'
+               PLUS__ PHENO='ME'  MODELI='2FL'  BORD='-1'
+               PLUS__ PHENO='ME'  MODELI='AXF'  BORD='-1'

@@ -1,5 +1,5 @@
 %& LIBRARY OPTIONS
-% person_in_charge: xavier.desroches at edf.fr
+% person_in_charge: jacques.pellet at edf.fr
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,3 +27,7 @@ OPTION__
         PCAGEPO  CAGEPO   << RAYON ET EPAISSAUR POUR LES TUYAUX >>
    OUT__
 PCOORPG GEOM_R ELGA__
+
+COND_CALCUL__  PLUS__  PHENO='ME'
+               PLUS__  PHENO='TH'
+               PLUS__  PHENO='AC'

@@ -21,21 +21,21 @@ import cPickle
 import copy
 import os
 
-#
+##########################################################################
 #  1    utilitaires pour supprimer ce qui est inutile dans les catalogues
 #  2    utilitaires pour vérifications et émission de messages
 #  3    utilitaires pour création des objets jeveux en Python
-#
+##########################################################################
 
 
-#
+##########################################################################
 #  1    utilitaires pour supprimer ce qui est inutile dans les catalogues
-#
+##########################################################################
 
 def menage_capy(capy):
-#--------------------------------------
-#   pour supprimer ce qui est inutile :
-#--------------------------------------
+    #--------------------------------------
+    #   pour supprimer ce qui est inutile :
+    #--------------------------------------
     for cata in capy.tg:
         nom, l_entetg, modlocs, opts = cata.cata_tg
         menage_type_elem(modlocs, opts)
@@ -50,13 +50,13 @@ def menage_type_elem(modlocs, opts):
 
 
 def menage_te_option(opts):
-#------------------------------------------------------------
-#   pour supprimer les paramètres d'une option non calculée :
-#------------------------------------------------------------
+    #------------------------------------------------------------
+    #   pour supprimer les paramètres d'une option non calculée :
+    #------------------------------------------------------------
     if opts:
         for i in range(len(opts)):
             opt = opts.pop(i)
-            numte = int(opt[1])
+            numte = opt[1]
             if numte < 0:
                 opt = (
                     opt[0], opt[1], ['XXXXXX', 'XXXXXX'], ['XXXXXX', 'XXXXXX'])
@@ -64,9 +64,9 @@ def menage_te_option(opts):
 
 
 def menage_te_moloc(modlocs, opts):
-#-------------------------------------------------
-# pour supprimer les modes locaux inutilisés :
-#-------------------------------------------------
+    #-------------------------------------------------
+    # pour supprimer les modes locaux inutilisés :
+    #-------------------------------------------------
 
     utilise = {}
     utilise_in = {}
@@ -110,9 +110,10 @@ def menage_te_moloc(modlocs, opts):
             MLOCs.remove(moloc)
 
 
-#
+##########################################################################
 #  2    utilitaires pour vérifications et émission de messages
-#
+##########################################################################
+
 from Execution.strfunc import convert
 
 
@@ -227,7 +228,7 @@ def cmp_gd(a, b):
 
 
 def tronque_n(lmax, liste):
-# pour tronquer une liste de chaines de caratères:
+    # pour tronquer une liste de chaines de caratères:
     for x in liste:
         if len(x) > lmax:
             ERR.mess('A', "troncature : avant : " + x + " apres: " + x[0:lmax])
@@ -236,7 +237,7 @@ def tronque_n(lmax, liste):
 
 
 def tronque_1(lmax, x):
-# pour tronquer une chaine de caratères:
+    # pour tronquer une chaine de caratères:
     if len(x) > lmax:
         ERR.mess('A', "troncature : avant : " + x + " apres: " + x[0:lmax])
     x = x[0:lmax]
@@ -252,9 +253,9 @@ def chaine(var, long, cadre='G'):
     else:
         ERR.mess('F', "Erreur")
 
-#
+##########################################################################
 #  3    utilitaires pour création des objets jeveux en Python
-#
+##########################################################################
 
 
 def cree_os(dicobj, nom, tsca, long):
@@ -284,13 +285,13 @@ def cree_co(dicobj, nom, tsca, tsca_pn, contig, acces, longv):
 class JV_COLLEC:
 
     def __init__(self, nom, tsca, tsca_pn, contig, acces, longv):
-    # ----------------------------------------------------------------------------------------
-    # pour créer une collection jeveux
-    # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
-    # tsca_pn = /'K8' /'K16' /'K24' ... : longueur des chaines permettant l'acces aux OC
-    # contig = /'CONTIG' /'DISPER'
-    # acces = /'NU' /'NO'
-    # longv : /0 (si longueur variable) /n (si longueur constante)
+        # ----------------------------------------------------------------------------------------
+        # pour créer une collection jeveux
+        # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
+        # tsca_pn = /'K8' /'K16' /'K24' ... : longueur des chaines permettant l'acces aux OC
+        # contig = /'CONTIG' /'DISPER'
+        # acces = /'NU' /'NO'
+        # longv : /0 (si longueur variable) /n (si longueur constante)
         self.nom = nom
         self.typojb = 'collec'
         self.tsca = tsca
@@ -354,8 +355,8 @@ class JV_COLLEC:
             if self.acces == "NO":
                 # les collections ayant leur pointeur de nom en interne ont un
                 # accès K8
-                file.write("|NOM=" + chaine(oc1.nom, 8) + "|LONMAX=" + chaine(
-                    len(oc1.valeurs), 12, 'D') + "\n")
+                file.write("|NOM=" + chaine(oc1.nom, 8) +
+                           "|LONMAX=" + chaine(len(oc1.valeurs), 12, 'D') + "\n")
             else:
                 file.write(
                     "|LONMAX=" + chaine(len(oc1.valeurs), 12, 'D') + "\n")
@@ -373,10 +374,10 @@ class JV_COLLEC:
 class JV_SIMPLE:
 
     def __init__(self, nom, tsca, long):
-    # ----------------------------------------------------------------------------------------
-    # pour créer un vecteur jeveux
-    # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
-    # long : longueur du vecteur
+        # ----------------------------------------------------------------------------------------
+        # pour créer un vecteur jeveux
+        # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
+        # long : longueur du vecteur
         self.nom = nom
         self.typojb = 'vecteur'
         self.tsca = tsca
@@ -393,11 +394,11 @@ class JV_SIMPLE:
     def ecri_os(self, indice, valeur):
         if indice < 1 or indice > len(self.valeurs):
             ERR.mess('F', "Erreur")
-        if self.tsca[0] == "K" and type(valeur) != type("a"):
+        if self.tsca[0] == "K" and not isinstance(valeur,str):
             ERR.mess('F', "Erreur : on attend une chaine: " + str(valeur))
-        if self.tsca[0] == "I" and type(valeur) != type(1):
+        if self.tsca[0] == "I" and not isinstance(valeur,int):
             ERR.mess('F', "Erreur : on attend un entier: " + str(valeur))
-        if self.tsca[0] == "R" and type(valeur) != type(1.e0):
+        if self.tsca[0] == "R" and not isinstance(valeur,float):
             ERR.mess('F', "Erreur : on attend un réel: " + str(valeur))
 
         if self.tsca[0] == "K":
@@ -415,8 +416,8 @@ class JV_SIMPLE:
 
     def impr(self, file):
         file.write("|TYPE_JEVEUX=SIMPLE" + "\n")
-        file.write("|NOM=" + chaine(self.nom, 24) + "|TYPE=" + chaine(
-            self.tsca, 3) + "|LONMAX=" + chaine(self.long, 12, 'D') + "\n")
+        file.write("|NOM=" + chaine(self.nom, 24) + "|TYPE=" +
+                   chaine(self.tsca, 3) + "|LONMAX=" + chaine(self.long, 12, 'D') + "\n")
         if self.tsca[0] == "K":
             for val in self.valeurs:
                 file.write(str(val) + "\n")
@@ -430,9 +431,9 @@ class JV_SIMPLE:
 class JV_PNOM:
 
     def __init__(self, nom, tsca):
-    # ----------------------------------------------------------------------------------------
-    # pour créer un pointeur de noms jeveux
-    # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
+        # ----------------------------------------------------------------------------------------
+        # pour créer un pointeur de noms jeveux
+        # tsca = /'I' /'R' /'C' /'K8' /'K16' ...
         self.nom = nom
         self.typojb = 'pteur_nom'
         if tsca[0] != "K":
@@ -443,9 +444,9 @@ class JV_PNOM:
         self.nomuti = 0
 
     def jenonu(self, nom, stop='PAS_COOL'):
-    # rend le numéro (num de 1 à  n) d'un nom dans un pointeur de noms.
-    # num est < 0 si le nom a été ajouté au pointeur.
-        if type(nom) != type("a"):
+        # rend le numéro (num de 1 à  n) d'un nom dans un pointeur de noms.
+        # num est < 0 si le nom a été ajouté au pointeur.
+        if not isinstance(nom,str):
             ERR.mess('F', "Erreur : on attend nom=chaine.")
         ERR.veri_long_chaine('E', nom, int(self.tsca[1:3]))
         nom2 = nom[0:int(self.tsca[1:3])]
@@ -462,11 +463,11 @@ class JV_PNOM:
             return -indice
 
     def ajout_nom(self, nom):
-    # ajoute un nom dans un pointeur de noms.
-    # s'arrete en erreur fatale si le nom existe déjà 
+        # ajoute un nom dans un pointeur de noms.
+        # s'arrete en erreur fatale si le nom existe déjà 
         if self.dico.has_key(nom):
-            ERR.mess('F', "Erreur: le nom: " +
-                     nom + " existe déjà  dans: " + self.nom)
+            ERR.mess(
+                'F', "Erreur: le nom: " + nom + " existe déjà  dans: " + self.nom)
         else:
             indice = self.nomuti + 1
             self.nomuti = indice
@@ -477,27 +478,28 @@ class JV_PNOM:
 
     def impr(self, file):
         file.write("|TYPE_JEVEUX=PT_NOM" + "\n")
-        file.write("|NOM=" + chaine(self.nom, 24) + "|TYPE=" + chaine(
-            self.tsca, 3) + "|NOMMAX=" + chaine(self.nomuti, 12, 'D') + "\n")
+        file.write("|NOM=" + chaine(self.nom, 24) + "|TYPE=" +
+                   chaine(self.tsca, 3) + "|NOMMAX=" + chaine(self.nomuti, 12, 'D') + "\n")
         nchar = int(self.tsca[1:4])
         for val in self.valeurs:
             file.write(chaine(val, nchar) + "\n")
 
 
-#
+##########################################################################
 #  fonctions de manipulation de capy : pickled/unpickled + surcharge  + destruction
-#
+# ###################################################################################
+
 def write_capy(capy, nomfic):
-#==================================
-#   sauver un catalogue python (capy) sur un fichier (cPickle)
+    #==================================
+    #   sauver un catalogue python (capy) sur un fichier (cPickle)
     fimpr = open(nomfic, "w")
     cPickle.dump(capy, fimpr)
     fimpr.close()
 
 
 def read_capy(nomfic):
-#==================================
-#   récupérer un catalogue python (capy) sur un fichier (un-cPickle)
+    #==================================
+    #   récupérer un catalogue python (capy) sur un fichier (un-cPickle)
     fimpr = open(nomfic, "r")
     capy = cPickle.load(fimpr)
     fimpr.close()
@@ -505,9 +507,9 @@ def read_capy(nomfic):
 
 
 def surch_capy(capy1, capy2):
-#==================================
-#   ajouter/remplacer  capy2 à  capy1
-#   Attention : cette fonction modifie capy1 (enrichissement + remplacement)
+    #==================================
+    #   ajouter/remplacer  capy2 à  capy1
+    # Attention : cette fonction modifie capy1 (enrichissement + remplacement)
 
     if capy2 is None:
         return 0
@@ -557,7 +559,7 @@ def surch_capy(capy1, capy2):
             capy1.tg.append(copy.deepcopy(capy2.tg[num2]))
 
     # on met les options ,les type_elem et les type_gene dans l'ordre alphabétique:
-    # ------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
     likeys = capy1.dicop.keys()
     likeys.sort()
     liste2 = []
@@ -599,8 +601,8 @@ def surch_capy(capy1, capy2):
 
 
 def cata_split(nomfic, prefix, nblig):
-#=============================================
-#   spliter 1 fichier .cata en plusieurs morceaux
+    #=============================================
+    #   spliter 1 fichier .cata en plusieurs morceaux
     file = open(nomfic, "r")
     t = file.readlines()
 
@@ -631,9 +633,9 @@ def cata_split(nomfic, prefix, nblig):
 
 
 def concat_capy(capy1, capy2):
-#==================================
-#   ajouter  capy2 à  capy1
-#   Attention : cette fonction modifie capy1 (enrichissement + remplacement)
+    #==================================
+    #   ajouter  capy2 à  capy1
+    # Attention : cette fonction modifie capy1 (enrichissement + remplacement)
 
     if capy2 is None:
         return 0
@@ -687,7 +689,7 @@ def concat_capy(capy1, capy2):
 
 
 def detruire_cata(capy, unigest):
-#==================================
+    #==================================
     u"""détruire dans un objet 'capy' les catalogues indiqués dans le fichier
     unigest
 
@@ -733,15 +735,16 @@ def detruire_cata(capy, unigest):
                 ERR.mess('E', mess % (nom, type))
 
 
-#
+##########################################################################
 #  fonctions d'inspection des catalogues  :
-#
+##########################################################################
 
 def ut_qui_use_cmp(capy, nomgd, nomcmp):
-#=====================================
+    #=====================================
 
-# pour écrire quels sont les triplets (modelisation,typelem,option)
-# qui utilisent une CMP d'une grandeur :
+    # pour écrire quels sont les triplets (modelisation,typelem,option)
+    # qui utilisent une CMP d'une grandeur :
+
     lte = []
     lopt2 = []
     for cata in capy.te:
@@ -775,7 +778,7 @@ def ut_qui_use_cmp(capy, nomgd, nomcmp):
         lopt = []
         for opt in opts:
             for k in l1:
-                numte = int(opt[1])
+                numte = opt[1]
                 if numte < 0:
                     continue
                 k2 = opt[2].count(k)
@@ -793,10 +796,12 @@ def ut_qui_use_cmp(capy, nomgd, nomcmp):
             lte.append(entete[0])
             lopt2.extend(lopt)
 
+
 # impression de la liste des type_elem utilisant nomgd,nomcmp:
 # ------------------------------------------------------------
     lte.sort()
     print "#jp3 ", nomgd, nomcmp, lte
+
 
 # impression de la liste des options utilisant nomgd,nomcmp:
 # ----------------------------------------------------------------
@@ -806,6 +811,7 @@ def ut_qui_use_cmp(capy, nomgd, nomcmp):
     a = dicopt.keys()
     a.sort()
     print "#jp2 ", nomgd, nomcmp, a
+
 
 # impression de la liste des modélisations utilisant nomgd,nomcmp:
 # ----------------------------------------------------------------

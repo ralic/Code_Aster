@@ -57,3 +57,5 @@ OPTION__
    OUT__
         PSIEFNOR SIEF_R ELNO__
         PSIEFNOC SIEF_C ELNO__
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+                MOINS__  PHENO='ME' ABSO='OUI'

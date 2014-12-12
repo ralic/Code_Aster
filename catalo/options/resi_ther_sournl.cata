@@ -30,3 +30,4 @@ OPTION__
        <<  PTEMPER :  >>
    OUT__
         PRESIDU VTEM_R RESL__
+ COND_CALCUL__   PLUS__  PHENO='TH' BORD='0'

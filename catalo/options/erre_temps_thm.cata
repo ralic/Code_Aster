@@ -37,3 +37,5 @@ OPTION__
    OUT__
         PERREUR ERRE_R ELEM__
        <<  PERREUR : ESTIMATEUR D ERREUR  >>
+                                                                                                                            
+COND_CALCUL__ PLUS__  PHENO='ME'  THM='OUI' DIM_COOR_MODELI='2' BORD='0'

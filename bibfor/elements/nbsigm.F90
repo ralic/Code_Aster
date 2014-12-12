@@ -34,9 +34,9 @@ function nbsigm()
     endif
 !
 !
-    if (nbsig .eq. 'X4') then
+    if (nbsig .eq. '4') then
         nbsigm=4
-    else if (nbsig.eq.'X6') then
+    else if (nbsig.eq.'6') then
         nbsigm=6
     else
         ASSERT(.false.)

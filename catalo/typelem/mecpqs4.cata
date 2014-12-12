@@ -186,10 +186,6 @@ OPTION__
                           OUT__ EKTHETA  PGTHETA  
     CALC_NOEU_BORD   290  IN__  NGEOMER  PGEOMER  
                           OUT__ MVECTUR  PVECTUR  
-    CARA_GEOM         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_LIMITE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     CHAR_MECA_EPSA_R 421  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  
                                 ZVARCPG  PVARCRR  
                           OUT__ MVECTUR  PVECTUR  
@@ -226,8 +222,6 @@ OPTION__
                           OUT__ EDERAPG  PDERAPG  
     DERA_ELNO          4  IN__  EDERAPG  PDERAPG  
                           OUT__ EDERANO  PDERANO  
-    ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
     ENEL_ELEM        490  IN__  CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  DDL_MECA PDEPLR   NGEOMER  PGEOMER  
                                 CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIPR  
                           OUT__ EENERR   PENERD1  
@@ -337,10 +331,6 @@ OPTION__
                           OUT__ EMASSINE PMASSINE 
     MASS_MECA         82  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  
                           OUT__ MMATUUR  PMATUUR  
-    MASS_MECA_DIAG    -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    MASS_MECA_EXPLI   -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
     MASS_ZZ1         293  IN__  NGEOMER  PGEOMER  
                           OUT__ MMATZZR  PMATZZR  
     M_GAMMA           82  IN__  DDL_MECA PACCELR  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  
@@ -388,8 +378,6 @@ OPTION__
                           OUT__ MMATUUR  PMATUUR  
     RIGI_MECA_HYST    50  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR  
                           OUT__ MMATUUC  PMATUUC  
-    RIGI_MECA_RO      -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     RIGI_MECA_TANG   350  IN__  CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  
                                 DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  
                                 CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  

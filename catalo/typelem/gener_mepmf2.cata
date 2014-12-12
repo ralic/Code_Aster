@@ -133,10 +133,6 @@ OPTION__
     AMOR_MECA         50  IN__  NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                 ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
-    CARA_GEOM         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    CHAR_LIMITE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     CHAR_MECA_EPSI_R  20  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CEPSINR  PEPSINR  ECAFIEL  PFIBRES
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                                 CCOMPOR  PCOMPOR
@@ -177,35 +173,17 @@ OPTION__
                           OUT__ EGGEOP_R PCOORPG
     COOR_ELGA_MATER  463  IN__  CCAORIE  PCAORIE  ECAFIEL  PFIBRES  NGEOMER  PGEOMER  ENBSP_I  PNBSP_I
                           OUT__ EGGEMA_R PCOOPGM
-    DEGE_ELGA        -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     DEGE_ELNO        158  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                 CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ EDEFGNO  PDEFOGR
-    ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
-    EFGE_ELGA         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     EFGE_ELNO        185  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
                                 DDL_MECA PDEPLAR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC
                                 ENBSP_I  PNBSP_I  ENONLIN  PNONLIN  ESTRAUX  PSTRXRR  ZVARCPG  PVARCPR
                           OUT__ EEFGENC  PEFFORC  EEFGENO  PEFFORR
-    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
-    ENER_TOTALE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    EPEQ_ELGA         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    EPEQ_ELNO         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     EPOT_ELEM        151  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR
                                 ECAFIEL  PFIBRES  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                 ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ EENEDNO  PENERDR
-    EPSI_ELGA         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
-    EPSI_ELNO         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     FORC_NODA        517  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                 DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  ECAFIEL  PFIBRES  NGEOMER  PGEOMER
                                 CMATERC  PMATERC  ENBSP_I  PNBSP_I  ESTRAUX  PSTRXMR  ZVARCPG  PVARCPR
@@ -218,12 +196,6 @@ OPTION__
                                 ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                           OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ESTRAUX  PSTRXPR
                                 ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    FULL_MECA_ELAS    -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    INDIC_ENER        -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    INDIC_SEUIL       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     INIT_VARC         99  IN__
                           OUT__ ZVARCPG  PVARCPR
     INI_SP_MATER      99  IN__
@@ -271,16 +243,12 @@ OPTION__
                           OUT__ MVECTUR  PVECTUR
     REPERE_LOCAL     135  IN__  CCAORIE  PCAORIE
                           OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
-    RICE_TRACEY       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     RIGI_FLUI_STRU   140  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECAFIEL  PFIBRES
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
     RIGI_MECA        140  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  ECAFIEL  PFIBRES
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
-    RIGI_MECA_ELAS    -1  IN__  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
     RIGI_MECA_GE     143  IN__  CCAGNP1  PCAGNPO  CCAORIE  PCAORIE  ECONTPG  PEFFORR  ECAFIEL  PFIBRES
                                 NGEOMER  PGEOMER  ENBSP_I  PNBSP_I  ESTRAUX  PSTRXRR
                           OUT__ MMATUUR  PMATUUR
@@ -296,8 +264,6 @@ OPTION__
                                 CITERAT  PITERAT  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ESTRAUX  PSTRXMR
                                 ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                           OUT__ MMATUUR  PMATUUR
-    SIEF_ELGA         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
     SIEF_ELNO          4  IN__  ECONTPG  PCONTRR  ZVARCPG  PVARCPR
                           OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
     SIEQ_ELGA        335  IN__  ECONTPG  PCONTRR
@@ -310,8 +276,6 @@ OPTION__
                           OUT__ ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
     SIPM_ELNO        149  IN__  ENBSP_I  PNBSP_I  ECONTNO  PSIEFNOR ZVARCPG  PVARCPR
                           OUT__ ESIMXNC  PSIMXRC  ESIMXNO  PSIMXRR
-    SIPO_ELNO         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     TOU_INI_ELEM      99  IN__
                           OUT__ ECAFIEL  PCAFI_R  CGEOMER  PGEOM_R  ENBSP_I  PNBSP_I
     TOU_INI_ELGA      99  IN__
@@ -320,7 +284,3 @@ OPTION__
     TOU_INI_ELNO      99  IN__
                           OUT__ NGEOMER  PGEOM_R  EEINST_R PINST_R  EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
                                 EEFGENO  PSIEF_R  ZVARINO  PVARI_R
-    VARI_ELNO         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    WEIBULL           -1  IN__
-                          OUT__ XXXXXX   XXXXXX

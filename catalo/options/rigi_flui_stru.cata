@@ -32,3 +32,6 @@ OPTION__
         PCINFDI  CINFDI  <<  PCINFDI : INFORMATIONS SUR LES DISCRETS, PAR AFFE_CARA_ELEM  >>
    OUT__
 PMATUUR MDEP_R RESL__
+                                                                                                                            
+COND_CALCUL__ PLUS__  PHENO='ME' DIM_TOPO_MODELI='1'
+              PLUS__  PHENO='ME' DISCRET='OUI'

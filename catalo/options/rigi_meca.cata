@@ -57,3 +57,8 @@ OPTION__
         PMATUUR  MDEP_R  RESL__
         PMATUNS  MDNS_R  RESL__
         PCACO3D  CACO3D  ELEM__  << NE SERT QUE POUR COQUE_3D >>
+        
+COND_CALCUL__   PLUS__   PHENO='ME' BORD='0'
+                MOINS__  PHENO='ME' ABSO='OUI'
+                MOINS__  PHENO='ME' MODELI='FS2'
+                MOINS__  PHENO='ME' MODELI='FSA'

@@ -79,15 +79,14 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
+    MECA_GYRO                 -2 IN__ OUT__ XXXXXX XXXXXX
+    RIGI_GYRO                 -2 IN__ OUT__ XXXXXX XXXXXX
+    
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA         41  IN__  CCADISA  PCADISA  CCAORIE  PCAORIE  CCINFDI  PCINFDI  CMATERC  PMATERC
                                 MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR
-    CARA_GEOM         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    CHAR_LIMITE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     CHAR_MECA_PESA_R  43  IN__  CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI  CPESANR  PPESANR
                                 ZVARCPG  PVARCPR
                               OUT__  MVECTUR  PVECTUR
@@ -106,10 +105,6 @@ OPTION__
     EFGE_ELNO        185  IN__  CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI  EEFGEGA  PCONTRR
                                 DDL_MECA PDEPLAR  ENONLIN  PNONLIN  ZVARCPG  PVARCPR
                           OUT__ EEFGENC  PEFFORC  EEFGENO  PEFFORR
-    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
-    ENER_TOTALE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     EPOT_ELEM         44  IN__  CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI  DDL_MECA PDEPLAR
                                 ZVARCPG  PVARCPR
                               OUT__  EENERR  PENERDR
@@ -131,10 +126,6 @@ OPTION__
                                 ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                           OUT__ ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    INDIC_ENER        -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    INDIC_SEUIL       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     INIT_VARC         99  IN__
                           OUT__ ZVARCPG  PVARCPR
     MASS_FLUI_STRU      41    IN__   CABSCUR  PABSCUR  CCADISM  PCADISM  CCAORIE  PCAORIE  CCINFDI  PCINFDI
@@ -166,8 +157,6 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     REPERE_LOCAL        135   IN__   CCAORIE  PCAORIE
                               OUT__  CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
-    RICE_TRACEY       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     RIGI_FLUI_STRU    41  IN__  CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI  ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA         41  IN__  CCADISK  PCADISK  CCAORIE  PCAORIE  CCINFDI  PCINFDI  ZVARCPG  PVARCPR
@@ -203,5 +192,3 @@ OPTION__
                                 EEFGENO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELNO           4     IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
-    WEIBULL           -1  IN__
-                          OUT__ XXXXXX   XXXXXX

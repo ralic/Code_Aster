@@ -37,7 +37,7 @@ ENTETE__ ELEMENT__ EJHYME_PENTA15       MAILLE__ PENTA15
 ENTETE__ ELEMENT__ MEFI_HEXA20          MAILLE__ HEXA20
    ELREFE__  QU8       GAUSS__  RIGI=FPG9   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  QU4       GAUSS__  RIGI=FPG9
-   ATTRIBUT__  TYPE_VOISIN=F3
+   ATTRIBUT__  TYPE_VOISIN='F3'
    ENS_NOEUD__  EN1     =      1  2  3  4  9  10  11  12
    ENS_NOEUD__  EN2     =      5  6  7  8   
    ENS_NOEUD__  EN3     =     16 13 14 15
@@ -46,7 +46,7 @@ ENTETE__ ELEMENT__ MEFI_HEXA20          MAILLE__ HEXA20
 ENTETE__ ELEMENT__ MEFI_PENTA15         MAILLE__ PENTA15
    ELREFE__  TR6       GAUSS__  RIGI=FPG6   FPG_LISTE__  MATER = (RIGI)
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
-   ATTRIBUT__  TYPE_VOISIN=F3
+   ATTRIBUT__  TYPE_VOISIN='F3'
    ENS_NOEUD__  EN1     =      1   2   3  7   8   9 
    ENS_NOEUD__  EN2     =      4   5   6 
    ENS_NOEUD__  EN3     =     10  11  12
@@ -107,20 +107,8 @@ OPTION__
     AMOR_MECA        324  IN__  CMATERC  PMATERC  MMATUNS  PRIGINS  ZVARIPG  PVARIPG
                                 NGEOMER  PGEOMER
                           OUT__ MMATUUR  PMATUUR
-    CARA_GEOM         -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    CHAR_LIMITE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     COOR_ELGA        362  IN__  NGEOMER  PGEOMER  
                           OUT__ EGGEOP_R PCOORPG  
-    ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
-    ENER_TOTALE       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    EPOT_ELEM         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
     FORC_NODA        323  IN__  ECONTPG  PCONTMR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  
                           OUT__ MVECTUR  PVECTUR  
     FULL_MECA        322  IN__  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
@@ -133,16 +121,8 @@ OPTION__
                                 CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  
                           OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  MMATUUR  PMATUUR  
                                 ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
-    INDIC_ENER        -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    INDIC_SEUIL       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     INIT_VARC         99  IN__  
                           OUT__ ZVARCPG  PVARCPR  
-%    MASS_INER         -1  IN__  ZVARCPG  PVARCPR  
-%                          OUT__ XXXXXX   XXXXXX   
-    NORME_L2          -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
     NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR  
                           OUT__ EDCEL_I  PDCEL_I  
     PAS_COURANT      405  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
@@ -153,10 +133,6 @@ OPTION__
                           OUT__ ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR  
     REFE_FORC_NODA   323  IN__  NGEOMER  PGEOMER  EREFCO   PREFCO   
                           OUT__ MVECTUR  PVECTUR  
-    RICE_TRACEY       -1  IN__  
-                          OUT__ XXXXXX   XXXXXX   
-    RIGI_MECA         -1  IN__  ZVARCPG  PVARCPR  
-                          OUT__ XXXXXX   XXXXXX   
     RIGI_MECA_ELAS   322  IN__  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  
                                 DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  
                                 CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR  
@@ -177,5 +153,3 @@ OPTION__
                                 ECONTNO  PSIEF_R  ZVARINO  PVARI_R  
     VARI_ELNO        122  IN__  ZVARIPG  PVARIGR  
                           OUT__ ZVARINO  PVARINR  
-    WEIBULL           -1  IN__  
-                          OUT__ XXXXXX   XXXXXX

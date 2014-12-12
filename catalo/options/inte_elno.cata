@@ -30,3 +30,4 @@ OPTION__
        <<  PFREQR : FREQUENCE DU MODE >>
    OUT__
         PINTER  INTE_R ELNO__
+COND_CALCUL__   PLUS__  PHENO='AC' BORD='0'

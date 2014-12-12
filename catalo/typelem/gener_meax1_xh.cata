@@ -23,11 +23,11 @@ TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEAXSE2_XH     MAILLE__ SEG2
    ELREFE__ SE2      GAUSS__  RIGI=FPG2
-   ATTRIBUT__     XFEM=XH
+   ATTRIBUT__  XFEM='XH'
 ENTETE__ ELEMENT__ MEAXSE3_XH     MAILLE__ SEG3
    ELREFE__ SE3      GAUSS__  RIGI=FPG4
    ELREFE__ SE2      GAUSS__  RIGI=FPG2
-   ATTRIBUT__   XFEM=XH
+   ATTRIBUT__  XFEM='XH'
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX     DY      H1X     H1Y  )
@@ -43,7 +43,8 @@ MODE_LOCAL__
     E2NEUTI = N128_I    ELEM__         (X[2])
     E6NEUTI = N512_I    ELEM__         (X[6])
     E8NEUTI = N120_I    ELEM__         (X[8])
-   
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
+
 
     E4NEUTR = N480_R    ELEM__         (X[4])
     E6NEUTR = N132_R    ELEM__         (X[6])
@@ -60,6 +61,7 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
+    CALC_K_G                  -2 IN__ OUT__ XXXXXX XXXXXX 
     CHAR_MECA_FF1D2D  36  IN__  E6NEUTI  PCNSETO  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  E2NEUTI  PHEAVTO
                                 E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E6NEUTR  PPINTTO
                                 E4NEUTR  PPMILTO  STANO_I  PSTANO   CTEMPSR  PTEMPSR

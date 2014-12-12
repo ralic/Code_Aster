@@ -34,3 +34,6 @@ OPTION__
    OUT__
         PNORME NEUT_R ELEM__
        <<  PNORME : NORME L2  >>
+
+COND_CALCUL__   PLUS__  BORD='0'
+                PLUS__  BORD='-1'

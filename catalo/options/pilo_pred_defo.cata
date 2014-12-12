@@ -32,3 +32,4 @@ OPTION__
         PCDTAU   PILO_R
         OUT__
         PCOPILO  PILO_R ELGA__
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'

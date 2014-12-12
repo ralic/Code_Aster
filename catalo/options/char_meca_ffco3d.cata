@@ -29,3 +29,5 @@ OPTION__
         PCACOQU  CACOQU   << Champ de caracteristiques pour les coques. Concept CARA_ELEM >>
    OUT__
 PVECTUR VDEP_R RESL__
+
+COND_CALCUL__  PLUS__  PHENO='ME' BORD='0' COQUE='OUI'

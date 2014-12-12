@@ -29,3 +29,5 @@ OPTION__
         PREPLO2  GEOM_R     ELEM__
         PREPLO3  GEOM_R     ELEM__
         PMATPASS CHGREPER   ELEM__
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+                PLUS__  PHENO='TH' BORD='0'

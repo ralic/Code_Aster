@@ -19,7 +19,7 @@
 
 # --------------------------------------------------------------------------------
 #       impressions du catalogue à différents formats :   cata /cata_l/ ojb
-# ------------------------------------------------------------------------
+# --------------------------------------------------------------------------------
 import string
 import copy
 import os
@@ -31,22 +31,23 @@ ERR = ut.ERR
 # Remarque : Ce fichier contient des "bouts" de code que l'on peut facilement executer
 #            pour obtenir des fichiers de documentation ou de problemes.
 #            Ces bouts de code se situent ci-dessous vers la chaine "XXUTIL"
-# ------------------------------------------------------------------------
+# --------------------------------------------------------------------------------
 
 
-#
+##########################################################################
 # Fonction principale :
-#
+##########################################################################
 
 def impr_cata(capy, nomfic, format, seq='oui'):
-#==========================================
+    #==========================================
 
-#   imprimer un catalogue python (capy) sur un fichier à un format donné
-#       seq='non' permet de demander le "split" en autant de fichiers qu'il y a de catalogues
-#       format='ojb'     : impression des objets jeveux correspondant à la SD &CATA
-#       format='cata'    : impression au format ".cata" (en texte)
-# format='cata_l'  : impression au format ".cata" (en texte) avec des
-# lignes "longues" (plus facile pour les grep)
+    #   imprimer un catalogue python (capy) sur un fichier à un format donné
+    #       seq='non' permet de demander le "split" en autant de fichiers qu'il y a de catalogues
+    #       format='ojb'     : impression des objets jeveux correspondant à la SD &CATA
+    #       format='cata'    : impression au format ".cata" (en texte)
+    # format='cata_l'  : impression au format ".cata" (en texte) avec des
+    # lignes "longues" (plus facile pour les grep)
+
     if seq == "oui":
         fimpr = open(nomfic, "w")
     elif seq == "non":
@@ -73,28 +74,28 @@ def impr_cata(capy, nomfic, format, seq='oui'):
     ERR.fini()
 
 
-#
+##########################################################################
 # utilitaires :
-#
+##########################################################################
 
 
 def txtpad(long, chaine):
-#---------------------------------------
-# retourne une chaine de longueur "long" en complétant chaine par des
-# "blancs"
+    #---------------------------------------
+    # retourne une chaine de longueur "long" en complétant chaine par des
+    # "blancs"
     if len(chaine) > long:
         return chaine[0:long]
     chaine2 = chaine + " " * (long - len(chaine))
     return chaine2
 
 
-#
+##########################################################################
 # sous_fonctions :
-#
+##########################################################################
 
 
 def imprime_cata(file2, capy, seq, format):
-#---------------------------------------
+    #---------------------------------------
 
     if seq == "oui":
         file = file2
@@ -128,6 +129,7 @@ def imprime_cata(file2, capy, seq, format):
                 imprime_lk8(format, file, gd.gdelem, 1)
         file.write("\n")
 
+
 #  impression du catalogue des TYPE_MAILLE__ :
 #-----------------------------------------
     cata = capy.tm
@@ -148,6 +150,7 @@ def imprime_cata(file2, capy, seq, format):
                     file.write("\n         FAMILLE__ %-8s    %-3s" %
                                (fampg[0], str(fampg[1])))
 
+
 #  impression du catalogue des PHENOMENE_MODELISATION__ :
 #--------------------------------------------------------
     cata = capy.ph
@@ -161,8 +164,8 @@ def imprime_cata(file2, capy, seq, format):
             file.write(
                 "\n   PHENOMENE__  " + ph + "       CODE__  " + codph + "\n")
             for (mod, laffe, codmod, (d1, d2), lattrib) in lmod:
-                file.write("\n       MODELISATION__ %-16s   DIM__ %-1s %-1s   CODE__ %s\n" %
-                           (mod, d1, d2, codmod))
+                file.write(
+                    "\n       MODELISATION__ %-16s   DIM__ %-1s %-1s   CODE__ %s\n" % (mod, d1, d2, codmod))
                 if (lattrib):
                     file.write("              ATTRIBUT__",)
                     for (x, y) in lattrib:
@@ -173,10 +176,11 @@ def imprime_cata(file2, capy, seq, format):
                         "              MAILLE__ %-8s  ELEMENT__ %-16s\n" % (tyma, tyel))
         file.write("\n")
 
+
 #  impression des catalogues des OPTION__ :
 #-----------------------------------------
     for cata in capy.op:
-        nom, lchin, lchou, comlibr = cata.cata_op
+        nom, lchin, lchou, comlibr, cond_calcul = cata.cata_op
         if seq == "non":
             file = open(file2 + "/" + string.lower(nom) + ".cata", "w")
         file.write(cata.cmodif + "\n")
@@ -203,6 +207,7 @@ def imprime_cata(file2, capy, seq, format):
         if seq == "non":
             file.close()
 
+
 #  impression des catalogues des TYPE_GENE :
 #-------------------------------------------
     for cata in capy.tg:
@@ -219,13 +224,14 @@ def imprime_cata(file2, capy, seq, format):
             lattrib = entete[3]
             l_decl_en = entete[4]
             l_decl_opt = entete[5]
-            impr_entete(file, entete, l_elref1, lattrib, l_decl_en, l_decl_opt,
-                        format)
+            impr_entete(
+                file, entete, l_elref1, lattrib, l_decl_en, l_decl_opt, format)
 
         # impression des modes locaux et des options
         impr_moloc_opt(file, modlocs, opts, format)
         if seq == "non":
             file.close()
+
 
 #  impression des catalogues des TYPE_ELEM__ :
 #-------------------------------------------
@@ -249,9 +255,9 @@ def imprime_cata(file2, capy, seq, format):
 
 
 def imprime_copyright(file):
-#------------------------------------------------------------
-#  impression des 17 lignes de copyright EDF sur le fichier file
-#------------------------------------------------------------
+    #------------------------------------------------------------
+    #  impression des 17 lignes de copyright EDF sur le fichier file
+    #------------------------------------------------------------
     file.write(
         '% ======================================================================    ' + "\n")
     # pour déjouer un bug de l'agla, on coupe la ligne suivante en 2 :
@@ -289,15 +295,15 @@ def imprime_copyright(file):
 
 
 def imprime_lk8(format, file, liste, ncol, decal1=0, decaln=0, retour=1):
-#------------------------------------------------------------
-#  impression d'une liste de K8 :
-#    format : si format='cata_l' : on ecrit tout sur la meme ligne
-#             sinon : on tient compte de l'argument nbcol
-#    ncol   : nombre de colonnes voulu (après, on revient à la ligne)
-#    decal1 : nombre de " " imprimé au début de la 1ere ligne.
-#    decaln : nombre de " " imprimé au début des lignes suivantes
-#    retour : 1 -> on termine par un \n ; 0 -> on n'écrit pas de \n
-#------------------------------------------------------------
+    #------------------------------------------------------------
+    #  impression d'une liste de K8 :
+    #    format : si format='cata_l' : on ecrit tout sur la meme ligne
+    #             sinon : on tient compte de l'argument nbcol
+    #    ncol   : nombre de colonnes voulu (après, on revient à la ligne)
+    #    decal1 : nombre de " " imprimé au début de la 1ere ligne.
+    #    decaln : nombre de " " imprimé au début des lignes suivantes
+    #    retour : 1 -> on termine par un \n ; 0 -> on n'écrit pas de \n
+    #------------------------------------------------------------
     if format == 'cata_l':
         nbcol = len(liste)
     else:
@@ -336,14 +342,14 @@ def imprime_lk8(format, file, liste, ncol, decal1=0, decaln=0, retour=1):
 
 
 def tri_moloc(m1, m2):
-# pour trier les modes_locaux selon le nom de la grandeur :
+    # pour trier les modes_locaux selon le nom de la grandeur :
     return cmp(m1[1], m2[1])
 
 
 def impr_moloc_opt(file, modlocs, opts, format):
-#-------------------------------------------------------------------------------------
-#  impression des modes locaux et des options  pour un TYPE_ELEM__ ou 1 TYPE_GENE__
-#-------------------------------------------------------------------------
+    #-------------------------------------------------------------------------
+    #  impression des modes locaux et des options  pour un TYPE_ELEM__ ou 1 TYPE_GENE__
+    #-------------------------------------------------------------------------
     MLOCs, MLVEs, MLMAs = modlocs
 
     file.write("\n\nMODE_LOCAL__ " + "\n")
@@ -353,15 +359,13 @@ def impr_moloc_opt(file, modlocs, opts, format):
             file.write("    %-8s = %-8s %-6s        " % moloc[0:3])
             point = moloc[5]
             file.write(" (")
-            imprime_lk8(
-                format, file, point, 6, decal1=0, decaln=40, retour=0)
+            imprime_lk8(format, file, point, 6, decal1=0, decaln=40, retour=0)
             file.write(")\n")
         elif moloc[2] == "ELGA__":
             file.write("    %-8s = %-8s %-6s %-6s " % moloc[0:4])
             point = moloc[5]
             file.write(" (")
-            imprime_lk8(
-                format, file, point, 6, decal1=0, decaln=40, retour=0)
+            imprime_lk8(format, file, point, 6, decal1=0, decaln=40, retour=0)
             file.write(")\n")
         elif moloc[2] == "ELNO__":
             file.write("    %-8s = %-8s %-6s %-4s__ " %
@@ -388,8 +392,8 @@ def impr_moloc_opt(file, modlocs, opts, format):
 
     file.write("\nMATRICE__ " + "\n")
     for moloc in MLMAs:
-        file.write("    " + moloc[0] + " = " + moloc[
-                   1] + " " + moloc[2] + " " + moloc[3] + "\n")
+        file.write(
+            "    " + moloc[0] + " = " + moloc[1] + " " + moloc[2] + " " + moloc[3] + "\n")
 
     file.write("\nOPTION__ " + "\n")
     if opts:
@@ -446,9 +450,10 @@ def impr_entete(file, entete, l_elref1, lattrib, l_decl_en, l_decl_opt, format):
                        ("OPTION__", decl[0], str(decl[1])))
 
 
-#------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
 # impression au format 'ojb' :
 #-------------------------------------------------------------------------
+
 def imprime_ojb(file, capy):
     ERR.mess(
         'I', "Début de la transformation de l'ENSEMBLE des catalogues en objets jeveux")
@@ -474,7 +479,7 @@ def imprime_ojb(file, capy):
 
     d = {}  # dictionnaire des ojb
 
-    #=========================================================================================
+    #=========================================================================
     # XXUTIL:
     # Bouts de code pouvant servir aux développeurs pour générer des fichiers pratiques pour les scripts :
     # Ces bouts de code sont placés ici, après le "degenerise" et avant les
@@ -482,29 +487,29 @@ def imprime_ojb(file, capy):
     xxut1 = False
     if xxut1:
         nomfic = "/local00/home/B27918/U/CATA_liCMP.txt"
+        # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM
+        # GRANDEUR  CMP )
         impr_CMP(nomfic, capy)
-                 # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT
-                 # PARAM   GRANDEUR  CMP )
     if xxut1:
         nomfic = "/local00/home/B27918/U/CATA_param_options.txt"
         # le fichier produit est moins gros que liCMP mais surtout il contient
         # les paramètres RESL
+        # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM
+        # GRANDEUR)
         impr_param_options(nomfic, capy)
-                           # pour imprimer tous les 5-uplets ( OPTION  TYPELEM
-                           # IN/OUT  PARAM  GRANDEUR)
     if xxut1:
         nomfic = "/local00/home/B27918/U/CATA_PbOptions.txt"
+        # pour imprimer le nom des parametres inutilises des options
         PbOptions(nomfic, capy)
-                  # pour imprimer le nom des parametres inutilises des options
     if xxut1:
         nomfic = "/local00/home/B27918/U/CATA_nomte_nomtm.txt"
+        # pour imprimer les lignes (type_elem, type_maille, attribut1,
+        # attribut2, ... )
         nomte_nomtm(nomfic, capy)
-                    # pour imprimer les lignes (type_elem, type_maille,
-                    # attribut1, attribut2, ... )
     if xxut1:
         nomfic = "/local00/home/B27918/U/CATA_numte_lnomte.txt"
-        numte_lnomte(
-            nomfic, capy)  # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
+        # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
+        numte_lnomte(nomfic, capy)
     #=========================================================================
 
     #  TOUCOMLIBR = objet contenant tous les commentaires libres :
@@ -531,8 +536,8 @@ def imprime_ojb(file, capy):
         return chaineDependance[1:-1].split("!")
 
     def elrefe_npg(cata_tm, NOFPG, elrf, f):
-    # retourne le nombre de points de la famille f de l'elrefe elrf et le
-    # numéro de la famille
+        # retourne le nombre de points de la famille f de l'elrefe elrf et le
+        # numéro de la famille
         for tm in cata_tm.ltm:
             for elrefe in tm[4]:
                 if elrefe[0] == elrf:
@@ -540,8 +545,8 @@ def imprime_ojb(file, capy):
                         if fam[0] == f:
                             ifpg = NOFPG.jenonu(txtpad(8, elrf) + f)
                             return (int(fam[1]), ifpg)
-        ERR.mess(
-            'E', " famille de Points de Gauss inconnue: " + f + " pour ELREFE: " + elrf)
+        ERR.mess('E', " famille de Points de Gauss inconnue: " +
+                 f + " pour ELREFE: " + elrf)
 
     #  catalogue des TYPE_MAILLE :
     #-----------------------------------------
@@ -566,7 +571,7 @@ def imprime_ojb(file, capy):
         TMDIM.ecri_co(nom=cata.ltm[k][0], indice=1, valeur=int(cata.ltm[k][2]))
         for elrf in cata.ltm[k][4]:
             nom = elrf[0]
-            assert not NOELRF.dico.has_key(nom)
+            assert not nom in NOELRF.dico
             nb_elrf = nb_elrf + 1
             NOELRF.ajout_nom(nom)
             nom = txtpad(8, nom)
@@ -690,7 +695,7 @@ def imprime_ojb(file, capy):
                          tsca_pn='K16', contig='CONTIG', acces='NU', longv=0)
 
     for cata in capy.op:
-        nom, lchin, lchou, comlibr = cata.cata_op
+        nom, lchin, lchou, comlibr, cond_calcul = cata.cata_op
         ERR.contexte("Examen du catalogue d'OPTION__: " + nom)
         nbin = len(lchin)
         nbou = len(lchou)
@@ -712,7 +717,7 @@ def imprime_ojb(file, capy):
             igd = NOMGD.jenonu(nogd)
             DESCOPT.ecri_co(nom=nom, indice=4 + k, valeur=igd)
             OPTPARA.ecri_co(nom=nom, indice=k, valeur=para)
-            if localis != None:
+            if localis is not None:
                 tabDep = split_localisation(localis)
                 LOCALIS.ecri_co(nom=nom, indice=3 * k - 2, valeur=tabDep[0])
                 LOCALIS.ecri_co(nom=nom, indice=3 * k - 1, valeur=tabDep[1])
@@ -747,6 +752,7 @@ def imprime_ojb(file, capy):
 
     #  catalogues des TYPE_ELEM__ :
     #-------------------------------------------
+
     # fonction de calcul d'une suite d'entiers codés correspondant à une liste
     # de CMPS:
     def entiers_codes(note, lcmp, lcmp_gd):
@@ -757,8 +763,8 @@ def imprime_ojb(file, capy):
             ERR.veri_appartient_liste('F', lcmp[icmp], lcmp_gd)
             rangcmp = lcmp_gd.index(lcmp[icmp])
             if rangcmp < rangav:
-                ERR.mess(
-                    'E', " CMPS dans un ordre incorrect. " + repr(lcmp) + " type_element: " + note)
+                ERR.mess('E', " CMPS dans un ordre incorrect. " +
+                         repr(lcmp) + " type_elem: " + note)
 
             rangav = rangcmp
             iec = rangcmp / 30
@@ -789,14 +795,16 @@ def imprime_ojb(file, capy):
                         nb = nb + len(elref1[1][1])
         return nb
 
+
+#   --- debut instructions imprime_ojb :
+#   ----------------------------------------
+
+#   -- calcul de 2 dictionnaires qui seront utilises plus loin :
+    opt_contrainte, opt_a_calculer = liste_opt_a_calculer(capy)
+
     nbte = len(capy.te)
     nblocfpg = nb_loc_fpg(capy)
-
-    nbopte = 0
-    for cata in capy.te:
-        entete, modlocs, opts = cata.cata_te
-        if opts:
-            nbopte = nbopte + len(opts)
+    nbopte = calc_nbopte(capy, opt_a_calculer)
 
     NOMTE = ut.cree_pn(d, nom='&CATA.TE.NOMTE', tsca='K16')
     TYPEMA = ut.cree_os(d, nom='&CATA.TE.TYPEMA', tsca='K8', long=nbte)
@@ -821,8 +829,8 @@ def imprime_ojb(file, capy):
     # objets FPG_LISTE et NOFPG_LISTE :
     # --------------------------------------
     ERR.contexte("fabrication de l'objet .FPG_LISTE")
+    # lifpgl={NOMTE(1:16)//nofpgl(1:8):[nofpg1,nofpg2,...,ELREFE]}
     lifpgl = get_lifpgl(capy)
-                        # lifpgl={NOMTE(1:16)//nofpgl(1:8):[nofpg1,nofpg2,...,ELREFE]}
     FPG_LISTE = ut.cree_co(d, nom='&CATA.TE.FPG_LISTE', tsca='K8',
                            tsca_pn='K24', contig='CONTIG', acces='NU', longv=0)
     NOFPG_LISTE = ut.cree_pn(d, nom='&CATA.TE.NOFPG_LISTE', tsca='K24')
@@ -847,7 +855,7 @@ def imprime_ojb(file, capy):
         l_decl_en = entete[4]
         note = entete[0]
         print "<I> On va traiter le TYPE_ELEM: " + note
-        ERR.contexte("Examen du catalogue de TYPE_ELEM__: " + note)
+        ERR.contexte("Examen du catalogue du TYPE_ELEM__: " + note)
         ERR.contexte("  rubrique: ENTETE__", "AJOUT")
 
         NOMTE.ajout_nom(note)
@@ -899,7 +907,8 @@ def imprime_ojb(file, capy):
                 for fpgl in elref1[1][1]:
                     iflpg = iflpg + 1
                     noflpg = note2 + txtpad(8, elref1[0]) + txtpad(8, fpgl[0])
-                    ifpg = 0  # pour les familles de PG "liste" : NOLOCFPG(iflpg)=0
+                    # pour les familles de PG "liste" : NOLOCFPG(iflpg)=0
+                    ifpg = 0
                     PNLOCFPG.ecri_os(indice=iflpg, valeur=noflpg)
                     NOLOCFPG.ecri_os(indice=iflpg, valeur=ifpg)
 
@@ -914,13 +923,12 @@ def imprime_ojb(file, capy):
         # modes locaux :
         # ---------------
         MLOCs, MLVEs, MLMAs = modlocs
-        ERR.contexte("Examen du catalogue de TYPE_ELEM__: " + note)
+        ERR.contexte("Examen du catalogue du TYPE_ELEM__: " + note)
         ERR.contexte("  rubrique: définition des modes locaux ", "AJOUT")
 
         for moloc in MLOCs:
             nomolo = moloc[0]
-            nogd = moloc[
-                1]
+            nogd = moloc[1]
             typept = moloc[2]
             diff = moloc[4]
             nomolo2 = note2 + nomolo
@@ -1011,9 +1019,10 @@ def imprime_ojb(file, capy):
                         if en2 == en:
                             liste = liste2
                     if not liste:
-                        pass  # la verif. ci-dessous est trop sévère. Voir fiche REX 18068.
-                        # ERR.mess('E',"L' ensemble de noeuds "+en+" est
-                        # non-défini pour l'élément: "+note)
+                        # la verif. ci-dessous est trop sévère. Voir fiche REX
+                        # 18068.
+                        pass
+                        #ERR.mess('E',"L' ensemble de noeuds "+en+" est non-défini pour l'élément: "+note)
                     else:
                         for ino in liste:
                             for kk in range(len(liec)):
@@ -1039,8 +1048,7 @@ def imprime_ojb(file, capy):
 
         for moloc in MLMAs:
             nomolo = moloc[0]
-            nogd = moloc[
-                1]
+            nogd = moloc[1]
             molo1 = moloc[2]
             molo2 = moloc[3]
             nomolo2 = note2 + nomolo
@@ -1072,43 +1080,36 @@ def imprime_ojb(file, capy):
         if opts:
             for opt in opts:
                 noop = opt[0]
-                numte = int(opt[1])
-                nbin = len(
-                    opt[2]) / 2
+                numte = opt[1]
+                nbin = len(opt[2]) / 2
                 nbou = len(opt[3]) / 2
-                ERR.contexte("Examen du catalogue de TYPE_ELEM__: " + note)
+                ERR.contexte("Examen du catalogue du TYPE_ELEM__: " + note)
                 ERR.contexte("  rubrique: OPTION__ : " + noop, "AJOUT")
                 ERR.veri_pas_doublon_lpara('E', opt[2])
                 ERR.veri_pas_doublon_lpara('E', opt[3])
 
-                if dico_opt_te.has_key(noop):
+                if noop in dico_opt_te:
                     ERR.mess(
-                        'E', "L'option: " + noop + " est définie plusieurs fois pour le TYPE_ELEMENT: " + note)
+                        'E', "L'option: " + noop + " est définie plusieurs fois pour le TYPE_ELEM: " + note)
                 else:
-                    dico_opt_te[noop] = 1
+                    dico_opt_te[noop] = numte
 
                 if numte < 0:
-                    ioptte = ioptte + 1
-                    nuop = NOMOP.jenonu(nom=noop)
-                    OPTT2.ecri_os(indice=2 * (ioptte - 1) + 1, valeur=nuop)
-                    OPTT2.ecri_os(indice=2 * (ioptte - 1) + 2, valeur=nute)
-                    OPTMOD.cree_oc(nom=str(ioptte), long=3 + nbin + nbou)
-                    OPTNOM.cree_oc(nom=str(ioptte), long=nbin + nbou)
-                    OPTMOD.ecri_co(nom=str(ioptte), indice=1, valeur=numte)
-                    OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
-                    OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
+                    assert numte == -1 or numte == -2, (note, noop, numte)
+                    nbin = 0
+                    nbout = 0
+
+                ioptte = ioptte + 1
+                nuop = NOMOP.jenonu(nom=noop)
+                OPTT2.ecri_os(indice=2 * (ioptte - 1) + 1, valeur=nuop)
+                OPTT2.ecri_os(indice=2 * (ioptte - 1) + 2, valeur=nute)
+                OPTMOD.cree_oc(nom=str(ioptte), long=3 + nbin + nbou)
+                OPTNOM.cree_oc(nom=str(ioptte), long=nbin + nbou)
+                OPTMOD.ecri_co(nom=str(ioptte), indice=1, valeur=numte)
+                OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
+                OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
 
                 if numte > 0:
-                    ioptte = ioptte + 1
-                    nuop = NOMOP.jenonu(nom=noop)
-                    OPTT2.ecri_os(indice=2 * (ioptte - 1) + 1, valeur=nuop)
-                    OPTT2.ecri_os(indice=2 * (ioptte - 1) + 2, valeur=nute)
-                    OPTMOD.cree_oc(nom=str(ioptte), long=3 + nbin + nbou)
-                    OPTNOM.cree_oc(nom=str(ioptte), long=nbin + nbou)
-                    OPTMOD.ecri_co(nom=str(ioptte), indice=1, valeur=numte)
-                    OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
-                    OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
-
                     for kk in range(nbin):
                         mode = opt[2][2 * kk]
                         param = opt[2][2 * kk + 1]
@@ -1125,12 +1126,43 @@ def imprime_ojb(file, capy):
                         OPTMOD.ecri_co(
                             nom=str(ioptte), indice=3 + nbin + kk + 1, valeur=NOMMOLOC.jenonu(note2 + mode))
 
+        # -- on emet une erreur si le type_elem calcule des options qu'il NE DEVRAIT PAS calculer
+        ERR.contexte("Examen du catalogue du TYPE_ELEM__: " + note)
+        for noop in dico_opt_te.keys():
+            #           -- si numte=-1, ce n'est pas tres grave pour l'instant :
+            if dico_opt_te[noop] == -1:
+                continue
+
+            if noop in opt_contrainte:
+                if noop not in opt_a_calculer[note]:
+                    ERR.mess(
+                        'E', "L'option: " + noop + " NE DOIT PAS etre calculee par le TYPE_ELEM: " + note)
+
+        # -- on ajoute des "-1" pour les options que le type_elem DEVRAIT calculer
+        #    et qu'il ne calcule pas.
+        for noop in opt_a_calculer[note]:
+            if not noop in dico_opt_te:
+                numte = -1
+                nbin = 0
+                nbout = 0
+                ioptte = ioptte + 1
+                nuop = NOMOP.jenonu(nom=noop)
+                OPTT2.ecri_os(indice=2 * (ioptte - 1) + 1, valeur=nuop)
+                OPTT2.ecri_os(indice=2 * (ioptte - 1) + 2, valeur=nute)
+                OPTMOD.cree_oc(nom=str(ioptte), long=3 + nbin + nbou)
+                OPTNOM.cree_oc(nom=str(ioptte), long=nbin + nbou)
+                OPTMOD.ecri_co(nom=str(ioptte), indice=1, valeur=numte)
+                OPTMOD.ecri_co(nom=str(ioptte), indice=2, valeur=nbin)
+                OPTMOD.ecri_co(nom=str(ioptte), indice=3, valeur=nbou)
+
         del cata
+
+    assert(ioptte == nbopte)
 
     #  catalogue des PHENOMENE_MODELISATION :
     #--------------------------------------------------------
     cata = capy.ph
-    ERR.contexte("Examen du catalogue de PHENOMENE_MODELISATION__: ")
+    ERR.contexte("Examen du catalogue PHENOMENE_MODELISATION__: ")
     PHENOMENE = ut.cree_pn(d, nom='&CATA.PHENOMENE', tsca='K16')
 
     for (ph, lmod, codph) in cata.l_pheno:
@@ -1146,8 +1178,8 @@ def imprime_ojb(file, capy):
             MODELI.ecri_co(nom=mod, indice=nbtm + 1, valeur=int(d1))
             MODELI.ecri_co(nom=mod, indice=nbtm + 2, valeur=int(d2))
             for (tyma, tyel) in laffe:
-                MODELI.ecri_co(nom=mod, indice=NOMTM.jenonu(
-                    nom=tyma), valeur=NOMTE.jenonu(nom=tyel))
+                MODELI.ecri_co(
+                    nom=mod, indice=NOMTM.jenonu(nom=tyma), valeur=NOMTE.jenonu(nom=tyel))
 
     del cata
 
@@ -1163,9 +1195,9 @@ def imprime_ojb(file, capy):
 
 
 def verif_type_gene(capy):
-#------------------------------------------------------
-#  fait quelques vérifications sur les TYPE_GENE__
-#-------------------------------------------------------
+    #------------------------------------------------------
+    #  fait quelques vérifications sur les TYPE_GENE__
+    #-------------------------------------------------------
     ERR.contexte('Vérification des éléments finis génériques (TYPE_GENE__).')
     for cata in capy.tg:
         nogene, l_entete, modlocs, opts = cata.cata_tg
@@ -1197,9 +1229,9 @@ def verif_type_gene(capy):
 
 
 def degenerise(capy):
-#------------------------------------------------
-#  remplace les TYPE_GENE__ par des TYPE_ELEM__ :
-#------------------------------------------------
+    #------------------------------------------------
+    #  remplace les TYPE_GENE__ par des TYPE_ELEM__ :
+    #------------------------------------------------
     ERR.contexte(
         'Eclatement des éléments finis génériques (TYPE_GENE__) en des TYPE_ELEM__ ordinaires.')
     verif_type_gene(capy)
@@ -1224,6 +1256,7 @@ def degenerise(capy):
                 opts2 = copy.deepcopy(opts)
                 for decl in l_decl_opt:
                     nomop1, numte = decl
+                    assert numte > 0 or numte == -1, (entete[0], nomop1, numte)
 
                     for iopt in range(len(opts2)):
                         if nomop1 == opts2[iopt][0]:
@@ -1236,16 +1269,16 @@ def degenerise(capy):
             # on ajoute le TYPE_ELEM__ meme s'il y en a déjà un de meme nom  (TYPE_GENE__ "plus fort" que TYPE_ELEM__):
             #------------------------------------------------------------------
             note = entete[0]
-            if capy.dicte.has_key(note):
+            if note in capy.dicte:
                 capy.te[capy.dicte[note]] = cata2
-                if dicte2.has_key(note):
+                if note in dicte2:
                     if dicte2[note] == 'a':
                         ERR.mess(
                             'E', 'Le TYPE_ELEM__: ' + note + ' est re-défini en tant que TYPE_GENE__')
                         dicte2[note] = 'b'
                     elif dicte2[note] == 'b':
-                        ERR.mess(
-                            'E', 'Le TYPE_ELEM__: ' + note + ' est défini plusieurs fois en tant que TYPE_GENE__')
+                        ERR.mess('E', 'Le TYPE_ELEM__: ' + note +
+                                 ' est défini plusieurs fois en tant que TYPE_GENE__')
                 else:
                     dicte2[note] = 'b'
                     ERR.mess(
@@ -1257,7 +1290,7 @@ def degenerise(capy):
                 dicte2[note] = 'b'
 
     # on remet les TYPE_ELEM__   dans l'ordre alphabétique:
-    # ------------------------------------------------------------------------
+    # -----------------------------------------------------------------------------
     likeys = capy.dicte.keys()
     likeys.sort()
     liste2 = []
@@ -1273,10 +1306,10 @@ def degenerise(capy):
 
 #---------------------------------------------------------------------------
 def get_liattr(capy, cata):
-#     retourne la liste des attributs d'un type_element :
-#     (y compris les attributs définis au niveau des modélisations)
-#     (y compris les attributs définis AUTOMATIQUEMENT)
-#---------------------------------------------------------------------------
+    #     retourne la liste des attributs d'un type_elem :
+    #     (y compris les attributs définis au niveau des modélisations)
+    #     (y compris les attributs définis AUTOMATIQUEMENT)
+    #-------------------------------------------------------------------------
     entete, modlocs, opts = cata.cata_te
     note = entete[0]
     tyma1 = entete[1]
@@ -1293,17 +1326,16 @@ def get_liattr(capy, cata):
     dicattr = {}
 
     # Attributs définis pour toute la modélisation :
-    # Remarque : pour les type_element appartenant à plusieurs modélisations,
+    # Remarque : pour les type_elem appartenant à plusieurs modélisations,
     #    si un attribut doit avoir plusieurs valeurs différentes, on lui
     # affecte la valeur "###" (qui veut dire plusieurs) ou (-999 si c'est un entier)
-    # Si c'est embetant, il faut redéfinir l'attribut au niveau du
-    # type_element
+    #    Si c'est embetant, il faut redéfinir l'attribut au niveau du type_elem
 
-    lattr_AUTO = ['ALIAS8', 'DIM_TOPO_MODELI', 'DIM_COOR_MODELI',
-                  'DIM_TOPO_MAILLE', 'PRINCIPAL', 'BORD', 'DISCRET']
+    lattr_AUTO = ['ALIAS8', 'PHENO', 'MODELI', 'DIM_TOPO_MODELI', 'DIM_COOR_MODELI', 'DIM_TOPO_MAILLE',
+                  'PRINCIPAL', 'BORD', 'DISCRET']
     for (ph, lmod, codph) in capy.ph.l_pheno:
         for (mod, laffe, codmod, (d1, d2), lattrib) in lmod:
-            # la modélisation inclut-elle le type_element note ?
+            # la modélisation inclut-elle le type_elem note ?
             trouve = 0
             for (tyma, tyel) in laffe:
                 if tyel == note:
@@ -1318,13 +1350,15 @@ def get_liattr(capy, cata):
                 # lattr_AUTO) :
 
                 # Si les attributs automatiques existent deja, c'est que l'element est partage.
-                # On verifie alors la coherence dse informations
-                if not dicattr.has_key('ALIAS8'):
+                # On verifie alors la coherence des informations
+                if not 'ALIAS8' in dicattr:
                     dicattr['DIM_TOPO_MAILLE'] = str(dimtma)
                     dicattr['DIM_TOPO_MODELI'] = str(d1)
                     dicattr['DIM_COOR_MODELI'] = str(d2)
-                    dicattr['ALIAS8'] = str(codph)[
-                        1:3] + str(codmod)[1:4] + str(codtma)[1:4]
+                    dicattr['ALIAS8'] = str(
+                        codph)[1:3] + str(codmod)[1:4] + str(codtma)[1:4]
+                    dicattr['PHENO'] = str(codph)[1:3]
+                    dicattr['MODELI'] = str(codmod)[1:4]
 
                 else:
                     if dicattr['DIM_TOPO_MAILLE'] != str(dimtma):
@@ -1339,8 +1373,10 @@ def get_liattr(capy, cata):
 
                     alias8 = dicattr['ALIAS8']
                     if alias8[:2] != str(codph)[1:3]:
+                        dicattr['PHENO'] = '##'
                         alias8 = '##' + alias8[2:]
                     if alias8[2:5] != str(codmod)[1:4]:
+                        dicattr['MODELI'] = '###'
                         alias8 = alias8[:2] + '###' + alias8[5:]
                     dicattr['ALIAS8'] = alias8
 
@@ -1349,20 +1385,27 @@ def get_liattr(capy, cata):
                 if d1 == -1:
                     dicattr['DISCRET'] = 'OUI'
                     dicattr['PRINCIPAL'] = 'OUI'
+                    dicattr['BORD'] = '0'
                 else:
                     dicattr['DISCRET'] = 'NON'
                     if d1 > d2:
                         ERR.mess(
                             'E', "Pb. pour les dimensions DIM__ x y de la modelisation:" + mod)
-                    if dimtma > d1:
-                        ERR.mess('E', "Pb. pour la dimension de la maille:" + tyma +
-                                 "de la modelisation:" + mod)
+
                     if dimtma == d1:
                         dicattr['PRINCIPAL'] = 'OUI'
-                        dicattr['BORD'] = 'NON'
+                        dicattr['BORD'] = '0'
                     else:
-                        dicattr['PRINCIPAL'] = 'NON'
-                        dicattr['BORD'] = 'OUI'
+                        if dimtma == d1 - 1:
+                            dicattr['BORD'] = '-1'
+                        elif dimtma == d1 - 2:
+                            dicattr['BORD'] = '-2'
+                        elif dimtma == d1 - 3:
+                            dicattr['BORD'] = '-3'
+                        elif dimtma == d1 + 1:
+                            dicattr['BORD'] = '+1'
+                        else:
+                            assert False, (mod, d1, dimtma)
 
                 if lattrib:
                     for k in range(len(lattrib)):
@@ -1373,12 +1416,12 @@ def get_liattr(capy, cata):
                         val_attr = lattrib[k][1]
                         dicattr[no_attr] = val_attr
 
-    # surcharge éventuelle des attributs définis pour le type_element:
+    # surcharge éventuelle des attributs définis pour le type_elem:
     lattrib = entete[3]
     if lattrib:
         for k in range(len(lattrib)):
             no_attr = lattrib[k][0]
-            if no_attr in lattr_AUTO and dicattr.has_key(no_attr):
+            if no_attr in lattr_AUTO and no_attr in dicattr:
                 ERR.mess('E',
                          "Il est interdit de redéfinir l'attribut:" + no_attr)
             val_attr = lattrib[k][1]
@@ -1392,9 +1435,91 @@ def get_liattr(capy, cata):
 
 
 #-------------------------------------------------------------------------
+def liste_opt_a_calculer(capy):
+    #   -- retourne 2 dictionnaires :
+    #      opt_contrainte[noop]=1
+    #        => noop est une option "contrainte" (il existe un bloc COND_CALCUL dans son catalogue.)
+    #      opt_a_calculer[nomte]=[noop1,noop2,...]
+    #        => liste des options contraintes qui DOIVENT etre calculees par nomte
+    #   ------------------------------------------------------------------------------------------
+    opt_contrainte = {}
+    opt_a_calculer = {}
+
+#   -- On calcule :
+#      dic1[attr=valattr]=set([nomte])
+#   ------------------------------------
+    dic1 = {}
+    for cata in capy.te:
+        entete, modlocs, opts = cata.cata_te
+        nomte = entete[0]
+        opt_a_calculer[nomte] = []
+        liattr = get_liattr(capy, cata)
+        n1 = len(liattr)
+        assert n1 % 2 == 0, n1
+        for k in range(n1 / 2):
+            attr1 = liattr[2 * k] + '=' + liattr[2 * k + 1]
+            if not attr1 in dic1:
+                dic1[attr1] = []
+            dic1[attr1].append(nomte)
+    for attr1 in dic1.keys():
+        dic1[attr1] = set(dic1[attr1])
+
+#   -- On remplit opt_a_calculer :
+#   --------------------
+    for cata in capy.op:
+        noop, lchin, lchou, comlibr, cond_calcul = cata.cata_op
+        if not cond_calcul:
+            continue
+
+        opt_contrainte[noop] = 1
+        set_total = set()
+        for cond_calc in cond_calcul:
+            plusoumoins = cond_calc[0]
+            l1 = []
+            for attr, val in cond_calc[1]:
+                l1.append(attr + '=' + val)
+            set1 = set(dic1[l1[0]])
+            for attr1 in l1[1:]:
+                set1 = set1.intersection(dic1[attr1])
+
+            if plusoumoins == 'PLUS__':
+                set_total = set_total.union(set1)
+            elif plusoumoins == 'MOINS__':
+                set_total = set_total.difference(set1)
+            else:
+                assert 0, plusoumoins
+        l1 = list(set_total)
+        for nomte in l1:
+            opt_a_calculer[nomte].append(noop)
+    return (opt_contrainte, opt_a_calculer)
+
+
+def calc_nbopte(capy, opt_a_calculer):
+    # retourne nbopte : le nombre total de couples (nomte,noop) ayant un sens
+
+    nbopte = 0
+    for cata in capy.te:
+        entete, modlocs, opts = cata.cata_te
+        note = entete[0]
+        dico_opt_te = {}
+
+#       -- 1. les couples declares dans les catalogues de type_elem :
+        if opts:
+            for opt in opts:
+                noop = opt[0]
+                dico_opt_te[noop] = 1
+                nbopte = nbopte + 1
+
+#       -- 2. les couples absents (pas encore programmes => -1) :
+        for noop in opt_a_calculer[note]:
+            if not noop in dico_opt_te:
+                nbopte = nbopte + 1
+    return nbopte
+
+
 def get_lifpgl(capy):
-#  retourne un dictionnaire contenant toutes les définitions des familles "liste" de PG
-#-------------------------------------------------------------------------
+    #  retourne un dictionnaire contenant toutes les définitions des familles "liste" de PG
+    #-------------------------------------------------------------------------
     lifpgl = {}
     for cata in capy.te:
         entete, modlocs, opts = cata.cata_te
@@ -1413,8 +1538,8 @@ def get_lifpgl(capy):
 
 #-------------------------------------------------------------------------
 def impr_CMP(nomfic, capy):
-# pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR  CMP )
-#-------------------------------------------------------------------------
+    # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR  CMP )
+    #-------------------------------------------------------------------------
     file = open(nomfic, "w")
 
     for cata in capy.te:
@@ -1428,8 +1553,7 @@ def impr_CMP(nomfic, capy):
         dicmod = {}
         for moloc in MLOCs:
             nomolo = moloc[0]
-            nogd = moloc[
-                1]
+            nogd = moloc[1]
             typept = moloc[2]
             diff = moloc[4]
 
@@ -1446,9 +1570,8 @@ def impr_CMP(nomfic, capy):
         if opts:
             for opt in opts:
                 noop = opt[0]
-                numte = int(opt[1])
-                nbin = len(
-                    opt[2]) / 2
+                numte = opt[1]
+                nbin = len(opt[2]) / 2
                 nbou = len(opt[3]) / 2
 
                 if numte > 0:
@@ -1456,7 +1579,7 @@ def impr_CMP(nomfic, capy):
                     for kk in range(nbin):
                         mode = opt[2][2 * kk]
                         param = opt[2][2 * kk + 1]
-                        if mode in dicmod.keys():
+                        if mode in dicmod:
                             nogd, licmp = dicmod[mode]
                             for cmp in licmp:
                                 file.write(
@@ -1465,7 +1588,7 @@ def impr_CMP(nomfic, capy):
                     for kk in range(nbou):
                         mode = opt[3][2 * kk]
                         param = opt[3][2 * kk + 1]
-                        if mode in dicmod.keys():
+                        if mode in dicmod:
                             nogd, licmp = dicmod[mode]
                             for cmp in licmp:
                                 file.write(
@@ -1474,8 +1597,8 @@ def impr_CMP(nomfic, capy):
 
 #-------------------------------------------------------------------------
 def impr_param_options(nomfic, capy):
-# pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)  (y compris les RESL)
-#-------------------------------------------------------------------------
+    # pour imprimer tous les 5-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR)  (y compris les RESL)
+    #-------------------------------------------------------------------------
     file = open(nomfic, "w")
 
     for cata in capy.te:
@@ -1501,9 +1624,8 @@ def impr_param_options(nomfic, capy):
         if opts:
             for opt in opts:
                 noop = opt[0]
-                numte = int(opt[1])
-                nbin = len(
-                    opt[2]) / 2
+                numte = opt[1]
+                nbin = len(opt[2]) / 2
                 nbou = len(opt[3]) / 2
 
                 if numte > 0:
@@ -1511,7 +1633,7 @@ def impr_param_options(nomfic, capy):
                     for kk in range(nbin):
                         mode = opt[2][2 * kk]
                         param = opt[2][2 * kk + 1]
-                        if mode in dicmod.keys():
+                        if mode in dicmod:
                             nogd = dicmod[mode]
                             file.write(
                                 noop + " " + note + " IN " + param + " " + nogd + "\n")
@@ -1519,7 +1641,7 @@ def impr_param_options(nomfic, capy):
                     for kk in range(nbou):
                         mode = opt[3][2 * kk]
                         param = opt[3][2 * kk + 1]
-                        if mode in dicmod.keys():
+                        if mode in dicmod:
                             nogd = dicmod[mode]
                             file.write(
                                 noop + " " + note + " OUT " + param + " " + nogd + "\n")
@@ -1527,9 +1649,9 @@ def impr_param_options(nomfic, capy):
 
 #-------------------------------------------------------------------------
 def PbOptions(nomfic, capy):
-# pour imprimer les noms des options qui ne sont plus realisees
-# pour imprimer les noms des parametres inutilises des options
-#-------------------------------------------------------------------------
+    # pour imprimer les noms des options qui ne sont plus realisees
+    # pour imprimer les noms des parametres inutilises des options
+    #-------------------------------------------------------------------------
     file = open(nomfic, "w")
 
     utilise = {}
@@ -1540,11 +1662,10 @@ def PbOptions(nomfic, capy):
         if opts:
             for opt in opts:
                 noop = opt[0]
-                numte = int(opt[1])
-                nbin = len(
-                    opt[2]) / 2
+                numte = opt[1]
+                nbin = len(opt[2]) / 2
                 nbou = len(opt[3]) / 2
-                if not utilise.has_key(noop):
+                if not noop in utilise:
                     utilise[noop] = []
                 if numte > 0:
                     for kk in range(nbin):
@@ -1556,7 +1677,7 @@ def PbOptions(nomfic, capy):
 
     declare = {}
     for cata in capy.op:
-        noop, lchin, lchou, comlibr = cata.cata_op
+        noop, lchin, lchou, comlibr, cond_calcul = cata.cata_op
         declare[noop] = []
         for (param, nogd, localis, comlibr) in lchin:
             declare[noop].append(param)
@@ -1567,7 +1688,7 @@ def PbOptions(nomfic, capy):
     lopt = declare.keys()
     lopt.sort()
     for noop in lopt:
-        if not noop in utilise.keys():
+        if not noop in utilise:
             file.write("A_DETR " + noop + '\n')
             continue
         for param in declare[noop]:
@@ -1575,13 +1696,13 @@ def PbOptions(nomfic, capy):
                 file.write("INUTILISE " + noop + " " + param + '\n')
             else:
                 pass
-                # file.write("UTILISE "+noop+" "+param+'\n')
+                #file.write("UTILISE "+noop+" "+param+'\n')
 
 
 #-------------------------------------------------------------------------
 def numte_lnomte(nomfic, capy):
-# pour imprimer les noms des type_element qui utilisent une routine te00ij
-#-------------------------------------------------------------------------
+    # pour imprimer les noms des type_elem qui utilisent une routine te00ij
+    #-------------------------------------------------------------------------
     file = open(nomfic, "w")
     dico = {}
     for cata in capy.te:
@@ -1589,11 +1710,11 @@ def numte_lnomte(nomfic, capy):
         note = entete[0]
         if opts:
             for opt in opts:
-                numte = int(opt[1])
+                numte = opt[1]
                 if numte > 0 and numte != 99:
                     numte = 1000 + numte
                     numte = 'te0' + str(numte)[1:]
-                    if not dico.has_key(numte):
+                    if not numte in dico:
                         dico[numte] = []
                     dico[numte].append(note)
     l1 = dico.keys()
@@ -1607,8 +1728,8 @@ def numte_lnomte(nomfic, capy):
 
 #-------------------------------------------------------------------------
 def nomte_nomtm(nomfic, capy):
-# pour imprimer les lignes (type_elem, type_maille, attribut1, attribut2, ... )
-#-------------------------------------------------------------------------
+    # pour imprimer les lignes (type_elem, type_maille, attribut1, attribut2, ... )
+    #-------------------------------------------------------------------------
     file = open(nomfic, "w")
     dico = {}
     for cata in capy.te:

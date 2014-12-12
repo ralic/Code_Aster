@@ -40,3 +40,5 @@ OPTION__
 
    OUT__
 PVECTTR VTEM_R RESL__
+COND_CALCUL__   PLUS__  PHENO='TH' BORD='0'
+                PLUS__  PHENO='TH' BORD='-1' COQUE='OUI'

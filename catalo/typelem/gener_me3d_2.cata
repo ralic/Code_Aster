@@ -70,8 +70,7 @@ MODE_LOCAL__
     CEPSINR  = EPSI_R   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     CEPSINF  = EPSI_F   ELEM__         (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
    
-    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     FIC3
-                                        K1       K2       K3       BETA     )
+    EKTHETA  = G        ELEM__         (GTHETA  FIC1  FIC2  FIC3  K1  K2  K3  BETA  )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     EMNEUT_R = NEUT_R   ELEM__         (X[30]    )
     EMNEUT_I = NEUT_I   ELEM__         (X[1]     )

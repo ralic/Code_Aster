@@ -39,3 +39,5 @@ OPTION__
         PFISNO   NEUT_I
    OUT__
 PVECTUR VDEP_R RESL__
+                                                                                                                            
+COND_CALCUL__  PLUS__  PHENO='ME' THM='OUI' BORD='-1'

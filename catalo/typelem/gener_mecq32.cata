@@ -137,19 +137,11 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
-    ACCEPTANCE        -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     ADD_SIGM         581  IN__  ECONTPG  PEPCON1  ECONTPG  PEPCON2
                           OUT__ ECONTPG  PEPCON3
     AMOR_MECA         50  IN__  NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                 ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
-    CARA_GEOM         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    CHAR_LIMITE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    CHAR_MECA_EPSI_R  -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
     CHAR_MECA_FFCO3D 403  IN__  CFORCEF  PFFCO3D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR
                           OUT__ MVECTUR  PVECTUR
     CHAR_MECA_FRCO3D 403  IN__  EFORCNO  PFRCO3D  NGEOMER  PGEOMER
@@ -197,10 +189,6 @@ OPTION__
                                 NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I  ENONLIN  PNONLIN
                                 CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ EEFGENOC PEFFORC  EEFGENOR PEFFORR
-    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
-    ENER_TOTALE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     EPEQ_ELGA        335  IN__  EDEFOPG  PDEFORR
                           OUT__ EDFEQPG  PDEFOEQ
     EPEQ_ELNO        335  IN__  EDEFONO  PDEFORR
@@ -232,10 +220,6 @@ OPTION__
                                 ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                           OUT__ CCACO3D  PCACO3D  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS
                                 MMATUUR  PMATUUR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    INDIC_ENER        -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    INDIC_SEUIL       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     INIT_VARC         99  IN__
                           OUT__ ZVARCPG  PVARCPR
     MASS_INER        417  IN__  CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
@@ -243,10 +227,6 @@ OPTION__
     MASS_MECA        406  IN__  CCACOQU  PCACOQU  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                 ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
-    MASS_MECA_DIAG    -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
-    MASS_MECA_EXPLI   -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
     MINMAX_SP         99  IN__
                           OUT__ EGAMIMA  PGAMIMA  ENOMIMA  PNOMIMA
     M_GAMMA          406  IN__  DDL_MECA PACCELR  CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -278,8 +258,6 @@ OPTION__
     REPE_TENS        443  IN__  CCAORIE  PANGREP  CCACOQU  PCACOQU  ECONTPG  PCOGAIN  ESIGMNOR PCONOIN
                                 EDEFOPG  PDEGAIN  EDEFONO  PDENOIN  NGEOMER  PGEOMER
                           OUT__ ECONTPG  PCOGAOUT ESIGMNOR PCONOOUT EDEFOPG  PDEGAOUT EDEFONO  PDENOOUT
-    RICE_TRACEY       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     RIGI_MECA        401  IN__  CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  ENBSP_I  PNBSP_I
                                 CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR
                           OUT__ CCACO3D  PCACO3D  MMATUUR  PMATUUR
@@ -297,8 +275,6 @@ OPTION__
                           OUT__ MMATUNS  PMATUNS
     RIGI_MECA_PRSU_R 486  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                           OUT__ MMATUNS  PMATUNS
-    RIGI_MECA_RO      -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     RIGI_MECA_SFCO3D 486  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  CFORCEF  PFFCO3D  NGEOMER  PGEOMER
                                 CTEMPSR  PTEMPSR
                           OUT__ MMATUNS  PMATUNS
@@ -337,5 +313,3 @@ OPTION__
                           OUT__ ZVARINO  PVARINR
     VERI_CARA_ELEM   119  IN__  CCACOQU  PCACOQU
                           OUT__ ECOURAN  PBIDON
-    WEIBULL           -1  IN__
-                          OUT__ XXXXXX   XXXXXX

@@ -24,7 +24,7 @@ TYPE_GENE__
 ENTETE__ ELEMENT__ HM_D_PLAN_SE3_XH    MAILLE__ SEG3
    ELREFE__  SE3        GAUSS__  RIGI=FPG4
    ELREFE__  SE2        GAUSS__  RIGI=FPG4
-   ATTRIBUT__  XFEM=XH
+   ATTRIBUT__  XFEM='XH'
    ENS_NOEUD__  EN2     =     3
    ENS_NOEUD__  EN1     =     1  2
 
@@ -75,8 +75,6 @@ OPTION__
                                      E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
                                      STANO_I  PSTANO   E4NEUTR  PPMILTO  CTEMPSR  PTEMPSR
                               OUT__  MVECTUR  PVECTUR
-    COOR_ELGA           -1   IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
     FLHN_ELGA           468   IN__   NGEOMER  PGEOMER  NSIEF_R  PCONTR
                               OUT__  EFLHN    PFLHN   
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
@@ -87,6 +85,4 @@ OPTION__
     TOU_INI_ELEM        99    IN__
                               OUT__  CPRES_R  PPRES_R  
     INI_XFEM_ELNO     99  IN__    OUT__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
-    RIGI_MECA           -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
 

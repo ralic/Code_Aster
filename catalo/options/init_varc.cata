@@ -25,6 +25,6 @@ INIT_VARC
 >>
 OPTION__
    IN__
-        
+
    OUT__
         PVARCPR  VARI_R  ELGA__   <<  PVARCPR : VARIABLES DE COMMANDE POUR LE MATERIAU >>

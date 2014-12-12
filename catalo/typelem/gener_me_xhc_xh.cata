@@ -25,112 +25,112 @@ TYPE_GENE__
 ENTETE__ ELEMENT__ ME3DH8HH8H_XH           MAILLE__ HE8HE8
    ELREFE__  HE8     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=H
+   ATTRIBUT__  XFEM_E='H' XFEM_M='H'
    ENS_NOEUD__  EN2   =  9  10  11  12  13  14  15  16
    ENS_NOEUD__  EN1   =  1   2   3   4   5   6   7   8
 ENTETE__ ELEMENT__ ME3DH8HH8C_XH           MAILLE__ HE8HE8
    ELREFE__  HE8     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=C
+   ATTRIBUT__  XFEM_E='H' XFEM_M='C'
    ENS_NOEUD__  EN4   =  9  10  11  12  13  14  15  16
    ENS_NOEUD__  EN1   =  1   2   3   4   5   6   7   8
 ENTETE__ ELEMENT__ ME3DH8CH8H_XH           MAILLE__ HE8HE8
    ELREFE__  HE8     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=C  XFEM_M=H
+   ATTRIBUT__  XFEM_E='C' XFEM_M='H'
    ENS_NOEUD__  EN2   =  9  10  11  12  13  14  15  16
    ENS_NOEUD__  EN3   =  1   2   3   4   5   6   7   8
 ENTETE__ ELEMENT__ ME3DH8CH8C_XH           MAILLE__ HE8HE8
    ELREFE__  HE8     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=C  XFEM_M=C
+   ATTRIBUT__  XFEM_E='C' XFEM_M='C'
    ENS_NOEUD__  EN4   =  9  10  11  12  13  14  15  16
    ENS_NOEUD__  EN3   =  1   2   3   4   5   6   7   8
 ENTETE__ ELEMENT__ ME3DH8T_XH              MAILLE__ HEXA8
    ELREFE__  HE8     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=T  XFEM_M=T
+   ATTRIBUT__  XFEM_E='T' XFEM_M='T'
    ENS_NOEUD__  EN5   =  1   2   3   4   5   6   7   8
 
 
 ENTETE__ ELEMENT__ ME3DP6HP6H_XH           MAILLE__ PE6PE6
    ELREFE__  PE6     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=H
+   ATTRIBUT__  XFEM_E='H' XFEM_M='H'
    ENS_NOEUD__  EN2   =  7   8   9  10  11  12
    ENS_NOEUD__  EN1   =  1   2   3   4   5   6
 ENTETE__ ELEMENT__ ME3DP6HP6C_XH           MAILLE__ PE6PE6
    ELREFE__  PE6     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=C
+   ATTRIBUT__  XFEM_E='H' XFEM_M='C'
    ENS_NOEUD__  EN4   =  7   8   9  10  11  12
    ENS_NOEUD__  EN1   =  1   2   3   4   5   6
 ENTETE__ ELEMENT__ ME3DP6CP6H_XH           MAILLE__ PE6PE6
    ELREFE__  PE6     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=C  XFEM_M=H
+   ATTRIBUT__  XFEM_E='C' XFEM_M='H'
    ENS_NOEUD__  EN2   =  7   8   9  10  11  12
    ENS_NOEUD__  EN3   =  1   2   3   4   5   6
 ENTETE__ ELEMENT__ ME3DP6CP6C_XH           MAILLE__ PE6PE6
    ELREFE__  PE6     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=C  XFEM_M=C
+   ATTRIBUT__  XFEM_E='C' XFEM_M='C'
    ENS_NOEUD__  EN4   =  7   8   9  10  11  12
    ENS_NOEUD__  EN3   =  1   2   3   4   5   6
 ENTETE__ ELEMENT__ ME3DP6T_XH              MAILLE__ PENTA6
    ELREFE__  PE6     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=T  XFEM_M=T
+   ATTRIBUT__  XFEM_E='T' XFEM_M='T'
    ENS_NOEUD__  EN5   =  1   2   3   4   5   6
 
 
 ENTETE__ ELEMENT__ ME3DT4HT4H_XH           MAILLE__ TE4TE4
    ELREFE__  TE4     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=H
+   ATTRIBUT__  XFEM_E='H' XFEM_M='H'
    ENS_NOEUD__  EN2   =  5   6   7   8
    ENS_NOEUD__  EN1   =  1   2   3   4
 ENTETE__ ELEMENT__ ME3DT4HT4C_XH           MAILLE__ TE4TE4
    ELREFE__  TE4     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=C
+   ATTRIBUT__  XFEM_E='H' XFEM_M='C'
    ENS_NOEUD__  EN4   =  5   6   7   8
    ENS_NOEUD__  EN1   =  1   2   3   4
 ENTETE__ ELEMENT__ ME3DT4CT4H_XH           MAILLE__ TE4TE4
    ELREFE__  TE4     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=C  XFEM_M=H
+   ATTRIBUT__  XFEM_E='C' XFEM_M='H'
    ENS_NOEUD__  EN2   =  5   6   7   8
    ENS_NOEUD__  EN3   =  1   2   3   4
 ENTETE__ ELEMENT__ ME3DT4CT4C_XH           MAILLE__ TE4TE4
    ELREFE__  TE4     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=C  XFEM_M=C
+   ATTRIBUT__  XFEM_E='C' XFEM_M='C'
    ENS_NOEUD__  EN4   =  5   6   7   8
    ENS_NOEUD__  EN3   =  1   2   3   4
 ENTETE__ ELEMENT__ ME3DT4T_XH              MAILLE__ TETRA4
    ELREFE__  TE4     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=T  XFEM_M=T
+   ATTRIBUT__  XFEM_E='T' XFEM_M='T'
    ENS_NOEUD__  EN5   =  1   2   3   4
 % debut des modifs ajout des elements quadratiques
 % on ne garde que H-H C:heav+ctip T:ctip (el du fond)
 ENTETE__ ELEMENT__ ME3DHVHHVH_XH           MAILLE__ H20H20
    ELREFE__  H20     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=H
+   ATTRIBUT__  XFEM_E='H' XFEM_M='H'
    ENS_NOEUD__  EN2   =  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40
    ENS_NOEUD__  EN1   =  1   2   3   4   5   6   7   8
 ENTETE__ ELEMENT__ ME3DPQHPQH_XH           MAILLE__ P15P15
    ELREFE__  P15     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=H
+   ATTRIBUT__  XFEM_E='H' XFEM_M='H'
    ENS_NOEUD__  EN2   =  7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30
    ENS_NOEUD__  EN1   =  1   2   3   4   5   6
 ENTETE__ ELEMENT__ ME3DTDHTDH_XH           MAILLE__ T10T10
    ELREFE__  T10     GAUSS__  NOEU=NOEU
    ELREFE__  TR3     GAUSS__  NOEU=NOEU
-   ATTRIBUT__   XFEM_E=H  XFEM_M=H
+   ATTRIBUT__  XFEM_E='H' XFEM_M='H'
    ENS_NOEUD__  EN2   =  5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1   =  1   2   3   4
 %
@@ -180,7 +180,5 @@ OPTION__
     RIGI_FROT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
                                 DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PSTANO   
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
-    SYME_MDNS_R       -1  IN__  XXXXXX   XXXXXX
-                          OUT__ XXXXXX   XXXXXX
     XCVBCA           363  IN__  CCONAI   PCAR_AI  CCONPT   PCAR_PT  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  
                           OUT__ I3NEUT_I PINDCOO

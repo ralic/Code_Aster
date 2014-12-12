@@ -43,3 +43,10 @@ OPTION__
         PFISNO   NEUT_I
    OUT__
 PVECTUR VDEP_R RESL__
+
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='-1'
+                PLUS__  PHENO='ME' BORD='0'  COQUE='OUI'
+                PLUS__  PHENO='ME' BORD='0'  TUYAU='OUI'
+                PLUS__  PHENO='ME' BORD='0'  LXFEM='OUI'
+                MOINS__ PHENO='ME' BORD='0'  GRILLE='OUI'
+                MOINS__ PHENO='ME' BORD='-1' COQUE='OUI'

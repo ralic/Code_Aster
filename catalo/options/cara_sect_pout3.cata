@@ -24,3 +24,6 @@ OPTION__
         PCAORIE  GEOM_R
    OUT__
 PCASECT NEUT_R ELEM__
+
+COND_CALCUL__   PLUS__  PHENO='ME' BORD='-1'
+                PLUS__  PHENO='ME' BORD='0' COQUE='OUI'

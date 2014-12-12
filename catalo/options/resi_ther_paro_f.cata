@@ -25,3 +25,7 @@ OPTION__
         PTEMPEI  TEMP_R
    OUT__
 PRESIDU VTEM_R RESL__
+
+ COND_CALCUL__   PLUS__  PHENO='TH' BORD='0'  MODELI='CL1'
+                 PLUS__  PHENO='TH' BORD='0'  MODELI='CL2'
+                 PLUS__  PHENO='TH' BORD='0'  LXFEM='OUI'

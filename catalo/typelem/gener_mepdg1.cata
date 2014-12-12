@@ -116,10 +116,6 @@ OPTION__
     AMOR_MECA         50  IN__  NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                 ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
-    CARA_GEOM         -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    CHAR_LIMITE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     CHAR_MECA_EPSI_R  20  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CEPSINR  PEPSINR  NGEOMER  PGEOMER
                                 CMATERC  PMATERC  ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR
@@ -157,13 +153,9 @@ OPTION__
                           OUT__ MVECTUR  PVECTUR
     COOR_ELGA        478  IN__  NGEOMER  PGEOMER
                           OUT__ EGGEOP_R PCOORPG
-    DEGE_ELGA        -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     DEGE_ELNO        158  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                 CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ EDEFGNO  PDEFOGR
-    ECIN_ELEM         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
     EFGE_ELGA        546  IN__  EEFGEGA  PSIEFR
                           OUT__ EEFGEGC  PEFGEC   EEFGEGA  PEFGER
     EFGE_ELNO        185  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTRR
@@ -171,10 +163,6 @@ OPTION__
                                 CMATERC  PMATERC  ENONLIN  PNONLIN  CPESANR  PPESANR  CTEMPSR  PTEMPSR
                                 ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ EEFGENC  PEFFORC  EEFGENO  PEFFORR
-    ENEL_ELEM         -1  IN__  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
-    ENER_TOTALE       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     EPOT_ELEM        151  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                 CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                           OUT__ EENEDNO  PENERDR
@@ -188,12 +176,6 @@ OPTION__
                                 ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                           OUT__ ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ESTRAUX  PSTRXPR
                                 ZVARIPG  PVARIPR  MVECTUR  PVECTUR
-    FULL_MECA_ELAS    -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    INDIC_ENER        -1  IN__
-                          OUT__ XXXXXX   XXXXXX
-    INDIC_SEUIL       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     INIT_VARC         99  IN__
                           OUT__ ZVARCPG  PVARCPR
     INI_STRX          23  IN__  CCAORIE  PCAORIE
@@ -232,16 +214,12 @@ OPTION__
                           OUT__ MVECTUR  PVECTUR
     REPERE_LOCAL     135  IN__  CCAORIE  PCAORIE
                           OUT__ CGEOMER  PREPLO1  CGEOMER  PREPLO2  CGEOMER  PREPLO3
-    RICE_TRACEY       -1  IN__
-                          OUT__ XXXXXX   XXXXXX
     RIGI_FLUI_STRU   140  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                 ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
     RIGI_MECA        140  IN__  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER  CMATERC  PMATERC
                                 ZVARCPG  PVARCPR
                           OUT__ MMATUUR  PMATUUR
-    RIGI_MECA_ELAS    -1  IN__  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
-                          OUT__ XXXXXX   XXXXXX
     RIGI_MECA_GE     143  IN__  CCAGNP1  PCAGNPO  CCAORIE  PCAORIE  EEFGEGA  PEFFORR  NGEOMER  PGEOMER
                           OUT__ MMATUUR  PMATUUR
     RIGI_MECA_HYST    50  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  MMATUUR  PRIGIEL  ZVARCPG  PVARCPR
@@ -278,5 +256,3 @@ OPTION__
                                 EEFGENO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELNO        347  IN__  CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                           OUT__ ZVARINO  PVARINR
-    WEIBULL           -1  IN__
-                          OUT__ XXXXXX   XXXXXX

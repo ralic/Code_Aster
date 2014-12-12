@@ -207,7 +207,7 @@ Erreur utilisateur :
 
   -> Risques & Conseils :
    * Si vous utilisez une commande de "calcul" (THER_LINEAIRE, STAT_NON_LINE, ...), il n'y a pas
-     moyen de contourner ce problème. Il faut changer de modélisation ou  émettre une demande d'évolution.
+     moyen de contourner ce problème. Il faut changer de modélisation ou émettre une demande d'évolution.
 
    * Si c'est un calcul de post-traitement, vous pouvez sans doute "éviter" le problème
      en ne faisant le post-traitement que sur les mailles qui savent le faire.
@@ -306,6 +306,26 @@ Conseil :
  Elle écrit en dehors de la zone allouée au paramètre (OUT) %(k3)s.
 
 """),
+
+    43 : _(u"""
+Alarme utilisateur :
+  Le TYPE_ELEMENT %(k1)s devrait savoir calculer l'option:  %(k2)s mais il ne
+  le fait pas encore (la programmation est manquante).
+
+  Pour l'instant, l'élément est ignoré pour le calcul de cette option, ce qui peut
+  entraîner des résultats faux.
+
+
+-> Risques & Conseils :
+   * Cette situation est très dangereuse. Il y a un risque de résultats faux.
+   * Si ce manque dans la programmation vous semble important, il faut émettre
+     une demande d'évolution.
+"""),
+
+
+
+
+
 
     47 : _(u"""
   le CHAM_ELEM:  %(k1)s  n'existe pas.
