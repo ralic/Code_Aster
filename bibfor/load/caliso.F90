@@ -13,8 +13,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/char_excl_keyw.h"
 #include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/drz02d.h"
-#include "asterfort/drz03d.h"
+#include "asterfort/solide_tran.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
 #include "asterfort/drzrot.h"
@@ -214,7 +213,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 !
 ! ----- Minimum distance
 !
-        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, nbval=0, nbret=n1)
+        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, scal=dist_mini, nbret=n1)
         if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Read mesh affectation
@@ -281,7 +280,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                 type_rela = "2D0ROTA"
                 nom_noeuds(1) = nom_noeuds_tmp(1)
             else
-                call drz02d(mesh, vale_type, dist_mini, nb_node, list_node,&
+                call solide_tran('2D',mesh, vale_type, dist_mini, nb_node, list_node,&
                             type_lagr, list_rela, nom_noeuds_tmp, type_transf)
                 type_rela = "2D"//type_transf
                 nom_noeuds(1) = nom_noeuds_tmp(1)
@@ -315,7 +314,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
                 type_rela = "3D0ROTA"
                 nom_noeuds(1) = nom_noeuds_tmp(1)
             else
-                call drz03d(mesh, vale_type, dist_mini, nb_node, list_node,&
+                call solide_tran('3D',mesh, vale_type, dist_mini, nb_node, list_node,&
                             type_lagr, list_rela, nom_noeuds_tmp, type_transf)
                 type_rela = "3D"//type_transf
                 nom_noeuds(1) = nom_noeuds_tmp(1)

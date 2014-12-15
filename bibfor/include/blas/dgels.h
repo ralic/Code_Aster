@@ -16,19 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 #include "asterf_types.h"
-!
+
 interface
-    subroutine drz03d_tria(dist_mini, nb_node, list_node, coor_node, numnoe_a, &
-                           numnoe_b, numnoe_c, ab, ac, l_trian)
-        real(kind=8), intent(in) :: dist_mini
-        integer, intent(in) :: nb_node
-        integer, intent(in) :: list_node(*)
-        real(kind=8), intent(in) :: coor_node(*)
-        integer, intent(in) :: numnoe_a
-        integer, intent(out) :: numnoe_b
-        integer, intent(out) :: numnoe_c
-        real(kind=8), intent(out) :: ab(3)
-        real(kind=8), intent(out) :: ac(3)
-        aster_logical, intent(out) :: l_trian
-    end subroutine drz03d_tria
+    subroutine dgels(trans, m, n, nrhs, a, lda,&
+                      b, ldb, work, lwork, info)
+        character(len=1) ,intent(in) :: trans
+        integer, intent(in) :: ldb
+        integer, intent(in) :: lda
+        integer, intent(in) :: m
+        integer, intent(in) :: n
+        integer, intent(in) :: nrhs
+        real(kind=8) ,intent(inout) :: a(lda, *)
+        real(kind=8) ,intent(inout) :: b(ldb, *)
+        real(kind=8) ,intent(out) :: work(*)
+        integer, intent(in) :: lwork
+        blas_int, intent(out) :: info
+    end subroutine dgels
 end interface

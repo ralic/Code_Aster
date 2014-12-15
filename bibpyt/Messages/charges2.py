@@ -179,16 +179,8 @@ Erreur utilisateur :
   Mais ce ddl n'existe sur aucun de ces noeuds.
 """),
 
-    46 : _(u"""
- Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP),
- on a un problème dans le cas 3d où les noeuds sont alignés car deux noeuds sont confondus.
-"""),
 
-    47 : _(u"""
- Lors de l'écriture de la relation linéaire rigidifiant la structure (LIAISON_SOLIDE ou RELA_CINE_BP),
- on a un problème dans le cas 3d où les noeuds forment un triangle.
- Le système résultant n'est pas inversible. Le triangle est trop distordu, revoyez votre maillage.
-"""),
+
 
     48: _(u"""
  Le concept CABLE_BP de nom %(k1)s ne contient pas de relations linéaires. L'option RELA_CINE est donc inutilisable.

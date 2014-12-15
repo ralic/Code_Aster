@@ -15,11 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine char_soli_mat1(ab, ac, matr_inve_1, matr_2)
-        real(kind=8), intent(in) :: ab(3)
-        real(kind=8), intent(in) :: ac(3)
-        real(kind=8), intent(out) :: matr_inve_1(3, 3)
-        real(kind=8), intent(out) :: matr_2(3, 12)
-    end subroutine char_soli_mat1
-end interface
+          interface 
+            subroutine getcara_lisno(noma,nno,lisno,dist_mini,dim,      &
+     &linocara)
+              integer, intent(in) :: nno
+              character(len=8), intent(in) :: noma
+              integer, intent(in) :: lisno(nno)
+              real(kind=8), intent(in) :: dist_mini
+              integer, intent(out) :: dim
+              integer, intent(out) :: linocara(*)
+            end subroutine getcara_lisno
+          end interface 

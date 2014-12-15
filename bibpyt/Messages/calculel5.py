@@ -216,6 +216,39 @@ Risques et conseils :
  de peau dans votre modèle ; il faut revoir le maillage.
 """),
 
+    55 : _(u"""
+Alarme utilisateur :
+  Vous avez utilisé le mot clé LIAISON_SOLIDE pour solidifier un ensemble
+  de noeuds.
+  Le nuage formé par ces noeuds est volumique mais il est très aplati.
+  Le rapport entre les dimensions 3 et 1 est faible : %(r1)f
+  Les relations cinématiques engendrées peuvent être proches de la 
+  redondance et provoquer des problèmes de type "pivot nul".
+ 
+Risques et Conseils :
+  En utilisant le mot clé DIST_MIN, vous pouvez faire en sorte que le
+  programme considère le nuage de points comme surfacique.
+  Pour cela, vous devez choisir un DIST_MIN > %(r2)f
+"""),
+
+    56 : _(u"""
+Alarme utilisateur :
+  Vous avez utilisé le mot clé LIAISON_SOLIDE pour solidifier un ensemble
+  de noeuds.
+  Le nuage formé par ces noeuds est surfacique mais il est très allongé.
+  Le rapport entre les dimensions 2 et 1 est faible : %(r1)f
+  Les relations cinématiques engendrées peuvent être proches de la 
+  redondance et provoquer des problèmes de type "pivot nul".
+
+Risques et Conseils :
+  En utilisant le mot clé DIST_MIN, vous pouvez faire en sorte que le
+  programme considère le nuage de points comme linéique.
+  Pour cela, vous devez choisir un DIST_MIN > %(r2)f
+"""),
+
+
+
+
 
     65 : _(u"""
  composante non définie dans  la grandeur.  composante:  %(k1)s

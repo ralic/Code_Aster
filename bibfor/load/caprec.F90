@@ -17,8 +17,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 #include "asterfort/chsfus.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/drz02d.h"
-#include "asterfort/drz03d.h"
+#include "asterfort/solide_tran.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
 #include "asterfort/exisdg.h"
@@ -194,7 +193,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
 !
 ! ----- Minimum distance
 !
-        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, nbval=0, nbret=n1)
+        call getvr8(keywordfact, 'DIST_MIN', iocc=iocc, scal=dist_mini, nbret=n1)
         if (n1 .eq. 0) dist_mini = dist*1.d-3
 !
 ! ----- Options
@@ -293,7 +292,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                                     cmp_index_drz, lagr_type, list_rela,&
                                                     nom_noeuds_tmp)
                                     else
-                                        call drz02d(mesh, vale_type, dist_mini, nb_node,&
+                                        call solide_tran('2D',mesh, vale_type, dist_mini, nb_node,&
                                                     list_node, lagr_type, list_rela,&
                                                     nom_noeuds_tmp, type_transf)
                                     endif
@@ -335,7 +334,7 @@ subroutine caprec(load, mesh, ligrmo, vale_type)
                                                     cmp_index_drx, cmp_index_dry, cmp_index_drz,&
                                                     lagr_type, list_rela, nom_noeuds_tmp)
                                     else
-                                        call drz03d(mesh, vale_type, dist_mini, nb_node,&
+                                        call solide_tran('3D',mesh, vale_type, dist_mini, nb_node,&
                                                     list_node, lagr_type, list_rela,&
                                                     nom_noeuds_tmp, type_transf)
                                     endif

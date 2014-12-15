@@ -16,13 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine char_soli_mat2(am, matr_inve_1, matr_2, matr_4, matr_3,&
-                              matr_5)
-        real(kind=8), intent(in) :: am(3)
-        real(kind=8), intent(in) :: matr_inve_1(3, 3)
-        real(kind=8), intent(in) :: matr_2(3, 12)
-        real(kind=8), intent(in) :: matr_4(3, 12)
-        real(kind=8), intent(inout) :: matr_3(3, 3)
-        real(kind=8), intent(inout) :: matr_5(3, 12)
-    end subroutine char_soli_mat2
+    subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node, &
+                      type_lagr, lisrel, nom_noeuds, type_transf)
+        character(len=2), intent(in)  :: type_geo
+        character(len=8), intent(in)  :: noma
+        character(len=4), intent(in) :: type_vale
+        real(kind=8), intent(in) :: dist_mini
+        integer, intent(in) :: nb_node
+        character(len=24), intent(in) :: list_node
+        character(len=2), intent(in) :: type_lagr
+        character(len=19), intent(in) :: lisrel
+        character(len=8), intent(out) :: nom_noeuds(:)
+        character(len=1), intent(out) :: type_transf
+    end subroutine solide_tran
 end interface
