@@ -221,7 +221,7 @@ MA1_1=CREA_MAILLAGE(MAILLAGE=MA1,
 
 # 2) Pour creer un autre groupe de mailles GMAB2 contenant de nouvelles mailles POI1 sur les memes noeuds :
 MA1_2=CREA_MAILLAGE(MAILLAGE=MA1_1,
-                 CREA_GROUP_MA=_F(NOM='GMAB2', GROUP_MA='GMAB1', PREF_MAILLE='S',))
+                 CREA_MAILLE=_F(NOM='GMAB2', GROUP_MA='GMAB1', PREF_MAILLE='S',))
 IMPR_RESU(RESU=_F(MAILLAGE=MA1_2), UNITE=6)
 
 

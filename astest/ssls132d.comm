@@ -28,7 +28,7 @@ MAILL1=LIRE_MAILLAGE(FORMAT='MED'   )
 
 MAILL2=CREA_MAILLAGE(
                MAILLAGE=MAILL1,
-               CREA_GROUP_MA=_F(
+               CREA_MAILLE=_F(
                    NOM = 'ACPLUS',
                    GROUP_MA = 'CONSOLE',
                    PREF_MAILLE = 'B',
@@ -38,7 +38,7 @@ MAILL2=CREA_MAILLAGE(
 
 MAILTOT=CREA_MAILLAGE(
                MAILLAGE=MAILL2,
-               CREA_GROUP_MA=_F(
+               CREA_MAILLE=_F(
                    NOM = 'ACMOINS',
                    GROUP_MA = 'CONSOLE',
                    PREF_MAILLE = 'C',

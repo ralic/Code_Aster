@@ -160,7 +160,7 @@ CHMUL2=AFFE_MATERIAU(MAILLAGE=MA,
                              MATER=MU2,),);
 
 MA3=CREA_MAILLAGE(MAILLAGE=MA,
-                  CREA_GROUP_MA=_F(NOM='PLAQ2',
+                  CREA_MAILLE=_F(NOM='PLAQ2',
                                    GROUP_MA='PLAQ1',
                                    PREF_MAILLE='MAIL',),);
 

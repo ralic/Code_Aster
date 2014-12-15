@@ -58,7 +58,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                                       GROUP_NO='A1',),);
 
 MA=CREA_MAILLAGE(MAILLAGE=MAIL,
-                 CREA_GROUP_MA=(_F(NOM='ACIER1L',
+                 CREA_MAILLE=(_F(NOM='ACIER1L',
                                    GROUP_MA='DALLE',
                                    PREF_MAILLE='A1L',),
                                 _F(NOM='ACIER2L',

@@ -89,7 +89,7 @@ MA0=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI',),FORMAT='MED',);
 # creation de plaq2 : meme noeuds que plaq1 mais mailles distinctes
 
 MA1=CREA_MAILLAGE(MAILLAGE=MA0,
-                  CREA_GROUP_MA=_F(NOM = 'PLAQ2',
+                  CREA_MAILLE=_F(NOM = 'PLAQ2',
                                    PREF_MAILLE = 'B',
                                    GROUP_MA = 'PLAQ1',)
                  )

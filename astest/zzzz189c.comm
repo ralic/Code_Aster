@@ -154,7 +154,7 @@ MAIL1=DEFI_GROUP(reuse =MAIL1,
        );
 
 MAILL=CREA_MAILLAGE(MAILLAGE= MAIL1,
-                    CREA_GROUP_MA=_F(NOM='GRILLE',
+                    CREA_MAILLE=_F(NOM='GRILLE',
                                             GROUP_MA='PLAQUE',
                                             PREF_MAILLE='B'));
 

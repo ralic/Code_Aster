@@ -34,7 +34,6 @@ subroutine op0167()
 #include "asterfort/cm2027.h"
 #include "asterfort/cmcovo.h"
 #include "asterfort/cmcrea.h"
-#include "asterfort/cmdgma.h"
 #include "asterfort/cmlqlq.h"
 #include "asterfort/cmmoma.h"
 #include "asterfort/cmqlql.h"
@@ -99,10 +98,10 @@ subroutine op0167()
     character(len=24) :: nomg, valk(2), nogma, gpptnm, gpptnn
     character(len=24) :: prfn1, prfn2, nume2, iadr, nume1, momoto, momuto, prfn
     integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j, nfi
-    integer :: jcrgno, jcrgnu, jcrmno, jcrmnu, jgg, jlii, jlik, jmail, jmomto
+    integer :: jcrgno, jcrgnu, jgg, jlii, jlik, jmail, jmomto
     integer :: jmomtu, jnoeu, jnono, jnpt, jopt, jtom, jtrno, jvale, jvg, kvale
     integer :: nbcrma, nbcrp1, nbdgma, nbgma, nbgrma, nbgrmn, nbgrmt, nbgrmv
-    integer :: nbgrno, nbmain, nbmaj1, nbmaj2, nbmaj3, nbno, nbnot
+    integer :: nbgrno, nbmain, nbmaj2, nbmaj3, nbno, nbnot
     integer :: nbpt, nbptt, nori, nrep, ntab, ntpoi
     integer :: ibid, icham, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
     integer :: jnommc, jnu2, jnum, joccmc, jpr2, jpro, jrefe, jtypmv
@@ -580,38 +579,10 @@ subroutine op0167()
     endif
 !
 ! ----------------------------------------------------------------------
-!                TRAITEMENT DU MOT CLE "CREA_MAILLE"
+!                 TRAITEMENT DU MOT CLE "CREA_MAILLE"
 ! ----------------------------------------------------------------------
 !
-    call getfac('CREA_MAILLE', nbcrma)
-    nbmaj1=0
-    if (nbcrma .ne. 0) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE3_1')
-        endif
-        crmanu='&&OP0167.CR_MA.NUM'
-        crmano='&&OP0167.CR_MA.NOM'
-        call wkvect(crmanu, 'V V I', nbmaiv, jcrmnu)
-        call wkvect(crmano, 'V V K8', nbmaiv, jcrmno)
-        nbmaj1=0
-        do iocc = 1, nbcrma
-            nbmst=nbmaj1
-            call palim3('CREA_MAILLE', iocc, nomain, crmanu, crmano,&
-                        nbmaj1)
-            if (niv .ge. 1) then
-                write (ifm,9040)iocc
-                write (ifm,9050)nbmaj1-nbmst
-            endif
-        end do
-        call jeveuo(crmanu, 'L', jcrmnu)
-        call jeveuo(crmano, 'L', jcrmno)
-    endif
-!
-! ----------------------------------------------------------------------
-!                 TRAITEMENT DU MOT CLE "CREA_GROUP_MA"
-! ----------------------------------------------------------------------
-!
-    call getfac('CREA_GROUP_MA', nbgrma)
+    call getfac('CREA_MAILLE', nbgrma)
     nbmaj2=0
     if (nbgrma .ne. 0) then
         if (nn1 .eq. 0) then
@@ -623,7 +594,7 @@ subroutine op0167()
         call wkvect(crgrno, 'V V K8', nbmaiv, jcrgno)
         nbmaj2=0
         do iocc = 1, nbgrma
-            call palim3('CREA_GROUP_MA', iocc, nomain, crgrnu, crgrno,&
+            call palim3('CREA_MAILLE', iocc, nomain, crgrnu, crgrno,&
                         nbmaj2)
         end do
         call jeveuo(crgrnu, 'L', jcrgnu)
@@ -790,7 +761,7 @@ subroutine op0167()
 !         ON AGRANDIT LE '.NOMMAI' ET LE '.CONNEX'
 ! ----------------------------------------------------------------------
 !
-    nbmain=nbmaiv+nbmaj1+nbmaj2+nbmaj3
+    nbmain=nbmaiv+nbmaj2+nbmaj3
 !
     zi(jdime+3-1)=nbmain
     call jecreo(nommai, 'G N K8')
@@ -844,34 +815,6 @@ subroutine op0167()
 !
     decala = decala + nbmaiv
 !
-    do ima = 1, nbmaj1
-        newmai=zk8(jcrmno+ima-1)
-        inumol=zi(jcrmnu+ima-1)
-        call jeexin(jexnom(nommai, newmai), iret)
-        if (iret .eq. 0) then
-            call jecroc(jexnom(nommai, newmai))
-        else
-            valk(1)=newmai
-            call utmess('F', 'ALGELINE4_7', sk=valk(1))
-        endif
-!
-        jtom=jtypmv-1+inumol
-        call jenonu(jexnom(nommai, newmai), ibid)
-        if (ibid .eq. 0) then
-            call utmess('F', 'ALGELINE3_6', sk=newmai)
-        endif
-        zi(iatyma-1+ibid)=zi(jtom)
-!
-        call jelira(jexnum(connev, inumol), 'LONMAX', nbpt)
-        call jeveuo(jexnum(connev, inumol), 'L', jopt)
-        dimcon = dimcon+nbpt
-        nbnoma(1+decala+ima-1) = nbpt
-        adrjvx(1+decala+ima-1) = jopt
-        nomnum(1+decala+ima-1) = ibid
-    end do
-!
-    decala = decala + nbmaj1
-!
     do ima = 1, nbmaj2
         newmai=zk8(jcrgno+ima-1)
         inumol=zi(jcrgnu+ima-1)
@@ -915,19 +858,6 @@ subroutine op0167()
     end do
 !
     decala = decala + nbmaiv
-!
-    do ima = 1, nbmaj1
-        nbpt = nbnoma(1+decala+ima-1)
-        jopt = adrjvx(1+decala+ima-1)
-        ibid = nomnum(1+decala+ima-1)
-        call jeecra(jexnum(connex, ibid), 'LONMAX', nbpt)
-        call jeveuo(jexnum(connex, ibid), 'E', jnpt)
-        do ino = 0, nbpt-1
-            zi(jnpt+ino)=zi(jopt+ino)
-        end do
-    end do
-!
-    decala = decala + nbmaj1
 !
     do ima = 1, nbmaj2
         nbpt = nbnoma(1+decala+ima-1)
@@ -1001,7 +931,7 @@ subroutine op0167()
             end do
         end do
         do i = 1, nbgrma
-            call getvtx('CREA_GROUP_MA', 'NOM', iocc=i, scal=nomg, nbret=n1)
+            call getvtx('CREA_MAILLE', 'NOM', iocc=i, scal=nomg, nbret=n1)
             ASSERT(n1.eq.1)
             call jeexin(jexnom(grpmai, nomg), iret)
             if (iret .eq. 0) then
@@ -1011,7 +941,7 @@ subroutine op0167()
                 call utmess('F', 'ALGELINE4_9', sk=valk(1))
             endif
             nbmaj2=0
-            call palim3('CREA_GROUP_MA', i, nomain, crgrnu, crgrno,&
+            call palim3('CREA_MAILLE', i, nomain, crgrnu, crgrno,&
                         nbmaj2)
             call jeveuo(crgrno, 'L', jcrgno)
             call jeecra(jexnom(grpmai, nomg), 'LONMAX', max(nbmaj2, 1))
@@ -1138,19 +1068,9 @@ subroutine op0167()
             end do
         endif
     endif
-! ----------------------------------------------------------------------
-!              TRAITEMENT DU MOT CLE DETR_GROUP_MA
-! ----------------------------------------------------------------------
-!
-    call getfac('DETR_GROUP_MA', nbdgma)
-    if (nbdgma .eq. 1) then
-        if (nn1 .eq. 0) then
-            call utmess('F', 'ALGELINE3_8')
-        endif
-        call cmdgma(nomaou)
-    endif
+
 350 continue
-!
+
     call titre()
 !
     call cargeo(nomaou)
@@ -1166,6 +1086,5 @@ subroutine op0167()
     9010 format ('  MODIFICATION DE ',i6,' MAILLES ',a8,' EN ',a8)
     9020 format ('MOT CLE FACTEUR "CREA_POI1", OCCURRENCE ',i4)
     9030 format ('  CREATION DU GROUP_MA ',a8,' DE ',i6,' MAILLES POI1')
-    9040 format ('MOT CLE FACTEUR "CREA_MAILLE", OCCURRENCE ',i4)
     9050 format ('  CREATION DE ',i6,' MAILLES')
 end subroutine

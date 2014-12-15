@@ -49,7 +49,7 @@ MA1=DEFI_GROUP(reuse =MA1,
                                 TOUT='OUI',),);
 
 MA=CREA_MAILLAGE(MAILLAGE=MA1,
-                 CREA_GROUP_MA=_F(NOM='PLAQ2',
+                 CREA_MAILLE=_F(NOM='PLAQ2',
                                   GROUP_MA='PLAQ1',
                                   PREF_MAILLE='MAIL',),);
 

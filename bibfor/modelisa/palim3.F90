@@ -54,6 +54,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
 !     ------------------------------------------------------------------
 !
     call jemarq()
+    ASSERT(mcfact.eq.'CREA_MAILLE')
 !
     noma = nomaz
     nomama = noma//'.NOMMAI'
@@ -126,11 +127,7 @@ subroutine palim3(mcfact, iocc, nomaz, nomvei, nomvek,&
             endif
             do 32 i = 1, nbmst
                 if (zk8(klist+i-1) .eq. nommai) then
-                    if (mcfact .eq. 'CREA_GROUP_MA') then
-                        call utmess('F', 'MODELISA9_57', sk=nommai)
-                    else
-                        goto 34
-                    endif
+                    call utmess('F', 'MODELISA9_57', sk=nommai)
                 endif
  32         continue
             nbmst = nbmst + 1

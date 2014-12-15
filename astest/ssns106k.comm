@@ -52,7 +52,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                                       GROUP_NO='A1',),);
 
 MA=CREA_MAILLAGE(MAILLAGE=MAIL,
-                 CREA_GROUP_MA=(_F(NOM='DALLE_G',
+                 CREA_MAILLE=(_F(NOM='DALLE_G',
                                    GROUP_MA='DALLE',
                                    PREF_MAILLE='G',),),);
 

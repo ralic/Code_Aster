@@ -46,7 +46,7 @@ MA_A=DEFI_MATERIAU(ELAS =_F(E  = E_A,
 MA_0=LIRE_MAILLAGE(FORMAT    = 'MED',);
 
 MAIL=CREA_MAILLAGE(MAILLAGE      = MA_0,
-                   CREA_GROUP_MA =_F(NOM         = 'MEMBRA_T',
+                   CREA_MAILLE =_F(NOM         = 'MEMBRA_T',
                                      GROUP_MA    = 'MEMBRA',
                                      PREF_MAILLE = 'T_',),);
 

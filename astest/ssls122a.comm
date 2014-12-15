@@ -113,7 +113,7 @@ MA=DEFI_GROUP(reuse =MA,
               );
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA,INFO=2,
-                 CREA_GROUP_MA=_F(NOM='PLAQ_P1I',
+                 CREA_MAILLE=_F(NOM='PLAQ_P1I',
                                   GROUP_MA='PLAQ_P1S',
                                   PREF_MAILLE='S',),);
 

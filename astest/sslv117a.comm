@@ -28,7 +28,7 @@ MA2=CREA_MAILLAGE(MAILLAGE=MA1,
                                PREF_NOEUD='Q',),);
 
 MA=CREA_MAILLAGE(MAILLAGE=MA2,
-                 CREA_GROUP_MA=_F(NOM='CUBE_REG',
+                 CREA_MAILLE=_F(NOM='CUBE_REG',
                                   GROUP_MA='CUBE',
                                   PREF_MAILLE='MR',),);
 

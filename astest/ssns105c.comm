@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MAIL=LIRE_MAILLAGE(   )
 
 MAILTOT=CREA_MAILLAGE(MAILLAGE      = MAIL,
-                      CREA_GROUP_MA = _F(
+                      CREA_MAILLE = _F(
                                NOM         = 'GEOBB',
                                GROUP_MA    = 'GEOB',
                                PREF_MAILLE = 'B'))

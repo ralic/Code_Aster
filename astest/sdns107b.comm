@@ -27,22 +27,22 @@ NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 MAILL1=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAILL2=CREA_MAILLAGE(MAILLAGE=MAILL1,
-                     CREA_GROUP_MA=_F(NOM='ACPLUS',
+                     CREA_MAILLE=_F(NOM='ACPLUS',
                                       GROUP_MA='CONSOLE',
                                       PREF_MAILLE='B',),);
 
 MAILL3=CREA_MAILLAGE(MAILLAGE=MAILL2,
-                     CREA_GROUP_MA=_F(NOM='ACMOINS',
+                     CREA_MAILLE=_F(NOM='ACMOINS',
                                       GROUP_MA='CONSOLE',
                                       PREF_MAILLE='C',),);
 
 MAILL4=CREA_MAILLAGE(MAILLAGE=MAILL3,
-                     CREA_GROUP_MA=_F(NOM='ACPLUSY',
+                     CREA_MAILLE=_F(NOM='ACPLUSY',
                                       GROUP_MA='CONSOLE',
                                       PREF_MAILLE='D',),);
 
 MAILTOT=CREA_MAILLAGE(MAILLAGE=MAILL4,
-                      CREA_GROUP_MA=_F(NOM='ACMOINSY',
+                      CREA_MAILLE=_F(NOM='ACMOINSY',
                                        GROUP_MA='CONSOLE',
                                        PREF_MAILLE='E',),);
 

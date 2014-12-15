@@ -83,7 +83,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 
 # creation du renforcement supplementaire
 MA=CREA_MAILLAGE(MAILLAGE = MAIL,
-                      CREA_GROUP_MA =(_F(NOM = 'RENF_H',
+                      CREA_MAILLE =(_F(NOM = 'RENF_H',
                                         GROUP_MA = 'POUTRE',
                                         PREF_MAILLE = 'H',),),);
 

@@ -19,9 +19,8 @@
 
 cata_msg = {
 
-    1: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_MAILLE.
-"""),
+
+
 
     2: _(u"""
  Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_GROUP_MA.
@@ -52,9 +51,8 @@ cata_msg = {
     de le détruire avec DEFI_GROUP / DETR_GROUP_MA.
 """),
 
-    8: _(u"""
- Le mot-clé MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA.
-"""),
+
+
 
     9: _(u"""
  Mode non compatible.

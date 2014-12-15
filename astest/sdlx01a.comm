@@ -211,23 +211,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-#--DEBUT TEST CREA_MAILLAGE/DETR_GROUP_MA-----------------------------
-
-MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,CREA_GROUP_MA=(
-
-        _F( NOM = 'F1', MAILLE = ('E101','E102','E103','E104',)),
-        _F( NOM = 'F2', MAILLE = ('E101','E102','E103',)),
-        _F( NOM = 'F3', MAILLE = ('E101','E102',)),
-
-        _F( NOM = 'G1', MAILLE = ('E101','E102','E103','E104',)),
-        _F( NOM = 'G2', MAILLE = ('E101','E102','E103',)),
-        _F( NOM = 'G3', MAILLE = ('E101','E102',)))
-     )
-
-MA2=CREA_MAILLAGE( MAILLAGE=MA,
-                   DETR_GROUP_MA=_F( NB_MAILLE = 2, GROUP_MA = ('F1','G3',)) )
-
-#--FIN TEST CREA_MAILLAGE/DETR_GROUP_MA-------------------------------
 
 FIN()
-#

@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA = LIRE_MAILLAGE(FORMAT='MED');
 
 MAIL=CREA_MAILLAGE(MAILLAGE=MA,
-                    CREA_GROUP_MA=(_F(NOM  = 'ROCHE_RE',
+                    CREA_MAILLE=(_F(NOM  = 'ROCHE_RE',
                                       GROUP_MA    = 'ROCHE',
                                       PREF_MAILLE = 'MR')));
 

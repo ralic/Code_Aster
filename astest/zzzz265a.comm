@@ -67,7 +67,7 @@ MAIL0=DEFI_GROUP(reuse =MAIL0,
                                   CRIT_NOEUD='TOUS',),);
 
 MAIL1=CREA_MAILLAGE(MAILLAGE=MAIL0,
-                    CREA_GROUP_MA=_F(NOM='TOTAL1',
+                    CREA_MAILLE=_F(NOM='TOTAL1',
                                      GROUP_MA='TOTAL',
                                      PREF_MAILLE='ZZ',),);
 
