@@ -43,8 +43,8 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 ! -----------------------------------------------------------------
 !
 ! CHIN IN/JXIN  K19 : NOM DU CHAMP A CHANGER
-!                     TYPE AUTORISE POUR CHIN :
-!        NOEU, CART, ELGA, ELNO, CESE
+!        TYPE AUTORISE POUR CHIN :
+!           NOEU, CART, ELGA, ELNO, ELEM, CESE
 !
 ! CHOU IN/JXOUT K19 : NOM DU CHAMP RESULTAT
 ! BASE IN       K1  : BASE DE CREATION DE CHOU : /'G' / 'V'
@@ -71,8 +71,12 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
 !         /'ELGA->NOEU'   : CHAM_ELEM/ELGA    -> CHAM_NO
 !         /'ELGA->ELNO'   : CHAM_ELEM/ELGA    -> CHAM_ELEM/ELNO
+
 !         /'ELNO->NOEU'   : CHAM_ELEM/ELNO    -> CHAM_NO
 !         /'ELNO->ELGA'   : CHAM_ELEM/ELNO    -> CHAM_ELEM/ELGA
+!
+!         /'ELEM->ELNO'   : CHAM_ELEM/ELEM    -> CHAM_ELEM/ELNO
+!         /'ELEM->ELGA'   : CHAM_ELEM/ELEM    -> CHAM_ELEM/ELGA
 !
 !         /'CESE->ELNO'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELNO
 !         /'CESE->ELGA'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELGA
@@ -90,6 +94,9 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !     ------------------------------------------------------------------
     mnoga = '&&CHPCHD.MANOGA'
     cesmod = '&&CHPCHD.CESMOD'
+    ces1 = '&&CHPCHD.CES1'
+    ces2 = '&&CHPCHD.CES2'
+    cns1 = '&&CHPCHD.CNS1'
 !
 !
 ! 1- CALCUL DE:
@@ -102,7 +109,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
     call dismoi('TYPE_CHAMP', chin, 'CHAMP', repk=tychi)
     call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd)
     bool = tychi .eq. 'NOEU' .or. tychi .eq. 'CART' .or. tychi .eq. 'ELNO' .or. tychi .eq. 'ELGA'&
-           .or. tychi .eq. 'CESE'
+           .or. tychi .eq. 'ELEM' .or. tychi .eq. 'CESE'
     ASSERT(bool)
 !
 !
@@ -141,8 +148,12 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
 !         /'ELGA->NOEU'   : CHAM_ELEM/ELGA    -> CHAM_NO
 !         /'ELGA->ELNO'   : CHAM_ELEM/ELGA    -> CHAM_ELEM/ELNO
+
 !         /'ELNO->NOEU'   : CHAM_ELEM/ELNO    -> CHAM_NO
 !         /'ELNO->ELGA'   : CHAM_ELEM/ELNO    -> CHAM_ELEM/ELGA
+!
+!         /'ELEM->ELNO'   : CHAM_ELEM/ELEM    -> CHAM_ELEM/ELNO
+!         /'ELEM->ELGA'   : CHAM_ELEM/ELEM    -> CHAM_ELEM/ELGA
 !
 !         /'CESE->ELNO'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELNO
 !         /'CESE->ELGA'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELGA
@@ -159,8 +170,6 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
     nncp = 0
     if (cas .eq. 'NOEU->ELGA') then
 !     ----------------------------------
-        cns1 = '&&CHPCHD.CNS1'
-        ces1 = '&&CHPCHD.CES1'
         call manopg(ligrel, option, param, mnoga)
 !
         call cnocns(chin, 'V', cns1)
@@ -176,8 +185,6 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else if (cas.eq.'ELNO->ELGA') then
 !     ----------------------------------
-        ces1 = '&&CHPCHD.CES1'
-        ces2 = '&&CHPCHD.CES2'
         call manopg(ligrel, option, param, mnoga)
 !
         call celces(chin, 'V', ces1)
@@ -193,8 +200,6 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else if (cas.eq.'NOEU->ELNO') then
 !     ----------------------------------------------------------------
-        cns1 = '&&CHPCHD.CNS1'
-        ces1 = '&&CHPCHD.CES1'
 !
         call cnocns(chin, 'V', cns1)
         call cnsces(cns1, 'ELNO', cesmod, ' ', 'V',&
@@ -207,10 +212,8 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
 !
         elseif ((cas.eq.'ELNO->NOEU') .or. (cas.eq.'ELGA->NOEU') .or.&
-    (cas.eq.'CART->NOEU')) then
+                (cas.eq.'CART->NOEU')) then
 !     ----------------------------------------------------------------
-        cns1 = '&&CHPCHD.CNS1'
-        ces1 = '&&CHPCHD.CES1'
 !
         if (cas(1:4) .eq. 'ELNO') then
             call celces(chin, 'V', ces1)
@@ -237,12 +240,18 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
         call jedetr('&&CHPCHD.CELFPG')
 !
 !
-    else if (cas(1:8).eq.'CART->EL') then
+    else if (cas(1:8).eq.'CART->EL' .or. cas(1:8).eq.'ELEM->EL') then
 !     ----------------------------------------------------------------
         ASSERT(ligrel.ne.' ')
-        ces1 = '&&CHPCHD.CES1'
-        call carces(chin, cas(7:10), cesmod, 'V', ces1,&
+        if (cas(1:4).eq.'CART') then
+            call carces(chin, cas(7:10), cesmod, 'V', ces1,&
                     'A', ib)
+        else
+            ASSERT(cas(1:4).eq.'ELEM')
+            call celces(chin, 'V', ces2)
+            call cesces(ces2, cas(7:10), cesmod, ' ', ' ','V', ces1)
+            call detrsd('CHAM_ELEM_S', ces2)
+        endif
 !
         call cescel(ces1, ligrel, option, param, prol0,&
                     nncp, base, chou, 'F', ibid)
@@ -262,9 +271,7 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
     else if (cas(1:8).eq.'CESE->EL') then
 !     ----------------------------------------------------------------
         ASSERT(ligrel.ne.' ')
-        ces1 = '&&CHPCHD.CES1'
-        call cesces(chin, cas(7:10), cesmod, ' ', ' ',&
-                    'V', ces1)
+        call cesces(chin, cas(7:10), cesmod, ' ', ' ','V', ces1)
         call cescel(ces1, ligrel, option, param, prol0,&
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
@@ -282,8 +289,6 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else if (cas.eq.'ELGA->ELNO') then
 !     ----------------------------------------------------------------
-        ces1 = '&&CHPCHD.CES1'
-        ces2 = '&&CHPCHD.CES2'
 !
         call celces(chin, 'V', ces1)
         call celfpg(chin, '&&CHPCHD.CELFPG', iret)
@@ -300,8 +305,6 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 !
     else if (cas.eq.'NOEU->ELEM') then
 !     ----------------------------------------------------------------
-        cns1 = '&&CHPCHD.CNS1'
-        ces1 = '&&CHPCHD.CES1'
 !
         call cnocns(chin, 'V', cns1)
         call cnsces(cns1, 'ELEM', cesmod, ' ', 'V',&
