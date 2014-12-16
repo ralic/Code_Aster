@@ -72,7 +72,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
 ! ======================================================================
 !
     integer :: nbmaou, nbnoin, iret, jnuma, jwk1, jconx2, ima, numa
-    integer :: nbno
+    integer :: nbno, lont
     integer :: ino, nuno, jdim, itypou, jadin, jadou, ibid
     integer :: jcorou
     integer :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
@@ -201,7 +201,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
     ptngrn=nomare//'.PTRNOMNOE'
     ptngrm=nomare//'.PTRNOMMAI'
 !
-    connex=nomare//'.CONNEX         '
+    connex=nomare//'.CONNEX'
     typmai=nomare//'.TYPMAIL        '
     cooval=nomare//'.COORDO    .VALE'
     coodsc=nomare//'.COORDO    .DESC'
@@ -235,7 +235,12 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm,&
                 nbmaou)
     call dismoi('NB_NO_MAX', '&CATA', 'CATALOGUE', repi=nbnomx)
 !
-    call jeecra(connex, 'LONT', nbnomx*nbmaou, ' ')
+    lont=0
+    do ima = 1, nbmaou
+        call jelira(jexnum(noma//'.CONNEX', zi(jnuma+ima-1)), 'LONMAX', nbno)
+        lont=lont+nbno
+    end do
+    call jeecra(connex, 'LONT', lont, ' ')
     do ima = 1, nbmaou
         call jelira(jexnum(noma//'.CONNEX', zi(jnuma+ima-1)), 'LONMAX', nbno)
         call jeecra(jexnum(connex, ima), 'LONMAX', nbno)
