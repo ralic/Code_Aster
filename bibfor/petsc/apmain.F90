@@ -62,7 +62,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/filter_smd.h" 
+#include "asterfort/filter_smd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -96,7 +96,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     real(kind=8), dimension(:), pointer :: slvr => null()
     complex(kind=8) :: cbid
 !
-    aster_logical :: lmd
+    aster_logical :: lmd, dbg=.false.
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -159,6 +159,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         ASSERT(ierr.eq.0)
         call MatAssemblyEnd(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
         ASSERT(ierr.eq.0)
+       !call MatView(ap(kptsc),PETSC_VIEWER_DEFAULT,ierr)
 !
 !        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
@@ -170,12 +171,12 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), DIFFERENT_NONZERO_PATTERN, ierr)
 #else
         call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), ierr )
-#endif        
+#endif
 
         ASSERT(ierr == 0)
-        ! 
-        !  Initialisation du préconditionneur 
-        !       
+        !
+        !  Initialisation du préconditionneur
+        !
         call appcpr(kptsc)
 !
     else if (action.eq.'RESOUD') then
@@ -193,11 +194,10 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !        -- MISE A L'ECHELLE DES LAGRANGES DANS LE SECOND MEMBRE
         call mtdscr(nomat)
         call jeveuo(nomat//'.&INT', 'L', lmat)
-        call mrconl('MULT', lmat, 0, 'R', rsolu,&
-                    1)
+        call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
 !
-!        -- MISE A ZERO DES TERMES NON CINEMATIQUES DONT LE PROC 
-!           COURANT N'EST PAS SEUL PROPRIETAIRE 
+!        -- MISE A ZERO DES TERMES NON CINEMATIQUES DONT LE PROC
+!           COURANT N'EST PAS SEUL PROPRIETAIRE
         call filter_smd(nomat, rsolu)
 !        -- PRISE EN COMPTE DES CHARGES CINEMATIQUES :
         call jeexin(vcine//'.VALE', ierd)
@@ -229,8 +229,8 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
         call VecDuplicate(b, x, ierr)
         ASSERT(ierr.eq.0)
+
         call KSPSolve(ksp, b, x, ierr)
-!
 !
 !        2.5 DIAGNOSTIC :
 !        ----------------
@@ -243,12 +243,12 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         ASSERT(ierr.eq.0)
         call KSPGetIterationNumber(ksp, its, ierr)
 
+
 !
 !       -- si LDLT_SP et its > maxits, on essaye une 2eme fois
 !       -- apres avoir actualise le preconditionneur :
         if ((indic .eq. KSP_DIVERGED_ITS) .and. (precon.eq.'LDLT_SP')) then
-            call ap2foi(kptsc, mpicomm, nosolv, lmd, indic,&
-                        its)
+            call ap2foi(kptsc, mpicomm, nosolv, lmd, indic,its)
 !           -- ksp a ete modifie par ap2foi :
             ksp = kp(kptsc)
         endif
@@ -264,17 +264,17 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 
             if (indic .eq. KSP_DIVERGED_ITS) then
 !               -- NOMBRE MAX D'ITERATIONS
-                if ( istop == 0 ) then 
+                if ( istop == 0 ) then
 !                  ERREUR <F>
                    nmaxit=maxits
                    call utmess('F', 'PETSC_5', si=nmaxit )
                 else if ( istop == 2 ) then
-!                  ON CONTINUE ET ON REMONTE UN CODE D'ERREUR 
+!                  ON CONTINUE ET ON REMONTE UN CODE D'ERREUR
                    iret = 1
                    goto 999
                 else
                    ASSERT (.false.)
-                endif 
+                endif
 !
             else if (indic.eq.KSP_DIVERGED_DTOL) then
 !               DIVERGENCE
@@ -414,6 +414,12 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
         nonus(kptsc) = ' '
         ap(kptsc) = 0
         kp(kptsc) = 0
+        tblocs(kptsc) = -1
+        if (fictifs(kptsc).eq.1) then
+            deallocate(new_ieqs(kptsc)%pi4)
+            deallocate(old_ieqs(kptsc)%pi4)
+        endif
+        fictifs(kptsc) = -1
 !
 !        -- PRECONDITIONNEUR UTILISE
 !

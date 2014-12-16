@@ -22,7 +22,6 @@ subroutine appcpr(kptsc)
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/apbloc.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -47,7 +46,7 @@ subroutine appcpr(kptsc)
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc
-    integer :: dimgeo, dimgeo_b, tbloc, niremp, istat 
+    integer :: dimgeo, dimgeo_b, niremp, istat 
     integer :: jnequ, jnequl
     integer :: nloc, neqg, ndprop, ieq, numno, icmp
     integer :: iret
@@ -151,11 +150,11 @@ subroutine appcpr(kptsc)
             endif
         endif
 !       -- NOMBRE CONSTANT DE DDLS PAR NOEUD
-        call apbloc(nomat, nosolv, tbloc)
-        if (tbloc .le. 0) then
+        bs=tblocs(kptsc)
+        if (bs .le. 0) then
             call utmess('A', 'PETSC_18')
         else
-        bs = abs(tbloc)
+        bs = abs(bs)
         endif
     endif
     

@@ -25,23 +25,36 @@
 ! Gestion des versions de PETSc
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 2
 #   define ASTER_PETSC_VERSION_LEQ_32
-#endif 
+#endif
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 4
 #   define ASTER_PETSC_VERSION_LEQ_34
-#endif   
+#endif
 !
 # include "petsc_interfaces.h"
 
 
 !----------------------------------------------------------------
 !   spetsc : common pour les instances PETSC
+
+! On ne peut pas creer directement un tableau de pointer,
+! il faut passer par un artifice (type derive) :
+type p_int4
+sequence
+    integer(kind=4), pointer :: pi4(:)
+end type
+
 integer, parameter :: nmxins=5
 character(len=19)  :: nomats(nmxins), nosols(nmxins)
 character(len=14)  :: nonus(nmxins)
 Mat :: ap(nmxins)
 KSP :: kp(nmxins)
 Vec :: b, x
-common /spetsc/ap, kp, b, x, nomats, nosols, nonus
+
+! Les variables suivantes sont utilisees par les preconditionneurs multigrille
+integer(kind=4) :: tblocs(nmxins),fictifs(nmxins)
+type(p_int4), target :: new_ieqs(nmxins), old_ieqs(nmxins)
+common /spetsc/ap, kp, b, x, tblocs,fictifs, new_ieqs, old_ieqs, &
+       nomats, nosols, nonus
 !
 !----------------------------------------------------------------
 !   ldltsp : common pour le preconditionneur simple precision ldlt_sp

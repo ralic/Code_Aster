@@ -27,6 +27,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
 #include "asterfort/mrconl.h"
     integer :: kptsc
     aster_logical :: lmd
@@ -42,16 +43,18 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang
-    integer :: nbproc, lmat
+    integer :: nbproc, lmat, neq1,neq2, fictif, bs,ieq1,ieq2,k
     integer :: iloc, iglo
     integer, dimension(:), pointer :: nlgp => null(), nulg=> null(), prddl =>null()
+    integer(kind=4), pointer :: new_ieq(:) => null()
+    integer(kind=4), pointer :: old_ieq(:) => null()
 !
     character(len=14) :: nonu
     character(len=19) :: nomat
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: i, neqg, neql, nuglpe, high, low, ierr
+    PetscInt :: i, neqg, neql, nuglpe, high2, low2, ierr
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     VecScatter :: ctx
@@ -63,6 +66,8 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)
     nonu = nonus(kptsc)
+    bs = tblocs(kptsc)
+    fictif = fictifs(kptsc)
 !
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     neqg = zi(jnequ)
@@ -78,7 +83,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
         call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)
         call jeveuo(nonu//'.NUML.PDDL', 'L', vi=prddl)
 
- 
+
 !
         nloc = zi(jnequl)
         nglo = neqg
@@ -88,7 +93,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
             rsolu(iloc)=0.d0
         enddo
 !
-        call VecGetOwnershipRange(x, low, high, ierr)
+        call VecGetOwnershipRange(x, low2, high2, ierr)
         ASSERT(ierr.eq.0)
 !
 !       -- RECOPIE DE DANS RSOLU
@@ -99,7 +104,7 @@ subroutine apsolu(kptsc, lmd, rsolu)
             if ( prddl(iloc) .eq. rang ) then
                 nuglpe= nlgp(iloc)
                 iglo= nulg(iloc)
-                rsolu(iglo)=xx(xidx+nuglpe-low)
+                rsolu(iglo)=xx(xidx+nuglpe-low2)
             endif
         enddo
 !
@@ -109,6 +114,21 @@ subroutine apsolu(kptsc, lmd, rsolu)
         ASSERT(ierr.eq.0)
 !
     else
+        call jelira(nonu//'.SMOS.SMDI', 'LONMAX', neq1)
+        ASSERT(neq1.eq.neqg)
+        if (fictif.eq.0) then
+            neq2=neq1
+            allocate(new_ieq(neq2))
+            allocate(old_ieq(neq2))
+            do k=1,neq2
+                new_ieq(k)=k
+                old_ieq(k)=k
+            enddo
+        else
+            new_ieq => new_ieqs(kptsc)%pi4
+            old_ieq => old_ieqs(kptsc)%pi4
+        endif
+        neq2=size(old_ieq)
 !
 !       -- RECONSTRUCTION DE LA LA SOLUTION SUR CHAQUE PROC
         call VecScatterCreateToAll(x, ctx, xgth, ierr)
@@ -125,8 +145,9 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !       -- RECOPIE DE XX DANS RSOLU
         call VecGetArray(xgth, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
-        do i = 1, neqg
-            rsolu(i)=xx(xidx+i)
+        do ieq1 = 1, neq1
+            ieq2=new_ieq(ieq1)
+            rsolu(ieq1)=xx(xidx+ieq2)
         end do
 !
         call VecRestoreArray(xgth, xx, xidx, ierr)
@@ -135,14 +156,17 @@ subroutine apsolu(kptsc, lmd, rsolu)
 !       -- NETTOYAGE
         call VecDestroy(xgth, ierr)
         ASSERT(ierr.eq.0)
+        if (fictif.eq.0) then
+            deallocate(new_ieq)
+            deallocate(old_ieq)
+        endif
 !
     endif
 !
     call jeveuo(nomat//'.&INT', 'L', lmat)
 !
 !     -- REMISE A L'ECHELLE DES LAGRANGES DANS LA SOLUTION
-    call mrconl('MULT', lmat, 0, 'R', rsolu,&
-                1)
+    call mrconl('MULT', lmat, 0, 'R', rsolu, 1)
 !
     call jedema()
 !

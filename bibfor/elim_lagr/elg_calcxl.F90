@@ -55,7 +55,7 @@ subroutine elg_calcxl(x1, vlag)
     aster_logical :: info
     PetscInt :: n1, n2, n3
     PetscInt :: ierr
-    PetscScalar :: neg_one
+    PetscScalar :: neg_one = -1.d0
     PetscOffset :: xidxay, xidxl
     Mat :: cct
     Vec :: bx, y, ay, xtmp, xlag

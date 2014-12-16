@@ -16,9 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apbloc(matass, solveu, tbloc)
-        character(len=19) :: matass
-        character(len=19) :: solveu
-        integer :: tbloc
+    subroutine apbloc(kptsc)
+        integer :: kptsc
     end subroutine apbloc
 end interface

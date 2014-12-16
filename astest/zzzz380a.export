@@ -1,0 +1,10 @@
+P time_limit 180
+P memory_limit 1024
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification parallel
+
+F comm zzzz380a.comm  D 1
+F mgib zzzz380a.mgib  D 19
+F datg zzzz380a.datg  D 17

@@ -81,8 +81,8 @@ subroutine resou2(matass, matpre, solveu, chcine, nsecm,&
 !                       / 0 : OK (PAR DEFAUT POUR SOLVEURS DIRECTS)
 !                       / 1 : ECHEC (NOMBRE MAX. D'ITERATIONS ATTEINT)
 !-----------------------------------------------------------------------
-! cette routine est une surcouche de la routine resou1.
-! elle est necessaire pour traiter le cas elim_lagr='oui'
+! Cette routine est une surcouche de la routine resou1.
+! Elle est necessaire pour traiter le cas ELIM_LAGR='OUI'
 ! ----------------------------------------------------------------------
     character(len=19) :: matas1, solve1
     character(len=3) :: kellag

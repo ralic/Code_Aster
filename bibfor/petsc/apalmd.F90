@@ -48,7 +48,7 @@ subroutine apalmd(kptsc)
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc, jnbjoi, nbjoin, jnequ, jnequl, jnugll
-    integer :: nsmdi, nsmhc, nz, tbloc, jprddl, nloc, nglo, jcoll
+    integer :: nsmdi, nsmhc, nz, jprddl, nloc, nglo, jcoll
     integer :: jsmdi, jsmhc, jidxd, jidxo, ndprop, procol, jidxdc, jidxoc
     integer :: k, nzdeb, nzfin, jcolg, iligl, jaux
     integer :: prolig, iligg, iaux, numpro, jjoint, jvaleu, numloc
@@ -98,8 +98,10 @@ subroutine apalmd(kptsc)
     call jelira(nonu//'.SMOS.SMHC', 'LONMAX', nsmhc)
     nz = zi(jsmdi-1+nsmdi)
 !
-    call apbloc(nomat, nosolv, tbloc)
-    bs = abs(tbloc)
+    call apbloc(kptsc)
+    bs=tblocs(kptsc)
+    ASSERT(bs.ge.1)
+    ASSERT(fictifs(kptsc).eq.0)
 !
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     call jeveuo(nonu//'.NUML.NEQU', 'L', jnequl)

@@ -22,7 +22,6 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterfort/apbloc.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmpi_info.h"
@@ -45,23 +44,25 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 #include "asterf_petsc.h"
 !
 !     VARIABLES LOCALES
-    integer :: nsmdi, tbloc, rang, nbproc, jnequ, jnequl
+    integer :: nsmdi, rang, nbproc, jnequ, jnequl
     integer :: iloc, iglo, nloc, nglo, ndprop
-    integer :: bs, i, neq
+    integer :: bs, i, neq1, neq2, fictif, ieq1, ieq2, k
     integer, dimension(:), pointer         :: nulg => null()
     integer, dimension(:), pointer         :: nlgp => null(), pddl => null()
     integer(kind=4), dimension(:), pointer :: ig_petsc_c => null()
-    
+    integer(kind=4), pointer :: new_ieq(:) => null()
+    integer(kind=4), pointer :: old_ieq(:) => null()
+
     mpi_int :: mpicomm
 !
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
-    
+
     real(kind=8), dimension(:), pointer :: val => null()
 !
 !----------------------------------------------------------------
 !     Variables PETSc
-    PetscInt :: low, high, ierr
+    PetscInt :: low2, high2, ierr
     PetscScalar :: xx(1)
     PetscOffset :: xidx
     mpi_int :: mrank, msize
@@ -74,14 +75,15 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
 !     -- LECTURE DU COMMUN
     nomat = nomats(kptsc)
+    bs = tblocs(kptsc)
+    fictif = fictifs(kptsc)
+    ASSERT(bs.ge.1)
     nosolv = nosols(kptsc)
     nonu = nonus(kptsc)
-!
-!     -- TAILLE DES BLOCS (nombre de ddls par noeud)
-    call apbloc(nomat, nosolv, tbloc)
-    bs = abs(tbloc)
+
 !
     if (lmd) then
+        ASSERT(fictif.eq.0)
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)
@@ -93,7 +95,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         nloc = zi(jnequl)
         nglo = zi(jnequ)
 !       Nombre de ddls m'appartenant (pour PETSc)
-        ndprop = count( pddl(1:nloc) == rang ) 
+        ndprop = count( pddl(1:nloc) == rang )
 !
         call VecCreate(mpicomm, b, ierr)
         ASSERT(ierr.eq.0)
@@ -103,11 +105,11 @@ subroutine apvsmb(kptsc, lmd, rsolu)
         ASSERT(ierr.eq.0)
         call VecSetType(b, VECMPI, ierr)
         ASSERT(ierr.eq.0)
-!       
+!
         AS_ALLOCATE( vi4=ig_petsc_c, size=nloc )
         AS_ALLOCATE( vr=val, size=nloc )
         do iloc = 1, nloc
-            ! Indice global PETSc (convention C) 
+            ! Indice global PETSc (convention C)
             ig_petsc_c( iloc ) = nlgp( iloc ) - 1
             ! Indice global Aster (convention F)
             iglo               = nulg( iloc )
@@ -124,35 +126,61 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 !
     else
         call jelira(nonu//'.SMOS.SMDI', 'LONMAX', nsmdi)
-        neq=nsmdi
+        neq1=nsmdi
+        if (fictif.eq.0) then
+            neq2=neq1
+            allocate(new_ieq(neq2))
+            allocate(old_ieq(neq2))
+            do k=1,neq2
+                new_ieq(k)=k
+                old_ieq(k)=k
+            enddo
+        else
+            new_ieq => new_ieqs(kptsc)%pi4
+            old_ieq => old_ieqs(kptsc)%pi4
+        endif
+        neq2=size(old_ieq)
+
+
+        ASSERT(mod(neq2,bs).eq.0)
 !
 !       -- allocation de b :
         call VecCreate(mpicomm, b, ierr)
         ASSERT(ierr.eq.0)
         call VecSetBlockSize(b, to_petsc_int(bs), ierr)
         ASSERT(ierr.eq.0)
-        call VecSetSizes(b, PETSC_DECIDE, to_petsc_int(neq), ierr)
+        call VecSetSizes(b, PETSC_DECIDE, to_petsc_int(neq2), ierr)
         ASSERT(ierr.eq.0)
         call VecSetType(b, VECMPI, ierr)
+        ASSERT(ierr.eq.0)
+!       -- on met le vecteur a zero a cause des ddls fictifs :
+        call VecSet(b, 0.d0, ierr)
         ASSERT(ierr.eq.0)
 !
 !
 !       -- calcul de b=RSOLU :
 !       ------------------------------------------------
-        call VecGetOwnershipRange(b, low, high, ierr)
+        call VecGetOwnershipRange(b, low2, high2, ierr)
         call VecGetArray(b, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
 !
-        do i = 1, high-low
-            xx(xidx+i)=rsolu(low+i)
+        do i = 1, high2-low2
+            ieq2=low2+i
+            ieq1=old_ieq(ieq2)
+            if (ieq1.gt.0) xx(xidx+i)=rsolu(ieq1)
         end do
         call VecRestoreArray(b, xx, xidx, ierr)
         ASSERT(ierr.eq.0)
-!
-!
+
+        if (fictif.eq.0) then
+            deallocate(new_ieq)
+            deallocate(old_ieq)
+        endif
+
     endif
-!
-!
+
+
+
     call jedema()
 !
 #else

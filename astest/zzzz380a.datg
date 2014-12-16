@@ -1,0 +1,52 @@
+opti dime 2 elem qua8 ;
+
+*                         
+* pour  mailler 2 carres adjacents de facon non compatible :
+* ----------------------------------------------------------
+
+* vecteur translation :
+tx=0.; ty=1.;
+vtran=(tx ty);
+
+a  = 0.   0.;
+b1  = 1.   0.;
+b2  = 1.   0.;
+c  = 2.   0.;
+
+* pe= c+vtran;
+pe= (2.+tx)  ty;
+* pd= a+vtran;
+pd= tx  ty;
+
+* nombres d'element pour carr1 et carr2 :
+n1=15;
+n2=n1+1;
+* coef. multiplicateur pour le nombre d'elements dans la direction Ox :
+n3=1;
+
+
+bord1 = droi (n3*n1) a b1 ;
+bord2 = droi (n3*n2) b2 c ;
+
+carr1= bord1 tran n1 vtran;
+carr2= bord2 tran n2 vtran;
+
+bord3= cote 3 carr1;
+bord4= cote 3 carr2;
+bord5= cote 4 carr2;
+bord6= cote 4 carr1;
+
+e=carr2 poin proc pe;
+d=carr1 poin proc pd;
+
+* trac carr1;
+* trac carr2;
+carre=carr1 et carr2;
+
+trac carre;
+
+opti sauv form 'zzzz380a.mgib' ;
+sauv form carre ;
+list (nbno carre) ;
+list (nbel carre) ;
+fin;

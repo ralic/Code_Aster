@@ -30,7 +30,6 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/nueq_chck.h"
 !
     integer :: repi, ierd
     character(len=*) :: questi
@@ -49,13 +48,11 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     ------------------
     character(len=32) :: repk
     character(len=24) :: p1, p2, k24
-    character(len=19) :: nomob, solveu, prno
-    integer ::   jprno
-    character(len=8) :: kbid, nomgd
+    character(len=19) :: nomob, solveu
     character(len=2) :: typmat
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier, nec, ieq, neq
-    integer ::  nblime, nbddl, nbddlc, numno, icmp
+    integer :: i, ibid, ier
+    integer ::  nblime
     character(len=24), pointer :: lime(:) => null()
     character(len=24), pointer :: refa(:) => null()
     integer, pointer :: deeq(:) => null()
@@ -104,46 +101,16 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
         else
             repk = 'OUI'
         endif
-!
-    else if (questi.eq.'NB_DDL_NOEUD') then
-        prno = refa(2)(1:14)//'.NUME'
-        call nueq_chck(prno, l_error = .true.)
-        call jeveuo(jexnum(prno//'.PRNO', 1), 'L', jprno)
-        call jeveuo(prno//'.DEEQ', 'L', vi=deeq)
-!
-        call dismnu('NOM_GD', refa(2)(1:14), ibid, nomgd, ierd)
-        if (ierd .ne. 0) goto 999
-        call dismgd('NB_EC', nomgd, nec, kbid, ierd)
-        if (ierd .ne. 0) goto 999
-        call dismnu('NB_EQUA', refa(2)(1:14), neq, kbid, ierd)
-        if (ierd .ne. 0) goto 999
-!
-       nbddl = zi(jprno-1+2)
-        do ieq = 2, neq
-            numno = deeq((ieq -1)* 2 +1)
-            icmp  = deeq((ieq -1)* 2 +2)
-            if ((numno .le. 0) .or. (icmp .le. 0)) then
-                repi = -1
-                goto 200
-            endif
-            nbddlc = zi(jprno-1+(numno-1)*(2+nec)+2)
-            if (nbddlc .ne. nbddl) then
-                repi = -1
-                goto 200
-            endif
-        end do
-        repi = nbddl
-200     continue
-!
+
     else if (questi.eq.'XFEM') then
         repk=refa(17)
-!
+
     else if (questi.eq.'XFEM_PC') then
         repk=refa(18)(1:19)
-!
+
     else if (questi.eq.'XFEM_PC_INV') then
         repk=refa(16)(1:19)
-!
+
     else if (questi.eq.'SOLVEUR') then
         if (refa(7) .ne. ' ') then
             repk=refa(7)
@@ -224,6 +191,5 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     endif
 !
     repkz = repk
-999 continue
     call jedema()
 end subroutine

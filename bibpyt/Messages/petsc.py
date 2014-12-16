@@ -19,17 +19,17 @@
 
 cata_msg = {
 
-    1 : _(u"""
+1 : _(u"""
 Solveur PETSc :
  Erreur à l'initialisation de PETSc. Il y a certainement un problème dans l'installation.
 """),
 
-    2 : _(u"""
+2 : _(u"""
 Solveur PETSc :
  On ne traite que des matrices réelles avec PETSc.
 """),
 
-    3 : _(u"""
+3 : _(u"""
 Solveur PETSc :
   Limite atteinte : le solveur PETSc est utilisé par plus de 5 matrices simultanément.
 Solution :
@@ -37,12 +37,12 @@ Solution :
   Contactez l'assistance.
 """),
 
-    4 : _(u"""
+4 : _(u"""
 Solveur PETSc :
   Le préconditionneur a déjà été calculé, on ne le recalcule pas.
 """),
 
-    5 : _(u"""
+5 : _(u"""
 Solveur PETSc :
  La résolution du système linéaire a échoué car le critère de convergence n'a pu être satisfait avec le nombre d'itérations autorisées (%(i1)d).
 
@@ -53,61 +53,61 @@ Solveur PETSc :
     Prenez garde cependant car cela peut empêcher la convergence de l'algorithme non-linéaire.
 """),
 
-    6 : _(u"""
+6 : _(u"""
 Solveur PETSc :
   Le résidu a été multiplié par plus de %(i1)d par rapport au résidu initial : on diverge
   Vous pouvez utiliser un préconditionneur plus précis, voire changer d'algorithme.
 """),
 
-    7 : _(u"""
+7 : _(u"""
 Solveur PETSc :
   On a rencontré un 'breakdown', on ne peut plus agrandir l'espace de Krylov, or on n'a pas encore
   convergé.
   Il faut changer de préconditionneur ou d'algorithme.
 """),
 
-    8 : _(u"""
+8 : _(u"""
 Solveur PETSc :
   On a rencontré un 'breakdown' dans l'algorithme BiCG, le résidu initial est orthogonal au résidu
   initial préconditionné.
   Il faut changer de préconditionneur ou d'algorithme.
 """),
 
-    9 : _(u"""
+9 : _(u"""
 Solveur PETSc :
   La matrice du système est non symétrique, or l'algorithme que vous utilisez requiert
   la symétrie.
   Changez d'algorithme ou bien utilisez le mot-clé SYME='OUI' pour symétriser la matrice.
 """),
 
-    10 : _(u"""
+10 : _(u"""
 Solveur PETSc :
   Le préconditionneur construit à partir de la matrice du système n'est défini positif, or l'algorithme
   que vous utilisez requiert la définie positivité.
   Changez d'algorithme.
 """),
 
-    11 : _(u"""
+11 : _(u"""
 Solveur PETSc :
   La matrice du système n'est pas définie positive, or l'algorithme que vous utilisez requiert
   la définie positivité.
   Changez d'algorithme.
 """),
 
-    12 : _(u"""
+12 : _(u"""
 Solveur PETSc :
   L'algorithme itératif a rencontré un erreur dont le code retourné par PETSC est : %(i1)d.
   Consulter le manuel de PETSc pour plus d'informations et prévenez l'assistance.
 """),
 
-    13 : _(u"""
+13 : _(u"""
 Solveur PETSc :
   La résolution a échoué ; consultez le message ci-dessus.
   Cela peut être dû à une propriété particulière de la matrice du système non supportée par l'algorithme choisi.
   Par exemple, une matrice avec des zéros sur la diagonale et l'algorithme SOR, qui utilise ces entrées pour réaliser des divisions.
 """),
 
-    14 : _(u"""
+14 : _(u"""
 Solveur PETSc :
   La création du préconditionneur a échoué ; consultez le message ci-dessus.
   Cela peut être dû à une propriété particulière de la matrice du système non supportée par le préconditionneur choisi.
@@ -116,14 +116,14 @@ Solveur PETSc :
   Conseil : changez de préconditionneur.
 """),
 
-    15 : _(u"""
+15 : _(u"""
 Solveur PETSc :
   La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
 
   Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.
 """),
 
-    16 : _(u"""
+16 : _(u"""
 Solveur PETSc :
   La résolution du système linéaire a abouti mais la solution obtenue ne vérifie pas le critère de convergence.
   Cela peut arriver lorsque la matrice du système linéaire est mal conditionnée.
@@ -131,7 +131,7 @@ Solveur PETSc :
   Conseil : utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS')
 """),
 
-    17 : _(u"""
+17 : _(u"""
 Solveur PETSc :
   Un ou plusieurs processeurs ne se sont vu attribuer aucun degré de liberté pour la résolution
   du système linéaire. La résolution n'est pas possible.
@@ -140,19 +140,19 @@ Solveur PETSc :
             "SOUS_DOMAINE".
 """),
 
-    18 : _(u"""
+18 : _(u"""
 Solveur PETSc :
-  Les préconditionneurs 'ML' et 'BOOMER' ne doivent pas être utilisés lorsque:
+  Les préconditionneurs 'ML', 'BOOMER' et 'GAMG' ne doivent pas être utilisés lorsque:
   - soit le modèle comporte des charges dualisées issues de AFFE_CHAR_MECA,
-  - soit les noeuds du modèle ne portent pas tous le même nombre de degrés de liberté.
-
+  - soit les noeuds du modèle ne portent pas tous les mêmes degrés de liberté. 
+  
   Conseils :
   - ne mélangez pas des modélisations dans votre calcul
-  - remplacez AFFE_CHAR_MECA par AFFE_CHAR_CINE si cela est possible
+  - remplacez AFFE_CHAR_MECA par AFFE_CHAR_CINE si cela est possible 
   - utilisez le préconditionneur 'LDLT_SP' ou un solveur direct ('MULT_FRONT' ou 'MUMPS').
 """),
 
-    19 : _(u"""
+19 : _(u"""
 Solveur PETSc :
   La sélection du préconditionneur '%(k1)s' a échoué.
   L'installation de PETSc dont vous disposez n'a vraisemblablement pas été compilée avec le support de ce préconditionneur.
@@ -161,4 +161,29 @@ Solveur PETSc :
   - reconstruisez une version de PETSc avec le support des préconditionneurs BOOMER, ML et GAMG
   - utilisez un autre préconditionneur (comme 'LDLT_SP' par exemple)
 """),
+
+
+
+
+
+
+21 : _(u"""
+Solveur PETSc :
+  Les préconditionneurs 'ML', 'BOOMER' et 'GAMG' exigent que tous les noeuds
+  du modèle portent les mêmes degrés de liberté.
+  Comme ce n'est pas le cas ici, on ajoute des degrés de liberté
+  fictifs au système linéaire pour répondre à cette contrainte.
+  On a ajouté %(i1)d degrés de liberté fictifs (%(i2)d %%)
+"""),
+
+
+22 : _(u"""
+Solveur PETSc :
+  Les préconditionneurs 'ML', 'BOOMER' et 'GAMG' exigent que tous les noeuds
+  du modèle portent les mêmes degrés de liberté.
+  Ce n'est pas le cas ici. On arrête l'exécution.
+"""),
+
+
 }
+

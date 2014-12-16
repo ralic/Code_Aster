@@ -82,8 +82,8 @@ subroutine resoud(matass, matpre, solveu, chcine, nsecm,&
 !                       / 0 : OK (PAR DEFAUT POUR SOLVEURS DIRECTS)
 !                       / 1 : ECHEC (NOMBRE MAX. D'ITERATIONS ATTEINT)
 !-----------------------------------------------------------------------
-! cette routine est une surcouche de la routine resou1.
-! elle est necessaire pour traiter le cas elim_lagr='oui'
+! Cette routine est une surcouche de la routine resou2.
+! Elle est necessaire pour traiter 'XFEM_PRECOND'
 ! ----------------------------------------------------------------------
     character(len=24) :: kxfem
     character(len=19) :: matas1, solve1

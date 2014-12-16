@@ -106,7 +106,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     PetscScalar :: sbid
     PetscOffset :: offbid
     PetscReal :: rbid
-    
+
 !----------------------------------------------------------------
 !   INITIALISATION DE PETSC A FAIRE AU PREMIER APPEL
     save iprem
@@ -143,7 +143,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         ASSERT(kind(vbid).eq.kind(np))
         ASSERT(kind(offbid).eq.kind(np))
 !
-! Tous les codes de retour non-nuls de PETSc feront planter le code 
+! Tous les codes de retour non-nuls de PETSc feront planter le code
 !
         call PetscPushErrorHandler(PetscAbortErrorHandler, PETSC_NULL_INTEGER, ierr)
         call PetscInitialize(PETSC_NULL_CHARACTER, ierr)
@@ -156,6 +156,12 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
             nomats(k) = ' '
             nosols(k) = ' '
             nonus(k) = ' '
+            tblocs(k) = -1
+            if (fictifs(k).eq.1) then
+                deallocate(new_ieqs(k)%pi4)
+                deallocate(old_ieqs(k)%pi4)
+            endif
+            fictifs(k) = -1
         enddo
         xlocal = 0
         xglobal = 0
@@ -177,7 +183,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 !   2. on cherche si la matrice est dans le common :
 !   -------------------------------------------------
-!   on teste le nom de la matrice, celui du nume_ddl,
+!   On teste le nom de la matrice, celui du nume_ddl,
 !   et la taille des matrices aster et petsc
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
@@ -189,9 +195,17 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
             ASSERT(ap(k).ne.0)
             call MatGetSize(ap(k), m, n, ierr)
             ASSERT(ierr.eq.0)
-            if (m .eq. n .and. nglo .eq. n) then
+            ASSERT(m.eq.n)
+            if (fictifs(k).eq.1) then
+                ASSERT(n.ge.nglo)
+                ASSERT(size(new_ieqs(k)%pi4).eq.nglo)
                 kptsc = k
                 goto 1
+            else
+                if (nglo .eq. n) then
+                    kptsc = k
+                    goto 1
+                endif
             endif
         endif
     enddo
@@ -257,6 +271,10 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         nomats(kptsc) = matas
         nosols(kptsc) = solveu
         nonus(kptsc) = nu
+        tblocs(kptsc) = -1
+        fictifs(kptsc) = -1
+        new_ieqs(kptsc)%pi4 => null()
+        old_ieqs(kptsc)%pi4 => null()
         lqr=action .eq. 'ELIM_LAGR+R'
         call elg_apelim(kptsc, lqr)
         iret=0
