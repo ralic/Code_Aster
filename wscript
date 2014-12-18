@@ -95,6 +95,11 @@ def configure(self):
     self.setenv('default')
 
     self.load('ext_aster', tooldir='waftools')
+    if not self.options.use_config and os.environ.get('DEVTOOLS_COMPUTER_ID'):
+        suffix= osp.basename(self.options.out)
+        if suffix:
+            suffix = '_' + suffix
+        self.options.use_config = os.environ['DEVTOOLS_COMPUTER_ID'] + suffix
     self.load('use_config', tooldir='waftools')
     self.load('gnu_dirs')
     self.env['BIBPYTPATH'] = self.path.find_dir('bibpyt').abspath()
