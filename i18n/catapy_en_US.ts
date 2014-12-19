@@ -66,7 +66,7 @@
     <message>
       <location filename="../cata.py" line="3647"/>
       <source>Comportement utilisateur meca THM de type MFRONT</source>
-      <translation type="unfinished">Comportement utilisateur meca THM de type MFRONT</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="3647"/>
@@ -506,7 +506,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="6715"/>
       <source>Applique à des noeuds des forces nodales</source>
-      <translation type="unfinished">Apply nodal forces on nodes</translation>
+      <translation type="unfinished">Apply nodal forces to nodes</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="6715"/>
@@ -621,7 +621,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7585"/>
       <source>Définit une relation linéaire entre les DDLs de deux ou plusieurs noeuds</source>
-      <translation type="unfinished">Define a linear relation between DOFs of two or several nodes</translation>
+      <translation type="unfinished">Define a linear relation between DOFs of two or more nodes</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7667"/>
@@ -686,7 +686,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7667"/>
       <source>Calcul l'effet de fond sur une branche de tuyauterie (modélisation 3D) soumise à une pression dont la valeur est fournie par l'intermédiaire d'un concept fonction</source>
-      <translation type="unfinished">Calcul l'effet de fond sur une branche de tuyauterie (modélisation 3D) soumise à une pression dont la valeur est fournie par l'intermédiaire d'un concept fonction</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="7667"/>
@@ -1021,7 +1021,7 @@
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Coefficient de la perte de charge singuliere a l'entree [zeta]</source>
-      <translation type="unfinished">Coefficient de la perte de charge singuliere a l'entree [zeta]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
@@ -1091,7 +1091,7 @@
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Eau sous-refroidie ou saturee</source>
-      <translation type="unfinished">Eau sous-refroidie ou saturee</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
@@ -1146,7 +1146,7 @@
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Modele d'ecoulement gele</source>
-      <translation type="unfinished">Modele d'ecoulement gele</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
@@ -1431,7 +1431,7 @@
     <message>
       <location filename="../cata.py" line="11070"/>
       <source>Fractile d une famille de fonctions ou de nappes</source>
-      <translation type="unfinished">Fractile d une famille de fonctions ou de nappes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="11070"/>
@@ -1471,7 +1471,7 @@
     <message>
       <location filename="../cata.py" line="11217"/>
       <source>Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure en analyse sismique</source>
-      <translation type="unfinished">Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure en analyse sismique</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11271"/>
@@ -1546,7 +1546,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35660"/>
       <source>filtre les messages émis dans le .mess selon le type de message demandé</source>
-      <translation type="unfinished">filtre les messages émis dans le .mess selon le type de message demandé</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11772"/>
@@ -1616,7 +1616,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12164"/>
       <source>Table des propriétés du sol stratifié</source>
-      <translation type="unfinished">Table des propriétés du sol stratifié</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12164"/>
@@ -1631,12 +1631,12 @@
     <message>
       <location filename="../cata.py" line="12164"/>
       <source>Demi-espace de fluide avec surface libre ou non</source>
-      <translation type="unfinished">Demi-espace de fluide avec surface libre ou non</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33601"/>
       <source>Macro élément produit en amont</source>
-      <translation type="unfinished">Macro élément produit en amont</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="12164"/>
@@ -1711,7 +1711,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12164"/>
       <source>Valeur du pas d'échantillonnage et                                 du facteur de réduction du temps de calcul</source>
-      <translation type="unfinished">Valeur du pas d'échantillonnage et                                 du facteur de réduction du temps de calcul</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="12164"/>
@@ -1876,7 +1876,7 @@
     <message>
       <location filename="../cata.py" line="13033"/>
       <source>Calcule une matrice interspectrale ou des fonctions de transferts</source>
-      <translation type="unfinished">Calcule une matrice interspectrale ou des fonctions de transferts</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13090"/>
@@ -1951,7 +1951,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13153"/>
       <source>Restreint la fusion uniquement aux lignes où les NOM_PARA sont communs</source>
-      <translation type="unfinished">Restreint la fusion uniquement aux lignes où les NOM_PARA sont communs</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13153"/>
@@ -1971,7 +1971,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13153"/>
       <source>Ajoute une colonne constante à la table initiale</source>
-      <translation type="unfinished">Ajoute une colonne constante à la table initiale</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13153"/>
@@ -2041,7 +2041,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13458"/>
       <source>Sens du chaînage ou initialisation des matrices de projection</source>
-      <translation type="unfinished">Sens du chaînage ou initialisation des matrices de projection</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13458"/>
@@ -2056,7 +2056,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13458"/>
       <source>Modèle d'arrivée mécanique</source>
-      <translation type="unfinished">Modèle d'arrivée mécanique</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="13458"/>
@@ -2076,7 +2076,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="13458"/>
       <source>Modèle d'arrivée hydraulique</source>
-      <translation type="unfinished">Modèle d'arrivée hydraulique</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="13458"/>
@@ -2146,7 +2146,7 @@
     <message>
       <location filename="../cata.py" line="14041"/>
       <source>Creation de macro-element dynamique en enchainant les commandes : CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, MODE_ITER_SIMULT, DEFI_INTERF_DYNA, DEFI_BASE_MODALE et MACR_ELEM_DYNA</source>
-      <translation type="unfinished">Creation de macro-element dynamique en enchainant les commandes : CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, MODE_ITER_SIMULT, DEFI_INTERF_DYNA, DEFI_BASE_MODALE et MACR_ELEM_DYNA</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="14041"/>
@@ -2566,7 +2566,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Choix d'une formulation de contact ou de liaisons unilatérales</source>
-      <translation type="unfinished">Choix d'une formulation de contact ou de liaisons unilatérales</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
@@ -2576,17 +2576,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Arrête le calcul dès qu'une interpénétration est détectée en mode RESOLUTION='NON'</source>
-      <translation type="unfinished">Arrête le calcul dès qu'une interpénétration est détectée en mode RESOLUTION='NON'</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="15165"/>
       <source>Lissage des normales par moyennation aux noeuds</source>
-      <translation type="unfinished">Lissage des normales par moyennation aux noeuds</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Vérification de l'orientation (sortante) des normales aux surfaces</source>
-      <translation type="unfinished">Vérification de l'orientation (sortante) des normales aux surfaces</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
@@ -2611,17 +2611,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Autorisation de sortie du domaine admissible lors de la recherche linéaire</source>
-      <translation type="unfinished">Autorisation de sortie du domaine admissible lors de la recherche linéaire</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Choix d'un préconditionneur (accélère la convergence de 'GCP')</source>
-      <translation type="unfinished">Choix d'un préconditionneur (accélère la convergence de 'GCP')</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Activation du préconditionneur quand le résidu a été divisé par COEF_RESI</source>
-      <translation type="unfinished">Activation du préconditionneur quand le résidu a été divisé par COEF_RESI</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
@@ -2636,7 +2636,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Paramètres de la méthode pénalisée (contact)</source>
-      <translation type="unfinished">Paramètres de la méthode pénalisée (contact)</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
@@ -2646,7 +2646,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
       <source>Paramètres de la méthode pénalisée (frottement)</source>
-      <translation type="unfinished">Paramètres de la méthode pénalisée (frottement)</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15165"/>
@@ -2756,7 +2756,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15826"/>
       <source>Paramètres de l'interface entaille</source>
-      <translation type="unfinished">Paramètres de l'interface entaille</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="15826"/>
@@ -2866,7 +2866,7 @@
     <message>
       <location filename="../cata.py" line="16369"/>
       <source>Definition des groupes de fibres pour les elements multifibres</source>
-      <translation type="unfinished">Definition des groupes de fibres pour les elements multifibres</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="16419"/>
@@ -2911,7 +2911,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="16585"/>
       <source>crée le groupe des noeuds des mailles de GROUP_MA inclus géométriquementdans les mailles de GROUP_MA_INCL</source>
-      <translation type="unfinished">crée le groupe des noeuds des mailles de GROUP_MA inclus géométriquementdans les mailles de GROUP_MA_INCL</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="16840"/>
@@ -2996,12 +2996,12 @@
     <message>
       <location filename="../cata.py" line="17188"/>
       <source>Action d' adaptation du coefficient de penalisation</source>
-      <translation type="unfinished">Action d' adaptation du coefficient de penalisation</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17188"/>
       <source>Coefficient multiplicateur maximum du coefficient de penalisation</source>
-      <translation type="unfinished">Coefficient multiplicateur maximum du coefficient de penalisation</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17199"/>
@@ -3051,7 +3051,7 @@
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Event: l'increment d'une composante d'un champ depasse le seuil</source>
-      <translation type="unfinished">Event: l'increment d'une composante d'un champ depasse le seuil</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
@@ -3076,7 +3076,7 @@
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Event: interpenetration des surfaces en contact</source>
-      <translation type="unfinished">Event: interpenetration des surfaces en contact</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
@@ -3086,7 +3086,7 @@
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Event: divergence du residu</source>
-      <translation type="unfinished">Event: divergence du residu</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
@@ -3096,12 +3096,12 @@
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Parametres de l'evenement declencheur de l'adaptation du pas de temps</source>
-      <translation type="unfinished">Parametres de l'evenement declencheur de l'adaptation du pas de temps</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Nom de l'evenement declencheur de l'adaptation</source>
-      <translation type="unfinished">Nom de l'evenement declencheur de l'adaptation</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
@@ -3116,22 +3116,22 @@
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Parametres du mode de calcul de dt+</source>
-      <translation type="unfinished">Parametres du mode de calcul de dt+</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Mode de calcul de dt+: fixe</source>
-      <translation type="unfinished">Mode de calcul de dt+: fixe</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Mode de calcul de dt+: increment d'une grandeur</source>
-      <translation type="unfinished">Mode de calcul de dt+: increment d'une grandeur</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17199"/>
       <source>Mode de calcul de dt+: nb iterations de Newton</source>
-      <translation type="unfinished">Mode de calcul de dt+: nb iterations de Newton</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17518"/>
@@ -3171,7 +3171,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Paramètres matériaux de MAZARS unilatéral en 1D à partir des caractéristiques du béton</source>
-      <translation type="unfinished">Paramètres matériaux de MAZARS unilatéral en 1D à partir des caractéristiques du béton</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
@@ -3181,7 +3181,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Contrainte au pic en compression [Unité]</source>
-      <translation type="unfinished">Contrainte au pic en compression [Unité]</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
@@ -3196,12 +3196,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Déformation au pic en compression</source>
-      <translation type="unfinished">Déformation au pic en compression</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Contrainte au pic en traction [Unité]</source>
-      <translation type="unfinished">Contrainte au pic en traction [Unité]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
@@ -3221,12 +3221,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Paramètre de décroissance post-pic en compression</source>
-      <translation type="unfinished">Paramètre de décroissance post-pic en compression</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Paramètre de décroissance post-pic en traction</source>
-      <translation type="unfinished">Paramètre de décroissance post-pic en traction</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
@@ -3271,7 +3271,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Limite en traction obtenue via un essai brésilien</source>
-      <translation type="unfinished">Limite en traction obtenue via un essai brésilien</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
@@ -3286,32 +3286,32 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17633"/>
       <source>Parametre dominant de la loi cohésive asymptotique</source>
-      <translation type="unfinished">Parametre dominant de la loi cohésive asymptotique</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
       <source>Pente initiale (au signe pres) de la loi cohesive asymptotique</source>
-      <translation type="unfinished">Pente initiale (au signe pres) de la loi cohesive asymptotique</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
       <source>Parametre secondaire de la loi cohesive asymptotique</source>
-      <translation type="unfinished">Parametre secondaire de la loi cohesive asymptotique</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
       <source>Parametre Q exprime de maniere relative par rapport a Qmax(P)</source>
-      <translation type="unfinished">Parametre Q exprime de maniere relative par rapport a Qmax(P)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
       <source>Largeur de bande d'endommagement (2*D)</source>
-      <translation type="unfinished">Largeur de bande d'endommagement (2*D)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17633"/>
       <source>Rigidite minimale dans la matrice tangente</source>
-      <translation type="unfinished">Rigidite minimale dans la matrice tangente</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22283"/>
@@ -3336,12 +3336,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Si l'on fournit C01 en plus de C10, on obtient un matériau de type Mooney-Rivlin.</source>
-      <translation type="unfinished">Si l'on fournit C01 en plus de C10, on obtient un matériau de type Mooney-Rivlin.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Si l'on fournit C20 en plus de C10 et C01, on obtient un matériau de type Signorini.</source>
-      <translation type="unfinished">Si l'on fournit C20 en plus de C10 et C01, on obtient un matériau de type Signorini.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3361,12 +3361,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>choix de la modélisation de la porosité : 1 = IMPLICITE, 2 = EXPLICITE</source>
-      <translation type="unfinished">choix de la modélisation de la porosité : 1 = IMPLICITE, 2 = EXPLICITE</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>choix de la modelisation de la porosite : 1 = IMPLICITE, 2 = EXPLICITE</source>
-      <translation type="unfinished">choix de la modelisation de la porosite : 1 = IMPLICITE, 2 = EXPLICITE</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
@@ -3386,37 +3386,37 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Loi pour les discrets avec écrouissage cinématique.</source>
-      <translation type="unfinished">Loi pour les discrets avec écrouissage cinématique.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort limite élastique suivant l'axe local x de l'élément.</source>
-      <translation type="unfinished">Effort limite élastique suivant l'axe local x de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort limite élastique suivant l'axe local y de l'élément.</source>
-      <translation type="unfinished">Effort limite élastique suivant l'axe local y de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort limite élastique suivant l'axe local z de l'élément.</source>
-      <translation type="unfinished">Effort limite élastique suivant l'axe local z de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Moment limite élastique suivant l'axe local x de l'élément.</source>
-      <translation type="unfinished">Moment limite élastique suivant l'axe local x de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Moment limite élastique suivant l'axe local y de l'élément.</source>
-      <translation type="unfinished">Moment limite élastique suivant l'axe local y de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Moment limite élastique suivant l'axe local z de l'élément.</source>
-      <translation type="unfinished">Moment limite élastique suivant l'axe local z de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3451,62 +3451,62 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort limite suivant l'axe local x de l'élément.</source>
-      <translation type="unfinished">Effort limite suivant l'axe local x de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort limite suivant l'axe local y de l'élément.</source>
-      <translation type="unfinished">Effort limite suivant l'axe local y de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort limite suivant l'axe local z de l'élément.</source>
-      <translation type="unfinished">Effort limite suivant l'axe local z de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Moment limite suivant l'axe local x de l'élément.</source>
-      <translation type="unfinished">Moment limite suivant l'axe local x de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Moment limite suivant l'axe local y de l'élément.</source>
-      <translation type="unfinished">Moment limite suivant l'axe local y de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Moment limite suivant l'axe local z de l'élément.</source>
-      <translation type="unfinished">Moment limite suivant l'axe local z de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Coefficient de non-linéarité suivant l'axe local x de l'élément.</source>
-      <translation type="unfinished">Coefficient de non-linéarité suivant l'axe local x de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Coefficient de non-linéarité suivant l'axe local y de l'élément.</source>
-      <translation type="unfinished">Coefficient de non-linéarité suivant l'axe local y de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Coefficient de non-linéarité suivant l'axe local z de l'élément.</source>
-      <translation type="unfinished">Coefficient de non-linéarité suivant l'axe local z de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Coefficient de non-linéarité suivant l'axe local Rx de l'élément.</source>
-      <translation type="unfinished">Coefficient de non-linéarité suivant l'axe local Rx de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Coefficient de non-linéarité suivant l'axe local Ry de l'élément.</source>
-      <translation type="unfinished">Coefficient de non-linéarité suivant l'axe local Ry de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Coefficient de non-linéarité suivant l'axe local Rz de l'élément.</source>
-      <translation type="unfinished">Coefficient de non-linéarité suivant l'axe local Rz de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="23591"/>
@@ -3516,32 +3516,32 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="23591"/>
       <source>Raideur en série avec les 2 autres branches.</source>
-      <translation type="unfinished">Raideur en série avec les 2 autres branches.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="23591"/>
       <source>Raideur en parallèle de la branche visqueuse.</source>
-      <translation type="unfinished">Raideur en parallèle de la branche visqueuse.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="23591"/>
       <source>Raideur dans la branche visqueuse.</source>
-      <translation type="unfinished">Raideur dans la branche visqueuse.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="23591"/>
       <source>Souplesse en série avec les 2 autres branches.</source>
-      <translation type="unfinished">Souplesse en série avec les 2 autres branches.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="23591"/>
       <source>Souplesse en parallèle de la branche visqueuse.</source>
-      <translation type="unfinished">Souplesse en parallèle de la branche visqueuse.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="23591"/>
       <source>Souplesse dans la branche visqueuse.</source>
-      <translation type="unfinished">Souplesse dans la branche visqueuse.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="23591"/>
@@ -3551,7 +3551,7 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>Puissance de la loi visqueuse ]0.0, 1.0] .</source>
-      <translation type="unfinished">Puissance de la loi visqueuse ]0.0, 1.0] .</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3591,17 +3591,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort de préserrage suivant l'axe local x de l'élément.</source>
-      <translation type="unfinished">Effort de préserrage suivant l'axe local x de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort de préserrage suivant l'axe local y de l'élément.</source>
-      <translation type="unfinished">Effort de préserrage suivant l'axe local y de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Effort de préserrage suivant l'axe local z de l'élément.</source>
-      <translation type="unfinished">Effort de préserrage suivant l'axe local z de l'élément.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3626,7 +3626,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Paramètres nécessaires pour une loi de couplage de type LIQU_AD_GAZ</source>
-      <translation type="unfinished">Paramètres nécessaires pour une loi de couplage de type LIQU_AD_GAZ</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3646,7 +3646,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Cisaillement plan critique critère de matake pour les cas amplitude constante et amplitude variable</source>
-      <translation type="unfinished">Cisaillement plan critique critère de matake pour les cas amplitude constante et amplitude variable</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3666,7 +3666,7 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>exposant de la loi de variation des modules K et G</source>
-      <translation type="unfinished">exposant de la loi de variation des modules K et G</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3676,112 +3676,112 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>parametre pilotant la résistance en extension</source>
-      <translation type="unfinished">parametre pilotant la résistance en extension</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>parametre de forme du critere ds le plan déviatoire entre 0 et 1.</source>
-      <translation type="unfinished">parametre de forme du critere ds le plan déviatoire entre 0 et 1.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>parametre non nul intervenant dans les lois d'écrouissage pre pic</source>
-      <translation type="unfinished">parametre non nul intervenant dans les lois d'écrouissage pre pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>parametre non nul intervenant dans les lois d'écrouissage post pic</source>
-      <translation type="unfinished">parametre non nul intervenant dans les lois d'écrouissage post pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>a de la limite d'élasticité initiale</source>
-      <translation type="unfinished">a de la limite d'élasticité initiale</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>a de la limite de clivage ou seuil intermédiaire</source>
-      <translation type="unfinished">a de la limite de clivage ou seuil intermédiaire</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>a du seuil de pic</source>
-      <translation type="unfinished">a du seuil de pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>s de la limite d'élasticité initiale</source>
-      <translation type="unfinished">s de la limite d'élasticité initiale</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>m de la limite d'élasticité initiale</source>
-      <translation type="unfinished">m de la limite d'élasticité initiale</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>m de la limite de clivage ou seuil intermédiaire</source>
-      <translation type="unfinished">m de la limite de clivage ou seuil intermédiaire</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>m du seuil de pic</source>
-      <translation type="unfinished">m du seuil de pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>m du seuil residuel</source>
-      <translation type="unfinished">m du seuil residuel</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>niveau d écrouissage pour atteindre le seuil résiduel</source>
-      <translation type="unfinished">niveau d écrouissage pour atteindre le seuil résiduel</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>niveau d écrouissage pour atteindre le seuil de clivage</source>
-      <translation type="unfinished">niveau d écrouissage pour atteindre le seuil de clivage</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>niveau d écrouissage pour atteindre le seuil de pic</source>
-      <translation type="unfinished">niveau d écrouissage pour atteindre le seuil de pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>m du seuil viscoplastique maximal</source>
-      <translation type="unfinished">m du seuil viscoplastique maximal</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>niveau d écrouissage pour atteindre le seuil viscoplastique maximal</source>
-      <translation type="unfinished">niveau d écrouissage pour atteindre le seuil viscoplastique maximal</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>parametre carcaterisant l amplitude de la vitesse de fluage</source>
-      <translation type="unfinished">parametre carcaterisant l amplitude de la vitesse de fluage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>parametre intervenant dans la formule pilotant la cinetique de fluage</source>
-      <translation type="unfinished">parametre intervenant dans la formule pilotant la cinetique de fluage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>SIG min de l intersection du seuil de pic et intermediaire </source>
-      <translation type="unfinished">SIG min de l intersection du seuil de pic et intermediaire </translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>relatif à l angle de dilatance des mecanismes pre pic et viscoplastique</source>
-      <translation type="unfinished">relatif à l angle de dilatance des mecanismes pre pic et viscoplastique</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>relatif à l angle de dilatance du mecanisme post pic </source>
-      <translation type="unfinished">relatif à l angle de dilatance du mecanisme post pic </translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
@@ -3801,37 +3801,37 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>niveau d ecrouissage pour atteindre le seuil de pic</source>
-      <translation type="unfinished">niveau d ecrouissage pour atteindre le seuil de pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>niveau d ecrouissage pour atteindre le seuil utime</source>
-      <translation type="unfinished">niveau d ecrouissage pour atteindre le seuil utime</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>parametre d ecrouissage relatif à la cohesion au seuil d elasticite</source>
-      <translation type="unfinished">parametre d ecrouissage relatif à la cohesion au seuil d elasticite</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>parametre d ecrouissage relatif à la cohesion au seuil de pic</source>
-      <translation type="unfinished">parametre d ecrouissage relatif à la cohesion au seuil de pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>parametre d ecrouissage relatif à la cohesion au seuil ultime</source>
-      <translation type="unfinished">parametre d ecrouissage relatif à la cohesion au seuil ultime</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>parametre d ecrouissage correspondant au seuil d'elasticite</source>
-      <translation type="unfinished">parametre d ecrouissage correspondant au seuil d'elasticite</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>parametre d ecrouissage correspondant au seuil de pic</source>
-      <translation type="unfinished">parametre d ecrouissage correspondant au seuil de pic</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
@@ -3866,7 +3866,7 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>Contraintes critique initiale de cisaillement, en unite de contraintes</source>
-      <translation type="unfinished">Contraintes critique initiale de cisaillement, en unite de contraintes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
@@ -3881,17 +3881,17 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>fonction de la taille du grain B/D</source>
-      <translation type="unfinished">fonction de la taille du grain B/D</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>distance critique d'annihilation GC/B</source>
-      <translation type="unfinished">distance critique d'annihilation GC/B</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
       <source>Parametre relatif à la direction principale de la dislocation</source>
-      <translation type="unfinished">Parametre relatif à la direction principale de la dislocation</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="17732"/>
@@ -3946,27 +3946,27 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>matrice d'interaction, terme a*</source>
-      <translation type="unfinished">matrice d'interaction, terme a*</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>matrice d'interaction, terme a_colineaire</source>
-      <translation type="unfinished">matrice d'interaction, terme a_colineaire</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>matrice d'interaction, terme a_glissile</source>
-      <translation type="unfinished">matrice d'interaction, terme a_glissile</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>matrice d'interaction, terme a_Lomer</source>
-      <translation type="unfinished">matrice d'interaction, terme a_Lomer</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>matrice d'interaction, terme a_Hirth</source>
-      <translation type="unfinished">matrice d'interaction, terme a_Hirth</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
@@ -4051,7 +4051,7 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>seuil en contrainte , en unite de contraintes</source>
-      <translation type="unfinished">seuil en contrainte , en unite de contraintes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
@@ -4061,7 +4061,7 @@
     <message>
       <location filename="../cata.py" line="17732"/>
       <source>densite de dislocations mobiles, en unite de longueur **-2</source>
-      <translation type="unfinished">densite de dislocations mobiles, en unite de longueur **-2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="17732"/>
@@ -4136,12 +4136,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22093"/>
       <source>Type d'interpolation pour les abscisses et les ordonnées de la fonction.</source>
-      <translation type="unfinished">Type d'interpolation pour les abscisses et les ordonnées de la fonction.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22093"/>
       <source>Type d'interpolation pour le paramètre de la nappe</source>
-      <translation type="unfinished">Type d'interpolation pour le paramètre de la nappe</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22137"/>
@@ -4151,7 +4151,7 @@
     <message>
       <location filename="../cata.py" line="22168"/>
       <source>Creation partitionnement en sous-domaines</source>
-      <translation type="unfinished">Creation partitionnement en sous-domaines</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22283"/>
@@ -4161,22 +4161,22 @@
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>Signal impose d'accelero horizontal</source>
-      <translation type="unfinished">Signal impose d'accelero horizontal</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>lieu d'imposition du signal</source>
-      <translation type="unfinished">lieu d'imposition du signal</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>facteur de variation des modules</source>
-      <translation type="unfinished">facteur de variation des modules</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>facteur sur l'amplitude d'accelero</source>
-      <translation type="unfinished">facteur sur l'amplitude d'accelero</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22201"/>
@@ -4191,12 +4191,12 @@
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>tolerance d'arret des iterations</source>
-      <translation type="unfinished">tolerance d'arret des iterations</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>frequence de coupure de filtrage du signal</source>
-      <translation type="unfinished">frequence de coupure de filtrage du signal</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22283"/>
@@ -4206,17 +4206,17 @@
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>Abscisses de distorsion</source>
-      <translation type="unfinished">Abscisses de distorsion</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>Valeurs de reduction de module G</source>
-      <translation type="unfinished">Valeurs de reduction de module G</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="22201"/>
       <source>Valeurs de coefficient d'amortissement</source>
-      <translation type="unfinished">Valeurs de coefficient d'amortissement</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22283"/>
@@ -4246,7 +4246,7 @@
     <message>
       <location filename="../cata.py" line="22327"/>
       <source>Definition d'un spectre d'excitation turbulente</source>
-      <translation type="unfinished">Definition d'un spectre d'excitation turbulente</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22438"/>
@@ -4256,7 +4256,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22515"/>
       <source>Définir d'un diagramme de transformations en refroidissement continu (TRC) de référence d'un acier pour les calculs métallurgiques.</source>
-      <translation type="unfinished">Définir d'un diagramme de transformations en refroidissement continu (TRC) de référence d'un acier pour les calculs métallurgiques.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22560"/>
@@ -4276,7 +4276,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22730"/>
       <source>Calcul du spectre de réponse ou de la reponse temporelle sismique incoherente par decomposition spectrale</source>
-      <translation type="unfinished">Calcul du spectre de réponse ou de la reponse temporelle sismique incoherente par decomposition spectrale</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22808"/>
@@ -4286,17 +4286,17 @@
     <message>
       <location filename="../cata.py" line="23591"/>
       <source>en mode concept reentrant : RESULTAT obligatoire</source>
-      <translation type="unfinished">en mode concept reentrant : RESULTAT obligatoire</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="23591"/>
       <source>Methode de resolution matrice generalisee</source>
-      <translation type="unfinished">Methode de resolution matrice generalisee</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="23591"/>
       <source>Methode de resolution matrice sur ddl physique</source>
-      <translation type="unfinished">Methode de resolution matrice sur ddl physique</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="22890"/>
@@ -4316,7 +4316,7 @@
     <message>
       <location filename="../cata.py" line="23272"/>
       <source>Calcul de la reponse dynamique transitoire d'un systeme amorti ou non en coordonees generalisees par superposition modale ou par sous structuration</source>
-      <translation type="unfinished">Calcul de la reponse dynamique transitoire d'un systeme amorti ou non en coordonees generalisees par superposition modale ou par sous structuration</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="23591"/>
@@ -4326,7 +4326,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="23591"/>
       <source>Unité de sortie des variables internes pour les DIS_VISC</source>
-      <translation type="unfinished">Unité de sortie des variables internes pour les DIS_VISC</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="23591"/>
@@ -4336,7 +4336,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24056"/>
       <source>Créer une matrice en ayant éliminé les condition cinématiques dualisées.</source>
-      <translation type="unfinished">Créer une matrice en ayant éliminé les condition cinématiques dualisées.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24087"/>
@@ -4346,7 +4346,7 @@
     <message>
       <location filename="../cata.py" line="24129"/>
       <source>Envoi des champs de deplacement et vitesse via YACS pour Couplage de Code_Aster et Saturne</source>
-      <translation type="unfinished">Envoi des champs de deplacement et vitesse via YACS pour Couplage de Code_Aster et Saturne</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24175"/>
@@ -4441,7 +4441,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24328"/>
       <source>Pour réduire une ou plusieurs sd_resultat sur un maillage ou un modèle réduit</source>
-      <translation type="unfinished">Pour réduire une ou plusieurs sd_resultat sur un maillage ou un modèle réduit</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29692"/>
@@ -4456,17 +4456,17 @@
     <message>
       <location filename="../cata.py" line="24400"/>
       <source>Extraire d'une table des concepts Code_Aster</source>
-      <translation type="unfinished">Extraire d'une table des concepts Code_Aster</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24465"/>
       <source>Factoriser une matrice assemblée en un produit de deux matrices triangulairesou construire une matrice de préconditionnement pour une résolution par gradient conjugué</source>
-      <translation type="unfinished">Factoriser une matrice assemblée en un produit de deux matrices triangulairesou construire une matrice de préconditionnement pour une résolution par gradient conjugué</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24465"/>
       <source>Paramètres des préconditionneurs JACOBI et SOR</source>
-      <translation type="unfinished">Paramètres des préconditionneurs JACOBI et SOR</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24550"/>
@@ -4491,17 +4491,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24594"/>
       <source>Crée une fonction constante paramétrée par l'abscisse curviligne</source>
-      <translation type="unfinished">Crée une fonction constante paramétrée par l'abscisse curviligne</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24623"/>
       <source>Définit une formule réelle ou complexe à partir de son expression mathématique</source>
-      <translation type="unfinished">Définit une formule réelle ou complexe à partir de son expression mathématique</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>Generation d'accelerogrammes sismiques </source>
-      <translation type="unfinished">Generation d'accelerogrammes sismiques </translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
@@ -4511,12 +4511,12 @@
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>constante de normalisation de ACCE_MAX, ECART_TYPE et INTE_ARIAS (g) ou le spectre</source>
-      <translation type="unfinished">constante de normalisation de ACCE_MAX, ECART_TYPE et INTE_ARIAS (g) ou le spectre</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24652"/>
       <source>durée phase forte du signal</source>
-      <translation type="unfinished">durée phase forte du signal</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
@@ -4526,12 +4526,12 @@
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>frequence du filtre frequentiel: corner frequency</source>
-      <translation type="unfinished">frequence du filtre frequentiel: corner frequency</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>frequence du filtre temporel</source>
-      <translation type="unfinished">frequence du filtre temporel</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
@@ -4541,7 +4541,7 @@
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>pente pour l'evolution de la frequence centrale</source>
-      <translation type="unfinished">pente pour l'evolution de la frequence centrale</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
@@ -4551,7 +4551,7 @@
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>nombre d'iterations pour fitter le spectre</source>
-      <translation type="unfinished">nombre d'iterations pour fitter le spectre</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
@@ -4561,22 +4561,22 @@
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>coef et erreur maxi global</source>
-      <translation type="unfinished">coef et erreur maxi global</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>coef et erreur maxi rms</source>
-      <translation type="unfinished">coef et erreur maxi rms</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>PGA: acceleration max au sol (g)</source>
-      <translation type="unfinished">PGA: acceleration max au sol (g)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>ecart-type</source>
-      <translation type="unfinished">ecart-type</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24652"/>
@@ -4586,7 +4586,7 @@
     <message>
       <location filename="../cata.py" line="24652"/>
       <source>instant debut phase forte</source>
-      <translation type="unfinished">instant debut phase forte</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24752"/>
@@ -4636,7 +4636,7 @@
     <message>
       <location filename="../cata.py" line="24837"/>
       <source>Parametres loi gamma</source>
-      <translation type="unfinished">Parametres loi gamma</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="24837"/>
@@ -4651,7 +4651,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24882"/>
       <source>Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)</source>
-      <translation type="unfinished">Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="24924"/>
@@ -4891,12 +4891,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25219"/>
       <source>Impression d'une structure de données MACR_ELEM_DYNA au format IDEAS MISS3D</source>
-      <translation type="unfinished">Impression d'une structure de données MACR_ELEM_DYNA au format IDEAS MISS3D</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="25270"/>
       <source>Lecture d'un maillage via YACS lors du Couplage de Code_Aster et Saturne</source>
-      <translation type="unfinished">Lecture d'un maillage via YACS lors du Couplage de Code_Aster et Saturne</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="25296"/>
@@ -4946,12 +4946,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25365"/>
       <source>Pour imprimer les champs de "données" à des fins de visualisation (controle des affectations).</source>
-      <translation type="unfinished">Pour imprimer les champs de "données" à des fins de visualisation (controle des affectations).</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="25365"/>
       <source>impression des reperes locaux.</source>
-      <translation type="unfinished">impression des reperes locaux.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
@@ -5001,7 +5001,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25678"/>
       <source>Débranchement vers un fichier de commandes secondaires</source>
-      <translation type="unfinished">Débranchement vers un fichier de commandes secondaires</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25678"/>
@@ -5061,7 +5061,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25802"/>
       <source>définition des bornes des intervalles sous forme de couples (xi_i1,xs_i1,xi_i2,xs_i2)</source>
-      <translation type="unfinished">définition des bornes des intervalles sous forme de couples (xi_i1,xs_i1,xi_i2,xs_i2)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="25802"/>
@@ -5076,7 +5076,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="25900"/>
       <source>Calculer, imprimer, et sauvegarder le nombre de valeurs propres dans un contour donné</source>
-      <translation type="unfinished">Calculer, imprimer, et sauvegarder le nombre de valeurs propres dans un contour donné</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="29938"/>
@@ -5116,12 +5116,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26010"/>
       <source>Imprimer tous les champs présents dans une structure de données résultat</source>
-      <translation type="unfinished">Imprimer tous les champs présents dans une structure de données résultat</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26034"/>
       <source>Initialiser adresse component YACS</source>
-      <translation type="unfinished">Initialiser adresse component YACS</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26058"/>
@@ -5141,7 +5141,7 @@
     <message>
       <location filename="../cata.py" line="26571"/>
       <source>Affecte des valeurs nulles la ou le champ n'est pas defini (sinon il y a NaN)</source>
-      <translation type="unfinished">Affecte des valeurs nulles la ou le champ n'est pas defini (sinon il y a NaN)</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26185"/>
@@ -5166,12 +5166,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26292"/>
       <source>Lit les valeurs réelles dans un fichier de données représentant une fonction et crée un concept de type fonction ou nappe</source>
-      <translation type="unfinished">Lit les valeurs réelles dans un fichier de données représentant une fonction et crée un concept de type fonction ou nappe</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26352"/>
       <source>Création d'un vecteur assemblé à partir d'une base modale</source>
-      <translation type="unfinished">Création d'un vecteur assemblé à partir d'une base modale</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26384"/>
@@ -5226,12 +5226,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26571"/>
       <source>Lire dans un fichier, soit format IDEAS, soit au format ENSIGHT soit au format MED, des champs et les stocker dans une SD résultat</source>
-      <translation type="unfinished">Lire dans un fichier, soit format IDEAS, soit au format ENSIGHT soit au format MED, des champs et les stocker dans une SD résultat</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26571"/>
       <source>Affecte des valeurs nulles la ou le champ n'est pas defini</source>
-      <translation type="unfinished">Affecte des valeurs nulles la ou le champ n'est pas defini</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26571"/>
@@ -5251,7 +5251,7 @@
     <message>
       <location filename="../cata.py" line="26571"/>
       <source>Prefixe du nom de champ dans le fichier MED.</source>
-      <translation type="unfinished">Prefixe du nom de champ dans le fichier MED.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26571"/>
@@ -5266,7 +5266,7 @@
     <message>
       <location filename="../cata.py" line="26571"/>
       <source>acces a un champ dans la structure de donnees resultat</source>
-      <translation type="unfinished">acces a un champ dans la structure de donnees resultat</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26743"/>
@@ -5276,7 +5276,7 @@
     <message>
       <location filename="../cata.py" line="26775"/>
       <source>Critere orthogonalite de modes propres</source>
-      <translation type="unfinished">Critere orthogonalite de modes propres</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
@@ -5371,7 +5371,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Initialisation de l'adaptation dans les régions sans indicateur : garder, raffiner ou déraffiner</source>
-      <translation type="unfinished">Initialisation de l'adaptation dans les régions sans indicateur : garder, raffiner ou déraffiner</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5416,7 +5416,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Définition de zones à raffiner ou déraffiner.</source>
-      <translation type="unfinished">Définition de zones à raffiner ou déraffiner.</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
@@ -5426,7 +5426,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Zone pour raffiner ou déraffiner</source>
-      <translation type="unfinished">Zone pour raffiner ou déraffiner</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
@@ -5571,7 +5571,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Definition analytique de frontières à suivre.</source>
-      <translation type="unfinished">Definition analytique de frontières à suivre.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5611,7 +5611,7 @@
     <message>
       <location filename="../cata.py" line="26837"/>
       <source>Le second rayon et centre d'un cone.</source>
-      <translation type="unfinished">Le second rayon et centre d'un cone.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
@@ -5621,17 +5621,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Abscisse du centre numéro 2</source>
-      <translation type="unfinished">Abscisse du centre numéro 2</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Ordonnée du centre numéro 2</source>
-      <translation type="unfinished">Ordonnée du centre numéro 2</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Cote du centre numéro 2</source>
-      <translation type="unfinished">Cote du centre numéro 2</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
@@ -5736,7 +5736,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28939"/>
       <source>Qualité des mailles du maillage.</source>
-      <translation type="unfinished">Qualité des mailles du maillage.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28939"/>
@@ -5766,17 +5766,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Champs supplémentaires sur le nouveau maillage.</source>
-      <translation type="unfinished">Champs supplémentaires sur le nouveau maillage.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Nom du champ de grandeur qui contiendra le champ supplémentaire</source>
-      <translation type="unfinished">Nom du champ de grandeur qui contiendra le champ supplémentaire</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="26837"/>
       <source>Catégorie du champ supplémentaire : niveau, qualité ou diamètre</source>
-      <translation type="unfinished">Catégorie du champ supplémentaire : niveau, qualité ou diamètre</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="26837"/>
@@ -5876,7 +5876,7 @@
     <message>
       <location filename="../cata.py" line="28185"/>
       <source>Unite correspondant au format du fichier maillage</source>
-      <translation type="unfinished">Unite correspondant au format du fichier maillage</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28185"/>
@@ -5896,7 +5896,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28185"/>
       <source>Calcul des caractéristiques équivalentes à plusieurs sections disjointes</source>
-      <translation type="unfinished">Calcul des caractéristiques équivalentes à plusieurs sections disjointes</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28185"/>
@@ -5921,7 +5921,7 @@
     <message>
       <location filename="../cata.py" line="28185"/>
       <source>Simplement pour empecher des pivots nuls le cas echeant. Fournir un noeud quelconque par GROUP_MA</source>
-      <translation type="unfinished">Simplement pour empecher des pivots nuls le cas echeant. Fournir un noeud quelconque par GROUP_MA</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28185"/>
@@ -5986,27 +5986,27 @@
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Liste des cotes des points definissant le grand axe de la section</source>
-      <translation type="unfinished">Liste des cotes des points definissant le grand axe de la section</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Liste des valeurs des points definissant le grand axe de la section</source>
-      <translation type="unfinished">Liste des valeurs des points definissant le grand axe de la section</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Liste des cotes des points definissant la hauteur de la section</source>
-      <translation type="unfinished">Liste des cotes des points definissant la hauteur de la section</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Liste des valeurs des points definissant la hauteur de la section</source>
-      <translation type="unfinished">Liste des valeurs des points definissant la hauteur de la section</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Modele de calcul du gradient de temperature [imograd]</source>
-      <translation type="unfinished">Modele de calcul du gradient de temperature [imograd]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
@@ -6016,7 +6016,7 @@
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Liste des cotes pour les temperatures</source>
-      <translation type="unfinished">Liste des cotes pour les temperatures</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
@@ -6026,22 +6026,22 @@
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Distribution imposee de temperature [imograd=0]</source>
-      <translation type="unfinished">Distribution imposee de temperature [imograd=0]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Gradient de temperature de la paroi le long de l'ecoulement (degC/m) [tm1]</source>
-      <translation type="unfinished">Gradient de temperature de la paroi le long de l'ecoulement (degC/m) [tm1]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Temperature de la paroi a l'entree (degC) [tm2]</source>
-      <translation type="unfinished">Temperature de la paroi a l'entree (degC) [tm2]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Profil de temperature calcule [imograd=1]</source>
-      <translation type="unfinished">Profil de temperature calcule [imograd=1]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
@@ -6051,47 +6051,47 @@
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Coefficient de convection a la surface de la paroi cote amont (W/degC/m2) [alphe]</source>
-      <translation type="unfinished">Coefficient de convection a la surface de la paroi cote amont (W/degC/m2) [alphe]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Coefficient de convection a la surface de la paroi cote aval (W/degC/m2) [alphs]</source>
-      <translation type="unfinished">Coefficient de convection a la surface de la paroi cote aval (W/degC/m2) [alphs]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Conduction thermique de la paroi (W/degC/m) [lambd]</source>
-      <translation type="unfinished">Conduction thermique de la paroi (W/degC/m) [lambd]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28345"/>
       <source>Temperature du fluide cote aval (degC) [ts]</source>
-      <translation type="unfinished">Temperature du fluide cote aval (degC) [ts]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Evolution de la pression de stagnation a l'entree (Pa) [pe]</source>
-      <translation type="unfinished">Evolution de la pression de stagnation a l'entree (Pa) [pe]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Evolution de la pression de stagnation a la sortie (Pa) [ps]</source>
-      <translation type="unfinished">Evolution de la pression de stagnation a la sortie (Pa) [ps]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Evolution de la temperature a l'entree (degres C) [te]</source>
-      <translation type="unfinished">Evolution de la temperature a l'entree (degres C) [te]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Evolution du titre massique eau vap/eau tot a l'entree [xe]</source>
-      <translation type="unfinished">Evolution du titre massique eau vap/eau tot a l'entree [xe]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Evolution de la pression partielle air en entree (Pa) [pae]</source>
-      <translation type="unfinished">Evolution de la pression partielle air en entree (Pa) [pae]</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
@@ -6101,12 +6101,12 @@
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Temperature de reference pour le calcul du critere</source>
-      <translation type="unfinished">Temperature de reference pour le calcul du critere</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Pression de reference pour le calcul du critere</source>
-      <translation type="unfinished">Pression de reference pour le calcul du critere</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
@@ -6116,12 +6116,12 @@
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Critere de convergence temp_press, temp, ou press</source>
-      <translation type="unfinished">Critere de convergence temp_press, temp, ou press</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
       <source>Numero d'ordre a partir duquel le critere est pris en compte</source>
-      <translation type="unfinished">Numero d'ordre a partir duquel le critere est pris en compte</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="28532"/>
@@ -6131,7 +6131,7 @@
     <message>
       <location filename="../cata.py" line="28814"/>
       <source>Definition d'un macro element pour analyse modale ou harmonique par sous structuration dynamique</source>
-      <translation type="unfinished">Definition d'un macro element pour analyse modale ou harmonique par sous structuration dynamique</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="28882"/>
@@ -6176,7 +6176,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29077"/>
       <source>Extraction des valeurs d'un résultat dans une ou plusieurs tables sur des lignes de coupe définies par deux points et un intervalle</source>
-      <translation type="unfinished">Extraction des valeurs d'un résultat dans une ou plusieurs tables sur des lignes de coupe définies par deux points et un intervalle</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32965"/>
@@ -6196,12 +6196,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29077"/>
       <source>Si la distance entre un noeud de la ligne de coupe et le maillage coupé est &gt; DISTANCE_MAX, ce noeud sera ignoré.</source>
-      <translation type="unfinished">Si la distance entre un noeud de la ligne de coupe et le maillage coupé est &gt; DISTANCE_MAX, ce noeud sera ignoré.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29219"/>
       <source>Réalise le recalage des calculs Aster sur des résultats expérimentaux ou sur d'autres résultats de calculs</source>
-      <translation type="unfinished">Réalise le recalage des calculs Aster sur des résultats expérimentaux ou sur d'autres résultats de calculs</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="29219"/>
@@ -6216,22 +6216,22 @@
     <message>
       <location filename="../cata.py" line="29219"/>
       <source>Critere d'arret sur la valeur du residu</source>
-      <translation type="unfinished">Critere d'arret sur la valeur du residu</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="29219"/>
       <source>Critere d'arret sur la valeur des parametres</source>
-      <translation type="unfinished">Critere d'arret sur la valeur des parametres</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="29219"/>
       <source>Critere d'arret sur la valeur de la fonctionnelle</source>
-      <translation type="unfinished">Critere d'arret sur la valeur de la fonctionnelle</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="29219"/>
       <source>Affichage de l'output et/ou error des jobs esclaves dans ce fichier</source>
-      <translation type="unfinished">Affichage de l'output et/ou error des jobs esclaves dans ce fichier</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="29219"/>
@@ -6261,12 +6261,12 @@
     <message>
       <location filename="../cata.py" line="29219"/>
       <source>Nombre de calculs esclaves lances en parallele en mode distribution (non precise = automatique)</source>
-      <translation type="unfinished">Nombre de calculs esclaves lances en parallele en mode distribution (non precise = automatique)</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29351"/>
       <source>Calcul de spectre, post-traitement de séisme</source>
-      <translation type="unfinished">Calcul de spectre, post-traitement de séisme</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29440"/>
@@ -6286,17 +6286,17 @@
     <message>
       <location filename="../cata.py" line="29515"/>
       <source>Outil d'expansion de resultats exprimentaux sur une base definie sur un modele numerique</source>
-      <translation type="unfinished">Outil d'expansion de resultats exprimentaux sur une base definie sur un modele numerique</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29585"/>
       <source>Calculer de facon plus condensée qu'avec CALC_MATR_AJOU des matrices de masse, d'amortissement ou de rigidité ajoutés</source>
-      <translation type="unfinished">Calculer de facon plus condensée qu'avec CALC_MATR_AJOU des matrices de masse, d'amortissement ou de rigidité ajoutés</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29664"/>
       <source>Compilation des catalogues d'éléments et couverture des calculs élémentaires</source>
-      <translation type="unfinished">Compilation des catalogues d'éléments et couverture des calculs élémentaires</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29692"/>
@@ -6306,12 +6306,12 @@
     <message>
       <location filename="../cata.py" line="29692"/>
       <source>Seule option : contraintes aux points de Gauss. Utilisez CALC_CHAMP pour les autres options.</source>
-      <translation type="unfinished">Seule option : contraintes aux points de Gauss. Utilisez CALC_CHAMP pour les autres options.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29741"/>
       <source>Calcul des modes propres d'une structure à répétitivité cyclique à partir d'une base de modes propres réels</source>
-      <translation type="unfinished">Calcul des modes propres d'une structure à répétitivité cyclique à partir d'une base de modes propres réels</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29817"/>
@@ -6341,7 +6341,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="29938"/>
       <source>Calcul des modes propres par itérations simultanées ; valeurs propres et modes propres réels ou complexes</source>
-      <translation type="unfinished">Calcul des modes propres par itérations simultanées ; valeurs propres et modes propres réels ou complexes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="29938"/>
@@ -6361,7 +6361,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30177"/>
       <source>Calcul de déformées statiques pour un déplacement, une force ou une accélération unitaire imposé</source>
-      <translation type="unfinished">Calcul de déformées statiques pour un déplacement, une force ou une accélération unitaire imposé</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30269"/>
@@ -6371,12 +6371,12 @@
     <message>
       <location filename="../cata.py" line="30305"/>
       <source>Reception des forces nodales via YACS lors du couplage de  Code_Aster et Saturne</source>
-      <translation type="unfinished">Reception des forces nodales via YACS lors du couplage de  Code_Aster et Saturne</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30340"/>
       <source>Effectuer des modifications sur un maillage existant: réorienter des mailles servant, à l'application d'une pression, à la modélisation du contact,...</source>
-      <translation type="unfinished">Effectuer des modifications sur un maillage existant: réorienter des mailles servant, à l'application d'une pression, à la modélisation du contact,...</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30340"/>
@@ -6421,12 +6421,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30700"/>
       <source>Composante donnée d'un noeud spécifié égale à 1</source>
-      <translation type="unfinished">Composante donnée d'un noeud spécifié égale à 1</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30700"/>
       <source>Composante donnée d'un groupe contenant un seul noeud spécifié égale à 1</source>
-      <translation type="unfinished">Composante donnée d'un groupe contenant un seul noeud spécifié égale à 1</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="30700"/>
@@ -6436,17 +6436,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30700"/>
       <source>Noeud où sera imposé le signe</source>
-      <translation type="unfinished">Noeud où sera imposé le signe</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30700"/>
       <source>Groupe d'un seul noeud où sera imposé le signe</source>
-      <translation type="unfinished">Groupe d'un seul noeud où sera imposé le signe</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30700"/>
       <source>Composante du noeud où sera imposé le signe</source>
-      <translation type="unfinished">Composante du noeud où sera imposé le signe</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="30700"/>
@@ -6476,12 +6476,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="30791"/>
       <source>Etablissement de la numérotation des ddl d'un modèle etabli en coordonnées généralisees</source>
-      <translation type="unfinished">Etablissement de la numérotation des ddl d'un modèle etabli en coordonnées généralisees</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="30838"/>
       <source>Calcul de l'observabilite d'un champ aux noeuds </source>
-      <translation type="unfinished">Calcul de l'observabilite d'un champ aux noeuds </translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
@@ -6496,17 +6496,17 @@
     <message>
       <location filename="../cata.py" line="31020"/>
       <source>calcul de la probabilite de clivage via le modele de Bordet</source>
-      <translation type="unfinished">calcul de la probabilite de clivage via le modele de Bordet</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31020"/>
       <source>le calcul ne sera effectué que sur ces mailles</source>
-      <translation type="unfinished">le calcul ne sera effectué que sur ces mailles</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="31020"/>
       <source>prise en compte du facteur exponentiel</source>
-      <translation type="unfinished">prise en compte du facteur exponentiel</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31091"/>
@@ -6571,12 +6571,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31129"/>
       <source>Calcul des efforts d'une coque 'excentrée' sur le feuillet moyen de la coque</source>
-      <translation type="unfinished">Calcul des efforts d'une coque 'excentrée' sur le feuillet moyen de la coque</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31253"/>
       <source>Calcul des efforts et déformations en un point et une cote quelconque de la coque</source>
-      <translation type="unfinished">Calcul des efforts et déformations en un point et une cote quelconque de la coque</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31253"/>
@@ -6586,17 +6586,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31253"/>
       <source>coordonnées et position dans l'épaisseur</source>
-      <translation type="unfinished">coordonnées et position dans l'épaisseur</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31309"/>
       <source>Post-Traiement scpécifiques aux modèles CZM</source>
-      <translation type="unfinished">Post-Traiement scpécifiques aux modèles CZM</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="31350"/>
       <source>calcul du rapport de surfaces de contact radier/sol</source>
-      <translation type="unfinished">calcul du rapport de surfaces de contact radier/sol</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31380"/>
@@ -6611,7 +6611,7 @@
     <message>
       <location filename="../cata.py" line="31380"/>
       <source>donnees pour interspectre</source>
-      <translation type="unfinished">donnees pour interspectre</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31380"/>
@@ -6676,12 +6676,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31490"/>
       <source>calcul de la distribution du volume d'une structure vis-à-vis d'une composante</source>
-      <translation type="unfinished">calcul de la distribution du volume d'une structure vis-à-vis d'une composante</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31490"/>
       <source>calcul des extrema en espace d'une CMP d'un champ, pour tous les instants spécifiés</source>
-      <translation type="unfinished">calcul des extrema en espace d'une CMP d'un champ, pour tous les instants spécifiés</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="31490"/>
@@ -6726,7 +6726,7 @@
     <message>
       <location filename="../cata.py" line="32093"/>
       <source>Individuation du trace d'une fissure a partir d'un champ scalaire pertinant</source>
-      <translation type="unfinished">Individuation du trace d'une fissure a partir d'un champ scalaire pertinant</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32093"/>
@@ -6781,12 +6781,12 @@
     <message>
       <location filename="../cata.py" line="32542"/>
       <source>Calcul des facteurs d intensite des contrainte par recombinaison modale</source>
-      <translation type="unfinished">Calcul des facteurs d intensite des contrainte par recombinaison modale</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32589"/>
       <source>Post-traitement des lames d'eau, par grille ou valeurs min/max</source>
-      <translation type="unfinished">Post-traitement des lames d'eau, par grille ou valeurs min/max</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32589"/>
@@ -6801,7 +6801,7 @@
     <message>
       <location filename="../cata.py" line="32589"/>
       <source>Post-traitement des deformations, par grille ou valeurs min/max</source>
-      <translation type="unfinished">Post-traitement des deformations, par grille ou valeurs min/max</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32654"/>
@@ -6816,7 +6816,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>limite élastique utilisée pour le calcul du rochet thermique</source>
-      <translation type="unfinished">limite élastique utilisée pour le calcul du rochet thermique</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
@@ -6846,17 +6846,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes sous chargement de pression</source>
-      <translation type="unfinished">table relevé des contraintes sous chargement de pression</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes a la distance d de la singularité pour chacun des angles THETA</source>
-      <translation type="unfinished">table relevé des contraintes a la distance d de la singularité pour chacun des angles THETA</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>limite élastique utilisée pourle calcul du rochet thermique</source>
-      <translation type="unfinished">limite élastique utilisée pourle calcul du rochet thermique</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
@@ -6881,7 +6881,7 @@
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>moment suivant x, tubulure</source>
-      <translation type="unfinished">moment suivant x, tubulure</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
@@ -6911,57 +6911,57 @@
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant x, tubulure</source>
-      <translation type="unfinished">effort suivant x, tubulure</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant y, tubulure</source>
-      <translation type="unfinished">effort suivant y, tubulure</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant z, tubulure</source>
-      <translation type="unfinished">effort suivant z, tubulure</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>moment suivant y, tubulure</source>
-      <translation type="unfinished">moment suivant y, tubulure</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>moment suivant z, tubulure</source>
-      <translation type="unfinished">moment suivant z, tubulure</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant x, corps du piquage</source>
-      <translation type="unfinished">effort suivant x, corps du piquage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant y, corps du piquage</source>
-      <translation type="unfinished">effort suivant y, corps du piquage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>effort suivant z, corps du piquage</source>
-      <translation type="unfinished">effort suivant z, corps du piquage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>moment suivant x, corps du piquage</source>
-      <translation type="unfinished">moment suivant x, corps du piquage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>moment suivant y, corps du piquage</source>
-      <translation type="unfinished">moment suivant y, corps du piquage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>moment suivant z, corps du piquage</source>
-      <translation type="unfinished">moment suivant z, corps du piquage</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
@@ -6976,7 +6976,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire MX_TUBU</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire MX_TUBU</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
@@ -7006,57 +7006,57 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire FX_TUBU</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire FX_TUBU</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire FY_TUBU</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire FY_TUBU</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire FZ_TUBU</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire FZ_TUBU</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire MY_TUBU</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire MY_TUBU</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire MZ_TUBU</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire MZ_TUBU</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire FX_CORP</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire FX_CORP</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire FY_CORP</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire FY_CORP</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire FZ_CORP</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire FZ_CORP</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire MX_CORP</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire MX_CORP</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire MY_CORP</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire MY_CORP</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>table relevé des contraintes pour chargement unitaire MZ_CORP</source>
-      <translation type="unfinished">table relevé des contraintes pour chargement unitaire MZ_CORP</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
@@ -7106,12 +7106,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>numéros du groupe de la situation</source>
-      <translation type="unfinished">numéros du groupe de la situation</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>numeros de chargements etat A</source>
-      <translation type="unfinished">numeros de chargements etat A</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
@@ -7126,12 +7126,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>numéro des situations de passage</source>
-      <translation type="unfinished">numéro des situations de passage</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32685"/>
       <source>numéros des groupes de la situation</source>
-      <translation type="unfinished">numéros des groupes de la situation</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
@@ -7141,7 +7141,7 @@
     <message>
       <location filename="../cata.py" line="32685"/>
       <source>numeros de chargements etat B</source>
-      <translation type="unfinished">numeros de chargements etat B</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32685"/>
@@ -7236,7 +7236,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="32965"/>
       <source>Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..) ou pour les exprimer dans d'autres repères</source>
-      <translation type="unfinished">Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..) ou pour les exprimer dans d'autres repères</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="32965"/>
@@ -7256,12 +7256,12 @@
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>post-traitements en Rupture</source>
-      <translation type="unfinished">post-traitements en Rupture</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>normalise l'abscisse curviligne</source>
-      <translation type="unfinished">normalise l'abscisse curviligne</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
@@ -7271,12 +7271,12 @@
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>Cumul sur les modes : calcul du K equivalent</source>
-      <translation type="unfinished">Cumul sur les modes : calcul du K equivalent</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>Formule de cumul des modes</source>
-      <translation type="unfinished">Formule de cumul des modes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
@@ -7286,32 +7286,32 @@
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>Cumul sur les modes : calcul du DeltaK equivalent</source>
-      <translation type="unfinished">Cumul sur les modes : calcul du DeltaK equivalent</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>Comptage des cycles</source>
-      <translation type="unfinished">Comptage des cycles</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33096"/>
       <source>Nom des quantités sur lesquelles s'effectuent le comptage</source>
-      <translation type="unfinished">Nom des quantités sur lesquelles s'effectuent le comptage</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>comptage unitaire pour les amplitudes constantes</source>
-      <translation type="unfinished">comptage unitaire pour les amplitudes constantes</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33096"/>
       <source>calcul de l'incrément d'avancée de fissure par cycle</source>
-      <translation type="unfinished">calcul de l'incrément d'avancée de fissure par cycle</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33096"/>
       <source>Nom de la quantité correspondant au Delta_K_eq</source>
-      <translation type="unfinished">Nom de la quantité correspondant au Delta_K_eq</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
@@ -7326,22 +7326,22 @@
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>Pilotage de la propagation</source>
-      <translation type="unfinished">Pilotage de la propagation</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33096"/>
       <source>Pilotage en incrément d'avancée max</source>
-      <translation type="unfinished">Pilotage en incrément d'avancée max</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33096"/>
       <source>Pilotage en incrément de nombre de blocs</source>
-      <translation type="unfinished">Pilotage en incrément de nombre de blocs</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33096"/>
       <source>Mise a zero des valeurs negatives de K1</source>
-      <translation type="unfinished">Mise a zero des valeurs negatives de K1</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33265"/>
@@ -7391,17 +7391,17 @@
     <message>
       <location filename="../cata.py" line="33727"/>
       <source>Projection des matrices et/ou vecteurs assembles sur une base (modale ou de RITZ)</source>
-      <translation type="unfinished">Projection des matrices et/ou vecteurs assembles sur une base (modale ou de RITZ)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33787"/>
       <source>Projeter des champs d'un maillage sur un autre</source>
-      <translation type="unfinished">Projeter des champs d'un maillage sur un autre</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
       <source>Pour indiquer au programme le type de projection souhaité</source>
-      <translation type="unfinished">Pour indiquer au programme le type de projection souhaité</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
@@ -7421,12 +7421,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
       <source>Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
-      <translation type="unfinished">Utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
       <source>Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</source>
-      <translation type="unfinished">Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no.</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="33787"/>
@@ -7446,7 +7446,7 @@
     <message>
       <location filename="../cata.py" line="34167"/>
       <source>Projection d'une sd resultat assemblee sur une base (modale ou de RITZ)</source>
-      <translation type="unfinished">Projection d'une sd resultat assemblee sur une base (modale ou de RITZ)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="34194"/>
@@ -7481,7 +7481,7 @@
     <message>
       <location filename="../cata.py" line="34602"/>
       <source>Calcul d'un indicateur binaire pour le raffinement</source>
-      <translation type="unfinished">Calcul d'un indicateur binaire pour le raffinement</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="34632"/>
@@ -7506,7 +7506,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="34693"/>
       <source>Récupération de fonction dans un concept interspectre</source>
-      <translation type="unfinished">Récupération de fonction dans un concept interspectre</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="34693"/>
@@ -7561,27 +7561,27 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="34937"/>
       <source>Extraire d'un champ de grandeur (déplacements, vitesses ou accélérations) à partir de résultats en coordonnées généralisées</source>
-      <translation type="unfinished">Extraire d'un champ de grandeur (déplacements, vitesses ou accélérations) à partir de résultats en coordonnées généralisées</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="34975"/>
       <source>Gestion des scalaires via YACS pour le coupleur IFS</source>
-      <translation type="unfinished">Gestion des scalaires via YACS pour le coupleur IFS</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35011"/>
       <source>Récupérer dans une table les valeurs d'un paramètre d'une SD Résultat ou d'extraire une table contenue dans une autre SD pour celles qui le permettent</source>
-      <translation type="unfinished">Récupérer dans une table les valeurs d'un paramètre d'une SD Résultat ou d'extraire une table contenue dans une autre SD pour celles qui le permettent</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35040"/>
       <source>Résolution par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLTou Résolution d'un système linéaire par la méthode du gradient conjugué préconditionné</source>
-      <translation type="unfinished">Résolution par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLTou Résolution d'un système linéaire par la méthode du gradient conjugué préconditionné</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35092"/>
       <source>Restituer dans la base physique des résultats issus d'un calculnon-lineaire avec projection modale ou d'un calcul transitoire linearavec condensation dynamique</source>
-      <translation type="unfinished">Restituer dans la base physique des résultats issus d'un calculnon-lineaire avec projection modale ou d'un calcul transitoire linearavec condensation dynamique</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35155"/>
@@ -7591,12 +7591,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35222"/>
       <source>Post traitement de mode_non_line : récuperation résultats</source>
-      <translation type="unfinished">Post traitement de mode_non_line : récuperation résultats</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35264"/>
       <source>Restituer dans la base physique des résultats obtenus par sous-structuration</source>
-      <translation type="unfinished">Restituer dans la base physique des résultats obtenus par sous-structuration</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35338"/>
@@ -7611,7 +7611,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35426"/>
       <source>Calcul de l'évolution mécanique, en quasi-statique, d'un point matériel en non linéaire</source>
-      <translation type="unfinished">Calcul de l'évolution mécanique, en quasi-statique, d'un point matériel en non linéaire</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35426"/>
@@ -7636,7 +7636,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35660"/>
       <source>Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique, d'une structure en non linéaire</source>
-      <translation type="unfinished">Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique, d'une structure en non linéaire</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35660"/>
@@ -7646,7 +7646,7 @@
     <message>
       <location filename="../cata.py" line="35810"/>
       <source>macro de test des comportements incrementaux dependant de la temperature</source>
-      <translation type="unfinished">macro de test des comportements incrementaux dependant de la temperature</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
@@ -7656,7 +7656,7 @@
     <message>
       <location filename="../cata.py" line="35810"/>
       <source>coefficient de dilatation fonction de la temperature</source>
-      <translation type="unfinished">coefficient de dilatation fonction de la temperature</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
@@ -7666,7 +7666,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35810"/>
       <source>liste des materiaux constants interpolés à chaque température</source>
-      <translation type="unfinished">liste des materiaux constants interpolés à chaque température</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
@@ -7686,7 +7686,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35810"/>
       <source>nombre de variables internes - 0 en elasticité</source>
-      <translation type="unfinished">nombre de variables internes - 0 en elasticité</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35810"/>
@@ -7696,12 +7696,12 @@
     <message>
       <location filename="../cata.py" line="35810"/>
       <source>module tangent fonction de la temperature- VMIS_CINE_LINE</source>
-      <translation type="unfinished">module tangent fonction de la temperature- VMIS_CINE_LINE</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
       <source>constante de Prager fonction de la temperature- VMIS_ECMI_*</source>
-      <translation type="unfinished">constante de Prager fonction de la temperature- VMIS_ECMI_*</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
@@ -7731,12 +7731,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="35810"/>
       <source>Rotation de ANGLE autour de Z uniquement, et seulement pour les déformations imposées</source>
-      <translation type="unfinished">Rotation de ANGLE autour de Z uniquement, et seulement pour les déformations imposées</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
       <source>orientation du materiau (monocristal, orthotropie)</source>
-      <translation type="unfinished">orientation du materiau (monocristal, orthotropie)</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="35810"/>
@@ -7781,7 +7781,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="36142"/>
       <source>Permet de vérifier le temps passé dans les commandes</source>
-      <translation type="unfinished">Permet de vérifier le temps passé dans les commandes</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="36142"/>
@@ -7791,7 +7791,7 @@
     <message>
       <location filename="../cata.py" line="36142"/>
       <source>Numero de l'occurrence de la commande testee</source>
-      <translation type="unfinished">Numero de l'occurrence de la commande testee</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="36142"/>
@@ -7806,7 +7806,7 @@
     <message>
       <location filename="../cata.py" line="36142"/>
       <source>Ecart admissible pour chaque machine</source>
-      <translation type="unfinished">Ecart admissible pour chaque machine</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="36142"/>
@@ -7821,12 +7821,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="36242"/>
       <source>Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire ou transitoire</source>
-      <translation type="unfinished">Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire ou transitoire</translation>
+      <translation type="unfinished"/>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="36328"/>
       <source>Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</source>
-      <translation type="unfinished">Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau) stationnaire avec chargement mobile</translation>
+      <translation type="unfinished"/>
     </message>
   </context>
 </TS>

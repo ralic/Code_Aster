@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv-SE" sourcelanguage="fr">
+<TS version="2.0" language="ko" sourcelanguage="fr">
   <context>
     <name>@default</name>
     <message>
@@ -7381,7 +7381,7 @@
     <message>
       <location filename="../cata.py" line="33601"/>
       <source>description</source>
-      <translation type="unfinished">beskrivning</translation>
+      <translation type="unfinished"/>
     </message>
     <message>
       <location filename="../cata.py" line="33682"/>
