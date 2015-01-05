@@ -307,9 +307,6 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
             varip(5)=varim(5)
             phitan=kphi
         else
-!-- Modif P. Badel        
-!            dpp=-(phic+ecro*ppm-abs(phm-phipl+dph))/(1.d0+ecro)
-!            dphipl=dpp*dph/abs(dph)
             sgne=(fphi)/abs(fphi)
             dpp=-(phic+ecro*ppm-abs(phm-phipl+dph))/(1.d0+ecro*sgne)
             dphipl=dpp*sgne
