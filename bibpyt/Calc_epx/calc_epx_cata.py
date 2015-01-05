@@ -403,6 +403,9 @@ cata_modelisa = {
         'MODE_EPX': {
             'TETRA4': ['TETR'],
             'HEXA8': ['CUB8'],
+             # pour chargement pression
+            'QUAD4'  : [],
+            'TRIA3'  : [],
         },
         'ETAT_INIT': True,
         'RESU_ELEM': True,
@@ -606,6 +609,14 @@ cata_charge = {
         'COEF_MULT': -1,
         'ENTITE': ['GROUP_MA'],
     },
+    'PRES_REP' : {
+        'TYPE_CHAR' : 'FACTO',
+        'MOT_CLE_EPX': ['PRES NODE'],
+        'ASTER'      : ['PRES'],
+        'EPX'        : None,
+        'COEF_MULT'  : -1,
+        'ENTITE'     : ['GROUP_MA'],
+                  },
 }
 
 

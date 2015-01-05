@@ -128,6 +128,10 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
                 if len(cata_modelisa[modelisation]['MODE_EPX'][typma]) == 1:
                     mode_epx = cata_modelisa[
                         modelisation]['MODE_EPX'][typma][0]
+                elif len(cata_modelisa[modelisation]['MODE_EPX'][typma]) == 0:
+                    # elements a ne pas inclure dans GEOM
+                    # face de 3D par exemple
+                    continue
                 else:
                     # cas ou la modelisation dépend du CARA_ELEM
                     mode_epx_dispo = cata_modelisa[
