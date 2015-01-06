@@ -156,4 +156,25 @@ Opérateurs INFO_MODE ou CALC_MODES sur plusieurs sous-bandes, en mode parallèl
        plus pour de meilleures performances en modal GESTION_MEMOIRE='IN_CORE' + RENUM='QAMD'),
     * Changez le niveau de parallélisme (mot-clé NIVEAU_PARALLELISME='COMPLET').
 """),
+
+    15: _(u"""
+L'amélioration des modes propres ne peut pas être effectuée,
+car au moins une des matrices d'entrée est non symétrique,
+ce qui est incompatible avec l'algorithme des puissances inverses utilisé pour l'amélioration.
+"""),
+
+    16: _(u"""
+L'amélioration des modes propres ne peut pas être effectuée,
+car la matrice renseignée sous %(k1)s est complexe,
+ce qui est incompatible avec l'algorithme des puissances inverses utilisé pour l'amélioration.
+"""),
+
+    17: _(u"""
+L'amélioration des modes propres ne peut pas être effectuée,
+car des valeurs propres très proches ont été détectées dans le concept %(k1)s
+(modes multiples ou plusieurs modes de corps rigide),
+ce qui est incompatible avec l'algorithme des puissances inverses utilisé pour l'amélioration.
+
+"""),
+
 }

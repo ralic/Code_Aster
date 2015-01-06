@@ -19,26 +19,30 @@
 
 
 def calc_modes_ops(self, TYPE_RESU, OPTION,
-                   SOLVEUR_MODAL, SOLVEUR, VERI_MODE, INFO, TITRE, **args):
+                         SOLVEUR_MODAL, SOLVEUR, VERI_MODE, AMELIORATION,
+                         INFO, TITRE, **args):
     """
        Macro-command CALC_MODES, main file
     """
 
-    ier = 0
+    ier=0
 
     import aster
+    from Accas import _F
     from Noyau.N_utils import AsType
     from Modal.calc_modes_simult import calc_modes_simult
     from Modal.calc_modes_inv import calc_modes_inv
     from Modal.calc_modes_multi_bandes import calc_modes_multi_bandes
+    from Modal.calc_modes_amelioration import calc_modes_amelioration
     from Modal.calc_modes_post import calc_modes_post
 
+    
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
     self.DeclareOut('modes', self.sd)
 
-    l_multi_bandes = False  # logical indicating if the computation is performed
+    l_multi_bandes = False # logical indicating if the computation is performed
                            # for DYNAMICAL modes on several bands
 
     if (TYPE_RESU == 'DYNAMIQUE'):
@@ -62,21 +66,30 @@ def calc_modes_ops(self, TYPE_RESU, OPTION,
         if OPTION in ('PLUS_PETITE', 'PLUS_GRANDE', 'CENTRE', 'BANDE', 'TOUT'):
             # call the MODE_ITER_SIMULT command
             modes = calc_modes_simult(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
-                                      SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+                                            SOLVEUR, VERI_MODE, INFO, TITRE, **args)
 
         elif OPTION in ('SEPARE', 'AJUSTE', 'PROCHE'):
             # call the MODE_ITER_INV command
             modes = calc_modes_inv(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
-                                   SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+                                         SOLVEUR, VERI_MODE, INFO, TITRE, **args)
 
-    #
+
+    if AMELIORATION=='OUI':
+        # after a 1st modal computation, achieve a 2nd computation with MODE_ITER_INV
+        # and option 'PROCHE' to refine the modes
+        modes = calc_modes_amelioration(self, modes, TYPE_RESU, SOLVEUR_MODAL,
+                                             SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+
+
+
+    ##################
     # post-traitements
-    #
+    ##################
     if (TYPE_RESU == 'DYNAMIQUE'):
 
-        lmatphys = False  # logical indicating if the matrices are physical or not (generalized)
-        nom_matrrigi = aster.getcolljev(modes.nom.ljust(19) + '.REFD')[1][2]
-        matrrigi = self.get_concept(nom_matrrigi.strip())
+        lmatphys = False # logical indicating if the matrices are physical or not (generalized)
+        iret, ibid, nom_matrrigi = aster.dismoi('REF_RIGI_PREM', modes.nom, 'RESU_DYNA', 'F')
+        matrrigi = self.get_concept(nom_matrrigi)
         if AsType(matrrigi).__name__ == 'matr_asse_depl_r':
             lmatphys = True
 
@@ -91,7 +104,7 @@ def calc_modes_ops(self, TYPE_RESU, OPTION,
             if args['IMPRESSION'] != None:
                 impression = args['IMPRESSION']
             if (norme_mode != None) or (filtre_mode != None) or (impression != None):
-                modes = calc_modes_post(
-                    self, modes, lmatphys, norme_mode, filtre_mode, impression)
+                modes = calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression)
+
 
     return ier

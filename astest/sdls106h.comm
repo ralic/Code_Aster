@@ -66,20 +66,25 @@ ASSEMBLAGE(MODELE=MODELE,
                          OPTION='MASS_MECA',),),);
 
 
-# CALCL DES MODES EN DEUX BANDES
+# CALCUL DES MODES EN DEUX BANDES
 MODES_1=CALC_MODES(MATR_RIGI=MATASSR,
-                   OPTION='BANDE',
-                   CALC_FREQ=_F(FREQ=( 0.,40.),
-                                ),
                    MATR_MASS=MATASSM,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=( 0.,40.), ),
                    )
 
 MODES_2=CALC_MODES(MATR_RIGI=MATASSR,
-                   OPTION='BANDE',
-                   CALC_FREQ=_F(FREQ=( 40.,100.),
-                                ),
                    MATR_MASS=MATASSM,
+                   OPTION='BANDE',
+                   CALC_FREQ=_F(FREQ=( 40.,100.), ),
+                   AMELIORATION='NON',
                    )
+MODES_2a=CALC_MODES(MATR_RIGI=MATASSR,
+                    MATR_MASS=MATASSM,
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=( 40.,100.), ),
+                    AMELIORATION='OUI',
+                    )
 
 #
 MODES_1=NORM_MODE( reuse=MODES_1, MODE=MODES_1,
@@ -93,7 +98,13 @@ MODES_2=NORM_MODE( reuse=MODES_2, MODE=MODES_2,
                    MODE_SIGNE=_F( GROUP_NO ='P',
                                   NOM_CMP = 'DZ',
                                   SIGNE = 'POSITIF'))
-                               
+
+MODES_2a=NORM_MODE(reuse=MODES_2a, MODE=MODES_2a,
+                   NORME='TRAN',
+                   MODE_SIGNE=_F( GROUP_NO ='P',
+                                  NOM_CMP = 'DZ',
+                                  SIGNE = 'POSITIF'))
+
 
 
 # VALIDATION DES DEFORMEES MODALES
@@ -140,6 +151,12 @@ MLC_X3=MACR_LIGN_COUPE( RESULTAT= MODES_2,
                       LIGN_COUPE=   _F( NB_POINTS= nb_points,
                                          COOR_ORIG= ( -1.5, 0.25 ),
                                          COOR_EXTR= (  0.5, 0.25 ), ),)
+MLC_X3a=MACR_LIGN_COUPE( RESULTAT= MODES_2a,
+                      NOM_CHAM= 'DEPL',
+                      NUME_ORDRE= 1,
+                      LIGN_COUPE=   _F( NB_POINTS= nb_points,
+                                         COOR_ORIG= ( -1.5, 0.25 ),
+                                         COOR_EXTR= (  0.5, 0.25 ), ),)
 
 MLC_Y3=MACR_LIGN_COUPE( RESULTAT= MODES_2,
                       NOM_CHAM= 'DEPL',
@@ -152,6 +169,7 @@ MLC_Y3=MACR_LIGN_COUPE( RESULTAT= MODES_2,
 IMPR_TABLE( TABLE=MLCDIAG3 )
 
 IMPR_TABLE( TABLE=MLC_X3 )
+IMPR_TABLE( TABLE=MLC_X3a )
 
 IMPR_TABLE( TABLE=MLC_Y3 )
 
@@ -185,7 +203,7 @@ for np in range(0,nb_points) :
       VALE_REFE=val_an,
       REFERENCE='ANALYTIQUE',
       PRECISION=1.e-2,
-      CRITERE=critere,
+      CRITERE=critere
       )
 
    # valeur analytique le long de la ligne milieu parallèle à Y
@@ -206,7 +224,7 @@ for np in range(0,nb_points) :
       VALE_REFE=val_an,
       REFERENCE='ANALYTIQUE',
       PRECISION=1.e-2,
-      CRITERE=critere,
+      CRITERE=critere
       )
 
    # valeur analytique le long de la ligne milieu parallèle à X : 0
@@ -218,6 +236,28 @@ TEST_TABLE(
       VALE_REFE=0.,
       REFERENCE='ANALYTIQUE',
       CRITERE='ABSOLU',
+      )
+
+# On teste l'amélioration (très légère dans ce cas-test)
+# on le voit surtout sur les composantes dont la valeur analytique est nulle, par exemple DRZ
+TEST_TABLE(
+      TABLE=MLC_X3,
+      NOM_PARA='DRZ',
+      TYPE_TEST='SOMM_ABS',
+      VALE_CALC=x3_nonreg_rz,
+      VALE_REFE=0.,
+      REFERENCE='ANALYTIQUE',
+      CRITERE='ABSOLU',
+      )
+TEST_TABLE(
+      TABLE=MLC_X3a,
+      NOM_PARA='DRZ',
+      TYPE_TEST='SOMM_ABS',
+      VALE_CALC=x3_nonreg_ameliore_rz,
+      VALE_REFE=0.,
+      REFERENCE='ANALYTIQUE',
+      CRITERE='ABSOLU',
+      ORDRE_GRANDEUR=1.e-20,
       )
 
 
@@ -277,7 +317,7 @@ for np in range(0,nb_points) :
       VALE_REFE=val_an,
       REFERENCE='ANALYTIQUE',
       PRECISION=1.e-2,
-      CRITERE=critere,
+      CRITERE=critere
       )
 
    # valeur analytique le long de la ligne milieu parallèle à X
@@ -298,7 +338,7 @@ for np in range(0,nb_points) :
       VALE_REFE=val_an,
       REFERENCE='ANALYTIQUE',
       PRECISION=1.e-2,
-      CRITERE=critere,
+      CRITERE=critere
       )
 
 
@@ -320,7 +360,7 @@ for np in range(0,nb_points) :
       VALE_REFE=val_an,
       REFERENCE='ANALYTIQUE',
       PRECISION=1.e-2,
-      CRITERE=critere,
+      CRITERE=critere
       )
 
 

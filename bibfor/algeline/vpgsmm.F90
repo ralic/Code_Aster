@@ -105,11 +105,11 @@ subroutine vpgsmm(nbeq, nconv, vect, alpha, lmatb,&
 !         write(6,*)i,dsor(i,1)
  66 continue
 !
-! Criteres de test dependant de veri_mode/seuil_*:
-! en dessous de seuilr: modes rigides
-! si deux modes ne sont pas consideres comme des modes rigides
-! modes multiples si leur ecart relatif < seuilp
-! rq: seuils volontairement laches car il vaut mieux trop reorthogonaliser que l'inverse
+! Critères de test dependant de CALC_* / SEUIL_* (*=FREQ ou CHAR_CRIT):
+! * en dessous de seuilr: modes rigides
+! * si deux modes ne sont pas considérés comme des modes rigides :
+!     modes multiples si leur écart relatif < seuilp
+! rq: seuils volontairement lâches car il vaut mieux trop réorthogonaliser que l'inverse
     seuilr=100.d0*omecor
     seuilp=omecor
     compt1=0

@@ -20,7 +20,11 @@ diag3_nonreg=[            \
 #   -- grand axe médian
 
 x3_nonreg=                \
-8.7991984926567E-11       \
+8.7991984926567E-11
+x3_nonreg_rz=             \
+1.03607226193E-15
+x3_nonreg_ameliore_rz=    \
+3.50020866564E-49
 
 #   -- petit axe médian
 

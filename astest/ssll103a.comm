@@ -366,6 +366,7 @@ MOD_4=CALC_MODES(MATR_RIGI=RIGAS,
                                    ),
                  SOLVEUR_MODAL=_F(DIM_SOUS_ESPACE=20,
                                   ),
+                 AMELIORATION='OUI',
                  )
 
 MOD_5=CALC_MODES( MATR_RIGI=RIGAS,
