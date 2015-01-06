@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron03c.comm D 1
-F mmed zmat007a.mmed D 20
+F mmed mfron03c.mmed D 20
