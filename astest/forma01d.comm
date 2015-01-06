@@ -1,0 +1,288 @@
+# TITRE PLAQUE TROUEE EN TRACTION EN ELASTICITE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+# MODALISATION D : METHODE X-FEM
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON',),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('CALCULEL2_63','UTILITAI4_2'),
+      )
+
+import math
+
+# <CALCULEL2_63> : Dans un modele, il existe des elements de type "bord" qui n'ont pas de voisin avec rigidite
+#  le modele provoquant ces alarmes ne sert qu'a la visualisation
+
+# <UTILITAI4_2> : Le mot clef EXCIT de CALC_CHAMP n'est pas renseigne car il ne sert a rien pour calculer les contraintes
+
+# ======================================================================
+#                 PARAMETRES UTILISATEURS
+# ======================================================================
+
+# rayon du trou
+r=10.
+
+# taille des mailles initiales (diagonales des triangles)
+h0 = 7.
+
+# nombre de segment le long du (quart de) trou 
+nb_cercles=42
+
+# taille cible des mailles apres raffinement 
+hc = math.pi/2*r/nb_cercles
+
+# ======================================================================
+#                 RAFFINEMENT DU MAILLAGE INTIAL
+# ======================================================================
+
+# nombre de raffinements
+# attention, en python log = ln (logarithme neperien)
+n = (log(h0)-log(hc))/log(2)
+nb_raff = int(n)+1
+h = h0/(2.**nb_raff)
+
+
+# rayon du disque de raffinement
+r_raff = 5*h
+
+print 'hello h0 ',h0
+print 'hello hc ',hc
+print 'hello nb_raff ',nb_raff
+print 'hello h ',h
+print 'hello r_raff ',r_raff
+
+
+# initialisation
+nb_iter = nb_raff+1
+MA    = [None]*(nb_iter+1)
+DIAM= [None]*(nb_iter+1)
+i_raff=0   
+
+MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED')
+
+for i_raff in range(nb_iter) :
+
+   FISS=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],  
+                         TYPE_DISCONTINUITE='INTERFACE',
+                         DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                      DEMI_GRAND_AXE = r,
+                                      DEMI_PETIT_AXE = r,
+                                      CENTRE         = (0., 0., 0.),
+                                      VECT_X         = (1., 0., 0. ),
+                                      VECT_Y         = (0., 1., 0. ),
+                                      ),)
+
+   CHERR = RAFF_XFEM(FISSURE=FISS,TYPE='ZONE',RAYON=r_raff)
+
+   # definition du type du maillage n+1
+   MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
+   DIAM[i_raff+1]=CO('DIAM_%d' % (i_raff+1))
+
+   MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                  CHAM_GD            = CHERR,
+                  CRIT_RAFF_ABS      = 0.5,
+                  DIAM_MIN           = hc,
+                  MAILLAGE_N         = MA[i_raff],
+                  MAILLAGE_NP1       = MA[i_raff+1],
+                  ADD_CHAM = _F(CHAM_GD = DIAM[i_raff+1],
+                                CHAM_CAT='DIAMETRE'),
+                  )
+                  
+   DETRUIRE(CONCEPT=_F(NOM=(FISS,CHERR)),INFO=1)
+
+# impression du dernier maillage
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]))
+
+
+# ======================================================================
+#                 CALCUL MECANIQUE
+# ======================================================================
+
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
+                         NU=0.3))
+
+
+# si on avait voulu definir un groupe de noeuds situes dans le trou pour le blocage des modes rigides
+# MA[nb_iter]=DEFI_GROUP(reuse =MA[nb_iter],
+#                 MAILLAGE=MA[nb_iter],
+#                 CREA_GROUP_NO=_F(NOM='NTROU',OPTION='ENV_SPHERE',POINT=(0.,0.,),PRECISION=r/10.,RAYON=r/10.),
+#                 INFO=2 )
+                        
+
+MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
+                          MAILLAGE=MA[nb_iter],
+                          ORIE_PEAU_2D=_F(GROUP_MA='haut',),);
+
+MA[nb_iter]=DEFI_GROUP(reuse =MA[nb_iter],
+                       MAILLAGE=MA[nb_iter],
+                       CREA_GROUP_MA=_F(NOM='plaque',TOUT='OUI',TYPE_MAILLE='2D'),);
+
+MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='C_PLAN',),);
+
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
+                     TYPE_DISCONTINUITE='INTERFACE',
+                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                  DEMI_GRAND_AXE = r,
+                                  DEMI_PETIT_AXE = r,
+                                  CENTRE         = (0., 0., 0.),
+                                  VECT_X         = (1., 0., 0. ),
+                                  VECT_Y         = (0., 1., 0. ),
+                                  ),)
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODE,
+                         FISSURE=FISS,);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
+                   AFFE=_F(TOUT='OUI',
+                           MATER=MAT,),);
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
+                    DDL_IMPO=(_F(GROUP_MA='bas',
+                                 DY=0.0,),
+                              _F(GROUP_MA='gauche',
+                                 DX=0.0,),),
+                    PRES_REP=_F(GROUP_MA='haut',
+                                PRES=-100.0,),);
+                                
+# pour bloquer les modes rigides de l'inclusion centrale 
+#CHARINC=AFFE_CHAR_MECA(MODELE=MODELEK,
+#                       DDL_IMPO=_F(GROUP_NO='NTROU',
+#                                   DX=0.0,DY=-10.0,),
+#                       );
+                                
+RESU=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CHAR,),
+      #                   _F(CHARGE=CHARINC,),
+                           ),);
+                           
+# ======================================================================
+#                 POST-TRAITEMENT
+# ======================================================================
+                        
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
+
+# on definit les noeuds pour le post-traitement (on ne pouvait pas le faire dans le maillage, of course)
+# attention, les groupes definis contiennet a la fois les noeuds cote "plus" (plaque) et cote "moins" (trou)
+eps=h/100.
+MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
+                   MAILLAGE=MA_XFEM,
+                   CREA_GROUP_NO=(_F(NOM='A',OPTION='ENV_SPHERE',POINT=(0.,r),PRECISION=eps,RAYON=eps),
+                                  _F(NOM='B',OPTION='ENV_SPHERE',POINT=(r,0.),PRECISION=eps,RAYON=eps),
+                                  ),
+                   INFO=2)
+
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(GROUP_MA='plaque', 
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='C_PLAN',),) 
+
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
+                        RESULTAT    = RESU)
+
+RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,
+                    RESULTAT=RES_XFEM,
+                    CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU'),
+                    CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'),);
+           
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM))
+
+
+SIG_A=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='table A',
+                              RESULTAT=RES_XFEM,
+                              NOM_CHAM='SIGM_NOEU',
+                              GROUP_NO='A',
+                              NOM_CMP='SIXX',),);
+
+# on filtre en supprimant les noeuds cote "moins" (cote trou)                                 
+SIG_A = CALC_TABLE(reuse = SIG_A,
+                   TABLE = SIG_A,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                                NOM_PARA  = 'NOEUD',
+                                CRIT_COMP = 'REGEXP',
+                                VALE_K    = 'N[^M]')));
+
+IMPR_TABLE(TABLE=SIG_A)
+
+SIG_B=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='table B',
+                              RESULTAT=RES_XFEM,
+                              NOM_CHAM='SIGM_NOEU',
+                              GROUP_NO='B',
+                              NOM_CMP='SIYY',),);
+                                 
+# on filtre en supprimant les noeuds cote "moins" (cote trou)                                 
+SIG_B = CALC_TABLE(reuse = SIG_B,
+                   TABLE = SIG_B,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                                NOM_PARA  = 'NOEUD',
+                                CRIT_COMP = 'REGEXP',
+                                VALE_K    = 'N[^M]')));
+
+IMPR_TABLE(TABLE=SIG_B)
+
+# test sur les contraintes
+# attention, la notion de SIGM_NOEU est particuliere pour X-FEM 
+# car les sous-elements de visu ont des noeuds doubles non connectes
+# on a donc plusieurs valeurs pour une position de noeud (SIGM_NOEU = SIGM_ELNO en fait)
+# on teste donc le min et le max de chaque table
+TEST_TABLE(TABLE=SIG_A,
+           NOM_PARA='SIXX',
+           TYPE_TEST='MIN',
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=-100.,
+           VALE_CALC=-101.043073153 ,
+           PRECISION=0.05,
+           )
+
+TEST_TABLE(TABLE=SIG_A,
+           NOM_PARA='SIXX',
+           TYPE_TEST='MAX',
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=-100.,
+           VALE_CALC=-96.1514793108,
+           PRECISION=0.05,
+           )
+
+
+TEST_TABLE(TABLE=SIG_B,
+           NOM_PARA='SIYY',
+           TYPE_TEST='MIN',
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=303.,
+           VALE_CALC=294.121896928,
+           PRECISION=0.05,
+           )
+
+TEST_TABLE(TABLE=SIG_B,
+           NOM_PARA='SIYY',
+           TYPE_TEST='MAX',
+           REFERENCE='ANALYTIQUE',
+           VALE_REFE=303.,
+           VALE_CALC=301.01711802,
+           PRECISION=0.05,
+           )
+
+FIN()
