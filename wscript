@@ -61,6 +61,22 @@ def options(self):
     self.load('use_config', tooldir='waftools')
     self.load('gnu_dirs')
 
+    # change default value for '--prefix'
+    default_prefix = '../install/std'
+    # see waflib/Tools/gnu_dirs.py for the group name
+    group = self.get_option_group('Installation directories')
+    # replace path in description
+    new_descr = group.get_description().replace('/usr/local', default_prefix)
+    new_descr += ". Using 'waf_variant', 'std' will be automatically replaced "\
+                 "by 'variant'."
+    group.set_description(new_descr)
+    # reset --prefix option
+    option = group.get_option('--prefix')
+    if option:
+        group.remove_option('--prefix')
+    group.add_option('--prefix', dest='prefix', default=None,
+                     help='installation prefix [default: %r]' % default_prefix)
+
     group = self.add_option_group('Code_Aster options')
 
     self.load('parallel', tooldir='waftools')
@@ -93,6 +109,15 @@ def options(self):
 
 def configure(self):
     self.setenv('default')
+
+    # compute default prefix
+    if not self.env.PREFIX:
+        suffix = osp.basename(self.options.out)
+        if not suffix:
+            suffix = 'std'
+        default_prefix = '../install/%s' % suffix
+        self.env.PREFIX = osp.abspath(default_prefix)
+    self.msg('Setting prefix to', self.env.PREFIX)
 
     self.load('ext_aster', tooldir='waftools')
     if not self.options.use_config and os.environ.get('DEVTOOLS_COMPUTER_ID'):
