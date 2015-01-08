@@ -17,8 +17,7 @@
 #include "asterf_types.h"
 !
 interface 
-    subroutine elg_apelim(kptsc, lqr)
+    subroutine elg_apelim(kptsc)
         integer :: kptsc
-        aster_logical :: lqr
     end subroutine elg_apelim
 end interface 

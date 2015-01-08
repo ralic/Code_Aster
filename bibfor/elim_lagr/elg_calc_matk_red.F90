@@ -1,4 +1,4 @@
-subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
+subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1)
     implicit none
 ! aslint: disable=W0104
 ! person_in_charge: jacques.pellet at edf.fr
@@ -33,7 +33,6 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 #include "asterfort/utmess.h"
     character(len=*) :: mat1z, mat2z, solv1z
     character(len=1) :: bas1
-    aster_logical :: lqr
 !--------------------------------------------------------------
 ! but :
 !   calculer la matrice reduite mat2z correspondant a mat1z
@@ -43,7 +42,6 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 ! in/jxin  : solv1z : sd_solveur
 ! in/jxout : mat2z : sd_matr_asse "reduite" (sans lagranges)
 ! in       : bas1 : 'G'/'V' (pour la création de mat2z)
-! in       : lqr (l) : .true. on souhaite le calcul de la matrice r
 ! remarque : on cree egalement un nume_ddl (sous-terrain) pour
 !            mat2z.
 !---------------------------------------------------------------
@@ -88,13 +86,9 @@ subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1, lqr)
 !     1. CALCUL DANS PETSC DES MATRICES NECESSAIRES :
 !        Kproj, Tfinal, ...
 !     --------------------------------------------------
-    if (lqr) then
-        call apetsc('ELIM_LAGR+R', solve1, matas1, rbid, ' ',&
+    call apetsc('ELIM_LAGR', solve1, matas1, rbid, ' ',&
                     0, 0, iret)
-    else
-        call apetsc('ELIM_LAGR-R', solve1, matas1, rbid, ' ',&
-                    0, 0, iret)
-    endif
+
     ASSERT(iret.eq.0)
 !
 !

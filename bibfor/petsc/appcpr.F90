@@ -213,7 +213,8 @@ subroutine appcpr(kptsc)
             val = coordo( dimgeo_b*(numno-1)+icmp )
             ! On met à jour le vecteur PETSc des coordonnées
             nterm=1
-            call VecSetValues( coords, nterm, [to_petsc_int(igp_f - 1)], [val],  INSERT_VALUES, ierr ) 
+            call VecSetValues( coords, nterm, [to_petsc_int(igp_f - 1)], [val], &
+              INSERT_VALUES, ierr ) 
             ASSERT( ierr == 0 )
           enddo 
             call VecAssemblyBegin( coords, ierr ) 

@@ -14,17 +14,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+
 interface
-    subroutine elg_remplt(c, nonu, nworkt, t, nbnvco)
+   function check_nullbasis( vec_c, mat_z, tol )
 # ifdef _HAVE_PETSC
-        Mat, intent(in)    :: c
-        Mat, intent(inout) :: t
+       Vec, intent(in) :: vec_c
+       Mat, intent(in) :: mat_z
+       PetscScalar, optional, intent(in)  :: tol
 # else
-        integer, intent(in)    :: c
-        integer, intent(inout) :: t
+       integer, intent(in) :: vec_c
+       integer, intent(in) :: mat_z
+       real(kind=8), optional, intent(in) :: tol
 # endif
-        integer, intent(inout)        :: nbnvco
-        character(len=14), intent(in) :: nonu
-        integer, intent(in)           :: nworkt
-    end subroutine elg_remplt
+       aster_logical       :: check_nullbasis
+   end function check_nullbasis
 end interface

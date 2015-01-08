@@ -95,7 +95,6 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     character(len=4) :: etamat
     character(len=1) :: rouc
     real(kind=8), pointer :: travail(:) => null()
-    aster_logical :: lqr
 !
 !----------------------------------------------------------------
 !
@@ -266,7 +265,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     else if (action.eq.'DETR_MAT') then
 !        RIEN A VERIFIER
 !
-    else if (action.eq.'ELIM_LAGR+R'.or.action.eq.'ELIM_LAGR-R') then
+    else if (action.eq.'ELIM_LAGR') then
 !        -- remplissage du commun spetsc
         nomats(kptsc) = matas
         nosols(kptsc) = solveu
@@ -275,8 +274,7 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
         fictifs(kptsc) = -1
         new_ieqs(kptsc)%pi4 => null()
         old_ieqs(kptsc)%pi4 => null()
-        lqr=action .eq. 'ELIM_LAGR+R'
-        call elg_apelim(kptsc, lqr)
+        call elg_apelim(kptsc)
         iret=0
         goto 999
     else

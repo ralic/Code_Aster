@@ -15,12 +15,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 #include "asterf_types.h"
-!
+#include "asterf_petsc.h"
+
 interface
-    subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1)
-        character(len=*) :: mat1z
-        character(len=*) :: solv1z
-        character(len=*) :: mat2z
-        character(len=1) :: bas1
-    end subroutine elg_calc_matk_red
+   subroutine matset_to_identity( mat_a, idrow_c, idcol_c )
+# ifdef _HAVE_PETSC
+       Mat, intent(inout) :: mat_a
+       PetscInt, dimension(:), intent(in), target, optional   :: idrow_c
+       PetscInt, dimension(:), intent(in), target, optional   :: idcol_c
+# else
+       integer, intent(inout) :: mat_a
+       integer, dimension(:), intent(in), target, optional   :: idrow_c
+       integer, dimension(:), intent(in), target, optional   :: idcol_c
+# endif
+   end subroutine matset_to_identity
 end interface

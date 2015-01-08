@@ -25,7 +25,7 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
 !--
 !--  IN : NBNZ   : LONGUEUR DU VECTEUR CTEMP
 !--  IN : CTEMP  : VECTEUR CONTENANT LES TERMES DE LA COMBINAISON LIN.
-!--  IN : NOMMAT : NOM DU CONCEPT RECEVANT LA BASE DU NOYAU
+!--  INOUT : MAT : MATRICE RECEVANT LA BASE DU NOYAU
 !--
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -42,6 +42,7 @@ subroutine elg_nllspc(nbnz, ctemp, mat)
     prec = r8prem()
     unit=6
 !
+   mat(:,:) = 0.d0
 !
     i1=1
 100 continue

@@ -227,7 +227,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call jecroc(jexnom(nu2//'.NUME.LILI', '&MAILLA'))
 !
 !     -- pour éviter de se planter dans vpstor.f (ligne 160)
-!        qui fait un dismoi('nom_modele',...) indérirable :
+!        qui fait un dismoi('nom_modele',...) indésirable :
     call jenuno(jexnum(nu1//'.NUME.LILI', 2), ligrmo)
     call jecroc(jexnom(nu2//'.NUME.LILI', ligrmo))
 !

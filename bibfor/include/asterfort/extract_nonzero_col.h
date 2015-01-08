@@ -14,15 +14,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+#include "asterf_petsc.h"
 interface
-    subroutine elg_comptt(c, t, nworkt)
-# ifdef _HAVE_PETSC
-        Mat, intent(in) :: c
-        Mat, intent(out):: t
-# else
-        integer, intent(in) :: c
-        integer, intent(out):: t
-# endif
-        integer, intent(out) :: nworkt
-    end subroutine elg_comptt
+    subroutine extract_nonzero_col(a, acnz, icolnz_c)
+#ifdef _HAVE_PETSC
+      Mat, intent(in)  :: a
+      Mat, intent(out) :: acnz
+      PetscInt, dimension(:), pointer :: icolnz_c
+#else
+      integer, intent(in)  :: a
+      integer, intent(out)  :: acnz
+      integer, dimension(:), pointer :: icolnz_c
+#endif
+!
+    end subroutine
 end interface
+

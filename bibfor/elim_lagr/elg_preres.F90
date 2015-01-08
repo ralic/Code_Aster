@@ -41,7 +41,6 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
     integer ::   npvneg
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    aster_logical :: lqr
 !
 !
     call jemarq()
@@ -50,8 +49,7 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
 !   -- ON CREE LA MATRICE (REDUITE) MATAS2
     call gcncon('_', matas2)
     call elg_gest_common('NOTE', matas1, matas2, ' ')
-    lqr=.true.
-    call elg_calc_matk_red(matas1, solve1, matas2, 'V', lqr)
+    call elg_calc_matk_red(matas1, solve1, matas2, 'V')
 !
 !   -- ON DUPLIQUE SOLVE1 EN CHANGEANT ELIM_LAGR: OUI -> NON
     call gcncon('_', solve2)

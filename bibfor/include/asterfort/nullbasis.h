@@ -14,13 +14,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
+#include "asterf_petsc.h"
 !
 interface
-    subroutine elg_calc_matk_red(mat1z, solv1z, mat2z, bas1)
-        character(len=*) :: mat1z
-        character(len=*) :: solv1z
-        character(len=*) :: mat2z
-        character(len=1) :: bas1
-    end subroutine elg_calc_matk_red
+    subroutine nullbasis( mat_c, mat_z, nbnvco, nvco_c)
+# ifdef _HAVE_PETSC
+        Mat, intent(in)                      :: mat_c
+        Mat, intent(out)                     :: mat_z
+        PetscInt, intent(out)                 :: nbnvco
+        PetscInt, dimension(:), intent(inout) :: nvco_c
+# else
+        integer, intent(in)    :: mat_c
+        integer, intent(inout) :: mat_z
+        integer, intent(out)                 :: nbnvco
+        integer, dimension(:), intent(inout) :: nvco_c
+# endif
+    end subroutine nullbasis
 end interface
