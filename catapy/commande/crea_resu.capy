@@ -16,21 +16,22 @@
 # ======================================================================
 # person_in_charge: j-pierre.lefebvre at edf.fr
 def crea_resu_prod(TYPE_RESU,**args):
-  if TYPE_RESU == "EVOL_ELAS"    : return evol_elas
-  if TYPE_RESU == "EVOL_NOLI"    : return evol_noli
-  if TYPE_RESU == "EVOL_THER"    : return evol_ther
-  if TYPE_RESU == "MULT_ELAS"    : return mult_elas
-  if TYPE_RESU == "MODE_MECA"    : return mode_meca
-  if TYPE_RESU == "DYNA_TRANS"   : return dyna_trans
-  if TYPE_RESU == "DYNA_HARMO"   : return dyna_harmo
-  if TYPE_RESU == "FOURIER_ELAS" : return fourier_elas
-  if TYPE_RESU == "FOURIER_THER" : return fourier_ther
-  if TYPE_RESU == "EVOL_VARC"    : return evol_varc
-  if TYPE_RESU == "EVOL_CHAR"    : return evol_char
-  raise AsException("type de concept resultat non prevu")
+    if TYPE_RESU == "EVOL_ELAS"    : return evol_elas
+    if TYPE_RESU == "EVOL_NOLI"    : return evol_noli
+    if TYPE_RESU == "EVOL_THER"    : return evol_ther
+    if TYPE_RESU == "MULT_ELAS"    : return mult_elas
+    if TYPE_RESU == "MODE_MECA"    : return mode_meca
+    if TYPE_RESU == "MODE_MECA_C"  : return mode_meca_c
+    if TYPE_RESU == "DYNA_TRANS"   : return dyna_trans
+    if TYPE_RESU == "DYNA_HARMO"   : return dyna_harmo
+    if TYPE_RESU == "FOURIER_ELAS" : return fourier_elas
+    if TYPE_RESU == "FOURIER_THER" : return fourier_ther
+    if TYPE_RESU == "EVOL_VARC"    : return evol_varc
+    if TYPE_RESU == "EVOL_CHAR"    : return evol_char
+    raise AsException("type de concept resultat non prevu")
 
 CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
-            UIinfo={"groupes":("Resultats et champs",)},
+               UIinfo={"groupes":("Resultats et champs",)},
                fr=tr("Creer ou enrichir une structure de donnees resultat a partir de champs aux noeuds"),
 
          OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2",),
@@ -39,8 +40,11 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',
                             into=(
                                   # pour bloc AFFE                         
-                                    "MODE_MECA","MULT_ELAS","EVOL_ELAS","EVOL_NOLI","DYNA_HARMO","DYNA_TRANS",
-                                    "FOURIER_ELAS","EVOL_THER","EVOL_VARC","EVOL_CHAR","FOURIER_THER"
+                                    "MODE_MECA","MODE_MECA_C","MULT_ELAS",
+                                    "EVOL_ELAS","EVOL_NOLI",
+                                    "DYNA_HARMO","DYNA_TRANS",
+                                    "FOURIER_ELAS","FOURIER_THER",
+                                    "EVOL_THER","EVOL_VARC","EVOL_CHAR"
                                   # pour bloc ASSE 
                                   # "EVOL_THER "
                                   # pour bloc ECLA_PG
@@ -70,7 +74,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
            ),
 
-           b_mode       =BLOC(condition = "au_moins_un(TYPE_RESU, ('MODE_MECA', 'DYNA_HARMO', 'DYNA_TRANS'))",
+           b_mode       =BLOC(condition = "au_moins_un(TYPE_RESU, ('MODE_MECA', 'MODE_MECA_C', 'DYNA_HARMO', 'DYNA_TRANS'))",
              MATR_RIGI     =SIMP(statut='f',typ=matr_asse_depl_r,),
              MATR_MASS     =SIMP(statut='f',typ=matr_asse_depl_r,),
            ),          
@@ -140,9 +144,12 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
                 NUME_MODE       =SIMP(statut='f',typ='I'),
                 TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
              ),
-             b_mode       =BLOC(condition = "TYPE_RESU == 'MODE_MECA'",
+             b_mode       =BLOC(condition = "TYPE_RESU in ('MODE_MECA','MODE_MECA_C')",
                 NUME_MODE       =SIMP(statut='f',typ='I'),
                 FREQ            =SIMP(statut='f',typ='R'),
+             ),
+             b_mode_cmplx =BLOC(condition = "TYPE_RESU == 'MODE_MECA_C'",
+                AMOR_REDUIT     =SIMP(statut='f',typ='R'),
              ),
              b_dyna_harmo       =BLOC(condition = "TYPE_RESU == 'DYNA_HARMO'",
                 regles=(UN_PARMI('FREQ','LIST_FREQ',),),

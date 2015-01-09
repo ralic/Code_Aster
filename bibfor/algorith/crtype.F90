@@ -23,7 +23,7 @@ subroutine crtype()
 !           "EVOL_THER"    "EVOL_VARC"       "EVOL_ELAS"
 !           "MULT_ELAS"    "FOURIER_ELAS"    "FOURIER_THER"
 !           "DYNA_TRANS"   "DYNA_HARMO"      "EVOL_CHAR"
-!           "MODE_MECA"
+!           "MODE_MECA"    "MODE_MECA_C"
 !
 ! --- ------------------------------------------------------------------
 #include "asterf_types.h"
@@ -80,7 +80,7 @@ subroutine crtype()
 !
     aster_logical :: lncas, lfonc, lcopy
 !
-    real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq
+    real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq, amor_red
     complex(kind=8) :: cbid
 !
     character(len=4) :: typabs
@@ -122,7 +122,7 @@ subroutine crtype()
 !
     lncas = .false.
     if (typres .eq. 'MULT_ELAS' .or. typres .eq. 'FOURIER_ELAS' .or. typres .eq.&
-        'FOURIER_THER' .or. typres .eq. 'MODE_MECA') then
+        'FOURIER_THER' .or. typres .eq. 'MODE_MECA' .or. typres .eq. 'MODE_MECA_C') then
         lncas = .true.
     endif
 !
@@ -317,6 +317,20 @@ subroutine crtype()
                 call rsadpa(resu, 'E', 1, 'FREQ', numini,&
                             0, sjv=iad, styp=k8b)
                 zr(iad) = freq
+!               HERE ONE IS IN THE CASE 'MODE_MECA' or 'MODE_MECA_C'
+!               SO IF A FREQUENCY IS GIVEN, ONE CONSIDER THAT THE GIVEN CHAM_GD
+!               IS A MODAL SHAPE
+!               (IN OPPOSITION WITH A STATIC DEFORMED SHAPE)
+                call rsadpa(resu, 'E', 1, 'TYPE_DEFO', numini,&
+                            0, sjv=iad, styp=k8b)
+                zk16(iad) = 'PROPRE'
+            endif
+!
+            call getvr8('AFFE', 'AMOR_REDUIT', iocc=iocc, scal=amor_red, nbret=n0)
+            if (n0 .ne. 0) then
+                call rsadpa(resu, 'E', 1, 'AMOR_REDUIT', numini,&
+                            0, sjv=iad, styp=k8b)
+                zr(iad) = amor_red
             endif
             goto 80
         endif
