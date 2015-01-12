@@ -35,7 +35,7 @@ from Cata_Utils.t_fonction import (
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe as LISS
-from Utilitai.random_signal_utils import ACCE2SRO, DSP2SRO, SRO2DSP
+from Utilitai.random_signal_utils import ACCE2SRO, DSP2SRO, SRO2DSP, acce_filtre_CP
 
 from Utilitai.Utmess import UTMESS, ASSERT
 from Macro.defi_inte_spec_ops import tocomplex
@@ -250,24 +250,32 @@ class CalcFonction_CORR_ACCE(CalcFonctionOper):
     def _run(self):
         """CORR_ACCE"""
         f_in = self._lf[0]
+        kw = self.kw
         para = f_in.para.copy()
-        # suppression de la tendance de l accelero
-        fres = f_in.suppr_tend()
-        # calcul de la vitesse
-        fres = fres.trapeze(0.)
-        # calcul de la tendance de la vitesse : y = a1*x +a0
-        fres = fres.suppr_tend()
-        if self.kw['CORR_DEPL'] == 'OUI':
-            # suppression de la tendance deplacement
-            # calcul du deplacement : integration
+        assert kw['METHODE'] in ('FILTRAGE', 'POLYNOME')
+        if kw['METHODE'] == 'POLYNOME':
+            # suppression de la tendance de l accelero
+            fres = f_in.suppr_tend()
+            # calcul de la vitesse
             fres = fres.trapeze(0.)
-            # calcul de la tendance du déplacement : y = a1*x +a0
+            # calcul de la tendance de la vitesse : y = a1*x +a0
             fres = fres.suppr_tend()
-            # regeneration de la vitesse : derivation
-            fres = fres.derive()
-        # regeneration de l accelero : derivation
-        self.resu = fres.derive()
-        self.resu.para = para
+            if self.kw['CORR_DEPL'] == 'OUI':
+                # suppression de la tendance deplacement
+                # calcul du deplacement : integration
+                fres = fres.trapeze(0.)
+                # calcul de la tendance du déplacement : y = a1*x +a0
+                fres = fres.suppr_tend()
+                # regeneration de la vitesse : derivation
+                fres = fres.derive()
+            # regeneration de l accelero : derivation
+            self.resu = fres.derive()
+            self.resu.para = para           
+        elif kw['METHODE'] == 'FILTRAGE':
+            dt=f_in.vale_x[1]-f_in.vale_x[0]
+            acce_filtre = acce_filtre_CP(f_in.vale_y, dt, kw['FREQ_FILTRE'],)
+            self.resu = t_fonction(f_in.vale_x, acce_filtre, para)
+
 
 class CalcFonction_DERIVE(CalcFonctionOper):
     """Derivation"""

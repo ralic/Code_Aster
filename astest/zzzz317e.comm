@@ -73,6 +73,7 @@ ACCE1=GENE_ACCE_SEISME( INFO =2,
               SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT     =amor, LIST_FREQ=LIST_FR, NB_ITER=15,  
                                         ERRE_ZPA  =(0.75, 0.2),ERRE_MAX  =(0.05, 0.3),ERRE_RMS  =(0.2,), METHODE='NIGAM',  ),
                MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
+
 FONC1=RECU_FONCTION(  TABLE=ACCE1,                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = 1),
                         NOM_PARA_TABL='FONCTION',)

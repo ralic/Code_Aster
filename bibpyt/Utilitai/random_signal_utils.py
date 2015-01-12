@@ -173,7 +173,7 @@ def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
     im = csqrt(-1)
     acce_in = NP.fft.fft(NP.array(vale_acce))
     hw2 = ws ** 2 * 1. / ((wcp ** 2 - ws ** 2) + 2. * amoc * im * wcp * ws)
-    liste_pairs = zip(hw2, acce_in[:N2])
+    liste_pairs = zip(-hw2, acce_in[:N2])
     Yw = [a * b for a, b in liste_pairs]
     if is_even(N):  # nombre pair
         ni = 1
