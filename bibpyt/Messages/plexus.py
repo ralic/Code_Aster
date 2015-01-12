@@ -146,9 +146,9 @@ si vous enlevez cette fonction (FONC_MULT de EXCIT).
 """),
 
     30 : _(u"""
-La valeur du mot-clé %(k1)s du type de chargement %(k2)s n'est pas égale à la valeur imposée :
+La valeur du mot-clé %(k1)s du type de chargement %(k2)s n'est autorisée :
 Valeur trouvée : %(k3)s
-Valeur imposée : %(k4)s
+Valeur(s) autorisée(s) : %(k4)s
 """),
 
     31 : _(u"""
@@ -276,6 +276,16 @@ Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.
 Sa valeur est différente de la valeur imposée :
 Valeur imposée  : %(r1)f
 Valeur présente : %(r2)f 
+"""),
+
+    50 : _(u"""
+Le fichier correspondant à l'unité %(i1)d donnée dans UNITE_MED de LIRE_EUROPLEXUS
+n'est pas un fichier MED ou est absent. 
+"""),
+
+    51 : _(u"""
+Le fichier correspondant à l'unité donnée dans UNITE_MED de LIRE_EUROPLEXUS
+ne contient pas de champ %(k1)s. Il ne peut pas être traité. 
 """),
 
 }

@@ -1,0 +1,175 @@
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),
+      DEBUG=_F(HIST_ETAPE='OUI'));
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
+
+#
+
+MODELE=AFFE_MODELE(
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('COQUE',),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'Q4GG'),
+                     _F(  GROUP_MA = 'CABLE2',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE')
+                            ) )
+
+CARAELEM=AFFE_CARA_ELEM(
+                      MODELE=MODELE,
+                       COQUE=(_F(  GROUP_MA = 'COQUE',
+                               EPAIS = 1.,
+                               VECTEUR = (0.,0.,1.),
+                               ),
+                               ),
+                       BARRE=_F(  GROUP_MA = 'CABLE2',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 1.5E-2, ))
+                               )
+
+
+BETON = DEFI_MATERIAU(ELAS=_F(
+                    E = 3E10,
+                    NU = 0.,
+                    RHO = 2500,
+                   ),
+                    BPEL_BETON=_F()
+                  );
+
+
+ACIER = DEFI_MATERIAU(ELAS=_F(
+                    E = 2E11,
+                    NU = 0.,
+                    RHO = 500,
+                   ),
+                   BPEL_ACIER=_F(
+                              FROT_COURB = 0.,
+                              FROT_LINE = 0.)
+                  );
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = ('COQUE',),
+                              MATER = BETON),
+                       _F(  GROUP_MA = 'CABLE2',
+                              MATER = ACIER)
+                              )
+                              )
+
+
+CL=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                      DDL_IMPO=(
+                           _F(  GROUP_MA=('COTE1','COTE2'),
+                               DX = 0.,
+                               DY = 0.,
+                               DZ = 0.,
+                               DRX = 0.,
+                               DRY = 0.,
+                               DRZ = 0.),),
+                        INFO=1 )
+
+CABLEPR=DEFI_CABLE_BP(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELEM,
+                      GROUP_MA_BETON='COQUE',
+                      DEFI_CABLE=_F(
+                            GROUP_MA = 'CABLE2',
+                            GROUP_NO_ANCRAGE = ( 'ANCR1',  'ANCR2', ),),
+                            TYPE_ANCRAGE = ( 'PASSIF',   'ACTIF',  ),
+                            TENSION_INIT=2.37182E+08,
+                            RECUL_ANCRAGE=0. )
+
+#
+
+temps=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=20,),
+                                    ),);
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),)
+
+U_PREC=CALC_PRECONT(MODELE=MODELE,
+                    CHAM_MATER=CHMATER,
+                    CARA_ELEM=CARAELEM,
+                    EXCIT=(_F(CHARGE=CL,),),
+                    CABLE_BP=CABLEPR,
+                    CONVERGENCE=_F(
+                                        ITER_GLOB_MAXI=20,
+                                        RESI_GLOB_RELA = 5E-6),
+                    COMPORTEMENT=(_F( RELATION = 'ELAS',DEFORMATION = 'GROT_GDEP',
+                                    GROUP_MA='COQUE',),
+                               _F( RELATION = 'ELAS',DEFORMATION = 'PETIT_REAC',
+                                    GROUP_MA ='CABLE2',),),
+                    INCREMENT=_F(LIST_INST=temps,),
+                    NEWTON=_F(REAC_INCR=1,
+                                   MATRICE='TANGENTE',
+                                   REAC_ITER=1,
+                                   ),
+                    )
+
+U_EPX = LIRE_EUROPLEXUS(UNITE_MED = 19,
+                MODELE = MODELE,
+                CARA_ELEM = CARAELEM,
+                COMPORTEMENT=(_F( RELATION = 'ELAS',
+                                    GROUP_MA='COQUE',),
+                               _F( RELATION = 'ELAS',
+                                    GROUP_MA ='CABLE2',),
+                             ),
+        )
+
+
+IMPR_RESU(RESU=_F(RESULTAT=U_PREC,NOM_CHAM=('SIEF_ELGA'), GROUP_MA='MY10'  , INST = 1.0))
+IMPR_RESU(RESU=_F(RESULTAT=U_EPX,NOM_CHAM=('SIEF_ELGA'), GROUP_MA='MY10'  , INST = 0.2))
+
+IMPR_RESU(RESU=_F(RESULTAT=U_PREC,NOM_CHAM=('SIEF_ELGA'), GROUP_MA='MCAY10'  , INST = 1.0))
+IMPR_RESU(RESU=_F(RESULTAT=U_EPX,NOM_CHAM=('SIEF_ELGA'), GROUP_MA='MCAY10'  , INST = 0.2))
+
+TEST_RESU(RESU=_F(INST = 1.,
+                  RESULTAT=U_PREC,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M305',
+                  NOM_CMP='NYY',
+                  POINT = 1,
+                  VALE_CALC=-119202846.463,
+                  ),
+          )
+          
+TEST_RESU(RESU=_F(INST = 0.2,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M305',
+                  NOM_CMP='NYY',
+                  POINT = 1,
+                  VALE_CALC=-118817864.507,
+                  VALE_REFE=-119202846.463,
+                  REFERENCE = 'AUTRE_ASTER',
+                  PRECISION = 4E-3,
+                  ),
+          )
+
+TEST_RESU(RESU=_F(INST = 1.,
+                  RESULTAT=U_PREC,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M150',
+                  NOM_CMP='N',
+                  POINT = 1,
+                  VALE_CALC=237528990.0,
+                  ),
+          )
+          
+TEST_RESU(RESU=_F(INST = 0.2,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M150',
+                  NOM_CMP='N',
+                  POINT = 1,
+                  VALE_CALC=237179395.086,
+                  VALE_REFE=237528990.0,
+                  REFERENCE = 'AUTRE_ASTER',
+                  PRECISION = 2E-3,
+                  ),
+          )
+
+
+FIN()

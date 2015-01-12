@@ -25,60 +25,6 @@ from Calc_epx.calc_epx_utils import recupere_structure, tolist, get_group_ma
 from Utilitai.Utmess import UTMESS
 #-----------------------------------------------------------------------
 
-
-def ecri_rela_cine(cabl_precont, MAILLAGE):
-    """
-    Ecriture des relations cinematiques contenues dans le concept cabl_precont
-    """
-    from Calc_epx.calc_epx_cata import cata_compo
-
-    l_cara = []
-    dic_ddl_impo = cata_compo['DEPL']
-
-    nomnoe = aster.getvectjev(MAILLAGE.nom.ljust(8) + ".NOMNOE")
-    dic_nomnoe = {}
-    for i, noeu in enumerate(nomnoe):
-        dic_nomnoe[noeu] = i + 1
-
-    nom_cabl_pr = cabl_precont.nom.ljust(8)
-    nb_rela = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLNR')[0]
-
-    typ_coef = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLTC')[0]
-    if typ_coef[:4] != 'REEL':
-        raise Exception("Coefficients non reels")
-
-    vec_sm = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLBE')
-    vec_nb_coef = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLNT')
-    pointeur = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLPO')
-    vec_coef = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLCO')
-    vec_nomnoe = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLNO')
-    vec_nomddl = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLDD')
-
-    for i_rela in range(nb_rela):
-        # le second membre doit etre nul
-        if vec_sm[i_rela] != 0.E0:
-            raise Exception("Second memnbre non nul")
-        # nb de coefficient de la relation
-        nb_coef = vec_nb_coef[i_rela]
-        nb_coef_temp = nb_coef
-        # position du dernier terme de la realtion
-        adr = pointeur[i_rela]
-        for i_coef in range(nb_coef):
-            if vec_coef[adr - nb_coef + i_coef] == 0.E0:
-                nb_coef_temp -= 1
-        l_cara.append('1 %s' % nb_coef_temp)
-        for i_coef in range(nb_coef):
-            coeff = vec_coef[adr - nb_coef + i_coef]
-            if coeff != 0.E0:
-                nomnoe_coef = vec_nomnoe[adr - nb_coef + i_coef]
-                nomddl_coef = vec_nomddl[adr - nb_coef + i_coef]
-                l_cara.append(' ' * 4 + str(coeff) + ' '
-                              + str(dic_ddl_impo[nomddl_coef.rstrip()])
-                              + ' ' + str(dic_nomnoe[nomnoe_coef]) + ' 0')
-    return nb_rela, l_cara
-#-----------------------------------------------------------------------
-
-
 def export_charge(epx, EXCIT, MAILLAGE):
     """
         Analyse et traduction pour EPX des données de chargement
@@ -118,7 +64,7 @@ def export_charge(epx, EXCIT, MAILLAGE):
                         UTMESS('F', 'PLEXUS_7', valk=char)
                 elif type_char[:4] == 'CONS':
                     raise Exception("""Type de charge pas encore testé
-                            des aménagements non certainement à faire.
+                            des aménagements sont certainement à faire.
                             Cette exeption peut être supprimée suite à cela.
                                     """)
                     if fonction:
@@ -196,9 +142,9 @@ def export_charge(epx, EXCIT, MAILLAGE):
                 for cle in ch.keys():
                     if cle in mot_cle_verif:
                         ind = mot_cle_verif.index(cle)
-                        if ch[cle] != vale_verif[ind]:
+                        if ch[cle] not in  tolist(vale_verif[ind]):
                             UTMESS('F', 'PLEXUS_30', valk=(cle, char, ch[cle],
-                                                           vale_verif[ind]))
+                                                ' '.join(tolist(vale_verif[ind]))))
                         continue
                     if cle in entite:
                         l_group = get_group_ma(ch, cle)
@@ -206,10 +152,16 @@ def export_charge(epx, EXCIT, MAILLAGE):
                     if not cle in cle_aster:
                         UTMESS('F', 'PLEXUS_27', valk=(cle, char))
                     if char == 'RELA_CINE_BP':
+                        if cle != cle_aster[0]:
+                            raise Exception('Erreur avec RELA_CINE_BP')
                         cable_bp = ch[cle]
-                        info_epx, l_cara = ecri_rela_cine(cable_bp, MAILLAGE,)
-                        l_vale = [''] * len(l_cara)
-                        vale_tmp = ''
+                        if ch.has_key('TYPE_EPX'):
+                            type_epx = ch['TYPE_EPX']
+                        else:
+                            type_epx = 'ADHE'
+#                        info_epx, l_cara = ecri_rela_cine(cable_bp, MAILLAGE,)
+#                        l_vale = [''] * len(l_cara)
+                        bloc_donnees = ecri_rela_cine(cable_bp, mot_cle_epx, type_epx)
                     else:
                         vale_tmp = ch[cle]
                     if nb_cle > nb_cle_max:
@@ -232,9 +184,10 @@ def export_charge(epx, EXCIT, MAILLAGE):
                 if directive == 'LINK' and l_fonc:
                     l_cara.append('FONC')
                     l_vale.append(ifonc + 1)
-                bloc_donnees = BLOC_DONNEES(mot_cle_epx, l_group=l_group,
-                                            cle=info_epx, val_cle=vale,
-                                            cara=l_cara, vale=l_vale)
+                if char != 'RELA_CINE_BP':
+                    bloc_donnees = BLOC_DONNEES(mot_cle_epx, l_group=l_group,
+                                                cle=info_epx, val_cle=vale,
+                                                cara=l_cara, vale=l_vale)
                 objet.add_bloc(bloc_donnees)
         if l_char_fact:
             # ajout de la fonction
@@ -275,3 +228,76 @@ def recu_val(ch, cata, char, key, mot_cle_epx):
         else:
             val = False
     return val
+#-----------------------------------------------------------------------
+def ecri_rela_cine(cabl_precont, cle_epx, type_epx):
+    """
+    Recherche des mots-clés de DEFI_CABLE_BP pour traduction en EPX (LCAB)
+    """
+    from Calc_epx.calc_epx_struc import BLOC_DONNEES, BLOC_DONNEES_SUP
+    
+    defi_cable_bp = recupere_structure(cabl_precont)
+    # BETON COQUE
+    gr_ma_bet = defi_cable_bp['GROUP_MA_BETON']
+    bloc_betc = BLOC_DONNEES('BETC', l_group=gr_ma_bet)
+    # CABLES
+    defi_cable = defi_cable_bp['DEFI_CABLE']
+    gr_ma_cab =[]
+    for insta in defi_cable:
+        gr_ma_cab.append(insta['GROUP_MA'])
+    bloc_cabl = BLOC_DONNEES('CABL', l_group=gr_ma_cab)
+    
+    bloc_lcab = BLOC_DONNEES_SUP(cle_epx,[bloc_betc, bloc_cabl], cle=type_epx)
+    
+    return bloc_lcab
+#-----------------------------------------------------------------------
+def ecri_rela_cine_old(cabl_precont, MAILLAGE):
+    """
+    Ecriture des relations cinematiques contenues dans le concept cabl_precont
+    """
+    from Calc_epx.calc_epx_cata import cata_compo
+
+    l_cara = []
+    dic_ddl_impo = cata_compo['DEPL']
+
+    nomnoe = aster.getvectjev(MAILLAGE.nom.ljust(8) + ".NOMNOE")
+    dic_nomnoe = {}
+    for i, noeu in enumerate(nomnoe):
+        dic_nomnoe[noeu] = i + 1
+
+    nom_cabl_pr = cabl_precont.nom.ljust(8)
+    nb_rela = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLNR')[0]
+
+    typ_coef = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLTC')[0]
+    if typ_coef[:4] != 'REEL':
+        raise Exception("Coefficients non reels")
+
+    vec_sm = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLBE')
+    vec_nb_coef = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLNT')
+    pointeur = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLPO')
+    vec_coef = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLCO')
+    vec_nomnoe = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLNO')
+    vec_nomddl = aster.getvectjev(nom_cabl_pr + '.LIRELA    .RLDD')
+
+    for i_rela in range(nb_rela):
+         #le second membre doit etre nul
+        if vec_sm[i_rela] != 0.E0:
+            raise Exception("Second memnbre non nul")
+         #nb de coefficient de la relation
+        nb_coef = vec_nb_coef[i_rela]
+        nb_coef_temp = nb_coef
+         #position du dernier terme de la realtion
+        adr = pointeur[i_rela]
+        for i_coef in range(nb_coef):
+            if vec_coef[adr - nb_coef + i_coef] == 0.E0:
+                nb_coef_temp -= 1
+        l_cara.append('1 %s' % nb_coef_temp)
+        for i_coef in range(nb_coef):
+            coeff = vec_coef[adr - nb_coef + i_coef]
+            if coeff != 0.E0:
+                nomnoe_coef = vec_nomnoe[adr - nb_coef + i_coef]
+                nomddl_coef = vec_nomddl[adr - nb_coef + i_coef]
+                l_cara.append(' ' * 4 + str(coeff) + ' '
+                              + str(dic_ddl_impo[nomddl_coef.rstrip()])
+                              + ' ' + str(dic_nomnoe[nomnoe_coef]) + ' 0')
+    return nb_rela, l_cara
+#-----------------------------------------------------------------------

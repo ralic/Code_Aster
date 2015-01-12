@@ -17,7 +17,8 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),
+              DEBUG=_F(HIST_ETAPE='OUI'));
 
 MPa = 1000000.0;
 
@@ -37,11 +38,6 @@ MODELE=AFFE_MODELE(
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'BARRE')
                             ) )
-# DKTG permet d'utiliser les elements Q4GS d'EUROPLEXUS
-
-
-
-
 
 #
 EP=6.0E-2
@@ -115,7 +111,8 @@ LIAISON=AFFE_CHAR_MECA(
                                ),
                 RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
                                SIGM_BPEL = 'NON',
-                               RELA_CINE = 'OUI'),
+                               RELA_CINE = 'OUI',
+                               TYPE_EPX = 'ADHE'),
                         INFO=1 )
 
 

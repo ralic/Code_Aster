@@ -26,7 +26,7 @@
 import aster
 from Accas import _F
 import os
-from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
+from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
 from Calc_epx.calc_epx_cata import cata_modelisa, cata_compor
 
 
@@ -65,6 +65,8 @@ class LireEPX():
         """
             Initialisation
         """
+        import med_aster
+
         self.UNITE_MED = UNITE_MED
         self.MODELE = MODELE
         self.CARA_ELEM = CARA_ELEM
@@ -73,6 +75,9 @@ class LireEPX():
         self.EXCIT = EXCIT
         self.INFO = INFO
         self.fichier_med = 'fort.%s' % UNITE_MED
+        dic_champ_med = med_aster.get_nom_champ_med(self.fichier_med)
+        if type(dic_champ_med) is not dict:
+            UTMESS('F','PLEXUS_50', vali = UNITE_MED)
 
         # Récuperation des concepts de la base
         macro = CONTEXT.get_current_step()
@@ -261,6 +266,8 @@ le mot-clé %s""" % mc_cara)
 
         # RECUPERATION DES DEPL, VITE et ACCE DANS LE FICHIER MED
         dic_champ_med = med_aster.get_nom_champ_med(self.fichier_med)
+        if not dic_champ_med.has_key('DEPL_001'):
+            UTMESS('F', 'PLEXUS_51', valk = 'DEPL_001')
         nb_ddl = len(dic_champ_med['DEPL_001'])
         if nb_ddl == 3:
             format_med = format_med_3ddl

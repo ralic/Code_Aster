@@ -17,7 +17,8 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),
+      DEBUG=_F(HIST_ETAPE='OUI'));
 
 MPa = 1000000.0;
 

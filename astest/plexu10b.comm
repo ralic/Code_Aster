@@ -1,0 +1,254 @@
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),
+      DEBUG=_F(HIST_ETAPE='OUI'));
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
+
+#
+
+MODELE=AFFE_MODELE(
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('COQUE',),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'Q4GG'),
+                     _F(  GROUP_MA = 'CABLE2',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE')
+                            ) )
+
+CARAELEM=AFFE_CARA_ELEM(
+                      MODELE=MODELE,
+                       COQUE=(_F(  GROUP_MA = 'COQUE',
+                               EPAIS = 1.,
+                               VECTEUR = (0.,0.,1.),
+                               ),
+                               ),
+                       BARRE=_F(  GROUP_MA = 'CABLE2',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 1.5E-2, ))
+                               )
+
+
+BETON = DEFI_MATERIAU(ELAS=_F(
+                    E = 3E10,
+                    NU = 0.,
+                    RHO = 2500,
+                   ),
+                    BPEL_BETON=_F()
+                  );
+
+
+ACIER = DEFI_MATERIAU(ELAS=_F(
+                    E = 2E11,
+                    NU = 0.,
+                    RHO = 500,
+                   ),
+                   BPEL_ACIER=_F(
+                              FROT_COURB = 0.,
+                              FROT_LINE = 0.)
+                  );
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = ('COQUE',),
+                              MATER = BETON),
+                       _F(  GROUP_MA = 'CABLE2',
+                              MATER = ACIER)
+                              )
+                              )
+
+
+CL=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                      DDL_IMPO=(
+                           _F(  GROUP_MA=('COTE1','COTE2'),
+                               DX = 0.,
+                               DY = 0.,
+                               DZ = 0.,
+                               DRX = 0.,
+                               DRY = 0.,
+                               DRZ = 0.),
+                               ),
+                        INFO=1 )
+
+CABLEPR=DEFI_CABLE_BP(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELEM,
+                      GROUP_MA_BETON='COQUE',
+                      DEFI_CABLE=_F(
+                            GROUP_MA = 'CABLE2',
+                            GROUP_NO_ANCRAGE = ( 'ANCR1',  'ANCR2', ),),
+                            TYPE_ANCRAGE = ( 'ACTIF',   'ACTIF',  ),
+                            TENSION_INIT=2.0E+5,
+                            RECUL_ANCRAGE=0. )
+
+#
+
+
+temps=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=5,),
+                                    ),);
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = temps,),)
+
+U_PREC=CALC_PRECONT(MODELE=MODELE,
+                    CHAM_MATER=CHMATER,
+                    CARA_ELEM=CARAELEM,
+                    EXCIT=(_F(CHARGE=CL,),),
+                    CABLE_BP=CABLEPR,
+                    COMPORTEMENT=(_F( RELATION = 'ELAS',DEFORMATION = 'GROT_GDEP',
+                                    GROUP_MA='COQUE',),
+                               _F( RELATION = 'ELAS',DEFORMATION = 'PETIT_REAC',
+                                    GROUP_MA ='CABLE2',),),
+                    INCREMENT=_F(LIST_INST=temps,),
+                    )
+
+
+
+
+
+
+
+GLIS=AFFE_CHAR_MECA(
+                      MODELE=MODELE,
+                      RELA_CINE_BP=_F(  CABLE_BP = CABLEPR,
+                               SIGM_BPEL = 'NON',
+                               RELA_CINE = 'OUI',
+                               TYPE_EPX = 'GLIS'),
+                      INFO=1 )
+
+
+
+TAB1 = CO('TAB1')
+
+tfin = 1e-2
+
+U_EPX = CALC_EUROPLEXUS(
+   ETAT_INIT=_F(RESULTAT=U_PREC,CONTRAINTE='OUI',EQUILIBRE='NON'),
+   COMPORTEMENT =(_F(
+                  RELATION = 'ELAS',
+                  GROUP_MA = ('CABLE2','COQUE'),
+                 ),
+              ),
+   EXCIT=(
+          _F(CHARGE=CL,),
+           _F(CHARGE=GLIS,),
+          ),
+   LANCEMENT ='OUI',
+   CALCUL = _F(TYPE_DISCRETISATION  ='UTIL',
+               INST_INIT = 0,
+               INST_FIN  = tfin,
+               NMAX      = 2000000,
+               PASFIX    = 2e-5,
+               ),
+   #OBSERVATION = _F(PAS_NBRE=1,
+                    #TOUT_GROUP_NO = 'OUI',
+                    #TOUT_GROUP_MA = 'OUI',
+                    #NOM_CHAM = ('DEPL','VITE','ACCE'),
+                    #),
+   ARCHIVAGE   = _F(PAS_INST=tfin,),
+   PAS_NBRE_COURBE=100,
+   TABLE_COURBE    = TAB1,
+   COURBE = (
+           _F(
+           NOM_CHAM = 'DEPL',
+           NOM_CMP  = 'DX',
+           GROUP_NO = 'NY10',
+           ),
+           _F(
+           NOM_CHAM = 'DEPL',
+           NOM_CMP  = 'DY',
+           GROUP_NO = 'NY10',
+           ),
+   ),
+   );
+
+IMPR_TABLE(TABLE=TAB1)
+
+
+#IMPR_RESU(RESU=_F(RESULTAT=U_EPX,NOM_CHAM=('SIEF_ELGA'), GROUP_MA='CABLE2',),)
+
+
+TEST_RESU(RESU=(_F(INST = 1.0,
+                  RESULTAT=U_PREC,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='NY10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-2.40357805409E-06,
+                  ),
+                _F(INST = 1.0,
+                  RESULTAT=U_PREC,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='NY10',
+                  NOM_CMP='DY',
+                  VALE_CALC=-6.40552798575E-05,
+                  ),
+                _F(INST = 1.0,
+                  RESULTAT=U_PREC,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M305',
+                  POINT = 1,
+                  NOM_CMP='NYY',
+                  VALE_CALC=-100399.049696,
+                  ),
+                _F(INST = 1.0,
+                  RESULTAT=U_PREC,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M150',
+                  POINT = 1,
+                  NOM_CMP='N',
+                  VALE_CALC=200000.163668,
+                  ),
+                )
+          )
+
+TEST_RESU(RESU=(_F(INST = tfin,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='NY10',
+                  NOM_CMP='DX',
+                  VALE_CALC=-2.40351243045E-06,
+                  VALE_REFE=-2.40357805409E-06,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION = 3E-5,
+                  ),
+                _F(INST = tfin,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='NY10',
+                  NOM_CMP='DY',
+                  VALE_CALC=-6.40552798575E-05,
+                  VALE_REFE=-6.40552798575E-05,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION = 1E-6,
+                  ),
+                _F(INST = tfin,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M305',
+                  POINT = 1,
+                  NOM_CMP='NYY',
+                  VALE_CALC=-100399.049696,
+                  VALE_REFE=-100399.049696,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION = 1E-6,
+                  ),
+                _F(INST = tfin,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M150',
+                  POINT = 1,
+                  NOM_CMP='N',
+                  VALE_CALC=199999.944309,
+                  VALE_REFE=200000.163668,
+                  REFERENCE = 'ANALYTIQUE',
+                  PRECISION = 1.2E-6,
+                  ),
+                )
+          )
+
+
+
+
+
+FIN()

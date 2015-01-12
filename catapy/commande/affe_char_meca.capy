@@ -762,6 +762,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
            CABLE_BP        =SIMP(statut='o',typ=cabl_precont ),
            SIGM_BPEL       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            RELA_CINE       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           TYPE_EPX        =SIMP(statut='f',typ='TXM',defaut="ADHE",into=("ADHE","GLIS","FROT") ),
            DIST_MIN        =SIMP(statut='f',typ='R'),
          ),
 

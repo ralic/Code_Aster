@@ -612,11 +612,11 @@ cata_liais = {
                       },
     },
     'RELA_CINE_BP': {
-        'MOT_CLE_EPX': ['RELA'],
+        'MOT_CLE_EPX': ['LCAB'],
         'ASTER': ['CABLE_BP'],
         'EPX': None,
-        'MOT_CLE_VERIF': ['SIGM_BPEL', 'RELA_CINE'],
-        'VALE_VERIF': ['NON', 'OUI'],
+        'MOT_CLE_VERIF': ['SIGM_BPEL', 'RELA_CINE', 'TYPE_EPX'],
+        'VALE_VERIF': ['NON', 'OUI', ['ADHE', 'GLIS']],
         'FONC_MULT': False,
     },
 }
