@@ -20,13 +20,13 @@ cata_msg={
 
 1: _(u"""
 Dans le cas TYPE_RESU='MODE',
-la liste de fréquences donnee sous le mot-cle FREQ ou LIST_FREQ
+la liste de fréquences donnée sous le mot-clé FREQ ou LIST_FREQ
 doit contenir exactement 2 valeurs.
 """),
 
 2: _(u"""
 Dans le cas TYPE_RESU='HARM',
-la liste de frequences donnee sous le mot-cle FREQ ou LIST_FREQ
+la liste de fréquences donnée sous le mot-clé FREQ ou LIST_FREQ
 doit contenir au moins 2 valeurs.
 """),
 
