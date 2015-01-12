@@ -16,6 +16,9 @@ subroutine apsolu(kptsc, lmd, rsolu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=C1513
+! cf. issue23375
+!
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
 #include "asterf_types.h"
