@@ -170,11 +170,12 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 !     ON RECUPERE LE NOM DE LA MATRICE DE RAIDEUR AFIN DE
 !     DETERMINER LE NOM DU MODELE, DU MATERIAU ET DES
 !     CARACTERISTIQUES ELEMENTAIRES
+    chmat='        '
     if (lstock) then
         if (typcon(1:9) .eq. 'MODE_MECA' .or. typcon(1:9) .eq. 'MODE_ACOU' .or.&
             typcon(1:10) .eq. 'MODE_FLAMB' .or. typcon(1:9) .eq. 'MODE_STAB') then
             call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
-            call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat)
+            call dismoi('CHAM_MATER', raide, 'MATR_ASSE', repk=chmat, arret='C')
             call dismoi('CARA_ELEM', raide, 'MATR_ASSE', repk=carael)
         else if (typcon(1:9).eq.'MODE_GENE') then
             call jeveuo(raide(1:19)//'.LIME', 'L', jmodg)

@@ -1,0 +1,168 @@
+# TITRE MODES PROPRES D'UNE POUTRE VISCOELASTIQUE ENCASTREE - LIBRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),);
+
+
+# LECTURE DU MAILLAGE AU FORMAT MED
+
+MAIL=LIRE_MAILLAGE(UNITE=20,
+                   FORMAT='MED',);
+
+
+# DEFINITION DE LA MODELISATION POUTRE
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA='SUPPORT',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT'),
+                         _F(GROUP_MA='VISCO',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D_SI'),
+                         ),);
+
+CARAPLAQ=AFFE_CARA_ELEM(MODELE=MODELE,
+                        COQUE=_F(GROUP_MA='SUPPORT',
+                                 EPAIS=1.E-3,
+                                 EXCENTREMENT=0.5E-3,
+                                 INER_ROTA='OUI'),
+                        );
+
+
+# DEFINITION DES CONDITIONS AUX LIMITES (ENCASTREMENT)
+
+CONDLIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_MA='ENCAS',
+                                   LIAISON='ENCASTRE',),);
+
+
+######################################
+# UTILISATION DE LA MACRO_DYNA_VISCO #
+######################################
+
+# DEFINITION DE LA DEPENDANCE EN FREQUENCE DES PROPRIETES DES MATERIAUX VISCOELASTIQUES
+
+# fréquences pour lesquelles les paramètres du matériaux sont donnés
+list_f=DEFI_LIST_REEL(VALE=(1,10,50,100,500,1000,1500,),);
+
+# valeurs (de la partie réelle) du module de Young aux fréquences de list_f
+list_E=DEFI_LIST_REEL(VALE=(23.2E6,58.E6,145.E6,203.E6,348.E6,435.E6,464.E6,),);
+
+# valeurs du facteur de perte aux fréquences de list_f
+list_eta=DEFI_LIST_REEL(VALE=(1.1,0.85,0.7,0.6,0.4,0.35,0.34,),);                            
+
+fonc_E=DEFI_FONCTION(NOM_PARA='FREQ',
+                     VALE_PARA=list_f,
+                     VALE_FONC=list_E,
+                     INTERPOL=('LIN','LIN',),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='CONSTANT',);
+
+fonc_eta=DEFI_FONCTION(NOM_PARA='FREQ',
+                       VALE_PARA=list_f,
+                       VALE_FONC=list_eta,
+                       INTERPOL=('LIN','LIN',),
+                       PROL_DROITE='LINEAIRE',
+                       PROL_GAUCHE='CONSTANT',);
+
+
+# CALCUL DES MODES PROPRES (COMPLEXES)
+
+modes=DYNA_VISCO(MODELE=MODELE,
+                 CARA_ELEM=CARAPLAQ,
+                 # matériaux à propriétés constantes :
+                 MATER_ELAS=_F(E=2.1e11,
+                               NU=0.3,
+                               RHO=7800.,
+                               AMOR_HYST=0.001,
+                               GROUP_MA='SUPPORT'),
+                 # matériaux à propriétés dépendantes de la fréquence :
+                 MATER_ELAS_FO =_F(E=fonc_E,
+                                   AMOR_HYST=fonc_eta,
+                                   RHO=1200.,
+                                   NU=0.45,
+                                   GROUP_MA='VISCO'),
+                 # bande fréquentielle de recherche
+                 EXCIT=_F(CHARGE=CONDLIM),
+                 FREQ=(1.,1500.),
+                 RESI_RELA=1.e-4,
+                 TYPE_RESU='MODE',
+                 TYPE_MODE='COMPLEXE',
+                 );
+
+
+IMPR_RESU(FORMAT='RESULTAT',
+          UNITE=8,
+          RESU=_F(RESULTAT=modes,
+                  GROUP_NO='A'),);
+
+
+# CALCUL DE LA SOLUTION "ITERATIVE - ANALYTIQUE"
+INCLUDE(UNITE=60)
+
+
+# TESTS SUR LES MODES DE FLEXION DANS L'EPAISSEUR DE LA POUTRE
+# (FREQUENCES PROPRES ET AMORTISSEMENTS MODAUX)
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=modes,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE_CALC=33.2898984952,
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=eigenfreq[0],
+                   PRECISION=0.01),
+                _F(RESULTAT=modes,
+                   NUME_ORDRE=1,
+                   PARA='AMOR_REDUIT',
+                   VALE_CALC=0.0130105641529,
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=eigendamp[0],
+                   PRECISION=0.12),
+                _F(RESULTAT=modes,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE_CALC=213.092667335,
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=eigenfreq[1],
+                   PRECISION=0.01),
+                _F(RESULTAT=modes,
+                   NUME_ORDRE=2,
+                   PARA='AMOR_REDUIT',
+                   VALE_CALC=0.0196218203227,
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=eigendamp[1],
+                   PRECISION=0.10),
+                _F(RESULTAT=modes,
+                   NUME_ORDRE=4,
+                   PARA='FREQ',
+                   VALE_CALC=608.781825719,
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=eigenfreq[2],
+                   PRECISION=0.02),
+                _F(RESULTAT=modes,
+                   NUME_ORDRE=4,
+                   PARA='AMOR_REDUIT',
+                   VALE_CALC= 0.0201983350735,
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=eigendamp[2],
+                   PRECISION=0.10),
+                ),);
+
+FIN();
