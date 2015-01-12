@@ -127,7 +127,6 @@ subroutine te0131(option, nomte)
             ASSERT(ier.eq.0)
 !
             do 103 i = 1, nno
-!CDIR$ IVDEP
                 do 104 j = 1, i
                     ij = (i-1)*i/2 + j
 !
@@ -149,7 +148,6 @@ subroutine te0131(option, nomte)
                 tpg = tpg + zr(itemp+i-1) * zr(ivf+ldec+i-1)
 105          continue
             do 106 i = 1, nno
-!CDIR$ IVDEP
                 do 107 j = 1, i
                     ij = (i-1)*i/2 + j
 !

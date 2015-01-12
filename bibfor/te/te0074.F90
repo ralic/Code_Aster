@@ -87,7 +87,6 @@ subroutine te0074(option, nomte)
  40             continue
                 poids = poids*r
             endif
-!CDIR$ IVDEP
             do 50 i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
                 vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)*zr( iflu)

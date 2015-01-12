@@ -77,7 +77,6 @@ subroutine te0264(option, nomte)
         call fointe('FM', zk8(isour), 3, nompar, valpar,&
                     soun, icode)
         sour = theta*sounp1 + (1.0d0-theta)*soun
-!CDIR$ IVDEP
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids * zr(ivf+k+i-1) * sour
         end do

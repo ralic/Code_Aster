@@ -153,7 +153,6 @@ subroutine ssmau2(nomu, option)
                 call jeveuo(jexnum(matas//'.UALF', iblo), 'L', jualf)
             endif
             iblold = iblo
-!CDIR$ IVDEP
             do i = max(1, j+1-schc), j
                 ii = (j-1)*j/2 + i
                 zr(iampee-1+ii) = zr(jualf-1+scdi+i-j)
@@ -188,7 +187,6 @@ subroutine ssmau2(nomu, option)
                     iaphie = iaphi0 + (iiblph-1)*nddli
                     ii = (j-1)*j/2 + i
                     kk = 0
-!CDIR$ IVDEP
                     do k = nddli + j + 1 - schc, nddli
                         kk = kk + 1
                         zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
@@ -220,7 +218,6 @@ subroutine ssmau2(nomu, option)
                     iaphie = iaphi0 + (iiblph-1)*nddli
                     ii = (i* (i-1)/2) + j
                     kk = 0
-!CDIR$ IVDEP
                     do k = nddli + j + 1 - schc, nddli
                         kk = kk + 1
                         zr(iampee-1+ii) = zr(iampee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&
@@ -263,14 +260,12 @@ subroutine ssmau2(nomu, option)
                     iblold = iblo
 !
                     kk = 0
-!CDIR$ IVDEP
                     do k = j + 1 - schc, j
                         kk = kk + 1
                         zr(iatmie-1+j) = zr(iatmie-1+j) - zr(iaphie-1+ k)*zr(jualf-1+scdi-schc+kk&
                                          &)
                     end do
                     kk = 0
-!CDIR$ IVDEP
                     do k = j + 1 - schc, j - 1
                         kk = kk + 1
                         zr(iatmie-1+k) = zr(iatmie-1+k) - zr(iaphie-1+ j)*zr(jualf-1+scdi-schc+kk&
@@ -304,7 +299,6 @@ subroutine ssmau2(nomu, option)
                         if (j .gt. i) goto 210
                         iatmie = iatmi0 + (jjblph-1)*nddli
                         ii = (i-1)*i/2 + j
-!CDIR$ IVDEP
                         do k = 1, nddli
                             zr(iampee-1+ii) = zr(iampee-1+ii) - zr(iaphie-1+k)*zr(iatmie-1+k)
                         end do

@@ -101,7 +101,6 @@ subroutine te0277(option, nomte)
         call fointe('A', zk8(ihechp), 3, nompar, valpar,&
                     hechp, icode)
         ASSERT(icode.eq.0)
-!CDIR$ IVDEP
         do 20 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
             zr(iveres+i-1) = zr(iveres+i-1) - poids*zr(li)*hechp* theta*tpg

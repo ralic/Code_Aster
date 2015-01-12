@@ -107,7 +107,6 @@ subroutine te0388(option, nomte)
         jac = sqrt(nx*nx + ny*ny + nz*nz)
 !
         do 103 i = 1, nno
-!CDIR$ IVDEP
             do 104 j = 1, i
                 ij = (i-1)*i/2 + j
                 mat(ij) = mat(ij) + jac * theta * zr(ipoids+ipg-1) * h * zr(ivf+ldec+i-1) * zr(iv&
@@ -125,7 +124,6 @@ subroutine te0388(option, nomte)
     k2= nno*(nno+1)/2
     do 200 i = 1, nno
         k3 = k2 + nno
-!CDIR$ IVDEP
         do 201 j = 1, i
             k1=k1+1
             k2=k2+1

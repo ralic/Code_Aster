@@ -112,7 +112,6 @@ subroutine te0130(option, nomte)
 !
         if (option(11:14) .eq. 'COEF') then
             do 103 i = 1, nno
-!CDIR$ IVDEP
                 do 104 j = 1, i
                     ij = (i-1)*i/2 + j
 !
@@ -127,7 +126,6 @@ subroutine te0130(option, nomte)
                 tpg = tpg + zr(itemp+i-1) * zr(ivf+ldec+i-1)
 105          continue
             do 106 i = 1, nno
-!CDIR$ IVDEP
                 do 107 j = 1, i
                     ij = (i-1)*i/2 + j
 !

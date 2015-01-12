@@ -141,7 +141,6 @@ subroutine mltfc1(nbloc, ncbloc, decal, supnd, fils,&
             endif
             if (fils(sni) .ne. 0) then
                 mem = max(mem, (itemp+lmatf-1))
-!RAY   DIR$ IVDEP
                 do 50 j = 1, lmatf
                     pile(adpile(fils(sni))+j-1) = pile(itemp+j-1)
 50              continue

@@ -32,7 +32,6 @@ subroutine ccl21j(fronti, frontj, frn, j, l,&
     do 120 k = 1, n1
         id1 = ic1
         id2 = ic2
-!CDIR$ IVDEP
         do 110 i = 1, ll
             jd1 = jd1 + 1
             frontj(jd1) = frontj(jd1) - t1(k)*fronti(id1) - t2(k)* fronti(id2)
@@ -49,7 +48,6 @@ subroutine ccl21j(fronti, frontj, frn, j, l,&
         id1 = ic1
         id2 = ic2
         jd = jd1
-!CDIR$ IVDEP
         do 130 i = 1, ll
             jd = jd + 1
             frn(jd) = frn(jd) - t1(k)*fronti(id1)

@@ -67,7 +67,6 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !
         if (tt .eq. 'RR') then
 !       ---------------------------
-!CDIR$   IVDEP
             do 10 j = 1, nrmax
                 ibloc=zi(jtmp2-1+2*(j-1)+1)
                 jvalb=jvalm(permbl(ibloc))
@@ -79,7 +78,6 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !
         else if (tt.eq.'CC') then
 !       ---------------------------
-!CDIR$   IVDEP
             do 11 j = 1, nrmax
                 ibloc=zi(jtmp2-1+2*(j-1)+1)
                 jvalb=jvalm(permbl(ibloc))
@@ -91,7 +89,6 @@ subroutine ascopr(lmasym, lmesym, tt, jtmp2, nrmax,&
 !
         else if (tt.eq.'RC') then
 !       ---------------------------
-!CDIR$   IVDEP
             do 12 j = 1, nrmax
                 ibloc=zi(jtmp2-1+2*(j-1)+1)
                 jvalb=jvalm(permbl(ibloc))

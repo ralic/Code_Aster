@@ -236,12 +236,6 @@ subroutine te0539(option, nomte)
         if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
             if (zk16(icompo+2) (6:10) .eq. '_REAC') then
                 call utmess('F', 'XFEM_50')
-!            DO 20 I = 1,3*NNO
-! --- ATTENTION, UTILISER PETIT_REAC EST FAUX CAR IL FAUT AUSSI
-! --- REACTUALISER LA GEOMETRIE DES POINTS D'INTERSECTION ZR(JPINTT)
-!              ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1) +
-!     &                        ZR(IDEPLP+I-1)
-!   20       CONTINUE
             endif
 !
             call xnmpl(nno, nfh, nfe, ddlc, ddlm,&
@@ -270,48 +264,6 @@ subroutine te0539(option, nomte)
         else
             call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif
-!
-!       ELSE
-!
-!        CALL UTMESS('F','ELEMENTS4_23')
-!
-!
-! PARTIE 2D
-! - HYPO-ELASTICITE
-!
-!         IF (ZK16(ICOMPO+2) (6:10).EQ.'_REAC') THEN
-! CCDIR$ IVDEP
-!           DO 25 I = 1,2*NNO
-!             ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1) +
-!      &                      ZR(IDEPLP+I-1)
-!   25     CONTINUE
-!         ENDIF
-!
-!         IF (ZK16(ICOMPO+2) (1:5).EQ.'PETIT') THEN
-!
-! C -       ELEMENT A DISCONTINUITE INTERNE
-!           IF (TYPMOD(2).EQ.'ELEMDISC') THEN
-!
-!             CALL NMED2D(NNO,NPG,IPOIDS,IVF,IDFDE,
-!      &              ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-!      &              LGPG,ZR(ICARCR),
-!      &              ZR(IDEPLM),ZR(IDEPLP),
-!      &              ZR(ICONTM),ZR(IVARIM),VECT1,
-!      &              VECT3,ZR(ICONTP),ZR(IVARIP),
-!      &              ZR(IMATUU),ZR(IVECTU),CODRET)
-!
-!           ELSE
-!
-!             CALL NMPL2D(FAMI,NNO,NPG,IPOIDS,IVF,IDFDE,
-!      &              ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-!      &              LGPG,ZR(ICARCR),
-!      &              ZR(IINSTM),ZR(IINSTP),
-!      &              ZR(IDEPLM),ZR(IDEPLP),ANGMAS,
-!      &              ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
-!      &              VECT3,ZR(ICONTP),ZR(IVARIP),
-!      &              ZR(IMATUU),ZR(IVECTU),CODRET)
-!
-!           ENDIF
 !
     endif
 !

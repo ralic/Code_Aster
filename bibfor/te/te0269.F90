@@ -61,7 +61,6 @@ subroutine te0269(option, nomte)
             tpg = tpg + zr(itemp+i-1)*zr(ivf+k+i-1)
 10      continue
         poids = poids*r
-!CDIR$ IVDEP
         do 20 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(ivf+k+i-1)*zr( icoefh)* (zr(itex)- (1.0d0-&
                              &theta)*tpg)

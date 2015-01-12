@@ -90,7 +90,6 @@ subroutine te0279(option, nomte)
             call rcfode(ifon(2), tpgi, lambda, r8bid)
 !
             do 30 i = 1, nno
-!CDIR$ IVDEP
                 do 20 j = 1, i
                     ij = (i-1)*i/2 + j
                     zr(imattt+ij-1) = zr(imattt+ij-1) + poids*theta* lambda* (dfdx(i)*dfdx(j)+ df&
@@ -110,7 +109,6 @@ subroutine te0279(option, nomte)
             call rcfode(ifon(1), tpgi, r8bid, rhocp)
 !
             do 70 i = 1, nno
-!CDIR$ IVDEP
                 do 60 j = 1, i
                     ij = (i-1)*i/2 + j
                     zr(imattt+ij-1) = zr(imattt+ij-1) + poids*khi* rhocp*zr(ivf2+l+i-1)* zr(ivf2+&

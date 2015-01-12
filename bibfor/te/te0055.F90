@@ -61,7 +61,6 @@ subroutine te0055(option, nomte)
         l = (kp-1)*nno
         call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
                     poids)
-!CDIR$ IVDEP
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(isour-1+kp)*zr( ivf+l+i-1)
         end do

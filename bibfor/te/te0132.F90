@@ -93,7 +93,6 @@ subroutine te0132(option, nomte)
 103      continue
         call foderi(zk8(iflux), tpg, rbid, alphap)
         do 104 i = 1, nno
-!CDIR$ IVDEP
             do 104 j = 1, i
                 ij = (i-1)*i/2 + j
                 zr(imattt+ij-1) = zr(imattt+ij-1) - jac* theta* zr(ipoids+ipg-1) * alphap * zr(iv&

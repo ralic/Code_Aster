@@ -80,7 +80,6 @@ subroutine te0317(option, nomte)
             poids = poids*r
         endif
 !
-!CDIR$ IVDEP
         do 40 i = 1, nno
             do 30 j = 1, i
                 ij = (i-1)*i/2 + j

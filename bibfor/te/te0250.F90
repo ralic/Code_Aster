@@ -142,7 +142,6 @@ subroutine te0250(option, nomte)
                 ASSERT(icode.eq.0)
                 do 70 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
-!CDIR$ IVDEP
                     do 60 j = 1, nno
                         lj = ivf + (kp-1)*nno + j - 1
                         mrigt(c(ise,i),c(ise,j)) = mrigt(&
@@ -167,7 +166,6 @@ subroutine te0250(option, nomte)
                 ASSERT(ier.eq.0)
                 do 100 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1
-!CDIR$ IVDEP
                     do 90 j = 1, nno
                         lj = ivf + (kp-1)*nno + j - 1
                         mrigt(c(ise,i),c(ise,j)) = mrigt(&

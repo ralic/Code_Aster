@@ -160,13 +160,11 @@ subroutine ssriu2(nomu)
                 end do
             else
 !
-!CDIR$ IVDEP
                 do i = nddli + j + 1 - schc, nddli
                     k = k + 1
                     zr(iaphie-1+i) = zr(jualf-1+scdi-schc+k)
                 end do
 !
-!CDIR$ IVDEP
                 do i = max(1, j+1-schc), j
                     ii = ((j-1)*j)/2 + i
                     zr(iakpee-1+ii) = zr(jualf-1+scdi+i-j)
@@ -218,7 +216,6 @@ subroutine ssriu2(nomu)
                     iaphie = iaphi0 + (iiblph-1)*nddli
                     ii = (j* (j-1)/2) + i
                     kk = 0
-!CDIR$ IVDEP
                     do k = nddli + j + 1 - schc, nddli
                         kk = kk + 1
                         zr(iakpee-1+ii) = zr(iakpee-1+ii) - zr( iaphie-1+k)*zr(jualf-1+scdi-schc+&

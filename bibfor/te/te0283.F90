@@ -199,7 +199,6 @@ subroutine te0283(option, nomte)
                 dtpgdz = dtpgdz + zr(itempi+i-1)*dfdz(i)
 80          continue
             call rcdiff(zi(imate), zk16(icomp), tpsec, tpg, diff)
-!CDIR$ IVDEP
             do 90 i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1) + poids* ( theta*diff* (dfdx(i)*dtpgdx+dfdy(i) *d&
                                  &tpgdy+ dfdz(i)*dtpgdz))
@@ -213,7 +212,6 @@ subroutine te0283(option, nomte)
             do 81 i = 1, nno
                 tpg = tpg + zr(itempi+i-1)*zr(ivf2+l+i-1)
 81          continue
-!CDIR$ IVDEP
             do 91 i = 1, nno
                 zr(iveres+i-1) = zr(iveres+i-1) + poids* (1.d0/deltat* khi*zr(ivf2+l+i-1)*tpg)
 91          continue

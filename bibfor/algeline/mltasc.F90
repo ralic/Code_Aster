@@ -110,7 +110,6 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
 !MIC$ DO ALL SHARED (ADINIT, DEB, FIN, IFACL, LONMAT, ZC)
 !MIC$*        SHARED (MATI,IFACU,MATS) VECTOR
 !MIC$*        PRIVATE (I1,CODE,ADPROV)
-!CDIR$ IVDEP
             do 120 i1 = 1, lonmat
                 if (adinit(i1) .le. 0) then
                     code =-1
@@ -149,7 +148,6 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
             deb = deb + 1
 !MIC$ DO ALL SHARED (ADINIT, DEB, FIN, IFACL, LONMAT, ZC)
 !MIC$*       PRIVATE (I1) SHARED (MATI) VECTOR
-!CDIR$ IVDEP
             do 125 i1 = 1, lonmat
                 if (adinit(i1) .gt. fin) goto 125
                 if (adinit(i1) .lt. deb) goto 125

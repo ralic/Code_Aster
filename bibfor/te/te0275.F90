@@ -79,7 +79,6 @@ subroutine te0275(option, nomte)
             poids2 = poids2*r2
         endif
         poids = (poids1+poids2)/2
-!CDIR$ IVDEP
         do 20 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
             zr(iveres+i-1) = zr(iveres+i-1) - poids*zr(li)*coefh* theta*tpg

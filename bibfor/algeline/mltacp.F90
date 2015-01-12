@@ -35,7 +35,6 @@ subroutine mltacp(n, ncol, adper, matper, matfi,&
             decp1 = decp1 - local(i)
             decp2 = adper(local(i+1)) - local(i+1)
             ni = n - i
-!CDIR$ IVDEP
             do 110 j = 1, ni
 !             ID1 = DECP1 + LOCAL(J+I)
 !             ID2 = DECP2 + LOCAL(J+I)
@@ -54,7 +53,6 @@ subroutine mltacp(n, ncol, adper, matper, matfi,&
             decp1 = decp1 - local(i)
             decp2 = adper(local(i+1)) - local(i+1)
             ni = n - i
-!CDIR$ IVDEP
             do 150 j = 1, ni
 !             ID1 = DECP1 + LOCAL(J+I)
 !             ID2 = DECP2 + LOCAL(J+I)

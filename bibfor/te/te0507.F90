@@ -106,7 +106,6 @@ subroutine te0507(option, nomte)
             ij = imattt - 1
             do 70 i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
-!CDIR$ IVDEP
                 do 60 j = 1, i
                     lj = ivf + (kp-1)*nno + j - 1
                     ij = ij + 1

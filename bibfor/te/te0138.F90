@@ -116,7 +116,6 @@ subroutine te0138(option, nomte)
  50         continue
             call foderi(coef, tpg, alpha, rbid)
 !
-!CDIR$ IVDEP
             do 60 i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
                 vectt(c(ise,i)) = vectt(c(ise,i)) - poids*theta*alpha* zr(li)

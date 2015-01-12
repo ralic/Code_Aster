@@ -85,7 +85,6 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
 !                 RANGEMENT DU TERME DIAGONAL
                 sm(ndj) = zc(ifac-1+ad(j))
 !
-!RAY DIR$ IVDEP
                 k = 1
                 do 140 i = j + 1, l
                     trav(i) = trav(i) - zc(ifac-1+ad(j)+k)*trav(j)
@@ -172,7 +171,6 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq,&
                 s = 0.d0
                 if (l .gt. 1) then
                     k = k0
-!RAY DIR$ IVDEP
                     do 210 j = fin, deb, -1
                         adfac = adfac - 1
                         k = k - 1

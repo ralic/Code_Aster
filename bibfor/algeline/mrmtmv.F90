@@ -108,7 +108,6 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
             do 50 ilig = 2, neq
                 kdeb=smdi(ilig-1)+1
                 kfin=smdi(ilig)-1
-!           CDIR$ IVDEP
                 do 40 ki = kdeb, kfin
                     jcol=smhc(ki)
                     xsol(jcol,jvec)=xsol(jcol,jvec)+ zr(jvalmi-1+ki)*&
@@ -143,7 +142,6 @@ subroutine mrmtmv(cumul, lmat, smdi, smhc, lmatd,&
                 iligg=zi(jnulg+ilig-1)
                 kdeb=smdi(ilig-1)+1
                 kfin=smdi(ilig)-1
-!           CDIR$ IVDEP
                 do 80 ki = kdeb, kfin
                     jcol=smhc(ki)
                     jcolg=zi(jnulg+jcol-1)

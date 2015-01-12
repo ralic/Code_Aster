@@ -104,7 +104,6 @@ subroutine te0071(option, nomte)
                         coefh, icode)
             do 70 i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
-!CDIR$ IVDEP
                 do 60 j = 1, nno
                     lj = ivf + (kp-1)*nno + j - 1
                     mrigt(c(ise,i),c(ise,j)) = mrigt(&

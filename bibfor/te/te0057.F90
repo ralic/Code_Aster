@@ -94,7 +94,6 @@ subroutine te0057(option, nomte)
 !   CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
         jac = sqrt(nx*nx + ny*ny + nz*nz)
-!CDIR$ IVDEP
         do 103 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + jac * zr(ipoids+ipg-1) * zr(iflux) * zr(ivf+ldec+i-&
                              &1)

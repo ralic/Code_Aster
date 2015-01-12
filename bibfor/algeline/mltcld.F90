@@ -57,7 +57,6 @@ subroutine mltcld(n, front, adper, t1, ad,&
             ier = k
             goto 40
         endif
-!RAY DIR$ IVDEP DIRECTIVE INHIBEE CAR DEPENDANCE AVANT
         do 20 i = 1, n - k
             front(adper(k)+i) = front(adper(k)+i)/front(adper(k))
 20      continue

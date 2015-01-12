@@ -126,7 +126,6 @@ subroutine te0053(option, nomte)
         jac = sqrt(nx*nx + ny*ny + nz*nz)
 !
         do 103 i = 1, nno
-!CDIR$ IVDEP
             do 104 j = 1, i
                 ij = (i-1)*i/2 + j
 !

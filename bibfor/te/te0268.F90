@@ -72,7 +72,6 @@ subroutine te0268(option, nomte)
         ij = imattt - 1
         do 30 i = 1, nno
             li = ivf + k + i - 1
-!CDIR$ IVDEP
             do 20 j = 1, i
                 lj = ivf + k + j - 1
                 ij = ij + 1

@@ -96,7 +96,6 @@ subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
         do 50 i = 2, neq
             kdeb=smdi(i-1)+1
             kfin=smdi(i)-1
-!          CDIR$ IVDEP
             do 40 ki = kdeb, kfin
                 jcol=smhc(ki)
                 xsol(jcol,jvec)=xsol(jcol,jvec)+zr(jmat1-1+ki)*vectmp(&

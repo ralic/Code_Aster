@@ -45,12 +45,10 @@ subroutine jxdeps(iadini, iadfin, lso)
         jini = ( jk1zon + iadini - 1 ) / lois + 1
         jfin = ( jk1zon + iadfin - 1 ) / lois + 1
         if (jini .gt. jfin) then
-!CDIR$ IVDEP
             do 20 i = 0, (lso / lois) - 1
                 iszon( jfin + i ) = iszon( jini + i )
 20          continue
         else if (jini .lt. jfin) then
-!CDIR$ IVDEP
             do 21 i = (lso / lois) - 1, 0, -1
                 iszon( jfin + i ) = iszon( jini + i )
 21          continue

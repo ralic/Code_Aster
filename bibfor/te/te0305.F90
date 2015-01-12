@@ -64,7 +64,6 @@ subroutine te0305(option, nomte)
             tpg = tpg + zr(itemp+i-1)*zr(ivf+l-1)
  10     continue
         if (laxi) poids = poids*r
-!CDIR$ IVDEP
         do 20 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
             zr(iveres+i-1) = zr(iveres+i-1) - poids*theta*zr(li)*zr( icoefh)*tpg

@@ -80,7 +80,6 @@ subroutine te0307(option, nomte)
         valpar(3) = zr(itemps)
         call fointe('FM', zk8(icoefh), 3, nompar, valpar,&
                     coenp1, icode)
-!CDIR$ IVDEP
         do 20 i = 1, nno
             li = ivf + (kp-1)*nno + i - 1
             zr(iveres+i-1) = zr(iveres+i-1) - poids*zr(li)*theta* coenp1*tpg

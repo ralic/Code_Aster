@@ -93,7 +93,6 @@ subroutine te0145(option, nomte)
         w(3)=u(1)*zr(iforc-1+2)-u(2)*zr(iforc-1+1)
         wm=sqrt(w(1)**2+w(2)**2+w(3)**2)
         if (wm .lt. 1.d-3) then
-!CDIR$ IVDEP
             do 10 j = 1, 3
                 force(j)=force(j)+xl*zr(iforc-1+j)/deux
                 force(j+6)=force(j+6)+xl*zr(iforc-1+j)/deux

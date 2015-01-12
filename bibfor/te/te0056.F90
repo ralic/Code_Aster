@@ -96,7 +96,6 @@ subroutine te0056(option, nomte)
         endif
         sourc = theta*sounp1 + (1.0d0-theta)*soun
 !
-!CDIR$ IVDEP
         do i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*sourc*zr(ivf+l+i- 1)
         end do

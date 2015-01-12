@@ -108,7 +108,6 @@ subroutine te0276(option, nomte)
             ldec = (ipg-1)*nno
             tem = tem + (zr(itemp+nno+i-1)- zr(itemp+i-1) ) * zr(ivf+ ldec+i-1)
 104      continue
-!CDIR$ IVDEP
         do 103 i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) - jac * h * zr(ipoids+ipg- 1) * zr(ivf+ldec+i-1) * th&
                              &eta*tem

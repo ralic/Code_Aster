@@ -192,7 +192,6 @@ subroutine te0100(option, nomte)
 1000     continue
 !
         if (zk16(icompo+2) (6:10) .eq. '_REAC') then
-!CDIR$ IVDEP
             do 20 i = 1, 2*nno
                 zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1) + zr(ideplp+i-1)
  20         continue

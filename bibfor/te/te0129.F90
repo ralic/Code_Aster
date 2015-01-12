@@ -101,7 +101,6 @@ subroutine te0129(option, nomte)
 ! ----- ON RAJOUTE DANS LE RESIDU LE TERME (1-THETA)*ALPHAP QUI NE
 ! ----- FIGURE PAS DANS LE 2ND MEMBRE LINEAIRE
 !
-!CDIR$ IVDEP
         do 104 i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) - zr(ipoids+kp-1)*jac* theta*alpha*zr(ivf+ldec+i-1)
 104      continue

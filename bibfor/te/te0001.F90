@@ -52,7 +52,6 @@ subroutine te0001(option, nomte)
         call jevech('PGEOMER', 'L', jgeom)
         call jevech('PFORNOR', 'L', jdimp)
         call jevech('PVECTUR', 'E', jvec)
-!CDIR$ IVDEP
         do 10 i = 1, nddl1
             zr(jvec-1+i) = zr(jdimp-1+i)
  10     continue

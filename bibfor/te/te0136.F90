@@ -102,7 +102,6 @@ subroutine te0136(option, nomte)
                 tpg = tpg + zr(itemp-1+c(ise,i))*zr(ivf+l-1)
  40         continue
             if (laxi) poids = poids*r
-!CDIR$ IVDEP
             if (option(11:14) .eq. 'COEF') then
                 do 50 i = 1, nno
                     li = ivf + (kp-1)*nno + i - 1

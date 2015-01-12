@@ -82,7 +82,6 @@ subroutine te0306(option, nomte)
         do 104 i = 1, nno
             tpg = tpg + zr(itemp+i-1) * zr(ivf+ldec+i-1)
 104      continue
-!CDIR$ IVDEP
         do 103 i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) - jac* theta* zr(ipoids+ ipg-1)* zr(ivf+ldec+i-1)* zr&
                              &(iech)* tpg

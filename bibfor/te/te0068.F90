@@ -101,7 +101,6 @@ subroutine te0068(option, nomte)
 !  PRODUIT  SCALAIRE   (FLUXV.NORMALE EXT)
 !**
             psfn = nx*fluxx + ny*fluxy
-!CDIR$ IVDEP
             do 50 i = 1, nno
                 li = ivf + (kp-1)*nno + i - 1
                 vectt(c(ise,i)) = vectt(c(ise,i)) + poids*zr(li)*psfn

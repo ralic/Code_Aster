@@ -106,7 +106,6 @@ subroutine te0309(option, nomte)
         norm(2) = ny/jac
         norm(3) = nz/jac
 !
-!CDIR$ IVDEP
         if (option(11:11) .eq. 'X') then
             do 103 i = 1, nno
                 do 104 j = 1, i

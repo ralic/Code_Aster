@@ -75,7 +75,6 @@ subroutine te0272(option, nomte)
         call fointe('FM', zk8(iflu), 3, nompar, valpar,&
                     flun, icode)
         flux = theta*flunp1 + (1.0d0-theta)*flun
-!CDIR$ IVDEP
         do 20 i = 1, nno
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(ivf+k+i-1)* flux
 20      continue

@@ -56,7 +56,6 @@ subroutine te0271(option, nomte)
             r = r + zr(igeom+2*i-2)*zr(ivf+k+i-1)
 10      continue
         poids = poids*r
-!CDIR$ IVDEP
         do 20 i = 1, nno
             li = ivf + k + i - 1
             zr(ivectt+i-1) = zr(ivectt+i-1) + poids*zr(li)*zr(iflu)
