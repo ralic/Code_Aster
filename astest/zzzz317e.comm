@@ -102,6 +102,27 @@ FONC2=RECU_FONCTION(  TABLE=ACCE2,
 SRO2=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC2, LIST_FREQ = L_FREQ, METHODE='HARMO',
                       NORME=9.81, AMOR_REDUIT=(amo_sro,),),); 
 
+##############################################
+### SPEC_UNIQUE, MODULATION GAMMA, NB_ITER,  FREQ_PENTE
+##############################################
+#
+#
+fp=-1.0
+ACCE3=GENE_ACCE_SEISME( INFO =2,
+              INIT_ALEA=IAL,
+              PAS_INST = 0.04, NB_POIN=2**9,PESANTEUR =9.81,DUREE_PHASE_FORTE = TSM, NB_TIRAGE = nbtir,
+              FREQ_FILTRE = 0.05,  FREQ_CORNER = fc, FREQ_PENTE = fp,
+              SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT = amor, FREQ_PAS=0.01, NB_ITER=2,  
+                                   ERRE_ZPA  =(0.75, 0.2),ERRE_MAX  =(0.05, 0.3),ERRE_RMS  =(0.2,),  METHODE='NIGAM',  ),
+              MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
+#
+FONC3=RECU_FONCTION(  TABLE=ACCE3,
+                        FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                       VALE_I = 1),
+                        NOM_PARA_TABL='FONCTION',)
+#
+SRO3=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC3, LIST_FREQ = L_FREQ, METHODE='NIGAM',
+                      NORME=9.81, AMOR_REDUIT=(amo_sro,),),); 
 
 
 
@@ -147,7 +168,20 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=  0.16091860        ,
                          FONCTION=SRO1,),),);
 
 
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.19833438449771  ,
+#                         VALE_REFE=ZPA_50    ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+ #                        REFERENCE='ANALYTIQUE',PRECISION=0.1,
+                         FONCTION=SRO3,),
+                        _F(VALE_CALC=  0.19831485236659  ,
+                         VALE_REFE=SA_25  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO3,),
+                        _F(VALE_CALC=  0.01414115566012   ,                      
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.2),
+                         FONCTION=SRO3,),),);
 
 
 

@@ -43,8 +43,8 @@ tini=0.5
 #
 ACCE4=GENE_ACCE_SEISME( INFO  =2, INIT_ALEA=10000,
               PAS_INST       = DT,PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM,
-              FREQ_FILTRE=0.05, FREQ_CORNER = 0.25,
-              DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, FREQ_PENTE=fp),
+              FREQ_FILTRE=0.05, FREQ_CORNER = 0.25,FREQ_PENTE=fp,
+              DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, ),
               MODULATION      = _F(TYPE=   "JENNINGS_HOUSNER", INTE_ARIAS =arias), )
 
 FONCT4=RECU_FONCTION(    TABLE=ACCE4,
@@ -87,8 +87,8 @@ TEST_TABLE(
 #----------------------------------------------------------------
 #
 ACCE5=GENE_ACCE_SEISME( INFO =2, INIT_ALEA=1356000, 
-               PESANTEUR =9.81,  DUREE_PHASE_FORTE =TSM, PAS_INST = DT,
-               DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr,  FREQ_PENTE=0.0),
+               PESANTEUR =9.81,  DUREE_PHASE_FORTE =TSM, PAS_INST = DT, FREQ_PENTE=0.0,
+               DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, ),
                MODULATION      = _F( TYPE=   "GAMMA", INST_INI= tini, INTE_ARIAS=arias),)
 
 FONCT5=RECU_FONCTION(    TABLE=ACCE5,

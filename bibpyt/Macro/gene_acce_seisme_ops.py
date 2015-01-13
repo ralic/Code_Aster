@@ -121,6 +121,7 @@ class GeneAcceParameters(object):
             other_keys[key] = kwargs.get(key)
         other_keys['FREQ_FILTRE'] = kwargs.get('FREQ_FILTRE')
         other_keys['FREQ_CORNER'] = kwargs.get('FREQ_CORNER')
+        other_keys['FREQ_PENTE'] = kwargs.get('FREQ_PENTE')
         self.method_keys.update(other_keys)
 
 
@@ -149,6 +150,7 @@ class Generator(object):
         self.specmethode = params.specmethode
         self.FREQ_FILTRE = params.method_keys['FREQ_FILTRE']
         self.FREQ_CORNER = params.method_keys['FREQ_CORNER']
+        self.FREQ_PENTE = params.method_keys['FREQ_PENTE']
         self.DSP_args = {}
         self.SRO_args = {'NORME': self.norme}
         self.ntir = 0
@@ -235,9 +237,9 @@ class GeneratorDSP(Generator):
 
     def build_DSP(self):
         """build DSP for DSP class"""
-        if 'FREQ_PENTE' in self.method_params:
+        if self.FREQ_PENTE != None:
             self.DSP_args.update({'FREQ_CORNER': self.FREQ_CORNER,
-                                  'FREQ_PENTE': self.method_params['FREQ_PENTE'],
+                                  'FREQ_PENTE': self.FREQ_PENTE,
                                   'TYPE_DSP': 'KT'})
         else:
             # calcul du facteur de normalisation
@@ -345,16 +347,15 @@ class GeneratorSpectrum(Generator):
         self.DSP_args.update({'FONC_DSP': fonc_dsp,
                               'TYPE_DSP': 'SC', 'FC': 0.05})
         self.SRO_args['FONC_SPEC'] = f_spec_ref
-        if 'FREQ_PENTE' in self.method_params:
-            if self.method_params['FREQ_PENTE'] != None:
-                self.DSP_args['TYPE_DSP'] = 'FR'
-                vop, amo, R0, R2, f_FIT = DSP2FR(self.DSP_args['FONC_DSP'],
-                                                 self.DSP_args['FC'])
-                self.DSP_args.update({
-                                     'FREQ_PENTE': self.method_params['FREQ_PENTE'],
-                                     'FREQ_FOND': vop, 'AMORT': amo,
-                                     'para_R0': R0, 'para_R2': R2,
-                                     'fonc_FIT': f_FIT, 'TYPE_DSP': 'FR'})
+        if self.FREQ_PENTE != None:
+            self.DSP_args['TYPE_DSP'] = 'FR'
+            vop, amo, R0, R2, f_FIT = DSP2FR(self.DSP_args['FONC_DSP'],
+                                             self.DSP_args['FC'])
+            self.DSP_args.update({
+                                 'FREQ_PENTE': self.FREQ_PENTE,
+                                 'FREQ_FOND': vop, 'AMORT': amo,
+                                 'para_R0': R0, 'para_R2': R2,
+                                 'fonc_FIT': f_FIT, 'TYPE_DSP': 'FR'})
         if self.specmethode == 'SPEC_FRACTILE':
             Periods = 1. / (self.sampler.liste_w2 / (2. * pi))
             Periods, MAT_COVC = corrcoefmodel(Periods,
@@ -366,16 +367,32 @@ class GeneratorSpectrum(Generator):
         if self.INFO == 2:
             UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
         if self.specmethode == 'SPEC_UNIQUE':
-            if 'NB_ITER' in self.method_params:
-                fonc_dsp_opt, rv = itersim_SRO(self, self.DSP_args['FONC_DSP'],
-                                               NB_TIRAGE=1, **self.SRO_args)
-                Xt = DSP2ACCE1D(fonc_dsp_opt, rv[0])
-            else:
-                Xt = DSP2ACCE1D(self.DSP_args['FONC_DSP'])
+            if 'NB_ITER' not in self.method_params:
+                if self.FREQ_PENTE != None:
+                    Xt = gene_traj_gauss_evol1D(self, **self.DSP_args)
+                else:
+                    Xt = DSP2ACCE1D(self.DSP_args['FONC_DSP'])
+            else:#'NB_ITER' in self.method_params
+                if self.FREQ_PENTE != None:
+                    fonc_dsp_opt, rv0 = itersim_SRO(
+                        self, self.DSP_args['FONC_DSP'],
+                        NB_TIRAGE=1, **self.SRO_args)
+                    vop, amo, R0, R2, f_FIT = DSP2FR(fonc_dsp_opt,
+                                                     self.DSP_args['FC'])
+                    self.DSP_args.update({'FREQ_FOND': vop, 'AMORT': amo,
+                                          'para_R0': R0, 'para_R2': R2,
+                                          'fonc_FIT': f_FIT})
+                    Xt = gene_traj_gauss_evol1D(self, rv=rv0[0], 
+                                                **self.DSP_args)
+                else:
+                    fonc_dsp_opt, rv0 = itersim_SRO(
+                         self, self.DSP_args['FONC_DSP'],
+                         NB_TIRAGE=1, **self.SRO_args)
+                    Xt = DSP2ACCE1D(fonc_dsp_opt, rv0[0])
             Xt = self.compute_TimeHistory(NP.array(Xt))
             return Xt
         if self.specmethode == 'SPEC_FRACTILE':
-            if 'FREQ_PENTE' in self.method_params:
+            if self.FREQ_PENTE != None:
                 alpha2 = RAND_VEC(self.DSP_args['MAT_COVC'],
                                   len(self.sampler.liste_w2), para=2.0)
                 self.DSP_args.update({'ALEA_DSP': alpha2})
@@ -389,7 +406,7 @@ class GeneratorSpectrum(Generator):
             return Xt
         if self.specmethode == 'SPEC_MEDIANE':
             if 'NB_ITER' not in self.method_params:
-                if 'FREQ_PENTE' in self.method_params:
+                if self.FREQ_PENTE != None:
                     Xt = gene_traj_gauss_evol1D(self, **self.DSP_args)
                 else:
                     Xt = DSP2ACCE1D(self.DSP_args['FONC_DSP'])
@@ -398,7 +415,7 @@ class GeneratorSpectrum(Generator):
             else:  # 'NB_ITER' in self.method_params:
                 tab = Table(titr='GENE_ACCE_SEISME concept : %s' % self.name)
                 DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
-                if 'FREQ_PENTE' in self.method_params:
+                if self.FREQ_PENTE != None:
                     fonc_dsp_opt, liste_rv = itersim_SRO(
                         self, self.DSP_args['FONC_DSP'],
                         NB_TIRAGE=self.method_params['NB_TIRAGE'],

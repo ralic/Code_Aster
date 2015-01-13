@@ -88,7 +88,7 @@ TEST_TABLE(
 ACCE1b=GENE_ACCE_SEISME(INFO = 2,  
               INIT_ALEA = 100000, NB_POIN = 2**10,
               PAS_INST  = DT, PESANTEUR = 9.81, DUREE_PHASE_FORTE = 10.,
-              DSP        = _F(AMOR_REDUIT  = amor,FREQ_FOND = frr,),
+              DSP        = _F(AMOR_REDUIT  = amor, FREQ_FOND = frr,),
               MODULATION = _F(TYPE = "JENNINGS_HOUSNER", ECART_TYPE = ecart),),
 
 
