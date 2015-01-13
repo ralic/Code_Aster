@@ -1,7 +1,6 @@
 subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
                   cxma, normal, itria, xbar, iproj,&
                   excent)
-! aslint: disable=W1501
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
@@ -97,13 +96,13 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i1, i2, i3, ibloc, icnx, iterm
+    integer :: i1, i2, i3, ibloc, icnx, iterm, ind
     integer :: nbbloc, nbsom, nbterm, nbtmax, nnomax, noeca
     real(kind=8) :: ksi1, ksi2, zero
     complex(kind=8) :: cbid
     character(len=8) :: k8b
     character(len=24) :: nonoma
-    aster_logical :: notlin
+    aster_logical :: notlin, l_excent
 !
     real(kind=8) :: ffel2d, x(2), ff(9)
     real(kind=8), pointer :: coemur(:) => null()
@@ -153,633 +152,132 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
     nomnoe(1) = nnoeca
     nomddl(1) = 'DEPL'
     coemur(1) = 1.0d0
+    
+    l_excent = .true.
+    if (excent .eq. 0.0d0) l_excent = .false.
+
 !
-! 3.1 DETERMINATION DES RELATIONS CINEMATIQUES DANS LE CAS OU
-! --- L'EXCENTRICITE EST NULLE
+    if (iproj .eq. 2) then
 !
-    if (excent .eq. 0.0d0) then
+!       pas de liaisons si les noeuds sont les mêmes
+        call jenonu(jexnom(nonoma, nnoeca), noeca)
+        if (noeca .eq. noebe) goto 110
 !
-        if (iproj .eq. 2) then
+        nbterm = 2
+        call jenuno(jexnum(nonoma, noebe), nomnoe(1+1))
+        nomddl(1+1) = 'DEPL'
+        coemur(1+1) = -1.0d0
 !
-!.......... PAS DE RELATIONS CINEMATIQUES SI LES NOEUDS SONT
-!.......... IDENTIQUES TOPOLOGIQUEMENT
-!
-            call jenonu(jexnom(nonoma, nnoeca), noeca)
-            if (noeca .eq. noebe) goto 110
-!
-            nbterm = 2
-            call jenuno(jexnum(nonoma, noebe), nomnoe(1+1))
-            nomddl(1+1) = 'DEPL'
-            coemur(1+1) = -1.0d0
-!
-        else
-!
-            if (iproj .gt. 10) then
-!
-                nbterm = 3
-                i1 = iproj - 10
-                i2 = i1 + 1
-                if (i2 .gt. nbsom) i2 = 1
-                call jenuno(jexnum(nonoma, cxma(i1)), nomnoe(1+1))
-                call jenuno(jexnum(nonoma, cxma(i2)), nomnoe(1+2))
-                nomddl(1+1) = 'DEPL'
-                nomddl(1+2) = 'DEPL'
-                if (nbcnx .eq. 3) then
-                    if (i1 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)
-                    else if (i1.eq.2) then
-                        ffel2d = -0.5d0* (ksi1+ksi2)
-                    else
-                        ffel2d = 0.5d0* (1.0d0+ksi1)
-                    endif
-                else if (nbcnx.eq.6) then
-                    if (i1 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                    else if (i1.eq.2) then
-                        ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+1.0d0)
-                    else if (i1.eq.3) then
-                        ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                    else if (i1.eq.4) then
-                        ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                    else if (i1.eq.5) then
-                        ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                    else
-                        ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                    endif
-                else if (nbcnx.eq.4) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU4', x, 4, ff, nno)
-                    if (i1 .eq. 1) then
-                        ffel2d = ff(4)
-                    else
-                        ffel2d = ff(i1-1)
-                    endif
-                else if (nbcnx.eq.8) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU8', x, 8, ff, nno)
-                    if (i1 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i1.eq.5) then
-                        ffel2d = ff(8)
-                    else
-                        ffel2d = ff(i1-1)
-                    endif
-                else if (nbcnx.eq.9) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU9', x, 9, ff, nno)
-                    if (i1 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i1.eq.5) then
-                        ffel2d = ff(8)
-                    else if (i1.eq.9) then
-                        ffel2d = ff(9)
-                    else
-                        ffel2d = ff(i1-1)
-                    endif
-                endif
-!
-                coemur(1+1) = -ffel2d
-!
-                if (nbcnx .eq. 3) then
-                    if (i2 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)
-                    else if (i2.eq.2) then
-                        ffel2d = -0.5d0* (ksi1+ksi2)
-                    else
-                        ffel2d = 0.5d0* (1.0d0+ksi1)
-                    endif
-                else if (nbcnx.eq.6) then
-                    if (i2 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                    else if (i2.eq.2) then
-                        ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+1.0d0)
-                    else if (i2.eq.3) then
-                        ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                    else if (i2.eq.4) then
-                        ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                    else if (i2.eq.5) then
-                        ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                    else
-                        ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                    endif
-                else if (nbcnx.eq.4) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU4', x, 4, ff, nno)
-                    if (i2 .eq. 1) then
-                        ffel2d = ff(4)
-                    else
-                        ffel2d = ff(i2-1)
-                    endif
-                else if (nbcnx.eq.8) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU8', x, 8, ff, nno)
-                    if (i2 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i2.eq.5) then
-                        ffel2d = ff(8)
-                    else
-                        ffel2d = ff(i2-1)
-                    endif
-                else if (nbcnx.eq.9) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU9', x, 9, ff, nno)
-                    if (i2 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i2.eq.5) then
-                        ffel2d = ff(8)
-                    else if (i2.eq.9) then
-                        ffel2d = ff(9)
-                    else
-                        ffel2d = ff(i2-1)
-                    endif
-                endif
-                coemur(1+2) = -ffel2d
-!               ZR(JCMUR+1) = -FFEL2D(NBCNX,I1,KSI1,KSI2)
-!               ZR(JCMUR+2) = -FFEL2D(NBCNX,I2,KSI1,KSI2)
-                if (notlin) then
-                    nbterm = 4
-                    i3 = i1 + nbsom
-                    call jenuno(jexnum(nonoma, cxma(i3)), nomnoe(1+3))
-                    nomddl(1+3) = 'DEPL'
-                    if (nbcnx .eq. 3) then
-                        if (i3 .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)
-                        else if (i3.eq.2) then
-                            ffel2d = -0.5d0* (ksi1+ksi2)
-                        else
-                            ffel2d = 0.5d0* (1.0d0+ksi1)
-                        endif
-                    else if (nbcnx.eq.6) then
-                        if (i3 .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                        else if (i3.eq.2) then
-                            ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+ 1.0d0)
-                        else if (i3.eq.3) then
-                            ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                        else if (i3.eq.4) then
-                            ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                        else if (i3.eq.5) then
-                            ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                        else
-                            ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                        endif
-                    else if (nbcnx.eq.4) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU4', x, 4, ff, nno)
-                        if (i3 .eq. 1) then
-                            ffel2d = ff(4)
-                        else
-                            ffel2d = ff(i3-1)
-                        endif
-                    else if (nbcnx.eq.8) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU8', x, 8, ff, nno)
-                        if (i3 .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (i3.eq.5) then
-                            ffel2d = ff(8)
-                        else
-                            ffel2d = ff(i3-1)
-                        endif
-                    else if (nbcnx.eq.9) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU9', x, 9, ff, nno)
-                        if (i3 .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (i3.eq.5) then
-                            ffel2d = ff(8)
-                        else if (i3.eq.9) then
-                            ffel2d = ff(9)
-                        else
-                            ffel2d = ff(i3-1)
-                        endif
-                    endif
-                    coemur(1+3) = -ffel2d
-!                  ZR(JCMUR+3) = -FFEL2D(NBCNX,I3,KSI1,KSI2)
-                endif
-!
-            else
-!
-                nbterm = 1 + nbcnx
-                do icnx = 1, nbcnx
-                    call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(icnx+1))
-                    nomddl(icnx+1) = 'DEPL'
-!
-                    if (nbcnx .eq. 3) then
-                        if (icnx .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)
-                        else if (icnx.eq.2) then
-                            ffel2d = -0.5d0* (ksi1+ksi2)
-                        else
-                            ffel2d = 0.5d0* (1.0d0+ksi1)
-                        endif
-                    else if (nbcnx.eq.6) then
-                        if (icnx .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                        else if (icnx.eq.2) then
-                            ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+ 1.0d0)
-                        else if (icnx.eq.3) then
-                            ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                        else if (icnx.eq.4) then
-                            ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                        else if (icnx.eq.5) then
-                            ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                        else
-                            ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                        endif
-                    else if (nbcnx.eq.4) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU4', x, 4, ff, nno)
-                        if (icnx .eq. 1) then
-                            ffel2d = ff(4)
-                        else
-                            ffel2d = ff(icnx-1)
-                        endif
-                    else if (nbcnx.eq.8) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU8', x, 8, ff, nno)
-                        if (icnx .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (icnx.eq.5) then
-                            ffel2d = ff(8)
-                        else
-                            ffel2d = ff(icnx-1)
-                        endif
-                    else if (nbcnx.eq.9) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU9', x, 9, ff, nno)
-                        if (icnx .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (icnx.eq.5) then
-                            ffel2d = ff(8)
-                        else if (icnx.eq.9) then
-                            ffel2d = ff(9)
-                        else
-                            ffel2d = ff(icnx-1)
-                        endif
-                    endif
-                    coemur(icnx+1) = -ffel2d
-!                  ZR(JCMUR+ICNX) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
-                end do
-!
-            endif
-!
+        if (l_excent)then
+            nbterm = 3
+            nomnoe(1+2) = nomnoe(1+1)
+            nomddl(1+2) = 'ROTA'
+            coemur(1+2) = -excent
         endif
 !
-!....... UNE RELATION PAR DDL DE TRANSLATION DU NOEUD DU CABLE
-!        .....................................................
-!
-!....... LE VECTEUR ZI(JDIME) DOIT ETRE REINITIALISE AFIN DE PRENDRE
-!....... EN COMPTE LES DIFFERENTS COEFFICIENTS PAR DIRECTION DEFINIS
-!....... DANS LE VECTEUR ZR(JDIREC)
-!
-        do iterm = 1, nbterm
-            dimens(iterm) = 3
-        end do
-!
-!....... COEFFICIENTS PAR DIRECTIONS POUR LA PREMIERE RELATION (DDL DX)
-!....... PUIS AFFECTATION
-!
-        do iterm = 1, nbterm
-            direct(1+3* (iterm-1)) = 1.0d0
-            direct(1+3* (iterm-1)+1) = 0.0d0
-            direct(1+3* (iterm-1)+2) = 0.0d0
-        end do
-!
-        call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                    direct, nbterm, zero, cbid, k8b,&
-                    'REEL', 'REEL', '12', 0.d0, lirela)
-!
-!....... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
-!....... PUIS AFFECTATION
-!
-        do iterm = 1, nbterm
-            direct(1+3* (iterm-1)) = 0.0d0
-            direct(1+3* (iterm-1)+1) = 1.0d0
-            direct(1+3* (iterm-1)+2) = 0.0d0
-        end do
-!
-        call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                    direct, nbterm, zero, cbid, k8b,&
-                    'REEL', 'REEL', '12', 0.d0, lirela)
-!
-!....... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
-!....... PUIS AFFECTATION
-!
-        do iterm = 1, nbterm
-            direct(1+3* (iterm-1)) = 0.0d0
-            direct(1+3* (iterm-1)+1) = 0.0d0
-            direct(1+3* (iterm-1)+2) = 1.0d0
-        end do
-!
-        call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                    direct, nbterm, zero, cbid, k8b,&
-                    'REEL', 'REEL', '12', 0.d0, lirela)
-!
-! 3.2 DETERMINATION DES RELATIONS CINEMATIQUES DANS LE CAS GENERAL
-! ---
     else
+        if (nbcnx .eq. 3) then
+            ff(1) = 0.5d0* (1.0d0+ksi2)
+            ff(2) = -0.5d0* (ksi1+ksi2)
+            ff(3) = 0.5d0* (1.0d0+ksi1)
+        else if (nbcnx.eq.6) then
+            ff(1) = 0.5d0* (1.0d0+ksi2)*ksi2
+            ff(2) = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+ 1.0d0)
+            ff(3) = 0.5d0* (1.0d0+ksi1)*ksi1
+            ff(4) = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
+            ff(5) = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
+            ff(6) = (1.0d0+ksi1)* (1.0d0+ksi2)
+        else
+            x(1) = ksi1
+            x(2) = ksi2
+            if (nbcnx.eq.4) then
+                call elrfvf('QU4', x, 4, ff, nno)
+            else if (nbcnx.eq.8) then
+                call elrfvf('QU8', x, 8, ff, nno)
+            else if (nbcnx.eq.9) then
+                call elrfvf('QU9', x, 9, ff, nno)
+            endif
+            ffel2d = ff(1)
+            ff(1) = ff(4)
+            ff(4) = ff(3)
+            ff(3) = ff(2)
+            ff(2) = ffel2d 
+            if (nbcnx.ge.8) then
+                ffel2d = ff(5)
+                ff(5) = ff(8)
+                ff(8) = ff(7)
+                ff(7) = ff(6)
+                ff(6) = ffel2d
+            endif
+        endif
 !
-        if (iproj .eq. 2) then
+        if (iproj .gt. 10) then
 !
             nbterm = 3
-            call jenuno(jexnum(nonoma, noebe), nomnoe(1+1))
-            nomnoe(1+2) = nomnoe(1+1)
+            i1 = iproj - 10
+            i2 = i1 + 1
+            if (i2 .gt. nbsom) i2 = 1
+            if (l_excent) then 
+                ind = 3
+            else
+                ind = 2
+            endif
+            call jenuno(jexnum(nonoma, cxma(i1)), nomnoe(1+1))
+            call jenuno(jexnum(nonoma, cxma(i2)), nomnoe(1+ind))
             nomddl(1+1) = 'DEPL'
-            nomddl(1+2) = 'ROTA'
-            coemur(1+1) = -1.0d0
-            coemur(1+2) = -excent
+            nomddl(1+ind) = 'DEPL'
+!
+            coemur(1+1) = -ff(i1)
+            coemur(1+ind) = -ff(i2)
+!
+            if (l_excent)then          
+                nbterm = 5
+                nomnoe(1+2) = nomnoe(1+1)
+                nomnoe(1+4) = nomnoe(1+ind)
+                nomddl(1+2) = 'ROTA'
+                nomddl(1+4) = 'ROTA'
+                coemur(1+2) = excent*coemur(1+1)
+                coemur(1+4) = excent*coemur(1+ind)
+            endif
+!
+            if (notlin) then
+                nbterm = nbterm +1
+                i3 = i1 + nbsom
+                ind = 3
+                if(l_excent) ind = 5
+                call jenuno(jexnum(nonoma, cxma(i3)), nomnoe(1+ind))
+                nomddl(1+ind) = 'DEPL'
+!
+                coemur(1+ind) = -ff(i3)
+!
+                if (l_excent)then
+                    nbterm = 7
+                    nomnoe(1+6) = nomnoe(1+ind)
+                    nomddl(1+6) = 'ROTA'
+                    coemur(1+6) = excent*coemur(1+ind)
+                endif
+            endif
 !
         else
 !
-            if (iproj .gt. 10) then
+            nbterm = 1 + nbcnx
+            if (l_excent) nbterm = 1 + 2*nbcnx
+            do icnx = 1, nbcnx
+                ind = icnx
+                if (l_excent) ind = 2*icnx - 1
+                call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(1+ ind))
+                nomddl(1+ind) = 'DEPL'
+                coemur(1+ind) = -ff(icnx)
 !
-                nbterm = 5
-                i1 = iproj - 10
-                i2 = i1 + 1
-                if (i2 .gt. nbsom) i2 = 1
-                call jenuno(jexnum(nonoma, cxma(i1)), nomnoe(1+1))
-                nomnoe(1+2) = nomnoe(1+1)
-                call jenuno(jexnum(nonoma, cxma(i2)), nomnoe(1+3))
-                nomnoe(1+4) = nomnoe(1+3)
-                nomddl(1+1) = 'DEPL'
-                nomddl(1+2) = 'ROTA'
-                nomddl(1+3) = 'DEPL'
-                nomddl(1+4) = 'ROTA'
-!
-                if (nbcnx .eq. 3) then
-                    if (i1 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)
-                    else if (i1.eq.2) then
-                        ffel2d = -0.5d0* (ksi1+ksi2)
-                    else
-                        ffel2d = 0.5d0* (1.0d0+ksi1)
-                    endif
-                else if (nbcnx.eq.6) then
-                    if (i1 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                    else if (i1.eq.2) then
-                        ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+1.0d0)
-                    else if (i1.eq.3) then
-                        ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                    else if (i1.eq.4) then
-                        ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                    else if (i1.eq.5) then
-                        ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                    else
-                        ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                    endif
-                else if (nbcnx.eq.4) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU4', x, 4, ff, nno)
-                    if (i1 .eq. 1) then
-                        ffel2d = ff(4)
-                    else
-                        ffel2d = ff(i1-1)
-                    endif
-                else if (nbcnx.eq.8) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU8', x, 8, ff, nno)
-                    if (i1 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i1.eq.5) then
-                        ffel2d = ff(8)
-                    else
-                        ffel2d = ff(i1-1)
-                    endif
-                else if (nbcnx.eq.9) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU9', x, 9, ff, nno)
-                    if (i1 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i1.eq.5) then
-                        ffel2d = ff(8)
-                    else if (i1.eq.9) then
-                        ffel2d = ff(9)
-                    else
-                        ffel2d = ff(i1-1)
-                    endif
+                if (l_excent)then
+                    nomnoe(1+ind+1) = nomnoe(1+ind)
+                    nomddl(1+ind+1) = 'ROTA'
+                    coemur(1+ind+1) = excent*coemur(1+ind)
                 endif
-                coemur(1+1) = -ffel2d
-!               ZR(JCMUR+1) = -FFEL2D(NBCNX,I1,KSI1,KSI2)
-                coemur(1+2) = excent*coemur(1+1)
-!
-                if (nbcnx .eq. 3) then
-                    if (i2 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)
-                    else if (i2.eq.2) then
-                        ffel2d = -0.5d0* (ksi1+ksi2)
-                    else
-                        ffel2d = 0.5d0* (1.0d0+ksi1)
-                    endif
-                else if (nbcnx.eq.6) then
-                    if (i2 .eq. 1) then
-                        ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                    else if (i2.eq.2) then
-                        ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+1.0d0)
-                    else if (i2.eq.3) then
-                        ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                    else if (i2.eq.4) then
-                        ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                    else if (i2.eq.5) then
-                        ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                    else
-                        ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                    endif
-                else if (nbcnx.eq.4) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU4', x, 4, ff, nno)
-                    if (i2 .eq. 1) then
-                        ffel2d = ff(4)
-                    else
-                        ffel2d = ff(i2-1)
-                    endif
-                else if (nbcnx.eq.8) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU8', x, 8, ff, nno)
-                    if (i2 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i2.eq.5) then
-                        ffel2d = ff(8)
-                    else
-                        ffel2d = ff(i2-1)
-                    endif
-                else if (nbcnx.eq.9) then
-                    x(1) = ksi1
-                    x(2) = ksi2
-                    call elrfvf('QU9', x, 9, ff, nno)
-                    if (i2 .eq. 1) then
-                        ffel2d = ff(4)
-                    else if (i2.eq.5) then
-                        ffel2d = ff(8)
-                    else if (i2.eq.9) then
-                        ffel2d = ff(9)
-                    else
-                        ffel2d = ff(i2-1)
-                    endif
-                endif
-                coemur(1+3) = -ffel2d
-!               ZR(JCMUR+3) = -FFEL2D(NBCNX,I2,KSI1,KSI2)
-                coemur(1+4) = excent*coemur(1+3)
-                if (notlin) then
-                    nbterm = 7
-                    i3 = i1 + nbsom
-                    call jenuno(jexnum(nonoma, cxma(i3)), nomnoe(1+5))
-                    nomnoe(1+6) = nomnoe(1+5)
-                    nomddl(1+5) = 'DEPL'
-                    nomddl(1+6) = 'ROTA'
-!
-                    if (nbcnx .eq. 3) then
-                        if (i3 .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)
-                        else if (i3.eq.2) then
-                            ffel2d = -0.5d0* (ksi1+ksi2)
-                        else
-                            ffel2d = 0.5d0* (1.0d0+ksi1)
-                        endif
-                    else if (nbcnx.eq.6) then
-                        if (i3 .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                        else if (i3.eq.2) then
-                            ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+ 1.0d0)
-                        else if (i3.eq.3) then
-                            ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                        else if (i3.eq.4) then
-                            ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                        else if (i3.eq.5) then
-                            ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                        else
-                            ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                        endif
-                    else if (nbcnx.eq.4) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU4', x, 4, ff, nno)
-                        if (i3 .eq. 1) then
-                            ffel2d = ff(4)
-                        else
-                            ffel2d = ff(i3-1)
-                        endif
-                    else if (nbcnx.eq.8) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU8', x, 8, ff, nno)
-                        if (i3 .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (i3.eq.5) then
-                            ffel2d = ff(8)
-                        else
-                            ffel2d = ff(i3-1)
-                        endif
-                    else if (nbcnx.eq.9) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU9', x, 9, ff, nno)
-                        if (i3 .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (i3.eq.5) then
-                            ffel2d = ff(8)
-                        else if (i3.eq.9) then
-                            ffel2d = ff(9)
-                        else
-                            ffel2d = ff(i3-1)
-                        endif
-                    endif
-                    coemur(1+5) = -ffel2d
-!                  ZR(JCMUR+5) = -FFEL2D(NBCNX,I3,KSI1,KSI2)
-                    coemur(1+6) = excent*coemur(1+5)
-                endif
-!
-            else
-!
-                nbterm = 1 + 2*nbcnx
-                do icnx = 1, nbcnx
-                    call jenuno(jexnum(nonoma, cxma(icnx)), nomnoe(1+ 2* (icnx-1)+1))
-                    nomnoe(1+2*icnx) = nomnoe(1+2* (icnx-1)+1)
-                    nomddl(1+2* (icnx-1)+1) = 'DEPL'
-                    nomddl(1+2*icnx) = 'ROTA'
-!
-                    if (nbcnx .eq. 3) then
-                        if (icnx .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)
-                        else if (icnx.eq.2) then
-                            ffel2d = -0.5d0* (ksi1+ksi2)
-                        else
-                            ffel2d = 0.5d0* (1.0d0+ksi1)
-                        endif
-                    else if (nbcnx.eq.6) then
-                        if (icnx .eq. 1) then
-                            ffel2d = 0.5d0* (1.0d0+ksi2)*ksi2
-                        else if (icnx.eq.2) then
-                            ffel2d = 0.5d0* (ksi1+ksi2)* (ksi1+ksi2+ 1.0d0)
-                        else if (icnx.eq.3) then
-                            ffel2d = 0.5d0* (1.0d0+ksi1)*ksi1
-                        else if (icnx.eq.4) then
-                            ffel2d = -1.0d0* (1.0d0+ksi2)* (ksi1+ksi2)
-                        else if (icnx.eq.5) then
-                            ffel2d = -1.0d0* (1.0d0+ksi1)* (ksi1+ksi2)
-                        else
-                            ffel2d = (1.0d0+ksi1)* (1.0d0+ksi2)
-                        endif
-                    else if (nbcnx.eq.4) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU4', x, 4, ff, nno)
-                        if (icnx .eq. 1) then
-                            ffel2d = ff(4)
-                        else
-                            ffel2d = ff(icnx-1)
-                        endif
-                    else if (nbcnx.eq.8) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU8', x, 8, ff, nno)
-                        if (icnx .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (icnx.eq.5) then
-                            ffel2d = ff(8)
-                        else
-                            ffel2d = ff(icnx-1)
-                        endif
-                    else if (nbcnx.eq.9) then
-                        x(1) = ksi1
-                        x(2) = ksi2
-                        call elrfvf('QU9', x, 9, ff, nno)
-                        if (icnx .eq. 1) then
-                            ffel2d = ff(4)
-                        else if (icnx.eq.5) then
-                            ffel2d = ff(8)
-                        else if (icnx.eq.9) then
-                            ffel2d = ff(9)
-                        else
-                            ffel2d = ff(icnx-1)
-                        endif
-                    endif
-                    coemur(1+2* (icnx-1)+1) = -ffel2d
-!            ZR(JCMUR+2*(ICNX-1)+1) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
-                    coemur(1+2*icnx) = excent*coemur(1+2* (icnx-1)+1)
-                end do
-!
-            endif
+            end do
 !
         endif
+    endif
 !
 !....... UNE RELATION PAR DDL DE TRANSLATION DU NOEUD DU CABLE
 !        .....................................................
@@ -788,70 +286,79 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx,&
 !....... EN COMPTE LES DIFFERENTS COEFFICIENTS PAR DIRECTION DEFINIS
 !....... DANS LE VECTEUR ZR(JDIREC)
 !
-        do iterm = 1, nbterm
-            dimens(iterm) = 3
-        end do
+    do iterm = 1, nbterm
+        dimens(iterm) = 3
+    end do
 !
+    nbbloc = nbterm-1
+    ind = 3
+    if (l_excent) then
+        ind = 6
         nbbloc = (nbterm-1)/2
+    endif
 !
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA PREMIERE RELATION (DDL DX)
 !....... PUIS AFFECTATION
 !
-        direct(1) = 1.0d0
-        direct(1+1) = 0.0d0
-        direct(1+2) = 0.0d0
-        do ibloc = 1, nbbloc
-            direct(1+3+6* (ibloc-1)) = 1.0d0
-            direct(1+3+6* (ibloc-1)+1) = 0.0d0
-            direct(1+3+6* (ibloc-1)+2) = 0.0d0
+    direct(1) = 1.0d0
+    direct(1+1) = 0.0d0
+    direct(1+2) = 0.0d0
+    do ibloc = 1, nbbloc
+        direct(1+3+ind* (ibloc-1)) = 1.0d0
+        direct(1+3+ind* (ibloc-1)+1) = 0.0d0
+        direct(1+3+ind* (ibloc-1)+2) = 0.0d0
+        if (l_excent) then
             direct(1+3+6* (ibloc-1)+3) = 0.0d0
             direct(1+3+6* (ibloc-1)+4) = normal(3)
             direct(1+3+6* (ibloc-1)+5) = -normal(2)
-        end do
+        endif
+    end do
 !
-        call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                    direct, nbterm, zero, cbid, k8b,&
-                    'REEL', 'REEL', '12', 0.d0, lirela)
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
+                direct, nbterm, zero, cbid, k8b,&
+                'REEL', 'REEL', '12', 0.d0, lirela)
 !
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA DEUXIEME RELATION (DDL DY)
 !....... PUIS AFFECTATION
 !
-        direct(1) = 0.0d0
-        direct(1+1) = 1.0d0
-        direct(1+2) = 0.0d0
-        do ibloc = 1, nbbloc
-            direct(1+3+6* (ibloc-1)) = 0.0d0
-            direct(1+3+6* (ibloc-1)+1) = 1.0d0
-            direct(1+3+6* (ibloc-1)+2) = 0.0d0
+    direct(1) = 0.0d0
+    direct(1+1) = 1.0d0
+    direct(1+2) = 0.0d0
+    do ibloc = 1, nbbloc
+        direct(1+3+ind* (ibloc-1)) = 0.0d0
+        direct(1+3+ind* (ibloc-1)+1) = 1.0d0
+        direct(1+3+ind* (ibloc-1)+2) = 0.0d0
+        if (l_excent)then
             direct(1+3+6* (ibloc-1)+3) = -normal(3)
             direct(1+3+6* (ibloc-1)+4) = 0.0d0
             direct(1+3+6* (ibloc-1)+5) = normal(1)
-        end do
+        endif
+    end do
 !
-        call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                    direct, nbterm, zero, cbid, k8b,&
-                    'REEL', 'REEL', '12', 0.d0, lirela)
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
+                direct, nbterm, zero, cbid, k8b,&
+                'REEL', 'REEL', '12', 0.d0, lirela)
 !
 !....... COEFFICIENTS PAR DIRECTIONS POUR LA TROISIEME RELATION (DDL DZ)
 !....... PUIS AFFECTATION
 !
-        direct(1) = 0.0d0
-        direct(1+1) = 0.0d0
-        direct(1+2) = 1.0d0
-        do ibloc = 1, nbbloc
-            direct(1+3+6* (ibloc-1)) = 0.0d0
-            direct(1+3+6* (ibloc-1)+1) = 0.0d0
-            direct(1+3+6* (ibloc-1)+2) = 1.0d0
+    direct(1) = 0.0d0
+    direct(1+1) = 0.0d0
+    direct(1+2) = 1.0d0
+    do ibloc = 1, nbbloc
+        direct(1+3+ind* (ibloc-1)) = 0.0d0
+        direct(1+3+ind* (ibloc-1)+1) = 0.0d0
+        direct(1+3+ind* (ibloc-1)+2) = 1.0d0
+        if (l_excent) then
             direct(1+3+6* (ibloc-1)+3) = normal(2)
             direct(1+3+6* (ibloc-1)+4) = -normal(1)
             direct(1+3+6* (ibloc-1)+5) = 0.0d0
-        end do
+        endif
+    end do
 !
-        call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
-                    direct, nbterm, zero, cbid, k8b,&
-                    'REEL', 'REEL', '12', 0.d0, lirela)
-!
-    endif
+    call afrela(coemur, [cbid], nomddl, nomnoe, dimens,&
+                direct, nbterm, zero, cbid, k8b,&
+                'REEL', 'REEL', '12', 0.d0, lirela)
 !
 110 continue
 !
