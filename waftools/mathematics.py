@@ -68,7 +68,7 @@ def check_libm_after_files(self):
                 flags.remove('-lm')
             except ValueError:
                 break
-        self.end_msg('ok ("-lm" moved to LINKFLAGS_CLIB)')
+        self.end_msg('ok ("-lm" removed from LINKFLAGS_CLIB)')
         self.env.LINKFLAGS_CLIB = flags
     else:
         self.end_msg('nothing done')
@@ -151,7 +151,7 @@ def detect_math_lib(self):
                         product([i], ['Cinit', 'F77init', ''])])
         libs = ins + libs
         return self.check_math_libs('blacs', libs, embed)
-    
+
     def _optional():
         """Check optional dependencies"""
         self.check_math_libs('optional', OPTIONAL_DEPS, embed, optional=True)

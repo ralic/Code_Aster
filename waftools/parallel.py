@@ -49,9 +49,6 @@ def load_compilers_mpi(self):
     cxx = os.environ.get('CXX')
     fc = os.environ.get('FC')
     if (cc and check(path=cc)) and (fc and check(path=fc)):
-        self.env.append_unique('CCNAME', osp.basename(cc))
-        self.env.append_unique('CXXNAME', osp.basename(cxx))
-        self.env.append_unique('FCNAME', osp.basename(fc))
         self.check_mpi()
     elif self.options.parallel:
         self.fatal("Unable to configure the parallel environment")
