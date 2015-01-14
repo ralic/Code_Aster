@@ -28,12 +28,12 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
 !
 !--------------------------------------------------------------
 ! BUT : creer une matice creuse ACNZ formée des colonnes non-nulles de A
-!       A et ACNZ ont le même nombre de termes non-nuls 
+!       A et ACNZ ont le même nombre de termes non-nuls
 ! RQ : on se base sur la norme des colonnes pour sélectionner les colonnes
 !      à garder
 !
 ! IN : A de taille ma x na
-! OUT : ACNZ de taille ma x nacnz   
+! OUT : ACNZ de taille ma x nacnz
 !---------------------------------------------------------------
 #ifdef _HAVE_PETSC
 #include "asterf_petsc.h"
@@ -41,17 +41,17 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
     Mat, intent(in)  :: a
     Mat, intent(out) :: acnz
     PetscInt, dimension(:), pointer :: icolnz_c
-!    
+!
 !================================================================
 !
 !     VARIABLES LOCALES
 !
     integer :: ifm, niv
     aster_logical :: verbose
-    mpi_int :: mpicomm  
-    PetscInt :: inz, ii 
-    PetscInt :: first, step, ma, na, nacnz, ierr 
-    PetscInt, parameter :: ione = 1 , izero = 0 
+    mpi_int :: mpicomm
+    PetscInt :: inz, ii
+    PetscInt :: first, step, ma, na, nacnz, ierr
+    PetscInt, parameter :: ione = 1 , izero = 0
     IS :: isall, isnz
     PetscReal, dimension(:), allocatable :: norms
 !----------------------------------------------------------------
@@ -59,33 +59,33 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
    call infniv(ifm, niv)
    verbose=(niv == 2)
 !
-    call MatGetSize( a, ma, na, ierr) 
+    call MatGetSize( a, ma, na, ierr)
     ASSERT(ierr == 0 )
 !
-    allocate(norms( na ), stat = ierr) 
+    allocate(norms( na ), stat = ierr)
     ASSERT(ierr == 0 )
     call MatGetColumnNorms( a, norm_2, norms, ierr)
-     ASSERT( ierr == 0 ) 
-!   -- nombre de colonnes nonnulles dans Atmp      
+     ASSERT( ierr == 0 )
+!   -- nombre de colonnes nonnulles dans Atmp
     nacnz = count( norms > r8prem() )
-!   -- icolnz :indices C des colonnes non nulles de de A   
-    allocate( icolnz_c( nacnz), stat = ierr ) 
+!   -- icolnz :indices C des colonnes non nulles de de A
+    allocate( icolnz_c( nacnz), stat = ierr )
     ASSERT( ierr == 0 )
 !
-    inz = 0 
+    inz = 0
     do ii=1, na
         if ( norms( ii ) > r8prem() ) then
-         inz = inz + 1 
+         inz = inz + 1
          icolnz_c( inz ) = ii-1
         endif
     enddo
-    
+
 !
-!   -- isnz index set des  colonnes non-nulles de Atmp (et de A)     
+!   -- isnz index set des  colonnes non-nulles de Atmp (et de A)
     call ISCreateGeneral(mpicomm, nacnz, icolnz_c, PETSC_USE_POINTER,&
                          isnz, ierr)
-!   -- isall index set de toutes les lignes de Atmp 
-    call ISCreateStride( mpicomm, ma, izero, ione, isall, ierr ) 
+!   -- isall index set de toutes les lignes de Atmp
+    call ISCreateStride( mpicomm, ma, izero, ione, isall, ierr )
 !   -- extraction des colonnes non-nulles de Atmp => Anz
     call MatGetSubMatrix( a, isall, isnz , MAT_INITIAL_MATRIX, &
         acnz, ierr)
@@ -101,14 +101,15 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
 !
     call ISDestroy(isnz, ierr)
     call ISDestroy(isall, ierr)
-    deallocate( norms, stat = ierr ) 
+    deallocate( norms, stat = ierr )
     ASSERT(ierr == 0 )
- 
+
 #else
     integer, intent(in)  :: a
     integer, intent(out)  :: acnz
     integer, dimension(:), pointer :: icolnz_c
     ASSERT(.false.)
+    acnz = 0
 #endif
 !
 end subroutine

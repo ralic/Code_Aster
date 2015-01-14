@@ -1,4 +1,4 @@
-function check_nullbasis( vec_c, mat_z, tol ) result ( is_ok ) 
+function check_nullbasis( vec_c, mat_z, tol ) result ( is_ok )
 !
 implicit none
 !
@@ -24,9 +24,9 @@ implicit none
 !
 !----------------------------------------------------------------
 !
-!     Vérification de l'orthogonalité de la base stockée dans 
-!     mat_z par rapport au vecteur vec_c 
-!     
+!     Vérification de l'orthogonalité de la base stockée dans
+!     mat_z par rapport au vecteur vec_c
+!
 ! ---------------------------------------------------------------
 #ifdef _HAVE_PETSC
 #include "elim_lagr.h"
@@ -36,7 +36,7 @@ implicit none
    PetscScalar, optional, intent(in)  :: tol
    aster_logical                      :: is_ok
 ! Local variables
-   integer                  :: ifm, niv 
+   integer                  :: ifm, niv
    Vec                      :: vec_cz
    PetscInt                 :: ierr
    PetscScalar              :: tol_loc, norm
@@ -45,8 +45,8 @@ implicit none
 !
    call infniv(ifm, niv)
    verbose=(niv == 2)
-!   
-  if (present(tol)) then 
+!
+  if (present(tol)) then
      tol_loc = tol
   else
      tol_loc = tolmax
@@ -58,15 +58,16 @@ implicit none
 !
   if (verbose) write(ifm,*),'   |C(IC,:).T|=', norm
   if (verbose) write(ifm,*),' '
-!  
+!
   is_ok = (norm < tol_loc)
 !
 ! Libération de la mémoire
-  call VecDestroy(vec_cz, ierr) 
+  call VecDestroy(vec_cz, ierr)
 !
 #else
     integer, intent(in)         :: vec_c, mat_z
     real, optional, intent(in)  :: tol
-    aster_logical               :: is_ok 
+    aster_logical               :: is_ok
+    is_ok = .false.
 #endif
 end function
