@@ -128,6 +128,7 @@ subroutine op0025()
                 parmei, parmer, solveu, parcri, parcrr,&
                 compor, evolsc)
     para(1) = parmer(1)
+    para(2) = 0.d0
 !
 ! 2.3. ==> LECTURE DE L'ETAT INITIAL ET DES DONNEES D'INCREMENTATION
 !
