@@ -26,7 +26,7 @@ def configure(self):
     self.env.append_unique('INCLUDES', ['include/'])
     if opts.embed_all or opts.embed_aster:
         self.env.append_value('ASTER_EMBEDS', ['bibc'])
-    if 'ifort' in self.env.get_flat('LINK_FC'):
+    if 'ifort' in self.env.FC_NAME.lower():
         self.env.append_value('LINKFLAGS_fcprogram', ['-nofor_main'])
         if opts.embed_all or opts.embed_aster:
             self.env.append_value('LINKFLAGS_fcprogram', ['-static-intel'])
@@ -146,8 +146,10 @@ def build_as_embeded(self, stenv):
 
     excl = ['**/med_aster_module.c'] if not stenv.BUILD_MED else []
 
-    # required for Intel compiler
-    main = 'main' if stenv.FC_MAIN == -1 or 'ifort' in stenv.LINK_FC else stenv.FC_MAIN
+    # FC_MAIN = 'main' with gfortran, 'MAIN__' with Intel
+    # Intel compiler requires -nofor_main to link a no fortran program.
+    # So in all cases, main='main' !
+    main = 'main' if stenv.FC_MAIN == -1 or 'ifort' in stenv.FC_NAME.lower() else stenv.FC_MAIN
 
     tgt = (self.variant == 'release' and stenv.ASTERBINOPT) or stenv.ASTERBINDBG
     self(

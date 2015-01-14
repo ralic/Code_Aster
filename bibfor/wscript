@@ -50,7 +50,7 @@ MAIN = "      program main\n      end program main\n"
 
 @Configure.conf
 def check_fortran_compiler_flags(self):
-    if self.env.FC_NAME == 'GFORTRAN':
+    if 'gfortran' in self.env.FC_NAME.lower():
         if self.env.DEST_CPU == 'x86_64':
             flags = ['-fdefault-%s-%i' % (name, 8)
                       for name in ('double', 'integer', 'real')]
@@ -60,7 +60,7 @@ def check_fortran_compiler_flags(self):
         self.check_fortran_compiler_options('-fno-aggressive-loop-optimizations')
         # long lines after preprocessing
         self.check_fortran_compiler_options('-ffree-line-length-none')
-    if self.env.FC_NAME == 'IFORT':
+    if 'ifort' in self.env.FC_NAME.lower():
         self.check_fortran_compiler_options(['-fpe0', '-traceback'])
         if self.env.DEST_CPU == 'x86_64':
             self.check_fortran_compiler_options(['-i8', '-r8'])

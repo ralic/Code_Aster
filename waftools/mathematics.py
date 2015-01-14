@@ -79,7 +79,7 @@ def detect_mkl(self):
     var = 'OPTLIB_FLAGS_MATH'
     opts = self.options
     embed = opts.embed_math or opts.embed_all
-    if self.env.FC_NAME != 'IFORT':
+    if 'ifort' not in self.env.FC_NAME.lower():
         return
     self.start_msg('Detecting MKL libraries')
     suffix = '_lp64' if self.env.DEST_CPU.endswith('64') else ''
