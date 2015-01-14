@@ -1,6 +1,8 @@
 subroutine tldlr8(nommat, hcol, adia, ablo, npivot,&
                   neq, nbbloc, ildeb, ilfin, eps)
     implicit none
+! multi-threading optimization for MULT_FRONT
+! aslint: disable=C1513
 !
 #include "jeveux.h"
 !

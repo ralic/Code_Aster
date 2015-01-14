@@ -20,6 +20,9 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat,&
 ! COMPIL PARAL
 ! VERSION COMPLEXE DE MLTASA
     implicit none
+! multi-threading optimization for MULT_FRONT
+! aslint: disable=C1513
+!
 #include "jeveux.h"
 !
 #include "asterfort/jecrec.h"
