@@ -28,9 +28,9 @@ subroutine te0309(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: nomte, option
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: norm(3)
@@ -42,8 +42,8 @@ subroutine te0309(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ij, imattt, ino, j, jno
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -51,27 +51,27 @@ subroutine te0309(option, nomte)
 !
     call jevech('PMATTTR', 'E', imattt)
 !
-    do 11 i = 1, ndim
+    do i = 1, ndim
         zr(imattt + i -1) = 0.0d0
-11  end do
+    end do
 !
 !
 !     CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
-    do 21 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 22 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
-22      continue
-21  end do
+        end do
+    end do
 !
 !
 !     BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 ipg = 1, npg1
+    do ipg = 1, npg1
         kdec=(ipg-1)*nno*ndim
         ldec=(ipg-1)*nno
 !
@@ -85,9 +85,9 @@ subroutine te0309(option, nomte)
 !
 !
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 102 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
 !
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
@@ -96,7 +96,8 @@ subroutine te0309(option, nomte)
 !
 !
 !
-102          continue
+            end do
+        end do
 !
 !        CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
@@ -107,40 +108,40 @@ subroutine te0309(option, nomte)
         norm(3) = nz/jac
 !
         if (option(11:11) .eq. 'X') then
-            do 103 i = 1, nno
-                do 104 j = 1, i
+            do i = 1, nno
+                do j = 1, i
                     ij = (i-1)*i/2 +j
                     zr(imattt + ij -1) = zr(imattt + ij -1) +jac*zr( ipoids+ipg-1)*norm(1)* zr(iv&
                                          &f+ldec+i-1)*zr(ivf+ ldec+j-1)
-104              continue
-103          continue
+                end do
+            end do
         else
 !
             if (option(11:11) .eq. 'Y') then
 !
-                do 105 i = 1, nno
-                    do 106 j = 1, i
+                do i = 1, nno
+                    do j = 1, i
                         ij = (i-1)*i/2 +j
                         zr(imattt + ij -1) = zr(imattt + ij -1) +jac*zr(ipoids+ipg-1)*norm(2)* zr&
                                              &(ivf+ldec+i- 1)*zr(ivf+ldec+j-1)
-106                  continue
-105              continue
+                    end do
+                end do
 !
             else
                 if (option(11:11) .eq. 'Z') then
 !
-                    do 107 i = 1, nno
-                        do 108 j = 1, i
+                    do i = 1, nno
+                        do j = 1, i
                             ij = (i-1)*i/2 +j
                             zr(imattt + ij -1) = zr(imattt + ij -1) +jac*zr(ipoids+ipg-1)*norm(3)&
                                                  &* zr(ivf+ ldec+i-1)*zr(ivf+ldec+j-1)
-108                      continue
-107                  continue
+                        end do
+                    end do
 !
                 endif
             endif
         endif
 !
-101  end do
+    end do
 !
 end subroutine

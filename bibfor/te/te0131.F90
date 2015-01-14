@@ -32,12 +32,12 @@ subroutine te0131(option, nomte)
 !.......................................................................
 !
 #include "jeveux.h"
-!
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
+!
     character(len=8) :: nompar(4)
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, theta
@@ -53,8 +53,8 @@ subroutine te0131(option, nomte)
 !-----------------------------------------------------------------------
     tz0 = r8t0()
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
     ndi = nno*(nno+1)/2
 !
@@ -74,49 +74,50 @@ subroutine te0131(option, nomte)
     nompar(3) = 'Z'
     nompar(4) = 'INST'
 !
-    do 10 i = 1, ndi
+    do i = 1, ndi
         zr(imattt+i-1) = 0.0d0
-10  end do
+    end do
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI X OMJ
 !
-    do 1 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 2 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
- 2      continue
- 1  end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 ipg = 1, npg2
+    do ipg = 1, npg2
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
 !
         nx = 0.0d0
         ny = 0.0d0
         nz = 0.0d0
-        do 12 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 12 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
-12          continue
+            end do
+        end do
         jac = sqrt(nx*nx + ny*ny + nz*nz)
 !
         xx = 0.d0
         yy = 0.d0
         zz = 0.d0
-        do 102 i = 1, nno
+        do i = 1, nno
             xx = xx + zr(igeom+3*i-3) * zr(ivf+ldec+i-1)
             yy = yy + zr(igeom+3*i-2) * zr(ivf+ldec+i-1)
             zz = zz + zr(igeom+3*i-1) * zr(ivf+ldec+i-1)
-102      continue
+        end do
         valpar(1) = xx
         valpar(2) = yy
         valpar(3) = zz
@@ -126,15 +127,15 @@ subroutine te0131(option, nomte)
                         echan, ier)
             ASSERT(ier.eq.0)
 !
-            do 103 i = 1, nno
-                do 104 j = 1, i
+            do i = 1, nno
+                do j = 1, i
                     ij = (i-1)*i/2 + j
 !
                     zr(imattt+ij-1) = zr(imattt+ij-1) + jac * theta * zr(ipoids+ipg-1) * echan * &
                                       &zr(ivf+ldec+i-1) * zr( ivf+ldec+j-1)
 !
-104              continue
-103          continue
+                end do
+            end do
         else if (option(11:14).eq.'RAYO') then
             call fointe('A', zk8(iray), 4, nompar, valpar,&
                         sigma, ier)
@@ -144,20 +145,20 @@ subroutine te0131(option, nomte)
             ASSERT(ier .eq. 0)
 !
             tpg = 0.d0
-            do 105 i = 1, nno
+            do i = 1, nno
                 tpg = tpg + zr(itemp+i-1) * zr(ivf+ldec+i-1)
-105          continue
-            do 106 i = 1, nno
-                do 107 j = 1, i
+            end do
+            do i = 1, nno
+                do j = 1, i
                     ij = (i-1)*i/2 + j
 !
                     zr(imattt+ij-1) = zr(imattt+ij-1) + jac * theta * zr(ivf+ldec+i-1) * zr(ivf+l&
                                       &dec+j-1) * zr(ipoids+ ipg-1) * sigma * epsil * 4.d0 * (tpg&
                                       &+tz0)**3
 !
-107              continue
-106          continue
+                end do
+            end do
         endif
 !
-101  continue
+    end do
 end subroutine

@@ -52,13 +52,13 @@ subroutine te0001(option, nomte)
         call jevech('PGEOMER', 'L', jgeom)
         call jevech('PFORNOR', 'L', jdimp)
         call jevech('PVECTUR', 'E', jvec)
-        do 10 i = 1, nddl1
+        do i = 1, nddl1
             zr(jvec-1+i) = zr(jdimp-1+i)
- 10     continue
+        end do
         langl = zr(jdimp+nddl1) .lt. 0.d0
-        do 11 i = 1, 3
+        do i = 1, 3
             angl(i) = zr(jdimp+nddl1+i)
- 11     continue
+        end do
     else if (option.eq. 'CHAR_MECA_FORC_F') then
         nbpar = 4
         nompar(1) = 'X'
@@ -73,22 +73,22 @@ subroutine te0001(option, nomte)
         valpar(3) = zr(jgeom-1+3)
         valpar(4) = zr(jtime-1+1)
         call jevech('PFORNOF', 'L', jdimp)
-        do 20 i = 1, nddl1
+        do i = 1, nddl1
             nomfon = zk8(jdimp-1+i)
             ier=0
             call fointe('FM', nomfon, nbpar, nompar, valpar,&
                         zr(jvec-1+i), ier)
- 20     continue
+        end do
         langl = zk8(jdimp+nddl1) .eq. 'UTILISAT'
         if (langl) then
             dgrd = r8dgrd()
-            do 21 i = 1, 3
+            do i = 1, 3
                 nomfon = zk8(jdimp+nddl1+i)
                 ier=0
                 call fointe('FM', nomfon, nbpar, nompar, valpar,&
                             angl(i), ier)
                 angl(i) = angl(i) * dgrd
- 21         continue
+            end do
         endif
     else
         call utmess('F', 'ELEMENTS2_61', sk=option)
@@ -97,18 +97,20 @@ subroutine te0001(option, nomte)
 !     --- PROJECTION DANS LE REPERE ABSOLU ---
     if (langl) then
         call matrot(angl, mat)
-        do 101 i = 1, min(nddl, 3)
+        do i = 1, min(nddl, 3)
             vect(i) = 0.d0
-            do 101 j = 1, min(nddl, 3)
+            do j = 1, min(nddl, 3)
                 vect(i) = vect(i) + mat(j,i)*zr(jvec-1+j)
-101         continue
-        do 102 i = 4, min(nddl, 6)
+            end do
+        end do
+        do i = 4, min(nddl, 6)
             vect(i) = 0.d0
-            do 102 j = 4, min(nddl, 6)
+            do j = 4, min(nddl, 6)
                 vect(i) = vect(i) + mat(j-3,i-3)*zr(jvec-1+j)
-102         continue
-        do 103 i = 1, nddl
+            end do
+        end do
+        do i = 1, nddl
             zr(jvec-1+i) = vect(i)
-103     continue
+        end do
     endif
 end subroutine

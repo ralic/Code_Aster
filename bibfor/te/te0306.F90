@@ -17,9 +17,9 @@ subroutine te0306(option, nomte)
 ! ======================================================================
     implicit none
 #include "jeveux.h"
-!
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
@@ -37,8 +37,8 @@ subroutine te0306(option, nomte)
 !-----------------------------------------------------------------------
     integer :: i, ino, itemp, itemps, j, jno
 !-----------------------------------------------------------------------
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
 !
     call jevech('PGEOMER', 'L', igeom)
@@ -51,42 +51,43 @@ subroutine te0306(option, nomte)
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI   OMJ
 !
-    do 1 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 2 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
- 2      continue
- 1  end do
+        end do
+    end do
 !
-    do 101 ipg = 1, npg1
+    do ipg = 1, npg1
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
 !
         nx = 0.0d0
         ny = 0.0d0
         nz = 0.0d0
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 102 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
                 nx = nx + zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec)* zr(idfdy+kdec+jdec)* sz(i,j)
-102          continue
+            end do
+        end do
         jac = sqrt(nx*nx + ny*ny + nz*nz)
 !
         tpg = 0.d0
-        do 104 i = 1, nno
+        do i = 1, nno
             tpg = tpg + zr(itemp+i-1) * zr(ivf+ldec+i-1)
-104      continue
-        do 103 i = 1, nno
+        end do
+        do i = 1, nno
             zr(iveres+i-1) = zr(iveres+i-1) - jac* theta* zr(ipoids+ ipg-1)* zr(ivf+ldec+i-1)* zr&
                              &(iech)* tpg
-103      continue
+        end do
 !
-101  end do
+    end do
 ! FIN ------------------------------------------------------------------
 end subroutine

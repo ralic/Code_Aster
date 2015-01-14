@@ -1,11 +1,11 @@
 subroutine te0301(option, nomte)
-    implicit   none
+    implicit none
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+!
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
@@ -47,8 +47,8 @@ subroutine te0301(option, nomte)
     ASSERT(nbelr.eq.2)
     elrefe = lirefe(2)
 !
-    call elrefe_info(elrefe=elrefe,fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+    call elrefe_info(elrefe=elrefe, fami='RIGI', ndim=ndim, nno=nno, nnos=nnos,&
+                     npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)
     idfdy = idfdx + 1
     ndi = nno*(nno+1)/2
 !
@@ -60,25 +60,25 @@ subroutine te0301(option, nomte)
 !
     theta = zr(itemps+2)
 !
-    do 10 i = 1, ndi
+    do i = 1, ndi
         mat(i) = 0.0d0
-10  end do
+    end do
 !
 !    CALCUL DES PRODUITS VECTORIELS OMI * OMJ
 !
-    do 1 ino = 1, nno
+    do ino = 1, nno
         i = igeom + 3*(ino-1) -1
-        do 2 jno = 1, nno
+        do jno = 1, nno
             j = igeom + 3*(jno-1) -1
             sx(ino,jno) = zr(i+2) * zr(j+3) - zr(i+3) * zr(j+2)
             sy(ino,jno) = zr(i+3) * zr(j+1) - zr(i+1) * zr(j+3)
             sz(ino,jno) = zr(i+1) * zr(j+2) - zr(i+2) * zr(j+1)
- 2      continue
- 1  end do
+        end do
+    end do
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 101 ipg = 1, npg1
+    do ipg = 1, npg1
         kdec = (ipg-1)*nno*ndim
         ldec = (ipg-1)*nno
 !
@@ -88,52 +88,53 @@ subroutine te0301(option, nomte)
 !
 !   CALCUL DE LA NORMALE AU POINT DE GAUSS IPG
 !
-        do 102 i = 1, nno
+        do i = 1, nno
             idec = (i-1)*ndim
-            do 102 j = 1, nno
+            do j = 1, nno
                 jdec = (j-1)*ndim
 !
                 nx = nx + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sx(i,j)
                 ny = ny + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sy(i,j)
                 nz = nz + zr(idfdx+kdec+idec) * zr(idfdy+kdec+jdec) * sz(i,j)
 !
-102          continue
+            end do
+        end do
 !
 !   CALCUL DU JACOBIEN AU POINT DE GAUSS IPG
 !
         jac = sqrt(nx*nx + ny*ny + nz*nz)
 !
-        do 103 i = 1, nno
-            do 104 j = 1, i
+        do i = 1, nno
+            do j = 1, i
                 ij = (i-1)*i/2 + j
                 mat(ij) = mat(ij) + jac * theta * zr(ipoids+ipg-1) * h * zr(ivf+ldec+i-1) * zr(iv&
                           &f+ldec+j-1)
 !
-104          continue
-103      continue
+            end do
+        end do
 !
-101  end do
+    end do
 !
 ! --- CALCUL LA MATRICE SUR LA MAILLE DE COUPLAGE
 !            ! MAT -MAT!
 !     MATTT =!      MAT!
     k1 = 0
     k2= nno*(nno+1)/2
-    do 200 i = 1, nno
+    do i = 1, nno
         k3 = k2 + nno
-        do 201 j = 1, i
+        do j = 1, i
             k1=k1+1
             k2=k2+1
             k3=k3+1
             zr(imattt-1+k1) = mat(k1)
             zr(imattt-1+k2) = -mat(k1)
             zr(imattt-1+k3) = mat(k1)
-201      continue
-        do 202 j = i+1, nno
+        end do
+        do j = i+1, nno
             k2=k2+1
             k4=i+j*(j-1)/2
             zr(imattt-1+k2) = -mat(k4)
-202      continue
+        end do
         k2 = k3
-200  end do
+    end do
 end subroutine
