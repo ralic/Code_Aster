@@ -94,7 +94,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     integer :: nbpg00(nbfamx), imolo, nec, kfpg, nbfpg, nbfpg2, ifam
     integer :: itype, nb1, nbelr, jmolo, idime, ipg
     integer :: ifm, nivinf, igrel
-    integer :: ierd, jliel, nbgrel, iordr
+    integer :: ierd, jliel, nbgrel
     integer :: iaux, dimtopo
     aster_logical :: ljoint, lpenta
 !
