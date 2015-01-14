@@ -18,7 +18,7 @@
 interface
     subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
                       nnos, nno, nbpg, ndim, refcoo,&
-                      gscoo, wg, codret)
+                      gscoo, wg, nochmd, codret)
         character(len=19) :: chanom
         character(len=8) :: typech
         integer :: tyelas
@@ -31,6 +31,7 @@ interface
         real(kind=8) :: refcoo(*)
         real(kind=8) :: gscoo(*)
         real(kind=8) :: wg(*)
+        character(len=64) :: nochmd
         integer :: codret
     end subroutine uteref
 end interface

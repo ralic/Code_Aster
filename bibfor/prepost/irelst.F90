@@ -1,5 +1,5 @@
-subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
-                  nbimpr, caimpi, caimpk, sdcarm)
+subroutine irelst(nofimd, chanom, nochmd, typech, nomaas,&
+                  nomamd, nbimpr, caimpi, caimpk, sdcarm)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -30,7 +30,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
     character(len=8) :: nomaas, typech, sdcarm
     character(len=*) :: nofimd
     character(len=19) :: chanom
-    character(len=64) :: nomamd
+    character(len=64) :: nomamd, nochmd
     integer :: nbimpr, caimpi(10, nbimpr)
     character(len=80) :: caimpk(3, nbimpr)
 ! ======================================================================
@@ -171,7 +171,7 @@ subroutine irelst(nofimd, chanom, typech, nomaas, nomamd,&
 !
         call uteref(chanom, typech, ntypef, nomtef, nomfpg,&
                     nbnoso, nbnoto, nbrepg, ndim, refcoo,&
-                    gscoo, wg, codret)
+                    gscoo, wg, nochmd, codret)
 !
         nomasu = ' '
         if (nbcouc .ne. 0 .and. nbsect .eq. 0) then

@@ -269,13 +269,14 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
         if (typech(1:4) .eq. 'ELGA' .or. typech(1:4) .eq. 'ELEM') then
 !
             if (sdcarm .ne. ' ' .and. typech(1:4) .eq. 'ELGA') then
-                call irelst(nofimd, chanom, typech, nomaas, nomamd,&
-                            nbimpr, zi( adcaii), zk80(adcaik), sdcarm)
+                call irelst(nofimd, chanom, nochmd, typech, nomaas,&
+                            nomamd, nbimpr, zi( adcaii), zk80(adcaik),&
+                            sdcarm)
             endif
 !
-            call irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
-                        zi( adcaii), zk80(adcaik), modnum, nuanom, sdcarm,&
-                        codret)
+            call irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
+                        nbimpr, zi( adcaii), zk80(adcaik), modnum, nuanom,&
+                        sdcarm, codret)
 !
         endif
 !

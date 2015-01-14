@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
-                      caimpi, caimpk, modnum, nuanom, sdcarm,&
-                      codret)
+    subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
+                      nbimpr, caimpi, caimpk, modnum, nuanom,&
+                      sdcarm, codret)
         integer, parameter :: ntymax=69
         integer :: nbimpr
         character(len=*) :: nofimd
@@ -30,6 +30,7 @@ interface
         integer :: modnum(ntymax)
         integer :: nuanom(ntymax, *)
         character(len=8) :: sdcarm
+        character(len=64) :: nochmd
         integer :: codret
     end subroutine irmpga
 end interface

@@ -94,7 +94,7 @@ subroutine irgene(iocc, resu, form, ifi, nbnosy,&
                             iret)
                 if (iret .eq. 0) then
                     call titre2(resu, noch19, nomst, 'GENE', iocc,&
-                                '(1PE12.5)')
+                                '(1PE12.5)', nosy(isy), ordr(iord))
                     write(ifi,2010)
                     call jeveuo(nomst, 'L', jtitr)
                     call jelira(nomst, 'LONMAX', nbtitr)

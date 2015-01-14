@@ -17,12 +17,14 @@
 !
 interface
     subroutine titre2(nomcon, nomcha, nomobj, motfac, iocc,&
-                      formr)
+                      formr, nomsym, iordr)
         character(len=*) :: nomcon
         character(len=*) :: nomcha
         character(len=*) :: nomobj
         character(len=*) :: motfac
         integer :: iocc
         character(len=*) :: formr
+        character(len=*), optional, intent(in) :: nomsym
+        integer, optional, intent(in) :: iordr
     end subroutine titre2
 end interface

@@ -17,7 +17,8 @@
 !
 interface
     subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
-                      motfac, iocc, base, formr)
+                      motfac, iocc, base, formr, nomsym,&
+                      iordr)
         character(len=1) :: niv
         character(len=*) :: nomcon
         character(len=*) :: nomcha
@@ -27,5 +28,7 @@ interface
         integer :: iocc
         character(len=1) :: base
         character(len=*) :: formr
+        character(len=*), optional, intent(in) :: nomsym
+        integer, optional, intent(in) :: iordr
     end subroutine titrea
 end interface

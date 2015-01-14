@@ -1,5 +1,5 @@
 subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
-                  iligs, icols, formr)
+                  iligs, icols, formr, nomsym, iordr)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -24,13 +24,14 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 #include "asterfort/lxscan.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsnopa.h"
-#include "asterfort/rsutor.h"
 #include "asterfort/sndbg.h"
 #include "asterfort/titrec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utremt.h"
     character(len=*) :: donnee(*), sortie(*), formr
     integer :: iligd, icold, nbtitr, iligs, icols
+    character(len=*), optional, intent(in) :: nomsym
+    integer, optional, intent(in) :: iordr
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -338,16 +339,14 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !        --- NOM SYMBOLIQUE POUR UN CHAMP D'UN RESULTAT ---
             call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
                         para, nbpara)
-            call rsutor(para(1)(1:8), para(2)(1:19), k16bid, ibid)
-            cgen = k16bid
+            cgen = nomsym
             igen = lxlgut(k16bid)
 !
         case (18)
 !        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
             call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
                         para, nbpara)
-            call rsutor(para(1)(1:8), para(2)(1:19), k16bid, ibid)
-            call codent(ibid, 'G', cgen(1:16))
+            call codent(iordr, 'G', cgen(1:16))
             igen = lxlgut(cgen(1:16))
 !
         case (19)
@@ -357,7 +356,8 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             call rsnopa(para(1)(1:8), 0, '&&TITREB.NOM_ACCE', nbacce, nbpa)
             call jeexin('&&TITREB.NOM_ACCE', iret)
             if (iret .gt. 0) call jeveuo('&&TITREB.NOM_ACCE', 'E', jpara)
-            call rsutor(para(1)(1:8), para(2)(1:19), k16bid, ibid)
+            k16bid = nomsym
+            ibid = iordr
             do iacc = 1, nbacce
                 call gettco(para(1)(1:8), tysd)
                 ilg = lxlgut(zk16(jpara-1+iacc))

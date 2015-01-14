@@ -17,7 +17,7 @@
 !
 interface
     subroutine titre1(st, nomobj, base, nbtitr, titdon,&
-                      lgdon, formr)
+                      lgdon, formr, nomsym, iordr)
         character(len=1) :: st
         character(len=*) :: nomobj
         character(len=*) :: base
@@ -25,5 +25,7 @@ interface
         character(len=*) :: titdon(*)
         integer :: lgdon(*)
         character(len=*) :: formr
+        character(len=*), optional, intent(in) :: nomsym
+        integer, optional, intent(in) :: iordr
     end subroutine titre1
 end interface

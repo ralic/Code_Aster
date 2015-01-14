@@ -1,5 +1,5 @@
 subroutine titre1(st, nomobj, base, nbtitr, titdon,&
-                  lgdon, formr)
+                  lgdon, formr, nomsym, iordr)
     implicit none
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -15,6 +15,8 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
     character(len=1) :: st
     character(len=*) :: nomobj, base, titdon(*), formr
     integer :: nbtitr, lgdon(*)
+    character(len=*), optional, intent(in) :: nomsym
+    integer, optional, intent(in) :: iordr
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +76,7 @@ subroutine titre1(st, nomobj, base, nbtitr, titdon,&
 !
 !              --- ON A TROUVE UN "&",  ATTENTION DEMON ---
                 call titreb(titdon, iligd, icold, nbtitr, zk80(1),&
-                            ldons1, icols, formr)
+                            ldons1, icols, formr, nomsym, iordr)
 !
             else
                 icols = icols + 1

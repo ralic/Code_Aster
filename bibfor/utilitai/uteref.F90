@@ -1,6 +1,6 @@
 subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
                   nnos, nno, nbpg, ndim, refcoo,&
-                  gscoo, wg, codret)
+                  gscoo, wg, nochmd, codret)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,6 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/rsutor.h"
 #include "asterfort/utmess.h"
 !
     integer :: tyelas
@@ -82,6 +81,7 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     character(len=16) :: nomte
     character(len=16) :: nomfpg
     character(len=19) :: chanom
+    character(len=64) :: nochmd
 !
     integer :: codret
 !
@@ -106,7 +106,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
     character(len=4) :: tych
     character(len=8) :: elrefe, elrefb, lielrf(nbfamx), fapg(nbfamx), nomgd, famil
     character(len=8) :: nomtypmail, fapg2(nbfamx)
-    character(len=16) :: nomsym, valk(2)
+    character(len=16) :: nomsym
+    character(len=64) :: valk(2)
     character(len=19) :: ligrel, resu
 !
     real(kind=8) :: vol
@@ -234,8 +235,8 @@ subroutine uteref(chanom, typech, tyelas, nomte, nomfpg,&
         if (ifam .le. 0) then
             resu = chanom(1:8)
             call jeexin(resu//'.DESC', ierd)
-            if (ierd .ne. 0) then
-                call rsutor(resu, chanom, nomsym, iordr)
+            if (ierd .eq. 0) then
+                nomsym = nochmd
             else
                 nomsym = chanom
             endif

@@ -1,5 +1,6 @@
 subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
-                  motfac, iocc, base, formr)
+                  motfac, iocc, base, formr, nomsym,&
+                  iordr)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -17,6 +18,8 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
     character(len=1) :: niv, st, base
     character(len=*) :: nomcon, nomcha, nomobj, motfac, formr
     integer :: iocc
+    character(len=*), optional, intent(in) :: nomsym
+    integer, optional, intent(in) :: iordr
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +108,7 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st,&
                     zi(llon), l)
     endif
     call titre1(st, nomobj, base, nbtitr, zk80(ldon),&
-                zi(llon), formr)
+                zi(llon), formr, nomsym, iordr)
     call jedetr('&&TITRE .TAMPON.ENTREE')
     call jedetr('&&TITRE .LONGUEUR     ')
 9999  continue

@@ -236,8 +236,13 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                     endif
 !           * CREATION D'UN SOUS-TITRE
                     if (form .eq. 'RESULTAT' .or. form .eq. 'IDEAS') then
-                        call titre2(nomcon, noch19, nomst, motfac, iocc,&
-                                    formr)
+                        if (lresu) then
+                            call titre2(nomcon, noch19, nomst, motfac, iocc,&
+                                        formr, cham(isy), ordr(iordr))
+                        else
+                            call titre2(nomcon, noch19, nomst, motfac, iocc,&
+                                        formr)
+                        endif
                     endif
 !
 !           * IMPRESSION DU SOUS-TITRE SI FORMAT 'RESULTAT'

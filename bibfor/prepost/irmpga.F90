@@ -1,6 +1,6 @@
-subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
-                  caimpi, caimpk, modnum, nuanom, sdcarm,&
-                  codret)
+subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp,&
+                  nbimpr, caimpi, caimpk, modnum, nuanom,&
+                  sdcarm, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,6 +81,7 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
     character(len=19) :: chanom
     character(len=80) :: caimpk(3, nbimpr)
     character(len=*) :: nofimd
+    character(len=64) :: nochmd
 !
     integer :: codret
 !
@@ -179,7 +180,7 @@ subroutine irmpga(nofimd, chanom, typech, nomtyp, nbimpr,&
 !
             call uteref(chanom, typech, ntypef, nomtef, nomfpg,&
                         nbnoso, nbnoto, nbrepg, ndim, refcoo,&
-                        gscoo, wg, codret)
+                        gscoo, wg, nochmd, codret)
 !
             if (codret .eq. 1) then
                 codret = 0

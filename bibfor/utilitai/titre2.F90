@@ -1,8 +1,10 @@
 subroutine titre2(nomcon, nomcha, nomobj, motfac, iocc,&
-                  formr)
+                  formr, nomsym, iordr)
     implicit none
 #include "asterfort/titrea.h"
     character(len=*) :: nomcon, nomcha, nomobj, motfac, formr
+    character(len=*), optional, intent(in) :: nomsym
+    integer, optional, intent(in) :: iordr
     integer :: iocc
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -34,5 +36,6 @@ subroutine titre2(nomcon, nomcha, nomobj, motfac, iocc,&
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     call titrea('S', nomcon, nomcha, nomobj, 'D',&
-                motfac, iocc, 'V', formr)
+                motfac, iocc, 'V', formr, nomsym,&
+                iordr)
 end subroutine
