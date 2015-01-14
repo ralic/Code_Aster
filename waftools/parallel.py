@@ -40,6 +40,14 @@ def load_compilers(self):
         self.load('compiler_cc')
         self.load('compiler_cxx')
         self.load('compiler_fc')
+    # print compilers version
+    self.start_msg('Checking for C compiler version')
+    self.end_msg(self.env.CC_NAME.lower() + ' ' + \
+                 '.'.join(Utils.to_list(self.env.CC_VERSION)))
+    # CXX_VERSION does not exist, c++ == c
+    self.start_msg('Checking for Fortran compiler version')
+    self.end_msg(self.env.FC_NAME.lower() + ' ' + \
+                 '.'.join(Utils.to_list(self.env.FC_VERSION)))
 
 @Configure.conf
 def load_compilers_mpi(self):
