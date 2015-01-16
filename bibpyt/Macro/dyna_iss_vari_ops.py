@@ -23,7 +23,6 @@ import os
 def dyna_iss_vari_ops(
     self, NOM_CMP, PRECISION, INTERF, MATR_COHE, UNITE_RESU_FORC,
     UNITE_RESU_IMPE, TYPE, MATR_GENE, INFO, ISSF,
-    #                      NB_FREQ, FREQ_INIT, FREQ_PAS,  FREQ_MAX, OPTION,
         **args):
     """
        Macro DYNA_ISS_VARI
@@ -37,30 +36,35 @@ def dyna_iss_vari_ops(
     from Accas import _F
     from Utilitai.Table import Table
     from Utilitai.Utmess import UTMESS
+    from Utilitai.force_iss_vari import force_iss_vari
 
    #-------------------------------------------------------------------------
-    def get_group_coord(group):
-        """Retourne les coordonnees des noeuds du groupe 'group'
-        """
-        l_ind = NP.array(coll_grno.get('%-24s' % group, [])) - 1
-        return NP.take(t_coordo, l_ind, axis=0)
-
-   #--------------------------------------------------------------------------------
    # On importe les definitions des commandes a utiliser dans la macro
    #
     COMB_MATR_ASSE = self.get_cmd('COMB_MATR_ASSE')
     LIRE_IMPE_MISS = self.get_cmd('LIRE_IMPE_MISS')
     LIRE_FORC_MISS = self.get_cmd('LIRE_FORC_MISS')
-    COMB_MATR_ASSE = self.get_cmd('COMB_MATR_ASSE')
-    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
     DYNA_LINE_HARM = self.get_cmd('DYNA_LINE_HARM')
-    DETRUIRE = self.get_cmd('DETRUIRE')
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
     CALC_FONCTION = self.get_cmd('CALC_FONCTION')
     DEFI_INTE_SPEC = self.get_cmd('DEFI_INTE_SPEC')
     REST_SPEC_TEMP = self.get_cmd('REST_SPEC_TEMP')
     DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
+    
+    from SD.sd_nume_ddl_gene import sd_nume_ddl_gene
+    from SD.sd_mode_meca import sd_mode_meca
+    from SD.sd_resultat import sd_resultat
+    from SD.sd_cham_gene import sd_cham_gene
+    
+    v_refa_rigi = MATR_GENE['MATR_RIGI'].sdj.REFA.get()
+    # MAILLAGE
+    nom_bamo = v_refa_rigi[0]
+    # MODELE, DDLGENE
+    nom_ddlgene = v_refa_rigi[1]
+    resultat = self.get_concept(nom_bamo)
+    nume_ddlgene = self.get_concept(nom_ddlgene)
+    iret,nbmodt,kbid=aster.dismoi('NB_MODES_TOT',nom_bamo,'RESULTAT','F')
 
     # Comptage commandes + declaration concept sortant
     self.set_icmd(1)
@@ -82,13 +86,16 @@ def dyna_iss_vari_ops(
         NB_FREQ = args['NB_FREQ']
         PAS = args['FREQ_PAS']
         OPTION = args['OPTION']
+        abscisse = [None] * NB_FREQ
+        for k in range(NB_FREQ):
+          abscisse[k] = FREQ_INIT + PAS * k
+        FMAX = FREQ_INIT + PAS * (NB_FREQ-1)
 
     if TYPE_RESU == 'TRANS':
         tt, vale_s = fonc_acce.Valeurs()
         DT = tt[1] - tt[0]
 
         __foint = CALC_FONCTION(
-            #          __foncaf=CALC_FONCTION(
             FFT=_F(FONCTION=fonc_acce,
                    #                             METHODE='COMPLET',
                    METHODE='PROL_ZERO',
@@ -103,6 +110,7 @@ def dyna_iss_vari_ops(
         OMF = 1. / (2. * DT)
         FREQ_INIT = 0.0
         FREQ_COUP = ((NB_FREQ - 1) * PAS)
+        FMAX = FREQ_COUP
        # liste des frequences complete
         l_freq_sig = []
         for k in range(NB_FREQ):
@@ -119,460 +127,29 @@ def dyna_iss_vari_ops(
             PAS = args['FREQ_PAS']
             NB_FREQ = int(ceil(FREQ_FIN / PAS)) + 1
             FREQ_INIT = 0.0
+            FMAX = ((NB_FREQ - 1) * PAS)
+        abscisse = [None] * NB_FREQ
+        for k in range(NB_FREQ):
+            freqk = FREQ_INIT + PAS * k
+            abscisse[k] = freqk
 
-#          NB_FREQ=NB_FREQ2
-#          print '', NB_FREQ, PAS, FREQ_INIT,  (NB_FREQ-1)*PAS
         if INFO == 2:
             aster.affiche('MESSAGE', 'DISCRETISATION UTILISATEUR :  NB_FREQ, PAS, FREQ_COUP' + str(
-                NB_FREQ2) + ' ,' + str(PAS) + ' ,' + str(FREQ_COUP))
+                NB_FREQ) + ' ,' + str(PAS) + ' ,' + str(FREQ_COUP))
 #---------------------------------------------------------------------------------------
-# ------------------------------------------------------------------------
-    dgene = MATR_GENE[0].cree_dict_valeurs(MATR_GENE[0].mc_liste)
-    if dgene['MATR_AMOR'] != None:
-        aster.affiche('MESSAGE', ' MATR_AMOR existe')
-        __ma_amort = MATR_GENE['MATR_AMOR']
-    else:
-        __ma_amort = COMB_MATR_ASSE(
-            CALC_AMOR_GENE=_F(MASS_GENE=MATR_GENE['MATR_MASS'],
-                              RIGI_GENE=MATR_GENE['MATR_RIGI'],
-                              AMOR_REDUIT=(0.0,),
-                              ),
-        )
-        aster.affiche(
-            'MESSAGE', ' MATR_AMOR pas donnee, on prend AMOR_REDUIT=0.0,')
-
-    from SD.sd_maillage import sd_maillage
-    from SD.sd_nume_ddl_gd import sd_nume_ddl_gd
-    from SD.sd_nume_ddl_gene import sd_nume_ddl_gene
-    from SD.sd_mode_meca import sd_mode_meca
-    from SD.sd_resultat import sd_resultat
-    from SD.sd_cham_gene import sd_cham_gene
-
-    v_refa_rigi = MATR_GENE['MATR_RIGI'].sdj.REFA.get()
-    v_refa_mass = MATR_GENE['MATR_MASS'].sdj.REFA.get()
-    # MAILLAGE
-    nom_bamo = v_refa_rigi[0]
-    iret, ibid, nume_ddl = aster.dismoi('NUME_DDL', nom_bamo, 'RESU_DYNA', 'F')
-    iret, ibid, nom_mail = aster.dismoi(
-        'NOM_MAILLA', nume_ddl, 'NUME_DDL', 'F')
-    maillage = sd_maillage(nom_mail)
-    # MODELE, DDLGENE
-    nom_ddlgene = v_refa_rigi[1]
-    iret, ibid, nom_modele = aster.dismoi(
-        'NOM_MODELE', nume_ddl, 'NUME_DDL', 'F')
-    resultat = self.get_concept(nom_bamo)
-    nume_ddlgene = self.get_concept(nom_ddlgene)
-    # TEST base modale
-    nom_bamo2 = v_refa_mass[0]
-    if nom_bamo.strip() != nom_bamo2.strip():
-        UTMESS('F', 'ALGORITH5_42')
-
-    nbnot, nbl, nbma, nbsm, nbsmx, dime = maillage.DIME.get()
-
-    # coordonnees des noeuds
-    l_coordo = maillage.COORDO.VALE.get()
-    t_coordo = NP.array(l_coordo)
-    t_coordo.shape = nbnot, 3
-    # groupes de noeuds
-    coll_grno = maillage.GROUPENO.get()
-    GROUP_NO_INTER = INTERF['GROUP_NO_INTERF']
-    noe_interf = get_group_coord(GROUP_NO_INTER)
-    nbno, nbval = noe_interf.shape
-
-    del nume_ddl, nom_mail, nom_modele
-    if INFO == 2:
-        aster.affiche('MESSAGE', 'NBNO INTERFACE : ' + str(nbno))
-
-   # MODES
-    nbmodt2 = MATR_GENE['MATR_RIGI'].sdj.DESC.get()[1]
-    iret, nbmodd, kbid = aster.dismoi(
-        'NB_MODES_DYN', nom_bamo, 'RESULTAT', 'F')
-    iret, nbmods, kbid = aster.dismoi(
-        'NB_MODES_STA', nom_bamo, 'RESULTAT', 'F')
-    iret, nbmodt, kbid = aster.dismoi(
-        'NB_MODES_TOT', nom_bamo, 'RESULTAT', 'F')
-    if nbmodt2 != nbmodt:
-        UTMESS('F', 'ALGORITH5_42')
-
-    if INFO == 2:
-        texte = 'NOMBRE DE MODES: ' + \
-            str(nbmodt) + '   MODES DYNAMIQUES: ' + str(
-                nbmodd) + '   MODES STATIQUES: ' + str(nbmods)
-        aster.affiche('MESSAGE', texte)
-        aster.affiche('MESSAGE', 'COMPOSANTE ' + NOM_CMP)
-
-    if TYPE_RESU == "SPEC":
-        SPEC = NP.zeros((NB_FREQ, nbmodt, nbmodt)) + 1j
-    if TYPE_RESU == "TRANS":
-        VEC = NP.zeros((NB_FREQ, nbmodt)) + 1j
-    abscisse = [None] * NB_FREQ
-
-# MODEL fonction de cohérence
-    MODEL = MATR_COHE['TYPE']
-    print 'MODEL :',   MODEL
-
-   # POUR TRANS, on sort le champ en déplacement: c'est équivalent du champ
-   # en deplacement si on applique un signal en ACCE
-    __CHAM = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                        OPERATION='EXTR',
-                        NUME_ORDRE=nbmodd + 1,
-                        RESULTAT=resultat,
-                        NOM_CHAM='DEPL'
-                        )
-    MCMP = __CHAM.EXTR_COMP(
-        NOM_CMP, [GROUP_NO_INTER]).valeurs  # on recupere la composante COMP (dx,dy,dz) des modes
-
-    NNO = __CHAM.EXTR_COMP(NOM_CMP, [GROUP_NO_INTER], topo=1).noeud
-
-    MCMP1 = __CHAM.EXTR_COMP(' ', [], 0).valeurs
-    NNO1 = __CHAM.EXTR_COMP(' ', [], topo=1).noeud
-    NCMP1 = __CHAM.EXTR_COMP(' ', [], topo=1).comp
-
-    MCMP2 = __CHAM.EXTR_COMP(' ', [GROUP_NO_INTER], 0).valeurs
-    NNO2 = __CHAM.EXTR_COMP(' ', [GROUP_NO_INTER], topo=1).noeud
-    NCMP2 = __CHAM.EXTR_COMP(' ', [GROUP_NO_INTER], topo=1).comp
-
-    nddi = len(MCMP2)
-    PHI = NP.zeros((nddi, nbmods))
-    # ----- boucle sur les modes statiques
-    for mods in range(0, nbmods):
-        nmo = nbmodd + mods + 1
-        __CHAM = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                            OPERATION='EXTR',
-                            NUME_ORDRE=nmo,
-                            RESULTAT=resultat,
-                            NOM_CHAM='DEPL'
-                            )
-        MCMP = __CHAM.EXTR_COMP(
-            NOM_CMP, [GROUP_NO_INTER]).valeurs  # on recupere la composante COMP (dx,dy,dz) des modes
-
-        NNO = __CHAM.EXTR_COMP(NOM_CMP, [GROUP_NO_INTER], topo=1).noeud
-        MCMP2 = __CHAM.EXTR_COMP(' ', [GROUP_NO_INTER], 0).valeurs
-        PHI[:, mods] = MCMP2
-
-    PHIT = NP.transpose(PHI)
-    PPHI = NP.dot(PHIT, PHI)
-
-#---------------------------------------------------------------------
-#---------------------------------------------------------------------
-   # BOUCLE SUR LES FREQUENCES
-    for k in range(NB_FREQ):
-        freqk = FREQ_INIT + PAS * k
-        if INFO == 2:
-            aster.affiche('MESSAGE', 'FREQUENCE DE CALCUL: ' + str(freqk))
-
-# ---------------------------------------------------------
-# Matrice de coherence
-        XX = noe_interf[:, 0]
-        YY = noe_interf[:, 1]
-#
-
-        if MODEL == 'MITA_LUCO':
-   # PARAMETRES fonction de cohérence
-            VITE_ONDE = MATR_COHE['VITE_ONDE']
-            alpha = MATR_COHE['PARA_ALPHA']
-# ----MITA & LUCO
-            XN = NP.repeat(XX, nbno)
-            YN = NP.repeat(YY, nbno)
-            XR = NP.reshape(XN, (nbno, nbno))
-            YR = NP.reshape(YN, (nbno, nbno))
-            XRT = NP.transpose(XR)
-            YRT = NP.transpose(YR)
-            DX = XR - XRT
-            DY = YR - YRT
-            DIST = DX ** 2 + DY ** 2
-
-            COHE = NP.exp(-(DIST * (alpha * freqk / VITE_ONDE) ** 2.))
-
-        elif MODEL == 'ABRAHAMSON':
-#----ABRAHAMSON (EPRI)
-            p_a1 = 1.647
-            p_a2 = 1.01
-            p_a3 = 0.4
-            p_n1 = 7.02
-    #    p_n2=1.685
-            COHE = NP.zeros((nbno, nbno))
-            for no1 in range(nbno):
-                for no2 in range(nbno):
-                    dist_xi = sqrt(
-                        (XX[no1] - XX[no2]) ** 2 + (YY[no1] - YY[no2]) ** 2)
-                    p_n2 = 5.1 - 0.51 * log(dist_xi + 10.)
-                    pfc = -1.886 + 2.221 * log(4000. / (dist_xi + 1.) + 1.5)
-                    term1 = 1. + \
-                        (freqk * tanh(p_a3 * dist_xi) / (p_a1 * pfc)) ** p_n1
-                    term2 = 1. + \
-                        (freqk * tanh(p_a3 * dist_xi) / (p_a2 * pfc)) ** p_n2
-                    COHE[no1, no2] = 1. / sqrt(term1 * term2)
-#
-   #---------------------------------------------------------
-        # On desactive temporairement les FPE qui pourraient etre generees (a
-        # tord!) par blas
-        aster_core.matfpe(-1)
-        eig, vec = linalg.eig(COHE)
-        vec = NP.transpose(vec)   # les vecteurs sont en colonne dans numpy
-        aster_core.matfpe(1)
-        eig = eig.real
-        vec = vec.real
-        # on rearrange selon un ordre decroissant
-        eig = NP.where(eig < 1.E-10, 0.0, eig)
-        order = (NP.argsort(eig)[::-1])
-        eig = NP.take(eig, order)
-        vec = NP.take(vec, order, 0)
-
-        #-----------------------
-        # Nombre de modes POD a retenir
-
-        etot = NP.sum(eig ** 2)
-        ener = 0.0
-        nbme = 0
-        while nbme < nbno:
-            ener = eig[nbme] ** 2 + ener
-            prec = ener / etot
-            nbme = nbme + 1
-            if INFO == 2:
-                aster.affiche(
-                    'MESSAGE', 'VALEUR PROPRE  ' + str(nbme) + ' : ' + str(eig[nbme - 1]))
-            if prec > PRECISION:
-                break
-
-        if INFO == 2:
-            aster.affiche(
-                'MESSAGE', 'NOMBRE DE MODES POD RETENUS : ' + str(nbme))
-            aster.affiche(
-                'MESSAGE', 'PRECISION (ENERGIE RETENUE) : ' + str(prec))
-
-        PVEC = NP.zeros((nbme, nbno))
-        for k1 in range(0, nbme):
-            PVEC[k1, 0:nbno] = NP.sqrt(eig[k1]) * vec[k1]
-
-        XOe = NP.zeros(nbme)
-        for k1 in range(0, nbme):
-            XOe[k1] = abs(NP.sum(PVEC[k1])) / nbno
-
-        # CALCUL DE FS variable-------------------------------
-        XO = NP.zeros((nbme, nbmods))
-        if NOM_CMP == 'DX':
-            COMP = 1
-        elif NOM_CMP == 'DY':
-            COMP = 2
-        elif NOM_CMP == 'DZ':
-            COMP = 3
-   #
-   #   ------------------------MODES interface-------------------------------------
-        # ----- boucle sur les modes statiques
-        for mods in range(0, nbmods):
-            if INTERF['MODE_INTERF'] == 'QUELCONQUE':
-                break
-            nmo = nbmodd + mods + 1
-            __CHAM = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                                OPERATION='EXTR',
-                                NUME_ORDRE=nmo,
-                                RESULTAT=resultat,
-                                NOM_CHAM='DEPL'
-                                )
-            MCMP = __CHAM.EXTR_COMP(
-                NOM_CMP, [GROUP_NO_INTER]).valeurs  # on recupere la composante COMP (dx,dy,dz) des modes
-
-            NNO = __CHAM.EXTR_COMP(NOM_CMP, [GROUP_NO_INTER], topo=1).noeud
-
-            som = NP.sum(MCMP)
-            max1 = NP.max(MCMP)
-            min1 = NP.min(MCMP)
-            maxm = NP.max([abs(max1), abs(min1)])
-
-        #-------------CALCUL DE XO -------------
-        #  on a recupere la composante COMP (dx,dy,dz) des modes et on projete
-            #  CAS 1: MODES DE CORPS RIGIDE
-            if INTERF['MODE_INTERF'] == 'CORP_RIGI':
-                for modp in range(0, nbme):
-                    # pour les modes de translation
-                    if mods + 1 <= 3:
-                        if abs(som) < 10.E-6:
-                            XO[modp, mods] = 0.0
-                        else:
-                            fact = 1. / som
-                            XO[modp, mods] = fact * abs(
-                                NP.inner(MCMP, PVEC[modp]))
-                    # modes de rotation
-                    else:
-                        if maxm < 10.E-6:
-                            if som < 10.E-6:
-                                XO[modp, mods] = 0.0
-                            else:
-                                UTMESS('F', 'ALGORITH6_86')
-                        else:
-                            fact = 1. / (nbno)
-                            XO[modp, mods] = 1. / (
-                                maxm ** 2.) * fact * NP.inner(MCMP, PVEC[modp])
-            # CAS 2: MODES EF
-            if INTERF['MODE_INTERF'] == 'TOUT':
-                for modp in range(0, nbme):
-                    if abs(som) < 10.E-6:
-                        if maxm < 10.E-6:
-                            XO[modp, mods] = 0.0
-                        else:
-                            UTMESS('F', 'UTILITAI5_89')
-                    else:
-                        fact = 1. / som
-                        XO[modp, mods] = fact * abs(NP.inner(MCMP, PVEC[modp]))
-
-            DETRUIRE(CONCEPT=_F(NOM=(__CHAM)), INFO=1)
-
-    #----Impedances + force sismique.-----------------------------------------
-        if k > 0:
-            DETRUIRE(CONCEPT=_F(NOM=(__impe, __fosi, __rito)), INFO=1)
-
-        __impe = LIRE_IMPE_MISS(BASE=resultat,
-                                TYPE=TYPE,
-                                NUME_DDL_GENE=nume_ddlgene,
-                                UNITE_RESU_IMPE=UNITE_RESU_IMPE,
-                                ISSF=ISSF,
-                                FREQ_EXTR=freqk,
-                                )
-        __rito = COMB_MATR_ASSE(COMB_C=(
-                                _F(MATR_ASSE=__impe,
-                                   COEF_C=1.0 + 0.j,),
-                                _F(MATR_ASSE=MATR_GENE['MATR_RIGI'],
-                                   COEF_C=1.0 + 0.j,),
-                                ),
-                                SANS_CMP='LAGR',
-                                )
-
-        #    on cree __fosi  pour  RECU_VECT_GENE_C   plus loin
-
-        __fosi = LIRE_FORC_MISS(BASE=resultat,
-                                NUME_DDL_GENE=nume_ddlgene,
-                                NOM_CMP=NOM_CMP,
-                                NOM_CHAM='DEPL',
-                                UNITE_RESU_FORC=UNITE_RESU_FORC,
-                                ISSF=ISSF,
-                                FREQ_EXTR=freqk,)
-
-        # -------------- impedance--------------------------------
-        MIMPE = __impe.EXTR_MATR_GENE()
-        #  extraction de la partie modes interface
-        KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
-
-        # -------------- force sismique-------------------------------
-        FSISM = __fosi.EXTR_VECT_GENE_C()
-
-        FS0 = FSISM[nbmodd:nbmodt][:]
-            #  extraction de la partie modes interface
-
-        if ISSF == 'OUI':
-
-            if INTERF['MODE_INTERF'] == 'CORP_RIGI':
-                U0 = NP.dot(linalg.inv(KRS), FS0)
-                XOe = XO[:, COMP - 1] * U0[COMP - 1]
-                XO[:, COMP - 1] = XOe
-                U0[COMP - 1] = 0.0 + 0j
-                for k1 in range(0, nbme):
-                    U0[COMP - 1] = U0[COMP - 1] + XOe[k1]
-
-        if INTERF['MODE_INTERF'] == 'QUELCONQUE':
-            U0 = NP.dot(linalg.inv(KRS), FS0)
-            XI = NP.dot(PHI, U0)
-
-#
-        if TYPE_RESU == "TRANS":
-
-            if INTERF['MODE_INTERF'] == 'QUELCONQUE':
-                XPI = XI
-                SI0 = 0.0
-                for k1 in range(0, nbme):
-                    SI0 = SI0 + XOe[k1] * XOe[k1]
-                SI = sqrt(SI0)
-                for idd in range(0, nddi):
-                    if NCMP2[idd][0:2] == NOM_CMP:
-                        XPI[idd] = SI * XI[idd]
-                QPI = NP.dot(PHIT, XPI)
-                U0 = NP.dot(linalg.inv(PPHI), QPI)
-            if INTERF['MODE_INTERF'] == 'QUELCONQUE' or ISSF == 'OUI':
-                FS = NP.dot(KRS, U0)
-
-            else:
-                #   force sismique resultante: somme des mode POD
-                XO_s = NP.sum(XO, 0)
-                FS = NP.dot(KRS, XO_s)
-            FSISM[nbmodd:nbmodt][:] = FS
-            #  Calcul harmonique
-            __fosi.RECU_VECT_GENE_C(FSISM)
-            __dyge = DYNA_LINE_HARM(
-                MATR_MASS=MATR_GENE['MATR_MASS'],
-                MATR_RIGI=__rito,
-                FREQ=freqk,
-                MATR_AMOR=__ma_amort,
-                EXCIT=_F(VECT_ASSE_GENE=__fosi,
-                         COEF_MULT=1.0,
-                                     ),
-            )
-            #  recuperer le vecteur modal depl calcule par dyge
-            RS = NP.array(__dyge.sdj.DEPL.get())
-            DETRUIRE(CONCEPT=_F(NOM=(__dyge)), INFO=1)
-
-        if TYPE_RESU == "SPEC":
-            SP = NP.zeros((nbmodt, nbmodt))
-            if INTERF['MODE_INTERF'] == 'QUELCONQUE':
-                XPI = XI
-                SI0 = 0.0
-                for k1 in range(0, nbme):
-                    SI0 = SI0 + XOe[k1] * XOe[k1]
-                SI = sqrt(SI0)
-                for idd in range(0, nddi):
-                    if NCMP2[idd][0:2] == NOM_CMP:
-                        XPI[idd] = SI * XI[idd]
-                QPI = NP.dot(PHIT, XPI)
-                U0 = NP.dot(linalg.inv(PPHI), QPI)
-                FS = NP.dot(KRS, U0)
-                FSISM[nbmodd:nbmodt][:] = FS
-        #  Calcul harmonique
-                __fosi.RECU_VECT_GENE_C(FSISM)
-                __dyge = DYNA_LINE_HARM(
-                    MATR_MASS=MATR_GENE['MATR_MASS'],
-                    MATR_RIGI=__rito,
-                    FREQ=freqk,
-                    MATR_AMOR=__ma_amort,
-                    EXCIT=_F(VECT_ASSE_GENE=__fosi,
-                             COEF_MULT=1.0,
-                             ),
-                )
-            #  recuperer le vecteur modal depl calcule par dyge
-                RS = NP.array(__dyge.sdj.DEPL.get())
-                DETRUIRE(CONCEPT=_F(NOM=(__dyge)), INFO=1)
-                 # stockage des matrices résultats: sum(s_q s_q* )
-                SP = RS * NP.conj(RS[:, NP.newaxis])
-            else:
-                for k1 in range(0, nbme):
-            #  calcul de la force sismique mode POD par mode POD
-                    FS = NP.dot(KRS, XO[k1])
-                    FSISM[nbmodd:nbmodt][:] = FS
-            #  Calcul harmonique
-                    __fosi.RECU_VECT_GENE_C(FSISM)
-                    __dyge = DYNA_LINE_HARM(
-                        MATR_MASS=MATR_GENE['MATR_MASS'],
-                        MATR_RIGI=__rito,
-                        FREQ=freqk,
-                        MATR_AMOR=__ma_amort,
-                        EXCIT=_F(VECT_ASSE_GENE=__fosi,
-                                 COEF_MULT=1.0,
-                                 ),
-                    )
-            #  recuperer le vecteur modal depl calcule par dyge
-                    RS = NP.array(__dyge.sdj.DEPL.get())
-                    DETRUIRE(CONCEPT=_F(NOM=(__dyge)), INFO=1)
-                 # stockage des matrices résultats: sum(s_q s_q* )
-                    SP = SP + RS * NP.conj(RS[:, NP.newaxis])
 
 #--------------------------------------------
 # stockage de résultats pour toutes les fréquences calculées
-        if TYPE_RESU == "SPEC":  # SPEC = (NB_FREQ,nbmodt,nbmodt)
-            SPEC[k] = SP
-        if TYPE_RESU == "TRANS":  # VEC (NB_FREQ,nbmodt)
-            VEC[k] = RS
+    if TYPE_RESU == "SPEC":  # SPEC = (NB_FREQ,nbmodt,nbmodt)
+       imod=3
+       SPEC = force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
+               UNITE_RESU_IMPE,PRECISION,INTERF,MATR_COHE,TYPE,FREQ_INIT,PAS,FMAX)
 
-        abscisse[k] = freqk
+    if TYPE_RESU == "TRANS":  # VEC (NB_FREQ,nbmodt)
+       imod=2
+       VEC = force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
+              UNITE_RESU_IMPE,PRECISION,INTERF,MATR_COHE,TYPE,FREQ_INIT,PAS,FMAX)
 
-#   DETRUIRE(CONCEPT=_F(NOM=(__impe,__fosi,__rito)),INFO=1)
 
 # -------------------------------------------------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------------------
@@ -620,7 +197,6 @@ def dyna_iss_vari_ops(
     # Creation du concept en sortie
         inte_out = DEFI_INTE_SPEC(PAR_FONCTION=mcfact,
                                   TITRE='DSP',)
-
 #-
 # ---------------------------------------------------------------------
 #  Si TRANS: Ecriture de  tran_gene
@@ -632,13 +208,38 @@ def dyna_iss_vari_ops(
     elif TYPE_RESU == 'TRANS':
 
         __lfre = DEFI_LIST_REEL(VALE=list(l_freq_sig), )
-            # on cree la SD resultat - factice (le champ ACCE sera remplace
-            # dans la suit par celui calcule)
+        # on cree la SD resultat - factice (le champ ACCE sera remplace
+        # dans la suit par celui calcule)
+        __impe = LIRE_IMPE_MISS(BASE=resultat,
+                                TYPE=TYPE,
+                                NUME_DDL_GENE=nume_ddlgene,
+                                UNITE_RESU_IMPE=UNITE_RESU_IMPE,
+                                ISSF=ISSF,
+                                FREQ_EXTR=PAS,
+                                )
+        __rito = COMB_MATR_ASSE(COMB_C=(
+                                _F(MATR_ASSE=__impe,
+                                   COEF_C=1.0 + 0.j,),
+                                _F(MATR_ASSE=MATR_GENE['MATR_RIGI'],
+                                   COEF_C=1.0 + 0.j,),
+                                ),
+                                SANS_CMP='LAGR',
+                                )
+
+        #    on cree __fosi  pour  RECU_VECT_GENE_C   plus loin
+        __fosi = LIRE_FORC_MISS(BASE=resultat,
+                                NUME_DDL_GENE=nume_ddlgene,
+                                NOM_CMP=NOM_CMP,
+                                NOM_CHAM='DEPL',
+                                UNITE_RESU_FORC=UNITE_RESU_FORC,
+                                ISSF=ISSF,
+                                FREQ_EXTR=PAS,)
+                                
         __dyge0 = DYNA_LINE_HARM(
             MATR_MASS=MATR_GENE['MATR_MASS'],
             MATR_RIGI=__rito,
             LIST_FREQ=__lfre,  # tuple(l_freq_sig),
-            MATR_AMOR=__ma_amort,
+            #MATR_AMOR=__ma_amort,
             EXCIT=_F(VECT_ASSE_GENE=__fosi,
                      COEF_MULT_C=1.,
                      ),
@@ -692,9 +293,6 @@ def dyna_iss_vari_ops(
         dyha = REST_SPEC_TEMP(RESU_GENE=__dyge0,
                               #                        METHODE = 'PROL_ZERO' ,
                               SYMETRIE='NON',
-                              # signal non symmétrique: a completer
-                              # SYMETRIE = 'OUI' ,           # pas de
-                              # prolongation
                               NOM_CHAM='ACCE')
 
     return ier

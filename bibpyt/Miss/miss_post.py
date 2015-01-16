@@ -46,13 +46,14 @@ from Cata.cata import (
     DYNA_LINE_HARM, REST_SPEC_TEMP,
     DEFI_LIST_REEL, CALC_FONCTION, RECU_FONCTION, DEFI_FONCTION,
     FORMULE, CALC_FONC_INTERP, CREA_TABLE, LIRE_FONCTION,
-    AFFE_CHAR_MECA_F
+    DEFI_CONSTANTE, CREA_CHAMP, AFFE_CHAR_MECA_F
 )
 
 from Utilitai.Table import Table
 from Utilitai.Utmess import UTMESS
 from Utilitai.utils import set_debug, _print, _printDBG
 from Miss.miss_resu_miss import MissCsolReader
+from Utilitai.force_iss_vari import force_iss_vari
 
 # correspondance
 FKEY = {
@@ -1101,6 +1102,7 @@ class PostMissFichierTemps(PostMissFichier):
         """
         fich = '%s.%s' % (self.param['PROJET'], ext)
         return osp.join(self.param['_WRKDIR'], fich)
+        
 class PostMissChar(PostMiss):
     """Post-traitement avec sortie charge"""
 
@@ -1120,6 +1122,7 @@ class PostMissChar(PostMiss):
         self.tmax = tt[NBTIME-1]
         self.df = 1.0/(self.tmax+self.dt)
         self.fmax = 1.0/(2.0*self.dt)
+        self.nb_freq = 1+int(self.fmax/self.df)
         self.Force_Nodale = []
 
     def execute(self):
@@ -1147,17 +1150,43 @@ class PostMissChar(PostMiss):
             ndeca = nbmod
         elif self.param['NOM_CMP'] == 'DZ':
             ndeca = 2*nbmod
+            
+        if self.param['VARI'] == 'OUI':
+           MODELE  =  self.param['MODELE']
+           MATR_GENE = self.param['MATR_GENE']
+           INFO = self.param['INFO']
+           ISSF = self.param['ISSF']
+           NOM_CMP = self.param['NOM_CMP']
+           PRECISION = self.param['PRECISION']
+           PAS=self.df 
+           INTERF = self.param['INTERF']
+           MATR_COHE = self.param['MATR_COHE']
+           UNITE_RESU_IMPE = self.param['UNITE_RESU_IMPE']
+           TYPE=self.param['TYPE']
+           FMAX=self.fmax
+           FINI=0.0
+           imod=1
+           FSIST=force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,unit,
+            UNITE_RESU_IMPE,PRECISION,INTERF,MATR_COHE,TYPE,FINI,PAS,FMAX)
 
         for ino in range(0, self.nbno):
-            no = self.List_Noeu_Fictif[ino]
-            fx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+1)
-            fy = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+2)
-            fz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+3)
-            frx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+4)
-            fry = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+5)
-            frz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+6)
-
-            self.Force_Nodale.append(_F(NOEUD=no,
+           no = self.List_Noeu_Fictif[ino]
+           if self.param['VARI'] == 'NON':
+             fx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+1)
+             fy = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+2)
+             fz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+3)
+             frx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+4)
+             fry = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+5)
+             frz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+6)
+           elif self.param['VARI'] == 'OUI':
+             fx = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+1)
+             fy = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+2)
+             fz = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+3)
+             frx = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+4)
+             fry = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+5)
+             frz = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+6)
+             
+           self.Force_Nodale.append(_F(NOEUD=no,
                                   FX= fx,
                                   FY= fy,
                                   FZ= fz,
@@ -1201,31 +1230,83 @@ class PostMissChar(PostMiss):
                         PROL_GAUCHE='CONSTANT',
                          )
 
-        self.parent.update_const_context({ '__fH' : __fH, '__fdepl' : fdepl })
-        self.parent.update_const_context({'FILTRE': __FILTRE })
-        __fF = FORMULE(NOM_PARA='FREQ',
-                       VALE_C='__fdepl(FREQ)*__fH(FREQ)*FILTRE(FREQ)')
-
-        __fT0 = CALC_FONC_INTERP(FONCTION=__fF, NOM_PARA = 'FREQ',
-                        PROL_DROITE='CONSTANT',
-                        PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=__lfreq)
-
+        __fT0 = CALC_FONCTION(MULT=(
+                                    _F(FONCTION=fdepl,),
+                                    _F(FONCTION=__fH,),
+                                    _F(FONCTION=__FILTRE,)
+                                    ),
+                              LIST_PARA=__lfreq, NOM_PARA='FREQ',
+                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                         )
 
         __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0, METHODE='COMPLET',
                             SYME='NON'))
+                        
+        __fTC = DEFI_CONSTANTE(VALE=__fTT(0))
+        
+        __fT1 = CALC_FONCTION(COMB=(
+                                    _F(FONCTION=__fTT,COEF=1.0,),
+                                    _F(FONCTION=__fTC,COEF=-1.0,)
+                                    ),
+                              LIST_PARA=linst, NOM_PARA='INST',
+                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                         )
 
-        self.parent.update_const_context({'__fTT' : __fTT})
-        __fTTF = FORMULE(NOM_PARA='INST', VALE='__fTT(INST) - __fTT(0)')
-
-        __fT1 = CALC_FONC_INTERP(FONCTION=__fTTF, NOM_PARA = 'INST',
-                        PROL_DROITE='CONSTANT',
-                        PROL_GAUCHE='CONSTANT',
-                        LIST_PARA=linst)
-
-        DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fF, __fT0, __fTT, __fTTF, __lfreq)))
+        DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fT0, __fTT, __fTC, __lfreq)))
         return __fT1
+        
+    def calc_forc_vari_temps(self, FSIST, linst, fdepl, indice):
+        """???"""
 
+        __lfreq = DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=self.fmax, PAS=self.df,),)
+        NB_FREQ=self.nb_freq
+
+        if self.param['FREQ_MAX'] is None :
+            __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
+                       VALE_C=(0., 1., 0., self.fmax, 1., 0.),
+                       INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',);
+        else:
+            fcoup = self.param['FREQ_MAX']
+            fcou2 = fcoup + self.df
+            __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
+                       VALE_C=(0., 1., 0., fcoup, 1., 0., fcou2, 0., 0.),
+                       INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',);
+
+        Vale = []
+        for k in range(0,NB_FREQ):
+           freqk=k*self.df
+           Vale.append(freqk)
+           Vale.append(NP.real(FSIST[k,indice-1]).tolist())
+           Vale.append(NP.imag(FSIST[k,indice-1]).tolist())
+
+        __fH=DEFI_FONCTION(NOM_PARA='FREQ', VALE_C=Vale,
+                    PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',);
+
+        __fT0 = CALC_FONCTION(MULT=(
+                                    _F(FONCTION=fdepl,),
+                                    _F(FONCTION=__fH,),
+                                    _F(FONCTION=__FILTRE,)
+                                    ),
+                              LIST_PARA=__lfreq, NOM_PARA='FREQ',
+                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                         )
+                         
+        __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0, METHODE='COMPLET',
+                            SYME='NON'))
+
+        __fTC = DEFI_CONSTANTE(VALE=__fTT(0))
+        
+        __fT1 = CALC_FONCTION(COMB=(
+                                    _F(FONCTION=__fTT,COEF=1.0,),
+                                    _F(FONCTION=__fTC,COEF=-1.0,)
+                                    ),
+                              LIST_PARA=linst, NOM_PARA='INST',
+                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                         )
+
+        DETRUIRE(CONCEPT=_F(NOM=(__fH, __fT0, __fTT, __fTC, __lfreq)))
+        return __fT1
 
 class ListPost(list):
     """Définit une liste de post-traitement à enchainer"""

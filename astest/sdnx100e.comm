@@ -800,6 +800,17 @@ FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',
                         FREQ_MAX=10.,
                         UNITE_RESU_FORC=29,
                         NOEUD_AFFE=('N257',),
+                        VARI='OUI', 
+                        PRECISION  =  0.9 ,
+                        MATR_GENE=_F(BASE=BAMO, NUME_DDL_GENE=NDDLGEN),
+                        UNITE_RESU_IMPE = 31,
+                        MATR_COHE = _F(
+                                  TYPE='MITA_LUCO',     
+                                  VITE_ONDE = 600. ,
+                                  PARA_ALPHA =0.,
+                                  ),
+                        INTERF=_F(GROUP_NO_INTERF='RADIER',
+                                  MODE_INTERF='QUELCONQUE',),
                         );
                      
 FSEISY=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE',

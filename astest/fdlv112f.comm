@@ -120,13 +120,18 @@ champmat = AFFE_MATERIAU( MAILLAGE= mail,
                                    MATER= mat1 )
                            );
                            
-Npf = 50000
+Npf1 = 5
+Npf2 = 5000000000
 
-kxp=3.55E13/Npf
-kyp=3.33E13/Npf
-kzp=3.41E13/Npf
+kxp1=3.55E13/Npf1
+kyp1=3.33E13/Npf1
+kzp1=3.41E13/Npf1
 
-cara_ele=AFFE_CARA_ELEM(MODELE=modele,
+kxp2=3.55E13/Npf2
+kyp2=3.33E13/Npf2
+kzp2=3.41E13/Npf2
+
+cara_el1=AFFE_CARA_ELEM(MODELE=modele,
                         DISCRET=(
                              _F(GROUP_MA=('MFICTIF'), 
                                 CARA='M_TR_D_N',
@@ -140,7 +145,26 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
                                 ),
                              _F(GROUP_MA=('PFONDAT'), 
                                 CARA='K_T_D_N',
-                                VALE=(kxp, kyp,kzp,),
+                                VALE=(kxp1, kyp1,kzp1,),
+                                ),
+                                 ),
+                        );
+                        
+cara_el2=AFFE_CARA_ELEM(MODELE=modele,
+                        DISCRET=(
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='M_TR_D_N',
+                                VALE=(1.E-10,1.E-10,1.E-10,1.E-10,0.,0.,
+                                      0.,0.,0.,0.,),
+                                ),
+                             _F(GROUP_MA=('MFICTIF'), 
+                                CARA='K_TR_D_N',
+                                VALE=(1.E-3,1.E-3,1.E-3,
+                                      1.E-3,1.E-3,1.E-3,),
+                                ),
+                             _F(GROUP_MA=('PFONDAT'), 
+                                CARA='K_T_D_N',
+                                VALE=(kxp2, kyp2,kzp2,),
                                 ),
                                  ),
                         );
@@ -148,16 +172,27 @@ cara_ele=AFFE_CARA_ELEM(MODELE=modele,
 
 #
 #========================================
-# ETAPE 1: Calul des impedances de sols
+# ETAPE 1: Calcul des impedances de sols
 
 
 ASSEMBLAGE(MODELE=modele,
                 CHAM_MATER=champmat,
-                CARA_ELEM=cara_ele,
+                CARA_ELEM=cara_el1,
                 NUME_DDL=CO('nume_ddl'),
-                MATR_ASSE=(_F(MATRICE=CO('MATRIGI'),
+                MATR_ASSE=(_F(MATRICE=CO('MATRIG1'),
                               OPTION='RIGI_MECA',),
-                           _F(MATRICE=CO('MATMASS'),
+                           _F(MATRICE=CO('MATMAS1'),
+                              OPTION='MASS_MECA',),
+                           ),
+                 );
+                 
+ASSEMBLAGE(MODELE=modele,
+                CHAM_MATER=champmat,
+                CARA_ELEM=cara_el2,
+                NUME_DDL=CO('nume_dd2'),
+                MATR_ASSE=(_F(MATRICE=CO('MATRIG2'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATMAS2'),
                               OPTION='MASS_MECA',),
                            ),
                  );
@@ -168,7 +203,7 @@ ASSEMBLAGE(MODELE=modele,
 mass_bar=POST_ELEM( MODELE= modele ,
                     INFO= 1,
                     CHAM_MATER= champmat,
-                    CARA_ELEM=cara_ele,
+                    CARA_ELEM=cara_el1,
                     MASS_INER=_F(TOUT='OUI'),
                    );
                    
@@ -180,12 +215,22 @@ IMPR_TABLE(TABLE=mass_bar);
 #
 #
 #
-mode_rig=CALC_MODES(MATR_RIGI=MATRIGI,
+mode_ri1=CALC_MODES(MATR_RIGI=MATRIG1,
                     VERI_MODE=_F(STOP_ERREUR='NON',
                                  ),
                     OPTION='PLUS_PETITE',
-                    CALC_FREQ=_F(NMAX_FREQ=70),
-                    MATR_MASS=MATMASS,
+                    CALC_FREQ=_F(NMAX_FREQ=60),
+                    MATR_MASS=MATMAS1,
+                    NORM_MODE=_F(INFO=1,
+                              NORME='TRAN_ROTA',),
+                    )
+                    
+mode_ri2=CALC_MODES(MATR_RIGI=MATRIG2,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    OPTION='PLUS_PETITE',
+                    CALC_FREQ=_F(NMAX_FREQ=10),
+                    MATR_MASS=MATMAS2,
                     NORM_MODE=_F(INFO=1,
                               NORME='TRAN_ROTA',),
                     )
@@ -208,10 +253,15 @@ INTERDY2=DEFI_INTERF_DYNA(NUME_DDL=NUME0,
                                        GROUP_NO='NISFS'),);
                                        
 
-BAMO=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=mode_rig,
+BAMO0=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=mode_ri1,
                                 NMAX_MODE=0,),
-                             _F(MODE_INTF=mode_rig,
-                                NMAX_MODE=60,),
+                             _F(MODE_INTF=mode_ri2, NMAX_MODE=6,),
+                             ),
+                       INTERF_DYNA=INTERDY2,
+                       NUME_REF=nume_ddl,);
+                       
+BAMO=DEFI_BASE_MODALE(RITZ=(_F(BASE_MODALE=BAMO0,),
+                            _F(MODE_INTF=mode_ri1, NMAX_MODE=24,),
                              ),
                        INTERF_DYNA=INTERDY2,
                        NUME_REF=nume_ddl,);
@@ -295,8 +345,8 @@ deplx=CALC_FONC_INTERP(FONCTION=deplxF, NOM_PARA = 'INST',
                         
                         
 MAEL0=MACR_ELEM_DYNA(BASE_MODALE=BAMO,
-                      MATR_RIGI=MATRIGI,
-                      MATR_MASS=MATMASS,
+                      MATR_RIGI=MATRIG1,
+                      MATR_MASS=MATMAS1,
                       SANS_GROUP_NO='NISFS',
                       );
                       
@@ -324,6 +374,7 @@ CALC_MISS(TYPE_RESU='FICHIER',
                        Z0=5.0,
                        SURF='NON',
                        ISSF='OUI',
+                       TYPE='BINAIRE',
                        ALGO='REGU',
                        OFFSET_MAX=1000,
                        OFFSET_NB=5000,),);
@@ -396,7 +447,7 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                      );
                      
 ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,                                           
-                        DISCRET=(                                                                            
+                        DISCRET=(                              
                              _F(GROUP_MA=('MFICTIF'), 
                                 CARA='M_TR_D_N',
                                 VALE=(1.E-10,1.E-10,1.E-10,1.E-10,0.,0.,
@@ -441,10 +492,6 @@ CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                              ),
                       );                      
 
-                        
-PESAX=AFFE_CHAR_MECA(MODELE=MODELB,
-                    PESANTEUR=_F(GRAVITE=1.0,
-                                 DIRECTION=(-1.0,0.0,0.0,),),);
                                  
 FSEISX0=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE', #INFO=2,
                         FONC_SIGNAL=deplx,
@@ -454,15 +501,43 @@ FSEISX0=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE', #INFO=2,
                         ISSF='OUI',
                         #NOEUD_AFFE=('N316',),
                         NOEUD_AFFE=('NO1','NO2','NO3','NO4','NO5',
-                                    'NO6','NO7','NO8','NO9','NO10',
+                                    #'NO6','NO7','NO8','NO9','NO10',
                                     ),
+                        );
+                        
+BAMO2=DEFI_BASE_MODALE(RITZ=(_F(MODE_MECA=mode_ri1, NMAX_MODE=24.,), #36,),
+                             _F(MODE_INTF=mode_ri2, NMAX_MODE=6,),
+                             ),
+                       INTERF_DYNA=INTERDY2,
+                       NUME_REF=nume_ddl,);                       
+                                              
+NDDLGEN2 = NUME_DDL_GENE( BASE= BAMO2, STOCKAGE= 'PLEIN',);
+                        
+FSEISX=CALC_MISS(MODELE=MODELB, TYPE_RESU='CHARGE', INFO=2,
+                        VARI='OUI',
+                        ISSF='OUI', 
+                        FONC_SIGNAL=deplx,
+                        FREQ_MAX=25., PRECISION  =  0.9 ,
+                        MATR_GENE=_F(BASE=BAMO2, NUME_DDL_GENE=NDDLGEN2),
+                        MATR_COHE=_F(TYPE='MITA_LUCO',     
+                                  VITE_ONDE = 600. ,
+                                  PARA_ALPHA = 0.5,
+                                     ),
+                        NOM_CMP='DX',
+                        UNITE_RESU_FORC=28,
+                        UNITE_RESU_IMPE = 25, TYPE='BINAIRE',
+                        NOEUD_AFFE=('NO1','NO2','NO3','NO4','NO5',
+                                    #'NO6','NO7','NO8','NO9','NO10',
+                                    ),
+                        INTERF=_F(GROUP_NO_INTERF='ISOLSTR',
+                                  MODE_INTERF='QUELCONQUE',),
                         );
                         
 DYNA=DYNA_NON_LINE(MODELE=MODELB,
                  CHAM_MATER=CHMATB,
                  CARA_ELEM=ELEMB,
                  EXCIT=(
-                        _F(CHARGE=FSEISX0,),
+                        _F(CHARGE=FSEISX,),
                         _F(CHARGE=CHSOL),
                         _F(CHARGE=COND_LIB),
                         ),
@@ -473,7 +548,7 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,
                            REAC_INCR=0,REAC_ITER=0,
                            ),
                  SCHEMA_TEMPS = _F(SCHEMA='HHT', 
-                                   ALPHA=-0.1,
+                                   ALPHA=-0.05,
                                    MODI_EQUI='NON',
                                    FORMULATION='DEPLACEMENT',),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
@@ -487,7 +562,7 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,reuse=DYNA,
                  CARA_ELEM=ELEMB,
                                  ETAT_INIT=_F(EVOL_NOLI=DYNA),
                  EXCIT=(
-                        _F(CHARGE=FSEISX0,),
+                        _F(CHARGE=FSEISX,),
                         _F(CHARGE=CHSOL),
                         _F(CHARGE=COND_LIB),
                         ),
@@ -498,7 +573,7 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,reuse=DYNA,
                            REAC_INCR=0,REAC_ITER=0,
                            ),
                  SCHEMA_TEMPS = _F(SCHEMA='HHT', 
-                                   ALPHA=-0.1,
+                                   ALPHA=-0.01,
                                    MODI_EQUI='OUI',
                                    FORMULATION='DEPLACEMENT',),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
@@ -573,17 +648,17 @@ SACCEX0=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
 # AJOUT TOLE_MACHINE DE 2E-4 POUR SATISFAIRE CLAP0F0Q EN DYNAMIQUE TRANSITOIRE
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC=5.227864843330,
-                         VALE_REFE=4.885,
+                      _F(VALE_CALC=3.471868248518,
+                         VALE_REFE=3.75,
                          PRECISION=0.08,
                          TOLE_MACHINE=2.E-04,
                          REFERENCE = 'AUTRE_ASTER',
                          VALE_PARA=1.00,
                          FONCTION=ax253i,
                          ),
-                      _F(VALE_CALC=17.73428238221,
-                         VALE_REFE=17.40,
-                         PRECISION=0.02,
+                      _F(VALE_CALC=12.19188359612,
+                         VALE_REFE=13.72,
+                         PRECISION=0.12,
                          TOLE_MACHINE=2.E-04,
                          REFERENCE = 'AUTRE_ASTER',
                          VALE_PARA=(10.7, 0.05),

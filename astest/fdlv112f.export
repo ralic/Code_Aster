@@ -8,4 +8,5 @@ P testlist verification sequential
 F comm fdlv112f.comm D 1
 F mail fdlv112f.mail D 20
 F libr fdlv112d.31 D 31
+F libr fdlv112f.25 D 25
 F libr fdlv112f.28 D 28
