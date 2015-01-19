@@ -278,7 +278,7 @@ subroutine jelihd(nomf, fichdf, clas)
 !
 ! ----OPEN DU FICHIER BINAIRE ASSOCIE A LA BASE JEVEUX
 !
-    call jxouvr(ic, 1)
+    call jxouvr(ic, 1, mode=2)
     iext(ic) = 1
 !
 ! ----ALLOCATION DES TAMPONS DE LECTURE/ECRITURE, DES ADRESSES MEMOIRE

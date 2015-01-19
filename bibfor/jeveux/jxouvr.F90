@@ -48,12 +48,13 @@ subroutine jxouvr(iclas, idn, mode)
     mode_ = 1
     if ( present(mode) ) then
         mode_ = mode
-    endif
-    if ( kstout(iclas) == 'LIBERE' .and. kstini(iclas) == 'POURSUIT' ) then
+    else 
+      if ( kstout(iclas) == 'LIBERE' .and. kstini(iclas) == 'POURSUIT' ) then
         mode_ = 0
-    endif
-    if ( kstini(iclas) == 'DEBUT' ) then
+      endif
+      if ( kstini(iclas) == 'DEBUT' ) then
         mode_ = 2
+      endif
     endif
     if (kstini(iclas) .ne. 'DUMMY   ') then
         ierr = 0
