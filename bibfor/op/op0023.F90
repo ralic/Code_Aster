@@ -7,7 +7,7 @@ subroutine op0023()
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 ! (AT YOUR OPTION) ANY LATER VERSION.
-!
+
 ! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 ! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 ! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
@@ -38,13 +38,13 @@ subroutine op0023()
 #include "asterfort/trchno.h"
 #include "asterfort/trgene.h"
 #include "asterfort/trjeve.h"
+#include "asterfort/trmail.h"
 #include "asterfort/trresu.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: tstnan, resnan
     integer :: ific, nocc, n
-    aster_logical :: nfac
     character(len=8) :: repons
     character(len=16) :: nomfi
 !     ------------------------------------------------------------------
@@ -55,89 +55,50 @@ subroutine op0023()
         resnan = tstnan*1.d0
         if (iisnan(resnan) .ne. 0) resnan = 0.d0
     endif
-!
+
     call infmaj()
-!
+
     nomfi = ' '
     ific = iunifi('RESULTAT')
     if (.not. ulexis( ific )) then
         call ulopen(ific, ' ', nomfi, 'NEW', 'O')
     endif
     write (ific,1000)
-    nfac=.false.
-!
+
+
 !     --- TRAITEMENT D'UN OBJET JEVEUX  ---
-!
     call getfac('OBJET', nocc)
-    if (nocc .ne. 0) then
-        call trjeve(ific, nocc)
-        if (nfac) then
-            call utmess('F', 'CALCULEL6_96')
-        else
-            nfac=.true.
-        endif
-    endif
-!
-!
+    if (nocc .ne. 0)  call trjeve(ific, nocc)
+
+
+!     --- TRAITEMENT D'UN MAILLAGE ---
+    call getfac('MAILLAGE', nocc)
+    if (nocc .ne. 0)  call trmail(ific, nocc)
+
+
 !     --- TRAITEMENT D'UN CHAM_NO ---
-!
     call getfac('CHAM_NO', nocc)
-    if (nocc .ne. 0) then
-        call trchno(ific, nocc)
-        if (nfac) then
-            call utmess('F', 'CALCULEL6_96')
-        else
-            nfac=.true.
-        endif
-    endif
-!
+    if (nocc .ne. 0)  call trchno(ific, nocc)
+
+
 !     --- TRAITEMENT D'UN CHAM_ELEM ---
-!
     call getfac('CHAM_ELEM', nocc)
-    if (nocc .ne. 0) then
-        call trchel(ific, nocc)
-        if (nfac) then
-            call utmess('F', 'CALCULEL6_96')
-        else
-            nfac=.true.
-        endif
-    endif
-!
+    if (nocc .ne. 0)  call trchel(ific, nocc)
+
+
 !     --- TRAITEMENT D'UNE CARTE ---
-!
     call getfac('CARTE', nocc)
-    if (nocc .ne. 0) then
-        call trcart(ific, nocc)
-        if (nfac) then
-            call utmess('F', 'CALCULEL6_96')
-        else
-            nfac=.true.
-        endif
-    endif
-!
+    if (nocc .ne. 0) call trcart(ific, nocc)
+
+
 !     --- TRAITEMENT D'UN CONCEPT RESULTAT ---
-!
     call getfac('RESU', nocc)
-    if (nocc .ne. 0) then
-        call trresu(ific, nocc)
-        if (nfac) then
-            call utmess('F', 'CALCULEL6_96')
-        else
-            nfac=.true.
-        endif
-    endif
-!
+    if (nocc .ne. 0)  call trresu(ific, nocc)
+
+
 !     --- TRAITEMENT D'UN CONCEPT GENE ---
-!
     call getfac('GENE', nocc)
-    if (nocc .ne. 0) then
-        call trgene(ific, nocc)
-        if (nfac) then
-            call utmess('F', 'CALCULEL6_96')
-        else
-            nfac=.true.
-        endif
-    endif
-!
+    if (nocc .ne. 0)  call trgene(ific, nocc)
+
     1000 format (/,80 ('-'))
 end subroutine

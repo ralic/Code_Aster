@@ -20,7 +20,7 @@
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Résultats et champs","Utilitaires",)},
          fr=tr("Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence"),
-         regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','CARTE','RESU','GENE','OBJET','TEST_NAN',)),
+         regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','CARTE','RESU','GENE','OBJET','TEST_NAN','MAILLAGE')),
 
          CHAM_NO         =FACT(statut='f',max='**',
            regles=(EXCLUS('NOEUD','GROUP_NO'),  # EXCLUS avec 'TYPE_TEST' dans trchno.f
@@ -120,6 +120,16 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
          OBJET           =FACT(statut='f',max='**',
            NOM             =SIMP(statut='o',typ='TXM'),
            **C_TEST_REFERENCE('OBJET', max=1)
+         ),
+
+         MAILLAGE        =FACT(statut='f',max='**',
+           MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
+           CARA            =SIMP(statut='o',typ='TXM',max=1,
+                                 into=('NB_MAILLE','NB_NOEUD','NB_GROUP_MA','NB_GROUP_NO','NB_MA_GROUP_MA','NB_NO_GROUP_NO',)),
+           NOM_GROUP_MA    =SIMP(statut='f',typ=grma,max=1),
+           NOM_GROUP_NO    =SIMP(statut='f',typ=grno,max=1),
+                            
+           **C_TEST_REFERENCE('MAILLAGE', max=1)
          ),
 
          TEST_NAN        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
