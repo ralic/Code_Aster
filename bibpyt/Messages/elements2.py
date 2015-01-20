@@ -186,7 +186,7 @@ cata_msg = {
 """),
 
     75 : _(u"""
-  Les matériaux de coque homogénéisées (ELAS_COQUE ou DEFI_COQU_MULT) sont interdits en non-linéaire.
+  Les matériaux de coque homogénéisées (ELAS_COQUE) sont interdits en non-linéaire.
 """),
 
     77 : _(u"""

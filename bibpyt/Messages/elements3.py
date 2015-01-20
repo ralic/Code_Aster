@@ -151,14 +151,14 @@ cata_msg = {
 """),
 
     51 : _(u"""
- Le nombre de couches défini dans DEFI_COQU_MULT et dans AFFE_CARA_ELEM dans n'est pas cohérent.
- Nombre de couches dans DEFI_COQU_MULT: %(i1)d
+ Le nombre de couches défini dans DEFI_COMPOSITE et dans AFFE_CARA_ELEM dans n'est pas cohérent.
+ Nombre de couches dans DEFI_COMPOSITE: %(i1)d
  Nombre de couches dans AFFE_CARA_ELEM: %(i2)d
 """),
 
     52 : _(u"""
- L'épaisseur totale des couches définie dans DEFI_COQU_MULT et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
- Épaisseur totale des couches dans DEFI_COQU_MULT: %(r1)f
+ L'épaisseur totale des couches définie dans DEFI_COMPOSITE et celle définie dans AFFE_CARA_ELEM ne sont pas cohérentes.
+ Épaisseur totale des couches dans DEFI_COMPOSITE: %(r1)f
  Épaisseur dans AFFE_CARA_ELEM: %(r2)f
 """),
 
