@@ -74,6 +74,7 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
     character(len=16) :: concept, nomcmd
     character(len=19) :: resout
     character(len=80) :: fichier
+    aster_logical :: limpr
 !
     character(len=14) :: trans12(2),geome12(2)
     data trans12/ 'TRANSF_GEOM_1',  'TRANSF_GEOM_2'  /
@@ -120,11 +121,26 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 !       Copiage de la géométrie modifiée dans geomi
         call jedupo(maili//'.COORDO    .VALE', 'V', geomi, ASTER_FALSE )
     endif
-!   Impression du maillage METHODE='SOUS_POINT' et info=2 et [ TRANSF_GEOM_ ou igeom==2]
-    call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
-    if ( ibid.eq.0 ) goto 999
+
+ 
+!   Si INFO=2, on imprime au format MED les maillages utilisés lors de la projection
+!   si ceux-ci ne sont pas connus de l'utilisateur, c'est à dire si :
+!     METHODE='SOUS_POINT' (pour le maillage "2")
+!     et/ou si l'utilisateur a demandé TRANSF_GEOM_1/_2   
     call infniv(ibid, niveau)
-    if ( (niveau.ge.2).and.(method.eq.'SOUS_POINT').and.((nfonc.gt.0).or.(igeom.eq.2)) ) then
+    if (niveau.le.1) goto 999
+
+    call getvtx(' ', 'METHODE', scal=method, nbret=ibid)
+    if ( ibid.eq.0 ) method=' '
+
+    limpr=.false.
+    if ( method.eq.'SOUS_POINT') then
+       if ((nfonc.gt.0).or.(igeom.eq.2)) limpr=.true.
+    else
+       if (nfonc.gt.0) limpr=.true.
+    endif
+
+    if ( limpr ) then
         ibid   = 0
         k8bid  = '        '
         formar = '        '

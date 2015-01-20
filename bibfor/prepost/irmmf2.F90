@@ -124,8 +124,6 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 !
     if (nivinf .ge. 2) then
 !
-        write (ifm,1001) nompro
-        1001 format( 60('-'),/,'DEBUT DU PROGRAMME ',a)
 !
     endif
 !
@@ -373,8 +371,6 @@ subroutine irmmf2(fid, nomamd, typent, nbrent, nbgrou,&
 !
     if (nivinf .ge. 2) then
 !
-        write (ifm,4001) nompro
-        4001 format(/,'FIN DU PROGRAMME ',a,/,60('-'))
 !
     endif
 !

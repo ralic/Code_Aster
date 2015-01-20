@@ -46,7 +46,7 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
     real(kind=8) :: xmin
     real(kind=8) :: yymax, yymin, ymax, ymin
     integer :: p1, q1, p2, q2, p, q, nx, ny
-    aster_logical :: dbg
+    aster_logical :: dbg=.false.
 !
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -189,7 +189,6 @@ subroutine pj2dfb(boite, tria3, geom1, geom2)
 !
 110 end do
 !
-    dbg = .false.
     if (dbg) then
         ifm = iunifi('MESSAGE')
         call utimsd(ifm, 2, .false._1, .true._1, boite,&
