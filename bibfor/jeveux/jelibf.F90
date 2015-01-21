@@ -301,9 +301,7 @@ subroutine jelibf(cond, clas, info)
         endif
         call jjlidy(iadady, iadacc)
 !       ----------- CLORE LE FICHIER
-        if (kstini(ic) .ne. 'DUMMY   ') then
-            call jxferm(ic)
-        endif
+        call jxferm(ic)
 !       ----------- LIBERER PLACE
         call jjlidy(k18, k18i)
         call jjlidy(k2, iad2)

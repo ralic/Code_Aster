@@ -56,12 +56,10 @@ subroutine jxouvr(iclas, idn, mode)
         mode_ = 2
       endif
     endif
-    if (kstini(iclas) .ne. 'DUMMY   ') then
-        ierr = 0
-        call get_jvbasename(nomfic(iclas)(1:4), idn, nom512)
-        call opendr(nom512, mode_, ierr)
-        if (ierr .ne. 0) then
-            call utmess('F', 'JEVEUX_43', sk=nombas(iclas), si=ierr)
-        endif
+    ierr = 0
+    call get_jvbasename(nomfic(iclas)(1:4), idn, nom512)
+    call opendr(nom512, mode_, ierr)
+    if (ierr .ne. 0) then
+       call utmess('F', 'JEVEUX_43', sk=nombas(iclas), si=ierr)
     endif
 end subroutine

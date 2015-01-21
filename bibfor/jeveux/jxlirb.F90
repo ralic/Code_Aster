@@ -77,39 +77,37 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
     nblent = lso / lgbl
     lrab = ( mod (lso,lgbl) .ne. 0 )
 !
-    if (kstini(ic) .ne. 'DUMMY   ') then
-        do 10 i = 1, nblent
-            numext = (iaddi+i-2)/nbenrg(ic)
-            iadloc = (iaddi+i-1)-(numext*nbenrg(ic))
-            call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
-            jiecr = (jk1zon+iadmo-1+lgbl*(i-1))/lois+1
-            call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
-            if (ierr .ne. 0) then
-                vali(1) = iaddi+i-1
-                vali(2) = numext
-                vali(3) = ierr
-                call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
-            endif
-            nbacce(2*ic-1) = nbacce(2*ic-1) + 1
- 10     continue
-        iacce (jiacce(ic)+iaddi)=iacce(jiacce(ic)+iaddi) + 1
-        if (lrab) then
-            numext = (iaddi+nblent-1)/nbenrg(ic)
-            iadloc = (iaddi+nblent)-(numext*nbenrg(ic))
-            call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
-            jiecr = (jk1zon+iadmo-1+lso-lgbl)/lois+1
-            if (lso .lt. lgbl) then
-                jiecr = (jk1zon+iadmo-1)/lois+1
-            endif
-            call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
-            if (ierr .ne. 0) then
-                vali(1) = iaddi+i-1
-                vali(2) = numext
-                vali(3) = ierr
-                call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
-            endif
-            nbacce(2*ic-1) = nbacce(2*ic-1) + 1
+    do 10 i = 1, nblent
+        numext = (iaddi+i-2)/nbenrg(ic)
+        iadloc = (iaddi+i-1)-(numext*nbenrg(ic))
+        call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
+        jiecr = (jk1zon+iadmo-1+lgbl*(i-1))/lois+1
+        call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
+        if (ierr .ne. 0) then
+            vali(1) = iaddi+i-1
+            vali(2) = numext
+            vali(3) = ierr
+            call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
         endif
+        nbacce(2*ic-1) = nbacce(2*ic-1) + 1
+ 10 continue
+    iacce (jiacce(ic)+iaddi)=iacce(jiacce(ic)+iaddi) + 1
+    if (lrab) then
+        numext = (iaddi+nblent-1)/nbenrg(ic)
+        iadloc = (iaddi+nblent)-(numext*nbenrg(ic))
+        call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
+        jiecr = (jk1zon+iadmo-1+lso-lgbl)/lois+1
+        if (lso .lt. lgbl) then
+            jiecr = (jk1zon+iadmo-1)/lois+1
+        endif
+        call readdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
+        if (ierr .ne. 0) then
+            vali(1) = iaddi+i-1
+            vali(2) = numext
+            vali(3) = ierr
+            call utmess('F', 'JEVEUX_41', sk=nombas(ic), ni=3, vali=vali)
+        endif
+        nbacce(2*ic-1) = nbacce(2*ic-1) + 1
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

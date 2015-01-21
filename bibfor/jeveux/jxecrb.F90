@@ -83,43 +83,41 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
     nblent = lso / lgbl
     lrab = ( mod ( lso , lgbl ) .ne. 0 )
 !     ------------------------------------------------------------------
-    if (kstini(ic) .ne. 'DUMMY   ') then
-        do 10 i = 1, nblent
-            numext = (iaddi+i-2)/nbenrg(ic)
-            iadloc = (iaddi+i-1)-(numext*nbenrg(ic))
-            call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
-            jiecr = (jk1zon+iadmo-1+lgbl*(i-1))/lois+1
-            call writdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
-            if (ierr .ne. 0) then
-                vali(1) = iaddi+i-1
-                vali(2) = numext
-                vali(3) = ierr
-                call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
-            endif
-            nbacce(2*ic) = nbacce(2*ic) + 1
-            iusadi(jusadi(ic)+3*(iaddi+i-1)-2) = idco
-            iusadi(jusadi(ic)+3*(iaddi+i-1)-1) = idos
- 10     continue
-        iacce (jiacce(ic)+iaddi) = iacce (jiacce(ic)+iaddi) + 1
-        if (lrab) then
-            numext = (iaddi+nblent-1)/nbenrg(ic)
-            iadloc = (iaddi+nblent)-(numext*nbenrg(ic))
-            call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
-            jiecr = (jk1zon+iadmo-1+lso-lgbl)/lois+1
-            if (lso .lt. lgbl) then
-                jiecr = (jk1zon+iadmo-1)/lois+1
-            endif
-            call writdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
-            if (ierr .ne. 0) then
-                vali(1) = iaddi+i-1
-                vali(2) = numext
-                vali(3) = ierr
-                call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
-            endif
-            nbacce(2*ic) = nbacce(2*ic) + 1
-            iusadi(jusadi(ic)+3*(iaddi+nblent)-2) = idco
-            iusadi(jusadi(ic)+3*(iaddi+nblent)-1) = idos
+    do 10 i = 1, nblent
+        numext = (iaddi+i-2)/nbenrg(ic)
+        iadloc = (iaddi+i-1)-(numext*nbenrg(ic))
+        call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
+        jiecr = (jk1zon+iadmo-1+lgbl*(i-1))/lois+1
+        call writdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
+        if (ierr .ne. 0) then
+            vali(1) = iaddi+i-1
+            vali(2) = numext
+            vali(3) = ierr
+            call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
         endif
+        nbacce(2*ic) = nbacce(2*ic) + 1
+        iusadi(jusadi(ic)+3*(iaddi+i-1)-2) = idco
+        iusadi(jusadi(ic)+3*(iaddi+i-1)-1) = idos
+ 10 continue
+    iacce (jiacce(ic)+iaddi) = iacce (jiacce(ic)+iaddi) + 1
+    if (lrab) then
+        numext = (iaddi+nblent-1)/nbenrg(ic)
+        iadloc = (iaddi+nblent)-(numext*nbenrg(ic))
+        call get_jvbasename(nomfic(ic)(1:4), numext + 1, nom512)
+        jiecr = (jk1zon+iadmo-1+lso-lgbl)/lois+1
+        if (lso .lt. lgbl) then
+            jiecr = (jk1zon+iadmo-1)/lois+1
+        endif
+        call writdr(nom512, iszon(jiecr), lgbl, iadloc, ierr)
+        if (ierr .ne. 0) then
+            vali(1) = iaddi+i-1
+            vali(2) = numext
+            vali(3) = ierr
+            call utmess('F', 'JEVEUX_40', sk=nombas(ic), ni=3, vali=vali)
+        endif
+        nbacce(2*ic) = nbacce(2*ic) + 1
+        iusadi(jusadi(ic)+3*(iaddi+nblent)-2) = idco
+        iusadi(jusadi(ic)+3*(iaddi+nblent)-1) = idos
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

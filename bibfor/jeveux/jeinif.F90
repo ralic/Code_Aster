@@ -41,7 +41,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'OUVERTURE D'UNE CLASSE
 !
-! IN  STI    : STATUT EN DEBUT DE TRAVAIL ('DUMMY','DEBUT','POURSUIT')
+! IN  STI    : STATUT EN DEBUT DE TRAVAIL ('DEBUT','POURSUIT')
 ! IN  STO    : STATUT EN FIN DE TRAVAIL ('SAUVE','DETRUIT')
 ! IN  NOMF   : NOM LOCALE DE LA BASE
 ! IN  CLAS   : NOM LOCALE DE LA CLASSE
@@ -148,9 +148,8 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
     ASSERT(kclas .ne. ' ')
     ASSERT(index (classe, kclas) .eq. 0)
 !
-    ASSERT(kstin .eq. 'DEBUT   ' .or. kstin .eq. 'POURSUIT' .or. kstin .eq. 'DUMMY   ')
+    ASSERT(kstin .eq. 'DEBUT   ' .or. kstin .eq. 'POURSUIT' )
     ASSERT(kstou .eq. 'SAUVE   ' .or. kstou .eq. 'DETRUIT ' .or. kstou .eq. 'LIBERE ')
-    ASSERT(kstin .ne. 'DUMMY   ' .or. kstou .ne. 'SAUVE   ')
     ASSERT(nrep .gt. 0)
     ASSERT(lbloc .gt. 0)
 !
@@ -180,7 +179,7 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
         ldyn = 2
     endif
 !
-    if (kstin .eq. 'DEBUT   ' .or. kstin .eq. 'DUMMY   ') then
+    if (kstin .eq. 'DEBUT   ' ) then
         nremax(ic) = nrep
         nreuti(ic) = 0
         nrhcod(ic) = jjprem(nremax(ic),irt)
@@ -259,10 +258,8 @@ subroutine jeinif(sti, sto, nomf, clas, nrep,&
 !
 ! ----- OPEN DU FICHIER
 !
-        if (kstin .ne. 'DUMMY   ') then
-            call jxouvr(ic, 1)
-            iext(ic) = 1
-        endif
+        call jxouvr(ic, 1)
+        iext(ic) = 1
 !
 ! ----- ECRITURE DANS L'OBJET CARA
 ! ----- NREMAX NREUTI NRHCOD NBLMAX NBLUTI
