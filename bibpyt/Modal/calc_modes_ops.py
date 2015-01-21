@@ -50,17 +50,10 @@ def calc_modes_ops(self, TYPE_RESU, OPTION,
         if (OPTION == 'BANDE'):
             if len(args['CALC_FREQ']['FREQ']) > 2:
                 l_multi_bandes = True
-                MATR_RIGI = args['MATR_RIGI']
-                del args['MATR_RIGI']
-                MATR_MASS = args['MATR_MASS']
-                del args['MATR_MASS']
-                CALC_FREQ = args['CALC_FREQ']
-                del args['CALC_FREQ']
                 # modes computation over several frequency bands,
-                # with optionnal parallelization of the bands
-                modes = calc_modes_multi_bandes(
-                    self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL,
-                    SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+                # with optional parallelization of the bands
+                modes = calc_modes_multi_bandes(self, SOLVEUR_MODAL, SOLVEUR,
+                                                      VERI_MODE, INFO, TITRE, **args)
 
     if not l_multi_bandes:
         if OPTION in ('PLUS_PETITE', 'PLUS_GRANDE', 'CENTRE', 'BANDE', 'TOUT'):
@@ -78,7 +71,7 @@ def calc_modes_ops(self, TYPE_RESU, OPTION,
         # after a 1st modal computation, achieve a 2nd computation with MODE_ITER_INV
         # and option 'PROCHE' to refine the modes
         modes = calc_modes_amelioration(self, modes, TYPE_RESU, SOLVEUR_MODAL,
-                                             SOLVEUR, VERI_MODE, INFO, TITRE, **args)
+                                              SOLVEUR, VERI_MODE, INFO, TITRE, **args)
 
 
 

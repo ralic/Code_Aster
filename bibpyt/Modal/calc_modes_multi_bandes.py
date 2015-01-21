@@ -24,14 +24,17 @@ from Noyau.N_utils import AsType
 from Cata.cata import matr_asse_depl_r
 
 
-def calc_modes_multi_bandes(
-    self, MATR_RIGI, MATR_MASS, CALC_FREQ, SOLVEUR_MODAL,
-        SOLVEUR, VERI_MODE, INFO, TITRE, **args):
+def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
+                                   VERI_MODE, INFO, TITRE, **args):
     """
        Macro-command CALC_MODES, case of the simultaneous iterations method
-       over several frequency bands, with optionnal parallelization
+       over several frequency bands, with optional parallelization.
+       Can be used only in the case of vibration modes (TYPE_RESU='DYNAMIQUE')
     """
 
+    MATR_RIGI = args['MATR_RIGI']
+    MATR_MASS = args['MATR_MASS']
+    CALC_FREQ = args['CALC_FREQ']
     METHODE = SOLVEUR_MODAL['METHODE']
 
     # ----------------------------------------------------------------------

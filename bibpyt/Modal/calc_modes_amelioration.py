@@ -19,8 +19,8 @@
 
 
 def calc_modes_amelioration(self, modes, TYPE_RESU,
-                             SOLVEUR_MODAL, SOLVEUR, VERI_MODE,
-                             INFO, TITRE, **args):
+                                  SOLVEUR_MODAL, SOLVEUR, VERI_MODE,
+                                  INFO, TITRE, **args):
     """
        Macro-command CALC_MODES, file for improving the quality of the eigenmodes
     """
@@ -144,7 +144,8 @@ def calc_modes_amelioration(self, modes, TYPE_RESU,
         solveur.pop('OPTION')
     if solveur.has_key('FREQ'):      # because FREQ can be a keyword with a 'global' position
         solveur.pop('FREQ')
-    motcles['SOLVEUR']=_F(**solveur)
+    #motcles['SOLVEUR']=_F(**solveur) # if this line is commented,
+                                      # one will use the default keywords for SOLVEUR
     
     
     #################################################################
