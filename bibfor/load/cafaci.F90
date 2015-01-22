@@ -242,7 +242,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dnor,&
                                     val_c_dnor, val_f_dnor, vale_type, ibid, list_rela,&
                                     ndim, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                                    ch_xfem_ltno, connex_inv)
+                                    ch_xfem_ltno, connex_inv, mesh)
                         goto 105
                     endif
                 endif
@@ -271,7 +271,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dtan,&
                                     val_c_dtan, val_f_dtan, vale_type, ibid, list_rela,&
                                     ndim, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                                    ch_xfem_ltno, connex_inv)
+                                    ch_xfem_ltno, connex_inv, mesh)
                         goto 115
                     endif
                 endif
@@ -303,7 +303,7 @@ subroutine cafaci(load, mesh, ligrmo, vale_type)
                             coef_type, n_keyword, keywordlist, nbterm, vale_type,&
                             vale_real, vale_func, vale_cplx, icompt, list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv)
+                            ch_xfem_ltno, connex_inv, mesh)
             enddo
 !
 ! --------- Components doesn't exist on all nodes

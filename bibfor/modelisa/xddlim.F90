@@ -1,12 +1,12 @@
 subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                   valimc, valimf, fonree, icompt, lisrel,&
                   ndim, direct, jnoxfv, ch1, ch2,&
-                  ch3, cnxinv)
+                  ch3, cnxinv, mesh)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
-#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/afrela.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
@@ -17,15 +17,19 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xcalf_he.h"
+#include "asterfort/xddlimf.h"
 !
     integer :: ino, icompt, ndim, jnoxfv
     real(kind=8) :: valimr, direct(3)
     character(len=4) :: fonree
     character(len=8) :: modele, nomn, valimf, motcle
-    character(len=19) :: lisrel, cnxinv
+    character(len=8), intent(in) :: mesh
+    character(len=19) :: lisrel, ch1, ch2, ch3, cnxinv
 ! ---------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,6 +65,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! IN  VALIMF : VALEUR DE BLOCAGE SUR CE DDL (FONREE = 'FONC')
 ! IN  FONREE : AFFE_CHAR_XXXX OU AFFE_CHAR_XXXX_F
 ! IN  NDIM
+! IN  MESH   : NOM DU MAILLAGE
 !
 ! IN/OUT
 !     ICOMPT : "COMPTEUR" DES DDLS AFFECTES REELLEMENT
@@ -70,19 +75,19 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !
 !
     integer :: nbxcmp
-    parameter  (nbxcmp=18)
+    parameter  (nbxcmp=60)
     integer :: ier, stano(4), jstnol,  jstnod, nrel
     integer ::  jlsnl, jlsnd,  jlstl, jlstd
-    integer ::  jfisnl, jfisnd, nfh, ifh
-    integer :: i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss
+    integer ::  jfisnl, jfisnd, nfh, ifh, jconx2,  iad, fisno(4)
+    integer ::  i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss
     integer ::  nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
-    integer ::  jconx2,  iad, fisno(4)
     real(kind=8) :: r, theta(2), he(2, 4), t, coef(nbxcmp), sign
     real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2
     character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), axes(3), noma
-    character(len=19) :: ch1, ch2, ch3, ch4
+    character(len=19) :: ch4
     complex(kind=8) :: cbid, valimc
     character(len=1) :: ch
+    aster_logical :: class
     integer, pointer :: nunotmp(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: connex(:) => null()
@@ -148,21 +153,29 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 !
 !
 ! --- IDENTIFICATIOND DES CAS A TRAITER :
+! --- SI LA RELATION CINEMATIQUE EST IMPOSEE PAR DES VALEURS REELLES ET
 ! --- SI NOEUD SUR LES LEVRES ET CONNECTÉ À DES NOEUDS (APPARTENANT AU
 ! --- GROUPE AFFECTÉ) DE PART ET D'AUTRE DE LA LEVRE : 2 RELATIONS
 ! --- SINON IL FAUT IMPOSER QUE D'UN SEUL COTÉ        : 1 RELATION
     if (nfiss .eq. 1) then
-        if (lsn(1) .eq. 0.d0 .and. lst(1) .lt. r8prem()) then
+        if (lsn(1) .eq. 0.d0 .and. lst(1) .lt. 0.d0) then
             minlsn = r8maem()
             maxlsn = -1*r8maem()
 ! ---     RECUPERATION DE LA LISTE DES NOEUDS AFFECTÉS PAR LA CONDITION
-            call jeexin('&&CADDLI.NUNOTMP', ier)
+            call jeexin('&&CADDLI.LIST_NODE', ier)
             if (ier .ne. 0) then
-                call jeveuo('&&CADDLI.NUNOTMP', 'L', vi=nunotmp)
-                call jelira('&&CADDLI.NUNOTMP', 'LONMAX', nbno)
-            else
-! ---       ON ZAPPE SI ON N'EST PAS EN MODE DDL_IMPO
-                nbno=0
+                call jeveuo('&&CADDLI.LIST_NODE', 'L', vi=nunotmp)
+                call jelira('&&CADDLI.LIST_NODE', 'LONMAX', nbno)
+            endif
+            call jeexin('&&CAFACI.LIST_NODE', ier)
+            if (ier .ne. 0) then
+                call jeveuo('&&CAFACI.LIST_NODE', 'L', vi=nunotmp)
+                call jelira('&&CAFACI.LIST_NODE', 'LONMAX', nbno)
+            endif
+            call jeexin('&&CAAREI.LIST_NODE', ier)
+            if (ier .ne. 0) then
+                call jeveuo('&&CAAREI.LIST_NODE', 'L', vi=nunotmp)
+                call jelira('&&CAAREI.LIST_NODE', 'LONMAX', nbno)
             endif
 ! ---     RECUPERATION DU NOM DU MAILLAGE :
             call jeveuo(modele//'.MODELE    .LGRF', 'L', vk8=lgrf)
@@ -198,17 +211,17 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                 end do
             end do
 !
-            if ((minlsn.eq.0.d0) .and. (maxlsn.gt.r8prem())) then
+            if ((minlsn.eq.0.d0) .and. (maxlsn.gt.0.d0)) then
 ! ---       ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE MAITRE
                 nrel = 1
                 theta(1) = r8pi()
                 he(1,1) = 1.d0
-            else if ((minlsn.lt.r8prem()).and.(maxlsn.eq.0.d0)) then
+            else if ((minlsn.lt.0.d0).and.(maxlsn.eq.0.d0)) then
 ! ---       ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE ESCLAVE
                 nrel = 1
                 theta(1) = r8pi()
                 he(1,1) = -1.d0
-            elseif (((minlsn.lt.r8prem()).and.(maxlsn.gt.r8prem())) .or.(&
+            elseif (((minlsn.lt.0.d0).and.(maxlsn.gt.0.d0)) .or.(&
             nbno.eq.0)) then
 ! ---       ON AFFECTE LA RELATION SUR LES DEUX PARTIES
                 nrel = 2
@@ -225,21 +238,39 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
             he(1,1) = sign(1.d0,lsn(1))
             theta(1) = he(1,1)*abs(atan2(lsn(1),lst(1)))
         endif
-    else
+    else if (nfiss .gt. 1) then
         nrel = 1
         do ifh = 1, nfh
-! --- ON NE PREND PAS ENCORE EN COMPTE LE CAS OU ON PASSE PAR UN NOEUD
+! --- ON NE PREND PAS ENCORE EN COMPTE LE CAS OU ON PASSE PAR UN NOEUD POUR
+! --- LES ELEMENTS MULTI-HEAVISIDE
             if (lsn(fisno(ifh)) .eq. 0) goto 888
             he(1,ifh) = sign(1.d0,lsn(fisno(ifh)))
         end do
     endif
+!
     do i = 1, nbxcmp
         dimens(i)= 0
         noeud(i) = nomn
     end do
 !
-!     BOUCLE SUR LES RELATIONS
-    do irel = 1, nrel
+    if (nrel .eq. 2 .and. fonree .eq. 'REEL') then
+       call utmess('A', 'XFEM_22', sk=nomn)
+    endif
+!
+    if (fonree.eq.'FONC' .and. nfiss .eq.1 .and. stano(1) .eq. 1) then
+! --- SI LA RELATION CINEMATIQUE EST IMPOSEE PAR UNE FONCTION DE L'ESPACE
+       call xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
+                    ch2, ndim, lsn, lst, valimr, valimf, valimc,&
+                    fonree, lisrel, nomn, direct, class, mesh) 
+    endif
+!     IMPOSITION DES CONDITIONS CINEMATIQUE "TOTALES" (DDL_CLASS +/- DDL_ENR)
+    if ((fonree.eq.'REEL') .or. (nfiss.gt.1) .or. class .or. (stano(1).ne.1)) then
+       do i = 1, nbxcmp
+           dimens(i)= 0
+           noeud(i) = nomn
+       end do
+! --- BOUCLE SUR LES RELATIONS
+       do irel = 1, nrel
 !
 !       CALCUL DES COORDONNÉES POLAIRES DU NOEUD (R,T)
         r = sqrt(lsn(1)**2+lst(1)**2)
@@ -288,7 +319,6 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     end do
                 endif
             end do
-!
 !       CAS DDL_IMPO DX DY DZ (ET/OU PRE1 => POUR HM-XFEM ONLY)
         elseif (motcle.eq.'DX'.or.motcle.eq.'DY'.or.motcle.eq.'DZ') then
 !         COEFFICIENTS ET DDLS DE LA RELATION
@@ -336,14 +366,15 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                   ddl(i) = 'H'//motcle(1:4)
                   coef(i)=xcalf_he(he(irel,1),lsn(1))
                 endif
-              endif  
+              endif
         endif
         nterm = i
-        call afrela(coef, [cbid], ddl, noeud, dimens,&
-                    [0.d0], nterm, valimr, valimc, valimf,&
-                    'REEL', fonree, '12', 0.d0, lisrel)
+           call afrela(coef, [cbid], ddl, noeud, dimens,&
+                       [0.d0], nterm, valimr, valimc, valimf,&
+                       'REEL', fonree, '12', 0.d0, lisrel)
+       end do
 !
-    end do
+    endif
 !
     icompt = icompt + 1
 !

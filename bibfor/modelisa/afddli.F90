@@ -2,7 +2,8 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
                   prnm, repe_type, repe_defi, coef_type, cmp_nb,&
                   cmp_name, cmp_acti, vale_type, vale_real, vale_func,&
                   vale_cplx, cmp_count, list_rela, lxfem, jnoxfl,&
-                  jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv)
+                  jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv,&
+                  mesh)
 !
     implicit none
 !
@@ -12,6 +13,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 #include "asterc/indik8.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -41,6 +43,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
     character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
     integer, intent(in) :: node_nume
     character(len=8), intent(in) :: node_name
+    character(len=8), intent(in) :: mesh
     integer, intent(in) :: prnm(*)
     integer, intent(in) :: repe_type
     real(kind=8), intent(in) :: repe_defi(3)
@@ -102,10 +105,11 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
 ! In  ch_xfem_stat   : status of nodes field (blank if not xfem)
 ! In  ch_xfem_lnno   : normal level-set field (blank if not xfem)
 ! In  ch_xfem_ltno   : tangent level-set field (blank if not xfem)
+! In  mesh           : name of the mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, i_cmp, cmp_index
+    integer :: ndim, i_cmp, cmp_index
     character(len=2) :: lagr_type
     real(kind=8) :: coef_real_unit, rbid(3)
     complex(kind=8) :: coef_cplx_unit
@@ -119,6 +123,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
     coef_real_unit = 1.d0
     coef_cplx_unit = dcmplx(1.d0,0.d0)
     lagr_type = '12'
+    call dismoi('DIM_GEOM', model, 'MODELE', repi=ndim)
 !
 ! - Loop on components
 !
@@ -140,8 +145,8 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
               if (cmp_name(i_cmp)(1:1).eq.'D'.or.cmp_name(i_cmp).eq.'PRE1') then
                 call xddlim(model, cmp_name(i_cmp)(1:8), node_name, node_nume, vale_real(i_cmp),&
                             vale_cplx(i_cmp), vale_func(i_cmp), vale_type, cmp_count(i_cmp),&
-                            list_rela, ibid, rbid, jnoxfv, ch_xfem_stat,&
-                            ch_xfem_lnno, ch_xfem_ltno, connex_inv)
+                            list_rela, ndim, rbid, jnoxfv, ch_xfem_stat,&
+                            ch_xfem_lnno, ch_xfem_ltno, connex_inv, mesh)
                 goto 25
               endif
             endif

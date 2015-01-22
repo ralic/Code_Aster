@@ -15,27 +15,27 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xddlim(modele, motcle, nomn, ino, valimr,&
-                      valimc, valimf, fonree, icompt, lisrel,&
-                      ndim, direct, jnoxfv, ch1, ch2,&
-                      ch3, cnxinv, mesh)
-        character(len=8) :: modele
-        character(len=8) :: motcle
-        character(len=8) :: nomn
+    subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
+                      ch2 , lsn, nbmano, jma, adrma, ndim, coupee,&
+                      nno, arete, milieu, lsno, voisin)
+        character(len=8) :: typma
         integer :: ino
-        real(kind=8) :: valimr
-        complex(kind=8) :: valimc
-        character(len=8) :: valimf
-        character(len=4) :: fonree
-        integer :: icompt
-        character(len=19) :: lisrel
-        integer :: ndim
-        real(kind=8) :: direct(3)
-        integer :: jnoxfv
-        character(len=19) :: ch1
+        character(len=8) :: noma
+        integer :: numa
+        integer :: jlsnd
+        integer :: jlsnl
         character(len=19) :: ch2
-        character(len=19) :: ch3
-        character(len=19) :: cnxinv
-        character(len=8), intent(in) :: mesh
-    end subroutine xddlim
+        real(kind=8) :: lsn(4)
+        integer :: nbmano
+        integer :: jma
+        integer :: adrma
+        integer :: ndim
+        aster_logical :: coupee
+        character(len=8) :: arete
+        aster_logical :: milieu
+        real(kind=8) :: lsno(3)
+        integer :: voisin(3)
+        integer :: jconx2
+        integer :: nno
+    end subroutine xdvois
 end interface

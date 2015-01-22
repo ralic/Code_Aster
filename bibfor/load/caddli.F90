@@ -229,7 +229,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
                             coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv)
+                            ch_xfem_ltno, connex_inv, mesh)
             enddo
 !
             call jedetr('&&CADDLI.ICOMPT')
@@ -260,7 +260,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
                             coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv)
+                            ch_xfem_ltno, connex_inv, mesh)
             enddo
             do icmp = 1, cmp_nb
                 if (zi(jcompt-1+icmp) .eq. 0) then

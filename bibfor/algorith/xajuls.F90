@@ -145,6 +145,15 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                     lnsv((nunob-1)+1)=0.d0
                     clsm=clsm+1
                 endif
+                if (.not. ismali(typma)) then
+                   nm=ar(ia,3)
+                   nunom=zi(jconx1-1+zi(jconx2+nmaabs-1)+nm-1)
+                   lsnm=lnsv((nunom-1)+1)
+                   if (abs(lsnm/(lsna-lsnb)) .le. crilsn) then
+                      lnsv((nunom-1)+1)=0.d0
+                      clsm=clsm+1
+                   endif
+                endif
             endif
 !
 !         REAJUSTEMENT DE LA LEVEL SET TANGENTE AUX NOEUDS SOMMETS,
@@ -163,6 +172,15 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !              REAJUSTEMENT DE LSTB
                     ltsv((nunob-1)+1)=0.d0
                     clsm=clsm+1
+                endif
+                if (.not. ismali(typma)) then
+                   nm=ar(ia,3)
+                   nunom=zi(jconx1-1+zi(jconx2+nmaabs-1)+nm-1)
+                   lstm=ltsv((nunom-1)+1)
+                   if (abs(lstm/(lsta-lstb)) .le. crilst) then
+                      ltsv((nunom-1)+1)=0.d0
+                      clsm=clsm+1
+                   endif
                 endif
             endif
 !
