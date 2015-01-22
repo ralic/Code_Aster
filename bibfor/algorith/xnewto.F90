@@ -145,7 +145,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
         endif
     endif
 !
-    do i = 1, ndim
+    do i = 1, ndime
         dist = dist+delta(i)*delta(i)
     end do
     dist = sqrt(dist)
