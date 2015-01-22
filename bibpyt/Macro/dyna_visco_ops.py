@@ -37,6 +37,7 @@ def dyna_visco_ops(self,MODELE,CARA_ELEM,
     NUME_DDL      = self.get_cmd('NUME_DDL')
     ASSE_MATRICE  = self.get_cmd('ASSE_MATRICE')
     COMB_MATR_ASSE= self.get_cmd('COMB_MATR_ASSE')
+    DEBUG         = self.get_cmd('DEBUG')
 
 
     # La macro compte pour 1 dans la numérotation des commandes
@@ -228,13 +229,19 @@ def dyna_visco_ops(self,MODELE,CARA_ELEM,
     _modes=dyna_visco_modes(self, TYPE_RESU, TYPE_MODE, list_FREQ, fmax, RESI_RELA,
                                   MATER_ELAS_FO, __asseKg, __asseKgr, __asseMg, trKg, __listKv, e0, eta0, ltrv, **args)
 
-
-
 # FREQUENCY RESPONSE COMPUTATION
     if TYPE_RESU=='HARM':
+
+#       DATASTRUCTURE VERIFICATION (SDVERI) MUST BE TEMPORARY DEACTIVATED, IT IS OTHERWISE
+#       COSTLY AS THE FINAL RESULT IS CONSTRUCTED FIELD-BY-FIELD, ONCE THE RESULT CONCEPT
+#       IS FINISHED, THE VERIFICATION PARAMETER IS SET BACK TO ITS ORIGINAL VALUE
+        PreviousCheck = 'NON'
+        if self.jdc.sdveri : PreviousCheck = 'OUI'
+       
+        DEBUG(SDVERI='NON')
         dyna_harm=dyna_visco_harm(self, EXCIT, list_FREQ, _modes,
                                         MATER_ELAS_FO, __asseKg, __asseKgr, __asseMg, __listKv, e0, eta0, __num, **args)
-
+        DEBUG(SDVERI=PreviousCheck)
 
 
     return ier

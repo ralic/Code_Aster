@@ -75,6 +75,7 @@ subroutine crtype()
     integer :: ino, nbv(1), jrefe, nchar, jfcha, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
+    integer :: nbordr1, nbordr2
 !
     parameter  (mxpara=10)
 !
@@ -119,6 +120,8 @@ subroutine crtype()
 !
     call jeexin(resu//'           .DESC', iret)
     if (iret .eq. 0) call rscrsd('G', resu, typres, nboini)
+!
+    call jelira(resu//'           .ORDR', 'LONUTI', nbordr1)
 !
     lncas = .false.
     if (typres .eq. 'MULT_ELAS' .or. typres .eq. 'FOURIER_ELAS' .or. typres .eq.&
@@ -597,42 +600,50 @@ subroutine crtype()
         call jedetr(lcpt)
  80     continue
     end do
+
+   
 !
 !     REMPLISSAGE DE .REFD POUR LES MODE_MECA  ET DYNA_*:
-    if (typres(1:9) .eq. 'MODE_MECA' .or. typres(1:10) .eq. 'DYNA_HARMO' .or. typres(1:10)&
-        .eq. 'DYNA_TRANS') then
-        matric(1) = ' '
-        matric(2) = ' '
-        matric(3) = ' '
-        numedd = ' '
-        call getvid(' ', 'MATR_RIGI', scal=matr, nbret=n1)
-        if (n1 .eq. 1) then
-            call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
-            matric(1) = matr
-        else
-            call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
+    call jelira(resu//'           .ORDR', 'LONUTI', nbordr2)
+    if (nbordr2.gt.nbordr1) then
+
+        if (     typres(1:9)  .eq. 'MODE_MECA' &
+            .or. typres(1:10) .eq. 'DYNA_HARMO'&
+            .or. typres(1:10) .eq. 'DYNA_TRANS') then
+
+            matric(1) = ' '
+            matric(2) = ' '
+            matric(3) = ' '
+            numedd    = ' '
+            call getvid(' ', 'MATR_RIGI', scal=matr, nbret=n1)
             if (n1 .eq. 1) then
                 call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
+                matric(1) = matr
+            else
+                call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
+                if (n1 .eq. 1) then
+                    call dismoi('NOM_NUME_DDL', matr, 'MATR_ASSE', repk=numedd)
+                endif
             endif
-        endif
-        call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
-        if (n1 .eq. 1) then
-            matric(2) = matr
-        endif
-!       If no numbering information could be found, try to recuperate the information from
-!       the fields composing the sd_resultat
-        if (numedd .eq. ' ') then
-            call getvid('AFFE', 'CHAM_GD', iocc=1, scal=champ, nbret=ier)
-            call dismoi('PROF_CHNO', champ, 'CHAMP', repk=profch, arret='C',&
-                        ier=ier)
-            if (ier .eq. 0) then
-                call refdaj('F', resu19, -1, profch, 'DYNAMIQUE',&
+            call getvid(' ', 'MATR_MASS', scal=matr, nbret=n1)
+            if (n1 .eq. 1) then
+                matric(2) = matr
+            endif
+!           If no numbering information could be found, try to retrieve the 
+!           information from the fields composing the sd_resultat
+            if (numedd .eq. ' ') then
+                call getvid('AFFE', 'CHAM_GD', iocc=1, scal=champ, nbret=ier)
+                call dismoi('PROF_CHNO', champ, 'CHAMP', repk=profch, arret='C',&
+                            ier=ier)
+                if (ier .eq. 0) then
+                    call refdaj('F', resu19, (nbordr2-nbordr1), profch, 'DYNAMIQUE',&
+                                matric, ier)
+                endif
+            else
+                call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE',&
                             matric, ier)
             endif
-        else
-            call refdaj('F', resu19, -1, numedd, 'DYNAMIQUE',&
-                        matric, ier)
-        endif
+        end if
     endif
 !
     if (typres .eq. 'EVOL_NOLI' .or. typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_THER') then

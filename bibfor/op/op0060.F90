@@ -314,7 +314,7 @@ subroutine op0060()
 !
     if (.not.calgen) then
 !       --- SAUVEGARDE DE LA COLLECTION .REFD POUR LES CALCULS SUR BASE PHYS
-        call refdaj('F', result, -1, numddl, 'DYNAMIQUE',&
+        call refdaj('F', result, nbfreq, numddl, 'DYNAMIQUE',&
                     [raide, masse, amor], iret)
     endif
 !

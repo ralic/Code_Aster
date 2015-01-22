@@ -242,8 +242,11 @@ subroutine refdaj(arret, result, nbordr, numer, typre,&
                     if (ibid .gt. 1) nbord0 = zi(jindi+nbrefs-1)
                     if ((zi(jindi+nbrefs) - nbord0) .eq. -1) then
                         zi(jindi+nbrefs) = nbord0 + nbord1
-                    endif
+                    else
+                        zi(jindi+nbrefs-1) = zi(jindi+nbrefs-1)  + nbord1
+                    end if
                 endif
+
                 codret = 1
                 goto 27
             endif
