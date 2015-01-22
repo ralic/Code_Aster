@@ -102,7 +102,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     integer :: nnops
     real(kind=8) :: ff(nnop), ffc(nnop), fe(4), crilsn, minlsn
     real(kind=8) :: r, theta, chpri(3), lagrs(9)
-    real(kind=8) :: ff2(4), press
+    real(kind=8) :: ff2(8), press
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
     integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
     integer :: lact(8), nlact
@@ -167,8 +167,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !       QUADRATIQUE ET LE NOMBRE DE NOEUDS SOMMETS
         call elelin(3, elrefp, elref2, ibid, nnops)
 !
-!       FF : FONCTIONS DE FORME AUX NOEUDS SOMMETS POUR INTERPOLER LE
+!       FF2 : FONCTIONS DE FORME AUX NOEUDS SOMMETS POUR INTERPOLER LE
 !       CHAMP PRIMAL CORRESPONDANT À LA PRESSION POUR LE CAS HM-XFEM
+        call vecini(8, 0.d0, ff2)
         call xpoffo(ndim, ndime, elref2, nnops, igeom,&
                     co, ff2)
     endif
@@ -223,10 +224,12 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                 do 90 i = 1, ndimc
                     ipos=ipos+1
                     chpri(i) = chpri(i) + xcalf_he(real(he(zi(jfisno-1+(j-1)*nfh+ig)),8),&
-                                 zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
-                                 *ff(j)*zr(iad+cmp(ipos))
+                               zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
+                               *ff(j)*zr(iad+cmp(ipos))
  90             continue
  85         continue
+!
+ 70     continue
 !
             press=0.d0
 !         ON TRAITE ICI LES DDLS DE PRESSION (NOEUDS SOMMETS UNIQUEMENT)
@@ -234,10 +237,16 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                 npr(i)=zi(jconx1-1+zi(jconx2+ima-1)+i-1)
  93         continue
 !
-            do 95 i = 1, nnops
-                press = press + ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+ cmp(ndim+1))
- 95         continue
- 70     continue
+!         DDLS CLASSIQUES POUR LA PRESSION DANS LE MASSIF
+        do 95 i = 1, nnops
+           press = press + ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1))
+!         DDLS HEAVISIDE POUR LA PRESSION DANS LE MASSIF
+          do 96 ig = 1, nfh
+            press = press +xcalf_he(real(he(zi(jfisno-1+(i-1)*nfh+ig)),8),&
+                    &zr(jlsn-1+(i-1)*nfiss+zi(jfisno-1+(i-1)*nfh+ig)))*zr(&
+                    &jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1+nfh*ndim+1))*ff2(i)
+ 96       continue
+ 95     continue
     else
         do 100 j = 1, nnop
 !
@@ -257,8 +266,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                 do 130 i = 1, ndimc
                     ipos=ipos+1
                     chpri(i) = chpri(i) + xcalf_he(real(he(zi(jfisno-1+(j-1)*nfh+ig)),8),&
-                                 zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
-                                 * ff(j) * zr(iad+cmp(ipo&
+                               zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
+                               * ff(j) * zr(iad+cmp(ipo&
                                &s))
 130             continue
 120         continue

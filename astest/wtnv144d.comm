@@ -51,7 +51,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D_HM',),);
 
-LS_N=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-2.0');
+LS_N=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-2.6');
 
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAIL,
                     TYPE_DISCONTINUITE='INTERFACE',
@@ -127,25 +127,47 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(TOUT='OUI',
                              MATER=MATERIAU,),);
 
+def depn(x,y,z) :
+   return 0.
+
+DEPL_N = FORMULE(VALE='depn(X,Y,Z)',
+                  NOM_PARA=('X','Y','Z'),);
+
+def pres(x,y,z) :
+   if x < 2.6:           return  1.0
+   if x > 2.6:           return  1.54
+
+PRES_R = FORMULE(VALE='pres(X,Y,Z)',
+                  NOM_PARA=('X','Y','Z',),);
+
 CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
-                    DDL_IMPO=(_F(GROUP_NO='HAUT',
-                                 PRE1=0.0,),
-                              _F(GROUP_NO='BAS',
-                                 DZ=0.0,),
-#                              _F(NOEUD=('N9','N6','N42','N45','N48','N51','N54','N57','N60','N63','N66','N69','N72','N75','N78','N81','N84','NS44','NS51','NS58','NS65','NS72','NS79','NS86','NS93','NS100','NS107','NS114','NS121','NS128','NS135','NS142','NS147',),
-                              _F(TOUT='OUI',
-                                 DX=0.0,
-                                 DY=0.0,),
+                      DDL_IMPO=( _F(GROUP_NO='BAS',
+                                   DZ=0.0,H1Z=0.0),
+                                _F(TOUT='OUI',
+                                   DX=0.0,H1X=0.0,
+                                   DY=0.0,H1Y=0.0,),
+                                ),
+                    );
+
+CHARF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                      PRES_REP=(_F(GROUP_MA='FACESUP',
+                                  PRES=PRES_R),
+                               ),
+                      );
+
+CHY=AFFE_CHAR_MECA(MODELE=MODELEK,
+                     DDL_IMPO=(_F(GROUP_NO='HAUT',
+                                  PRE1=0.0,HPRE1=0.0),
                               ),
-                    PRES_REP=(_F(GROUP_MA='GAUCHE',
-                                PRES=1.0,),
-                              _F(GROUP_MA='DROITE',
-                                PRES=1.54,),),
+                       INFO=2,
                     );
 
 RES1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHMAT0,
-                    EXCIT=_F(CHARGE=CHAR,),
+                    EXCIT=(_F(CHARGE = CHAR ),
+                           _F(CHARGE = CHARF ),
+                           _F(CHARGE = CHY ),
+                          ),
                     COMPORTEMENT=_F(RELATION='KIT_HM',PARM_THETA=0.56999999999999995,
                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),),
                     INCREMENT=_F(LIST_INST=LI,),
@@ -186,6 +208,7 @@ MODELIN=AFFE_MODELE(MAILLAGE=MA_XFEM,
 #          RESU= (_F(MAILLAGE=MA_XFEM,
 #                    RESULTAT = RESU1,
 #                    NOM_CHAM = ('DEPL',),
+#                    GROUP_MA='VOL',
 #                    NOM_CMP  = ('DX','DY','DZ','PRE1',),
 #                   ),
 #                ),
@@ -199,7 +222,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N69',
+                   NOEUD='N9',
                    NOM_CMP='PRE1',
                    VALE_CALC=1.000000000,
                    VALE_REFE=1.0,
@@ -343,7 +366,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N71',
+                   NOEUD='N11',
                    NOM_CMP='PRE1',
                    VALE_CALC=-5.04870979E-29,
                    VALE_REFE=0.0,
@@ -357,7 +380,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N70',
+                   NOEUD='N10',
                    NOM_CMP='PRE1',
                    VALE_CALC=1.540000000,
                    VALE_REFE=1.54,
@@ -501,7 +524,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
-                   NOEUD='N72',
+                   NOEUD='N12',
                    NOM_CMP='PRE1',
                    VALE_CALC=2.01948391737E-28,
                    VALE_REFE=0.0,

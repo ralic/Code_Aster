@@ -333,8 +333,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
               if (nfiss.eq.1) then
                 if (stano(1).eq.1.or.stano(1).eq.3) then
                   i = i + 1
-                  ddl(i) = 'H'//motcle
-                  coef(i) = he(irel,1)
+                  ddl(i) = 'H'//motcle(1:4)
+                  coef(i)=xcalf_he(he(irel,1),lsn(1))
                 endif
               endif  
         endif
