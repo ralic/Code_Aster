@@ -103,11 +103,11 @@ def Ordo(R, theta):
     """fonction pour connaitre l'ordonnee en fonction de theta"""
     return R * sin(math.radians(theta))
 
-COUPE_ORIG = [None] * number_of_sensors
-COUPE_EXTR = [None] * number_of_sensors
-for i, theta in enumerate(sensor_angle):
-    COUPE_ORIG[i]=(Absc(R_i, theta), Ordo(R_i, theta),)
-    COUPE_EXTR[i]=(Absc(R_e, theta), Ordo(R_e, theta),)
+coupe_orig = []
+coupe_extr = []
+for theta in sensor_angle:
+    coupe_orig.append( (Absc(R_i, theta), Ordo(R_i, theta)) )
+    coupe_extr.append( (Absc(R_e, theta), Ordo(R_e, theta)) )
 
 y_int = [Ordo(R_i, sensor_angle[i]) for i in range(number_of_sensors)]
 
@@ -165,17 +165,16 @@ TH1sf=THER_NON_LINE(MODELE=MO_THER,
 # --- Extract the temperature on the sensors
 T_out = []
 TAB = [None] * number_of_sensors
-TAB2 = [None] * number_of_sensors
 eps = 1.e-8
-for i in range(len(COUPE_ORIG)):
+for i in range(len(coupe_orig)):
     TAB[i]=MACR_LIGN_COUPE(RESULTAT=TH1sf,
                      LIST_INST=LS,
                      LIGN_COUPE=_F(INTITULE='LIGNE',
                                    NOM_CMP=('TEMP',),
                                    TYPE='SEGMENT',
                                    NB_POINTS=10.,
-                                   COOR_ORIG=COUPE_ORIG[i],
-                                   COOR_EXTR=COUPE_EXTR[i],
+                                   COOR_ORIG=coupe_orig[i],
+                                   COOR_EXTR=coupe_extr[i],
                                   ),
                     )
 
