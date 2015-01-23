@@ -1,0 +1,293 @@
+# TITRE : IMPOSITION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE COURBE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       CAS_TEST SSNV246D: 3D, ELEMENTS H20, XFEM
+
+import math
+import numpy as np
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+              
+#----------------------------------------------
+#                   MAILLAGE
+#----------------------------------------------
+
+
+MAILLAG2=LIRE_MAILLAGE()
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MAILLAG2,));
+#----------------------------------------------
+#                   MODELE ET FISSURE
+#----------------------------------------------
+
+MO=AFFE_MODELE(MAILLAGE=MAILLAG2,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),
+              );
+
+LS_N=FORMULE(NOM_PARA=('X','Y','Z'),VALE='sqrt(Z**2+X**2+Y**2)-1.5');
+
+
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
+                    TYPE_DISCONTINUITE='INTERFACE',
+                    DEFI_FISS=_F(FONC_LN=LS_N,),
+                    INFO=1,
+                   );
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
+                         FISSURE=FISS,
+                         INFO=1,
+                         DECOUPE_FACETTE='SOUS_ELEMENTS',
+                        );
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+E=5800.0E6
+SOL  = DEFI_MATERIAU(ELAS      = _F(E           = E,
+                                    NU          = 0.,
+                                    ALPHA       = 0.0,),
+                    );
+
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
+                       MODELE=MODELEK,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=SOL,
+                              ),
+                      );
+
+#----------------------------------------------
+#                   CHARGEMENTS
+#----------------------------------------------
+
+def depn(x,y,z) :
+   return 0.
+
+DEPL_N = FORMULE(VALE='depn(X,Y,Z)',
+                  NOM_PARA=('X','Y','Z'),);
+
+
+#CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+#                  DDL_IMPO=(
+#                            _F(GROUP_NO='BAS',DZ=0.,),
+#                            _F(GROUP_NO='BAS',DZ=0.,H1Z=0.),
+#                            _F(GROUP_NO='X',DY=0.,),
+#                            _F(GROUP_NO='X',DY=0.,H1Y=0.),
+#                            _F(GROUP_NO='Y',DX=0.,),
+#                            _F(GROUP_NO='Y',DX=0.,H1X=0.),
+#                            _F(GROUP_NO='EXT',DX=0.,DY=0.,DZ=0.,H1X=0.,H1Y=0.,H1Z=0.,),
+#                            _F(GROUP_NO='INT',DX=0.,DY=0.,DZ=0.,H1X=0.,H1Y=0.,H1Z=0.,),
+#                            _F(NOEUD=('N50','N51','NM121','NM123'),H1X=0.,H1Y=0.,),
+#                            _F(NOEUD=('NM51','NM91','NM122'),H1Y=0.),
+#                            _F(NOEUD=('N5','N9','N21','N25','N37','N41','NM29','NM33','NM69','NM73','NM109','NM113'),H1Y=0.),
+#                            _F(NOEUD=('NM54','NM94','NM122'),H1X=0.),
+#                            _F(NOEUD=('N5','N6','N7','N8','N9','N10','N11','N12','NM8','NM9','NM10','NM15','NM16','NM17'),H1Z=0.),
+#                            _F(NOEUD=('NM12'),H1Z=0.),
+#                            _F(NOEUD=('N8','N12','N24','N28','N40','N44','NM32','NM36','NM72','NM76','NM112','NM116'),H1X=0.),
+#                           ),
+#                  INFO=2,
+#                 );
+
+CH=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                    DDL_IMPO=(
+                            _F(GROUP_NO='BAS',DZ=DEPL_N,),
+                            _F(GROUP_NO='X',DY=DEPL_N,),
+                            _F(GROUP_NO='Y',DX=DEPL_N,),
+                            _F(GROUP_NO='EXT',DX=DEPL_N,DY=DEPL_N,DZ=DEPL_N,H1X=DEPL_N,H1Y=DEPL_N,H1Z=DEPL_N,),
+                            _F(GROUP_NO='INT',DX=DEPL_N,DY=DEPL_N,DZ=DEPL_N,H1X=DEPL_N,H1Y=DEPL_N,H1Z=DEPL_N,),
+                           ),
+                    INFO=2,
+                   );
+
+
+
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                      PRES_REP=_F(FISSURE=FISS,
+                                  PRES=10E5,
+                                 ),                            
+                    );
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+MULT=DEFI_FONCTION(NOM_PARA='INST',
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',
+                   VALE=( 0.0,  0.0,
+                          3.0,  1.0,)
+                  )
+
+L_INS=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=1,),
+                    );
+
+UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
+                    CHAM_MATER  = CHAMPMAT,
+                    EXCIT       = (_F(CHARGE = CH   ),
+                                   _F(CHARGE = CH1,  FONC_MULT = MULT ),),
+                    COMPORTEMENT   = _F(RELATION       = 'ELAS',
+                                        RESI_INTE_RELA = 1.E-6,
+                                        ITER_INTE_PAS  = -10,
+                                        ITER_INTE_MAXI = 100,
+                                       ),
+                    NEWTON      = _F(MATRICE   = 'TANGENTE',
+                                     REAC_ITER = 1, 
+                                    ),
+                    CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                     ITER_GLOB_MAXI = 100,    
+                                    ),
+                    SOLVEUR = _F(METHODE = 'MUMPS', NPREC=-1),
+                    INCREMENT   = _F(LIST_INST = L_INS,),
+                   )
+
+# -------------------------------------------------------------   
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
+# -------------------------------------------------------------   
+
+MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK)
+#IMPR_RESU(RESU=_F(MAILLAGE=MA_XFEM));
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=(_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),),
+                    );  
+
+RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
+                      RESULTAT    = UTOT1,
+                     );
+#IMPR_RESU(RESU=_F(RESULTAT=RES_X1,GROUP_NO='NFISSU'));
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1,));
+
+# -------------------------------------------------------------   
+#            TEST_TABLE
+# -------------------------------------------------------------   
+
+DEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                             GROUP_NO=('NFISSU',),
+                             RESULTAT=RES_X1,
+                             NOM_CHAM='DEPL',
+                             NUME_ORDRE=1,
+                             TOUT_CMP='OUI',
+                             OPERATION='EXTRACTION',
+                            ),
+                  );
+
+
+#IMPR_TABLE(TABLE=DEP1,);
+
+DEP1P = CALC_TABLE(TABLE = DEP1,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                                NOM_PARA  = 'NOEUD',
+                                CRIT_COMP = 'REGEXP',
+                                VALE_K    = 'N[^P]',
+                               ),
+                            ),
+                  );
+
+DEP1M = CALC_TABLE(TABLE = DEP1,
+                   ACTION = (_F(OPERATION = 'FILTRE',
+                                NOM_PARA  = 'NOEUD',
+                                CRIT_COMP = 'REGEXP',
+                                VALE_K    = 'N[^M]',
+                               ),
+                            ),
+                  );
+
+deplr = FORMULE(NOM_PARA=('DX','DY','DZ','X','Y','Z'),
+#                VALE='sqrt((X+DX)**2+(Y+DY)**2+(Z+DZ)**2)');
+#                VALE='sqrt(X**2+Y**2+Z**2)');
+#                VALE='sqrt(DX**2+DY**2+DZ**2)');
+                VALE='(DX*X+DY*Y+DZ*Z)/sqrt(X**2+Y**2+Z**2)');
+
+
+DEP1P=CALC_TABLE(reuse = DEP1P,
+                 TABLE = DEP1P,
+                 ACTION = (
+                           _F(OPERATION = 'RENOMME',
+                              NOM_PARA  = ('COOR_X','X')),
+                           _F(OPERATION = 'RENOMME',
+                              NOM_PARA  = ('COOR_Y','Y')),
+                           _F(OPERATION = 'RENOMME',
+                              NOM_PARA  = ('COOR_Z','Z')),
+                           _F(OPERATION = 'OPER',
+                              NOM_PARA  = 'DIST',
+                              FORMULE = deplr),
+                           _F(OPERATION = 'EXTR',
+                              NOM_PARA=('NOEUD','INST','DIST')),
+                            ));
+
+IMPR_TABLE(TABLE=DEP1P,);
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0E-2,
+           VALE_CALC=-0.000113936628274,
+           VALE_REFE=-1.142742582E-4,
+           NOM_PARA='DIST',
+           TYPE_TEST='MAX',
+           TABLE=DEP1P,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0E-2,
+           VALE_CALC=-0.000114712889329,
+           VALE_REFE=-1.142742582E-4,
+           NOM_PARA='DIST',
+           TYPE_TEST='MIN',
+           TABLE=DEP1P,)
+
+
+DEP1M=CALC_TABLE(reuse = DEP1M,
+                 TABLE = DEP1M,
+                 ACTION = (_F(OPERATION = 'RENOMME',
+                              NOM_PARA  = ('COOR_X','X')),
+                           _F(OPERATION = 'RENOMME',
+                              NOM_PARA  = ('COOR_Y','Y')),
+                           _F(OPERATION = 'RENOMME',
+                              NOM_PARA  = ('COOR_Z','Z')),
+                           _F(OPERATION = 'OPER',
+                              NOM_PARA  = 'DIST',
+                              FORMULE = deplr),
+                           _F(OPERATION = 'EXTR',
+                              NOM_PARA=('NOEUD','INST','DIST')),
+                            ));
+
+IMPR_TABLE(TABLE=DEP1M,);
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0E-2,
+           VALE_CALC=6.17982451845E-05,
+           VALE_REFE=6.173526141E-5,
+           NOM_PARA='DIST',
+           TYPE_TEST='MAX',
+           TABLE=DEP1M,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.0E-2,
+           VALE_CALC=6.13610859106E-05,
+           VALE_REFE=6.173526141E-5,
+           NOM_PARA='DIST',
+           TYPE_TEST='MIN',
+           TABLE=DEP1M,)
+
+
+FIN();
