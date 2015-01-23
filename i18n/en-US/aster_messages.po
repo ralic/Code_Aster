@@ -2,15 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-19 10:31+0100\n"
-"PO-Revision-Date: 2014-12-11 13:28-0500\n"
+"POT-Creation-Date: 2015-01-23 14:01+0100\n"
+"PO-Revision-Date: 2015-01-23 08:17-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: crowdin.com\n"
 "X-Crowdin-Project: code-aster\n"
@@ -494,7 +493,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:546
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:553
 msgid "variables internes pour le fluage direction 1"
-msgstr ""
+msgstr "internal variables for creep direction 1"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:139
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:145
@@ -502,7 +501,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:547
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:554
 msgid "variables internes pour le fluage direction 2"
-msgstr ""
+msgstr "internal variables for creep direction 2"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:140
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:146
@@ -510,7 +509,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:548
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:555
 msgid "variables internes pour le fluage direction 3"
-msgstr ""
+msgstr "internal variables for creep direction 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:141
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:147
@@ -518,7 +517,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:549
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:556
 msgid "variables internes pour le fluage direction 4"
-msgstr ""
+msgstr "internal variables for creep direction 4"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:142
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:148
@@ -526,7 +525,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:550
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:557
 msgid "variables internes pour le fluage direction 5"
-msgstr ""
+msgstr "internal variables for creep direction 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:143
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:149
@@ -534,7 +533,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:551
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:558
 msgid "variables internes pour le fluage direction 6"
-msgstr ""
+msgstr "internal variables for creep direction 6"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:156
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:157
@@ -542,7 +541,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:552
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:559
 msgid "variables internes pour le fluage sphérique"
-msgstr ""
+msgstr "internal variables for spherical creep"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:159
 msgid "énergie bloquée"
@@ -554,7 +553,7 @@ msgstr "energy dissipated for CRIT_RUPT"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:161
 msgid "énergie dissipée cumulée à chaque pas pour CRIT_RUPT"
-msgstr ""
+msgstr "dissipated energy accumulated at each step for CRIT_RUPT"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:162
 msgid ""
@@ -735,11 +734,11 @@ msgstr "variable of damage for positive bending"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:206
 msgid "variable d'endommagement pour la moitié supérieure de la plaque"
-msgstr ""
+msgstr "variable of damage for the upper half of the plate"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:207
 msgid "variable d'endommagement pour la moitié inférieure de la plaque"
-msgstr ""
+msgstr "variable of damage for the lower half of the plate"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:208
 msgid "endommagement normal"
@@ -811,7 +810,7 @@ msgstr "thickness of the clavé joint"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:225
 msgid "déformation équivalente de fluage"
-msgstr ""
+msgstr "equivalent creep deformation"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:226
 msgid "déformation plastique équivalente d'irradiation"
@@ -824,7 +823,7 @@ msgstr "equivalent plastic strain of irradiation"
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:231
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:232
 msgid "déformation plastique due au gel"
-msgstr ""
+msgstr "plastic deformation due to freezing"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:233
 msgid "déformation équivalente, au sens de Mazars"
@@ -897,7 +896,7 @@ msgstr "equivalent plastic strain (deviatoric) cumulated in tension"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:250
 msgid "Vitesse de déformation plastique mécanique"
-msgstr ""
+msgstr "Mechanical plastic strain rate"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:251
 msgid "déformation plastique équivalente volumique"
@@ -1265,11 +1264,11 @@ msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:329
 msgid "degre d hydratation"
-msgstr ""
+msgstr "degree of hydration"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:330
 msgid "degres d hydratation moyen"
-msgstr ""
+msgstr "average degrees of hydration"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:331
 msgid "HYDR : v1"
@@ -8178,8 +8177,8 @@ msgid ""
 "                Calcul modal par %(k1)s\n"
 "\n"
 msgstr ""
-"=======================================================================\n"
-" Modal computation by %(k1)s\n"
+" =======================================================================\n"
+"                Modal computation by %(k1)s\n"
 "\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:31
@@ -15847,14 +15846,6 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:126
 msgid ""
 "\n"
-" comportement ZMAT obligatoire\n"
-msgstr ""
-"\n"
-" compulsory behavior ZMAT \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:130
-msgid ""
-"\n"
 " il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation\n"
 " intrinsèque avec SECH comme paramètre\n"
 msgstr ""
@@ -16550,15 +16541,11 @@ msgstr ""
 " field:  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith9.py:216
-#, fuzzy
 msgid ""
 "\n"
 " Vous n'avez pas assez de mesures correspondant à la liste de fréquences "
 "demandées.\n"
 msgstr ""
-"\n"
-"Stop of the computation of the modes: no eigen mode in the waveband "
-"requested. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith9.py:219
 msgid ""
@@ -18960,7 +18947,7 @@ msgstr ""
 " Check that the data structure %(k1)s is well that which should be used. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:204
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
@@ -18980,23 +18967,6 @@ msgid ""
 "\".\n"
 "     S'il n'y en a pas, il faut faire une demande d'évolution.\n"
 msgstr ""
-"\n"
-"User error: \n"
-" - > the TYPE_ELEMENT %(k1)s does not know compute yet the option:  "
-"%(k2)s. \n"
-" \n"
-" - > Risks & advicess: \n"
-" * If you use an ordering of\" computation\" (THER_LINEAIRE, "
-"STAT_NON_LINE,'), there is not\n"
-" average to circumvent this problem. It is necessary to change modelization "
-"or to emit a request for evolution. \n"
-" \n"
-" * If it is a computation of postprocessing, you can undoubtedly\" avoid\" "
-"the problem\n"
-" by making postprocessing only on the meshes which can do it. \n"
-" For that, it is undoubtedly necessary to use a key word of the type\" "
-"GROUP_MA\". \n"
-" If there is not, it is necessary to make a request for evolution. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:218
 msgid ""
@@ -27086,7 +27056,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:29
 msgid ""
 "\n"
-"  C'est un comportement de type PMF, un comportement externe (UMAT, ZMAT ou "
+"  C'est un comportement de type PMF, un comportement externe (UMAT ou "
 "MFRONT) ou aucune maille n'est affectée.\n"
 "  On ne peut afficher aucune information.\n"
 msgstr ""
@@ -29654,6 +29624,61 @@ msgid ""
 "d'élasticité non-isotrope.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:21
+msgid ""
+"\n"
+"Dans le cas TYPE_RESU='MODE',\n"
+"la liste de fréquences donnée sous le mot-clé FREQ ou LIST_FREQ\n"
+"doit contenir exactement 2 valeurs.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:27
+msgid ""
+"\n"
+"Dans le cas TYPE_RESU='HARM',\n"
+"la liste de fréquences donnée sous le mot-clé FREQ ou LIST_FREQ\n"
+"doit contenir au moins 2 valeurs.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:33
+msgid ""
+"\n"
+"Les modes propres finaux sont :\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:37
+#, fuzzy
+msgid ""
+"\n"
+"numéro    fréquence (HZ)\n"
+msgstr ""
+"\n"
+" of frequency  %(r1)f \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:41
+#, fuzzy, python-format
+msgid " %(i1)4d      %(r1)12.5E "
+msgstr "  %(i1)4d       %(r1)12.5E\n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:43
+msgid ""
+"\n"
+"numéro    fréquence (HZ)     amortissement\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:47
+#, fuzzy, python-format
+msgid " %(i1)4d      %(r1)12.5E       %(r2)12.5E "
+msgstr " %(i1)4d      %(r2)12.5E       %(r1)12.5E\n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:49
+msgid ""
+"\n"
+"Aucune excitation au second membre n'a été trouvée.\n"
+"Pour le moment, l'opérateur DYNA_VISCO supporte uniquement\n"
+"un second membre de type FORCE_NODALE.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/ecrevisse0.py:21
 #, python-format
 msgid ""
@@ -30716,20 +30741,12 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:106
 msgid ""
 "\n"
-" noeuds confondus pour un élément\n"
-msgstr ""
-"\n"
-" nodes confused for an element \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:110
-msgid ""
-"\n"
 " le nombre de noeuds d'un tuyau est différent de 3 ou 4\n"
 msgstr ""
 "\n"
 " the number of nodes of a pipe is different from 3 or 4 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:114
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:110
 msgid ""
 "\n"
 " Aucun type d'éléments ne correspond au type demandé.\n"
@@ -30737,7 +30754,7 @@ msgstr ""
 "\n"
 " No type of elements corresponds to the required type. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:118
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:114
 msgid ""
 "\n"
 " prédicteur ELAS hors champs\n"
@@ -30745,7 +30762,7 @@ msgstr ""
 "\n"
 " predictor ELAS except fields \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:122
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:118
 #, python-format
 msgid ""
 "\n"
@@ -30760,7 +30777,7 @@ msgid ""
 "en compte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:127
 #, python-format
 msgid ""
 "\n"
@@ -30775,7 +30792,7 @@ msgid ""
 "en compte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:136
 msgid ""
 "\n"
 " dérivées de \"MP\" non définies\n"
@@ -30783,7 +30800,7 @@ msgstr ""
 "\n"
 " derived from\" non\"definite MP \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:140
 msgid ""
 "\n"
 " On passe en mécanisme 2.\n"
@@ -30791,7 +30808,7 @@ msgstr ""
 "\n"
 " One passes out of mechanism 2. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:144
 msgid ""
 "\n"
 " Chargement en mécanisme 2 trop important.\n"
@@ -30801,7 +30818,7 @@ msgstr ""
 " Loading out of too important mechanism 2. \n"
 " To check. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:149
 msgid ""
 "\n"
 " On poursuit en mécanisme 2.\n"
@@ -30809,7 +30826,7 @@ msgstr ""
 "\n"
 " One continues out of mechanism 2. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:153
 msgid ""
 "\n"
 " décharge négative sans passer par le mécanisme 1\n"
@@ -30819,7 +30836,7 @@ msgstr ""
 " negative discharge without passing by mechanism 1\n"
 " to decrease the time step \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:162
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:158
 msgid ""
 "\n"
 " on revient en mécanisme 1\n"
@@ -30827,7 +30844,7 @@ msgstr ""
 "\n"
 " one returns out of mechanism 1 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:162
 msgid ""
 "\n"
 " pas de retour dans le mécanisme 1 trop important\n"
@@ -30837,7 +30854,7 @@ msgstr ""
 " no the return in too important mechanism 1\n"
 " decrease the time step \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:171
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:167
 #, python-format
 msgid ""
 "\n"
@@ -30846,7 +30863,7 @@ msgstr ""
 "\n"
 " type of element %(k1)s incompatible with  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:175
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:171
 #, python-format
 msgid ""
 "\n"
@@ -30855,7 +30872,7 @@ msgstr ""
 "\n"
 " the behavior %(k1)s is unexpected \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:179
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:175
 #, python-format
 msgid ""
 "\n"
@@ -30864,7 +30881,7 @@ msgstr ""
 "\n"
 " element untreated  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:187
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:183
 #, python-format
 msgid ""
 "\n"
@@ -30873,7 +30890,7 @@ msgstr ""
 "\n"
 " number of layers negative or null:  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:191
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:187
 #, python-format
 msgid ""
 "\n"
@@ -30888,7 +30905,7 @@ msgstr ""
 " authorized quantity: %(k2)s \n"
 " quantity of the field: %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:199
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:195
 #, python-format
 msgid ""
 "\n"
@@ -30941,7 +30958,7 @@ msgstr ""
 " Problems of convergence can occur. \n"
 " The use of control can make it possible to pass this instability. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:217
 msgid ""
 "\n"
 "  -> L'axe de référence pour le calcul du repère local est normal à un\n"
@@ -30960,7 +30977,7 @@ msgstr ""
 " ANGL_REP or VECTOR. \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:230
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:226
 msgid ""
 "\n"
 " impossibilité :\n"
@@ -30974,7 +30991,7 @@ msgstr ""
 "stiffness of membrane,\n"
 " neither in form\" MEMB_L\", nor in form\" M_LLLL\". \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:232
 #, python-format
 msgid ""
 "\n"
@@ -30999,7 +31016,7 @@ msgid ""
 "      intrinsèque de la coque.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:248
 msgid ""
 "\n"
 " impossibilité :\n"
@@ -31011,14 +31028,14 @@ msgstr ""
 " you have a material of the type\" ELAS_COQUE\" and the determinant of under "
 "matrix of Hooke relating to the shears is null. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:257
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:253
 #, python-format
 msgid ""
 "\n"
 " Le comportement matériau %(k1)s n'est pas traité.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:261
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:257
 #, python-format
 msgid ""
 "\n"
@@ -31030,7 +31047,7 @@ msgid ""
 " Seule la définition du comportement ELAS_ORTH est nécessaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:271
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:267
 msgid ""
 "\n"
 " nombre de couches négatif ou nul\n"
@@ -31038,7 +31055,7 @@ msgstr ""
 "\n"
 " number of layers negative or null \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:271
 msgid ""
 "\n"
 " impossibilité, la surface de l'élément est nulle.\n"
@@ -31046,7 +31063,7 @@ msgstr ""
 "\n"
 " impossibility, the surface of the element is null. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:279
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:275
 msgid ""
 "\n"
 " comportement élastique inexistant\n"
@@ -31054,7 +31071,7 @@ msgstr ""
 "\n"
 " non-existent elastic behavior \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:283
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:279
 #, python-format
 msgid ""
 "\n"
@@ -31065,7 +31082,7 @@ msgstr ""
 " - > the type of behavior %(k1)s is not planned for the computation of\n"
 " SIEF_ELGA with thermal loading. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:288
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:284
 #, python-format
 msgid ""
 "\n"
@@ -31076,7 +31093,7 @@ msgstr ""
 "User error: \n"
 " Temperature on the mesh:  %(k1)s : it misses component\" TEMP_MIL\" \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:289
 #, python-format
 msgid ""
 "\n"
@@ -31085,7 +31102,7 @@ msgstr ""
 "\n"
 " Unknown ELREFA:  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:293
 #, python-format
 msgid ""
 "\n"
@@ -31096,7 +31113,7 @@ msgstr ""
 " the nature of the material %(k1)s requires the definition of coefficient "
 "B_ENDOGE in DEFI_MATERIAU. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:297
 #, python-format
 msgid ""
 "\n"
@@ -31105,7 +31122,7 @@ msgstr ""
 "\n"
 " GROUP_MA:  %(k1)s unknown in the mesh \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:309
 msgid ""
 "\n"
 " Si vous avez renseigné le mot-clé NOEUD_ORIG, donnez un groupe de mailles "
@@ -31118,7 +31135,7 @@ msgstr ""
 "list of meshes\n"
 " under MESH. The nodes groups and the lists of nodes are not reordered. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:318
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:314
 #, python-format
 msgid ""
 "\n"
@@ -31127,7 +31144,7 @@ msgstr ""
 "\n"
 " The nodes group %(k1)s does not exist. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:323
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:319
 #, python-format
 msgid ""
 "\n"
@@ -31138,7 +31155,7 @@ msgstr ""
 " The node origin or end %(k1)s does not form part of the meshes of the "
 "line. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:327
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:323
 #, python-format
 msgid ""
 "\n"
@@ -31148,7 +31165,7 @@ msgstr ""
 "\n"
 " The node origin or end %(k1)s is not an end of the line. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:327
 msgid ""
 "\n"
 " Alarme DEFI_GROUP / CREA_GROUP_NO / OPTION='NOEUD_ORDO' :\n"
@@ -31164,7 +31181,7 @@ msgstr ""
 " You did not inform key word VECT_ORIE. The line is thus directed "
 "arbitrarily. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:333
 msgid ""
 "\n"
 " Erreur utilisateur :\n"
@@ -31188,7 +31205,7 @@ msgstr ""
 " (or NOEUD_ORIG and NOEUD_EXTR). \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:349
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:345
 #, python-format
 msgid ""
 "\n"
@@ -31197,7 +31214,7 @@ msgstr ""
 "\n"
 " GROUP_NO directed: node origin =  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:353
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:349
 #, python-format
 msgid ""
 "\n"
@@ -31206,7 +31223,7 @@ msgstr ""
 "\n"
 " The GROUP_MA:  %(k1)s do not exist. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:360
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:356
 #, python-format
 msgid ""
 "\n"
@@ -31215,7 +31232,7 @@ msgstr ""
 "\n"
 " the node end %(k1)s is not the last node \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:368
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:364
 msgid ""
 "\n"
 " Le type des mailles des lèvres doit être quadrangle ou triangle.\n"
@@ -31223,7 +31240,7 @@ msgstr ""
 "\n"
 " The type of the meshes of the lips must be quadrangle or triangle. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:373
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:369
 msgid ""
 "\n"
 " Mauvaise définition de MP1 et MP2\n"
@@ -31231,7 +31248,7 @@ msgstr ""
 "\n"
 " Bad definition of MP1 and MP2 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:377
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:373
 #, python-format
 msgid ""
 "\n"
@@ -31242,7 +31259,7 @@ msgstr ""
 " Option %(k1)s is not available for the element %(k2)s and the constitutive "
 "law  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:381
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:377
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -31258,7 +31275,7 @@ msgstr ""
 " It is necessary to modify the catalogue phenomene_modelisation__.cata to "
 "add NBSIGM for this modelization. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:384
 #, python-format
 msgid ""
 "\n"
@@ -31275,7 +31292,7 @@ msgid ""
 "pour préciser les orientations des couches\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:399
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:395
 #, python-format
 msgid ""
 "\n"
@@ -31292,7 +31309,7 @@ msgid ""
 "      intrinsèque de la coque.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:410
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:406
 #, python-format
 msgid ""
 "\n"
@@ -31675,15 +31692,6 @@ msgstr ""
 " option:  %(k1)s prohibited \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:199
-#, python-format
-msgid ""
-"\n"
-" éléments de poutre noeuds confondus pour un élément:  %(k1)s\n"
-msgstr ""
-"\n"
-" beam elements nodes confused for an element:  %(k1)s \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:203
 msgid ""
 "\n"
 " éléments de poutre section variable affine :seul une section rectangle "
@@ -31693,7 +31701,7 @@ msgstr ""
 " beam elements variable section closely connected: only a right-angled "
 "section full is available. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:207
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:203
 msgid ""
 "\n"
 " éléments de poutre section variable homothétique : l'aire initiale est "
@@ -31702,7 +31710,7 @@ msgstr ""
 "\n"
 " beam elements homothetic variable section: the initial area is null. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:207
 #, python-format
 msgid ""
 "\n"
@@ -31711,7 +31719,7 @@ msgstr ""
 "\n"
 " beam elements the option\" %(k1)s\" is unknown \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:215
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:211
 msgid ""
 "\n"
 " le seul comportement élastique valide est ELAS\n"
@@ -36057,24 +36065,7 @@ msgstr ""
 "Library\" HDF5\" is not installed in this version of Code_Aster. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:37
-msgid ""
-"\n"
-"La bibliothèque \"ZMAT\" n'est pas installée dans cette version de "
-"Code_Aster ou bien elle\n"
-"n'a pas été trouvée.\n"
-"\n"
-"Conseil : Vérifiez que l'environnement est correctement défini,\n"
-"          notamment la variable LD_LIBRARY_PATH.\n"
-msgstr ""
-"\n"
-"Library\" ZMAT\" is not installed in this version of Code_Aster or it\n"
-" was not found. \n"
-" \n"
-"Advice: Check that the environment is correctly defined,\n"
-" in particular variable LD_LIBRARY_PATH. \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:45
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:52
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:44
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -36084,7 +36075,7 @@ msgstr ""
 "Programming error: \n"
 " One tries to use an operator who is not programmed yet. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:57
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:49
 msgid ""
 "\n"
 "Le renuméroteur \"SCOTCH\" n'est pas installé dans cette version de "
@@ -36093,7 +36084,7 @@ msgstr ""
 "\n"
 "Renumerotor\" SCOTCH\" is not installed in this version of Code_Aster. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:61
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:53
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -36105,7 +36096,7 @@ msgstr ""
 " One tries to use an elementary routine of computation\n"
 " which is not programmed yet. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:67
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:59
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -36117,7 +36108,7 @@ msgstr ""
 " One tries to use an elementary routine of initialization\n"
 " which is not programmed yet. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:73
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:65
 msgid ""
 "\n"
 "Le solveur \"PETSc\" n'est pas installé dans cette version de Code_Aster.\n"
@@ -36134,7 +36125,7 @@ msgstr ""
 " Attention, certain solvers are available only in the parallel versions of "
 "Code_Aster. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:80
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:72
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -36146,7 +36137,7 @@ msgstr ""
 " One tries to use a routine of behavior\n"
 " which is not programmed yet. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:86
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:78
 msgid ""
 "\n"
 "La bibliothèque \"YACS\" n'est pas installée dans cette version de "
@@ -36155,7 +36146,7 @@ msgstr ""
 "\n"
 "Library\" YACS\" is not installed in this version of Code_Aster. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:90
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:82
 #, python-format
 msgid ""
 "\n"
@@ -36174,7 +36165,7 @@ msgstr ""
 "Advice: Check that the environment is correctly defined,\n"
 " in particular variable LD_LIBRARY_PATH. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:99
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:91
 #, python-format
 msgid ""
 "\n"
@@ -36195,7 +36186,7 @@ msgstr ""
 "Advice: Check that the environment is correctly defined,\n"
 " in particular variable LD_LIBRARY_PATH. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:109
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:101
 msgid ""
 "\n"
 "La bibliothèque \"METIS\" n'est pas installée dans cette version de "
@@ -44149,6 +44140,38 @@ msgid ""
 "GESTION_MEMOIRE='IN_CORE' + RENUM='QAMD'),\n"
 "    * Changez le niveau de parallélisme (mot-clé "
 "NIVEAU_PARALLELISME='COMPLET').\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:160
+msgid ""
+"\n"
+"L'amélioration des modes propres ne peut pas être effectuée,\n"
+"car au moins une des matrices d'entrée est non symétrique,\n"
+"ce qui est incompatible avec l'algorithme des puissances inverses utilisé "
+"pour l'amélioration.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:166
+#, python-format
+msgid ""
+"\n"
+"L'amélioration des modes propres ne peut pas être effectuée,\n"
+"car la matrice renseignée sous %(k1)s est complexe,\n"
+"ce qui est incompatible avec l'algorithme des puissances inverses utilisé "
+"pour l'amélioration.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:172
+#, python-format
+msgid ""
+"\n"
+"L'amélioration des modes propres ne peut pas être effectuée,\n"
+"car des valeurs propres très proches ont été détectées dans le concept "
+"%(k1)s\n"
+"(modes multiples ou plusieurs modes de corps rigide),\n"
+"ce qui est incompatible avec l'algorithme des puissances inverses utilisé "
+"pour l'amélioration.\n"
+"\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modal0.py:21
@@ -52437,6 +52460,29 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:257
+#, python-format
+msgid ""
+"\n"
+"Vous avez demandé à ce que le champ de variables internes soit pris en \n"
+"compte dans l'état initial du calcul EPX. La transformation de ce champ\n"
+"de Code_Aster vers EPX n'est pas programmée pour le comportement  %(k1)s.\n"
+"Les valeurs de ce champ dans l'état initial sont donc nulles pour les "
+"mailles\n"
+"sur lesquelles ce comportement est affecté.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:265
+msgid ""
+"\n"
+"Vous avez demandé à ce que le champ de variables internes soit pris en \n"
+"compte dans l'état initial du calcul EPX. Cependant la transformation\n"
+"du champ de variables internes de Code_Aster vers EPX n'est programmée\n"
+"pour aucun des comportements présents dans le calcul. \n"
+"\n"
+"La commande VARI_INT = 'OUI' n'a ici aucun effet et est donc inutile.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:274
 #, python-format
 msgid ""
 "\n"
@@ -68522,7 +68568,25 @@ msgid ""
 "     Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:175
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:173
+#, python-format
+msgid ""
+"\n"
+"     Une relation cinématique est imposée au niveau du noeud %(k1)s sur "
+"lequel une \n"
+"     fissure passe et cette relation est imposée de part et d'autre de la "
+"fissure.\n"
+"     Deux relations sont donc imposées, bloquant ainsi le ddl Heaviside "
+"associé.\n"
+"     Si vous avez également imposé une relation cinématique sur le degré de "
+"liberté \n"
+"     Heaviside associé du noeud  %(k1)s, la matrice sera non factorisable.\n"
+"     Conseil :\n"
+"     Vous pouvez exclure le noeud %(k1)s du groupe affecté par\n"
+"     cette deuxième relation en utilisant par exemple l'opérande DIFFE.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:184
 #, python-format
 msgid ""
 "\n"
@@ -68541,7 +68605,7 @@ msgstr ""
 " Advice: \n"
 " Select a form of %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:184
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:193
 #, python-format
 msgid ""
 "\n"
@@ -68558,7 +68622,7 @@ msgstr ""
 " Advice: \n"
 " Want inform %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:192
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:201
 #, python-format
 msgid ""
 "\n"
@@ -68577,7 +68641,7 @@ msgstr ""
 " Advice: \n"
 " Not to obtain this message any more, do not inform %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:201
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:210
 msgid ""
 "\n"
 "     Numéros des mailles de la zone fissure.\n"
@@ -68585,7 +68649,7 @@ msgstr ""
 "\n"
 " Numbers of the meshes of the area fissures. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:214
 #, python-format
 msgid ""
 "\n"
@@ -68594,7 +68658,7 @@ msgstr ""
 "\n"
 " Number of meshes containing the crack tip:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:218
 #, python-format
 msgid ""
 "\n"
@@ -68603,7 +68667,7 @@ msgstr ""
 "\n"
 " Number of meshes of the Heaviside type:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:222
 #, python-format
 msgid ""
 "\n"
@@ -68612,7 +68676,7 @@ msgstr ""
 "\n"
 " Number of meshes of the Ace-tip type:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:217
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:226
 #, python-format
 msgid ""
 "\n"
@@ -68621,7 +68685,7 @@ msgstr ""
 "\n"
 " Number of meshes of the type Heaviside Ace-tip:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:230
 #, python-format
 msgid ""
 "\n"
@@ -68630,7 +68694,7 @@ msgstr ""
 "\n"
 " Many points of the crack tip:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:234
 #, python-format
 msgid ""
 "\n"
@@ -68639,7 +68703,7 @@ msgstr ""
 "\n"
 " Many crack tips:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:238
 msgid ""
 "\n"
 "     Coordonnées des points des fonds de fissure\n"
@@ -68647,7 +68711,7 @@ msgstr ""
 "\n"
 " Coordinates of the points of the crack tips \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:242
 #, python-format
 msgid ""
 "\n"
@@ -68656,7 +68720,7 @@ msgstr ""
 "\n"
 " crack tip:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:237
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:246
 #, python-format
 msgid ""
 "\n"
@@ -68665,7 +68729,7 @@ msgstr ""
 "\n"
 " Many level-sets readjusted:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:241
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:250
 msgid ""
 "\n"
 "     Si vous êtes en 2D pour l'approche de contact <<Grands glissements avec "
@@ -68686,7 +68750,7 @@ msgstr ""
 " are of type QUAD4 or TRIA3. \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:249
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:258
 #, python-format
 msgid ""
 "\n"
@@ -68704,7 +68768,7 @@ msgid ""
 "MODELE_IN.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:260
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:269
 #, python-format
 msgid ""
 "\n"
@@ -68726,7 +68790,7 @@ msgstr ""
 " Not to activate multi-Heaviside, the cracks must be separate of 2 meshes\n"
 " minimum. Please refine the mesh between cracks (or draw aside cracks). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:268
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:277
 #, python-format
 msgid ""
 "\n"
@@ -68743,7 +68807,7 @@ msgstr ""
 " Not to activate multi-Heaviside, the cracks must be separate of 2 meshes\n"
 " minimum. Please refine the mesh between cracks (or draw aside cracks). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:284
 #, python-format
 msgid ""
 "\n"
@@ -68776,7 +68840,7 @@ msgstr ""
 "stresses of\n"
 " each bottom (see column NUME_FOND of the array) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:288
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:297
 #, python-format
 msgid ""
 "\n"
@@ -68797,7 +68861,7 @@ msgstr ""
 " Not to activate multi-Heaviside, the cracks must be separate of 2 meshes\n"
 " minimum. Please refine the mesh between cracks (or draw aside cracks). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:295
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:304
 #, python-format
 msgid ""
 "\n"
@@ -68818,7 +68882,7 @@ msgstr ""
 " Not to activate multi-Heaviside, the cracks must be separate of 2 meshes\n"
 " minimum. Please refine the mesh between cracks (or draw aside cracks). \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:303
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:312
 msgid ""
 "\n"
 "      Jonction X-FEM et contact\n"
@@ -68829,7 +68893,7 @@ msgid ""
 "facette.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:310
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:319
 #, python-format
 msgid ""
 "\n"
@@ -68849,7 +68913,7 @@ msgstr ""
 " be given afterwards %(k2)s. To take care to permute %(k1)s and %(k2)s in "
 "the key word FISSURES MODI_MODELE_XFEM. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:317
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:326
 #, python-format
 msgid ""
 "\n"
@@ -68884,14 +68948,14 @@ msgstr ""
 " JONCTION=_F (FISSURE= %(k2)s, POINT=') when one calls DEFI_FISS_XFEM to "
 "define %(k3)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:328
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:337
 msgid ""
 "\n"
 "      Les flux correspondant a PRE2 et TEMP sont interdits pour les\n"
 "      éléments HM-XFEM.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:333
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:342
 msgid ""
 "\n"
 "     Le calcul de G avec X-FEM est impossible en grandes déformations.\n"
@@ -68899,7 +68963,7 @@ msgstr ""
 "\n"
 " The computation of G with X-FEM is impossible in large deformation. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:346
 msgid ""
 "\n"
 "     La méthode X-FEM n'est pas disponible avec 'PETIT_REAC'.\n"
@@ -68907,7 +68971,7 @@ msgstr ""
 "\n"
 " Method X-FEM is not available with 'PETIT_REAC'. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:341
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:350
 #, python-format
 msgid ""
 "\n"
@@ -68917,7 +68981,7 @@ msgstr ""
 "\n"
 " The mesh %(k1)s has %(i1)d basic crack points of coordinates: \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:345
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:354
 msgid ""
 "\n"
 "     Une ou des mailles contenant plus de 2 points du fond de fissure ont "
@@ -68938,14 +69002,14 @@ msgstr ""
 "multiple funds. \n"
 " Consequently postprocessing with command CALC_G is not possible. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:352
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:361
 msgid ""
 "\n"
 "Il y a trop de termes dans la relation d'égalité.\n"
 "Utilisez ELIM_ARETE='DUAL'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:366
 msgid ""
 "\n"
 "  -> La fissure (ou l'interface) définie dans DEFI_FISS_XFEM ne coupe aucune "
@@ -68969,7 +69033,7 @@ msgstr ""
 " To check coherence enters the definition of the geometry of crack and the "
 "mesh. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:366
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:375
 msgid ""
 "\n"
 "  -> Aucun point du fond de fissure n'a été trouvé !\n"
@@ -68990,7 +69054,7 @@ msgid ""
 "        de modes de corps rigides non bloqués).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:389
 msgid ""
 "\n"
 "     Ne pas utiliser le mot-clef RAYON_ENRI lorsque le fond de fissure\n"
@@ -69000,14 +69064,14 @@ msgstr ""
 " Do not use keyword RAYON_ENRI when the crack tip\n"
 " is apart from structure. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:385
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:394
 msgid ""
 "\n"
 "     -> Pour le fond fermé, un point supplémentaire du fond a été ajouté.\n"
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:390
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:399
 msgid ""
 "\n"
 "  -> Une face contient au moins 3 points d'intersection avec la courbe "
@@ -69057,7 +69121,7 @@ msgstr ""
 "crack calculated\n"
 " by CALC_G has meaning physical for the problem to solve. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:408
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:417
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -69073,7 +69137,7 @@ msgstr ""
 " on an edge. \n"
 " This configuration is proscribed. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:415
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:424
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -69093,7 +69157,7 @@ msgstr ""
 " - the element cannot be cut out according to the crack configuration which "
 "crosses it \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:423
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:432
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -69102,7 +69166,7 @@ msgid ""
 "     arête courbe.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:429
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:438
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -69120,7 +69184,7 @@ msgstr ""
 " - the three points which define the quadratic edge are identical\n"
 " - the edge is\" too\" round \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:437
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:446
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -69130,7 +69194,7 @@ msgstr ""
 " - > ---Quadratic elements XFEM 2D--- \n"
 " Newton: maximum iteration count reached \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:442
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:451
 msgid ""
 "\n"
 "  -> Aucune grille n'est associée à la fissure donnée par FISS_GRILLE.\n"
@@ -69146,7 +69210,7 @@ msgstr ""
 " Please give a crack with an associated grid. \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:450
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:459
 msgid ""
 "\n"
 "  -> La fissure à propager a été définie par DEFI_FISS_XFEM en donnant "
@@ -69215,7 +69279,7 @@ msgstr ""
 "DEFI_FISS_XFEM). \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:475
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:484
 #, python-format
 msgid ""
 "\n"
@@ -69234,7 +69298,7 @@ msgstr ""
 " Please re-examine the definition of your crack. \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:483
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:492
 #, python-format
 msgid ""
 "\n"
@@ -69248,7 +69312,7 @@ msgid ""
 "fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:491
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:500
 #, python-format
 msgid ""
 "\n"
@@ -69260,7 +69324,7 @@ msgid ""
 "modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:498
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:507
 #, python-format
 msgid ""
 "\n"
@@ -69273,7 +69337,7 @@ msgid ""
 "     présentes dans le modèle ou revoyez la définition de votre modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:506
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:515
 #, python-format
 msgid ""
 "\n"
@@ -69282,7 +69346,7 @@ msgstr ""
 "\n"
 " Many points of the crack tip on the grid:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:510
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:519
 msgid ""
 "\n"
 "     Coordonnées des points du fond de fissure sur la grille\n"
@@ -69290,7 +69354,7 @@ msgstr ""
 "\n"
 " Coordinates of the points of the crack tip on the grid \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:514
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:523
 msgid ""
 "\n"
 "  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le "
@@ -69307,7 +69371,7 @@ msgstr ""
 " - > Risks & advices: \n"
 " Please use a linear mesh. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:523
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:532
 msgid ""
 "\n"
 "  -> Il y a éventuellement des créations de mailles\n"
@@ -69325,7 +69389,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:535
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:544
 #, python-format
 msgid ""
 "\n"
@@ -69335,7 +69399,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:541
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:550
 #, python-format
 msgid ""
 "\n"
@@ -69348,7 +69412,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:549
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:558
 #, python-format
 msgid ""
 "\n"
@@ -69360,7 +69424,7 @@ msgid ""
 "     Revoyez la définition de ce modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:556
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:565
 #, python-format
 msgid ""
 "\n"
@@ -69373,7 +69437,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:564
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:573
 #, python-format
 msgid ""
 "\n"
@@ -69383,7 +69447,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:571
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:580
 #, python-format
 msgid ""
 "\n"
@@ -69396,7 +69460,7 @@ msgid ""
 "     Revoyez la définition de ces modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:579
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:588
 msgid ""
 "\n"
 "  On ne peut pas créer un modèle X-FEM avec contact dans le cas où le mot "
@@ -69405,7 +69469,7 @@ msgid ""
 "     Vous devez renseigner CONTACT='NON' pour ne pas activer le contact.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:585
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:594
 #, python-format
 msgid ""
 "\n"
@@ -69417,7 +69481,7 @@ msgid ""
 "     Revoyez la définition de ces deux modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:592
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:601
 msgid ""
 "\n"
 "  -> Il n'est pas possible de réaliser la propagation d'une fissure en "
@@ -69428,7 +69492,7 @@ msgid ""
 "     Veuillez utiliser un maillage linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:599
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:608
 #, python-format
 msgid ""
 "\n"
@@ -69439,7 +69503,7 @@ msgid ""
 "         doivent être définies avec un contact STANDARD.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:604
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:613
 msgid ""
 "\n"
 "     --> L algorithme de détection a détecté un front qui va au delà de\n"
@@ -71545,14 +71609,37 @@ msgstr "Simple key word: %s %s"
 
 #~ msgid ""
 #~ "\n"
-#~ " Le mot-clé MAILLAGE est obligatoire avec le mot-clé CREA_MAILLE.\n"
+#~ " comportement ZMAT obligatoire\n"
 #~ msgstr ""
 #~ "\n"
-#~ " The key word MESH is compulsory with key word CREA_MAILLE. \n"
+#~ " compulsory behavior ZMAT \n"
 
 #~ msgid ""
 #~ "\n"
-#~ " Le mot-clé MAILLAGE est obligatoire avec le mot-clé DETR_GROUP_MA.\n"
+#~ " noeuds confondus pour un élément\n"
 #~ msgstr ""
 #~ "\n"
-#~ " The key word MESH is compulsory with key word DETR_GROUP_MA. \n"
+#~ " nodes confused for an element \n"
+
+#~ msgid ""
+#~ "\n"
+#~ " éléments de poutre noeuds confondus pour un élément:  %(k1)s\n"
+#~ msgstr ""
+#~ "\n"
+#~ " beam elements nodes confused for an element:  %(k1)s \n"
+
+#~ msgid ""
+#~ "\n"
+#~ "La bibliothèque \"ZMAT\" n'est pas installée dans cette version de "
+#~ "Code_Aster ou bien elle\n"
+#~ "n'a pas été trouvée.\n"
+#~ "\n"
+#~ "Conseil : Vérifiez que l'environnement est correctement défini,\n"
+#~ "          notamment la variable LD_LIBRARY_PATH.\n"
+#~ msgstr ""
+#~ "\n"
+#~ "Library\" ZMAT\" is not installed in this version of Code_Aster or it\n"
+#~ " was not found. \n"
+#~ " \n"
+#~ "Advice: Check that the environment is correctly defined,\n"
+#~ " in particular variable LD_LIBRARY_PATH. \n"

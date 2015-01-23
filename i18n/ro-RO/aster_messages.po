@@ -2,15 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-19 10:31+0100\n"
-"PO-Revision-Date: 2014-12-11 13:29-0500\n"
+"POT-Creation-Date: 2015-01-23 14:01+0100\n"
+"PO-Revision-Date: 2015-01-14 10:39-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Romanian\n"
 "Language: ro_RO\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100>0 && n"
 "%100<20)) ? 1 : 2);\n"
 "X-Generator: crowdin.com\n"
@@ -12359,12 +12358,6 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:126
 msgid ""
 "\n"
-" comportement ZMAT obligatoire\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:130
-msgid ""
-"\n"
 " il faut déclarer FONC_DESORP sous ELAS_FO pour le fluage de dessiccation\n"
 " intrinsèque avec SECH comme paramètre\n"
 msgstr ""
@@ -20719,7 +20712,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor4.py:29
 msgid ""
 "\n"
-"  C'est un comportement de type PMF, un comportement externe (UMAT, ZMAT ou "
+"  C'est un comportement de type PMF, un comportement externe (UMAT ou "
 "MFRONT) ou aucune maille n'est affectée.\n"
 "  On ne peut afficher aucune information.\n"
 msgstr ""
@@ -22684,6 +22677,58 @@ msgid ""
 "d'élasticité non-isotrope.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:21
+msgid ""
+"\n"
+"Dans le cas TYPE_RESU='MODE',\n"
+"la liste de fréquences donnée sous le mot-clé FREQ ou LIST_FREQ\n"
+"doit contenir exactement 2 valeurs.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:27
+msgid ""
+"\n"
+"Dans le cas TYPE_RESU='HARM',\n"
+"la liste de fréquences donnée sous le mot-clé FREQ ou LIST_FREQ\n"
+"doit contenir au moins 2 valeurs.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:33
+msgid ""
+"\n"
+"Les modes propres finaux sont :\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:37
+msgid ""
+"\n"
+"numéro    fréquence (HZ)\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:41
+#, python-format
+msgid " %(i1)4d      %(r1)12.5E "
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:43
+msgid ""
+"\n"
+"numéro    fréquence (HZ)     amortissement\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:47
+#, python-format
+msgid " %(i1)4d      %(r1)12.5E       %(r2)12.5E "
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:49
+msgid ""
+"\n"
+"Aucune excitation au second membre n'a été trouvée.\n"
+"Pour le moment, l'opérateur DYNA_VISCO supporte uniquement\n"
+"un second membre de type FORCE_NODALE.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/ecrevisse0.py:21
 #, python-format
 msgid ""
@@ -23468,28 +23513,22 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:106
 msgid ""
 "\n"
-" noeuds confondus pour un élément\n"
+" le nombre de noeuds d'un tuyau est différent de 3 ou 4\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:110
 msgid ""
 "\n"
-" le nombre de noeuds d'un tuyau est différent de 3 ou 4\n"
+" Aucun type d'éléments ne correspond au type demandé.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:114
 msgid ""
 "\n"
-" Aucun type d'éléments ne correspond au type demandé.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:118
-msgid ""
-"\n"
 " prédicteur ELAS hors champs\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:122
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:118
 #, python-format
 msgid ""
 "\n"
@@ -23504,7 +23543,7 @@ msgid ""
 "en compte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:127
 #, python-format
 msgid ""
 "\n"
@@ -23519,80 +23558,80 @@ msgid ""
 "en compte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:136
 msgid ""
 "\n"
 " dérivées de \"MP\" non définies\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:140
 msgid ""
 "\n"
 " On passe en mécanisme 2.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:144
 msgid ""
 "\n"
 " Chargement en mécanisme 2 trop important.\n"
 " À vérifier.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:149
 msgid ""
 "\n"
 " On poursuit en mécanisme 2.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:153
 msgid ""
 "\n"
 " décharge négative sans passer par le mécanisme 1\n"
 " diminuer le pas de temps\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:162
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:158
 msgid ""
 "\n"
 " on revient en mécanisme 1\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:162
 msgid ""
 "\n"
 " pas de retour dans le mécanisme 1 trop important\n"
 " diminuer le pas de temps\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:171
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:167
 #, python-format
 msgid ""
 "\n"
 " type d'élément  %(k1)s  incompatible avec  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:175
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:171
 #, python-format
 msgid ""
 "\n"
 " le comportement %(k1)s est inattendu\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:179
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:175
 #, python-format
 msgid ""
 "\n"
 " élément non traité  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:187
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:183
 #, python-format
 msgid ""
 "\n"
 " nombre de couches négatif ou nul :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:191
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:187
 #, python-format
 msgid ""
 "\n"
@@ -23602,7 +23641,7 @@ msgid ""
 "   grandeur du champ   :%(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:199
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:195
 #, python-format
 msgid ""
 "\n"
@@ -23632,7 +23671,7 @@ msgid ""
 "    L'utilisation du pilotage peut permettre de passer cette instabilité.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:217
 msgid ""
 "\n"
 "  -> L'axe de référence pour le calcul du repère local est normal à un\n"
@@ -23643,7 +23682,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:230
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:226
 msgid ""
 "\n"
 " impossibilité :\n"
@@ -23652,7 +23691,7 @@ msgid ""
 " ni sous la forme \"MEMB_L\", ni sous la forme \"M_LLLL\".\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:232
 #, python-format
 msgid ""
 "\n"
@@ -23677,7 +23716,7 @@ msgid ""
 "      intrinsèque de la coque.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:248
 msgid ""
 "\n"
 " impossibilité :\n"
@@ -23685,14 +23724,14 @@ msgid ""
 "matrice de Hooke relative au cisaillement est nul.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:257
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:253
 #, python-format
 msgid ""
 "\n"
 " Le comportement matériau %(k1)s n'est pas traité.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:261
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:257
 #, python-format
 msgid ""
 "\n"
@@ -23704,25 +23743,25 @@ msgid ""
 " Seule la définition du comportement ELAS_ORTH est nécessaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:271
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:267
 msgid ""
 "\n"
 " nombre de couches négatif ou nul\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:271
 msgid ""
 "\n"
 " impossibilité, la surface de l'élément est nulle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:279
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:275
 msgid ""
 "\n"
 " comportement élastique inexistant\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:283
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:279
 #, python-format
 msgid ""
 "\n"
@@ -23730,7 +23769,7 @@ msgid ""
 "     SIEF_ELGA avec chargement thermique.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:288
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:284
 #, python-format
 msgid ""
 "\n"
@@ -23738,14 +23777,14 @@ msgid ""
 "  Température sur la maille: %(k1)s : il manque la composante \"TEMP_MIL\"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:289
 #, python-format
 msgid ""
 "\n"
 " ELREFA inconnu:  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:293
 #, python-format
 msgid ""
 "\n"
@@ -23753,14 +23792,14 @@ msgid ""
 "B_ENDOGE dans DEFI_MATERIAU.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:297
 #, python-format
 msgid ""
 "\n"
 " GROUP_MA :  %(k1)s  inconnu dans le maillage\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:309
 msgid ""
 "\n"
 " Si vous avez renseigné le mot-clé NOEUD_ORIG, donnez un groupe de mailles "
@@ -23769,14 +23808,14 @@ msgid ""
 "noeuds.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:318
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:314
 #, python-format
 msgid ""
 "\n"
 " Le groupe de noeuds %(k1)s n'existe pas.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:323
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:319
 #, python-format
 msgid ""
 "\n"
@@ -23784,7 +23823,7 @@ msgid ""
 "ligne.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:327
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:323
 #, python-format
 msgid ""
 "\n"
@@ -23792,7 +23831,7 @@ msgid ""
 "ligne.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:327
 msgid ""
 "\n"
 " Alarme DEFI_GROUP / CREA_GROUP_NO / OPTION='NOEUD_ORDO' :\n"
@@ -23802,7 +23841,7 @@ msgid ""
 "orientée arbitrairement.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:333
 msgid ""
 "\n"
 " Erreur utilisateur :\n"
@@ -23816,40 +23855,40 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:349
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:345
 #, python-format
 msgid ""
 "\n"
 " GROUP_NO orienté : noeud origine =  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:353
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:349
 #, python-format
 msgid ""
 "\n"
 " Le GROUP_MA :  %(k1)s n'existe pas.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:360
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:356
 #, python-format
 msgid ""
 "\n"
 " le noeud extrémité  %(k1)s  n'est pas le dernier noeud\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:368
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:364
 msgid ""
 "\n"
 " Le type des mailles des lèvres doit être quadrangle ou triangle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:373
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:369
 msgid ""
 "\n"
 " Mauvaise définition de MP1 et MP2\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:377
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:373
 #, python-format
 msgid ""
 "\n"
@@ -23857,7 +23896,7 @@ msgid ""
 "comportement %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:381
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:377
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -23867,7 +23906,7 @@ msgid ""
 "NBSIGM pour cette modélisation.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:384
 #, python-format
 msgid ""
 "\n"
@@ -23884,7 +23923,7 @@ msgid ""
 "pour préciser les orientations des couches\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:399
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:395
 #, python-format
 msgid ""
 "\n"
@@ -23901,7 +23940,7 @@ msgid ""
 "      intrinsèque de la coque.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:410
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:406
 #, python-format
 msgid ""
 "\n"
@@ -24202,34 +24241,27 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:199
-#, python-format
-msgid ""
-"\n"
-" éléments de poutre noeuds confondus pour un élément:  %(k1)s\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:203
 msgid ""
 "\n"
 " éléments de poutre section variable affine :seul une section rectangle "
 "plein est disponible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:207
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:203
 msgid ""
 "\n"
 " éléments de poutre section variable homothétique : l'aire initiale est "
 "nulle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:207
 #, python-format
 msgid ""
 "\n"
 " éléments de poutre l'option \" %(k1)s \" est inconnue\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:215
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:211
 msgid ""
 "\n"
 " le seul comportement élastique valide est ELAS\n"
@@ -27503,32 +27535,21 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:37
-msgid ""
-"\n"
-"La bibliothèque \"ZMAT\" n'est pas installée dans cette version de "
-"Code_Aster ou bien elle\n"
-"n'a pas été trouvée.\n"
-"\n"
-"Conseil : Vérifiez que l'environnement est correctement défini,\n"
-"          notamment la variable LD_LIBRARY_PATH.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:45
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:52
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:44
 msgid ""
 "\n"
 "Erreur de programmation :\n"
 "    On essaie d'utiliser un opérateur qui n'est pas encore programmé.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:57
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:49
 msgid ""
 "\n"
 "Le renuméroteur \"SCOTCH\" n'est pas installé dans cette version de "
 "Code_Aster.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:61
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:53
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -27536,7 +27557,7 @@ msgid ""
 "    qui n'est pas encore programmée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:67
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:59
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -27544,7 +27565,7 @@ msgid ""
 "    qui n'est pas encore programmée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:73
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:65
 msgid ""
 "\n"
 "Le solveur \"PETSc\" n'est pas installé dans cette version de Code_Aster.\n"
@@ -27555,7 +27576,7 @@ msgid ""
 "versions parallèles de Code_Aster.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:80
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:72
 msgid ""
 "\n"
 "Erreur de programmation :\n"
@@ -27563,14 +27584,14 @@ msgid ""
 "    qui n'est pas encore programmée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:86
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:78
 msgid ""
 "\n"
 "La bibliothèque \"YACS\" n'est pas installée dans cette version de "
 "Code_Aster.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:90
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:82
 #, python-format
 msgid ""
 "\n"
@@ -27582,7 +27603,7 @@ msgid ""
 "          notamment la variable LD_LIBRARY_PATH.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:99
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:91
 #, python-format
 msgid ""
 "\n"
@@ -27595,7 +27616,7 @@ msgid ""
 "          notamment la variable LD_LIBRARY_PATH.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:109
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fermetur.py:101
 msgid ""
 "\n"
 "La bibliothèque \"METIS\" n'est pas installée dans cette version de "
@@ -33438,6 +33459,38 @@ msgid ""
 "GESTION_MEMOIRE='IN_CORE' + RENUM='QAMD'),\n"
 "    * Changez le niveau de parallélisme (mot-clé "
 "NIVEAU_PARALLELISME='COMPLET').\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:160
+msgid ""
+"\n"
+"L'amélioration des modes propres ne peut pas être effectuée,\n"
+"car au moins une des matrices d'entrée est non symétrique,\n"
+"ce qui est incompatible avec l'algorithme des puissances inverses utilisé "
+"pour l'amélioration.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:166
+#, python-format
+msgid ""
+"\n"
+"L'amélioration des modes propres ne peut pas être effectuée,\n"
+"car la matrice renseignée sous %(k1)s est complexe,\n"
+"ce qui est incompatible avec l'algorithme des puissances inverses utilisé "
+"pour l'amélioration.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:172
+#, python-format
+msgid ""
+"\n"
+"L'amélioration des modes propres ne peut pas être effectuée,\n"
+"car des valeurs propres très proches ont été détectées dans le concept "
+"%(k1)s\n"
+"(modes multiples ou plusieurs modes de corps rigide),\n"
+"ce qui est incompatible avec l'algorithme des puissances inverses utilisé "
+"pour l'amélioration.\n"
+"\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modal0.py:21
@@ -39562,6 +39615,29 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:257
+#, python-format
+msgid ""
+"\n"
+"Vous avez demandé à ce que le champ de variables internes soit pris en \n"
+"compte dans l'état initial du calcul EPX. La transformation de ce champ\n"
+"de Code_Aster vers EPX n'est pas programmée pour le comportement  %(k1)s.\n"
+"Les valeurs de ce champ dans l'état initial sont donc nulles pour les "
+"mailles\n"
+"sur lesquelles ce comportement est affecté.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:265
+msgid ""
+"\n"
+"Vous avez demandé à ce que le champ de variables internes soit pris en \n"
+"compte dans l'état initial du calcul EPX. Cependant la transformation\n"
+"du champ de variables internes de Code_Aster vers EPX n'est programmée\n"
+"pour aucun des comportements présents dans le calcul. \n"
+"\n"
+"La commande VARI_INT = 'OUI' n'a ici aucun effet et est donc inutile.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:274
 #, python-format
 msgid ""
 "\n"
@@ -51441,7 +51517,25 @@ msgid ""
 "     Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:175
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:173
+#, python-format
+msgid ""
+"\n"
+"     Une relation cinématique est imposée au niveau du noeud %(k1)s sur "
+"lequel une \n"
+"     fissure passe et cette relation est imposée de part et d'autre de la "
+"fissure.\n"
+"     Deux relations sont donc imposées, bloquant ainsi le ddl Heaviside "
+"associé.\n"
+"     Si vous avez également imposé une relation cinématique sur le degré de "
+"liberté \n"
+"     Heaviside associé du noeud  %(k1)s, la matrice sera non factorisable.\n"
+"     Conseil :\n"
+"     Vous pouvez exclure le noeud %(k1)s du groupe affecté par\n"
+"     cette deuxième relation en utilisant par exemple l'opérande DIFFE.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:184
 #, python-format
 msgid ""
 "\n"
@@ -51453,7 +51547,7 @@ msgid ""
 "     Sélectionnez une forme de %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:184
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:193
 #, python-format
 msgid ""
 "\n"
@@ -51464,7 +51558,7 @@ msgid ""
 "     Veuillez renseignez %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:192
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:201
 #, python-format
 msgid ""
 "\n"
@@ -51476,75 +51570,75 @@ msgid ""
 "     Pour ne plus obtenir ce message, ne renseignez pas %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:201
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:210
 msgid ""
 "\n"
 "     Numéros des mailles de la zone fissure.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:214
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles contenant le fond de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:218
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles de type Heaviside : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:222
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles de type Crack-tip : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:217
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:226
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles de type Heaviside Crack-tip : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:230
 #, python-format
 msgid ""
 "\n"
 "     Nombre de points du fond de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:234
 #, python-format
 msgid ""
 "\n"
 "     Nombre de fonds de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:238
 msgid ""
 "\n"
 "     Coordonnées des points des fonds de fissure\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:242
 #, python-format
 msgid ""
 "\n"
 "     fond de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:237
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:246
 #, python-format
 msgid ""
 "\n"
 "     Nombre de level-sets réajustées : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:241
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:250
 msgid ""
 "\n"
 "     Si vous êtes en 2D pour l'approche de contact <<Grands glissements avec "
@@ -51557,7 +51651,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:249
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:258
 #, python-format
 msgid ""
 "\n"
@@ -51575,7 +51669,7 @@ msgid ""
 "MODELE_IN.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:260
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:269
 #, python-format
 msgid ""
 "\n"
@@ -51590,7 +51684,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:268
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:277
 #, python-format
 msgid ""
 "\n"
@@ -51602,7 +51696,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:284
 #, python-format
 msgid ""
 "\n"
@@ -51622,7 +51716,7 @@ msgid ""
 "        chaque fond (voir colonne NUME_FOND de la table)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:288
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:297
 #, python-format
 msgid ""
 "\n"
@@ -51636,7 +51730,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:295
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:304
 #, python-format
 msgid ""
 "\n"
@@ -51651,7 +51745,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:303
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:312
 msgid ""
 "\n"
 "      Jonction X-FEM et contact\n"
@@ -51662,7 +51756,7 @@ msgid ""
 "facette.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:310
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:319
 #, python-format
 msgid ""
 "\n"
@@ -51675,7 +51769,7 @@ msgid ""
 "clé FISSURE de MODI_MODELE_XFEM.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:317
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:326
 #, python-format
 msgid ""
 "\n"
@@ -51695,26 +51789,26 @@ msgid ""
 "pour définir %(k3)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:328
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:337
 msgid ""
 "\n"
 "      Les flux correspondant a PRE2 et TEMP sont interdits pour les\n"
 "      éléments HM-XFEM.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:333
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:342
 msgid ""
 "\n"
 "     Le calcul de G avec X-FEM est impossible en grandes déformations.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:346
 msgid ""
 "\n"
 "     La méthode X-FEM n'est pas disponible avec 'PETIT_REAC'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:341
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:350
 #, python-format
 msgid ""
 "\n"
@@ -51722,7 +51816,7 @@ msgid ""
 "coordonnées :\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:345
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:354
 msgid ""
 "\n"
 "     Une ou des mailles contenant plus de 2 points du fond de fissure ont "
@@ -51735,14 +51829,14 @@ msgid ""
 "possible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:352
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:361
 msgid ""
 "\n"
 "Il y a trop de termes dans la relation d'égalité.\n"
 "Utilisez ELIM_ARETE='DUAL'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:366
 msgid ""
 "\n"
 "  -> La fissure (ou l'interface) définie dans DEFI_FISS_XFEM ne coupe aucune "
@@ -51757,7 +51851,7 @@ msgid ""
 "et le maillage.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:366
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:375
 msgid ""
 "\n"
 "  -> Aucun point du fond de fissure n'a été trouvé !\n"
@@ -51778,21 +51872,21 @@ msgid ""
 "        de modes de corps rigides non bloqués).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:389
 msgid ""
 "\n"
 "     Ne pas utiliser le mot-clef RAYON_ENRI lorsque le fond de fissure\n"
 "     est en dehors de la structure.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:385
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:394
 msgid ""
 "\n"
 "     -> Pour le fond fermé, un point supplémentaire du fond a été ajouté.\n"
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:390
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:399
 msgid ""
 "\n"
 "  -> Une face contient au moins 3 points d'intersection avec la courbe "
@@ -51821,7 +51915,7 @@ msgid ""
 "     par CALC_G a sens physique pour le problème à résoudre.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:408
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:417
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -51831,7 +51925,7 @@ msgid ""
 "       Cette configuration est proscrite.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:415
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:424
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -51843,7 +51937,7 @@ msgid ""
 "le traverse\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:423
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:432
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -51852,7 +51946,7 @@ msgid ""
 "     arête courbe.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:429
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:438
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -51863,14 +51957,14 @@ msgid ""
 "     - l'arête est \"trop\" arrondie\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:437
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:446
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
 "     Newton : nombre d'itérations maximal atteint\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:442
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:451
 msgid ""
 "\n"
 "  -> Aucune grille n'est associée à la fissure donnée par FISS_GRILLE.\n"
@@ -51880,7 +51974,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:450
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:459
 msgid ""
 "\n"
 "  -> La fissure à propager a été définie par DEFI_FISS_XFEM en donnant "
@@ -51918,7 +52012,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:475
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:484
 #, python-format
 msgid ""
 "\n"
@@ -51930,7 +52024,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:483
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:492
 #, python-format
 msgid ""
 "\n"
@@ -51944,7 +52038,7 @@ msgid ""
 "fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:491
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:500
 #, python-format
 msgid ""
 "\n"
@@ -51956,7 +52050,7 @@ msgid ""
 "modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:498
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:507
 #, python-format
 msgid ""
 "\n"
@@ -51969,20 +52063,20 @@ msgid ""
 "     présentes dans le modèle ou revoyez la définition de votre modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:506
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:515
 #, python-format
 msgid ""
 "\n"
 "     Nombre de points du fond de fissure sur la grille : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:510
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:519
 msgid ""
 "\n"
 "     Coordonnées des points du fond de fissure sur la grille\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:514
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:523
 msgid ""
 "\n"
 "  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le "
@@ -51993,7 +52087,7 @@ msgid ""
 "     Veuillez utiliser un maillage linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:523
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:532
 msgid ""
 "\n"
 "  -> Il y a éventuellement des créations de mailles\n"
@@ -52011,7 +52105,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:535
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:544
 #, python-format
 msgid ""
 "\n"
@@ -52021,7 +52115,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:541
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:550
 #, python-format
 msgid ""
 "\n"
@@ -52034,7 +52128,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:549
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:558
 #, python-format
 msgid ""
 "\n"
@@ -52046,7 +52140,7 @@ msgid ""
 "     Revoyez la définition de ce modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:556
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:565
 #, python-format
 msgid ""
 "\n"
@@ -52059,7 +52153,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:564
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:573
 #, python-format
 msgid ""
 "\n"
@@ -52069,7 +52163,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:571
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:580
 #, python-format
 msgid ""
 "\n"
@@ -52082,7 +52176,7 @@ msgid ""
 "     Revoyez la définition de ces modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:579
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:588
 msgid ""
 "\n"
 "  On ne peut pas créer un modèle X-FEM avec contact dans le cas où le mot "
@@ -52091,7 +52185,7 @@ msgid ""
 "     Vous devez renseigner CONTACT='NON' pour ne pas activer le contact.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:585
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:594
 #, python-format
 msgid ""
 "\n"
@@ -52103,7 +52197,7 @@ msgid ""
 "     Revoyez la définition de ces deux modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:592
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:601
 msgid ""
 "\n"
 "  -> Il n'est pas possible de réaliser la propagation d'une fissure en "
@@ -52114,7 +52208,7 @@ msgid ""
 "     Veuillez utiliser un maillage linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:599
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:608
 #, python-format
 msgid ""
 "\n"
@@ -52125,7 +52219,7 @@ msgid ""
 "         doivent être définies avec un contact STANDARD.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:604
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:613
 msgid ""
 "\n"
 "     --> L algorithme de détection a détecté un front qui va au delà de\n"
