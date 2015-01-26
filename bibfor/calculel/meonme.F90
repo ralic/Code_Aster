@@ -116,5 +116,9 @@ subroutine meonme(modele, nchar, lchar, mate, matel)
             endif
         end do
     endif
+
+    if (ilires.eq.0) then
+        call utmess('F', 'CALCULEL2_84')
+    endif
     call jedema()
 end subroutine

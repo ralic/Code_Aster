@@ -505,6 +505,28 @@ Erreur utilisateur :
  il faut un MODELE
 """),
 
+    83: _(u"""
+Erreur utilisateur :
+  Vous demandez le calcul de la matrice correspondant à l'option IMPE_MECA.
+  Mais on ne peut rien calculer, faute de données.
+
+Risques et conseils :
+  Il faut fournir en argument du mot clé CHARGE au moins une charge 
+  mécanique qui utilise le mot clé IMPE_FACE.
+"""),
+
+    84: _(u"""
+Erreur utilisateur :
+  Vous demandez le calcul de la matrice correspondant à l'option ONDE_FLUI.
+  Mais on ne peut rien calculer, faute de données.
+
+Risques et conseils :
+  Il faut fournir en argument du mot clé CHARGE au moins une charge 
+  mécanique qui utilise le mot clé ONDE_FLUI.
+"""),
+
+
+
     86: _(u"""
  La carte de COMPORTEMENT est absente.
  Votre résultat a peut-être été produit par LIRE_RESU ou CREA_RESU.
