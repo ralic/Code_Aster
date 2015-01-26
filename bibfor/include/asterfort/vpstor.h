@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vpstor(ineg, type, modes, nbmode, neq,&
+    subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                       vecpr8, vecpc8, mxresf, nbpari, nbparr,&
                       nbpark, nopara, mod45, resufi, resufr,&
                       resufk, iprec)
         integer :: mxresf
         integer :: neq
         integer :: ineg
-        character(len=*) :: type
+        character(len=*) :: typ
         character(len=*) :: modes
         integer :: nbmode
         real(kind=8) :: vecpr8(neq, *)

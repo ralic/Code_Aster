@@ -255,8 +255,9 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
                 repk = ' '
                 goto 88
             endif
-        else
-            goto 99
+        else if (ir .eq. 100) then
+            repk = ' '
+            goto 88
         endif
 !       IL N'EXISTE QUE DE DEPL_R
         call jelira(resdyn//'           .REFD', 'NUTIOC', nbrefs, k8bid)
@@ -276,14 +277,20 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
                 endif
             endif
         else
-            call rsvpar(resdyn, 1, 'FACT_PARTICI_DX', ibid, r8vide(),&
-                        k8bid, l1)
-            call rsvpar(resdyn, 1, 'FACT_PARTICI_DY', ibid, r8vide(),&
-                        k8bid, l2)
-            call rsvpar(resdyn, 1, 'FACT_PARTICI_DZ', ibid, r8vide(),&
-                        k8bid, l3)
-            if ((l1+l2+l3) .eq. 300) repk = 'RITZ'
-        endif
+            call dismoi('REF_RIGI_PREM', resdyn, 'RESU_DYNA', repk=k8bid, arret='C',&
+                        ier=ir)
+            if (ir .eq. 1) then
+                repk = 'RITZ'
+            else 
+                call rsvpar(resdyn, 1, 'FACT_PARTICI_DX', ibid, r8vide(),&
+                            k8bid, l1)
+                call rsvpar(resdyn, 1, 'FACT_PARTICI_DY', ibid, r8vide(),&
+                            k8bid, l2)
+                call rsvpar(resdyn, 1, 'FACT_PARTICI_DZ', ibid, r8vide(),&
+                            k8bid, l3)
+                if ((l1+l2+l3) .eq. 300) repk = 'RITZ'
+            end if
+        end if
         goto 88
 !
 !

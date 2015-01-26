@@ -1,4 +1,4 @@
-subroutine vpstor(ineg, type, modes, nbmode, neq,&
+subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                   vecpr8, vecpc8, mxresf, nbpari, nbparr,&
                   nbpark, nopara, mod45, resufi, resufr,&
                   resufk, iprec)
@@ -6,6 +6,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
@@ -31,7 +32,7 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
     integer :: ineg, nbmode, neq, mxresf, nbpari, nbparr, nbpark
     integer :: iprec, resufi(mxresf, *)
     character(len=4) :: mod45
-    character(len=*) :: type, modes, resufk(mxresf, *), nopara(*)
+    character(len=*) :: typ, modes, resufk(mxresf, *), nopara(*)
     real(kind=8) :: vecpr8(neq, *), resufr(mxresf, *)
     complex(kind=8) :: vecpc8(neq, *)
 !     ------------------------------------------------------------------
@@ -54,9 +55,9 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
 !     STOCKAGE DES VALEURS PROPRES
 !
 !     REMARQUE:
-!        DANS NOPARA, ON A LES NOMS DE PARAMETRES DE TYPE ENTIER
-!                     ENSUITE LES NOMS DE PARAMETRES DE TYPE CHARACTER
-!                     ENSUITE LES NOMS DE PARAMETRES DE TYPE REEL
+!        DANS NOPARA, ON A LES NOMS DE PARAMETRES DE TYP ENTIER
+!                     ENSUITE LES NOMS DE PARAMETRES DE TYP CHARACTER
+!                     ENSUITE LES NOMS DE PARAMETRES DE TYP REEL
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: imode, jmode, ier, nmin, imin, nmax, imax
@@ -272,11 +273,12 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
         call rsexch(' ', modes, nosy, nordr, chamno,&
                     ier)
         if (ier .eq. 0) then
+            continue
         else if (ier .eq. 100 .and. lrefd) then
-            call vtcreb(chamno, 'G', type(1:1),&
+            call vtcreb(chamno, 'G', typ(1:1),&
                         nume_ddlz = nume,&
                         nb_equa_outz = neq)
-        else
+        else 
             vali (1) = kmode
             vali (2) = jmode
             vali (3) = ier
@@ -290,9 +292,9 @@ subroutine vpstor(ineg, type, modes, nbmode, neq,&
             call juveca(chamno//'.REFE', 2)
         endif
         call jeveuo(chamno//'.VALE', 'E', lvale)
-        if (type(1:1) .eq. 'R') then
+        if (typ(1:1) .eq. 'R') then
             call dcopy(neq, vecpr8(1, kmode), 1, zr(lvale), 1)
-        else if (type(1:1) .eq. 'C') then
+        else if (typ(1:1) .eq. 'C') then
             call zcopy(neq, vecpc8(1, kmode), 1, zc(lvale), 1)
         endif
 !       SI LE CHAMP A DEJA ETE NOTE PAR SEMOCO, ON NE LE REFAIT PAS
