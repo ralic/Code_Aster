@@ -159,19 +159,19 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
             call jenonu(jexnom(noresu//'           .NOVA', 'INST'), iret)
             if (iret .ne. 0) then
                 call rsadpa(noresu, 'L', 1, 'INST', numord,&
-                            0, sjv=iaux, styp=saux08)
+                            0, sjv=iaux, styp=saux08, istop=0)
                 instan = zr(iaux)
             else
                 call jenonu(jexnom(noresu//'           .NOVA', 'FREQ'), iret)
                 if (iret .ne. 0) then
                     call rsadpa(noresu, 'L', 1, 'FREQ', numord,&
-                                0, sjv=iaux, styp=saux08)
+                                0, sjv=iaux, styp=saux08, istop=0)
                     instan = zr(iaux)
                 else
                     call jenonu(jexnom(noresu//'           .NOVA', 'CHAR_CRIT'), iret)
                     if (iret .ne. 0) then
                         call rsadpa(noresu, 'L', 1, 'CHAR_CRIT', numord,&
-                                    0, sjv=iaux, styp=saux08)
+                                    0, sjv=iaux, styp=saux08, istop=0)
                         instan = zr(iaux)
                     endif
                 endif
@@ -201,7 +201,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
             if (iret .eq. 0) then
                 if (noresu .ne. ' ') then
                     call rsadpa(noresu, 'L', 1, 'MODELE', numord,&
-                                0, sjv=iaux, styp=saux08)
+                                0, sjv=iaux, styp=saux08, istop=0)
                     modele = zk8(iaux)
                     call jeexin(modele//'.MAILLE', iret)
                 endif

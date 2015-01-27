@@ -112,7 +112,7 @@ subroutine extrs1(resu0, nbrang, nuordr, nbpara, nompar,&
         do 60 j = 1, nbpara
             nopara=nompar(j)
             call rsadpa(nomsdr, 'L', 1, nopara, nuordr(i),&
-                        1, sjv=iadin, styp=type)
+                        1, sjv=iadin, styp=type, istop=0)
             call extrs3(nomsdr, nopara, irang, 'E', 1,&
                         type, iadou)
             if (type(1:1) .eq. 'I') then

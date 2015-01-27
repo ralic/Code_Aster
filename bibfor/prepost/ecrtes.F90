@@ -207,17 +207,17 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
         write (entete(10),3000) 0.0d0
     else if (anatyp.eq.2) then
         call rsadpa(nomsd, 'L', 1, 'NUME_MODE', numor,&
-                    0, sjv=iad, styp=k8bid)
+                    0, sjv=iad, styp=k8bid, istop=0)
         imode = zi(iad)
         call rsexpa(nomsd, 2, 'FREQ', iret)
         if (iret .ne. 0) then
             call rsadpa(nomsd, 'L', 1, 'FREQ', numor,&
-                        0, sjv=iad, styp=k8bid)
+                        0, sjv=iad, styp=k8bid, istop=0)
         else
             call rsexpa(nomsd, 2, 'CHAR_CRIT', iret)
             if (iret .ne. 0) then
                 call rsadpa(nomsd, 'L', 1, 'CHAR_CRIT', numor,&
-                            0, sjv=iad, styp=k8bid)
+                            0, sjv=iad, styp=k8bid, istop=0)
             else
                 k8bid = nomsd(1:8)
                 call utmess('F', 'PREPOST_31', sk=k8bid)
@@ -227,7 +227,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
         call rsexpa(nomsd, 2, 'MASS_GENE', iret)
         if (iret .ne. 0) then
             call rsadpa(nomsd, 'L', 1, 'MASS_GENE', numor,&
-                        0, sjv=iad, styp=k8bid)
+                        0, sjv=iad, styp=k8bid, istop=0)
             masgen= zr(iad)
         else
             masgen= 0.d0
@@ -237,7 +237,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
         call rsexpa(nomsd, 2, 'AMOR_REDUIT', iret)
         if (iret .ne. 0) then
             call rsadpa(nomsd, 'L', 1, 'AMOR_REDUIT', numor,&
-                        0, sjv=iad, styp=k8bid)
+                        0, sjv=iad, styp=k8bid, istop=0)
             amor1 = zr(iad)
             if (amor1 .eq. rvide) amor1 = 0.0d0
         else
@@ -250,14 +250,14 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype,&
         write (entete(10),3000) freq,masgen,amor1,amor2
     else if (anatyp.eq.4) then
         call rsadpa(nomsd, 'L', 1, 'INST', numor,&
-                    0, sjv=iad, styp=k8bid)
+                    0, sjv=iad, styp=k8bid, istop=0)
         write (entete(8),1000) modtyp,anatyp,datcar,nutype ,itype,&
         nbcmp
         write (entete(9),2000) 2,1,1,numor
         write (entete(10),3000) zr(iad)
     else if (anatyp.eq.5) then
         call rsadpa(nomsd, 'L', 1, 'FREQ', numor,&
-                    0, sjv=iad, styp=k8bid)
+                    0, sjv=iad, styp=k8bid, istop=0)
         write (entete(8),1000) modtyp,anatyp,datcar,nutype ,itype,&
         nbcmp
         write (entete(9),2000) 2,1,1,numor

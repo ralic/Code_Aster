@@ -124,7 +124,7 @@ subroutine imbamo(nomres)
     do i = 1, nbtot
 !
         call rsadpa(nomres, 'L', nbpabm, bmpara, i,&
-                    0, tjv=ldpar, styp=k8bid)
+                    0, tjv=ldpar, styp=k8bid, istop=0)
 !
         typdef=zk16(ldpar(5))
 !

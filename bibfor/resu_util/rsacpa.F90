@@ -83,7 +83,7 @@ subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
     do i = 1, nbord
         numord = zi(iord-1 + i)
         call rsadpa(nomsd, 'L', 1, nomva, numord,&
-                    1, sjv=iad, styp=ktype)
+                    1, sjv=iad, styp=ktype, istop=0)
 !                  123456789.123456789.1234
         kval(i) = '                        '
         if (ktype .eq. 'R') then

@@ -220,13 +220,13 @@ subroutine orth99(nomres, ritz)
         call rsnoch(nomres, 'DEPL', iorne)
 !
         call rsadpa(base, 'L', 1, 'NUME_MODE', iorol,&
-                    0, sjv=iad, styp=k8b)
+                    0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'NUME_MODE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zi(jiad) = zi(iad)
 !
         call rsadpa(base, 'L', 1, 'FREQ', iorol,&
-                    0, sjv=iad, styp=k8b)
+                    0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'FREQ', iorne,&
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
@@ -238,31 +238,31 @@ subroutine orth99(nomres, ritz)
         zk24(jiad) = zk24(iad)
 !
         call rsadpa(base, 'L', 1, 'OMEGA2', iorol,&
-                    0, sjv=iad, styp=k8b)
+                    0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'OMEGA2', iorne,&
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(base, 'L', 1, 'MASS_GENE', iorol,&
-                    0, sjv=iad, styp=k8b)
+                    0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'MASS_GENE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(base, 'L', 1, 'RIGI_GENE', iorol,&
-                    0, sjv=iad, styp=k8b)
+                    0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'RIGI_GENE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zr(jiad) = zr(iad)
 !
         call rsadpa(base, 'L', 1, 'TYPE_MODE', iorol,&
-                    0, sjv=iad, styp=k8b)
+                    0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'TYPE_MODE', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)
 !
         call rsadpa(base, 'L', 1, 'TYPE_DEFO', iorol,&
-                    0, sjv=iad, styp=k8b)
+                    0, sjv=iad, styp=k8b, istop=0)
         call rsadpa(nomres, 'E', 1, 'TYPE_DEFO', iorne,&
                     0, sjv=jiad, styp=k8b)
         zk16(jiad) = zk16(iad)

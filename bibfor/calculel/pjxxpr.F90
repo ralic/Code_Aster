@@ -253,7 +253,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                 call vpcrea(0, resu2, ' ', ' ', ' ',&
                             prfch2(1:8), ier)
                 call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
-                            0, sjv=iains1, styp=kb)
+                            0, sjv=iains1, styp=kb, istop=0)
                 call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
                             0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
@@ -262,7 +262,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                 call jenonu(jexnom(resu1//'           .NOVA', 'NUME_MODE'), inume)
                 if (inume .ne. 0) then
                     call rsadpa(resu1, 'L', 1, 'NUME_MODE', iordr,&
-                                0, sjv=iains1, styp=kb)
+                                0, sjv=iains1, styp=kb, istop=0)
                     call rsadpa(resu2, 'E', 1, 'NUME_MODE', iordr,&
                                 0, sjv=iains2, styp=kb)
                     zi(iains2) = zi(iains1)
@@ -272,21 +272,21 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
                 call vpcrea(0, resu2, ' ', ' ', ' ',&
                             prfch2(1:8), ier)
                 call rsadpa(resu1, 'L', 1, 'NOEUD_CMP', iordr,&
-                            0, sjv=iains1, styp=kb)
+                            0, sjv=iains1, styp=kb, istop=0)
                 call rsadpa(resu2, 'E', 1, 'NOEUD_CMP', iordr,&
                             0, sjv=iains2, styp=kb)
                 zk16(iains2) = zk16(iains1)
 !
             else if (typres.eq.'DYNA_HARMO') then
                 call rsadpa(resu1, 'L', 1, 'FREQ', iordr,&
-                            0, sjv=iains1, styp=kb)
+                            0, sjv=iains1, styp=kb, istop=0)
                 call rsadpa(resu2, 'E', 1, 'FREQ', iordr,&
                             0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
 !
             else if ((typres(1:4).eq.'EVOL') .or. (typres(1:4).eq.'DYNA')) then
                 call rsadpa(resu1, 'L', 1, 'INST', iordr,&
-                            0, sjv=iains1, styp=kb)
+                            0, sjv=iains1, styp=kb, istop=0)
                 call rsadpa(resu2, 'E', 1, 'INST', iordr,&
                             0, sjv=iains2, styp=kb)
                 zr(iains2) = zr(iains1)
@@ -303,7 +303,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !
             do ind = 1, ipar
                 call rsadpa(resu1, 'L', 1, kpar(ind), iordr,&
-                            1, sjv=ipar1, styp=typ1)
+                            1, sjv=ipar1, styp=typ1, istop=0)
                 call rsadpa(resu2, 'E', 1, kpar(ind), iordr,&
                             0, sjv=ipar2, styp=typ2)
                 if (typ1(1:1) .eq. 'I') then

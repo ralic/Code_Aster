@@ -199,7 +199,7 @@ subroutine smevol(temper, modelz, mate, compor, option,&
         call jenonu(jexnom(sdtemp//'.NOVA', 'DELTAT'), iad)
         if (iad .ne. 0) then
             call rsadpa(sdtemp, 'L', 1, 'DELTAT', num3,&
-                        0, sjv=iad, styp=k8b)
+                        0, sjv=iad, styp=k8b, istop=0)
             dt3 = zr(iad)
             if (dt3 .ne. r8vide()) then
                 if (abs(dt3-time(3)) .gt. r8prem()) then

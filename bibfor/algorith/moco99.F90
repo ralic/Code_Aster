@@ -165,17 +165,17 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
 ! ----- RECUPERATION DES VALEURS GENERALISEES ET PULSATION CARREE
 !
         call rsadpa(resul, 'L', 1, 'RIGI_GENE', iorol,&
-                    0, sjv=llkge, styp=k8bid)
+                    0, sjv=llkge, styp=k8bid, istop=0)
         genek=zr(llkge)
         call rsadpa(resul, 'L', 1, 'MASS_GENE', iorol,&
-                    0, sjv=llmge, styp=k8bid)
+                    0, sjv=llmge, styp=k8bid, istop=0)
         genem=zr(llmge)
         call rsadpa(resul, 'L', 1, 'OMEGA2', iorol,&
-                    0, sjv=llom2, styp=k8bid)
+                    0, sjv=llom2, styp=k8bid, istop=0)
         omeg2=zr(llom2)
 !
         call rsadpa(resul, 'L', 1, 'TYPE_MODE', iorol,&
-                    0, sjv=lltmo, styp=k8bid)
+                    0, sjv=lltmo, styp=k8bid, istop=0)
         typmo=zk16(lltmo)
 !
  11     continue
@@ -188,7 +188,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
         if (typmo(1:8) .ne. 'MODE_DYN') then
             if (typeba(1:1) .ne. ' ') then
                 call rsadpa(resul, 'L', nbpabm, bmpara, iorol,&
-                            0, tjv=ldpa2, styp=k8bid)
+                            0, tjv=ldpa2, styp=k8bid, istop=0)
                 zr(ldpar(2)) = zr(ldpa2(2))
                 zk24(ldpar(3)) = zk24(ldpa2(3))
                 zk16(ldpar(4)) = zk16(ldpa2(4))
@@ -209,7 +209,7 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
             zk16(ldpar(5))=' '
             if (typmo(1:8) .eq. 'MODE_STA') then
                 call rsadpa(resul, 'L', 1, 'NOEUD_CMP', iorol,&
-                            0, sjv=llncp, styp=k8bid)
+                            0, sjv=llncp, styp=k8bid, istop=0)
                 zk16(ldpar(4)) = zk16(llncp)
                 zk16(ldpar(5)) = 'STATIQUE'
                 if (interf .ne. ' ') then
@@ -227,9 +227,9 @@ subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
             goto 12
         endif
         call rsadpa(resul, 'L', 1, 'FREQ', iorol,&
-                    0, sjv=llvalo, styp=k8bid)
+                    0, sjv=llvalo, styp=k8bid, istop=0)
         call rsadpa(resul, 'L', 1, 'AMOR_REDUIT', iorol,&
-                    0, sjv=llval2, styp=k8bid)
+                    0, sjv=llval2, styp=k8bid, istop=0)
         zr(ldpar(2))=zr(llvalo)
         zk24(ldpar(3))=' '
         zk16(ldpar(4))=' '

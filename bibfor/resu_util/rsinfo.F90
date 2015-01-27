@@ -281,7 +281,7 @@ subroutine rsinfo(nomcon, ifi)
         write (ifi,'(/,1X,A)') 'LISTE DES NOMS DE VARIABLES D''ACCES:'
         do iac = 1, nbac
             call rsadpa(nomd2, 'L', 1, zk16(jpa-1+iac), zi(lres),&
-                        1, sjv=iad, styp=ctype)
+                        1, sjv=iad, styp=ctype, istop=0)
             if (ctype(1:1) .eq. 'I') then
                 write (ifi,'(38X,A,A)') zk16(jpa-1+iac),' DE TYPE  I'
             else if (ctype(1:1).eq.'R') then
@@ -314,7 +314,7 @@ subroutine rsinfo(nomcon, ifi)
             do j = 1, nbpa
                 nopara = zk16(jpa-1+j+nbac)
                 call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
-                            1, sjv=iad, styp=ctype)
+                            1, sjv=iad, styp=ctype, istop=0)
                 if (ctype(1:1) .eq. 'I') then
                 else if (ctype(1:1) .eq. 'R') then
                     if (zr(iad) .eq. rundf) goto 261
@@ -363,7 +363,7 @@ subroutine rsinfo(nomcon, ifi)
                 ipcf = ipcd + 15
                 nopara = zk16(lnupa+j-1)
                 call rsadpa(nomd2, 'L', 1, nopara, zi(lres+i-1),&
-                            1, sjv=iad, styp=ctype)
+                            1, sjv=iad, styp=ctype, istop=0)
                 if (ctype(1:1) .eq. 'I') then
                     chain2(ipcd:ipcf) = '       I        '
                 else if (ctype(1:1).eq.'R') then

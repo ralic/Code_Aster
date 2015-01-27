@@ -77,7 +77,7 @@ subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
     if (.not.perman) then
 !
         call rsadpa(resuc1, 'L', 6, lpartr, iord-1,&
-                    0, tjv=ljeveu, styp=kbid)
+                    0, tjv=ljeveu, styp=kbid, istop=0)
 !
         do 40 , iaux = 1 , 6
         if (iord .eq. 1) then

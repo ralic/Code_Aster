@@ -131,7 +131,7 @@ subroutine ccpara(option, modele, resuin, resuou, numord,&
             call jenonu(jexnom(resuin//'           .NOVA', 'NUME_MODE'), iret)
             if (iret .ne. 0) then
                 call rsadpa(resuin, 'L', 1, 'NUME_MODE', numord,&
-                            0, sjv=jnmo, styp=k8b)
+                            0, sjv=jnmo, styp=k8b, istop=0)
                 call mecact('V', chharm, 'MAILLA', mailla, 'HARMON',&
                             ncmp=1, nomcmp='NH', si=zi(jnmo))
             endif

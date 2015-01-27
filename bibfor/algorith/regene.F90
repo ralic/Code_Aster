@@ -295,7 +295,7 @@ subroutine regene(nomres, resgen, profno)
             call jeveuo(chamno//'.VALE', 'E', ldnew)
 !
             call rsadpa(resgen, 'L', 13, nompar, iord,&
-                        0, tjv=iadpar, styp=kbid)
+                        0, tjv=iadpar, styp=kbid, istop=0)
 !
             if (zcmplx) then
                 call mdgepc(neq, nbmo2, zr(idbase), zc(llchol), zc( ldnew))

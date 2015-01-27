@@ -117,7 +117,7 @@ subroutine rsutnu(resu, motcle, iocc, knum, nbordr,&
 !
             ctyp = '    '
             call rsadpa(resu, 'L', 1, zk16(jpara-1+iacc), iord,&
-                        1, sjv=iad, styp=ctyp)
+                        1, sjv=iad, styp=ctyp, istop=0)
             if (ctyp(1:1) .eq. 'I') then
                 call getvis(motcle, zk16(jpara-1+iacc), iocc=iocc, nbval=0, nbret=n2)
             else if (ctyp(1:1).eq.'R') then

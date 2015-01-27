@@ -171,7 +171,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
         do j = 1, nbacc
             nopara = nomacc(j)
             call rsadpa(resuin, 'L', 1, nopara, nuordr(i),&
-                        1, sjv=iadin, styp=type)
+                        1, sjv=iadin, styp=type, istop=0)
             call rsadpa(resuou, 'E', 1, nopara, nuordr(i),&
                         1, sjv=iadou, styp=type)
             if (type(1:1) .eq. 'I') then

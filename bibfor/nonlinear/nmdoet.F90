@@ -263,7 +263,7 @@ implicit none
         end do
         call jeveuo(sdpilo(1:19)//'.PLIR', 'E', vr=plir)
         call rsadpa(result, 'L', 1, 'COEF_MULT', nume_store_0,&
-                    0, sjv=jinst)
+                    0, sjv=jinst, istop=0)
         coefav = zr(jinst)
         if (coefav .ne. 0.d0 .and. coefav .ne. r8vide()) then
             plir(6) = coefav
@@ -276,10 +276,10 @@ implicit none
         errthm = sdcriq(1:19)//'.ERRT'
         call jeveuo(errthm, 'E', jerrt)
         call rsadpa(result, 'L', 1, 'ERRE_TPS_LOC', nume_store_0,&
-                    0, sjv=jinst)
+                    0, sjv=jinst, istop=0)
         zr(jerrt-1+1) = zr(jinst)
         call rsadpa(result, 'L', 1, 'ERRE_TPS_GLOB', nume_store_0,&
-                    0, sjv=jinst)
+                    0, sjv=jinst, istop=0)
         zr(jerrt-1+2) = zr(jinst)
 !
     endif

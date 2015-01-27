@@ -59,6 +59,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     real(kind=8) :: rmin, rmax, raux, rval
     aster_logical :: gene
     character(len=24), pointer :: refn(:) => null()
+    real(kind=8) :: rundef
 !     ------------------------------------------------------------------
     data nomddl / 'DX      ', 'DY      ', 'DZ      ' ,&
      &              'DRX     ', 'DRY     ', 'DRZ     ' /
@@ -68,6 +69,10 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     data  posddl/'&&VPPFAC.POSITION.DDL'/
     data  vecau1/'&&VPPFAC.VECTEUR.AUX1'/
     data  vecau2/'&&VPPFAC.VECTEUR.AUX2'/
+
+    rundef = r8vide()
+
+
 !     ------------------------------------------------------------------
 !     ----------------- CREATION DE VECTEURS DE TRAVAIL ----------------
 !     ------------------------------------------------------------------
@@ -107,13 +112,13 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
     do iddl = 1, 3
         if (gene) then
             do ieq = 1, neq
-                call rsvpar(basemo, 1, nompar(iddl), ibid, r8vide(),&
+                call rsvpar(basemo, 1, nompar(iddl), ibid, rundef,&
                             k8b, l1)
                 if (l1 .eq. 100) then
                     zr(laux1+ieq-1) = 0.D0
                 else
                     call rsadpa(basemo, 'L', 1, nompar(iddl), ieq,&
-                                1, tjv=iadpar)
+                                0, tjv=iadpar)
                     zr(laux1+ieq-1) = zr(iadpar(1))
                 endif
 ! SECURITE SI ON EST PASSE PAR DES MODES HETERODOXES AVEC FACTEURS DE PARTICIPATIONS HERETIQUES

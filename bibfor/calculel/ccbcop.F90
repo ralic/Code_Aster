@@ -131,7 +131,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
             iordr=zi(jordr+iaux-1)
             do j = 1, nbpara
                 call rsadpa(resuin, 'L', 1, zk16(jpara+j-1), iordr,&
-                            1, sjv=iadin, styp=type)
+                            1, sjv=iadin, styp=type, istop=0)
                 call rsadpa(resuou, 'E', 1, zk16(jpara+j-1), iordr,&
                             1, sjv=iadou, styp=type)
 !

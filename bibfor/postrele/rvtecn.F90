@@ -161,7 +161,7 @@ subroutine rvtecn(releve, absc, itcopt, itsppt, coor,&
                 call jeveuo(nomjv, 'L', jaces)
                 do 10 iac = 1, nbacc
                     call rsadpa(nomres, 'L', 1, zk16(jaces-1+iac), zi(adrval+i1-1),&
-                                1, sjv=iadr, styp=ctype)
+                                1, sjv=iadr, styp=ctype, istop=0)
                     call tbexip(nomtab, zk16(jaces-1+iac), exist, typpar)
                     if (.not. exist) then
                         call tbajpa(nomtab, 1, zk16(jaces-1+iac), ctype)

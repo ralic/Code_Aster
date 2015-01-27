@@ -15,16 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
-                      itype, tjv, ttyp, sjv, styp)
-        character(len=*), intent(in) :: nomsd
-        character(len=1), intent(in) :: cel
-        integer, intent(in) :: npara
-        character(len=*), intent(in) :: lpara(*)
-        integer, intent(in) :: iordr
-        integer, intent(in) :: itype
-        integer, intent(out), optional :: tjv(*), sjv
-        character(len=*), intent(out), optional :: styp, ttyp(*)
-    end subroutine rsadpa
-end interface
+          interface 
+            subroutine rsadpa(nomsd,cel,npara,lpara,iordr,itype,tjv,ttyp&
+     &,sjv,styp,istop)
+              integer, intent(in) :: npara
+              character(len=*), intent(in) :: nomsd
+              character(len=1), intent(in) :: cel
+              character(len=*), intent(in) :: lpara(*)
+              integer, intent(in) :: iordr
+              integer, intent(in) :: itype
+              integer ,optional, intent(out) :: tjv(*)
+              character(len=*) ,optional, intent(out) :: ttyp(*)
+              integer ,optional, intent(out) :: sjv
+              character(len=*) ,optional, intent(out) :: styp
+              integer ,optional, intent(in) :: istop
+            end subroutine rsadpa
+          end interface 

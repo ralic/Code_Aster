@@ -219,7 +219,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
     nbpark = 0
     do 40 i = 1, nbout
         call rsadpa(modes, 'L', 1, zk16(jpara+i-1), zi(lnumor),&
-                    i, sjv=lnume, styp=type)
+                    i, sjv=lnume, styp=type, istop=0)
         if (type(1:1) .eq. 'I') then
             nbpari = nbpari + 1
         else if (type(1:1).eq.'R') then
@@ -245,7 +245,7 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec,&
         do 52 j = 1, nbmode
             nordr = zi(lnumor-1+j)
             call rsadpa(modes, 'L', 1, zk16(jpara+i-1), nordr,&
-                        i, sjv=lnume, styp=type)
+                        i, sjv=lnume, styp=type, istop=0)
             if (type(1:1) .eq. 'I') then
                 ii = ii + 1
                 zi(lresui+ii-1) = zi(lnume)

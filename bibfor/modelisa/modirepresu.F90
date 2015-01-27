@@ -169,7 +169,7 @@ subroutine modirepresu(resuou, resuin )
     do iord = 1, nbordr
         iordr = zi(jordr-1+iord)
         do j = 1, nbpara
-            call rsadpa(resuin, 'L', 1, zk16(jpa+j-1), iordr, 1, sjv=iadin, styp=type)
+            call rsadpa(resuin, 'L', 1, zk16(jpa+j-1), iordr, 1, sjv=iadin, styp=type, istop=0)
             call rsadpa(resuou, 'E', 1, zk16(jpa+j-1), iordr, 1, sjv=iadou, styp=type)
             if (type(1:1) .eq. 'I') then
                 zi(iadou) = zi(iadin)

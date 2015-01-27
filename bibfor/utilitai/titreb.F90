@@ -365,7 +365,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                 cgen(igen+ilg+1:igen+ilg+1) = ':'
 !
                 call rsadpa(para(1)(1:8), 'L', 1, zk16(jpara-1+iacc), ibid,&
-                            1, sjv=iad, styp=ctype)
+                            1, sjv=iad, styp=ctype, istop=0)
 !                   TEST SUR LE TYPE DU CONCEPT
 !                   MODE_MECA A 3 VAR D'ACCES (FREQ,NUME_MODE,et NOEUD_CMP)
                 if (tysd .eq. 'MODE_MECA') then

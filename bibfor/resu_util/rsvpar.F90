@@ -38,8 +38,8 @@ subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
 ! IN  : RPAR   : VALEUR DU PARAMETRE ( TYPE REAL )
 ! IN  : KPAR   : VALEUR DU PARAMETRE ( TYPE CHARACTER )
 ! OUT : IER    : = 0    CE N'EST PAS UN PARAMETRE DU "RESULTAT".
-!              : = 110  LA VALEUR DU PARAMETRE N'EST PAS CORRECT.
-!              : = 100  LA VALEUR DU PARAMETRE EST CORRECT.
+!              : = 110  LA VALEUR DU PARAMETRE N'EST PAS CORRECTE.
+!              : = 100  LA VALEUR DU PARAMETRE EST CORRECTE.
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     integer :: ipa, nbpar, nbacc
@@ -64,7 +64,7 @@ subroutine rsvpar(nomsd, iordr, nompar, ipar, rpar,&
 12  continue
     ier = 110
     call rsadpa(nomsd, 'L', 1, nompar, iordr,&
-                1, sjv=jadr, styp=ctype)
+                1, sjv=jadr, styp=ctype, istop=0)
     if (ctype(1:1) .eq. 'I') then
         if (zi(jadr) .eq. ipar) ier = 100
     else if (ctype(1:1).eq.'R') then

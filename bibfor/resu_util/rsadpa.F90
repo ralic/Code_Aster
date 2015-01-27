@@ -1,5 +1,5 @@
 subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
-                  itype, tjv, ttyp, sjv, styp)
+                  itype, tjv, ttyp, sjv, styp, istop)
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
@@ -16,12 +16,15 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 #include "asterfort/jexnum.h"
 #include "asterfort/rsutrg.h"
 #include "asterfort/utmess.h"
+#include "asterc/isnnem.h"
+#include "asterc/r8vide.h"
 !
     integer, intent(in) :: npara, iordr, itype
     integer, intent(out), optional :: sjv, tjv(*)
     character(len=1), intent(in) :: cel
     character(len=*), intent(in) :: nomsd, lpara(*)
     character(len=*), intent(out), optional :: styp, ttyp(*)
+    integer, intent(in), optional :: istop
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,38 +44,54 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 ! ======================================================================
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-!      RECUPERATION DES ADRESSES JEVEUX DES PARAMETRES DE CALCUL
-!      (OU DES VARIABLES D'ACCES)
-!      D'UN RESULTAT-COMPOSE POUR LE NUMERO D'ORDRE : IORDR
-!      ET POUR LA LISTE DE VARIABLES DE NOMS SYMBOLIQUES LPARA.
+! Recuperation des adresses jeveux des parametres d'une sd_resultat
+! pour le numero d'ordre : iordr
+! et pour la liste des noms de parametres lpara.
 ! ----------------------------------------------------------------------
-! IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT".
-! IN  : CEL    : CONDITION D'ACCES AUX PARAMETRES :
-!                    'L' : LECTURE, 'E' : ECRITURE.
-! IN  : NPARA  : NOMBRE DE PARAMETRES CHERCHES.
-! IN  : LPARA  : LISTE DES NOMS SYMBOLIQUES DES PARAMETRES.
-! IN  : IORDR  : NUMERO D'ORDRE SOUHAITE.
-! IN  : ITYPE  : CODE INDIQUANT QUE L'ON DESIRE LE TYPE
-!                     = 0  PAS DE TYPE
-!                    /= 0  ON FOURNIT LE TYPE
-! OUT : LJEVEU : LISTE DES ADRESSES JEVEUX DANS ZI,ZR,...
-! OUT : CTYPE  : CODE DU TYPE
-!               R REAL,I INTEGER,C COMPLEXE,K8 K16 K24 K32 K80 CHARACTER
+! in  : nomsd  : nom de la structure "resultat".
+! in  : cel    : condition d'acces aux parametres :
+!                    'L' : lecture, 'E' : ecriture.
+! in  : npara  : nombre de parametres cherches.
+! in  : lpara  : liste des noms des parametres.
+! in  : iordr  : numero d'ordre souhaite.
+! in  : itype  : code indiquant que l'on desire le type
+!                     = 0  pas de type
+!                    /= 0  on retourne le type (dans styp ou ttyp)
+! out : / tjv : liste des adresses jeveux dans zi,zr,...
+!       / sjv : 1 adresse jeveux dans zi,zr,... (si npara=1)
+! out : / ttyp  : liste des codes du type des parametres
+!       / styp  : le code du type du parametre (si npara=1)
+!        code :   R real,I integer,C complexe,K8 K16 K24 K32 K80 character
+! in  : istop  : comportement souhaite en cas de lecture d'une valeur "undef"
+!           / 1  on emet une erreur <F> (c'est le defaut)
+!           / 0  on ne s'arrete pas et on retourne une adresse vers une valeur "undef"
 !-----------------------------------------------------------------------
-! REMARQUE : CETTE ROUTINE NE FAIT PAS JEMARQ/JEDEMA POUR NE PAS
-!            INVALIDER LJEVEU
+! remarque : cette routine ne fait pas jemarq/jedema pour ne pas
+!            invalider ljeveu
 !-----------------------------------------------------------------------
-    integer :: nbordr, nrang, jordr, i, ipara, irang, ifr
-    integer :: vali(2), ljeveu(npara)
+    integer :: nbordr, nrang, jordr, i, ipara, irang, ifr, iundef
+    integer :: vali(2), ljeveu(npara), istop2
+    real(kind=8) :: rundef
+    complex(kind=8) :: cundef
     character(len=3) :: ctype(npara)
     character(len=24) :: valk(3)
     character(len=16) :: param, k16b
     character(len=19) :: noms2
 ! ----------------------------------------------------------------------
-!
+
     noms2 = nomsd
-!
-!     --- RECUPERATION DU NUMERO DE RANGEMENT ---
+    iundef = isnnem()
+    rundef = r8vide()
+    cundef = dcmplx(rundef,rundef)
+
+    if (present(istop)) then
+        istop2=istop
+    else
+        istop2=1
+    endif
+
+
+!   --- recuperation du numero de rangement ---
     call rsutrg(nomsd, iordr, irang, nrang)
 !
     if (cel .eq. 'L') then
@@ -100,7 +119,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
             irang = nrang
         endif
     endif
-!
+
     call jelira(jexnum(noms2//'.TACH', 1), 'LONMAX', nbordr)
     if (irang .gt. nbordr) then
         valk (1) = nomsd
@@ -108,7 +127,7 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         vali (2) = nbordr
         call utmess('F', 'UTILITAI6_79', sk=valk(1), ni=2, vali=vali)
     endif
-!
+
     do i = 1, npara
         param = lpara(i)
         call jenonu(jexnom(noms2//'.NOVA', param), ipara)
@@ -121,12 +140,26 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
             valk (3) = k16b
             call utmess('F', 'UTILITAI6_80', nk=3, valk=valk)
         endif
-!
-        call extrs3(noms2, param, irang, cel, itype,&
+
+        call extrs3(noms2, param, irang, cel, 1,&
                     ctype(i), ljeveu(i))
-!
+
+
+!       -- on verifie que les parametres accedes en lecture n'ont pas
+!          une valeur "undef" :
+!       --------------------------------------------------------------
+        if (cel .eq. 'L'.and. istop2.eq.1 ) then
+           if (ctype(i).eq.'R') then
+               ASSERT(zr(ljeveu(i)).ne.rundef)
+           elseif (ctype(i).eq.'C') then
+               ASSERT(zc(ljeveu(i)).ne.cundef)
+           elseif (ctype(i).eq.'I') then
+               ASSERT(zi(ljeveu(i)).ne.iundef)
+           endif
+        endif
+
     end do
-!
+
     ASSERT(EXCLUS2(tjv,sjv))
     if (present(tjv)) then
         do i = 1, npara
@@ -134,16 +167,21 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
         end do
     else if (present(sjv)) then
         sjv=ljeveu(1)
+    else
+        ASSERT(.false.)
     endif
+
     ASSERT(EXCLUS2(ttyp,styp))
-    if (itype .gt. 0) then
+    if (itype .ne. 0) then
         if (present(ttyp)) then
             do i = 1, npara
                 ttyp(i)=ctype(i)
             end do
         else if (present(styp)) then
             styp=ctype(1)
+        else
+            ASSERT(.false.)
         endif
     endif
-!
+
 end subroutine

@@ -38,9 +38,9 @@ subroutine extrs3(resu, param, iordr, cel, itype,&
 ! IN  : IORDR  : NUMERO DE RANGEMENT
 ! IN  : CEL    : CONDITION D'ACCES AUX PARAMETRES :
 !                    'L' : LECTURE, 'E' : ECRITURE.
-! IN  : ITYPE  : CODE INDIQUANT QUE L'ON DESIRE LE TYPE
-!                     = 0  PAS DE TYPE
-!                    /= 0  ON FOURNIT LE TYPE
+! in  : itype  : code indiquant que l'on desire le type
+!                     = 0  pas de type
+!                    /= 0  on fournit le type
 ! OUT : TYPE   : CODE DU TYPE
 !               R REAL,I INTEGER,C COMPLEXE,K8 K16 K24 K32 K80 CHARACTER
 ! OUT : IAD    : ADRESSE JEVEUX DANS ZI,ZR,...

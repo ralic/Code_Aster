@@ -40,6 +40,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/assert.h"
 !
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara
@@ -197,7 +198,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
             do iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'FREQ', numord,&
-                            0, sjv=iainst, styp=k8b)
+                            0, sjv=iainst, styp=k8b, istop=0)
                 zr(jins+iord-1) = zr(iainst)
             end do
         endif
@@ -209,7 +210,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
             do iord = 1, nbordr
                 numord = zi(jord+iord-1)
                 call rsadpa(resul, 'L', 1, 'INST', numord,&
-                            0, sjv=iainst, styp=k8b)
+                            0, sjv=iainst, styp=k8b, istop=0)
                 zr(jins+iord-1) = zr(iainst)
             end do
         endif
@@ -227,6 +228,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
         call jerecu('V')
         numord = zi(jord+iord-1)
         inst = zr(jins+iord-1)
+        ASSERT(inst.ne.rundf)
         valer(1) = inst
         if (typres .eq. 'FOURIER_ELAS') then
             call rsadpa(resul, 'L', 1, 'NUME_MODE', numord,&

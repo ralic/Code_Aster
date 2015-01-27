@@ -199,7 +199,7 @@ subroutine op0168()
                 do j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'NUME_MODE', iord,&
-                                0, sjv=jadr, styp=k8b)
+                                0, sjv=jadr, styp=k8b, istop=0)
                     nume = zi(jadr)
                     do k = 1, nbmodu
                         if (nume .eq. zi(jme+k-1)) then
@@ -225,7 +225,7 @@ subroutine op0168()
                 do j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'NUME_MODE', iord,&
-                                0, sjv=jadr, styp=k8b)
+                                0, sjv=jadr, styp=k8b, istop=0)
                     nume = zi(jadr)
                     do k = 1, nbme
                         if (nume .eq. zi(jme+k-1)) goto 40
@@ -252,7 +252,7 @@ subroutine op0168()
                 do j = 1, nbmodt
                     iord = zi(jor+j-1)
                     call rsadpa(modein, 'L', 1, 'FREQ', iord,&
-                                0, sjv=jadr, styp=k8b)
+                                0, sjv=jadr, styp=k8b, istop=0)
                     freq = zr(jadr)
                     if (freq .ge. fremin .and. freq .le. fremax) then
                         nbmode = nbmode + 1
@@ -277,7 +277,7 @@ subroutine op0168()
                     do j = 1, nbmodt
                         iord = zi(jor+j-1)
                         call rsadpa(modein, 'L', 3, nompar, iord,&
-                                    0, tjv=lpar, styp=k8b)
+                                    0, tjv=lpar, styp=k8b, istop=0)
                         dx = zr(lpar(1))
                         dy = zr(lpar(2))
                         dz = zr(lpar(3))
@@ -314,14 +314,14 @@ subroutine op0168()
                         iord = zi(jor+j-1)
                         nompav = 'MASS_GENE'
                         call rsadpa(modein, 'L', 1, nompav, iord,&
-                                    0, sjv=lpar(1), styp=k8b)
+                                    0, sjv=lpar(1), styp=k8b, istop=0)
                         mastot = mastot + zr(lpar(1))
                     end do
                     do j = 1, nbmodt
                         iord = zi(jor+j-1)
                         nompav = 'MASS_GENE'
                         call rsadpa(modein, 'L', 1, nompav, iord,&
-                                    0, sjv=lpar(1), styp=k8b)
+                                    0, sjv=lpar(1), styp=k8b, istop=0)
                         dx = zr(lpar(1))/mastot
                         if (dx .ge. seuil) then
                             nbmode = nbmode + 1
@@ -404,12 +404,12 @@ subroutine op0168()
     do j = 1, nbmode
         iord = zi(jordr+j-1)
         call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                    0, sjv=jadr, styp=k8b)
+                    0, sjv=jadr, styp=k8b, istop=0)
         nume1 = zi(jadr)
         do k = j+1, nbmode
             iord = zi(jordr+k-1)
             call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                        0, sjv=jadr, styp=k8b)
+                        0, sjv=jadr, styp=k8b, istop=0)
             nume2 = zi(jadr)
             if (nume1 .eq. nume2) then
                 vali(1) = ibid
@@ -433,7 +433,7 @@ subroutine op0168()
         call rsvpar(modeou, 1, 'MASS_EFFE_UN_DX', ibid, undf,&
                     k8b, iret)
         call rsadpa(modeou, 'L', 1, 'MASS_EFFE_UN_DX', 1,&
-                    0, sjv=jadr, styp=k8b)
+                    0, sjv=jadr, styp=k8b, istop=0)
 !
         if (iret .ne. 100 .and. critfi .eq. 'MASS_EFFE_UN' .and. typcon(1:9) .eq.&
             'MODE_MECA') then
@@ -448,13 +448,13 @@ subroutine op0168()
             do j = 1, nbmode
                 iord = zi(jordr+j-1)
                 call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                            0, sjv=jadr, styp=k8b)
+                            0, sjv=jadr, styp=k8b, istop=0)
                 nume = zi(jadr)
                 call rsadpa(modeou, 'L', 1, 'FREQ', iord,&
-                            0, sjv=jadr, styp=k8b)
+                            0, sjv=jadr, styp=k8b, istop=0)
                 freq = zr(jadr)
                 call rsadpa(modeou, 'L', 3, nompar, iord,&
-                            0, tjv=lpar, styp=k8b)
+                            0, tjv=lpar, styp=k8b, istop=0)
                 dx = zr(lpar(1))
                 dy = zr(lpar(2))
                 dz = zr(lpar(3))
@@ -492,14 +492,14 @@ subroutine op0168()
             do j = 1, nbmode
                 iord = zi(jordr+j-1)
                 call rsadpa(modeou, 'L', 1, 'NUME_MODE', iord,&
-                            0, sjv=jadr, styp=k8b)
+                            0, sjv=jadr, styp=k8b, istop=0)
                 nume = zi(jadr)
                 call rsadpa(modeou, 'L', 1, 'FREQ', iord,&
-                            0, sjv=jadr, styp=k8b)
+                            0, sjv=jadr, styp=k8b, istop=0)
                 freq = zr(jadr)
                 nompav = 'MASS_GENE'
                 call rsadpa(modeou, 'L', 1, nompav, iord,&
-                            0, sjv=lpar(1), styp=k8b)
+                            0, sjv=lpar(1), styp=k8b, istop=0)
                 dx = zr(lpar(1))
                 cumulx = cumulx + dx
                 vali(1) = iord
