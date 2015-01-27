@@ -18,6 +18,7 @@ cp waf_variant waf_prof
 
 def configure(self):
     """Add flags for gprof"""
-    self.env.append_value('FCFLAGS', ['-pg'])
-    self.env.append_value('CFLAGS', ['-pg'])
-    self.env.append_value('LINKFLAGS', ['-pg'])
+    self.env.append_unique('FCFLAGS', ['-pg'])
+    self.env.append_unique('CFLAGS', ['-pg'])
+    self.env.append_unique('CXXFLAGS', ['-pg'])
+    self.env.append_unique('LINKFLAGS', ['-pg'])
