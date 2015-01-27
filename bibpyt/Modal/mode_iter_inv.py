@@ -1,3 +1,4 @@
+# coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,24 +17,28 @@
 # ======================================================================
 #
 
-def mode_iter_inv_prod(TYPE_RESU,**args ):
-  if (TYPE_RESU not in ["DYNAMIQUE","MODE_FLAMB","GENERAL"]):
-     # on retourne un type fictif pour que le plantage aie lieu dans la lecture du catalogue
-     return ASSD
-  if TYPE_RESU == "MODE_FLAMB" : return mode_flamb
-  if TYPE_RESU == "GENERAL"    : return mode_flamb
-  # sinon on est dans le cas 'DYNAMIQUE' donc **args doit contenir les mots-clés
-  # MATR_RIGI et (faculativement) MATR_AMOR, et on peut y accéder
-  vale_rigi = args['MATR_RIGI']
-  if (vale_rigi== None) : # si MATR_RIGI non renseigné
-     # on retourne un type fictif pour que le plantage aie lieu dans la lecture du catalogue
-     return ASSD
-  vale_amor = args['MATR_AMOR']
-  if AsType(vale_amor) == matr_asse_depl_r : return mode_meca_c
-  if AsType(vale_rigi) == matr_asse_depl_r : return mode_meca
-  if AsType(vale_rigi) == matr_asse_pres_r : return mode_acou
-  if AsType(vale_rigi) == matr_asse_gene_r : return mode_gene
-  raise AsException("type de concept resultat non prevu")
+from Cata import cata
+from Cata.cata import *
+
+
+def mode_iter_inv_prod(TYPE_RESU, **args ):
+    if (TYPE_RESU not in ["DYNAMIQUE","MODE_FLAMB","GENERAL"]):
+       # on retourne un type fictif pour que le plantage aie lieu dans la lecture du catalogue
+       return ASSD
+    if TYPE_RESU == "MODE_FLAMB" : return mode_flamb
+    if TYPE_RESU == "GENERAL"    : return mode_flamb
+    # sinon on est dans le cas 'DYNAMIQUE' donc **args doit contenir les mots-clés
+    # MATR_RIGI et (faculativement) MATR_AMOR, et on peut y accéder
+    vale_rigi = args['MATR_RIGI']
+    if (vale_rigi== None) : # si MATR_RIGI non renseigné
+       # on retourne un type fictif pour que le plantage aie lieu dans la lecture du catalogue
+       return ASSD
+    vale_amor = args['MATR_AMOR']
+    if AsType(vale_amor) == matr_asse_depl_r : return mode_meca_c
+    if AsType(vale_rigi) == matr_asse_depl_r : return mode_meca
+    if AsType(vale_rigi) == matr_asse_pres_r : return mode_acou
+    if AsType(vale_rigi) == matr_asse_gene_r : return mode_gene
+    raise AsException("type de concept resultat non prevu")
 
 MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
                     ,fr=tr("Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes"),

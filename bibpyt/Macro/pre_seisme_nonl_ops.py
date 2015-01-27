@@ -31,7 +31,7 @@ from Utilitai.partition import MAIL_PY
 from Cata.cata import _F, DETRUIRE, DEFI_MAILLAGE, ASSE_MAILLAGE, \
     AFFE_MATERIAU, AFFE_MODELE, AFFE_CARA_ELEM, LIRE_MAILLAGE,  \
     AFFE_CHAR_MECA, ASSE_MATRICE, DEFI_INTERF_DYNA, CALC_MATR_ELEM, \
-    DEFI_BASE_MODALE, MODE_ITER_SIMULT, NUME_DDL, MODE_STATIQUE, \
+    DEFI_BASE_MODALE, CALC_MODES, NUME_DDL, MODE_STATIQUE, \
     MACR_ELEM_DYNA
 
 
@@ -305,9 +305,11 @@ class BaseModale(object):
 
     def modes_dynamiques(self):
         """Calculate dynamic modes or modal shapes"""
-        _modyna = MODE_ITER_SIMULT(
-            MATR_RIGI=self.matr_rigi, MATR_MASS=self.matr_mass,
-            CALC_FREQ=_F(OPTION='PLUS_PETITE', NMAX_FREQ=self.nb_modes,),)
+        _modyna = CALC_MODES(
+            OPTION='PLUS_PETITE',
+            MATR_RIGI=self.matr_rigi,
+            MATR_MASS=self.matr_mass,
+            CALC_FREQ=_F(NMAX_FREQ=self.nb_modes,),)
         self.modes = _modyna
 
     def defi_base_modale(self):

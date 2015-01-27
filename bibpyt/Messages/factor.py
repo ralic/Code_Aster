@@ -519,7 +519,7 @@ Conseil :
 Solveur MUMPS :
   Un opérateur a demandé à MUMPS de ne pas conserver les termes de la matrice factorisée.
   Cela permet d'optimiser un peu les performances dans les cas ou seul le déterminant, la
-  détection de singularité ou le test de Sturm sont requis (par ex. MODE_ITER_SIMULT option 'BANDE').
+  détection de singularité ou le test de Sturm sont requis (par ex. CALC_MODES option 'BANDE').
   Or la version de MUMPS embarquée dans votre exécutable: %(k1)s
   ne permet pas cette optimisation.
 

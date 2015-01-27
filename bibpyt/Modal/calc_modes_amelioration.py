@@ -25,15 +25,15 @@ def calc_modes_amelioration(self, modes, TYPE_RESU,
        Macro-command CALC_MODES, file for improving the quality of the eigenmodes
     """
 
-
     import aster
     from Accas import _F
     from Noyau.N_utils import AsType
     from Utilitai.Utmess import UTMESS
 
+
     # import the definitions of the commands to use in the macro-command
     # The name of the variable has to be the name of the command
-    MODE_ITER_INV = self.get_cmd('MODE_ITER_INV')
+    from Modal.mode_iter_inv import MODE_ITER_INV
     DETRUIRE = self.get_cmd('DETRUIRE')
 
 

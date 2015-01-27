@@ -22,7 +22,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
                       CALC_FREQ, SOLVEUR, **args):
     """
      Enchainement des commandes :
-        CALC_MATR_ELEM + ASSE_MATRICE + MODE_ITER_SIMULT + MODE_STATIQUE
+        CALC_MATR_ELEM + ASSE_MATRICE + CALC_MODES + MODE_STATIQUE
         DEFI_INTERF_DYNA + DEFI_BASE_MODALE + MACR_ELEM_DYNA
     """
 
@@ -39,7 +39,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
     NUME_DDL = self.get_cmd('NUME_DDL')
     ASSE_MATRICE = self.get_cmd('ASSE_MATRICE')
     EXTR_MODE = self.get_cmd('EXTR_MODE')
-    MODE_ITER_SIMULT = self.get_cmd('MODE_ITER_SIMULT')
+    CALC_MODES = self.get_cmd('CALC_MODES')
     MODE_STATIQUE = self.get_cmd('MODE_STATIQUE')
     DEFI_INTERF_DYNA = self.get_cmd('DEFI_INTERF_DYNA')
     DEFI_BASE_MODALE = self.get_cmd('DEFI_BASE_MODALE')
@@ -72,9 +72,10 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
     _mmass = ASSE_MATRICE(NUME_DDL=_nume_ddl,
                           MATR_ELEM=__melem,)
 
-    # recuperation des options de MODE_ITER_SIMULT (equivalent CALC_MODAL)
+    # recuperation des options de CALC_MODES
     motscit = {}
     motscfa = {}
+    motscsm = {}
 
     if CALC_FREQ['OPTION'] == 'PLUS_PETITE':
         nbande = 1
@@ -89,7 +90,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
         nbande = 0
 
     if CALC_FREQ['DIM_SOUS_ESPACE']:
-        motscfa['DIM_SOUS_ESPACE'] = CALC_FREQ['DIM_SOUS_ESPACE']
+        motscsm['DIM_SOUS_ESPACE'] = CALC_FREQ['DIM_SOUS_ESPACE']
 
     motscit['VERI_MODE'] = _F(STOP_ERREUR=CALC_FREQ['STOP_ERREUR'],)
 
@@ -108,14 +109,19 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
         if CALC_FREQ['OPTION'] == 'BANDE':
             motscfa['FREQ'] = (CALC_FREQ['FREQ'][i], CALC_FREQ['FREQ'][i + 1])
 
-        motscit['CALC_FREQ'] = _F(OPTION=CALC_FREQ['OPTION'],
-                                  APPROCHE=CALC_FREQ['APPROCHE'],
-                                  **motscfa)
+        motscit['CALC_FREQ'] = _F(**motscfa)
 
-        __modes = MODE_ITER_SIMULT(MATR_RIGI=_matrigi,
-                                   MATR_MASS=_mmass,
-                                   INFO=args['INFO'],
-                                   **motscit)
+        if CALC_FREQ['APPROCHE']!=None:
+            motscsm['APPROCHE'] = CALC_FREQ['APPROCHE']
+
+        if len(motscsm)>0:
+            motscit['SOLVEUR_MODAL']=_F(**motscsm)
+
+        __modes = CALC_MODES(MATR_RIGI=_matrigi,
+                             MATR_MASS=_mmass,
+                             OPTION=CALC_FREQ['OPTION'],
+                             INFO=args['INFO'],
+                             **motscit)
 
         motfilt['FILTRE_MODE'].append(_F(MODE=__modes,
                                          TOUT_ORDRE='OUI',),)

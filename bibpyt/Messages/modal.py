@@ -63,7 +63,7 @@ Opérateur CALC_MODES sur plusieurs sous-bandes, test de Sturm global:
     * Vous pouvez relancer le calcul en demandant à faire le test de Sturm de post-vérification
       sur chaque sous-bande (VERI_MODE=_F(STURM='LOCAL')). Cela peut aider à trouver le problème:
       mode multiple sauté, borne trop proche d'un mode multiple, mode de corps rigide...
-    * Vous pouvez aussi relancez un INFO_MODE et/ou des MODE_ITER_SIMULT sur une sous-partie pour
+    * Vous pouvez aussi relancez un INFO_MODE et/ou des CALC_MODES sur une sous-partie pour
       corroborer (ou non) les résultats précédent.
 """),
     6: _(u"""

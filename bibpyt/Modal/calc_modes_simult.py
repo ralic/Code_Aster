@@ -25,10 +25,8 @@ def calc_modes_simult(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
     """
 
     from Accas import _F
+    from Modal.mode_iter_simult import MODE_ITER_SIMULT
 
-    # import the definitions of the commands to use in the macro-command
-    # The name of the variable has to be the name of the command
-    MODE_ITER_SIMULT = self.get_cmd('MODE_ITER_SIMULT')
 
     motcles = {}
     matrices = {}

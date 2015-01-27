@@ -37,7 +37,7 @@ def calc_mode_rotation_ops(self, MATR_RIGI, MATR_MASS, MATR_AMOR, MATR_GYRO,
     ier = 0
 
     # On importe les definitions des commandes a utiliser dans la macro
-    MODE_ITER_SIMULT = self.get_cmd('MODE_ITER_SIMULT')
+    CALC_MODES = self.get_cmd('CALC_MODES')
     COMB_MATR_ASSE = self.get_cmd('COMB_MATR_ASSE')
     CREA_TABLE = self.get_cmd('CREA_TABLE')
 
@@ -47,13 +47,11 @@ def calc_mode_rotation_ops(self, MATR_RIGI, MATR_MASS, MATR_AMOR, MATR_GYRO,
     motscit = {}
     
     if  CALC_FREQ['OPTION']== 'PLUS_PETITE':
-        motscit['CALC_FREQ'] = _F(OPTION='PLUS_PETITE',
-                                  SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
+        motscit['CALC_FREQ'] = _F(SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
                                   NMAX_FREQ=CALC_FREQ['NMAX_FREQ'])
 
     else:
-        motscit['CALC_FREQ'] = _F(OPTION='CENTRE',
-                                  SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
+        motscit['CALC_FREQ'] = _F(SEUIL_FREQ=CALC_FREQ['SEUIL_FREQ'],
                                   NMAX_FREQ=CALC_FREQ['NMAX_FREQ'],
                                   FREQ=CALC_FREQ['FREQ'])
 
@@ -80,11 +78,12 @@ def calc_mode_rotation_ops(self, MATR_RIGI, MATR_MASS, MATR_AMOR, MATR_GYRO,
         __gyom = COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=MATR_GYRO, COEF_R=OM,),
                                         _F(MATR_ASSE=MATR_AMOR, COEF_R=1.,),))
 
-        _mod[ii] = MODE_ITER_SIMULT(MATR_RIGI=MATR_RIGI,
-                                    MATR_MASS=MATR_MASS,
-                                    MATR_AMOR=__gyom,
-                                    METHODE=METHODE,
-                                    **motscit)
+        _mod[ii] = CALC_MODES(MATR_RIGI=MATR_RIGI,
+                              MATR_MASS=MATR_MASS,
+                              MATR_AMOR=__gyom,
+                              OPTION=CALC_FREQ['OPTION'],
+                              SOLVEUR_MODAL=_F(METHODE=METHODE),
+                              **motscit)
 
         tab.append({'NUME_VITE': ii, 'VITE_ROTA': OM, 'NOM_OBJET':
                    'MODE_MECA', 'TYPE_OBJET': 'MODE_MECA', 'NOM_SD': _mod[ii].nom})

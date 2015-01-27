@@ -24,7 +24,8 @@ from Accas import _F, ASSD
 
 import Cata.cata
 from Cata.cata import MODE_STATIQUE, PROJ_MESU_MODAL
-from Cata.cata import MODE_ITER_SIMULT, REST_GENE_PHYS
+from Modal.mode_iter_simult import MODE_ITER_SIMULT
+from Cata.cata import REST_GENE_PHYS
 from Cata.cata import ASSE_MAILLAGE, AFFE_MODELE
 from Cata.cata import NUME_DDL, CALC_MATR_ELEM, AFFE_CARA_ELEM
 from Cata.cata import ASSE_MATRICE
@@ -689,7 +690,8 @@ class CalcEssaiModifStruct:
     def modes_modele_couple(self, mode_simult, calc_freq):
         # ne traite qu'une seule masse/raideur
 
-        from Cata.cata import MODE_ITER_INV, DEPL_INTERNE
+        from Cata.cata import DEPL_INTERNE
+        from Modal.mode_iter_inv import MODE_ITER_INV
 
         cpl = self.cpl
         kcouple = cpl.mat_rigi[0]

@@ -564,7 +564,7 @@ class ParamModeIterSimult(Frame):
     # compliqué et donne des interfaces peu 'intuitives'...
 
     # On ne traite que SORENSEN pour l'instant
-    # (JACOBI et TRI_DIAG ont peu d'avantages d'après U4.52.03-H
+    # (JACOBI et TRI_DIAG ont peu d'avantages d'après U4.52.02
     def __init__(self, root, title, **kwargs):
         Frame.__init__(self, root, **kwargs)
         Label(self, text=title).grid(row=0, column=0, columnspan=1)

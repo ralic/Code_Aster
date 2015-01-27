@@ -49,7 +49,7 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
         lmatphys = False
 
     # On importe les definitions des commandes a utiliser dans la macro
-    MODE_ITER_SIMULT = self.get_cmd('MODE_ITER_SIMULT')
+    from Modal.mode_iter_simult import MODE_ITER_SIMULT
     EXTR_MODE = self.get_cmd('EXTR_MODE')
     INFO_MODE = self.get_cmd('INFO_MODE')
     MODI_MODELE = self.get_cmd('MODI_MODELE')

@@ -25,10 +25,8 @@ def calc_modes_inv(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
     """
 
     from Accas import _F
+    from Modal.mode_iter_inv import MODE_ITER_INV
 
-    # import the definitions of the commands to use in the macro-command
-    # The name of the variable has to be the name of the command
-    MODE_ITER_INV = self.get_cmd('MODE_ITER_INV')
 
     motcles = {}
     matrices = {}

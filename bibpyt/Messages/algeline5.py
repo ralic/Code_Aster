@@ -319,12 +319,12 @@ de fréquences demandées (%(i2)d).
 """),
 
     62: _(u"""
-    Méthode QZ dans MODE_ITER_SIMULT: On trouve un nombre de valeurs propres
+    Méthode 'QZ' dans CALC_MODES : On trouve un nombre de valeurs propres
     %(i1)d différent du nombre de ddls physiques actifs %(i2)d !
 """),
 
     63: _(u"""
-    Méthode QZ dans MODE_ITER_SIMULT + OPTION='BANDE': On trouve un nombre de
+    Méthode 'QZ' dans CALC_MODES + OPTION='BANDE': On trouve un nombre de
     valeurs propres %(i1)d différent du nombre de valeurs propres détectées
     dans la bande %(i2)d !
 """),
@@ -343,14 +343,14 @@ de fréquences demandées (%(i2)d).
 """),
 
     66: _(u"""
-    Méthode QZ dans MODE_ITER_SIMULT : On souhaite un nombre de valeurs
+    Méthode 'QZ' dans CALC_MODES : On souhaite un nombre de valeurs
     propres %(i1)d supérieur au nombre de valeurs propres détectées %(i2)d !
 """),
 
 
 
     68: _(u"""
-    Méthode 'QZ' dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !
+    Méthode 'QZ' dans CALC_MODES : erreur LAPACK %(i1)d !
 """),
 
     69: _(u"""
