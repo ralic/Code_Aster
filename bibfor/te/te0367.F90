@@ -69,7 +69,6 @@ subroutine te0367(option, nomte)
     integer :: nsinge, nsingm
     integer :: jpcpo, jpcpi, jpcai, jpccf, ivect, jstno
     integer :: indnor, ifrott, indco
-    integer :: cface(5, 3)
     integer :: jdepde, jdepm, jgeom, jheafa, jheano
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     real(kind=8) :: mprojt(3, 3)
@@ -78,7 +77,7 @@ subroutine te0367(option, nomte)
     real(kind=8) :: jacobi, hpg
     character(len=8) :: elrees, elrema, elreco, typmai, typmec
     integer :: inadh, nvit, lact(8), nlact, ninter
-    real(kind=8) :: geopi(9), dvitet(3)
+    real(kind=8) :: geopi(18), dvitet(3)
     real(kind=8) :: coefff, coefcr, coeffr, coeffp
     real(kind=8) :: coefcp
     real(kind=8) :: rre, rrm, jeu
@@ -109,7 +108,7 @@ subroutine te0367(option, nomte)
 ! --- INITIALISATIONS
 !
     call vecini(n, 0.d0, vtmp)
-    call vecini(9, 0.d0, geopi)
+    call vecini(18, 0.d0, geopi)
     call vecini(2, 0.d0, dlagrf)
     dlagrc = 0.d0
 !
@@ -190,14 +189,6 @@ subroutine te0367(option, nomte)
         jheano=1
     endif
 !
-! --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÉ CFACE (MAILLE ESCLAVE)
-! --- CE QUI SUIT N'EST VALABLE QU'EN 2D POUR LA FORMULATION QUADRATIQUE
-! --- EN 3D ON UTILISE SEULEMENT LA FORMULATION AUX NOEUDS SOMMETS,
-! --- CETTE MATRICE EST DONC INUTILE, ON NE LA CONSTRUIT PAS !!!
-!
-    cface(1,1)=1
-    cface(1,2)=2
-!
 ! --- CALCUL DES COORDONNEES REELLES DES POINTS D'INTERSECTION ESCLAVES
 !
     call xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
@@ -235,9 +226,9 @@ subroutine te0367(option, nomte)
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT ET FROTTEMENT
 !
-    call xtlagm(typmai, ndim, nnc, nne, ddle(1),&
-                nfaes, cface, jdepde, jpcai, ffc,&
-                lfrott, contac, nfhe, lmulti, zi(jheano),&
+    call xtlagm(ndim, nnc, nne, ddle(1),&
+                jdepde, ffc,&
+                lfrott, nfhe, lmulti, zi(jheano),&
                 dlagrc, dlagrf)
 !
 ! --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE
@@ -264,10 +255,10 @@ subroutine te0367(option, nomte)
                         jeu)
 !
             call xmvec1(ndim, nne, ndeple, nnc, nnm,&
-                        hpg, nfaes, ffc, ffe, ffm,&
-                        jacobi, dlagrc, jpcai, cface, coefcr,&
-                        coefcp, lpenac, jeu, norm, typmai,&
-                        nsinge, nsingm, rre, rrm, contac,&
+                        hpg, ffc, ffe, ffm,&
+                        jacobi, dlagrc, coefcr,&
+                        coefcp, lpenac, jeu, norm,&
+                        nsinge, nsingm, rre, rrm,&
                         ddle, ddlm, nfhe, nfhm, lmulti,&
                         zi(jheano), zi(jheafa), vtmp)
 !
@@ -276,10 +267,10 @@ subroutine te0367(option, nomte)
 !
 ! --- CALCUL DU VECTEUR - CAS SANS CONTACT
 !
-                call xmvec0(ndim, nne, nnc, nfaes, dlagrc,&
-                            hpg, ffc, jacobi, cface, jpcai,&
-                            coefcr, coefcp, lpenac, typmai, ddle,&
-                            contac, nfhe, lmulti, zi(jheano), vtmp)
+                call xmvec0(ndim, nne, nnc, dlagrc,&
+                            hpg, ffc, jacobi,&
+                            coefcr, coefcp, lpenac, ddle,&
+                            nfhe, lmulti, zi(jheano), vtmp)
             endif
         else
             call utmess('F', 'ELEMENTS3_80')
@@ -298,10 +289,10 @@ subroutine te0367(option, nomte)
 ! --- CALCUL DU VECTEUR - CAS SANS FROTTEMENT
 !
 !
-                call xmvef0(ndim, nne, nnc, nfaes, jpcai,&
-                            hpg, ffc, jacobi, coefcr, lpenac,&
-                            dlagrf, cface, typmai, tau1, tau2,&
-                            ddle, contac, nfhe, lmulti, zi(jheano),&
+                call xmvef0(ndim, nne, nnc,&
+                            hpg, ffc, jacobi, lpenac,&
+                            dlagrf, tau1, tau2,&
+                            ddle, nfhe, lmulti, zi(jheano),&
                             vtmp)
             endif
         else if (indco.eq.1) then
@@ -337,11 +328,11 @@ subroutine te0367(option, nomte)
 ! --- VECTEUR FROTTEMENT
 !
             call xmvef1(ndim, nne, nnm, ndeple, nnc,&
-                        nfaes, cface, hpg, ffc, ffe,&
-                        ffm, jacobi, jpcai, dlagrc, dlagrf,&
-                        coeffr, coeffp, lpenaf, coefff, tau1,&
-                        tau2, rese, mprojt, coefcr, coefcp,&
-                        jeu, typmai, nsinge, nsingm, rre,&
+                        hpg, ffc, ffe,&
+                        ffm, jacobi, dlagrc, dlagrf,&
+                        coeffr, lpenaf, coefff, tau1,&
+                        tau2, rese, mprojt, coefcr,&
+                        jeu, nsinge, nsingm, rre,&
                         rrm, nvit, contac, ddle, ddlm,&
                         nfhe, vtmp)
         endif

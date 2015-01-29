@@ -21,7 +21,7 @@ subroutine xmmjac(alias, geom, dff, jac)
 #include "jeveux.h"
 #include "asterfort/assert.h"
     character(len=8) :: alias
-    real(kind=8) :: dff(3, 9), geom(9), jac
+    real(kind=8) :: dff(3, 9), geom(18), jac
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,9 +76,17 @@ subroutine xmmjac(alias, geom, dff, jac)
             dydk = dydk + geom(3*i-1)*dff(2,i)
             dzde = dzde + geom(3*i)*dff(1,i)
             dzdk = dzdk + geom(3*i)*dff(2,i)
-            if (dzde .ne. 0) then
-            endif
 30      continue
+        jac = sqrt((dyde*dzdk-dzde*dydk)**2+ (dzde*dxdk-dxde*dzdk)**2+ (dxde*dydk-dyde*dxdk)**2)
+    else if (alias(1:5).eq.'TR6') then
+        do 40 i = 1, 6
+            dxde = dxde + geom(3*i-2)*dff(1,i)
+            dxdk = dxdk + geom(3*i-2)*dff(2,i)
+            dyde = dyde + geom(3*i-1)*dff(1,i)
+            dydk = dydk + geom(3*i-1)*dff(2,i)
+            dzde = dzde + geom(3*i)*dff(1,i)
+            dzdk = dzdk + geom(3*i)*dff(2,i)
+40      continue
         jac = sqrt((dyde*dzdk-dzde*dydk)**2+ (dzde*dxdk-dxde*dzdk)**2+ (dxde*dydk-dyde*dxdk)**2)
     else
         ASSERT(.false.)

@@ -173,7 +173,8 @@ subroutine xmacon(char, noma, nomo)
             if (xfem_cont(1) .le. 2) elrefe='SE2'
             if (xfem_cont(1) .eq. 3) elrefe='SE3'
         else if (ndim.eq.3) then
-            elrefe='TR3'
+            if (xfem_cont(1) .le. 2) elrefe='TR3'
+            if (xfem_cont(1) .eq. 3) elrefe='TR3'
         endif
 !
         typint = mminfi(defico,'INTEGRATION',izone )

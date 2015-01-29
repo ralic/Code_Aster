@@ -76,7 +76,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
     integer :: ino, ino2, nngl, nnot(3), nno, nno2, ima, ima2, ifis
     integer :: i, j, k, l, icont(nfiss), jco2, jcont(nfiss), ncont
     integer :: ar(12, 3), ia, nunoa, nunob, stna, stnb, nma, imae
-    integer :: fa(6, 4), ibid3(12, 3), nbf, ifq, codret, ilsn, ilst, igeom
+    integer :: fa(6, 8), ibid3(12, 3), nbf, ifq, codret, ilsn, ilst, igeom
     character(len=2) :: ch2
     character(len=8) :: typma, k8bid, noma, nomail
     character(len=19) :: clsn, clst, cnxinv, cstn(nfiss), maicon(nfiss)

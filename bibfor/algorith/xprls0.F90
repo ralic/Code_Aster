@@ -97,7 +97,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     integer :: jnomco, nbnoco, nuno, nmaabs, nptint, ntri, itypma, itri
     integer :: jnosom, nbnozo, ia, ib, ic, cptzo, jlsno, jltno, jnouls, jnoult
     integer :: ar(12, 3), nbar, iar, na, nb, ibid, ipt, nblsn0, ibid2(12, 3)
-    integer :: ifq, nbf, fa(6, 4), nbsom, ndime, i
+    integer :: ifq, nbf, fa(6, 8), nbsom, ndime, i
     real(kind=8) :: p(3), x(7), y(7), z(7), xa, ya, za, xb, yb, zb, s, a(3)
     real(kind=8) :: b(3), c(3), eps(3), m(3), d, vn(3), lsna, lsnb, lsta, lstb
     real(kind=8) :: lstc, lst(6), bestd, bestdi, lsn, bestlt, bestli, dist

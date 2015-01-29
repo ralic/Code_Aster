@@ -1,9 +1,9 @@
 subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
-                  nfaes, cface, hpg, ffc, ffe,&
-                  ffm, jacobi, jpcai, dlagrc, dlagrf,&
-                  coeffr, coeffp, lpenaf, coefff, tau1,&
-                  tau2, rese, mproj, coefcr, coefcp,&
-                  jeu, typmai, nsinge, nsingm, rre,&
+                  hpg, ffc, ffe,&
+                  ffm, jacobi, dlagrc, dlagrf,&
+                  coeffr, lpenaf, coefff, tau1,&
+                  tau2, rese, mproj, coefcr,&
+                  jeu, nsinge, nsingm, rre,&
                   rrm, nvit, nconta, jddle, jddlm,&
                   nfhe, vtmp)
 !
@@ -29,14 +29,13 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 #include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, nnc, jnne(3), jnnm(3), nfaes, jpcai, cface(5, 3)
+    integer :: ndim, nnc, jnne(3), jnnm(3)
     integer :: nsinge, nsingm, nvit, jddle(2), jddlm(2), nfhe
     real(kind=8) :: hpg, ffc(9), ffe(20), ffm(20), jacobi
-    real(kind=8) :: dlagrc, dlagrf(2), coefcp, jeu
-    real(kind=8) :: coefff, coeffr, coeffp, rre, rrm, coefcr
+    real(kind=8) :: dlagrc, dlagrf(2), jeu
+    real(kind=8) :: coefff, coeffr, rre, rrm, coefcr
     real(kind=8) :: tau1(3), tau2(3), rese(3), mproj(3, 3), vtmp(336)
     integer :: nconta, ndeple
-    character(len=8) :: typmai
     aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
@@ -56,14 +55,11 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 ! IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
 ! IN  NNC    : NOMBRE DE NOEUDS DE CONTACT
 ! IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
-! IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
-! IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 ! IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 ! IN  FFC    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ELC
 ! IN  FFE    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ESC
 ! IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
 ! IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-! IN  JPCAI  : POINTEUR VERS LE VECT DES ARRETES ESCLAVES INTERSECTEES
 ! IN  COEFFA : COEF_REGU_FROT
 ! IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 ! IN  TAU1   : PREMIERE TANGENTE
@@ -100,10 +96,10 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 !
     do 100 i = 1, 3
         vectt(i) = 0.d0
-100 end do
+100 continue
     do 110 i = 1, 2
         tt(i) = 0.d0
-110 end do
+110 continue
 !
 ! --- CALCUL DE RESE.C(*,I)
 !
@@ -111,7 +107,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
         do 130 k = 1, ndim
             vectt(i) = rese(k)*mproj(k,i) + vectt(i)
 130     continue
-120 end do
+120 continue
 !
 ! --- CALCUL DE T.(T-P)
 !
@@ -119,7 +115,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
         t = dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)-rese(i)
         tt(1)= t*tau1(i)+tt(1)
         if (ndim .eq. 3) tt(2)= t*tau2(i)+tt(2)
-140 end do
+140 continue
 !
 ! --------------------- CALCUL DE [L1_FROT]-----------------------------
 !
@@ -159,7 +155,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                     vtmp(ii) = rrm * vv
  35             continue
  30         continue
- 10     end do
+ 10     continue
     else
 !
         do 60 j = 1, ndim
@@ -174,7 +170,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                 ii = iin + j
                 vtmp(ii) = rre * vv
  70         continue
- 60     end do
+ 60     continue
     endif
 !
 ! --------------------- CALCUL DE [L3]----------------------------------
@@ -195,7 +191,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                     endif
                 endif
  50         continue
- 40     end do
+ 40     continue
     endif
 !
 end subroutine

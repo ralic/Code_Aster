@@ -1,5 +1,6 @@
 subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
-                  pinref, pmiref, cenref, cenfi, num)
+                  pinref, pmiref, cenref, cenfi,&
+                  num)
 !
     implicit none
 !
@@ -18,7 +19,6 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-#include "asterfort/xveri0.h"
     integer :: ndim, ndime
     integer, intent(in), optional :: num(8)
     character(len=8) :: elrefp
@@ -57,7 +57,7 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     real(kind=8) :: epsmax, rbid, crit, maxi, x(81)
     real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime), dff(3,27)
     real(kind=8) :: v(3), ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
-    integer :: ibid, itemax, i, n(3), nno, iret, j
+    integer :: ibid, itemax, i, n(3), nno, j
     integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34, nbnomx
     character(len=6) :: name
     character(len=3) :: edge
@@ -199,8 +199,6 @@ subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
     enddo
 !
     call xelrex(elrefp, nno, x)
-    call xveri0(ndime, elrefp, cenref, iret)
-    ASSERT(iret .eq. 0)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
     call reerel(elrefp, nno, ndim, geom, cenref,&

@@ -128,8 +128,7 @@ subroutine te0542(option, nomte)
             call xbsir2(elref, contac, ddlc, ddlm, ddls,&
                         igeom, jfisno, jlst, ivectu, singu,&
                         nddl, ndim, nfe, nfh, nfiss,&
-                        nno, nnom, nnos, depref, sigref(1),&
-                        nomte)
+                        nno, nnom, nnos, depref, sigref(1))
         endif
     else
         ASSERT(.false.)

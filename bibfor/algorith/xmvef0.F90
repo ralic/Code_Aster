@@ -1,7 +1,7 @@
-subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
-                  hpg, ffc, jacobi, coefcr, lpenac,&
-                  dlagrf, cface, typmai, tau1, tau2,&
-                  jddle, nconta, nfhe, lmulti, heavno,&
+subroutine xmvef0(ndim, jnne, nnc,&
+                  hpg, ffc, jacobi, lpenac,&
+                  dlagrf, tau1, tau2,&
+                  jddle, nfhe, lmulti, heavno,&
                   vtmp)
 !
 ! ======================================================================
@@ -25,13 +25,12 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
     implicit none
 #include "asterf_types.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, nnc, jnne(3), nfaes, jpcai, cface(5, 3), jddle(2)
-    real(kind=8) :: hpg, ffc(9), jacobi, coefcr
+    integer :: ndim, nnc, jnne(3), jddle(2)
+    real(kind=8) :: hpg, ffc(9), jacobi
     real(kind=8) :: dlagrf(2)
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: vtmp(336)
-    character(len=8) :: typmai
-    integer :: nconta, nfhe, heavno(8)
+    integer :: nfhe, heavno(8)
     aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
@@ -70,7 +69,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
 !
     do 100 i = 1, 2
         tt(i) = 0.d0
-100 end do
+100 continue
 !
 ! --- CALCUL DE T.T
 !
@@ -78,7 +77,7 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
         t = dlagrf(1)*tau1(i)+dlagrf(2)*tau2(i)
         tt(1) = t*tau1(i)+tt(1)
         if (ndim .eq. 3) tt(2) = t*tau2(i)+tt(2)
-200 end do
+200 continue
 !
 ! --------------------- CALCUL DE {L3_FROT}----------------------------
 !
@@ -94,6 +93,6 @@ subroutine xmvef0(ndim, jnne, nnc, nfaes, jpcai,&
                 vtmp(ii)= jacobi*hpg*ffc(i)*tt(l)
             endif
 600     continue
-500 end do
+500 continue
 !
 end subroutine

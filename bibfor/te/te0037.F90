@@ -15,6 +15,7 @@ subroutine te0037(option, nomte)
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/reeref.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
@@ -69,14 +70,14 @@ subroutine te0037(option, nomte)
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ier, ddlm
     integer :: igeom, ipres, itemps, ires, iadzi, iazk24
     integer :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
-    integer :: i, j, ninter, nface, cface(5, 3), ifa, nli, in(3), nfiss, jfisno
-    integer :: ar(12, 3), nbar, fac(6, 4), nbf, ibid2(12, 3), ibid, cpt, ino, ilev
+    integer :: i, j, ninter, nface, cface(18, 6), ifa, nfiss, jfisno
+    integer :: ibid, ino, ilev
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
-    real(kind=8) :: mult, pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
+    real(kind=8) :: pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r, lsn(27,4)
     aster_logical :: lbid, pre1, axi
     integer :: compt, nddlm, nddls, nddlp, iret
-    real(kind=8) :: thet
+    real(kind=8) :: thet, pinter(3), pinref(3)
     data    he / -1.d0 , 1.d0/
 !
     call jemarq()
@@ -149,11 +150,13 @@ subroutine te0037(option, nomte)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
     if (ndim .eq. 3) then
-        call confac(typma, ibid2, ibid, fac, nbf)
-        elc='TR3'
+        if (iselli(elref)) then
+            elc='TR3'
+        else
+            elc='TR3'
+        endif
         fpg='XCON'
     else if (ndim.eq.2) then
-        call conare(typma, ar, nbar)
         if (iselli(elref)) then
             elc='SE2'
         else
@@ -191,11 +194,12 @@ subroutine te0037(option, nomte)
     ninter=zi(jlonch-1+1)
     nface=zi(jlonch-1+2)
     nptf=zi(jlonch-1+3)
+    if (nptf .eq. 6 .and. ndim .eq. 3) elc = 'TR6'
     if (ninter .lt. ndim) goto 999
 !
     do i = 1, nface
         do j = 1, nptf
-            cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
+            cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
         end do
     end do
 !
@@ -207,46 +211,25 @@ subroutine te0037(option, nomte)
 !
     do ifa = 1, nface
 !
-!       PETIT TRUC EN PLUS POUR LES FACES EN DOUBLE
-        mult=1.d0
-        do i = 1, ndim
-            nli=cface(ifa,i)
-            in(i)=nint(zr(jaint-1+zxain*(nli-1)+2))
-        end do
-!       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
-        if (ndim .eq. 3) then
-            if (in(1) .ne. 0 .and. in(2) .ne. 0 .and. in(3) .ne. 0) then
-                do i = 1, nbf
-                    cpt=0
-                    do ino = 1, 4
-                        if (in(1) .eq. fac(i,ino) .or. in(2) .eq. fac(i,ino) .or. in(3) .eq.&
-                            fac(i,ino)) cpt=cpt+1
-                    end do
-                    if (cpt .eq. 3) then
-                        mult=0.5d0
-                        goto 104
-                    endif
-                end do
-            endif
-        else if (ndim .eq. 2) then
-            if (in(1) .ne. 0 .and. in(2) .ne. 0) then
-                do i = 1, nbar
-                    cpt=0
-                    do ino = 1, 2
-                        if (in(1) .eq. ar(i,ino) .or. in(2) .eq. ar(i,ino)) cpt=cpt+1
-                    end do
-                    if (cpt .eq. 2) then
-                        mult=0.5d0
-                        goto 104
-                    endif
-                end do
-            endif
+        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+                         npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
+!
+!       ON VERIFIE QUE LES NOEUDS DE LA FACETTE DE CONTACT ONT LST<0
+!
+        if (singu.eq.1) then
+           call vecini(3, 0.d0, pinter)
+           do i = 1, nptf
+              do j = 1, ndim
+                 pinter(j) = zr(jptint-1+ndim*(cface(ifa,i)-1)+j)
+              end do
+              call reeref(elref, nno, zr(igeom), pinter, ndim, pinref, ff, dfbid)
+              lst = 0.d0
+              do j = 1, nno
+                  lst=lst+zr(jlst-1+j)*ff(j)
+              end do
+              ASSERT(lst.le.1.d-4)
+           end do
         endif
-104     continue
-!
-        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
-                         jvf=ivff, jdfde=idfdef)
-!
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         do ipgf = 1, npgf
 !
@@ -273,7 +256,7 @@ subroutine te0037(option, nomte)
                 do i = 1, nno
                     lst=lst+zr(jlst-1+i)*ff(i)
                 end do
-                ASSERT(lst.lt.0.d0)
+                if (lst.gt.0.d0) lst = 0.d0
                 rr(1)=-sqrt(-lst)
                 rr(2)= sqrt(-lst)
             endif
@@ -361,7 +344,7 @@ subroutine te0037(option, nomte)
 !               TERME CLASSIQUE
                         do j = 1, ndim
                             pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)*mult
+                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)
                         end do
 !
 !               ON ZAPPE LES TERMES DE PRESSION CLASSIQUE SI ON EST SUR UN
@@ -373,7 +356,7 @@ subroutine te0037(option, nomte)
                             pos=pos+1
                             zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(he(ilev),&
                                              lsn(ino,j-nfh*int((j-1)/nfh)))&
-                                             *forrep(j,ilev)*jac*ff(ino)*mult
+                                             *forrep(j,ilev)*jac*ff(ino)
                         end do
 !               ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON 
 !               EST SUR UN NOEUD SOMMET
@@ -389,8 +372,7 @@ subroutine te0037(option, nomte)
 !               TERME CLASSIQUE
                         do j = 1, ndim
                             pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev) * jac * ff(ino) * m&
-                                             &ult
+                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev) * jac * ff(ino)
                         end do
 !
 !               TERME HEAVISIDE
@@ -399,14 +381,14 @@ subroutine te0037(option, nomte)
                             zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(he(ilev),&
                                              lsn(ino,j-nfh*int((j-1)/nfh)))&
                                              * forrep(j,ilev) * jac * f&
-                                             &f(ino) * mult
+                                             &f(ino)
                         end do
 !
 !               TERME SINGULIER
                         do j = 1, singu*ndim
                             pos=pos+1
                             zr(ires-1+pos) = zr(ires-1+pos) + rr(ilev) * forrep(j,ilev) * jac * f&
-                                             &f(ino) * mult
+                                             &f(ino) 
                         end do
 !
 !               ON SAUTE LES POSITIONS DES DDLS ASYMPTOTIQUES E2, E3, E4

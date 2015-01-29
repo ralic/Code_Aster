@@ -28,13 +28,19 @@ OPTION__
         PGRADLN  NEUT_R
         PGRADLT  NEUT_R
         PFISCO   NEUT_I
+        PPMILTO  N480_R
+        PPINTTO  N132_R
+        PCNSETO  N512_I
+        PLONCHA  N120_I
+        PHEAVTO  N128_I
+        PAINTTO  N480_R
         PTYPDIS  NEUT_I
    OUT__
         PPINTER  N120_R ELEM__
-        PAINTER  N120_R ELEM__
+        PAINTER  N480_R ELEM__
         PCFACE   N120_I ELEM__
         PLONGCO  N120_I ELEM__
-        PBASECO  N120_R ELEM__
+        PBASECO  N480_R ELEM__
         PGESCLA  N120_R ELEM__
         PGESCLO  N120_R ELEM__
         PGMAITR  N120_R ELEM__

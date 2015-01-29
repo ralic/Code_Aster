@@ -97,7 +97,7 @@ subroutine xmcart(noma, defico, modele, resoco)
     integer :: ztabf, jtabf, jnosdc, nfhe, nfhm, nfiss
     character(len=24) :: tabfin, nosdco
     integer :: jvalv(7), jncmp(7), jcesl(7), jcesd(7), jcesv(7), iad
-    character(len=2) :: ch2
+    character(len=3) :: ch3
     character(len=8) :: nomgd
     character(len=19) :: ligrxf, chs(7), carte(7)
     integer :: zxain, ifm, niv, jconx, ninter, nbpi, ier
@@ -122,16 +122,16 @@ subroutine xmcart(noma, defico, modele, resoco)
     ncmp(1) = 34
     if (ndim .eq. 2) then
         ncmp(2) = 32
-        ncmp(3) = 6
-        ncmp(4) = 15
-        ncmp(5) = 3
+        ncmp(3) = 14
+        ncmp(4) = 35
+        ncmp(5) = 9
         ncmp(6) = 32
         ncmp(7) = 4
     else if (ndim.eq.3) then
         ncmp(2) = 64
-        ncmp(3) = 18
-        ncmp(4) = 30
-        ncmp(5) = 15
+        ncmp(3) = 102
+        ncmp(4) = 170
+        ncmp(5) = 90
         ncmp(6) = 64
         ncmp(7) = 8
     endif
@@ -166,7 +166,7 @@ subroutine xmcart(noma, defico, modele, resoco)
         call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
         call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
         call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
-100 end do
+100 continue
 !
 ! --- CHAMPS ELEM XFEM MULTI-HEAVISIDE
 !
@@ -203,19 +203,23 @@ subroutine xmcart(noma, defico, modele, resoco)
             nomgd = 'N120_R'
         else if (i .eq. 2 .or. i .eq. 6) then
             nomgd = 'N120_I'
-        else if (i .eq. 3 .or. i .eq. 4) then
-            nomgd = 'NEUT_R'
+        elseif (i .eq. 3) then
+            nomgd = 'N120_R'
+        elseif (i .eq. 4) then
+            nomgd = 'N480_R'
+        elseif (i .eq. 5) then
+            nomgd = 'N120_I'
         else
             nomgd = 'NEUT_I'
         endif
         call alcart('V', carte(i), noma, nomgd)
         call jeveuo(carte(i)//'.NCMP', 'E', jncmp(i))
         call jeveuo(carte(i)//'.VALV', 'E', jvalv(i))
-        do 130 k = 1, ncmp(i)
-            call codent(k, 'G', ch2)
-            zk8(jncmp(i)-1+k) = 'X'//ch2
-130     continue
-120 end do
+        do 130,k = 1,ncmp(i)
+        call codent(k, 'G', ch3)
+        zk8(jncmp(i)-1+k) = 'X'//ch3
+130      continue
+120  continue
 !
 ! --- REMPLISSAGE DES CARTES
 !
@@ -421,19 +425,19 @@ subroutine xmcart(noma, defico, modele, resoco)
             call xmimp3(ifm, noma, ipc, jvalv(1), jtabf)
         endif
 !
-200 end do
+200 continue
 !
 ! --- MENAGE
 !
     do 140 i = 1, 7
         call jeexin(chs(i)//'.CESD', ier)
         if (ier .ne. 0) call detrsd('CHAM_ELEM_S', chs(i))
-140 end do
+140 continue
 !
     do 150 i = 1, 7
         call jedetr(carte(i)//'.NCMP')
         call jedetr(carte(i)//'.VALV')
-150 end do
+150 continue
 !
     call jedema()
 end subroutine

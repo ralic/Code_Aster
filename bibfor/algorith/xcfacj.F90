@@ -69,7 +69,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
     real(kind=8) :: loncar, dst
     real(kind=8) :: m(3), somlsn, epsi(2), coorma(8)
     integer :: i, nbf, ibid, ifq, j
-    integer :: fa(6, 4), ibid3(12, 3), ifisc, jfisc, ino
+    integer :: fa(6, 8), ibid3(12, 3), ifisc, jfisc, ino
     integer :: nnof, na, nb, iret, nne
     aster_logical :: chgsgn, lajpf, ajout
 ! ----------------------------------------------------------------------
@@ -186,7 +186,7 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn,&
                         m, loncar, ainter, 0, 0,&
                         0.d0, ajout)
         endif
-200 end do
+200 continue
 !
 !
     call jedema()

@@ -18,7 +18,7 @@
 interface 
     subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
                       ddls, dfdi, ff, idepl, igthet,&
-                      ithet, jac, mult, ndim, nnop,&
+                      ithet, jac, ndim, nnop,&
                       nnos, tau1, tau2, nd, xg)
         integer :: nnop
         integer :: ndim
@@ -34,7 +34,6 @@ interface
         integer :: igthet
         integer :: ithet
         real(kind=8) :: jac
-        real(kind=8) :: mult
         integer :: nnos
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)

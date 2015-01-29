@@ -3,7 +3,6 @@ subroutine te0534(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/confac.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -63,8 +62,8 @@ subroutine te0534(option, nomte)
     integer :: idepm, idepl, jptint, jaint, jcface, jlonch
     integer :: ivff, iadzi, iazk24, ibid, ivect, jbasec
     integer :: ndim, nfh, ddlc, ddls, nddl, nno, nnos, nnom, nnof, ddlm
-    integer :: npg, npgf, fac(6, 4), nbf, jseuil
-    integer :: indco, ninter, nface, cface(5, 3), ibid2(12, 3)
+    integer :: npg, npgf, jseuil
+    integer :: indco, ninter, nface, cface(18, 6)
     integer :: nfe, singu, jstno, nvit, algocr, algofr, nvec
     integer :: nnol, pla(27), lact(8), nlact, jcohes
     integer :: jmate, nfiss, jfisno, contac, nbspg, nspfis
@@ -106,10 +105,6 @@ subroutine te0534(option, nomte)
 !
     call tecael(iadzi, iazk24)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
-!
-    if (ndim .eq. 3) then
-        call confac(typma, ibid2, ibid, fac, nbf)
-    endif
 !
     do j = 1, nddl
         vtmp(j)=0.d0

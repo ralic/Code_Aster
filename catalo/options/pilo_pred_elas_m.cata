@@ -29,10 +29,10 @@ OPTION__
         PLST     NEUT_R
         PLSN     NEUT_R
         PPINTER  N120_R
-        PAINTER  N120_R
+        PAINTER  N480_R
         PCFACE   N120_I
         PLONGCO  N120_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
-        PBASECO  N120_R
+        PBASECO  N480_R
         PCOHES   NEUT_R
         PDEPL0R  DEPL_R
         PDEPL1R  DEPL_R

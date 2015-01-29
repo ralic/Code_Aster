@@ -1,7 +1,7 @@
-subroutine xmvec0(ndim, jnne, nnc, nfaes, dlagrc,&
-                  hpg, ffc, jacobi, cface, jpcai,&
-                  coefcr, coefcp, lpenac, typmai, jddle,&
-                  nconta, nfhe, lmulti, heavno, vtmp)
+subroutine xmvec0(ndim, jnne, nnc, dlagrc,&
+                  hpg, ffc, jacobi,&
+                  coefcr, coefcp, lpenac, jddle,&
+                  nfhe, lmulti, heavno, vtmp)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,11 +23,10 @@ subroutine xmvec0(ndim, jnne, nnc, nfaes, dlagrc,&
     implicit none
 #include "asterf_types.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, jnne(3), nnc, nfaes, cface(3, 5), jpcai, jddle(2), nconta
+    integer :: ndim, jnne(3), nnc, jddle(2)
     integer :: nfhe, heavno(8)
     real(kind=8) :: dlagrc, hpg, ffc(9), jacobi, coefcr, coefcp
     real(kind=8) :: vtmp(336)
-    character(len=8) :: typmai
     aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
@@ -73,6 +72,6 @@ subroutine xmvec0(ndim, jnne, nnc, nfaes, dlagrc,&
         else
             vtmp(pl) = -hpg*jacobi*dlagrc*ffc(i)/coefcr
         endif
- 10 end do
+ 10 continue
 !
 end subroutine

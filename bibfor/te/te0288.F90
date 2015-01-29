@@ -57,9 +57,9 @@ subroutine te0288(option, nomte)
     integer :: ndim, nno, nnop, npg, nptf, jbasec, nfiss, jfisno
     integer :: nfh, nfe, ddlc, nse, ise, in, ino
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
-    integer :: ipres, ipref, itemps, jptint, jaint, jcface, jlongc, imate, icomp
+    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, icomp
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, icode
-    integer :: ninter, nface, cface(5, 3), ifa, singu, jpmilt, irese, ddlm
+    integer :: ninter, nface, cface(18, 6), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
     integer :: icodre(3), contac, iadzi, iazk24
@@ -88,7 +88,7 @@ subroutine te0288(option, nomte)
  11     continue
         if (thet .lt. r8prem()) compt = compt + 1
  10  continue
-    if (compt .eq. nnop) goto 9999
+    if (compt .eq. nnop) goto 999
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
     if (.not.iselli(elrefp)) then
@@ -216,11 +216,10 @@ subroutine te0288(option, nomte)
         if (option .eq. 'CALC_G_F' .or. option .eq. 'CALC_GTP_F') pres = abs(presn(i))
         if (pres .lt. r8prem()) compt = compt + 1
  90  continue
-    if (compt .eq. nnop) goto 9999
+    if (compt .eq. nnop) goto 999
 !
 !     PARAMETRES PROPRES A X-FEM
     call jevech('PPINTER', 'L', jptint)
-    call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlongc)
     call jevech('PBASECO', 'L', jbasec)
@@ -229,7 +228,7 @@ subroutine te0288(option, nomte)
     ninter=zi(jlongc-1+1)
     nface=zi(jlongc-1+2)
     nptf=zi(jlongc-1+3)
-    if (ninter .lt. ndim) goto 9999
+    if (ninter .lt. ndim) goto 999
 !
     do 20 i = 1, nface
         do 21 j = 1, nptf
@@ -254,7 +253,7 @@ subroutine te0288(option, nomte)
 !     BOUCLE SUR LES FACETTES
 !
     do 200 ifa = 1, nface
-        call xsifle(ndim, ifa, jptint, jaint, cface,&
+        call xsifle(ndim, ifa, jptint, cface,&
                     igeom, nfh, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
@@ -263,7 +262,7 @@ subroutine te0288(option, nomte)
 200  continue
 !
 !
-9999 continue
+999 continue
 !
 !
 end subroutine

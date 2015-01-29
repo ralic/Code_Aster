@@ -34,12 +34,12 @@ OPTION__
         PLSN     NEUT_R
         PLST     NEUT_R
         PPINTER  N120_R
-        PAINTER  N120_R
+        PAINTER  N480_R
         PCFACE   N120_I
         PLONGCO  N120_I
         PSTANO   N120_I
         PPMILTO  N480_R
-        PBASECO  N120_R
+        PBASECO  N480_R
         PFISNO   NEUT_I
         PABSCUR  ABSC_R 'MAIL!.ABSC_CURV'   << pour les elements de tuyau >>
    OUT__

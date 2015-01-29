@@ -54,9 +54,9 @@ subroutine te0297(option, nomte)
     integer :: ndim, nno, nnop, npg, ier
     integer :: nfh, nfe, ddlc, nse, ise, in, ino, ninter
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
-    integer :: ipres, ipref, itemps, jptint, jaint, jcface, jlongc, imate
+    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, idecpg, icode
-    integer :: nface, cface(5, 3), ifa, singu, jpmilt, ipuls, iret, jtab(7)
+    integer :: nface, cface(18, 6), ifa, singu, jpmilt, ipuls, iret, jtab(7)
     integer :: irese, ddlm, jbasec, nptf, nfiss, jfisno
     integer :: contac
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
@@ -221,7 +221,6 @@ subroutine te0297(option, nomte)
 !
 !   PARAMETRES PROPRES A X-FEM
     call jevech('PPINTER', 'L', jptint)
-    call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlongc)
     call jevech('PBASECO', 'L', jbasec)
@@ -260,7 +259,7 @@ subroutine te0297(option, nomte)
 !
 !   BOUCLE SUR LES FACETTES
     do 200 ifa = 1, nface
-        call xsifle(ndim, ifa, jptint, jaint, cface,&
+        call xsifle(ndim, ifa, jptint, cface,&
                     igeom, nfh, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&

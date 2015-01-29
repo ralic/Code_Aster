@@ -26,8 +26,8 @@ interface
         character(len=6) :: name
         integer :: n(3)
         real(kind=8) :: ptxx(*)
-        real(kind=8) :: tabco(*)
         real(kind=8) :: tabls(*)
+        real(kind=8) :: tabco(*)
         integer :: ipp
         integer :: ip
         integer :: itemax

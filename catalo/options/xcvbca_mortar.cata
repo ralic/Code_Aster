@@ -28,7 +28,7 @@ OPTION__
         PINDCOI  NEUT_I
         PLST     NEUT_R
         PPINTER  N120_R
-        PAINTER  N120_R
+        PAINTER  N480_R
         PCFACE   N120_I
         PLONGCO  N120_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
         PDONCO   XCONTAC
@@ -38,7 +38,7 @@ OPTION__
         PCAR_PT  N120_R
         PCAR_AI  NEUT_R
         PCOHES   NEUT_R
-        PBASECO  N120_R
+        PBASECO  N480_R
         PFISNO   NEUT_I
         PHEAVNO  NEUT_I
         PHEAVFA  N120_I

@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
+    subroutine xsifle(ndim, ifa, jptint, cface,&
                       igeom, nfh, singu, nfe, ddlc,&
                       ddlm, jlst, ipres, ipref, itemps,&
                       idepl, nnop, valres, basloc, ithet,&
@@ -26,8 +26,7 @@ interface
         integer :: ndim
         integer :: ifa
         integer :: jptint
-        integer :: jaint
-        integer :: cface(5, 3)
+        integer :: cface(18, 6)
         integer :: igeom
         integer :: nfh
         integer :: singu

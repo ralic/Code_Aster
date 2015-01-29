@@ -1,8 +1,8 @@
 subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
-                  nfaes, cface, hpg, ffc, ffe,&
-                  ffm, jacobi, jpcai, coefcr, coefcp,&
-                  lpenac, norm, typmai, nsinge, nsingm,&
-                  rre, rrm, nconta, jddle, jddlm,&
+                  hpg, ffc, ffe,&
+                  ffm, jacobi, coefcr, coefcp,&
+                  lpenac, norm, nsinge, nsingm,&
+                  rre, rrm, jddle, jddlm,&
                   nfhe, nfhm, lmulti, heavno, heavfa,&
                   mmat)
 ! aslint: disable=W1504
@@ -11,12 +11,11 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, jnne(3), jnnm(3)
-    integer :: nsinge, nsingm, nconta
-    integer :: nfaes, jpcai, cface(5, 3), nfhe, nfhm, heavno(8), heavfa(*)
+    integer :: nsinge, nsingm
+    integer :: nfhe, nfhm, heavno(8), heavfa(*)
     real(kind=8) :: mmat(336, 336), norm(3)
     real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi
     real(kind=8) :: coefcr, coefcp, rre, rrm
-    character(len=8) :: typmai
     integer :: ndeple, nnc, jddle(2), jddlm(2)
     aster_logical :: lpenac, lmulti
 !
@@ -61,15 +60,11 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 ! IN  JNNM   : MAILLE MAIT : (1) NB NDS
 !                            (2) NB NDS SOMMETS
 !                            (3) NB NDS MILIEU
-! IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
-! IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 ! IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 ! IN  FFC    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ELC
 ! IN  FFE    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ESC
 ! IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
 ! IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-! IN  JPCAI  : POINTEUR VERS LE VECTEUR DES ARRETES ESCLAVES
-!              INTERSECTEES
 ! IN  COEFCA : COEF_REGU_CONT
 ! IN  NORM   : VALEUR DE LA NORMALE AU POINT DE CONTACT
 ! IN  MAILLE : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
@@ -158,7 +153,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
  60                 continue
  50             continue
  20         continue
- 10     end do
+ 10     continue
 !
 ! --------------------- CALCUL DE [AU]----------------------------------
 !
@@ -244,7 +239,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 300             continue
 !
 110         continue
-100     end do
+100     continue
     else
 !
 ! --------------------- CALCUL DE [A] ----------------------------------
@@ -263,7 +258,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                     mmat(jj,pl) = rre * mm
 530             continue
 520         continue
-510     end do
+510     continue
 !
 ! --------------------- CALCUL DE [AU]----------------------------------
 !
@@ -285,7 +280,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 630                 continue
 620             continue
 610         continue
-600     end do
+600     continue
     endif
 ! --------------------- CALCUL DE [C] ----------------------------------
 !

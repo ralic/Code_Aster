@@ -30,4 +30,5 @@ MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu
     CONTACT        
      =SIMP(statut='f',typ='TXM',defaut='SANS',into=("SANS","STANDARD","MORTAR"),min=1,max=1,),
     PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('AUTO','SANS','FORCE')),
+    DECOUPE_FACETTE =SIMP(statut='f',typ='TXM',defaut='DEFAUT',into=('DEFAUT','SOUS_ELEMENTS')),
 )  ;

@@ -17,7 +17,7 @@
 !
 interface 
     subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
-                      nmaabs, pinter, ninter, ainter, nface,&
+                      nmaabs, pinter, ainter, nface,&
                       nptf, cface, nbtot, nfiss, ifiss)
         integer :: jlsn
         integer :: jlst
@@ -26,11 +26,10 @@ interface
         character(len=8) :: noma
         integer :: nmaabs
         real(kind=8) :: pinter(*)
-        integer :: ninter
         real(kind=8) :: ainter(*)
         integer :: nface
         integer :: nptf
-        integer :: cface(5, 3)
+        integer :: cface(18, 6)
         integer :: nbtot
         integer :: nfiss
         integer :: ifiss

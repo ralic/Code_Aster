@@ -17,7 +17,8 @@
 !
 interface
     subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
-                  n, ip1, ip2, pinref, miref, mifis)
+                  n, ip1, ip2, pinref, miref, mifis, &
+                  u, v)
         integer :: ndime
         integer :: ndim
         integer :: n(3)
@@ -29,5 +30,7 @@ interface
         real(kind=8) :: pinref(*)
         real(kind=8) :: miref(ndime)
         real(kind=8) :: mifis(ndim)
+        real(kind=8), intent(in), optional :: u(ndime)
+        real(kind=8), intent(in), optional :: v(ndime)
     end subroutine xmifis
 end interface

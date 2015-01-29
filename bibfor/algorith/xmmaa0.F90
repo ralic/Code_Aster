@@ -1,6 +1,6 @@
-subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
-                  cface, ffc, jacobi, jpcai, coefcr,&
-                  coefcp, lpenac, typmai, jddle, nconta,&
+subroutine xmmaa0(ndim, nnc, jnne, hpg,&
+                  ffc, jacobi, coefcr,&
+                  coefcp, lpenac, jddle,&
                   nfhe, lmulti, heavno, mmat)
 !
 ! ======================================================================
@@ -23,11 +23,10 @@ subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
     implicit none
 #include "asterf_types.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, nnc, jnne(3), nfaes, jddle(2), nconta
-    integer :: cface(5, 3), jpcai, nfhe, heavno(8)
+    integer :: ndim, nnc, jnne(3), jddle(2)
+    integer :: nfhe, heavno(8)
     real(kind=8) :: mmat(336, 336)
     real(kind=8) :: hpg, ffc(8), jacobi, coefcr, coefcp
-    character(len=8) :: typmai
     aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
@@ -51,12 +50,8 @@ subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
 ! IN  NNE    : NOMBRE TOTAL DE NOEUDS DE LA MAILLE ESCLAVE
 ! IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
 ! IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
-! IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
-! IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 ! IN  FFC    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ELC
 ! IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-! IN  JPCAI  : POINTEUR VERS LE VECTEUR DES ARRETES ESCLAVES
-!              INTERSECTEES
 ! IN  COEFCA : COEF_REGU_CONT
 ! IN  TYPMAI : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
 ! IN  DDLES : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
@@ -88,6 +83,6 @@ subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
                 mmat(pli,plj) = -hpg*ffc(j)*ffc(i)*jacobi/coefcr
             endif
  20     continue
- 10 end do
+ 10 continue
 !
 end subroutine

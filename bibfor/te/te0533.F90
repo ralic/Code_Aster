@@ -3,7 +3,6 @@ subroutine te0533(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/confac.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -60,8 +59,8 @@ subroutine te0533(option, nomte)
     integer :: idepm, idepd, imatt, jlst, jptint, jaint, jcface, jlonch
     integer :: ivff, iadzi, iazk24, ibid, jbasec, jseuil
     integer :: ndim, nfh, ddlc, ddls, nddl, nno, nnos, nnom, nnof, ddlm
-    integer :: npg, npgf, fac(6, 4), nbf, algocr, algofr, vstnc(32)
-    integer :: indco, ninter, nface, cface(5, 3), ibid2(12, 3)
+    integer :: npg, npgf, algocr, algofr, vstnc(32)
+    integer :: indco, ninter, nface, cface(18, 6)
     integer :: nfe, singu, jstno, nvit, jcoheo, ncompv
     integer :: nnol, pla(27), lact(8), nlact, nptf
     integer :: contac, nfiss, jfisno, jmate, jcohes, nbspg, nspfis
@@ -102,10 +101,6 @@ subroutine te0533(option, nomte)
 !
     call tecael(iadzi, iazk24)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
-!
-    if (ndim .eq. 3) then
-        call confac(typma, ibid2, ibid, fac, nbf)
-    endif
 !
 !     INITIALISATION DE LA MATRICE DE TRAVAIL
     call matini(216, 216, 0.d0, mmat)

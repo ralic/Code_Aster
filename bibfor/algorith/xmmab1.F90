@@ -1,9 +1,9 @@
 subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
-                  nfaes, cface, hpg, ffc, ffe,&
-                  ffm, jacobi, jpcai, lambda, coefcr,&
-                  coefcp, dvitet, coeffr, dlagrf, jeu,&
+                  hpg, ffc, ffe,&
+                  ffm, jacobi, lambda, coefcr,&
+                  dvitet, coeffr, jeu,&
                   coeffp, coefff, lpenaf, tau1, tau2,&
-                  rese, mproj, norm, typmai, nsinge,&
+                  rese, mproj, norm, nsinge,&
                   nsingm, rre, rrm, nvit, nconta,&
                   jddle, jddlm, nfhe, mmat)
 !
@@ -30,14 +30,13 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
 #include "blas/ddot.h"
-    integer :: ndim, jnne(3), nnc, jnnm(3), nfaes, jpcai, cface(5, 3)
+    integer :: ndim, jnne(3), nnc, jnnm(3)
     integer :: nsinge, nsingm, nconta, jddle(2), jddlm(2)
     integer :: nvit, ndeple, nfhe
-    real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi, norm(3), coefcp
-    real(kind=8) :: lambda, coefff, coeffr, coeffp, rre, rrm, coefcr, dvitet(3)
+    real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi, norm(3), coeffp
+    real(kind=8) :: lambda, coefff, coeffr, rre, rrm, coefcr, dvitet(3)
     real(kind=8) :: tau1(3), tau2(3), rese(3), mmat(336, 336), mproj(3, 3)
-    real(kind=8) :: dlagrf(2), jeu
-    character(len=8) :: typmai
+    real(kind=8) :: jeu
     aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
@@ -57,15 +56,12 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 ! IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
 ! IN  NNC    : NOMBRE DE NOEUDS DE CONTACT
 ! IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
-! IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
-! IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 ! IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 ! IN  FFC    : FONCTIONS DE FORME DU PT CONTACT DANS ELC
 ! IN  FFE    : FONCTIONS DE FORME DU PT CONTACT DANS ESC
 ! IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
 ! IN  DDLES : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 ! IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-! IN  JPCAI  : POINTEUR VERS LE VECTEUR DES ARRETES ESCLAVES
 !              INTERSECTEES
 ! IN  LAMBDA : VALEUR DU SEUIL_INIT
 ! IN  COEFFA : COEF_REGU_FROT
@@ -108,7 +104,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
             e(i,j) = 0.d0
             tt(i,j) = 0.d0
   2     continue
-  1 end do
+  1 continue
     v(1) = ddot(ndim,dvitet,1,tau1,1)
     if (ndim .eq. 3) v(2) = ddot(ndim,dvitet,1,tau2,2)
 !     TT = ID
@@ -117,7 +113,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
         tt(1,2) = tau1(i)*tau2(i) + tt(1,2)
         tt(2,1) = tau2(i)*tau1(i) + tt(2,1)
         tt(2,2) = tau2(i)*tau2(i) + tt(2,2)
-301 end do
+301 continue
 !
 ! --- E = [P_TAU]T*[P_TAU]
 !
@@ -130,7 +126,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                 e(i,j) = mproj(k,i)*mproj(k,j) + e(i,j)
   5         continue
   4     continue
-  3 end do
+  3 continue
 !
 ! --- A = [P_B,TAU1,TAU2]*[P_TAU]
 !
@@ -142,7 +138,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
             a(2,i) = tau1(k)*mproj(k,i) + a(2,i)
             a(3,i) = tau2(k)*mproj(k,i) + a(3,i)
   7     continue
-  6 end do
+  6 continue
 !
 ! --- C = (P_B)[P_TAU]*(N)
 !
@@ -151,7 +147,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
         do 9 j = 1, ndim
             c(i,j) = a(1,i)*norm(j)
   9     continue
-  8 end do
+  8 continue
 ! ---- MP = MU*GN*WG*JAC
     if (nconta .eq. 3 .and. ndim .eq. 3) then
         mp = (lambda-coefcr*jeu)*coefff*hpg*jacobi
@@ -221,7 +217,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
  50                 continue
  20             continue
  10         continue
- 70     end do
+ 70     continue
 !
 ! --------------------- CALCUL DE [BU] ---------------------------------
 !
@@ -343,7 +339,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 320                 continue
 300             continue
 110         continue
-100     end do
+100     continue
     else
 !
 ! --------------------- CALCUL DE [A] ET [B] -----------------------
@@ -380,7 +376,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 530                 continue
 520             continue
 510         continue
-550     end do
+550     continue
 !
 ! --------------------- CALCUL DE [BU] ---------------------------------
 !
@@ -407,7 +403,7 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 630                 continue
 620             continue
 610         continue
-600     end do
+600     continue
     endif
 ! --------------------- CALCUL DE [F] ----------------------------------
 !

@@ -12,9 +12,11 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
+#include "asterfort/confac.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
@@ -26,7 +28,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
     real(kind=8) :: lsn(*), lst(*), pinter(*), ainter(*)
-    integer :: jgrlsn, igeom, ninter, nface, cface(5, 3), nptf
+    integer :: jgrlsn, igeom, ninter, nface, cface(18, 6), nptf
     integer :: nfiss, ifiss, fisco(*), nfisc, nmaabs
     character(len=8) :: noma
     character(len=16) :: enr, typdis
@@ -80,27 +82,77 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     real(kind=8) :: h(3), oh(3), noh, cos, noa, r3(3), theta(6), eps
     real(kind=8) :: ab(2), lsta, lstb, lstc, abprim(2), prec, pre2
     real(kind=8) :: lsja(nfisc+1), lsjb(nfisc+1), lsjc, beta
-    real(kind=8) :: minlsn, minlst
+    real(kind=8) :: minlsn, minlst, maxlsn, lsnabs, lonref, cridist
     integer :: j, ar(12, 3), nbar, na, nb, nc, ins
-    integer :: ia, i, ipt, ibid, pp, pd, nno, k, nnos
-    integer :: iadzi, iazk24, ndim, ptmax
+    integer :: ia, i, ipt, ibid, pp, pd, nno, k, nnos, ibid2(12,3)
+    integer :: iadzi, iazk24, ndim, ptmax, f(6,8) , nbf
     character(len=8) :: typma
     integer :: zxain
-    aster_logical :: lcont, lajpa, lajpb, lajpc, ajout
+    parameter(cridist=1.d-7)
+    aster_logical :: lcont, lajpa, lajpb, lajpc, ajout, cut, arete
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
     eps=-1.0d-10
+    zxain = xxmmvd('ZXAIN')
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
+    call tecael(iadzi, iazk24)
+    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    call loncar(ndim, typma, zr(igeom), lonref)
+    ipt=0
+!     L'ELEMENT EST-IL TRAVERSE STRICTEMENT PAR LSN=0?
+    cut=.false.
+    i=1
+ 1  continue
+!     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
+    if (lsn((i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
+        do 30 k = i+1, nnos
+!     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
+            if (lsn((i-1)*nfiss+ifiss)*lsn((k-1)*nfiss+ifiss) .lt. 0.d0) cut=.true.
+30      continue
+    else if (i.lt.nnos) then
+        i=i+1
+        goto 1
+    endif
+!     RECHERCHE DE MINLSN
+    minlsn = 0.d0
+    maxlsn = 0.d0
+    do i = 1, nnos
+        minlsn=min(lsn((i-1)*nfiss+ifiss),minlsn)
+        maxlsn=max(lsn((i-1)*nfiss+ifiss),maxlsn)
+    end do
+!
+!     ON NE PREND QUE CERTAINS ELEMENTS POUR NE PAS AVOIR DE "DOUBLONS"
+    arete = .false.
+    lsnabs = 0.d0
+    if(.not.cut) then
+       if (ndim.eq.3) then
+           call confac(typma, ibid2, ibid, f, nbf)
+           do i = 1, nbf
+                lsnabs = 0.d0
+                do j = 1, 4
+                  if (f(i,j).ne.0.d0) lsnabs = lsnabs+abs(lsn((f(i,j)-1)*nfiss+ifiss))
+                end do
+                if (lsnabs.le.cridist*lonref) arete = .true.
+           end do
+       else if (ndim.eq.2) then
+           call conare(typma, ar, nbar)
+           do i = 1, nbar
+               lsnabs = abs(lsn((ar(i,1)-1)*nfiss+ifiss))+abs(lsn((ar(i,2)-1)*nfiss+ifiss))
+               if (lsnabs.le.cridist*lonref) arete = .true.
+           end do
+       endif
+       if (.not.arete) goto 999
+       if (arete.and.minlsn.ge.0.d0) goto 999
+    endif
 !   PREC PERMET D"EVITER LES ERREURS DE PRÉCISION CONDUISANT
 !   A IA=IN=0 POUR LES MAILLES DU FRONT
     prec = 1000*r8prem()
     minlsn = 1*r8maem()
     minlst = 1*r8maem()
 !
-    zxain = xxmmvd('ZXAIN')
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
     if (ndim .eq. 3) then
         ptmax=6
@@ -261,6 +313,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
                     lst, igeom, nno, ndim, typma,&
                     noma, nmaabs)
     endif
+ 999 continue
     ninter=ipt
 !
 !     2) DECOUPAGE EN FACETTES TRIANGULAIRES DE LA SURFACE DEFINIE
@@ -272,8 +325,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     if (ndim .eq. 3) then
         if (ninter .lt. 3) goto 500
 !
-        do 200 i = 1, 5
-            do 201 j = 1, 3
+        do 200 i = 1, 18
+            do 201 j = 1, 6
                 cface(i,j)=0
 201         continue
 200     continue
@@ -422,9 +475,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !
 !     CAS 2D
     else if (ndim .eq. 2) then
-!
-        do 800 i = 1, 5
-            do 801 j = 1, 3
+        do 800 i = 1, 18
+            do 801 j = 1, 6
                 cface(i,j)=0
 801         continue
 800     continue

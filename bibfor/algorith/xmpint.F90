@@ -24,7 +24,7 @@ subroutine xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
 #include "asterfort/jemarq.h"
     integer :: jpcpi, jpccf
     integer :: ndim, nfaes, npte
-    real(kind=8) :: geopi(9)
+    real(kind=8) :: geopi(18)
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ subroutine xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
         do 40 j = 1, ndim
             geopi(ndim*(i-1)+j) = zr( jpcpi-1+ndim*(zi(jpccf-1+npte*( nfaes-1)+i)-1 )+j )
 40      continue
-30  end do
+30  continue
 !
     call jedema()
 end subroutine

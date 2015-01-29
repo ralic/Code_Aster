@@ -1,8 +1,7 @@
 subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                   igeom, jfisno, jlst, ivectu, singu,&
                   nddl, ndim, nfe, nfh, nfiss,&
-                  nno, nnom, nnos, depref, sigref,&
-                  nomte)
+                  nno, nnom, nnos, depref, sigref)
 !
 ! aslint: disable=W1504
     implicit none
@@ -58,7 +57,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! CALCUL RESIDU DE REFERENCE ELEMENTS COHESIF MIXTE XFEM
 ! TERMES D INTERFACE
 ! -------------------
-    integer :: cface(5, 3), contac, ddlc, ddlm, ddls
+    integer :: cface(18, 6), contac, ddlc, ddlm, ddls
     integer :: i, iadzi, iazk24, vstnc(1), ibid, ifa, ifiss, igeom, ipgf
     integer :: iret, jaint, jbasec, jcface
     integer :: jfisno, jheafa, jheano, jlonch, jlst, jptint, jtab(2)
@@ -71,7 +70,6 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     real(kind=8) :: r3bid(3), rr, sigref, vtmp(400)
     aster_logical :: lbid
     character(len=8) :: elc, elref, elrefc, fpg, typma
-    character(len=16) :: nomte
 !
 ! --- INITIALISATIONS
 !

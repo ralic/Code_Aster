@@ -1,9 +1,9 @@
 subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
-                  nfaes, cface, hpg, ffc, ffe,&
-                  ffm, jacobi, jpcai, lambda, coefcr,&
-                  coefcp, coeffr, dlagrf, jeu, coeffp,&
+                  hpg, ffc, ffe,&
+                  ffm, jacobi, lambda, coefcr,&
+                  coeffr, jeu, coeffp,&
                   lpenaf, coefff, tau1, tau2, rese,&
-                  nrese, mproj, norm, typmai, nsinge,&
+                  nrese, mproj, norm, nsinge,&
                   nsingm, rre, rrm, nvit, nconta,&
                   jddle, jddlm, nfhe, mmat)
 !
@@ -31,15 +31,14 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 #include "asterfort/mkkvec.h"
 #include "asterfort/normev.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, nnc, jnne(3), jnnm(3), nfaes, jpcai, cface(5, 3)
+    integer :: ndim, nnc, jnne(3), jnnm(3)
     integer :: nsinge, nsingm, nfhe
     integer :: nvit, nconta, ndeple, jddle(2), jddlm(2)
-    real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi, norm(3), coefcp
-    real(kind=8) :: lambda, coefff, coeffr, rre, rrm, coefcr, coeffp, dlagrf(2)
+    real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi, norm(3)
+    real(kind=8) :: lambda, coefff, coeffr, rre, rrm, coefcr, coeffp
     real(kind=8) :: tau1(3), tau2(3), rese(3), nrese, mmat(336, 336)
     real(kind=8) :: mproj(3, 3)
     real(kind=8) :: jeu
-    character(len=8) :: typmai
     aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
@@ -94,7 +93,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
     real(kind=8) :: c1(3), c2(3), c3(3), d1(3), d2(3), d3(3), h1(3), h2(3)
     real(kind=8) :: g(3, 3), d(3, 3), b(3, 3), c(3, 3), r(3, 3), mp, mb, mbt, mm
     real(kind=8) :: mmt
-    real(kind=8) :: f(3, 3), tt(3, 3)
+    real(kind=8) :: tt(3, 3)
 ! ----------------------------------------------------------------------
 !
 ! --- INITIALISATIONS
@@ -116,7 +115,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
             r(i,j) = 0.d0
             tt(i,j)=0.d0
   2     continue
-  1 end do
+  1 continue
     do 3 k = 1, 3
         c1(k) = mproj(k,1)
         c2(k) = mproj(k,2)
@@ -126,7 +125,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         d3(k) = 0.d0
         h1(k) = 0.d0
         h2(k) = 0.d0
-  3 end do
+  3 continue
 !
 ! --- G = [K][P_TAU]
 !
@@ -138,7 +137,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         g(k,1) = d1(k)
         g(k,2) = d2(k)
         g(k,3) = d3(k)
-  4 end do
+  4 continue
 !
 ! --- D = [P_TAU]*[K]*[P_TAU]
 !
@@ -148,7 +147,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
                 d(i,j) = g(k,i)*mproj(k,j) + d(i,j)
  15         continue
  14     continue
- 13 end do
+ 13 continue
 !
     call mkkvec(rese, nrese, ndim, tau1, h1)
     call mkkvec(rese, nrese, ndim, tau2, h2)
@@ -162,7 +161,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
             b(2,i) = h1(k)*mproj(k,i)+b(2,i)
             b(3,i) = h2(k)*mproj(k,i)+b(3,i)
  25     continue
- 24 end do
+ 24 continue
 !
 ! --- C = (P_B)[P_TAU]*(N)
 !
@@ -170,7 +169,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         do 9 j = 1, ndim
             c(i,j) = b(1,i)*norm(j)
   9     continue
-  8 end do
+  8 continue
 !
 ! --- R = [TAU1,TAU2][ID-K][TAU1,TAU2]
 !
@@ -179,7 +178,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         r(1,2) = (tau1(k)-h1(k))*tau2(k) + r(1,2)
         r(2,1) = (tau2(k)-h2(k))*tau1(k) + r(2,1)
         r(2,2) = (tau2(k)-h2(k))*tau2(k) + r(2,2)
-857 end do
+857 continue
 !
 !---- TT = [TAU1,TAU2][ID][TAU1,TAU2]
 !
@@ -188,7 +187,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
         tt(1,2) = tau1(i)*tau2(i) + tt(1,2)
         tt(2,1) = tau2(i)*tau1(i) + tt(2,1)
         tt(2,2) = tau2(i)*tau2(i) + tt(2,2)
-301 end do
+301 continue
 !
     if (nconta .eq. 3 .and. ndim .eq. 3) then
         mp = (lambda-coefcr*jeu)*coefff*hpg*jacobi
@@ -264,7 +263,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
  50                 continue
  20             continue
  10         continue
- 70     end do
+ 70     continue
 !
 ! --------------------- CALCUL DE [BU] ---------------------------------
 !
@@ -386,7 +385,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 320                 continue
 300             continue
 110         continue
-100     end do
+100     continue
 !
     else
 ! --------------------- CALCUL DE [A] ET [B] -----------------------
@@ -427,7 +426,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 530                 continue
 520             continue
 510         continue
-550     end do
+550     continue
 !
 ! --------------------- CALCUL DE [BU] ---------------------------------
 !
@@ -454,7 +453,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 630                 continue
 620             continue
 610         continue
-600     end do
+600     continue
     endif
 !
 ! --------------------- CALCUL DE [F] ----------------------------------
@@ -482,7 +481,7 @@ subroutine xmmab2(ndim, jnne, ndeple, nnc, jnnm,&
 430                 continue
 420             continue
 410         continue
-400     end do
+400     continue
     endif
 ! ------------------- CALCUL DE [E] ------------------------------------
 !

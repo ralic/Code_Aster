@@ -1,11 +1,13 @@
-subroutine confac(typma, ft, nbft, f, nbf)
+subroutine confac(typma, ft, nbft, f, nbf, quad)
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: ft(12, 3), nbft, f(6, 4), nbf
+    integer :: ft(12, 3), nbft, f(6, 8), nbf
     character(len=8) :: typma
+    aster_logical, intent(in), optional :: quad
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +36,7 @@ subroutine confac(typma, ft, nbft, f, nbf)
 !
 !    ENTREE :
 !              TYPMA : TYPE DE LA MAILLE
+!              QUAD  : ON DEMANDE LES CONNECTIVITES DES FACES EN QUADRATIQUE
 !
 !    SORTIE :
 !              FT   : MATRICE DE CONNECTIVITÉ DES FACES TRIANGULARISEES
@@ -43,14 +46,22 @@ subroutine confac(typma, ft, nbft, f, nbf)
 !     ------------------------------------------------------------------
 !
     integer :: i, j
+    aster_logical :: milieu
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    do 100 i = 1, 12
-        do 110 j = 1, 3
+    do i = 1, 12
+        do j = 1, 3
             ft(i,j)=0
-110      continue
-100  end do
+        end do
+    end do
+    do i = 1, 6
+        do j = 1, 8
+            f(i,j)=0
+        end do
+    end do
+    milieu = .false.
+    if (present(quad)) milieu = .true.
 !
     if (typma(1:4) .eq. 'HEXA') then
         nbft=12
@@ -118,6 +129,32 @@ subroutine confac(typma, ft, nbft, f, nbf)
         f(6,2)=3
         f(6,3)=7
         f(6,4)=6
+        if (milieu) then
+           f(1,5)=9
+           f(1,6)=10
+           f(1,7)=11
+           f(1,8)=12
+           f(2,5)=9
+           f(2,6)=14
+           f(2,7)=17
+           f(2,8)=13
+           f(3,5)=11
+           f(3,6)=16
+           f(3,7)=19
+           f(3,8)=15
+           f(4,5)=17
+           f(4,6)=18
+           f(4,7)=19
+           f(4,8)=20
+           f(5,5)=12
+           f(5,6)=16
+           f(5,7)=20
+           f(5,8)=13
+           f(6,5)=10
+           f(6,6)=15
+           f(6,7)=18
+           f(6,8)=14
+        endif
 !
     else if (typma(1:5).eq.'PENTA') then
         nbft=8
@@ -169,6 +206,28 @@ subroutine confac(typma, ft, nbft, f, nbf)
         f(5,2)=2
         f(5,3)=5
         f(5,4)=4
+        if (milieu) then
+           f(1,4)=7
+           f(1,5)=8
+           f(1,6)=9
+           f(1,7)=0
+           f(2,4)=13
+           f(2,5)=14
+           f(2,6)=15
+           f(2,7)=0
+           f(3,5)=9
+           f(3,6)=12
+           f(3,7)=15
+           f(3,8)=10
+           f(4,5)=8
+           f(4,6)=12
+           f(4,7)=14
+           f(4,8)=11
+           f(5,5)=7
+           f(5,6)=11
+           f(5,7)=13
+           f(5,8)=10
+        endif
 !
     else if (typma(1:5).eq.'PYRAM') then
         nbft=6
@@ -219,8 +278,30 @@ subroutine confac(typma, ft, nbft, f, nbf)
         f(5,2)=2
         f(5,3)=3
         f(5,4)=4
+        if (milieu) then
+           f(1,4)=6
+           f(1,5)=11
+           f(1,6)=10
+           f(1,7)=0
+           f(2,4)=7
+           f(2,5)=12
+           f(2,6)=11
+           f(2,7)=0
+           f(3,4)=8
+           f(3,5)=13
+           f(3,6)=12
+           f(3,7)=0
+           f(4,4)=9
+           f(4,5)=10
+           f(4,6)=13
+           f(4,7)=0
+           f(5,5)=6
+           f(5,6)=7
+           f(5,7)=8
+           f(5,8)=9
+        endif
 !
-    else if (typma.eq.'TETRA4'.or.typma.eq.'TETRA10') then
+    else if (typma(1:5).eq.'TETRA') then
         nbft=4
 !     CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE TETRA4 OU TETRA10
         ft(1,1)=1
@@ -254,7 +335,26 @@ subroutine confac(typma, ft, nbft, f, nbf)
         f(4,2)=2
         f(4,3)=4
         f(4,4)=0
-    else if (typma.eq.'QUAD4'.or.typma.eq.'QUAD8') then
+        if (milieu) then
+           f(1,4)=7
+           f(1,5)=6
+           f(1,6)=5
+           f(1,7)=0
+           f(2,4)=6
+           f(2,5)=10
+           f(2,6)=9
+           f(2,7)=0
+           f(3,4)=8
+           f(3,5)=10
+           f(3,6)=7
+           f(3,7)=0
+           f(4,4)=5
+           f(4,5)=9
+           f(4,6)=8
+           f(4,7)=0
+        endif
+!
+    else if (typma(1:4).eq.'QUAD') then
         nbft=2
 !     CONNECTIVITE DES TRIANGLES POUR UNE MAILLE QUAD4 OU QUAD8
         ft(1,1)=1
@@ -270,7 +370,13 @@ subroutine confac(typma, ft, nbft, f, nbf)
         f(1,2)=2
         f(1,3)=3
         f(1,4)=4
-    else if (typma.eq.'TRIA3'.or.typma.eq.'TRIA6') then
+        if (milieu) then
+           f(1,5)=5
+           f(1,6)=6
+           f(1,7)=7
+           f(1,8)=8
+        endif
+    else if (typma(1:4).eq.'TRIA') then
         nbft=1
 !     CONNECTIVITE DES TRIANGLES POUR UNE MAILLE TRIA3 OU TRIA6
         ft(1,1)=1
@@ -283,6 +389,12 @@ subroutine confac(typma, ft, nbft, f, nbf)
         f(1,2)=3
         f(1,3)=2
         f(1,4)=0
+        if (milieu) then
+           f(1,4)=4
+           f(1,5)=5
+           f(1,6)=6
+           f(1,7)=0
+        endif
     else
         call utmess('F', 'ALGORITH2_24', sk=typma)
     endif

@@ -18,25 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xmmaa0(ndim, nnc, jnne, hpg, nfaes,&
-                      cface, ffc, jacobi, jpcai, coefcr,&
-                      coefcp, lpenac, typmai, jddle, nconta,&
+    subroutine xmmaa0(ndim, nnc, jnne, hpg,&
+                      ffc, jacobi, coefcr,&
+                      coefcp, lpenac, jddle,&
                       nfhe, lmulti, heavno, mmat)
         integer :: ndim
         integer :: nnc
         integer :: jnne(3)
         real(kind=8) :: hpg
-        integer :: nfaes
-        integer :: cface(5, 3)
         real(kind=8) :: ffc(8)
         real(kind=8) :: jacobi
-        integer :: jpcai
         real(kind=8) :: coefcr
         real(kind=8) :: coefcp
         aster_logical :: lpenac
-        character(len=8) :: typmai
         integer :: jddle(2)
-        integer :: nconta
         integer :: nfhe
         aster_logical :: lmulti
         integer :: heavno(8)

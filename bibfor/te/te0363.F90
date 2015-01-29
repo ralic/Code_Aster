@@ -66,7 +66,7 @@ subroutine te0363(option, nomte)
     real(kind=8) :: prec, noor
     real(kind=8) :: rre, rrm, ffec(8)
     parameter    (prec=1.d-16)
-    integer :: cface(5, 3), contac, ddle(2), ddlm(2), ibid, ndeple
+    integer :: contac, ddle(2), ddlm(2), ibid, ndeple
     aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
@@ -155,15 +155,6 @@ subroutine te0363(option, nomte)
                 nnm(1), nnc, coore, coorm, coorc,&
                 ffe, ffm, dffc)
 !
-! --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÉ CFACE (MAILLE ESCLAVE), CE
-! --- QUI SUIT N'EST VALABLE QU'EN 2D POUR LA FORMULATION QUADRATIQUE,
-! --- EN 3D ON UTILISE SEULEMENT LA FORMULATION AUX NOEUDS SOMMETS,
-! --- CETTE MATRICE EST DONC INUTILE, ON NE LA CONSTRUIT PAS !!!
-!
-    cface(1,1) = 1
-    cface(1,2) = 2
-    cface(1,3) = 3
-!
 ! --- FONCTION DE FORMES POUR LES LAGRANGIENS
 ! --- SI ON EST EN LINEAIRE, ON IMPOSE QUE LE NB DE NOEUDS DE CONTACTS
 ! --- ET LES FFS LAGRANGES DE CONTACT SONT IDENTIQUES A CEUX
@@ -197,9 +188,9 @@ subroutine te0363(option, nomte)
 !
 ! --- CALCUL DE L'INCREMENT DE REACTION DE CONTACT
 !
-    call xtlagc(typmai, ndim, nnc, nne, ddle(1),&
-                nfaes, cface, jdepde, jpcai, ffc,&
-                contac, nfhe, lmulti, zi(jheano), dlagrc)
+    call xtlagc(ndim, nnc, nne, ddle(1),&
+                jdepde, ffc,&
+                nfhe, lmulti, zi(jheano), dlagrc)
 !
 ! --- EVALUATION DES JEUX - CAS DU CONTACT
 !

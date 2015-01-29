@@ -3,6 +3,7 @@ subroutine te0514(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/conare.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -59,18 +60,19 @@ subroutine te0514(option, nomte)
 !......................................................................
 !
 !
-    character(len=8) :: elp, noma, typma, enr
+    character(len=8) :: elp, noma, typma, enr, elrese(3), typsma
     integer :: igeom, jlsn, ifisc, nfisc, ptmaxi, pmmaxi
     integer :: jout1, jout2, jout3, jout4, jout5, zintmx, nfimax
-    integer :: iadzi, iazk24, nno, nnn, jfisco, nsemax
+    integer :: iadzi, iazk24, nno, nnn, jfisco, nsemax, jout6
     integer :: ninter, nit, nse, nnose, ise2, ncomph, ncompp, ncompc
     integer :: npts, cnse(6, 10), i, j, k, it, npi, ipt, ise, in, ni, cpt
     integer :: ndim, ibid, ndime, iad, jtab(7), jtab2(2), vali(2)
-    integer :: nnc, npm, nmilie, pmmax, nmfis
-    integer :: iret, nfiss, ifiss, ncomb, ninmax, nmmax
+    integer :: nnc, npm, nmilie, pmmax, nmfis, nbar, ar(12,3)
+    integer :: iret, nfiss, ifiss, ncomb, ninmax, nmmax, nbars, ars(12,3)
+    integer :: a1, a2, b1, b2
     parameter(ptmaxi=6,zintmx=5,pmmaxi=17,nsemax=6,nfimax=10)
-    parameter(ninmax=44,nmmax=65)
-    real(kind=8) :: nmil(3, 7), txlsn(7), ainter(ptmaxi*zintmx)
+    parameter(ninmax=44,nmmax=66)
+    real(kind=8) :: nmil(3, 7), txlsn(7), ainter(ptmaxi*zintmx), rainter(4)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi)
     real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax)
     real(kind=8) :: xg(3), cridist
@@ -80,6 +82,7 @@ subroutine te0514(option, nomte)
     integer :: ndoub3(nmmax*(2**nfimax))
     aster_logical :: deja, ajn
 !
+    data            elrese /'SEG3','TRIA6','TETRA10'/
 !......................................................................
 !     LES TABLEAUX FISC, FISCO, NDOUBL, NDOUB2, PMILIE, PINTER ONT ETE
 !     ALLOUE DE FACON STATIQUE POUR OPTIMISER LE CPU (CAR LES APPELS A
@@ -107,7 +110,7 @@ subroutine te0514(option, nomte)
 !
 ! calcul du nombre maximum de points milieux crees par le sous-decoupage
     if (ndime .eq. 3) then
-        pmmax=63
+        pmmax=66
     else if (ndime .eq. 2) then
         pmmax=10
     else if (ndime.eq. 1) then
@@ -139,10 +142,16 @@ subroutine te0514(option, nomte)
     ncomph = jtab(2)
     nfiss = jtab(7)
 !
+!   recuperation de PAINTTO pour les elements principaux
+    jout6 = 0
+    if (ndim.eq.ndime) then
+       call jevech('PAINTTO', 'E', jout6)
+    endif
+!
     do 9 i = 1, 2*nfimax
         fisco(i) = 0
         fisc(i) = 0
-  9 end do
+  9 continue
     if (nfiss .gt. 1) then
         call jevech('PFISCO', 'L', jfisco)
         do 10 i = 1, 2*nfiss
@@ -243,27 +252,31 @@ subroutine te0514(option, nomte)
                 endif
 !
 ! ----- - BOUCLE SUR LES NINTER POINTS D'INTER : ARCHIVAGE DE PINTTO
-                do 200 ipt = 1, ninter
-                    do 210 j = 1, ndim
-                        newpt(j)=pinter(ndim*(ipt-1)+j)
-210                 continue
+            do 200 ipt = 1, ninter
+                do 210 j = 1, ndim
+                    newpt(j)=pinter(ndim*(ipt-1)+j) 
+210              continue
+                do i = 1, 4
+                    rainter(i) = ainter(zxain*(ipt-1)+i)
+                end do
 !
 !           VERIF SI EXISTE DEJA DANS PINTTO
-                    deja=.false.
-                    do 220 i = 1, npi
-                        do 221 j = 1, ndim
-                            p(j) = zr(jout1-1+ndim*(i-1)+j)
-221                     continue
-                        if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
-                            deja = .true.
-                            ni=i
-                        endif
-220                 continue
-                    ai=nint(ainter(zxain*(ipt-1)+1))
-                    if (ai .eq. 0) go to 200
-                    if (.not.deja) then
-                        npi=npi+1
-                        ni =npi
+                deja=.false.
+                do 220 i = 1, npi
+                    do 221 j = 1, ndim
+                        p(j) = zr(jout1-1+ndim*(i-1)+j)
+221                  continue
+                    if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
+                        deja = .true.
+                        ni=i
+                    endif
+220             continue
+                ai=nint(ainter(zxain*(ipt-1)+1))
+!             SI LE POINT D'INTER COINCIDE AVEC UN NOEUD
+                if (ai .eq. 0) go to 200
+                if (.not.deja) then
+                    npi=npi+1
+                    ni =npi
 !             NOMBRE TOTAL DE PT D'INTER LIMITE A LA TAILLE DE LA CARTE
                         ASSERT(npi.le.ncompp)
 !             ARCHIVAGE DE PINTTO
@@ -271,21 +284,48 @@ subroutine te0514(option, nomte)
                             zr(jout1-1+ndim*(npi-1)+j)=newpt(j)
 230                     continue
 !
-!             MISE A JOUR DU CNSE (TRANSFORMATION DES 100 EN 1000...)
-                        do 240 ise = 1, nse
-                            do 241 in = 1, ndime+1
-                                if (cnse(ise,in) .eq. 100+ipt) cnse(ise,in)= 1000+ni
-241                         continue
-240                     continue
-                    else
-                        do 114 ise = 1, nse
-                            do 115 in = 1, ndime+1
-                                if (cnse(ise,in) .eq. 100+ipt) cnse(ise,in)= 1000+ni
-115                         continue
-114                     continue
-                    endif
-200             continue
+!             ARCHIVAGE DE PAINTTO POUR LES ELEMENTS PRINCIPAUX
+                    if (ndim.eq.ndime) then
+                       do k = 1, zxain
+                          zr(jout6-1+zxain*(npi-1)+k)=0.d0
+                       end do
 !
+                       call conare(typma, ar, nbar)
+                       typsma = elrese(ndim)
+                       call conare(typsma, ars, nbars)
+                       b1=zi(jout2+nnose*(it-1)+ars(nint(rainter(1)),1)-1)
+                       b2=zi(jout2+nnose*(it-1)+ars(nint(rainter(1)),2)-1)
+!
+                       do j = 1, nbar
+                          a1 = ar(j,1)
+                          a2 = ar(j,2)
+                          if (a1.eq.b1.and.a2.eq.b2) then
+                             zr(jout6-1+zxain*(npi-1)+1)=j
+                             zr(jout6-1+zxain*(npi-1)+3)=rainter(3)
+                             zr(jout6-1+zxain*(npi-1)+4)=rainter(4)
+                          else if (a1.eq.b2.and.a2.eq.b1) then
+                             zr(jout6-1+zxain*(npi-1)+1)=j
+                             zr(jout6-1+zxain*(npi-1)+3)=rainter(3)
+                             zr(jout6-1+zxain*(npi-1)+4)=1.d0-rainter(4)
+                          endif
+                       end do
+                    endif
+!
+!             MISE A JOUR DU CNSE (TRANSFORMATION DES 100 EN 1000...)
+                    do 240 ise = 1, nse
+                        do 241 in = 1, ndime+1
+                            if (cnse(ise,in) .eq. 100+ipt) cnse(ise,in)= 1000+ni
+241                      continue
+240                 continue
+                else
+                    do 114 ise = 1, nse
+                        do 115 in = 1, ndime+1
+                            if (cnse(ise,in) .eq. 100+ipt) cnse(ise,in)= 1000+ni
+115                      continue
+114                  continue
+                endif
+200         continue
+
 !
 ! ------- BOUCLE SUR LES NMILIE POINTS MILIEUX : ARCHIVAGE DE PMILTO
                 if (.not.iselli(elp)) then
@@ -330,6 +370,10 @@ subroutine te0514(option, nomte)
 300                 continue
                 endif
 !
+!         ARCHIVAGE DE LONCHAM
+            if (ndim.eq.3.and.nfiss.eq.1) then
+               zi(jout4-1+4+it) = nse
+            endif
 ! ------- BOUCLE SUR LES NSE SOUS-ELE : ARCHIVAGE DE PCNSETO, PHEAVTO
                 do 120 ise = 1, nse
                     if (ise .eq. 1) then
@@ -352,10 +396,10 @@ subroutine te0514(option, nomte)
 !
 120             continue
 !
-100         continue
-            nit = cpt
+100     continue
+        nit = cpt
 !
- 90     end do
+ 90     continue
 !
 !     ARCHIVAGE DE LONCHAM SOUS ELEMENTS
         zi(jout4-1+1)=nit
@@ -372,18 +416,18 @@ subroutine te0514(option, nomte)
         ASSERT(ncompp.le.ninmax)
         do 776 i = 1, ninmax*(2**nfimax)
             ndoub2(i)=0
-776     end do
+776     continue
 !     POUR COMPTER LES PT D'INTER EN DOUBLE (EN POST-TRAITEMENT)
 !     ON VA JUSQU'A NNO+1 POUR PRENDRE EN COMPTE LE 9EME NOEUD DU QUAD8
         ASSERT((nno+1).le.ninmax)
         do 777 i = 1, ninmax*(2**nfimax)
             ndoubl(i)=0
-777     end do
+777     continue
 !     POUR COMPTER LES PT MILIEU EN DOUBLE (EN POST-TRAITEMENT)
 !     ON VA JUSQU'A NNO+NNC POUR PRENDRE EN COMPTE LES NOEUDS CENTRAUX
         do 778 i = 1, nmmax*(2**nfimax)
             ndoub3(i)=0
-778     end do
+778     continue
 !
         do 130 ise = 1, nit
             do 127 in = 1, nnose
@@ -417,7 +461,7 @@ subroutine te0514(option, nomte)
                     ndoub3(iad+1) = 1
                 endif
 127         continue
-130     end do
+130     continue
 !
 !     NOMBRE DE NOUVEAUX POINTS : NNN
         nnn = 0
@@ -425,14 +469,14 @@ subroutine te0514(option, nomte)
 !  -  AUTANT DE FOIS QU'IL Y A DE COMBINAISON D'HEAVISIDE DIFFERENTES
         do 600 i = 1, ncomb*ncompp
             nnn = nnn + ndoub2(i)
-600     end do
+600     continue
 !
 !  -  ON AJOUTE LES NOEUDS, AUTANT DE FOIS QU'IL Y A DE COMBINAISON
 !  -  D'HEAVISIDE DIFFERENTES.
 !     ON VA JUSQU'A NNO+NNC POUR PRENDRE EN COMPTE LES NOEUDS CENTRAUX
         do 500 i = 1, ncomb*(nno+nnc)
             nnn = nnn + ndoubl(i)
-500     end do
+500     continue
 !
         if (.not.iselli(elp)) then
 !  - CAS QUADRATIQUE, ON AJOUTE LES NOUVEAUX NOEUDS MILIEUX DES SE
@@ -440,7 +484,7 @@ subroutine te0514(option, nomte)
 !        nnn=nnn+nmfis+npm
             do 700 i = 1, ncomb*nmmax
                 nnn = nnn + ndoub3(i)
-700         end do
+700         continue
         endif
 !
         zi(jout4-1+3)=nnn
@@ -454,7 +498,7 @@ subroutine te0514(option, nomte)
             do 23 k = 1, ndim
                 xg(k)=nmil(k,j)
  23         continue
-!     pour chaque noued de chaque sous-tetra
+!     pour chaque noeud de chaque sous-tetra
             do 400 i = 1, nit*nnose
 !       si le noeud courant du sous-tetra courant est le noeud central courant
                 if (zi(jout2-1+i) .eq. (nno+j)) then

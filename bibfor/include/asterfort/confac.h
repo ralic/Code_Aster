@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine confac(typma, ft, nbft, f, nbf)
+    subroutine confac(typma, ft, nbft, f, nbf, quad)
         character(len=8) :: typma
         integer :: ft(12, 3)
         integer :: nbft
-        integer :: f(6, 4)
+        integer :: f(6, 8)
         integer :: nbf
+        aster_logical, intent(in), optional :: quad
     end subroutine confac
 end interface

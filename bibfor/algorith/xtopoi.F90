@@ -51,11 +51,11 @@ subroutine xtopoi(noma, modele)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=5, nbin=3)
+    parameter    (nbout=6, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    character(len=19) :: ligrel, chgeom
+    character(len=19) :: ligrel, chgeom, painto
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
     aster_logical :: debug
     integer :: ifm, niv, ifmdbg, nivdbg, ima, nbma
@@ -95,6 +95,7 @@ subroutine xtopoi(noma, modele)
     heavto = modele(1:8)//'.TOPOSE.HEA'
     loncha = modele(1:8)//'.TOPOSE.LON'
     pmilto = modele(1:8)//'.TOPOSE.PMI'
+    painto = modele(1:8)//'.TOPOSE.PAI'
 !
     licmp(1) = 'NPG_DYN'
     licmp(2) = 'NCMP_DYN'
@@ -140,6 +141,8 @@ subroutine xtopoi(noma, modele)
     lchout(4) = loncha
     lpaout(5) = 'PPMILTO'
     lchout(5) = pmilto
+    lpaout(6) = 'PAINTTO'
+    lchout(6) = painto
 !
 ! --- APPEL A CALCUL
 !

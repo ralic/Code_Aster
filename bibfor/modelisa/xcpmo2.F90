@@ -86,7 +86,7 @@ subroutine xcpmo2(modx1, modx2)
     character(len=24) :: nomol1, nomol2
 !
     integer :: ntopos, ntopof, noptri
-    parameter (ntopos = 5)
+    parameter (ntopos = 6)
     parameter (ntopof = 6)
     parameter (noptri = 4)
     character(len=8) :: lpara(ntopos+ntopof+noptri)
@@ -169,18 +169,19 @@ subroutine xcpmo2(modx1, modx2)
     lcham(3)  = k8blan//'.TOPOSE.HEA'
     lcham(4)  = k8blan//'.TOPOSE.LON'
     lcham(5)  = k8blan//'.TOPOSE.PMI'
+    lcham(6)  = k8blan//'.TOPOSE.PAI'
 !   pour option == TOPOFA dans alchml
-    lcham(6)  = k8blan//'.TOPOFAC.PI'
-    lcham(7)  = k8blan//'.TOPOFAC.AI'
-    lcham(8)  = k8blan//'.TOPOFAC.CF'
-    lcham(9)  = k8blan//'.TOPOFAC.LO'
-    lcham(10) = k8blan//'.TOPOFAC.BA'
-    lcham(11) = k8blan//'.TOPOFAC.OE'
+    lcham(7)  = k8blan//'.TOPOFAC.PI'
+    lcham(8)  = k8blan//'.TOPOFAC.AI'
+    lcham(9)  = k8blan//'.TOPOFAC.CF'
+    lcham(10)  = k8blan//'.TOPOFAC.LO'
+    lcham(11) = k8blan//'.TOPOFAC.BA'
+    lcham(12) = k8blan//'.TOPOFAC.OE'
 !   pour option == FULL_MECA dans alchml
-    lcham(12) = k8blan//'.STNO'
-    lcham(13) = k8blan//'.LNNO'
-    lcham(14) = k8blan//'.LTNO'
-    lcham(15) = k8blan//'.BASLOC'
+    lcham(13) = k8blan//'.STNO'
+    lcham(14) = k8blan//'.LNNO'
+    lcham(15) = k8blan//'.LTNO'
+    lcham(16) = k8blan//'.BASLOC'
 
 !   pour option == TOPOSE dans alchml
     lpara(1)  = 'PPINTTO'
@@ -188,18 +189,19 @@ subroutine xcpmo2(modx1, modx2)
     lpara(3)  = 'PHEAVTO'
     lpara(4)  = 'PLONCHA'
     lpara(5)  = 'PPMILTO'
+    lpara(6)  = 'PAINTTO'
 !   pour option == TOPOFA dans alchml
-    lpara(6)  = 'PPINTER'
-    lpara(7)  = 'PAINTER'
-    lpara(8)  = 'PCFACE'
-    lpara(9)  = 'PLONGCO'
-    lpara(10) = 'PBASECO'
-    lpara(11) = 'PGESCLA'
+    lpara(7)  = 'PPINTER'
+    lpara(8)  = 'PAINTER'
+    lpara(9)  = 'PCFACE'
+    lpara(10)  = 'PLONGCO'
+    lpara(11) = 'PBASECO'
+    lpara(12) = 'PGESCLA'
 !   pour option == FULL_MECA dans alchml
-    lpara(12) = 'PSTANO'
-    lpara(13) = 'PLSN'
-    lpara(14) = 'PLST'
-    lpara(15) = 'PBASLOR'
+    lpara(13) = 'PSTANO'
+    lpara(14) = 'PLSN'
+    lpara(15) = 'PLST'
+    lpara(16) = 'PBASLOR'
 !
     ncopy = ntopos + ntopof + noptri
 !

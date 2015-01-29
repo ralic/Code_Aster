@@ -24,10 +24,10 @@ OPTION__
         PMATERC  ADRSJEVE
         PBASLOR  NEUT_R
         PPINTER  N120_R
-        PAINTER  N120_R
+        PAINTER  N480_R
         PCFACE   N120_I
         PLONGCO  N120_I
-        PBASECO  N120_R
+        PBASECO  N480_R
         PLST     NEUT_R
         PLSN     NEUT_R << INUSITE >>
         PVARCPR  VARI_R << INUSITE >>

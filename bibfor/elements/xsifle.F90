@@ -1,4 +1,4 @@
-subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
+subroutine xsifle(ndim, ifa, jptint, cface,&
                   igeom, nfh, singu, nfe, ddlc,&
                   ddlm, jlst, ipres, ipref, itemps,&
                   idepl, nnop, valres, basloc, ithet,&
@@ -44,7 +44,7 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 !
     character(len=8) :: nompar(4)
     character(len=16) :: option
-    integer :: ndim, ifa, cface(5, 3), jaint, igeom, nfh, singu, jlst, ipres
+    integer :: ndim, ifa, cface(18, 6), igeom, nfh, singu, jlst, ipres
     integer :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl
     integer :: ddlm, jbasec, contac
     real(kind=8) :: valres(3)
@@ -84,11 +84,11 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
 ! IN CONTAC : TYPE DE CONTACT P1P1 ou P2P1
 !
 !
-    integer :: i, nli, in(3), iadzi, iazk24, ibid2(12, 3), ibid, fac(6, 4), nbf
-    integer :: ar(12, 3), nbar, cpt, ino, nnof, npgf, ipoidf, ivff, idfdef
+    integer :: iadzi, iazk24, ibid2(12, 3), ibid, fac(6, 8), nbf
+    integer :: ar(12, 3), nbar, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, zxain
     integer :: ddld, ddls, nnops
-    real(kind=8) :: mult, xg(4), jac, ff(27), nd(3)
+    real(kind=8) :: xg(4), jac, ff(27), nd(3)
     real(kind=8) :: angl(2)
     real(kind=8) :: e, nu, mu, ka, coeff, coeff3, r27bid(27)
     real(kind=8) :: dfdi(nnop, ndim)
@@ -129,43 +129,6 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
         elc='SE2'
         fpg='MASS'
     endif
-!
-!     PETIT TRUC EN PLUS POUR LES FACES EN DOUBLE
-    mult=1.d0
-    do 101 i = 1, ndim
-        nli=cface(ifa,i)
-        in(i)=nint(zr(jaint-1+zxain*(nli-1)+2))
-101  end do
-!     SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
-    if (ndim .eq. 3) then
-        if (in(1) .ne. 0 .and. in(2) .ne. 0 .and. in(3) .ne. 0) then
-            do 102 i = 1, nbf
-                cpt=0
-                do 103 ino = 1, 4
-                    if (in(1) .eq. fac(i,ino) .or. in(2) .eq. fac(i,ino) .or. in(3) .eq.&
-                        fac(i,ino)) cpt=cpt+1
-103              continue
-                if (cpt .eq. 3) then
-                    mult=0.5d0
-                    goto 104
-                endif
-102          continue
-        endif
-    else if (ndim .eq. 2) then
-        if (in(1) .ne. 0 .and. in(2) .ne. 0) then
-            do 1021 i = 1, nbar
-                cpt=0
-                do 1031 ino = 1, 2
-                    if (in(1) .eq. ar(i,ino) .or. in(2) .eq. ar(i,ino)) cpt=cpt+1
-1031              continue
-                if (cpt .eq. 2) then
-                    mult=0.5d0
-                    goto 104
-                endif
-1021          continue
-        endif
-    endif
-104  continue
 !
     call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
                      npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
@@ -211,17 +174,17 @@ subroutine xsifle(ndim, ifa, jptint, jaint, cface,&
             call xsifl1(angl, basloc, coeff, coeff3, ddlm,&
                         ddls, dfdi, ff, he, idepl,&
                         igthet, ipref, ipres, ithet, jac,&
-                        jlst, ka, mu, mult, nd,&
+                        jlst, ka, mu, nd,&
                         ndim, nfh, nnop, nnops, itemps,&
                         nompar, option, presn, singu, xg)
         endif
         if (option .eq. 'CALC_K_G_COHE') then
             call xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
                         ddls, dfdi, ff, idepl, igthet,&
-                        ithet, jac, mult, ndim, nnop,&
+                        ithet, jac, ndim, nnop,&
                         nnos, tau1, tau2, nd, xg)
         endif
-900  end do
+900  continue
 !     FIN DE BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !     ----------------------------------------------------------------
     call jedema()

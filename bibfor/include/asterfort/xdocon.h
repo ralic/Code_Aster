@@ -24,7 +24,7 @@ interface
                       rela)
         integer :: algocr
         integer :: algofr
-        integer :: cface(5, 3)
+        integer :: cface(18, 6)
         integer :: contac
         real(kind=8) :: coefcp
         real(kind=8) :: coeffp

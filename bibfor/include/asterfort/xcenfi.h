@@ -17,7 +17,8 @@
 !
 interface 
     subroutine xcenfi(elrefp, ndim, ndime, geom, lsn,&
-                      pinref, pmiref, cenref, cenfi, num)
+                      pinref, pmiref, cenref, cenfi,&
+                      num)
         character(len=8) :: elrefp
         integer :: ndim
         integer :: ndime

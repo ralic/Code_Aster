@@ -53,7 +53,7 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 #include "asterfort/xjacff.h"
 #include "asterfort/xmoffc.h"
 #include "asterfort/xxmmvd.h"
-    integer :: cface(5, 3), contac
+    integer :: cface(18, 6), contac
     integer :: i, iaint, ibasec, ifa, igeom, ipgf, iptint, j
     integer :: jlst, k, lact(8), ndim, ninter, nlact, nno
     integer :: nnos, nptf, nvit, singu, zxain

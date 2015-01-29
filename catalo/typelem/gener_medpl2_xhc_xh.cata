@@ -128,11 +128,11 @@ MODE_LOCAL__
 
     CCONPT   = N120_R   ELEM__         (X[34])
 
-    CCONPI   = NEUT_R   ELEM__         (X[6] )
+    CCONPI   = N120_R   ELEM__         (X[14] )
 
-    CCONAI   = NEUT_R   ELEM__         (X[15])
+    CCONAI   = N480_R   ELEM__         (X[35])
 
-    CCONCF   = NEUT_I   ELEM__         (X[3] )
+    CCONCF   = N120_I   ELEM__         (X[9] )
 
     I3NEUT_I = NEUT_I   ELEM__         (X[3] )
 

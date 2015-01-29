@@ -1,5 +1,5 @@
 subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
-                  nmaabs, pinter, ninter, ainter, nface,&
+                  nmaabs, pinter, ainter, nface,&
                   nptf, cface, nbtot, nfiss, ifiss)
     implicit none
 !
@@ -18,6 +18,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/elrfvf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/tecael.h"
@@ -29,7 +30,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 #include "asterfort/xmilfi.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
-    integer :: jgrlsn, igeom, ninter, nface, cface(5, 3), jlsn, jlst
+    integer :: jgrlsn, igeom, nface, cface(18, 6), jlsn, jlst
     integer :: nfiss, ifiss, nptf, nbtot, nmaabs
     real(kind=8) :: pinter(*), ainter(*)
     character(len=8) :: noma
@@ -71,17 +72,18 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: a(3), b(3), c(3), lsna, lsnb, longar, tampor(4)
-    real(kind=8) :: alpha, nd(3), coor2d(9), bar(3), oa(3), am(3), ps, ps1
-    real(kind=8) :: ab(2), lsta, lstb, lstc, abprim(2), prec
-    real(kind=8) :: h(3), oh(3), noh, cos, noa, r3(3), theta(6), eps
-    real(kind=8) :: ff(27), ksic(3), sc, tabar(9), lambda
-    real(kind=8) :: m(3), lsnm, lstm, ksi, milfi(3), smilfi
+    real(kind=8) :: alpha, nd(3), coor2d(9)
+    real(kind=8) :: ab(2), lsta, lstb, lstc, abprim(2), prec, lonref, cridist
+    real(kind=8) :: eps
+    real(kind=8) :: ff(27), ksic(3), sc, tabar(9), minlsn, maxlsn
+    real(kind=8) :: m(3), lsnm, lstm, ksi, milfi(3), smilfi, lsnabs
     integer :: j, ar(12, 3), nbar, na, nb, ins, n(3)
-    integer :: ia, i, ipt, ibid, pp, pd, nno, k
+    integer :: ia, i, ipt, ibid, nno, k
     integer :: iadzi, iazk24, ndim, ptmax
     integer :: zxain
-    integer :: inm, inc, nm, nbnomx
-    aster_logical :: cut, ajout
+    integer :: inm, inc, nm, nbnomx, ninter
+    parameter(cridist=1.d-7)
+    aster_logical :: cut, ajout, arete
     character(len=8) :: typma, elp, elc
 !
     parameter       (ptmax=4, elc='SE3',nbnomx=27)
@@ -111,20 +113,42 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !
     call tecael(iadzi, iazk24)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    call loncar(ndim, typma, zr(igeom), lonref)
 !
-!     L'ELEMENT EST IL TRAVERSE PAR LA FISSURE?
+!     L'ELEMENT EST-IL TRAVERSE STRICTEMENT PAR LSN=0?
+    nbtot = 0
     cut=.false.
     i=1
-  1 continue
+ 1  continue
 !     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
-    if (zr(jlsn-1+i) .ne. 0 .and. i .lt. nno) then
+    if (zr(jlsn-1+(i-1)*nfiss+ifiss) .ne. 0.d0 .and. i .lt. nno) then
         do 30 k = i+1, nno
 !     (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
-            if (zr(jlsn-1+i)*zr(jlsn-1+k) .lt. 0.d0) cut=.true.
- 30     continue
-    else
+            if (zr(jlsn-1+(i-1)*nfiss+ifiss)*zr(jlsn-1+(k-1)*nfiss+ifiss) .lt. 0.d0) cut=.true.
+30      continue
+    else if (i.lt.nno) then
         i=i+1
         goto 1
+    endif
+!     RECHERCHE DE MINLSN
+    minlsn = 0.d0
+    maxlsn = 0.d0
+    do i = 1, nno
+        minlsn=min(zr(jlsn-1+(i-1)*nfiss+ifiss),minlsn)
+        maxlsn=max(zr(jlsn-1+(i-1)*nfiss+ifiss),maxlsn)
+    end do
+!
+!     ON NE PREND QUE CERTAINS ELEMENTS POUR NE PAS AVOIR DE "DOUBLONS"
+    arete = .false.
+    lsnabs = 0.d0
+    if(.not.cut) then
+       call conare(typma, ar, nbar)
+       do i = 1, nbar
+           lsnabs = abs(zr(jlsn-1+(ar(i,1)-1)*nfiss+ifiss))+abs(zr(jlsn-1+(ar(i,2)-1)*nfiss+ifiss))
+           if (lsnabs.le.cridist*lonref) arete = .true.
+       end do
+       if (.not.arete) goto 999
+       if (arete.and.minlsn.ge.0.d0) goto 999
     endif
     ipt=0
 !     COMPTEUR DE POINT INTERSECTION = NOEUD SOMMET
@@ -241,7 +265,7 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !
         endif
 !
-100 end do
+100 continue
 !
 !     RECHERCHE SPECIFIQUE POUR LES ELEMENTS EN FOND DE FISSURE
     call xcfacf(pinter, ptmax, ipt, ainter, zr(jlsn),&
@@ -281,163 +305,11 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !
 !                  (BOOK IV 09/09/04)
 !
-!     CAS 3D
-    if (ndim .eq. 3) then
-        if (ninter .lt. 3) goto 500
-!
-        do 200 i = 1, 5
-            do 201 j = 1, 3
-                cface(i,j)=0
-201         continue
-200     continue
-!
-!       NORMALE A LA FISSURE (MOYENNE DE LA NORMALE AUX NOEUDS)
-        call vecini(3, 0.d0, nd)
-        do 210 i = 1, nno
-            do 211 j = 1, 3
-                nd(j)=nd(j)+zr(jgrlsn-1+3*(nfiss*(i-1)+ifiss-1)+j)/&
-                nno
-211         continue
-210     continue
-!
-!       PROJECTION ET NUMEROTATION DES POINTS COMME DANS XORIFF
-        call vecini(3, 0.d0, bar)
-        do 220 i = 1, ninter
-            do 221 j = 1, 3
-                bar(j)=bar(j)+pinter((i-1)*3+j)/ninter
-221         continue
-220     continue
-        do 230 j = 1, 3
-            a(j)=pinter((1-1)*3+j)
-            oa(j)=a(j)-bar(j)
-230     continue
-        noa=sqrt(oa(1)*oa(1) + oa(2)*oa(2) + oa(3)*oa(3))
-!
-!       BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
-        do 240 i = 1, ninter
-            do 241 j = 1, 3
-                m(j)=pinter((i-1)*3+j)
-                am(j)=m(j)-a(j)
-241         continue
-            ps=ddot(3,am,1,nd,1)
-!
-            ps1=ddot(3,nd,1,nd,1)
-            lambda=-ps/ps1
-            do 242 j = 1, 3
-                h(j)=m(j)+lambda*nd(j)
-                oh(j)=h(j)-bar(j)
-242         continue
-            ps=ddot(3,oa,1,oh,1)
-!
-            noh=sqrt(oh(1)*oh(1) + oh(2)*oh(2) + oh(3)*oh(3))
-            cos=ps/(noa*noh)
-!
-            theta(i)=trigom('ACOS',cos)
-!        SIGNE DE THETA (06/01/2004)
-            call provec(oa, oh, r3)
-            ps=ddot(3,r3,1,nd,1)
-            if (ps .lt. eps) theta(i) = -1 * theta(i) + 2 * r8pi()
-!
-240     continue
-!
-!       TRI SUIVANT THETA CROISSANT
-        do 250 pd = 1, ninter-1
-            pp=pd
-            do 251 i = pp, ninter
-                if (theta(i) .lt. theta(pp)) pp=i
-251         continue
-            tampor(1)=theta(pp)
-            theta(pp)=theta(pd)
-            theta(pd)=tampor(1)
-            do 252 k = 1, 3
-                tampor(k)=pinter(3*(pp-1)+k)
-                pinter(3*(pp-1)+k)=pinter(3*(pd-1)+k)
-                pinter(3*(pd-1)+k)=tampor(k)
-252         continue
-            do 253 k = 1, zxain
-                tampor(k)=ainter(zxain*(pp-1)+k)
-                ainter(zxain*(pp-1)+k)=ainter(zxain*(pd-1)+k)
-                ainter(zxain*(pd-1)+k)=tampor(k)
-253         continue
-250     continue
-!
-500     continue
-!
-!       NOMBRE DE POINTS D'INTERSECTION IMPOSSIBLE.
-!       NORMALEMENT, ON A DEJE FAIT LA VERIF DANS XAJPIN
-!       CEINTURE ET BRETELLE
-        ASSERT(ninter.le.7)
-!
-        if (ninter .eq. 7) then
-            nface=5
-            nptf=3
-            cface(1,1)=1
-            cface(1,2)=2
-            cface(1,3)=3
-            cface(2,1)=1
-            cface(2,2)=3
-            cface(2,3)=5
-            cface(3,1)=3
-            cface(3,2)=4
-            cface(3,3)=5
-            cface(4,1)=1
-            cface(4,2)=5
-            cface(4,3)=7
-            cface(5,1)=5
-            cface(5,2)=6
-            cface(5,3)=7
-        else if (ninter.eq.6) then
-            nface=4
-            nptf=3
-            cface(1,1)=1
-            cface(1,2)=2
-            cface(1,3)=3
-            cface(2,1)=1
-            cface(2,2)=3
-            cface(2,3)=5
-            cface(3,1)=1
-            cface(3,2)=5
-            cface(3,3)=6
-            cface(4,1)=3
-            cface(4,2)=4
-            cface(4,3)=5
-        else if (ninter.eq.5) then
-            nface=3
-            nptf=3
-            cface(1,1)=1
-            cface(1,2)=2
-            cface(1,3)=3
-            cface(2,1)=1
-            cface(2,2)=3
-            cface(2,3)=4
-            cface(3,1)=1
-            cface(3,2)=4
-            cface(3,3)=5
-        else if (ninter.eq.4) then
-            nface=2
-            nptf=3
-            cface(1,1)=1
-            cface(1,2)=2
-            cface(1,3)=3
-            cface(2,1)=1
-            cface(2,2)=3
-            cface(2,3)=4
-        else if (ninter.eq.3) then
-            nface=1
-            nptf=3
-            cface(1,1)=1
-            cface(1,2)=2
-            cface(1,3)=3
-        else
-            nptf=0
-            nface=0
-        endif
-!
 !     CAS 2D
-    else if (ndim .eq. 2) then
+    if (ndim .eq. 2) then
 !
-        do 800 i = 1, 5
-            do 801 j = 1, 3
+        do 800 i = 1, 18
+            do 801 j = 1, 5
                 cface(i,j)=0
 801         continue
 800     continue
@@ -483,8 +355,9 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
 !
     else
 !       PROBLEME DE DIMENSION : NI 2D, NI 3D
-        ASSERT(ndim.eq.2 .or. ndim.eq.3)
+        ASSERT(ndim.eq.2)
     endif
 !
+999 continue
     call jedema()
 end subroutine

@@ -17,20 +17,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
-                      nface, cface, jdepde, jpcai, ffc,&
-                      nconta, nfhe, lmulti, heavno, dlagrc)
-        character(len=8) :: typmai
+    subroutine xtlagc(ndim, nnc, jnn, nddls,&
+                      jdepde, ffc,&
+                      nfhe, lmulti, heavno, dlagrc)
         integer :: ndim
         integer :: nnc
         integer :: jnn(3)
         integer :: nddls
-        integer :: nface
-        integer :: cface(5, 3)
         integer :: jdepde
-        integer :: jpcai
         real(kind=8) :: ffc(9)
-        integer :: nconta
         integer :: nfhe
         aster_logical :: lmulti
         integer :: heavno(8)

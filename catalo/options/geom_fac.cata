@@ -32,5 +32,5 @@ OPTION__
    OUT__
         PNEWGES  N120_R ELEM__
         PNEWGEM  N120_R ELEM__
-        PBASESC  N120_R ELEM__
-        PBASMAI  N120_R ELEM__
+        PBASESC  N480_R ELEM__
+        PBASMAI  N480_R ELEM__

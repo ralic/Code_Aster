@@ -52,13 +52,14 @@ subroutine xtopoc(modele)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=7, nbin=7)
+    parameter    (nbout=7, nbin=13)
     character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
     character(len=8) :: nomfis, cpar
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=19) :: ligrel, chgeom
     character(len=19) :: lnno, grlnno, ltno, grltno, fissco, champ(7)
+    character(len=19) :: pint, cnset, nit, phe, aint, milt
     aster_logical :: debug
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
@@ -100,6 +101,12 @@ subroutine xtopoc(modele)
     grlnno = modele(1:8)//'.GRLNNO'
     grltno = modele(1:8)//'.GRLTNO'
     fissco = modele(1:8)//'.FISSCO'
+    pint = modele(1:8)//'.TOPOSE.PIN'
+    cnset = modele(1:8)//'.TOPOSE.CNS'
+    nit = modele(1:8)//'.TOPOSE.LON'
+    phe = modele(1:8)//'.TOPOSE.HEA'
+    aint = modele(1:8)//'.TOPOSE.PAI'
+    milt = modele(1:8)//'.TOPOSE.PMI'
     champ(1) = modele(1:8)//'.TOPOFAC.PI'
     champ(2) = modele(1:8)//'.TOPOFAC.AI'
     champ(3) = modele(1:8)//'.TOPOFAC.CF'
@@ -173,8 +180,20 @@ subroutine xtopoc(modele)
     lchin(5) = grltno
     lpain(6) = 'PFISCO'
     lchin(6) = fissco
-    lpain(7) = 'PTYPDIS'
-    lchin(7) = typenr
+    lpain(7) = 'PPINTTO'
+    lchin(7) = pint
+    lpain(8) = 'PCNSETO'
+    lchin(8) = cnset
+    lpain(9) = 'PLONCHA'
+    lchin(9) = nit
+    lpain(10) = 'PHEAVTO'
+    lchin(10) = phe
+    lpain(11) = 'PAINTTO'
+    lchin(11) = aint
+    lpain(12) = 'PPMILTO'
+    lchin(12) = milt
+    lpain(13) = 'PTYPDIS'
+    lchin(13) = typenr
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

@@ -17,7 +17,7 @@
 !
 interface
     subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
-                      ihechp, jptint, jaint, jcface, jlonch,&
+                      ihechp, jptint, jcface, jlonch,&
                       jlst, jlsn, jbasec, nfh, nfe, fonree,&
                       imattt)
         integer :: nfe
@@ -29,7 +29,6 @@ interface
         integer :: itps
         integer :: ihechp
         integer :: jptint
-        integer :: jaint
         integer :: jcface
         integer :: jlonch
         integer :: jlst

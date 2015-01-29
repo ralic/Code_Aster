@@ -1,6 +1,6 @@
-subroutine xtlagf(typmai, ndim, nnc, jnn, nddls,&
-                  nface, cface, jdepde, jpcai, ffc,&
-                  nconta, nfhe, dlagrf)
+subroutine xtlagf(ndim, nnc, jnn, nddls,&
+                  jdepde, ffc,&
+                  nfhe, dlagrf)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,12 +25,10 @@ subroutine xtlagf(typmai, ndim, nnc, jnn, nddls,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, nnc, jnn(3), nconta, nfhe
-    integer :: jdepde, jpcai
+    integer :: ndim, nnc, jnn(3), nfhe
+    integer :: jdepde
     real(kind=8) :: ffc(9)
-    character(len=8) :: typmai
     real(kind=8) :: dlagrf(2)
-    integer :: cface(5, 3), nface
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,9 +51,6 @@ subroutine xtlagf(typmai, ndim, nnc, jnn, nddls,&
 ! IN  NDDLS  : NOMBRE DE DDL SUR UN NOEUD SOMMET
 ! IN  JDEPDE : POINTEUR JEVEUX POUR DEPDEL
 ! IN  FFC    : FONCTIONS DE FORMES LAGR.
-! IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
-! IN  NFACE  : NUMÉRO DE LA FACETTE
-! IN  JAINT  : ADRESSE DES INFORMATIONS CONCERNANT LES ARETES COUPÉES
 ! IN  TYPMAI : TYPE DE LA MAILLE
 ! OUT DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
 !
@@ -85,7 +80,7 @@ subroutine xtlagf(typmai, ndim, nnc, jnn, nddls,&
                         nfhe, pl)
             dlagrf(idim-1) = dlagrf(idim-1)+ ffc(ino)*zr(jdepde-1+pl+ idim-1)
 231      continue
-221  end do
+221  continue
 !
     call jedema()
 !

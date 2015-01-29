@@ -1,5 +1,5 @@
 subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
-                  itps, ihechp, jptint, jaint, jcface,&
+                  itps, ihechp, jptint, jcface,&
                   jlonch, jlst, jlsn, jbasec, nfh, nfe,&
                   fonree, ivectt)
 ! ======================================================================
@@ -68,7 +68,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 #include "asterfort/xcalf_he.h"
     character(len=4) :: fonree
     character(len=8) :: elrefp
-    integer :: ndim, nnop, igeom, itemp, itps, ihechp, jptint, jaint, jcface
+    integer :: ndim, nnop, igeom, itemp, itps, ihechp, jptint, jcface
     integer :: jlonch, jlst, jlsn, jbasec, nfh, nfe, ivectt
 !
 !-----------------------------------------------------------------------
@@ -76,14 +76,14 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
     character(len=8) :: typma, fpg, elc, elrefc, nompar(4)
     aster_logical :: axi
     integer :: nbddl, zxain, iadzi, iazk24, ibid, ibid2(12, 3), nbf
-    integer :: fac(6, 4), nbar, ar(12, 3), cface(5, 3), ninter, nface, nptf
-    integer :: i, j, ifa, nli, in(3), cpt, ino, nnof, npgf, ipoidf, ivff, idfdef
+    integer :: fac(6, 8), nbar, ar(12, 3), cface(18, 6), ninter, nface, nptf
+    integer :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, ilev, inp, jnp, kddl, lddl, ier
     integer :: mxstac, ipos
 !
     parameter (mxstac=1000)
 !
-    real(kind=8) :: theta, he(2), mult, xg(4), jac, ff(27), r27bid(27), nd(3)
+    real(kind=8) :: theta, he(2), xg(4), jac, ff(27), r27bid(27), nd(3)
     real(kind=8) :: dfbid(27, 3), r3bid(3), lst, rr(2), ffenr(nnop, 1+nfh+nfe)
     real(kind=8) :: hechp, r8tmp, r
 !
@@ -132,12 +132,12 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
     ninter=zi(jlonch-1+1)
     nface =zi(jlonch-1+2)
     nptf  =zi(jlonch-1+3)
-    if (ninter .lt. ndim) goto 9999
+    if (ninter .lt. ndim) goto 999
     do 11 i = 1, nface
         do 12 j = 1, nptf
             cface(i,j)=zi(jcface-1+ndim*(i-1)+j)
  12     continue
- 11 end do
+ 11 continue
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES FACETTES
@@ -145,45 +145,8 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 !
     do 100 ifa = 1, nface
 !
-!       PETIT TRUC EN PLUS POUR LES FACES EN DOUBLE
-        mult=1.d0
-        do 101 i = 1, ndim
-            nli=cface(ifa,i)
-            in(i)=nint(zr(jaint-1+zxain*(nli-1)+2))
-101     continue
-!       SI LES 2/3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ELEMENT
-        if (ndim .eq. 3) then
-            if (in(1) .ne. 0 .and. in(2) .ne. 0 .and. in(3) .ne. 0) then
-                do 102 i = 1, nbf
-                    cpt=0
-                    do 103 ino = 1, 4
-                        if (in(1) .eq. fac(i,ino) .or. in(2) .eq. fac(i,ino) .or. in(3) .eq.&
-                            fac(i,ino)) cpt=cpt+1
-103                 continue
-                    if (cpt .eq. 3) then
-                        mult=0.5d0
-                        goto 104
-                    endif
-102             continue
-            endif
-        else if (ndim .eq. 2) then
-            if (in(1) .ne. 0 .and. in(2) .ne. 0) then
-                do 1021 i = 1, nbar
-                    cpt=0
-                    do 1031 ino = 1, 2
-                        if (in(1) .eq. ar(i,ino) .or. in(2) .eq. ar(i,ino)) cpt=cpt+1
-1031                 continue
-                    if (cpt .eq. 2) then
-                        mult=0.5d0
-                        goto 104
-                    endif
-1021             continue
-            endif
-        endif
-104     continue
-!
-        call elrefe_info(elrefe=elc, fami=fpg, nno=nnof, npg=npgf, jpoids=ipoidf,&
-                         jvf=ivff, jdfde=idfdef)
+        call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
+  npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
 !-----------------------------------------------------------------------
 !       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
@@ -284,7 +247,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 420                     continue
                         r8tmp = -2.d0*r8tmp
 !
-                        zr(ivectt-1+ipos) = zr(ivectt-1+ipos) + ( 1.0d0-theta)* hechp*jac*mult*ff&
+                        zr(ivectt-1+ipos) = zr(ivectt-1+ipos) + ( 1.0d0-theta)* hechp*jac*ff&
                                             &enr(inp,kddl)* r8tmp
 !
 410                 continue
@@ -301,11 +264,11 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 !       FIN BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 !-----------------------------------------------------------------------
 !
-100 end do
+100 continue
 !-----------------------------------------------------------------------
 !     FIN BOUCLE SUR LES FACETTES
 !-----------------------------------------------------------------------
 !
-9999 continue
+999 continue
 !
 end subroutine

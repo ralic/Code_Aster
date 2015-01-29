@@ -54,7 +54,7 @@ subroutine te0548(option, nomte)
     integer :: ideppl, jaint, jcface, jlonch, jseuil, ipoidf, ivff, idfdef
     integer :: iadzi, iazk24, ipoids, ivf, idfde, jgano, jdonco
     integer :: ndim, nno, nnos, npg, nfh, ddlc, nnom, integ, ninter, nfe
-    integer :: nface, cface(5, 3), ibid, nnof, npgf, jptint
+    integer :: nface, cface(18, 6), ibid, nnof, npgf, jptint
     integer :: singu, jbasec, nptf
     integer :: ddls, nddl, nnol, lact(8), nlact, igeom, ddlm
     integer :: contac
@@ -102,14 +102,18 @@ subroutine te0548(option, nomte)
         do 16 j = 1, nptf
             cface(i,j)=zi(jcface-1+nptf*(i-1)+j)
 16      continue
-15  end do
+15  continue
 !
 !     SCHEMA D'INTEGRATION NUMERIQUE ET ELEMENT DE REFERENCE DE CONTACT
     integ = nint(zr(jdonco-1+4))
     call xminte(ndim, integ, fpg)
 !
     if (ndim .eq. 3) then
-        elc='TR3'
+        if (contac .le. 2) then
+            elc='TR3'
+        else
+            elc='TR3'
+        endif
     else if (ndim.eq.2) then
         if (contac .le. 2) then
             elc='SE2'
@@ -182,7 +186,7 @@ subroutine te0548(option, nomte)
             zr(jseuil-1+isspg)=seuil
 !
 110      continue
-100  end do
+100  continue
 !
     call jedema()
 end subroutine

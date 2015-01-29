@@ -88,6 +88,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
 ! IN  GEOM   : COORDONNEES DU POINT DE CONTACT
 ! IN  NUMMAE : NUMERO ABSOLU DANS LE MAILLAGE DE LA MAILLE ESCLAVE
 ! IN  IFACE  : NUMERO LOCAL DE LA FACETTE ESCLAVE
+! IN  NPTE   : NOMBRE DE NOEUDS PAR FACETTE
 ! OUT NUMMIN : NUMERO ABSOLU DANS LE MAILLAGE DE LA MAILLE MAITRE
 !              LA PLUS PROCHE
 ! OUT IFAMIN : NUMERO LOCAL DE LA FACETTE MAITRE LA PLUS PROCHE
@@ -116,7 +117,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     integer :: nummai, nunoin, nunog, nugla, nuglb, nbnott(3)
     integer :: n1, n2, nbnos, ntmae, nfacem
     integer :: ino, ifacem, ima
-    integer :: i, j, k, ia, numpi(3), niverr
+    integer :: i, j, k, ia, numpi(6), niverr
     integer :: ar(12, 3), nbar, na, nb, nunoa, nunob
     real(kind=8) :: jeu, tau1(3), tau2(3)
     real(kind=8) :: toleou, epsmax, nrese
@@ -141,7 +142,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
     lappar = .false.
     do 10 i = 1, 27
         coorma(i)=0.d0
- 10 end do
+ 10 continue
     dirapp = .false.
     ntmae = cfdisi(defico,'NTMAE')
 !
@@ -351,7 +352,7 @@ subroutine xmrema(jcesd, jcesv, jcesl, noma, ndim,&
             endif
 !
 130     continue
-100 end do
+100 continue
 !
     if (nummin .eq. 0 .and. (.not.lappar)) then
 !       DEUXIÈME CHANCE

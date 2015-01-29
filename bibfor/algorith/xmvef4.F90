@@ -6,7 +6,7 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
     integer :: ndim, nnol
-    integer ::  pla(27), cface(5, 3), lact(8)
+    integer ::  pla(27), lact(8)
     real(kind=8) :: vtmp(400), tau1(3), tau2(3)
     real(kind=8) :: ffc(8), jac, reac12(3)
 !
@@ -88,6 +88,6 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
         do 167 k = 1, ndim-1
             vtmp(pli+k) = vtmp(pli+k) + tt(k)*ffi*jac
 167      continue
-165  end do
+165  continue
 !
 end subroutine

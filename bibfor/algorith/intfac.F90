@@ -16,7 +16,7 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
 #include "asterfort/jexatr.h"
 #include "asterfort/reereg.h"
 #include "asterfort/vecini.h"
-    integer :: ifq, fa(6, 4), nno, ndim, jglsn, jglst, igeom, codret
+    integer :: ifq, fa(6, 8), nno, ndim, jglsn, jglst, igeom, codret
     integer :: indptf(3), nmaabs
     real(kind=8) :: lsn(nno), lst(nno), m(ndim), gln(ndim), glt(ndim)
     character(len=3) :: grad

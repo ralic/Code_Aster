@@ -1,30 +1,25 @@
 subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                   jinter, ifa, cface, nptf, ipg,&
-                  nno, igeom, jbasec, g, jac,&
+                  nnop, igeom, jbasec,xg, jac,&
                   ffp, ffpc, dfdi, nd, tau1)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/abscvf.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/elrfvf.h"
-#include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
 #include "asterfort/reeref.h"
-#include "asterfort/reereg.h"
-#include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-    integer :: jinter, ifa, cface(5, 3), ipg, nno, igeom, jbasec, nptf, ndim
+    integer :: jinter, ifa, cface(18, 6), ipg, nnop, igeom, jbasec, nptf, ndim
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(27, 3)
-    real(kind=8) :: nd(3), tau1(3), g(3)
+    real(kind=8) :: nd(3), tau1(3), xg(3)
     character(len=8) :: elrefp, fpg, elc, elrefc
 !
 !
@@ -69,25 +64,23 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: xg, a(3), b(3), ab(3), ksig1(1), ksig2(3), ksib
-    real(kind=8) :: ff(27), seg(3)
-    real(kind=8) :: grlt(3), normab, norme, norm2, ps
-    integer :: ndimf, nbnomx, nnoc, nnos, nn
-    integer :: i, j, k, nnof, ipoidf, ivff, idfdef
+    real(kind=8) :: grlt(3), grln(3), norme, norm2, ps
+    integer :: ndimf, nnoc, nn
+    integer :: i, j, k, nno, ipoidf, ivff, idfdef
     aster_logical :: axi
-    character(len=8) :: k8bid
     real(kind=8) :: xe(3)
     integer :: ibid, nptfmx
-    real(kind=8) :: dfdx(3), rbid2, rbid3, rbid4
+    real(kind=8) :: dfdx(3), rbid2, cosa, sina
+    character(len=8) :: k8bid
 !
-    parameter       (nbnomx = 27, nptfmx=4)
-    real(kind=8) :: coor2d(nptfmx*3), coor1d(6)
+    parameter       (nptfmx=4)
+    real(kind=8) :: coor2d(nptfmx*3)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nnof, jpoids=ipoidf,&
-                     jvf=ivff, jdfde=idfdef)
+    call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nno,&
+                     jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
     axi = lteatt('AXIS','OUI')
 !
@@ -96,14 +89,11 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !
 ! --- INITIALISATION
     call vecini(3, 0.d0, nd)
+    call vecini(3, 0.d0, grln)
     call vecini(3, 0.d0, grlt)
-    call vecini(3, 0.d0, a)
-    call vecini(3, 0.d0, b)
-    call vecini(3, 0.d0, ab)
     call vecini(3, 0.d0, tau1)
-    call vecini(3, 0.d0, seg)
 !
-! --- COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
+! --- COORDONNÉES DES NOEUDS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
     nn=3*nptfmx
     do i = 1, nn
         coor2d(i)=0.d0
@@ -114,73 +104,35 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
         end do
     end do
 !
-    do j = 1, ndim
-        a(j)=zr(jinter-1+ndim*(cface(ifa,1)-1)+j)
-        b(j)=zr(jinter-1+ndim*(cface(ifa,2)-1)+j)
-        ab(j)=b(j)-a(j)
+! --- CALCUL DE JAC EN 2D
+    k = (ipg-1)*nno
+    call dfdm1d(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor2d, dfdx,&
+                rbid2, jac, cosa, sina)
+!
+! --- COORDONNEES REELLES 2D DU POINT DE GAUSS IPG
+    call vecini(3, 0.d0, xg)
+    do j = 1, nno
+        do i = 1, ndim
+          xg(i)=xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor2d(ndim*(j-1)+i)
+        end do
     end do
 !
-! --- COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE
-!     LIE A LA FACETTE
-    if (iselli(elc)) then
-!     EN LINEAIRE 2D
-        call normev(ab, normab)
-        coor1d(1)=0.d0
-        coor1d(2)=0.d0
-        coor1d(3)=normab
-        coor1d(4)=0.d0
-        coor1d(5)=0.d0
-        coor1d(6)=0.d0
-        seg(1)=0.d0
-        seg(2)=normab
-    else if (.not.iselli(elc)) then
-!     EN QUADRATIQUE 2D
-        ksib=1.d0
-        call abscvf(ndim, coor2d, ksib, normab)
-        coor1d(1)=0.d0
-        coor1d(2)=0.d0
-        coor1d(3)=normab
-        coor1d(4)=0.d0
-        coor1d(5)=normab/2
-        coor1d(6)=0.d0
-        seg(1)=0.d0
-        seg(2)=normab
-        seg(3)=normab/2
-    endif
+! --- BASE LOCALE AU POINT DE GAUSS
 !
-! --- CALCUL DE JAC EN 1D
-    k = (ipg-1)*nnof
-    call dfdm1d(nnof, zr(ipoidf-1+ipg), zr(idfdef+k), coor1d, dfdx,&
-                rbid2, jac, rbid3, rbid4)
-!
-! --- COORDONNEES REELLES 1D DU POINT DE GAUSS IPG (ABS CUR DE G)
-    xg=0.d0
-    do j = 1, nnof
-        xg=xg+zr(ivff-1+nnof*(ipg-1)+j)*coor1d(2*j-1)
-    end do
-!
-! --- COORDONNEES DE REFERENCE 1D DU POINT DE GAUSS
-    call reereg('S', elc, nnof, seg, [xg],&
-                ndimf, ksig1, ibid)
-!
-! --- COORDONNEES REELLES 2D DU POINT DE GAUSS
-    ksig2(1)=ksig1(1)
-    ksig2(2)=0.d0
-    call reerel(elc, nnof, ndim, coor2d, ksig2,&
-                g)
-!
-! --- CONSTRUCTION DE LA BASE AU POINT DE GAUSS
-!     CALCUL DES FF DE LA FACETTE EN CE POINT DE GAUSS
-    call elrfvf(elc, ksig1, nbnomx, ff, ibid)
-!
+    nd(1) = -cosa
+    nd(2) = -sina
     do j = 1, ndim
-        do k = 1, nnof
-            nd(j) = nd(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
-            grlt(j)= grlt(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
+        do k = 1, nno
+            grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
+            grlt(j)= grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
             ndim)
         end do
     end do
 !
+    ps=ddot(ndim,nd,1,grln,1)
+    if (ps.lt.0.d0) then
+       nd(1:2) = -nd(1:2)
+    endif
     call normev(nd, norme)
     ps=ddot(ndim,grlt,1,nd,1)
     do j = 1, ndim
@@ -203,9 +155,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     endif
 !
 !     CALCUL DES FF DE L'ÉLÉMENT PARENT EN CE POINT DE GAUSS
-    call elelin(3, elrefp, k8bid, ibid, nnos)
-    call reeref(elrefp, nno, zr(igeom), g, ndim,&
-                xe, ffp, dfdi=dfdi)
+    call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ffp, dfdi=dfdi)
 !
     if (elrefc .eq. elrefp) goto 999
     if (elrefc(1:3) .eq. 'NON') goto 999
@@ -213,8 +163,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), g, ndim,&
-                xe, ffpc)
+    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, xe, ffpc)
 !
 999 continue
 !

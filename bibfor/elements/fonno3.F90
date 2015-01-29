@@ -46,7 +46,7 @@ subroutine fonno3(noma, tablev, ndim, na, nb,&
 !                ET AUX LEVRES
 !
     integer :: iatyma, iamase, ityp
-    integer :: i, j, jf, numert(12, 3), nbft, numero(6, 4), nbf
+    integer :: i, j, jf, numert(12, 3), nbft, numero(6, 8), nbf
     integer :: compte, ima, nn, inp, compt(2), compf
     integer :: numerf(4, 2)
     character(len=8) :: type

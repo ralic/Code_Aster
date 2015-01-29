@@ -129,10 +129,6 @@ cata_msg = {
      ou bien les supprimer du maillage.
 """),
 
-    14: _(u"""
-     On ne peut pas appliquer un cisaillement 2d sur les lèvres d'une fissure X-FEM.
-"""),
-
     15: _(u"""
   -> Cette option n'a pas encore été programmée.
   -> Risque & Conseil:

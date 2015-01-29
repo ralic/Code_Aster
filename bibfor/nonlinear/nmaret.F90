@@ -144,7 +144,6 @@ subroutine nmaret(nbarvz   , nb_node    , nb_dim     , sdline_crack, nb_node_sel
         call jeveuo(nlise2, 'L', jlis1)
         call jelira(nlise2, 'LONMAX', ival=nreleq)
         nreleq = nreleq/2
-        ASSERT(nreleq.eq.nar)
         if (nreleq .gt. 0) then
             do i = 1, nreleq
                 repere=0

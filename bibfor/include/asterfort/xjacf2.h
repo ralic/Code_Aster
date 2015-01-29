@@ -18,7 +18,7 @@
 interface
     subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                       jinter, ifa, cface, nptf, ipg,&
-                      nno, igeom, jbasec, g, jac,&
+                      nnop, igeom, jbasec, xg, jac,&
                       ffp, ffpc, dfdi, nd, tau1)
         character(len=8) :: elrefp
         character(len=8) :: elrefc
@@ -27,13 +27,13 @@ interface
         character(len=8) :: fpg
         integer :: jinter
         integer :: ifa
-        integer :: cface(5, 3)
+        integer :: cface(18, 6)
         integer :: nptf
         integer :: ipg
-        integer :: nno
+        integer :: nnop
         integer :: igeom
         integer :: jbasec
-        real(kind=8) :: g(3)
+        real(kind=8) :: xg(3)
         real(kind=8) :: jac
         real(kind=8) :: ffp(27)
         real(kind=8) :: ffpc(27)

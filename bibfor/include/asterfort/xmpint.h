@@ -23,6 +23,6 @@ interface
         integer :: nfaes
         integer :: jpcpi
         integer :: jpccf
-        real(kind=8) :: geopi(9)
+        real(kind=8) :: geopi(18)
     end subroutine xmpint
 end interface

@@ -60,7 +60,7 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/teattr.h"
 #include "asterfort/xminte.h"
-    integer :: algocr, algofr, cface(5, 3), contac
+    integer :: algocr, algofr, cface(18, 6), contac
     integer :: i, ibid, idfdef, ifiss
     integer :: ipoidf, ivff, j, jcface
     integer :: jdonco, jlonch
@@ -87,7 +87,11 @@ subroutine xdocon(algocr, algofr, cface, contac, coefcp,&
     call xminte(ndim, ninteg, fpg)
 !
     if (ndim .eq. 3) then
-        elc='TR3'
+        if (contac .le. 2) then
+            elc='TR3'
+        else
+            elc='TR3'
+        endif
     else if (ndim.eq.2) then
         if (contac .le. 2) then
             elc='SE2'

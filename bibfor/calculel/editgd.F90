@@ -78,7 +78,6 @@ subroutine editgd(ncmp,nedit,dg,ncmpmx,ctype,&
             call jacopo(1, ctype, jvalv+j-1, jvale+deb2-1)
         endif
     enddo
-
     if (ico .ne. ncmp2) then
         call utmess('F+', 'CALCULEL6_68')
         do i = 1, ncmpmx

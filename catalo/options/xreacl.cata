@@ -24,13 +24,13 @@ XREACL
 OPTION__
    IN__
         PDEPL_P  DEPL_R
-        PAINTER  N120_R
+        PAINTER  N480_R
         PCFACE   N120_I
         PLONGCO  N120_I 'MODL!.TOPOSE.LON' <<  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
         PDONCO   XCONTAC
         PPINTER  N120_R
         PGEOMER  GEOM_R
         PLST     NEUT_R        
-        PBASECO  N120_R
+        PBASECO  N480_R
         OUT__
         PSEUIL  NEUT_R ELEM__

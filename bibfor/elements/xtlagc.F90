@@ -1,6 +1,6 @@
-subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
-                  nface, cface, jdepde, jpcai, ffc,&
-                  nconta, nfhe, lmulti, heavno, dlagrc)
+subroutine xtlagc(ndim, nnc, jnn, nddls,&
+                  jdepde, ffc,&
+                  nfhe, lmulti, heavno, dlagrc)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,11 +27,9 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
 #include "asterfort/jemarq.h"
 #include "asterfort/xplma2.h"
     integer :: ndim, nnc, jnn(3), nfhe
-    integer :: jdepde, jpcai, heavno(8)
+    integer :: jdepde, heavno(8)
     real(kind=8) :: ffc(9)
-    character(len=8) :: typmai
     real(kind=8) :: dlagrc
-    integer :: cface(5, 3), nface, nconta
     aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
@@ -55,9 +53,6 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
 ! IN  NNS    : NOMBRE DE NOEUDS SOMMETS
 ! IN  JDEPDE : ADRESSE JEVEUX POUR DEPDEL
 ! IN  FFC    : FONCTIONS DE FORMES LAGR.
-! IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
-! IN  NFACE  : NUMÉRO DE LA FACETTE
-! IN  JAINT  : ADRESSE DES INFORMATIONS CONCERNANT LES ARETES COUPÉES
 ! IN  TYPMAI : TYPE DE LA MAILLE
 ! OUT DLAGRC : INCREMENT DEPDEL DU LAGRANGIEN DE CONTACT
 !
@@ -85,7 +80,7 @@ subroutine xtlagc(typmai, ndim, nnc, jnn, nddls,&
                     nfhe, pl)
         if (lmulti) pl = pl + (heavno(ino)-1)*ndim
         dlagrc = dlagrc+ffc(ino)*zr(jdepde-1+pl+1-1)
-230 end do
+230 continue
 !
     call jedema()
 !

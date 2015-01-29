@@ -54,7 +54,7 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
 ! --- DANS LA MAILLE
 !
 !
-!   
+!
     call jemarq()
     fctg = 0.d0
     dfctg = 0.d0

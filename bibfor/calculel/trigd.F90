@@ -64,7 +64,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
 !    -------------------------------------------------------------------
     aster_logical :: change
     integer :: cmp, ind1, nec2, nsav, ksav
-    parameter(nec2=12)
+    parameter(nec2=30)
     parameter(nsav=5)
     integer :: ind2(nsav), necold(nsav)
     integer :: dg1old(nec2, nsav), dg2old(nec2, nsav), poscmp(nec2*30, nsav)
@@ -88,7 +88,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
         ksav=k
         goto 80
 !
- 20 end do
+ 20 continue
 !
 !
 !----------------------------------------------------------------
@@ -108,14 +108,14 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
  40     continue
         ind2(k+1)=ind2(k)
         necold(k+1)=necold(k)
- 50 end do
+ 50 continue
 !
     ksav=1
     necold(ksav)=nec
     do 60 i = 1, nec
         dg1old(i,ksav)=dg1(i)
         dg2old(i,ksav)=dg2(i)
- 60 end do
+ 60 continue
 !
 !
 !     2.2 REMPLISSAGE DE POSCMP(KSAV):
@@ -132,7 +132,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
                 poscmp(ind2(ksav),ksav)=0
             endif
         endif
- 70 end do
+ 70 continue
 !
 !
 !
@@ -187,7 +187,7 @@ subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
         else
             zl(ilchlo-1+deb2-1+cmp)=.false.
         endif
- 90 end do
+ 90 continue
 !
 !
 !----------------------------------------------------------------

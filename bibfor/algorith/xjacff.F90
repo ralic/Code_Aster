@@ -1,29 +1,27 @@
 subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
-                  jinter, ifa, cface, ipg, nno,&
-                  igeom, jbasec, g, jac, ffp,&
-                  ffpc, dfdi, nd1, tau1, tau2)
+                  jinter, ifa, cface, ipg, nnop,&
+                  igeom, jbasec, xg, jac, ffp,&
+                  ffpc, dfdi, nd, tau1, tau2)
 ! aslint: disable=W1306
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm2b.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/elrfvf.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
-#include "asterfort/reereg.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-    integer :: jinter, ifa, cface(5, 3), ipg, nno, igeom, jbasec, ndim
-    real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nno, ndim)
-    real(kind=8) :: nd(ndim), tau1(ndim), tau2(ndim)
+    integer :: jinter, ifa, cface(18, 6), ipg, nnop, igeom, jbasec, ndim
+    real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nnop, ndim)
+    real(kind=8) :: nd(ndim), tau1(ndim), tau2(ndim), xg(3)
     character(len=8) :: elrefp, fpg, elrefc, elc
 !
 !     ------------------------------------------------------------------
@@ -66,123 +64,94 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: a(3), b(3), c(3), ab(3), ac(3), y(3), norme, nab, g(3)
-    real(kind=8) :: xg(2), ksig(2)
-    real(kind=8) :: ff(27)
-    real(kind=8) :: grlt(3), norm2, ps, nd1(3)
-    integer :: ibid, nbnomx, nnoc, nnos
-    integer :: j, k, nnof, ipoidf, ivff, idfdef, ndimf
+    real(kind=8) :: norme
+    real(kind=8) :: grlt(3), grln(3), norm2, ps
+    integer :: ibid, nn, nnoc
+    integer :: j, k, i, nno, ipoidf, ivff, idfdef, ndimf
+    real(kind=8) :: xe(3), coor3d(3*27)
     character(len=8) :: k8bid
-    real(kind=8) :: xe(3), coor2d(6)
 !
     aster_logical :: axi
 !
-    parameter       (nbnomx = 27)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    call elrefe_info(elrefe=elc, fami=fpg, ndim=ndimf, nno=nnof, jpoids=ipoidf,&
-                     jvf=ivff, jdfde=idfdef)
+    call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nno,&
+                     jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
     axi = lteatt('AXIS','OUI')
-    ASSERT(nnof.eq.3)
+    ASSERT(nno.eq.3.or.nno.eq.6)
     ASSERT(ndim.eq.3)
 !
 ! --- INITIALISATION
-    call vecini(3, 0.d0, a)
-    call vecini(3, 0.d0, b)
-    call vecini(3, 0.d0, c)
-    call vecini(3, 0.d0, ab)
-    call vecini(3, 0.d0, ac)
-    call vecini(3, 0.d0, nd1)
     call vecini(3, 0.d0, nd)
+    call vecini(3, 0.d0, grln)
     call vecini(3, 0.d0, grlt)
     call vecini(3, 0.d0, tau1)
     call vecini(3, 0.d0, tau2)
 !
-    do j = 1, ndim
-        a(j)=zr(jinter-1+ndim*(cface(ifa,1)-1)+j)
-        b(j)=zr(jinter-1+ndim*(cface(ifa,2)-1)+j)
-        c(j)=zr(jinter-1+ndim*(cface(ifa,3)-1)+j)
-        ab(j)=b(j)-a(j)
-        ac(j)=c(j)-a(j)
+! --- COORDONNÉES DES NOEUDS DE LA FACETTE DANS LE REPERE GLOBAL NDIM
+    nn=3*nno
+    do i = 1, nn
+        coor3d(i)=0.d0
     end do
-!
-    call provec(ab, ac, nd)
-    call normev(nd, norme)
-    call normev(ab, nab)
-    call provec(nd, ab, y)
-!
-!     COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL 2D
-    coor2d(1)=0.d0
-    coor2d(2)=0.d0
-    coor2d(3)=nab
-    coor2d(4)=0.d0
-    coor2d(5)=ddot(3,ac,1,ab,1)
-    coor2d(6)=ddot(3,ac,1,y ,1)
-!
-!     CALCUL DE JAC EN 2D
-    call dfdm2d(nnof, ipg, ipoidf, idfdef, coor2d,&
-                jac)
-!
-!     COORDONNÉES RÉELLES 2D DU POINT DE GAUSS IPG
-    call vecini(2, 0.d0, xg)
-    do j = 1, nnof
-        xg(1)=xg(1)+zr(ivff-1+nnof*(ipg-1)+j)*coor2d(2*j-1)
-        xg(2)=xg(2)+zr(ivff-1+nnof*(ipg-1)+j)*coor2d(2*j)
+    do i = 1, nno
+        do j = 1, ndim
+            coor3d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
+        end do
     end do
+!     CALCUL DE JAC EN 3D
+    k = 2*(ipg-1)*nno
+    call dfdm2b(nno, zr(ipoidf-1+ipg), zr(idfdef+k), coor3d,&
+                jac, nd)
 !
-!     COORDONNÉES RÉELLES 3D DU POINT DE GAUSS
-    g(1)=a(1)+ab(1)*xg(1)+y(1)*xg(2)
-    g(2)=a(2)+ab(2)*xg(1)+y(2)*xg(2)
-    g(3)=a(3)+ab(3)*xg(1)+y(3)*xg(2)
-!
-! --- COORDONNEES DE REFERENCE 2D DU POINT DE GAUSS
-    call reereg('S', elc, nnof, coor2d, xg,&
-                ndimf, ksig, ibid)
+! --- COORDONNEES REELLES 3D DU POINT DE GAUSS IPG
+    call vecini(3, 0.d0, xg)
+    do j = 1, nno
+        do i = 1, ndim
+          xg(i)=xg(i)+zr(ivff-1+nno*(ipg-1)+j)*coor3d(ndim*(j-1)+i)
+        end do
+    end do
 !
 ! --- CONSTRUCTION DE LA BASE AU POINT DE GAUSS
-!     CALCUL DES FF DE LA FACETTE EN CE POINT DE GAUSS
-    call elrfvf(elc, ksig, nbnomx, ff, ibid)
 !
     do j = 1, ndim
-        do k = 1, nnof
-            nd1(j) = nd1(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
-            grlt(j)= grlt(j) + ff(k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
+        do k = 1, nno
+            grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j)
+            grlt(j)= grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+ndim*ndim*(k-1)+j+&
             ndim)
         end do
     end do
 !
-    call normev(nd1, norme)
-    ps=ddot(ndim,grlt,1,nd1,1)
+    ps=ddot(ndim,grln,1,nd,1)
+    if (ps.lt.0.d0) nd(1:3) = -nd(1:3)
+    ps=ddot(ndim,grlt,1,nd,1)
     do j = 1, ndim
-        tau1(j)=grlt(j)-ps*nd1(j)
+        tau1(j)=grlt(j)-ps*nd(j)
     end do
 !
     call normev(tau1, norme)
 !
     if (norme .lt. 1.d-12) then
 !       ESSAI AVEC LE PROJETE DE OX
-        tau1(1)=1.d0-nd1(1)*nd1(1)
-        tau1(2)=0.d0-nd1(1)*nd1(2)
-        if (ndim .eq. 3) tau1(3)=0.d0-nd1(1)*nd1(3)
+        tau1(1)=1.d0-nd(1)*nd(1)
+        tau1(2)=0.d0-nd(1)*nd(2)
+        if (ndim .eq. 3) tau1(3)=0.d0-nd(1)*nd(3)
         call normev(tau1, norm2)
         if (norm2 .lt. 1.d-12) then
 !         ESSAI AVEC LE PROJETE DE OY
-            tau1(1)=0.d0-nd1(2)*nd1(1)
-            tau1(2)=1.d0-nd1(2)*nd1(2)
-            if (ndim .eq. 3) tau1(3)=0.d0-nd1(2)*nd1(3)
+            tau1(1)=0.d0-nd(2)*nd(1)
+            tau1(2)=1.d0-nd(2)*nd(2)
+            if (ndim .eq. 3) tau1(3)=0.d0-nd(2)*nd(3)
             call normev(tau1, norm2)
         endif
         ASSERT(norm2.gt.1.d-12)
     endif
     if (ndim .eq. 3) then
-        call provec(nd1, tau1, tau2)
+        call provec(nd, tau1, tau2)
     endif
-    call elelin(3, elrefp, k8bid, ibid, nnos)
-    call reeref(elrefp, nno, zr(igeom), g, ndim,&
-                xe, ffp, dfdi=dfdi)
+    call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ffp, dfdi=dfdi)
 !
 !
     if (elrefc .eq. elrefp) goto 999
@@ -191,8 +160,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), g, ndim,&
-                xe, ffpc)
+    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, xe, ffpc)
 !
 999 continue
 !

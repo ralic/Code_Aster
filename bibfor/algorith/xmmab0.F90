@@ -1,7 +1,7 @@
-subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
-                  hpg, ffc, jacobi, coefcr, lpenac,&
-                  typmai, cface, tau1, tau2, jddle,&
-                  nconta, nfhe, lmulti, heavno, mmat)
+subroutine xmmab0(ndim, nnc, jnne,&
+                  hpg, ffc, jacobi, lpenac,&
+                  tau1, tau2, jddle,&
+                  nfhe, lmulti, heavno, mmat)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,13 +23,12 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
     implicit none
 #include "asterf_types.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, nnc, jnne(3), nfaes, jpcai, cface(5, 3), jddle(2)
+    integer :: ndim, nnc, jnne(3), jddle(2)
 !
-    real(kind=8) :: hpg, ffc(8), jacobi, coefcr
+    real(kind=8) :: hpg, ffc(8), jacobi
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: mmat(336, 336)
-    character(len=8) :: typmai
-    integer :: nconta, nfhe, heavno(8)
+    integer :: nfhe, heavno(8)
     aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
@@ -71,7 +70,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
         do 290 j = 1, 2
             tt(i,j) = 0.d0
 290     continue
-300 end do
+300 continue
 !
 ! --- MATRICE
 !
@@ -80,7 +79,7 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
         tt(1,2) = tau1(i)*tau2(i) + tt(1,2)
         tt(2,1) = tau2(i)*tau1(i) + tt(2,1)
         tt(2,2) = tau2(i)*tau2(i) + tt(2,2)
-301 end do
+301 continue
 !
     do 284 i = 1, nnc
         do 283 j = 1, nnc
@@ -102,6 +101,6 @@ subroutine xmmab0(ndim, nnc, jnne, nfaes, jpcai,&
 281             continue
 282         continue
 283     continue
-284 end do
+284 continue
 !
 end subroutine

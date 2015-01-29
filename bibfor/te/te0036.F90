@@ -37,10 +37,9 @@ subroutine te0036(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/abscvf.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
-#include "asterfort/dfdm2d.h"
+#include "asterfort/dfdm2b.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -59,26 +58,26 @@ subroutine te0036(option, nomte)
 #include "asterfort/tefrep.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
+#include "asterfort/xnormv.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xcalf_he.h"
-#include "blas/ddot.h"
 !
-    character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag, elref
+    character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
+    character(len=8) :: elref
     character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
     integer :: jpmilt, irese, nfiss, ifiss, jfisno, jtab(7), ncomp
     integer :: ibid, ier, ndim, nno, nnop, nnops, npg, nnos, kpg
-    integer :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, i, j
-    integer :: nfh, nfe, nse, ise, in, ino, iadzi, iazk24, jstno
+    integer :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, j
+    integer :: nfh, nfe, nse, ise
+    integer :: in, ino, iadzi, iazk24, jstno
     integer :: iforc, iret, ig, pos, ndime, nddl, ddls
-    real(kind=8) :: y(3), xg(4), fe(4), xe(2), lsng, lstg, rg, tg
-    real(kind=8) :: pres, ff(27), a(3), b(3), c(3), ab(3), ac(3), coorse(81)
-    real(kind=8) :: nd(3), norme, nab, rb1(3), rb2(3), gloc(2), n(3), cisa
-    real(kind=8) :: an(3), poids, forrep(3), vf, r, coorlo(12), geomlo(81)
-    real(kind=8) :: ad(3), ae(3), af(3), rbid(1)
+    real(kind=8) :: xg(4), fe(4), lsng, lstg, rg, tg
+    real(kind=8) :: pres, ff(27), coorse(81), cosa, sina
+    real(kind=8) :: nd(3), norme, rb1(3), rb2(3), cisa
+    real(kind=8) :: poids, forrep(3), vf, td(3), rbid(1)
     aster_logical :: lbid, axi, pre1
-    real(kind=8) :: rb3, rb4, ksib, ksig(1), dx, dy, dff(1, 3), seg(3), jac
     integer :: kk, ddlm, nnopm
     data          elrese /'SE2','TR3','SE3','TR6'/
 !
@@ -103,6 +102,11 @@ subroutine te0036(option, nomte)
     call tecael(iadzi, iazk24)
     noma=zk24(iazk24)(1:8)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+!
+!     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
+!     NDIM EST LA DIMENSION DU MAILLAGE
+!     NDIME EST DIMENSION DE L'ELEMENT FINI
+!     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
 !
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then
@@ -191,9 +195,7 @@ subroutine te0036(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ier)
-    if (ier .eq. 0 .and. (.not. axi) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
-    call jevech('PPMILTO', 'L', jpmilt)
+    if (ier .eq. 0 .and. (.not. axi) .and. .not.iselli(elref)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
     call jevech('PVECTUR', 'E', ires)
@@ -204,7 +206,7 @@ subroutine te0036(option, nomte)
 !       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
 !
-!       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
+!       BOUCLE SUR LES NOEUDS DU SOUS-TRIA (DU SOUS-SEG)
         do in = 1, nno
             ino=zi(jcnset-1+nno*(ise-1)+in)
             do j = 1, ndim
@@ -223,176 +225,81 @@ subroutine te0036(option, nomte)
             end do
         end do
 !
-!       ON RENOMME LES SOMMETS DU SOUS-ELEMENT
-        call vecini(3, 0.d0, a)
-        call vecini(3, 0.d0, b)
-        call vecini(3, 0.d0, ab)
-        do j = 1, ndim
-            a(j)=coorse(ndim*(1-1)+j)
-            b(j)=coorse(ndim*(2-1)+j)
-            ab(j)=b(j)-a(j)
-            if (.not.iselli(elref) .and. ndim .eq. 2) then
-                c(j)=coorse(ndim*(3-1)+j)
-            endif
-            if (ndim .eq. 3) c(j)=coorse(ndim*(3-1)+j)
-            if (ndim .eq. 3) then
-                ac(j)=c(j)-a(j)
-                if (.not.iselli(elref)) then
-                    ad(j)=coorse(ndim*(4-1)+j)-a(j)
-                    ae(j)=coorse(ndim*(5-1)+j)-a(j)
-                    af(j)=coorse(ndim*(6-1)+j)-a(j)
-                endif
-            endif
-        end do
-!
-        call vecini(12, 0.d0, coorlo)
-        if (ndime .eq. 2) then
-!         CREATION DU REPERE LOCAL 2D : (AB,Y)
-            call provec(ab, ac, nd)
-            call normev(nd, norme)
-            call normev(ab, nab)
-            call provec(nd, ab, y)
-!       COORDONNÉES DES SOMMETS DE LA FACETTE DANS LE REPÈRE LOCAL
-            coorlo(1)=0.d0
-            coorlo(2)=0.d0
-            coorlo(3)=nab
-            coorlo(4)=0.d0
-            coorlo(5)=ddot(3,ac,1,ab,1)
-            coorlo(6)=ddot(3,ac,1,y ,1)
-            if (.not. iselli(elref)) then
-                coorlo(7)=ddot(3,ad,1,ab,1)
-                coorlo(8)=ddot(3,ad,1,y,1)
-                coorlo(9)=ddot(3,ae,1,ab,1)
-                coorlo(10)=ddot(3,ae,1,y,1)
-                coorlo(11)=ddot(3,af,1,ab,1)
-                coorlo(12)=ddot(3,af,1,y,1)
-            endif
-        else if (ndime.eq.1) then
-            if (iselli(elref)) then
-!         EN LINEAIRE 2D
-                call normev(ab, nab)
-                coorlo(1)=0.d0
-                coorlo(2)=0.d0
-                coorlo(3)=nab
-                coorlo(4)=0.d0
-                coorlo(5)=0.d0
-                coorlo(6)=0.d0
-                call vecini(3, 0.d0, nd)
-                nd(1) = ab(2)
-                nd(2) = -ab(1)
-            else if (.not.iselli(elref)) then
-!         EN QUADRATIQUE 2D
-                ksib=1.d0
-                call abscvf(ndim, coorse, ksib, nab)
-                coorlo(1)=0.d0
-                coorlo(2)=0.d0
-                coorlo(3)=nab
-                coorlo(4)=0.d0
-                coorlo(5)=nab/2.d0
-                coorlo(6)=0.d0
-                seg(1)=0.d0
-                seg(2)=nab
-                seg(3)=nab/2.d0
-                call normev(ab, nab)
-            endif
-        endif
-!
-!       COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
-        do ino = 1, nnop*ndime
-            geomlo(ino)=0.d0
-        end do
-        do ino = 1, nnop
-            do j = 1, ndim
-                n(j)=zr(igeom-1+ndim*(ino-1)+j)
-                an(j)=n(j)-a(j)
-            end do
-            geomlo(ndime*(ino-1)+1)=ddot(ndim,an,1,ab,1)
-!
-            if (ndime .eq. 2) geomlo(ndime*(ino-1)+2)=ddot(ndim,an,1,y , 1)
-        end do
-!
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 !-----------------------------------------------------------------------
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
-        if (axi) then
-            r = 0.d0
-            do ino = 1, nnop
-                r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-            end do
-            ASSERT(r.ge.0d0)
+!       if (axi) then
+!            r = 0.d0
+!            do ino = 1, nnop
+!                r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+!            end do
+!            ASSERT(r.ge.0d0)
 !          ATTENTION : LE POIDS N'EST PAS X R
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
-        endif
+!        endif
 !
         do kpg = 1, npg
 !
 !         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             if (ndime .eq. 2) then
-                call dfdm2d(nno, kpg, ipoids, idfde, coorlo,&
-                            poids)
+                kk = 2*(kpg-1)*nno
+                call dfdm2b(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse,&
+                            poids, nd)
             else if (ndime.eq.1) then
                 kk = (kpg-1)*nno
-                call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorlo, rb1,&
-                            rb2(1), poids, rb3, rb4)
+                call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse, rb1,&
+                            rb2(1), poids, cosa, sina)
             endif
 !
-!         COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
-            call vecini(ndime, 0.d0, gloc)
+!         COORDONNÉES RÉELLES GLOBALES DU POINT DE GAUSS
+            call vecini(ndim+1, 0.d0, xg)
             do j = 1, nno
                 vf=zr(ivf-1+nno*(kpg-1)+j)
-                do k = 1, ndime
-                    gloc(k)=gloc(k)+vf*coorlo(2*j+k-2)
+                do k = 1, ndim
+                    xg(k)=xg(k)+vf*coorse(ndim*(j-1)+k)
                 end do
             end do
 !
+            if (ndime.eq.1) then
+                ASSERT(elref(1:2).eq.'SE')
+                call vecini(ndim, 0.d0, td)
+                call vecini(ndim, 0.d0, nd)
+!         CALCUL DE LA NORMALE AU SEGMENT AU POINT DE GAUSS
+               nd(1) = cosa
+               nd(2) = sina
+               call xnormv(2, nd, norme)
+               ASSERT(norme.gt.0.d0)
+!         CALCUL DE LA TANGENTE AU SEGMENT AU POINT DE GAUSS
+!                do j = 1, nno
+!                   vf=zr(idfde-1+nno*(kpg-1)+j)
+!                   do k = 1, ndim
+!                       td(k)=td(k)+vf*coorse(ndim*(j-1)+k)
+!                   end do
+!               end do
+                td(1) = -sina
+                td(2) = cosa
+            else if (ndime.eq.2) then
+!                call vecini(ndim, 0.d0, td1)
+!                call vecini(ndim, 0.d0, td2)
+!         CALCUL DES TANGENTES A LA FACE AU POINT DE GAUSS
+!                do j = 1, nno
+!                   do k = 1, ndim
+!                       td1(k)=td1(k)+coorse(ndim*(j-1)+k)* zr(idfde-1+2*nno*(kpg-1)+2*j-1)
+!                       td2(k)=td2(k)+coorse(ndim*(j-1)+k)* zr(idfde-1+2*nno*(kpg-1)+2*j)
+!                   end do
+!               end do
 !         CALCUL DE LA NORMALE A LA FACE AU POINT DE GAUSS
-            if (ndim .eq. 2 .and. .not.iselli(elref)) then
-                ASSERT(elref.eq.'SE3')
-                call vecini(3, 0.d0, nd)
-!           COORDONNEES DE REFERENCE 1D DU POINT DE GAUSS
-                call reereg('S', elref, nno, seg, gloc,&
-                            ndime, ksig, ibid)
-!
-                dff(1,1) = ksig(1)-5.d-1
-                dff(1,2) = ksig(1)+5.d-1
-                dff(1,3) = -2*ksig(1)
-                dx=0.d0
-                dy=0.d0
-                do i = 1, nno
-                    dx = dx+dff(1,i)*coorse(ndim*(i-1)+1)
-                    dy = dy+dff(1,i)*coorse(ndim*(i-1)+2)
-                end do
-                jac=sqrt(dx*dx+dy*dy)
-! MODIFIER LE JAC
-                if (axi) then
-                    jac= jac * r
-                endif
-                if (abs(jac) .gt. r8prem()) then
-                    nd(1) = dy/jac
-                    nd(2) = -dx/jac
-                else
-                    nd(1) = ab(2)
-                    nd(2) = -ab(1)
-                endif
+!               call provec(td1,td2,nd)
+               call xnormv(3, nd, norme)
+!               nd(1:3) = -nd(1:3)
+               ASSERT(norme.gt.0.d0)
             endif
-!
-!         JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
-!
-            call reeref(elrefp, nnop, geomlo, gloc, ndime,&
-                        xe, ff)
-!
-!         COORDONNES REELLES DU POINT DE GAUSS
-            call vecini(4, 0.d0, xg)
-            do i = 1, ndim
-                do in = 1, nno
-                    xg(i) = xg(i) + zr(ivf-1+nno*(kpg-1)+in) * coorse( ndim*(in-1)+i)
-                end do
-            end do
 !
 !           CALCUL DES FONCTIONS D'ENRICHISSEMENT
 !           -------------------------------------
 !
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, rb2, ff)
             if (nfe .gt. 0) then
 !           LEVEL SETS AU POINT DE GAUSS
                 lsng = 0.d0
@@ -427,10 +334,10 @@ subroutine te0036(option, nomte)
                 pres = 0.d0
                 cisa = 0.d0
                 do ino = 1, nnop
-                    if (ndim .eq. 3) pres = pres + zr(ipres-1+ino) * ff( ino)
+                    if (ndim .eq. 3) pres = pres + zr(ipres-1+ino) * ff(ino)
                     if (ndim .eq. 2) then
-                        pres = pres + zr(ipres-1+2*(ino-1)+1) * ff( ino)
-                        cisa = cisa + zr(ipres-1+2*(ino-1)+2) * ff( ino)
+                        pres = pres + zr(ipres-1+2*(ino-1)+1) * ff(ino)
+                        cisa = cisa + zr(ipres-1+2*(ino-1)+2) * ff(ino)
                     endif
                 end do
 !           ATTENTION AU SIGNE : POUR LES PRESSIONS, IL FAUT UN - DVT
@@ -460,7 +367,7 @@ subroutine te0036(option, nomte)
                     forrep(2) = forrep(2)+cisa * nd(1)
                 endif
 !
-                elseif (option.eq.'CHAR_MECA_FR2D3D'.or.&
+            elseif (option.eq.'CHAR_MECA_FR2D3D'.or.&
      &            option.eq.'CHAR_MECA_FR1D2D') then
 !
                 call vecini(ndim, 0.d0, forrep)
@@ -471,7 +378,7 @@ subroutine te0036(option, nomte)
                     end do
                 end do
 !
-                elseif (option.eq.'CHAR_MECA_FF2D3D'.or.&
+            elseif (option.eq.'CHAR_MECA_FF2D3D'.or.&
      &            option.eq.'CHAR_MECA_FF1D2D') then
 !
                 xg(ndim+1) = zr(itemps)
@@ -533,12 +440,13 @@ subroutine te0036(option, nomte)
                        end do
                    end do
 !           TERME SINGULIER
-                   do ig = 1, nfe
-                       do j = 1, ndim
-                           pos=pos+1
-                           zr(ires-1+pos) = zr(ires-1+pos) + fe(ig) * forrep(j) * poids * ff(ino)
-                       end do
-                   end do
+                do ig = 1, nfe
+                    do j = 1, ndim
+                        pos=pos+1
+                        zr(ires-1+pos) = zr(ires-1+pos) + fe(ig) * forrep(j) * poids *&
+                                         ff(ino)
+                    end do
+                end do
                end do
             endif
         end do

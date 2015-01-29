@@ -1,6 +1,6 @@
-subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
-                  nface, cface, jdepde, jpcai, ffc,&
-                  lfrott, nconta, nfhe, lmulti, heavno,&
+subroutine xtlagm(ndim, nnc, jnn, nddls,&
+                  jdepde, ffc,&
+                  lfrott, nfhe, lmulti, heavno,&
                   dlagrc, dlagrf)
 !
 ! ======================================================================
@@ -25,12 +25,10 @@ subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
 #include "asterf_types.h"
 #include "asterfort/xtlagc.h"
 #include "asterfort/xtlagf.h"
-    integer :: ndim, nnc, jnn(3), nddls, nconta, nfhe, heavno(8)
-    integer :: jdepde, jpcai
+    integer :: ndim, nnc, jnn(3), nddls, nfhe, heavno(8)
+    integer :: jdepde
     real(kind=8) :: ffc(9)
-    character(len=8) :: typmai
     real(kind=8) :: dlagrc, dlagrf(2)
-    integer :: cface(5, 3), nface
     aster_logical :: lfrott, lmulti
 !
 ! ----------------------------------------------------------------------
@@ -54,9 +52,6 @@ subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
 ! IN  NDDLS  : NOMBRE DE DDL SUR UN NOEUD SOMMET
 ! IN  JDEPDE : POINTEUR JEVEUX POUR DEPDEL
 ! IN  FFC    : FONCTIONS DE FORMES LAGR.
-! IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
-! IN  NFACE  : NUMÉRO DE LA FACETTE
-! IN  JAINT  : ADRESSE DES INFORMATIONS CONCERNANT LES ARETES COUPÉES
 ! IN  TYPMAI : TYPE DE LA MAILLE
 ! IN  LFROTT : .TRUE. SI FROTTEMENT
 ! OUT DLAGRC : INCREMENT DEPDEL DU LAGRANGIEN DE CONTACT
@@ -64,14 +59,14 @@ subroutine xtlagm(typmai, ndim, nnc, jnn, nddls,&
 !
 ! ----------------------------------------------------------------------
 !
-    call xtlagc(typmai, ndim, nnc, jnn, nddls,&
-                nface, cface, jdepde, jpcai, ffc,&
-                nconta, nfhe, lmulti, heavno, dlagrc)
+    call xtlagc(ndim, nnc, jnn, nddls,&
+                jdepde, ffc,&
+                nfhe, lmulti, heavno, dlagrc)
 !
     if (lfrott) then
-        call xtlagf(typmai, ndim, nnc, jnn, nddls,&
-                    nface, cface, jdepde, jpcai, ffc,&
-                    nconta, nfhe, dlagrf)
+        call xtlagf(ndim, nnc, jnn, nddls,&
+                    jdepde, ffc,&
+                    nfhe, dlagrf)
     endif
 !
 end subroutine

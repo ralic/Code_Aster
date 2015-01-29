@@ -18,7 +18,7 @@ interface
     subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
                       ddls, dfdi, ff, he, idepl,&
                       igthet, ipref, ipres, ithet, jac,&
-                      jlst, ka, mu, mult, nd,&
+                      jlst, ka, mu, nd,&
                       ndim, nfh, nnop, nnops, itemps,&
                       nompar, option, presn, singu, xg)
         integer :: nnop
@@ -41,7 +41,6 @@ interface
         integer :: jlst
         real(kind=8) :: ka
         real(kind=8) :: mu
-        real(kind=8) :: mult
         real(kind=8) :: nd(3)
         integer :: nfh
         integer :: nnops

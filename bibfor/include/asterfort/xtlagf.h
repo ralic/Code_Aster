@@ -15,20 +15,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xtlagf(typmai, ndim, nnc, jnn, nddls,&
-                      nface, cface, jdepde, jpcai, ffc,&
-                      nconta, nfhe, dlagrf)
-        character(len=8) :: typmai
+    subroutine xtlagf(ndim, nnc, jnn, nddls,&
+                      jdepde, ffc,&
+                      nfhe, dlagrf)
         integer :: ndim
         integer :: nnc
         integer :: jnn(3)
         integer :: nddls
-        integer :: nface
-        integer :: cface(5, 3)
         integer :: jdepde
-        integer :: jpcai
         real(kind=8) :: ffc(9)
-        integer :: nconta
         integer :: nfhe
         real(kind=8) :: dlagrf(2)
     end subroutine xtlagf

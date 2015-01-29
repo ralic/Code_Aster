@@ -30,18 +30,18 @@ OPTION__
         PACCE_M  DEPL_R    << ACCELERATIONS POUR T- >>
         PCONFR   NEUT_R    << INFORMATION AUX POINTS POUR LE CONTACT - VOIR MMCHML >>
         PCAR_PT  N120_R    << XFEM - INFORMATIONS AUX POINTS >>
-        PCAR_PI  NEUT_R    << XFEM >>
-        PCAR_AI  NEUT_R    << XFEM >>
-        PCAR_CF  NEUT_I    << XFEM >>
+        PCAR_PI  N120_R    << XFEM >>
+        PCAR_AI  N480_R    << XFEM >>
+        PCAR_CF  N120_I    << XFEM >>
         PINDCOI  NEUT_I    << XFEM >>
         PDONCO   XCONTAC   << XFEM >>
         PLSN     NEUT_R    << XFEM >>
         PLST     NEUT_R    << XFEM >>
         PPINTER  N120_R    << XFEM >>
-        PAINTER  N120_R    << XFEM >>
+        PAINTER  N480_R    << XFEM >>
         PCFACE   N120_I    << XFEM >>
         PLONGCO  N120_I    << XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  >>
-        PBASECO  N120_R    << XFEM >>
+        PBASECO  N480_R    << XFEM >>
         PSEUIL   NEUT_R    << XFEM >>
         PSTANO   N120_I    << XFEM >>
         PCOHES   NEUT_R    << XFEM >>

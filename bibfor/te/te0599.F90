@@ -41,7 +41,7 @@ subroutine te0599(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, igeom, nnop, jptint, jaint, jcface
+    integer :: ndim, nfh, nfe, igeom, nnop, jptint, jcface
     integer :: jlonch, jlst, jlsn, itps, ihechp, jstno, jbasec
     integer :: itemp, ivectt, nddlno
     character(len=8) :: elrefp
@@ -75,7 +75,6 @@ subroutine te0599(option, nomte)
 !
 !     CHAMPS IN X-FEM
     call jevech('PPINTER', 'L', jptint)
-    call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PLST', 'L', jlst)
@@ -99,7 +98,7 @@ subroutine te0599(option, nomte)
 ! ----------------------------------------------------------------------
 !
     call xvechp(ndim, elrefp, nnop, igeom, itemp,&
-                itps, ihechp, jptint, jaint, jcface,&
+                itps, ihechp, jptint, jcface,&
                 jlonch, jlst, jlsn, jbasec, nfh, nfe,&
                 fonree, ivectt)
 !

@@ -65,7 +65,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
     real(kind=8) :: loncar, dst
     real(kind=8) :: m(3)
     integer :: i, nbf, ibid, ifq, j, codret
-    integer :: fa(6, 4), ibid3(12, 3), indptf(3)
+    integer :: fa(6, 8), ibid3(12, 3), indptf(3)
     aster_logical :: ajout
 ! ----------------------------------------------------------------------
 !
@@ -84,13 +84,13 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
         maxlst=max(lst(i),maxlst)
         minlsn=min(lsn(i),minlsn)
         minlst=min(lst(i),minlst)
-100 end do
+100 continue
 !
 !     SI CE N'EST PAS UN ELEMENT EN FOND DE FISSURE, ON SORT
 !     EN FAIT, CE TEST NE PERMET PAS DE DETECTER TOUS LES CAS
 !     IL SE PEUT DONC QUE L'ON NE SORTE PAS MAIS QUE L'ON NE
 !     SOIT PAS SUR UNE ELEMENT EN FOND DE FISSURE
-    if (minlsn*maxlsn .ge. 0.d0 .or. minlst*maxlst .ge. 0.d0) goto 9999
+    if (minlsn*maxlsn .ge. 0.d0 .or. minlst*maxlst .ge. 0.d0) goto 999
 !
     call confac(typma, ibid3, ibid, fa, nbf)
 !
@@ -126,8 +126,8 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
                     m, loncar, ainter, 0, 0,&
                     0.d0, ajout)
 !
-200 end do
+200 continue
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

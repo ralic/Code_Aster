@@ -67,6 +67,7 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG2,
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
                          INFO=1,
+                         DECOUPE_FACETTE='SOUS_ELEMENTS',
                         );
 
 #----------------------------------------------

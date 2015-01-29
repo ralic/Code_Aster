@@ -13,6 +13,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 #include "asterfort/xdelt0.h"
 #include "asterfort/xdelt2.h"
 #include "asterfort/xdelt3.h"
+#include "asterfort/xdelt4.h"
 #include "asterfort/xintva.h"
     integer :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ptxx(*), tabco(*), tabls(*)
@@ -96,14 +97,16 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !     FAIRE TANT QUE
 !
 !
-! --- CALCUL DE LA QUANTITE A MINIMISER
+! --- CALCUL DE L'INCREMENT
 !
     if (name .eq. 'XMILFI') then
         call xdelt2(elrefp, n, ndime, ksi2, ptxx,&
                     ndim, tabco, tabls, ipp, ip,&
                     delta)
-    else if (name.eq. 'XINTAR') then
+    elseif (name .eq. 'XINTAR') then
         call xdelt3(ndim, ksi2, tabls, delta(1))
+    elseif (name .eq. 'XINTFA') then
+        call xdelt4(elrefp, ksi2, ptxx, ndim, tabls, delta)
     else if (name .eq. 'XINTER') then
         call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
                     delta(1))
@@ -117,7 +120,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
 !   ON VERIFIE POUR XINTER QUE LE NEWTON RESTE SUR L ARETE
     if (name .eq. 'XINTER') then
-        ASSERT((ksi2(1) .ge. 0.d0) .and. (ksi2(1) .le. 1.d0))
+       ASSERT((ksi2(1) .ge. 0.d0) .and. (ksi2(1) .le. 1.d0))
     endif
 !
 ! --- ACTUALISATION

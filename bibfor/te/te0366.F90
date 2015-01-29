@@ -70,7 +70,6 @@ subroutine te0366(option, nomte)
     integer :: imatt, jpcpo
     integer :: jpcpi, jpcai, jpccf, jstno
     integer :: indnor, ifrott, indco
-    integer :: cface(5, 3)
     integer :: jdepde, jdepm, jgeom, jheafa, jheano
     real(kind=8) :: mmat(n, n), tau1(3), tau2(3), norm(3)
     real(kind=8) :: mprojt(3, 3)
@@ -79,7 +78,7 @@ subroutine te0366(option, nomte)
     real(kind=8) :: jacobi, hpg
     character(len=8) :: elrees, elrema, elreco, typmai, typmec
     integer :: inadh, nvit, lact(8), nlact, ninter
-    real(kind=8) :: geopi(9), dvitet(3)
+    real(kind=8) :: geopi(18), dvitet(3)
     real(kind=8) :: coefff, coefcr, coeffr, coeffp
     real(kind=8) :: coefcp, rese(3), nrese
     real(kind=8) :: rre, rrm, jeu
@@ -107,7 +106,7 @@ subroutine te0366(option, nomte)
 ! --- INITIALISATIONS
 !
     call matini(n, n, 0.d0, mmat)
-    call vecini(9, 0.d0, geopi)
+    call vecini(18, 0.d0, geopi)
     call vecini(2, 0.d0, dlagrf)
     call vecini(3, 0.d0, ddeple)
     call vecini(3, 0.d0, ddeplm)
@@ -187,14 +186,6 @@ subroutine te0366(option, nomte)
         jheano=1
     endif
 !
-! --- ON CONSTRUIT LA MATRICE DE CONNECTIVITÉ CFACE (MAILLE ESCLAVE)
-! --- CE QUI SUIT N'EST VALABLE QU'EN 2D POUR LA FORMULATION QUADRATIQUE
-! --- EN 3D ON UTILISE SEULEMENT LA FORMULATION AUX NOEUDS SOMMETS,
-! --- CETTE MATRICE EST DONC INUTILE, ON NE LA CONSTRUIT PAS !!!
-!
-    cface(1,1) = 1
-    cface(1,2) = 2
-!
 ! --- CALCUL DES COORDONNEES REELLES DES POINTS D'INTERSECTION ESCLAVES
 !
     call xmpint(ndim, npte, nfaes, jpcpi, jpccf,&
@@ -247,10 +238,10 @@ subroutine te0366(option, nomte)
 ! --- CALCUL DES MATRICES A, AT, AU - CAS DU CONTACT
 !
             call xmmaa1(ndim, nne, ndeple, nnc, nnm,&
-                        nfaes, cface, hpg, ffc, ffe,&
-                        ffm, jacobi, jpcai, coefcr, coefcp,&
-                        lpenac, norm, typmai, nsinge, nsingm,&
-                        rre, rrm, contac, ddle, ddlm,&
+                        hpg, ffc, ffe,&
+                        ffm, jacobi, coefcr, coefcp,&
+                        lpenac, norm, nsinge, nsingm,&
+                        rre, rrm, ddle, ddlm,&
                         nfhe, nfhm, lmulti, zi(jheano), zi(jheafa),&
                         mmat)
 !
@@ -259,9 +250,9 @@ subroutine te0366(option, nomte)
 !
 ! --- CALCUL DE LA MATRICE C - CAS SANS CONTACT
 !
-                call xmmaa0(ndim, nnc, nne, hpg, nfaes,&
-                            cface, ffc, jacobi, jpcai, coefcr,&
-                            coefcp, lpenac, typmai, ddle, contac,&
+                call xmmaa0(ndim, nnc, nne, hpg,&
+                            ffc, jacobi, coefcr,&
+                            coefcp, lpenac, ddle,&
                             nfhe, lmulti, zi(jheano), mmat)
 !
             endif
@@ -273,9 +264,9 @@ subroutine te0366(option, nomte)
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT
 !
-        call xtlagc(typmai, ndim, nnc, nne, ddle(1),&
-                    nfaes, cface, jdepde, jpcai, ffc,&
-                    contac, nfhe, lmulti, zi(jheano), dlagrc)
+        call xtlagc(ndim, nnc, nne, ddle(1),&
+                    jdepde, ffc,&
+                    nfhe, lmulti, zi(jheano), dlagrc)
 !
         if (coefff .eq. 0.d0) indco = 0
 ! ON MET LA SECURITE DANS LE CAS PENALISE EGALEMENT
@@ -287,10 +278,10 @@ subroutine te0366(option, nomte)
 !
 ! --- CALCUL DE LA MATRICE F - CAS SANS FROTTEMENT
 !
-                call xmmab0(ndim, nnc, nne, nfaes, jpcai,&
-                            hpg, ffc, jacobi, coefcr, lpenac,&
-                            typmai, cface, tau1, tau2, ddle,&
-                            contac, nfhe, lmulti, zi(jheano), mmat)
+                call xmmab0(ndim, nnc, nne,&
+                            hpg, ffc, jacobi, lpenac,&
+                            tau1, tau2, ddle,&
+                            nfhe, lmulti, zi(jheano), mmat)
             endif
         else if (indco.eq.1) then
 !
@@ -302,9 +293,9 @@ subroutine te0366(option, nomte)
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE FROTTEMENT
 !
-            call xtlagf(typmai, ndim, nnc, nne, ddle(1),&
-                        nfaes, cface, jdepde, jpcai, ffc,&
-                        contac, nfhe, dlagrf)
+            call xtlagf(ndim, nnc, nne, ddle(1),&
+                        jdepde, ffc,&
+                        nfhe, dlagrf)
 !
 ! --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 !
@@ -330,11 +321,11 @@ subroutine te0366(option, nomte)
 ! --- CALCUL DE B, BT, BU - CAS ADHERENT
 !
                 call xmmab1(ndim, nne, ndeple, nnc, nnm,&
-                            nfaes, cface, hpg, ffc, ffe,&
-                            ffm, jacobi, jpcai, dlagrc, coefcr,&
-                            coefcp, dvitet, coeffr, dlagrf, jeu,&
+                            hpg, ffc, ffe,&
+                            ffm, jacobi, dlagrc, coefcr,&
+                            dvitet, coeffr, jeu,&
                             coeffp, coefff, lpenaf, tau1, tau2,&
-                            rese, mprojt, norm, typmai, nsinge,&
+                            rese, mprojt, norm, nsinge,&
                             nsingm, rre, rrm, nvit, contac,&
                             ddle, ddlm, nfhe, mmat)
 !
@@ -343,11 +334,11 @@ subroutine te0366(option, nomte)
 ! --- CALCUL DE B, BT, BU, F - CAS GLISSANT
 !
                 call xmmab2(ndim, nne, ndeple, nnc, nnm,&
-                            nfaes, cface, hpg, ffc, ffe,&
-                            ffm, jacobi, jpcai, dlagrc, coefcr,&
-                            coefcp, coeffr, dlagrf, jeu, coeffp,&
+                            hpg, ffc, ffe,&
+                            ffm, jacobi, dlagrc, coefcr,&
+                            coeffr, jeu, coeffp,&
                             lpenaf, coefff, tau1, tau2, rese,&
-                            nrese, mprojt, norm, typmai, nsinge,&
+                            nrese, mprojt, norm, nsinge,&
                             nsingm, rre, rrm, nvit, contac,&
                             ddle, ddlm, nfhe, mmat)
             endif

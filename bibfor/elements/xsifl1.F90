@@ -1,7 +1,7 @@
 subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
                   ddls, dfdi, ff, he, idepl,&
                   igthet, ipref, ipres, ithet, jac,&
-                  jlst, ka, mu, mult, nd,&
+                  jlst, ka, mu, nd,&
                   ndim, nfh, nnop, nnops, itemps,&
                   nompar, option, presn, singu, xg)
     implicit none
@@ -47,7 +47,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
     integer :: jlst
     real(kind=8) :: jm, dpredi(3, 3)
     integer :: k
-    real(kind=8) :: k1, k2, k3, ka, lsn, lst, mu, mult, nd(3)
+    real(kind=8) :: k1, k2, k3, ka, lsn, lst, mu, nd(3)
     integer :: nfh, nnops, itemps
     character(len=8) :: nompar(4)
     real(kind=8) :: norme
@@ -67,7 +67,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
             e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff(ino)
             e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff(ino)
 110      continue
-100  end do
+100  continue
 !
 !     NORMALISATION DE LA BASE
     call normev(e1, norme)
@@ -80,7 +80,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
         p(i,1)=e1(i)
         p(i,2)=e2(i)
         p(i,3)=e3(i)
-120  end do
+120  continue
 !
 !     CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
     ASSERT(lst.lt.0.d0)
@@ -160,7 +160,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 !
         divt = divt + dtdm(i,i)
 !
-390  end do
+390  continue
 !
 !     BOUCLE SUR LES DEUX LEVRES
     do 300 ilev = 1, 2
@@ -256,10 +256,10 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
             endif
 520      continue
 !
-        jm = jac*mult*0.5d0
+        jm = jac*0.5d0
 !
         if (ndim .eq. 3) then
-            zr(igthet-1+1)=zr(igthet-1+1)+g*jac*mult
+            zr(igthet-1+1)=zr(igthet-1+1)+g*jac
             if (option(1:8) .eq. 'CALC_K_G') then
                 zr(igthet-1+2)=zr(igthet-1+2)+k1*jm*sqrt(coeff)
                 zr(igthet-1+3)=zr(igthet-1+3)+k2*jm*sqrt(coeff)
@@ -270,7 +270,7 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
             endif
         else if (ndim.eq.2) then
 !
-            zr(igthet-1+1)=zr(igthet-1+1)+g*jac*mult
+            zr(igthet-1+1)=zr(igthet-1+1)+g*jac
 !
             if (option(1:8) .eq. 'CALC_K_G') then
                 zr(igthet-1+2)=zr(igthet-1+2)+k1*jm*sqrt(coeff)
@@ -281,6 +281,6 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 !
         endif
 !
-300  end do
+300  continue
 !     FIN DE BOUCLE SUR LES DEUX LEVRES
 end subroutine

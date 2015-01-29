@@ -82,7 +82,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
 !
     integer :: ipt, ima, i, j, ibid, ndim, ino, k, ifq, ifm, niv
     integer :: nmaabs, nbf, nbnoma, nuno, nunoa, nunob, nunoc, nunod
-    integer :: fa(6, 4), ibid3(12, 3), vecind(5)
+    integer :: fa(6, 8), ibid3(12, 3), vecind(5)
     integer :: jconx1, jconx2, jcoor
     integer :: jglsn, jglst, igeom, itypma
     integer :: indipt, jborl, jdirol, jnvdir, jlistp

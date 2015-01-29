@@ -46,7 +46,7 @@ subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx,&
 !                     JACP          <--  PRODUIT DU JACOBIEN ET DU POIDS
 !
 !  REMARQUE :
-!    - LES SEGMENTS DOIVENT ETRE "PLANS" (DANS OXY)
+!    - LES SEGMENTS DOIVENT ETRE CONTENUS DANS UN PLAN (DANS OXY)
 !
     character(len=8) :: nomail
     integer :: i
@@ -60,7 +60,7 @@ subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx,&
     do 100 i = 1, nno
         dxdk = dxdk + coor( 2*i-1 ) * dfrdk(i)
         dydk = dydk + coor( 2*i ) * dfrdk(i)
-100  end do
+100 continue
     jac = sqrt ( dxdk**2 + dydk**2 )
 !
     if (abs(jac) .le. 1.d0/r8gaem()) then
@@ -76,6 +76,6 @@ subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx,&
     cour = ( dxdk * d2ydk - d2xdk * dydk ) / jac**3
     do 200 i = 1, nno
         dfdx(i) = dfrdk(i) / jac
-200  end do
+200 continue
     jacp = jac * poids
 end subroutine

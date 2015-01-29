@@ -225,7 +225,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
  51             continue
  21         continue
  11     continue
- 81 end do
+ 81 continue
     ASSERT(narcon.gt.0)
     AS_ALLOCATE(vi=arcon, size=4*narcon)
 !
@@ -322,8 +322,7 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                                             iac = iac + 1
                                             ASSERT(iac.le.narcon)
                                             arcon(4*(iac-1)+1) = in
-                                            arcon(4*(iac-1)+2) =&
-                                        ima
+                                            arcon(4*(iac-1)+2) = ima
                                             arcon(4*(iac-1)+3) = ia
                                             arcon(4*(iac-1)+4) = jn
                                             goto 20
@@ -338,11 +337,12 @@ subroutine xbarvi(noma, nomo, fiss, faclon, ainter)
                         endif
 !
  50                 continue
+!
                 endif
 !
  20         continue
  10     continue
- 80 end do
+ 80 continue
 !   menage
     do kk = 1, 3
         call jeexin(grp(kk), iret)

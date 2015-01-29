@@ -120,7 +120,7 @@ class sd_modele_xfem(AsBase):
     TOPOSE_CNS = sd_cham_elem(SDNom(nomj='.TOPOSE.CNS'))
     TOPOSE_HEA = sd_cham_elem(SDNom(nomj='.TOPOSE.HEA'))
     TOPOSE_LON = sd_cham_elem(SDNom(nomj='.TOPOSE.LON'))
-    TOPOSE_AIN = sd_cham_elem(SDNom(nomj='.TOPOSE.AIN'))
+    TOPOSE_AIN = sd_cham_elem(SDNom(nomj='.TOPOSE.PAI'))
     TOPOSE_PMI = sd_cham_elem(SDNom(nomj='.TOPOSE.PMI'))
     TOPOSE_CRI = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOSE.CRI')))
 

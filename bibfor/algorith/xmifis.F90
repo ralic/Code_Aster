@@ -1,5 +1,6 @@
 subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
-                  n, ip1, ip2, pinref, miref, mifis)
+                  n, ip1, ip2, pinref, miref, mifis,&
+                  u, v)
     implicit none
 !
 #include "jeveux.h"
@@ -10,10 +11,10 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-#include "asterfort/xveri0.h"
     integer :: ndim, ndime, n(3), ip1, ip2
     character(len=8) :: elrefp
     real(kind=8) :: mifis(ndim), pinref(*), miref(ndime), geom(*), lsn(*)
+    real(kind=8), intent(in), optional :: u(ndime), v(ndime)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +43,8 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !       IPP     : NUMERO NOEUD PREMIER POINT INTER
 !       IP      : NUMERO NOEUD DEUXIEME POINT INTER
 !       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
+!       U,V     : BASE ORTHONORMEE DE LA FACE SUR LAQUELLE EON EFFECTUE LA
+!                 RECHERCHE (EN OPTION)
 !     SORTIE
 !       mifis   : COORDONNES DU PT MILIEU ENTRE IPP ET IP
 !     ----------------------------------------------------------------
@@ -49,8 +52,8 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     integer :: nno, j, ia, ib, ic
     real(kind=8) :: x(81), ksi(ndime), bc(ndime), ba(ndime)
     real(kind=8) :: epsmax, rbid, ip1ip2(ndime), ptxx(2*ndime)
-    real(kind=8) :: v(ndime), k, k1, k2, alpha
-    integer :: itemax, iret, dekker
+    real(kind=8) :: vect(ndime), k, k1, k2, alpha
+    integer :: itemax, dekker
     character(len=6) :: name
 !
 ! --------------------------------------------------------------------
@@ -63,9 +66,20 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     ib=n(1)
     ic=n(2)
     ia=n(3)
-    do j=1,ndime
-      bc(j)=x(ndime*(ic-1)+j)-x(ndime*(ib-1)+j)
-      ba(j)=x(ndime*(ia-1)+j)-x(ndime*(ib-1)+j)
+    dekker = 0
+    if (present(u).and.present(v)) then
+       do j = 1, ndime
+          bc(j) = u(j)
+          ba(j) = v(j)
+       end do
+    else
+       do j=1,ndime
+          bc(j)=x(ndime*(ic-1)+j)-x(ndime*(ib-1)+j)
+          ba(j)=x(ndime*(ia-1)+j)-x(ndime*(ib-1)+j)
+       end do
+       dekker = 1
+    endif
+    do j = 1, ndime
       ip1ip2(j)=pinref(ndime*(ip2-1)+j)-pinref(ndime*(ip1-1)+j)
     enddo
     call xnormv(ndime, bc, rbid)
@@ -80,11 +94,11 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     k2=ddot(ndime,bc,1,ip1ip2,1)
     alpha=dsqrt(1/(k1**2+k2**2-2*k*k1*k2))
     do j=1,ndime
-        v(j)=alpha*(k2*ba(j)-k1*bc(j))
+        vect(j)=alpha*(k2*ba(j)-k1*bc(j))
     enddo
 !
     do j=1,ndime
-      ptxx(j)=v(j)
+      ptxx(j)=vect(j)
       ptxx(j+ndime)=(pinref(ndime*(ip1-1)+j)+&
                      pinref(ndime*(ip2-1)+j))/2.d0
     enddo  
@@ -92,7 +106,6 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !     DU POINT PAR UN ALGO DE NEWTON
 !!!!!ATTENTION INITIALISATION DU NEWTON:
     call vecini(ndime, 0.d0, ksi)
-    dekker = 1
     call xnewto(elrefp, name, n,&
                 ndime, ptxx, ndim, geom, lsn,&
                 ip1, ip2, itemax,&
@@ -100,9 +113,6 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     do j=1,ndime
        miref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)
     enddo
-!
-    call xveri0(ndime, elrefp, miref, iret)  
-    ASSERT(iret .eq. 0)
 !
 ! --- COORDONNES DU POINT DANS L'ELEMENT REEL
     call reerel(elrefp, nno, ndim, geom, miref,&

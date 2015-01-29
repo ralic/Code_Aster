@@ -117,11 +117,6 @@ subroutine capres(char, ligrmo, noma, ndim, fonree)
 !
         if (nfiss .ne. 0) then
 !
-!           PAS DE CISA_2D SUR LES LÈVRES DES FISSURES X-FEM
-            if (nc .ne. 0) then
-                call utmess('F', 'XFEM_14')
-            endif
-!
             nfiss = -nfiss
             call getvid(motclf, 'FISSURE', iocc=iocc, nbval=nfiss, vect=fiss,&
                         nbret=ibid)

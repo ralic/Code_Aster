@@ -25,7 +25,7 @@ interface
         character(len=8) :: noma
         integer :: nmaabs
         integer :: ifq
-        integer :: fa(6, 4)
+        integer :: fa(6, 8)
         real(kind=8) :: lst(nno)
         real(kind=8) :: lsn(nno)
         character(len=3) :: grad

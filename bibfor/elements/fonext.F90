@@ -76,7 +76,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
     integer :: jconx2, jcoor, jmanoe
     integer :: nbf, nbfacb, nbno, ndime, nmaext, nmanoe, nuno
     integer :: nunoa, nunob, nunoc, numpt
-    integer :: ibid3(12, 3), inobor(2), fa(6, 4)
+    integer :: ibid3(12, 3), inobor(2), fa(6, 8)
     real(kind=8) :: coorg(3), vectn(12), norme, vect(3), proj
     character(len=8) :: typma
     aster_logical :: fabord, nofac
@@ -109,7 +109,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
         call dismoi('DIM_TOPO', typma, 'TYPE_MAILLE', repi=ndime)
 !
 !       ON NE PREND QUE LES MAILLES EN 3D
-        if (ndime .ne. 3) goto 1000
+        if (ndime .ne. 3) goto 100
 !       CALCUL DU CENTRE DE GRAVITE DE LA MAILLE
         call cengra(noma, nmaext, coorg)
         call confac(typma, ibid3, ibid, fa, nbf)
@@ -124,7 +124,7 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !         BOUCLE SUR LE NOMBRE DE NOEUDS DE LA FACE
             do ino = 1, nbno
                 nuno = connex(zi(jconx2+nmaext-1)+fa(ifa,ino)-1)
-                if (nuno .eq. inoseg) goto 1100
+                if (nuno .eq. inoseg) goto 110
                 if (nuno .eq. inoext) nofac=.true.
 !         FIN BOUCLE SUR LES NOEUDS
             end do
@@ -153,20 +153,20 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg,&
 !
                     if (abs(proj) .ge. 0.95d0) then
                         nbfacb = nbfacb-1
-                        goto 1100
+                        goto 110
                     endif
 !
                 endif
             endif
 !       FIN BOUCLE SUR LES FACES
-1100         continue
+110         continue
         end do
         if (nbfacb .ne. 0) then
             call xextre(inobor, vectn, nbfacb, jbasno, jborl,&
                         jdirol, jnvdir)
         endif
 !     FIN BOUCLE SUR LES MAILLES
-1000     continue
+100     continue
     end do
 !
     call normev(zr(jbasno-1+6*(numpt-1)+4), norme)

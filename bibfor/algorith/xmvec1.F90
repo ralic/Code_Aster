@@ -1,8 +1,8 @@
 subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
-                  hpg, nfaes, ffc, ffe, ffm,&
-                  jacobi, dlagrc, jpcai, cface, coefcr,&
-                  coefcp, lpenac, jeu, norm, typmai,&
-                  nsinge, nsingm, rre, rrm, nconta,&
+                  hpg, ffc, ffe, ffm,&
+                  jacobi, dlagrc, coefcr,&
+                  coefcp, lpenac, jeu, norm,&
+                  nsinge, nsingm, rre, rrm,&
                   jddle, jddlm, nfhe, nfhm, lmulti,&
                   heavno, heavfa, vtmp)
 !
@@ -28,13 +28,12 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
 #include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
-    integer :: ndim, jnne(3), jnnm(3), nnc, nfaes
-    integer :: jpcai, cface(3, 5), nsinge, nsingm
+    integer :: ndim, jnne(3), jnnm(3), nnc
+    integer :: nsinge, nsingm
     real(kind=8) :: hpg, ffc(9), jacobi, ffe(20), ffm(20)
     real(kind=8) :: dlagrc, jeu, norm(3), coefcr, coefcp, rre, rrm
     real(kind=8) :: vtmp(336)
-    character(len=8) :: typmai
-    integer :: nconta, ndeple, jddle(2), jddlm(2)
+    integer :: ndeple, jddle(2), jddlm(2)
     integer :: nfhe, nfhm, heavno(8), heavfa(*)
     aster_logical :: lpenac, lmulti
 !
@@ -54,14 +53,11 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
 ! IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
 ! IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 ! IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
-! IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
 ! IN  FFC    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ELC
 ! IN  FFE    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ESC
 ! IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
 ! IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 ! IN  DLAGRC : LAGRANGE DE CONTACT AU POINT D'INTÉGRATION
-! IN  JPCAI  : POINTEUR VERS LE VECT DES ARRETES ESCLAVES INTERSECTEES
-! IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 ! IN  COEFCA : COEF_REGU_CONT
 ! IN  JEU    : VALEUR DU JEU
 ! IN  NORM   : VALEUR DE LA NORMALE AU POINT DE CONTACT
@@ -138,7 +134,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                     vtmp(ii) = imait(iddl)*vv
  45             continue
  30         continue
- 10     end do
+ 10     continue
     else
         do 50 j = 1, ndim
             do 60 i = 1, ndeple
@@ -152,7 +148,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                 ii = iin + j
                 vtmp(ii) = rre * vv
  60         continue
- 50     end do
+ 50     continue
     endif
 !
 ! --------------------- CALCUL DE [L2]----------------------------------
@@ -166,6 +162,6 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
         else
             vtmp(pl) = -hpg*jacobi*jeu*ffc(i)
         endif
- 40 end do
+ 40 continue
 !
 end subroutine

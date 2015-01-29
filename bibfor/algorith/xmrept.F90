@@ -88,7 +88,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
     dmin = r8gaem()
     do 10 i = 1, 3
         coord(i)=0.d0
-10  end do
+10  continue
     ntmae = cfdisi(defico,'NTMAE')
 !
 ! --- RECUPERATION DE QUELQUES DONNEES
@@ -113,7 +113,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
         nummai = zi(jmaesx+zmesx*(ima-1)+1-1)
         ifiss = zi(jmaesx+zmesx*(ima-1)+5-1)
 !
-! ----- RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION DE LA MAILLE
+! ---  RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION DE LA MAILLE
         call cesexi('C', jcesd(1), jcesl(1), nummai, 1,&
                     ifiss, 3, iad)
         ASSERT(iad.gt.0)
@@ -122,12 +122,14 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
 !
         do 110 ini = 1, nbpt
 ! ------- COORDONNEES GEOMETRIQUES DU POINT D'INTERSECTION
-            do 120 j = 1, ndim
-                call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
-                            ifiss, ndim*(ini-1)+j, iad)
-                ASSERT(iad.gt.0)
-                coord(j) = zr(jcesv(6)-1+iad)
-120          continue
+!
+           do 120 j = 1, ndim
+               call cesexi('S', jcesd(6), jcesl(6), nummai, 1,&
+                           ifiss, ndim*( ini-1)+j, iad)
+               ASSERT(iad.gt.0)
+               coord(j)=zr(jcesv(6)-1+iad)
+120         continue
+!
 ! ------- CALCUL DE LA DISTANCE
             dist = sqrt( ( coord(1)-geom(1))**2+ (coord(2)-geom(2))**2+ (coord(3)-geom(3) )**2 )
             call cesexi('S', jcesd(2), jcesl(2), nummai, 1,&
@@ -155,7 +157,7 @@ subroutine xmrept(jcesd, jcesv, jcesl, izone, ndim,&
                 endif
             endif
 110      continue
-100  end do
+100  continue
 !
 999  continue
 !

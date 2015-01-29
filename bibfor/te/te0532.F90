@@ -2,7 +2,6 @@ subroutine te0532(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
@@ -65,7 +64,7 @@ subroutine te0532(option, nomte)
     integer :: ivff, iadzi, iazk24, ibid, jout1, jout2
     integer :: jout3, jmemco, ndim, nfh, ddlc, ddls, ddlm
     integer :: npg, npgf, incoca, nfe, ninter, nnof, vstnc(1)
-    integer :: indco, gliss, memco, nface, cface(5, 3)
+    integer :: indco, gliss, memco, nface, cface(18, 6)
     integer :: nno, nnos, nnom, nnol, pla(27), lact(8), nlact, nvec
     integer :: contac, jbasec, nddl, nfiss, jfisno
     integer :: jmate, singu, jcohes, jcoheo, jheano, ifiss, jheafa, ncomph
@@ -326,7 +325,6 @@ subroutine te0532(option, nomte)
                                 zi(jout2-1+nbspg+isspg) = 1
                                 zi(jout3-1+nbspg+isspg) = 1
                             endif
-!
                         else
 !                SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1:
 !                PROBLEME DE STATUT DE CONTACT.
