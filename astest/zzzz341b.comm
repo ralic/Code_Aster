@@ -46,7 +46,7 @@ CLFIX=AFFE_CHAR_MECA(MODELE=MODE,
 CLROT=AFFE_CHAR_MECA(MODELE=MODE,
                      DDL_IMPO=_F(GROUP_MA='BASCULE',
                                  DX=1.0,
-                                 DY=0.0                  ,
+                                 DY=0.0,
                                  DZ=1.0,),);
 
 pres=1.0E+10
@@ -164,4 +164,164 @@ TEST_TABLE(TABLE=RESRN,
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=RESU,),);
 
+
+#===================================================================================
+# Validation de POST_RELEVE_T / MOMENT + REPERE='UTILISATEUR' (issue23442):
+#------------------------------------------------------------------------------
+
+# 1. On refait un calcul lineaire quelconque pour que les reactions soient significatives :
+#------------------------------------------------------------------------------------------
+
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
+                      CREA_GROUP_NO=(
+                           _F( GROUP_MA = 'FIXE',),
+                           _F( GROUP_MA = 'BASCULE',),
+                   ))
+CLFIX2=AFFE_CHAR_MECA(MODELE=MODE,
+                     DDL_IMPO=(
+                        _F(GROUP_MA='FIXE', DX=0.0, DY=0.0, DZ=0.0,),
+                        _F(NOEUD='N7', DX=0.0, DY=0.0, DZ=0.0,),
+                        ));
+
+CHFORC=AFFE_CHAR_MECA(MODELE=MODE,
+                     FORCE_NODALE=_F(GROUP_NO='BASCULE',
+                                 FX=5.e-1,
+                                 FY=7.e-1,
+                                 FZ=3.e-1,),);
+RESU2=MECA_STATIQUE(MODELE=MODE,
+                   CHAM_MATER=MATE,
+                   EXCIT=(_F(CHARGE=CLFIX2,),
+                          _F(CHARGE=CHFORC )),
+                   INST=3.,);
+
+RESU2=CALC_CHAMP(reuse =RESU2,
+                RESULTAT=RESU2,
+                FORCE=('REAC_NODA',),);
+
+# 2.1) le calcul POST1 donne la resultante et le moment / O dans le repere global :
+# => R et M
+#    Les tests sont de non-regression.
+#--------------------------------------------------------------------------------------------------
+
+POST1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', INTITULE='Moment/O Global',
+                              RESULTAT=RESU2, INST=3., NOM_CHAM='REAC_NODA',
+                              GROUP_NO='FIXE',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ'),
+                              POINT=(0.0,0.0,0.0),
+                              REPERE='GLOBAL',
+                              ),);
+
+IMPR_TABLE(TABLE=POST1,);
+TEST_TABLE(TABLE=POST1, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_X', VALE_CALC=   -0.4                ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST1, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Y', VALE_CALC=   -1.18347826087      ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST1, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Z', VALE_CALC=   -0.325537757437     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST1, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_X', VALE_CALC=   -0.242059496568     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST1, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Y', VALE_CALC=    0.325537757437     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST1, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Z', VALE_CALC=    0.11652173913      ,CRITERE='RELATIF',)
+
+
+# 2.2) le calcul POST2 donne la resultante et le moment / P=(-10,-20,-30) dans le repere global :
+# La resultante R est inchangee
+# Le moment M  est augmente de OP^R :
+POST2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', INTITULE='Moment/P Global',
+                              RESULTAT=RESU2, INST=3., NOM_CHAM='REAC_NODA',
+                              GROUP_NO='FIXE',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ'),
+                              POINT=(-10.0, -20.0, -30.0),
+                              REPERE='GLOBAL',
+                              ),);
+
+IMPR_TABLE(TABLE=POST2,);
+TEST_TABLE(TABLE=POST2, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_X', VALE_CALC=   -0.4                ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -0.4                ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST2, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Y', VALE_CALC=   -1.18347826087      ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -1.18347826087      ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST2, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Z', VALE_CALC=   -0.325537757437     ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -0.325537757437     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST2, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_X', VALE_CALC=   28.7515331808       ,REFERENCE='AUTRE_ASTER', VALE_REFE=  28.7515331808       ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST2, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Y', VALE_CALC=   -8.41908466819      ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -8.41908466819      ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST2, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Z', VALE_CALC=   -3.71826086957      ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -3.71826086957      ,CRITERE='RELATIF',)
+
+
+
+# 2.3) le calcul POST3 donne la resultante et le moment / O dans le repere ANGL_NAUT=(10., 20., 30.) :
+# La resultante R est "tournee"
+# Le moment M  est "tourne"
+# La matrice de rotation est :
+# Mrot= [[0.925416578398323, 0.163175911166535, -0.342020143325669],
+#        [0.01802831123629725, 0.882564119259386, 0.469846310392954],
+#        [0.378522306369792, -0.440969610529882, 0.813797681349374]]
+# On peut calculer "a la main" les 2 vecteurs "tournes"
+POST3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', INTITULE='Moment/O Utilisateur',
+                              RESULTAT=RESU2, INST=3., NOM_CHAM='REAC_NODA',
+                              GROUP_NO='FIXE',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ'),
+                              POINT=(0., 0., 0.),
+                              REPERE='UTILISATEUR', ANGL_NAUT=(10., 20., 30.),
+                              ),);
+
+IMPR_TABLE(TABLE=POST3,);
+TEST_TABLE(TABLE=POST3, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_X', VALE_CALC=   -0.451941304466     ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -0.451941304466     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST3, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Y', VALE_CALC=   -1.20465948769      ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -1.20465948769      ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST3, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Z', VALE_CALC=    0.105547153024     ,REFERENCE='AUTRE_ASTER', VALE_REFE=   0.105547153024     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST3, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_X', VALE_CALC=   -0.210738732811     ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -0.210738732811     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST3, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Y', VALE_CALC=    0.337691329447     ,REFERENCE='AUTRE_ASTER', VALE_REFE=   0.337691329447     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST3, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Z', VALE_CALC=   -0.140352055898     ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -0.140352055898     ,CRITERE='RELATIF',)
+
+
+
+# 2.4) le calcul POST4 donne la resultante et le moment / P (-10,-20,-30) dans le repere ANGL_NAUT=(10., 20., 30.) :
+# La resultante R est "tournee"
+# Le moment M  est le moment de POST2 "tourne"
+# La matrice de rotation est :
+# Mrot= [[0.925416578398323, 0.163175911166535, -0.342020143325669],
+#        [0.01802831123629725, 0.882564119259386, 0.469846310392954],
+#        [0.378522306369792, -0.440969610529882, 0.813797681349374]]
+# On peut calculer "a la main" les 2 vecteurs "tournes"
+POST4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION', INTITULE='Moment/P Utilisateur',
+                              RESULTAT=RESU2, INST=3., NOM_CHAM='REAC_NODA',
+                              GROUP_NO='FIXE',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ'),
+                              POINT=(-10., -20., -30.),
+                              REPERE='UTILISATEUR', ANGL_NAUT=(10., 20., 30.),
+                              ),);
+
+IMPR_TABLE(TABLE=POST4,);
+TEST_TABLE(TABLE=POST4, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_X', VALE_CALC=   -0.451941304466     ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -0.451941304466     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST4, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Y', VALE_CALC=   -1.20465948769      ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -1.20465948769      ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST4, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='RESULT_Z', VALE_CALC=    0.105547153024     ,REFERENCE='AUTRE_ASTER', VALE_REFE=   0.105547153024     ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST4, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_X', VALE_CALC=   26.5050737635       ,REFERENCE='AUTRE_ASTER', VALE_REFE=  26.5050737635       ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST4, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Y', VALE_CALC=   -8.65905160709      ,REFERENCE='AUTRE_ASTER', VALE_REFE=  -8.65905160709      ,CRITERE='RELATIF',)
+TEST_TABLE(TABLE=POST4, FILTRE=_F(NOM_PARA='INST', VALE=3.0,),
+           NOM_PARA='MOMENT_Z', VALE_CALC=   11.5697450641       ,REFERENCE='AUTRE_ASTER', VALE_REFE=  11.5697450641       ,CRITERE='RELATIF',)
+#===================================================================================
+
+
+
+
 FIN();
+

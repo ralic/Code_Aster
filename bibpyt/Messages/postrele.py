@@ -405,4 +405,11 @@ Erreur de programmation dans la commande POST_RELEVE_T : Une incohérence a ét�
     C'est à dire qu'il faut remplacer INTE_MAIL_XX + POST_RELEVE par MACR_LIGN_COUPE.
 
 """),
+
+    68 : _(u"""
+Erreur utilisateur dans la commande POST_RELEVE_T :
+  Pour les mots clés ACTION / RESULTANTE (et MOMENT), on ne peut utiliser que le repère
+ 'GLOBAL' ou le repère 'UTILISATEUR' (avec ANGL_NAUT).
+"""),
+
 }

@@ -32,6 +32,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/rvchve.h"
 !
     character(len=19) :: sdeval
     character(len=24) :: sdmoye, sdlieu
@@ -81,7 +82,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     integer :: deb, fin, lmoye, nbcp, nbco, nbsp, nboc, nbsgt, nres, nmom
     integer :: l1, l2, l3, l5, ioc, i, j, k, l, n, nbpt
 !
-    real(kind=8) :: t1, t(3), x, y, z, xpi, ypi, zpi, rx, ry, rz, mx, my, mz
+    real(kind=8) :: t1, t(3), x, y, z, xpi=0.d0, ypi=0.d0, zpi=0.d0, rx, ry, rz, mx, my, mz
     real(kind=8) :: zero
 !
 !==================== CORPS DE LA ROUTINE =============================
@@ -103,6 +104,11 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     call getvtx('ACTION', 'MOMENT', iocc=iocc, nbval=0, nbret=nmom)
     nres = -nres
     nmom = -nmom
+
+!   -- si on utilise RESULTANTE ou MOMENT, on verifie que REPERE est correct :
+    if (nres.gt.0 .or. nmom.gt.0) then
+        call rvchve(iocc,xpi,ypi,zpi)
+    endif
 !
     call jelira(sdlieu(1:19)//'.REFE', 'DOCU', cval=docul)
     call jelira(sdeval//'.VALE', 'DOCU', cval=docu)
@@ -287,6 +293,8 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
         n = -n
         call getvr8('ACTION', 'POINT', iocc=iocc, nbval=n, vect=t,&
                     nbret=i)
+
+!       -- point P : (x,y,z)
         x = t(1)
         y = t(2)
         if (n .eq. 2) then
@@ -299,38 +307,44 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
         adr1 = (i-1)*nbcp
         adr2 = (i-1)*6
         do 151, j = 1, nbpt, 1
-        l = (j-1)*3 + k-1
-        l5 = (j-1)*l1
-        xpi = zr(l+1) - x
-        ypi = zr(l+2) - y
-        zpi = zr(l+3) - z
+            l = (j-1)*3 + k-1
+            l5 = (j-1)*l1
+
+!           -- calcul du vecteur PM :
+            xpi = zr(l+1) - x
+            ypi = zr(l+2) - y
+            zpi = zr(l+3) - z
+
+!           -- changement de repere pour le vecteur PM :
+            call rvchve(iocc,xpi,ypi,zpi)
+
 !
-        if (nmom .eq. 3) then
-            rx = zr(atab + l5 + adr1 + 1-1)
-            ry = zr(atab + l5 + adr1 + 2-1)
-            rz = zr(atab + l5 + adr1 + 3-1)
-            mx = zr(atab + l5 + adr1 + 4-1)
-            my = zr(atab + l5 + adr1 + 5-1)
-            mz = zr(atab + l5 + adr1 + 6-1)
-        else
-            rx = zr(atab + l5 + adr1 + 1-1)
-            ry = zr(atab + l5 + adr1 + 2-1)
-            rz = zero
-            mx = zr(atab + l5 + adr1 + 3-1)
-            my = zr(atab + l5 + adr1 + 4-1)
-            mz = zero
-        endif
+            if (nmom .eq. 3) then
+                rx = zr(atab + l5 + adr1 + 1-1)
+                ry = zr(atab + l5 + adr1 + 2-1)
+                rz = zr(atab + l5 + adr1 + 3-1)
+                mx = zr(atab + l5 + adr1 + 4-1)
+                my = zr(atab + l5 + adr1 + 5-1)
+                mz = zr(atab + l5 + adr1 + 6-1)
+            else
+                rx = zr(atab + l5 + adr1 + 1-1)
+                ry = zr(atab + l5 + adr1 + 2-1)
+                rz = zero
+                mx = zr(atab + l5 + adr1 + 3-1)
+                my = zr(atab + l5 + adr1 + 4-1)
+                mz = zero
+            endif
 !
-        mx = ypi*rz - zpi*ry + mx
-        my = zpi*rx - xpi*rz + my
-        mz = xpi*ry - ypi*rx + mz
+            mx = ypi*rz - zpi*ry + mx
+            my = zpi*rx - xpi*rz + my
+            mz = xpi*ry - ypi*rx + mz
 !
-        zr(amoye+adr2+1-1) = zr(amoye+adr2+1-1) + rx
-        zr(amoye+adr2+2-1) = zr(amoye+adr2+2-1) + ry
-        zr(amoye+adr2+3-1) = zr(amoye+adr2+3-1) + rz
-        zr(amoye+adr2+4-1) = zr(amoye+adr2+4-1) + mx
-        zr(amoye+adr2+5-1) = zr(amoye+adr2+5-1) + my
-        zr(amoye+adr2+6-1) = zr(amoye+adr2+6-1) + mz
+            zr(amoye+adr2+1-1) = zr(amoye+adr2+1-1) + rx
+            zr(amoye+adr2+2-1) = zr(amoye+adr2+2-1) + ry
+            zr(amoye+adr2+3-1) = zr(amoye+adr2+3-1) + rz
+            zr(amoye+adr2+4-1) = zr(amoye+adr2+4-1) + mx
+            zr(amoye+adr2+5-1) = zr(amoye+adr2+5-1) + my
+            zr(amoye+adr2+6-1) = zr(amoye+adr2+6-1) + mz
 151      continue
 150      continue
     endif
