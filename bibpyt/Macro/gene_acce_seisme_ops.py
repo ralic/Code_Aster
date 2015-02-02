@@ -36,7 +36,8 @@ from Utilitai.random_signal_utils import (
     calc_dsp_KT, f_ARIAS, f_ARIAS_TSM, fonctm_gam, dsp_filtre_CP,
     fonctm_JetH, acce_filtre_CP, f_opta, f_opt1, f_opt2
 )
-
+from Utilitai.signal_correlation_utils import (
+              DSP2ACCE_ND, gene_traj_gauss_evol_ND)
 
 def gene_acce_seisme_ops(self, **kwargs):
     """Corps de la macro GENE_ACCE_SEIMSE"""
@@ -88,6 +89,17 @@ class GeneAcceParameters(object):
         # OtherKeys
         others = kwargs.keys()
         others.remove('MODULATION')
+        others.remove('CORR_COEF')
+ #     # SimulationKeys
+        simu_keys={}
+        print kwargs
+        if kwargs.get('CORR_COEF'):
+            simu_keys['TYPE'] = 'VECTOR'
+            simu_keys['CORR_COEF'] = kwargs.get('CORR_COEF')
+        else:
+           simu_keys['TYPE'] = 'SCALAR'
+        self.simulation_keys = simu_keys
+        print 'self.simulation_keys', self.simulation_keys
         # GeneratorKeys
         if kwargs.get('DSP'):
             self.cas = 'DSP'
@@ -123,7 +135,9 @@ class GeneAcceParameters(object):
         other_keys['FREQ_CORNER'] = kwargs.get('FREQ_CORNER')
         other_keys['FREQ_PENTE'] = kwargs.get('FREQ_PENTE')
         self.method_keys.update(other_keys)
-
+        self.simulation_keys.update(other_keys)
+        self.simulation_keys.update({'CAS': self.cas})
+        print 'self.simulation_keys', self.simulation_keys
 
 class Generator(object):
 
@@ -147,6 +161,7 @@ class Generator(object):
         self.INFO = params.method_keys['INFO']
         self.modul_params = params.modulation_keys
         self.method_params = params.method_keys
+        self.simulation_params = params.simulation_keys
         self.specmethode = params.specmethode
         self.FREQ_FILTRE = params.method_keys['FREQ_FILTRE']
         self.FREQ_CORNER = params.method_keys['FREQ_CORNER']
@@ -154,9 +169,13 @@ class Generator(object):
         self.DSP_args = {}
         self.SRO_args = {'NORME': self.norme}
         self.ntir = 0
+        self.dim = 1
+        self.tab = Table(titr='GENE_ACCE_SEISME concept : %s' % macro.sd.nom)
         self.sampler = Sampler(params.modulation_keys, params.method_keys)
         # modulation indépendant de DSP/SPECTRE mais dépend de sampler:
         self.modulator = Modulator.factory(params.modulation_keys)
+        # simulation depend de generator:
+        self.simulator = Simulator.factory(params.simulation_keys)
         # parametres des t_fonctions  a creer
         self.para_fonc_traj = {
             'NOM_PARA': 'INST', 'NOM_RESU': 'ACCE', 'PROL_DROITE': 'EXCLU',
@@ -175,7 +194,11 @@ class Generator(object):
         """run modulation"""
         self.modulator.run(self.sampler.liste_temps, self.sampler.DUREE_SIGNAL)
 
-    def compute_TimeHistory(self, Xt):
+    def build_output(self):
+        """run modulation"""
+        self.simulator.run(self)
+
+    def process_TimeHistory(self, Xt):
         """apply modulation and low pass filter if requested"""
         Xm = Xt * self.modulator.fonc_modul.vale_y
         if self.FREQ_FILTRE > 0.0:
@@ -191,7 +214,7 @@ class Generator(object):
         raise NotImplementedError('must be implemented in a subclass')
 
     def build_result(self):
-        """specific to each method"""
+        """specific to each method: output table"""
         raise NotImplementedError('must be implemented in a subclass')
 
     def run(self):
@@ -255,34 +278,16 @@ class GeneratorDSP(Generator):
             self.DSP_args.update({'FONC_DSP': fonc_dsp,
                                   'TYPE_DSP': 'KT'})
 
-    def build_TimeHistory(self):
-        """build Time History for DSP class"""
-        if self.INFO == 2:
-            UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
-        if 'FREQ_PENTE' in self.DSP_args:
-            Xt = gene_traj_gauss_evol1D(self, **self.DSP_args)
-        else:
-            Xt = DSP2ACCE1D(self.DSP_args['FONC_DSP'])
-        Xt = self.compute_TimeHistory(NP.array(Xt))
-        return Xt
-
     def build_result(self):
         """Create the result function"""
        # Le concept sortant (de type table_fonction) est tab
         macr = self.macro
-        DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
         CREA_TABLE = macr.get_cmd('CREA_TABLE')
         macr.DeclareOut('tab_out', macr.sd)
         #--- construction des fonctions sortie
-        tab = Table(titr='GENE_ACCE_SEISME concept : %s' % self.name)
-        for iii in range(self.method_params['NB_TIRAGE']):
-            Xt = self.build_TimeHistory()
-            _f_out = DEFI_FONCTION(ABSCISSE=tuple(self.sampler.liste_temps),
-                                   ORDONNEE=tuple(Xt), **self.para_fonc_traj)
-            tab.append({'NUME_ORDRE': self.ntir + 1,  'FONCTION': _f_out.nom})
-            self.ntir = self.ntir + 1
+        self.build_output()
         #--- Creation du concept (table) en sortie
-        dict_keywords = tab.dict_CREA_TABLE()
+        dict_keywords = self.tab.dict_CREA_TABLE()
         tab_out = CREA_TABLE(TYPE_TABLE='TABLE_FONCTION', **dict_keywords)
 
 
@@ -389,7 +394,7 @@ class GeneratorSpectrum(Generator):
                          self, self.DSP_args['FONC_DSP'],
                          NB_TIRAGE=1, **self.SRO_args)
                     Xt = DSP2ACCE1D(fonc_dsp_opt, rv0[0])
-            Xt = self.compute_TimeHistory(NP.array(Xt))
+            Xt = self.process_TimeHistory(NP.array(Xt))
             return Xt
         if self.specmethode == 'SPEC_FRACTILE':
             if self.FREQ_PENTE != None:
@@ -402,7 +407,7 @@ class GeneratorSpectrum(Generator):
                                        len(self.sampler.liste_w2),
                                        self.DSP_args['FONC_DSP'])
                 Xt = DSP2ACCE1D(fonc_dsp_rv)
-            Xt = self.compute_TimeHistory(NP.array(Xt))
+            Xt = self.process_TimeHistory(NP.array(Xt))
             return Xt
         if self.specmethode == 'SPEC_MEDIANE':
             if 'NB_ITER' not in self.method_params:
@@ -410,7 +415,7 @@ class GeneratorSpectrum(Generator):
                     Xt = gene_traj_gauss_evol1D(self, **self.DSP_args)
                 else:
                     Xt = DSP2ACCE1D(self.DSP_args['FONC_DSP'])
-                Xt = self.compute_TimeHistory(NP.array(Xt))
+                Xt = self.process_TimeHistory(NP.array(Xt))
                 return Xt
             else:  # 'NB_ITER' in self.method_params:
                 tab = Table(titr='GENE_ACCE_SEISME concept : %s' % self.name)
@@ -428,7 +433,7 @@ class GeneratorSpectrum(Generator):
                     for (ntir, rvtir) in enumerate(liste_rv):
                         Xt = gene_traj_gauss_evol1D(self, rv=rvtir,
                                                     **self.DSP_args)
-                        Xt = self.compute_TimeHistory(Xt)
+                        Xt = self.process_TimeHistory(Xt)
                         _f_out = DEFI_FONCTION(
                             ABSCISSE=tuple(self.sampler.liste_temps),
                             ORDONNEE=tuple(Xt), **self.para_fonc_traj)
@@ -444,7 +449,7 @@ class GeneratorSpectrum(Generator):
                                                          **self.SRO_args)
                     for (ntir, rvtir) in enumerate(liste_rv):
                         Xt = DSP2ACCE1D(fonc_dsp_opt, rv=rvtir)
-                        Xt = self.compute_TimeHistory(Xt)
+                        Xt = self.process_TimeHistory(Xt)
                         _f_out = DEFI_FONCTION(
                             ABSCISSE=tuple(self.sampler.liste_temps),
                             RDONNEE=tuple(Xt), **self.para_fonc_traj)
@@ -463,21 +468,20 @@ class GeneratorSpectrum(Generator):
         # construction fonctions sortie
         #     avec iterations sur l'ensemble (SPEC_MEDIANE)
         if 'NB_ITER' in self.method_params and self.specmethode == 'SPEC_MEDIANE':
-            tab = self.build_TimeHistory()
+            self.tab = self.build_TimeHistory()
         #--- construction des fonctions sortie sans iterations sur l'ensemble
         else:
-            tab = Table(titr='GENE_ACCE_SEISME concept : %s' % self.name)
             for iii in range(self.method_params['NB_TIRAGE']):
                 listv = self.build_TimeHistory()
                 _f_out = DEFI_FONCTION(
                     ORDONNEE=tuple(listv),
                     ABSCISSE=tuple(self.sampler.liste_temps),
                     **self.para_fonc_traj)
-                tab.append({'NUME_ORDRE': self.ntir + 1,
+                self.tab.append({'NUME_ORDRE': self.ntir + 1,
                             'FONCTION': _f_out.nom})
                 self.ntir = self.ntir + 1
         #--- construction de la table produite: Creation du concept en sortie
-        dict_keywords = tab.dict_CREA_TABLE()
+        dict_keywords = self.tab.dict_CREA_TABLE()
         tab_out = CREA_TABLE(TYPE_TABLE='TABLE_FONCTION',
                              **dict_keywords)
 
@@ -693,3 +697,142 @@ class ModulatorConstant(Modulator):
         if self.modul_params['INFO'] == 2:
             UTMESS('I', 'SEISME_44', valk=('CONSTANTE', 'None'),
                    valr=(self.DUREE_PHASE_FORTE, self.T1, self.T2))
+
+
+
+#     -----------------------------------------------------------------
+#          SIMULATION  
+#     -----------------------------------------------------------------
+
+class Simulator(object):
+
+    """class Simulation"""
+
+    @staticmethod
+    def factory(simu_params):
+        """create an instance of the simulator"""
+        if simu_params['CAS'] == 'DSP':
+            if simu_params['TYPE'] == 'VECTOR':
+                 return SimulatorDSPVector(simu_params)
+            elif simu_params['TYPE'] == 'SCALAR':
+                return SimulatorDSPScalar(simu_params)
+            else:
+                raise ValueError('unknown configuration')
+        elif simu_params['CAS'] == 'SPECTRE':
+            if simu_params['TYPE'] == 'VECTOR':
+                 return SimulatorSPECVector(simu_params)
+            elif simu_params['TYPE'] == 'SCALAR':
+                return SimulatorSPECScalar(simu_params)
+            else:
+                raise ValueError('unknown configuration')
+        else:
+            raise ValueError('unknown configuration')
+
+
+    def __init__(self, simu_params):
+        self.simu_params = simu_params
+        self.type = simu_params['TYPE']
+        self.rho = None
+        self.ntir = 0
+        self.INFO = simu_params['INFO']
+        self.nbtirage = simu_params['NB_TIRAGE']
+        self.FREQ_FILTRE = simu_params['FREQ_FILTRE']
+        self.para_fonc_traj = {
+            'NOM_PARA': 'INST', 'NOM_RESU': 'ACCE', 'PROL_DROITE': 'EXCLU',
+            'PROL_GAUCHE': 'EXCLU', 'TITRE': simu_params['TITRE'], }
+
+
+    def process_TimeHistory(self, generator, Xt):
+        """apply modulation and low pass filter if requested"""
+        Xm = Xt * generator.modulator.fonc_modul.vale_y
+        if self.FREQ_FILTRE > 0.0:
+            Xm = acce_filtre_CP(Xm, generator.sampler.DT, self.FREQ_FILTRE)
+        return Xm
+
+    def build_TimeHistory(self):
+        """ build_TimeHistory: specific to scalar or vector case"""
+        raise NotImplementedError('must be implemented in a subclass')
+
+    def run(self, generator):
+        """ run simulator: specific to scalar or vector case"""
+        raise NotImplementedError('must be implemented in a subclass')
+
+
+class SimulatorDSPScalar(Simulator):
+    """Construct scalar signal for DSP class"""
+
+    def build_TimeHistory(self, generator):
+        """build scalar Time History for DSP class"""
+        if self.INFO == 2:
+            UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
+        if 'FREQ_PENTE' in generator.DSP_args:
+            Xt = gene_traj_gauss_evol1D(generator, **generator.DSP_args)
+        else:
+            Xt = DSP2ACCE1D(generator.DSP_args['FONC_DSP'])
+        Xt = self.process_TimeHistory(generator, NP.array(Xt))
+        return Xt
+
+    def run(self, generator):
+        """Create the result table of functions"""
+        macr=generator.macro
+        DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
+        for iii in range(self.nbtirage):
+            Xt = self.build_TimeHistory(generator)
+            _f_out = DEFI_FONCTION(ABSCISSE=tuple(generator.sampler.liste_temps),
+                                   ORDONNEE=tuple(Xt), **self.para_fonc_traj)
+            generator.tab.append({'NUME_ORDRE': self.ntir + 1,  'FONCTION': _f_out.nom})
+            self.ntir = self.ntir + 1
+
+
+class SimulatorDSPVector(Simulator):
+    """Construct vector valued signal with correlation matrix for DSP class""" 
+
+    def build_TimeHistory(self, generator):
+        rho = self.simu_params['CORR_COEF']
+        """build vector valued Time History for DSP class"""
+        Mat_cor = NP.array([[1.0 , rho ],[rho ,1.0]])
+        if self.INFO == 2:
+            UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
+        if 'FREQ_PENTE' in generator.DSP_args:
+            Xt = gene_traj_gauss_evol_ND(generator, Mat_cor,
+                                       **generator.DSP_args)
+        else:
+            Xt = DSP2ACCE_ND(generator.DSP_args['FONC_DSP'], Mat_cor)
+        return Xt
+
+    def run(self, generator):
+        """build result for vector DSP class"""
+        macr=generator.macro
+        DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
+        for iii in range(self.nbtirage):
+            Xt = self.build_TimeHistory(generator)
+            accex = self.process_TimeHistory(generator, NP.array(Xt[0]))    
+            accey = self.process_TimeHistory(generator, NP.array(Xt[1]))
+            _f_outx = DEFI_FONCTION(
+                          ABSCISSE = tuple(generator.sampler.liste_temps),
+                          ORDONNEE = tuple(accex), **self.para_fonc_traj)
+            _f_outy = DEFI_FONCTION(
+                          ABSCISSE = tuple(generator.sampler.liste_temps),
+                          ORDONNEE = tuple(accey), **self.para_fonc_traj)
+            generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                         'FONCTION': _f_outx.nom ,  'NOM_PARA':'ACCEX' })
+            generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                         'FONCTION': _f_outy.nom ,  'NOM_PARA': 'ACCEY' })
+            self.ntir = self.ntir + 1
+
+
+class SimulatorSPECVector(Simulator):
+
+    """Construct scalar signal for SPEC class"""
+
+    def run(self, generator):
+        pass
+
+class SimulatorSPECScalar(Simulator):
+
+    """Construct vector valued signal with correlation matrix for SPEC class""" 
+
+    def run(self, generator):
+        pass
+
+

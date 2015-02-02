@@ -35,6 +35,7 @@ GENE_ACCE_SEISME=MACRO(nom="GENE_ACCE_SEISME",
          FREQ_CORNER       =SIMP(statut='f',typ='R', val_min=0.0, fr=tr("frequence du filtre frequentiel: corner frequency")),
          FREQ_FILTRE       =SIMP(statut='f',typ='R', defaut= 0.0, val_min=0.0, fr=tr("frequence du filtre temporel")),
          FREQ_PENTE        =SIMP(statut='f',typ='R',  fr=tr("pente pour l'evolution de la frequence centrale")),
+         CORR_COEF         =SIMP(statut='f',typ='R',val_min=-1.0, val_max=1.0, fr=tr("Correlation coefficient for horizontal motion")),
 #
          DSP        = FACT(statut='f',max=1,     
             AMOR_REDUIT   =SIMP(statut='o',typ='R'),

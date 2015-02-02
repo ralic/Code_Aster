@@ -26,6 +26,11 @@ DSP2ACCE1D        ---      generation of trajectories of a stationary Gaussian p
 gene_traj_gauss_evol1D ---      generation of trajectories of a non stationary Gaussian process
 calc_dsp_KT            ---      construct KT PSD
 calc_dsp_FR            ---      construct rational PSD
+acce_filtre_CP         ---       high pass filter for seismic signals 
+DSP2SRO                ---       identify PSD from given response spectrum
+SRO2DSP                ---      determine response spectrum for a given PSD
+Acce2SRO               ---      calculate response spectrum of a seismic signal
+                                (accelerogram) by FFT
 """
 
 from Utilitai.Utmess import UTMESS
@@ -45,8 +50,6 @@ def DSP2ACCE1D(f_dsp, rv=None):
    #     rv: realisation du vecteur de variables aleatoires gaussiennes complexe
    # OUT: Xt: trajectoire du processus gaussien stationnaire normalise (m=0, ect=1)
    # ----------------------------------
-    import aster_core
-# ajouter:   FMIN, FMAX
     vale_dsp = f_dsp.vale_y
     lw2 = f_dsp.vale_x
     DW = lw2[1] - lw2[0]
@@ -70,8 +73,6 @@ def DSP2ACCE1D(f_dsp, rv=None):
 # --------------------------------------------------------------------------
 #  ALGORITHME DE GENERATION DE SIGNAUX GAUSSIENS DSP evolutive non separable
 #---------------------------------------------------------------------------
-
-
 def gene_traj_gauss_evol1D(self, rv=None, **kwargs):
    #---------------------------------------------
    # IN: calc_dsp_KT: function for the definition of the PSD matrix (KT ou rational type)
@@ -80,7 +81,6 @@ def gene_traj_gauss_evol1D(self, rv=None, **kwargs):
    #      fcp [Hz]: corner frequency for Clough & Penzien filter
    # OUT: Xt: trajectoire du processus gaussien stationnaire normalise (m=0, ect=1)
    #---------------------------------------------
-    import aster_core
     nbfreq2 = len(self.sampler.liste_w2)
     nbfreq = 2 * nbfreq2
     DW = self.sampler.DW
@@ -145,13 +145,11 @@ def gene_traj_gauss_evol1D(self, rv=None, **kwargs):
             -1.j * self.sampler.liste_w2 * tii)
         vale_Xt = sum(vale_xp) + sum(vale_xn)
         Xt.append(vale_Xt.real * sqrt(DW))
-    aster_core.matfpe(1)
     return Xt
 
 #-----------------------------------------------------------------
 #    filtre corner frequency wcp (modele Clough&Penzien)
 #-----------------------------------------------------------------
-
 
 def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
     # ---------------------------------------------------------
@@ -188,7 +186,6 @@ def acce_filtre_CP(vale_acce, dt, fcorner, amoc=1.0):
 
 # ------------------------------------------------------------------------
 
-
 def dsp_filtre_CP(f_in, fcorner, amoc=1.0):
     # ---------------------------------------------------------
     # IN : f_in: DSP (frequence rad/s),
@@ -214,7 +211,6 @@ def dsp_filtre_CP(f_in, fcorner, amoc=1.0):
 #     KANAI TAJIMI PSD
 #-----------------------------------------------------------------
 
-
 def calc_dsp_KT(self, freq_fond, amo, So=1.0):
     w0 = freq_fond * 2. * pi
     # KT model
@@ -236,7 +232,6 @@ def calc_dsp_KT(self, freq_fond, amo, So=1.0):
 #
 #     FRACTION RATIONELLE
 #-----------------------------------------------------------------
-
 
 def calc_dsp_FR(lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0):
     # KT model parameters
@@ -921,7 +916,6 @@ def RAND_VEC(MAT_CHOL, Nbf, para=1.):
     return alpha
 
 # Model des coefficients de correlation (Baker)
-
 
 def corrcoefmodel(Period, f_beta=None):
     # ---------------------------------------------------------
