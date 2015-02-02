@@ -85,6 +85,8 @@ def process_h(self, node):
 def build_as_shared(self, shenv):
     get_srcs = self.path.get_src().ant_glob
     uses = shenv['all_dependencies']
+    if shenv.BUILD_MFRONT:
+        uses.append('astermfront')
 
     self(
         features = 'c cshlib',
@@ -142,7 +144,9 @@ def build_as_shared(self, shenv):
 
 def build_as_embeded(self, stenv):
     get_srcs = self.path.get_src().ant_glob
-    uses = stenv['all_dependencies']
+    uses = stenv['all_dependencies'][:]
+    if stenv.BUILD_MFRONT:
+        uses.append('astermfront')
 
     excl = ['**/med_aster_module.c'] if not stenv.BUILD_MED else []
 

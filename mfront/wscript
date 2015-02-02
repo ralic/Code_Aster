@@ -60,7 +60,7 @@ def build(self):
             includes = '../bibcxx/mfront',
               target = 'mfront_request',
                  env = env.derive(),
-                 use = ('MFRONT', ),
+                 use = ('MFRONT', 'MFRONT_ONLY'),
         install_path = None,
         )
 
@@ -85,7 +85,7 @@ def build(self):
               target = env['_ASTERBEHAVIOUR'],
         install_path = env.ASTERLIBDIR,
                  env = env.derive(),
-                 use = ('MFRONT', ),
+                 use = ('MFRONT', 'MFRONT_ONLY'),
         )
         lst = [i.name for i in lmfront]
         self(
@@ -125,11 +125,14 @@ def check_mfront(self):
         arch = 'ASTER_ARCH=32'
     self.env.append_value('DEFINES_MFRONT', arch)
     # remove options usually used by MFront but in conflict with our code
-    self.safe_remove('CFLAGS_MFRONT', '-fvisibility=hidden')
-    self.safe_remove('CFLAGS_MFRONT', '-fvisibility-inlines-hidden')
-    self.safe_remove('CFLAGS_MFRONT', '-ftree-vectorize')
+    for flag in ('-fvisibility=hidden', '-fvisibility-inlines-hidden',
+                 '-ftree-vectorize'):
+        self.safe_remove('CFLAGS_MFRONT', flag)
+        self.safe_remove('CXXFLAGS_MFRONT', flag)
+        self.env.append_value('CFLAGS_MFRONT_ONLY', flag)
+        self.env.append_value('CXXFLAGS_MFRONT_ONLY', flag)
     # remove some g++ options if icpc is used
-    if 'icpc' in self.env.CXX:
+    if 'icpc' in self.env.CXX_NAME:
         self.safe_remove('CXXFLAGS_MFRONT', '-ftree-vectorize')
     self.check_mfront_libs()
     self.check_mfront_obsolete_source()
