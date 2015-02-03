@@ -2176,12 +2176,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG22       ELEMENT__ THPLSE22
               MAILLE__ SEG33       ELEMENT__ THPLSE33
 
-       MODELISATION__ 'CL_SNOD2'            DIM__ 0 2   CODE__ 'CL7'
-              MAILLE__ POI1        ELEMENT__ SOURCE_NOD_2D
-
-       MODELISATION__ 'CL_SNOD3'            DIM__ 0 3   CODE__ 'CL8'
-              MAILLE__ POI1        ELEMENT__ SOURCE_NOD_3D
-
 
 %=============================================================================================
 
