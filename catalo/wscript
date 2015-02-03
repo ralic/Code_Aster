@@ -145,6 +145,8 @@ def exec_pyaster(self, pyfile, args, **kwargs):
     cmdprefix = Utils.to_list(env['CATALO_CMD'])
     cmds = ' '.join(cmdenv + cmdprefix + cmdexe)
     Logs.debug('os environ: %r' % environ)
+    # do not confuse with installed elementsdir
+    environ['ASTER_ELEMENTSDIR'] = ''
     kwargs['output'] = Context.BOTH
     try:
         out, err = self.cmd_and_log(cmds, env=environ, shell=True, quiet=0, **kwargs)
@@ -158,6 +160,7 @@ def exec_pyaster(self, pyfile, args, **kwargs):
         Logs.info('LIBDIR="%s"' % environ['LIBDIR'])
         Logs.info('PYTHONDIR="%s"' % environ['PYTHONDIR'])
         Logs.info('export LD_LIBRARY_PATH="%s"' % environ['LD_LIBRARY_PATH'])
+        Logs.info('export PYTHONPATH="%s"' % environ['PYTHONPATH'])
         Logs.info(' '.join(cmdexe))
         raise
 
