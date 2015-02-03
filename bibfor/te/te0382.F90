@@ -129,13 +129,11 @@ subroutine te0382(option, nomte)
     call jevech('PERREUR', 'E', ierr)
 !
 ! 1.2. --- LES CARACTERISTIQUES DE LA MAILLE EN COURS
-    call tecael(iadzi, iazk24)
-    valk(1)=zk24(iazk24-1+3)
-    valk(2)=option
 !
     call elref1(elrefe)
 !
     if (niv .ge. 2) then
+        call tecael(iadzi, iazk24, noms=0)
         write(ifm,*) ' '
         write(ifm,*) '================================================='
         write(ifm,*) ' '

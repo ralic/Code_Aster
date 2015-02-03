@@ -80,7 +80,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     rr = 0.d0
     ncomph = 0
     nbspg = 0
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
 ! --- ROUTINE SPECIFIQUE P2P1

@@ -105,7 +105,7 @@ subroutine te0547(option, nomte)
     call xteini(nomte, nfh, nfe, singu, ddlc,&
                 nnom, ddls, nddl, ddlm, nfiss,&
                 contac)
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
 !
 ! --- ROUTINE SPECIFIQUE P2P1

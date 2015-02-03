@@ -44,7 +44,7 @@ subroutine connec(nomte, nse, nnop2, c)
     integer :: nno, i, j, iadzi, iazk24
     character(len=8) :: alias8
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     nno = zi(iadzi-1+2)
 !
 ! INITIALISATION DU TABLEAU COMPLET

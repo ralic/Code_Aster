@@ -156,7 +156,7 @@ subroutine te0038(option, nomte)
             iy1 = pi* (rext**4-rint**4)/4.d0
             iz1 = iy1
 !
-            call tecael(iadzi, iazk24)
+            call tecael(iadzi, iazk24, noms=0)
             nn2 = zi(iadzi-1+2)
             call carcou(zr(lorien), xl, pgl, rayon, theta,&
                         pgl1, pgl2, pgl3, pgl4, nn2, omega, icoude)

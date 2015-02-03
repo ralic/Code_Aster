@@ -142,7 +142,7 @@ subroutine te0520(option, nomte)
     ASSERT(vf)
 !
 !     -- RECHERCHE DE VOISINAGES
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     numa=zi(iadzi-1+1)
     if ((typvf.eq.1) .or. (typvf.eq.2)) then
         codvoi='A2'

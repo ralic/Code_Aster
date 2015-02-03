@@ -116,7 +116,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
     if (minlsn*maxlsn.gt.0.d0) goto 999
     if (minlst*maxlst.gt.0.d0) goto 999
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
 !     CALCUL D'UNE LONGUEUR CARACTERISTIQUE DE L'ELEMENT

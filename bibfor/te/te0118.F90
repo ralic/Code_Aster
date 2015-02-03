@@ -99,9 +99,8 @@ subroutine te0118(option, nomte)
     tol=100.d0*r8prem()
 !
 !  VERIFICATION DU TYPE D'ELEMENT
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
-    nomail= zk24(iazk24-1+3)(1:8)
 !
 !
 !  CALCUL DE NDIME (2 OU 3) DIMENSION DE L'ESPACE :
@@ -191,6 +190,8 @@ subroutine te0118(option, nomte)
     else
         if (typma(1:5) .ne. 'TETRA' .and. typma(1:4) .ne. 'HEXA' .and. typma(1:3) .ne.&
             'TRI' .and. typma(1:3) .ne. 'QUA') then
+            call tecael(iadzi, iazk24)
+            nomail= zk24(iazk24-1+3)(1:8)
             valk(1) = option
             valk(2) = nomail
             valk(3) = typma
@@ -339,6 +340,8 @@ subroutine te0118(option, nomte)
                     sigmni(i)=sigmni(i)+zr(ini-1+(ino-1)*3+i)
 130              continue
                 if (abs(sigmni(i)) .gt. toleni) then
+                    call tecael(iadzi, iazk24)
+                    nomail= zk24(iazk24-1+3)(1:8)
                     call utmess('F', 'ELEMENTS3_20', sk=nomail)
                 endif
 120          continue

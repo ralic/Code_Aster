@@ -63,7 +63,7 @@ subroutine te0332(option, nomte)
 !
 !     RECUPERATION DU NUMERO DE LA MAILLE :
 !     -------------------------------------
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     ima =zi(iadzi)
     numema= dble(ima)
     laxi = .false.

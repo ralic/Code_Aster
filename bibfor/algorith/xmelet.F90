@@ -184,7 +184,7 @@ subroutine xmelet(nomte, typmai, elrees, elrema, elreco,&
         endif
 190  end do
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
     if (typma(1:2) .eq. typma(4:5)) then
         elrees = elrema

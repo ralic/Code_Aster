@@ -149,7 +149,7 @@ subroutine te0037(option, nomte)
                     contac)
     endif
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
     if (ndim .eq. 3) then

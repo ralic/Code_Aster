@@ -86,7 +86,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !     RECUPERATION DES INFORMATIONS SUR LE MACRO-ELEMENT PARENT
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
 !     INITIALISATION DU NOMBRE DE POINTS TELS QUE LSN=0

@@ -83,7 +83,7 @@ subroutine dxmate(fami, df, dm, dmf, dc,&
 !
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    call tecael(iazi, iazk24)
+    call tecael(iazi, iazk24, noms=0)
     nomte = zk24(iazk24-1+3+nno+1)(1:16)
 !
     call jevech('PCACOQU', 'L', jcoqu)

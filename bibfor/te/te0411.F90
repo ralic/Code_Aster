@@ -55,7 +55,7 @@ subroutine te0411(option, nomte)
 ! ----------------------------------------------------------------------
     call jemarq()
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     call elref1(elrefe)
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nnop,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)

@@ -118,7 +118,7 @@ subroutine fnoesu(option, nno, nnos, nnom, nface,&
     adcm2 = 2*nface+2
 !
     ASSERT(option.eq.'FORC_NODA')
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
 ! =====================================================================
 ! --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU -------------
 ! =====================================================================

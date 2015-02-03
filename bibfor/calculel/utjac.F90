@@ -112,7 +112,7 @@ subroutine utjac(l2d, geom, ipg, idfde, niv,&
 ! EN 2D ON NE TESTE PAS LE SIGNE DU JACOBIEN
     if (.not.l2d .and. (jacob.lt.0.d0)) then
         call utmess('A+', 'CALCULEL6_73')
-        call tecael(ia1, ia2)
+        call tecael(ia1, ia2, noms=0)
         vali = zi(ia1)
         valr = jacob
         call utmess('A', 'CALCULEL6_74', si=vali, sr=valr)

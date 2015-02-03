@@ -74,8 +74,8 @@ subroutine te0548(option, nomte)
                 nnom, ddls, nddl, ddlm, ibid,&
                 contac)
 !
-    call tecael(iadzi, iazk24)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
+    call tecael(iadzi, iazk24, noms=0)
+    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
 ! --- ROUTINE SPECIFIQUE P2P1
 !
@@ -125,8 +125,8 @@ subroutine te0548(option, nomte)
     call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
   npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
-    call tecael(iadzi, iazk24)
-    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
+    call tecael(iadzi, iazk24, noms=0)
+    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
 !     LISTE DES LAMBDAS ACTIFS
 !

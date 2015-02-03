@@ -77,7 +77,7 @@ subroutine te0288(option, nomte)
     call elref1(elrefp)
     call jevech('PTHETAR', 'L', ithet)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nnop)
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
 !
 !     SI LA VALEUR DE THETA EST NULLE SUR L'ÉLÉMENT, ON SORT
     compt = 0

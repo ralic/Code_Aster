@@ -71,7 +71,7 @@ subroutine xdecqv(nnose, it, cnset, lsn, igeom,&
 !
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop)
     zxain = xxmmvd('ZXAIN')
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)
     call jeveuo(noma//'.DIME', 'L', vi=dime)
     ndim=dime(6)

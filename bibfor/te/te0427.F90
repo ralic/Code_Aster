@@ -72,7 +72,7 @@ subroutine te0427(option, nomte)
     ASSERT(iret.eq.0)
     ASSERT(imatu2.eq.imatu)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     numa=zi(iadzi-1+1)
 !
     ico2=0

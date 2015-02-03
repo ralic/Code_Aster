@@ -98,7 +98,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
     zxain = xxmmvd('ZXAIN')
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
     call loncar(ndim, typma, zr(igeom), lonref)
     ipt=0
@@ -173,7 +173,7 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr,&
 !     - POSITION DU PT SUR L'ARETE          (0 SI C'EST UN NOEUD SOMMET)
 !     - ARETE VITALE                        (0 SI NON)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
 !
     ipt=0

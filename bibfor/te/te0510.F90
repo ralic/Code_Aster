@@ -153,7 +153,7 @@ subroutine te0510(option, nomte)
     call jevech('PBASECO', 'E', jout5)
     call jevech('PGESCLA', 'E', jout6)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
     nmaabs=zi(iadzi)

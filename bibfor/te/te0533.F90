@@ -99,7 +99,7 @@ subroutine te0533(option, nomte)
                 nnom, ddls, nddl, ddlm, nfiss,&
                 contac)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
 !
 !     INITIALISATION DE LA MATRICE DE TRAVAIL

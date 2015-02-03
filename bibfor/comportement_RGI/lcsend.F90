@@ -68,7 +68,7 @@ subroutine lcsend(fami, kpg, ksp, ndim, imate,&
 ! --- Limitation aux éléments He8
 ! -----------------------------------
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     nbno=zi(iadzi-1+2)
     ind=iazk24+3-1+nbno+3
     elem=zk24(ind)(1:8)

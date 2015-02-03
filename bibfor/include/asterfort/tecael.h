@@ -15,9 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine tecael(iadzi, iazk24)
-        integer :: iadzi
-        integer :: iazk24
-    end subroutine tecael
-end interface
+          interface 
+            subroutine tecael(iadzi,iazk24,noms)
+              integer, intent(out) :: iadzi
+              integer, intent(out) :: iazk24
+              integer ,optional, intent(in) :: noms
+            end subroutine tecael
+          end interface 

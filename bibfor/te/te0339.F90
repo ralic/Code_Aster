@@ -63,7 +63,7 @@ subroutine te0339(option, nomte)
 !
 !     1.2 NUMERO DE LA MAILLE
 !     -----------------------
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     ima = zi(iadzi)
     numema = dble(ima)
 !

@@ -66,7 +66,6 @@ subroutine te0096(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nompar(3), typmod(2), famil, poum
     character(len=16) :: compor(4), oprupt, phenom
-    character(len=24) :: valk
 !
     real(kind=8) :: epsref(6), e(1), mu
     real(kind=8) :: epsi, rac2, crit(13)
@@ -88,7 +87,6 @@ subroutine te0096(option, nomte)
     integer :: nno, nnos, ncmp, jgano
     integer :: i, j, k, kk, l, m, kp, ndim, compt, nbvari
     integer :: ij, ij1, matcod, i1, iret, iret1, npg1
-    integer :: iadzi, iazk24
 !
     aster_logical :: grand, axi, cp, fonc, incr, epsini
 !
@@ -730,8 +728,6 @@ subroutine te0096(option, nomte)
 9999 continue
 !
 ! ASSEMBLAGE FINAL DES TERMES DE G OU DG
-    call tecael(iadzi, iazk24)
-    valk=zk24(iazk24-1+3)
     
     zr(igthet) = tthe + tcla + tfor + tplas + tini
     

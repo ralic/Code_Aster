@@ -164,7 +164,7 @@ subroutine te0329(option, nomte)
         imode='CHBIDON'
         ielem ='CHBIDON'
         call codent(zi(iharm), 'D0', imode)
-        call tecael(iadzi, iazk24)
+        call tecael(iadzi, iazk24, noms=0)
         call codent(zi(iadzi), 'D0', ielem)
         vetel = '&&329.M'//imode//'.EL'//ielem
 !        ON CONSERVE L'ALLOCATION DYNAMIQUE AU DETRIMENT DE L'ALLOCATION

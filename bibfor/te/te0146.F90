@@ -68,7 +68,7 @@ subroutine te0146(option, nomte)
     integer :: typcmb, ino, icmp, iret, k
     integer :: iadzi, iazk24
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
 !
     call jevech('PCACOQU', 'L', jepais)
     call jevech('PFERRA1', 'L', jfer1)

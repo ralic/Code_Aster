@@ -98,9 +98,6 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     character(len=*) :: fami
     character(len=80) :: cmname
     common/tdim/  ntens  , ndi
-    integer :: ii, dimaki
-!     DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
-    parameter (dimaki=9)
     data idbg/1/
 !
 !     NTENS  :  NB TOTAL DE COMPOSANTES TENSEURS
@@ -111,7 +108,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
     noel=0
     if (compor(17) .ne. 'POINT') then
 !        NUMERO D'ELEMENT
-        call tecael(iadzi, iazk24)
+        call tecael(iadzi, iazk24, noms=0)
         noel=zi(iadzi)
     endif
 !

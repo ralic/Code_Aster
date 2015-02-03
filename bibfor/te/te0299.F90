@@ -35,7 +35,6 @@ subroutine te0299(option, nomte)
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/tecael.h"
 #include "asterfort/cgverho.h"
 #include "asterfort/chauxi.h"
 #include "asterfort/elrefe_info.h"
@@ -58,7 +57,6 @@ subroutine te0299(option, nomte)
     integer :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls, isigi
     integer :: imate, iforc, iforf, ifond, itemps, k, i, j, kk, l, ndim, jtab(7)
     integer :: ino
-    integer :: iadzi, iazk24
 !
     real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18), sigin(6), dsigin(6,3)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4)
@@ -76,7 +74,6 @@ subroutine te0299(option, nomte)
     character(len=4) :: fami
     character(len=8) :: nompar(4)
     character(len=16) :: nomres(3), compor(4)
-    character(len=24) :: valk
     character(len=32) :: phenom
 !
     aster_logical :: lcour, fonc, lpesa, lrota
@@ -540,8 +537,6 @@ subroutine te0299(option, nomte)
     k1 = k1 * coefk
     k2 = k2 * coefk
 !
-    call tecael(iadzi, iazk24)
-    valk=zk24(iazk24-1+3)
 
 
 

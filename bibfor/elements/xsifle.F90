@@ -131,7 +131,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     ddls=ddld+ddlc
 !
     call elref1(elref)
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)
 !
     if (ndim .eq. 3) then

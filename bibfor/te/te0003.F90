@@ -318,9 +318,7 @@ subroutine te0003(option, nomte)
 !
     call infniv(ifm, niv)
 !
-    call tecael(iadzi, iazk24)
-    valk(1)=zk24(iazk24-1+3)
-    valk(2)=option
+    call tecael(iadzi, iazk24, noms=0)
 !
     call elref1(elrefe)
 !

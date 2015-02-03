@@ -98,7 +98,7 @@ subroutine te0514(option, nomte)
     call elref1(elp)
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nno)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)(1:8)
     typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)

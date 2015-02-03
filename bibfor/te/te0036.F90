@@ -99,7 +99,7 @@ subroutine te0036(option, nomte)
       endif
 !
 !     DIMENSION DE L'ESPACE
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)(1:8)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !

@@ -112,7 +112,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 
     if (nint(crit(17)) .ne. 1) then
 !        NUMERO D'ELEMENT
-        call tecael(iadzi, iazk24)
+        call tecael(iadzi, iazk24, noms=0)
         noel=zi(iadzi)
     endif
 !

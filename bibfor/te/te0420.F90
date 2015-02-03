@@ -42,7 +42,7 @@ subroutine te0420(option, nomte)
     call jevech('PPRME_R', 'E', ipdeb)
     call jevech('PDEPLAC', 'L', ipres)
 !
-    call tecael(iadzi, iazk24)
+    call tecael(iadzi, iazk24, noms=0)
     nno = zi(iadzi+1)
 !
     do 10 ino = 1, nno
