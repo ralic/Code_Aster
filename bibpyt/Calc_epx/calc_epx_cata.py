@@ -121,7 +121,17 @@ cata_compor = {
         'NB_VAR_ASTER': 5,
         'NB_VAR_EPX': 8,
         'TRANSFO': True,
+    
     },
+    'BPEL_FROT': {
+        'LOI': ['BPEL_ACIER',],
+        'BESOIN': ['o',],
+        'REPEAT': ['n',],
+        'NOM_EPX': 'BPEL',
+        'NB_VAR_ASTER': 1,
+        'NB_VAR_EPX': 6,
+        'TRANSFO': False,
+    },    
     'GLRC_DAMAGE': {
         'LOI': ['RELATION', 'BETON', 'NAPPE', 'CABLE_PREC',
                 'CISAIL_NL', 'LINER'],
@@ -216,6 +226,12 @@ cata_lois = {
         'PARA_EPX': ['COA1', 'COA2', 'CLB1', 'CLB2', 'SRRF'],
         'BESOIN': ['o', 'o', 'o', 'o', 'o',],
         'TYPE': ['reel', 'reel', 'reel', 'reel', 'reel',],
+    },
+    'BPEL_FROT/BPEL_ACIER': {
+        'PARA':     ['FROT_LINE', 'FROT_COURB',],
+        'PARA_EPX': ['FRLI', 'FRCO',],
+        'BESOIN': ['o', 'o',],
+        'TYPE': ['reel', 'reel',],
     },
     # SPECIAL GLRC_DAMAGE
     'GLRC_DAMAGE/CISAIL_NL': {
@@ -408,7 +424,8 @@ cata_modelisa = {
     },
     'DIS_T': {
         'MODE_EPX': {
-            'POI1': ['APPU', 'PMAT']
+            'POI1': ['APPU', 'PMAT'],
+            'SEG2': ['RNFR']
         },
         'ETAT_INIT': False,
         'RESU_ELEM': False,
@@ -433,6 +450,10 @@ cata_modelisa = {
         'CONT_ASTER': ['SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIYZ', 'SIXZ', ],
     },
 }
+
+# liste des modélisations EPX qui doivent être déclarées après les autres
+mode_epx_fin = ['RNFR']
+
 
 """
     CARA_ELEM :
@@ -616,7 +637,7 @@ cata_liais = {
         'ASTER': ['CABLE_BP'],
         'EPX': None,
         'MOT_CLE_VERIF': ['SIGM_BPEL', 'RELA_CINE', 'TYPE_EPX'],
-        'VALE_VERIF': ['NON', 'OUI', ['ADHE', 'GLIS']],
+        'VALE_VERIF': ['NON', 'OUI', ['ADHE', 'GLIS', 'FROT']],
         'FONC_MULT': False,
     },
 }

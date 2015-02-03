@@ -27,7 +27,8 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
            RELATION  = SIMP( statut='o',typ='TXM',defaut="ELAS",into=('ELAS',
                                                                       'GLRC_DAMAGE',
                                                                       'VMIS_ISOT_TRAC',
-                                                                      'VMIS_JOHN_COOK')),
+                                                                      'VMIS_JOHN_COOK',
+                                                                      'BPEL_FROT')),
            GROUP_MA  = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
         )
     elif COMMAND == 'CREA_RESU' or COMMAND == 'LIRE_RESU' or COMMAND == 'CALC_FORC_NONL':

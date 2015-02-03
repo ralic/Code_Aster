@@ -151,7 +151,7 @@ def bloc_cara(typ_carel, l_elem, epx, l_group, directive, mot_cle_aster,
             l_cara.extend(cara)
             l_vale.extend(vale)
     if mot_cle_epx_select == None:
-        raise Exception('Echec : lecture des caractéristiques élémentaires')
+        UTMESS('F','PLEXUS_52',valk = [cara_in[0], 'CARA', typ_carel])
     bloc_donnees = BLOC_DONNEES(mot_cle_epx_select, l_group=l_group,
                                 cle=cle_select, val_cle=val_cle_select,
                                 cara=l_cara, vale=l_vale, titre=titre_select)

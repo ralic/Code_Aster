@@ -20,7 +20,7 @@
 """
 Traitement du modèle
 """
-from Calc_epx.calc_epx_cata import cata_modelisa
+from Calc_epx.calc_epx_cata import cata_modelisa, mode_epx_fin
 from Calc_epx.calc_epx_struc import BLOC_DONNEES
 from Calc_epx.calc_epx_utils import recupere_structure, tolist, get_group_ma
 from Utilitai.partition import MAIL_PY
@@ -54,7 +54,7 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
     veri_gr_from_cara = []
     ltyma = aster.getvectjev("&CATA.TM.NOMTM")
     modi_repere = {'COQUE': False}
-    etat_init_cont = True
+    etat_init_cont = []
     for affe in affe_modele:
         modelisation = affe['MODELISATION']
         phenomene = affe['PHENOMENE']
@@ -65,7 +65,7 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
         if not affe.has_key('GROUP_MA'):
             UTMESS('A', 'PLEXUS_3', valk=modelisation)
         if not cata_modelisa[modelisation]['ETAT_INIT']:
-            etat_init_cont = False
+            etat_init_cont.append(modelisation)
         group_ma = get_group_ma(affe)
         if cata_modelisa[modelisation].has_key('MODI_REPERE'):
             type_modi = cata_modelisa[modelisation]['MODI_REPERE']
@@ -166,12 +166,22 @@ def export_modele(epx, MAILLAGE, MODELE, INTERFACES, mode_from_cara):
     # liste comportant les modelisations definis dans le module GEOMETRIE
     # Ecriture sous format europlexus
     for mode_epx in epx_geom.keys():
+        if mode_epx in mode_epx_fin:
+            continue
         len_groups = len(epx_geom[mode_epx]['GROUP_MA'])
         if len_groups == 0:
             raise Exception('Erreur de programmation : liste de groupe vide')
         bloc_simple = BLOC_DONNEES(
             mode_epx, cara=epx_geom[mode_epx]['GROUP_MA'])
         epx[directive].add_bloc(bloc_simple)
+    for mode_epx in mode_epx_fin:
+        if mode_epx in epx_geom.keys():
+            len_groups = len(epx_geom[mode_epx]['GROUP_MA'])
+            if len_groups == 0:
+                raise Exception('Erreur de programmation : liste de groupe vide')
+            bloc_simple = BLOC_DONNEES(
+                mode_epx, cara=epx_geom[mode_epx]['GROUP_MA'])
+            epx[directive].add_bloc(bloc_simple)
 
     # INTERFACES
     listInterfaces = INTERFACES

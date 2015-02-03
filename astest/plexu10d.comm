@@ -1,0 +1,410 @@
+# TITRE VALIDATION DE L'UTILISATION DES CABLES FROTTANTS DANS CALC_EUROPLEXUS
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#-----------------------------------------------------------------------
+#
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),IMPR_MACRO='OUI',ERREUR=_F(ERREUR_F='EXCEPTION',),
+      DEBUG=_F(HIST_ETAPE='OUI'));
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED')
+
+#
+
+MODELE=AFFE_MODELE(
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('COQUE',),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'Q4GG'),
+                     _F(  GROUP_MA = 'CABLE2',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE')
+                            ) )
+
+CARAELEM=AFFE_CARA_ELEM(
+                      MODELE=MODELE,
+                       COQUE=(_F(  GROUP_MA = 'COQUE',
+                               EPAIS = 1.,
+                               VECTEUR = (0.,0.,1.),
+                               ),
+                               ),
+                       BARRE=_F(  GROUP_MA = 'CABLE2',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 1.5E-2, ))
+                               )
+
+
+BETON = DEFI_MATERIAU(ELAS=_F(
+                    E = 3E10,
+                    NU = 0.,
+                    RHO = 2500,
+                   ),
+                    BPEL_BETON=_F()
+                  );
+
+
+ACIER = DEFI_MATERIAU(ELAS=_F(
+                    E = 2E11,
+                    NU = 0.,
+                    RHO = 7800,
+                   ),
+                   BPEL_ACIER=_F(
+                              FROT_COURB = 0.2,
+                              FROT_LINE = 3.0E-3)
+                  );
+
+CHMATER=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = ('COQUE',),
+                              MATER = BETON),
+                       _F(  GROUP_MA = 'CABLE2',
+                              MATER = ACIER)
+                              )
+                              )
+
+
+# PROFILS DE TENSION DE REFERENCE
+
+
+# TENSION INITIALE
+
+CABLEIN=DEFI_CABLE_BP(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELEM,
+                      GROUP_MA_BETON='COQUE',
+                      DEFI_CABLE=_F(
+                            GROUP_MA = 'CABLE2',
+                            GROUP_NO_ANCRAGE = ( 'ANCR2',  'ANCR1', ),),
+                            TYPE_ANCRAGE = ( 'ACTIF',   'PASSIF',  ),
+                            TENSION_INIT=315367000,
+                            RECUL_ANCRAGE=0. )
+
+TABINI = RECU_TABLE(CO=CABLEIN, NOM_TABLE='CABLE_BP')
+
+# RECUL D'ANCRAGE
+
+CABLEPR=DEFI_CABLE_BP(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      CARA_ELEM=CARAELEM,
+                      GROUP_MA_BETON='COQUE',
+                      DEFI_CABLE=_F(
+                            GROUP_MA = 'CABLE2',
+                            GROUP_NO_ANCRAGE = ( 'ANCR2',  'ANCR1', ),),
+                            TYPE_ANCRAGE = ( 'ACTIF',   'PASSIF',  ),
+                            TENSION_INIT=315367000,
+                            RECUL_ANCRAGE=0.116 )
+
+
+TABREC = RECU_TABLE(CO=CABLEPR, NOM_TABLE='CABLE_BP')
+
+
+
+# RELECTURE DU FICHIER RESULTAT EPX
+
+
+MODEEPX0=AFFE_MODELE(
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('COQUE',),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'Q4GG'),
+                     _F(  GROUP_MA = 'CABLE2',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE'),
+                     _F(  GROUP_MA = 'DISFROT',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'DIS_T')
+                            ) )
+
+
+CARAEPX0=AFFE_CARA_ELEM(
+                      MODELE=MODEEPX0,
+                       COQUE=(_F(  GROUP_MA = 'COQUE',
+                               EPAIS = 1.,
+                               VECTEUR = (0.,0.,1.),
+                               ),
+                               ),
+                       BARRE=_F(  GROUP_MA = 'CABLE2',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 1.5E-2, ))
+                               )
+
+
+U_EPX0 = LIRE_EUROPLEXUS(UNITE_MED = 19,
+                MODELE = MODEEPX0,
+                CARA_ELEM = CARAEPX0,
+                COMPORTEMENT=(_F( RELATION = 'ELAS',
+                                    GROUP_MA='COQUE',),
+                               _F( RELATION = 'ELAS',
+                                    GROUP_MA ='CABLE2',),
+                                _F( RELATION = 'ELAS',
+                                    GROUP_MA ='DISFROT', ),
+                             ),
+        )
+
+
+CALC_CHAMP(reuse = U_EPX0, RESULTAT = U_EPX0, CONTRAINTE = 'SIEF_NOEU', GROUP_MA = 'CABLE2')
+
+
+nume_ordre1 =3020
+nume_ordre2 =5973
+
+ERR_RELA = FORMULE(NOM_PARA=('TENSION', 'N'), VALE='abs(TENSION-N)/TENSION')
+
+
+TABEPX01 = CREA_TABLE(RESU = (_F(RESULTAT = U_EPX0, NOM_CHAM ='SIEF_NOEU', GROUP_MA='CABLE2', NUME_ORDRE = nume_ordre1, NOM_CMP ='N'),
+                        ))
+
+TABINI0 = CALC_TABLE(TABLE=TABINI, ACTION=_F(OPERATION='RENOMME',
+                                NOM_PARA=('NOEUD_CABLE','NOEUD'), ))
+
+TABINI0 = CALC_TABLE(reuse=TABINI0 ,TABLE=TABINI0, ACTION=_F(OPERATION='COMB',
+                                TABLE=TABEPX01,
+                                NOM_PARA=('NOEUD'),
+                                RESTREINT='NON' ) )
+
+TABINI0 = CALC_TABLE(reuse=TABINI0 ,TABLE=TABINI0, ACTION=_F(OPERATION='OPER',
+                                FORMULE = ERR_RELA,
+                                NOM_PARA=('ERR_RELA'),
+                                ))
+                                
+IMPR_TABLE(TABLE = TABINI0, NOM_PARA=('NOEUD', 'ABSC_CURV', 'TENSION', 'N','ERR_RELA'), SEPARATEUR=';')
+
+TEST_TABLE(TABLE=TABINI0, NOM_PARA = 'ERR_RELA', TYPE_TEST='MAX',VALE_CALC = 0.0447086123078)
+
+
+
+
+
+
+
+
+TABEPX02 = CREA_TABLE(RESU = (_F(RESULTAT = U_EPX0, NOM_CHAM ='SIEF_NOEU', GROUP_MA='CABLE2', NUME_ORDRE = nume_ordre2, NOM_CMP ='N'),
+                        ))
+
+TABREC0 = CALC_TABLE(TABLE=TABREC, ACTION=_F(OPERATION='RENOMME',
+                                NOM_PARA=('NOEUD_CABLE','NOEUD'), ))
+
+TABREC0 = CALC_TABLE(reuse=TABREC0 ,TABLE=TABREC0, ACTION=_F(OPERATION='COMB',
+                                TABLE=TABEPX02,
+                                NOM_PARA=('NOEUD'),
+                                RESTREINT='NON' ) )
+
+
+TABREC0 = CALC_TABLE(reuse=TABREC0 ,TABLE=TABREC0, ACTION=_F(OPERATION='OPER',
+                                FORMULE = ERR_RELA,
+                                NOM_PARA=('ERR_RELA'),
+                                ))
+
+                                
+IMPR_TABLE(TABLE = TABREC0, NOM_PARA=('NOEUD', 'ABSC_CURV', 'TENSION', 'N','ERR_RELA'), SEPARATEUR=';')
+
+TEST_TABLE(TABLE=TABREC0, NOM_PARA = 'ERR_RELA', TYPE_TEST='MAX',VALE_CALC = 0.0605346658829)
+ 
+
+
+
+# LANCEMENT DU CALCUL
+
+
+
+MODE_EPX=AFFE_MODELE(
+                 MAILLAGE=MAILLAGE,AFFE=(
+                     _F(  GROUP_MA = ('COQUE',),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'Q4GG'),
+                     _F(  GROUP_MA = 'CABLE2',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'BARRE'),
+                     _F(  GROUP_MA = 'DISFROT',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'DIS_T')
+                            ) )
+
+
+
+CARAEPX=AFFE_CARA_ELEM(
+                      MODELE=MODE_EPX,
+                       COQUE=(_F(  GROUP_MA = 'COQUE',
+                               EPAIS = 1.,
+                               VECTEUR = (0.,0.,1.),
+                               ),
+                               ),
+                       BARRE=_F(  GROUP_MA = 'CABLE2',
+                               SECTION = 'GENERALE',
+                               CARA = ( 'A', ),
+                               VALE = ( 1.5E-2, ))
+                               )
+
+CHMA_EPX=AFFE_MATERIAU(
+                   MAILLAGE=MAILLAGE,AFFE=(
+                       _F(  GROUP_MA = ('COQUE',),
+                              MATER = BETON),
+                       _F(  GROUP_MA = ('CABLE2','DISFROT'),
+                              MATER = ACIER)
+                              )
+                              )
+
+CL=AFFE_CHAR_MECA(
+                      MODELE=MODE_EPX,
+                      DDL_IMPO=(
+                           _F(  GROUP_NO=('COTE1','COTEBLOC'),
+                               DX = 0.,
+                               DY = 0.,
+                               DZ = 0.,
+                               DRX = 0.,
+                               DRY = 0.,
+                               DRZ = 0.),
+                            _F(  GROUP_NO=('COTE2',),
+                               DRX = 0.,
+                               DRY = 0.,
+                               DRZ = 0.),
+                               ),
+                        INFO=1 )
+
+TRAC=AFFE_CHAR_MECA(
+                      MODELE=MODE_EPX,
+                DDL_IMPO=_F(DY = -3., GROUP_NO = 'COTE2',),
+                        INFO=1 )
+
+
+CABLEPX=DEFI_CABLE_BP(MODELE=MODE_EPX,
+                      CHAM_MATER=CHMA_EPX,
+                      CARA_ELEM=CARAEPX,
+                      GROUP_MA_BETON='COQUE',
+                      DEFI_CABLE=_F(
+                            GROUP_MA = 'CABLE2',
+                            GROUP_NO_ANCRAGE = ( 'ANCR2',  'ANCR1', ),),
+                            TYPE_ANCRAGE = ( 'ACTIF',   'PASSIF',  ),
+                            TENSION_INIT=0.,
+                            RECUL_ANCRAGE=0. )
+
+
+
+
+FROT=AFFE_CHAR_MECA(
+                      MODELE=MODE_EPX,
+                      RELA_CINE_BP=_F(  CABLE_BP = CABLEPX,
+                               SIGM_BPEL = 'NON',
+                               RELA_CINE = 'OUI',
+                               TYPE_EPX = 'FROT'),
+                      INFO=1 )
+
+
+
+FONC2=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    0.0,
+                           2e-3,   1.0,
+                           0.06, 1.0,
+                           0.1, 0.9333333,
+                           1.0,  0.9333333,
+                           ),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     );
+
+
+
+U_EPX = CALC_EUROPLEXUS(
+   MODELE = MODE_EPX,
+   CARA_ELEM = CARAEPX,
+   CHAM_MATER = CHMA_EPX,
+   COMPORTEMENT =(
+                 _F(
+                    RELATION = 'ELAS',
+                    GROUP_MA = ('CABLE2','COQUE'),
+                   ),
+                 _F(
+                    RELATION = 'BPEL_FROT',
+                    GROUP_MA = ('DISFROT'),
+                   ),
+              ),
+   EXCIT=(
+          _F(CHARGE=TRAC,FONC_MULT=FONC2,),
+          _F(CHARGE=CL,),
+          _F(CHARGE=FROT,),
+          ),
+   LANCEMENT ='OUI',
+   CALCUL = _F(TYPE_DISCRETISATION  ='AUTO',
+               INST_INIT = 0,
+               INST_FIN  = 0.12,
+               NMAX      = 20000000,
+               CSTAB = 0.5,
+               ),
+   AMORTISSEMENT= _F(TYPE_AMOR='QUASI_STATIQUE',
+                     FREQUENCE = 65.,
+                     COEF_AMOR = 1.,
+                    ),
+
+   ARCHIVAGE   = _F(PAS_NBRE=3020,),
+   );
+
+
+CALC_CHAMP(reuse = U_EPX, RESULTAT = U_EPX, CONTRAINTE = 'SIEF_NOEU', GROUP_MA = 'CABLE2')
+
+
+
+TABEPX1 = CREA_TABLE(RESU = (_F(RESULTAT = U_EPX, NOM_CHAM ='SIEF_NOEU', GROUP_MA='CABLE2', NUME_ORDRE = nume_ordre1, NOM_CMP ='N'),
+                        ))
+
+TABINI = CALC_TABLE(reuse = TABINI, TABLE=TABINI, ACTION=_F(OPERATION='RENOMME',
+                                NOM_PARA=('NOEUD_CABLE','NOEUD'), ))
+
+TABINI = CALC_TABLE(reuse=TABINI ,TABLE=TABINI, ACTION=_F(OPERATION='COMB',
+                                TABLE=TABEPX1,
+                                NOM_PARA=('NOEUD'),
+                                RESTREINT='NON' ) )
+
+TABINI = CALC_TABLE(reuse=TABINI ,TABLE=TABINI, ACTION=_F(OPERATION='OPER',
+                                FORMULE = ERR_RELA,
+                                NOM_PARA=('ERR_RELA'),
+                                ))
+                                
+IMPR_TABLE(TABLE = TABINI, NOM_PARA=('NOEUD', 'ABSC_CURV', 'TENSION', 'N','ERR_RELA'), SEPARATEUR=';')
+
+TEST_TABLE(TABLE=TABINI, NOM_PARA = 'ERR_RELA', TYPE_TEST='MAX',VALE_CALC = 0.0447086123078)
+
+
+
+
+
+
+
+
+TABEPX2 = CREA_TABLE(RESU = (_F(RESULTAT = U_EPX, NOM_CHAM ='SIEF_NOEU', GROUP_MA='CABLE2', NUME_ORDRE = nume_ordre2, NOM_CMP ='N'),
+                        ))
+
+TABREC = CALC_TABLE(reuse = TABREC, TABLE=TABREC, ACTION=_F(OPERATION='RENOMME',
+                                NOM_PARA=('NOEUD_CABLE','NOEUD'), ))
+
+TABREC = CALC_TABLE(reuse=TABREC ,TABLE=TABREC, ACTION=_F(OPERATION='COMB',
+                                TABLE=TABEPX2,
+                                NOM_PARA=('NOEUD'),
+                                RESTREINT='NON' ) )
+
+
+TABREC = CALC_TABLE(reuse=TABREC ,TABLE=TABREC, ACTION=_F(OPERATION='OPER',
+                                FORMULE = ERR_RELA,
+                                NOM_PARA=('ERR_RELA'),
+                                ))
+
+                                
+IMPR_TABLE(TABLE = TABREC, NOM_PARA=('NOEUD', 'ABSC_CURV', 'TENSION', 'N','ERR_RELA'), SEPARATEUR=';')
+
+TEST_TABLE(TABLE=TABREC, NOM_PARA = 'ERR_RELA', TYPE_TEST='MAX',VALE_CALC = 0.0605346658829)
+
+FIN()

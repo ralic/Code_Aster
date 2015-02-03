@@ -90,7 +90,10 @@ CALC_EUROPLEXUS ne sait pas traiter de tels cas.
 
     17 : _(u"""
 Vous avez demander de fournir à EPX un état initial de contraintes, cependant cette fonctionnalité
-n'est pas développée pour certains éléments du modèle.
+n'est pas développée pour certains éléments du modèle. Le champ de contraintes du résultat donné
+en état initial ne sera pas transmis à EPX pour les éléments affectés des modélisations suivantes :
+
+%(k1)s.
 """),
 
     18 : _(u"""Le mot clé %(k1)s du concept CARA_ELEM n'est pas pris en compte par CALC_EUROPLEXUS'
@@ -286,6 +289,32 @@ n'est pas un fichier MED ou est absent.
     51 : _(u"""
 Le fichier correspondant à l'unité donnée dans UNITE_MED de LIRE_EUROPLEXUS
 ne contient pas de champ %(k1)s. Il ne peut pas être traité. 
+"""),
+
+    52 : _(u"""
+La valeur %(k1)s n'est pas autorisée pour l'opérande %(k2)s dans CALC_EUROPLEXUS pour le mot-clé
+facteur %(k3)s d'AFFE_CARA_ELEM.
+"""),
+
+    53 : _(u"""
+Le mot-clé CARA_ELEM est renseigné alors qu'un état initial est donné via ETAT_INIT. 
+Il n'est pas nécessaire de renseigner CARA_ELEM dans ce cas sauf si vous souhaitez
+fournir des informations différentes de celles contenues dans le résultat de l'état initial.
+"""),
+
+    54 : _(u"""
+Un champ de type %(k1)s contenu dans le fichier MED est porté par des éléments EUROPLEXUS de type %(k2)s.
+LIRE_EUROPLEXUS ne sait pas traduire les données de ce champ. Les éléments du modèle
+Code_Aster associés aux mêmes éléments du maillage, s'ils existent, 
+gardent des valeurs nulles sur le champ correspondant.
+"""),
+
+    55 : _(u"""
+Un champ de variables internes contenu dans le fichier MED est associé à la loi
+de comportement %(k1)s d'EUROPLEXUS.
+LIRE_EUROPLEXUS ne sait pas traduire les données de ce champ. Les éléments du modèle
+Code_Aster associés aux mêmes éléments du maillage, s'ils existent, 
+gardent des valeurs nulles sur le champ correspondant.
 """),
 
 }

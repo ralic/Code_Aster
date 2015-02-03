@@ -49,7 +49,8 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
                         CHAM_MATER=None, FONC_PARASOL=None,
                         OBSERVATION=None, COURBE=None,
                         DOMAINES=None, INTERFACES=None,
-                        ETAT_INIT=None, INFO=1, **args):
+                        ETAT_INIT=None, AMORTISSEMENT=None,
+                        INFO=1, **args):
     """
         Macro-commande CALC_EUROPLEXUS.
     """
@@ -102,8 +103,8 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
 
     EPX = EUROPLEXUS(ETAT_INIT, MODELE, CARA_ELEM, CHAM_MATER, COMPORTEMENT,
                      FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
-                     CALCUL, DOMAINES, INTERFACES, REPE='REPE_OUT', EXEC=EXEC,
-                     INFO=INFO, REPE_epx=REPE_epx, NOM_RESU=nom_resu,
+                     CALCUL, AMORTISSEMENT, DOMAINES, INTERFACES, REPE='REPE_OUT',
+                     EXEC=EXEC, INFO=INFO, REPE_epx=REPE_epx, NOM_RESU=nom_resu,
                      args=args)
 
     #
@@ -166,8 +167,8 @@ class EUROPLEXUS:
 
     def __init__(self, ETAT_INIT, MODELE, CARA_ELEM, CHAM_MATER, COMPORTEMENT,
                  FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
-                 CALCUL, DOMAINES, INTERFACES, REPE, EXEC, INFO, REPE_epx,
-                 NOM_RESU, args):
+                 CALCUL, AMORTISSEMENT, DOMAINES, INTERFACES, REPE, EXEC, INFO,
+                 REPE_epx, NOM_RESU, args):
         """
             Met toutes les entrées en attributs.
             Crée les directives EPX.
@@ -200,15 +201,19 @@ class EUROPLEXUS:
             self.MODELE = macro.get_concept(nomsd)
 
             # CARA_ELEM
-            iret, ibid, nomsd = aster.dismoi('CARA_ELEM', nom_RESU_INIT,
-                                             'RESULTAT', 'F')
-            nomsd = nomsd.strip()
-            if nomsd[:8] == '#PLUSIEU':
-                UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT, 'CARA_ELEM'])
-            elif nomsd[:6] == '#AUCUN':
-                self.CARA_ELEM = None
+            if CARA_ELEM is None :
+                iret, ibid, nomsd = aster.dismoi('CARA_ELEM', nom_RESU_INIT,
+                                                 'RESULTAT', 'F')
+                nomsd = nomsd.strip()
+                if nomsd[:8] == '#PLUSIEU':
+                    UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT, 'CARA_ELEM'])
+                elif nomsd[:6] == '#AUCUN':
+                    self.CARA_ELEM = None
+                else:
+                    self.CARA_ELEM = macro.get_concept(nomsd)
             else:
-                self.CARA_ELEM = macro.get_concept(nomsd)
+                self.CARA_ELEM = CARA_ELEM
+                UTMESS('A','PLEXUS_53')
 
             # CHAM_MATER
             iret, ibid, nomsd = aster.dismoi('CHAM_MATER', nom_RESU_INIT,
@@ -240,6 +245,7 @@ class EUROPLEXUS:
         self.INTERFACES = INTERFACES
         self.INFO = INFO
         self.COMPORTEMENT = COMPORTEMENT
+        self.AMORTISSEMENT = AMORTISSEMENT
 
         self.REPE_epx = REPE_epx
 
@@ -354,8 +360,9 @@ class EUROPLEXUS:
             res_imp = RESULTAT
             list_cham = ['DEPL']
             if self.ETAT_INIT['CONTRAINTE'] == 'OUI':
-                if not self.etat_init_cont:
-                    UTMESS('F', 'PLEXUS_17')
+                if self.etat_init_cont != []:
+                    valk = ', '.join(self.etat_init_cont)
+                    UTMESS('A', 'PLEXUS_17', valk = valk)
                 list_cham.append('SIEF_ELGA')
                 nume_ordre = RESULTAT.LIST_PARA()['NUME_ORDRE'][-1]
                 if self.modi_repere['COQUE']:
@@ -764,6 +771,17 @@ class EUROPLEXUS:
             cstab = liste_mots_cles_CALCUL['CSTAB']
             bloc = BLOC_DONNEES('CSTAB', cle=cstab)
             epx[directive].add_bloc(bloc)
+
+        if self.AMORTISSEMENT is not None:
+            liste_mots_cles_AMOR = self.AMORTISSEMENT.List_F()[0]
+            type_amor = liste_mots_cles_AMOR['TYPE_AMOR']
+            if type_amor == 'QUASI_STATIQUE':
+                freq = liste_mots_cles_AMOR['FREQUENCE']
+                coef = liste_mots_cles_AMOR['COEF_AMOR']
+                bloc = BLOC_DONNEES('QUASI STATIQUE', cle=freq, val_cle=coef)
+                epx[directive].add_bloc(bloc)
+            else:
+                raise Exception("Type d'amortissement non programmé")
 
         # STRUCTURE
         directive = 'STRUCTURE'

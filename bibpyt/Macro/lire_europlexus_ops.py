@@ -337,12 +337,17 @@ le mot-clé %s""" % mc_cara)
             type_cham = ch_split[0]
             mode_epx = ch_split[1]
             loi = ch_split[2]
+            
             if type_cham == "CONT":
-
+                
                 if not info_mode_epx.has_key(mode_epx):
-                    raise Exception("""
-    La modélisation %s n'est pas encore programmée mais est présente
-    dans un champ.""" % mode_epx)
+                    UTMESS('A', 'PLEXUS_54', valk=[type_cham, mode_epx])
+                    continue
+                    
+                if info_mode_epx[mode_epx]['NOM_CMP'] is None:
+                    UTMESS('A', 'PLEXUS_54', valk=[type_cham, mode_epx])
+                    continue
+
                 nbcomp = len(dic_champ_med[nom_cham_med])
                 nbcomp_ref = len(info_mode_epx[mode_epx]['NOM_CMP'])
                 if nbcomp != nbcomp_ref:
@@ -362,9 +367,19 @@ le mot-clé %s""" % mc_cara)
                     dic_champ_cont[mc_cara][nom_cham_med] = mode_epx
 
             if type_cham == "ECRO":
+                
+                if not info_mode_epx.has_key(mode_epx):
+                    UTMESS('A', 'PLEXUS_54', valk=[type_cham, mode_epx])
+                    continue
+
+                if info_mode_epx[mode_epx]['NOM_CMP'] is None:
+                    UTMESS('A', 'PLEXUS_54', valk=[type_cham, mode_epx])
+                    continue
+
                 if not info_comp_epx.has_key(loi):
-                    raise Exception(
-                        "La loi %s n'est pas encore programmée mais est présente dans un champ." % loi)
+                    UTMESS('A', 'PLEXUS_55', valk=loi)
+                    continue
+                        
                 nbcomp = len(dic_champ_med[nom_cham_med])
                 nbcomp_ref = info_comp_epx[loi]['NB_VAR_EPX']
                 if nbcomp != nbcomp_ref:
