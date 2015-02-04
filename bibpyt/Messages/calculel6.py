@@ -193,8 +193,8 @@ Conseils :
     57: _(u"""
  Erreur d'utilisation (préparation des variables de commande) :
  Pour la variable de commande %(k1)s, il y a une incohérence du
- nombre de "sous-points" entre le CARA_ELEM %(k2)s
- et le CHAM_MATER %(k3)s.
+ nombre de "sous-points" entre le CARA_ELEM %(k2)s (%(i1)d)
+ et le CHAM_MATER %(k3)s (%(i2)d) pour la maille %(k4)s qui est de type %(k5)s.
 
  Conseil :
  N'avez-vous pas défini plusieurs CARA_ELEM conduisant à des nombres de

@@ -45,7 +45,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 #include "asterfort/rsinch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
+
     character(len=2) :: codret
     character(len=8) :: modele, chmat, carele
     real(kind=8) :: inst
@@ -83,11 +83,10 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !               (SI EVOL : FONCTION DE TRANSFORMATION DU TEMPS)
 !        CODRET (K2) : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE,
 !                                            'NO' SINON
-!
 ! ----------------------------------------------------------------------
-!
+
     real(kind=8) :: instev
-!
+
     integer :: n1, ibid, nbma, jcesd1, jcesl1,  iad, lonk80
     integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
     integer :: nbcvrc,  jlisch, nval1
@@ -104,22 +103,21 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     character(len=8), pointer :: cvrcgd(:) => null()
     save nval1
 ! ----------------------------------------------------------------------
-!
+
     call jemarq()
     call infmaj()
-!
+
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
     ligrmo=modele//'.MODELE'
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jeveuo(chmat//'.CVRCGD', 'L', vk8=cvrcgd)
-!
-!     INITIALISATION
-!
+
+
     codret = 'OK'
-!
-!
+
+
 !     1. CREATION DE CHMAT.LISTE_SD :
 !     -------------------------------
     call jeexin(chmat//'.LISTE_SD', iret)
@@ -153,7 +151,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
                 finst =cesv(iad+7)(1:8)
                 ASSERT((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP') .or. (tysd.eq.'VIDE'))
                 if (tysd .eq. 'VIDE') goto 2
-!
+
                 k80=' '
                 k80(1:8) =tysd
                 k80(9:16) =nomsd
@@ -178,7 +176,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             call detrsd('CHAM_ELEM_S', ces1)
   1         continue
         end do
-!
+
         nbchs=nbk80
         if (nbchs .eq. 0) then
             call jedetr('&&VRCIN1.LK80')
@@ -197,10 +195,10 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         end do
         call jedetr('&&VRCIN1.LK80')
     endif
-!
-!
-!     2. CREATION DE CHMAT.LISTE_CH :
-!     -------------------------------
+
+
+!   2. CREATION DE CHMAT.LISTE_CH :
+!   -------------------------------
     call jeveuo(chmat//'.LISTE_SD', 'L', jlissd)
     call jelira(chmat//'.LISTE_SD', 'LONMAX', n1)
     nbchs=n1/7
@@ -208,11 +206,12 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     call jedetr(chmat//'.LISTE_CH')
     call wkvect(chmat//'.LISTE_CH', 'V V K24', nbchs, jlisch)
     chs=chmat//'.CHS000'
-!
-!     2.0.1  CREATION DE CESMOD :
-!     ---------------------------
+
+
+!   2.0.1  CREATION DE CESMOD :
+!   ---------------------------
     cesmod=modele//'.VRC.CESMOD'
-!     --  CESMOD N'EST PAS DETRUIT POUR GAGNER DU TEMPS
+!   --  cesmod n'est pas detruit pour gagner du temps
     call exisd('CHAM_ELEM_S', cesmod, iret)
     if (iret .eq. 0) then
         celmod='&&VRCIN1.CELMOD'
@@ -226,23 +225,23 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         call jelira(celmod//'.CELV', 'LONMAX', nval1)
         call detrsd('CHAMP', celmod)
     endif
-!
-!
-!     2.0.2  CREATION DE MNOGA :
-!     ---------------------------
+
+
+!   2.0.2  CREATION DE MNOGA :
+!   ---------------------------
     mnoga = modele//'.VRC.MNOGA'
     call exisd('CHAM_ELEM_S', mnoga, iret)
     if (iret .eq. 0) call manopg(ligrmo, 'INIT_VARC', 'PVARCPR', mnoga)
-!
-!
+
+
     do ichs = 1, nbchs
         call codent(ichs, 'D0', chs(13:15))
         zk24(jlisch-1+ichs)=chs
         tysd=zk16(jlissd-1+7*(ichs-1)+1)(1:8)
         varc=zk16(jlissd-1+7*(ichs-1)+4)(1:8)
-!
-!         2.1 INTERPOLATION EN TEMPS => NOMCH
-!         ------------------------------------
+
+!       2.1 INTERPOLATION EN TEMPS => NOMCH
+!       ------------------------------------
         if (tysd .eq. 'EVOL') then
 !           -- SI TYSD='EVOL', ON INTERPOLE AU TEMPS INST
             nomevo=zk16(jlissd-1+7*(ichs-1)+2)(1:8)
@@ -251,7 +250,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             proldr=zk16(jlissd-1+7*(ichs-1)+6)(1:8)
             finst =zk16(jlissd-1+7*(ichs-1)+7)(1:8)
             nomch='&&VRCIN1.NOMCH'
-!
+
 !           -- PRISE EN COMPTE DE L'EVENTUELLE TRANSFORMATION DU TEMPS
 !              (AFFE_VARC/FONC_INST):
             if (finst .ne. ' ') then
@@ -278,10 +277,10 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             valk(2)=ma2
             call utmess('F', 'CALCULEL4_13', nk=2, valk=valk)
         endif
-!
-!         2.2 PASSAGE AUX POINTS DE GAUSS => CHS
-!         --------------------------------------
-!         -- VERIFICATION DE NOMCH :
+
+!       2.2 PASSAGE AUX POINTS DE GAUSS => CHS
+!       --------------------------------------
+!       -- VERIFICATION DE NOMCH :
         itrou=indik8(cvrcvarc,varc,1,nbcvrc)
         ASSERT(itrou.gt.0)
         nomgd=cvrcgd(itrou)
@@ -293,25 +292,22 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             call utmess('F', 'CALCULEL5_39', nk=3, valk=valk)
         endif
         call dismoi('TYPE_CHAMP', nomch, 'CHAMP', repk=tych)
-!
-!
+
+
         if (tych .eq. 'CART') then
-            call carces(nomch, 'ELGA', cesmod, 'V', chs,&
-                        'A', iret)
+            call carces(nomch, 'ELGA', cesmod, 'V', chs, 'A', iret)
             ASSERT(iret.eq.0)
-!
+
         else if (tych.eq.'NOEU') then
             cns1='&&VRCIN1.CNS1'
             call cnocns(nomch, 'V', cns1)
-            call cnsces(cns1, 'ELGA', cesmod, mnoga, 'V',&
-                        chs)
+            call cnsces(cns1, 'ELGA', cesmod, mnoga, 'V', chs)
             call detrsd('CHAM_NO_S', cns1)
 
         else if ((tych.eq.'ELNO').or.(tych.eq.'ELEM')) then
             ces1='&&VRCIN1.CES1'
             call celces(nomch, 'V', ces1)
-            call cesces(ces1, 'ELGA', cesmod, mnoga, ' ',&
-                        'V', chs)
+            call cesces(ces1, 'ELGA', cesmod, mnoga, ' ', 'V', chs)
             call detrsd('CHAM_ELEM_S', ces1)
 
         else if (tych.eq.'ELGA') then
@@ -341,12 +337,12 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         else
             ASSERT(.false.)
         endif
-!
-!
-!
+
+
+
         if (tysd .eq. 'EVOL') call detrsd('CHAMP', nomch)
     end do
-!
+
 999 continue
     call jedema()
 end subroutine
