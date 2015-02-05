@@ -36,6 +36,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 #include "asterc/r8pi.h"
 #include "asterfort/tecael.h"
 #include "asterfort/tecach.h"
+#include "asterfort/vecini.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xsifl1.h"
@@ -96,7 +97,6 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     real(kind=8) :: he(2)
 !
     integer :: nnos, nno
-    real(kind=8) :: ffc(27)
     character(len=8) :: elref, typma, fpg, elc, elrefc
     real(kind=8) :: tau1(3), tau2(3)
     data     he / -1.d0 , 1.d0/
@@ -169,6 +169,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !       ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
 !       ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS
 !       ET DE DFDI : DERIVVES DES FF PARENT
+        call vecini(27, 0.d0, ff)
         if (ndim .eq. 3) then
             call elelin(contac, elref, elrefc, nno, nnos)
             nnops = nnos
@@ -177,7 +178,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
             call xjacff(elref, elrefc, elc, ndim, fpg,&
                         jptint, ifa, cface, ipgf, nnop,&
                         igeom, jbasec, xg, jac, ff,&
-                        ffc, dfdi, nd, tau1, tau2)
+                        r27bid, dfdi, nd, tau1, tau2)
         else if (ndim.eq.2) then
             elrefc='NON'
             call xjacf2(elref, elrefc, elc, ndim, fpg,&
