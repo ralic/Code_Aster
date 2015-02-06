@@ -71,12 +71,8 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !
-    data nocoor  /'X               ',&
-     &              'Y               ',&
-     &              'Z               '/
-    data uncoor  /'INCONNU         ',&
-     &              'INCONNU         ',&
-     &              'INCONNU         '/
+    data nocoor  /'X               ', 'Y               ', 'Z               '/
+    data uncoor  /'INCONNU         ', 'INCONNU         ', 'INCONNU         '/
 !
     desmed = ' '
     if (nbrcou .eq. 0 .and. nbsect .eq. 0 .and. nummai .eq. 0) goto 9999
@@ -169,8 +165,12 @@ subroutine irmase(nofimd, typsec, nbrcou, nbsect, nummai,&
         nbpoin = zi(jcesd+5+4*(nummai-1)+1)
         call wkvect('&&IRMASE.COOR_PTS', 'V V R', 2*nbpoin, jcoopt)
         nbcmp = zi(jcesd+5+4*(nummai-1)+2)
-        ASSERT(nbcmp.eq.3)
-        ASSERT(cesc(1).eq.'XG      '.and. cesc(2).eq.'YG      ')
+!       YG       ZG       AIRE     YP       ZP       GX       NUMGR
+        ASSERT(nbcmp.eq.7)
+        ASSERT(cesc(1).eq.'YG      '.and. cesc(2).eq.'ZG      ')
+        ASSERT(cesc(3).eq.'AIRE    '.and. cesc(4).eq.'YP      ')
+        ASSERT(cesc(5).eq.'ZP      '.and. cesc(6).eq.'GX      ')
+        ASSERT(cesc(7).eq.'NUMGR   ')
 !
         postmp = 0
         do 50 isp = 1, nbpoin

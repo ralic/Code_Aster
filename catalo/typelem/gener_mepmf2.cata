@@ -25,10 +25,10 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2    )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    ECAFIEL  = CAFI_R   ELEM__         (XG       YG       AIRE     )
+    ECAFIEL  = CAFI_R   ELEM__         (YG       ZG       AIRE     YP       ZP       GX       NUMGR )
     CCAGEPO  = CAGEPO   ELEM__         (R1       EP1      )
     CCAGNPO  = CAGNPO   ELEM__         (A1       IY1      IZ1      AY1      AZ1
-                                        EY1      EZ1      JX1      RY1      RZ1 
+                                        EY1      EZ1      JX1      RY1      RZ1
                                         RT1      JG1      A2       IY2      IZ2
                                         AY2      AZ2      EY2      EZ2      JX2
                                         RY2      RZ2      RT2      JG2      TVAR     )
@@ -41,12 +41,11 @@ MODE_LOCAL__
                                         TVAR     )
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     GAMMA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR
                                        POSTITER LC_EXT[3] MODECALC ALPHA LC_EXT2[2] )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
-                                        SD_COMP    KIT1     KIT2     KIT3     KIT4     KIT5
-                                        KIT6     KIT7     KIT8     KIT9     )
+                                        SD_COMP  KIT[9]   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     NDEPLAC  = DEPL_C   ELNO__ IDEN__  (DX       DY       DZ       DRX      DRY      DRZ
@@ -68,7 +67,7 @@ MODE_LOCAL__
     CEPSINR  = EPSI_R   ELEM__         (EPX      KY       KZ       )
     EDEFGNO  = EPSI_R   ELNO__ IDEN__  (EPXX     GAXY     GAXZ     GAT      KY       KZ
                                         GAX      )
-   
+
     CFLAPLA  = FLAPLA   ELEM__         (NOMAIL   NOGEOM   )
     CFRELEC  = FELECR   ELEM__         (X1       Y1       Z1       X2       Y2       Z2
                                         CODE     )
@@ -87,10 +86,9 @@ MODE_LOCAL__
     CLISTMA  = LISTMA   ELEM__         (LISTMA   TRANS    )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
-    ENBSP_I  = NBSP_I   ELEM__         (NBFIBR   NBGRFI   NUG1     NUG2     NUG3     NUG4
-                                        NUG5     NUG6     NUG7     NUG8     NUG9     NUG10    )
+    ENBSP_I  = NBSP_I   ELEM__         (NBFIBR   NBGRFI   TYGRFI   NBCARMAX NUG[10]    )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
-    CROTATR  = ROTA_R   ELEM__         (OME    AR     BR     CR     X      Y     Z  )
+    CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y       Z  )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
                                         BX       )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ

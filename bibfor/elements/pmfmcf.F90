@@ -22,15 +22,21 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
 ! ======================================================================
 !
 ! aslint: disable=W1504
+! --------------------------------------------------------------------------------------------------
+!
+!       APPEL AU COMPORTEMENT DU GROUPE DE FIBRE
+!
+! --------------------------------------------------------------------------------------------------
+!
     implicit none
+#include "asterfort/pmfcom.h"
+!
     integer :: ip, nbgf, nbfib, nbvalc, nugf(*), icdmat,codret
     character(len=16) :: option
     character(len=24) :: sdcomp(*)
     real(kind=8) :: varim(*), varimp(*), varip(*), contm(*), defm(*), defp(*)
     real(kind=8) :: crit(*), instam, instap, defap(*), defam(*), epsm
     real(kind=8) :: sigf(*), modf(*)
-!
-#include "asterfort/pmfcom.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,18 +54,17 @@ subroutine pmfmcf(ip, nbgf, nbfib, nugf, sdcomp,&
     idecc = 1
     idecv = 1
     do ig = 1, nbgf
-!       NUMERO DU GROUPE DE FIBRE
+!       numéro du groupe de fibre
         ngf = nugf(ig)
         icp = (ngf-1)*6
-!       NOMBRE DE FIBRES DE CE GROUPE
+!       nombre de fibres de ce groupe
         read(sdcomp(icp+6),'(I24)') nbfig
-!       AIGUILLAGE SUIVANT COMPORTEMENT :
-!           MODULE ET CONTRAINTE SUR CHAQUE FIBRE
-!           ATTENTION A LA POSITION DU POINTEUR CONTRAINTE ET VARIABLES INTERNES
+!       aiguillage suivant comportement :
+!           module et contrainte sur chaque fibre
+!           attention à la position du pointeur contrainte et variables internes
         iposv = idecv + idcipv
         iposc = idecc + idcipc
-        call pmfcom(ip, idecc, option, sdcomp(icp+2), crit, nbfig,&
-                    instam, instap, icdmat,&
+        call pmfcom(ip, idecc, option, sdcomp(icp+2), crit, nbfig, instam, instap, icdmat,&
                     nbvalc, defam, defap, varim(iposv), varimp( iposv),&
                     contm(iposc), defm(idecc), defp(idecc), epsm, modf(idecc),&
                     sigf(idecc), varip(iposv), codrep)

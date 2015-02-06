@@ -1,0 +1,12 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm zzzz381a.comm D 1
+F mail zzzz381a.mail D 20
+F libr zzzz381a.18 D 18
+F datg zzzz381a.datg D 16
+

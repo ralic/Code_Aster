@@ -99,11 +99,15 @@ GRANDEUR_SIMPLE__
     CACO3D   = R    CRF
 
 <<  CAFI_R  Type:R Caracteristiques des fibres dans le repere local de la poutre
-       XG   : coordonnee du centre de gravite de la fibre
-       YG   : coordonnee du centre de gravite de la fibre
-       AIRE : aire de lafibre
+       YG    : coordonnee du centre de gravite de la fibre
+       ZG    : coordonnee du centre de gravite de la fibre
+       AIRE  : aire de lafibre
+       YP    : coordonnee du centre de gravite du groupe de fibre
+       ZP    : coordonnee du centre de gravite du groupe de fibre
+       GX    : Constante de torsion pour le groupe de fibre
+       NUMGR : numero du groupe de fibre
 >>
-    CAFI_R   = R    XG       YG       AIRE
+    CAFI_R   = R    YG  ZG  AIRE  YP  ZP  GX  NUMGR
 
 %
 %   POUR LES DISCRETS : DEBUT
@@ -1315,13 +1319,16 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 
 %   COMPOSANTES CARACTERISTIQUES DES ELEMENTS A SOUS-POINTS
 <<  NBSP_I Type:I Caracteristiques des elements de structure a sous-points
-       COQ_NCOU : nombre de couches (COQUE)
-       TUY_NCOU : nombre de couches (TUYAU)
-       TUY_NSEC : nombre de secteurs (TUYAU)
-       NBGRFI   : nombre de groupes de fibres (Poutre MULTI-FIBRE)
-       NUG1,..  : numeros des groupes de fibres (DE 1 A 10)
+        COQ_NCOU : nombre de couches (COQUE)
+        TUY_NCOU : nombre de couches (TUYAU)
+        TUY_NSEC : nombre de secteurs (TUYAU)
+        NBFIBR   : nombre de fibres au total sur la section
+        NBGRFI   : nombre de groupes de fibres (Poutre MULTI-FIBRE)
+        TYGRFI   : type du groupe de fibres
+        NBCARMAX : nombre de caracteristique maximum pour une fibre
+        NUG1,..  : numeros des groupes de fibres (DE 1 A 10)
 >>
-    NBSP_I   = I    NBFIBR   COQ_NCOU  TUY_NCOU   TUY_NSEC  NBGRFI    NUG[10]
+    NBSP_I   = I  NBFIBR  COQ_NCOU  TUY_NCOU  TUY_NSEC  NBGRFI  TYGRFI  NBCARMAX NUG[10]
 
 
 <<  NEUT_F Type:K8 Grandeur ''neutre'' de type K8

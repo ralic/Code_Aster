@@ -1,4 +1,5 @@
 subroutine te0535(option, nomte)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,10 +16,24 @@ subroutine te0535(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     Calcul des options FULL_MECA ou RAPH_MECA ou RIGI_MECA_TANG
+!     pour les éléments de poutre 'MECA_POU_D_EM'
+!
+!     'MECA_POU_D_EM' : poutre droite d'EULER multifibre
+!
+! --------------------------------------------------------------------------------------------------
+!
     implicit none
-#include "asterf_types.h"
+    character(len=16) :: option, nomte
+!
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jedetr.h"
@@ -34,6 +49,7 @@ subroutine te0535(option, nomte)
 #include "asterfort/pmfdef.h"
 #include "asterfort/pmfdge.h"
 #include "asterfort/pmffft.h"
+#include "asterfort/pmfinfo.h"
 #include "asterfort/pmfite.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfits.h"
@@ -49,73 +65,64 @@ subroutine te0535(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 !
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: option, nomte
-! --- ------------------------------------------------------------------
-!
-!     CALCUL DES OPTIONS FULL_MECA OU RAPH_MECA OU RIGI_MECA_TANG
-!     POUR LES ELEMENTS DE POUTRE 'MECA_POU_D_EM'
-!
-!     'MECA_POU_D_EM' : POUTRE DROITE D'EULER MULTIFIBRES
-!
-! --- ------------------------------------------------------------------
-! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-!     NOMTE  : K16 : NOM DU TYPE ELEMENT
-! --- ------------------------------------------------------------------
-    integer :: igeom, icompo, imate, iorien, nd, nk, iret
-    integer :: icarcr, icontm, ideplm, ideplp, imatuu
-    integer :: ivectu, icontp, nno, nc, ivarim, ivarip, i
+    integer :: nno, nc, nd, nk
     parameter  (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
+!
+    integer :: igeom, icompo, imate, iorien, iret
+    integer :: icarcr, icontm, ideplm, ideplp, imatuu
+    integer :: ivectu, icontp, ivarim, ivarip, i, lx
+    integer :: jmodfb, jsigfb, jacf, nbvalc
+    integer :: jtab(7), ivarmp, istrxp, istrxm
+    integer :: ip, jcret, codret, codrep
+    integer :: iposcp, iposig, ipomod, iinstp, iinstm
+    integer :: icomax, ico, isdcom, nbgfmx, ncomp
+    integer :: npg, nnoel, ipoids, ivf
+!
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
-    integer :: lx
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk), rgeom(nk)
     real(kind=8) :: deplm(12), deplp(12), matsec(6), dege(6)
-    real(kind=8) :: zero
-    integer :: jmodfb, jsigfb, nbfib, ncarfi, jacf, nbvalc
-    integer :: jtab(7), ivarmp, istrxp, istrxm
-    integer :: ip, inbf, jcret, codret, codrep
-    integer :: iposcp, iposig, ipomod, iinstp, iinstm
-    integer :: icomax, ico, nbgf, isdcom, nbgfmx, ncomp
-    integer :: npg, nnoel, ipoids, ivf
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
     real(kind=8) :: alicom, dalico, ss1, hv, he, minus
-    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3), sign_noeu
+    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3)
     real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
     aster_logical :: vecteu, matric, reactu
     character(len=8) :: mator
     character(len=24) :: valk(2)
+!
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
     integer, pointer :: cpri(:) => null()
-    parameter  (zero=0.0d+0)
 !
-! --- ------------------------------------------------------------------
+    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+!
+! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara /'EY1','EZ1','JX1'/
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', nno=nnoel, npg=npg, jpoids=ipoids, jvf=ivf)
     ASSERT(nno.eq.nnoel)
-!   NOMBRE DE COMPOSANTES DES CHAMPS PSTRX? PAR POINTS DE GAUSS
+!   Nombre de composantes des champs PSTRX par points de gauss
     ncomp = 18
 !
-    ncarfi = 3
     codret = 0
     codrep = 0
-!
-! --- BOOLEENS PRATIQUES
+!   Booleens pratiques
     matric = option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG'
     vecteu = option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
-!
-    call jevech('PNBSP_I', 'L', inbf)
+! --------------------------------------------------------------------------------------------------
+!   Récupération des caractéristiques des fibres
+    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
     call jevech('PFIBRES', 'L', jacf)
+!
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PINSTMR', 'L', iinstm)
@@ -124,33 +131,29 @@ subroutine te0535(option, nomte)
     call jevech('PCAORIE', 'L', iorien)
     call jevech('PCARCRI', 'L', icarcr)
     call jevech('PDEPLMR', 'L', ideplm)
-! --- LA PRESENCE DU CHAMP DE DEPLACEMENT A L INSTANT T+
-!     DEVRAIT ETRE CONDITIONNE  PAR L OPTION (AVEC RIGI_MECA_TANG
-!     CA N A PAS DE SENS).
-!     CEPENDANT CE CHAMP EST INITIALISE A 0 PAR LA ROUTINE NMMATR.
+!   La présence du champ de deplacement a l'instant T+ devrait être conditionné  par l'option
+!   (avec RIGI_MECA_TANG ca n'a pas de sens). Cependant ce champ est initialisé a 0 par
+!   la routine nmmatr.
     call jevech('PDEPLPR', 'L', ideplp)
-    call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
-                itab=jtab)
+    call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
     icontm = jtab(1)
 !
     call jevech('PSTRXMR', 'L', istrxm)
 !
-    call tecach('OON', 'PVARIMR', 'L', iret, nval=7,&
-                itab=jtab)
+    call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
     ivarim = jtab(1)
 !
     if (vecteu) then
-        call tecach('OON', 'PVARIMP', 'L', iret, nval=7,&
-                    itab=jtab)
+        call tecach('OON', 'PVARIMP', 'L', iret, nval=7, itab=jtab)
         ivarmp = jtab(1)
     else
         ivarmp=1
     endif
 !
-! --- DEFORMATIONS ANELASTIQUES
+!   Déformations anélastiques
     call r8inir(6, 0.d0, defam, 1)
     call r8inir(6, 0.d0, defap, 1)
-! --- PARAMETRES EN SORTIE
+!   Paramètres en sortie
     if (option .eq. 'RIGI_MECA_TANG') then
         call jevech('PMATUUR', 'E', imatuu)
         ivarip = ivarim
@@ -169,33 +172,27 @@ subroutine te0535(option, nomte)
         call jevech('PSTRXPR', 'E', istrxp)
     endif
 !
-! --- ------------------------------------------------------------------
-! --- RECUPERATION DU NOMBRE DE FIBRES TOTAL DE L'ELEMENT
-!     ET DU NOMBRE DE GROUPES DE FIBRES SUR CET ELEMENT
-    nbfib = zi(inbf)
-    nbgf = zi(inbf+1)
-!
-! --- VERIFICATION QUE C'EST BIEN DES MULTIFIBRES
+! --------------------------------------------------------------------------------------------------
+!   Récupération du nombre de fibres total et du nombre de groupes de fibres sur cet élément
+!   Verification que c'est bien des multifibres
     call jeexin(zk16(icompo-1+7), iret)
     if (iret .eq. 0) then
         call utmess('F', 'ELEMENTS4_14', sk=nomte)
     endif
 !
-! --- RECUPERATION DE LA SD_COMPOR OU LE COMPORTEMENT DES GROUPES DE
-!     FIBRES DE CET ELEMENT EST STOCKE
-!     (NOM, MATER, LOI, ALGO1D, DEFORMATION NBFIG) POUR CHAQUE GROUPE
-!     DANS L'ORDRE CROISSANT DE NUMEROS DE GROUPES)
+!   SD_COMPOR où le comportement des groupes de fibres de cet élément est stocké
+!   <nom, mater, loi, algo1d, deformation , nbfig> pour chaque groupe dans l'ordre croissant des
+!   numéros de groupes
     call jeveuo(zk16(icompo-1+7), 'L', isdcom)
     read (zk16(icompo-1+2),'(I16)') nbvalc
 !
-! --- ON RESERVE QUELQUES PLACES
-    AS_ALLOCATE(vr=defmfib, size=nbfib)
-    AS_ALLOCATE(vr=defpfib, size=nbfib)
-    call wkvect('&&TE0535.MODUFIB', 'V V R8', (nbfib*2), jmodfb)
-    call wkvect('&&TE0535.SIGFIB', 'V V R8', (nbfib*2), jsigfb)
+!   On reserve quelques places
+    AS_ALLOCATE(vr=defmfib, size=nbfibr)
+    AS_ALLOCATE(vr=defpfib, size=nbfibr)
+    call wkvect('&&TE0535.MODUFIB', 'V V R8', (nbfibr*2), jmodfb)
+    call wkvect('&&TE0535.SIGFIB', 'V V R8', (nbfibr*2), jsigfb)
 !
-!
-! --- LONGUEUR DE L'ELEMENT
+!   Longueur de l'élément
     call lonele(3, lx, xl)
 !
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
@@ -205,85 +202,71 @@ subroutine te0535(option, nomte)
     endif
     reactu = zk16(icompo+2) .eq. 'GROT_GDEP'
 !
-!   CALCUL DES MATRICES DE CHANGEMENT DE REPERE
-!
+!   Calcul des matrices de changement de repère
     if (reactu) then
-!
-!        RECUPERATION DU 3EME ANGLE NAUTIQUE AU TEMPS T-
+!       Recuperation du 3eme angle nautique au temps T-
         gamma = zr(istrxm+18-1)
-!
-!       CALCUL DE PGL,XL ET ANGP
+!       Calcul de pgl,xl et angp
         call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom),&
                     gamma, vecteu, pgl, xl, angp)
-!
-!        SAUVEGARDE DES ANGLES NAUTIQUES
+!       Sauvegarde des angles nautiques
         if (vecteu) then
             zr(istrxp+16-1) = angp(1)
             zr(istrxp+17-1) = angp(2)
             zr(istrxp+18-1) = angp(3)
         endif
-!
     else
         call matrot(zr(iorien), pgl)
     endif
 !
 !   récupération des caractéristiques de section utiles
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-!
     ey  = vale_cara(1)
     ez  = vale_cara(2)
     xjx = vale_cara(3)
 !
-! --- CARACTERISTIQUES ELASTIQUES (PAS DE TEMPERATURE POUR L'INSTANT)
-!     ON PREND LE E ET NU DU MATERIAU TORSION (VOIR OP0059)
+!   Caractéristiques élastiques (pas de température pour l'instant)
+!   On prend le E et NU du matériau torsion (voir op0059)
     call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
     nbgfmx = cpri(3)
     mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
-    call matela(zi(imate), mator, 0, 0.d0, e,&
-                nu)
+    call matela(zi(imate), mator, 0, 0.d0, e, nu)
     g = e/ (2.d0* (1.d0+nu))
-! --- TORSION A PART
-    
     gxjx = g*xjx
-!
-! --- DEPLACEMENTS DANS LE REPERE LOCAL
+!   Déplacements dans le repère local
     call utpvgl(nno, nc, pgl, zr(ideplm), deplm)
     call utpvgl(nno, nc, pgl, zr(ideplp), deplp)
     epsm = (deplm(7)-deplm(1))/xl
-! --- ON RECUPERE ALPHA MODE INCOMPATIBLE=ALICO
+!   On recupère alpha mode incompatible=alico
     alicom=zr(istrxm-1+15)
+!   Mises à zéro
+    call r8inir(nk, 0.0d+0, klv, 1)
+    call r8inir(nk, 0.0d+0, sk, 1)
+    call r8inir(12, 0.0d+0, fl, 1)
+    call r8inir(12, 0.0d+0, fv, 1)
 !
-! --- MISES A ZERO
-    call r8inir(nk, zero, klv, 1)
-    call r8inir(nk, zero, sk, 1)
-    call r8inir(12, zero, fl, 1)
-    call r8inir(12, zero, fv, 1)
-!
-! --- BOUCLE POUR CALCULER LE ALPHA MODE INCOMPATIBLE : ALICO
+!   Boucle pour calculer le alpha mode incompatible : alico
     icomax=100
     minus=1.d-6
-    ss1=zero
-    dalico=zero
+    ss1=0.0d+0
+    dalico=0.0d+0
     do ico = 1, icomax
-        he=zero
-        hv=zero
-! ---    BOUCLE SUR LES POINTS DE GAUSS
-        do 500 ip = 1, npg
-! ---       POSITION, POIDS X JACOBIEN ET MATRICE B ET G
-            call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi,&
-                        wi, b, gg)
-! ---       DEFORMATIONS '-' ET INCREMENT DE DEFORMATION PAR FIBRE
-!           MOINS --> M
+        he=0.0d+0
+        hv=0.0d+0
+!       Boucle sur les points de gauss
+        do ip = 1, npg
+!           Position, poids x jacobien et matrice B et G
+            call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi, wi, b, gg)
+!           Déformations '-' et increment de deformation par fibre
             call pmfdge(b, gg, deplm, alicom, dege)
-            call pmfdef(nbfib, ncarfi, zr(jacf), dege, defmfib)
-!  --       INCREMENT --> P
+            call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), dege, defmfib)
             call pmfdge(b, gg, deplp, dalico, dege)
-            call pmfdef(nbfib, ncarfi, zr(jacf), dege, defpfib)
+            call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), dege, defpfib)
 !
-            iposig=jsigfb + nbfib*(ip-1)
-            ipomod=jmodfb + nbfib*(ip-1)
-! ---       MODULE ET CONTRAINTES SUR CHAQUE FIBRE (COMPORTEMENT)
-            call pmfmcf(ip, nbgf, nbfib, zi(inbf+2), zk24(isdcom),&
+            iposig=jsigfb + nbfibr*(ip-1)
+            ipomod=jmodfb + nbfibr*(ip-1)
+!           Module et contraintes sur chaque fibre (comportement)
+            call pmfmcf(ip, nbgrfi, nbfibr, nug, zk24(isdcom),&
                         zr(icarcr), option, zr(iinstm), zr(iinstp), zi(imate),&
                         nbvalc, defam, defap, zr(ivarim), zr(ivarmp),&
                         zr(icontm), defmfib, defpfib, epsm, zr(ipomod),&
@@ -291,20 +274,19 @@ subroutine te0535(option, nomte)
 !
             if (codrep .ne. 0) then
                 codret = codrep
-!              CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
-!              AUTRE CODES: SORTIE IMMEDIATE
-                if (codrep .ne. 3) goto 900
+!               code 3: on continue et on le renvoie a la fin, autre codes sortie immediate
+                if (codrep .ne. 3) goto 999
             endif
-! ---       CALCUL MATRICE SECTION
-            call pmfite(nbfib, ncarfi, zr(jacf), zr(ipomod), matsec)
-! ---       INTEGRATION DES CONTRAINTES SUR LA SECTION
-            call pmfits(nbfib, ncarfi, zr(jacf), zr(iposig), vs)
-! ---       CALCULS MODE INCOMPATIBLE HV=INT(GT KS G), HE=INT(GT FS)
+!           calcul matrice section
+            call pmfite(tygrfi, nbfibr, nbcarm, zr(jacf), zr(ipomod), matsec)
+!           Integration des contraintes sur la section
+            call pmfits(tygrfi, nbfibr, nbcarm, zr(jacf), zr(iposig), vs)
+!           Calculs mode incompatible hv=int(gt ks g), he=int(gt fs)
             hv = hv+wi*gg*gg*matsec(1)
             he = he+wi*gg*vs(1)
-500     continue
-! ---    FIN BOUCLE POINTS DE GAUSS
-! ---    ENCORE UN PEU DE MODE INCOMPATIBLE
+        enddo
+!       Fin boucle points de gauss
+!       Encore un peu de mode incompatible
         if (abs(hv) .le. r8prem()) then
             call utmess('F', 'ELEMENTS_8')
         endif
@@ -319,71 +301,65 @@ subroutine te0535(option, nomte)
         if (abs(he) .le. (ss1*minus)) then
             goto 710
         endif
-    end do
-! --- FIN BOUCLE CALCUL ALICO
+    enddo
+!   Fin boucle calcul alico
 710 continue
 !
-! --- QUAND ON A CONVERGE SUR ALICO, ON PEUT INTEGRER SUR L'ELEMENT
+!   Quand on a convergé sur alico, on peut intégrer sur l'élément
     do ip = 1, npg
-        call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi,&
-                    wi, b, gg)
-! ---    CALCUL LA MATRICE ELEMENTAIRE (SAUF POUR RAPH_MECA)
+        call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi, wi, b, gg)
+!       Calcul la matrice elementaire (sauf pour RAPH_MECA)
         if (option .ne. 'RAPH_MECA') then
-            ipomod = jmodfb + nbfib*(ip-1)
-! ---       CALCUL DES CARACTERISTIQUES DE SECTION PAR INTEGRATION
-!           SUR LES FIBRES
-            call pmfite(nbfib, ncarfi, zr(jacf), zr(ipomod), matsec)
-!
+            ipomod = jmodfb + nbfibr*(ip-1)
+!           Calcul des caracteristiques de section par integration sur les fibres
+            call pmfite(tygrfi, nbfibr, nbcarm, zr(jacf), zr(ipomod), matsec)
             call pmfbkb(matsec, b, wi, gxjx, sk)
-            do 320 i = 1, nk
+            do i = 1, nk
                 klv(i) = klv(i)+sk(i)
-320         continue
-! ---       ON SE SERT DE PMFBTS POUR CALCULER BT,KS,G. G EST SCALAIRE
+            enddo
+!           On se sert de pmfbts pour calculer bt,ks,g. g est scalaire
             ksg(1) = matsec(1)*gg
             ksg(2) = matsec(2)*gg
             ksg(3) = matsec(3)*gg
             call pmfbts(b, wi, ksg, vv)
-            do 340 i = 1, 12
+            do i = 1, 12
                 fv(i) = fv(i)+vv(i)
-340         continue
+            enddo
         endif
-! ---    SI PAS RIGI_MECA_TANG, ON CALCULE LES FORCES INTERNES
+!       si pas RIGI_MECA_TANG, on calcule les forces internes
         if (option .ne. 'RIGI_MECA_TANG') then
-            iposig=jsigfb + nbfib*(ip-1)
-            call pmfits(nbfib, ncarfi, zr(jacf), zr(iposig), vs)
+            iposig=jsigfb + nbfibr*(ip-1)
+!           Efforts généralisés à "+" :
+!               vs : < int(sig.ds) int(sig.y.ds)  int(sig.z.ds) >
+!               vs : <     Nx          -Mz             My       >
+            call pmfits(tygrfi, nbfibr, nbcarm, zr(jacf), zr(iposig), vs)
             call pmfbts(b, wi, vs, ve)
-            do 360 i = 1, 12
+            do i = 1, 12
                 fl(i) = fl(i)+ve(i)
-360         continue
+            enddo
         endif
-    end do
-! --  ON MODIFIE LA MATRICE DE RAIDEUR PAR CONDENSATION STATIQUE
+    enddo
+!   On modifie la matrice de raideur par condensation statique
     if (option .ne. 'RAPH_MECA') then
         call pmffft(fv, sv)
-        do 380 i = 1, nk
+        do i = 1, nk
             klv(i) = klv(i) - sv(i)/hv
-380     continue
+        enddo
     endif
 !
-! --- TORSION A PART POUR LES FORCES INTERNE
+!   Torsion a part pour les forces interne
     fl(10) = gxjx*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
     fl(4) = -fl(10)
-!
-!   STOCKAGE DES EFFORTS GENERALISES ET PASSAGE DES FORCES EN REP LOCAL
+!   Stockage des efforts généralisés et passage des forces en repère local
     if (vecteu) then
-! ---    ON SORT LES CONTRAINTES SUR CHAQUE FIBRE
-        do 310 ip = 1, 2
-            iposcp=icontp + nbfib*(ip-1)
-            iposig=jsigfb + nbfib*(ip-1)
-            do 300 i = 0, nbfib-1
+!       on sort les contraintes sur chaque fibre
+        do ip = 1, 2
+            iposcp=icontp + nbfibr*(ip-1)
+            iposig=jsigfb + nbfibr*(ip-1)
+            do i = 0, nbfibr-1
                 zr(iposcp+i) = zr(iposig+i)
-300         continue
-!           STOCKAGE DES FORCES INTEGREES
-            if (ip .eq. 1) then
-                sign_noeu = -1.d0
-            else
-                sign_noeu = 1.d0
-            endif
+            enddo
+!           Stockage des forces intégrées
             zr(istrxp-1+ncomp*(ip-1)+1) = fl(6*(ip-1)+1)
             zr(istrxp-1+ncomp*(ip-1)+2) = fl(6*(ip-1)+2)
             zr(istrxp-1+ncomp*(ip-1)+3) = fl(6*(ip-1)+3)
@@ -391,38 +367,31 @@ subroutine te0535(option, nomte)
             zr(istrxp-1+ncomp*(ip-1)+5) = fl(6*(ip-1)+5)
             zr(istrxp-1+ncomp*(ip-1)+6) = fl(6*(ip-1)+6)
             zr(istrxp-1+ncomp*(ip-1)+15)= alicom+dalico
-310     continue
+        enddo
         call utpvlg(nno, nc, pgl, fl, zr(ivectu))
     endif
 !
-!   CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE
+!   Calcul de la matrice de rigidité géométrique
     if (matric .and. reactu) then
-!
-        do 15 i = 1, nc
+        do i = 1, nc
             sigma(i) = - zr(istrxp+i-1)
             sigma(i+nc) = zr(istrxp+ncomp+i-1)
- 15     continue
-!
-        call r8inir(nk, zero, rgeom, 1)
-        call pmfitg(nbfib, 3, zr(jacf), cars1)
-        a = cars1(1)
+        enddo
+        call r8inir(nk, 0.0d+0, rgeom, 1)
+        call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), cars1)
+        a   = cars1(1)
         xiy = cars1(5)
         xiz = cars1(4)
-
-        call ptkg00(sigma, a, a, xiz, xiz,&
-                    xiy, xiy, xl, ey, ez,&
-                    rgeom)
+        call ptkg00(sigma, a, a, xiz, xiz, xiy, xiy, xl, ey, ez, rgeom)
         call lcsovn(nk, klv, rgeom, klv)
     endif
-!
+!   On sort la matrice de rigidité tangente
     if (matric) then
-! ---    ON SORT LA MATRICE DE RIGIDITE TANGENTE
         call utpslg(nno, nc, pgl, klv, zr(imatuu))
     endif
 !
-!
-900 continue
-! --- SORTIE PROPRE: CODE RETOUR ET LIBERATION DES RESSOURCES
+999 continue
+!   Sortie propre : code retour et libération des ressources
     if (vecteu) then
         call jevech('PCODRET', 'E', jcret)
         zi(jcret) = codret

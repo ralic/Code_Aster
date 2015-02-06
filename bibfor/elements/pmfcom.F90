@@ -22,8 +22,41 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 ! ======================================================================
 !
 ! aslint: disable=W1504
-    implicit none
+! --------------------------------------------------------------------------------------------------
 !
+!        COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRE
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   IN
+!       kpg     : numero de point de gauss
+!       debsp   : numero de sous-point de la premiere fibre du groupe
+!       option  :
+!       compor  : nom du comportement
+!       crit    : criteres de convergence locaux
+!       nf      : nombre de fibres du groupe
+!       instam  : instant du calcul precedent
+!       instap  : instant du calcul
+!       icdmat  : code materiau
+!       nbvalc  :
+!       defam   : deformations anelastiques a l'instant precedent
+!       defap   : deformations anelastiques a l'instant du calcul
+!       varim   : variables internes moins
+!       varimp  : variables internes iteration precedente (pour deborst)
+!       contm   : contraintes moins par fibre
+!       defm    : deformation  a l'instant du calcul precedent
+!       ddefp   : increment de deformation
+!       epsm    : deformation a l'instant precedent
+!
+!   OUT
+!       modf    : module tangent des fibres
+!       sigf    : contrainte a l'instant actuel des fibres
+!       varip   : variables internes a l'instant actuel
+!       codret :
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
 #include "asterf_types.h"
 #include "asterfort/comp1d.h"
 #include "asterfort/mazu1d.h"
@@ -39,60 +72,34 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 #include "asterfort/utmess.h"
 #include "asterfort/vmci1d.h"
 #include "blas/dcopy.h"
-    integer :: nf, icdmat, nbvalc, kpg, debsp
+!
+    integer :: nf, icdmat, nbvalc, kpg, debsp, codret
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)
-    real(kind=8) :: tempm, tempp, tref, sigx, epsx, depsx, instam, instap
+    real(kind=8) :: instam, instap, epsm
     real(kind=8) :: crit(*), defap(*), defam(*)
 !
     character(len=16) :: option
     character(len=24) :: compor(*)
-    aster_logical :: ltemp
-! --- ------------------------------------------------------------------
 !
-!        AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
+! --------------------------------------------------------------------------------------------------
 !
-! --- ------------------------------------------------------------------
-!
-! IN  KPG   : NUMERO DE POINT DE GAUSS
-! IN  DEBSP : NUMERO DE SOUS-POINT DE LA PREMIERE FIBRE DU GROUPE
-! IN  COMPO : NOM DU COMPORTEMENT
-! IN  CRIT  : CRITERES DE CONVERGENCE LOCAUX
-! IN  NF    : NOMBRE DE FIBRES DU GROUPE
-! IN  INSTAM: INSTANT DU CALCUL PRECEDENT
-! IN  INSTAP: INSTANT DU CALCUL
-! IN  E     : MODULE D'YOUNG (ELASTIQUE)
-! IN  ICDMAT: CODE MATERIAU
-! IN  NV    : NOMBRE DE VARIABLES INTERNES DU MODELE
-! IN  VARIM : VARIABLES INTERNES MOINS
-! IN  VARIMP: VARIABLES INTERNES ITERATION PRECEDENTE (POUR DEBORST)
-! IN  DEFAM : DEFORMATIONS ANELASTIQUES A L'INSTANT PRECEDENT
-! IN  DEFAP : DEFORMATIONS ANELASTIQUES A L'INSTANT DU CALCUL
-! IN  CONTM : CONTRAINTES MOINS PAR FIBRE
-! IN  DEFM  : DEFORMATION  A L'INSTANT DU CALCUL PRECEDENT
-! IN  DDEFP : INCREMENT DE DEFORMATION
-! IN  EPSM  : DEFORMATION A L'INSTANT PRECEDENT
-! OUT MODF  : MODULE TANGENT DES FIBRES
-! OUT SIGF  : CONTRAINTE A L'INSTANT ACTUEL DES FIBRES
-! OUT VARIP : VARIABLES INTERNES A L'INSTANT ACTUEL
-! --- ------------------------------------------------------------------
-    integer :: nbval, nbvari, codrep, ksp
-    parameter     (nbval=12)
+    integer , parameter :: nbval=12
     integer :: icodre(nbval)
-    integer :: i, ivari, codret, iret1
-    real(kind=8) :: valres(nbval), ep, em, depsth, epsth
-    real(kind=8) :: cstpm(13), epsm, angmas(3), depsm, nu
+    real(kind=8) :: valres(nbval)
+
+    integer :: nbvari, codrep, ksp, i, ivari, iret1
+    real(kind=8) :: ep, em, depsth, epsth, tref, tempm, tempp, sigx, epsx, depsx
+    real(kind=8) :: cstpm(13), angmas(3), depsm, nu
     character(len=4) :: fami
-    character(len=8) :: nompim(12), mazars(8)
-    character(len=8) :: materi
+    character(len=8) :: nompim(12), mazars(8), materi
     character(len=16) :: compo, algo, nomres(2)
     character(len=30) :: valkm(3)
+    aster_logical :: ltemp
 !
-    data nompim /'SY','EPSI_ULT','SIGM_ULT','EPSP_HAR','R_PM',&
-                 'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM',&
-                 'C_PM','A_PM'/
-    data mazars /'EPSD0','K','AC','BC','AT',&
-                 'BT','SIGM_LIM','EPSI_LIM'/
+    data nompim /'SY', 'EPSI_ULT', 'SIGM_ULT', 'EPSP_HAR', 'R_PM',&
+                 'EP_SUR_E', 'A1_PM', 'A2_PM', 'ELAN', 'A6_PM', 'C_PM', 'A_PM'/
+    data mazars /'EPSD0', 'K', 'AC', 'BC', 'AT', 'BT', 'SIGM_LIM', 'EPSI_LIM'/
 !
 ! --------------------------------------------------------------------------------------------------
     codret = 0
@@ -123,6 +130,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
 !   initialise à 0.D0 (on ne s'en sert pas)
     call r8inir(3, 0.d0, angmas, 1)
 !
+! --------------------------------------------------------------------------------------------------
     if (compo .eq. 'ELAS') then
         nomres(1) = 'E'
         do i = 1, nf
@@ -135,6 +143,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             sigf(i) = ep*(contm(i)/em + ddefp(i) - depsth)
         enddo
 !
+! --------------------------------------------------------------------------------------------------
     else if (compo.eq.'MAZARS_GC') then
         epsth = 0.d0
 !       on récupère les paramètres matériau
@@ -164,6 +173,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                         ddefp(i), modf(i), sigf(i), varip(ivari), option)
         enddo
 !
+! --------------------------------------------------------------------------------------------------
     else if (compo.eq.'VMIS_CINE_GC') then
 !       boucle sur chaque fibre
         do i = 1, nf
@@ -179,6 +189,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                         materi, sigf(i), varip(ivari), modf(i))
         enddo
 !
+! --------------------------------------------------------------------------------------------------
     else if (compo.eq.'PINTO_MENEGOTTO') then
 !       on récupère les paramètres matériau
         call r8inir(nbval, 0.d0, valres, 1)
@@ -204,6 +215,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                         depsm, varip(ivari), sigf(i), modf(i))
         enddo
 !
+! --------------------------------------------------------------------------------------------------
     else if (compo.eq.'VMIS_CINE_LINE') then
         do i = 1, nf
             ivari = nbvalc* (i-1) + 1
@@ -218,6 +230,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                         materi, sigf(i), varip(ivari), modf(i))
         enddo
 !
+! --------------------------------------------------------------------------------------------------
     else if ((compo.eq.'VMIS_ISOT_LINE').or.(compo.eq.'VMIS_ISOT_TRAC')) then
         do i = 1, nf
             ivari = nbvalc* (i-1) + 1
@@ -232,6 +245,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                         compo, materi, sigf(i), varip(ivari), modf(i))
         enddo
 !
+! --------------------------------------------------------------------------------------------------
     else if (compo.eq.'CORR_ACIER') then
         do i = 1, nf
             ivari = nbvalc* (i-1) + 1
@@ -247,6 +261,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
             if (codret .ne. 0) goto 999
         enddo
 !
+! --------------------------------------------------------------------------------------------------
     else if ((compo.eq.'GRAN_IRRA_LOG').or.(compo.eq.'VISC_IRRA_LOG')) then
         if (algo(1:10) .eq. 'ANALYTIQUE') then
             if (.not. ltemp) then
@@ -289,6 +304,8 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
                 endif
             enddo
         endif
+!
+! --------------------------------------------------------------------------------------------------
     else if (compo.eq.'GRANGER_FP_INDT') then
 !       Appel à comp1d pour bénéficier des comportements AXIS: méthode de DEBORST
 !           La LDC doit retourner le module tangent

@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
-        character(len=8) :: noma
-        character(len=8) :: carele
-        character(len=24) :: vmailfib
-        character(len=8) :: sdgf
-        character(len=19) :: cesdec
-        integer :: ngmxel
-    end subroutine pmfd01
+    subroutine pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug)
+        integer,intent(out) :: nbfibr
+        integer,intent(out) :: nbgrfi
+        integer,intent(out) :: tygrfi
+        integer,intent(out) :: nbcarm
+        integer,intent(out) :: nug(*)
+    end subroutine pmfinfo
 end interface

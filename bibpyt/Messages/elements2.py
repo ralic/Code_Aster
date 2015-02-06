@@ -69,12 +69,9 @@ cata_msg = {
 """),
 
     40 : _(u"""
- on ne sait pas intégrer avec  %(k1)s  caractéristiques par fibre
+ Poutres multifibres. Pas d'intégration possible sur les poutre de type %(i1)d.
 """),
 
-    41 : _(u"""
- cas avec inerties des fibres non programme
-"""),
 
     42 : _(u"""
  " %(k1)s "    nom d'élément inconnu.
@@ -195,6 +192,7 @@ cata_msg = {
     77 : _(u"""
  option :  %(k1)s  interdite
 """),
+
 
     81 : _(u"""
  éléments de poutre section variable affine :seul une section rectangle plein est disponible.

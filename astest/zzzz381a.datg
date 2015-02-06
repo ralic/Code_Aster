@@ -1,0 +1,60 @@
+* même fichier que ssll111b
+*
+*
+* opti dime 3 elem seg2 qua4;
+* a=0. 0. 0.;
+* c=2.5 0. 0.;
+* b=5. 0. 0.;
+* poutre=a droi 1 c droi 1 b;
+* opti sauv format 'sdll122a.25';
+* sauv format poutre;
+
+
+
+opti dime 2;
+* Maillage de la section
+* Rectangle centre : QUA4
+opti elem qua4;
+nx = 5; ny = 10; cdg = ( 0.0  0.0); lx = 0.10; ly = 0.20;
+p01 = ( (lx*(-0.5)) (ly*(-0.5)) );
+p02 = ( (lx*( 0.5)) (ly*(-0.5)) );
+cot1 = 'DROITE' nx  p01 p02;
+surf1 = cot1 'TRANS' ny (0.0 ly);
+'DEPL' surf1 'PLUS' cdg;
+* Rectangle bas : TRI3
+opti elem tri3;
+nx = 10; ny = 5; cdg = ( 0.0 -0.125); lx = 0.20; ly = 0.05;
+p01 = ( (lx*(-0.5)) (ly*(-0.5)) );
+p02 = ( (lx*( 0.5)) (ly*(-0.5)) );
+cot2 = 'DROITE' nx  p01 p02;
+surf2 = cot2 'TRANS' ny (0.0 ly);
+'DEPL' surf2 'PLUS' cdg;
+* Rectangle haut gauche : TRI3
+opti elem tri3;
+nx = 5; ny = 5; cdg = ( -0.075  0.125); lx = 0.15; ly = 0.05;
+p01 = ( (lx*(-0.5)) (ly*(-0.5)) );
+p02 = ( (lx*( 0.5)) (ly*(-0.5)) );
+cot3 = 'DROITE' nx  p01 p02;
+surf3 = cot3 'TRANS' ny (0.0 ly);
+'DEPL' surf3 'PLUS' cdg;
+* Rectangle haut droite : QUA4
+opti elem qua4;
+nx = 5; ny = 5; cdg = ( 0.075  0.125); lx = 0.15; ly = 0.05;
+p01 = ( (lx*(-0.5)) (ly*(-0.5)) );
+p02 = ( (lx*( 0.5)) (ly*(-0.5)) );
+cot4 = 'DROITE' nx  p01 p02;
+surf4 = cot4 'TRANS' ny (0.0 ly);
+'DEPL' surf4 'PLUS' cdg;
+'ELIM' 0.00001 (surf3 et surf4);
+
+* Surface finale
+SurfT = surf1 et surf2 et surf3 et surf4;
+*'OUBL' surf1;
+*'OUBL' surf2;
+*'OUBL' surf3;
+*'OUBL' surf4;
+trace surft;
+
+opti sauv format 'sdll122a.26';
+sauv format surft;
+

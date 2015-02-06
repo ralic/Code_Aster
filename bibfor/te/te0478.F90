@@ -16,9 +16,7 @@ subroutine te0478(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-    implicit none
-    character(len=16) :: option, nomte
+! aslint: disable=W0104
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -30,6 +28,9 @@ subroutine te0478(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    implicit none
+    character(len=16) :: option, nomte
+!
 #include "jeveux.h"
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
@@ -37,6 +38,7 @@ subroutine te0478(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/matrot.h"
+#include "asterfort/pmfinfo.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/ppga1d.h"
 #include "asterfort/tecach.h"
@@ -46,27 +48,27 @@ subroutine te0478(option, nomte)
 !
     integer :: ndim, nno, nnos, npg, jgano, icopg, idfde, ipoids, ivf, igeom
     integer :: tab(2), iret, ndim1
-    integer :: inbf, nbfib, jacf, iorien, nbsp, nbcou, nbsec, nbptcou, nbptsec
-    integer :: ncarfi, isec, icou, isp, icoq
-    integer :: ig, ifi, kk, ii, jadr
+    integer :: inbf, jacf, iorien, nbsp, nbcou, nbsec, nbptcou, nbptsec
+    integer :: isec, icou, isp, icoq, ig, ifi, kk, ii, jadr
     real(kind=8) :: copg(4, 4), copg2(3, 4), pgl(3, 3), gm1(3), gm2(3), airesp
     real(kind=8) :: epcou, alpha, rayon, ep, yy, zz, hh, rr, rayonsp, wspicou,wspisec
     real(kind=8) :: dfdx(3), cour, jacp, cosa, sina, spoid
-!-----------------------------------------------------------------------    
+!
+    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1 /'R1','EP1'/
-!
 ! --------------------------------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim1,nno=nno,nnos=nnos,&
-        npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     ASSERT(npg.le.4)
 !
 !   ndim1 est la dimension topologique. il faut calculer la dimension de l'espace ndim (2 ou 3)
     call tecach('OOO', 'PGEOMER', 'L', iret, nval=2, itab=tab)
-    ndim = tab(2)/nno
+    ndim  = tab(2)/nno
     igeom = tab(1)
 !   zr(icopg) : coordonnees points de gauss + poids
     call jevech('PCOORPG', 'E', icopg)
@@ -74,24 +76,24 @@ subroutine te0478(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !   POUTRES MULTIFIBRES
     if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
-        call jevech('PNBSP_I', 'L', inbf)
-        nbfib = zi(inbf)
+!       Récupération des caractéristiques des fibres
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
         call jevech('PFIBRES', 'L', jacf)
-        ncarfi = 3
         call jevech('PCAORIE', 'L', iorien)
         call matrot(zr(iorien), pgl)
-!       position et poids des points de gauss
-        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
-                    zr(idfde), zr(igeom), copg)
+!       position et poids des points de gauss, dans l'espace utilisateur
+        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf), zr(idfde), zr(igeom), copg)
         gm1(1)=0.d0
-!       boucle sur les fibres/sous-points (4 valeurs par fibre, x,y,z,w)
-        do ifi = 1, nbfib
-            gm1(2)=zr(jacf+(ifi-1)*ncarfi)
-            gm1(3)=zr(jacf+(ifi-1)*ncarfi+1)
+!       boucle sur les fibres/sous-points
+!           données   : nbcarm valeurs par fibre <yf,zf,Aire> +<yp,zp,Numgr>
+!           résultats : 4 valeurs par fibre  <x,y,z,w>
+        do ifi = 1, nbfibr
+            gm1(2)=zr(jacf+(ifi-1)*nbcarm)
+            gm1(3)=zr(jacf+(ifi-1)*nbcarm+1)
             call utpvlg(1, 3, pgl, gm1, gm2)
-            airesp=zr(jacf+(ifi-1)*ncarfi+2)
+            airesp=zr(jacf+(ifi-1)*nbcarm+2)
             do ig = 1, npg
-                jadr = icopg+(nbfib*(ig-1)+(ifi-1))*4
+                jadr = icopg+(nbfibr*(ig-1)+(ifi-1))*4
                 zr(jadr+0)=copg(1,ig)+gm2(1)
                 zr(jadr+1)=copg(2,ig)+gm2(2)
                 zr(jadr+2)=copg(3,ig)+gm2(3)
@@ -119,8 +121,7 @@ subroutine te0478(option, nomte)
 !
         call jevech('PCAORIE', 'L', iorien)
 !       position et poids des points de gauss
-        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
-                    zr(idfde), zr(igeom), copg)
+        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf), zr(idfde), zr(igeom), copg)
 !
         gm1(1)=0.d0
         alpha = r8pi()/(nbsec)
@@ -180,8 +181,7 @@ subroutine te0478(option, nomte)
         call jevech('PCACOQU', 'L', icoq)
         ep=zr(icoq)
         epcou=ep/nbcou
-        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
-                    zr(idfde), zr(igeom), copg2)
+        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf), zr(idfde), zr(igeom), copg2)
 !
 !       Nombre de point par couche
         nbptcou = 3
@@ -223,8 +223,7 @@ subroutine te0478(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !   autres elements
     else
-        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf),&
-                    zr(idfde), zr( igeom), zr(icopg))
+        call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf), zr(idfde), zr( igeom), zr(icopg))
     endif
 !
 end subroutine

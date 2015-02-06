@@ -17,28 +17,36 @@ subroutine op0119()
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !                O P E R A T E U R    DEFI_GEOM_FIBRE
 !
-! --- ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
+!
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/codent.h"
+#include "asterfort/dgfassefibres.h"
+#include "asterfort/dgffibres.h"
+#include "asterfort/dgfsections.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
@@ -51,33 +59,32 @@ subroutine op0119()
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ncarfi
-    parameter  (ncarfi=3)
+!
+    integer :: ncarfi1,ncarfi2
+    parameter  (ncarfi1=3, ncarfi2=7)
     real(kind=8) :: pi4
     parameter  (pi4=0.7853981633974483d+00)
 !
-    integer :: nbvfibre, maxfibre
-    integer :: iret, ifm, niv, nboccs, nboccp, ii, nbmagr, iidepnoeud
+    integer :: nbvfibre, maxfibre1, maxfibre2, nbfibres1, nbfibres2
+    integer :: iret, ifm, niv, nboccsec, nboccfib, nboccasf, ii, nbmagr, iidepnoeud, nbocctype1
     integer :: nbmaills, nttri3, ntseg2, ntqua4, ntpoi1, correni(4), ncarma
-    integer :: numno
+    integer :: numno, nbfibreass, jj, ng, iptrng
     integer :: ulnbnoeuds, ulnbmailles, maxmailgrp
     integer :: iinbnoeuds, iinbmailles
-    integer :: nbnoeuds
     integer :: nbv, jdtm, nummai, nutyma
-    integer :: nbgf, jptr, ioc, ido, jdo, ipos, in, nno, no, jcf, jdno, jdco, jnfg
-    integer :: ibid, ipointeur, iinbgf, jngfma, jmaill, jcarasd
+    integer :: nbgf, jpofig, ioc, ido, jdo, ipos, in, nno, no, jcf, jdno, jdco, jnbfig, jtyfig
+    integer :: ibid, ipointeur, iinbgf, jmafig, jmaill, jsdfig
 !
     real(kind=8) :: x(4), y(4), centre(2), axep(2), surf
 !
-    character(len=7)  :: k7bid
-    character(len=8)  :: sdgf, nomas, ktyma, ksudi, nommai, nogfma
+    character(len=8)  :: sdgf, nomas, ksudi, nommai, nogfma
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
     character(len=24) :: mlgtms, mlgcnx, mlgcoo, mlgtma, mlgtno, nomgf
-    character(len=24) :: vnbfig, vcafig, vpocfg, rnomgf, gfmagl, carasd, valk(3)
+    character(len=24) :: vnbfig, vtyfig, vcafig, vpofig, vnmfig, vmafig, vsdfig
+!
+    character(len=24) :: valk(3)
 !
     integer, pointer ::             vmailgrp(:)     => null()
     integer, pointer ::             vimailles(:)    => null()
@@ -87,58 +94,73 @@ subroutine op0119()
     real(kind=8),pointer ::         vcoord(:)       => null()
     character(len=24),pointer ::    vngroup(:)      => null()
 !
+    integer, pointer ::             tousgroupesnbf(:) => null()
+    character(len=24),pointer ::    tousgroupesnom(:) => null()
+    real(kind=8),pointer ::         coorgrfibreass(:) => null()
+    real(kind=8),pointer ::         gxgrfibreass(:)   => null()
+    character(len=24),pointer ::    nomgrfibreass(:)  => null()
+!
     data limcls/'MAILLE_SECT','GROUP_MA_SECT','TOUT_SECT'/
     data ltymcl/'MAILLE','GROUP_MA','TOUT'/
-! --------------------------------------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
     call jemarq()
     iret=0
 !
-!   RECUPERATION DES ARGUMENTS DE LA COMMANDE
+!   récupération des arguments de la commande
     call getres(sdgf, concep, cmd)
 !
-!   NOMBRE DES GROUPES DE FIBRES POUR DIMENSIONNER LES OBJETS
-    call getfac('SECTION', nboccs)
-    call getfac('FIBRE', nboccp)
-    nbgf = nboccs + nboccp
+!   nombre des groupes de fibres pour dimensionner les objets
+    call getfac('SECTION', nboccsec)
+    call getfac('FIBRE',   nboccfib)
+    call getfac('ASSEMBLAGE_FIBRE',nboccasf)
+    nbgf = nboccsec + nboccfib + nboccasf
     ASSERT( nbgf.gt.0 )
 !
+! --------------------------------------------------------------------------------------------------
 !   SD GEOM_FIBRE
-!       noms des groupes de fibres (répertoire de noms)
-!       nombre de fibres par groupe
-!       caractéristiques de fibres (tout à la suite en 1 seul vecteur)
-!       pointeur pour les caractéristiques pour faciliter les accès
-!       nom du maillage global des groupes de fibres
-!       caractéristiques de la SD (ncarfi, nbgf)
-    rnomgf = sdgf//'.NOMS_GROUPES'
+!       NOMS_GROUPES    : noms des groupes de fibres (répertoire de noms)
+!       NB_FIBRE_GROUPE : nombre de fibres par groupe
+!       TYPE_GROUPE     : type de groupe de fibre (1, 2)
+!       CARFI           : caractéristiques de fibres (tout à la suite en 1 seul vecteur)
+!       POINTEUR        : pointeur pour les caractéristiques : ipos-1+[1..nb_figre_groupe]
+!       GFMA            : nom du maillage global des groupes de fibres
+!       CARACSD         : caractéristiques de la SD (nbgf , ncar_type1, ncar_type2)
+    vnmfig = sdgf//'.NOMS_GROUPES'
     vnbfig = sdgf//'.NB_FIBRE_GROUPE'
+    vtyfig = sdgf//'.TYPE_GROUPE'
     vcafig = sdgf//'.CARFI'
-    vpocfg = sdgf//'.POINTEUR'
-    gfmagl = sdgf//'.GFMA'
-    carasd = sdgf//'.CARACSD'
+    vpofig = sdgf//'.POINTEUR'
+    vmafig = sdgf//'.GFMA'
+    vsdfig = sdgf//'.CARACSD'
 !
-    call jecreo(rnomgf, 'G N K24')
-    call jeecra(rnomgf, 'NOMMAX', nbgf, ' ')
+    call jecreo(vnmfig, 'G N K24')
+    call jeecra(vnmfig, 'NOMMAX', nbgf, ' ')
 !
-    call wkvect(vnbfig, 'G V I', nbgf, jnfg)
-    call wkvect(vpocfg, 'G V I', nbgf, jptr)
-    call wkvect(gfmagl, 'G V K8', 1, jngfma)
-    call wkvect(carasd, 'G V I', 2,  jcarasd)
+    call wkvect(vnbfig, 'G V I', nbgf, jnbfig)
+    call wkvect(vtyfig, 'G V I', nbgf, jtyfig)
+    call wkvect(vpofig, 'G V I', nbgf, jpofig)
+    call wkvect(vmafig, 'G V K8',   1, jmafig)
+    call wkvect(vsdfig, 'G V I',    3, jsdfig)
 !
 !   nom du maillage global
     call gcncon('_', nogfma)
-    zk8(jngfma) = nogfma
+    zk8(jmafig) = nogfma
 !
 !   Récupération du niveau d'impression
     call infmaj()
     call infniv(ifm, niv)
 !
-!   Récuperation des types mailles TRI3, QUAD4, SEG2, POI1
+!   Récupération des types mailles TRI3, QUAD4, SEG2, POI1
     call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), nttri3)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), ntqua4)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'SEG2'),  ntseg2)
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'),  ntpoi1)
-
+!
+!   Pour tous les groupes de fibres : Nom , nombre de fibre
+    AS_ALLOCATE( size=nbgf, vk24 = tousgroupesnom )
+    AS_ALLOCATE( size=nbgf, vi = tousgroupesnbf )
+! --------------------------------------------------------------------------------------------------
 !   comptage du nombre de :
 !       - fibres ==> nombre de maille : QUA4 + TRI3 + POI1
 !       - noeuds
@@ -146,63 +168,31 @@ subroutine op0119()
     ulnbnoeuds  = 0
     ulnbmailles = 0
     maxmailgrp  = 10
-!   Les sections
-    do ioc = 1, nboccs
-        call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
-!       Type de maille dans le maillage associé
-        mlgtms = nomas//'.TYPMAIL'
-        call jeveuo(mlgtms, 'L', jdtm)
-!       nombre de fibres = nombre de mailles concernées
-        call reliem(' ', nomas, 'NU_MAILLE', 'SECTION', ioc,&
-                    3, limcls, ltymcl, '&&OP0119.GRPMAILL', nbmaills)
-        call reliem(' ', nomas, 'NU_NOEUD',  'SECTION', ioc,&
-                    3, limcls, ltymcl, '&&OP0119.GRPNOEUD', nbnoeuds)
-        ulnbnoeuds = ulnbnoeuds + nbnoeuds
-        call jeveuo('&&OP0119.GRPMAILL', 'L', jmaill)
-!       Les mailles : TRIA3 ou QUA4
-!           - les SEG2 sont exclus, ils peuvent servir à la construction
-!           - arrêt dans les autres cas
-        nbmagr = 0
-        do jdo = 1, nbmaills
-            nummai = zi(jmaill+jdo-1)
-            nutyma = zi(jdtm+nummai-1)
-            if (nutyma.eq.ntseg2) cycle
-            if ((nutyma.eq.nttri3).or.(nutyma.eq.ntqua4)) then
-                nbmagr = nbmagr + 1
-                ulnbmailles = ulnbmailles +1
-            else
-                call codent(nummai, 'G', k7bid)
-                call jenuno(jexnum('&CATA.TM.NOMTM', nutyma), ktyma)
-                valk(1)=nomas
-                valk(2)=k7bid
-                valk(3)=ktyma
-                call utmess('F', 'MODELISA6_27', nk=3, valk=valk)
-            endif
-        enddo
-        maxmailgrp = max(maxmailgrp,nbmagr)
-    enddo
-!   Les fibres ponctuelles
-    maxfibre = 10
-    do ioc = 1, nboccp
-        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=0, nbret=nbvfibre)
-        nbvfibre = -nbvfibre
-        maxfibre = max(maxfibre,nbvfibre)
-!       Vérification multiple de 'ncarfi' pour 'vale' dans 'fibre'
-        if ( modulo(nbvfibre,ncarfi).ne.0 ) then
-            call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
-            call codent(nbvfibre, 'G', k7bid)
-            valk(1)=nomgf
-            valk(2)=k7bid
-            call utmess('F', 'MODELISA6_26', nk=2, valk=valk)
-        endif
-        ulnbmailles = ulnbmailles + nbvfibre/ncarfi
-        ulnbnoeuds  = ulnbnoeuds  + nbvfibre/ncarfi
-        maxmailgrp  = max(maxmailgrp,nbvfibre/ncarfi)
-    enddo
+    nbfibres1   = 0
+    nbfibres2   = 0
+    iinbgf      = 0
+! --------------------------------------------------------------------------------------------------
+!   Les sections (de type 1)
+    call dgfsections(nboccsec, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgrp, &
+                     ulnbnoeuds, ulnbmailles, nbfibres1)
+! --------------------------------------------------------------------------------------------------
+!   Les fibres ponctuelles (de type 1)
+    call dgffibres(nboccfib, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgrp, &
+                   ulnbnoeuds, ulnbmailles, nbfibres1, maxfibre1, ncarfi1)
+! --------------------------------------------------------------------------------------------------
+!   Les fibres ponctuelles (de type 2)
+    nbocctype1 = nboccfib + nboccsec
+    call dgfassefibres(nboccasf, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgrp, &
+                       ulnbnoeuds, ulnbmailles, nbfibres2, maxfibre2, ncarfi2, nbocctype1)
+!   On libère
+    AS_DEALLOCATE( vk24 = tousgroupesnom )
+    AS_DEALLOCATE( vi = tousgroupesnbf )
+!
 !   Si pas de noeuds et pas de mailles ==> <F>
     ASSERT( ulnbnoeuds.gt.0 )
     ASSERT( ulnbmailles.gt.0 )
-!
+! --------------------------------------------------------------------------------------------------
+!   Dimensionnement des vecteurs pour description du maillage
 !   Avec    :
 !       nbgf        : Nombre de groupe
 !       ulnbnoeuds  : Nombre de noeuds maximum
@@ -230,23 +220,23 @@ subroutine op0119()
 !   Correspondance entre les noeuds du maillage des fibres et du maillage initial de la section
     AS_ALLOCATE( size=ulnbnoeuds, vi = vinoeud )
 !
+! --------------------------------------------------------------------------------------------------
 !   Vecteur de la SD GEOM_FIBRES (carfi)
-    call wkvect(vcafig, 'G V R', ulnbmailles*ncarfi, jcf)
+    call wkvect(vcafig, 'G V R', nbfibres1*ncarfi1+nbfibres2*ncarfi2, jcf)
     ipointeur   = 1
     iinbgf      = 0
     iinbnoeuds  = 0
     iinbmailles = 0
     iidepnoeud  = 1
 ! --------------------------------------------------------------------------------------------------
-!   Les fibres à partir des mailles TRIA3, QUAD4
-    do ioc = 1, nboccs
+!   Les fibres à partir des mailles TRIA3, QUAD4 (de type 1)
+    do ioc = 1, nboccsec
         call getvtx('SECTION', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
         if (niv .eq. 2) write(ifm,800) nomgf
 !       On récupère le nom du maillage
         call getvid('SECTION', 'MAILLAGE_SECT', iocc=ioc, scal=nomas, nbret=nbv)
 !       Récupération des coordonnées de l'axe de la poutre
-        call getvr8('SECTION', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep,&
-                    nbret=iret)
+        call getvr8('SECTION', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
         if (iret .ne. 2) axep(1:2) = 0.0d0
 !       Concept maillage associé
         mlgtms = nomas//'.TYPMAIL'
@@ -261,9 +251,14 @@ subroutine op0119()
         call reliem(' ', nomas, 'NU_MAILLE', 'SECTION', ioc,&
                     3, limcls, ltymcl, '&&OP0119.GRPMAILL', nbmaills)
         call jeveuo('&&OP0119.GRPMAILL', 'L', jmaill)
-!       Nom du groupe de mailles, Nombre de maille du groupe
+!       Nom du groupe de mailles
+        call jenonu(jexnom(vnmfig, nomgf), iret)
+        if ( iret .ne. 0 ) then
+            call utmess('F', 'MODELISA6_19', sk=nomgf)
+        endif
         iinbgf = iinbgf + 1
         vngroup( iinbgf ) = nomgf
+!
         nbmagr = 0
         do jdo = 1, nbmaills
             nummai = zi(jmaill+jdo-1)
@@ -303,8 +298,8 @@ subroutine op0119()
             vigroup( (iinbgf-1)*maxmailgrp +nbmagr ) = iinbmailles
 !           Pour la fibre : surface et centre
             call pmfsce(nno, x, y, surf, centre)
-!           Stockage des caractéristiques de fibres dans la SD
-            ipos = jcf + ipointeur - 1 + ncarfi*(nbmagr-1)
+!           Stockage des caractéristiques de fibres dans la SD : Yf Zf Aire
+            ipos = jcf + ipointeur - 1 + ncarfi1*(nbmagr-1)
             zr(ipos)   = centre(1)
             zr(ipos+1) = centre(2)
             zr(ipos+2) = surf
@@ -317,51 +312,52 @@ subroutine op0119()
                 endif
             endif
         enddo
+!       Nombre de maille du groupe
         vmailgrp(iinbgf) = nbmagr
-!       Les nouveaux noeuds
+!       Les nouveaux noeuds dans la SD MAILLAGE
         do ii = iidepnoeud , iinbnoeuds
             numno = vinoeud(ii)
             vcoord( (ii-1)*2 + 1 ) = zr(jdco+(numno-1)*3)   - axep(1)
             vcoord( (ii-1)*2 + 2 ) = zr(jdco+(numno-1)*3+1) - axep(2)
         enddo
         iidepnoeud = iinbnoeuds+1
-!
-        call jecroc(jexnom(rnomgf, nomgf))
-        zi(jnfg+iinbgf-1) = nbmagr
-        zi(jptr+iinbgf-1) = ipointeur
-        ipointeur = ipointeur + nbmagr*ncarfi
+        call jecroc(jexnom(vnmfig, nomgf))
+        zi(jnbfig+iinbgf-1) = nbmagr
+        zi(jpofig+iinbgf-1)   = ipointeur
+        zi(jtyfig+iinbgf-1) = 1
+        ipointeur = ipointeur + nbmagr*ncarfi1
     enddo
 !
 ! --------------------------------------------------------------------------------------------------
-!   Les fibres à partir des mailles POI1
-    AS_ALLOCATE( size=maxfibre, vr = valfibre )
-    do ioc = 1, nboccp
+!   Les fibres à partir des mailles POI1 (de type 1)
+    AS_ALLOCATE( size=maxfibre1, vr=valfibre )
+    do ioc = 1, nboccfib
         call getvtx('FIBRE', 'GROUP_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
         if (niv .eq. 2) write (ifm,820) nomgf
 !       Surface ou diametre
         call getvtx('FIBRE', 'CARA', iocc=ioc, scal=ksudi, nbret=iret)
         if (iret .eq. 0) ksudi = 'SURFACE '
-        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=maxfibre, vect=valfibre, &
-                    nbret=nbvfibre)
+        call getvr8('FIBRE', 'VALE', iocc=ioc, nbval=maxfibre1, vect=valfibre, nbret=nbvfibre)
 !       Récupération des coordonnées de l'axe de la poutre
-        call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep,&
-                    nbret=iret)
+        call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
         if (iret .ne. 2) axep(1:2) = 0.0d0
-!       Nom du groupe de mailles, Nombre de maille du groupe
+!       Nom du groupe de mailles
+        call jenonu(jexnom(vnmfig, nomgf), iret)
+        if ( iret .ne. 0 ) then
+            call utmess('F', 'MODELISA6_19', sk=nomgf)
+        endif
         iinbgf = iinbgf + 1
         vngroup(iinbgf) = nomgf
+!
 !       Si diamètre ==> calcul de la surface
         nbmagr = 0
-        do ido = 1, nbvfibre/ncarfi
-            centre(1) = valfibre(ncarfi*(ido-1)+1) - axep(1)
-            centre(2) = valfibre(ncarfi*(ido-1)+2) - axep(2)
-!           Le noeud
-            vcoord( (ido+iinbnoeuds-1)*2 + 1 ) = centre(1)
-            vcoord( (ido+iinbnoeuds-1)*2 + 2 ) = centre(2)
+        do ido = 1, nbvfibre/ncarfi1
+            centre(1) = valfibre(ncarfi1*(ido-1)+1) - axep(1)
+            centre(2) = valfibre(ncarfi1*(ido-1)+2) - axep(2)
             if (ksudi .eq. 'DIAMETRE') then
-                surf = valfibre(ncarfi*(ido-1)+3)*valfibre(ncarfi*(ido-1)+3)*pi4
+                surf = valfibre(ncarfi1*(ido-1)+3)*valfibre(ncarfi1*(ido-1)+3)*pi4
             else
-                surf = valfibre(ncarfi*(ido-1)+3)
+                surf = valfibre(ncarfi1*(ido-1)+3)
             endif
 !           La maille
             nbmagr = nbmagr + 1
@@ -372,52 +368,164 @@ subroutine op0119()
             vimailles( ii    ) = ntpoi1
             vimailles( ii +1 ) = 1
             vimailles( ii +2 ) = ido+iinbnoeuds
-!           Stockage des caractéristiques de fibres dans la SD
-            ipos = jcf + ipointeur - 1 + ncarfi*(nbmagr-1)
+!           Stockage des caractéristiques de fibres dans la SD : Yf Zf Aire
+            ipos = jcf + ipointeur - 1 + ncarfi1*(nbmagr-1)
             zr(ipos)   = centre(1)
             zr(ipos+1) = centre(2)
             zr(ipos+2) = surf
             if (niv .eq. 2) then
                 write (ifm,821) iinbmailles,centre,surf
             endif
+!           Le noeud dans la SD MAILLAGE
+            vcoord( (ido+iinbnoeuds-1)*2 + 1 ) = centre(1)
+            vcoord( (ido+iinbnoeuds-1)*2 + 2 ) = centre(2)
         enddo
+!       Nombre de maille du groupe
         vmailgrp(iinbgf) = nbmagr
-        iinbnoeuds       = iinbnoeuds + nbvfibre/ncarfi
-!
-        call jecroc(jexnom(rnomgf, nomgf))
-        zi(jnfg+iinbgf-1) = nbmagr
-        zi(jptr+iinbgf-1) = ipointeur
-        ipointeur = ipointeur + nbmagr*ncarfi
+        iinbnoeuds       = iinbnoeuds + nbvfibre/ncarfi1
+        call jecroc(jexnom(vnmfig, nomgf))
+        zi(jnbfig+iinbgf-1) = nbmagr
+        zi(jpofig+iinbgf-1) = ipointeur
+        zi(jtyfig+iinbgf-1) = 1
+        ipointeur = ipointeur + nbmagr*ncarfi1
     enddo
+    AS_DEALLOCATE( vr=valfibre )
 !
+! --------------------------------------------------------------------------------------------------
+!   Les fibres à partir des mailles POI1 (de type 2)
+    AS_ALLOCATE( size=maxfibre2, vr=valfibre )
+    do ioc = 1, nboccasf
+        call getvtx('ASSEMBLAGE_FIBRE', 'GROUP_ASSE_FIBRE', iocc=ioc, scal=nomgf, nbret=ibid)
+        if (niv .eq. 2) write (ifm,830) nomgf
+!       Nom des groupes de fibres composant l'assemblage
+        call getvtx('ASSEMBLAGE_FIBRE', 'GROUP_FIBRE', iocc=ioc, nbval=0, nbret=nbfibreass)
+        nbfibreass = -nbfibreass
+        AS_ALLOCATE( size=nbfibreass, vk24 = nomgrfibreass)
+        AS_ALLOCATE( size=nbfibreass*2, vr = coorgrfibreass)
+        AS_ALLOCATE( size=nbfibreass,   vr = gxgrfibreass)
+        call getvtx('ASSEMBLAGE_FIBRE', 'GROUP_FIBRE',      iocc=ioc, &
+                        nbval=nbfibreass, vect=nomgrfibreass)
+        call getvr8('ASSEMBLAGE_FIBRE', 'COOR_GROUP_FIBRE', iocc=ioc, &
+                        nbval= nbfibreass*2, vect=coorgrfibreass)
+        call getvr8('ASSEMBLAGE_FIBRE', 'GX_GROUP_FIBRE',   iocc=ioc, &
+                        nbval=nbfibreass, vect=gxgrfibreass)
+!       Nom du groupe de mailles, Nombre de maille du groupe
+        call jenonu(jexnom(vnmfig, nomgf), iret)
+        if ( iret .ne. 0 ) then
+            call utmess('F', 'MODELISA6_19', sk=nomgf)
+        endif
+        iinbgf = iinbgf + 1
+        vngroup(iinbgf) = nomgf
+!       Remplissage de valfibre Yf Zf Aire Yp Zp GX Num
+        nbvfibre = 0
+        do ii =1 , nbfibreass
+!           On pointe sur le groupe de type 1
+            call jenonu(jexnom(vnmfig, nomgrfibreass(ii)), ng)
+            if ( ng.eq.0 ) then
+                valk(1)=nomgf
+                valk(2)='GROUP_FIBRE'
+                valk(3)= nomgrfibreass(ii)
+                call utmess('F', 'MODELISA6_24', nk=3, valk=valk)
+            endif
+!           C'est obligatoirement un type 1
+            if ( zi(jtyfig+ng-1) .ne. 1 ) then
+                valk(1)=nomgf
+                valk(2)=nomgrfibreass(ii)
+                call utmess('F', 'MODELISA6_25', nk=2, valk=valk)
+            endif
+!           Données du groupe 'ng' : [ iptrng, iptrng+nbmagr*ncarfi1-1 ]
+            iptrng = zi(jpofig+ng-1)
+!           coor_group_fibre
+            axep(1) = coorgrfibreass(1+(ii-1)*2)
+            axep(2) = coorgrfibreass(2+(ii-1)*2)
+!           Boucle sur le nombre de fibre du groupe 'ng' : Yf Zf Aire Yp Zp GX Num
+            do jj=1, zi(jnbfig+ng-1)
+                nbvfibre=nbvfibre+1
+                valfibre(ncarfi2*(nbvfibre-1)+1) = zr(jcf+iptrng-1+(jj-1)*ncarfi1  )+axep(1)
+                valfibre(ncarfi2*(nbvfibre-1)+2) = zr(jcf+iptrng-1+(jj-1)*ncarfi1+1)+axep(2)
+                valfibre(ncarfi2*(nbvfibre-1)+3) = zr(jcf+iptrng-1+(jj-1)*ncarfi1+2)
+                valfibre(ncarfi2*(nbvfibre-1)+4) = axep(1)
+                valfibre(ncarfi2*(nbvfibre-1)+5) = axep(2)
+                valfibre(ncarfi2*(nbvfibre-1)+6) = gxgrfibreass(ii)
+                valfibre(ncarfi2*(nbvfibre-1)+7) = ii
+            enddo
+        enddo
+!
+        nbmagr = 0
+        do ido = 1, nbvfibre
+!           La maille
+            nbmagr = nbmagr + 1
+            iinbmailles = iinbmailles + 1
+            nno = 1
+            vigroup( (iinbgf-1)*maxmailgrp +nbmagr ) = iinbmailles
+            ii = (iinbmailles-1)*ncarma + 1
+            vimailles( ii    ) = ntpoi1
+            vimailles( ii +1 ) = 1
+            vimailles( ii +2 ) = ido+iinbnoeuds
+!           Stockage des caractéristiques de fibres dans la SD : Yf Zf Aire Yp Zp GX Num
+            ipos = jcf + ipointeur - 1 + ncarfi2*(nbmagr-1)
+            zr(ipos)   = valfibre(ncarfi2*(ido-1)+1)
+            zr(ipos+1) = valfibre(ncarfi2*(ido-1)+2)
+            zr(ipos+2) = valfibre(ncarfi2*(ido-1)+3)
+            zr(ipos+3) = valfibre(ncarfi2*(ido-1)+4)
+            zr(ipos+4) = valfibre(ncarfi2*(ido-1)+5)
+            zr(ipos+5) = valfibre(ncarfi2*(ido-1)+6)
+            zr(ipos+6) = valfibre(ncarfi2*(ido-1)+7)
+            if (niv .eq. 2) then
+                write (ifm,831) iinbmailles,zr(ipos:ipos+5),nint(zr(ipos+6))
+            endif
+!           Le noeud dans la SD MAILLAGE
+            vcoord( (ido+iinbnoeuds-1)*2 + 1 ) = zr(ipos)
+            vcoord( (ido+iinbnoeuds-1)*2 + 2 ) = zr(ipos+1)
+        enddo
+!       Nombre de maille du groupe
+        vmailgrp(iinbgf) = nbmagr
+        iinbnoeuds       = iinbnoeuds + nbvfibre
+        call jecroc(jexnom(vnmfig, nomgf))
+        zi(jnbfig+iinbgf-1) = nbmagr
+        zi(jpofig+iinbgf-1) = ipointeur
+        zi(jtyfig+iinbgf-1) = 2
+        ipointeur = ipointeur + nbmagr*ncarfi2
+        AS_DEALLOCATE( vk24 = nomgrfibreass )
+        AS_DEALLOCATE( vr = coorgrfibreass )
+        AS_DEALLOCATE( vr = gxgrfibreass )
+    enddo
+    AS_DEALLOCATE( vr=valfibre )
+!
+! --------------------------------------------------------------------------------------------------
     ASSERT( iinbnoeuds.le.ulnbnoeuds )
     ASSERT( ulnbmailles.eq.iinbmailles)
     ASSERT( nbgf.eq.iinbgf )
 !
-!   SD GEOM_FIBRE
-    zi(jcarasd   ) = ncarfi
-    zi(jcarasd +1) = nbgf
+! --------------------------------------------------------------------------------------------------
+!   On complète la SD GEOM_FIBRE
+    zi(jsdfig     ) = nbgf
+    zi(jsdfig + 1 ) = ncarfi1
+    zi(jsdfig + 2 ) = ncarfi2
 !
 !   Création du maillage des fibres
     call maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, iinbnoeuds, &
                        vigroup, vngroup, vmailgrp, vimailles, ulnbmailles, ncarma)
-
+!
 800 format(/,'DETAIL DES FIBRES SURFACIQUES DU GROUPE "',A,'"',&
-           /,'NUMF  MAILLE    TYPE        Y        ',&
-             '     Z            SURF')
+           /,'NUMF  MAILLE    TYPE    Y             Z             SURF')
 801 format(i4,2x,a8,2x,a5,3(2x,1pe12.5))
 !
 820 format(/,'DETAIL DES FIBRES PONCTUELLES DU GROUPE "',A,'"',&
-            /,'NUMF       Y             Z            SURF')
+            /,'NUMF   Y             Z             SURF')
 821 format(i4,3(2x,1pe12.5))
 !
+830 format(/,'DETAIL DES FIBRES PONCTUELLES DU GROUPE "',A,'"',&
+           /'NUMF   Y             Z             SURF',&
+            '          YP            ZP            GX             NUM')
+831 format(i4,6(2x,1pe12.5),2x,i4)
+!
+! --------------------------------------------------------------------------------------------------
 !   Destructions
     call jedetr('&&OP0119.GRPMAILL')
-!
     AS_DEALLOCATE( vr   = vcoord )
     AS_DEALLOCATE( vi   = vinoeud )
     AS_DEALLOCATE( vi   = vmailgrp )
-    AS_DEALLOCATE( vr   = valfibre )
     AS_DEALLOCATE( vi   = vigroup )
     AS_DEALLOCATE( vi   = vimailles )
     AS_DEALLOCATE( vk24 = vngroup )

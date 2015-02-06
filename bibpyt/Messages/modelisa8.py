@@ -55,18 +55,18 @@ cata_msg = {
 
     6 : _(u"""
  AFFE_CARA_ELEM / MULTIFIBRE
- Les mots clefs PREC_AIRE et PREC_INERTIE servent à définir la tolérance entre les
+ Les mots clefs PREC_AIRE et/ou PREC_INERTIE servent à définir la tolérance entre les
  caractéristiques de poutres affectées sous le mot clef facteur POUTRE et celles
  calculées par intégration sur les fibres.
- Les critères imposés par PREC_AIRE et PREC_INERTIE ne sont pas respectés.
+ Les critères imposés par PREC_AIRE et/ou PREC_INERTIE ne sont pas respectés.
 """),
 
     7 : _(u"""
- Actuellement, on ne peut mettre que %(k1)s groupes de fibres sur un élément.
+ On ne peut mettre que %(i1)d groupes de fibres sur un élément.
 """),
 
     8 : _(u"""
- Le groupe de fibre %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE
+ Le groupe de fibres %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE
 """),
 
     9 : _(u"""
@@ -104,6 +104,14 @@ cata_msg = {
     18 : _(u"""
  La table %(k1)s ne contient pas de nom de section %(k2)s.
 """),
+
+    19 : _(u"""
+ Pour l'occurrence %(i1)d de %(k1)s, il y a %(i2)d groupes de fibres, alors que dans
+ DEFI_GEOM_FIBRE il y a %(i3)d groupes qui ont été renseignés.
+"""),
+
+
+
 
     25 : _(u"""
    l'ensemble des mailles comporte plus de 2 extrémités %(k1)s
@@ -253,11 +261,10 @@ La maille %(k1)s est mal orientée. Utilisez la commande MODI_MAILLAGE pour orie
 """),
 
     88 : _(u"""
- conflit dans les vis-à-vis  générés successivement a partir des listes  %(k1)s
- et  %(k2)s
- le noeud de la première liste %(k3)s
-  n"est l"image d"aucun  %(k4)s
- noeud par la correspondance inverse %(k5)s
+ conflit dans les vis-à-vis  générés successivement a partir des listes
+    %(k1)s et %(k2)s
+ Le noeud de la première liste %(k3)s n'est l'image d"aucun  %(k4)s
+ Noeud par la correspondance inverse %(k5)s
 """),
 
     89 : _(u"""

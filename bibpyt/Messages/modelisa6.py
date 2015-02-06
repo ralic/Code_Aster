@@ -52,7 +52,6 @@ cata_msg = {
 """),
 
 
-
     10 : _(u"""
  la maille  %(k1)s  ne fait pas partie du maillage  %(k2)s
 """),
@@ -72,24 +71,48 @@ cata_msg = {
 """),
 
 
+    17 : _(u"""
+ AFFE_CARA_ELEM les groupes de fibres %(k1)s et %(k2)s ont une définition incompatible.
+ L'utilisation des groupes fibres définis par DEFI_GEOM_FIBRE/SECTION ou DEFI_GEOM_FIBRE/FIBRE
+ est incompatible avec DEFI_GEOM_FIBRE/ASSEMBLAGE_FIBRE.
+ Ces groupes de fibres ne peuvent pas être affectés sur une même poutre multifibre.
+"""),
 
+    18 : _(u"""
+ AFFE_CARA_ELEM le groupe de fibres %(k1)s n'existe pas.
+ Conseil : Vérifier la définition des groupes fibres dans l'opérateur DEFI_GEOM_FIBRE.
+"""),
 
-
+    19 : _(u"""
+ DEFI_GEOM_FIBRE le groupe de fibres %(k1)s est déjà défini.
+"""),
 
     20 : _(u"""
- ce type de maille n'est pas encore traité :  %(k1)s
+ Ce type de maille n'est pas encore traité :  %(k1)s
 """),
 
     21 : _(u"""
- le nombre total de noeuds est différent de la somme des noeuds sommets, arêtes et intérieurs
+ Le nombre total de noeuds est différent de la somme des noeuds sommets, arêtes et intérieurs
 """),
 
     22 : _(u"""
- les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur
+ Les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur
+"""),
+
+    23 : _(u"""
+ DEFI_GEOM_FIBRE %(k1)s : Pour %(k2)s il y a %(i1)d valeurs. Ce devrait être %(i2)d valeurs,
+"""),
+
+    24 : _(u"""
+ DEFI_GEOM_FIBRE %(k1)s : Le %(k2)s %(k3)s n'existe pas.
+"""),
+
+    25 : _(u"""
+ DEFI_GEOM_FIBRE %(k1)s : Le groupe de fibre %(k2)s doit être défini par SECTION ou FIBRE,
 """),
 
     26 : _(u"""
- AFFE_FIBRE pour " %(k1)s ": il y a  %(k2)s  valeurs pour "VALE", ce devrait être un multiple de 3
+ DEFI_GEOM_FIBRE %(k1)s : Pour %(k2)s il y a %(i1)d valeurs, ce devrait être un multiple de %(i2)d
 """),
 
     27 : _(u"""

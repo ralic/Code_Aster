@@ -1,0 +1,41 @@
+TITRE
+%  FAIT A LA MAIN
+FINSF
+%
+COOR_3D
+N10        0.000D+00  0.000  0.000
+N20        2.500D+00  0.000  0.000
+N30        5.000D+00  0.000  0.000
+N11        0.000D+00  0.000  0.000
+N21        2.500D+00  0.000  0.000
+N31        5.000D+00  0.000  0.000
+N12        0.000D+00  0.000  0.000
+N22        2.500D+00  0.000  0.000
+N32        5.000D+00  0.000  0.000
+FINSF
+%
+SEG2
+M10      N10      N20
+M20      N20      N30
+M11      N11      N21
+M21      N21      N31
+M12      N12      N22
+M22      N22      N32
+FINSF
+%
+GROUP_MA
+POUTRE0
+M10       M20
+FINSF
+%
+GROUP_MA
+POUTRE1
+M11       M21
+FINSF
+%
+GROUP_MA
+POUTRE2
+M12       M22
+FINSF
+%
+FIN

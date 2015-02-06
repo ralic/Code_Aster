@@ -1,5 +1,5 @@
-subroutine pmfite(nf, ncf, vf, ve, vs)
-    implicit none
+subroutine pmfite(typfib, nf, ncarf, vf, ve, vs)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,57 +16,86 @@ subroutine pmfite(nf, ncf, vf, ve, vs)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! -----------------------------------------------------------
-! ---  INTEGRATIONS SUR LA SECTION (TENANT COMPTE DU MODULE DE
-!                                   CHAQUE FIBRE)
-! --- IN : FIBRES
-!          NF : NOMBRE DE FIBRES
-!          NCF: NOMBRE DE CARACTERISTIQUES SUR CHAQUE FIBRE
-!          VF(1,*) : Y FIBRES
-!          VF(2,*) : Z FIBRES
-!          VF(3,*) : S FIBRES
-!          VF(4-6,*) : AUTRES CARACTERISTIQUES
-!          VE(*) : E MODULE DES FIBRES
 !
-! --- OUT : SECTION
-!          VS(1) : INT(E.DS)
-!          VS(2) : INT(E.Y.DS)
-!          VS(3) : INT(E.Z.DS)
-!          VS(4) : INT(E.Y.Y.DS)
-!          VS(5) : INT(E.Z.Z.DS)
-!          VS(6) : INT(E.Y.Z.DS)
-! -----------------------------------------------------------
-#include "asterfort/codent.h"
+! --------------------------------------------------------------------------------------------------
+!
+!       INTEGRATIONS SUR LA SECTION (TENANT COMPTE DU MODULE DE CHAQUE FIBRE)
+!
+! person_in_charge: jean-luc.flejou at edf.fr
+! --------------------------------------------------------------------------------------------------
+!
+!   IN
+!       typfib  : type des fibres : 1 ou 2
+!       nf      : nombre de fibres
+!       ncarf   : nombre de caracteristiques sur chaque fibre
+!       vf(*)   : positions des fibres
+!           Types 1 et 2
+!               vf(1,*) : Y fibres
+!               vf(2,*) : Z fibres
+!               vf(3,*) : Aire fibres
+!           Types 2
+!               vf(4,*) : Yp groupes de fibres
+!               vf(5,*) : Zp groupes de fibres
+!               vf(6,*) : num du groupe
+!       ve(*)   : module des fibres
+!
+!   OUT
+!       vs(1) : int(e.ds)
+!       vs(2) : int(e.y.ds)
+!       vs(3) : int(e.z.ds)
+!       vs(4) : int(e.y.y.ds)
+!       vs(5) : int(e.z.z.ds)
+!       vs(6) : int(e.y.z.ds)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
 #include "asterfort/utmess.h"
-    integer :: nf, ncf, i
-    real(kind=8) :: vf(ncf, nf), ve(nf), vs(6), zero, esf
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    parameter (zero=0.0d+0)
-    character(len=2) :: kncf
 !
-    do 10 i = 1, 6
-        vs(i) = zero
-10  end do
+    integer :: typfib, nf, ncarf
+    real(kind=8) :: vf(ncarf, nf), ve(nf), vs(6)
 !
-    if (ncf .eq. 3) then
-! --- ON A 3 CARACTERISTIQUES PAR FIBRE : Y, Z ET S
-        do 20 i = 1, nf
-            esf = vf(3,i)*ve(i)
-            vs(1) = vs(1) + esf
-            vs(2) = vs(2) + vf(1,i)*esf
-            vs(3) = vs(3) + vf(2,i)*esf
-            vs(4) = vs(4) + vf(1,i)*vf(1,i)*esf
-            vs(5) = vs(5) + vf(2,i)*vf(2,i)*esf
-            vs(6) = vs(6) + vf(1,i)*vf(2,i)*esf
-20      continue
-    else if (ncf.eq.6) then
-! --- ON A 6 CARACTERISTIQUES PAR FIBRE : Y, Z, S, IZ, IY ET IYZ
-        call utmess('F', 'ELEMENTS2_41')
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ii
+    real(kind=8) :: eds,yy,zz,aire
+!
+! --------------------------------------------------------------------------------------------------
+!
+    vs(:) = 0.0d0
+!
+    if ( typfib.eq.1 ) then
+!       3 caractéristiques utiles par fibre : y z aire
+        do ii = 1, nf
+            yy   = vf(1,ii)
+            zz   = vf(2,ii)
+            aire = vf(3,ii)
+!
+            eds = aire*ve(ii)
+            vs(1) = vs(1) + eds
+            vs(2) = vs(2) + yy*eds
+            vs(3) = vs(3) + zz*eds
+            vs(4) = vs(4) + yy*yy*eds
+            vs(5) = vs(5) + zz*zz*eds
+            vs(6) = vs(6) + yy*zz*eds
+        enddo
+    else if ( typfib.eq.2 ) then
+!       6 caractéristiques utiles par fibre : y z aire yp zp numgr
+        do ii = 1, nf
+            yy   = vf(1,ii)
+            zz   = vf(2,ii)
+            aire = vf(3,ii)
+!
+            eds = aire*ve(ii)
+            vs(1) = vs(1) + eds
+            vs(2) = vs(2) + yy*eds
+            vs(3) = vs(3) + zz*eds
+            vs(4) = vs(4) + yy*yy*eds
+            vs(5) = vs(5) + zz*zz*eds
+            vs(6) = vs(6) + yy*zz*eds
+        enddo
     else
-! --- ERREUR SUR NCARFI
-        call codent(ncf, 'G', kncf)
-        call utmess('F', 'ELEMENTS2_40', sk=kncf)
+        call utmess('F', 'ELEMENTS2_40', si=typfib)
     endif
 !
 end subroutine

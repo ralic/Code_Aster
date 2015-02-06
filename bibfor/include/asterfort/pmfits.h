@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmfits(nf, ncf, vf, vsig, vs)
-        integer :: ncf
+    subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
+        integer :: typfib
         integer :: nf
-        real(kind=8) :: vf(ncf, nf)
+        integer :: ncarf
+        real(kind=8) :: vf(ncarf, nf)
         real(kind=8) :: vsig(nf)
         real(kind=8) :: vs(3)
     end subroutine pmfits

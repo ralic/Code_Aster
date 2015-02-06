@@ -1,4 +1,5 @@
-subroutine pmfits(nf, ncf, vf, vsig, vs)
+subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,51 +16,76 @@ subroutine pmfits(nf, ncf, vf, vsig, vs)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   INTEGRATION DES CONTRAINTES SUR LA SECTION : CALCUL DES FORCES INTERIEURES
+!
+! --------------------------------------------------------------------------------------------------
+!
+!    IN
+!       typfib  : type des fibres : 1 ou 2
+!       nf      : nombre de fibres
+!       ncarf   : nombre de caracteristiques sur chaque fibre
+!       vf(*)   : positions des fibres
+!           Types 1 et 2
+!               vf(1,*) : Y fibres
+!               vf(2,*) : Z fibres
+!               vf(3,*) : Aire fibres
+!           Types 2
+!               vf(4,*) : Yp groupes de fibres
+!               vf(5,*) : Zp groupes de fibres
+!               vf(6,*) : num du groupe
+!       vsig(*) : contrainte normale dans chaque fibre
+!
+!   OUT
+!       vs(1) : int(sig.ds)      =  n0
+!       vs(2) : int(sig.y.ds)    = -mfz0
+!       vs(3) : int(sig.z.ds)    =  mfy0
+!
+! --------------------------------------------------------------------------------------------------
+!
     implicit none
-! -----------------------------------------------------------
-! ---  INTEGRATION DES CONTRAINTES SUR LA SECTION
-!      (CALCUL DES FORCES INTERIEURES)
-! --- IN : FIBRES
-!          NF : NOMBRE DE FIBRES
-!          NCF: NOMBRE DE CARACTERISTIQUES SUR CHAQUE FIBRE
-!          VF(1,*) : Y FIBRES
-!          VF(2,*) : Z FIBRES
-!          VF(3,*) : S FIBRES
-!          VF(4-6,*) : AUTRES CARACTERISTIQUES
-!          VSIG(*) : CONTRAINTE NORMALE DANS CHAQUE FIBRE
-!
-! --- OUT : SECTION
-!          VS(1) : INT(SIG.DS)      = N0
-!          VS(2) : INT(SIG.Y.DS)    = -MFZ0
-!          VS(3) : INT(SIG.Z.DS)    = MFY0
-! -----------------------------------------------------------
-#include "asterfort/codent.h"
 #include "asterfort/utmess.h"
-    integer :: nf, ncf, i
-    real(kind=8) :: vf(ncf, nf), vsig(nf), vs(3), zero, sigsf
-    parameter (zero=0.0d+0)
-    character(len=2) :: kncf
 !
-    do 10 i = 1, 3
-        vs(i)=zero
-10  end do
+    integer :: typfib, nf, ncarf
+    real(kind=8) :: vf(ncarf, nf), vsig(nf), vs(3)
 !
-    if (ncf .eq. 3) then
-! --- ON A 3 CARACTERISTIQUES PAR FIBRE : Y, Z ET S
-        do 100 i = 1, nf
-            sigsf=vsig(i)*vf(3,i)
-            vs(1)=vs(1)+sigsf
-            vs(2)=vs(2)+vf(1,i)*sigsf
-            vs(3)=vs(3)+vf(2,i)*sigsf
-100      continue
-    else if (ncf.eq.6) then
-! --- ON A 6 CARACTERISTIQUES PAR FIBRE : Y, Z, S, IZ, IY ET IYZ
-        call utmess('F', 'ELEMENTS2_41')
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ii
+    real(kind=8) :: sigsf, yy, zz, aire
+!
+! --------------------------------------------------------------------------------------------------
+!
+    vs(:)=0.0d0
+!
+    if ( typfib.eq.1 ) then
+!       3 caractéristiques utiles par fibre : y z aire
+        do ii = 1, nf
+            yy   = vf(1,ii)
+            zz   = vf(2,ii)
+            aire = vf(3,ii)
+!
+            sigsf = vsig(ii)*aire
+            vs(1) = vs(1)+sigsf
+            vs(2) = vs(2)+yy*sigsf
+            vs(3) = vs(3)+zz*sigsf
+        enddo
+    else if ( typfib.eq.2 ) then
+!       6 caractéristiques utiles par fibre : y z aire yp zp numgr
+        do ii = 1, nf
+            yy   = vf(1,ii)
+            zz   = vf(2,ii)
+            aire = vf(3,ii)
+!
+            sigsf = vsig(ii)*aire
+            vs(1) = vs(1)+sigsf
+            vs(2) = vs(2)+yy*sigsf
+            vs(3) = vs(3)+zz*sigsf
+        enddo
     else
-! --- ERREUR SUR NCARFIB
-        call codent(ncf, 'G', kncf)
-        call utmess('F', 'ELEMENTS2_40', sk=kncf)
+        call utmess('F', 'ELEMENTS2_40', si=typfib)
     endif
-!
 !
 end subroutine

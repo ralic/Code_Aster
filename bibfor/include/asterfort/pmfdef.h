@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmfdef(nf, ncf, vf, dege, deff)
-        integer :: ncf
+    subroutine pmfdef(typfib, nf, ncarf, vf, dege, deff)
+        integer :: typfib
         integer :: nf
-        real(kind=8) :: vf(ncf, nf)
+        integer :: ncarf
+        real(kind=8) :: vf(ncarf, nf)
         real(kind=8) :: dege(6)
         real(kind=8) :: deff(nf)
     end subroutine pmfdef
