@@ -67,8 +67,8 @@ subroutine te0532(option, nomte)
     integer :: indco, gliss, memco, nface, cface(18, 6)
     integer :: nno, nnos, nnom, nnol, pla(27), lact(8), nlact, nvec
     integer :: contac, jbasec, nddl, nfiss, jfisno
-    integer :: jmate, singu, jcohes, jcoheo, jheano, ifiss, jheafa, ncomph
-    integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
+    integer :: jmate, singu, jcohes, jcoheo, jheano, ifiss, jheafa, jheavn, ncomph
+    integer :: jtab(7), iret, ncompd, ncompp, ncompa, ncompb, ncompc, ncompn
     integer :: nbspg, nspfis, nvit, ncompv, jta2(3)
     integer :: nptf
     character(len=8) :: elref, typma, elrefc, job
@@ -130,11 +130,17 @@ subroutine te0532(option, nomte)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PMEMCON', 'L', jmemco)
     call jevech('PBASECO', 'L', jbasec)
+    if (nfh.gt.0.and.option.ne.'XCVBCA_MORTAR') then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+    endif
     if (nfiss .gt. 1) then
         call jevech('PFISNO', 'L', jfisno)
         call jevech('PHEAVNO', 'L', jheano)
-        call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+        call jevech('PHEA_FA', 'L', jheafa)
+        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
                     itab=jtab)
         ncomph = jtab(2)
     endif
@@ -277,7 +283,7 @@ subroutine te0532(option, nomte)
                     nvec=1
                     call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                                 nvec, zr(idepl), zr(idepl), zr(idepl), nfh,&
-                                singu, rr, ddls, ddlm, jfisno,&
+                                singu, rr, ddls, ddlm, jheavn, ncompn,&
                                 nfiss, ifiss, jheafa, ncomph, ifa,&
                                 saut)
 !

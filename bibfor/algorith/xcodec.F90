@@ -21,6 +21,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 #include "asterf_types.h"
 #include "jeveux.h"
 !
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -32,6 +33,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 #include "asterfort/xoripe.h"
 #include "asterfort/xstan2.h"
 #include "asterfort/xtopoc.h"
+#include "asterfort/xtopoh.h"
 #include "asterfort/xtopoi.h"
     character(len=8) :: noma, modelx, k8condi
     character(len=19) :: ligre1, maxfem
@@ -58,6 +60,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !
     character(len=19) :: ltno, lnno, stno, basloc, grlnno, grltno
     character(len=16) :: optrig
+    real(kind=8) :: crit2(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -100,6 +103,10 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !
     call xtopoc(modelx)
 !
+! --- REDEFINITION DES FONCTIONS HEAVISIDE PAR NOEUD
+!
+    call xtopoh(noma, modelx)
+!
 ! --- ON MODIFIE MODELX(1:8)//'TOPOFAC.AI' POUR LE MULTI-HEAVISIDE
 !
     if (linter) then
@@ -108,23 +115,40 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !
 ! --- ON MODIFIE MODELX(1:8)//'.PRE_COND' POUR L ACTIVATION DU PRE CONDITIONNEUR XFEM
 ! --- ON MODIFIE MODELX(1:8)//'.STNO' POUR LE CONDITIONNEMENT HEAVISIDE
-!
+    call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
     if ( k8condi .eq. 'AUTO' ) then
        call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
        call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
        if (maxfem .ne. 'LINE') then   
-          call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
-          crimax=5.d-17
+          crimax=-1.
+          crit2(1)=1.d-6
+          crit2(2)=1.d-5
+          zk8(jcond)='OUI'
+       else
+          crimax=-1.
+          crit2(1)=1.d-8
+          crit2(2)=10**-3.5
           zk8(jcond)='OUI'
        endif
     elseif ( k8condi .eq. 'FORCE' ) then
-       call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
-       call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
-       crimax=5.d-17
-       zk8(jcond)='OUI'
+       crimax=-1.
+       crit2(1)=1.d-8
+       crit2(2)=10**-3.5
+       zk8(jcond)='OUI_DPB'
+    elseif ( k8condi .eq. 'SANS' ) then
+       ASSERT(crimax.gt.0.d0)
+       crit2(1)=-1.
+       crit2(2)=-1.
+       zk8(jcond)='NON'
+    else
+       ASSERT(.false.)
     endif
 !
-    call xstan2(crimax, noma, modelx)
+!   ON MET EN PLACE UN CRITERE A 2 NIVEAUX:
+!   CRIT2(1) => POUR LES NOEUDS SOMMETS 
+!   CRIT2(2) => POUR LES NOEUDS MILIEUX
+!
+    call xstan2(crimax, noma, modelx, crit2)
 !
 ! --- ORIENTATION DES FACETTES DE PEAU X-FEM (COMME ORIE_PEAU)
 !

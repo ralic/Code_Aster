@@ -3,7 +3,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
                   cmp_name, cmp_acti, vale_type, vale_real, vale_func,&
                   vale_cplx, cmp_count, list_rela, lxfem, jnoxfl,&
                   jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv,&
-                  mesh)
+                  mesh, ch_xfem_heav)
 !
     implicit none
 !
@@ -64,6 +64,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
     character(len=19), intent(in) :: ch_xfem_stat
     character(len=19), intent(in) :: ch_xfem_lnno
     character(len=19), intent(in) :: ch_xfem_ltno
+    character(len=19), intent(in) :: ch_xfem_heav
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -146,7 +147,7 @@ subroutine afddli(model, gran_cmp_nb, gran_cmp_name, node_nume, node_name,&
                 call xddlim(model, cmp_name(i_cmp)(1:8), node_name, node_nume, vale_real(i_cmp),&
                             vale_cplx(i_cmp), vale_func(i_cmp), vale_type, cmp_count(i_cmp),&
                             list_rela, ndim, rbid, jnoxfv, ch_xfem_stat,&
-                            ch_xfem_lnno, ch_xfem_ltno, connex_inv, mesh)
+                            ch_xfem_lnno, ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                 goto 25
               endif
             endif

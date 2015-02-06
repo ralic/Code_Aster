@@ -5,7 +5,8 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                   tau2, rese, mproj, coefcr,&
                   jeu, nsinge, nsingm, rre,&
                   rrm, nvit, nconta, jddle, jddlm,&
-                  nfhe, vtmp)
+                  nfhe, nfhm, lmulti, heavn, heavfa,&
+                  vtmp)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,14 +30,17 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 #include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim, nnc, jnne(3), jnnm(3)
     integer :: nsinge, nsingm, nvit, jddle(2), jddlm(2), nfhe
+    integer :: nfhm, heavn(*), heavfa(*)
     real(kind=8) :: hpg, ffc(9), ffe(20), ffm(20), jacobi
     real(kind=8) :: dlagrc, dlagrf(2), jeu
     real(kind=8) :: coefff, coeffr, rre, rrm, coefcr
     real(kind=8) :: tau1(3), tau2(3), rese(3), mproj(3, 3), vtmp(336)
     integer :: nconta, ndeple
-    aster_logical :: lpenaf
+    aster_logical :: lpenaf, lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,11 +59,14 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 ! IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
 ! IN  NNC    : NOMBRE DE NOEUDS DE CONTACT
 ! IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
+! IN  NFAES  : NUMERO DE LA FACETTE DE CONTACT ESCLAVE
+! IN  CFACE  : MATRICE DE CONECTIVITE DES FACETTES DE CONTACT
 ! IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 ! IN  FFC    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ELC
 ! IN  FFE    : FONCTIONS DE FORME DU POINT DE CONTACT DANS ESC
 ! IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
 ! IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
+! IN  JPCAI  : POINTEUR VERS LE VECT DES ARRETES ESCLAVES INTERSECTEES
 ! IN  COEFFA : COEF_REGU_FROT
 ! IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 ! IN  TAU1   : PREMIERE TANGENTE
@@ -76,12 +83,25 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 ! IN  INADH  : POINT ADHERENT OU PAS
 ! I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, ii, pli, iin, nddle
+    integer :: i, j, k, ii, pli, iin, nddle, hea_fa(2)
     integer :: nne, nnes, nnem, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    real(kind=8) :: vectt(3), tt(2), vv, t
+    real(kind=8) :: vectt(3), tt(2), vv, t, iescl(3), imait(3)
 ! ----------------------------------------------------------------------
 !
 ! --- INITIALISATIONS
+!
+!  CETTE ROUTINE N AUTORISE QU UNE FACETTE MONOFISSUREE
+!  ON DIMENSIONNE LES CHAMPS DE SIGNES SELON CETTE HYPOTHESE 
+    iescl(1) = 1.d0
+    iescl(2) = -1.d0
+    iescl(3)= -rre
+    imait(1) = 1.d0
+    imait(2) = 1.d0
+    imait(3)= rrm
+    if (.not.lmulti) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
 !
     nne=jnne(1)
     nnes=jnne(2)
@@ -123,6 +143,15 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
 !
         do 10 j = 1, ndim
             do 20 i = 1, ndeple
+                if (lmulti) then
+                    iescl(2)=xcalc_heav(heavn(nfhe*(i-1)+1),&
+                                            heavfa(1),&
+                                            heavn(nfhe*nne+nfhm*nnm+i))
+                else
+                    iescl(2)=xcalc_heav(heavn(i),&
+                                            hea_fa(1),&
+                                            heavn(nfhe*nne+nfhm*nnm+i))
+                endif
 ! --- BLOCS ES,CL ; ES,EN ; (ES,SI)
                 if (nconta .eq. 3 .and. ndim .eq. 3) then
                     vv = jacobi*hpg*coefff*(dlagrc-coefcr*jeu)*vectt( j)*ffe(i)
@@ -133,13 +162,22 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                 ii = iin + j
                 vtmp(ii) = -vv
                 ii = ii + ndim
-                vtmp(ii) = vv
+                vtmp(ii) = -vv*iescl(2)
                 do 25 k = 1, nsinge
                     ii = ii + ndim
                     vtmp(ii) = rre * vv
  25             continue
  20         continue
             do 30 i = 1, nnm
+                if (lmulti) then
+                    imait(2)=xcalc_heav(heavn(nfhe*nne+nfhm*(i-1)+1),&
+                                            heavfa(2),&
+                                            heavn((1+nfhe)*nne+nfhm*nnm+i))
+                else
+                    imait(2)=xcalc_heav(heavn(nne+i),&
+                                        hea_fa(2),&
+                                        heavn((1+nfhe)*nne+nfhm*nnm+i))
+                endif
                 if (nconta .eq. 3 .and. ndim .eq. 3) then
                     vv = jacobi*hpg*coefff* (dlagrc-coefcr*jeu)*vectt( j)*ffm(i)
                 else
@@ -149,7 +187,7 @@ subroutine xmvef1(ndim, jnne, jnnm, ndeple, nnc,&
                 ii = nddle + iin + j
                 vtmp(ii) = vv
                 ii = ii + ndim
-                vtmp(ii) = vv
+                vtmp(ii) = vv*imait(2)
                 do 35 k = 1, nsingm
                     ii = ii + ndim
                     vtmp(ii) = rrm * vv

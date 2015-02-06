@@ -21,7 +21,7 @@ interface
     subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
                       nsingm, ffe, ffm, norm, jgeom,&
                       jdepde, jdepm, rre, rrm, jddle,&
-                      jddlm, nfhe, nfhm, lmulti, heavfa,&
+                      jddlm, nfhe, nfhm, lmulti, heavn, heavfa,&
                       jeu)
         integer :: ndim
         integer :: jnnm(3)
@@ -42,6 +42,7 @@ interface
         integer :: nfhe
         integer :: nfhm
         aster_logical :: lmulti
+        integer :: heavn(*)
         integer :: heavfa(*)
         real(kind=8) :: jeu
     end subroutine xmmjeu

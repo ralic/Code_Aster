@@ -23,7 +23,7 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
     implicit none
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), lact(8)
@@ -66,13 +66,13 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
 !
 !
     integer :: i, j, k, l, jn, nli, pli
-    real(kind=8) :: ffi, tauknp(2, 3), coefh
+    real(kind=8) :: ffi, tauknp(2, 3), coefj
 !
 ! ----------------------------------------------------------------------
 !
 !     INITIALISATION
     call matini(2, 3, 0.d0, tauknp)
-    coefh=xcoef_he()
+    coefj=xcalc_saut(1,0,1)
 !
 !     II.3.1. CALCUL DE B ET DE BT
 !
@@ -103,10 +103,10 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
             call indent(j, ddls, ddlm, nnos, jn)
             do 166 k = 1, ndim-1
                 do 167 l = 1, nfh*ndim
-                    mmat(pli+k,jn+ndim+l) = mmat(pli+k,jn+ndim+l) + coefh*mu*seuil*ffi*ffp(j)*tauk&
+                    mmat(pli+k,jn+ndim+l) = mmat(pli+k,jn+ndim+l) + coefj*mu*seuil*ffi*ffp(j)*tauk&
                                             &np(k,l)*jac
 !
-                    mmat(jn+ndim+l,pli+k) = mmat(jn+ndim+l,pli+k) + coefh*mu*seuil*ffi*ffp(j)*tauk&
+                    mmat(jn+ndim+l,pli+k) = mmat(jn+ndim+l,pli+k) + coefj*mu*seuil*ffi*ffp(j)*tauk&
                                             &np(k,l)*jac
 !
 !

@@ -43,8 +43,8 @@ subroutine te0261(option, nomte)
     character(len=8) :: enr, typmod(2), elrefp
     character(len=16) :: compor(4)
     integer :: ndim, nfh, nno, nnos, npg1, ipoids, ivf, idfde, jgano
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
-    integer :: igeom, idepl, imate, jfisno, icont
+    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
+    integer :: igeom, idepl, imate, icont
     integer :: ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss
 !
 !
@@ -53,6 +53,8 @@ subroutine te0261(option, nomte)
 !      ------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
+    option=option
+!
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     call elref1(elrefp)
@@ -103,13 +105,13 @@ subroutine te0261(option, nomte)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
-!     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
+    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
+!     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
          .and..not.iselli(elrefp))&
     call jevech('PPMILTO', 'L', jpmilt)
-    if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
     call jevech('PCONTRR', 'E', icont)
 !
@@ -117,5 +119,5 @@ subroutine te0261(option, nomte)
                 igeom, typmod, zi(imate), compor, jpintt,&
                 zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), idepl,&
                 zr(jlsn), zr(jlst), zr(icont), jpmilt, nfiss,&
-                jfisno)
+                jheavn)
 end subroutine

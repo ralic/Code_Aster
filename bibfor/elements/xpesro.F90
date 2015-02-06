@@ -1,5 +1,5 @@
-subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
-                  jfisno, nfh, ddlc, nfe, nfiss,&
+subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
+                  heavn, nfh, ddlc, nfe, nfiss,&
                   ise, nnop, jlsn, jlst, ivectu,&
                   fno)
 !
@@ -30,15 +30,15 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/iselli.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
-#include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
     integer :: igeom, ndim, ddlc, nfe, nnop
     integer :: ivectu, jlsn, jlst
-    integer :: jheavt, jfisno, nfh, nfiss, ise
+    integer :: jheavt, nfh, nfiss, ise, heavn(27,5), ncomp
     real(kind=8) :: fno(ndim*nnop)
 !-----------------------------------------------------------------------
 ! FONCTION REALISEE : CALCUL DU SECOND MEMBRE AUX PG DU SOUS EL COURANT
@@ -67,8 +67,8 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 ! IN IVECTU   : INDICE DU SECONDE MEMBRE
 !
 !
-    integer :: i, ino, ig, j, n, jtab(2), iret, ncomp, ifiss
-    integer :: ndimb, nno, nnos, nnops, npgbis, pos
+    integer :: i, ino, ig, j, n
+    integer :: ndimb, nno, nnos, nnops, npgbis, pos, ifiz, he(nfiss), hea_se
     integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
     real(kind=8) :: forvol(ndim)
@@ -87,6 +87,12 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !
     call elrefe_info(fami='RIGI', nnos=nnops)
 !
+!       FONCTION HEAVYSIDE CSTE POUR CHAQUE FISSURE SUR LE SS-ELT
+    do ifiz = 1, nfiss
+      he(ifiz) = zi(jheavt-1+ncomp*(ifiz-1)+ise)
+    end do
+    hea_se=xcalc_code(nfiss, he_inte=[he])
+!
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then
         irese=3
@@ -97,11 +103,6 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
                      nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf,&
                      jdfde=idfde, jdfd2=jdfd2, jgano=jgano)
     ASSERT(ndim.eq.ndimb)
-!     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
-    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
-                itab=jtab)
-    ncomp = jtab(2)
-    ifiss = 1
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT COURANT
@@ -193,12 +194,10 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !         TERME HEAVISIDE
             do ig = 1, nfh
-                if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ig)
                 do j = 1, ndim
                     pos=pos+1
                     zr(ivectu-1+pos) = zr(ivectu-1+pos) + &
-                                       xcalf_he(real(zi(jheavt-1+ (ifiss-1)*ncomp+ise),8),&
-                                                 zr(jlsn-1+(ino-1)*nfiss+ifiss))&
+                                       xcalc_heav(heavn(ino,ig),hea_se,heavn(ino,5))&
                                        *forvol(j)*poids*ff(ino)
                 end do
             end do

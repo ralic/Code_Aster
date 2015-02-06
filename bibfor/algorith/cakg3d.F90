@@ -130,7 +130,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=24) :: chthet, chtime
     character(len=24) :: abscur, pavolu, papres, pa2d3d
     character(len=24) :: pepsin, livk(nbmxpa)
-    character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno, pmilto
+    character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno, pmilto, hea_no
 !
 ! ----------------------------------------------------------------------
 !
@@ -171,6 +171,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     pintto = ' '
     cnseto = ' '
     heavto = ' '
+    hea_no = ' '
     loncha = ' '
     pmilto = ' '
     chpres = ' '
@@ -292,6 +293,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     pintto = modele(1:8)//'.TOPOSE.PIN'
     cnseto = modele(1:8)//'.TOPOSE.CNS'
     heavto = modele(1:8)//'.TOPOSE.HEA'
+    hea_no = modele(1:8)//'.TOPONO.HNO'
     loncha = modele(1:8)//'.TOPOSE.LON'
     pmilto = modele(1:8)//'.TOPOSE.PMI'
 !     ON NE PREND PAS LES LSN ET LST DU MODELE
@@ -387,8 +389,10 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         endif
         lpain(27) = 'PPMILTO'
         lchin(27) = pmilto
+        lpain(28) = 'PHEA_NO'
+        lchin(28) = hea_no
 !
-        nchin = 27
+        nchin = 28
 !
 
 !

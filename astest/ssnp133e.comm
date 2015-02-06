@@ -133,15 +133,11 @@ TRACTION = AFFE_CHAR_MECA(
                    ),
   );
 
-SYMETRIE = AFFE_CHAR_MECA(
+SYMETRIE = AFFE_CHAR_MECA(INFO=2,
   MODELE        = MODELEK,
-  LIAISON_GROUP =_F(GROUP_NO_1 = 'N_SUP',
-                    GROUP_NO_2 = 'N_SUP',
-                    DDL_1 = 'DY',
-                    DDL_2 = 'DY',
-                    COEF_MULT_1 = 0.5,
-                    COEF_MULT_2 = 0.5,
-                    COEF_IMPO=0.),
+  LIAISON_GROUP =_F(GROUP_NO_1 = 'N_SUP',GROUP_NO_2 = 'N_SUP',
+                    DDL_1 = 'DY', DDL_2 = 'H1Y',
+                    COEF_MULT_1 = 2.,COEF_MULT_2 = -2., COEF_IMPO=0.),
   )
 
 

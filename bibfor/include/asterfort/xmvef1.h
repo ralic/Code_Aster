@@ -24,7 +24,8 @@ interface
                       tau2, rese, mproj, coefcr,&
                       jeu, nsinge, nsingm, rre,&
                       rrm, nvit, nconta, jddle, jddlm,&
-                      nfhe, vtmp)
+                      nfhe, nfhm, lmulti, heavn, heavfa,&
+                      vtmp)
         integer :: ndim
         integer :: jnne(3)
         integer :: jnnm(3)
@@ -55,6 +56,10 @@ interface
         integer :: jddle(2)
         integer :: jddlm(2)
         integer :: nfhe
+        integer :: nfhm
+        integer :: heavn(*)
+        integer :: heavfa(*)
+        aster_logical :: lmulti
         real(kind=8) :: vtmp(336)
     end subroutine xmvef1
 end interface

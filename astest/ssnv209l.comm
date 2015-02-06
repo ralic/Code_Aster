@@ -209,7 +209,9 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                    );
 
 # valeur de la fonction heaviside du cote concerne
-H=-1.
+H_no=0.
+H_plus=-2.
+H_moin=0.
 
 CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                   DDL_IMPO=(
@@ -228,36 +230,37 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                     SANS_GROUP_NO = 'BLOCAX',
                                     DDL_1      = ('DX', 'H1X'),
                                     DDL_2      = ('DX', 'H1X'),
-                                    COEF_MULT_1= (1., H),
+                                    COEF_MULT_1= (1., H_no),
                                     COEF_MULT_2= (0., 0.),
                                     COEF_IMPO= 0.),
                                  # * mot clef-facteur pour imposer le ddl recompose a 0 sur l'interface,
-                                 #   sur la levre ou la fonction d'Heaviside vaut H
+                                 #   sur la partie inferireure de la levre : avec le nouvel enrichissiment H depend de lsn
                                  _F(GROUP_NO_1 = ('BATIB'),
                                     GROUP_NO_2 = ('BATIH'),
                                     SANS_GROUP_NO = 'BLOCAX',
                                     DDL_1      = ('DX', 'H1X'),
                                     DDL_2      = ('DX', 'H1X'),
-                                    COEF_MULT_1= (0.5, 0.5*H),
-                                    COEF_MULT_2= (0.5, 0.5*H),
+                                    COEF_MULT_1= (0.5, 0.5*H_moin),
+                                    COEF_MULT_2= (0.5, 0.5*H_plus),
                                     COEF_IMPO= 0.),
                                  # --- DY = 0 ---
                                  # * mot clef-facteur pour imposer le ddl recompose a 0 sur le premier groupe
+                                 #   sur la partie inferireure de la levre : avec le nouvel enrichissiment H depend de lsn
                                  _F(GROUP_NO_1 = ('BATIB'),
                                     GROUP_NO_2 = ('BATIH'),
                                     DDL_1      = ('DY', 'H1Y'),
                                     DDL_2      = ('DY', 'H1Y'),
-                                    COEF_MULT_1= (1., H),
+                                    COEF_MULT_1= (1., H_no),
                                     COEF_MULT_2= (0., 0.),
                                     COEF_IMPO= 0.),
                                  # * mot clef-facteur pour imposer le ddl recompose a 0 sur l'interface,
-                                 #   sur la levre ou la fonction d'Heaviside vaut H
+                                #   sur la partie inferireure de la levre : avec le nouvel enrichissiment H depend de lsn
                                  _F(GROUP_NO_1 = ('BATIB'),
                                     GROUP_NO_2 = ('BATIH'),
                                     DDL_1      = ('DY', 'H1Y'),
                                     DDL_2      = ('DY', 'H1Y'),
-                                    COEF_MULT_1= (0.5, 0.5*H),
-                                    COEF_MULT_2= (0.5, 0.5*H),
+                                    COEF_MULT_1= (0.5, 0.5*H_moin),
+                                    COEF_MULT_2= (0.5, 0.5*H_plus),
                                     COEF_IMPO= 0.),
                                  # --- DZ = 0 ---
                                  # * mot clef-facteur pour imposer le ddl recompose a 0 sur le premier groupe
@@ -265,17 +268,17 @@ CH=AFFE_CHAR_MECA(MODELE=MODELEK,
                                     GROUP_NO_2 = ('BATIH'),
                                     DDL_1      = ('DZ', 'H1Z'),
                                     DDL_2      = ('DZ', 'H1Z'),
-                                    COEF_MULT_1= (1., H),
+                                    COEF_MULT_1= (1., H_no),
                                     COEF_MULT_2= (0., 0.),
                                     COEF_IMPO= 0.),
                                  # * mot clef-facteur pour imposer le ddl recompose a 0 sur l'interface,
-                                 #   sur la levre ou la fonction d'Heaviside vaut H
+                                 #   sur la partie inferireure de la levre : avec le nouvel enrichissiment H depend de lsn
                                  _F(GROUP_NO_1 = ('BATIB'),
                                     GROUP_NO_2 = ('BATIH'),
                                     DDL_1      = ('DZ', 'H1Z'),
                                     DDL_2      = ('DZ', 'H1Z'),
-                                    COEF_MULT_1= (0.5, 0.5*H),
-                                    COEF_MULT_2= (0.5, 0.5*H),
+                                    COEF_MULT_1= (0.5, 0.5*H_moin),
+                                    COEF_MULT_2= (0.5, 0.5*H_plus),
                                     COEF_IMPO= 0.),
                                 ),
                   );

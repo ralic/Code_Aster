@@ -59,13 +59,13 @@ subroutine xgecfi(modele, depgeo)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=2, nbin=7)
+    parameter    (nbout=2, nbin=8)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), noma
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=16) :: option
     character(len=19) :: ligrel, pinter, faclon, newges, newgem
-    character(len=19) :: gesclo, ltno, fissno, heavfa
+    character(len=19) :: gesclo, ltno, fissno, hea_no, hea_fa
     character(len=1) :: base
     aster_logical :: debug
     integer :: ifmdbg, nivdbg, iret, nbma, ima
@@ -99,9 +99,11 @@ subroutine xgecfi(modele, depgeo)
     gesclo = modele//'.TOPOFAC.OE'
     ltno = modele//'.LTNO'
     fissno = modele(1:8)//'.FISSNO'
-    heavfa = modele(1:8)//'.TOPOFAC.HE'
+!    heavfa = modele(1:8)//'.TOPOFAC.HE'
     newges = modele//'.TOPOFAC.GE'
     newgem = modele//'.TOPOFAC.GM'
+    hea_no = modele//'.TOPONO.HNO'
+    hea_fa = modele//'.TOPONO.HFA'
     call jeexin(newges//'.CESD', iret)
     if (iret .eq. 0) then
 !
@@ -143,8 +145,10 @@ subroutine xgecfi(modele, depgeo)
     lchin(5) = ltno
     lpain(6) = 'PFISNO'
     lchin(6) = fissno
-    lpain(7) = 'PHEAVFA'
-    lchin(7) = heavfa
+    lpain(7) = 'PHEA_FA'
+    lchin(7) = hea_fa
+    lpain(8) = 'PHEA_NO'
+    lchin(8) = hea_no
 !
     lpaout(1) = 'PNEWGES'
     lchout(1) = newges

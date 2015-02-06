@@ -7,6 +7,7 @@ subroutine te0536(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xrigel.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
@@ -43,6 +44,7 @@ subroutine te0536(option, nomte)
     integer :: nnos
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss, jfisno
+    integer :: jheavn, ncompn, heavn(27,5), jtab(7), iret, ifh, ino
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -77,10 +79,27 @@ subroutine te0536(option, nomte)
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
+!     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
+    if (enr(1:2).eq.'XH') then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+       ncompn = jtab(2)/jtab(3)
+       ASSERT(ncompn.eq.5)
+       do ino = 1, nno
+         do ifh = 1 , ncompn
+           heavn(ino,ifh) = zi(jheavn-1+ncompn*(ino-1)+ifh)
+         enddo
+       enddo
+    endif
+!   PRECAUTION :: ON BLOQUE LE MULTIHEAVISIDE POUR L INSTANT CAR FISNO DOIT ETRE 
+!                   PRIS EN COMPTE POUR UTILISER HEAVN => A FAIRE
+    ASSERT(nfiss.eq.1)
+!
     call xrigel(nno, nfh*ndim, nfe, ddlc,&
                 igeom, jpintt, zi(jcnset), zi(jheavt), zi(jlonch),&
                 zr(jbaslo), zr(jlsn), zr(jlst), zr(icont), zr(imatuu),&
-                jpmilt)
+                jpmilt, heavn)
 !
 !
 !     SUPPRESSION DES DDLS SUPERFLUS

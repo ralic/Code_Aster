@@ -45,7 +45,7 @@ subroutine te0541(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
     integer :: jpmilt, ddlm, nfiss, jfisno, icontt
-    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
+    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, jheavn
     integer :: contac, nnom, singu, itab(1)
     integer :: iret, k, itemps
     aster_logical :: lbid
@@ -94,6 +94,7 @@ subroutine te0541(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
+    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -107,7 +108,7 @@ subroutine te0541(option, nomte)
                ddlm, igeom, compor, jpintt, zi(jcnset),&
                zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt), nbsig,&
                ibid, zr(jlsn), zr(jlst), ivectu, jpmilt,&
-               nfiss, jfisno)
+               nfiss, jheavn)
 !
 !     POUR LES DDLS HEAVISIDE ENRICHIS A TORT
     call xteddl(ndim, nfh, nfe, ddls, nddl,&

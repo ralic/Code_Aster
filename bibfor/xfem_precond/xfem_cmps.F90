@@ -54,13 +54,20 @@ function xfem_cmps(nocmp, phys)
         goto 99
     elseif (nocmp .eq. 'H4' .or. nocmp .eq. 'H4X' .or. nocmp .eq. 'H4Y' .or. nocmp .eq. 'H4Z') then
         goto 99
+! ON RAJOUTE LES CPMS DE CONT/FROT
+    elseif (nocmp .eq. 'LAGS_C' .or. nocmp .eq. 'LAGS_F1' .or. nocmp .eq. 'LAGS_F2' .or.  &
+            nocmp .eq. 'LAG2_C' .or. nocmp .eq. 'LAG2_F1' .or. nocmp .eq. 'LAG2_F2' .or. & 
+            nocmp .eq. 'LAG3_C' .or. nocmp .eq. 'LAG3_F1' .or. nocmp .eq. 'LAG3_F2' .or. & 
+            nocmp .eq. 'LAG4_C' .or. nocmp .eq. 'LAG4_F1' .or. nocmp .eq. 'LAG4_F2') then
+        goto 99
+! ON RAJOUTE LES CPMS DE HM-XFEM
+    elseif (nocmp .eq. 'HPRE1') then
+        goto 99
 ! ON TESTE LES DDLS DE PHYSIQUES 
     elseif( present(phys)) then 
        if (phys .eq. 'OUI' .and. &
-        (nocmp .eq. 'TEMP'.or. nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ' .or. &
-         nocmp .eq. 'PRE1' &
-        )) goto 99
-!        .or. nocmp .eq. 'LAGS_C')) goto 99
+        (nocmp .eq. 'TEMP'.or. nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ'))&
+        goto 99
     endif
     xfem_cmps=.false.
 99  continue

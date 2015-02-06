@@ -33,12 +33,12 @@ subroutine xthpoc(modele, chtn, chtpg)
 !
 ! ----------------------------------------------------------------------
     integer :: nbin, nbout
-    parameter    (nbin=9)
+    parameter    (nbin=10)
     parameter    (nbout=1)
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=16) :: option
     character(len=19) :: ligrmo, pintto, cnseto, heavto, loncha, basloc, lsn
-    character(len=19) :: lst
+    character(len=19) :: lst, hea_no
     character(len=24) :: lchin(nbin), lchout(nbout), chgeom
 ! ----------------------------------------------------------------------
 !
@@ -52,6 +52,7 @@ subroutine xthpoc(modele, chtn, chtpg)
     basloc = modele(1:8)//'.BASLOC'
     lsn = modele(1:8)//'.LNNO'
     lst = modele(1:8)//'.LTNO'
+    hea_no = modele(1:8)//'.TOPONO.HNO'
 !
     lpain(1) = 'PGEOMER'
     lchin(1) = chgeom
@@ -71,6 +72,8 @@ subroutine xthpoc(modele, chtn, chtpg)
     lchin(8) = lsn
     lpain(9) = 'PLST'
     lchin(9) = lst
+    lpain(10) = 'PHEA_NO'
+    lchin(10) = hea_no
 !
     lpaout(1) = 'PTEMPPG'
     lchout(1) = chtpg

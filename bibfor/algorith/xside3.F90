@@ -2,7 +2,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
                   he, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, npg, idecpg, imate,&
                   compor, idepl, lsn, lst, nfiss,&
-                  fisno, sig)
+                  heavn, sig)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -20,8 +20,9 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, ddls, nfe
-    integer :: nfiss, fisno(nnop, nfiss), idepl, idecpg
+    integer :: nfiss, idepl, idecpg, heavn(nnop,5)
     character(len=8) :: elrefp, elrese
     character(len=16) :: compor(4)
     real(kind=8) :: basloc(9*nnop), he(nfiss)
@@ -68,7 +69,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
+! IN  JHEAVN  : POINTEUR VERS LA DEFINITION HEAVISIDE
 !
 ! OUT SIG     : CONTRAINTES (SIEF_ELGA)
 !......................................................................
@@ -79,7 +80,7 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
     integer :: kpg, n, i, j, iret, ipg
     integer :: nno, npgbis, ddlm, ddld, ndimb, ino
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
-    integer :: nbsig, nnops
+    integer :: nbsig, nnops, hea_se
     aster_logical :: grdepl
     real(kind=8) :: f(3, 3), eps(6), baslog(9)
     real(kind=8) :: fe(4), instan, lsng, lstg
@@ -133,6 +134,9 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT
+    hea_se=xcalc_code(nfiss, he_real=[he])
+!
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
     do kpg = 1, npg
@@ -176,10 +180,10 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom,&
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
         call xcinem(.false._1, nnop, nnops, idepl, grdepl,&
-                    ndim, he, rbid, rbid, fisno,&
+                    ndim, he, rbid, rbid,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    eps, grad, lsn)
+                    eps, grad, heavn)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         call vecini(6, 0.d0, epsth)

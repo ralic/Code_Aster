@@ -85,16 +85,18 @@ subroutine xcpmo2(modx1, modx2)
     character(len=19) :: ligr1, ligr2, chele1, chele2
     character(len=24) :: nomol1, nomol2
 !
-    integer :: ntopos, ntopof, noptri
+    integer :: ntopos, ntopof, noptri, ntopon
     parameter (ntopos = 6)
     parameter (ntopof = 6)
     parameter (noptri = 4)
-    character(len=8) :: lpara(ntopos+ntopof+noptri)
-    character(len=16) :: lopti(ntopos+ntopof+noptri)
-    character(len=19) :: lcham(ntopos+ntopof+noptri)
+    parameter (ntopon = 2)
+    character(len=8) :: lpara(ntopos+ntopof+noptri+ntopon)
+    character(len=16) :: lopti(ntopos+ntopof+noptri+ntopon)
+    character(len=19) :: lcham(ntopos+ntopof+noptri+ntopon)
 !   ntopos : nbre de cham_el** a allouer avec option == TOPOSE
 !   ntopof : nbre de cham_el** a allouer avec option == TOPOFA
 !   noptri : nbre de cham_el** a allouer avec option == FULL_MECA
+!   ntopon : nbre de cham_el** a allouer avec option == TOPONO
 !
     integer :: nma3d, nma2d, nma1d, nenrch
     parameter ( nma3d  = 4 )
@@ -160,6 +162,9 @@ subroutine xcpmo2(modx1, modx2)
     do iopt = 1,noptri
         lopti(ntopos+ntopof+iopt) = 'INI_XFEM_ELNO'
     enddo
+    do iopt = 1,ntopon
+        lopti(ntopos+ntopof+noptri+iopt) = 'TOPONO'
+    enddo
 !
     k8blan = ' '
 !
@@ -171,17 +176,20 @@ subroutine xcpmo2(modx1, modx2)
     lcham(5)  = k8blan//'.TOPOSE.PMI'
     lcham(6)  = k8blan//'.TOPOSE.PAI'
 !   pour option == TOPOFA dans alchml
-    lcham(7)  = k8blan//'.TOPOFAC.PI'
-    lcham(8)  = k8blan//'.TOPOFAC.AI'
-    lcham(9)  = k8blan//'.TOPOFAC.CF'
-    lcham(10)  = k8blan//'.TOPOFAC.LO'
-    lcham(11) = k8blan//'.TOPOFAC.BA'
-    lcham(12) = k8blan//'.TOPOFAC.OE'
+    lcham(ntopos+1)  = k8blan//'.TOPOFAC.PI'
+    lcham(ntopos+2)  = k8blan//'.TOPOFAC.AI'
+    lcham(ntopos+3)  = k8blan//'.TOPOFAC.CF'
+    lcham(ntopos+4)  = k8blan//'.TOPOFAC.LO'
+    lcham(ntopos+5) = k8blan//'.TOPOFAC.BA'
+    lcham(ntopos+6) = k8blan//'.TOPOFAC.OE'
 !   pour option == FULL_MECA dans alchml
-    lcham(13) = k8blan//'.STNO'
-    lcham(14) = k8blan//'.LNNO'
-    lcham(15) = k8blan//'.LTNO'
-    lcham(16) = k8blan//'.BASLOC'
+    lcham(ntopos+ntopof+1) = k8blan//'.STNO'
+    lcham(ntopos+ntopof+2) = k8blan//'.LNNO'
+    lcham(ntopos+ntopof+3) = k8blan//'.LTNO'
+    lcham(ntopos+ntopof+4) = k8blan//'.BASLOC'
+!   pour option == TOPONO dans alchml
+    lcham(ntopos+ntopof+noptri+1)  = k8blan//'.TOPONO.HNO'
+    lcham(ntopos+ntopof+noptri+2)  = k8blan//'.TOPONO.HSE'
 
 !   pour option == TOPOSE dans alchml
     lpara(1)  = 'PPINTTO'
@@ -191,19 +199,22 @@ subroutine xcpmo2(modx1, modx2)
     lpara(5)  = 'PPMILTO'
     lpara(6)  = 'PAINTTO'
 !   pour option == TOPOFA dans alchml
-    lpara(7)  = 'PPINTER'
-    lpara(8)  = 'PAINTER'
-    lpara(9)  = 'PCFACE'
-    lpara(10)  = 'PLONGCO'
-    lpara(11) = 'PBASECO'
-    lpara(12) = 'PGESCLA'
+    lpara(ntopos+1)  = 'PPINTER'
+    lpara(ntopos+2)  = 'PAINTER'
+    lpara(ntopos+3)  = 'PCFACE'
+    lpara(ntopos+4)  = 'PLONGCO'
+    lpara(ntopos+5) = 'PBASECO'
+    lpara(ntopos+6) = 'PGESCLA'
 !   pour option == FULL_MECA dans alchml
-    lpara(13) = 'PSTANO'
-    lpara(14) = 'PLSN'
-    lpara(15) = 'PLST'
-    lpara(16) = 'PBASLOR'
+    lpara(ntopos+ntopof+1) = 'PSTANO'
+    lpara(ntopos+ntopof+2) = 'PLSN'
+    lpara(ntopos+ntopof+3) = 'PLST'
+    lpara(ntopos+ntopof+4) = 'PBASLOR'
+!   pour option == TOPONO dans alchml
+    lpara(ntopos+ntopof+noptri+1) = 'PHEA_NO'
+    lpara(ntopos+ntopof+noptri+2) = 'PHEA_SE'
 !
-    ncopy = ntopos + ntopof + noptri
+    ncopy = ntopos + ntopof + noptri + ntopon
 !
 ! ----------------------------------------------------------------------
 !   boucle sur les champs a copier
@@ -329,6 +340,7 @@ subroutine xcpmo2(modx1, modx2)
     call jedup1(modx1//'.NFIS', 'G', modx2//'.NFIS')
     call jedup1(modx1//'.FISS', 'G', modx2//'.FISS')
     call jedup1(modx1//'.XFEM_CONT', 'G', modx2//'.XFEM_CONT')
+    call jedup1(modx1//'.PRE_COND', 'G', modx2//'.PRE_COND')
 !
     call jedema()
 !

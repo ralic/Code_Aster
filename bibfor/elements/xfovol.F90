@@ -1,6 +1,6 @@
 subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
                   ddlh, ddlc, nfe, nnop, jlsn,&
-                  jlst, iforc, itemps, ivectu, fonc,&
+                  jlst, heavn, iforc, itemps, ivectu, fonc,&
                   fono)
 !
 ! ======================================================================
@@ -33,11 +33,12 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdeffe.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
     integer :: igeom, ndim, ddlh, ddlc, nfe, nnop
-    integer :: iforc, itemps, ivectu, jlsn, jlst
+    integer :: iforc, itemps, ivectu, jlsn, jlst, heavn(27,5)
     real(kind=8) :: he
     aster_logical :: fonc, fono
 !-----------------------------------------------------------------------
@@ -70,8 +71,8 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
 !
     integer :: i, ino, ig, ier, j, n, mxstac
-    integer :: ndimb, nno, nnos, nnops, npgbis, pos, irese
-    integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg
+    integer :: ndimb, nno, nnos, nnops, npgbis, pos, irese, nfh
+    integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg, hea_se
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: valpar(ndim+1), fe(4), poids
@@ -105,6 +106,10 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
                      nnos=nnos, npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf,&
                      jdfde=idfde, jdfd2=jdfd2, jgano=jgano)
     ASSERT(ndim.eq.ndimb)
+!
+!     DEFINITION DE LA FONCTION HEAVISIDE POUR CHAQUE SS-ELT
+    hea_se=xcalc_code(1, he_real=[he])
+    nfh=ddlh/ndim
 !
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT
@@ -220,8 +225,9 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !         TERME HEAVISIDE
             do j = 1, ddlh
                 pos=pos+1
+                ig=j-nfh*int((j-1)/nfh)
                 zr(ivectu-1+pos) = zr(ivectu-1+pos) + &
-                                   xcalf_he(he,zr(jlsn-1+ino))*forvol(j)* poids*ff(ino)
+                             xcalc_heav(heavn(ino,ig),hea_se,heavn(ino,5))*forvol(j)* poids*ff(ino)
 !
             end do
 !

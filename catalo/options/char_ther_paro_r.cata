@@ -32,6 +32,7 @@ OPTION__
         PLSN     NEUT_R
         PSTANO   N120_I
         PBASECO  N480_R
+        PHEA_NO  N120_I
    OUT__
 PVECTTR VTEM_R RESL__
 

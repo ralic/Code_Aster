@@ -19,7 +19,7 @@ interface
                      ddlm, igeom, compor, jpintt, cnset,&
                      heavt, lonch, basloc, sigref, nbsig,&
                      idepl, lsn, lst, ivectu, jpmilt,&
-                     nfiss, jfisno)
+                     nfiss, jheavn)
         integer :: nfiss
         integer :: nnop
         integer :: ndim
@@ -41,6 +41,6 @@ interface
         real(kind=8) :: lst(nnop)
         integer :: ivectu
         integer :: jpmilt
-        integer :: jfisno
+        integer :: jheavn
     end subroutine xbsir
 end interface

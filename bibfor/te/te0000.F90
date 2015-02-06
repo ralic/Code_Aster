@@ -625,6 +625,7 @@ subroutine te0000(numc, opt, te)
 #include "asterfort/te0598.h"
 #include "asterfort/te0599.h"
 #include "asterfort/te0600.h"
+#include "asterfort/te0602.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
     integer :: numc, opt, te
@@ -1877,6 +1878,8 @@ subroutine te0000(numc, opt, te)
             call te0599(nomopt, nomte)
         case (600)
             call te0600(nomopt, nomte)
+        case (602)
+            call te0602(nomopt, nomte)
         case default
             call codent(numc, 'D', k8bid)
             call utmess('F', 'CALCULEL4_91', 1, k8bid)

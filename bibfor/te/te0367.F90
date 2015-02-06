@@ -26,6 +26,7 @@ subroutine te0367(option, nomte)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
 #include "asterfort/normev.h"
 #include "asterfort/ttprsm.h"
 #include "asterfort/utmess.h"
@@ -69,7 +70,7 @@ subroutine te0367(option, nomte)
     integer :: nsinge, nsingm
     integer :: jpcpo, jpcpi, jpcai, jpccf, ivect, jstno
     integer :: indnor, ifrott, indco
-    integer :: jdepde, jdepm, jgeom, jheafa, jheano
+    integer :: jdepde, jdepm, jgeom, jheafa, jheano, jheavn, ncompn, jtab(7), iret
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     real(kind=8) :: mprojt(3, 3)
     real(kind=8) :: coore(3), coorm(3), coorc(2)
@@ -108,7 +109,7 @@ subroutine te0367(option, nomte)
 ! --- INITIALISATIONS
 !
     call vecini(n, 0.d0, vtmp)
-    call vecini(18, 0.d0, geopi)
+    call vecini(9, 0.d0, geopi)
     call vecini(2, 0.d0, dlagrf)
     dlagrc = 0.d0
 !
@@ -174,12 +175,18 @@ subroutine te0367(option, nomte)
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PDEPL_P', 'L', jdepde)
     call jevech('PDEPL_M', 'L', jdepm)
+    if (nfhe .gt. 0 .or. nfhm .gt. 0) then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+    endif
 !
     if (lmulti) then
 !
 ! --- RECUPERATION DES FONCTION HEAVISIDES SUR LES FACETTES
 !
-        call jevech('PHEAVFA', 'L', jheafa)
+        call jevech('PHEA_FA', 'L', jheafa)
 !
 ! --- RECUPERATION DE LA PLACE DES LAGRANGES
 !
@@ -251,7 +258,7 @@ subroutine te0367(option, nomte)
             call xmmjeu(ndim, nnm, nne, ndeple, nsinge,&
                         nsingm, ffe, ffm, norm, jgeom,&
                         jdepde, jdepm, rre, rrm, ddle,&
-                        ddlm, nfhe, nfhm, lmulti, zi(jheafa),&
+                        ddlm, nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa),&
                         jeu)
 !
             call xmvec1(ndim, nne, ndeple, nnc, nnm,&
@@ -260,7 +267,7 @@ subroutine te0367(option, nomte)
                         coefcp, lpenac, jeu, norm,&
                         nsinge, nsingm, rre, rrm,&
                         ddle, ddlm, nfhe, nfhm, lmulti,&
-                        zi(jheano), zi(jheafa), vtmp)
+                        zi(jheano), zi(jheavn), zi(jheafa), vtmp)
 !
         else if (indco .eq. 0) then
             if (nvit .eq. 1) then
@@ -301,7 +308,9 @@ subroutine te0367(option, nomte)
 !
             call xtdepm(ndim, nnm, nne, ndeple, nsinge,&
                         nsingm, ffe, ffm, jdepde, rre,&
-                        rrm, ddle, ddlm, ddeple, ddeplm)
+                        rrm, ddle, ddlm, nfhe, nfhm, lmulti,&
+                        zi(jheavn), zi(jheafa),&
+                        ddeple, ddeplm)
 !
 !
 ! --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
@@ -317,7 +326,7 @@ subroutine te0367(option, nomte)
                 call xmmjeu(ndim, nnm, nne, ndeple, nsinge,&
                             nsingm, ffe, ffm, norm, jgeom,&
                             jdepde, jdepm, rre, rrm, ddle,&
-                            ddlm, nfhe, nfhm, lmulti, zi(jheafa),&
+                            ddlm, nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa),&
                             jeu)
             endif
 !
@@ -334,7 +343,8 @@ subroutine te0367(option, nomte)
                         tau2, rese, mprojt, coefcr,&
                         jeu, nsinge, nsingm, rre,&
                         rrm, nvit, contac, ddle, ddlm,&
-                        nfhe, vtmp)
+                        nfhe, nfhm, lmulti,  zi(jheavn), zi(jheafa),&
+                        vtmp)
         endif
     else
         ASSERT(.false.)

@@ -61,7 +61,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=4, nbin=18)
+    parameter    (nbout=4, nbin=20)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -71,7 +71,7 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     character(len=16) :: option
     character(len=19) :: ligrmo, cicoca, cindoo, cmemco, ltno
     character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo
-    character(len=19) :: fissno, heavno, heavfa
+    character(len=19) :: fissno, heavno, heavfa, hea_no, hea_fa
     aster_logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
@@ -146,6 +146,8 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     fissno = nomo(1:8)//'.FISSNO'
     heavno = nomo(1:8)//'.HEAVNO'
     heavfa = nomo(1:8)//'.TOPOFAC.HE'
+    hea_no = nomo(1:8)//'.TOPONO.HNO'
+    hea_fa = nomo(1:8)//'.TOPONO.HFA'
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE  INDIC. CONTACT ET MEMOIRE CONTACT
 !
@@ -192,6 +194,10 @@ subroutine xmmbca(noma, nomo, mate, resoco, valinc,&
     lchin(17) = heavno
     lpain(18) = 'PHEAVFA'
     lchin(18) = heavfa
+    lpain(19) = 'PHEA_NO'
+    lchin(19) = hea_no
+    lpain(20) = 'PHEA_FA'
+    lchin(20) = hea_fa
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

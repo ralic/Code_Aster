@@ -1,7 +1,7 @@
 subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                   itps, ihechp, jptint, jcface,&
-                  jlonch, jlst, jlsn, jbasec, nfh, nfe,&
-                  fonree, ivectt)
+                  jlonch, jlst, jbasec, nfh, nfe,&
+                  fonree, ivectt, heavn)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,11 +65,12 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xxmmvd.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
     character(len=4) :: fonree
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, itemp, itps, ihechp, jptint, jcface
-    integer :: jlonch, jlst, jlsn, jbasec, nfh, nfe, ivectt
+    integer :: jlonch, jlst, jbasec, nfh, nfe, ivectt, heavn(27,5)
 !
 !-----------------------------------------------------------------------
 !
@@ -79,7 +80,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
     integer :: fac(6, 8), nbar, ar(12, 3), cface(18, 6), ninter, nface, nptf
     integer :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, ilev, inp, jnp, kddl, lddl, ier
-    integer :: mxstac, ipos
+    integer :: mxstac, ipos, hea_fa(2)
 !
     parameter (mxstac=1000)
 !
@@ -101,6 +102,11 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
 !     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
 !     (VOIR CRS 1404)
     ASSERT(nnop.le.mxstac .and. 1+nfh+nfe.le.mxstac)
+!
+!    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
+    do ilev=1,2
+      hea_fa(ilev)=xcalc_code(1, he_real=[he(ilev)])
+    enddo
 !
 !     S'AGIT-IL D'UNE MODELISATION AXIS
     axi = .false.
@@ -220,7 +226,7 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                     ffenr(i,1) = ff(i)
 !             DDL HEAVISIDE (H1)
                     if (nfh .eq. 1) then
-                        ffenr(i,1+nfh) = xcalf_he(he(ilev),zr(jlsn-1+i))*ff(i)
+                        ffenr(i,1+nfh) = xcalc_heav(heavn(i,1),hea_fa(ilev),heavn(i,5))*ff(i)
                     endif
 !             DDL CRACK-TIP (E1)
                     if (nfe .eq. 1) then

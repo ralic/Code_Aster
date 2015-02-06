@@ -31,6 +31,8 @@ subroutine te0519(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xteini.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
 !
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -48,10 +50,10 @@ subroutine te0519(option, nomte)
 !
     character(len=8) :: elref
     integer :: jdepl, jpint, jlon, jgeo, jlst, nfiss
-    integer :: jges, jgma, ifiss, ifh, ncompp, jtab(2), iret, ncomph
+    integer :: jges, jgma, ifiss, ifh, ncompp, jtab(7), iret, ncomph
     integer :: ibid, ndim, nno, nfh, singu, ddls, ninter
     integer :: i, j, ipt, nfe, ddlc, nnom, nddl, ddlm, nnos, in
-    integer :: jfisno, jheafa, jeu(2)
+    integer :: jheafa, jeu(2), jheavn, ncompn
     real(kind=8) :: ptref(3), deple(3), deplm(3), ff(20), lst, r
 !
 ! ---------------------------------------------------------------------
@@ -77,22 +79,27 @@ subroutine te0519(option, nomte)
     call jevech('PPINTER', 'L', jpint)
     call jevech('PLONGCO', 'L', jlon)
     call jevech('PLST', 'L', jlst)
+    if (nfh.gt.0) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+    endif
 ! --- LES GEOMETRIES MAITRES ET ESCLAVES INITIALES SONT
 ! --- ET RESTENT LES MEMES
     call jevech('PGESCLO', 'L', jgeo)
 ! --- CAS MULTI-HEAVISIDE
     if (nfiss .gt. 1) then
-        call jevech('PFISNO', 'L', jfisno)
-        call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
-                    itab=jtab)
+        call jevech('PHEA_FA', 'L', jheafa)
+        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
+                itab=jtab)
         ncomph = jtab(2)
     endif
     call tecach('OOO', 'PPINTER', 'L', iret, nval=2,&
                 itab=jtab)
     ncompp = jtab(2)
-    jeu(1) = -1
-    jeu(2) = +1
+    jeu(1) = xcalc_code(1,[-1])
+    jeu(2) = xcalc_code(1,[+1])
 !
     call jevech('PNEWGES', 'E', jges)
     call jevech('PNEWGEM', 'E', jgma)
@@ -144,20 +151,16 @@ subroutine te0519(option, nomte)
 220              continue
                 do 230 ifh = 1, nfh
                     if (nfiss .gt. 1) then
-                        jeu(1) = zi(&
-                                 jheafa-1+ncomph*(nfiss*(ifiss-1) + zi(jfisno-1+nfh*(i-1)+ifh)-1&
-                                 )+1&
-                                 )
-                        jeu(2) = zi(&
-                                 jheafa-1+ncomph*(nfiss*(ifiss-1) + zi(jfisno-1+nfh*(i-1)+ifh)-1&
-                                 )+2&
-                                 )
+                        jeu(1) = zi(jheafa-1+ncomph*(ifiss-1)+1)
+                        jeu(2) = zi(jheafa-1+ncomph*(ifiss-1)+2)
                     endif
                     do 250 j = 1, ndim
-                        deplm(j)=deplm(j)+jeu(2)*ff(i)*zr(jdepl-1+in+&
-                        ndim*ifh+j)
-                        deple(j)=deple(j)+jeu(1)*ff(i)*zr(jdepl-1+in+&
-                        ndim*ifh+j)
+                        deplm(j)=deplm(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh),jeu(2),&
+                                                     zi(jheavn-1+ncompn*(i-1)+ncompn))&
+                                         *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
+                        deple(j)=deple(j)+xcalc_heav(zi(jheavn-1+ncompn*(i-1)+ifh),jeu(1),&
+                                                     zi(jheavn-1+ncompn*(i-1)+ncompn))&
+                                         *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
 250                  continue
 230              continue
                 do 240 j = 1, singu*ndim

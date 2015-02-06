@@ -315,21 +315,21 @@ KIref = 3574.39612
 
 # 1) le G de CALC_G
 TEST_TABLE(PRECISION=0.021,
-           VALE_CALC=54.9057366145,
+           VALE_CALC=54.8177886721,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGA1)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.5166405674,
+           VALE_CALC=54.4347463389,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGA2)
 
-TEST_TABLE(PRECISION=0.035,
-           VALE_CALC=53.4298213805,
+TEST_TABLE(PRECISION=0.04,
+           VALE_CALC=53.3484131987,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
@@ -337,21 +337,21 @@ TEST_TABLE(PRECISION=0.035,
 
 # 2) le G de CALC_K_G
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=55.0309001195,
+           VALE_CALC=54.9352527268,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGAK1,)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.6483565339,
+           VALE_CALC=54.5665050638,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGAK2,)
 
 TEST_TABLE(PRECISION=0.035,
-           VALE_CALC=53.5677970912,
+           VALE_CALC=53.4924548957,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
@@ -359,21 +359,21 @@ TEST_TABLE(PRECISION=0.035,
            
 # 3) le K de CALC_K_G
 TEST_TABLE(PRECISION=0.01,
-           VALE_CALC=3571.21045922,
+           VALE_CALC=3570.68198957,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
            TABLE=GINGAK1,)
 
 TEST_TABLE(PRECISION=0.01,
-           VALE_CALC=3561.07057244,
+           VALE_CALC=3560.82981086,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
            TABLE=GINGAK2,)
 
 TEST_TABLE(PRECISION=0.01,
-           VALE_CALC=3539.8265489,
+           VALE_CALC=3539.66359637,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
@@ -381,14 +381,14 @@ TEST_TABLE(PRECISION=0.01,
 
 # 4) le K avec POST_K1_K2_K3 : 5% d'ecart, c'est bizarre
 TEST_TABLE(PRECISION=0.05,
-           VALE_CALC=3735.03567957,
+           VALE_CALC=3620.51791372,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
            TABLE=PKMECA,)
 
 # 5) le G suite au calcul thermique
-TEST_TABLE(VALE_CALC=55.1469005895,
+TEST_TABLE(VALE_CALC=55.0681758782,
            NOM_PARA='G',
            TABLE=GTHER3,
            FILTRE=_F(NOM_PARA='INST',

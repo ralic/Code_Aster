@@ -69,7 +69,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=2, nbin=31)
+    parameter    (nbout=2, nbin=32)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -78,7 +78,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
     character(len=16) :: option, k16bid, nomcmd
     character(len=19) :: chvarc, compor
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
-    character(len=19) :: pmilto, fissno, pinter
+    character(len=19) :: pmilto, fissno, pinter, pheavn
     character(len=24) :: chgeom, chcara(18), chharm
     character(len=24) :: argu, chtime
     character(len=8) :: modele, carele
@@ -165,6 +165,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
         stano = modele(1:8)//'.STNO'
         fissno = modele(1:8)//'.FISSNO'
         pinter = modele(1:8)//'.TOPOFAC.OE'
+        pheavn = modele(1:8)//'.TOPONO.HNO'
     else
         pintto = '&&MERIME.PINTTO.BID'
         cnseto = '&&MERIME.CNSETO.BID'
@@ -244,6 +245,8 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
         lchin(30) = fissno(1:19)
         lpain(31) = 'PPINTER'
         lchin(31) = pinter(1:19)
+        lpain(32) = 'PHEA_NO'
+        lchin(32) = pheavn(1:19)
         call calcul('S', option, ligrmo, nbin, lchin,&
                     lpain, nbout, lchout, lpaout, base,&
                     'OUI')

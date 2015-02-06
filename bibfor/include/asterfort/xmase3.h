@@ -18,7 +18,7 @@
 interface
     subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                       ddlh, ddlc, nfe, basloc, nnop,&
-                      npg, imate, lsn, lst, matuu)
+                      npg, imate, lsn, lst, matuu, heavn)
         integer :: nnop
         integer :: nfe
         integer :: ddlc
@@ -34,5 +34,6 @@ interface
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: matuu(*)
+        integer :: heavn(27,5)
     end subroutine xmase3
 end interface

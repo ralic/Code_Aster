@@ -1,5 +1,5 @@
 subroutine xsifle(ndim, ifa, jptint, cface,&
-                  igeom, nfh, singu, nfe, ddlc,&
+                  igeom, nfh, jheavn, singu, nfe, ddlc,&
                   ddlm, jlst, ipres, ipref, itemps,&
                   idepl, nnop, valres, basloc, ithet,&
                   nompar, presn, option, igthet, jbasec,&
@@ -35,6 +35,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 #include "asterfort/jemarq.h"
 #include "asterc/r8pi.h"
 #include "asterfort/tecael.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xsifl1.h"
@@ -45,7 +46,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     character(len=8) :: nompar(4)
     character(len=16) :: option
     integer :: ndim, ifa, cface(18, 6), igeom, nfh, singu, jlst, ipres
-    integer :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl
+    integer :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl, jheavn
     integer :: ddlm, jbasec, contac
     real(kind=8) :: valres(3)
     real(kind=8) :: basloc(9*nnop), presn(27)
@@ -86,8 +87,8 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !
     integer :: iadzi, iazk24, ibid2(12, 3), ibid, fac(6, 8), nbf
     integer :: ar(12, 3), nbar, nnof, npgf, ipoidf, ivff, idfdef
-    integer :: ipgf, zxain
-    integer :: ddld, ddls, nnops
+    integer :: ipgf, zxain, heavn(nnop,5)
+    integer :: ddld, ddls, nnops, ncompn, ino, ig, iret, jtab(7)
     real(kind=8) :: xg(4), jac, ff(27), nd(3)
     real(kind=8) :: angl(2)
     real(kind=8) :: e, nu, mu, ka, coeff, coeff3, r27bid(27)
@@ -108,6 +109,20 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !     LEVRE SUPERIEURE (HE=+1) EST LA LEVRE 2, DE NORMALE SORTANTE -ND
     angl(1) = -r8pi()
     angl(2) = r8pi()
+!
+!     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
+    if (nfh.gt.0) then
+      ASSERT(jheavn.gt.0)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
+    endif
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
     ddld=ndim*(1+nfh+nfe)
@@ -172,7 +187,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
         endif
         if (option .ne. 'CALC_K_G_COHE') then
             call xsifl1(angl, basloc, coeff, coeff3, ddlm,&
-                        ddls, dfdi, ff, he, idepl,&
+                        ddls, dfdi, ff, he, heavn, idepl,&
                         igthet, ipref, ipres, ithet, jac,&
                         jlst, ka, mu, nd,&
                         ndim, nfh, nnop, nnops, itemps,&

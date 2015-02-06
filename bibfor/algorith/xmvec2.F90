@@ -1,7 +1,7 @@
 subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, reac, jac, nfh,&
                   saut, singu, nd, rr, coeffr,&
-                  ddls, ddlm, jfisno, nfiss, ifiss,&
+                  ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                   jheafa, ncomph, ifa, vtmp)
 !
 ! aslint: disable=W1504
@@ -9,10 +9,11 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_saut.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim, nno, nnos, nnol
     integer :: pla(27), nfh
-    integer :: singu, ddls, ddlm, jfisno, nfiss, ifiss, jheafa, ncomph, ifa
+    integer :: singu, ddls, ddlm, nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
     real(kind=8) :: vtmp(400), coeffr, saut(3), nd(3)
     real(kind=8) :: ffc(8), ffp(27), jac, reac, rr
 !
@@ -75,14 +76,18 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 !
 !
 !
-    integer :: i, j, in, pli, ifh, coefi
-    real(kind=8) :: ffi, dn
+    integer :: i, j, in, pli, ifh, hea_fa(2)
+    real(kind=8) :: ffi, dn, coefi
     aster_logical :: lmultc
 !
 ! ----------------------------------------------------------------------
 !
-    coefi = int(xcoef_he())
+    coefi = xcalc_saut(1,0,1)
     lmultc = nfiss.gt.1
+    if (.not.lmultc) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
     dn = 0.d0
     do 143 j = 1, ndim
         dn = dn + saut(j)*nd(j)
@@ -94,12 +99,15 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
         call indent(i, ddls, ddlm, nnos, in)
         do 157 ifh = 1, nfh
             if (lmultc) then
-                coefi = zi(&
-                        jheafa-1+ncomph*(&
-                        nfiss*(ifiss-1) +zi( jfisno-1+nfh*(i-1)+ifh)-1)+2*ifa) - zi(jheafa-1+ nco&
-                        &mph*(nfiss*(ifiss-1) +zi(jfisno-1+nfh*(i-1)+ifh)-1&
-                        ) +2*ifa-1&
-                        )
+                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
+                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+            else
+                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                   hea_fa(1), &
+                                   hea_fa(2),&
+                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
             endif
             do 151 j = 1, ndim
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + (reac- coeffr*dn)*coefi*ffp(i)*nd(j)*&
@@ -108,7 +116,7 @@ subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
 157     continue
         do 152 j = 1, singu*ndim
             vtmp(in+ndim*(1+nfh)+j) = vtmp(&
-                                      in+ndim*(1+nfh)+j) + (reac-coeffr*dn)*coefi*ffp(i)*rr*nd(j&
+                                      in+ndim*(1+nfh)+j) + (reac-coeffr*dn)*2.d0*ffp(i)*rr*nd(j&
                                       )*jac
 152     continue
 150 continue

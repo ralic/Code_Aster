@@ -19,7 +19,7 @@ interface
     subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
                       am, delta, pla, lact, nfh,&
                       ddls, ddlm, nfiss, ifiss, jheafa,&
-                      ifa, ncomph, jfisno, jac, ffc,&
+                      ifa, ncomph, jheavn, ncompn, jac, ffc,&
                       ffp, singu, r, rr, vtmp,&
                       p)
         integer :: ndim
@@ -37,9 +37,10 @@ interface
         integer :: nfiss
         integer :: ifiss
         integer :: jheafa
+        integer :: jheavn
+        integer :: ncompn
         integer :: ifa
         integer :: ncomph
-        integer :: jfisno
         real(kind=8) :: jac
         real(kind=8) :: ffc(8)
         real(kind=8) :: ffp(27)

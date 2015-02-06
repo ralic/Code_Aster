@@ -4,7 +4,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                   typmod, option, imate, compor, lgpg,&
                   crit, idepl, lsn, lst, idecpg,&
                   sig, vi, matuu, ivectu, codret,&
-                  nfiss, fisno)
+                  nfiss, heavn)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -23,10 +23,11 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
-#include "asterfort/xcalf_he.h"
-    integer :: nnop, nfiss, codret, ddlc, ddlm, fisno(nnop, nfiss)
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
+    integer :: nnop, nfiss, codret, ddlc, ddlm
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
-    integer :: lgpg, ndim, nfe, nfh, npg
+    integer :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), crit(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg)
     real(kind=8) :: matuu(*), vi(lgpg, npg)
@@ -93,7 +94,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     character(len=16) :: compo2(4)
     integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg, iret
     integer :: ddld, ddls, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
-    integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano
+    integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfe+nfh)), rbid33(3, 3)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
@@ -144,6 +145,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     do n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
     end do
+!
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS
@@ -214,8 +218,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                     ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
                     do ig = 1, nfh
                         ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1)&
-                                               *xcalf_he(he(fisno(n,ig)),&
-                                                          lsn((n-1)*nfiss+fisno(n,ig)))
+                                               *xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                     end do
                     do ig = 1, nfe
                         ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
@@ -225,10 +228,10 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
             call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                         xe, ff, dfdi=dfdi)
             call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                        ndim, he, r, ur, fisno,&
+                        ndim, he, r, ur, &
                         nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f,&
-                        eps, rbid33, lsn)
+                        eps, rbid33, heavn)
 !
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then
@@ -271,8 +274,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 do i = 1, ndim
                     cpt = cpt+1
                     do m = 1, 2*ndim
-                        def(m,cpt,n) = def(m,i,n) * xcalf_he(he(fisno(n,ig)),&
-                                                    lsn((n-1)*nfiss+fisno(n,ig)))
+                        def(m,cpt,n) = def(m,i,n) * xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                     end do
                     if (ndim .eq. 2) then
                         def(3,cpt,n) = 0.d0
@@ -281,8 +283,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !   TERME DE CORRECTION (3,3) A PORTE SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3,1+ndim*ig,n) = f(3,3) * ff(n)/r * xcalf_he(he(fisno(n,ig)),&
-                                                            lsn((n-1)*nfiss+fisno(n,ig)))
+                    def(3,1+ndim*ig,n) = f(3,3)*ff(n)/r*xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                 endif
 !
             end do

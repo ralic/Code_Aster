@@ -3,7 +3,7 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
                  vip, typmod, option, imate, compor,&
                  lgpg, crit, jpintt, cnset, heavt,&
                  lonch, basloc, idepl, lsn, lst,&
-                 nfiss, jfisno, sig, vi, matuu,&
+                 nfiss, jheavn, sig, vi, matuu,&
                  ivectu, codret, jpmilt)
 !
 ! ======================================================================
@@ -43,7 +43,7 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
 #include "asterfort/nbsigm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/xxnmgr.h"
-    integer :: nnop, imate, lgpg, codret, igeom, nfiss, jfisno
+    integer :: nnop, imate, lgpg, codret, igeom, nfiss,jheavn
     integer :: cnset(4*32), heavt(36*nfiss), lonch(10), ndim
     integer :: nfh, nfe, ddlc, ddlm
     integer :: jpintt, jpmilt, idepl, ivectu, ideplp
@@ -78,7 +78,7 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
+! IN  JHEAVN  : POINTEUR VERS LA DEFINITION HEAVISIDE
 !
 ! OUT SIG     : CONTRAINTES DE CAUCHY (RAPH_MECA ET FULL_MECA)
 ! OUT VI      : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
@@ -88,9 +88,10 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
 !----------------------------------------------------------------
     character(len=8) :: elrefp, elrese(6), fami(6)
     real(kind=8) :: he(nfiss), coorse(81)
-    integer :: nse, npg, jtab(2), ncomp, iret
+    integer :: nse, npg, jtab(7), ncomp, iret
     integer :: ise, in, j, ino, idebs, idebv
-    integer ::  nbsig, idecpg, ig, ifiss, fisno(nnop, nfiss)
+    integer :: nbsig, idecpg, ig, ifiss
+    integer :: ncompn, heavn(nnop, 5)
     integer :: irese, nno
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -120,19 +121,16 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
-!     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
-!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
-    if (nfiss .eq. 1) then
-        do ino = 1, nnop
-            fisno(ino,1) = 1
-        end do
-    else
-        do ig = 1, nfh
-!    ON REMPLIT JUSQU'A NFH <= NFISS
-            do ino = 1, nnop
-                fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-            end do
-        end do
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
     endif
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
@@ -182,7 +180,7 @@ subroutine xnmgr(nnop, nfh, nfe, ddlc, ddlm,&
                     instam, instap, ideplp, sigm(idebs+1), vip( idebv+1),&
                     basloc, nnop, npg, typmod, option,&
                     imate, compor, lgpg, idecpg, crit,&
-                    idepl, lsn, lst, nfiss, fisno,&
+                    idepl, lsn, lst, nfiss, heavn,&
                     sig(idebs+1), vi(idebv+ 1), matuu, ivectu, codret)
 !
     end do

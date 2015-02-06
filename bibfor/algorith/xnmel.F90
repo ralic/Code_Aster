@@ -3,7 +3,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                  compor, lgpg, crit, jpintt, cnset,&
                  heavt, lonch, basloc, idepl, lsn,&
                  lst, sig, vi, matuu, ivectu,&
-                 codret, jpmilt, nfiss, jfisno)
+                 codret, jpmilt, nfiss, jheavn)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -15,7 +15,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 #include "asterfort/nbsigm.h"
 #include "asterfort/tecach.h"
 #include "asterfort/xxnmel.h"
-    integer :: nnop, imate, lgpg, codret, igeom, nfiss, jfisno
+    integer :: nnop, imate, lgpg, codret, igeom, nfiss, jheavn
     integer :: cnset(4*32), heavt(*), lonch(10), ndim
     integer :: nfh, nfe, ddlc, ddlm
     integer :: ivectu, idepl, jpintt, jpmilt
@@ -78,7 +78,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  PMILT   : COORDONNEES DES POINTS MILIEUX
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
+! IN  JHEAVN  : POINTEUR VERS LA DEFINITION HEAVISIDE
 !
 ! OUT SIG     : CONTRAINTES DE CAUCHY (RAPH_MECA ET FULL_MECA)
 ! OUT VI      : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
@@ -87,11 +87,11 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 !..............................................................
 !----------------------------------------------------------------
     character(len=8) :: elrefp, elrese(6), fami(6)
-    real(kind=8) :: he(nfiss), coorse(81)
+    real(kind=8) :: coorse(81), he(nfiss)
     integer :: nse, npg
     integer :: j, ise, in, ino, idebs, idebv, nnops
-    integer :: ibid, idecpg, nbsig, ig, ifiss, ibid2
-    integer :: irese, nno, fisno(nnop, nfiss), jtab(2), ncomp, iret
+    integer :: ibid, idecpg, nbsig, ig, ifiss, ibid2, ncompn, heavn(nnop,5)
+    integer :: irese, nno, jtab(7), ncomp, iret
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -117,26 +117,23 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
         irese=0
     endif
     call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
-  npg=npg)
+    npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
-!     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
-!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
-    if (nfiss .eq. 1) then
-        do ino = 1, nnop
-            fisno(ino,1) = 1
-        end do
-    else
-        do ig = 1, nfh
-!    ON REMPLIT JUSQU'A NFH <= NFISS
-            do ino = 1, nnop
-                fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-            end do
-        end do
+!     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
     endif
-!
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
 !
@@ -185,7 +182,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                         typmod, option, imate, compor, lgpg,&
                         crit2, ibid, lsn, lst, idecpg,&
                         sig2, vi2, matuu, ibid2, codret,&
-                        nfiss, fisno)
+                        nfiss, heavn)
 !
             elseif (option(1:9).eq.'RAPH_MECA' .or. option(1:9)&
         .eq.'FULL_MECA' .or. option(1:10).eq.'RIGI_MECA_') then
@@ -197,7 +194,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                         typmod, option, imate, compor, lgpg,&
                         crit, idepl, lsn, lst, idecpg,&
                         sig(idebs+1), vi(idebv+1), matuu, ivectu, codret,&
-                        nfiss, fisno)
+                        nfiss, heavn)
         endif
 !
 !

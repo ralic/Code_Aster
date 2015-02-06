@@ -18,7 +18,7 @@
 interface
     subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
                       imate, pintt, cnset, heavt, lonch,&
-                      basloc, lsn, lst, matuu)
+                      basloc, lsn, lst, matuu, heavn)
         integer :: nnop
         integer :: ddlh
         integer :: nfe
@@ -33,5 +33,6 @@ interface
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: matuu(*)
+        integer :: heavn(27,5)
     end subroutine xmasel
 end interface

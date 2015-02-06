@@ -1,7 +1,7 @@
 subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
                   am, delta, pla, lact, nfh,&
                   ddls, ddlm, nfiss, ifiss, jheafa,&
-                  ifa, ncomph, jfisno, jac, ffc,&
+                  ifa, ncomph, jheavn, ncompn, jac, ffc,&
                   ffp, singu, r, rr, vtmp,&
                   p)
 !
@@ -14,8 +14,9 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcoef_he.h"
-    integer :: ndim, nno, nnol
+#include "asterfort/xcalc_saut.h"
+#include "asterfort/xcalc_code.h"
+    integer :: ndim, nno, nnol, jheavn, ncompn
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu
     real(kind=8) :: vtmp(400), delta(6)
@@ -58,7 +59,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 !
 !
     integer :: i, j, k, pli, nli, ddlm, ier, ifa, ifh, ifiss
-    integer :: in, jfisno, jheafa, ncomph, nfiss, nnos
+    integer :: in, jheafa, ncomph, nfiss, nnos, hea_fa(2)
     real(kind=8) :: ffi, am(3), coefi, hfix(3), h(3), lamb(3), r
     real(kind=8) :: p(3, 3), ptr(3, 3)
     aster_logical :: lmultc
@@ -67,9 +68,14 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 !
 ! INITIALISATIONS
 !
+    lmultc = nfiss.gt.1
     call vecini(3, 0.d0, h)
     call vecini(3, 0.d0, hfix)
     call matini(3, 3, 0.d0, ptr)
+    if (.not.lmultc) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
 !
 ! CALCUL DE H = R*DELTA - FORCE COHESIVE AUGMENTEE EN BASE COVARIANTE
 ! RAPPEL : AM INVERSE PAR RAPPORT AUX CONVENTIONS X-FEM
@@ -89,18 +95,20 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 ! ON STOCKE DANS LE VECTEUR SECOND MEMBRE ELEMENTAIRE DE L EQUILIBRE
 ! ! IL Y A DEJA UN MOINS DU AUX CONVENTIONS POUR LE SAUT
 !
-    coefi = xcoef_he()
-    lmultc = nfiss.gt.1
+    coefi = xcalc_saut(1,0,1)
     do 10 i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
         do 11 ifh = 1, nfh
             if (lmultc) then
-                coefi = zi(&
-                        jheafa-1+ncomph*(&
-                        nfiss*(ifiss-1) +zi( jfisno-1+nfh*(i-1)+ifh)-1)+2*ifa) - zi(jheafa-1+ nco&
-                        &mph*(nfiss*(ifiss-1) +zi(jfisno-1+nfh*(i-1)+ifh)-1&
-                        ) +2*ifa-1&
-                        )
+                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
+                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+            else
+                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                   hea_fa(1), &
+                                   hea_fa(2),&
+                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
             endif
             do 12 j = 1, ndim
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) - coefi*ffp( i)*hfix(j)*jac

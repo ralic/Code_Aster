@@ -103,12 +103,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !
     integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in
-    integer :: jcesd(11), jcesv(11), jcesl(11), iad, jconx1, jconx2
+    integer :: jcesd(12), jcesv(12), jcesl(12), iad, jconx1, jconx2
     integer :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
     integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm
     integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv
     integer :: jcnse, iad4, iad3, itypel, nbelr, jhea
-    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(50), jlst, jfisno
+    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(50), jlst, jheavn
     integer :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi
     integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter
@@ -116,10 +116,10 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     character(len=8) :: k8b, typese(6), elrefp, lirefe(10)
     character(len=8) :: typma, noma
     character(len=16) :: tysd, k16b, nomcmd, notype
-    character(len=19) :: chs(11)
-    character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, fisno, hea, nogno
+    character(len=19) :: chs(12)
+    character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, hea, nogno, heavn
     aster_logical :: opmail, lmeca, pre1
-    integer :: iad9, irese, nnose, tabse(6), ncomp
+    integer :: iad9, irese, nnose, tabse(6), ncomp, ncompn, ncompn_tmp
     integer :: iviex, iret, jconq1, jconq2, jxc
     integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
     integer, pointer :: maille(:) => null()
@@ -164,6 +164,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     chs(9) = '&&XPOMAX.PMILTO'
     chs(10) = '&&XPOMAX.PLONCH'
     chs(11) = '&&XPOMAX.PAIN'
+    chs(12) = '&&XPOMAX.FHEAVN'
 !
 !
     call celces(mo//'.TOPOSE.PIN', 'V', chs(1))
@@ -204,6 +205,11 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     call jeveuo(chs(11)//'.CESV', 'E', jcesv(11))
     call jeveuo(chs(11)//'.CESL', 'L', jcesl(11))
 !      ENDIF
+!
+    call celces(mo//'.TOPONO.HNO', 'V', chs(12))
+    call jeveuo(chs(12)//'.CESD', 'L', jcesd(12))
+    call jeveuo(chs(12)//'.CESV', 'E', jcesv(12))
+    call jeveuo(chs(12)//'.CESL', 'L', jcesl(12))
 !
     do ich = 1, 4
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
@@ -435,6 +441,9 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             call jeveuo(jexatr(noma//'.CONNEX', 'LONCUM'), 'L', jconq2)
         endif
 !
+        nfe=0
+        nfh=0
+!
 !       COMPOSANTES DU CHAMP DE DEPLACEMENT 1 POUR LA MAILLE IMA
 !       ET RECUPERATION DES CONTRAINTES 1
         if (.not.opmail) then
@@ -518,21 +527,41 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         if (.not.opmail .and. nfh .gt. 0) then
 !         CORRECTION DE NFH SI ON SE TROMPE DANS XPOCMP
             if (nfh .gt. nfiss) nfh = nfiss
-            fisno = '&&XPOAJD.FISNO'
-            call wkvect(fisno, 'V V I', n*nfh, jfisno)
-            do j = 1, n
-                if (nfiss .eq. 1) then
-                    zi(jfisno-1+j) = 1
-                else if (nfiss.gt.1) then
-                    nfh = zi(jcesd(8)-1+5+4*(ima-1)+2)
-                    do ifh = 1, nfh
-                        call cesexi('C', jcesd(8), jcesl(8), ima, j,&
-                                    ifh, 1, iad)
-                        ASSERT(iad.gt.0)
-                        zi(jfisno-1+(j-1)*nfh+ifh) = zi(jcesv(8)-1+ iad)
-                    end do
-                endif
-            end do
+            if (nfiss.gt.1) nfh = zi(jcesd(8)-1+5+4*(ima-1)+2)           
+        endif
+!
+!       RECUPERATION DE LA DEFINITION DES FONCTION HEAVISIDES
+        if (.not.opmail .and. nfh .gt. 0) then
+!       NOMBRE DE COMPOSANTE DE LA SD TOPONO.HNO
+          ncompn_tmp = zi(jcesd(12)-1+5+4*(ima-1)+3)
+          heavn='&&XPOAJD.HEAVN'
+!       EN PRINCIPE, TOPONO N EST DEFINI QUE DANS LES MAILLES XH
+!          MAIS IL PEUT ARRIVER QUE LA MAILLE VOIT AU MOINS
+!          1 NOEUD  AVEC UNE COMPOSANTE HEAVISIDE.
+!          LE DEPLACEMEMENT ASSOCIE DOIT VALOIR ZERO SUR LA MAILLE COURANTE
+!          DANS CE CAS, ON NE PREND PAS DE RISQUE, ON CALCULE AUSSI UN COEF 
+!          HEAVISIDE EGAL ZERO PAR LE HEAVN.
+          if (ncompn_tmp.eq.0) then
+            ncompn=5
+            call wkvect(heavn, 'V V I', n*ncompn, jheavn)
+            do ifh = 1, ncompn
+              do j = 1, n                
+                zi(jheavn-1+(j-1)*ncompn+ifh) = -99
+              end do
+            end do           
+          else
+            ncompn=ncompn_tmp
+            call wkvect(heavn, 'V V I', n*ncompn, jheavn)
+            do ifh = 1, ncompn
+              do j = 1, n
+                call cesexi('C', jcesd(12), jcesl(12), ima, j,&
+                            1, ifh, iad)
+                ASSERT(iad.gt.0)
+                zi(jheavn-1+(j-1)*ncompn+ifh) = zi(jcesv(12)-1+iad)
+              end do
+            end do           
+          endif
+          ASSERT(ncompn.eq.5)
         endif
 !
 ! ----- ON AJOUTE LES NOUVELLES MAILLES ET LES NOUVEAUX NOEUDS
@@ -558,7 +587,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                         jconq2, ima, iad1+jcesv(1)-1, nnn, inn,&
                         inntot, nbnoc, nbnofi, inofi, iacoo1,&
                         iacoo2, iad9+jcesv(9)-1, ninter, jcesv( 11)+iad11-1, elrefp,&
-                        jlsn, jlst, typma, igeom, jfisno,&
+                        jlsn, jlst, typma, igeom, jheavn, ncompn, &
                         zi(jxc), cmp, nbcmp, nfh, nfe,&
                         ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
                         pre1)
@@ -589,7 +618,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call jedetr(lsn)
         call jedetr(lst)
         call jedetr(hea)
-        if (.not.opmail .and. nfh .gt. 0) call jedetr(fisno)
+        if (.not.opmail .and. nfh .gt. 0) call jedetr(heavn)
 !
 100     continue
     end do

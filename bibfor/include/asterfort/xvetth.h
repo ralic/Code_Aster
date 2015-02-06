@@ -18,7 +18,7 @@
 interface
     subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                       igeom, temper, lonch, cnset, jpintt,&
-                      lsn, lst, basloc, heavt, nfh,&
+                      lsn, lst, heavn, basloc, heavt, nfh,&
                       nfe, vectt)
         integer :: nfe
         integer :: nfh
@@ -31,6 +31,7 @@ interface
         real(kind=8) :: temper(nnop*(1+nfh+nfe))
         integer :: lonch(10)
         integer :: cnset(128)
+        integer :: heavn(27,5)
         integer :: jpintt
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)

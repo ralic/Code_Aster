@@ -1,5 +1,5 @@
 subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
-                  igeom, jfisno, jlst, ivectu, singu,&
+                  igeom, jheavn, jlst, ivectu, singu,&
                   nddl, ndim, nfe, nfh, nfiss,&
                   nno, nnom, nnos, depref, sigref)
 !
@@ -38,7 +38,6 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! IN DDLM   : NB DDL PAR NOEUD MILIEU
 ! IN DDLS   : NB DDL TOT PAR NOEUD SOMMET
 ! IN GEOM   : ADRESSE POUR COORDONNEES NOEUD PARENT
-! IN JFISNO : CONNECTIVITE FISSURE/DDLS HEAVISIDE AU NOEUD
 ! IN JLST   : ADRESSE LST
 ! IN/OUT IVECTU : VECTEUR RESIDUS DE REF
 ! IN SINGU
@@ -60,9 +59,9 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     integer :: cface(18, 6), contac, ddlc, ddlm, ddls
     integer :: i, iadzi, iazk24, vstnc(1), ibid, ifa, ifiss, igeom, ipgf
     integer :: iret, jaint, jbasec, jcface
-    integer :: jfisno, jheafa, jheano, jlonch, jlst, jptint, jtab(2)
+    integer :: jheavn, jheafa, jheano, jlonch, jlst, jptint, jtab(7)
     integer :: ivectu, lact(8), singu
-    integer :: nbspg, ncompa, ncompb, ncompc, ncomph, ncompp
+    integer :: nbspg, ncompa, ncompb, ncompc, ncomph, ncompp, ncompn
     integer :: nddl, ndim, nface, nfe, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, npgf, nptf, nspfis, pla(27)
     integer :: idfdef, ipoidf, ivff, j, nnof
@@ -96,10 +95,17 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     call jevech('PCFACE', 'L', jcface)
     call jevech('PBASECO', 'L', jbasec)
     call jevech('PLONFA', 'L', jlonch)
+!
+!   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+    endif
     if (nfiss .gt. 1) then
         call jevech('PHEAVNO', 'L', jheano)
-        call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+        call jevech('PHEA_FA', 'L', jheafa)
+        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
                     itab=jtab)
         ncomph = jtab(2)
     endif
@@ -181,7 +187,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                 call xmvco3(sigref, depref, ndim, nno, nnol,&
                             nnos, pla, lact, nfh, ddls,&
                             ddlm, nfiss, ifiss, jheafa, ifa,&
-                            ncomph, jfisno, jac, ffc, ffp,&
+                            ncomph, jheavn, ncompn, jac, ffc, ffp,&
                             singu, rr, vtmp)
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
             end do

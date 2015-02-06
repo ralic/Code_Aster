@@ -20,6 +20,8 @@ subroutine te0441(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/tecach.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
@@ -50,9 +52,10 @@ subroutine te0441(option, nomte)
 !
     integer :: j, kk, ndim, nno, nnop, nnops, nnos, nnom, nddl, npg, singu
     integer :: nfh, ddls, nfe, ddlc, nse, ise, in, ino, ibid, ddlm
-    integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno, jpmilt
+    integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno, jpmilt, jheavn
     integer :: ivectu, igeom, irota, ipesa, imate
     integer :: irese, nfiss, jfisno, kpg, spt
+    integer :: ncompn, ncomp, heavn(27,5), iret, jtab(7), ig
     real(kind=8) :: fno(81), rho(1), om, omo, coorse(81)
     integer :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag, famil, poum
@@ -97,8 +100,9 @@ subroutine te0441(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PMATERC', 'L', imate)
-!     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
+    if (enr(1:2).eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
+!     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -146,6 +150,24 @@ subroutine te0441(option, nomte)
 !
     endif
 !
+!     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
+    call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
+                itab=jtab)
+    ncomp = jtab(2)
+!
+!     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
+    endif
+!
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=zi(jlonch-1+1)
 !
@@ -171,8 +193,8 @@ subroutine te0441(option, nomte)
             end do
         end do
 !
-        call xpesro(elrefp, ndim, coorse, igeom, jheavt,&
-                    jfisno, nfh, ddlc, nfe, nfiss,&
+        call xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
+                    heavn, nfh, ddlc, nfe, nfiss,&
                     ise, nnop, jlsn, jlst, ivectu,&
                     fno)
 !

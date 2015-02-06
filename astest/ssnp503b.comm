@@ -128,11 +128,11 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                    # ET SUPERIEURE
                    LIAISON_DDL=(_F(NOEUD=('N20','N20'),
                                    DDL=('DX','H1X'),
-                                   COEF_MULT=(1,1),
+                                   COEF_MULT=(1,2),
                                    COEF_IMPO=DEPX),
                                 _F(NOEUD=('N25','N25'),
                                    DDL=('DX','H1X'),
-                                   COEF_MULT=(1,1),
+                                   COEF_MULT=(1,2),
                                    COEF_IMPO=DEPX),
                                 ),
                     INFO=1);

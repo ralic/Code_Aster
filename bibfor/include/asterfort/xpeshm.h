@@ -19,7 +19,7 @@
 !
 interface 
     subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
-                      nddlm, npg, igeom, jpintt, jpmilt, jlsn,&
+                      nddlm, npg, igeom, jpintt, jpmilt, jheavn,&
                       ivf, ipoids, idfde, ivectu, ipesa,&
                       heavt, lonch, cnset, rho, axi,&
                       yaenrm)
@@ -33,7 +33,7 @@ interface
         integer :: igeom
         integer :: jpintt
         integer :: jpmilt
-        integer :: jlsn
+        integer :: jheavn
         integer :: ivf
         integer :: ipoids
         integer :: idfde

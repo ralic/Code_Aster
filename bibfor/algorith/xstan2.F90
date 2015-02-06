@@ -1,4 +1,4 @@
-subroutine xstan2(crimax, noma, modele)
+subroutine xstan2(crimax, noma, modele, crit2)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,9 +45,10 @@ subroutine xstan2(crimax, noma, modele)
 #include "asterfort/panbno.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcrvol.h"
+#include "asterfort/isnomi.h"
 !
     character(len=8) :: modele, noma
-    real(kind=8) :: crimax
+    real(kind=8) :: crimax, crit2(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,7 +74,7 @@ subroutine xstan2(crimax, noma, modele)
     character(len=16) :: notype
     character(len=8) :: typma, lirefe(10), elrefp
     character(len=2) :: ch2
-    real(kind=8) :: crit, vmoin, vplus, vtot
+    real(kind=8) :: crit, vmoin, vplus, vtot, crimaxi
     integer :: jcesd(7), jcesl(7), jcesv(7), iad
     integer :: jnoxfl, itypma, nncp, ibid, ier
     integer :: ifm, niv, jpint, jcnse
@@ -247,8 +248,14 @@ subroutine xstan2(crimax, noma, modele)
  50             continue
             end do
 !         CALCUL DU CRITERE
-            crit=min(vmoin,vplus)/vtot
-            if (crit .lt. crimax) then
+            crimaxi=crimax
+            if (.not.isnomi(elrefp,inoloc)) then
+              if (crimax.lt.0.d0) crimaxi=crit2(1)**ndim
+            else
+              if (crimax.lt.0.d0) crimaxi=crit2(2)**ndim
+            endif
+            crit=min(vmoin,vplus)/vtot            
+            if (crit .lt. crimaxi) then
                 cpt = cpt + 1
 !           BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
                 do ima = 1, nbmano

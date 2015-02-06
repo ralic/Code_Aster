@@ -132,12 +132,12 @@ CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
                     LIAISON_DDL=(_F(
                                     NOEUD=('N390','N390'),
                                     DDL=('DX','H1X'),
-                                    COEF_MULT=(1,1),
+                                    COEF_MULT=(1,2),
                                     COEF_IMPO=DEPX),
                                  _F(
                                     NOEUD=('N70','N70'),
                                     DDL=('DX','H1X'),
-                                    COEF_MULT=(1,1),
+                                    COEF_MULT=(1,2),
                                     COEF_IMPO=DEPX),
                                  ),
                    );
@@ -201,7 +201,7 @@ VALE_CALC=[
  0.0,
  -43801.631588151,
  -24105.986248215,
- -7657.3042263706,],
+ -7657.3574063706,],
 ]
 
 for i in [1,2,3,4]: #Boucle sur les increments

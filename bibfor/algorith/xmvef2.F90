@@ -10,7 +10,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
 #include "asterfort/vecini.h"
 #include "asterfort/xadher.h"
 #include "asterfort/xmafr1.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos, ddls, ddlm, nfh, singu, idepl
     integer :: algofr
     real(kind=8) :: vtmp(400), rr, nd(3)
@@ -76,15 +76,15 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
 !
 !
 !
-    integer :: i, j, k, in, ino
+    integer :: i, j, k, in, ino, ig
     real(kind=8) :: ptpb(3), p(3, 3), vitang(3), saut(3), rbid(3, 3)
     real(kind=8) :: r2bid(3, 3)
-    real(kind=8) :: r3bid(3, 3), coefh
+    real(kind=8) :: r3bid(3, 3), coefj
     aster_logical :: adher
 !
 ! ----------------------------------------------------------------------
 !
-    coefh=xcoef_he()
+    coefj=xcalc_saut(1,0,1)
 !
 !     P : OPÉRATEUR DE PROJECTION
     call xmafr1(ndim, nd, p)
@@ -93,11 +93,13 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
     call vecini(3, 0.d0, saut)
     do 175 ino = 1, nno
         call indent(ino, ddls, ddlm, nnos, in)
-        do 176 j = 1, nfh*ndim
-            saut(j) = saut(j) - coefh * ffp(ino) * zr(idepl-1+in+ndim+ j)
+        do 176 j = 1, ndim
+          do ig = 1, nfh          
+            saut(j) = saut(j) - coefj * ffp(ino) * zr(idepl-1+in+ndim*(1+ig-1)+ j)
+          enddo
 176     continue
         do 177 j = 1, singu*ndim
-            saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepl-1+in+ ndim*(1+nfh)+j)
+            saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepl-1+in+ndim*(1+nfh)+j)
 !
 177     continue
 175 end do
@@ -134,8 +136,10 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
     do 185 i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
 !
-        do 186 j = 1, nfh*ndim
-            vtmp(in+ndim+j) = vtmp(in+ndim+j) + coefh*mu*seuil* ptpb(j) *ffp(i)*jac
+        do 186 j = 1, ndim
+          do ig = 1, nfh        
+            vtmp(in+ndim*(1+ig-1)+j) = vtmp(in+ndim*(1+ig-1)+j) + coefj*mu*seuil*ptpb(j)*ffp(i)*jac
+          enddo
 186     continue
         do 187 j = 1, singu*ndim
             vtmp(in+ndim*(1+nfh)+j) = vtmp(in+ndim*(1+nfh)+j) + 2.d0*rr*mu*seuil* ptpb(j)*ffp(i&

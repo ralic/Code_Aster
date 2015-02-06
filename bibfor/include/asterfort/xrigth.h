@@ -18,7 +18,7 @@
 interface
     subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                       igeom, lonch, cnset, jpintt, lsn,&
-                      lst, basloc, heavt, nfh, nfe,&
+                      lst, heavn, basloc, heavt, nfh, nfe,&
                       mattt)
         integer :: nfe
         integer :: nfh
@@ -30,6 +30,7 @@ interface
         integer :: igeom
         integer :: lonch(10)
         integer :: cnset(128)
+        integer :: heavn(27,5)
         integer :: jpintt
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)

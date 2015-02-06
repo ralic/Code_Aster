@@ -20,7 +20,7 @@ interface
                      compor, lgpg, crit, jpintt, cnset,&
                      heavt, lonch, basloc, idepl, lsn,&
                      lst, sig, vi, matuu, ivectu,&
-                     codret, jpmilt, nfiss, jfisno)
+                     codret, jpmilt, nfiss, jheavn)
         integer :: nfiss
         integer :: nnop
         character(len=*) :: poum
@@ -49,6 +49,6 @@ interface
         integer :: ivectu
         integer :: codret
         integer :: jpmilt
-        integer :: jfisno
+        integer :: jheavn
     end subroutine xnmel
 end interface

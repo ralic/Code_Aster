@@ -17,8 +17,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xfem_pc(matass, base, filtrage)
+    subroutine xfem_pc(matass, base, filtrage, typ_pc)
         character(len=*) :: matass
+        character(len=*) :: typ_pc
         character(len=1) :: base
         aster_logical :: filtrage
     end subroutine xfem_pc

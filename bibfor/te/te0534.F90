@@ -65,10 +65,10 @@ subroutine te0534(option, nomte)
     integer :: npg, npgf, jseuil
     integer :: indco, ninter, nface, cface(18, 6)
     integer :: nfe, singu, jstno, nvit, algocr, algofr, nvec
-    integer :: nnol, pla(27), lact(8), nlact, jcohes
+    integer :: nnol, pla(27), lact(8), nlact, jcohes, jheavn
     integer :: jmate, nfiss, jfisno, contac, nbspg, nspfis
     integer :: jheano, ifiss, ncomph, ncompv, vstnc(32)
-    integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
+    integer :: jtab(7), iret, ncompd, ncompp, ncompa, ncompb, ncompc, ncompn
     integer :: jheafa, nptf, jta2(3)
     real(kind=8) :: vtmp(400), reac, reac12(3), jac
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
@@ -134,11 +134,17 @@ subroutine te0534(option, nomte)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PBASECO', 'L', jbasec)
     call jevech('PVECTUR', 'E', ivect)
+    if (nfh.gt.0) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+    endif
     if (nfiss .gt. 1) then
         call jevech('PFISNO', 'L', jfisno)
         call jevech('PHEAVNO', 'L', jheano)
-        call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+        call jevech('PHEA_FA', 'L', jheafa)
+        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
                     itab=jtab)
         ncomph = jtab(2)
     endif
@@ -249,7 +255,7 @@ subroutine te0534(option, nomte)
                                 coefcp, coefcr, ddlm,&
                                 ddls, ffc, ffp, idepl, idepm,&
                                 ifa, ifiss, zi( jmate), indco, ipgf,&
-                                jac, jfisno, jheafa, lact, ncomph,&
+                                jac, jheavn, ncompn, jheafa, lact, ncomph,&
                                 nd, nddl, ndim, nfh, nfiss,&
                                 nno, nnol, nnos, nvit, pla,&
                                 rela, reac, rr, singu, tau1,&
@@ -262,7 +268,7 @@ subroutine te0534(option, nomte)
                        (rela.eq.0.d0.or.rela.eq.1.d0.or.rela.eq.2.d0)) then
                     call xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
                                 ffc, ffp, idepl, idepm, ifa,&
-                                ifiss, indco, jac, jfisno, jheafa,&
+                                ifiss, indco, jac, jheavn, ncompn, jheafa,&
                                 lact, mu, ncomph, nd, nddl,&
                                 ndim, nfh, nfiss, nno, nnol,&
                                 nnos, nvit, pla, reac12, rr,&

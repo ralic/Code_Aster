@@ -21,7 +21,7 @@ interface
                       instam, instap, ideplp, sigm, vip,&
                       basloc, nnop, npg, typmod, option,&
                       imate, compor, lgpg, idecpg, crit,&
-                      idepl, lsn, lst, nfiss, fisno,&
+                      idepl, lsn, lst, nfiss, heavn,&
                       sigp, vi, matuu, ivectu, codret)
         integer :: nfiss
         integer :: lgpg
@@ -52,7 +52,7 @@ interface
         integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: fisno(nnop, nfiss)
+        integer :: heavn(nnop, 5)
         real(kind=8) :: sigp(2*ndim, npg)
         real(kind=8) :: vi(lgpg, npg)
         real(kind=8) :: matuu(*)

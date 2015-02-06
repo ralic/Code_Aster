@@ -70,7 +70,6 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
 
 CH2 = DEFI_CONTACT(MODELE       = MODE,
                    FORMULATION  = 'DISCRETE',
-
                    ZONE=(
                         _F(
                             GROUP_MA_MAIT='SMAI',

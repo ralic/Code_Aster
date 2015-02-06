@@ -20,7 +20,7 @@ interface
                       he, nfh, ddlc, ddlm, nfe,&
                       basloc, nnop, npg, idecpg, imate,&
                       compor, idepl, lsn, lst, nfiss,&
-                      fisno, sig)
+                      heavn, sig)
         integer :: nfiss
         integer :: npg
         integer :: nnop
@@ -41,7 +41,7 @@ interface
         integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: fisno(nnop, nfiss)
+        integer :: heavn(nnop, 5)
         real(kind=8) :: sig(6, npg)
     end subroutine xside3
 end interface

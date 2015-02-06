@@ -10,7 +10,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                   np1, ndim, compor, axi, modint,&
                   codret, nnop, nnops, nnopm, enrmec,&
                   dimenr, heavt, lonch, cnset, jpintt,&
-                  jpmilt, jlsn, angmas,dimmat, enrhyd)
+                  jpmilt, jheavn, angmas,dimmat, enrhyd)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
@@ -34,6 +34,8 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/tecach.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/matini.h"
 #include "asterfort/pmathm.h"
@@ -53,7 +55,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     integer :: nbvari, nddls, nddlm, nmec, np1, ndim, codret
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: yamec, yap1
-    integer :: addeme, addep1, ii, jj, in, jlsn
+    integer :: addeme, addep1, ii, jj, in, jheavn
     integer :: kpi, ipi
     integer :: i, j, n, k, kji, nvim, nbcomp
     real(kind=8) :: geom(ndim, nnop), crit(*), poids
@@ -77,6 +79,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
     integer :: adenhy, yaenrh
     integer :: lonch(10), ino, cnset(4*32)
     integer :: jpintt, jpmilt, igeom
+    integer :: heavn(nnop,5), ig, ncompn, jtab(7), iret
     real(kind=8) :: he, coorse(81), xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
     real(kind=8) :: ff(nnop), ff2(nnops)
@@ -234,6 +237,16 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
 ! =====================================================================
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMEN
     nse=lonch(1)
+!     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
+    call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+    ncompn = jtab(2)/jtab(3)
+    ASSERT(ncompn.eq.5)
+    do in = 1, nnop
+      do ig = 1 , ncompn
+        heavn(in,ig) = zi(jheavn-1+ncompn*(in-1)+ig)
+      enddo
+    enddo
 !
 !     BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do 510 ise = 1, nse
@@ -299,7 +312,7 @@ subroutine xasshm(nno, npg, npi, ipoids, ivf,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he, jlsn, yaenrh, adenhy)
+                        he, heavn, yaenrh, adenhy)
 ! =====================================================================
 ! --- CALCUL INTERMEDIAIRE POUR LES DEF GENERALISEES AVEC XFEM --------
 ! =====================================================================

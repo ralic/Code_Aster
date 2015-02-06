@@ -20,7 +20,7 @@
 interface
     subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
                       ddlh, ddlc, nfe, nnop, jlsn,&
-                      jlst, iforc, itemps, ivectu, fonc,&
+                      jlst, heavn, iforc, itemps, ivectu, fonc,&
                       fono)
         integer :: nnop
         integer :: ndim
@@ -36,6 +36,7 @@ interface
         integer :: iforc
         integer :: itemps
         integer :: ivectu
+        integer :: heavn(27,5)
         aster_logical :: fonc
         aster_logical :: fono
     end subroutine xfovol

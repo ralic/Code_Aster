@@ -19,7 +19,9 @@ interface
     subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
                       lact, dtang, nfh, ddls, jac,&
                       ffc, ffp, singu, rr, cstaco,&
-                      nd, tau1, tau2, vtmp)
+                      nd, tau1, tau2, jheavn, ncompn,&
+                      nfiss, ifiss, jheafa, ncomph, ifa,&
+                      vtmp)
         integer :: ndim
         integer :: nno
         integer :: nnol
@@ -29,6 +31,13 @@ interface
         real(kind=8) :: dtang(3)
         integer :: nfh
         integer :: ddls
+        integer :: ifiss
+        integer :: nfiss
+        integer :: jheavn
+        integer :: jheafa
+        integer :: ncompn
+        integer :: ncomph
+        integer :: ifa
         real(kind=8) :: jac
         real(kind=8) :: ffc(8)
         real(kind=8) :: ffp(27)

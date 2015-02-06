@@ -6,7 +6,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                   jconq2, ima, iad1, nnn, inn,&
                   inntot, nbnoc, nbnofi, inofi, iacoo1,&
                   iacoo2, iad9, ninter, iainc, elrefp,&
-                  jlsn, jlst, typma, igeom, jfisno,&
+                  jlsn, jlst, typma, igeom, jheavn, ncompn,&
                   contac, cmp, nbcmp, nfh, nfe,&
                   ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
                   pre1)
@@ -51,7 +51,7 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     integer :: jconq1, jconq2, iacoo1, iacoo2, jcnsl2
     integer :: nbnoc, nbnofi, inofi
     integer :: ima, iad1, jlsn, jlst, igeom, ndime, iad9
-    integer :: jfisno, cmp(*), nbcmp, nfh, nfe, ddlc, jcnsv1, jcnsv2
+    integer :: jheavn, ncompn, cmp(*), nbcmp, nfh, nfe, ddlc, jcnsv1, jcnsv2
     integer :: ninter, iainc, contac
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem, elrefp, typma
@@ -97,7 +97,6 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 !     JLST   : ADRESSE DU CHAM_NO_S DE LA LEVEL TANGENTE
 !     TYPMA  : TYPE DE LA MAILLE PARENTE
 !     IGEOM  : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
-!     JFISNO : POINTEUR DE FISSNO DANS L'ÉLÉMENT PARENT
 !     CMP    : POSITION DES DDLS DE DEPL X-FEM DANS LE CHAMP_NO DE DEPL1
 !     NBCMP  : NOMBRE DE COMPOSANTES DU CHAMP_NO DE DEPL1
 !     NFH    : NOMBRE DE FONCTIONS HEAVISIDE (PAR NOEUD)
@@ -206,11 +205,11 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                         lst)
             call xpoajd(elrefp, ino, n, lsn, lst,&
                         ninter, iainc, typma, co, igeom,&
-                        jdirno, nfiss, jfisno, he, ndime,&
+                        jdirno, nfiss, jheavn, ncompn, he, ndime,&
                         ndim, cmp, nbcmp, nfh, nfe,&
                         ddlc, ima, jconq1, jconq2, jcnsv1,&
                         jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                        nnn, contac, lmeca, pre1, jlsn)
+                        nnn, contac, lmeca, pre1)
         endif
 !
 410 continue

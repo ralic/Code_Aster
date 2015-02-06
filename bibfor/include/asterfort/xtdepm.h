@@ -18,7 +18,8 @@
 interface
     subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
                       nsingm, ffe, ffm, jdepde, rre,&
-                      rrm, jddle, jddlm, ddeple, ddeplm)
+                      rrm, jddle, jddlm, nfhe, nfhm, lmulti,&
+                      heavn, heavfa, ddeple, ddeplm)
         integer :: ndim
         integer :: jnnm(3)
         integer :: jnne(3)
@@ -32,6 +33,11 @@ interface
         real(kind=8) :: rrm
         integer :: jddle(2)
         integer :: jddlm(2)
+        integer :: nfhe
+        integer :: nfhm
+        aster_logical :: lmulti
+        integer :: heavn(*)
+        integer :: heavfa(*)
         real(kind=8) :: ddeple(3)
         real(kind=8) :: ddeplm(3)
     end subroutine xtdepm

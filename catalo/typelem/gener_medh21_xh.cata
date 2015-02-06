@@ -49,6 +49,8 @@ MODE_LOCAL__
     E6NEUTR  = N132_R   ELEM__         (X[6]     )
     E6NEUTI  = N512_I   ELEM__         (X[6]     ) 
     E2NEUTI  = N128_I   ELEM__         (X[2]     ) 
+    E10NEUTI = N120_I    ELEM__         (X[10]     )
+    N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
     E8NEUTI  = N120_I   ELEM__         (X[8]     ) 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    ) 
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    ) 
@@ -60,25 +62,27 @@ MATRICE__
 
 OPTION__
     CHAR_MECA_FLUX_F    579   IN__   CFLUXF   PFLUXF   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  E6NEUTR  PPINTTO
-                                     E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  STANO_I  PSTANO
-                                     E4NEUTR  PPMILTO  N1NEUT_R PLSN
+                                     E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA  STANO_I  PSTANO
+                                     E4NEUTR  PPMILTO  N1NEUT_R PLSN     N5NEUTI  PHEA_NO  E2NEUTI  PHEA_SE
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FLUX_R    579   IN__   EFLUXE   PFLUXR   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  E6NEUTR  PPINTTO
-                                     E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  STANO_I  PSTANO
-                                     E4NEUTR  PPMILTO  N1NEUT_R PLSN
+                                     E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA  STANO_I  PSTANO
+                                     E4NEUTR  PPMILTO  N1NEUT_R PLSN     N5NEUTI  PHEA_NO  E2NEUTI  PHEA_SE
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F     36   IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  E6NEUTR  PPINTTO  E6NEUTI  PCNSETO
-                                     E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
                                      STANO_I  PSTANO   E4NEUTR  PPMILTO  CTEMPSR  PTEMPSR
+                                     N5NEUTI  PHEA_NO  E2NEUTI  PHEA_SE
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R     36   IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E6NEUTR  PPINTTO  E6NEUTI  PCNSETO
-                                     E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
                                      STANO_I  PSTANO   E4NEUTR  PPMILTO  CTEMPSR  PTEMPSR
+                                     N5NEUTI  PHEA_NO  E2NEUTI  PHEA_SE
                               OUT__  MVECTUR  PVECTUR
     FLHN_ELGA           468   IN__   NGEOMER  PGEOMER  NSIEF_R  PCONTR
                               OUT__  EFLHN    PFLHN   
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E6NEUTR  PPINTTO  E6NEUTI  PCNSETO   E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA
+                              OUT__  E6NEUTR  PPINTTO  E6NEUTI  PCNSETO   E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA
                                      E4NEUTR  PPMILTO
     TOU_INI_ELNO        99    IN__
                               OUT__  NGEOMER  PGEOM_R  EPRESNO  PPRES_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
@@ -86,3 +90,5 @@ OPTION__
                               OUT__  CPRES_R  PPRES_R  
     INI_XFEM_ELNO     99  IN__    OUT__  N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
 
+    TOPONO           602  IN__  E6NEUTI  PCNSETO  E2NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLEVSET
+                          OUT__ N5NEUTI  PHEA_NO  E2NEUTI  PHEA_SE

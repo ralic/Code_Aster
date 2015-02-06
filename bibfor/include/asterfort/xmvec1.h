@@ -23,7 +23,7 @@ interface
                       coefcp, lpenac, jeu, norm,&
                       nsinge, nsingm, rre, rrm,&
                       jddle, jddlm, nfhe, nfhm, lmulti,&
-                      heavno, heavfa, vtmp)
+                      heavno, heavn, heavfa, vtmp)
         integer :: ndim
         integer :: jnne(3)
         integer :: ndeple
@@ -50,6 +50,7 @@ interface
         integer :: nfhm
         aster_logical :: lmulti
         integer :: heavno(8)
+        integer :: heavn(*)
         integer :: heavfa(*)
         real(kind=8) :: vtmp(336)
     end subroutine xmvec1

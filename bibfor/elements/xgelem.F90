@@ -1,7 +1,7 @@
 subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                   ise, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, idepl, lsn, lst,&
-                  igthet, fno, nfiss, jfisno, incr)
+                  igthet, fno, nfiss, jheavn, incr)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,10 +46,12 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/xcinem.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
+!
     character(len=8) :: elrefp
-    integer :: igeom, ndim, nfh, ddlc, nfe, nnop, ddlm
-    integer :: idepl, nfiss, jfisno, jheavt, ise
+    integer :: igeom, ndim, nfh, ddlc, nfe, nnop, ddlm, jheavn
+    integer :: idepl, nfiss, jheavt, ise
     real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop)
     real(kind=8) :: fno(ndim*nnop), coorse(*)
 !
@@ -66,7 +68,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 ! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
 ! IN  NFH     : NOMBRE DE FONCTIONS HEAVYSIDE
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDES
+! IN  JHEAVN  : POINTEUR VERS LA DEFINITION HEAVISIDE
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 ! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
@@ -78,10 +80,11 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 ! OUT IGTHET  : G
 !
 !
-    integer :: ithet, imate, icomp, igthet, jtab(2), ncomp, idecpg, idebs
+    integer :: ithet, imate, icomp, igthet, jtab(7), ncomp, idecpg, idebs
     integer :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano, jsigse
     integer :: i, j, k, kpg, n, ino, iret, cpt, ig, in, mxstac, isigi, isigm
     integer :: ndimb, nno, nnos, npgbis, ddld, ddls, matcod, m, irett
+    integer :: ncompn, heavn(nnop, 5), hea_se
     real(kind=8) :: xg(ndim), fe(4), he(nfiss)
     real(kind=8) :: dgdgl(4, 3), xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
     real(kind=8) :: eps(6), e1(3), e2(3), norme, e3(3), p(3, 3)
@@ -98,7 +101,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
     aster_logical :: grdepl, cp, axi
-    integer :: irese, ddli, nnoi, indeni, nnops, fisno(nnop, nfiss), ifiss
+    integer :: irese, ddli, nnoi, indeni, nnops, ifiss
 !
 !
     real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6), epsp(6)
@@ -229,21 +232,21 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         he(ifiss) = zi(jheavt-1+ncomp*(ifiss-1)+ise)
     end do
 !
-!   RECUPERATION DE LA CONNECTIVITE FISSURE - DDL HEAVISIDES
-!   ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNE
-    if (nfiss .eq. 1) then
-        do ino = 1, nnop
-            fisno(ino,1) = 1
-        end do
-    else
-        do ig = 1, nfh
-!           ON REMPLIT JUSQU'A NFH <= NFISS
-            do ino = 1, nnop
-                fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-            end do
-        end do
+!   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ifiss = 1 , ncompn
+          heavn(ino,ifiss) = zi(jheavn-1+ncompn*(ino-1)+ifiss)
+        enddo
+      enddo
     endif
-
+!
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !     ------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TETRA
 !     ------------------------------------------------------------------
@@ -386,7 +389,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
             do ig = 1, nfh
                 do i = 1, ndim
                     cpt=cpt+1
-                    depla(i) = depla(i) + xcalf_he(he(fisno(in,ig)),lsn((in-1)*nfiss+fisno(in,ig)))&
+                    depla(i) = depla(i) + xcalc_heav(heavn(in,ig),hea_se,heavn(in,5))&
                            * ff(in) * zr(idepl-1+indeni+cpt)
                 end do
             end do
@@ -423,10 +426,10 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
         call xcinem(axi, nnop, nnos, idepl, grdepl,&
-                    ndim, he, rbid, rbid, fisno,&
+                    ndim, he, rbid, rbid,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    eps, grad, lsn)
+                    eps, grad, heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         do i = 1, ndim

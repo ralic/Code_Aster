@@ -6,6 +6,7 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
 #include "asterfort/transp.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, ddls, pla(27)
     integer :: nnol, ddlm, nnos
     real(kind=8) :: mmat(216, 216)
@@ -55,7 +56,7 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
 !
     integer :: i, j, k, l, pli, plj, jn
     real(kind=8) :: dside2(3, 3), ptr(3, 3), temp(3, 3), au(3, 3)
-    real(kind=8) :: p(3, 3)
+    real(kind=8) :: p(3, 3), coefj
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,6 +68,7 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
     call matini(3, 3, 0.d0, temp)
     call matini(3, 3, 0.d0, ptr)
     call matini(3, 3, 0.d0, p)
+    coefj=xcalc_saut(1,0,1)
 ! idem, il va falloir introduire les matrices de passage
     do 17 i = 1, ndim
         p(1,i) = nd(i)
@@ -91,10 +93,10 @@ subroutine xmmco4(ndim, nno, pla, nd, tau1,&
                 do 8 k = 1, ndim
 ! on remplit A : matrice [u*] / mu
                     mmat(pli+2*ndim-1+k,jn+ndim+l) = mmat(pli+2*ndim-1+k,jn+ndim+l)+&
-                    2.d0*ffc(i)*p(k,l)*ffp(j)*jac
+                    coefj*ffc(i)*p(k,l)*ffp(j)*jac
 ! et sa transposee
                     mmat(jn+ndim+l,pli+2*ndim-1+k) = mmat(jn+ndim+l,pli+2*ndim-1+k)+&
-                    2.d0*ffc(i)*p(k,l)*ffp(j)*jac
+                    coefj*ffc(i)*p(k,l)*ffp(j)*jac
  8              continue
  3          continue
  2      continue

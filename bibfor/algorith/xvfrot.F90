@@ -1,6 +1,6 @@
 subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
                   ffc, ffp, idepl, idepm, ifa,&
-                  ifiss, indco, jac, jfisno, jheafa,&
+                  ifiss, indco, jac, jheavn, ncompn, jheafa,&
                   lact, mu, ncomph, nd, nddl,&
                   ndim, nfh, nfiss, nno, nnol,&
                   nnos, nvit, pla, reac12, rr,&
@@ -64,7 +64,7 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
 #include "asterfort/xmvef4.h"
     integer :: algofr, ddlm, ddls
     integer :: idepl, idepm, ifa, ifiss
-    integer :: indco, jfisno
+    integer :: indco, jheavn, ncompn
     integer :: jheafa, lact(8), ncomph
     integer :: nddl, ndim, nfh, nfiss, nno
     integer :: nnol, nnos, nvec, nvit
@@ -82,7 +82,7 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !

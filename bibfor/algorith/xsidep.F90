@@ -2,7 +2,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                   igeom, typmod, imate, compor, jpintt,&
                   cnset, heavt, lonch, basloc, idepl,&
                   lsn, lst, sig, jpmilt, nfiss,&
-                  jfisno)
+                  jheavn)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  JPMILT  : POINTEUR DE COORDONNEES DES POINTS MILIEUX
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
+! IN  JHEAVN  : POINTEUR VERS LA DEFINITION HEAVISIDE
 !
 ! OUT SIG     : CONTRAINTES DE CAUCHY (RAPH_MECA ET FULL_MECA)
 !..............................................................
@@ -73,8 +73,8 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     integer :: nse, npg, imate, ddlc, ddlm, ndim, nfh
     integer :: j, ise, in, ino, cnset(4*32), heavt(*), lonch(10)
     integer ::  idecpg, nbsig, ig, ifiss, idebs, jpmilt, nfe, idepl
-    integer :: jfisno, jpintt, igeom
-    integer :: irese, nno, fisno(nnop, nfiss), jtab(2), ncomp, iret
+    integer ::  jpintt, igeom, jheavn, ncompn, heavn(nnop,5)
+    integer :: irese, nno, jtab(7), ncomp, iret
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -105,21 +105,17 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
-!     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
-!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
-    if (nfiss .eq. 1) then
-        do 30 ino = 1, nnop
-            fisno(ino,1) = 1
-30      continue
-    else
-        do 10 ig = 1, nfh
-!    ON REMPLIT JUSQU'A NFH <= NFISS
-            do 20 ino = 1, nnop
-                fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-20          continue
-10      continue
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
     endif
-!
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
 !
@@ -162,7 +158,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                         he, nfh, ddlc, ddlm, nfe,&
                         basloc, nnop, npg, idecpg, imate,&
                         compor, idepl, lsn, lst, nfiss,&
-                        fisno, sig(idebs+1))
+                        heavn, sig(idebs+1))
         else if (ndim.eq.2) then
 !
             ASSERT(nbsig.eq.4)
@@ -171,7 +167,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                         he, nfh, ddlc, ddlm, nfe,&
                         basloc, nnop, npg, idecpg, typmod,&
                         imate, compor, idepl, lsn, lst,&
-                        nfiss, fisno, sig(idebs+1))
+                        nfiss, heavn, sig(idebs+1))
 !
         endif
 !

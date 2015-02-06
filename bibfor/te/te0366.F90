@@ -28,6 +28,7 @@ subroutine te0366(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/matini.h"
 #include "asterfort/ttprsm.h"
+#include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xlacti.h"
 #include "asterfort/xmelet.h"
@@ -70,7 +71,7 @@ subroutine te0366(option, nomte)
     integer :: imatt, jpcpo
     integer :: jpcpi, jpcai, jpccf, jstno
     integer :: indnor, ifrott, indco
-    integer :: jdepde, jdepm, jgeom, jheafa, jheano
+    integer :: jdepde, jdepm, jgeom, jheafa, jheano, jheavn, ncompn, jtab(7), iret
     real(kind=8) :: mmat(n, n), tau1(3), tau2(3), norm(3)
     real(kind=8) :: mprojt(3, 3)
     real(kind=8) :: coore(3), coorm(3), coorc(2)
@@ -106,7 +107,7 @@ subroutine te0366(option, nomte)
 ! --- INITIALISATIONS
 !
     call matini(n, n, 0.d0, mmat)
-    call vecini(18, 0.d0, geopi)
+    call vecini(9, 0.d0, geopi)
     call vecini(2, 0.d0, dlagrf)
     call vecini(3, 0.d0, ddeple)
     call vecini(3, 0.d0, ddeplm)
@@ -172,11 +173,18 @@ subroutine te0366(option, nomte)
     call jevech('PDEPL_P', 'L', jdepde)
     call jevech('PDEPL_M', 'L', jdepm)
 !
+    if (nfhe .gt. 0 .or. nfhm .gt. 0) then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+    endif
+!
     if (lmulti) then
 !
 ! --- RECUPERATION DES FONCTION HEAVISIDES SUR LES FACETTES
 !
-        call jevech('PHEAVFA', 'L', jheafa)
+        call jevech('PHEA_FA', 'L', jheafa)
 !
 ! --- RECUPERATION DE LA PLACE DES LAGRANGES
 !
@@ -242,7 +250,7 @@ subroutine te0366(option, nomte)
                         ffm, jacobi, coefcr, coefcp,&
                         lpenac, norm, nsinge, nsingm,&
                         rre, rrm, ddle, ddlm,&
-                        nfhe, nfhm, lmulti, zi(jheano), zi(jheafa),&
+                        nfhe, nfhm, lmulti, zi(jheano), zi(jheavn), zi(jheafa),&
                         mmat)
 !
         else if (indco .eq. 0) then
@@ -289,7 +297,9 @@ subroutine te0366(option, nomte)
 !
             call xtdepm(ndim, nnm, nne, ndeple, nsinge,&
                         nsingm, ffe, ffm, jdepde, rre,&
-                        rrm, ddle, ddlm, ddeple, ddeplm)
+                        rrm, ddle, ddlm, nfhe, nfhm, lmulti,&
+                        zi(jheavn), zi(jheafa),&
+                        ddeple, ddeplm)
 !
 ! --- CALCUL DES INCREMENTS - LAGRANGE DE FROTTEMENT
 !
@@ -310,7 +320,7 @@ subroutine te0366(option, nomte)
                 call xmmjeu(ndim, nnm, nne, ndeple, nsinge,&
                             nsingm, ffe, ffm, norm, jgeom,&
                             jdepde, jdepm, rre, rrm, ddle,&
-                            ddlm, nfhe, nfhm, lmulti, zi(jheafa),&
+                            ddlm, nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa),&
                             jeu)
             endif
 !

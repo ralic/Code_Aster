@@ -2,7 +2,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
                   coefcp, coefcr,&
                   ddlm, ddls, ffc, ffp, idepl,&
                   idepm, ifa, ifiss, imate, indco,&
-                  ipgf, jac, jfisno, jheafa, lact,&
+                  ipgf, jac, jheavn, ncompn, jheafa, lact,&
                   ncomph, nd, nddl, ndim, nfh,&
                   nfiss, nno, nnol, nnos, nvit,&
                   pla, rela, reac, rr, singu,&
@@ -44,7 +44,6 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
 ! IN IPGF   : NUMERO POINT DE GAUSS DE CONTACT
 ! IN IVFF   : ADRESSE FONCTION DE FORME EL PARENT
 ! IN JAC    : PRODUIT JACOBIEN*POIDS
-! IN JFISNO
 ! IN JHEAFA
 ! IN NCOMPH
 ! IN ND     : NORMALE A LA SURFACE DE CONTACT AU PG
@@ -82,7 +81,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
     integer :: ddlm, ddls, i, ino
     integer :: idepl, idepm, ifa, ifiss
     integer :: imate, indco, ipgf
-    integer :: jfisno, jheafa, lact(8), ncomph
+    integer :: jheafa, lact(8), ncomph, jheavn, ncompn
     integer :: nddl, ndim, nfh, nfiss, nno
     integer :: nnol, nnos, nvec, nvit, pla(27)
     integer :: singu
@@ -112,7 +111,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -127,7 +126,9 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             call xmvco1(ndim, nno, nnol, sigma, pla,&
                         lact, dtang, nfh, ddls, jac,&
                         ffc, ffp, singu, rr, un,&
-                        nd, tau1, tau2, vtmp)
+                        nd, tau1, tau2, jheavn, ncompn,&
+                        nfiss, ifiss, jheafa, ncomph, ifa,&
+                        vtmp)
 !
 ! --- SI FORMULATION "MORTAR" LOI CZM_LIN
 !
@@ -138,7 +139,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -189,7 +190,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -213,7 +214,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             call xmvco2(ndim, nno, nnol, nnos, lamb,&
                         am, delta, pla, lact, nfh,&
                         ddls, ddlm, nfiss, ifiss, jheafa,&
-                        ifa, ncomph, jfisno, jac, ffc,&
+                        ifa, ncomph, jheavn, ncompn, jac, ffc,&
                         ffp, singu, r, rr, vtmp,&
                         p)
         endif
@@ -234,7 +235,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -243,7 +244,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             call xmvec2(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, reac, jac, nfh,&
                         saut, singu, nd, rr, coefcr,&
-                        ddls, ddlm, jfisno, nfiss, ifiss,&
+                        ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                         jheafa, ncomph, ifa, vtmp)
         endif
     else if (algocr.eq.2) then
@@ -259,13 +260,13 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
             call xmvep2(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, reac, jac, nfh,&
                         saut, singu, nd, rr, coefcp,&
-                        ddls, ddlm, jfisno, nfiss, ifiss,&
+                        ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                         jheafa, ncomph, ifa, vtmp)
         else
             ASSERT(.false.)

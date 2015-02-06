@@ -17,7 +17,7 @@
 !
 interface
     subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
-                      ddlh, ddlc, nfe, basloc,&
+                      heavn, ddlh, ddlc, nfe, basloc,&
                       nnop, npg, lsn, lst, sig,&
                       matuu)
         integer :: nnop
@@ -26,6 +26,7 @@ interface
         real(kind=8) :: coorse(*)
         integer :: igeom
         real(kind=8) :: he
+        integer :: heavn(27,5)
         integer :: ddlh
         integer :: ddlc
         integer :: nfe

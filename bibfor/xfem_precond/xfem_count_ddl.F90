@@ -53,9 +53,9 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
     integer :: ieq, nuno, nucmp, j
     integer :: ipos
     integer :: ddlmax
-    parameter (ddlmax=21)
+    parameter (ddlmax=27)
 !
-!   REMARQUE: ON A AU PLUS 21 DDLS POUR UN ELEMENT XFEM (cf. 3D_XHTC)
+!   REMARQUE: ON A AU PLUS 27 DDLS POUR UN ELEMENT XFEM (cf. 3D_XHHC)
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -64,7 +64,7 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
        nuno=deeq(2*(ieq-1)+1)
        nucmp=deeq(2*(ieq-1)+2)
        nocmp=k8cmp(nucmp)
-!       write(31,*) ieq, nuno, nocmp
+!       write(6,*) ieq, nuno, nocmp
        if(nuno .lt. 1) goto 20
        if(.not. is_xfem(nuno)) goto 20
        if(.not. xfem_cmps(nocmp,'OUI')) goto 20

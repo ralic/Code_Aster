@@ -18,8 +18,8 @@
 interface
     subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
                       ihechp, jptint, jcface, jlonch,&
-                      jlst, jlsn, jbasec, nfh, nfe, fonree,&
-                      imattt)
+                      jlst, jbasec, nfh, nfe, fonree,&
+                      imattt, heavn)
         integer :: nfe
         integer :: nfh
         integer :: nnop
@@ -32,8 +32,8 @@ interface
         integer :: jcface
         integer :: jlonch
         integer :: jlst
-        integer :: jlsn
         integer :: jbasec
+        integer :: heavn(27,5)
         character(len=4) :: fonree
         integer :: imattt
     end subroutine xrechp

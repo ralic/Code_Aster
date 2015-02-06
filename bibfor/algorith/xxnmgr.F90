@@ -3,7 +3,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                   instam, instap, ideplp, sigm, vip,&
                   basloc, nnop, npg, typmod, option,&
                   imate, compor, lgpg, idecpg, crit,&
-                  idepl, lsn, lst, nfiss, fisno,&
+                  idepl, lsn, lst, nfiss, heavn,&
                   sigp, vi, matuu, ivectu, codret)
 !
 ! aslint: disable=W1306,W1504
@@ -25,9 +25,10 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
-    integer :: nfiss, fisno(nnop, nfiss), idecpg
+    integer :: nfiss, heavn(nnop, 5), idecpg
     integer :: nfh, ddlc, ddlm, nfe
     character(len=8) :: elrefp, typmod(*), elrese
     character(len=16) :: option, compor(4)
@@ -93,7 +94,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !......................................................................
 !
     integer :: i, ig, iret, j, j1, k, kk, kkd, kpg, l, m, mn, n, nn
-    integer :: ddls, ddld, ddldn, cpt, dec(nnop)
+    integer :: ddls, ddld, ddldn, cpt, dec(nnop), hea_se
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano
     integer :: ndimb, nno, nnops, nnos, npgbis
     real(kind=8) :: f(3, 3), fm(3, 3), fr(3, 3), epsm(6), epsp(6), deps(6)
@@ -155,6 +156,8 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
         call indent(n, ddls, ddlm, nnops, dec(n))
     end do
 !
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !-----------------------------------------------------------------------
 ! - CALCUL POUR CHAQUE POINT DE GAUSS DU SOUS-ELEMENT
     do kpg = 1, npg
@@ -203,17 +206,17 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
         call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                    ndim, he, rbid, rbid, fisno,&
+                    ndim, he, rbid, rbid,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, fm,&
-                    epsm, rbid33, lsn)
+                    epsm, rbid33, heavn)
 !
 !       CALCUL EN T+
         call xcinem(axi, nnop, nnops, ideplp, grdepl,&
-                    ndim, he, rbid, rbid, fisno,&
+                    ndim, he, rbid, rbid,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    epsp, rbid33, lsn)
+                    epsp, rbid33, heavn)
 !
 !       CALCUL DE DEPS POUR LDC
         do i = 1, 6
@@ -255,8 +258,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                 do i = 1, ndim
                     cpt = ndim*(1+ig-1)+i
                     do m = 1, 2*ndim
-                        def(m,n,cpt) = def(m,n,i) * xcalf_he(he(fisno(n,ig)),&
-                                         lsn((n-1)*nfiss+fisno(n,ig)))
+                        def(m,n,cpt) = def(m,n,i) * xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                     end do
                     if (ndim .eq. 2) def(3,n,cpt) = 0.d0
                 end do
@@ -309,8 +311,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
                     pff(cpt,n,i) = dfdi(n,i)
                     do ig = 1, nfh
                         cpt = cpt+1
-                        pff(cpt,n,i) = dfdi(n,i) * xcalf_he(he(fisno(n,ig)),&
-                                                   lsn((n-1)*nfiss+fisno(n,ig)))
+                        pff(cpt,n,i) = dfdi(n,i) * xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                     end do
                     do ig = 1, nfe
                         cpt = cpt+1

@@ -1,7 +1,7 @@
 subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, jac, nfh, nd,&
                   cstaco, singu, rr, ddls, ddlm,&
-                  jfisno, nfiss, ifiss, jheafa, ncomph,&
+                  jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
                   ifa, mmat)
 !
 ! aslint: disable=W1504
@@ -9,10 +9,11 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
-    integer :: singu, pla(27), jfisno, nfiss, ifiss, jheafa, ncomph, ifa
+    integer :: singu, pla(27), nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
     real(kind=8) :: mmat(216, 216), nd(3)
     real(kind=8) :: ffc(8), ffp(27), jac
     real(kind=8) :: cstaco, rr
@@ -64,16 +65,20 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
 !
 !
-    integer :: i, j, k, l, jn, in, ifh, jfh, coefi, coefj
-    integer :: pli
-    real(kind=8) :: ffi
+    integer :: i, j, k, l, jn, in, ifh, jfh
+    integer :: pli, hea_fa(2)
+    real(kind=8) :: ffi, coefi, coefj
     aster_logical :: lmultc
 !
 ! ----------------------------------------------------------------------
 !
-    coefi = int(xcoef_he())
-    coefj = int(xcoef_he())
+    coefi = xcalc_saut(1,0,1)
+    coefj = xcalc_saut(1,0,1)
     lmultc = nfiss.gt.1
+    if (.not.lmultc) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
 ! I.1 CALCUL DE A
     do 130 i = 1, nnol
 !
@@ -84,12 +89,15 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
             call indent(j, ddls, ddlm, nnos, jn)
             do 134 jfh = 1, nfh
                 if (lmultc) then
-                    coefj = zi(&
-                            jheafa-1+ncomph*(&
-                            nfiss*(ifiss-1) +zi(jfisno-1+nfh*(j-1)+jfh)-1)+2*ifa) - zi(jheafa- 1+&
-                            &ncomph*(nfiss*(ifiss-1) +zi(jfisno-1+nfh*(j-1)+ jfh)-1&
-                            )+2*ifa-1&
-                            )
+                    coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+jfh),&
+                                       zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                                       zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
+                                       zi(jheavn-1+ncompn*(j-1)+ncompn))
+                else
+                    coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+jfh),&
+                                       hea_fa(1), &
+                                       hea_fa(2),&
+                                       zi(jheavn-1+ncompn*(j-1)+ncompn))
                 endif
                 do 132 l = 1, ndim
                     mmat(pli,jn+ndim*jfh+l) = mmat(pli,jn+ndim*jfh+l) + coefj * ffi * ffp(j) * nd&
@@ -125,21 +133,27 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
             call indent(j, ddls, ddlm, nnos, jn)
             do 148 ifh = 1, nfh
                 if (lmultc) then
-                    coefi = zi(&
-                            jheafa-1+ncomph*(&
-                            nfiss*(ifiss-1) +zi(jfisno-1+nfh*(i-1)+ifh)-1)+2*ifa) - zi(jheafa- 1+&
-                            &ncomph*(nfiss*(ifiss-1) +zi(jfisno-1+nfh*(i-1)+ ifh)-1&
-                            )+2*ifa-1&
-                            )
+                    coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                       zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                                       zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
+                                       zi(jheavn-1+ncompn*(i-1)+ncompn))
+                else
+                    coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                       hea_fa(1), &
+                                       hea_fa(2),&
+                                       zi(jheavn-1+ncompn*(i-1)+ncompn))
                 endif
                 do 149 jfh = 1, nfh
                     if (lmultc) then
-                        coefj = zi(&
-                                jheafa-1+ncomph*(&
-                                nfiss*(ifiss-1) +zi(jfisno-1+nfh*(j-1)+jfh)-1)+2*ifa) - zi( jheaf&
-                                &a-1+ncomph*(nfiss*(ifiss-1) +zi(jfisno-1+ nfh*(j-1)+jfh)-1&
-                                )+2*ifa-1&
-                                )
+                        coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+jfh),&
+                                           zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                                           zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
+                                           zi(jheavn-1+ncompn*(j-1)+ncompn))
+                    else
+                        coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+jfh),&
+                                           hea_fa(1), &
+                                           hea_fa(2),&
+                                           zi(jheavn-1+ncompn*(j-1)+ncompn))
                     endif
                     do 142 k = 1, ndim
                         do 143 l = 1, ndim
@@ -163,7 +177,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
                 do 146 l = 1, nfh*ndim
                     mmat(in+ndim*(1+nfh)+k,jn+ndim+l) = mmat(&
                                                         in+ndim*(1+nfh)+k,&
-                                                   jn+ndim+l) + coefi*2.d0*cstaco*ffp(i)*ffp(j)* r&
+                                                   jn+ndim+l) + coefj*2.d0*cstaco*ffp(i)*ffp(j)* r&
                                                         &r*nd(k)*nd(l&
                                                         )*jac
 146             continue

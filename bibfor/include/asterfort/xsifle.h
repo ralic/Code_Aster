@@ -17,7 +17,7 @@
 !
 interface
     subroutine xsifle(ndim, ifa, jptint, cface,&
-                      igeom, nfh, singu, nfe, ddlc,&
+                      igeom, nfh, jheavn, singu, nfe, ddlc,&
                       ddlm, jlst, ipres, ipref, itemps,&
                       idepl, nnop, valres, basloc, ithet,&
                       nompar, presn, option, igthet, jbasec,&
@@ -34,6 +34,7 @@ interface
         integer :: ddlc
         integer :: ddlm
         integer :: jlst
+        integer :: jheavn
         integer :: ipres
         integer :: ipref
         integer :: itemps

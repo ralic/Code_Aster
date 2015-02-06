@@ -1,8 +1,8 @@
 subroutine xcinem(axi, nnop, nnos, idepl, grand,&
-                  ndim, he, r, ur, fisno,&
+                  ndim, he, r, ur,&
                   nfiss, nfh, nfe, ddls, ddlm,&
                   fe, dgdgl, ff, dfdi, f,&
-                  eps, grad, lsn)
+                  eps, grad, heavn)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,8 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 #include "asterfort/jemarq.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
 !
     aster_logical, intent(in) :: axi
     integer, intent(in) :: nnop
@@ -42,11 +43,11 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     real(kind=8), intent(in) :: he(nfiss)
     real(kind=8), intent(in) :: r
     real(kind=8), intent(in) :: ur
-    integer, intent(in) :: fisno(nnop, nfiss)
     integer, intent(in) :: nfh
     integer, intent(in) :: nfe
     integer, intent(in) :: ddls
     integer, intent(in) :: ddlm
+    integer, intent(in) :: heavn(nnop, 5)
     real(kind=8), intent(in) :: fe(4)
     real(kind=8), intent(in) :: dgdgl(4, ndim)
     real(kind=8), intent(in) :: ff(nnop)
@@ -54,7 +55,6 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     real(kind=8), intent(out) :: f(3, 3)
     real(kind=8), intent(out) :: eps(6)
     real(kind=8), intent(out) :: grad(ndim, ndim)
-    real(kind=8) :: lsn(nnop)
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,10 +87,10 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 ! OUT F      : GRADIENT DE LA TRANSFORMATION
 ! OUT EPS    : DÉFORMATIONS
 ! OUT GRAD   : GRADIENT DES DÉPLACEMENTS
-! IN  LSN    : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
+! IN  HEAVN  : DEFINITION DES DOMAINES DES FONCTIONS HEAVISIDES
 !
     real(kind=8) :: zero, un, rac2
-    integer :: i, j, k, n, p, ig, cpt, nn
+    integer :: i, j, k, n, p, ig, cpt, nn, hea_se
     real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
     aster_logical :: ldec
 !
@@ -103,6 +103,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     zero = 0.d0
     un = 1.d0
     rac2 = sqrt(2.d0)
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !
 ! --- MATRICE IDENTITE
 !
@@ -153,7 +154,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
             do 406 i = 1, ndim
                 cpt = cpt+1
                 do 407 j = 1, ndim
-                    grad(i,j) = grad(i,j) +  xcalf_he(he(fisno(n,ig)),lsn((n-1)*nfiss+fisno(n,ig)))&
+                    grad(i,j) = grad(i,j) +  xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))&
                             * dfdi(n, j) * zr(idepl-1+nn+cpt)
 407             continue
 406         continue

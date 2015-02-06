@@ -1,6 +1,6 @@
 subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                   lonch, cnset, jpintt, lsn, lst,&
-                  basloc, heavt, nfh, nfe, temppg)
+                  heavn, basloc, heavt, nfh, nfe, temppg)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,10 +27,12 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
+
     character(len=8) :: elrefp
     integer :: ndim, nnop, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36)
+    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27,5)
     real(kind=8) :: tempno(nnop*(1+nfh+nfe)), lsn(nnop), lst(nnop)
     real(kind=8) :: basloc(*), temppg(*)
 !
@@ -71,7 +73,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
     real(kind=8) :: he
     real(kind=8) :: ffenr(nnop, 1+nfh+nfe), dfdi(nnop,ndim)
     integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
-    integer :: nbddl
+    integer :: nbddl, hea_se
     integer :: mxstac
 !
     parameter   (mxstac=1000)
@@ -94,6 +96,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 !
 !     RECUPERATION DE LA SUBDIVISION DE L'ELEMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
+
 !
 ! ----------------------------------------------------------------------
 ! --- BOUCLE SUR LES NSE SOUS-ELEMENTS
@@ -103,6 +106,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
 !
 !       VALEUR (CSTE) DE LA FONCTION HEAVISIDE SUR LE SS-ELT
         he = 1.d0*heavt(ise)
+        hea_se=xcalc_code(1, he_real=[he])
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TETRA/TRIA -> COORDS NOEUDS
         do 1100 in = 1, nno
@@ -172,7 +176,7 @@ subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                 ffenr(inp,1) = ff(inp)
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
-                    ffenr(inp,1+nfh) = xcalf_he(he,lsn(inp))*ff(inp)
+                    ffenr(inp,1+nfh) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*ff(inp)
                 endif
 !           DDL CRACK-TIP (E1)
                 if (nfe .eq. 1) then

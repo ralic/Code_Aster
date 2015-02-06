@@ -103,7 +103,7 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
     character(len=16) :: option
     character(len=19) :: ch1d2d, ch2d3d, chpres, chrota, chpesa, chvolu, chepsi
     character(len=19) :: chvref, chvarc
-    character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno
+    character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno, hea_no
     character(len=19) :: pmilto
     character(len=19) :: pinter, ainter, cface, longco, baseco
     character(len=24) :: ligrmo, chgeom, lchin(50), lchout(2)
@@ -273,6 +273,9 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         longco = modele//'.TOPOFAC.LO'
         baseco = modele//'.TOPOFAC.BA'
 !
+!       RECUPERATION DES DONNEES XFEM (TOPONO)
+        hea_no = modele//'.TOPONO.HNO'
+!
     endif
 !
     lpaout(1) = 'PGTHETA'
@@ -336,8 +339,10 @@ subroutine mecalg(optioz, result, modele, depla, theta,&
         lchin(26) = longco
         lpain(27) = 'PBASECO'
         lchin(27) = baseco
+        lpain(28) = 'PHEA_NO'
+        lchin(28) = hea_no
 !
-        nchin = 27
+        nchin = 28
 !
     endif
 !

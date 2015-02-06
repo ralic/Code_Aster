@@ -1,6 +1,7 @@
 subroutine te0588(option, nomte)
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/epsthm.h"
 #include "asterfort/eulnau.h"
 #include "asterc/r8dgrd.h"
@@ -135,8 +136,8 @@ subroutine te0588(option, nomte)
     integer :: nfh
     integer :: ddld, ddlm, ddlp, nnop, nnops, nnopm
     integer :: enrmec(3), nenr, dimenr, enrhyd(3)
-    integer :: jpintt, jcnset, jheavt, jpmilt
-    integer :: jlonch, jbaslo, jlsn, jlst, jstno
+    integer :: jpintt, jcnset, jheavt, jpmilt, jheavn
+    integer :: jlonch, jbaslo, jlst, jstno
     character(len=8) :: enr
 ! =====================================================================
 ! --- 1. INITIALISATIONS ----------------------------------------------
@@ -163,14 +164,15 @@ subroutine te0588(option, nomte)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PBASLOR', 'L', jbaslo)
-    call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
     call elref1(elref)
+    call teattr('S', 'XFEM', enr, ibid)
+    ASSERT(enr(1:2).eq. 'XH') 
+    call jevech('PHEA_NO', 'L', jheavn)
 !
 ! PARAMÈTRES PROPRES AUX ÉLÉMENTS 1D ET 2D QUADRATIQUES
 !
-    call teattr('S', 'XFEM', enr, ibid)
     if ((ibid.eq.0) .and. (enr.eq.'XH') .and. .not. iselli(elref)) call jevech('PPMILTO', 'L',&
                                                                                jpmilt)
 ! =====================================================================
@@ -268,7 +270,7 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, jlsn, angnau,dimmat, enrhyd)
+                        jpmilt, jheavn, angnau,dimmat, enrhyd)
         else
             do 30 li = 1, dimuel
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
@@ -285,7 +287,7 @@ subroutine te0588(option, nomte)
                         np1, ndim, zk16(icompo), axi, modint,&
                         retloi, nnop, nnops, nnopm, enrmec,&
                         dimenr, zi(jheavt), zi( jlonch), zi(jcnset), jpintt,&
-                        jpmilt, jlsn, angnau,dimmat, enrhyd)
+                        jpmilt, jheavn, angnau,dimmat, enrhyd)
             zi(jcret) = retloi
         endif
 ! =====================================================================
@@ -312,7 +314,7 @@ subroutine te0588(option, nomte)
         yaenrm = enrmec(1)
 !
         call xpeshm(nno, nnop, nnops, ndim, nddls,&
-                    nddlm, npg, igeom, jpintt, jpmilt, jlsn,&
+                    nddlm, npg, igeom, jpintt, jpmilt, jheavn,&
                     ivf, ipoids, idfde, ivectu, ipesa,&
                     zi(jheavt), zi( jlonch), zi(jcnset), rho(1), axi,&
                     yaenrm)
@@ -359,7 +361,7 @@ subroutine te0588(option, nomte)
                     mecani, press1, dimcon, nddls, nddlm,&
                     dimuel, nmec, np1, ndim, axi,&
                     dimenr, nnop, nnops, nnopm, igeom,&
-                    jpintt, jpmilt, jlsn, zi(jlonch), zi( jcnset), zi(jheavt),&
+                    jpintt, jpmilt, jheavn, zi(jlonch), zi( jcnset), zi(jheavt),&
                     enrmec, enrhyd)
 !
 ! =====================================================================

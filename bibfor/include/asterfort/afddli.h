@@ -23,7 +23,7 @@ interface
                       cmp_name, cmp_acti, vale_type, vale_real, vale_func, &
                       vale_cplx, cmp_count, list_rela, lxfem, jnoxfl, &
                       jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, connex_inv,&
-                      mesh)
+                      mesh, ch_xfem_heav)
         character(len=8), intent(in) :: model
         integer, intent(in) :: gran_cmp_nb
         character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
@@ -49,6 +49,7 @@ interface
         character(len=19), intent(in) :: ch_xfem_stat
         character(len=19), intent(in) :: ch_xfem_lnno
         character(len=19), intent(in) :: ch_xfem_ltno
+        character(len=19), intent(in) :: ch_xfem_heav
         character(len=8), intent(in) :: mesh
     end subroutine afddli
 end interface

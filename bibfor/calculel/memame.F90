@@ -79,7 +79,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=24) :: lchout(nbout), lchin(nbin)
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
-    character(len=19) :: pmilto
+    character(len=19) :: pmilto, hea_no
 !
     character(len=2) :: codret
     character(len=19) :: chvarc, matele
@@ -148,6 +148,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
         heavto = modele(1:8)//'.TOPOSE.HEA'
         loncha = modele(1:8)//'.TOPOSE.LON'
         pmilto = modele(1:8)//'.TOPOSE.PMI'
+        hea_no = modele(1:8)//'.TOPONO.HNO'
         basloc = modele(1:8)//'.BASLOC'
         lsn = modele(1:8)//'.LNNO'
         lst = modele(1:8)//'.LTNO'
@@ -175,15 +176,17 @@ subroutine memame(option, modele, nchar, lchar, mate,&
         lchin(9) = lst
         lpain(10) = 'PSTANO'
         lchin(10) = stano
-        lpain(11) = 'PPMILTO'
-        lchin(11) = pmilto
+        lpain(11) = 'PHEA_NO'
+        lchin(11) = hea_no
+        lpain(12) = 'PPMILTO'
+        lchin(12) = pmilto
 !
 ! --- CHAMPS DE SORTIE
 !
         lpaout(1) = 'PMATUUR'
         lchout(1) = matele(1:15)//'.M01'
 !
-        call calcul('S', option, ligrmo, 10, lchin,&
+        call calcul('S', option, ligrmo, 11, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
         call reajre(matelz, lchout(1), base)

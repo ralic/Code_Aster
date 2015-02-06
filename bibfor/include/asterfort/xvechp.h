@@ -18,8 +18,8 @@
 interface
     subroutine xvechp(ndim, elrefp, nnop, igeom, itemp,&
                       itps, ihechp, jptint, jcface,&
-                      jlonch, jlst, jlsn, jbasec, nfh, nfe,&
-                      fonree, ivectt)
+                      jlonch, jlst, jbasec, nfh, nfe,&
+                      fonree, ivectt, heavn)
         integer :: nfe
         integer :: nfh
         integer :: nnop
@@ -33,8 +33,8 @@ interface
         integer :: jcface
         integer :: jlonch
         integer :: jlst
-        integer :: jlsn
         integer :: jbasec
+        integer :: heavn(27,5)
         character(len=4) :: fonree
         integer :: ivectt
     end subroutine xvechp

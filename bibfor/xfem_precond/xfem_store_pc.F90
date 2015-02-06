@@ -1,6 +1,6 @@
 subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
                          nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc,&
-                         maxi_ddl, iglob_ddl, deca, tab_mloc, pc)
+                         maxi_ddl, iglob_ddl, deca, tab_mloc, pc, kstruct)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,7 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
     character(len=19) :: matass, pc
     character(len=14) :: nonu
     character(len=1) :: base
+    character(len=5) :: kstruct
     integer :: neq, nbnoxfem, maxi_ddl, deca, nbnomax
     integer :: ino_xfem(nbnomax), deeq(*)
     integer :: ieq_loc(neq), neq_mloc(nbnoxfem), iglob_ddl(maxi_ddl*nbnoxfem)
@@ -62,7 +63,7 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
     character(len=14) :: nu_pc
     character(len=24), pointer :: refa_pc(:) => null()
     integer :: cumul_ilig, jcoll, jvale_sup, jvale_inf, nunoj
-    integer :: ipos, decaj, jsmhc_pc, jsmdi_pc, jadr, iexi
+    integer :: ipos, decaj, jsmhc_pc, jsmdi_pc, jadr, iexi, nvale
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -73,14 +74,22 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
 !    - PREMIERE PASSE : CALCUL DE L ESPACE <DENSE> NECESSAIRE 
 !                          POUR STOCKER LES MATRICES LOCALES TRIANFULAIRES SUPERIEURES
 !
-    cumul_ilig=0
-    do jcoll=1,neq  
-       if (ieq_loc(jcoll) .eq. 0) then 
+    if (kstruct.eq.'D_P_B') then
+      cumul_ilig=0
+      do jcoll=1,neq  
+        if (ieq_loc(jcoll) .eq. 0) then 
           cumul_ilig=cumul_ilig+1
-       else
+         else
           cumul_ilig=cumul_ilig+ieq_loc(jcoll)
-       endif
-    enddo
+         endif
+      enddo
+      nvale=2
+    elseif (kstruct.eq.'DIAGO') then
+      cumul_ilig=neq
+      nvale=1
+    else
+       ASSERT(.false.)
+    endif
 !
 !    - DEUXIEME PASSE : ALLOCATION ET ECRITURE
 !
@@ -88,14 +97,16 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
     if ( iexi .gt. 0) call detrsd('MATR_ASSE', pc)
     call mtdefs(pc, matass, base, ' ')
     call jedetr(pc//'.VALM')
-    call jecrec(pc//'.VALM', base//' V R', 'NU', 'DISPERSE', 'CONSTANT', 2)
+    call jecrec(pc//'.VALM', base//' V R', 'NU', 'DISPERSE', 'CONSTANT', nvale)
 ! TRIANGULAIRE SUPERIEURE
     call jecroc(jexnum(pc//'.VALM', 1))
     call jeecra(pc//'.VALM', 'LONMAX', cumul_ilig, kbid)
     call jeveuo(jexnum(pc//'.VALM', 1), 'E', jvale_sup)
 ! TRIANGULAIRE INFERIEURE
-    call jecroc(jexnum(pc//'.VALM', 2))
-    call jeveuo(jexnum(pc//'.VALM', 2), 'E', jvale_inf)
+    if (nvale.eq.2) then
+      call jecroc(jexnum(pc//'.VALM', 2))
+      call jeveuo(jexnum(pc//'.VALM', 2), 'E', jvale_inf)
+    endif
 !
     call jeveuo(pc//'.REFA', 'E', vk24=refa_pc)
 !
@@ -107,7 +118,7 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
     call wkvect(nu_pc//'.SMOS.SMDI', base//' V I', neq, jsmdi_pc)
     jadr=0
     do jcoll=1,neq
-       if (ieq_loc(jcoll) .eq. 0) then
+       if (ieq_loc(jcoll) .eq. 0 .or. kstruct.eq.'DIAGO') then
           jadr=jadr+1
        else
           jadr=jadr+ieq_loc(jcoll)
@@ -120,22 +131,33 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
     call wkvect(nu_pc//'.SMOS.SMHC', base//' V S', cumul_ilig, jsmhc_pc)
 !
     decaj=0
-    do 20 jcoll=1,neq  
+    do jcoll=1,neq  
        if (ieq_loc(jcoll) .eq. 0) then 
           decaj=decaj+1
-          zi4(jsmhc_pc-1+decaj)=jcoll
+          zi4(jsmhc_pc-1+decaj)=int(jcoll,4)
           zr(jvale_sup-1+decaj)=1.d0
-          zr(jvale_inf-1+decaj)=1.d0
+          if (nvale.eq.2) zr(jvale_inf-1+decaj)=1.d0
        else
+!
           nunoj=ino_xfem(deeq(2*(jcoll-1)+1))
-          do ipos=1,ieq_loc(jcoll)
-             decaj=decaj+1
-             zi4(jsmhc_pc-1+decaj)=iglob_ddl(maxi_ddl*(nunoj-1)+ipos)
-             zr(jvale_sup-1+decaj)=tab_mloc(deca*(nunoj-1)+ neq_mloc(nunoj)*(ipos-1)+ieq_loc(jcoll))
-             zr(jvale_inf-1+decaj)=tab_mloc(deca*(nunoj-1)+ neq_mloc(nunoj)*(ieq_loc(jcoll)-1)+ipos)
-          enddo
+          if (kstruct.eq.'D_P_B') then
+            do ipos=1,ieq_loc(jcoll)
+              decaj=decaj+1
+              zi4(jsmhc_pc-1+decaj)=int(iglob_ddl(maxi_ddl*(nunoj-1)+ipos),4)
+              zr(jvale_sup-1+decaj)=tab_mloc(deca*(nunoj-1)+ neq_mloc(nunoj)*&
+                                    (ipos-1)+ieq_loc(jcoll))
+              zr(jvale_inf-1+decaj)=tab_mloc(deca*(nunoj-1)+ neq_mloc(nunoj)*&
+                                    (ieq_loc(jcoll)-1)+ipos)
+            enddo
+          else
+            decaj=decaj+1
+            zi4(jsmhc_pc-1+decaj)=int(jcoll,4)
+            zr(jvale_sup-1+decaj)=tab_mloc(deca*(nunoj-1)+ieq_loc(jcoll))
+          endif
+!
        endif
-20  enddo
+    enddo
+!
     ASSERT( decaj .eq. cumul_ilig )
 !
     call jedema()

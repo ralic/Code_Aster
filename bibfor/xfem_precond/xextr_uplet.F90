@@ -1,4 +1,4 @@
-function xcoef_he()
+function xextr_uplet(n,id)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,15 +18,31 @@ function xcoef_he()
 ! ======================================================================
 !
 !-----------------------------------------------------------------------
-! BUT : CALCULER LE COEFFICEINT DE SAUT POUR L INTEGRATION DES TERMES DE CONTACT
-!  ENRICH. HANSBO/MOES: XCOEF_H=1.d0
-!  ENRICH. MOES: XCOEF_H=2.d0
+! BUT : EXTRACTION DU P-UPLET CORRESPONDANT A UN IDENTIFIANT
 !-----------------------------------------------------------------------
 !
+! ARGUMENTS :
+!------------
+!   - N     : LE NOMBRE DE CHIFFRE (EN BASE 4)
+!   - ID    : IDENTIFIANT DU DOMAINE
+!-----------------------------------------------------------------------
     implicit none
+!-----------------------------------------------------------------------
+#include "jeveux.h"
+!-----------------------------------------------------------------------
+    integer :: n, id
+    integer :: xextr_uplet(n)
+!-----------------------------------------------------------------------
+    integer :: base_codage, idigi, res, p
+    parameter (base_codage=4)
+!-----------------------------------------------------------------------
 !
-    real(kind=8) :: xcoef_he
-!
-     xcoef_he=2.d0
+    res=id
+    do idigi=1,n
+      p=int(res/base_codage**(n-idigi))
+      res=res-p*base_codage**(n-idigi)
+      xextr_uplet(idigi)=p-2
+    enddo
 !
 end function
+

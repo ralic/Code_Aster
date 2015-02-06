@@ -18,7 +18,7 @@
 interface
     subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
                       nvec, v1, v2, v3, nfh,&
-                      singu, rr, ddls, ddlm, jfisno,&
+                      singu, rr, ddls, ddlm, jheavn, ncompn,&
                       nfiss, ifiss, jheafa, ncomph, ifa,&
                       saut)
         integer :: nddl
@@ -35,11 +35,12 @@ interface
         real(kind=8) :: rr
         integer :: ddls
         integer :: ddlm
-        integer :: jfisno
         integer :: nfiss
         integer :: ifiss
         integer :: jheafa
         integer :: ncomph
+        integer :: jheavn
+        integer :: ncompn
         integer :: ifa
         real(kind=8) :: saut(3)
     end subroutine xmmsa3

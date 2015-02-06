@@ -60,7 +60,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=6)
+    parameter    (nbout=1, nbin=7)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -72,7 +72,7 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
     character(len=24) :: nosdco
     integer :: jnosdc
     character(len=19) :: ligrxf, cindco
-    character(len=19) :: cpoint, cainte, heavno, heavfa
+    character(len=19) :: cpoint, cainte, heavno, hea_fa, hea_no
     character(len=19) :: oldgeo, depplu
     character(len=16) :: option
     aster_logical :: debug
@@ -95,7 +95,8 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
     cainte = resoco(1:14)//'.XFAI'
     nosdco = resoco(1:14)//'.NOSDCO'
     heavno = resoco(1:14)//'.XFPL'
-    heavfa = resoco(1:14)//'.XFHF'
+    hea_fa = resoco(1:14)//'.XFHF'
+    hea_no = resoco(1:14)//'.XFHN'
     call jeveuo(nosdco, 'L', jnosdc)
     option = 'XCVBCA'
     if (nivdbg .ge. 2) then
@@ -145,8 +146,10 @@ subroutine xmtbca(noma, defico, resoco, valinc, mmcvca)
     lchin(4) = cainte
     lpain(5) = 'PHEAVNO'
     lchin(5) = heavno
-    lpain(6) = 'PHEAVFA'
-    lchin(6) = heavfa
+    lpain(6) = 'PHEA_NO'
+    lchin(6) = hea_no
+    lpain(7) = 'PHEA_FA'
+    lchin(7) = hea_fa
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

@@ -18,7 +18,7 @@
 interface
     subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
                       ffc, ffp, idepl, idepm, ifa,&
-                      ifiss, indco, jac, jfisno, jheafa,&
+                      ifiss, indco, jac, jheavn, ncompn, jheafa,&
                       lact, mu, ncomph, nd, nddl,&
                       ndim, nfh, nfiss, nno, nnol,&
                       nnos, nvit, pla, reac12, rr,&
@@ -36,11 +36,12 @@ interface
         integer :: ifiss
         integer :: indco
         real(kind=8) :: jac
-        integer :: jfisno
         integer :: jheafa
         integer :: lact(8)
         real(kind=8) :: mu
         integer :: ncomph
+        integer :: jheavn
+        integer :: ncompn
         real(kind=8) :: nd(3)
         integer :: nddl
         integer :: ndim

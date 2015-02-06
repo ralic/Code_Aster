@@ -19,7 +19,7 @@ interface
     subroutine xmvec2(ndim, nno, nnos, nnol, pla,&
                       ffc, ffp, reac, jac, nfh,&
                       saut, singu, nd, rr, coeffr,&
-                      ddls, ddlm, jfisno, nfiss, ifiss,&
+                      ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                       jheafa, ncomph, ifa, vtmp)
         integer :: ndim
         integer :: nno
@@ -38,7 +38,8 @@ interface
         real(kind=8) :: coeffr
         integer :: ddls
         integer :: ddlm
-        integer :: jfisno
+        integer :: jheavn
+        integer :: ncompn
         integer :: nfiss
         integer :: ifiss
         integer :: jheafa

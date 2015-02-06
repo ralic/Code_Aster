@@ -1,6 +1,6 @@
 subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
                   igeom, lonch, cnset, jpintt, lsn,&
-                  lst, basloc, heavt, nfh, nfe,&
+                  lst, heavn, basloc, heavt, nfh, nfe,&
                   mattt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,12 +62,13 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrefp
     integer :: ndim, nnop, imate, itemps, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36)
+    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27,5)
     real(kind=8) :: lsn(nnop), lst(nnop), basloc(*), mattt(*)
 !
 !-----------------------------------------------------------------------
@@ -78,13 +79,12 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     real(kind=8) :: baslog(3*ndim), lsng, lstg, coorse(81), xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8) :: femec(4), dgdmec(4, ndim), feth, ff(nnop), dfdi(nnop, ndim)
-    real(kind=8) :: he
     real(kind=8) :: valpar(1), valres(1), lambda
-    real(kind=8) :: r
+    real(kind=8) :: r, he
     real(kind=8) :: jac, theta, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: pdscal
     integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
-    integer :: nbddl
+    integer :: nbddl, hea_se
     integer :: mxstac, icodre(1), spt, ipoids, idfde, nosema, ind1, lddl, jnp
     integer :: iddlma
     integer :: idim, ind2
@@ -136,7 +136,8 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
     do 1000 ise = 1, nse
 !
 !       VALEUR (CSTE) DE LA FONCTION HEAVISIDE SUR LE SS-ELT
-        he = 1.d0*heavt(ise)
+        he=real(heavt(ise),8)
+        hea_se=xcalc_code(1, he_real=[he])
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TETRA/TRIA -> COORDS NOEUDS
         do 1100 in = 1, nno
@@ -240,7 +241,7 @@ subroutine xrigth(ndim, elrefp, nnop, imate, itemps,&
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
                     do 1252 j = 1, ndim
-                        dffenr(inp,1+nfh,j) = xcalf_he(he,lsn(inp))*dfdi(inp,j)
+                      dffenr(inp,1+nfh,j) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*dfdi(inp,j)
 1252                 continue
                 endif
 !           DDL CRACK-TIP (E1)

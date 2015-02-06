@@ -25,9 +25,12 @@ subroutine te0037(option, nomte)
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xteddl.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xteini.h"
 #include "asterfort/xxmmvd.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_saut.h"
 !
     character(len=16) :: option, nomte
 !
@@ -65,16 +68,16 @@ subroutine te0037(option, nomte)
 !.......................................................................
 !
 !
-    character(len=8) :: elref, typma, fpg, elc, nompar(4), lag, elrefc, enr
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, jlsn
+    character(len=8) :: elref, typma, fpg, elc, nompar(4), lag, elrefc, enr, enr2
+    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ier, ddlm
-    integer :: igeom, ipres, itemps, ires, iadzi, iazk24
+    integer :: igeom, ipres, itemps, ires, iadzi, iazk24, jheavn, ncompn, hea_fa(2), jtab(7)
     integer :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
     integer :: i, j, ninter, nface, cface(18, 6), ifa, nfiss, jfisno
     integer :: ibid, ino, ilev
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
     real(kind=8) :: pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
-    real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r, lsn(27,4)
+    real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
     aster_logical :: lbid, pre1, axi
     integer :: compt, nddlm, nddls, nddlp, iret
     real(kind=8) :: thet, pinter(3), pinref(3)
@@ -97,7 +100,7 @@ subroutine te0037(option, nomte)
 !
     axi = lteatt('AXIS','OUI')
 !
-    call teattr('C', 'MODTHM', enr, iret)
+    call teattr('C', 'MODTHM', enr2, iret)
     pre1=(iret.eq.0)
 !
 !-----------------------------------------------------------------------
@@ -167,7 +170,6 @@ subroutine te0037(option, nomte)
 !
 !     PARAMETRES PROPRES A X-FEM
     call jevech('PLST', 'L', jlst)
-    call jevech('PLSN', 'L', jlsn)
     call jevech('PPINTER', 'L', jptint)
     call jevech('PAINTER', 'L', jaint)
     call jevech('PCFACE', 'L', jcface)
@@ -176,18 +178,19 @@ subroutine te0037(option, nomte)
     call jevech('PBASECO', 'L', jbasec)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
-!     RECUPERATION DES LEVETS-NORMALES
-    if (nfh .eq. 1) then
-      do ino=1,nno
-        lsn(ino,1)=zr(jlsn-1+ino)
-      enddo
-    else
-      ASSERT(nfh.le.4)
-      do ifh=1,nfh
-         do ino=1,nno
-           lsn(ino,ifh)=zr(jlsn-1+(ino-1)*nfiss+zi(jfisno-1+(ino-1)*nfh+ifh))
-         enddo
-      enddo
+!     RECUPERATION DE LA DEFNITION DES FONCTIONS HEAVISIDE
+    hea_fa(1:2)=0
+    call teattr('S', 'XFEM', enr, ier)
+    if (enr(1:2).eq.'XH') then
+!   AVEC DE JONCTIONS IL FAUT PROGRAMMER PROPREMENT L INTEGRATION SUR LES FACETTES DE DECOUPE:
+!    IL FAUDRAIT DEFINIR LA TOPOLOGIE DE SOUS-DOMAINE ESCL/MAITR PAR FACETTE
+        ASSERT(nfiss .eq. 1)
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        hea_fa(1)=xcalc_code(1, he_real=[he(1)])
+        hea_fa(2)=xcalc_code(1, he_real=[he(2)])
     endif
 !
 !     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
@@ -352,16 +355,20 @@ subroutine te0037(option, nomte)
                         if (ino .le. nnos) pos=pos+1
 !
 !               TERME HEAVISIDE
-                        do j = 1, nfh*ndim
+                        do ifh = 1, nfh
+                          do j = 1, ndim
                             pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(he(ilev),&
-                                             lsn(ino,j-nfh*int((j-1)/nfh)))&
-                                             *forrep(j,ilev)*jac*ff(ino)
-                        end do
+                            zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                                             zi(jheavn-1+ncompn*(ino-1)+ifh),&
+                                                             hea_fa(ilev),&
+                                                             zi(jheavn-1+ncompn*(ino-1)+ncompn))&
+                                                             *forrep(j,ilev)*jac*ff(ino)
+                          enddo
 !               ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON 
 !               EST SUR UN NOEUD SOMMET
-                if (ino.le.nnos) pos=pos+1 
-                   end do
+                          if (ino.le.nnos) pos=pos+1 
+                        end do
+                    enddo
                 end do
             else
                 do ilev = 1, 2
@@ -376,12 +383,16 @@ subroutine te0037(option, nomte)
                         end do
 !
 !               TERME HEAVISIDE
-                        do j = 1, nfh*ndim
+                        do j = 1, ndim
+                          do ifh = 1, nfh
                             pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(he(ilev),&
-                                             lsn(ino,j-nfh*int((j-1)/nfh)))&
+                            zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ifh),&
+                                                           hea_fa(ilev),&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ncompn))&
                                              * forrep(j,ilev) * jac * f&
                                              &f(ino)
+                          enddo
                         end do
 !
 !               TERME SINGULIER

@@ -20,6 +20,7 @@ subroutine te0440(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
@@ -28,6 +29,7 @@ subroutine te0440(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tefrep.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xfovol.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
@@ -51,7 +53,8 @@ subroutine te0440(option, nomte)
     integer :: nfh, ddls, nfe, ddlc, nse, ise, in, ino, ibid, ddlm
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno
     integer :: ivectu, iforc, itemps, igeom, jpmilt, irese
-    integer :: nfiss, jfisno
+    integer :: nfiss, jfisno, jheavn
+    integer :: ncompn, heavn(27,5), iret, jtab(7), ig
     real(kind=8) :: he, coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag
     aster_logical :: fonc, lbid
@@ -95,8 +98,21 @@ subroutine te0440(option, nomte)
     call jevech('PLST', 'L', jlst)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSTANO', 'L', jstno)
-!     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
+!     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
+    if (nfh.gt.0) then 
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
+    endif
+!     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -151,7 +167,7 @@ subroutine te0440(option, nomte)
 !
         call xfovol(elrefp, ndim, coorse, igeom, he,&
                     nfh*ndim, ddlc, nfe, nnop, jlsn,&
-                    jlst, iforc, itemps, ivectu, fonc,&
+                    jlst, heavn, iforc, itemps, ivectu, fonc,&
                     .true._1)
 !
     end do

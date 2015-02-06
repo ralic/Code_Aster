@@ -26,6 +26,7 @@ OPTION__
         PPINTTO  N132_R
         PCNSETO  N512_I
         PHEAVTO  N128_I
+        PHEA_NO  N120_I
         PLONCHA  N120_I
         PBASLOR  NEUT_R
         PLSN     NEUT_R

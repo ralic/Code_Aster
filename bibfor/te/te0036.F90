@@ -61,13 +61,13 @@ subroutine te0036(option, nomte)
 #include "asterfort/xnormv.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xteddl.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
 !
     character(len=8) :: nompar(4), noma, elrefp, elrese(4), enr, lag
     character(len=8) :: elref
     character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
-    integer :: jpmilt, irese, nfiss, ifiss, jfisno, jtab(7), ncomp
+    integer :: jpmilt, irese, nfiss, jfisno, jtab(7), ncomp, jheavn, jheavs, ncompn
     integer :: ibid, ier, ndim, nno, nnop, nnops, npg, nnos, kpg
     integer :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, j
     integer :: nfh, nfe, nse, ise
@@ -103,11 +103,6 @@ subroutine te0036(option, nomte)
     noma=zk24(iazk24)(1:8)
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
 !
-!     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
-!     NDIM EST LA DIMENSION DU MAILLAGE
-!     NDIME EST DIMENSION DE L'ELEMENT FINI
-!     SUR UN ELET DE BORD, ON A :  NDIM = NDIME + 1
-!
 !     SOUS-ELEMENT DE REFERENCE
     if (.not.iselli(elrefp)) then
         irese=2
@@ -125,7 +120,6 @@ subroutine te0036(option, nomte)
     nfe = 0
     nfh = 0
     nfiss = 1
-    ifiss = 1
     call teattr('S', 'XFEM', enr, ier)
     if (enr(1:2) .eq. 'XH') then
 ! --- NOMBRE DE FISSURES
@@ -197,6 +191,15 @@ subroutine te0036(option, nomte)
     call teattr('S', 'XFEM', enr, ier)
     if (ier .eq. 0 .and. (.not. axi) .and. .not.iselli(elref)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
+!
+!   LECTURE DES DONNES TOPOLOGIQUE DES FONCTIONS HEAVISIDE
+    if (enr(1:2).eq.'XH'.or.pre1) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        call jevech('PHEA_SE', 'L', jheavs)
+    endif
 !
     call jevech('PVECTUR', 'E', ires)
 !
@@ -405,12 +408,13 @@ subroutine te0036(option, nomte)
                    if (ino.le.nnops) pos = pos+1
 !           TERME HEAVISIDE
                 do ig = 1, nfh
-                    if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ ig)
                     do j = 1, ndim
                         pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(real(zi(jheavt-1+ (ifiss-1)&
-                                         *ncomp+ise),8),zr(jlsn-1+(ino-1)*nfiss+ifiss))&
-                                         *forrep(j)*poids*ff(ino)
+                        zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ig)&
+                                                          ,zi(jheavs-1+ise),&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ncompn))&
+                                                        *forrep(j)*poids*ff(ino)
                     end do
                 end do
 !
@@ -431,12 +435,13 @@ subroutine te0036(option, nomte)
 !
 !           TERME HEAVISIDE
                    do ig = 1, nfh
-                       if (nfiss .gt. 1) ifiss = zi(jfisno-1+(ino-1)*nfh+ ig)
                        do j = 1, ndim
                            pos=pos+1
-                           zr(ires-1+pos) = zr(ires-1+pos) + xcalf_he(real(zi(jheavt-1+&
-                                            (ifiss-1)*ncomp+ise),8),zr(jlsn-1+(ino-1)*&
-                                            nfiss+ifiss))*forrep(j)*poids*ff(ino)
+                           zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                                             zi(jheavn-1+ncompn*(ino-1)+ig)&
+                                                            ,zi(jheavs-1+ise),&
+                                                             zi(jheavn-1+ncompn*(ino-1)+ncompn))&
+                                                           *forrep(j)*poids*ff(ino)
                        end do
                    end do
 !           TERME SINGULIER

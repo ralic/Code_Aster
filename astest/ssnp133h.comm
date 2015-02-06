@@ -86,7 +86,8 @@ CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
             FROTTEMENT     = 'SANS',
-            ITER_CONT_MAXI = 3,ELIM_ARETE     = 'ELIM',
+            ITER_CONT_MAXI = 3,
+            ELIM_ARETE     = 'ELIM',
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ORDRE_INT=2,
@@ -135,9 +136,9 @@ SYMETRIE = AFFE_CHAR_MECA(
   LIAISON_GROUP =_F(GROUP_NO_1 = 'N_SUP',
                     GROUP_NO_2 = 'N_SUP',
                     DDL_1 = 'DY',
-                    DDL_2 = 'DY',
-                    COEF_MULT_1 = 0.5,
-                    COEF_MULT_2 = 0.5,
+                    DDL_2 = 'H1Y',
+                    COEF_MULT_1 = 2.,
+                    COEF_MULT_2 = -2.,
                     COEF_IMPO=0.),
   )
 
@@ -186,7 +187,7 @@ EVOL = STAT_NON_LINE(
     ETA_PILO_R_MIN = 0.0,
     ),
   NEWTON  = _F(REAC_ITER = 1),
-  CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+  CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-8,
                    ITER_GLOB_MAXI = 12),
   SOLVEUR    = _F(METHODE = 'MUMPS',
                   NPREC=-1,

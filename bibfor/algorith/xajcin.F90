@@ -61,7 +61,7 @@ implicit none
         (option(1:9) .eq. 'RAPH_MECA') .or. &
         (option(1:9) .eq. 'RIGI_MECA')) then
 !
-        nbadd = 10
+        nbadd = 11
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
@@ -83,11 +83,13 @@ implicit none
         lchin(nchin + 9 ) = model(1:8)//'.TOPOSE.PMI'
         lpain(nchin + 10) = 'PFISNO'
         lchin(nchin + 10) = model(1:8)//'.FISSNO'
+        lpain(nchin + 11) = 'PHEA_NO'
+        lchin(nchin + 11) = model(1:8)//'.TOPONO.HNO'
         nchin = nchin+nbadd
 !
     elseif (option.eq.'CHAR_MECA_NEUM') then
 !
-        nbadd = 14
+        nbadd = 16
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
@@ -117,12 +119,16 @@ implicit none
         lchin(nchin + 13) = model(1:8)// '.TOPOFAC.LO'
         lpain(nchin + 14) = 'PBASECO'
         lchin(nchin + 14) = model(1:8)// '.TOPOFAC.BA'
+        lpain(nchin + 15) = 'PHEA_NO'
+        lchin(nchin + 15) = model(1:8)// '.TOPONO.HNO'
+        lpain(nchin + 16) = 'PHEA_SE'
+        lchin(nchin + 16) = model(1:8)// '.TOPONO.HSE'
         nchin = nchin+nbadd
 !
     elseif ((option.eq.'CHAR_THER_PARO_F').or.&
             (option.eq.'CHAR_THER_PARO_R')) then
 !
-        nbadd = 8
+        nbadd = 9
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTER'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOFAC.OE'
@@ -140,6 +146,8 @@ implicit none
         lchin(nchin + 7 ) = model(1:8)//'.TOPOFAC.BA'
         lpain(nchin + 8 ) = 'PLSN'
         lchin(nchin + 8 ) = model(1:8)//'.LNNO'
+        lpain(nchin + 9) = 'PHEA_NO'
+        lchin(nchin + 9) = model(1:8)// '.TOPONO.HNO'
         nchin = nchin+nbadd
 !
     else

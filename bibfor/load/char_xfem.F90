@@ -1,5 +1,5 @@
 subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat,&
-                     ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
+                     ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav)
 !
     implicit none
 !
@@ -34,6 +34,7 @@ subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat,&
     character(len=19), intent(out) :: ch_xfem_stat
     character(len=19), intent(out) :: ch_xfem_lnno
     character(len=19), intent(out) :: ch_xfem_ltno
+    character(len=19), intent(out) :: ch_xfem_heav
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,9 +80,11 @@ subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat,&
         ch_xfem_stat = '&&CHXFEM.STAT'
         ch_xfem_lnno = '&&CHXFEM.LNNO'
         ch_xfem_ltno = '&&CHXFEM.LTNO'
+        ch_xfem_heav = '&&CHXFEM.HEAV'
         call celces(model//'.STNO', 'V', ch_xfem_stat)
         call celces(model//'.LNNO', 'V', ch_xfem_lnno)
         call celces(model//'.LTNO', 'V', ch_xfem_ltno)
+        call celces(model//'.TOPONO.HNO', 'V', ch_xfem_heav)
     endif
 !
 end subroutine

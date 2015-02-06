@@ -19,7 +19,7 @@
 !
 interface
     subroutine char_xfem(mesh, model, l_xfem, connex_inv, ch_xfem_stat, &
-                         ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
+                         ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav)
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         aster_logical, intent(out) :: l_xfem
@@ -28,5 +28,6 @@ interface
         character(len=19), intent(out) :: ch_xfem_stat
         character(len=19), intent(out) :: ch_xfem_lnno
         character(len=19), intent(out) :: ch_xfem_ltno
+        character(len=19), intent(out) :: ch_xfem_heav
     end subroutine char_xfem
 end interface

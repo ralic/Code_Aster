@@ -86,7 +86,7 @@ subroutine vefnme(option, base, model, mate, carele,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=31)
+    parameter    (nbout=1, nbin=32)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -98,7 +98,7 @@ subroutine vefnme(option, base, model, mate, carele,&
     integer :: ibid, iret
     real(kind=8) :: instm, instp
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
-    character(len=19) :: pmilto, fissno
+    character(len=19) :: pmilto, fissno, hea_no
     character(len=19) :: sigma, varicom, strx
     character(len=19) :: depl, depl_incr
     aster_logical :: debug
@@ -231,6 +231,7 @@ subroutine vefnme(option, base, model, mate, carele,&
         lst = model(1:8)//'.LTNO'
         stano = model(1:8)//'.STNO'
         fissno = model(1:8)//'.FISSNO'
+        hea_no = model(1:8)//'.TOPONO.HNO'
     else
         pintto = '&&VEFNME.PINTTO.BID'
         cnseto = '&&VEFNME.CNSETO.BID'
@@ -242,6 +243,7 @@ subroutine vefnme(option, base, model, mate, carele,&
         lst = '&&VEFNME.LTNO.BID'
         stano = '&&VEFNME.STNO.BID'
         fissno = '&&VEFNME.FISSNO.BID'
+        hea_no = '&&VEFNME.HEA_NO.BID'
     endif
 !
     lpain(20) = 'PPINTTO'
@@ -268,6 +270,8 @@ subroutine vefnme(option, base, model, mate, carele,&
     lchin(30) = fissno
     lpain(31) = 'PSTRXMR'
     lchin(31) = strx
+    lpain(32) = 'PHEA_NO'
+    lchin(32) = hea_no
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

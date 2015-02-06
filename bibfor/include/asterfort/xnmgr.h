@@ -20,7 +20,7 @@ interface
                      vip, typmod, option, imate, compor,&
                      lgpg, crit, jpintt, cnset, heavt,&
                      lonch, basloc, idepl, lsn, lst,&
-                     nfiss, jfisno, sig, vi, matuu,&
+                     nfiss, jheavn, sig, vi, matuu,&
                      ivectu, codret, jpmilt)
         integer :: nfiss
         integer :: nnop
@@ -48,12 +48,12 @@ interface
         integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: jfisno
         real(kind=8) :: sig(*)
         real(kind=8) :: vi(*)
         real(kind=8) :: matuu(*)
         integer :: ivectu
         integer :: codret
         integer :: jpmilt
+        integer :: jheavn
     end subroutine xnmgr
 end interface

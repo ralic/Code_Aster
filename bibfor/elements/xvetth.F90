@@ -1,6 +1,6 @@
 subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                   igeom, temper, lonch, cnset, jpintt,&
-                  lsn, lst, basloc, heavt, nfh,&
+                  lsn, lst, heavn, basloc, heavt, nfh,&
                   nfe, vectt)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,12 +64,13 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrefp
     integer :: ndim, nnop, imate, itps, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36)
+    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27,5)
     real(kind=8) :: temper(nnop*(1+nfh+nfe)), lsn(nnop), lst(nnop)
     real(kind=8) :: basloc(*), vectt(*)
 !
@@ -88,7 +89,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
     real(kind=8) :: pdscal
     real(kind=8) :: rhocp, dtem(ndim), r
     integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
-    integer :: nbddl
+    integer :: nbddl, hea_se
     integer :: mxstac, icodre(2), spt, ipoids, idfde, idim, ipos, codret
 !
     parameter (mxstac=1000)
@@ -140,6 +141,7 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
 !
 !       VALEUR (CSTE) DE LA FONCTION HEAVISIDE SUR LE SS-ELT
         he = 1.d0*heavt(ise)
+        hea_se=xcalc_code(1, he_real=[he])
 !
 !       BOUCLE SUR LES SOMMETS DU SOUS-TETRA/TRIA -> COORDS NOEUDS
         do in = 1, nno
@@ -247,9 +249,10 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps,&
                 end do
 !           DDL HEAVISIDE (H1)
                 if (nfh .eq. 1) then
-                    ffenr(inp,1+nfh) = xcalf_he(he,lsn(inp))*ff(inp)
+                    ffenr(inp,1+nfh) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*ff(inp)
                     do j = 1, ndim
-                        dffenr(inp,1+nfh,j) = xcalf_he(he,lsn(inp))*dfdi(inp,j)
+                        dffenr(inp,1+nfh,j) = xcalc_heav(heavn(inp,1),hea_se,heavn(inp,5))*&
+                                              dfdi(inp,j)
                     end do
                 endif
 !           DDL CRACK-TIP (E1)

@@ -108,7 +108,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
-            FROTTEMENT     = 'SANS',ELIM_ARETE     = 'ELIM',
+            FROTTEMENT     = 'SANS',#ELIM_ARETE     = 'ELIM',
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ORDRE_INT=3,                                   
@@ -157,13 +157,9 @@ RIGIDE = AFFE_CHAR_MECA(
 # la condition de symetrie change completement
 SYMETRIE = AFFE_CHAR_MECA(
   MODELE        = MODELEK,
-  LIAISON_GROUP =_F(GROUP_NO_1 = 'N_MIL',
-                     GROUP_NO_2 = 'N_MIL',
-                     DDL_1 = 'DY',
-                     DDL_2 = 'DY',
-                     COEF_MULT_1 = 0.5,
-                     COEF_MULT_2 = 0.5,
-                     COEF_IMPO=0.,),
+  LIAISON_GROUP =_F(GROUP_NO_1 = 'N_MIL', GROUP_NO_2 = 'N_MIL',
+                     DDL_1 = 'DY', DDL_2 = 'H1Y',
+                     COEF_MULT_1 = 2., COEF_MULT_2 = -2., COEF_IMPO=0.,),
   )
 
 # EFFORT IMPOSE SUR LA SURFACE SUPERIEURE DE LA PLAQUE

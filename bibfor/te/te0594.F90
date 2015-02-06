@@ -24,6 +24,7 @@ subroutine te0594(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xrechp.h"
 #include "asterfort/xthddl.h"
 #include "asterfort/xthini.h"
@@ -42,7 +43,8 @@ subroutine te0594(option, nomte)
 !-----------------------------------------------------------------------
 !
     integer :: ndim, nfh, nfe, igeom, nnop, jptint, jcface
-    integer :: jlonch, jlst, itps, ihechp, jstno, jbasec, jlsn
+    integer :: jlonch, jlst, itps, ihechp, jstno, jbasec
+    integer :: heavn(27,5), ino, ig, jheavn, ncompn, jtab(7), iret
     integer :: imattt, nddlno
     character(len=8) :: elrefp
     character(len=4) :: fonree
@@ -77,7 +79,6 @@ subroutine te0594(option, nomte)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PLST', 'L', jlst)
-    call jevech('PLSN', 'L', jlsn)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PBASECO', 'L', jbasec)
 !
@@ -92,14 +93,28 @@ subroutine te0594(option, nomte)
     call xthini(nomte, nfh, nfe)
     nddlno = 1+nfh+nfe
 !
+!   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
+    if (nfh.gt.0) then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
+    endif
+!
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE LA MATRICE DE RIGIDITE ELEMENTAIRE DUE A ECHANGE_PAROI
 ! ----------------------------------------------------------------------
 !
     call xrechp(ndim, elrefp, nnop, igeom, itps,&
                 ihechp, jptint, jcface, jlonch,&
-                jlst, jlsn, jbasec, nfh, nfe, fonree,&
-                imattt)
+                jlst, jbasec, nfh, nfe, fonree,&
+                imattt, heavn)
 !
 ! ----------------------------------------------------------------------
 ! --- SUPPRESSION DES DDLS SUPERFLUS

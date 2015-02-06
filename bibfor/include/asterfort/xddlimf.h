@@ -17,7 +17,8 @@
 interface
     subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                        ch2, ndim, lsn, lst, valimr, valimf, valimc,&
-                       fonree, lisrel, nomn, direct, class, mesh)
+                       fonree, lisrel, nomn, direct, class, mesh,&
+                       hea_no)
         character(len=8) :: modele
         integer :: ino
         character(len=19) :: cnxinv
@@ -36,5 +37,6 @@ interface
         character(len=8) :: nomn
         real(kind=8) :: direct(3)
         aster_logical :: class
+        character(len=19) :: hea_no
     end subroutine xddlimf
 end interface

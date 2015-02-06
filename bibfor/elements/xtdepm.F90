@@ -1,6 +1,7 @@
 subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
                   nsingm, ffe, ffm, jdepde, rre,&
-                  rrm, jddle, jddlm, ddeple, ddeplm)
+                  rrm, jddle, jddlm, nfhe, nfhm, lmulti,&
+                  heavn, heavfa, ddeple, ddeplm)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,12 +27,15 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/vecini.h"
-    integer :: ndim, jnnm(3), jnne(3)
-    integer :: nsinge, nsingm
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
+    integer :: ndim, jnnm(3), jnne(3), nfhe, nfhm
+    integer :: nsinge, nsingm, heavn(*), heavfa(*)
     real(kind=8) :: rre, rrm
     integer :: jdepde, ndeple, jddle(2), jddlm(2)
     real(kind=8) :: ffm(20), ffe(20)
     real(kind=8) :: ddeple(3), ddeplm(3)
+    aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,8 +64,9 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 !
 !
 !
-    integer :: idim, inoe, inom, isingm, isinge, pl, in, jn, nddle
-    integer :: nnes, nnem, nnm, nnms, ddles, ddlem, ddlms, ddlmm
+    integer :: idim, inoe, inom, pl, in, iddl, hea_fa(2), nddle, nnem
+    integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm, ifh
+    real(kind=8) :: iescl(6), imait(6)
 !
 ! ----------------------------------------------------------------------
 !
@@ -69,6 +74,7 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 !
 ! --- INITIALISATIONS
 !
+    nne=jnne(1)
     nnes=jnne(2)
     nnem=jnne(3)
     nnm=jnnm(1)
@@ -77,35 +83,71 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
     ddlem=jddle(2)
     ddlms=jddlm(1)
     ddlmm=jddlm(2)
-    nddle = ddles*nnes+ddlem*nnem
+    nddle=ddles*nnes+ddlem*nnem
 !
     call vecini(3, 0.d0, ddeplm)
     call vecini(3, 0.d0, ddeple)
+    call vecini(6,0.d0,iescl)
+    call vecini(6,0.d0,imait)
+!
+    iescl(1) = 1
+    iescl(2) = -1
+    iescl(2+nfhe)=-rre
+    imait(1) = 1
+    imait(2) = 1
+    imait(2+nfhm)= rrm
+    if (.not.lmulti) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
 !
 !
     do 200 idim = 1, ndim
         do 210 inoe = 1, ndeple
+            call indent(inoe, ddles, ddlem, nnes, in)
             if (nnm .ne. 0) then
-                call indent(inoe, ddles, ddlem, nnes, in)
-                pl = in + idim
-                ddeple(idim) = ddeple(idim)+ ffe(inoe)*(zr(jdepde-1+ pl)- zr(jdepde-1+pl+ndim))
+                if (lmulti) then
+                    do 30 ifh = 1, nfhe
+                        iescl(1+ifh)=xcalc_heav(heavn(nfhe*(inoe-1)+ifh),&
+                                                heavfa(1),&
+                                                -99)
+ 30                 continue
+                else
+                        iescl(2)=xcalc_heav(heavn(inoe),&
+                                            hea_fa(1),&
+                                            heavn(nne+nnm+inoe))
+                endif
+                do 40 iddl = 1, 1+nfhe
+                    pl = in + (iddl-1)*ndim + idim
+                    ddeple(idim) = ddeple(idim)+ ffe(inoe)*iescl(iddl)*zr(jdepde-1+ pl)
+ 40             continue
             endif
-            do 215 isinge = 1, nsinge
-                call indent(inoe+1, ddles, ddlem, nnes, in)
-                pl = in -2*ndim+idim
-                ddeple(idim) = ddeple(idim) - rre*ffe(inoe)*zr( jdepde-1+pl)
+            do 215 iddl = 1+nfhe+1, 1+nfhe+nsinge
+                pl = in + (iddl-1)*ndim + idim
+                ddeple(idim) = ddeple(idim) +ffe(inoe)*iescl(2+nfhe)*zr(jdepde-1+pl)
 215          continue
 210      continue
 200  end do
 !
     do 201 idim = 1, ndim
         do 220 inom = 1, nnm
-            call indent(inom, ddlms, ddlmm, nnms, jn)
-            pl = nddle + jn + idim
-            ddeplm(idim) = ddeplm(idim)+ ffm(inom)*(zr(jdepde-1+pl)+ zr(jdepde-1+pl+ndim))
-            do 225 isingm = 1, nsingm
-                ddeplm(idim) = ddeplm(idim) + rrm*ffm(inom)*zr( jdepde-1+pl+2*ndim)
-225          continue
+            call indent(inom, ddlms, ddlmm, nnms, in)
+            in = in + nddle
+            if (lmulti) then
+                do 70 ifh = 1, nfhm
+                    imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(inom-1)+ifh),&
+                                            heavfa(2),&
+                                            -99)
+ 70             continue
+            else
+                    imait(2)=xcalc_heav(heavn(nne+inom),&
+                                        hea_fa(2),&
+                                        heavn(2*nne+nnm+inom))
+            endif
+            do 80 iddl = 1, 1+nfhm+nsingm
+                pl = in + (iddl-1)*ndim + idim
+                ddeplm(idim) = ddeplm(idim) + ffm(inom)*imait(iddl)*zr(jdepde-1+pl)
+ 80         continue
 220      continue
 201  end do
 !

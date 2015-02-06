@@ -17,7 +17,7 @@
 !
 interface
     subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
-                      igeom, jfisno, jlst, ivectu, singu,&
+                      igeom, jheavn, jlst, ivectu, singu,&
                       nddl, ndim, nfe, nfh, nfiss,&
                       nno, nnom, nnos, depref, sigref)
         character(len=8) :: elref
@@ -26,7 +26,7 @@ interface
         integer :: ddlm
         integer :: ddls
         integer :: igeom
-        integer :: jfisno
+        integer :: jheavn
         integer :: jlst
         integer :: ivectu
         integer :: singu

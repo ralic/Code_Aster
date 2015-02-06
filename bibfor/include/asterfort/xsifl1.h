@@ -16,7 +16,7 @@
 !
 interface 
     subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
-                      ddls, dfdi, ff, he, idepl,&
+                      ddls, dfdi, ff, he, heavn, idepl,&
                       igthet, ipref, ipres, ithet, jac,&
                       jlst, ka, mu, nd,&
                       ndim, nfh, nnop, nnops, itemps,&
@@ -29,6 +29,7 @@ interface
         real(kind=8) :: coeff3
         integer :: ddlm
         integer :: ddls
+        integer :: heavn(nnop,5)
         real(kind=8) :: dfdi(nnop, ndim)
         real(kind=8) :: ff(27)
         real(kind=8) :: he(2)

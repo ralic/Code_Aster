@@ -74,7 +74,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=25)
+    parameter    (nbout=1, nbin=26)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -86,7 +86,7 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     character(len=19) :: ligrmo, verefe, carte
     character(len=24) :: chgeom
     character(len=24) :: chcara(18)
-    character(len=19) :: pintto, cnseto, heavto, loncha, pmilto
+    character(len=19) :: pintto, cnseto, heavto, loncha, pmilto, hea_no
     character(len=19) :: pinter, ainter, baseco, ccface, lonfac
     aster_logical :: debug
     integer :: ifmdbg, nivdbg
@@ -137,6 +137,10 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     heavto = modele(1:8)//'.TOPOSE.HEA'
     loncha = modele(1:8)//'.TOPOSE.LON'
     pmilto = modele(1:8)//'.TOPOSE.PMI'
+!
+! --- RECUPERATION DES DONNEES XFEM (TOPONO)
+!
+    hea_no = modele(1:8)//'.TOPONO.HNO'
 !
 ! --- RECUPERATION DES DONNEES XFEM (TOPOFAC)
 !
@@ -198,6 +202,8 @@ subroutine nmrefe(modele, compor, mate, carele, depmoi,&
     lchin(24) = lonfac
     lpain(25) = 'PCAGNBA'
     lchin(25) = chcara(11)(1:19)
+    lpain(26) = 'PHEA_NO'
+    lchin(26) = hea_no
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

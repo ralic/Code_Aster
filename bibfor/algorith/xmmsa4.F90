@@ -23,7 +23,7 @@ subroutine xmmsa4(ndim, nno, nnos, ffp, nddl,&
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos
     integer :: nfh, ddls, ddlm
     integer :: singu, nvec, nddl
@@ -55,20 +55,22 @@ subroutine xmmsa4(ndim, nno, nnos, ffp, nddl,&
 !
 !
 !
-    real(kind=8) :: coefh
-    integer :: i, j, in
+    real(kind=8) :: coefj
+    integer :: i, j, in, ig
 !
 ! ----------------------------------------------------------------------
 !
     call vecini(3, 0.d0, saut)
-    coefh=xcoef_he()
+    coefj=xcalc_saut(1,0,1)
     ASSERT(nvec.gt.0)
     do 161 i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
-        do 162 j = 1, nfh*ndim
-            saut(j) = saut(j) - coefh*ffp(i)*v1(in+ndim+j)
-            if (nvec .ge. 2) saut(j) = saut(j) - coefh*ffp(i)*v2(in+ndim+ j)
-            if (nvec .ge. 3) saut(j) = saut(j) - coefh*ffp(i)*v3(in+ndim+ j)
+        do 162 j = 1, ndim
+          do ig = 1, nfh
+            saut(j) = saut(j) - coefj*ffp(i)*v1(in+ndim*(1+ig-1)+j)
+            if (nvec .ge. 2) saut(j) = saut(j) - coefj*ffp(i)*v2(in+ndim*(1+ig-1)+ j)
+            if (nvec .ge. 3) saut(j) = saut(j) - coefj*ffp(i)*v3(in+ndim*(1+ig-1)+ j)
+          enddo
 162      continue
         do 163 j = 1, singu*ndim
             saut(j) = saut(j)-2.d0*ffp(i)*rr*v1(in+ndim*(1+nfh)+j)

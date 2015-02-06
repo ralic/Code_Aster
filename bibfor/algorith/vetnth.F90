@@ -81,7 +81,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
     character(len=8) :: lpain(nchinx), lpaout(nchoux), newnom
     character(len=16) :: option
     character(len=19) :: chvarc, stano, pintto, cnseto, heavto, loncha, basloc
-    character(len=19) :: lsn, lst
+    character(len=19) :: lsn, lst, hea_no
     character(len=24) :: modele, carele, matcod, inst, chtn, vecel, vecei
     character(len=24) :: compor, tmpchi, tmpchf, chhy, ligrmo, lchin(nchinx)
     character(len=24) :: chgeom, lchout(nchoux), chcara(18)
@@ -131,15 +131,18 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
         pintto = modele(1:8)//'.TOPOSE.PIN'
         cnseto = modele(1:8)//'.TOPOSE.CNS'
         heavto = modele(1:8)//'.TOPOSE.HEA'
+        hea_no = modele(1:8)//'.TOPONO.HNO'
         loncha = modele(1:8)//'.TOPOSE.LON'
         basloc = modele(1:8)//'.BASLOC'
         lsn = modele(1:8)//'.LNNO'
         lst = modele(1:8)//'.LTNO'
+
     else
         stano = '&&VETNTH.STNO.BID'
         pintto = '&&VETNTH.PINTTO.BID'
         cnseto = '&&VETNTH.CNSETO.BID'
         heavto = '&&VETNTH.HEAVTO.BID'
+        hea_no = '&&VETNTH.HEA_NO.BID'
         loncha = '&&VETNTH.LONCHA.BID'
         basloc = '&&VETNTH.BASLOC.BID'
         lsn = '&&VETNTH.LNNO.BID'
@@ -242,6 +245,9 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
         nchin = nchin + 1
         lpain(nchin) = 'PLST'
         lchin(nchin) = lst
+        nchin = nchin + 1
+        lpain(nchin) = 'PHEA_NO'
+        lchin(nchin) = hea_no
     else
         nchin = nchin + 1
         lpain(nchin) = 'PCOMPOR'

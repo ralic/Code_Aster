@@ -15,7 +15,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 #include "asterfort/vecini.h"
 #include "asterfort/xadher.h"
 #include "asterfort/xmafr1.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_saut.h"
     integer :: algofr, ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), lact(8), idepd, idepm
@@ -85,8 +85,8 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
 !
 !
-    integer :: i, j, nli, ino, in, pli
-    real(kind=8) :: ffi, lamb1(3), r3(3), vitang(3), kn(3, 3), saut(3), coefh
+    integer :: i, j, nli, ino, in, pli, ig
+    real(kind=8) :: ffi, lamb1(3), r3(3), vitang(3), kn(3, 3), saut(3), coefj
 !
 ! ----------------------------------------------------------------------
 !
@@ -98,18 +98,20 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
     call matini(3, 3, 0.d0, knp)
     call matini(3, 3, 0.d0, kn)
 !
-    coefh=xcoef_he()
+    coefj=xcalc_saut(1,0,1)
 !
     call xmafr1(ndim, nd, p)
 !
     do 154 ino = 1, nno
         call indent(ino, ddls, ddlm, nnos, in)
 !
-        do 155 j = 1, nfh*ndim
-            saut(j) = saut(j) - coefh * ffp(ino) * zr(idepd-1+in+ndim+ j)
+        do 155 j = 1, ndim
+          do ig = 1, nfh
+            saut(j) = saut(j) - coefj * ffp(ino) * zr(idepd-1+in+ndim*(1+ig-1)+j)
+          enddo 
 155     continue
-        do 156 j = 1, singu*ndim
-            saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepd-1+in+ ndim*(1+nfh)+j)
+        do 156 j = 1, ndim*singu
+            saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepd-1+in+ndim*(1+nfh)+j)
 156     continue
 154 end do
 !

@@ -16,9 +16,11 @@
 !
 !
 interface
-    function xcalf_he(he,lsn)
-       real(kind=8) :: xcalf_he
-       real(kind=8) :: he
-       real(kind=8) :: lsn
-    end function xcalf_he
+    function xcalc_code(nfiss, he_inte, he_real)
+       integer :: xcalc_code
+       integer :: nfiss
+       integer, optional :: he_inte(*)
+       real(kind=8), optional :: he_real(*)
+    end function xcalc_code
 end interface
+

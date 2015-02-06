@@ -42,6 +42,8 @@ OPTION__
         PFISNO   NEUT_I
         PHEAVNO  NEUT_I
         PHEAVFA  N120_I
+        PHEA_NO  N120_I
+        PHEA_FA  N120_I
    OUT__
         PINCOCA NEUT_I ELEM__
         PINDCOO NEUT_I ELEM__

@@ -2,7 +2,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
                  ddlc, ddlm, igeom, compor, jpintt,&
                  cnset, heavt, lonch, basloc, sigma,&
                  nbsig, idepl, lsn, lst, ivectu,&
-                 jpmilt, nfiss, jfisno)
+                 jpmilt, nfiss, jheavn)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -15,8 +15,8 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
 #include "asterfort/tecach.h"
 #include "asterfort/xxbsig.h"
     integer :: ndim, nnop, nfh, nfe, ddlc, ddlm, igeom, nbsig, ivectu
-    integer :: jfisno, nfiss
-    integer :: cnset(4*32), heavt(*), lonch(10), idepl, jpintt, jpmilt
+    integer :: nfiss
+    integer :: cnset(4*32), heavt(*), lonch(10), idepl, jpintt, jpmilt, jheavn
     real(kind=8) :: basloc(*), sigma(*), lsn(nnop), lst(nnop)
     character(len=16) :: compor(*)
 !
@@ -62,7 +62,6 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  PMILT   : COORDONNEES DES POINTS MILIEUX
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
 !
 ! OUT IVECTU  : ADRESSE DU VECTEUR BT.SIGMA
 !
@@ -70,9 +69,10 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
 !     VARIABLES LOCALES
     real(kind=8) :: he(nfiss), coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6)
-    integer :: nse, idecpg, idebs, jtab(2), ncomp, iret
+    integer :: nse, idecpg, idebs, jtab(7), ncomp, iret
     integer :: ise, in, ino, npg, j, codopt
-    integer :: irese, nno, fisno(nnop, nfiss), ifiss, ig
+    integer :: ncompn, heavn(nnop, 5)
+    integer :: irese, nno, ifiss, ig
 !
     data          elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data          fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -95,19 +95,17 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
     endif
     call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,npg=npg)
 !
-!     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
-!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
-    if (nfiss .eq. 1) then
-        do ino = 1, nnop
-            fisno(ino,1) = 1
-        end do
-    else
-        do ig = 1, nfh
-!    ON REMPLIT JUSQU'A NFH <= NFISS
-            do ino = 1, nnop
-                fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-            end do
-        end do
+!   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
     endif
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
@@ -155,7 +153,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
                     igeom, he, nfh, ddlc, ddlm,&
                     nfe, basloc, nnop, npg, sigma(idebs+1),&
                     compor, idepl, lsn, lst, nfiss,&
-                    fisno, codopt, ivectu)
+                    heavn, codopt, ivectu)
 !
     end do
 !

@@ -1,4 +1,4 @@
-subroutine xfem_pc(matass, base, filtrage)
+subroutine xfem_pc(matass, base, filtrage, typ_pc)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,13 +56,14 @@ subroutine xfem_pc(matass, base, filtrage)
 #include "asterfort/xfem_count_no.h"
 #include "asterfort/xfem_calc_pc.h"
 #include "asterfort/xfem_calc_mloc.h"
+#include "asterfort/xfem_calc_diag.h"
 #include "asterfort/xfem_store_pc.h"
 #include "asterfort/xfem_mult_l.h"
 #include "asterfort/xfem_mult_r.h"
 #include "asterfort/xfem_over_write.h"
 #include "asterfort/xfem_over_write_2.h"
 !-----------------------------------------------------------------------
-    character(len=*) :: matass
+    character(len=*) :: matass, typ_pc
     character(len=1) :: base
     aster_logical :: filtrage
 !-----------------------------------------------------------------------
@@ -89,13 +90,13 @@ subroutine xfem_pc(matass, base, filtrage)
     aster_logical, pointer :: is_xfem(:) => null()
     aster_logical, pointer :: is_connec(:) => null(), is_connec_2(:) => null()
     aster_logical, pointer :: is_svd(:) => null()
-    integer :: nuno, neq, ieq, jcmp, jnueq, jdeeq
-    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm, incr, iret_pc
+    integer :: nuno, neq, ieq, jcmp, jdeeq
+    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm, iret_pc
     real(kind=8) :: kmin, kmax, coef, scal, seuil
     aster_logical :: lmd
     integer :: size_smhc, size_vect_col, size_vect_raw
     integer :: size_smhc_2, size_vect_col_2, size_vect_raw_2
-     parameter    (pc_1='&&XFEM_PC_1')
+    parameter    (pc_1='&&XFEM_PC_1')
 !-----------------------------------------------------------------------
 !
     call jemarq()
@@ -110,7 +111,6 @@ subroutine xfem_pc(matass, base, filtrage)
 !       call utmess('A', 'XFEM_PRECOND_2')
        goto 999
     endif
-!    if (lmd) call jeveuo(nonu//'.NUML.NULG', 'L', jnlogl)
 !
     call infniv(ifm, niv)
     if(niv .ge. 2) call utmess('I', 'XFEMPRECOND_6')
@@ -128,9 +128,6 @@ subroutine xfem_pc(matass, base, filtrage)
     call jeveuo(nonu//'.NUME.REFN', 'L', vk24=refn)
     nomgd=refn(2)(1:8)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', nomgd), 'L', jcmp)
-! VERIFICATION DU NUEQ
-    call jeveuo(nonu//'.NUME.NUEQ', 'L', jnueq)
-    incr=0
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  - MARQUAGE DES NOEUDS XFEM
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -155,12 +152,19 @@ subroutine xfem_pc(matass, base, filtrage)
                               nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
 !
     AS_ALLOCATE(vi=iglob_ddl,size=nbnoxfem*maxi_ddl)
-    do 21 ieq = 1, neq
+    do  ieq = 1, neq
        if (ieq_loc(ieq) .ne. 0) then
            nuno=zi(jdeeq-1+2*(ieq-1)+1)
            iglob_ddl(maxi_ddl*(ino_xfem(nuno)-1)+ieq_loc(ieq))=ieq
        endif
-21  enddo
+    enddo
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! CALCUL COEFFICIENT MISE A ECHELLE
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call echmat(matas1, lmd, kmin, kmax)
+    coef=(kmin+kmax)/2.d0
+    scal=dsqrt(coef)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   CONDENSATION DANS UN "ZR" DES MATRICES LOCALES DE PRE CONDITIONNMENT
@@ -174,15 +178,10 @@ subroutine xfem_pc(matass, base, filtrage)
                          nnz_mloc, deca, tab_mloc)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! CALCUL COEFFICIENT MISE A ECHELLE
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    call echmat(matas1, lmd, kmin, kmax)
-    coef=(kmin+kmax)/2.d0
-    scal=dsqrt(coef)
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! FACTORISATION DE CHOLESKY DES MATRICES LOCALES
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!
+    if (typ_pc.ne.'DPB') goto 999
 !
     if (nvale.eq.2) then
       call xfem_calc_pc('IS_SYME', nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
@@ -212,7 +211,7 @@ subroutine xfem_pc(matass, base, filtrage)
 !
     call xfem_store_pc(matas1, bas1, nonu, neq, zi(jdeeq),&
                        nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc,&
-                       maxi_ddl, iglob_ddl, deca, tab_mloc, pc_1)
+                       maxi_ddl, iglob_ddl, deca, tab_mloc, pc_1, 'D_P_B')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! ACTION DU PRE-CONDITIONNEUR A DROITE ET A GAUCHE SUR MATRICE ASTER
@@ -335,10 +334,29 @@ subroutine xfem_pc(matass, base, filtrage)
     refa(18)(1:19)=pc_1
     call mtdscr(pc_1)
 !
-! EN CAS DE SORTIE BRUTALE
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 999 continue
+!
+! EN CAS DE SORTIE BRUTALE
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   if (refa(18)(1:19) .eq. ' ' .or. iret_pc.ne.0) then
+    AS_DEALLOCATE(vr=tab_mloc)
+    AS_ALLOCATE(vr=tab_mloc,size=nbnoxfem*maxi_ddl)
+!      call xfem_matimp(matas1, 32, 'MATLAB')
+    call xfem_calc_diag(matas1, nonu, neq, zi(jdeeq), nbnomax, &
+                         ino_xfem, is_xfem, nbnoxfem, ieq_loc,&
+                         scal, maxi_ddl, tab_mloc)
+    call xfem_store_pc(matas1, bas1, nonu, neq, zi(jdeeq),&
+                       nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc,&
+                       maxi_ddl, iglob_ddl, maxi_ddl, tab_mloc, pc_1, 'DIAGO')
+    call jeveuo(matas1//'.REFA', 'E', vk24=refa)
+    refa(17)='XFEM_PRECOND'
+    ASSERT( refa(18)(1:19) .eq. ' ' )
+    refa(18)(1:19)=pc_1
+    call mtdscr(pc_1)
+   endif
+!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! NETTOYAGES ...
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

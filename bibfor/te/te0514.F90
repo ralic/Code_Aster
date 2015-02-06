@@ -62,7 +62,7 @@ subroutine te0514(option, nomte)
 !
     character(len=8) :: elp, noma, typma, enr, elrese(3), typsma
     integer :: igeom, jlsn, ifisc, nfisc, ptmaxi, pmmaxi
-    integer :: jout1, jout2, jout3, jout4, jout5, zintmx, nfimax
+    integer :: jpintt, jcnset, jheavt, jlonch, jpmilt, zintmx, nfimax
     integer :: iadzi, iazk24, nno, nnn, jfisco, nsemax, jout6
     integer :: ninter, nit, nse, nnose, ise2, ncomph, ncompp, ncompc
     integer :: npts, cnse(6, 10), i, j, k, it, npi, ipt, ise, in, ni, cpt
@@ -87,6 +87,8 @@ subroutine te0514(option, nomte)
 !     LES TABLEAUX FISC, FISCO, NDOUBL, NDOUB2, PMILIE, PINTER ONT ETE
 !     ALLOUE DE FACON STATIQUE POUR OPTIMISER LE CPU (CAR LES APPELS A
 !     WKVECT DANS LES TE SONT COUTEUX).
+!
+    nomte=nomte
 !
     ASSERT(option.eq.'TOPOSE')
     call vecini(51, 0.d0, pmilie)
@@ -120,10 +122,10 @@ subroutine te0514(option, nomte)
 !     RECUPERATION DES ENTREES / SORTIE
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PLEVSET', 'L', jlsn)
-    call jevech('PPINTTO', 'E', jout1)
-    call jevech('PCNSETO', 'E', jout2)
-    call jevech('PHEAVTO', 'E', jout3)
-    call jevech('PLONCHA', 'E', jout4)
+    call jevech('PPINTTO', 'E', jpintt)
+    call jevech('PCNSETO', 'E', jcnset)
+    call jevech('PHEAVTO', 'E', jheavt)
+    call jevech('PLONCHA', 'E', jlonch)
 !
     call teattr('S', 'XFEM', enr, ibid)
 !
@@ -134,7 +136,7 @@ subroutine te0514(option, nomte)
 !
     if ((ibid.eq.0) .and. (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT' .or.enr.eq.'XHC')&
         .and. .not.iselli(elp)) then
-        call jevech('PPMILTO', 'E', jout5)
+        call jevech('PPMILTO', 'E', jpmilt)
     endif
 !
     call tecach('OOO', 'PHEAVTO', 'E', iret, nval=7,&
@@ -189,7 +191,7 @@ subroutine te0514(option, nomte)
         call loncar(ndim, typma, zr(igeom), lonref)
 !
 !     ON SUBDIVISE L'ELEMENT PARENT EN NIT SOUS-ELEMENTS
-        call xdivte(elp, zi(jout2), nit, nnose)
+        call xdivte(elp, zi(jcnset), nit, nnose)
         cpt = nit
 !     PROBLEME DE DIMENSSIONNEMENT DANS LES CATALOGUES
         ASSERT(ncompc.ge.nnose*ncomph)
@@ -232,20 +234,20 @@ subroutine te0514(option, nomte)
  89             continue
 !
                 if (.not.iselli(elp)) then
-                    call xdecqu(nnose, it, ndim, zi(jout2), jlsn,&
+                    call xdecqu(nnose, it, ndim, zi(jcnset), jlsn,&
                                 igeom, pinter, ninter, npts, ainter,&
                                 pmilie, nmilie, nmfis, nmil, txlsn)
 !
-                    call xdecqv(nnose, it, zi(jout2), zr(jlsn), igeom,&
+                    call xdecqv(nnose, it, zi(jcnset), zr(jlsn), igeom,&
                                 ninter, npts, ainter, nse, cnse,&
-                                heav, nsemax, pinter, zr(jout1))
+                                heav, nsemax, pinter, zr(jpintt))
                 else
                     call xdecou(ndim, elp, nno, nnose, it,&
-                                zr(jout1), zi(jout2), zr(jlsn), fisc, igeom,&
+                                zr(jpintt), zi(jcnset), zr(jlsn), fisc, igeom,&
                                 nfiss, ifiss, pinter, ninter, npts,&
                                 ainter, lonref, nfisc)
                     call xdecov(ndim, elp, nno, nnose, it,&
-                                zr(jout1), zi(jout2), zi(jout3), ncomph, zr(jlsn),&
+                                zr(jpintt), zi(jcnset), zi(jheavt), ncomph, zr(jlsn),&
                                 fisc, igeom, nfiss, ifiss, pinter,&
                                 ninter, npts, ainter, nse, cnse,&
                                 heav, nfisc, nsemax)
@@ -264,7 +266,7 @@ subroutine te0514(option, nomte)
                 deja=.false.
                 do 220 i = 1, npi
                     do 221 j = 1, ndim
-                        p(j) = zr(jout1-1+ndim*(i-1)+j)
+                        p(j) = zr(jpintt-1+ndim*(i-1)+j)
 221                  continue
                     if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
                         deja = .true.
@@ -281,7 +283,7 @@ subroutine te0514(option, nomte)
                         ASSERT(npi.le.ncompp)
 !             ARCHIVAGE DE PINTTO
                         do 230 j = 1, ndim
-                            zr(jout1-1+ndim*(npi-1)+j)=newpt(j)
+                            zr(jpintt-1+ndim*(npi-1)+j)=newpt(j)
 230                     continue
 !
 !             ARCHIVAGE DE PAINTTO POUR LES ELEMENTS PRINCIPAUX
@@ -293,8 +295,8 @@ subroutine te0514(option, nomte)
                        call conare(typma, ar, nbar)
                        typsma = elrese(ndim)
                        call conare(typsma, ars, nbars)
-                       b1=zi(jout2+nnose*(it-1)+ars(nint(rainter(1)),1)-1)
-                       b2=zi(jout2+nnose*(it-1)+ars(nint(rainter(1)),2)-1)
+                       b1=zi(jcnset+nnose*(it-1)+ars(nint(rainter(1)),1)-1)
+                       b2=zi(jcnset+nnose*(it-1)+ars(nint(rainter(1)),2)-1)
 !
                        do j = 1, nbar
                           a1 = ar(j,1)
@@ -337,7 +339,7 @@ subroutine te0514(option, nomte)
                         deja=.false.
                         do 320 i = 1, npm
                             do 321 j = 1, ndim
-                                p(j) = zr(jout5-1+ndim*(i-1)+j)
+                                p(j) = zr(jpmilt-1+ndim*(i-1)+j)
 321                         continue
                             if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
                                 deja = .true.
@@ -350,7 +352,7 @@ subroutine te0514(option, nomte)
                             ASSERT(npm.le.pmmax)
 !               ARCHIVAGE DE PMILTO
                             do 330 j = 1, ndim
-                                zr(jout5-1+ndim*(npm-1)+j)=pmilie(ndim*(ipt-1)+j)
+                                zr(jpmilt-1+ndim*(npm-1)+j)=pmilie(ndim*(ipt-1)+j)
 330                         continue
 !
 !               MISE A JOUR DU CNSE (TRANSFORMATION DES 200 EN 2000...)
@@ -372,7 +374,7 @@ subroutine te0514(option, nomte)
 !
 !         ARCHIVAGE DE LONCHAM
             if (ndim.eq.3.and.nfiss.eq.1) then
-               zi(jout4-1+4+it) = nse
+               zi(jlonch-1+4+it) = nse
             endif
 ! ------- BOUCLE SUR LES NSE SOUS-ELE : ARCHIVAGE DE PCNSETO, PHEAVTO
                 do 120 ise = 1, nse
@@ -386,12 +388,12 @@ subroutine te0514(option, nomte)
                     ASSERT(cpt.le.ncomph)
 !           ARCHIVAGE DE PHEAVTO
                     do 125 i = 1, ifiss
-                        zi(jout3-1+ncomph*(i-1)+ise2)= nint(heav(ifiss*(&
+                        zi(jheavt-1+ncomph*(i-1)+ise2)= nint(heav(ifiss*(&
                     ise-1)+i))
 125                 continue
 !           ARCHIVAGE DE PCNSETO
                     do 121 in = 1, nnose
-                        zi(jout2-1+nnose*(ise2-1)+in)=cnse(ise,in)
+                        zi(jcnset-1+nnose*(ise2-1)+in)=cnse(ise,in)
 121                 continue
 !
 120             continue
@@ -402,10 +404,10 @@ subroutine te0514(option, nomte)
  90     continue
 !
 !     ARCHIVAGE DE LONCHAM SOUS ELEMENTS
-        zi(jout4-1+1)=nit
+        zi(jlonch-1+1)=nit
 !
 !     ARCHIVAGE DE LONCHAM POINTS D'INTERSECTION
-        zi(jout4-1+2)=npi
+        zi(jlonch-1+2)=npi
 !
 !     SERT UNIQUEMENT POUR LA VISU
 !
@@ -431,14 +433,14 @@ subroutine te0514(option, nomte)
 !
         do 130 ise = 1, nit
             do 127 in = 1, nnose
-                i = zi(jout2-1+nnose*(ise-1)+in)
+                i = zi(jcnset-1+nnose*(ise-1)+in)
                 if (i .lt. 1000) then
 ! ----- ON SE PLACE EN BASE 2, LA DIMENSSION DU PB EST NFISS
 ! ----- POUR CHAQUE FISSURE H=-1 OU 0=>0
 !                           H=+1     =>1
                     iad = ncomb*(i-1)
                     do 128 ifiss = 1, nfiss
-                        if (zi(jout3-1+ncomph*(ifiss-1)+ise) .eq. 1) then
+                        if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
                             iad = iad + 2**(nfiss-ifiss)
                         endif
 128                 continue
@@ -446,7 +448,7 @@ subroutine te0514(option, nomte)
                 else if (i.gt.1000.and.i.lt.2000) then
                     iad = ncomb*(i-1001)
                     do 129 ifiss = 1, nfiss
-                        if (zi(jout3-1+ncomph*(ifiss-1)+ise) .eq. 1) then
+                        if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
                             iad = iad + 2**(nfiss-ifiss)
                         endif
 129                 continue
@@ -454,7 +456,7 @@ subroutine te0514(option, nomte)
                 else if (i.gt.2000.and.i.lt.3000) then
                     iad = ncomb*(i-2001)
                     do 779 ifiss = 1, nfiss
-                        if (zi(jout3-1+ncomph*(ifiss-1)+ise) .eq. 1) then
+                        if (zi(jheavt-1+ncomph*(ifiss-1)+ise) .eq. 1) then
                             iad = iad + 2**(nfiss-ifiss)
                         endif
 779                 continue
@@ -487,8 +489,8 @@ subroutine te0514(option, nomte)
 700         continue
         endif
 !
-        zi(jout4-1+3)=nnn
-        zi(jout4-1+4)=0
+        zi(jlonch-1+3)=nnn
+        zi(jlonch-1+4)=0
 !   stockage des noeuds centraux servant a definir la connectivite sur sous-tetra courant
         call vecini(3, 0.d0, xg)
 !   pour chaque noeud central
@@ -501,19 +503,19 @@ subroutine te0514(option, nomte)
 !     pour chaque noeud de chaque sous-tetra
             do 400 i = 1, nit*nnose
 !       si le noeud courant du sous-tetra courant est le noeud central courant
-                if (zi(jout2-1+i) .eq. (nno+j)) then
+                if (zi(jcnset-1+i) .eq. (nno+j)) then
 !         s'il n'a pas deja ete ajoute, on ajoute le noeud central courant
                     if (.not. deja) then
                         deja=.true.
                         npm=npm+1
                         do 402 k = 1, ndim
-                            zr(jout5+(npm-1)*ndim+k-1)=xg(k)
+                            zr(jpmilt+(npm-1)*ndim+k-1)=xg(k)
 402                     continue
                         end if
 !         NOMBRE TOTAL DE POINTS MILIEUX LIMITE A PMMAX
                         ASSERT(npm.le.pmmax)
 !         stockage du noeud central cournant
-                        zi(jout2-1+i)=3000+npm
+                        zi(jcnset-1+i)=3000+npm
                     endif
 400                 continue
 401                 continue
@@ -521,7 +523,7 @@ subroutine te0514(option, nomte)
 !     ARCHIVAGE DE LONCHAM POINTS MILIEUX
 !
                     if (.not.iselli(elp)) then
-                        zi(jout4-1+4)=npm
+                        zi(jlonch-1+4)=npm
                     endif
 !
                     call jedema()

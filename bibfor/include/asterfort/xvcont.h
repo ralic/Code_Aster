@@ -20,7 +20,7 @@ interface
                       coefcp, coefcr, ddlm,&
                       ddls, ffc, ffp, idepl, idepm,&
                       ifa, ifiss, imate, indco, ipgf,&
-                      jac, jfisno, jheafa, lact, ncomph,&
+                      jac, jheavn, ncompn, jheafa, lact, ncomph,&
                       nd, nddl, ndim, nfh, nfiss,&
                       nno, nnol, nnos, nvit, pla,&
                       rela, reac, rr, singu, tau1,&
@@ -43,7 +43,8 @@ interface
         integer :: indco
         integer :: ipgf
         real(kind=8) :: jac
-        integer :: jfisno
+        integer :: jheavn
+        integer :: ncompn
         integer :: jheafa
         integer :: lact(8)
         integer :: ncomph

@@ -1,5 +1,5 @@
 subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
-                  he, ddlh, ddlc, nfe, basloc,&
+                  he, heavn, ddlh, ddlc, nfe, basloc,&
                   nnop, npg, lsn, lst, sig,&
                   matuu)
 !
@@ -14,7 +14,9 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
-    integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
+    integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe, heavn(27,5)
     character(len=8) :: elrefp
     character(len=8) :: elrese
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
@@ -68,7 +70,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !
     integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret, ij
     integer :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
+    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se, nfiss
     real(kind=8) :: tmp1, fe(4), baslog(6)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, ndim), dgdgl(4, 3)
@@ -98,6 +100,10 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
                      npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
                      jdfd2=jdfd2, jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
+!
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT :: LE MULTI-HEAVISIDE N EST PAS PRIS EN COMPTE SANS FISNO
+    nfiss=1
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
@@ -160,7 +166,7 @@ subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
 !----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT HEAVISIDE
                 if (ddlh .eq. ndim) then
                     cpt = 2
-                    pff(cpt,n,i) = dfdi(n,i)*he
+                    pff(cpt,n,i) = dfdi(n,i)*xcalc_heav(heavn(n,1),hea_se,heavn(n,5))
                 endif
 !----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT CRACK-TIP
                 do ig = 1, nfe

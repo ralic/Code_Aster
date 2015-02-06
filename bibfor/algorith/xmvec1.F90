@@ -4,7 +4,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                   coefcp, lpenac, jeu, norm,&
                   nsinge, nsingm, rre, rrm,&
                   jddle, jddlm, nfhe, nfhm, lmulti,&
-                  heavno, heavfa, vtmp)
+                  heavno, heavn, heavfa, vtmp)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,13 +28,15 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
 #include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
     integer :: ndim, jnne(3), jnnm(3), nnc
     integer :: nsinge, nsingm
     real(kind=8) :: hpg, ffc(9), jacobi, ffe(20), ffm(20)
     real(kind=8) :: dlagrc, jeu, norm(3), coefcr, coefcp, rre, rrm
     real(kind=8) :: vtmp(336)
     integer :: ndeple, jddle(2), jddlm(2)
-    integer :: nfhe, nfhm, heavno(8), heavfa(*)
+    integer :: nfhe, nfhm, heavno(8), heavfa(*), heavn(*)
     aster_logical :: lpenac, lmulti
 !
 ! ----------------------------------------------------------------------
@@ -69,7 +71,7 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
 ! ----------------------------------------------------------------------
     integer :: i, j, ii, pl, iin, nddle
     integer :: nne, nnes, nnem, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    integer :: ifh, iddl
+    integer :: ifh, iddl, hea_fa(2)
     real(kind=8) :: vv, iescl(6), imait(6)
 ! ----------------------------------------------------------------------
 !
@@ -82,6 +84,11 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
     imait(1) = 1
     imait(2) = 1
     imait(2+nfhm)= rrm
+!    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
+    if (.not.lmulti) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
 !
 ! --------------------- CALCUL DE [L1_CONT]-----------------------------
 !
@@ -108,8 +115,14 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                 endif
                 if (lmulti) then
                     do 15 ifh = 1, nfhe
-                        iescl(1+ifh)=heavfa(nfhe*(i-1)+ifh)
+                        iescl(1+ifh)=xcalc_heav(heavn(nfhe*(i-1)+ifh),&
+                                                heavfa(1),&
+                                                heavn(nfhe*nne+nfhm*nnm+i))
  15                 continue
+                else
+                        iescl(2)=xcalc_heav(heavn(i),&
+                                            hea_fa(1),&
+                                            heavn(nfhe*nne+nfhm*nnm+i))
                 endif
                 do 25 iddl = 1, 1+nfhe+nsinge
                     ii = iin + (iddl-1)*ndim + j
@@ -126,8 +139,14 @@ subroutine xmvec1(ndim, jnne, ndeple, nnc, jnnm,&
                 endif
                 if (lmulti) then
                     do 35 ifh = 1, nfhm
-                        imait(1+ifh)=heavfa(nfhe*nne+nfhm*(i-1)+ifh)
+                        imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(i-1)+ifh),&
+                                                heavfa(2),&
+                                                heavn((1+nfhe)*nne+nfhm*nnm+i))
  35                 continue
+                else
+                        imait(2)=xcalc_heav(heavn(nne+i),&
+                                            hea_fa(2),&
+                                            heavn((1+nfhe)*nne+nfhm*nnm+i))  
                 endif
                 do 45 iddl = 1, 1+nfhm+nsingm
                     ii = iin + (iddl-1)*ndim + j

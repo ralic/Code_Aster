@@ -23,7 +23,7 @@ interface
                       ffm, jacobi, coefcr, coefcp,&
                       lpenac, norm, nsinge, nsingm,&
                       rre, rrm, jddle, jddlm,&
-                      nfhe, nfhm, lmulti, heavno, heavfa,&
+                      nfhe, nfhm, lmulti, heavno, heavn, heavfa,&
                       mmat)
         integer :: ndim
         integer :: jnne(3)
@@ -49,6 +49,7 @@ interface
         integer :: nfhm
         aster_logical :: lmulti
         integer :: heavno(8)
+        integer :: heavn(*)
         integer :: heavfa(*)
         real(kind=8) :: mmat(336, 336)
     end subroutine xmmaa1

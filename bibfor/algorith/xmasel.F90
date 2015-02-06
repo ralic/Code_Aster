@@ -1,6 +1,6 @@
 subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
                   imate, pintt, cnset, heavt, lonch,&
-                  basloc, lsn, lst, matuu)
+                  basloc, lsn, lst, matuu, heavn)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref1.h"
@@ -8,7 +8,7 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
 #include "asterfort/xmase2.h"
 #include "asterfort/xmase3.h"
     integer :: nnop, imate, igeom
-    integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
+    integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10), heavn(27,5)
     real(kind=8) :: pintt(3*11), lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), basloc(*)
 ! ----------------------------------------------------------------------
@@ -110,13 +110,13 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
 !
             call xmase3(elrefp, ndim, coorse, igeom, he,&
                         ddlh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu)
+                        npg, imate, lsn, lst, matuu, heavn)
 !
         else if (ndim.eq.2) then
 !
             call xmase2(elrefp, ndim, coorse, igeom, he,&
                         ddlh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu)
+                        npg, imate, lsn, lst, matuu, heavn)
 !
         endif
 !

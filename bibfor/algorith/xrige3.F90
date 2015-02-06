@@ -1,5 +1,5 @@
 subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
-                  ddlh, ddlc, nfe, basloc,&
+                  heavn, ddlh, ddlc, nfe, basloc,&
                   nnop, npg, lsn, lst, sig,&
                   matuu)
 !
@@ -12,7 +12,9 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalfe.h"
-    integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
+    integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe, heavn(27,5)
     character(len=8) :: elrefp
     real(kind=8) :: basloc(9*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(90), matuu(*)
@@ -68,7 +70,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !
     integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret, ij
     integer :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
+    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se, nfiss
     integer :: nnops
     real(kind=8) :: tmp1, fe(4), baslog(9)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
@@ -95,6 +97,10 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
   jdfd2=jdfd2,jgano=jgano)
 !
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
+!
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT :: LE MULTI-HEAVISIDE N EST PAS PRIS EN COMPTE SANS FISNO
+    nfiss=1
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
@@ -151,7 +157,7 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT HEAVISIDE
                 if (ddlh .eq. ndim) then
                     cpt = 2
-                    pff(cpt,n,i) = dfdi(n,i)*he
+                    pff(cpt,n,i) = dfdi(n,i)*xcalc_heav(heavn(n,1),hea_se,heavn(n,5))
                 endif
 !----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT CRACK-TIP
                 do ig = 1, nfe

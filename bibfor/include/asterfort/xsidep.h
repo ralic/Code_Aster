@@ -20,7 +20,7 @@ interface
                       igeom, typmod, imate, compor, jpintt,&
                       cnset, heavt, lonch, basloc, idepl,&
                       lsn, lst, sig, jpmilt, nfiss,&
-                      jfisno)
+                      jheavn)
         integer :: nfiss
         integer :: nnop
         integer :: nfh
@@ -41,6 +41,6 @@ interface
         real(kind=8) :: lst(nnop)
         real(kind=8) :: sig(*)
         integer :: jpmilt
-        integer :: jfisno
+        integer :: jheavn
     end subroutine xsidep
 end interface

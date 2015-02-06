@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xstan2(crimax, noma, modele)
+    subroutine xstan2(crimax, noma, modele, crit2)
         real(kind=8) :: crimax
+        real(kind=8) :: crit2(2)
         character(len=8) :: noma
         character(len=8) :: modele
     end subroutine xstan2

@@ -46,15 +46,14 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
     integer :: nm, jadr, info
     real(kind=8) :: tab_mat(*), scal
 !-----------------------------------------------------------------------
-    real(kind=8), allocatable :: ab(:,:), s(:), u(:,:), vt(:,:), work(:), diag(:)
-    real(kind=8) :: work0(1), coef_j, lambda_j, mini, maxi, dii, ech
+    real(kind=8), allocatable :: ab(:,:), s(:), u(:,:), vt(:,:), work(:)
+    real(kind=8) :: work0(1), coef_j, lambda_j, mini, maxi, dii, ech, diag(nm)
     integer :: j, i, lwork
     blas_int :: iret
     real(kind=8) :: seuil_svd, seuil_mloc
 !-----------------------------------------------------------------------
 !
     allocate(ab(nm,nm))
-    allocate(diag(nm))
     allocate(s(nm))
     allocate(u(nm,nm))
     allocate(vt(nm,nm))
@@ -69,7 +68,16 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
        mini=min(dii,mini)
        maxi=max(dii,maxi)
     enddo
+!
     ech=(maxi+mini)/2.d0
+    seuil_mloc=sqrt(ech*5.d-17)
+!
+    do i=1,nm
+       if (diag(i) .lt. seuil_mloc) then
+         info=-1
+         goto 99
+       endif
+    enddo
 !
     do j=1,nm
        do i=1,nm
@@ -89,6 +97,8 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
 !
     call dgesvd('S', 'S', nm, nm, ab, nm, s, u, nm, vt, nm,&
                 work, lwork, iret)
+!
+    deallocate(work)
     info=iret
 !
     if (info .ne. 0) then
@@ -102,22 +112,16 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
 !    ON MULTIPLIE PAR SCAL : UN COEFFICIENT DE MISE A L ECHELLE
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     seuil_svd=sqrt(r8prem())
-    seuil_mloc=sqrt(ech*5.d-17)
-    do i=1,nm
-       if (diag(i) .lt. seuil_mloc) then
-         info=-1
-         goto 99
-         diag(i)=sqrt(ech)*r8gaem()
-       endif
-    enddo
     if ( info .eq. 0) then
        do j=1,nm
-          if(s(j) .lt. 0.d0)  then
+          if(s(j) .le. 0.d0)  then
              info=-1
              goto 99
           endif
           lambda_j=s(j)/s(1)
           if (lambda_j .lt. seuil_svd) then
+             info=-1
+             goto 99
              coef_j=sqrt(s(1))*r8gaem()
           else
              coef_j=sqrt(s(j)) 
@@ -131,11 +135,9 @@ subroutine xfem_calc_svd(tab_mat, jadr, nm, scal, info)
 !
 99  continue
 !
-    deallocate(diag)
     deallocate(ab)
     deallocate(s)
     deallocate(u)
     deallocate(vt)
-    deallocate(work)
 !
 end subroutine

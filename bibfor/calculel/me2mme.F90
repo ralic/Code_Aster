@@ -104,11 +104,11 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     integer :: icha, ier, ifla, ilires, iret
     integer :: j, jveass, nh
 !-----------------------------------------------------------------------
-    parameter(nbin=43)
+    parameter(nbin=44)
     character(len=8) :: lpain(nbin), lpaout(1), noma, exiele
     character(len=16) :: option
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
-    character(len=19) :: pmilto, fissno, pinter
+    character(len=19) :: pmilto, fissno, pinter, hea_no
     character(len=24) :: chgeom, lchin(nbin), lchout(1), kcmp(5)
     character(len=24) :: ligrmo, ligrch, chtime, chlapl, chcara(18)
     character(len=24) :: chharm
@@ -187,6 +187,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
         heavto=modele(1:8)//'.TOPOSE.HEA'
         loncha=modele(1:8)//'.TOPOSE.LON'
         pmilto=modele(1:8)//'.TOPOSE.PMI'
+        hea_no=modele(1:8)//'.TOPONO.HNO'
         basloc=modele(1:8)//'.BASLOC'
         lsn=modele(1:8)//'.LNNO'
         lst=modele(1:8)//'.LTNO'
@@ -205,6 +206,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
         stano='&&ME2MME.STNO.BID'
         fissno='&&ME2MME.FISSNO.BID'
         pinter='&&ME2MME.PINTER.BID'
+        hea_no='&&ME2MME.HEA_NO.BID'
     endif
 !
     if (ier .ne. 0) then
@@ -230,6 +232,8 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
         lchin(42)=fissno
         lpain(43)='PPINTER'
         lchin(43)=pinter
+        lpain(44)='PHEA_NO'
+        lchin(44)=hea_no
     endif
 ! ----- REMPLISSAGE DES CHAMPS D'ENTREE
 !

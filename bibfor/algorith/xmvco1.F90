@@ -1,17 +1,22 @@
 subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
                   lact, dtang, nfh, ddls, jac,&
                   ffc, ffp, singu, rr, cstaco,&
-                  nd, tau1, tau2, vtmp)
+                  nd, tau1, tau2, jheavn, ncompn,&
+                  nfiss, ifiss, jheafa, ncomph, ifa,&
+                  vtmp)
 !
 !
     implicit none
+#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_saut.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim, nno, nnol
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu
+    integer :: ifiss, nfiss, jheavn, ncompn, jheafa, ifa, ncomph
     real(kind=8) :: vtmp(400), sigma(6)
     real(kind=8) :: ffp(27), jac
 !
@@ -56,16 +61,22 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 !
 !
 !
-    integer :: i, j, k, pli, nli
-    real(kind=8) :: tau(3), coefh
+    integer :: i, j, k, pli, nli, ifh, hea_fa(2)
+    real(kind=8) :: tau(3), coefi
     real(kind=8) :: ffi, ttx(3), eps, sqrtan, sqttan
+    aster_logical :: lmultc
 !
 ! ---------------------------------------------------------------------
 !
 ! DIRECTION DU SAUT DE DEPLACEMENT TANGENT
 !
+    lmultc = nfiss.gt.1
+    if (.not.lmultc) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
     call vecini(3, 0.d0, tau)
-    coefh=xcoef_he()
+    coefi=xcalc_saut(1,0,1)
     eps=r8prem()
     sqttan=0.d0
     sqrtan=dtang(1)**2+dtang(2)**2+dtang(3)**2
@@ -77,16 +88,31 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
     endif
 !
     do 450 i = 1, nno
-        do 451 j = 1, nfh*ndim
+        do 451 j = 1, ndim
+          do ifh = 1, nfh
+            if (lmultc) then
+                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa-1), &
+                                   zi(jheafa-1+ncomph*(ifiss-1)+2*ifa),&
+                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+            else
+                coefi = xcalc_saut(zi(jheavn-1+ncompn*(i-1)+ifh),&
+                                   hea_fa(1), &
+                                   hea_fa(2),&
+                                   zi(jheavn-1+ncompn*(i-1)+ncompn))
+            endif
             vtmp(ddls*(i-1)+ndim+j) =vtmp(&
-                                     ddls*(i-1)+ndim+j)+ (coefh*sigma(1)*nd(j)*ffp(i)*jac)+ (coefh&
+                                     ddls*(i-1)+ndim*(1+ifh-1)+j)+ &
+                                     (coefi*sigma(1)*nd(j)*ffp(i)*jac)+ (coefi&
                                      &*sigma(2)*tau1(j)* ffp(i)*jac&
                                       )
             if (ndim .eq. 3) then
                 vtmp(ddls*(i-1)+ndim+j) = vtmp(&
-                                          ddls*(i-1)+ndim+j)+ (coefh*sigma(3)*tau2(j)*ffp(i)*jac)
+                                          ddls*(i-1)+ndim*(1+ifh-1)+j)+ &
+                                          (coefi*sigma(3)*tau2(j)*ffp(i)*jac)
             endif
 !
+          enddo
 451      continue
         do 452 j = 1, singu*ndim
             vtmp(ddls*(i-1)+ndim*(1+nfh)+j) = vtmp(&

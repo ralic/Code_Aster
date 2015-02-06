@@ -45,7 +45,7 @@ subroutine te0542(option, nomte)
 !
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, icontm, jlsn, jlst
-    integer :: jpmilt, ddlm, nfiss, jfisno, ideplm, icompo
+    integer :: jpmilt, ddlm, nfiss, jfisno, ideplm, icompo, jheavn
     integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
     integer :: contac, nnom, singu
     aster_logical :: lbid
@@ -84,6 +84,7 @@ subroutine te0542(option, nomte)
     call jevech('PLST', 'L', jlst)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
+    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -99,7 +100,7 @@ subroutine te0542(option, nomte)
                    ddlm, igeom, zk16( icompo), jpintt, zi(jcnset),&
                    zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm), nbsig,&
                    ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt,&
-                   nfiss, jfisno)
+                   nfiss, jheavn)
 !
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, lbid,&
@@ -119,14 +120,14 @@ subroutine te0542(option, nomte)
                    ddlm, igeom, zk16(icompo), jpintt, zi(jcnset),&
                    zi(jheavt), zi(jlonch), zr(jbaslo), sigref, nbsig,&
                    ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt,&
-                   nfiss, jfisno)
+                   nfiss, jheavn)
 !
 ! --- SI ELEMENT DE CONTACT, ON Y AJOUTE LES CONTRIBUTIONS SURFACIQUES
 ! --- NOTAMMENT CELLE POUR LES EQUATIONS DUALES
 !
         if (enr .eq. 'XHC') then
             call xbsir2(elref, contac, ddlc, ddlm, ddls,&
-                        igeom, jfisno, jlst, ivectu, singu,&
+                        igeom, jheavn, jlst, ivectu, singu,&
                         nddl, ndim, nfe, nfh, nfiss,&
                         nno, nnom, nnos, depref, sigref(1))
         endif

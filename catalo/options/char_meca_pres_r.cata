@@ -41,6 +41,8 @@ OPTION__
         PPMILTO  N480_R
         PBASECO  N480_R
         PFISNO   NEUT_I
+        PHEA_NO  N120_I
+        PHEA_SE  N128_I
    OUT__
 PVECTUR VDEP_R RESL__
 

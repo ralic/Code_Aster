@@ -4,7 +4,7 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
                  lgpg, crit, jpintt, cnset, heavt,&
                  lonch, basloc, idepl, lsn, lst,&
                  sig, vi, matuu, ivectu, codret,&
-                 jpmilt, nfiss, jfisno)
+                 jpmilt, nfiss, jheavn)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
 #include "asterfort/tecach.h"
 #include "asterfort/xxnmpl.h"
 !
-    integer :: nnop, imate, lgpg, codret, igeom, nfiss, jfisno
+    integer :: nnop, imate, lgpg, codret, igeom, nfiss, jheavn
     integer :: cnset(4*32), heavt(*), lonch(10), ndim
     integer :: nfh, nfe, ddlc, ddlm, idepl, ivectu, ideplp
     integer :: jpintt, jpmilt
@@ -80,7 +80,7 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  PMILT   : COORDONNEES DES POINTS MILIEUX
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
+! IN  JHEAVN  : POINTEUR VERS LA DEFINITION HEAVISIDE
 !
 ! OUT SIG     : CONTRAINTES DE CAUCHY (RAPH_MECA ET FULL_MECA)
 ! OUT VI      : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
@@ -92,8 +92,9 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
     real(kind=8) :: he(nfiss), coorse(81)
     integer :: nse, npg
     integer :: j, ise, in, ino, idebs, idebv
-    integer ::  nbsig, idecpg, jtab(2), ncomp, iret
-    integer :: irese, nno, ig, ifiss, fisno(nnop, nfiss)
+    integer ::  nbsig, idecpg, jtab(7), ncomp, iret
+    integer :: irese, nno, ig, ifiss
+    integer :: ncompn, heavn(nnop, 5)
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -123,19 +124,17 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
     nbsig = nbsigm()
 !
-!     RECUPERATION DE LA CONNECTIVITÉ FISSURE - DDL HEAVISIDES
-!     ATTENTION !!! FISNO PEUT ETRE SURDIMENTIONNÉ
-    if (nfiss .eq. 1) then
-        do ino = 1, nnop
-            fisno(ino,1) = 1
-        end do
-    else
-        do ig = 1, nfh
-!    ON REMPLIT JUSQU'A NFH <= NFISS
-            do ino = 1, nnop
-                fisno(ino,ig) = zi(jfisno-1+(ino-1)*nfh+ig)
-            end do
-        end do
+!   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
+    if (nfh.gt.0) then
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
     endif
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
@@ -185,7 +184,7 @@ subroutine xnmpl(nnop, nfh, nfe, ddlc, ddlm,&
                     basloc, nnop, npg, typmod, option,&
                     imate, compor, lgpg, crit, idepl,&
                     lsn, lst, idecpg, sig(idebs+1), vi(idebv+1),&
-                    matuu, ivectu, codret, nfiss, fisno)
+                    matuu, ivectu, codret, nfiss, heavn)
 !
 !
     end do

@@ -118,12 +118,12 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     aster_logical :: fonc, lxfem
     character(len=2) :: codret
     character(len=8) :: resu, fiss
-    character(len=8) :: lpain(30), lpaout(1)
+    character(len=8) :: lpain(31), lpaout(1)
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
     character(len=19) :: chvarc, chvref
     character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno
-    character(len=19) :: pmilto
+    character(len=19) :: pmilto, hea_no
     character(len=19) :: longco, pinter, ainter, cface, baseco
     character(len=24) :: ligrmo, chgeom, chgthi
     character(len=24) :: chsigi, sigout, celmod
@@ -248,6 +248,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         pintto = modele//'.TOPOSE.PIN'
         cnseto = modele//'.TOPOSE.CNS'
         heavto = modele//'.TOPOSE.HEA'
+        hea_no = modele//'.TOPONO.HNO'
         loncha = modele//'.TOPOSE.LON'
         pmilto = modele//'.TOPOSE.PMI'
 !       ON NE PREND PAS LES LSN ET LST DU MODELE
@@ -326,8 +327,10 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             lchin(25) = pmilto
             lpain(26) = 'PBASECO'
             lchin(26) = baseco
+            lpain(27) = 'PHEA_NO'
+            lchin(27) = hea_no
 !
-            nchin = 26
+            nchin = 27
         endif
 !
         if ((opti.eq.'CALC_G_F') .or. (opti.eq.'G_LAGR_F')) then

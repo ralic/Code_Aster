@@ -133,7 +133,13 @@ class sd_modele_xfem(AsBase):
     TOPOFAC_HE = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOFAC.HE')))
     TOPOFAC_OE = sd_cham_elem(SDNom(nomj='.TOPOFAC.OE'))
 
-# II.3) objets concatenes relatifs aux level sets
+# II.3) objets relatifs a l'enrichissement heaviside
+
+    TOPONO_HNO  = sd_cham_elem(SDNom(nomj='.TOPONO.HNO'))
+    TOPONO_HSE  = sd_cham_elem(SDNom(nomj='.TOPONO.HSE'))
+    TOPONO_HFA  = sd_cham_elem(SDNom(nomj='.TOPONO.HFA'))
+
+# II.4) objets concatenes relatifs aux level sets
 
     LNNO = sd_cham_elem(SDNom(nomj='.LNNO'))
     LTNO = sd_cham_elem(SDNom(nomj='.LTNO'))
@@ -143,7 +149,7 @@ class sd_modele_xfem(AsBase):
     HEAVNO = sd_cham_elem(SDNom(nomj='.HEAVNO'))
     NOXFEM = sd_cham_no()
 
-# II.4) autres objets
+# II.5) autres objets
 
     XFEM_CONT = AsVI(lonmax=1)  # contact ou pas
     FISS = AsVK8()             # noms des fissures

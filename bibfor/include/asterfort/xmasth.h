@@ -18,7 +18,7 @@
 interface
     subroutine xmasth(ndim, elrefp, nnop, imate, itemps,&
                       igeom, lonch, cnset, jpintt, lsn,&
-                      lst, basloc, heavt, nfh, nfe,&
+                      lst, heavn, basloc, heavt, nfh, nfe,&
                       mattt)
         integer :: nfe
         integer :: nfh
@@ -31,6 +31,7 @@ interface
         integer :: lonch(10)
         integer :: cnset(128)
         integer :: jpintt
+        integer :: heavn(27,5)
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: basloc(*)

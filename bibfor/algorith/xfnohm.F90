@@ -4,7 +4,7 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                   mecani, press1, dimcon, nddls, nddlm,&
                   dimuel, nmec, np1, ndim, axi,&
                   dimenr, nnop, nnops, nnopm, igeom,&
-                  jpintt, jpmilt, jlsn, lonch, cnset, heavt,&
+                  jpintt, jpmilt, jheavn, lonch, cnset, heavt,&
                   enrmec, enrhyd)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
@@ -27,6 +27,8 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 ! ======================================================================
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/tecach.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcabhm.h"
@@ -45,8 +47,9 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
     integer :: nnop, nnopm, nnops, in, j
     integer :: yaenrm, adenme, nse, ise, ino, enrmec(3)
     integer :: yaenrh, enrhyd(3), adenhy
-    integer :: igeom, jpintt, jpmilt, jlsn
+    integer :: igeom, jpintt, jpmilt, jheavn
     integer :: lonch(10), cnset(4*32), heavt(36)
+    integer :: heavn(nnop,5), ig, ncompn, jtab(7), iret
     real(kind=8) :: coorse(81), he, xg(ndim), xe(ndim), bid3(ndim)
     real(kind=8) :: ff(nnop), ff2(nnops), geom(ndim, nnop)
     real(kind=8) :: dfdi(nnop, ndim), dfdi2(nnops, ndim)
@@ -107,6 +110,16 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
 ! =====================================================================
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMEN
     nse=lonch(1)
+!     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
+    call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+    ncompn = jtab(2)/jtab(3)
+    ASSERT(ncompn.eq.5)
+    do in = 1, nnop
+      do ig = 1 , ncompn
+        heavn(in,ig) = zi(jheavn-1+ncompn*(in-1)+ig)
+      enddo
+    enddo
 !
 !     BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do 600 ise = 1, nse
@@ -173,7 +186,7 @@ subroutine xfnohm(fnoevo, deltat, nno, npg, ipoids,&
                         addeme, yap1, addep1, np1, axi,&
                         ivf, ipoids, idfde, poids, coorse,&
                         nno, geom, yaenrm, adenme, dimenr,&
-                        he, jlsn, yaenrh, adenhy)
+                        he, heavn, yaenrh, adenhy)
 ! ======================================================================
             call xfnoda(imate, mecani, press1, enrmec, dimenr,&
                         dimcon, ndim, dt, fnoevo, congem(npg*(ise-1)*dimcon+1),&

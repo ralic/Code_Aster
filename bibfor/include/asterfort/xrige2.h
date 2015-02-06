@@ -17,11 +17,12 @@
 !
 interface
     subroutine xrige2(elrefp, elrese, ndim, coorse, igeom,&
-                      he, ddlh, ddlc, nfe,&
+                      he, heavn, ddlh, ddlc, nfe,&
                       basloc, nnop, npg, lsn, lst,&
                       sig, matuu)
         integer :: nnop
         integer :: ndim
+        integer :: heavn(27,5)
         character(len=8) :: elrefp
         character(len=8) :: elrese
         real(kind=8) :: coorse(*)

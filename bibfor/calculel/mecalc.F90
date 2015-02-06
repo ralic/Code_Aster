@@ -86,7 +86,7 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
     character(len=8) :: poux, nomode, lpain(maxin), lpaout(maxout), carel
     character(len=8) :: noma
     character(len=16) :: optio2, vari
-    character(len=19) :: canbsp, canbva, chxfem(11)
+    character(len=19) :: canbsp, canbva, chxfem(12)
     character(len=24) :: valk
     character(len=24) :: lchin(maxin), lchout(maxout), chdep2, chele2, chc
     character(len=24) :: chnova
@@ -321,7 +321,8 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
             chxfem(8) = modele(1:8)//'.LTNO'
             chxfem(9) = modele(1:8)//'.STNO'
             chxfem(10) = modele(1:8)//'.FISSNO'
-            chxfem(11)=chelex
+            chxfem(11) = chelex
+            chxfem(12) = modele(1:8)//'.TOPONO.HNO'
             call ajchca('PPINTTO', chxfem(1), lpain, lchin, nbin,&
                         maxin, 'N')
             call ajchca('PCNSETO', chxfem(2), lpain, lchin, nbin,&
@@ -346,6 +347,8 @@ subroutine mecalc(option, modele, chdepl, chgeom, chmate,&
                 call ajchca('PSIEFSER', chxfem(11), lpaout, lchout, nbout,&
                             maxout, 'N')
             endif
+            call ajchca('PHEA_NO', chxfem(12), lpain, lchin, nbin,&
+                        maxin, 'N')
         endif
 !
         call ajchca('PCAARPO', chcara(9), lpain, lchin, nbin,&

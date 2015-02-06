@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt,&
-                      jfisno, nfh, ddlc, nfe, nfiss,&
+    subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
+                      heavn, nfh, ddlc, nfe, nfiss,&
                       ise, nnop, jlsn, jlst, ivectu,&
                       fno)
         integer :: nnop
@@ -26,7 +26,8 @@ interface
         real(kind=8) :: coorse(*)
         integer :: igeom
         integer :: jheavt
-        integer :: jfisno
+        integer :: ncomp
+        integer :: heavn(27,5)
         integer :: nfh
         integer :: ddlc
         integer :: nfe

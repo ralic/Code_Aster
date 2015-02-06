@@ -2,7 +2,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
                   jcohes, jcoheo, ncompv,&
                   ddlm, ddls, ffc, ffp, idepd,&
                   idepm, ifa, ifiss, jmate, indco,&
-                  ipgf, jac, jfisno, jheafa, mmat,&
+                  ipgf, jac, jheavn, ncompn, jheafa, mmat,&
                   lact, ncomph, nd, nddl, ndim,&
                   nfh, nfiss, nno, nnol, nnos,&
                   nvit, pla, rela, rr, singu,&
@@ -43,7 +43,6 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
 ! IN IPGF   : NUMERO POINT DE GAUSS DE CONTACT
 ! IN IVFF   : ADRESSE FONCTION DE FORME EL PARENT
 ! IN JAC    : PRODUIT JACOBIEN*POIDS
-! IN JFISNO
 ! IN JHEAFA
 ! OUT MMAT  : MATRICE ELEMENTAIRE DE CONTACT
 ! IN NCOMPH
@@ -75,7 +74,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
     integer :: i, ino, jcoheo, ncompv, jcohes
     integer :: algocr, ddlm, ddls
     integer :: idepd, idepm, ifa, ifiss, ibid
-    integer :: jmate, indco, ipgf, jfisno, jheafa
+    integer :: jmate, indco, ipgf, jheafa, jheavn, ncompn
     integer :: ncomph, nddl, ndim, nfh, nfiss, lact(8)
     integer :: nno, nnol, nnos, nvec, nvit, pla(27)
     integer :: singu
@@ -99,7 +98,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
             call xmmaa3(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, jac, nfh, nd,&
                         coefcr, singu, rr, ddls, ddlm,&
-                        jfisno, nfiss, ifiss, jheafa, ncomph,&
+                        jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
                         ifa, mmat)
         endif
 !
@@ -115,7 +114,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
             call xmmpa3(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, jac, nfh, nd,&
                         coefcp, singu, rr, ddls, ddlm,&
-                        jfisno, nfiss, ifiss, jheafa, ncomph,&
+                        jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
                         ifa, mmat)
         endif
 !
@@ -134,7 +133,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
             endif
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepd), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
             job='MATRICE'
@@ -202,7 +201,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
             nvec = 2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepd), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jfisno,&
+                        singu, rr, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -226,7 +225,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
             call xmmco2(ndim, nno, nnos, nnol, ddls,&
                         ddlm, dsidep, p, r, nfh,&
                         jac, ffp, ffc, pla, singu,&
-                        nfiss, jheafa, jfisno, ifa, ncomph,&
+                        nfiss, jheafa, jheavn, ncompn, ifa, ncomph,&
                         ifiss, rr, mmat)
 !
 ! --- ACTUALISATION INDICATEUR PREDICTION / CORRECTION

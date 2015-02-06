@@ -1,7 +1,7 @@
 subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
                   he, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, npg, sigma, compor,&
-                  idepl, lsn, lst, nfiss, fisno,&
+                  idepl, lsn, lst, nfiss, heavn,&
                   codopt, ivectu)
 !
 ! aslint: disable=W1306,W1504
@@ -20,9 +20,10 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim, nfe, nfh, nfiss, nnop, npg
-    integer :: ddlc, ddlm, fisno(nnop, nfiss)
+    integer :: ddlc, ddlm, heavn(nnop, 5)
     integer :: codopt, idepl, igeom, ivectu
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop)
@@ -79,7 +80,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !......................................................................
     integer :: kpg, i, ig, n, nn, m, dec(nnop)
     integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt, iret
-    integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano
+    integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se, i_dim
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: rbid, rbid6(6), rbid33(3, 3)
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
@@ -122,6 +123,9 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
     do n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
     end do
+!
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS
@@ -187,10 +191,10 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
                     xe, ff, dfdi=dfdi)
         if (grdepl) then
             call xcinem(axi, nnop, nnops, idepl, .true._1,&
-                        ndim, he, r, rbid, fisno,&
+                        ndim, he, r, rbid,&
                         nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f,&
-                        rbid6, rbid33, lsn)
+                        rbid6, rbid33, heavn)
         else
 !           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R,
 !                      l'adresse idepl est un argument bidon...)
@@ -230,8 +234,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
                 do i = 1, ndim
                     cpt = cpt+1
                     do m = 1, 2*ndim
-                        def(m,n,cpt) = def(m,n,i) * xcalf_he(he(fisno(n,ig)),&
-                                                    lsn((n-1)*nfiss+fisno(n,ig)))
+                        def(m,n,cpt) = def(m,n,i) * xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                     end do
                     if (ndim .eq. 2) then
                         def(3,n,cpt) = 0.d0
@@ -240,8 +243,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !
 !   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3,n,1+ndim*ig) = f(3,3) * ff(n)/r * xcalf_he(he(fisno(n,ig)),&
-                                                            lsn((n-1)*nfiss+fisno(n,ig)))
+                    def(3,n,1+ndim*ig) = f(3,3)*ff(n)/r*xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                 endif
 !
             end do
@@ -326,6 +328,15 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
                         ASSERT(.false.)
                     endif
                 end do
+!   POUR LES DDLS HEAVISIDE SEULEMENT ::
+!    IL PEUT ARRIVER QUE L ESTIMATION DE LA FORCE DE REFERENCE TENDE VERS ZERO
+!    ON REMPLACE LA VALEUR AU DDL HEAVISIDE I PAR LA VALEUR AU DDL PHYSIQUE I_DIM DU MEME NOEUD
+                if (i.ge.(ndim+1) .and. i.le.(ndim+nfh*ndim) .and. codopt.eq.0) then
+                  i_dim=i-ndim*int((i-1)/ndim)
+!                  if(abs(zr(ivectu-1+nn+i)).lt.abs(1.d-6*zr(ivectu-1+nn+i_dim))) then 
+                    zr(ivectu-1+nn+i)=zr(ivectu-1+nn+i_dim)
+!                  endif
+                endif
             end do
 !
         end do

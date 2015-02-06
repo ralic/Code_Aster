@@ -40,6 +40,7 @@ subroutine xmcart(noma, defico, modele, resoco)
 #include "asterfort/nocart.h"
 #include "asterfort/xmimp3.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/xcalc_code.h"
 !
     character(len=8) :: noma, modele
     character(len=24) :: defico, resoco
@@ -90,16 +91,19 @@ subroutine xmcart(noma, defico, modele, resoco)
 !
 !
 !
-    integer :: ncmp(7)
+    integer :: nbch
+    parameter (nbch=8)
+!
+    integer :: ncmp(nbch)
 !
     integer :: nummae, nummam, nnoe, nnom, ifise, ifism, jfiss
     integer :: i, j, ipc, k, ntpc, ndim, izone, nface, npte
-    integer :: ztabf, jtabf, jnosdc, nfhe, nfhm, nfiss
+    integer :: ztabf, jtabf, jnosdc, nfhe, nfhm, ncmpe, ncmpm
     character(len=24) :: tabfin, nosdco
-    integer :: jvalv(7), jncmp(7), jcesl(7), jcesd(7), jcesv(7), iad
+    integer :: jvalv(nbch), jncmp(nbch), jcesl(nbch), jcesd(nbch), jcesv(nbch), iad
     character(len=3) :: ch3
     character(len=8) :: nomgd
-    character(len=19) :: ligrxf, chs(7), carte(7)
+    character(len=19) :: ligrxf, chs(nbch), carte(nbch)
     integer :: zxain, ifm, niv, jconx, ninter, nbpi, ier
     aster_logical :: lmulti
 !
@@ -125,15 +129,17 @@ subroutine xmcart(noma, defico, modele, resoco)
         ncmp(3) = 14
         ncmp(4) = 35
         ncmp(5) = 9
-        ncmp(6) = 32
+        ncmp(6) = 2
         ncmp(7) = 4
+        ncmp(8) = 40
     else if (ndim.eq.3) then
         ncmp(2) = 64
         ncmp(3) = 102
         ncmp(4) = 170
         ncmp(5) = 90
-        ncmp(6) = 64
+        ncmp(6) = 2
         ncmp(7) = 8
+        ncmp(8) = 80
     endif
 !
     ztabf = cfmmvd('ZTABF')
@@ -156,6 +162,7 @@ subroutine xmcart(noma, defico, modele, resoco)
     chs(5) = '&&XMCART.CHS5'
     chs(6) = '&&XMCART.CHS6'
     chs(7) = '&&XMCART.CHS7'
+    chs(8) = '&&XMCART.CHS8'
 !
     call celces(modele//'.STNO', 'V', chs(1))
     call celces(modele//'.TOPOFAC.OE', 'V', chs(2))
@@ -176,13 +183,20 @@ subroutine xmcart(noma, defico, modele, resoco)
         lmulti = .true.
         call celces(modele//'.FISSNO', 'V', chs(5))
         call celces(modele//'.HEAVNO', 'V', chs(6))
-        call celces(modele//'.TOPOFAC.HE', 'V', chs(7))
+        call celces(modele//'.TOPONO.HFA', 'V', chs(7))
         do 110 i = 5, 7
             call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
             call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
             call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
 110     continue
     endif
+!
+! --- CHAMPS ELEM XFEM TOPOLOGIE DES FONCTIONS HEAVISIDE
+!
+    call celces(modele//'.TOPONO.HNO', 'V', chs(8))
+    call jeveuo(chs(8)//'.CESD', 'L', jcesd(8))
+    call jeveuo(chs(8)//'.CESV', 'L', jcesv(8))
+    call jeveuo(chs(8)//'.CESL', 'L', jcesl(8))
 !
 ! --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
 !
@@ -197,15 +211,15 @@ subroutine xmcart(noma, defico, modele, resoco)
     carte(5) = resoco(1:14)//'.XFCF'
     carte(6) = resoco(1:14)//'.XFHF'
     carte(7) = resoco(1:14)//'.XFPL'
-    do 120 i = 1, 7
+    carte(8) = resoco(1:14)//'.XFHN'
+!
+    do 120 i = 1, nbch
         call detrsd('CARTE', carte(i))
-        if (i .eq. 1) then
+        if (i .eq. 1 .or. i .eq. 3) then
             nomgd = 'N120_R'
-        else if (i .eq. 2 .or. i .eq. 6) then
+        else if (i .eq. 2 .or. i .eq. 6 .or. i .eq. 8) then
             nomgd = 'N120_I'
-        elseif (i .eq. 3) then
-            nomgd = 'N120_R'
-        elseif (i .eq. 4) then
+        else if (i .eq. 4) then
             nomgd = 'N480_R'
         elseif (i .eq. 5) then
             nomgd = 'N120_I'
@@ -366,42 +380,26 @@ subroutine xmcart(noma, defico, modele, resoco)
         if (lmulti) then
             if (nfhe .gt. 1 .or. nfhm .gt. 1) then
 !
-! ----- REMPLISSAGE DE LA CARTE CARTCF.TOPOFAC.HE
+! ----- REMPLISSAGE DE LA CARTE CARTCF.TOPONO.HFA
+                ncmpe = zi(jcesd(7)-1+5+4*(nummae-1)+3)
+                if (ncmpe.ge.2) then
+                     call cesexi('S', jcesd(7), jcesl(7), nummae, 1,&
+                                 ifise, 1, iad)
+                     ASSERT(iad.gt.0)
+                     zi(jvalv(6)-1+1)=zi(jcesv(7)-1+iad)
+                else
+                     zi(jvalv(6)-1+1)=xcalc_code(1,[-1])
+                endif
+                ncmpm = zi(jcesd(7)-1+5+4*(nummam-1)+3)
+                if (ncmpm.ge.2) then
+                     call cesexi('S', jcesd(7), jcesl(7), nummam, 1,&
+                                 ifism, 2, iad)
+                     ASSERT(iad.gt.0)
+                     zi(jvalv(6)-1+2)=zi(jcesv(7)-1+iad)
+                else
+                     zi(jvalv(6)-1+2)=xcalc_code(1,[+1])
+                endif
 !
-                nfiss = zi(jcesd(6)-1+5+4*(nummae-1)+2)
-                do 250 i = 1, nnoe
-                    do 260 j = 1, nfhe
-                        call cesexi('C', jcesd(5), jcesl(5), nummae, i,&
-                                    j, 1, iad)
-                        if (iad .gt. 0) then
-                            jfiss = zi(jcesv(5)-1+iad)
-                            call cesexi('S', jcesd(7), jcesl(7), nummae, 1,&
-                                        nfiss*(ifise-1)+jfiss, 1, iad)
-                            ASSERT(iad.gt.0)
-                            zi(jvalv(6)-1+nfhe*(i-1)+j)=zi(jcesv(7)-1+&
-                            iad)
-                        else
-                            zi(jvalv(6)-1+nfhe*(i-1)+j)=-1
-                        endif
-260                 continue
-250             continue
-                nfiss = zi(jcesd(6)-1+5+4*(nummam-1)+2)
-                do 270 i = 1, nnom
-                    do 280 j = 1, nfhm
-                        call cesexi('C', jcesd(5), jcesl(5), nummam, i,&
-                                    j, 1, iad)
-                        if (iad .gt. 0) then
-                            jfiss = zi(jcesv(5)-1+iad)
-                            call cesexi('S', jcesd(7), jcesl(7), nummam, 1,&
-                                        nfiss*(ifism-1)+jfiss, 2, iad)
-                            ASSERT(iad.gt.0)
-                            zi(jvalv(6)-1+nfhe*nnoe+nfhm*(i-1)+j)=&
-                            zi(jcesv(7)-1+iad)
-                        else
-                            zi(jvalv(6)-1+nfhe*nnoe+nfhm*(i-1)+j)=1
-                        endif
-280                 continue
-270             continue
                 call nocart(carte(6), -3, ncmp(6), ligrel=ligrxf, nma=1,&
                             limanu=[-ipc])
 !
@@ -421,23 +419,62 @@ subroutine xmcart(noma, defico, modele, resoco)
             endif
         endif
 !
+! ----- REMPLISSAGE DE LA CARTE CARTCF.TOPONO.HNO
+!
+        ncmpe = zi(jcesd(8)-1+5+4*(nummae-1)+3)
+        do i = 1, nnoe
+            do j = 1, nfhe
+                call cesexi('C', jcesd(8), jcesl(8), nummae, i,&
+                                1, j, iad)
+                ASSERT(iad.gt.0)
+                zi(jvalv(8)-1+nfhe*(i-1)+j)=zi(jcesv(8)-1+iad)
+            enddo
+!   BRICOLAGE POUR REMPLIR LE IFLAG DE XCALC_HEAV QUI NE SERT QU'EN MONO HEAVISIDE
+            if (nfhe.gt.0) then
+            call cesexi('C', jcesd(8), jcesl(8), nummae, i,&
+                                1, ncmpe, iad)
+            ASSERT(iad.gt.0)
+            zi(jvalv(8)-1+nfhe*nnoe+nfhm*nnom+i)=zi(jcesv(8)-1+iad)
+            endif
+        enddo
+!
+        ncmpm = zi(jcesd(8)-1+5+4*(nummam-1)+3)
+        do i = 1, nnom
+            do j = 1, nfhm
+                call cesexi('C', jcesd(8), jcesl(8), nummam, i,&
+                                1, j, iad)
+                ASSERT(iad.gt.0)
+                zi(jvalv(8)-1+nfhe*nnoe+nfhm*(i-1)+j)=zi(jcesv(8)-1+iad)
+            enddo
+!   BRICOLAGE POUR REMPLIR LE IFLAG DE XCALC_HEAV QUI NE SERT QU'EN MONO HEAVISIDE
+            if (nfhm.gt.0) then
+             call cesexi('C', jcesd(8), jcesl(8), nummam, i,&
+                                1, ncmpm, iad)
+             ASSERT(iad.gt.0)
+             zi(jvalv(8)-1+(1+nfhe)*nnoe+nfhm*nnom+i)=zi(jcesv(8)-1+iad)
+            endif
+        enddo
+!
+        call nocart(carte(8), -3, ncmp(8), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
+!
         if (niv .ge. 2) then
             call xmimp3(ifm, noma, ipc, jvalv(1), jtabf)
         endif
 !
-200 continue
+200 end do
 !
 ! --- MENAGE
 !
-    do 140 i = 1, 7
+    do 140 i = 1, nbch
         call jeexin(chs(i)//'.CESD', ier)
         if (ier .ne. 0) call detrsd('CHAM_ELEM_S', chs(i))
-140 continue
+140 end do
 !
-    do 150 i = 1, 7
+    do 150 i = 1, nbch
         call jedetr(carte(i)//'.NCMP')
         call jedetr(carte(i)//'.VALV')
-150 continue
+150 end do
 !
     call jedema()
 end subroutine

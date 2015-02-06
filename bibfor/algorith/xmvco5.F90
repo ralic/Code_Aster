@@ -10,6 +10,7 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnol, ddlm
     integer :: ddls, pla(27)
     integer :: nnos
@@ -66,7 +67,7 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
 !
 !
     integer :: i, j, pli, iin, ier
-    real(kind=8) :: p(3, 3), ptr(3, 3), mug(3), am(3)
+    real(kind=8) :: p(3, 3), ptr(3, 3), mug(3), am(3), coefi
 !
 ! ---------------------------------------------------------------------
 ! on va commencer par construire une matrice de passage
@@ -74,6 +75,7 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
     call matini(3, 3, 0.d0, ptr)
     call vecini(3, 0.d0, mug)
     call vecini(3, 0.d0, am)
+    coefi=xcalc_saut(1,0,1)
 !
     do 17 i = 1, ndim
         p(1,i) = nd(i)
@@ -103,7 +105,7 @@ subroutine xmvco5(ndim, nno, nnol, pla, nd,&
     do 1 i = 1, nno
         call indent(i, ddls, ddlm, nnos, iin)
         do 2 j = 1, ndim
-            vtmp(iin+ndim+j) = vtmp(iin+ndim+j)+ 2.d0*mug(j)*ffp(i)* jac
+            vtmp(iin+ndim+j) = vtmp(iin+ndim+j)+ coefi*mug(j)*ffp(i)* jac
  2      continue
  1  end do
 ! remplissage L1u

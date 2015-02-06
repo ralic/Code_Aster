@@ -117,7 +117,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     character(len=19) :: ch1d2d, chpres, chrota, chpesa, chvolu, ch2d3d, chepsi
     character(len=19) :: chvref, chvarc
     character(len=19) :: basefo
-    character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno
+    character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno, hea_no
     character(len=19) :: pmilto
     character(len=19) :: pinter, ainter, cface, longco, baseco
     character(len=24) :: chgeom, chfond, celmod, sigelno, sigseno
@@ -348,6 +348,9 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     longco = modele//'.TOPOFAC.LO'
     baseco = modele//'.TOPOFAC.BA'
 !
+!   RECUPERATION DES DONNEES XFEM (TOPONO)
+    hea_no = modele//'.TOPONO.HNO'
+!
     ndimte = 5
     AS_ALLOCATE(vr=valg, size=ndimte)
     lpaout(1) = 'PGTHETA'
@@ -409,8 +412,10 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     lchin(25) = longco
     lpain(26) = 'PBASECO'
     lchin(26) = baseco
+    lpain(27) = 'PHEA_NO'
+    lchin(27) = hea_no
 !
-    nchin = 26
+    nchin = 27
 !
     chtime = '&&CAKG2D.CH_INST_R'
     if (option .eq. 'CALC_K_G_F') then

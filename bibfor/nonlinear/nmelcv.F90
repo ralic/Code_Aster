@@ -65,7 +65,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbout, nbin
-    parameter    (nbout=1, nbin=27)
+    parameter    (nbout=1, nbin=28)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -78,7 +78,7 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
     character(len=19) :: chmlcf
     character(len=16) :: option
     character(len=19) :: cpoint, cpinte, cainte, ccface
-    character(len=19) :: lnno, ltno, stano, fissno, heavno, heavfa
+    character(len=19) :: lnno, ltno, stano, fissno, heavno, hea_no, hea_fa
     character(len=19) :: pinter, ainter, cface, faclon, baseco
     character(len=19) :: xdonco, xindco, xseuco, xcohes
     aster_logical :: lctcc, lxfcm, ltfcm, lallv
@@ -206,7 +206,8 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
         stano = modele(1:8)//'.STNO'
         fissno = modele(1:8)//'.FISSNO'
         heavno = modele(1:8)//'.HEAVNO'
-        heavfa = modele(1:8)//'.TOPOFAC.HE'
+        hea_no = modele(1:8)//'.TOPONO.HNO'
+        hea_fa = modele(1:8)//'.TOPONO.HFA'
     endif
 !
 ! --- CHAMPS METHODE XFEM (GRANDS GLISSEMENTS)
@@ -218,7 +219,8 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
         cainte = resoco(1:14)//'.XFAI'
         ccface = resoco(1:14)//'.XFCF'
         heavno = resoco(1:14)//'.XFPL'
-        heavfa = resoco(1:14)//'.XFHF'
+        hea_fa = resoco(1:14)//'.XFHF'
+        hea_no = resoco(1:14)//'.XFHN'
     endif
 !
 ! --- CREATION DES LISTES DES CHAMPS IN ET OUT
@@ -279,8 +281,10 @@ subroutine nmelcv(phase, modele, defico, resoco, mate,&
     lchin(25) = fissno
     lpain(26) = 'PHEAVNO'
     lchin(26) = heavno
-    lpain(27) = 'PHEAVFA'
-    lchin(27) = heavfa
+    lpain(27) = 'PHEA_NO'
+    lchin(27) = hea_no
+    lpain(28) = 'PHEA_FA'
+    lchin(28) = hea_fa
 !
 ! --- ON DETRUIT LES VECTEURS ELEMENTAIRES S'ILS EXISTENT
 !

@@ -19,8 +19,8 @@
 !
 interface
     subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
-                      r, ur, fisno, nfiss, nfh, nfe, ddls, ddlm,&
-                      fe, dgdgl, ff, dfdi, f, eps, grad, lsn)
+                      r, ur, nfiss, nfh, nfe, ddls, ddlm,&
+                      fe, dgdgl, ff, dfdi, f, eps, grad, heavn)
         aster_logical, intent(in) :: axi
         integer, intent(in) :: nnop
         integer, intent(in) :: nnos
@@ -30,7 +30,6 @@ interface
         real(kind=8), intent(in) :: he(nfiss)
         real(kind=8), intent(in) :: r
         real(kind=8), intent(in) :: ur
-        integer, intent(in) :: fisno(nnop, nfiss)
         integer, intent(in) :: nfiss
         integer, intent(in) :: nfh
         integer, intent(in) :: nfe
@@ -43,6 +42,6 @@ interface
         real(kind=8), intent(out) :: f(3, 3)
         real(kind=8), intent(out) :: eps(6)
         real(kind=8), intent(out) :: grad(ndim, ndim)
-        real(kind=8) :: lsn(nnop)
+        integer, intent(in) :: heavn(nnop, 5)
     end subroutine xcinem
 end interface

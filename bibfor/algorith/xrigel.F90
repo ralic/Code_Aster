@@ -1,7 +1,7 @@
 subroutine xrigel(nnop, ddlh, nfe, ddlc,&
                   igeom, jpintt, cnset, heavt, lonch,&
                   basloc, lsn, lst, sig, matuu,&
-                  jpmilt)
+                  jpmilt, heavn)
 !
     implicit none
 #include "jeveux.h"
@@ -14,7 +14,7 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
 #include "asterfort/xrige3.h"
     integer :: nnop, igeom
     integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
-    integer :: jpintt, jpmilt
+    integer :: jpintt, jpmilt, heavn(27,5)
     real(kind=8) :: lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
 ! ----------------------------------------------------------------------
@@ -135,14 +135,14 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
         if (ndim .eq. 3) then
             ASSERT(nbsig.eq.6)
             call xrige3(elrefp, ndim, coorse, igeom, he,&
-                        ddlh, ddlc, nfe, basloc,&
+                        heavn, ddlh, ddlc, nfe, basloc,&
                         nnop, npg, lsn, lst, sig(idebs+1),&
                         matuu)
 !
         else if (ndim.eq.2) then
             ASSERT(nbsig.eq.4)
             call xrige2(elrefp, elrese(ndim+irese), ndim, coorse, igeom,&
-                        he, ddlh, ddlc, nfe,&
+                        he, heavn, ddlh, ddlc, nfe,&
                         basloc, nnop, npg, lsn, lst,&
                         sig( idebs+1), matuu)
 !

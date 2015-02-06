@@ -228,7 +228,11 @@ MODE_LOCAL__
 
     STANO_I  = N120_I   ELEM__         (X[32])
 
+    E2NEUTI  = N120_I   ELEM__         (X[2])
+
     PLALA_I  = NEUT_I   ELEM__         (X[4])
+
+    N40NEUI  = N120_I   ELEM__         (X[40])
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -238,21 +242,21 @@ MATRICE__
 
 OPTION__
     CHAR_MECA_CONT   367  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
-                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FROT   367  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
-                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                           OUT__ MVECTUR  PVECTUR  
     RIGI_CONT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
-                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
     RIGI_FROT        366  IN__  CCONAI   PCAR_AI  CCONCF   PCAR_CF  CCONPI   PCAR_PI  CCONPT   PCAR_PT  
-                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  STANO_I  PHEAVFA  
-                                PLALA_I  PHEAVNO  STANO_I  PSTANO   
+                                DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  E2NEUTI  PHEA_FA  
+                                PLALA_I  PHEAVNO  STANO_I  PSTANO   N40NEUI PHEA_NO
                           OUT__ MMATUNS  PMATUNS  MMATUUR  PMATUUR  
     XCVBCA           363  IN__  CCONAI   PCAR_AI  CCONPT   PCAR_PT  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  
-                                     STANO_I  PHEAVFA  PLALA_I  PHEAVNO
-                              OUT__  I3NEUT_I PINDCOO
+                                E2NEUTI  PHEA_FA  PLALA_I  PHEAVNO  N40NEUI PHEA_NO
+                          OUT__  I3NEUT_I PINDCOO

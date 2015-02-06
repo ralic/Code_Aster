@@ -1,4 +1,4 @@
-function xcalf_he(he,lsn)
+function xcalc_code(nfiss, he_inte, he_real)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,47 +18,47 @@ function xcalf_he(he,lsn)
 ! ======================================================================
 !
 !-----------------------------------------------------------------------
-! BUT : FONCTION SIGNE HEAVISIDE
+! BUT : CALCULER UN INDICE DE DOMAINE :
+!       CONSTRUIRE UNE INJECTION P-UPLET <HE> => ENTIER <ID>
 !-----------------------------------------------------------------------
 !
 ! ARGUMENTS :
 !------------
-!   - HE  : SIGNE HEAVISIDE
-!   - LSN : 
+!   - NFISS  : TAILLE DU P-UPLET
+!   - HE     : P-UPLET DE SIGNE HEAVISIDE
+!   - ID     : ENTIER A CALCULER
 !
 !-----------------------------------------------------------------------
     implicit none
-!
+!-----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/assert.h"
-!
-    real(kind=8) :: xcalf_he, he
-    real(kind=8) :: lsn, rbid
-!
+!-----------------------------------------------------------------------
+    integer :: nfiss, xcalc_code
+    integer, optional :: he_inte(*)
+    real(kind=8), optional :: he_real(*)
+!-----------------------------------------------------------------------
+    integer :: base_codage
+    parameter (base_codage=4)
+    integer :: ifiss
 !-----------------------------------------------------------------------
 !
-    xcalf_he=he
+    ASSERT(nfiss.le.4)
 !
-    rbid=lsn
+    ASSERT(.not.(present(he_inte).and.present(he_real)))
 !
-!    if ( he .eq. 0.d0 ) goto 99
+    xcalc_code=0
+    if ( present(he_inte) ) then
+      do ifiss=1, nfiss
+        xcalc_code=xcalc_code + (he_inte(ifiss)+2)*base_codage**(nfiss-ifiss)
+      enddo
+    elseif (present(he_real) ) then
+      do ifiss=1, nfiss
+        xcalc_code=xcalc_code + (int(he_real(ifiss))+2)*base_codage**(nfiss-ifiss)
+      enddo
+    else
+      ASSERT(.false.)
+    endif
 !
-!    if (lsn .ne. 0) then
-!     if ((lsn*he) .gt. 0) then
-!       xcalf_he = 0.d0
-!     else
-!       xcalf_he = -sign(1.d0,lsn)
-!       xcalf_he = 2.d0*he
-!     endif
-!    else 
-!     if (he .gt. 0) then
-!       xcalf_he = 2.d0
-!     else
-!       xcalf_he = 0.d0
-!     endif
-!    endif
-!
-!    xcalf_he=he
-!
-!99   continue
 end function
+

@@ -1,6 +1,6 @@
 subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
                   ddlh, ddlc, nfe, basloc, nnop,&
-                  npg, imate, lsn, lst, matuu)
+                  npg, imate, lsn, lst, matuu, heavn)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -11,7 +11,9 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalfe.h"
-    integer :: ndim, igeom, imate, nnop, npg, ddlh, ddlc, nfe
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
+    integer :: ndim, igeom, imate, nnop, npg, ddlh, ddlc, nfe, heavn(27,5)
     character(len=8) :: elrefp
     real(kind=8) :: basloc(9*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), matuu(*)
@@ -63,7 +65,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
     integer :: retour(1)
     integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret
     integer :: nno, nnos, npgbis, ddlt, ddld, cpt, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
+    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se
 !
     real(kind=8) :: rho(1)
     real(kind=8) :: fe(4), baslog(9)
@@ -84,6 +86,8 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 !
 !     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
     ddlt=ddld+ddlc
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT
+    hea_se=xcalc_code(1, he_real=[he])
 !
 !       TE4-'XINT' : SCHÉMAS À 15 POINTS
     call elrefe_info(elrefe='TE4',fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
@@ -147,7 +151,7 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he,&
 !         ENRICHISSEMENT PAR HEAVYSIDE
             do i = 1, ddlh
                 cpt=cpt+1
-                enr(n,cpt) = enr(n,i) * he
+                enr(n,cpt) = enr(n,i) * xcalc_heav(heavn(n,i),hea_se,heavn(n,5))
             end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
             do ig = 1, nfe

@@ -48,7 +48,7 @@ subroutine merige(modele, cara, sigg, strx, matel,&
 !
     character(len=16) :: option
     character(len=24) :: ligrmo, chgeom, chcara(18), chharm
-    character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano, pmilto
+    character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano, pmilto, hea_no
 !
 !-----------------------------------------------------------------------
     integer :: icode, ier, nbpara
@@ -74,6 +74,7 @@ subroutine merige(modele, cara, sigg, strx, matel,&
         heavto = modele(1:8)//'.TOPOSE.HEA'
         loncha = modele(1:8)//'.TOPOSE.LON'
         pmilto = modele(1:8)//'.TOPOSE.PMI'
+        hea_no = modele(1:8)//'.TOPONO.HNO'
         basloc = modele(1:8)//'.BASLOC'
         lsn = modele(1:8)//'.LNNO'
         lst = modele(1:8)//'.LTNO'
@@ -107,6 +108,8 @@ subroutine merige(modele, cara, sigg, strx, matel,&
         lchin(11) = pmilto
         lpain(12) = 'PSTRXRR'
         lchin(12) = strx
+        lpain(13) = 'PHEA_NO'
+        lchin(13) = hea_no
 !
 ! --- CHAMPS DE SORTIE
 !
@@ -115,7 +118,7 @@ subroutine merige(modele, cara, sigg, strx, matel,&
 !
         option = 'RIGI_MECA_GE'
 !
-        call calcul('S', option, ligrmo, 12, lchin,&
+        call calcul('S', option, ligrmo, 13, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
         call reajre(matel, lchout(1), base)

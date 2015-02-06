@@ -21,7 +21,7 @@ interface
                       typmod, option, imate, compor, lgpg,&
                       crit, idepl, lsn, lst, idecpg,&
                       sig, vi, matuu, ivectu, codret,&
-                      nfiss, fisno)
+                      nfiss, heavn)
         integer :: nfiss
         integer :: lgpg
         integer :: npg
@@ -53,6 +53,6 @@ interface
         real(kind=8) :: matuu(*)
         integer :: ivectu
         integer :: codret
-        integer :: fisno(nnop, nfiss)
+        integer :: heavn(nnop, 5)
     end subroutine xxnmel
 end interface

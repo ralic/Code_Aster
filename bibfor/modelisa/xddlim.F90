@@ -1,7 +1,7 @@
 subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                   valimc, valimf, fonree, icompt, lisrel,&
                   ndim, direct, jnoxfv, ch1, ch2,&
-                  ch3, cnxinv, mesh)
+                  ch3, cnxinv, mesh, hea_no)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8maem.h"
@@ -21,7 +21,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
 #include "asterfort/xddlimf.h"
 !
     integer :: ino, icompt, ndim, jnoxfv
@@ -29,7 +30,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     character(len=4) :: fonree
     character(len=8) :: modele, nomn, valimf, motcle
     character(len=8), intent(in) :: mesh
-    character(len=19) :: lisrel, ch1, ch2, ch3, cnxinv
+    character(len=19) :: lisrel, ch1, ch2, ch3, cnxinv, hea_no
 ! ---------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,9 +79,11 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     parameter  (nbxcmp=60)
     integer :: ier, stano(4), jstnol,  jstnod, nrel
     integer ::  jlsnl, jlsnd,  jlstl, jlstd
-    integer ::  jfisnl, jfisnd, nfh, ifh, jconx2,  iad, fisno(4)
+    integer ::  jfisnl, jfisnd, nfh, ifh
     integer ::  i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss
     integer ::  nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
+    integer ::  jconx2,  iad, fisno(4)
+    integer ::  jheavnl, jheavnd, ncompn, heavn(5), hea_se
     real(kind=8) :: r, theta(2), he(2, 4), t, coef(nbxcmp), sign
     real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2
     character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), axes(3), noma
@@ -90,7 +93,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     aster_logical :: class
     integer, pointer :: nunotmp(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer, pointer :: connex(:) => null(), ihea_no(:) => null()
     integer, pointer :: fisnv(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
     real(kind=8), pointer :: lstv(:) => null()
@@ -151,6 +154,21 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
         lst(ifiss) = lstv(iad)
     end do
 !
+! --- RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
+    hea_se=-99
+    heavn(1:5)=0
+    if (nfh.gt.0) then
+      call jeveuo(hea_no//'.CESV', 'L', vi=ihea_no)
+      call jeveuo(hea_no//'.CESL', 'L', jheavnl)
+      call jeveuo(hea_no//'.CESD', 'L', jheavnd)
+      ncompn = zi(jheavnd-1+5+4*(numa-1)+3)
+!      ASSERT(ncompn.eq.5)
+      do i = 1, ncompn
+        call cesexi('S', jheavnd, jheavnl, numa, nuno,&
+                   1, i, iad)
+        heavn(i) = ihea_no(iad)
+      end do
+    endif
 !
 ! --- IDENTIFICATIOND DES CAS A TRAITER :
 ! --- SI LA RELATION CINEMATIQUE EST IMPOSEE PAR DES VALEURS REELLES ET
@@ -244,7 +262,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! --- ON NE PREND PAS ENCORE EN COMPTE LE CAS OU ON PASSE PAR UN NOEUD POUR
 ! --- LES ELEMENTS MULTI-HEAVISIDE
             if (lsn(fisno(ifh)) .eq. 0) goto 888
-            he(1,ifh) = sign(1.d0,lsn(fisno(ifh)))
+            he(1,ifh) = 0.d0
         end do
     endif
 !
@@ -261,7 +279,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! --- SI LA RELATION CINEMATIQUE EST IMPOSEE PAR UNE FONCTION DE L'ESPACE
        call xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                     ch2, ndim, lsn, lst, valimr, valimf, valimc,&
-                    fonree, lisrel, nomn, direct, class, mesh) 
+                    fonree, lisrel, nomn, direct, class, mesh,&
+                    hea_no)
     endif
 !     IMPOSITION DES CONDITIONS CINEMATIQUE "TOTALES" (DDL_CLASS +/- DDL_ENR)
     if ((fonree.eq.'REEL') .or. (nfiss.gt.1) .or. class .or. (stano(1).ne.1)) then
@@ -271,6 +290,9 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
        end do
 ! --- BOUCLE SUR LES RELATIONS
        do irel = 1, nrel
+!
+! --- CALCUL DU SOUS DOMAINE CORRESPONDANT A CHAQUE RELATION LINEAIRE
+        if (nfiss.eq.1) hea_se=xcalc_code(1,he_real=[he(irel,1)])
 !
 !       CALCUL DES COORDONNÉES POLAIRES DU NOEUD (R,T)
         r = sqrt(lsn(1)**2+lst(1)**2)
@@ -291,7 +313,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     if (stano(1) .eq. 1 .or. stano(1) .eq. 3) then
                         i = i+1
                         ddl(i) = 'H1'//axes(j)
-                        coef(i)=xcalf_he(he(irel,1),lsn(1))*direct(j)
+                        coef(i)=xcalc_heav(heavn(1),hea_se,heavn(5))*direct(j)
                     endif
 !
                     if (stano(1) .eq. 2 .or. stano(1) .eq. 3) then
@@ -314,7 +336,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                             i = i+1
                             call codent(ifh, 'G', ch)
                             ddl(i) = 'H'//ch//axes(j)
-                            coef(i)=xcalf_he(he(irel,ifh),lsn(fisno(ifh)))*direct(j)
+                            coef(i)=he(irel,ifh)*direct(j)
                         endif
                     end do
                 endif
@@ -329,7 +351,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                 if (stano(1) .eq. 1 .or. stano(1) .eq. 3) then
                     i = i+1
                     ddl(i) = 'H1'//motcle(2:2)
-                    coef(i)=xcalf_he(he(irel,1),lsn(1))
+                    coef(i)=xcalc_heav(heavn(1),hea_se,heavn(5))
                 endif
                 if (stano(1) .eq. 2 .or. stano(1) .eq. 3) then
                     i = i+1
@@ -351,7 +373,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                         i = i+1
                         call codent(ifh, 'G', ch)
                         ddl(i) = 'H'//ch//motcle(2:2)
-                        coef(i)=xcalf_he(he(irel,ifh),lsn(fisno(ifh)))
+                        coef(i)=he(irel,ifh)
                     endif
                 end do
               endif
@@ -364,7 +386,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                 if (stano(1).eq.1.or.stano(1).eq.3) then
                   i = i + 1
                   ddl(i) = 'H'//motcle(1:4)
-                  coef(i)=xcalf_he(he(irel,1),lsn(1))
+                  coef(i) =xcalc_heav(heavn(1),hea_se,heavn(5))
                 endif
               endif
         endif

@@ -20,7 +20,7 @@ interface
                       igeom, he, nfh, ddlc, ddlm,&
                       nfe, basloc, nnop, npg, sigma,&
                       compor, idepl, lsn, lst, nfiss,&
-                      fisno, codopt, ivectu)
+                      heavn, codopt, ivectu)
         integer :: codopt
         integer :: nfiss
         integer :: npg
@@ -41,7 +41,7 @@ interface
         integer :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: fisno(nnop, nfiss)
+        integer :: heavn(nnop, 5)
         integer :: ivectu
     end subroutine xxbsig
 end interface

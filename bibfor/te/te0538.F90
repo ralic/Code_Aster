@@ -5,6 +5,7 @@ subroutine te0538(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/teattr.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xmasel.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
@@ -38,7 +39,7 @@ subroutine te0538(option, nomte)
     integer :: jgano, nno, npg, imatuu, ndim
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno
-    integer :: nnos, nfiss, jfisno
+    integer :: nnos, nfiss, jfisno, jheavn, ncompn, heavn(27,5), jtab(7), ino, ig, iret
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
 !
 !
@@ -66,13 +67,28 @@ subroutine te0538(option, nomte)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
+!
+!     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
+    if (nfh.gt.0) then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nno
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
+    endif
+!
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
     call xmasel(nno, nfh*ndim, nfe, ddlc, igeom,&
                 zi(imate), zr(jpintt), zi(jcnset), zi(jheavt), zi(jlonch),&
-                zr(jbaslo), zr(jlsn), zr(jlst), zr(imatuu))
+                zr(jbaslo), zr(jlsn), zr(jlst), zr(imatuu), heavn)
 !
 !
 !     SUPPRESSION DES DDLS SUPERFLUS

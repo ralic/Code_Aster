@@ -41,11 +41,11 @@ subroutine memsth(modele, carele, mate, inst, memass)
 !
 !
 !
-    character(len=8) :: lpain(13), lpaout(1)
+    character(len=8) :: lpain(14), lpaout(1)
     character(len=16) :: option
-    character(len=24) :: ligrmo, lchin(13), lchout(1)
+    character(len=24) :: ligrmo, lchin(14), lchout(1)
     character(len=24) :: chgeom, chcara(18)
-    character(len=19) :: chvarc, stano, pintto, cnseto, heavto
+    character(len=19) :: chvarc, stano, pintto, cnseto, heavto, hea_no
     character(len=19) :: loncha, basloc, lsn, lst
     integer :: iret, ilires
 !
@@ -76,6 +76,7 @@ subroutine memsth(modele, carele, mate, inst, memass)
         pintto = modele(1:8)//'.TOPOSE.PIN'
         cnseto = modele(1:8)//'.TOPOSE.CNS'
         heavto = modele(1:8)//'.TOPOSE.HEA'
+        hea_no = modele(1:8)//'.TOPONO.HNO'
         loncha = modele(1:8)//'.TOPOSE.LON'
         basloc = modele(1:8)//'.BASLOC'
         lsn = modele(1:8)//'.LNNO'
@@ -87,6 +88,7 @@ subroutine memsth(modele, carele, mate, inst, memass)
         heavto = '&&MEMSTH.HEAVTO.BID'
         loncha = '&&MEMSTH.LONCHA.BID'
         basloc = '&&MEMSTH.BASLOC.BID'
+        hea_no = '&&MEMSTH.HEA_NO.BID'
         lsn = '&&MEMSTH.LNNO.BID'
         lst = '&&MEMSTH.LTNO.BID'
     endif
@@ -118,10 +120,12 @@ subroutine memsth(modele, carele, mate, inst, memass)
         lchin(12) = lsn
         lpain(13) = 'PLST'
         lchin(13) = lst
+        lpain(14) = 'PHEA_NO'
+        lchin(14) = hea_no
         option = 'MASS_THER'
         ilires = 1
         call codent(ilires, 'D0', lchout(1) (12:14))
-        call calcul('S', option, ligrmo, 13, lchin,&
+        call calcul('S', option, ligrmo, 14, lchin,&
                     lpain, 1, lchout, lpaout, 'V',&
                     'OUI')
         call jedetr(memass)

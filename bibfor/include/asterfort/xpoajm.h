@@ -26,7 +26,7 @@ interface
                       jconq2, ima, iad1, nnn, inn,&
                       inntot, nbnoc, nbnofi, inofi, iacoo1,&
                       iacoo2, iad9, ninter, iainc, elrefp,&
-                      jlsn, jlst, typma, igeom, jfisno,&
+                      jlsn, jlst, typma, igeom, jheavn, ncompn,&
                       contac, cmp, nbcmp, nfh, nfe,&
                       ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
                       pre1)
@@ -74,7 +74,8 @@ interface
         integer :: jlst
         character(len=8) :: typma
         integer :: igeom
-        integer :: jfisno
+        integer :: jheavn
+        integer :: ncompn
         integer :: contac
         integer :: cmp(*)
         integer :: nbcmp

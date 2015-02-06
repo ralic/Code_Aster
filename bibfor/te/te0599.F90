@@ -24,6 +24,7 @@ subroutine te0599(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xthddl.h"
 #include "asterfort/xthini.h"
 #include "asterfort/xvechp.h"
@@ -42,7 +43,8 @@ subroutine te0599(option, nomte)
 !-----------------------------------------------------------------------
 !
     integer :: ndim, nfh, nfe, igeom, nnop, jptint, jcface
-    integer :: jlonch, jlst, jlsn, itps, ihechp, jstno, jbasec
+    integer :: jlonch, jlst, itps, ihechp, jstno, jbasec
+    integer :: heavn(27,5), ino, ig, jheavn, ncompn, jtab(7), iret
     integer :: itemp, ivectt, nddlno
     character(len=8) :: elrefp
     character(len=4) :: fonree
@@ -78,7 +80,6 @@ subroutine te0599(option, nomte)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PLST', 'L', jlst)
-    call jevech('PLSN', 'L', jlsn)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PBASECO', 'L', jbasec)
 !
@@ -93,14 +94,28 @@ subroutine te0599(option, nomte)
     call xthini(nomte, nfh, nfe)
     nddlno = 1+nfh+nfe
 !
+!   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
+    if (nfh.gt.0) then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
+    endif
+!
 ! ----------------------------------------------------------------------
 ! --- CALCUL DU VECTEUR ELEMENTAIRE DU A ECHANGE_PAROI
 ! ----------------------------------------------------------------------
 !
     call xvechp(ndim, elrefp, nnop, igeom, itemp,&
                 itps, ihechp, jptint, jcface,&
-                jlonch, jlst, jlsn, jbasec, nfh, nfe,&
-                fonree, ivectt)
+                jlonch, jlst, jbasec, nfh, nfe,&
+                fonree, ivectt, heavn)
 !
 ! ----------------------------------------------------------------------
 ! --- SUPPRESSION DES DDLS SUPERFLUS

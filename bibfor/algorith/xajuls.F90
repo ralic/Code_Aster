@@ -67,7 +67,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     real(kind=8), pointer :: lnsv(:) => null()
     real(kind=8), pointer :: ltsv(:) => null()
 !
-    parameter     (fit_to_vertex=(/1.d-2,1d-6/), crilst=1.d-3, penal=0.01)
+    parameter     (fit_to_vertex=(/1.d-6,1d-6/), crilst=1.d-3, penal=0.01)
 !
 !-----------------------------------------------------------------------
 !     DEBUT

@@ -24,6 +24,7 @@ subroutine te0571(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
+#include "asterfort/tecach.h"
 #include "asterfort/xrigth.h"
 #include "asterfort/xthddl.h"
 #include "asterfort/xthini.h"
@@ -43,6 +44,7 @@ subroutine te0571(option, nomte)
 !
     integer :: ndim, nfh, nfe, igeom, nnop, jpintt, imate, itps, jstno
     integer :: imattt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, nddlno
+    integer :: heavn(27,5), ino, ig, jheavn, ncompn, jtab(7), iret
     character(len=8) :: elrefp
 !
 ! ----------------------------------------------------------------------
@@ -76,13 +78,27 @@ subroutine te0571(option, nomte)
     call xthini(nomte, nfh, nfe)
     nddlno = 1+nfh+nfe
 !
+!   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
+    if (nfh.gt.0) then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+      ASSERT(ncompn.eq.5)
+      do ino = 1, nnop
+        do ig = 1 , ncompn
+          heavn(ino,ig) = zi(jheavn-1+ncompn*(ino-1)+ig)
+        enddo
+      enddo
+    endif
+!
 ! ----------------------------------------------------------------------
 ! --- CALCUL DE LA MATRICE DE RIGIDITE ELEMENTAIRE
 ! ----------------------------------------------------------------------
 !
     call xrigth(ndim, elrefp, nnop, imate, itps,&
                 igeom, zi(jlonch), zi(jcnset), jpintt, zr(jlsn),&
-                zr(jlst), zr(jbaslo), zi(jheavt), nfh, nfe,&
+                zr(jlst), heavn, zr(jbaslo), zi(jheavt), nfh, nfe,&
                 zr(imattt))
 !
 ! ----------------------------------------------------------------------

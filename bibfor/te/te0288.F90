@@ -54,10 +54,10 @@ subroutine te0288(option, nomte)
 !
 !
 !
-    integer :: ndim, nno, nnop, npg, nptf, jbasec, nfiss, jfisno
+    integer :: ndim, nno, nnop, npg, nptf, jbasec, nfiss
     integer :: nfh, nfe, ddlc, nse, ise, in, ino
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
-    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, icomp
+    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate, icomp, jheavn
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, icode
     integer :: ninter, nface, cface(18, 6), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
@@ -138,13 +138,13 @@ subroutine te0288(option, nomte)
     call jevech('PBASLOR', 'L', jbaslo)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
+    call teattr('S', 'XFEM', enr, ibid)
+    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
 !
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    call teattr('S', 'XFEM', enr, ibid)
     if (ibid .eq. 0 .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
-    if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
     call xcgfvo(option, ndim, nnop, fno)
@@ -177,7 +177,7 @@ subroutine te0288(option, nomte)
         call xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
                     zr(jbaslo), nnop, idepl, zr(jlsn), zr(jlst),&
-                    igthet, fno, nfiss, jfisno, incr)
+                    igthet, fno, nfiss, jheavn, incr)
 !
 !
 110  continue
@@ -254,7 +254,7 @@ subroutine te0288(option, nomte)
 !
     do 200 ifa = 1, nface
         call xsifle(ndim, ifa, jptint, cface,&
-                    igeom, nfh, singu, nfe, ddlc,&
+                    igeom, nfh, jheavn, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
                     nompar, presn, option, igthet, jbasec,&

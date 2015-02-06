@@ -57,7 +57,7 @@ subroutine te0297(option, nomte)
     integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, idecpg, icode
     integer :: nface, cface(18, 6), ifa, singu, jpmilt, ipuls, iret, jtab(7)
-    integer :: irese, ddlm, jbasec, nptf, nfiss, jfisno
+    integer :: irese, ddlm, jbasec, nptf, nfiss, jheavn
     integer :: contac
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81), puls
@@ -119,14 +119,13 @@ subroutine te0297(option, nomte)
     call jevech('PDEPLAR', 'L', idepl)
     call jevech('PMATERC', 'L', imate)
     call jevech('PGTHETA', 'E', igthet)
-
-!   Propre aux elements 1d et 2d (quadratiques)
     call teattr('S', 'XFEM', enr, ier)
+    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
+!   Propre aux elements 1d et 2d (quadratiques)
     if ((ier.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHC'.or.enr.eq.'XHT'.or.enr.eq.'XT')&
          .and..not.iselli(elrefp))&
     call jevech('PPMILTO', 'L', jpmilt)
-    if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
     if(option.eq.'CALC_K_G_COHE') goto 98
 !
 !   VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
@@ -177,7 +176,7 @@ subroutine te0297(option, nomte)
                     ise, nfh, ddlc, ddlm, nfe,&
                     puls, zr(jbaslo), nnop,&
                     idepl, zr(jlsn), zr( jlst), idecpg, igthet,&
-                    fno, nfiss, jfisno)
+                    fno, nfiss, jheavn)
 !
 110  continue
 !
@@ -260,7 +259,7 @@ subroutine te0297(option, nomte)
 !   BOUCLE SUR LES FACETTES
     do 200 ifa = 1, nface
         call xsifle(ndim, ifa, jptint, cface,&
-                    igeom, nfh, singu, nfe, ddlc,&
+                    igeom, nfh, jheavn, singu, nfe, ddlc,&
                     ddlm, jlst, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
                     nompar, presn, option, igthet, jbasec,&

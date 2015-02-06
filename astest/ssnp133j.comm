@@ -119,7 +119,7 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
-            FROTTEMENT     = 'SANS',
+            FROTTEMENT     = 'SANS',#ELIM_ARETE     = 'ELIM',
             ZONE=(
                   _F(INTEGRATION='GAUSS',
                      ORDRE_INT=2,
@@ -170,9 +170,9 @@ SYMETRIE = AFFE_CHAR_MECA(
   LIAISON_GROUP =_F(GROUP_NO_1 = 'N_MIL',
                      GROUP_NO_2 = 'N_MIL',
                      DDL_1 = 'DY',
-                     DDL_2 = 'DY',
-                     COEF_MULT_1 = 1.,
-                     COEF_MULT_2 = 1.,
+                     DDL_2 = 'H1Y',
+                     COEF_MULT_1 = 2.,
+                     COEF_MULT_2 = -2.,
                      COEF_IMPO=0.,),
   )
 
@@ -237,16 +237,16 @@ EVOL = STAT_NON_LINE(INFO=1,
     MATRICE   = 'TANGENTE',
     REAC_ITER = 1,
     ),
-  CONVERGENCE = _F(
-    RESI_REFE_RELA = 1.E-6,
-    SIGM_REFE      = Sc,
-    DEPL_REFE      = 2*Gc/Sc,
-    ITER_GLOB_MAXI = 12,
-    ),
-#   CONVERGENCE = _F(
-#     RESI_GLOB_RELA = 1.E-6,
-#     ITER_GLOB_MAXI = 12,
-#     ),
+#  CONVERGENCE = _F(
+#    RESI_REFE_RELA = 1.E-6,
+#    SIGM_REFE      = Sc,
+#    DEPL_REFE      = 2*Gc/Sc,
+#    ITER_GLOB_MAXI = 12,
+#    ),
+   CONVERGENCE = _F(
+     RESI_GLOB_RELA = 1.E-6,
+     ITER_GLOB_MAXI = 12,
+     ),
   SOLVEUR    = _F(METHODE = 'MUMPS', NPREC=10),
   ARCHIVAGE = _F(
     LIST_INST      = INS_ARCH

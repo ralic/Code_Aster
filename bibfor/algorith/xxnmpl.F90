@@ -4,7 +4,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                   basloc, nnop, npg, typmod, option,&
                   imate, compor, lgpg, crit, idepl,&
                   lsn, lst, idecpg, sig, vi,&
-                  matuu, ivectu, codret, nfiss, fisno)
+                  matuu, ivectu, codret, nfiss, heavn)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -23,10 +23,11 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
     integer :: nfh, ddlc, ddlm, nfe, idepl, ivectu, ideplp
-    integer :: nfiss, fisno(nnop, nfiss), idecpg
+    integer :: nfiss, heavn(nnop, 5), idecpg
     character(len=8) :: elrefp, typmod(*)
     character(len=8) :: elrese
     character(len=16) :: option, compor(4)
@@ -90,7 +91,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
     integer :: i, ig, iret, j, j1, kkd, kl, kpg, l, m, n, nn, mn
     integer :: ddls, ddld, cpt, idfde, ipoids, ivf, dec(nnop)
-    integer :: jcoopg, jdfd2, jgano, ndimb, nno, nnops, nnos, npgbis
+    integer :: jcoopg, jdfd2, jgano, ndimb, nno, nnops, nnos, npgbis, hea_se
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6), fe(4), baslog(3*ndim)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
@@ -143,6 +144,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     do n = 1, nnop
         call indent(n, ddls, ddlm, nnops, dec(n))
     end do
+!
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !-----------------------------------------------------------------------
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
     do kpg = 1, npg
@@ -210,7 +213,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 ur = ur + ff(n)*zr(ideplp-1+ddls*(n-1)+1)
                 do ig = 1, nfh
                     ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*ig+1) *&
-                            xcalf_he(he(fisno(n,ig)),lsn((n-1)*nfiss+fisno(n,ig)))
+                            xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                 end do
                 do ig = 1, nfe
                     ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
@@ -220,10 +223,10 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 ! -     CALCUL DE DEPS
         call xcinem(axi, nnop, nnops, ideplp, grdepl,&
-                    ndim, he, r, ur, fisno,&
+                    ndim, he, r, ur,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    deps, rbid33, lsn)
+                    deps, rbid33, heavn)
 !
 ! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T-
         if (axi) then
@@ -232,7 +235,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
                 do ig = 1, nfh
                     ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *&
-                            xcalf_he(he(fisno(n,ig)),lsn((n-1)*nfiss+fisno(n,ig)))
+                            xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                 end do
                 do ig = 1, nfe
                     ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
@@ -242,10 +245,10 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 ! -     CALCUL DE EPS
         call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                    ndim, he, r, ur, fisno,&
+                    ndim, he, r, ur,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    eps, rbid33, lsn)
+                    eps, rbid33, heavn)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
@@ -274,8 +277,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 do i = 1, ndim
                     cpt=ndim*(1+ig-1)+i
                     do m = 1, 2*ndim
-                        def(m,n,cpt) = def(m,n,i) * xcalf_he(he(fisno(n,ig)),&
-                                                    lsn((n-1)*nfiss+fisno(n,ig)))
+                        def(m,n,cpt) = def(m,n,i) * xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                     end do
                     if (ndim .eq. 2) then
                         def(3,n,cpt) = 0.d0
@@ -284,8 +286,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
 !  ATTENTION:TERME DE CORRECTION (3,3) AXI SUR LE DDL 1+NDIM*IG
                 if (axi) then
-                    def(3,n,(1+ndim*ig)) = f(3,3) * ff(n)/r * xcalf_he(he( fisno(n,ig)),&
-                                                              lsn((n-1)*nfiss+fisno(n,ig)))
+                    def(3,n,(1+ndim*ig)) = f(3,3)*ff(n)/r*xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                 endif
 !
             end do

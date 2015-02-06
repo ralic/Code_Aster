@@ -1,10 +1,10 @@
 subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                   ninter, iainc, typma, co, igeom,&
-                  jdirno, nfiss, jfisno, he, ndime,&
+                  jdirno, nfiss, jheavn, ncompn, he, ndime,&
                   ndim, cmp, nbcmp, nfh, nfe,&
                   ddlc, ima, jconx1, jconx2, jcnsv1,&
                   jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                  nnn, contac, lmeca, pre1, jlsn)
+                  nnn, contac, lmeca, pre1)
 ! aslint: disable=W1306,W1504
     implicit none
 !
@@ -21,14 +21,14 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 #include "asterfort/xlacti.h"
 #include "asterfort/xmoffc.h"
 #include "asterfort/xpoffo.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
 #include "asterfort/ismali.h"
 !
     integer :: ino, nnop, igeom, ndim, ndime, ddlc, jdirno
     integer :: nbcmp, cmp(nbcmp), nfe, ima, jconx1, jconx2, jcnsv1
     integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac
-    integer :: nfiss, jfisno, he(nfiss), nfh, inn, nnn, ninter
-    integer, optional :: jlsn
+    integer :: nfiss, he(nfiss), nfh, inn, nnn, ninter, jheavn, ncompn
     aster_logical :: lmeca
     character(len=8) :: elrefp, typma
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
@@ -67,7 +67,6 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !     IGEOM  : COORDONNÉES DES NOEUDS DE L'ÉLÉMENT PARENT
 !     JDIRNO : ADRESSE DU TABLEAU DIRNO LOCAL
 !     NFISS  : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT PARENT
-!     JFISNO : POINTEUR DE FISSNO DANS L'ÉLÉMENT PARENT
 !     HE     : VALEURS DE(S) FONCTION(S) HEAVISIDE SUR LE SOUS ÉLÉMENT
 !     NDIME  : DIMENSION TOPOLOGIQUE DE LA MAILLE PARENT
 !     NDIM   : DIMENSION DU MAILLAGE
@@ -105,7 +104,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     real(kind=8) :: ff2(8), press
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
     integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
-    integer :: lact(8), nlact
+    integer :: lact(8), nlact, hea_se
     aster_logical :: lpint, lcont, pre1
     parameter    (crilsn = 1.d-4)
 !
@@ -199,6 +198,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         call xdeffe(r, theta, fe)
     endif
 !
+!   CALCUL DE L IDENTIFIANT SOUS ELEMENT
+    hea_se=xcalc_code(nfiss,he)
+!
 !     CALCUL DE L'APPROXIMATION DU CHAMP PRIMAL "CHPRI" (DEPLACEMENT
 !     EN MECA / TEMPERATURE EN THERMIQUE)
     if (pre1) then
@@ -223,9 +225,10 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             do 85 ig = 1, nfh
                 do 90 i = 1, ndimc
                     ipos=ipos+1
-                    chpri(i) = chpri(i) + xcalf_he(real(he(zi(jfisno-1+(j-1)*nfh+ig)),8),&
-                               zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
-                               *ff(j)*zr(iad+cmp(ipos))
+                    chpri(i) = chpri(i) + &
+                       xcalc_heav(zi(jheavn-1+(j-1)*ncompn+ig),hea_se,&
+                                  zi(jheavn-1+(j-1)*ncompn+ncompn))&
+                       *ff(j)*zr(iad+cmp(ipos))
  90             continue
  85         continue
 !
@@ -242,8 +245,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
            press = press + ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1))
 !         DDLS HEAVISIDE POUR LA PRESSION DANS LE MASSIF
           do 96 ig = 1, nfh
-            press = press +xcalf_he(real(he(zi(jfisno-1+(i-1)*nfh+ig)),8),&
-                    &zr(jlsn-1+(i-1)*nfiss+zi(jfisno-1+(i-1)*nfh+ig)))*zr(&
+            press = press +xcalc_heav(zi(jheavn-1+(i-1)*ncompn+ig),hea_se,&
+                                  zi(jheavn-1+(i-1)*ncompn+ncompn))*zr(&
                     &jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1+nfh*ndim+1))*ff2(i)
  96       continue
  95     continue
@@ -265,9 +268,10 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             do 120 ig = 1, nfh
                 do 130 i = 1, ndimc
                     ipos=ipos+1
-                    chpri(i) = chpri(i) + xcalf_he(real(he(zi(jfisno-1+(j-1)*nfh+ig)),8),&
-                               zr(jlsn-1+(j-1)*nfiss+zi(jfisno-1+(j-1)*nfh+ig))) &
-                               * ff(j) * zr(iad+cmp(ipo&
+                    chpri(i) = chpri(i) + &
+                                xcalc_heav(zi(jheavn-1+(j-1)*ncompn+ig),hea_se,&
+                                           zi(jheavn-1+(j-1)*ncompn+ncompn))&
+                                * ff(j) * zr(iad+cmp(ipo&
                                &s))
 130             continue
 120         continue

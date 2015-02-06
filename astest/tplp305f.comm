@@ -183,8 +183,8 @@ TEMCINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
 # TESTS SUR LE RESULTAT XFEM
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.,
-           VALE_REFE=15.,
+           VALE_CALC=20.,
+           VALE_REFE=20.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMXSUP,)
@@ -197,8 +197,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.,
-           VALE_REFE=15.,
+           VALE_CALC=10.,
+           VALE_REFE=10.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMXINF,)
@@ -213,8 +213,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # -- 
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.,
-           VALE_REFE=15.,
+           VALE_CALC=20.,
+           VALE_REFE=20.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMXSUP,)
@@ -227,8 +227,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.,
-           VALE_REFE=15.,
+           VALE_CALC=10.,
+           VALE_REFE=10.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMXINF,)

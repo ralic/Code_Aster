@@ -1,5 +1,5 @@
 subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
-                  nddlm, npg, igeom, jpintt, jpmilt, jlsn,&
+                  nddlm, npg, igeom, jpintt, jpmilt, jheavn,&
                   ivf, ipoids, idfde, ivectu, ipesa,&
                   heavt, lonch, cnset, rho, axi,&
                   yaenrm)
@@ -33,30 +33,44 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !
     implicit none
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref1.h"
+#include "asterfort/tecach.h"
 #include "asterfort/hmdeca.h"
 #include "asterfort/indent.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
 #include "jeveux.h"
     aster_logical :: axi
     integer :: nse, ise, in, ino, nno, j, ndim
     integer :: nnop, nnops, n, nddls, nddlm, ipi, npg
-    integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde, jlsn
+    integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde, jheavn
     integer :: ivectu, yaenrm
     integer :: ipesa, dec1(nnop), dec2(nnop), icla, ienr
     integer :: heavt(36), lonch(10), cnset(4*32)
+    integer :: heavn(nnop,5), ig, ncompn, jtab(7), iret, hea_se
     real(kind=8) :: xg(ndim), xe(ndim), coorse(81), dbid(nnop, ndim)
-    real(kind=8) :: ff(nnop), rbid1(4), rbid2(4), rbid3(4), poids, rho, he, rx
+    real(kind=8) :: ff(nnop), rbid1(4), rbid2(4), rbid3(4), poids, rho, rx
     character(len=8) :: elrefp
 !
     call elref1(elrefp)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMEN
     nse=lonch(1)
+!     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
+    call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+    ncompn = jtab(2)/jtab(3)
+    ASSERT(ncompn.eq.5)
+    do in = 1, nnop
+      do ig = 1 , ncompn
+        heavn(in,ig) = zi(jheavn-1+ncompn*(in-1)+ig)
+      enddo
+    enddo
 !
 !     BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
     do ise = 1, nse
@@ -81,7 +95,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
         end do
 !
 !     DEFINITION DE LA FONCTION HEAVISIDE POUR CHAQUE SS-ELT
-        he=1.d0*heavt(ise)
+        hea_se=xcalc_code(1, he_inte=[heavt(ise)])
 !
         do 70 n = 1, nnop
             call indent(n, nddls, nddlm, nnops, dec1(n))
@@ -135,7 +149,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !     TERMES HEAVISIDE
                     if (yaenrm .eq. 1) then
                         zr(ivectu+ienr+ndim+1)=zr(ivectu+ienr+ndim+1)&
-                        +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+2)*ff(ino)
+                        +xcalc_heav(heavn(ino,1),hea_se,heavn(ino,5))*poids*zr(ipesa+2)*ff(ino)
                     endif
  90             continue
             else
@@ -157,13 +171,13 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !     TERMES HEAVISIDE
                     if (yaenrm .eq. 1) then
                         zr(ivectu+ienr+ndim)=zr(ivectu+ienr+ndim)&
-                        +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+1)*ff(ino)
+                        +xcalc_heav(heavn(ino,1),hea_se,heavn(ino,5))*poids*zr(ipesa+1)*ff(ino)
 !
                         zr(ivectu+ienr+ndim+1)=zr(ivectu+ienr+ndim+1)&
-                        +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+2)*ff(ino)
+                        +xcalc_heav(heavn(ino,1),hea_se,heavn(ino,5))*poids*zr(ipesa+2)*ff(ino)
                         if (ndim .eq. 3) then
                             zr(ivectu+ienr+ndim+2)=zr(ivectu+ienr+ndim+2)&
-                                      +xcalf_he(he,zr(jlsn-1+ino))*poids*zr(ipesa+3)*ff(ino)  
+                            +xcalc_heav(heavn(ino,1),hea_se,heavn(ino,5))*poids*zr(ipesa+3)*ff(ino)
                         endif
                     endif
 100             continue

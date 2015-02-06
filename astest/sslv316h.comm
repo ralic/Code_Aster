@@ -406,7 +406,7 @@ TEST_TABLE(TABLE=TABLSN[3],
            TYPE_TEST='MAX',
            PRECISION=tol,           
            CRITERE='RELATIF',
-           VALE_CALC=-0.0119834964885,
+           VALE_CALC=-0.0119861133814,
            TOLE_MACHINE=5e-03,
            VALE_REFE= -0.0119834964885,)
 
@@ -415,7 +415,7 @@ TEST_TABLE(TABLE=TABLSN[3],
            NOM_PARA='X1',
            TYPE_TEST='MIN',
            CRITERE='RELATIF',
-           VALE_CALC=-0.0120326858289,
+           VALE_CALC=-0.0120326858284,
            TOLE_MACHINE=5e-03,           
            VALE_REFE=-0.0120331025342, )
 #====================================================
@@ -426,7 +426,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,          
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0153561447604,
+           VALE_CALC=-0.00320251327053,
            TOLE_MACHINE=2.e-2,          
            VALE_REFE=0.0 )
 
@@ -436,7 +436,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,           
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0143311850663,
+           VALE_CALC=-0.00450775893647,
            TOLE_MACHINE=2.e-2,          
            VALE_REFE=0.0 )
 

@@ -47,7 +47,7 @@ subroutine xintva(elrefp, n, ptxx, ndime, intinf, intsup)
     real(kind=8) :: norm_ab, norm_bc , norm_ca, eps, tole
     integer :: nno, ia , ib , ic, j, cpt
     parameter (eps = 1.d-12)
-    parameter (tole = 1.d-7)
+    parameter (tole = 5.d-7)
 !
 ! ------------------------------------------------------------------
 !

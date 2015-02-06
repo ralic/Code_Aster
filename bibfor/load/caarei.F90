@@ -107,7 +107,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
     character(len=16) :: keywordfact, keyword
     character(len=19) :: list_rela
     character(len=19) :: connex_inv
-    character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
+    character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav
     integer :: jnoxfl, jnoxfv
     aster_logical :: lxfem, l_ocmp
     aster_logical :: l_dtan
@@ -172,7 +172,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
 ! - Xfem fields
 !
     call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat,&
-                   ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
+                   ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
@@ -228,7 +228,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
                         call xddlim(model, dof_name, name_node, nume_node, val_r_dtan,&
                                     val_c_dtan, val_f_dtan, vale_type, ibid, list_rela,&
                                     ndim, repe_defi, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                                    ch_xfem_ltno, connex_inv, mesh)
+                                    ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
                         goto 115
                     endif
                 endif
@@ -260,7 +260,7 @@ subroutine caarei(load, mesh, ligrmo, vale_type)
                             coef_type, n_keyword, keywordlist, nbterm, vale_type,&
                             vale_real, vale_func, vale_cplx, icompt, list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv, mesh)
+                            ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
 !
             enddo
 !

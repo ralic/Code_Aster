@@ -19,7 +19,7 @@ interface
     subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
                       nnos, pla, lact, nfh, ddls,&
                       ddlm, nfiss, ifiss, jheafa, ifa,&
-                      ncomph, jfisno, jac, ffc, ffp,&
+                      ncomph, jheavn, ncompn, jac, ffc, ffp,&
                       singu, rr, vtmp)
         real(kind=8) :: sigref
         real(kind=8) :: depref
@@ -37,7 +37,8 @@ interface
         integer :: jheafa
         integer :: ifa
         integer :: ncomph
-        integer :: jfisno
+        integer :: ncompn
+        integer :: jheavn
         real(kind=8) :: jac
         real(kind=8) :: ffc(8)
         real(kind=8) :: ffp(27)

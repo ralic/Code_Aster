@@ -5,7 +5,7 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
     implicit none
 #include "jeveux.h"
 #include "asterfort/indent.h"
-#include "asterfort/xcoef_he.h"
+#include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos
     integer :: nfh, ddls, ddlm
     integer :: singu
@@ -55,13 +55,13 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
 !
 !
 !
-    real(kind=8) :: coefh, coefh2
+    real(kind=8) :: coefj, coefi
     integer :: i, j, k, l, jn, in
 !
 ! ----------------------------------------------------------------------
 !
-    coefh=xcoef_he()
-    coefh2=coefh**2
+    coefi=xcalc_saut(1,0,1)
+    coefj=xcalc_saut(1,0,1)
 !
     do 170 i = 1, nno
         call indent(i, ddls, ddlm, nnos, in)
@@ -72,15 +72,15 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
             do 172 k = 1, nfh*ndim
                 do 173 l = 1, nfh*ndim
 !
-                   mmat(in+ndim+k,jn+ndim+l) = mmat(in+ndim+k,jn+ ndim+l) - coefh2*mu*seuil*coefbu&
-                                                &*ffp(i)*ffp(j)* ptknp(k,l)*jac
+                   mmat(in+ndim+k,jn+ndim+l) = mmat(in+ndim+k,jn+ ndim+l) - coefi*coefj*mu*seuil*&
+                                               coefbu*ffp(i)*ffp(j)* ptknp(k,l)*jac
 173              continue
 !
                 do 174 l = 1, singu*ndim
 !
                     mmat(in+ndim+k,jn+ndim*(1+nfh)+l) = mmat(&
                                                         in+ndim+ k,&
-                                                   jn+ndim*(1+nfh)+l) - coefh*2.d0*rr*mu*seuil*coe&
+                                                   jn+ndim*(1+nfh)+l) - coefj*2.d0*rr*mu*seuil*coe&
                                                         &fbu* ffp(i)*ffp(j)* ptknp(k,&
                                                         l&
                                                         )*jac
@@ -93,7 +93,7 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
 !
                     mmat(in+ndim*(1+nfh)+k,jn+ndim+l) = mmat(&
                                                         in+ndim*(1+nfh)+k,&
-                                                   jn+ndim+l) - coefh*2.d0*rr*mu*seuil*coefbu*ffp(&
+                                                   jn+ndim+l) - coefj*2.d0*rr*mu*seuil*coefbu*ffp(&
                                                         & i)*ffp(j)* ptknp(k,&
                                                         l&
                                                         )*jac

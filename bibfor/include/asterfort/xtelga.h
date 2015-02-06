@@ -18,7 +18,7 @@
 interface
     subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                       lonch, cnset, jpintt, lsn, lst,&
-                      basloc, heavt, nfh, nfe, temppg)
+                      heavn, basloc, heavt, nfh, nfe, temppg)
         integer :: nfe
         integer :: nfh
         integer :: nnop
@@ -28,6 +28,7 @@ interface
         real(kind=8) :: tempno(nnop*(1+nfh+nfe))
         integer :: lonch(10)
         integer :: cnset(128)
+        integer :: heavn(27,5)
         integer :: jpintt
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)

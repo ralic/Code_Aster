@@ -37,6 +37,7 @@ subroutine te0363(option, nomte)
 #include "asterfort/xmoffc.h"
 #include "asterfort/xtform.h"
 #include "asterfort/xtlagc.h"
+#include "asterfort/tecach.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -55,7 +56,7 @@ subroutine te0363(option, nomte)
     integer :: ndim, nddl, nne(3), nnm(3), nnc
     integer :: nsinge, nsingm, lact(8), nlact, ninter
     integer :: jpcpo, jpcai, jheafa, jheano
-    integer :: jgeom, jdepde
+    integer :: jgeom, jdepde, jheavn, ncompn, jtab(7), iret
     integer :: indco, memco, indnor, igliss, nfaes
     integer :: jout
     integer :: incoca, nfhe, nfhm
@@ -131,11 +132,18 @@ subroutine te0363(option, nomte)
     call jevech('PGEOMER', 'L', jgeom)
     call jevech('PDEPL_P', 'L', jdepde)
 !
+    if (nfhe .gt. 0 .or. nfhm .gt. 0) then
+      call jevech('PHEA_NO', 'L', jheavn)
+      call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+      ncompn = jtab(2)/jtab(3)
+    endif
+!
     if (lmulti) then
 !
 ! --- RECUPERATION DES FONCTION HEAVISIDES SUR LES FACETTES
 !
-        call jevech('PHEAVFA', 'L', jheafa)
+        call jevech('PHEA_FA', 'L', jheafa)
 !
 ! --- RECUPERATION DE LA PLACE DES LAGRANGES
 !
@@ -197,7 +205,7 @@ subroutine te0363(option, nomte)
     call xmmjec(ndim, nnm, nne, ndeple, nsinge,&
                 nsingm, ffe, ffm, norm, jgeom,&
                 jdepde, rre, rrm, ddle, ddlm,&
-                nfhe, nfhm, lmulti, zi(jheafa), jeuca)
+                nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa), jeuca)
 !
 !
 ! --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE

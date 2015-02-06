@@ -61,7 +61,7 @@ subroutine te0533(option, nomte)
     integer :: ndim, nfh, ddlc, ddls, nddl, nno, nnos, nnom, nnof, ddlm
     integer :: npg, npgf, algocr, algofr, vstnc(32)
     integer :: indco, ninter, nface, cface(18, 6)
-    integer :: nfe, singu, jstno, nvit, jcoheo, ncompv
+    integer :: nfe, singu, jstno, nvit, jcoheo, ncompv, jheavn
     integer :: nnol, pla(27), lact(8), nlact, nptf
     integer :: contac, nfiss, jfisno, jmate, jcohes, nbspg, nspfis
     real(kind=8) :: ffp(27), ffc(8), coefcp, coefcr, coeffp
@@ -70,7 +70,7 @@ subroutine te0533(option, nomte)
     real(kind=8) :: nd(3), seuil, cohes(3), coheo(3)
     real(kind=8) :: rr
     integer :: jheano, ifiss, jheafa, ncomph,jta2(3)
-    integer :: jtab(2), iret, ncompd, ncompp, ncompa, ncompb, ncompc
+    integer :: jtab(7), iret, ncompd, ncompp, ncompa, ncompb, ncompc, ncompn
     aster_logical :: matsym, lelim
     character(len=8) :: elref, elrefc, typma
     character(len=8) :: elc, fpg
@@ -126,11 +126,17 @@ subroutine te0533(option, nomte)
     call jevech('PCFACE', 'L', jcface)
     call jevech('PLONGCO', 'L', jlonch)
     call jevech('PBASECO', 'L', jbasec)
+    if (nfh.gt.0) then
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+    endif
     if (nfiss .gt. 1) then
         call jevech('PFISNO', 'L', jfisno)
         call jevech('PHEAVNO', 'L', jheano)
-        call jevech('PHEAVFA', 'L', jheafa)
-        call tecach('OOO', 'PHEAVFA', 'L', iret, nval=2,&
+        call jevech('PHEA_FA', 'L', jheafa)
+        call tecach('OOO', 'PHEA_FA', 'L', iret, nval=2,&
                     itab=jtab)
         ncomph = jtab(2)
     endif
@@ -234,7 +240,7 @@ subroutine te0533(option, nomte)
                                 jcohes, jcoheo, ncompv,&
                                 ddlm, ddls, ffc, ffp, idepd,&
                                 idepm, ifa, ifiss, jmate, indco,&
-                                ipgf, jac, jfisno, jheafa, mmat,&
+                                ipgf, jac, jheavn, ncompn, jheafa, mmat,&
                                 lact, ncomph, nd, nddl, ndim,&
                                 nfh, nfiss, nno, nnol, nnos,&
                                 nvit, pla, rela, rr, singu,&

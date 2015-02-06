@@ -22,7 +22,7 @@ interface
                       ise, nfh, ddlc, ddlm, nfe,&
                       puls, basloc, nnop,&
                       idepl, lsn, lst, idecpg, igthet,&
-                      fno, nfiss, jfisno)
+                      fno, nfiss, jheavn)
         integer :: nfiss
         integer :: nnop
         integer :: ndim
@@ -45,6 +45,6 @@ interface
         integer :: idecpg
         integer :: igthet
         real(kind=8) :: fno(ndim*nnop)
-        integer :: jfisno
+        integer :: jheavn
     end subroutine xsifel
 end interface

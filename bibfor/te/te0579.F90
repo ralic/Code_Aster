@@ -51,7 +51,7 @@ subroutine te0579(option, nomte)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_heav.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xlinhm.h"
 #include "blas/ddot.h"
@@ -64,7 +64,7 @@ subroutine te0579(option, nomte)
     integer :: ier, ndim, nno, nnop, nnops, npg, nnos, kpg
     integer :: ipoids, ivf, idfde, igeom, ires, i, j
     integer :: nfh, nse, ise, iret, pos, ndime, nddl
-    integer :: in, ino, iadzi, iazk24, jstno, itemps, jlsn
+    integer :: in, ino, iadzi, iazk24, jstno, itemps, jlsn, jheavn, ncompn, jheavs
     integer :: iflux, idec, nddls, nddlm, nnopm, ifluxf
     real(kind=8) :: ff(27), dfdi(27,3)
     real(kind=8) :: rb1(3), rb2, nbid(3), rb3, rb4
@@ -136,6 +136,11 @@ subroutine te0579(option, nomte)
         ncomp = jtab(2)
         nfiss = jtab(7)
         nfh = 1
+        call jevech('PHEA_NO', 'L', jheavn)
+        call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
+                itab=jtab)
+        ncompn = jtab(2)/jtab(3)
+        call jevech('PHEA_SE', 'L', jheavs)
     endif
 !
     ASSERT(nfh.gt.0)
@@ -272,9 +277,11 @@ subroutine te0579(option, nomte)
                     pos=pos+(ndim+1)
 !
 !             TERME HEAVISIDE
-                    zr(ires-1+pos) = zr(ires-1+pos) - xcalf_he(real(zi(jheavt-1+&
-                                     (ifiss-1)*ncomp+ise),8),zr(jlsn-1+(ino-1)*&
-                                     nfiss+ifiss))*deltat*flux*poids*ff(ino)
+                    zr(ires-1+pos) = zr(ires-1+pos) - xcalc_heav(&
+                                                           zi(jheavn-1+ncompn*(ino-1)+1),&
+                                                           zi(jheavs-1+ise),&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ncompn))*&
+                                                      deltat*flux*poids*ff(ino)
 !
 290             continue
             else if (pre1 .and. (option.eq.'CHAR_MECA_FLUX_F')) then
@@ -306,10 +313,12 @@ subroutine te0579(option, nomte)
                     pos=pos+(ndim+1)
 !
 !             TERME HEAVISIDE
-                    zr(ires-1+pos) = zr(ires-1+pos) - xcalf_he(real(zi(jheavt&
-                                     -1+( ifiss-1)*ncomp+ise),8),zr(jlsn-1+&
-                                     (ino-1)*nfiss+ifiss))*deltat*flux*&
-                                     poids*ff(ino)
+                    zr(ires-1+pos) = zr(ires-1+pos) - xcalc_heav(&
+                                                           zi(jheavn-1+ncompn*(ino-1)+1),&
+                                                           zi(jheavs-1+ise),&
+                                                           zi(jheavn-1+ncompn*(ino-1)+ncompn))*&
+                                                      deltat*flux*&
+                                                      poids*ff(ino)
 80              continue
             else
                 call utmess('F', 'XFEM_15')

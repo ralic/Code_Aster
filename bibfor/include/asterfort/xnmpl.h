@@ -21,7 +21,7 @@ interface
                      lgpg, crit, jpintt, cnset, heavt,&
                      lonch, basloc, idepl, lsn, lst,&
                      sig, vi, matuu, ivectu, codret,&
-                     jpmilt, nfiss, jfisno)
+                     jpmilt, nfiss, jheavn)
         integer :: nfiss
         integer :: nnop
         integer :: nfh
@@ -54,6 +54,6 @@ interface
         integer :: ivectu
         integer :: codret
         integer :: jpmilt
-        integer :: jfisno
+        integer :: jheavn
     end subroutine xnmpl
 end interface

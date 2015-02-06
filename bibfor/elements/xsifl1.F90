@@ -1,5 +1,5 @@
 subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
-                  ddls, dfdi, ff, he, idepl,&
+                  ddls, dfdi, ff, he, heavn, idepl,&
                   igthet, ipref, ipres, ithet, jac,&
                   jlst, ka, mu, nd,&
                   ndim, nfh, nnop, nnops, itemps,&
@@ -30,18 +30,20 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
 #include "jeveux.h"
 !
 ! Calcul de G avec forces de pression XFEM sur les levres
 !   de la fissure
 !
-    integer :: nnop, ndim
+    integer :: nnop, ndim, heavn(nnop,5)
     real(kind=8) :: angl(2), basloc(9*nnop), cisa, coeff, coeff3
     integer :: cpt, ddlm, ddls
     real(kind=8) :: depla(3), dfdi(nnop, ndim), dfor(3), divt
     real(kind=8) :: dtdm(3, 3), e1(3), e2(3), e3(3), ff(27)
     real(kind=8) :: forrep(3, 2), g, he(2)
-    integer :: i, idepl, ier, igthet, ilev, indi, ino
+    integer :: i, idepl, ier, igthet, ilev, indi, ino, ig, hea_fa(2)
     integer :: ipref, ipres, ithet, j
     real(kind=8) :: jac
     integer :: jlst
@@ -86,6 +88,11 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
     ASSERT(lst.lt.0.d0)
     rr(1)=-sqrt(-lst)
     rr(2)= sqrt(-lst)
+!
+! CALCUL DE L IDENTIFIANT DE FACETTES MAITRE/ESCLAVE
+    do ilev=1,2
+      hea_fa(ilev)=xcalc_code(1,he_real=[he(ilev)])
+    enddo
 !
 !     -----------------------------------------------
 !     1) CALCUL DES FORCES SUIVANT LES OPTIONS
@@ -178,9 +185,12 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
                 depla(i) = depla(i) + ff(ino)*zr(idepl-1+indi+cpt)
 201          continue
 !         DDLS HEAVISIDE
-            do 202 i = 1, nfh*ndim
+            do 202 i = 1, ndim
+              do ig = 1, nfh              
                 cpt=cpt+1
-                depla(i) = depla(i) + he(ilev) * ff(ino) * zr(idepl-1+ indi+cpt)
+                depla(i) = depla(i) + xcalc_heav(heavn(ino,ig),hea_fa(ilev),heavn(ino,5))& 
+                                    * ff(ino) * zr(idepl-1+ indi+cpt)
+              enddo
 202          continue
 !         DDL ENRICHIS EN FOND DE FISSURE
             do 204 i = 1, singu*ndim
@@ -224,12 +234,13 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
                 do 411 ino = 1, nnop
                     if ((option.eq.'CALC_K_G') .or. ( option.eq.'CALC_G').or.&
                         ( option.eq.'CALC_GTP')) then
-                        dpredi(i,j) = dpredi(i,j) + he(ilev) * dfdi( ino,j) * zr(ipres-1+ino) * n&
-                                      &d(i)
+                        dpredi(i,j) = dpredi(i,j) + xcalc_heav(heavn(ino,1),hea_fa(ilev),&
+                                  heavn(ino,5))*ff(ino)*dfdi( ino,j)*zr(ipres-1+ino)*nd(i)
                     endif
                     if ((option.eq.'CALC_K_G_F') .or. ( option.eq.'CALC_G_F').or.&
                         ( option.eq.'CALC_GTP_F')) then
-                        dpredi(i,j) = dpredi(i,j) + he(ilev) * dfdi( ino,j) * presn(ino) * nd(i)
+                        dpredi(i,j) = dpredi(i,j) + xcalc_heav(heavn(ino,1),hea_fa(ilev),&
+                                  heavn(ino,5))*dfdi( ino,j)*presn(ino)*nd(i)
                     endif
 411              continue
 410          continue

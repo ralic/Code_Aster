@@ -2,7 +2,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                   he, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, npg, idecpg, typmod,&
                   imate, compor, idepl, lsn, lst,&
-                  nfiss, fisno, sig)
+                  nfiss, heavn, sig)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -19,9 +19,10 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/vecini.h"
 #include "asterfort/xcalf2.h"
 #include "asterfort/xcinem.h"
-#include "asterfort/xcalf_he.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
     integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
-    integer :: nfh, ddlc, nfe, nfiss, fisno(nnop, nfiss)
+    integer :: nfh, ddlc, nfe, nfiss, heavn(nnop, 5)
     character(len=8) :: elrefp, elrese, typmod(*)
     character(len=16) :: compor(4)
     real(kind=8) :: basloc(6*nnop), he(nfiss), coorse(*)
@@ -68,7 +69,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 ! IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
 ! IN  NFISS   : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
-! IN  JFISNO  : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
+! IN  JHEAVN  : POINTEUR VERS LA DEFINITION HEAVISIDE
 !
 ! OUT SIG     : CONTRAINTES (SIEF_ELGA)
 !
@@ -76,7 +77,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
     character(len=2) :: k2bid
     character(len=16) :: phenom
-    integer :: kpg, n, i, j, ino, iret, ipg, ig
+    integer :: kpg, n, i, j, ino, iret, ipg, ig, hea_se
     integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
     aster_logical :: grdepl, axi
@@ -128,6 +129,9 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                      npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
                      jdfd2=jdfd2, jgano=jgano)
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
+!
+! CALCUL DE L IDENTIFIANT DU SS ELEMENT
+    hea_se=xcalc_code(nfiss, he_real=[he])
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
@@ -184,8 +188,8 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                 ur = ur + ff(ino)*zr(idepl-1+ddls*(ino-1)+1)
                 do ig = 1, nfh
                     ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*ig+1)&
-                                           *xcalf_he(he(fisno(ino,ig)),&
-                                                      lsn((ino-1)*nfiss+fisno(ino,ig)))
+                                           *xcalc_heav(heavn(ino,ig),&
+                                                       hea_se,heavn(ino,5))
                 end do
                 do ig = 1, nfe
                     ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*(nfh+ ig)+1) *fe(ig)
@@ -199,10 +203,10 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
         call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                    ndim, he, r, ur, fisno,&
+                    ndim, he, r, ur,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
-                    eps, grad, lsn)
+                    eps, grad, heavn)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH
         call vecini(6, 0.d0, epsth)

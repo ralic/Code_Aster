@@ -21,7 +21,7 @@ interface
     subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
                       nsingm, ffe, ffm, norm, jgeom,&
                       jdepde, rre, rrm, jddle, jddlm,&
-                      nfhe, nfhm, lmulti, heavfa, jeuca)
+                      nfhe, nfhm, lmulti, heavn, heavfa, jeuca)
         integer :: ndim
         integer :: jnnm(3)
         integer :: jnne(3)
@@ -40,6 +40,7 @@ interface
         integer :: nfhe
         integer :: nfhm
         aster_logical :: lmulti
+        integer :: heavn(*)
         integer :: heavfa(*)
         real(kind=8) :: jeuca
     end subroutine xmmjec

@@ -1,6 +1,7 @@
 subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                    ch2, ndim, lsn, lst, valimr, valimf, valimc,&
-                   fonree, lisrel, nomn, direct, class, mesh)
+                   fonree, lisrel, nomn, direct, class, mesh,&
+                   hea_no)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -23,6 +24,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 #include "asterfort/jexnum.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcalc_code.h"
+#include "asterfort/xcalc_heav.h"
 #include "asterfort/xdvois.h"
 !
     integer :: ino, jnoxfv, ndim
@@ -31,7 +34,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
     character(len=4) :: fonree
     character(len=8) :: modele, motcle, valimf, nomn
     character(len=8), intent(in) :: mesh
-    character(len=19) :: cnxinv, ch2, lisrel
+    character(len=19) :: cnxinv, ch2, lisrel, hea_no
     aster_logical :: class
 ! ---------------------------------------------------------------------
 ! ======================================================================
@@ -69,14 +72,15 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
     integer :: nbxcmp
     parameter  (nbxcmp=60)
     integer :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp)
-    integer :: itypma, ibid, nbnoma, nno, i, jlsnd, jlsnl
-    integer :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac, nterm
+    integer :: itypma, ibid, nbnoma, nno, i, jlsnd, jlsnl, hea_pt, heavm(135), jheavnl
+    integer :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac, nterm, ncompn, jheavnd
     real(kind=8) :: lsno(3), lsn2, coor(4*ndim), param(1), alpha(1), geom(20*ndim)
     real(kind=8) :: ff(20), dfbid(20,ndim), eps, ptm(ndim), ptp(ndim), xe(3)
     real(kind=8) :: valpar(ndim), deplm, deplp, deplun, deplde, depltr, coef(nbxcmp)
     real(kind=8) :: valh, valc, sign, deplmi, ffb(3), a1, b1, c1, a2, b2, c2
     character(len=8) :: noma, typma, elp, elpq, arete, nompar(ndim), nomres
-    character(len=8) :: name_node, name_ma(20), ddl(nbxcmp), noeud(nbxcmp), axes(3)
+    character(len=8) :: name_node, name_ma(20), ddl(nbxcmp), noeud(nbxcmp)
+    character(len=1) :: axes(3)
     character(len=19) :: mai, fclas, fenri
     character(len=24) :: coorn, noojb
     character(len=16) :: typres, nomcmd
@@ -84,6 +88,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
     integer, pointer :: nunotmp(:) => null()
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
+    integer, pointer :: ihea_no(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
     complex(kind=8) :: cbid
     aster_logical :: milieu, passe, coupee
@@ -222,7 +227,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 ! --- PREMIER CAS, LE NOEUD EST SUR LA FISSURE
           if (lsn(1) .eq. 0.d0 .and. lst(1) .lt. 0.d0) then
              valh = (deplp-deplm)/2.d0
-             valc = (deplm+deplp)/2.d0
+             valc = deplp
           endif
 ! --- DEUXIEME CAS: NOEUD HORS FISSURE, MAILLAGE LINEAIRE
 !     ON EVALUE LA FONCTION AUX NOEUDS VOISINS 1 ET 2
@@ -238,7 +243,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 ! --- TROISIEME CAS: MAILLLAGE QUADRATIQUE ET NOEUD HORS FISSURE, ET NOEUD
 !     MILIEU SUR LA FISSURE
           if (.not. ismali(typma) .and. lsn(1) .ne. 0.d0 .and. lsno(3) .eq. 0.d0) then
-             param(1) = sign(1.d0,lsn(1))*5.d-1
+             param(1) = -sign(1.d0,lsn(1))*5.d-1
 !     ON EVALUE LA FONCTION EN PARAM
              call elrfvf(arete, param, nno, ff, nno)
              do i = 1, ndim
@@ -246,7 +251,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              end do
              call fointe('FM', valimf, ndim, nompar, valpar,&
                          deplmi, icode)
-             if (lsn(1) .lt. 0.d0) then
+             if (lsn(1) .gt. 0.d0) then
                 valh=(ff(1)*deplun+ff(3)*deplm-deplmi)/(2.d0*ff(2))+deplde/2.d0
              else
                 valh=(deplmi-ff(2)*deplde-ff(3)*deplp)/(2.d0*ff(1))-deplun/2.d0
@@ -382,13 +387,27 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 80           continue
           end do
 !     ON RECUPERE LES COORDONNEES DE LA MAILLE SELECTIONNEE
+          heavm(1:135)=0
+          call jeveuo(hea_no//'.CESV', 'L', vi=ihea_no)
+          call jeveuo(hea_no//'.CESL', 'L', jheavnl)
+          call jeveuo(hea_no//'.CESD', 'L', jheavnd)
+          ncompn = zi(jheavnd-1+5+4*(numac-1)+3)
           do i = 1, nbnomac
              do j = 1, ndim
                 geom(ndim*(i-1)+j) = zr(iadrco-1+3*(connex(zi(jconx2+numac-1)+i-1)-1)+j)
              end do
              call jenuno(jexnum(mesh//'.NOMNOE',connex(zi(jconx2+numac-1)+i-1)), name_node)
              name_ma(i) = name_node
+!     RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
+!            ASSERT(ncompn.eq.5)
+             do j = 1, ncompn
+                call cesexi('S', jheavnd, jheavnl, numac, i,&
+                            1, j, iad)
+                heavm(ncompn*(i-1)+j) = ihea_no(iad)
+             end do
           end do
+          hea_pt=-99
+          hea_pt=xcalc_code(1,he_real=[-sign(1.d0,lsn(1))])
 !     ON CHERCHE LES COORDONNEES DE CE NOEUD
           do i = 1, ndim
              coor(i) = zr(iadrco-1+3*(ino-1)+i)
@@ -417,7 +436,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                 ddl(2*i-1) = 'D'//motcle(2:2)
                 ddl(2*i) = 'H1'//motcle(2:2)
                 coef(2*i-1) = ff(i)
-                coef(2*i) = sign(1.d0,-lsn(1))*ff(i)
+                coef(2*i) = xcalc_heav(heavm(1+ncompn*(i-1)),hea_pt,heavm(5+ncompn*(i-1)))*ff(i)
                 noeud(2*i-1) = name_ma(i)
                 noeud(2*i) = name_ma(i)
              end do
@@ -432,7 +451,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                    coef(2*nbnoma*(j-1)+2*i-1)=direct(j)*ff(i)
                    noeud(2*nbnoma*(j-1)+2*i-1) = name_ma(i)
                    ddl(2*nbnoma*(j-1)+2*i) = 'H1'//axes(j)
-                   coef(2*nbnoma*(j-1)+2*i)=direct(j)*ff(i)*sign(-lsn(1),1.d0)
+                   coef(2*nbnoma*(j-1)+2*i) = direct(j)*ff(i)*xcalc_heav(heavm(1+ncompn*(i-1)),&
+                                              hea_pt,heavm(5+ncompn*(i-1)))
                    noeud(2*nbnoma*(j-1)+2*i) = name_ma(i)
                 end do
              end do
@@ -445,7 +465,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                 ddl(2*i-1) = 'PRE1'
                 ddl(2*i) = 'HPRE1'
                 coef(2*i-1) = ff(i)
-                coef(2*i) = sign(1.d0,-lsn(1))*ff(i)
+                coef(2*i) = xcalc_heav(heavm(1+ncompn*(i-1)),hea_pt,heavm(5+ncompn*(i-1)))*ff(i)
                 noeud(2*i-1) = name_ma(i)
                 noeud(2*i) = name_ma(i)
              end do
@@ -493,12 +513,12 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                       [0.d0], nterm, valimr, valimc, fclas,&
                       'REEL', fonree, '12', 0.d0, lisrel)
        endif
-          nterm = 1
-          ddl(1) = 'H1'//motcle(2:2)
-          coef(1)= 1.d0
-          call afrela(coef, [cbid], ddl, noeud, dimens,&
-                      [0.d0], nterm, valimr, valimc, fenri,&
-                      'REEL', fonree, '12', 0.d0, lisrel)
+       nterm = 1
+       ddl(1) = 'H1'//motcle(2:2)
+       coef(1)= 1.d0
+       call afrela(coef, [cbid], ddl, noeud, dimens,&
+                   [0.d0], nterm, valimr, valimc, fenri,&
+                   'REEL', fonree, '12', 0.d0, lisrel)
     elseif (motcle.eq.'PRE1' .and. .not.passe) then
 !          COEFFICIENTS ET DDLS DE LA RELATION
        if (lsn(1) .eq. 0.d0) then

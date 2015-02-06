@@ -1,7 +1,7 @@
 subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
                   nsingm, ffe, ffm, norm, jgeom,&
                   jdepde, rre, rrm, jddle, jddlm,&
-                  nfhe, nfhm, lmulti, heavfa, jeuca)
+                  nfhe, nfhm, lmulti, heavn, heavfa, jeuca)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,13 +26,15 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
 !
 #include "asterfort/indent.h"
 #include "asterfort/vecini.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim
     real(kind=8) :: norm(3)
     real(kind=8) :: ffe(20), ffm(20)
     real(kind=8) :: jeuca
     integer :: jgeom, jdepde
     integer :: jnnm(3), jnne(3), jddle(2), jddlm(2)
-    integer :: nsinge, nsingm, nfhe, nfhm, heavfa(*)
+    integer :: nsinge, nsingm, nfhe, nfhm, heavfa(*), heavn(*)
     real(kind=8) :: rre, rrm
     aster_logical :: lmulti
 !
@@ -66,7 +68,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
 !
     integer :: idim, inom, inoes, in, nddle
     integer :: ndeple, nne, nnes, nnem, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    integer :: ifh, iddl
+    integer :: ifh, iddl, hea_fa(2)
     real(kind=8) :: pose(3), posm(3), iescl(6), imait(6), pos
     integer :: pl
 !
@@ -77,7 +79,7 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
 ! --- INNITIALISATION
 !
     iescl(1) = 1
-    iescl(2) =-1
+    iescl(2) = -1
     iescl(2+nfhe)=-rre
     imait(1) = 1
     imait(2) = 1
@@ -96,6 +98,11 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
     jeuca = 0.d0
     call vecini(3, 0.d0, pose)
     call vecini(3, 0.d0, posm)
+!    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
+    if (.not.lmulti) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
 !
 ! --- CALCUL DE LA POSITION COURANTE DU POINT ESCLAVE
 !
@@ -105,8 +112,14 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
             if (nnm .ne. 0) then
                 if (lmulti) then
                     do 30 ifh = 1, nfhe
-                        iescl(1+ifh)=heavfa(nfhe*(inoes-1)+ifh)
+                        iescl(1+ifh)=xcalc_heav(heavn(nfhe*(inoes-1)+ifh),&
+                                                heavfa(1),&
+                                                heavn(nfhe*nne+nfhm*nnm+inoes))
  30                 continue
+                else
+                        iescl(2)=xcalc_heav(heavn(inoes),&
+                                            hea_fa(1),&
+                                            heavn(nfhe*nne+nfhm*nnm+inoes))
                 endif
                 pos = zr(jgeom-1+ndim*(inoes-1)+idim)
                 do 40 iddl = 1, 1+nfhe+nsinge
@@ -129,8 +142,14 @@ subroutine xmmjec(ndim, jnnm, jnne, ndeple, nsinge,&
             in = in + nddle
             if (lmulti) then
                 do 70 ifh = 1, nfhm
-                    imait(1+ifh)=heavfa(nfhe*nne+nfhm*(inom-1)+ifh)
+                    imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(inom-1)+ifh),&
+                                            heavfa(2),&
+                                            heavn((1+nfhe)*nne+nfhm*nnm+inom))
  70             continue
+            else
+                    imait(2)=xcalc_heav(heavn(nne+inom),&
+                                        hea_fa(2),&
+                                        heavn((1+nfhe)*nne+nfhm*nnm+inom))  
             endif
             pos = zr(jgeom-1+nne*ndim+(inom-1)*ndim+idim)
             do 80 iddl = 1, 1+nfhm+nsingm

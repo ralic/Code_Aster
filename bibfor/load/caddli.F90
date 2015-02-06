@@ -92,7 +92,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
     character(len=19) :: list_rela
     character(len=4) :: coef_type
     character(len=19) :: connex_inv
-    character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno
+    character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav
     integer :: jnoxfl, jnoxfv
     aster_logical :: lxfem
     character(len=24) :: list_node
@@ -166,7 +166,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
 ! - Xfem fields
 !
     call char_xfem(mesh, model, lxfem, connex_inv, ch_xfem_stat,&
-                   ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno)
+                   ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav)
     if (lxfem) then
         call jeveuo(ch_xfem_node//'.CNSL', 'L', jnoxfl)
         call jeveuo(ch_xfem_node//'.CNSV', 'L', jnoxfv)
@@ -229,7 +229,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
                             coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv, mesh)
+                            ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
             enddo
 !
             call jedetr('&&CADDLI.ICOMPT')
@@ -260,7 +260,7 @@ subroutine caddli(keywordfact, load, mesh, ligrmo, vale_type)
                             coef_type, cmp_nb, cmp_name, cmp_acti, vale_type,&
                             vale_real, vale_func, vale_cplx, zi(jcompt), list_rela,&
                             lxfem, jnoxfl, jnoxfv, ch_xfem_stat, ch_xfem_lnno,&
-                            ch_xfem_ltno, connex_inv, mesh)
+                            ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
             enddo
             do icmp = 1, cmp_nb
                 if (zi(jcompt-1+icmp) .eq. 0) then

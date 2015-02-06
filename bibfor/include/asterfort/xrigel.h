@@ -19,7 +19,7 @@ interface
     subroutine xrigel(nnop, ddlh, nfe, ddlc,&
                       igeom, jpintt, cnset, heavt, lonch,&
                       basloc, lsn, lst, sig, matuu,&
-                      jpmilt)
+                      jpmilt, heavn)
         integer :: nnop
         integer :: ddlh
         integer :: nfe
@@ -29,6 +29,7 @@ interface
         integer :: cnset(128)
         integer :: heavt(36)
         integer :: lonch(10)
+        integer :: heavn(27,5)
         real(kind=8) :: basloc(*)
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)

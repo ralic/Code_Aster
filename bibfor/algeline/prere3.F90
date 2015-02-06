@@ -84,7 +84,7 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
 !
     metres  = zk24(islvk-1+1)
     kprecond= zk24(islvk-1+14)
-    ASSERT(kprecond .eq. 'OUI')
+    ASSERT(kprecond(1:3) .eq. 'OUI')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   FILTRAGE DES TERMES PRESQUE NULS EN FONCTION DU SOLVEUR 
@@ -95,7 +95,15 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   CALCUL DU PRE CONDITIONNEUR XFEM :: 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    call xfem_precond('PRE_COND', matas1, base, filtrage)
+    if (kprecond.eq.'OUI_DPB') then
+!
+      call xfem_precond('PRE_COND_DPB', matas1, base, filtrage)
+!
+    else
+!
+      call xfem_precond('PRE_COND', matas1, base, filtrage)
+!
+    endif
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   POURSUITE DE LA FACTORISATION ASTER :: 

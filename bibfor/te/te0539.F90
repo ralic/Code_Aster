@@ -55,7 +55,7 @@ subroutine te0539(option, nomte)
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, li, jcret, codret
     integer :: ivarix
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
+    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
     integer :: jtab(7), nnos, idim, jfisno
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
     aster_logical :: matsym
@@ -122,8 +122,9 @@ subroutine te0539(option, nomte)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
-!     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
+    if (enr(1:2).eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
+!     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
@@ -142,7 +143,7 @@ subroutine te0539(option, nomte)
                    compor, lgpg, crit, jpintt, zi(jcnset),&
                    zi(jheavt), zi( jlonch), zr(jbaslo), ibid, zr(jlsn),&
                    zr(jlst), sig, vi, zr(imatuu), ibid,&
-                   codret, jpmilt, nfiss, jfisno)
+                   codret, jpmilt, nfiss, jheavn)
 !
 !-------ON MET NE DUR LE FAIT QUE LA MATRICE EST SYMETRIQUE
         matsym=.true.
@@ -211,7 +212,7 @@ subroutine te0539(option, nomte)
                        zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
                        zi(jheavt), zi(jlonch), zr(jbaslo), ideplm, zr(jlsn),&
                        zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), ivectu,&
-                       codret, jpmilt, nfiss, jfisno)
+                       codret, jpmilt, nfiss, jheavn)
         else
 !
 !        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
@@ -224,7 +225,7 @@ subroutine te0539(option, nomte)
                        zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
                        zi(jheavt), zi(jlonch), zr(jbaslo), ideplp, zr(jlsn),&
                        zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), ivectu,&
-                       codret, jpmilt, nfiss, jfisno)
+                       codret, jpmilt, nfiss, jheavn)
         endif
 !
     else
@@ -244,7 +245,7 @@ subroutine te0539(option, nomte)
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt),&
                        zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst),&
                        zr(icontp), zr(ivarim), zr(imatuu), ivectu, codret,&
-                       jpmilt, nfiss, jfisno)
+                       jpmilt, nfiss, jheavn)
 !
 ! 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         else if (zk16(icompo+2).eq.'GROT_GDEP') then
@@ -258,7 +259,7 @@ subroutine te0539(option, nomte)
                        zr(ivarip), typmod, option, zi( imate), zk16(icompo),&
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt),&
                        zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst),&
-                       nfiss, jfisno, zr(icontp), zr(ivarim), zr(imatuu),&
+                       nfiss, jheavn, zr(icontp), zr(ivarim), zr(imatuu),&
                        ivectu, codret, jpmilt)
 !
         else

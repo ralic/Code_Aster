@@ -35,6 +35,7 @@ OPTION__
         PFIBRES  CAFI_R   'CARA!.CAFIBR'    << MULTIFIBER: COORDONNEES ET AIRE DES FIBRES >>
         PPINTTO  N132_R                     << SPECIFIQUE X-FEM >>
         PCNSETO  N512_I   'MODL!.TOPOSE.CNS'<< XFEM - CONNECTIVITE DES SOUS-ELEMENTS >>
+        PHEA_NO  N120_I                     << SPECIFIQUE X-FEM >>
         PHEAVTO  N128_I                     << SPECIFIQUE X-FEM >>
         PLONCHA  N120_I   'MODL!.TOPOSE.LON'<< XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS >>
         PLSN     NEUT_R                     << SPECIFIQUE X-FEM >>

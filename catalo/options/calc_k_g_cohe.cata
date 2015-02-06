@@ -44,6 +44,7 @@ OPTION__
         PPMILTO  N480_R << INUSITE >>
         PCNSETO  N512_I << INUSITE >>
         PHEAVTO  N128_I << INUSITE >>
+        PHEA_NO  N120_I
         PLONCHA  N120_I << INUSITE >>
    OUT__
 PGTHETA G ELEM__

@@ -1,3 +1,4 @@
+!
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -14,8 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-!
 interface
-    function xcoef_he()
-    end function xcoef_he
+    subroutine xcelno(noma, modelx, cel_hno, opt, npa)
+        character(len=8) :: noma
+        character(len=8) :: modelx
+        character(len=19) :: cel_hno
+        character(len=*) :: opt
+        character(len=*) :: npa
+    end subroutine xcelno
 end interface

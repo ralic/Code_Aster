@@ -24,7 +24,7 @@ interface
                       addeme, yap1, addep1, np1, axi,&
                       ivf, ipoids, idfde, poids, coorse,&
                       nno, geom, yaenrm, adenme, dimenr,&
-                      he, jlsn, yaenrh, adenhy)
+                      he, heavn, yaenrh, adenhy)
         integer :: dimenr
         integer :: ndim
         integer :: dimuel
@@ -49,13 +49,13 @@ interface
         integer :: ivf
         integer :: ipoids
         integer :: idfde
+        integer :: heavn(nnop,5)
         real(kind=8) :: poids
         real(kind=8) :: coorse(81)
         integer :: nno
         real(kind=8) :: geom(ndim, nnop)
         integer :: yaenrm
         integer :: adenme
-        integer :: jlsn
         real(kind=8) :: he
         integer :: yaenrh
         integer :: adenhy

@@ -17,11 +17,12 @@
 interface
     subroutine xfem_store_pc(matass, base, nonu, neq, deeq,&
                          nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc,&
-                         maxi_ddl, iglob_ddl, deca, tab_mloc, pc)
+                         maxi_ddl, iglob_ddl, deca, tab_mloc, pc, kstruct)
         character(len=19) :: matass
         character(len=19) :: pc
         character(len=14) :: nonu
         character(len=1) :: base
+        character(len=5) :: kstruct
         integer :: neq
         integer :: deeq(*)
         integer :: nbnoxfem

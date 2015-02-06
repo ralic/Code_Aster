@@ -3,16 +3,18 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                   ffm, jacobi, coefcr, coefcp,&
                   lpenac, norm, nsinge, nsingm,&
                   rre, rrm, jddle, jddlm,&
-                  nfhe, nfhm, lmulti, heavno, heavfa,&
+                  nfhe, nfhm, lmulti, heavno, heavn, heavfa,&
                   mmat)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "asterfort/indent.h"
 #include "asterfort/xplma2.h"
+#include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalc_code.h"
     integer :: ndim, jnne(3), jnnm(3)
     integer :: nsinge, nsingm
-    integer :: nfhe, nfhm, heavno(8), heavfa(*)
+    integer :: nfhe, nfhm, heavno(8), heavfa(*), heavn(*)
     real(kind=8) :: mmat(336, 336), norm(3)
     real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi
     real(kind=8) :: coefcr, coefcp, rre, rrm
@@ -83,7 +85,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 !
     integer :: i, j, k, l, ii, jj, pl, jjn, iin, nddle
     integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    integer :: pli, plj, ifh, iddl, jddl
+    integer :: pli, plj, ifh, iddl, jddl, hea_fa(2)
     real(kind=8) :: mm, iescl(6), jescl(6), imait(6), jmait(6)
 !
 ! ----------------------------------------------------------------------
@@ -92,10 +94,10 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 ! --- INITIALISATION
 !
     iescl(1) = 1
-    iescl(2) =-1
+    iescl(2) = -1
     iescl(2+nfhe)=-rre
     jescl(1) = 1
-    jescl(2) =-1
+    jescl(2) = -1
     jescl(2+nfhe)=-rre
     imait(1) = 1
     imait(2) = 1
@@ -103,6 +105,11 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
     jmait(1) = 1
     jmait(2) = 1
     jmait(2+nfhm)= rrm
+!    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
+    if (.not.lmulti) then
+      hea_fa(1)=xcalc_code(1,he_inte=[-1])
+      hea_fa(2)=xcalc_code(1,he_inte=[+1])
+    endif
 !
 ! --------------------- CALCUL DE [A] ----------------------------------
 !
@@ -127,8 +134,14 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                     call indent(j, ddles, ddlem, nnes, jjn)
                     if (lmulti) then
                         do 35 ifh = 1, nfhe
-                            jescl(1+ifh)=heavfa(nfhe*(j-1)+ifh)
+                            jescl(1+ifh)=xcalc_heav(heavn(nfhe*(j-1)+ifh),&
+                                                    heavfa(1),&
+                                                    heavn(nfhe*nne+nfhm*nnm+j))
  35                     continue
+                    else
+                            jescl(2)=xcalc_heav(heavn(j),&
+                                                hea_fa(1),&
+                                                heavn(nfhe*nne+nfhm*nnm+j))
                     endif
                     do 40 jddl = 1, 1+nfhe+nsinge
                         jj = jjn + (jddl-1)*ndim + k
@@ -142,9 +155,14 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                     jjn = jjn + nddle
                     if (lmulti) then
                         do 55 ifh = 1, nfhm
-                            jmait(1+ifh)=heavfa(nfhe*ndeple+nfhm*(j-1)&
-                            +ifh)
+                            jmait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(j-1)+ifh),&
+                                                    heavfa(2),&
+                                                    heavn((1+nfhe)*nne+nfhm*nnm+j))
  55                     continue
+                    else
+                            jmait(2)=xcalc_heav(heavn(nne+j),&
+                                                hea_fa(2),&
+                                                heavn((1+nfhe)*nne+nfhm*nnm+j))
                     endif
                     do 60 jddl = 1, 1+nfhm+nsingm
                         jj = jjn + (jddl-1)*ndim + k
@@ -170,9 +188,20 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         endif
                         if (lmulti) then
                             do 220 ifh = 1, nfhe
-                                iescl(1+ifh)=heavfa(nfhe*(i-1)+ifh)
-                                jescl(1+ifh)=heavfa(nfhe*(j-1)+ifh)
+                                iescl(1+ifh)=xcalc_heav(heavn(nfhe*(i-1)+ifh),&
+                                                        heavfa(1),&
+                                                        heavn(nfhe*nne+nfhm*nnm+i))
+                                jescl(1+ifh)=xcalc_heav(heavn(nfhe*(j-1)+ifh),&
+                                                        heavfa(1),&
+                                                        heavn(nfhe*nne+nfhm*nnm+j))
 220                         continue
+                        else
+                                iescl(2)=xcalc_heav(heavn(i),&
+                                                    hea_fa(1),&
+                                                    heavn(nfhe*nne+nfhm*nnm+i))
+                                jescl(2)=xcalc_heav(heavn(j),&
+                                                    hea_fa(1),&
+                                                    heavn(nfhe*nne+nfhm*nnm+j))
                         endif
                         do 230 iddl = 1, 1+nfhe+nsinge
                             ii = iin + (iddl-1)*ndim + l
@@ -192,12 +221,22 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         endif
                         if (lmulti) then
                             do 260 ifh = 1, nfhe
-                                iescl(1+ifh)=heavfa(nfhe*(i-1)+ifh)
+                                iescl(1+ifh)=xcalc_heav(heavn(nfhe*(i-1)+ifh),&
+                                                        heavfa(1),&
+                                                        heavn(nfhe*nne+nfhm*nnm+i))
 260                         continue
                             do 270 ifh = 1, nfhm
-                                jmait(1+ifh)=heavfa(nfhe*ndeple+nfhm*(&
-                                j-1)+ifh)
+                                jmait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(j-1)+ifh),&
+                                                        heavfa(2),&
+                                                        heavn((1+nfhe)*nne+nfhm*nnm+j))
 270                         continue
+                        else
+                               iescl(2)=xcalc_heav(heavn(i),&
+                                                   hea_fa(1),&
+                                                   heavn(nfhe*nne+nfhm*nnm+i))    
+                               jmait(2)=xcalc_heav(heavn(nne+j),&
+                                                   hea_fa(2),&
+                                                   heavn((1+nfhe)*nne+nfhm*nnm+j))
                         endif
                         do 280 iddl = 1, 1+nfhe+nsinge
                             ii = iin + (iddl-1)*ndim + l
@@ -222,11 +261,20 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         endif
                         if (lmulti) then
                             do 330 ifh = 1, nfhm
-                                imait(1+ifh)=heavfa(nfhe*ndeple+nfhm*(&
-                                i-1)+ifh)
-                                jmait(1+ifh)=heavfa(nfhe*ndeple+nfhm*(&
-                                j-1)+ifh)
+                                imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(i-1)+ifh),&
+                                            heavfa(2),&
+                                            heavn((1+nfhe)*nne+nfhm*nnm+i))
+                                jmait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(j-1)+ifh),&
+                                            heavfa(2),&
+                                            heavn((1+nfhe)*nne+nfhm*nnm+j))
 330                         continue
+                        else
+                                imait(2)=xcalc_heav(heavn(nne+i),&
+                                                    hea_fa(2),&
+                                                    heavn((1+nfhe)*nne+nfhm*nnm+i))  
+                                jmait(2)=xcalc_heav(heavn(nne+j),&
+                                                    hea_fa(2),&
+                                                    heavn((1+nfhe)*nne+nfhm*nnm+j))  
                         endif
                         do 340 iddl = 1, 1+nfhm+nsingm
                             ii = iin + (iddl-1)*ndim + l
