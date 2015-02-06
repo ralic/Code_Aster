@@ -4,6 +4,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
+#include "asterfort/check_homo_grma.h"
 #include "asterfort/check_homo_ratio.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvr8.h"
@@ -89,8 +90,12 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
                 endif
             else if (vsec .eq. 'HOMOTHETIQUE') then
                 ASSERT(nval .le. 100)
-                call getvr8('POUTRE', 'VALE', iocc=ioc, nbval=nval, vect=vale)
-                call check_homo_ratio(cara, vale, min(nval, ncar))
+                if (nm .ne. 0) then
+                    call getvr8('POUTRE', 'VALE', iocc=ioc, nbval=nval, vect=vale)
+                    call check_homo_ratio(cara, vale, min(nval, ncar))
+                else
+                    call check_homo_grma(cara, ncar)
+                endif
             endif
         endif
 !

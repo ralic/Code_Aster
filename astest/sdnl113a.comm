@@ -43,6 +43,7 @@ M1=DEFI_GROUP(reuse =M1,
                              _F(GROUP_MA='BIELB',),
                              _F(GROUP_MA='BIELC',),),);
 
+
 MA=CREA_MAILLAGE(MAILLAGE=M1,
                  MODI_MAILLE=_F(GROUP_MA=('POUTRES','COUDES',),
                                 OPTION='SEG3_4',),);
@@ -75,7 +76,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                              _F(GROUP_MA='PATBIELA',
                                 SECTION='CERCLE',
                                 VARI_SECT='HOMOTHETIQUE',
-                                CARA=('R1','R2',),
+                                CARA=('R_DEBUT','R_FIN',),
                                 VALE=(8.6E-2,4.55E-2,),),
                              _F(GROUP_MA='PATBIELC',
                                 SECTION='CERCLE',

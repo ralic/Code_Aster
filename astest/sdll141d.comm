@@ -43,7 +43,7 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                        POUTRE=(_F(GROUP_MA='ROTOR',
                                  SECTION='CERCLE',
                                  VARI_SECT='HOMOTHETIQUE',
-                                 CARA=('R1','R2'),
+                                 CARA=('R_DEBUT','R_FIN'),
                                  VALE=(.025,.025),),),
                         )
                                  

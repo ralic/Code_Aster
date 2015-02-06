@@ -10,6 +10,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
 #include "asterfort/affpou.h"
 #include "asterfort/alcart.h"
 #include "asterfort/assert.h"
+#include "asterfort/calc_cara_homo.h"
 #include "asterfort/codent.h"
 #include "asterfort/coecis.h"
 #include "asterfort/getvem.h"
@@ -92,6 +93,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
     integer :: npoaff, nsec, nsecpo, ntab, ntypse, nummai, nutyel
     integer :: nval, nvsec
     real(kind=8) :: epy1, hy1
+    character(len=8) :: caram(4)
+!
     character(len=8), pointer :: cara(:) => null()
     character(len=8), pointer :: carpou(:) => null()
     character(len=8), pointer :: exppou(:) => null()
@@ -101,6 +104,7 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
     character(len=8), pointer :: tabpou(:) => null()
     character(len=16), pointer :: typ_sect(:) => null()
     real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: valem(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()
 !-----------------------------------------------------------------------
@@ -290,6 +294,12 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
             do 40 i = 1, ng
                 call jeveuo(jexnom(mlggma, poutre(i)), 'L', jdgm)
                 call jelira(jexnom(mlggma, poutre(i)), 'LONUTI', nbmagr)
+!               traitement des affectations CERCLE HOMOTHETIQUE GROUP_MA
+                if (isec .eq. 2 .and. ivar .eq. 2) then
+                    AS_ALLOCATE(vr=valem, size=ncarac*nbmagr)
+                    call calc_cara_homo(noma, poutre(i), zi(jdgm), nbmagr, ncarac,&
+                                    cara, vale, caram, valem)
+                endif
                 do 42 j = 1, nbmagr
                     nummai = zi(jdgm+j-1)
                     call jenuno(jexnum(mlgnma, nummai), nommai)
@@ -297,9 +307,16 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                     do 44 k = 1, nbepo
                         if (nutyel .eq. ntyele(k)) then
                             if (k .eq. 4) iivar = 10
-                            call affpou(tmpgen, tmpgef, fcx, nommai, isec,&
-                                        iivar, cara, ncarac, vale, tabpou,&
-                                        exppou, nbo, kioc, ier)
+                            if (isec .eq. 2 .and. ivar .eq. 2) then
+                                call affpou(tmpgen, tmpgef, fcx, nommai, isec,&
+                                            iivar, caram, ncarac,&
+                                            valem(ncarac*(j-1)+1 :ncarac*j),& 
+                                            tabpou, exppou, nbo, kioc, ier)
+                            else
+                                call affpou(tmpgen, tmpgef, fcx, nommai, isec,&
+                                            iivar, cara, ncarac, vale, tabpou,&
+                                            exppou, nbo, kioc, ier)
+                            endif
                             iivar = ivar
                             goto 42
                         endif
@@ -308,6 +325,9 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc,&
                     vmessk(2) = nommai
                     call utmess('F', 'MODELISA_8', nk=2, valk=vmessk)
 42              continue
+                if (isec .eq. 2 .and. ivar .eq. 2) then
+                    AS_DEALLOCATE(vr=valem)
+                endif
 40          continue
         endif
 !

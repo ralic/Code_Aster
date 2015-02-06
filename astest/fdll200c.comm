@@ -47,9 +47,8 @@ CARATU=AFFE_CARA_ELEM(MODELE=MO,
                       POUTRE=_F(GROUP_MA='TOUT',
                                 SECTION='CERCLE',
                                 VARI_SECT = 'HOMOTHETIQUE',
-                                CARA=('R1','R2','EP1','EP2',),
-                                VALE=(0.100,0.200,0.02,0.01,),),);
-
+                                CARA=('R_DEBUT','R_FIN','EP_DEBUT','EP_FIN',),
+                                VALE=(0.100,0.11,0.011,0.01,),),);
 
 
 CHM=AFFE_MATERIAU(MAILLAGE=MA,
@@ -126,7 +125,7 @@ MODES=CALC_MODES(MATR_RIGI=MATK,
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   RESULTAT=MODES,
-                  VALE_CALC=61.5156826059 ,
+                  VALE_CALC=141.290782294 ,
                   ),
           )
 

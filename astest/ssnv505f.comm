@@ -85,7 +85,7 @@ DEFI_R=AFFE_CARA_ELEM(MODELE=MOD2,
                       POUTRE=_F(GROUP_MA='POU2',
                                 SECTION='CERCLE',
                                 VARI_SECT='HOMOTHETIQUE',
-                                CARA=('R1','R2',),
+                                CARA=('R_DEBUT','R_FIN',),
                                 VALE=(31.75,31.75,),),);
 
 

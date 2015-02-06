@@ -47,7 +47,7 @@ CARATU=AFFE_CARA_ELEM(MODELE=MO,
                       POUTRE=_F(GROUP_MA='TOUT',
                                 SECTION='CERCLE',
                                 VARI_SECT = 'HOMOTHETIQUE',
-                                CARA=('R1','R2','EP1','EP2',),
+                                CARA=('R_DEBUT','R_FIN','EP_DEBUT','EP_FIN',),
                                 VALE=(0.100,0.100,0.01,0.01,),),);
 
 

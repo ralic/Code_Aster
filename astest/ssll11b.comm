@@ -45,13 +45,13 @@ E2=0.006
 R2=(2.E-04 + pi*E2*E2) / (2.*pi*E2)
 
 CAREL=AFFE_CARA_ELEM(  MODELE=MOD,
-                POUTRE=(_F( GROUP_MA = 'ACBC',  SECTION = 'CERCLE',
+                POUTRE=(_F( GROUP_MA = ('AC','BC'),  SECTION = 'CERCLE',
                             VARI_SECT = 'HOMOTHETIQUE',
-                            CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
+                            CARA = ( 'R_DEBUT', 'R_FIN', 'EP_DEBUT', 'EP_FIN', ),
                             VALE = (  R2,   R2,   E2,   E2,  )),
-                        _F( GROUP_MA = 'CDBD', SECTION = 'CERCLE',
+                        _F( GROUP_MA = ('CD','BD'), SECTION = 'CERCLE',
                             VARI_SECT = 'HOMOTHETIQUE',
-                            CARA = ( 'R1', 'R2', 'EP1', 'EP2', ),
+                            CARA = ( 'R_DEBUT', 'R_FIN', 'EP_DEBUT', 'EP_FIN', ),
                             VALE = (  R1,   R1,   E1,   E1,  ))) )
 
 CHADEP=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',

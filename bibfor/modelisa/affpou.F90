@@ -46,7 +46,7 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec,&
 !        0    A1    IY1   IZ1   AY1   AZ1  EY1  EZ1  JX1  RY1  RZ1
 !        1    RT1   A2    IY2   IZ2   AY2  AZ2  EY2  EZ2  JX2  RY2
 !        2    RZ2   RT2   TVAR  HY1   HZ1  EPY1 EPZ1 HY2  HZ2  EPY2
-!        3    EPZ2  R1    E1    R2    E2   TSEC AI1  AI2  JG1  JG2
+!        3    EPZ2  R1    EP1   R2    EP2  TSEC AI1  AI2  JG1  JG2
 !        4    IYR21 IYR22 IZR21 IZR22
 !     ------------------------------------------------------------------
 !        TSEC = TYPE  GEOMETRIQUE DE SECTION : 0 = GENERALE

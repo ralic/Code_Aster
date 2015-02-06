@@ -41,9 +41,9 @@ def volume(r1, r2, e1, e2, lng):
 
 # caractéristiques du maillage (découpage régulier)
 longueur = 1.
-nbel = 40
+nbel = 100
 
-mcf = [_F(MAILLE='M{}'.format(i)) for i in range(1, 41)]
+mcf = [_F(MAILLE='M{}'.format(i)) for i in range(1, nbel+1)]
 mcf.append(_F(GROUP_MA='ROTOR'))
 
 masse_el = POST_ELEM(MODELE=MODELE,
@@ -80,7 +80,7 @@ errtot = abs((masse_totale - masse_refe) / masse_refe * 100.)
 
 # masses de référence
 refe = []
-for i in range(0, 40):
+for i in range(0, nbel):
     vr1 = rayon(i)
     vr2 = rayon(i + 1)
     ve1 = epais(i)
@@ -101,15 +101,15 @@ print 'Masse totale:', masse_refe, masse_totale, errtot, '%'
 
 # C'est sur le dernier élément que l'erreur est la plus grande
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=0.9954529,
-           VALE_REFE=0.99549217,
+           VALE_CALC=0.394518668724,
+           VALE_REFE=0.39452121,
            NOM_PARA='MASSE',
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='M40'),
+                     VALE_K='M100'),
            TABLE=masse_el)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=63.7104640577,
+           VALE_CALC=63.7113334203,
            VALE_REFE=63.7114990148,
            NOM_PARA='MASSE',
            FILTRE=_F(NOM_PARA='LIEU',

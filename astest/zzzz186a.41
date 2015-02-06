@@ -100,10 +100,12 @@ CARA_POU=AFFE_CARA_ELEM(MODELE=MODELE,
                                    CARA=('R','EP',),
                                    VALE=(R2,0.0135,),),
                                    # transition d'epaisseur 4" - 6"
+                                   # transition non exacte pour supprimer
+                                   # l'alarme POUTRE0_4
                                 _F(MAILLE='M16',
                                    SECTION='CERCLE',VARI_SECT='HOMOTHETIQUE',
                                    CARA=('R1','EP1','R2','EP2',),
-                                   VALE=(R3,0.018200000000000001,R2,0.0135,),),
+                                   VALE=(R3,0.01987,R2,0.0135,),),
                                 _F(MAILLE='M17',
                                    SECTION='CERCLE',VARI_SECT='CONSTANT',
                                    CARA=('R','EP',),
@@ -311,7 +313,7 @@ CARA_POU=AFFE_CARA_ELEM(MODELE=MODELE,
                                 _F(MAILLE='M68',
                                    SECTION='CERCLE',VARI_SECT='HOMOTHETIQUE',
                                    CARA=('R1','EP1','R2','EP2',),
-                                   VALE=(R6,0.024150000000000001,R10,0.0115,),),
+                                   VALE=(R6,0.01981285714285714,R10,0.0115,),),
                                 _F(MAILLE='M69',
                                    SECTION='CERCLE',VARI_SECT='CONSTANT',
                                    CARA=('R','EP',),
@@ -1187,7 +1189,7 @@ IMPR_OAR(TYPE_CALC = 'TUYAUTERIE',
 # md5 = 2979eea4671ff79c37fdabac2a3c9ef7
 TEST_FICHIER(FICHIER='fort.38',
              NB_VALE=950,
-             VALE_CALC=11178.1333321,
+             VALE_CALC=11173.7861686,
              VALE_CALC_K='218e41469273321fc1b7a75fd790ba1a',
              TOLE_MACHINE=1.E-3)
 
@@ -1221,6 +1223,6 @@ IMPR_OAR(TYPE_CALC='TUYAUTERIE',
 # md5 = a5b0d49bec94dddbee12071bd2b4da5f
 TEST_FICHIER(FICHIER='fort.38',
              NB_VALE=1900,
-             VALE_CALC=47895.4254219,
+             VALE_CALC=47887.3657556,
              VALE_CALC_K='acda10a804104216eaab3937140bcfb2',
              TOLE_MACHINE=1.E-3)
