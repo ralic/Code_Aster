@@ -60,10 +60,11 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     integer :: nbvec, type
     real(kind=8) :: licoef(*), rcoef, r
 ! ----------------------------------------------------------------------
-!    ASSEMBLAGE "PARTICULIER" POUR CONVERGENCE EN CONTRAINTES
-!    GENERALISEES
-!    REALISE LE MIN DES VECT_
-!    GROSSIEREMENT POMPE SUR ASSVEC
+!    assemblage "particulier" pour convergence en contraintes generalisees
+!    realise le min des vect_elem
+!
+!    Cette routine est inspiree de la routine assvec
+!
 ! OUT K19 VEC   : NOM DU CHAM_NO RESULTAT
 !                CHAM_NO ::= CHAM_NO_GD + OBJETS PROVISOIRES POUR L'ASS.
 ! IN  K* BASE   : NOM DE LA BASE SUR LAQUELLE ON VEUT CREER LE CHAM_NO
@@ -74,21 +75,10 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
 ! IN  K* VECPRO: NOM D'UN CHAM_NO MODELE(NU OU VECPRO EST OBLIGATOIRE)
 ! IN  K4 MOTCLE : 'ZERO' OU 'CUMU'
 ! IN  I  TYPE   : TYPE DU VECTEUR ASSEMBLE : 1 --> REEL
-!                                            2 --> COMPLEXE
 !
 ! ----------------------------------------------------------------------
-!     FONCTIONS JEVEUX
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
     character(len=24) :: valk(5)
-! ----------------------------------------------------------------------
-!     COMMUNS   LOCAUX DE L'OPERATEUR ASSE_VECTEUR
-! ----------------------------------------------------------------------
     integer :: gd, nec, nlili
-! ---------------------------------------------------------------------
-!     VARIABLES LOCALES
-! ---------------------------------------------------------------------
     integer :: rang, nbproc, iret, ifm, niv
     character(len=1) :: bas
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
@@ -99,13 +89,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     character(len=24) :: knequa, kvale
     integer :: admodl, lcmodl, iexi
     aster_logical :: ldist, ldgrel
-! ----------------------------------------------------------------------
-!     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
-!     S.D. MANIPULEES DANS LE SOUS PROGRAMME
-! ----------------------------------------------------------------------
     integer :: vali(4)
 !
-! --- DEBUT ------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, i1, iad, iad1, iadnem
     integer :: ianulo, iconx2
@@ -128,11 +113,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     mpi_int :: mrank, msize
 !-----------------------------------------------------------------------
     call jemarq()
-!
-!-----RECUPERATION DU NIVEAU D'IMPRESSION
-!
     call infniv(ifm, niv)
-!----------------------------------------------------------------------
+
 !
 ! --- VERIF DE MOTCLE:
     if (motcle(1:4) .eq. 'ZERO') then
@@ -278,8 +260,8 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     end do
 !
 !
-!     -- REMPLISSAGE DE .VALE
-!     ------------------------
+!   -- REMPLISSAGE DE .VALE
+!   ------------------------
     do imat = 1, nbvec
         rcoef=licoef(imat)
         vecel=zk24(ilivec+imat-1)(1:19)
@@ -393,7 +375,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     AS_DEALLOCATE(vi=posddl)
     call jedetr('&&ASSMIV.NUMLOC')
 !
-!        -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
+!   -- REDUCTION + DIFFUSION DE VECAS A TOUS LES PROC
     if (ldist) then
         call asmpi_comm_vect('MPI_MIN', 'R', nbval=nb_equa, vr=zr(jvale))
     endif
