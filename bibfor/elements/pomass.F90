@@ -1,5 +1,4 @@
-subroutine pomass(nomte, e, xnu, rho, kanl,&
-                  mlv)
+subroutine pomass(nomte, e, xnu, rho, kanl, mlv)
 ! aslint: disable=
     implicit none
 #include "jeveux.h"
@@ -40,7 +39,7 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: istruc, itype, kanl, lrcou, lx, i
+    integer :: istruc, itype, kanl, lrcou, i
 !
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, ang
     real(kind=8) :: angs2, deux, e, ey, ez, rad, rho
@@ -64,7 +63,7 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call lonele(3, lx, xl)
+    xl = lonele()
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
     a      = vale_cara(1)
@@ -139,8 +138,7 @@ subroutine pomass(nomte, e, xnu, rho, kanl,&
 !
     else if (itype.eq.10) then
 !        --- POUTRE COURBE SECTION CONSTANTE ---
-        call ptma10(mlv, rho, a, xl, x2iy,&
-                    x2iz)
+        call ptma10(mlv, rho, a, xl, x2iy, x2iz)
     endif
 !
 end subroutine

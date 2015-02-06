@@ -51,7 +51,7 @@ subroutine te0158(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jeffg, lmater, lx, iret, lorien, jdepl, i, j, kp, nc
+    integer :: jeffg, lmater, iret, lorien, jdepl, i, j, kp, nc
     integer :: itemp, jtab(7), istrxr
 !
     character(len=4) :: fami
@@ -61,20 +61,18 @@ subroutine te0158(option, nomte)
     real(kind=8) :: b(4), gg, xi, wi
     real(kind=8) :: ul(14), pgl(3, 3), d1b(6, 12), dege(3, 7), d1btg(7, 14)
     real(kind=8) :: degem(6), alpha
-    real(kind=8) :: zero, un, deux, temp, e, xnu, epsthe(1), g, xl
+    real(kind=8) :: temp, e, xnu, epsthe(1), g, xl
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, phiy, phiz
     real(kind=8) :: ksi1, d1b3(2, 3), ey, ez
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
-    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1',&
-                    'EY2','EZ2'/
-!-----------------------------------------------------------------------
-    zero = 0.d0
-    un = 1.d0
-    deux = 2.d0
-!     ------------------------------------------------------------------
+    data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','EY2','EZ2'/
+!
+! --------------------------------------------------------------------------------------------------
 !
     fami = 'RIGI'
     call elrefe_info(fami=fami, nno=nno, npg=npg, jpoids=ipoids, jvf=ivf)
@@ -87,11 +85,10 @@ subroutine te0158(option, nomte)
     endif
 !
 !   RECUPERATION DES COORDONNEES DES NOEUDS
-    call lonele(3, lx, xl)
+    xl = lonele()
 !
 !   RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-!
     a     = vale_cara(1)
     xiy   = vale_cara(2)
     xiz   = vale_cara(3)
@@ -111,22 +108,19 @@ subroutine te0158(option, nomte)
 !       CARACTERISTIQUES MATERIAUX
         call jevech('PMATERC', 'L', lmater)
 !
-        call verifm(fami, npg, 1, '+', zi(lmater),&
-                    'ELAS', 1, epsthe, iret)
+        call verifm(fami, npg, 1, '+', zi(lmater), 'ELAS', 1, epsthe, iret)
         itemp=0
         if (iret .eq. 0) itemp=1
 !
-        call moytem(fami, npg, 1, '+', temp,&
-                    iret)
-        call matela(zi(lmater), ' ', itemp, temp, e,&
-                    xnu)
+        call moytem(fami, npg, 1, '+', temp, iret)
+        call matela(zi(lmater), ' ', itemp, temp, e, xnu)
 !
-        g = e / ( deux * ( un + xnu ) )
+        g = e / ( 2.0d0 * ( 1.0d0 + xnu ) )
 !
         if (nomte.eq.'MECA_POU_D_E') then
             nc = 6
-            phiy = zero
-            phiz = zero
+            phiy = 0.0d0
+            phiz = 0.0d0
         else if (nomte.eq.'MECA_POU_D_T') then
             nc = 6
             phiy = e*xiz*12.d0*alfay/ (xl*xl*g*a)
@@ -156,7 +150,7 @@ subroutine te0158(option, nomte)
             do kp = 1, npg
                 call jsd1ff(kp, xl, phiy, phiz, d1btg)
                 do i = 1, nc
-                    dege(kp,i) = zero
+                    dege(kp,i) = 0.0d0
                     do j = 1, 2*nc
                         dege(kp,i) = dege(kp,i) + d1btg(i,j)*ul(j)
                     enddo
@@ -167,7 +161,7 @@ subroutine te0158(option, nomte)
             do kp = 1, npg
                 call jpd1ff(kp, xl, phiy, phiz, d1b)
                 do i = 1, nc
-                    dege(kp,i) = zero
+                    dege(kp,i) = 0.0d0
                     do j = 1, 2*nc
                         dege(kp,i) = dege(kp,i) + d1b(i,j)*ul(j)
                     enddo
@@ -194,19 +188,17 @@ subroutine te0158(option, nomte)
         enddo
     else
 !
-!       POUTRE MULTIFIBRES MECA_POU_D_EM
+!       poutre multifibres MECA_POU_D_EM
         nc = 6
-!       PASSAGE DES DEPLACEMENTS DANS LE REPERE LOCAL
+!       passage des deplacements dans le repere local
         call utpvgl(nno, nc, pgl, zr(jdepl), ul)
 !       alpha modes incompatibles
-        call tecach('ONN','PSTRXRR','L',iret, nval=7,&
-                    itab= jtab)
+        call tecach('ONN','PSTRXRR','L',iret, nval=7, itab= jtab)
         istrxr=jtab(1)
         alpha=zr(istrxr-1+15)
 !
         do in = 1, 2
-            call pmfpti(-in, zr(ipoids), zr(ivf), xl, xi,&
-                        wi, b, gg)
+            call pmfpti(-in, zr(ipoids), zr(ivf), xl, xi,  wi, b, gg)
             call pmfdge(b, gg, ul, alpha, degem)
             ipos=jeffg+nc*(in-1)
             do i = 1, nc

@@ -48,7 +48,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
 !
 !-----------------------------------------------------------------------
     integer :: i, iret, itype, j, jdepl, kanl, ldyna
-    integer :: lmater, lopt, lorien, lrcou, lx
+    integer :: lmater, lopt, lorien, lrcou
     integer :: mater, nc, ncc, nno, nnoc
     real(kind=8) :: a, a2, along, angarc, angs2, deux, f(1)
     real(kind=8) :: rad, xl, zero
@@ -74,7 +74,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu,&
     itype = nint(vale_cara(3))
 !
 !     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call lonele(3, lx, xl)
+    xl = lonele()
     if (itype .eq. 10) then
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)

@@ -56,7 +56,7 @@ subroutine te0111(option, nomte)
     aire = zr(lsect)
 !
 !   Longueur de l'élément
-    call lonele(3, igeom, xl)
+    xl = lonele(igeom=igeom)
 !
     call jevech('PMASSINE', 'E', lcastr)
     zr(lcastr) = rho * aire * xl

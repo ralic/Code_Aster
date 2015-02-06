@@ -1,30 +1,5 @@
 subroutine te0038(option, nomte)
-! aslint: disable=
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8pi.h"
-#include "asterc/r8prem.h"
-#include "asterfort/angvxy.h"
-#include "asterfort/carcou.h"
-#include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/lonele.h"
-#include "asterfort/matrot.h"
-#include "asterfort/normev.h"
-#include "asterfort/pmat.h"
-#include "asterfort/pmfitx.h"
-#include "asterfort/poutre_modloc.h"
-#include "asterfort/provec.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/tecael.h"
-#include "asterfort/trigom.h"
-#include "asterfort/utmess.h"
-#include "asterfort/utpslg.h"
-#include "asterfort/utpvlg.h"
-#include "asterfort/vdiff.h"
-    character(len=*) :: option, nomte
-!     ------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +16,16 @@ subroutine te0038(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCULE DES TERMES PROPRES A UN STRUCTURE  (ELEMENTS DE POUTRE)
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 !       'MASS_INER      : CALCUL DES CARACTERISTIQUES DE STRUCTURES
+!
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !       'MECA_POU_D_E'  : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !       'MECA_POU_D_T'  : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
@@ -53,8 +34,36 @@ subroutine te0038(option, nomte)
 !       'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !                         MULTI-FIBRES SECTION CONSTANTE
-!     ------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
+!
+! aslint: disable=
+    implicit none
+#include "jeveux.h"
+#include "asterc/r8pi.h"
+#include "asterc/r8prem.h"
+#include "asterfort/angvxy.h"
+#include "asterfort/carcou.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matrot.h"
+#include "asterfort/normev.h"
+#include "asterfort/pmat.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/poutre_modloc.h"
+#include "asterfort/provec.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/tecael.h"
+#include "asterfort/trigom.h"
+#include "asterfort/utmess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/vdiff.h"
+!
+    character(len=*) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: codres(1)
     character(len=16) :: ch16, phenom
@@ -64,54 +73,53 @@ subroutine te0038(option, nomte)
     real(kind=8) :: p1(3, 3), p2(3, 3), p3(3, 3), cdgl(3), xfly, xflz, r8b
     real(kind=8) :: pgl3(3, 3), pi, po, poxi2, rayon, rext, rint, rmoy, rr
     real(kind=8) :: ry1, ry2, rz1, rz2, theta, unpr2, unpr4, unprr, xa, xb, xi
-    real(kind=8) :: xig, xisl, xixx, xixz, xizz, xzig, yig, zero, zig
+    real(kind=8) :: xig, xisl, xixx, xixz, xizz, xzig, yig, zig
     real(kind=8) :: pgl4(3, 3)
     real(kind=8) :: t1(3), t2(3), norme1, norme2, n(3), normen, x3(3), y3(3)
     real(kind=8) :: coo1(3), coo2(3), coo3(3), prec, omega
     real(kind=8) :: casect(6), yg, zg, p1gl(3),p1gg (3), rbid
 !
-    integer :: lmater, lx, lorien, nno, nc, lcastr, itype, icoude
+    integer :: lmater, igeom, lorien, nno, nc, lcastr, itype, icoude
     integer :: i, n1, n2, lrcou, iadzi, iazk24, nn2
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara /'A1','IY1','IZ1','RY1','RZ1','A2','RY2','RZ2','TVAR'/
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1 /'R1','EP1'/
-!-----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     prec = r8prem()
-    zero = 0.0d0
     r8b = 0.0d0
 !
-!     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
-!
+!   RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)
-!
 !
     if (( nomte.ne.'MECA_POU_D_EM' ) .and. ( nomte.ne.'MECA_POU_D_TGM')) then
         call rccoma(zi(lmater), 'ELAS', 1, phenom, codres(1))
 !
-        if (phenom .eq. 'ELAS' .or. phenom .eq. 'ELAS_ISTR' .or. phenom .eq. 'ELAS_FLUI'&
-            .or. phenom .eq. 'ELAS_ORTH') then
-            call rcvalb('FPG1', 1, 1, '+', zi(lmater),&
-                        ' ', phenom, 0, ' ', [r8b],&
+        if ( (phenom.eq.'ELAS') .or. (phenom.eq.'ELAS_ISTR') .or. &
+             (phenom.eq.'ELAS_FLUI') .or. (phenom .eq. 'ELAS_ORTH') ) then
+            call rcvalb('FPG1', 1, 1, '+', zi(lmater), ' ', phenom, 0, ' ', [r8b],&
                         1, 'RHO', rho, codres, 1)
         else
             call utmess('F', 'ELEMENTS_50')
         endif
     endif
 !
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
+!   recuperation des coordonnees des noeuds
+    xl = lonele(igeom=igeom)
 !
-    call lonele(3, lx, xl)
-!
-!
-!     --- ORIENTATION DE LA POUTRE ---
-!
+!   orientation de la poutre
     call jevech('PCAORIE', 'L', lorien)
     call matrot(zr(lorien), pgl)
     nno = 1
@@ -119,16 +127,12 @@ subroutine te0038(option, nomte)
 !
     if (option .eq. 'MASS_INER') then
         call jevech('PMASSINE', 'E', lcastr)
-        do i = 1, 6
-            matine(i) = 0.d0
-            matinl(i) = 0.d0
-        enddo
+        matine(:) = 0.d0
+        matinl(:) = 0.d0
 !
         if ((nomte.ne.'MET3SEG3') .and. (nomte.ne.'MET6SEG3') .and. (nomte.ne.'MET3SEG4')) then
-!           RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
-            
+!           recuperation des caracteristiques generales des sections
             call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
-!
             a1     = vale_cara(1)
             iy1    = vale_cara(2)
             iz1    = vale_cara(3)
@@ -139,7 +143,7 @@ subroutine te0038(option, nomte)
             rz2    = vale_cara(8)
             itype  = nint(vale_cara(9))
         else
-!           RECUPERATION DES CARACTERISTIQUES  DES TUYAUX
+!           recuperation des caracteristiques  des tuyaux
             itype = -999
             call poutre_modloc('CAGEP1', noms_cara1, nb_cara1, lvaleur=vale_cara1)
             rext  = vale_cara1(1)
@@ -155,8 +159,7 @@ subroutine te0038(option, nomte)
             call tecael(iadzi, iazk24)
             nn2 = zi(iadzi-1+2)
             call carcou(zr(lorien), xl, pgl, rayon, theta,&
-                        pgl1, pgl2, pgl3, pgl4, nn2,&
-                        omega, icoude)
+                        pgl1, pgl2, pgl3, pgl4, nn2, omega, icoude)
             if (icoude .ge. 10) then
                 icoude = icoude - 10
             endif
@@ -164,14 +167,14 @@ subroutine te0038(option, nomte)
             if (icoude .eq. 1) xl = theta*rayon
             xl2 = xl*xl
             angs2 = theta/2.d0
-!           CALCUL D'UN REPERE MOYEN
+!           calcul d'un repere moyen
             if (nn2 .eq. 4) then
-                do 20 i = 1, 3
+                do i = 1, 3
                     angl(i) = 0.d0
-                    coo1(i) = zr(lx+i)
-                    coo2(i) = zr(lx+3+i)
-                    coo3(i) = (zr(lx+6+i)+zr(lx+9+i))*0.5d0
-20              continue
+                    coo1(i) = zr(igeom+i)
+                    coo2(i) = zr(igeom+3+i)
+                    coo3(i) = (zr(igeom+6+i)+zr(igeom+9+i))*0.5d0
+                enddo
                 call vdiff(3, coo3, coo1, t1)
                 call vdiff(3, coo2, coo3, t2)
                 call normev(t1, norme1)
@@ -183,17 +186,13 @@ subroutine te0038(option, nomte)
                 call angvxy(x3, y3, angl)
                 call matrot(angl, pgl3)
             endif
-!
-!           ------- CALCULS  -----------------------------
-!           -------- MASSE
+!           calcul masse
             zr(lcastr) = rho(1)*a1*xl
-!           -------- CDG
+!           calcul CDG
             cdgl(1) = 0.d0
             if (icoude .eq. 1) then
-                cdgl(2) = -rayon* (&
-                          sin(angs2)/angs2* (1.d0+ (rmoy* rmoy+ep*ep/4.d0)/ (2.d0*rayon**2))- cos&
-                          &(angs2)&
-                          )
+                xb = 1.0d0+(rmoy*rmoy+ep*ep/4.d0)/(2.d0*rayon**2)
+                cdgl(2) = -rayon*(sin(angs2)/angs2*xb - cos(angs2))
             else
                 cdgl(2) = 0.d0
             endif
@@ -205,36 +204,32 @@ subroutine te0038(option, nomte)
             else
                 call utpvlg(n1, n2, pgl, cdgl, cdg)
             endif
-            zr(lcastr+1) = cdg(1) + (zr(lx+4)+zr(lx+1))/2.d0
-            zr(lcastr+2) = cdg(2) + (zr(lx+5)+zr(lx+2))/2.d0
-            zr(lcastr+3) = cdg(3) + (zr(lx+6)+zr(lx+3))/2.d0
-!           -------- INERTIE
-!           --- INERTIE DE L'ELEMENT ---
+            zr(lcastr+1) = cdg(1) + (zr(igeom+4)+zr(igeom+1))/2.d0
+            zr(lcastr+2) = cdg(2) + (zr(igeom+5)+zr(igeom+2))/2.d0
+            zr(lcastr+3) = cdg(3) + (zr(igeom+6)+zr(igeom+3))/2.d0
+!           inertie de l'element
             if (icoude .eq. 1) then
-                xb = rayon*sin(angs2)/angs2* (1.d0+ (rmoy*rmoy+ep*ep/ 4.d0)/ (2.d0*rayon**2))
-                matinl(1) = rho(1)*xl* (&
-                            iy1+ (a1*rayon**2+3*iz1)* (1.d0/2.d0+sin(theta)/ (4.d0*theta))) - zr(&
-                            &lcastr&
-                            )*xb* xb
+                xa = (a1*rayon**2+3.0d0*iz1)
+                xb = rayon*sin(angs2)/angs2*(1.d0+(rmoy*rmoy+ep*ep/4.d0)/(2.d0*rayon**2))
+                matinl(1) = rho(1)*xl*(iy1+xa*(0.5d0+sin(theta)/(4.d0*theta))) - zr(lcastr)*xb*xb
                 matinl(2) = 0.d0
-                matinl(3) = rho(1)*xl* (&
-                            iy1+ (a1*rayon**2+3*iz1)* (1.d0/2.d0-sin(theta)/ (4.d0*theta)))
+                matinl(3) = rho(1)*xl*(iy1+xa*(0.5d0-sin(theta)/(4.d0*theta)))
                 matinl(4) = 0.d0
                 matinl(5) = 0.d0
-                matinl(6) = rho(1)*xl*(a1*rayon**2+3*iz1)-zr(lcastr)*xb* xb
+                matinl(6) = rho(1)*xl*xa-zr(lcastr)*xb*xb
                 call utpslg(nno, nc, pgl3, matinl, matine)
             else
-                matinl(1) = rho(1)* (iy1+iz1)*xl
+                matinl(1) = rho(1)*(iy1+iz1)*xl
                 matinl(2) = 0.d0
-                matinl(3) = rho(1)*xl* (iy1+a1*xl2/12.d0)
+                matinl(3) = rho(1)*xl*(iy1+a1*xl2/12.d0)
                 matinl(4) = 0.d0
                 matinl(5) = 0.d0
-                matinl(6) = rho(1)*xl* (iz1+a1*xl2/12.d0)
+                matinl(6) = rho(1)*xl*(iz1+a1*xl2/12.d0)
                 call utpslg(nno, nc, pgl, matinl, matine)
             endif
         endif
 !
-!     --- ORIENTATION DE LA POUTRE ---
+!       orientation de la poutre
         if (nomte .eq. 'MECA_POU_C_T') then
             call jevech('PCAARPO', 'L', lrcou)
             rad = zr(lrcou)
@@ -242,7 +237,7 @@ subroutine te0038(option, nomte)
             xfl = zr(lrcou+2)
             xfly = xfl
             xflz = xfl
-            if (xfl .eq. zero) then
+            if (xfl .eq. 0.0d0) then
                 xfly = zr(lrcou+4)
                 xflz = zr(lrcou+6)
             endif
@@ -262,18 +257,18 @@ subroutine te0038(option, nomte)
             call pmat(3, p2, p1, p3)
         endif
 !
-!     --- CALCUL DES CARACTERISTIQUES ELEMENTAIRES 'MASS_INER' ----
+!       calcul des caracteristiques elementaires 'MASS_INER'
         matinl(3) = iy1
         matinl(6) = iz1
         xl2 = xl*xl
 !
-!        --- POUTRE A SECTION CONSTANTE ---
         if (itype .eq. 0) then
-!           -------- MASSE
+!           poutre a section constante
+!           masse
             if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
                 call pmfitx(zi(lmater), 2, casect, rbid)
                 zr(lcastr) = casect(1)*xl
-!               correction excentricite
+!               correction excentrement
                 if (casect(1).gt.prec)then
                     yg=casect(2)/casect(1)
                     zg=casect(3)/casect(1)
@@ -283,17 +278,17 @@ subroutine te0038(option, nomte)
                     call utpvlg(1,3,pgl,p1gl,p1gg)
                     iy1=casect(5)-casect(1)*zg*zg
                     iz1=casect(4)-casect(1)*yg*yg
-!                   CDG
-                    zr(lcastr+1) =  zr(lx+1)+p1gg(1)
-                    zr(lcastr+2) =  zr(lx+2)+p1gg(2)
-                    zr(lcastr+3) =  zr(lx+3)+p1gg(3)
+!                   cdg
+                    zr(lcastr+1) =  zr(igeom+1)+p1gg(1)
+                    zr(lcastr+2) =  zr(igeom+2)+p1gg(2)
+                    zr(lcastr+3) =  zr(igeom+3)+p1gg(3)
                 else
-!                   CDG
-                    zr(lcastr+1) = (zr(lx+4)+zr(lx+1))/2.d0
-                    zr(lcastr+2) = (zr(lx+5)+zr(lx+2))/2.d0
-                    zr(lcastr+3) = (zr(lx+6)+zr(lx+3))/2.d0
+!                   cdg
+                    zr(lcastr+1) = (zr(igeom+4)+zr(igeom+1))/2.d0
+                    zr(lcastr+2) = (zr(igeom+5)+zr(igeom+2))/2.d0
+                    zr(lcastr+3) = (zr(igeom+6)+zr(igeom+3))/2.d0
                 endif
-!               INERTIE
+!               inertie
                 matinl(1) = (iy1+iz1)*xl
                 matinl(2) = 0.d0
                 matinl(3) = xl*iy1+ casect(1)*xl*xl2/12.d0
@@ -302,11 +297,11 @@ subroutine te0038(option, nomte)
                 matinl(6) = xl*iz1+ casect(1)*xl*xl2/12.d0
             else
                 zr(lcastr) = rho(1)*a1*xl
-!           -------- CDG
-                zr(lcastr+1) = (zr(lx+4)+zr(lx+1))/2.d0
-                zr(lcastr+2) = (zr(lx+5)+zr(lx+2))/2.d0
-                zr(lcastr+3) = (zr(lx+6)+zr(lx+3))/2.d0
-!           -------- INERTIE
+!               cdg
+                zr(lcastr+1) = (zr(igeom+4)+zr(igeom+1))/2.d0
+                zr(lcastr+2) = (zr(igeom+5)+zr(igeom+2))/2.d0
+                zr(lcastr+3) = (zr(igeom+6)+zr(igeom+3))/2.d0
+!               inertie
                 matinl(1) = rho(1)* (iy1+iz1)*xl
                 matinl(2) = 0.d0
                 matinl(3) = rho(1)*xl* (iy1+a1*xl2/12.d0)
@@ -316,27 +311,27 @@ subroutine te0038(option, nomte)
             endif
             call utpslg(nno, nc, pgl, matinl, matine)
 !
-!        --- POUTRE A SECTION VARIABLE AFFINE ---
         else if (itype.eq.1) then
+!           poutre a section variable affine
             if ((abs(a1- (4.d0*ry1*rz1)).gt. (a1*prec)) .or.&
                 (abs(a2- (4.d0*ry2*rz2)).gt. (a2*prec))) then
                 call utmess('F', 'ELEMENTS2_81')
             endif
-!           -------- MASSE
+!           masse
             zr(lcastr) = rho(1)*xl* (a1+a2)/2.d0
-!           -------- CDG
+!           cdg
             xisl = (rz1+2.d0*rz2)/ (3.d0* (rz1+rz2))
-            zr(lcastr+1) = zr(lx+1) + (zr(lx+4)-zr(lx+1))*xisl
-            zr(lcastr+2) = zr(lx+2) + (zr(lx+5)-zr(lx+2))*xisl
-            zr(lcastr+3) = zr(lx+3) + (zr(lx+6)-zr(lx+3))*xisl
-!           -------- INERTIE
+            zr(lcastr+1) = zr(igeom+1) + (zr(igeom+4)-zr(igeom+1))*xisl
+            zr(lcastr+2) = zr(igeom+2) + (zr(igeom+5)-zr(igeom+2))*xisl
+            zr(lcastr+3) = zr(igeom+3) + (zr(igeom+6)-zr(igeom+3))*xisl
+!           inertie
             xa = xl* (rz1+rz2)
             amb = rz1 - rz2
             apb = rz1 + rz2
             ab2 = rz1**2 + rz2**2 + 4.d0*rz1*rz2
             ab3 = rz1**3 + 3.d0*rz1**2*rz2 - 3.d0*rz1*rz2**2 - rz2**3
             ab4 = rz1**4 + rz2**4 + 2.d0*rz1*rz2* (rz1**2+rz2**2)
-!     ------------------------------------------------------------------
+!
             xixx = xl* (4.d0*ab4-2.d0*amb*ab3+amb**2*ab2)/ (18.d0*apb)
             xizz = xl**3*ab2/ (18.d0*apb)
             xixz = xl**2* (ab3-amb*ab2)/ (18.d0*apb)
@@ -352,21 +347,21 @@ subroutine te0038(option, nomte)
             matinl(6) = zig
             call utpslg(nno, nc, pgl, matinl, matine)
 !
-!        --- POUTRE A SECTION VARIABLE HOMOTHETIQUE ---
         else if (itype.eq.2) then
+!           poutre a section variable homothetique
             if (a1 .eq. 0.d0) then
                 call utmess('F', 'ELEMENTS2_82')
             endif
-!           -------- MASSE
+!           masse
             zr(lcastr) = rho(1)* (a1+a2+sqrt(a1*a2))*xl/3.d0
-!           -------- CDG
+!           CDG
             rr = sqrt(a2/a1)
             unprr = 1.d0 + rr + rr**2
             xi = (1.d0+2.d0*rr+3.d0*rr**2)/ (4.d0*unprr)
-            zr(lcastr+1) = zr(lx+1)* (1.d0-xi) + zr(lx+4)*xi
-            zr(lcastr+2) = zr(lx+2)* (1.d0-xi) + zr(lx+5)*xi
-            zr(lcastr+3) = zr(lx+3)* (1.d0-xi) + zr(lx+6)*xi
-!           -------- INERTIE
+            zr(lcastr+1) = zr(igeom+1)* (1.d0-xi) + zr(igeom+4)*xi
+            zr(lcastr+2) = zr(igeom+2)* (1.d0-xi) + zr(igeom+5)*xi
+            zr(lcastr+3) = zr(igeom+3)* (1.d0-xi) + zr(igeom+6)*xi
+!           inertie
             unpr4 = unprr + rr**3 + rr**4
             unpr2 = 1.d0 + 3.d0*rr + 6.d0*rr**2
             po = rho(1)*xl*a1*unprr/3.d0
@@ -382,21 +377,21 @@ subroutine te0038(option, nomte)
             matinl(6) = zig
             call utpslg(nno, nc, pgl, matinl, matine)
 !
-!        --- POUTRE COURBE ---
         else if (itype.eq.10) then
-!           -------- MASSE
+!           poutre courbe
+!           masse
             zr(lcastr) = rho(1)*a1*xl
-!           -------- CDG
+!           cdg
             cdgl(1) = 0.d0
             cdgl(2) = rad* (sin(angs2)/angs2-cos(angs2))
             cdgl(3) = 0.d0
             n1 = 1
             n2 = 3
             call utpvlg(n1, n2, p3, cdgl, cdg)
-            zr(lcastr+1) = cdg(1) + (zr(lx+4)+zr(lx+1))/2.d0
-            zr(lcastr+2) = cdg(2) + (zr(lx+5)+zr(lx+2))/2.d0
-            zr(lcastr+3) = cdg(3) + (zr(lx+6)+zr(lx+3))/2.d0
-!           -------- INERTIE
+            zr(lcastr+1) = cdg(1) + (zr(igeom+4)+zr(igeom+1))/2.d0
+            zr(lcastr+2) = cdg(2) + (zr(igeom+5)+zr(igeom+2))/2.d0
+            zr(lcastr+3) = cdg(3) + (zr(igeom+6)+zr(igeom+3))/2.d0
+!           inertie
             matinl(1) = rho(1)* (iy1+iz1)*xl
             matinl(2) = 0.d0
             matinl(3) = rho(1)*xl* (iy1+a1*xl2/12.d0)
@@ -417,5 +412,4 @@ subroutine te0038(option, nomte)
         ch16 = option
         call utmess('F', 'ELEMENTS2_84', sk=ch16)
     endif
-!
 end subroutine

@@ -59,7 +59,7 @@ subroutine te0154(option, nomte)
     aster_logical :: lteimp
     real(kind=8) :: aire, epsth, e(1), r8bid=0.d0, rho(1), xfl1, xfl4, xl, xmas, xrig
     integer :: ii, iif, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
-    integer :: lmater, lorien, lsect, iret, igeom, nc, nno
+    integer :: lmater, lorien, lsect, iret, nc, nno
     integer :: jvite
 !     ------------------------------------------------------------------
 !
@@ -76,20 +76,18 @@ subroutine te0154(option, nomte)
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
     call jevech('PMATERC', 'L', lmater)
 !
-    call verift(fami, 1, 1, '+', zi(lmater),&
-                epsth=epsth)
+    call verift(fami, 1, 1, '+', zi(lmater), epsth=epsth)
 !
     r8bid = 0.0d0
-    call rcvalb(fami, 1, 1, '+', zi(lmater),&
-                ' ', 'ELAS', 0, ' ', [r8bid],&
+    call rcvalb(fami, 1, 1, '+', zi(lmater), ' ', 'ELAS', 0, ' ', [r8bid],&
                 1, 'E', e, codres, 1)
     if (epsth .ne. 0.d0) lteimp =.true.
 !
 !   Longueur de l'élément
     if (nomte .eq. 'MECA_BARRE') then
-        call lonele(3, igeom, xl)
+        xl = lonele()
     else if (nomte.eq.'MECA_2D_BARRE') then
-        call lonele(2, igeom, xl)
+        xl = lonele(dime=2)
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

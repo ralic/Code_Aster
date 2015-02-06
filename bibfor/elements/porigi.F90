@@ -36,7 +36,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
 ! IN  NOMTE : NOM DU TYPE ELEMENT
 !             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_C_T' ...
 !-----------------------------------------------------------------------
-    integer :: istruc, itype, lrcou, lx
+    integer :: istruc, itype, lrcou
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2, ang
     real(kind=8) :: angs2, deux, ey, ez, g, rad, un
     real(kind=8) :: xfl, xfly, xflz, xiy, xiy2, xiz, xiz2
@@ -59,7 +59,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 !
-    call lonele(3, lx, xl_geom)
+    xl_geom = lonele()
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
     a      = vale_cara(1)

@@ -53,7 +53,7 @@ subroutine te0537(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcont, lorien, jdepl, imate, lx, nno, nc, i, iret
+    integer :: jcont, lorien, jdepl, imate, nno, nc, i, iret
     integer :: ip, ipos, istrxr, ipos1, ipos2, nbfig, ig, icp, isdcom, icompo
     integer :: codres(2), ncomp
     integer :: npg, ndim, nnoel, nnos, ipoids, ivf
@@ -84,7 +84,7 @@ subroutine te0537(option, nomte)
     call jevech('PCAORIE', 'L', lorien)
     call jevech('PDEPLAR', 'L', jdepl)
 !   Recuperation des coordonnees des noeuds
-    call lonele(3, lx, xl)
+    xl = lonele()
 !
 !   Recuperation des orientations
     call matrot(zr(lorien), pgl)

@@ -92,8 +92,7 @@ subroutine te0262(option, nomte)
     call jevech('PCAORIE', 'L', lorien)
 !
 !     --- CALCUL DE LA MATRICE GYROSCOPIQUE LOCALE ---
-    call porigy(nomte, e, rho, xnu, zi(imate),&
-                klv, nl)
+    call porigy(nomte, rho, xnu, zi(imate), klv, nl)
 !
     call matrot(zr(lorien), pgl)
 !  CHANGEMENT DE BASE : LOCAL -> GLOBAL

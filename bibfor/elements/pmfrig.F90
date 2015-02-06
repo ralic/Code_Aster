@@ -50,7 +50,7 @@ subroutine pmfrig(nomte, icdmat, klv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lx, jacf
+    integer :: jacf
     real(kind=8) :: g, xjx, gxjx, xl, casect(6)
     real(kind=8) :: cars1(6), a, alfay, alfaz, ey, ez, xjg
     character(len=16) :: ch16
@@ -68,8 +68,8 @@ subroutine pmfrig(nomte, icdmat, klv)
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call lonele(3, lx, xl)
+!   recuperation des coordonnees des noeuds
+    xl = lonele()
 !
 !   Appel intégration sur section et calcul g torsion
     call pmfitx(icdmat, 1, casect, g)
@@ -88,7 +88,6 @@ subroutine pmfrig(nomte, icdmat, klv)
 !
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), cars1)
         a     = cars1(1)
-!
         alfay = vale_cara(1)
         alfaz = vale_cara(2)
         xjx   = vale_cara(5)

@@ -1,19 +1,5 @@
 subroutine te0163(option, nomte)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/elref1.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/lonele.h"
-#include "asterfort/utmess.h"
-#include "asterfort/vff3d.h"
 !
-    character(len=16) :: option, nomte
-!     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,15 +16,33 @@ subroutine te0163(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCUL FORCES ELEMENTAIRES DE LAPLACE DES CABLES
-!     ------------------------------------------------------------------
+!
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 !        'CHAR_MECA' : CALCUL DE LA FORCE DE LAPLACE
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        'MECABL2'     : CABLE2
-!     ------------------------------------------------------------------
 !
+! --------------------------------------------------------------------------------------------------
 !
+    implicit none
+#include "jeveux.h"
+#include "asterfort/elref1.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/lonele.h"
+#include "asterfort/vff3d.h"
+!
+    character(len=16) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe
     character(len=16) :: listma, ltrans
@@ -48,20 +52,18 @@ subroutine te0163(option, nomte)
     real(kind=8) :: q3, dd
     real(kind=8) :: b1, b2, b3, u(3), s, d
     real(kind=8) :: poids(20)
-!     ------------------------------------------------------------------
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     integer :: i, idfdk, ilapl, ilist, ima, ipoids, ivect
     integer :: ivf, j, jgano,  jlima, k, kp
-    integer :: lx, nbma, nbma2, nddl, ndim, nno, nnos
+    integer :: igeom, nbma, nbma2, nddl, ndim, nno, nnos
     integer :: no1, no2, npg
     real(kind=8), pointer :: vale(:) => null()
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     call jemarq()
     call elref1(elrefe)
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
+                     npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfdk,jgano=jgano)
     zero = 0.d0
-!
 !
     if (nomte .eq. 'MECA_POU_D_T_GD') then
         nddl = 6
@@ -69,11 +71,8 @@ subroutine te0163(option, nomte)
         nddl = 3
     endif
 !
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call lonele(3, lx, xl)
 !
-!     ------------------- CALCUL DES VECTEURS ELEMENTAIRES ------------
-!
+!   calcul des vecteurs elementaires
     call jevech('PFLAPLA', 'L', ilapl)
     call jevech('PLISTMA', 'L', ilist)
     call jevech('PVECTUR', 'E', ivect)
@@ -82,18 +81,20 @@ subroutine te0163(option, nomte)
     chgeom = zk24(ilapl+1) (1:19)
     call jeveuo(chgeom//'.VALE', 'L', vr=vale)
 !
-    e1 = zr(lx+4) - zr(lx+1)
-    e2 = zr(lx+5) - zr(lx+2)
-    e3 = zr(lx+6) - zr(lx+3)
-    s = sqrt(e1**2+e2**2+e3**2)
-    e1 = e1/s
-    e2 = e2/s
-    e3 = e3/s
+!   Longueur et recuperation pointeur sur coordonnees des noeuds
+    xl = lonele(igeom=igeom)
+!   vecteur normé axe seg2
+    e1 = zr(igeom+4) - zr(igeom+1)
+    e2 = zr(igeom+5) - zr(igeom+2)
+    e3 = zr(igeom+6) - zr(igeom+3)
+    e1 = e1/xl
+    e2 = e2/xl
+    e3 = e3/xl
     if (listma .eq. ' ' .or. ltrans .eq. ' ') goto 60
     call jeveuo(listma, 'L', jlima)
     call jelira(listma, 'LONMAX', nbma2)
     nbma = nbma2/2
-!C    2 BARRES EN POSITION QUELCONQUE
+!   2 barres en position quelconque
     do ima = 1, nbma
         no1 = zi(jlima+2*ima-2)
         no2 = zi(jlima+2*ima-1)
@@ -106,15 +107,15 @@ subroutine te0163(option, nomte)
         f3 = g3/s
         do 40 kp = 1, npg
             k = (kp-1)*nno
-            if (ima .eq. 1) call vff3d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(lx+1), poids(kp))
+            if (ima .eq. 1) call vff3d(nno, zr(ipoids+kp-1), zr(idfdk+k), zr(igeom+1), poids(kp))
             r1 = -vale(1+3*no2-3)
             r2 = -vale(1+3*no2-2)
             r3 = -vale(1+3*no2-1)
-            do 10 i = 1, nno
-                r1 = r1 + zr(lx+1+3* (i-1))*zr(ivf+k+i-1)
-                r2 = r2 + zr(lx+2+3* (i-1))*zr(ivf+k+i-1)
-                r3 = r3 + zr(lx+3+3* (i-1))*zr(ivf+k+i-1)
-10          continue
+            do i = 1, nno
+                r1 = r1 + zr(igeom+1+3*(i-1))*zr(ivf+k+i-1)
+                r2 = r2 + zr(igeom+2+3*(i-1))*zr(ivf+k+i-1)
+                r3 = r3 + zr(igeom+3+3*(i-1))*zr(ivf+k+i-1)
+            enddo
             q1 = r1 + g1
             q2 = r2 + g2
             q3 = r3 + g3
@@ -140,16 +141,14 @@ subroutine te0163(option, nomte)
             r3 = r3/s
             s = f1* (q1-r1) + f2* (q2-r2) + f3* (q3-r3)
             s = s/d/2.d0
-            do 30 i = 1, nno
-                do 20 j = 1, 3
-                    zr(ivect-1+j+nddl* (i-1)) = zr(&
-                                                ivect-1+j+nddl* (i- 1)) + s*u(j)*poids(kp)*zr(ivf&
-                                                &+k+i-1&
-                                                )
-20              continue
-30          continue
+            do i = 1, nno
+                do j = 1, 3
+                    zr(ivect-1+j+nddl* (i-1)) = zr(ivect-1+j+nddl*(i- 1)) + &
+                                                s*u(j)*poids(kp)*zr(ivf+k+i-1)
+                enddo
+            enddo
 40      continue
-    end do
+    enddo
 !
 60  continue
 !

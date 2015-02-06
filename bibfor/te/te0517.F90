@@ -50,7 +50,7 @@ subroutine te0517(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nc, nno, kp, ncomp, i, jacf, icompo, iorien, ivectu, lx
+    integer :: nc, nno, kp, ncomp, i, jacf, icompo, iorien, ivectu
     integer :: jtab(7), ino, istrxm, nbsp
     integer :: nbgfmx, isdcom, igeom, iret, imate, k, npg, ifgm, iretc
 !
@@ -119,7 +119,7 @@ subroutine te0517(option, nomte)
             gamma = zr(istrxm+18-1)
             call porea2(nno, nc, zr(igeom), gamma, pgl, xl)
         else
-            call lonele(3, lx, xl)
+            xl = lonele()
             call matrot(zr(iorien), pgl)
         endif
 !

@@ -37,7 +37,6 @@ subroutine te0346(option, nomte)
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
-#include "asterfort/vdiff.h"
 #include "blas/ddot.h"
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +48,7 @@ subroutine te0346(option, nomte)
     integer :: nno, nc, i, j, jcret, npg, ipoids
     integer :: igeom, imate, icontm, iorien, icompo, iinstp
     integer :: ideplm, ideplp, iinstm, ivectu, icontp, imat
-    integer :: istrxm, istrxp, ldep, lx
+    integer :: istrxm, istrxp, ldep
     character(len=4) :: fami
     character(len=24) :: valk(3)
     aster_logical :: vecteu, matric, reactu
@@ -68,8 +67,9 @@ subroutine te0346(option, nomte)
     matric = option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG'
     vecteu = option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
 !
+!   Longueur de l'élément et pointeur sur la géométrie
+    xl = lonele(igeom=igeom)
 !   Récupération des parametres "in"/"out"
-    call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCONTMR', 'L', icontm)
     call jevech('PCAORIE', 'L', iorien)
@@ -116,8 +116,7 @@ subroutine te0346(option, nomte)
         call jevech('PSTRXMR', 'L', istrxm)
         gamma = zr(istrxm+3-1)
 !       calcul de pgl,xl et angp
-        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom),&
-                    gamma, vecteu, pgl, xl, angp)
+        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1), gamma, vecteu, pgl, xl, angp)
 !       sauvegarde des angles nautiques
         if (vecteu) then
             call jevech('PSTRXPR', 'E', istrxp)
@@ -126,7 +125,6 @@ subroutine te0346(option, nomte)
             zr(istrxp+3-1) = angp(3)
         endif
     else
-        call lonele(3, lx, xl)
         call matrot(zr(iorien), pgl)
     endif
 !
@@ -173,8 +171,7 @@ subroutine te0346(option, nomte)
             iyr2= vale_cara(10)
             izr2= vale_cara(11)
             rgeom(:)=0.0d0
-            call ptkg20(b, a, xiz, xiy, iyr2,&
-                        izr2, xl, ey, ez, rgeom)
+            call ptkg20(b, a, xiz, xiy, iyr2, izr2, xl, ey, ez, rgeom)
             call lcsovn(105, klv, rgeom, klv)
         endif
     endif

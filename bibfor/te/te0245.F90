@@ -17,16 +17,6 @@ subroutine te0245(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-implicit none
-    character(len=*) :: option, nomte
-!
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lonele.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,13 +32,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codres(1)
-    character(len=16) :: ch16, phenom
-    real(kind=8) :: rho(1), a, xl, r8b
+implicit none
+    character(len=*) :: option, nomte
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lcastr, lmater, lsect, igeom
+    integer :: codres(1)
+    real(kind=8) :: rho(1), a, xl, r8b
+    character(len=16) :: ch16, phenom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,21 +69,24 @@ implicit none
         call utmess('F', 'ELEMENTS_50')
     endif
 !
-!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
+!   recuperation des caracteristiques generales des sections
     call jevech('PCAGNBA', 'L', lsect)
     a = zr(lsect)
 !
 !   Longueur de l'élément
     if (nomte .eq. 'MECA_BARRE') then
-        call lonele(3, igeom, xl)
+        xl = lonele(igeom=igeom)
     else if (nomte.eq.'MECA_2D_BARRE') then
-        call lonele(2, igeom, xl)
+        xl = lonele(dime=2, igeom=igeom)
+    else
+        xl = 0.0d0
+        ASSERT( ASTER_FALSE )
     endif
 !
-!     --- CALCUL DES CARACTERISTIQUES ELEMENTAIRES ----
+!   calcul des caracteristiques elementaires
     if (option .eq. 'MASS_INER') then
         call jevech('PMASSINE', 'E', lcastr)
-!        --- MASSE ET CDG DE L'ELEMENT ---
+!       masse et cdg de l'element
         if (nomte .eq. 'MECA_BARRE') then
             zr(lcastr) = rho(1) * a * xl
             zr(lcastr+1) =( zr(igeom+4) + zr(igeom+1) ) / 2.d0
@@ -92,7 +97,7 @@ implicit none
             zr(lcastr+1) =( zr(igeom+3) + zr(igeom+1) ) / 2.d0
             zr(lcastr+2) =( zr(igeom+4) + zr(igeom+2) ) / 2.d0
         endif
-!        --- INERTIE DE L'ELEMENT ---
+!       inertie de l'element
         zr(lcastr+4) = 0.d0
         zr(lcastr+5) = 0.d0
         zr(lcastr+6) = 0.d0

@@ -1,4 +1,5 @@
 subroutine te0342(option, nomte)
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,6 +16,20 @@ subroutine te0342(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!     CALCUL
+!       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
+!     POUR LES ELEMENTS DE POUTRE DE TIMOSHENKO AVEC GAUCHISSEMENT.
+!     ------------------------------------------------------------------
+! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
+!        'SIEF_ELGA'
+! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
+!        'MECA_POU_D_TG': POUTRE DROITE DE TIMOSHENKO AVEC GAUCHISSEMENT
+!
+!
+! --------------------------------------------------------------------------------------------------
+!
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -29,87 +44,55 @@ subroutine te0342(option, nomte)
 #include "asterfort/utpvgl.h"
 !
     character(len=*) :: option, nomte
-!     ------------------------------------------------------------------
-!     CALCUL
-!       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
-!     POUR LES ELEMENTS DE POUTRE DE TIMOSHENKO AVEC GAUCHISSEMENT.
-!     ------------------------------------------------------------------
-! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-!        'SIEF_ELGA'
-! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
-!        'MECA_POU_D_TG': POUTRE DROITE DE TIMOSHENKO AVEC GAUCHISSEMENT
 !
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    integer :: i, igau, j, jdepl, jeffo, k, lmater
-    integer :: lorien, lx, nbpar, nbres, nc, nno
-    integer :: npg
-    real(kind=8) :: a, alfay, alfaz, deux, douze, e, g
-    real(kind=8) :: phiy, phiz, un, valpar, xiy, xiz, xjg
-    real(kind=8) :: xjx, xl, xl2, zero
-!-----------------------------------------------------------------------
-    parameter   (       nbres=2)
-    integer :: iret
-    real(kind=8) :: valres(nbres)
-    integer :: codres(nbres)
-    character(len=8) :: nompar
-    character(len=16) :: nomres(nbres)
-    real(kind=8) :: nu
+    integer :: i, igau, j, jdepl, jeffo, k, lmater, iret
+    integer :: lorien, nbpar, nbres, nc, nno, npg
+    real(kind=8) :: a, alfay, alfaz, e, g, nu
+    real(kind=8) :: phiy, phiz, valpar, xiy, xiz, xjg, xjx, xl, xl2
+! --------------------------------------------------------------------------------------------------
     real(kind=8) :: b(7, 14)
-    real(kind=8) :: pgl(14, 14), depl(14), depglo(14)
-    real(kind=8) :: epsgen(7), siggen(3, 7)
-!     ------------------------------------------------------------------
+    real(kind=8) :: pgl(14, 14), depl(14), depglo(14), epsgen(7), siggen(3, 7)
+    character(len=8) :: nompar
+! --------------------------------------------------------------------------------------------------
+    parameter   (nbres=2)
+    integer :: codres(nbres)
+    real(kind=8) :: valres(nbres)
+    character(len=16) :: nomres(nbres)
     data nomres / 'E' , 'NU' /
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 7
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara /'A1','IY1','IZ1','AY1','AZ1','JX1','JG1'/
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-! --- INITIALISATIONS :
-!     ---------------
-    zero = 0.0d0
-    un = 1.0d0
-    deux = 2.0d0
-    douze = 12.0d0
-!
-    call r8inir(7*14, zero, b, 1)
-    call r8inir(7*3, zero, siggen, 1)
+    call r8inir(7*14, 0.0d0, b, 1)
+    call r8inir(7*3, 0.0d0, siggen, 1)
 !
     nbpar = 0
     nompar = '  '
     valpar = 0.d0
+    valres(:) = 0.0d0
 !
-    valres(:) = zero
-!
-! --- RECUPERATION DE LA TEMPERATURE :
-!     -----------------------------------------------
+!   recuperation de la temperature :
     npg = 3
-    call moytem('RIGI', npg, 1, '+', valpar,&
-                iret)
+    call moytem('RIGI', npg, 1, '+', valpar, iret)
 !
     nbpar = 1
     nompar = 'TEMP'
 !
-! --- RECUPERATION ET INTERPOLATION DES CARACTERISTIQUES MATERIAUX :
-!     ------------------------------------------------------------
+!   recuperation et interpolation des caracteristiques materiaux
     call jevech('PMATERC', 'L', lmater)
-!
-    call rcvalb('RIGI', npg, 1, '+', zi(lmater),&
-                ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb('RIGI', npg, 1, '+', zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
                 nbres, nomres, valres, codres, 1)
 !
     e = valres(1)
     nu = valres(2)
-    g = e / ( deux * ( un + nu ) )
+    g = e / ( 2.0d0 * ( 1.0d0 + nu ) )
 !
-! --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS :
-!     --------------------------------------------------------
-    
-!
+!   recuperation des caracteristiques generales des sections :
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
     a      = vale_cara(1)
@@ -123,65 +106,42 @@ subroutine te0342(option, nomte)
     nno = 2
     nc = 7
 !
-! --- RECUPERATION DES COORDONNEES DES NOEUDS
-! --- ET CALCUL DE LA LONGUEUR DE LA POUTRE :
-!     -------------------------------------
-    call lonele(3, lx, xl)
-!
+!   Calcul de la longueur de la poutre
+    xl =  lonele()
     xl2 = xl*xl
 !
-! --- CALCUL DES COEFFICIENTS D'INFLUENCE DU CISAILLEMENT TRANSVERSE :
-!     --------------------------------------------------------------
-    phiy = e*xiz*douze*alfay/ (xl2*g*a)
-    phiz = e*xiy*douze*alfaz/ (xl2*g*a)
+!   calcul des coefficients d'influence du cisaillement transverse
+    phiy = e*xiz*12.0d0*alfay/ (xl2*g*a)
+    phiz = e*xiy*12.0d0*alfaz/ (xl2*g*a)
 !
-! --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA  :
-!     ----------------------------------------------
+!   recuperation des orientations alpha,beta,gamma  :
     call jevech('PCAORIE', 'L', lorien)
 !
-! --- CONSTRUCTION DE LA MATRICE DE PASSAGE PGL DU REPERE GLOBAL
-! --- AU REPERE LOCAL  :
-!     ---------------
+!   construction de la matrice de passage pgl du repere global au repere local
     call matrot(zr(lorien), pgl)
 !
-! --- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT :
-!     --------------------------------------------------
+!   recuperation du champ de deplacement sur l'element
     call jevech('PDEPLAR', 'L', jdepl)
-!
     do i = 1, 14
         depglo(i) = zr(jdepl+i-1)
-    end do
+    enddo
 !
-! --- PASSAGE DES DEPLACEMENTS DU REPERE GLOBAL AU REPERE LOCAL :
-!     ---------------------------------------------------------
+!   passage des deplacements du repere global au repere local
     call utpvgl(nno, nc, pgl, depglo, depl)
 !
-! --- BOUCLE SUR LES POINTS DE GAUSS :
-!     ------------------------------
+!   boucle sur les points de gauss
     do igau = 1, 3
-!
-! --- INITIALISATION :
-!     ---------------
-        call r8inir(7, zero, epsgen, 1)
-!
-! --- CALCUL DE LA MATRICE (B) RELIANT LES DEFORMATIONS GENERALISEES
-! --- (DU/DX,GAMAXY,GAMAXZ,D(TETAX)/DX,D(TETAY)/DX,D(TETAZ/DX,D(GRX)/DX)
-! --- AUX DEPLACEMENTS :
-!     ----------------
+        call r8inir(7, 0.0d0, epsgen, 1)
+!       calcul de la matrice (b) reliant les deformations generalisees aux deplacements
+!           (DU/DX,GAMAXY,GAMAXZ,D(TETAX)/DX,D(TETAY)/DX,D(TETAZ/DX,D(GRX)/DX)
         call jsd1ff(igau, xl, phiy, phiz, b)
-!
-! --- CALCUL DES DEFORMATIONS GENERALISEES AU POINT D'INTEGRATION
-! --- COURANT :
-!     -------
+!       calcul des deformations generalisees au point d'integration courant
         do i = 1, 7
             do j = 1, 14
                 epsgen(i) = epsgen(i) + b(i,j)*depl(j)
             enddo
         enddo
-!
-! --- CALCUL DES EFFORTS GENERALISES AU POINT D'INTEGRATION
-! --- COURANT :
-!     -------
+!       calcul des efforts generalises au point d'integration courant
         siggen(igau,1) = e*a*epsgen(1)
         siggen(igau,2) = alfay*g*a*epsgen(2)
         siggen(igau,3) = alfaz*g*a*epsgen(3)
@@ -189,16 +149,13 @@ subroutine te0342(option, nomte)
         siggen(igau,5) = e*xiy*epsgen(5)
         siggen(igau,6) = e*xiz*epsgen(6)
         siggen(igau,7) = e*xjg*epsgen(7)
+    enddo
 !
-    end do
-!
-! --- RECUPERATION ET AFFECTATION DU VECTEUR DES EFFORTS
-! --- GENERALISES EN SORTIE :
-!     ---------------------
+!   recuperation et affectation du vecteur des efforts generalises en sortie
     if (option .eq. 'SIEF_ELGA') then
         call jevech('PCONTRR', 'E', jeffo)
     else
-! OPTION NON PROGRAMMEE
+!       option non programmee
         ASSERT(.false.)
     endif
 !
@@ -208,6 +165,6 @@ subroutine te0342(option, nomte)
             k = k + 1
             zr(jeffo+k-1) = siggen(igau,i)
         enddo
-    end do
+    enddo
 !
 end subroutine

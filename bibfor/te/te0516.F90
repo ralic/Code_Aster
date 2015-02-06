@@ -73,7 +73,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: klv(dimklv), work(nc, 2*nc), co(npg)
     real(kind=8) :: rigge0(2*nc, 2*nc), ddu(2*nc), effgep(nc), d1bsig(4, 2*nc)
 !
-    integer :: ne, cara, idepla, iiter, iterat, ifgp, nbgfmx, lx
+    integer :: ne, cara, idepla, iiter, iterat, ifgp, nbgfmx
     integer :: i, jcret, npge
     integer :: igeom, imate, icontm, iorien, icompo, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
@@ -136,8 +136,8 @@ subroutine te0516(option, nomte)
     ncomp = 18
 !   Nombre de composantes d'efforts et de déformations généralisés
     ncomp2 = 7
-!   Recuperation des parametres "in"/"out"
-    call jevech('PGEOMER', 'L', igeom)
+!   Longueur de l'élément et pointeur sur le géométrie
+    xl = lonele(igeom=igeom)
     call jevech('PMATERC', 'L', imate)
 !
     call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
@@ -205,7 +205,7 @@ subroutine te0516(option, nomte)
 !       recuperation du 3eme angle nautique au temps t-
         gamma = zr(istrxm+18-1)
 !       calcul de PGL,XL et ANGP
-        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom),&
+        call porea1(nno, nc, zr(ideplm), zr(ideplp), zr(igeom+1),&
                     gamma, vecteu, pgl, xl, angp)
 !       sauvegarde des angles nautiques
         if (vecteu) then
@@ -214,7 +214,6 @@ subroutine te0516(option, nomte)
             zr(istrxp+18-1) = angp(3)
         endif
     else
-        call lonele(3, lx, xl)
         ang1(1) = zr(iorien-1+1)
         ang1(2) = zr(iorien-1+2)
         ang1(3) = zr(iorien-1+3)

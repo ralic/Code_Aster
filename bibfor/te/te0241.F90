@@ -10,7 +10,7 @@ subroutine te0241(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
     character(len=*) :: option, nomte
-!     ------------------------------------------------------------------
+!    ---------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ subroutine te0241(option, nomte)
 !     POUR LE MOMENT, ON TRAITE LES POUTRES A SECTIONS CIRCULAIRES OU
 !     RECTANGULAIRE UNIQUEMENT
 !     IL N'Y A DONC PAS DE TERME DU A L'EXCENTRICITE
-!     ------------------------------------------------------------------
+!    ---------------------------------------------------------------
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 !        'MASS_MECA'    : CALCUL DE LA MATRICE DE MASSE COHERENTE
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
@@ -42,7 +42,7 @@ subroutine te0241(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: isect, itype, lmat, lmater, lorien, lsect
-    integer :: lsect2, lx, nbpar, nbres, nc, nno
+    integer :: lsect2, nbpar, nbres, nc, nno
     real(kind=8) :: ey, ez
 !-----------------------------------------------------------------------
     parameter                 (nbres=3)
@@ -50,16 +50,13 @@ subroutine te0241(option, nomte)
     integer :: codres(nbres), kpg, spt
     character(len=8) :: nompar, fami, poum
     character(len=16) :: ch16, nomres(nbres)
-    real(kind=8) :: c1, c2, pgl(3, 3), mat(136)
+    real(kind=8) ::  pgl(3, 3), mat(136)
     real(kind=8) :: e, nu, g, rho, rof, celer
     real(kind=8) :: a, ai, xiy, xiz, alfay, alfaz, xl
     real(kind=8) :: a2, ai2, xiy2, xiz2, alfay2, alfaz2
-!     ------------------------------------------------------------------
-    c1 = 1.d0
-    c2 = 2.d0
-!     ------------------------------------------------------------------
+!    ---------------------------------------------------------------
 !
-!     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+!   recuperation des caracteristiques materiaux
     call jevech('PMATERC', 'L', lmater)
     nbpar = 0
     nompar = '  '
@@ -73,25 +70,23 @@ subroutine te0241(option, nomte)
     spt=1
     poum='+'
 !
-    call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                ' ', 'ELAS', nbpar, nompar, [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', 'ELAS', nbpar, nompar, [valpar],&
                 nbres, nomres, valres, codres, 1)
     e = valres(1)
     nu = valres(2)
-    g = e / (c2 *(c1+nu))
+    g = e / (2.0d0 *(1.0d0+nu))
     rho = valres(3)
 !
     valres(1) = 0.d0
     valres(2) = 0.d0
     nomres(1) = 'RHO'
     nomres(2) = 'CELE_R'
-    call rcvalb(fami, kpg, spt, poum, zi(lmater),&
-                ' ', 'FLUIDE', nbpar, nompar, [valpar],&
+    call rcvalb(fami, kpg, spt, poum, zi(lmater), ' ', 'FLUIDE', nbpar, nompar, [valpar],&
                 2, nomres, valres, codres, 1)
     rof = valres(1)
     celer = valres(2)
 !
-!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
+!   recuperation des caracteristiques generales des sections
     call jevech('PCAGEPO', 'L', lsect)
     isect = nint(zr(lsect-1+13))
     call jevech('PCAGNPO', 'L', lsect)
@@ -100,7 +95,7 @@ subroutine te0241(option, nomte)
     nno = 2
     nc = 8
 !
-!     --- SECTION INITIALE ---
+!   section initiale
     a = zr(lsect+1)
     xiy = zr(lsect+2)
     xiz = zr(lsect+3)
@@ -108,7 +103,7 @@ subroutine te0241(option, nomte)
     alfaz = zr(lsect+5)
     ai = zr(lsect+12)
 !
-!     --- SECTION FINALE ---
+!   section finale
     lsect2 = lsect + 12
     a2 = zr(lsect2+1)
     xiy2 = zr(lsect2+2)
@@ -116,30 +111,27 @@ subroutine te0241(option, nomte)
     alfay2 = zr(lsect2+4)
     alfaz2 = zr(lsect2+5)
     ai2 = zr(lsect2+12)
-    ey = -(zr(lsect+6)+zr(lsect2+6)) / c2
-    ez = -(zr(lsect+7)+zr(lsect2+7)) / c2
+    ey = -(zr(lsect+6)+zr(lsect2+6)) / 2.0d0
+    ez = -(zr(lsect+7)+zr(lsect2+7)) / 2.0d0
 !
     if (nomte .ne. 'MEFS_POU_D_T') then
         ch16 = nomte
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-    call lonele(3, lx, xl)
-!
+!   recuperation des coordonnees des noeuds
+    xl =  lonele()
+!   calcul des matrices elementaires
     mat(1:136) = 0.d0
-!
-!     --- CALCUL DES MATRICES ELEMENTAIRES ----
     if (option .eq. 'MASS_MECA') then
-!
         if (rho .ne. 0.d0 .or. rof .ne. 0.d0) then
             if (itype .eq. 0) then
-!           --- POUTRE DROITE A SECTION CONSTANTE
+!               poutre droite a section constante
                 call ptmtuf(mat, rho, e, rof, celer,&
                             a, ai, xl, xiy, xiz,&
                             g, alfay, alfaz, ey, ez)
             else if (itype.eq.1.or.itype.eq.2) then
-!           --- POUTRE DROITE A SECTION VARIABLE
+!               poutre droite a section variable
                 call ptmtfv(mat, rho, e, rof, celer,&
                             a, a2, ai, ai2, xl,&
                             xiy, xiy2, xiz, xiz2, g,&
@@ -150,14 +142,13 @@ subroutine te0241(option, nomte)
             call utmess('F', 'ELEMENTS3_56')
         endif
 !
-!        --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
+!       recuperation des orientations alpha,beta,gamma
         call jevech('PCAORIE', 'L', lorien)
 !
-!        --- PASSAGE DU REPERE LOCAL AU REPER GLOBAL ---
+!       passage du repere local au reper global
         call matrot(zr(lorien), pgl)
         call jevech('PMATUUR', 'E', lmat)
         call utpslg(nno, nc, pgl, mat, zr(lmat))
-!
     else
         ch16 = option
         call utmess('F', 'ELEMENTS2_47', sk=ch16)

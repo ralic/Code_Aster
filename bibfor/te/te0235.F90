@@ -53,7 +53,7 @@ subroutine te0235(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i, lmater, j, lorien, lmat, nno, nc, kpg, spt
-    integer :: itype, lx, irota, jacf
+    integer :: itype, irota, jacf
     real(kind=8) :: omega(3), omegl(3), s, xl
     real(kind=8) :: e, g, xnu, rho, a, xiy, xiz, alfay, alfaz
     real(kind=8) :: pgl(3, 3), mlv(105), matp1(78)
@@ -120,7 +120,7 @@ subroutine te0235(option, nomte)
         e   = casece(1)/a
     endif
 !   Coordonnees des noeuds
-    call lonele(3, lx, xl)
+    xl =  lonele()
 !   Récupération des orientations
     call jevech('PCAORIE', 'L', lorien)
 !   Récupération du vecteur rotation

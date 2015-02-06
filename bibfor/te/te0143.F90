@@ -63,7 +63,7 @@ subroutine te0143(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lorien, nno, nc, i, lmat, ncomp, itype
-    integer :: lrcou, ldep, kp, adr, lx, npg, istrxr, jacf
+    integer :: lrcou, ldep, kp, adr, npg, istrxr, jacf
     real(kind=8) :: a, xiy, xiz, ez, ey, a2, xiy2, xiz2, xl
     real(kind=8) :: rad, ang, angarc, angs2, xfly, xflz
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), mat(105)
@@ -111,7 +111,6 @@ subroutine te0143(option, nomte)
         ez = (vale_cara1(5) +vale_cara1(10))/2.d0
         itype = nint(vale_cara1(11))
     endif
-!
 ! --------------------------------------------------------------------------------------------------
 !   section initiale
     if (nomte .eq. 'MECA_POU_D_TGM') then
@@ -124,14 +123,11 @@ subroutine te0143(option, nomte)
         xiy = carsec(5)
         xiz = carsec(4)
     endif
-!
 ! --------------------------------------------------------------------------------------------------
 !   Recuperation des orientations
     call jevech('PCAORIE', 'L', lorien)
-!
 !   Recuperation des coordonnees des noeuds
-    call lonele(3, lx, xl)
-!
+    xl =  lonele()
     if (itype .ne. 10) then
 !       poutre droite
         call matrot(zr(lorien), pgl)
@@ -158,10 +154,9 @@ subroutine te0143(option, nomte)
         call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
     endif
 !
-    mat(:) = 0.0d+0
-!
 ! --------------------------------------------------------------------------------------------------
 !   Calcul des matrices elementaires
+    mat(:) = 0.0d+0
     if (option .eq. 'RIGI_MECA_GE') then
 !       Calcul de la matrice de rigidite geometrique
         call jevech('PEFFORR', 'L', ldep)

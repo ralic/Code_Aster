@@ -28,10 +28,8 @@ subroutine te0140(option, nomte)
 #include "asterfort/moytem.h"
 #include "asterfort/pmfrig.h"
 #include "asterfort/porigi.h"
-#include "asterfort/ptka21.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/trigom.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
@@ -53,7 +51,7 @@ subroutine te0140(option, nomte)
 !
 !
     integer :: imate, lmat, lorien, lrcou
-    integer :: lx, nbpar, nbres, nc, nno, iret
+    integer :: nbpar, nbres, nc, nno, iret
     parameter (nbres=2)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: angarc, angs2, deux, e, rad
@@ -123,7 +121,7 @@ subroutine te0140(option, nomte)
     if (nomte(1:13).eq.'MECA_POU_D_TG') nc = 7
 !
     if (nomte.eq.'MECA_POU_C_T') then
-        call lonele(3, lx, xl)
+        xl = lonele()
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angarc = zr(lrcou+1)

@@ -48,7 +48,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lx, jacf
+    integer :: jacf
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
     real(kind=8) :: casrho(6), xl, rbid, cars1(6) ,co12, co13
     real(kind=8) :: matp1(78), a, xiy, xiz, casece(6), g
@@ -66,8 +66,8 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
         call utmess('F', 'ELEMENTS2_42', sk=ch16)
     endif
 !
-!   Récupération des coordonnées des noeuds
-    call lonele(3, lx, xl)
+!   Longueur de l'élément
+    xl = lonele()
 !
 !   Appel intégration sur section
     call pmfitx(icdmat, 2, casrho, rbid)

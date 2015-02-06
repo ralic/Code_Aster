@@ -29,6 +29,7 @@ subroutine ef0154(nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
@@ -47,7 +48,7 @@ subroutine ef0154(nomte)
     aster_logical :: lteimp
     real(kind=8) :: a, epsth, e, r8bid, xfl1, xfl4, xl, xrig, val(1)
     integer :: i, j, jdepl, jeffo
-    integer :: lmater, lorien, lsect, igeom, nc, nno
+    integer :: lmater, lorien, lsect, nc, nno
 !     ------------------------------------------------------------------
 !
     lteimp= ASTER_FALSE
@@ -73,9 +74,12 @@ subroutine ef0154(nomte)
 !
 !   Longueur de l'élément
     if (nomte .eq. 'MECA_BARRE') then
-        call lonele(3, igeom, xl)
+        xl = lonele()
     else if (nomte.eq.'MECA_2D_BARRE') then
-        call lonele(2, igeom, xl)
+        xl = lonele(dime=2)
+    else
+        xl = 0.0d0
+        ASSERT( ASTER_FALSE )
     endif
 !
 !     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

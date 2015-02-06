@@ -16,10 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine porigy(nomte, e, rho, xnu, icdmat,&
-                      klv, nl)
+    subroutine porigy(nomte, rho, xnu, icdmat, klv, nl)
         character(len=*) :: nomte
-        real(kind=8) :: e
         real(kind=8) :: rho
         real(kind=8) :: xnu
         integer :: icdmat

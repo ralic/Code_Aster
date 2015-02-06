@@ -1,23 +1,5 @@
 subroutine te0144(option, nomte)
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
-#include "asterfort/matrot.h"
-#include "asterfort/moytem.h"
-#include "asterfort/pmavec.h"
-#include "asterfort/porigi.h"
-#include "asterfort/poutre_modloc.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/trigom.h"
-#include "asterfort/utpvgl.h"
-#include "asterfort/vecma.h"
-#include "asterfort/verifm.h"
-    character(len=*) :: option, nomte
-!     ------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,59 +17,79 @@ subroutine te0144(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! --------------------------------------------------------------------------------------------------
 !     CALCUL
 !       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 !       - DU VECTEUR ELEMENTAIRE CONTRAINTE
 !     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 !        'SIEF_ELGA'
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 !        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
 !        'MECA_POU_C_T' : POUTRE COURBE DE TIMOSHENKO(SECTION CONSTANTE)
-!     ------------------------------------------------------------------
 !
-    real(kind=8) :: zero, deux
-    parameter  (zero = 0.d0,deux = 2.d0)
+! --------------------------------------------------------------------------------------------------
 !
+    implicit none
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmavec.h"
+#include "asterfort/porigi.h"
+#include "asterfort/poutre_modloc.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/trigom.h"
+#include "asterfort/utpvgl.h"
+#include "asterfort/vecma.h"
+#include "asterfort/verifm.h"
+!
+    character(len=*) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
     integer :: nbres, npg, nno, nc, nnoc, ncc, jeffo, lmater, iret
-    integer :: iret1, itype, lx, lrcou, lorien, jdepl, i, j
+    integer :: iret1, itype, lrcou, lorien, jdepl, i, j
+!
+    real(kind=8) :: ul(12), ug(12), pgl(3, 3), klc(12, 12), klv(78)
+    real(kind=8) :: fl(12), pgl1(3, 3), pgl2(3, 3), epsith(1)
+    real(kind=8) :: x, temp, tvar, rad
+    real(kind=8) :: e, xnu, xl, angarc, angs2, along
+!
+! --------------------------------------------------------------------------------------------------
     parameter    (nbres=2)
     real(kind=8) :: valres(nbres)
     integer :: codres(nbres)
     character(len=16) :: nomres(nbres)
-!
-    real(kind=8) :: ul(12), ug(12), pgl(3, 3), klc(12, 12), klv(78)
-    real(kind=8) :: fl(12), pgl1(3, 3), pgl2(3, 3), epsith(1)
-    real(kind=8) :: x, temp, tvar
-    real(kind=8) :: e, xnu, xl, rad, angarc, angs2, along
-!
-!
-!     ------------------------------------------------------------------
     data nomres / 'E', 'NU'/
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
     nno = 2
     nc = 6
     nnoc = 1
     ncc = 6
-!     ------------------------------------------------------------------
 !
     if (option .eq. 'SIEF_ELGA') then
         call jevech('PCONTRR', 'E', jeffo)
     else
-! OPTION NON PROGRAMMEE
+!       option non programmee
         ASSERT(.false.)
     endif
 !
-! --- POINT DE GAUSS DE L'ELEMENT
+!   point de gauss de l'element
     call elrefe_info(fami='RIGI',npg=npg)
     ASSERT((npg.eq.2).or.(npg.eq.3))
-!
-! --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+!   recuperation des caracteristiques materiaux
     call jevech('PMATERC', 'L', lmater)
 !
-! --- RECUPERATION DE LA TEMPERATURE :
+!   recuperation de la temperature
     call verifm('RIGI', npg, 1, '+', zi(lmater),&
                 'ELAS', 1, epsith, iret)
     call moytem('RIGI', npg, 1, '+', temp,&
@@ -99,33 +101,28 @@ subroutine te0144(option, nomte)
     e = valres(1)
     xnu = valres(2)
 !
-!     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
-!
+!   calcul de la matrice de rigidite locale
     call porigi(nomte, e, xnu, -1.d0, klv)
 !
-!     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
-!
+!   matrice rigidite ligne > matrice rigidite carre
     call vecma(klv, 78, klc, 12)
 !
-!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-!
+!   recuperation des caracteristiques generales des sections
     call poutre_modloc('CAGNPO', ['TVAR'], 1, valeur=tvar)
     itype = nint(tvar)
 !
-!     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
-!
-    call lonele(3, lx, xl)
+!   recuperation des coordonnees des noeuds
+    xl = lonele()
     if (itype .eq. 10) then
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
         angarc = zr(lrcou+1)
-        x = xl / ( deux * rad )
+        x = xl / ( 2.0d0 * rad )
         angs2 = trigom('ASIN', x )
-        xl = rad * angs2 * deux
+        xl = rad * angs2 * 2.0d0
     endif
 !
-!     --- MATRICE DE ROTATION PGL
-!
+!   matrice de rotation pgl
     call jevech('PCAORIE', 'L', lorien)
     if (itype .eq. 10) then
         call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
@@ -136,9 +133,9 @@ subroutine te0144(option, nomte)
     call jevech('PDEPLAR', 'L', jdepl)
     do i = 1, 12
         ug(i) = zr(jdepl+i-1)
-    end do
+    enddo
 !
-!      --- VECTEUR DEPLACEMENT LOCAL  UL = PGL * UG
+!   vecteur deplacement local  UL = PGL * UG
     if (itype .eq. 10) then
         call utpvgl(nnoc, ncc, pgl1, ug, ul)
         call utpvgl(nnoc, ncc, pgl2, ug(7), ul(7))
@@ -146,15 +143,14 @@ subroutine te0144(option, nomte)
         call utpvgl(nno, nc, pgl, ug, ul)
     endif
 !
-!     --- VECTEUR EFFORT       LOCAL  FL = KLC * UL
+!   vecteur effort local  FL = KLC * UL
     call pmavec('ZERO', 12, klc, ul, fl)
 !
-!     --- TENIR COMPTE DES EFFORTS DUS A LA DILATATION ---
-    if (epsith(1) .ne. zero) then
+!   tenir compte des efforts dus a la dilatation
+    if (epsith(1) .ne. 0.0d0) then
         do i = 1, 12
-            ug(i) = zero
+            ug(i) = 0.0d0
         enddo
-!
         if (itype .ne. 10) then
             ug(1) = -epsith(1) * xl
             ug(7) = -ug(1)
@@ -165,8 +161,7 @@ subroutine te0144(option, nomte)
             ug(7) = -ug(1)
             ug(8) = ug(2)
         endif
-!
-!              --- CALCUL DES FORCES INDUITES ---
+!       calcul des forces induites
         do i = 1, 6
             do j = 1, 6
                 fl(i) = fl(i) - klc(i,j) * ug(j)
@@ -174,25 +169,22 @@ subroutine te0144(option, nomte)
             enddo
         enddo
     endif
-!
-! --- ARCHIVAGE ---
+!   archivage
     if (npg .eq. 2) then
         do i = 1, 6
             zr(jeffo+i-1) = -fl(i)
             zr(jeffo+i+6-1) = fl(i+6)
         enddo
     else
-!        DANS LE CAS 3 POINTS DE GAUSS
-!        IL NE FAUT PAS METTRE 0 SUR UN DES POINTS DE GAUSS
-!        CF DOC ASTER POUR LA NUMEROTATION OU ELREGA
-!              NOEUD        N1       N2       N3
-!              POSITION   (-0.7777 , 0.0000 , 0.7777)
-!        C'EST LINEAIRE : (N2) = ( (N1) + (N3) )/2
+!       dans le cas 3 points de gauss il ne faut pas mettre 0 sur un des points de gauss
+!        cf doc aster pour la numerotation ou elrega
+!              noeud        n1       n2       n3
+!              position   (-0.7777 , 0.0000 , 0.7777)
+!           c'est lineaire : (n2) = ( (n1) + (n3) )/2
         do i = 1, 6
             zr(jeffo+i-1) = -fl(i)
             zr(jeffo+i+6-1) = (-fl(i) + fl(i+6))*0.5d0
             zr(jeffo+i+12-1) = fl(i+6)
         enddo
     endif
-!
 end subroutine

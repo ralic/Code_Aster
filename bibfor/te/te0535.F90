@@ -73,7 +73,7 @@ subroutine te0535(option, nomte)
 !
     integer :: igeom, icompo, imate, iorien, iret
     integer :: icarcr, icontm, ideplm, ideplp, imatuu
-    integer :: ivectu, icontp, ivarim, ivarip, i, lx
+    integer :: ivectu, icontp, ivarim, ivarip, i
     integer :: jmodfb, jsigfb, jacf, nbvalc
     integer :: jtab(7), ivarmp, istrxp, istrxm
     integer :: ip, jcret, codret, codrep
@@ -193,7 +193,7 @@ subroutine te0535(option, nomte)
     call wkvect('&&TE0535.SIGFIB', 'V V R8', (nbfibr*2), jsigfb)
 !
 !   Longueur de l'élément
-    call lonele(3, lx, xl)
+    xl = lonele()
 !
     if (zk16(icompo+2) .ne. 'PETIT' .and. zk16(icompo+2) .ne. 'GROT_GDEP') then
         valk(1) = zk16(icompo+2)

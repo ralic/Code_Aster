@@ -1,31 +1,5 @@
 subroutine te0150(option, nomte)
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/lonele.h"
-#include "asterfort/matro2.h"
-#include "asterfort/matrot.h"
-#include "asterfort/moytem.h"
-#include "asterfort/pmfrig.h"
-#include "asterfort/porigi.h"
-#include "asterfort/poutre_modloc.h"
-#include "asterfort/ptfocp.h"
-#include "asterfort/ptforp.h"
-#include "asterfort/ptka21.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/tecach.h"
-#include "asterfort/trigom.h"
-#include "asterfort/utmess.h"
-#include "asterfort/utpvlg.h"
-#include "asterfort/verifm.h"
-    character(len=*) :: option, nomte
-!     ------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,9 +16,13 @@ subroutine te0150(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
 !     CALCULE LE CHARGEMENT INDUIT PAR UNE ELEVATION UNIFORME DE
 !     TEMPERATURE DANS LES POUTRES D'EULER ET DE TIMOSHENKO
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 !       'FC1D1D_MECA'       : FORCES LINEIQUES (COMP)
 !       'FR1D1D_MECA'       : FORCES LINEIQUES (REEL)
@@ -64,38 +42,68 @@ subroutine te0150(option, nomte)
 !       'MECA_POU_D_TG' : POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 !                         MULTI-FIBRES SECTION CONSTANTE
-!     ------------------------------------------------------------------
-    integer :: nbres, nbpar, lmater, iret
-    integer :: istruc, lorien, lrcou, lvect, lx
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lonele.h"
+#include "asterfort/matro2.h"
+#include "asterfort/matrot.h"
+#include "asterfort/moytem.h"
+#include "asterfort/pmfrig.h"
+#include "asterfort/porigi.h"
+#include "asterfort/poutre_modloc.h"
+#include "asterfort/ptfocp.h"
+#include "asterfort/ptforp.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/trigom.h"
+#include "asterfort/utmess.h"
+#include "asterfort/utpvlg.h"
+#include "asterfort/verifm.h"
+!
+    character(len=*) :: option, nomte
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbpar, lmater, iret
+    integer :: istruc, lorien, lrcou, lvect
     integer :: itype, nc, ind, i, j
-    parameter                 (nbres=2)
-    real(kind=8) :: valpar(3), valres(nbres)
-    integer :: codres(nbres)
-    character(len=4) :: fami
-    character(len=8) :: nompar(3), materi
-    character(len=16) :: ch16, nomres(nbres)
+    integer :: ndim, nno, nnos, npg, ipoids
+    integer :: ivf, idfdx, jgano
+    real(kind=8) :: valpar(3)
     real(kind=8) :: e, nu, g
     real(kind=8) :: a, a2, xl
     real(kind=8) :: ang, rad, angarc, angs2, along
     real(kind=8) :: pgl(3, 3), pgl1(3, 3), pgl2(3, 3), de(14), ffe(14)
     real(kind=8) :: bsm(14, 14), matk(105)
-    real(kind=8) :: f(1), zero
+    real(kind=8) :: f(1)
     real(kind=8) :: fr(14), fi(14), fgr(14), fgi(14)
     real(kind=8) :: fer(12), fei(12)
-    integer :: ndim, nno, nnos, npg, ipoids
-    integer :: ivf, idfdx, jgano
-    aster_logical :: lrho
 !
+    character(len=4) :: fami
+    character(len=8) :: nompar(3), materi
+    character(len=16) :: ch16
+    aster_logical :: lrho
+! --------------------------------------------------------------------------------------------------
+    integer, parameter :: nbres=2
+    integer :: codres(nbres)
+    real(kind=8) :: valres(nbres)
+    character(len=16) :: nomres(nbres)
     data nomres / 'E', 'NU' /
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara /'A1','A2','TVAR'/
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
     call jemarq()
 !
-    zero = 0.d0
     fami = 'RIGI'
     nno = 2
     nc = 6
@@ -106,18 +114,14 @@ subroutine te0150(option, nomte)
 !
 !     -- POUR LA PESANTEUR ET LA ROTATION, ON N'A BESOIN QUE DE RHO
 !        QUI EST FORCEMENT CONSTANT DANS LA MAILLE
-    lrho=(option.eq.'CHAR_MECA_PESA_R'.or.&
-     &      option.eq.'CHAR_MECA_ROTA_R')
+    lrho=(option.eq.'CHAR_MECA_PESA_R'.or. option.eq.'CHAR_MECA_ROTA_R')
 !
 !     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX (MOYENNE)
     if (option(13:16) .ne. '1D1D' .and. .not.lrho) then
         call jevech('PMATERC', 'L', lmater)
-        call moytem(fami, npg, 1, '+', valpar(1),&
-                    iret)
+        call moytem(fami, npg, 1, '+', valpar(1), iret)
     endif
-    do i = 1, nbres
-        valres(i) = 0.d0
-    end do
+    valres(:) = 0.d0
 !
     nbpar = 1
     nompar(1) = 'TEMP'
@@ -125,18 +129,17 @@ subroutine te0150(option, nomte)
     e = 0.d0
 !   -- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS
     call jevech('PCAORIE', 'L', lorien)
-    call lonele(3, lx, xl)
+    xl = lonele()
 !
-    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)         
+    call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
     a     = vale_cara(1)
     a2    = vale_cara(2)
     itype = nint(vale_cara(3))
-!
     call matrot(zr(lorien), pgl)
 !
     materi=' '
     if ((nomte.ne.'MECA_POU_D_EM') .and. (nomte.ne.'MECA_POU_D_TGM')) then
-!       -- POUTRES CLASSIQUES
+!       poutres classiques
         if (option(13:16) .ne. '1D1D' .and. .not.lrho) then
             call rcvalb(fami, 1, 1, '+', zi(lmater),&
                         materi, 'ELAS', nbpar, nompar, valpar,&
@@ -149,7 +152,7 @@ subroutine te0150(option, nomte)
     endif
 !
     if (nomte .eq. 'MECA_POU_C_T') then
-!        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
+!        poutre courbe de timoskenko a 6 ddl
         nno = 1
         call jevech('PCAARPO', 'L', lrcou)
         rad = zr(lrcou)
@@ -160,7 +163,7 @@ subroutine te0150(option, nomte)
         call matro2(zr(lorien), angarc, angs2, pgl1, pgl2)
 !
     else if (nomte .eq. 'MECA_POU_D_EM') then
-!        --- POUTRE MULTIFIBRE DROITE D'EULER A 6 DDL ---
+!       poutre multifibre droite d'euler a 6 DDL
         if (lrho) then
             itype=0
         else
@@ -168,25 +171,20 @@ subroutine te0150(option, nomte)
         endif
 !
     else if (nomte .eq. 'MECA_POU_D_TG') then
-!        --- POUTRE DROITE DE TIMOSKENKO A 7 DDL (GAUCHISSEMENT)---
+!       poutre droite de timoskenko a 7 ddl (gauchissement)
         itype = 30
         nc = 7
-!
     else if (nomte .eq. 'MECA_POU_D_TGM') then
-!        --- POUTRE DROITE DE TIMOSKENKO A 7 DDL ---
-!           (GAUCHISSEMENT, MULTIFIBRES)---
+!       poutre droite de timoskenko a 7 ddl (gauchissement, multifibres)
         itype = 30
         nc = 7
-!
     endif
-!
-!     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
+!   passage du repere local au repere global
     if (option .eq. 'CHAR_MECA_FC1D1D') then
         call jevech('PVECTUC', 'E', lvect)
         if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
             call ptfocp(itype, option, nomte, xl, rad,&
-                        angs2, nno, 6, pgl, pgl1,&
-                        pgl2, fr, fi)
+                        angs2, nno, 6, pgl, pgl1, pgl2, fr, fi)
             call utpvlg(nno, 6, pgl, fr, fgr)
             call utpvlg(nno, 6, pgl, fi, fgi)
             do i = 1, 6
@@ -197,8 +195,7 @@ subroutine te0150(option, nomte)
             zc(lvect+14-1) = dcmplx(0.d0,0.d0)
         else
             call ptfocp(itype, option, nomte, xl, rad,&
-                        angs2, nno, nc, pgl, pgl1,&
-                        pgl2, fr, fi)
+                        angs2, nno, nc, pgl, pgl1, pgl2, fr, fi)
             if (nomte .eq. 'MECA_POU_C_T') then
                 call utpvlg(nno, nc, pgl1, fr, fgr)
                 call utpvlg(nno, nc, pgl2, fr(7), fgr(7))
@@ -213,21 +210,19 @@ subroutine te0150(option, nomte)
             enddo
         endif
         else if( option.eq.'CHAR_MECA_FR1D1D' .or.&
-     &         option.eq.'CHAR_MECA_FF1D1D' .or.&
-     &         option.eq.'CHAR_MECA_SR1D1D' .or.&
-     &         option.eq.'CHAR_MECA_SF1D1D' .or.&
-     &         option.eq.'CHAR_MECA_ROTA_R' .or.&
-     &         option.eq.'CHAR_MECA_PESA_R' ) then
+                 option.eq.'CHAR_MECA_FF1D1D' .or.&
+                 option.eq.'CHAR_MECA_SR1D1D' .or.&
+                 option.eq.'CHAR_MECA_SF1D1D' .or.&
+                 option.eq.'CHAR_MECA_ROTA_R' .or.&
+                 option.eq.'CHAR_MECA_PESA_R' ) then
         if (nomte .eq. 'MECA_POU_D_TG' .or. nomte .eq. 'MECA_POU_D_TGM') then
             call ptforp(0, option, nomte, a, a2,&
                         xl, rad, angs2, 1, nno,&
-                        6, pgl, pgl1, pgl2, fer,&
-                        fei)
+                        6, pgl, pgl1, pgl2, fer, fei)
         else
             call ptforp(itype, option, nomte, a, a2,&
                         xl, rad, angs2, 1, nno,&
-                        nc, pgl, pgl1, pgl2, fer,&
-                        fei)
+                        nc, pgl, pgl1, pgl2, fer, fei)
         endif
         do i = 1, 6
             ffe(i) = fer(i)
@@ -239,13 +234,12 @@ subroutine te0150(option, nomte)
         endif
     else
         if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
-!        --- POUTRE DROITE MULTIFIBRE A SECTION CONSTANTE ---
+!           poutre droite multifibre a section constante
             call pmfrig(nomte, zi(lmater), matk)
         else
             call porigi(nomte, e, nu, xl, matk)
         endif
-!
-!     --- REMPLISSAGE DE LA MATRICE CARREE ---
+!       remplissage de la matrice carree
         ind = 0
         do i = 1, nc*2
             de(i) = 0.d0
@@ -259,10 +253,8 @@ subroutine te0150(option, nomte)
         enddo
 !
         if (option .eq. 'CHAR_MECA_TEMP_R') then
-!
-!        --- CALCUL DU DEPLACEMENT LOCAL INDUIT PAR L'ELEVATION DE TEMP.
-            call verifm(fami, npg, 1, '+', zi(lmater),&
-                        'ELAS', 1, f, iret)
+!           calcul du deplacement local induit par l'elevation de temp.
+            call verifm(fami, npg, 1, '+', zi(lmater), 'ELAS', 1, f, iret)
 !
         else
             ch16 = option
@@ -282,8 +274,7 @@ subroutine te0150(option, nomte)
             de(1) = -f(1) * xl
             de(7) = -de(1)
         endif
-!
-!        --- CALCUL DES FORCES INDUITES ---
+!       calcul des forces induites
         do i = 1, nc
             ffe(i) = 0.d0
             ffe(i+nc) = 0.d0
@@ -296,7 +287,7 @@ subroutine te0150(option, nomte)
 !
     if (option .ne. 'CHAR_MECA_FC1D1D') then
         call jevech('PVECTUR', 'E', lvect)
-!      --- MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE LOCAL: PGL
+!       matrice de passage du repere global au repere local : PGL
         if (itype .eq. 10) then
             call utpvlg(nno, nc, pgl1, ffe, zr(lvect))
             call utpvlg(nno, nc, pgl2, ffe(7), zr(lvect+6))

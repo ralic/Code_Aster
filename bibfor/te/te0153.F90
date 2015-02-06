@@ -20,7 +20,9 @@ subroutine te0153(option, nomte)
     implicit none
     character(len=*) :: option, nomte
 !
+#include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matrot.h"
@@ -46,8 +48,8 @@ subroutine te0153(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: codres(1)
-    integer :: i, iacce, imate, j, lmat, lorien, lsect
-    integer :: lvec, igeom, nc, nno
+    integer :: i, iacce, imate, lmat, lorien, lsect
+    integer :: lvec, nc, nno
     real(kind=8) :: e(1), rho(1), pgl(3, 3), mat(21), matr(21)
     real(kind=8) :: a, xl, xrig, xmas, matp(6, 6), mat2dm(4, 4), mat2dv(10)
     real(kind=8) :: r8b
@@ -63,14 +65,16 @@ subroutine te0153(option, nomte)
 !
 !   Longueur de l'élément
     if (nomte .eq. 'MECA_BARRE') then
-        call lonele(3, igeom, xl)
+        xl =  lonele()
     else if (nomte.eq.'MECA_2D_BARRE') then
-        call lonele(2, igeom, xl)
+        xl = lonele(dime=2)
+    else
+        xl = 0.0d0
+        ASSERT( ASTER_FALSE )
     endif
 !
-!     --- RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA ---
+!   recuperation des orientations alpha,beta,gamma
     call jevech('PCAORIE', 'L', lorien)
-!
     if (option .eq. 'M_GAMMA') then
         call jevech('PVECTUR', 'E', lvec)
         call jevech('PACCELR', 'L', iacce)
@@ -78,27 +82,21 @@ subroutine te0153(option, nomte)
         call jevech('PMATUUR', 'E', lmat)
     endif
 !
-    do i = 1, 21
-        mat(i) = 0.d0
-    enddo
-!
-!     --- CALCUL DES MATRICES ELEMENTAIRES ----
+!   calcul des matrices elementaires
+    mat(:) = 0.d0
     call jevech('PMATERC', 'L', imate)
     if (option .eq. 'RIGI_MECA') then
         call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b],&
                     1, 'E', e, codres, 1)
         xrig = e(1) * a / xl
-        mat( 1) = xrig
+        mat( 1) =  xrig
         mat( 7) = -xrig
-        mat(10) = xrig
+        mat(10) =  xrig
 !
     else if (option.eq.'MASS_MECA' .or. option.eq.'M_GAMMA') then
-        call rcvalb('FPG1', 1, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 0, ' ', [r8b],&
+        call rcvalb('FPG1', 1, 1, '+', zi(imate), ' ', 'ELAS', 0, ' ', [r8b],&
                     1, 'RHO', rho, codres, 1)
-        do i = 1, 21
-            matr(i) = 0.d0
-        enddo
+        matr(:) = 0.d0
 !
         xmas = rho(1) * a * xl / 6.d0
         mat( 1) = xmas * 2.d0
@@ -128,17 +126,13 @@ subroutine te0153(option, nomte)
         call utmess('F', 'ELEMENTS2_47', sk=ch16)
     endif
 !
-!     --- PASSAGE DU REPERE LOCAL AU REPERE GLOBAL ---
+!   passage du repere local au repere global
     call matrot(zr(lorien), pgl)
     call utpslg(nno, nc, pgl, mat, matr)
 !
     if (option .eq. 'M_GAMMA') then
         if (nomte .eq. 'MECA_BARRE') then
-            do  i = 1, 6
-                do  j = 1, 6
-                    matp(i,j)=0.d+0
-                enddo
-            enddo
+            matp(:,:)=0.d+0
             call vecma(matr, 21, matp, 6)
             call pmavec('ZERO', 6, matp, zr(iacce), zr(lvec))
         else
@@ -152,22 +146,18 @@ subroutine te0153(option, nomte)
             mat2dv(8) = matr(12)
             mat2dv(9) = matr(14)
             mat2dv(10) = matr(15)
-            do i = 1, 4
-                do j = 1, 4
-                    mat2dm(i,j)=0.d+0
-                enddo
-            enddo
+            mat2dm(:,:)=0.d+0
             call vecma(mat2dv, 10, mat2dm, 4)
             call pmavec('ZERO', 4, mat2dm, zr(iacce), zr(lvec))
         endif
     else
-!       ECRITURE DANS LE VECTEUR PMATTUR SUIVANT L'ELEMENT
+!       ecriture dans le vecteur pmattur suivant l'element
         if (nomte .eq. 'MECA_BARRE') then
             do i = 1, 21
                 zr(lmat+i-1) = matr(i)
             enddo
         else if (nomte.eq.'MECA_2D_BARRE') then
-            zr(lmat) = matr(1)
+            zr(lmat)   = matr(1)
             zr(lmat+1) = matr(2)
             zr(lmat+2) = matr(3)
             zr(lmat+3) = matr(7)

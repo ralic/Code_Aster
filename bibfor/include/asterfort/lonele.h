@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lonele(dime, igeom, xl)
-        integer :: dime
-        integer :: igeom
-        real(kind=8) :: xl
-    end subroutine lonele
+    function lonele(dime, igeom)
+        integer,optional,intent(in)  :: dime
+        integer,optional,intent(out) :: igeom
+        real(kind=8) :: lonele
+    end function lonele
 end interface

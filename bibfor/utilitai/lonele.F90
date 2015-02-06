@@ -1,4 +1,4 @@
-subroutine lonele(dime, igeom, xl)
+function lonele(dime, igeom)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,10 +17,21 @@ subroutine lonele(dime, igeom, xl)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-    integer :: dime, igeom
-    real(kind=8) :: xl
+! --------------------------------------------------------------------------------------------------
 !
+!                           CALCULE LA LONGEUR D'UN ELEMENT
+!
+!   Message <F> en cas de longueur <= r8prem
+!
+!   IN
+!       dime    : dimension de l'espace
+!
+!   OUT
+!       igeom   : adresse-1 du zr sur la géométrie  x1,y1 : < zr(igeom+1), zr(igeom+2) >
+!
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -29,37 +40,34 @@ subroutine lonele(dime, igeom, xl)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-! --------------------------------------------------------------------------------------------------
-!
-!                           CALCULE LA LONGEUR D'UN ELEMENT
-!
-!   Message <F> en cas le longueur <= 0
-!
-!   IN
-!       dime    : dimension de l'espace
-!
-!   OUT
-!       igeom   : adresse du zr
-!       xl      : longueur de l'élément
+    integer,optional,intent(in)  :: dime
+    integer,optional,intent(out) :: igeom
+    real(kind=8) :: lonele
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iadzi, iazk24
-    real(kind=8) :: r8bid
-    character(len=8) :: nomail
+    integer             :: iadzi, iazk24, igeomloc, idimloc
+    real(kind=8)        :: r8bid,xl
+    character(len=8)    :: nomail
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jevech('PGEOMER', 'L', igeom)
-    igeom = igeom - 1
+    if ( present(dime) ) then
+        idimloc = dime
+    else
+        idimloc = 3
+    endif
 !
-    if (dime .eq. 3) then
-        r8bid = ( zr(igeom+4) - zr(igeom+1) )**2
-        r8bid = ( zr(igeom+5) - zr(igeom+2) )**2 + r8bid
-        r8bid = ( zr(igeom+6) - zr(igeom+3) )**2 + r8bid
-    else if (dime.eq.2) then
-        r8bid = ( zr(igeom+3) - zr(igeom+1) )**2
-        r8bid = ( zr(igeom+4) - zr(igeom+2) )**2 + r8bid
+    call jevech('PGEOMER', 'L', igeomloc)
+    igeomloc = igeomloc - 1
+!
+    if (idimloc .eq. 3) then
+        r8bid = ( zr(igeomloc+4) - zr(igeomloc+1) )**2
+        r8bid = ( zr(igeomloc+5) - zr(igeomloc+2) )**2 + r8bid
+        r8bid = ( zr(igeomloc+6) - zr(igeomloc+3) )**2 + r8bid
+    else if (idimloc.eq.2) then
+        r8bid = ( zr(igeomloc+3) - zr(igeomloc+1) )**2
+        r8bid = ( zr(igeomloc+4) - zr(igeomloc+2) )**2 + r8bid
     else
 !       no warning: ‘r8bid’ may be used uninitialized in this function
         r8bid = 0.0d0
@@ -71,4 +79,9 @@ subroutine lonele(dime, igeom, xl)
         nomail = zk24(iazk24-1+3)(1:8)
         call utmess('F', 'ELEMENTS2_43', sk=nomail)
     endif
-end subroutine
+!
+    lonele = xl
+    if ( present(igeom) ) then
+        igeom = igeomloc
+    endif
+end function

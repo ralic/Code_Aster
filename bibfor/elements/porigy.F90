@@ -1,20 +1,6 @@
-subroutine porigy(nomte, e, rho, xnu, icdmat,&
-                  klv, nl)
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lonele.h"
-#include "asterfort/pmfitx.h"
-#include "asterfort/poutre_modloc.h"
-#include "asterfort/ptgy02.h"
-#include "asterfort/utmess.h"
-#include "asterfort/lteatt.h"
+subroutine porigy(nomte, rho, xnu, icdmat, klv, nl)
 !
-    integer :: icdmat
-    character(len=*) :: nomte
-    real(kind=8) :: e, rho, xnu, klv(*)
-! ------------------------------------------------------------------
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,39 +17,55 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     CALCULE LA MATRICE GYROSCOPIQUE DES ELEMENTS DE POUTRE
 !
 ! IN  NOMTE : NOM DU TYPE ELEMENT
 !             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_D_TG'
 !             'MECA_POU_D_EM' 'MECA_POU_D_TGM'
-!     ------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+    implicit none
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/lonele.h"
+#include "asterfort/pmfitx.h"
+#include "asterfort/poutre_modloc.h"
+#include "asterfort/ptgy02.h"
+#include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
+!
+    integer :: icdmat
+    character(len=*) :: nomte
+    real(kind=8) :: rho, xnu, klv(*)
     integer :: nl
 !
-    character(len=16) :: ch16
-    integer :: lx, istruc, itype
-    real(kind=8) :: zero, deux, rbid, casect(6)
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: istruc, itype
+    real(kind=8) :: rbid, casect(6)
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, xjx, alfay, alfaz, alfinv
     real(kind=8) :: a2, xiy2, xiz2, xjx2, alfay2, alfaz2
+    character(len=16) :: ch16
     aster_logical :: euler
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer, parameter :: nb_cara = 17
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','JX1',&
                     'A2','IY2','IZ2','AY2','AZ2','EY2','EZ2','JX2','TVAR'/
-!-----------------------------------------------------------------------
 !
-    zero = 0.d0
-    deux = 2.d0
+! --------------------------------------------------------------------------------------------------
+!
     euler=lteatt('EULER','OUI')
 !
-!
-!
-!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
-!
-    call lonele(3, lx, xl)
+!   recuperation des caracteristiques generales des sections
+    xl = lonele()
     call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
 !
     a = vale_cara(1)
@@ -83,19 +85,19 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
     itype = nint(vale_cara(17))
 !
     if (nomte .eq. 'MECA_POU_D_E') then
-!        --- POUTRE DROITE D'EULER A 6 DDL ---
+!       poutre droite d'euler a 6 ddl
         istruc = 1
-        alfinv = zero
+        alfinv = 0.0d0
     else if (nomte.eq.'MECA_POU_D_T') then
-!        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
+!       poutre droite de timoskenko a 6 ddl
         istruc = 1
-        alfinv = deux/(alfay+alfaz)
+        alfinv = 2.0d0/(alfay+alfaz)
     else if (nomte.eq.'MECA_POU_D_EM' .or. nomte.eq.'MECA_POU_D_TGM') then
-!        --- POUTRE DROITE MULTI-FIBRES---
+!       poutre droite multifibre
         itype = 0
         istruc = 1
-        alfinv = zero
-!       ON MET RHO=1, il est utilisé dans PMFITX
+        alfinv = 0.0d0
+!       on met rho=1
         rho = 1.d0
         call pmfitx(icdmat, 2, casect, rbid)
         a = casect(1)
@@ -109,21 +111,19 @@ subroutine porigy(nomte, e, rho, xnu, icdmat,&
 !
 !
     if (itype .eq. 1 .or. itype .eq. 2) then
-!     ---- MOYENNAGE -------------------------------------
-        a=(a+a2)/deux
-        xiy=(xiy+xiy2)/deux
-        xiz=(xiz+xiz2)/deux
-        alfay=(alfay+alfay2)/deux
-        alfaz=(alfaz+alfaz2)/deux
-        xjx=(xjx+xjx2)/deux
+!       moyennage
+        a=(a+a2)/2.0d0
+        xiy=(xiy+xiy2)/2.0d0
+        xiz=(xiz+xiz2)/2.0d0
+        alfay=(alfay+alfay2)/2.0d0
+        alfaz=(alfaz+alfaz2)/2.0d0
+        xjx=(xjx+xjx2)/2.0d0
         if (euler) then
-            alfinv = zero
+            alfinv = 0.0d0
         else
-            alfinv = deux/(alfay+alfaz)
+            alfinv = 2.0d0/(alfay+alfaz)
         endif
     endif
-    call ptgy02(klv, nl, xnu, rho, a,&
-                xl, xiy, xiz, xjx, alfinv,&
-                ey, ez, istruc)
+    call ptgy02(klv, nl, xnu, rho, a, xl, xiy, xiz, xjx, alfinv, ey, ez, istruc)
 !
 end subroutine
