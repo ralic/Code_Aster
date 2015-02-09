@@ -160,8 +160,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     fmax = 0.5 / dt  # facteur 1/2 car FFT calculee avec SYME='NON'
     df = 2 * fmax / nbdt
 
-    # print 'nbdt dt tfin fmax df ',nbdt, dt, tfin, fmax, df
-
     if args['FREQ_COUP'] != None:
         fcoup = args['FREQ_COUP']
     else:
@@ -287,12 +285,10 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         os.system('rm fort.13 ')
         tmat = __TMAT.EXTR_TABLE()
         NCOU = len(tmat) - 1
-        # print 'NCOU = ',NCOU ;
         nbmat = 0
         for k in range(1, NCOU + 2):
             if __TMAT['GDgam', k] > nbmat:
                 nbmat = __TMAT['GDgam', k]
-        # print 'nbmat=',nbmat
         __GG = [None] * (nbmat + 1)
         __DG = [None] * (nbmat + 1)
         utabequ = 16
@@ -301,11 +297,13 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
         for j in range(1, nbmat + 1):
             __GG[j] = LIRE_FONCTION(UNITE=utabequ, NOM_PARA='EPSI',
-                                    INTERPOL='LOG', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
+                                    #INTERPOL='LOG', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
+                                    INTERPOL=('LOG','LIN'), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                                     INDIC_PARA=[1, 1], INDIC_RESU=[1, j + 1],
                                     )
             __DG[j] = LIRE_FONCTION(UNITE=utabequ, NOM_PARA='EPSI',
-                                    INTERPOL='LOG', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
+                                    #INTERPOL='LOG', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
+                                    INTERPOL=('LOG','LIN'), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                                     INDIC_PARA=[2, 1], INDIC_RESU=[2, j + 1],
                                     )
         os.system('rm fort.16 ')
@@ -326,6 +324,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             l_couche.append(dC)
         NCOU = len(l_couche) - 1
 
+        __GG0 = [None] * (nbmat + 1)
+        __DG0 = [None] * (nbmat + 1)
         __GG = [None] * (nbmat + 1)
         __DG = [None] * (nbmat + 1)
 
@@ -335,21 +335,42 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             l_para = mate["GAMMA"]
             vale_G = mate["G_GMAX"]
             vale_D = mate["D"]
-            __GG[j] = DEFI_FONCTION(NOM_PARA='EPSI', NOM_RESU='G_Gmax',
-                                    INTERPOL='LOG',
-                                    PROL_DROITE='LINEAIRE',
-                                    PROL_GAUCHE='LINEAIRE',
+            __GG0[j] = DEFI_FONCTION(NOM_PARA='EPSI', NOM_RESU='G_Gmax',
+                                    #INTERPOL='LIN',
+                                    #INTERPOL='LOG',
+                                    INTERPOL=('LOG','LIN'),
+                                    PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                                     ORDONNEE=tuple(vale_G),
                                     ABSCISSE=tuple(l_para))
 
-            __DG[j] = DEFI_FONCTION(NOM_PARA='EPSI', NOM_RESU='D',
-                                    INTERPOL='LOG',
-                                    PROL_DROITE='LINEAIRE',
-                                    PROL_GAUCHE='LINEAIRE',
+            __DG0[j] = DEFI_FONCTION(NOM_PARA='EPSI', NOM_RESU='D',
+                                    #INTERPOL='LIN',
+                                    #INTERPOL='LOG',
+                                    INTERPOL=('LOG','LIN'),
+                                    PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                                     ORDONNEE=tuple(vale_D),
                                     ABSCISSE=tuple(l_para))
+                                    
+        __lpara = DEFI_LIST_REEL(VALE=tuple(l_para))
 
         for j in range(1, nbmat + 1):
+            __GG[j] = CALC_FONCTION(
+              COMB=_F(FONCTION=__GG0[j], COEF=1.), LIST_PARA=__lpara,
+              NOM_PARA='EPSI', NOM_RESU='G_Gmax',
+              #INTERPOL='LIN',
+              #INTERPOL='LOG',
+              INTERPOL=('LOG','LIN'),
+              PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', 
+              )
+            __DG[j] = CALC_FONCTION(
+              COMB=_F(FONCTION=__DG0[j], COEF=1.), LIST_PARA=__lpara,
+              NOM_PARA='EPSI', NOM_RESU='D',
+              #INTERPOL='LIN',
+              #INTERPOL='LOG',
+              INTERPOL=('LOG','LIN'),
+              PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', 
+              )
+              
             if j == 1:
                 __tabfgg = CREA_TABLE(
                     FONCTION=_F(FONCTION=__GG[j], PARA=('EPSI', 'GG' + str(j))))
@@ -419,21 +440,27 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     E[0].append(0)
     AH[0].append(0)
     rat[0].append(1)
+    self.update_const_context({'cvar': cvar})
+    __fEmax = FORMULE(NOM_PARA=('Emax'), VALE = 'cvar*Emax')
+    __fAH = FORMULE(NOM_PARA=('AH'), VALE = 'AH')
 
     __TMAT = CALC_TABLE(reuse=__TMAT, TABLE=__TMAT,
                         ACTION=(
-                        _F(OPERATION='RENOMME', NOM_PARA=('Emax', 'E0'),),
-                        _F(OPERATION='RENOMME', NOM_PARA=('AH', 'AH0'),),))
+                                _F(OPERATION = 'OPER',
+                                   FORMULE=__fEmax, NOM_PARA = 'E0',),
+                                _F(OPERATION = 'OPER',
+                                   FORMULE=__fAH, NOM_PARA = 'AH0',),
+                                ))
 
     for k in range(1, NCOU + 1):
 
         lprof.append(__TMAT['Y', k])
-        E[0].append(cvar * __TMAT['E0', k])
+        E[0].append(__TMAT['E0', k])
         AH[0].append(__TMAT['AH0', k])
         rat[0].append(1)
 
     while etat <> 'fin':
-        # print 'iter= ',iter
+        print 'iter= ',iter
 
         if iter == 0:
 
@@ -441,7 +468,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
             for j in range(1, NCOU + 1):
 
-                __SOLH[j] = DEFI_MATERIAU(ELAS=_F(E=cvar * __TMAT['E0', j],
+                __SOLH[j] = DEFI_MATERIAU(ELAS=_F(E=__TMAT['E0', j],
                                                   RHO=__TMAT['RHO', j],
                                                   NU=__TMAT['NU', j],
                                                   AMOR_HYST=__TMAT['AH0', j],
@@ -498,8 +525,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             affmat.append(_F(GROUP_MA=__TMAT['M', j], MATER=tSOLH[j]))
 
         affmat.append(_F(GROUP_MA=grma_subst, MATER=__SOLHSUBS))
-
-        print affmat
 
         __CHAMPMAH = AFFE_MATERIAU(MAILLAGE=__mailla,
                                    AFFE=affmat,
@@ -750,7 +775,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                                       POSITION='INIT'),
                                       )
 
-            # print ('legende = '+legende + 'deltaE ='+str(deltaE));
 
             __fthr = RECU_FONCTION(
                 GROUP_NO=('PN' + str(k)), RESULTAT=__DYNHARM, NOM_CHAM='ACCE', NOM_CMP='DX', INTERPOL='LIN',)
@@ -828,18 +852,17 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
             AH[iter].append(2 * __DG[ind[k]](geff * gamax[k]))
 
-            E[iter].append((rat[iter][k]) * cvar * __TMAT['E0', k])
+            E[iter].append((rat[iter][k]) * __TMAT['E0', k])
 
             diff.append(
                 abs(((E[iter - 1][k]) - (E[iter][k]))) / (E[iter - 1][k]))
 
         deltaE = max(max(diff), abs(min(diff)))
 
-        print diff
-        print 'deltaE ='
-        print deltaE
-        print E[iter]
-        print rat[iter]
+        print 'diff=',diff
+        print 'deltaE =',deltaE
+        print 'E_iter =',E[iter]
+        print 'rat_iter =',rat[iter]
 
         __Enew = DEFI_FONCTION(NOM_PARA='Y', NOM_RESU='DX',
                                ORDONNEE=tuple(E[iter]),
@@ -903,7 +926,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
         if deltaE < tole:
             etat = 'fin'
-        # print 'iter etat ',iter,etat
 
         if etat == 'fin':
 
@@ -916,6 +938,9 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 {'ca': ca, 'aamult': aamult, 'abmult': abmult})
             __fAB = FORMULE(NOM_PARA=('AHfin'), VALE = 'ca*abmult*AHfin')
             __fAA = FORMULE(NOM_PARA=('AHfin'), VALE = 'ca*aamult*AHfin')
+            
+            __fEf = FORMULE(NOM_PARA=('Efin'), VALE = 'Efin')
+            __fAHf = FORMULE(NOM_PARA=('AHfin'), VALE = 'AHfin')
 
             __TMAT = CALC_TABLE(reuse=__TMAT, TABLE=__TMAT,
                                 ACTION=(
@@ -934,7 +959,15 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                                     _F(OPERATION = 'OPER',
                                        FORMULE=__fAB, NOM_PARA = 'ABfin',),
                                 ))
-
+            if iter == 1 :
+               __TMAT = CALC_TABLE(reuse=__TMAT, TABLE=__TMAT,
+                            ACTION=(
+                                    _F(OPERATION = 'OPER',
+                                       FORMULE=__fEf, NOM_PARA = 'E0',),
+                                    _F(OPERATION = 'OPER',
+                                       FORMULE=__fAHf, NOM_PARA = 'AH0',),
+                                ))
+                                
             DETRUIRE(
                 CONCEPT=_F(NOM=(__tabred, __tabgam, __tabacc, __fAA, __fAB),))
 
@@ -1045,7 +1078,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             for d in range(1, NCOU + 1):
                 ifspec.append(
                     _F(FONCTION=__SPEC[d], MARQUEUR=0, LEGENDE='SAX_' + str(d) + legende + 'deltaE =' + str(deltaE)),)
-            # print ifspec;
 
             IMPR_FONCTION(UNITE=utabspec,
                           FORMAT='TABLEAU',
@@ -1228,8 +1260,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
               "RECEPTEUR", "SOURCE", "NUME_MATE", "SUBSTRATUM"],
         typ=["I", "R", "R", "R", "R", "R", "K8", "K8", "I", "K8"])
 
-    # print 'SURF=',SURF
-    # print 'NCOU NCOU2 ',NCOU,NCOU2
 
     if SURF == 'OUI':
         ic = 0
