@@ -91,10 +91,10 @@ subroutine dglrdm()
     integer :: jmelr, jmelc, lonobj
     integer :: icompr, iret, icisai
     integer :: ibid1, ibid2, ibid3
-    integer :: nimpr, impr, ifr, iendo, ipente
+    integer :: nimpr, impr, ifr, iendo, ipente, nalphat
 !
     real(kind=8) :: ea(3*na), sya(3*na), eb, nub, sytb, b, b1, a
-    real(kind=8) :: h, np, emaxm, emaxf
+    real(kind=8) :: h, np, emaxm, emaxf, alphat
     real(kind=8) :: pendt, pendf, nyc, gt, gf, gc
     real(kind=8) :: num, nuf, em, ef, nyt, dxd, myf, dxp, drp, mp, rho, drd
     real(kind=8) :: pelast, pelasf, amora, amorb, amorh, rhob, rhoa, alpha, beta, hyst
@@ -320,12 +320,17 @@ subroutine dglrdm()
 ! - DETERMINATION DES PARAMETRES D ENDOMMAGEMENT
     call dgendo(em, ef, h, nyt, nyc, num, nuf, pendt, pelast, pendf,&
                 pelasf, iendo, icisai, icompr, gt, gf, gc, ipente, np, dxp)
+
+
+!---------------------------------------------------------------------------------------
+
 !-----REMPLISSAGE DU MATERIAU
     call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K32', 2, jlm)
-    zk32(jlm ) = 'GLRC_DM         '
-    zk32(jlm+1) = 'ELAS_GLRC       '
+    zk32(jlm ) = 'GLRC_DM'
+    zk32(jlm+1) = 'ELAS_GLRC'
+
 !---------ELASTIQUE---------------
-    lonobj = 8
+    lonobj = 9
     call codent(2,'D0',K6)
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
     call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
@@ -355,9 +360,17 @@ subroutine dglrdm()
         zk16(jmelk+7) = 'AMOR_HYST'
         zr(jmelr+7 ) = hyst
     endif
+
+!   -- alphat : coef. dilatation thermique :
+    call getvr8(' ', 'ALPHA', iocc=1, scal=alphat, nbret=nalphat)
+    if (nalphat .eq. 1) then
+        zk16(jmelk+8) = 'ALPHA'
+        zr(jmelr+8 ) = alphat
+    endif
+
 !---------GLRC_DM---------------
     lonobj = 8
-    call codent(1,'D0',K6)    
+    call codent(1,'D0',K6)
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
     call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALR', 'G V R',    lonobj, jmelr)
@@ -380,6 +393,7 @@ subroutine dglrdm()
     zr(jmelr+6 ) = 1.d0
     zk16(jmelk+7) = 'EPAIS   '
     zr(jmelr+7 ) = h
+
 !---------IMPRESSION-------------
     if (nimpr .gt. 0) then
         write (ifr,*) 'PARAMETRES HOMOGENEISES POUR GLRC_DM :'

@@ -61,10 +61,10 @@ subroutine dglrda()
     real(kind=8) :: hh, bm11, bm12, bm22, bm33, bc11, bc22, mf1x, mf1y
     real(kind=8) :: mf2x, mf2y, rho, amora, amorb, amorh, eeq, nueq, mf1, mf2
     real(kind=8) :: normm, normn, valres(5), mp1n0, mp2n0, aux, maxmp(2)
-    real(kind=8) :: minmp(2)
+    real(kind=8) :: minmp(2), alphat
     real(kind=8) :: nmax0, nmin(2), nmax(2), oml(na), r8b(1), par1, par2, elb(2)
     real(kind=8) :: mp1cst(2), mp2cst(2), omt, eat, bt1, bt2, pflua, pretr
-    integer :: icodr2(5)
+    integer :: icodr2(5), nalphat
     character(len=6) :: k6
     character(len=8) :: mater, fon(4), k8b
     character(len=16) :: nomres(5)
@@ -282,11 +282,12 @@ subroutine dglrda()
 !
 !-----REMPLISSAGE DU MATERIAU
     call wkvect(mater//'.MATERIAU.NOMRC ', 'G V K32', 3, jlm)
-    zk32(jlm ) =  'GLRC_DAMAGE     '
-    zk32(jlm+1) = 'ELAS_GLRC       '
-    zk32(jlm+2) = 'BPEL_BETON      '
+    zk32(jlm ) =  'GLRC_DAMAGE'
+    zk32(jlm+1) = 'ELAS_GLRC'
+    zk32(jlm+2) = 'BPEL_BETON'
+
 !---------ELASTIQUE---------------
-    lonobj = 10
+    lonobj = 11
     call codent(2,'D0',K6)
     call wkvect(mater//'.CPT.'//K6//'.VALK', 'G V K16', 2*lonobj, jmelk)
     call jeecra(mater//'.CPT.'//K6//'.VALK', 'LONUTI',   lonobj)
@@ -294,19 +295,19 @@ subroutine dglrda()
     call jeecra(mater//'.CPT.'//K6//'.VALR', 'LONUTI',   lonobj)
     call wkvect(mater//'.CPT.'//K6//'.VALC', 'G V C',    lonobj, jmelc)
     call jeecra(mater//'.CPT.'//K6//'.VALC', 'LONUTI',   0)
-    zk16(jmelk) = 'E_M     '
+    zk16(jmelk) = 'E_M'
     zr(jmelr) = em
-    zk16(jmelk+1) = 'NU_M    '
+    zk16(jmelk+1) = 'NU_M'
     zr(jmelr+1) = num
-    zk16(jmelk+2) = 'E_F     '
+    zk16(jmelk+2) = 'E_F'
     zr(jmelr+2) = eeq
-    zk16(jmelk+3) = 'NU_F    '
+    zk16(jmelk+3) = 'NU_F'
     zr(jmelr+3) = nueq
-    zk16(jmelk+4) = 'BT1     '
+    zk16(jmelk+4) = 'BT1'
     zr(jmelr+4) = bt1
-    zk16(jmelk+5) = 'BT2     '
+    zk16(jmelk+5) = 'BT2'
     zr(jmelr+5) = bt2
-    zk16(jmelk+6) = 'RHO     '
+    zk16(jmelk+6) = 'RHO'
     zr(jmelr+6) = rho
     if (amora .gt. 0.0d0) then
         zk16(jmelk+7) = 'AMOR_ALPHA'
@@ -320,6 +321,15 @@ subroutine dglrda()
         zk16(jmelk+9) = 'AMOR_HYST'
         zr(jmelr+9 ) = amorh
     endif
+
+!   -- alphat : coef. dilatation thermique :
+    call getvr8(' ', 'ALPHA', iocc=1, scal=alphat, nbret=nalphat)
+    if (nalphat .eq. 1) then
+        zk16(jmelk+10) = 'ALPHA'
+        zr(jmelr+10 ) = alphat
+    endif
+
+
 !---------BPEL_BETON--------------
     lonobj = 2
     call codent(3,'D0',K6)

@@ -16,34 +16,35 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ======================================================================
-#  DETAILS : MODELISATION :
-#                           DKTG (GLRC_DM)
+#  DETAILS : MODELISATION : DKTG
 #            MAILLAGE     : TRIA3
-#            CHARGEMENT   : THERMIQUE CYCLIQUE
-#                           REFROIDISSEMENT-RECHAUFFEMENT EQUIVALENT A
-#                           TRACTION - COMPRESSION DE LA MODELISATION A
+#            CHARGEMENT   : Dilatation THERMIQUE
 
-DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),);
+# ======================================================================
+# Principe du test :
+# ------------------
+#  Une plaque est soumise a deux chargements équivalents :
+#   * 1) deplacement impose
+#   * 2) chargement thermique (dilatation)
+#  On peut alors verifier que le chargement 2 produit les memes efforts que le chargement 1.
+#
+#--------------------------------------------------------------------------------------------
+#
+#  Deux jeux de chargements sont utilises :
+#    1.1 : translation imposee sur le bord A2A4   : DX = 2.e-4
+#    1.2 : dilatation thermique homogene          : alpha*(T-Tref) = -2.e-4
+#
+#    2.1 : rotation imposee sur le bord A2A4               : DRY = 6.e-3
+#    2.2 : dilatation thermique lineaire dans l'epaisseur  : alpha*(GradT) = -6.e-3
+#
+#
+# ================================================================================================
 
-#PRE_GIBI();
-EP = 0.1;
+DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET',), DEBUG=_F(SDVERI='OUI',),);
 
-# ON MET LES DEPLACEMENTS A 0 POUR ENGENDRER DES CONTRAINTES THERMIQUES
-#DEP0 = 0.0002;
-DEP0 = 0.0;
 
 t1 = 1.0;
-
-t2 = (2 * t1);
-
-t3 = (4 * t1);
-
 dt = 0.05;
-
-fx = 500000.0;
 
 
 MAIL=LIRE_MAILLAGE();
@@ -62,86 +63,25 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                                       GROUP_NO='A1',),);
 
 MO_G=AFFE_MODELE(MAILLAGE=MAIL,
-                 INFO=1,
                  AFFE=_F(GROUP_MA='DALLE',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='DKTG',),);
 
-EGM = 35620000000.0;
-EGF = 38700000000.0;
+#=====================================================================================
+# Materiau pour RELATION = 'GLRC_DM' :
+#-------------------------------------
+MAT_G=DEFI_MATERIAU(
+             ELAS_GLRC =_F(E_M= 35620000000.0,  NU_M=0.18,   E_F=38700000000.0, NU_F=0.17, ALPHA = 1.E-5),
+             GLRC_DM   =_F(GAMMA_T=0.02, GAMMA_F=0.32, NYT=3.7E5,  MYF=9.0E3,),
+             );
 
-MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
-                                 NU_M=0.18,
-                                 E_F=EGF,
-                                 NU_F=0.17,
-                                 ALPHA = 1.E-5),
-                    GLRC_DM=_F(GAMMA_T=0.02,
-                               GAMMA_F=0.32,
-                               NYT=3.7E5,
-                               MYF=9.0E3,),);
+#=====================================================================================
 
-TEMP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
-                   AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-                            VALE=   (    10.   ,  10. ,    10.   ), ), )
 
-TEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
-                   AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-                            VALE=   (    -10.   ,  -10. ,    -10.   ), ), )
-
-TEMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
-                   AFFE=_F( TOUT='OUI',
-                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
-                            VALE=   (   30.   , 30. ,   30.   ), ), )
-
-TEMPLI=CREA_RESU( OPERATION='AFFE',
-                   TYPE_RESU='EVOL_THER',
-                   NOM_CHAM='TEMP',
-                   AFFE=(
-                   _F( CHAM_GD=TEMP0,
-                             INST=0.0,      ),
-                   _F( CHAM_GD=TEMP1,
-                             INST=1.0,      ),
-                   _F( CHAM_GD=TEMP0,
-                              INST=2.0,      ),
-                   _F( CHAM_GD=TEMP2,
-                             INST=3.0,      ),
-                   _F( CHAM_GD=TEMP0,
-                             INST=4.0,      ),
-                          ), );
-
-TEMPLI2=CREA_RESU( OPERATION='AFFE',
-                   TYPE_RESU='EVOL_THER',
-                   NOM_CHAM='TEMP',
-                   AFFE=(
-                   _F( CHAM_GD=TEMP0,
-                             INST=0.0,      ),
-                   _F( CHAM_GD=TEMP2,
-                             INST=1.0,      ),
-                   _F( CHAM_GD=TEMP0,
-                             INST=2.0,      ),
-                   _F( CHAM_GD=TEMP1,
-                             INST=3.0,      ),
-                   _F( CHAM_GD=TEMP0,
-                             INST=4.0,      ),
-                             ), );
-
-MATER=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA='DALLE',
-                             MATER=MAT_G,),
-                    AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI,NOM_VARC='TEMP',
-                                     NOM_CHAM='TEMP',VALE_REF=(10.,)),)
-
-MATER2=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(GROUP_MA='DALLE',
-                             MATER=MAT_G,),
-                    AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI2,NOM_VARC='TEMP',
-                                     NOM_CHAM='TEMP',VALE_REF=(10.,)),)
 
 CAEL_G=AFFE_CARA_ELEM(MODELE=MO_G,
                       COQUE=_F(GROUP_MA='DALLE',
-                               EPAIS=EP,
+                               EPAIS=0.10,
                                ANGL_REP=(0.0,0.0,),
                                INER_ROTA='OUI',),);
 
@@ -157,43 +97,115 @@ COND_0G=AFFE_CHAR_MECA(MODELE=MO_G,
                                     DX=0.0,
                                     DRY=0.0,),),);
 
-COND_1G=AFFE_CHAR_MECA(MODELE=MO_G,
-                       DDL_IMPO=_F(GROUP_MA='A2A4',
-                                   DX=DEP0,),);
 
-chf1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                         t1,1.,
-                         t2,-1.,
-                         t3,0.0,
+chf1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0, 0.0, t1, 1.,
                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-chf2=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                         t1,-1.,
-                         t2,1.,
-                         t3,0.0,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
 
-inst1=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=t3,
-                                   PAS=dt,),);
+inst1=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=t1, PAS=dt,),);
 
-lisnt1=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                   LIST_INST=inst1,),
+lisnt1=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL', LIST_INST=inst1,),
                       ECHEC=_F(ACTION        = 'DECOUPE',
                                SUBD_METHODE  = 'MANUEL',),);
 
-#-----------------------------------------------
-# CALCUL DES RESULTATS POUR LE CHARGEMENT chf1
-#-----------------------------------------------
+
+#--------------------------------------------------------------------------------------
+# materiau pour le calcul sans dilatation thermique (MATER1):
+#--------------------------------------------------------------
+MATER1=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(GROUP_MA='DALLE',  MATER=MAT_G,))
+
+
+# materiau pour le calcul avec dilatation thermique homogene (MATER2):
+#----------------------------------------------------------------------
+TEMP0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
+                   AFFE=_F( TOUT='OUI',
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
+                            VALE=   (    10.   ,  10. ,    10.   ), ), )
+
+TEMP1A=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
+                   AFFE=_F( TOUT='OUI',
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
+                            VALE=   (    -10.   ,  -10. ,    -10.   ), ), )
+
+
+TEMPLI1=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
+                   AFFE=(
+                   _F( CHAM_GD=TEMP0,  INST=0.0,      ),
+                   _F( CHAM_GD=TEMP1A, INST=1.0,      ),
+))
+
+MATER2=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(GROUP_MA='DALLE',  MATER=MAT_G,),
+                    AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI1,NOM_VARC='TEMP',
+                                 NOM_CHAM='TEMP',VALE_REF=(10.,)),)
+
+
+# materiau pour le calcul avec gradient de dilatation thermique (MATER3):
+#-------------------------------------------------------------------------
+TEMP1B=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MAIL,
+                   AFFE=_F( TOUT='OUI',
+                            NOM_CMP=('TEMP_INF','TEMP_MIL','TEMP_SUP'),
+                            VALE=   (    70.   ,  40. ,    10.   ), ), )
+
+
+TEMPLI2=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP',
+                   AFFE=(
+                   _F( CHAM_GD=TEMP0,  INST=0.0,      ),
+                   _F( CHAM_GD=TEMP1B, INST=1.0,      ),
+))
+
+MATER3=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(GROUP_MA='DALLE',  MATER=MAT_G,),
+                    AFFE_VARC=_F(TOUT='OUI',EVOL=TEMPLI2,NOM_VARC='TEMP',
+                                 NOM_CHAM='TEMP',VALE_REF=(10.,)),)
+
+#--------------------------------------------------------------------------------------
+# chargement 1 : (effort de membrane NXX) :
+# -------------------------------------------
+# condition limite sur A2A4 (calcul sans dilatation thermique)
+ch1_1=AFFE_CHAR_MECA(MODELE=MO_G,
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DX=2.e-4,),);
+
+# condition limite sur A2A4 (calcul avec dilatation thermique)
+ch1_2=AFFE_CHAR_MECA(MODELE=MO_G,
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DX=0.,),);
+
+#--------------------------------------------------------------------------------------
+# chargement 2 : (effort de flexion MXX) :
+# -------------------------------------------
+# condition limite sur A2A4 (calcul sans dilatation thermique)
+ch2_1=AFFE_CHAR_MECA(MODELE=MO_G,
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DRY=6.e-3,),);
+
+# condition limite sur A2A4 (calcul avec dilatation thermique)
+ch2_2=AFFE_CHAR_MECA(MODELE=MO_G,
+                       DDL_IMPO=_F(GROUP_MA='A2A4',  DRY=0.,),);
+
+#--------------------------------------------------------------------------------------
+# L'etat de contrainte (et d'effort) est homogene dans la plaque.
+# On le teste sur un point choisi au hasard : maille M8 / noeud N7
+#--------------------------------------------------------------------------------------
+
+
+#==========================================================================================
+# 1. RELATION='GLRC_DM'
+#==========================================================================================
+relation='GLRC_DM'
+
+#-------------------------------------------
+# 1.1 Dilation homogene dans l'epaisseur :
+#-------------------------------------------
+
+# 1.1.1 Calcul de reference (sans dilatation thermique) :
+#-------------------------------------------------------
 
 RESU_G1=STAT_NON_LINE(MODELE=MO_G,
-                      CHAM_MATER=MATER,
+                      CHAM_MATER=MATER1,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0G,
-                                FONC_MULT=chf1,),
-                             _F(CHARGE=COND_1G,
-                                FONC_MULT=chf1,),),
-                      COMPORTEMENT=_F(RELATION='GLRC_DM',
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
                                    ITER_INTE_MAXI=30,),
                       INCREMENT=_F(LIST_INST=lisnt1,
                                    PRECISION=0.1,),
@@ -203,427 +215,743 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
 
 RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
-IMPR_RESU(RESU=_F(RESULTAT=RESU_G1,
-                  NOM_CHAM=('DEPL','EFGE_ELNO',) , NUME_ORDRE=(20,40,60,80,),));
-
-RESU_G1=CALC_CHAMP(reuse =RESU_G1,
-                   RESULTAT=RESU_G1,
-                   ENERGIE=('DISS_ELGA','DISS_ELNO','DISS_NOEU','DISS_ELEM'),
-                   VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),
-                   FORCE=('FORC_NODA',),);
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
+                   VALE_CALC=3.80288037596113E+05,  ))
 
 
-IMPR_RESU(RESU=_F(RESULTAT=RESU_G1,
-                  NOM_CHAM='DISS_ELGA',NUME_ORDRE=(20,40,60,80,),));
-
-TAB_DISS=POST_ELEM(RESULTAT=RESU_G1,
-                   ENER_DISS=_F(TOUT='OUI'),);
-
-IMPR_TABLE(TABLE=TAB_DISS,);
-
-
-TFXA4_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='A4FX',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A4',
-                                 NOM_CMP='DX',),);
-
-TFXA4_G1=CALC_TABLE(reuse =TFXA4_G1,
-               TABLE=TFXA4_G1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TFXA2_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='A2FX',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A2',
-                                 NOM_CMP='DX',),);
-
-TFXA2_G1=CALC_TABLE(reuse =TFXA2_G1,
-               TABLE=TFXA2_G1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-
-TFXA6_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='A6FX',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A6',
-                                 NOM_CMP='DX',),);
-
-
-TFXA6_G1=CALC_TABLE(reuse =TFXA6_G1,
-               TABLE=TFXA6_G1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TD_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                              INTITULE='A4FX',
-                              RESULTAT=RESU_G1,
-                              NOM_CHAM='VARI_NOEU',
-                              GROUP_NO='A4',
-                              NOM_CMP=('V1','V2',),),);
-
-TD_G1=CALC_TABLE(reuse =TD_G1,
-               TABLE=TD_G1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TD_G1=CALC_TABLE(reuse =TD_G1,
-                 TABLE=TD_G1,
-                 ACTION=(_F(OPERATION='EXTR',
-                            NOM_PARA=('INST','V1','V2',),),
-                         _F(OPERATION='RENOMME',
-                            NOM_PARA=('V1','D1',),),
-                         _F(OPERATION='RENOMME',
-                            NOM_PARA=('V2','D2',),),),);
-
-TDISS_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='A5FX',
-                                 RESULTAT=RESU_G1,
-                                 NOM_CHAM='DISS_NOEU',
-                                 GROUP_NO='A4',
-                                 NOM_CMP=('ENDO',),),);
-
-TDISS_G1=CALC_TABLE(reuse =TDISS_G1,
-               TABLE=TDISS_G1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TDISS_G1=CALC_TABLE(reuse =TDISS_G1,
-                    TABLE=TDISS_G1,
-                    ACTION=_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','ENDO',),),);
-
-
-TFXA2_G1=CALC_TABLE(reuse =TFXA2_G1,
-                    TABLE=TFXA2_G1,
-                    ACTION=(_F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA2',),),),);
-
-
-TFXA4_G1=CALC_TABLE(reuse =TFXA4_G1,
-                    TABLE=TFXA4_G1,
-                    ACTION=(_F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA4',),),),);
-
-
-TFXA6_G1=CALC_TABLE(reuse =TFXA6_G1,
-                    TABLE=TFXA6_G1,
-                    ACTION=(_F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA6',),),),);
-
-SUM_FX = FORMULE(VALE='FXA2+FXA4+FXA6',
-                 NOM_PARA=('FXA2','FXA4','FXA6',),);
-
-D_REL_FX = FORMULE(VALE='(FXG-FX)/FX',
-                   NOM_PARA=('FX','FXG',),);
-
-D_REL_DY = FORMULE(VALE='(DYG-DY)/DY',
-                   NOM_PARA=('DY','DYG',),);
-
-
-TFX_G1=CALC_TABLE(TABLE=TFXA2_G1,
-                  ACTION=(_F(OPERATION='FILTRE',
-                             NOM_PARA='INST',
-                             CRIT_COMP = 'GT',
-                             VALE = 0.,),
-
-                           _F(OPERATION='COMB',
-                             TABLE=TFXA4_G1,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='COMB',
-                             TABLE=TFXA6_G1,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='OPER',
-                             FORMULE=SUM_FX,
-                             NOM_PARA='FXG',),
-                          _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','FXG',),),),);
-
-
-TDY_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='A4DY',
-                               RESULTAT=RESU_G1,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='A4',
-                               NOM_CMP='DY',),);
-
-TDY_G1=CALC_TABLE(reuse =TDY_G1,
-               TABLE=TDY_G1,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TDY_G1=CALC_TABLE(reuse =TDY_G1,
-                  TABLE=TDY_G1,
-                  ACTION=(_F(OPERATION='EXTR',
-                             NOM_PARA=('INST','DY',),),
-                          _F(OPERATION='RENOMME',
-                             NOM_PARA=('DY','DYG',),),),);
-
-
-DETRUIRE(CONCEPT=_F(NOM=(TDY_G1,),),);
-
-
-IMPR_TABLE(TABLE=TD_G1,);
-
-IMPR_TABLE(TABLE=TDISS_G1,);
-
-#----- TRACTION - PHASE ELASTIQUE -----
-
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
-           NOM_PARA='ENDO',
-           TABLE=TDISS_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.05,),
-           )
-
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=8.2519177442469,
-           NOM_PARA='ENDO',
-           TABLE=TDISS_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.75,),
-           )
-
-#----- TRACTION - PHASE ENDOMMAGEMENT -----
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=17.281653420429,
-           NOM_PARA='ENDO',
-           TABLE=TDISS_G1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.0,),
-           )
-
-#-----------------------------------------------
-#CALCUL DES RESULTATS POUR LE CHARGEMENT chf2
-#-----------------------------------------------
-
+# 1.1.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
 
 RESU_G2=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATER2,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0G,
-                                FONC_MULT=chf2,),
-                             _F(CHARGE=COND_1G,
-                                FONC_MULT=chf2,),
-                             ),
-                      COMPORTEMENT=_F(RELATION='GLRC_DM',),
-                      INCREMENT=_F(LIST_INST=inst1,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
                                    PRECISION=0.1,),
                       NEWTON=_F(REAC_ITER=1,),
                       CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
                       ARCHIVAGE=_F(LIST_INST=inst1,),);
 
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
-IMPR_RESU(RESU=_F(RESULTAT=RESU_G2,
-                  NOM_CHAM='DEPL', NUME_ORDRE=(20,40,),));
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC=3.80288037596113E+05, VALE_REFE=3.80288037596113E+05,  ))
 
-RESU_G2=CALC_CHAMP(reuse =RESU_G2,RESULTAT=RESU_G2,PRECISION=1.E-3,
-             FORCE=('FORC_NODA',),
-             VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),
-             )
-
-TFXA4_G2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='A4FX',
-                                 RESULTAT=RESU_G2,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A4',
-                                 NOM_CMP='DX',),);
-
-TFXA4_G2=CALC_TABLE(reuse =TFXA4_G2,
-               TABLE=TFXA4_G2,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TFXA2_G2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='A2FX',
-                                 RESULTAT=RESU_G2,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A2',
-                                 NOM_CMP='DX',),);
-
-TFXA2_G2=CALC_TABLE(reuse =TFXA2_G2,
-               TABLE=TFXA2_G2,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
 
-TFXA6_G2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='A6FX',
-                                 RESULTAT=RESU_G2,
-                                 NOM_CHAM='FORC_NODA',
-                                 GROUP_NO='A6',
-                                 NOM_CMP='DX',),);
+#---------------------------------------------
+# 1.2 Gradient de dilation dans l'epaisseur :
+#----------------------------------------------
 
-TFXA6_G2=CALC_TABLE(reuse =TFXA6_G2,
-               TABLE=TFXA6_G2,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TD_G2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                              INTITULE='A4FX',
-                              RESULTAT=RESU_G2,
-                              NOM_CHAM='VARI_NOEU',
-                              GROUP_NO='A4',
-                              NOM_CMP=('V1','V2',),),);
-
-TD_G2=CALC_TABLE(reuse =TD_G2,
-               TABLE=TD_G2,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
-
-TD_G2=CALC_TABLE(reuse =TD_G2,
-                 TABLE=TD_G2,
-                 ACTION=(_F(OPERATION='FILTRE',
-                            NOM_PARA='INST',
-                            CRIT_COMP = 'GT',
-                            VALE = 0.,),
-                         _F(OPERATION='EXTR',
-                            NOM_PARA=('INST','V1','V2',),),
-                         _F(OPERATION='RENOMME',
-                            NOM_PARA=('V1','D1',),),
-                         _F(OPERATION='RENOMME',
-                            NOM_PARA=('V2','D2',),),),);
-
-TFXA2_G2=CALC_TABLE(reuse =TFXA2_G2,
-                    TABLE=TFXA2_G2,
-                    ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='INST',
-                               CRIT_COMP = 'GT',
-                               VALE = 0.,),
-                            _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA2',),),),);
+# 1.2.1 Calcul de reference (sans dilatation thermique) :
+#---------------------------------------------------------
 
 
-TFXA4_G2=CALC_TABLE(reuse =TFXA4_G2,
-                    TABLE=TFXA4_G2,
-                    ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='INST',
-                               CRIT_COMP = 'GT',
-                               VALE = 0.,),
-                            _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA4',),),),);
+RESU_G1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER1,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
 
-TFXA6_G2=CALC_TABLE(reuse =TFXA6_G2,
-                    TABLE=TFXA6_G2,
-                    ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='INST',
-                               CRIT_COMP = 'GT',
-                               VALE = 0.,),
-                            _F(OPERATION='EXTR',
-                               NOM_PARA=('INST','DX',),),
-                            _F(OPERATION='RENOMME',
-                               NOM_PARA=('DX','FXA6',),),),);
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',
+                   VALE_CALC=12379.1720185,  ))
 
 
-TFX_G2=CALC_TABLE(TABLE=TFXA2_G2,
-                  ACTION=(_F(OPERATION='FILTRE',
-                             NOM_PARA='INST',
-                             CRIT_COMP = 'GT',
-                             VALE = 0.,),
-                          _F(OPERATION='COMB',
-                             TABLE=TFXA4_G2,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='COMB',
-                             TABLE=TFXA6_G2,
-                             NOM_PARA='INST',),
-                          _F(OPERATION='OPER',
-                             FORMULE=SUM_FX,
-                             NOM_PARA='FXG',),
-                          _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','FXG',),),),);
+# 1.2.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
+
+RESU_G2=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER3,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC=12379.1720185, VALE_REFE=12379.1720185,  ))
+
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
 
-DETRUIRE(CONCEPT=_F(NOM=(TFXA2_G2,TFXA4_G2,TFXA6_G2,TFX_G2,),),);
+#==========================================================================================
+# 2. RELATION='ELAS'
+#==========================================================================================
+relation='ELAS'
 
-TDY_G2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                               INTITULE='A4DY',
-                               RESULTAT=RESU_G2,
-                               NOM_CHAM='DEPL',
-                               GROUP_NO='A4',
-                               NOM_CMP='DY',),);
+# Materiau pour RELATION = 'ELAS' :
+#-------------------------------------
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=MAT_G))
+MAT_G=DEFI_MATERIAU(
+             ELAS      =_F(E = 4.e11 , NU=0.2, ALPHA = 1.E-5),
+             );
 
-TDY_G2=CALC_TABLE(reuse =TDY_G2,
-               TABLE=TDY_G2,
-               ACTION=(_F(
-                          OPERATION = 'FILTRE',
-                          NOM_PARA  = 'NUME_ORDRE',
-                          CRIT_COMP = 'GT',
-                          VALE    = 0,
-                         ),),);
+#-------------------------------------------
+# 2.1 Dilation homogene dans l'epaisseur :
+#-------------------------------------------
 
-TDY_G2=CALC_TABLE(reuse =TDY_G2,
-                  TABLE=TDY_G2,
-                  ACTION=(_F(OPERATION='FILTRE',
-                             NOM_PARA='INST',
-                             CRIT_COMP = 'GT',
-                             VALE = 0.,),
-                           _F(OPERATION='EXTR',
-                             NOM_PARA=('INST','DY',),),
-                          _F(OPERATION='RENOMME',
-                             NOM_PARA=('DY','DYG',),),),);
+# 2.1.1 Calcul de reference (sans dilatation thermique) :
+#-------------------------------------------------------
 
 
-DETRUIRE(CONCEPT=_F(NOM=(TDY_G2,),),);
+RESU_G1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER1,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
 
-IMPR_TABLE(TABLE=TD_G2,);
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
+                   VALE_CALC= 8000000.0,  ))
+
+
+# 2.1.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
+
+RESU_G2=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER2,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC= 8000000.0, VALE_REFE= 8000000.0,  ))
+
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+
+#---------------------------------------------
+# 2.2 Gradient de dilation dans l'epaisseur :
+#----------------------------------------------
+
+# 2.2.1 Calcul de reference (sans dilatation thermique) :
+#---------------------------------------------------------
+
+
+RESU_G1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER1,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',
+                   VALE_CALC= 200000.0,  ))
+
+
+# 2.2.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
+
+RESU_G2=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER3,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC= 200000.0, VALE_REFE= 200000.0,  ))
+
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+
+
+
+#==========================================================================================
+# 3. RELATION='DHRC'
+#==========================================================================================
+relation='DHRC'
+
+# Materiau pour RELATION = 'DHRC' :
+#-------------------------------------
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=MAT_G))
+
+MAT_G=DEFI_MATERIAU(ELAS_DHRC=_F(  ALPHA=1.e-5,
+                               A011=3.685E+09,
+                               A012=6.985E+08,
+                               A013=0.000E+00,
+                               A014=4.944E+03,
+                               A015=6.651E+02,
+                               A016=0.000E+00,
+                               A022=3.684E+09,
+                               A023=0.000E+00,
+                               A024=6.161E+02,
+                               A025=4.318E+03,
+                               A026=0.000E+00,
+                               A033=1.409E+09,
+                               A034=0.000E+00,
+                               A035=0.000E+00,
+                               A036=8.309E+02,
+                               A044=3.154E+06,
+                               A045=5.835E+05,
+                               A046=0.000E+00,
+                               A055=3.028E+06,
+                               A056=0.000E+00,
+                               A066=1.177E+06,),
+                    DHRC=_F(
+                               SYD=1.7E10,
+                               SCRIT=.5E10,
+                               K0MICR=1.476E-11,
+                               AAC111=2.086E+00,
+                               AAC121=2.085E+00,
+                               AAC131=1.000E+00,
+                               AAC141=2.063E+00,
+                               AAC151=1.764E+00,
+                               AAC161=1.000E+00,
+                               AAC221=2.086E+00,
+                               AAC231=1.000E+00,
+                               AAC241=1.764E+00,
+                               AAC251=2.096E+00,
+                               AAC261=1.000E+00,
+                               AAC331=1.118E+00,
+                               AAC341=1.000E+00,
+                               AAC351=1.000E+00,
+                               AAC361=1.122E+00,
+                               AAC441=2.088E+00,
+                               AAC451=2.092E+00,
+                               AAC461=1.000E+00,
+                               AAC551=2.096E+00,
+                               AAC561=1.000E+00,
+                               AAC661=1.120E+00,
+                               AAC112=2.085E+00,
+                               AAC122=2.085E+00,
+                               AAC132=1.000E+00,
+                               AAC142=2.058E+00,
+                               AAC152=1.764E+00,
+                               AAC162=1.000E+00,
+                               AAC222=2.086E+00,
+                               AAC232=1.000E+00,
+                               AAC242=1.764E+00,
+                               AAC252=2.085E+00,
+                               AAC262=1.000E+00,
+                               AAC332=1.118E+00,
+                               AAC342=1.000E+00,
+                               AAC352=1.000E+00,
+                               AAC362=1.122E+00,
+                               AAC442=2.088E+00,
+                               AAC452=2.092E+00,
+                               AAC462=1.000E+00,
+                               AAC552=2.096E+00,
+                               AAC562=1.000E+00,
+                               AAC662=1.120E+00,
+                               AAT111=1.952E+00,
+                               AAT121=1.704E+00,
+                               AAT131=1.000E+00,
+                               AAT141=2.017E+00,
+                               AAT151=1.233E+00,
+                               AAT161=1.000E+00,
+                               AAT221=1.945E+00,
+                               AAT231=1.000E+00,
+                               AAT241=1.224E+00,
+                               AAT251=2.025E+00,
+                               AAT261=1.000E+00,
+                               AAT331=1.118E+00,
+                               AAT341=1.000E+00,
+                               AAT351=1.000E+00,
+                               AAT361=1.122E+00,
+                               AAT441=2.004E+00,
+                               AAT451=1.882E+00,
+                               AAT461=1.000E+00,
+                               AAT551=2.025E+00,
+                               AAT561=1.000E+00,
+                               AAT661=1.120E+00,
+                               AAT112=1.952E+00,
+                               AAT122=1.705E+00,
+                               AAT132=1.000E+00,
+                               AAT142=2.015E+00,
+                               AAT152=1.233E+00,
+                               AAT162=1.000E+00,
+                               AAT222=1.945E+00,
+                               AAT232=1.000E+00,
+                               AAT242=1.224E+00,
+                               AAT252=2.026E+00,
+                               AAT262=1.000E+00,
+                               AAT332=1.118E+00,
+                               AAT342=1.000E+00,
+                               AAT352=1.000E+00,
+                               AAT362=1.122E+00,
+                               AAT442=2.004E+00,
+                               AAT452=1.882E+00,
+                               AAT462=1.000E+00,
+                               AAT552=2.025E+00,
+                               AAT562=1.000E+00,
+                               AAT662=1.120E+00,
+                               GAC111=8.998E-01,
+                               GAC121=8.914E-01,
+                               GAC131=1.000E+00,
+                               GAC141=1.017E+01,
+                               GAC151=3.416E+00,
+                               GAC161=1.000E+00,
+                               GAC221=8.998E-01,
+                               GAC231=1.000E+00,
+                               GAC241=3.416E+00,
+                               GAC251=1.034E+01,
+                               GAC261=1.000E+00,
+                               GAC331=3.928E-01,
+                               GAC341=1.000E+00,
+                               GAC351=1.000E+00,
+                               GAC361=2.248E+01,
+                               GAC441=9.035E-01,
+                               GAC451=8.912E-01,
+                               GAC461=1.000E+00,
+                               GAC551=8.969E-01,
+                               GAC561=1.000E+00,
+                               GAC661=3.944E-01,
+                               GAC112=8.998E-01,
+                               GAC122=8.914E-01,
+                               GAC132=1.000E+00,
+                               GAC142=-8.195E+00,
+                               GAC152=-1.416E+00,
+                               GAC162=1.000E+00,
+                               GAC222=8.998E-01,
+                               GAC232=1.000E+00,
+                               GAC242=-1.416E+00,
+                               GAC252=-8.325E+00,
+                               GAC262=1.000E+00,
+                               GAC332=3.928E-01,
+                               GAC342=1.000E+00,
+                               GAC352=1.000E+00,
+                               GAC362=-2.048E+01,
+                               GAC442=9.035E-01,
+                               GAC452=8.912E-01,
+                               GAC462=1.000E+00,
+                               GAC552=8.970E-01,
+                               GAC562=1.000E+00,
+                               GAC662=3.943E-01,
+                               GAT111=1.007E-01,
+                               GAT121=2.211E-01,
+                               GAT131=1.000E+00,
+                               GAT141=8.651E+01,
+                               GAT151=1.590E+01,
+                               GAT161=1.000E+00,
+                               GAT221=9.489E-02,
+                               GAT231=1.000E+00,
+                               GAT241=1.549E+01,
+                               GAT251=8.919E+01,
+                               GAT261=1.000E+00,
+                               GAT331=3.928E-01,
+                               GAT341=1.000E+00,
+                               GAT351=1.000E+00,
+                               GAT361=2.248E+01,
+                               GAT441=1.112E-01,
+                               GAT451=1.883E-01,
+                               GAT461=1.000E+00,
+                               GAT551=2.908E-02,
+                               GAT561=1.000E+00,
+                               GAT661=3.944E-01,
+                               GAT112=1.005E-01,
+                               GAT122=2.210E-01,
+                               GAT132=1.000E+00,
+                               GAT142=-8.454E+01,
+                               GAT152=-1.390E+01,
+                               GAT162=1.000E+00,
+                               GAT222=9.489E-02,
+                               GAT232=1.000E+00,
+                               GAT242=-1.350E+01,
+                               GAT252=-8.718E+01,
+                               GAT262=1.000E+00,
+                               GAT332=3.928E-01,
+                               GAT342=1.000E+00,
+                               GAT352=1.000E+00,
+                               GAT362=-2.048E+01,
+                               GAT442=1.111E-01,
+                               GAT452=1.882E-01,
+                               GAT462=1.000E+00,
+                               GAT552=2.917E-02,
+                               GAT562=1.000E+00,
+                               GAT662=3.943E-01,
+                               AB111=1.219E+00,
+                               AB121=6.351E-01,
+                               AB211=6.895E-01,
+                               AB221=1.238E+00,
+                               AB311=1.000E+00,
+                               AB321=1.000E+00,
+                               AB411=1.191E+00,
+                               AB421=6.522E-01,
+                               AB511=6.234E-01,
+                               AB521=1.260E+00,
+                               AB611=1.000E+00,
+                               AB621=1.000E+00,
+                               AB112=1.227E+00,
+                               AB122=6.315E-01,
+                               AB212=6.950E-01,
+                               AB222=1.219E+00,
+                               AB312=1.000E+00,
+                               AB322=1.000E+00,
+                               AB412=1.199E+00,
+                               AB422=6.473E-01,
+                               AB512=6.287E-01,
+                               AB522=1.241E+00,
+                               AB612=1.000E+00,
+                               AB622=1.000E+00,
+                               GB111=-1.071E+08,
+                               GB121=-1.689E+07,
+                               GB211=-2.012E+07,
+                               GB221=-1.035E+08,
+                               GB311=0.000E+00,
+                               GB321=0.000E+00,
+                               GB411=3.474E+06,
+                               GB421=4.224E+05,
+                               GB511=6.100E+05,
+                               GB521=2.594E+06,
+                               GB611=0.000E+00,
+                               GB621=0.000E+00,
+                               GB112=-1.070E+08,
+                               GB122=-1.684E+07,
+                               GB212=-2.007E+07,
+                               GB222=-1.034E+08,
+                               GB312=0.000E+00,
+                               GB322=0.000E+00,
+                               GB412=-3.470E+06,
+                               GB422=-4.208E+05,
+                               GB512=-6.087E+05,
+                               GB522=-2.592E+06,
+                               GB612=0.000E+00,
+                               GB622=0.000E+00,
+                               C0111=5.756E+07,
+                               C0211=0.000E+00,
+                               C0221=5.717E+07,
+                               C0112=5.753E+07,
+                               C0212=0.000E+00,
+                               C0222=5.712E+07,
+                               AC111=1.865E+00,
+                               AC211=1.000E+00,
+                               AC221=1.779E+00,
+                               AC112=1.872E+00,
+                               AC212=1.000E+00,
+                               AC222=1.785E+00,
+                               GC111=2.310E-01,
+                               GC211=1.000E+00,
+                               GC221=2.605E-01,
+                               GC112=2.327E-01,
+                               GC212=1.000E+00,
+                               GC222=2.577E-01,
+                              ),
+                   );
+
+
+#-------------------------------------------
+# 3.1 Dilation homogene dans l'epaisseur :
+#-------------------------------------------
+
+# 3.1.1 Calcul de reference (sans dilatation thermique) :
+#-------------------------------------------------------
+
+
+RESU_G1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER1,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
+                   VALE_CALC= 710512.362725,  ))
+
+
+# 3.1.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
+
+RESU_G2=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER2,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC= 710512.362725, VALE_REFE= 710512.362725,  ))
+
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+
+#---------------------------------------------
+# 3.2 Gradient de dilation dans l'epaisseur :
+#----------------------------------------------
+
+# 3.2.1 Calcul de reference (sans dilatation thermique) :
+#---------------------------------------------------------
+
+
+RESU_G1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER1,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',
+                   VALE_CALC= 18249.3521728,  ))
+
+
+# 3.2.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
+
+RESU_G2=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER3,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC= 18249.3521728, VALE_REFE= 18249.3521728,  ))
+
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+
+
+#==========================================================================================
+# 4. RELATION='GLRC_DAMAGE'
+#==========================================================================================
+relation='GLRC_DAMAGE'
+
+# Materiau pour RELATION = 'GLRC_DAMAGE' :
+#-------------------------------------
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=MAT_G))
+
+MAT_A = DEFI_MATERIAU(ECRO_LINE=_F(SY=5.E8, D_SIGM_EPSI=0.0,),
+                      ELAS=_F(E=2.1E11, NU=0.3,))
+
+MAT_B = DEFI_MATERIAU(
+             BETON_ECRO_LINE=_F(SYC=-5.2500000E7, D_SIGM_EPSI=0.0, SYT=4.400000E6,),
+             ELAS=_F(E=3.57E10, RHO=2500.0, NU=0.22,))
+
+MAT_G = DEFI_GLRC(RELATION='GLRC_DAMAGE',
+                  INFO=1,
+                  ALPHA=1.e-5,
+                  BETON=_F(C2M1=0.0,
+                           C2M2=0.0,
+                           C2M3=0.0,
+                           C1N3=0.0,
+                           C1M2=0.0,
+                           C1N2=0.0,
+                           GAMMA=0.0,
+                           C1N1=0.0,
+                           C1M3=0.0,
+                           C2N3=0.0,
+                           EPAIS=0.10,
+                           C2N1=0.0,
+                           C2N2=0.0,
+                           QP2=0.15,
+                           C1M1=0.0,
+                           QP1=0.15,
+                           MATER=MAT_B,),
+                  NAPPE=(_F(OMY=7.854E-4,
+                            MATER=MAT_A,
+                            OMX=7.854E-4,
+                            RX=0.6333333333333333,
+                            RY=0.6333333333333333,),
+                         _F(OMY=7.854E-4,
+                            MATER=MAT_A,
+                            OMX=7.854E-4,
+                            RX=-0.6333333333333333,
+                            RY=-0.6333333333333333,),
+                         ),
+                  )
+
+
+
+#-------------------------------------------
+# 4.1 Dilation homogene dans l'epaisseur :
+#-------------------------------------------
+
+# 4.1.1 Calcul de reference (sans dilatation thermique) :
+#-------------------------------------------------------
+
+
+RESU_G1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER1,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
+                   VALE_CALC= 745621.659319,  ))
+
+
+# 4.1.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
+
+RESU_G2=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER2,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch1_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC= 745621.659319, VALE_REFE= 745621.659319,  ))
+
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+
+#---------------------------------------------
+# 4.2 Gradient de dilation dans l'epaisseur :
+#----------------------------------------------
+
+# 4.2.1 Calcul de reference (sans dilatation thermique) :
+#---------------------------------------------------------
+
+
+RESU_G1=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER1,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_1, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',
+                   VALE_CALC= 7989.15818449,  ))
+
+
+# 4.2.2 Calcul avec dilatation thermique :
+#--------------------------------------------------
+
+RESU_G2=STAT_NON_LINE(MODELE=MO_G,
+                      CHAM_MATER=MATER3,
+                      CARA_ELEM=CAEL_G,
+                      EXCIT=(_F(CHARGE=COND_0G, FONC_MULT=chf1,),
+                             _F(CHARGE=ch2_2, FONC_MULT=chf1,),),
+                      COMPORTEMENT=_F(RELATION=relation,
+                                   ITER_INTE_MAXI=30,),
+                      INCREMENT=_F(LIST_INST=lisnt1,
+                                   PRECISION=0.1,),
+                      NEWTON=_F(REAC_ITER=1,),
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=26,),
+                      ARCHIVAGE=_F(LIST_INST=inst1,),);
+
+RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
+
+TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
+                   MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
+                   VALE_CALC= 7989.15833907, VALE_REFE= 7989.15818449,  ))
+
+DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
+
+
+
+
+
 
 FIN()

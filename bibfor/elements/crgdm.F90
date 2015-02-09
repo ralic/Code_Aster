@@ -1,8 +1,6 @@
 subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
                  deumuf, gt, gc, gf, seuil,&
-                 alpha, alfmc, ep, lrgm, ipg,&
-                 ther, tref, dtmoy, dtgra, tmoym,&
-                 tgram, alph)
+                 alpha, alfmc, ep, lrgm, ipg)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
@@ -28,11 +26,10 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    aster_logical :: lrgm, ther
+    aster_logical :: lrgm
     integer :: imate, ipg
     real(kind=8) :: lambda, deuxmu, deumuf, lamf
     real(kind=8) :: gt, gc, gf, seuil, alpha, alfmc
-    real(kind=8) :: tref, dtmoy, dtgra, tmoyp, tmoym, tgrap, tgram, alph
     character(len=16) :: compor, phenom
 ! ----------------------------------------------------------------------
 !
@@ -56,14 +53,11 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
 !       ALFMC   : PARAMETRE DE DECOUPLAGE SEUILS TRACTION-COMPRESSION
 ! ----------------------------------------------------------------------
 !
-    integer :: icodre(7), iret, iret1, iretm
+    integer :: icodre(7)
     real(kind=8) :: valres(7), e, nu, ep, ef, nycmax, rmesg(2)
-    real(kind=8) :: nyt, nyc, myf, nuf, delas(6, 6), t1p, t2p, t3p
-    real(kind=8) :: t1m, t2m, t3m
-    character(len=4) :: fami
+    real(kind=8) :: nyt, nyc, myf, nuf, delas(6, 6)
     character(len=16) :: nomres(7)
 !
-    ther=.false.
     if ((.not.( compor(1:7) .eq. 'GLRC_DM'))) then
         call utmess('F', 'ELEMENTS4_65', sk=compor)
     endif
@@ -75,76 +69,15 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
         call utmess('F', 'ELEMENTS2_32', sk=phenom)
     endif
 !
-!     EPAISSEUR
-!      CALL JEVECH('PCACOQU','L',JCOQU)
-!      EPAIS = ZR(JCOQU)
-!      NOMRES(1)  = 'EPAIS'
-!      CALL RCVALA(IMATE,' ',PHENOM,0,' ',R8B,1,NOMRES,
-!     &              VALRES,CODRES,'FM')
-!      IF(VALRES(1) .NE. EPAIS) THEN
-!        VALRES(2) = EPAIS
-!        CALL U2MESG('F','ELEMENTS5_42',0,' ',0,0,2,VALRES)
-!      ENDIF
 !
-    fami='RIGI'
-!
-    call rcvarc(' ', 'TEMP_INF', '+', fami, ipg,&
-                1, t2p, iret)
-    call rcvarc(' ', 'TEMP_SUP', '+', fami, ipg,&
-                1, t3p, iret)
-    if (iret .eq. 0) then
-        call rcvarc(' ', 'TEMP', '+', fami, ipg,&
-                    1, t1p, iretm)
-! SI TEMP N'EST PAS FOURNI ON MET LA MOYENNE DE TSUP ET TINF
-        if (iretm .ne. 0) then
-            t1p=(t2p+t3p)/2.d0
-        endif
-        tmoyp=(4.d0*t1p+t2p+t3p)/6.d0
-        tgrap=(t3p-t2p)/ep
-        call rcvarc(' ', 'TEMP', 'REF', fami, 1,&
-                    1, tref, iret1)
-        if (iret1 .eq. 0) then
-            ther=.true.
-        endif
-    endif
-    if (ther) then
-        call rcvarc(' ', 'TEMP_INF', '-', fami, ipg,&
-                    1, t2m, iret)
-        call rcvarc(' ', 'TEMP_SUP', '-', fami, ipg,&
-                    1, t3m, iret)
-        if (iret .eq. 0) then
-            call rcvarc(' ', 'TEMP', '-', fami, ipg,&
-                        1, t1m, iretm)
-! SI TEMP N'EST PAS FOURNI ON MET LA MOYENNE DE TSUP ET TINF
-            if (iretm .ne. 0) then
-                t1m=(t2m+t3m)/2.d0
-            endif
-            tmoym=(4.d0*t1m+t2m+t3m)/6.d0
-            tgram=(t3m-t2m)/ep
-            dtmoy=tmoyp-tmoym
-            dtgra=tgrap-tgram
-        else
-            call utmess('F', 'ALGORITH17_30')
-        endif
-    endif
 !
 !    LECTURE DES CARACTERISTIQUES DU MATERIAU
     nomres(1) = 'E_M'
     nomres(2) = 'NU_M'
 !
-    if (iret .eq. 0) then
-        nomres(3) = 'ALPHA'
-        call rcvala(imate, ' ', 'ELAS_GLRC', 1, 'TEMP',&
-                    [tmoyp], 3, nomres, valres, icodre,&
-                    1)
-        alph = valres(3)
+    call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ',&
+                    [0.d0], 2, nomres, valres, icodre,1)
 !
-    else
-        call rcvala(imate, ' ', 'ELAS_GLRC', 0, ' ',&
-                    [0.d0], 2, nomres, valres, icodre,&
-                    1)
-!
-    endif
     e = valres(1)
     nu = valres(2)
     lambda = e * nu / (1.d0+nu) / (1.d0 - 2.d0*nu)*ep

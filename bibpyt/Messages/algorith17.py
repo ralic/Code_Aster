@@ -127,9 +127,10 @@ cata_msg = {
     29 : _(u"""
   Erreur dans l'allocation de la structure de données dynamique. La liste des champs à allouer n'est pas valide.
 """),
-    30 : _(u"""
-  On n'arrive pas à récupérer la température au temps T-.
-"""),
+
+
+
+
     31 : _(u"""
   Il faut donner autant de coefficients pour le paramètre %(k1)s
   qu'il y a de modes propres dans la base sur laquelle est fabriquée
@@ -176,4 +177,5 @@ cata_msg = {
     42 : _(u"""
    On doit obligatoirement trouver le mot-clé F_MRR_RR ou le mot-clé F_MXX_XX
 """),
+    
 }

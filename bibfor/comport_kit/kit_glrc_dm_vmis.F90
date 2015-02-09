@@ -108,9 +108,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
 !-----LECTURE DES PARAMETRES D ENDOMMAGEMENT
     call crgdm(imate, 'GLRC_DM         ', lambda, deuxmu, lamf,&
                deumuf, gt, gc, gf, seuil,&
-               alpha, alfmc, ep, .false._1, 1,&
-               lbid, r8bid(1), r8bid(2), r8bid(3), r8bid(4),&
-               r8bid(5), r8bid(6))
+               alpha, alfmc, ep, .false._1, 1)
 !
 !-----OBTENTION DU MODULE ELASTIQUE INITIAL
     call r8inir(6, 0.d0, demp, 1)

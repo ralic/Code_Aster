@@ -26,6 +26,7 @@ subroutine te0409(option, nomte)
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
+#include "asterfort/coqgth.h"
 #include "asterfort/crgdm.h"
 #include "asterfort/dhrc_lc.h"
 #include "asterfort/dhrc_recup_mate.h"
@@ -147,7 +148,7 @@ subroutine te0409(option, nomte)
     aster_logical :: leul, lrgm
     aster_logical :: lbid, resi, rigi
     aster_logical :: q4gg
-    aster_logical :: coupmf, ther
+    aster_logical :: coupmf
 !
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx
     integer :: idfd2, jgano
@@ -161,20 +162,20 @@ subroutine te0409(option, nomte)
 !
     real(kind=8) :: delas(6, 6), dsidep(6, 6)
     real(kind=8) :: lambda, deuxmu, deumuf, lamf, gt, gc, gf, seuil, alphaf
-    real(kind=8) :: r8bid, tref, dtmoy, dtgra, alphat, depsth, dkhith, epsth, win(1), wout(1)
-    real(kind=8) :: khith
+    real(kind=8) :: r8bid, win(1), wout(1)
     real(kind=8) :: alpha, beta
-! VARIABLES POUR DHRC
+
+!   -- variables pour dhrc
     real(kind=8) :: a0(6, 6), c0(2, 2, 2)
     real(kind=8) :: aa_t(6, 6, 2), ab_(6, 2, 2), ac_(2, 2, 2), aa_c(6, 6, 2)
     real(kind=8) :: ga_t(6, 6, 2), gb_(6, 2, 2), gc_(2, 2, 2), ga_c(6, 6, 2)
     real(kind=8) :: cstseu(2)
-! ATTENTION LA TAILLE DE ECP DEPEND DU NOMBRE DE VARIABLE INTERNE
-! LORS DE L AJOUT DE VARIABLE INTERNE IL FAUT INCREMENTER ECR ET ECRP
+!   -- attention la taille de ecp depend du nombre de variable interne
+!   -- lors de l ajout de variable interne il faut incrementer ecr et ecrp
     real(kind=8) :: epst(6), ep, surfgp, sig(8), dsig(8), ecr(24), ecrp(24)
     real(kind=8) :: epsm(6), qsi, eta, ctor
     real(kind=8) :: carat3(21), jacob(5), caraq4(25)
-    real(kind=8) :: matr(50), sigm(8), alfmc, tmoy, tgra
+    real(kind=8) :: matr(50), sigm(8), alfmc
 !
     character(len=8) :: k8bid
     character(len=16) :: comp3
@@ -204,7 +205,7 @@ subroutine te0409(option, nomte)
 !
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
-    lrgm = option.eq.'RIGI_MECA     '
+    lrgm = option.eq.'RIGI_MECA'
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfdx, jdfd2=idfd2,&
@@ -230,7 +231,7 @@ subroutine te0409(option, nomte)
             comp3 = zk16(icompo+3)
             leul = zk16(icompo+2).eq.'GROT_GDEP'
             read (zk16(icompo-1+2),'(I16)') nbvari
-!     ON VERIFIE QUE LE NOMBRE DE VARINT TIENT DANS ECR
+!           -- on verifie que le nombre de varint tient dans ecr
             ASSERT(nbvari.le.24)
 !
             call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
@@ -278,7 +279,7 @@ subroutine te0409(option, nomte)
 !
         call jevech('PMATERC', 'L', imate)
         call jevech('PCACOQU', 'L', icacoq)
-!     EPAISSEUR TOTALE
+!       --  EPAISSEUR TOTALE
         ep = zr(icacoq)
         ctor = zr(icacoq+3)
 !
@@ -290,16 +291,14 @@ subroutine te0409(option, nomte)
             ivarip = ivarim
         endif
 !
-!     GRANDEURS GEOMETRIQUES :
-!
+!       -- GRANDEURS GEOMETRIQUES :
         if (nno .eq. 3) then
             call gtria3(xyzl, carat3)
         else if (nno.eq.4) then
             call gquad4(xyzl, caraq4)
         endif
 !
-!     MISES A ZERO :
-!
+!       -- MISES A ZERO :
         if (rigi) then
             call r8inir((3*nno)*(3*nno), 0.d0, flexi, 1)
             call r8inir((3*nno)*(3*nno), 0.d0, flex, 1)
@@ -317,8 +316,7 @@ subroutine te0409(option, nomte)
         call r8inir(32, 0.d0, sigmam, 1)
         call r8inir(32, 0.d0, efform, 1)
 !
-!     PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
-!
+!       -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
         do ino = 1, nno
             um(1,ino) = ul(1,ino)
             um(2,ino) = ul(2,ino)
@@ -332,29 +330,26 @@ subroutine te0409(option, nomte)
             duf(3,ino) =-dul(4,ino)
         end do
 !
-!     CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY,QX,QY
+!       -- CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY,QX,QY
         nbcont = 8
 !
-!     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
         if (.not. lrgm) then
-! SIGMAM : EFFORTS DANS REPERE UTILISATEUR
+!           -- SIGMAM : EFFORTS DANS REPERE UTILISATEUR
             do i = 1, nbcont*npg
                 sigmam(i)=zr(icontm-1+i)
             end do
 !
-! --- CALCUL DES MATRICES DE CHANGEMENT DE REPERE
-!
-!     T2IU : MATRICE DE PASSAGE (2x2) ; UTILISATEUR -> INTRINSEQUE
-!     T2UI : MATRICE DE PASSAGE (2x2) ; INTRINSEQUE -> UTILISATEUR
+!           -- CALCUL DES MATRICES DE CHANGEMENT DE REPERE
+!              T2IU : MATRICE DE PASSAGE (2x2) ; UTILISATEUR -> INTRINSEQUE
+!              T2UI : MATRICE DE PASSAGE (2x2) ; INTRINSEQUE -> UTILISATEUR
 !
             alpha = zr(icacoq+1) * r8dgrd()
             beta = zr(icacoq+2) * r8dgrd()
             call coqrep(pgl, alpha, beta, t2iu, t2ui,&
                         c, s)
 !
-! --- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
-!     DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
-!
+!           -- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
+!              DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
             call dxefro(npg, t2ui, sigmam, efform)
         endif
 !
@@ -412,7 +407,8 @@ subroutine te0409(option, nomte)
                 call pmrvec('ZERO', 2, 3*nno, bc, duf,&
                             dgam)
             endif
-!     EULER_ALMANSI - TERMES QUADRATIQUES
+
+!           -- EULER_ALMANSI - TERMES QUADRATIQUES
             if (leul) then
                 call r8inir(6, 0.d0, bmq, 1)
 !
@@ -437,8 +433,6 @@ subroutine te0409(option, nomte)
 !
             if (.not. lrgm) then
                 do i = 1, 3
-                    epst(i) = eps(i) + deps(i)
-                    epst(i+3) = khi(i) + dkhi(i)
                     deps(i+3) = dkhi(i)
                     epsm(i) = eps(i)
                     epsm(i+3) = khi(i)
@@ -457,18 +451,22 @@ subroutine te0409(option, nomte)
                 call r8inir(36, 0.d0, dsidep, 1)
                 do i = 1, 3
                     do j = 1, 3
-! -- MEMBRANE
+!                       -- MEMBRANE
                         dsidep(i,j) = dmm(i,j)
-! -- FLEXION
+!                       -- FLEXION
                         dsidep(i+3,j+3) = dff(i,j)
-! -- MEMBRANE-FLEXION
+!                       -- MEMBRANE-FLEXION
                         dsidep(i,j+3) = dmff(i,j)
                         dsidep(j+3,i) = dmff(i,j)
                     end do
                 end do
 !
-! -- CALCUL DE L'ACCROISSEMENT DE CONTRAINTE
+!               --  prise en compte de la dilatation thermique
+                if (.not.lrgm) then
+                    call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
+                endif
 !
+!               -- calcul de l'accroissement de contrainte
                 do i = 1, 6
                     dsig(i) = 0.d0
                     do j = 1, 6
@@ -476,8 +474,7 @@ subroutine te0409(option, nomte)
                     end do
                 end do
 !
-! -- CALCUL DE L'ACCOISSEMENT EFFORT CISAILLEMENT
-!
+!               -- calcul de l'accoissement effort cisaillement
                 if (q4gg) then
                     dsig(7) = dcc(1,1)*dgam(1)
                     dsig(8) = dcc(2,2)*dgam(2)
@@ -500,8 +497,15 @@ subroutine te0409(option, nomte)
                     dcc(2,1) = 0.d0
                 endif
 !
-!   AIRE DE SURFACE APPARTENANT AU POINT DE G.
+!               -- aire de surface appartenant au point de g.
                 surfgp = poids
+!
+!               --  prise en compte de la dilatation thermique
+                call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
+
+                do i = 1, 6
+                    epst(i) = epsm(i) + deps(i)
+                end do
 !
                 call r8inir(36, 0.d0, dsidep, 1)
                 call glrcmm(zi(imate), matr, ep, surfgp, pgl,&
@@ -535,28 +539,12 @@ subroutine te0409(option, nomte)
 !
                 call crgdm(zi(imate), compor, lambda, deuxmu, lamf,&
                            deumuf, gt, gc, gf, seuil,&
-                           alphaf, alfmc, ep, lrgm, ipg,&
-                           ther, tref, dtmoy, dtgra, tmoy,&
-                           tgra, alphat)
+                           alphaf, alfmc, ep, lrgm, ipg)
 !
-!     CALCUL DE LA DEFORMATION THERMIQUE
-                if (ther) then
-                    epsth = alphat * (tmoy-tref)
-                    khith = alphat * tgra
-                    do i = 1, 2
-                        epsm(i) = epsm(i) - epsth
-                        epsm(i+3) = epsm(i+3) - khith
-                    end do
-                    depsth = alphat * dtmoy
-                    dkhith = alphat * dtgra
-                    do i = 1, 2
-                        deps(i) = deps(i) - depsth
-                        deps(i+3) = deps(i+3) - dkhith
-                    end do
-                endif
+!               --  prise en compte de la dilatation thermique
+                call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
 !
-!     ENDOMMAGEMENT SEULEMENT
-!
+!               -- endommagement seulement
                 call r8inir(36, 0.d0, dsidep, 1)
                 call lcgldm(epsm, deps, ecr, option, sig,&
                             ecrp, dsidep, lambda, deuxmu, lamf,&
@@ -564,8 +552,6 @@ subroutine te0409(option, nomte)
                             alphaf, alfmc, zr(icarcr), codret)
 !
             else if (compor(1:4).eq. 'DHRC') then
-!
-!     LECTURE PARAMETRES MATERIAU
 !
                 if (.not. lrgm) then
                     do i = 1, nbvari
@@ -577,8 +563,10 @@ subroutine te0409(option, nomte)
                                      aa_t, ga_t, ab_, gb_, ac_,&
                                      gc_, aa_c, ga_c, cstseu)
 !
-!     ENDOMMAGEMENT COUPLÉ PLASTICITÉ
+!               --  prise en compte de la dilatation thermique
+                call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
 !
+!               -- endommagement couple plasticite
                 call r8inir(36, 0.d0, dsidep, 1)
                 call dhrc_lc(epsm, deps, ecr, pgl, option,&
                              sig, ecrp, a0, c0, aa_t,&
@@ -587,7 +575,6 @@ subroutine te0409(option, nomte)
                              dsidep)
 !
             else if (compor(1:7).eq. 'KIT_DDI') then
-!     ENDOMMAGEMENT PLUS PLASTICITE
 !
                 if (.not. lrgm) then
                     do i = 1, nbvari
@@ -595,6 +582,12 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
+!               --  Prise en compte de la dilatation thermique
+!                   En realite, on ne sait pas encore faire ...
+!                   La routine coqgth nous arretera s'il y a de la dilatation
+                call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
+!
+!               -- endommagement plus plasticite
                 call r8inir(3, r8vide(), angmas, 1)
                 call nmcoup('RIGI', ipg, 1, 3, k8bid,&
                             zi(imate), zk16(icompo), lbid, zr(icarcr), r8bid,&
@@ -615,8 +608,7 @@ subroutine te0409(option, nomte)
 !
             if (resi) then
 !
-!     EFFORTS RESULTANTS (N, M ET Q)
-!
+!               -- EFFORTS RESULTANTS (N, M ET Q)
                 do i = 1, 3
                     n(i) = sig(i)
                     m(i) = sig(i+3)
@@ -625,9 +617,8 @@ subroutine te0409(option, nomte)
                     q(i) = sig(i+6)
                 end do
 !
-!     CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR'
-!
-!     BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
+!               -- CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR'
+!                  BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
 !
                 do k = 1, 3
                     effint((ipg-1)*8+k) = n(k)
@@ -649,8 +640,7 @@ subroutine te0409(option, nomte)
                         vecloc(4,ino) = vecloc(4,ino) - bf(k,3* (ino-1)+3)* m(k)*poids
                     end do
 !
-! PRISE EN COMPTE DU CISAILLEMENT
-!
+!                   -- PRISE EN COMPTE DU CISAILLEMENT
                     if (q4gg) then
                         do k = 1, 2
                             vecloc(3,ino) = vecloc(3,ino) + bc(k,3* (ino-1)+ 1)*q(k)*poids
@@ -663,8 +653,7 @@ subroutine te0409(option, nomte)
 !
             if (rigi) then
 !
-!     CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF)
-!
+!               -- CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF)
                 l = 0
                 do i = 1, 3
                     do j = 1, 3
@@ -682,35 +671,36 @@ subroutine te0409(option, nomte)
                     dc(2,1) = 0.d0
                 endif
 !
-!     CALCUL DE LA MATRICE TANGENTE
+!               CALCUL DE LA MATRICE TANGENTE :
 !
-!     KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
-!                   + BCT*DC*BC
-!     MEMBRANE
+!               KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
+!                             + BCT*DC*BC
+!               -- MEMBRANE
                 call utbtab('CUMUL', 3, 2*nno, dm, bm,&
                             work, memb)
 !
-!     FLEXION
+!               -- FLEXION
                 call utbtab('CUMUL', 3, 3*nno, df, bf,&
                             work, flex)
 !
-!     CISAILLEMENT
+!               -- CISAILLEMENT
                 if (q4gg) then
                     call utbtab('CUMUL', 2, 3*nno, dc, bc,&
                                 work, flex)
                 endif
-!     COUPLAGE
+
+!               -- COUPLAGE
                 call utctab('CUMUL', 3, 3*nno, 2*nno, dmf,&
                             bf, bm, work, mefl)
             endif
 !
-!     FIN BOUCLE SUR LES POINTS DE GAUSS
+!       -- fin boucle sur les points de gauss
         end do
 !
         if (.not.lrgm) then
-! --- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
-!     DU REPERE INTRINSEQUE AU REPERE LOCAL
-!     STOCKAGE DES EFFORTS GENERALISES
+!           -- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
+!              DU REPERE INTRINSEQUE AU REPERE LOCAL
+!              STOCKAGE DES EFFORTS GENERALISES
 !
             call dxefro(npg, t2iu, effint, efforp)
             do i = 1, nbcont*npg
@@ -727,13 +717,13 @@ subroutine te0409(option, nomte)
         endif
 !
         if (rigi) then
-!     ACCUMULATION DES SOUS MATRICES DANS MATLOC
+!           -- ACCUMULATION DES SOUS MATRICES DANS MATLOC
             if (t3g) then
                 call dxtloc(flex, memb, mefl, ctor, matloc)
             else if (q4g) then
                 call dxqloc(flex, memb, mefl, ctor, matloc)
             endif
-!     STOCKAGE DE MATLOC
+!           -- STOCKAGE DE MATLOC
             call jevech('PMATUUR', 'E', imatuu)
             call utpslg(nno, 6, pgl, matloc, zr(imatuu))
         endif

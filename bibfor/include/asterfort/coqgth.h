@@ -16,22 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine crgdm(imate,compor,lambda,deuxmu,lamf,deumuf,gt, &
-     &gc,gf,seuil,alpha,alfmc,ep,lrgm,ipg)
-              integer :: imate
-              character(len=16) :: compor
-              real(kind=8) :: lambda
-              real(kind=8) :: deuxmu
-              real(kind=8) :: lamf
-              real(kind=8) :: deumuf
-              real(kind=8) :: gt
-              real(kind=8) :: gc
-              real(kind=8) :: gf
-              real(kind=8) :: seuil
-              real(kind=8) :: alpha
-              real(kind=8) :: alfmc
-              real(kind=8) :: ep
-              aster_logical :: lrgm
-              integer :: ipg
-            end subroutine crgdm
+            subroutine coqgth(imate,compor,fami,ipg,ep,epsm,deps)
+              integer, intent(in) :: imate
+              character(len=16), intent(in) :: compor
+              character(len=*), intent(in) :: fami
+              integer, intent(in) :: ipg
+              real(kind=8), intent(in) :: ep
+              real(kind=8), intent(inout) :: epsm(6)
+              real(kind=8), intent(inout) :: deps(6)
+            end subroutine coqgth
           end interface 
