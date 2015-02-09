@@ -25,14 +25,6 @@ OPTION__
         PMATERC  ADRSJEVE  << CHAMP DE MATERIAU  >>
         PDEPL_M  DEPL_R    << DEPLACEMENTS POUR T- >>
         PDEPL_P  DEPL_R    << INCREMENT DE DEPLACEMENT CUMULE DEPUIS LE DEBUT DU PAS DE TEMPS >>
-        PVITE_M  DEPL_R    << VITESSES POUR T- >>
-        PVITE_P  DEPL_R    << VITESSES POUR T+ >>
-        PACCE_M  DEPL_R    << ACCELERATIONS POUR T- >>
-        PCONFR   NEUT_R    << INFORMATION AUX POINTS POUR LE CONTACT - VOIR MMCHML >>
-        PCAR_PT  N120_R    << XFEM - INFORMATIONS AUX POINTS >>
-        PCAR_PI  NEUT_R    << XFEM >>
-        PCAR_AI  NEUT_R    << XFEM >>
-        PCAR_CF  NEUT_I    << XFEM >>
         PINDCOI  NEUT_I    << XFEM >>
         PDONCO   XCONTAC   << XFEM >>
         PLSN     NEUT_R    << XFEM >>
@@ -45,10 +37,7 @@ OPTION__
         PSEUIL   NEUT_R    << XFEM >>
         PSTANO   N120_I    << XFEM >>
         PCOHES   NEUT_R    << XFEM >>
-        PFISNO   NEUT_I    << XFEM >>
-        PHEAVNO  NEUT_I    << XFEM >>
         PHEA_NO  N120_I    << XFEM >>
-        PHEA_FA  N120_I    << XFEM >>
    OUT__
         PMATUUR MDEP_R RESL__ << MATRICE RIGIDITE TANGENTE SYMETRIQUE >>
         PMATUNS MDNS_R RESL__ << MATRICE RIGIDITE TANGENTE NON-SYMETRIQUE >>

@@ -498,10 +498,6 @@ def imprime_ojb(file, capy):
         # GRANDEUR)
         impr_param_options(nomfic, capy)
     if xxut1:
-        nomfic = "/local00/home/B27918/U/CATA_PbOptions.txt"
-        # pour imprimer le nom des parametres inutilises des options
-        PbOptions(nomfic, capy)
-    if xxut1:
         nomfic = "/local00/home/B27918/U/CATA_nomte_nomtm.txt"
         # pour imprimer les lignes (type_elem, type_maille, attribut1,
         # attribut2, ... )
@@ -511,6 +507,10 @@ def imprime_ojb(file, capy):
         # pour imprimer les lignes (te00ij -> (type_elem1, type_elem2, ...)
         numte_lnomte(nomfic, capy)
     #=========================================================================
+
+
+    # Pour verifier que les options et leurs parametres servent a quelque chose :
+    PbOptions(capy)
 
     #  TOUCOMLIBR = objet contenant tous les commentaires libres :
     #-------------------------------------------------------------
@@ -1465,7 +1465,7 @@ def liste_opt_a_calculer(capy):
         dic1[attr1] = set(dic1[attr1])
 
 #   -- On remplit opt_a_calculer :
-#   --------------------
+#   -------------------------------
     for cata in capy.op:
         noop, lchin, lchou, comlibr, cond_calcul = cata.cata_op
         if not cond_calcul:
@@ -1648,12 +1648,10 @@ def impr_param_options(nomfic, capy):
 
 
 #-------------------------------------------------------------------------
-def PbOptions(nomfic, capy):
+def PbOptions(capy):
     # pour imprimer les noms des options qui ne sont plus realisees
     # pour imprimer les noms des parametres inutilises des options
     #-------------------------------------------------------------------------
-    file = open(nomfic, "w")
-
     utilise = {}
     for cata in capy.te:
         entete, modlocs, opts = cata.cata_te
@@ -1687,16 +1685,21 @@ def PbOptions(nomfic, capy):
     # les parametres declares et non utilises sont a supprimer :
     lopt = declare.keys()
     lopt.sort()
+    erreur=False
     for noop in lopt:
         if not noop in utilise:
-            file.write("A_DETR " + noop + '\n')
+            ERR.mess(
+               'E', "L'option "+noop+" n'est calculee par aucun element.")
+
+            erreur=True
             continue
         for param in declare[noop]:
             if not param in utilise[noop]:
-                file.write("INUTILISE " + noop + " " + param + '\n')
-            else:
-                pass
-                #file.write("UTILISE "+noop+" "+param+'\n')
+                # exception acceptee :
+                if noop=='SIRO_ELEM' and param=='XXXXXX' : continue
+                ERR.mess(
+                   'E', "Le parametre "+param+" de l'option "+noop+" n'est utilise par aucun element.")
+                erreur=True
 
 
 #-------------------------------------------------------------------------

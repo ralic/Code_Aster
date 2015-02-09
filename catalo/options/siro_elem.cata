@@ -24,8 +24,12 @@ OPTION__
        <<  PGEOMER : COORDONNEES DES NOEUDS >>
         PSIG3D   SIEF_R 'VOLA!&&CCPARA.CHAM_SI2D'
        <<  PSIG3D : CONTRAINTES 3D PROJETEES SUR LES FACES >>
-        PCONTRR  SIEF_R 'RESU!SIGM_ELNO!N'
-       <<  PCONTRR : CONTRAINTES REELLES AUX POINTS DE GAUSS  >>
+
+%       le parametre suivant XXXXXX n'est pas utilise par les elements.
+%       Il ne sert qu'a ecrire une dependance entre SIRO_ELEM et SIGM_ELNO pour
+%       automatiser CALC_CHAMP.
+        XXXXXX  SIEF_R 'RESU!SIGM_ELNO!N'
+
    OUT__
         PPJSIGM  SIEF_R   ELEM__
        <<  PPJSIGM : ROSETTE DE CONTRAINTES PAR ELEMENT  >>

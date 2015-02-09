@@ -27,7 +27,6 @@ OPTION__
         PLST     NEUT_R
         NOMFIS   NEUT_K8
         PFISNO   NEUT_I
-        PHEAVFA  N120_I
         PHEA_NO  N120_I
         PHEA_FA  N120_I
 

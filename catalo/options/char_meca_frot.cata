@@ -46,7 +46,6 @@ OPTION__
         PCOHES   NEUT_R    << XFEM >>
         PFISNO   NEUT_I    << XFEM >>
         PHEAVNO  NEUT_I    << XFEM >>
-        PHEAVFA  N120_I    << XFEM >>
         PHEA_NO  N120_I    << XFEM >>
         PHEA_FA  N120_I    << XFEM >>
    OUT__

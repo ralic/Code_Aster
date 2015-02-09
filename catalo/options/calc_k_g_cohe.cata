@@ -29,22 +29,6 @@ OPTION__
         PLONGCO  N120_I
         PBASECO  N480_R
         PLST     NEUT_R
-        PLSN     NEUT_R << INUSITE >>
-        PVARCPR  VARI_R << INUSITE >>
-        PVARCRR  VARI_R << INUSITE >>
-        PFRVOLU  FORC_R << INUSITE >>
-        PFR2D3D  FORC_R << INUSITE >>
-        PPRESSR  PRES_R << INUSITE >>
-        PPESANR  PESA_R << INUSITE >>
-        PROTATR  ROTA_R << INUSITE >>
-        PEPSINR  EPSI_R << INUSITE >>
-        PCOMPOR  COMPOR << INUSITE >>
-        PCOURB   NEUT_R << INUSITE >>
-        PPINTTO  N132_R << INUSITE >>
-        PPMILTO  N480_R << INUSITE >>
-        PCNSETO  N512_I << INUSITE >>
-        PHEAVTO  N128_I << INUSITE >>
         PHEA_NO  N120_I
-        PLONCHA  N120_I << INUSITE >>
-   OUT__
+    OUT__
 PGTHETA G ELEM__

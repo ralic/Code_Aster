@@ -35,13 +35,8 @@ OPTION__
         PGLISS   NEUT_I
         PMEMCON  NEUT_I
         PMATERC  ADRSJEVE 'CHMA!.MATE_CODE' <<  PMATERC : CHAMP DE MATERIAU  >>
-        PCAR_PT  N120_R
-        PCAR_AI  NEUT_R
         PCOHES   NEUT_R
         PBASECO  N480_R
-        PFISNO   NEUT_I
-        PHEAVNO  NEUT_I
-        PHEAVFA  N120_I
    OUT__
         PINCOCA NEUT_I ELEM__
         PINDCOO NEUT_I ELEM__
