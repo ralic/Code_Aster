@@ -50,83 +50,85 @@ def mac3coeur_ac_permute(self, **args):
     # La macro compte pour 1 dans l'execution des commandes
     self.set_icmd(1)
 
-    _tini = RESU_FIN.LIST_PARA()['INST'][-1]
-    __CHDEP = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                         OPERATION='EXTR',
-                         PRECISION=1.0E-10,
-                         RESULTAT=RESU_FIN,
-                         NOM_CHAM='DEPL',
-                         INST=_tini,)
+    #_tini = RESU_FIN.LIST_PARA()['INST'][-1]
+    #__CHDEP = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                         #OPERATION='EXTR',
+                         #PRECISION=1.0E-10,
+                         #RESULTAT=RESU_FIN,
+                         #NOM_CHAM='DEPL',
+                         #INST=_tini,)
 
-    __ASSDEP = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                          MODELE=MO_FIN,
-                          OPERATION='ASSE',
-                          ASSE=(_F(TOUT='OUI',
-                                    CHAM_GD=__CHDEP,
-                                    CUMUL='NON',
-                                    COEF_R=0.0),),)
+    #__ASSDEP = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                          #MODELE=MO_FIN,
+                          #OPERATION='ASSE',
+                          #ASSE=(_F(TOUT='OUI',
+                                    #CHAM_GD=__CHDEP,
+                                    #CUMUL='NON',
+                                    #COEF_R=0.0),),)
 
-    __RESU_F = CREA_RESU(OPERATION='AFFE',
-                         TYPE_RESU='EVOL_NOLI',
-                         NOM_CHAM='DEPL',
-                         AFFE=_F(CHAM_GD=__ASSDEP,
-                                 INST=0.0,
-                                 MODELE=MO_FIN,))
+    ##__RESU_F = CREA_RESU(OPERATION='AFFE',
+    #CREA_RESU(reuse=RESU_FIN,
+                         #OPERATION='AFFE',
+                         #TYPE_RESU='EVOL_NOLI',
+                         #NOM_CHAM='DEPL',
+                         #AFFE=_F(CHAM_GD=__ASSDEP,
+                                 #INST=0.0,
+                                 #MODELE=MO_FIN,))
 
-    __CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                         OPERATION='EXTR',
-                         PRECISION=1.0E-10,
-                         RESULTAT=RESU_FIN,
-                         NOM_CHAM='SIEF_ELGA',
-                         INST=_tini,)
+    #__CHSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                         #OPERATION='EXTR',
+                         #PRECISION=1.0E-10,
+                         #RESULTAT=RESU_FIN,
+                         #NOM_CHAM='SIEF_ELGA',
+                         #INST=_tini,)
 
-    __ASSSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                          MODELE=MO_FIN,
-                          OPERATION='ASSE',
-                          ASSE=(_F(TOUT='OUI',
-                                   CHAM_GD=__CHSIE,
-                                   CUMUL='NON',
-                                   COEF_R=0.0),),)
+    #__ASSSIE = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                          #MODELE=MO_FIN,
+                          #OPERATION='ASSE',
+                          #ASSE=(_F(TOUT='OUI',
+                                   #CHAM_GD=__CHSIE,
+                                   #CUMUL='NON',
+                                   #COEF_R=0.0),),)
 
-    CREA_RESU(reuse=__RESU_F,
-              OPERATION='AFFE',
-              TYPE_RESU='EVOL_NOLI',
-              NOM_CHAM='SIEF_ELGA',
-              AFFE=_F(CHAM_GD=__ASSSIE,
-                      INST=0.0,
-                      MODELE=MO_FIN,))
+    #CREA_RESU(reuse=RESU_FIN,
+              #OPERATION='AFFE',
+              #TYPE_RESU='EVOL_NOLI',
+              #NOM_CHAM='SIEF_ELGA',
+              #AFFE=_F(CHAM_GD=__ASSSIE,
+                      #INST=0.0,
+                      #MODELE=MO_FIN,))
 
-    __CHVAR = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
-                         OPERATION='EXTR',
-                         PRECISION=1.0E-10,
-                         RESULTAT=RESU_FIN,
-                         NOM_CHAM='VARI_ELGA',
-                         INST=_tini,)
+    #__CHVAR = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                         #OPERATION='EXTR',
+                         #PRECISION=1.0E-10,
+                         #RESULTAT=RESU_FIN,
+                         #NOM_CHAM='VARI_ELGA',
+                         #INST=_tini,)
 
-    __ASSVAR = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
-                          MODELE=MO_FIN,
-                          OPERATION='ASSE',
-                          ASSE=(_F(TOUT='OUI',
-                                    CHAM_GD=__CHVAR,
-                                    CUMUL='NON',
-                                    COEF_R=0.0),),)
+    #__ASSVAR = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                          #MODELE=MO_FIN,
+                          #OPERATION='ASSE',
+                          #ASSE=(_F(TOUT='OUI',
+                                    #CHAM_GD=__CHVAR,
+                                    #CUMUL='NON',
+                                    #COEF_R=0.0),),)
 
-    CREA_RESU(reuse=__RESU_F,
-              OPERATION='AFFE',
-              TYPE_RESU='EVOL_NOLI',
-              NOM_CHAM='VARI_ELGA',
-              AFFE=_F(CHAM_GD=__ASSVAR,
-                      INST=0.0,
-                      MODELE=MO_FIN,))
+    #CREA_RESU(reuse=RESU_FIN,
+              #OPERATION='AFFE',
+              #TYPE_RESU='EVOL_NOLI',
+              #NOM_CHAM='VARI_ELGA',
+              #AFFE=_F(CHAM_GD=__ASSVAR,
+                      #INST=0.0,
+                      #MODELE=MO_FIN,))
 
-    CREA_RESU(reuse=__RESU_F,
+    CREA_RESU(reuse=RESU_FIN,
               OPERATION='PERM_CHAM',
               TYPE_RESU='EVOL_NOLI',
               RESU_INIT=RESU_INI,
               INST_INIT=INSTANT,
               MAILLAGE_INIT=MA_INI,
               NOM_CHAM='DEPL',
-              RESU_FINAL=__RESU_F,
+              RESU_FINAL=RESU_FIN,
               MAILLAGE_FINAL=MA_FIN,
               PERM_CHAM=(_F(GROUP_MA_INIT='CR_' + POS_INIT,
                             GROUP_MA_FINAL='CR_' + POS_FIN,
@@ -173,14 +175,14 @@ def mac3coeur_ac_permute(self, **args):
                             TRAN=VECT,
                             PRECISION=1.E-10),))
 
-    CREA_RESU(reuse=__RESU_F,
+    CREA_RESU(reuse=RESU_FIN,
               OPERATION='PERM_CHAM',
               TYPE_RESU='EVOL_NOLI',
               RESU_INIT=RESU_INI,
               INST_INIT=INSTANT,
               MAILLAGE_INIT=MA_INI,
               NOM_CHAM='VARI_ELGA',
-              RESU_FINAL=__RESU_F,
+              RESU_FINAL=RESU_FIN,
               MAILLAGE_FINAL=MA_FIN,
               PERM_CHAM=(_F(GROUP_MA_INIT='CR_' + POS_INIT,
                             GROUP_MA_FINAL='CR_' + POS_FIN,
@@ -227,14 +229,14 @@ def mac3coeur_ac_permute(self, **args):
                             TRAN=VECT,
                             PRECISION=1.E-10),))
 
-    self.DeclareOut('sortie', self.sd)
-    sortie = EXTR_RESU(RESULTAT=__RESU_F, ARCHIVAGE=_F(INST=0.0),)
+    #self.DeclareOut('sortie', self.sd)
+    #sortie = EXTR_RESU(RESULTAT=__RESU_F, ARCHIVAGE=_F(INST=0.0),)
 
     return ier
 
 MACRO_AC_PERMUTE = MACRO(nom="MACRO_AC_PERMUTE",
                          op=mac3coeur_ac_permute,
-                         sd_prod=evol_noli,
+                         #sd_prod=evol_noli,
                          fr="PERMUTATION DES ASSEMBLAGES",
                          POS_INIT=SIMP(statut='o', typ='TXM',),
                          POS_FIN=SIMP(statut='o', typ='TXM',),
