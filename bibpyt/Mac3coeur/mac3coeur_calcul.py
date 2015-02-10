@@ -95,6 +95,8 @@ class Mac3CoeurCalcul(object):
             class_ = Mac3CoeurDeformation
         if args['LAME']:
             class_ = Mac3CoeurLame
+        if args['ETAT_INITIAL']:
+            class_ = Mac3CoeurEtatInitial
         if not class_:
             UTMESS('F', 'DVP_1')
         return class_(macro, args)
@@ -103,11 +105,15 @@ class Mac3CoeurCalcul(object):
         """Initialization"""
         self.macro = macro
         self.keyw = args
+        print 'mcfact = ',self.mcfact
+        print 'args[self.mcfact] = ',args[self.mcfact]
         self.mcf = args[self.mcfact]
         # parameters
         self._niv_fluence = 0.
         self._subdivis = 1
         self._use_archimede = None
+        self.char_init = None
+
         # cached properties
         self._init_properties()
 
@@ -131,6 +137,9 @@ class Mac3CoeurCalcul(object):
         self._thyc_load = NULL
         self._symetric_cond = NULL
         self._periodic_cond = NULL
+        self._vessel_dilatation_load_full = NULL
+        self._kinematic_cond = NULL
+        self._char_ini_comp = NULL
 
     def _prepare_data(self,noresu):
         """Prepare the data for the calculation"""
@@ -149,9 +158,9 @@ class Mac3CoeurCalcul(object):
     def _build_result(self):
         """Build the results"""
 
-    def run(self):
+    def run(self,noresu=False):
         """Run all the calculation steps"""
-        self._prepare_data()
+        self._prepare_data(noresu)
         self._run()
         self._build_result()
 
@@ -331,6 +340,14 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def vessel_dilatation_load(self):
         """Return the loading due to the vessel dilatation"""
+        char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh,
+                               (self.char_init != None))
+        return [_F(CHARGE=char_dilat,), ]
+
+    @property
+    @cached_property
+    def vessel_dilatation_load_full(self):
+        """Return the loading due to the vessel dilatation"""
         char_dilat = self.coeur.dilatation_cuve(self.model, self.mesh)
         return [_F(CHARGE=char_dilat,), ]
 
@@ -342,13 +359,27 @@ class Mac3CoeurCalcul(object):
         thyc = read_thyc(coeur, self.model, self.mcf['UNITE_THYC'])
         fmult_ax = coeur.definition_temp_hydro_axiale()
         fmult_tr = coeur.definition_effort_transverse()
-        load = [
+        load_ax = [
             _F(CHARGE=thyc.chax_nodal, FONC_MULT=fmult_ax,),
             _F(CHARGE=thyc.chax_poutre, FONC_MULT=fmult_ax,),
+        ]
+        load_tr = [
             _F(CHARGE=thyc.chtr_nodal, FONC_MULT=fmult_tr,),
             _F(CHARGE=thyc.chtr_poutre, FONC_MULT=fmult_tr,),
         ]
-        return load
+        
+        return (load_ax,load_tr)
+
+    @property
+    @cached_property
+    def kinematic_cond(self):
+        """Define the kinematic conditions from displacement"""
+        from Cata.cata import AFFE_CHAR_CINE
+        _excit = AFFE_CHAR_CINE(MODELE=self.model,
+                                EVOL_IMPO=self.char_init, 
+                                NOM_CMP=('DY','DZ',),
+                                )
+        return [_F(CHARGE=_excit), ]  
 
     @property
     @cached_property
@@ -396,6 +427,25 @@ class Mac3CoeurCalcul(object):
                                 LIAISON_GROUP=liaison_group)
         return [_F(CHARGE=_excit), ]
 
+    @property
+    @cached_property
+    def char_ini_comp(self):
+        comp = [_F(RELATION='MULTIFIBRE',
+                                GROUP_MA=('CRAYON', 'T_GUIDE'),
+                                PARM_THETA=0.5,
+                                DEFORMATION='GROT_GDEP',),
+                             _F(RELATION='DIS_GRICRA',
+                                GROUP_MA='ELA',),
+                             _F(RELATION='DIS_CHOC',
+                                GROUP_MA=('RES_EXT','RES_CONT'),),
+                             _F(RELATION='ELAS',
+                                GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
+                             _F(RELATION='VMIS_ISOT_TRAC',
+                                GROUP_MA='MAINTIEN',
+                                DEFORMATION='PETIT'),]
+        return comp
+    
+
     def snl(self, **kwds):
         """Return the common keywords for STAT_NON_LINE
         All keywords can be overridden using `kwds`."""
@@ -436,38 +486,51 @@ class Mac3CoeurCalcul(object):
         nom_co = aster.dismoi(key, resu.nom, 'RESULTAT', 'F')[2].strip()
         return self.macro.get_concept_by_type(nom_co, typ)
 
+        
+        
+    
 
 class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     """Compute the strain of the assemblies"""
     mcfact = 'DEFORMATION'
 
-    def __init__(self, macro, args):
+    def __init__(self, macro, args,char_init=None):
         """Initialization"""
         super(Mac3CoeurDeformation, self).__init__(macro, args)
         self.etat_init = None
+        self.char_init=char_init
 
-    def _prepare_data(self):
+    def _prepare_data(self,noresu):
         """Prepare the data for the calculation"""
         self.niv_fluence = self.mcf['NIVE_FLUENCE']
         if self.keyw['TYPE_COEUR'] == "MONO":
             self.subdivis = 5
         self.use_archimede = self.mcf['ARCHIMEDE']
-        super(Mac3CoeurDeformation, self)._prepare_data()
+        super(Mac3CoeurDeformation, self)._prepare_data(noresu)
 
     @property
     @cached_property
     def mesh(self):
         """Return the `maillage_sdaster` object"""
         mesh = self.keyw['MAILLAGE_N']
-        resu_init = self.mcf['RESU_INIT']
-        if not (mesh or resu_init):
+        char_init = self.char_init
+        if char_init :
+            resu_init=None
+        else :
+            resu_init = self.mcf['RESU_INIT']
+        if not (mesh or resu_init or char_init):
             UTMESS('F', 'COEUR0_7')
         elif resu_init:
             if mesh:
                 UTMESS('A', 'COEUR0_1')
             self.etat_init = _F(EVOL_NOLI=resu_init)
             mesh = self.set_from_resu('mesh', resu_init)
+        elif char_init :
+            if mesh :
+                UTMESS('A', 'COEUR0_1')
+            #self.char_init = char_init
+            mesh = self.set_from_resu('mesh', char_init)
         else:
             mesh = super(Mac3CoeurDeformation, self).mesh
         return mesh
@@ -476,9 +539,15 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     @cached_property
     def model(self):
         """Return the `modele_sdaster` object"""
-        resu_init = self.mcf['RESU_INIT']
+        char_init = self.char_init
+        if char_init :
+            resu_init=None
+        else :
+            resu_init = self.mcf['RESU_INIT']
         if resu_init:
             model = self.set_from_resu('model', resu_init)
+        elif char_init :
+            model = self.set_from_resu('model', char_init)
         else:
             model = super(Mac3CoeurDeformation, self).model
         return model
@@ -491,35 +560,79 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             chmat_contact = self.cham_mater_free
         else:
             chmat_contact = self.cham_mater_contact
-        constant_load = self.rigid_load + self.archimede_load + \
+        constant_load = self.archimede_load + \
             self.gravity_load + self.vessel_dilatation_load + \
-            self.symetric_cond + self.periodic_cond
+            self.symetric_cond
         # T0 - T8
-        RESULT = STAT_NON_LINE(**self.snl(
-                               CHAM_MATER=chmat_contact,
+        if (self.char_init) :
+            __RESULT = STAT_NON_LINE(**self.snl(
+                               CHAM_MATER=self.cham_mater_free,
+                               INCREMENT=_F(LIST_INST=self.times,
+                                            INST_FIN=coeur.temps_simu['T5']),
+                               COMPORTEMENT=self.char_ini_comp,
+                               EXCIT=constant_load + self.vessel_head_load + \
+                                      self.thyc_load[0]+self.kinematic_cond,
+                               ))
+            constant_load = self.archimede_load + \
+                self.gravity_load + self.vessel_dilatation_load_full + \
+                self.symetric_cond + self.periodic_cond + self.rigid_load                  
+            __RESULT = STAT_NON_LINE(**self.snl(
+                               reuse=__RESULT,
+                               CHAM_MATER=self.cham_mater_free,
                                INCREMENT=_F(LIST_INST=self.times,
                                             INST_FIN=coeur.temps_simu['T8']),
+                               COMPORTEMENT=self.char_ini_comp,
                                EXCIT=constant_load + self.vessel_head_load +
-                               self.thyc_load,
-                               ETAT_INIT=self.etat_init,
+                                      self.thyc_load[0],
+                               ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                                ))
-        # T8 - T8b
-        RESULT = STAT_NON_LINE(**self.snl(
-                               reuse=RESULT,
-                               CHAM_MATER=chmat_contact,
-                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=constant_load + self.vessel_head_load,
-                               INCREMENT=_F(LIST_INST=self.times,
-                                            INST_FIN=coeur.temps_simu['T8b']),
-                               ))
-        # T8b - Tf
-        RESULT = STAT_NON_LINE(**self.snl(
-                               reuse=RESULT,
-                               CHAM_MATER=self.cham_mater_free,
-                               ETAT_INIT=_F(EVOL_NOLI=RESULT),
-                               EXCIT=constant_load,
-                               INCREMENT=_F(LIST_INST=self.times),
-                               ))
+            # T8 - T8b
+            __RESULT = STAT_NON_LINE(**self.snl(
+                                  reuse=__RESULT,
+                                  CHAM_MATER=self.cham_mater_free,
+                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                                  EXCIT=constant_load + self.vessel_head_load,
+                                  INCREMENT=_F(LIST_INST=self.times,
+                                                INST_FIN=coeur.temps_simu['T8b']),
+                                  COMPORTEMENT=self.char_ini_comp,
+                                  ))
+            # T8b - Tf
+            __RESULT = STAT_NON_LINE(**self.snl(
+                                  reuse=__RESULT,
+                                  CHAM_MATER=self.cham_mater_free,
+                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                                  EXCIT=constant_load,
+                                  INCREMENT=_F(LIST_INST=self.times),
+                                  COMPORTEMENT=self.char_ini_comp,
+                                  ))
+
+        else :
+            constant_load += self.periodic_cond + self.rigid_load
+            __RESULT = STAT_NON_LINE(**self.snl(
+                                  CHAM_MATER=chmat_contact,
+                                  INCREMENT=_F(LIST_INST=self.times,
+                                                INST_FIN=coeur.temps_simu['T8']),
+                                  EXCIT=constant_load + self.vessel_head_load + \
+                                      self.thyc_load[0] + self.thyc_load[1],
+                                  ETAT_INIT=self.etat_init,
+                                  ))
+            # T8 - T8b
+            __RESULT = STAT_NON_LINE(**self.snl(
+                                  reuse=__RESULT,
+                                  CHAM_MATER=chmat_contact,
+                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                                  EXCIT=constant_load + self.vessel_head_load,
+                                  INCREMENT=_F(LIST_INST=self.times,
+                                                INST_FIN=coeur.temps_simu['T8b']),
+                                  ))
+            # T8b - Tf
+            __RESULT = STAT_NON_LINE(**self.snl(
+                                  reuse=__RESULT,
+                                  CHAM_MATER=self.cham_mater_free,
+                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                                  EXCIT=constant_load,
+                                  INCREMENT=_F(LIST_INST=self.times),
+                                  ))
 
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
@@ -650,6 +763,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def _prepare_data(self,noresu=None):
         """Prepare the data for the calculation"""
+        print '_prepare_data Lame'
         self.use_archimede = 'OUI'
         if (not noresu) :
             self.res_def = self.keyw['RESU_DEF']
@@ -660,6 +774,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
     def _run(self,tinit=None,tfin=None):
         """Run the main part of the calculation"""
         from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR
+        print '_run Lame'
         coeur = self.coeur
         # calcul de deformation d'apres DAMAC / T0 - T1
         _snl_lame = STAT_NON_LINE(**self.snl(
@@ -689,7 +804,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                             self.vessel_dilatation_load +
                             self.gravity_load +
                             self.symetric_cond + self.periodic_cond +
-                            self.thyc_load,
+                            self.thyc_load[0] + self.thyc_load[1],
                             )
         depl_deformed = self.deform_mesh(__resuf)
         __RESULT = STAT_NON_LINE(**keywords)
@@ -698,6 +813,60 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         if self.res_def :
             self.output_resdef(__RESULT,depl_deformed,tinit,tfin)
             
+class Mac3CoeurEtatInitial(Mac3CoeurLame):
+    
+    """Compute Initial State"""
+    mcfact = 'LAME'
+    
+    def __init__(self,macro,args) :
+        """Initialization"""
+        from Cata.cata import CO
+        #print 'debut etat initial'
+        #super(Mac3CoeurEtatInitial, self).__init__(macro, args)
+        self.args_lame={}
+        self.args_defo={}
+        for el in args :
+            print 'el = ',el
+            print 'args[el] = ',args[el]
+            if el == 'ETAT_INITIAL' :
+                self.args_lame['LAME']=args[el]
+                self.args_defo['DEFORMATION']=args[el]
+            else :
+                if (el not in ['LAME','DEFORMATION']) :
+                    self.args_lame[el] = args[el]
+                    self.args_defo[el] = args[el]
+        print 'self.args_lame = ',self.args_lame['LAME']  
+        #RES_LM=CO('RES_LM')
+        #self.args_lame['RESU_DEF']=RES_LM
+        #args_defo['DEFORMATION']['CHAR_INIT']='RES_LM'
+        super(Mac3CoeurEtatInitial, self).__init__(macro, self.args_lame)
+        self.res_def=True
+        #self.lame=Mac3CoeurLame(macro,self.args_lame)
+        #self.defo=Mac3CoeurDeformation(macro,args)
+
+    def _prepare_data(self,noresu):
+        """Prepare the data for the calculation"""
+        self.niv_fluence = self.mcf['NIVE_FLUENCE']
+        if self.keyw['TYPE_COEUR'] == "MONO":
+            assert(False)
+        #self.use_archimede = self.mcf['ARCHIMEDE']
+        super(Mac3CoeurEtatInitial, self)._prepare_data(noresu)
+
+    def _run(self,tinit=None,tfin=None):
+        tinit = self.coeur.temps_simu['T0']
+        tfin  = self.coeur.temps_simu['T5']
+        print 'T0 = %f , T5 = %f'%(tinit,tfin) 
+        super(Mac3CoeurEtatInitial, self)._run(tinit,tfin)
+
+
+    def run(self):
+        print 'run...'
+        super(Mac3CoeurEtatInitial, self).run(noresu=True)
+        print 'self.args_defo = ',self.args_defo['DEFORMATION']
+        #print 
+        #self.args_defo['DEFORMATION']['CHAR_INIT']=self.res_def
+        self.defo=Mac3CoeurDeformation(self.macro,self.args_defo,self.res_def)        
+        self.defo.run()
 
 
 # helper functions

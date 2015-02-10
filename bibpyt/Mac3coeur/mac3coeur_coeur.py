@@ -1002,7 +1002,7 @@ class Coeur(object):
         mcf.extend(mtmp)
         return mcf
 
-    def dilatation_cuve(self, MODEL, MAILL):
+    def dilatation_cuve(self, MODEL, MAILL,is_char_ini=False):
         """Retourne les déplacements imposés aux noeuds modélisant les internes de cuves
         (supports inférieur (PIC ou FSC), supérieur (PSC) et cloisons)
         et traduisant les dilatations thermiques des internes et leurs deformations de natures mecaniques"""
@@ -1211,7 +1211,14 @@ class Coeur(object):
         #---------------------------------------------------------------
         #--                  chargement resultant                     --
         #---------------------------------------------------------------
-        _dilatation = AFFE_CHAR_MECA_F(MODELE=MODEL,
+        if (is_char_ini) :
+            _dilatation = AFFE_CHAR_MECA_F( MODELE   = MODEL,
+                                           DDL_IMPO = (_F(GROUP_NO = 'FIX', 
+                                                          DX=_DthXpic,),
+                                                       _F(GROUP_NO = 'P_CUV',  
+                                                          DX=_DthX,   ),),)
+        else :
+            _dilatation = AFFE_CHAR_MECA_F(MODELE=MODEL,
                                        DDL_IMPO=(_F(GROUP_NO='FIX',
                                                     DX=_DthXpic,
                                                     DY=_DthYpic,

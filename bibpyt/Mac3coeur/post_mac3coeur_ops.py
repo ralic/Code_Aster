@@ -567,7 +567,7 @@ def post_mac3coeur_ops(self, **args):
             nb_grilles = int(nb_grilles)
             l_x = [l_x_tmp[4 * i] for i in range(nb_grilles)]
             l_dy = [l_dy_tmp[4 * i] for i in range(nb_grilles)]
-            l_dz = [l_dz_tmp[4 * i] for i in range(nb_grilles)]
+            l_dz = [-l_dz_tmp[4 * i] for i in range(nb_grilles)]
 
             # on applique la formule des fleches
             l_fy = []
@@ -685,6 +685,8 @@ def post_mac3coeur_ops(self, **args):
                 for name in POSITION:
                     name_AC_aster = name[0] + '_' + name[1]
                     name_AC_damac = _coeur.position_todamac(name_AC_aster)
+                    
+                    #print '%s (aster) -> %s (damac)'%(name_AC_aster,name_AC_damac)
 
                     cycle = 1
                     repere = 'non_renseigne'
