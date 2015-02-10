@@ -114,32 +114,32 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
           do ii = 1, ndim
             newpt(ii) = cooree(k,ii)
           end do
-       endif
 !      VERIF SI DEJA
-       deja = .false.
-       do ii = 1, npi
-          do j = 1, ndim
-               p(j) = pinter(ndim*(ii-1)+j)
+          deja = .false.
+          do ii = 1, npi
+             do j = 1, ndim
+                  p(j) = pinter(ndim*(ii-1)+j)
+             end do
+             if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
+                  deja = .true.
+                  ni=ii
+             endif
           end do
-          if (padist(ndim,p,newpt) .lt. (lonref*cridist)) then
-               deja = .true.
-               ni=ii
-          endif
-       end do
 !      ON ARCHIVE LES NOEUDS SOMMETS DU TRIA TELS QUE LST<=0
-       if (.not. deja) then
-          npi = npi+1
-          npis = npis+1
-          do j = 1, ndim
-              pinter(ndim*(npi-1)+j) = newpt(j)
-              pinref(ndim*(npi-1)+j) = cooref(k,j)
-          end do
-          do j = 1, zxain-1
-             ainter(zxain*(npi-1)+j) = rainter(k,j)
-          end do
-          noeud(npts) = npi
-       else
-          noeud(npts) = ni
+          if (.not. deja) then
+             npi = npi+1
+             npis = npis+1
+             do j = 1, ndim
+                 pinter(ndim*(npi-1)+j) = newpt(j)
+                 pinref(ndim*(npi-1)+j) = cooref(k,j)
+             end do
+             do j = 1, zxain-1
+                ainter(zxain*(npi-1)+j) = rainter(k,j)
+             end do
+             noeud(npts) = npi
+          else
+             noeud(npts) = ni
+          endif
        endif
     end do
 !

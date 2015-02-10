@@ -123,7 +123,8 @@ FISSX=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                                   FONC_LN=LN,))
 
 MODX=MODI_MODELE_XFEM(MODELE_IN=MODE,
-                      FISSURE=FISSX)
+                      FISSURE=FISSX,
+                      DECOUPE_FACETTE='SOUS_ELEMENTS')
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210000e6,
                             NU=0.3))
