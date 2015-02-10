@@ -86,7 +86,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     integer ::  jheavnl, jheavnd, ncompn, heavn(5), hea_se
     real(kind=8) :: r, theta(2), he(2, 4), t, coef(nbxcmp), sign
     real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2
-    character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), axes(3), noma
+    character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), noma
+    character(len=1) :: axes(3)
     character(len=19) :: ch4
     complex(kind=8) :: cbid, valimc
     character(len=1) :: ch
@@ -157,7 +158,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
 ! --- RECUPERATION DE LA DEFINITION DES DDLS HEAVISIDES
     hea_se=-99
     heavn(1:5)=0
-    if (nfh.gt.0) then
+    if (stano(1) .eq. 1 .or. stano(1) .eq. 3) then
       call jeveuo(hea_no//'.CESV', 'L', vi=ihea_no)
       call jeveuo(hea_no//'.CESL', 'L', jheavnl)
       call jeveuo(hea_no//'.CESD', 'L', jheavnd)

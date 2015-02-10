@@ -168,19 +168,17 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !       ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 !       ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
 !       ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS
-!       ET DE DFDI : DERIVVES DES FF PARENT
+!       ET DE DFDI : DERIVES DES FF PARENT
+        call elelin(contac, elref, elrefc, nno, nnos)
+        elrefc='NON'
         call vecini(27, 0.d0, ff)
         if (ndim .eq. 3) then
-            call elelin(contac, elref, elrefc, nno, nnos)
-            nnops = nnos
             ASSERT(nno.eq.nnop)
-            elrefc='NON'
             call xjacff(elref, elrefc, elc, ndim, fpg,&
                         jptint, ifa, cface, ipgf, nnop,&
                         igeom, jbasec, xg, jac, ff,&
                         r27bid, dfdi, nd, tau1, tau2)
         else if (ndim.eq.2) then
-            elrefc='NON'
             call xjacf2(elref, elrefc, elc, ndim, fpg,&
                         jptint, ifa, cface, ndim, ipgf,&
                         nnop, igeom, jbasec, xg, jac,&
@@ -191,7 +189,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
                         ddls, dfdi, ff, he, heavn, idepl,&
                         igthet, ipref, ipres, ithet, jac,&
                         jlst, ka, mu, nd,&
-                        ndim, nfh, nnop, nnops, itemps,&
+                        ndim, nfh, nnop, nnos, itemps,&
                         nompar, option, presn, singu, xg)
         endif
         if (option .eq. 'CALC_K_G_COHE') then
