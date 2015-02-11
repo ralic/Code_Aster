@@ -200,7 +200,7 @@ SIGINIT=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
                            NOM_CMP=('SIGN','SITX','SIP','M11','FH11X','LH1P','LH1M','DPRE1P','DPRE1M'),
                            VALE=(-sigyy,0.0,-pini,ouvini*1000.,0.,0.,0.,0.,0.),),),);
 
-CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO, INFO=2,
+CH_VARI=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='ELGA_VARI_R', MODELE=MO, INFO=1,
        AFFE=(
            _F( GROUP_MA = 'MASSIF',   NOM_CMP = ('V1','V2',  'V3'),
                                      VALE = ( 0 , 0, 0)),

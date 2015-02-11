@@ -87,7 +87,7 @@ LSBO=CALC_FONC_INTERP(FONCTION=LSO,
                         NOM_PARA='SAT',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
-                        INFO=2,);
+                        INFO=1,);
 DLSBO=DEFI_CONSTANTE(VALE=0.35,);
 
 SL = FORMULE(NOM_PARA='PCAP',VALE='0.99*(1.-PCAP*6.E-9)');
@@ -97,7 +97,7 @@ SATUBO=CALC_FONC_INTERP(FONCTION=SL,
                         NOM_PARA='PCAP',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        INFO=2,);
+                        INFO=1,);
 
 
 DSL = FORMULE(NOM_PARA='PCAP', VALE='-6.E-9*0.99');
@@ -107,7 +107,7 @@ DSATBO=CALC_FONC_INTERP(FONCTION=DSL,
                         NOM_PARA='PCAP',
                         PROL_DROITE='CONSTANT',
                         PROL_GAUCHE='CONSTANT',
-                        INFO=2,);
+                        INFO=1,);
 
 
 PERM = FORMULE(NOM_PARA='SAT',VALE='SAT');
@@ -117,7 +117,7 @@ PERM11BO=CALC_FONC_INTERP(FONCTION=PERM,
                           NOM_PARA='SAT',
                           PROL_DROITE='CONSTANT',
                           PROL_GAUCHE='CONSTANT',
-                          INFO=2,);
+                          INFO=1,);
 
 
 DPERMBO = FORMULE(NOM_PARA='SAT',VALE='1.');
@@ -127,7 +127,7 @@ DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMBO,
                           NOM_PARA='SAT',
                          PROL_DROITE='CONSTANT',
                          PROL_GAUCHE='CONSTANT',
-                         INFO=2,);
+                         INFO=1,);
 
 
 PERM2BO = FORMULE(NOM_PARA='SAT',VALE=' 1.-SAT');
@@ -137,7 +137,7 @@ PERM21BO=CALC_FONC_INTERP(FONCTION=PERM2BO,
                           NOM_PARA='SAT',
                           PROL_DROITE='CONSTANT',
                           PROL_GAUCHE='CONSTANT',
-                          INFO=2,);
+                          INFO=1,);
 
 
 DPERM2BO = FORMULE(NOM_PARA='SAT',VALE=' -1.');
@@ -147,7 +147,7 @@ DPR21BO=CALC_FONC_INTERP(FONCTION=DPERM2BO,
                           NOM_PARA='SAT',
                          PROL_DROITE='CONSTANT',
                          PROL_GAUCHE='CONSTANT',
-                         INFO=2,);
+                         INFO=1,);
 #
 # CONDUCTIVITE THERMIQUE DE LA BO
 #
@@ -218,7 +218,7 @@ LSBG=CALC_FONC_INTERP(FONCTION=LSG,
                         NOM_PARA='SAT',
                         PROL_GAUCHE='LINEAIRE',
                         PROL_DROITE='LINEAIRE',
-                        INFO=2,);
+                        INFO=1,);
 DLSBG=DEFI_CONSTANTE(VALE=0.05,);
 
 MATERBG=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,

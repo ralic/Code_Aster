@@ -322,7 +322,16 @@ Alarme utilisateur :
      une demande d'évolution.
 """),
 
+    44 : _(u"""
+Erreur :
+  Le TYPE_ELEMENT %(k1)s devrait savoir calculer l'option:  %(k2)s, 
+  mais il ne le fait pas encore (la programmation est manquante).
+  Le calcul n'est possible que dans les cas "triviaux" : chargement nul, ...
 
+-> Risques & Conseils :
+   * Si ce manque dans la programmation vous semble important, il faut émettre
+     une demande d'évolution.
+"""),
 
 
 
