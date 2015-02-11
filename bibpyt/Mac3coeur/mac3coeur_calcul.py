@@ -132,9 +132,10 @@ class Mac3CoeurCalcul(object):
         self._symetric_cond = NULL
         self._periodic_cond = NULL
 
-    def _prepare_data(self):
+    def _prepare_data(self,noresu):
         """Prepare the data for the calculation"""
-        self.macro.DeclareOut('RESULT', self.macro.sd)
+        if (not noresu) :
+          self.macro.DeclareOut('__RESULT', self.macro.sd)
         coeur = self.coeur
         coeur.recuperation_donnees_geom(self.mesh)
         # force the computation of the times to ensure it is done first
@@ -547,6 +548,21 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         self.coeur.recuperation_donnees_geom(self.mesh)
         self.times
 
+    def deform_mesh_inverse(self, depl):
+        """Use the displacement of the result to deform the mesh"""
+        from Cata.cata import CREA_CHAMP, MODI_MAILLAGE
+        _depl_inv = CREA_CHAMP(OPERATION='COMB',
+                          TYPE_CHAM='NOEU_DEPL_R',
+                          COMB=_F(CHAM_GD=depl,COEF_R=-1.))
+
+        _debug(_depl_inv, "mesh deformation")
+        _mesh = MODI_MAILLAGE(reuse=self.mesh,
+                              MAILLAGE=self.mesh,
+                              DEFORME=_F(OPTION='TRAN',
+                                         DEPL=_depl_inv))
+        del self.mesh
+        self.mesh = _mesh
+
     def deform_mesh(self, resu):
         """Use the displacement of the result to deform the mesh"""
         from Cata.cata import CREA_CHAMP, MODI_MAILLAGE
@@ -561,13 +577,87 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                          DEPL=_depl))
         del self.mesh
         self.mesh = _mesh
+        return _depl
+        
+    def extrChamp(self,resu,inst) :
+        from Cata.cata import CREA_CHAMP
+      
+        _depl = CREA_CHAMP(OPERATION='EXTR',
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           NOM_CHAM='DEPL',
+                           INST=inst,
+                           RESULTAT=resu)
+        return _depl
+        
+    def asseChamp(self,depl1,depl2) :
+        from Cata.cata import CREA_CHAMP
+        
+        _depl = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
+                   OPERATION = 'ASSE',
+                   MODELE    = self.model,
+                   ASSE = (_F(TOUT='OUI',CHAM_GD = depl1,NOM_CMP=('DY','DZ'),CUMUL = 'NON',),
+                           _F(TOUT='OUI',CHAM_GD = depl2,NOM_CMP=('DY','DZ'),CUMUL = 'OUI',),
+                           _F(TOUT='OUI',CHAM_GD = depl2,NOM_CMP=('DX',),CUMUL = 'NON',COEF_R=0.0), 
+                           ),);
+                           
+        return _depl
+        
+    def cr(self,inst,cham_gd,reuse=None) :
+        """Return the common keywords for CREA_RESU """
+        keywords = {
+            'OPERATION' : 'AFFE',
+            'TYPE_RESU' : 'EVOL_NOLI',
+            'NOM_CHAM'  : 'DEPL',
+            'AFFE': (_F(CHAM_GD = cham_gd,
+                        INST    = inst,
+                        MODELE  = self.model))    
+                   }
+        if reuse :
+            keywords['reuse'] = reuse
+        return keywords        
+                        
 
-    def _prepare_data(self):
+    def output_resdef(self,resu,depl_deformed,tinit,tfin) :
+        """save the result to be used by a next calculation"""
+        from Cata.cata import CREA_RESU
+        #_pdt_ini = resu.LIST_PARA()['INST'][2]
+        #_pdt_fin = resu.LIST_PARA()['INST'][-1]
+        _pdt_ini = self.coeur.temps_simu['T1']
+        _pdt_fin = self.coeur.temps_simu['T4']
+        
+        #print 'tinit, tfin : ',tinit,tfin
+        
+        if ((not tinit) and (not tfin)) :
+            _pdt_ini_out = _pdt_ini
+            _pdt_fin_out = _pdt_fin
+        else :
+            _pdt_ini_out = tinit
+            _pdt_fin_out = tfin
+        
+       
+        depl_ini = self.extrChamp(resu,_pdt_ini)
+        depl_fin = self.extrChamp(resu,_pdt_fin)
+       
+        depl_tot_ini = self.asseChamp(depl_deformed,depl_ini)
+        depl_tot_fin = self.asseChamp(depl_deformed,depl_fin)
+       
+        self.deform_mesh_inverse(depl_deformed)
+              
+        __RESFIN = CREA_RESU(**self.cr(_pdt_ini_out,depl_tot_ini))
+        CREA_RESU(**self.cr(_pdt_fin_out,depl_tot_fin,reuse=__RESFIN))
+        self.res_def=__RESFIN
+        
+
+    def _prepare_data(self,noresu=None):
         """Prepare the data for the calculation"""
         self.use_archimede = 'OUI'
-        super(Mac3CoeurLame, self)._prepare_data()
+        if (not noresu) :
+            self.res_def = self.keyw['RESU_DEF']
+            if self.res_def :
+                self.macro.DeclareOut('__RESFIN',self.res_def)
+        super(Mac3CoeurLame, self)._prepare_data(noresu)
 
-    def _run(self):
+    def _run(self,tinit=None,tfin=None):
         """Run the main part of the calculation"""
         from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR
         coeur = self.coeur
@@ -601,9 +691,13 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                             self.symetric_cond + self.periodic_cond +
                             self.thyc_load,
                             )
-        self.deform_mesh(__resuf)
-        RESULT = STAT_NON_LINE(**keywords)
-        _debug(RESULT, "result STAT_NON_LINE 2")
+        depl_deformed = self.deform_mesh(__resuf)
+        __RESULT = STAT_NON_LINE(**keywords)
+        _debug(__RESULT, "result STAT_NON_LINE 2")
+        
+        if self.res_def :
+            self.output_resdef(__RESULT,depl_deformed,tinit,tfin)
+            
 
 
 # helper functions
