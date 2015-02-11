@@ -166,7 +166,9 @@ OPTION__
     EPSP_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX 
     EPSP_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX 
     VARI_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX 
-    AMOR_MECA                 -2 IN__ OUT__ XXXXXX XXXXXX 
+
+%   -- te0580 : ne resout que les cas triviaux : 0.
+    AMOR_MECA           580   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER   OUT__ MMATUUR  PMATUUR
 
     CALC_G           288  IN__  E170NEUT PAINTER  E306NEUT PBASECO  N9NEUT_R PBASLOR  E90NEUTI PCFACE   
                                 E320NEUI PCNSETO  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU  

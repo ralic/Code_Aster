@@ -169,7 +169,8 @@ MATRICE__
 
 OPTION__
 
-    AMOR_MECA                 -2 IN__ OUT__ XXXXXX XXXXXX 
+%   -- te0580 : ne resout que les cas triviaux : 0.
+    AMOR_MECA           580   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER   OUT__ MMATUUR  PMATUUR
 
     ADD_SIGM            581   IN__   ECONTPG  PEPCON1  ECONTPG  PEPCON2
                               OUT__  ECONTPG  PEPCON3
