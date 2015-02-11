@@ -34,7 +34,6 @@ subroutine op0109()
 #include "asterfort/asmsup.h"
 #include "asterfort/assert.h"
 #include "asterfort/asveri.h"
-#include "asterfort/copmat.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"

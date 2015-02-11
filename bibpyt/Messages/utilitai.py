@@ -209,9 +209,9 @@ Le champ %(k1)s n'est pas un champ aux noeuds.
  type de sd. inconnu :  %(k1)s
 """),
 
-    43 : _(u"""
- numérotation absente  problème dans la matrice  %(k1)s
-"""),
+
+
+
 
 
 

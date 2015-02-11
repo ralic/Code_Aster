@@ -415,7 +415,7 @@ subroutine mdtr74(nomres)
         enddo
 !       PROBLEME POSSIBLE DU JEVEUO SUR UNE COLLECTION
         call wkvect('&&MDTR74.AMORTI', 'V V R8', nbmode*nbmode, jamog)
-        call copmat(amogen, numgec, zr(jamog))
+        call copmat(amogen, zr(jamog))
 !
     endif
     vrotat = 0.d0
@@ -431,9 +431,9 @@ subroutine mdtr74(nomres)
         numgeg = refag(2)(1:14)
         nomstg = numgeg//'.SLCS'
         call jeveuo(nomstg//'.SCDE', 'L', jscdeg)
-        call copmat(gyogen, numgeg, zr(jgyog))
+        call copmat(gyogen, zr(jgyog))
         if (ng2 .ne. 0) then
-            call copmat(rgygen, numgeg, zr(jrgyg))
+            call copmat(rgygen, zr(jrgyg))
         endif
     else
         call getvr8(' ', 'VITE_ROTA', scal=vrotat, nbret=n1)
@@ -756,8 +756,8 @@ subroutine mdtr74(nomres)
     endif
 !
     if (typbas(1:9) .eq. 'BASE_MODA' .and. method .ne. 'DEVOGE') then
-        call copmat(masgen, numgem, zr(jmasg))
-        call copmat(riggen, numgek, zr(jraig))
+        call copmat(masgen, zr(jmasg))
+        call copmat(riggen, zr(jraig))
     endif
 !
 !   ALLOCATION DES VECTEURS DE SORTIE

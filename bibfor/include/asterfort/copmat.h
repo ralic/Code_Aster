@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine copmat(matr, numddl, mat)
-        character(len=8) :: matr
-        character(len=14) :: numddl
-        real(kind=8) :: mat(*)
+    subroutine copmat(mat_in, mat_out)
+        character(len=8), intent(in) :: mat_in
+        real(kind=8), intent(out) :: mat_out(*)
     end subroutine copmat
 end interface
