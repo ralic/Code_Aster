@@ -70,7 +70,7 @@ ACCE1=GENE_ACCE_SEISME( INFO =2,
                INIT_ALEA=IAL,
               PAS_INST       =0.01, NB_POIN=2**11, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,
               FREQ_FILTRE=fc,  FREQ_CORNER=fc,
-              SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT     =amor, LIST_FREQ=LIST_FR, NB_ITER=15,  
+              SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT = amor, LIST_FREQ = LIST_FR, NB_ITER=15,  
                                         ERRE_ZPA  =(0.75, 0.2),ERRE_MAX  =(0.05, 0.3),ERRE_RMS  =(0.2,), METHODE='NIGAM',  ),
                MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
 
@@ -81,6 +81,47 @@ FONC1=RECU_FONCTION(  TABLE=ACCE1,                       FILTRE=_F(  NOM_PARA = 
 SRO1=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1, LIST_FREQ = L_FREQ, METHODE='NIGAM',
                       NORME=9.81, AMOR_REDUIT=(amo_sro,),),); 
 
+############################################## ###########################
+### SPEC_UNIQUE, MODULATION GAMMA, NB_ITER, LIST_FREQ, METHODE: NIGAM, CORR_COEF
+############################################## ###########################
+
+ACCE1a=GENE_ACCE_SEISME( INFO =2,
+               INIT_ALEA=IAL,
+              PAS_INST       =0.01, NB_POIN=2**11, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE  =nbtir,
+              FREQ_FILTRE=fc,  FREQ_CORNER=fc, COEF_CORR = 0.99,
+              SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT = amor, LIST_FREQ = LIST_FR, NB_ITER=15,  
+                                    ERRE_ZPA  =(0.75, 0.2),ERRE_MAX  =(0.05, 0.3),ERRE_RMS  =(0.2,), METHODE='NIGAM',  ),
+               MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
+
+
+ACCE1b=GENE_ACCE_SEISME( INFO =2,
+              INIT_ALEA=IAL,
+              PAS_INST  = 0.01, NB_POIN=2**9, PESANTEUR =9.81,DUREE_PHASE_FORTE =3.0, NB_TIRAGE  =nbtir,
+              FREQ_FILTRE=fc,  FREQ_CORNER=fc, COEF_CORR = 0.5, FREQ_PENTE = -0.9,
+              SPEC_UNIQUE        = _F(SPEC_OSCI  = SRO_NGA, AMOR_REDUIT = amor, LIST_FREQ = LIST_FR, NB_ITER=15, 
+                                     METHODE='NIGAM',  ),
+               MODULATION      = _F(TYPE="GAMMA", INST_INI=tini, ),)
+
+#---------------
+FONC1aX=RECU_FONCTION(  TABLE=ACCE1a, FILTRE=(_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1), 
+                              _F(NOM_PARA = 'NOM_PARA',    VALE_K = 'ACCE1'),),
+                              NOM_PARA_TABL='FONCTION',)
+FONC1aY=RECU_FONCTION(  TABLE=ACCE1a, FILTRE=(_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1), 
+                              _F(NOM_PARA = 'NOM_PARA',    VALE_K = 'ACCE2'),),
+                              NOM_PARA_TABL='FONCTION',)
+
+FONC1bY=RECU_FONCTION(  TABLE=ACCE1b, FILTRE=(_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1), 
+                             _F(NOM_PARA = 'NOM_PARA',    VALE_K = 'ACCE2'),),
+                              NOM_PARA_TABL='FONCTION',)
+
+SRO1aX=CALC_FONCTION(SPEC_OSCI=_F(FONCTION = FONC1aX, LIST_FREQ = L_FREQ, METHODE = 'NIGAM',
+                                 NORME=9.81, AMOR_REDUIT=(amo_sro,), ), ); 
+
+SRO1aY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION = FONC1aY, LIST_FREQ = L_FREQ, METHODE = 'NIGAM',
+                                 NORME=9.81, AMOR_REDUIT=(amo_sro,), ), ); 
+
+SRO1bY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION = FONC1bY, LIST_FREQ = L_FREQ, METHODE = 'NIGAM',
+                                 NORME=9.81, AMOR_REDUIT=(amo_sro,), ), ); 
 
 ##############################################
 ### SPEC_UNIQUE, MODULATION GAMMA, NB_ITER, METHODE: HARMO
@@ -166,6 +207,61 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=  0.16091860        ,
                           NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.2),
                           REFERENCE='ANALYTIQUE',  PRECISION=0.1,
                          FONCTION=SRO1,),),);
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=  0.16095584334956 ,
+                          VALE_REFE=ZPA_50    ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                          REFERENCE='ANALYTIQUE',
+                          PRECISION=0.1,
+                          FONCTION=SRO1aX,),
+                        _F(VALE_CALC=  0.19978536351687,
+                          VALE_REFE=SA_25  ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.),
+                          REFERENCE='ANALYTIQUE',
+                          PRECISION=0.1,
+                          FONCTION=SRO1aX,),
+                        _F(VALE_CALC=  0.02570783703957  ,
+                          VALE_REFE=SA_02  ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.2),
+                          REFERENCE='ANALYTIQUE',  PRECISION=0.1,
+                         FONCTION=SRO1aX,),),);
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=  0.16323238699603 ,
+                          VALE_REFE=ZPA_50    ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                          REFERENCE='ANALYTIQUE',
+                          PRECISION=0.1,
+                          FONCTION=SRO1aY,),
+                        _F(VALE_CALC=  0.20573555223238,
+                          VALE_REFE=SA_25  ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.),
+                          REFERENCE='ANALYTIQUE',
+                          PRECISION=0.1,
+                          FONCTION=SRO1aY,),
+                        _F(VALE_CALC=  0.02474927828610  ,
+                          VALE_REFE=SA_02  ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.2),
+                          REFERENCE='ANALYTIQUE',  PRECISION=0.1,
+                         FONCTION=SRO1aY,),),);
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.16002776404230 ,
+                          VALE_REFE=ZPA_50    ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                          REFERENCE='ANALYTIQUE',
+                          PRECISION=0.1,
+                          FONCTION=SRO1bY,),
+                        _F(VALE_CALC=0.18591036561047 ,
+                          VALE_REFE=SA_25  ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.),
+                          REFERENCE='ANALYTIQUE',
+                          PRECISION=0.1,
+                          FONCTION=SRO1bY,),
+                        _F(VALE_CALC= 8.471386345257E-03  ,
+ #                         VALE_REFE=SA_02  ,                        
+                          NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.2),
+  #                         REFERENCE='ANALYTIQUE',  PRECISION=0.1,
+                         FONCTION=SRO1bY,),),);
 
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.19833438449771  ,

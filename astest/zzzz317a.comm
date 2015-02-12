@@ -106,8 +106,42 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='ECART_TYPE',
            TABLE=RMS1b,)
 
+# EVOL
+########
+ACCE1C=GENE_ACCE_SEISME(INFO = 2,  
+              INIT_ALEA = 100000, NB_POIN = 2**10,
+              PAS_INST  = DT, PESANTEUR = 9.81, DUREE_PHASE_FORTE = 10.,COEF_CORR=0.4,
+              DSP        = _F(AMOR_REDUIT  = amor, FREQ_FOND = frr,),
+              MODULATION = _F(TYPE = "JENNINGS_HOUSNER", ECART_TYPE = ecart),),
 
 
+FONCT1bX=RECU_FONCTION( TABLE=ACCE1C,
+                         FILTRE=(_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+                                 _F(NOM_PARA = 'NOM_PARA', VALE_K = 'ACCE1'),),
+                        NOM_PARA_TABL='FONCTION',)
+
+FONCT1bY=RECU_FONCTION( TABLE=ACCE1C,
+                         FILTRE=(_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+                                 _F(NOM_PARA = 'NOM_PARA', VALE_K = 'ACCE2'),),
+                        NOM_PARA_TABL='FONCTION',)
+
+
+
+RMS1bX=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1bX))
+RMS1bY=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1bY))
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION = 0.10000000000000001,
+           VALE_CALC= 0.937816329496 ,
+           VALE_REFE=ecart*9.81,
+           NOM_PARA='ECART_TYPE',
+           TABLE=RMS1bX,)
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.10000000000000001,
+           VALE_CALC = 0.968128105246 ,
+           VALE_REFE=ecart*9.81,
+           NOM_PARA='ECART_TYPE',
+           TABLE=RMS1bY,)
 ##############################
 # OPTION "GAMMA"
 ##############################

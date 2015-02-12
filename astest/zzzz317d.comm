@@ -125,7 +125,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15934181,
 ## on valide ici METHODE=NIGAM
 #############################################
 
-
 nbtir=20
 fc=0.05
 ACCE1b=GENE_ACCE_SEISME( INFO =2, INIT_ALEA=200000,
