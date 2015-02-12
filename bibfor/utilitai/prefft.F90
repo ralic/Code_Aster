@@ -126,9 +126,9 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !        --- CAS OU ON DISPOSE D'UNE DYNA_TRANS:
             do 5 iordr = 0, nbordr-1
 !           --- BOUCLE SUR LES NUMEROS D'ORDRE (INSTANTS ARCHIVES)
-                call rsexch('F', resin, grande, iordr, cham19,&
+                call rsexch('F', resin, grande, zi(jordr+iordr), cham19,&
                             iret)
-                call rsadpa(resin, 'L', 1, 'INST', iordr,&
+                call rsadpa(resin, 'L', 1, 'INST', zi(jordr+iordr),&
                             0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
 !              --- REMPLIR LE VECTEUR ABSCISSES DE LA FONCTION PREFFT
@@ -180,7 +180,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
                 ii = 0
 !              --- REMPLISSAGE ORDONNEES DE LA FONCTION PREFFT
                 do 20 iordr = 0, nbordr-1
-                    call rsexch('F', resin, grande, iordr, cham19,&
+                    call rsexch('F', resin, grande, zi(jordr+iordr), cham19,&
                                 iret)
                     call jeveuo(cham19//'.VALE', 'L', lvale)
                     zr(lfon+ii) = zr(lvale+iddl-1)
@@ -242,9 +242,9 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
             do 50 iordr = 1, nbordr
 !             --- REMPLIR L'ABSCISSE ET ORDONNE DE LA FONCTION PREFFT
 !             --- NOTE : VALEURS DES CHAMPS SONT COMPLEXES
-                call rsexch('F', resin, grande, iordr, cham19,&
+                call rsexch('F', resin, grande, zi(jordr+iordr-1), cham19,&
                             iret)
-                call rsadpa(resin, 'L', 1, 'FREQ', iordr,&
+                call rsadpa(resin, 'L', 1, 'FREQ', zi(jordr+iordr-1),&
                             0, sjv=lacce, styp=k8b)
                 call jeveuo(cham19//'.VALE', 'L', lvale)
                 zr(lvar+iordr-1) = zr(lacce)
@@ -298,7 +298,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
             do 100 iddl = 2, neq
                 ii = 0
                 do 70 iordr = 1, nbordr
-                    call rsexch('F', resin, grande, iordr, cham19,&
+                    call rsexch('F', resin, grande, zi(jordr+iordr-1), cham19,&
                                 iret)
                     call jeveuo(cham19//'.VALE', 'L', lvale)
                     zr(lfon+ii) = dble(zc(lvale+iddl-1))
