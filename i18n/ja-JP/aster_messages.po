@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-23 14:01+0100\n"
-"PO-Revision-Date: 2015-01-22 11:13-0500\n"
+"POT-Creation-Date: 2015-02-12 23:17+0100\n"
+"PO-Revision-Date: 2015-02-06 04:22-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -5982,8 +5982,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    Méthode QZ dans MODE_ITER_SIMULT: On trouve un nombre de valeurs "
-"propres\n"
+"    Méthode 'QZ' dans CALC_MODES : On trouve un nombre de valeurs propres\n"
 "    %(i1)d différent du nombre de ddls physiques actifs %(i2)d !\n"
 msgstr ""
 
@@ -5991,8 +5990,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    Méthode QZ dans MODE_ITER_SIMULT + OPTION='BANDE': On trouve un nombre "
-"de\n"
+"    Méthode 'QZ' dans CALC_MODES + OPTION='BANDE': On trouve un nombre de\n"
 "    valeurs propres %(i1)d différent du nombre de valeurs propres détectées\n"
 "    dans la bande %(i2)d !\n"
 msgstr ""
@@ -6021,7 +6019,7 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    Méthode QZ dans MODE_ITER_SIMULT : On souhaite un nombre de valeurs\n"
+"    Méthode 'QZ' dans CALC_MODES : On souhaite un nombre de valeurs\n"
 "    propres %(i1)d supérieur au nombre de valeurs propres détectées "
 "%(i2)d !\n"
 msgstr ""
@@ -6030,10 +6028,8 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"    Méthode 'QZ' dans MODE_ITER_SIMULT: erreur LAPACK %(i1)d !\n"
+"    Méthode 'QZ' dans CALC_MODES : erreur LAPACK %(i1)d !\n"
 msgstr ""
-"\n"
-"   MODE_ITER_SIMULTの'QZ'法 : エラー LAPACK %(i1)d !\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline5.py:356
 msgid ""
@@ -10687,13 +10683,7 @@ msgid ""
 "des champs à allouer n'est pas valide.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:130
-msgid ""
-"\n"
-"  On n'arrive pas à récupérer la température au temps T-.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:133
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:134
 #, python-format
 msgid ""
 "\n"
@@ -10704,7 +10694,7 @@ msgid ""
 "   - Nombre de coefficients donnés : %(i2)d.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:141
 msgid ""
 "\n"
 "  Le macro-élément est assemblé à partir de données mesurées.\n"
@@ -10712,7 +10702,7 @@ msgid ""
 "  compte dans les calculs postérieurs.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:145
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:146
 msgid ""
 "\n"
 "  Attention le comportement isotrope transverse ELAS_ISTR 3D doit être "
@@ -10720,7 +10710,7 @@ msgid ""
 "   isotrope (L,N) transverse dans THM_DIFFU et réciproquement.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:150
 msgid ""
 "\n"
 "  Attention le comportement ELAS_ORTH 2D doit être compatible avec un "
@@ -10728,21 +10718,21 @@ msgid ""
 "  dans THM_DIFFU et réciproquement.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:154
 msgid ""
 "\n"
 "  Attention, en THM le comportement ELAS_ISTR n'est valable qu'en 3D, pour "
 "2D passer en ELAS_ORTH\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:156
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:157
 msgid ""
 "\n"
 "  Attention, en THM le comportement ELAS_ORTH n'est valable qu'en 2D, pour "
 "3D passer en ELAS_ISTR\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:159
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:160
 msgid ""
 "\n"
 "  Attention, si les composantes L,T sont dans THM_DIFFU on est en "
@@ -10750,7 +10740,7 @@ msgid ""
 "   INCOMPATIBLE 3D\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:163
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:164
 msgid ""
 "\n"
 "  Attention, si les composantes L,N sont dans THM_DIFFU on est en isotropie "
@@ -10758,7 +10748,7 @@ msgid ""
 "   INCOMPATIBLE 2D\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:167
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:168
 #, python-format
 msgid ""
 "\n"
@@ -10766,7 +10756,7 @@ msgid ""
 "négative sur la maille %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:170
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:171
 #, python-format
 msgid ""
 "\n"
@@ -10774,7 +10764,7 @@ msgid ""
 "spécifique négative sur la maille %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:173
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:174
 #, python-format
 msgid ""
 "\n"
@@ -10782,7 +10772,7 @@ msgid ""
 "mot clé facteur %(k2)s (mot clé OPERATION)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:176
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith17.py:177
 msgid ""
 "\n"
 "   On doit obligatoirement trouver le mot-clé F_MRR_RR ou le mot-clé "
@@ -16397,13 +16387,37 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:508
 msgid ""
 "\n"
+"Erreur utilisateur :\n"
+"  Vous demandez le calcul de la matrice correspondant à l'option IMPE_MECA.\n"
+"  Mais on ne peut rien calculer, faute de données.\n"
+"\n"
+"Risques et conseils :\n"
+"  Il faut fournir en argument du mot clé CHARGE au moins une charge \n"
+"  mécanique qui utilise le mot clé IMPE_FACE.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:518
+msgid ""
+"\n"
+"Erreur utilisateur :\n"
+"  Vous demandez le calcul de la matrice correspondant à l'option ONDE_FLUI.\n"
+"  Mais on ne peut rien calculer, faute de données.\n"
+"\n"
+"Risques et conseils :\n"
+"  Il faut fournir en argument du mot clé CHARGE au moins une charge \n"
+"  mécanique qui utilise le mot clé ONDE_FLUI.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:530
+msgid ""
+"\n"
 " La carte de COMPORTEMENT est absente.\n"
 " Votre résultat a peut-être été produit par LIRE_RESU ou CREA_RESU.\n"
 " Si votre résultat a été produit par LIRE_RESU, il faut renseigner le mot-"
 "clé COMPORTEMENT.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:514
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:536
 #, python-format
 msgid ""
 "\n"
@@ -16411,7 +16425,7 @@ msgid ""
 " Le calcul d'indicateur d'erreur est donc impossible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:519
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:541
 #, python-format
 msgid ""
 "\n"
@@ -16435,7 +16449,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:534
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:556
 #, python-format
 msgid ""
 "\n"
@@ -16449,14 +16463,14 @@ msgid ""
 "  Vérifier la construction du champ de fonctions est %(k2)s_F\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:544
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:566
 msgid ""
 "\n"
 " votre chargement contient plus d'une charge répartie\n"
 " le calcul n'est pas possible pour les modèles de poutre.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:549
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:571
 msgid ""
 "\n"
 " pour un modèle comportant des éléments de plaque ou de coque\n"
@@ -18402,8 +18416,9 @@ msgid ""
 "\n"
 " Erreur d'utilisation (préparation des variables de commande) :\n"
 " Pour la variable de commande %(k1)s, il y a une incohérence du\n"
-" nombre de \"sous-points\" entre le CARA_ELEM %(k2)s\n"
-" et le CHAM_MATER %(k3)s.\n"
+" nombre de \"sous-points\" entre le CARA_ELEM %(k2)s (%(i1)d)\n"
+" et le CHAM_MATER %(k3)s (%(i2)d) pour la maille %(k4)s qui est de type "
+"%(k5)s.\n"
 "\n"
 " Conseil :\n"
 " N'avez-vous pas défini plusieurs CARA_ELEM conduisant à des nombres de\n"
@@ -18703,15 +18718,7 @@ msgid ""
 "champ.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:398
-msgid ""
-"\n"
-"  Un seul type de test dans la commande TEST_RESU. Merci de dissocier les "
-"mots clés facteurs (RESU, CHAM_NO ...) en autant d'appels différents à la "
-"commande.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:402
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:400
 #, python-format
 msgid ""
 "\n"
@@ -18720,13 +18727,13 @@ msgid ""
 "    -> champ : %(k2)s %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:407
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:405
 msgid ""
 "\n"
 "  Composante généralisée non trouvée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:411
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:409
 #, python-format
 msgid ""
 "\n"
@@ -23517,18 +23524,15 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:37
-#, fuzzy
 msgid ""
 "\n"
 "numéro    fréquence (HZ)\n"
 msgstr ""
-"\n"
-"  周波数 %(r1)f\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:41
-#, fuzzy, python-format
+#, python-format
 msgid " %(i1)4d      %(r1)12.5E "
-msgstr "  %(i1)4d       %(r1)12.5E\n"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:43
 msgid ""
@@ -23537,9 +23541,9 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:47
-#, fuzzy, python-format
+#, python-format
 msgid " %(i1)4d      %(r1)12.5E       %(r2)12.5E "
-msgstr " %(i1)4d      %(r2)12.5E       %(r1)12.5E\n"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:49
 msgid ""
@@ -24900,16 +24904,11 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-" on ne sait pas intégrer avec  %(k1)s  caractéristiques par fibre\n"
+" Poutres multifibres. Pas d'intégration possible sur les poutre de type "
+"%(i1)d.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:75
-msgid ""
-"\n"
-" cas avec inerties des fibres non programme\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:79
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:76
 #, python-format
 msgid ""
 "\n"
@@ -24918,47 +24917,47 @@ msgstr ""
 "\n"
 " 未知の要素名 \" %(k1)s \" \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:83
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:80
 #, python-format
 msgid ""
 "\n"
 " noeuds confondus pour la maille:  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:87
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:84
 #, python-format
 msgid ""
 "\n"
 "  option de matrice de masse  %(k1)s  inconnue\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:91
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:88
 msgid ""
 "\n"
 " on n'a pas trouvé de variable interne correspondante a la déformation "
 "plastique équivalente cumulée\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:95
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:92
 msgid ""
 "\n"
 " on ne traite pas les moments\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:99
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:96
 #, python-format
 msgid ""
 "\n"
 " l'option \" %(k1)s \" est inconnue\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:103
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:100
 msgid ""
 "\n"
 " type de poutre inconnu\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:107
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:104
 msgid ""
 "\n"
 " charge répartie variable non admise sur un élément courbe.\n"
@@ -24966,7 +24965,7 @@ msgstr ""
 "\n"
 " 要素の曲線上に分布荷重は、認められていません。\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:111
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:108
 msgid ""
 "\n"
 " charge répartie variable non admise sur un élément variable.\n"
@@ -24974,73 +24973,73 @@ msgstr ""
 "\n"
 " 要素の変数上に分布荷重は、認められていません。\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:115
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:112
 msgid ""
 "\n"
 " on ne peut pas imposer de charges réparties suiveuses de type vitesse de "
 "vent sur les poutres courbes.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:119
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:116
 msgid ""
 "\n"
 " on ne peut pas imposer de charges réparties suiveuses sur les poutres "
 "courbes.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:123
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:120
 msgid ""
 "\n"
 " un champ de vitesse de vent est imposé sans donner un Cx dépendant de la "
 "vitesse sur une des poutres.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:124
 msgid ""
 "\n"
 " le module de cisaillement G est nul mais pas le module de Young E\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:128
 msgid ""
 "\n"
 " section circulaire uniquement\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:135
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:132
 msgid ""
 "\n"
 "       La modélisation T3G ne permet pas de bien prendre en compte "
 "l'excentrement à cause de son interpolation de la flèche.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:139
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:136
 msgid ""
 "\n"
 " Échec de convergence dans l'inversion du système par Newton-Raphson.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:143
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:140
 msgid ""
 "\n"
 " Les moments répartis ne sont autorisés que sur les poutres droites à "
 "section constante.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:147
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:144
 #, python-format
 msgid ""
 "\n"
 " \" %(k1)s \"   nom d'option non reconnue\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:151
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:148
 msgid ""
 "\n"
 " ! Problème RCVALA rhocp !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:155
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:152
 #, python-format
 msgid ""
 "\n"
@@ -25049,7 +25048,7 @@ msgstr ""
 "\n"
 " 定義された材料に挙動 %(k1)s がない。\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:159
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:156
 #, python-format
 msgid ""
 "\n"
@@ -25057,7 +25056,7 @@ msgid ""
 "le comportement %(k2)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:163
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:160
 #, python-format
 msgid ""
 "\n"
@@ -25067,7 +25066,7 @@ msgid ""
 " - THER_HYDR\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:169
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:166
 msgid ""
 "\n"
 " On ne trouve pas l'un des comportements suivants dans le matériau :\n"
@@ -25075,7 +25074,7 @@ msgid ""
 " - THER_HYDR\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:175
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:172
 msgid ""
 "\n"
 "  -> La réactualisation de la géométrie (DEFORMATION='PETIT_REAC') est "
@@ -25088,49 +25087,49 @@ msgid ""
 "DEFORMATION='GROT_GDEP'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:183
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:180
 msgid ""
 "\n"
 " Seule la loi de comportement ELAS est autorisée avec la déformation "
 "GROT_GDEP en modélisation DKT.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:187
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:184
 #, python-format
 msgid ""
 "\n"
 "  %(k1)s  non implante.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:191
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:188
 msgid ""
 "\n"
 "  Les matériaux de coque homogénéisées (ELAS_COQUE ou DEFI_COQU_MULT) sont "
 "interdits en non-linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:195
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:192
 #, python-format
 msgid ""
 "\n"
 " option :  %(k1)s  interdite\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:199
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:197
 msgid ""
 "\n"
 " éléments de poutre section variable affine :seul une section rectangle "
 "plein est disponible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:203
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:201
 msgid ""
 "\n"
 " éléments de poutre section variable homothétique : l'aire initiale est "
 "nulle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:207
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:205
 #, python-format
 msgid ""
 "\n"
@@ -25139,7 +25138,7 @@ msgstr ""
 "\n"
 " 不明な梁要素のオプション \" %(k1)s \" \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:209
 msgid ""
 "\n"
 " le seul comportement élastique valide est ELAS\n"
@@ -27574,7 +27573,7 @@ msgid ""
 "  Cela permet d'optimiser un peu les performances dans les cas ou seul le "
 "déterminant, la\n"
 "  détection de singularité ou le test de Sturm sont requis (par ex. "
-"MODE_ITER_SIMULT option 'BANDE').\n"
+"CALC_MODES option 'BANDE').\n"
 "  Or la version de MUMPS embarquée dans votre exécutable: %(k1)s\n"
 "  ne permet pas cette optimisation.\n"
 "\n"
@@ -34301,8 +34300,8 @@ msgid ""
 "trouver le problème:\n"
 "      mode multiple sauté, borne trop proche d'un mode multiple, mode de "
 "corps rigide...\n"
-"    * Vous pouvez aussi relancez un INFO_MODE et/ou des MODE_ITER_SIMULT sur "
-"une sous-partie pour\n"
+"    * Vous pouvez aussi relancez un INFO_MODE et/ou des CALC_MODES sur une "
+"sous-partie pour\n"
 "      corroborer (ou non) les résultats précédent.\n"
 msgstr ""
 
@@ -37646,20 +37645,20 @@ msgid ""
 "  on est sur 2 mailles orthogonales\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:56
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:55
 #, python-format
 msgid ""
 "\n"
 " la maille  %(k1)s  ne fait pas partie du maillage  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:60
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:59
 msgid ""
 "\n"
 " PREF_MAILLE est trop long, PREF_NUME est trop grand\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:64
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:63
 msgid ""
 "\n"
 " PREF_MAILLE est trop long\n"
@@ -37667,7 +37666,7 @@ msgstr ""
 "\n"
 " PREF_MAILLE が長すぎる\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:68
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:67
 #, python-format
 msgid ""
 "\n"
@@ -37678,36 +37677,94 @@ msgid ""
 " le mot-clé facteur : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:79
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:74
 #, python-format
 msgid ""
 "\n"
-" ce type de maille n'est pas encore traité :  %(k1)s\n"
+" AFFE_CARA_ELEM les groupes de fibres %(k1)s et %(k2)s ont une définition "
+"incompatible.\n"
+" L'utilisation des groupes fibres définis par DEFI_GEOM_FIBRE/SECTION ou "
+"DEFI_GEOM_FIBRE/FIBRE\n"
+" est incompatible avec DEFI_GEOM_FIBRE/ASSEMBLAGE_FIBRE.\n"
+" Ces groupes de fibres ne peuvent pas être affectés sur une même poutre "
+"multifibre.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:83
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:81
+#, python-format
 msgid ""
 "\n"
-" le nombre total de noeuds est différent de la somme des noeuds sommets, "
+" AFFE_CARA_ELEM le groupe de fibres %(k1)s n'existe pas.\n"
+" Conseil : Vérifier la définition des groupes fibres dans l'opérateur "
+"DEFI_GEOM_FIBRE.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:86
+#, fuzzy, python-format
+msgid ""
+"\n"
+" DEFI_GEOM_FIBRE le groupe de fibres %(k1)s est déjà défini.\n"
+msgstr ""
+"\n"
+" グループ %(k1)s は既にあります \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:90
+#, fuzzy, python-format
+msgid ""
+"\n"
+" Ce type de maille n'est pas encore traité :  %(k1)s\n"
+msgstr ""
+"\n"
+" タイプ sd 未処理:  %(k1)s\n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:94
+msgid ""
+"\n"
+" Le nombre total de noeuds est différent de la somme des noeuds sommets, "
 "arêtes et intérieurs\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:87
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:98
+#, fuzzy, python-format
+msgid ""
+"\n"
+" Les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur\n"
+msgstr ""
+"\n"
+" フィールド \" %(k1)s \" と \" %(k2)s \" は、定義の同じ分野を持っていない。\n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:102
 #, python-format
 msgid ""
 "\n"
-" les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur\n"
+" DEFI_GEOM_FIBRE %(k1)s : Pour %(k2)s il y a %(i1)d valeurs. Ce devrait être "
+"%(i2)d valeurs,\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:91
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:106
 #, python-format
 msgid ""
 "\n"
-" AFFE_FIBRE pour \" %(k1)s \": il y a  %(k2)s  valeurs pour \"VALE\", ce "
-"devrait être un multiple de 3\n"
+" DEFI_GEOM_FIBRE %(k1)s : Le %(k2)s %(k3)s n'existe pas.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:95
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:110
+#, python-format
+msgid ""
+"\n"
+" DEFI_GEOM_FIBRE %(k1)s : Le groupe de fibre %(k2)s doit être défini par "
+"SECTION ou FIBRE,\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:114
+#, python-format
+msgid ""
+"\n"
+" DEFI_GEOM_FIBRE %(k1)s : Pour %(k2)s il y a %(i1)d valeurs, ce devrait être "
+"un multiple de %(i2)d\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:118
 #, python-format
 msgid ""
 "\n"
@@ -37715,7 +37772,7 @@ msgid ""
 "\" (ni TRIA3 ni QUAD4)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:99
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:122
 #, python-format
 msgid ""
 "\n"
@@ -37727,7 +37784,7 @@ msgid ""
 "Solution : Il faut dédoubler le noeud.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:107
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:130
 msgid ""
 "\n"
 " Une maille des groupes modélisant la dalle a une dimension topologique "
@@ -37735,7 +37792,7 @@ msgid ""
 " de 1 et 2.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:112
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:135
 #, python-format
 msgid ""
 "\n"
@@ -37744,7 +37801,7 @@ msgid ""
 " une relation linéaire n'est pas correct.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:117
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:140
 msgid ""
 "\n"
 "  ->  En thermique, les fonctions définissant le matériau (enthalpie, "
@@ -37762,7 +37819,7 @@ msgid ""
 " "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:150
 #, python-format
 msgid ""
 "\n"
@@ -37770,46 +37827,46 @@ msgid ""
 "%(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:154
 msgid ""
 "\n"
 " il faut COEF_GROUP ou FONC_GROUP\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:135
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:158
 msgid ""
 "\n"
 " un élément n'est ni TRIA3 ni TRIA6 ni QUAD4 ni QUAD8\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:139
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:162
 msgid ""
 "\n"
 " Les mailles des groupes modélisant la dalle ne sont pas toutes de même\n"
 " dimension topologique (RIGI_PARASOL)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:167
 #, python-format
 msgid ""
 "\n"
 "  le noeud  %(k1)s  doit appartenir à une seule maille\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:171
 #, python-format
 msgid ""
 "\n"
 " la maille à laquelle appartient le noeud  %(k1)s  doit être de type SEG3\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:152
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:175
 msgid ""
 "\n"
 " on ne trouve pas les angles nautiques pour le tuyau\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:156
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:179
 #, python-format
 msgid ""
 "\n"
@@ -37818,7 +37875,7 @@ msgstr ""
 "\n"
 " オプション  %(k1)s  が無効\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:160
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:183
 #, python-format
 msgid ""
 "\n"
@@ -37829,26 +37886,26 @@ msgstr ""
 " オプション'3D_POU'のキーワード ファクター %(k1)s  の後には、キーワー"
 "ド'NOEUD_2' または 'GROUP_NO_2'の指定が必要です。\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:164
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:187
 msgid ""
 "\n"
 " il ne faut donner qu'un seul noeud de poutre à raccorder au massif.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:168
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:191
 msgid ""
 "\n"
 " il ne faut donner qu'un un seul GROUP_NO à un noeud à raccorder au massif.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:172
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:195
 #, python-format
 msgid ""
 "\n"
 " il ne faut donner qu'un seul noeud dans le GROUP_NO :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:176
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:199
 #, python-format
 msgid ""
 "\n"
@@ -37856,7 +37913,7 @@ msgid ""
 "%(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:180
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:203
 #, python-format
 msgid ""
 "\n"
@@ -37864,19 +37921,19 @@ msgid ""
 "%(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:184
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:207
 msgid ""
 "\n"
 " impossibilité, la surface de raccord du massif est nulle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:211
 msgid ""
 "\n"
 " il faut donner un CARA_ELEM pour récupérer les caractéristiques de tuyau.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:192
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:215
 #, python-format
 msgid ""
 "\n"
@@ -37884,40 +37941,40 @@ msgid ""
 "facteur  %(k1)s  pour l'option  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:196
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:219
 msgid ""
 "\n"
 " il ne faut donner qu'un seul noeud de poutre à raccorder à la coque.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:200
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:223
 msgid ""
 "\n"
 " il ne faut donner qu'un seul GROUP_NO à un noeud à raccorder à la coque.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:204
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:227
 msgid ""
 "\n"
 " il faut donner un vecteur orientant l'axe de la poutre sous le mot-clé "
 "\"AXE_POUTRE\".\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:208
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:231
 msgid ""
 "\n"
 " il faut donner un vecteur non nul orientant l'axe de la poutre sous le mot-"
 "clé \"AXE_POUTRE\".\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:212
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:235
 msgid ""
 "\n"
 " il faut donner un CARA_ELEM pour récupérer l'épaisseur des éléments de "
 "bord.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:216
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:239
 #, python-format
 msgid ""
 "\n"
@@ -37925,19 +37982,19 @@ msgid ""
 "rotation  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:220
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:243
 msgid ""
 "\n"
 " impossibilité, la surface de raccord de la coque est nulle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:224
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:247
 msgid ""
 "\n"
 " nappe interdite pour les caractéristiques matériau\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:228
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:251
 #, python-format
 msgid ""
 "\n"
@@ -37946,7 +38003,7 @@ msgstr ""
 "\n"
 " タイプ sd 未処理:  %(k1)s\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:232
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:255
 #, python-format
 msgid ""
 "\n"
@@ -37954,7 +38011,7 @@ msgid ""
 "paramètre : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:259
 #, python-format
 msgid ""
 "\n"
@@ -37962,7 +38019,7 @@ msgid ""
 "points < 2  !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:240
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:263
 #, python-format
 msgid ""
 "\n"
@@ -37970,7 +38027,7 @@ msgid ""
 "points < 1  !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:244
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:267
 msgid ""
 "\n"
 " erreurs rencontrées.\n"
@@ -37978,14 +38035,14 @@ msgstr ""
 "\n"
 " 発生したエラー\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:248
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:271
 msgid ""
 "\n"
 " erreur lors de la définition de la nappe des courbes de traction: nombre de "
 "points < 2 !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:275
 #, python-format
 msgid ""
 "\n"
@@ -37993,14 +38050,14 @@ msgid ""
 "nombre de points < 1 !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:256
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:279
 msgid ""
 "\n"
 "  erreur lors de la définition de la courbe de traction: FONCTION ou "
 "NAPPE !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:260
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:283
 msgid ""
 "\n"
 " comportement TRACTION non trouvé\n"
@@ -38008,7 +38065,7 @@ msgstr ""
 "\n"
 " コンポーネント TRACTION が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:266
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:289
 msgid ""
 "\n"
 " comportement META_TRACTION non trouvé\n"
@@ -38016,7 +38073,7 @@ msgstr ""
 "\n"
 " コンポーネント META_TRACTION が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:293
 msgid ""
 "\n"
 " fonction SIGM_F1 non trouvée\n"
@@ -38024,7 +38081,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F1 が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:297
 msgid ""
 "\n"
 " fonction SIGM_F2 non trouvée\n"
@@ -38032,7 +38089,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F2 見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:278
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:301
 msgid ""
 "\n"
 " fonction SIGM_F3 non trouvée\n"
@@ -38040,7 +38097,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F3 が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:282
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:305
 msgid ""
 "\n"
 " fonction SIGM_F4 non trouvée\n"
@@ -38048,7 +38105,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F4 が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:286
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:309
 msgid ""
 "\n"
 " fonction SIGM_C non trouvée\n"
@@ -38056,61 +38113,61 @@ msgstr ""
 "\n"
 " 関数 SIGM_C が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:290
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:313
 #, python-format
 msgid ""
 "\n"
 " fonction constante interdite pour la courbe de traction %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:294
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:317
 #, python-format
 msgid ""
 "\n"
 " prolongement à gauche EXCLU pour la courbe  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:298
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:321
 #, python-format
 msgid ""
 "\n"
 " prolongement à droite EXCLU pour la courbe  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:302
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:325
 #, python-format
 msgid ""
 "\n"
 " concept de type :  %(k1)s  interdit pour la courbe de traction %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:306
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:329
 #, python-format
 msgid ""
 "\n"
 " matériau : %(k1)s  non affecté par la commande AFFE_MATERIAU.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:310
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:333
 msgid ""
 "\n"
 "  les fonctions complexes ne sont pas implémentées\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:314
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:337
 #, python-format
 msgid ""
 "\n"
 " Le nombre de paramètres est supérieur à 30 pour le matériau  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:318
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:341
 msgid ""
 "\n"
 " mauvaise définition de la plage de fréquence, aucun mode pris en compte\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:345
 #, python-format
 msgid ""
 "\n"
@@ -38118,19 +38175,19 @@ msgid ""
 " et pourtant elles ont été affectées dans le mot-clé facteur : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:327
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:350
 msgid ""
 "\n"
 " FREQ INIT plus grande que FREQ FIN\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:354
 msgid ""
 "\n"
 " FREQ INIT nécessaire avec CHAMNO\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:335
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:358
 msgid ""
 "\n"
 " FREQ FIN nécessaire avec CHAMNO\n"
@@ -38821,28 +38878,30 @@ msgstr ""
 msgid ""
 "\n"
 " AFFE_CARA_ELEM / MULTIFIBRE\n"
-" Les mots clefs PREC_AIRE et PREC_INERTIE servent à définir la tolérance "
+" Les mots clefs PREC_AIRE et/ou PREC_INERTIE servent à définir la tolérance "
 "entre les\n"
 " caractéristiques de poutres affectées sous le mot clef facteur POUTRE et "
 "celles\n"
 " calculées par intégration sur les fibres.\n"
-" Les critères imposés par PREC_AIRE et PREC_INERTIE ne sont pas respectés.\n"
+" Les critères imposés par PREC_AIRE et/ou PREC_INERTIE ne sont pas "
+"respectés.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:64
 #, python-format
 msgid ""
 "\n"
-" Actuellement, on ne peut mettre que %(k1)s groupes de fibres sur un "
-"élément.\n"
+" On ne peut mettre que %(i1)d groupes de fibres sur un élément.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:68
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "\n"
-" Le groupe de fibre %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE\n"
+" Le groupe de fibres %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE\n"
 msgstr ""
+"\n"
+"  コンポーネント :  %(k1)s  が定義されていない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:72
 #, python-format
@@ -38910,24 +38969,33 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"   l'ensemble des mailles comporte plus de 2 extrémités %(k1)s\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:112
-#, python-format
-msgid ""
-"\n"
-" DEFI_ARC l'ensemble des mailles  forme un cercle : a subdiviser  %(k1)s\n"
+" Pour l'occurrence %(i1)d de %(k1)s, il y a %(i2)d groupes de fibres, alors "
+"que dans\n"
+" DEFI_GEOM_FIBRE il y a %(i3)d groupes qui ont été renseignés.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:116
 #, python-format
 msgid ""
 "\n"
-" le ddl  %(k1)s est interdit pour le noeud %(k2)s\n"
+"   l'ensemble des mailles comporte plus de 2 extrémités %(k1)s\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:120
+#, python-format
+msgid ""
+"\n"
+" DEFI_ARC l'ensemble des mailles  forme un cercle : a subdiviser  %(k1)s\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:124
+#, python-format
+msgid ""
+"\n"
+" le ddl  %(k1)s est interdit pour le noeud %(k2)s\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:128
 #, python-format
 msgid ""
 "\n"
@@ -38935,14 +39003,14 @@ msgid ""
 "règle de surcharge\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:124
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:132
 #, python-format
 msgid ""
 "\n"
 " nombre de composantes supérieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:136
 #, python-format
 msgid ""
 "\n"
@@ -38950,21 +39018,21 @@ msgid ""
 "%(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:132
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:140
 #, python-format
 msgid ""
 "\n"
 " erreur dans les données pas de valeur pour le paramètre  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:144
 #, python-format
 msgid ""
 "\n"
 " erreur dans les données plusieurs valeurs pour le GROUP_MA  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:148
 #, python-format
 msgid ""
 "\n"
@@ -38975,7 +39043,7 @@ msgid ""
 "   %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:147
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:155
 #, python-format
 msgid ""
 "\n"
@@ -38986,7 +39054,7 @@ msgid ""
 "   %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:154
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:162
 #, python-format
 msgid ""
 "\n"
@@ -38997,7 +39065,7 @@ msgid ""
 "   %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:161
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:169
 #, python-format
 msgid ""
 "\n"
@@ -39008,7 +39076,7 @@ msgid ""
 "   %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:168
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:176
 #, python-format
 msgid ""
 "\n"
@@ -39018,7 +39086,7 @@ msgid ""
 "  de facettes, mots clés :  %(k1)s %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:174
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:182
 #, python-format
 msgid ""
 "\n"
@@ -39028,7 +39096,7 @@ msgid ""
 " norme   : %(r5)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:180
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:188
 #, python-format
 msgid ""
 "\n"
@@ -39041,7 +39109,7 @@ msgid ""
 " norme   : %(r10)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:189
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:197
 #, python-format
 msgid ""
 "\n"
@@ -39049,7 +39117,7 @@ msgid ""
 "Seule l'extraction est possible : OPERATION='EXTR'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:194
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:202
 #, python-format
 msgid ""
 "\n"
@@ -39057,7 +39125,7 @@ msgid ""
 "Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:198
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:206
 #, python-format
 msgid ""
 "\n"
@@ -39065,7 +39133,7 @@ msgid ""
 "orienter la normale aux surfaces.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:203
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:211
 #, python-format
 msgid ""
 "\n"
@@ -39076,28 +39144,28 @@ msgid ""
 " mot-clé GROUP_MA_ESCL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:221
 #, python-format
 msgid ""
 "\n"
 " matériau non valide matériau :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:217
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:225
 #, python-format
 msgid ""
 "\n"
 " matériaux non valides on ne peut avoir a la fois  %(k1)s  et  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:229
 #, python-format
 msgid ""
 "\n"
 " erreur données le GROUP_NO n'existe pas  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:233
 #, python-format
 msgid ""
 "\n"
@@ -39112,7 +39180,7 @@ msgid ""
 "LIAISON_MAIL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:234
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:242
 #, python-format
 msgid ""
 "\n"
@@ -39121,7 +39189,7 @@ msgid ""
 "  et le noeud %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:240
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:248
 #, python-format
 msgid ""
 "\n"
@@ -39131,7 +39199,7 @@ msgid ""
 " noeud par la correspondance inverse %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:247
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:255
 #, python-format
 msgid ""
 "\n"
@@ -39143,26 +39211,24 @@ msgid ""
 "  et le noeud %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:263
 #, python-format
 msgid ""
 "\n"
-" conflit dans les vis-à-vis  générés successivement a partir des listes  "
-"%(k1)s\n"
-" et  %(k2)s\n"
-" le noeud de la première liste %(k3)s\n"
-"  n\"est l\"image d\"aucun  %(k4)s\n"
-" noeud par la correspondance inverse %(k5)s\n"
+" conflit dans les vis-à-vis  générés successivement a partir des listes\n"
+"    %(k1)s et %(k2)s\n"
+" Le noeud de la première liste %(k3)s n'est l'image d\"aucun  %(k4)s\n"
+" Noeud par la correspondance inverse %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:263
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:270
 #, python-format
 msgid ""
 "\n"
 " on ne trouve pas dans la paroi 2 de maille de type :  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:267
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:274
 #, python-format
 msgid ""
 "\n"
@@ -39170,7 +39236,7 @@ msgid ""
 "  ont toutes les 2 comme VIS_A_VIS la maille %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:272
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:279
 #, python-format
 msgid ""
 "\n"
@@ -39179,7 +39245,7 @@ msgid ""
 " TEMP : %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:277
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:284
 #, python-format
 msgid ""
 "\n"
@@ -40502,33 +40568,39 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:91
+#, python-format
 msgid ""
 "\n"
 "Vous avez demander de fournir à EPX un état initial de contraintes, "
 "cependant cette fonctionnalité\n"
-"n'est pas développée pour certains éléments du modèle.\n"
+"n'est pas développée pour certains éléments du modèle. Le champ de "
+"contraintes du résultat donné\n"
+"en état initial ne sera pas transmis à EPX pour les éléments affectés des "
+"modélisations suivantes :\n"
+"\n"
+"%(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:96
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:99
 #, python-format
 msgid ""
 "Le mot clé %(k1)s du concept CARA_ELEM n'est pas pris en compte par "
 "CALC_EUROPLEXUS'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:98
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:101
 #, python-format
 msgid ""
 "Le type de charge %(k1)s n'est pas pris en compte par CALC_EUROPLEXUS'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:101
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:104
 #, python-format
 msgid ""
 "La valeur du mot-clé %(k1)s du matériau %(k2)s est différente de %(k3)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:104
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:107
 #, python-format
 msgid ""
 "\n"
@@ -40539,12 +40611,12 @@ msgid ""
 "CALC_EUROPLEXUS.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:110
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:113
 #, python-format
 msgid "CALC_EUROPLEXUS ne traite aucune modélisation du phénomène %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:112
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:115
 #, python-format
 msgid ""
 "\n"
@@ -40553,7 +40625,7 @@ msgid ""
 "pour la modélisation %(k2)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:116
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:119
 #, python-format
 msgid ""
 "\n"
@@ -40564,7 +40636,7 @@ msgid ""
 "en compte dans le calcul.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:122
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:125
 #, python-format
 msgid ""
 "\n"
@@ -40572,7 +40644,7 @@ msgid ""
 "chargements de type %(k2)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:126
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:129
 #, python-format
 msgid ""
 "\n"
@@ -40582,7 +40654,7 @@ msgid ""
 "Valeur imposée : %(r2)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:132
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:135
 #, python-format
 msgid ""
 "\n"
@@ -40606,17 +40678,16 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:151
 #, python-format
 msgid ""
 "\n"
-"La valeur du mot-clé %(k1)s du type de chargement %(k2)s n'est pas égale à "
-"la valeur imposée :\n"
+"La valeur du mot-clé %(k1)s du type de chargement %(k2)s n'est autorisée :\n"
 "Valeur trouvée : %(k3)s\n"
-"Valeur imposée : %(k4)s\n"
+"Valeur(s) autorisée(s) : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:154
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:157
 #, python-format
 msgid ""
 "\n"
@@ -40624,14 +40695,14 @@ msgid ""
 "%(k3)s. Ce paramètre est obligatoire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:158
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:161
 #, python-format
 msgid ""
 "\n"
 "Aucun matériau n'est affecté au groupe %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:162
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:165
 #, python-format
 msgid ""
 "\n"
@@ -40639,7 +40710,7 @@ msgid ""
 "indispensable au comportement %(k3)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:169
 #, python-format
 msgid ""
 "\n"
@@ -40647,7 +40718,7 @@ msgid ""
 "le MODELE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:170
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:173
 #, python-format
 msgid ""
 "\n"
@@ -40663,7 +40734,7 @@ msgid ""
 "premier CALC_EUROPLEXUS.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:179
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:182
 #, python-format
 msgid ""
 "\n"
@@ -40681,7 +40752,7 @@ msgid ""
 "fonctionne.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:190
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:193
 #, python-format
 msgid ""
 "\n"
@@ -40689,7 +40760,7 @@ msgid ""
 "CALC_EUROPLEXUS ne sait pas traiter de tels cas.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:195
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:198
 #, python-format
 msgid ""
 "\n"
@@ -40697,7 +40768,7 @@ msgid ""
 "Le champ %(k1)s ne possède pas de composante %(k2)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:200
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:203
 msgid ""
 "\n"
 "CALC_EUROPLEXUS/COURBE :\n"
@@ -40712,7 +40783,7 @@ msgid ""
 "ou le problème se situe.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:210
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:213
 #, python-format
 msgid ""
 "\n"
@@ -40727,7 +40798,7 @@ msgid ""
 "Déformation                      = %(r2)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:219
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:222
 #, python-format
 msgid ""
 "\n"
@@ -40740,7 +40811,7 @@ msgid ""
 "données dans la même occurrence.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:227
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:230
 msgid ""
 "\n"
 "CALC_EUROPLEXUS : RIGI_PARASOL\n"
@@ -40749,7 +40820,7 @@ msgid ""
 "le CARA_ELEM donné à CALC_EUROPLEXUS.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:235
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:238
 msgid ""
 "\n"
 "CALC_EUROPLEXUS : RIGI_PARASOL\n"
@@ -40758,7 +40829,7 @@ msgid ""
 "GROUP_MA_POI1 de RIGI_PARASOL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:242
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:245
 #, python-format
 msgid ""
 "\n"
@@ -40767,7 +40838,7 @@ msgid ""
 "d'AFFE_CARA_ELEM.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:247
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:250
 #, python-format
 msgid ""
 "\n"
@@ -40775,7 +40846,7 @@ msgid ""
 "facteur %(k2)s d'AFFE_CARA_ELEM.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:255
 #, python-format
 msgid ""
 "\n"
@@ -40783,7 +40854,7 @@ msgid ""
 "Il n'existe pas de traduction dans le matériau EPX correspondant.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:257
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:260
 #, python-format
 msgid ""
 "\n"
@@ -40795,7 +40866,7 @@ msgid ""
 "sur lesquelles ce comportement est affecté.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:265
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:268
 msgid ""
 "\n"
 "Vous avez demandé à ce que le champ de variables internes soit pris en \n"
@@ -40806,7 +40877,7 @@ msgid ""
 "La commande VARI_INT = 'OUI' n'a ici aucun effet et est donc inutile.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:277
 #, python-format
 msgid ""
 "\n"
@@ -40814,6 +40885,68 @@ msgid ""
 "Sa valeur est différente de la valeur imposée :\n"
 "Valeur imposée  : %(r1)f\n"
 "Valeur présente : %(r2)f \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:284
+#, python-format
+msgid ""
+"\n"
+"Le fichier correspondant à l'unité %(i1)d donnée dans UNITE_MED de "
+"LIRE_EUROPLEXUS\n"
+"n'est pas un fichier MED ou est absent. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:289
+#, python-format
+msgid ""
+"\n"
+"Le fichier correspondant à l'unité donnée dans UNITE_MED de LIRE_EUROPLEXUS\n"
+"ne contient pas de champ %(k1)s. Il ne peut pas être traité. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:294
+#, python-format
+msgid ""
+"\n"
+"La valeur %(k1)s n'est pas autorisée pour l'opérande %(k2)s dans "
+"CALC_EUROPLEXUS pour le mot-clé\n"
+"facteur %(k3)s d'AFFE_CARA_ELEM.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:299
+msgid ""
+"\n"
+"Le mot-clé CARA_ELEM est renseigné alors qu'un état initial est donné via "
+"ETAT_INIT. \n"
+"Il n'est pas nécessaire de renseigner CARA_ELEM dans ce cas sauf si vous "
+"souhaitez\n"
+"fournir des informations différentes de celles contenues dans le résultat de "
+"l'état initial.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:305
+#, python-format
+msgid ""
+"\n"
+"Un champ de type %(k1)s contenu dans le fichier MED est porté par des "
+"éléments EUROPLEXUS de type %(k2)s.\n"
+"LIRE_EUROPLEXUS ne sait pas traduire les données de ce champ. Les éléments "
+"du modèle\n"
+"Code_Aster associés aux mêmes éléments du maillage, s'ils existent, \n"
+"gardent des valeurs nulles sur le champ correspondant.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:312
+#, python-format
+msgid ""
+"\n"
+"Un champ de variables internes contenu dans le fichier MED est associé à la "
+"loi\n"
+"de comportement %(k1)s d'EUROPLEXUS.\n"
+"LIRE_EUROPLEXUS ne sait pas traduire les données de ce champ. Les éléments "
+"du modèle\n"
+"Code_Aster associés aux mêmes éléments du maillage, s'ils existent, \n"
+"gardent des valeurs nulles sur le champ correspondant.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/post0.py:21
@@ -42176,6 +42309,15 @@ msgid ""
 "    C'est à dire qu'il faut remplacer INTE_MAIL_XX + POST_RELEVE par "
 "MACR_LIGN_COUPE.\n"
 "\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/postrele.py:409
+msgid ""
+"\n"
+"Erreur utilisateur dans la commande POST_RELEVE_T :\n"
+"  Pour les mots clés ACTION / RESULTANTE (et MOMENT), on ne peut utiliser "
+"que le repère\n"
+" 'GLOBAL' ou le repère 'UTILISATEUR' (avec ANGL_NAUT).\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/poutre0.py:21
@@ -52992,46 +53134,39 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:132
 msgid ""
 "\n"
-"     On ne peut pas appliquer un cisaillement 2d sur les lèvres d'une "
-"fissure X-FEM.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:136
-msgid ""
-"\n"
 "  -> Cette option n'a pas encore été programmée.\n"
 "  -> Risque & Conseil:\n"
 "     Veuillez utiliser un autre chargement (en pression) ou contacter votre\n"
 "     correspondant.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:143
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:139
 msgid ""
 "\n"
 "  -> Il n'y a aucun élément enrichi.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:147
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:143
 msgid ""
 "\n"
 "     il ne faut qu'un mot-clé parmi RAYON_ENRI et NB_COUCHES.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:151
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:147
 msgid ""
 "\n"
 "     Dimension de l'espace incorrecte.\n"
 "     Le modèle doit être 2D ou 3D et ne pas comporter de sous-structures.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:156
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:152
 #, python-format
 msgid ""
 "\n"
 "     Il y a %(i1)d mailles dans la zone fissure.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:160
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:156
 msgid ""
 "\n"
 "     Vous avez défini plus d'un fond fermé lors d'un appel à "
@@ -53040,7 +53175,7 @@ msgid ""
 "     Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:162
 msgid ""
 "\n"
 "     Vous avez défini au moins un fond ouvert et un fond fermé lors d'un "
@@ -53050,7 +53185,7 @@ msgid ""
 "     Veuillez définir chacun des fonds dans des DEFI_FISS_XFEM différents.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:173
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:169
 #, python-format
 msgid ""
 "\n"
@@ -53068,7 +53203,7 @@ msgid ""
 "     cette deuxième relation en utilisant par exemple l'opérande DIFFE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:184
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:180
 #, python-format
 msgid ""
 "\n"
@@ -53080,7 +53215,7 @@ msgid ""
 "     Sélectionnez une forme de %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:193
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:189
 #, python-format
 msgid ""
 "\n"
@@ -53091,7 +53226,7 @@ msgid ""
 "     Veuillez renseignez %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:201
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:197
 #, python-format
 msgid ""
 "\n"
@@ -53103,75 +53238,75 @@ msgid ""
 "     Pour ne plus obtenir ce message, ne renseignez pas %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:210
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:206
 msgid ""
 "\n"
 "     Numéros des mailles de la zone fissure.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:214
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:210
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles contenant le fond de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:218
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:214
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles de type Heaviside : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:222
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:218
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles de type Crack-tip : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:226
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:222
 #, python-format
 msgid ""
 "\n"
 "     Nombre de mailles de type Heaviside Crack-tip : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:230
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:226
 #, python-format
 msgid ""
 "\n"
 "     Nombre de points du fond de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:234
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:230
 #, python-format
 msgid ""
 "\n"
 "     Nombre de fonds de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:238
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:234
 msgid ""
 "\n"
 "     Coordonnées des points des fonds de fissure\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:242
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:238
 #, python-format
 msgid ""
 "\n"
 "     fond de fissure : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:246
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:242
 #, python-format
 msgid ""
 "\n"
 "     Nombre de level-sets réajustées : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:250
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:246
 msgid ""
 "\n"
 "     Si vous êtes en 2D pour l'approche de contact <<Grands glissements avec "
@@ -53184,7 +53319,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:258
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:254
 #, python-format
 msgid ""
 "\n"
@@ -53202,7 +53337,7 @@ msgid ""
 "MODELE_IN.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:269
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:265
 #, python-format
 msgid ""
 "\n"
@@ -53217,7 +53352,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:277
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:273
 #, python-format
 msgid ""
 "\n"
@@ -53229,7 +53364,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:280
 #, python-format
 msgid ""
 "\n"
@@ -53249,7 +53384,7 @@ msgid ""
 "        chaque fond (voir colonne NUME_FOND de la table)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:293
 #, python-format
 msgid ""
 "\n"
@@ -53263,7 +53398,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:304
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:300
 #, python-format
 msgid ""
 "\n"
@@ -53278,7 +53413,7 @@ msgid ""
 "les fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:312
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:308
 msgid ""
 "\n"
 "      Jonction X-FEM et contact\n"
@@ -53289,7 +53424,7 @@ msgid ""
 "facette.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:319
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:315
 #, python-format
 msgid ""
 "\n"
@@ -53302,7 +53437,7 @@ msgid ""
 "clé FISSURE de MODI_MODELE_XFEM.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:326
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:322
 #, python-format
 msgid ""
 "\n"
@@ -53322,26 +53457,26 @@ msgid ""
 "pour définir %(k3)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:333
 msgid ""
 "\n"
 "      Les flux correspondant a PRE2 et TEMP sont interdits pour les\n"
 "      éléments HM-XFEM.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:342
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:338
 msgid ""
 "\n"
 "     Le calcul de G avec X-FEM est impossible en grandes déformations.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:346
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:342
 msgid ""
 "\n"
 "     La méthode X-FEM n'est pas disponible avec 'PETIT_REAC'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:350
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:346
 #, python-format
 msgid ""
 "\n"
@@ -53349,7 +53484,7 @@ msgid ""
 "coordonnées :\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:350
 msgid ""
 "\n"
 "     Une ou des mailles contenant plus de 2 points du fond de fissure ont "
@@ -53362,14 +53497,14 @@ msgid ""
 "possible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:361
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:357
 msgid ""
 "\n"
 "Il y a trop de termes dans la relation d'égalité.\n"
 "Utilisez ELIM_ARETE='DUAL'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:366
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:362
 msgid ""
 "\n"
 "  -> La fissure (ou l'interface) définie dans DEFI_FISS_XFEM ne coupe aucune "
@@ -53384,7 +53519,7 @@ msgid ""
 "et le maillage.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:375
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:371
 msgid ""
 "\n"
 "  -> Aucun point du fond de fissure n'a été trouvé !\n"
@@ -53405,21 +53540,21 @@ msgid ""
 "        de modes de corps rigides non bloqués).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:389
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:385
 msgid ""
 "\n"
 "     Ne pas utiliser le mot-clef RAYON_ENRI lorsque le fond de fissure\n"
 "     est en dehors de la structure.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:394
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:390
 msgid ""
 "\n"
 "     -> Pour le fond fermé, un point supplémentaire du fond a été ajouté.\n"
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:399
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:395
 msgid ""
 "\n"
 "  -> Une face contient au moins 3 points d'intersection avec la courbe "
@@ -53448,7 +53583,7 @@ msgid ""
 "     par CALC_G a sens physique pour le problème à résoudre.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:417
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:413
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -53458,7 +53593,7 @@ msgid ""
 "       Cette configuration est proscrite.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:424
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:420
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -53470,7 +53605,7 @@ msgid ""
 "le traverse\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:432
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:428
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -53479,7 +53614,7 @@ msgid ""
 "     arête courbe.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:438
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:434
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
@@ -53490,14 +53625,14 @@ msgid ""
 "     - l'arête est \"trop\" arrondie\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:446
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:442
 msgid ""
 "\n"
 "  -> ---Éléments XFEM quadratiques 2D---\n"
 "     Newton : nombre d'itérations maximal atteint\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:451
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:447
 msgid ""
 "\n"
 "  -> Aucune grille n'est associée à la fissure donnée par FISS_GRILLE.\n"
@@ -53507,7 +53642,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:459
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:455
 msgid ""
 "\n"
 "  -> La fissure à propager a été définie par DEFI_FISS_XFEM en donnant "
@@ -53545,7 +53680,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:484
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:480
 #, python-format
 msgid ""
 "\n"
@@ -53557,7 +53692,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:492
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:488
 #, python-format
 msgid ""
 "\n"
@@ -53571,7 +53706,7 @@ msgid ""
 "fissures).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:500
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:496
 #, python-format
 msgid ""
 "\n"
@@ -53583,7 +53718,7 @@ msgid ""
 "modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:507
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:503
 #, python-format
 msgid ""
 "\n"
@@ -53596,20 +53731,20 @@ msgid ""
 "     présentes dans le modèle ou revoyez la définition de votre modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:515
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:511
 #, python-format
 msgid ""
 "\n"
 "     Nombre de points du fond de fissure sur la grille : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:519
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:515
 msgid ""
 "\n"
 "     Coordonnées des points du fond de fissure sur la grille\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:523
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:519
 msgid ""
 "\n"
 "  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le "
@@ -53620,7 +53755,7 @@ msgid ""
 "     Veuillez utiliser un maillage linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:532
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:528
 msgid ""
 "\n"
 "  -> Il y a éventuellement des créations de mailles\n"
@@ -53638,7 +53773,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:544
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:540
 #, python-format
 msgid ""
 "\n"
@@ -53648,7 +53783,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:550
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:546
 #, python-format
 msgid ""
 "\n"
@@ -53661,7 +53796,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:558
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:554
 #, python-format
 msgid ""
 "\n"
@@ -53673,7 +53808,7 @@ msgid ""
 "     Revoyez la définition de ce modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:565
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:561
 #, python-format
 msgid ""
 "\n"
@@ -53686,7 +53821,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:573
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:569
 #, python-format
 msgid ""
 "\n"
@@ -53696,7 +53831,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:580
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:576
 #, python-format
 msgid ""
 "\n"
@@ -53709,7 +53844,7 @@ msgid ""
 "     Revoyez la définition de ces modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:588
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:584
 msgid ""
 "\n"
 "  On ne peut pas créer un modèle X-FEM avec contact dans le cas où le mot "
@@ -53718,7 +53853,7 @@ msgid ""
 "     Vous devez renseigner CONTACT='NON' pour ne pas activer le contact.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:594
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:590
 #, python-format
 msgid ""
 "\n"
@@ -53730,7 +53865,7 @@ msgid ""
 "     Revoyez la définition de ces deux modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:601
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:597
 msgid ""
 "\n"
 "  -> Il n'est pas possible de réaliser la propagation d'une fissure en "
@@ -53741,7 +53876,7 @@ msgid ""
 "     Veuillez utiliser un maillage linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:608
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:604
 #, python-format
 msgid ""
 "\n"
@@ -53752,7 +53887,7 @@ msgid ""
 "         doivent être définies avec un contact STANDARD.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:613
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:609
 msgid ""
 "\n"
 "     --> L algorithme de détection a détecté un front qui va au delà de\n"
@@ -55436,24 +55571,3 @@ msgstr ""
 #, python-format
 msgid "Mot-clé simple : %s %s"
 msgstr "単純なキーワード: %s %s"
-
-#~ msgid ""
-#~ "\n"
-#~ " comportement ZMAT obligatoire\n"
-#~ msgstr ""
-#~ "\n"
-#~ " 成分 ZMAT が必須\n"
-
-#~ msgid ""
-#~ "\n"
-#~ " noeuds confondus pour un élément\n"
-#~ msgstr ""
-#~ "\n"
-#~ " 要素の構成節点\n"
-
-#~ msgid ""
-#~ "\n"
-#~ " éléments de poutre noeuds confondus pour un élément:  %(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " 要素を構成する梁要素節点:  %(k1)s\n"
