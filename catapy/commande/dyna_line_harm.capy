@@ -86,4 +86,5 @@ DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
 #-------------------------------------------------------------------
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
 )  ;

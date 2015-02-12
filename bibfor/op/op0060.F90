@@ -51,6 +51,7 @@ subroutine op0060()
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -92,7 +93,7 @@ subroutine op0060()
     character(len=19) :: lischa
     integer :: nbsym, i, n1, n2
     integer :: lamor1, lamor, limpe, lfreq, nbfreq
-    integer :: neq, nbmat
+    integer :: neq, nbmat, ifm, niv, pasfreq
     integer :: ifreq, ieq, inom, ier
     integer :: lsecmb, jvezer
     integer :: icoef, icode
@@ -128,8 +129,10 @@ subroutine op0060()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
-    call infmaj()
     call titre()
+!
+    call infmaj()
+    call infniv(ifm,niv)
 !
 ! --- INITIALISATIONS DIVERSES
 !
@@ -204,7 +207,10 @@ subroutine op0060()
 !
 ! --- NOM DES CHAMPS CALCULES
 !
-    call getvtx(' ', 'NOM_CHAM', nbval=3, vect=nomsym, nbret=nbsym)
+    nomsym(1) = ' '
+    nomsym(2) = ' '
+    nomsym(3) = ' '
+    call getvtx(' ', 'NOM_CHAM', nbval=3, nbret=nbsym)
     ASSERT(nbsym.le.3)
     if (typcon .eq. 'ACOU_HARMO') then
         nbsym = 1
@@ -386,6 +392,16 @@ subroutine op0060()
 ! 4.2 ==> BOUCLE SUR LES FREQUENCES ---
 !====
     call uttcpu('CPU.OP0060', 'INIT', ' ')
+
+!   NIVEAU D'IMPRESSION DE L'AVANCEMENT DE CALCUL
+    pasfreq = 1
+    if (niv.eq.1) then
+        pasfreq = max(1,nint(1.d0*nbfreq/20.d0))
+    end if
+    if (pasfreq.ne.1) then
+        call utmess('I', 'DYNAMIQUE_28', nk=3, valk=nomsym, si=1+nbold, &
+                    sr=zr(lfreq))
+    end if
 !
     do ifreq = 1, nbfreq
         call uttcpu('CPU.OP0060', 'DEBUT', ' ')
@@ -444,11 +460,19 @@ subroutine op0060()
         call zcopy(neq, solut, 1, zc(lsecmb), 1)
         call jedetr(soluti)
 !
+! ----- IMPRESSION DE L'ETAT D'AVANCEMENT DU CALCUL FREQUENTIEL
+!
+        if (mod(ifreq, pasfreq) .eq. 0) then
+            call utmess('I', 'DYNAMIQUE_28', nk=3, valk=nomsym, si=ifreq+nbold, &
+                        sr=freq)
+        end if
+!
 ! ----------------------------------------------------------------
 ! --- ARCHIVAGE DES RESULTATS SUR BASE PHYSIQUE OU GENERALISEE ---
 ! ----------------------------------------------------------------
 !
-        if (.not.calgen) then
+
+        if (.not.calgen) then       
 !       --- SI CALCUL SUR BASE PHYSIQUE
 !         - CREER UN CHAM_NO DANS LA SD_RESULTAT
             do inom = 1, nbsym
@@ -547,6 +571,16 @@ subroutine op0060()
                         num_except=28)
         endif
     end do
+
+!
+! ----- IMPRESSION DE LA DERNIERE FREQUENCE CALCULEE
+!
+    ifreq = ifreq - 1
+    if (mod((ifreq), pasfreq) .gt. 0) then
+        call utmess('I', 'DYNAMIQUE_28', nk=3, valk=nomsym, si=ifreq+nbold, &
+                    sr=freq)
+    end if
+
 !
 !     --- DETRUIRE LES OBJETS TEMPORAIRES A LA FIN DU CALCUL GENE
     if (calgen) then

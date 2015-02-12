@@ -172,6 +172,8 @@ intervalle (écart inférieur à PAS_MINI), l'une des deux sera supprimée de la
 ces deux valeurs car l'une d'elles peut correspondre à une fréquence de résonance"
 """),
 
+    28 : _(u"""NUME_ORDRE : %(i1)5d,   FREQ : %(r1)f,   CHAMP(S) STOCKE(S) : %(k1)s %(k2)s %(k3)s
+      """),
 
     30 : _(u"""
  La fréquence d'actualisation de FORCE_SOL dans le fichier des masses est incohérente avec
