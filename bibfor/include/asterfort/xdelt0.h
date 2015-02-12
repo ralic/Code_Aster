@@ -15,12 +15,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
+    subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
         character(len=8) :: elrefp
         integer :: ndime
         real(kind=8) :: ksi
         real(kind=8) :: tabls(*)
         real(kind=8) :: delta
         real(kind=8) :: ptxx(*)
+        integer, intent(in), optional :: arete
     end subroutine xdelt0
 end interface

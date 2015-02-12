@@ -17,7 +17,7 @@
 !
 interface
     subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
-                  lsnm, inref, inter) 
+                      im, lsna, lsnb, lsnm, inref, inter) 
         integer :: ndim
         integer :: ndime
         character(len=8) :: elrefp
@@ -25,7 +25,10 @@ interface
         real(kind=8) :: lsn(*)
         integer :: ia
         integer :: ib
-        real(kind=8), intent(in), optional :: lsnm
+        integer :: im
+        real(kind=8) :: lsna
+        real(kind=8) :: lsnb
+        real(kind=8) :: lsnm
         real(kind=8) :: inref(3)
         real(kind=8) :: inter(3)
     end subroutine xinter

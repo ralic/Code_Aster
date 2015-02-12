@@ -297,10 +297,10 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             endif
 !
 !         SI LA FISSURE COUPE AILLEURS
-            if (lsna .ne. 0 .and. lsnb .ne. 0) then
+            if (lsna .ne. 0 .and. lsnb .ne. 0 .and. lsnm .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
                 call xinter(ndim, ndime, elrefp, zr(igeom), zr(jlsn), na, nb,&
-                            lsnm, cref, c) 
+                            nm, lsna, lsnb, lsnm, cref, c) 
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
                 alpha=padist(ndim,a,c)
 !           ON AJOUTE A LA LISTE LE POINT C

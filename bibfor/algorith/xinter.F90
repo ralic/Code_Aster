@@ -1,5 +1,5 @@
 subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
-                  lsnm, inref, inter) 
+                  im, lsna, lsnb, lsnm, inref, inter) 
     implicit none
 !
 #include "jeveux.h"
@@ -13,9 +13,9 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 #include "asterfort/xveri0.h"
 #include "asterfort/xnewto.h"
     character(len=8) :: elrefp
-    integer :: ndim, ndime, ia, ib
-    real(kind=8), intent(in), optional :: lsnm
+    integer :: ndim, ndime, ia, ib, im
     real(kind=8) :: lsn(*), geom(*), inter(3), inref(3)
+    real(kind=8) :: lsna, lsnb, lsnm
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,8 +43,8 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 !     ----------------------------------------------------------------
 !
     character(len=6) :: name
-    real(kind=8) :: ksi(ndime), ptxx(2*ndime), lsna, lsnb, x(81)
-    real(kind=8) :: epsmax, a , b , c
+    real(kind=8) :: ksi(ndime), ptxx(3*ndime), x(81)
+    real(kind=8) :: epsmax, a , b , c, pta(ndime), ptb(ndime), ptm(ndime)
     integer :: itemax, ibid, n(3), j, nno, iret
 !
 !---------------------------------------------------------------------
@@ -60,32 +60,32 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
     n(3)=0
 !   COORDONNEES DANS L ELEMENT DE REFERENCE PARENT
     call xelrex(elrefp, nno, x)
-!  ON STOCKE LES COORDONEES DE REFERENCE DE A ET B DANS <ptxx>
-    do j = 1,ndime
-      ptxx(j)=x(ndime*(ib-1)+j)-x(ndime*(ia-1)+j)
-      ptxx(j+ndime)=x(ndime*(ia-1)+j)
+       do j = 1, ndime
+          pta(j) = x(ndime*(ia-1)+j)
+          ptb(j) = x(ndime*(ib-1)+j)
+          ptm(j) = x(ndime*(im-1)+j)
+       end do
+!  ON STOCKE LES COORDONEES DE REFERENCE DE A, B ET M DANS <ptxx>
+    do j = 1, ndime
+       ptxx(j) = pta(j)
+       ptxx(j+ndime) = ptb(j)
+       ptxx(j+2*ndime) = ptm(j)
     enddo
 !!!!!ATTENTION INITIALISATION DU NEWTON: INTERPOLATION LINEAIRE DE LSN
     call vecini(ndime, 0.d0, ksi)
 !   INITIALISATION DU NEWTON
-    lsna=lsn(ia)
-    lsnb=lsn(ib)
     ASSERT(abs(lsna-lsnb) .gt. 1.d0/r8gaem())
-    if (present(lsnm)) then
-       a = (lsna + lsnb - 2*lsnm)/2.d0
-       b = (lsnb - lsna)/2.d0
-       c = lsnm
-       ASSERT(b**2.ge.(4*a*c))
-       if (abs(a).lt.1.d-8) then
-          ksi(1) = lsna/(lsna-lsnb)
-       else 
-          ksi(1) = (-b-sqrt(b**2-4*a*c))/(2.d0*a)
-          if (abs(ksi(1)).gt.1) ksi(1) = (-b+sqrt(b**2-4*a*c))/(2.d0*a)
-          ASSERT(abs(ksi(1)).le.1)
-          ksi(1) = (ksi(1)+1)/2.d0
-       endif
-    else
-       ksi(1)=lsna/(lsna-lsnb)
+    a = (lsna + lsnb - 2*lsnm)/2.d0
+    b = (lsnb - lsna)/2.d0
+    c = lsnm
+    ASSERT(b**2.ge.(4*a*c))
+    if (abs(a).lt.1.d-8) then
+       ksi(1) = lsna/(lsna-lsnb)
+    else 
+       ksi(1) = (-b-sqrt(b**2-4*a*c))/(2.d0*a)
+       if (abs(ksi(1)).gt.1) ksi(1) = (-b+sqrt(b**2-4*a*c))/(2.d0*a)
+       ASSERT(abs(ksi(1)).le.1)
+       ksi(1) = (ksi(1)+1)/2.d0
     endif
     call xnewto(elrefp, name, n,&
                 ndime, ptxx, ndim, geom, lsn,&
@@ -93,7 +93,8 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
                 epsmax, ksi)
 !  FIN DE RECHERCHE SUR SEGMENT AB
     do j = 1, ndime
-        inref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)
+        inref(j)=2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*(1.d0-ksi(1))*&
+                 ptxx(j+2*ndime)+2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(j+ndime)
     enddo
 !
     call xveri0(ndime, elrefp, inref, iret)  

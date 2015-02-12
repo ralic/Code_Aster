@@ -58,7 +58,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
     real(kind=8) :: eps
     real(kind=8) :: test, epsrel, epsabs, refe, itermin
-    integer :: iter, i
+    integer :: iter, i, arete
     real(kind=8) :: zero
     parameter    (zero=0.d0)
     real(kind=8) :: dist, dmin, intinf, intsup
@@ -109,7 +109,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
         call xdelt4(elrefp, ksi2, ptxx, ndim, tabls, delta)
     else if (name .eq. 'XINTER') then
         call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
-                    delta(1))
+                    delta(1), arete)
     else if (name .eq. 'XMIFIS') then
         call xdelt0(elrefp, ndime, tabls, ptxx, ksi2(1),&
                     delta(1))

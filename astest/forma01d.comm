@@ -253,7 +253,7 @@ TEST_TABLE(TABLE=SIG_A,
            TYPE_TEST='MIN',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=-100.,
-           VALE_CALC=-101.043073153 ,
+           VALE_CALC=-101.042925282,
            PRECISION=0.05,
            )
 
@@ -262,7 +262,7 @@ TEST_TABLE(TABLE=SIG_A,
            TYPE_TEST='MAX',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=-100.,
-           VALE_CALC=-96.1514793108,
+           VALE_CALC=-96.151325951,
            PRECISION=0.05,
            )
 
@@ -272,7 +272,7 @@ TEST_TABLE(TABLE=SIG_B,
            TYPE_TEST='MIN',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=303.,
-           VALE_CALC=294.121896928,
+           VALE_CALC=294.125381078,
            PRECISION=0.05,
            )
 
@@ -281,7 +281,7 @@ TEST_TABLE(TABLE=SIG_B,
            TYPE_TEST='MAX',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=303.,
-           VALE_CALC=301.01711802,
+           VALE_CALC=301.020639278,
            PRECISION=0.05,
            )
 

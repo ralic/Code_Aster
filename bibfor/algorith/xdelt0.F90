@@ -1,4 +1,4 @@
-subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
+subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
     implicit none
 !
 #include "jeveux.h"
@@ -8,8 +8,10 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
 #include "asterfort/jemarq.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
+#include "asterfort/xnormv.h"
     character(len=8) :: elrefp
     integer :: ndime
+    integer, intent(in), optional :: arete
     real(kind=8) :: tabls(*), ksi, delta, ptxx(*)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,8 +46,8 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
     integer :: nbfct
     parameter    ( nbfct=27)   
     real(kind=8) :: ff(nbfct), dff(3, nbfct), v(ndime), ptm(ndime), pt(ndime)
-    integer :: i, nderiv, nno, k
-    real(kind=8) :: fctg, dfctg
+    integer :: i, nderiv, nno, k, nna
+    real(kind=8) :: fctg, dfctg, x(1), dfft(3,3), norme, rbid
 !
 !
 !......................................................................
@@ -58,14 +60,36 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
     call jemarq()
     fctg = 0.d0
     dfctg = 0.d0
-    do i = 1,ndime
-      v(i)=ptxx(i)
-      ptm(i)=ptxx(i+ndime)
-    enddo
+!
+    if (present(arete)) then
+!   COORDONNEES SUIVANT L'ARETE AB DANS L ELEMENT DE REFERENCE
+       do i = 1,ndime
+         pt(i)=2.d0*(1.d0-ksi)*(5.d-1-ksi)*ptxx(i)+4.d0*ksi*(1.d0-ksi)*&
+               ptxx(i+2*ndime)+2.d0*ksi*(ksi-5.d-1)*ptxx(i+ndime)
+       end do
+!     CALCUL DU VECTEUR TANGENT AU POINT COURANT
+       x(1) = 2.d0*ksi-1.d0
+       call elrfdf('SE3', x, 1*3, dfft, nna,&
+                   nderiv)
+       do k = 1, ndime
+          v(k) = ptxx(k)*dfft(1,1)+ptxx(k+ndime)*dfft(1,2)+ptxx(k+2*ndime)*dfft(1,3)
+          ptm(k) = ptxx(k+ndime)-ptxx(k)
+       end do
+       call xnormv(ndime, v, rbid)
+       call xnormv(ndime, ptm, norme)
+       do k = 1, ndime
+          v(k) = v(k)*norme
+       end do
+    else
+       do i = 1,ndime
+         v(i)=ptxx(i)
+         ptm(i)=ptxx(i+ndime)
+       end do
 !   COORDONNEES SUIVANT LE SEGMENT AB DANS L ELEMENT DE REFERENCE
-    do i = 1,ndime
-      pt(i)=ksi*v(i)+ptm(i)
-    enddo
+       do i = 1,ndime
+          pt(i)=ksi*v(i)+ptm(i)
+       end do
+    endif
 !
 !     CALCUL DES FONCTIONS DE FORME DE L'ELEMENT EN KSI
     call elrfvf(elrefp, pt, nbfct, ff, nno)
@@ -79,11 +103,11 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta)
         fctg = fctg + ff(i)*tabls(i)
     enddo
     dfctg=0.d0
-    do k=1,ndime
+    do k = 1, ndime
        do i = 1, nno
          dfctg=dfctg+tabls(i)*dff(k,i)*v(k)
-       enddo
-    enddo
+       end do
+    end do
     ASSERT( abs(dfctg) .gt. 1.d0/r8gaem())
 !
 ! --- CALCUL DES QUANTITES A MINIMISER
