@@ -554,7 +554,8 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
     def _run(self):
         """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE
+        from Cata.cata import STAT_NON_LINE,CALC_CHAMP,POST_RELEVE_T,DEFI_FONCTION,AFFE_CHAR_MECA,IMPR_TABLE
+        
         coeur = self.coeur
         if self.keyw['TYPE_COEUR'] == "MONO":
             chmat_contact = self.cham_mater_free
@@ -586,22 +587,51 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                       self.thyc_load[0],
                                ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                                ))
-            # T8 - T8b
+
+            __RESULT = CALC_CHAMP(reuse =__RESULT,
+                        RESULTAT=__RESULT,
+                        INST = coeur.temps_simu['T8'],
+                        FORCE=('FORC_NODA',),)
+                        
+            __SPRING=POST_RELEVE_T(
+                        ACTION=_F(INTITULE='FORCES',
+                                  GROUP_NO=('PMNT_S'),
+                                  RESULTAT=__RESULT,
+                                  NOM_CHAM='FORC_NODA',
+                                  NOM_CMP=('DX',),
+                                  REPERE='GLOBAL',
+                                  OPERATION='EXTRACTION',),)
+
+            tab2=__SPRING.EXTR_TABLE()
+            IMPR_TABLE(TABLE=__SPRING)
+
+            valeurs=tab2.values()
+
+            inst=valeurs['INST'][-1]
+            fx=valeurs['DX']
+            noeuds=valeurs['NOEUD']
+            
+            listarg = []
+            
+            for el in zip(fx,noeuds) :
+              listarg.append(_F(NOEUD=el[1],FX=el[0]))
+       
+            assert(inst==coeur.temps_simu['T8'])
+            
+            
+            _LI2=DEFI_FONCTION(NOM_PARA='INST',VALE=(coeur.temps_simu['T8'],1.,coeur.temps_simu['T9'],0.),);
+
+            _F_EMB2=AFFE_CHAR_MECA(MODELE=self.model,
+                                    FORCE_NODALE=listarg,
+                              INFO=1,
+                              VERI_NORM='OUI',)            
+
+            # T8 - Tf
             __RESULT = STAT_NON_LINE(**self.snl(
                                   reuse=__RESULT,
                                   CHAM_MATER=self.cham_mater_free,
                                   ETAT_INIT=_F(EVOL_NOLI=__RESULT),
-                                  EXCIT=constant_load + self.vessel_head_load,
-                                  INCREMENT=_F(LIST_INST=self.times,
-                                                INST_FIN=coeur.temps_simu['T8b']),
-                                  COMPORTEMENT=self.char_ini_comp,
-                                  ))
-            # T8b - Tf
-            __RESULT = STAT_NON_LINE(**self.snl(
-                                  reuse=__RESULT,
-                                  CHAM_MATER=self.cham_mater_free,
-                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT),
-                                  EXCIT=constant_load,
+                                  EXCIT=constant_load+[_F(CHARGE=_F_EMB2,FONC_MULT=_LI2),],
                                   INCREMENT=_F(LIST_INST=self.times),
                                   COMPORTEMENT=self.char_ini_comp,
                                   ))
@@ -616,16 +646,54 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                       self.thyc_load[0] + self.thyc_load[1],
                                   ETAT_INIT=self.etat_init,
                                   ))
-            # T8 - T8b
+            __RESULT = CALC_CHAMP(reuse =__RESULT,
+                        RESULTAT=__RESULT,
+                        INST = coeur.temps_simu['T8'],
+                        FORCE=('FORC_NODA',),)
+                        
+            __SPRING=POST_RELEVE_T(
+                        ACTION=_F(INTITULE='FORCES',
+                                  GROUP_NO=('PMNT_S'),
+                                  RESULTAT=__RESULT,
+                                  NOM_CHAM='FORC_NODA',
+                                  NOM_CMP=('DX',),
+                                  REPERE='GLOBAL',
+                                  OPERATION='EXTRACTION',),)
+
+            tab2=__SPRING.EXTR_TABLE()
+            IMPR_TABLE(TABLE=__SPRING)
+
+            valeurs=tab2.values()
+
+            inst=valeurs['INST'][-1]
+            fx=valeurs['DX']
+            noeuds=valeurs['NOEUD']
+            
+            print 'fx = ',fx
+            print 'noeuds = ',noeuds
+            
+            listarg = []
+            
+            for el in zip(fx,noeuds) :
+              listarg.append(_F(NOEUD=el[1],FX=el[0]))
+       
+            assert(inst==coeur.temps_simu['T8'])
+            
+            
+            _LI2=DEFI_FONCTION(NOM_PARA='INST',VALE=(coeur.temps_simu['T8'],1.,coeur.temps_simu['T8b'],0.),);
+
+            _F_EMB2=AFFE_CHAR_MECA(MODELE=self.model,
+                                    FORCE_NODALE=listarg,
+                              INFO=1,
+                              VERI_NORM='OUI',)   
+            # T8 - Tf
             __RESULT = STAT_NON_LINE(**self.snl(
                                   reuse=__RESULT,
                                   CHAM_MATER=chmat_contact,
                                   ETAT_INIT=_F(EVOL_NOLI=__RESULT),
-                                  EXCIT=constant_load + self.vessel_head_load,
-                                  INCREMENT=_F(LIST_INST=self.times,
-                                                INST_FIN=coeur.temps_simu['T8b']),
+                                  EXCIT=constant_load+[_F(CHARGE=_F_EMB2,FONC_MULT=_LI2),],
+                                  INCREMENT=_F(LIST_INST=self.times,INST_FIN=coeur.temps_simu['T8b']),
                                   ))
-            # T8b - Tf
             __RESULT = STAT_NON_LINE(**self.snl(
                                   reuse=__RESULT,
                                   CHAM_MATER=self.cham_mater_free,
