@@ -51,7 +51,6 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
          DEFORMATION  = FACT(statut='f',max=1,
                       fr=tr("Estimation des deformations des AC"),
                RESU_INIT    = SIMP(statut='f',typ=resultat_sdaster),
-               #CHAR_INIT    = SIMP(statut='f',typ=resultat_sdaster),
                NIVE_FLUENCE = SIMP(statut='o',typ='R',validators=NoRepeat(),max=1), # FLUENCE MAXIMALE DANS LE COEUR
                UNITE_THYC      = SIMP(statut='o',typ='I', max=1),                   # Unite Logique du fichier THYC
 

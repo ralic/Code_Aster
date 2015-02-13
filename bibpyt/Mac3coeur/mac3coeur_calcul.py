@@ -105,8 +105,6 @@ class Mac3CoeurCalcul(object):
         """Initialization"""
         self.macro = macro
         self.keyw = args
-        print 'mcfact = ',self.mcfact
-        print 'args[self.mcfact] = ',args[self.mcfact]
         self.mcf = args[self.mcfact]
         # parameters
         self._niv_fluence = 0.
@@ -461,12 +459,16 @@ class Mac3CoeurCalcul(object):
                                 GROUP_MA='ELA',),
                              _F(RELATION='DIS_CHOC',
                                 GROUP_MA='RES_TOT',),
+                             _F(RELATION='DIS_CHOC',   GROUP_MA ='CREIC',),
+                             _F(RELATION='ELAS',   GROUP_MA ='CREI',),                      
                              _F(RELATION='ELAS',
                                 GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
                              _F(RELATION='VMIS_ISOT_TRAC',
                                 GROUP_MA='MAINTIEN',
                                 DEFORMATION='PETIT'),),
+            'SUIVI_DDL':_F(NOM_CHAM='DEPL',EVAL_CHAM='MAXI_ABS',GROUP_NO='CR_BAS',NOM_CMP=('DX',)),
             'NEWTON': _F(MATRICE='TANGENTE',
+                         #PREDICTION='ELASTIQUE',
                          REAC_ITER=1,),
             'SOLVEUR': _F(METHODE='MUMPS',
                           RENUM='AMF',
@@ -486,9 +488,6 @@ class Mac3CoeurCalcul(object):
         nom_co = aster.dismoi(key, resu.nom, 'RESULTAT', 'F')[2].strip()
         return self.macro.get_concept_by_type(nom_co, typ)
 
-        
-        
-    
 
 class Mac3CoeurDeformation(Mac3CoeurCalcul):
 
@@ -529,7 +528,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         elif char_init :
             if mesh :
                 UTMESS('A', 'COEUR0_1')
-            #self.char_init = char_init
             mesh = self.set_from_resu('mesh', char_init)
         else:
             mesh = super(Mac3CoeurDeformation, self).mesh
@@ -551,10 +549,48 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         else:
             model = super(Mac3CoeurDeformation, self).model
         return model
+        
+    def dechargePSC(self,RESU) :
+        from Cata.cata import CALC_CHAMP,POST_RELEVE_T,DEFI_FONCTION,AFFE_CHAR_MECA
+        coeur = self.coeur
+        
+        CALC_CHAMP(reuse =RESU,
+                    RESULTAT=RESU,
+                    INST = coeur.temps_simu['T8'],
+                    FORCE=('FORC_NODA',),)
+                    
+        __SPRING=POST_RELEVE_T(
+                    ACTION=_F(INTITULE='FORCES',
+                              GROUP_NO=('PMNT_S'),
+                              RESULTAT=RESU,
+                              NOM_CHAM='FORC_NODA',
+                              NOM_CMP=('DX',),
+                              REPERE='GLOBAL',
+                              OPERATION='EXTRACTION',),)
+
+        tab2=__SPRING.EXTR_TABLE()
+        valeurs=tab2.values()
+
+        inst=valeurs['INST'][-1]
+        fx=valeurs['DX']
+        noeuds=valeurs['NOEUD']
+        
+        listarg = []        
+        for el in zip(fx,noeuds) :
+          listarg.append(_F(NOEUD=el[1],FX=el[0]))
+    
+        assert(inst==coeur.temps_simu['T8'])
+        
+        _LI2=DEFI_FONCTION(NOM_PARA='INST',PROL_DROITE='CONSTANT',VALE=(coeur.temps_simu['T8'],1.,coeur.temps_simu['T8b'],0.),);
+
+        _F_EMB2=AFFE_CHAR_MECA(MODELE=self.model,
+                                FORCE_NODALE=listarg,)            
+        
+        return (_LI2,_F_EMB2)
 
     def _run(self):
         """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE,CALC_CHAMP,POST_RELEVE_T,DEFI_FONCTION,AFFE_CHAR_MECA,IMPR_TABLE
+        from Cata.cata import STAT_NON_LINE
         
         coeur = self.coeur
         if self.keyw['TYPE_COEUR'] == "MONO":
@@ -588,50 +624,14 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                                ))
 
-            __RESULT = CALC_CHAMP(reuse =__RESULT,
-                        RESULTAT=__RESULT,
-                        INST = coeur.temps_simu['T8'],
-                        FORCE=('FORC_NODA',),)
-                        
-            __SPRING=POST_RELEVE_T(
-                        ACTION=_F(INTITULE='FORCES',
-                                  GROUP_NO=('PMNT_S'),
-                                  RESULTAT=__RESULT,
-                                  NOM_CHAM='FORC_NODA',
-                                  NOM_CMP=('DX',),
-                                  REPERE='GLOBAL',
-                                  OPERATION='EXTRACTION',),)
-
-            tab2=__SPRING.EXTR_TABLE()
-            IMPR_TABLE(TABLE=__SPRING)
-
-            valeurs=tab2.values()
-
-            inst=valeurs['INST'][-1]
-            fx=valeurs['DX']
-            noeuds=valeurs['NOEUD']
+            (LI2,F_EMB2)=self.dechargePSC(__RESULT)
             
-            listarg = []
-            
-            for el in zip(fx,noeuds) :
-              listarg.append(_F(NOEUD=el[1],FX=el[0]))
-       
-            assert(inst==coeur.temps_simu['T8'])
-            
-            
-            _LI2=DEFI_FONCTION(NOM_PARA='INST',VALE=(coeur.temps_simu['T8'],1.,coeur.temps_simu['T9'],0.),);
-
-            _F_EMB2=AFFE_CHAR_MECA(MODELE=self.model,
-                                    FORCE_NODALE=listarg,
-                              INFO=1,
-                              VERI_NORM='OUI',)            
-
             # T8 - Tf
             __RESULT = STAT_NON_LINE(**self.snl(
                                   reuse=__RESULT,
                                   CHAM_MATER=self.cham_mater_free,
                                   ETAT_INIT=_F(EVOL_NOLI=__RESULT),
-                                  EXCIT=constant_load+[_F(CHARGE=_F_EMB2,FONC_MULT=_LI2),],
+                                  EXCIT=constant_load+[_F(CHARGE=F_EMB2,FONC_MULT=LI2),],
                                   INCREMENT=_F(LIST_INST=self.times),
                                   COMPORTEMENT=self.char_ini_comp,
                                   ))
@@ -646,52 +646,14 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                       self.thyc_load[0] + self.thyc_load[1],
                                   ETAT_INIT=self.etat_init,
                                   ))
-            __RESULT = CALC_CHAMP(reuse =__RESULT,
-                        RESULTAT=__RESULT,
-                        INST = coeur.temps_simu['T8'],
-                        FORCE=('FORC_NODA',),)
-                        
-            __SPRING=POST_RELEVE_T(
-                        ACTION=_F(INTITULE='FORCES',
-                                  GROUP_NO=('PMNT_S'),
-                                  RESULTAT=__RESULT,
-                                  NOM_CHAM='FORC_NODA',
-                                  NOM_CMP=('DX',),
-                                  REPERE='GLOBAL',
-                                  OPERATION='EXTRACTION',),)
 
-            tab2=__SPRING.EXTR_TABLE()
-            IMPR_TABLE(TABLE=__SPRING)
-
-            valeurs=tab2.values()
-
-            inst=valeurs['INST'][-1]
-            fx=valeurs['DX']
-            noeuds=valeurs['NOEUD']
-            
-            print 'fx = ',fx
-            print 'noeuds = ',noeuds
-            
-            listarg = []
-            
-            for el in zip(fx,noeuds) :
-              listarg.append(_F(NOEUD=el[1],FX=el[0]))
-       
-            assert(inst==coeur.temps_simu['T8'])
-            
-            
-            _LI2=DEFI_FONCTION(NOM_PARA='INST',VALE=(coeur.temps_simu['T8'],1.,coeur.temps_simu['T8b'],0.),);
-
-            _F_EMB2=AFFE_CHAR_MECA(MODELE=self.model,
-                                    FORCE_NODALE=listarg,
-                              INFO=1,
-                              VERI_NORM='OUI',)   
+            (LI2,F_EMB2)=self.dechargePSC(__RESULT)
             # T8 - Tf
             __RESULT = STAT_NON_LINE(**self.snl(
                                   reuse=__RESULT,
                                   CHAM_MATER=chmat_contact,
                                   ETAT_INIT=_F(EVOL_NOLI=__RESULT),
-                                  EXCIT=constant_load+[_F(CHARGE=_F_EMB2,FONC_MULT=_LI2),],
+                                  EXCIT=constant_load+[_F(CHARGE=F_EMB2,FONC_MULT=LI2),],
                                   INCREMENT=_F(LIST_INST=self.times,INST_FIN=coeur.temps_simu['T8b']),
                                   ))
             __RESULT = STAT_NON_LINE(**self.snl(
@@ -801,13 +763,9 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
     def output_resdef(self,resu,depl_deformed,tinit,tfin) :
         """save the result to be used by a next calculation"""
         from Cata.cata import CREA_RESU
-        #_pdt_ini = resu.LIST_PARA()['INST'][2]
-        #_pdt_fin = resu.LIST_PARA()['INST'][-1]
         _pdt_ini = self.coeur.temps_simu['T1']
         _pdt_fin = self.coeur.temps_simu['T4']
-        
-        #print 'tinit, tfin : ',tinit,tfin
-        
+                
         if ((not tinit) and (not tfin)) :
             _pdt_ini_out = _pdt_ini
             _pdt_fin_out = _pdt_fin
@@ -831,7 +789,6 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def _prepare_data(self,noresu=None):
         """Prepare the data for the calculation"""
-        print '_prepare_data Lame'
         self.use_archimede = 'OUI'
         if (not noresu) :
             self.res_def = self.keyw['RESU_DEF']
@@ -842,7 +799,6 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
     def _run(self,tinit=None,tfin=None):
         """Run the main part of the calculation"""
         from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR
-        print '_run Lame'
         coeur = self.coeur
         # calcul de deformation d'apres DAMAC / T0 - T1
         _snl_lame = STAT_NON_LINE(**self.snl(
@@ -889,13 +845,9 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
     def __init__(self,macro,args) :
         """Initialization"""
         from Cata.cata import CO
-        #print 'debut etat initial'
-        #super(Mac3CoeurEtatInitial, self).__init__(macro, args)
         self.args_lame={}
         self.args_defo={}
         for el in args :
-            print 'el = ',el
-            print 'args[el] = ',args[el]
             if el == 'ETAT_INITIAL' :
                 self.args_lame['LAME']=args[el]
                 self.args_defo['DEFORMATION']=args[el]
@@ -903,21 +855,14 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
                 if (el not in ['LAME','DEFORMATION']) :
                     self.args_lame[el] = args[el]
                     self.args_defo[el] = args[el]
-        print 'self.args_lame = ',self.args_lame['LAME']  
-        #RES_LM=CO('RES_LM')
-        #self.args_lame['RESU_DEF']=RES_LM
-        #args_defo['DEFORMATION']['CHAR_INIT']='RES_LM'
         super(Mac3CoeurEtatInitial, self).__init__(macro, self.args_lame)
         self.res_def=True
-        #self.lame=Mac3CoeurLame(macro,self.args_lame)
-        #self.defo=Mac3CoeurDeformation(macro,args)
 
     def _prepare_data(self,noresu):
         """Prepare the data for the calculation"""
         self.niv_fluence = self.mcf['NIVE_FLUENCE']
         if self.keyw['TYPE_COEUR'] == "MONO":
             assert(False)
-        #self.use_archimede = self.mcf['ARCHIMEDE']
         super(Mac3CoeurEtatInitial, self)._prepare_data(noresu)
 
     def _run(self,tinit=None,tfin=None):
@@ -928,11 +873,7 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
 
 
     def run(self):
-        print 'run...'
         super(Mac3CoeurEtatInitial, self).run(noresu=True)
-        print 'self.args_defo = ',self.args_defo['DEFORMATION']
-        #print 
-        #self.args_defo['DEFORMATION']['CHAR_INIT']=self.res_def
         self.defo=Mac3CoeurDeformation(self.macro,self.args_defo,self.res_def)        
         self.defo.run()
 

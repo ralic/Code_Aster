@@ -378,6 +378,15 @@ class Assemblage(object):
                REPERE='LOCAL',
                CARA='M_T_D_N',
                VALE=self.m_gri / 4.,),
+            # ressort pour blocage bas crayons
+             _F(GROUP_MA='CREI',
+               REPERE='GLOBAL',
+               CARA='K_T_D_L',
+               VALE=(1.e4,1.e4,1.e4)),
+             _F(GROUP_MA='CREIC',
+               REPERE='GLOBAL',
+               CARA='K_T_D_L',
+               VALE=(1.e9,1.e9,1.e9)),
         )
         return mcf
 

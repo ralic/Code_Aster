@@ -231,5 +231,4 @@ def perm_mac3coeur_ops(self, **args):
                 TRAN=(tran_x, tran_y, tran_z))
             UTMESS('I', 'COEUR0_3', valk=(_coeur.position_todamac(
                 _coeur.nameAC[nom]), _coeurp1.position_todamac(_coeurp1.nameAC[nom])))
-
     UTMESS('I', 'COEUR0_2', vali=(indice))

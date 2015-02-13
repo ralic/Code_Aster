@@ -685,8 +685,6 @@ def post_mac3coeur_ops(self, **args):
                 for name in POSITION:
                     name_AC_aster = name[0] + '_' + name[1]
                     name_AC_damac = _coeur.position_todamac(name_AC_aster)
-                    
-                    #print '%s (aster) -> %s (damac)'%(name_AC_aster,name_AC_damac)
 
                     cycle = 1
                     repere = 'non_renseigne'

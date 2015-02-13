@@ -497,8 +497,19 @@ class Coeur(object):
             else:
                 LISGRILI.append('GRIL_' + str(igr + 1))
 
-        _MA = CREA_MAILLAGE(MAILLAGE=MA0,
+        _MA1 = CREA_MAILLAGE(MAILLAGE=MA0,
                             CREA_POI1=tuple(LISGRIL + LISG),)
+
+        DICCR={}
+        DICCR["GROUP_MA"]='CREI'
+        DICCR["NOM"]='CREIC'
+        DICCR["PREF_MAILLE"]='M'
+        LISCR2=[]
+        LISCR2.append(DICCR)
+
+        _MA=CREA_MAILLAGE(MAILLAGE=_MA1,
+                      INFO=2,
+                     CREA_MAILLE=tuple(LISCR2),)
 
         _MA = DEFI_GROUP(reuse=_MA, ALARME='NON',
                          MAILLAGE=_MA,
@@ -614,7 +625,7 @@ class Coeur(object):
                                     _F(GROUP_MA =('MAINTIEN',),
                                        PHENOMENE = 'MECANIQUE',
                                        MODELISATION = 'BARRE',),
-                                    _F(GROUP_MA ='RES_TOT',
+                                    _F(GROUP_MA =('RES_TOT','CREI','CREIC'),
                                        PHENOMENE = 'MECANIQUE',
                                        MODELISATION = 'DIS_T',),),)
 
@@ -640,7 +651,7 @@ class Coeur(object):
         _LI = DEFI_LIST_REEL(DEBUT=self.temps_simu['T0'], INTERVALLE=_list,)
 
         _TE = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=_LI,),
-                             ECHEC=_F(SUBD_PAS=2, SUBD_NIVEAU=5,),)
+                             ECHEC=_F(SUBD_PAS=2, SUBD_NIVEAU=10,),)
 
         return _TE
 
@@ -931,6 +942,10 @@ class Coeur(object):
         else:
             _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E1))
 
+ 
+        _M_BCR = DEFI_MATERIAU( DIS_CONTACT = _F( RIGI_NOR = 1.E9, JEU=.0),);
+ 
+        mcf_affe_mater = self.mcf_coeur_mater(_M_RES,_M_BCR)
         # Affectation des materiau dans le coeur
         _A_MAT = AFFE_MATERIAU(MAILLAGE=MAILLAGE,
                                AFFE_VARC=(_F(NOM_VARC='IRRA',
@@ -942,7 +957,7 @@ class Coeur(object):
                                              EVOL=CHTH,
                                              PROL_DROITE='CONSTANT',
                                              VALE_REF=self.TP_REF)),
-                               AFFE=self.mcf_coeur_mater(_M_RES),
+                               AFFE=mcf_affe_mater,
                                AFFE_COMPOR=self.mcf_compor_fibre(GFF))
         return _A_MAT
 
@@ -972,7 +987,7 @@ class Coeur(object):
 
         return mcf
 
-    def mcf_coeur_mater(self, _M_RES):
+    def mcf_coeur_mater(self, _M_RES, _M_BCR):
         from Accas import _F
         DEFI_MATERIAU = self.macro.get_cmd('DEFI_MATERIAU')
         # Definition d'un materiau bidon pour les elements de poutres
@@ -999,6 +1014,8 @@ class Coeur(object):
             # On repete en ecrasant a chaque fois avec la meme valeur pour tout
             # le groupe DIL
         mtmp = (_F(GROUP_MA='DIL', MATER=ac.mate.mate['DIL'],),)
+        mcf.extend(mtmp)
+        mtmp = (_F(GROUP_MA = 'CREIC', MATER = _M_BCR,),)
         mcf.extend(mtmp)
         return mcf
 
