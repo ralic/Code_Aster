@@ -17,6 +17,9 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
 PILO_PRED_ELAS_M
+%
+% Cette option est une variante de PILO_PRED_ELAS dediee a certains elements XFEM
+%
 OPTION__
    IN__
         PGEOMER  GEOM_R
@@ -38,3 +41,8 @@ OPTION__
         PDEPL1R  DEPL_R
    OUT__
         PCOPILO  PILO_R ELNO__
+
+COND_CALCUL__
+
+%               -- Cette option ne concerne que les elements 'XHC3':
+                PLUS__   PHENO='ME' XFEM='XHC3'

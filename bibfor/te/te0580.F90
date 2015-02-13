@@ -40,8 +40,10 @@ subroutine te0580(nomopt, nomte)
     character(len=32) :: phenom
     character(len=8) :: param
     character(len=8) :: lparam1(2)=(/ 'PPRESSR', 'PPRESSF' /)
-    character(len=8) :: lparam2(6)=(/ 'PPRESSR', 'PPRESSF', 'PFR2D3D', &
-                                      'PFF2D3D', 'PFR1D2D', 'PFF1D2D' /)
+    character(len=8) :: lparam2(6)
+
+    data  lparam2 / 'PPRESSR', 'PPRESSF', 'PFR2D3D', &
+                    'PFF2D3D', 'PFR1D2D', 'PFF1D2D' /
 
 !-----------------------------------------------------------------------
 ! Cette routine realise les calculs elementaires "triviaux" qui ne sont pas

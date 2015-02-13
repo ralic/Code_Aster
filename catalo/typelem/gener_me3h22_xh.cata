@@ -26,13 +26,11 @@ ENTETE__ ELEMENT__ HM_FACE8_XH         MAILLE__ QUAD8
    ELREFE__  QU4       GAUSS__  RIGI=FPG9
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
-   ATTRIBUT__  XFEM='XH'
    ENS_NOEUD__  EN2     =     5  6  7  8
    ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ HM_FACE6_XH        MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG6
    ELREFE__  TR3       GAUSS__  RIGI=FPG6
-   ATTRIBUT__  XFEM='XH'
    ENS_NOEUD__  EN2     =     4  5  6
    ENS_NOEUD__  EN1     =     1  2  3
 
@@ -60,17 +58,17 @@ MODE_LOCAL__
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EFLHN    = FLHN_R   ELGA__ RIGI    (FH11     )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-   
+
     E10NEUTI = N120_I    ELEM__         (X[10]     )
     N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
     E6NEUTI = N128_I    ELEM__         (X[6])
     E36NEUI = N512_I    ELEM__         (X[36])
-   
-    E12NEUTR = N132_R   ELEM__         (X[12])  
-    E33NEUTR = N480_R   ELEM__         (X[33])                      
+
+    E12NEUTR = N132_R   ELEM__         (X[12])
+    E33NEUTR = N480_R   ELEM__         (X[33])
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X[30]    )
-    STANO_I  = N120_I   ELNO__ IDEN__  (X1       ) 
+    STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

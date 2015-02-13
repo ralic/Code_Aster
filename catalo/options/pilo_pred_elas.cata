@@ -44,4 +44,11 @@ OPTION__
         PCAMASS  CAMASS 'CARA!.CARMASSI' <<  PCAMASS : CARACTERISTIQUE DE MASSIF  >>
    OUT__
         PCOPILO  PILO_R ELGA__
+
 COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
+
+%               -- Pour les elements XFEM, cette option ne concerne que les elements 'XHC':
+%                  Mais il est difficile pour l'utilisateur de ne designer QUE les elements XHC,
+%                  c'est pour cela que l'on retire les autres elements XFEM qui les bordent :
+                MOINS__  PHENO='ME' LXFEM='OUI'
+                PLUS__   PHENO='ME' XFEM='XHC'

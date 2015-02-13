@@ -23,19 +23,16 @@ TYPE_GENE__
 ENTETE__ ELEMENT__ MECPTR3_XH      MAILLE__ TRIA3
    ELREFE__  TR3       GAUSS__  RIGI=FPG3  MASS=FPG3  XINT=FPG12  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM36   FPG1=FPG1 FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
-   ATTRIBUT__  XFEM='XH'
    ENS_NOEUD__  EN1     =     1   2   3
 ENTETE__ ELEMENT__ MECPQU4_XH      MAILLE__ QUAD4
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4   NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72  FPG1=FPG1  FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  TR3       GAUSS__  RIGI=FPG3  MASS=FPG3  XINT=FPG12  NOEU_S=NOEU_S  NOEU=NOEU
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
-   ATTRIBUT__  XFEM='XH'
    ENS_NOEUD__  EN1     =     1   2   3   4
 ENTETE__ ELEMENT__ MECPTR6_XH      MAILLE__ TRIA6
    ELREFE__  TR6       GAUSS__  RIGI=FPG3  MASS=FPG6 XINT=FPG12   NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM72   FPG1=FPG1 FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
    ELREFE__  SE3       GAUSS__  RIGI=FPG4  MASS=FPG4
-   ATTRIBUT__  XFEM='XH'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6
 ENTETE__ ELEMENT__ MECPQU8_XH      MAILLE__ QUAD8
    ELREFE__  QU8       GAUSS__  RIGI=FPG9  MASS=FPG9  NOEU_S=NOEU_S  NOEU=NOEU XFEM=XFEM144  FPG1=FPG1 FPG_LISTE__  MATER = (RIGI XFEM NOEU FPG1)
@@ -44,17 +41,16 @@ ENTETE__ ELEMENT__ MECPQU8_XH      MAILLE__ QUAD8
    ELREFE__  TR3       GAUSS__  RIGI=FPG3  MASS=FPG3 XINT=FPG12
    ELREFE__  SE3       GAUSS__  RIGI=FPG4  MASS=FPG4
    ELREFE__  SE2       GAUSS__  RIGI=FPG2  MASS=FPG3
-   ATTRIBUT__  XFEM='XH'
    ENS_NOEUD__  EN1     =     1   2   3   4   5   6   7   8
 
 MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        W        )
-   
-   
+
+
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CCAMASS  = CAMASS   ELEM__         (C        ALPHA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR
                                        POSTITER LC_EXT[3] MODECALC ALPHA LC_EXT2[2] )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
@@ -62,7 +58,7 @@ MODE_LOCAL__
                                         KIT6     KIT7     KIT8     KIT9     )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-   
+
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
     CREFERI  = NEUT_I   ELEM__         (X[12]    )
@@ -76,7 +72,7 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
-   
+
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E10NEUTI = N120_I    ELEM__         (X[10]     )
     N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
@@ -104,7 +100,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     )
     ECONTSE  = N1920R   ELEM__         (X[144]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-   
+
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
     EGGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
@@ -116,7 +112,7 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
-   
+
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )
@@ -144,7 +140,7 @@ OPTION__
 
 %   -- te0580 : ne resout que les cas triviaux : 0.
     AMOR_MECA           580   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER   OUT__ MMATUUR  PMATUUR
-    
+
     CALC_G           288  IN__  E35NEUTR PAINTER  E28NEUTR PBASECO  N6NEUT_R PBASLOR  E9NEUTI  PCFACE
                                 E36NEUI  PCNSETO  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU
                                 NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  E3NEUTI  PLONGCO
@@ -160,7 +156,7 @@ OPTION__
                                 E14NEUTR PPINTER  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  CPRESSF  PPRESSF
                                 CROTATR  PROTATR  CTEMPSR  PTEMPSR  DDL_MECC PTHETAR  ZVARCPG  PVARCPR
                                 ZVARCPG  PVARCRR  ECONTSE  PSIGISE  ECONTPG  PCONTRR  N5NEUTI  PHEA_NO
-                          OUT__ EGTHETA  PGTHETA                                
+                          OUT__ EGTHETA  PGTHETA
     CALC_GTP         288  IN__  E35NEUTR PAINTER  E28NEUTR PBASECO  N6NEUT_R PBASLOR  E9NEUTI  PCFACE
                                 E36NEUI  PCNSETO  CCOMPOR  PCOMPOR  DDL_MECA PDEPLAR  NFORCER  PFRVOLU
                                 NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  E3NEUTI  PLONGCO
@@ -235,7 +231,7 @@ OPTION__
                                 N1NEUT_R PLSN     N1NEUT_R PLST     E6NEUTR  PPINTTO  E22NEUTR PPMILTO
                                 STANO_I  PSTANO   ZVARCPG  PVARCPR  N5NEUTI  PHEA_NO
                           OUT__ MVECTUR  PVECTUR
-    INI_XFEM_ELNO    99   IN__    OUT__  N6NEUT_R PBASLOR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST  FISNO_I  PFISNO  
+    INI_XFEM_ELNO    99   IN__    OUT__  N6NEUT_R PBASLOR  STANO_I  PSTANO   N1NEUT_R PLSN     N1NEUT_R PLST  FISNO_I  PFISNO
     FULL_MECA        539  IN__  N6NEUT_R PBASLOR  CCAMASS  PCAMASS  CCARCRI  PCARCRI  E36NEUI  PCNSETO
                                 CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                 NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
@@ -305,8 +301,8 @@ OPTION__
                                 E6NEUTI  PHEAVTO  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  E15NEUTR PAINTTO
                           OUT__ E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   E14NEUTR PGESCLA
                                 E14NEUTR PGESCLO  E14NEUTR PGMAITR  E3NEUTI  PLONGCO  E14NEUTR PPINTER
-    TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET 
-                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  E6NEUTR  PPINTTO  
+    TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET
+                          OUT__ E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  E6NEUTR  PPINTTO
                                 E22NEUTR PPMILTO  E15NEUTR PAINTTO
     TOU_INI_ELGA      99  IN__
                           OUT__ EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
