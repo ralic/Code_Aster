@@ -125,5 +125,73 @@ TEST_TABLE(
            TABLE=RMS5,
            )
 ################################################################
+
+#################################################################
+#"GAMMA, ACCE_MAX , COEF_CORR"
+#----------------------------------------------------------------
+ecart=1.0/9.81
+TSM=3.0
+ACCEXY=GENE_ACCE_SEISME( INFO =2, INIT_ALEA=100000, 
+               PESANTEUR =9.81,  DUREE_PHASE_FORTE =TSM, PAS_INST = DT, FREQ_PENTE=-0.5, COEF_CORR=0.5,
+               DSP        = _F(AMOR_REDUIT  =amor,  FREQ_FOND =frr, ),
+               MODULATION      = _F( TYPE=   "GAMMA", INST_INI= tini, ECART_TYPE = ecart),)
+
+FONCTX=RECU_FONCTION(TABLE=ACCEXY,
+                         FILTRE=(_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+                                 _F(NOM_PARA = 'NOM_PARA', VALE_K = 'ACCE1'),),
+                        NOM_PARA_TABL='FONCTION',)
+
+FONCTY=RECU_FONCTION( TABLE=ACCEXY,
+                         FILTRE=(_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+                                 _F(NOM_PARA = 'NOM_PARA', VALE_K = 'ACCE2'),),
+                        NOM_PARA_TABL='FONCTION',)
+
+N_MAXX=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCTX,
+                             OPTION = ('MAXI') ))
+
+N_dureeX=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCTX,
+                             PESANTEUR = 9.81, OPTION = ('DUREE_PHAS_FORT'  ) ))
+
+N_dureeY=INFO_FONCTION(  NOCI_SEISME=_F(
+                             FONCTION = FONCTY,
+                             PESANTEUR = 9.81, OPTION = ('DUREE_PHAS_FORT'  ) ))
+
+RMSX=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCTX))
+RMSY=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCTY))
+
+
+TEST_TABLE(
+           VALE_CALC=2.97664060417,
+           NOM_PARA='ACCE_MAX',
+           TABLE=N_MAXX,
+           )
+
+TEST_TABLE(VALE_CALC=3.12,
+           NOM_PARA='DUREE_PHAS_FORT',
+           VALE_REFE=TSM,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.1,
+           TABLE=N_dureeX,
+           )
+TEST_TABLE(VALE_CALC=3.19,
+           NOM_PARA='DUREE_PHAS_FORT',
+           VALE_REFE=TSM,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.1,
+           TABLE=N_dureeY,
+           )
+
+TEST_TABLE(VALE_CALC=0.520514619841,
+           NOM_PARA='ECART_TYPE',
+           TABLE=RMSX,
+           )
+
+TEST_TABLE(VALE_CALC=0.531123991018,
+           NOM_PARA='ECART_TYPE',
+           TABLE=RMSY,
+           )
+
 ################################################################
 FIN( )

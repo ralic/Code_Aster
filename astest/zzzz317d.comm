@@ -57,7 +57,7 @@ tini=2.5
 SA_1=0.1415
 SA_013=0.0127
 ############################################
-## on teste NBTIR>1, NB_ITER=0
+## on teste NBTIR>1, NB_ITER=0, COEF_CORR
 #############################################
 
 nbtir=20
@@ -71,29 +71,57 @@ ACCE1a=GENE_ACCE_SEISME( INFO =2,
                                        LIST_FREQ = L_FREQ2, ),
                MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
+ACCEXY=GENE_ACCE_SEISME( INFO =2,
+              INIT_ALEA=200000,
+              PAS_INST = 0.01, PESANTEUR =9.81,DUREE_PHASE_FORTE =TSM, NB_TIRAGE = nbtir,
+              NB_POIN = 2**11, FREQ_FILTRE = fc, FREQ_CORNER = fc, COEF_CORR=0.5,
+              SPEC_MEDIANE  = _F(SPEC_OSCI  =SRO_NGA, AMOR_REDUIT=amor, METHODE='NIGAM',
+                                       LIST_FREQ = L_FREQ2, ),
+               MODULATION      = _F(TYPE="GAMMA",INST_INI=tini, ),)
 
 # Calcul spectre median 
 FONC1=[None]*(nbtir)
 SRO1=[None]*(nbtir)
 l_SRO=[]
-
-
+FONCX=[None]*(nbtir)
+FONCY=[None]*(nbtir)
+SROX=[None]*(nbtir)
+l_SROX=[]
+SROY=[None]*(nbtir)
+l_SROY=[]
 for ii in range(nbtir):
    nacc=ii+1
    FONC1[ii]=RECU_FONCTION(  TABLE=ACCE1a,
                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
                                        VALE_I = nacc),
                         NOM_PARA_TABL='FONCTION',)
+   FONCX[ii]=RECU_FONCTION(  TABLE=ACCEXY,
+                        FILTRE=(_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = nacc),
+                                 _F(NOM_PARA = 'NOM_PARA',    VALE_K = 'ACCE1'),),
+                        NOM_PARA_TABL='FONCTION',)
+
+   FONCY[ii]=RECU_FONCTION(  TABLE=ACCEXY,
+                        FILTRE=(_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = nacc),
+                                 _F(NOM_PARA = 'NOM_PARA',    VALE_K = 'ACCE2'),),
+                        NOM_PARA_TABL='FONCTION',)
+
    SRO1[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONC1[ii], LIST_FREQ = L_FREQ, 
                           METHODE='HARMO',NORME=9.81, AMOR_REDUIT=(amo_sro,),),);  
+   SROX[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCX[ii], LIST_FREQ = L_FREQ, 
+                          NORME=9.81, AMOR_REDUIT=(amo_sro,),),); 
+   SROY[ii]=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=FONCY[ii], LIST_FREQ = L_FREQ, 
+                          NORME=9.81, AMOR_REDUIT=(amo_sro,),),); 
+
    l_SRO.append(SRO1[ii])
-
-
+   l_SROX.append(SROX[ii])
+   l_SROY.append(SROY[ii])
 
 SRO_MED=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SRO,
                              FRACT=0.5) )
-
-
+SRO_MEDX=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SROX,
+                             FRACT=0.5) )
+SRO_MEDY=CALC_FONCTION(FRACTILE=_F(FONCTION=l_SROY,
+                             FRACT=0.5) )
 
 ############################################
 ## TESTS
@@ -118,9 +146,39 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15934181,
                          PRECISION=0.1,
                          FONCTION=SRO_MED,),
                          ),)
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.15048731923644,
+                         VALE_REFE=ZPA_50    ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_MEDX,),
+                        _F(VALE_CALC= 0.18655343903912  ,
+                         VALE_REFE=SA_25  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_MEDX,),
+                        _F(VALE_CALC=7.989470143007E-03 ,                      
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1333),
+                         FONCTION=SRO_MEDX,),
+                         ),)
 
-
-
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.16794194439772,
+                         VALE_REFE=ZPA_50    ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 50.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_MEDY,),
+                        _F(VALE_CALC= 0.19314756323716 ,
+                         VALE_REFE=SA_25  ,                        
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 25.0),
+                         REFERENCE='ANALYTIQUE',
+                         PRECISION=0.1,
+                         FONCTION=SRO_MEDY,),
+                        _F(VALE_CALC=9.328498244959E-03 ,                       
+                         NOM_PARA=('AMOR', 'FREQ'), VALE_PARA=(0.05, 0.1333),
+                         FONCTION=SRO_MEDY,),
+                         ),)
 ############################################
 ## on valide ici METHODE=NIGAM
 #############################################
