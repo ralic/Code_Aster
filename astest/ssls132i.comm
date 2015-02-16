@@ -161,7 +161,6 @@ LIMPLEX=CALC_CHAMP(reuse = LIMPLEX,
                 RESULTAT=LIMPLEX,
                 DEFORMATION ='EPSI_ELNO',
                 CONTRAINTE = 'SIEF_ELNO',
-                CRITERES='SIEQ_ELNO',
                 FORCE = 'FORC_NODA');
 
 
@@ -212,7 +211,6 @@ LEDEP=CALC_CHAMP(reuse =LEDEP,
                 RESULTAT=LEDEP,
                 DEFORMATION ='EPSI_ELNO',
                 CONTRAINTE = 'SIEF_ELNO',
-                CRITERES='SIEQ_ELNO',
                 FORCE = 'FORC_NODA');
 
 

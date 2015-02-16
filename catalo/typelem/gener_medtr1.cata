@@ -32,7 +32,7 @@ MODE_LOCAL__
                                         DISK     DISM     DISA     ETAK     TYDI     )
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     GAMMA    )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR
                                        POSTITER LC_EXT[3] MODECALC ALPHA LC_EXT2[2] )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
@@ -55,7 +55,7 @@ MODE_LOCAL__
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y        Z        )
     EEFGEGA  = SIEF_R   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
     EEFGEGC  = SIEF_C   ELGA__ RIGI    (N        VY       VZ       MT       MFY      MFZ      )
-   
+
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     EEFGENC  = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ      )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
@@ -79,9 +79,7 @@ MATRICE__
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 OPTION__
-    MECA_GYRO                 -2 IN__ OUT__ XXXXXX XXXXXX
-    RIGI_GYRO                 -2 IN__ OUT__ XXXXXX XXXXXX
-    
+
     ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
                               OUT__  EEFGEGA  PEPCON3
     AMOR_MECA         41  IN__  CCADISA  PCADISA  CCAORIE  PCAORIE  CCINFDI  PCINFDI  CMATERC  PMATERC

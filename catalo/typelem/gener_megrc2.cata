@@ -30,7 +30,7 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CCACOQU  = CACOQU   ELEM__         (SECT_L   ALPHA    BETA     DIST_N   CTOR     )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR
                                        POSTITER LC_EXT[3] MODECALC ALPHA LC_EXT2[2] )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CEPSINR  = EPSI_R   ELEM__         (EXX)
@@ -43,9 +43,9 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-   
-   
-   
+
+
+
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EXX     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EXX     )
     EENERR   = ENER_R   ELEM__         (TOTALE   )
@@ -76,8 +76,6 @@ MATRICE__
     MMATUUC = MDEP_C NDEPLAC NDEPLAC
 
 OPTION__
-
-    SIEQ_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX 
 
     ADD_SIGM         581  IN__  ECONTPG  PEPCON1  ECONTPG  PEPCON2
                           OUT__ ECONTPG  PEPCON3

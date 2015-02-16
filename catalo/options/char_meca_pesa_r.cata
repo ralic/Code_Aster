@@ -53,5 +53,12 @@ PVECTUR VDEP_R RESL__
 
 COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
                 MOINS__ PHENO='ME' INTERFACE='OUI'
-                MOINS__ PHENO='ME' MODELI='D2D'
                 MOINS__ PHENO='ME' ABSO='OUI'
+
+                % les 5 modelisations suivantes n'ont pas de masse :
+                MOINS__ PHENO='ME' MODELI='3FL'
+                MOINS__ PHENO='ME' MODELI='2FL'
+                MOINS__ PHENO='ME' MODELI='2FP'
+                MOINS__ PHENO='ME' MODELI='D2D'
+                MOINS__ PHENO='ME' MODELI='D3D'
+

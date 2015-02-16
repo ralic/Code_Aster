@@ -139,7 +139,7 @@ LEDEP=CALC_CHAMP(reuse =LEDEP,
                 RESULTAT=LEDEP,
                 DEFORMATION ='EPSI_ELNO',
                 CONTRAINTE = 'SIEF_ELNO',
-                CRITERES='SIEQ_ELNO',
+             #  CRITERES='SIEQ_ELNO',
                 FORCE = 'FORC_NODA');
 
 IMPR_RESU(FORMAT='MED',

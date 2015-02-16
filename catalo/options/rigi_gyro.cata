@@ -37,3 +37,8 @@ OPTION__
 << MATRICE ELEMENTAIRE DE RAIDEUR GYROSCOPIQUE >>
 
 COND_CALCUL__   PLUS__   PHENO='ME' BORD='0'
+
+%               Pour les elements discrets (voir u2.06.31), le calcul n'est possible que pour
+%               les elements nodaux ayant des ddls de rotation :
+                MOINS__ PHENO='ME' MODELI='DIT'
+                MOINS__ ALIAS8='MEDTRSE2'

@@ -78,7 +78,6 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    CHAR_MECA_PESA_R       -2 IN__ OUT__ XXXXXX XXXXXX
 
     COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
                           OUT__ EGGEOP_R PCOORPG  

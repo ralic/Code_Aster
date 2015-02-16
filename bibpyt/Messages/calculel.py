@@ -309,11 +309,11 @@ Conseil :
 
     43 : _(u"""
 Alarme utilisateur :
-  Le TYPE_ELEMENT %(k1)s devrait savoir calculer l'option:  %(k2)s mais il ne
-  le fait pas encore (la programmation est manquante).
+  Le TYPE_ELEMENT %(k1)s devrait calculer l'option:  %(k2)s, 
+  mais il ne le fait pas encore (la programmation est manquante).
 
-  Pour l'instant, l'élément est ignoré pour le calcul de cette option, ce qui peut
-  entraîner des résultats faux.
+  Pour l'instant, l'élément est ignoré pour le calcul de cette option, 
+  ce qui peut entraîner des résultats faux.
 
 
 -> Risques & Conseils :
@@ -324,7 +324,7 @@ Alarme utilisateur :
 
     44 : _(u"""
 Erreur :
-  Le TYPE_ELEMENT %(k1)s devrait savoir calculer l'option:  %(k2)s, 
+  Le TYPE_ELEMENT %(k1)s devrait calculer l'option :  %(k2)s, 
   mais il ne le fait pas encore (la programmation est manquante).
   Le calcul n'est possible que dans les cas "triviaux" : chargement nul, ...
 

@@ -56,7 +56,7 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
                                  PFON      =(0.5 , 0.5 , 0.),
                                  NORMALE   =(0. , 1. , 0.),
                                  DTAN      =(1. ,0. , 0.)),);
-                   
+
 MO=MODI_MODELE_XFEM(MODELE_IN=MO_SAIN,FISSURE=FISS)
 
 MAT_TEST=DEFI_MATERIAU(ELAS=_F(E=1,
@@ -134,7 +134,7 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=(_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),),
-                    );  
+                    );
 
 RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                       RESULTAT    = RESU)
@@ -144,7 +144,7 @@ IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_X1))
 
 RESU=CALC_CHAMP(reuse=RESU,
                     RESULTAT=RESU,
-                    DEFORMATION=('EPSI_ELGA','EPSP_ELNO',),
+                    DEFORMATION=('EPSP_ELNO',),
                    VARI_INTERNE=('VARI_ELNO',)
                );
 
@@ -168,7 +168,7 @@ G_INIT2=CALC_G(THETA=_F(FISSURE=FISS,
 KMECA=POST_K1_K2_K3(MODELISATION='3D',
                     MATER = MAT_TEST,
                     FISSURE=FISS,
-                    RESULTAT=RESU) 
+                    RESULTAT=RESU)
 IMPR_TABLE(TABLE=G_INIT)
 IMPR_TABLE(TABLE=G_INIT2)
 IMPR_TABLE(TABLE=KMECA)

@@ -143,7 +143,6 @@ MATRICE__
 
 OPTION__
     PILO_PRED_ELAS            -2 IN__ OUT__ XXXXXX XXXXXX
-    EPSI_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX
     EPSP_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX
     EPSP_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX
     VARI_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX

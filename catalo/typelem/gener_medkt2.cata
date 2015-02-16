@@ -88,7 +88,7 @@ MODE_LOCAL__
     CCAORIE  = CAORIE   ELEM__         (ALPHA    BETA     REP      AXE_X    AXE_Y    AXE_Z
                                         O_X      O_Y      O_Z      )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   PERTURB
-                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR 
+                                        TOLDEBO  ITEDEBO  TSSEUIL  TSAMPL   TSRETOUR
                                        POSTITER LC_EXT[3] MODECALC ALPHA LC_EXT2[2] )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   NUME_LC
@@ -133,8 +133,8 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEMA_R = GEOM_R   ELGA__ MATER   (X        Y        Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-   
-   
+
+
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
@@ -150,14 +150,14 @@ MODE_LOCAL__
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
     ENBSP_I  = NBSP_I   ELEM__         (COQ_NCOU )
-   
+
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     EREFCO   = PREC     ELEM__         (EFFORT    MOMENT)
-   
+
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ RIGI    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -182,7 +182,7 @@ MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
-   
+
     EGAMIMA  = SPMX_R   ELGA__ RIGI    (VAL      NUCOU    NUSECT   NUFIBR   POSIC    POSIS    )
     ENOMIMA  = SPMX_R   ELNO__ IDEN__  (VAL      NUCOU    NUSECT   NUFIBR   POSIC    POSIS    )
     ECHGREP  = CHGREPER ELEM__         (NATCHG   CMAT[9] )
@@ -193,14 +193,19 @@ VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
 
 MATRICE__
-    MMATUUC = MDEP_C NDEPLAC NDEPLAC
+    MMATUUC = MDEP_C NDEPLAC  NDEPLAC
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
+    MMATUNS = MDNS_R DDL_MECA DDL_MECA
 
 
 OPTION__
 
-    RIGI_MECA_PRSU_F          -2 IN__ OUT__ XXXXXX XXXXXX 
-    RIGI_MECA_PRSU_R          -2 IN__ OUT__ XXXXXX XXXXXX 
+%   -- te0580 : ne resout que le cas trivial : pres=0.
+    RIGI_MECA_PRSU_F 580  IN__  CPRESSF  PPRESSF  OUT__ MMATUNS  PMATUNS
+    RIGI_MECA_PRSU_R 580  IN__  EPRESNO  PPRESSR  OUT__ MMATUNS  PMATUNS
+    CHAR_MECA_PRSU_F 580  IN__  CPRESSF  PPRESSF  OUT__ MVECTUR  PVECTUR
+    CHAR_MECA_PRSU_R 580  IN__  EPRESNO  PPRESSR  OUT__ MVECTUR  PVECTUR
+
 
     ACCEPTANCE       329  IN__  NACCELR  PACCELR  NGEOMER  PGEOMER  CNUMMOD  PNUMMOD
                           OUT__ MVECTAR  PVECTUR
@@ -228,11 +233,6 @@ OPTION__
     CHAR_MECA_PRES_F  32  IN__  CCACOQU  PCACOQU  NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR
                           OUT__ MVECTUR  PVECTUR
     CHAR_MECA_PRES_R  32  IN__  CCACOQU  PCACOQU  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                          OUT__ MVECTUR  PVECTUR
-    CHAR_MECA_PRSU_F 487  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                CTEMPSR  PTEMPSR
-                          OUT__ MVECTUR  PVECTUR
-    CHAR_MECA_PRSU_R 486  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                           OUT__ MVECTUR  PVECTUR
     CHAR_MECA_SECH_R 312  IN__  CMATERC  PMATERC  ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR

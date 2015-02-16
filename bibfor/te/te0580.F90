@@ -3,6 +3,7 @@ subroutine te0580(nomopt, nomte)
 ! aslint: disable=C1505
 #include "jeveux.h"
 #include "asterfort/utmess.h"
+#include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
@@ -28,11 +29,11 @@ subroutine te0580(nomopt, nomte)
     character(len=16) :: nomte, nomopt
 
 !-----------------------------------------------------------------------
- 
+
     character(len=1) :: code
     integer :: jad, itab(8), nbv, iret, k, kpara, mater, icodre(2)
-    integer :: imate,idimge,npara,nno,igeom,ndim,ino
-    real(kind=8) :: valres(2), valpar(3),vxyz
+    integer :: imate,idimge,npara,nno,igeom,ndim,ino,ier
+    real(kind=8) :: valres(2), valpar(3),vxyz, pr
     character(len=8) :: nompar(3)
     character(len=16) :: nomres(2)
     character(len=24) :: valk(2)
@@ -49,8 +50,9 @@ subroutine te0580(nomopt, nomte)
 !-----------------------------------------------------------------------
 
 
-    if (nomopt.eq.'CHAR_MECA_PRES_R' .or. nomopt.eq.'CHAR_MECA_PRES_F') then
-!   =========================================================================
+    if (nomopt(1:15).eq.'CHAR_MECA_PRES_' .or. nomopt(1:15).eq.'CHAR_MECA_PRSU_'  &
+       .or. nomopt(1:15).eq.'RIGI_MECA_PRSU_'  ) then
+!   ===================================================================================
         do kpara=1,2
             param=lparam1(kpara)
             call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
@@ -64,7 +66,14 @@ subroutine te0580(nomopt, nomte)
                     enddo
                 else
                     do k=1,nbv
-                        if (zk8(jad-1+k).ne.'&FOZERO') goto 998
+                        if (zk8(jad-1+k).ne.'&FOZERO') then
+                            call fointe(' ', zk8(jad-1+k), 0, ' ', [0.d0], pr, ier)
+                            if (ier.eq.0 .and. pr.eq.0.d0) then
+                                ! tout va bien ...
+                            else
+                                goto 998
+                            endif
+                        endif
                     enddo
                 endif
             endif
@@ -175,3 +184,4 @@ subroutine te0580(nomopt, nomte)
 999 continue
 
 end subroutine
+

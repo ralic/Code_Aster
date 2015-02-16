@@ -17,7 +17,7 @@
 % ======================================================================
 GENER_ME2FP2
 
-% Ce catalogue correspondant aux elements de surface libre fluide (2D) 
+% Ce catalogue correspondant aux elements de surface libre fluide (2D)
 % pour le couplage fluide-structure n'ont que des DDL de :
 %  deplacement vertical DH et potentiel de deplacement PHI.
 %
@@ -46,11 +46,11 @@ MODE_LOCAL__
     ECOURAN  = NEUT_R   ELEM__         (X1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W       )
-   
-   
-   
+
+
+
     ECODRET  = CODE_I   ELEM__         (IRET     )
-   
+
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
@@ -64,28 +64,27 @@ MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
 
 OPTION__
-    CHAR_MECA_PESA_R       -2 IN__ OUT__ XXXXXX XXXXXX
 
-    COOR_ELGA        488  IN__  NGEOMER  PGEOMER  
-                          OUT__ EGGEOP_R PCOORPG  
-    FORC_NODA        370  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                          OUT__ MVECTUR  PVECTUR  
-    FULL_MECA        370  IN__  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  
-                                CMATERC  PMATERC  
-                          OUT__ ECODRET  PCODRET  MMATUUR  PMATUUR  MVECTUR  PVECTUR  
-    MASS_MECA        371  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                          OUT__ MMATUUR  PMATUUR  
-    NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR  
-                          OUT__ EDCEL_I  PDCEL_I  
-    PAS_COURANT      405  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                          OUT__ ECOURAN  PCOURAN  
-    RAPH_MECA        370  IN__  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  
-                                CMATERC  PMATERC  
-                          OUT__ ECODRET  PCODRET  MVECTUR  PVECTUR  
-    RIGI_MECA        370  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                          OUT__ MMATUUR  PMATUUR  
-    RIGI_MECA_HYST   370  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                          OUT__ MMATUUC  PMATUUC  
-    RIGI_MECA_TANG   370  IN__  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  
-                                CMATERC  PMATERC  
-                          OUT__ MMATUUR  PMATUUR  
+    COOR_ELGA        488  IN__  NGEOMER  PGEOMER
+                          OUT__ EGGEOP_R PCOORPG
+    FORC_NODA        370  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                          OUT__ MVECTUR  PVECTUR
+    FULL_MECA        370  IN__  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+                                CMATERC  PMATERC
+                          OUT__ ECODRET  PCODRET  MMATUUR  PMATUUR  MVECTUR  PVECTUR
+    MASS_MECA        371  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC
+                          OUT__ MMATUUR  PMATUUR
+    NSPG_NBVA        496  IN__  CCOMPO2  PCOMPOR
+                          OUT__ EDCEL_I  PDCEL_I
+    PAS_COURANT      405  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC
+                          OUT__ ECOURAN  PCOURAN
+    RAPH_MECA        370  IN__  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+                                CMATERC  PMATERC
+                          OUT__ ECODRET  PCODRET  MVECTUR  PVECTUR
+    RIGI_MECA        370  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC
+                          OUT__ MMATUUR  PMATUUR
+    RIGI_MECA_HYST   370  IN__  NGEOMER  PGEOMER  CMATERC  PMATERC
+                          OUT__ MMATUUC  PMATUUC
+    RIGI_MECA_TANG   370  IN__  CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
+                                CMATERC  PMATERC
+                          OUT__ MMATUUR  PMATUUR
