@@ -27,9 +27,11 @@
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MAIL=LIRE_MAILLAGE()
 MAIL=DEFI_GROUP(reuse =MAIL,
-              MAILLAGE=MAIL,
-             CREA_GROUP_MA=_F(TOUT='OUI',
-                               NOM='TOUT',),)
+             MAILLAGE=MAIL,
+             CREA_GROUP_MA=(
+                _F(TOUT='OUI', NOM='TOUT',),
+                _F(TOUT='OUI', NOM='TOUT2D', TYPE_MAILLE='2D'),
+             ))
 
 MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
@@ -199,10 +201,9 @@ TEST_RESU(RESU=(
                   ),
                   ),)
 
-CHAMEL=CALC_CHAM_ELEM(    MODELE=MO,
-                              CARA_ELEM=CAR_ELE,
-#                             MAILLE=('M1',),
-                             GROUP_MA='TOUT',
+CHAMEL=CALC_CHAM_ELEM(    MODELE=MO, CARA_ELEM=CAR_ELE,
+#                            MAILLE=('M1',),
+                             GROUP_MA='TOUT2D',
                              OPTION='COOR_ELGA' )
 
 IMPR_RESU(RESU=_F(CHAM_GD=CHAMEL,))

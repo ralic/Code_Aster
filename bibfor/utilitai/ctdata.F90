@@ -7,12 +7,15 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesvar.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
 #include "asterfort/megeom.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
@@ -64,11 +67,12 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 !
 ! ----------------------------------------------------------------------
     integer :: jkcha, i, ibid, iret, jlno, jcmp, n1, jlma, n2, n3, nchi, n0, n4
-    integer :: n5
+    integer :: n5, igrel
+    integer, pointer :: repe(:) => null()
     character(len=8) :: nomo, nomgd, noca
     character(len=8) :: typmcl(4), lpain(6), lpaout(1)
     character(len=16) :: motcle(4)
-    character(len=19) :: ligrel
+    character(len=19) :: ligrel, ligrmo
     character(len=24) :: chgeom, lchin(6), lchout(1)
     aster_logical :: exicar
 !     ------------------------------------------------------------------
@@ -80,7 +84,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 !
     call jeveuo(nkcha, 'L', jkcha)
     tych=' '
-    ligrel = ' '
+    ligrel = '&&CTDATA.LIGREL'
     nomo=' '
     tsca=' '
     exicar=.false.
@@ -100,7 +104,8 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
             endif
             if (tych(1:2) .eq. 'EL') then
                 call dismoi('NOM_MODELE', zk24(jkcha+i-1)(1:19), 'CHAMP', repk=nomo)
-                ligrel=nomo//'.MODELE'
+                call dismoi('NOM_LIGREL', nomo, 'MODELE', repk=ligrmo)
+                call jeveuo(ligrmo//'.REPE', 'L', vi=repe)
             endif
             if (tych .eq. 'ELGA') then
 !               CARACTERISTIQUES POUR LES CAS DES ELEMENTS A SOUS POINTS
@@ -174,17 +179,30 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
         call getvtx('RESU', 'TOUT', iocc=1, nbval=0, nbret=n1)
         if (n1 .ne. 0) then
             call wkvect(mesmai, 'V V I', nbma, jlma)
-            do i = 1, nbma
-                zi(jlma+i-1)=i
-            end do
+            if (tych.eq.'CART') then
+                do i = 1, nbma
+                    zi(jlma+i-1)=i
+                end do
+            else
+!               -- on ne garde que les mailles du modele :
+                do i = 1, nbma
+                    igrel = repe(1+2*(i-1))
+                    if (igrel.gt.0) zi(jlma+i-1)=i
+                end do
+            endif
         else
             call reliem(' ', noma, 'NU_MAILLE', 'RESU', 1,&
                         2, motcle, typmcl, mesmai, nbma)
-            call jeveuo(mesmai, 'L', jlma)
         endif
         nbno=0
 !
         if (tych .eq. 'ELGA') then
+
+!           -- calcul de ligrel :
+!           ---------------------
+            call jeveuo(mesmai, 'L', jlma)
+            call jelira(mesmai, 'LONMAX', nbma)
+            call exlim1(zi(jlma), nbma, nomo, 'V', ligrel)
 !
             call megeom(nomo, chgeom)
             lchin(1)=chgeom(1:19)
@@ -214,6 +232,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                         lpain, 1, lchout, lpaout, 'V',&
                         'OUI')
             call celces(lchout(1), 'V', chpgs)
+            call detrsd('LIGREL', ligrel)
 !
         endif
 !

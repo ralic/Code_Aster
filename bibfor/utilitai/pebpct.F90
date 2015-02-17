@@ -1,6 +1,6 @@
-subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
+subroutine pebpct(ligrel, nbma, lma, cham, nomcmp,&
                   dim, bfix, borne, norme, seuil,&
-                  lseuil, borpct, voltot, carele)
+                  lseuil, borpct, voltot, carele, cespoi)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -21,8 +21,9 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 #include "asterfort/wkvect.h"
     integer :: dim, nbma, bfix
     real(kind=8) :: borpct(dim), borne(2), seuil, voltot
-    character(len=8) :: modele, nomcmp, norme, carele
-    character(len=19) :: cham
+    character(len=*) :: ligrel
+    character(len=8) :: nomcmp, norme, carele
+    character(len=19) :: cham,cespoi
     character(len=24) :: lma
     aster_logical :: lseuil
 !
@@ -53,7 +54,7 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
 !    ARGUMENTS:
 !
 !     IN :
-!          MODELE  =  NOM DU MODELE
+!          LIGREL  =  NOM DU LIGREL
 !          NBMA    =  NOMBRE DE MAILLES A CONSIDERER
 !          LMA     =  NOM JEVEUX DES NUMEROS DE MAILLES A CONSIDERER
 !          CHAM    =  NOM DU CHAMP
@@ -85,30 +86,32 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     integer :: ncmpm, nucmp, nbval
     character(len=4) :: tych, non
     character(len=8) :: noma
-    character(len=19) :: ligrel, cesout, cespoi, chams
+    character(len=19) ::  cesout, chams
     character(len=24) :: tabval, tabvol
     aster_logical :: first
     character(len=8), pointer :: cesc(:) => null()
     real(kind=8), pointer :: pdsm(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: poiv(:) => null()
+    integer, pointer :: repe(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()
 !
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrel)
-    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+    call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbmat)
+    call jeveuo(ligrel//'.REPE', 'L', vi=repe)
 !
 ! --- CALCULS DES VALEURS ET VOLUMES POUR CHAQUE POINT DE CHAQUE MAILLE
 !     ----------------------------------------------------------------
     tabval='&&PEBPCT_VAL_CMP_MAIL'
     tabvol='&&PEBPCT_VOLUME_MAIL'
     cesout='&&PEBPCT_CHAMS_POND'
-    cespoi='&&PEBPCT_POIDS'
     chams='&&PEBPCT.CHAM_EL_S'
-!
-!     PASSAGE AU CHAMP SIMPLE
+
+
+!   -- passage au champ simple
+!   ----------------------------
     call celces(cham, 'V', chams)
     call jeveuo(chams//'.CESV', 'L', vr=cesv)
     call jeveuo(chams//'.CESL', 'L', jcesl)
@@ -117,37 +120,41 @@ subroutine pebpct(modele, nbma, lma, cham, nomcmp,&
     call jeveuo(chams//'.CESK', 'L', jcesk)
     nbptmx=zi(jcesd+2)
     nbpspt=zi(jcesd+3)
-!
-!     DETERMINATION DES POIDS DES POINTS DE GAUSS
+
+
+!   -- determination des poids des points de gauss
+!   -----------------------------------------------
     non='NON'
     call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych)
     call chpond(tych, non, cham, cesout, cespoi,&
-                modele, carele)
+                ligrel, carele)
     call jeveuo(cespoi//'.CESV', 'L', vr=poiv)
     call jeveuo(cespoi//'.CESL', 'L', jpoil)
     call jeveuo(cespoi//'.CESD', 'L', jpoid)
     if (tych .ne. 'ELGA') call jeveuo(cespoi//'.PDSM', 'L', vr=pdsm)
 !
-!     CREATION DES TABLEAUX RECENSANT LES VALEURS DE LA COMPOSANTE
-!     (VAL) ET LE VOLUME*POIDS (VOL) ASSOCIE
+!   -- creation des tableaux recensant les valeurs de la composante
+!      (val) et le volume*poids (vol) associe
     call wkvect(tabval, 'V V R', nbma*nbptmx*nbpspt, jval)
     call wkvect(tabvol, 'V V R', nbma*nbptmx*nbpspt, jvol)
 !
     call jelira(chams//'.CESC', 'LONMAX', ncmpm)
     nucmp=indik8(cesc,nomcmp,1,ncmpm)
 
-    if (nucmp.le.0) then 
+    if (nucmp.le.0) then
         call utmess('F', 'CHAMPS_3', sk=nomcmp)
     endif
 !
-!     MAILLES A CONSIDERER
+!   -- mailles a considerer :
     call jeveuo(lma, 'L', jnuma)
 !
     voltot=0.d0
     first=.true.
     k=0
-!
-!     ON REMPLIT LES TABLEAUX VAL ET VOL
+
+
+!   -- on remplit les tableaux val et vol
+!   --------------------------------------
     do i = 1, nbma
 !
         ima=zi(jnuma+i-1)

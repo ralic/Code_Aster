@@ -197,8 +197,8 @@ TEST_RESU(RESU=(
 
 CHAMEL=CALC_CHAM_ELEM(    MODELE=MO,
                               CARA_ELEM=CAR_ELE,
-#                             MAILLE=('M1',),
-                             GROUP_MA='TOUT',
+                              MAILLE=('M1',),
+#                            GROUP_MA='TOUT',
                              OPTION='COOR_ELGA' )
 
 IMPR_RESU(RESU=_F(CHAM_GD=CHAMEL,))

@@ -14,7 +14,7 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exlima.h"
+#include "asterfort/exlim1.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -28,6 +28,7 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/jexnom.h"
 #include "asterfort/nopar2.h"
 #include "asterfort/peecal.h"
+#include "asterfort/reliem.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
@@ -35,6 +36,7 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utflmd.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -75,14 +77,22 @@ subroutine peeint(resu, modele, nbocc)
     character(len=8) :: nomgd, tout, grpma, maille, typpa1(nbpa1), typpa2(nbpa2)
     parameter(tout='TOUT',grpma='GROUP_MA',maille='MAILLE')
     character(len=16) :: nompa1(nbpa1), nompa2(nbpa2), optio2
-    character(len=19) :: knum, cham, kins, lisins, chamg, celmod, ligrel, tmpcha
-    character(len=19) :: cham2, cham3, chamtm, ligtmp
+    character(len=19) :: knum, cham, kins, lisins, chamg, celmod
+    character(len=19) :: ligrel, cespoi, tmpcha
+    character(len=19) :: cham2, cham3, chamtm
     character(len=24) :: nomcha, valk2(5)
     logical :: exiord, toneut
+
+    integer :: jmesma, nbmai,nbmaf,indma,iresma,vali
+    character(len=8) :: typmcl(3), infoma
+    character(len=16) :: motcle(3)
+    character(len=24) :: mesmai, mesmaf,mesma2
+
     character(len=8), pointer :: cmp1(:) => null()
     character(len=8), pointer :: cmp2(:) => null()
     character(len=8), pointer :: cmp_init(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
+
     data nompa1/'NOM_CHAM','NUME_ORDRE','INST','VOL'/
     data typpa1/'K16','I','R','R'/
     data nompa2/'CHAM_GD','VOL'/
@@ -95,6 +105,12 @@ subroutine peeint(resu, modele, nbocc)
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
 !
+    ligrel='&&PEEINT.LIGREL'
+    cespoi='&&PEEINT.CESPOI'
+    mesmai='&&PEEINT.MES_MAILLES'
+    mesmaf='&&PEEINT.MAILLES_FILTRE'
+    knum='&&PEEINT.NUME_ORDRE'
+    kins='&&PEEINT.INST'
 !
 !     --- RECUPERATION DU RESULTAT ET DU NUMERO D'ORDRE
     call getvid(' ', 'RESULTAT', scal=resuco, nbret=nr)
@@ -114,8 +130,6 @@ subroutine peeint(resu, modele, nbocc)
         call tbajpa(resu, nbpa2, nompa2, typpa2)
     endif
 !
-    knum = '&&PEEINT.NUME_ORDRE'
-    kins = '&&PEEINT.INST'
     exiord=.false.
     toneut=.false.
 !
@@ -169,18 +183,59 @@ subroutine peeint(resu, modele, nbocc)
     endif
 !
     do iocc = 1, nbocc
+
+!       -- creation d'un ligrel reduit sur les mailles d'interet :
+!       ----------------------------------------------------------
+        call wkvect('&&PEEINT.IND.MAILLE', 'V V I', nbma, indma)
 !
-!     --- VERIFICATION SI ON VA TRAITER DES ELEMENTS DE STRUCTURE
-!     ===========================================================
+        motcle(1) = 'GROUP_MA'
+        motcle(2) = 'MAILLE'
+        motcle(3) = 'TOUT'
+        typmcl(1) = 'GROUP_MA'
+        typmcl(2) = 'MAILLE'
+        typmcl(3) = 'TOUT'
 !
-        ligtmp='&&PEEINT.LIGTMP'
-        call exlima('INTEGRALE', iocc, 'V', modele, ligtmp)
-        call dismlg('EXI_RDM', ligtmp, ibid, exirdm, iret)
+!       -- mailles fournies par l'utilisateur:
+        call reliem(' ', mailla, 'NU_MAILLE', 'INTEGRALE', iocc,&
+                    3, motcle, typmcl, mesmai, nbmai)
+!
+!       -- mailles filtrees en fonction de la dimension pour
+!          etre homogene(2d ou 3d)(mot cle type_maille)
+        call getvtx('INTEGRALE', 'TYPE_MAILLE', iocc=iocc, scal=infoma, nbret=iret)
+!
+        if (iret .ne. 0) then
+            iresma = 0
+            if (infoma .eq. '1D') iresma=1
+            if (infoma .eq. '2D') iresma=2
+            if (infoma .eq. '3D') iresma=3
+            ASSERT(iresma.ne.0)
+            call utflmd(mailla, mesmai, nbmai, iresma, ' ',nbmaf, mesmaf)
+            if (nbmaf .gt. 0) then
+                vali= nbmai-nbmaf
+                if (vali .ne.0) call utmess ('A','PREPOST2_7', si=vali)
+            else
+                call utmess('F', 'PREPOST2_8')
+            endif
+            mesma2=mesmaf
+            nbmai=nbmaf
+        else
+            mesma2=mesmai
+        endif
+
+        call jeveuo(mesma2, 'L', jmesma)
+        do i = 1, nbmai
+            zi(indma+zi(jmesma+i-1)-1)=1
+        end do
+
+        call exlim1(zi(jmesma), nbmai, modele, 'V', ligrel)
+!
+!       -- verification si on va traiter des elements de structure
+        call dismlg('EXI_RDM', ligrel, ibid, exirdm, iret)
         if (exirdm .eq. 'OUI') then
             call utmess('F', 'UTILITAI8_60')
         endif
-!
-!
+
+
 !     --- BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ===================================
 !
@@ -256,7 +311,6 @@ subroutine peeint(resu, modele, nbocc)
                             ier=iret)
                 nopar = nopar2(optio2,nomgd,'OUT')
                 celmod = '&&PEEINT.CELMOD'
-                ligrel = modele//'.MODELE'
                 call alchml(ligrel, optio2, nopar, 'V', celmod,&
                             ib, ' ')
                 if (ib .ne. 0) then
@@ -305,7 +359,7 @@ subroutine peeint(resu, modele, nbocc)
             if (iret .ne. 0) then
                 call peecal(tych, resu, nomcha, tout, tout,&
                             modele, nr, cham, nbcmp, zk8(jcmp),&
-                            cmp_init, numo, inst, iocc)
+                            cmp_init, numo, inst, iocc, ligrel, cespoi)
             endif
 !
 !         --- CALCUL ET STOCKAGE DES MOYENNES : MOT-CLE 'GROUP_MA'
@@ -322,7 +376,7 @@ subroutine peeint(resu, modele, nbocc)
                     call jeveuo(jexnom(mailla//'.GROUPEMA', zk24(jgma+ igm-1)), 'L', jnuma)
                     call peecal(tych, resu, nomcha, grpma, zk24(jgma+igm- 1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
-                                cmp_init, numo, inst, iocc)
+                                cmp_init, numo, inst, iocc, ligrel, cespoi)
                 end do
                 call jedetr('&&PEEINT_GMA')
             endif
@@ -339,7 +393,7 @@ subroutine peeint(resu, modele, nbocc)
                     call jenonu(jexnom(mailla//'.NOMMAI', zk8(jma+im-1) ), numa)
                     call peecal(tych, resu, nomcha, maille, zk8(jma+im-1),&
                                 modele, nr, cham, nbcmp, zk8(jcmp),&
-                                cmp_init, numo, inst, iocc)
+                                cmp_init, numo, inst, iocc, ligrel, cespoi)
                 end do
                 call jedetr('&&PEEINT_MAIL')
             endif
@@ -352,6 +406,12 @@ subroutine peeint(resu, modele, nbocc)
         end do
 !
  10     continue
+        call detrsd('LIGREL', ligrel)
+        call detrsd('CHAM_ELEM_S', cespoi)
+        call jedetr('&&PEEINT.IND.MAILLE')
+        call jedetr(cespoi//'.PDSM')
+        call jedetr('&&PEEINT.MES_MAILLES')
+        call jedetr('&&PEEINT.MAILLES_FILTRE')
     end do
 !
     if (nr .eq. 0) then

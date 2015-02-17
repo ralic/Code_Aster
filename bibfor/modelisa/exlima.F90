@@ -32,27 +32,27 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! BUT  :  SCRUTER LES MOTS CLE TOUT/GROUP_MA/MAILLE POUR CREER
-!         UN LIGREL "REDUIT" A PARTIR DU LIGREL DU MODELE MODELZ
+! but  :  scruter les mots cle tout/group_ma/maille pour creer
+!         un ligrel "reduit" a partir du ligrel du modele modelz
 !
-! IN  : MODELZ : NOM DU MODELE
+! in  : modelz : nom du modele
 !
-! OUT/JXOUT   : LIGREL  : LIGREL REDUIT
-!     ATTENTION :
-!          - LE NOM DE LIGREL EST TOUJOURS "OUT"
-!          - PARFOIS ON REND LIGREL=LIGREL(MODELE) :
-!             - ALORS ON NE TIENT DONC PAS COMPTE DE 'BASE'
-!             - IL NE FAUT PAS LE DETRUIRE !
-!          - PARFOIS ON EN CREE UN NOUVEAU SUR LA BASE 'BASE'
-!             - LE NOM DU LIGREL EST OBTENU PAR GNOMSD
-!     -----------------------------------------------------------------
+! out/jxout   : ligrel  : ligrel reduit
+!     attention :
+!          - le nom de ligrel est toujours "out"
+!          - parfois on rend ligrel=ligrel(modele) :
+!             - alors on ne tient donc pas compte de 'base'
+!             - il ne faut pas le detruire !
+!          - parfois on en cree un nouveau sur la base 'base'
+!             - le nom du ligrel est obtenu par gnomsd
+!  -----------------------------------------------------------------
 !
     integer :: n1, jma, nbma
     character(len=8) :: modele, noma
     character(len=16) :: motfac, motcle(2), typmcl(2), oper, k16b
     character(len=19) :: ligrmo
     character(len=24) :: lismai, noojb
-!     -----------------------------------------------------------------
+!  -----------------------------------------------------------------
 !
     motfac = motfaz
     modele = modelz

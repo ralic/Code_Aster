@@ -117,14 +117,6 @@ sta_DKT=CALC_CHAMP(reuse    = sta_DKT,
                    RESULTAT = sta_DKT,
                    CONTRAINTE=('EFGE_ELNO','EFGE_ELGA','SIEF_ELGA'));
 
-CHAMELG1=CALC_CHAM_ELEM(MODELE=mod_DKT,
-                       CARA_ELEM=car_DKT,
-                       TOUT='OUI',
-                       OPTION='COOR_ELGA',);
-
-# IMPR_RESU(RESU=_F(CHAM_GD=CHAMELG1));
-
-
 #---------------------------------------------------------
 # -> EFGE_ELNO : REPERE UTILISATEUR
 #
@@ -612,13 +604,6 @@ sta_Q4GG = MECA_STATIQUE(MODELE=mod_Q4GG,
 sta_Q4GG=CALC_CHAMP(reuse    = sta_Q4GG,
                    RESULTAT = sta_Q4GG,
                    CONTRAINTE=('EFGE_ELNO','EFGE_ELGA','SIEF_ELGA'));
-
-CHAMELG2=CALC_CHAM_ELEM(MODELE=mod_Q4GG,
-                       CARA_ELEM=car_Q4GG,
-                       TOUT='OUI',
-                       OPTION='COOR_ELGA',);
-
-#IMPR_RESU(RESU=_F(CHAM_GD=CHAMELG2));
 
 IMPR_RESU(RESU=_F(RESULTAT=sta_Q4GG,NOM_CHAM='DEPL'));
 
@@ -1419,9 +1404,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    REFERENCE='NON_DEFINI',
                    RESULTAT=sta_Q4GG,
                    VALE_CALC=-1.7057966150702E-11,
-                   VALE_REFE=-1.7057966150702E-11,
+                   VALE_REFE=0.,
                    CRITERE='ABSOLU',
-                   PRECISION=1.E-10,),
+                   PRECISION=1.5E-10,),
                  _F(NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP = 'MXY',

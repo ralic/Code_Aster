@@ -15,23 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
-                      modele, ichagd, chpost, nbcmp, nomcmp,&
-                      nomcp2, nuord, inst, iocc)
-        integer :: nbcmp
-        character(len=4) :: tych
-        character(len=19) :: resu
-        character(len=24) :: nomcha
-        character(len=8) :: lieu
-        character(len=*) :: nomlie
-        character(len=8) :: modele
-        integer :: ichagd
-        character(len=19) :: chpost
-        character(len=8) :: nomcmp(nbcmp)
-        character(len=8) :: nomcp2(nbcmp)
-        integer :: nuord
-        real(kind=8) :: inst
-        integer :: iocc
-    end subroutine peecal
-end interface
+          interface 
+            subroutine peecal(tych,resu,nomcha,lieu,nomlie,modele,ichagd&
+     &,chpost,nbcmp,nomcmp,nomcp2,nuord,inst,iocc,ligrel,cespoi)
+              integer :: nbcmp
+              character(len=4) :: tych
+              character(len=19) :: resu
+              character(len=24) :: nomcha
+              character(len=8) :: lieu
+              character(len=*) :: nomlie
+              character(len=8) :: modele
+              integer :: ichagd
+              character(len=19) :: chpost
+              character(len=8) :: nomcmp(nbcmp)
+              character(len=8) :: nomcp2(nbcmp)
+              integer :: nuord
+              real(kind=8) :: inst
+              integer :: iocc
+              character(len=19) :: ligrel
+              character(len=19) :: cespoi
+            end subroutine peecal
+          end interface 

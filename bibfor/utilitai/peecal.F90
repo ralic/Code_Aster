@@ -1,6 +1,6 @@
 subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
                   modele, ichagd, chpost, nbcmp, nomcmp,&
-                  nomcp2, nuord, inst, iocc)
+                  nomcp2, nuord, inst, iocc, ligrel, cespoi)
 !
     implicit none
 !
@@ -13,6 +13,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -29,11 +30,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 #include "asterfort/wkvect.h"
     integer :: nbcmp, nuord, iocc, ichagd
     character(len=8) :: nomcmp(nbcmp), nomcp2(nbcmp), modele, lieu
-    character(len=19) :: chpost, resu
+    character(len=19) :: chpost, resu, cespoi, ligrel
     character(len=24) :: nomcha
     character(len=*) :: nomlie
     character(len=4) :: tych
-!    -------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,33 +78,33 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !     ------------------------------------------------------------------
 !
     integer :: iret, nbma, nbmai, i, jcesl, jcesd, jpoil, jpoid
-    integer :: nucmp, jcmpgd, ncmpm, iad, jintr, jintk, indma
-    integer :: jmesma, ipt, nbsp, nbpt, icmp, ima, nbpara
-    integer :: ico, ind1, ind2, ifm, niv, iresma, nbmaf, vali
+    integer :: nucmp, jcmpgd, ncmpm, iad, jintr, jintk
+    integer :: ipt, nbsp, nbpt, icmp, ima, nbpara
+    integer :: ico, ind1, ind2, ifm, niv
     real(kind=8) :: vol, val, inst, volpt
     complex(kind=8) :: cbid
-    character(len=8) :: noma, k8b, typmcl(3), nomgd, nomva, infoma
+    character(len=8) :: noma, k8b, nomgd, nomva
     character(len=4) :: dejain
-    character(len=16) :: motcle(3)
-    character(len=19) :: cesout, cespoi
-    character(len=24) :: mesmai, valk(3), mesmaf
+    character(len=19) :: cesout
+    character(len=24) :: valk(3)
     aster_logical :: exist
     real(kind=8), pointer :: pdsm(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: poiv(:) => null()
-!
+    integer, pointer :: repe(:) => null()
+! -------------------------------------------------------------------------
     call jemarq()
     cbid=(0.d0,0.d0)
     call infniv(ifm, niv)
 !
     k8b='        '
 !
-    mesmai = '&&PEECAL.MES_MAILLES'
-    mesmaf = '&&PEECAL.MAILLES_FILTRE'
 !
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
+
+    call jeveuo(ligrel//'.REPE', 'L', vi=repe)
 !
 ! --- TABLEAUX DE TRAVAIL:
 !     - TABLEAU DES PARAMETRES INTE_XXXX : ZK16(JINTK)
@@ -133,50 +133,8 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         ind1 = 3
         ind2 = 0
     endif
-!
-! --- CREATION D'UN TABLEAU D'INDICES POUR REPERER
-!     LES MAILLES DU POST TRAITEMENT
-    call wkvect('&&PEECAL.IND.MAILLE', 'V V I', nbma, indma)
-!
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    motcle(3) = 'TOUT'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
-    typmcl(3) = 'TOUT'
-!
-!   --MAILLES FOURNIES PAR L'UTILISATEUR -
-    call reliem(' ', noma, 'NU_MAILLE', 'INTEGRALE', iocc,&
-                3, motcle, typmcl, mesmai, nbmai)
-!
-!   --MAILLES FILTREES EN FONCTION DE LA DIMENSION POUR
-!   --ETRE HOMOGENE(2D OU 3D)(MOT CLE TYPE_MAILLE)
-    call getvtx('INTEGRALE', 'TYPE_MAILLE', iocc=iocc, scal=infoma, nbret=iret)
-!
-    if (iret .ne. 0) then
-        iresma = 0
-        if (infoma .eq. '1D') iresma=1
-        if (infoma .eq. '2D') iresma=2
-        if (infoma .eq. '3D') iresma=3
-        ASSERT(iresma.ne.0)
-        call utflmd(noma, mesmai, nbmai, iresma, ' ',nbmaf, mesmaf)
-        if (nbmaf .gt. 0) then
-            vali= nbmai-nbmaf
-            if (vali .ne.0) call utmess ('A','PREPOST2_7', si=vali)
-            call jedetr(mesmai)
-        else
-            call utmess('F', 'PREPOST2_8')
-        endif
-    else
-        infoma='-'
-    endif
-    call jeveuo(mesmaf, 'L', jmesma)
-    do i = 1, nbma
-        zi(indma+i-1)=0
-    end do
-    do i = 1, nbmaf
-        zi(indma+zi(jmesma+i-1)-1)=1
-    end do
+
+
 !
 ! --- POUR LES CHAM_ELEM / ELEM : MOT CLE DEJA_INTEGRE:
     if (tych .eq. 'ELEM') then
@@ -192,9 +150,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !              PAR LE POIDS*JACOBIEN.
 !      CESPOI: CHAMP ELXX CORRESPONDANT AU POIDS*JACOBIEN
     cesout='&&PEECAL.CESOUT'
-    cespoi='&&PEECAL_POIDS_'//nomcha(1:4)
-    call chpond(tych, dejain, chpost, cesout, cespoi,&
-                modele,k8b)
+    call chpond(tych, dejain, chpost, cesout, cespoi, ligrel,k8b)
     call jeveuo(cesout//'.CESV', 'L', vr=cesv)
     call jeveuo(cesout//'.CESL', 'L', jcesl)
     call jeveuo(cesout//'.CESD', 'L', jcesd)
@@ -222,7 +178,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
 !
 !     - INFOS
     if (niv .gt. 1) then
-        write(6,*) '<PEECAL> NOMBRE DE MAILLES A TRAITER : ',nbmaf
+        write(6,*) '<PEECAL> NOMBRE DE MAILLES A TRAITER : ',nbmai
         write(6,*) '<PEECAL> NOMBRE DE COMPOSANTES : ',ncmpm
     endif
 !
@@ -234,7 +190,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
         vol=0.d0
         ico=0
         do ima = 1, nbma
-            if (zi(indma+ima-1) .ne. 1) goto 35
+            if (repe(2*(ima-1)+1).eq.0) cycle
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
             nbsp=zi(jcesd-1+5+4*(ima-1)+2)
             if (nbsp .gt. 1) then
@@ -244,7 +200,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
                 call cesexi('C', jcesd, jcesl, ima, ipt,&
                             1, nucmp, iad)
                 ASSERT(iad.ge.0)
-                if (iad .eq. 0) goto 35
+                if (iad .eq. 0) cycle
 !
                 val=val+cesv(iad)
 !
@@ -263,7 +219,6 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie,&
                 ico=ico+1
                 vol=vol+volpt
             end do
- 35         continue
         end do
         if (ico .eq. 0) then
             valk(3)=nomcmp(icmp)

@@ -269,13 +269,9 @@ Conseil:
  %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...
 """),
 
-    63 : _(u"""
- POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas
- (ou ne peut pas) calculer le post-traitement demandé
-Conseil:
-   Limiter le post-traitement à des GROUP_MA contenant des mailles
-de type valide
-"""),
+
+
+
 
     66 : _(u"""
   Le MACR_ELEM_DYNA a été créé avec une base modale qui entre-temps a été

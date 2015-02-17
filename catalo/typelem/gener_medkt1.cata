@@ -39,7 +39,6 @@ MATRICE__
 
 OPTION__
 
-    COOR_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX 
 
     CARA_SECT_POUT3  570  IN__  CCACOQU  PCACOQU  CGEOMER  PCAORIE  MGEOMER  PGEOMER  
                           OUT__ ECASECT  PCASECT  

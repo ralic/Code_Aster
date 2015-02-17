@@ -721,13 +721,11 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
-coord=CALC_CHAM_ELEM(MODELE=MODEL, OPTION='COOR_ELGA',CARA_ELEM=CARELEM,)
-
 
 VOLUM1=POST_ELEM( RESULTAT=RESU,
                   VOLUMOGRAMME=  _F(NOM_CMP='SIYY',
                                     CARA_ELEM=CARELEM,
-                                    TOUT='OUI',
+                                    TOUT='OUI', TYPE_MAILLE='2D',
                                     NOM_CHAM='SIEF_ELGA',
                                     NORME='RELATIF',
                                     NB_INTERV=8),

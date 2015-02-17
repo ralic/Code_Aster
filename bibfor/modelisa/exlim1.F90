@@ -66,47 +66,52 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 !     ------------------------------------------------------------------
 !
     call jemarq()
-!
+
     base = basez
     modele = modelz
     ligrel = ligrez
-!
-! --- MAILLAGE ASSOCIE AU MODELE
-!     --------------------------
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-!
-! --- LIGREL DU MODELE
-!     ----------------
     call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
-!
+
     call jeveuo(ligrmo//'.REPE', 'L', vi=repe)
     call jeveuo(jexatr(ligrmo//'.LIEL', 'LONCUM'), 'L', lcliel)
     call jeveuo(ligrmo//'.LIEL', 'L', vi=liel)
-!
-! --- OBJET NBNO
-!     ----------
+
+
+!   -- objet nbno
+!   --------------
     call wkvect(ligrel//'.NBNO', base//' V I', 1, jdnb)
     zi(jdnb) = 0
-!
-! --- OBJET .LGRF
-!     ------------
+
+
+!   -- objet .lgrf
+!   --------------
     call jedupo(ligrmo//'.LGRF', base, ligrel//'.LGRF', .false._1)
 
-!   -- On retire les mailles 0 de lismai :
-!   --------------------------------------
+
+!   -- on retire les mailles 0 de lismai ainsi que les mailles qui ne
+!      font pas partie du modele :
+!   ------------------------------------------------------------------
     AS_ALLOCATE(vi=lismai_nz, size=nbmail)
     nbmail_nz=0
     do k=1,nbmail
-        if (lismai(k).gt.0) then
+        numail=lismai(k)
+        if (numail.gt.0) then
+            igrel = repe(1+2*(numail-1))
+            if (igrel .eq. 0) then
+                call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
+                call utmess('A', 'MODELISA4_50', sk=nomail)
+                cycle
+            endif
             nbmail_nz=nbmail_nz+1
-            lismai_nz(nbmail_nz)=lismai(k)
+            lismai_nz(nbmail_nz)=numail
         endif
     enddo
 
 
 
-! --- TYPE D'ELEMENT ET NOMBRE DE MAILLES PAR TYPE
-!     --------------------------------------------
+!   -- on compte les types d'element et le nombre de mailles par type
+!   -------------------------------------------------------------------
     call wkvect('&&EXLIM1.TYPE_NOMBRE', 'V V I', 2*nbmail_nz, jtyp)
     jnel = jtyp + nbmail_nz
 !
@@ -116,10 +121,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     do i = 1, nbmail_nz
         numail = lismai_nz(i)
         igrel = repe(1+2*(numail-1))
-        if (igrel .eq. 0) then
-            call jenuno(jexnum(noma//'.NOMMAI', numail), nomail)
-            call utmess('F', 'MODELISA4_50', sk=nomail)
-        endif
+        ASSERT(igrel.gt.0)
         iadm = zi(lcliel+igrel)
         typele = liel(iadm-1)
         if (typele .eq. typel1) then

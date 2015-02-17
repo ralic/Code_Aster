@@ -17,6 +17,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/exlim1.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -65,7 +66,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
 !     ------------------------------------------------------------------
 !
     integer :: nr, nd, np, nc, ni, no, nli, nlo, iret, ibid, nbma, nbordr, jno
-    integer :: nn, nbmaf
+    integer :: nn, nbmaf, jma
     integer :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
     integer :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
     integer :: nucmp, ivali, bfix, ivol(2), tord(1)
@@ -77,7 +78,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
     real(kind=8) :: prec, inst, borne(2), voltot, seuil
     complex(kind=8) :: c16b
     character(len=19) :: knum, kins, lisins, cham, cham2, chamtm, celmod, ligrel
-    character(len=19) :: tmpcha, cham3
+    character(len=19) :: tmpcha, cham3,cespoi
     character(len=16) :: nompar(nbpmax), mocles(1), optio2, nomcha, valk, valr
     character(len=16) :: vali
     character(len=24) :: mesmai, mesmaf, mesmae, borpct, valk2(5), grouma
@@ -114,11 +115,12 @@ subroutine pevolu(resu, modele, carele, nbocc)
     knum = '&&PEVOLU.NUME_ORDRE'
     kins = '&&PEVOLU.INST'
     mesmai = '&&PEVOLU.MES_MAILLES'
+    ligrel = '&&PEVOLU.LIGREL'
     mesmaf = '&&PEVOLU.MAILLES_FILTRE'
     borpct = '&&PEVOLU_BORNES_PCT'
+    cespoi = '&&PEVOLU_POIDS'
 !
     exiord=.false.
-    toneut=.false.
 !
     if (nd .ne. 0) then
 !
@@ -230,26 +232,76 @@ subroutine pevolu(resu, modele, carele, nbocc)
     endif
 !
     do iocc = 1, nbocc
+
+!       -- 4.1 recuperation des mailles, calcul de ligrel :
+!       -----------------------------------------------------
+
+        call getvtx('VOLUMOGRAMME', 'TOUT', iocc=iocc, scal=tout, nbret=iret)
+        if (iret .ne. 0) then
+            mocles(1) = 'TOUT'
+            typmcl(1) = 'TOUT'
+            grouma='-'
+        else
+            mocles(1) = 'GROUP_MA'
+            typmcl(1) = 'GROUP_MA'
+            call getvtx('VOLUMOGRAMME', 'GROUP_MA', iocc=iocc, scal=grouma, nbret=iret)
+        endif
 !
+!       -- MAILLES FOURNIES PAR L'UTILISATEUR -
+        call reliem(modele, mailla, 'NU_MAILLE', 'VOLUMOGRAMME', iocc,&
+                    1, mocles, typmcl, mesmai, nbma)
 !
-!
-!     --- BOUCLE SUR LES NUMEROS D'ORDRE:
-!     ----------------------------------
+        mesmae=mesmai
+!       -- MAILLES EVENTUELLEMENT FILTREES EN FONCTION DE LA DIMENSION
+!       GEOMETRIQUE (2D OU 3D)
+        call getvtx('VOLUMOGRAMME', 'TYPE_MAILLE', iocc=iocc, scal=infoma, nbret=iret)
+        if (iret .ne. 0) then
+            if (infoma .eq. '2D') then
+                iresma=2
+            else if (infoma.eq.'3D') then
+                iresma=3
+            else
+                ASSERT(.false.)
+            endif
+            call utflmd(mailla, mesmai, nbma, iresma, ' ',&
+                        nbmaf, mesmaf)
+            if (nbmaf .gt. 0) then
+                call jedetr(mesmai)
+                nbma = nbmaf
+                mesmae = mesmaf
+            else
+                call utmess('F', 'PREPOST2_6')
+            endif
+        else
+            infoma='-'
+        endif
+
+!       -- calcul de ligrel :
+!       ---------------------
+        call jeveuo(mesmae, 'L', jma)
+        call jelira(mesmae, 'LONMAX', nbma)
+        call exlim1(zi(jma), nbma, modele, 'V', ligrel)
+
+
+!       -- BOUCLE SUR LES NUMEROS D'ORDRE:
+!       ----------------------------------
 !
         do inum = 1, nbordr
+            toneut=.false.
+
 !
-!      -- 4.1 RECUPERATION DU CHAMP --
+!           -- 4.2 RECUPERATION DU CHAMP --
 !
             if (nr .ne. 0) then
-!         --  RESULTAT --
+!               --  RESULTAT --
                 if (exiord) then
-!           - ORDRE -
+!                  - ORDRE -
                     numo=zi(jno+inum-1)
                     call rsadpa(resuco, 'L', 1, 'INST', numo,&
                                 0, sjv=jin, styp=k8b)
                     inst=zr(jin)
                 else
-!           - INST -
+!                   - INST -
                     inst=zr(jin+inum-1)
                     call rsorac(resuco, 'INST', 0, zr(jin+inum-1), k8b,&
                                 c16b, prec, crit, tord, nbordr,&
@@ -265,7 +317,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
                             iret)
 !
             else
-!         -- CHAM_GD --
+!               -- CHAM_GD --
                 numo = nbordr
                 cham2 = tmpcha
                 nomcha= chamg
@@ -309,7 +361,6 @@ subroutine pevolu(resu, modele, carele, nbocc)
                             ier=iret)
                 nopar = nopar2(optio2,nomgd,'OUT')
                 celmod = '&&PEVOLU.CELMOD'
-                ligrel = modele//'.MODELE'
                 call alchml(ligrel, optio2, nopar, 'V', celmod,&
                             ib, ' ')
                 if (ib .ne. 0) then
@@ -319,8 +370,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
                     call utmess('F', 'UTILITAI3_23', nk=3, valk=valk2)
                 endif
                 cham='&&CHPCHD.CHAM'
-                call chpchd(cham3, 'ELGA', celmod, 'OUI', 'V',&
-                            cham)
+                call chpchd(cham3, 'ELGA', celmod, 'OUI', 'V', cham)
                 call detrsd('CHAMP', celmod)
                 call detrsd('CHAMP', cham3)
 !
@@ -330,8 +380,9 @@ subroutine pevolu(resu, modele, carele, nbocc)
 !
             call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych, arret='C',&
                         ier=iret)
+
 !
-!      -- 4.2 RECUPERATION DE LA COMPOSANTE --
+!      -- 4.3 RECUPERATION DE LA COMPOSANTE --
 !
             call getvtx('VOLUMOGRAMME', 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=nbcmp)
             ncpini=nomcmp
@@ -340,48 +391,6 @@ subroutine pevolu(resu, modele, carele, nbocc)
                 nomcmp=cmp2(nucmp)
                 AS_DEALLOCATE(vk8=cmp1)
                 AS_DEALLOCATE(vk8=cmp2)
-            endif
-!
-!      -- 4.3 RECUPERATION DES MAILLES --
-!
-            call getvtx('VOLUMOGRAMME', 'TOUT', iocc=iocc, scal=tout, nbret=iret)
-            if (iret .ne. 0) then
-                mocles(1) = 'TOUT'
-                typmcl(1) = 'TOUT'
-                grouma='-'
-            else
-                mocles(1) = 'GROUP_MA'
-                typmcl(1) = 'GROUP_MA'
-                call getvtx('VOLUMOGRAMME', 'GROUP_MA', iocc=iocc, scal=grouma, nbret=iret)
-            endif
-!
-!         - MAILLES FOURNIES PAR L'UTILISATEUR -
-            call reliem(modele, mailla, 'NU_MAILLE', 'VOLUMOGRAMME', iocc,&
-                        1, mocles, typmcl, mesmai, nbma)
-!
-            mesmae=mesmai
-!         - MAILLES EVENTUELLEMENT FILTREES EN FONCTION DE LA DIMENSION
-!           GEOMETRIQUE (2D OU 3D)
-            call getvtx('VOLUMOGRAMME', 'TYPE_MAILLE', iocc=iocc, scal=infoma, nbret=iret)
-            if (iret .ne. 0) then
-                if (infoma .eq. '2D') then
-                    iresma=2
-                else if (infoma.eq.'3D') then
-                    iresma=3
-                else
-                    ASSERT(.false.)
-                endif
-                call utflmd(mailla, mesmai, nbma, iresma, ' ',&
-                            nbmaf, mesmaf)
-                if (nbmaf .gt. 0) then
-                    call jedetr(mesmai)
-                    nbma = nbmaf
-                    mesmae = mesmaf
-                else
-                    call utmess('F', 'PREPOST2_6')
-                endif 
-            else
-                infoma='-'
             endif
 !
 !      -- 4.4 CALCUL DES INTERVALLES ET DE LA DISTRIBUTION --
@@ -413,9 +422,9 @@ subroutine pevolu(resu, modele, carele, nbocc)
 !             . LA BORNE SUP,
 !             . LE VALEUR DE REPARTITION DE LA COMPOSANTE
             call wkvect(borpct, 'V V R', 3*nbint, jbpct)
-            call pebpct(modele, nbma, mesmae, cham, nomcmp,&
+            call pebpct(ligrel, nbma, mesmae, cham, nomcmp,&
                         3*nbint, bfix, borne, norme, seuil,&
-                        lseuil, zr(jbpct), voltot, carele)
+                        lseuil, zr(jbpct), voltot, carele, cespoi)
 !
 !      -- 4.5 ON REMPLIT LA TABLE --
 !
@@ -463,19 +472,20 @@ subroutine pevolu(resu, modele, carele, nbocc)
             call utmess('I', 'UTILITAI7_14', ni=2, vali=ivol, sr=voltot)
 !
 !      -- 4.5 NETTOYAGE POUR L'OCCURRENCE SUIVANTE --
-!CC          CALL DETRSD('CHAMP',CHAM2)
             call jedetr(valr)
             call jedetr(vali)
             call jedetr(valk)
-            call jedetr(mesmaf)
-            call jedetr(mesmai)
             call jedetr(borpct)
-            call jedetr(mesmaf)
 !
 !     --- FIN DE LA BOUCLE SUR LES NUMEROS D'ORDRE:
 !     ---------------------------------------------
         end do
-!
+
+        call jedetr(mesmaf)
+        call jedetr(mesmai)
+        call detrsd('LIGREL', ligrel)
+        call detrsd('CHAM_ELEM_S', cespoi)
+
 !     --- FIN DE LA BOUCLE SUR LES OCCURRENCES DU MOT-CLE VOLUMOGRAMME
 !     ----------------------------------------------------------------
  10     continue

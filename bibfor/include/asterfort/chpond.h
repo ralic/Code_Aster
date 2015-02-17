@@ -15,15 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine chpond(tych, dejain, chin, cesout, cespoi,&
-                      modele,carele)
-        character(len=4) :: tych
-        character(len=4) :: dejain
-        character(len=19) :: chin
-        character(len=19) :: cesout
-        character(len=19) :: cespoi
-        character(len=8) :: modele
-        character(len=8) :: carele
-    end subroutine chpond
-end interface
+          interface 
+            subroutine chpond(tych,dejain,chin,cesout,cespoi,ligrel,    &
+     &carele)
+              character(len=4), intent(in) :: tych
+              character(len=4), intent(in) :: dejain
+              character(len=19), intent(in) :: chin
+              character(len=19), intent(in) :: cesout
+              character(len=19), intent(in) :: cespoi
+              character(len=*), intent(in) :: ligrel
+              character(len=8), intent(in) :: carele
+            end subroutine chpond
+          end interface 
