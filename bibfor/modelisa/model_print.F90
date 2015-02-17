@@ -48,7 +48,7 @@ subroutine model_print(model)
 !
     integer ifm, niv
     integer :: numvec, nbgrel, igrel, long_grel, nume_elem, nume_node
-    integer :: nume_type_poi1, jc, j, iend, ibegin
+    integer :: nume_type_poi1, jc, j,k, ibegin
     integer :: nume_type_elem, nume_type_geom
     integer :: iexi, nb_type_elem
     integer :: nb_elem_grel
@@ -199,8 +199,8 @@ subroutine model_print(model)
                 call utmess('I', 'MODELE1_21', nk = 3, valk = valk, si = long_grel-1)
                 jc = 0
                 ibegin = numvec
-                iend   = numvec+nb_elem_grel-1
-                do j = ibegin, iend
+                do k = 1,nb_elem_grel
+                    j=ibegin-1+k
                     jc = jc+1
                     nume_elem = p_model_liel(j)
                     if (nume_elem .lt. 0) then
@@ -210,60 +210,21 @@ subroutine model_print(model)
                     else
                         call jenuno(jexnum(mesh//'.NOMMAI', nume_elem), name_entity)
                     endif
-                    if (jc .eq. 8) then
+                    if (jc .le. 8) then
                         tabmai(jc) = name_entity
+                    end if
+                    if (jc .eq.8) then
                         call utmess('I', 'MODELE1_38', nk = 8, valk = tabmai)
                         jc         = 0
-                    elseif (j .eq. p_model_liel(numvec+long_grel-2)) then
-                        valk(1) = ' ' 
-                        valk(2) = ' '
-                        valk(3) = ' '
-                        valk(4) = ' '
-                        valk(5) = ' '
-                        valk(6) = ' '
-                        valk(7) = ' '
-                        valk(8) = ' '
-                        if (jc.eq.1) then
-                            valk(1:1) = tabmai(1:1)
-                        elseif (jc.eq.2) then
-                            valk(1:1) = tabmai(1:1)
-                            valk(1:2) = tabmai(1:2)
-                        elseif (jc.eq.3) then
-                            valk(1:1) = tabmai(1:1)
-                            valk(1:2) = tabmai(1:2)
-                            valk(1:3) = tabmai(1:3)
-                        elseif (jc.eq.4) then
-                            valk(1:1) = tabmai(1:1)
-                            valk(1:2) = tabmai(1:2)
-                            valk(1:3) = tabmai(1:3)
-                            valk(1:4) = tabmai(1:4)
-                        elseif (jc.eq.5) then
-                            valk(1:1) = tabmai(1:1)
-                            valk(1:2) = tabmai(1:2)
-                            valk(1:3) = tabmai(1:3)
-                            valk(1:4) = tabmai(1:4)
-                            valk(1:5) = tabmai(1:5)
-                        elseif (jc.eq.6) then
-                            valk(1:1) = tabmai(1:1)
-                            valk(1:2) = tabmai(1:2)
-                            valk(1:3) = tabmai(1:3)
-                            valk(1:4) = tabmai(1:4)
-                            valk(1:5) = tabmai(1:5)
-                            valk(1:6) = tabmai(1:6)
-                        elseif (jc.eq.7) then
-                            valk(1:1) = tabmai(1:1)
-                            valk(1:2) = tabmai(1:2)
-                            valk(1:3) = tabmai(1:3)
-                            valk(1:4) = tabmai(1:4)
-                            valk(1:5) = tabmai(1:5)
-                            valk(1:6) = tabmai(1:6)
-                            valk(1:7) = tabmai(1:7)
+                    endif
+                    if (k .eq. nb_elem_grel) then
+                        valk(1:8) = ' '
+                        if (jc.le.7) then
+                            valk(1:jc) = tabmai(1:jc)
                         else
                             ASSERT(.false.)
                         endif
                         call utmess('I', 'MODELE1_38', nk = 8, valk = valk)
-                    else
-                        tabmai(jc) = name_entity
                     endif
                 end do
             endif
