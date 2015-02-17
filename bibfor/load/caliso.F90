@@ -13,6 +13,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
 #include "asterfort/char_excl_keyw.h"
 #include "asterfort/char_read_tran.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/solide_tran.h"
 #include "asterfort/drz12d.h"
 #include "asterfort/drz13d.h"
@@ -97,7 +98,7 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     character(len=19) :: ligrch
     character(len=16) :: keywordfact
     character(len=24) :: keywordexcl
-    integer :: n_keyexcl
+    integer :: n_keyexcl, iexi
     integer :: cmp_index_dx, cmp_index_dy, cmp_index_dz
     integer :: cmp_index_drx, cmp_index_dry, cmp_index_drz
     aster_logical :: l_rota_2d, l_rota_3d
@@ -190,8 +191,13 @@ subroutine caliso(load, mesh, ligrmo, vale_type)
     call wkvect(list_type, 'G V K8', nliai, vk8 = typ_liais)
     call wkvect(num_mat_tar, 'G V I', 2*nliai, vi = lis_nb_ma_ta)
 !
+!   -- calcul de inema : nombre de mailles tardives deja presentes dans ligrch :
     ligrch = load//'.CHME.LIGRE'
-    call dismoi('NB_MA_SUP', ligrch, 'LIGREL', repi = inema)
+    inema=0
+    call jeexin(ligrch//'.NEMA', iexi)
+    if (iexi .gt. 0) then
+        call jelira(ligrch//'.NEMA', 'NUTIOC', inema)
+    endif
 !
 ! - Loop on factor keyword
 !

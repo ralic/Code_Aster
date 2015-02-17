@@ -170,10 +170,9 @@ subroutine exisd(typesd, nomsd, iret)
     else if (typ2sd.eq.'LIGREL') then
 !     -----------------------------------
         ch = nomsd
-        call jeexin(ch//'.LIEL', i1)
-        call jeexin(ch//'.LGRF', i2)
-        call jeexin(ch//'.NBNO', i3)
-        if (i1*i2*i3 .ne. 0) goto 20
+        call jeexin(ch//'.LGRF', i1)
+        call jeexin(ch//'.NBNO', i2)
+        if (i1*i2 .ne. 0) goto 20
 !
     else if (typ2sd.eq.'FONCTION') then
 !     -----------------------------------

@@ -64,7 +64,6 @@ MATRICE__
 
 OPTION__
 
-    NORME_L2                  -2 IN__ OUT__ XXXXXX XXXXXX 
 
     CHAR_THER_ACCE_R 315  IN__  NACCELR  PACCELR  NGEOMER  PGEOMER  CMATERC  PMATERC  
                           OUT__ MVECTTR  PVECTTR  

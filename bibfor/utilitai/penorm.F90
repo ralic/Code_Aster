@@ -20,6 +20,7 @@ subroutine penorm(resu, modele)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismlg.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exlim1.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -120,7 +121,6 @@ subroutine penorm(resu, modele)
     chgeom = '&&PENORM.CHGEOM'
     exiord=.false.
     nb_cmp_act =0
-    ligrel = modele//'.MODELE'
 !
 ! - Geometry
 !
@@ -354,13 +354,18 @@ subroutine penorm(resu, modele)
                 mesmai = mesmaf
             else
                 call utmess('F', 'PREPOST2_6')
-            endif 
+            endif
         else
             infoma='-'
         endif
-!
-!       - VERIFICATION SI ON VA TRAITER DES ELEMENTS DE STRUCTURE
-        call dismlg('EXI_RDM', mesmai, ibid, exirdm, iret)
+
+!       -- calcul de ligrel :
+!       ---------------------
+        call jeveuo(mesmai, 'L', jma)
+        call exlim1(zi(jma), nbma, modele, 'V', ligrel)
+
+!       -- verification si on va traiter des elements de structure
+        call dismlg('EXI_RDM', ligrel, ibid, exirdm, iret)
         if (exirdm .eq. 'OUI') then
             call utmess('F', 'UTILITAI8_60')
         endif
@@ -454,7 +459,6 @@ subroutine penorm(resu, modele)
 !      -- 4.5 REDUCTION DU CHAMP EN FONCTION DES MAILLES --
 !
         call celces(cham1, 'V', chamtm)
-        call jeveuo(mesmai, 'L', jma)
         call cesred(chamtm, nbma, zi(jma), 0, [k8b],&
                     'V', chamtm)
         optio2 ='NORME_L2'
@@ -508,6 +512,7 @@ subroutine penorm(resu, modele)
 !
         call detrsd('CHAMP', cham1)
         call detrsd('CHAMP', cham2)
+        call detrsd('LIGREL', ligrel)
 !
         call jedetr(valr)
         call jedetr(vali)

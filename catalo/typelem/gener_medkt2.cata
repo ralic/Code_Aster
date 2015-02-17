@@ -199,7 +199,6 @@ MATRICE__
 
 OPTION__
 
-    NORME_L2                  -2 IN__ OUT__ XXXXXX XXXXXX 
     RIGI_MECA_PRSU_F          -2 IN__ OUT__ XXXXXX XXXXXX 
     RIGI_MECA_PRSU_R          -2 IN__ OUT__ XXXXXX XXXXXX 
 

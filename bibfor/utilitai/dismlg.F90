@@ -8,6 +8,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/dismml.h"
 #include "asterfort/dismte.h"
 #include "asterfort/dismtm.h"
+#include "asterfort/exisd.h"
 #include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
@@ -74,10 +75,16 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     ierd = 0
 !
     nomob=nomobz
+
+!   -- nomob est-il vraiment un ligrel ?
+!   -----------------------------------
+    call exisd('LIGREL', nomob, iexi)
+    ASSERT(iexi.eq.1)
+
 !
-!     --------------------------------
+!   -----------------------------------
     if (questi .eq. 'NOM_MAILLA') then
-!     --------------------------------
+!   -----------------------------------
         call jeveuo(nomob//'.LGRF', 'L', jlgrf)
         repk=zk8(jlgrf-1+1)
 !
