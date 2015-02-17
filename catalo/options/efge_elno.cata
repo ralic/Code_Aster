@@ -27,7 +27,7 @@ OPTION__
        % Probleme pour PCOMPOR :
        %   1) En non lineaire, il faut prendre 'RESU!COMPORTEMENT'
        %   2) En lineaire (pour POU_D_EM), il faut prendre 'CHMA!.COMPOR'
-       % On privilegie le 1er cas et on corrige si necessaire dans ccaccl.f
+       % On privilegie le 1er cas et on corrige si necessaire dans ccaccl.F90
 
         PCOMPOR  COMPOR 'RESU!COMPORTEMENT!N'
 

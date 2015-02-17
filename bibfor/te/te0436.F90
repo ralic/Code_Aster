@@ -33,6 +33,7 @@ subroutine te0436(option, nomte)
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE POST-TRAITEMENT :
 !                                  - SIEF_ELGA
+!                                  - EFGE_ELGA
 !                                  - EPOT_ELEM
 !                                  - EPSI_ELGA
 !                                  - MASS_INER
@@ -45,7 +46,7 @@ subroutine te0436(option, nomte)
     integer :: codres(2)
     character(len=4) :: fami
     integer :: nddl, nno, nnos, npg, ndim, ncomp
-    integer :: i, j, n, c, cc, kpg
+    integer :: i, j, n, c, cc, kpg, j1, j2, k
     integer :: ipoids, ivf, idfde, jgano
     integer :: igeom, icacoq, imate, idepl, icontp, inr, idefo, imass
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
@@ -55,6 +56,7 @@ subroutine te0436(option, nomte)
     real(kind=8) :: x(8), y(8), z(8), surfac, cdg(3), ppg, xxi, yyi, zzi
     real(kind=8) :: matine(6)
     real(kind=8) :: vro
+!----------------------------------------------------------------------------------
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -65,7 +67,17 @@ subroutine te0436(option, nomte)
 !
     fami = 'RIGI'
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+                      npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+
+    if (option.eq.'EFGE_ELGA') then
+!       -- c'est facile : il n'y a qu'a recopier :
+        call jevech('PSIEFR', 'L', j1)
+        call jevech('PEFGER', 'E', j2)
+        do k=1,3*npg
+            zr(j2-1+k)=zr(j1-1+k)
+        enddo
+        goto 999
+    endif
 !
 ! - PARAMETRES EN ENTREE
 !
@@ -259,5 +271,7 @@ subroutine te0436(option, nomte)
         zr(imass+8) = matine(4)*rho(1) - vro*(cdg(1)*cdg(3))
         zr(imass+9) = matine(5)*rho(1) - vro*(cdg(2)*cdg(3))
     endif
-!
+
+999 continue
+
 end subroutine

@@ -52,7 +52,7 @@ ACIER=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = E_A*section_l,
 # -------------------------------------------------
 LEMOD = AFFE_MODELE(
                 MAILLAGE=MA,
-                
+
                 AFFE=(
                         _F( GROUP_MA = 'GEOB',
                             PHENOMENE = 'MECANIQUE',
@@ -184,12 +184,15 @@ DEP=STAT_NON_LINE(  MODELE=LEMOD,
                     CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-3,
                                    ITER_GLOB_MAXI = 30,),
                                    )
-DEPB=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=DEP,GROUP_MA='GEOB')
+
+
+
+DEPB=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO',),RESULTAT=DEP,GROUP_MA='GEOB')
 
 
 DEPB=CALC_CHAMP(reuse =DEPB,
                 RESULTAT=DEPB,
-                CONTRAINTE='SIGM_NOEU',);
+                CONTRAINTE=('SIGM_NOEU',));
 
 
 # -------------------------------------------------
@@ -225,12 +228,12 @@ TEST_RESU(RESU=(_F(GROUP_NO='PMB',
                 ),
           )
 
-DEPA=CALC_CHAMP(CONTRAINTE=('SIEF_ELNO'),RESULTAT=DEP,GROUP_MA='GEOA')
+DEPA=CALC_CHAMP(CONTRAINTE=('SIEF_ELNO',),RESULTAT=DEP,GROUP_MA='GEOA')
 
 
 DEPA=CALC_CHAMP(reuse=DEPA,
                 RESULTAT=DEPA,
-                CONTRAINTE='SIEF_NOEU',);
+                CONTRAINTE=('SIEF_NOEU',));
 
 TEST_RESU(RESU=_F(GROUP_NO='PMA',
                   INST=1.0,
@@ -242,5 +245,43 @@ TEST_RESU(RESU=_F(GROUP_NO='PMA',
                   VALE_REFE=-8.5714290000000002E5,
                   PRECISION=1.E-2,),
           )
+
+
+#-------------------------------------------------------------------------------------------------
+# 5. Validation du calcul de EFGE_ELGA et EFGE_ELNO sur les elements de membrane :
+#    Sur ces elements : EFGE_ELNO = SIEF_ELNO
+#                       EFGE_ELGA = SIEF_ELGA
+#--------------------------------------------------------------------------------------------------
+
+# 5.1 Suite a un calcul non-lineaire :
+#-------------------------------------
+DEP=CALC_CHAMP(reuse=DEP, RESULTAT=DEP, CONTRAINTE=('SIEF_ELNO','EFGE_ELNO','EFGE_ELGA',))
+
+
+TEST_RESU(RESU=_F(RESULTAT=DEP, NOM_CHAM='SIEF_ELGA',INST=1.0, MAILLE='M107', POINT=1, NOM_CMP='NXX',
+                   VALE_CALC= -863864.492344, ))
+TEST_RESU(RESU=_F(RESULTAT=DEP, NOM_CHAM='EFGE_ELGA',INST=1.0,  MAILLE='M107', POINT=1, NOM_CMP='NXX',
+                   REFERENCE='AUTRE_ASTER', VALE_CALC= -863864.492344, VALE_REFE=-863864.492344, ))
+TEST_RESU(RESU=_F(RESULTAT=DEP, NOM_CHAM='SIEF_ELNO',INST=1.0,  MAILLE='M107', NOEUD='N28', NOM_CMP='NXX',
+                   REFERENCE='AUTRE_ASTER', VALE_CALC= -863864.492344, VALE_REFE=-863864.492344, ))
+TEST_RESU(RESU=_F(RESULTAT=DEP, NOM_CHAM='EFGE_ELNO',INST=1.0,  MAILLE='M107', NOEUD='N28', NOM_CMP='NXX',
+                   REFERENCE='AUTRE_ASTER', VALE_CALC= -863864.492344, VALE_REFE=-863864.492344, ))
+
+# 5.2 Suite a un calcul lineaire :
+#-------------------------------------
+DEP2=MECA_STATIQUE(  MODELE=LEMOD, CHAM_MATER=MATAF, CARA_ELEM=LECAR, INST=1.0,
+                     EXCIT=      _F( CHARGE = CL,),)
+
+DEP2=CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, CONTRAINTE=('SIEF_ELNO','EFGE_ELGA','EFGE_ELNO'))
+
+TEST_RESU(RESU=_F(RESULTAT=DEP2, NOM_CHAM='SIEF_ELGA',INST=1.0, MAILLE='M107', POINT=1, NOM_CMP='NXX',
+                   VALE_CALC= -863864.492344, ))
+TEST_RESU(RESU=_F(RESULTAT=DEP2, NOM_CHAM='EFGE_ELGA',INST=1.0, MAILLE='M107', POINT=1, NOM_CMP='NXX',
+                   REFERENCE='AUTRE_ASTER', VALE_CALC= -863864.492344, VALE_REFE=-863864.492344, ))
+TEST_RESU(RESU=_F(RESULTAT=DEP2, NOM_CHAM='SIEF_ELNO',INST=1.0, MAILLE='M107', NOEUD='N28', NOM_CMP='NXX',
+                   REFERENCE='AUTRE_ASTER', VALE_CALC= -863864.492344, VALE_REFE=-863864.492344, ))
+TEST_RESU(RESU=_F(RESULTAT=DEP2, NOM_CHAM='EFGE_ELNO',INST=1.0, MAILLE='M107', NOEUD='N28', NOM_CMP='NXX',
+                   REFERENCE='AUTRE_ASTER', VALE_CALC= -863864.492344, VALE_REFE=-863864.492344, ))
+#--------------------------------------------------------------------------------------------------
 
 FIN()

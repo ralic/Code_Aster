@@ -35,6 +35,7 @@ subroutine te0185(option, nomte)
 #include "asterfort/ef0409.h"
 #include "asterfort/ef0410.h"
 #include "asterfort/ef0415.h"
+#include "asterfort/ef0436.h"
 #include "asterfort/ef0517.h"
 #include "asterfort/ef0585.h"
 #include "asterfort/ef0587.h"
@@ -117,6 +118,9 @@ subroutine te0185(option, nomte)
         else if (cmod.eq.'TU3'.or.cmod.eq.'TU6') then
 !         -- TUYAU_3M, TUYAU_6M
             call ef0585(nomte)
+        else if (cmod.eq.'MMB') then
+!         -- MEMBRANE
+            call ef0436(nomte)
         else
             ASSERT(.false.)
         endif
@@ -179,6 +183,9 @@ subroutine te0185(option, nomte)
         else if (cmod.eq.'TU3'.or.cmod.eq.'TU6') then
 !         -- TUYAU_3M, TUYAU_6M
             call ef0587(nomte)
+        else if (cmod.eq.'MMB') then
+!         -- MEMBRANE
+            call ef0156(nomte)
         else
             ASSERT(.false.)
         endif

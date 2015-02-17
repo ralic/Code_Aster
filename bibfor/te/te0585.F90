@@ -24,7 +24,7 @@ subroutine te0585(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!    - FONCTION REALISEE:  CALCUL DES OPTIONS FORC_NODA ET
+!    - FONCTION REALISEE:  CALCUL DES OPTIONS FORC_NODA ET REFE_FORC_NODA
 !
 !    - ARGUMENTS:
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
