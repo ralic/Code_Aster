@@ -143,13 +143,12 @@ OSIG22 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-coef*1./sqrt(R(X,Y,Z))*cos(T(X,Y,
 OSIG12 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-coef*1./sqrt(R(X,Y,Z))*cos(T(X,Y,Z)/2.)*sin(T(X,Y,Z)/2.)*cos(3.*T(X,Y,Z)/2.)');
 OSIG33 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='-nu*(SIG11(X,Y,Z)+SIG22(X,Y,Z))');
 
-ZERO   = FORMULE(NOM_PARA=('X','Y','Z'),VALE='0.');
 
 CHF=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     FORCE_FACE=(_F(GROUP_MA='SURFGAU', FX=ZERO,   FY=OSIG11, FZ= SIG12),
-                                 _F(GROUP_MA='SURFDRO', FX=ZERO,   FY= SIG11, FZ=OSIG12),
-                                 _F(GROUP_MA='SURFSUP', FX=ZERO,   FY=OSIG12, FZ= SIG22),
-                                 _F(GROUP_MA='SURFINF', FX=ZERO,   FY= SIG12, FZ=OSIG22),
+                     FORCE_FACE=(_F(GROUP_MA='SURFGAU',  FY=OSIG11, FZ= SIG12),
+                                 _F(GROUP_MA='SURFDRO',  FY= SIG11, FZ=OSIG12),
+                                 _F(GROUP_MA='SURFSUP',  FY=OSIG12, FZ= SIG22),
+                                 _F(GROUP_MA='SURFINF',  FY= SIG12, FZ=OSIG22),
                        ),);
 
 

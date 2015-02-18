@@ -37,7 +37,7 @@ subroutine mefor0(nomo, chfor0, fonc)
     character(len=19) :: ligrmo
 !-----------------------------------------------------------------------
     chfor0 = '&&MEFOR0.FORCE_NULLE'
-    zero = '&&MEFOR0'
+    zero = '&FOZERO'
     ligrmo = nomo//'.MODELE    '
     licmp(1) = 'FX'
     licmp(2) = 'FY'
@@ -46,7 +46,6 @@ subroutine mefor0(nomo, chfor0, fonc)
     rcmp(2) = 0.d0
     rcmp(3) = 0.d0
     if (fonc) then
-        call fozerv(zero)
         nomf(1) = zero
         nomf(2) = zero
         nomf(3) = zero

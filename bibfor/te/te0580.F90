@@ -25,30 +25,78 @@ subroutine te0580(nomopt, nomte)
 
 !-----------------------------------------------------------------------
     character(len=1) :: code
-    integer :: jad, itab(8), nbv, iret, k
+    integer :: jad, itab(8), nbv, iret, k,kpara
     character(len=24) :: valk(2)
+    character(len=8) :: param
+    character(len=8) :: lparam1(2)=(/ 'PPRESSR', 'PPRESSF' /)
+    character(len=8) :: lparam2(6)=(/ 'PPRESSR', 'PPRESSF', 'PFR2D3D', &
+                                      'PFF2D3D', 'PFR1D2D', 'PFF1D2D' /)
+
 !-----------------------------------------------------------------------
 ! Cette routine realise les calculs elementaires "triviaux" qui ne sont pas
 ! encore programmes par les elements.
-! Par exemple les chargements de Neuman nuls.
+! Par exemple les chargements de Neumann nuls.
 !-----------------------------------------------------------------------
 
-    if (nomopt.eq.'CHAR_MECA_PRES_R') then
-        call tecach('OOO', 'PPRESSR', 'L', iret, nval=8, itab=itab)
-        ASSERT(iret.eq.0)
-        jad=itab(1)
-        nbv=itab(2)
-        do k=1,nbv
-            if (zr(jad-1+k).ne.0.d0) goto 998
+
+    if (nomopt.eq.'CHAR_MECA_PRES_R' .or. nomopt.eq.'CHAR_MECA_PRES_F') then
+!   =========================================================================
+        do kpara=1,2
+            param=lparam1(kpara)
+            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            if (iret.eq.0) then
+                jad=itab(1)
+                nbv=itab(2)
+                ASSERT(itab(5).eq.1 .or. itab(5).eq.4)
+                if (itab(5).eq.1) then
+                    do k=1,nbv
+                        if (zr(jad-1+k).ne.0.d0) goto 998
+                    enddo
+                else
+                    do k=1,nbv
+                        if (zk8(jad-1+k).ne.'&FOZERO') goto 998
+                    enddo
+                endif
+            endif
         enddo
 
-    elseif (nomopt.eq.'CHAR_MECA_PRES_F') then
-        call tecach('OOO', 'PPRESSF', 'L', iret, nval=8, itab=itab)
+
+    elseif (nomopt.eq.'CALC_G' .or. nomopt.eq.'CALC_G_F' &
+            .or. nomopt.eq.'CALC_K_G' .or. nomopt.eq.'CALC_K_G_F') then
+!   =======================================================================
+
+!       -- le resultat est nul si les forces de bord sont nulles ou
+!          si le champ theta est nul.
+
+!       -- on regarde d'abord theta :
+        call tecach('OOO', 'PTHETAR', 'L', iret, nval=8, itab=itab)
         ASSERT(iret.eq.0)
         jad=itab(1)
         nbv=itab(2)
         do k=1,nbv
-            if (zk8(jad-1+k).ne.'&FOZERO') goto 998
+            if (zr(jad-1+k).ne.0.d0) goto 2
+        enddo
+        goto 999
+
+!       -- on regarde toutes les forces :
+2       continue
+        do kpara=1,6
+            param=lparam2(kpara)
+            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            if (iret.eq.0) then
+                jad=itab(1)
+                nbv=itab(2)
+                ASSERT(itab(5).eq.1 .or. itab(5).eq.4)
+                if (itab(5).eq.1) then
+                    do k=1,nbv
+                        if (zr(jad-1+k).ne.0.d0) goto 998
+                    enddo
+                else
+                    do k=1,nbv
+                        if (zk8(jad-1+k).ne.'&FOZERO') goto 998
+                    enddo
+                endif
+            endif
         enddo
 
     else
@@ -66,6 +114,12 @@ subroutine te0580(nomopt, nomte)
 !   -- le bloc if suivant sera a retirer apres la correction de issue23503
     if (nomopt(1:14).eq.'CHAR_MECA_PRES') then
         if (nomte.eq.'HM_J_AXSE3'.or.nomte.eq.'HM_J_DPSE3') code='A'
+    endif
+
+!   -- le bloc if suivant sera a retirer apres la correction de issue23504
+    if (nomopt(1:8).eq.'CALC_K_G') then
+        if (nomte.eq.'MECA_XH_FACE4' .or. nomte.eq.'MECA_XHT_FACE4' &
+            .or. nomte.eq.'MECA_XT_FACE4') code='A'
     endif
     call utmess(code, 'CALCULEL_44',2,valk=valk)
 

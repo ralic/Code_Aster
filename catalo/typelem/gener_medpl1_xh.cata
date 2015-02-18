@@ -30,10 +30,13 @@ ENTETE__ ELEMENT__ MEPLSE3_XH     MAILLE__ SEG3
 
 MODE_LOCAL__
     DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX     DY      H1X     H1Y  )
+    NTHETAR  = DEPL_R   ELNO__ IDEN__  (DX     DY )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-   
+
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y       )
+    EGTHETA  = G        ELEM__         (GTHETA   )
+    EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA    )
@@ -44,11 +47,11 @@ MODE_LOCAL__
     E10NEUTI = N120_I    ELEM__         (X[10]     )
     N5NEUTI  = N120_I   ELNO__ IDEN__  (X[5]     )
     E8NEUTI = N120_I    ELEM__         (X[8])
-   
+
 
     E4NEUTR = N480_R    ELEM__         (X[4])
     E6NEUTR = N132_R    ELEM__         (X[6])
-   
+
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
 
     ENNEUT_F = NEUT_F   ELNO__ IDEN__  (X[30]    )
@@ -62,7 +65,11 @@ MATRICE__
 
 OPTION__
 
-    CALC_K_G_F                -2 IN__ OUT__ XXXXXX XXXXXX 
+%   -- te0580 : ne resout que les cas triviaux : 0.
+    CALC_G           580  IN__  NTHETAR PTHETAR  NFORCER  PFR1D2D  EPRESNO  PPRESSR    OUT__ EGTHETA  PGTHETA
+    CALC_G_F         580  IN__  NTHETAR PTHETAR  CFORCEF  PFF1D2D  CPRESSF  PPRESSF    OUT__ EGTHETA  PGTHETA
+    CALC_K_G         580  IN__  NTHETAR PTHETAR  NFORCER  PFR1D2D  EPRESNO  PPRESSR    OUT__ EKTHETA  PGTHETA
+    CALC_K_G_F       580  IN__  NTHETAR PTHETAR  CFORCEF  PFF1D2D  CPRESSF  PPRESSF    OUT__ EKTHETA  PGTHETA
 
     CHAR_MECA_FF1D2D  36  IN__  E6NEUTI  PCNSETO  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  E2NEUTI  PHEAVTO
                                 E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E6NEUTR  PPINTTO
