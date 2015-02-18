@@ -65,12 +65,12 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     real(kind=8) :: gs2, gs3, cmp_hp
     integer :: i, idepl, ier, igthet, ii, ino, ithet
     integer :: j, l
-    real(kind=8) :: jac, jm, k1, k2, k3, lamb(3), lamb1, lamb2
-    real(kind=8) :: lamb3, lambl(3)
+    real(kind=8) :: jac, k1, k2, k3, lamb(3), lamb1, lamb2
+    real(kind=8) :: lamb3, lambl(3), norme_theta
     integer :: nnos
     real(kind=8) :: norme, pm(3, 3), ptr(3, 3), theta(3)
     real(kind=8) :: tau1(3), tau2(3), nd(3), temp(3), xg(3)
-    real(kind=8) :: ptp(3), vec(3), sens, mult
+    real(kind=8) :: ptp(3), vec(3), sens
 !     BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
 !     DIMENSIONNEMENT A 3 ET NON NDIM POUR POUVOIR UTILISER NORMEV.F
     call matini(3, 3, 0.d0, pm)
@@ -97,7 +97,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
             e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff(ino)
             e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff(ino)
 110      continue
-132  continue
+132  end do
 !
 ! E1 == NORMALE (N)
 ! E2 == TANGENTE DIRECTION DE FISSURATION (M)
@@ -114,14 +114,19 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !
 !       ON REMPLACE E2 PAR THETA: REDRESSEMENT EN BORD DE FISSURE
         e2(i) = theta(i)
-390  continue
+390  end do
 !
 !    ON REORTHOGONALISE THETA
+!    EN GARDANT SA NORME!
 !
     call provec(e1, theta, temp)
     call normev(temp, norme)
+    call normev(theta, norme_theta)
     call provec(temp, e1, theta)
     call normev(theta, norme)
+    do i=1,ndim
+        theta(i) = norme_theta*theta(i)
+    end do
 !
 !   NORMALISATION DE LA BASE
     call normev(e1, norme)
@@ -173,7 +178,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
         do 280 j = 1, ndim
             lambl(j) = lambl(j) + zr(idepl-1+ii+ddld+j)*ff(ino)
 280      continue
-270  continue
+270  end do
     call prmave(0, ptr, 3, ndim, ndim,&
                 lambl, ndim, lamb, ndim, ier)
 !
@@ -195,7 +200,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
                 grdep(j,l) = grdep(j,l) + dfdi(ino,l)*am(j)
 282          continue
 281      continue
-290  continue
+290  end do
 !
 !
 !     -----------------------------------
@@ -218,7 +223,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
             grde3 = grde3 + e3(j)*grdep(j,l)*theta(l)
             g = g - lamb(j)*grdep(j,l)*theta(l)
 540      continue
-530  continue
+530  end do
     lamb1 = ddot(3,lamb,1,e1,1)
     lamb2 = ddot(3,lamb,1,e2,1)
     lamb3 = ddot(3,lamb,1,e3,1)
@@ -228,17 +233,14 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     gs2 = (lamb2*abs(grde2)-grde2*abs(lamb2))/2.d0
     gs3 = (lamb3*abs(grde3)-grde3*abs(lamb3))/2.d0
 !
-    jm = jac*0.5d0
-    mult = 0.5d0
-!
     if (ndim .eq. 3) then
-        zr(igthet-1+1)=zr(igthet-1+1)+g*jac*mult
-        zr(igthet-1+2)=zr(igthet-1+2)+g1*jac*mult
-        zr(igthet-1+3)=zr(igthet-1+3)+gs2*jac*mult
-        zr(igthet-1+4)=zr(igthet-1+4)+gs3*jac*mult
-        zr(igthet-1+5)=zr(igthet-1+5)+g1*jac*mult*coeff
-        zr(igthet-1+6)=zr(igthet-1+6)+g2*jac*mult*coeff
-        zr(igthet-1+7)=zr(igthet-1+7)+g3*jac*mult*coeff3
+        zr(igthet-1+1)=zr(igthet-1+1)+g*jac
+        zr(igthet-1+2)=zr(igthet-1+2)+g1*jac
+        zr(igthet-1+3)=zr(igthet-1+3)+gs2*jac
+        zr(igthet-1+4)=zr(igthet-1+4)+gs3*jac
+        zr(igthet-1+5)=zr(igthet-1+5)+g1*jac*coeff
+        zr(igthet-1+6)=zr(igthet-1+6)+g2*jac*coeff
+        zr(igthet-1+7)=zr(igthet-1+7)+g3*jac*coeff3
     else if (ndim.eq.2) then
 !
 ! PAS PROGRAMME POUR L INSTANT

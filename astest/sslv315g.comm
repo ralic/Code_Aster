@@ -202,6 +202,7 @@ for i in range(nbcalc) :
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,
                               FISSURE=FISS[i],
                               CONTACT='MORTAR',
+                              DECOUPE_FACETTE='SOUS_ELEMENTS',
                               INFO=1,);
    TRACT[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
                            PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),);
@@ -230,18 +231,18 @@ for i in range(nbcalc) :
                                         NOM=GRP[i],
                                         OPTION='FISS_XFEM',
                                         TYPE_GROUP='HEAVISIDE',
-                                        TYPE_MAILLE='3D'));
-#
-#  LISTE D INSTANTS
-   
-
-   step = L_INS1[i]+1.E-4
-   step2 = L_INS1[i]+0.5
-   INST[i] = DEFI_LIST_REEL(VALE=(L_INS1[i], step, step2, L_INS1[i+1]),);
+                                        TYPE_MAILLE='3D'));  
 #
 #  on remplace MECA_STATIQUE par STAT_NON_LINE
 #  si premier instant, pas d etat initial a gerer
    if(i==0) :
+       #
+       #  LISTE D INSTANTS
+       step = L_INS1[i]+1.E-4
+       step2 = L_INS1[i]+0.1
+       step3 = L_INS1[i]+0.5
+       INST[i] = DEFI_LIST_REEL(VALE=(L_INS1[i], step, step2, step3, L_INS1[i+1]),);
+       #
        RESU[i]=STAT_NON_LINE(MODELE=MODELX[i],
                              CHAM_MATER=CHAMPMA,
                              EXCIT=(_F(CHARGE=ENCAS[i],),
@@ -268,6 +269,14 @@ for i in range(nbcalc) :
                              INFO=1,);
 #  si instants suivants, etat initial a donner
    if(i!=0) :
+       #
+       #  LISTE D INSTANTS
+       step = L_INS1[i]+1.E-4
+       step2 = L_INS1[i]+0.1
+       step3 = L_INS1[i]+0.5
+       step4 = L_INS1[i]+0.8
+       INST[i] = DEFI_LIST_REEL(VALE=(L_INS1[i], step, step2, step3, step4, L_INS1[i+1]),);
+       #
        RESU[i]=STAT_NON_LINE(ETAT_INIT=_F(COHE=COHE[i-1]),
                              MODELE=MODELX[i],
                              CHAM_MATER=CHAMPMA,
@@ -396,8 +405,8 @@ DISTMAX=1./3.
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='NON_DEFINI',
-           VALE_CALC=3.21984087273,
-           VALE_REFE=3.16797599215,
+           VALE_CALC=3.090765691,
+           VALE_REFE=3.090765691,
            PRECISION=2.E-2,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',
@@ -406,8 +415,8 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='NON_DEFINI',
-           VALE_CALC=3.21984087273,
-           VALE_REFE=3.16797599215,
+           VALE_CALC=3.09075510002,
+           VALE_REFE=3.09075510002,
            PRECISION=2.E-2,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MIN',
@@ -416,8 +425,8 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='NON_DEFINI',
-           VALE_CALC=9.13846269603,
-           VALE_REFE=9.02648480411,
+           VALE_CALC=9.11518719782,
+           VALE_REFE=9.11518719782,
            PRECISION=2.E-2,
            NOM_PARA='COOR_Z',
            TYPE_TEST='MAX',
@@ -426,8 +435,8 @@ TEST_TABLE(CRITERE='RELATIF',
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='NON_DEFINI',
-           VALE_CALC=9.13846269603,
-           VALE_REFE=9.02648480411,
+           VALE_CALC=9.11513426391,
+           VALE_REFE=9.11513426391,
            PRECISION=2.E-2,
            NOM_PARA='COOR_Z',
            TYPE_TEST='MIN',
