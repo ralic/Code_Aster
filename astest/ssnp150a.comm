@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 # Definition des caracteristiques du materiau
 #================================================================================================
 E=1;
-NU=0.3;
+NU=0.;
 
 #================================================================================================
 # Calcul de la solution de reference
@@ -184,7 +184,7 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=Modele,
 TEST_RESU(CHAM_NO=_F(
                      TYPE_TEST='SOMM_ABS',
                      CHAM_GD=DIFF,
-                     VALE_CALC=4.0388841109908997E-05,),
+                     VALE_CALC=4.06363496057E-05,),
           )
 
 IMPR_RESU(FORMAT='MED',
