@@ -79,6 +79,7 @@ MA=MODI_MAILLAGE(reuse =MA,
                  ORIE_PEAU_2D=_F(GROUP_MA=('HAUT','BAS','DROITE','GAUCHE'),),
                  );
 
+MA=DEFI_GROUP(reuse = MA, MAILLAGE = MA, CREA_GROUP_MA=(_F(NOM='GAUCHE_M',UNION=('GAUCHE_1','GAUCHE_3'),),),);
 MA=MODI_MAILLAGE(reuse =MA,
                  MAILLAGE=MA,
                  ORIE_FISSURE=_F(GROUP_MA='FISSURE'),
@@ -163,7 +164,7 @@ PWELL=AFFE_CHAR_MECA_F(MODELE=MO,
 COMP=AFFE_CHAR_MECA(
    MODELE=MO,
    PRES_REP=(
-      _F(GROUP_MA=('HAUT','GAUCHE'),PRES=62000000.0),
+      _F(GROUP_MA=('HAUT','GAUCHE_M'),PRES=62000000.0),
      ),
    );
 

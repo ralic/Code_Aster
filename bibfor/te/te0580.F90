@@ -171,7 +171,7 @@ subroutine te0580(nomopt, nomte)
 
 !   -- le bloc if suivant sera a retirer apres la correction de issue23503
     if (nomopt(1:14).eq.'CHAR_MECA_PRES') then
-        if (nomte.eq.'HM_J_AXSE3'.or.nomte.eq.'HM_J_DPSE3') code='A'
+        if (nomte.eq.'HM_J_AXSE3'.or.nomte.eq.'HM_J_DPSE3') code='F'
     endif
 
 !   -- le bloc if suivant sera a retirer apres la correction de issue23504
