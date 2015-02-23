@@ -20,7 +20,7 @@
 cata_msg = {
 
     3 : _(u"""
-On ne sait pas calculer l'option AMOR_MECA pour une élasticité de type %(k1)s
+On ne sait pas calculer l'option %(k1)s pour une élasticité de type %(k2)s.
 """),
 
     4 : _(u"""
