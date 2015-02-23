@@ -47,7 +47,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 5
+    integer, parameter :: nbin = 6
     integer, parameter :: nbout = 1
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -58,7 +58,7 @@ implicit none
     character(len=19) :: ligrmo
     character(len=1) :: base
     character(len=19) :: vari_curr, varc_prev, varc_curr, vari_curr_modi
-    character(len=19) :: vrcplu, vrcmoi
+    character(len=19) :: vrcplu, vrcmoi, time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,6 +76,7 @@ implicit none
     call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
     call nmvcex('TOUT', varc_prev, vrcmoi)
     call nmvcex('TOUT', varc_curr, vrcplu)
+    call nmvcex('INST', varc_curr, time_curr)
 !
     vari_curr_modi = '&&VARI_TMP'
     !call copisd('CHAMP_GD', 'V', vari_curr, vari_curr_modi)
@@ -93,6 +94,8 @@ implicit none
     lchin(4) = vrcmoi
     lpain(5) = 'PVARCPR'
     lchin(5) = vrcplu
+    lpain(6) = 'PTEMPSR'
+    lchin(6) = time_curr
 !
 ! - Output field
 !

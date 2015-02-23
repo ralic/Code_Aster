@@ -38,7 +38,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ipg, npg, nb_vari, ivari, ispg, nr
-    integer :: jmate, jcompo, j_vari_out, j_vari_in
+    integer :: jmate, jcompo, j_vari_out, j_vari_in, jtime
     character(len=16) :: rela_comp
     integer :: nb_res_mx
     parameter (nb_res_mx = 1)
@@ -58,6 +58,7 @@ implicit none
     call jevech('PMATERC', 'L', jmate) 
     call jevech('PCOMPOR', 'L', jcompo) 
     call jevech('PVARIMR', 'L', j_vari_in)
+    call jevech('PTEMPSR', 'L', jtime)
     rela_comp = zk16(jcompo-1+1)
     read (zk16(jcompo-1+2),'(I16)') nb_vari
 !
@@ -69,11 +70,13 @@ implicit none
 !
     ipg=1
     ispg=1
-    call rcvarc('F', 'TEMP', '+', 'RIGI', ipg,&
-                ispg, vvalres, ccodret)
+!    call rcvarc('F', 'TEMP', '+', 'RIGI', ipg,&
+!                ispg, vvalres, ccodret)
+    vvalres = zr(jtime)
 !
     call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
-                ' '   , 'REST_ECRO', 1, 'TEMP', [vvalres],&
+                ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
+!                ' ', 'REST_ECRO', 0, ' ', [0.d0],&
                 nb_res_mx, 'REST_FONC', valres, codret, 2)
 !
 ! - annealing function bounds checking
