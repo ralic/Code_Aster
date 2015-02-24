@@ -141,14 +141,9 @@ def calc_transfert_ops(
             _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_Tcal, VALE_FONC=_Ordcal,); #On recrée la fonction temporelle pour en faire sa fft
             _fonc=CALC_FONCTION(FFT=_F(FONCTION=_f0, METHODE='COMPLET',),);
             __freq,__Re,__Im=_fonc.Valeurs()
-            corr = 1
-            nb_tot='2N-1'
-            if np.remainder(len(__freq), 2) == 0:
-                corr = 2
-                nb_tot='2N-2'
-            __freq=__freq[0:int((corr+len(__freq))/2)]
-            __Re=__Re[0:int((corr+len(__Re))/2)]
-            __Im=__Im[0:int((corr+len(__Im))/2)]
+            __freq=__freq[0:int((len(__freq))/2)]
+            __Re=__Re[0:int((len(__Re))/2)]
+            __Im=__Im[0:int((len(__Im))/2)]
             E_Lfreq.append(__freq)
             E_L_Re.append(__Re)
             E_L_Im.append(__Im)
@@ -174,14 +169,9 @@ def calc_transfert_ops(
             _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_TcalS, VALE_FONC=_OrdcalS,); #On recrée la fonction temporelle pour en faire sa fft
             _fonc=CALC_FONCTION(FFT=_F(FONCTION=_f0, METHODE='COMPLET',),);
             __freq,__Re,__Im=_fonc.Valeurs()
-            corr = 1
-            nb_tot='2N-1'
-            if np.remainder(len(__freq), 2) == 0:
-                corr = 2
-                nb_tot='2N-2'
-            __freq=__freq[0:int((corr+len(__freq))/2)]
-            __Re=__Re[0:int((corr+len(__Re))/2)]
-            __Im=__Im[0:int((corr+len(__Im))/2)]
+            __freq=__freq[0:int((len(__freq))/2)]
+            __Re=__Re[0:int((len(__Re))/2)]
+            __Im=__Im[0:int((len(__Im))/2)]
             S_Lfreq.append(__freq)
             S_L_Re.append(__Re)
             S_L_Im.append(__Im)
@@ -194,8 +184,6 @@ def calc_transfert_ops(
             S_L_Im.append(_Im)
             
     LISTFREQ=S_Lfreq[0]
-    print 'LISTFREQ=',LISTFREQ
-    print 'len(LISTFREQ)=',len(LISTFREQ)
     _LIST00=DEFI_LIST_REEL(VALE=LISTFREQ,);
     
   #On vérifie que les calculs dynamiques ont été faits sur les mêmes listes   
@@ -368,7 +356,6 @@ def calc_transfert_ops(
             s_sign=sign.val
             for ss in l_signal:
                 if type(s_sign[ss])==fonction_c:
-                   signal='harmo'
                    _test=s_sign[ss]
                    Test_F,Test_Re,Test_Im=_test.Valeurs()
                    STEST.append(Test_F)
@@ -383,7 +370,6 @@ def calc_transfert_ops(
                        Sign_Re.append(B)
                        Sign_Im.append(C)
                 else :
-                   signal='temp'
                    _test=s_entr[mm]
                    Test_T,Test_Ord=_test.Valeurs()
                    STEST.append(Test_T)
@@ -461,17 +447,10 @@ def calc_transfert_ops(
                 _L0=d_signal['Lff_%d' %rr]
                 _AXX=DEFI_FONCTION(NOM_PARA='FREQ',VALE_C=_L0)
                 lf1,re,im=_AXX.Valeurs()
-#                 _ATT=CALC_FONCTION(FFT=_F(FONCTION=_AXX, METHODE='COMPLET',SYME='NON',NB_ECHANT=nb_tot,),);
-#                 T_en,Ord_en=_ATT.Valeurs()
-#                 mcsign.append(_F(LISTE_R=Ord_en,PARA='F%s' %(Ls[rr])))
-                if signal=='temp' :
-                    _ATT=CALC_FONCTION(FFT=_F(FONCTION=_AXX, METHODE='COMPLET',SYME='NON',NB_ECHANT=nb_tot,),);
-                    T_en,Ord_en=_ATT.Valeurs()
-                    mcsign.append(_F(LISTE_R=Ord_en,PARA='F%s' %(Ls[rr])))
-                else :
-                    _ATT=CALC_FONCTION(FFT=_F(FONCTION=_AXX, METHODE='COMPLET',SYME='NON',),);
-                    T_en,Ord_en=_ATT.Valeurs()
-                    mcsign.append(_F(LISTE_R=Ord_en,PARA='F%s' %(Ls[rr])))
+                _ATT=CALC_FONCTION(FFT=_F(FONCTION=_AXX, METHODE='COMPLET',SYME='NON'),);
+                T_en,Ord_en=_ATT.Valeurs()
+                mcsign.append(_F(LISTE_R=Ord_en,PARA='F%s' %(Ls[rr])))
+
                     
         if type_resu=='HARMONIQUE':
             mcsign.insert(0,_F(LISTE_R=LISTFREQ,PARA='FREQ',))
