@@ -19,8 +19,8 @@
 # FLUIDES INCOMPRESSIBLES - MASSES AJOUTEES - CALCUL FREQUENTIEL - HARM GENE
 
 
-POURSUITE(PAR_LOT='NON',IGNORE_ALARM=('CALCULEL2_63','SUPERVIS_42','CALCULEL2_64','MODELE1_63','CATAMESS_41','MODELE1_64','MODELE1_63','ALGORITH_60','SUPERVIS_1'));
-
+POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',
+      IGNORE_ALARM=('CALCULEL2_63','CALCULEL2_64','SUPERVIS_1'))
 
 
 #On passe les signaux en frequentiel pour tester la macro en frequentiel
@@ -33,14 +33,14 @@ FREQ=FREQ[0:int((len(FREQ)+1)/2)]
 LFREQ=DEFI_LIST_REEL(VALE=FREQ,);
 
 F_ACC_X=CALC_FONC_INTERP(LIST_PARA=LFREQ,
-		       FONCTION=F_ACC_X0,);
-		       
+                       FONCTION=F_ACC_X0,);
+
 F_ACC_Y=CALC_FONC_INTERP(LIST_PARA=LFREQ,
-		       FONCTION=F_ACC_Y0,);
-		       
+                       FONCTION=F_ACC_Y0,);
+
 F_ACC_Z=CALC_FONC_INTERP(LIST_PARA=LFREQ,
-		       FONCTION=F_ACC_Z0,);
-		       		       
+                       FONCTION=F_ACC_Z0,);
+
 #------------------------------------------
 #          calcul standard
 #------------------------------------------
@@ -61,9 +61,9 @@ DYNGENF=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
 
 #On récupère les accelerations du calcul du calcul dynamique DYNGENF 'HARM_GENE'
 f_a_x=RECU_FONCTION(RESU_GENE=DYNGENF,
-             	    NOM_CHAM='ACCE',
-             	    NOM_CMP='DX',
-             	    NOEUD='NO2815',);
+                    NOM_CHAM='ACCE',
+                    NOM_CMP='DX',
+                    NOEUD='NO2815',);
 
 f_a_y=RECU_FONCTION(RESU_GENE=DYNGENF,
                     NOM_CHAM='ACCE',
@@ -71,24 +71,24 @@ f_a_y=RECU_FONCTION(RESU_GENE=DYNGENF,
                     NOEUD='NO2815',);
 
 f_a_z=RECU_FONCTION(RESU_GENE=DYNGENF,
-                    	    NOM_CHAM='ACCE',
-                    	    NOM_CMP='DZ',
-                    	    NOEUD='NO2815',);
+                            NOM_CHAM='ACCE',
+                            NOM_CMP='DZ',
+                            NOEUD='NO2815',);
 
 f_Abs_x=CALC_FONCTION(INTERPOL='LIN',
-		    COMB_C=(_F(FONCTION=f_a_x,
+                    COMB_C=(_F(FONCTION=f_a_x,
                                COEF_C=1,),
                             _F(FONCTION=F_ACC_X,
                                COEF_C=1,),),);
 
 f_Abs_y=CALC_FONCTION(INTERPOL='LIN',
-		    COMB_C=(_F(FONCTION=f_a_y,
+                    COMB_C=(_F(FONCTION=f_a_y,
                                COEF_C=1,),
                             _F(FONCTION=F_ACC_Y,
                                COEF_C=1,),),);
 
 f_Abs_z=CALC_FONCTION(INTERPOL='LIN',
-	            COMB_C=(_F(FONCTION=f_a_z,
+                    COMB_C=(_F(FONCTION=f_a_z,
                                COEF_C=1,),
                             _F(FONCTION=F_ACC_Z,
                                COEF_C=1,),),);
@@ -133,22 +133,22 @@ FDYNGENZ=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
 
 
 C_FREQ=CALC_TRANSFERT(NOM_CHAM='ACCE',
-		    RESULTAT_X=FDYNGENX,
-		    RESULTAT_Y=FDYNGENY,
-		    RESULTAT_Z=FDYNGENZ,
+                    RESULTAT_X=FDYNGENX,
+                    RESULTAT_Y=FDYNGENY,
+                    RESULTAT_Z=FDYNGENZ,
                     REPERE='RELATIF',
-		    ENTREE=_F(NOEUD='NO1996',),
-		    SORTIE=_F(NOEUD='NO2815',),
- 		    ENTRAINEMENT=_F(DX=F_ACC_X,
- 				    DY=F_ACC_Y,
- 				    DZ=F_ACC_Z,
+                    ENTREE=_F(NOEUD='NO1996',),
+                    SORTIE=_F(NOEUD='NO2815',),
+                    ENTRAINEMENT=_F(DX=F_ACC_X,
+                                     DY=F_ACC_Y,
+                                     DZ=F_ACC_Z,
                                     ),
                     SIGNAL=_F(MESURE_X=f_Abs_x,
                               MESURE_Y=f_Abs_y,
                               MESURE_Z=f_Abs_z,
                               TYPE_RESU='HARMONIQUE',
                               TABLE_RESU=CO("TABLE00"),),
-                              );		
+                              );                
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
           VALE_CALC=-1.3233422078,

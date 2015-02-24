@@ -19,10 +19,10 @@
 # FLUIDES INCOMPRESSIBLES - MASSES AJOUTEES.
 
 
-POURSUITE(PAR_LOT='NON',
-      IGNORE_ALARM=('CALCULEL2_63','CALCULEL2_64','MODELE1_63','CATAMESS_41','MODELE1_64','MODELE1_63','ALGORITH_60','ALGORITH16_14','SUPERVIS_1','SUPERVIS_42',))
+POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',
+      IGNORE_ALARM=('CALCULEL2_63','CALCULEL2_64','SUPERVIS_1'))
 
-pas=0.01
+pas=0.001
 Tfin=11.14-pas
 #------------------------------------------
 #          calcul standard
@@ -52,37 +52,37 @@ DYNGENT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 #On récupère les accelerations du calcul du calcul dynamique DYNGEN
 t_a_x=RECU_FONCTION(RESU_GENE=DYNGENT,
-             	    NOM_CHAM='ACCE',
-             	    NOM_CMP='DX',
-             	    NOEUD='NO2815',
-		    );
+                         NOM_CHAM='ACCE',
+                         NOM_CMP='DX',
+                         NOEUD='NO2815',
+                    );
 
 t_a_y=RECU_FONCTION(RESU_GENE=DYNGENT,
                     NOM_CHAM='ACCE',
                     NOM_CMP='DY',
                     NOEUD='NO2815',
-	            );
+                    );
 
 t_a_z=RECU_FONCTION(RESU_GENE=DYNGENT,
-                    	    NOM_CHAM='ACCE',
-                    	    NOM_CMP='DZ',
-                    	    NOEUD='NO2815',
-			    );
+                                NOM_CHAM='ACCE',
+                                NOM_CMP='DZ',
+                                NOEUD='NO2815',
+                            );
 #On calcule le signal absolu
 t_Abs_x0=CALC_FONCTION(INTERPOL='LIN',
-		    COMB=(_F(FONCTION=t_a_x,
+                    COMB=(_F(FONCTION=t_a_x,
                                COEF=1,),
                             _F(FONCTION=ACC_X, 
                                COEF=1,),),);
 
 t_Abs_y0=CALC_FONCTION(INTERPOL='LIN',
-		    COMB=(_F(FONCTION=t_a_y,
+                    COMB=(_F(FONCTION=t_a_y,
                                COEF=1,),
                             _F(FONCTION=ACC_Y,   
                                COEF=1,),),);
 
 t_Abs_z0=CALC_FONCTION(INTERPOL='LIN',
-	            COMB=(_F(FONCTION=t_a_z,
+                    COMB=(_F(FONCTION=t_a_z,
                                COEF=1,),
                             _F(FONCTION=ACC_Z, 
                                COEF=1,),),);
@@ -90,11 +90,11 @@ t_Abs_z0=CALC_FONCTION(INTERPOL='LIN',
 L_tmp0,ordo=t_a_x.Valeurs()
 L_tmp=DEFI_LIST_REEL(VALE=L_tmp0);
 t_Abs_x=CALC_FONC_INTERP(LIST_PARA=L_tmp,
-		       FONCTION=t_Abs_x0,);
+                       FONCTION=t_Abs_x0,);
 t_Abs_y=CALC_FONC_INTERP(LIST_PARA=L_tmp,
-		       FONCTION=t_Abs_y0,);
+                       FONCTION=t_Abs_y0,);
 t_Abs_z=CALC_FONC_INTERP(LIST_PARA=L_tmp,
-		       FONCTION=t_Abs_z0,);
+                       FONCTION=t_Abs_z0,);
 
 #------------------------------------------------------------------------------------
 #          Calculs préalable à l'utilisation de la macro commande
@@ -149,22 +149,22 @@ TDYNGENZ=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                           ),);
 
 C_TEMP=CALC_TRANSFERT(NOM_CHAM='ACCE',
-		    RESULTAT_X=TDYNGENX,
-		    RESULTAT_Y=TDYNGENY,
-		    RESULTAT_Z=TDYNGENZ,
+                    RESULTAT_X=TDYNGENX,
+                    RESULTAT_Y=TDYNGENY,
+                    RESULTAT_Z=TDYNGENZ,
                     REPERE='RELATIF',
-		    ENTREE=_F(NOEUD='NO1996',),
-		    SORTIE=_F(NOEUD='NO2815',),
- 		    ENTRAINEMENT=_F(DX=ACC_X,
- 				    DY=ACC_Y,
- 				    DZ=ACC_Z,
+                    ENTREE=_F(NOEUD='NO1996',),
+                    SORTIE=_F(NOEUD='NO2815',),
+                    ENTRAINEMENT=_F(DX=ACC_X,
+                                     DY=ACC_Y,
+                                     DZ=ACC_Z,
                                     ),
                     SIGNAL=_F(MESURE_X=t_Abs_x,
                               MESURE_Y=t_Abs_y,
                               MESURE_Z=t_Abs_z,
                               TYPE_RESU='HARMONIQUE',
                               TABLE_RESU=CO("TABLE01"),),
-                              );		
+                              );                
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
           VALE_CALC=-1.3233422078,
