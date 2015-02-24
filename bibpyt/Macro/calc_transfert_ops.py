@@ -1,7 +1,6 @@
 # coding=utf-8
-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,11 +58,11 @@ def calc_transfert_ops(
 
     if RESULTAT_Z !=None :
         l_resu.append(RESULTAT_Z)
-    	compo.append('Z')
-    	entrain.append('DZ')
+        compo.append('Z')
+        entrain.append('DZ')
       
     for r_type in l_type :
-    	if isinstance(RESULTAT_X, r_type) :
+        if isinstance(RESULTAT_X, r_type) :
             if isinstance(RESULTAT_Y, r_type):
                 if (len(l_resu)==3 and isinstance(RESULTAT_Z, r_type)) :
                     typ_resu = r_type
@@ -73,7 +72,7 @@ def calc_transfert_ops(
                     break
                 else :
                     UTMESS('F', 'DYNAMIQUE_34')
-    	    else :
+            else :
                 UTMESS('F', 'DYNAMIQUE_33')      
 
                
@@ -219,8 +218,7 @@ def calc_transfert_ops(
                       UTMESS('F', 'DYNAMIQUE_36')  #On n'a pas encore traité le cas où la fréquence finale des signaux d'entrainement est plus petite que celle des calculs dynamiques 
                       break
                    else :
-                      _interp=CALC_FONC_INTERP(LIST_PARA=_LIST00,
-		                            FONCTION=s_entr[mm],);
+                      _interp=CALC_FONC_INTERP(LIST_PARA=_LIST00,FONCTION=s_entr[mm],);
                       A,B,C=_interp.Valeurs()
                       Ab_Lfreq.append(A)
                       Ab_L_Re.append(B)
@@ -233,8 +231,7 @@ def calc_transfert_ops(
                       UTMESS('F', 'DYNAMIQUE_37')  #On n'a pas encore traité le cas où l'instant final des signaux d'entrainement est plus petit que celui des calculs dynamiques 
                       break
                    else :         
-                      _interp=CALC_FONC_INTERP(LIST_PARA=_Tcal,
-		                            FONCTION=s_entr[mm],); 
+                      _interp=CALC_FONC_INTERP(LIST_PARA=_Tcal,FONCTION=s_entr[mm],); 
                       _fonc=CALC_FONCTION(FFT=_F(FONCTION=_interp, METHODE='COMPLET',),);# on fait une FFT
 
                       A,B,C=_fonc.Valeurs()
@@ -322,8 +319,7 @@ def calc_transfert_ops(
            
     motsfrf['LISTE'] = mclist
     tabfrf=CREA_TABLE(**motsfrf)
-    
-    				
+
 #...................................................       
 #Cas ou l'utilisateur souhaite déterminer un signal
 #...................................................
@@ -363,8 +359,7 @@ def calc_transfert_ops(
                       UTMESS('F', 'DYNAMIQUE_38')  #On n'a pas encore traité le cas où la fréquence finale des signaux mesurés est plus petite que celle des calculs dynamiques 
                       break
                    else:   
-                       _interp=CALC_FONC_INTERP(LIST_PARA=_LIST00,
-		                            FONCTION=s_sign[ss],);
+                       _interp=CALC_FONC_INTERP(LIST_PARA=_LIST00,FONCTION=s_sign[ss],);
                        A,B,C=_interp.Valeurs()
                        Signfreq.append(A)
                        Sign_Re.append(B)
@@ -458,7 +453,7 @@ def calc_transfert_ops(
             mcsign.insert(0,_F(LISTE_R=T_en,PARA='INST'))
                   
         motssign['LISTE'] = mcsign
-        table_s=CREA_TABLE(TYPE_TABLE='TABLE',**motssign)			
+        table_s=CREA_TABLE(TYPE_TABLE='TABLE',**motssign)
         
     return ier
 
