@@ -51,7 +51,7 @@ def calc_transfert_ops(
 #On cherche le type de resultat des calculs dynamiques 
 #......................................................
     l_resu=[RESULTAT_X,RESULTAT_Y,] #Liste des noms des resultats
-    l_type=[tran_gene,harm_gene,dyna_trans,dyna_harmo,] #Liste des différents types de resultats possibles
+    l_type=[tran_gene,harm_gene,dyna_trans,dyna_harmo,] #Liste des differents types de resultats possibles
     compo=['X','Y',]
     entrain=['DX','DY',]
 
@@ -80,7 +80,7 @@ def calc_transfert_ops(
 #On extrait les rÃ©sultats otenus pour ensuite traiter le cas de la liste de frÃ©quence
 #....................................................................................
 
-#Recu fonction pour le noeud entrée
+#Recu fonction pour le noeud entree
     lst_entr=[]
     if ENTREE != None :
         for entr in ENTREE:
@@ -126,7 +126,7 @@ def calc_transfert_ops(
                  
                 
 #................................................................................................
-#Extraction des parties réelles et imaginaires des fonctions obtenues via les calculs dynamiques
+#Extraction des parties reelles et imaginaires des fonctions obtenues via les calculs dynamiques
 #................................................................................................
     E_Lfreq=[]
     E_L_Re=[]
@@ -134,10 +134,10 @@ def calc_transfert_ops(
     for aa in lst_entr :
         if typ_resu  == tran_gene or typ_resu ==dyna_trans :
             _aaa=CALC_FONCTION(COMB=_F(FONCTION=aa,COEF=1,),);
-            Tcal,Ordcal=_aaa.Valeurs() # on récupère la liste d'instant pour les signaux calculés par les opérateurs de dynamique
-            _Tcal=DEFI_LIST_REEL(VALE=Tcal,);#On crée la liste d'instant  associée au calcul dynamique
-            _Ordcal=DEFI_LIST_REEL(VALE=Ordcal,);#On crée la liste des ordonnées associée au calcul dynamique         
-            _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_Tcal, VALE_FONC=_Ordcal,); #On recrée la fonction temporelle pour en faire sa fft
+            Tcal,Ordcal=_aaa.Valeurs() # on rÃ©cupÃ¨re la liste d'instant pour les signaux calcules par les operateurs de dynamique
+            _Tcal=DEFI_LIST_REEL(VALE=Tcal,);#On cree la liste d'instant  associee au calcul dynamique
+            _Ordcal=DEFI_LIST_REEL(VALE=Ordcal,);#On cree la liste des ordonnees associee au calcul dynamique         
+            _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_Tcal, VALE_FONC=_Ordcal,); #On recree la fonction temporelle pour en faire sa fft
             _fonc=CALC_FONCTION(FFT=_F(FONCTION=_f0, METHODE='COMPLET',),);
             __freq,__Re,__Im=_fonc.Valeurs()
             __freq=__freq[0:int((len(__freq))/2)]
@@ -161,11 +161,11 @@ def calc_transfert_ops(
     for bb in lst_sort :
         if typ_resu  == tran_gene or typ_resu ==dyna_trans :
             _bbb=CALC_FONCTION(COMB=_F(FONCTION=bb,COEF=1,),);
-            TcalS,OrdcalS=_bbb.Valeurs() # on récupère la liste d'instant pour les signaux calculés par les opérateurs de dynamique 
-            p_calS=TcalS[1]-TcalS[0] #on calcul le pas de temps des fonctions récupérées
-            _TcalS=DEFI_LIST_REEL(VALE=TcalS,);#On crée la liste d'instant  associée au calcul dynamique
-            _OrdcalS=DEFI_LIST_REEL(VALE=OrdcalS,);#On crée la liste des ordonnées associée au calcul dynamique
-            _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_TcalS, VALE_FONC=_OrdcalS,); #On recrée la fonction temporelle pour en faire sa fft
+            TcalS,OrdcalS=_bbb.Valeurs() # on rÃ©cupÃ¨re la liste d'instant pour les signaux calcules par les operateurs de dynamique 
+            p_calS=TcalS[1]-TcalS[0] #on calcul le pas de temps des fonctions rÃ©cupÃ¨rees
+            _TcalS=DEFI_LIST_REEL(VALE=TcalS,);#On cree la liste d'instant  associee au calcul dynamique
+            _OrdcalS=DEFI_LIST_REEL(VALE=OrdcalS,);#On cree la liste des ordonnees associee au calcul dynamique
+            _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_TcalS, VALE_FONC=_OrdcalS,); #On recree la fonction temporelle pour en faire sa fft
             _fonc=CALC_FONCTION(FFT=_F(FONCTION=_f0, METHODE='COMPLET',),);
             __freq,__Re,__Im=_fonc.Valeurs()
             __freq=__freq[0:int((len(__freq))/2)]
@@ -185,7 +185,7 @@ def calc_transfert_ops(
     LISTFREQ=S_Lfreq[0]
     _LIST00=DEFI_LIST_REEL(VALE=LISTFREQ,);
     
-  #On vérifie que les calculs dynamiques ont été faits sur les mêmes listes   
+  #On verifie que les calculs dynamiques ont ete faits sur les mêmes listes   
     for ii in range(1,len(E_Lfreq)) :
         if len(E_Lfreq[0])!=len(E_Lfreq[ii]):
             UTMESS('F', 'DYNAMIQUE_35')
@@ -199,7 +199,7 @@ def calc_transfert_ops(
             
 
 #..............................................
-#On détermine la matrice fonction de transfert
+#On determine la matrice fonction de transfert
 #..............................................
               
     Ab_Lfreq=[]
@@ -215,7 +215,7 @@ def calc_transfert_ops(
                    Test_F,Test_Re,Test_Im=_test.Valeurs()
                    LTEST.append(Test_F)
                    if (Test_F[len(Test_F)-1] - LISTFREQ[len(LISTFREQ)-1])/LISTFREQ[len(LISTFREQ)-1]>1.E-6:
-                      UTMESS('F', 'DYNAMIQUE_36')  #On n'a pas encore traité le cas où la fréquence finale des signaux d'entrainement est plus petite que celle des calculs dynamiques 
+                      UTMESS('F', 'DYNAMIQUE_36')  #On n'a pas encore traite le cas où la frequence finale des signaux d'entrainement est plus petite que celle des calculs dynamiques 
                       break
                    else :
                       _interp=CALC_FONC_INTERP(LIST_PARA=_LIST00,FONCTION=s_entr[mm],);
@@ -228,7 +228,7 @@ def calc_transfert_ops(
                    Test_T,Test_Ord=_test.Valeurs()
                    LTEST.append(Test_T)
                    if (Tcal[len(Tcal)-1]-Test_T[len(Test_T)-1])/Test_T[len(Test_T)-1]>1E-8:
-                      UTMESS('F', 'DYNAMIQUE_37')  #On n'a pas encore traité le cas où l'instant final des signaux d'entrainement est plus petit que celui des calculs dynamiques 
+                      UTMESS('F', 'DYNAMIQUE_37')  #On n'a pas encore traite le cas où l'instant final des signaux d'entrainement est plus petit que celui des calculs dynamiques 
                       break
                    else :         
                       _interp=CALC_FONC_INTERP(LIST_PARA=_Tcal,FONCTION=s_entr[mm],); 
@@ -237,14 +237,14 @@ def calc_transfert_ops(
                       A,B,C=_fonc.Valeurs()
                       Ab_Lfreq.append(A)
                       Ab_L_Re.append(B)
-                      Ab_L_Im.append(C)#On rÃ©cupÃ\u0161re la demi liste et on regarde si elle est compatible
+                      Ab_L_Im.append(C)#On rÃ©cupÃ¨re la demi liste et on regarde si elle est compatible
     else :
          _A=[]
          _A[0:len(LISTFREQ)]=len(LISTFREQ)*[0]
          Ab_L_Re.append(_A)
          Ab_L_Im.append(_A)   
          
-    #On verifie que les signaux d'entrainements sont discrétisés de la même manière    
+    #On verifie que les signaux d'entrainements sont discretises de la même maniere    
     for ii in range(1,len(LTEST)) :
         if len(LTEST[0])!=len(LTEST[ii]):
             UTMESS('F', 'DYNAMIQUE_40')
@@ -265,10 +265,10 @@ def calc_transfert_ops(
     lst_frf=dim*[0]
     motsfrf = {}
     L_fonc=[]
-    mclist = []  # mot clé facteur FONCTION
+    mclist = []  # mot cle facteur FONCTION
 
    
-    #On créé un dictionnaire pour ranger les fonctions de transferts. Pour chaque fonction de transfert sera associé les valeurs : (freq, Re,Im)
+    #On cree un dictionnaire pour ranger les fonctions de transferts. Pour chaque fonction de transfert sera associe les valeurs : (freq, Re,Im)
     d_frf={}
     for ff in range (dim):
         d_frf['LRe_%d' %ff]=[]
@@ -321,7 +321,7 @@ def calc_transfert_ops(
     tabfrf=CREA_TABLE(**motsfrf)
 
 #...................................................       
-#Cas ou l'utilisateur souhaite déterminer un signal
+#Cas ou l'utilisateur souhaite determiner un signal
 #...................................................
 
     Signfreq=[]
@@ -330,10 +330,10 @@ def calc_transfert_ops(
     lst_sign=[]
     motssign = {}
     L_sign=[]
-    mcsign = []  # mot clé facteur FONCTION
+    mcsign = []  # mot cle facteur FONCTION
     d_signal={}    
     STEST=[]
-# On recupère les signaux donnés par l'utilisateur
+# On rÃ©cupÃ¨re les signaux donnes par l'utilisateur
     if SIGNAL!= None :
         type_resu = SIGNAL['TYPE_RESU']
         l_signal=['MESURE_X','MESURE_Y']
@@ -341,7 +341,7 @@ def calc_transfert_ops(
         if RESULTAT_Z !=None :
              l_signal.append('MESURE_Z')
              
-#On créé un dictionnaire pour ranger les signaux calculés. Pour chaque signal sera associé les valeurs : (freq, Re,Im)
+#On cree un dictionnaire pour ranger les signaux calcules. Pour chaque signal sera associe les valeurs : (freq, Re,Im)
         for ff in range (dim_0):
              d_signal['LRe_%d' %ff]=[]
              d_signal['LIm_%d' %ff]=[]
@@ -356,7 +356,7 @@ def calc_transfert_ops(
                    Test_F,Test_Re,Test_Im=_test.Valeurs()
                    STEST.append(Test_F)
                    if Test_F[len(Test_F)-1]<LISTFREQ[len(LISTFREQ)-1]:
-                      UTMESS('F', 'DYNAMIQUE_38')  #On n'a pas encore traité le cas où la fréquence finale des signaux mesurés est plus petite que celle des calculs dynamiques 
+                      UTMESS('F', 'DYNAMIQUE_38')  #On n'a pas encore traite le cas où la frequence finale des signaux mesures est plus petite que celle des calculs dynamiques 
                       break
                    else:   
                        _interp=CALC_FONC_INTERP(LIST_PARA=_LIST00,FONCTION=s_sign[ss],);
@@ -369,7 +369,7 @@ def calc_transfert_ops(
                    Test_T,Test_Ord=_test.Valeurs()
                    STEST.append(Test_T)
                    if (Tcal[len(Tcal)-1]-Test_T[len(Test_T)-1])/Test_T[len(Test_T)-1]>1.E-8:
-                      UTMESS('F', 'DYNAMIQUE_39')  #On n'a pas encore traité le cas où l'instant final des signaux mesurés est plus petit que celui des calculs dynamiques 
+                      UTMESS('F', 'DYNAMIQUE_39')  #On n'a pas encore traite le cas où l'instant final des signaux mesures est plus petit que celui des calculs dynamiques 
                       break      
                    else : 
                       if typ_resu  == tran_gene or typ_resu ==dyna_trans :
@@ -379,9 +379,9 @@ def calc_transfert_ops(
                          if np.remainder(len(Test_T), 2) == 0:  #Si pair
                             _fonc=CALC_FONCTION(FFT=_F(FONCTION=s_sign[ss], METHODE='COMPLET',),);
                          else :   #Si impair
-                            _Test_T=DEFI_LIST_REEL(VALE=Test_T,);#On crée la liste d'instant  associée au calcul dynamique
-                            _Test_Ord=DEFI_LIST_REEL(VALE=Test_Ord,);#On crée la liste des ordonnées associée au calcul dynamique         
-                            _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_Test_T, VALE_FONC=_Test_Ord,); #On recrée la fonction temporelle pour en faire sa fft
+                            _Test_T=DEFI_LIST_REEL(VALE=Test_T,);#On cree la liste d'instant  associee au calcul dynamique
+                            _Test_Ord=DEFI_LIST_REEL(VALE=Test_Ord,);#On cree la liste des ordonnees associee au calcul dynamique         
+                            _f0=DEFI_FONCTION(NOM_PARA='INST',VALE_PARA=_Test_T, VALE_FONC=_Test_Ord,); #On recree la fonction temporelle pour en faire sa fft
                             _fonc=CALC_FONCTION(FFT=_F(FONCTION=_f0, METHODE='COMPLET',),);
 
                       A,B,C=_fonc.Valeurs()
@@ -390,7 +390,7 @@ def calc_transfert_ops(
                       Sign_Im.append(C) 
  
  
-#On verifie que les signaux mesurés sont discrétisés de la même manière    
+#On verifie que les signaux mesures sont discretises de la même maniere    
         for ii in range(1,len(STEST)) :
             if len(STEST[0])!=len(STEST[ii]):
                 UTMESS('F', 'DYNAMIQUE_41')
@@ -402,7 +402,7 @@ def calc_transfert_ops(
                     UTMESS('F', 'DYNAMIQUE_41')
                     break     
                                   
-# On determine le signal d'entrée par inversion du système sur chaque fréquence
+# On determine le signal d'entree par inversion du systeme sur chaque frequence
 
         for i in range(len(LISTFREQ)):
             vv=0
