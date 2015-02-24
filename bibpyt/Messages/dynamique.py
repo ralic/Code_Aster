@@ -190,11 +190,11 @@ La condition de stabilité n'a pas pu être calculée car il s'agit d'élasticit
 """),
 
     33 : _(u"""
-Il y a une incoherence dans les type de résultats, le résultat selon X n'est pas le meme que celui selon Y. 
+Il y a une incohérence dans les type de résultats, le résultat selon X n'est pas le même que celui selon Y. 
 """),
 
     34 : _(u"""
-Il y a une incohérence dans les type de résultats, le résultat selon X et Y n'est pas le meme que celui selon Z.  
+Il y a une incohérence dans les type de résultats, le résultat selon X et Y n'est pas le même que celui selon Z.  
 """),
 
     35 : _(u"""
@@ -203,27 +203,27 @@ L'utilisation de la macro-commande nécessite d'avoir réalisé les calculs dyna
 """),
 
     36 : _(u"""
-Les signaux d'entrainements ont une fréquence finale inférieure à celle du calcul dynamique.
+Les signaux d'entraînements ont une fréquence finale inférieure à celle du calcul dynamique.
 """),
 
     37 : _(u"""
-Les signaux d'entrainements ont un instant final inférieur à celui du calcul dynamique.
+Les signaux d'entraînements ont un instant final inférieur à celui du calcul dynamique.
 """), 
 
     38 : _(u"""
-Les signaux servant de supports à la détermination des signaux d'entrainement ont une fréquence finale inférieure à celle du calcul dynamique.
+Les signaux servant de supports à la détermination des signaux d'entraînement ont une fréquence finale inférieure à celle du calcul dynamique.
 """),
 
     39 : _(u"""
-Les signaux servant de supports à la détermination des signaux d'entrainement ont un instant final inférieur à  celui du calcul dynamique.
+Les signaux servant de supports à la détermination des signaux d'entraînement ont un instant final inférieur à  celui du calcul dynamique.
 """), 
 
     40 : _(u"""
-Les signaux d'entrainements ne sont pas discrétisés de la même manière. Vérifier le pas de chaque signaux ainsi que leur longueur.
+Les signaux d'entraînements ne sont pas discrétisés de la même manière. Vérifier le pas de chaque signaux ainsi que leur longueur.
 """), 
 
     41 : _(u"""
-Les signaux servant de supports à la détermination des signaux d'entrainement ne sont pas discrétisés de la même manière. Vérifier le pas de chaque signaux ainsi que leur longueur.
+Les signaux servant de supports à la détermination des signaux d'entraînement ne sont pas discrétisés de la même manière. Vérifier le pas de chaque signaux ainsi que leur longueur.
 """),  
 }
 
