@@ -191,15 +191,13 @@ subroutine intfac(noma, nmaabs, ifq, fa, nno,&
     mp(1)=0.d0
     mp(2)=0.d0
     call reereg('C', alias, nnof, coorma, mp,&
-                2, epsi, iret)
+                2, epsi, iret, toler=prec*1.d4)
 !
     if (iret .eq. 1) goto 999
 !
-!     ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE
-!     ON AJOUTE UN PETIT PREC ICI POUR RAISON DE PRECISION DANS
-!     LA COMPARAISON, CF. LA FICHE 20170.
-!     -> PREC*1.d3 POUR ISSUE21167
-!     -> PREC*1.d4 POUR ISSUE22492
+!     ON NE PREND PAS EN COMPTE LES POINTS QUI SORTENT DU DOMAINE,
+!     AVEC UNE TOLERANCE IDENTIQUE A CELLE UTILISEE POUR LA RECHERCHE
+!     DU POINT SOLUTION FOURNI PAR REEREG
     if (alias .eq. 'QU4') then
         if (abs(epsi(1)) .gt. (1.d0+prec*1.d4)) goto 999
         if (abs(epsi(2)) .gt. (1.d0+prec*1.d4)) goto 999

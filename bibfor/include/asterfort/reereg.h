@@ -16,7 +16,7 @@
 !
 interface
     subroutine reereg(stop, elrefp, nnop, coor, xg,&
-                      ndim, xe, iret)
+                      ndim, xe, iret, toler)
         integer :: ndim
         integer :: nnop
         character(len=1) :: stop
@@ -25,5 +25,6 @@ interface
         real(kind=8) :: xg(ndim)
         real(kind=8) :: xe(ndim)
         integer :: iret
+        real(kind=8), optional, intent(in) :: toler
     end subroutine reereg
 end interface
