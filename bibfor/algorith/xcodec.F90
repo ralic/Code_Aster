@@ -119,7 +119,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
     if ( k8condi .eq. 'AUTO' ) then
        call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
        call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
-       if (maxfem .ne. 'LINE') then   
+       if (maxfem .ne. 'LINE') then
           crimax=-1.
           crit2(1)=1.d-6
           crit2(2)=1.d-5
@@ -127,13 +127,13 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
        else
           crimax=-1.
           crit2(1)=1.d-8
-          crit2(2)=10**-3.5
+          crit2(2)=10**(-3.5)
           zk8(jcond)='OUI'
        endif
     elseif ( k8condi .eq. 'FORCE' ) then
        crimax=-1.
        crit2(1)=1.d-8
-       crit2(2)=10**-3.5
+       crit2(2)=10**(-3.5)
        zk8(jcond)='OUI_DPB'
     elseif ( k8condi .eq. 'SANS' ) then
        ASSERT(crimax.gt.0.d0)
@@ -145,7 +145,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
     endif
 !
 !   ON MET EN PLACE UN CRITERE A 2 NIVEAUX:
-!   CRIT2(1) => POUR LES NOEUDS SOMMETS 
+!   CRIT2(1) => POUR LES NOEUDS SOMMETS
 !   CRIT2(2) => POUR LES NOEUDS MILIEUX
 !
     call xstan2(crimax, noma, modelx, crit2)
