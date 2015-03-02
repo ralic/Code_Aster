@@ -201,11 +201,11 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
             call zerlag(neq, deeq, vectr=vectass2)
             do j = 1, nueq
                 pij=ddot(neq,zr(idbase+(j-1)*neq),1,vectass2,1)
-                if (j .le. i) then
-                    zr(ldblo1+scdi(i)+j-i-1)=pij
-                endif
                 if (j .ge. i) then
-                    zr(ldblo2+scdi(j)+i-j-1)=pij
+                    zr(ldblo1+scdi(j)+i-j-1)=pij
+                endif
+                if (j .le. i) then
+                    zr(ldblo2+scdi(i)+j-i-1)=pij
                 endif
             end do
         end do
