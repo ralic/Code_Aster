@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-12 23:17+0100\n"
-"PO-Revision-Date: 2015-02-06 04:22-0500\n"
+"POT-Creation-Date: 2015-03-02 14:03+0100\n"
+"PO-Revision-Date: 2015-03-02 07:55-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -2386,7 +2386,7 @@ msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:661
 msgid "variation volumique"
-msgstr ""
+msgstr "体積変化"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:662
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:663
@@ -2418,7 +2418,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:676
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:677
 msgid "ouverture maxi des fissures localisées"
-msgstr ""
+msgstr "局所亀裂の最大開口"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:678
 msgid "coordonnée X de la pointe de fissure après rupture par propagation,"
@@ -2577,7 +2577,7 @@ msgstr "GLRC_DAMAGE : 膜の移動硬化テンソル 成分 3"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:713
 msgid "variable de calcul non local pour Weibull"
-msgstr ""
+msgstr "ワイブルを計算するための非局所変数"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:714
 msgid "coeff multiplicateur pour effet d echelle temporelle"
@@ -3336,6 +3336,8 @@ msgid ""
 "\n"
 " on ne peut dépasser  %(k1)s  mailles\n"
 msgstr ""
+"\n"
+"  %(k1)s  メッシュを超えることはできない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline.py:320
 msgid ""
@@ -3379,6 +3381,8 @@ msgid ""
 "\n"
 " autres configurations non traitées\n"
 msgstr ""
+"\n"
+" 他の未処理の構成\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline.py:348
 #, python-format
@@ -3386,12 +3390,16 @@ msgid ""
 "\n"
 " le cylindre  %(k1)s  n a pas un axe rectiligne\n"
 msgstr ""
+"\n"
+" %(k1)s シリンダーは、直線軸でない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline.py:352
 msgid ""
 "\n"
 " la composante n'est pas dans le CHAM_ELEM\n"
 msgstr ""
+"\n"
+" コンポーネントは、CHAM_ELEMではない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline.py:356
 msgid ""
@@ -3441,6 +3449,8 @@ msgid ""
 "\n"
 " pas de groupes de noeuds à créer\n"
 msgstr ""
+"\n"
+" 作成するノードグループがない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline.py:386
 #, python-format
@@ -4891,6 +4901,8 @@ msgid ""
 "\n"
 "Objet .REFE/.REFA/.CELK inexistant.\n"
 msgstr ""
+"\n"
+"オブジェクト .REFE/.REFA/.CELK が存在しない.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline3.py:433
 #, python-format
@@ -5744,6 +5756,8 @@ msgid ""
 "\n"
 " nombre de relations linéaires %(i1)d\n"
 msgstr ""
+"\n"
+" 線形関係の数 %(i1)d\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline5.py:191
 #, python-format
@@ -6401,6 +6415,8 @@ msgid ""
 "         Vérification à posteriori des modes\n"
 "\n"
 msgstr ""
+"         事後モードの検証\n"
+"\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:142
 #, python-format
@@ -6514,7 +6530,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:212
 #, python-format
 msgid "  Nombre de fréquences propres inférieures à %(r1)10.3E Hz : %(i1)d\n"
-msgstr ""
+msgstr "  低い固有周波数 %(r1)10.3E Hz : %(i1)d\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:215
 #, python-format
@@ -6932,7 +6948,7 @@ msgstr "シフトは適用する事はできません\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:464
 msgid "Problème de factorisation de Arnoldi.\n"
-msgstr ""
+msgstr "アーノルディ素因数分解問題\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:467
 #, python-format
@@ -8028,12 +8044,16 @@ msgid ""
 "\n"
 "Précisez le mode statique.\n"
 msgstr ""
+"\n"
+"静的モードの指定\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith11.py:137
 msgid ""
 "\n"
 "Le mode statique n'est pas nécessaire.\n"
 msgstr ""
+"\n"
+"静的モードは必要無い\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith11.py:141
 msgid ""
@@ -8054,6 +8074,8 @@ msgid ""
 "\n"
 "Pas d'interpolation possible.\n"
 msgstr ""
+"\n"
+"補間不可能\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith11.py:153
 #, python-format
@@ -8069,6 +8091,8 @@ msgid ""
 "\n"
 "Arrêt par manque de temps CPU.\n"
 msgstr ""
+"\n"
+" CPU時間不足のため停止する\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith11.py:163
 msgid ""
@@ -8457,6 +8481,8 @@ msgid ""
 "\n"
 " nombre de noeuds communs =  %(i1)d\n"
 msgstr ""
+"\n"
+" 共有節点数 =  %(i1)d\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith12.py:209
 #, python-format
@@ -10178,6 +10204,8 @@ msgid ""
 "\n"
 " le pas de temps initial est  : %(r1)f\n"
 msgstr ""
+"\n"
+" 最初の時間  : %(r1)f\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith16.py:202
 #, python-format
@@ -10387,6 +10415,9 @@ msgid ""
 "  Précision du transitoire : %(r1)f\n"
 "  "
 msgstr ""
+"\n"
+"  過渡精度 : %(r1)f\n"
+"  "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith16.py:362
 #, python-format
@@ -11318,6 +11349,8 @@ msgid ""
 "\n"
 " déplacements initiaux nuls.\n"
 msgstr ""
+"\n"
+" ゼロの初期変位\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith3.py:121
 msgid ""
@@ -12156,6 +12189,8 @@ msgid ""
 "\n"
 " la matrice KTILDA est singulière.\n"
 msgstr ""
+"\n"
+" マトリックス KTILDA が特異\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith5.py:261
 msgid ""
@@ -15373,13 +15408,11 @@ msgstr ""
 msgid ""
 "\n"
 "Alarme utilisateur :\n"
-"  Le TYPE_ELEMENT %(k1)s devrait savoir calculer l'option:  %(k2)s mais il "
-"ne\n"
-"  le fait pas encore (la programmation est manquante).\n"
+"  Le TYPE_ELEMENT %(k1)s devrait calculer l'option:  %(k2)s, \n"
+"  mais il ne le fait pas encore (la programmation est manquante).\n"
 "\n"
-"  Pour l'instant, l'élément est ignoré pour le calcul de cette option, ce "
-"qui peut\n"
-"  entraîner des résultats faux.\n"
+"  Pour l'instant, l'élément est ignoré pour le calcul de cette option, \n"
+"  ce qui peut entraîner des résultats faux.\n"
 "\n"
 "\n"
 "-> Risques & Conseils :\n"
@@ -15390,7 +15423,23 @@ msgid ""
 "     une demande d'évolution.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:330
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:325
+#, python-format
+msgid ""
+"\n"
+"Erreur :\n"
+"  Le TYPE_ELEMENT %(k1)s devrait calculer l'option :  %(k2)s, \n"
+"  mais il ne le fait pas encore (la programmation est manquante).\n"
+"  Le calcul n'est possible que dans les cas \"triviaux\" : chargement "
+"nul, ...\n"
+"\n"
+"-> Risques & Conseils :\n"
+"   * Si ce manque dans la programmation vous semble important, il faut "
+"émettre\n"
+"     une demande d'évolution.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:339
 #, python-format
 msgid ""
 "\n"
@@ -15399,7 +15448,7 @@ msgstr ""
 "\n"
 " CHAM_ELEM:  %(k1)s は存在しない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:334
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:343
 #, python-format
 msgid ""
 "\n"
@@ -15407,14 +15456,14 @@ msgid ""
 "tous ses éléments.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:338
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:347
 #, python-format
 msgid ""
 "\n"
 " le CHAM_ELEM : %(k1)s a des sous-points.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:343
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:352
 #, python-format
 msgid ""
 "\n"
@@ -15427,7 +15476,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:352
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:361
 #, python-format
 msgid ""
 "\n"
@@ -15435,7 +15484,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:366
 #, python-format
 msgid ""
 "\n"
@@ -15443,7 +15492,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:362
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:371
 #, python-format
 msgid ""
 "\n"
@@ -15452,7 +15501,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:367
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:376
 #, python-format
 msgid ""
 "\n"
@@ -15465,7 +15514,7 @@ msgid ""
 "vous devriez peut-être l'utiliser.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:375
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:384
 #, python-format
 msgid ""
 "\n"
@@ -15473,7 +15522,7 @@ msgid ""
 " Champ : %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:389
 #, python-format
 msgid ""
 "\n"
@@ -15488,7 +15537,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:391
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:400
 #, python-format
 msgid ""
 "\n"
@@ -15501,21 +15550,21 @@ msgid ""
 " il est possible de poursuivre le calcul en choisissant PROL_ZERO='OUI'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:401
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:410
 #, python-format
 msgid ""
 "\n"
 " grandeur:  %(k1)s  inconnue au catalogue.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:405
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:414
 #, python-format
 msgid ""
 "\n"
 " numéro de maille invalide     :  %(k1)s  (<1 ou > nombre de mailles)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:409
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:418
 #, python-format
 msgid ""
 "\n"
@@ -15523,7 +15572,7 @@ msgid ""
 " pour la maille                :  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:414
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:423
 #, python-format
 msgid ""
 "\n"
@@ -15532,7 +15581,7 @@ msgid ""
 " pour le point                 :  %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:420
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:429
 #, python-format
 msgid ""
 "\n"
@@ -15542,7 +15591,7 @@ msgid ""
 " pour le sous-point            :  %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:427
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:436
 #, python-format
 msgid ""
 "\n"
@@ -15557,7 +15606,7 @@ msgid ""
 "   1050 : ELS : Dépassement contrainte béton;\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:438
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:447
 msgid ""
 "\n"
 " Erreur utilisateur commande CALC_FERRAILLAGE :\n"
@@ -15569,7 +15618,7 @@ msgid ""
 "        CEQUI\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:447
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:456
 #, python-format
 msgid ""
 "\n"
@@ -15577,21 +15626,21 @@ msgid ""
 "   La valeur du module d'Young ES est de <%(r1)E>. Elle n'est pas correcte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:451
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:460
 msgid ""
 "\n"
 " Votre modèle ne contient que des éléments 1D. Le lissage global n'est\n"
 " possible que pour les éléments 2D ou 3D.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:456
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:465
 msgid ""
 "\n"
 " Votre modèle contient un mélange d'éléments 1D,2D ou 3D.\n"
 " Le lissage global n'est possible que pour les éléments 2D soit 3D.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:461
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:470
 #, python-format
 msgid ""
 "\n"
@@ -15600,7 +15649,7 @@ msgid ""
 " mailles n'existant pas dans %(k1)s et il est de type VARI_ELGA.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:466
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:475
 #, python-format
 msgid ""
 "\n"
@@ -15608,21 +15657,21 @@ msgid ""
 " ( %(k2)s / %(k3)s )\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:471
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:480
 #, python-format
 msgid ""
 "\n"
 " type scalaire du CHAM_NO :  %(k1)s  non réel.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:475
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:484
 #, python-format
 msgid ""
 "\n"
 " type scalaire du NUME_DDL :  %(k1)s  non réel.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:479
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:488
 msgid ""
 "\n"
 " mélange de CHAM_ELEM_S et CHAM_NO_S\n"
@@ -23478,7 +23527,15 @@ msgid ""
 "résonance\"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:176
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:175
+#, python-format
+msgid ""
+"NUME_ORDRE : %(i1)5d,   FREQ : %(r1)f,   CHAMP(S) STOCKE(S) : %(k1)s %(k2)s "
+"%(k3)s\n"
+"      "
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:178
 msgid ""
 "\n"
 " La fréquence d'actualisation de FORCE_SOL dans le fichier des masses est "
@@ -23486,7 +23543,7 @@ msgid ""
 "celle choisie précédemment.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:181
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:183
 msgid ""
 "\n"
 " La fréquence d'actualisation de FORCE_SOL dans le fichier des "
@@ -23494,11 +23551,78 @@ msgid ""
 "celle choisie précédemment.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:186
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:188
 msgid ""
 "\n"
 "La condition de stabilité n'a pas pu être calculée car il s'agit "
 "d'élasticité non-isotrope.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:192
+msgid ""
+"\n"
+"Il y a une incohérence dans les type de résultats, le résultat selon X n'est "
+"pas le même que celui selon Y. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:196
+msgid ""
+"\n"
+"Il y a une incohérence dans les type de résultats, le résultat selon X et Y "
+"n'est pas le même que celui selon Z.  \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:200
+msgid ""
+"\n"
+"Il semble que vos calculs dynamiques ont été réalisés sur des listes de "
+"fréquences ou d'instants différentes. \n"
+"L'utilisation de la macro-commande nécessite d'avoir réalisé les calculs "
+"dynamiques sur une unique liste de fréquences ou d'instants.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:205
+msgid ""
+"\n"
+"Les signaux d'entraînements ont une fréquence finale inférieure à celle du "
+"calcul dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:209
+msgid ""
+"\n"
+"Les signaux d'entraînements ont un instant final inférieur à celui du calcul "
+"dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:213
+msgid ""
+"\n"
+"Les signaux servant de supports à la détermination des signaux "
+"d'entraînement ont une fréquence finale inférieure à celle du calcul "
+"dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:217
+msgid ""
+"\n"
+"Les signaux servant de supports à la détermination des signaux "
+"d'entraînement ont un instant final inférieur à  celui du calcul dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:221
+msgid ""
+"\n"
+"Les signaux d'entraînements ne sont pas discrétisés de la même manière. "
+"Vérifier le pas de chaque signaux ainsi que leur longueur.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:225
+msgid ""
+"\n"
+"Les signaux servant de supports à la détermination des signaux "
+"d'entraînement ne sont pas discrétisés de la même manière. Vérifier le pas "
+"de chaque signaux ainsi que leur longueur.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:21
@@ -37700,22 +37824,18 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:86
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " DEFI_GEOM_FIBRE le groupe de fibres %(k1)s est déjà défini.\n"
 msgstr ""
-"\n"
-" グループ %(k1)s は既にあります \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:90
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Ce type de maille n'est pas encore traité :  %(k1)s\n"
 msgstr ""
-"\n"
-" タイプ sd 未処理:  %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:94
 msgid ""
@@ -37725,13 +37845,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:98
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur\n"
 msgstr ""
-"\n"
-" フィールド \" %(k1)s \" と \" %(k2)s \" は、定義の同じ分野を持っていない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:102
 #, python-format
@@ -38895,13 +39013,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:68
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Le groupe de fibres %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE\n"
 msgstr ""
-"\n"
-"  コンポーネント :  %(k1)s  が定義されていない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:72
 #, python-format
@@ -46058,6 +46174,8 @@ msgid ""
 "\n"
 "Le résultat n'est pas un EVOL_NOLI.\n"
 msgstr ""
+"\n"
+"結果は、EVOL_NOLIではない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/rupture1.py:124
 #, python-format
@@ -46661,6 +46779,8 @@ msgid ""
 "\n"
 " Arguments invalide : 'nomres' vide !\n"
 msgstr ""
+"\n"
+" 無効な引数 : 'nomres' が空 !\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/sdveri.py:40
 #, python-format
@@ -46726,6 +46846,8 @@ msgid ""
 "\n"
 " le vecteur directeur du spectre est nul.\n"
 msgstr ""
+"\n"
+" スペクトルの方向ベクトルがゼロです。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:38
 msgid ""
@@ -46823,6 +46945,8 @@ msgid ""
 "\n"
 "   la nature de l'excitation est             : %(k1)s "
 msgstr ""
+"\n"
+"   励起の性質は             : %(k1)s "
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:101
 #, python-format
@@ -47198,12 +47322,16 @@ msgid ""
 "\n"
 " vecteur nul pour l'orientation\n"
 msgstr ""
+"\n"
+" 方向のためのゼロベクトル\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:112
 msgid ""
 "\n"
 " critère inconnu\n"
 msgstr ""
+"\n"
+" 不明な基準\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:116
 #, python-format
@@ -47565,6 +47693,8 @@ msgid ""
 "\n"
 " AMOR_MECA non implante.\n"
 msgstr ""
+"\n"
+" AMOR_MECA が注入されない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:320
 msgid ""
@@ -47599,18 +47729,24 @@ msgid ""
 "\n"
 " autorise : \"LAG\" ou \"GL\" pas: %(k1)s\n"
 msgstr ""
+"\n"
+" 許可 : \"LAG\" または \"GL\" しない: %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:340
 msgid ""
 "\n"
 " ddl non prévu. on attend: DX\n"
 msgstr ""
+"\n"
+" ddl 提供されていない。 期待: DX\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:344
 msgid ""
 "\n"
 " ddls non prévus\n"
 msgstr ""
+"\n"
+" ddls 提供されない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:348
 msgid ""
@@ -47653,6 +47789,8 @@ msgid ""
 "\n"
 "  au noeud de choc:  %(k1)s\n"
 msgstr ""
+"\n"
+"  衝撃節点:  %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:376
 #, python-format
@@ -49886,13 +50024,6 @@ msgid ""
 msgstr ""
 "\n"
 " sd.のタイプが不明  :  %(k1)s\n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai.py:212
-#, python-format
-msgid ""
-"\n"
-" numérotation absente  problème dans la matrice  %(k1)s\n"
-msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai.py:221
 msgid ""
@@ -52780,18 +52911,7 @@ msgid ""
 " %(k2)s, %(k3)s, %(k4)s, %(k5)s, ...\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:272
-#, python-format
-msgid ""
-"\n"
-" POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas\n"
-" (ou ne peut pas) calculer le post-traitement demandé\n"
-"Conseil:\n"
-"   Limiter le post-traitement à des GROUP_MA contenant des mailles\n"
-"de type valide\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:280
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:276
 #, python-format
 msgid ""
 "\n"
@@ -52808,40 +52928,40 @@ msgid ""
 "  Nombre de vecteurs de projection modale        = %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:289
 msgid ""
 "\n"
 " Les cartes n'utilisent pas la même grandeur.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:293
 msgid ""
 "\n"
 " Les cartes n'utilisent pas le même maillage.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:297
 #, python-format
 msgid ""
 "\n"
 " Les cartes n'ont pas le même nombre de composantes sur la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:305
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:301
 #, python-format
 msgid ""
 "\n"
 " Les cartes n'ont pas activé la même composante sur la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:305
 #, python-format
 msgid ""
 "\n"
 " Les cartes n'ont pas la même valeur sur la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:309
 msgid ""
 "\n"
 " On attend des données fréquentielles.\n"

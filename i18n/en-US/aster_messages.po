@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-12 23:17+0100\n"
-"PO-Revision-Date: 2015-02-06 04:22-0500\n"
+"POT-Creation-Date: 2015-03-02 14:03+0100\n"
+"PO-Revision-Date: 2015-03-02 07:55-0500\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -7522,8 +7522,8 @@ msgid ""
 "  Il y a %(i1)d valeur(s) propre(s) dans la bande (%(r1)12.5E ,"
 "%(r2)12.5E ) .\n"
 msgstr ""
-"  There is(are) %(i1)d eigen value(s) in the band (%(r1)12.5 E ,%(r2)12.5 "
-"E ) .\n"
+"  There is(are) %(i1)d eigen value(s) in the band (%(r1)12.5E ,"
+"%(r2)12.5E ) .\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:86
 msgid ""
@@ -19293,13 +19293,11 @@ msgstr ""
 msgid ""
 "\n"
 "Alarme utilisateur :\n"
-"  Le TYPE_ELEMENT %(k1)s devrait savoir calculer l'option:  %(k2)s mais il "
-"ne\n"
-"  le fait pas encore (la programmation est manquante).\n"
+"  Le TYPE_ELEMENT %(k1)s devrait calculer l'option:  %(k2)s, \n"
+"  mais il ne le fait pas encore (la programmation est manquante).\n"
 "\n"
-"  Pour l'instant, l'élément est ignoré pour le calcul de cette option, ce "
-"qui peut\n"
-"  entraîner des résultats faux.\n"
+"  Pour l'instant, l'élément est ignoré pour le calcul de cette option, \n"
+"  ce qui peut entraîner des résultats faux.\n"
 "\n"
 "\n"
 "-> Risques & Conseils :\n"
@@ -19310,7 +19308,23 @@ msgid ""
 "     une demande d'évolution.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:330
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:325
+#, python-format
+msgid ""
+"\n"
+"Erreur :\n"
+"  Le TYPE_ELEMENT %(k1)s devrait calculer l'option :  %(k2)s, \n"
+"  mais il ne le fait pas encore (la programmation est manquante).\n"
+"  Le calcul n'est possible que dans les cas \"triviaux\" : chargement "
+"nul, ...\n"
+"\n"
+"-> Risques & Conseils :\n"
+"   * Si ce manque dans la programmation vous semble important, il faut "
+"émettre\n"
+"     une demande d'évolution.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:339
 #, python-format
 msgid ""
 "\n"
@@ -19319,7 +19333,7 @@ msgstr ""
 "\n"
 " the CHAM_ELEM:  %(k1)s do not exist. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:334
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:343
 #, python-format
 msgid ""
 "\n"
@@ -19330,7 +19344,7 @@ msgstr ""
 " the CHAM_ELEM:  %(k1)s does not have the same component count dynamic on "
 "all its elements. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:338
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:347
 #, python-format
 msgid ""
 "\n"
@@ -19339,7 +19353,7 @@ msgstr ""
 "\n"
 " the CHAM_ELEM:  %(k1)s has subpoints. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:343
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:352
 #, python-format
 msgid ""
 "\n"
@@ -19360,7 +19374,7 @@ msgstr ""
 "known:  %(k3)s \n"
 " Field:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:352
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:361
 #, python-format
 msgid ""
 "\n"
@@ -19371,7 +19385,7 @@ msgstr ""
 " The component:  %(k1)s does not belong to the quantity:  %(k2)s \n"
 " Field:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:357
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:366
 #, python-format
 msgid ""
 "\n"
@@ -19382,7 +19396,7 @@ msgstr ""
 " Option:  %(k1)s non-existent in the catalogues. \n"
 " Field:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:362
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:371
 #, python-format
 msgid ""
 "\n"
@@ -19395,7 +19409,7 @@ msgstr ""
 "known:  %(k3)s \n"
 " Field:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:367
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:376
 #, python-format
 msgid ""
 "\n"
@@ -19416,7 +19430,7 @@ msgstr ""
 " If the command that you execute comprises key word PROL_ZERO='OUI', you "
 "should perhaps use it. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:375
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:384
 #, python-format
 msgid ""
 "\n"
@@ -19427,7 +19441,7 @@ msgstr ""
 " The LIGREL contains late meshes\n"
 " Champ:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:380
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:389
 #, python-format
 msgid ""
 "\n"
@@ -19452,7 +19466,7 @@ msgstr ""
 " - name of the simple field:  %(k5)s \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:391
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:400
 #, python-format
 msgid ""
 "\n"
@@ -19473,7 +19487,7 @@ msgstr ""
 " If this error occurs during command execution PROJ_CHAMP,\n"
 " it is possible to continue computation by choosing PROL_ZERO='OUI' \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:401
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:410
 #, python-format
 msgid ""
 "\n"
@@ -19482,7 +19496,7 @@ msgstr ""
 "\n"
 " quantity:  %(k1)s unknown factor with the catalogue. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:405
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:414
 #, python-format
 msgid ""
 "\n"
@@ -19491,7 +19505,7 @@ msgstr ""
 "\n"
 " invalid number of mesh:  %(k1)s (<1 or > number of meshes) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:409
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:418
 #, python-format
 msgid ""
 "\n"
@@ -19502,7 +19516,7 @@ msgstr ""
 " invalid number of point:  %(k1)s (<1 or > many points)\n"
 " for the mesh:  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:414
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:423
 #, python-format
 msgid ""
 "\n"
@@ -19515,7 +19529,7 @@ msgstr ""
 " for the mesh:  %(k2)s \n"
 " for the point:  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:420
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:429
 #, python-format
 msgid ""
 "\n"
@@ -19530,7 +19544,7 @@ msgstr ""
 " for the point:  %(k3)s \n"
 " for the subpoint:  %(k4)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:427
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:436
 #, python-format
 msgid ""
 "\n"
@@ -19545,7 +19559,7 @@ msgid ""
 "   1050 : ELS : Dépassement contrainte béton;\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:438
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:447
 msgid ""
 "\n"
 " Erreur utilisateur commande CALC_FERRAILLAGE :\n"
@@ -19557,7 +19571,7 @@ msgid ""
 "        CEQUI\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:447
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:456
 #, python-format
 msgid ""
 "\n"
@@ -19565,7 +19579,7 @@ msgid ""
 "   La valeur du module d'Young ES est de <%(r1)E>. Elle n'est pas correcte.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:451
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:460
 msgid ""
 "\n"
 " Votre modèle ne contient que des éléments 1D. Le lissage global n'est\n"
@@ -19575,7 +19589,7 @@ msgstr ""
 " Your model contains only elements 1D. Total smoothing is not\n"
 " possible that for elements 2D or 3D. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:456
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:465
 msgid ""
 "\n"
 " Votre modèle contient un mélange d'éléments 1D,2D ou 3D.\n"
@@ -19585,7 +19599,7 @@ msgstr ""
 " Your model contains a mixture of elements 1D, 2D or 3D. \n"
 " Total smoothing is not possible that for elements 2D is 3D. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:461
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:470
 #, python-format
 msgid ""
 "\n"
@@ -19597,7 +19611,7 @@ msgstr ""
 " The field %(k2)s cannot be created from %(k1)s because it is described on\n"
 " meshes not existing in %(k1)s and it is of type VARI_ELGA. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:466
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:475
 #, python-format
 msgid ""
 "\n"
@@ -19608,7 +19622,7 @@ msgstr ""
 " inconsistency of the families of Gauss points for the mesh %(k1)s\n"
 " (  %(k2)s /  %(k3)s ) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:471
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:480
 #, python-format
 msgid ""
 "\n"
@@ -19617,7 +19631,7 @@ msgstr ""
 "\n"
 " scalar type of the CHAM_NO:  %(k1)s not reality. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:475
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:484
 #, python-format
 msgid ""
 "\n"
@@ -19626,7 +19640,7 @@ msgstr ""
 "\n"
 " scalar type of the NUME_DDL:  %(k1)s not reality. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:479
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel.py:488
 msgid ""
 "\n"
 " mélange de CHAM_ELEM_S et CHAM_NO_S\n"
@@ -23510,7 +23524,7 @@ msgstr ""
 " AFFE_MATERIAU/AFFE_VARC/NOM_VARC='TEMP' + VALE_REF \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:193
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Erreur d'utilisation (préparation des variables de commande) :\n"
@@ -23523,15 +23537,6 @@ msgid ""
 " N'avez-vous pas défini plusieurs CARA_ELEM conduisant à des nombres de\n"
 " \"sous-points\" différents (COQUE_NCOU, TUYAU_NCOU, ...) ?\n"
 msgstr ""
-"\n"
-" Error of use (preparation of the command variables): \n"
-" For the command variable %(k1)s, there is an inconsistency amongst\n"
-"\" subpoints\" between the CARA_ELEM %(k2)s\n"
-" and the CHAM_MATER %(k3)s. \n"
-" \n"
-" Advice: \n"
-" You did not define several CARA_ELEM leading to numbers of\n"
-"\" different\" subpoints (COQUE_NCOU, TUYAU_NCOU,') ? \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel6.py:204
 #, python-format
@@ -29750,7 +29755,15 @@ msgid ""
 "résonance\"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:176
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:175
+#, python-format
+msgid ""
+"NUME_ORDRE : %(i1)5d,   FREQ : %(r1)f,   CHAMP(S) STOCKE(S) : %(k1)s %(k2)s "
+"%(k3)s\n"
+"      "
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:178
 msgid ""
 "\n"
 " La fréquence d'actualisation de FORCE_SOL dans le fichier des masses est "
@@ -29762,7 +29775,7 @@ msgstr ""
 "incoherent with\n"
 " that previously selected. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:181
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:183
 msgid ""
 "\n"
 " La fréquence d'actualisation de FORCE_SOL dans le fichier des "
@@ -29774,11 +29787,78 @@ msgstr ""
 "incoherent with\n"
 " that previously selected. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:186
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:188
 msgid ""
 "\n"
 "La condition de stabilité n'a pas pu être calculée car il s'agit "
 "d'élasticité non-isotrope.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:192
+msgid ""
+"\n"
+"Il y a une incohérence dans les type de résultats, le résultat selon X n'est "
+"pas le même que celui selon Y. \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:196
+msgid ""
+"\n"
+"Il y a une incohérence dans les type de résultats, le résultat selon X et Y "
+"n'est pas le même que celui selon Z.  \n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:200
+msgid ""
+"\n"
+"Il semble que vos calculs dynamiques ont été réalisés sur des listes de "
+"fréquences ou d'instants différentes. \n"
+"L'utilisation de la macro-commande nécessite d'avoir réalisé les calculs "
+"dynamiques sur une unique liste de fréquences ou d'instants.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:205
+msgid ""
+"\n"
+"Les signaux d'entraînements ont une fréquence finale inférieure à celle du "
+"calcul dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:209
+msgid ""
+"\n"
+"Les signaux d'entraînements ont un instant final inférieur à celui du calcul "
+"dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:213
+msgid ""
+"\n"
+"Les signaux servant de supports à la détermination des signaux "
+"d'entraînement ont une fréquence finale inférieure à celle du calcul "
+"dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:217
+msgid ""
+"\n"
+"Les signaux servant de supports à la détermination des signaux "
+"d'entraînement ont un instant final inférieur à  celui du calcul dynamique.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:221
+msgid ""
+"\n"
+"Les signaux d'entraînements ne sont pas discrétisés de la même manière. "
+"Vérifier le pas de chaque signaux ainsi que leur longueur.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:225
+msgid ""
+"\n"
+"Les signaux servant de supports à la détermination des signaux "
+"d'entraînement ne sont pas discrétisés de la même manière. Vérifier le pas "
+"de chaque signaux ainsi que leur longueur.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynavisco.py:21
@@ -48548,94 +48628,72 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:81
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " AFFE_CARA_ELEM le groupe de fibres %(k1)s n'existe pas.\n"
 " Conseil : Vérifier la définition des groupes fibres dans l'opérateur "
 "DEFI_GEOM_FIBRE.\n"
 msgstr ""
-"\n"
-" The group of fiber %(k1)s was not defined in DEFI_GEOM_FIBRE \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:86
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " DEFI_GEOM_FIBRE le groupe de fibres %(k1)s est déjà défini.\n"
 msgstr ""
-"\n"
-" the group %(k1)s already exists \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:90
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Ce type de maille n'est pas encore traité :  %(k1)s\n"
 msgstr ""
-"\n"
-" this kind of mesh is not treated yet:  %(k1)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:94
-#, fuzzy
 msgid ""
 "\n"
 " Le nombre total de noeuds est différent de la somme des noeuds sommets, "
 "arêtes et intérieurs\n"
 msgstr ""
-"\n"
-" the full number of nodes is different from the sum from the top nodes, "
-"edges and interiors \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:98
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Les deux listes %(k1)s  et  %(k2)s  ne sont pas de même longueur\n"
 msgstr ""
-"\n"
-" the two lists %(k1)s and %(k2)s are not of the same length \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:102
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " DEFI_GEOM_FIBRE %(k1)s : Pour %(k2)s il y a %(i1)d valeurs. Ce devrait être "
 "%(i2)d valeurs,\n"
 msgstr ""
-"\n"
-" AFFE_FIBRE for\" %(k1)s\": there are values %(k2)s for VALE\",\" it should "
-"be a multiple of 3 \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:106
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " DEFI_GEOM_FIBRE %(k1)s : Le %(k2)s %(k3)s n'existe pas.\n"
 msgstr ""
-"\n"
-" The GROUP_MA:  %(k1)s do not exist. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:110
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " DEFI_GEOM_FIBRE %(k1)s : Le groupe de fibre %(k2)s doit être défini par "
 "SECTION ou FIBRE,\n"
 msgstr ""
-"\n"
-" The group of fiber %(k1)s was not defined in DEFI_GEOM_FIBRE \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:114
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " DEFI_GEOM_FIBRE %(k1)s : Pour %(k2)s il y a %(i1)d valeurs, ce devrait être "
 "un multiple de %(i2)d\n"
 msgstr ""
-"\n"
-" AFFE_FIBRE for\" %(k1)s\": there are values %(k2)s for VALE\",\" it should "
-"be a multiple of 3 \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:118
 #, python-format
@@ -50140,7 +50198,6 @@ msgstr ""
 " - relative error:  %(r3)12.5E > PREC_INERTIE =  %(r4)12.5E \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:56
-#, fuzzy
 msgid ""
 "\n"
 " AFFE_CARA_ELEM / MULTIFIBRE\n"
@@ -50152,32 +50209,20 @@ msgid ""
 " Les critères imposés par PREC_AIRE et/ou PREC_INERTIE ne sont pas "
 "respectés.\n"
 msgstr ""
-"\n"
-" AFFE_CARA_ELEM / MULTIFIBRE\n"
-" Les key words PREC_AIRE and PREC_INERTIE are used to define the tolerance "
-"between\n"
-" the characteristics of beams affected under the key word factor BEAM and "
-"those\n"
-" calculated by integration on fibers. \n"
-" The criteria imposed by PREC_AIRE and PREC_INERTIE are not respected. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:64
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " On ne peut mettre que %(i1)d groupes de fibres sur un élément.\n"
 msgstr ""
-"\n"
-" Currently, one can put only %(k1)s groups of fibers on an element. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:68
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Le groupe de fibres %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE\n"
 msgstr ""
-"\n"
-" The group of fiber %(k1)s was not defined in DEFI_GEOM_FIBRE \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:72
 #, python-format
@@ -50614,7 +50659,7 @@ msgstr ""
 " and the node  %(k5)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:263
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " conflit dans les vis-à-vis  générés successivement a partir des listes\n"
@@ -50622,12 +50667,6 @@ msgid ""
 " Le noeud de la première liste %(k3)s n'est l'image d\"aucun  %(k4)s\n"
 " Noeud par la correspondance inverse %(k5)s\n"
 msgstr ""
-"\n"
-" conflict in opposite generated successively from the lists %(k1)s\n"
-" and %(k2)s\n"
-" the node of the first list %(k3)s\n"
-" is not\" filing\" daucun\" %(k4)s\n"
-" node by the opposite correspondence  %(k5)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:270
 #, python-format
@@ -64390,15 +64429,6 @@ msgstr ""
 "\n"
 " type of sd. unknown:  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai.py:212
-#, python-format
-msgid ""
-"\n"
-" numérotation absente  problème dans la matrice  %(k1)s\n"
-msgstr ""
-"\n"
-" dialup goes away problem in the matrix  %(k1)s \n"
-
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai.py:221
 msgid ""
 "\n"
@@ -68309,24 +68339,7 @@ msgstr ""
 " Aucune mesh does not support the components\n"
 " %(k2)s %(k3)s %(k4)s %(k5)s,' \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:272
-#, python-format
-msgid ""
-"\n"
-" POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas\n"
-" (ou ne peut pas) calculer le post-traitement demandé\n"
-"Conseil:\n"
-"   Limiter le post-traitement à des GROUP_MA contenant des mailles\n"
-"de type valide\n"
-msgstr ""
-"\n"
-" POST_ELEM INTEGRALE: the mesh %(i1)d of the type %(k1)s does not know\n"
-" (or cannot) compute postprocessing required\n"
-" Conseil: \n"
-" Limit postprocessing to GROUP_MA containing of the meshes\n"
-" of the valid type \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:280
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:276
 #, python-format
 msgid ""
 "\n"
@@ -68343,40 +68356,40 @@ msgid ""
 "  Nombre de vecteurs de projection modale        = %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:289
 msgid ""
 "\n"
 " Les cartes n'utilisent pas la même grandeur.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:293
 msgid ""
 "\n"
 " Les cartes n'utilisent pas le même maillage.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:297
 #, python-format
 msgid ""
 "\n"
 " Les cartes n'ont pas le même nombre de composantes sur la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:305
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:301
 #, python-format
 msgid ""
 "\n"
 " Les cartes n'ont pas activé la même composante sur la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:305
 #, python-format
 msgid ""
 "\n"
 " Les cartes n'ont pas la même valeur sur la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai8.py:309
 msgid ""
 "\n"
 " On attend des données fréquentielles.\n"
@@ -71878,29 +71891,22 @@ msgstr "Simple key word: %s %s"
 
 #~ msgid ""
 #~ "\n"
-#~ "  On n'arrive pas à récupérer la température au temps T-.\n"
+#~ " numérotation absente  problème dans la matrice  %(k1)s\n"
 #~ msgstr ""
 #~ "\n"
-#~ " One does not manage to recover the temperature at time T. \n"
+#~ " dialup goes away problem in the matrix  %(k1)s \n"
 
 #~ msgid ""
 #~ "\n"
-#~ " on ne sait pas intégrer avec  %(k1)s  caractéristiques par fibre\n"
+#~ " POST_ELEM INTEGRALE : la maille %(i1)d de type %(k1)s ne sait pas\n"
+#~ " (ou ne peut pas) calculer le post-traitement demandé\n"
+#~ "Conseil:\n"
+#~ "   Limiter le post-traitement à des GROUP_MA contenant des mailles\n"
+#~ "de type valide\n"
 #~ msgstr ""
 #~ "\n"
-#~ " one cannot integrate with %(k1)s characteristics by fiber \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " cas avec inerties des fibres non programme\n"
-#~ msgstr ""
-#~ "\n"
-#~ " case with inertias of fibers not program \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "     On ne peut pas appliquer un cisaillement 2d sur les lèvres d'une "
-#~ "fissure X-FEM.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " One cannot apply shears 2d to the lips of a crack X-FEM. \n"
+#~ " POST_ELEM INTEGRALE: the mesh %(i1)d of the type %(k1)s does not know\n"
+#~ " (or cannot) compute postprocessing required\n"
+#~ " Conseil: \n"
+#~ " Limit postprocessing to GROUP_MA containing of the meshes\n"
+#~ " of the valid type \n"
