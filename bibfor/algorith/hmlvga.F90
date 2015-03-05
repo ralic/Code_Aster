@@ -126,7 +126,7 @@ subroutine hmlvga(yachai, option, meca, ther, hydr,&
     real(kind=8) :: rbid21, rbid22, rbid23, rbid24, rbid25, rbid26, rbid20
     real(kind=8) :: rbid27, rbid28, rbid29, rbid32(ndim, ndim)
     real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid38
-    real(kind=8) :: rbid39, rbid45, rbid46, rbid49, rbid50(ndim, ndim), rbid51
+    real(kind=8) :: rbid39, rbid45, rbid46, rbid49, rbid50(ndim, ndim)
     real(kind=8) :: signe, pvp1, pvp1m, dpad, pas
     real(kind=8) :: m11m, m12m, m21m, m22m
     real(kind=8) :: dmdeps(6), dsdp1(6)
@@ -153,7 +153,7 @@ subroutine hmlvga(yachai, option, meca, ther, hydr,&
                 mamolg, cp21, rbid32, rbid33, rbid34,&
                 rbid35, mamolv, cp12, rbid38, rbid39,&
                 rbid45, rbid46, cp22, kh, rbid49,&
-                em, rbid50, rbid51, rinstp, retcom,&
+                em, rbid50, rinstp, retcom,&
                 angmas, aniso, ndim)
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------

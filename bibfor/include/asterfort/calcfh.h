@@ -28,7 +28,7 @@ interface
                       krel2, dkr2s, dkr2p, fick, dfickt,&
                       dfickg, fickad, dfadt, kh, cliq,&
                       alpliq, viscl, dviscl, mamolg, viscg,&
-                      dviscg, mamolv, dficks, vf, ifa,&
+                      dviscg, mamolv, vf, ifa,&
                       valfac, valcen)
         integer, parameter :: maxfa=6
         integer :: dimcon
@@ -83,7 +83,6 @@ interface
         real(kind=8) :: viscg
         real(kind=8) :: dviscg
         real(kind=8) :: mamolv
-        real(kind=8) :: dficks
         aster_logical :: vf
         integer :: ifa
         real(kind=8) :: valfac(maxfa, 14, 6)

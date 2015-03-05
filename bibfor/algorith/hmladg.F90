@@ -122,7 +122,7 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
     real(kind=8) :: rbid27, rbid28, rbid29, rbid32(ndim, ndim)
     real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid36, rbid37
     real(kind=8) :: rbid39, rbid45, rbid46, rbid49, rbid50(ndim, ndim)
-    real(kind=8) :: rbid51, rbid20, rbid38
+    real(kind=8) :: rbid20, rbid38
     real(kind=8) :: signe, dpad, pas
     real(kind=8) :: m11m, m21m, m22m
     real(kind=8) :: dsdp1(6), dsdp2(6)
@@ -151,7 +151,7 @@ subroutine hmladg(yachai, option, meca, ther, hydr,&
                 mamolg, cp21, rbid32, rbid33, rbid34,&
                 rbid35, rbid36, rbid37, rbid38, rbid39,&
                 rbid45, rbid46, cp22, kh, rbid49,&
-                em, rbid50, rbid51, rinstp, retcom,&
+                em, rbid50, rinstp, retcom,&
                 angmas, aniso, ndim)
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------

@@ -6,7 +6,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                   dfickg, lambp, dlambp, unsurk, alpha,&
                   lambs, dlambs, viscl, dviscl, mamolg,&
                   tlambt, tdlamt, viscg, dviscg, mamolv,&
-                  fickad, dfadt, tlamct, dficks, instap,&
+                  fickad, dfadt, tlamct, instap,&
                   angmas, aniso, ndim)
 ! =====================================================================
 ! ======================================================================
@@ -41,7 +41,6 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
     real(kind=8) :: tlambt(ndim, ndim), tdlamt(ndim, ndim), viscg
     real(kind=8) :: dviscg, mamolg, instap
     real(kind=8) :: mamolv, fickad, dfadt, pad, tlamct(ndim, ndim), unsurk
-    real(kind=8) :: dficks
     real(kind=8) :: angmas(3)
     character(len=16) :: meca, thmc, ther, hydr
 ! =====================================================================
@@ -118,7 +117,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     rbid31, rbid32, tlambt, tdlamt, rbid35,&
                     rbid36, rbid37, rbid38, rbid39, rbid40,&
                     rbid45, rbid46, rbid47, rbid48, rbid49,&
-                    rbid50, tlamct, rbid50, instap, retcom,&
+                    rbid50, tlamct, instap, retcom,&
                     angmas, aniso, ndim)
     else if (thmc.eq.'GAZ') then
         call thmrcp('FINALE  ', imate, thmc, meca, hydr,&
@@ -133,7 +132,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     mamolg, rbid28, tlambt, tdlamt, viscg,&
                     dviscg, rbid37, rbid38, rbid39, rbid40,&
                     rbid45, rbid46, rbid47, rbid48, rbid49,&
-                    rbid50, tlamct, rbid50, instap, retcom,&
+                    rbid50, tlamct,  instap, retcom,&
                     angmas, aniso, ndim)
     else if (thmc.eq.'LIQU_VAPE') then
         call thmrcp('FINALE  ', imate, thmc, meca, hydr,&
@@ -148,7 +147,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     rbid19, rbid20, tlambt, tdlamt, rbid23,&
                     rbid24, mamolv, rbid25, viscg, dviscg,&
                     rbid45, rbid46, rbid47, rbid48, rbid49,&
-                    rbid50, tlamct, rbid50, instap, retcom,&
+                    rbid50, tlamct, instap, retcom,&
                     angmas, aniso, ndim)
     else if (thmc.eq.'LIQU_VAPE_GAZ') then
         call thmrcp('FINALE  ', imate, thmc, meca, hydr,&
@@ -163,7 +162,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     mamolg, rbid19, tlambt, tdlamt, viscg,&
                     dviscg, mamolv, rbid25, rbid26, rbid27,&
                     rbid45, rbid46, rbid47, rbid48, rbid49,&
-                    rbid50, tlamct, dficks, instap, retcom,&
+                    rbid50, tlamct,  instap, retcom,&
                     angmas, aniso, ndim)
     else if (thmc.eq.'LIQU_AD_GAZ_VAPE') then
         call thmrcp('FINALE  ', imate, thmc, meca, hydr,&
@@ -178,7 +177,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     mamolg, rbid19, tlambt, tdlamt, viscg,&
                     dviscg, mamolv, rbid25, rbid26, rbid27,&
                     fickad, dfadt, rbid47, rbid48, pad,&
-                    rbid50, tlamct, dficks, instap, retcom,&
+                    rbid50, tlamct,  instap, retcom,&
                     angmas, aniso, ndim)
 !
     else if (thmc.eq.'LIQU_AD_GAZ') then
@@ -194,7 +193,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     mamolg, rbid19, tlambt, tdlamt, viscg,&
                     dviscg, rbid50, rbid25, rbid26, rbid27,&
                     fickad, dfadt, rbid47, rbid48, pad,&
-                    rbid50, tlamct, dficks, instap, retcom,&
+                    rbid50, tlamct,  instap, retcom,&
                     angmas, aniso, ndim)
     else if (thmc.eq.'LIQU_GAZ') then
         call thmrcp('FINALE  ', imate, thmc, meca, hydr,&
@@ -209,7 +208,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     mamolg, rbid19, tlambt, tdlamt, viscg,&
                     dviscg, mamolv, rbid25, rbid26, rbid27,&
                     rbid45, rbid46, rbid47, rbid48, rbid49,&
-                    rbid50, tlamct, rbid50, instap, retcom,&
+                    rbid50, tlamct,  instap, retcom,&
                     angmas, aniso, ndim)
     else if (thmc.eq.'LIQU_GAZ_ATM') then
         call thmrcp('FINALE  ', imate, thmc, meca, hydr,&
@@ -224,7 +223,7 @@ subroutine thmlec(imate, thmc, meca, hydr, ther,&
                     rbid20, rbid19, tlambt, tdlamt, rbid23,&
                     rbid24, mamolv, rbid25, rbid26, rbid27,&
                     rbid45, rbid46, rbid47, rbid48, rbid49,&
-                    rbid50, tlamct, rbid50, instap, retcom,&
+                    rbid50, tlamct, instap, retcom,&
                     angmas, aniso, ndim)
     endif
 ! =====================================================================

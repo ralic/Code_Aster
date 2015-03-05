@@ -12,6 +12,8 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
                   aniso, phenom)
 ! ======================================================================
 ! ======================================================================
+! person_in_charge: sylvie.granet at edf.fr
+! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -27,7 +29,6 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
 ! ROUTINE HMLVAG : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISE
 !   ET LA MATRICE TANGENTE DES GRANDEURS COUPLEES, A SAVOIR CELLES QUI
@@ -123,7 +124,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
     real(kind=8) :: rbid27, rbid28, rbid29, rbid32(ndim, ndim), rbid20
     real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid38
     real(kind=8) :: rbid39, rbid45, rbid46, rbid47, rbid48, rbid49
-    real(kind=8) :: rbid50(ndim, ndim), rbid51
+    real(kind=8) :: rbid50(ndim, ndim)
     real(kind=8) :: signe, dpad, coeps, cp22, pas, rho22, m11m, m12m, m21m
     real(kind=8) :: dmdeps(6), sigmp(6)
     real(kind=8) :: dqeps(6), dsdp1(6), dsdp2(6), rac2
@@ -148,7 +149,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
                 mamolg, cp21, rbid32, rbid33, rbid34,&
                 rbid35, mamolv, cp12, rbid38, rbid39,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
-                em, rbid50, rbid51, rinstp, retcom,&
+                em, rbid50, rinstp, retcom,&
                 angmas, aniso, ndim)
 ! ======================================================================
 ! --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----

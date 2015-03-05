@@ -104,7 +104,6 @@ subroutine xcomhm(option, imate, compor,instap,&
     real(kind=8) :: viscg, dviscg, mamolg
     real(kind=8) :: fickad, dfadt, alpha
     real(kind=8) :: tlambt(ndim, ndim), tlamct(ndim, ndim), tdlamt(ndim, ndim)
-    real(kind=8) :: dficks
     real(kind=8) :: angmas(3)
     character(len=16) :: meca, thmc, ther, hydr, phenom
 ! ======================================================================
@@ -174,7 +173,7 @@ subroutine xcomhm(option, imate, compor,instap,&
                 dfickg, lambp, dlambp, unsurk, alpha,&
                 lambs, dlambs, viscl, dviscl, mamolg,&
                 tlambt, tdlamt, viscg, dviscg, mamovg,&
-                fickad, dfadt, tlamct, dficks, instap,&
+                fickad, dfadt, tlamct, instap,&
                 angmas, anisof, ndim)
 ! ======================================================================
 ! --- CALCUL DES FLUX HYDRAULIQUES UNIQUEMENT SI YAP1 = 1 --------------

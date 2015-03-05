@@ -8,7 +8,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
                   krel2, dkr2s, dkr2p, fick, dfickt,&
                   dfickg, fickad, dfadt, kh, cliq,&
                   alpliq, viscl, dviscl, mamolg, viscg,&
-                  dviscg, mamolv, dficks, vf, ifa,&
+                  dviscg, mamolv, vf, ifa,&
                   valfac, valcen)
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -895,6 +895,8 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 !==============================================
     if (vf) then
 !
+! Aujourd'hui dficks est mis a zero par défaut
+        dficks = 0.
         if (ifa .eq. 0) then
             valcen(densit ,rhoga)=rho12+rho21
             valcen(densit ,rhoga1)=dr12p1+dr21p1
@@ -907,6 +909,7 @@ subroutine calcfh(option, perman, thmc, ndim, dimdef,&
 ! VALEURS CALCULEES AU CENTRE DES VF
 !==============================================
             if (thmc .eq. 'LIQU_AD_GAZ_VAPE') then
+!
 !
 ! ****************** MOBILITES*******************
                 valcen(mob,wliq) =rho11*krel1/viscl

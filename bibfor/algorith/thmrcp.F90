@@ -10,7 +10,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                   mamolg, cpg, tlambt, tdlamt, viscg,&
                   dviscg, mamolv, cpvg, viscvg, dvisvg,&
                   fickad, dfadt, cpad, kh, pad,&
-                  em, tlamct, dficks, instap, retcom,&
+                  em, tlamct, instap, retcom,&
                   angmas, aniso, ndim)
 ! =====================================================================
 ! ======================================================================
@@ -54,7 +54,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     real(kind=8) :: t0, p10, p20, phi0, pvp0, t, p1, p2, phi, pvp
     real(kind=8) :: rgaz, rhod, cpd, satm, satur, dsatur, pesa(3)
     real(kind=8) :: permli, dperml, permgz, dperms, dpermp
-    real(kind=8) :: fick, dfickt, dficks, dfickg, lambp, dlambp, rhol
+    real(kind=8) :: fick, dfickt, dfickg, lambp, dlambp, rhol
     real(kind=8) :: alpha, cpl, lambs, dlambs, viscl, dviscl, cpg, pad
     real(kind=8) :: viscg, dviscg, mamolg, cpvg, viscvg
     real(kind=8) :: dvisvg, fickad, dfadt, endo, mamolv, p1m, cpad, kh, em
@@ -104,7 +104,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     parameter   ( dim22  = 32 )
     parameter   ( dim23  =  4 )
     parameter   ( dim24  =  3 )
-    parameter   ( dim25  = 39 )
+    parameter   ( dim25  = 38 )
     parameter   ( dim26  =  4 )
     parameter   ( dim27  =  3 )
     parameter   ( dim28  =  1 )
@@ -119,7 +119,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
     parameter   ( dim37  =  2 )
     parameter   ( dim38  =  2 )
     parameter   ( dim39  =  2 )
-    parameter   ( dim40  = 44 )
+    parameter   ( dim40  = 43 )
     parameter   ( dim41  =  4 )
     parameter   ( dim42  =  3 )
     parameter   ( dim43  =  1 )
@@ -293,8 +293,8 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'D_LB_T',&
      &              'D_LB_TL',&
      &              'D_LB_TN',&
-     &              'LAMB_P'   ,&
-     &              'D_LB_P',&
+     &              'LAMB_PHI'   ,&
+     &              'D_LB_PHI',&
      &              'LAMB_CT',&
      &              'LAMB_C_L',&
      &              'LAMB_C_N',&
@@ -323,8 +323,8 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'D_LB_T',&
      &              'D_LB_TL',&
      &              'D_LB_TN',&
-     &              'LAMB_P'   ,&
-     &              'D_LB_P',&
+     &              'LAMB_PHI'   ,&
+     &              'D_LB_PHI',&
      &              'LAMB_CT',&
      &              'LAMB_C_L',&
      &              'LAMB_C_N',&
@@ -352,8 +352,8 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'D_LB_T' ,&
      &              'D_LB_TL',&
      &              'D_LB_TN',&
-     &              'LAMB_P' ,&
-     &              'D_LB_P' ,&
+     &              'LAMB_PHI' ,&
+     &              'D_LB_PHI' ,&
      &              'LAMB_S'   ,&
      &              'D_LB_S' ,&
      &              'LAMB_CT'  ,&
@@ -389,7 +389,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'D_LB_T' ,&
      &              'D_LB_TL',&
      &              'D_LB_TN',&
-     &              'LAMB_P'   ,'D_LB_P' ,&
+     &              'LAMB_PHI'   ,'D_LB_PHI' ,&
      &              'LAMB_S'   ,'D_LB_S' ,&
      &              'LAMB_CT'   ,&
      &              'LAMB_C_L',&
@@ -401,7 +401,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'FICKV_PV' ,'FICKV_PG' ,&
      &              'FICKV_S'  ,'D_FV_T'   ,&
      &              'D_FV_PG',&
-     &              'D_FV_S',&
      &              'PERMIN_T',&
      &              'LAMB_TT',&
      &              'D_LB_TT',&
@@ -431,7 +430,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'D_LB_T' ,&
      &              'D_LB_TL',&
      &              'D_LB_TN',&
-     &              'LAMB_P'   ,'D_LB_P' ,&
+     &              'LAMB_PHI'   ,'D_LB_PHI' ,&
      &              'LAMB_S'   ,'D_LB_S' ,&
      &              'LAMB_CT'  ,&
      &              'LAMB_C_L',&
@@ -467,8 +466,8 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &              'D_LB_T',&
      &              'D_LB_TL',&
      &              'D_LB_TN',&
-     &              'LAMB_P',&
-     &              'D_LB_P' ,&
+     &              'LAMB_PHI',&
+     &              'D_LB_PHI' ,&
      &              'LAMB_S'   ,&
      &              'D_LB_S' ,&
      &              'LAMB_CT'   ,&
@@ -522,7 +521,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &               'D_LB_T' ,&
      &               'D_LB_TL',&
      &               'D_LB_TN',&
-     &               'LAMB_P'    ,'D_LB_P' ,&
+     &               'LAMB_PHI'    ,'D_LB_PHI' ,&
      &               'LAMB_S'    ,'D_LB_S' ,&
      &               'LAMB_CT'    ,&
      &               'LAMB_C_L',&
@@ -536,7 +535,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &               'D_FV_PG','FICKA_T'  ,&
      &               'FICKA_PA' , 'FICKA_PL' ,&
      &               'FICKA_S'  ,'D_FA_T' ,&
-     &               'D_FV_S',&
      &               'PERMIN_T',&
      &               'LAMB_TT',&
      &               'D_LB_TT',&
@@ -586,7 +584,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &                'D_LB_T' ,&
      &                'D_LB_TL',&
      &                'D_LB_TN',&
-     &                'LAMB_P'    ,'D_LB_P' ,&
+     &                'LAMB_PHI'    ,'D_LB_PHI' ,&
      &                'LAMB_S'    ,'D_LB_S' ,&
      &                'LAMB_CT'    ,&
      &                'LAMB_C_L',&
@@ -600,7 +598,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
      &                'D_FV_PG','FICKA_T'  ,&
      &                'FICKA_PA' , 'FICKA_PL' ,&
      &                'FICKA_S'  ,'D_FA_T' ,&
-     &                'D_FV_S',&
      &                'PERMIN_T',&
      &                'LAMB_TT',&
      &                'D_LB_TT',&
@@ -2266,7 +2263,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [phi], 1, ncra25(6), val25(6), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                                    [phi], 1, ncra25(36), val25(36), icodre,&
+                                    [phi], 1, ncra25(35), val25(35), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2317,7 +2314,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [t], 1, ncra25(10), val25(10), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                                    [t], 1, ncra25(37), val25(37), icodre,&
+                                    [t], 1, ncra25(36), val25(36), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2368,7 +2365,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [0.d0], 1, ncra25(20), val25(20), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                                    [0.d0], 1, ncra25(39), val25(39), icodre,&
+                                    [0.d0], 1, ncra25(38), val25(38), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2432,13 +2429,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             valpar(2) = p2
             valpar(3) = val25(22)
 !
-!           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
-!
-            val25(35) = 0.d0
-            call rcvala(imate, ' ', 'THM_DIFFU', 1, nompar(3),&
-                        valpar( 3), 1, ncra25(35), val25(35), icodre,&
-                        0)
-!
 ! INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 !
             val25(30) = 1.0d0
@@ -2482,7 +2472,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             dlambt(1) = val25(12)
             dlambt(2) = val25(13)
             dlambt(3) = val25(14)
-            dlambt(4) = val25(38)
+            dlambt(4) = val25(37)
             lambp = val25(15)
             dlambp = val25(16)
             lambs = val25(17)
@@ -2490,7 +2480,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             lambct(1) = val25(19)
             lambct(2) = val25(20)
             lambct(3) = val25(21)
-            lambct(4) = val25(39)
+            lambct(4) = val25(38)
             satur = val25(22)
             dsatur = val25(23)
             permli = val25(24)
@@ -2502,7 +2492,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             fick = val25(29)*val25(30)*val25(31)*val25(32)
             dfickt = val25(33)*val25(30)*val25(31)*val25(32)
             dfickg = val25(34)*val25(29)*val25(30)*val25(32)
-            dficks = val25(29)*val25(30)*val25(31)*val25(35)
             unsurk = val26( 1)
             viscl = val26( 2)
             dviscl = val26( 3)
@@ -2632,7 +2621,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [t], 1, ncra40(10), val40(10), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                                    [t], 1, ncra40(42), val40(42), icodre,&
+                                    [t], 1, ncra40(41), val40(41), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2656,7 +2645,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [t], 1, ncra40(13), val40(13), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                                    [t], 1, ncra40(43), val40(43), icodre,&
+                                    [t], 1, ncra40(42), val40(42), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2683,7 +2672,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [0.d0], 1, ncra40(20), val40(20), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                                    [0.d0], 1, ncra40(44), val40(44), icodre,&
+                                    [0.d0], 1, ncra40(43), val40(43), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2757,10 +2746,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
 !
-            val40(40) = 0.d0
-            call rcvala(imate, ' ', 'THM_DIFFU', 1, nompar(3),&
-                        valpar( 3), 1, ncra40(40), val40(40), icodre,&
-                        0)
             call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
                         valpar, 3, ncra40(30), val40(30), icodre,&
                         0)
@@ -2814,15 +2799,15 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             permfh(1) = val40(5)
             permfh(2) = val40(6)
             permfh(3) = val40(7)
-            permfh(4) = val40(41)
+            permfh(4) = val40(40)
             lambt(1) = val40(9)
             lambt(2) = val40(10)
             lambt(3) = val40(11)
-            lambt(4) = val40(42)
+            lambt(4) = val40(41)
             dlambt(1) = val40(12)
             dlambt(2) = val40(13)
             dlambt(3) = val40(14)
-            dlambt(4) = val40(43)
+            dlambt(4) = val40(42)
             lambp = val40(15)
             dlambp = val40(16)
             lambs = val40(17)
@@ -2830,7 +2815,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             lambct(1) = val40(19)
             lambct(2) = val40(20)
             lambct(3) = val40(21)
-            lambct(4) = val40(44)
+            lambct(4) = val40(43)
             satur = val40(22)
             dsatur = val40(23)
             permli = val40(24)
@@ -2842,7 +2827,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             fick = val40(29)*val40(30)*val40(31)*val40(32)
             dfickt = val40(33)*val40(30)*val40(31)*val40(32)
             dfickg = val40(34)*val40(29)*val40(30)*val40(32)
-            dficks = val40(29)*val40(30)*val40(31)*val40(40)
             fickad = val40(35)*val40(36)*val40(37)*val40(38)
             dfadt = val40(39)*val40(36)*val40(37)*val40(38)
 !
@@ -2921,7 +2905,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [phi], 1, crad40(6), val40(6), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                                    [phi], 1, crad40(41), val40(41), icodre,&
+                                    [phi], 1, crad40(40), val40(40), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2969,7 +2953,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [t], 1, crad40(10), val40(10), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                                    [t], 1, crad40(42), val40(42), icodre,&
+                                    [t], 1, crad40(41), val40(41), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -2993,7 +2977,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [t], 1, crad40(13), val40(13), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
-                                    [t], 1, crad40(43), val40(43), icodre,&
+                                    [t], 1, crad40(42), val40(42), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -3020,7 +3004,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [0.d0], 1, crad40(20), val40(20), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
-                                    [0.d0], 1, crad40(44), val40(44), icodre,&
+                                    [0.d0], 1, crad40(43), val40(43), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -3079,9 +3063,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
 !
 !
-!           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
-!
-            val40(40) = 0.d0
+
 !
 !    RECUPERATION DES FONCTIONS FICK AIR DISSOUS ET LEURS DERIVEES
 !
@@ -3128,11 +3110,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             lambt(1) = val40(9)
             lambt(2) = val40(10)
             lambt(3) = val40(11)
-            lambt(4) = val40(42)
+            lambt(4) = val40(41)
             dlambt(1) = val40(12)
             dlambt(2) = val40(13)
             dlambt(3) = val40(14)
-            dlambt(4) = val40(43)
+            dlambt(4) = val40(42)
             lambp = val40(15)
             dlambp = val40(16)
             lambs = val40(17)
@@ -3140,7 +3122,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             lambct(1) = val40(19)
             lambct(2) = val40(20)
             lambct(3) = val40(21)
-            lambct(4) = val40(44)
+            lambct(4) = val40(43)
             satur = val40(22)
             dsatur = val40(23)
             permli = val40(24)
@@ -3152,7 +3134,6 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             fick = val40(29)*val40(30)*val40(31)*val40(32)
             dfickt = val40(33)*val40(30)*val40(31)*val40(32)
             dfickg = val40(34)*val40(29)*val40(30)*val40(32)
-            dficks = val40(29)*val40(30)*val40(31)*val40(40)
             fickad = val40(35)*val40(36)*val40(37)*val40(38)
             dfadt = val40(39)*val40(36)*val40(37)*val40(38)
 !

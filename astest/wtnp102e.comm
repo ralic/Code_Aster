@@ -152,8 +152,8 @@ KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,);
 #
 # CONDUCTIVITE THERMIQUE
 #
-
-LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,);
+# On multiplie lambt par 2 et on divise lambphi par 2 juste pour vérifier qu'on ne prend pas la valeur par défaut
+LAMBT=DEFI_CONSTANTE(VALE=2*8.3300000000000001,);
 LS = FORMULE(NOM_PARA='SAT',VALE='(0.3*SAT)');
 
 LAMBS=CALC_FONC_INTERP(FONCTION=LS,
@@ -212,7 +212,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    LAMB_S=LAMBS,
                                    D_LB_S=DLS,
                                    LAMB_CT=0.5,
-                                   LAMB_PHI=UN,
+                                   LAMB_PHI=UNDEMI,
                                    D_LB_PHI=ZERO,
                             ),);
 
@@ -349,3 +349,4 @@ TEST_RESU(RESU=(_F(INST=1.E4,
           )
 
 FIN();
+

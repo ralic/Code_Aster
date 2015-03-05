@@ -24,7 +24,7 @@ interface
                       dfickg, lambp, dlambp, unsurk, alpha,&
                       lambs, dlambs, viscl, dviscl, mamolg,&
                       tlambt, tdlamt, viscg, dviscg, mamolv,&
-                      fickad, dfadt, tlamct, dficks, instap,&
+                      fickad, dfadt, tlamct, instap,&
                       angmas, aniso, ndim)
         integer :: ndim
         integer :: imate
@@ -70,7 +70,6 @@ interface
         real(kind=8) :: fickad
         real(kind=8) :: dfadt
         real(kind=8) :: tlamct(ndim, ndim)
-        real(kind=8) :: dficks
         real(kind=8) :: instap
         real(kind=8) :: angmas(3)
         integer :: aniso

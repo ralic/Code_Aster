@@ -28,7 +28,7 @@ interface
                       mamolg, cpg, tlambt, tdlamt, viscg,&
                       dviscg, mamolv, cpvg, viscvg, dvisvg,&
                       fickad, dfadt, cpad, kh, pad,&
-                      em, tlamct, dficks, instap, retcom,&
+                      em, tlamct, instap, retcom,&
                       angmas, aniso, ndim)
         integer :: ndim
         character(len=8) :: etape
@@ -93,7 +93,6 @@ interface
         real(kind=8) :: pad
         real(kind=8) :: em
         real(kind=8) :: tlamct(ndim, ndim)
-        real(kind=8) :: dficks
         real(kind=8) :: instap
         integer :: retcom
         real(kind=8) :: angmas(3)

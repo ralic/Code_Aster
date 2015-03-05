@@ -69,7 +69,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
     real(kind=8) :: lambp, dlambp, unsurk, alpha, lambs, dlambs, viscl, dfickg
     real(kind=8) :: dviscl, mamolg, tlambt(ndim, ndim), tdlamt(ndim, ndim)
     real(kind=8) :: mamovg, fickad, dfadt, tlamct(ndim, ndim), dfickt, dviscg
-    real(kind=8) :: dficks, klint(ndim-1, ndim-1), fick, viscg
+    real(kind=8) :: klint(ndim-1, ndim-1), fick, viscg
     real(kind=8) :: dsde(dimcon, dimdef)
     real(kind=8) :: tlint, ouvh, deltat, unsurn
     real(kind=8) :: valcen(14, 6), angbid(3)
@@ -255,7 +255,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                 dfickg, lambp, dlambp, unsurk, alpha,&
                 lambs, dlambs, viscl, dviscl, mamolg,&
                 tlambt, tdlamt, viscg, dviscg, mamovg,&
-                fickad, dfadt, tlamct, dficks, instap,&
+                fickad, dfadt, tlamct, instap,&
                 angbid, anisof, ndim-1)
 ! ======================================================================
 ! --- CALCUL DES FLUX HYDRAULIQUES -------------------------------------
@@ -291,7 +291,7 @@ subroutine coeihm(option, perman, resi, rigi, imate,&
                     permgz, dperms, dpermp, fick, dfickt,&
                     dfickg, fickad, dfadt, kh, unsurk,&
                     alpha, viscl, dviscl, mamolg, viscg,&
-                    dviscg, mamovg, dficks, vf, ifa,&
+                    dviscg, mamovg, vf, ifa,&
                     valfac, valcen)
 !
         if (retcom .ne. 0) then

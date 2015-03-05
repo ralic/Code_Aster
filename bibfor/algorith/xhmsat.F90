@@ -89,7 +89,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     real(kind=8) :: rbid27, rbid28, rbid29, rbid30, rbid31, rbid38
     real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid36, rbid37
     real(kind=8) :: rbid39, rbid40, rbid45, rbid46, rbid47, rbid48, rbid49
-    real(kind=8) :: rbid50(ndim, ndim), rbid51, rbid20, rbid32(ndim, ndim)
+    real(kind=8) :: rbid50(ndim, ndim), rbid20, rbid32(ndim, ndim)
     real(kind=8) :: dp2, signe
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
 !
@@ -114,7 +114,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
                 rbid30, rbid31, rbid32, rbid33, rbid34,&
                 rbid35, rbid36, rbid37, rbid38, rbid39,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
-                bid, rbid50, rbid51, rinstp, retcom,&
+                bid, rbid50, rinstp, retcom,&
                 angmas, aniso, ndim)
 ! ======================================================================
 ! --- INITIALISATIONS --------------------------------------------------

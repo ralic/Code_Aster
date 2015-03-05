@@ -11,8 +11,6 @@ subroutine hmliga(yachai, option, meca, ther, hydr,&
                   phenom)
 ! ======================================================================
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
-! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -116,7 +114,7 @@ subroutine hmliga(yachai, option, meca, ther, hydr,&
     real(kind=8) :: rbid27, rbid28, rbid29, rbid32(ndim, ndim)
     real(kind=8) :: rbid33(ndim, ndim), rbid34, rbid35, rbid36, rbid37
     real(kind=8) :: rbid39, rbid45, rbid46, rbid47, rbid48, rbid49
-    real(kind=8) :: rbid50(ndim, ndim), rbid51, rbid20, rbid38
+    real(kind=8) :: rbid50(ndim, ndim), rbid20, rbid38
     real(kind=8) :: signe, m11m, m21m, coeps, rho12, rho22, dpad, cp12, cp22
     real(kind=8) :: dsdp1(6), dsdp2(6)
     real(kind=8) :: dmdeps(6)
@@ -142,7 +140,7 @@ subroutine hmliga(yachai, option, meca, ther, hydr,&
                 mamolg, cp21, rbid32, rbid33, rbid34,&
                 rbid35, rbid36, rbid37, rbid38, rbid39,&
                 rbid45, rbid46, rbid47, rbid48, rbid49,&
-                em, rbid50, rbid51, rinstp, retcom,&
+                em, rbid50, rinstp, retcom,&
                 angmas, aniso, ndim)
 ! ======================================================================
 ! --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
