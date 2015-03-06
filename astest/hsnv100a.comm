@@ -46,15 +46,8 @@ FCT2=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.100E-2,200.,
 CTRACB=DEFI_NAPPE(NOM_PARA='TEMP',
                   PARA=(0.,50.,),
                   FONCTION=(FCT1,FCT2,),
-                   PROL_DROITE='LINEAIRE',
-                   PROL_GAUCHE='LINEAIRE',);
-
-#
-
-REST1=DEFI_FONCTION(NOM_PARA='TEMP',
-                    VALE=(30.,1.,70.,0.),
-                    PROL_DROITE='CONSTANT',
-                    PROL_GAUCHE='CONSTANT',);
+                  PROL_DROITE='LINEAIRE',
+                  PROL_GAUCHE='LINEAIRE',);
 
 #
 # MATERIAU ISOTROPE
@@ -64,9 +57,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=200.E+3,
                           ALPHA=10.0E-6,),
                   TRACTION=_F(SIGM=CTRACB,),
                   THER=_F(LAMBDA=1.0E-3,
-                          RHO_CP=0.0E-3,),
-                  REST_ECRO=_F(REST_FONC=REST1),
-                 );
+                          RHO_CP=0.0E-3,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=MAIL,
                  AFFE=_F(TOUT='OUI',
@@ -152,8 +143,8 @@ CTM=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 U=STAT_NON_LINE(MODELE=MOMECA,
                 CHAM_MATER=CTM,
-                EXCIT=_F(CHARGE=CHMECA,),INFO=2,
-                COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',POST_INCR='REST_ECRO'),
+                EXCIT=_F(CHARGE=CHMECA,),
+                COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',),
                 INCREMENT=_F(LIST_INST=L_INST,),);
 
 U=CALC_CHAMP(reuse =U,

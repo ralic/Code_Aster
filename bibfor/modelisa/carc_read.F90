@@ -235,12 +235,12 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
         ipostincr = 0.d0
         post_incr = ' '
-	    call getvtx(keywordfact, 'POST_INCR', iocc = iocc, scal = post_incr, nbret = iret)
-	    if (iret .eq. 1) then
-	       if (post_incr .eq. 'REST_ECRO') then
-		        ipostincr = 1.d0
-	       endif
-	    endif
+        call getvtx(keywordfact, 'POST_INCR', iocc = iocc, scal = post_incr, nbret = iret)
+        if (iret .eq. 1) then
+           if (post_incr .eq. 'REST_ECRO') then
+                ipostincr = 1.d0
+           endif
+        endif
 !
 ! ----- Get function pointers for mfront
 !

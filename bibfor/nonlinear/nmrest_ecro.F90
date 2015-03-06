@@ -1,4 +1,4 @@
-subroutine nmrest_ecro(model_, mate_, compor_, hval_incr)
+subroutine nmrest_ecro(model_, mate_, compor_, hval_incr, carcri)
 !
 implicit none
 !
@@ -31,6 +31,7 @@ implicit none
     character(len=*), intent(in) :: mate_
     character(len=*), intent(in) :: compor_
     character(len=19), intent(in) :: hval_incr(*)
+    character(len=24), intent(in) :: carcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,16 +48,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 6
+    integer, parameter :: nbin = 7
     integer, parameter :: nbout = 1
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=19) :: lchout(nbout), lchin(nbin)
+    character(len=8)   :: lpaout(nbout), lpain(nbin)
+    character(len=19)  :: lchout(nbout), lchin(nbin)
 !
-    character(len=8) :: model
+    character(len=8)  :: model
     character(len=19) :: mate, compor
     character(len=16) :: option
     character(len=19) :: ligrmo
-    character(len=1) :: base
+    character(len=1)  :: base
     character(len=19) :: vari_curr, varc_prev, varc_curr, vari_curr_modi
     character(len=19) :: vrcplu, vrcmoi, time_curr
 !
@@ -79,7 +80,6 @@ implicit none
     call nmvcex('INST', varc_curr, time_curr)
 !
     vari_curr_modi = '&&VARI_TMP'
-    !call copisd('CHAMP_GD', 'V', vari_curr, vari_curr_modi)
     call copisd('CHAM_ELEM_S', 'V', compor, vari_curr_modi)
 !
 ! - Input fields
@@ -96,6 +96,8 @@ implicit none
     lchin(5) = vrcplu
     lpain(6) = 'PTEMPSR'
     lchin(6) = time_curr
+    lpain(7) = 'PCARCRI'
+    lchin(7) = carcri(1:19)
 !
 ! - Output field
 !

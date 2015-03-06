@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmrest_ecro(model_, mate_, compor_, hval_incr)
+    subroutine nmrest_ecro(model_, mate_, compor_, hval_incr, carcri)
         character(len=*), intent(in) :: model_
         character(len=*), intent(in) :: mate_
         character(len=*), intent(in) :: compor_
         character(len=19), intent(in) :: hval_incr(*)
+        character(len=24), intent(in) :: carcri
     end subroutine nmrest_ecro
 end interface

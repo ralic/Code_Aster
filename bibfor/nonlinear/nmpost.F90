@@ -155,10 +155,10 @@ implicit none
     endif
 
 !
-! - Post-treatment for comportment laws.
+! - Post-treatment for behavior laws.
 !
     if (l_post_incr) then
-        call nmrest_ecro(modele, mate, compor, valinc)
+        call nmrest_ecro(modele, mate, compor, valinc, carcri)
     endif
 !
 ! - Make observation

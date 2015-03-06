@@ -26,24 +26,23 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W0104
 !
     character(len=16), intent(in) :: nomte
     character(len=16), intent(in) :: nomopt
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Calcul de l'option REST_ECRO
+! Computing the option REST_ECRO
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ipg, npg, nb_vari, ivari, ispg, nr
-    integer :: jmate, jcompo, j_vari_out, j_vari_in, jtime
+    integer :: ipg, npg, nb_vari, ivari, ispg
+    integer :: jmate, jcompo, j_vari_out, j_vari_in, jtime, jcarcri
     character(len=16) :: rela_comp
     integer :: nb_res_mx
     parameter (nb_res_mx = 1)
-    real(kind=8) :: valres(nb_res_mx), vvalres, valr
-    integer :: codret(nb_res_mx), ccodret
+    real(kind=8) :: valres(nb_res_mx), vvalres, check_rest
+    integer :: codret(nb_res_mx)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,58 +58,71 @@ implicit none
     call jevech('PCOMPOR', 'L', jcompo) 
     call jevech('PVARIMR', 'L', j_vari_in)
     call jevech('PTEMPSR', 'L', jtime)
+    call jevech('PCARCRI', 'L', jcarcri) 
+!
     rela_comp = zk16(jcompo-1+1)
     read (zk16(jcompo-1+2),'(I16)') nb_vari
 !
 ! - Get output field
 !
-    call jevech('PVARIPR', 'E', j_vari_out)   
+    call jevech('PVARIPR', 'E', j_vari_out) 
 !
-! - Evaluate annealing function
+    check_rest = zr(jcarcri-1+21)
 !
-    ipg=1
-    ispg=1
-!    call rcvarc('F', 'TEMP', '+', 'RIGI', ipg,&
-!                ispg, vvalres, ccodret)
-    vvalres = zr(jtime)
+    if (check_rest .gt. 0.1) then  
 !
-    call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
-                ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
-!                ' ', 'REST_ECRO', 0, ' ', [0.d0],&
-                nb_res_mx, 'REST_FONC', valres, codret, 2)
+!     - Evaluate annealing function
 !
-! - annealing function bounds checking
-    if ((valres(1).gt. 1.d0) .or. (valres(1).lt. 0.d0)) then
-        call utmess('F', 'COMPOR1_91', nr=2,valr=valres(1))
-    endif
-
-WRITE(6,*)'NB VARI INT',nb_vari
+        ipg=1
+        ispg=1
 !
-! - Modif internal variables
+        vvalres = zr(jtime)
 !
-    if ((rela_comp.eq.'VMIS_ISOT_LINE').or.(rela_comp.eq.'VMIS_ISOT_TRAC'))  then
-        do ipg = 1, npg
-            zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
-            zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
-        end do
-    elseif (rela_comp.eq.'VMIS_CINE_LINE') then
-        do ipg = 1, npg
-            do ivari = 1, 6
-                zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)&
-                                                         *valres(1)
+        call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
+                    ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
+                    nb_res_mx, 'FONC_MULT', valres, codret, 2)
+!
+!     - Annealing function bound's checking
+!
+        if ((valres(1).gt. 1.d0) .or. (valres(1).lt. 0.d0)) then
+            call utmess('F', 'COMPOR1_91', nr=2,valr=valres(1))
+        endif
+!
+!     - Modify internal variables
+!
+        if ((rela_comp.eq.'VMIS_ISOT_LINE').or.(rela_comp.eq.'VMIS_ISOT_TRAC'))  then
+            do ipg = 1, npg
+                zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
+                zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
             end do
-            zr(j_vari_out-1+nb_vari*(ipg-1)+7) = zr(j_vari_in-1+nb_vari*(ipg-1)+7)
-        end do
-    elseif (rela_comp.eq.'VMIS_ECMI_LINE') then
-        do ipg = 1, npg
-            zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
-            do ivari = 3, 8
-                zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)&
-                                                         *valres(1)
+        elseif (rela_comp.eq.'VMIS_CINE_LINE') then
+            do ipg = 1, npg
+                do ivari = 1, 6
+                    zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)&
+                                                             *valres(1)
+                end do
+                zr(j_vari_out-1+nb_vari*(ipg-1)+7) = zr(j_vari_in-1+nb_vari*(ipg-1)+7)
             end do
-            zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
+        elseif (rela_comp.eq.'VMIS_ECMI_LINE') then
+            do ipg = 1, npg
+                zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
+                do ivari = 3, 8
+                    zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)&
+                                                             *valres(1)
+                end do
+                zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
+            end do
+        endif
+!
+    else
+!
+!     - Internal variables OUT = Internal variables IN (no modifications)
+!
+        do ipg = 1, npg
+            do ivari = 1, nb_vari
+                zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)
+            end do
         end do
     endif
-
-!    call utmess('F', 'FERMETUR_8')
+!
 end subroutine

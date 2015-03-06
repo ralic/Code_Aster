@@ -123,9 +123,9 @@ subroutine op0033()
     action=1
     finpas=.false.
     itemax=.false.
-    do 10 i = 1, 5
+    do i = 1, 5
         liccvg(i)=0
- 10 end do
+    end do
 !
 !     RECUPERATION DES OPTIONS DEMANDEES
 !     ----------------------------------
@@ -346,7 +346,7 @@ subroutine op0033()
     call dcopy(6, dy(7), 1, deps, 1)
 !
 !           POUR LE CALCUL DE LA MATRICE TANGENTE PAR PERTURBATION
-1000 continue
+400 continue
 !
 !           CALCUL DU RESIDU
     liccvg(2) = 0
@@ -382,7 +382,7 @@ subroutine op0033()
                 nbvari, epsilo, varia, matper, dsidep,&
                 smatr, sdeps, ssigp, zr(lsvip), itgt)
     if (itgt .ne. 0) then
-        goto 1000
+        goto 400
     endif
 !
     call dcopy(12, ym, 1, y, 1)

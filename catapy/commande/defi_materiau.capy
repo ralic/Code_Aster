@@ -4308,7 +4308,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 #
 ### RESTAURATION D'ECROUISSAGE (ANNEALING)
            REST_ECRO      =FACT(statut='f',
-             REST_FONC =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             FONC_MULT =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
            ),
 #
 
