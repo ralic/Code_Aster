@@ -196,7 +196,9 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     call jeveuo(nbeta, 'E', jbeta)
 !
     fvirtu = .false.
-!
+!   
+! --------------- VITESSE FONDFISS
+           
 !     CHECK if an auxilliary grid is used
 !
     call jeexin(fiss//'.GRI.MAILLA', ibid)
@@ -218,7 +220,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         call jeveuo(ucnsln//'.CNSV', 'L', vr=nlsn)
         call jeveuo(ucnslt//'.CNSV', 'L', vr=nlst)
 !
-!     Creation de vecteur ou sont stocke les coordonnes et les
+!     Creation de vecteur ou sont stocke les coordonnees et les
 !     bases associees du font de fissure virtuel
         covir='&&XPRVIT.COVIR'
         bavir='&&XPRVIT.BAVIR'
@@ -452,18 +454,10 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
             modtan = sqrt(zr( jbasef-1+2*ndim*(i-1)+3)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+4 )**2.d0&
                      )
         else
-            modnor = sqrt(&
-                     zr(&
-                     jbasef-1+2*ndim*(i-1)+1)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+2)**2.d0+ zr(jbase&
-                     &f-1+2*ndim*(i-1)+ 3&
-                     )**2.d0&
-                     )
-            modtan = sqrt(&
-                     zr(&
-                     jbasef-1+2*ndim*(i-1)+4)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+5)**2.d0+ zr(jbase&
-                     &f-1+2*ndim*(i-1)+ 6&
-                     )**2.d0&
-                     )
+            modnor = sqrt(zr(jbasef-1+2*ndim*(i-1)+1)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+2)**2.d0+&
+                     &zr(jbasef-1+2*ndim*(i-1)+ 3)**2.d0)
+            modtan = sqrt(zr(jbasef-1+2*ndim*(i-1)+4)**2.d0+ zr( jbasef-1+2*ndim*(i-1)+5)**2.d0+&
+                     &zr(jbasef-1+2*ndim*(i-1)+ 6)**2.d0)
         endif
 !
         ASSERT(modnor.gt.0.d0)
@@ -544,7 +538,8 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
         endif
 !
-    end do
+    end do  
+       
 !
 ! ***************************************************************
 ! ELABORATE EACH NODE IN THE MESH IN ORDER TO CALCULATE THE FOLLOWING:
@@ -565,7 +560,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
     jmin = 1
     smin = 0.d0
 !
-!     BOUCLE SUR LES NOEUDS M DU MAILLAGE POUR CALCULER PROJ(V)=V
+!     BOUCLE SUR LES NOEUDS M DU MAILLAGE POUR CALCULER PROJ(V)=V  
     eps = 1.d-12
     do i = 1, nbno
 !
@@ -982,6 +977,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !           T-AXIS
             bl(2*ndim*(i-1)+3) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+1)
             bl(2*ndim*(i-1)+4) = zr(jbasef-1+2*ndim*(jmin-1)+ ndim+2)
+            
 !
         else
 !
@@ -1068,7 +1064,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !           CORRECTION OF THE LOCAL BASE FOR THE POINTS PROJECTED ON
 !           ONE END OF THE CRACK FRONT
             if ((operation.eq.'PROPA_COHESIF'&
-                .or.operation.eq.'DETECT_COHESIF') .and. endpnt) then
+                .or.operation.eq.'DETECT_COHESIF') .and. endpnt) then 
 !
                n(1) = bl(2*ndim*(i-1)+1)
                n(2) = bl(2*ndim*(i-1)+2)
@@ -1129,6 +1125,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !
             if ((method.eq.'GEOMETRI'.and.operation.eq.'RIEN')&
                 .and. endpnt) then
+                
 !
 !              NORMAL AXIS OF THE LOCAL BASE
                 n(1) = bl(2*ndim*(i-1)+1)
@@ -1163,7 +1160,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !              BY THE SIGN OF MODVEC)
                 bl(2*ndim*(i-1)+4) = t(1)/modvec
                 bl(2*ndim*(i-1)+5) = t(2)/modvec
-                bl(2*ndim*(i-1)+6) = t(3)/modvec
+                bl(2*ndim*(i-1)+6) = t(3)/modvec  
 !
             endif
 !
@@ -1227,7 +1224,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         zr(jcnsb+i-1) = betap
 !
 !
-    end do
+    end do 
 !
 ! ***************************************************************
 ! PRINT SOME INFORMATIONS
@@ -1260,8 +1257,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
         313     format(1x,' FOND DE FISSURE ',i2)
 !
     endif
-!
-!
+!  
     if (fvirtu) then
         nbptff=nbptff-2*numfon
         call jedetr(covir)

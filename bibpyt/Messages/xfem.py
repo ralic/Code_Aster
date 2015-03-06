@@ -610,4 +610,13 @@ Utilisez ELIM_ARETE='DUAL'.
      --> L algorithme de détection a détecté un front qui va au delà de
          la zone de fissuration potentielle. Il faut agrandir celle-ci.
 """),
+    95: _(u"""
+  -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO_GAMMA' ou 'ANGLE_IMPO_BETA_GAMMA' et le tableau
+     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s ne contient
+     pas de colonne 'GAMMA'.
+  -> Risque & Conseil:
+     Si vous souhaitez imposer les valeurs de l'angle de déversement aux points 
+     du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO_GAMMA' ou 'ANGLE_IMPO_BETA_GAMMA' et ajouter
+     une colonne 'GAMMA' au tableau de SIF manuellement.
+"""),
 }

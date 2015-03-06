@@ -355,9 +355,11 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 nb_pt_fiss = len(Coorfo) / 4
 
                 TABLE_BETA = nb_pt_fiss * [0.]
+                TABLE_GAMMA = nb_pt_fiss * [0.]
                 TABLE_VIT = nb_pt_fiss * [Damax]
 
-                mcsimp['ANGLE'] = TABLE_BETA
+                mcsimp['ANGLE_BETA']   = TABLE_BETA
+                mcsimp['ANGLE_GAMMA']   = TABLE_GAMMA
                 mcsimp['VITESSE'] = TABLE_VIT
 
                 if NumStep == StepTot - 1:
@@ -393,11 +395,16 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         Nbfissure = len(Fissures)
         resultat = args['RESULTAT']
         tab_BETA = [None] * Nbfissure
+        tab_GAMMA   = [None]*Nbfissure
         TABLE_BETA = [None] * Nbfissure
+        TABLE_GAMMA   = [None]*Nbfissure
         TABLE_VIT = [None] * Nbfissure
+
+        CRITERE_ANGLE = args['CRIT_ANGL_BIFURCATION']
 #
         for numfis, Fiss in enumerate(Fissures):
             tab_BETA[numfis] = {}
+            tab_GAMMA[numfis] = {} 
             fiss0 = Fiss['FISS_ACTUELLE']
             nb_pts_fo = Fiss['NB_POINT_FOND']
             __TABDIR = DETEC_FRONT(
@@ -413,6 +420,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             __SIF = Fiss['TABLE']
             tab_sif = __SIF.EXTR_TABLE()
             table_beta = tab_sif.BETA.values()
+            if 'GAMMA' in tab_sif.para :
+                table_gamma = tab_sif.GAMMA.values()
             n = len(table_beta)
 #
 #     debut bloc de conversion de la table
@@ -427,6 +436,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 #
 #       pour l'instant fond unique seulement
             tab_BETA[numfis][1] = [[absc[j], table_beta[j]] for j in range(n)]
+            if 'GAMMA' in tab_sif.para :
+                tab_GAMMA[numfis][1] = [[absc[j],table_gamma[j]] for j in range(n)]
 #     calcul de beta aux points physiques
 #     effectué juste avant le calcul
 
@@ -454,9 +465,11 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
 # Initialisations
         tab_BETA = [None] * Nbfissure
+        tab_GAMMA   = [None]*Nbfissure
         tab_VIT = [None] * Nbfissure
 
         TABLE_BETA = [None] * Nbfissure
+        TABLE_GAMMA = [None]*Nbfissure
         TABLE_VIT = [None] * Nbfissure
 
         Vmfiss = {}
@@ -502,66 +515,102 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                      ACTION=_F(OPERATION='EXTR',
                                                NOM_PARA=__tabsif.para))
 
-#     beta
-            if not 'BETA' in __tabsif.para and CRITERE_ANGLE == 'ANGLE_IMPO':
-                UTMESS('F', 'XFEM2_19', valk=fiss0.get_name())
+#     beta et gamma
+            if not 'BETA' in __tabsif.para and CRITERE_ANGLE in ('ANGLE_IMPO','ANGLE_IMPO_BETA','ANGLE_IMPO_GETA_GAMMA'):
+                UTMESS('F','XFEM2_19',valk = fiss0.get_name())
+              
+            if not 'GAMMA' in __tabsif.para and CRITERE_ANGLE in ('ANGLE_IMPO_GAMMA','ANGLE_IMPO_GETA_GAMMA'):
+                UTMESS('F','XFEM_95',valk = fiss0.get_name())  
+            if CRITERE_ANGLE == 'ANGLE_IMPO' : CRITERE='SITT_MAX'
+            elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' not in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX'
+            elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX_DEVER'
+            elif CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA' : CRITERE='SITT_MAX_DEVER'
+            else : CRITERE=CRITERE_ANGLE
+        
+#           BOOLEEN POUR SIMPLIFIER LES TESTS PAR LA SUITE
+            if CRITERE=='SITT_MAX_DEVER' : calc_gamma=True
+            else : calc_gamma=False
+            if CRITERE_ANGLE not in ('ANGLE_IMPO_BETA_GAMMA','ANGLE_IMPO'):
+               if 'BETA' in __tabsif.para or 'GAMMA' in  __tabsif.para :
+                  UTMESS('A','XFEM2_18',valk = fiss0.get_name())
 
-            if CRITERE_ANGLE != 'ANGLE_IMPO':
-                if 'BETA' in __tabsif.para:
-                    UTMESS('A', 'XFEM2_18', valk=fiss0.get_name())
+            if (OPERATION != 'PROPA_COHESIF'):
+#         Si CRITERE_ANGLE = ANGLE_IMPO_BETA/GAMMA il faut calculer le deuxième angle, donc donner le bon mot-clé à post_rupture          
+               __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
+                                          reuse=__COPIE_SIF,
+                                          OPERATION='ANGLE_BIFURCATION',
+                                          CRITERE=CRITERE,
+                                          NOM_PARA='ANGLE_BETA',
+                                          MATER=MATER)
+                                          
+#         Keq
+               __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
+                                          reuse=__COPIE_SIF,
+                                          OPERATION='K_EQ',
+                                          CUMUL='CUMUL_G',
+                                          NOM_PARA='K_EQ',
+                                          MATER=MATER)
+                                                                     
 
+#         DKeq
+               CMIN = COMP_LINE['COEF_MULT_MINI']
+               CMAX = COMP_LINE['COEF_MULT_MAXI']
+
+               __TAB_DKEQ_VIT = POST_RUPTURE(TABLE=__COPIE_SIF,
+                                             OPERATION='COMPTAGE_CYCLES',
+                                             NOM_PARA=('K_EQ'),
+                                             COMPTAGE='UNITAIRE',
+                                             COEF_MULT_MINI=CMIN,
+                                             COEF_MULT_MAXI=CMAX) 
+
+#         Da/Dt
+               __TAB_DKEQ_VIT = POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
+                                             reuse=__TAB_DKEQ_VIT,
+                                             OPERATION='LOI_PROPA',
+                                             LOI='PARIS',
+                                             C=coef_C,
+                                             M=coef_M)                             
+
+#         somme Da/Dt
+               __TAB_CUMUL[numfis] = POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
+                                                  OPERATION='CUMUL_CYCLES')
+               tab_cumul = __TAB_CUMUL[numfis].EXTR_TABLE()
+
+#         recuperation des vitesses Da/Dt et des angles de bifurcation beta
+               table_vit = tab_cumul.DELTA_A.values()
+            else:
                 __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
                                            reuse=__COPIE_SIF,
                                            OPERATION='ANGLE_BIFURCATION',
-                                           CRITERE=CRITERE_ANGLE,
+                                           CRITERE=CRITERE,
                                            NOM_PARA='ANGLE_BETA')
-#
-            if (OPERATION != 'PROPA_COHESIF'):
-#         Keq
-                __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
-                                           reuse=__COPIE_SIF,
-                                           OPERATION='K_EQ',
-                                           CUMUL='CUMUL_G',
-                                           NOM_PARA='K_EQ',
-                                           MATER=MATER)
-
-#         DKeq
-                CMIN = COMP_LINE['COEF_MULT_MINI']
-                CMAX = COMP_LINE['COEF_MULT_MAXI']
-
-                __TAB_DKEQ_VIT = POST_RUPTURE(TABLE=__COPIE_SIF,
-                                              OPERATION='COMPTAGE_CYCLES',
-                                              NOM_PARA=('K_EQ'),
-                                              COMPTAGE='UNITAIRE',
-                                              COEF_MULT_MINI=CMIN,
-                                              COEF_MULT_MAXI=CMAX)
-
-#         Da/Dt
-                __TAB_DKEQ_VIT = POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
-                                              reuse=__TAB_DKEQ_VIT,
-                                              OPERATION='LOI_PROPA',
-                                              LOI='PARIS',
-                                              C=coef_C,
-                                              M=coef_M)
-
-#         somme Da/Dt
-                __TAB_CUMUL[numfis] = POST_RUPTURE(TABLE=__TAB_DKEQ_VIT,
-                                                   OPERATION='CUMUL_CYCLES')
-
-                tab_cumul = __TAB_CUMUL[numfis].EXTR_TABLE()
-
-#         recuperation des vitesses Da/Dt et des angles de bifurcation beta
-                table_vit = tab_cumul.DELTA_A.values()
-            else:
+                
                 tab_cumul = __COPIE_SIF.EXTR_TABLE()
 
-            if CRITERE_ANGLE != 'ANGLE_IMPO':
-                table_temp = tab_cumul.ANGLE_BETA.values()
-                table_beta = [
-                    table_temp[i] * pi / 180. for i in range(len(table_temp))]
-            else:
-                table_beta = __tabsif.BETA.values()
-
+            if CRITERE_ANGLE not in ['ANGLE_IMPO','ANGLE_IMPO_BETA','ANGLE_IMPO_GAMMA','ANGLE_IMPO_BETA_GAMMA'] :
+               table_temp = tab_cumul.ANGLE_BETA.values()
+               table_beta = [table_temp[i]*pi/180. for i in range(len(table_temp))]
+               if calc_gamma :
+                  table_temp = tab_cumul.ANGLE_GAMMA.values()
+                  table_gamma = [table_temp[i]*pi/180. for i in range(len(table_temp))]
+      
+            elif (CRITERE_ANGLE in ('ANGLE_IMPO','ANGLE_IMPO_BETA')) :
+               table_beta = __tabsif.BETA.values()
+               if calc_gamma :
+                  table_temp = tab_cumul.ANGLE_GAMMA.values()
+                  table_gamma = [table_temp[i]*pi/180. for i in range(len(table_temp))]
+               else :
+                  table_gamma = None  
+            
+            elif(CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA') :
+               table_gamma = __tabsif.GAMMA.values()
+               table_temp = tab_cumul.ANGLE_BETA.values()
+               table_beta = [table_temp[i]*pi/180. for i in range(len(table_temp))]
+               
+            else :
+               table_beta = __tabsif.BETA.values()
+               table_gamma = __tabsif.GAMMA.values()
+            
             n = len(table_beta)
             if OPERATION == 'PROPA_COHESIF':
                 table_vit = [Damax for i in range(n)]
@@ -570,9 +619,11 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             Vmfiss[numfis] = max(table_vit)
 
             tab_BETA[numfis] = {}
+            if calc_gamma :
+               tab_GAMMA[numfis] = {}
             tab_VIT[numfis] = {}
 
-#     Stockage de Da/Dt et de beta
+#     Stockage de Da/Dt de beta et de gamma
             # Si METHODE_PROPA !='MAILLAGE'
             if TEST_MAIL == 'NON':
 
@@ -580,7 +631,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                     UTMESS('A', 'XFEM2_73')
                     Fiss['NB_POINT_FOND'] = None
 
-#       Stockage de Da/Dt et de beta en fonction de l'abscisse curviligne
+#       Stockage de Da/Dt de beta et de gamma en fonction de l'abscisse curviligne
 #       pour permettre ensuite de trouver ces parametres aux points "physiques"
 #       par interpolation lineaire
                 if Fiss['NB_POINT_FOND'] != None:
@@ -599,21 +650,35 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                         tab_nume_fond = tab_cumul.NUME_FOND.values()
                         list_nume_fond = list(set(tab_nume_fond))
 
-                        for fond_i in list_nume_fond:
-                            tab_BETA[numfis][fond_i] = [[absc[j], table_beta[j]]
-                                                        for j in range(n) if tab_nume_fond[j] == fond_i]
-                            tab_VIT[numfis][fond_i] = [[absc[j], table_vit[j]]
-                                                       for j in range(n) if tab_nume_fond[j] == fond_i]
+                        if calc_gamma :
+                           for fond_i in list_nume_fond :
+                              tab_BETA[numfis][fond_i]=[[absc[j],table_beta[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+                              tab_GAMMA[numfis][fond_i]=[[absc[j],table_gamma[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+                              tab_VIT[numfis][fond_i]=[[absc[j],table_vit[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+
+                        else :
+                           for fond_i in list_nume_fond :
+                              tab_BETA[numfis][fond_i]=[[absc[j],table_beta[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+                              tab_VIT[numfis][fond_i]=[[absc[j],table_vit[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
 
                     else:
 #             cas d'un fond unique
-                        tab_BETA[numfis][1] = [[absc[j], table_beta[j]]
-                                               for j in range(n)]
-                        tab_VIT[numfis][1] = [[absc[j], table_vit[j]]
-                                              for j in range(n)]
+                        if calc_gamma :
+                           tab_BETA[numfis][1] = [[absc[j],table_beta[j]] for j in range(n)]
+                           tab_GAMMA[numfis][1] = [[absc[j],table_gamma[j]] for j in range(n)]
+                           tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]
+              
+                        else :
+                           tab_BETA[numfis][1] = [[absc[j],table_beta[j]] for j in range(n)]
+                           tab_VIT[numfis][1] = [[absc[j],table_vit[j]] for j in range(n)]   
                 else:
-                    TABLE_BETA[numfis] = table_beta
-                    TABLE_VIT[numfis] = table_vit
+                    if calc_gamma :
+                       TABLE_BETA[numfis] = table_beta
+                       TABLE_GAMMA[numfis] = table_gamma
+                       TABLE_VIT[numfis]  = table_vit
+                    else :
+                       TABLE_BETA[numfis] = table_beta
+                       TABLE_VIT[numfis]  = table_vit
 
             # Si METHODE_PROPA=='MAILLAGE'
             else:
@@ -633,10 +698,13 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                     list_nume_fond = list(set(tab_nume_fond))
 
                     for fond_i in list_nume_fond:
-                        tab_BETA[numfis][fond_i] = [[absc[j], table_beta[j]]
-                                                    for j in range(n) if tab_nume_fond[j] == fond_i]
-                        tab_VIT[numfis][fond_i] = [[absc[j], table_vit[j]]
-                                                   for j in range(n) if tab_nume_fond[j] == fond_i]
+                        if calc_gamma :
+                           tab_BETA[numfis][fond_i]=[[absc[j],table_beta[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+                           tab_GAMMA[numfis][fond_i]=[[absc[j],table_gamma[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+                           tab_VIT[numfis][fond_i]=[[absc[j],table_vit[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+                        else :
+                           tab_BETA[numfis][fond_i]=[[absc[j],table_beta[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
+                           tab_VIT[numfis][fond_i]=[[absc[j],table_vit[j]] for j in range(n) if tab_nume_fond[j]==fond_i]
                 else:
 #           cas d'un fond unique
                     tab_BETA[numfis][1] = [[absc[j], table_beta[j]]
@@ -669,7 +737,14 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 # CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET
 # TEST_MAIL = 'NON'
     if TEST_MAIL == 'NON':
-
+        if CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' not in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX'
+        elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX_DEVER'
+        elif CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA' : CRITERE='SITT_MAX_DEVER'
+        else : CRITERE=CRITERE_ANGLE
+    
+#      BOOLEEN POUR SIMPLIFIER LES TESTS PAR LA SUITE
+        if CRITERE=='SITT_MAX_DEVER' : calc_gamma=True
+        else : calc_gamma=False  
         for numfis, Fiss in enumerate(Fissures):
 
             Coorfo = Fiss['FISS_ACTUELLE'].sdj.FONDFISS.get()
@@ -678,6 +753,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
             if (Fiss['NB_POINT_FOND'] != None):
 
                 TABLE_BETA[numfis] = []
+                if calc_gamma :
+                   TABLE_GAMMA[numfis] = []
                 if (OPERATION != 'DETECT_COHESIF'):
                     TABLE_VIT[numfis] = []
 
@@ -697,38 +774,57 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
 #           verification de la coherence entre le nombre de valeurs de beta pour chaque fond et
 #           le nombre de points indiques dans NB_POINT_FOND
-                    if len(tab_BETA[numfis][i + 1]) != NbPointFond[i]:
-                        UTMESS(
-                            'F', 'XFEM2_75', vali=i + 1, valk=fiss0.get_name())
+                    if calc_gamma :
+                       if ((len(tab_BETA[numfis][i+1]) != NbPointFond[i]) or (len(tab_GAMMA[numfis][i+1]) != NbPointFond[i])):
+                          UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())
+                    else :
+                       if (len(tab_BETA[numfis][i+1]) != NbPointFond[i]) :
+                          UTMESS('F','XFEM2_75',vali=i+1,valk=fiss0.get_name())     
 
                     if not presence_colonne_absc:
 # cas ou la colonne ABSC_CURV n'existe pas la table SIF: calcul des
 # abscisses curvilignes
-                        for j in range(NbPointFond[i]):
-                            tab_BETA[numfis][i + 1][j][
-                                0] = absmax / (NbPointFond[i] - 1) * j
-                            if (OPERATION != 'DETECT_COHESIF'):
-                                tab_VIT[numfis][i + 1][j][
-                                    0] = absmax / (NbPointFond[i] - 1) * j
+                        if calc_gamma :
+                           for j in range(NbPointFond[i]):
+                              tab_BETA[numfis][i+1][j][0] = absmax/(NbPointFond[i]-1)*j
+                              tab_GAMMA[numfis][i+1][j][0] = absmax/(NbPointFond[i]-1)*j
+                              if (OPERATION!='DETECT_COHESIF') :
+                                 tab_VIT[numfis][i+1][j][0]  = absmax/(NbPointFond[i]-1)*j
+                        else :
+                           for j in range(NbPointFond[i]):
+                              tab_BETA[numfis][i+1][j][0] = absmax/(NbPointFond[i]-1)*j
+                              if (OPERATION!='DETECT_COHESIF') :
+                                 tab_VIT[numfis][i+1][j][0]  = absmax/(NbPointFond[i]-1)*j  
 
 #           interpolation lineaire
-                    for j in range(NF - NI + 1):
-                        abscurv_pt = Coorfo[4 * (NI + j) - 1]
-                        TABLE_BETA[numfis].append(
-                            InterpolationLineaire(abscurv_pt, tab_BETA[numfis][i + 1]))
-                        if (OPERATION != 'DETECT_COHESIF'):
-                            TABLE_VIT[numfis].append(
-                                InterpolationLineaire(abscurv_pt, tab_VIT[numfis][i + 1]))
+                    if calc_gamma :
+                       for j in range(NF-NI+1) :
+                          abscurv_pt = Coorfo[4*(NI+j)-1]
+                          TABLE_BETA[numfis].append(InterpolationLineaire(abscurv_pt,tab_BETA[numfis][i+1]))
+                          TABLE_GAMMA[numfis].append(InterpolationLineaire(abscurv_pt,tab_GAMMA[numfis][i+1]))
+                          if (OPERATION!='DETECT_COHESIF') :
+                             TABLE_VIT[numfis].append(InterpolationLineaire(abscurv_pt,tab_VIT[numfis][i+1]))
+                    else :
+                       for j in range(NF-NI+1) :
+                          abscurv_pt = Coorfo[4*(NI+j)-1]
+                          TABLE_BETA[numfis].append(InterpolationLineaire(abscurv_pt,tab_BETA[numfis][i+1]))
+                          if (OPERATION!='DETECT_COHESIF') :
+                             TABLE_VIT[numfis].append(InterpolationLineaire(abscurv_pt,tab_VIT[numfis][i+1]))
 
             else:
-# il doit y avoir autant de valeurs de beta que de points au fond de
+# il doit y avoir autant de valeurs de beta et de gamma que de points au fond de
 # fissure
-                if (len(TABLE_BETA[numfis]) != len(Coorfo) / 4):
-                    UTMESS('F', 'XFEM2_80')
+                if calc_gamma :
+                   if ((len(TABLE_BETA[numfis]) != len(Coorfo)/4) or (len(TABLE_GAMMA[numfis]) != len(Coorfo)/4)):
+                      UTMESS('F','XFEM2_80')
+        
+                else :
+                   if (len(TABLE_BETA[numfis]) != len(Coorfo)/4):
+                      UTMESS('F','XFEM2_80') 
 
 #       Si 2D: verification de l'orientation du repere (VNOR,VDIR)
             if (OPERATION != 'DETECT_COHESIF'):
-                if not 'K3' in __tabsif.para:
+                if (not 'K3' in __tabsif.para) and (not CRITERE_ANGLE == 'ANGLE_IMPO_BETA_GAMMA') :
                     Basefond = Fiss['FISS_ACTUELLE'].sdj.BASEFOND.get()
                     for fond in range(len(Basefond) / 4):
                         VNOR = (Basefond[4 * fond + 0], Basefond[4 * fond + 1])
@@ -763,7 +859,9 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
         for numfis in range(0, len(FissAct)):
             mcsimp['FISS_PROP'] = FissAct[numfis]
-            mcsimp['ANGLE'] = TABLE_BETA[numfis]
+            mcsimp['ANGLE_BETA']       = TABLE_BETA[numfis]
+            if calc_gamma :
+               mcsimp['ANGLE_GAMMA']       = TABLE_GAMMA[numfis]
             mcsimp['VITESSE'] = TABLE_VIT[numfis]
             if (OPERATION != 'PROPA_COHESIF') and (OPERATION != 'DETECT_COHESIF'):
                 mcsimp['DA_FISS'] = Vmfiss[numfis] * NBCYCLE

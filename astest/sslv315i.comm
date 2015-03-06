@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('XFEM2_94','XFEM2_18'),);
 
 # ON IGNORE L'ALARME XFEM2_94 PARCE QUE LA VALEUR MINIMALE CONSEILLE EST
-# TRES PROCHES A L'AVANCEE UTILISEE ET ON OBTIENT DES BONNES RESULTATS
+# TRES PROCHES A L'AVANCEE UTILISEE ET ON OBTIENT DES BONS RESULTATS
 
 
 #----------------------------------------------
@@ -148,6 +148,7 @@ for i in range(nbcalc) :
                               C=1.,
                               M=1.,
                               MATER=ACIER,),
+                 CRIT_ANGL_BIFURCATION='SITT_MAX_DEVER',                         
                  RAYON=RP,
                  COMP_LINE=_F(COEF_MULT_MINI=0.0,
                               COEF_MULT_MAXI=1.0,
@@ -214,7 +215,7 @@ DISTMAX=2./3.
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=0.66666666666666663,
-           VALE_CALC=0.234252670573,
+           VALE_CALC=0.234251339468,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -225,7 +226,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=0.66666666666666663,
-           VALE_CALC=0.399019272464,
+           VALE_CALC=0.39902168761,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -236,7 +237,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=0.66666666666666663,
-           VALE_CALC=0.332517809392,
+           VALE_CALC=0.332517044401,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -247,7 +248,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=0.66666666666666663,
-           VALE_CALC=0.274390083766,
+           VALE_CALC=0.274392030368,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -256,3 +257,4 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 FIN();
+

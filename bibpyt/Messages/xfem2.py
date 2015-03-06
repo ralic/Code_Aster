@@ -86,14 +86,14 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
 """),
 
     18 : _(u"""
-  -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' et le tableau
+  -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' ou 'ANGLE_IMPO_BETA_GAMMA' et le tableau
      des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s contient
-     une colonne 'BETA'.
+     une colonne 'BETA' ou une colonne 'GAMMA'.
   -> Risque & Conseil:
      Les valeurs de l'angle de bifurcation notées dans ce tableau ne sont
      pas prises en compte. Si vous souhaitez imposer les valeurs de l'angle
      de bifurcation aux points du fonds de fissure, veuillez indiquer
-     CRITERE='ANGLE_IMPO'.
+     CRITERE='ANGLE_IMPO' ou 'ANGLE_IMPO_BETA_GAMMA'.
 """),
 
     19 : _(u"""
@@ -500,4 +500,5 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
      grande arête des éléments du maillage ou de la grille auxiliaire
      dans la zone de propagation.
   """),
+
 }

@@ -35,10 +35,13 @@ subroutine op0010()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterc/r8prem.h"
+#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscno.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
@@ -57,6 +60,7 @@ subroutine op0010()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/pre_traitement.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xajuls.h"
@@ -96,9 +100,9 @@ subroutine op0010()
 !
 !     CRACK ADVANCEMENT
     real(kind=8) :: damax, dttot, vmax, rayon, dafiss, bmax
-    character(len=24) :: vvit, vbeta
+    character(len=24) :: vvit, vbeta, vgamma
     character(len=19) :: cnsbet, listp
-    integer :: crack, jbeta, jvit, nbval, nfiss
+    integer :: crack, jbeta, jgamma, jvit, nbval, nfiss
     integer :: numfis
 !
 !     LEVELSET AUXILIARY MESH
@@ -170,6 +174,7 @@ subroutine op0010()
 !
     call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
 !
+!    
 !     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
     if(operation.ne.'PROPA_COHESIF') then
         call dismoi('NB_FISS_XFEM', nomo, 'MODELE', repi=nfiss)
@@ -304,21 +309,24 @@ subroutine op0010()
             call utmess('F', 'XFEM2_87')
         endif
     endif
-!
+!    
 !     RECUPERATION DES VITESSES DE PROPAGATION, DES ANGLES
 !     DE BIFURCATION ET DE L'AVANCEE MAXIMALE DE LA FISSURE
 !     A PROPAGER
 !
     vvit = '&&OP0010.VVIT'
     vbeta = '&&OP0010.VBETA'
+    vgamma = '&&OP0010.VGAMMA'
 !
     call getvr8(' ', 'VITESSE', nbval=0, nbret=nbval)
 !
     call wkvect(vbeta, 'V V R8', -nbval, jbeta)
+    call wkvect(vgamma, 'V V R8', -nbval, jgamma)
     call wkvect(vvit, 'V V R8', -nbval, jvit)
 !
-    call getvr8(' ', 'ANGLE', nbval=-nbval, vect=zr(jbeta), nbret=ibid)
-    call getvr8(' ', 'VITESSE', nbval=-nbval, vect=zr(jvit), nbret=ibid)
+    call getvr8(' ', 'ANGLE_BETA', nbval=-nbval, vect=zr(jbeta), nbret=ibid)
+    call getvr8(' ', 'ANGLE_GAMMA', nbval=-nbval, vect=zr(jgamma), nbret=ibid)
+    call getvr8(' ', 'VITESSE', nbval=-nbval, vect=zr(jvit), nbret=ibid)    
 !
     if(operation.ne.'DETECT_COHESIF') then
         call getvr8(' ', 'DA_FISS', scal=dafiss, nbret=ibid)
@@ -336,7 +344,7 @@ subroutine op0010()
     call cnocns(fispre//'.LTNO', 'V', cnslt)
     call cnocns(fispre//'.LNNO', 'V', cnsln)
     call cnocns(fispre//'.GRLTNO', 'V', grlt)
-    call cnocns(fispre//'.GRLNNO', 'V', grln)
+    call cnocns(fispre//'.GRLNNO', 'V', grln)   
 !
 ! --- DUPLICATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
 !
@@ -533,9 +541,11 @@ subroutine op0010()
 !     ARE PASSED TO THE SUBROUTINE IN ORDER TO USE THE SAME SUBROUTINE
 !     FOR THE SIMPLEXE AND UPWIND SCHEMA.
 !
+  
     call xprini(ligr_dnoma, dnoma, dcnxin, grille, fispre,&
                 fiss, dcnsln, dcnslt, dgrlt, noesom,&
-                noresi, vcn, grlr, lcmin)
+                noresi, vcn, grlr, lcmin)                  
+                
 !
 !-----------------------------------------------------------------------
 !     CALCUL DES POINTS DU FOND DE FISSURE SUR LA GRILLE
@@ -552,9 +562,12 @@ subroutine op0010()
         cnsljg = '&&OP0010.CNSLJG'
         cnseg='&&OP0010.CNSEG'
         cnseng='&&OP0010.CNSENG'
+        
+
+
         call xenrch(dnoma, dcnslt, dcnsln, cnsljg,&
                     cnseg, cnseng, ndim, fispre, goinop,&
-                    lismag, lisnog)
+                    lismag, lisnog)          
 !
         call jedetr(cnsljg)
         call jedetr(cnseg)
@@ -590,12 +603,23 @@ subroutine op0010()
     cnsdis='&&OP0010.CNSDIS'
     delta='&&OP0010.DELTA'
 !
-    call xprvit(dnoma, fispre, ndim, vvit, vbeta,&
+    deltat = lcmin*0.45d0
+
+    if ((method.eq.'GEOMETRI') .and. (operation.ne.'PROPA_COHESIF')) then
+         call pre_traitement(dnoma, fispre, ndim, vbeta, vgamma)
+!         
+         call xprvit(dnoma, fispre, ndim, vvit, vbeta,&
+                lcmin, cnsvt, cnsvn, vpoint, cnsbl,&
+                cnsdis, disfr, cnsbet, listp, damax,&
+                locdom, radimp, radtor, delta, ucnslt,&
+                ucnsln)    
+    else          
+          call xprvit(dnoma, fispre, ndim, vvit, vbeta,&
                 lcmin, cnsvt, cnsvn, vpoint, cnsbl,&
                 cnsdis, disfr, cnsbet, listp, damax,&
                 locdom, radimp, radtor, delta, ucnslt,&
                 ucnsln)
-!
+    endif 
 !
 !
 !-----------------------------------------------------------------------
@@ -645,12 +669,13 @@ subroutine op0010()
     nodtor='&&OP0010.NODTOR'
     eletor='&&OP0010.ELETOR'
     liggrd='&&OP0010.LIGGRD'
-!
+!            
     call xprtor(method, dnoma, dcnxin, fispre,&
                 fiss, vcn, grlr, dcnsln, dgrln,&
                 dcnslt, dgrlt, locdom, radtor, radimp,&
                 cnsdis, disfr, cnsbl, nodtor, eletor,&
-                liggrd, vcnt, grlrt)
+                liggrd, vcnt, grlrt)         
+                  
 !
 !     CHECK IF THE RADIUS OF THE TORUS IS GREATER THAN THE CRITICAL
 !     VALUE
@@ -749,10 +774,12 @@ subroutine op0010()
     if (method .eq. 'GEOMETRI') then
         write(ifm,*)'   '
         write(ifm,*)'   UTILISATION DE LA METHODE GEOMETRIQUE.'
+        
+
         call xprgeo(dnoma, dcnsln, dcnslt, dgrln, dgrlt,&
                     vpoint, cnsbl, dttot, nodtor, liggrd,&
                     cnsbet, listp, operation)
-        goto 1000
+        goto 100
     endif
 !
     call xprls(dnoma, dcnsln, dcnslt, dgrln, dgrlt,&
@@ -773,7 +800,6 @@ subroutine op0010()
         write(ifm,905)
     endif
 !
-    deltat = lcmin*0.45d0
     isozro = '&&OP0010.ISOZRO'
 !
     if (method .eq. 'SIMPLEXE') then
@@ -864,7 +890,7 @@ subroutine op0010()
 !------------------------------------------------------------------!
 
 
-1000 continue
+100 continue
     call jedetr(vvit)
     call jedetr(vbeta)
     call jedetr(noesom)
@@ -912,7 +938,6 @@ subroutine op0010()
         call xprpls(ligr_noma, dnoma, dcnsln, dcnslt, noma,&
                     cnsln, cnslt, grln, grlt, corres,&
                     ndim, ndomp, edomg)
-!
 !       STORE THE LIST OF THE NODES OF THE STRUCTURAL MESH WHERE THE
 !       PROJECTION HAS BEEN CARRIED OUT
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=j)
@@ -950,13 +975,16 @@ subroutine op0010()
     if (niv .ge. 0) then
         write(ifm,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',&
         clsm
+        print*, 'coucou1'
     endif
+    
 !
 !-----------------------------------------------------------------------
 !     EXTENSION DES LEVEL SETS AUX NOEUDS MILIEUX
 !-----------------------------------------------------------------------
 !
     call xprmil(noma, cnslt, cnsln)
+    print*, 'coucou2'
 !
 !     IF THE DOMAINE LOCALISATION HAS BEEN USED ON THE PHYSICAL MODEL,
 !     THE VALUES OF THE LEVEL SET GRADIENTS OUTSIDE THE DOMAINE MUST
@@ -1007,6 +1035,7 @@ subroutine op0010()
 !
         call jedetr(grltc)
         call jedetr(grlnc)
+        print*, 'coucou3'
 !
     endif
 !
@@ -1018,12 +1047,14 @@ subroutine op0010()
                 'F', ibid)
     call cnscno(grln, ' ', 'NON', 'G', fiss//'.GRLNNO',&
                 'F', ibid)
+    print*, 'coucou4'
 !
 !     IF THE DOMAIN LOCALISATION HAS NOT BEEN USED, THE BOOLEAN LIST
 !     OF THE NODES IN THE TORE MUST BE DESTROYED
     if (.not.locdom) then
         call jedetr(fiss//'.PRO.NOEUD_TORE')
     endif
+    print*, 'coucou5'
 !
 !     IF THE DOMAIN LOCALISATION HAS BEEN USED, THE RADIUS OF THE TORUS
 !     USED IN THE LOCALISATION MUST BE STORED
@@ -1032,6 +1063,7 @@ subroutine op0010()
 !        VALUE OF THE RADIUS USED IN THE ACTUAL PROPAGATION
         zr(ibid) = radtor
     endif
+    print*, 'coucou6'
 !
     call jedetr(delta)
 !----------------------------------------------------------------------+
@@ -1045,11 +1077,12 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !     CALCUL DE L'ENRICHISSEMENT ET DES POINTS DU FOND DE FISSURE
 !-----------------------------------------------------------------------
-!
+
+    print*, 'coucou6'
     cnslj = '&&OP0010.CNSLJ'
     cnsen='&&OP0010.CNSEN'
     cnsenr='&&OP0010.CNSENR'
-    goinop=.false.
+    goinop=.false.     
     call xenrch(noma, cnslt, cnsln, cnslj,&
                 cnsen, cnsenr, ndim, fiss, goinop,&
                 lismae, lisnoe, operation_opt=operation)

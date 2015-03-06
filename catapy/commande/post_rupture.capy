@@ -57,7 +57,11 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
       b_angle = BLOC(condition="OPERATION == 'ANGLE_BIFURCATION'  ",fr=tr("Angle de bifurcation"),
 
                    NOM_PARA = SIMP(statut='f',typ='TXM',max=1,defaut="BETA",fr=tr("Nom de la nouvelle colonne")),
-                   CRITERE  = SIMP(statut='f',typ='TXM',max=1,defaut="SITT_MAX",into=('SITT_MAX','K1_MAX','K2_NUL','PLAN'),),
+                   CRITERE  = SIMP(statut='f',typ='TXM',max=1,defaut="SITT_MAX",into=('SITT_MAX','SITT_MAX_DEVER','K1_MAX','K2_NUL','PLAN'),),
+                   MATER = SIMP(statut='f',typ=mater_sdaster,),
+                   #b_mater = BLOC(condition="CRITERE == SITT_MAX_DEVER",fr=tr("materiau du fond de fissure"),
+                   #                 MATER = SIMP(statut='o',typ=mater_sdaster,),
+                   #                ),
                    ),
 
 #-----------------------------------------------------------------------------------------------------------------------------------
