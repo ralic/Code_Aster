@@ -2464,11 +2464,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             permfh(1) = val25(5)
             permfh(2) = val25(6)
             permfh(3) = val25(7)
-            permfh(4) = val25(36)
+            permfh(4) = val25(35)
+
             lambt(1) = val25(9)
             lambt(2) = val25(10)
             lambt(3) = val25(11)
-            lambt(4) = val25(37)
+            lambt(4) = val25(36)
             dlambt(1) = val25(12)
             dlambt(2) = val25(13)
             dlambt(3) = val25(14)
@@ -2570,7 +2571,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                                     [phi], 1, ncra40(6), val40(6), icodre,&
                                     0)
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
-                                    [phi], 1, ncra40(41), val40(41), icodre,&
+                                    [phi], 1, ncra40(40), val40(40), icodre,&
                                     0)
                     endif
                 else if (icodre(1).eq.0) then
@@ -3106,7 +3107,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             permfh(1) = val40(5)
             permfh(2) = val40(6)
             permfh(3) = val40(7)
-            permfh(4) = val40(41)
+            permfh(4) = val40(40)
             lambt(1) = val40(9)
             lambt(2) = val40(10)
             lambt(3) = val40(11)
