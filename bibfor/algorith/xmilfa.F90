@@ -7,16 +7,15 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 #include "asterf_types.h"
 #include "jeveux.h"
 !
-#include "blas/ddot.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reerel.h"
-#include "asterfort/xcedge.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnormv.h"
 #include "asterfort/xxmmvd.h"
+#include "blas/ddot.h"
     integer :: ip1, ip2, pm2, cnset(*), nnose, it, ndim, ndime
     real(kind=8) :: pinref(*), geom(*), milfa(ndim), ainter(*)
     real(kind=8) :: pmiref(*), ksi(ndime)
@@ -59,9 +58,9 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
     integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
     integer :: i, j, zxain, nno
-    real(kind=8) :: xref(81), tole, crit
+    real(kind=8) :: xref(81), t1(ndime), t2(ndime), sinu, rbid
+    real(kind=8) :: t3(ndime), cosv, cosu
     aster_logical :: courbe
-    parameter   (tole=1.d-2)
 !
 ! --------------------------------------------------------------------
     call jemarq()
@@ -101,16 +100,25 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     end do
 ! --- TEST SI LSN COURBE :
     courbe=.false.
-    call xcedge(ndime, pinref, ip1, ip2, pmiref,&
-                pm2, crit)
+    do i = 1, ndime
+        t1(i) = ksi(i)-pinref(ndime*(ip1-1)+i)
+        t2(i) = -1.5d0*pinref(ndime*(ip1-1)+i)-5.d-1*pinref(ndime*(ip2-1)+i)+&
+                2.d0*pmiref(ndime*(pm2-1)+i)
+        t3(i) = xref(ndime*(ia-1)+i)-pinref(ndime*(ip1-1)+i)
+    end do
+    call xnormv(ndime, t1, rbid)
+    call xnormv(ndime, t2, rbid)
+    call xnormv(ndime, t3, rbid)
+    cosu = ddot(ndime, t1, 1, t2, 1)
+    sinu = sqrt(1-cosu**2) 
+!   ON CHOISIT UNE CONVENTION DE SIGNE
+    cosv = ddot(ndime, t3, 1, t2, 1)
+    if (cosv.gt.cosu) sinu = -sinu
+! 
 !   ON RAJOUTE UNE TOLE POUR EVITER DES DECOUPES TROP POURRIES
-    if (crit .gt. tole) courbe = .true.
+    if (sinu.lt.1.d-3) courbe = .true.
 !
-    if (.not. courbe) then
-        do i = 1, ndime
-            ksi(i)=(pinref(ndime*(ip1-1)+i)+xref(ndime*(ib-1)+i))/2.d0
-        end do
-    else
+    if (courbe) then
 !   EN DEUXIEME APPROXIMATION: ON CHOISIT LE MILIEU DES "MILIEUX" PM2 ET D
         do i = 1, ndime
             ksi(i)=(pmiref(ndime*(pm2-1)+i)+xref(ndime*(id-1)+i))/2.d0
