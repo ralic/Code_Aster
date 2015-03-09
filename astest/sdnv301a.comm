@@ -1,0 +1,172 @@
+# TITRE COLLISION HERZIENNE DE DEUX BILLES ELASTIQUES 
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# DATE   : 08/01/2015
+# AUTEUR : Francis LEBOUVIER (DeltaCAD)
+# 
+# MODELISATION : AXIS
+# MAILLE       : QUAD4
+#------------------------------------------------------------------
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+mail=LIRE_MAILLAGE(FORMAT='MED',);
+
+mail=MODI_MAILLAGE( reuse=mail,
+             MAILLAGE=mail,
+             ORIE_PEAU_2D=_F(  GROUP_MA = ('Contact_Haut', 'Contact_Bas')),
+             );
+
+mater=DEFI_MATERIAU(ELAS=_F(E=50000,
+                            NU=0.3,
+                            RHO=1,),);
+
+chmat=AFFE_MATERIAU(MAILLAGE=mail,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=mater,),);
+
+model=AFFE_MODELE(MAILLAGE=mail,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION=('AXIS'),),);
+
+clim=AFFE_CHAR_MECA(MODELE=model,
+                    DDL_IMPO=_F(GROUP_MA=('DX_0_Inf','DX_0_Sup'),
+                                DX=0,),);
+
+contact=DEFI_CONTACT(MODELE=model,
+                  FORMULATION='DISCRETE',
+                  REAC_GEOM='AUTOMATIQUE',
+                  ZONE=_F(GROUP_MA_MAIT='Contact_Haut',
+                          GROUP_MA_ESCL='Contact_Bas',
+                          ALGO_CONT='CONTRAINTE',),);
+
+VITE_0=CREA_CHAMP( OPERATION='AFFE',
+                  TYPE_CHAM='NOEU_DEPL_R',
+                  MODELE=model,
+                  AFFE=(
+                     _F(TOUT='OUI',
+                        NOM_CMP = ('DX', 'DY'),
+                        VALE = (  0.0,  -1.,)),
+                     _F(GROUP_MA = 'Bille_Inf',
+                        NOM_CMP = ('DX', 'DY'),
+                        VALE = (  0.0,  +1., )),
+                    ));
+
+
+l_inst=DEFI_LIST_REEL(DEBUT=-1.E-5,
+                      INTERVALLE=(_F(JUSQU_A=0.  ,NOMBRE=1),
+                                  _F(JUSQU_A=0.6,PAS=0.0005)))
+
+deflist=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                    LIST_INST=l_inst,),
+                       ECHEC=_F(SUBD_PAS=4,
+                                SUBD_PAS_MINI=1.e-30,
+                                SUBD_METHODE='MANUEL',
+                                ACTION='DECOUPE',),);
+
+resu=DYNA_NON_LINE(MODELE=model,
+                   ETAT_INIT=_F(VITE = VITE_0,),
+                   CHAM_MATER=chmat,
+                   CONTACT=contact,
+                   EXCIT=_F(CHARGE=clim),
+                   SOLVEUR=_F(SYME='OUI'),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=deflist,),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',
+                                   FORMULATION='DEPLACEMENT',),);
+
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=resu))
+
+
+#
+# ---- Deplacement
+#
+
+Dep_Bas=RECU_FONCTION(RESULTAT=resu,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DY',
+                       GROUP_NO='Bas',);
+
+Dep_Cent=RECU_FONCTION(RESULTAT=resu,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DY',
+                       GROUP_NO='Centre',);
+
+Dep_Haut=RECU_FONCTION(RESULTAT=resu,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DY',
+                       GROUP_NO='Haut',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=Dep_Bas,),
+                      _F(FONCTION=Dep_Cent,),
+                      _F(FONCTION=Dep_Haut,)),
+              UNITE=8,);
+
+#
+# ---- Deplacement
+#
+
+Vit_Bas=RECU_FONCTION(RESULTAT=resu,
+                       NOM_CHAM='VITE',
+                       NOM_CMP='DY',
+                       GROUP_NO='Bas',);
+
+Vit_Cent=RECU_FONCTION(RESULTAT=resu,
+                       NOM_CHAM='VITE',
+                       NOM_CMP='DY',
+                       GROUP_NO='Centre',);
+
+Vit_Haut=RECU_FONCTION(RESULTAT=resu,
+                       NOM_CHAM='VITE',
+                       NOM_CMP='DY',
+                       GROUP_NO='Haut',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=Vit_Bas,),
+                      _F(FONCTION=Vit_Cent,),
+                      _F(FONCTION=Vit_Haut,)),
+              UNITE=8,);
+
+
+TEST_RESU(RESU=_F(INST      =  0.289,
+                  NOM_CHAM  =  'DEPL',
+                  NOM_CMP   =  'DY',
+                  GROUP_NO  =  'Bas',
+                  REFERENCE =  'AUTRE_ASTER',
+                  RESULTAT  =  resu,
+                  VALE_CALC = -0.0492505286557,
+                  VALE_REFE = -0.05,
+                  CRITERE   =  'RELATIF',
+                  PRECISION =  2.E-2,),
+          )
+
+TEST_RESU(RESU=_F(INST      =  0.289,
+                  NOM_CHAM  =  'DEPL',
+                  NOM_CMP   =  'DY',
+                  GROUP_NO  =  'Centre',
+                  REFERENCE =  'AUTRE_ASTER',
+                  RESULTAT  =  resu,
+                  VALE_CALC = -0.21627245461,
+                  VALE_REFE = -0.21454,
+                  CRITERE   =  'RELATIF',
+                  PRECISION =  1.E-2,),
+          )
+
+FIN();
+#CHECKSUM:6472704b686cd0cb0931542295bc015f  -:FIN CHECKSUM
