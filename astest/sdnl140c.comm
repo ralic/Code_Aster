@@ -1,0 +1,172 @@
+# TITRE  : VIBRATION AMORTIE DE DEUX POUTRES AVEC CONTACT FROTTANT 
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+# DATE   : 05/12/2014
+# AUTEUR : Francis LEBOUVIER (DeltaCAD)
+# 
+# MODELISATION : 3D
+# MAILLE       : HEXA8
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+mail=LIRE_MAILLAGE(FORMAT='MED');
+
+mail=MODI_MAILLAGE(reuse =mail,
+                   MAILLAGE=mail,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('Haut_Contact','Bas_Contact',),),);
+
+mail=DEFI_GROUP(reuse =mail,
+              MAILLAGE=mail,
+              CREA_GROUP_NO=(_F(GROUP_MA='Haut_Encastre'),
+                             _F(GROUP_MA='Bas_Encastre'),))
+                               
+modele=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION=('3D',),),);
+
+acier=DEFI_MATERIAU(ELAS=_F(E=200e9,
+                            NU=0,
+                            RHO=7800,),);
+
+affe_mat=AFFE_MATERIAU(MAILLAGE=mail,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=acier,),);
+
+clim=AFFE_CHAR_MECA(MODELE=modele,
+                    DDL_IMPO=_F(GROUP_MA=('Haut_Encastre','Bas_Encastre',),
+                                DX=0,
+                                DY=0,
+                                DZ=0,),);
+
+
+force=AFFE_CHAR_MECA(MODELE=modele,
+                     FORCE_ARETE=_F(GROUP_MA='Haut_Pression',
+                                    FY=-1.e7,),);
+
+#contact = NEWTON_GENERALISE
+contact=DEFI_CONTACT(MODELE=modele,
+                     FORMULATION='CONTINUE',
+                     FROTTEMENT='COULOMB',
+                     ALGO_RESO_GEOM='NEWTON',
+                     ALGO_RESO_CONT='NEWTON',
+                     ALGO_RESO_FROT='NEWTON',
+                     ZONE=_F(GROUP_MA_MAIT='Haut_Contact',
+                             GROUP_MA_ESCL='Bas_Contact',
+                             CONTACT_INIT='OUI',
+                             COEF_FROT=1.E7,COEF_CONT=1.E9,
+                             SANS_NOEUD = ('N11','N12'), 
+                             COULOMB=0.2),);
+
+#contact2 = NEWTON_PARTIEL
+contact2=DEFI_CONTACT(MODELE=modele,
+                     FORMULATION='CONTINUE',
+                     FROTTEMENT='COULOMB',
+                     ALGO_RESO_GEOM='POINT_FIXE',
+                     ALGO_RESO_CONT='NEWTON',
+                     ALGO_RESO_FROT='NEWTON',
+                     ZONE=_F(GROUP_MA_MAIT='Haut_Contact',
+                             GROUP_MA_ESCL='Bas_Contact',
+                             CONTACT_INIT='OUI',
+                             COEF_FROT=1.E7,COEF_CONT=1.E9,
+                             SANS_NOEUD = ('N11','N12'),  
+                             COULOMB=0.2),);
+
+#contact3 = PENALISE+NEWTON_PARTIEL
+contact3=DEFI_CONTACT(MODELE=modele,
+                     FORMULATION='CONTINUE',
+                     FROTTEMENT='COULOMB',
+                     ALGO_RESO_GEOM='POINT_FIXE',
+                     ALGO_RESO_CONT='NEWTON',
+                     ALGO_RESO_FROT='NEWTON',
+                     ZONE=_F(ALGO_CONT='PENALISATION',ALGO_FROT='PENALISATION',
+                             GROUP_MA_MAIT='Haut_Contact',
+                             GROUP_MA_ESCL='Bas_Contact',
+                             CONTACT_INIT='OUI',
+                             COEF_PENA_FROT=1.E7,COEF_PENA_CONT=1.E9,
+                             SANS_NOEUD = ('N11','N12'), 
+                             COULOMB=0.2),);
+
+#contact4 = PENALISE+POINT_FIXE
+contact4=DEFI_CONTACT(MODELE=modele,
+                     FORMULATION='CONTINUE',
+                     FROTTEMENT='COULOMB',
+                     ALGO_RESO_GEOM='POINT_FIXE',
+                     ALGO_RESO_CONT='POINT_FIXE',
+                     ALGO_RESO_FROT='POINT_FIXE',
+                     ZONE=_F(ALGO_CONT='PENALISATION',ALGO_FROT='PENALISATION',
+                             GROUP_MA_MAIT='Haut_Contact',
+                             GROUP_MA_ESCL='Bas_Contact',
+                             CONTACT_INIT='OUI',
+                             COEF_PENA_FROT=1.E7,COEF_PENA_CONT=1.E9,
+                             SANS_NOEUD = ('N11','N12'), 
+                             COULOMB=0.2),);
+
+#contact5 = DISCRET+LAGRANGIEN_PENALISE
+contact5=DEFI_CONTACT(MODELE=modele,
+                     FORMULATION='DISCRETE',
+                     FROTTEMENT='COULOMB',
+                     ZONE=_F(
+                             GROUP_MA_MAIT='Haut_Contact',
+                             GROUP_MA_ESCL='Bas_Contact',
+                             ALGO_CONT= 'LAGRANGIEN',ALGO_FROT= 'PENALISATION',E_T=1.E+6,
+                             COULOMB=0.2),);
+
+rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.    , 1.,
+                                          0.15, 1.))
+
+listinst=DEFI_LIST_REEL(DEBUT=0.,
+                        INTERVALLE=_F(JUSQU_A=.15,
+                                      PAS=0.001,),);
+
+list=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                 LIST_INST=listinst,),
+                    ECHEC=_F(SUBD_PAS=2.,SUBD_NIVEAU=12,),);
+
+lfin1=0.012
+lfin2=0.001
+#evol1 = Newton_GENERALISE
+evol1=DYNA_NON_LINE(MODELE=modele,
+                   CHAM_MATER=affe_mat,
+                   EXCIT=(_F(CHARGE=clim,),
+                          _F(CHARGE=force,
+                             FONC_MULT=rampe),),
+                   CONTACT=contact,
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   NEWTON=_F(REAC_ITER=1,),
+                   INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2,),
+                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-4,),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250,),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3, MODI_EQUI='OUI',
+                                   FORMULATION='DEPLACEMENT',),);
+
+TEST_RESU(RESU=_F(INST      =  lfin2,
+                  NOM_CHAM  =  'DEPL',
+                  NOM_CMP   =  'DY',
+                  NOEUD     =  'N7',
+                  REFERENCE =  'SOURCE_EXTERNE',
+                  RESULTAT  =  evol1,
+                  VALE_CALC = -0.0112465263392,
+                  VALE_REFE = -0.03,
+                  CRITERE   =  'RELATIF',
+                  PRECISION =  65.E-2,),)
+
+
+FIN();
+#CHECKSUM:2af6539f8f0ef1542b8f866eb84ee269  -:FIN CHECKSUM
