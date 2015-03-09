@@ -303,7 +303,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 # Definition des caracteristiques du materiau
 #================================================================================================
 E=1;
-NU=0.;
+NU=0.15;
 
 #================================================================================================
 # Calcul de la solution de reference
@@ -575,8 +575,8 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      PRECISION=5.0E-11,
                      TYPE_TEST='MAX',
                      CHAM_GD=DIFFUN,
-                     VALE_CALC= 4.1704914693E-05,
-                     VALE_REFE= 4.170491468701E-05,),
+                     VALE_CALC= 4.13935026178E-05,
+                     VALE_REFE= 4.13935026178E-05,),
           )
 
 # On cree une liste bidon pour pouvoir
@@ -585,7 +585,7 @@ BIDONU=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.99109503574,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.986115379294,
                         VALE_REFE=3.0,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
@@ -602,7 +602,7 @@ BIDONP=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2P));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.56322923254,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.534025066720,
                         VALE_REFE=2.5,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
@@ -610,7 +610,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.56322923254,
                         FONCTION=BIDONP,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.56323,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.534025066720,
                         VALE_PARA=1.0,
                         FONCTION=BIDONP,
                         ),

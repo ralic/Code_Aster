@@ -263,7 +263,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
 # Definition des caracteristiques du materiau
 #================================================================================================
 E=1;
-NU=0.;
+NU=0.15;
 
 #================================================================================================
 # Calcul de la solution de reference
@@ -502,8 +502,8 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      PRECISION=1.E-6,
                      TYPE_TEST='MAX',
                      CHAM_GD=DIFFUN,
-                     VALE_CALC= 4.17052891E-05,
-                     VALE_REFE=4.1705290544268997E-05,
+                     VALE_CALC= 4.25881911029E-05,
+                     VALE_REFE=4.25881911029E-05,
                      ),
           )
 
@@ -516,7 +516,7 @@ BIDONU_S=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U_Surf));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.514541806954,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.089989292191,
                         TOLE_MACHINE=6.E-05,           #TODO TOLE_MACHINE variable entre les machines
                         VALE_PARA=1.0,
                         FONCTION=BIDONU_S,
@@ -532,7 +532,7 @@ BIDONU_V=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U_Volu));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.99233184337,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.986693864660,
                         VALE_REFE=3.0,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
