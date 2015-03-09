@@ -238,24 +238,24 @@ cata_msg = {
   On la modifie et elle devient : %(r1)12.5E
 """),
 
-    45: _(u"""  On augmente la valeur de décalage de %(r1)12.5E %%.
-  La valeur centrale devient : %(r2)12.5E
+    45: _(u"""  On augmente la valeur de décalage de %(r2)12.5E %%.
+  La valeur centrale devient : %(r1)12.5E
 """),
 
     46: _(u"""  La valeur minimale est inférieure à la valeur de corps rigide.
   On la modifie et elle devient : %(r1)12.5E
 """),
 
-    47: _(u"""  On diminue la valeur minimale de %(r1)12.5E %%.
-  La valeur minimale devient : %(r2)12.5E
+    47: _(u"""  On diminue la valeur minimale de %(r2)12.5E %%.
+  La valeur minimale devient : %(r1)12.5E
 """),
 
     48: _(u"""  La valeur maximale est inférieure à la valeur de corps rigide.
   On la modifie et elle devient : %(r1)12.5E
 """),
 
-    49: _(u"""  On augmente la valeur maximale de %(r1)12.5E %%.
-  La valeur maximale devient : %(r2)12.5E
+    49: _(u"""  On augmente la valeur maximale de %(r2)12.5E %%.
+  La valeur maximale devient : %(r1)12.5E
 """),
 
     50: _(u"""
