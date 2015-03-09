@@ -128,7 +128,7 @@ subroutine op0174()
     do 30 i = 1, nbpara
         nom = zk16(inom + i)
         call rsadpa(concpt, 'L', 1, nom, numord,&
-                    1, sjv=ipara, styp=typ)
+                    1, sjv=ipara, styp=typ, istop=0)
         if (typ(1:1) .ne. 'R' .and. typ(1:1) .ne. 'I' .and. typ(1:1) .ne. 'C') then
             call utmess('F', 'UTILITAI3_6')
         endif
@@ -162,7 +162,7 @@ subroutine op0174()
         do 50 i = 1, nbpara
             nom = zk16(inom + i)
             call rsadpa(concpt, 'L', 1, nom, numord,&
-                        1, sjv=ipara, styp=typ)
+                        1, sjv=ipara, styp=typ, istop=0)
             if (typ(1:1) .eq. 'R') then
                 zr(itabr+pr) = zr(ipara)
                 pr = pr+1
