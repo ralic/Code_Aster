@@ -84,7 +84,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
     character(len=19) :: mai, fclas, fenri
     character(len=24) :: coorn, noojb
     character(len=16) :: typres, nomcmd
-    parameter  (eps=2.d-2)
+    parameter  (eps=2.d-6)
     integer, pointer :: nunotmp(:) => null()
     integer, pointer :: connex(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
@@ -185,10 +185,10 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              end do
           else
              do i = 1, ndim
-                 ptm(i) = (5.d-1+eps-alpha(1)/2.d0)*coor(ndim+i)+(-eps+alpha(1)/2.d0+&
-                          5.d-1)*coor(i+2*ndim)
-                 ptp(i) = (5.d-1-eps-alpha(1)/2.d0)*coor(ndim+i)+(eps+alpha(1)/2.d0+&
-                          5.d-1)*coor(i+2*ndim)
+                 ptm(i) = (1.d0-(1.d0-eps)*(5.d-1+alpha(1)/2.d0))*coor(ndim+i)+(1.d0-eps)*&
+                          (alpha(1)/2.d0+5.d-1)*coor(i+2*ndim)
+                 ptp(i) = (1.d0-eps)*(5.d-1-alpha(1)/2.d0)*coor(ndim+i)+(1.d0-(1.d0-eps)*&
+                          (-alpha(1)/2.d0+5.d-1))*coor(i+2*ndim)
              end do
           endif
 ! --- ON EVALUE LA FONCTION EN PTM ET PTP AINSI QU'AUX NOEUDS
@@ -316,6 +316,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           passe = .true.
 !     ON BOUCLE SUR LES MAILLES AUXQUELLES LE NOEUD APPARTIENT
           lsn2 = 0.d0
+          nbnomac = 0
+          numac = 0
           do ima = 1, nbmano
              numa = zi(adrma-1 + ima)
              itypma=zi(jma-1+numa)
@@ -386,6 +388,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              end do
 80           continue
           end do
+          if (numac.eq.0) goto 78
 !     ON RECUPERE LES COORDONNEES DE LA MAILLE SELECTIONNEE
           heavm(1:135)=0
           call jeveuo(hea_no//'.CESV', 'L', vi=ihea_no)
@@ -477,6 +480,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
        endif
     endif
 !       CAS FACE_IMPO DNOR OU DTAN
+78  continue
     if (motcle(1:8) .eq. 'DEPL    ' .and. .not.passe) then
        if (lsn(1) .eq. 0.d0) then
           i = 0
@@ -530,7 +534,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                       'REEL', fonree, '12', 0.d0, lisrel)
        endif
        nterm = 1
-       ddl(1) = 'H'//motcle
+       ddl(1) = 'H'//motcle(1:4)
        coef(1) = 1.d0
        call afrela(coef, [cbid], ddl, noeud, dimens,&
                    [0.d0], nterm, valimr, valimc, fenri,&
