@@ -10,11 +10,11 @@ waf install -p
 """
 
 import calibre7
-YAMMROOT = calibre7.YAMMROOT
+YAMMROOT = calibre7.YAMMROOT + '_mpi'
 
 def configure(self):
     opts = self.options
-    
+
     # parallel must be set before calling intel.configure() to use MPI wrappers
     opts.parallel = True
     calibre7.configure(self)

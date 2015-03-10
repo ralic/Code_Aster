@@ -11,7 +11,7 @@ waf_mpi install -p
 
 import athosdev
 ASTER_ROOT = athosdev.ASTER_ROOT
-YAMMROOT = athosdev.YAMMROOT
+YAMMROOT = athosdev.YAMMROOT + '_mpi'
 
 def configure(self):
     opts = self.options

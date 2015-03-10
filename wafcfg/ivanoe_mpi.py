@@ -11,7 +11,7 @@ waf install -p -j 8
 
 import ivanoe
 ASTER_ROOT = ivanoe.ASTER_ROOT
-YAMMROOT = ivanoe.YAMMROOT
+YAMMROOT = ivanoe.YAMMROOT + '_mpi'
 
 def configure(self):
     opts = self.options
@@ -30,5 +30,5 @@ def configure(self):
         '/logiciels/intel/composerxe-2011.3.174/mkl/lib/intel64'])
     self.env.prepend_value('INCLUDES', [
         YAMMROOT + '/prerequisites/Petsc_mpi_petsc_aster/include'])
-    
+
     opts.enable_petsc = True
