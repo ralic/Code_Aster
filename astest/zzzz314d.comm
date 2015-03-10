@@ -1,19 +1,19 @@
 # TITRE VALIDATION INFORMATIQUE DE DEFI_FOND_FISS
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 
@@ -91,7 +91,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VNORX',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -101,7 +100,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VNORY',
               VALE_CALC=-1.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=-1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -111,7 +109,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VNORZ',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -121,7 +118,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VDIRX',
               VALE_CALC=1.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -131,7 +127,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VDIRY',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -141,7 +136,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VDIRZ',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -151,7 +145,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VNORX',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -161,7 +154,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VNORY',
               VALE_CALC=-1.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=-1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -171,7 +163,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VNORZ',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -181,7 +172,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VDIRX',
               VALE_CALC=1.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -191,7 +181,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VDIRY',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -201,7 +190,6 @@ for i in range(0,len(basefond0)/6):
                           VALE_I = i+1),
               NOM_PARA='VDIRZ',
               VALE_CALC=0.,
-              TOLE_MACHINE=1.e-3,
               VALE_REFE=0.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )

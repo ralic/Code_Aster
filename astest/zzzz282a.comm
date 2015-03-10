@@ -1,19 +1,19 @@
 # TITRE VALIDATION DE LA DEFINITION D'UNE FISSURE SUR UN GRILLE PAR DEFI_FISS_XFEM
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: patrick.massin at edf.fr
 
@@ -217,48 +217,48 @@ for i in range(1,8) :
     LSNma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                         OPERATION='EXTR',
                         NOM_CHAM='LNNO',
-                        FISSURE=FISS[i],);    
+                        FISSURE=FISS[i],);
 
     if ( i < 5 ) :
        LSTma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                            OPERATION='EXTR',
                            NOM_CHAM='LTNO',
-                           FISSURE=FISS[i],);    
+                           FISSURE=FISS[i],);
 
     GLSNma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                          OPERATION='EXTR',
                          NOM_CHAM='GRLNNO',
-                         FISSURE=FISS[i],);    
+                         FISSURE=FISS[i],);
 
     if ( i < 5 ) :
        GLSTma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                             OPERATION='EXTR',
                             NOM_CHAM='GRLTNO',
-                            FISSURE=FISS[i],);        
+                            FISSURE=FISS[i],);
 
 #   EXTRACTION DES CHAMPS LEVEL SETS DE LA GRILLE
 
     LSNgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                         OPERATION='EXTR',
                         NOM_CHAM='GRI.LNNO',
-                        FISSURE=FISS[i],);    
+                        FISSURE=FISS[i],);
 
     if ( i < 5 ) :
        LSTgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                            OPERATION='EXTR',
                            NOM_CHAM='GRI.LTNO',
-                           FISSURE=FISS[i],);    
+                           FISSURE=FISS[i],);
 
     GLSNgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                          OPERATION='EXTR',
                          NOM_CHAM='GRI.GRLNNO',
-                         FISSURE=FISS[i],);    
+                         FISSURE=FISS[i],);
 
     if ( i < 5 ) :
        GLSTgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                             OPERATION='EXTR',
                             NOM_CHAM='GRI.GRLTNO',
-                            FISSURE=FISS[i],);     
+                            FISSURE=FISS[i],);
 
 #   CREATION DES TABLES DES CHAMPS CI-DESSUS POUR LE MAILLAGE
 
@@ -385,7 +385,6 @@ for i in range(1,8) :
     TEST_TABLE(TABLE=DIFFN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
-               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
@@ -395,7 +394,6 @@ for i in range(1,8) :
     TEST_TABLE(TABLE=DIFFN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
-               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
@@ -406,7 +404,6 @@ for i in range(1,8) :
        TEST_TABLE(TABLE=DIFFT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
-                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MAX',
                   CRITERE='ABSOLU',
@@ -416,7 +413,6 @@ for i in range(1,8) :
        TEST_TABLE(TABLE=DIFFT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
-                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MIN',
                   CRITERE='ABSOLU',
@@ -428,7 +424,6 @@ for i in range(1,8) :
     TEST_TABLE(TABLE=DIFFGN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
-               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
@@ -438,7 +433,6 @@ for i in range(1,8) :
     TEST_TABLE(TABLE=DIFFGN[i],
                REFERENCE='ANALYTIQUE',
                NOM_PARA='DIFF',
-               TOLE_MACHINE=tol,
                PRECISION=tol,
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
@@ -449,7 +443,6 @@ for i in range(1,8) :
        TEST_TABLE(TABLE=DIFFGT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
-                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MAX',
                   CRITERE='ABSOLU',
@@ -459,7 +452,6 @@ for i in range(1,8) :
        TEST_TABLE(TABLE=DIFFGT[i],
                   REFERENCE='ANALYTIQUE',
                   NOM_PARA='DIFF',
-                  TOLE_MACHINE=tol,
                   PRECISION=tol,
                   TYPE_TEST='MIN',
                   CRITERE='ABSOLU',

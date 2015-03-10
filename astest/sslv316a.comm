@@ -259,7 +259,6 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[1],
@@ -269,7 +268,6 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 #====================================================
@@ -283,7 +281,6 @@ TEST_TABLE(TABLE=TABLSN[2],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[2],
@@ -302,7 +299,6 @@ TEST_TABLE(TABLE=TABLST[2],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -312,7 +308,6 @@ TEST_TABLE(TABLE=TABLST[2],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 #====================================================
@@ -326,7 +321,6 @@ TEST_TABLE(TABLE=TABLSN[3],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[3],
@@ -336,7 +330,6 @@ TEST_TABLE(TABLE=TABLSN[3],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -346,7 +339,6 @@ TEST_TABLE(TABLE=TABLST[3],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -356,7 +348,6 @@ TEST_TABLE(TABLE=TABLST[3],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           TOLE_MACHINE=6.E-04,
            VALE_REFE=0.0  )
 
 

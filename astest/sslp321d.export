@@ -6,4 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sslp321d.comm D 1
-F mmed sslp321b.mmed D 20
+F mmed sslp321a.mmed D 20

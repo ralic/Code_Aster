@@ -251,10 +251,9 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=2.E-6,
-
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
+               TOLE_MACHINE= 2.5E-6,     # TODO varibilite
                VALE_CALC=VAL_CALC[(i-1)*4+0],
                VALE_REFE=0.0  )
 
@@ -262,9 +261,9 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
+               TOLE_MACHINE= 2.5E-6,     # TODO varibilite          
                VALE_CALC=VAL_CALC[(i-1)*4+1],
                VALE_REFE=0.0  )
 
@@ -272,10 +271,9 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-               TOLE_MACHINE=1.7E-5,
-
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
+               TOLE_MACHINE= 2.E-5,     # TODO varibilite
                VALE_CALC=VAL_CALC[(i-1)*4+2],
                VALE_REFE=0.0  )
 
@@ -283,9 +281,9 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
-
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
+               TOLE_MACHINE= 2.E-5,     # TODO varibilite 
                VALE_CALC=VAL_CALC[(i-1)*4+3],
                VALE_REFE=0.0  )
 

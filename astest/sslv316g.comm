@@ -289,7 +289,8 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0., TOLE_MACHINE=2.e-4, VALE_REFE=0.0  )
+           VALE_CALC=0.,
+           VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
            REFERENCE='ANALYTIQUE',
@@ -297,7 +298,8 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0., TOLE_MACHINE=2.e-4, VALE_REFE=0.0  )
+           VALE_CALC=0.,
+           VALE_REFE=0.0  )
 
 #====================================================
 #=================== PROPA 3 ========================
@@ -309,7 +311,8 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0., TOLE_MACHINE=1.e-3, VALE_REFE=0.0  )
+           VALE_CALC=0.,
+           VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[3],
            REFERENCE='ANALYTIQUE',
@@ -317,7 +320,8 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0., TOLE_MACHINE=1.e-3, VALE_REFE=0.0  )
+           VALE_CALC=0.,
+           VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
            REFERENCE='ANALYTIQUE',
@@ -325,7 +329,8 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0., TOLE_MACHINE=4.e-4, VALE_REFE=0.0  )
+           VALE_CALC=0.,
+           VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
            REFERENCE='ANALYTIQUE',
@@ -333,7 +338,8 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0., TOLE_MACHINE=4.e-4, VALE_REFE=0.0  )
+           VALE_CALC=0.,
+           VALE_REFE=0.0  )
 
 
 #----------------------------------------------

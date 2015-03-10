@@ -1,19 +1,19 @@
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
@@ -27,16 +27,16 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 #*********************************************************
 #
 # LARGEUR DE L EPROUVETTE SELON X
-W = 0.2 
+W = 0.2
 #
 # HAUTEUR DE L EPROUVETTE SELON Y
-H = 0.5 
+H = 0.5
 #
 # NOMBRE D ELEMENTS SELON X
-NX = 100. 
+NX = 100.
 #
 # NOMBRE D ELEMENTS SELON Y
-NY = 100. 
+NY = 100.
 #
 # precision
 eps = sqrt((W/NX)**2+(H/NY)**2)
@@ -57,8 +57,8 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu))
 #*********************************************************
 
 # ANGLES D INCLINAISON DE LA FISSURE (EN DEGRES)
-#alphaf = [0., 30., 60.] 
-alphaf = [ 30.] 
+#alphaf = [0., 30., 60.]
+alphaf = [ 30.]
 
 # DEFINITION DES COURONNES POUR LE CALCUL DES SIF
 RI=[0.2*A,   eps]
@@ -79,7 +79,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                    _F(NOM='ND',OPTION='ENV_SPHERE',POINT=(0.,+H/2.),PRECISION=eps/4.,RAYON=eps/4.),
                                    ),
                     INFO=2)
-                    
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE=_F(GROUP_MA=('SURF','LIG1','LIG3'),
                              PHENOMENE='MECANIQUE',
@@ -124,7 +124,7 @@ VALE_CALC=[ 1.934548872162E+05,
  1.0966433272661E+05,
  1.9307350709856E+05,
  1.1043532175666E+05,]
-ct = -1 
+ct = -1
 for i in range(nbcalc) :
 
    # on passe pas un string pour que l evaluation de la fonction se fasse a chaque pas
@@ -183,62 +183,69 @@ for i in range(nbcalc) :
       IMPR_TABLE(TABLE=SIF_1[k])
       IMPR_TABLE(TABLE=SIF_2[k])
       IMPR_TABLE(TABLE=TG_1[k])
-      
+
       ct = ct +1
       TEST_TABLE(TABLE=SIF_1[k],
                  NOM_PARA='K1',
-                 VALE_CALC=VALE_CALC[ct], VALE_REFE=K1REF, TOLE_MACHINE=3.E-05,
+                 VALE_CALC=VALE_CALC[ct],
+                 VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                 PRECISION=0.02, 
+                 PRECISION=0.02,
                  REFERENCE='ANALYTIQUE')
-                 
+
       ct = ct +1
       TEST_TABLE(TABLE=SIF_2[k],
                  NOM_PARA='K1',
-                 VALE_CALC=VALE_CALC[ct], VALE_REFE=K1REF, TOLE_MACHINE=3.E-05,
+                 VALE_CALC=VALE_CALC[ct],
+                 VALE_REFE=K1REF,
                  CRITERE='RELATIF',
-                 PRECISION=0.02, 
+                 PRECISION=0.02,
                  REFERENCE='ANALYTIQUE')
-                 
+
       ct = ct +1
       TEST_TABLE(TABLE=TG_1[k],
                  NOM_PARA='G',
-                 VALE_CALC=VALE_CALC[ct], VALE_REFE=GREF, TOLE_MACHINE=3.E-05,
+                 VALE_CALC=VALE_CALC[ct],
+                 VALE_REFE=GREF,
                  CRITERE='RELATIF',
-                 PRECISION=0.02, 
+                 PRECISION=0.02,
                  REFERENCE='ANALYTIQUE')
 
       if K2REF != 0. :
-         ct = ct +1      
+         ct = ct +1
          TEST_TABLE(TABLE=SIF_1[k],
                     NOM_PARA='K2',
-                    VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                    VALE_CALC=VALE_CALC[ct],
+                    VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                    PRECISION=0.03, 
+                    PRECISION=0.03,
                     REFERENCE='ANALYTIQUE')
-                    
+
          ct = ct +1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
-                    VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                    VALE_CALC=VALE_CALC[ct],
+                    VALE_REFE=K2REF,
                     CRITERE='RELATIF',
-                    PRECISION=0.03, 
+                    PRECISION=0.03,
                     REFERENCE='ANALYTIQUE')
       else :
-         ct = ct +1      
+         ct = ct +1
          TEST_TABLE(TABLE=SIF_1[k],
                     NOM_PARA='K2',
-                    VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                    VALE_CALC=VALE_CALC[ct],
+                    VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/1000., 
+                    PRECISION=K1REF/1000.,
                     REFERENCE='ANALYTIQUE')
-                    
+
          ct = ct +1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
-                    VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                    VALE_CALC=VALE_CALC[ct],
+                    VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/1000., 
+                    PRECISION=K1REF/1000.,
                     REFERENCE='ANALYTIQUE')
 
    # K1 SUR LE 1er FOND
@@ -250,30 +257,33 @@ for i in range(nbcalc) :
                        )
 
    IMPR_TABLE(TABLE = PK1[i])
-   
+
    ct = ct +1
    TEST_TABLE(TABLE=PK1[i],
               NOM_PARA='K1',
-              VALE_CALC=VALE_CALC[ct], VALE_REFE=K1REF, TOLE_MACHINE=3.E-05,
+              VALE_CALC=VALE_CALC[ct],
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.02, 
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE')
 
    if K2REF != 0. :
-      ct = ct +1   
+      ct = ct +1
       TEST_TABLE(TABLE=PK1[i],
                  NOM_PARA='K2',
-                 VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                 VALE_CALC=VALE_CALC[ct],
+                 VALE_REFE=K2REF,
                  CRITERE='RELATIF',
-                 PRECISION=0.02, 
+                 PRECISION=0.02,
                  REFERENCE='ANALYTIQUE')
    else :
-      ct = ct +1   
+      ct = ct +1
       TEST_TABLE(TABLE=PK1[i],
                  NOM_PARA='K2',
-                 VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                 VALE_CALC=VALE_CALC[ct],
+                 VALE_REFE=K2REF,
                  CRITERE='ABSOLU',
-                 PRECISION=K1REF/1000., 
+                 PRECISION=K1REF/1000.,
                  REFERENCE='ANALYTIQUE')
 
 
@@ -286,31 +296,34 @@ for i in range(nbcalc) :
                        )
 
    IMPR_TABLE(TABLE = PK2[i])
-   
+
    ct = ct +1
    TEST_TABLE(TABLE=PK2[i],
               NOM_PARA='K1',
-              VALE_CALC=VALE_CALC[ct], VALE_REFE=K1REF, TOLE_MACHINE=3.E-05,
+              VALE_CALC=VALE_CALC[ct],
+              VALE_REFE=K1REF,
               CRITERE='RELATIF',
-              PRECISION=0.02, 
+              PRECISION=0.02,
               REFERENCE='ANALYTIQUE');
 
    if K2REF != 0. :
-      ct = ct +1   
+      ct = ct +1
       TEST_TABLE(TABLE=PK2[i],
                 NOM_PARA='K2',
-                VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                VALE_CALC=VALE_CALC[ct],
+                VALE_REFE=K2REF,
                 CRITERE='RELATIF',
-                PRECISION=0.02, 
+                PRECISION=0.02,
                 REFERENCE='ANALYTIQUE')
 
    else :
-      ct = ct +1   
+      ct = ct +1
       TEST_TABLE(TABLE=PK2[i],
                 NOM_PARA='K2',
-                VALE_CALC=VALE_CALC[ct], VALE_REFE=K2REF, TOLE_MACHINE=3.E-05,
+                VALE_CALC=VALE_CALC[ct],
+                VALE_REFE=K2REF,
                 CRITERE='ABSOLU',
-                PRECISION=K1REF/1000., 
+                PRECISION=K1REF/1000.,
                 REFERENCE='ANALYTIQUE')
 
 
