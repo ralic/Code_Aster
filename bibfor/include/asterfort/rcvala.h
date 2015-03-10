@@ -17,7 +17,7 @@
 !
           interface 
             subroutine rcvala(jmat,nomat,phenom,nbpar,nompar,valpar,    &
-     &nbres,nomres,valres,icodre,iarret)
+     &nbres,nomres,valres,icodre,iarret,nan)
               integer, intent(in) :: nbres
               integer, intent(in) :: nbpar
               integer, intent(in) :: jmat
@@ -29,5 +29,6 @@
               real(kind=8), intent(out) :: valres(nbres)
               integer, intent(out) :: icodre(nbres)
               integer, intent(in) :: iarret
+              character(len=3) ,optional, intent(in) :: nan
             end subroutine rcvala
           end interface 

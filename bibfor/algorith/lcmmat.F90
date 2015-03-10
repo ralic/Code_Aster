@@ -129,10 +129,11 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !
     call matrot(angmas, pgl)
 !
-    do 111 i = 1, nmat
-        do 111 j = 1, 3
+    do i = 1, nmat
+        do j = 1, 3
             nbcomm(i,j)=0
-111      continue
+        enddo
+    enddo
     nbcomm(1,1)=1
 !
     do 6 ifa = 1, nbfsys
@@ -259,6 +260,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
         call rcvalb(fami, kpg, ksp, '-', imat,&
                     ' ', 'ELAS', 0, ' ', [0.d0],&
                     1, nomc(3), materd(3, 1), cerr(3), 0)
+        if (cerr(3) .ne. 0) materd(3,1) = 0.d0
         materd(nmat,1)=0
 !
 ! -     RECUPERATION MATERIAU A TEMPF (T+DT)
@@ -289,29 +291,36 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
         call d1ma3d(fami, imat, r8vide(), '-', kpg,&
                     ksp, repere, xyz, kooh)
 !
-        do 67 j = 4, 6
-            do 67 i = 1, 6
+        do j = 4, 6
+            do i = 1, 6
                 hook(i,j) = hook(i,j)*sqrt(2.d0)
-67          continue
-        do 68 j = 1, 6
-            do 68 i = 4, 6
+            enddo
+        enddo
+
+        do j = 1, 6
+            do i = 4, 6
                 hook(i,j) = hook(i,j)*sqrt(2.d0)
-68          continue
-        do 69 j = 4, 6
-            do 69 i = 1, 6
+            enddo
+        enddo
+
+        do j = 4, 6
+            do i = 1, 6
                 kooh(i,j) = kooh(i,j)/sqrt(2.d0)
-69          continue
-        do 70 j = 1, 6
-            do 70 i = 4, 6
+            enddo
+        enddo
+
+        do j = 1, 6
+            do i = 4, 6
                 kooh(i,j) = kooh(i,j)/sqrt(2.d0)
-70          continue
-!
-        do 101 i = 1, 6
-            do 102 j = 1, 6
+            enddo
+        enddo
+
+        do i = 1, 6
+            do j = 1, 6
                 materd(6*(j-1)+i,1)=hook(i,j)
                 materd(36+6*(j-1)+i,1)=kooh(i,j)
-102          continue
-101      continue
+            enddo
+        enddo
 !
         materd(nmat,1)=1
 !
@@ -335,34 +344,41 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
         call d1ma3d(fami, imat, r8vide(), '+', kpg,&
                     ksp, repere, xyz, kooh)
 !
-        do 671 j = 4, 6
-            do 671 i = 1, 6
+        do j = 4, 6
+            do i = 1, 6
                 hookf(i,j) = hookf(i,j)*sqrt(2.d0)
-671          continue
-        do 681 j = 1, 6
-            do 681 i = 4, 6
+            enddo
+        enddo
+
+        do j = 1, 6
+            do i = 4, 6
                 hookf(i,j) = hookf(i,j)*sqrt(2.d0)
-681          continue
-        do 691 j = 4, 6
-            do 691 i = 1, 6
+            enddo
+        enddo
+
+        do j = 4, 6
+            do i = 1, 6
                 kooh(i,j) = kooh(i,j)/sqrt(2.d0)
-691          continue
-        do 701 j = 1, 6
-            do 701 i = 4, 6
+            enddo
+        enddo
+
+        do j = 1, 6
+            do i = 4, 6
                 kooh(i,j) = kooh(i,j)/sqrt(2.d0)
-701          continue
-        do 103 i = 1, 6
-            do 104 j = 1, 6
+            enddo
+        enddo
+        do i = 1, 6
+            do j = 1, 6
                 materf(6*(j-1)+i,1)=hookf(i,j)
                 materf(36+6*(j-1)+i,1)=kooh(i,j)
-104          continue
-103      continue
+            enddo
+        enddo
 !
         materf(nmat,1)=1
 !
         call rcvalb(fami, kpg, ksp, '+', imat,&
                     ' ', phenom, 0, ' ', [0.d0],&
-                    3, nomc, materd(73, 1), cerr, 0)
+                    3, nomc, materf(73, 1), cerr, 0)
         if (cerr(1) .ne. 0) materf(73,1) = 0.d0
         if (cerr(2) .ne. 0) materf(74,1) = 0.d0
         if (cerr(3) .ne. 0) materf(75,1) = 0.d0

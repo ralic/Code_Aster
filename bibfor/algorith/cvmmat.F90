@@ -139,11 +139,12 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
     nomc(27) ='G2_0'
     nomc(28) ='A_I'
 !
-    do 9 j = 1, 2
-        do 9 i = 1, nmat
+    do  j = 1, 2
+        do  i = 1, nmat
             materd(i,j) = 0.d0
             materf(i,j) = 0.d0
- 9      continue
+        enddo
+    enddo
 !
 ! -     RECUPERATION MATERIAU A (T)
 !

@@ -111,7 +111,7 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
 ! --- RECUPERATION DES PROPRIETES ELASTIQUES
         call rcvalb(fami, kpg, ksp, '+', imat,&
                     ' ', phenom, 0, '   ', [tempf],&
-                    3, nomc(1), materf(1, 1), cerr(1), 0)
+                    3, nomc(1), materf(1, 1), cerr(1), 0, nan='NON')
 !
         materf(17,1) =1.d0
 !
@@ -146,7 +146,7 @@ subroutine hujmat(fami, kpg, ksp, mod, imat,&
 !        ALPHA3= MATERF(9,1)
         call rcvalb(fami, kpg, ksp, '+', imat,&
                     ' ', phenom, 0, '   ', [tempf],&
-                    12, nomc(1), materf(1, 1), cerr(1), 0)
+                    12, nomc(1), materf(1, 1), cerr(1), 0, nan='NON')
 !
         nu21 = materf(2,1)*materf(4,1)/materf(1,1)
         nu31 = materf(3,1)*materf(5,1)/materf(1,1)

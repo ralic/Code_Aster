@@ -651,7 +651,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
         val1(1) = r8vide()
         call rcvala(imate, ' ', 'THM_INIT', 0, ' ',&
                     [0.d0], dim1, ncra1, val1, icodre,&
-                    0)
+                    0,nan='NON')
         t0 = val1(1)
         p10 = val1(2)
         p20 = val1(3)
@@ -695,38 +695,38 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra2, val2, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra2(2), val2(2), icodre,&
-                        0)
+                        0,nan='NON')
 !
             if (icodre(1) .eq. 1) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra2(7), val2(7), icodre,&
-                            0)
+                            0,nan='NON')
 !
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra2(3), val2(3), icodre,&
-                                0)
+                                0,nan='NON')
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra2(3), val2(3), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, ncra2(7), val2(7), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra3, val3, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra2(5), val2(5), icodre,&
@@ -737,7 +737,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra2(6), val2(6), icodre,&
-                        0)
+                        0,nan='NON')
             rhod = val2(1)
             biot(1) = val2(2)
             biot(2) = val2(3)
@@ -764,37 +764,37 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra4, val4, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra4(3), val4(3), icodre,&
-                        0)
+                        0,nan='NON')
             if (icodre(1) .eq. 1) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra4(8), val4(8), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra4(4), val4(4), icodre,&
-                                0)
+                                0,nan='NON')
 !
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra4(4), val4(4), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, ncra4(8), val4(8), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         [0.d0], 1, ncra5, val5, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra4(6), val4(6), icodre,&
@@ -805,7 +805,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra4(7), val4(7), icodre,&
-                        0)
+                        0,nan='NON')
             rgaz = val4(1)
             rhod = val4(2)
             biot(1) = val4(3)
@@ -835,39 +835,39 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, 'TEMP',&
                         [0.d0], 2, ncra6, val6, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, 'TEMP',&
                         [0.d0], 1, ncra6(3), val6(3), icodre,&
-                        0)
+                        0,nan='NON')
             if (icodre(1) .eq. 1) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra6(9), val6(9), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra6(4), val6(4), icodre,&
-                                0)
+                                0,nan='NON')
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra6(4), val6(4), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, ncra6(9), val6(9), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra7, val7, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 2, ncra8, val8, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra6(6), val6(6), icodre,&
@@ -892,7 +892,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra6(8), val6(8), icodre,&
-                        0)
+                        0,nan='NON')
             rgaz = val6(1)
             rhod = val6(2)
             biot(1) = val6(3)
@@ -933,43 +933,43 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra9, val9, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra9(3), val9(3), icodre,&
-                        0)
+                        0,nan='NON')
             if (icodre(1) .eq. 1) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra9(10), val9(11), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra9(4), val9(4), icodre,&
-                                0)
+                                0,nan='NON')
 !
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra9(4), val9(4), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, ncra9(10), val9(11), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra10, val10, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         [0.d0], 1, ncra11, val11, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 2, ncra12, val12, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra9(6), val9(6), icodre,&
@@ -1002,7 +1002,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra9(9), val9(10), icodre,&
-                        0)
+                        0,nan='NON')
             rgaz = val9(1)
             rhod = val9(2)
             biot(1) = val9(3)
@@ -1054,46 +1054,46 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra35, val35, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra35(3), val35(3), icodre,&
-                        0)
+                        0,nan='NON')
             if (icodre(1) .eq. 1) then
 !  attention au décalage
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra35(10), val35(11), icodre,&
-                            0)
+                            0,nan='NON')
 !
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra35(4), val35(4), icodre,&
-                                0)
+                                0,nan='NON')
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra35(4), val35(4), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, ncra35(10), val35(11), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra36, val36, icodre,&
-                        0)
+                        0,nan='NON')
 !
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         [0.d0], 1, ncra37, val37, icodre,&
-                        0)
+                        0,nan='NON')
 !
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 2, ncra38, val38, icodre,&
-                        0)
+                        0,nan='NON')
 !
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
@@ -1132,7 +1132,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         1)
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra35(9), val35(10), icodre,&
-                        0)
+                        0,nan='NON')
             rgaz = val35(1)
             rhod = val35(2)
             biot(1) = val35(3)
@@ -1183,40 +1183,40 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, crad35, val35, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, crad35(3), val35(3), icodre,&
-                        0)
+                        0,nan='NON')
             if (icodre(1) .eq. 1) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, crad35(10), val35(11), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, crad35(4), val35(4), icodre,&
-                                0)
+                                0,nan='NON')
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, crad35(4), val35(4), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, crad35(10), val35(11), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, crad36, val36, icodre,&
-                        0)
+                        0,nan='NON')
 !
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         [0.d0], 1, crad37, val37, icodre,&
-                        0)
+                        0,nan='NON')
 !
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
@@ -1255,7 +1255,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
                         1)
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, crad35(9), val35(10), icodre,&
-                        0)
+                        0,nan='NON')
             rgaz = val35(1)
             rhod = val35(2)
             biot(1) = val35(3)
@@ -1302,40 +1302,40 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 2, ncra13, val13, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra13(3), val13(3), icodre,&
-                        0)
+                        0,nan='NON')
             if (icodre(1) .eq. 1) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra13(10), val13(11), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra13(4), val13(4), icodre,&
-                                0)
+                                0,nan='NON')
 !
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra13(4), val13(4), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, ncra13(10), val13(11), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra14, val14, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_GAZ', 0, ' ',&
                         [0.d0], 1, ncra15, val15, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra13(6), val13(6), icodre,&
@@ -1367,7 +1367,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra13(9), val13(10), icodre,&
-                        0)
+                        0,nan='NON')
             rgaz = val13(1)
             rhod = val13(2)
             biot(1) = val13(3)
@@ -1408,37 +1408,37 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             end do
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra16, val16, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra16(2), val16(2), icodre,&
-                        0)
+                        0,nan='NON')
             if (icodre(1) .eq. 1) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra16(9), val16(10), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                     aniso=1
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra16(3), val16(3), icodre,&
-                                0)
+                                0,nan='NON')
 !
                 else
 ! ELAS_ORTH 2D
                     aniso=2
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 2, ncra16(3), val16(3), icodre,&
-                                0)
+                                0,nan='NON')
                     call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                 [0.d0], 1, ncra16(9), val16(10), icodre,&
-                                0)
+                                0,nan='NON')
                 endif
             else if (icodre(1).eq.0) then
                 aniso=0
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 0, ' ',&
                         [0.d0], 2, ncra17, val17, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra16(5), val16(5), icodre,&
@@ -1457,7 +1457,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, ncra16(8), val16(9), icodre,&
-                        0)
+                        0,nan='NON')
             rhod = val16(1)
             biot(1) = val16(2)
             biot(2) = val16(3)
@@ -1505,33 +1505,33 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 ! RECUPERATION DE BIOT_COEF DANS LE CAS FINAL (ISOTROPIE)
         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                     [0.d0], 1, 'BIOT_COEF', biot(1), icodre,&
-                    0)
+                    0,nan='NON')
         if (icodre(1) .eq. 1) then
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 1, 'BIOT_T', biot(4), icodre,&
-                        0)
+                        0,nan='NON')
 ! RECUPERATION DES BIOT_COEFFF DANS LE CAS FINAL (ANISOTROPIE)
             if (icodre(1) .eq. 1) then
 ! ELAS_ISTR 3D
                 aniso=1
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, 'BIOT_L', biot(2), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, 'BIOT_N', biot(3), icodre,&
-                            0)
+                            0,nan='NON')
             else
 ! ELAS_ORTH 2D
                 aniso=2
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, 'BIOT_L', biot(2), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, 'BIOT_N', biot(3), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, 'BIOT_T', biot(4), icodre,&
-                            0)
+                            0,nan='NON')
             endif
         else if (icodre(1).eq.0) then
             aniso=0
@@ -1561,30 +1561,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.0d0], 3, ncra18(1), val18(1), icodre,&
-                        0)
+                        0,nan='NON')
             if ((hydr.eq.'HYDR_UTIL') .or. (hydr.eq.'HYDR_VGM') .or. ( hydr.eq.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, ncra18(4), val18(4), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, ncra18(6), val18(6), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, ncra18(5), val18(5), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra18(5), val18(5), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra18(19), val18(19), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -1609,79 +1609,79 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], dim19-1, ncra19, val19, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra18(8), val18(8), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra18(10), val18(10), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra18(9), val18(9), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra18(9), val18(9), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra18(20), val18(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra18(11), val18(11), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra18(13), val18(13), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra18(12), val18(12), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra18(12), val18(12), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra18(21), val18(21), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, ncra18(14), val18(14), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra18(16), val18(16), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra18(18), val18(18), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, ncra18(17), val18(17), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra18(17), val18(17), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra18(22), val18(22), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -1693,7 +1693,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
@@ -1770,30 +1770,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 4, ncra20(1), val20(1), icodre,&
-                        0)
+                        0,nan='NON')
             if ((hydr.eq.'HYDR_UTIL') .or. (hydr.eq.'HYDR_VGM') .or. ( hydr.eq.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, ncra20(5), val20(5), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, ncra20(7), val20(7), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, ncra20(6), val20(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra20(6), val20(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra20(20), val20(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -1817,79 +1817,79 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], dim21, ncra21, val21, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra20(9), val20(9), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra20(11), val20(11), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra20(10), val20(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra20(10), val20(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra20(21), val20(21), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra20(12), val20(12), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra20(14), val20(14), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra20(13), val20(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra20(13), val20(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra20(22), val20(22), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, ncra20(15), val20(15), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra20(17), val20(17), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra20(19), val20(19), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, ncra20(18), val20(18), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra20(18), val20(18), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra20(23), val20(23), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -1898,7 +1898,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
@@ -1976,30 +1976,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 4, ncra22, val22, icodre,&
-                        0)
+                        0,nan='NON')
             if ((hydr.eq.'HYDR_UTIL') .or. (hydr.eq.'HYDR_VGM') .or. ( hydr.eq.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, ncra22(5), val22(5), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, ncra22(7), val22(7), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, ncra22(6), val22(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra22(6), val22(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra22(29), val22(29), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -2023,82 +2023,82 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], 3, ncra23, val23, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 1, 'TEMP',&
                         [t], 3, ncra24, val24, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra22(9), val22(9), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra22(11), val22(11), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra22(10), val22(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra22(10), val22(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra22(30), val22(30), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra22(12), val22(12), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra22(14), val22(14), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra22(13), val22(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra22(13), val22(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra22(31), val22(31), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, ncra22(15), val22(15), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra22(19), val22(19), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra22(21), val22(21), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, ncra22(20), val22(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra22(20), val22(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra22(32), val22(32), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -2141,12 +2141,12 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra22(17), val22(17), icodre,&
-                            0)
+                            0,nan='NON')
             endif
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
@@ -2241,30 +2241,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 4, ncra25, val25, icodre,&
-                        0)
+                        0,nan='NON')
             if ((hydr.eq.'HYDR_UTIL') .or. (hydr.eq.'HYDR_VGM') .or. ( hydr.eq.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, ncra25(5), val25(5), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, ncra25(7), val25(7), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, ncra25(6), val25(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra25(6), val25(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra25(35), val25(35), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -2288,85 +2288,85 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], 3, ncra26, val26, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], 3, ncra27, val27, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 1, ncra28, val28, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra25(9), val25(9), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra25(11), val25(11), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra25(10), val25(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra25(10), val25(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra25(36), val25(36), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra25(12), val25(12), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra25(15), val25(15), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra25(14), val25(14), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra25(14), val25(14), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra25(38), val25(38), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, ncra25(15), val25(15), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra25(19), val25(19), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra25(21), val25(21), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, ncra25(20), val25(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra25(20), val25(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra25(38), val25(38), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -2411,7 +2411,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra25(17), val25(17), icodre,&
-                            0)
+                            0,nan='NON')
             endif
 !
 !    RÉCUPÉRATION DES FONCTIONS FICKS ET LEUR DÉRIVÉES AU DESSUS PB
@@ -2436,19 +2436,19 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             val25(32) = 1.0d0
             call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
                         valpar, 3, ncra25(30), val25(30), icodre,&
-                        0)
+                        0,nan='NON')
             nompar(1) = 'TEMP'
             nompar(2) = 'PGAZ'
             valpar(1) = t
             valpar(2) = p2
             call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
                         valpar, 2, ncra25(33), val25(33), icodre,&
-                        0)
+                        0,nan='NON')
 !
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
@@ -2549,30 +2549,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 4, ncra40, val40, icodre,&
-                        0)
+                        0,nan='NON')
             if (hydr .eq. 'HYDR_UTIL' .or. hydr .eq. 'HYDR_VGM' .or. hydr .eq. 'HYDR_VGC') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, ncra40(5), val40(5), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, ncra40(7), val40(7), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, ncra40(6), val40(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra40(6), val40(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra40(40), val40(40), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -2596,85 +2596,85 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], 3, ncra41, val41, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], 3, ncra42, val42, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_VAPE_GAZ', 0, ' ',&
                         [0.d0], 1, ncra43, val43, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra40(9), val40(9), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra40(11), val40(11), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra40(10), val40(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra40(10), val40(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra40(41), val40(41), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra40(12), val40(12), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra40(14), val40(14), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra40(13), val40(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra40(13), val40(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra40(42), val40(42), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, ncra40(15), val40(15), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra40(19), val40(19), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra40(21), val40(21), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, ncra40(20), val40(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra40(20), val40(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra40(43), val40(43), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -2720,7 +2720,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra40(17), val40(17), icodre,&
-                            0)
+                            0,nan='NON')
             endif
 !
 !    RECUPERATION DES FONCTIONS FICK VAPEUR ET LEURS DERIVEES
@@ -2749,14 +2749,14 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 3, nompar,&
                         valpar, 3, ncra40(30), val40(30), icodre,&
-                        0)
+                        0,nan='NON')
             nompar(1) = 'TEMP'
             nompar(2) = 'PGAZ'
             valpar(1) = t
             valpar(2) = p2
             call rcvala(imate, ' ', 'THM_DIFFU', 2, nompar,&
                         valpar, 2, ncra40(33), val40(33), icodre,&
-                        0)
+                        0,nan='NON')
 !
 !
 !    RECUPERATION DES FONCTIONS FICK AIR DISSOUS ET LEURS DERIVEES
@@ -2777,14 +2777,14 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             val40(38) = 1.0d0
             call rcvala(imate, ' ', 'THM_DIFFU', 4, nompar,&
                         valpar, 4, ncra40(35), val40(35), icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                         [t], 1, ncra40(39), val40(39), icodre,&
-                        0)
+                        0,nan='NON')
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
@@ -2884,30 +2884,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 4, crad40, val40, icodre,&
-                        0)
+                        0,nan='NON')
             if ((hydr.eq.'HYDR_UTIL') .or. (hydr.eq.'HYDR_VGM') .or. (hydr.eq.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, crad40(5), val40(5), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, crad40(7), val40(7), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, crad40(6), val40(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, crad40(6), val40(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, crad40(40), val40(40), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -2931,82 +2931,82 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], 3, crad41, val41, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], 3, crad42, val42, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, crad40(9), val40(9), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, crad40(11), val40(11), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, crad40(10), val40(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, crad40(10), val40(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, crad40(41), val40(41), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, crad40(12), val40(12), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, crad40(14), val40(14), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, crad40(13), val40(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, crad40(13), val40(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, crad40(42), val40(42), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, crad40(15), val40(15), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, crad40(19), val40(19), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, crad40(21), val40(21), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, crad40(20), val40(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, crad40(20), val40(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, crad40(43), val40(43), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -3052,7 +3052,7 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, crad40(17), val40(17), icodre,&
-                            0)
+                            0,nan='NON')
             endif
 !
             nompar(1) = 'PVAP'
@@ -3084,14 +3084,14 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             val40(38) = 1.0d0
             call rcvala(imate, ' ', 'THM_DIFFU', 4, nompar,&
                         valpar, 4, crad40(35), val40(35), icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                         [t], 1, crad40(39), val40(39), icodre,&
-                        0)
+                        0,nan='NON')
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
@@ -3190,30 +3190,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 4, ncra29, val29, icodre,&
-                        0)
+                        0,nan='NON')
             if ((hydr.eq.'HYDR_UTIL') .or. (hydr.eq.'HYDR_VGM') .or. ( hydr.eq.'HYDR_VGC')) then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, ncra29(5), val29(5), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, ncra29(7), val29(7), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, ncra29(6), val29(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra29(6), val29(6), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra29(29), val29(29), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -3237,82 +3237,82 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], 3, ncra30, val30, icodre,&
-                        0)
+                        0,nan='NON')
             call rcvala(imate, ' ', 'THM_GAZ', 1, 'TEMP',&
                         [t], 3, ncra31, val31, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra29(9), val29(9), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra29(11), val29(11), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra29(10), val29(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra29(10), val29(10), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra29(30), val29(30), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra29(12), val29(12), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra29(14), val29(14), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra29(13), val29(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra29(13), val29(13), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra29(31), val29(31), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, ncra29(15), val29(15), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra29(19), val29(19), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra29(21), val29(21), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, ncra29(20), val29(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra29(20), val29(20), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra29(32), val29(32), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -3355,11 +3355,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra29(17), val29(17), icodre,&
-                            0)
+                            0,nan='NON')
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
@@ -3447,30 +3447,30 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
 !
             call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                         [0.d0], 3, ncra32, val32, icodre,&
-                        0)
+                        0,nan='NON')
             if (hydr .eq. 'HYDR_UTIL') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 1, ncra32(4), val32(4), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                 [phi], 1, ncra32(6), val32(6), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
 ! ELAS_ISTR 3D
                         aniso1=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 2, ncra32(5), val32(5), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
 ! ELAS_ORTH 2D
                         aniso1=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra32(5), val32(5), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                                     [phi], 1, ncra32(25), val32(25), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso1=0
@@ -3497,79 +3497,79 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             endif
             call rcvala(imate, ' ', 'THM_LIQU', 1, 'TEMP',&
                         [t], 3, ncra33, val33, icodre,&
-                        0)
+                        0,nan='NON')
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra32(8), val32(8), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra32(10), val32(10), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso2=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra32(9), val32(9), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso2=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra32(9), val32(9), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra32(26), val32(26), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso2=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                             [t], 1, ncra32(11), val32(11), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra32(13), val32(13), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso3=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 2, ncra32(12), val32(12), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso3=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra32(12), val32(12), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                     [t], 1, ncra32(27), val32(27), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso3=0
                 endif
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'PORO',&
                             [phi], 2, ncra32(14), val32(14), icodre,&
-                            0)
+                            0,nan='NON')
                 call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                             [0.d0], 1, ncra32(18), val32(18), icodre,&
-                            0)
+                            0,nan='NON')
                 if (icodre(1) .eq. 1) then
                     call rcvala(imate, ' ', 'THM_DIFFU', 1, 'TEMP',&
                                 [t], 1, ncra32(20), val32(20), icodre,&
-                                0)
+                                0,nan='NON')
                     if (icodre(1) .eq. 0) then
                         aniso4=1
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 2, ncra32(19), val32(19), icodre,&
-                                    0)
+                                    0,nan='NON')
                     else
                         aniso4=2
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra32(19), val32(19), icodre,&
-                                    0)
+                                    0,nan='NON')
                         call rcvala(imate, ' ', 'THM_DIFFU', 0, ' ',&
                                     [0.d0], 1, ncra32(28), val32(28), icodre,&
-                                    0)
+                                    0,nan='NON')
                     endif
                 else if (icodre(1).eq.0) then
                     aniso4=0
@@ -3593,11 +3593,11 @@ subroutine thmrcp(etape, imate, thmc, meca, hydr,&
             if (ther .ne. 'VIDE') then
                 call rcvala(imate, ' ', 'THM_DIFFU', 1, 'SAT',&
                             valpar( 1), 2, ncra32(16), val32(16), icodre,&
-                            0)
+                            0,nan='NON')
             endif
             call rcvala(imate, ' ', 'THM_DIFFU', 1, 'INST',&
                         [instap], 1, 'PESA_MULT', fpesa, icodre,&
-                        0)
+                        0,nan='NON')
 ! COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 ! A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 ! DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE

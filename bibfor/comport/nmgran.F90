@@ -277,7 +277,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), icodre(1), 0)
-        if (icodre(i) .ne. 0) valres(1)=0.d0
+        if (icodre(1) .ne. 0) valres(1)=0.d0
         qsrt=valres(1)
         coeft=(-qsrt)*(1/temp-1/tkref)
         coeft=exp(coeft)
@@ -294,7 +294,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), icodre(1), 0)
-        if (icodre(i) .ne. 0) valres(1)=0.d0
+        if (icodre(1) .ne. 0) valres(1)=0.d0
         qsrv=valres(1)
 !
 !  -------- FONCTION MULTIPLICATIVE - VIEILLISSEMENT K

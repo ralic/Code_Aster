@@ -91,7 +91,7 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
     character(len=24), pointer :: prol(:) => null()
     character(len=16), pointer :: ordr(:) => null()
     integer, pointer :: kord(:) => null()
-    aster_logical :: lordre
+    aster_logical :: lordre, lverif
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -170,7 +170,10 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
             call getvid(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
             call gettco(valch, typeco)
             if (typeco.eq.'TABLE_SDASTER') cycle
-    !       ASSERT(typeco(1:8).eq.'FONCTION' .or. typeco(1:5).eq.'NAPPE' .or. typeco(1:7).eq.'FORMULE')
+            lverif=(typeco(1:8).eq.'FONCTION' .or. typeco(1:5).eq.'NAPPE' &
+                    .or. typeco(1:7).eq.'FORMULE')
+!           -- la verif echoue pour comp011d car gettco retourne ' ' ??
+!           ASSERT(lverif)
             if (n.lt.0) then
                 typobj(i)='LFO'
             else

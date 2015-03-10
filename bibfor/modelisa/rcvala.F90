@@ -1,6 +1,6 @@
 subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
                   valpar, nbres, nomres, valres, icodre,&
-                  iarret)
+                  iarret,nan)
     implicit none
 #include "jeveux.h"
 #include "asterfort/fointa.h"
@@ -16,6 +16,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
     real(kind=8), intent(out) :: valres(nbres)
     integer, intent(out) :: icodre(nbres)
     character(len=*), intent(in) :: nomat, phenom, nompar(nbpar), nomres(nbres)
+    character(len=3), intent(in), optional :: nan
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +53,8 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
 !              = 1 : si un des parametres n'est pas trouve, on arrete
 !                       en fatal en indiquant le nom de la maille.
 !              = 2 : idem que 1 mais on n'indique pas la maille.
+!       nan    = 'OUI' (defaut) : pour les parametres non trouves, on retourne valres = NaN
+!              = 'NON' : pour les parametres non trouves, on ne modifie pas valres
 !
 !     arguments de sortie:
 !        valres(*) : valeurs des resultats apres recuperation et interpolation
@@ -68,6 +71,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
     character(len=32) :: nomphe
     character(len=24) :: valk(2)
     real(kind=8) :: rundf
+    aster_logical :: lnan
 !  ---------------------------------------------------------------------
 
 !   -- On est oblige de recopier phenom car il faut le tronquer
@@ -78,10 +82,14 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
 !   -- initialisation de icodre(*) et valres(*) :
 !   ---------------------------------------------
     rundf=r8nnem()
+    lnan=.true.
+    if (present(nan)) then
+        ASSERT(nan.eq.'OUI' .or. nan.eq.'NON')
+        if (nan.eq.'NON') lnan=.false.
+    endif
     do ires = 1, nbres
         icodre(ires) = 1
-!       -- il faudra penser a remettre l'initialisation a "undef" apres la correction de issue23562 :
-!       valres(ires) = rundf
+        if (lnan) valres(ires) = rundf
     enddo
 
 
@@ -177,5 +185,6 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
 999  continue
 
     call rcvals(iarret, icodre, nbres, nomres)
+
 
 end subroutine

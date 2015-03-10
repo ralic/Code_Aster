@@ -140,14 +140,14 @@ subroutine te0050(option, nomte)
         valres(1) = 0.d0
         valres(2) = 0.d0
         call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 2,&
-                    nomres, valres, icodre, 0)
+                    nomres, valres, icodre, 0, nan='NON')
 !
     else if (option.eq.'RIGI_MECA_HYST') then
 !     ------------------------------------------
         nomres(1)='AMOR_HYST'
         valres(1) = 0.d0
         call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 1,&
-                    nomres, valres, icodre, 0)
+                    nomres, valres, icodre, 0, nan='NON')
     else
         ASSERT(.false.)
     endif

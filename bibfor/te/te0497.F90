@@ -291,10 +291,11 @@ subroutine te0497(option, nomte)
         if ((codm13(1).eq.0) .and. (codm13(2).eq.0) .and. (codm13(3) .eq.0)) then
             rhohom = valr13(1)
             biot = sqrt(valr13(2)**2+valr13(3)**2)
-            elseif ((codm13(1).eq.0).and.(codm13(2).eq.0).and. (codm13(4)&
-        .eq.0)) then
+        elseif ((codm13(1).eq.0).and.(codm13(2).eq.0).and. (codm13(4).eq.0)) then
             rhohom = valr13(1)
             biot = sqrt(valr13(2)**2+valr13(4)**2)
+        else
+            ASSERT(.false.)
         endif
     else
         call utmess('F', 'ELEMENTS4_78', sk=nomre1(1)//nomre1(2))

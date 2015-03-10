@@ -15,24 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
-                      nomat, phenom, nbpar, nompar, valpar,&
-                      nbres, nomres, valres, codret, iarret)
-        integer, intent(in) :: nbres
-        integer, intent(in) :: nbpar
-        character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        character(len=*), intent(in) :: poum
-        integer, intent(in) :: jmat
-        character(len=*), intent(in) :: nomat
-        character(len=*), intent(in) :: phenom
-        character(len=*), intent(in) :: nompar(nbpar)
-        real(kind=8), intent(in) :: valpar(nbpar)
-        character(len=*), intent(in) :: nomres(nbres)
-        real(kind=8), intent(out) :: valres(nbres)
-        integer, intent(out) :: codret(nbres)
-        integer, intent(in) :: iarret
-    end subroutine rcvalb
-end interface
+          interface 
+            subroutine rcvalb(fami,kpg,ksp,poum,jmat,nomat,phenom,nbpar,&
+     &nompar,valpar,nbres,nomres,valres,codret,iarret,nan)
+              integer, intent(in) :: nbres
+              integer, intent(in) :: nbpar
+              character(len=*), intent(in) :: fami
+              integer, intent(in) :: kpg
+              integer, intent(in) :: ksp
+              character(len=*), intent(in) :: poum
+              integer, intent(in) :: jmat
+              character(len=*), intent(in) :: nomat
+              character(len=*), intent(in) :: phenom
+              character(len=*), intent(in) :: nompar(nbpar)
+              real(kind=8), intent(in) :: valpar(nbpar)
+              character(len=*), intent(in) :: nomres(nbres)
+              real(kind=8), intent(out) :: valres(nbres)
+              integer, intent(out) :: codret(nbres)
+              integer, intent(in) :: iarret
+              character(len=3) ,optional, intent(in) :: nan
+            end subroutine rcvalb
+          end interface 

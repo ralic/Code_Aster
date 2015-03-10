@@ -52,6 +52,7 @@ subroutine te0500(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/assert.h"
     character(len=16) :: option, nomte
 !
 !
@@ -176,22 +177,24 @@ subroutine te0500(option, nomte)
 !
     call rcvalb(fami, kpg, spt, poum, zi(imate),&
                 ' ', 'THM_DIFFU', 1, nompar, [valpar],&
-                nbre1, nomre1, valre1, codme1, 0)
+                nbre1, nomre1, valre1, codme1, 0, nan='OUI')
 !
     if (codme1(1) .eq. 0) then
         permin = valre1(1)
     else if (codme1(1).eq.1) then
         call rcvalb(fami, kpg, spt, poum, zi(imate),&
                     ' ', 'THM_DIFFU', 1, nompar, [valpar],&
-                    nbrr1, nomrr1, valrr1, codmr1, 0)
+                    nbrr1, nomrr1, valrr1, codmr1, 0, nan='OUI')
         if (( codmr1(1).eq.0 ) .and. ( codmr1(2).eq.0 )) then
             permin = sqrt(valrr1(1)**2+valrr1(2)**2+valrr1(1)**2)
         else
             call rcvalb(fami, kpg, spt, poum, zi(imate),&
                         ' ', 'THM_DIFFU', 1, nompar, [valpar],&
-                        nbrr1, nomrr2, valrr2, codmr2, 0)
+                        nbrr1, nomrr2, valrr2, codmr2, 0, nan='OUI')
             if (( codmr2(1).eq.0 ) .and. ( codmr2(2).eq.0 )) then
-                permin = sqrt(valrr1(1)**2+valrr1(2)**2)
+                permin = sqrt(valrr2(1)**2+valrr2(2)**2)
+            else
+                ASSERT(.false.)
             endif
         endif
     else
@@ -232,6 +235,8 @@ subroutine te0500(option, nomte)
                         nbrr3, nomrr4, valrr4, codmr4, 0)
             if (( codmr4(1).eq.0 ) .and. ( codmr4(2).eq.0 )) then
                 myoung = sqrt(valrr4(1)**2+valrr4(2)**2)
+            else
+                ASSERT(.false.)
             endif
         endif
     else
