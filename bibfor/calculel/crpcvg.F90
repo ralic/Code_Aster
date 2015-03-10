@@ -171,7 +171,7 @@ subroutine crpcvg(ma1, ma2, gma1, gma2, tran,&
         valr(1) = tran(1)
         valr(2) = tran(2)
         valr(3) = tran(3)
-        call utmess('F', 'CALCULEL5_69', nk=5, valk=valk, sr=valr(3))
+        call utmess('F', 'CALCULEL5_69', nk=5, valk=valk, nr=3, valr=valr)
  10 continue
     end do
 !
