@@ -219,7 +219,7 @@ subroutine fonbas(noma, basfon, fontyp, fonfis, nbnoff,&
 !           DISTANCE MN
                 d = sqrt(xnm*xnm + ynm*ynm + znm*znm)
 !
-                if (d .lt. (dmin*(1-abs(r8prem())*100) )) then
+                if (d .lt. (dmin*(1-abs(r8prem())*1.d04) )) then
                     dmin = d
                     sn = s
                     indica = ina

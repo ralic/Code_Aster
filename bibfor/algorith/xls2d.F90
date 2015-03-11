@@ -7,6 +7,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8maem.h"
+#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -171,7 +172,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !           MISE EN MEMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
 !           EN VERIFIANT DE QUEL COTE DE LA FISSURE SE TROUVE P
-            if (d .lt. dmin) then
+            if ((dmin-d) .gt. (r8prem()*1.d04)) then
                 dmin=d
                 oriabp=ab(1)*ap(2)-ab(2)*ap(1)
                 do 213 i = 1, 2
@@ -245,7 +246,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !               CALCUL DE LA DISTANCE PA
                     d=padist(2,p,a)
 !               MISE EN MEMOIRE DE LSN=PA.N POUR LE SEG LE PLUS PROCHE
-                    if (d .lt. dmin) then
+                    if ((dmin-d) .gt. (r8prem()*1.d04)) then
                         dmin=d
                         xlt=-1.d0*eps*sqrt(ab(1)*ab(1)+ab(2)*ab(2))
                     endif

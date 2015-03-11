@@ -117,6 +117,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
     call getres(k8b, k16b, nomcmd)
 !
+    pair=.false.
     eps = 1.d-06
     call jeveuo(trav1, 'L', iadrt1)
     call jeveuo(trav2, 'L', iadrt2)
@@ -604,7 +605,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                 yn = s*yij+yi1
                 zn = s*zij+zi1
                 d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+ (zn-zm)*(zn- zm))
-                if (d .lt. (dmin*(1-abs(r8prem())*100))) then
+                if (d .lt. (dmin*(1-abs(r8prem())*1.d04))) then
                     dmin = d
                     jmin = j
                     smin = s

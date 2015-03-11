@@ -282,7 +282,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                     zn = s*zij+zi1
 !               DISTANCE MN
                     d = sqrt((xn-xm)*(xn-xm)+(yn-ym)*(yn-ym)+ (zn-zm)* (zn-zm))
-                    if (d .lt. (dmin*(1-abs(r8prem())*100))) then
+                    if (d .lt. (dmin*(1-abs(r8prem())*1.d04))) then
                         dmin = d
                         jmin = j
                         smin = s

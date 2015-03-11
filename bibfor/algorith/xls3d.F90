@@ -194,7 +194,7 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                 d=padist(3,p,m)
 !
 !           MISE EN MEMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
-                if ((dmin-d) .gt. r8prem()*10.d0) then
+                if ((dmin-d) .gt. r8prem()*1.d04) then
                     dmin=d
                     xln=zi(jsens-1+imafis)*ddot(3,vn,1,pm,1)
                 endif
@@ -312,8 +312,8 @@ subroutine xls3d(callst, grille, jltsv, jltsl, jlnsv,&
                     d=padist(3,p,m)
 !
 !             MISE EN MEMOIRE DE LSN=PM.N POUR LE SEG LE PLUS PROCHE
-                    if ((dmin-d) .gt. r8prem()*10.d0 .or.&
-                        (abs(dmin-d).le.r8prem()*10.d0 .and.angle.lt.anglem)) then
+                    if ((dmin-d) .gt. r8prem()*1.d04 .or.&
+                        (abs(dmin-d).le.r8prem()*1.d04 .and.angle.lt.anglem)) then
                         dmin=d
                         anglem = angle
                         xlt=ddot(3,vn,1,pm,1)

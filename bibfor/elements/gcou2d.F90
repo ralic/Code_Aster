@@ -195,7 +195,7 @@ subroutine gcou2d(base, resu, noma, nomno, noeud,&
                 endif
 !           IL SE PEUT QUE EN CERTAINS POINTS, LE GRADIENT SOIT NUL
 !           CES POINTS SONT NORMALEMENT HORS COURONNE THETA
-                if (norme .le. r8prem()) then
+                if (norme .le. r8prem()*1.d04) then
                     if ((abs(alpha-1).gt.eps) .and. ((alpha-1).le.0)) then
                         call jenuno(jexnum(noma//'.NOMNOE', i), k8b)
                         call utmess('F', 'XFEM_12', sk=k8b)

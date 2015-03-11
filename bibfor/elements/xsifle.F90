@@ -89,7 +89,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     integer :: iadzi, iazk24, ibid2(12, 3), ibid, fac(6, 8), nbf
     integer :: ar(12, 3), nbar, nnof, npgf, ipoidf, ivff, idfdef
     integer :: ipgf, zxain, heavn(nnop,5)
-    integer :: ddld, ddls, nnops, ncompn, ino, ig, iret, jtab(7)
+    integer :: ddld, ddls, ncompn, ino, ig, iret, jtab(7)
     real(kind=8) :: xg(4), jac, ff(27), nd(3)
     real(kind=8) :: angl(2)
     real(kind=8) :: e, nu, mu, ka, coeff, coeff3, r27bid(27)
@@ -112,7 +112,6 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 !
 !     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
     if (nfh.gt.0) then
-      ASSERT(jheavn.gt.0)
       call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
       ncompn = jtab(2)/jtab(3)
