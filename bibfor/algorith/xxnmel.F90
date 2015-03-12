@@ -93,7 +93,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
     character(len=16) :: compo2(4)
     integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg, iret
-    integer :: ddld, ddls, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
+    integer :: ddld, ddls, ddlx, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfe+nfh)), rbid33(3, 3)
@@ -212,26 +212,25 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' .or.&
             option(1: 9) .eq. 'RAPH_MECA') then
 ! -         CALCUL DU DEPL. RADIAL
-            if (axi) then
-                ur = 0.d0
-                do n = 1, nnop
-                    ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
-                    do ig = 1, nfh
-                        ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1)&
-                                               *xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
-                    end do
-                    do ig = 1, nfe
-                        ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
-                    end do
+ ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):
+         if (axi) then
+            ur = 0.d0
+             do n = 1, nnop
+                call indent(n,ddls,ddlm,nnops,ddlx)
+                ur = ur + ff(n)*zr(idepl-1+ddlx+1)
+                do ig = 1, nfh
+                    ur = ur + ff(n) *zr(idepl-1+ddlx+ndim*ig+1)*xcalc_heav(&
+                         heavn(n,ig),hea_se,heavn(n,5))
                 end do
-            endif
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                        xe, ff, dfdi=dfdi)
-            call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                        ndim, he, r, ur, &
-                        nfiss, nfh, nfe, ddls, ddlm,&
-                        fe, dgdgl, ff, dfdi, f,&
-                        eps, rbid33, heavn)
+                do ig = 1, nfe
+                    ur = ur + ff(n) *zr(idepl-1+ddlx+ndim*(nfh+ ig)+1) *fe(ig)
+                end do
+             end do
+         endif
+            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
+            call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
+                        r, ur, nfiss, nfh, nfe, ddls, ddlm,&
+                        fe, dgdgl, ff, dfdi, f, eps, rbid33, heavn)
 !
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then

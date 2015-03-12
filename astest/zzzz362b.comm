@@ -122,10 +122,10 @@ FISSLI3 = DEFI_FISS_XFEM(MAILLAGE = MAILLALI,
                                        PFON = (a-1.5*h, 0.5*h, 0.),
                                        DTAN = (-1., 0., 0.),),)
 
-# "subtilite" due au contact : on va definir 2 modeles enrichis avec contact,
+# "subtilite" due au contact : on va definir 3 modeles enrichis avec contact,
 # or MODI_MODELE_XFEM ecrit dans les sd_fiss_xfem (base globale) l'objet
 # '.MAILFISS.CONT' donc on ne peut pas utiliser deux fois le meme jeu 
-# de fissures, d'ou les 3 definitions redondantes ci-dessous
+# de fissures, d'ou les definitions redondantes ci-dessous
 
 FISSLI1C = DEFI_FISS_XFEM(MAILLAGE = MAILLALI,
                          TYPE_DISCONTINUITE = 'FISSURE', 
@@ -141,6 +141,24 @@ FISSLI2C = DEFI_FISS_XFEM(MAILLAGE = MAILLALI,
 
 FISSLI3C = DEFI_FISS_XFEM(MAILLAGE = MAILLALI,
                          TYPE_DISCONTINUITE = 'FISSURE', 
+                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                        PFON = (a-1.5*h, 0.5*h, 0.),
+                                        DTAN = (-1., 0., 0.),),)
+
+FISSLI1D = DEFI_FISS_XFEM(MAILLAGE = MAILLALI,
+                         TYPE_DISCONTINUITE = 'FISSURE',
+                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                        PFON = (0.25*a, 0.25*a, 0.),
+                                        DTAN = (1., 0., 0.),),)
+
+FISSLI2D = DEFI_FISS_XFEM(MAILLAGE = MAILLALI,
+                         TYPE_DISCONTINUITE = 'FISSURE',
+                         DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                        PFON = (0.25*a, 0.75*a, 0.),
+                                        DTAN = ( 1., 0., 0.),),)
+
+FISSLI3D = DEFI_FISS_XFEM(MAILLAGE = MAILLALI,
+                         TYPE_DISCONTINUITE = 'FISSURE',
                          DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
                                         PFON = (a-1.5*h, 0.5*h, 0.),
                                         DTAN = (-1., 0., 0.),),)
@@ -171,6 +189,10 @@ MLMEDPXC = MODI_MODELE_XFEM(MODELE_IN = MLMEDPS,
 MLMEAXX  = MODI_MODELE_XFEM(MODELE_IN = MLMEAXS,
                             FISSURE = (FISSLI1,FISSLI2,FISSLI3),)
 
+# MLMEAXX : Modele Lineaire MEcanique AXis Xfem
+MLMEAXXC = MODI_MODELE_XFEM(MODELE_IN = MLMEAXS,
+                            FISSURE = (FISSLI1D,FISSLI2D,FISSLI3D),)
+
 # MLTHPLX : Modele Lineaire THermique PLan Xfem
 MLTHPLX  = MODI_MODELE_XFEM(MODELE_IN = MLTHPLS,
                             FISSURE = (FISSLI1,FISSLI2,FISSLI3),)
@@ -190,6 +212,7 @@ DEFI_FICHIER(UNITE=34, FICHIER='./fort.34')
 DEFI_FICHIER(UNITE=35, FICHIER='./fort.35')
 DEFI_FICHIER(UNITE=36, FICHIER='./fort.36')
 DEFI_FICHIER(UNITE=37, FICHIER='./fort.37')
+DEFI_FICHIER(UNITE=38, FICHIER='./fort.38')
 
 IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MLMECPX ),NIVEAU=-1,PERMUTATION='NON',)
 IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MLMECPXC),NIVEAU=-1,PERMUTATION='NON',)
@@ -198,6 +221,7 @@ IMPR_CO(UNITE=34,CONCEPT=_F(NOM=MLMEDPXC),NIVEAU=-1,PERMUTATION='NON',)
 IMPR_CO(UNITE=35,CONCEPT=_F(NOM=MLMEAXX ),NIVEAU=-1,PERMUTATION='NON',)
 IMPR_CO(UNITE=36,CONCEPT=_F(NOM=MLTHPLX ),NIVEAU=-1,PERMUTATION='NON',)
 IMPR_CO(UNITE=37,CONCEPT=_F(NOM=MLTHAXX ),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=38,CONCEPT=_F(NOM=MLMEAXXC),NIVEAU=-1,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
@@ -206,6 +230,7 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=34)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=35)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=36)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
+DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 
 # ###################################################
 # "Post-traitements" des fichiers obtenus avec IMPR_CO
@@ -218,6 +243,7 @@ File34 = open('./fort.34', "r")
 File35 = open('./fort.35', "r")
 File36 = open('./fort.36', "r")
 File37 = open('./fort.37', "r")
+File38 = open('./fort.38', "r")
 
 LinesFile31 = File31.readlines()
 LinesFile32 = File32.readlines()
@@ -226,6 +252,7 @@ LinesFile34 = File34.readlines()
 LinesFile35 = File35.readlines()
 LinesFile36 = File36.readlines()
 LinesFile37 = File37.readlines()
+LinesFile38 = File38.readlines()
 
 File31.close()
 File32.close()
@@ -234,6 +261,7 @@ File34.close()
 File35.close()
 File36.close()
 File37.close()
+File38.close()
 
 ListLMECP  = [] # 31 <-> MLMECPX 
 ListLMECPC = [] # 32 <-> MLMECPXC
@@ -242,6 +270,7 @@ ListLMEDPC = [] # 34 <-> MLMEDPXC
 ListLMEAX  = [] # 35 <-> MLMEAXX 
 ListLTHPL  = [] # 36 <-> MLTHPLX 
 ListLTHAX  = [] # 37 <-> MLTHAXX 
+ListLMEAXC = [] # 38 <-> MLMEAXXC
 
 # 31 <-> ListLMECP  / MLMECPX
 nommo  = 'MLMECPX'
@@ -327,6 +356,19 @@ for line in LinesFile37:
     lsplit[1] = lsplit[1].replace(nommo," "*8)
     ListLTHAX.append(lsplit)
 
+# 38 <-> ListLMEAXC / MLMEAXXC
+nommo  = 'MLMEAXXC'
+nommo += (8-len(nommo))*" "
+for line in LinesFile38:
+  if ('TOPOFAC' in line) and ('.CELV' in line) or \
+     ('TOPOSE'  in line) and ('.CELV' in line) :
+    lsplit = line.split("|")
+    assert nommo in lsplit[1]
+    # on remplace le nom du modele par 8 " "
+    lsplit[1] = lsplit[1].replace(nommo," "*8)
+    ListLMEAXC.append(lsplit)
+
+
 ## pour debug
 #assert len(ListLMECP ) == len(ListLMECPC)
 #for i in xrange(len(ListLMECP )):
@@ -411,6 +453,12 @@ if (len(ListLMECP ) > 0) and (len(ListLMECP ) == len(ListLTHAX )) : nobj_ok = 1
 TABTAIL6 = CREA_TABLE(TITRE = '',
                       LISTE = _F( LISTE_I = [nobj_ok], PARA = 'BOOLEEN'),)
 
+# TABTAIL7 -> entre MLMECPX et MLMEAXXC
+nobj_ok = 0
+if (len(ListLMECP ) > 0) and (len(ListLMECP ) == len(ListLMEAXC)) : nobj_ok = 1
+TABTAIL7 = CREA_TABLE(TITRE = '',
+                      LISTE = _F( LISTE_I = [nobj_ok], PARA = 'BOOLEEN'),)
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
            VALE_REFE_I=1,
@@ -446,6 +494,12 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
            TABLE=TABTAIL6,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TABTAIL7,)
 
 ## -------
 ## vale_ok == 1 si le "resume" (IMPR_CO/NIVEAU=-1) des .CELV
@@ -490,6 +544,12 @@ if (ListLMECP != []) and (ListLMECP == ListLTHAX ) : vale_ok = 1
 TARESUM6 = CREA_TABLE(TITRE = '',
                       LISTE = _F( LISTE_I = [vale_ok], PARA = 'BOOLEEN'),)
 
+# TARESUM7 -> entre MLMECPX et MLMEAXXC
+vale_ok = 0
+if (ListLMECP != []) and (ListLMECP == ListLMEAXC) : vale_ok = 1
+TARESUM7 = CREA_TABLE(TITRE = '',
+                      LISTE = _F( LISTE_I = [vale_ok], PARA = 'BOOLEEN'),)
+
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
            VALE_REFE_I=1,
@@ -525,6 +585,12 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
            TABLE=TARESUM6,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TARESUM7,)
 
 # ###################################################
 # ###################################################
@@ -656,17 +722,17 @@ for line in LinesFile32:
 # nobj_ok == 0 sinon
 # -------
 
-# TABTAIL7 -> entre MQMEDPX et MQHMDPX
+# TABTAIL8 -> entre MQMEDPX et MQHMDPX
 nobj_ok = 0
 if (len(ListQMEDP) > 0) and (len(ListQMEDP) == len(ListQHMDP)) : nobj_ok = 1
-TABTAIL7 = CREA_TABLE(TITRE = '',
+TABTAIL8 = CREA_TABLE(TITRE = '',
                       LISTE = _F( LISTE_I = [nobj_ok], PARA = 'BOOLEEN'),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
            VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
-           TABLE=TABTAIL7,)
+           TABLE=TABTAIL8,)
 
 ## -------
 ## vale_ok == 1 si le "resume" (IMPR_CO/NIVEAU=-1) des .CELV
@@ -675,16 +741,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 ## vale_ok == 0 sinon
 ## -------
 
-# TARESUM7 -> entre MQMEDPX et MQHMDPX
+# TARESUM8 -> entre MQMEDPX et MQHMDPX
 vale_ok = 0
 if (ListQMEDP != []) and (ListQMEDP == ListQHMDP) : vale_ok = 1
-TARESUM7 = CREA_TABLE(TITRE = '',
+TARESUM8 = CREA_TABLE(TITRE = '',
                       LISTE = _F( LISTE_I = [vale_ok], PARA = 'BOOLEEN'),)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC_I=1,
            VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
-           TABLE=TARESUM7,)
+           TABLE=TARESUM8,)
 
 FIN()

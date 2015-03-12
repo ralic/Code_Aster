@@ -125,7 +125,7 @@ subroutine te0539(option, nomte)
     call teattr('S', 'XFEM', enr, ibid)
     if (enr(1:2).eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if ((ibid.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
+    if ((ibid.eq.0) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
@@ -249,7 +249,6 @@ subroutine te0539(option, nomte)
 !
 ! 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         else if (zk16(icompo+2).eq.'GROT_GDEP') then
-!            DO 50 I = 1,3*NNO
             do i = 1, nddl
                 zr(ideplp+i-1) = zr(ideplm+i-1) + zr(ideplp+i-1)
             end do

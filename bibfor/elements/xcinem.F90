@@ -110,7 +110,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     call matini(3, 3, zero, kron)
     do 10 p = 1, 3
         kron(p,p) = un
- 10 end do
+ 10 continue
 !
 ! --- CALCUL DES GRADIENTS : GRAD(U) ET F
 !
@@ -118,13 +118,13 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
         do 20 i = 1, 3
             f(i,j) = kron(i,j)
  20     continue
- 21 end do
+ 21 continue
 !
     do 31 j = 1, ndim
         do 30 i = 1, ndim
             grad(i,j) = zero
  30     continue
- 31 end do
+ 31 continue
 !
     ldec=.false.
     if (ddlm .eq. 0 .or. ddlm .eq. -1 .or. ddlm .eq. ddls) ldec=.true.
@@ -170,14 +170,15 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 410             continue
 409         continue
 408     continue
-402 end do
+402 continue
 !
     if (grand) then
         do 421 j = 1, ndim
             do 420 i = 1, ndim
                 f(i,j) = f(i,j) + grad(i,j)
-420         continue
-421     end do
+420          continue
+421      continue
+         if(axi) f(3,3) = 1.d0+ur/r
     endif
 !
 ! --- CALCUL DES DÉFORMATIONS : EPS
@@ -192,7 +193,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
             endif
             epstab(i,j) = 0.5d0*tmp
 431     continue
-430 end do
+430 continue
     call vecini(6, zero, eps)
     eps(1) = epstab(1,1)
     eps(2) = epstab(2,2)
@@ -203,6 +204,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
         eps(6) = epstab(3,2)*rac2
     else if (axi) then
         eps(3) = ur/r
+        if(grand) eps(3) = eps(3)+0.5d0*ur*ur/(r*r)
     endif
 !
     call jedema()

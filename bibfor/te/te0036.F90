@@ -73,7 +73,7 @@ subroutine te0036(option, nomte)
     integer :: nfh, nfe, nse, ise
     integer :: in, ino, iadzi, iazk24, jstno
     integer :: iforc, iret, ig, pos, ndime, nddl, ddls
-    real(kind=8) :: xg(4), fe(4), lsng, lstg, rg, tg
+    real(kind=8) :: xg(4), fe(4), lsng, lstg, rg, tg, r
     real(kind=8) :: pres, ff(27), coorse(81), cosa, sina
     real(kind=8) :: nd(3), norme, rb1(3), rb2(3), cisa
     real(kind=8) :: poids, forrep(3), vf, td(3), rbid(1)
@@ -189,7 +189,7 @@ subroutine te0036(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ier)
-    if (ier .eq. 0 .and. (.not. axi) .and. .not.iselli(elref)) call jevech('PPMILTO', 'L', jpmilt)
+    if (ier .eq. 0 .and. .not.iselli(elref)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !   LECTURE DES DONNES TOPOLOGIQUE DES FONCTIONS HEAVISIDE
@@ -390,6 +390,14 @@ subroutine te0036(option, nomte)
                                 forrep(j), ier)
                 end do
 !
+            endif
+            if (axi) then
+                 r = 0.d0
+                 do ino = 1, nnop
+                     r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+                 end do
+                 ASSERT(r.ge.0d0)
+                 poids = poids*r
             endif
 !
 !         CALCUL EFFECTIF DU SECOND MEMBRE

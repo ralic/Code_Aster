@@ -129,11 +129,6 @@ subroutine te0514(option, nomte)
 !
     call teattr('S', 'XFEM', enr, ibid)
 !
-!     MODELISATION AXISYMETRIQUE AVEC ELEMENTS QUADRATIQUES INTERDITE
-    if (lteatt('AXIS','OUI') .and. .not.iselli(elp)) then
-        call utmess('F', 'XFEM_76')
-    endif
-!
     if ((ibid.eq.0) .and. (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT' .or.enr.eq.'XHC')&
         .and. .not.iselli(elp)) then
         call jevech('PPMILTO', 'E', jpmilt)

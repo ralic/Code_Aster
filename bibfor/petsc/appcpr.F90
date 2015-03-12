@@ -71,7 +71,7 @@ subroutine appcpr(kptsc)
     real(kind=8), dimension(:), pointer :: coordo => null() 
     real(kind=8), dimension(:), pointer :: slvr => null()
 !
-    logical :: lmd
+    aster_logical :: lmd
 !
 !----------------------------------------------------------------
 !     Variables PETSc

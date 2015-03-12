@@ -730,6 +730,23 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEAXSE3_XT
               MAILLE__ SEG2      ELEMENT__ MEAXSE2_XT
 
+       MODELISATION__ 'AXIS_XHC'         DIM__ 2 2   CODE__ 'AX4'
+              ATTRIBUT__  NBSIGM='4' AXIS='OUI'   TYPMOD='AXIS' LXFEM='OUI' XFEM='XHC' XLAG='NOEUD'
+              MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XHC
+              MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XHC
+              MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XHC
+              MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XHC
+              
+       MODELISATION__ 'AXIS_XTC'         DIM__ 2 2   CODE__ 'AX5'
+              ATTRIBUT__  NBSIGM='4' AXIS='OUI'   TYPMOD='AXIS' LXFEM='OUI' XFEM='XTC' XLAG='NOEUD'
+              MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XTC
+              MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XTC
+              
+       MODELISATION__ 'AXIS_XHTC'        DIM__ 2 2   CODE__ 'AX6'
+              ATTRIBUT__  NBSIGM='4' AXIS='OUI'   TYPMOD='AXIS' LXFEM='OUI' XFEM='XHTC' XLAG='NOEUD'
+              MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XHTC
+              MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XHTC
+
        MODELISATION__ 'C_PLAN_XH'         DIM__ 2 2   CODE__ 'CX1'
               ATTRIBUT__  NBSIGM='4' C_PLAN='OUI' TYPMOD='C_PLAN' LXFEM='OUI' XFEM='XH'
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XH

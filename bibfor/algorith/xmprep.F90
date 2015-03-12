@@ -49,17 +49,20 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 ! IN SINGU  : PRESENCE OU NON DE LA SINGULARITE
 ! OUT TAU1  : 1ERE TANGENTE A LE SURFACE DE CONTACT AU PG
 ! OUT TAU2  : 2EME TANGENTE (EN 3D)
+#include "asterfort/lteatt.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xmoffc.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/assert.h"
     integer :: cface(18, 6), contac
-    integer :: i, iaint, ibasec, ifa, igeom, ipgf, iptint, j
+    integer :: i, iaint, ibasec, ifa, igeom, ipgf, iptint, j, n
     integer :: jlst, k, lact(8), ndim, ninter, nlact, nno
     integer :: nnos, nptf, nvit, singu, zxain
     real(kind=8) :: dfbid(27, 3), ffc(8), ffp(27), ffpc(27), g(3), jac
     real(kind=8) :: nd(3), lst, r, rr, tau1(3), tau2(3), x(4)
     character(len=8) :: elc, elref, elrefc, fpg
+    aster_logical :: axi
 !
 !
 ! --- CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
@@ -77,6 +80,18 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
                     nno, igeom, ibasec, g, jac,&
                     ffp, ffpc, dfbid, nd, tau1)
     endif
+!Check for axi-symmetric elements
+        axi = lteatt('AXIS','OUI')
+        if (axi)then
+            r = 0.d0
+           do n = 1, nno
+              r = r + ffp(n)*zr(igeom-1+2*(n-1)+1)
+           end do
+           if(r.eq.0d0) r=1.d-7
+           ASSERT(r.gt.0d0)
+            jac = jac*r
+
+        endif
 !
 ! --- CALCUL DES FONCTIONS DE FORMES DE CONTACT
 !

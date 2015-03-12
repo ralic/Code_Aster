@@ -1,0 +1,213 @@
+# TITRE  FISSURE LENTILLE EN TRACTION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI'),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM='CALCULEL2_63')
+
+# MODELISATION B : X-FEM 2D-AXI, MAILLAGE LINEAIRE
+
+# parametres utiles
+#------------------
+
+# angle de la lentile
+alpha = pi / 4.
+
+# valeur nominale de la force imposee
+sig = 1000000.
+
+# rayon de la fissure
+R = 2
+
+# rayon circulaire de la lentille
+a = R * sin(alpha)
+
+# taille des mailles initiales
+h0 = 1.
+
+# taille cible des mailles apres raffinement 
+# on prend des mailles 2 fois plus petites que celles
+# de la modelisation A (car ici mailles lineaires)
+hc = 0.025/2
+
+# nombre de raffinements
+# attention, en python log = ln (logarithme neperien)
+n = (log(h0)-log(hc))/log(2)
+nb_raff = int(n)+1
+h = h0/(2.**nb_raff)
+
+# rayon du disque de raffinement
+r_raff = 5*h
+
+# couronnes d'integration 
+Rsup = 6*h
+Rinf = 1*h
+
+# definition des formules utiles pour le calcul des level sets
+Rp = R * tan(alpha)
+Yh = R - R/cos(alpha)
+LN = FORMULE(NOM_PARA=('X','Y'),VALE='(X**2+(Y-R)**2-R**2)')
+LT = FORMULE(NOM_PARA=('X','Y'),VALE='sqrt(X**2+(Y-Yh)**2)-Rp')
+
+# initialisation
+nb_iter = nb_raff+1
+MA    = [None]*(nb_iter+1)
+MO    = [None]*nb_iter
+CHERR = [None]*nb_iter
+FISS  = [None]*nb_iter 
+
+i_raff=0   
+
+#MAILLAGE QUADRATIQUE
+MA_L=LIRE_MAILLAGE(FORMAT='MED')
+MA[i_raff]= CREA_MAILLAGE(
+  MAILLAGE = MA_L,
+  LINE_QUAD = _F(TOUT = 'OUI')
+)
+
+# boucle de raffinements
+for i_raff in range(nb_iter) :
+
+   MO[i_raff]=AFFE_MODELE(MAILLAGE=MA[i_raff],
+                          AFFE=_F(TOUT='OUI',
+                                  PHENOMENE='MECANIQUE',
+                                  MODELISATION='AXIS'))
+
+   FISS[i_raff]=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],
+                               DEFI_FISS=_F(FONC_LT=LT,
+                                            FONC_LN=LN,),
+                               )
+      
+   # evaluation de l'erreur       
+   CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff],
+                           TYPE='ZONE',
+                           RAYON=r_raff)
+   
+   # definition du type du maillage n+1
+   MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
+      
+   MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                  CHAM_GD            = CHERR[i_raff],
+                  CRIT_RAFF_ABS      = 0.5,
+                  DIAM_MIN           = hc,
+                  MAILLAGE_N         = MA[i_raff],
+                  MAILLAGE_NP1       = MA[i_raff+1])
+                     
+assert(nb_iter == i_raff+1)
+
+# impression du dernier maillage
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]))
+
+MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
+                          MAILLAGE=MA[nb_iter],
+                          ORIE_PEAU_2D=_F(GROUP_MA=('SUP','INF','EXT','AXI')))
+
+MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='MECANIQUE',
+                         MODELISATION='AXIS',),);
+
+FISSX=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
+                     DEFI_FISS=_F(FONC_LT=LT,
+                                  FONC_LN=LN,),
+                    )
+                                      
+
+MODX=MODI_MODELE_XFEM(MODELE_IN=MODE,
+                      DECOUPE_FACETTE='SOUS_ELEMENTS',
+                      FISSURE=FISSX)
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000e6,
+                            NU=0.3))
+
+MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
+                   AFFE=_F(TOUT='OUI',
+                           MATER=ACIER))
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODX,
+                    DDL_IMPO=(_F(GROUP_MA='AXI',DX=0,),
+                              _F(GROUP_NO='D'  ,DY=0),
+                              ),
+                    PRES_REP=_F(GROUP_MA=('SUP','INF','EXT'),PRES=-sig))
+
+RESU=MECA_STATIQUE(MODELE=MODX,
+                   CHAM_MATER=MATE,
+                   EXCIT=_F(CHARGE=CHAR))
+
+# visualisation
+MA_VISU=POST_MAIL_XFEM(MODELE=MODX)
+
+MO_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='AXIS'))
+
+RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
+                       RESULTAT=RESU)
+
+CGX=CALC_G(THETA=_F(FISSURE=FISSX,
+                    R_INF=Rinf,
+                    R_SUP=Rsup,),
+          RESULTAT=RESU,
+          OPTION='CALC_K_G')
+
+IMPR_TABLE(TABLE=CGX)
+
+PK=POST_K1_K2_K3(MODELISATION='AXIS',
+                 FISSURE=FISSX,
+                 MATER=ACIER,
+                 RESULTAT=RESU,
+                 ABSC_CURV_MAXI=50*h
+                )
+
+IMPR_TABLE(TABLE=PK)
+
+K1ref = 0.877*(2/pi)*sig*sqrt(pi*a)
+K2ref = 0.235*(2/pi)*sig*sqrt(pi*a)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.004,
+           VALE_CALC= 1180384.44041,
+           VALE_REFE=1.176825720257336E6,
+           NOM_PARA='K1',
+           TABLE=CGX,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.003,
+           VALE_CALC= 316072.688239,
+           VALE_REFE=3.1534098547374451E5,
+           NOM_PARA='K2',
+           TABLE=CGX,)        
+           
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC= 1197307.93343,
+           VALE_REFE=1.176825720257336E6,
+           NOM_PARA='K1',
+           TABLE=PK,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.23,
+           VALE_CALC= 385029.272871,
+           VALE_REFE=3.1534098547374451E5,
+           NOM_PARA='K2',
+           TABLE=PK,)            
+
+FIN()

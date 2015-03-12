@@ -106,8 +106,9 @@ subroutine te0046(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and. (.not. axi) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
+    if ((ibid.eq.0) .and.&
+        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
+        .and..not.iselli(elrefp)) &
     call jevech('PPMILTO', 'L', jpmilt)
 !
     call jevech('PXFGEOM', 'E', jout)
@@ -171,7 +172,7 @@ subroutine te0046(option, nomte)
 !-----------------------------------------------------------------------
 !
 !
-110 end do
+110 continue
 !
 !
     call jedema()

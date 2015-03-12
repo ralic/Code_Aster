@@ -516,15 +516,6 @@ Utilisez ELIM_ARETE='DUAL'.
      Coordonnées des points du fond de fissure sur la grille
 """),
 
-    76: _(u"""
-  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le cadre
-     d'un modèle X-FEM axisymétrique.
-
-  -> Risque & Conseil:
-     Veuillez utiliser un maillage linéaire.
-"""),
-
-
     77: _(u"""
   -> Il y a éventuellement des créations de mailles
      supplémentaires de type POI1 lorsque des affectations sont faites sur des nœuds ou des groupes de

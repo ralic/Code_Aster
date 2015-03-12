@@ -71,7 +71,6 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     real(kind=8) :: xe(3), coor3d(3*27)
     character(len=8) :: k8bid
 !
-    aster_logical :: axi
 !
 ! ----------------------------------------------------------------------
 !
@@ -80,7 +79,6 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg,&
     call elrefe_info(elrefe=elc,fami=fpg,ndim=ndimf,nno=nno,&
                      jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
-    axi = lteatt('AXIS','OUI')
     ASSERT(nno.eq.3.or.nno.eq.6)
     ASSERT(ndim.eq.3)
 !

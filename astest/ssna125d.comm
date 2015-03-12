@@ -1,0 +1,344 @@
+# TITRE : CONDITIONS DE DIRCIHLET SUR DES ELEMENTS XFEM
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#       CAS_TEST SSNA125D: 2D_AXI, ELEMENTS TR6, XFEM
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+
+import math;
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='MED');   
+MA = MODI_MAILLAGE( reuse=MA,  MAILLAGE=MA,
+                    ORIE_PEAU_2D=_F(GROUP_MA = ('gauche','bas')))
+MODELEIN=AFFE_MODELE(MAILLAGE=MA,
+                     AFFE=(_F(TOUT='OUI',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='AXIS',),),);
+       
+# Definition de Materiau
+
+nu1=0.3
+E1=1.0E5
+kappa = (3-nu1)/(1+nu1)
+mu = E1/(2*(1+nu1))
+lam=E1*nu1/((1+nu1)*(1-2*nu1))
+
+# Information geometrique
+
+RI=1.;
+RE=10.;
+PINT=300.
+RF = (RI+RE)/2
+
+
+# definition de l'interface
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
+                     TYPE_DISCONTINUITE='INTERFACE',
+                     DEFI_FISS=_F(FORM_FISS='ELLIPSE',
+                  DEMI_GRAND_AXE=RF,
+  DEMI_PETIT_AXE=RF,
+  CENTRE=(0,0,0),
+  VECT_X=(1,0,0),
+  VECT_Y=(0,1,0),),
+                     INFO=1,);
+                    
+# modification des modeles
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         DECOUPE_FACETTE='SOUS_ELEMENTS',
+                         CONTACT='STANDARD',
+                         INFO=2,);
+                         
+
+
+# modif definition et affectation materiau
+
+#elasticite
+
+#MAT=DEFI_MATERIAU(ELAS=_F(E=E1,NU=nu1,));
+MAT=DEFI_MATERIAU(        ELAS=_F(  E = E1,
+                                     NU = nu1),
+                                ECRO_LINE=_F(  D_SIGM_EPSI = 0.,
+                                         SY = 350.)
+                       );
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA=('SURF',),
+                      MATER=MAT,),
+    );
+
+#+----------------------------------------+
+#|       conditions aux limites           |
+#+----------------------------------------+
+
+# solution analytique
+
+# fonction utilitaitres pour le passage spherique -> cartesien
+def thet(X,Y):
+  return atan2(Y,X)
+
+def cos(X,Y):
+  return math.cos(thet(X,Y))
+
+def sin(X,Y):
+  return math.sin(thet(X,Y))
+
+# pression (-sig rr) dans la zone elastique, en r=RF
+PR=(-PINT*RI**3/(RE**3-RI**3)*(1.-RE**3/RF**3))*-1
+
+PRES=FORMULE(NOM_PARA=('X','Y',),VALE='PR')
+
+# elasticite deplacement   
+# indices 1:ux,2:uy  
+def UREF(X,Y,IND) : 
+    UREF = [None]*2
+    r=math.sqrt(X*X+Y*Y)
+    
+    UR=PINT*RI**3/(RE**3-RI**3)*(r/(2*mu+3*lam)+RE**3/(4*mu*r**2))          
+      
+    UREF[0]=UR*cos(X,Y)
+    UREF[1]=UR*sin(X,Y)
+
+    return UREF[IND]
+   
+UX=FORMULE(NOM_PARA=('X','Y',),VALE='UREF(X,Y,0)'); 
+UY=FORMULE(NOM_PARA=('X','Y',),VALE='UREF(X,Y,1)');
+U=PINT*RI**3/(RE**3-RI**3)*(RF/(2*mu+3*lam)+RE**3/(4*mu*RF**2))        
+ZERO=FORMULE(NOM_PARA=('X','Y',),VALE='0.');     
+
+#elasticite energie
+def EPSREF(X,Y,IND) : 
+    EPSREF = [None]*4
+    r=math.sqrt(X*X+Y*Y)
+   
+    err=PINT*RI**3/(RE**3-RI**3)*(1./(2*mu+3*lam)-RE**3/(2*mu*r**3))    
+    eth=PINT*RI**3/(RE**3-RI**3)*(1./(2*mu+3*lam)+RE**3/(4*mu*r**3))    
+
+    EPSREF[0]=err*cos(X,Y)**2+eth*sin(X,Y)**2
+    EPSREF[1]=err*sin(X,Y)**2+eth*cos(X,Y)**2
+    EPSREF[2]=(err-eth)*cos(X,Y)*sin(X,Y)
+    EPSREF[3]=eth
+
+    return EPSREF[IND]
+      
+EXX=FORMULE(NOM_PARA=('X','Y',),VALE='EPSREF(X,Y,0)'); 
+EYY=FORMULE(NOM_PARA=('X','Y',),VALE='EPSREF(X,Y,1)');
+EXY=FORMULE(NOM_PARA=('X','Y',),VALE='EPSREF(X,Y,2)');
+EZZ=FORMULE(NOM_PARA=('X','Y',),VALE='EPSREF(X,Y,3)');   
+
+#plasticite contraintes
+def SIGREF(X,Y,IND) : 
+    SIGREF = [None]*4
+    r=math.sqrt(X*X+Y*Y)
+   
+    srr=PINT*RI**3/(RE**3-RI**3)*(1.-RE**3/r**3)    
+    sth=PINT*RI**3/(RE**3-RI**3)*(1.+RE**3/(2*r**3))    
+
+    SIGREF[0]=srr*cos(X,Y)**2+sth*sin(X,Y)**2
+    SIGREF[1]=srr*sin(X,Y)**2+sth*cos(X,Y)**2
+    SIGREF[2]=((srr-sth)*cos(X,Y)*sin(X,Y))*-1
+    SIGREF[3]=sth*(-1)
+
+    return SIGREF[IND]
+      
+SXX=FORMULE(NOM_PARA=('X','Y',),VALE='SIGREF(X,Y,0)'); 
+SYY=FORMULE(NOM_PARA=('X','Y',),VALE='SIGREF(X,Y,1)');
+SXY=FORMULE(NOM_PARA=('X','Y',),VALE='SIGREF(X,Y,2)');
+SZZ=FORMULE(NOM_PARA=('X','Y',),VALE='SIGREF(X,Y,3)');   
+
+
+# - blocages mouvements de corps rigide
+# - deplacement impose 
+
+CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                      DDL_IMPO=(  
+                  _F(GROUP_MA=('int','ext'),    DX=UX, DY=UY,),
+      ),
+            );
+
+# pression imposee
+
+CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                   PRES_REP=(
+                   _F(GROUP_MA=('gauche','bas'),PRES=SZZ, CISA_2D = SXY),
+               ),
+              );
+CONT_G  = DEFI_CONTACT(MODELE = MODELEK,
+                       FORMULATION    = 'XFEM',
+                       ZONE =(
+                           _F(FISS_MAIT = FISS,
+                              ALGO_LAGR='VERSION2',
+                              CONTACT_INIT  = 'OUI',
+                              GLISSIERE     = 'NON',
+                              ),),);
+#+----------------------------------------+
+#|               calcul                   |
+#+----------------------------------------+
+
+     
+INSTS=DEFI_LIST_REEL(DEBUT       = 0.0,
+                     INTERVALLE = _F(JUSQU_A = 1.,
+                                     NOMBRE  = 1,),);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,1,1,),)
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CH1),
+                          _F(CHARGE=CH2),
+                          ),
+                   CONTACT = CONT_G,       
+                          
+                          
+                   COMPORTEMENT=_F(RELATION='ELAS',
+                           GROUP_MA='SURF',),
+                   NEWTON=_F(REAC_ITER=1,REAC_INCR=1),
+                   INCREMENT=_F(LIST_INST=INSTS,),
+                   CONVERGENCE=(_F(ITER_GLOB_MAXI=5,
+                                   RESI_GLOB_RELA=1E-6,),),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              NPREC=-6,),
+                         
+                   INFO=1,);
+MA_G=POST_MAIL_XFEM(MODELE        = MODELEK,
+                        INFO          = 2);
+ 
+ 
+MOD_G=AFFE_MODELE(MAILLAGE=MA_G,
+                      AFFE=_F(TOUT='OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='AXIS',),);
+ 
+RES_G=POST_CHAM_XFEM(MODELE_VISU   = MOD_G,
+                         RESULTAT      = UTOT1,
+                         INFO          = 2);
+
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RES_G))                  
+
+#-----------------------------------------------------------
+#             POST-TRAITEMENT POUR LA VISUALISATION
+#-----------------------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(
+                                                MODELE=MODELEK);
+
+MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
+                                        MAILLAGE=MA_XFEM,
+                                        CREA_GROUP_NO=(_F(NOM='N_INT',
+                                                                              OPTION ='ENV_SPHERE',
+                                                                              POINT  = (0.0,0.0),
+                                                                              RAYON = 5.5,
+                                                                              PRECISION = 0.01,
+                                                                              )),
+                                        INFO = 2);
+                                                                                                                                       
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                                            AFFE=_F(TOUT='OUI',
+                                                            PHENOMENE='MECANIQUE',
+                                                            MODELISATION='AXIS',
+                ))
+
+RES_XFEM=POST_CHAM_XFEM(
+
+                                                    MODELE_VISU  = MOD_VISU,
+                                                    RESULTAT        = UTOT1,
+                                                    )
+
+#----------------------------------------------
+#                   POST RELEVE
+#----------------------------------------------
+
+DEP=[None]*1
+distance = FORMULE(NOM_PARA=('DX','DY'),
+                   VALE='sqrt((DX)**2+(DY)**2)');
+
+#Boucle sur les increments
+DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                 GROUP_NO=('N_INT'),
+                                 RESULTAT=RES_XFEM,
+                                 NOM_CHAM='DEPL',
+                                 INST=1,
+                                 TOUT_CMP='OUI',
+                                 OPERATION='EXTRACTION'));
+                                 
+LAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                             GROUP_NO='N_INT',
+                             RESULTAT=RES_XFEM,
+                             NOM_CHAM='DEPL',
+                             NUME_ORDRE=1,
+                             NOM_CMP=('LAGS_C'),
+                             OPERATION='EXTRACTION',),);                                 
+
+DEP=CALC_TABLE(reuse = DEP,
+                    TABLE = DEP,
+                    ACTION = (_F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ('COOR_X','X')),
+                              _F(OPERATION = 'RENOMME',
+                                 NOM_PARA  = ('COOR_Y','Y')),
+                              _F(OPERATION = 'OPER',
+                                 NOM_PARA  = 'UR',
+                                 FORMULE = distance),
+                              _F(OPERATION = 'EXTR',
+                                 NOM_PARA=('NOEUD','INST','UR')),
+                              _F(OPERATION = 'FILTRE',
+                                 NOM_PARA  = 'NOEUD',
+                                 CRIT_COMP = 'REGEXP',
+                                 VALE_K    = 'N[^M]')));
+
+IMPR_TABLE(TABLE=DEP);
+
+IMPR_TABLE(TABLE=LAG);
+
+TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.02,
+             VALE_CALC=7.12597832846E-05,
+             VALE_REFE=U,
+             NOM_PARA='UR',
+             TYPE_TEST='MAX',
+             TABLE=DEP,)
+             
+TEST_TABLE(CRITERE='RELATIF',
+             REFERENCE='ANALYTIQUE',
+             PRECISION=0.02,
+             VALE_CALC=7.07660690875E-05,
+             VALE_REFE=U,
+             NOM_PARA='UR',
+             TYPE_TEST='MIN',
+             TABLE=DEP,) 
+             
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=-1.50176623681,
+           VALE_REFE=PINT*RI**3/(RE**3-RI**3)*(1.-RE**3/RF**3),
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           TABLE=LAG,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.02,
+           VALE_CALC=-1.51147492123,
+           VALE_REFE=PINT*RI**3/(RE**3-RI**3)*(1.-RE**3/RF**3),
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MIN',
+           TABLE=LAG,)                         
+
+FIN();

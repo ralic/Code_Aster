@@ -122,7 +122,7 @@ subroutine te0297(option, nomte)
     call teattr('S', 'XFEM', enr, ier)
     if (nfh.gt.0) call jevech('PHEA_NO', 'L', jheavn)
 !   Propre aux elements 1d et 2d (quadratiques)
-    if ((ier.eq.0) .and. (.not.lteatt('AXIS','OUI')) .and.&
+    if ((ier.eq.0) .and.&
         (enr.eq.'XH' .or.enr.eq.'XHC'.or.enr.eq.'XHT'.or.enr.eq.'XT')&
          .and..not.iselli(elrefp))&
     call jevech('PPMILTO', 'L', jpmilt)
