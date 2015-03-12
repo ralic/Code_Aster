@@ -39,8 +39,7 @@ def perm_mac3coeur_ops(self, **args):
     CREA_CHAMP = self.get_cmd('CREA_CHAMP')
     CREA_RESU = self.get_cmd('CREA_RESU')
     AFFE_CHAR_CINE = self.get_cmd('AFFE_CHAR_CINE')
-    #DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
-    
+
     self.set_icmd(1)
     datg = aster_core.get_option("repdex")
     coeur_factory = CoeurFactory(datg)
@@ -116,7 +115,6 @@ def perm_mac3coeur_ops(self, **args):
         _F(RELATION='VMIS_ISOT_TRAC', GROUP_MA ='MAINTIEN', DEFORMATION='PETIT',), ]
     
     self.DeclareOut('BIDON', self.sd)
-    #__timeBidon=DEFI_LIST_REEL(VALE=(0.,0.))
     __BIDON = STAT_NON_LINE(MODELE=_MO_NP1,
                            CHAM_MATER=_AFSCNP1,
                            CARA_ELEM=_CARANP1,
@@ -221,7 +219,6 @@ def perm_mac3coeur_ops(self, **args):
                 (_coeurp1.ALPHAMAC.index(_coeurp1.nameAC[nom][
                  2]) - _coeurp1.ALPHAMAC.index(_coeur.nameAC[nom][2]))
 
-            #_coe[indice] = MACRO_AC_PERMUTE(
             MACRO_AC_PERMUTE(
                 POS_INIT=_coeur.nameAC[nom],
                 POS_FIN=_coeurp1.nameAC[nom],
@@ -235,64 +232,4 @@ def perm_mac3coeur_ops(self, **args):
             UTMESS('I', 'COEUR0_3', valk=(_coeur.position_todamac(
                 _coeur.nameAC[nom]), _coeurp1.position_todamac(_coeurp1.nameAC[nom])))
 
-            #_dep[indice] = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                                      #OPERATION='EXTR',
-                                      #PRECISION=1.0E-10,
-                                      #RESULTAT=_coe[indice],
-                                      #NOM_CHAM='DEPL',
-                                      #INST=0.0,)
-
-            #_var[indice] = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
-                                      #OPERATION='EXTR',
-                                      #PRECISION=1.0E-10,
-                                      #RESULTAT=_coe[indice],
-                                      #NOM_CHAM='VARI_ELGA',
-                                      #INST=0.0,)
-
-            #mtdep = (
-                #_F(TOUT='OUI', CHAM_GD=_dep[indice], CUMUL='OUI', COEF_R=1.0),)
-            #mtvar = (
-                #_F(TOUT='OUI', CHAM_GD=_var[indice], CUMUL='OUI', COEF_R=1.0),)
-            #lisdep.extend(mtdep)
-            #lisvar.extend(mtvar)
-
-            #mtdet = {}
-            #mtdet["NOM"] = (_coe[indice], _dep[indice], _var[indice])
-            #lisdet.append(mtdet)
-
-            #indice = indice + 1
-
     UTMESS('I', 'COEUR0_2', vali=(indice))
-    #_RES_DEP = CREA_CHAMP(
-        #TYPE_CHAM='NOEU_DEPL_R', MODELE=_MO_NP1, OPERATION='ASSE', ASSE=lisdep)
-    #_RES_VAR = CREA_CHAMP(
-        #TYPE_CHAM='ELGA_VARI_R', MODELE=_MO_NP1, OPERATION='ASSE', ASSE=lisvar)
-
-    #_RES_SIG = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
-                          #OPERATION='EXTR',
-                          #PRECISION=1.0E-10,
-                          #RESULTAT=_coe[0],
-                          #NOM_CHAM='SIEF_ELGA',
-                          #INST=0.0,)
-
-    #self.DeclareOut('RESU_F', self.sd)
-    
-    #RESU_F = CREA_RESU(OPERATION='AFFE',
-                       #TYPE_RESU='EVOL_NOLI',
-                       #NOM_CHAM='DEPL',
-                       #COMPORTEMENT=compor,
-                       #AFFE=_F(CHAM_GD=_RES_DEP, INST=0.0, MODELE=_MO_NP1, CARA_ELEM=_CARANP1, CHAM_MATER=_AFSCNP1,))
-
-    #RESU_F = CREA_RESU(reuse=RESU_F,
-                       #OPERATION='AFFE',
-                       #TYPE_RESU='EVOL_NOLI',
-                       #NOM_CHAM='SIEF_ELGA',
-                       #COMPORTEMENT=compor,
-                       #AFFE=_F(CHAM_GD=_RES_SIG, INST=0.0, MODELE=_MO_NP1, CARA_ELEM=_CARANP1, CHAM_MATER=_AFSCNP1,))
-
-    #RESU_F = CREA_RESU(reuse=RESU_F,
-                       #OPERATION='AFFE',
-                       #TYPE_RESU='EVOL_NOLI',
-                       #NOM_CHAM='VARI_ELGA',
-                       #COMPORTEMENT=compor,
-                       #AFFE=_F(CHAM_GD=_RES_VAR, INST=0.0, MODELE=_MO_NP1, CARA_ELEM=_CARANP1, CHAM_MATER=_AFSCNP1,))
