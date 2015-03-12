@@ -21,16 +21,20 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 MA0=LIRE_MAILLAGE(INFO=1,
                   FORMAT='MED');
 
-MA0=DEFI_GROUP(reuse =MA0,
-                    MAILLAGE=MA0,
+MA1=CREA_MAILLAGE(MAILLAGE=MA0,
+                  LINE_QUAD=_F(TOUT='OUI'),);
+
+
+MA1=DEFI_GROUP(reuse =MA1,
+                    MAILLAGE=MA1,
                    CREA_GROUP_NO=(_F(GROUP_MA='VOL'),
                                    _F(GROUP_MA='SURFSUP')))
 
-MA0=MODI_MAILLAGE(reuse =MA0,
-                       MAILLAGE=MA0,
+MA1=MODI_MAILLAGE(reuse =MA1,
+                       MAILLAGE=MA1,
                        ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF')))
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MA0,
+MODELEIN=AFFE_MODELE(MAILLAGE=MA1,
                      AFFE=(_F(GROUP_MA=('VOL'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D'),
@@ -40,7 +44,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MA0,
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-17.5');
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MA0,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA1,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN));
 
@@ -77,7 +81,7 @@ E=1.0E11
 nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=7800.0));
 
-CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA0,
+CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA1,
                        MODELE=MODELEK,
                        AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP'),
                                 MATER=ACIER,
@@ -149,7 +153,7 @@ LAREF=-9.52844E6
 LA2REF=0.
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=-9.5250948399678E+06,
+           VALE_CALC=-9526014.77509,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            TABLE=LAG,
