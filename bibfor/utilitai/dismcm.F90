@@ -250,10 +250,12 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                 do 160 irc = 1, nbrc
                     nomrc=zk32(ianorc-1+irc)
 !
-!            -- SI LE MATERIAU EST ISSU DE LA COMMANDE DEFI_COQU_MULT :
+!                   -- Si le materiau est issu de la commande DEFI_COQU_MULT :
                     if (nomrc(5:10) .eq. '_COQMU') goto 170
 !
                     if (nomrc(1:4) .ne. 'ELAS') goto 160
+                    if (nomrc .eq. 'ELAS_DHRC') goto 160
+
                     call codent(irc,'D0',k6)
                     call jeveuo(mater//'.CPT.'//k6//'.VALK', 'L', iavalk)
                     call jelira(mater//'.CPT.'//k6//'.VALK', 'LONUTI', n1)
@@ -264,9 +266,9 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
                         nomf=zk16(iavalk-1+nr+nc+nf+if)
                         call jeveuo(nomf//'           .PROL', 'L', iaprol)
                         if (zk24(iaprol-1+1) .eq. 'CONSTANT') then
-!                  -- CAS D'UNE FONCTION CONSTANTE :
+!                           -- cas d'une fonction constante :
                         else
-!                  -- CAS D'UNE FONCTION VARIABLE :
+!                           -- cas d'une fonction variable :
                             repk='OUI'
                         endif
 150                 continue

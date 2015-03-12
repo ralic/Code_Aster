@@ -16,18 +16,22 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine rcvala(jmat,nomat,phenom,nbpar,nompar,valpar,    &
-     &nbres,nomres,valres,icodre,iarret)
-              integer, intent(in) :: nbres
+            subroutine rcadlv(fami,kpg,ksp,poum,jmat,nomat,mfact,msimp, &
+     &nbpar,nompar,valpar,jadr,nbres,icodre,iarret)
               integer, intent(in) :: nbpar
+              character(len=*), intent(in) :: fami
+              integer, intent(in) :: kpg
+              integer, intent(in) :: ksp
+              character(len=1), intent(in) :: poum
               integer, intent(in) :: jmat
               character(len=*), intent(in) :: nomat
-              character(len=*), intent(in) :: phenom
+              character(len=*), intent(in) :: mfact
+              character(len=*), intent(in) :: msimp
               character(len=*), intent(in) :: nompar(nbpar)
               real(kind=8), intent(in) :: valpar(nbpar)
-              character(len=*), intent(in) :: nomres(nbres)
-              real(kind=8), intent(out) :: valres(nbres)
-              integer, intent(out) :: icodre(nbres)
+              integer, intent(out) :: jadr
+              integer, intent(out) :: nbres
+              integer, intent(out) :: icodre
               integer, intent(in) :: iarret
-            end subroutine rcvala
+            end subroutine rcadlv
           end interface 

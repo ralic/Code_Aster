@@ -27,23 +27,23 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre, iarret)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!     OBTENTION DES ADRESSES DES COMPOSANTES D'UN MATERIAU METALLURGIQUE
-!               DE L'ADRESSE D'UNE TEXTURE
+!     obtention des adresses des composantes d'un materiau metallurgique
+!               de l'adresse d'une texture
 !
-!     ARGUMENTS D'ENTREE:
-!        IMATE  : ADRESSE DU MATERIAU CODE
-!        PHENOM : NOM DU PHENOMENE
-!        NOMRES : NOM DES RESULTATS (EX: TRC, TEXTURE, ... )
-!                 TELS QU'IL FIGURENT DANS LA COMMANDE MATERIAU
+!     arguments d'entree:
+!        imate  : adresse du materiau code
+!        phenom : nom du phenomene
+!        nomres : nom des resultats (ex: trc, texture, ... )
+!                 tels qu'il figurent dans la commande materiau
 !
-!     ARGUMENTS DE SORTIE:
-!       VALRES  : ADRESSE DU .VALE du LISTR8
-!       ICODRE  : 0 SI ON A TROUVE, 1 SINON
+!     arguments de sortie:
+!       valres  : adresse du .vale du listr8
+!       icodre  : 0 si on a trouve, 1 sinon
 ! ----------------------------------------------------------------------
 !
     integer :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, ik, nbr, nbc
     integer :: lfct, imate, nbmat
-    parameter        ( lmat = 7 , lfct = 9)
+    parameter  ( lmat = 9 , lfct = 10)
     character(len=24) :: valk
     character(len=8) :: nomail
     character(len=32) :: nomphe
@@ -87,6 +87,7 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre, iarret)
         if (nomres .eq. zk16(ivalk+nbr+nbc+ik-1)) then
             icodre = 0
             ipif = ipi + lmat + (ik-1)*lfct -1
+            ASSERT(zi(ipif+9).eq.2)
             valres = zi(ipif )
             goto 9999
         endif

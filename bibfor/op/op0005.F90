@@ -61,7 +61,7 @@ subroutine op0005()
     character(len=19) :: noobrc
     character(len=24) :: valk(4)
     character(len=32) :: nomrc
-    character(len=32), allocatable :: motcle(:)   
+    character(len=32), allocatable :: motcle(:)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -73,9 +73,9 @@ subroutine op0005()
 !
     if (nbrcme .eq. 0) then
         call utmess('F', 'MODELISA10_16')
-    else 
-        allocate(motcle(nbrcme))   
-        call getmat(nbrcme, motcle) 
+    else
+        allocate(motcle(nbrcme))
+        call getmat(nbrcme, motcle)
     endif
 !
     matin = ' '
@@ -141,7 +141,7 @@ subroutine op0005()
         ind=lxlgut(nomrc)+1
         if (ind .gt. 32) then
             call utmess('F','MODELISA9_83', sk=nomrc)
-        endif   
+        endif
         if (zl(jtypfo+irc-1)) then
             nomrc(ind:ind+2) = '_FO'
         endif
@@ -152,12 +152,14 @@ subroutine op0005()
         endif
 !
         if (nomrc .eq. 'THER_NL') nbobm = nbobm + 1
+
+!       -- les objets .VALR, .VALC et .VALK sont sur-dimensionnes :
         call wkvect(noobrc//'.VALR', 'G V R', nbobm, jvalrm)
         call wkvect(noobrc//'.VALC', 'G V C', nbobm, jvalcm)
         call wkvect(noobrc//'.VALK', 'G V K16', 2*nbobm, jvalkm)
 !
-        call rcstoc(matout, nomrc, nbobm, zr(jvalrm), zc(jvalcm),&
-                    zk16( jvalkm), nbr, nbc, nbk)         
+        call rcstoc(matout, nomrc, noobrc, nbobm, zr(jvalrm), zc(jvalcm),&
+                    zk16(jvalkm), nbr, nbc, nbk)
         call jeecra(noobrc//'.VALR', 'LONUTI', nbr)
         call jeecra(noobrc//'.VALC', 'LONUTI', nbc)
         call jeecra(noobrc//'.VALK', 'LONUTI', nbr+nbc+2*nbk)
@@ -188,7 +190,7 @@ subroutine op0005()
             write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=1,nbr)
             write(ifm,'(5(3X,G13.6))')  (zr(jvalrm-1+i),i=1,nbr)
             write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=nbr+1,nbr+nbc)
-            write(ifm,'(5(3X,2G13.6))') (zc(jvalcm-1+i),i=1,nbc)
+            write(ifm,'(5(3X,2G13.6))') (zc(jvalcm-1+i),i=nbr+1,nbr+nbc)
             write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=nbr+nbc+1,nbr+nbc+nbk)
             write(ifm,'(5(3X,A16,5X))') (zk16(jvalkm-1+i),i=nbr+nbc+nbk+1,nbr+nbc+2*nbk)
             write(ifm,'(1X)')
@@ -196,7 +198,7 @@ subroutine op0005()
     endif
 !
     call aniver(matout)
-! 
+!
     deallocate(motcle)
 
     call jedema()

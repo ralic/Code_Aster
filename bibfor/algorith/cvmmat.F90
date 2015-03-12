@@ -46,7 +46,10 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
 #include "asterfort/rcvalb.h"
+#include "asterfort/rcvalt.h"
 #include "asterfort/rupmat.h"
+#include "asterfort/assert.h"
+!       ----------------------------------------------------------------
     integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi, lgpg
     integer :: ioptio, idnr, i, j, imat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -107,34 +110,34 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !
 ! -     RECUPERATION MATERIAU -----------------------------------------
 !
-    nomc(1) = 'E       '
-    nomc(2) = 'NU      '
-    nomc(3) = 'ALPHA   '
-    nomc(4) = 'K_0     '
-    nomc(5) = 'A_K     '
-    nomc(6) = 'A_R     '
-    nomc(7) = 'K       '
-    nomc(8) = 'N       '
-    nomc(9) = 'ALP     '
-    nomc(10) = 'B       '
-    nomc(11) = 'M_R     '
-    nomc(12) = 'G_R     '
-    nomc(13) = 'MU      '
-    nomc(14) = 'Q_M     '
-    nomc(15) = 'Q_0     '
-    nomc(16) = 'QR_0    '
-    nomc(17) = 'ETA     '
-    nomc(18) = 'C1      '
-    nomc(19) = 'M_1     '
-    nomc(20) = 'D1      '
-    nomc(21) = 'G_X1    '
-    nomc(22) = 'G1_0    '
-    nomc(23) = 'C2      '
-    nomc(24) = 'M_2     '
-    nomc(25) = 'D2      '
-    nomc(26) = 'G_X2    '
-    nomc(27) = 'G2_0    '
-    nomc(28) = 'A_I     '
+    nomc(1) ='E'
+    nomc(2) ='NU'
+    nomc(3) ='ALPHA'
+    nomc(4) ='K_0'
+    nomc(5) ='A_K'
+    nomc(6) ='A_R'
+    nomc(7) ='K'
+    nomc(8) ='N'
+    nomc(9) ='ALP'
+    nomc(10) ='B'
+    nomc(11) ='M_R'
+    nomc(12) ='G_R'
+    nomc(13) ='MU'
+    nomc(14) ='Q_M'
+    nomc(15) ='Q_0'
+    nomc(16) ='QR_0'
+    nomc(17) ='ETA'
+    nomc(18) ='C1'
+    nomc(19) ='M_1'
+    nomc(20) ='D1'
+    nomc(21) ='G_X1'
+    nomc(22) ='G1_0'
+    nomc(23) ='C2'
+    nomc(24) ='M_2'
+    nomc(25) ='D2'
+    nomc(26) ='G_X2'
+    nomc(27) ='G2_0'
+    nomc(28) ='A_I'
 !
     do 9 j = 1, 2
         do 9 i = 1, nmat
@@ -157,9 +160,11 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
 !
 !
     if (cerr(3) .ne. 0) materd(3,1) = 0.d0
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'VISCOCHAB', 0, ' ', [0.d0],&
-                25, nomc(4), materd(1, 2), cerr(4), 2)
+
+    call rcvalt(fami, kpg, ksp, '-', imat, ' ',  'VISCOCHAB', &
+                0, [' '], [0.d0], 5, materd(1, 2), cerr(4), 2)
+
+
 !
 ! -     MISE A JOUR DU COMMUN COED POUR TRAITER LE CAS ANISOTHERME
 !
@@ -180,9 +185,9 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat,&
     endif
 !
     if (cerr(3) .ne. 0) materf(3,1) = 0.d0
-    call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'VISCOCHAB', 0, ' ', [0.d0],&
-                25, nomc(4), materf(1, 2), cerr(4), 2)
+
+    call rcvalt(fami, kpg, ksp, '+', imat, ' ', 'VISCOCHAB', &
+                0, [' '], [0.d0], 25, materf(1, 2), cerr(4), 2)
 !
 ! -     PARAMETRES DES LOIS DE COMPORTEMENT A 2 SEUILS
 !

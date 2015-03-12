@@ -15,17 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
-                      valk, nbr, nbc, nbk)
-        character(len=8) :: nommat
-        character(len=32) :: nomrc
-        integer :: nbobj
-        real(kind=8) :: valr(*)
-        complex(kind=8) :: valc(*)
-        character(len=16) :: valk(*)
-        integer :: nbr
-        integer :: nbc
-        integer :: nbk
-    end subroutine rcstoc
-end interface
+          interface 
+            subroutine rcstoc(nommat,nomrc,noobrc,nbobj,valr,valc,valk, &
+     &nbr,nbc,nbk)
+              character(len=8) :: nommat
+              character(len=32) :: nomrc
+              character(len=19) :: noobrc
+              integer :: nbobj
+              real(kind=8) :: valr(*)
+              complex(kind=8) :: valc(*)
+              character(len=16) :: valk(*)
+              integer :: nbr
+              integer :: nbc
+              integer :: nbk
+            end subroutine rcstoc
+          end interface 

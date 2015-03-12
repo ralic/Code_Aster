@@ -43,7 +43,7 @@ subroutine ntfcma(compo, jmat, ifon)
     integer :: idf, jmat, lfct, lmat
     character(len=16) :: valk(2), compo2
 !-----------------------------------------------------------------------
-    parameter        ( lmat = 7 , lfct = 9 )
+    parameter  ( lmat = 9 , lfct = 10 )
 ! DEB ------------------------------------------------------------------
 !
 !

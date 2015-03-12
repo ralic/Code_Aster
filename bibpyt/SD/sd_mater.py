@@ -22,6 +22,12 @@ from SD.sd_fonction import sd_fonction
 from SD.sd_table import sd_table
 
 
+class sd_mater_LISV(AsBase):
+#---------------------------
+    nomj = SDNom(fin=16)
+    LISV_R8 = Facultatif(AsVR())
+    LISV_FO = Facultatif(AsVK8())
+
 class sd_mater_XDEP(AsBase):
 #---------------------------
     # on dirait une fonction, mais c'est plutot la concaténation de plusieurs
@@ -34,27 +40,37 @@ class sd_mater_XDEP(AsBase):
 class sd_compor1(AsBase):
 #-----------------------
     nomj = SDNom(fin=19)
-    VALC = AsVC(SDNom(), )
-    VALK = AsVK16(SDNom(), )
-    VALR = AsVR(SDNom(), )
+    VALC = AsVC(SDNom())
+    VALK = AsVK16(SDNom())
+    VALR = AsVR(SDNom())
+    ORDR =Facultatif(AsVK16(SDNom()))
+    KORD =Facultatif(AsVI(SDNom()))
 
     # parfois, comme dans THER_NL on crée une sd_fonction pour BETA
     def check_compor1_i_VALK(self, checker):
         nom = self.nomj().strip()
         valk = list(self.VALK.get_stripped())
-        if valk:
-            nbk2 = self.VALK.lonuti
-            nbr = self.VALR.lonuti
-            nbc = self.VALC.lonuti
-            nbk = nbk2 - nbr - nbc
-            for k in range(nbk / 2):
-                nomfon = valk[nbr + nbc + nbk / 2 + k]
-                sd2 = sd_fonction(nomfon)
-                if sd2.PROL.exists:   # pourquoi sd2.exists() plante-t-il ?
-                    sd2.check(checker)
-                else:
-                    sd3 = sd_table(nomfon)
-                    assert sd3.exists()
+        assert self.VALC.lonmax == self.VALR.lonmax
+        assert self.VALK.lonmax == 2*self.VALR.lonmax
+        nbk2 = self.VALK.lonuti
+        nbr = self.VALR.lonuti
+        nbc = self.VALC.lonuti
+        nbk = nbk2 - nbr - nbc
+        for k in range(nbk / 2):
+            nomcon = valk[nbr + nbc + nbk / 2 + k]
+            # La SD nomcon est une sd_fonction, une sd_table ou un sd_mater_LISV :
+            sd2 = sd_fonction(nomcon)
+            if sd2.PROL.exists:
+                # parfois, la fonction a ete cree en sous-terrain et n'a
+                # pas encore ete verifiee :
+                sd2.check(checker)
+            else:
+                sd3 = sd_table(nomcon)
+                if sd3.exists():
+                    pass # normalement,la table a deja ete verifiee
+                else :
+                    sd4 = sd_mater_LISV(nomcon)
+                    sd4.check(checker)
 
 
 class sd_mater(AsBase):

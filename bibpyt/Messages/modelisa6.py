@@ -284,6 +284,11 @@ Solution : Il faut dédoubler le noeud.
  comportement TRACTION non trouvé
 """),
 
+    81 : _(u"""
+Erreur programmeur dans DEFI_MATERIAU :
+   Pour le mot clé facteur %(k1)s, la liste ordonnée des mots clés (ORDRE_PARAM)
+   ne contient pas le mot clé %(k2)s.
+"""),
 
 
     82 : _(u"""

@@ -15,14 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rcadma(jmat, phenom, nomres, valres, icodre,&
-                      iarret)
-        integer :: jmat
-        character(len=*) :: phenom
-        character(len=*) :: nomres
-        integer :: valres
-        integer :: icodre
-        integer :: iarret
-    end subroutine rcadma
-end interface
+          interface 
+            subroutine rcadma(jmat,phenom,nomres,valres,icodre,iarret)
+              integer :: jmat
+              character(len=*) :: phenom
+              character(len=*) :: nomres
+              integer :: valres
+              integer :: icodre
+              integer :: iarret
+            end subroutine rcadma
+          end interface 

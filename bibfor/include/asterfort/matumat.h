@@ -15,16 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
-        real(kind=8) :: props(*)
-        integer :: ifm
-        integer :: niv
-        integer :: idbg
-        integer :: nprops
-    end subroutine matumat
-end interface
+          interface 
+            subroutine matumat(fami,kpg,ksp,poum,imate,nprops,props)
+              character(len=*), intent(in) :: fami
+              integer, intent(in) :: kpg
+              integer, intent(in) :: ksp
+              character(len=1), intent(in) :: poum
+              integer, intent(in) :: imate
+              integer, intent(inout) :: nprops
+              real(kind=8), intent(out) :: props(*)
+            end subroutine matumat
+          end interface 

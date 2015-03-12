@@ -103,15 +103,7 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !     NTENS  :  NB TOTAL DE COMPOSANTES TENSEURS
 !     NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 ! ======================================================================
-!
-!     NUMERO D'ELEMENT SEULEMENT SI ON N'EST PAS DANS CALC_POINT_MAT
-    noel=0
-    if (compor(17) .ne. 'POINT') then
-!        NUMERO D'ELEMENT
-        call tecael(iadzi, iazk24, noms=0)
-        noel=zi(iadzi)
-    endif
-!
+
     ntens=2*ndim
     ndi=3
     nshr=ntens-ndi
@@ -123,8 +115,8 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !     IMPRESSIONS EVENTUELLES EN DEBUG
     call infniv(ifm, niv)
 
-!   LECTURE DES PROPRIETES MATERIAU (MOT-CLE UMAT DE DEFI_MATERIAU)
-    call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
+!   LECTURE DES PROPRIETES MATERIAU (MOT-CLE UMAT[_FO] DE DEFI_MATERIAU)
+    call matumat(fami, kpg, ksp, '+', imate, nprops, props)
 
 !   LECTURE DES VARIABLES DE COMMANDE  ET DEFORMATIONS ASSOCIEES
     call varcumat(fami, kpg, ksp, imate, ifm, niv, idbg,  temp, dtemp, &
@@ -190,6 +182,13 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         if ((niv.ge.2) .and. (idbg.eq.1)) then
+!
+!           -- numero d'element seulement si on n'est pas dans calc_point_mat
+            noel=0
+            if (compor(17) .ne. 'POINT') then
+                call tecael(iadzi, iazk24)
+                noel=zi(iadzi)
+            endif
             write(ifm,*)' '
             write(ifm,*)'AVANT APPEL UMAT, INSTANT=',time(2)+dtime
             write(ifm,*)'NUMERO ELEMENT=',noel

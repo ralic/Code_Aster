@@ -63,7 +63,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
     integer :: lmat, lfct, lsup
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    parameter(lmat=7,lfct=9,lsup=2)
+    parameter  ( lmat = 9 , lfct = 10, lsup=2)
 ! DEB ------------------------------------------------------------------
 !      TOLE=R8PREM() TROP PETIT
     tole=1.d-6

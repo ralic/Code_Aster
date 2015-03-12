@@ -69,16 +69,14 @@ NUB=0.
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
                                ALPHA=11.8e-6),
-            UMAT=_F( C1 = LAMBD_Pa ,C2= MU_Pa , C3=LAMBB_Pa, C4= MUB_Pa, C5=NUB),
-                    ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa,
-                                 SY=SY_Pa,),);
+            UMAT=_F( LISTE_COEF = (LAMBD_Pa ,MU_Pa ,LAMBB_Pa,MUB_Pa,NUB)),
+            ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa, SY=SY_Pa,),);
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
                                ALPHA=11.8e-6),
-            UMAT=_F( C1 = LAMBDA ,C2= MU , C3=LAMBB, C4= MUB, C5=NUB, NB_VALE=5),
-                    ECRO_LINE=_F(D_SIGM_EPSI=pente,
-                                 SY=SY,),)
+            UMAT=_F( LISTE_COEF = (LAMBDA ,MU ,LAMBB, MUB,NUB)),
+            ECRO_LINE=_F(D_SIGM_EPSI=pente, SY=SY,))
 
 compor='UMAT'
 

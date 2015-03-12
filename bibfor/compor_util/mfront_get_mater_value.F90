@@ -55,7 +55,7 @@ subroutine mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
 !
     if (rela_comp .eq. 'MFRONT') then
 !       Usermaterial: parameters are defined using UMAT in DEFI_MATERIAU
-        call matumat(fami, kpg, ksp, imate, ifm, niv, idbg, nprops, props)
+        call matumat(fami, kpg, ksp, '+', imate, nprops, props)
     else
 !       Get the number and the names of the material properties
         call mfront_get_mater_prop(rela_comp, nbcoef, nomres)

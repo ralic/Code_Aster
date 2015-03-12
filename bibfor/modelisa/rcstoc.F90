@@ -1,4 +1,4 @@
-subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
+subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
                   valk, nbr, nbc, nbk)
 ! aslint: disable=
     implicit none
@@ -28,16 +28,18 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 #include "asterfort/tbexp2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/indk16.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-!
+
     integer :: nbr, nbc, nbk, nbobj
     real(kind=8) :: valr(*)
     complex(kind=8) :: valc(*)
     character(len=8) :: nommat
+    character(len=19) :: noobrc
     character(len=16) :: valk(*)
     character(len=32) :: nomrc
-! ----------------------------------------------------------------------
+
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,54 +56,191 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+
+! But: Stocker dans les 3 tableaux VALR, VALC et VALK les reels, les
+!      complexes et les k16 caracterisant la loi de comportement de nom nomrc
+!      Creer si necessaire (ORDRE_PARAM) les objets .ORDR et .KORD et les remplir
+!
+!  in  nommat : nom utilisateur du materiau
+!  in  nomrc  : nom de la relation de comportement (mot cle facteur)
+!  in  nbobj  : nombre de mcsimps
+!  out valr   : vecteur des valeurs reelles
+!  out valk   : vecteur des k16
+!  out valc   : vecteur des complexes
+!  out nbr    : nombre de reels
+!  out nbc    : nombre de complexes
+!  out nbk    : nombre de concepts (fonction, trc, table, liste)
+!
 ! ----------------------------------------------------------------------
-!     BUT: STOCKER DANS LES DEUX TABLEAUX VALR ET VALK LES REELS
-!          ET LES K8 CARACTERISANT LA LOI DE COMPORTEMENT DE NOM NOMRC
-!
-!  IN  NOMMAT : NOM UTILISATEUR DU MATERIAU
-!  IN  NOMRC  : NOM DE LA R.C.
-!  IN  NBOBJ  : NOMBRE DE MCSIMPS
-!  OUT VALR   : VECTEUR DES VALEURS REELLES
-!  OUT VALK   : VECTEUR DES K8
-!  OUT VALC   : VECTEUR DES COMPLEXES
-!  OUT NBR    : NOMBRE DE REELS
-!  OUT NBC    : NOMBRE DE COMPLEXES
-!  OUT NBK    : NOMBRE DE CONCEPTS (FONCTION, TRC, TABLE, ... )
-!
-! ----------------------------------------------------------------------
-!
-!
 !
     real(kind=8) :: valr8, e1, ei, precma, valrr(4)
     character(len=8) :: valtx
     character(len=8) :: valch, nomcle(5)
     character(len=8) :: table
     character(len=19) :: rdep, nomfct, nomint
+    character(len=8) :: num_lisv
+    character(len=16) :: nom_lisv
     character(len=24) :: prol1, prol2, valkk(2)
     character(len=16) :: typeco
     complex(kind=8) :: valc8
-    integer ::   ibk, nbmax, vali
-    integer :: i, k, ii,  jrpv, jvale, nbcoup, n
+    integer ::   ibk, nbmax, vali, itrou, n1, posi, kr, kc, kf
+    integer :: i, k, ii,  jrpv, jvale, nbcoup, n, jlisvr, jlisvf,nmcs
     integer :: iret, nbfct, nbpts, jprol, nbptm, lpro1, lpro2
     character(len=32), pointer :: nomobj(:) => null()
     character(len=8), pointer :: typobj(:) => null()
     character(len=24), pointer :: prol(:) => null()
+    character(len=16), pointer :: ordr(:) => null()
+    integer, pointer :: kord(:) => null()
+    aster_logical :: lordre
 ! ----------------------------------------------------------------------
 !
     call jemarq()
     AS_ALLOCATE(vk8=typobj, size=nbobj)
     AS_ALLOCATE(vk32=nomobj, size=nbobj)
-    call getmjm(nomrc, 1, nbobj, nomobj, typobj, n)
-!
-!
+
     nbr = 0
     nbc = 0
     nbk = 0
+
+
+!   -- 1. Recuperation de la liste des mots cles utilises
+!         et de leurs types associes => nomobj(:) et typboj(:)
+!   -------------------------------------------------------------------------
+    call getmjm(nomrc, 1, nbobj, nomobj, typobj, nmcs)
+
+
+!   -- 2. Le mot cle ORDRE_PARAM est special (mot cle cache).
+!         Il donne l'ordre des mots cles simples pour l'acces via la routine rcvalt.F90.
+!         On le scrute et on le recopie dans .ORDR et puis on le retire de la liste.
+!   ------------------------------------------------------------------------------------
+    itrou=0
+    lordre=.false.
+    do i = 1, nmcs
+        if (nomobj(i).eq.'ORDRE_PARAM') then
+            itrou=i
+            lordre=.true.
+            call getvtx(nomrc, 'ORDRE_PARAM', iocc=1, nbval=0, vect=ordr, nbret=n1)
+            ASSERT(n1.lt.0)
+            call wkvect(noobrc//'.ORDR', 'G V K16', -n1, vk16=ordr)
+            call getvtx(nomrc, 'ORDRE_PARAM', iocc=1, nbval=-n1, vect=ordr, nbret=n1)
+            ASSERT(n1.gt.0)
+        endif
+    enddo
+    if (itrou.gt.0) then
+        do i = 1, nmcs
+            if (i.gt.itrou) then
+                nomobj(i-1)=nomobj(i)
+                typobj(i-1)=typobj(i)
+            endif
+        enddo
+        nmcs=nmcs-1
+    endif
+
+
+!   -- 3. On verifie que les mots cles simples ont moins de 16 carateres
+!   ---------------------------------------------------------------------
+    do i = 1, nmcs
+        ASSERT (nomobj(i).ne.' ')
+        ASSERT (typobj(i).ne.' ')
+        if (lxlgut(nomobj(i)) .gt. 16) then
+            call utmess('F','MODELISA9_84', sk=nomobj(i))
+        endif
+    enddo
+
+
+!   -- 4. On modifie typobj pour remplacer 'R8' par 'LR8',
+!         'C8' par 'LC8' et 'CO' par 'LFO' quand ce sont des listes.
+!   -------------------------------------------------------------------------
+    do i = 1, nmcs
+        if (typobj(i)(1:2) .eq. 'R8') then
+            call getvr8(nomrc, nomobj(i), iocc=1, scal=valr8, nbret=n)
+            if (n.lt.0) then
+                typobj(i)='LR8'
+            else
+                ASSERT(n.eq.1)
+            endif
+        elseif (typobj(i)(1:2) .eq. 'C8') then
+            call getvc8(nomrc, nomobj(i), iocc=1, scal=valc8, nbret=n)
+            if (n.lt.0) then
+                typobj(i)='LC8'
+            else
+                ASSERT(n.eq.1)
+            endif
+        elseif (typobj(i)(1:2) .eq. 'CO') then
+            call getvid(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
+            call gettco(valch, typeco)
+            if (typeco.eq.'TABLE_SDASTER') cycle
+    !       ASSERT(typeco(1:8).eq.'FONCTION' .or. typeco(1:5).eq.'NAPPE' .or. typeco(1:7).eq.'FORMULE')
+            if (n.lt.0) then
+                typobj(i)='LFO'
+            else
+                ASSERT(n.eq.1)
+            endif
+        elseif (typobj(i)(1:2) .eq. 'TX') then
+            call getvtx(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
+            ASSERT(n.eq.1)
+        else
+            ASSERT(.false.)
+        endif
+    enddo
+
+
+!   -- 5. Si le mot cle ORDRE_PARAM est fourni, on verifie que TOUS les mots cles fournis
+!         font partie de la liste et on cree l'objet .KORD :
+!            .KORD(1) : n1 : nombre total des mots cles MSIMP possibles de MFACT
+!                            (=longueur de .ORDR)
+!            .KORD(2) : nmcs : nombre de mots cles MSIMP rellement utilises
+!            .KORD(2+i) : i   (pour i=1,nmcs)
+!                 posi : indice du mot cles dans  .ORDR
+!            .KORD(2+nmcs+i) : kr   (pour i=1,nmcs)
+!                - si kr > 0 :  est l'indice du mot cle dans .VALR
+!                - sinon : le mot cle n'est pas reel
+!            .KORD(2+2*nmcs+i) : kc   (pour i=1,nmcs)
+!                - si kc > 0 :  est l'indice du mot cle dans .VALC
+!                - sinon : le mot cle n'est pas complexe
+!            .KORD(2+3*nmcs+i) : kf   (pour i=1,nmcs)
+!                - si kf > 0 :  est l'indice du mot cle dans .VALK(nmcs:)
+!                - sinon : le mot cle n'est pas un concept (fonction, TRC, liste)
 !
-! --- 0- GLUT META_MECA*, BETON_DOUBLE_DP, RUPT_FRAG ET CZM_LAB_MIX :
-! --- ON TRAITE LES TX QU ON CONVERTIT EN REELS
-!
-    do i = 1, nbobj
+!   ------------------------------------------------------------------------------------------------
+    if (lordre) then
+        call wkvect(noobrc//'.KORD', 'G V I', 2+4*nmcs, vi=kord)
+        kord(1)=n1
+        kord(2)=nmcs
+
+        kr=0
+        kc=0
+        kf=0
+        do i = 1, nmcs
+            posi = indk16(ordr,nomobj(i),1,n1)
+            if (posi.eq.0) then
+                valkk(1)=nomrc
+                valkk(2)=nomobj(i)
+                call utmess('F','MODELISA6_81',nk=2,valk=valkk)
+            else
+                kord(2+i)=posi
+            endif
+            if (typobj(i) .eq. 'R8') then
+                kr=kr+1
+                kord(2+nmcs+i)=kr
+            elseif (typobj(i) .eq. 'C8') then
+                kc=kc+1
+                kord(2+2*nmcs+i)=kc
+            else
+                kf=kf+1
+                kord(2+3*nmcs+i)=kf
+                ASSERT(typobj(i) .eq. 'CO')
+            endif
+        enddo
+        ASSERT(kc.eq.0)
+        ASSERT(kr+kf.eq.nmcs)
+    endif
+
+
+!   -- 6. Glute META_MECA*, BETON_DOUBLE_DP, RUPT_FRAG et CZM_LAB_MIX :
+!         On traite les TX qu'on convertit en R8
+!   --------------------------------------------------------------------
+    do i = 1, nmcs
         if (typobj(i)(1:2) .eq. 'TX') then
             if (nomrc(1:9) .eq. 'ELAS_META') then
                 call getvtx(nomrc, nomobj(i), iocc=1, scal=valtx, nbret=n)
@@ -154,64 +293,102 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
             endif
         endif
     end do
-!
-! --- 1- ON TRAITE LES REELS
-!
-    do i = 1, nbobj
+
+
+!   -- 7. Stockage des informations dans VALK, VALR et VALC :
+!   ---------------------------------------------------------
+
+!   -- 7.1 on traite les reels
+!   --------------------------
+    do i = 1, nmcs
         if (typobj(i)(1:3) .eq. 'R8 ') then
             call getvr8(nomrc, nomobj(i), iocc=1, scal=valr8, nbret=n)
-            if (n .eq. 1) then
-                nbr = nbr + 1
-                valr(nbr) = valr8
-                valk(nbr) = nomobj(i)(1:16)
-            endif
+            ASSERT(n.eq.1)
+            nbr = nbr + 1
+            valr(nbr) = valr8
+            valk(nbr) = nomobj(i)(1:16)
         endif
     end do
-!
-!
-! --- 2- ON TRAITE LES COMPLEXES
-!
-    do i = 1, nbobj
+
+
+!   -- 7.2 on traite les complexes
+!   ------------------------------
+    do i = 1, nmcs
         if (typobj(i)(1:3) .eq. 'C8 ') then
             call getvc8(nomrc, nomobj(i), iocc=1, scal=valc8, nbret=n)
-            if (n .eq. 1) then
-                nbc = nbc + 1
-                valc(nbr+nbc) = valc8
-                valk(nbr+nbc) = nomobj(i)(1:16)
-            endif
+            ASSERT(n.eq.1)
+            nbc = nbc + 1
+            valc(nbr+nbc) = valc8
+            valk(nbr+nbc) = nomobj(i)(1:16)
         endif
     end do
-!
-!
-! --- 3- ON TRAITE ENSUITE LES CONCEPTS
-!
-    do i = 1, nbobj
+
+
+!   -- 3.3 on traite ensuite les concepts CO puis les listes (LR8/LC8/LFO):
+!   ------------------------------------------------------------------------
+
+!   -- 7.3.1 : on stocke le nom des parametres concernes :
+    do i = 1, nmcs
         if (typobj(i)(1:3) .eq. 'CO ') then
             call getvid(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
             if (n .eq. 1) then
                 nbk = nbk + 1
-                if (lxlgut(nomobj(i)) .gt. 16) then
-                    call utmess('A','MODELISA9_84', sk=nomobj(i))
-                endif   
                 valk(nbr+nbc+nbk) = nomobj(i)(1:16)
+            else
+                ASSERT(.false.)
+                ASSERT(n.eq.0)
             endif
         endif
     end do
-!
+
+    do i = 1, nmcs
+        if ((typobj(i) .eq. 'LR8') .or. (typobj(i) .eq. 'LC8') .or. (typobj(i) .eq. 'LFO')) then
+            nbk = nbk + 1
+            valk(nbr+nbc+nbk) = nomobj(i)(1:16)
+        endif
+    end do
+
+!   -- 7.3.2 : on stocke le nom des structures de donnees : fonctions, TRC, listes
     ibk = 0
-    do i = 1, nbobj
+    do i = 1, nmcs
         if (typobj(i)(1:3) .eq. 'CO ') then
             call getvid(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
             if (n .eq. 1) then
-                call gettco(valch, typeco)
                 ibk = ibk + 1
                 valk(nbr+nbc+nbk+ibk) = valch
+            else
+                ASSERT(n.eq.0)
             endif
         endif
-   end do
-!
-! --- 4- CREATION D'UNE FONCTION POUR STOCKER R(P)
-!
+    end do
+
+    do i = 1, nmcs
+        if ((typobj(i) .eq. 'LR8') .or. (typobj(i) .eq. 'LC8') .or. (typobj(i) .eq. 'LFO')) then
+            call gcncon('.', num_lisv)
+            nom_lisv=nommat//num_lisv
+            if (typobj(i) .eq. 'LR8') then
+                call getvr8(nomrc, nomobj(i), iocc=1, scal=valr8, nbret=n)
+                ASSERT(n.lt.0)
+                n=-n
+                call wkvect(nom_lisv//'.LISV_R8','G V R',n,jlisvr)
+                call getvr8(nomrc, nomobj(i), iocc=1, nbval=n, vect=zr(jlisvr))
+            elseif (typobj(i) .eq. 'LC8') then
+                ASSERT(.false.)
+            elseif (typobj(i) .eq. 'LFO') then
+                call getvid(nomrc, nomobj(i), iocc=1, scal=valtx, nbret=n)
+                ASSERT(n.lt.0)
+                n=-n
+                call wkvect(nom_lisv//'.LISV_FO','G V K8',n,jlisvf)
+                call getvid(nomrc, nomobj(i), iocc=1, nbval=n, vect=zk8(jlisvf))
+            endif
+            ibk = ibk + 1
+            valk(nbr+nbc+nbk+ibk) = nom_lisv
+        endif
+    end do
+
+
+!   -- 7. creation d'une fonction pour stocker r(p) :
+!   -------------------------------------------------
     if (( nomrc(1:8) .eq. 'TRACTION' ) .or. ( nomrc(1:13) .eq. 'META_TRACTION' )) then
         if (nomrc(1:8) .eq. 'TRACTION') then
             nomcle(1)(1:4)='SIGM'
@@ -332,7 +509,8 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
                         call utmess('F', 'MODELISA9_64', nk=2, valk=valkk, si=vali,&
                                     sr=valrr(1))
                     endif
-!         VERIF ABSCISSES CROISSANTES (AU SENS LARGE)
+
+!                   verif abscisses croissantes (au sens large)
                     iret=2
                     call foverf(zr(jrpv), nbcoup, iret)
                     iret = 0
@@ -369,17 +547,16 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
         zk24(jprol+3) = prol(4)
         call wkvect(rdep//'.VALE', 'G V R', 2*nbmax, jvale)
     endif
-!
-! --- 6 CREATION SI NECESSAIRE D'UNE FONCTION POUR STOCKER BETA
-!       (ENTHALPIE VOLUMIQUE) CALCULEE A PARTIR DE RHO_CP
-!
+
+
+!   -- 8. Creation si necessaire d'une fonction pour stocker beta
+!         (enthalpie volumique) calculee a partir de RHO_CP
+!   ---------------------------------------------------------------
     if (nomrc(1:8) .eq. 'THER_NL') then
         do 650 i = 1, nbk
             if (( valk(nbr+nbc+i)(1:4) .eq. 'BETA' )) then
                 nomfct = valk(nbr+nbc+nbk+i)
-!
-! IL N'Y A RIEN A FAIRE, ON TRAVAILLE DIRECTEMENT AVEC BETA
-!
+!               -- il n'y a rien a faire, on travaille directement avec beta
                 goto 651
             endif
 650      continue
@@ -394,7 +571,7 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
         call gcncon('_', nomint)
         call focain('TRAPEZE', nomfct, 0.d0, nomint, 'G')
 !
-! SI PROLONGEMENT CONSTANT POUR RHO_CP : ON AFFECTE PROL LINEAIRE A BETA
+!       -- si prolongement constant pour rho_cp : on affecte prol lineaire a beta
 !
         prol1 = nomfct//'.PROL'
         call jeveuo(prol1, 'L', lpro1)
@@ -412,8 +589,10 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
         valk(nbr+nbc+2*nbk) = nomint(1:16)
 651     continue
     endif
-!
-! --- 7 VERIFICATION DES NOMS DES PARAMETRES DES TABLES
+
+
+!   -- 9. Verification des noms des parametres des tables TRC :
+!   -----------------------------------------------------------
     if (nomrc(1:10) .eq. 'META_ACIER') then
         do 720 i = 1, nbk
             if (valk(nbr+nbc+i)(1:3) .eq. 'TRC') then
@@ -440,9 +619,9 @@ subroutine rcstoc(nommat, nomrc, nbobj, valr, valc,&
             endif
 720      continue
     endif
-!
+
     AS_DEALLOCATE(vk8=typobj)
     AS_DEALLOCATE(vk32=nomobj)
-! FIN ------------------------------------------------------------------
+
     call jedema()
 end subroutine

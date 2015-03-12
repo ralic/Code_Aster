@@ -89,7 +89,6 @@ BLOC = AFFE_CHAR_MECA (MODELE = MO,
                        DDL_IMPO=_F(GROUP_NO =('DAB','DCD'),
                                    DY=0.)
                       )
-
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
                       EXCIT = _F( CHARGE = BLOC),
@@ -131,7 +130,6 @@ TEST_RESU(
                    REFERENCE='ANALYTIQUE')
          )
 
-
 # UMAT
 
 E=1.
@@ -145,7 +143,7 @@ ZE=DEFI_CONSTANTE( VALE=0. )
 
 UMAT = DEFI_MATERIAU(
             ELAS=_F( E = 1., NU = 0.3, ALPHA = 0.7),
-            UMAT_FO=_F( C1 = LAMBDA ,C2= MU , C3=ZE, C4= ZE, C5=ZE)
+            UMAT_FO=_F( LISTE_COEF = (LAMBDA , MU , ZE, ZE, ZE)),
            )
 
 CHUMAT = AFFE_MATERIAU (MAILLAGE = MA,

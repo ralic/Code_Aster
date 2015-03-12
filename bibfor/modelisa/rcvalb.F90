@@ -1,5 +1,5 @@
-subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
-                  nomat, phenom, nbpar, nompar, valpar,&
+subroutine rcvalb(fami, kpg, ksp, poum, jmat, nomat,&
+                  phenom, nbpar, nompar, valpar,&
                   nbres, nomres, valres, codret, iarret)
     implicit none
 #include "jeveux.h"
@@ -37,10 +37,33 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ----------------------------------------------------------------------
-!  BUT : CHAPEAU A LA ROUTINE RCVALA POUR AJOUTER A LA LISTE DES
-!        PARAMETRES DES FONCTIONS LES VARIABLES DE COMMANDE
-! ----------------------------------------------------------------------
+!
+! But : Recuperation des valeurs d'une liste de coefficients d'une relation de
+!       comportement pour un materiau donne.
+!       C'est une routine "chapeau" de rcvala.F90 pour ajouter les variables de commande
+!
+!     arguments d'entree:
+!        jmat      : adresse de la liste des materiaux codes
+!        nomat     : nom du materiau dans le cas d'une liste de materiaux
+!                    si = ' ', on exploite le premier de la liste
+!        phenom    : nom du phenomene (mot cle facteur sans le "_FO")
+!        nbpar     : nombre de parametres dans nompar(*) et valpar(*)
+!        nompar(*) : noms des parametres(ex: 'TEMP', 'INST' )
+!        valpar(*) : valeurs des parametres
+!        nbres     : nombre de coefficients recherches
+!                    (dimension des tableaux nomres(*), valres(*) et icodre(*)
+!        nomres(*) : nom des resultats (ex: 'E','NU',... )
+!                    tels qu'il figurent dans la commande DEFI_MATERIAU
+!       iarret = 0 : on remplit icodre et on sort sans message.
+!              = 1 : si un des parametres n'est pas trouve, on arrete
+!                       en fatal en indiquant le nom de la maille.
+!              = 2 : idem que 1 mais on n'indique pas la maille.
+!
+!     arguments de sortie:
+!        valres(*) : valeurs des resultats apres recuperation et interpolation
+!        icodre(*) : pour chaque resultat, 0 si on a trouve, 1 sinon
+
+
 ! ----------------------------------------------------------------------
     integer :: nbcvrc, jvcnom
     common /caii14/nbcvrc,jvcnom
@@ -49,41 +72,40 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat,&
     parameter (nbpamx=10)
     real(kind=8) :: valpa2(nbpamx), valvrc
     character(len=8) :: nompa2(nbpamx), novrc
-! DEB ------------------------------------------------------------------
-!
-!     -- S'IL N'Y A PAS DE VARC, IL N'Y A QU'A APPELER  RCVALA :
+! ----------------------------------------------------------------------
+
+!   -- s'il n'y a pas de varc, il n'y a qu'a appeler  rcvala :
     if (nbcvrc .eq. 0) then
         call rcvala(jmat, nomat, phenom, nbpar, nompar,&
                     valpar, nbres, nomres, valres, codret,&
                     iarret)
         goto 9999
     endif
-!
-!
-!     -- SINON, ON AJOUTE LES VARC AU DEBUT DE LA LISTE DES PARAMETRES
-!     CAR FOINTA DONNE PRIORITE AUX DERNIERS :
+
+
+!   -- sinon, on ajoute les varc au debut de la liste des parametres
+!      car fointa donne priorite aux derniers :
     nbpar2 = 0
-    do 1, ipar=1,nbcvrc
-    novrc=zk8(jvcnom-1+ipar)
-    call rcvarc(' ', novrc, poum, fami, kpg,&
-                ksp, valvrc, ier)
-    if (ier .eq. 0) then
-        nbpar2=nbpar2+1
-        nompa2(nbpar2)=novrc
-        valpa2(nbpar2)=valvrc
-    endif
-    1 end do
-!
-    do 2, ipar=1,nbpar
-    nompa2(nbpar2+ipar) = nompar(ipar)
-    valpa2(nbpar2+ipar) = valpar(ipar)
-    2 end do
-!
+    do ipar=1,nbcvrc
+        novrc=zk8(jvcnom-1+ipar)
+        call rcvarc(' ', novrc, poum, fami, kpg,&
+                    ksp, valvrc, ier)
+        if (ier .eq. 0) then
+            nbpar2=nbpar2+1
+            nompa2(nbpar2)=novrc
+            valpa2(nbpar2)=valvrc
+        endif
+    enddo
+
+    do ipar=1,nbpar
+        nompa2(nbpar2+ipar) = nompar(ipar)
+        valpa2(nbpar2+ipar) = valpar(ipar)
+    enddo
+
     nbpart=nbpar+nbpar2
-!     ASSERT(NBPART.LE.NBPAMX)
     call rcvala(jmat, nomat, phenom, nbpart, nompa2,&
                 valpa2, nbres, nomres, valres, codret,&
                 iarret)
-!
+
 9999  continue
 end subroutine

@@ -12,6 +12,7 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 #include "asterfort/jedupc.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/jexatr.h"
@@ -60,14 +61,16 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 !         P.I = CODI(2+I)
 !
 !    CODI(2+I)  :POINTEUR DANS .CODI DU IEME COMPORTEMENT
-!    CODI(P.I)  :NOMBRE DE COEFFICIENTS REELS
+!    CODI(P.I+0):NOMBRE DE COEFFICIENTS REELS
 !    CODI(P.I+1):NOMBRE DE COEFFICIENTS COMPLEXES
 !    CODI(P.I+2):NOMBRE DE COEFFICIENTS FONCTIONS
-!    CODI(P.I+3):ADRESSE ZK16 RELATIVE AU .VALK DES PARAMETRES (NOMS)
+!    CODI(P.I+3):ADRESSE ZK16 RELATIVE AU .VALK (noms des parametres)
 !    CODI(P.I+4):ADRESSE ZR  RELATIVE AU .VALR DES REELS
 !    CODI(P.I+5):ADRESSE ZC  RELATIVE AU .VALC DES COMPLEXES
+!    CODI(P.I+6):ADRESSE ZK16 RELATIVE AU .ORDR  (ou 1 si absent)
+!    CODI(P.I+7):ADRESSE ZI   RELATIVE AU .KORD  (ou 1 si absent)
 !
-!         P.IF = P.I+6
+!         P.IF = P.I+LMAT
 !
 !    CODI(P.IF+LFCT*(K-1))  :NOMBRE DE POINTS DE LA FONCTION ASSOCIEE
 !    CODI(P.IF+LFCT*(K-1)+1):ADRESSE ZK16 DU .PROL
@@ -78,6 +81,11 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 !    CODI(P.IF+LFCT*(K-1)+6):POINTEUR SUPPLEMENTAIRE (TRACTION,TRC)
 !    CODI(P.IF+LFCT*(K-1)+7):INDICE DE L'INTERVALLE POUR INTERPOLATION
 !    CODI(P.IF+LFCT*(K-1)+8):INDICE SUPPLEMENTAIRE
+!    CODI(P.IF+LFCT*(K-1)+9):coco = 1/2/3/4 : "code" du type de concept
+!                            1 : fonction ou nappe
+!                            2 : table TRC
+!                            3 : liste de reels
+!                            4 : liste de fonctions
 !
 !         P.IFC = CODI(P.IF+LFCT*(K-1)+6))
 !
@@ -88,25 +96,26 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 !
 !
 !
-    integer :: iret, iretf, irett, nbcm, jnomrc, lmat, lfct, lsup
-    integer :: jnbcm, l, nbv, nbtt, nbcot, nbcmt, nbco
-    integer :: nbt, jdim, k, kk, nbk, lgcodi, isundf, idma
+    integer :: iret, iretf, irett, iretlr, iretlf, nbcm, jnomrc, lmat, lfct, lsup
+    integer :: jnbcm, l, nbv, nbtt, nbcot, nbcmt, nbco, iexi1, iexi2
+    integer :: nbt, jdim, k, kk, nbk, lgcodi, isundf, idma, kr, nbreel
     integer :: imat, ipi, ipif, nbpts, ipifc, m, iretc
-    integer :: jcodi, jnomr, jjdim, jlcod, ipi0
+    integer :: jlisvr8, jlisvfo, jlisvi, jlisvr, code, iexi
+    integer :: jcodi, jnomr, jjdim, jlcod, ipi0, nbfonc, kfonc, ipif2
     real(kind=8) :: tdef, prec
     character(len=4) :: knuma1
     character(len=3) :: knuma2
     character(len=3) :: knuma3
     character(len=6) :: k6
     character(len=8) :: nopara, nommat
-    character(len=19) :: ch19, chma, listr
+    character(len=19) :: ch19, chma, listr, fon19
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE
 !
 ! --- LMAT   : NOMBRE DE PARAMETRES ASSOCIES AU COMPORTEMENT
 ! --- LFCT   : NOMBRE DE PARAMETRES ASSOCIES AUX FONCTIONS
 ! --- LSUP   : NOMBRE DE PARAMETRES SUPPLEMENTAIRE (COURBE &&RDEP)
-    parameter        ( lmat = 7 , lfct = 9 , lsup = 2 )
+    parameter  ( lmat = 9 , lfct = 10 , lsup = 2 )
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -173,6 +182,15 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                 zi(kk+6) = 1
                 nbt = nbt + nbk/2
             endif
+            call jeexin(ch19//'.ORDR',iexi)
+            if (iexi.gt.0) then
+                call jeveut(ch19//'.ORDR', 'L', zi(kk+7))
+                call jeveut(ch19//'.KORD', 'L', zi(kk+8))
+            else
+!               -- une adresse jeveux n'est jamais 1 :
+                zi(kk+7)=1
+                zi(kk+8)=1
+            endif
 10      continue
         zi(jlcod+l-1)=2 + lmat*nbcm+ lfct*nbco + lsup*nbt
         nbcmt=nbcmt+nbcm
@@ -184,10 +202,12 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
     call wkvect(codi//'.CODI', 'V V I', lgcodi, jcodi)
     call jeveut(codi//'.CODI', 'E', jcodi)
     isundf = isnnem()
-    do 12 k = 1, lgcodi
+    do k = 1, lgcodi
         zi(jcodi + k-1) = isundf
-12  end do
+    enddo
+
     zi(jcodi ) = nbmat
+
     ipi0=2*nbmat+1
     idma=ipi0
     do 300 imat = 1, nbmat
@@ -215,30 +235,34 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
             zi(ipi+3) = zi(kk+5)
             zi(ipi+4) = zi(kk+1)
             zi(ipi+5) = zi(kk+3)
+            zi(ipi+6) = zi(kk+7)
+            zi(ipi+7) = zi(kk+8)
+!           zi(ipi+8) = zi(kk+8)
             ipif = ipi+lmat-1
 !
-! ---     BOUCLE SUR LE NOMBRE DE COEFFICIENTS REELS :
-!         ------------------------------------------
+! ---       boucle sur les coefficients reels :
+!           ------------------------------------------
             do 21 l = 0, zi(kk)-1
                 ch19 = zk16(zi(kk+5)+l)
                 if (ch19 .eq. 'PRECISION') prec = zr(zi(kk+1)+l)
 21          continue
+
             do 22 l = 0, zi(kk)-1
                 ch19 = zk16(zi(kk+5)+l)
                 if (ch19 .eq. 'TEMP_DEF_ALPHA') then
                     tdef = zr(zi(kk+1)+l)
 !
-! ---       BOUCLE SUR LES FONCTIONS :
-!           ------------------------
+!                   boucle sur les fonctions :
+!                   ------------------------
                     do 23 m = 0, zi(kk+4)-1
                         ch19 = zk16(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+ m)
                         nopara = zk16(zi(kk+5)+zi(kk)+zi(kk+2)+m)
                         if (nopara(1:5) .eq. 'ALPHA' .or. nopara .eq. 'F_ALPHA ' .or.&
                             nopara .eq. 'C_ALPHA ') then
 !
-! ---        INTERPOLATION DES COEFFICIENTS DE DILATATION ALPHA
-! ---        EN TENANT COMPTE DE LA TEMPERATURE DE DEFINITION TDEF :
-!            -----------------------------------------------------
+!                           interpolation des coefficients de dilatation alpha
+!                           en tenant compte de la temperature de definition tdef :
+!                           -----------------------------------------------------
                             if (chmat .ne. '&chpoint') then
                                 call alfint(chmat, imate, nommat, tdef, nopara,&
                                             k, prec, ch19)
@@ -249,18 +273,32 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
 !
                 endif
 22          continue
-!
-! ---     BOUCLE SUR LE NOMBRE DE COEFFICIENTS FONCTIONS :
-!         ------------------------------------------------
+
+
+!          -- boucle sur les coefficients fonction/table/lisv :
+!          -----------------------------------------------------------
             do 25 l = 0, zi(kk+4)-1
                 ch19 = zk16(zi(kk+5)+zi(kk)+zi(kk+2)+zi(kk+4)+l)
                 call exisd('FONCTION', ch19(1:8), iretf)
                 call exisd('TABLE', ch19(1:8), irett)
-! ---   DES FONCTIONS SONT CREEES SUR LA VOLATILE (ROUTINE ALFINT) ---
+
+!               -- cas des LISV_R8 / LISV_FO :
+                iretlr=0
+                iretlf=0
+                call jeexin(ch19(1:16)//'.LISV_R8', iexi1)
+                call jeexin(ch19(1:16)//'.LISV_FO', iexi2)
+                if (iexi1.gt.0) iretlr=1
+                if (iexi2.gt.0) iretlf=1
+
+                ASSERT(iretf.eq.1 .or. irett.eq.1 .or. iretlr.eq.1 .or. iretlf.eq.1)
+
+!               -- des fonctions sont creees sur la volatile (routine alfint) ---
                 if (iretf .eq. 1) then
+!                   -- cas des fonctions :
                     call jeveut(ch19//'.PROL', 'L', zi(ipif+1))
                     zi(ipif+7) = 1
                     zi(ipif+8) = 1
+                    zi(ipif+9) = 1
                     if (zk24(zi(ipif+1))(1:1) .eq. 'C' .or. zk24(zi( ipif+1))(1:1) .eq. 'F') then
                         call jeveut(ch19//'.VALE', 'L', zi(ipif+2))
                         call jelira(ch19//'.VALE', 'LONMAX', nbpts)
@@ -274,7 +312,9 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                     else
                         call utmess('F', 'MODELISA6_64', sk=zk24(zi(ipif+ 1)))
                     endif
+
                 else if (irett .eq. 1) then
+!                   -- cas des tables (TRC) :
                     listr = '&&'//ch19(1:8)//'_LR8'
                     call jeexin(listr//'.VALE', iretc)
                     if (iretc .eq. 0) then
@@ -283,6 +323,71 @@ subroutine matcod(chmat, indmat, nbmat, imate, igrp,&
                     call jeveut(listr//'.VALE', 'L', zi(ipif))
                     zi(ipif+1) = 0
                     zi(ipif+2) = 0
+                    zi(ipif+9) = 2
+
+                else if (iretlr .eq. 1) then
+!                   -- cas des mater_LISV_R8 :
+                    code=-1
+                    call jeveuo(ch19(1:16)//'.LISV_R8', 'L', jlisvr8)
+                    call jelira(ch19(1:16)//'.LISV_R8', 'LONMAX', nbreel)
+                    call wkvect(ch19(1:16)//'.LISV_VR', 'V V R', nbreel+1,jlisvr)
+                    call jeveut(ch19(1:16)//'.LISV_VR', 'E', jlisvr)
+                    zr(jlisvr-1+1)=dble(nbreel)
+                    call wkvect(ch19(1:16)//'.LISV_IA', 'V V I', 2,jlisvi)
+                    call jeveut(ch19(1:16)//'.LISV_IA', 'E', jlisvi)
+                    zi(jlisvi-1+1)=code
+                    zi(jlisvi-1+2)=jlisvr
+                    do kr=1,nbreel
+                        zr(jlisvr-1+1+kr)=zr(jlisvr8-1+kr)
+                    enddo
+
+                    zi(ipif) = jlisvi
+                    zi(ipif+1) = 0
+                    zi(ipif+2) = 0
+                    zi(ipif+9) = 3
+
+                else if (iretlf .eq. 1) then
+!                   -- cas des mater_LISV_FO :
+                    code=-2
+!                   -- on cree un vecteur d'entiers pour stocker les adresses et les infos
+!                      necessaires a l'evaluation rapide des listes de fonctions :
+                    call jeveuo(ch19(1:16)//'.LISV_FO', 'L', jlisvfo)
+                    call jelira(ch19(1:16)//'.LISV_FO', 'LONMAX', nbfonc)
+                    call wkvect(ch19(1:16)//'.LISV_VR', 'V V R', nbfonc+1,jlisvr)
+                    call jeveut(ch19(1:16)//'.LISV_VR', 'E', jlisvr)
+                    zr(jlisvr-1+1)=dble(nbfonc)
+                    call wkvect(ch19(1:16)//'.LISV_IA', 'V V I', 3+lfct*nbfonc,jlisvi)
+                    call jeveut(ch19(1:16)//'.LISV_IA', 'E', jlisvi)
+                    zi(jlisvi-1+1)=code
+                    zi(jlisvi-1+2)=jlisvr
+                    zi(jlisvi-1+3)=nbfonc
+                    do kfonc=1,nbfonc
+                        fon19=zk8(jlisvfo-1+kfonc)
+                        ipif2=jlisvi+3+lfct*(kfonc-1)
+                        call jeveut(fon19//'.PROL', 'L', zi(ipif2+1))
+                        zi(ipif2+7) = 1
+                        zi(ipif2+8) = 1
+                        if (zk24(zi(ipif2+1))(1:1) .eq. 'C' &
+                           .or. zk24(zi(ipif2+1))(1:1) .eq. 'F') then
+                            call jeveut(fon19//'.VALE', 'L', zi(ipif2+2))
+                            call jelira(fon19//'.VALE', 'LONMAX', nbpts)
+                            zi(ipif2) = nbpts/2
+                        else if (zk24(zi(ipif2+1))(1:1) .eq. 'N') then
+                            call jeveut(fon19//'.VALE', 'L', zi(ipif2+2))
+                            call jeveut(jexatr(fon19//'.VALE', 'LONCUM'), 'L', zi(ipif2+3))
+                            call jeveut(fon19//'.PARA', 'L', zi(ipif2+4))
+                            call jelira(fon19//'.PARA', 'LONUTI', zi(ipif2+ 5))
+                        else if (zk24(zi(ipif2+1))(1:1) .eq. 'I') then
+                        else
+                            call utmess('F', 'MODELISA6_64', sk=zk24(zi(ipif2+ 1)))
+                        endif
+                    enddo
+
+                    zi(ipif) = jlisvi
+                    zi(ipif+1) = 0
+                    zi(ipif+2) = 0
+                    zi(ipif+9) = 4
+
                 else
                     call utmess('F', 'MODELISA6_64', sk=ch19(1:8))
                 endif

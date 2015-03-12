@@ -56,7 +56,7 @@ subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: lfct, lmat, lsup
-    parameter ( lmat = 7 , lfct = 9, lsup=2)
+    parameter  ( lmat = 9 , lfct = 10, lsup=2)
 !
     integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, jpro
     integer :: imate, nbmat
