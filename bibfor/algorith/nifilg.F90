@@ -338,9 +338,9 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
 ! - CALCUL DE D^DEV:ID ET ID:D^DEV ET ID:D:ID
             iddid = 0.d0
             do ia = 1, 6
-                devdi(ia) = devd(ia,1)+devd(ia,2)+devd(ia,3)
-                iddev(ia) = ddev(1,ia)+ddev(2,ia)+ddev(3,ia)
-                taudv(ia) = taup(ia) - tauhy*kr(ia)
+                devdi(ia)  = devd(ia,1)+devd(ia,2)+devd(ia,3)
+                iddev(ia)  = ddev(1,ia)+ddev(2,ia)+ddev(3,ia)
+                taudv(ia)  = taup(ia) - tauhy*kr(ia)
                 tauldc(ia) = taup(ia) + (pp*bb-tauhy)*kr(ia)
                 do ja = 1, 3
                     iddid = iddid+kr(ia)*d(ia,ja)
@@ -375,6 +375,9 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
                                             t1 = t1+dff1(na,lij(ia,ja))*t2*dff1(nb,lij(ib,jb))
                                         end do
                                     end do
+!
+                                    t2 = pp*jp*dbb
+                                    t1 = t1+dff1(na,lij(ia,ia))*t2*dff1(nb,lij(ib,ib))
 !
 ! - RIGIDITE GEOMETRIQUE
                                     do jb = 1, ndu
@@ -510,6 +513,9 @@ subroutine nifilg(ndim, nno1, nno2, nno3, npg,&
                                         t1 = t1+dff1(na,lij(ia,ja))*t2*dff1(nb,lij(ib,jb))
                                     end do
                                 end do
+!
+                                t2 = pp*jp*dbb
+                                t1 = t1+dff1(na,lij(ia,ia))*t2*dff1(nb,lij(ib,ib))
 !
 ! - RIGIDITE GEOMETRIQUE
                                 do jb = 1, ndu

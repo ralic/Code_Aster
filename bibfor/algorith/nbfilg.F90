@@ -364,6 +364,9 @@ subroutine nbfilg(ndim, nno1, nno2, nno3, npg,&
                                         end do
                                     end do
 !
+                                    t2 = pp*jp*dbb
+                                    t1 = t1+dff1(na,lij(ia,ia))*t2*dff1(nb,lij(ib,ib))
+!
 ! - RIGIDITE GEOMETRIQUE
                                     do jb = 1, ndu
                                         t1 = t1 - dff1(&
@@ -498,6 +501,9 @@ subroutine nbfilg(ndim, nno1, nno2, nno3, npg,&
                                         t1 = t1+dff1(na,lij(ia,ja))*t2*dff1(nb,lij(ib,jb))
                                     end do
                                 end do
+!
+                                t2 = pp*jp*dbb
+                                t1 = t1+dff1(na,lij(ia,ia))*t2*dff1(nb,lij(ib,ib))
 !
 ! - RIGIDITE GEOMETRIQUE
                                 do jb = 1, ndu
