@@ -1,0 +1,12 @@
+# coding=utf-8
+
+# Simulation de la génération d'un maillage avec Geom+Smesh, pylotage...
+
+# mesh.ExportToMedFile('cube.mmed')   <<< écrit dans le tmp de l'exécution
+# on utilisera ARGUMENT pour qu'EXEC_LOGICIEL sache quel fichier a été produit
+
+import shutil
+shutil.copyfile('fort.80', 'cube.mmed')
+
+print 'Fichier MED produit par Salomé ;-)'
+

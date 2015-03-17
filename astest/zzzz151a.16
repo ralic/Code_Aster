@@ -1,0 +1,50 @@
+haut = 1.0;
+larg = 1.0;
+epais = 1.0;
+h = 0.3;
+
+Point(1) = {0.0,0.0,0.0,h};
+Point(2) = {larg,0.0,0.0,h};
+Point(3) = {larg,haut,0.0,h};
+Point(4) = {0.0,haut,0.0,h};
+
+Point(11) = {0.0,0.0,epais,h};
+Point(12) = {larg,0.0,epais,h};
+Point(13) = {larg,haut,epais,h};
+Point(14) = {0.0,haut,epais,h};
+
+Line(1) = {1,2};
+Line(2) = {2,3};
+Line(3) = {3,4};
+Line(4) = {4,1};
+Line(5) = {1,11};
+Line(6) = {11,12};
+Line(7) = {12,13};
+Line(8) = {13,14};
+Line(9) = {14,11};
+Line(10) = {12,2};
+Line(11) = {13,3};
+Line(12) = {14,4};
+Line Loop(13) = {4,1,2,3};
+Plane Surface(14) = {13};
+Line Loop(15) = {9,6,7,8};
+Plane Surface(16) = {15};
+Line Loop(17) = {5,6,10,-1};
+Plane Surface(18) = {17};
+Line Loop(19) = {7,11,-2,-10};
+Plane Surface(20) = {19};
+Line Loop(21) = {8,12,-3,-11};
+Plane Surface(22) = {21};
+Line Loop(23) = {9,-5,-4,-12};
+Plane Surface(24) = {23};
+Surface Loop(25) = {16,-24,-18,-20,-22,-14};
+Volume(26) = {25};
+Physical Point(27) = {3};
+Physical Surface(28) = {14};
+Physical Surface(29) = {16};
+Physical Surface(30) = {18};
+Physical Surface(31) = {20};
+Physical Surface(32) = {22};
+Physical Surface(33) = {24};
+
+Physical Volume(34) = {26};

@@ -1,0 +1,14 @@
+OPTI DIME 3 ELEM CUB8;
+
+N = 2;
+H = 1.;
+
+L1 = (0. 0. 0.) DROIT N (H 0. 0.);
+S0 = L1 TRAN N (0. H 0.);
+
+VOL = VOLU TRAN S0 N (0. 0. H);
+
+OPTI SAUV FORMAT 'fort.8';
+SAUV 'FORMAT' VOL;
+
+FIN;

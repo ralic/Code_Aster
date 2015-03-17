@@ -1,0 +1,92 @@
+# TITRE TEST DE LA COMMANDE EXEC_LOGICIEL STANDARD ET GENERATION DE MAILLAGE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+# ATTENTION LES DIFFERENTS LOGICIELS APPELES DOIVENT ETRE ACCESSIBLES 
+# DEPUIS LE REPERTOIRE ./outils
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='OUI',)
+
+import os.path as osp
+import Templates
+TEMPLATESDIR = osp.dirname(Templates.__file__)
+
+EXEC_LOGICIEL(LOGICIEL='ls -la')
+
+EXEC_LOGICIEL(LOGICIEL='pwd',
+              MACHINE_DISTANTE=_F(SSH_ADRESSE  = 'localhost',
+                                  SSH_PORT     = 22,),);
+ 
+EXEC_LOGICIEL(LOGICIEL='fic=`mktemp`;salome start -t --ns-port-log=$fic;\
+                        salome shell -p `cat $fic`  ./fort.19; salome shell -p\
+                        `cat $fic` killSalomeWithPort.py args:`cat $fic`; rm -f $fic', INFO=2);
+
+DEFI_FICHIER(ACTION='ASSOCIER',
+               TYPE='LIBRE',
+               UNITE=33,
+               FICHIER='Mesh_1.med',
+               ACCES='OLD',)
+               
+sammed = LIRE_MAILLAGE(INFO=1,
+                        UNITE=33,
+                        FORMAT='MED',
+                        INFO_MED=1,
+                        )
+DEFI_FICHIER(ACTION='LIBERER',
+               UNITE=33,)
+
+
+EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
+                          UNITE_GEOM=16,
+                          UNITE=19,
+                          MAILLAGE=CO('magmsh'),),
+              # sur l'AlphaServer, gmsh 1.44 (!) retourne un code retour 1...
+              CODE_RETOUR_MAXI=1,
+              INFO=1)
+
+EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='SALOME',
+                          UNITE_GEOM=17,
+                          UNITE=21,
+                          MAILLAGE=CO('mamed'),),
+              ARGUMENT='cube.mmed',
+              INFO=1)
+
+EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GIBI',
+                          UNITE_GEOM=14,
+                          UNITE=20,
+                          MAILLAGE=CO('magibi'),),
+              INFO=1)
+
+# ----------------------------------------------------------------------------
+# TEST_TABLE toujours ok pour disposer d'un test valide
+# En cas d'erreur, le code retour de la commande doit arreter l'execution.
+tab1 = CREA_TABLE(LISTE=(_F(PARA='TEST',
+                            TYPE_K='K8',
+                            LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',
+                            LISTE_I=1,),),)
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=tab1,
+           FILTRE=_F(NOM_PARA='TEST',
+                     VALE_K='VALEUR  ',),
+           )
+
+FIN()
