@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-06 10:14+0100\n"
-"PO-Revision-Date: 2015-03-06 03:58-0500\n"
+"POT-Creation-Date: 2015-03-19 17:44+0100\n"
+"PO-Revision-Date: 2015-03-19 12:37-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -3533,6 +3533,8 @@ msgid ""
 " La valeur du module de YOUNG est nulle pour le matériau constitutif de la "
 "coque interne\n"
 msgstr ""
+"\n"
+" インナーシェルで構成された材料のためのヤング率がゼロです。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline.py:435
 msgid ""
@@ -3555,6 +3557,8 @@ msgid ""
 " La valeur du module de YOUNG est nulle pour le matériau constitutif de la "
 "coque externe\n"
 msgstr ""
+"\n"
+" アウターシェルで構成された材料のためのヤング率がゼロです。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline.py:449
 #, python-format
@@ -6584,11 +6588,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:241
-#, python-format
+#, fuzzy, python-format
 msgid ""
-"  On augmente la valeur de décalage de %(r1)12.5E %%.\n"
-"  La valeur centrale devient : %(r2)12.5E\n"
-msgstr ""
+"  On augmente la valeur de décalage de %(r2)12.5E %%.\n"
+"  La valeur centrale devient : %(r1)12.5E\n"
+msgstr " 周波数オフセットの値 : %(r1)12.5E\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:245
 #, python-format
@@ -6600,8 +6604,8 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:249
 #, python-format
 msgid ""
-"  On diminue la valeur minimale de %(r1)12.5E %%.\n"
-"  La valeur minimale devient : %(r2)12.5E\n"
+"  On diminue la valeur minimale de %(r2)12.5E %%.\n"
+"  La valeur minimale devient : %(r1)12.5E\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:253
@@ -6614,8 +6618,8 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:257
 #, python-format
 msgid ""
-"  On augmente la valeur maximale de %(r1)12.5E %%.\n"
-"  La valeur maximale devient : %(r2)12.5E\n"
+"  On augmente la valeur maximale de %(r2)12.5E %%.\n"
+"  La valeur maximale devient : %(r1)12.5E\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:261
@@ -20697,6 +20701,16 @@ msgid ""
 "Vérifiez les propriétés matériaux et que la modélisation est 3D.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/compor1.py:423
+#, python-format
+msgid ""
+"\n"
+" REST_ECRO : la fonction de restauration d'écrouissage vaut %(r1)E or elle "
+"doit être comprise entre 0 et 1.\n"
+"\n"
+"Vérifiez les valeurs de la fonction.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/compor2.py:22
 #, python-format
 msgid ""
@@ -25229,8 +25243,8 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:188
 msgid ""
 "\n"
-"  Les matériaux de coque homogénéisées (ELAS_COQUE ou DEFI_COQU_MULT) sont "
-"interdits en non-linéaire.\n"
+"  Les matériaux de coque homogénéisées (ELAS_COQUE) sont interdits en non-"
+"linéaire.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:192
@@ -25493,9 +25507,9 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-" Le nombre de couches défini dans DEFI_COQU_MULT et dans AFFE_CARA_ELEM dans "
+" Le nombre de couches défini dans DEFI_COMPOSITE et dans AFFE_CARA_ELEM dans "
 "n'est pas cohérent.\n"
-" Nombre de couches dans DEFI_COQU_MULT: %(i1)d\n"
+" Nombre de couches dans DEFI_COMPOSITE: %(i1)d\n"
 " Nombre de couches dans AFFE_CARA_ELEM: %(i2)d\n"
 msgstr ""
 
@@ -25503,9 +25517,9 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-" L'épaisseur totale des couches définie dans DEFI_COQU_MULT et celle définie "
+" L'épaisseur totale des couches définie dans DEFI_COMPOSITE et celle définie "
 "dans AFFE_CARA_ELEM ne sont pas cohérentes.\n"
-" Épaisseur totale des couches dans DEFI_COQU_MULT: %(r1)f\n"
+" Épaisseur totale des couches dans DEFI_COMPOSITE: %(r1)f\n"
 " Épaisseur dans AFFE_CARA_ELEM: %(r2)f\n"
 msgstr ""
 
@@ -25917,6 +25931,8 @@ msgid ""
 "\n"
 "Le module de Young est nul.\n"
 msgstr ""
+"\n"
+"ヤング率がゼロです。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements4.py:162
 #, python-format
@@ -37390,7 +37406,43 @@ msgid ""
 "la valeur calculée est %(r1)f.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:141
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:140
+#, python-format
+msgid ""
+"\n"
+"La première maille du groupe %(k1)s sur lequel des caractéristiques de "
+"poutre\n"
+"à section circulaire et homothétique sont affectés n'est pas correctement "
+"orientée.\n"
+"\n"
+"Solution : réorienter les mailles du groupe avec MODI_MAILLAGE/ORIE_LIGNE.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:147
+#, python-format
+msgid ""
+"\n"
+"La maille numéro %(i1)d du groupe %(k1)s sur lequel des caractéristiques de "
+"poutre\n"
+"à section circulaire et homothétique sont affectés n'est pas connectée à la "
+"maille\n"
+"précédente ou n'est pas orientée de la même manière.\n"
+"\n"
+"Conseil et solution : \n"
+"    - vérifier que les mailles sont correctement ordonnées dans le groupe\n"
+"    définissant la poutre \n"
+"    - réorienter les mailles du groupe avec MODI_MAILLAGE/ORIE_LIGNE.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:158
+#, python-format
+msgid ""
+"\n"
+"Poutre circulaire à section homothétique :\n"
+"La présence de la caractéristique %(k1)s est obligatoire.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:163
 msgid ""
 "\n"
 " VERIF : 2 arguments max\n"
@@ -37398,32 +37450,32 @@ msgstr ""
 "\n"
 " VERIF : 最大2引数\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:145
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:167
 msgid ""
 "\n"
 " il manque le mot clé facteur POUTRE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:149
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:171
 msgid ""
 "\n"
 " erreur(s) rencontrée(s) lors de la vérification des affectations.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:153
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:175
 msgid ""
 "\n"
 " une erreur d affectation a été détectée : certaines mailles demandées "
 "possèdent un type élément incompatible avec les données a affecter\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:157
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:179
 msgid ""
 "\n"
 " des poutres ne sont pas affectées\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:161
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:183
 msgid ""
 "\n"
 " des barres ne sont pas affectées\n"
@@ -37431,7 +37483,7 @@ msgstr ""
 "\n"
 " バーは影響をうけない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:165
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:187
 msgid ""
 "\n"
 " des câbles ne sont pas affectes\n"
@@ -37439,79 +37491,79 @@ msgstr ""
 "\n"
 " ケーブルは影響をうけない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:169
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:191
 msgid ""
 "\n"
 " le paramètre \"RHO\" n'est pas défini pour toutes les couches.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:173
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:195
 msgid ""
 "\n"
 " Il ne faut qu'un comportement élastique.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:177
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:199
 msgid ""
 "\n"
 " <FAISCEAU_TRANS> deux zones d excitation du fluide ont même nom\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:181
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:203
 msgid ""
 "\n"
 " SPEC_EXCI_POINT : si INTE_SPEC alors autant d arguments pour nature, ANGLE "
 "et noeud\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:185
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:207
 msgid ""
 "\n"
 " SPEC_EXCI_POINT : si grappe_2 alors un seul noeud\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:189
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:211
 msgid ""
 "\n"
 " SPEC_FONC_FORME : le nombre de fonctions fournies doit être égal a la "
 "dimension de la matrice interspectrale\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:193
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:215
 msgid ""
 "\n"
 " SPEC_EXCI_POINT : le nombre d arguments pour nature, ANGLE et noeud doit "
 "être égal a la dimension de la matrice interspectrale\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:219
 msgid ""
 "\n"
 " mauvaise définition de la plage  de fréquence.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:201
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:223
 msgid ""
 "\n"
 " mauvaise définition de la plage de fréquence. les modèles ne tolèrent pas "
 "des valeurs négatives ou nulles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:227
 msgid ""
 "\n"
 " le nombre de points pour la discrétisation fréquentielle doit être une "
 "puissance de 2.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:231
 msgid ""
 "\n"
 " les spectres de type \"longueur de corrélation\"  ne peuvent être combines "
 "avec des spectres d un autre type.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:235
 #, python-format
 msgid ""
 "\n"
@@ -37519,20 +37571,20 @@ msgid ""
 "dans le concept  %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:217
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:239
 #, python-format
 msgid ""
 "\n"
 " le spectre de nom  %(k1)s  est associe a la zone de nom  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:243
 msgid ""
 "\n"
 " deux spectres sont identiques\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:247
 #, python-format
 msgid ""
 "\n"
@@ -37540,20 +37592,20 @@ msgid ""
 "vitesse, de nom  %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:251
 msgid ""
 "\n"
 " pas le bon numéro de mode\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:255
 msgid ""
 "\n"
 " le calcul de tous les interspectres de réponse modale n est pas possible "
 "car seuls les auto spectres d excitation ont été calcules.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:237
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:259
 msgid ""
 "\n"
 " la composante sélectionnée pour la restitution en base physique des "
@@ -37561,14 +37613,14 @@ msgid ""
 "structure.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:241
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:263
 msgid ""
 "\n"
 " la table de réponse modale ne contient que des auto spectres. le calcul "
 "demande n est donc pas réalisable.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:245
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:267
 #, python-format
 msgid ""
 "\n"
@@ -37576,7 +37628,7 @@ msgid ""
 "n'appartient pas au béton (modélisé en coque).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:249
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:271
 #, python-format
 msgid ""
 "\n"
@@ -37587,7 +37639,7 @@ msgstr ""
 " キーワード <DEFI_CABLE>, 発生番号  %(k1)s , オペランド <NOEUD_ANCRAGE> : 2つ"
 "のアンカーノードを定義する必要があります\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:253
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:275
 #, python-format
 msgid ""
 "\n"
@@ -37598,7 +37650,7 @@ msgstr ""
 " キーワード <DEFI_CABLE>, 発生番号  %(k1)s , オペランド <GROUP_NO_ANCRAGE> : "
 "２つのアンカーグループの定義が必要\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:257
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:279
 #, python-format
 msgid ""
 "\n"
@@ -37609,7 +37661,7 @@ msgstr ""
 " キーワード <DEFI_CABLE>, 発生番号  %(k1)s , オペランド <NOEUD_ANCRAGE> : 2ア"
 "ンカーノードは別個のものでなければなりません\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:261
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:283
 #, python-format
 msgid ""
 "\n"
@@ -37620,7 +37672,7 @@ msgstr ""
 " キーワード <DEFI_CABLE>, 発生番号  %(k1)s , オペランド <GROUP_NO_ANCRAGE> : "
 "2 GROUP_NOアンカーは異なっていなければなりません\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:265
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:287
 #, python-format
 msgid ""
 "\n"
@@ -37631,7 +37683,7 @@ msgstr ""
 " キーワード <DEFI_CABLE>, 発生番号  %(k1)s , オペランド型アンカー : 2両端が受"
 "動 -> パッシブの強化\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:269
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:291
 #, python-format
 msgid ""
 "\n"
@@ -37640,7 +37692,7 @@ msgid ""
 "nulle : impossible !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:273
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:295
 msgid ""
 "\n"
 " la carte des caractéristiques matérielles des éléments n existe pas. il "
@@ -37648,7 +37700,7 @@ msgid ""
 "<AFFE_MATERIAU>\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:277
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:299
 msgid ""
 "\n"
 " la carte des caractéristiques géométriques des éléments de barre de section "
@@ -37656,14 +37708,14 @@ msgid ""
 "en utilisant la commande <AFFE_CARA_ELEM>\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:281
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:303
 msgid ""
 "\n"
 " problème pour déterminer le rang de la composante <a1> de la grandeur "
 "<cagnba>\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:285
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:307
 #, python-format
 msgid ""
 "\n"
@@ -37672,34 +37724,34 @@ msgid ""
 "type :  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:289
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:311
 msgid ""
 "\n"
 " vous avez utilise le mot clé ORIE_PEAU_2d alors que le problème est 3d. "
 "utilisez ORIE_PEAU_3d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:315
 msgid ""
 "\n"
 " vous avez utilise le mot clé ORIE_PEAU_3d alors que le problème est 2d. "
 "utilisez ORIE_PEAU_2d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:319
 #, python-format
 msgid ""
 "\n"
 " erreur données : le noeud  %(k1)s  n'existe pas\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:323
 msgid ""
 "\n"
 " impossibilité de mélanger des \"SEG\" et des \"tria\" ou \"QUAD\" !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:305
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:327
 msgid ""
 "\n"
 " Lors de la vérification automatique de l'orientation des mailles de bord, "
@@ -38184,7 +38236,17 @@ msgstr ""
 "\n"
 " コンポーネント TRACTION が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:289
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:287
+#, python-format
+msgid ""
+"\n"
+"Erreur programmeur dans DEFI_MATERIAU :\n"
+"   Pour le mot clé facteur %(k1)s, la liste ordonnée des mots clés "
+"(ORDRE_PARAM)\n"
+"   ne contient pas le mot clé %(k2)s.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:294
 msgid ""
 "\n"
 " comportement META_TRACTION non trouvé\n"
@@ -38192,7 +38254,7 @@ msgstr ""
 "\n"
 " コンポーネント META_TRACTION が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:298
 msgid ""
 "\n"
 " fonction SIGM_F1 non trouvée\n"
@@ -38200,7 +38262,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F1 が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:297
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:302
 msgid ""
 "\n"
 " fonction SIGM_F2 non trouvée\n"
@@ -38208,7 +38270,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F2 見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:306
 msgid ""
 "\n"
 " fonction SIGM_F3 non trouvée\n"
@@ -38216,7 +38278,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F3 が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:305
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:310
 msgid ""
 "\n"
 " fonction SIGM_F4 non trouvée\n"
@@ -38224,7 +38286,7 @@ msgstr ""
 "\n"
 " 関数 SIGM_F4 が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:314
 msgid ""
 "\n"
 " fonction SIGM_C non trouvée\n"
@@ -38232,61 +38294,61 @@ msgstr ""
 "\n"
 " 関数 SIGM_C が見つからない\n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:318
 #, python-format
 msgid ""
 "\n"
 " fonction constante interdite pour la courbe de traction %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:317
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:322
 #, python-format
 msgid ""
 "\n"
 " prolongement à gauche EXCLU pour la courbe  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:321
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:326
 #, python-format
 msgid ""
 "\n"
 " prolongement à droite EXCLU pour la courbe  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:325
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:330
 #, python-format
 msgid ""
 "\n"
 " concept de type :  %(k1)s  interdit pour la courbe de traction %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:329
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:334
 #, python-format
 msgid ""
 "\n"
 " matériau : %(k1)s  non affecté par la commande AFFE_MATERIAU.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:333
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:338
 msgid ""
 "\n"
 "  les fonctions complexes ne sont pas implémentées\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:337
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:342
 #, python-format
 msgid ""
 "\n"
 " Le nombre de paramètres est supérieur à 30 pour le matériau  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:341
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:346
 msgid ""
 "\n"
 " mauvaise définition de la plage de fréquence, aucun mode pris en compte\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:345
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:350
 #, python-format
 msgid ""
 "\n"
@@ -38294,19 +38356,19 @@ msgid ""
 " et pourtant elles ont été affectées dans le mot-clé facteur : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:350
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:355
 msgid ""
 "\n"
 " FREQ INIT plus grande que FREQ FIN\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:359
 msgid ""
 "\n"
 " FREQ INIT nécessaire avec CHAMNO\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:358
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa6.py:363
 msgid ""
 "\n"
 " FREQ FIN nécessaire avec CHAMNO\n"
@@ -53868,17 +53930,6 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:519
 msgid ""
 "\n"
-"  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le "
-"cadre\n"
-"     d'un modèle X-FEM axisymétrique.\n"
-"\n"
-"  -> Risque & Conseil:\n"
-"     Veuillez utiliser un maillage linéaire.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:528
-msgid ""
-"\n"
 "  -> Il y a éventuellement des créations de mailles\n"
 "     supplémentaires de type POI1 lorsque des affectations sont faites sur "
 "des nœuds ou des groupes de\n"
@@ -53894,7 +53945,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:540
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:531
 #, python-format
 msgid ""
 "\n"
@@ -53904,7 +53955,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:546
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:537
 #, python-format
 msgid ""
 "\n"
@@ -53917,7 +53968,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:554
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:545
 #, python-format
 msgid ""
 "\n"
@@ -53929,7 +53980,7 @@ msgid ""
 "     Revoyez la définition de ce modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:561
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:552
 #, python-format
 msgid ""
 "\n"
@@ -53942,7 +53993,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:569
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:560
 #, python-format
 msgid ""
 "\n"
@@ -53952,7 +54003,7 @@ msgid ""
 "     Revoyez la définition de ce modèle\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:576
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:567
 #, python-format
 msgid ""
 "\n"
@@ -53965,7 +54016,7 @@ msgid ""
 "     Revoyez la définition de ces modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:584
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:575
 msgid ""
 "\n"
 "  On ne peut pas créer un modèle X-FEM avec contact dans le cas où le mot "
@@ -53974,7 +54025,7 @@ msgid ""
 "     Vous devez renseigner CONTACT='NON' pour ne pas activer le contact.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:590
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:581
 #, python-format
 msgid ""
 "\n"
@@ -53986,7 +54037,7 @@ msgid ""
 "     Revoyez la définition de ces deux modèles.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:597
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:588
 msgid ""
 "\n"
 "  -> Il n'est pas possible de réaliser la propagation d'une fissure en "
@@ -53997,7 +54048,7 @@ msgid ""
 "     Veuillez utiliser un maillage linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:604
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:595
 #, python-format
 msgid ""
 "\n"
@@ -54008,11 +54059,28 @@ msgid ""
 "         doivent être définies avec un contact STANDARD.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:609
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:600
 msgid ""
 "\n"
 "     --> L algorithme de détection a détecté un front qui va au delà de\n"
 "         la zone de fissuration potentielle. Il faut agrandir celle-ci.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:604
+#, python-format
+msgid ""
+"\n"
+"  -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO_GAMMA' ou "
+"'ANGLE_IMPO_BETA_GAMMA' et le tableau\n"
+"     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s ne "
+"contient\n"
+"     pas de colonne 'GAMMA'.\n"
+"  -> Risque & Conseil:\n"
+"     Si vous souhaitez imposer les valeurs de l'angle de déversement aux "
+"points \n"
+"     du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO_GAMMA' ou "
+"'ANGLE_IMPO_BETA_GAMMA' et ajouter\n"
+"     une colonne 'GAMMA' au tableau de SIF manuellement.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:22
@@ -54119,16 +54187,16 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"  -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' et le "
-"tableau\n"
+"  -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' ou "
+"'ANGLE_IMPO_BETA_GAMMA' et le tableau\n"
 "     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s "
 "contient\n"
-"     une colonne 'BETA'.\n"
+"     une colonne 'BETA' ou une colonne 'GAMMA'.\n"
 "  -> Risque & Conseil:\n"
 "     Les valeurs de l'angle de bifurcation notées dans ce tableau ne sont\n"
 "     pas prises en compte. Si vous souhaitez imposer les valeurs de l'angle\n"
 "     de bifurcation aux points du fonds de fissure, veuillez indiquer\n"
-"     CRITERE='ANGLE_IMPO'.\n"
+"     CRITERE='ANGLE_IMPO' ou 'ANGLE_IMPO_BETA_GAMMA'.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:99

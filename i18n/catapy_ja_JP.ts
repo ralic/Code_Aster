@@ -276,12 +276,12 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4774"/>
       <source>SEGMENT: 2 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">セグメント: 2 値 (上三角行列)</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4774"/>
       <source>SEGMENT: 10 valeurs (triangulaire supérieure par colonne)</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">セグメント: 10 値 (上三角行列)</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4774"/>
@@ -1331,17 +1331,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="10174"/>
       <source>Régression polynomiale d'une fonction</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">多項式回帰関数</translation>
     </message>
     <message>
       <location filename="../cata.py" line="10174"/>
       <source>Spectre d'oscillateur</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">振幅スペクトル</translation>
     </message>
     <message>
       <location filename="../cata.py" line="10174"/>
       <source>Valeur de la norme du spectre d oscillateur</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">標準振幅スペクトルの値</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="10174"/>
@@ -1351,7 +1351,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="10174"/>
       <source>Densité spectrale</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">スペクトル密度</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="10174"/>
@@ -1736,12 +1736,12 @@
     <message>
       <location filename="../cata.py" line="11272"/>
       <source>Valeur de la norme du spectre d'oscillateur</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">標準振幅スペクトルの値</translation>
     </message>
     <message>
       <location filename="../cata.py" line="11272"/>
       <source>Amortissement du spectre d'oscillateur</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">振幅スペクトルの減衰</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="11272"/>
@@ -3171,7 +3171,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="16830"/>
       <source>Module d'Young [Unité]</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">ヤング率 [単位]</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="16830"/>
@@ -4531,7 +4531,7 @@
     <message>
       <location filename="../cata.py" line="23952"/>
       <source>nombre d'iterations pour fitter le spectre</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">フィッター スペクトルの反復処理回数</translation>
     </message>
     <message>
       <location filename="../cata.py" line="23952"/>
@@ -6226,12 +6226,12 @@
     <message>
       <location filename="../cata.py" line="28522"/>
       <source>Nombre de cpu pour les calculs MPI</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">MPI計算のためのCPU数</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28522"/>
       <source>Nombre de noeuds pour les calculs MPI</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">MPI計算のための節点数</translation>
     </message>
     <message>
       <location filename="../cata.py" line="28522"/>
@@ -7601,7 +7601,7 @@
     <message>
       <location filename="../cata.py" line="34813"/>
       <source>module d'Young fonction de la temperature</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">ヤング率の温度依存性</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="34813"/>
@@ -7651,12 +7651,12 @@
     <message>
       <location filename="../cata.py" line="34813"/>
       <source>module d'Young</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">ヤング率</translation>
     </message>
     <message>
       <location filename="../cata.py" line="34813"/>
       <source>coef de Poisson</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">ポアソン比</translation>
     </message>
     <message>
       <location filename="../cata.py" line="34813"/>
