@@ -310,6 +310,7 @@ subroutine calirc(chargz)
                 endif
             end do
             nbno2=kkno2
+            if (nbno2.eq.0) call utmess('F','MODELISA8_48',si=iocc)
             call jedetr('&&CALIRC.LINONU2')
             call wkvect('&&CALIRC.LINONU2', 'V V I', nbno2, iagno2)
             do kno2 = 1, nbno2
