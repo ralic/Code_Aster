@@ -81,7 +81,7 @@ OPTION__
     CHAR_MECA_PESA_R 345  IN__  CCAGNBA  PCAGNBA  NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                                 ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR
-    COOR_ELGA        343  IN__  NGEOMER  PGEOMER
+    COOR_ELGA        478  IN__  NGEOMER  PGEOMER
                           OUT__ EGGEOP_R PCOORPG
     EPSI_ELGA        438  IN__  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                           OUT__ EDEFOPG  PDEFOPG
