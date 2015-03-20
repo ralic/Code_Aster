@@ -32,7 +32,7 @@ subroutine te0580(nomopt, nomte)
 
     character(len=1) :: code
     integer :: jad, itab(8), nbv, iret, k, kpara, mater, icodre(2)
-    integer :: imate,idimge,npara,nno,igeom,ndim,ino,ier
+    integer :: imate,idimge,npara,nno,igeom,ndim,ino,ier,ipt,nbpt
     real(kind=8) :: valres(2), valpar(3),vxyz, pr
     character(len=8) :: nompar(3)
     character(len=16) :: nomres(2)
@@ -41,6 +41,7 @@ subroutine te0580(nomopt, nomte)
     character(len=8) :: param
     character(len=8) :: lparam1(2)=(/ 'PPRESSR', 'PPRESSF' /)
     character(len=8) :: lparam2(6)
+    character(len=8) :: lparam3(2)=(/ 'PFRCO3D', 'PFFCO3D' /)
 
     data  lparam2 / 'PPRESSR', 'PPRESSF', 'PFR2D3D', &
                     'PFF2D3D', 'PFR1D2D', 'PFF1D2D' /
@@ -76,6 +77,44 @@ subroutine te0580(nomopt, nomte)
                                 goto 998
                             endif
                         endif
+                    enddo
+                endif
+            endif
+        enddo
+
+
+    elseif ( nomopt.eq.'CHAR_MECA_SFCO3D' .or. nomopt.eq.'CHAR_MECA_SRCO3D'  &
+        .or. nomopt.eq.'RIGI_MECA_SFCO3D' .or. nomopt.eq.'RIGI_MECA_SRCO3D' ) then
+!   ===================================================================================
+        do kpara=1,2
+            param=lparam3(kpara)
+            call tecach('NNN', param, 'L', iret, nval=8, itab=itab)
+            if (iret.eq.0) then
+                jad=itab(1)
+                nbv=itab(2)
+                ASSERT(itab(5).eq.1 .or. itab(5).eq.4)
+                ASSERT(mod(nbv,8).eq.0)
+                nbpt=nbv/8
+                ! on ne conserve que les 6 CMPS FX, FY, ..., MZ
+                nbv=6
+                if (itab(5).eq.1) then
+                    do ipt=1,nbpt
+                        do k=1,nbv
+                            if (zr(jad-1+8*(ipt-1)+k).ne.0.d0) goto 998
+                        enddo
+                    enddo
+                else
+                    do ipt=1,nbpt
+                        do k=1,nbv
+                            if (zk8(jad-1+k).ne.'&FOZERO') then
+                                call fointe(' ', zk8(jad-1+8*(ipt-1)+k), 0, ' ', [0.d0], pr, ier)
+                                if (ier.eq.0 .and. pr.eq.0.d0) then
+                                    ! tout va bien ...
+                                else
+                                    goto 998
+                                endif
+                            endif
+                        enddo
                     enddo
                 endif
             endif

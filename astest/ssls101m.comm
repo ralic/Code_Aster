@@ -72,6 +72,14 @@ PRSUIV=AFFE_CHAR_MECA(  MODELE=MODEL, INFO=1,
 PRSUIV2=AFFE_CHAR_MECA_F(  MODELE=MODEL, INFO=1,
                PRES_REP=_F(GROUP_MA='DBCE',   PRES =  P2))
 
+PRSUIV3=AFFE_CHAR_MECA(  MODELE=MODEL, INFO=1,
+               FORCE_COQUE=(_F(GROUP_MA='ADE2',   PRES =  0.),
+                         _F(GROUP_MA='DBCE', PRES = 0.),
+                     ),)
+
+PRSUIV4=AFFE_CHAR_MECA_F(  MODELE=MODEL, INFO=1,
+               FORCE_COQUE=_F(GROUP_MA='DBCE',   PRES =  P2))
+
 # 1er calcul avec TYPE_RACCORD='COQUE_MASSIF' :
 #------------------------------------------------
 DEFI_GROUP(reuse=MAILL, MAILLAGE=MAILL,
@@ -102,8 +110,10 @@ INTERVALLE=(_F(JUSQU_A=1,  NOMBRE=1,),
 RESU1=STAT_NON_LINE( MODELE=MODEL, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM,
           EXCIT=(_F(CHARGE = CHARGE),
                  _F(CHARGE = CHARGE2),
-                 _F(CHARGE = PRSUIV, TYPE_CHARGE='SUIV'),
+                 _F(CHARGE = PRSUIV,  TYPE_CHARGE='SUIV'),
                  _F(CHARGE = PRSUIV2, TYPE_CHARGE='SUIV'),
+                 _F(CHARGE = PRSUIV3, TYPE_CHARGE='SUIV'),
+                 _F(CHARGE = PRSUIV4, TYPE_CHARGE='SUIV'),
                  _F(CHARGE = RACCOR1),
                  _F(CHARGE = BLOQ1)),
           INCREMENT=_F(LIST_INST=LINST,),COMPORTEMENT=_F(RELATION='ELAS',))
