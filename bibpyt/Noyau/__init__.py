@@ -56,5 +56,5 @@ from asojb import AsBase
 # values in a MCSIMP.
 MAXSIZE = 500
 
-MAXSIZE_MSGCHK = ' <A> Only the first {0} occurrences (total: {1}) have been checked.'
-MAXSIZE_MSGKEEP = ' <A> Only the first {0} occurrences (total: {1}) have been kept.'
+MAXSIZE_MSGCHK = ' <I> Only the first {0} occurrences (total: {1}) have been checked.'
+MAXSIZE_MSGKEEP = ' <I> Only the first {0} occurrences (total: {1}) have been printed.'
