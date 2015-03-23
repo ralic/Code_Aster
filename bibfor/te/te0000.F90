@@ -18,6 +18,7 @@ subroutine te0000(numc, opt, te)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
 !     ARGUMENTS:
 !     ----------
 #include "asterf_types.h"
@@ -625,9 +626,9 @@ subroutine te0000(numc, opt, te)
 #include "asterfort/te0598.h"
 #include "asterfort/te0599.h"
 #include "asterfort/te0600.h"
-#include "asterfort/te0602.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
+#include "asterfort/assert.h"
     integer :: numc, opt, te
 ! ----------------------------------------------------------------------
 !     ENTREES:
@@ -658,6 +659,11 @@ subroutine te0000(numc, opt, te)
     character(len=8) :: k8bid
 ! DEB-------------------------------------------------------------------
     call uttcpu('CPU.CALC.3', 'DEBUT', ' ')
+
+!   -- avant d'augmenter la plage des numeros (au dela de 600),
+!      il faut utiliser les numeros "vides" (les routines de 25 lignes)
+    ASSERT(numc.gt.0)
+    ASSERT(numc.le.600)
 !
 !     PARALLELE OR NOT ?
 !     --------------------
@@ -1878,8 +1884,6 @@ subroutine te0000(numc, opt, te)
             call te0599(nomopt, nomte)
         case (600)
             call te0600(nomopt, nomte)
-        case (602)
-            call te0602(nomopt, nomte)
         case default
             call codent(numc, 'D', k8bid)
             call utmess('F', 'CALCULEL4_91', 1, k8bid)
