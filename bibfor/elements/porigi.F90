@@ -114,6 +114,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
         xiz2 = xiz2/xflz
     else if (nomte.eq.'MECA_POU_D_TG') then
         itype = 30
+    else
 !        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         istruc = 1
     endif
