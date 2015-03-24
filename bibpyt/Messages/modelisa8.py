@@ -175,7 +175,7 @@ cata_msg = {
 
     48 : _(u"""
 Erreur utilisateur pour LIAISON_MAIL :
-   Il n'y a aucun noeud esclave à lier pour l'occurence %(i1)d du mot clé LIAISON_MAIL.
+   Il n'y a aucun noeud esclave à lier pour l'occurrence %(i1)d du mot clé LIAISON_MAIL.
    Peut-être que tous les noeuds esclaves ont déjà été éliminés dans des occurrences
    précédentes.
 """),
