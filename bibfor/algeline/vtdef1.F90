@@ -42,6 +42,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecreo.h"
 #include "asterfort/jedema.h"
@@ -130,6 +131,9 @@ subroutine vtdef1(chpout, chpin, base, typc)
     vale(1:19) = chpin
     type = typc(1:1)
     if (type .eq. ' ') call jelira(vale, 'TYPE', cval=type)
+    if (tych(1:2).eq.'EL') then
+        ASSERT( type .ne. 'C' )
+    endif
     call jelira(vale, 'LONMAX', nbval)
     vale(1:19) = chpout
     call jecreo(vale, classe//' V '//type)
