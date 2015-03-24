@@ -265,12 +265,7 @@ Erreur Programmeur / UTTCPU  :
  Interpolation LOG et complexe en ordonnées sont incompatibles !
 """),
 
-    93 : _(u"""
- Vous essayez de stocker le modèle, le champ matériau ou
- des caractéristiques élémentaires dans la SD résultat.
- Ce n'est pas possible pour une SD résultat de type %(k1)s,
- on ne stocke aucun de ces trois éléments.
-"""),
+
 
     94 : _(u"""
  Vous essayer de stocker la SD charge dans la SD résultat.
@@ -283,7 +278,6 @@ Erreur Programmeur / UTTCPU  :
  veuillez consulter la documentation U correspondante
 """),
 
-    98 : _(u"""
- Pour une SD résultat de type %(k1)s, le modèle ne sera pas stocké.
-"""),
+
+
 }

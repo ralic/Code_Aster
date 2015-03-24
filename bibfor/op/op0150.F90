@@ -435,13 +435,7 @@ subroutine op0150()
     call getvid(' ', 'MODELE', nbval=0, nbret=n3)
 !
     if (((n1.ne.0).or.(n2.ne.0).or.(n3.ne.0)) .and. ((typres.eq.'EVOL_CHAR'))) then
-        if ((n3.ne.0) .and. (form.eq.'ENSIGHT')) then
-            call utmess('I', 'UTILITAI5_98', sk=typres)
-            goto 265
-        else
-            call utmess('A', 'UTILITAI5_93', sk=typres)
-            goto 265
-        endif
+        goto 265
     endif
 !
     if (n1 .ne. 0) then
