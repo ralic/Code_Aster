@@ -202,6 +202,7 @@ OPTION__
                                 NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  N1NEUT_R PLSN
                                 N1NEUT_R PLST     CMATERC  PMATERC  E6NEUTR  PPINTTO  E22NEUTR PPMILTO
                                 STANO_I  PSTANO   CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                N5NEUTI  PHEA_NO
                           OUT__ ECONTPG  PCONTRT  MVECTUR  PVECTUR
     CHVOIS_XFEM      400  IN__  E36NEUI  PCNSETO  E10NEUTI  PLONCHA
                           OUT__ E18NEUI  PCVOISX
