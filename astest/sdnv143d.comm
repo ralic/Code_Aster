@@ -1,0 +1,272 @@
+# TITRE BATIMENT DE GENIE CIVIL SOUS SEISME
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+import numpy as NP
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',))
+
+#-------------------------------------------------------------#
+#                 DEFINITION DES PARAMETRES                   #
+#-------------------------------------------------------------#
+
+####################################################
+#Definition de l ecrouissage et du materiau du bati#
+####################################################
+
+#Materiau elasto-parfaitement plastique (VMIS_ISOT_LINE)
+MAT_MASS=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
+                               NU=0.3,
+                               RHO=7500,
+                               ALPHA=0.,),
+                       ECRO_LINE=_F(D_SIGM_EPSI=0,
+                                    SY=870.E6,),);
+                                    
+####################################################################
+#Definition des parametres temps du calcul et de la force appliquee#
+####################################################################
+
+#Pression creneau
+# Pmax l--------l
+#      l        l
+#      l        l
+#      l        l
+#      l        l_______
+#     0        T1     T2
+
+#Duree pour passer de 0 a Pmax
+T0a=1.E-10;
+#Duree de l impact
+T1=20.E-09;
+#Duree pour passer de Pmax a 0
+T0b=T1+T0a;
+#Temps ajoute apres impact
+T2=22.E-09;
+#Pas de temps
+PAS_TP=1.E-10;
+PAS_TP2=2.E-10;
+
+#Liste des instants de calcul
+LIMP=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=T0a,
+                                   NOMBRE=1,),
+                               #_F(JUSQU_A=PAS_TP,
+                               #    NOMBRE=1,),
+                                 _F(JUSQU_A=T1+T0a,
+                                   PAS=PAS_TP,),
+                                 _F(JUSQU_A=T1+2*T0a,
+                                   NOMBRE=1,),
+                               #  _F(JUSQU_A=T0b+PAS_TP,
+                               #    NOMBRE=1,),
+                                 _F(JUSQU_A=T2,
+                                   PAS=PAS_TP,),
+                                ),);                             
+                                    
+#Force appliquee
+Pmax=5E9;
+PRESSION=DEFI_FONCTION(NOM_PARA='INST',
+                       VALE=(0.,0.,
+                             T0a,Pmax,
+                             T1+T0a,Pmax,
+                             T1+2*T0a,0.,
+                             T2,0.,),
+                       PROL_DROITE='CONSTANT',);
+                    
+#-------------------------------------------------------------#
+#    DEFINITION DU MAILLAGE INITIAL ET DU MODELE INITIAL      #
+#-------------------------------------------------------------#
+
+MA=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
+
+#Reorientation des normales 
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_2D=_F(GROUP_MA=('HAUT','IMP'),),);
+                               
+#Definition du modele initial                               
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
+
+#Definition des materiaux
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(TOUT='OUI',
+                             MATER=MAT_MASS,),),);
+
+#Definition des conditions limites 
+CLIM=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=(_F(GROUP_NO='BAS',
+                                  DY=0.0,),
+                               _F(GROUP_NO='AXE',
+                                  DX=0.0,),),);
+
+#Definition du chargement                                 
+CHOC=AFFE_CHAR_MECA_F(MODELE=MO,
+                      PRES_REP=(_F(GROUP_MA='IMP',
+                                   PRES=PRESSION,),),);                                 
+
+#-------------------------------------------------------------#
+#                     CALCUL DYNAMIQUE                        #
+#-------------------------------------------------------------#
+RESU=DYNA_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,                              
+                   EXCIT=(_F(CHARGE=CLIM,),                       
+                          _F(CHARGE=CHOC,),),                     
+                   COMPORTEMENT=(_F(RELATION='VMIS_ISOT_LINE',       
+                                 DEFORMATION='PETIT',             
+                                 GROUP_MA='CIBLE',),),            
+                   INCREMENT=_F(LIST_INST=LIMP,                   
+                                INST_FIN=T2,),                                   
+                   SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',               
+                                   FORMULATION='ACCELERATION',),                                                                      
+                   NEWTON=_F(MATRICE='TANGENTE',                  
+                             REAC_ITER=1,),
+                             );
+
+#Post-traitement
+RESU=CALC_CHAMP(reuse=RESU,
+                RESULTAT=RESU,
+#                INST=22.E-9,
+                CONTRAINTE='SIEF_NOEU',
+                CRITERES  ='SIEQ_NOEU',
+                );
+
+
+
+
+#IMPRESSION DES RESULTATS                                                                                                                             
+#SIG_AXE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',                                                             
+#                                 INTITULE='SIEF_NOEU',                                                              
+#                                 RESULTAT=RESU,                                                                 
+#                                 NOM_CHAM='SIEF_NOEU',                                                                     
+#                                 GROUP_NO='AXE',                                                                   
+#                                 NOM_CMP='SIYY',                                                    
+#                                 REPERE='GLOBAL',),);
+
+#IMPR_RESU(RESU=_F(RESULTAT=RESU,
+#                  NOM_CHAM='SIEF_NOEU',
+#                  INST=22.E-9,
+#                  NOM_CMP='SIYY',
+#                  GROUP_NO='P1',),);
+                  
+#IMPR_RESU(RESU=_F(RESULTAT=RESU,
+#                  NOM_CHAM='SIEF_NOEU',
+#                  INST=22.E-9,
+#                  NOM_CMP='SIYY',
+#                  GROUP_NO='P2',),);
+
+#IMPR_RESU(RESU=_F(RESULTAT=RESU,
+#                  NOM_CHAM='SIEF_NOEU',
+#                  INST=22.E-9,
+#                  NOM_CMP='SIYY',
+#                  GROUP_NO='P3',),);
+
+#IMPR_RESU(RESU=_F(RESULTAT=RESU,
+#                  NOM_CHAM='SIEF_NOEU',
+#                  INST=22.E-9,
+#                  NOM_CMP='SIYY',
+#                  GROUP_NO='P4',),);                  
+                                    
+                  
+#REFE=DEFI_FONCTION(NOM_PARA='DY',
+#                   VALE=(0.,0.,
+#                         9.4E-6,0.,
+#                         9.401E-6,2.062948E9,
+#                         12.1E-6,2.062948E9,
+#                         12.11E-6,5.E9,
+#                         103.58E-6,5.E9,
+#                         103.59E-6,1.468526E9,
+#                         133.16E-6,1.468526E9,
+#                         133.17E-6,0.,
+#                         250.E-6,0.,),
+#                   PROL_DROITE='CONSTANT',);
+
+#ABSOLU1=FORMULE(NOM_PARA='SIYY',
+#               VALE='abs(SIYY)',);
+
+#ABSOLU2=FORMULE(NOM_PARA='COOR_Y',
+#               VALE='abs(COOR_Y)',);
+                              
+#ABS_SIG=CALC_TABLE(TABLE=SIG_AXE,
+#                   ACTION=(_F(OPERATION='OPER',
+#                             FORMULE=ABSOLU1,
+#                             NOM_PARA='ABS_SIYY',),
+#                           _F(OPERATION='OPER',
+#                             FORMULE=ABSOLU2,
+#                             NOM_PARA='ABS_COOR',),)  
+#                             );
+                  
+#IMPR_TABLE(TABLE=ABS_SIG,
+#           FORMAT='XMGRACE',
+#           NOM_PARA=('ABS_COOR','ABS_SIYY'),
+#           TRI=_F(NOM_PARA='ABS_COOR',
+#                  ORDRE='CROISSANT'),
+#           LEGENDE_X='PROFONDEUR (m)',
+#           LEGENDE_Y='CONTRAINTE SIYY (Pa)',
+#           );                       
+                       
+#IMPR_FONCTION(COURBE=_F(FONCTION=REFE,),
+#              FORMAT='XMGRACE',
+#              LEGENDE_X='PROFONDEUR (m)',
+#              LEGENDE_Y='CONTRAINTE SIYY (Pa)',
+#              );
+
+
+#TEST DE NON REGRESSION
+TEST_RESU(RESU=(
+                _F(GROUP_NO='P1',
+                   INST=22.E-9,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=-5.E9,
+                   VALE_CALC=-4996029033.78,
+                   PRECISION=1.E-2,),
+                _F(GROUP_NO='P2',
+                   INST=22.E-9,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=-5.E9,
+                   VALE_CALC=-4975760814.81,
+                   PRECISION=2.E-2),
+                _F(GROUP_NO='P3',
+                   INST=22.E-9,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=-1.468526E9,
+                   VALE_CALC=-1490408569.47,
+                   PRECISION=5.E-2),                   
+                _F(GROUP_NO='P4',
+                   INST=22.E-9,
+                   RESULTAT=RESU,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOM_CMP='SIYY',
+                   REFERENCE='ANALYTIQUE',
+                   VALE_REFE=-1.468526E9,
+                   VALE_CALC=-1337189483.19,
+                   PRECISION=10.E-2),                                                                       
+                ),
+          );                                             
+
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU,));                                               
+
+FIN();
