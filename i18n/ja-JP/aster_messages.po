@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-19 17:44+0100\n"
-"PO-Revision-Date: 2015-03-19 12:37-0400\n"
+"POT-Creation-Date: 2015-03-26 18:15+0100\n"
+"PO-Revision-Date: 2015-03-26 12:53-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Japanese\n"
 "Language: ja_JP\n"
@@ -6485,6 +6485,8 @@ msgid ""
 "  Vérification du spectre de charges critiques (Méthode de Sturm)\n"
 "\n"
 msgstr ""
+"  重要な負荷のスペクトルの検証 (Sturm法)\n"
+"\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:186
 msgid ""
@@ -6492,6 +6494,9 @@ msgid ""
 "  Résultat issu d'un INFO_MODE précédent ).\n"
 "\n"
 msgstr ""
+"  重要な負荷のスペクトルの検証 (Sturm法 -\n"
+"  前のINFO_MODEからの結果 ).\n"
+"\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:191
 #, python-format
@@ -6517,6 +6522,8 @@ msgid ""
 "  Vérification du spectre de fréquences (Méthode de Sturm)\n"
 "\n"
 msgstr ""
+"  周波数のスペクトルの検証 (Sturm法)\n"
+"\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:204
 msgid ""
@@ -6524,6 +6531,9 @@ msgid ""
 "  Résultat issu d'un INFO_MODE précédent )\n"
 "\n"
 msgstr ""
+"  周波数のスペクトルの検証 (Sturm法-\n"
+" 前の INFO_MODE からの結果 )\n"
+"\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:209
 #, python-format
@@ -6549,6 +6559,8 @@ msgid ""
 "  Vérification du spectre en fréquences (Méthode de l'argument principal)\n"
 "\n"
 msgstr ""
+"  周波数スペクトルの検証 (偏角の原理の方法)\n"
+"\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:222
 #, python-format
@@ -6588,11 +6600,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:241
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "  On augmente la valeur de décalage de %(r2)12.5E %%.\n"
 "  La valeur centrale devient : %(r1)12.5E\n"
-msgstr " 周波数オフセットの値 : %(r1)12.5E\n"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:245
 #, python-format
@@ -7313,6 +7325,10 @@ msgid ""
 " la condition d'applicabilité sur la taille des éléments\n"
 " n'est pas respectée en compression.\n"
 msgstr ""
+"\n"
+" 弾塑性法 BETON_DOUBLE_DP の統合 :\n"
+" 要素サイズの適用性の条件は、\n"
+" 圧縮を尊重しない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:95
 #, python-format
@@ -7322,6 +7338,10 @@ msgid ""
 " la condition d'applicabilité sur la taille des éléments\n"
 " n'est pas respectée en compression pour la maille:  %(k1)s\n"
 msgstr ""
+"\n"
+" 弾塑性法 BETON_DOUBLE_DP の適用性の統合 :\n"
+" 要素サイズの適用性の条件は、\n"
+" メッシュ :  %(k1)s の圧縮は、尊重しない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:101
 msgid ""
@@ -7330,6 +7350,10 @@ msgid ""
 " la condition d'applicabilité sur la taille des éléments\n"
 " n est pas respectée en traction.\n"
 msgstr ""
+"\n"
+" 弾塑性法 BETON_DOUBLE_DP の統合 :\n"
+" 要素サイズの適用性の条件は、\n"
+" 引張りを尊重しない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:107
 #, python-format
@@ -7339,6 +7363,10 @@ msgid ""
 " la condition d'applicabilité sur la taille des éléments\n"
 " n'est pas respectée en traction pour la maille:  %(k1)s\n"
 msgstr ""
+"\n"
+" 弾塑性法 BETON_DOUBLE_DP の適用性の統合 :\n"
+" 要素サイズの適用性の条件は、\n"
+" メッシュ :  %(k1)s の引張りは、尊重しない。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:113
 #, python-format
@@ -7746,6 +7774,9 @@ msgid ""
 " l'interspectre modal est de type \"ACCE\"\n"
 " on ne peut que restituer une accélération\n"
 msgstr ""
+"\n"
+" モーダルの依存性は、\"ACCE\"型 \n"
+" 加速度のみを返すことができる。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:166
 msgid ""
@@ -7753,6 +7784,9 @@ msgid ""
 " l'interspectre modal est de type \"VITE\"\n"
 " on ne peut que restituer une vitesse\n"
 msgstr ""
+"\n"
+" モーダルの依存性は、\"VITE\"型 \n"
+" 速度のみを返すことができる。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:171
 msgid ""
@@ -7760,6 +7794,9 @@ msgid ""
 " l'interspectre modal est de type \"DEPL\"\n"
 " on ne peut pas restituer une accélération\n"
 msgstr ""
+"\n"
+" モーダルの依存性は、\"DEPL\"型 \n"
+" 加速度のみを返すことができる。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:176
 msgid ""
@@ -7767,6 +7804,9 @@ msgid ""
 " l'interspectre modal est de type \"DEPL\"\n"
 " on ne peut pas restituer une vitesse\n"
 msgstr ""
+"\n"
+" モーダルの依存性は、\"DEPL\"型 \n"
+" 速度のみを返すことができる。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:181
 msgid ""
@@ -12914,6 +12954,8 @@ msgid ""
 " loi de comportement avec irradiation, le paramètre N doit être supérieur à "
 "0\n"
 msgstr ""
+"\n"
+" 照射挙動の法則, パラメータNは、0より大きくなければならない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:114
 msgid ""
@@ -12921,6 +12963,8 @@ msgid ""
 " loi de comportement avec irradiation, le paramètre PHI_ZERO doit être "
 "supérieur à 0\n"
 msgstr ""
+"\n"
+" 照射挙動の法則, パラメータPHI_ZEROは、0より大きくなければならない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:118
 msgid ""
@@ -12928,6 +12972,8 @@ msgid ""
 " loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L doit "
 "être supérieur ou égal à 0\n"
 msgstr ""
+"\n"
+" 照射挙動の法則, パラメータphi/K.PHI_ZERO+Lは、0以上でなければならない\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:122
 msgid ""
@@ -12935,6 +12981,9 @@ msgid ""
 " loi de comportement avec irradiation, le paramètre phi/K.PHI_ZERO+L vaut 0. "
 "Dans ces conditions le paramètre BETA doit être positif ou nul\n"
 msgstr ""
+"\n"
+" 照射挙動の法則, パラメータphi/K.PHI_ZERO+Lは、0です。 これらの条件の下でパラ"
+"メータBETAが正またはゼロでなければなりません\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith7.py:126
 msgid ""
@@ -14321,6 +14370,8 @@ msgid ""
 "\n"
 "Vous affectez plus d'un matériau contenant l'option RCCM.\n"
 msgstr ""
+"\n"
+" RCCMオプションを含む複数の材料を割り当る。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/aspic0.py:25
 msgid ""
@@ -23212,6 +23263,12 @@ msgid ""
 "    %(k1)s\n"
 "Fichier %(k2)s, ligne %(i1)d\n"
 msgstr ""
+"\n"
+"プログラムのエラー。\n"
+"\n"
+"条件を満たさない:\n"
+"    %(k1)s\n"
+"ファイル %(k2)s, 行 %(i1)d\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dvp.py:41
 msgid ""
@@ -23282,6 +23339,11 @@ msgid ""
 "\n"
 "      %(k1)s\n"
 msgstr ""
+"\n"
+" Pythonモジュールのプルグラムのエラー。\n"
+"条件を満たさない : %(k2)s\n"
+"\n"
+"      %(k1)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dvp.py:92
 #, python-format
@@ -23305,6 +23367,8 @@ msgid ""
 "\n"
 " la liste d'instants fournie ne respecte pas la condition de stabilité.\n"
 msgstr ""
+"\n"
+" 提供される瞬間のリストは安定性の条件を満たしていません。 \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/dynamique.py:30
 msgid ""
@@ -24845,6 +24909,12 @@ msgid ""
 "   Vous n'avez pas renseigné le mot clé VECT_ORIE. La ligne est donc "
 "orientée arbitrairement.\n"
 msgstr ""
+"\n"
+" アラーム DEFI_GROUP / CREA_GROUP_NO / OPTION='NOEUD_ORDO' :\n"
+"   メッシュの指定されたグループは、閉じた線を形成する (同一の NOEUD_ORIG と "
+"NOEUD_EXTR).\n"
+"   キーワード VECT_ORIE に入力していない。 ラインは、任意の方向に配向され"
+"る。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:333
 msgid ""
@@ -26498,6 +26568,9 @@ msgid ""
 "de données\n"
 " résultat de nom <%(k1)s>.\n"
 msgstr ""
+"\n"
+" ETAT_INIT/INST 下で指定された瞬間は、\n"
+"結果名 <%(k1)s> データ構造体で見つかりません。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/etatinit.py:33
 #, python-format
@@ -34371,6 +34444,8 @@ msgid ""
 "Arrêt du calcul des modes : pas de mode propre dans la bande de fréquence "
 "demandée.\n"
 msgstr ""
+"\n"
+"モードの計算を停止 : 要求された周波数帯域には固有モードはありません。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:25
 msgid ""
@@ -37583,6 +37658,8 @@ msgid ""
 "\n"
 " deux spectres sont identiques\n"
 msgstr ""
+"\n"
+" 2スペクトルは同一\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:247
 #, python-format
@@ -37597,6 +37674,8 @@ msgid ""
 "\n"
 " pas le bon numéro de mode\n"
 msgstr ""
+"\n"
+" 良くないモードの数\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa5.py:255
 msgid ""
@@ -39259,13 +39338,24 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
+"Erreur utilisateur pour LIAISON_MAIL :\n"
+"   Il n'y a aucun noeud esclave à lier pour l'occurrence %(i1)d du mot clé "
+"LIAISON_MAIL.\n"
+"   Peut-être que tous les noeuds esclaves ont déjà été éliminés dans des "
+"occurrences\n"
+"   précédentes.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:183
+#, python-format
+msgid ""
 "\n"
 " la direction normale est calculée sur la face esclave. il faut donner des "
 "mailles\n"
 "  de facettes, mots clés :  %(k1)s %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:191
 #, python-format
 msgid ""
 "\n"
@@ -39275,7 +39365,7 @@ msgid ""
 " norme   : %(r5)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:197
 #, python-format
 msgid ""
 "\n"
@@ -39288,7 +39378,7 @@ msgid ""
 " norme   : %(r10)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:206
 #, python-format
 msgid ""
 "\n"
@@ -39296,7 +39386,7 @@ msgid ""
 "Seule l'extraction est possible : OPERATION='EXTR'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:202
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:211
 #, python-format
 msgid ""
 "\n"
@@ -39304,7 +39394,7 @@ msgid ""
 "Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:206
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:215
 #, python-format
 msgid ""
 "\n"
@@ -39312,7 +39402,7 @@ msgid ""
 "orienter la normale aux surfaces.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:220
 #, python-format
 msgid ""
 "\n"
@@ -39323,28 +39413,28 @@ msgid ""
 " mot-clé GROUP_MA_ESCL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:230
 #, python-format
 msgid ""
 "\n"
 " matériau non valide matériau :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:234
 #, python-format
 msgid ""
 "\n"
 " matériaux non valides on ne peut avoir a la fois  %(k1)s  et  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:238
 #, python-format
 msgid ""
 "\n"
 " erreur données le GROUP_NO n'existe pas  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:242
 #, python-format
 msgid ""
 "\n"
@@ -39359,7 +39449,7 @@ msgid ""
 "LIAISON_MAIL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:242
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:251
 #, python-format
 msgid ""
 "\n"
@@ -39368,7 +39458,7 @@ msgid ""
 "  et le noeud %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:248
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:257
 #, python-format
 msgid ""
 "\n"
@@ -39378,7 +39468,7 @@ msgid ""
 " noeud par la correspondance inverse %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:264
 #, python-format
 msgid ""
 "\n"
@@ -39390,7 +39480,7 @@ msgid ""
 "  et le noeud %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:263
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:272
 #, python-format
 msgid ""
 "\n"
@@ -39400,14 +39490,14 @@ msgid ""
 " Noeud par la correspondance inverse %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:279
 #, python-format
 msgid ""
 "\n"
 " on ne trouve pas dans la paroi 2 de maille de type :  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:283
 #, python-format
 msgid ""
 "\n"
@@ -39415,7 +39505,7 @@ msgid ""
 "  ont toutes les 2 comme VIS_A_VIS la maille %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:279
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:288
 #, python-format
 msgid ""
 "\n"
@@ -39424,7 +39514,7 @@ msgid ""
 " TEMP : %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:293
 #, python-format
 msgid ""
 "\n"
@@ -47254,6 +47344,8 @@ msgid ""
 "\n"
 " la (super)maille :  %(k1)s  est en double.\n"
 msgstr ""
+"\n"
+" (スーパー)メッシュ :  %(k1)s  は、二重です。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:30
 #, python-format
@@ -47270,6 +47362,8 @@ msgid ""
 "\n"
 " le GROUP_MA :  %(k1)s  est en double. on ignore le second.\n"
 msgstr ""
+"\n"
+" GROUP_MA :  %(k1)s  は二重です。 ２番目は無視します。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:38
 #, python-format
@@ -47277,6 +47371,8 @@ msgid ""
 "\n"
 " le GROUP_NO :  %(k1)s  est en double. on ignore le second.\n"
 msgstr ""
+"\n"
+" GROUP_NO :  %(k1)s  は二重です。 ２番目は無視します。\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:42
 #, python-format
@@ -47357,6 +47453,9 @@ msgid ""
 " maillages avec super mailles :\n"
 " utiliser OPERATION = SOUS_STRUC\n"
 msgstr ""
+"\n"
+" スパーメッシュを伴ったメッシュ :\n"
+" 使用 OPERATION = SOUS_STRUC\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:96
 msgid ""
@@ -52140,17 +52239,7 @@ msgid ""
 " Interpolation LOG et complexe en ordonnées sont incompatibles !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:268
-#, python-format
-msgid ""
-"\n"
-" Vous essayez de stocker le modèle, le champ matériau ou\n"
-" des caractéristiques élémentaires dans la SD résultat.\n"
-" Ce n'est pas possible pour une SD résultat de type %(k1)s,\n"
-" on ne stocke aucun de ces trois éléments.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:270
 #, python-format
 msgid ""
 "\n"
@@ -52159,19 +52248,12 @@ msgid ""
 " on ne stocke pas la charge.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:281
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:276
 #, python-format
 msgid ""
 "\n"
 " le type de champ  %(k1)s n'est pas accepté\n"
 " veuillez consulter la documentation U correspondante\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:286
-#, python-format
-msgid ""
-"\n"
-" Pour une SD résultat de type %(k1)s, le modèle ne sera pas stocké.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai6.py:22

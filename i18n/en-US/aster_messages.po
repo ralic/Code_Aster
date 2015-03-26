@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-19 17:44+0100\n"
-"PO-Revision-Date: 2015-03-19 12:36-0400\n"
+"POT-Creation-Date: 2015-03-26 18:15+0100\n"
+"PO-Revision-Date: 2015-03-26 12:52-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -7804,13 +7804,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:241
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "  On augmente la valeur de décalage de %(r2)12.5E %%.\n"
 "  La valeur centrale devient : %(r1)12.5E\n"
 msgstr ""
-" The offset value will be changed by %(r2)12.5E %%\n"
-" The offset value becomes : %(r1)12.5E\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:245
 #, python-format
@@ -7820,13 +7818,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:249
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "  On diminue la valeur minimale de %(r2)12.5E %%.\n"
 "  La valeur minimale devient : %(r1)12.5E\n"
 msgstr ""
-"  The maximum value will be raised by %(r1)12.5E %%.\n"
-"  The maximum value becomes : %(r2)12.5E\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:253
 #, python-format
@@ -7836,13 +7832,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:257
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "  On augmente la valeur maximale de %(r2)12.5E %%.\n"
 "  La valeur maximale devient : %(r1)12.5E\n"
 msgstr ""
-"  The maximum value will be raised by %(r1)12.5E %%.\n"
-"  The maximum value becomes : %(r2)12.5E\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline6.py:261
 msgid ""
@@ -31913,15 +31907,11 @@ msgstr ""
 "  %(k1)s not establishes. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:188
-#, fuzzy
 msgid ""
 "\n"
 "  Les matériaux de coque homogénéisées (ELAS_COQUE) sont interdits en non-"
 "linéaire.\n"
 msgstr ""
-"\n"
-" The homogenized materials of shell (ELAS_COQUE or DEFI_COQU_MULT) are "
-"prohibited into nonlinear. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements2.py:192
 #, python-format
@@ -32252,7 +32242,7 @@ msgstr ""
 " number of boundary layers has 30 for the shells 1d \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements3.py:153
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Le nombre de couches défini dans DEFI_COMPOSITE et dans AFFE_CARA_ELEM dans "
@@ -32260,14 +32250,9 @@ msgid ""
 " Nombre de couches dans DEFI_COMPOSITE: %(i1)d\n"
 " Nombre de couches dans AFFE_CARA_ELEM: %(i2)d\n"
 msgstr ""
-"\n"
-" The number of layers defined in DEFI_COQU_MULT and AFFE_CARA_ELEM in is not "
-"coherent. \n"
-" Many layers in DEFI_COQU_MULT:  %(i1)d \n"
-" Many layers in AFFE_CARA_ELEM:  %(i2)d \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements3.py:159
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " L'épaisseur totale des couches définie dans DEFI_COMPOSITE et celle définie "
@@ -32275,11 +32260,6 @@ msgid ""
 " Épaisseur totale des couches dans DEFI_COMPOSITE: %(r1)f\n"
 " Épaisseur dans AFFE_CARA_ELEM: %(r2)f\n"
 msgstr ""
-"\n"
-" The total thickness of the layers defined in DEFI_COQU_MULT and that "
-"defined in AFFE_CARA_ELEM are not coherent. \n"
-" Total thickness of the layers in DEFI_COQU_MULT:  %(r1)f \n"
-" Thickness in AFFE_CARA_ELEM:  %(r2)f \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements3.py:165
 msgid ""
@@ -50525,6 +50505,17 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
+"Erreur utilisateur pour LIAISON_MAIL :\n"
+"   Il n'y a aucun noeud esclave à lier pour l'occurrence %(i1)d du mot clé "
+"LIAISON_MAIL.\n"
+"   Peut-être que tous les noeuds esclaves ont déjà été éliminés dans des "
+"occurrences\n"
+"   précédentes.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:183
+#, fuzzy, python-format
+msgid ""
 "\n"
 " la direction normale est calculée sur la face esclave. il faut donner des "
 "mailles\n"
@@ -50536,7 +50527,7 @@ msgstr ""
 "meshes\n"
 " of breakages, key words:  %(k1)s  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:191
 #, python-format
 msgid ""
 "\n"
@@ -50551,7 +50542,7 @@ msgstr ""
 "  %(r4)f \n"
 " normalizes:  %(r5)f \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:197
 #, python-format
 msgid ""
 "\n"
@@ -50572,7 +50563,7 @@ msgstr ""
 "  %(r9)f \n"
 " normalizes:  %(r10)f \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:206
 #, python-format
 msgid ""
 "\n"
@@ -50583,7 +50574,7 @@ msgstr ""
 "Interpolation prohibited for a result of the type:  %(k1)s \n"
 "Only the extraction is possible: OPERATION='EXTR' \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:202
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:211
 #, python-format
 msgid ""
 "\n"
@@ -50594,7 +50585,7 @@ msgstr ""
 "In the mesh group %(k1)s, there is %(i1)d badly directed meshes. Use command "
 "MODI_MAILLAGE to direct the norm on the surfaces. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:206
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:215
 #, python-format
 msgid ""
 "\n"
@@ -50605,7 +50596,7 @@ msgstr ""
 "The mesh %(k1)s is badly directed. Use command MODI_MAILLAGE to direct the "
 "norm on the surfaces. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:220
 #, python-format
 msgid ""
 "\n"
@@ -50622,7 +50613,7 @@ msgstr ""
 " Check the constitution of the mesh groups informed under\n"
 " key word GROUP_MA_ESCL. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:230
 #, python-format
 msgid ""
 "\n"
@@ -50631,7 +50622,7 @@ msgstr ""
 "\n"
 " material nonvalid material:  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:234
 #, python-format
 msgid ""
 "\n"
@@ -50640,7 +50631,7 @@ msgstr ""
 "\n"
 " nonvalid materials one cannot have the time %(k1)s and  %(k2)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:238
 #, python-format
 msgid ""
 "\n"
@@ -50649,7 +50640,7 @@ msgstr ""
 "\n"
 " error given the GROUP_NO does not exist  %(k1)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:242
 #, python-format
 msgid ""
 "\n"
@@ -50674,7 +50665,7 @@ msgstr ""
 "superimpose them via key words CENTRE, ANGL_NAUT and TRAN. \n"
 " - If the meshes are incompatible, use loading LIAISON_MAIL rather. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:242
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:251
 #, python-format
 msgid ""
 "\n"
@@ -50687,7 +50678,7 @@ msgstr ""
 " has for opposite the node %(k2)s\n"
 " and the node  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:248
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:257
 #, python-format
 msgid ""
 "\n"
@@ -50702,7 +50693,7 @@ msgstr ""
 " is not\" filing\" daucun\" %(k2)s\n"
 " node by the opposite correspondence  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:264
 #, python-format
 msgid ""
 "\n"
@@ -50720,7 +50711,7 @@ msgstr ""
 " has for opposite the node %(k4)s\n"
 " and the node  %(k5)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:263
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:272
 #, python-format
 msgid ""
 "\n"
@@ -50730,7 +50721,7 @@ msgid ""
 " Noeud par la correspondance inverse %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:279
 #, python-format
 msgid ""
 "\n"
@@ -50739,7 +50730,7 @@ msgstr ""
 "\n"
 " one does not find in wall 2 of mesh of the type:  %(i1)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:283
 #, python-format
 msgid ""
 "\n"
@@ -50750,7 +50741,7 @@ msgstr ""
 " conflict in the VIS_A_VIS the meshes %(k1)s and %(k2)s\n"
 " have all the 2 like VIS_A_VIS the mesh  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:279
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:288
 #, python-format
 msgid ""
 "\n"
@@ -50763,7 +50754,7 @@ msgstr ""
 "for temperature\n"
 " TEMP:  %(r1)f \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:293
 #, python-format
 msgid ""
 "\n"
@@ -67217,22 +67208,7 @@ msgstr ""
 "\n"
 " Interpolation LOG and complex in Y-coordinates are incompatible! \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:268
-#, python-format
-msgid ""
-"\n"
-" Vous essayez de stocker le modèle, le champ matériau ou\n"
-" des caractéristiques élémentaires dans la SD résultat.\n"
-" Ce n'est pas possible pour une SD résultat de type %(k1)s,\n"
-" on ne stocke aucun de ces trois éléments.\n"
-msgstr ""
-"\n"
-" You try to store models it, the field material or\n"
-" of the elementary characteristics in the SD result. \n"
-" It is not possible for a SD result of the type %(k1)s,\n"
-" one does not store any of these three elements. \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:270
 #, python-format
 msgid ""
 "\n"
@@ -67245,7 +67221,7 @@ msgstr ""
 " It is not possible for a SD result of the type %(k1)s,\n"
 " one does not store the load. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:281
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:276
 #, python-format
 msgid ""
 "\n"
@@ -67255,15 +67231,6 @@ msgstr ""
 "\n"
 " the type of field %(k1)s is not accepted\n"
 " want to consult corresponding documentation U \n"
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:286
-#, python-format
-msgid ""
-"\n"
-" Pour une SD résultat de type %(k1)s, le modèle ne sera pas stocké.\n"
-msgstr ""
-"\n"
-" For a SD result of the type %(k1)s, models it will not be stored. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai6.py:22
 #, python-format
@@ -69838,7 +69805,7 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:604
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO_GAMMA' ou "
@@ -69853,16 +69820,6 @@ msgid ""
 "'ANGLE_IMPO_BETA_GAMMA' et ajouter\n"
 "     une colonne 'GAMMA' au tableau de SIF manuellement.\n"
 msgstr ""
-"\n"
-" - > key word CRITERE of PROPA_FISS is different from 'ANGLE_IMPO' and the "
-"table\n"
-" of stress intensity factors (SIF) of crack %(k1)s contains\n"
-" a column 'BETA'. \n"
-" - > Risks & advices: \n"
-" The values of the angle of bifurcation noted in this table\n"
-" are not taken into account. If you wish to impose the values of the angle\n"
-" of bifurcation on the points of the crack tips, please indicate\n"
-" CRITERE='ANGLE_IMPO'. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:22
 msgid ""
@@ -69980,7 +69937,7 @@ msgstr ""
 " Please re-examine the definition of the level-sets. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:88
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' ou "
@@ -69994,16 +69951,6 @@ msgid ""
 "     de bifurcation aux points du fonds de fissure, veuillez indiquer\n"
 "     CRITERE='ANGLE_IMPO' ou 'ANGLE_IMPO_BETA_GAMMA'.\n"
 msgstr ""
-"\n"
-" - > key word CRITERE of PROPA_FISS is different from 'ANGLE_IMPO' and the "
-"table\n"
-" of stress intensity factors (SIF) of crack %(k1)s contains\n"
-" a column 'BETA'. \n"
-" - > Risks & advices: \n"
-" The values of the angle of bifurcation noted in this table\n"
-" are not taken into account. If you wish to impose the values of the angle\n"
-" of bifurcation on the points of the crack tips, please indicate\n"
-" CRITERE='ANGLE_IMPO'. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:99
 #, python-format
@@ -71963,16 +71910,20 @@ msgstr "Simple key word: %s %s"
 
 #~ msgid ""
 #~ "\n"
-#~ "  -> Il n'est pas possible d'utiliser des éléments quadratiques dans le "
-#~ "cadre\n"
-#~ "     d'un modèle X-FEM axisymétrique.\n"
-#~ "\n"
-#~ "  -> Risque & Conseil:\n"
-#~ "     Veuillez utiliser un maillage linéaire.\n"
+#~ " Vous essayez de stocker le modèle, le champ matériau ou\n"
+#~ " des caractéristiques élémentaires dans la SD résultat.\n"
+#~ " Ce n'est pas possible pour une SD résultat de type %(k1)s,\n"
+#~ " on ne stocke aucun de ces trois éléments.\n"
 #~ msgstr ""
 #~ "\n"
-#~ " - > It is not possible to use quadratic elements in the frame\n"
-#~ " of an axisymmetric model X-FEM. \n"
-#~ " \n"
-#~ " - > Risks & advices: \n"
-#~ " Please use a linear mesh. \n"
+#~ " You try to store models it, the field material or\n"
+#~ " of the elementary characteristics in the SD result. \n"
+#~ " It is not possible for a SD result of the type %(k1)s,\n"
+#~ " one does not store any of these three elements. \n"
+
+#~ msgid ""
+#~ "\n"
+#~ " Pour une SD résultat de type %(k1)s, le modèle ne sera pas stocké.\n"
+#~ msgstr ""
+#~ "\n"
+#~ " For a SD result of the type %(k1)s, models it will not be stored. \n"

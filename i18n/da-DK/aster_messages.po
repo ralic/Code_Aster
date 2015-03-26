@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-19 17:44+0100\n"
-"PO-Revision-Date: 2015-03-19 12:36-0400\n"
+"POT-Creation-Date: 2015-03-26 18:15+0100\n"
+"PO-Revision-Date: 2015-03-26 12:52-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Danish\n"
 "Language: da_DK\n"
@@ -38066,13 +38066,24 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
+"Erreur utilisateur pour LIAISON_MAIL :\n"
+"   Il n'y a aucun noeud esclave à lier pour l'occurrence %(i1)d du mot clé "
+"LIAISON_MAIL.\n"
+"   Peut-être que tous les noeuds esclaves ont déjà été éliminés dans des "
+"occurrences\n"
+"   précédentes.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:183
+#, python-format
+msgid ""
 "\n"
 " la direction normale est calculée sur la face esclave. il faut donner des "
 "mailles\n"
 "  de facettes, mots clés :  %(k1)s %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:191
 #, python-format
 msgid ""
 "\n"
@@ -38082,7 +38093,7 @@ msgid ""
 " norme   : %(r5)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:197
 #, python-format
 msgid ""
 "\n"
@@ -38095,7 +38106,7 @@ msgid ""
 " norme   : %(r10)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:197
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:206
 #, python-format
 msgid ""
 "\n"
@@ -38103,7 +38114,7 @@ msgid ""
 "Seule l'extraction est possible : OPERATION='EXTR'\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:202
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:211
 #, python-format
 msgid ""
 "\n"
@@ -38111,7 +38122,7 @@ msgid ""
 "Utilisez la commande MODI_MAILLAGE pour orienter la normale aux surfaces.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:206
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:215
 #, python-format
 msgid ""
 "\n"
@@ -38119,7 +38130,7 @@ msgid ""
 "orienter la normale aux surfaces.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:220
 #, python-format
 msgid ""
 "\n"
@@ -38130,28 +38141,28 @@ msgid ""
 " mot-clé GROUP_MA_ESCL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:230
 #, python-format
 msgid ""
 "\n"
 " matériau non valide matériau :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:234
 #, python-format
 msgid ""
 "\n"
 " matériaux non valides on ne peut avoir a la fois  %(k1)s  et  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:229
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:238
 #, python-format
 msgid ""
 "\n"
 " erreur données le GROUP_NO n'existe pas  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:242
 #, python-format
 msgid ""
 "\n"
@@ -38166,7 +38177,7 @@ msgid ""
 "LIAISON_MAIL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:242
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:251
 #, python-format
 msgid ""
 "\n"
@@ -38175,7 +38186,7 @@ msgid ""
 "  et le noeud %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:248
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:257
 #, python-format
 msgid ""
 "\n"
@@ -38185,7 +38196,7 @@ msgid ""
 " noeud par la correspondance inverse %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:264
 #, python-format
 msgid ""
 "\n"
@@ -38197,7 +38208,7 @@ msgid ""
 "  et le noeud %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:263
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:272
 #, python-format
 msgid ""
 "\n"
@@ -38207,14 +38218,14 @@ msgid ""
 " Noeud par la correspondance inverse %(k5)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:279
 #, python-format
 msgid ""
 "\n"
 " on ne trouve pas dans la paroi 2 de maille de type :  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:283
 #, python-format
 msgid ""
 "\n"
@@ -38222,7 +38233,7 @@ msgid ""
 "  ont toutes les 2 comme VIS_A_VIS la maille %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:279
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:288
 #, python-format
 msgid ""
 "\n"
@@ -38231,7 +38242,7 @@ msgid ""
 " TEMP : %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa8.py:293
 #, python-format
 msgid ""
 "\n"
@@ -50504,17 +50515,7 @@ msgid ""
 " Interpolation LOG et complexe en ordonnées sont incompatibles !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:268
-#, python-format
-msgid ""
-"\n"
-" Vous essayez de stocker le modèle, le champ matériau ou\n"
-" des caractéristiques élémentaires dans la SD résultat.\n"
-" Ce n'est pas possible pour une SD résultat de type %(k1)s,\n"
-" on ne stocke aucun de ces trois éléments.\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:270
 #, python-format
 msgid ""
 "\n"
@@ -50523,19 +50524,12 @@ msgid ""
 " on ne stocke pas la charge.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:281
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:276
 #, python-format
 msgid ""
 "\n"
 " le type de champ  %(k1)s n'est pas accepté\n"
 " veuillez consulter la documentation U correspondante\n"
-msgstr ""
-
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai5.py:286
-#, python-format
-msgid ""
-"\n"
-" Pour une SD résultat de type %(k1)s, le modèle ne sera pas stocké.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/utilitai6.py:22
