@@ -107,13 +107,13 @@ def check_numpy_version(self, minver=None):
     """
     if not self.env['PYTHON']:
         self.fatal('load python tool first')
-    if minver is None:
-        self.msg('Checking for numpy version', npyver)
-        return
     assert isinstance(minver, tuple)
     cmd = self.env['PYTHON'] + ['-c', 'import numpy; print(numpy.__version__)']
     res = self.cmd_and_log(cmd)
     npyver = res.strip()
+    if minver is None:
+        self.msg('Checking for numpy version', npyver)
+        return
     minver_str = '.'.join(map(str, minver))
     result = LooseVersion(npyver) >= LooseVersion(minver_str)
     self.msg('Checking for numpy version', npyver, ">= %s" % (minver_str,) and 'GREEN' or 'YELLOW')

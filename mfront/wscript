@@ -6,6 +6,8 @@ from glob import glob
 import subprocess
 import shutil
 from functools import partial
+import re
+from distutils.version import LooseVersion
 
 from waflib import Configure, Context, Build, TaskGen, Task, Utils, Errors, Logs
 
@@ -134,8 +136,32 @@ def check_mfront(self):
     # remove some g++ options if icpc is used
     if 'icpc' in self.env.CXX_NAME:
         self.safe_remove('CXXFLAGS_MFRONT', '-ftree-vectorize')
+    self.check_mfront_version( (2, 0, 1) )
     self.check_mfront_libs()
     self.check_mfront_obsolete_source()
+
+@Configure.conf
+def check_mfront_version(self, minver=None):
+    """Check if mfront is matching a given minimum version.
+    minver should be a tuple, eg. to check for mfront >= 2.0 pass (2,0,0) as minver.
+    """
+    assert isinstance(minver, tuple)
+    cmd = [self.env['MFRONT'], '--version']
+    res = self.cmd_and_log(cmd)
+    mfrver = '0.0.0'
+    regexp = re.compile('version *: *([0-9]+\.[0-9]+\..*) *', re.I | re.M)
+    mat = regexp.search( res.strip() )
+    if mat:
+        mfrver = mat.group(1).strip()
+    if minver is None:
+        self.msg('Checking for mfront version', mfrver)
+        return
+    minver_str = '.'.join(map(str, minver))
+    result = LooseVersion(mfrver) >= LooseVersion(minver_str)
+    self.msg("Checking for mfront version >= %s" % minver_str, mfrver,
+             result and 'GREEN' or 'YELLOW')
+    if not result:
+        raise Errors.ConfigurationError('The Mfront version is too old, expecting %r' % minver_str)
 
 @Configure.conf
 def check_mfront_libs(self):
