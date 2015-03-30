@@ -69,7 +69,7 @@ for k in range(1,nbadap+1):
                      CONTRAINTE=('SIGM_ELNO','SIGM_NOEU',),
                      CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU'),);
 
-  nomfic="MED_%d" %k
+  nomfic="REPE_OUT/mesh_%d.med" % k
 
   DEFI_FICHIER (UNITE=80+k,FICHIER=nomfic);
 
