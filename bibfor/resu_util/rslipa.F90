@@ -12,7 +12,6 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !
     integer :: jadd, nbval, n1, j1
     character(len=*) :: nomsd, nopara, nomobj
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,24 +30,28 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !
-!   EXTRAIRE D'UNE SD_RESULTAT, LA LISTE DES VALEURS D'UN PARAMETRE
-!   ET RECOPIER CES VALEURS DANS L'OBJET NOMOBJ DONT ON REND L'ADRESSE.
 ! ----------------------------------------------------------------------
-! IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT".
-! IN  : NOPARA : NOM DU PARAMETRE ('INST','FREQ', ...)
-! IN  : NOMOBJ : NOM DE L'OBJET JEVEUX A CREER (K24)
-! OUT : JADD   : ADRESSE DE L'OBJET NOMOBJ
-! OUT : NBVAL  : LONGUEUR DE L'OBJET NOMOBJ
+!   extraire d'une sd_resultat, la liste des valeurs d'un parametre
+!   et recopier ces valeurs dans l'objet nomobj dont on rend l'adresse.
+! ----------------------------------------------------------------------
+! in  : nomsd  : nom de la structure "resultat".
+! in  : nopara : nom du parametre ('inst','freq', ...)
+! in  : nomobj : nom de l'objet jeveux a creer (k24)
+! out : jadd   : adresse de l'objet nomobj
+! out : nbval  : longueur de l'objet nomobj
 !-----------------------------------------------------------------------
-! REMARQUES :
-!  - L'OBJET RETOURNE (NOMOBJ) CONTIENT LES VALEURS DU PARAMETRE DANS
-!    L'ORDRE DES NUMEROS DE RANGEMENT.
-!    IL EST "PARALLELE" A L'OBJET .ORDR :
-!    DO K=1,LONUTI(.ORDR) :
-!       IORDR=.ORDR(K)
-!       NOMOBJ(K) == "RSADPA(NOPARA,IORDR)"
-!  - CETTE ROUTINE NE FAIT PAS JEMARQ/JEDEMA POUR NE PAS
-!    INVALIDER L'ADRESSE JEVEUX JADD
+! remarques :
+!  - l'objet retourne (nomobj) contient les valeurs du parametre dans
+!    l'ordre des numeros de rangement.
+!    il est "parallele" a l'objet .ordr :
+!    do k=1,lonuti(.ordr) :
+!       iordr=.ordr(k)
+!       nomobj(k) == "rsadpa(nopara,iordr)"
+!  - si le parametre est absent pour certains numeros d'ordre, la valeur
+!    stockee est "NaN".
+!  - cette routine ne fait pas jemarq/jedema pour ne pas
+!    invalider l'adresse jeveux jadd
+! ----------------------------------------------------------------------
     integer :: kk,  jpara, i1, jtava, l1
     character(len=8) :: k8b, tsca
     character(len=5) :: nom1
@@ -91,7 +94,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !
     do kk = 1, n1
         call rsadpa(noms2, 'L', 1, nompar, ordr(kk),&
-                    0, sjv=jpara, styp=k8b)
+                    0, sjv=jpara, styp=k8b, istop=0)
         if (tsca .eq. 'R') then
             zr(j1-1+kk)=zr(jpara)
         else if (tsca.eq.'C') then

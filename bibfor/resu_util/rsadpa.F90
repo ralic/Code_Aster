@@ -18,14 +18,13 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr,&
 #include "asterfort/utmess.h"
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
-!
+! ----------------------------------------------------------------------
     integer, intent(in) :: npara, iordr, itype
     integer, intent(out), optional :: sjv, tjv(*)
     character(len=1), intent(in) :: cel
     character(len=*), intent(in) :: nomsd, lpara(*)
     character(len=*), intent(out), optional :: styp, ttyp(*)
     integer, intent(in), optional :: istop
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
