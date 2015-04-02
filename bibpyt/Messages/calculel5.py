@@ -246,6 +246,19 @@ Risques et Conseils :
   Pour cela, vous devez choisir un DIST_MIN > %(r2)f
 """),
 
+    57 : _(u"""
+Erreur utilisateur dans la commande PROJ_CHAMP :
+  La structure de données résultat à projeter ne contient que des champs 'ELGA'.
+  La méthode de projection adaptée à ces champs est la méthode 'ECLA_PG' mais
+  elle ne fonctionne qu'avec un champ isolé (mot clé CHAM_GD).
+"""),
+
+    58 : _(u"""
+Erreur utilisateur dans la commande PROJ_CHAMP :
+  On cherche à projeter un champ par éléments 'ELGA' isolé (mot clé CHAM_GD).
+  La méthode de projection doit être 'ECLA_PG' et non pas %(k1)s
+"""),
+
 
 
 
@@ -256,7 +269,7 @@ Risques et Conseils :
 
     66 : _(u"""
 
- le nombre de composantes affectées n'est pas égal  au nombre de composantes a affecter
+ le nombre de composantes affectées n'est pas égal  au nombre de composantes à affecter
  occurrence de AFFE numéro %(i1)d
  nombre de composante affectées :  %(i2)d
  nombre de composante a affecter :  %(i3)d

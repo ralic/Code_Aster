@@ -20,19 +20,19 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 ! ======================================================================
 !
 ! --------------------------------------------------------------------------------------------------
-! COMMANDE:  PROJ_CHAMP
-! BUT : ROUTINE "CHAPEAU" CONCERNANT LA SD LCORRESP_2_MAILLA
+! commande:  PROJ_CHAMP
+! but : routine "chapeau" concernant la sd lcorresp_2_mailla
 !
-!  ON REGARDE LES TYPES DE CHAMPS A PROJETER
-!    ON EMET DES MESSAGES D'ALARME SI LA METHODE NE PEUT LES PROJETER
-!    (EX. : 'COLLOCATION' NE SAIT PAS TRAITER LES CHAM_ELEM ELGA)
+!  on regarde les types de champs a projeter
+!    on emet des messages d'alarme si la methode ne peut les projeter
+!    (ex. : 'collocation' ne sait pas traiter les cham_elem elga)
 !
-!  SI TOUT EST COHERENT, ON APPELLE :
-!    PJEFCO VIA LE 1ER ARGT DE LA SD LCORRESP_2_MAILLA ('COLLOCATION')
-!    PJELCO VIA LE 2ND ARGT DE LA SD LCORRESP_2_MAILLA ('ECLA_PG')
+!  si tout est coherent, on appelle :
+!    pjefco via le 1er argt de la sd lcorresp_2_mailla ('collocation')
+!    pjelco via le 2nd argt de la sd lcorresp_2_mailla ('ecla_pg')
 !
-!  LE CAS DE LA METHODE 'NUAGE_DEG' EST PLUS PARTICULIER :
-!    ON FAIT DONC UN TEST A PART
+!  le cas de la methode 'nuage_deg' est plus particulier :
+!    on fait donc un test a part
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,7 +63,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lnoeu, lelno, lelem, lelga
+    aster_logical :: lnoeu, lelno, lelem, lelga, proj1
     character(len= 8) :: corru
     character(len=16) :: cortmp, k16bid
     character(len=24) :: valk(2)
@@ -71,6 +71,7 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+
 !   cas de la méthode 'NUAGE_DEG'
     if (method(1:10) .eq. 'NUAGE_DEG_') then
         ASSERT(typcal.eq.'1ET2')
@@ -123,17 +124,26 @@ subroutine pjxxco(typcal, method, lcorre, isole, resuin,&
             endif
 !
 !           on utilise lcorre(1) ou lcorre(2) suivant le type de champ
+            proj1=.false.
             if ((lnoeu) .or. (lelno) .or. (lelem)) then
                 if (method(1:10).eq.'SOUS_POINT') then
                     call pjspco(moa1, moa2, lcorre(1), 'V', noca, method, isole)
                 else
                     call pjefco(moa1, moa2, lcorre(1), 'V')
                 endif
+                proj1=.true.
             endif
 !
-            if (lelga .and. isole) then
-                if ((method.eq.'ECLA_PG') .or. (method.eq.'AUTO')) then
-                    call pjelco(moa1, moa2, cham1, lcorre(2), 'V')
+            if (lelga) then
+                if (isole) then
+                    if ((method.eq.'ECLA_PG') .or. (method.eq.'AUTO')) then
+                        call pjelco(moa1, moa2, cham1, lcorre(2), 'V')
+                    else
+                        valk(1)=method
+                        call utmess('F','CALCULEL5_58',nk=1,valk=valk)
+                    endif
+                else
+                    if (.not.proj1)  call utmess('F','CALCULEL5_57')
                 endif
             endif
         endif
