@@ -332,9 +332,8 @@ subroutine aflrch(lisrez, chargz, elim)
 !
             if (numel .ne. 0) then
                 igrel=igrel+1
-                call noligr(noma, ligrch, igrel, numel, 1, [in],&
-                            [' '], 3, 1, inema, nbno,&
-                            rlla(irela),jlgns,&
+                call noligr(ligrch, igrel, numel, in,&
+                            3,inema, nbno(1), rlla(irela),jlgns,&
                             rapide=rapide,jliel0=jliel0,jlielc=jlielc,&
                             jnema0=jnema0,jnemac=jnemac)
             else

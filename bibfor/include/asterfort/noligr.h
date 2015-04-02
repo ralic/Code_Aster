@@ -15,31 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
-                  lk, code, irepe, inema, nbno,&
-                  typlaz,jlgns,&
-                  rapide, jliel0, jlielc, jnema0, jnemac)
-    character(len=8),intent(in) :: noma
-    character(len=*),intent(in) :: ligrz
-    integer,intent(in) :: igrel
-    integer,intent(in) :: numel
-    integer,intent(in) :: nb
-    integer,intent(in) :: li(*)
-    character(len=*),intent(in) :: lk(*)
-    integer,intent(in) :: code
-    integer,intent(in) :: irepe
-    integer,intent(inout) :: inema
-    integer,intent(inout) :: nbno(*)
-    character(len=*),intent(in) :: typlaz
-    integer,intent(in) :: jlgns
-
-!   -- arguments optionnels pour gagner du CPU :
-    character(len=3), intent(in), optional ::  rapide
-    integer, intent(in), optional ::  jliel0
-    integer, intent(in), optional ::  jlielc
-    integer, intent(in), optional ::  jnema0
-    integer, intent(in), optional ::  jnemac
-
-end subroutine noligr
-end interface
+          interface 
+            subroutine noligr(ligrz,igrel,numel,nunoeu,code,inema, &
+                       &nbno,typlaz,jlgns,rapide,jliel0,jlielc,jnema0,jnemac)
+              character(len=*), intent(in) :: ligrz
+              integer, intent(in) :: igrel
+              integer, intent(in) :: numel
+              integer, intent(in) :: nunoeu
+              integer, intent(in) :: code
+              integer, intent(inout) :: inema
+              integer, intent(inout) :: nbno
+              character(len=*), intent(in) :: typlaz
+              integer, intent(in) :: jlgns
+              character(len=3) ,optional, intent(in) :: rapide
+              integer ,optional, intent(in) :: jliel0
+              integer ,optional, intent(in) :: jlielc
+              integer ,optional, intent(in) :: jnema0
+              integer ,optional, intent(in) :: jnemac
+            end subroutine noligr
+          end interface 

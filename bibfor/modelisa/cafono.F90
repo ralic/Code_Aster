@@ -34,7 +34,6 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     character(len=4) :: vale_type
     character(len=8) :: char, mesh
     character(len=*) :: ligrcz, ligrmz
-!     -----------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -331,9 +330,8 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
 !
             igrel = igrel + 1
             call jenuno(jexnum('&CATA.TE.NOMTE', numel), nomele)
-            call noligr(mesh, ligrch, igrel, numel, 1,&
-                        [in], [' '], 1, 1, inema,&
-                        zi(jnbno), typlag, jlgns)
+            call noligr(ligrch, igrel, numel, in,&
+                        1, inema, zi(jnbno), typlag, jlgns)
 !
             call jeveuo(jexnum(liel, igrel), 'E', jl)
             if (vale_type .eq. 'REEL') then

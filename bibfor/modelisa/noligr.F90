@@ -1,6 +1,5 @@
-subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
-                  lk, code, irepe, inema, nbno,&
-                  typlaz,jlgns,&
+subroutine noligr(ligrz, igrel, numel, nunoeu,&
+                  code, inema, nbno, typlaz,jlgns,&
                   rapide, jliel0, jlielc, jnema0, jnemac)
     implicit none
 #include "asterf_types.h"
@@ -18,21 +17,17 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
 !
-    character(len=8),intent(in) :: noma
     character(len=*),intent(in) :: ligrz
     integer,intent(in) :: igrel
     integer,intent(in) :: numel
-    integer,intent(in) :: nb
-    integer,intent(in) :: li(*)
-    character(len=*),intent(in) :: lk(*)
+    integer,intent(in) :: nunoeu
     integer,intent(in) :: code
-    integer,intent(in) :: irepe
     integer,intent(inout) :: inema
-    integer,intent(inout) :: nbno(*)
+    integer,intent(inout) :: nbno
     character(len=*),intent(in) :: typlaz
     integer,intent(in) :: jlgns
 
-!   -- arguments optionnels pour gagner du CPU :
+!   -- arguments optionnels pour gagner du temps CPU :
     character(len=3), intent(in), optional ::  rapide
     integer, intent(in), optional ::  jliel0
     integer, intent(in), optional ::  jlielc
@@ -67,33 +62,15 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
 !      ligr : nom du ligrel
 !      igrel: numero du grel
 !      numel:numero du type_element
-!      nb   :nombre de noeuds de la liste
-!      li   :liste de numeros de noeuds (au nombre de nb)
-!      lk   :liste de noms de noeuds (au nombre de -nb)
+!      nunoeu   : numero d'un noeud
 !      code : 1 ==> une maille "poi1" par noeud
 !                   (typiquement: force_nodale)
-!           : 2 ==> une maille "seg2" et un noeud tardif par noeud
-!                   (typiquement: ddl_impo    )
-!           : 3 ==> une maille "seg2" par noeud, et un seul noeud tardif
-!                   son numero est incremente par la routine appelante
-!                   (typiquement: liaison_ddl )
-!   alteration : 2 ddl de lagrange =>
-!           : 2 ==> une maille "seg3" et 2 noeuds tardifs par noeud
-!                   (typiquement: ddl_impo    )
 !           : 3 ==> une maille "seg3" par noeud, et 2 noeuds tardifs
 !                   par liaison
 !                   son numero est incremente par la routine appelante
 !                   (typiquement: liaison_ddl )
-!           : 4 ==> une maille "seg3" par noeud, et 2 noeuds tardifs
-!                   par liaison sur nb liaisons du meme type
-!                   les numero des noeuds tardifs sont geres par la
-!                   routine appelante ( pour relation i noeud tardif 1
-!                   de num : -nbno(i)+1 et noeud tardif 2 -nbno(i) )
-!                   (typiquement: liaison_ddl_group )
-!      irepe:nombre de repetitions de la boucle par noeud
 !      inema:numero  de la derniere maille tardive dans ligr
-!      nbno :numero  du  dernier noeud tardif dans ligr ou liste de nume
-!            ro de noeuds tardifs(code 4)
+!      nbno : numero du dernier noeud tardif dans ligr
 !      typlag:type des multiplicateurs de lagrange associes a la
 !             relation
 !          : '12'  ==>  le premier lagrange est avant le noeud physique
@@ -114,17 +91,16 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
 !     Attention : si rapide='OUI', il faut que l'appelant fasse appel a
 !                 jeecra / NUTIOC apres le denier appel a noligr
 !                 (objets .LIEL et .NEMA)
-
-!     sorties:
-!        on enrichit le contenu de la carte chin
+!
+! arguments de sortie:
+!        on enrichit le contenu du ligrel
 !------------------------------------------------------------------------
     character(len=8) :: typlag
     character(len=19) :: ligr
-    integer :: absnb
     character(len=24) :: liel, nema
-    integer :: ic, ilag1, ilag2,jnema, jnema02, jnemac2
+    integer :: ilag1, ilag2,jnema, jnema02, jnemac2
     integer :: jliel, jliel02, jlielc2
-    integer :: k, kligr, lonigr, nunoeu, lgnema
+    integer :: kligr, lonigr, lgnema
     aster_logical :: lrapid
     integer, save :: iprem=0 , numpoi, numse3
 !-----------------------------------------------------------------------
@@ -165,7 +141,6 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
         jnemac2=jnemac
     endif
 
-    absnb=abs(nb)
     ASSERT(code.ge.1 .and. code.le.4)
 
 !   -- lgnema : longueur d'un objet de la collection .NEMA :
@@ -176,7 +151,7 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
     endif
 
 
-    lonigr = absnb*irepe + 1
+    lonigr = 2
     if (.not.lrapid) then
         call jeecra(jexnum(liel,igrel), 'LONMAX', ival=lonigr)
         call jecroc(jexnum(liel,igrel))
@@ -189,58 +164,35 @@ subroutine noligr(noma,ligrz, igrel, numel, nb, li,&
 
     kligr = 0
     jliel=jliel02-1+zi(jlielc2-1+igrel)
-    do 130 ic = 1, irepe
-        do 110 k = 1, absnb
-            kligr = kligr + 1
-            inema = inema + 1
-            zi(jliel-1+kligr) = -inema
+    
+    kligr = kligr + 1
+    inema = inema + 1
+    zi(jliel-1+kligr) = -inema
 
-            if (nb .lt. 0) then
-                call jenonu(jexnom(noma//'.NOMNOE', lk(k)), nunoeu)
-            else
-                nunoeu=li(k)
-            endif
+    jnema=jnema02-1+zi(jnemac2-1+inema)
+    if (.not.lrapid) then
+        call jeecra(jexnum(nema,inema), 'LONMAX', ival=lgnema)
+        call jecroc(jexnum(nema,inema))
+    else
+        zi(jnemac2-1+inema+1)=zi(jnemac2-1+inema)+lgnema
+    endif
 
-            jnema=jnema02-1+zi(jnemac2-1+inema)
-            if (.not.lrapid) then
-                call jeecra(jexnum(nema,inema), 'LONMAX', ival=lgnema)
-                call jecroc(jexnum(nema,inema))
-            else
-                zi(jnemac2-1+inema+1)=zi(jnemac2-1+inema)+lgnema
-            endif
+    if (code .eq. 1) then
+        zi(jnema-1+1) = nunoeu
+        zi(jnema-1+2) = numpoi
 
-            if (code .eq. 1) then
-                zi(jnema-1+1) = nunoeu
-                zi(jnema-1+2) = numpoi
+    else if (code.eq.3) then
+        zi(jnema-1+1) = nunoeu
+        zi(jnema-1+2) = -nbno+1
+        zi(jnema-1+3) = -nbno
+        zi(jnema-1+4) = numse3
+        ASSERT(jlgns.ne.1)
+        zi(jlgns+nbno-2) = ilag1
+        zi(jlgns+nbno-1) = ilag2
 
-            else if (code.eq.2) then
-                zi(jnema-1+1) = nunoeu
-                nbno(1) = nbno(1) + 1
-                zi(jnema-1+2) = -nbno(1)
-                nbno(1) = nbno(1) + 1
-                zi(jnema-1+3) = -nbno(1)
-                zi(jnema-1+4) = numse3
-
-            else if (code.eq.3) then
-                zi(jnema-1+1) = nunoeu
-                zi(jnema-1+2) = -nbno(1)+1
-                zi(jnema-1+3) = -nbno(1)
-                zi(jnema-1+4) = numse3
-                ASSERT(jlgns.ne.1)
-                zi(jlgns+nbno(1)-2) = ilag1
-                zi(jlgns+nbno(1)-1) = ilag2
-
-            else if (code.eq.4) then
-                zi(jnema-1+1) = nunoeu
-                zi(jnema-1+2) = -nbno(k)+1
-                zi(jnema-1+3) = -nbno(k)
-                zi(jnema-1+4) = numse3
-
-            else
-                ASSERT(.false.)
-            endif
-110      continue
-130  end do
+    else
+        ASSERT(.false.)
+    endif
      zi(jliel-1+kligr+1) = numel
 
 end subroutine
