@@ -292,6 +292,9 @@ TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='EP',  VALE_REFE=8.0E-2,
 TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE', NOM_CMP='KAPPA', VALE_REFE=8.333333E-01,
           VALE_CALC=8.333333E-01, MAILLE='M14', CHAM_GD=CACOQU,))
 
+# On verifie egalement que la carte peut etre imprimee au format MED pour etre visualisee :
+IMPR_RESU(FORMAT='MED',  UNITE=80, RESU=(_F(CHAM_GD=CACOQU,)))
+
 # On verifie egalement que la carte extraite peut etre transformee en table :
 TABCOQ=CREA_TABLE(RESU=_F(CHAM_GD=CACOQU, MAILLE=('M13','M14'), TOUT_CMP='OUI',),)
 #IMPR_TABLE(TABLE=TABCOQ)

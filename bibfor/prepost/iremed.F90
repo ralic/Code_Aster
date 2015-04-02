@@ -70,7 +70,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=6) :: chnumo
+    character(len=6) :: chnumo, tsca
     character(len=8) :: typech, nomgd, saux08, noresu, sdcarm, carel2, valk2(2)
     character(len=16) :: nosy16
     character(len=19) :: cham19, cesnsp, cescoq, cesfib, cesori, cestuy
@@ -228,8 +228,13 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 !
 !         --- NOM DE LA GRANDEUR ASSOCIEE AU CHAMP CHAM19
             call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
-            if ((typech(1:4).eq. 'CART'.and.nomgd(6:7).ne.'R') .or. nomgd .eq. 'COMPOR') &
-            goto 999
+            call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
+
+            if ((typech(1:4).eq. 'CART'.and. tsca.ne.'R')) then
+                valk(1)=tsca
+                call utmess('A+', 'PREPOST_91', nk=1, valk=valk)
+                goto 999
+             endif
 !
             if (nbrcmp .ne. 0) then
                 if ((nomgd.eq.'VARI_R') .and. (typech(1:2).eq.'EL')) then

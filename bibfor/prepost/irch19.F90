@@ -92,6 +92,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 !
     if ((tych(1:4).eq.'NOEU') .or. (tych(1:2).eq.'EL')) then
     else if (tych(1:4).eq. 'CART') then
+        call utmess('A', 'PREPOST_92')
         goto 999
     else
         valk(1) = tych

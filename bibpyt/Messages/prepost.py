@@ -290,6 +290,14 @@ Attention :
  On ne sait pas imprimer le champ  %(k1)s  au format  %(k2)s
 """),
 
+    91 : _(u"""
+ On ne sait pas imprimer au format 'MED' les cartes de type %(k1)s
+"""),
+
+    92 : _(u"""
+ On ne sait pas imprimer au format 'RESULTAT' les champs de type "carte".
+"""),
+
     97 : _(u"""
  On ne sait pas imprimer les champs de type " %(k1)s "
 """),
