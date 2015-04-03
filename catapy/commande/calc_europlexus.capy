@@ -79,9 +79,9 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
               PASFIX   = SIMP(statut='o',typ='R'),
                        ),
            ),
-        
+
         AMORTISSEMENT = FACT(statut='f',max=1,
-                TYPE_AMOR  = SIMP(statut='f',typ='TXM',defaut='QUASI_STATIQUE',into=('QUASI_STATIQUE')),
+                TYPE_AMOR  = SIMP(statut='f',typ='TXM',defaut='QUASI_STATIQUE',into=('QUASI_STATIQUE', )),
                 FREQUENCE  = SIMP(statut='o',typ='R'),
                 COEF_AMOR  = SIMP(statut='o',typ='R'),
            ),

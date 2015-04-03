@@ -216,7 +216,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    if COMMAND in ['MODE_NON_LINE']:
       _defaut = "MUMPS"
-      _into = ("MUMPS")
+      _into = ("MUMPS", )
 
    if COMMAND in ['CALC_ERC_DYN']:
       _defaut = "MUMPS"

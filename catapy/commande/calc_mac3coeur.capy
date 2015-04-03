@@ -38,7 +38,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                UNITE_THYC   = SIMP(statut='f',typ='I', max=1),            # Unite Logique du fichier THYC
                NIVE_FLUENCE =  SIMP(statut='o',typ='R',validators=NoRepeat(),max=1), # FLUENCE MAXIMALE DANS LE COEUR
                TYPE_MAINTIEN = SIMP(statut='f',typ='TXM',into=("DEPL_PSC",),defaut="DEPL_PSC" ),
-               ARCHIMEDE = SIMP(statut='f',typ='TXM',into=("OUI"),defaut="OUI" ),
+               ARCHIMEDE = SIMP(statut='f',typ='TXM',into=("OUI", ),defaut="OUI" ),
             ),
 
          LAME = FACT(statut='f',max=1,
@@ -82,7 +82,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                # choix de la poussée d'Archimède dans le cas d'un coeur à plusieurs assemblages
                b_archimede_coeur = BLOC(condition = "TYPE_COEUR != 'MONO'",
 
-                    ARCHIMEDE = SIMP(statut='f',typ='TXM',into=("OUI"),defaut="OUI" ),
+                    ARCHIMEDE = SIMP(statut='f',typ='TXM',into=("OUI", ),defaut="OUI" ),
 
                                        ),
 
