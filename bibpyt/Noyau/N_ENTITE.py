@@ -26,11 +26,16 @@
 """
 
 import re
-import types
 import N_CR
 import N_OPS
 import N_VALIDATOR
 from strfunc import ufmt
+
+try:
+    from PyQt4 import QtCore
+    stringTypes = (str, unicode, QtCore.QString)
+except ImportError:
+    stringTypes = (str, unicode)
 
 
 class ENTITE:
@@ -173,21 +178,21 @@ class ENTITE:
 
     def check_fr(self):
         """Vérifie l'attribut fr."""
-        if type(self.fr) not in (str, unicode):
+        if type(self.fr) not in stringTypes:
             self.cr.fatal(
                 _(u"L'attribut 'fr' doit être une chaine de caractères : %r"),
                 self.fr)
 
     def check_docu(self):
         """Vérifie l'attribut docu."""
-        if type(self.docu) not in (str, unicode):
+        if type(self.docu) not in stringTypes:
             self.cr.fatal(
                 _(u"L'attribut 'docu' doit être une chaine de caractères : %r"),
                 self.docu)
 
     def check_nom(self):
         """Vérifie l'attribut proc."""
-        if type(self.nom) != types.StringType:
+        if type(self.nom) is not str:
             self.cr.fatal(
                 _(u"L'attribut 'nom' doit être une chaine de caractères : %r"),
                 self.nom)
@@ -208,7 +213,7 @@ class ENTITE:
     def check_condition(self):
         """Vérifie l'attribut condition."""
         if self.condition != None:
-            if type(self.condition) != types.StringType:
+            if type(self.condition) is not str:
                 self.cr.fatal(
                     _(u"L'attribut 'condition' doit être une chaine de caractères : %r"),
                     self.condition)
@@ -217,11 +222,11 @@ class ENTITE:
 
     def check_min_max(self):
         """Vérifie les attributs min/max."""
-        if type(self.min) != types.IntType:
+        if type(self.min) != int:
             if self.min != '**':
                 self.cr.fatal(
                     _(u"L'attribut 'min' doit être un entier : %r"), self.min)
-        if type(self.max) != types.IntType:
+        if type(self.max) != int:
             if self.max != '**':
                 self.cr.fatal(
                     _(u"L'attribut 'max' doit être un entier : %r"), self.max)
@@ -245,7 +250,7 @@ class ENTITE:
     def check_into(self):
         """Vérifie l'attribut into."""
         if self.into != None:
-            if type(self.into) != types.TupleType:
+            if type(self.into) not in (list, tuple):
                 self.cr.fatal(
                     _(u"L'attribut 'into' doit être un tuple : %r"), self.into)
 
