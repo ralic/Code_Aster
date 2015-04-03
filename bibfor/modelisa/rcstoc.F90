@@ -169,11 +169,13 @@ subroutine rcstoc(nommat, nomrc, noobrc, nbobj, valr, valc,&
         elseif (typobj(i)(1:2) .eq. 'CO') then
             call getvid(nomrc, nomobj(i), iocc=1, scal=valch, nbret=n)
             call gettco(valch, typeco)
+            if (typeco == ' ') then
+                call utmess('F', 'FONCT0_71', sk=nomobj(i))
+            endif
             if (typeco.eq.'TABLE_SDASTER') cycle
             lverif=(typeco(1:8).eq.'FONCTION' .or. typeco(1:5).eq.'NAPPE' &
                     .or. typeco(1:7).eq.'FORMULE')
-!           -- la verif echoue pour comp011d car gettco retourne ' ' ??
-!           ASSERT(lverif)
+            ASSERT(lverif)
             if (n.lt.0) then
                 typobj(i)='LFO'
             else

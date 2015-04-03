@@ -418,4 +418,15 @@ La remontée d'erreur suivante peut aider à comprendre où se situe l'erreur :
 %(k1)s
 """),
 
+    71 : _(u"""
+Type invalide pour le mot-clé '%(k1)s'.
+Il semble que ce ne soit pas une structure de données connue.
+
+Conseil
+-------
+    Vérifiez que les objets utilisés dans cette commande n'ont pas été
+    créé en tant que liste Python. Cela peut se produire si la commande
+    précédente se termine par une virgule.
+"""),
+
 }

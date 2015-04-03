@@ -164,11 +164,11 @@ for i in range(NCAL):
           if i > 0 :
              SXM = SXM *(YOUN(Ti)/YOUN(Tm))
 
-          FC_T   = DEFI_CONSTANTE( VALE = FC(Ti) ),
-          FT_T   = DEFI_CONSTANTE( VALE = FT(Ti) ),
-          BETA_T = DEFI_CONSTANTE( VALE = BETA(Ti) ),
-          GC_T   = DEFI_CONSTANTE( VALE = GC(Ti) ),
-          GT_T   = DEFI_CONSTANTE( VALE = GT(Ti) ),
+          FC_T   = DEFI_CONSTANTE( VALE = FC(Ti) )
+          FT_T   = DEFI_CONSTANTE( VALE = FT(Ti) )
+          BETA_T = DEFI_CONSTANTE( VALE = BETA(Ti) )
+          GC_T   = DEFI_CONSTANTE( VALE = GC(Ti) )
+          GT_T   = DEFI_CONSTANTE( VALE = GT(Ti) )
 
           MATER[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti), NU=0., ALPHA=0.),
                          BETON_DOUBLE_DP=_F( F_C = FC_T,
