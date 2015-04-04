@@ -40,17 +40,17 @@ if not sys.modules.has_key('Graph'):
 
 # formats de base (identiques à ceux du module Graph)
 DicForm = {
-    'chead': None,     # entête avant la table
-    'cfoot': '',       # lignes après la table
-    'csep': ' ',       # séparateur
-    'ccom': '#',       # commentaire
-    'ccpara': '',      # commentaire des labels
-    'cdeb': '',        # début de ligne
-    'cfin': '\n',      # fin de ligne
-    'sepch': ';',      # séparateur entre deux lignes d'une cellule
-    'formK': '%-12s',  # chaines
-    'formR': '%12.5E', # réels
-    'formI': '%12d'    # entiers
+    'chead': None,      # entête avant la table
+    'cfoot': '',        # lignes après la table
+    'csep': ' ',        # séparateur
+    'ccom': '#',        # commentaire
+    'ccpara': '',       # commentaire des labels
+    'cdeb': '',         # début de ligne
+    'cfin': '\n',       # fin de ligne
+    'sepch': ';',       # séparateur entre deux lignes d'une cellule
+    'formK': '%-12s',   # chaines
+    'formR': '%12.5E',  # réels
+    'formI': '%12d'     # entiers
 }
 # type par défaut des chaines de caractères
 Kdef = 'K24'

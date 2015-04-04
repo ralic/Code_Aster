@@ -42,7 +42,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
                     fr = tr("Suite des opérations à effectuer sur la table"),
       OPERATION = SIMP(statut='o', typ='TXM',
                   into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'AJOUT_LIGNE',
-                        'OPER', 'SUPPRIME', 'AJOUT_COLONNE')),
+                        'OPER', 'SUPPRIME', 'AJOUT_COLONNE', 'STATISTIQUES')),
 
       b_filtre = BLOC(condition="OPERATION == 'FILTRE'",
                       fr=tr("Sélectionne les lignes de la table vérifiant un critère"),

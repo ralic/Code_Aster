@@ -160,6 +160,18 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                 nval = [value, ] * len(tab)
                 tab[para] = nval
 
+        # Traitement de STATISTIQUES
+        if occ['OPERATION'] == 'STATISTIQUES':
+            for nom_para in ('STAT_NOM', 'STAT_VALE'):
+                if nom_para in tab.para:
+                    UTMESS('F', 'TABLE0_24', valk=nom_para)
+            nbVide = 0
+            for col in tab.values().values():
+                nbVide += sum([1 for i in col if i is None])
+            # be care to extract the statistics before changing `tab`!
+            tab['STAT_VALE'] = [len(tab), len(tab.para), nbVide]
+            tab['STAT_NOM'] = ['NB_LIGNES', 'NB_COLONNES', 'NB_VIDE']
+
     # 99. Création de la table_sdaster résultat
     # cas réentrant : il faut détruire l'ancienne table_sdaster
     if self.reuse is not None:

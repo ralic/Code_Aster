@@ -259,6 +259,47 @@ t3=CALC_TABLE(TABLE = t2,
 
 IMPR_TABLE(TABLE=t3)
 
+# Validation de CALC_TABLE / STATISTIQUES
+tabs = CALC_TABLE(TABLE=t3,
+                  ACTION=(
+                    _F(
+                        OPERATION='STATISTIQUES',
+                    ),
+                    _F(
+                        OPERATION='EXTR',
+                        NOM_PARA=('STAT_NOM', 'STAT_VALE'),
+                    ),
+                 ),
+)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           FILTRE=_F(NOM_PARA='STAT_NOM',
+                     VALE_K='NB_LIGNES',),
+           VALE_CALC_I=10,
+           VALE_REFE_I=10,
+           NOM_PARA='STAT_VALE',
+           TABLE=tabs,
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           FILTRE=_F(NOM_PARA='STAT_NOM',
+                     VALE_K='NB_COLONNES',),
+           VALE_CALC_I=4,
+           VALE_REFE_I=4,
+           NOM_PARA='STAT_VALE',
+           TABLE=tabs,
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           FILTRE=_F(NOM_PARA='STAT_NOM',
+                     VALE_K='NB_VIDE',),
+           VALE_CALC_I=12,
+           VALE_REFE_I=12,
+           NOM_PARA='STAT_VALE',
+           TABLE=tabs,
+           )
+
+
 # Validation des performances de CALC_TABLE OPERATION=COMB
 # 10.6 s avec n = 20.000
 n_table=200
