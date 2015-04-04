@@ -40,15 +40,17 @@ if not sys.modules.has_key('Graph'):
 
 # formats de base (identiques à ceux du module Graph)
 DicForm = {
+    'chead': None,     # entête avant la table
+    'cfoot': '',       # lignes après la table
     'csep': ' ',       # séparateur
     'ccom': '#',       # commentaire
-    'ccpara': '',       # commentaire des labels
+    'ccpara': '',      # commentaire des labels
     'cdeb': '',        # début de ligne
     'cfin': '\n',      # fin de ligne
-    'sepch': ';',       # séparateur entre deux lignes d'une cellule
-    'formK': '%-12s',   # chaines
-    'formR': '%12.5E',  # réels
-    'formI': '%12d'     # entiers
+    'sepch': ';',      # séparateur entre deux lignes d'une cellule
+    'formK': '%-12s',  # chaines
+    'formR': '%12.5E', # réels
+    'formI': '%12d'    # entiers
 }
 # type par défaut des chaines de caractères
 Kdef = 'K24'
@@ -172,9 +174,12 @@ class TableBase(object):
             typ = [self.type, ]
         if dform == None:
             dform = DicForm.copy()
+        if dform['chead'] is None:
+            dform['chead'] = os.linesep.join([dform['ccom'],
+                                              dform['ccom'] + '-' * 80,
+                                              dform['ccom']])
         # est-ce que l'attribut .type est renseigné ?
         typdef = typ != [None] * len(typ)
-        txt = []
         ASTER = (FORMAT == 'ASTER')
         lspa = []
         if ASTER:
@@ -195,9 +200,7 @@ class TableBase(object):
         if typdef:
             stype = dform['csep'].join([''] +
                          [FMT(dform, 'formK', typ[i], lmax[i]) % typ[i] for i in range(len(para))])
-        txt.append(dform['ccom'])
-        txt.append(dform['ccom'] + '-' * 80)
-        txt.append(dform['ccom'])
+        txt = []
         if ASTER:
             txt.append('#DEBUT_TABLE')
         if self.titr:
@@ -235,6 +238,8 @@ class TableBase(object):
             txt.append('#FIN_TABLE')
         # ajout des debut et fin de ligne
         txt = [dform['cdeb'] + t + dform['cfin'] for t in txt]
+        txt.insert(0, dform['chead'])
+        txt.append(dform['cfoot'])
 
         return ''.join(txt)
 

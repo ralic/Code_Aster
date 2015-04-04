@@ -145,6 +145,8 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
         if FORMAT == 'TABLEAU':
             # surcharge par les formats de l'utilisateur
             kargs['dform'] = {
+                'chead': args.get('DEBUT_TABLE'),   # None est traité par Table
+                'cfoot': args['FIN_TABLE'],
                 'csep': args['SEPARATEUR'],
                 'ccom': args['COMMENTAIRE'],
                 'ccpara': args['COMM_PARA'],

@@ -66,6 +66,11 @@ IMPR_TABLE=MACRO(nom="IMPR_TABLE",
    # Mise en page du tableau ou du graphique
    b_tableau = BLOC(condition = "FORMAT == 'TABLEAU'",
                     fr=tr("Mots-clés propres au format Tableau"),
+      DEBUT_TABLE     =SIMP(statut='f',typ='TXM',
+                            fr=tr("Entête avant la table "
+                                  "(par défaut, une ligne de tirets)")),
+      FIN_TABLE       =SIMP(statut='f',typ='TXM', defaut='',
+                            fr=tr("Texte après la table")),
       SEPARATEUR      =SIMP(statut='f',typ='TXM',defaut=' ',
                             fr=tr("Séparateur des colonnes du tableau (ex : ' ', ';'...)")),
       COMMENTAIRE     =SIMP(statut='f',typ='TXM',defaut='#',
