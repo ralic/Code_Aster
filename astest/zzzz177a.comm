@@ -398,6 +398,16 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='ligne5',),
            )
 
+tp7b = CALC_TABLE(TABLE=tp7,
+                  ACTION=_F(
+                      OPERATION='AJOUT_COLONNE',
+                      NOM_PARA='Colonne_D',
+                      VALE_COLONNE=(1, 2, 3,),
+                 ),
+)
+
+IMPR_TABLE(TABLE=tp7b)
+
 # test de l'évaluation d'une formule avec d'autres noms de colonne
 form = FORMULE(NOM_PARA=('A', 'B'), VALE='A + B')
 

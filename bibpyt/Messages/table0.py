@@ -31,6 +31,11 @@ Paramètre %(k1)s inexistant dans la table %(k2)s.
 Opération RENOMME. Erreur : %(k1)s
 """),
 
+    4 : (u"""
+NOM_PARA ne doit contenir qu'un seul nom de paramètres pour ajouter
+une colonne non constante.
+"""),
+
     6 : _(u"""
 Le fichier %(k1)s existe déjà, on écrit à la suite.
 """),

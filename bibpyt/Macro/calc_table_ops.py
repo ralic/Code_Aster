@@ -153,12 +153,19 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
         # 9. Traitement de AJOUT_COLONNE
         if occ['OPERATION'] == 'AJOUT_COLONNE':
             lpar = force_list(occ['NOM_PARA'])
-            lval = force_list(occ['VALE'])
-            if len(lpar) != len(lval):
-                UTMESS('F', 'TABLE0_14', valk=('NOM_PARA', 'VALE'))
-            for para, value in zip(lpar, lval):
-                nval = [value, ] * len(tab)
-                tab[para] = nval
+            lcol = occ.get('VALE_COLONNE')
+            if lcol:
+                lcol = force_list(lcol)
+                if len(lpar) != 1:
+                    UTMESS('F', 'TABLE0_4')
+                tab[lpar[0]] = lcol[:len(tab)]
+            else:
+                lval = force_list(occ['VALE'])
+                if len(lpar) != len(lval):
+                    UTMESS('F', 'TABLE0_14', valk=('NOM_PARA', 'VALE'))
+                for para, value in zip(lpar, lval):
+                    nval = [value, ] * len(tab)
+                    tab[para] = nval
 
         # Traitement de STATISTIQUES
         if occ['OPERATION'] == 'STATISTIQUES':
