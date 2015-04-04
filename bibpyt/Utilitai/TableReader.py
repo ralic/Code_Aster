@@ -115,6 +115,9 @@ class TableReaderFree(TableReader):
         stat = [[], ]
         nbcol = 0
         curblock = 0
+        _printDBG("NB: Les lignes sont numérotées après la suppression "
+                  "des lignes vides.")
+        _printDBG("Début de la table {} à la ligne {}".format(curblock+1, 1) )
         curblock_hasvalue = False
         for i, line in enumerate(all_lines):
             cur = len(msplit(line, self.sep))
@@ -123,7 +126,7 @@ class TableReaderFree(TableReader):
                 cur = 0
             elif nbcol > 1 and cur < nbcol:
                 # less fields = new block
-                _printDBG("Nouveau bloc à la ligne ", i)
+                _printDBG("Début de la table {} à la ligne {}".format(curblock+2, i+1) )
                 if curblock >= nblock and not self.debug:
                     break
                 curblock += 1
