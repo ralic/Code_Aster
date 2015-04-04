@@ -52,4 +52,48 @@ assert t.rows[0][p] == 3
 assert t.rows[1][p] == 3
 assert t.rows[2][p] == 5
 
+# vérification de l'impression en utilisant les formats de customisation
+IMPR_TABLE(TABLE=tp7,
+           DEBUT_TABLE='<table>',
+           FIN_TABLE='</table>',
+           DEBUT_LIGNE='<tr><td>',
+           FIN_LIGNE='</td></tr>\n',
+           SEPARATEUR='</td><td>',
+           COMMENTAIRE='',
+           UNITE=88)
+
+# vérification minimaliste du code "html" produit
+from HTMLParser import HTMLParser
+
+
+class MyHTMLParser( HTMLParser ):
+    """Minimal html code checker"""
+
+    def __init__( self ):
+        """Constructor - store a stack of opened tags"""
+        HTMLParser.__init__(self)
+        self._stack = []
+
+    def handle_starttag( self, tag, attrs ):
+        """Store the new opened tag"""
+        self._stack.append( tag )
+
+    def handle_endtag(self, tag):
+        """Check that the closed tag is the last opened"""
+        last = self._stack.pop(-1)
+        assert last == tag, "tag unclosed '{}', got unexpected tag '{}'".format(last, tag)
+
+
+parser = MyHTMLParser()
+
+code = open('fort.88', 'rb').read()
+
+print "Checking the html code written by IMPR_TABLE... ",
+try:
+    parser.feed( code )
+    print "ok"
+except AssertionError:
+    print "error"
+    raise
+
 FIN()
