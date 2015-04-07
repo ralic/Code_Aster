@@ -247,4 +247,11 @@ Conseil:
         instants de début et de fin phase forte: %(r2).2f s et %(r3).2f s
 """),
 
+    45: _(u"""Il n'y a pas de fonctions d'excitation de type '%(k1)s'.
+
+Conseil:
+    Vérifier le mot-clé NOM_CHAM et que vous souhaitez bien faire un
+    calcul de type multi-appui ou avec prise en compte de la correction statique.
+"""),
+
 }

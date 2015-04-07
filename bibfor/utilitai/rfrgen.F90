@@ -306,6 +306,10 @@ subroutine rfrgen(trange)
             call getvtx(' ', 'CORR_STAT', scal=monmot(2), nbret=n2)
             if (monmot(1) .eq. 'OUI' .or. monmot(2) .eq. 'OUI') nonmot= 'OUI'
             if (nonmot(1:3) .eq. 'OUI') then
+                call jeexin(resu//'.F'//nomcha(1:3), iret)
+                if ( iret .eq. 0 ) then
+                    call utmess('F', 'SEISME_45', sk=nomcha)
+                endif
                 call jeveuo(resu//'.F'//nomcha(1:3), 'L', jfon)
                 call jeveuo(resu//'.IPSD', 'L', vr=ipsd)
                 call jelira(resu//'.F'//nomcha(1:3), 'LONMAX', nbexci)
