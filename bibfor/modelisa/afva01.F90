@@ -60,6 +60,7 @@ subroutine afva01(typsd, nomsd, nomsym, lautr)
                 goto 7
             endif
         end do
+        lautr=.false.
         goto 8
 !
 !

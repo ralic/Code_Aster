@@ -84,7 +84,7 @@ subroutine chvepg(chel1, chel2)
         fpg2 = fapg2(ima)
         if ((fpg1.ne.' ') .and. (fpg2.ne.' ') .and. (fpg2.ne.fpg1)) then
             call jenuno(jexnum(noma//'.NOMMAI', ima), nommai)
-            valk(1) = noma
+            valk(1) = nommai
             valk(2) = fpg1
             valk(3) = fpg2
             call utmess('F', 'CALCULEL_91', nk=3, valk=valk)
