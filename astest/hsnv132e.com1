@@ -1,4 +1,5 @@
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
+# SIMILAIRE A HSNV132D AVEC UN ENCASTREMENT SUPLLEMENT SUR LA SURFACE SUP
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -16,27 +17,48 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('MODELE1_63'));
+POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'), IGNORE_ALARM=('MODELE1_63','CALCULEL_28'))
 
-n = 51
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);
+DETRUIRE(CONCEPT=_F(NOM=LN))
+DETRUIRE(CONCEPT=_F(NOM=LT))
+DETRUIRE(CONCEPT=_F(NOM=FISS))
+DETRUIRE(CONCEPT=_F(NOM=MOTH))
+DETRUIRE(CONCEPT=_F(NOM=MATH))
+DETRUIRE(CONCEPT=_F(NOM=CMTH))
+DETRUIRE(CONCEPT=_F(NOM=CHTH))
+DETRUIRE(CONCEPT=_F(NOM=MODELE))
+DETRUIRE(CONCEPT=_F(NOM=MODELEK))
+DETRUIRE(CONCEPT=_F(NOM=ACIER))
+DETRUIRE(CONCEPT=_F(NOM=CHAMPMAT))
+DETRUIRE(CONCEPT=_F(NOM=CHARBLO))
+DETRUIRE(CONCEPT=_F(NOM=L_INST))
+DETRUIRE(CONCEPT=_F(NOM=UTOT))
+DETRUIRE(CONCEPT=_F(NOM=MA_XFEM))
+DETRUIRE(CONCEPT=_F(NOM=MOD_VISU))
+DETRUIRE(CONCEPT=_F(NOM=RES_XFEM))
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
-                    CREA_GROUP_NO=(_F(GROUP_MA='SURFINF',),
-                                   _F(GROUP_MA='VOL',),
-                                   ),
-                    INFO=1);
+#--------------------------------------------------------------------
+#               DEFINITION DE LA FISSURE                            #
+#--------------------------------------------------------------------
+
+LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
+LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
+
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,  
+                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
+                    INFO=1,
+                    );
 
 #--------------------------------------------------------------------
 #               DEBUT DU THERMIQUE                                  #
 #--------------------------------------------------------------------
 
 MOTH=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                 AFFE=_F(TOUT='OUI',
+                 AFFE=_F(GROUP_MA='VOL',
                          PHENOMENE='THERMIQUE',
                          MODELISATION='3D',),);
+
+MOTHX=MODI_MODELE_XFEM(MODELE_IN=MOTH,FISSURE=FISS,INFO=2,);
 
 MATH=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
                            RHO_CP=0.0,),);
@@ -45,21 +67,16 @@ CMTH=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                    AFFE=_F(TOUT='OUI',
                            MATER=MATH,),);
 
-CHTH=AFFE_CHAR_THER(MODELE=MOTH,
+CHTH=AFFE_CHAR_THER(MODELE=MOTHX,
                     TEMP_IMPO=(_F(GROUP_MA='SURFGAU',TEMP=20.0,),
-                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),);
+                               _F(GROUP_MA='SURFDRO',TEMP=220.0,),),
+                    ECHANGE_PAROI=(_F(FISSURE = FISS,
+                                      TEMP_CONTINUE = 'OUI',),),
+                   );
 
-THLI=THER_LINEAIRE(MODELE=MOTH,
+THLIX=THER_LINEAIRE(MODELE=MOTHX,
                    CHAM_MATER=CMTH,
                    EXCIT=_F(CHARGE=CHTH,),);
-
-TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
-                OPERATION='EXTR',
-                RESULTAT=THLI,
-                NOM_CHAM='TEMP',
-                INST=0.0,);
-
-#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(CHAM_GD = TEMP,))   
 
 #--------------------------------------------------------------------
 #               FIN DU THERMIQUE                                    #
@@ -72,17 +89,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAILLAG1,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='3D',),),);
 
-LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
-LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
-
-
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,  
-                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    INFO=1,
-                    );
-
-
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS,INFO=2,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,MODELE_THER=MOTHX);
 
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
@@ -95,7 +102,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        AFFE=_F(GROUP_MA='VOL',MATER=ACIER,),
                        AFFE_VARC=_F( GROUP_MA='VOL',
                                      NOM_VARC='TEMP',
-                                     CHAM_GD=TEMP,
+                                     EVOL=THLIX,
                                      VALE_REF=20.0),
                        );
 
@@ -105,7 +112,7 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #*********************************************************************
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
-                       DDL_IMPO=_F(GROUP_NO='SURFINF',DX=0.0,DY=0.0,DZ=0.0),
+                       DDL_IMPO=_F(GROUP_NO=('SURFINF','SURFSUP' ),DX=0.0,DY=0.0,DZ=0.0),
                        INFO=1,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -132,66 +139,77 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         INFO          = 2)
 
 
-IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=RES_XFEM,NOM_CHAM='DEPL'))   
-
-
-SIF=CALC_G(RESULTAT=UTOT,
+SIFC1=CALC_G(RESULTAT=UTOT,
            OPTION='CALC_K_G',
            THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.2,),
-#           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-#                      LISSAGE_G='LAGRANGE',),
            INFO=2,);
 
-
-IMPR_TABLE(TABLE=SIF,);
-
-TABG=CALC_G(RESULTAT=UTOT,
+TABGC1=CALC_G(RESULTAT=UTOT,
            OPTION='CALC_G',
            THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.2,),
-#           LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-#                      LISSAGE_G='LAGRANGE',),
            INFO=2,);
 
 
-IMPR_TABLE(TABLE=TABG,);
-
+# ces valeurs de reference ont ete obtenues par un calcul classique 3D
+# avec les memes conditions aux limites, et un maillage 2*100*100
 
 # on ne peut pas les obtenir avec la modelisation a (2d), ni c (3d avec DZ=0)
 
 
+
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= 231.412800803,
+           VALE_CALC=393366.055819,
            NOM_PARA='G',
-           TABLE=SIF,
+           TABLE=SIFC1,
            FILTRE=(_F(NOM_PARA='NUM_PT',
                       VALE_I=5,),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
                    ),
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC= 231.412800803,
-           NOM_PARA='G',
-           TABLE=TABG,
+           VALE_CALC=-310148521.794,
+           NOM_PARA='K1',
+           TABLE=SIFC1,
            FILTRE=(_F(NOM_PARA='NUM_PT',
                       VALE_I=5,),
-                   _F(NOM_PARA='NUME_ORDRE',
-                      VALE_I=1,),
                    ),
            )
 
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=-16044.9748463,
+           NOM_PARA='K2',
+           TABLE=SIFC1,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
+           )
 
-# CLe bareau est libre de dilation thermique.
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=884808.766742,
+           NOM_PARA='K3',
+           TABLE=SIFC1,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
+           )
 
-# On note que G_IRWIN est très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions 
-# singulières d'un problème thermo-mécanique a entrainé des valuers des K mauvais. Cependant, les valeurs de G est juste.
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=393366.055819,
+           NOM_PARA='G',
+           TABLE=TABGC1,
+           FILTRE=(_F(NOM_PARA='NUM_PT',
+                      VALE_I=5,),
+                   ),
+           )
+
+FIN();
+
+# On note que G_IRWIN n'est pas très différent de G calculé par CALC_G. C'est un problème purement thermique. Le fait qu'on utilise les solutions 
+# singulières d'un problème thermo-mécanique a entrainé des valuers des K approchées. Cependant, les valeurs de G est juste.
 # Voir les documents pour plus d'information.
 
 # On note que les valeurs de G obtenues avec l'option CALC_G et CALC_K_G sont identiques.
-FIN();
-

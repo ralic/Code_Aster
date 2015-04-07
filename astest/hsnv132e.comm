@@ -18,7 +18,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL2_63'));
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('MODELE1_63'));
 
 n = 51
 MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',INFO=1,);

@@ -17,7 +17,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL2_63'));
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('MODELE1_63'));
               
 PRE_GIBI();
 n = 11

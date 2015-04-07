@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm hsnv132e.comm D 1
+F comm hsnv132e.com1 D 1
 F datg hsnv132d.datg D 16
 F mmed hsnv132d.mmed D 20
