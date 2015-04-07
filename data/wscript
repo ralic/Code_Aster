@@ -40,7 +40,8 @@ def build(self):
             vars = ['PREFIX', 'DEFINES', 'PYTHON',
                     'FC', 'FCFLAGS',
                     'LIBPATH', 'LIBDIR', 'CFG_PYTHONPATH', 'astervers',
-                    'ASTERDATADIR', 'ASTERLIBDIR', 'OPT_ENV', 'install_tests'],
+                    'ASTERDATADIR', 'ASTERLIBDIR', 'OPT_ENV', 'install_tests',
+                    'MFRONT_SPECIFIC'],
      **dict_conv
     )
 
@@ -76,4 +77,13 @@ def _env2dict(self, src, env, install_tests):
         dico['srctest'] = os.linesep.join([
             srctest_tmpl % '%(SRC)s/astest' % dico,
             srctest_tmpl % '%(SRC)s/../validation/astest' % dico])
+    text = ""
+    if env['MFRONT']:
+        tfel = osp.dirname( osp.dirname(env['MFRONT']) )
+        text += os.linesep.join([
+            "# MFront specific",
+            "export TFEL_HOME={}".format( tfel ),
+            "export PATH=${TFEL_HOME}/bin:$PATH"
+        ])
+    dico['MFRONT_SPECIFIC'] = text
     return dico
