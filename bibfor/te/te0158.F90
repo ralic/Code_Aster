@@ -36,6 +36,7 @@ subroutine te0158(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/verifm.h"
+#include "asterfort/pmfmats.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +70,7 @@ subroutine te0158(option, nomte)
 !
     integer, parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
-    character(len=8) :: noms_cara(nb_cara)
+    character(len=8) :: noms_cara(nb_cara), nomat
     data noms_cara /'A1','IY1','IZ1','AY1','AZ1','EY1','EZ1','EY2','EZ2'/
 !
 ! --------------------------------------------------------------------------------------------------
@@ -107,13 +108,14 @@ subroutine te0158(option, nomte)
     if (nomte .ne. 'MECA_POU_D_EM') then
 !       CARACTERISTIQUES MATERIAUX
         call jevech('PMATERC', 'L', lmater)
+        call pmfmats(lmater, nomat)
 !
         call verifm(fami, npg, 1, '+', zi(lmater), 'ELAS', 1, epsthe, iret)
         itemp=0
         if (iret .eq. 0) itemp=1
 !
         call moytem(fami, npg, 1, '+', temp, iret)
-        call matela(zi(lmater), ' ', itemp, temp, e, xnu)
+        call matela(zi(lmater), nomat, itemp, temp, e, xnu)
 !
         g = e / ( 2.0d0 * ( 1.0d0 + xnu ) )
 !

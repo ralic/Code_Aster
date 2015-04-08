@@ -74,7 +74,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=3, nbin=13)
+    parameter    (nbout=3, nbin=14)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -250,6 +250,12 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
         lpain(nop) = 'PVARIPG'
         lchin(nop) = varplu(1:19)
     endif
+!   -- pour les PMF :
+    nop=nop+1
+    lpain(nop) = 'PCOMPOR'
+    lchin(nop) = mate(1:8)//'.COMPOR'
+    
+    
     call calcul('S', option, ligrmo, nop, lchin,&
                 lpain, 2, lchout, lpaout, base,&
                 'OUI')

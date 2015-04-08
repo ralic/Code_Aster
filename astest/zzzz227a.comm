@@ -1,4 +1,4 @@
-# TITRE VALIDATION DE LA CREATION DE LA CARTE DE TEMPERATURE DE REFERENCE
+# TITRE Validation de la creation de la carte de temperature de reference
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,18 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-# ON VEUT VERIFIER QUE LA CARTE DES TEMPERATURE DE REFERENCE EST BIEN CREEE
-# DANS LES CAS SUIVANTS :
-#   - AVEC LA SYNTAXE : AFFE_MATERIAU/AFFE_VARC/VALE_REF
-#   - DANS LE CAS OU L'ON AFFECTE PLUSIEURS MATERIAUX SUR LES MAILLES.
-
-# LA SOLUTION DE "REFERENCE" EST OBTENUE AVEC 1 SEUL MATERIAU PAR MAILLE (CALCUL 0).
-
-# ON VERIFIE ALORS QUE L'ON OBTIENT LES MEMES RESULTATS POUR LES 2 CALCULS :
-# CALCUL 1 : 1 MATERIAU PAR MAILLE
-# CALCUL 2 : PLUSIEURS MATERIAUX PAR MAILLE
-#-------------------------------------------------------------------------------
 
 
 DEBUT(  CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -75,8 +63,10 @@ CHARST=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=_F(GROUP_MA='BASE1',DZ=0.,DY=0.))
 L1=DEFI_LIST_REEL(VALE=(1.))
 
 
-# CALCUL 1: CALCUL AVEC 1 MATERIAU PAR MAILLE:
-#----------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------
+# Validation de la prise ne compte de plusieurs temperature de reference :
+# (non-regression)
+#---------------------------------------------------------------------------
 CHMAT2=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(
            _F(TOUT='OUI', MATER=MAT),
            _F(MAILLE='M1', MATER=MAT2),
@@ -104,38 +94,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   VALE_CALC=-0.38209964322068002,),
           )
 
-# CALCUL 2: CALCUL AVEC PLUSIEURS MATERIAUX PAR MAILLE:
-#----------------------------------------------------------------------------
-CHMAT3=AFFE_MATERIAU(MAILLAGE=MA,AFFE=(
-           _F(TOUT='OUI', MATER=MAT),
-           _F(MAILLE='M1', MATER=(MAT2,MATB2,MATB3)),
-           _F(MAILLE='M8', MATER=(MAT3,MATB2,MATB3)),
-           _F(MAILLE='M18',MATER=(MAT,MATB2,MATB3)),
-        ),
-        AFFE_VARC=(
-           _F(TOUT='OUI',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=0.),
-           _F(MAILLE='M1',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=100.),
-           _F(MAILLE='M8',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=200.),
-           _F(MAILLE='M18',NOM_VARC='TEMP',CHAM_GD=CHT1,VALE_REF=300.),
-         ),
-         )
 
-RESU3=MECA_STATIQUE(MODELE=MO,CHAM_MATER=CHMAT3,LIST_INST=L1,
-         EXCIT=(_F(CHARGE=CHARST),_F(CHARGE=CHARCI)))
-
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='C',
-                  REFERENCE='AUTRE_ASTER',
-                  RESULTAT=RESU3,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  VALE_CALC=-0.382099643,
-                  VALE_REFE=-0.38209964322068002,),
-          )
-
-#--------------------------------------------------------------------------------------------------------------
-# pour tester la commande TEST_RESU sur des cartes (fiche 18997) :
+#------------------------------------------------------------------------------------
+# Validation de la commande TEST_RESU sur des cartes (fiche 18997) :
 #------------------------------------------------------------------
 
 CH1=CREA_CHAMP(TYPE_CHAM='CART_TEMP_R', OPERATION='AFFE', MAILLAGE=MA,
@@ -168,7 +129,8 @@ TEST_RESU(CARTE=_F(REFERENCE='ANALYTIQUE',
                    CHAM_GD=CH3,),
           )
 
-# VALIDATION DE L'ASSEMBLAGE DE 2 CARTES (CREA_CHAMP / ASSE) (fiche 18995) :
+#-----------------------------------------------------------------------------------
+# Validation de l'assemblage de 2 cartes (CREA_CHAMP / ASSE) (fiche 18995) :
 #---------------------------------------------------------------------------
 CART1=CREA_CHAMP(TYPE_CHAM='CART_TEMP_R', OPERATION='AFFE', MAILLAGE=MA,
                 AFFE=_F(TOUT='OUI',NOM_CMP='TEMP',VALE=31.),INFO=1)

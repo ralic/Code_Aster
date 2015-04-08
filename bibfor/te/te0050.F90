@@ -25,6 +25,8 @@ subroutine te0050(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/pmfmats.h"
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -52,13 +54,13 @@ subroutine te0050(option, nomte)
     real(kind=8) :: alpha, beta, eta, valres(nbres), valpar(nbpar), vxyz
 !
     integer :: icodre(nbres)
-    character(len=8) :: nompar(nbpar)
+    character(len=8) :: nompar(nbpar), nomat
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
-!
+!-----------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
+                     npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
 !     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
 !     ------------------------------------------------------------
@@ -109,6 +111,14 @@ subroutine te0050(option, nomte)
         .or. phenom .eq. 'ELAS_DHRC')) then
         call utmess('F', 'MODELISA10_3', sk=phenom)
     endif
+
+!   -- si l'element est multifibre, il faut prendre le materiau "section"
+!      pour recuperer les coefficients de dilatation :
+    if (lteatt('TYPMOD2','PMF')) then
+        call pmfmats(mater, nomat)
+    else
+        nomat=' '
+    endif
 !
     if (ins .eq. 0) then
         call tecach('ONN', 'PRIGIEL', 'L', iret, nval=2,&
@@ -139,14 +149,14 @@ subroutine te0050(option, nomte)
         nomres(2)='AMOR_BETA'
         valres(1) = 0.d0
         valres(2) = 0.d0
-        call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 2,&
+        call rcvalb('RIGI', 1, 1, '+', mater, nomat, phenom, npara, nompar, valpar, 2,&
                     nomres, valres, icodre, 0, nan='NON')
 !
     else if (option.eq.'RIGI_MECA_HYST') then
 !     ------------------------------------------
         nomres(1)='AMOR_HYST'
         valres(1) = 0.d0
-        call rcvalb('RIGI', 1, 1, '+', mater, ' ', phenom, npara, nompar, valpar, 1,&
+        call rcvalb('RIGI', 1, 1, '+', mater, nomat, phenom, npara, nompar, valpar, 1,&
                     nomres, valres, icodre, 0, nan='NON')
     else
         ASSERT(.false.)

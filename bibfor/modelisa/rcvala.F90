@@ -109,8 +109,13 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
         enddo
         call utmess('F', 'MODELISA6_92', sk=nomat)
     else
-!       -- il faudra penser a remettre l'assert apres la correction de issue23564 :
-!       ASSERT(nbmat.eq.1)
+        if (nbmat.gt.1) then
+            call tecael(iadzi, iazk24)
+            nomail = zk24(iazk24-1+3)(1:8)
+            valk(1) = nomail
+            valk(2) = nomres(1)
+            call utmess('A', 'MODELISA9_3', nk=2, valk=valk)
+        endif
         imat = jmat+zi(jmat+nbmat+1)
     endif
  9  continue

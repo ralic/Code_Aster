@@ -24,6 +24,8 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/pmfmats.h"
     character(len=*) :: fami, poum, compor
     real(kind=8) :: epsth(*)
     integer :: npg, nspg, ndim, iret, imate
@@ -44,20 +46,29 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
 ! IRET  : CODE RETOUR CONCERNANT LA TEMPERATURE 0 SI OK
 !                                               1 SI NOOK
 !
-!
+!------------------------------------------------------------------
     integer :: codrem(3), codrep(3)
-    character(len=8) :: valek(2)
+    character(len=8) :: valek(2), nomat
     character(len=16) :: nomres(3)
     integer :: iret1, iret2, iret3, ind, somire, iadzi, iazk24
     real(kind=8) :: tm, tref, tp, valrep(3), valrem(3)
+!------------------------------------------------------------------
 !
     iret1 = 0
     iret2 = 0
     iret3 = 0
-!
+
+!   -- si l'element est multifibre, il faut prendre le materiau "section"
+!      pour recuperer les coefficients de dilatation :
+    if (lteatt('TYPMOD2','PMF')) then
+        call pmfmats(imate, nomat)
+    else
+        nomat=' '
+    endif
+
     call rcvarc(' ', 'TEMP', 'REF', fami, npg,&
                 nspg, tref, iret1)
-!
+
     if (ndim .eq. 1) then
         nomres(1) = 'ALPHA'
     else if (ndim.eq.2) then
@@ -68,18 +79,18 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
         nomres(2) = 'ALPHA_T'
         nomres(3) = 'ALPHA_N'
     endif
-!
+
     if (poum .eq. 'T') then
-!
+
         call moytem(fami, npg, nspg, '-', tm,&
                     iret2)
         call rcvalb(fami, npg, nspg, '-', imate,&
-                    ' ', compor, 1, 'TEMP', [tm],&
+                    nomat, compor, 1, 'TEMP', [tm],&
                     ndim, nomres, valrem, codrem, 0)
         call moytem(fami, npg, nspg, '+', tp,&
                     iret3)
         call rcvalb(fami, npg, nspg, '+', imate,&
-                    ' ', compor, 1, 'TEMP', [tp],&
+                    nomat, compor, 1, 'TEMP', [tp],&
                     ndim, nomres, valrep, codrep, 0)
 !
         somire = iret2 + iret3
@@ -117,7 +128,7 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
         call moytem(fami, npg, nspg, poum, tm,&
                     iret2)
         call rcvalb(fami, npg, nspg, poum, imate,&
-                    ' ', compor, 1, 'TEMP', [tm],&
+                    nomat, compor, 1, 'TEMP', [tm],&
                     ndim, nomres, valrem, codrem, 0)
 !
         somire = iret2 + iret3
