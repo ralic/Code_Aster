@@ -575,6 +575,101 @@ def essai_CISA_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
 #             Essai Triaxial Non Draine Cyclique (TND_C)
 # -----------------------------------------------------------------------
 # -----------------------------------------------------------------------
+def essai_TND_C_mono(self, inst_init, sigm, epsi, vari, DicoEssai,
+                     PRES_CONF, MATER, COMPORTEMENT, CONVERGENCE, INFO,
+                     nombre=500, inst_epsi=100., epsi_max=.04):
+    """
+    Essai Triaxial Non Draine Cyclique Draine (TND_C)
+    Poursuite en monotone avec deformation verticale controlee
+    """
+    import numpy as NP
+    import math as M
+    from Accas import _F
+    import aster
+    from Utilitai.Utmess import UTMESS
+    from Comportement import catalc
+
+    DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
+    CALC_POINT_MAT = self.get_cmd('CALC_POINT_MAT')
+    DETRUIRE       = self.get_cmd('DETRUIRE')
+    DEFI_LIST_INST = self.get_cmd('DEFI_LIST_INST')
+    DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
+
+    #SIGM_IMPOSE= DicoEssai['SIGM_IMPOSE']
+    #BIOT_COEF  = DicoEssai['BIOT_COEF']
+    UN_SUR_K   = DicoEssai['UN_SUR_K']
+    KZERO      = DicoEssai['KZERO']
+    K_EAU      = 1. / UN_SUR_K
+    calc_ok    = True
+      
+    __rlist = DEFI_LIST_REEL(DEBUT=inst_init,
+                 INTERVALLE=_F(JUSQU_A=inst_init+inst_epsi, NOMBRE=nombre,),
+                 INFO=INFO)
+
+    __dlist = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__rlist),
+                 ECHEC=_F(SUBD_METHODE='MANUEL',
+                          SUBD_PAS    =10,
+                          SUBD_NIVEAU =10,),
+                 INFO=INFO,)
+
+    __CHARV = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
+                    VALE=(inst_init          , epsi[2],
+                          inst_init+inst_epsi, epsi[2]+epsi_max,),)
+                    
+    __CHARH = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
+                        VALE=(inst_init          , KZERO*PRES_CONF,
+                              inst_init+inst_epsi, KZERO*PRES_CONF,),)
+    try:
+      __EVOLM = CALC_POINT_MAT(
+        INFO=INFO,
+        COMPORTEMENT=COMPORTEMENT.List_F(),
+        CONVERGENCE=CONVERGENCE.List_F(),
+        MATER=MATER,
+        INCREMENT=_F(LIST_INST=__dlist,
+                     INST_INIT=inst_init,
+                     INST_FIN =inst_init+inst_epsi,),
+        NEWTON=_F(MATRICE='TANGENTE', REAC_ITER=1,),
+        ARCHIVAGE=_F(LIST_INST=__rlist,),
+        
+        VECT_IMPO=(_F(NUME_LIGNE=1, VALE=__CHARH),
+                   _F(NUME_LIGNE=2, VALE=__CHARH),
+                   _F(NUME_LIGNE=3, VALE=__CHARV),),
+                   
+        MATR_C1=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=1.),
+                 _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=1.),),
+                 
+        MATR_C2=(_F(NUME_LIGNE=1,
+                    NUME_COLONNE=1, VALE=K_EAU),
+                 _F(NUME_LIGNE=1,
+                    NUME_COLONNE=2, VALE=K_EAU),
+                 _F(NUME_LIGNE=1,
+                    NUME_COLONNE=3, VALE=K_EAU),
+                 _F(NUME_LIGNE=2,
+                    NUME_COLONNE=1, VALE=K_EAU),
+                 _F(NUME_LIGNE=2,
+                    NUME_COLONNE=2, VALE=K_EAU),
+                 _F(NUME_LIGNE=2,
+                    NUME_COLONNE=3, VALE=K_EAU),
+                 _F(NUME_LIGNE=3,
+                    NUME_COLONNE=3, VALE=1.),),
+                    
+        SIGM_INIT= _F(SIXX=sigm[0], SIYY=sigm[1], SIZZ=sigm[2],
+                      SIXY=sigm[3], SIXZ=sigm[4], SIYZ=sigm[5],),
+        EPSI_INIT= _F(EPXX=epsi[0], EPYY=epsi[1], EPZZ=epsi[2],
+                      EPXY=epsi[3], EPXZ=epsi[4], EPYZ=epsi[5],),
+        VARI_INIT= _F(VALE=vari,),
+    );
+    
+    except aster.NonConvergenceError:
+      calc_ok = False
+      __EVOLM = self.get_last_concept()
+
+    else:
+      DETRUIRE(CONCEPT=_F(NOM=(__rlist,__dlist,__CHARV,__CHARH,)), INFO=1)
+    
+    return __EVOLM,calc_ok,    
+    
+
 def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INFO):
     """
     Essai Triaxial Non Draine Cyclique Draine (TND_C)
@@ -603,6 +698,7 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
     NB_INST = DicoEssai['NB_INST']
     RU_MAX = DicoEssai['RU_MAX']
     K_EAU = 1. / UN_SUR_K
+    comp  = ['XX','YY','ZZ','XY','XZ','YZ']
 
     # recuperation du nombre de VI associe a la LdC
     nom_lc = COMPORTEMENT.List_F()[0]['RELATION']
@@ -639,9 +735,11 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
 
     __DLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=__RLIST),
                              ECHEC=_F(SUBD_METHODE='MANUEL',
-                                      SUBD_PAS=10,
-                                      SUBD_NIVEAU=10,),
+                                      SUBD_PAS=4,
+                                      SUBD_NIVEAU=4,),
                              INFO=INFO,)
+                             
+    inst_peak = [10.+40.*k for k in range(NB_CYCLE)]
 
     inst_list = [[[] for j in xrange(len(SIGM_IMPOSE))]
                  for i in xrange(len(PRES_CONF))]
@@ -693,9 +791,16 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
             # ---
             char1_absc = [0.] + [10. * (2 * k + 1)
                                  for k in xrange(2 * NB_CYCLE)] + [10. * (4 * NB_CYCLE)]
+                                 
+            # Calcul du gamma correspondant a sigma_impose
+            # |epsilon_1 - epsilon_2| = |sigma_1 - sigma_2| /2G
+            #GAMMA=.0005
+            #char1_ordo = [0.] + [GAMMA * (-1*2.) ** k for k in xrange(2 * NB_CYCLE)] + [0.]
+            # ---Fin modif
+                                 
             char1_ordo = [PRES_CONF[i]] + [PRES_CONF[i] + SIGM_IMPOSE[j] * (-1) ** k
                                            for k in xrange(2 * NB_CYCLE)] + [PRES_CONF[i]]
-
+                                           
             __CHAR1 = DEFI_FONCTION(INFO=INFO, NOM_PARA='INST',
                                     ABSCISSE=char1_absc,
                                     ORDONNEE=char1_ordo,
@@ -711,7 +816,7 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
             calc_ok = True
 
             try:
-
+# Contrainte SIGMA_1 imposee
                 __EVOL = CALC_POINT_MAT(
                     INFO=INFO,
                     COMPORTEMENT=COMPORTEMENT.List_F(),
@@ -728,7 +833,8 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
                     MATR_C1=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=1.),
                              _F(NUME_LIGNE=2, NUME_COLONNE=2, VALE=1.),
                              _F(NUME_LIGNE=3, NUME_COLONNE=3, VALE=1.),),
-                    MATR_C2=(_F(NUME_LIGNE=1, NUME_COLONNE=1, VALE=K_EAU),
+                    MATR_C2=(_F(NUME_LIGNE=1,
+                                NUME_COLONNE=1, VALE=K_EAU),
                              _F(NUME_LIGNE=1,
                                 NUME_COLONNE=2, VALE=K_EAU),
                              _F(NUME_LIGNE=1,
@@ -743,11 +849,11 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
                                 NUME_COLONNE=1, VALE=K_EAU),
                              _F(NUME_LIGNE=3,
                                 NUME_COLONNE=2, VALE=K_EAU),
-                             _F(NUME_LIGNE=3, NUME_COLONNE=3, VALE=K_EAU),),
+                             _F(NUME_LIGNE=3,
+                                NUME_COLONNE=3, VALE=K_EAU),),
                     SIGM_INIT= _F(SIXX=KZERO * PRES_CONF[i],
                                   SIYY=KZERO * PRES_CONF[i],
-                                  SIZZ=PRES_CONF[i],),
-                )
+                                  SIZZ=PRES_CONF[i],),)
 
             except aster.NonConvergenceError:
                 calc_ok = False
@@ -759,14 +865,276 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
                 TabRes = __EVOL.EXTR_TABLE().values()
                 DETRUIRE(CONCEPT=_F(NOM=(__EVOL)), INFO=1)
 
-            # post-traitements
-            inst = TabRes['INST']
-            sig_xx = NP.array(TabRes['SIXX'])
-            sig_yy = NP.array(TabRes['SIYY'])
-            sig_zz = NP.array(TabRes['SIZZ'])
-            eps_xx = NP.array(TabRes['EPXX'])
-            eps_yy = NP.array(TabRes['EPYY'])
-            eps_zz = NP.array(TabRes['EPZZ'])
+# Debut Modifs fiche 23451
+# Author:  Marc KHAM  -----------------------
+# Date:    31/03/2015 -----------------------
+#
+            titre='\n# =====================================\n'+\
+            '#\n# TNDC :: REPRISE MONOTONE APRES ECHEC\n#\n'+\
+            '# =====================================\n\n'
+            
+
+            # 1- ON VERIFIE LES CRITERES D'INSTABILITE OU DE NON CV:
+            #
+            #    * CRIT1 = DELTA_EPZZ[N] / DELTA_EPZZ[N-1] > 10
+            #
+            #    * CRIT2 = DELTA_Q[N] / DELTA_P[N] < 0.25
+            #
+            #    * NON CV
+            #    
+            # 2- ON EFFECTUE UNE SUCCESSION D'ESSAIS MONOTONES
+            #    A EPSILON CONTROLE A PARTIR DU DERNIER INSTANT
+            
+            
+            # ========================================================
+            # 1- ON VERIFIE LES CRITERES D'INSTABILITE OU DE NON CV:
+            #
+            #    * CRIT1 = DELTA_EPZZ[N] / DELTA_EPZZ[N-1] > 10
+            #
+            #    * CRIT2 = DELTA_Q[N] / DELTA_P[N] < 0.25
+            #
+            #    * NON CV
+            #
+            # ========================================================
+            inst  = TabRes['INST']
+            
+            print
+            print ' * INST FINAL = %f' %(inst[-1])
+            
+            q   =NP.array(TabRes['SIZZ']) - NP.array(TabRes['SIXX'])
+            p   =(NP.array(TabRes['SIZZ'])+2*NP.array(TabRes['SIXX'])) /3.
+            epzz=NP.array(TabRes['EPZZ'])
+            
+            depzzm=NP.abs( (epzz[2:]-epzz[1:-1])/(epzz[1:-1]-epzz[:-2]) )
+            dqdp  =NP.abs( (q[1:]-q[:-1])/(p[1:]-p[:-1]) )
+            
+            interv=20
+            
+            print ' * Q  = %e' %(q[-1])
+            print ' * P  = %e' %(p[-1])
+            print ' * INST PEAK LIST =',inst_peak
+            
+            indx_peak=[]
+            
+            for n,t in enumerate(inst_peak):
+              if t<=inst[-1]:
+                indx_peak.append(inst.index(t))
+
+            print ' * INDEX PEAK LIST =',indx_peak
+            
+            indx_init,numcyc=-1,-1
+            
+            for k,n in enumerate(indx_peak):
+            
+              print
+              print ' * INDEX PEAK = %d' %(n)
+              print ' * P  = %e' %(p[n])
+              print ' * Q  = %e' %(q[n])
+              
+              n0=min(interv,len(depzzm[:n]))
+              depzzmax=max(depzzm[n-n0:n])
+              dqdpmin =min(dqdp[n-n0:n])
+              
+              print ' * DEPM = %f' %(depzzmax)
+              print ' * DQDP  = %f' %(dqdpmin)
+              
+              ncrit,nume1,nume2=0,0,0
+              if depzzmax>10.:
+                nume1=list(depzzm).index(depzzmax)
+                ncrit+=1
+              if dqdpmin<.25:
+                nume2=list(dqdp).index(dqdpmin)
+                ncrit+=1
+
+              print ' * CRIT =%d   NUME_DEPS =%d   NUME_DQDP =%d'\
+                    %(ncrit,nume1,nume2)
+                
+              if ncrit>=2:
+                indx_init=nume2
+                numcyc   =k
+                break
+            #
+            # Quand le calcul se termine en non CV sans que le critere
+            # soit actif, on termine le travail.
+            #
+            if numcyc==-1 and (not calc_ok):
+              for n in range(NB_CYCLE):
+                if inst[-1]>=40.*n and inst[-1]<=40.*(n+1):
+                  numcyc=n
+                  break
+                  
+            # ========================================================
+            #
+            # 2- SUCCESION DE TND MONOTONES A EPSILON IMPOSE
+            #
+            # ========================================================
+            # Creation de la liste d'instants
+            
+            if indx_init>0 or (not calc_ok):
+            
+              inst_init= TabRes['INST'][indx_init]
+              
+              print titre
+              print ' * ETAT INIT:'
+              print '   CYCLE NUMERO %d SUR %d' %(2*numcyc,2*NB_CYCLE)
+              print '   INDEX INIT=%d' %(indx_init)
+              print '   INST INIT =%f' %(inst_init)
+              
+              sigm,epsi,=[0.]*6,[0.]*6,
+              for n in range(3):
+                sigm[n]=TabRes['SI%s' %(comp[n])][indx_init]
+                epsi[n]=TabRes['EP%s' %(comp[n])][indx_init]
+                
+                print '   EP%s =%e   SI%s =%e' %(comp[n],epsi[n],comp[n],sigm[n])
+              
+              p = (sigm[0]+sigm[1]+sigm[2]) /3.
+              q = sigm[2]-sigm[0]
+              
+              print '   P =%e  Q=%e' %(p,q)
+              
+              vari =[]
+              for n in range(50):
+                vari.append(TabRes['V%d' %(n+1)][indx_init])
+                print '   V%d =%f' %(n,vari[n])
+                
+              print
+              print '   *** BOUCLE SUR LES CYCLES TND A EPSILON IMPOSE ***'
+              
+              indx_max,inst_max,=indx_init,inst_init,
+              
+              TabResm={'INST':[], 'SIXX':[], 'SIYY':[], 'SIZZ':[],\
+                       'EPXX':[], 'EPYY':[], 'EPZZ':[],}
+              
+              # --------------------------------------------
+              #
+              #        Boucle sur les gamma imposees
+              #
+              # --------------------------------------------
+              # Calcul du signe de gamma_max: nbc0
+              __EVOLM,calc_ok_mono,=\
+                 essai_TND_C_mono(self, inst_max, sigm, epsi,
+                 vari, DicoEssai, PRES_CONF[i], MATER, COMPORTEMENT, CONVERGENCE,
+                 INFO, nombre=10, inst_epsi=10., epsi_max=.0005)
+                 
+              __TabResm = __EVOLM.EXTR_TABLE().values()
+                
+              q =__TabResm['SIZZ'][-1] - __TabResm['SIXX'][-1]
+                
+              DETRUIRE(CONCEPT=_F(NOM=(__EVOLM)), INFO=1)
+              
+              if q>SIGM_IMPOSE[j]:
+                nbc0=1
+              else:
+                nbc0=0
+
+              coef_gamma      =3.
+              NB_CYCLE_EPSILON=2*(NB_CYCLE-numcyc)
+              
+              for nbc in range(NB_CYCLE_EPSILON):
+              
+                gamma =.04*(-1.)**(nbc+nbc0)
+                
+                print
+                print '   * CYCLE NUMERO %d SUR %d' %(nbc+1,NB_CYCLE_EPSILON)
+                print '   * GAMMA_MAX =%e' %(gamma)
+                
+                __EVOLM,calc_ok_mono,=\
+                 essai_TND_C_mono(self, inst_max, sigm, epsi,
+                 vari, DicoEssai, PRES_CONF[i], MATER, COMPORTEMENT, CONVERGENCE,
+                 INFO, nombre=500, inst_epsi=100., epsi_max=gamma)
+                
+                __TabResm = __EVOLM.EXTR_TABLE().values()
+                
+                q =__TabResm['SIZZ'][-1] - __TabResm['SIXX'][-1]
+                
+                DETRUIRE(CONCEPT=_F(NOM=(__EVOLM)), INFO=1)
+                
+                if abs(q) < .95*SIGM_IMPOSE[j]:
+                
+                  print '   * AUGMENTATION GAMMA_MAX =%e' %(coef_gamma*gamma)
+                
+                  __EVOLM,calc_ok_mono,=\
+                   essai_TND_C_mono(self, inst_max, sigm, epsi,
+                   vari, DicoEssai, PRES_CONF[i], MATER, COMPORTEMENT, CONVERGENCE,
+                   INFO, nombre=1000, inst_epsi=100., epsi_max=coef_gamma*gamma)
+                                         
+                  __TabResm = __EVOLM.EXTR_TABLE().values()
+                  
+                  DETRUIRE(CONCEPT=_F(NOM=(__EVOLM,)), INFO=1)
+                
+                # ========================================================
+                #
+                # 3- DETECTION DU DEPASSEMENT DE LA CONTRAINTE MAXIMALE
+                #    APPLIQUEE
+                #
+                # ========================================================
+                #print '__TabResm.keys() =',__TabResm.keys()
+                
+                inst  = __TabResm['INST']
+                
+                print '   * INST FINAL = %f' %(inst[-1])
+                
+                q =NP.array(__TabResm['SIZZ']) - NP.array(__TabResm['SIXX'])
+                p =(NP.array(__TabResm['SIZZ'])+2*NP.array(__TabResm['SIXX'])) /3.
+                
+                dq      =list(NP.abs( (q-(-1.)**(nbc+nbc0)*SIGM_IMPOSE[j]) ))
+                dqmax   =min(dq)
+                indx_max=dq.index(dqmax)
+                inst_max=inst[indx_max]
+                
+                for n in range(3):
+                  sigm[n]=__TabResm['SI%s' %(comp[n])][indx_max]
+                  epsi[n]=__TabResm['EP%s' %(comp[n])][indx_max]
+                
+                  print '   * EP%s =%e   SI%s =%e' %(comp[n],epsi[n],comp[n],sigm[n])
+              
+                for n in range(50):
+                  vari[n]=__TabResm['V%d' %(n+1)][indx_max]
+                  print '   * V%d =%f' %(n,vari[n])
+     
+                print '   * INDEX MAX SIGMA=%d' %(indx_max)
+                print '   * INST MAX SIGMA =%f' %(inst_max)
+                print '   * MAX P =%e  Q =%e' %(p[indx_max],q[indx_max])
+                
+                nf=1000
+                if nbc<NB_CYCLE_EPSILON-1:
+                  nf =indx_max-1
+                  
+                TabResm['INST']+=__TabResm['INST'][:nf]
+                TabResm['SIXX']+=__TabResm['SIXX'][:nf]
+                TabResm['SIYY']+=__TabResm['SIYY'][:nf]
+                TabResm['SIZZ']+=__TabResm['SIZZ'][:nf]
+                TabResm['EPXX']+=__TabResm['EPXX'][:nf]
+                TabResm['EPYY']+=__TabResm['EPYY'][:nf]
+                TabResm['EPZZ']+=__TabResm['EPZZ'][:nf]
+# ---- Fin de la boucle de calcul
+#      Debut des post-traitements
+# ---------------------------------
+            if indx_init>0 or (not calc_ok):
+            
+              calc_ok=calc_ok_mono
+            
+              inst = TabRes['INST'][:indx_init]+TabResm['INST']
+              sig_xx = NP.array(TabRes['SIXX'][:indx_init]+TabResm['SIXX'])
+              sig_yy = NP.array(TabRes['SIYY'][:indx_init]+TabResm['SIYY'])
+              sig_zz = NP.array(TabRes['SIZZ'][:indx_init]+TabResm['SIZZ'])
+              eps_xx = NP.array(TabRes['EPXX'][:indx_init]+TabResm['EPXX'])
+              eps_yy = NP.array(TabRes['EPYY'][:indx_init]+TabResm['EPYY'])
+              eps_zz = NP.array(TabRes['EPZZ'][:indx_init]+TabResm['EPZZ'])
+              
+            else:
+            
+              inst = TabRes['INST']
+              sig_xx = NP.array(TabRes['SIXX'])
+              sig_yy = NP.array(TabRes['SIYY'])
+              sig_zz = NP.array(TabRes['SIZZ'])
+              eps_xx = NP.array(TabRes['EPXX'])
+              eps_yy = NP.array(TabRes['EPYY'])
+              eps_zz = NP.array(TabRes['EPZZ'])
+              
+            print '>> INST FINAL = %f' %(inst[-1])
+# --- Fin modifs fiche 23451
+
             p = (sig_xx + sig_yy + sig_zz) / 3.
             q = sig_zz - sig_xx
             eps_vol = eps_xx + eps_yy + eps_zz
