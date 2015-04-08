@@ -75,7 +75,7 @@ subroutine xthpoc(modele, chtn, chtpg)
     lpain(10) = 'PHEA_NO'
     lchin(10) = hea_no
 !
-    lpaout(1) = 'PTEMPPG'
+    lpaout(1) = 'PTEMP_R'
     lchout(1) = chtpg
 !
     option = 'TEMP_ELGA'

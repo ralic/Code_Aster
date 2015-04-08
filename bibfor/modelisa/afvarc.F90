@@ -26,6 +26,7 @@ subroutine afvarc(chmat, nomail, nomode)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xvarc_temp.h"
     character(len=8) :: chmat, nomail, nomode
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -320,6 +321,10 @@ subroutine afvarc(chmat, nomail, nomode)
                 call jedetr(mesmai)
             endif
 !
+!         2.5 CAS PARTICULIER DU CHAINAGE THERMO-MECANIQUE AVEC XFEM :
+!         ------------------------------------------------------------
+            call xvarc_temp(novarc, evouch, evol, prolga, proldr,&
+                            finst, nboccv, cart2)
 !
  80         continue
         end do

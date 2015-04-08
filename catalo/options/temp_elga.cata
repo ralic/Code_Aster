@@ -17,7 +17,7 @@
 % ======================================================================
 % person_in_charge: sam.cuvilliez at edf.fr
 TEMP_ELGA
-<< CALCUL DE LA TEMPERATURE AUX POINTS DE GAUSS>>
+<< CALCUL DE LA TEMPERATURE ET DE SON GRADIENT AUX POINTS DE GAUSS>>
 OPTION__
    IN__
         PGEOMER  GEOM_R
@@ -32,6 +32,6 @@ OPTION__
         PLSN     NEUT_R
         PLST     NEUT_R
    OUT__
-        PTEMPPG  TEMP_R  ELGA__
+        PTEMP_R  TEMP_R  ELGA__
 
  COND_CALCUL__   PLUS__  PHENO='TH' BORD='0'  LXFEM='OUI'

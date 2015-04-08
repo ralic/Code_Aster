@@ -157,3 +157,6 @@ class sd_modele_xfem(AsBase):
     XMAFIS = sd_cham_elem(SDNom(nomj='.XMAFIS'))
                           # pour chaque maille : nom de(s) fissure(s)
     PRE_COND = AsVK8(lonmax=1)  # preconditionnement ou pas
+
+    # si le modele a ete cree par MODI_MODELE_XFEM / MODELE_THER
+    MODELE_THER = Facultatif( AsVK8(lonmax=1,) )

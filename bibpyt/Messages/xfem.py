@@ -610,4 +610,14 @@ Utilisez ELIM_ARETE='DUAL'.
      du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO_GAMMA' ou 'ANGLE_IMPO_BETA_GAMMA' et ajouter
      une colonne 'GAMMA' au tableau de SIF manuellement.
 """),
+
+    96: _(u"""
+  -> Vous avez renseigné le mot-clé EVOL de AFFE_MATERIAU / AFFE_VARC avec un résultat thermique X-FEM.
+     Dans ce cas, vous ne pouvez définir qu'une seule occurrence du mot-clé facteur AFFE_VARC.
+"""),
+
+    97: _(u"""
+  -> Vous avez renseigné le mot-clé EVOL de AFFE_MATERIAU / AFFE_VARC avec un résultat thermique X-FEM.
+     Dans ce cas, le mot-clé MODELE de AFFE_MATERIAU devient obligatoire.
+"""),
 }

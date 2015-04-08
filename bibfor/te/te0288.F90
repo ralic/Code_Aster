@@ -237,10 +237,9 @@ subroutine te0288(option, nomte)
  21      continue
  20  continue
 !
-!     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS DE
-!     DE L'ELEMENT PARENT !!
+!     RECUPERATION DES DONNEES MATERIAU AU 1ER POINT DE GAUSS !!
 !     LE MATÉRIAU DOIT ETRE HOMOGENE DANS TOUT L'ELEMENT
-    call rcvad2('RIGI', 1, 1, '+', zi(imate),&
+    call rcvad2('XFEM', 1, 1, '+', zi(imate),&
                 'ELAS', 3, nomres, valres, devres,&
                 icodre)
     if ((icodre(1).ne.0) .or. (icodre(2).ne.0)) then

@@ -96,12 +96,14 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: tthe, r, rp, ppg
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
     real(kind=8) :: crit(13), dfdm(3, 4), dfdx(27), dfdy(27), dfdz(27)
+    real(kind=8) :: dtx, dty, dtz
     real(kind=8) :: energi(2), sigl(6), prod, prod2, rac2, sr(3, 3), tcla, divt
     real(kind=8) :: tfor, dsidep(6, 6),sigse(6*27)
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
-    aster_logical :: grdepl, cp, axi
+    aster_logical :: grdepl, cp, axi, l_temp_noeu
     integer :: irese, ddli, nnoi, indeni, nnops, ifiss
+    integer :: iret1, iret2, iret3
 !
 !
     real(kind=8) :: tini, prod1, dsigin(6, 3), sigin(6), epsref(6), epsp(6)
@@ -216,16 +218,18 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     endif
 !
 !   TEMPERATURE DE REF
-    call rcvarc(' ', 'TEMP', 'REF', 'RIGI', 1,&
+    call rcvarc(' ', 'TEMP', 'REF', 'XFEM', 1,&
                 1, tref, irett)
     if (irett .ne. 0) tref = 0.d0
 !
 !   TEMPERATURE AUX NOEUDS PARENT
+    l_temp_noeu = .false.
     do ino = 1, nnop
         call rcvarc(' ', 'TEMP', '+', 'NOEU', ino,&
                     1, tpn(ino), iret)
         if (iret .ne. 0) tpn(ino) = 0.d0
     end do
+    if (iret .eq. 0) l_temp_noeu = .true.
 !
 !   FONCTION HEAVYSIDE CSTE SUR LE SS-ELT ET PAR FISSURE
     do ifiss = 1, nfiss
@@ -477,10 +481,32 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
         do i = 1, ndim
             tgudm(i)=0.d0
-            do ino = 1, nnop
-                tgudm(i) = tgudm(i) + dfdi(ino,i) * tpn(ino)
-            end do
+!           cas de la varc TEMP, "continue" et donnee au noeud. Calcul
+!           de ses derivees partielles
+            if (l_temp_noeu) then
+                do ino = 1, nnop
+                    tgudm(i) = tgudm(i) + dfdi(ino,i) * tpn(ino)
+                end do
+            endif
         end do
+!
+!       cas des varc DTX DTY DTZ, derivees partielles de la temperature
+!       "discontinue". Ces varc sont donnees aux pg xfem
+        call rcvarc(' ', 'DTX', '+', 'XFEM', kpg+idecpg, 1, dtx, iret1)
+        if (iret1 .eq. 0) then
+!           economisons les appels a rcvarc... si DTX est absent, pas
+!           besoin de recuperer les autres composantes
+            ASSERT(.not.l_temp_noeu)
+            call rcvarc(' ', 'DTY', '+', 'XFEM', kpg+idecpg, 1, dty, iret2)
+            ASSERT(iret2 .eq. 0)
+            tgudm(1) = dtx
+            tgudm(2) = dty
+            if (ndim .eq. 3) then
+                call rcvarc(' ', 'DTZ', '+', 'XFEM', kpg+idecpg, 1, dtz, iret3)
+                ASSERT(iret3 .eq. 0)
+                tgudm(3) = dtz
+            endif
+        endif
 !
 !       --------------------------------------------------
 !       5) CALCUL DE LA CONTRAINTE ET DE L ENERGIE

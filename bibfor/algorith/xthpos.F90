@@ -70,7 +70,7 @@ subroutine xthpos(resulz, modele)
 !       RQ : LIGRMO CONTIENT TOUS LES EF DU MODELE, MAIS SEULS LES EF
 !       ---  X-FEM SAVENT CALCULER L'OPTION 'TEMP_ELGA' -> CELTMP N'EST
 !            DONC DEFINI QUE SUR L'ENSEMBLE DES EF X-FEM
-        call alchml(ligrmo, 'TEMP_ELGA', 'PTEMPPG', 'V', celtmp,&
+        call alchml(ligrmo, 'TEMP_ELGA', 'PTEMP_R', 'V', celtmp,&
                     iret, ' ')
         ASSERT(iret.eq.0)
 !

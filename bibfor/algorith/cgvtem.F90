@@ -50,7 +50,7 @@ function cgvtem(resu, iord0)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret, jadmat, nvacr, ivarc
-    character(len=8) :: chmat, k8b, other_varc
+    character(len=8) :: chmat, other_varc
     aster_logical :: exivrc, exitem
     character(len=8), pointer :: cvrcvarc(:) => null()
 !
@@ -60,8 +60,7 @@ function cgvtem(resu, iord0)
 !
 ! - y a t il des VARC dans la sd cham_mater du resultat ?
 !
-    call rsadpa(resu, 'L', 1, 'CHAMPMAT', iord0,&
-                0, sjv=jadmat, styp=k8b)
+    call rsadpa(resu, 'L', 1, 'CHAMPMAT', iord0, 0, sjv=jadmat)
     chmat = zk8(jadmat)
     call jeexin(chmat//'.CVRCVARC', iret)
     exivrc = iret .ne. 0
@@ -72,10 +71,10 @@ function cgvtem(resu, iord0)
     if (exivrc) then
 !
         other_varc = ''
-        call jelira(chmat// '.CVRCVARC', 'LONMAX', ival=nvacr)
-        call jeveuo(chmat// '.CVRCVARC', 'L', vk8=cvrcvarc)
+        call jelira(chmat//'.CVRCVARC', 'LONMAX', ival=nvacr)
+        call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
         do ivarc = 1, nvacr
-            if (cvrcvarc(ivarc) .eq. 'TEMP    ') then
+            if (cvrcvarc(ivarc) .eq. 'TEMP') then
                 exitem = .true.
             else
                 other_varc = cvrcvarc(ivarc)

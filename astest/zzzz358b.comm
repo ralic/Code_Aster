@@ -210,6 +210,14 @@ for il in xrange(n41):
 # ###################################################
 
 # -------
+# on retranche 1 au nombre d'objets trouves dans MODMEX2
+# car en presence du mot cle MODELE_THER, l'operateur 
+# MODI_MODELE_XFEM ajoute dans la sd modele_xfem l'objet
+# facultatif MODELE_THER
+# -------
+n32 -= 1
+
+# -------
 # nobj_ok == 1 si il y a le meme nombre de lignes dans les 2
 # fichiers, c.a.d le meme nombre d'objets dans les deux modeles
 # nobj_ok == 0 sinon

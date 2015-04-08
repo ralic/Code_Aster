@@ -179,9 +179,6 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !                  on espere que les routines te00ij arreteront en <f> si necessaire.
                 if (iad1 .lt. 0) goto 70
 
-!               -- controle du nombre de points :
-                ASSERT(nbpt.eq.zi(jce1d-1+5+4* (ima-1)+1))
-
 !               -- On regarde si le champ possede des valeurs sur la maille :
                 exival=.false.
                 do ipt = 1, nbpt
@@ -191,6 +188,10 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
                         if (iad .gt. 0) exival=.true.
                     enddo
                 enddo
+                if (.not.exival) goto 70
+
+!               -- controle du nombre de points :
+                ASSERT(nbpt.eq.zi(jce1d-1+5+4* (ima-1)+1))
 
 !               -- Controle du nombre de sous-points :
                 if (nbsp .ne. zi(jce1d-1+5+4* (ima-1)+2)) then

@@ -63,7 +63,7 @@ subroutine te0578(option, nomte)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
 !     CHAMPS OUT
-    call jevech('PTEMPPG', 'E', itempg)
+    call jevech('PTEMP_R', 'E', itempg)
 !
 !     ELT DE REF PARENT : RECUP NDIM ET NNOP (NOEUDS PARENT)
 !     -> RQ : 'RIGI' POUR LA FAMILLE DE PG EST DONC SANS CONSQUENCE

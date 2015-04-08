@@ -1,4 +1,4 @@
-subroutine celces(celz, basez, cesz)
+subroutine celces(celz, basez, cesz, copy_nan)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,6 +21,7 @@ subroutine celces(celz, basez, cesz)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/cheksd.h"
+#include "asterc/iisnan.h"
 #include "asterfort/assert.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
@@ -43,6 +44,7 @@ subroutine celces(celz, basez, cesz)
 #include "asterfort/as_allocate.h"
 !
     character(len=*) :: celz, cesz, basez
+    character(len=*), optional, intent(in) :: copy_nan
 ! ------------------------------------------------------------------
 ! BUT : TRANSFORMER UN CHAM_ELEM (CELZ) EN CHAM_ELEM_S (CESZ)
 !       LES ELEMENTS DONT LA MAILLE SUPPORT EST TARDIVE SONT
@@ -68,7 +70,7 @@ subroutine celces(celz, basez, cesz)
     integer :: nptmx, nbel, ncmpm, nbspt, ncdyn, ncdymx, lgcata
     integer :: ico, adiel, ispt, jcesd, jlpt, cumu
     character(len=24) :: valk(2)
-    aster_logical :: sdveri
+    aster_logical :: sdveri, l_copy_nan
     integer, pointer :: liel(:) => null()
     integer, pointer :: lliel(:) => null()
     integer, pointer :: celd(:) => null()
@@ -87,6 +89,13 @@ subroutine celces(celz, basez, cesz)
     cel = celz
     ces = cesz
     base = basez
+!
+!   -- faut-il copier les NaN dans le ces ?
+    l_copy_nan = .true.
+    if ( present(copy_nan) ) then
+        ASSERT(copy_nan .eq. 'NON')
+        l_copy_nan = .false.
+    endif
 !
 !   -- verification de la SD cel ? (debug) :
     sdveri=.false.
@@ -290,7 +299,12 @@ subroutine celces(celz, basez, cesz)
                                       &t) + ico
 !
                                 if (tsca .eq. 'R') then
-                                    zr(jcesv-1+iad) = zr(jcelv-1+ieq)
+                                    if ((iisnan(zr(jcelv-1+ieq)) .ne. 0) .and. &
+                                        (.not.l_copy_nan)) then
+                                        zl(jcesl-1+iad) = .false.
+                                    else
+                                        zr(jcesv-1+iad) = zr(jcelv-1+ieq)
+                                    endif
                                 else if (tsca.eq.'I') then
                                     zi(jcesv-1+iad) = zi(jcelv-1+ieq)
                                 else if (tsca.eq.'C') then

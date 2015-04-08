@@ -41,7 +41,7 @@ MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
     CHECHPF  = COEH_F   ELEM__         (H        )
     EHECHPR  = COEH_R   ELEM__         (H        )
-    ETEMPPG  = TEMP_R   ELGA__ MATER   (TEMP     DTX      DTY      DTZ      )
+    ETEMXPG  = TEMP_R   ELGA__ XFEM    (TEMP     DTX      DTY      DTZ      )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    KHI      R        RHO      )
     DDL_THER = TEMP_R   ELNO__ IDEN__  (TEMP     H1       E1       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
@@ -106,7 +106,7 @@ OPTION__
     TEMP_ELGA        578  IN__  N9NEUT_R PBASLOR  E320NEUI PCNSETO  NGEOMER  PGEOMER  E32NEUTI PHEAVTO  
                                 E10NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST     E33NEUTR PPINTTO  
                                 DDL_THER PTEMPER  N5NEUTI  PHEA_NO
-                          OUT__ ETEMPPG  PTEMPPG  
+                          OUT__ ETEMXPG  PTEMP_R
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N3NEUT_R PGRADLN  N3NEUT_R PGRADLT  N1NEUT_R PLSN     
                                 N1NEUT_R PLST     E320NEUI PCNSETO  E10NEUTI  PLONCHA
                                 E32NEUTI PHEAVTO  E33NEUTR PPINTTO  E198NEUT PPMILTO  E55NEUTR PAINTTO

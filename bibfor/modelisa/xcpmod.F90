@@ -29,6 +29,7 @@ subroutine xcpmod(modmes, modthx, modmex)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/xcpmo1.h"
 #include "asterfort/xcpmo2.h"
 !
@@ -61,6 +62,7 @@ subroutine xcpmod(modmes, modthx, modmex)
     character(len=24) :: pheno
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
+    character(len=8), pointer :: p_mod_ther(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -130,6 +132,10 @@ subroutine xcpmod(modmes, modthx, modmex)
 !
 !   copie des objets specifiques a x-fem de modthx dans modmex
     call xcpmo2(modthx, modmex)
+!
+!   ajout objet MODELE_THER dans le modele produit par l'operateur
+    call wkvect(modmex//'.MODELE_THER', 'G V K8', 1, vk8=p_mod_ther)
+    p_mod_ther(1) = modthx
 !
     call jedema()
 !

@@ -16,6 +16,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/alchml.h"
@@ -45,6 +46,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 #include "asterfort/rsinch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xvrcin.h"
 
     character(len=2) :: codret
     character(len=8) :: modele, chmat, carele
@@ -90,12 +92,13 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     integer :: n1, ibid, nbma, jcesd1, jcesl1,  iad, lonk80
     integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
     integer :: nbcvrc,  jlisch, nval1
+    aster_logical :: l_xfem
     character(len=8) :: varc, mailla, tysd, proldr, prolga, nomevo, finst
     character(len=8) :: ma2
     character(len=8) :: nomgd, nomgd2, tych, nomsd
     character(len=16) :: nomsym, optio1
     character(len=19) :: cart2, chs, cesmod, celmod, ligrmo, mnoga, dceli, ligr1
-    character(len=19) :: ces1, cns1, nomch
+    character(len=19) :: ces1, cns1, nomch, celtmp
     character(len=24) :: valk(3)
     character(len=80) :: k80, k80pre
     character(len=8), pointer :: cvrcvarc(:) => null()
@@ -311,29 +314,44 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             call detrsd('CHAM_ELEM_S', ces1)
 
         else if (tych.eq.'ELGA') then
-!           2.2.3
-!           -- CAS OU LE CHAMP PROVIENT DE PROJ_CHAMP /
-!              METHODE='SOUS_POINT'.
-!           2.2.3.1 :
-!              ON VERIFIE QUE LE CHAMP EST BIEN PREPARE :
-            call dismoi('NOM_LIGREL', nomch, 'CHAM_ELEM', repk=ligr1)
-            if (ligr1 .ne. ligrmo) then
-                valk(1)=nomch
-                valk(2)=ligr1
-                valk(3)=ligrmo
-                call utmess('F', 'CALCULEL4_25', nk=3, valk=valk)
+!
+            celtmp = '&&VRCIN1.CELTMP'
+            l_xfem = .false.
+            call xvrcin(ligrmo, nomch, nomevo, nomsym, celtmp, l_xfem)
+!
+!           soit chainage thermo-mecanique avec xfem
+!
+            if (l_xfem) then
+!               simple recopie du champ produit par xvrcin
+                call celces(celtmp, 'V', chs, copy_nan='NON')
+                call detrsd('CHAM_ELEM', celtmp)
+!
+!           soit le champ provient de PROJ_CHAMP / METHODE='SOUS_POINT'
+!
+            else
+!               on verifie que le champ est bien prepare
+                call dismoi('NOM_LIGREL', nomch, 'CHAM_ELEM',&
+                            repk=ligr1)
+                if (ligr1 .ne. ligrmo) then
+                    valk(1)=nomch
+                    valk(2)=ligr1
+                    valk(3)=ligrmo
+                    call utmess('F', 'CALCULEL4_25', nk=3, valk=valk)
+                endif
+!
+                call dismoi('NOM_OPTION', nomch, 'CHAM_ELEM',&
+                            repk=optio1)
+                if (optio1 .ne. 'INI_SP_MATER') then
+                    valk(1)=nomch
+                    valk(2)=optio1
+                    call utmess('F', 'CALCULEL4_26', nk=2, valk=valk)
+                endif
+!
+!               simple recopie
+                call celces(nomch, 'V', chs)
+!
             endif
-
-            call dismoi('NOM_OPTION', nomch, 'CHAM_ELEM', repk=optio1)
-            if (optio1 .ne. 'INI_SP_MATER') then
-                valk(1)=nomch
-                valk(2)=optio1
-                call utmess('F', 'CALCULEL4_26', nk=2, valk=valk)
-            endif
-
-!            2.2.3.2 : SIMPLE RECOPIE
-            call celces(nomch, 'V', chs)
-
+!
         else
             ASSERT(.false.)
         endif

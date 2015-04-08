@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine celces(celz, basez, cesz, copy_nan)
-        character(len=*) :: celz
-        character(len=*) :: basez
-        character(len=*) :: cesz
-        character(len=*), optional, intent(in) :: copy_nan
-    end subroutine celces
+    subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,& 
+                          nboccv, carte)
+        character(len=8), intent(in) :: novarc
+        character(len=8), intent(in) :: evouch
+        character(len=8), intent(in) :: evol
+        character(len=16), intent(in) :: prolga
+        character(len=16), intent(in) :: proldr
+        character(len=8), intent(in) :: finst
+        integer, intent(in) :: nboccv
+        character(len=19), intent(in) :: carte
+    end subroutine xvarc_temp
 end interface

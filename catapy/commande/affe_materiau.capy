@@ -106,8 +106,8 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
          VARC_TEMP    =FACT(statut='d',
            NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="TEMP"),
            GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="TEMP_R"),
-           CMP_GD          =SIMP(statut='c',typ='TXM',max=4,min=4,defaut=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP",)),
-           CMP_VARC        =SIMP(statut='c',typ='TXM',max=4,min=4,defaut=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP",)),
+           CMP_GD          =SIMP(statut='c',typ='TXM',max=7,min=7,defaut=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","DTX","DTY","DTZ")),
+           CMP_VARC        =SIMP(statut='c',typ='TXM',max=7,min=7,defaut=("TEMP","TEMP_MIL","TEMP_INF","TEMP_SUP","DTX","DTY","DTZ")),
          ),
 
          #  mots clés cachés pour variable de commande GEOM :
