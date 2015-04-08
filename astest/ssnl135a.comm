@@ -598,6 +598,8 @@ MEKEFOR0=STAT_NON_LINE(MODELE=MO,
                                      ITER_GLOB_MAXI=NBGL,),
                       );
 
+
+
 MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CAREL,
@@ -624,6 +626,18 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       CONVERGENCE=_F(RESI_GLOB_RELA=RESGL,
                                      ITER_GLOB_MAXI=NBGL,),
                       );
+
+
+IMPR_RESU_SP(
+    RESULTAT   =MEKEFOR0,
+    GROUP_MA   =('S00A',),
+    RESU =(
+        _F(NOM_CHAM ="SIEF_ELGA", NOM_CMP=('SIXX'),),
+        _F(NOM_CHAM ="VARI_ELGA", NOM_CMP=('V1','V2'),),
+    ),
+    UNITE =10,
+)
+
 
 ETA_PILO=RECU_FONCTION(RESULTAT=MEKEFOR,
                        NOM_PARA_RESU='ETA_PILOTAGE',);
