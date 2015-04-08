@@ -241,8 +241,9 @@ Erreur utilisateur dans CREA_MAILLAGE / CREA_POI1 :
 """),
 
     58 : _(u"""
-  problème dans le préconditionnement de la matrice MATAS par LDLT incomplet
-  pivot nul à la ligne :  %(i1)d
+  Problème dans le préconditionnement de la matrice MATAS par LDLT incomplet
+  pivot nul à la ligne %(i1)d correspondant au noeud %(k1)s et à la
+  composante %(k2)s
 """),
 
     60 : _(u"""

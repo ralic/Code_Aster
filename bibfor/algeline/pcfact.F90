@@ -18,7 +18,10 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 ! ======================================================================
 ! aslint: disable=W1304
     implicit none
+#include "jeveux.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rgndas.h"
 !-----------------------------------------------------------------------
 !  FONCTION  :  CREATION D'UNE MATRICE DE PRECONDITIONNEMENT PRC
 !     PAR LDLT INCOMPLET SUR LA MATRICE MAT STOCKEE SOUS FORME MORSE
@@ -29,6 +32,7 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 !
 !  REMARQUE: A L'APPEL AC ET PRC PEUVENT ETRE CONFONDUS
 !-----------------------------------------------------------------------
+    integer :: nequ
     real(kind=8) :: ac(*), prc(*), vect(nequ)
     character(len=19) :: matas
     integer :: in(nequ)
@@ -40,7 +44,9 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 !          ---- MISE A 0  DU VECTEUR AUXILIAIRE POUR PROD-SCAL CREUX
 !-----------------------------------------------------------------------
     integer :: i, j, jdeb, jfin, jj, kdeb, kfin
-    integer :: ki, kk, nequ
+    integer :: ki, kk, jrefa
+    character(len=24) numedd
+    character(len=8) name_node, name_cmp, valk(2)
     real(kind=8) :: cumul, epsi
 !-----------------------------------------------------------------------
     do 10 j = 1, nequ
@@ -91,7 +97,13 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 !        ---- TEST DE SINGULARITE
             if (abs(cumul) .lt. epsi) then
                 vali = i
-                call utmess('F', 'ALGELINE4_58', si=vali)
+                call jeveuo(matas//'.REFA', 'L', jrefa)
+                numedd = zk24(jrefa+1)
+                call rgndas(numedd, i, .false., name_nodez=name_node,&
+                            name_cmpz=name_cmp)
+                valk(1) = name_node
+                valk(2) = name_cmp
+                call utmess('F', 'ALGELINE4_58', nk = 2, valk=valk, si=vali)
             endif
             prc(jfin) = 1.d0/cumul
         endif
