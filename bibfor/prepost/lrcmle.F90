@@ -1,6 +1,6 @@
 subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
-                  numord, typent, typgeo, ntvale, nomprf,&
-                  codret)
+                  numord, typent, typgeo, iprof, ntvale,&
+                  nomprf, codret)
 !_____________________________________________________________________
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,11 +98,9 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
     call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
                    typgeo, iterma, nomamd, nomprf, nomloc,&
                    nbprof, codret)
-    do 10, iprof = 1, nbprof
     call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
                    numpt, numord, iprof, nomprf, edcomp,&
                    taipro, nomloc, nip, n, codret)
-    10 end do
 !
 !====
 ! 3. LECTURE DU CHAMP DANS UN TABLEAU TEMPORAIRE

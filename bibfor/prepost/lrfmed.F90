@@ -94,7 +94,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     integer :: j
     integer :: mfich, jinst, itps
     integer :: ifm, nivinf, jnuom
-    integer :: nbma, jnbpgm, jnbpmm, ordins
+    integer :: nbma, jnbpgm, jnbpmm, ordins, jnbsmm
     real(kind=8) :: epsi
     character(len=3) :: prolz
     character(len=4) :: acce
@@ -260,6 +260,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call wkvect('&&OP0150_NBPG_MAILLE', 'V V I', nbma, jnbpgm)
     call wkvect('&&OP0150_NBPG_MED', 'V V I', nbma, jnbpmm)
+    call wkvect('&&OP0150_NBSP_MED', 'V V I', nbma, jnbsmm)
 !
 !         BOUCLE SUR LES PAS DE TEMPS
 !         ---------------------------
@@ -307,7 +308,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
                     nomgd, typent, nbcmpv, ncmpva, ncmpvm,&
                     prolz, iinst, numpt, numord, inst,&
                     crit, epsi, mfich, option, param,&
-                    zi(jnbpgm), zi(jnbpmm), iret)
+                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), iret)
 !
 !         POUR LES CHAM_NO : POUR ECONOMISER L'ESPACE,
 !         ON ESSAYE DE PARTAGER LE PROF_CHNO DU CHAMP CREE AVEC
@@ -362,6 +363,7 @@ subroutine lrfmed(resu, i, mfich, nomgd, typcha,&
     end do
     call jedetr('&&OP0150_NBPG_MAILLE')
     call jedetr('&&OP0150_NBPG_MED')
+    call jedetr('&&OP0150_NBSP_MED')
     call jedetr(ncmpva)
     call jedetr(ncmpvm)
     call jedetr('&&OP0150_NUMORD_MED')

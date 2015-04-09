@@ -1,6 +1,7 @@
 subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
                   nbcmpc, nomcmc, nbvato, typent, typgeo,&
-                  existc, nbcmfi, nmcmfi, nbval, codret)
+                  existc, nbcmfi, nmcmfi, nbval, nbprof,&
+                  codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +46,7 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
 !       NBCMFI : NOMBRE DE COMPOSANTES DANS LE FICHIER
 !       NMCMFI : SD DU NOM DES COMPOSANTES DANS LE FICHIER
 !       NBVAL  : NOMBRE DE VALEURS DANS LE FICHIER
+!       NBPROF : NOMBRE DE PROFILS PRESENTS
 !       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !_______________________________________________________________________
 !
@@ -60,7 +62,7 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
     character(len=*) :: nochmd
     character(len=*) :: nomcmc, nmcmfi
 !
-    integer :: numpt, numord, nbcmpc, idfimd
+    integer :: numpt, numord, nbcmpc, idfimd, nbprof
     integer :: nbvato, typent, typgeo
     integer :: existc, nbcmfi, nbval
 !
@@ -103,7 +105,7 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
     else if (iaux.eq.1) then
 !
         call mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
-                    typent, typgeo, nbval, codret)
+                    typent, typgeo, nbval, nbprof, codret)
 !
         if (nbval .eq. 0) then
             existc = 2

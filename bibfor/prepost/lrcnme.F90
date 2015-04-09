@@ -195,9 +195,10 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd,&
     parbid=' '
     call lrcame(nrofic, nochmd, nomamd, nomaas, ligbid,&
                 optbid, parbid, 'NOEU', typent, unbid,&
-                unbid, nbcmpv, ncmpva, ncmpvm, iinst,&
-                numpt, numord, inst, crit, prec,&
-                nomgd, ncmprf, jnocmp, chamns, codret)
+                unbid, unbid, nbcmpv, ncmpva, ncmpvm,&
+                iinst,numpt, numord, inst, crit,&
+                prec,nomgd, ncmprf, jnocmp, chamns,&
+                codret)
 !
 !====
 ! 3. TRANSFORMATION DU CHAM_NO_S EN CHAM_NO :

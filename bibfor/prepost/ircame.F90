@@ -128,7 +128,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
     integer :: renumd(ntymax)
     integer :: ifm, nivinf, ifimed
     integer :: lnomam
-    integer :: ncmpve, nvalec
+    integer :: ncmpve, nvalec, nbprof
     integer :: nbvato, ncmprf
     integer :: nbimpr, jnocm1, jnocm2, nbcmp2, icmp1, icmp2
     integer :: adcaii, adcaik
@@ -308,7 +308,8 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
                 ifimed = 0
                 call mdexch(nofimd, ifimed, nochmd, numpt, numord,&
                             ncmpve, ntncmp, nvalec, typent, tygeom,&
-                            jaux, nbcmfi, nmcmfi, nbval, codret)
+                            jaux, nbcmfi, nmcmfi, nbval, nbprof,&
+                            codret)
 !
                 existc = max ( existc, jaux )
 !

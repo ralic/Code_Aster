@@ -17,8 +17,8 @@
 !
 interface
     subroutine lrmpga(nrofic, ligrel, nochmd, nbma, pgmail,&
-                      pgmmil, ntypel, npgmax, indpg, numpt,&
-                      numord, option, param)
+                      pgmmil, spmmil, ntypel, npgmax, indpg,&
+                      numpt, numord, option, param)
         integer :: npgmax
         integer :: ntypel
         integer :: nbma
@@ -27,6 +27,7 @@ interface
         character(len=*) :: nochmd
         integer :: pgmail(nbma)
         integer :: pgmmil(nbma)
+        integer :: spmmil(nbma)
         integer :: indpg(ntypel, npgmax)
         integer :: numpt
         integer :: numord

@@ -17,7 +17,7 @@
 !
 interface
     subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
-                      typent, typgeo, nbval, codret)
+                      typent, typgeo, nbval, nbprof, codret)
         character(len=*) :: nofimd
         integer :: idfimd
         character(len=*) :: nochmd
@@ -26,6 +26,7 @@ interface
         integer :: typent
         integer :: typgeo
         integer :: nbval
+        integer :: nbprof
         integer :: codret
     end subroutine mdexcv
 end interface

@@ -20,7 +20,7 @@ interface
                       ncmprf, nomcmr, ntypel, npgmax, indpg,&
                       nbcmfi, nmcmfi, nbcmpv, ncmpvm, numcmp,&
                       jnumma, nochmd, nbma, npgma, npgmm,&
-                      typech, nutyma, adsl, adsv, adsd,&
+                      nspmm, typech, nutyma, adsl, adsv, adsd,&
                       lrenum, nuanom, codret)
         integer :: nbma
         integer :: npgmax
@@ -42,6 +42,7 @@ interface
         character(len=*) :: nochmd
         integer :: npgma(nbma)
         integer :: npgmm(nbma)
+        integer :: nspmm(nbma)
         character(len=*) :: typech
         integer :: nutyma
         integer :: adsl

@@ -32,14 +32,9 @@ cata_msg = {
       - nombre de points de Gauss contenu dans le fichier MED : %(i1)d
       - nombre de points de Gauss défini dans Aster           : %(i2)d
 
-     Visiblement les éléments finis décrits dans le fichier MED ne sont pas les
-     mêmes que dans Code_Aster.
-     Si vous avez choisi PROL_ZERO='OUI', le champ sera initialisé à zéro sur
-     ces éléments.
-     Sinon, le champ ne sera pas initialisé (NaN, not a number). C'est le
-     comportement par défaut.
+     Cette partie du champ ne sera pas relu.
 
-  -> Risque & Conseil :
+  -> Conseil :
       - Choisissez des éléments finis compatibles entre Aster et le code tiers
 """),
 

@@ -1,5 +1,5 @@
 subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
-                  typent, typgeo, nbval, codret)
+                  typent, typgeo, nbval, nbprof, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
 ! . TYPENT .  E  .   1    . TYPE D'ENTITE AU SENS MED                  .
 ! . TYPGEO .  E  .   1    . TYPE DE SUPPORT AU SENS MED                .
 ! . NBVAL  .  S  .   1    . NOMBRE DE VALEURS DANS LE FICHIER          .
+! . NBPROF .  S  .   1    . NOMBRE DE PROFILS MED POUR LE CHAMP        .
 ! . CODRET .  S  .    1   . CODE DE RETOUR DES MODULES                 .
 ! ______________________________________________________________________
 !
@@ -108,14 +109,14 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord,&
             call as_mfdonp(idfimd, nochmd, numpt, numord, typent,&
                            typgeo, iterma, nomamd, nompro, nomloc,&
                            nbprof, codret)
-            do 10 iprof = 1, nbprof
+            do iprof = 1, nbprof
                 call as_mfdonv(idfimd, nochmd, typent, typgeo, nomamd,&
                                numpt, numord, iprof, nompro, edcomp,&
                                npr, nomloc, nip, ntmp, codret)
                 if (codret .eq. 0) then
                     nbval = nbval + nip*ntmp
                 endif
- 10         end do
+            end do
 !
 !====
 ! 3. FERMETURE DU FICHIER

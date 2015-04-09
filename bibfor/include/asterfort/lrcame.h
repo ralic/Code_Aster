@@ -18,9 +18,10 @@
 interface
     subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                       option, param, typech, typen, npgma,&
-                      npgmm, nbcmpv, ncmpva, ncmpvm, iinst,&
-                      numpt, numord, inst, crit, prec,&
-                      nomgd, ncmprf, jnocmp, chames, codret)
+                      npgmm, nspmm, nbcmpv, ncmpva, ncmpvm,&
+                      iinst, numpt, numord, inst, crit,&
+                      prec, nomgd, ncmprf, jnocmp, chames,&
+                      codret)
         integer :: nrofic
         character(len=*) :: nochmd
         character(len=*) :: nomamd
@@ -32,6 +33,7 @@ interface
         integer :: typen
         integer :: npgma(*)
         integer :: npgmm(*)
+        integer :: nspmm(*)
         integer :: nbcmpv
         character(len=*) :: ncmpva
         character(len=*) :: ncmpvm

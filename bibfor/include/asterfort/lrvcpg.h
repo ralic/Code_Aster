@@ -18,7 +18,7 @@
 interface
     subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
                       elrefa, fapg, nloc, locnam, permu,&
-                      nutyma, codret)
+                      nutyma, nbsp, codret)
         integer :: nbpgm
         integer :: idfimd
         integer :: nbpga
@@ -30,6 +30,7 @@ interface
         character(len=64) :: locnam
         integer :: permu(nbpgm)
         integer :: nutyma
+        integer :: nbsp
         integer :: codret
     end subroutine lrvcpg
 end interface

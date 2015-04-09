@@ -2,7 +2,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
                   nomgd, typent, nbcmpv, ncmpva, ncmpvm,&
                   prolz, iinst, numpt, numord, inst,&
                   crit, prec, nrofic, option, param,&
-                  nbpgma, nbpgmm, codret)
+                  nbpgma, nbpgmm, nbspmm, codret)
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
@@ -75,7 +75,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
     integer :: codret
     integer :: nbcmpv
     integer :: iinst, numpt, numord
-    integer :: nbpgma(*), nbpgmm(*)
+    integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
 !
     real(kind=8) :: inst
     real(kind=8) :: prec
@@ -108,7 +108,7 @@ subroutine lrchme(chanom, nochmd, nomamd, nomaas, typech,&
                     nommod, nomgd, typent, nbcmpv, ncmpva,&
                     ncmpvm, prolz, iinst, numpt, numord,&
                     inst, crit, prec, nrofic, option,&
-                    param, nbpgma, nbpgmm, codret)
+                    param, nbpgma, nbpgmm, nbspmm, codret)
     else
         codret = 1
         call utmess('A', 'MED_92', sk=typech(1:4))

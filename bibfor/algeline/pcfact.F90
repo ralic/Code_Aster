@@ -17,6 +17,7 @@ subroutine pcfact(matas, nequ, in, ip, ac,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! aslint: disable=W1304
+! aslint: disable=C1513
     implicit none
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"

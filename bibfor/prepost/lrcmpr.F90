@@ -131,9 +131,9 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
     lgproa = lgprom
     call wkvect(ntproa, 'V V I', lgproa, adproa)
 !
-    do 41 , iaux = 0 , lgprom-1
-    zi(adproa+iaux) = zi(adprom+iaux)
-    41 end do
+    do iaux = 0 , lgprom-1
+        zi(adproa+iaux) = zi(adprom+iaux)
+    end do
 !
     call jedetr(ntprom)
 !

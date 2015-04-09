@@ -17,8 +17,8 @@
 !
 interface
     subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt,&
-                      numord, typent, typgeo, ntvale, nomprf,&
-                      codret)
+                      numord, typent, typgeo, iprof, ntvale,&
+                      nomprf, codret)
         integer :: idfimd
         character(len=*) :: nochmd
         integer :: nbcmfi
@@ -27,6 +27,7 @@ interface
         integer :: numord
         integer :: typent
         integer :: typgeo
+        integer :: iprof
         character(len=*) :: ntvale
         character(len=*) :: nomprf
         integer :: codret

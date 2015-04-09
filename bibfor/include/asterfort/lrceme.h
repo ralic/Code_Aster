@@ -20,7 +20,7 @@ interface
                       nommod, nomgd, typent, nbcmpv, ncmpva,&
                       ncmpvm, prolz, iinst, numpt, numord,&
                       inst, crit, prec, nrofic, option,&
-                      param, nbpgma, nbpgmm, codret)
+                      param, nbpgma, nbpgmm, nbspmm, codret)
         character(len=19) :: chanom
         character(len=*) :: nochmd
         character(len=4) :: typech
@@ -44,6 +44,7 @@ interface
         character(len=8) :: param
         integer :: nbpgma(*)
         integer :: nbpgmm(*)
+        integer :: nbspmm(*)
         integer :: codret
     end subroutine lrceme
 end interface

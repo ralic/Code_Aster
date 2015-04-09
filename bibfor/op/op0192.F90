@@ -71,7 +71,7 @@ subroutine op0192()
     integer :: codret, iver, typent
     integer :: numpt, numord
     integer :: nbcmpv, jcmpva, jcmpvm
-    integer :: nbma, jnbpgm, jnbpmm
+    integer :: nbma, jnbpgm, jnbpmm, jnbsmm
     integer :: ednoeu
     parameter (ednoeu=3)
     integer :: edmail
@@ -276,9 +276,11 @@ subroutine op0192()
         call dismoi('NB_MA_MAILLA', nomaas, 'MAILLAGE', repi=nbma)
         call wkvect('&&OP0150_NBPG_MAILLE', 'V V I', nbma, jnbpgm)
         call wkvect('&&OP0150_NBPG_MED', 'V V I', nbma, jnbpmm)
+        call wkvect('&&OP0150_NBSP_MED', 'V V I', nbma, jnbsmm)
     else
         jnbpgm=1
         jnbpmm=1
+        jnbsmm=1
     endif
 !
     if (format .eq. 'MED') then
@@ -321,7 +323,7 @@ subroutine op0192()
                     nomgd, typent, nbcmpv, ncmpva, ncmpvm,&
                     prolz, iinst, numpt, numord, inst,&
                     crit, prec, unite, option, param,&
-                    zi(jnbpgm), zi( jnbpmm), codret)
+                    zi(jnbpgm), zi(jnbpmm), zi(jnbsmm), codret)
 !
         call copisd('CHAMP_GD', 'G', chatmp, chanom)
         if (tych(1:2) .eq. 'NO') then

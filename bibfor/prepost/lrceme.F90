@@ -2,7 +2,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
                   nommod, nomgd, typent, nbcmpv, ncmpva,&
                   ncmpvm, prolz, iinst, numpt, numord,&
                   inst, crit, prec, nrofic, option,&
-                  param, nbpgma, nbpgmm, codret)
+                  param, nbpgma, nbpgmm, nbspmm, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
     integer :: nrofic, typent
     integer :: nbcmpv
     integer :: iinst, numpt, numord
-    integer :: nbpgma(*), nbpgmm(*)
+    integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
     integer :: codret
 !
     real(kind=8) :: inst
@@ -221,9 +221,10 @@ subroutine lrceme(chanom, nochmd, typech, nomamd, nomaas,&
 !
     call lrcame(nrofic, nochmd, nomamd, nomaas, ligrel,&
                 option, param, typech, typent, nbpgma,&
-                nbpgmm, nbcmpv, ncmpva, ncmpvm, iinst,&
-                numpt, numord, inst, crit, prec,&
-                nomgd, ncmprf, jnocmp, chames, codret)
+                nbpgmm, nbspmm, nbcmpv, ncmpva, ncmpvm,&
+                iinst, numpt, numord, inst, crit,&
+                prec, nomgd, ncmprf, jnocmp, chames,&
+                codret)
 !
     call jeveuo(chames//'.CESL', 'E', jcesl)
 !

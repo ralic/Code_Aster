@@ -2,7 +2,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
                   ncmprf, nomcmr, ntypel, npgmax, indpg,&
                   nbcmfi, nmcmfi, nbcmpv, ncmpvm, numcmp,&
                   jnumma, nochmd, nbma, npgma, npgmm,&
-                  typech, nutyma, adsl, adsv, adsd,&
+                  nspmm, typech, nutyma, adsl, adsv, adsd,&
                   lrenum, nuanom, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,6 +49,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !       NBMA   : NOMBRE DE MAILLES DU MAILLAGE
 !       NPGMA  : NOMBRE DE POINTS DE GAUSS PAR MAILLE (ASTER)
 !       NPGMM  : NOMBRE DE POINTS DE GAUSS PAR MAILLE (MED)
+!       NSPMM  : NOMBRE DE SOUS-POINTS PAR MAILLE (MED)
 !       TYPECH : TYPE DE CHAMP (ELEM/ELNO/ELGA)
 !       NUTYMA : NUMERO DU TYPE DE MAILLE
 !     SORTIES:
@@ -84,7 +85,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
     parameter (nnomax=27)
     integer :: nmatyp, nbnoma, lgproa, ntypel, npgmax
     integer :: ncmprf, nbcmpv, jnumma, nbma
-    integer :: indpg(ntypel, npgmax), npgma(nbma), npgmm(nbma)
+    integer :: indpg(ntypel, npgmax), npgma(nbma), npgmm(nbma), nspmm(nbma)
     integer :: adsl, adsv, adsd, nutyma
     integer :: nuanom(ntymax, nnomax)
     aster_logical :: lrenum
@@ -105,7 +106,7 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
     integer :: iaux, jaux, kaux, laux
     integer :: nrcmp, ncmpdb, nbpt, nbptm
     integer :: nuval, ipg
-    integer :: nbcmfi, i, kk, ima
+    integer :: nbcmfi, i, kk, ima, nbspm, i2, isp
     integer :: adremp, advale, adncfi, adnucm, adncvm, adproa, nummod
     integer :: ifm, nivinf
 !
@@ -229,19 +230,27 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !           SI TYPE DE CHAMP = 'ELGA'
             if (typech(1:4) .eq. 'ELGA') then
                 do jaux = 1, nmatyp
-                    ima=zi(jnumma+jaux-1)
-                    nbpt=npgma(ima)
-                    nbptm=npgmm(ima)
+                    ima = zi(jnumma+jaux-1)
+                    nbpt = npgma(ima)
+                    nbptm = npgmm(ima)
+                    nbspm = nspmm(ima)
+                    i2 = 1
+                    isp = 1
                     do i = 1, nbptm
 !
                         laux = laux + nbcmfi
 !                       IS GAUSS POINT IN ASTER ELEMENT ?
-                        if (i .le. nbpt) then
-                            ipg=indpg(nutyma,i)
+                        if (i2 .le. nbpt) then
+                            ipg = indpg(nutyma, i2)
                             call cesexi('S', adsd, adsl, ima, ipg,&
-                                        1, nrcmp, kk)
+                                        isp, nrcmp, kk)
                             zl(adsl-kk-1) = .true.
                             zr(adsv-kk-1) = zr(laux)
+                        endif
+                        i2 = i2 + 1
+                        if ( mod(i, nbptm/nbspm).eq.0 ) then
+                            i2 = 1
+                            isp = isp + 1
                         endif
                     enddo
                 enddo
@@ -278,19 +287,27 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa,&
 !           SI TYPE DE CHAMP = 'ELGA'
             if (typech(1:4) .eq. 'ELGA') then
                 do nuval = 0, lgproa-1
-                    ima=zi(jnumma+nuval)
-                    nbpt=npgma(ima)
-                    nbptm=npgmm(ima)
+                    ima = zi(jnumma+nuval)
+                    nbpt = npgma(ima)
+                    nbptm = npgmm(ima)
+                    nbspm = nspmm(ima)
+                    i2 = 1
+                    isp = 1
                     do i = 1, nbptm
 !
                         laux = laux + nbcmfi
 !                       IS GAUSS POINT IN ASTER ELEMENT ?
-                        if (i .le. nbpt) then
-                            ipg=indpg(nutyma,i)
+                        if (i2 .le. nbpt) then
+                            ipg = indpg(nutyma, i2)
                             call cesexi('S', adsd, adsl, ima, ipg,&
-                                        1, nrcmp, kk)
+                                        isp, nrcmp, kk)
                             zl(adsl-kk-1) = .true.
                             zr(adsv-kk-1) = zr(laux)
+                        endif
+                        i2 = i2 + 1
+                        if ( mod(i, nbptm/nbspm).eq.0 ) then
+                            i2 = 1
+                            isp = isp + 1
                         endif
                     enddo
                 enddo

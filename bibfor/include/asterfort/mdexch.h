@@ -18,7 +18,8 @@
 interface
     subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord,&
                       nbcmpc, nomcmc, nbvato, typent, typgeo,&
-                      existc, nbcmfi, nmcmfi, nbval, codret)
+                      existc, nbcmfi, nmcmfi, nbval, nbprof,&
+                      codret)
         character(len=*) :: nofimd
         integer :: idfimd
         character(len=*) :: nochmd
@@ -33,6 +34,7 @@ interface
         integer :: nbcmfi
         character(len=*) :: nmcmfi
         integer :: nbval
+        integer :: nbprof
         integer :: codret
     end subroutine mdexch
 end interface

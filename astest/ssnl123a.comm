@@ -269,6 +269,38 @@ STNL = STAT_NON_LINE(
 
 IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=STNL,CARA_ELEM=CAREL),);
 
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=STNL,),UNITE=81);
+BIS=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
+              CARA_ELEM=CAREL,
+              FORMAT='MED',
+              MODELE=MO,
+              TOUT_ORDRE='OUI',
+              UNITE=81,
+              FORMAT_MED=_F(NOM_RESU='STNL',
+                            NOM_CHAM=('SIEF_ELGA'),),
+              );
+
+TEST_RESU(RESU = (_F(RESULTAT = BIS,
+                     NUME_ORDRE = 2,
+                     NOM_CHAM = 'SIEF_ELGA',
+                     NOM_CMP = 'SIXX',
+                     MAILLE = 'E00204',
+                     POINT = 1,
+                     SOUS_POINT = 60,
+                     VALE_CALC = -2.5E6,
+                     VALE_REFE = -2.5E6,
+                     REFERENCE='NON_DEFINI',),
+                  _F(RESULTAT = BIS,
+                     NUME_ORDRE = 2,
+                     NOM_CHAM = 'SIEF_ELGA',
+                     NOM_CMP = 'SIXX',
+                     MAILLE = 'E00100',
+                     POINT = 3,
+                     SOUS_POINT = 36,
+                     VALE_CALC = -2.5E6,
+                     VALE_REFE = -2.5E6,
+                     REFERENCE='NON_DEFINI',)),);
+
 FL = [None]*3
 for i in range(1,3):
   print "Nume ordre   %d " % i
