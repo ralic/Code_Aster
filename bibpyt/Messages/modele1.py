@@ -123,8 +123,8 @@ Il est interdit de mélanger des éléments discrets 2D et 3D dans le même mod�
    Pour l'occurrence AFFE de numéro %(i1)d, certaines mailles de même dimension topologique
    que la (ou les) modélisation(s) (ici dimension = %(i3)d) n'ont pas pu être affectées.
 
-   Cela veut dire que la (ou les) modélisation(s) que l'on cherche à affecter
-   ne supporte(nt) pas tous les types de mailles présents dans le maillage.
+   Cela veut dire que la modélisation que l'on cherche à affecter
+   ne supporte pas tous les types de mailles présents dans le maillage.
 
    Le nombre de mailles que l'on n'a pas pu affecter (pour cette occurrence de AFFE) est :  %(i2)d
 
