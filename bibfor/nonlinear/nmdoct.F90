@@ -199,7 +199,7 @@ implicit none
 !
 ! ----- Create new datastructure
 !
-        call lisccr(list_load_new, nb_load_new, 'V')
+        call lisccr('MECA', list_load_new, nb_load_new, 'V')
 !
 ! ----- Copy old datastructure in new one
 !
@@ -207,18 +207,18 @@ implicit none
             nb_info_type = nb_info_maxi
             call liscli(list_load, i_load, nb_info_maxi, list_info_type, load_name,&
                         load_func, nb_info_type, i_neum_lapl)
-            call liscad(list_load_new , i_load, load_name, load_func, nb_info_type,&
-                        list_info_type, i_neum_laplz = i_neum_lapl)
+            call liscad('MECA'      , list_load_new , i_load, load_name, load_func, &
+                        nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
         end do
 !
 ! ----- Contact - Continue
 !
         if (l_cont_cont) then
             i_load = nb_load_init + 1
-            call liscad(list_load_new, i_load, ligrel_link_slav, func_const,&
+            call liscad('MECA'        ,list_load_new, i_load, ligrel_link_slav, func_const,&
                         info_typez = 'ELEM_TARDIF')
             i_load = nb_load_init + 2
-            call liscad(list_load_new, i_load, ligrel_link_cont, func_const,&
+            call liscad('MECA'        ,list_load_new, i_load, ligrel_link_cont, func_const,&
                         info_typez = 'ELEM_TARDIF')
         endif
 !
@@ -227,7 +227,7 @@ implicit none
         if (l_cont_disc) then
             if (rel_lin_disc .ne. 0) then
                 i_load = nb_load_init + 1
-                call liscad(list_load_new, i_load, ligrel_link, func_const,&
+                call liscad('MECA'        ,list_load_new, i_load, ligrel_link, func_const,&
                             info_typez = 'DIRI_CSTE')
             endif
         endif
@@ -237,22 +237,22 @@ implicit none
         if (l_cont_xfem) then
             if (l_cont_xfem_gg) then
                 i_load = nb_load_init + 1
-                call liscad(list_load_new, i_load, ligrel_link_slav, func_const,&
+                call liscad('MECA'        ,list_load_new, i_load, ligrel_link_slav, func_const,&
                             info_typez = 'ELEM_TARDIF')
                 i_load = nb_load_init + 2
-                call liscad(list_load_new, i_load, ligrel_link_xfem, func_const,&
+                call liscad('MECA'        ,list_load_new, i_load, ligrel_link_xfem, func_const,&
                             info_typez = 'ELEM_TARDIF')
             endif
             if (rel_lin_xfem .ne. 0) then
                 i_load = nb_load_init + 1
-                call liscad(list_load_new, i_load, ligrel_link, func_const,&
+                call liscad('MECA'        ,list_load_new, i_load, ligrel_link, func_const,&
                             info_typez = 'DIRI_CSTE')
             endif
         endif
 !
 ! ----- Copy and clean
 !
-        call lisccr(list_load, nb_load_new, 'V')
+        call lisccr('MECA', list_load, nb_load_new, 'V')
         call copisd(' ', 'V', list_load_new, list_load)
         call detrsd('LISTE_CHARGES', list_load_new)
 !

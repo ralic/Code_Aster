@@ -1,5 +1,5 @@
-subroutine liscad(list_load      , i_load    , load_namez  , load_funcz, nb_info_typez,&
-                  list_info_typez, info_typez, i_neum_laplz)
+subroutine liscad(phenom       , list_load      , i_load    , load_namez  , load_funcz,&
+                  nb_info_typez, list_info_typez, info_typez, i_neum_laplz)
 !
 implicit none
 !
@@ -25,6 +25,7 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    character(len=4), intent(in) :: phenom
     character(len=19), intent(in) :: list_load
     integer, intent(in) :: i_load
     character(len=*), intent(in) :: load_namez
@@ -42,6 +43,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  phenom         : phenomenon (MECA/THER/ACOU)
 ! In  list_load      : name of datastructure for list of loads
 ! In  i_load         : index in list
 ! In  load_name      : name of load
@@ -94,65 +96,99 @@ implicit none
 !
 ! - Set type of load
 !
-    do i_info_type = 1, nb_info_type
-        if (present(info_typez)) then
-            info_type = info_typez
-        else
-            info_type = list_info_typez(i_info_type)
-        endif
-        if (info_type .eq. 'CINE_CSTE') then
-            v_load_info(i_load+1) = -1
-        else if (info_type.eq.'CINE_FO') then
-            v_load_info(i_load+1) = -2
-        else if (info_type.eq.'CINE_FT') then
-            v_load_info(i_load+1) = -3
-        else if (info_type.eq.'DIRI_PILO ') then
-            v_load_info(i_load+1) = 5
-        else if (info_type.eq.'DIRI_PILO_F') then
-            v_load_info(i_load+1) = 6
-        else if (info_type(1:9).eq.'DIRI_CSTE') then
-            v_load_info(i_load+1) = 1
-            if (info_type(10:15) .eq. '_DIDI') then
-                v_load_info(3*nb_load+2+i_load+1) = 1
+    if (phenom.eq.'MECA') then
+        do i_info_type = 1, nb_info_type
+            if (present(info_typez)) then
+                info_type = info_typez
+            else
+                info_type = list_info_typez(i_info_type)
             endif
-        else if (info_type(1:9).eq.'DIRI_FO') then
-            v_load_info(i_load+1) = 2
-            if (info_type(10:15) .eq. '_DIDI') then
-                v_load_info(3*nb_load+2+i_load+1) = 1
+            if (info_type .eq. 'CINE_CSTE') then
+                v_load_info(i_load+1) = -1
+            else if (info_type.eq.'CINE_FO') then
+                v_load_info(i_load+1) = -2
+            else if (info_type.eq.'CINE_FT') then
+                v_load_info(i_load+1) = -3
+            else if (info_type.eq.'DIRI_PILO ') then
+                v_load_info(i_load+1) = 5
+            else if (info_type.eq.'DIRI_PILO_F') then
+                v_load_info(i_load+1) = 6
+            else if (info_type(1:9).eq.'DIRI_CSTE') then
+                v_load_info(i_load+1) = 1
+                if (info_type(10:15) .eq. '_DIDI') then
+                    v_load_info(3*nb_load+2+i_load+1) = 1
+                endif
+            else if (info_type(1:9).eq.'DIRI_FO') then
+                v_load_info(i_load+1) = 2
+                if (info_type(10:15) .eq. '_DIDI') then
+                    v_load_info(3*nb_load+2+i_load+1) = 1
+                endif
+            else if (info_type(1:9).eq.'DIRI_FT') then
+                v_load_info(i_load+1) = 3
+                if (info_type(10:15) .eq. '_DIDI') then
+                    v_load_info(3*nb_load+2+i_load+1) = 1
+                endif
+            else if (info_type.eq.'NEUM_ONDE') then
+                v_load_info(nb_load+i_load+1) = 6
+            else if (info_type.eq.'NEUM_ONDF') then
+                v_load_info(nb_load+i_load+1) = 7
+            else if (info_type.eq.'NEUM_SIGM_INT') then
+                v_load_info(nb_load+i_load+1) = 55
+                v_load_info(4*nb_load+5) = 99
+            else if (info_type.eq.'NEUM_PILO') then
+                v_load_info(nb_load+i_load+1) = 5
+            else if (info_type.eq.'NEUM_SUIV') then
+                v_load_info(nb_load+i_load+1) = 4
+            else if (info_type.eq.'NEUM_FO') then
+                v_load_info(nb_load+i_load+1) = 2
+            else if (info_type.eq.'NEUM_FT') then
+                v_load_info(nb_load+i_load+1) = 3
+            else if (info_type.eq.'NEUM_CSTE') then
+                v_load_info(nb_load+i_load+1) = 1
+            else if (info_type.eq.'NEUM_LAPL') then
+                v_load_info(2*nb_load+3) = i_neum_laplz
+            else if (info_type.eq.'ELEM_TARDIF') then
+                v_load_info(nb_load+i_load+1) = 10
+            else if (info_type.eq.'EXCIT_SOL') then
+                v_load_info(nb_load+i_load+1) = 20
+            else
+                write(6,*) 'LISCAD: ',info_type
+                ASSERT(.false.)
             endif
-        else if (info_type(1:9).eq.'DIRI_FT') then
-            v_load_info(i_load+1) = 3
-            if (info_type(10:15) .eq. '_DIDI') then
-                v_load_info(3*nb_load+2+i_load+1) = 1
+        end do
+    elseif (phenom.eq.'THER') then
+        do i_info_type = 1, nb_info_type
+            if (present(info_typez)) then
+                info_type = info_typez
+            else
+                info_type = list_info_typez(i_info_type)
             endif
-        else if (info_type.eq.'NEUM_ONDE') then
-            v_load_info(nb_load+i_load+1) = 6
-        else if (info_type.eq.'NEUM_ONDF') then
-            v_load_info(nb_load+i_load+1) = 7
-        else if (info_type.eq.'NEUM_SIGM_INT') then
-            v_load_info(nb_load+i_load+1) = 55
-            v_load_info(4*nb_load+5) = 99
-        else if (info_type.eq.'NEUM_PILO') then
-            v_load_info(nb_load+i_load+1) = 5
-        else if (info_type.eq.'NEUM_SUIV') then
-            v_load_info(nb_load+i_load+1) = 4
-        else if (info_type.eq.'NEUM_FO') then
-            v_load_info(nb_load+i_load+1) = 2
-        else if (info_type.eq.'NEUM_FT') then
-            v_load_info(nb_load+i_load+1) = 3
-        else if (info_type.eq.'NEUM_CSTE') then
-            v_load_info(nb_load+i_load+1) = 1
-        else if (info_type.eq.'NEUM_LAPL') then
-            v_load_info(2*nb_load+3) = i_neum_laplz
-        else if (info_type.eq.'ELEM_TARDIF') then
-            v_load_info(nb_load+i_load+1) = 10
-        else if (info_type.eq.'EXCIT_SOL') then
-            v_load_info(nb_load+i_load+1) = 20
-        else
-            write(6,*) 'LISCAD: ',info_type
-            ASSERT(.false.)
-        endif
-    end do
+            if (info_type .eq. 'CINE_CSTE') then
+                v_load_info(i_load+1) = -1
+            else if (info_type.eq.'CINE_FO') then
+                v_load_info(i_load+1) = -2
+            else if (info_type.eq.'CINE_FT') then
+                v_load_info(i_load+1) = -3
+            else if (info_type(1:9).eq.'DIRI_CSTE') then
+                v_load_info(i_load+1) = 1
+            else if (info_type(1:9).eq.'DIRI_FO') then
+                v_load_info(i_load+1) = 2
+            else if (info_type(1:9).eq.'DIRI_FT') then
+                v_load_info(i_load+1) = 3
+            else if (info_type.eq.'NEUM_CSTE') then
+                v_load_info(nb_load+i_load+1) = 1
+            else if (info_type.eq.'NEUM_FO') then
+                v_load_info(nb_load+i_load+1) = 2
+            else if (info_type.eq.'NEUM_FT') then
+                v_load_info(nb_load+i_load+1) = 3
+            else
+                write(6,*) 'LISCAD: ',info_type
+                ASSERT(.false.)
+            endif
+        end do
+    else
+        ASSERT(.false.)
+    endif
 !
     call jedema()
 end subroutine

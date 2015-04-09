@@ -152,7 +152,7 @@ implicit none
 ! --- CAS OU LE CHARGEMENT PEUT NE PAS ETRE OBLIGATOIRE (DYNA_NON_LINE)
 !     ON CREE UNE SD CHARGE CONTENANT 1 CHARGE FICTIVE
             if (nomcmd .eq. 'DYNA_NON_LINE') then
-                call lisccr(list_load, 1, 'V')
+                call lisccr('MECA', list_load, 1, 'V')
                 call jeveuo(list_load(1:19)//'.INFC', 'E', vi=infch)
                 nchar=0
                 infch(1) = nchar
@@ -185,7 +185,7 @@ implicit none
             if (nchar1 .ne. nchar2) then
                 nchar3        = max(nchar2,1)
                 list_load_new = '&&NMDOME.CHARGES'
-                call lisccr(list_load_new, nchar3, 'V')
+                call lisccr('MECA', list_load_new, nchar3, 'V')
                 i_load_new = 0
                 do i_load = 1, nchar1
                     nb_info_type = 1
@@ -193,8 +193,8 @@ implicit none
                                 nomfc1        , nb_info_type, i_neum_lapl)
                     if (list_info_type(1)(1:5) .ne. 'CINE_' .and. nomch1 .ne. ' ') then
                         i_load_new = i_load_new + 1
-                        call liscad(list_load_new , i_load_new, nomch1, nomfc1, nb_info_type,&
-                                    list_info_type, i_neum_laplz = i_neum_lapl)
+                        call liscad('MECA'      , list_load_new , i_load_new, nomch1, nomfc1,&
+                                    nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
                     endif
                 end do
                 nchar      = nchar2
@@ -217,7 +217,7 @@ implicit none
 !
 ! ----- CREATION LA SD L_CHARGES
 !
-        call lisccr(list_load, nchar, 'V')
+        call lisccr('MECA', list_load, nchar, 'V')
 !
 ! ----- LISTE DOUBLE
 !
@@ -499,8 +499,8 @@ implicit none
 !
             if (nb_info_type .gt. 0) then
                 i_load_new = i_load_new+1
-                call liscad(list_load     , i_load_new, nomcha, nomfct, nb_info_type,&
-                            list_info_type, i_neum_laplz = i_neum_lapl)
+                call liscad('MECA'      , list_load     , i_load_new, nomcha, nomfct, &
+                            nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
             endif
 !
         end do

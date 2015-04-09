@@ -1,7 +1,8 @@
-subroutine lisccr(list_load, nb_loadz, base)
+subroutine lisccr(phenom, list_load, nb_loadz, base)
 !
 implicit none
 !
+#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/wkvect.h"
 !
@@ -22,6 +23,7 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    character(len=4), intent(in) :: phenom
     character(len=19), intent(in) :: list_load
     integer, intent(in) :: nb_loadz
     character(len=1), intent(in) :: base
@@ -34,6 +36,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  phenom         : phenomenon (MECA/THER/ACOU)
 ! In  list_load      : name of datastructure for list of loads
 ! In  nb_loadz       : number of loads
 ! In  base           : JEVEUX base
@@ -63,9 +66,17 @@ implicit none
     endif
 !
     call detrsd('LISTE_CHARGES', list_load)
-    call wkvect(lload_name, base//' V K24', nb_load    , vk24 = v_load_name)
-    call wkvect(lload_info, base//' V IS' , 4*nb_load+7, vi   = v_load_info)
-    call wkvect(lload_func, base//' V K24', nb_load    , vk24 = v_load_func)
+    if (phenom.eq.'MECA') then
+        call wkvect(lload_name, base//' V K24', nb_load    , vk24 = v_load_name)
+        call wkvect(lload_info, base//' V IS' , 4*nb_load+7, vi   = v_load_info)
+        call wkvect(lload_func, base//' V K24', nb_load    , vk24 = v_load_func)
+    elseif (phenom.eq.'THER') then
+        call wkvect(lload_name, base//' V K24', nb_load    , vk24 = v_load_name)
+        call wkvect(lload_info, base//' V IS' , 2*nb_load+1, vi   = v_load_info)
+        call wkvect(lload_func, base//' V K24', nb_load    , vk24 = v_load_func)
+    else
+        ASSERT(.false.)
+    endif
     v_load_info(1) = nb_load
 !
 ! - No loads datastructure

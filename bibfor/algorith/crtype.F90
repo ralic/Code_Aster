@@ -17,6 +17,7 @@ subroutine crtype()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1501
 !
 !     COMMANDE:  CREA_RESU /AFFE
 !     CREE UNE STRUCTURE DE DONNEE DE TYPE
@@ -72,7 +73,7 @@ subroutine crtype()
     integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
     integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
     integer :: iad, jinst, nbpf, nuprev
-    integer :: ino, nbv(1), jrefe, nchar, jfcha, icmpd, icmpi
+    integer :: ino, nbv(1), jrefe, nb_load, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
     integer :: nbordr1, nbordr2
@@ -90,7 +91,7 @@ subroutine crtype()
     character(len=8) :: modele, materi, carele, blan8, noma2
     character(len=14) :: numedd
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
-    character(len=19) :: nomch, champ, listr8, excit, pchn1, resu19, profprev, profch
+    character(len=19) :: nomch, champ, listr8, list_load, pchn1, resu19, profprev, profch
     character(len=24) :: k24, linst, nsymb, typres, lcpt, o1, o2, noojb
     character(len=24) :: valkk(4), matric(3)
     character(len=32) :: kjexn
@@ -109,7 +110,7 @@ subroutine crtype()
     call jemarq()
 !
     blan8 = ' '
-    excit = ' '
+    list_load = ' '
     nboini=10
 !
     call getres(resu, type, oper)
@@ -144,16 +145,14 @@ subroutine crtype()
 !        -- POUR STOCKER INFO_CHARGE DANS LE PARAMETRE EXCIT :
         call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .lt. 0) then
-            nchar=-n1
+            nb_load=-n1
             noojb ='12345678'//'.1234'//'.EXCIT.INFC'
             call gnomsd(' ', noojb, 10, 13)
-            excit = noojb(1:19)
+            list_load = noojb(1:19)
 !           ON CREE LA SD_INFO_CHARGE
-            call lisccr(excit, nchar, 'G')
-            call jeveuo(excit//'.LCHA', 'E', vk24=lcha)
-            call jeveuo(excit//'.FCHA', 'E', jfcha)
-            call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nchar, vect=lcha,&
-                        nbret=n1)
+            call lisccr('MECA', list_load, nb_load, 'G')
+            call jeveuo(list_load//'.LCHA', 'E', vk24=lcha)
+            call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=nb_load, vect=lcha)
         endif
 !
         call getvid('AFFE', 'CHAM_GD', iocc=iocc, scal=champ, nbret=n1)
@@ -292,7 +291,7 @@ subroutine crtype()
 !
             call rsnoch(resu, nsymb, numini)
             call rssepa(resu, numini, modele, materi, carele,&
-                        excit)
+                        list_load)
 !
             call getvtx('AFFE', 'NOM_CAS', iocc=iocc, scal=acces, nbret=n0)
             if (n0 .ne. 0) then
@@ -592,7 +591,7 @@ subroutine crtype()
                         0, sjv=iad, styp=k8b)
             zr(iad) = tps
             call rssepa(resu, icompt, modele, materi, carele,&
-                        excit)
+                        list_load)
             if (j .ge. 2) call jedema()
 !
         end do

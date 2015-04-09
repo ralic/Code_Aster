@@ -69,7 +69,7 @@ implicit none
     nb_load_in = v_load_info(1)
 !
     if (nb_load_in .eq. 0) then
-        call lisccr(list_load_out, 1, base)
+        call lisccr('MECA', list_load_out, 1, base)
         call jeveuo(list_load_out(1:19)//'.INFC', 'E', vi = v_load_info_out)
         v_load_info_out(1) = 0
         goto 999
@@ -90,7 +90,7 @@ implicit none
 ! - No loads but contact method
 !
     if (nb_load_out.le.0) then
-        call lisccr(list_load_out, 1, base)
+        call lisccr('MECA', list_load_out, 1, base)
         call jeveuo(list_load_out(1:19)//'.INFC', 'E', vi = v_load_info_out)
         v_load_info_out(1) = 0
         goto 999
@@ -101,7 +101,7 @@ implicit none
 !
 ! - Create new Datastructure
 !
-    call lisccr(list_load_out, nb_load_out, base)
+    call lisccr('MECA', list_load_out, nb_load_out, base)
 !
 ! - Copy all loads except "ELEM_TARDIF" load type
 !
@@ -111,8 +111,8 @@ implicit none
         if (i_type_info .ne. 10) then
             call liscli(list_load_in  , i_load_in   , nb_info_maxi  , list_info_type, load_name,&
                         load_func     , nb_info_type, i_neum_lapl)
-            call liscad(list_load_out , i_load_out  , load_name, load_func, nb_info_type,&
-                        list_info_type, i_neum_laplz = i_neum_lapl)
+            call liscad('MECA'      , list_load_out , i_load_out  , load_name, load_func,&
+                        nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
             i_load_out = i_load_out + 1
         endif
     end do
