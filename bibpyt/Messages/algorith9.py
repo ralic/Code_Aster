@@ -33,14 +33,6 @@ cata_msg = {
  valeur de THETA illicite
 """),
 
-    5 : _(u"""
- la charge  %(k1)s  n'est pas thermique
-"""),
-
-    7 : _(u"""
- la charge  %(k1)s  n'est pas compatible avec FONC_MULT
-"""),
-
     10 : _(u"""
  nombre de vecteurs demandé trop grand
  on prend tous les modes du concept MODE_MECA

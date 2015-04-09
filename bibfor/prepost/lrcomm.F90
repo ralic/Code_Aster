@@ -12,9 +12,9 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmdoco.h"
-#include "asterfort/nmdome.h"
+#include "asterfort/nmdoch.h"
 #include "asterfort/nmdorc.h"
-#include "asterfort/ntdoth.h"
+#include "asterfort/ntdoch.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
@@ -60,36 +60,26 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 !
 ! ......................................................................
 !
-!
-!
-!
-!
-    character(len=6) :: nompro
-    parameter (nompro='LRCOMM')
-!
     integer :: iordr, lordr, nexci, jpara
     integer :: i, iret, ibid, nbtrou, tord(1)
-!
     real(kind=8) :: epsi, rbid
-!
-    character(len=8) :: crit, k8bid, blan8
-    character(len=19) :: infcha, lischa, lisch2, vari, ligrmo
-    character(len=24) :: champ, noobj, fomult, k24b, compor, carcri, blan24, mod24, car24
-!
+    character(len=8) :: crit, k8bid
+    character(len=19) :: list_load, list_load_save, vari, ligrmo, list_load_resu
+    character(len=24) :: champ, noobj, compor, carcri, mod24, car24
     complex(kind=8) :: cbid
-!
-    aster_logical :: matcst, coecst, l_etat_init
+    aster_logical :: l_etat_init, l_load_user
 !
 ! ----------------------------------------------------------------------
 !
     call jemarq()
 !
-    blan8 = ' '
-    blan24 = ' '
-    compor = blan24
+    !blan8 = ' '
+    compor = ' '
     l_etat_init = .false.
+    l_load_user = .true.
 !
-    lischa = '&&'//nompro//'.LISCHA    '
+    list_load      = '&&LRCOMM.LISCHA'
+    list_load_resu = '&&LRCOMM.LISCHA'
 !
     call rsorac(resu, 'LONUTI', ibid, rbid, k8bid,&
                 cbid, epsi, crit, tord, 1,&
@@ -98,31 +88,33 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     if (nbordr .le. 0) then
         call utmess('F', 'UTILITAI2_97')
     endif
-    call wkvect('&&'//nompro//'.NUME_ORDR', 'V V I', nbordr, lordr)
+    call wkvect('&&LRCOMM.NUME_ORDR', 'V V I', nbordr, lordr)
     call rsorac(resu, 'TOUT_ORDRE', ibid, rbid, k8bid,&
                 cbid, epsi, crit, zi(lordr), nbordr,&
                 nbtrou)
 !
-    if (chmat .ne. blan8) then
+    if (chmat .ne. ' ') then
         do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'CHAMPMAT', iordr,&
-                        0, sjv=jpara, styp=k8bid)
+                        0, sjv=jpara)
             zk8(jpara)=chmat
         end do
     endif
-    if (carael .ne. blan8) then
+!
+    if (carael .ne. ' ') then
         do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'CARAELEM', iordr,&
-                        0, sjv=jpara, styp=k8bid)
+                        0, sjv=jpara)
             zk8(jpara)=carael
         end do
     endif
-    if (modele .ne. blan8) then
+!
+    if (modele .ne. ' ') then
         if (typres(1:9) .eq. 'EVOL_NOLI') then
             call nmdorc(modele, chmat, l_etat_init, compor, carcri)
-            if (compor .ne. blan24) then
+            if (compor .ne. ' ') then
                 do i = 1, nbordr
                     iordr=zi(lordr+i-1)
                     call rsexch(' ', resu, 'COMPORTEMENT', iordr, champ,&
@@ -137,10 +129,11 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'MODELE', iordr,&
-                        0, sjv=jpara, styp=k8bid)
+                        0, sjv=jpara)
             zk8(jpara)=modele
         end do
     endif
+!
     call getfac('EXCIT', nexci)
     if (nexci .gt. 0) then
         if (typres(1:4) .eq. 'DYNA' .or. typres(1:4) .eq. 'MODE') then
@@ -149,23 +142,19 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         endif
         noobj ='12345678'//'.1234'//'.EXCIT.INFC'
         call gnomsd(' ', noobj, 10, 13)
-        lisch2 = noobj(1:19)
-        ibid=0
+        list_load_save = noobj(1:19)
         if (typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_NOLI') then
-            call nmdome(k24b, k24b, k24b, lischa, blan8,&
-                        ibid)
+            call nmdoch(list_load, l_load_user, list_load_resu)
         else if (typres.eq.'EVOL_THER') then
-            infcha = '&&'//nompro//'_INFCHA    '
-            call ntdoth(k24b, k24b, k24b, fomult, matcst,&
-                        coecst, infcha, blan8, ibid)
+            call ntdoch(list_load)
         endif
         do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'EXCIT', iordr,&
-                        0, sjv=jpara, styp=k8bid)
-            zk24(jpara)=lisch2
+                        0, sjv=jpara)
+            zk24(jpara)=list_load_save
         end do
-        call copisd(' ', 'G', lischa, lisch2)
+        call copisd(' ', 'G', list_load, list_load_save)
     endif
  60 continue
 !
@@ -189,7 +178,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         end do
     endif
 !
-    call jedetr('&&'//nompro//'.NUME_ORDR')
+    call jedetr('&&LRCOMM.NUME_ORDR')
 !
     call jedema()
 !

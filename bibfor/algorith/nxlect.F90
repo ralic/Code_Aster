@@ -3,7 +3,7 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
                   parmei, parmer, solveu, parcri, parcrr,&
                   compor, evolsc)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getres.h"
@@ -62,11 +62,11 @@ subroutine nxlect(result, modele, mate, carele, matcst,&
 !
 ! --- DONNEES THERMIQUES
 !
+    call ntdoth(modele, mate, carele, lischa, k8bla, &
+                ibid  , matcst_ = matcst, coecst_ = coecst )
     charge = lischa//'.LCHA'
     infoch = lischa//'.INFC'
     fomult = lischa//'.FCHA'
-    call ntdoth(modele, mate, carele, fomult, matcst,&
-                coecst, lischa, k8bla, ibid)
 !
 ! --- COMPORTEMENT
 !

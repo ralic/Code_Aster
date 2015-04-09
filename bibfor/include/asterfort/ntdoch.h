@@ -18,15 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntdoth(model     , mate   , cara_elem, list_load, result, &
-                      nume_store, matcst_, coecst_  )
-        character(len=24), intent(out) :: model
-        character(len=24), intent(out) :: cara_elem
-        character(len=24), intent(out) :: mate
-        character(len=19), intent(out) :: list_load
-        character(len=8), optional, intent(in) :: result
-        integer, optional, intent(in) :: nume_store
-        aster_logical, optional, intent(out) :: matcst_
-        aster_logical, optional, intent(out) :: coecst_
-    end subroutine ntdoth
+    subroutine ntdoch(list_load, l_load_user_, list_load_resu)
+        character(len=19), intent(in) :: list_load
+        aster_logical, optional, intent(in) :: l_load_user_
+        character(len=19), optional, intent(in) :: list_load_resu
+    end subroutine ntdoch
 end interface

@@ -84,8 +84,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     character(len=24) :: mater
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
     character(len=24) :: strx
-    character(len=24) :: bidon, chacce, k24b, modele, kstr
-    aster_logical :: exitim, lbid, lstr, lstr2
+    character(len=24) :: bidon, chacce, modele, kstr
+    aster_logical :: exitim, lstr, lstr2
     real(kind=8), pointer :: cgmp(:) => null()
     real(kind=8), pointer :: chmp(:) => null()
     real(kind=8), pointer :: fono(:) => null()
@@ -147,8 +147,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     modele=' '
     nuord=zi(jordr)
     if (typesd .eq. 'EVOL_THER') then
-        call ntdoth(modele, mater, carac, k24b, lbid,&
-                    lbid, infcha, resuou( 1:8), nuord)
+        call ntdoth(modele, mater, carac, infcha,& 
+                    result = resuou, nume_store = nuord)
     else
         call nmdome(modele, mater, carac, infcha, resuou(1:8),&
                     nuord)
@@ -379,7 +379,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             do j = 0, lonch-1
                 noch(1+j)=fono(1+j)-chmp(1+j)-cgmp(1+j)
             end do
-            if ((typesd.eq.'EVOL_NOLI') .and. (etan.ne.0.d0)) then
+            if (typesd.eq.'EVOL_NOLI') then
                 call jeveuo(cnfpip(1:19)//'.VALE', 'L', vr=fpip)
                 do j = 0, lonch-1
                     noch(1+j)=noch(1+j)-etan*fpip(1+j)
@@ -521,8 +521,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call rsnoch(resuou, option, iordr)
 !
         if (typesd .eq. 'EVOL_THER') then
-            call ntdoth(modele, mater, carac, k24b, lbid,&
-                        lbid, infcha, resuou(1:8), iordr)
+            call ntdoth(modele, mater, carac, infcha, &
+                        result = resuou, nume_store = iordr)
         else
             call nmdome(modele, mater, carac, infcha, resuou(1:8),&
                         iordr)

@@ -20,7 +20,7 @@
 cata_msg = {
 
     1 : _(u"""
-La charge <%(k1)s> a été utilisée plus d'une fois dans EXCIT: il faut la supprimer.
+La charge %(k1)s a été utilisée plus d'une fois dans EXCIT: il faut la supprimer.
 """),
 
     2 : _(u"""
@@ -28,47 +28,55 @@ Il n'y a aucune charge dans le mot-clef facteur EXCIT. Ce n'est pas possible ave
 """),
 
     3 : _(u"""
-La charge <%(k1)s> n'a pu être identifiée. Cette erreur est probablement due à l'utilisation d'un
+La charge %(k1)s n'a pu être identifiée. Cette erreur est probablement due à l'utilisation d'un
 mot-clef facteur vide dans l'opérateur AFFE_CHAR_MECA, AFFE_CHAR_THER ou AFFE_CHAR_ACOU.
 """),
 
+    20 : _(u"""
+La charge %(k1)s  n'est pas compatible avec FONC_MULT.
+"""),
+
+    21 : _(u"""
+La charge %(k1)s n'est pas thermique.
+"""),
+
     22 : _(u"""
-La charge <%(k1)s> n'est pas mécanique.
+La charge %(k1)s n'est pas mécanique.
 """),
 
     23 : _(u"""
-La charge <%(k1)s> a été déclarée comme étant suiveuse alors que ce n'est pas possible.
+La charge %(k1)s a été déclarée comme étant suiveuse alors que ce n'est pas possible.
 Si votre chargement contient plusieurs types dont certains ne peuvent être suiveurs, il faut les séparer.
 Certains chargements ne peuvent être suiveurs s'ils sont dépendant du temps.
 """),
 
     24 : _(u"""
-La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
+La charge %(k1)s est de type cinématique (AFFE_CHAR_CINE):
  elle ne peut pas être différentielle.
 """),
 
 
     26 : _(u"""
-La charge <%(k1)s> a été déclarée comme étant pilotable alors que ce n'est pas possible.
+La charge %(k1)s a été déclarée comme étant pilotable alors que ce n'est pas possible.
 Si votre chargement contient plusieurs types dont certains ne peuvent être pilotables, il faut les séparer.
 """),
 
 
     27 : _(u"""
-La charge <%(k1)s> est de type cinématique (AFFE_CHAR_CINE):
+La charge %(k1)s est de type cinématique (AFFE_CHAR_CINE):
  elle ne peut pas être pilotée.
 """),
 
     28 : _(u"""
-On ne peut pas piloter la charge <%(k1)s> car c'est une charge fonction du temps.
+On ne peut pas piloter la charge %(k1)s car c'est une charge fonction du temps.
 """),
 
     34 : _(u"""
-La charge de type EVOL_CHAR <%(k1)s>  ne peut pas être pilotée.
+La charge de type EVOL_CHAR %(k1)s  ne peut pas être pilotée.
 """),
 
     38 : _(u"""
-La charge <%(k1)s> ne peut pas utiliser de fonction multiplicatrice FONC_MULT
+La charge %(k1)s ne peut pas utiliser de fonction multiplicatrice FONC_MULT
  car elle est pilotée.
 """),
 

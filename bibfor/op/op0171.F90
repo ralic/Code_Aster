@@ -139,10 +139,11 @@ subroutine op0171()
 !
 ! --- DONNEES
 !
-    call ntdoth(modele, mate, carele, fomult, matcst,&
-                coecst, list_load, k8bid, ibid)
+    call ntdoth(modele, mate, carele, lischa, k8bid, &
+                ibid  , matcst_ = matcst, coecst_ = coecst )
     charge = list_load//'.LCHA'
     infoch = list_load//'.INFC'
+    fomult = list_load//'.FCHA'
 !
 ! --- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR
 !
