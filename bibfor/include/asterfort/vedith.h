@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vedith(modele, charge, infcha, inst, vecelz)
-        character(len=24) :: modele
-        character(len=24) :: charge
-        character(len=24) :: infcha
-        character(len=24) :: inst
-        character(len=24) :: vecelz
+    subroutine vedith(model, list_load, time, vect_elem_)
+        character(len=24), intent(in) :: model
+        character(len=19), intent(in) :: list_load
+        character(len=24), intent(in) :: time
+        character(len=24), intent(inout) :: vect_elem_
     end subroutine vedith
 end interface

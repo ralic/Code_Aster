@@ -1,10 +1,27 @@
-subroutine nxnewt(modele, mate, carele, charge, infcha,&
-                  infoch, numedd, solveu, time, lonch,&
-                  matass, maprec, cnchci, vtemp, vtempm,&
-                  vtempp, vec2nd, mediri, conver, vhydr,&
-                  vhydrp, tmpchi, tmpchf, compor, cnvabt,&
-                  cnresi, parcri, parcrr, reasma, testr,&
-                  testm)
+subroutine nxnewt(model      , mate  , cara_elem, list_load, nume_dof   ,&
+                  solver     , time  , lonch    , matass   , maprec     ,&
+                  cnchci     , vtemp , vtempm   , vtempp   , vec2nd     ,&
+                  mediri     , conver, vhydr    , vhydrp   , tmpchi     ,&
+                  tmpchf     , compor, cnvabt   , cnresi   , ther_crit_i,&
+                  ther_crit_r, reasma, testr    , testm)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/asmatr.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/merxth.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/verstp.h"
+#include "asterfort/vethbt.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,46 +39,36 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jessica.haelewyn at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/asasve.h"
-#include "asterfort/ascova.h"
-#include "asterfort/asmatr.h"
-#include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/merxth.h"
-#include "asterfort/preres.h"
-#include "asterfort/resoud.h"
-#include "asterfort/verstp.h"
-#include "asterfort/vethbt.h"
+!
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: solver
+    character(len=24), intent(in) :: time
     integer :: lonch
     aster_logical :: conver, reasma
-    character(len=19) :: infcha, solveu, maprec
-    character(len=24) :: modele, mate, carele, charge, infoch, numedd, time
+    character(len=19) :: maprec
     character(len=24) :: matass, cnchci, cnresi, vtemp, vtempm, vtempp, vec2nd
     character(len=24) :: vhydr, vhydrp, compor, tmpchi, tmpchf
-    integer :: parcri(3)
-    real(kind=8) :: parcrr(2)
+    integer :: ther_crit_i(*)
+    real(kind=8) :: ther_crit_r(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! COMMANDE THER_NON_LINE : ITERATION DE NEWTON
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !     VAR VTEMPM : ITERE PRECEDENT DU CHAMP DE TEMPERATURE
 !     OUT VTEMPP : ITERE COURANT   DU CHAMP DE TEMPERATURE
 !     OUT VHYDRP : ITERE COURANT   DU CHAMP D HYDRATATION
 !
+! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8) :: cbid
-!
-!
     integer :: k, j2nd, ibid
     integer :: jmed, jmer, nbmat, ierr
     real(kind=8) :: r8bid
@@ -70,20 +77,16 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
     character(len=24) :: tlimat(2), mediri, merigi, cnvabt
     real(kind=8) :: testr, testm, vnorm
+    character(len=24) :: lload_name, lload_info
     integer :: iret
     real(kind=8), pointer :: btla(:) => null()
     real(kind=8), pointer :: tempp(:) => null()
     real(kind=8), pointer :: vare(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
-    data typres        /'R'/
-    data chsol         /'&&NXNEWT.SOLUTION'/
-    data bidon         /'&&FOMULT.BIDON'/
-    data veresi        /'&&VERESI           .RELR'/
-    data vebtla        /'&&VETBTL           .RELR'/
-    data merigi        /'&&METRIG           .RELR'/
+
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     varesi = '&&VARESI'
@@ -91,6 +94,14 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
     cnresi = ' '
     cnvabt = ' '
     criter = '&&RESGRA_GCPC'
+    typres = 'R'
+    chsol  = '&&NXNEWT.SOLUTION'
+    bidon  = '&&FOMULT.BIDON'
+    veresi = '&&VERESI           .RELR'
+    vebtla = '&&VETBTL           .RELR'
+    merigi = '&&METRIG           .RELR'
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
 !
 ! --- RECUPERATION D'ADRESSES
 !
@@ -98,19 +109,19 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !
 ! --- VECTEURS RESIDUS ELEMENTAIRES - CALCUL ET ASSEMBLAGE
 !
-    call verstp(modele, charge, infoch, carele, mate,&
+    call verstp(model, lload_name, lload_info, cara_elem, mate,&
                 time, compor, vtemp, vtempm, vhydr,&
                 vhydrp, tmpchi, tmpchf, veresi)
-    call asasve(veresi, numedd, typres, varesi)
+    call asasve(veresi, nume_dof, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
     call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)
 !
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
-    call vethbt(modele, charge, infoch, carele, mate,&
+    call vethbt(model, lload_name, lload_info, cara_elem, mate,&
                 vtempm, vebtla)
-    call asasve(vebtla, numedd, typres, vabtla)
+    call asasve(vebtla, nume_dof, typres, vabtla)
     call ascova('D', vabtla, bidon, 'INST', r8bid,&
                 typres, cnvabt)
     call jeveuo(cnvabt(1:19)//'.VALE', 'L', vr=btla)
@@ -134,8 +145,8 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
         testr = sqrt( testr / vnorm )
     endif
 !
-    if (parcri(1) .ne. 0) then
-        if (testm .lt. parcrr(1)) then
+    if (ther_crit_i(1) .ne. 0) then
+        if (testm .lt. ther_crit_r(1)) then
             conver=.true.
             call copisd('CHAMP_GD', 'V', vtempm(1:19), vtempp(1:19))
             goto 999
@@ -143,7 +154,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
             conver=.false.
         endif
     else
-        if (testr .lt. parcrr(2)) then
+        if (testr .lt. ther_crit_r(2)) then
             conver=.true.
             call copisd('CHAMP_GD', 'V', vtempm(1:19), vtempp(1:19))
             goto 999
@@ -158,7 +169,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 ! --- (RE)CALCUL DE LA MATRICE TANGENTE
 !==========================================================
 !
-        call merxth(modele, charge, infoch, carele, mate,&
+        call merxth(model, lload_name, lload_info, cara_elem, mate,&
                     time, vtempm, merigi, compor, tmpchi,&
                     tmpchf)
         call jeveuo(merigi, 'L', jmer)
@@ -176,12 +187,12 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !
 ! --- ASSEMBLAGE DE LA MATRICE
 !
-        call asmatr(nbmat, tlimat, ' ', numedd, solveu,&
-                    infcha, 'ZERO', 'V', 1, matass)
+        call asmatr(nbmat, tlimat, ' ', nume_dof, solver,&
+                    list_load, 'ZERO', 'V', 1, matass)
 !
 ! --- DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT
 !
-        call preres(solveu, 'V', ierr, maprec, matass,&
+        call preres(solver, 'V', ierr, maprec, matass,&
                     ibid, -9999)
 !
     endif
@@ -189,7 +200,7 @@ subroutine nxnewt(modele, mate, carele, charge, infcha,&
 !==========================================================
 ! --- RESOLUTION (VTEMPP CONTIENT LE SECOND MEMBRE, CHSOL LA SOLUTION)
 !
-    call resoud(matass, maprec, solveu, cnchci, 0,&
+    call resoud(matass, maprec, solver, cnchci, 0,&
                 vtempp, chsol, 'V', [0.d0], [cbid],&
                 criter, .true._1, 0, iret)
 !

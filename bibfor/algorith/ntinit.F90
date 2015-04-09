@@ -79,7 +79,6 @@ implicit none
     k24bla = ' '
     vhydr = k24bla
     lostat = .false.
-    lnonl = .false.
     time = result(1:8)//'.CHTPS'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
 !

@@ -18,26 +18,23 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxlect(result, modele, mate, carele, matcst,&
-                      coecst, fomult, lischa, charge, infoch,&
-                      parmei, parmer, solveu, parcri, parcrr,&
-                      compor, evolsc)
-        character(len=24) :: result
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        aster_logical :: matcst
-        aster_logical :: coecst
-        character(len=24) :: fomult
-        character(len=19) :: lischa
-        character(len=24) :: charge
-        character(len=24) :: infoch
-        integer :: parmei(2)
-        real(kind=8) :: parmer(2)
-        character(len=19) :: solveu
-        integer :: parcri(3)
-        real(kind=8) :: parcrr(2)
-        character(len=24) :: compor
-        character(len=8) :: evolsc
+    subroutine nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
+                      ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
+                      result     , model      , mate      , cara_elem  , compor     )
+        aster_logical, intent(in) :: l_ther_nonl
+        character(len=19), intent(inout) :: list_load
+        character(len=19), intent(in) :: solver
+        integer, intent(inout) :: ther_para_i(*)
+        integer, intent(inout) :: ther_crit_i(*)
+        real(kind=8), intent(inout) :: ther_para_r(*)
+        real(kind=8), intent(inout) :: ther_crit_r(*)
+        character(len=8), intent(out) :: result_dry
+        aster_logical, intent(out) :: matcst
+        aster_logical, intent(out) :: coecst
+        character(len=24), intent(out) :: result
+        character(len=24), intent(out) :: model
+        character(len=24), intent(out) :: mate
+        character(len=24), intent(out) :: cara_elem
+        character(len=24), intent(out) :: compor
     end subroutine nxlect
 end interface

@@ -15,25 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 #include "asterf_types.h"
 !
 interface
-    subroutine nttcmv(modele, mate, carele, fomult, charge,&
-                      infcha, infoch, numedd, solveu, time,&
-                      chlapm, tpsthe, tpsnp1, reasvt, reasmt,&
-                      creas, vtemp, vtempm, vec2nd, matass,&
-                      maprec, cndirp, cnchci, cnchtp)
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        character(len=24) :: fomult
-        character(len=24) :: charge
-        character(len=19) :: infcha
-        character(len=24) :: infoch
-        character(len=24) :: numedd
-        character(len=19) :: solveu
-        character(len=24) :: time
-        character(len=24) :: chlapm
+    subroutine nttcmv(model , mate  , cara_elem, list_load, nume_dof,&
+                      solver, time  , tpsthe   , tpsnp1   , reasvt  ,&
+                      reasmt, creas , vtemp    , vtempm   , vec2nd  ,&
+                      matass, maprec, cndirp   , cnchci   , cnchtp)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        character(len=19), intent(in) :: list_load
+        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: solver
+        character(len=24), intent(in) :: time
         real(kind=8) :: tpsthe(6)
         real(kind=8) :: tpsnp1
         aster_logical :: reasvt

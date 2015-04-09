@@ -1,7 +1,6 @@
-subroutine nxlect(result, modele, mate, carele, matcst,&
-                  coecst, fomult, lischa, charge, infoch,&
-                  parmei, parmer, solveu, parcri, parcrr,&
-                  compor, evolsc)
+subroutine nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
+                  ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
+                  result     , model      , mate      , cara_elem  , compor     )
 !
 implicit none
 !
@@ -33,71 +32,83 @@ implicit none
 ! ======================================================================
 ! person_in_charge: jessica.haelewyn at edf.fr
 !
-    character(len=8) :: evolsc
-    aster_logical :: matcst, coecst
-    integer :: parmei(2), parcri(3)
-    real(kind=8) :: parmer(2), parcrr(2)
-    character(len=19) :: lischa, solveu
-    character(len=24) :: result, modele, mate, carele, compor
-    character(len=24) :: fomult, charge, infoch
+    aster_logical, intent(in) :: l_ther_nonl
+    character(len=19), intent(inout) :: list_load
+    character(len=19), intent(in) :: solver
+    integer, intent(inout) :: ther_para_i(*)
+    integer, intent(inout) :: ther_crit_i(*)
+    real(kind=8), intent(inout) :: ther_para_r(*)
+    real(kind=8), intent(inout) :: ther_crit_r(*)
+    character(len=8), intent(out) :: result_dry
+    aster_logical, intent(out) :: matcst
+    aster_logical, intent(out) :: coecst
+    character(len=24), intent(out) :: result
+    character(len=24), intent(out) :: model
+    character(len=24), intent(out) :: mate
+    character(len=24), intent(out) :: cara_elem
+    character(len=24), intent(out) :: compor
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! COMMANDES DE THERMIQUE THER_LINEAIRE ET THER_NON_LINE :
-! LECTURE DES OPERANDES.
+! Thermics - Initializations
 !
-! ----------------------------------------------------------------------
+! Read parameters
 !
-    integer :: ibid
-    character(len=16) :: k16bid, nomcmd
-    character(len=8) :: k8bla
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! In  l_temp_nonl      : .true. if THER_NON_LINE
+! IO  list_load        : name for list of loads
+! In  solver           : name of datastructure for linear solver parameters
+! IO  ther_para_i      : parameters for algorithm (integer)
+! IO  ther_para_r      : parameters for algorithm (real)
+! IO  ther_crit_i      : criteria for algorithm (integer)
+! IO  ther_crit_r      : criteria for algorithm (real)
+! Out result_dry       : name of datastructure for results (drying)
+! Out matcst           : .true. if constant material parameters
+! Out coecst           : .true. if constant rigidity matrix
+! Out result           : name of datastructure for results
+! Out model            : name of model
+! Out mate             : name of material characteristics (field)
+! Out cara_elem        : name of datastructure for elementary parameters (CARTE)
+! Out compor           : name of <CARTE> COMPOR
 !
-    k8bla = ' '
+! --------------------------------------------------------------------------------------------------
 !
-! --- NOM UTILISATEUR DU CONCEPT RESULTAT CREE PAR LA COMMANDE
+    character(len=16) :: k16bid
+    character(len=8) :: k8bid
 !
-    call getres(result, k16bid, nomcmd)
+! --------------------------------------------------------------------------------------------------
 !
-! --- DONNEES THERMIQUES
+    result_dry = ' '
+    compor     = ' '
 !
-    call ntdoth(modele, mate, carele, lischa, k8bla, &
-                ibid  , matcst_ = matcst, coecst_ = coecst )
-    charge = lischa//'.LCHA'
-    infoch = lischa//'.INFC'
-    fomult = lischa//'.FCHA'
+! - Get datastructure for results
 !
-! --- COMPORTEMENT
+    call getres(result, k16bid, k8bid)
 !
-    if (nomcmd(1:13) .ne. 'THER_LINEAIRE') then
-        call nxdocc(modele, compor)
+! - Read parameters
+!
+    call ntdoth(model, mate, cara_elem, list_load,&
+                matcst_ = matcst, coecst_ = coecst )
+!
+! - Create comportment <CARTE>
+!
+    if (l_ther_nonl) then
+        call nxdocc(model, compor)
     endif
 !
-! --- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR
+! - Get parameters for linear solver
 !
-    call cresol(solveu)
+    call cresol(solver)
 !
-    if (nomcmd(1:13) .eq. 'THER_NON_LINE') then
+! - Get algorithm parameters and criteria
 !
-! ----- PARAMETRES DE RESOLUTION
-!
-        call nxdomt(parmei, parmer)
-!
-! ----- CHAMP THERMIQUE DU SECHAGE, ET VERIFICATION SYNTAXIQUE
-!
-        call ntdcom(evolsc)
-!
-! ----- CRITERES DE CONVERGENCE
-!
-        call nxdocn(parcri, parcrr)
-!
+    if (l_ther_nonl) then
+        call nxdomt(ther_para_i, ther_para_r)
+        call ntdcom(result_dry)
+        call nxdocn(ther_crit_i, ther_crit_r)
     else
-!
-! ----- PARAMETRES DE RESOLUTION
-!
-        call ntdomt(parmer)
-!
+        call ntdomt(ther_para_r)
     endif
 !
 end subroutine

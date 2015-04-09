@@ -15,26 +15,25 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 #include "asterf_types.h"
 !
 interface
-    subroutine nxacmv(modele, mate, carele, fomult, charge,&
-                      infcha, infoch, numedd, solveu, lostat,&
-                      time, tpsthe, reasvc, reasvt, reasmt,&
-                      reasrg, reasms, creas, vtemp, vhydr,&
-                      tmpchi, tmpchf, vec2nd, vec2ni, matass,&
-                      maprec, cndirp, cnchci, mediri, compor)
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        character(len=24) :: fomult
-        character(len=24) :: charge
-        character(len=19) :: infcha
-        character(len=24) :: infoch
-        character(len=24) :: numedd
-        character(len=19) :: solveu
+    subroutine nxacmv(model , mate  , cara_elem, list_load, numedd,&
+                      solver, lostat, time     , tpsthe   , reasvc,&
+                      reasvt, reasmt, reasrg   , reasms   , creas ,&
+                      vtemp , vhydr , tmpchi   , tmpchf   , vec2nd,&
+                      vec2ni, matass, maprec   , cndirp   , cnchci,&
+                      mediri, compor)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        character(len=19), intent(in) :: list_load
+        character(len=24), intent(in) :: numedd
+        character(len=19), intent(in) :: solver
+        character(len=24), intent(in) :: time
         aster_logical :: lostat
-        character(len=24) :: time
         real(kind=8) :: tpsthe(6)
         aster_logical :: reasvc
         aster_logical :: reasvt

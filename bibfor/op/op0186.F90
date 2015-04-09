@@ -1,32 +1,7 @@
 subroutine op0186()
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: jessica.haelewyn at edf.fr
-! ----------------------------------------------------------------------
-!
-!     COMMANDE:  THER_NON_LINE
-!
-!----------------------------------------------------------------------
-! CORPS DU PROGRAMME
-    implicit none
-!
-! 0.2  ==> ARGUMENTS
-!
-! 0.3. ==> VARIABLES LOCALES
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
@@ -61,24 +36,50 @@ subroutine op0186()
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
+!
+
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jessica.haelewyn at edf.fr
+!
+! --------------------------------------------------------------------------------------------------
+!
+! THER_NON_LINE
+!
+! --------------------------------------------------------------------------------------------------
+!
     aster_logical :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
     aster_logical :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
-    aster_logical :: force, lnonl
-    integer :: parmei(2), parcri(3), numins, k, icoret, nbcham, iterho
+    aster_logical :: force, l_ther_nonl
+    integer :: ther_para_i(2), ther_crit_i(3), numins, k, icoret, nbcham, iterho
     integer :: itmax, ifm, niv, neq, iterat, jtempp, jtemp
     integer :: itab(2)
-    real(kind=8) :: parmer(2), tpsthe(6), deltat, timet, timtdt, tps1(4)
-    real(kind=8) :: tps2(4), tps3(4), tpex, parcrr(2), theta, khi, rho, testr
+    real(kind=8) :: ther_para_r(2), tpsthe(6), deltat, timet, timtdt, tps1(4)
+    real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), theta, khi, rho, testr
     real(kind=8) :: testm, para(2), instap, tconso
     real(kind=8) :: rtab(2)
     character(len=1) :: creas, base
     character(len=3) :: kreas
-    character(len=8) :: evolsc, mailla
+    character(len=8) :: result_dry, mailla
     character(len=19) :: sdobse
     character(len=16) :: tysd, k16b1, k16b2
-    character(len=19) :: lischa, lisch2
-    character(len=19) :: solveu, maprec, sddisc, sdcrit
-    character(len=24) :: modele, mate, carele, fomult, charge, infoch, result
+    character(len=19) :: list_load, list_load_save
+    character(len=19) :: solver, maprec, sddisc, sdcrit
+    character(len=24) :: model, mate, cara_elem, result
     character(len=24) :: time, tmpchi, tmpchf, compor, vtemp, vtempm, vtempp
     character(len=24) :: vtempr, vec2nd, vec2ni, numedd, mediri, matass, cndirp
     character(len=24) :: cnchci, cnresi, vabtla, vhydr, vhydrp
@@ -88,10 +89,7 @@ subroutine op0186()
     real(kind=8), pointer :: crtr(:) => null()
     real(kind=8), pointer :: tempm(:) => null()
 !
-! ----------------------------------------------------------------------
-    data lischa/'&&OP0186.LISCHA'/
     data sdcrit/'&&OP0186.CRITERE'/
-    data solveu/'&&OP0186.SOLVEUR'/
     data maprec/'&&OP0186.MAPREC'/
     data result/' '/
     data cndirp/1*' '/
@@ -108,38 +106,28 @@ subroutine op0186()
     data fmt4/'(A,12X,A,2X,A,17X,A,9X,A,4X,A)'/
     data sddisc            /'&&OP0186.PARTPS'/
     data sdobse            /'&&OP0186.OBSER'/
-! ----------------------------------------------------------------------
 !
-!     MESURE DE TEMPS CPU :
-!
-!      1 : PAS DE TEMPS
-!      2 : ITERATIONS
-!      3 : ACTUALISATIONS ET ARCHIVAGE
-!
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-!
-! **********************************************************************
-!                    RECUPERATION DES OPERANDES
-! **********************************************************************
-!
-!--- RECUPERATION DU NIVEAU D'IMPRESSION
     call infmaj()
     call infniv(ifm, niv)
 !
-! --- LECTURE DES OPERANDES DE LA COMMANDE
+    solver    = '&&OP0186.SOLVER'
+    list_load = '&&OP0186.LISCHA'
 !
-    call nxlect(result, modele, mate, carele, matcst,&
-                coecst, fomult, lischa, charge, infoch,&
-                parmei, parmer, solveu, parcri, parcrr,&
-                compor, evolsc)
-    para(1) = parmer(1)
-    itmax = parcri(3)
-    rechli = .false.
+! - Read parameters
+!
+    l_ther_nonl = .true.
+    call nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
+                ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
+                result     , model      , mate      , cara_elem  , compor     )
+    para(1)    = ther_para_r(1)
+    itmax      = ther_crit_i(3)
+    rechli     = .false.
 !
 ! EST-ON DANS UN CALCUL DE SECHAGE ?
-    if (evolsc(1:1) .ne. ' ') then
+    if (result_dry(1:1) .ne. ' ') then
         lsecha = .true.
     else
         lsecha = .false.
@@ -147,7 +135,7 @@ subroutine op0186()
 ! --- CE BOOLEEN ARRET EST DESTINE AUX DEVELOPPEUR QUI VOUDRAIENT
 ! --- FORCER LE CALCUL MEME SI ON N'A PAS CONVERGENCE (ARRET=TRUE)
     arret = .false.
-    if (parmei(2) .gt. 0) rechli = .true.
+    if (ther_para_i(2) .gt. 0) rechli = .true.
 !
 ! **********************************************************************
 !    INITIALISATIONS ET DUPLICATION DES STRUCTURES DE DONNEES
@@ -155,11 +143,10 @@ subroutine op0186()
 !
 ! --- INITIALISATIONS
 !
-    call nxinit(result, modele, mate, carele, compor,&
-                lischa, lisch2, solveu, para, numedd,&
-                lostat, levol, lnonl, sddisc, sdieto,&
-                vhydr, sdobse, mailla, sdcrit, time)
-    ASSERT(lnonl)
+    call nxinit(result   , model         , mate       , cara_elem, compor,&
+                list_load, list_load_save, solver     , para     , numedd,&
+                lostat   , levol         , l_ther_nonl, sddisc   , sdieto,&
+                vhydr    , sdobse        , mailla     , sdcrit   , time  )
 !
     if (lostat) then
         numins=0
@@ -181,7 +168,7 @@ subroutine op0186()
     call copisd('CHAMP_GD', 'V', vhydr(1:19), vhydrp(1:19))
 !
 ! --- CALCUL DES MATRICES ELEMENTAIRES DES DIRICHLETS
-    call medith(modele, charge, infoch, mediri)
+    call medith(model, list_load, mediri)
 !
 ! **********************************************************************
 !                 BOUCLE SUR LES PAS DE TEMPS
@@ -213,7 +200,7 @@ subroutine op0186()
     else
         instap = diinst(sddisc, numins)
         deltat = instap-diinst(sddisc, numins-1)
-        theta=parmer(1)
+        theta=ther_para_r(1)
         khi=1.d0
     endif
     para(2) = deltat
@@ -250,25 +237,25 @@ subroutine op0186()
 ! --- RECUPERATION DU CHAMP DE TEMPERATURE A T ET T+DT POUR LE SECHAGE
 !     LOIS SECH_GRANGER ET SECH_NAPPE
     if (lsecha) then
-        call gettco(evolsc, tysd)
+        call gettco(result_dry, tysd)
         if (tysd(1:9) .eq. 'EVOL_THER') then
-            call dismoi('NB_CHAMP_UTI', evolsc, 'RESULTAT', repi=nbcham)
+            call dismoi('NB_CHAMP_UTI', result_dry, 'RESULTAT', repi=nbcham)
             if (nbcham .gt. 0) then
                 timet = instap
                 timtdt = instap + deltat
                 base = 'V'
-                call rsinch(evolsc, 'TEMP', 'INST', timet, tmpchi,&
+                call rsinch(result_dry, 'TEMP', 'INST', timet, tmpchi,&
                             'CONSTANT', 'CONSTANT', 1, base, icoret)
                 if (icoret .ge. 10) then
-                    call utmess('F', 'ALGORITH8_94', sk=evolsc, si=icoret, sr=timet)
+                    call utmess('F', 'ALGORITH8_94', sk=result_dry, si=icoret, sr=timet)
                 endif
-                call rsinch(evolsc, 'TEMP', 'INST', timtdt, tmpchf,&
+                call rsinch(result_dry, 'TEMP', 'INST', timtdt, tmpchf,&
                             'CONSTANT', 'CONSTANT', 1, base, icoret)
                 if (icoret .ge. 10) then
-                    call utmess('F', 'ALGORITH8_94', sk=evolsc, si=icoret, sr=timtdt)
+                    call utmess('F', 'ALGORITH8_94', sk=result_dry, si=icoret, sr=timtdt)
                 endif
             else
-                call utmess('F', 'ALGORITH8_99', sk=evolsc)
+                call utmess('F', 'ALGORITH8_99', sk=result_dry)
             endif
         endif
     endif
@@ -287,12 +274,12 @@ subroutine op0186()
 ! ON ASSEMBLE LES SECONDS MEMBRES CHAR_THER_LINEAIRE+CHAR_THER_NONLIN+
 ! CHAR_THER_EVOLNI EN BETA DANS VEC2ND (IDEM EN RHO_CP DANS VEC2NI)
 ! ON ASSEMBLE LA MATRICE A = TANGENTE (MTAN_*) + DIRICHLET
-    call nxacmv(modele, mate, carele, fomult, charge,&
-                lischa, infoch, numedd, solveu, lostat,&
-                time, tpsthe, reasvc, reasvt, reasmt,&
-                reasrg, reasms, creas, vtemp, vhydr,&
-                tmpchi, tmpchf, vec2nd, vec2ni, matass,&
-                maprec, cndirp, cnchci, mediri, compor)
+    call nxacmv(model , mate  , cara_elem, list_load, numedd,&
+                solver, lostat, time     , tpsthe   , reasvc,&
+                reasvt, reasmt, reasrg   , reasms   , creas ,&
+                vtemp , vhydr , tmpchi   , tmpchf   , vec2nd,&
+                vec2ni, matass, maprec   , cndirp   , cnchci,&
+                mediri, compor)
 !
 ! ======================================================================
 !                        PHASE DE PREDICTION
@@ -305,11 +292,11 @@ subroutine op0186()
 ! SYSTEME LINEAIRE RESOLU:  A * (T+,1 - T-) = B
 ! SOLUTION: VTEMP= T- ET VTEMPM = T+,1
 !
-    call nxpred(modele, mate, carele, charge, infoch,&
-                numedd, solveu, lostat, time, neq,&
-                matass, maprec, vtemp, vtempm, vtempp,&
-                vhydr, vhydrp, tmpchi, tmpchf, compor,&
-                cndirp, cnchci, vec2nd, vec2ni)
+    call nxpred(model , mate  , cara_elem, list_load, numedd,&
+                solver, lostat, time     , neq      , matass,&
+                maprec, vtemp , vtempm   , vtempp   , vhydr ,&
+                vhydrp, tmpchi, tmpchf   , compor   , cndirp,&
+                cnchci, vec2nd, vec2ni)
 !
 ! ======================================================================
 !              ITERATIONS DE LA METHODE DE NEWTON-RAPHSON
@@ -330,8 +317,8 @@ subroutine op0186()
     reasma = .false.
     kreas = 'NON'
     if (iterat .ge. itmax) itemax = .true.
-    if ((parmei(1).ne.0)) then
-        if (mod(iterat,parmei(1)) .eq. 0) then
+    if ((ther_para_i(1).ne.0)) then
+        if (mod(iterat,ther_para_i(1)) .eq. 0) then
             reasma = .true.
             kreas = 'OUI'
         endif
@@ -342,13 +329,12 @@ subroutine op0186()
 ! SYSTEME LINEAIRE RESOLU:  A * (T+,I+1 - T+,I) = B
 ! SOLUTION: VTEMPP = T+,I+1 - T+,I
 !
-    call nxnewt(modele, mate, carele, charge, lischa,&
-                infoch, numedd, solveu, time, neq,&
-                matass, maprec, cnchci, vtemp, vtempm,&
-                vtempp, vec2nd, mediri, conver, vhydr,&
-                vhydrp, tmpchi, tmpchf, compor, vabtla,&
-                cnresi, parcri, parcrr, reasma, testr,&
-                testm)
+    call nxnewt(model      , mate  , cara_elem, list_load, numedd     ,&
+                solver     , time  , neq      , matass   , maprec     ,&
+                cnchci     , vtemp , vtempm   , vtempp   , vec2nd     ,&
+                mediri     , conver, vhydr    , vhydrp   , tmpchi     ,&
+                tmpchf     , compor, vabtla   , cnresi   , ther_crit_i,&
+                ther_crit_r, reasma, testr    , testm)
 !
 ! --- SI NON CONVERGENCE ALORS RECHERCHE LINEAIRE
 !       (CALCUL DE RHO) SUR L INCREMENT VTEMPP
@@ -361,11 +347,11 @@ subroutine op0186()
 !
 ! ON CALCULE LE RHO/ VTEMPR = T+,I+1BIS = T+,1 + RHO * (T+,I+1 - T+,I)
 ! MINIMISE VEC2ND - RESI_THER(T+,I+1BIS) - (BT)*LAGRANGE
-            call nxrech(modele, mate, carele, charge, infoch,&
-                        numedd, time, neq, compor, vtempm,&
-                        vtempp, vtempr, vtemp, vhydr, vhydrp,&
-                        tmpchi, tmpchf, vec2nd, vabtla, cnresi,&
-                        rho, iterho, parmer, parmei)
+            call nxrech(model , mate       , cara_elem  , list_load, numedd,&
+                        time  , neq        , compor     , vtempm   , vtempp,&
+                        vtempr, vtemp      , vhydr      , vhydrp   , tmpchi,&
+                        tmpchf, vec2nd     , vabtla     , cnresi   , rho   ,&
+                        iterho, ther_para_r, ther_para_i)
         else
             rho = 1.d0
         endif
@@ -461,8 +447,8 @@ subroutine op0186()
     else
         force = .false.
     endif
-    call ntarch(numins, modele, mate, carele, lnonl,&
-                para, sddisc, sdcrit, sdieto, lisch2,&
+    call ntarch(numins, model, mate, cara_elem, l_ther_nonl,&
+                para, sddisc, sdcrit, sdieto, list_load_save,&
                 force)
 !
 ! - Make observation

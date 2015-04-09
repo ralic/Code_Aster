@@ -15,23 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 #include "asterf_types.h"
 !
 interface
-    subroutine nxpred(modele, mate, carele, charge, infoch,&
-                      numedd, solveu, lostat, time, lonch,&
-                      matass, maprec, vtemp, vtempm, vtempp,&
-                      vhydr, vhydrp, tmpchi, tmpchf, compor,&
-                      cndirp, cnchci, vec2nd, vec2ni)
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        character(len=24) :: charge
-        character(len=24) :: infoch
-        character(len=24) :: numedd
-        character(len=19) :: solveu
+    subroutine nxpred(model , mate  , cara_elem, list_load, nume_dof,&
+                      solver, lostat, time     , lonch    , matass  ,&
+                      maprec, vtemp , vtempm   , vtempp   , vhydr   ,&
+                      vhydrp, tmpchi, tmpchf   , compor   , cndirp  ,&
+                      cnchci, vec2nd, vec2ni)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        character(len=19), intent(in) :: list_load
+        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: solver
+        character(len=24), intent(in) :: time
         aster_logical :: lostat
-        character(len=24) :: time
         integer :: lonch
         character(len=24) :: matass
         character(len=19) :: maprec

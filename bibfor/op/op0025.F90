@@ -1,6 +1,29 @@
 subroutine op0025()
 !
-! ----------------------------------------------------------------------
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/etausr.h"
+#include "asterfort/assert.h"
+#include "asterfort/detmat.h"
+#include "asterfort/didern.h"
+#include "asterfort/diinst.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/infniv.h"
+#include "asterfort/medith.h"
+#include "asterfort/ntarch.h"
+#include "asterfort/ntinit.h"
+#include "asterfort/ntreso.h"
+#include "asterfort/nxlect.h"
+#include "asterfort/sigusr.h"
+#include "asterfort/titre.h"
+#include "asterfort/utmess.h"
+#include "asterfort/uttcpr.h"
+#include "asterfort/uttcpu.h"
+#include "asterfort/vtcreb.h"
+#include "asterfort/xthpos.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,130 +40,78 @@ subroutine op0025()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     COMMANDE:  THER_LINEAIRE
-! ----------------------------------------------------------------------
 ! person_in_charge: jessica.haelewyn at edf.fr
 !
-    implicit none
+
+
 !
-! 0.1. ==> ARGUMENTS
+! --------------------------------------------------------------------------------------------------
 !
+! COMMAND:  THER_LINEAIRE
 !
-! 0.2. ==> COMMUNS
-!
-!
-!
-!
-! 0.3. ==> VARIABLES LOCALES
-!
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/etausr.h"
-#include "asterfort/assert.h"
-#include "asterfort/detmat.h"
-#include "asterfort/didern.h"
-#include "asterfort/diinst.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/medith.h"
-#include "asterfort/ntarch.h"
-#include "asterfort/ntinit.h"
-#include "asterfort/ntreso.h"
-#include "asterfort/nxlect.h"
-#include "asterfort/sigusr.h"
-#include "asterfort/titre.h"
-#include "asterfort/utmess.h"
-#include "asterfort/uttcpr.h"
-#include "asterfort/uttcpu.h"
-#include "asterfort/vtcreb.h"
-#include "asterfort/xthpos.h"
-    character(len=6) :: nompro
-    parameter ( nompro = 'OP0025' )
+! --------------------------------------------------------------------------------------------------
 !
     integer :: vali
     integer :: ifm, niv, iret
-    integer :: numins
-    integer :: parmei(2), parcri(3)
-!
-    real(kind=8) :: parmer(2), parcrr(2), para(2), valr(2)
+    integer :: nume_inst
+    integer :: ther_para_i(2), ther_crit_i(3)
+    real(kind=8) :: ther_para_r(2), ther_crit_r(2), para(2), valr(2)
     real(kind=8) :: tpsthe(6), tps1(4), deltat, deltam
     real(kind=8) :: theta, instap
-!
-    aster_logical :: matcst, coecst, lostat, levol, asme, asms, finpas, lnonl
+    aster_logical :: matcst, coecst, lostat, levol, asme, asms, finpas, l_ther_nonl
     aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, force
-!
     character(len=1) :: creas
-    character(len=8) :: evolsc, mailla
-    character(len=19) :: maprec, solveu, lischa, lisch2, sddisc, sdcrit
-    character(len=24) :: result, modele, charge, carele
-    character(len=24) :: fomult, numedd
+    character(len=8) :: result_dry, mesh
+    character(len=19) :: maprec, solver, list_load_save, sddisc, sdcrit, list_load
+    character(len=24) :: result, model, cara_elem
+    character(len=24) :: nume_dof
     character(len=24) :: mediri, matass
     character(len=24) :: cndirp, cnchci, time
-    character(len=24) :: infoch, mate
+    character(len=24) :: mate
     character(len=24) :: vec2nd
     character(len=24) :: compor, sdieto
 !
-! ----------------------------------------------------------------------
-!
-    data result  /' '/
-    data sdcrit  /'&&OP0025.CRIT.'/
-    data mediri  /' '/
-    data cndirp  /' '/
-    data cnchci  /' '/
-    data tpsthe  /6*0.d0/
-    data sddisc  /'&&OP0025.SDDISC'/
-!
-! DEB ------------------------------------------------------------------
-!====
-! 1. PREALABLES
-!====
-!
-    call jemarq()
-!
-!-----RECUPERATION DU NIVEAU D'IMPRESSION
+! --------------------------------------------------------------------------------------------------
 !
     call infmaj()
     call infniv(ifm, niv)
 !
-!-----------------------------------------------------------------------
-    asme = .true.
-    asms = .false.
+! - Initializations
 !
-! 1.2. ==> NOM DES STRUCTURES
+    tpsthe(1:6) = 0.d0
+    asme        = .true.
+    asms        = .false.
+    solver      = '&&OP0025.SOLVEUR'
+    list_load   = '&&OP0025.LIST_LOAD'
+    maprec      = '&&OP0025.MAT_PRECON'
+    vec2nd      = '&&OP0025.2ND_MEMBRE'
+    matass      = '&&OP0025.MATR_ASSEM'
+    result      = ' '
+    sdcrit      = '&&OP0025.CRIT.'
+    mediri      = ' '
+    cndirp      = ' '
+    cnchci      = ' '
+    sddisc      = '&&OP0025.SDDISC'
 !
-    solveu = '&&'//nompro//'.SOLVEUR   '
-    lischa = '&&'//nompro//'_INFCHA    '
-    maprec = '&&'//nompro//'_MAT_PRECON'
-    vec2nd = '&&'//nompro//'_2ND_MEMBRE     '
-    matass = '&&'//nompro//'_MATR_ASSEM     '
+! - Read parameters
 !
-!====
-! 2. LES DONNEES
-!====
-!
-! 2.1. ==> LECTURE DES OPERANDES DE LA COMMANDE
-!
-    call nxlect(result, modele, mate, carele, matcst,&
-                coecst, fomult, lischa, charge, infoch,&
-                parmei, parmer, solveu, parcri, parcrr,&
-                compor, evolsc)
-    para(1) = parmer(1)
+    l_ther_nonl = .false.
+    call nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
+                ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
+                result     , model      , mate      , cara_elem  , compor     )
+    para(1) = ther_para_r(1)
     para(2) = 0.d0
 !
-! 2.3. ==> LECTURE DE L'ETAT INITIAL ET DES DONNEES D'INCREMENTATION
+! - Initial state and some parameters
 !
-    call ntinit(result, modele, mate, carele, lischa,&
-                lisch2, solveu, para, numedd, lostat,&
-                levol, lnonl, sddisc, sdieto, mailla,&
-                sdcrit, time)       
-    ASSERT(.not.lnonl)
+    call ntinit(result        , model      , mate  , cara_elem, list_load,&
+                list_load_save, solver     , para  , nume_dof , lostat   ,&
+                levol         , l_ther_nonl, sddisc, sdieto   , mesh     ,&
+                sdcrit        , time)
 !
-! 2.5. ==> CALCUL DES MATRICES ELEMENTAIRES DES DIRICHLETS
+! - Elementary matrix for Dirichlet BC
 !
-    call medith(modele, charge, infoch, mediri)
+    call medith(model, list_load, mediri)
 !
 ! 2.6. ==> PILOTAGE DES REACTUALISATIONS DES ASSEMBLAGES
 !     REASVT : INSTANTS, DIRICHLET, TERMES DU TRANSITOIRE
@@ -158,16 +129,16 @@ subroutine op0025()
 !
     if (lostat) then
         asms = .true.
-        numins=0
+        nume_inst=0
     else
-        numins=1
+        nume_inst=1
     endif
 !
     deltat=-1.d150
 !
-! 2.6. ==> CREATION DES STRUCTURES
+! - Create empty second member
 !
-    call vtcreb(vec2nd, 'V', 'R', nume_ddlz = numedd)
+    call vtcreb(vec2nd, 'V', 'R', nume_ddlz = nume_dof)
 !
 !====
 ! 3. BOUCLES SUR LES PAS DE TEMPS
@@ -191,16 +162,16 @@ subroutine op0025()
             deltat=-1.d150
             theta=1.d0
         else
-            instap=diinst(sddisc, numins)
+            instap=diinst(sddisc, nume_inst)
             deltam=deltat
             deltat=-1.d150
             theta=1.d0
         endif
     else
-        instap = diinst(sddisc, numins)
+        instap = diinst(sddisc, nume_inst)
         deltam=deltat
-        deltat = instap-diinst(sddisc, numins-1)
-        theta=parmer(1)
+        deltat = instap-diinst(sddisc, nume_inst-1)
+        theta=ther_para_r(1)
     endif
     para(2) = deltat
 ! --- MATRICE TANGENTE REACTUALISEE POUR UN NOUVEAU DT
@@ -221,25 +192,25 @@ subroutine op0025()
 !
 ! 3.2.2.2. ==> RESOLUTION
 !
-    call ntreso(modele, mate, carele, fomult, charge,&
-                lischa, infoch, numedd, solveu, lostat,&
-                time, tpsthe, reasvc, reasvt, reasmt,&
-                reasrg, reasms, creas, vec2nd, matass,&
-                maprec, cndirp, cnchci, mediri, compor)
+    call ntreso(model , mate  , cara_elem, list_load, nume_dof,&
+                solver, lostat, time     , tpsthe   , reasvc  ,&
+                reasvt, reasmt, reasrg   , reasms   , creas   ,&
+                vec2nd, matass, maprec   , cndirp   , cnchci  ,&
+                mediri, compor)
 !
     reasrg = .false.
     reasms = .false.
 !
 !
-! ------- ARCHIVAGE
+! - Save results
 !
     if (lostat) then
         force = .true.
     else
         force = .false.
     endif
-    call ntarch(numins, modele, mate, carele, lnonl,&
-                para, sddisc, sdcrit, sdieto, lisch2,&
+    call ntarch(nume_inst, model , mate  , cara_elem, l_ther_nonl   ,&
+                para     , sddisc, sdcrit, sdieto   , list_load_save,&
                 force)
 !
 ! ------- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
@@ -250,24 +221,24 @@ subroutine op0025()
 !
 ! 3.2.3. ==> GESTION DU TEMPS CPU
 !
-    finpas = didern(sddisc, numins)
+    finpas = didern(sddisc, nume_inst)
 !
     call uttcpu('CPU.OP0025', 'FIN', ' ')
     call uttcpr('CPU.OP0025', 4, tps1)
     if (tps1(4) .gt. .95d0*tps1(1)-tps1(4)) then
-        vali = numins
+        vali = nume_inst
         valr(1) = tps1(4)
         valr(2) = tps1(1)
         call utmess('Z', 'ALGORITH16_68', si=vali, nr=2, valr=valr,&
                     num_except=28)
     else
         write (ifm,'(A,1X,I6,2(1X,A,1X,1PE11.3))') 'NUMERO D''ORDRE:',&
-        numins,'INSTANT:',instap, 'DUREE MOYENNE:',tps1(4)
+        nume_inst,'INSTANT:',instap, 'DUREE MOYENNE:',tps1(4)
     endif
     if (lostat) then
         lostat=.false.
     endif
-    numins = numins + 1
+    nume_inst = nume_inst + 1
 !
     if (finpas) goto 41
 !
@@ -285,11 +256,9 @@ subroutine op0025()
 !
 ! --- POST TRAITEMENT SPECIFIQUE X-FEM : CALCUL / STOCKAGE DE TEMP_ELGA
 !
-    call exixfe(modele, iret)
+    call exixfe(model, iret)
     if (iret .ne. 0) then
-        call xthpos(result, modele)
+        call xthpos(result, model)
     endif
-!
-    call jedema()
 !
 end subroutine

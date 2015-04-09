@@ -23,7 +23,7 @@ interface
         character(len=24), intent(out) :: model
         character(len=24), intent(out) :: cara_elem
         character(len=24), intent(out) :: mate
-        character(len=19), intent(out) :: list_load
+        character(len=19), intent(inout) :: list_load
         character(len=8), optional, intent(in) :: result
         integer, optional, intent(in) :: nume_store
         aster_logical, optional, intent(out) :: matcst_

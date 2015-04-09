@@ -32,7 +32,7 @@ implicit none
     character(len=24), intent(out) :: model
     character(len=24), intent(out) :: cara_elem
     character(len=24), intent(out) :: mate
-    character(len=19), intent(out) :: list_load
+    character(len=19), intent(inout) :: list_load
     character(len=8), optional, intent(in) :: result
     integer, optional, intent(in) :: nume_store
     aster_logical, optional, intent(out) :: matcst_
@@ -78,7 +78,6 @@ implicit none
     matcst      = .true.
 !
     call getres(k8bid, k16bid, nomcmd)
-    if (nomcmd .eq. 'LIRE_RESU') goto 500
 !
     if ((nomcmd.eq.'CALC_CHAMP') .or. (nomcmd.eq.'POST_ELEM')) then
         call rslesd(result        , nume_store, model, materi, cara_elem,&
@@ -95,8 +94,6 @@ implicit none
     if (materi .ne. ' ') then
         call rcmfmc(materi, mate)
     endif
-!
-500 continue
 !
 ! - Get loads information and create datastructure
 !

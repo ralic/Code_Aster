@@ -15,19 +15,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine nxrech(modele, mate, carele, charge, infoch,&
-                      numedd, time, lonch, compor, vtempm,&
-                      vtempp, vtempr, vtemp, vhydr, vhydrp,&
-                      tmpchi, tmpchf, vec2nd, cnvabt, cnresi,&
-                      rho, iterho, parmer, parmei)
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        character(len=24) :: charge
-        character(len=24) :: infoch
-        character(len=24) :: numedd
-        character(len=24) :: time
+    subroutine nxrech(model , mate       , cara_elem  , list_load, numedd,&
+                      time  , lonch      , compor     , vtempm   , vtempp,&
+                      vtempr, vtemp      , vhydr      , vhydrp   , tmpchi,&
+                      tmpchf, vec2nd     , cnvabt     , cnresi   , rho   ,&
+                      iterho, ther_para_r, ther_para_i)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        character(len=19), intent(in) :: list_load
+        character(len=24), intent(in) :: numedd
+        character(len=24), intent(in) :: time
         integer :: lonch
         character(len=24) :: compor
         character(len=24) :: vtempm
@@ -43,7 +44,7 @@ interface
         character(len=24) :: cnresi
         real(kind=8) :: rho
         integer :: iterho
-        real(kind=8) :: parmer(2)
-        integer :: parmei(2)
+        real(kind=8) :: ther_para_r(*)
+        integer :: ther_para_i(*)
     end subroutine nxrech
 end interface

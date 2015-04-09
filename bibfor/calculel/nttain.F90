@@ -1,8 +1,22 @@
-subroutine nttain(modele, mate, carele, charge, infoch,&
-                  numedd, solveu, time, epsr, lonch,&
-                  matass, maprec, cnchci, cnresi, vtemp,&
-                  vtempm, vtempp, vec2nd, chlapm, chlapp,&
-                  ci1, ci2, testi)
+subroutine nttain(model , mate  , cara_elem, list_load, nume_dof,&
+                  solver, time  , epsr     , lonch    , matass  ,&
+                  maprec, cnchci, cnresi   , vtemp    , vtempm  ,&
+                  vtempp, vec2nd, chlapm   , chlapp   , ci1     ,&
+                  ci2   , testi)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/copisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/resoud.h"
+#include "asterfort/vetrth.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,65 +36,59 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 ! ======================================================================
 ! aslint: disable=W1504
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/asasve.h"
-#include "asterfort/ascova.h"
-#include "asterfort/copisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/resoud.h"
-#include "asterfort/vetrth.h"
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: solver
+    character(len=24), intent(in) :: time
     integer :: lonch
     real(kind=8) :: epsr, testi
     character(len=1) :: ci1, ci2
-    character(len=19) :: solveu, maprec
-    character(len=24) :: modele, mate, carele, charge, infoch, numedd, time
+    character(len=19) :: maprec
     character(len=24) :: matass, cnchci, cnresi
     character(len=24) :: vtemp, vtempm, vtempp, vec2nd, chlapm, chlapp
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! COMMANDE THER_MOBI_NLINE : ITERATIONS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 !     IN  VTEMP  : CHAMP DE TEMPERATURE A L'INSTANT PRECEDENT
 !     VAR VTEMPM : ITERE PRECEDENT DU CHAMP DE TEMPERATURE
 !     OUT VTEMPP : ITERE COURANT   DU CHAMP DE TEMPERATURE
 !
+! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8) :: cbid
-!
-!
     integer :: k,  j2nd,  jtempp
     real(kind=8) :: r8bid, testn
     character(len=1) :: typres
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, criter
-!
-!-----------------------------------------------------------------------
+    character(len=24) :: lload_name, lload_info
     integer :: iret
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: temp(:) => null()
     real(kind=8), pointer :: vare(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
-!-----------------------------------------------------------------------
-    data typres        /'R'/
-    data chsol         /'&&NTTAIN.SOLUTION'/
-    data bidon         /'&&FOMULT.BIDON'/
-    data veresi        /'&&VERESI           .RELR'/
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     varesi = '&&VARESI'
     criter = '&&RESGRA_GCPC'
+    typres = 'R'
+    chsol  = '&&NTTAIN.SOLUTION'
+    bidon  = '&&FOMULT.BIDON'
+    veresi = '&&VERESI           .RELR'
 !
     ci1 = ' '
     ci2 = ' '
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
 !
 ! --- RECUPERATION D'ADRESSES
 !
@@ -90,13 +98,13 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
 !
 ! --- VECTEURS ELEMENTAIRES DU SEGOND MEMBRE
 !
-    call vetrth(modele, charge, infoch, carele, mate,&
+    call vetrth(model, lload_name, lload_info, cara_elem, mate,&
                 time, vtemp, vtempm, chlapm, chlapp,&
                 veresi)
 !
 ! --- ASSEMBLAGE DU SEGOND MEMBRE
 !
-    call asasve(veresi, numedd, typres, varesi)
+    call asasve(veresi, nume_dof, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
     call jeveuo(cnresi(1:19)//'.VALE', 'L', vr=vare)
@@ -108,7 +116,7 @@ subroutine nttain(modele, mate, carele, charge, infoch,&
         zr(jtempp+k-1) = zr(j2nd+k-1) + vare(k)
     end do
 !
-    call resoud(matass, maprec, solveu, cnchci, 0,&
+    call resoud(matass, maprec, solver, cnchci, 0,&
                 vtempp, chsol, 'V', [0.d0], [cbid],&
                 criter, .true._1, 0, iret)
 !

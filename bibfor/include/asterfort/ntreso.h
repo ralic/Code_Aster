@@ -15,23 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 #include "asterf_types.h"
 !
 interface
-    subroutine ntreso(modele, mate, carele, fomult, charge,&
-                      lischa, infoch, numedd, solveu, lostat,&
-                      time, tpsthe, reasvc, reasvt, reasmt,&
-                      reasrg, reasms, creas, vec2nd, matass,&
-                      maprec, cndirp, cnchci, mediri, compor)
-        character(len=24) :: modele
+    subroutine ntreso(model , mate  , cara_elem, list_load, nume_dof,&
+                      solver, lostat, time     , tpsthe   , reasvc  ,&
+                      reasvt, reasmt, reasrg   , reasms   , creas   ,&
+                      vec2nd, matass, maprec   , cndirp   , cnchci  ,&
+                      mediri, compor)
+        character(len=24) :: model
         character(len=24) :: mate
-        character(len=24) :: carele
-        character(len=24) :: fomult
-        character(len=24) :: charge
-        character(len=19) :: lischa
-        character(len=24) :: infoch
-        character(len=24) :: numedd
-        character(len=19) :: solveu
+        character(len=24) :: cara_elem
+        character(len=19) :: list_load
+        character(len=24) :: nume_dof
+        character(len=19) :: solver
         aster_logical :: lostat
         character(len=24) :: time
         real(kind=8) :: tpsthe(6)

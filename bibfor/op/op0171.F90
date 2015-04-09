@@ -1,28 +1,6 @@
 subroutine op0171()
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
-! ----------------------------------------------------------------------
-!     COMMANDE:  THER_NON_LINE_MO
-!
-!
-!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -65,42 +43,56 @@ subroutine op0171()
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+! --------------------------------------------------------------------------------------------------
+!
+! THER_NON_LINE_MO
+!
+! --------------------------------------------------------------------------------------------------
+!
     aster_logical :: matcst, coecst, prem, reasmt, reasvt
     integer :: parcri(9), iifm, jlagp, jinst
-    integer :: ibid, k, iret
+    integer :: k, iret
     integer :: itmaxl, iterl, ifm, niv, num
     integer :: iocc, n1, n2
     integer :: jtemp, jtempm, jtempp, j2nd, lonch, lglap
-    integer :: jlcha, nchar, jinfc
-    integer :: i, jfcha, ialifc
     real(kind=8) :: tpsthe(6), tpsnp1, testn, testr
     real(kind=8) :: tps1(4), tps2(4), tpex
     real(kind=8) :: parcrr(9), testi, epsr, epsl
     real(kind=8) :: r8aux(1)
     character(len=1) :: ci1, ci2, creas, ce1, ce2
     character(len=8) :: k8bid
-    character(len=16) :: k16bid, nomcmd, nomcvg
-    character(len=19) :: list_load, solveu, maprec, lischa
-    character(len=24) :: modele, mate, carele, fomult, charge, infoch
+    character(len=16) :: k16bid, nomcvg
+    character(len=19) :: list_load, solver, maprec, list_load_save
+    character(len=24) :: model, mate, cara_elem
     character(len=24) :: nomch, vtemp, vtempm, vtempp, vec2nd
     character(len=24) :: result, ligrmo, tempev, tempin
-    character(len=24) :: time, mediri, matass, noojb, numedd
+    character(len=24) :: time, mediri, matass, noojb, nume_dof
     character(len=24) :: cndirp, cnchci, cnchtp
     character(len=24) :: chlapm, chlapp, cnresi, noobj
     character(len=76) :: fmt
     integer :: vali(2)
     real(kind=8) :: valr(2)
-    integer, pointer :: infc(:) => null()
-    character(len=24), pointer :: lcha(:) => null()
     real(kind=8), pointer :: lagpm(:) => null()
     real(kind=8), pointer :: lagpp(:) => null()
 !
-! ----------------------------------------------------------------------
-!
-    data list_load                 /'&&OP0171.INFCHA'/
-    data solveu                 /'&&OP0171.SOLVEUR'/
     data maprec                 /'&&OP0171.MAPREC'/
-    data result  /' '/
     data cndirp,cnchtp          /2*' '/
     data cnchci,cnresi    /2*' '/
     data chlapm,chlapp          /'&&OP0171.CLPM','&&OP0171.CLPP'/
@@ -110,44 +102,36 @@ subroutine op0171()
     data matass                 /'&&MTHASS'/
     data fmt                    /'(76(''*''))'/
 !
-! ======================================================================
-!                    RECUPERATION DES OPERANDES
-! ======================================================================
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-!
-!-----RECUPERATION DU NIVEAU D'IMPRESSION
-!
     call infmaj()
-!
     call infniv(ifm, niv)
-!---------------------------------------------------------------------
+!
     ce1 = ' '
     ce2 = ' '
+    solver    = '&&OP0171.SOLVER'
+    list_load = '&&OP0171.LISCHA'
 !
+! - Get datastructure for results
 !
-!     DETERMINATION DU NOM DE LA SD INFO_CHARGE
-!             12345678    90123    45678901234
+    call getres(result, k16bid, k8bid)
+!
+! - Read parameters
+!
+    call ntdoth(model, mate, cara_elem, list_load,&
+                matcst_ = matcst, coecst_ = coecst )
+!
+! - Save list of loads in results datastructure
+!
     noobj ='12345678'//'.1234'//'.EXCIT.INFC'
     call gnomsd(' ', noobj, 10, 13)
-    lischa = noobj(1:19)
-!
-! --- LECTURE DES OPERANDES DE LA COMMANDE
-!
-! --- NOM UTILISATEUR DU CONCEPT RESULTAT CREE PAR LA COMMANDE
-!
-    call getres(result, k16bid, nomcmd)
-!
-! --- DONNEES
-!
-    call ntdoth(modele, mate, carele, lischa, k8bid, &
-                ibid  , matcst_ = matcst, coecst_ = coecst )
-    charge = list_load//'.LCHA'
-    infoch = list_load//'.INFC'
-    fomult = list_load//'.FCHA'
+    list_load_save = noobj(1:19)
+    call copisd('LISTE_CHARGES', 'G', list_load, list_load_save)
 !
 ! --- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR
 !
-    call cresol(solveu)
+    call cresol(solver)
 !
 ! --- RECUPERATION DU CRITERE DE CONVERGENCE
 !
@@ -178,11 +162,11 @@ subroutine op0171()
 ! --- NUMEROTATION ET CREATION DU PROFIL DE LA MATRICE
     noojb='12345678.00000.NUME.PRNO'
     call gnomsd(' ', noojb, 10, 14)
-    numedd=noojb(1:14)
-    call numero(numedd, solveu, 'VG',&
-                modelz = modele , list_loadz = list_load)
+    nume_dof=noojb(1:14)
+    call numero(nume_dof, solver, 'VG',&
+                modelz = model , list_loadz = list_load)
 !
-    call vtcreb(vtemp, 'V', 'R', nume_ddlz=numedd)
+    call vtcreb(vtemp, 'V', 'R', nume_ddlz=nume_dof)
 !
 !
     call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=tempev, nbret=n1)
@@ -198,7 +182,7 @@ subroutine op0171()
     endif
 ! ======================================================================
 !
-    ligrmo = modele(1:8)//'.MODELE'
+    ligrmo = model(1:8)//'.MODELE'
     r8aux(1) = 0.d0
     call mecact('V', chlapm, 'MODELE', ligrmo, 'NEUT_R',&
                 ncmp=1, nomcmp='X1', sr=r8aux(1))
@@ -208,7 +192,7 @@ subroutine op0171()
 !
 ! --- MATRICE DE RIGIDITE ASSOCIEE AUX LAGRANGE
 !
-    call medith(modele, charge, infoch, mediri)
+    call medith(model, list_load, mediri)
 !
 ! ======================================================================
 !
@@ -262,11 +246,10 @@ subroutine op0171()
 !
 ! --- ACTUALISATION EVENTUELLE DES VECTEURS ET DES MATRICES
 !
-    call nttcmv(modele, mate, carele, fomult, charge,&
-                list_load, infoch, numedd, solveu, time,&
-                chlapm, tpsthe, tpsnp1, reasvt, reasmt,&
-                creas, vtemp, vtempm, vec2nd, matass,&
-                maprec, cndirp, cnchci, cnchtp)
+    call nttcmv(model , mate  , cara_elem, list_load, nume_dof,&
+                solver, time  , tpsthe   , tpsnp1   , reasvt  ,&
+                reasmt, creas , vtemp    , vtempm   , vec2nd  ,&
+                matass, maprec, cndirp   , cnchci   , cnchtp)
     reasmt = .true.
     reasvt = .false.
 !
@@ -280,11 +263,11 @@ subroutine op0171()
 !
 ! - ITERATIONS INTERNES
 !
-        call nttain(modele, mate, carele, charge, infoch,&
-                    numedd, solveu, time, epsr, lonch,&
-                    matass, maprec, cnchci, cnresi, vtemp,&
-                    vtempm, vtempp, vec2nd, chlapm, chlapp,&
-                    ci1, ci2, testi)
+        call nttain(model , mate  , cara_elem, list_load, nume_dof,&
+                    solver, time  , epsr     , lonch    , matass  ,&
+                    maprec, cnchci, cnresi   , vtemp    , vtempm  ,&
+                    vtempp, vec2nd, chlapm   , chlapp   , ci1     ,&
+                    ci2   , testi)
 !
 ! - ACTUALISATION DU CHAMP ENTHALPIE
 !
@@ -351,25 +334,6 @@ subroutine op0171()
 !
 ! --- FIN DES ITERATIONS
 !
-! --- COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE
-    call getfac('EXCIT', nchar)
-    call jedetr(lischa//'.LCHA')
-    call wkvect(lischa//'.LCHA', 'G V K24', nchar, jlcha)
-    call jeveuo(list_load//'.LCHA', 'L', vk24=lcha)
-    call jedetr(lischa//'.FCHA')
-    call wkvect(lischa//'.FCHA', 'G V K24', nchar, jfcha)
-    call jeveuo(fomult, 'L', ialifc)
-    do i = 1, nchar
-        zk24(jlcha+i-1)=lcha(i)
-        zk24(jfcha+i-1)=zk24(ialifc+i-1)
-    end do
-    call jedetr(lischa//'.INFC')
-    call wkvect(lischa//'.INFC', 'G V IS', 2*nchar+1, jinfc)
-    call jeveuo(list_load//'.INFC', 'L', vi=infc)
-    do i = 1, 2*nchar+1
-        zi(jinfc+i-1)=infc(i)
-    end do
-!
     call uttcpu('CPU.OP0171.1', 'FIN', ' ')
     call uttcpr('CPU.OP0171.1', 4, tps1)
     write(ifm,fmt)
@@ -393,8 +357,8 @@ subroutine op0171()
 !
 !      ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE
 !
-    call rssepa(result(1:8), 0, modele(1:8), mate(1:8), carele(1:8),&
-                lischa)
+    call rssepa(result(1:8), 0, model(1:8), mate(1:8), cara_elem(1:8),&
+                list_load_save)
 !
     call titre()
 !

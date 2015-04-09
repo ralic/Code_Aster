@@ -1,8 +1,21 @@
-subroutine nxrech(modele, mate, carele, charge, infoch,&
-                  numedd, time, lonch, compor, vtempm,&
-                  vtempp, vtempr, vtemp, vhydr, vhydrp,&
-                  tmpchi, tmpchf, vec2nd, cnvabt, cnresi,&
-                  rho, iterho, parmer, parmei)
+subroutine nxrech(model , mate       , cara_elem  , list_load, numedd,&
+                  time  , lonch      , compor     , vtempm   , vtempp,&
+                  vtempr, vtemp      , vhydr      , vhydrp   , tmpchi,&
+                  tmpchf, vec2nd     , cnvabt     , cnresi   , rho   ,&
+                  iterho, ther_para_r, ther_para_i)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8prem.h"
+#include "asterfort/asasve.h"
+#include "asterfort/ascova.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/verstp.h"
+#include "asterfort/vethbt.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,31 +33,25 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jessica.haelewyn at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8prem.h"
-#include "asterfort/asasve.h"
-#include "asterfort/ascova.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/verstp.h"
-#include "asterfort/vethbt.h"
-    integer :: parmei(2), lonch
-    real(kind=8) :: parmer(2), rho
-    character(len=24) :: modele, mate, carele, charge, infoch, numedd, time
+!
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: numedd
+    character(len=24), intent(in) :: time
+    integer :: ther_para_i(*), lonch
+    real(kind=8) :: ther_para_r(*), rho
     character(len=24) :: vtemp, vtempm, vtempp, vtempr, cnvabt, cnresi, vec2nd
     character(len=24) :: vhydr, vhydrp, compor, tmpchi, tmpchf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! COMMANDE THER_NON_LINE : RECHERCHE LINEAIRE
 ! DANS LA DIRECTION DONNEE PAR NEWTON (ON CHERCHE RHO).
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: i
     integer ::    j2nd, jvare, jbtla
@@ -57,16 +64,19 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: tempp(:) => null()
     real(kind=8), pointer :: tempr(:) => null()
+    character(len=24) :: lload_name, lload_info
     parameter (rhomin = -2.d0, rhomax = 2.d0)
     data typres        /'R'/
     data bidon         /'&&FOMULT.BIDON'/
     data veresi        /'&&VERESI           .RELR'/
     data vebtla        /'&&VETBTL           .RELR'/
 !
-!-----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     varesi = '&&VARESI'
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
 !
 ! --- RECUPERATION D'ADRESSES JEVEUX
 !
@@ -80,21 +90,21 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 ! --- RECHERCHE LINEAIRE (CALCUL DE RHO) SUR L'INCREMENT VTEMPP
 !
     f0 = 0.d0
-    do 330 i = 1, lonch
+    do i = 1, lonch
         f0 = f0 + tempp(i)*( zr(j2nd+i-1) - zr(jvare+i-1) - zr( jbtla+i-1) )
-330  end do
+    end do
 !
     rho0 = 0.d0
     rho = 1.d0
-    itrmax = parmei(2)+1
-    do 20 iterho = 1, itrmax
-        do 345 i = 1, lonch
+    itrmax = ther_para_i(2)+1
+    do iterho = 1, itrmax
+        do i = 1, lonch
             tempr(i) = tempm(i) + rho * tempp(i)
-345      continue
+        end do
 !
 ! --- VECTEURS RESIDUS ELEMENTAIRES - CALCUL ET ASSEMBLAGE
 !
-        call verstp(modele, charge, infoch, carele, mate,&
+        call verstp(model, lload_name, lload_info, cara_elem, mate,&
                     time, compor, vtemp, vtempr, vhydr,&
                     vhydrp, tmpchi, tmpchf, veresi)
         call asasve(veresi, numedd, typres, varesi)
@@ -104,7 +114,7 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
 !
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
-        call vethbt(modele, charge, infoch, carele, mate,&
+        call vethbt(model, lload_name, lload_info, cara_elem, mate,&
                     vtempr, vebtla)
         call asasve(vebtla, numedd, typres, vabtla)
         call ascova('D', vabtla, bidon, 'INST', r8bid,&
@@ -112,14 +122,16 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
         call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)
 !
         f1 = 0.d0
-        do 360 i = 1, lonch
+        do i = 1, lonch
             f1 = f1 + tempp(i) * ( zr(j2nd+i-1) - zr(jvare+i-1) - zr(jbtla+i-1) )
-360      continue
+        end do
         testm = 0.d0
-        do 100 k = 1, lonch
+        do k = 1, lonch
             testm = max( testm, abs(zr(j2nd+k-1)-zr(jvare+k-1)-zr( jbtla+k-1)))
-100      continue
-        if (testm .lt. parmer(2)) goto 9999
+        end do
+        if (testm .lt. ther_para_r(2)) then
+            goto 999
+        endif
 !
         if (iterho .eq. 1) then
             ffinal = f1
@@ -134,19 +146,20 @@ subroutine nxrech(modele, mate, carele, charge, infoch,&
             rho = -(f0*rhot-f1*rho0)/(f1-f0)
             if (rho .lt. rhomin) rho = rhomin
             if (rho .gt. rhomax) rho = rhomax
-            if (abs(rho-rhot) .lt. 1.d-08) goto 40
+            if (abs(rho-rhot) .lt. 1.d-08) then
+                goto 40
+            endif
         else
             goto 40
         endif
         rho0= rhot
         f0 = f1
-20  continue
+    end do
 40  continue
     rho=rhof
     f1=ffinal
 !
-!-----------------------------------------------------------------------
-9999  continue
+999 continue
     iterho = iterho - 1
     call jedema()
 end subroutine

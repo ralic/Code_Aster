@@ -1,4 +1,20 @@
-subroutine medith(modele, charge, infcha, mediri)
+subroutine medith(model, list_load, matr_elem)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/calcul.h"
+#include "asterfort/codent.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/memare.h"
+#include "asterfort/wkvect.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,67 +31,62 @@ subroutine medith(modele, charge, infcha, mediri)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
 !
-#include "jeveux.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/memare.h"
-#include "asterfort/wkvect.h"
-    character(len=24) :: modele, charge, infcha, mediri
+    character(len=24), intent(in) :: model
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(inout) :: matr_elem
 !
-! ----------------------------------------------------------------------
-! CALCUL DES MATRICES ELEMENTAIRES DES ELEMENTS DE LAGRANGE
+! --------------------------------------------------------------------------------------------------
 !
-! C'EST UNE RECOPIE DE MEDIME OU L'ON MODIFIE CHME EN CHTH
+! Thermics - Load
 !
+! Elementary matrix for Dirichlet BC
 !
-! IN  MODELE  : NOM DU MODELE
-! IN  CHARGE  : LISTE DES CHARGES
-! IN  INFCHA  : INFORMATIONS SUR LES CHARGEMENTS
-! OUT MEDIRI  : MATRICES ELEMENTAIRES
+! --------------------------------------------------------------------------------------------------
 !
+! In  model            : name of model
+! In  list_load        : name for list of loads
+! IO  matr_elem        : elementary matrix
 !
+! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: nomcha, lpain(1), lpaout(1)
-    character(len=19) :: matel
     character(len=16) :: option
     character(len=24) :: ligrch, lchin(1), lchout(1)
-    integer :: iret, nchar, ilires, jmed, ichar, jchar, jinf
+    integer :: iret, nb_load, ilires, jmed, i_load, jchar, jinf
+    character(len=24) :: lload_name, lload_info
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call jeexin(charge, iret)
-    if (iret .eq. 0) goto 20
-    call jelira(charge, 'LONMAX', nchar)
-    call jeveuo(charge, 'L', jchar)
-!
-    call jeexin(mediri, iret)
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
+    call jeexin(lload_name, iret)
     if (iret .eq. 0) then
-        matel = '&&METDIR           '
-        mediri = matel//'.RELR'
-        call memare('V', matel, modele(1:8), ' ', ' ',&
+        goto 99
+    endif
+    call jelira(lload_name, 'LONMAX', nb_load)
+    call jeveuo(lload_name, 'L', jchar)
+!
+    call jeexin(matr_elem, iret)
+    if (iret .eq. 0) then
+        matr_elem = '&&METDIR           .RELR'
+        call memare('V', matr_elem, model(1:8), ' ', ' ',&
                     'RIGI_THER')
-        call wkvect(mediri, 'V V K24', nchar, jmed)
+        call wkvect(matr_elem, 'V V K24', nb_load, jmed)
     else
-        call jeveuo(mediri, 'E', jmed)
+        call jeveuo(matr_elem, 'E', jmed)
     endif
 !
     lpaout(1) = 'PMATTTR'
-    lchout(1) = mediri(1:8)//'.ME001'
+    lchout(1) = matr_elem(1:8)//'.ME001'
 !
     if (zk24(jchar) .ne. '        ') then
         ilires = 0
-        call jeveuo(infcha, 'L', jinf)
-        do 10 ichar = 1, nchar
-            if (zi(jinf+ichar) .ne. 0) then
-                nomcha = zk24(jchar+ichar-1) (1:8)
+        call jeveuo(lload_info, 'L', jinf)
+        do i_load = 1, nb_load
+            if (zi(jinf+i_load) .ne. 0) then
+                nomcha = zk24(jchar+i_load-1) (1:8)
                 ligrch = nomcha//'.CHTH.LIGRE'
 !
                 call jeexin(nomcha//'.CHTH.LIGRE.LIEL', iret)
@@ -93,10 +104,12 @@ subroutine medith(modele, charge, infcha, mediri)
                 zk24(jmed+ilires) = lchout(1)
                 ilires = ilires + 1
             endif
-10      continue
-        call jeecra(mediri, 'LONUTI', ilires)
+10          continue
+        end do
+        call jeecra(matr_elem, 'LONUTI', ilires)
     endif
-20  continue
-! FIN ------------------------------------------------------------------
+!
+99  continue
+!
     call jedema()
 end subroutine

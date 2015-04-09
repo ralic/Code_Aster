@@ -1,8 +1,19 @@
-subroutine ntreso(modele, mate, carele, fomult, charge,&
-                  lischa, infoch, numedd, solveu, lostat,&
-                  time, tpsthe, reasvc, reasvt, reasmt,&
-                  reasrg, reasms, creas, vec2nd, matass,&
-                  maprec, cndirp, cnchci, mediri, compor)
+subroutine ntreso(model , mate  , cara_elem, list_load, nume_dof,&
+                  solver, lostat, time     , tpsthe   , reasvc  ,&
+                  reasvt, reasmt, reasrg   , reasms   , creas   ,&
+                  vec2nd, matass, maprec   , cndirp   , cnchci  ,&
+                  mediri, compor)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/getres.h"
+#include "asterfort/copisd.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/infniv.h"
+#include "asterfort/nxacmv.h"
+#include "asterfort/resoud.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,37 +33,20 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
 ! ======================================================================
 ! aslint: disable=W1504
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterfort/copisd.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/infniv.h"
-#include "asterfort/nxacmv.h"
-#include "asterfort/resoud.h"
     real(kind=8) :: tpsthe(6)
     character(len=1) :: creas
-    character(len=19) :: lischa, solveu, maprec
-    character(len=24) :: modele, mate, carele, fomult, charge, infoch, numedd
+    character(len=19) :: list_load, solver, maprec
+    character(len=24) :: model, mate, cara_elem, nume_dof
     character(len=24) :: time, vec2nd, matass, cndirp, cnchci, compor
     aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
 !     THERMIQUE LINEAIRE - RESOLUTION
 !     *                    ****
 !     COMMANDE:  THER_LINEAIRE
-! ----------------------------------------------------------------------
-!     SUBROUTINES APPELLEES:
-!       MESSAGE:INFMAJ,INFNIV.
-!       JEVEUX/SD:COPISD,DETRSD,RSEXCH,RSAGSD,RSNOCH.
-!       THERMIQUE: NXACMV,NTARCH.
-!       SOLVEUR EF: RESOUD.
 !
-!     FONCTIONS INTRINSEQUES:
-!       AUCUNE.
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=16) :: k16b1, k16b2
@@ -61,12 +55,16 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
     character(len=24) :: vtemp
     complex(kind=8) :: c16bid
     integer :: iret
+    character(len=24) :: lload_name, lload_info, lload_func
     c16bid = dcmplx(0.d0, 0.d0)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
 !
+    lload_name = list_load(1:19)//'.LCHA'
+    lload_info = list_load(1:19)//'.INFC'
+    lload_func = list_load(1:19)//'.FCHA'
     chsol = '&&NTRESO_SOLUTION  '
     criter = '&&NTRESO_RESGRA_GCPC    '
 !
@@ -74,15 +72,15 @@ subroutine ntreso(modele, mate, carele, fomult, charge,&
     vtemp='&&NXLECTVAR_____'
 !
 ! 1 ==> ASSEMBLAGE DU SECOND MEMBRE
-    call nxacmv(modele, mate, carele, fomult, charge,&
-                lischa, infoch, numedd, solveu, lostat,&
-                time, tpsthe, reasvc, reasvt, reasmt,&
-                reasrg, reasms, creas, vtemp, vhydr,&
-                tmpchi, tmpchf, vec2nd, vec2ni, matass,&
-                maprec, cndirp, cnchci, mediri, compor)
+    call nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
+                solver, lostat, time     , tpsthe   , reasvc,&
+                reasvt, reasmt, reasrg   , reasms   , creas ,&
+                vtemp , vhydr , tmpchi   , tmpchf   , vec2nd,&
+                vec2ni, matass, maprec   , cndirp   , cnchci,&
+                mediri, compor)
 !
 ! 2 ==> RESOLUTION AVEC VEC2ND COMME SECOND MEMBRE
-    call resoud(matass, maprec, solveu, cnchci, 0,&
+    call resoud(matass, maprec, solver, cnchci, 0,&
                 vec2nd, chsol, 'V', [0.d0], [c16bid],&
                 criter, .true._1, 0, iret)
 !
