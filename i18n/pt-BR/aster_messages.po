@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-26 18:15+0100\n"
-"PO-Revision-Date: 2015-03-26 12:53-0400\n"
+"POT-Creation-Date: 2015-04-09 17:24+0200\n"
+"PO-Revision-Date: 2015-04-09 11:23-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -5129,12 +5129,13 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"  problème dans le préconditionnement de la matrice MATAS par LDLT "
+"  Problème dans le préconditionnement de la matrice MATAS par LDLT "
 "incomplet\n"
-"  pivot nul à la ligne :  %(i1)d\n"
+"  pivot nul à la ligne %(i1)d correspondant au noeud %(k1)s et à la\n"
+"  composante %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:248
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:249
 #, python-format
 msgid ""
 "\n"
@@ -5142,14 +5143,14 @@ msgid ""
 "reconstitués %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:252
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:253
 #, python-format
 msgid ""
 "\n"
 " pas de mode statique pour le noeud :  %(k1)s  et sa composante :  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:256
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:257
 #, python-format
 msgid ""
 "\n"
@@ -5158,7 +5159,7 @@ msgid ""
 " composante   :  %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:262
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:263
 msgid ""
 "\n"
 " Solveur GCPC :\n"
@@ -5166,7 +5167,7 @@ msgid ""
 " "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:267
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:268
 #, python-format
 msgid ""
 "\n"
@@ -5175,7 +5176,7 @@ msgid ""
 " valeur de ALPHA  %(r2)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:273
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:274
 #, python-format
 msgid ""
 "\n"
@@ -5185,14 +5186,14 @@ msgid ""
 " "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:279
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:280
 #, python-format
 msgid ""
 "\n"
 " la valeur propre est :   %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:286
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:287
 #, python-format
 msgid ""
 "\n"
@@ -5203,28 +5204,28 @@ msgid ""
 " Par convention l'erreur modale est fixée à : %(r1)f.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:295
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:296
 #, python-format
 msgid ""
 "\n"
 " la réorthogonalisation diverge après  %(i1)d  itération(s).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:299
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:300
 #, python-format
 msgid ""
 "\n"
 " l'option de normalisation  %(k1)s  n'est pas implantée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:307
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:308
 #, python-format
 msgid ""
 "\n"
 " type de valeurs inconnu   %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:313
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:314
 #, python-format
 msgid ""
 "\n"
@@ -5232,7 +5233,7 @@ msgid ""
 " numéro d'erreur  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:321
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:322
 #, python-format
 msgid ""
 "\n"
@@ -5241,7 +5242,7 @@ msgid ""
 " Problème CHAM_NO %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:327
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:328
 #, python-format
 msgid ""
 "\n"
@@ -5251,7 +5252,7 @@ msgid ""
 " arrêt de la réorthogonalisation %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:334
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:335
 #, python-format
 msgid ""
 "\n"
@@ -5272,7 +5273,7 @@ msgid ""
 " des couples de valeurs propres normalement conjuguées.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:349
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:350
 #, python-format
 msgid ""
 "\n"
@@ -5293,25 +5294,25 @@ msgid ""
 " des couples de valeurs propres normalement conjuguées.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:364
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:365
 msgid ""
 "\n"
 " Problème généralisé complexe.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:368
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:369
 msgid ""
 "\n"
 " Problème quadratique complexe.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:372
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:373
 msgid ""
 "\n"
 " Problème quadratique.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:376
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline4.py:377
 #, python-format
 msgid ""
 "\n"
@@ -17341,26 +17342,47 @@ msgid ""
 "  Pour cela, vous devez choisir un DIST_MIN > %(r2)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:253
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:249
+msgid ""
+"\n"
+"Erreur utilisateur dans la commande PROJ_CHAMP :\n"
+"  La structure de données résultat à projeter ne contient que des champs "
+"'ELGA'.\n"
+"  La méthode de projection adaptée à ces champs est la méthode 'ECLA_PG' "
+"mais\n"
+"  elle ne fonctionne qu'avec un champ isolé (mot clé CHAM_GD).\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:256
+#, python-format
+msgid ""
+"\n"
+"Erreur utilisateur dans la commande PROJ_CHAMP :\n"
+"  On cherche à projeter un champ par éléments 'ELGA' isolé (mot clé "
+"CHAM_GD).\n"
+"  La méthode de projection doit être 'ECLA_PG' et non pas %(k1)s\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:266
 #, python-format
 msgid ""
 "\n"
 " composante non définie dans  la grandeur.  composante:  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:257
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:270
 #, python-format
 msgid ""
 "\n"
 "\n"
 " le nombre de composantes affectées n'est pas égal  au nombre de composantes "
-"a affecter\n"
+"à affecter\n"
 " occurrence de AFFE numéro %(i1)d\n"
 " nombre de composante affectées :  %(i2)d\n"
 " nombre de composante a affecter :  %(i3)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:265
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:278
 #, python-format
 msgid ""
 "\n"
@@ -17368,7 +17390,7 @@ msgid ""
 "  n'a pas le même nombre de mailles  que le GROUP_MA  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:283
 #, python-format
 msgid ""
 "\n"
@@ -17376,7 +17398,7 @@ msgid ""
 "  n'a pas les mêmes types de maille  que le GROUP_MA  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:275
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:288
 #, python-format
 msgid ""
 "\n"
@@ -17398,21 +17420,21 @@ msgid ""
 "conception.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:291
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:304
 #, python-format
 msgid ""
 "\n"
 " l'instant  de calcul  %(r1)f  n'existe pas dans  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:295
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:308
 #, python-format
 msgid ""
 "\n"
 " plusieurs numéros d'ordre trouves pour l'instant  %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:299
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:312
 #, python-format
 msgid ""
 "\n"
@@ -17420,7 +17442,7 @@ msgid ""
 "    sd resultat \"RESU_FINAL\"  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:304
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:317
 #, python-format
 msgid ""
 "\n"
@@ -17428,7 +17450,7 @@ msgid ""
 "  doit contenir qu'un seul NUME_ORDRE %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:309
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:322
 #, python-format
 msgid ""
 "\n"
@@ -17439,7 +17461,7 @@ msgid ""
 " Faites une demande d'évolution.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:316
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:329
 #, python-format
 msgid ""
 "\n"
@@ -17449,7 +17471,7 @@ msgid ""
 " Faites une demande d'évolution.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:327
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel5.py:340
 #, python-format
 msgid ""
 "\n"
@@ -27728,7 +27750,7 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/fonct0.py:22
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:34
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:39
 #, python-format
 msgid ""
 "\n"
@@ -28306,6 +28328,20 @@ msgid ""
 "La remontée d'erreur suivante peut aider à comprendre où se situe "
 "l'erreur :\n"
 "%(k1)s\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/fonct0.py:421
+#, python-format
+msgid ""
+"\n"
+"Type invalide pour le mot-clé '%(k1)s'.\n"
+"Il semble que ce ne soit pas une structure de données connue.\n"
+"\n"
+"Conseil\n"
+"-------\n"
+"    Vérifiez que les objets utilisés dans cette commande n'ont pas été\n"
+"    créé en tant que liste Python. Cela peut se produire si la commande\n"
+"    précédente se termine par une virgule.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/generic.py:20
@@ -32227,21 +32263,14 @@ msgid ""
 "      - nombre de points de Gauss contenu dans le fichier MED : %(i1)d\n"
 "      - nombre de points de Gauss défini dans Aster           : %(i2)d\n"
 "\n"
-"     Visiblement les éléments finis décrits dans le fichier MED ne sont pas "
-"les\n"
-"     mêmes que dans Code_Aster.\n"
-"     Si vous avez choisi PROL_ZERO='OUI', le champ sera initialisé à zéro "
-"sur\n"
-"     ces éléments.\n"
-"     Sinon, le champ ne sera pas initialisé (NaN, not a number). C'est le\n"
-"     comportement par défaut.\n"
+"     Cette partie du champ ne sera pas relu.\n"
 "\n"
-"  -> Risque & Conseil :\n"
+"  -> Conseil :\n"
 "      - Choisissez des éléments finis compatibles entre Aster et le code "
 "tiers\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:46
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:41
 msgid ""
 "\n"
 "  -> Les point de Gauss MED/Aster ne correspondent pas géométriquement.\n"
@@ -32249,7 +32278,7 @@ msgid ""
 "     Risque de résultats faux à cause cette incompatibilité.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:52
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:47
 #, python-format
 msgid ""
 "\n"
@@ -32257,14 +32286,14 @@ msgid ""
 "     Point De Gauss : %(i1)d              MED               ASTER\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:57
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:52
 #, python-format
 msgid ""
 "\n"
 "        %(k1)s                          %(r1)f          %(r2)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:61
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:56
 msgid ""
 "\n"
 "  -> Une ou plusieurs permutations ont été effectuées sur l'ordre des "
@@ -32273,7 +32302,7 @@ msgid ""
 "Code_Aster.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:66
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:61
 #, python-format
 msgid ""
 "\n"
@@ -32282,7 +32311,7 @@ msgid ""
 "     Le groupe \"%(k2)s\" est renommé en \"%(k3)s\".\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:72
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:67
 #, python-format
 msgid ""
 "\n"
@@ -32295,7 +32324,7 @@ msgid ""
 "       vient du fichier MED ou de la lecture dans Code_Aster.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:82
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:77
 #, python-format
 msgid ""
 "\n"
@@ -32303,7 +32332,7 @@ msgid ""
 "     car \"%(k2)s\" existe déjà dans le fichier MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:87
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:82
 #, python-format
 msgid ""
 "\n"
@@ -32312,7 +32341,7 @@ msgid ""
 "     Le groupe \"%(k2)s\" est renommé en \"%(k3)s\".\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:93
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:88
 #, python-format
 msgid ""
 "\n"
@@ -32320,7 +32349,7 @@ msgid ""
 "     est vide.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:98
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:93
 #, python-format
 msgid ""
 "\n"
@@ -32334,28 +32363,28 @@ msgid ""
 "     invalides.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:109
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:104
 #, python-format
 msgid ""
 "\n"
 "  -> La famille %(k1)s n'a ni groupe, ni attribut.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:113
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:108
 #, python-format
 msgid ""
 "\n"
 "  -> Lecture de la famille numéro %(i1)4d de nom %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:117
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:112
 #, python-format
 msgid ""
 "\n"
 "      Groupe numéro %(i1)6d : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:121
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:116
 #, python-format
 msgid ""
 "\n"
@@ -32363,7 +32392,7 @@ msgid ""
 "                renommé en : %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:126
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:121
 msgid ""
 "\n"
 "  -> Aucune famille n'est présente dans ce fichier MED.\n"
@@ -32371,33 +32400,33 @@ msgid ""
 "     Vérifier l'intégrité du fichier MED avec medconforme/mdump.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:132
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:127
 msgid ""
 "\n"
 "  -> Arrêt en raison des conflits sur les noms de groupe.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:131
 #, python-format
 msgid ""
 "\n"
 "  -> Les mailles  %(k1)s ne sont pas nommées dans le fichier MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:135
 #, python-format
 msgid ""
 "\n"
 "  -> Impossible de retrouver l'adresse associée au groupe  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:144
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:139
 msgid ""
 "\n"
 "  -> Il manque les coordonnées !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:143
 #, python-format
 msgid ""
 "\n"
@@ -32407,14 +32436,14 @@ msgid ""
 "  - nom aster retenu :  %(k4)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:155
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:150
 #, python-format
 msgid ""
 "\n"
 "  -> Mailles  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:159
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:154
 msgid ""
 "\n"
 "  -> Le fichier n'a pas été construit avec la même version de MED.\n"
@@ -32423,7 +32452,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:161
 #, python-format
 msgid ""
 "\n"
@@ -32431,13 +32460,13 @@ msgid ""
 "%(i3)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:170
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:165
 msgid ""
 "\n"
 "   Version de la bibliothèque MED qui a créé le fichier  : < 2.1.5\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:174
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:169
 #, python-format
 msgid ""
 "\n"
@@ -32445,7 +32474,7 @@ msgid ""
 "%(i3)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:178
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:173
 msgid ""
 "\n"
 "\n"
@@ -32453,13 +32482,13 @@ msgid ""
 "(medimport)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:183
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:178
 msgid ""
 "\n"
 "  -> Il manque les mailles !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:187
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:182
 #, python-format
 msgid ""
 "\n"
@@ -32473,7 +32502,7 @@ msgid ""
 "     cas, l'utilisation du mot-clé NOM_CMP est conseillée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:196
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:191
 #, python-format
 msgid ""
 "\n"
@@ -32499,38 +32528,38 @@ msgid ""
 "     sélectionner la composante dans Scalar Range/Scalar Mode.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:216
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:211
 #, python-format
 msgid ""
 "\n"
 "     Le champ %(k1)s est inconnu dans le fichier MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:220
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:215
 msgid ""
 "\n"
 "     Il manque des composantes.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:224
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:219
 msgid ""
 "\n"
 "     Aucune valeur n'est présente à cet instant.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:228
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:223
 msgid ""
 "\n"
 "     Aucune valeur n'est présente à ce numéro d'ordre.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:232
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:227
 msgid ""
 "\n"
 "     Le nombre de valeurs n'est pas correct.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:231
 msgid ""
 "\n"
 "  -> La lecture est donc impossible.\n"
@@ -32538,107 +32567,107 @@ msgid ""
 "     Veuillez vérifier l'intégrité du fichier MED avec medconforme/mdump.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:242
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:237
 msgid ""
 "\n"
 "  -> Incohérence catalogue - fortran (nbtyp fortran différent de nbtyp "
 "catalogue)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:246
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:241
 msgid ""
 "\n"
 "  -> Incohérence catalogue - fortran (nomtyp fortran différent de nomtyp "
 "catalogue)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:250
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:245
 #, python-format
 msgid ""
 "\n"
 "  -> Ouverture du fichier MED en mode  %(k1)s  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:254
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:249
 msgid ""
 "\n"
 "  -> Incohérence de version détectée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:258
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:253
 #, python-format
 msgid ""
 "\n"
 "  -> Le type d'entité  %(k1)s  est inconnu.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:262
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:257
 #, python-format
 msgid ""
 "\n"
 "  Le champ %(k1)s est introuvable dans le fichier MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:266
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:261
 #, python-format
 msgid ""
 "\n"
 "  -> Pas d'écriture pour  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:265
 #, python-format
 msgid ""
 "\n"
 "     Issu de  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:274
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:269
 #, python-format
 msgid ""
 "\n"
 "  -> Le type de champ est inconnu :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:278
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:273
 msgid ""
 "\n"
 "  -> Création des tableaux de valeurs à écrire avec :\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:282
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:277
 msgid ""
 "\n"
 "  -> Renumérotation impossible avec plus d'un sous-point.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:286
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:281
 msgid ""
 "\n"
 "  -> Véritable écriture des tableaux de valeurs\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:290
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:285
 #, python-format
 msgid ""
 "\n"
 "  -> Pas de maillage dans  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:294
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:289
 #, python-format
 msgid ""
 "\n"
 "  -> Maillage  %(k1)s  inconnu dans  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:298
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:293
 msgid ""
 "\n"
 "  ->  Instant inconnu pour ce champ et ces supports dans le fichier.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:302
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:297
 #, python-format
 msgid ""
 "\n"
@@ -32651,7 +32680,7 @@ msgid ""
 "       de MED_NOEUD_MAILLE).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:312
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:307
 msgid ""
 "\n"
 "  -> Le maillage fourni à la commande n'est pas cohérent avec le type de "
@@ -32659,14 +32688,14 @@ msgid ""
 "     de données résultat que vous souhaitez produire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:318
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:313
 #, python-format
 msgid ""
 "\n"
 "  -> Lecture impossible pour  %(k1)s  au format MED\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:317
 #, python-format
 msgid ""
 "\n"
@@ -32677,7 +32706,7 @@ msgid ""
 "     Veuillez fournir à LIRE_RESU un autre modèle ou changer de TYPE_RESU.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:329
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:324
 #, python-format
 msgid ""
 "\n"
@@ -32690,7 +32719,7 @@ msgid ""
 "dessous :\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:338
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:333
 msgid ""
 "\n"
 "  -> Le nombre de type de maille présent dans le fichier MED est\n"
@@ -32702,7 +32731,7 @@ msgid ""
 "     Vérifiez le maillage de votre modèle !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:346
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:341
 #, python-format
 msgid ""
 "\n"
@@ -32715,13 +32744,13 @@ msgid ""
 "     dans le fichier MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:356
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:351
 msgid ""
 "\n"
 "  -> On ne traite pas les maillages distants.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:360
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:355
 #, python-format
 msgid ""
 "\n"
@@ -32736,19 +32765,19 @@ msgid ""
 "     ou que l'un des maillages est quadratique et l'autre linéaire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:370
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:365
 msgid ""
 "\n"
 "  -> Impossible de déterminer un nom de maillage MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:374
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:369
 msgid ""
 "\n"
 "  -> Le mot clé \"INFO_MAILLAGE\" est réservé au format MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:378
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:373
 #, python-format
 msgid ""
 "\n"
@@ -32756,33 +32785,33 @@ msgid ""
 "     dans le résultat a imprimer (%(k2)s). Cela n'est pas autorisé.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:383
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:378
 msgid ""
 "\n"
 "  -> Grandeur inconnue.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:387
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:382
 msgid ""
 "\n"
 "  -> Composante inconnue pour la grandeur.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:391
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:386
 #, python-format
 msgid ""
 "\n"
 "  -> Le maillage %(k2)s est déjà présent dans le fichier MED %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:395
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:390
 #, python-format
 msgid ""
 "\n"
 "  -> Instant voulu :  %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:399
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:394
 #, python-format
 msgid ""
 "\n"
@@ -32790,51 +32819,51 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:404
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:399
 msgid ""
 "\n"
 "  -> Trop de composantes pour la grandeur.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:408
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:403
 msgid ""
 "\n"
 "  -> le mot-clé MODELE est obligatoire pour lire un CHAM_ELEM\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:412
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:407
 #, python-format
 msgid ""
 "\n"
 "  -> Nom de composante tronqué à 8 caractères ( %(k1)s  >>>  %(k2)s )\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:416
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:411
 #, python-format
 msgid ""
 "\n"
 "  -> Impossible de trouver la composante ASTER associée a  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:420
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:415
 msgid ""
 "\n"
 "  -> Écriture des localisations des points de gauss.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:424
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:419
 msgid ""
 "\n"
 "  -> Problème dans la lecture du nom du champ et de ses composantes.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:428
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:423
 msgid ""
 "\n"
 "  -> Problème dans le diagnostic.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:432
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:427
 #, python-format
 msgid ""
 "\n"
@@ -32848,7 +32877,7 @@ msgid ""
 "     (mot clé TYPE_CHAM).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:440
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:435
 #, python-format
 msgid ""
 "\n"
@@ -32858,26 +32887,26 @@ msgid ""
 "l'étude.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:446
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:441
 msgid ""
 "\n"
 "  -> Attention le maillage n'est pas de type non structuré\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:450
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:445
 #, python-format
 msgid ""
 "\n"
 "  -> Le maillage ' %(k1)s ' est inconnu dans le fichier.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:454
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:449
 msgid ""
 "\n"
 "  -> Attention, il s'agit d'un maillage structuré\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:458
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:453
 #, python-format
 msgid ""
 "\n"
@@ -32888,7 +32917,7 @@ msgid ""
 "  Pour ce champ aucune impression ne sera faite.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:465
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:460
 #, python-format
 msgid ""
 "\n"
@@ -32911,7 +32940,7 @@ msgid ""
 "  Vérifiez la cohérence du modèle et du fichier MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:481
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:476
 msgid ""
 "\n"
 "  Le champ relu n'est pas du bon type. Un champ de réel est attendu\n"
@@ -32920,14 +32949,14 @@ msgid ""
 "  La relecture de ce champ n'est pas possible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:488
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:483
 #, python-format
 msgid ""
 "\n"
 "  -> Maillage présent :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:492
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:487
 #, python-format
 msgid ""
 "\n"
@@ -32938,7 +32967,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:500
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:495
 #, python-format
 msgid ""
 "\n"
@@ -32948,35 +32977,35 @@ msgid ""
 "  SD Résultat %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:508
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:503
 #, python-format
 msgid ""
 "\n"
 "  -> Fichier MED :  %(k1)s, nombre de maillages présents : %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:512
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:507
 #, python-format
 msgid ""
 "\n"
 "  -> Écriture impossible pour  %(k1)s  au format MED.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:516
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:511
 #, python-format
 msgid ""
 "\n"
 "     Début de l'écriture MED de  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:520
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:515
 msgid ""
 "\n"
 "  -> Impossible de déterminer un nom de champ MED.\n"
 "  -> Risque & Conseil:\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:525
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:520
 #, python-format
 msgid ""
 "\n"
@@ -32986,14 +33015,14 @@ msgid ""
 "     (LIRE_RESU) ou NOM_MED (LIRE_CHAMP).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:532
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:527
 #, python-format
 msgid ""
 "\n"
 "     Fin de l'écriture MED de  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:536
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:531
 msgid ""
 "\n"
 "  Vous imprimez un champ dont le maillage change au cours du temps.\n"
@@ -33004,7 +33033,7 @@ msgid ""
 "     reposent sur un seul et même maillage.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:545
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:540
 #, python-format
 msgid ""
 "\n"
@@ -33014,7 +33043,7 @@ msgid ""
 "     ainsi que le fichier MED fourni à l'opérateur.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:552
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:547
 msgid ""
 "\n"
 "  -> NOM_MED absent !\n"
@@ -33022,7 +33051,7 @@ msgid ""
 "     Veuillez renseigner le mot-clé NOM_MED de l'opérateur LIRE_CHAMP.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:558
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:553
 #, python-format
 msgid ""
 "\n"
@@ -33032,14 +33061,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:565
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:560
 #, python-format
 msgid ""
 "\n"
 "  -> Fichier MED :  %(k1)s champ :  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:569
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/med.py:564
 #, python-format
 msgid ""
 "\n"
@@ -33749,9 +33778,8 @@ msgid ""
 "   que la (ou les) modélisation(s) (ici dimension = %(i3)d) n'ont pas pu "
 "être affectées.\n"
 "\n"
-"   Cela veut dire que la (ou les) modélisation(s) que l'on cherche à "
-"affecter\n"
-"   ne supporte(nt) pas tous les types de mailles présents dans le maillage.\n"
+"   Cela veut dire que la modélisation que l'on cherche à affecter\n"
+"   ne supporte pas tous les types de mailles présents dans le maillage.\n"
 "\n"
 "   Le nombre de mailles que l'on n'a pas pu affecter (pour cette occurrence "
 "de AFFE) est :  %(i2)d\n"
@@ -38299,7 +38327,24 @@ msgid ""
 "   éliminer les colonnes RESULTAT, NUME_ORDRE, ....\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:60
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:54
+#, python-format
+msgid ""
+"\n"
+"Alarme de programmation :\n"
+"   Plusieurs matériaux ont été affectés sur la maille %(k1)s.\n"
+"   Le programme cherche un paramètre matériel (%(k2)s) sans préciser le "
+"matériau.\n"
+"   On utilise le premier matériau de la liste affectée sur la maille.\n"
+"\n"
+"Risques et conseils :\n"
+"   Le comportement du code est dangereux car les résultats dépendent de "
+"l'ordre  \n"
+"   des matériaux affectés dans la commande AFFE_MATERIAU.\n"
+"   Il faut sans doute émettre une demande de correction du code.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:70
 #, python-format
 msgid ""
 "\n"
@@ -38310,7 +38355,7 @@ msgid ""
 "   noeud de numéro local  %(i1)d  ou noeud de nom %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:68
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:78
 #, python-format
 msgid ""
 "\n"
@@ -38321,7 +38366,7 @@ msgid ""
 "   Sous-point : %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:79
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:89
 #, python-format
 msgid ""
 "\n"
@@ -38335,7 +38380,7 @@ msgid ""
 "   Sous-point : %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:89
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:99
 #, python-format
 msgid ""
 "\n"
@@ -38345,7 +38390,7 @@ msgid ""
 "   %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:95
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:105
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
@@ -38358,14 +38403,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:106
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:116
 #, python-format
 msgid ""
 "\n"
 " mot-clé facteur non traite :  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:110
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:120
 #, python-format
 msgid ""
 "\n"
@@ -38374,7 +38419,7 @@ msgid ""
 "   %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:115
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:125
 #, python-format
 msgid ""
 "\n"
@@ -38383,78 +38428,78 @@ msgid ""
 " %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:120
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:130
 #, python-format
 msgid ""
 "\n"
 " votre fréquence de coupure   %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:124
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:134
 #, python-format
 msgid ""
 "\n"
 " est inférieure a celle  du modèle de turbulence adopte :  %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:138
 msgid ""
 "\n"
 " on prend la votre.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:132
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:142
 #, python-format
 msgid ""
 "\n"
 " votre fréquence de coupure :   %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:146
 #, python-format
 msgid ""
 "\n"
 " est supérieure a celle  du modèle de turbulence adopte :   %(r1)f\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:150
 msgid ""
 "\n"
 " on prend celle du modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:144
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:185
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:197
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:154
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:195
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:207
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:215
 #, python-format
 msgid ""
 "\n"
 " erreur dans les données mot clé facteur  %(k1)s  occurrence  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:148
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:158
 msgid ""
 "\n"
 " le maillage est \"plan\" ou \"z_CSTE\"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:152
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:162
 msgid ""
 "\n"
 " le maillage est \"3d\"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:156
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:201
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:209
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:211
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:219
 #, python-format
 msgid ""
 "\n"
 " il y a  %(i1)d  valeurs pour le mot clé  %(k1)s il en faut  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:160
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:170
 #, python-format
 msgid ""
 "\n"
@@ -38463,7 +38508,7 @@ msgid ""
 "  le noeud n'existe pas  %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:176
 #, python-format
 msgid ""
 "\n"
@@ -38472,7 +38517,7 @@ msgid ""
 "  le GROUP_NO n'existe pas  %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:172
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:182
 #, python-format
 msgid ""
 "\n"
@@ -38481,7 +38526,7 @@ msgid ""
 "   noeud utilise:  %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:177
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:187
 #, python-format
 msgid ""
 "\n"
@@ -38492,35 +38537,35 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:193
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:203
 #, python-format
 msgid ""
 "\n"
 " il y a  %(i1)d  valeurs pour le mot clé  ANGL_NAUT il en faut  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:223
 #, python-format
 msgid ""
 "\n"
 " fichier MED :  %(k1)s maillage :  %(k2)s erreur effoco numéro  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:217
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:227
 #, python-format
 msgid ""
 "\n"
 " fichier MED :  %(k1)s maillage :  %(k2)s erreur efouvr numéro  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:221
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:231
 #, python-format
 msgid ""
 "\n"
 " fichier MED :  %(k1)s maillage :  %(k2)s erreur efferm numéro  %(i1)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:225
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:235
 #, python-format
 msgid ""
 "\n"
@@ -38531,28 +38576,28 @@ msgid ""
 " PREF_MAILLE : %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:233
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:243
 msgid ""
 "\n"
 " l'utilisation de 'PREF_NUME' est recommandée.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:237
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:247
 #, python-format
 msgid ""
 "\n"
 " comportement : %(k1)s non trouve\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:241
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:335
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:251
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:345
 #, python-format
 msgid ""
 "\n"
 " pour la maille  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:245
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:255
 #, python-format
 msgid ""
 "\n"
@@ -38567,7 +38612,7 @@ msgid ""
 "  "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:258
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:268
 #, python-format
 msgid ""
 "\n"
@@ -38576,7 +38621,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:264
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:274
 #, python-format
 msgid ""
 "\n"
@@ -38585,7 +38630,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:270
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:280
 #, python-format
 msgid ""
 "\n"
@@ -38602,7 +38647,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:284
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:294
 #, python-format
 msgid ""
 "\n"
@@ -38615,7 +38660,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:294
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:304
 #, python-format
 msgid ""
 "\n"
@@ -38625,7 +38670,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:301
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:311
 #, python-format
 msgid ""
 "\n"
@@ -38635,7 +38680,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:308
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:318
 #, python-format
 msgid ""
 "\n"
@@ -38646,14 +38691,14 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:318
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:328
 #, python-format
 msgid ""
 "\n"
 " comportement :%(k1)s non trouvé\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:322
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:332
 #, python-format
 msgid ""
 "\n"
@@ -38665,14 +38710,14 @@ msgid ""
 "    sur cette partie du modèle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:331
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:341
 #, python-format
 msgid ""
 "\n"
 " manque le paramètre  %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:339
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:349
 #, python-format
 msgid ""
 "\n"
@@ -38683,7 +38728,7 @@ msgid ""
 " Ce mot clé facteur est inutile.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:346
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:356
 #, python-format
 msgid ""
 "\n"
@@ -38691,14 +38736,14 @@ msgid ""
 "  elle ne sera pas affectée par %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:351
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:361
 #, python-format
 msgid ""
 "\n"
 "  GROUP_MA : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:355
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:365
 #, python-format
 msgid ""
 "\n"
@@ -38706,7 +38751,7 @@ msgid ""
 "autorisés.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:359
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:369
 #, python-format
 msgid ""
 "\n"
@@ -38715,14 +38760,14 @@ msgid ""
 "Le nom sera tronqué à 16 caractères.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:364
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:374
 msgid ""
 "\n"
 "Erreur Europlexus\n"
 "   Le mot-clé GROUP_MA_SEG2 est incompatible avec EUROPLEXUS = 'OUI'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:369
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:379
 #, python-format
 msgid ""
 "\n"
@@ -38734,19 +38779,19 @@ msgid ""
 "   est différente de sa valeur à l'occurrence numéro 1.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:376
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:386
 msgid ""
 "\n"
 "     On ne peut pas appliquer un cisaillement 2d sur une modélisation 3D\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:379
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:389
 msgid ""
 "\n"
 "     ERREUR: l'auto-spectre est a valeurs négatives\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:382
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:392
 #, python-format
 msgid ""
 "\n"
@@ -38755,7 +38800,7 @@ msgid ""
 "   Le problème vient de la maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:388
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:398
 msgid ""
 "\n"
 "Erreur Europlexus\n"
@@ -38764,7 +38809,7 @@ msgid ""
 "   Fortran : acearp)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:394
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa9.py:404
 msgid ""
 "\n"
 "Erreur Europlexus\n"
@@ -41724,10 +41769,23 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-" On ne sait pas imprimer les champs de type \" %(k1)s \"\n"
+" On ne sait pas imprimer au format 'MED' les cartes de type %(k1)s\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:297
+msgid ""
+"\n"
+" On ne sait pas imprimer au format 'RESULTAT' les champs de type \"carte\".\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:301
+#, python-format
+msgid ""
+"\n"
+" On ne sait pas imprimer les champs de type \" %(k1)s \"\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:305
 #, python-format
 msgid ""
 "\n"
@@ -41735,7 +41793,7 @@ msgid ""
 " Il est écrit avec un format différent.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:302
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/prepost.py:310
 #, python-format
 msgid ""
 "\n"
@@ -45802,6 +45860,17 @@ msgid ""
 "        instants de début et de fin phase forte: %(r2).2f s et %(r3).2f s\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/seisme.py:250
+#, python-format
+msgid ""
+"Il n'y a pas de fonctions d'excitation de type '%(k1)s'.\n"
+"\n"
+"Conseil:\n"
+"    Vérifier le mot-clé NOM_CHAM et que vous souhaitez bien faire un\n"
+"    calcul de type multi-appui ou avec prise en compte de la correction "
+"statique.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/soustruc.py:22
 msgid ""
 "\n"
@@ -47757,21 +47826,21 @@ msgid ""
 "Opération RENOMME. Erreur : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:38
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:43
 #, python-format
 msgid ""
 "\n"
 "Paramètre absent de la table : %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:42
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:47
 #, python-format
 msgid ""
 "\n"
 "Paramètres absents de la table (ou de NOM_PARA) : %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:46
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:51
 #, python-format
 msgid ""
 "\n"
@@ -47779,28 +47848,28 @@ msgid ""
 "fichier.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:50
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:55
 #, python-format
 msgid ""
 "\n"
 "Nombre de champs incorrect ligne %(i1)d.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:54
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:59
 #, python-format
 msgid ""
 "\n"
 "On attend %(i1)d paramètres.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:58
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:63
 #, python-format
 msgid ""
 "\n"
 "On attend %(i1)d champs dans le fichier.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:66
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:71
 #, python-format
 msgid ""
 "\n"
@@ -47812,106 +47881,106 @@ msgid ""
 "    %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:75
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:80
 #, python-format
 msgid ""
 "La formule dépend de %(i1)d paramètre(s).\n"
 "Vous devez fournir autant de nom de colonne dans NOM_COLONNE."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:78
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:83
 msgid "Erreur lors de la construction des n-uplets\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:81
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:86
 msgid ""
 "La table doit avoir exactement deux paramètres pour une impression au format "
 "XMGRACE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:84
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:89
 msgid "Les cellules ne doivent contenir que des nombres réels\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:87
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:92
 #, python-format
 msgid "Le paramètre %(k1)s est en double.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:90
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:95
 #, python-format
 msgid "Le paramètre %(k1)s existe déjà.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:93
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:98
 #, python-format
 msgid "'%(k1)s' n'a pas d'attribut '%(k2)s'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:96
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:101
 #, python-format
 msgid "Les paramètres n'existent pas dans la table : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:99
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:104
 #, python-format
 msgid "L'argument '%(k1)s' doit être de type '%(k2)s'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:102
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:107
 #, python-format
 msgid "Valeur incorrecte pour ORDRE : %(k1)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:105
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:110
 msgid ""
 "Les paramètres doivent être les mêmes dans les deux tables pour\n"
 "faire l'intersection  ou l'union (opérateurs &, |).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:109
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:114
 #, python-format
 msgid "Type du paramètre '%(k1)s' non défini.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:112
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:117
 #, python-format
 msgid "Type du paramètre '%(k1)s' forcé à '%(k2)s'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:115
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:120
 #, python-format
 msgid ""
 "Erreur pour le paramètre '%(k1)s' :\n"
 "   %(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:119
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:124
 #, python-format
 msgid "La colonne '%(k1)s' est vide.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:122
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:127
 msgid "La table est vide !\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:125
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:130
 msgid "La table doit avoir exactement trois paramètres.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:128
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:133
 #, python-format
 msgid ""
 "\n"
 "   La table %(k1)s n'existe pas dans le résultat %(k2)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:132
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:137
 #, python-format
 msgid "Champ %(k1)s inexistant à l'ordre %(i1)d .\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:135
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:140
 #, python-format
 msgid ""
 "\n"
@@ -47919,7 +47988,7 @@ msgid ""
 "Veuillez vérifier vos données.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:140
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:145
 #, python-format
 msgid ""
 "\n"
@@ -47927,20 +47996,20 @@ msgid ""
 "Veuillez vérifier vos données.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:145
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:150
 msgid ""
 "\n"
 "Les mots-clés 'NOEUD' et 'GROUP_NO' ne sont pas autorisés pour\n"
 "les champs élémentaires (ELNO/ELGA).\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:150
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:155
 msgid ""
 "\n"
 "Développement non réalisé pour les champs dont les valeurs sont complexes.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:154
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:159
 #, python-format
 msgid ""
 "\n"
@@ -47953,7 +48022,7 @@ msgid ""
 "    à lire.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:164
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:169
 #, python-format
 msgid ""
 "\n"
@@ -47963,7 +48032,7 @@ msgid ""
 "%(k2)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:171
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:176
 #, python-format
 msgid ""
 "\n"
@@ -47979,7 +48048,7 @@ msgid ""
 "    Si c'est le cas, utilisez LIRE_TABLE au FORMAT='ASTER'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/table0.py:187
 #, python-format
 msgid ""
 "\n"
@@ -52442,6 +52511,23 @@ msgid ""
 "     une colonne 'GAMMA' au tableau de SIF manuellement.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:614
+msgid ""
+"\n"
+"  -> Vous avez renseigné le mot-clé EVOL de AFFE_MATERIAU / AFFE_VARC avec "
+"un résultat thermique X-FEM.\n"
+"     Dans ce cas, vous ne pouvez définir qu'une seule occurrence du mot-clé "
+"facteur AFFE_VARC.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:619
+msgid ""
+"\n"
+"  -> Vous avez renseigné le mot-clé EVOL de AFFE_MATERIAU / AFFE_VARC avec "
+"un résultat thermique X-FEM.\n"
+"     Dans ce cas, le mot-clé MODELE de AFFE_MATERIAU devient obligatoire.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:22
 msgid ""
 "\n"
@@ -53134,96 +53220,96 @@ msgstr ""
 msgid "On attend un objet concept."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:104
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:109
 #, python-format
 msgid "Impossible d'obtenir le rapport de %s %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:123
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:128
 #, python-format
 msgid "Argument(s) non permis : %r pour la règle : %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:159
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:164
 #, python-format
 msgid "L'attribut 'op' doit être un entier compris entre %d et %d : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:166
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:171
 #, python-format
 msgid "L'attribut op doit être une instance d'OPS : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:171
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:176
 #, python-format
 msgid "L'attribut 'regles' doit être un tuple : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:178
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:183
 #, python-format
 msgid "L'attribut 'fr' doit être une chaine de caractères : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:185
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:190
 #, python-format
 msgid "L'attribut 'docu' doit être une chaine de caractères : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:192
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:197
 #, python-format
 msgid "L'attribut 'nom' doit être une chaine de caractères : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:199
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:204
 #, python-format
 msgid "L'attribut 'reentrant' doit valoir 'o','n' ou 'f' : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:205
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:210
 #, python-format
 msgid "L'attribut 'statut' doit être parmi %s : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:213
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:218
 #, python-format
 msgid "L'attribut 'condition' doit être une chaine de caractères : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:216
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:221
 msgid "La condition ne doit pas valoir None !"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:223
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:228
 #, python-format
 msgid "L'attribut 'min' doit être un entier : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:227
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:232
 #, python-format
 msgid "L'attribut 'max' doit être un entier : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:230
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:235
 #, python-format
 msgid "Nombres d'occurrence min et max invalides : %r %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:236
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:241
 #, python-format
 msgid "Un des validateurs est incorrect. Raison : %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:243
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:248
 #, python-format
 msgid "L'attribut 'homo' doit valoir 0 ou 1 : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:250
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:255
 #, python-format
 msgid "L'attribut 'into' doit être un tuple : %r"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:255
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_ENTITE.py:260
 #, python-format
 msgid ""
 "L'attribut 'position' doit valoir 'local', 'global' ou 'global_jdc' : %r"
