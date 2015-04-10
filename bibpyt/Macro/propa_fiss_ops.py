@@ -516,15 +516,14 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                                                NOM_PARA=__tabsif.para))
 
 #     beta et gamma
-            if not 'BETA' in __tabsif.para and CRITERE_ANGLE in ('ANGLE_IMPO','ANGLE_IMPO_BETA','ANGLE_IMPO_GETA_GAMMA'):
+            if not 'BETA' in __tabsif.para and CRITERE_ANGLE in ('ANGLE_IMPO','ANGLE_IMPO_GETA_GAMMA'):
                 UTMESS('F','XFEM2_19',valk = fiss0.get_name())
               
             if not 'GAMMA' in __tabsif.para and CRITERE_ANGLE in ('ANGLE_IMPO_GAMMA','ANGLE_IMPO_GETA_GAMMA'):
                 UTMESS('F','XFEM_95',valk = fiss0.get_name())  
             if CRITERE_ANGLE == 'ANGLE_IMPO' : CRITERE='SITT_MAX'
-            elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' not in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX'
-            elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX_DEVER'
             elif CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA' : CRITERE='SITT_MAX_DEVER'
+            elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA_GAMMA' : CRITERE='SITT_MAX_DEVER'
             else : CRITERE=CRITERE_ANGLE
         
 #           BOOLEEN POUR SIMPLIFIER LES TESTS PAR LA SUITE
@@ -535,7 +534,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                   UTMESS('A','XFEM2_18',valk = fiss0.get_name())
 
             if (OPERATION != 'PROPA_COHESIF'):
-#         Si CRITERE_ANGLE = ANGLE_IMPO_BETA/GAMMA il faut calculer le deuxième angle, donc donner le bon mot-clé à post_rupture          
+#         Si CRITERE_ANGLE = ANGLE_IMPO_GAMMA il faut calculer le BETA, donc donner le bon mot-clé à post_rupture          
                __COPIE_SIF = POST_RUPTURE(TABLE=__COPIE_SIF,
                                           reuse=__COPIE_SIF,
                                           OPERATION='ANGLE_BIFURCATION',
@@ -587,14 +586,14 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                 
                 tab_cumul = __COPIE_SIF.EXTR_TABLE()
 
-            if CRITERE_ANGLE not in ['ANGLE_IMPO','ANGLE_IMPO_BETA','ANGLE_IMPO_GAMMA','ANGLE_IMPO_BETA_GAMMA'] :
+            if CRITERE_ANGLE not in ['ANGLE_IMPO','ANGLE_IMPO_GAMMA','ANGLE_IMPO_BETA_GAMMA'] :
                table_temp = tab_cumul.ANGLE_BETA.values()
                table_beta = [table_temp[i]*pi/180. for i in range(len(table_temp))]
                if calc_gamma :
                   table_temp = tab_cumul.ANGLE_GAMMA.values()
                   table_gamma = [table_temp[i]*pi/180. for i in range(len(table_temp))]
       
-            elif (CRITERE_ANGLE in ('ANGLE_IMPO','ANGLE_IMPO_BETA')) :
+            elif (CRITERE_ANGLE =='ANGLE_IMPO') :
                table_beta = __tabsif.BETA.values()
                if calc_gamma :
                   table_temp = tab_cumul.ANGLE_GAMMA.values()
@@ -607,7 +606,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
                table_temp = tab_cumul.ANGLE_BETA.values()
                table_beta = [table_temp[i]*pi/180. for i in range(len(table_temp))]
                
-            else :
+            elif(CRITERE_ANGLE == 'ANGLE_IMPO_BETA_GAMMA') :
                table_beta = __tabsif.BETA.values()
                table_gamma = __tabsif.GAMMA.values()
             
@@ -737,9 +736,8 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 # CAS 2: METHODE_PROPA = 'SIMPLEXE' OU 'UPWIND' OU 'GEOMETRIQUE' ET
 # TEST_MAIL = 'NON'
     if TEST_MAIL == 'NON':
-        if CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' not in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX'
-        elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA' and 'K3' in (__COPIE_SIF.EXTR_TABLE()).para : CRITERE='SITT_MAX_DEVER'
-        elif CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA' : CRITERE='SITT_MAX_DEVER'
+        if CRITERE_ANGLE == 'ANGLE_IMPO_GAMMA' : CRITERE='SITT_MAX_DEVER'
+        elif CRITERE_ANGLE == 'ANGLE_IMPO_BETA_GAMMA' : CRITERE='SITT_MAX_DEVER'
         else : CRITERE=CRITERE_ANGLE
     
 #      BOOLEEN POUR SIMPLIFIER LES TESTS PAR LA SUITE
