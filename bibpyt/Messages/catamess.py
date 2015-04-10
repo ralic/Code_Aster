@@ -27,6 +27,13 @@ Erreur lors de la vérification des messages.
 %(k2)s
 """),
 
+    2 : _(u"""
+Erreur lors de la vérification du catalogue de commandes.
+%(k1)s
+
+%(k2)s
+"""),
+
     6: _(u"""
 Fin à la suite de message(s) <E>
 """),

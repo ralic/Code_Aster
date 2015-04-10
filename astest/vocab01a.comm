@@ -1,4 +1,3 @@
-# person_in_charge: Christophe-mmn.durand at edf.fr
 # TITRE TEST FICTIF POUR PRODUIRE LE VOCABULAIRE DU CATALOGUE DE COMMANDES
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,112 +15,44 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+# person_in_charge: mathieu.courtois@edf.fr
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='NON'))
 
-
-# Ceci n est pas un vrai cas test
-#
-# le programme python ci-dessous permet de naviguer dans l ensemble des
-# commandes du catalogue, et d extraire pour chacune son vocabulaire :
-# mots cles simple et facteurs.
-#
-# Ensuite ce vocabulaire est ordonne et on imprime dans le fichier message
-# pour chaque mot la liste des commandes qui le contiennent :
+# Ce test vérifie les arguments dans le catalogue de commandes
+# et imprime l'ensemble des mots-clés et les commandes qui les utilisent
+# sous cette forme :
 #
 #      DDL       :: AFFE_CHAR_ACOU   / AFFE_CHAR_THER   / ...
 #      DDL_1     :: AFFE_CHAR_THER   / AFFE_CHAR_MECA_F / ...
 #      DDL_2     :: AFFE_CHAR_THER   / AFFE_CHAR_MECA_F /
 #
-# la methode permettant de recuperer le vocabulaire d une commande est
-# get_mc_simp/get_mc_fact de la classe ENTITE (B_ENTITE.py)
 
-from pprint import pprint
-from Cata import cata
+# this replaces 'import vocab01a.33'
+execfile('fort.33', globals())
 
-def get_entite(obj):
-    ret = obj.entites.values()
-    lsub = []
-    for sub in ret:
-        if sub.label in ("BLOC", "FACT"):
-            lsub.extend(get_entite(sub))
-    ret.extend(lsub)
-    return ret
+# read the previous 'fort.34'
+try:
+    existing_keywords = open( 'fort.34', 'rb' ).read().split()
+except IOError:
+    existing_keywords = ['???']
 
-commands = []
-for name, elem in cata.__dict__.items() :
-    if isinstance(elem, OPER):
-        commands.append(elem)
-    elif isinstance(elem, PROC):
-        commands.append(elem)
-    elif isinstance(elem, MACRO):
-        commands.append(elem)
+# En cas de NOOK, mettre INFO=2 dans l'appel à VOCAB01 ci-dessous,
+# Un message de ce type sera affiché dans l'output indiquant le
+# fichier produit contenant tous les mots-clés du catalogue.
+#
+# NB : Vous ne devez modifié ce fichier que si le vocabulaire a été validé !
+#
+#    ************************************************************
+#
+#     Nom du fichier à recopier pour mettre à jour vocab01a.34
+#
+#                        /tmp/vocab01a_OTsZV1
+#
+#    ************************************************************
 
-# check the catalog (see N_ENTITE)
-for cmd in commands:
-    cr = cmd.report()
-    if not cr.estvide():
-        print str(cr)
-        raise TypeError('catalog verification failed for {}'.format(cmd.nom))
-
-# extract fr/ang docstrings
-lang = {}
-for cmd in commands:
-    objs = [cmd] + get_entite(cmd)
-    for entity in objs:
-        if getattr(entity, 'ang', None):
-            lang[id(entity)] = (entity.fr, entity.ang)
-assert len(lang) == 0, "'ang' is deprecated and not used anymore, please remove it"
-
-from Execution.strfunc import convert
-phrase_book_tmpl = """
-<phrase>
-    <source>{fr}</source>
-    <target>{en}</target>
-</phrase>"""
-csv_tmpl = "\"{fr}\",\"{en}\""
-template = csv_tmpl
-text = []
-for val in lang.values():
-    fr = val[0].replace('"', r'\"')
-    en = val[1].replace('"', r'\"')
-    text.append(template.format(fr=convert(fr), en=convert(en)))
-print os.linesep.join(text)
-
-vocabulaire = set()
-com_voca = {}
-for cmd in commands :
-    com_voca[cmd.nom] = cmd.get_mc_simp(niv=2) + cmd.get_mc_fact()
-    vocabulaire.update(com_voca[cmd.nom])
-
-vocabulaire = list(vocabulaire)
-vocabulaire.sort()
-print '\n Nombre de mots cles = ', len(vocabulaire)
-
-inv_voca = {}
-for command, words in com_voca.items():
-    for word in words:
-        inv_voca[word] = inv_voca.get(word, set())
-        inv_voca[word].add(command)
-
-lines = []
-for i in vocabulaire:
-    texte = i.ljust(28) + ' :: '
-    commands = list(inv_voca[i])
-    commands.sort()
-    for j in commands:
-        texte = texte + j.ljust(17) + '/ '
-    lines.append(texte)
-
-print os.linesep.join(lines)
-
-
-FO = DEFI_FONCTION(NOM_PARA='X',
-                   NOM_RESU='Y',
-                   VALE=(0., 0.),)
-
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
-                        CRITERE='ABSOLU',
-                        VALE_PARA=0.0,
-                        FONCTION=FO,),)
+# TEST_TABLE are included in the "macro-command"
+VOCAB01(EXISTANT=existing_keywords,
+        INFO=1)
 
 FIN()

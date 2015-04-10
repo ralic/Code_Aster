@@ -785,6 +785,7 @@ def __fake__():
     UTMESS('I', 'JEVEUX_45')      # émis depuis le C (iodr)
     UTMESS('I', 'GENERIC_1')      # dans des tests pour traiter les exceptions
     UTMESS('I', 'CATAMESS_1')     # pour supv002a
+    UTMESS('I', 'CATAMESS_2')     # pour vocab01a
     UTMESS('I', 'CATAMESS_55')    # pour u2mesg.f via UTPRIN
     UTMESS('I', 'CATAMESS_69')    # pour u2mesg.f via UTPRIN
     UTMESS('I', 'CATAMESS_70')    # pour u2mesg.f via UTPRIN

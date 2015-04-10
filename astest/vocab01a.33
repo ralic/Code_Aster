@@ -1,0 +1,143 @@
+# coding=utf-8
+# person_in_charge: mathieu.courtois@edf.fr
+
+import os
+import tempfile
+
+
+def getListOfCommands():
+    """Build the list of operators"""
+    from Cata import cata
+    commands = []
+    for name, elem in cata.__dict__.items():
+        if isinstance(elem, OPER):
+            commands.append(elem)
+        elif isinstance(elem, PROC):
+            commands.append(elem)
+        elif isinstance(elem, MACRO):
+            commands.append(elem)
+    return commands
+
+def checkDefinition( commands ):
+    """Check the definition of the catalog of the commands (see N_ENTITE.py)"""
+    for cmd in commands:
+        cr = cmd.report()
+        if not cr.estvide():
+            print str(cr)
+            raise TypeError('catalog verification failed for {}'.format(cmd.nom))
+
+def get_entite( obj ):
+    """Return the sub-objects of a composite object"""
+    ret = obj.entites.values()
+    lsub = []
+    for sub in ret:
+        if sub.label in ("BLOC", "FACT"):
+            lsub.extend(get_entite(sub))
+    ret.extend(lsub)
+    return ret
+
+def checkDocStrings( commands ):
+    """Extract and check the fr/ang docstrings"""
+    lang = {}
+    for cmd in commands:
+        objs = [cmd] + get_entite( cmd )
+        for entity in objs:
+            if getattr(entity, 'ang', None):
+                lang[id(entity)] = (entity.fr, entity.ang)
+    assert len(lang) == 0, "'ang' is deprecated and not used anymore, please remove it"
+
+def extractKeywords( commands ):
+    """Return the list of all the keywords (simple or factor)"""
+    # keywords of each command
+    cmdKwd = {}
+    for command in commands:
+        name = command.nom
+        words = command.get_mc_simp(niv=2) + command.get_mc_fact()
+        cmdKwd[ name ] = words
+    # reverse dict : commands that use a keyword
+    kwdCmd = {}
+    for nom, words in cmdKwd.items():
+        for word in words:
+            kwdCmd[ word ] = kwdCmd.get(word, set())
+            kwdCmd[ word ].add(nom)
+    return kwdCmd
+
+def sortedKeywords( kwdCmd ):
+    """Build the sorted list of all keywords"""
+    allKwd = kwdCmd.keys()
+    allKwd.sort()
+    return allKwd
+
+def printKeywordsUsage( commands, fileList=None ):
+    """Print the usage of all the keywords"""
+    kwdCmd = extractKeywords( commands )
+    allKwd = sortedKeywords( kwdCmd )
+    print '\n Nombre total de mots cles = ', len( allKwd )
+    lines = []
+    for word in allKwd:
+        cmds = list( kwdCmd[ word ] )
+        cmds.sort()
+        fmt = "{:<28} :: " + " / ".join( ["{:<18}"] * len(cmds) )
+        lines.append( fmt.format(word, *cmds) )
+    print os.linesep.join(lines)
+    if fileList:
+        open( fileList, 'wb').write( os.linesep.join(allKwd) )
+        line = "\n    {:^60}"
+        print line.format( "*" * 60 )
+        print line.format( "Nom du fichier à recopier pour mettre à jour vocab01a.34" )
+        print line.format( fileList )
+        print line.format( "*" * 60 )
+        print "\n"
+    return allKwd
+
+
+def vocab01_ops(self, EXISTANT, INFO, **kwargs):
+    """Fake macro-command to check the catalog"""
+    from Cata.cata import CREA_TABLE, TEST_TABLE
+    from Utilitai.Utmess import UTMESS
+    self.set_icmd(1)
+
+    # start the job
+    commands = getListOfCommands()
+    checkDefinition( commands )
+    checkDocStrings( commands )
+
+    fileList = None
+    if INFO == 2:
+        fileList = tempfile.NamedTemporaryFile( prefix="vocab01a_" ).name
+    allKwd = printKeywordsUsage( commands, fileList )
+    nbWords = len( allKwd )
+
+    diff = set( allKwd ).difference( EXISTANT )
+    nbNew = len( diff )
+    if nbNew:
+        UTMESS('A', 'CATAMESS_2',
+               valk=("Liste des nouveaux mots-clefs (relancer avec INFO=2 "
+                     "pour produire la nouvelle liste) :", str(list(diff)) ))
+
+    __tab = CREA_TABLE(LISTE=_F(PARA='NBMOT', LISTE_I=nbNew))
+    TEST_TABLE(REFERENCE='ANALYTIQUE',
+               VALE_CALC_I=0,
+               VALE_REFE_I=0,
+               NOM_PARA='NBMOT',
+               TABLE=__tab,)
+
+    nbExist = len(EXISTANT)
+    if nbExist != nbWords:
+        UTMESS('A', 'CATAMESS_2',
+               valk=("Il y avait {} mots-clefs dans le catalogue et, "
+                     "maintenant, il y en a {}.".format(nbExist, nbWords),
+                     "Relancez avec INFO=2 pour écrire la nouvelle liste "
+                     "et comparer avec le fichier vocab01a.34 existant."))
+    __tab = CREA_TABLE(LISTE=_F(PARA='NBMOT', LISTE_I=nbWords))
+    TEST_TABLE(REFERENCE='ANALYTIQUE',
+               VALE_CALC_I=nbExist,
+               VALE_REFE_I=nbExist,
+               NOM_PARA='NBMOT',
+               TABLE=__tab,)
+
+
+VOCAB01 = MACRO(nom='VOCAB01', op=vocab01_ops,
+                EXISTANT = SIMP(statut='o', typ='TXM', max='**',),
+                INFO = SIMP(statut='f',typ='I', defaut=1, into=(1, 2),),
+)
