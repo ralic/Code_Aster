@@ -13,7 +13,7 @@ subroutine tbacce(nomta, numeli, para, mode, vi,&
     complex(kind=8) :: vc
     character(len=*) :: nomta, para, mode, vk
 ! ----------------------------------------------------------------------
-! person_in_charge: Christophe-mmn.durand at edf.fr
+! person_in_charge: mathieu.courtois at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
