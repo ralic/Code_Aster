@@ -38,5 +38,7 @@ PMATUNS MDNS_R RESL__
 COND_CALCUL__   PLUS__  PHENO='ME' BORD='0'
                 MOINS__ PHENO='ME' MODELI='3FL'
                 MOINS__ PHENO='ME' MODELI='2FL'
+                MOINS__ PHENO='ME' MODELI='3FA'
+                MOINS__ PHENO='ME' MODELI='2FA'
                 MOINS__ PHENO='ME' MODELI='FS2'
                 MOINS__ PHENO='ME' MODELI='FSA'

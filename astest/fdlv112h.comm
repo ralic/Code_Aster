@@ -1,0 +1,437 @@
+# TITRE REPONSE SISMIQUE D UN BARRAGE MODELE FULL-FEM HARMONIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+      
+mail0         = LIRE_MAILLAGE( );
+
+mail1=CREA_MAILLAGE(MAILLAGE=mail0,
+                   CREA_MAILLE=_F(NOM='REFLEX',GROUP_MA='IFLUSOL',
+                                  PREF_MAILLE='N'),
+                   );
+
+mail = CREA_MAILLAGE(MAILLAGE=mail1,
+          CREA_POI1 = (
+                _F(NOM_GROUP_MA='PC',NOEUD='NO6288',),
+                       ),
+                     );
+
+mail=DEFI_GROUP(reuse =mail, MAILLAGE=mail,
+                CREA_GROUP_NO=_F(GROUP_MA=('STRVOU','VOLSOL','TH_SOL',),),
+                );
+                
+mail=DEFI_GROUP(reuse =mail, MAILLAGE=mail,
+                CREA_GROUP_NO=_F(INTERSEC=('STRVOU','VOLSOL',),NOM='INTESOL'),
+                );
+                
+# 
+eau   = DEFI_MATERIAU (FLUIDE=_F(RHO=1000.,  CELE_R=1500.));
+eaub   = DEFI_MATERIAU (FLUIDE=_F(RHO=1000.,  CELE_R=4500.)); #r=0.5
+
+#
+beton= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10, RHO= 2400. , NU= 0.2,
+                               AMOR_ALPHA=0.00015, AMOR_BETA=0.18,
+                               ##AMOR_HYST=0.03,
+                               )
+                      ) ;
+
+roche= DEFI_MATERIAU( ELAS=_F( E= 3.0E+11, RHO= 2000., NU= 0.16, 
+                               AMOR_ALPHA=0.0005, AMOR_BETA=0.6,
+                               #AMOR_HYST=0.1,
+                               #AMOR_ALPHA=0.00037, AMOR_BETA=1.75, 
+                               ),
+                      #ELAS=_F( E= 1.2E+10, RHO= 2000. , NU= 0.16)
+                      ) ;
+#
+ensemble  = AFFE_MODELE (MAILLAGE= mail,
+                          AFFE=(
+                                 _F(GROUP_MA    = 'FLUIDE',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_FLUIDE'),
+                                 _F(GROUP_MA    = 'IFLUSTR',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='FLUI_STRU'),
+                                 _F(GROUP_MA    = 'IFLUSOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='FLUI_STRU'),
+                                 _F(GROUP_MA    = 'IFLUSOLF',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_FLUI_ABSO'),
+                                 #_F(GROUP_MA    = 'REFLEX',
+                                 #   PHENOMENE   ='MECANIQUE',
+                                 #   MODELISATION='3D_FLUI_ABSO'),
+                                  _F(GROUP_MA    = 'STRVOU',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D'),
+                                  _F(GROUP_MA    = 'VOLSOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D'),
+                                  _F(GROUP_MA    = 'TH_SOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_ABSO'),
+                                ),
+                           );
+                           
+ensembl2  = AFFE_MODELE (MAILLAGE= mail,
+                          AFFE=(
+                                 _F(GROUP_MA    = 'FLUIDE',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_FLUIDE'),
+                                 _F(GROUP_MA    = 'IFLUSTR',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='FLUI_STRU'),
+                                 _F(GROUP_MA    = 'IFLUSOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='FLUI_STRU'),
+                                 _F(GROUP_MA    = 'IFLUSOLF',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_FLUI_ABSO'),
+                                 #_F(GROUP_MA    = 'REFLEX',
+                                 #   PHENOMENE   ='MECANIQUE',
+                                 #   MODELISATION='3D_FLUI_ABSO'),
+                                  _F(GROUP_MA    = 'STRVOU',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D'),
+                                  _F(GROUP_MA    = 'VOLSOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D'),
+                                  _F(GROUP_MA    = 'TH_SOL',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='3D_ABSO'),
+                                 _F(GROUP_MA    = 'PC',
+                                    PHENOMENE   ='MECANIQUE',
+                                    MODELISATION='DIS_TR'),
+                                ),
+                           );
+#
+champmat = AFFE_MATERIAU    (MAILLAGE= mail,
+                    AFFE =(
+                           _F(GROUP_MA= ('FLUIDE', 'IFLUSTR',
+                                        'IFLUSOLF'),
+                               MATER   = eau ),
+                           _F(GROUP_MA    = 'IFLUSOL',
+                              MATER   = eau ),
+                           _F(GROUP_MA    = 'REFLEX',
+                              MATER   = eaub ),
+                           _F(GROUP_MA= 'STRVOU',
+                               MATER   = beton ),
+                           _F(GROUP_MA= ('VOLSOL', 'TH_SOL'),
+                               MATER   = roche ),
+                           ),
+                               );
+                               
+C_LIM_1 = AFFE_CHAR_MECA( MODELE= ensembl2,
+
+           LIAISON_SOLIDE=(_F( GROUP_NO = 'TH_SOL',),),
+                        
+           DDL_IMPO=(_F(NOEUD='NO6288',
+                        DX=0.0,
+                        DY=0.0,
+                        DZ=0.0,
+                        DRX=0.0,
+                        DRY=0.0,
+                        DRZ=0.0,
+                        ),
+                     _F(GROUP_NO='SLIBRE_N',  PRES=0., PHI=0.),
+                     ),
+                            ) ;
+                            
+CARA_EL1=AFFE_CARA_ELEM( MODELE=ensembl2,
+          DISCRET=(
+                   _F(CARA='K_TR_D_N',
+                      GROUP_MA=('PC'),
+                      VALE=(0.,0.,0.,0.,0.,0.,),),
+                   _F(CARA='M_TR_D_N',
+                      GROUP_MA=('PC'),
+                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+                   ),
+             );
+                            
+ASSEMBLAGE(MODELE=ensembl2,
+                CHAM_MATER=champmat,
+                CARA_ELEM=CARA_EL1,
+                CHARGE=C_LIM_1,
+                NUME_DDL=CO('NUMEDDL1'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDI1'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE1'),
+                              OPTION='MASS_MECA',),),
+               );
+               
+RIGIDI1B = COMB_MATR_ASSE(
+                          COMB_R=(
+                                  _F(MATR_ASSE=RIGIDI1, COEF_R=1.0),
+                                  _F(MATR_ASSE=MASSE1, COEF_R=-0.01),
+                                  ),
+                         );
+
+MODE_ST1=MODE_STATIQUE(  MATR_RIGI=RIGIDI1B,   MATR_MASS=MASSE1,
+                          MODE_STAT=_F(  NOEUD='NO6288',
+                           AVEC_CMP=('DX','DY','DZ','DRX','DRY','DRZ',),
+                                       ), 
+                      );
+                      
+VEC_X1=CALC_CHAR_SEISME(MATR_MASS=MASSE1,
+                       DIRECTION=(1.0,0.0,0.0,),
+                       MODE_STAT=MODE_ST1, NOEUD='NO6288', );
+
+cond_lib = AFFE_CHAR_MECA( MODELE= ensemble,
+           DDL_IMPO=_F(GROUP_NO='SLIBRE_N',  PRES=0., PHI=0.)
+                            ) ;
+
+impemeca = AFFE_CHAR_MECA (MODELE    = ensemble,
+               IMPE_FACE =(_F(GROUP_MA= 'IFLUSOLF', IMPE= 1.5E+6),
+                           #_F(GROUP_MA= 'REFLEX', IMPE= 4.5E6), #1.5E+6),
+                           ));
+
+# Calcul des matrices et vecteurs elementaires=
+#---------------------------------------------- 
+rigi_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'RIGI_MECA',
+                               CHAM_MATER= champmat, 
+                               CHARGE= (cond_lib)    ) ;
+                               
+rigi_elc = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'RIGI_MECA_HYST',
+                               CHAM_MATER= champmat, 
+                               RIGI_MECA=rigi_ele,
+                               CHARGE= (cond_lib)    ) ;
+#
+mass_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'MASS_MECA',
+                               CHAM_MATER= champmat, 
+                               CHARGE= (cond_lib)    ) ;
+
+amor_ele = CALC_MATR_ELEM( MODELE = ensemble, OPTION= 'AMOR_MECA',
+                               CHAM_MATER= champmat, 
+                               RIGI_MECA = rigi_ele,
+                               MASS_MECA = mass_ele,
+                               CHARGE= (cond_lib)    ) ;
+      
+impe_ele = CALC_MATR_ELEM( MODELE = ensemble, OPTION= 'IMPE_MECA',
+                               CHAM_MATER= champmat, 
+                               CHARGE= (impemeca)    ) ;
+ 
+nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele, );
+
+# Assemblage des matrices et vecteurs=
+#-------------------------------------
+#  
+rigidite = ASSE_MATRICE( MATR_ELEM= rigi_ele , NUME_DDL= nume_ddl ) ;
+rigihyst = ASSE_MATRICE( MATR_ELEM= rigi_elc , NUME_DDL= nume_ddl ) ;
+masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
+amort    = ASSE_MATRICE( MATR_ELEM= amor_ele , NUME_DDL= nume_ddl ) ;
+imped    = ASSE_MATRICE( MATR_ELEM= impe_ele , NUME_DDL= nume_ddl ) ;
+
+vecasx=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='ASSE',
+                  NUME_DDL= nume_ddl,
+                  MODELE=ensemble,
+                  ASSE=(_F(TOUT='OUI',
+                           CHAM_GD=VEC_X1,
+                           CUMUL='OUI',
+                           COEF_R=1.0,),),
+                  ); 
+#
+fo1 = DEFI_FONCTION ( NOM_PARA= 'FREQ', 
+         VALE= ( 0., 1., 100., 1. ) );
+         
+INCLUDE(UNITE=31,);
+
+linst= DEFI_LIST_REEL ( DEBUT = 0.,
+                          INTERVALLE = (
+                                      _F(
+                                         JUSQU_A = 20.47, #10.23, #
+                                         PAS=0.01,
+                                         ),
+                                       ),
+                      );
+
+accex= CALC_FONCTION( COMB=_F( FONCTION = acc_x, COEF = 1.),
+                      LIST_PARA=linst);
+
+fmax=50.,
+df=1./20.48 #1./10.24, #
+
+# calcul des modes
+#------------------
+#
+#
+#
+modes=CALC_MODES(MATR_RIGI=rigidite, MATR_MASS=masse,
+                    VERI_MODE=_F(STOP_ERREUR='NON',),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(0.1,5.,10.,15.,20.,25.,),
+                                 #30.,35.,40.,45.,50.,),
+                                 ),
+                    #FILTRE_MODE=_F(SEUIL=0.0003,),
+                    NORM_MODE=_F(INFO=1,
+                              NORME='TRAN_ROTA',),
+                    );
+                    
+BAMO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = modes, NMAX_MODE = 9999),
+                              _F( MODE_INTF = MODE_ST1, NMAX_MODE = 30),
+                             ),
+                       NUME_REF=nume_ddl)
+                    
+NDDLGEN=NUME_DDL_GENE(BASE=BAMO, STOCKAGE='PLEIN',);
+                    
+rigigen=PROJ_MATR_BASE(BASE=BAMO,
+                     NUME_DDL_GENE=NDDLGEN,
+                     MATR_ASSE=rigidite,);
+                     
+#rigigeh=PROJ_MATR_BASE(BASE=BAMO,
+#                     NUME_DDL_GENE=NDDLGEN,
+#                     MATR_ASSE=rigihyst,);
+                     
+massgen=PROJ_MATR_BASE(BASE=BAMO,
+                     NUME_DDL_GENE=NDDLGEN,
+                     MATR_ASSE=masse,);
+                     
+amorgen=PROJ_MATR_BASE(BASE=BAMO,
+                     NUME_DDL_GENE=NDDLGEN,
+                     MATR_ASSE=amort,);
+                     
+impegen=PROJ_MATR_BASE(BASE=BAMO,
+                     NUME_DDL_GENE=NDDLGEN,
+                     MATR_ASSE=imped,);
+                     
+                     
+vecxgen=PROJ_VECT_BASE(BASE=BAMO,
+                     NUME_DDL_GENE=NDDLGEN,
+                     VECT_ASSE=vecasx,);
+#
+lfreq = DEFI_LIST_REEL ( DEBUT = 0.,
+                           INTERVALLE = _F( JUSQU_A = fmax,
+                                          PAS = df)
+                            );
+                            
+lfreqc = DEFI_LIST_REEL ( DEBUT = df,
+                           INTERVALLE = _F( JUSQU_A = fmax,
+                                          PAS = df)
+                            );
+                            
+
+dyna = DYNA_LINE_HARM ( MATR_MASS= massgen,   MATR_RIGI= rigigen, #rigigeh,
+                        MATR_AMOR = amorgen,  MATR_IMPE_PHI = impegen,
+                         EXCIT   = _F( VECT_ASSE_GENE=vecxgen,
+                                       COEF_MULT = 1.
+                                       ),
+                        LIST_FREQ= lfreqc,
+                        TOUT_CHAM= 'OUI'
+                      );
+                      
+FILTRE=DEFI_FONCTION(NOM_PARA='FREQ',
+                     VALE_C=(0.,1.,0.,50.,1.,0.,50.1,0.,0.,),
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                      );
+                      
+axch = RECU_FONCTION( RESU_GENE= dyna, NOEUD= 'NO10027', NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                         NOM_CMP='DX');
+                         
+axcc = RECU_FONCTION( RESU_GENE= dyna, NOEUD= 'NO550', NOM_CHAM= 'ACCE',
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                         NOM_CMP='DX');
+                         
+axccF=FORMULE(NOM_PARA='FREQ',VALE_C='1+0j+axcc(FREQ)')
+
+axccC=CALC_FONC_INTERP(FONCTION=axccF, NOM_PARA = 'FREQ',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=lfreq);
+                        
+                         
+accexH= CALC_FONCTION(FFT=_F(FONCTION=accex,METHODE='COMPLET'),
+                      INTERPOL='LIN',
+                      PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                      
+accexNHF=FORMULE(NOM_PARA='FREQ',
+               VALE_C='accexH(FREQ)*FILTRE(FREQ)/axccC(FREQ)')
+
+accexNH=CALC_FONC_INTERP(FONCTION=accexNHF, NOM_PARA = 'FREQ',
+                        PROL_DROITE='CONSTANT',
+                        PROL_GAUCHE='CONSTANT',
+                        LIST_PARA=lfreq);
+                        
+accexN=CALC_FONCTION(FFT=_F(FONCTION=accexNH,METHODE='COMPLET',SYME='NON'),
+                    INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                      
+
+axchH=CALC_FONCTION(MULT=(_F(FONCTION=axch),_F(FONCTION=accexNH),                                           _F(FONCTION=FILTRE),),
+                     INTERPOL='LIN',
+                     PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                     LIST_PARA=lfreq);
+                     
+axchTr=CALC_FONCTION(FFT=_F(FONCTION=axchH,METHODE='COMPLET',SYME='NON'),
+                    INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                    
+axchTa=CALC_FONCTION(COMB=(_F(FONCTION=axchTr,COEF=1.0),
+                           _F(FONCTION=accexN,COEF=1.0),
+                           ),
+                    LIST_PARA=linst,
+                    INTERPOL='LIN',
+                    PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                    
+              
+freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
+                          INTERVALLE = (
+                                      _F(
+                                         JUSQU_A = 15.,
+                                         NOMBRE = 149,
+                                       ),
+                                      _F(
+                                         JUSQU_A = 35.,
+                                         NOMBRE = 80,
+                                       ),
+                                      _F(
+                                         JUSQU_A = 100.,
+                                         NOMBRE = 65,
+                                       ),
+                                       ),
+                           );
+
+
+sro_axh=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=axchTa, AMOR_REDUIT=0.05,
+                                  NORME=1.,
+                                  LIST_FREQ = freqspec,
+                                 ),);
+                                 
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=5.0422212,
+                         VALE_REFE=4.885,
+                         PRECISION=0.04,
+                         REFERENCE = 'AUTRE_ASTER',
+                         VALE_PARA=1.01,
+                         FONCTION=axchTa,
+                         ),
+                      _F(VALE_CALC=19.31085,
+                         VALE_REFE=17.40,
+                         PRECISION=0.12,
+                         REFERENCE = 'AUTRE_ASTER',
+                         VALE_PARA=(10.7, 0.05),
+                         NOM_PARA=('FREQ', 'AMOR'),
+                         FONCTION=sro_axh,
+                         ),
+                      ),
+              );
+
+FIN( );
+
+
