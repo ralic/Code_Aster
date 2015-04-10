@@ -31,7 +31,6 @@ subroutine te0517(option, nomte)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jsd1ff.h"
 #include "asterfort/lonele.h"
 #include "asterfort/matela.h"
@@ -39,6 +38,7 @@ subroutine te0517(option, nomte)
 #include "asterfort/moytem.h"
 #include "asterfort/pmfinfo.h"
 #include "asterfort/pmfitg.h"
+#include "asterfort/pmfmats.h"
 #include "asterfort/porea2.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/r8inir.h"
@@ -52,7 +52,7 @@ subroutine te0517(option, nomte)
 !
     integer :: nc, nno, kp, ncomp, i, jacf, icompo, iorien, ivectu
     integer :: jtab(7), ino, istrxm, nbsp
-    integer :: nbgfmx, isdcom, igeom, iret, imate, k, npg, ifgm, iretc
+    integer :: igeom, iret, imate, k, npg, ifgm, iretc
 !
     real(kind=8) :: pgl(3, 3), fl(14), xiy, xiz
     real(kind=8) :: ey, ez, temp, xl, gamma
@@ -60,8 +60,6 @@ subroutine te0517(option, nomte)
     real(kind=8) :: phiz, forref, momref, carsec(6)
     aster_logical :: reactu
     character(len=24) :: mator
-!
-    integer, pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
@@ -146,10 +144,8 @@ subroutine te0517(option, nomte)
             call jevech('PMATERC', 'L', imate)
             call moytem('RIGI', npg, 1, '+', temp, iret)
 !
-            call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
-            call jeveuo(zk16(icompo-1+7), 'L', isdcom)
-            nbgfmx = cpri(3)
-            mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
+            call pmfmats(imate,mator)
+            ASSERT( mator.ne.' ')
             call matela(zi(imate), mator, 1, temp, e, nu)
             g = e / (2.d0*(1.d0+nu))
             phiy = e*xiz*12.d0*alfay/ (xl*xl*g*aa)

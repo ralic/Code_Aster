@@ -19,8 +19,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     CALCULE INTEGRALE(E.DS) ou INTEGRALE(RHO.DS)
-!       AVEC E OU RHO CONSTANT PAR GROUPE
+!     CALCULE INTEGRALE(E.DS) ou INTEGRALE(RHO.DS) AVEC E OU RHO CONSTANT PAR GROUPE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,6 +40,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 #include "asterfort/jeveuo.h"
 #include "asterfort/pmfinfo.h"
 #include "asterfort/pmfitg.h"
+#include "asterfort/pmfmats.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
@@ -53,7 +53,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: jacf, labsc
-    integer :: icompo, isdcom, i, ipos, icp, ig, nbfig, nbgfmx
+    integer :: icompo, isdcom, i, ipos, icp, ig, nbfig
     real(kind=8) :: carsec(6)
     real(kind=8) :: rho, rhos, rhofi, rhofe, cm, phie, phii
     real(kind=8) :: val(1), e, nu, absmoy
@@ -66,7 +66,6 @@ subroutine pmfitx(icdmat, isw, casect, gto)
     data nomres2 /'E','NU'/
     data nomres4 /'RHO','PROF_RHO_F_INT','PROF_RHO_F_EXT','COEF_MASS_AJOU'/
 !
-    integer, pointer :: cpri(:) => null()
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
@@ -135,9 +134,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 ! --------------------------------------------------------------------------------------------------
 !   si ito=1 on récupère le matériau de torsion
     if (isw .eq. 1) then
-        call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
-        nbgfmx=cpri(3)
-        materi=zk24(isdcom-1+nbgfmx*6+1)(1:16)
+        call pmfmats(icdmat, materi)
         call rcvalb('RIGI', 1, 1, '+', icdmat, materi, 'ELAS', 0, ' ', [0.0d+0],&
                     2, nomres2, valres, codres, 0)
 !

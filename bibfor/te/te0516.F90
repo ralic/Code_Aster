@@ -51,6 +51,7 @@ subroutine te0516(option, nomte)
 #include "asterfort/pmfite.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfits.h"
+#include "asterfort/pmfmats.h"
 #include "asterfort/pmfmcf.h"
 #include "asterfort/porea1.h"
 #include "asterfort/pouex7.h"
@@ -73,7 +74,7 @@ subroutine te0516(option, nomte)
     real(kind=8) :: klv(dimklv), work(nc, 2*nc), co(npg)
     real(kind=8) :: rigge0(2*nc, 2*nc), ddu(2*nc), effgep(nc), d1bsig(4, 2*nc)
 !
-    integer :: ne, cara, idepla, iiter, iterat, ifgp, nbgfmx
+    integer :: ne, cara, idepla, iiter, iterat, ifgp
     integer :: i, jcret, npge
     integer :: igeom, imate, icontm, iorien, icompo, ivarim, iinstp, ipoids
     integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
@@ -98,7 +99,6 @@ subroutine te0516(option, nomte)
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
-    integer, pointer :: cpri(:) => null()
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
     real(kind=8), pointer :: modufib(:) => null()
@@ -254,9 +254,8 @@ subroutine te0516(option, nomte)
     call moytem(fami, npg, 1, '-', temm, iret)
 !   caracteristiques elastiques (pas de temperature pour l'instant)
 !   on prend le E et NU du materiau torsion (voir op0059)
-    call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
-    nbgfmx = cpri(3)
-    mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
+    call pmfmats(imate, mator)
+    ASSERT( mator.ne.' ' )
     call matela(zi(imate), mator, 1, temp, e, nu)
     g = e / (2.d0*(1.d0+nu))
 !   matrice de raideur elastique : materiau integre sur la section

@@ -1,6 +1,5 @@
 subroutine verifm(fami, npg, nspg, poum, imate,&
                   compor, ndim, epsth, iret)
-    implicit none
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,18 +17,21 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+    implicit none
 #include "jeveux.h"
 #include "asterfort/moytem.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/pmfmats.h"
+!
     character(len=*) :: fami, poum, compor
     real(kind=8) :: epsth(*)
     integer :: npg, nspg, ndim, iret, imate
 !
+! --------------------------------------------------------------------------------------------------
 !
 !  FAMI : FAMILLE DE POINTS DE GAUSS
 !  NPG  : NOMBRE DE POINTS DE GAUSS
@@ -46,29 +48,29 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
 ! IRET  : CODE RETOUR CONCERNANT LA TEMPERATURE 0 SI OK
 !                                               1 SI NOOK
 !
-!------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: codrem(3), codrep(3)
-    character(len=8) :: valek(2), nomat
+    character(len=8) :: nomat
     character(len=16) :: nomres(3)
     integer :: iret1, iret2, iret3, ind, somire, iadzi, iazk24
     real(kind=8) :: tm, tref, tp, valrep(3), valrem(3)
-!------------------------------------------------------------------
+!
+    character(len=24) :: valek(2)
+!
+! --------------------------------------------------------------------------------------------------
 !
     iret1 = 0
     iret2 = 0
     iret3 = 0
 
-!   -- si l'element est multifibre, il faut prendre le materiau "section"
-!      pour recuperer les coefficients de dilatation :
-    if (lteatt('TYPMOD2','PMF')) then
-        call pmfmats(imate, nomat)
-    else
-        nomat=' '
-    endif
-
-    call rcvarc(' ', 'TEMP', 'REF', fami, npg,&
-                nspg, tref, iret1)
-
+!   si l'élément est multifibre, il faut prendre le materiau "section"
+!   pour récupérer les coefficients de dilatation :
+    call pmfmats(imate, nomat)
+!
+    call rcvarc(' ', 'TEMP', 'REF', fami, npg, nspg, tref, iret1)
+!
     if (ndim .eq. 1) then
         nomres(1) = 'ALPHA'
     else if (ndim.eq.2) then
@@ -79,88 +81,63 @@ subroutine verifm(fami, npg, nspg, poum, imate,&
         nomres(2) = 'ALPHA_T'
         nomres(3) = 'ALPHA_N'
     endif
-
+!
     if (poum .eq. 'T') then
-
-        call moytem(fami, npg, nspg, '-', tm,&
-                    iret2)
+        call moytem(fami, npg, nspg, '-', tm, iret2)
         call rcvalb(fami, npg, nspg, '-', imate,&
-                    nomat, compor, 1, 'TEMP', [tm],&
-                    ndim, nomres, valrem, codrem, 0)
-        call moytem(fami, npg, nspg, '+', tp,&
-                    iret3)
+                    nomat, compor, 1, 'TEMP', [tm], ndim, nomres, valrem, codrem, 0)
+        call moytem(fami, npg, nspg, '+', tp, iret3)
         call rcvalb(fami, npg, nspg, '+', imate,&
-                    nomat, compor, 1, 'TEMP', [tp],&
-                    ndim, nomres, valrep, codrep, 0)
+                    nomat, compor, 1, 'TEMP', [tp], ndim, nomres, valrep, codrep, 0)
 !
         somire = iret2 + iret3
-!
         if (somire .eq. 0) then
-!
             if (iret1 .eq. 1) then
                 call tecael(iadzi, iazk24)
                 valek(1) = zk24(iazk24-1+3) (1:8)
                 call utmess('F', 'COMPOR5_8', sk=valek(1))
             endif
-!
-            do 5 ind = 1, ndim
+            do ind = 1, ndim
                 if ((codrem(ind).ne.0) .or. (codrep(ind).ne.0)) then
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
                     call utmess('F', 'COMPOR5_32', nk=2, valk=valek)
                 endif
- 5          continue
-!
-            do 10 ind = 1, ndim
+            enddo
+            do ind = 1, ndim
                 epsth(ind) = valrep(ind)*(tp-tref)- valrem(ind)*(tm- tref)
-10          continue
+            enddo
         else
-!
-            do 20 ind = 1, ndim
-                epsth(ind) = 0.d0
-20          continue
-!
+            epsth(1:ndim) = 0.d0
         endif
 !
     else
-!
-        call moytem(fami, npg, nspg, poum, tm,&
-                    iret2)
+        call moytem(fami, npg, nspg, poum, tm, iret2)
         call rcvalb(fami, npg, nspg, poum, imate,&
-                    nomat, compor, 1, 'TEMP', [tm],&
-                    ndim, nomres, valrem, codrem, 0)
-!
+                    nomat, compor, 1, 'TEMP', [tm], ndim, nomres, valrem, codrem, 0)
         somire = iret2 + iret3
-!
         if (somire .eq. 0) then
-!
             if (iret1 .eq. 1) then
                 call tecael(iadzi, iazk24)
                 valek(1) = zk24(iazk24-1+3) (1:8)
                 call utmess('F', 'COMPOR5_8', sk=valek(1))
             endif
-            do 35 ind = 1, ndim
+            do ind = 1, ndim
                 if (codrem(ind) .ne. 0) then
                     call tecael(iadzi, iazk24)
                     valek(1)= zk24(iazk24-1+3) (1:8)
                     valek(2)=nomres(ind)
                     call utmess('F', 'COMPOR5_32', nk=2, valk=valek)
                 endif
-35          continue
-            do 30 ind = 1, ndim
+            enddo
+            do ind = 1, ndim
                 epsth(ind) = valrem(ind)*(tm-tref)
-30          continue
+            enddo
         else
-!
-            do 40 ind = 1, ndim
-                epsth(ind) = 0.d0
-40          continue
-!
+            epsth(1:ndim) = 0.d0
         endif
-!
     endif
 !
     if ((iret2+iret3) .ge. 1) iret = 1
-!
 end subroutine

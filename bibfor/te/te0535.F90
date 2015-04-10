@@ -53,6 +53,7 @@ subroutine te0535(option, nomte)
 #include "asterfort/pmfite.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfits.h"
+#include "asterfort/pmfmats.h"
 #include "asterfort/pmfmcf.h"
 #include "asterfort/pmfpti.h"
 #include "asterfort/porea1.h"
@@ -78,7 +79,7 @@ subroutine te0535(option, nomte)
     integer :: jtab(7), ivarmp, istrxp, istrxm
     integer :: ip, jcret, codret, codrep
     integer :: iposcp, iposig, ipomod, iinstp, iinstm
-    integer :: icomax, ico, isdcom, nbgfmx, ncomp
+    integer :: icomax, ico, isdcom, ncomp
     integer :: npg, nnoel, ipoids, ivf
 !
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
@@ -96,7 +97,6 @@ subroutine te0535(option, nomte)
 !
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
-    integer, pointer :: cpri(:) => null()
 !
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
@@ -227,9 +227,8 @@ subroutine te0535(option, nomte)
 !
 !   Caractéristiques élastiques (pas de température pour l'instant)
 !   On prend le E et NU du matériau torsion (voir op0059)
-    call jeveuo(zk16(icompo-1+7)(1:8)//'.CPRI', 'L', vi=cpri)
-    nbgfmx = cpri(3)
-    mator = zk24(isdcom-1+nbgfmx*6+1)(1:8)
+    call pmfmats(imate, mator)
+    ASSERT( mator.ne.' ')
     call matela(zi(imate), mator, 0, 0.d0, e, nu)
     g = e/ (2.d0* (1.d0+nu))
     gxjx = g*xjx

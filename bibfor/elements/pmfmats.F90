@@ -31,10 +31,8 @@ subroutine pmfmats(icdmat, nomats)
 !
     implicit none
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 !
     integer, intent(in) :: icdmat

@@ -25,24 +25,26 @@ subroutine te0050(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/pmfmats.h"
 !
     character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
-!                          OPTION : 'AMOR_MECA'
-!                                OU 'RIGI_MECA_HYST'
-!        POUR TOUS LES TYPES D'ELEMENTS (SAUF LES ELEMENTS DISCRETS)
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+! --------------------------------------------------------------------------------------------------
+!
+!    - fonction réalisée :  calcul des matrices élémentaires
+!                          option : 'AMOR_MECA'
+!                                ou 'RIGI_MECA_HYST'
+!        pour tous les types d'éléments (sauf les éléments discrets)
+!
+!    - arguments:
+!        données:      option       -->  option de calcul
+!                      nomte        -->  nom du type élément
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbres, nbpar
-    parameter         ( nbres=2 )
-    parameter         ( nbpar=3 )
+    parameter  ( nbres=2 )
+    parameter  ( nbpar=3 )
 !
     integer :: jgano, iret, nbval, nbddl, idimge, npara
     integer :: i, j, k, kns, ks, mater, irigi, imass
@@ -57,23 +59,21 @@ subroutine te0050(option, nomte)
     character(len=8) :: nompar(nbpar), nomat
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
-!-----------------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
                      npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
-!     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
-!     ------------------------------------------------------------
+!   récupération des champs paramètres et de leurs longueurs:
     ins=0
     irns=0
     if (option .eq. 'AMOR_MECA') then
         call tecach('NNO', 'PRIGIEL', 'L', ins, iad=idrigi(1))
         if (ins .eq. 0) then
-            call tecach('ONN', 'PMATUUR', 'E', iret, nval=5,&
-                        itab=idresu)
+            call tecach('ONN', 'PMATUUR', 'E', iret, nval=5, itab=idresu)
         else
-            call tecach('NNN', 'PMATUNS', 'E', irns, nval=5,&
-                        itab=idresu)
+            call tecach('NNN', 'PMATUNS', 'E', irns, nval=5, itab=idresu)
             if (irns .ne. 0) call tecach('ONN', 'PMATUUR', 'E', iret, 5, itab=idresu)
         endif
     else if (option.eq.'RIGI_MECA_HYST') then
@@ -87,8 +87,7 @@ subroutine te0050(option, nomte)
     nompar(2)='Y'
     nompar(3)='Z'
 !
-    call tecach('ONN', 'PGEOMER', 'L', iret, nval=5,&
-                itab=idgeo)
+    call tecach('ONN', 'PGEOMER', 'L', iret, nval=5, itab=idgeo)
     igeom=idgeo(1)
     idimge=idgeo(2)/nno
 !
@@ -99,45 +98,34 @@ subroutine te0050(option, nomte)
         vxyz = 0.d0
         do ino = 1, nno
             vxyz = vxyz+zr(igeom + idimge*(ino-1) +k -1)
-        end do
+        enddo
         valpar(k) = vxyz/nno
-    end do
+    enddo
 !
     call jevech('PMATERC', 'L', imate)
     mater=zi(imate)
     call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
-    if(.not.(phenom .eq. 'ELAS'      .or. phenom .eq. 'ELAS_COQMU'&
-        .or. phenom .eq. 'ELAS_GLRC' .or. phenom .eq. 'ELAS_DHRC'&
-        )) then
+    if(.not.(phenom .eq. 'ELAS'       .or. phenom .eq. 'ELAS_COQMU' .or. &
+             phenom .eq. 'ELAS_GLRC'  .or. phenom .eq. 'ELAS_DHRC')) then
         call utmess('F', 'MODELISA10_3', nk=2, valk=[option, phenom])
     endif
 
-!   -- si l'element est multifibre, il faut prendre le materiau "section"
-!      pour recuperer les coefficients de dilatation :
-    if (lteatt('TYPMOD2','PMF')) then
-        call pmfmats(mater, nomat)
-    else
-        nomat=' '
-    endif
+!   si l'élément est multifibre, il faut prendre le materiau "section"
+!   pour récupérer les coefficients de dilatation :
+    call pmfmats(mater, nomat)
 !
     if (ins .eq. 0) then
-        call tecach('ONN', 'PRIGIEL', 'L', iret, nval=2,&
-                    itab=idrigi)
+        call tecach('ONN', 'PRIGIEL', 'L', iret, nval=2, itab=idrigi)
         ASSERT(idrigi(2).eq.nbval)
     else if (irns.eq.0) then
-        call tecach('ONN', 'PRIGINS', 'L', iret, nval=2,&
-                    itab=idrigi)
+        call tecach('ONN', 'PRIGINS', 'L', iret, nval=2, itab=idrigi)
         ASSERT(idrigi(2).eq.nbval)
     endif
 !
-!     -- RECUPERATION DES COEFFICIENTS FONCTIONS DE LA GEOMETRIE :
-!     -------------------------------------------------------------
-!
+!   récupération des coefficients fonctions de la géométrie :
+    nbddl = 0
     if (option .eq. 'AMOR_MECA') then
-!     --------------------------------
-        call tecach('ONN', 'PMASSEL', 'L', iret, nval=2,&
-                    itab=idmass)
-!
+        call tecach('ONN', 'PMASSEL', 'L', iret, nval=2, itab=idmass)
         if (ins .eq. 0) then
             ASSERT(idmass(2).eq.nbval)
         else if (irns.eq.0) then
@@ -153,7 +141,6 @@ subroutine te0050(option, nomte)
                     nomres, valres, icodre, 0, nan='NON')
 !
     else if (option.eq.'RIGI_MECA_HYST') then
-!     ------------------------------------------
         nomres(1)='AMOR_HYST'
         valres(1) = 0.d0
         call rcvalb('RIGI', 1, 1, '+', mater, nomat, phenom, npara, nompar, valpar, 1,&
@@ -162,8 +149,7 @@ subroutine te0050(option, nomte)
         ASSERT(.false.)
     endif
 !
-!     -- CALCUL PROPREMENT DIT :
-!     --------------------------
+!   calcul proprement dit
     iresu= idresu(1)
     irigi= idrigi(1)
     if (option .eq. 'AMOR_MECA') then
@@ -178,9 +164,10 @@ subroutine te0050(option, nomte)
                 else
                     zr(iresu-1+i)=beta*zr(imass-1+i)
                 endif
-            end do
+            enddo
         else
-!     Cas non symetrique
+!           Cas non symétrique
+            ASSERT(nbddl.gt.0)
             do i = 1, nbddl
                 kns = (i-1)*nbddl
                 do j = 1, nbddl
@@ -190,13 +177,13 @@ subroutine te0050(option, nomte)
                         ks = (j-1)*j/2+i
                     endif
                     zr(iresu-1+kns+j)=alpha*zr(irigi-1+kns+j) +beta* zr(imass-1+ks)
-                end do
-            end do
+                enddo
+            enddo
         endif
     else if (option.eq.'RIGI_MECA_HYST') then
         eta = valres(1)
         do i = 1, nbval
             zc(iresu-1+i)=dcmplx(zr(irigi-1+i),eta*zr(irigi-1+i))
-        end do
+        enddo
     endif
 end subroutine
