@@ -24,13 +24,19 @@
 """
 
 # Modules EFICAS
-from strfunc import get_encoding
+from strfunc import get_encoding, to_unicode
 
 
 class AsException(Exception):
 
     def __unicode__(self):
-        return " ".join([unicode(x) for x in self.args])
+        args = []
+        for x in self.args:
+            ustr = to_unicode(x)
+            if type(ustr) is not unicode:
+                ustr = unicode( repr(x) )
+            args.append(ustr)
+        return " ".join(args)
 
     def __str__(self):
         return unicode(self).encode(get_encoding())
