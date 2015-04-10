@@ -129,6 +129,10 @@ cata_msg = {
      ou bien les supprimer du maillage.
 """),
 
+    14: _(u"""
+Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pas disponible. 
+"""),
+
     15: _(u"""
   -> Cette option n'a pas encore été programmée.
   -> Risque & Conseil:
@@ -592,6 +596,23 @@ Utilisez ELIM_ARETE='DUAL'.
   -> Risque & Conseil:
      Veuillez utiliser un maillage linéaire.
 """),
+
+    86: _(u"""
+Le CHAM_GD utilisé par l'opération ASSE_DEPL de l'opérateur CREA_CHAMP doit être un champ nodal." 
+"""),
+
+    87: _(u"""
+Le CHAM_GD utilisé par l'opération ASSE_DEPL de l'opérateur CREA_CHAMP doit être de type DEPL_R." 
+"""),
+
+    88: _(u"""
+L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne doit pas être utilisée si le modèle le comporte pas d'éléments X-FEM." 
+"""),
+
+    89: _(u"""
+L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les éléments HM." 
+"""),
+
     93: _(u"""
      --> La loi cohésive CZM_LIN_MIX est utilisable uniquement avec un contact de type mortier
          dans le modèle %(k1)s. En revanche, les autres lois cohésives et de contact-frottement

@@ -59,6 +59,7 @@ subroutine op0195()
 #include "asterfort/utmess.h"
 #include "asterfort/varaff.h"
 #include "asterfort/x195cb.h"
+#include "asterfort/xasdpl.h"
     integer :: n1, ib, ifm, niv, iret, i11, i12, test, ibid, nocc
     character(len=3) :: prol0
     character(len=4) :: tychr, tych
@@ -127,14 +128,14 @@ subroutine op0195()
     call getvtx(' ', 'OPTION', scal=option, nbret=n1)
     if (n1 .eq. 0) option = ' '
 !
-!
 ! 2.  CALCUL DE LIGREL,CELMOD  + QUELQUES VERIFICATIONS   :
 !     -------------------------------------------------------------
     ligrel = ' '
     celmod = ' '
 !
     if (tychr(1:2) .eq. 'EL') then
-        if ((opera.eq.'AFFE') .or. (opera.eq.'ASSE') .or. ( opera.eq.'DISC')) then
+        if ((opera.eq.'AFFE') .or. (opera.eq.'ASSE') .or. (opera.eq.'ASSE_DEPL') .or. &
+            ( opera.eq.'DISC')) then
             if (mo .eq. ' ') then
                 call utmess('F', 'UTILITAI3_22')
             endif
@@ -248,6 +249,11 @@ subroutine op0195()
     else if (opera.eq.'EVAL') then
 !     -----------------------------------------
         call chpeva(chou)
+!
+!
+    else if (opera.eq.'ASSE_DEPL') then
+!     -----------------------------------------
+        call xasdpl(celmod, prol0, chou)
 !
 !
     else if (opera(1:3).eq.'R2C') then

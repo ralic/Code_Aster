@@ -3,6 +3,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterc/gettco.h"
 #include "asterc/r8prem.h"
 #include "asterfort/alchml.h"
@@ -159,14 +160,14 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     complex(kind=8) :: c16b
     character(len=2) :: codret
     character(len=8) :: resul, crit, noma, nommai, vk8(2), kiordm
-    character(len=8) :: kiord, k8b, lpain(10), lpaout(2), typarr(9)
+    character(len=8) :: kiord, k8b, lpain(14), lpaout(2), typarr(9)
     character(len=8) :: nomgd
     character(len=16) :: typres, motfac, noparr(9), ligrmo, compt, option
     character(len=19) :: knum, ligrel, kins, compor
     character(len=19) :: chvarc, chvref
     character(len=24) :: chgeom, chcara(18), chharm, chvari, chdepl
     character(len=24) :: vk24(2), nomgrm
-    character(len=24) :: chsig, lchin(10), lchout(2)
+    character(len=24) :: chsig, lchin(14), lchout(2)
     character(len=24) :: mlggma, mlgnma
     character(len=24) :: chsigm, chdepm, chbid
     aster_logical :: evol
@@ -174,6 +175,9 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     integer, pointer :: ptma(:) => null()
     integer, pointer :: desc(:) => null()
     character(len=16), pointer :: vale(:) => null()
+!
+    integer :: nfiss
+    aster_logical :: lxfem
 !
     data typarr/'I','R','K24','K8','R','R','R','R','R'/
     data chvarc,chvref /'&&PEINGL.CHVARC','&&PEINGL.CHVARC.REF'/
@@ -444,6 +448,10 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         iret)
         endif
 !
+!      le modele comporte-t-il des elements X-FEM ?
+       call dismoi('NB_FISS_XFEM', modele, 'MODELE', repi=nfiss)
+       lxfem = nfiss .ne. 0
+
 ! ---  CALCUL DE L'INDICATEUR GLOBAL DE PERTE DE RADIALITE
 ! ---  SUR TOUTES LES MAILLES DU MODELE :
 !      --------------------------------
@@ -480,6 +488,18 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                 lchin(10) = chdepm
                 nbin = 10
             endif
+        endif
+        if (lxfem) then
+            ASSERT(option.eq.'ENEL_ELEM')
+            lpain(11) = 'PPINTTO'
+            lchin(11) = modele(1:8)//'.TOPOSE.PIN'
+            lpain(12) = 'PPMILTO'
+            lchin(12) = modele(1:8)//'.TOPOSE.PMI'
+            lpain(13) = 'PCNSETO'
+            lchin(13) = modele(1:8)//'.TOPOSE.CNS'
+            lpain(14) = 'PLONCHA'
+            lchin(14) = modele(1:8)//'.TOPOSE.LON'
+            nbin = 14
         endif
         if (option .eq. 'INDIC_ENER' .or. option .eq. 'INDIC_SEUIL') then
             nbout = 2

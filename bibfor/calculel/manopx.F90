@@ -21,6 +21,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
+#include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/indk32.h"
@@ -81,7 +82,7 @@ subroutine manopx(ligrel, option, param, chsgeo, exixfm,&
     integer :: k, nuflpg, nufgpg
     character(len=8) :: nomgd, elrefe, ma, mo
     character(len=16) :: nofpg, nomte
-    character(len=24) :: chgeom
+    character(len=19) :: chgeom
     character(len=32) :: noflpg
     character(len=32), pointer :: pnlocfpg(:) => null()
     integer, pointer :: nolocfpg(:) => null()

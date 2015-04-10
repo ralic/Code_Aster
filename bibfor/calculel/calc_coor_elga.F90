@@ -3,6 +3,7 @@ subroutine calc_coor_elga(ligrel, chgeom, chgaus)
 implicit none
 !
 #include "asterfort/calcul.h"
+#include "asterfort/dismoi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,20 +38,36 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=8) :: lpain(1), lpaout(1)
+    character(len=8) :: lpain(5), lpaout(1), mo
     character(len=16) :: option
-    character(len=19) :: lchin(1), lchout(1)
-    integer :: nbchin
+    character(len=19) :: lchin(5), lchout(1)
+    integer :: nbchin, nfiss
 !
 ! --------------------------------------------------------------------------------------------------
 !
     lpain(1)  = 'PGEOMER'
     lchin(1)  = chgeom
+    nbchin    = 1
+!   si le modele comporte des elements X-FEM, on ajoute les
+!   champs ad hoc
+    call dismoi('NOM_MODELE', ligrel, 'LIGREL', repk=mo)
+    call dismoi('NB_FISS_XFEM', mo, 'MODELE', repi=nfiss)
+    if (nfiss.gt.0) then
+         lpain(2) = 'PPINTTO'
+         lchin(2) = mo(1:8)//'.TOPOSE.PIN'
+         lpain(3) = 'PPMILTO'
+         lchin(3) = mo(1:8)//'.TOPOSE.PMI'
+         lpain(4) = 'PCNSETO'
+         lchin(4) = mo(1:8)//'.TOPOSE.CNS'
+         lpain(5) = 'PLONCHA'
+         lchin(5) = mo(1:8)//'.TOPOSE.LON'
+         nbchin   = 5
+    endif
+!
     lpaout(1) = 'PCOORPG'
     lchout(1) = chgaus
     option    = 'COOR_ELGA'
-    nbchin    = 1
-!
+ 
     call calcul('S', option, ligrel, nbchin, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')

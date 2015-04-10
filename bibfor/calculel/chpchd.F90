@@ -19,6 +19,9 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 #include "asterfort/jedetr.h"
 #include "asterfort/manopg.h"
 #include "asterfort/utmess.h"
+#include "asterfort/xcesrd.h"
+#include "asterfort/xnpgxx.h"
+
     character(len=*) :: chin, chou, base, celmod, type
 !     -----------------------------------------------------------------
 ! ======================================================================
@@ -84,10 +87,10 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
 ! -----------------------------------------------------------------
 !
     integer :: ib, iret, nncp, ibid
-    character(len=3) :: prol0
+    character(len=3) :: prol0, exixfm
     character(len=8) :: ma, ma2, tychi, nomgd, param, moin
     character(len=16) :: cas, option, nomcmd, kbid
-    character(len=19) :: cesmod, ces1, cns1, mnoga, ligrel, ces2
+    character(len=19) :: cesmod, ces1, cns1, mnoga, ligrel, ces2, chsnpg
     character(len=24) :: valk(4)
     aster_logical :: bool
 !
@@ -178,6 +181,21 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
         call detrsd('CHAM_NO_S', cns1)
         call detrsd('CHAM_ELEM_S', mnoga)
 !
+!       construction du CHAM_ELEM_S conteant le nombre de points
+!       de Gauss reellement utilises par chaque element, dans le
+!       cas d'un champs ELGA, base sur la famille "XFEM"
+        chsnpg = '&&CHPCHD.CHSNPG'
+        call xnpgxx(ligrel, option, param, chsnpg, exixfm)
+!
+        if (exixfm.eq.'OUI') then
+!            si le champ ELGA s'appuie sur la famille "XFEM", on
+!            desaffecte toutes les composantes associes aux points
+!            de Gauss inutilises
+             call xcesrd(ces1, chsnpg)
+        endif
+!
+        call detrsd('CHAM_ELEM_S', chsnpg)
+!
         call cescel(ces1, ligrel, option, param, prol0,&
                     nncp, base, chou, 'F', ibid)
         call detrsd('CHAM_ELEM_S', ces1)
@@ -251,6 +269,23 @@ subroutine chpchd(chin, type, celmod, prol0, base,&
             call celces(chin, 'V', ces2)
             call cesces(ces2, cas(7:10), cesmod, ' ', ' ','V', ces1)
             call detrsd('CHAM_ELEM_S', ces2)
+        endif
+!
+        if (type.eq.'ELGA') then
+!           construction du CHAM_ELEM_S conteant le nombre de points
+!           de Gauss reellement utilises par chaque element, dans le
+!           cas d'un champs ELGA, base sur la famille "XFEM"
+            chsnpg = '&&CHPCHD.CHSNPG'
+            call xnpgxx(ligrel, option, param, chsnpg, exixfm)
+!
+            if (exixfm.eq.'OUI') then
+!                si le champ ELGA s'appuie sur la famille "XFEM", on
+!                desaffecte toutes les composantes associes aux points
+!                de Gauss inutilises
+                 call xcesrd(ces1, chsnpg)
+            endif
+!
+            call detrsd('CHAM_ELEM_S', chsnpg)
         endif
 !
         call cescel(ces1, ligrel, option, param, prol0,&

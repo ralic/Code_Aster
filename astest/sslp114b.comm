@@ -145,6 +145,12 @@ def cos12(X,Y) :
 def sin12(X,Y) :
     return math.sin(theta(X,Y)/2)
 
+def cos32(X,Y) :
+    return math.cos(3*theta(X,Y)/2)
+
+def sin32(X,Y) :
+    return math.sin(3*theta(X,Y)/2)
+
 #CHAMP DE DEPLACEMANT ANALYTIQUE ::
 def Ux(X,Y) :
     global KI,E,nu
@@ -168,41 +174,13 @@ U1=FORMULE(NOM_PARA=('X','Y',),VALE='Vx(X,Y)');
 U2=FORMULE(NOM_PARA=('X','Y',),VALE='Vy(X,Y)');
 
 #TENSEUR DES CONTTRAINTES ANALYTIQUE ::
-PI=math.pi
-expo = [None]*2
-A1 = [None]*2
-A2 = [None]*2
-expo[0]=1
-expo[1]=3
-A1[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(4-4*nu)
-A1[1]=-KI*(1+nu)/(E*(2*PI)**0.5)*2
-A2[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(2-4*nu)
-A2[1]=KI*(1+nu)/(E*(2*PI)**0.5)*2
-
-
 def SIGMA(X,Y,IND) :
-    global   PI,A1,A2,expo,E,nu,alpha
-    rxy=r(X,Y)
-    EPSREF = [None]*3
     SIGMAREF = [None]*3
-    EPSREF[0]=0.
-    EPSREF[1]=0.
-    EPSREF[2]=0.
-    for I in range(2) :
-        EPSREF[0]=EPSREF[0]+A1[I]*(cos12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(cos12(X,Y)*cos1(X,Y)+expo[I]*sin12(X,Y)*sin1(X,Y))
-
-    for I in range(2) :
-        EPSREF[1]=EPSREF[1]+A2[I]*(sin12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(sin12(X,Y)*sin1(X,Y)+expo[I]*cos12(X,Y)*cos1(X,Y))
-
-    for I in range(2) :
-        EPSREF[2]=EPSREF[2]+A1[I]*(cos12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(cos12(X,Y)*sin1(X,Y)-expo[I]*sin12(X,Y)*cos1(X,Y))+A2[I]*(sin12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(sin12(X,Y)*cos1(X,Y)-expo[I]*cos12(X,Y)*sin1(X,Y))
-
-    EPSREF[2]=0.5*EPSREF[2]
-
-    for I in range(2) :
-         SIGMAREF[I]=E/(1+nu)*(EPSREF[I]+nu/(1-2*nu)*(EPSREF[0]+EPSREF[1]))
-
-    SIGMAREF[2]=E/(1+nu)*EPSREF[2]
+#   utilisation directe du tenseur analytique
+    rxy=r(X,Y)
+    SIGMAREF[0]=KI/math.sqrt(2.*math.pi*rxy)*cos12(X,Y)*(1.-sin12(X,Y)*sin32(X,Y))
+    SIGMAREF[1]=KI/math.sqrt(2.*math.pi*rxy)*cos12(X,Y)*(1.+sin12(X,Y)*sin32(X,Y))
+    SIGMAREF[2]=KI/math.sqrt(2.*math.pi*rxy)*sin12(X,Y)*cos12(X,Y)*cos32(X,Y)
 
 #COPIE DE SIGMAREF :: WARNING :: TMP=SIGMAREF UTILISE UN POINTEUR ET NE COPIE PAS LES DONNEES ==> CARTON MEMOIRE DRAMATIQUE
     TMP=[None]*3

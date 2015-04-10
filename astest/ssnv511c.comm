@@ -195,6 +195,44 @@ DEPZON[4] = CALC_TABLE(TABLE = DEPPLY,
                     ACTION =_F(OPERATION = 'COMB',
                                TABLE=DEPMGX,),);
 
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : CALCUL D'ERREURS EN TERME DE NORME EN ENERGEIE ET
+#                   DE NORME L2 DU DEPLACEMENT
+#------------------------------------------------------------------------
+
+# calcul de l'erreur en terme de norme en energie
+Scal=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='ELGA_SIEF_R',
+                RESULTAT=UTOT1,
+                NOM_CHAM='SIEF_ELGA',
+                NUME_ORDRE=1)
+
+tabNRJ=POST_ERREUR(OPTION='ENER_RELA',
+                   CHAM_GD=Scal,
+                   MODELE=MODELEK,
+                   DEFORMATION='PETIT',
+                   CHAM_MATER=CHAMPMAT,
+                   GROUP_MA='VOLU',
+                  )
+
+IMPR_TABLE(TABLE=tabNRJ)
+
+# calcul de l'erreur en terme de norme L2 du deplacement
+Ucal=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='NOEU_DEPL_R',
+                RESULTAT=UTOT1,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1)
+
+tabL2=POST_ERREUR(OPTION='DEPL_RELA',
+                  CHAM_GD=Ucal,
+                  MODELE=MODELEK,
+                  GROUP_MA='VOLU',
+                  DX=DEPL_X,
+                 )
+
+IMPR_TABLE(TABLE=tabL2)
+
 #----------------------------------------------
 #                   TEST TABLE
 #----------------------------------------------
@@ -275,5 +313,33 @@ for i in [1,2,3,4]: #Boucle sur les zones
              CRITERE='ABSOLU',
              PRECISION=preci, 
              REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.,
+           VALE_REFE=0.,
+           NOM_PARA='REFERENCE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabNRJ,
+           );
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=6.84653196881,
+           VALE_REFE=6.84653196881,
+           NOM_PARA='REFERENCE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=8.7642964875E-15,
+           NOM_PARA='ERREUR RELATIVE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
 
 FIN();

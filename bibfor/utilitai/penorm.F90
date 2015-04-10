@@ -21,6 +21,7 @@ subroutine penorm(resu, modele)
 #include "asterfort/dismlg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -79,10 +80,10 @@ subroutine penorm(resu, modele)
     integer :: nbpar, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
     integer :: nn, nbmaf
     integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
-    integer :: nb_cmp_act
+    integer :: nb_cmp_act, nfiss, ndim
     real(kind=8) :: prec, inst, vnorm(1)
     complex(kind=8) :: c16b
-    aster_logical :: exiord
+    aster_logical :: exiord, filtr
     character(len=4) :: tych, ki, exirdm
     character(len=8) :: mailla, k8b, resuco, chamg, typmcl(1), tout
     character(len=8) :: tmpres, nomgd, crit
@@ -120,6 +121,7 @@ subroutine penorm(resu, modele)
     chgaus = '&&PENORM.CHGAUS'
     chgeom = '&&PENORM.CHGEOM'
     exiord=.false.
+    filtr=.false.
     nb_cmp_act =0
 !
 ! - Geometry
@@ -339,6 +341,7 @@ subroutine penorm(resu, modele)
 !         GEOMETRIQUE (2D OU 3D)
         call getvtx('NORME', 'TYPE_MAILLE', iocc=1, scal=infoma, nbret=iret)
         if (iret .ne. 0) then
+            filtr=.true.
             if (infoma(1:2) .eq. '2D') then
                 iresma=2
             else if (infoma(1:2).eq.'3D') then
@@ -346,6 +349,20 @@ subroutine penorm(resu, modele)
             else
                 ASSERT(.false.)
             endif
+        else
+            infoma='-'
+        endif
+!
+!       - si le modele comporte des elements X-FEM, on retire les elements de
+!         bord
+        call dismoi('NB_FISS_XFEM', modele, 'MODELE', repi=nfiss)
+        if (nfiss.gt.0) then
+            filtr=.true.
+            call dismoi('DIM_GEOM', mailla, 'MAILLAGE', repi=ndim)
+            iresma=ndim
+        endif
+!
+        if (filtr) then
             call utflmd(mailla, mesmai, nbma, iresma, ' ',&
                         nbmaf, mesmaf)
             if (nbmaf .gt. 0) then
@@ -354,9 +371,7 @@ subroutine penorm(resu, modele)
                 mesmai = mesmaf
             else
                 call utmess('F', 'PREPOST2_6')
-            endif
-        else
-            infoma='-'
+            endif 
         endif
 
 !       -- calcul de ligrel :

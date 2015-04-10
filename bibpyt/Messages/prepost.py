@@ -71,6 +71,14 @@ Attention :
  phénomène non valide
 """),
 
+    11 : _(u"""
+ la macro-commande POST_ERREUR prend en charge seulement le phénomène MECANIQUE.
+"""),
+
+    12 : _(u"""
+ une et une seule fonction doit être associée à chaque GROUP_MA, pour la composante %(k1)s.
+"""),
+
     13 : _(u"""
  Les valeurs non existantes du champ %(k1)s lues sur le maillage donné
  sont considérées nulles.

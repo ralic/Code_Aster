@@ -67,7 +67,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 
 #        LE MOT-CLE OPERATION EST OBLIGATOIRE. IL PERMET LE BON AIGUILLAGE.
 #        ------------------------------------------------------------------
-         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC","NORMALE","R2C","C2R","COMB") ),
+         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","ASSE_DEPL","EVAL","EXTR","DISC","NORMALE","R2C","C2R","COMB") ),
 
 #        ------------------------------------------------------------------
          b_norm          =BLOC(condition = "OPERATION == 'NORMALE'",
@@ -129,6 +129,11 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
          b_eval          =BLOC(condition = "OPERATION == 'EVAL'",
              CHAM_F          =SIMP(statut='o',typ=cham_gd_sdaster),
              CHAM_PARA       =SIMP(statut='o',typ=cham_gd_sdaster,max='**'),
+                             ),
+#        ------------------------------------------------------------------
+         b_xfem          =BLOC(condition = "OPERATION == 'ASSE_DEPL'",
+             CHAM_GD          =SIMP(statut='o',typ=cham_gd_sdaster),
+             MODELE           =SIMP(statut='o',typ=(modele_sdaster) ),
                              ),
 #        ------------------------------------------------------------------
          b_r2c           =BLOC(condition = "OPERATION == 'R2C'",

@@ -239,6 +239,61 @@ IMPR_TABLE(TABLE=TABDEPM,
            TRI=_F(NOM_PARA = ('COOR_Y','COOR_X'),
                   ORDRE ='CROISSANT'));
 
+# solution analytique :
+#    - deplacement
+def ux(X,Y): 
+    return (2.-X)*pression(Y)/E
+
+def uy(X,Y): 
+    return -Y*1.e7/E
+
+UX=FORMULE(NOM_PARA=('X','Y',),VALE='ux(X,Y)')
+UY=FORMULE(NOM_PARA=('X','Y',),VALE='uy(X,Y)')
+
+#    - contraintes
+def Sxx(X,Y):
+    return -pression(Y)
+
+def Syy(X,Y):
+    return -1.e7
+
+SXX=FORMULE(NOM_PARA=('X','Y',),VALE='Sxx(X,Y)');
+SYY=FORMULE(NOM_PARA=('X','Y',),VALE='Syy(X,Y)');
+
+# calcul de l'erreur en terme de norme en energie
+Scal=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='ELGA_SIEF_R',
+                RESULTAT=UTOT1,
+                NOM_CHAM='SIEF_ELGA',
+                NUME_ORDRE=1)
+
+tabNRJ=POST_ERREUR(OPTION='ENER_RELA',
+                   CHAM_GD=Scal,
+                   MODELE=MODELEK,
+                   DEFORMATION='PETIT',
+                   CHAM_MATER=CHAMPMAT,
+                   GROUP_MA='VOLU',
+                   SIXX=SXX,
+                   SIYY=SYY)
+
+IMPR_TABLE(TABLE=tabNRJ)
+
+# calcul de l'erreur en terme de norme L2 du deplacement
+Ucal=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='NOEU_DEPL_R',
+                RESULTAT=UTOT1,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1)
+
+tabL2=POST_ERREUR(OPTION='DEPL_RELA',
+                  CHAM_GD=Ucal,
+                  MODELE=MODELEK,
+                  GROUP_MA='VOLU',
+                  DX=UX,
+                  DY=UY)
+
+IMPR_TABLE(TABLE=tabL2)
+
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=9.9999999999999998E-13,
@@ -292,5 +347,41 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='DZ',
            TYPE_TEST='SOMM_ABS',
            TABLE=TABDEPM,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=2.6e+7,
+           VALE_REFE=2.6e+7,
+           NOM_PARA='REFERENCE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabNRJ,
+           );
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=2.00466062385E-15,
+           NOM_PARA='ERREUR RELATIVE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabNRJ,
+           );
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.00664459137,
+           VALE_REFE=1.00664459137,
+           NOM_PARA='REFERENCE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
+
+TEST_TABLE(CRITERE='ABSOLU',
+           VALE_CALC=2.47300049955E-15,
+           NOM_PARA='ERREUR RELATIVE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
 
 FIN();

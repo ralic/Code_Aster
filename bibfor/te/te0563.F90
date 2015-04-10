@@ -40,18 +40,13 @@ subroutine te0563(option, nomte)
 !
     integer :: ncmp_coor, ncmp_vale, ncmp_coef, npg, iret
     integer :: j_coor_elga, j_vale, j_coef, j_resu, j_calc
-    integer :: ndim, nno, nnos, ivf, idfdx, jgano, jtab1(2), jtab2(2)
+    integer :: jtab1(3), jtab2(2)
     integer :: jtab3(2), ipg, icmp
     real(kind=8) :: resu, poids_pg, vale_pg, calc_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option.eq.'NORME_L2' .or. option.eq.'NORME_FROB')
-!
-! - Finite element parameters
-!
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jvf=ivf,jdfde=idfdx,jgano=jgano)
 !
 ! - Input fields
 !
@@ -66,8 +61,9 @@ subroutine te0563(option, nomte)
 !
 ! - Informations of input fields
 !
-    call tecach('OON', 'PCHAMPG', 'L', iret, nval=2,&
+    call tecach('OON', 'PCHAMPG', 'L', iret, nval=3,&
                 itab=jtab1)
+    npg=jtab1(3)
     ncmp_vale = jtab1(2)/npg
 !
     call tecach('OON', 'PCOORPG', 'L', iret, nval=2,&

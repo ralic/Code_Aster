@@ -145,6 +145,12 @@ def cos12(X,Y) :
 def sin12(X,Y) :
     return math.sin(theta(X,Y)/2)
 
+def cos32(X,Y) :
+    return math.cos(3*theta(X,Y)/2)
+
+def sin32(X,Y) :
+    return math.sin(3*theta(X,Y)/2)
+
 #CHAMP DE DEPLACEMANT ANALYTIQUE ::
 def Ux(X,Y) :
     global KI,E,nu
@@ -168,41 +174,13 @@ U1=FORMULE(NOM_PARA=('X','Y',),VALE='Vx(X,Y)');
 U2=FORMULE(NOM_PARA=('X','Y',),VALE='Vy(X,Y)');
 
 #TENSEUR DES CONTTRAINTES ANALYTIQUE ::
-PI=math.pi
-expo = [None]*2
-A1 = [None]*2
-A2 = [None]*2
-expo[0]=1
-expo[1]=3
-A1[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(4-4*nu)
-A1[1]=-KI*(1+nu)/(E*(2*PI)**0.5)*2
-A2[0]=KI*(1+nu)/(E*(2*PI)**0.5)*(2-4*nu)
-A2[1]=KI*(1+nu)/(E*(2*PI)**0.5)*2
-
-
 def SIGMA(X,Y,IND) :
-    global   PI,A1,A2,expo,E,nu,alpha
-    rxy=r(X,Y)
-    EPSREF = [None]*3
     SIGMAREF = [None]*3
-    EPSREF[0]=0.
-    EPSREF[1]=0.
-    EPSREF[2]=0.
-    for I in range(2) :
-        EPSREF[0]=EPSREF[0]+A1[I]*(cos12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(cos12(X,Y)*cos1(X,Y)+expo[I]*sin12(X,Y)*sin1(X,Y))
-
-    for I in range(2) :
-        EPSREF[1]=EPSREF[1]+A2[I]*(sin12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(sin12(X,Y)*sin1(X,Y)+expo[I]*cos12(X,Y)*cos1(X,Y))
-
-    for I in range(2) :
-        EPSREF[2]=EPSREF[2]+A1[I]*(cos12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(cos12(X,Y)*sin1(X,Y)-expo[I]*sin12(X,Y)*cos1(X,Y))+A2[I]*(sin12(X,Y)**(expo[I]-1))/(2*rxy**0.5)*(sin12(X,Y)*cos1(X,Y)-expo[I]*cos12(X,Y)*sin1(X,Y))
-
-    EPSREF[2]=0.5*EPSREF[2]
-
-    for I in range(2) :
-         SIGMAREF[I]=E/(1+nu)*(EPSREF[I]+nu/(1-2*nu)*(EPSREF[0]+EPSREF[1]))
-
-    SIGMAREF[2]=E/(1+nu)*EPSREF[2]
+#   utilisation directe du tenseur analytique
+    rxy=r(X,Y)
+    SIGMAREF[0]=KI/math.sqrt(2.*math.pi*rxy)*cos12(X,Y)*(1.-sin12(X,Y)*sin32(X,Y))
+    SIGMAREF[1]=KI/math.sqrt(2.*math.pi*rxy)*cos12(X,Y)*(1.+sin12(X,Y)*sin32(X,Y))
+    SIGMAREF[2]=KI/math.sqrt(2.*math.pi*rxy)*sin12(X,Y)*cos12(X,Y)*cos32(X,Y)
 
 #COPIE DE SIGMAREF :: WARNING :: TMP=SIGMAREF UTILISE UN POINTEUR ET NE COPIE PAS LES DONNEES ==> CARTON MEMOIRE DRAMATIQUE
     TMP=[None]*3
@@ -354,6 +332,49 @@ DIFF=CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='NOEU_DEPL_R',MODELE=MODELEIN,
 
 tab_du=POST_ELEM(NORME=(_F(TYPE_NORM='L2', GROUP_MA='TEST_MA',CHAM_GD=DIFF, MODELE=MODELEIN),),INFO=2);
 
+# champ de contrainte analytique
+SXX=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,0)');
+SYY=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,1)');
+SXY=FORMULE(NOM_PARA=('X','Y',),VALE='SIGMA(X,Y,2)');
+
+# calcul de l'erreur en termes de norme de l'energie
+Scal=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='ELGA_SIEF_R',
+                RESULTAT=UTOT,
+                NOM_CHAM='SIEF_ELGA',
+                NUME_ORDRE=1)
+
+tabNRJ=POST_ERREUR(OPTION='ENER_RELA',
+                   CHAM_GD=Scal,
+                   MODELE=MODELK,
+                   DEFORMATION='PETIT',
+                   CHAM_MATER=CHMA,
+                   GROUP_MA='SURF',
+                   SIXX=SXX,
+                   SIYY=SYY,
+                   SIXY=SXY,
+                   )
+
+IMPR_TABLE(TABLE=tabNRJ)
+
+# calcul de l'erreur en termes de norme L2 du deplacement
+Ucal=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='NOEU_DEPL_R',
+                RESULTAT=UTOT,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1)
+
+tabL2=POST_ERREUR(OPTION='DEPL_RELA',
+                  CHAM_GD=Ucal,
+                  MODELE=MODELK,
+                  GROUP_MA='SURF',
+                  DX=U1,
+                  DY=U2)
+
+IMPR_TABLE(TABLE=tabL2)
+
+# 
+
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-3,
@@ -426,5 +447,41 @@ TEST_TABLE(CRITERE='ABSOLU',
            LEGENDE='ERREUR DEPL NORME_L2',
            TABLE=tab_du,
            )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=3.50517904921E-06,
+           VALE_REFE=3.50687407712e-6,
+           NOM_PARA='REFERENCE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabNRJ,
+           );
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.0209340007373,
+           NOM_PARA='ERREUR RELATIVE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabNRJ,
+           );
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=7.60569062254E-06,
+           VALE_REFE=7.6057690825e-6,
+           NOM_PARA='REFERENCE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.000150792619772,
+           NOM_PARA='ERREUR RELATIVE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
 
 FIN();
