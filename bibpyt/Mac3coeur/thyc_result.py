@@ -168,26 +168,31 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     # Recuperation des efforts transverses sur les grilles
     mcf = []
     mcft = []
+    chThyc={}
     for i in range(0, coeur.NBAC):
         line = f.readline().split()
         line2 = f2.readline().split()
-        posi_aster1 = coeur.ALPHAMAC[len(coeur.ALPHAMAC) + 2 - string.atoi(
-            line[1]) - 1] + "_" + coeur.ALPHAMAC[string.atoi(line[0]) - 2]
-        posi_aster2 = coeur.ALPHAMAC[len(coeur.ALPHAMAC) + 2 - string.atoi(
-            line2[1]) - 1] + "_" + coeur.ALPHAMAC[string.atoi(line2[0]) - 2]
-
+        print 'line = ',line
+        print 'line2 = ',line2
+        posi_aster1 = coeur.position_fromthyc(int(line[0]),int(line[1]))
+        posi_aster2 = coeur.position_fromthyc(int(line2[0]),int(line2[1]))
         if (posi_aster1 != posi_aster2):
             raise KeyError("position d assemblage avec ordre different")
 
         for j in range(0, len(pos_thyc)):
-            mtmp = (_F(GROUP_NO='G_' + posi_aster1 + '_' + str(j + 1), FY=string.atof(
-                line[pos_thyc[j]]) / 4.0, FZ=- string.atof(line2[pos_thyc[j]]) / 4.0),)
+            chThyc['X']=string.atof(line[pos_thyc[j]])  / 4.0
+            chThyc['Y']=string.atof(line2[pos_thyc[j]]) / 4.0
+            chAsterY=coeur.coefFromThyc('Y')*chThyc[coeur.axeFromThyc('Y')]
+            chAsterZ=coeur.coefFromThyc('Z')*chThyc[coeur.axeFromThyc('Z')]
+            #print 'chAsterY , type()',chAsterY,type(chAsterY)
+            mtmp = (_F(GROUP_NO='G_' + posi_aster1 + '_' + str(j + 1), FY=chAsterY , FZ=chAsterZ),)
             mcf.extend(mtmp)
 
-        _resu_fy = definir_chargement_transverse(
-            cote, epaisseur, pos_thyc, line, 1)
-        _resu_fz = definir_chargement_transverse(
-            cote, epaisseur, pos_thyc, line2, -1)
+        chThyc['X']=definir_chargement_transverse(cote, epaisseur, pos_thyc, line, coeur.coefToThyc('X'))
+        chThyc['Y']=definir_chargement_transverse(cote, epaisseur, pos_thyc, line2, coeur.coefToThyc('Y'))
+
+        _resu_fy = chThyc[coeur.axeFromThyc('Y')]
+        _resu_fz = chThyc[coeur.axeFromThyc('Z')]
         mtmp = (
             _F(GROUP_MA='CR_' + posi_aster1, FY=_resu_fy, FZ=_resu_fz),)
         mcft.extend(mtmp)
@@ -208,8 +213,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     mcpf = []
     for i in range(0, coeur.NBAC):
         line = f.readline().split()
-        posi_aster = coeur.ALPHAMAC[len(coeur.ALPHAMAC) + 2 - string.atoi(line[1]) - 1] + "_" + coeur.ALPHAMAC[
-            len(coeur.ALPHAMAC) + 2 - string.atoi(line[0]) - 1]
+        posi_aster=coeur.position_fromthyc(int(line[0]),int(line[1]))
         idAC = coeur.position_todamac(posi_aster)
 
         ac = coeur.collAC[idAC]

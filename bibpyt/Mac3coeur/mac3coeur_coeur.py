@@ -56,8 +56,6 @@ class Coeur(object):
         # paramètres de l'interpolation linéaire
         # du coefficient de dilatation des internes de cuve
         'ALPH1', 'ALPH2',
-        # Geometrie du coeur
-        'ALPHABET', 'ALPHAMAC', 'NumV',
         # Post-traitement des lames
         'nomContactAssLame', 'nomContactCuve',
     ]
@@ -81,10 +79,6 @@ class Coeur(object):
         self._para = {}
         self._keys = {}.fromkeys(self.required_parameters)
         self._init_from_attrs()
-        self.dcorr1 = dict(zip(self.ALPHABET, self.ALPHAMAC))
-        self.dcorr2 = dict(zip(self.ALPHAMAC, self.ALPHABET))
-        self.dnume2 = dict(
-            zip(self.ALPHAMAC, range(1, len(self.ALPHAMAC) + 1)))
 
     def _init_from_attrs(self):
         """Initialisation à partir des attributs de classe."""
@@ -104,23 +98,31 @@ class Coeur(object):
 
     def position_toaster(self, position):
         """Retourne la position Aster correspondant à la position DAMAC."""
-        lig, col = position[0], position[1:]
-        ind = int(col) - 1
-        try:
-            posi_aster = self.ALPHAMAC[ind] + "_" + self.dcorr1[lig]
-        except (IndexError, KeyError):
-            raise KeyError("invalid damac position : %s" % position)
-        return posi_aster
+        raise NotImplementedError
 
-    def position_todamac(self, position):
+    def position_todamac(self,position):
         """Retourne la position DAMAC correspondant à la position Aster."""
-        col, lig = position.split("_")
-        try:
-            posi_damac = self.dcorr2[lig] + '%02d' % (self.dnume2[col])
-        except KeyError:
-            raise KeyError("invalid aster position : %s" % position)
+        raise NotImplementedError
 
-        return posi_damac
+    def position_fromthyc(self, posX, posY):
+        """Retourne la position Aster correspondant à la position Thyc."""
+        raise NotImplementedError
+        
+    def get_length(self) :
+        return len(self.ALPHA_MAC)
+        
+    def get_letter(self,index) :
+        return self.ALPHA_MAC[index]
+        
+    def get_index(self,letter) :
+        return self.ALPHA_MAC.index(letter)
+        
+    def get_XY(self,position) :
+        raise NotImplementedError
+
+    def get_outGraceXY(self) :
+        return self.dAxeGrace
+
 
     def init_from_table(self, tab):
         """Initialise le coeur à partir d'une table."""
@@ -138,7 +140,7 @@ class Coeur(object):
             for igr in range(0, ac._para['NBGR']):
                 ac_def['DY' + str(igr + 1)] = rows[
                     'XG' + str(igr + 1)] / 1000.0
-                ac_def['DZ' + str(igr + 1)] = - rows[
+                ac_def['DZ' + str(igr + 1)] = rows[
                     'YG' + str(igr + 1)] / 1000.0
             ac.set_deforDAM(ac_def)
             ac.set_materiau(self._mateAC[typeAC])

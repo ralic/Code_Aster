@@ -212,12 +212,16 @@ def perm_mac3coeur_ops(self, **args):
 
     for nom in _coeurp1.nameAC.keys():
         if nom in _coeur.nameAC:
+            #print 'index z : ',_coeurp1.get_index(_coeurp1.nameAC[nom][0]),_coeurp1.get_index(_coeur.nameAC[nom][0])
+            #print 'index y : ',_coeurp1.get_index(_coeurp1.nameAC[nom][2]),_coeurp1.get_index(_coeur.nameAC[nom][2])
             tran_z = _coeurp1.pas_assemblage * \
-                (_coeurp1.ALPHAMAC.index(_coeurp1.nameAC[nom][
-                 0]) - _coeurp1.ALPHAMAC.index(_coeur.nameAC[nom][0]))
+                (_coeurp1.get_index(_coeurp1.nameAC[nom][
+                 0]) - _coeurp1.get_index(_coeur.nameAC[nom][0]))
             tran_y = _coeurp1.pas_assemblage * \
-                (_coeurp1.ALPHAMAC.index(_coeurp1.nameAC[nom][
-                 2]) - _coeurp1.ALPHAMAC.index(_coeur.nameAC[nom][2]))
+                (_coeurp1.get_index(_coeurp1.nameAC[nom][
+                 2]) - _coeurp1.get_index(_coeur.nameAC[nom][2]))
+            #print 'tran_z, tran_y, tran_x = ',tran_z, tran_y, tran_x
+            #print 'AC init, AC_fin = ',_coeur.nameAC[nom],_coeurp1.nameAC[nom]
 
             MACRO_AC_PERMUTE(
                 POS_INIT=_coeur.nameAC[nom],
