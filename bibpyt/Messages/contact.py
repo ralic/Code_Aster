@@ -85,7 +85,14 @@ Contact méthode continue.
 
     21 : _(u"""
 Contact méthode continue.
-  La méthode de Newton généralisée pour la boucle de géométrie n'est pas utilisable avec la pénalisation.
+  La méthode de Newton généralisée a été activé pour la méthode de  pénalisation. Pour éviter des pénétrations trop grandes,la valeur de 
+  COEF_PENA_CONT doit être au moins égal au module d'YOUNG du corps le plus rigide. 
+"""),
+    22 : _(u"""
+Contact méthode continue.
+  Le jeu calculé dépasse de %(r1)f pour cent la plus petite longueur de la maille. On vous conseille d'augmenter la valeur de COEF_PENA_CONT et de COEF_PENA_FROT.
+  - On conseille que COEF_PENA_CONT soit être supérieure ou égal MODULE  et inférieure à 1.E16.
+  - On conseille que COEF_PENA_FROT soit supérieure ou égale à 1.E-6*COEF_PENA_CONT et inférieure à 1.E7. 
 """),
 
     60 : _(u"""

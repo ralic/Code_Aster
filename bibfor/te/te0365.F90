@@ -129,7 +129,7 @@ subroutine te0365(option, nomte)
                     lfovit, jeusup, ffe, ffm, ffl,&
                     norm, tau1, tau2, mprojt, jacobi,&
                     wpg, dlagrc, dlagrf, jeu, djeu,&
-                    djeut)
+                    djeut,coefaf,coefac)
 !
 ! ----- CHOIX DU LAGRANGIEN DE CONTACT
 !

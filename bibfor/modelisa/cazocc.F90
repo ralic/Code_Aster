@@ -166,7 +166,7 @@ subroutine cazocc(char, motfac, izone)
         call utmess('F', 'CONTACT_89')
     endif
     if ((algoc.eq.'PENALISATION') .and. lnewtg) then
-        call utmess('F', 'CONTACT_21')
+        call utmess('A', 'CONTACT_21')
     endif
     if (lnewtg .and. (.not.lnewtc)) then
         call utmess('F', 'CONTACT_20')

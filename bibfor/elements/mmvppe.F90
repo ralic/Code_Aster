@@ -3,7 +3,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
                   lfovit, jeusup, ffe, ffm, ffl,&
                   norm, tau1, tau2, mprojt, jacobi,&
                   wpg, dlagrc, dlagrf, jeu, djeu,&
-                  djeut)
+                  djeut,coefaf,coefac)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,6 +39,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 #include "asterfort/mmmjev.h"
 #include "asterfort/mmreac.h"
 #include "asterfort/mmvitm.h"
+#include "asterfort/utmess.h"
     character(len=8) :: typmae, typmam
     integer :: iresog
     integer :: ndim, nne, nnm, nnl, nbdm
@@ -49,7 +50,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: mprojt(3, 3)
     aster_logical :: laxis, ldyna, lfovit
     real(kind=8) :: jacobi, wpg
-    real(kind=8) :: jeusup
+    real(kind=8) :: jeusup,coefaf,coefac
     real(kind=8) :: dlagrc, dlagrf(2)
     real(kind=8) :: jeu, djeu(3), djeut(3)
 !
@@ -94,7 +95,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jpcf
+    integer :: jpcf,i
     integer :: jgeom, jdepde, jdepm
     integer :: jaccm, jvitm, jvitp
     real(kind=8) :: geomae(9, 3), geomam(9, 3)
@@ -108,7 +109,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: dffl(2, 9), ddffl(3, 9)
     real(kind=8) :: xpc, ypc, xpr, ypr
     real(kind=8) :: mprojn(3, 3)
-    real(kind=8) :: jeuvit
+    real(kind=8) :: jeuvit,tmp,vec(3),valmax,valmin
 !
 ! ----------------------------------------------------------------------
 !
@@ -129,6 +130,8 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     tau2(3) = zr(jpcf-1+10)
     wpg = zr(jpcf-1+11)
     ppe = 0.d0
+    tmp=0.0
+    valmax=0.0
 !
 ! --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 !
@@ -174,6 +177,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 !
     call mmlagm(nbdm, ndim, nnl, jdepde, ffl,&
                 dlagrc, dlagrf)
+
 !
 !
 ! --- MISE A JOUR DES CHAMPS INCONNUS INCREMENTAUX - DEPLACEMENTS
@@ -195,6 +199,39 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     call mmmjeu(ndim, jeusup, norm, geome, geomm,&
                 ddeple, ddeplm, mprojt, jeu, djeu,&
                 djeut, iresog)
+
+    vec(1) = (geomae(1,1) - geomae(2,1))**2 
+    vec(2) = (geomae(1,2) - geomae(2,2))**2
+    vec(3) = (geomae(1,3) - geomae(2,3))**2
+    valmax =  sqrt(vec(1)+vec(2)+vec(3)) 
+    valmin =  sqrt(vec(1)+vec(2)+vec(3)) 
+ 
+ ! Evaluation de la plus grande longueur de la maille
+    do  i = 3,9
+        vec(1) = (geomae(1,1) - geomae(i,1))**2 
+        vec(2) = (geomae(1,2) - geomae(i,2))**2
+        vec(3) = (geomae(1,3) - geomae(i,3))**2
+        tmp =  sqrt(vec(1)+vec(2)+vec(3))
+        
+        if (tmp .le. valmin)  then
+           valmin = tmp
+        elseif  (tmp .ge. valmin)  then
+           valmax = tmp 
+        endif
+    enddo
+    
+
+    
+    if (valmin .lt. 1.d-10) then
+        tmp = jeu/valmax
+    else 
+        tmp = jeu/valmin
+    endif
+                    
+    if ( (jeu .gt. valmin) )  then 
+       call utmess('A', 'CONTACT_22',sr=tmp)
+    endif   
+
 !
 ! --- CALCUL DU JEU EN VITESSE NORMALE
 !
