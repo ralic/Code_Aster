@@ -217,17 +217,23 @@ l_modes_exploit=(1,2,3,4,5,6,7,8,)
 l_array = NP.array(l_modes_exploit)
 list_reca = l_array-1
 
+TFREQM=RECU_TABLE(CO=MODET,
+                    NOM_PARA='FREQ');
 
-# recuperation frequences et amor_reduit depuis MODMES
-# car CREA_RESU(MODET) ne recupere pas l amor reduit pour l instant!
+TAMORM=RECU_TABLE(CO=MODET,
+                    NOM_PARA='AMOR_REDUIT');
 
-tmodes = aster.getvectjev("MODMES             .RSPR        ")
+t_freq_mes = TFREQM.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
+freq_mes = t_freq_mes[:,1]
+
+t_amorx = TAMORM.EXTR_TABLE().Array('NUME_ORDRE','AMOR_REDUIT')
+amorx_mes = t_amorx[:,1]
 
 freq = []
 amor_red = []
 for i in list_reca:
-    freq.append(tmodes[25*i+14])      #14 : frequence
-    amor_red.append(tmodes[25*i+1])   #1  : amortissement reduit
+    freq.append(freq_mes[i]) 
+    amor_red.append(amorx_mes[i]) 
 
 nbmodes_mes = len(l_modes_exploit)
 

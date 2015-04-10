@@ -314,6 +314,12 @@ else:
 TFREQ=RECU_TABLE(CO=MODMES,
                     NOM_PARA='FREQ');
 
+TAMORX=RECU_TABLE(CO=MODMES,
+                    NOM_PARA='AMOR_REDUIT');
+
+t_amorx = TAMORX.EXTR_TABLE().Array('NUME_ORDRE','AMOR_REDUIT')
+amorx_mes = t_amorx[:,1]
+
 t_freq_mes = TFREQ.EXTR_TABLE().Array('NUME_ORDRE','FREQ')
 freq_mes = t_freq_mes[:,1]
 
@@ -483,17 +489,15 @@ for i in range(nbmodes_mes):
                     'MODELE':MODEL,
                     'CHAM_MATER':MAT,
                     'NUME_MODE':l_modes_exploit[i],
+                    'AMOR_REDUIT':amorx_mes[l_modes_exploit[i]-1],
                     'FREQ':freq_mes[l_modes_exploit[i]-1]})
 
 MODET = CREA_RESU(OPERATION='AFFE',
-                  TYPE_RESU='MODE_MECA',
+                  TYPE_RESU='MODE_MECA_C',
                   AFFE=chamet,
                   MATR_RIGI =M_AS_RIG,
                   MATR_MASS =M_AS_MAS,
                   NOM_CHAM='DEPL',)
-
-# amortissement reduit a mettre a jour manuellement dans le fichier .unv
-# ou bien relire depuis le fichier de mesure dans calcul esclave
 
 IMPR_RESU(FORMAT='IDEAS',UNITE=38,
           RESU=_F(RESULTAT =MODET,));
