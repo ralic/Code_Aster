@@ -46,4 +46,9 @@ Conseil:
 Avec des déformations de type %(k1)s,
 il est préférable d'utiliser EPSG_%(k2)s
 """),
+
+4 : _(u"""
+Les contributions de l'amortissement liées à la vitesse pour les 
+réactions nodales sont négligées dans la version actuelle du code.
+"""),
 }

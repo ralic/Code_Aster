@@ -172,6 +172,11 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
         if ((option.eq.'FORC_NODA') .or. (option.eq.'REAC_NODA')) then
             call ccfnrn(option, resuin, resuou, lisord, nbordr,&
                         lischa, nbchar, typcha, typesd)
+            if((option.eq.'REAC_NODA') .and. &
+                  ((typesd.eq.'DYNA_TRANS') .or. &
+                   (typesd.eq.'DYNA_HARMO'))) then
+                call utmess('A', 'CALCCHAMP_4')
+            endif
         else
             call calcop(option, lisopt, resuin, resuou, lisord,&
                         nbordr, lischa, nbchar, typcha, typesd,&
