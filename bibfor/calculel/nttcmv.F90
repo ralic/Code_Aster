@@ -52,7 +52,7 @@ implicit none
     real(kind=8) :: tpsthe(6), tpsnp1
     character(len=1) :: creas
     character(len=19) :: maprec
-    character(len=24) :: timemo
+    character(len=24) :: time_move
     character(len=24) :: vtemp, vtempm, vec2nd
     character(len=24) :: matass, cndirp, cnchci, cnchtp
 !
@@ -68,11 +68,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ibid, k, iret, ierr, nbmat, jmet
-    integer :: jmer, jmed, j2nd, lonch
+    integer :: jmed, j2nd, lonch
     character(len=1) :: typres
     character(len=8) :: nomcmp(6)
-    character(len=24) :: ligrmo, merigi, mediri, tlimat(3)
+    character(len=19) :: merigi
+    character(len=24) :: ligrmo, mediri, tlimat(3)
     character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl
+    character(len=19) :: resu_elem
+    character(len=24), pointer :: p_relr(:) => null()
     real(kind=8), pointer :: chtp(:) => null()
     real(kind=8), pointer :: dirp(:) => null()
     character(len=24) :: lload_name, lload_info, lload_func
@@ -80,19 +83,19 @@ implicit none
     data typres /'R'/
     data nomcmp /'INST    ','DELTAT  ','THETA   ','KHI     ',&
                  'R       ','RHO     '/
-    data merigi        /'&&METRIG           .RELR'/
     data mediri        /'&&METDIR           .RELR'/
     data metrnl        /'&&METNTH           .RELR'/
     data vediri        /'&&VETDIR           .RELR'/
     data vechtp        /'&&VETCHA           .RELR'/
-    data timemo        /'&&OP0171.TIMEMO'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    vadirp = '&&VATDIR'
-    vachtp = '&&VATCHA'
-    creas = ' '
+    vadirp    = '&&VATDIR'
+    vachtp    = '&&VATCHA'
+    time_move = '&&NTTCMV.TIMEMO'
+    merigi    = '&&METRIG'
+    creas      = ' '
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
     lload_func = list_load(1:19)//'.FCHA'
@@ -103,22 +106,20 @@ implicit none
 !
     if (reasvt) then
 !
-! --- (RE)ACTUALISATION DU CHAMP CONSTANT EN ESPACE : TIME
+! ----- Field for time
 !
         ligrmo = model(1:8)//'.MODELE'
         call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
                     ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
-!       ON CREE CETTE CARTE IDENTIQUE A TIME MAIS AVEC 1-THETA=1
-!       A LA PLACE DE THETA POUR PERMETTRE LE CALCUL DE LA CHARGE
-!       D'ECHANGE_PAROI
+! ----- Field for shifted time with 1-THETA
 !
         tpsthe(3) = 1.d0
-        call mecact('V', timemo, 'MODELE', ligrmo, 'INST_R',&
+        call mecact('V', time_move, 'MODELE', ligrmo, 'INST_R',&
                     ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
         tpsthe(3) = 0.d0
 !
-! --- TEMPERATURES IMPOSEES                                  ---> CNDIRP
+! ----- TEMPERATURES IMPOSEES                                  ---> CNDIRP
 !
         call vedith(model, list_load, time, vediri)
         call asasve(vediri, nume_dof, typres, vadirp)
@@ -138,7 +139,7 @@ implicit none
 !
         call vechth('MOVE' , model, lload_name, lload_info, cara_elem,&
                     mate   , time , vtemp , vechtp,&
-                    time_move_ = timemo)
+                    time_move_ = time_move)
         call asasve(vechtp, nume_dof, typres, vachtp)
         call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
                     typres, cnchtp)
@@ -165,20 +166,23 @@ implicit none
         call medith(model, list_load, mediri)
         call jeveuo(mediri, 'L', jmed)
 !
-! --- (RE)ASSEMBLAGE DE LA MATRICE ET CALCUL DES "REACTIONS D'APPUI"
+! ----- Elementary matrix for transport (volumic and surfacic terms)
 !
         creas = 'M'
         call mertth(model, lload_name, lload_info, cara_elem, mate,&
-                    time, vtemp, vtempm, merigi)
+                    time, time_move, vtemp, vtempm, merigi)
+!
+! ----- Elementary matrix for boundary conditions
 !
         call metnth(model, lload_name, cara_elem, mate, time,&
                     vtempm, metrnl)
 !
         nbmat = 0
-        call jeveuo(merigi, 'L', jmer)
-        if (zk24(jmer)(1:8) .ne. '        ') then
+        call jeveuo(merigi(1:19)//'.RELR', 'L', vk24 = p_relr)
+        resu_elem = p_relr(1)(1:19)
+        if (resu_elem .ne. ' ') then
             nbmat = nbmat + 1
-            tlimat(nbmat) =merigi(1:19)
+            tlimat(nbmat) = merigi
         endif
 !
         call jeexin(metrnl, iret)
