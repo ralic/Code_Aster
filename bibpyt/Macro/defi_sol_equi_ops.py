@@ -28,7 +28,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     from Accas import _F
     from Utilitai.Utmess import UTMESS
     from Utilitai.Table import Table
-    from math import log
+    from math import log, sqrt
 
   #--------------------------------------------------------------------------------
   # On importe les definitions des commandes a utiliser dans la macro
@@ -84,6 +84,12 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 # coefficient de variabilite sur le profil de modules Emax : 2/3 ou 3/2
 # par exemple
     cvar = args['COEF_VARI_MATE']
+    
+# formulation methode d'amortissement
+    if args['CORR_AMOR'] == 'OUI':
+      formulation = 'LYSMER'
+    else:
+      formulation = 'SCHNABEL' 
 
 # definition de l'operation a effectuer :
 # input = 'CL' : l'accelerogramme est defini en champ libre et
@@ -249,9 +255,12 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     __ACCEX = CALC_FONCTION(
         COMB=_F(FONCTION=fonc_acce, COEF=coefu * coefzpa))
 
-    __SAX = CALC_FONCTION(
+    if args['LIST_FREQ'] != None:
+      __SAX = CALC_FONCTION(
+        SPEC_OSCI=_F(FONCTION=__ACCEX,AMOR_REDUIT=0.05,LIST_FREQ=args['LIST_FREQ'],NORME=9.81))
+    else:
+      __SAX = CALC_FONCTION(
         SPEC_OSCI=_F(FONCTION=__ACCEX, AMOR_REDUIT=0.05, NORME=9.81))
-
     ifsax.append(
         _F(FONCTION=__SAX, MARQUEUR=0, LEGENDE='SAXi_' + str(a)),)
 
@@ -262,7 +271,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 #
 # DEBUT DE LA BOUCLE       #
 #
-
 # for s in range (1,nbsol+1):
 #  for v in range (1,len(cvar)+1) :
 #    for a in range (1,nbacc+1):
@@ -297,12 +305,10 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
         for j in range(1, nbmat + 1):
             __GG[j] = LIRE_FONCTION(UNITE=utabequ, NOM_PARA='EPSI',
-                                    #INTERPOL='LOG', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                                     INTERPOL=('LOG','LIN'), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                                     INDIC_PARA=[1, 1], INDIC_RESU=[1, j + 1],
                                     )
             __DG[j] = LIRE_FONCTION(UNITE=utabequ, NOM_PARA='EPSI',
-                                    #INTERPOL='LOG', PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                                     INTERPOL=('LOG','LIN'), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                                     INDIC_PARA=[2, 1], INDIC_RESU=[2, j + 1],
                                     )
@@ -336,16 +342,12 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             vale_G = mate["G_GMAX"]
             vale_D = mate["D"]
             __GG0[j] = DEFI_FONCTION(NOM_PARA='EPSI', NOM_RESU='G_Gmax',
-                                    #INTERPOL='LIN',
-                                    #INTERPOL='LOG',
                                     INTERPOL=('LOG','LIN'),
                                     PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                                     ORDONNEE=tuple(vale_G),
                                     ABSCISSE=tuple(l_para))
 
             __DG0[j] = DEFI_FONCTION(NOM_PARA='EPSI', NOM_RESU='D',
-                                    #INTERPOL='LIN',
-                                    #INTERPOL='LOG',
                                     INTERPOL=('LOG','LIN'),
                                     PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                                     ORDONNEE=tuple(vale_D),
@@ -357,16 +359,12 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             __GG[j] = CALC_FONCTION(
               COMB=_F(FONCTION=__GG0[j], COEF=1.), LIST_PARA=__lpara,
               NOM_PARA='EPSI', NOM_RESU='G_Gmax',
-              #INTERPOL='LIN',
-              #INTERPOL='LOG',
               INTERPOL=('LOG','LIN'),
               PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', 
               )
             __DG[j] = CALC_FONCTION(
               COMB=_F(FONCTION=__DG0[j], COEF=1.), LIST_PARA=__lpara,
               NOM_PARA='EPSI', NOM_RESU='D',
-              #INTERPOL='LIN',
-              #INTERPOL='LOG',
               INTERPOL=('LOG','LIN'),
               PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', 
               )
@@ -409,7 +407,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                  'M': couche["GROUP_MA"], 'Y': Y, 'GDgam': id_mate,
                  'AH': couche["AMOR_HYST"]})
 
-            # creation de la table
+     # creation de la table
         dprod = tabini.dict_CREA_TABLE()
         __TMAT = CREA_TABLE(**dprod)
 
@@ -424,9 +422,10 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             NCOU2 = NCOU
     else:
         NCOU2 = NCOU
+    # nombre de sous-couches par couche enfoncee        
+    nsco = args['NB_RECEPTEUR']
 
-            # On genere la liste initiale pour Emax AH et ratio G/Gmax et des
-            # profondeurs
+    # On genere la liste initiale pour Emax AH ratio G/Gmax et des profondeurs
     E = [[]] * nmaxit
     AH = [[]] * nmaxit
     rat = [[]] * nmaxit
@@ -467,6 +466,14 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             __SOLH = [None] * (NCOU + 2)
 
             for j in range(1, NCOU + 1):
+              if formulation == 'LYSMER':
+                __SOLH[j] = DEFI_MATERIAU(
+                                ELAS=_F(E=__TMAT['E0', j]*(1.-__TMAT['AH0',j]*__TMAT['AH0',j]/2),
+                                RHO=__TMAT['RHO', j],
+                                NU=__TMAT['NU', j],
+                                AMOR_HYST=__TMAT['AH0', j]*sqrt(1-__TMAT['AH0',j]*__TMAT['AH0',j]/4)/(1.-__TMAT['AH0',j]*__TMAT['AH0',j]/2),
+                                ))
+              else:                                
 
                 __SOLH[j] = DEFI_MATERIAU(ELAS=_F(E=__TMAT['E0', j],
                                                   RHO=__TMAT['RHO', j],
@@ -487,7 +494,14 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             __SOLH = [None] * (NCOU + 2)
 
             for j in range(1, NCOU + 1):
-
+              if formulation == 'LYSMER':
+                __SOLH[j] = DEFI_MATERIAU(
+                                ELAS=_F(E=__TMAT[('E' + str(iter)), j]*(1.-__TMAT[('AH'+str(iter)),j]*__TMAT[('AH'+str(iter)),j]/2),
+                                RHO=__TMAT['RHO', j],
+                                NU=__TMAT['NU', j],
+                                AMOR_HYST=__TMAT[('AH' + str(iter)), j]*sqrt(1-__TMAT[('AH'+str(iter)),j]*__TMAT[('AH'+str(iter)),j]/4)/(1.-__TMAT[('AH'+str(iter)),j]*__TMAT[('AH'+str(iter)),j]/2),
+                                ))
+              else:            
                 __SOLH[j] = DEFI_MATERIAU(
                     ELAS=_F(E=__TMAT[('E' + str(iter)), j],
                             RHO=__TMAT['RHO', j],
@@ -705,8 +719,12 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             INTERPOL='LIN',
             PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT', )
         DETRUIRE(CONCEPT=_F(NOM=__AX_RAf,))
-
-        __SAX_RA = CALC_FONCTION(
+        
+        if args['LIST_FREQ'] != None:
+          __SAX_RA = CALC_FONCTION(
+            SPEC_OSCI=_F(FONCTION=__AX_RA,AMOR_REDUIT=0.05,LIST_FREQ=args['LIST_FREQ'],NORME=9.81))
+        else:
+          __SAX_RA = CALC_FONCTION(
             SPEC_OSCI=_F(FONCTION=__AX_RA, AMOR_REDUIT=0.05, NORME=9.81))
 
             # Calcul des accelerogrammes et spectres de sol en CL
@@ -721,7 +739,11 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         __AX_CL = CALC_FONCTION(
             COMB=(_F(FONCTION=__AXrCL, COEF=1.,), _F(FONCTION=__AX_RA, COEF=1.,),), LIST_PARA=__linst,)
 
-        __SAX_CL = CALC_FONCTION(
+        if args['LIST_FREQ'] != None:
+          __SAX_CL = CALC_FONCTION(
+            SPEC_OSCI=_F(FONCTION=__AX_CL,AMOR_REDUIT=0.05,LIST_FREQ=args['LIST_FREQ'],NORME=9.81))        
+        else:        
+          __SAX_CL = CALC_FONCTION(
             SPEC_OSCI=_F(FONCTION=__AX_CL, AMOR_REDUIT=0.05, NORME=9.81))
 
             # Calcul des contraintes et deformations dans tous les elements de
@@ -747,6 +769,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         __axa = [None] * (NCOU + 1)
         __epxy = [None] * (NCOU + 1)
         __gam = [None] * (NCOU + 1)
+        __tau = [None] * (NCOU + 1)
 
         lmaccx = []
         gamax = []
@@ -759,6 +782,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         gamax.append(0)
         __axa.append(0)
         __epxy.append(0)
+        __tau.append(0)
 
         for k in range(1, NCOU + 1):
             if iter == 0:
@@ -799,6 +823,13 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             __gam[k] = CALC_FONCTION(
                 LIST_PARA=__linst, COMB=(_F(FONCTION=__epxy[k], COEF=(2),),
                                          ),)
+               
+            f2Getoil = (E[iter][k] / (1+ __TMAT['NU',k]) ) * (1.+ (AH[iter][k])*1.j);
+
+            __tauh = CALC_FONCTION(COMB_C=_F(FONCTION=__eph,COEF_C = f2Getoil),LIST_PARA=__lfreq,NOM_PARA='FREQ',);
+            
+            __tau[k] = CALC_FONCTION(FFT=_F(FONCTION=__tauh,METHODE='COMPLET',SYME='NON',));
+
             # Calcul des max
             __accxa = CALC_FONCTION(ABS=_F(FONCTION=__axa[k]))
             __gama = CALC_FONCTION(ABS=_F(FONCTION=__gam[k]))
@@ -823,7 +854,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         __pgamax = DEFI_FONCTION(NOM_PARA='Y', NOM_RESU='gamma_max',
                                  ORDONNEE=tuple(gamax),
                                  ABSCISSE=tuple(lprof,))
-#
+
         # Lecture sur les courbes G/Gmax et D
         ind = []
         diff = []
@@ -922,7 +953,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
                 for k in range(1, NCOU + 1):
                     DETRUIRE(
-                        CONCEPT=_F(NOM=(__SOLH[k], __axa[k], __epxy[k], __gam[k]),), INFO = 1)
+                        CONCEPT=_F(NOM=(__SOLH[k], __axa[k], __epxy[k], __gam[k], __tau[k] ),), INFO = 1)
 
         if deltaE < tole:
             etat = 'fin'
@@ -1003,13 +1034,20 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
                     __tabgam = CREA_TABLE(
                         FONCTION=_F(FONCTION=__gam[k], PARA=('INST', 'GAM' + str(k))))
+                        
+                    __tabtau = CREA_TABLE(
+                        FONCTION=_F(FONCTION=__tau[k], PARA=('INST', 'TAU' + str(k))))
 
                     __tabatmp = CREA_TABLE(
                         FONCTION=_F(FONCTION=__axa[k], PARA=('INST', 'ACCE' + str(k))))
                     __tabaccx = CALC_TABLE(TABLE=__tabaccx, reuse=__tabaccx,
                                            ACTION=_F(OPERATION='COMB', TABLE=__tabatmp, NOM_PARA='INST'),)
 
-                    __SPEC[k] = CALC_FONCTION(
+                    if args['LIST_FREQ'] != None:
+                      __SPEC[k] = CALC_FONCTION(
+                        SPEC_OSCI=_F(FONCTION=__axa[k],AMOR_REDUIT=0.05,LIST_FREQ=args['LIST_FREQ'],NORME=9.81))
+                    else:
+                      __SPEC[k] = CALC_FONCTION(
                         SPEC_OSCI=_F(FONCTION=__axa[k], AMOR_REDUIT=0.05, NORME=9.81))
 
                     DETRUIRE(CONCEPT=_F(NOM=(__tabatmp),))
@@ -1019,8 +1057,14 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                         FONCTION=_F(FONCTION=__axa[k], PARA=('INST', 'ACCE' + str(k))))
                     __tabgtmp = CREA_TABLE(
                         FONCTION=_F(FONCTION=__gam[k], PARA=('INST', 'GAM' + str(k))))
+                    __tabttmp = CREA_TABLE(
+                        FONCTION=_F(FONCTION=__tau[k], PARA=('INST', 'TAU' + str(k))))
 
-                    __SPEC[k] = CALC_FONCTION(
+                    if args['LIST_FREQ'] != None:
+                      __SPEC[k] = CALC_FONCTION(
+                        SPEC_OSCI=_F(FONCTION=__axa[k],AMOR_REDUIT=0.05,LIST_FREQ=args['LIST_FREQ'],NORME=9.81))
+                    else:
+                      __SPEC[k] = CALC_FONCTION(
                         SPEC_OSCI=_F(FONCTION=__axa[k], AMOR_REDUIT=0.05, NORME=9.81))
 
                     __tabaccx = CALC_TABLE(
@@ -1029,8 +1073,9 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
                     __tabgam = CALC_TABLE(reuse=__tabgam, TABLE=__tabgam,
                                           ACTION=_F(OPERATION='COMB', TABLE=__tabgtmp, NOM_PARA='INST'))
-
-                    DETRUIRE(CONCEPT=_F(NOM=(__tabatmp, __tabgtmp,),))
+                    __tabtau = CALC_TABLE(reuse=__tabtau, TABLE=__tabtau,
+                                          ACTION=_F(OPERATION='COMB', TABLE=__tabttmp, NOM_PARA='INST'))
+                    DETRUIRE(CONCEPT=_F(NOM=(__tabatmp, __tabgtmp, __tabttmp,),))
 
             IMPR_FONCTION(UNITE=8,
                           FORMAT='TABLEAU',
@@ -1067,6 +1112,11 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                        TITRE=('Resultats du calcul lineaire equivalent pour le sol' + str(s) + 'avec E=' + str(cvar) + '*E0 \
                Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y'),
                        )
+                       
+            IMPR_TABLE(UNITE=utabtran, TABLE=__tabtau,
+                       TITRE=('Resultats du calcul lineaire equivalent pour le sol' + str(s) + 'avec E=' + str(cvar) + '*E0 \
+               Les valeurs max sont calculees au 1er Point de Gauss de la couche definie par sa cote inferieure Y'),
+                       )                       
 
             ifspec = []
 
@@ -1185,8 +1235,11 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
                 __AX_CLv = CALC_FONCTION(
                     COMB=(_F(FONCTION=__AXrCLv, COEF=1.,), _F(FONCTION=__AX_RA, COEF=1.,),), LIST_PARA=__linst,)
-
-                __SAX_CLv = CALC_FONCTION(
+                if args['LIST_FREQ'] != None:
+                  __SAX_CLv = CALC_FONCTION(
+                    SPEC_OSCI=_F(FONCTION=__AX_CLv,AMOR_REDUIT=0.05,LIST_FREQ=args['LIST_FREQ'],NORME=9.81))                
+                else:
+                  __SAX_CLv = CALC_FONCTION(
                     SPEC_OSCI=_F(FONCTION=__AX_CLv, AMOR_REDUIT=0.05, NORME=9.81))
 
                 IMPR_FONCTION(UNITE=8,
@@ -1296,6 +1349,34 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         ic = 0
         for k in range(1, NCOU2 + 1):
             if k > 1:
+              if nsco == 4:
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * (__TMAT['Y', k] - __TMAT['Y', k - 1])), 'SOURCE': 'NON',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * (__TMAT['Y', k] - __TMAT['Y', k - 1])), 'SOURCE': 'NON',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * (__TMAT['Y', k] - __TMAT['Y', k - 1])), 'SOURCE': 'OUI',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * (__TMAT['Y', k] - __TMAT['Y', k - 1])), 'SOURCE': 'NON',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+              else:
                 ic = ic + 1
                 tab.append(
                     {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
@@ -1310,6 +1391,35 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                      'EPAIS': (0.5 * (__TMAT['Y', k] - __TMAT['Y', k - 1])), 'SOURCE': 'OUI',
                      'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
             else:
+              if nsco == 4:
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * __TMAT['Y', k]), 'SOURCE': 'NON',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * __TMAT['Y', k]), 'SOURCE': 'NON',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+                     
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * __TMAT['Y', k]), 'SOURCE': 'OUI',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+
+                ic = ic + 1
+                tab.append(
+                    {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],
+                     'NUME_COUCHE': ic, 'NUME_MATE': k,
+                     'EPAIS': (0.25 * __TMAT['Y', k]), 'SOURCE': 'NON',
+                     'RECEPTEUR': 'OUI', 'AMOR_HYST': __TMAT['AHfin', k]})
+              else:
                 ic = ic + 1
                 tab.append(
                     {'RHO': __TMAT['RHO', k], 'NU': __TMAT['NU', k], 'E': __TMAT['Efin', k],

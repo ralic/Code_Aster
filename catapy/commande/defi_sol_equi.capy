@@ -24,7 +24,13 @@ DEFI_SOL_EQUI = MACRO(nom="DEFI_SOL_EQUI",
                        fr=tr("Signal impose d'accelero horizontal") ),
    SURF          =SIMP(statut='f',typ='TXM',into=("OUI","NON",),defaut="NON"),
    LIEU_SIGNAL   =SIMP(statut='f',typ='TXM',into=("AFFLEURANT","CHAMP_LIBRE",),
-                       defaut="AFFLEURANT",fr=tr("lieu d'imposition du signal") ),
+                       defaut="AFFLEURANT",fr=tr("lieu d'imposition du signal")
+                       ),
+   CORR_AMOR  =SIMP(statut='f',typ='TXM',into=("OUI","NON",),
+                       defaut="NON",fr=tr("formulation d'amortissement")
+                       ),
+   LIST_FREQ     =SIMP(statut='f',typ=listr8_sdaster,
+                       fr=tr("liste de frequences de spectre d oscillateur")),
    MAILLAGE      =SIMP(statut='o', typ=maillage_sdaster),     
    GROUP_MA_DROITE =SIMP(statut='o',typ=grma,),
    GROUP_MA_GAUCHE =SIMP(statut='o',typ=grma,),
@@ -44,6 +50,8 @@ DEFI_SOL_EQUI = MACRO(nom="DEFI_SOL_EQUI",
                        fr=tr("frequence de coupure de filtrage du signal")),
    # Si precise et SURF='NON' nombre de couches enfoncees
    NIVE_COUCH_ENFO   =SIMP(statut='f', typ='I',),
+   # Si SURF='NON' nombre de recepteurs decoupant les couches enfoncees
+   NB_RECEPTEUR  =SIMP(statut='f', typ='I',into=(2,4,),defaut=2),
    # Unites de sortie
    UNITE_TABLE_RESU =SIMP(statut='f', typ='I',),
    UNITE_RESU_TRAN =SIMP(statut='f', typ='I', defaut=40,),
