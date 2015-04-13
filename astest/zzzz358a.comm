@@ -90,35 +90,20 @@ cent = D/2
 a    = 0.57
 b    = 0.57
 
-FISSME = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'ELLIPSE',
-                                       DEMI_GRAND_AXE = a, # suivant x ellipse
-                                       DEMI_PETIT_AXE = b, # suivant y ellipse
-                                       CENTRE = (cent,0.0,0.0),
-                                       VECT_X = (0.1,0.0,0.0),
-                                       VECT_Y = (0.0,1.0,0.0)
-                                       ),
-                        )
-
-FISSTH = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'ELLIPSE',
-                                       DEMI_GRAND_AXE = a, # suivant x ellipse
-                                       DEMI_PETIT_AXE = b, # suivant y ellipse
-                                       CENTRE = (cent,0.0,0.0),
-                                       VECT_X = (0.1,0.0,0.0),
-                                       VECT_Y = (0.0,1.0,0.0)
-                                       ),
-                        )
+FISS = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
+                      TYPE_DISCONTINUITE = 'FISSURE', 
+                      DEFI_FISS = _F(FORM_FISS = 'ELLIPSE',
+                                     DEMI_GRAND_AXE = a, # suivant x ellipse
+                                     DEMI_PETIT_AXE = b, # suivant y ellipse
+                                     CENTRE = (cent,0.0,0.0),
+                                     VECT_X = (0.1,0.0,0.0),
+                                     VECT_Y = (0.0,1.0,0.0)
+                                     ),
+                      )
 
 LNHAUT = FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-0.5');
 
-INTEME = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'INTERFACE', 
-                        DEFI_FISS = _F(FONC_LN = LNHAUT,),)
-
-INTETH = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
+INTERF = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
                         TYPE_DISCONTINUITE = 'INTERFACE', 
                         DEFI_FISS = _F(FONC_LN = LNHAUT,),)
 
@@ -128,10 +113,10 @@ INTETH = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
 # ###################################################
 
 MODMEX1 = MODI_MODELE_XFEM(MODELE_IN = MODMES,
-                           FISSURE = (FISSME,INTEME),)
+                           FISSURE = (FISS,INTERF),)
 
 MODTHX1 = MODI_MODELE_XFEM(MODELE_IN = MODTHS,
-                           FISSURE = (FISSTH,INTETH),)
+                           FISSURE = (FISS,INTERF),)
 
 #MAXF = POST_MAIL_XFEM(MODELE=MODMEX1)
 #IMPR_RESU(FORMAT='MED', RESU=_F(MAILLAGE=MAXF) )
@@ -155,9 +140,9 @@ DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
 DEFI_FICHIER(UNITE=32, FICHIER='./fort.32')
 DEFI_FICHIER(UNITE=41, FICHIER='./fort.41')
 
-IMPR_CO(CONCEPT=_F(NOM=MODMEX1),NIVEAU=-1,UNITE=31,)
-IMPR_CO(CONCEPT=_F(NOM=MODMEX2),NIVEAU=-1,UNITE=32,)
-IMPR_CO(CONCEPT=_F(NOM=MODTHX1),NIVEAU=-1,UNITE=41,)
+IMPR_CO(CONCEPT=_F(NOM=MODMEX1),NIVEAU=-1,UNITE=31,PERMUTATION='NON',)
+IMPR_CO(CONCEPT=_F(NOM=MODMEX2),NIVEAU=-1,UNITE=32,PERMUTATION='NON',)
+IMPR_CO(CONCEPT=_F(NOM=MODTHX1),NIVEAU=-1,UNITE=41,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)

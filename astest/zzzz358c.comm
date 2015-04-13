@@ -60,41 +60,23 @@ MODTHS = AFFE_MODELE(MAILLAGE = MAILLAGE,
 a = 10.
 h = a/18.
 
-FISSME1 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
-                                       PFON = (0.25*a, 0.25*a, 0.),
-                                       DTAN = (1., 0., 0.),),)
+FISS1 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
+                       TYPE_DISCONTINUITE = 'FISSURE', 
+                       DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                      PFON = (0.25*a, 0.25*a, 0.),
+                                      DTAN = (1., 0., 0.),),)
 
-FISSTH1 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
-                                       PFON = (0.25*a, 0.25*a, 0.),
-                                       DTAN = (1., 0., 0.),),)
+FISS2 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
+                       TYPE_DISCONTINUITE = 'FISSURE', 
+                       DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                      PFON = (0.25*a, 0.75*a, 0.),
+                                      DTAN = ( 1., 0., 0.),),)
 
-FISSME2 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
-                                       PFON = (0.25*a, 0.75*a, 0.),
-                                       DTAN = ( 1., 0., 0.),),)
-
-FISSTH2 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
-                                       PFON = (0.25*a, 0.75*a, 0.),
-                                       DTAN = ( 1., 0., 0.),),)
-
-FISSME3 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
-                                       PFON = (a-1.5*h, 0.5*h, 0.),
-                                       DTAN = (-1., 0., 0.),),)
-
-FISSTH3 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
-                        TYPE_DISCONTINUITE = 'FISSURE', 
-                        DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
-                                       PFON = (a-1.5*h, 0.5*h, 0.),
-                                       DTAN = (-1., 0., 0.),),)
+FISS3 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
+                       TYPE_DISCONTINUITE = 'FISSURE', 
+                       DEFI_FISS = _F(FORM_FISS = 'DEMI_DROITE',
+                                      PFON = (a-1.5*h, 0.5*h, 0.),
+                                      DTAN = (-1., 0., 0.),),)
 
 # ###################################################
 # Definition des modeles xfem mecanique et thermique
@@ -102,10 +84,10 @@ FISSTH3 = DEFI_FISS_XFEM(MAILLAGE = MAILLAGE,
 # ###################################################
 
 MODMEX1 = MODI_MODELE_XFEM(MODELE_IN = MODMES,
-                           FISSURE = (FISSME1,FISSME2,FISSME3),)
+                           FISSURE = (FISS1,FISS2,FISS3),)
 
 MODTHX1 = MODI_MODELE_XFEM(MODELE_IN = MODTHS,
-                           FISSURE = (FISSTH1,FISSTH2,FISSTH3),)
+                           FISSURE = (FISS1,FISS2,FISS3),)
 
 #MAXF = POST_MAIL_XFEM(MODELE=MODMEX1)
 #IMPR_RESU(FORMAT='MED', RESU=_F(MAILLAGE=MAXF) )
@@ -129,9 +111,9 @@ DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
 DEFI_FICHIER(UNITE=32, FICHIER='./fort.32')
 DEFI_FICHIER(UNITE=41, FICHIER='./fort.41')
 
-IMPR_CO(CONCEPT=_F(NOM=MODMEX1),NIVEAU=-1,UNITE=31,)
-IMPR_CO(CONCEPT=_F(NOM=MODMEX2),NIVEAU=-1,UNITE=32,)
-IMPR_CO(CONCEPT=_F(NOM=MODTHX1),NIVEAU=-1,UNITE=41,)
+IMPR_CO(CONCEPT=_F(NOM=MODMEX1),NIVEAU=-1,UNITE=31,PERMUTATION='NON',)
+IMPR_CO(CONCEPT=_F(NOM=MODMEX2),NIVEAU=-1,UNITE=32,PERMUTATION='NON',)
+IMPR_CO(CONCEPT=_F(NOM=MODTHX1),NIVEAU=-1,UNITE=41,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
