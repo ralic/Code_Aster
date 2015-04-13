@@ -69,7 +69,9 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
     real(kind=8) :: coord(2), coor(2, 4), coorin(2, 2)
     real(kind=8) :: delta(3), dist, rayz(nbint), ray
     real(kind=8) :: airtot, sprim
-    real(kind=8) :: ener(nbint)
+    real(kind=8) :: ener(nbint), epsir
+!---------------------------------------------------------------------------------
+    epsir=1.d0 + 1.d-15
 !
 ! 1 - COORDONNEES DU NOEUD CONSIDERE INNO
 !
@@ -127,7 +129,7 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
                 coor(1,inno) = xy(1,icnc(inno+2,nuef))
                 coor(2,inno) = xy(2,icnc(inno+2,nuef))
                 ray = sqrt( (coord(1)-coor(1,inno))**2 +(coord(2)-coor( 2,inno))**2)
-                if (ray .le. rayz(iint)) then
+                if (ray .le. rayz(iint)*epsir) then
                     nint = nint + 1
                     if (ipoi1 .eq. 0) then
                         ipoi1 = inno
