@@ -129,12 +129,22 @@ def vocab01_ops(self, EXISTANT, INFO, **kwargs):
                      "maintenant, il y en a {}.".format(nbExist, nbWords),
                      "Relancez avec INFO=2 pour écrire la nouvelle liste "
                      "et comparer avec le fichier vocab01a.34 existant."))
-    __tab = CREA_TABLE(LISTE=_F(PARA='NBMOT', LISTE_I=nbWords))
+    __tab = CREA_TABLE(LISTE=_F(PARA='NBMOT', LISTE_I=nbExist <= nbWords))
     TEST_TABLE(REFERENCE='ANALYTIQUE',
-               VALE_CALC_I=nbExist,
-               VALE_REFE_I=nbExist,
+               VALE_CALC_I=nbExist <= nbWords,
+               VALE_REFE_I=nbExist <= nbWords,
                NOM_PARA='NBMOT',
                TABLE=__tab,)
+
+    diff = set( EXISTANT ).difference( allKwd )
+    nbDel = len( diff )
+    if nbDel:
+        UTMESS('A', 'CATAMESS_2',
+               valk=("Liste des %d mots-clefs supprimés ou non définis dans "
+                     "cette version (MFront est-il présent ?) "
+                     "(relancer avec INFO=2 "
+                     "pour produire la nouvelle liste) :" % nbDel,
+                     str(list(diff)) ))
 
 
 VOCAB01 = MACRO(nom='VOCAB01', op=vocab01_ops,
