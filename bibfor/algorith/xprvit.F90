@@ -212,7 +212,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta,&
 !      On utilise un fond virtuel si une grille auxilliaire
 !      est utilisee et que l on travaille sur un modele 3D
 !
-    if ((grille) .and. (ndim.eq.3) .and. (method.ne.'GEOMETRI')) then
+    if ((grille) .and. (ndim.eq.3) .and. (method.eq.'UPWIND')) then
 !
         fvirtu = .true.
 !

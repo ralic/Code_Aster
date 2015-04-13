@@ -39,20 +39,12 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     E3NEUT_R = NEUT_R   ELNO__ IDEN__  (X[3]     )
-    E1NEUTR  = NEUT_R   ELEM__         (X1       )
 
 VECTEUR__
 
 MATRICE__
 
 OPTION__
-    CFL_XFEM         118  IN__  NGEOMER  PGEOMER  
-                          OUT__ E1NEUTR  PLONCAR  
     GRAD_NEUT_R       24  IN__  NGEOMER  PGEOMER  N1NEUT_R PNEUTER  
                           OUT__ E3NEUT_R PGNEUTR
-    MOY_NOEU_S       118  IN__  N1NEUT_R PNEUTR   
-                          OUT__ E1NEUTR  PMOYEL   
-    XFEM_SMPLX_CALC  118  IN__  E1NEUTR  PGRANDF  E3NEUT_R PGRLS    N1NEUT_R PLSNO    E3NEUT_R PNIELNO  
-                          OUT__ N1NEUT_R PALPHA   E1NEUTR  PDPHI    
-    XFEM_SMPLX_INIT  118  IN__  NGEOMER  PGEOMER  
-                          OUT__ E1NEUTR  PMEAST   E3NEUT_R PNIELNO
+                          

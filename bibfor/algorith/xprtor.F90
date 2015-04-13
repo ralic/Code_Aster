@@ -63,14 +63,14 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !                  LOCALISATION DU DOMAINE DU CALCUL
 !
 ! DANS LE CONTEXTE DE LA PROPAGATION X-FEM ET DE LA REPRESENTATION DE LA
-! FISSURE PAR LEVEL SETS (METHODES UPWIND ET SIMPLEXE), CETTE ROUTINE
-! DEFINIT UN DOMAINE DE CALCUL LOCALISE AUTOUR DU FOND DE LA FISSURE.
-! CELA PERMET DE RENDRE LE CALCUL PLUS RAPIDE ET FIABLE.
+! FISSURE PAR LEVEL SETS , CETTE ROUTINe DEFINIT UN DOMAINE DE CALCUL 
+! LOCALISE AUTOUR DU FOND DE LA FISSURE. CELA PERMET DE RENDRE LE CALCUL 
+! PLUS RAPIDE ET FIABLE.
 !
 !    ENTREE
 !    ------
 !      METHOD = METHODE UTILISE POUR LA REINITIALISATION ET LA
-!               REORTHOGONALISATION DES LEVEL SETS (UPWIND/SIMPLEXE)
+!               REORTHOGONALISATION DES LEVEL SETS 
 !      NOMA   = NOM DU MAILLAGE
 !      CNXINV = CONNECTIVITE INVERSEE DU MAILLAGE NOMA
 !      FISPRE = NOM DU CONCEPT FISSURE X-FEM DE LA FISSURE A PROPAGER
@@ -542,7 +542,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !        THE TORUS
         call wkvect(elecal, 'V V I', neleto, jeleca)
 !
-        if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
+        if (method .eq. 'UPWIND') then
 !           CREATE THE VECTORS FOR THE NODAL CONNECTION TABLE OF THE
 !           TORUS
             call wkvect(vcnt, 'V V I', 6*nnodto, jvcnt)
@@ -573,7 +573,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !              STORE THE NUMBER OF THE NODE
                 zi(jnocal-1+j) = i
 !
-                if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
+                if (method  .eq. 'UPWIND') then
 !                 STORE THE CONNECTION TABLE FOR THE NODE
                     do k = 1, 6
                         zi(jvcnt-1+6*(j-1)+k) = zi(jvcn-1+6*(i-1)+k)
@@ -607,7 +607,7 @@ subroutine xprtor(method, noma, cnxinv, fispre,&
 !        UPDATE THE NODAL CONNECTION TABLE FOR THE TORUS
 !        ***********************************************************
 !
-        if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
+        if (method .eq. 'UPWIND') then
 !
             do i = 1, nnodto
 !

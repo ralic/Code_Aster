@@ -20,7 +20,7 @@ PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
                 UIinfo={"groupes":("Post-traitements","Rupture",)},
                 fr=tr("Propagation de fissure avec X-FEM"),
     
-    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","UPWIND","GEOMETRIQUE","UPW_FMM"),defaut="UPWIND"),
+    METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","GEOMETRIQUE","UPWIND"),defaut="GEOMETRIQUE"),
 
     OPERATION =SIMP(statut='f',typ='TXM',into=("RIEN","DETECT_COHESIF","PROPA_COHESIF"),defaut="RIEN"),
 

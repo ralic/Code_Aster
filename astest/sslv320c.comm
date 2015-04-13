@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
 
-# METHODE UPWIND
+# METHODE FMM
 
 #  MAILLAGE 10X10
 SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
@@ -99,7 +99,7 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MeshSEB,
 #----------------------------------------------
 
 # Nombre refinement Homard
-infit=1
+infit=2
 
 MODX = [None]*nbcalc
 LSN = [None]*nbcalc
@@ -235,7 +235,7 @@ for i in range(nbcalc) :
                             FISS_PROPAGEE=FISS[i+1],
                             NB_POINT_FOND=(10,10,10,10),
                             TABLE=SIF40,
-                           ),
+                           ),                                
                  METHODE_PROPA='UPWIND',
                  DA_MAX=da,
                  ZONE_MAJ='TOUT',
@@ -307,7 +307,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC=16.000000000,
+           VALE_CALC=16.0000000007,
            VALE_REFE=16.0,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',
@@ -329,7 +329,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=NB_FOND2,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=27.999999130521,
+           VALE_CALC=28.0,
            VALE_REFE=28.0,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',

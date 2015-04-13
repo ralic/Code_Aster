@@ -1,9 +1,8 @@
-subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
-                  noesom, lcmin, cnsln, grln, cnslt,&
-                  grlt, isozro, nodtor,eletor, liggrd,&
-                  vpoint , cnsbl ,deltat ,cnsbet ,listp, nbrinit)
-!
-! aslint: disable=W1504
+subroutine xprfastmarching(cmnd, noma, fispre, cnxinv, noesom,&
+                           lcmin, cnsln, grln, cnslt, grlt,&
+                           isozro, nodtor,eletor, liggrd,&
+                           vpoint, cnsbl ,deltat ,cnsbet ,listp )
+
    implicit none
 !
 #include "jeveux.h"
@@ -13,6 +12,7 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 #include "asterfort/celces.h"
 #include "asterfort/cescns.h"
 #include "asterfort/cnscno.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -21,22 +21,24 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeundf.h"
+#include "asterfort/jexatr.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprls0.h"
+#include "asterfort/xdecoupe.h"
+#include "asterfort/xsolveurtria.h"
 #include "asterfort/xvaleurmin.h"
-#include "asterfort/xcalculfmm.h"
 #include "asterfort/xcalculgeo.h"
+#include "asterfort/xprfastcalcul.h"
 
     character(len=8)  :: cmnd, noma, fispre
     character(len=19) :: cnsln, grln, cnslt, grlt, noesom, isozro
-    character(len=19) :: nodtor, eletor, liggrd
+    character(len=19) :: nodtor, eletor, liggrd, cnxinv  
     character(len=19) :: cnsbl ,cnsbet ,listp , vpoint
-    character(len=24) :: vcn, grlr
     real(kind=8)      :: lcmin
     real(kind=8)      :: deltat
-    integer           :: nbrinit
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,14 +60,13 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 !
 !     ------------------------------------------------------------------
 !
-!       XPRUPW_FMM  : X-FEM PROPAGATION : REINITIALISATION ET
-!                                      REORTHOGONALISATION DES LEVEL
-!                                      SETS AVEC LA METHODE FAST MARCHING
-!       ------     -     --                                 ---
+!       xprfastmarching : X-FEM PROPAGATION : REINITIALISATION ET
+!                                             REORTHOGONALISATION DES LEVEL
+!                                             SETS AVEC LA METHODE FAST MARCHING
+!                                             SANS GRILLE AUXILIAIRE
 !
 !  DANS LE CADRE DE LA PROPAGATION X-FEM, UTILISATION DE LA METHODE
-!  FAST MARCHING POUR LES PHASES DE REINITIALISATION ET REORTHOGONALISATION
-!  DES LEVEL SETS APRES LA MISE A JOUR
+!  FAST MARCHING POUR LES PHASES DE REINITIALISATION DES LEVEL SETS APRES LA MISE A JOUR
 !
 !    ENTREE
 !    ------
@@ -94,8 +95,6 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 !      LISTP  = VECTEUR (A 3 COMPOSANTES) OU LES CORDONNEES DU
 !               PROJETE DE CHAQUE POINT DU DOMAINE DE CALCUL SUR LE
 !               FOND DE LA FISSURE SONT STOCKEES
-!      NBRINIT= NOMBRE DE REINITIALISATION DE LST
-!
 !    SORTIE
 !    ------
 !      CNSLN  = CHAMP_NO_S DES NOUVELLES VALEURS DE LA LEVEL SET NORMALE
@@ -108,29 +107,23 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 
     character(len=19) :: cnsls, grls
     character(len=19) :: copiels, vtemp, calculs
-    character(len=2) :: levset
+    character(len=2)  :: levset
 
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer :: nbno, nbnoma, jcnsls, jgrls
-    integer :: node , ndim , nodneg ,nodpos
-    integer :: jbl, jbeta, jlistp, jvp, jltno
-    integer :: ifm, niv, jnodto
-    integer :: j, inar
-    integer :: jzero, jcopiels, jvtemp, jcalculs
-    integer :: minlo
-!
-!     CONNECTION TABLE OF THE NODES
-    integer :: jvcn, jvcnd, jgrlr
-
+    integer      :: nbno, nbnoma, jcnsls, jgrls
+    integer      :: node , ndim
+    integer      :: jbl, jbeta, jlistp, jvp, jltno
+    integer      :: ifm, niv, jnodto, ibid
+    integer      :: inar, jconx1, jconx2
+    integer      :: jzero, jcopiels, jvtemp, jcalculs
+    real(kind=8) :: newlsn, newlst
+    
 !     EVALUATION OF THE GRADIENT OF THE LEVEL SET
-    character(len=8) :: lpain(4), lpaout(2)
+    character(len=8)  :: lpain(4), lpaout(2)
     character(len=19) :: cnols, celgls, chams
     character(len=24) :: lchin(4), lchout(2)
-    integer :: ibid
     real(kind=8), pointer       :: vale(:) => null()
-!    GENERAL VARIABLES
-    real(kind=8) :: newlsn, newlst
-
+    
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------
@@ -145,12 +138,6 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
     call jeveuo(cnsbet, 'L', jbeta)
     call jeveuo(listp, 'L', jlistp)
     call jeveuo(vpoint, 'L', jvp)
-
-!    RETRIEVE THE CONNECTION INFORMATION FOR THE NODES OF THE AUXILIARY GRID
-
-    call jeveuo(grlr, 'L', jgrlr)
-    call jeveuo(vcn, 'L', jvcn)
-    jvcnd = jgrlr+10
 
 !     RETRIEVE THE DIMENSION OF THE PROBLEM
     call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
@@ -177,8 +164,7 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 
 !     RETRIEVE THE NUMBER OF NODES AND ELEMENTS IN THE MESH
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoma)
-!     RETRIEVE THE COORDINATES OF THE NODES
-    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+
 !     RETRIEVE THE NUMBER OF THE NODES THAT MUST TO BE USED IN THE
 !     CALCULUS (SAME ORDER THAN THE ONE USED IN THE CONNECTION TABLE)
     call jeveuo(nodtor, 'L', jnodto)
@@ -186,11 +172,14 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 !     RETRIEVE THE TOTAL NUMBER OF THE NODES THAT MUST BE ELABORATED
     call jelira(nodtor, 'LONMAX', nbno)
 
+!     RETRIEVE THE COORDINATES OF THE NODES
+    call jeveuo(noma//'.COORDO    .VALE', 'L', vr=vale)
+        
 !----------------------------------------------------------------------
 !   CALCUL DES VRAIES DISTANCES SIGNEES SUR LES NOEUDS PROCHES DE LS=0
 !   PERMET DE REPERER LES IZOZEROS DE LSN ET LST POUR LA FMM
 !----------------------------------------------------------------------
-
+    
     call wkvect(isozro, 'V V L', nbnoma, jzero)
 
     call xprls0(fispre, noma, noesom, lcmin, cnsln,&
@@ -200,173 +189,95 @@ subroutine xprupw_fmm(cmnd, noma, fispre, vcn, grlr,&
 !                     BOUCLE LS INFERIEUR
 !                        INITIALISATION
 !----------------------------------------------------------------------
-!creation d'une copie de ls : permet de récupérer l'iso zéro pour la boucle supérieur
-    copiels = '&&XPRFMM.COPIELS'
+!creation d'une copie de ls :récupérer les valeurs de l'iso zéro pour la boucle supérieur
+    copiels = '&&XPRFAST.COPIELS'
     call wkvect(copiels, 'V V R', nbnoma, jcopiels)
 
 !creation d'un vecteur logique pour repérer les noeuds calculés
-    vtemp = '&&XPRFMM.VTEMP'
+    vtemp = '&&XPRFAST.VTEMP'
     call wkvect(vtemp, 'V V L', nbnoma, jvtemp)
 
 !creation d'un vecteur calculs qui modifira les valeurs de la ls
-    calculs = '&&XPRFMM.CALCULS'
+    calculs = '&&XPRFAST.CALCULS'
     call wkvect(calculs, 'V V R', nbnoma, jcalculs)
-
+    
 !multiplie par -1 pour calculer les valeurs negatives de ls
     zr(jcnsls:jcnsls+nbnoma-1) = -1 * zr(jcnsls:jcnsls+nbnoma-1)
 
 !copie de ls
     zr(jcopiels:jcopiels+nbnoma-1) = zr(jcnsls:jcnsls+nbnoma-1)
 
-    !initialisation de vtemp et calculs
-    do inar = 1 ,nbno
-
-    !   RETREIVE THE NODE NUMBER
-        node = zi(jnodto-1+inar)
-
-        if ( .not. zl(jzero-1+node) .and. zr(jcopiels-1+node) .ge. 0 ) then
-            zl(jvtemp-1+node) = .true.
-            zr(jcalculs-1+node) = r8gaem()
-        elseif (zl(jzero-1+node) .and. zr(jcopiels-1+node) .ge. 0) then
-            if (levset .eq. 'LN' .or. nbrinit .gt. 1) then
-                zl(jvtemp-1+node) = .true.
-                zr(jcalculs-1+node) = zr(jcopiels-1+node)
-            else
-                !calcul geometrique des noeuds autour de l'iso zéro pour lst
-                call xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
-                                jlistp, node, newlst, newlsn)
-                zr(jcalculs-1+node) = -newlst
-                zl(jvtemp-1+node) = .true.
-            endif
-        else
-            zr(jcalculs-1+node) = r8gaem()
-            zl(jvtemp-1+node) = .false.
-        endif
-    end do
-
-!----------------------------------------------------------------------
-!                  BOUCLE LS INFERIEUR
-!              CALCUL LES VALEURS NEGATIVES (LS<0)
-!----------------------------------------------------------------------
-    !!boucle tant qu'il reste un élément vrai
-    do while ( any(zl(jvtemp:jvtemp+nbnoma-1)) .eqv. .true. )
-
-        !!on recherche la valeur min dans le vecteur calculs
-         call xvaleurmin(jcalculs,jvtemp,jnodto,nbno,minlo)
-
-        !!on calcule les noeuds voisins du min!!
-         do j = 1 , ndim
-            !! retrouve les voisins du noeud min
-            nodneg = 6*(minlo-1)+2*(j-1)+2
-            nodpos = 6*(minlo-1)+2*(j-1)+1
-
-            !! si le numéro de noeud du voisin est 0 on se trouve en dehors du domaine
-            if (zi(jvcn-1+nodneg) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodneg)) .and. .not. zl(jzero-1+zi(jvcn-1+nodneg)) ) then
-                    !!calcul des noeuds voisins (i-1,j-i,k-1) !!
-                    call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
-                                    ndim, nodneg, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'inf')
-                endif
-            endif
-
-            if (zi(jvcn-1+nodpos) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodpos)) .and. .not. zl(jzero-1+zi(jvcn-1+nodpos)) ) then
-                    !!calcul des noeuds voisins (i+1,j+i,k+1) !!
-                    call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
-                                    ndim, nodpos, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'inf')
-                endif
-            endif
-         end do
-
-         !! on met le noeud à false pour ne plus le calculer !!
-         zl(jvtemp-1+zi(jnodto-1+minlo)) = .false.
-         !! on met à jour la vraie level set !!
-         zr(jcnsls-1+zi(jnodto-1+minlo)) = zr(jcalculs-1+zi(jnodto-1+minlo))
-    end do
-
-!----------------------------------------------------------------------
-!                    BOUCLE LS SUPERIEUR
-!                      INITIALISATION
-!----------------------------------------------------------------------
-
-!on inverse les valeurs pour calculer l'autre côté de l'iso zéro!
-    zr(jcnsls:jcnsls+nbnoma-1) = -1 * zr(jcnsls:jcnsls+nbnoma-1)
-    zr(jcopiels:jcopiels+nbnoma-1) = -1 * zr(jcopiels:jcopiels+nbnoma-1)
-
 !-----------------------------------------------------------------------
-!                     INITIALISATION
-!-----------------------------------------------------------------------
-    !! initialisation de vtemp et calculs!
+!            INITIALISATION AUTOUR DU FOND DE FISURE
+!-----------------------------------------------------------------------    
     do inar = 1 , nbnoma
         zl(jvtemp-1+inar) = .false.
         zr(jcalculs-1+inar)= r8gaem()
     enddo
 
     do inar = 1 ,nbno
-
         node = zi(jnodto-1+inar)
-
         if ( zr(jcopiels-1+node) .ge. 0 ) then
             if (.not. zl(jzero-1+node)) then
-                zl(jvtemp-1+node) = .true.
+                zl(jvtemp-1+node) = .true.         
             else
-                if (levset .eq. 'LN' .or. nbrinit .gt. 1) then
+                if (levset .eq. 'LN' ) then
                     zl(jvtemp-1+node) = .true.
                     zr(jcalculs-1+node) = zr(jcopiels-1+node)
                 else
                     call xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
-                                    jlistp, node, newlst, newlsn)
-                    zr(jcalculs-1+node) = newlst
-                    zl(jvtemp-1+node) = .true.
+                                    jlistp, node, newlst, newlsn)                                 
+                    zl(jvtemp-1+node) = .true.                    
+                    zr(jcalculs-1+node) = -newlst
                 endif
             endif
         endif
     end do
 
+!  Propagation des valeurs a tout le domaine 
+   call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
+                      cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
+
 !----------------------------------------------------------------------
-!                   BOUCLE LS SUPERIEUR
-!              CALCUL LES VALEURS POSITIVES (LS>0)
+!                    BOUCLE LS SUPERIEUR
+!                      INITIALISATION
 !----------------------------------------------------------------------
 
-    !!boucle tant qu'il reste un élément vrai
-    do while ( any(zl(jvtemp:jvtemp+nbnoma-1)) .eqv. .true. )
+!   On inverse les valeurs pour calculer l'autre cote de l'iso zero!
+    zr(jcnsls:jcnsls+nbnoma-1)     = -1 * zr(jcnsls:jcnsls+nbnoma-1)
+    zr(jcopiels:jcopiels+nbnoma-1) = -1 * zr(jcopiels:jcopiels+nbnoma-1)
+    
+!-----------------------------------------------------------------------
+!              INITIALISATION AUTOUR DU FOND DE FISURE
+!-----------------------------------------------------------------------
+    do inar = 1 , nbnoma
+        zl(jvtemp-1+inar) = .false.
+        zr(jcalculs-1+inar)= r8gaem()
+    enddo
 
-        !!on recherche la valeur min dans le vecteur calculs
-        call xvaleurmin(jcalculs,jvtemp,jnodto,nbno,minlo)
-        !!on calcule les noeuds voisins du min!!
-        do j = 1 , ndim
-
-           !! retrouve les voisins du noeud min
-            nodneg = 6*(minlo-1)+2*(j-1)+2
-            nodpos = 6*(minlo-1)+2*(j-1)+1
-
-            if (zi(jvcn-1+nodneg) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodneg)) .and. .not. zl(jzero-1+zi(jvcn-1+nodneg)) ) then
-                    !!calcul des noeuds voisins (i-1,j-i,k-1) !!
-                    call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
-                                    ndim, nodneg, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'sup')
+    do inar = 1 ,nbno
+        node = zi(jnodto-1+inar)
+        if ( zr(jcopiels-1+node) .ge. 0 ) then
+            if (.not. zl(jzero-1+node)) then            
+                zl(jvtemp-1+node) = .true.
+            else
+                if (levset .eq. 'LN' ) then
+                    zl(jvtemp-1+node) = .true.
+                    zr(jcalculs-1+node) = zr(jcopiels-1+node)
+                else
+                    call xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
+                                    jlistp, node, newlst, newlsn)
+                    zl(jvtemp-1+node) = .true.                    
+                    zr(jcalculs-1+node) = newlst
                 endif
             endif
-
-            if (zi(jvcn-1+nodpos) .gt. 0) then
-                if ( zl(jvtemp-1+zi(jvcn-1+nodpos)) .and. .not. zl(jzero-1+zi(jvcn-1+nodpos)) ) then
-                    !!calcul des noeuds voisins (i+1,j+i,k+1) !!
-                    call xcalculfmm(nbno, jcalculs, jcopiels, jnodto, &
-                                    ndim, nodpos, jltno, jvcn, jgrlr, jbl, jbeta, &
-                                    jlistp , jvp, vale, deltat, levset, 'sup')
-                endif
-            endif
-        end do
-
-        !! on met le noeud à false pour ne plus le calculer !!
-        zl(jvtemp-1+zi(jnodto-1+minlo)) = .false.
-        !! on met à jour la vraie level set !!
-        zr(jcnsls-1+zi(jnodto-1+minlo)) = zr(jcalculs-1+zi(jnodto-1+minlo))
-
+        endif
     end do
+    
+!  Propagation des valeurs a tout le domaine    
+   call xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
+                      cnxinv, jconx1, jconx2, ndim, jcopiels, noma)
+
 !-----------------------------------------------------------------------
 !     CALCUL DES GRADIENTS DES LEVEL SETS RESULTANTES
 !-----------------------------------------------------------------------

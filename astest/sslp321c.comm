@@ -1,4 +1,4 @@
-# TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
+aster# TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -16,7 +16,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
-# MODELISATION C: METHODE UPWIND
+
+# MODELISATION E: METHODE FAST MARCHING
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
@@ -94,26 +95,24 @@ LST = [None]*(NPAS+1)
 CHAMA = [None]*(NPAS+1)
 CHRIG = [None]*(NPAS+1)
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-
 # KI REFERENCE  => KI DE LA METHODE MAILLAGE
 K1REF=[0.243961, 0.290147, 0.33084, 0.375984, 0.433606, 0.496975, 0.573785, 0.670222, 0.789716, 0.939463, 1.15201, 1.45163, 1.91885, 2.63622]
 # KII REFERENCE => KII DE LA METHODE MAILLAGE
 K2REF=[4.27722E-02, 1.21013E-04, 7.10255E-03, 1.94683E-03, 1.20266E-03, 8.82542E-04, -1.23199E-03, -3.54655E-03, -4.54122E-03, -8.18030E-03, -1.55772E-02, -2.31849E-02, -3.52229E-02]
 
-VAL_CALC= [0.24396050465583        , 0.042772160777115       ,
-           0.28973200191010        ,4.4533592561954E-03     ,
-           0.33171236042288        ,1.8664823982995E-03     ,
-           0.37917481018943        ,3.1170517612975E-03     ,
-           0.43378656068640        ,7.2316545824255E-04     ,
-           0.49676771477489        ,1.3099352867957E-03     ,
-           0.57390834474419        ,2.0665357002017E-03     ,
-           0.66568641206222        ,-4.0938477256947E-03    ,
-           0.78855736976887        ,-0.016092501088868      ,
-           0.94166190820076        ,-4.9190119400832E-03    ,
-           1.1532035378803         ,-0.010739546028388      ,
-           1.4499452535842         ,-0.0123866831084      ,
-           1.90943376147           ,-0.0173462455909        ]
+VAL_CALC= [0.243960504656          ,0.042772160777115      ,
+           0.290552766941          ,-0.000182685427002     ,
+           0.330871923624          ,0.00863506471402       ,
+           0.375936614455          ,0.000679769937143      ,
+           0.43352469455           ,0.00196764507798      ,
+           0.496884381181          ,-0.000119484624865      ,
+           0.572963398794          ,-0.000961899527013     ,
+           0.67333960568           ,0.000296439181393     ,
+           0.788693858443          ,-0.00272283558816      ,
+           0.943065555178           ,-0.0258299724707       ,
+           1.15140602635           ,-0.00410769464623      ,
+           1.4499772584            ,-0.0283523535043       ,
+           1.92206684466           ,-0.0304681221247       ]
             
 for i in range(1,NPAS+1) :
                                                   
@@ -183,8 +182,8 @@ for i in range(1,NPAS+1) :
                                 C=1.,
                                 M=1.,
                                 MATER=ACIER,),
-                 COMP_LINE =_F(COEF_MULT_MINI=0.,
-                               COEF_MULT_MAXI=1.,),
+                COMP_LINE =_F(COEF_MULT_MINI=0.,
+                              COEF_MULT_MAXI=1.,),
                 );
 
 

@@ -1,5 +1,4 @@
-subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
-                  lcmin)
+subroutine xprcnu(noma, cnxinv, base, vcn, grlr, lcmin)
     implicit none
 !
 #include "jeveux.h"
@@ -48,12 +47,12 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
 !
 !       XPRCNU   : X-FEM PROPAGATION : CREATION DE LA TABLE DE CONNEXION
 !       ------     -     --                                    -
-!                                       DES NODES POUR LA METHODE UPWIND
+!                                       DES NODES POUR LA METHODE FAST MARCHING UPWIND
 !                                           -                     -
 !
 !    DANS LE CADRE DE LA PROPAGATION DE FISSURE XFEM AVEC LA METHODE
-!    UPWIND, ON CALCULE LA BASE LOCALE DE LA GRILLE UTILISEE ET ON
-!    ARRANGE LES NOEUDS SELON LA DIRECTION DES AXES DE CETTE BASE
+!    FAST MARCHING UPWIND, ON CALCULE LA BASE LOCALE DE LA GRILLE 
+!    UTILISEE ET ON ARRANGE LES NOEUDS SELON LA DIRECTION DES AXES DE CETTE BASE
 !
 !    ENTREE
 !            NOMA   = NOM DU MAILLAGE SUR LEQUEL LES LEVEL SETS SONT
@@ -161,11 +160,9 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr,&
         if (((ndim.eq.2).and.(typma(1:5).eq.'QUAD4')) .or.&
             ((ndim.eq.3) .and.(typma(1:5).eq.'HEXA8'))) then
             elmori = i
-            goto 1000
+            exit
         endif
     end do
-!
-1000 continue
 !
 !     CHECK IF A SUPPORTED ELEMENT HAS BEEN FOUND
     if (elmori .eq. 0) then

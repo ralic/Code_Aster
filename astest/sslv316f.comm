@@ -17,7 +17,12 @@
 # ======================================================================
 # person_in_charge: daniele.colombo at ifpen.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_94',);
+
+# ON IGNORE L'ALARME XFEM2_94 PARCE QUE MEME SI DANS LE CAS OU ELLE EST
+# EMISE ON PEUT OBTENIR DES VALEURS DE KI, KII, KIII ET BETA QUI NE SONT PAS
+# CORRECTES, DANS CE CAS TEST CES VALEURS (CALCULEES PAR CALC_G) NE SONT PAS
+# UTILISEES.
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -67,22 +72,12 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                              );
 
 #----------------------------------------------
-#              GRILLE AUXILIAIRE
-#----------------------------------------------
-
-MaiGril=LIRE_MAILLAGE(FORMAT='MED', UNITE=41,
-                      INFO_MED=1,);
-
-Grille=DEFI_GRILLE(MAILLAGE=MaiGril);
-
-#----------------------------------------------
 #              FISSURE INITIALE
 #----------------------------------------------
 
 FISS = [None]*nbcalc
 
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
-                       MAILLAGE_GRILLE=Grille,
                        DEFI_FISS=_F(
                                  FORM_FISS = 'DEMI_PLAN',
                                  PFON      =(0. , 2. ,9.),
@@ -120,30 +115,28 @@ beta=30.0/180.0*3.1415
 ZERO=FORMULE(NOM_PARA='G',
              VALE='0.0*G+beta',);
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-RI = 0.2
 RS = 0.8
 
-VAL_CALC=[
- -4.0136417592262E-09,
- -4.0136421269876E-09,
- 6.6062516801579E-05,
- 6.6062516801399E-05,
- -6.5419522021576E-04,
- -6.5419522021641E-04,
- -1.3052763748304E-03,
- -1.3052763748319E-03,
- 0.0146339323655,
- 0.014631973198177,
- -0.00127864607958,
- -0.00129491634858,
-]
+VAL_CALC = [            
+            -4.43048375764E-15,
+            -4.65469676691E-15,
+             3.01061259256E-15,
+             2.76167977376E-15,
+            -0.000672885486702,
+            -0.000672885486702,
+             2.01227923213E-16,
+            -1.31145094784E-15,
+             0.000463809476227,
+             0.000463809476227,
+            -0.000414166523737,
+            -0.000414166523737,
+           ]
 
 for i in range(nbcalc) :
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,);
 
-   CH[i]=AFFE_CHAR_MECA(MODELE= MODELX[i],
+   CH[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
                         PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
                         DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
                                   _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
@@ -153,6 +146,7 @@ for i in range(nbcalc) :
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
                                 _F(CHARGE=CH[i],),),
+                         INST=1.0,
                          INFO=1,);
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
@@ -163,9 +157,9 @@ for i in range(nbcalc) :
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
    SIF1[i] = CALC_TABLE(TABLE=SIF[i],
                    ACTION=(_F(OPERATION='EXTR',
-                             NOM_PARA=('NUME_ORDRE','NUM_PT',
+                             NOM_PARA=('NUME_ORDRE','INST','NUM_PT',
                                        'ABSC_CURV','K1','K2',
-                                       'K3','G','G_IRWIN','NUME_FOND',),
+                                       'K3','G','G_IRWIN','NUME_FOND'),
                              ),
                           _F(OPERATION='OPER',
                              FORMULE=ZERO,
@@ -181,7 +175,7 @@ for i in range(nbcalc) :
                             FISS_PROPAGEE=FISS[i+1],
                             TABLE=SIF1[i],
                            ),
-                 METHODE_PROPA='UPWIND',
+                 METHODE_PROPA='SIMPLEXE',
                  DA_MAX=da,
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
@@ -233,7 +227,6 @@ for i in range(1,nbcalc) :
                      NOM_CHAM='LTNO',
                      FISSURE=FISS[i],);
 
-
     TABLSN[i]=MACR_LIGN_COUPE(CHAM_GD=CHLN[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
                      LIGN_COUPE=(
                        _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
@@ -251,9 +244,9 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               TOLE_MACHINE= 2.5E-6,     # TODO varibilite
                VALE_CALC=VAL_CALC[(i-1)*4+0],
                VALE_REFE=0.0  )
 
@@ -261,9 +254,9 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               TOLE_MACHINE= 2.5E-6,     # TODO varibilite          
                VALE_CALC=VAL_CALC[(i-1)*4+1],
                VALE_REFE=0.0  )
 
@@ -271,9 +264,9 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+
                TYPE_TEST='MAX',
                CRITERE='ABSOLU',
-               TOLE_MACHINE= 2.E-5,     # TODO varibilite
                VALE_CALC=VAL_CALC[(i-1)*4+2],
                VALE_REFE=0.0  )
 
@@ -281,10 +274,11 @@ for i in range(1,nbcalc) :
                REFERENCE='ANALYTIQUE',
                NOM_PARA='X1',
                PRECISION=tol,
+
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
-               TOLE_MACHINE= 2.E-5,     # TODO varibilite 
                VALE_CALC=VAL_CALC[(i-1)*4+3],
                VALE_REFE=0.0  )
 
 FIN();
+

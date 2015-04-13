@@ -1,4 +1,4 @@
-P time_limit 40
+P time_limit 30
 P memory_limit 256
 P ncpus 1
 P mpi_nbcpu 1
@@ -6,5 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sslv314d.comm D 1
-F datg sslv314b.datg D 16
+F datg sslv314a.datg D 16
 F mmed sslv314a.mmed D 20

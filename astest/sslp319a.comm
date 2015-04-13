@@ -22,7 +22,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
               IGNORE_ALARM=('TEST0_12'))
 
 # DANS LE MAILLAGE IL Y A DES MAILLES SURFACIQUES QUI NE SONT PAS CONSIDEREES PAR
-# LA METHODE UPWIND. EN CONSEQUENCE ON IGNORE LE MESSAGE XFEM2_52.
+# LA METHODE UPWIND FAST MARCHING. EN CONSEQUENCE ON IGNORE LE MESSAGE XFEM2_52.
 
 #***********************************
 # MAILLAGE ET MODELE
@@ -53,14 +53,6 @@ steel=DEFI_MATERIAU(ELAS=_F(E=2.06E11,
 champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
                       AFFE=_F(TOUT='OUI',
                               MATER=steel,),);
-
-#***********************************
-# DISCRETISATION EN TEMPS
-#***********************************
-
-TimeStep=DEFI_LIST_REEL(DEBUT=0,
-                        INTERVALLE=_F(JUSQU_A=1,
-                                      NOMBRE=1,),);
 
 #***********************************
 # DEFINITION DES FISSURES
@@ -186,26 +178,27 @@ for i in range(1,NPS-1) :
 W=1000;
 sigma=1E6
 
-KIL_calc = [
- 3.7940271283701E+07,
- 4.1939581591254E+07,
- 4.6309565430486E+07,
+KIL_calc  = [
+ 37940271.2837,
+ 41939582.5835,
+ 46309568.5504,
 ]
 KIIL_calc = [
--2.1645420158958E+03,
--4.6102794325443E+03,
--6.7566055007150E+03,
+-2164.54201591,
+-1524.89515177,
+-4590.23282314
 ]
-KIR_calc = [
- 3.7877442071310E+07,
- 4.1570656732793E+07,
- 4.6728543982369E+07,
+KIR_calc  = [
+ 37877442.0713,
+ 41570656.7015,
+ 46728542.7588
 ]
-KIIR_calc =[
- 2.3693436147152E+03,
- 4.8553413787281E+03,
- 6.9987129171335E+03,
+KIIR_calc = [
+ 2369.34361471,
+ 1503.87483012,
+ 4825.40881328
 ]
+
 for i in range(1,NPS-1) :
   
    a=a0+da_fiss*(i-1)
@@ -236,12 +229,12 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              VALE_CALC=0.  )
+              VALE_CALC=0., )
    # TEST DE NON REGRESSION SUR K2
    TEST_TABLE(TABLE=SIFL[i],
               NOM_PARA='K2',
               TYPE_TEST='MAX',
-              VALE_CALC=KIIL_calc[i-1]  )
+              VALE_CALC=KIIL_calc[i-1],)
    IMPR_TABLE(TABLE=SIFL[i],FORMAT_R='E20.13',NOM_PARA='K2');
 
    TEST_TABLE(TABLE=SIFR[i],
@@ -261,12 +254,12 @@ for i in range(1,NPS-1) :
               TYPE_TEST='MAX',
               CRITERE='ABSOLU',
               VALE_REFE=0.,
-              VALE_CALC=0.  )
+              VALE_CALC=0., )
    # TEST DE NON REGRESSION SUR K2
    TEST_TABLE(TABLE=SIFR[i],
               NOM_PARA='K2',
               TYPE_TEST='MAX',
-              VALE_CALC=KIIR_calc[i-1]  )
+              VALE_CALC=KIIR_calc[i-1],)
    IMPR_TABLE(TABLE=SIFR[i],FORMAT_R='E20.13',NOM_PARA='K2');
 
 #----------------------------------------------

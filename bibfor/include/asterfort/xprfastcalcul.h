@@ -16,17 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-   subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
-                         jlistp, node, newlst, newlsn)
-       integer          :: ndim                  
-       real(kind=8)     :: vale(:)
-       integer          :: jvp
-       integer          :: jbl
-       real(kind=8)     :: deltat
-       integer          :: jbeta
-       integer          :: jlistp
-       integer          :: node                                
-       real(kind=8)     :: newlst 
-       real(kind=8)     :: newlsn
+
+   subroutine xprfastcalcul(jvtemp, nbnoma, jcalculs, jnodto, nbno, jcnsls, &
+                            cnxinv, jconx1, jconx2, ndim, jcopiels, noma)                           
+    integer           :: jvtemp
+    integer           :: nbnoma
+    integer           :: jcalculs
+    integer           :: jnodto
+    integer           :: nbno                    
+    integer           :: jcnsls
+    character(len=19) :: cnxinv    
+    integer           :: jconx1   
+    integer           :: jconx2        
+    integer           :: ndim
+    integer           :: jcopiels 
+    character(len=8) :: noma
    end subroutine
 end interface

@@ -17,7 +17,12 @@
 # ======================================================================
 # person_in_charge: daniele.colombo at ifpen.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_94',);
+
+# ON IGNORE L'ALARME XFEM2_94 PARCE QUE MEME SI DANS LE CAS OU ELLE EST
+# EMISE ON PEUT OBTENIR DES VALEURS DE KI, KII, KIII ET BETA QUI NE SONT PAS
+# CORRECTES, DANS CE CAS TEST CES VALEURS (CALCULEES PAR CALC_G) NE SONT PAS
+# UTILISEES.
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -92,6 +97,7 @@ PRES=-1.E6
 
 MODELX = [None]*nbcalc
 CHXFEM = [None]*nbcalc
+CH = [None]*nbcalc
 RESU = [None]*nbcalc
 SIF = [None]*nbcalc
 SIF1 = [None]*nbcalc
@@ -102,48 +108,58 @@ LST = [None]*nbcalc
 da=0.4
 
 # ANGLE DE PROPAGATION IMPOSE
-
-deg_rad = pi/180. ;
-beta=30.0*deg_rad
+beta=30.0/180.0*3.1415
 
 # FUNCTION POUR IMPOSER L'ANGLE DE PROPAGATION CI-DESSUS
 # DANS LA TABLE ISSUE PAR CALC_G
 ZERO=FORMULE(NOM_PARA='G',
              VALE='0.0*G+beta',);
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
-RI = 0.1
-RS = 0.4
+RS = 0.8
+
+VAL_CALC = [
+            -3.6325109587E-15  ,  
+            -3.63337832043E-15 , 
+             3.01061259256E-15 , 
+             2.76167977376E-15 , 
+            -0.0154738496526   , 
+            -0.0155597040476   , 
+            -0.00030959307962  , 
+            -0.000312990178866 , 
+            -0.0364488457909   , 
+            -0.0366308979896   , 
+            -0.00890163765582  , 
+            -0.00895603384774  , 
+           ]
 
 for i in range(nbcalc) :
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,);
 
-   CH=AFFE_CHAR_MECA(MODELE=MODELX[i],
-                   PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
-                   DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
-                             _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
-                             _F(GROUP_NO='P4',DY=0.0,),),);
+   CH[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
+                        PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
+                        DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
+                                  _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
+                                  _F(GROUP_NO='P4',DY=0.0,),),);
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
-                                _F(CHARGE=CH,),),
+                                _F(CHARGE=CH[i],),),
+                         INST=1.0,
                          INFO=1,);
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],
-                                   R_INF=RI,
-                                   R_SUP=RS,),
+                         THETA=_F( FISSURE=FISS[i],),
                          LISSAGE=_F( DEGRE=0,),);
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
    SIF1[i] = CALC_TABLE(TABLE=SIF[i],
                    ACTION=(_F(OPERATION='EXTR',
-                             NOM_PARA=('NUME_ORDRE','NUM_PT',
+                             NOM_PARA=('NUME_ORDRE','INST','NUM_PT',
                                        'ABSC_CURV','K1','K2',
-                                       'K3','G','G_IRWIN','NUME_FOND',),
+                                       'K3','G','G_IRWIN','NUME_FOND'),
                              ),
                           _F(OPERATION='OPER',
                              FORMULE=ZERO,
@@ -159,20 +175,17 @@ for i in range(nbcalc) :
                             FISS_PROPAGEE=FISS[i+1],
                             TABLE=SIF1[i],
                            ),
-                 METHODE_PROPA='SIMPLEXE',
+                 METHODE_PROPA='GEOMETRIQUE',
                  DA_MAX=da,
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
                               MATER=ACIER),
                  RAYON=RS,
-                 ZONE_MAJ='TOUT',
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
                  INFO=0,);
-
-   DETRUIRE(CONCEPT=_F(NOM=(CH)),INFO=1)
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -190,6 +203,7 @@ CHLT=[None]*nbcalc
 FOND=[None]*nbcalc
 TABLSN=[None]*nbcalc
 TABLST=[None]*nbcalc
+
 
 # VERIFICATION DE LA POSITION DU CHAQUE FOND DE FISSURE CALCULE
 for i in range(1,nbcalc) :
@@ -212,7 +226,6 @@ for i in range(1,nbcalc) :
                      NOM_CHAM='LTNO',
                      FISSURE=FISS[i],);
 
-
     TABLSN[i]=MACR_LIGN_COUPE(CHAM_GD=CHLN[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
                      LIGN_COUPE=(
                        _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
@@ -226,137 +239,45 @@ for i in range(1,nbcalc) :
 
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
 #   SELECTIONNES, LES LEVEL SETS DOIVENT ETRE EGAL A ZERO.
+    TEST_TABLE(TABLE=TABLSN[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='X1',
+               PRECISION=tol,
 
-#====================================================
-#=================== PROPA 1 ========================
-#====================================================
+               TYPE_TEST='MAX',
+               CRITERE='ABSOLU',
+               VALE_CALC=VAL_CALC[(i-1)*4+0],
+               VALE_REFE=0.0  )
 
-TEST_TABLE(TABLE=TABLSN[1],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE_CALC=0., VALE_REFE=0.0  )
+    TEST_TABLE(TABLE=TABLSN[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='X1',
+               PRECISION=tol,
 
-TEST_TABLE(TABLE=TABLSN[1],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE_CALC=0., VALE_REFE=0.0  )
+               TYPE_TEST='MIN',
+               CRITERE='ABSOLU',
+               VALE_CALC=VAL_CALC[(i-1)*4+1],
+               VALE_REFE=0.0  )
 
-TEST_TABLE(TABLE=TABLST[1],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE_CALC=0., VALE_REFE=0.0  )
+    TEST_TABLE(TABLE=TABLST[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='X1',
+               PRECISION=tol,
 
-TEST_TABLE(TABLE=TABLST[1],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE_CALC=0., VALE_REFE=0.0  )
+               TYPE_TEST='MAX',
+               CRITERE='ABSOLU',
+               VALE_CALC=VAL_CALC[(i-1)*4+2],
+               VALE_REFE=0.0  )
 
-#====================================================
-#=================== PROPA 2 ========================
-#====================================================
+    TEST_TABLE(TABLE=TABLST[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='X1',
+               PRECISION=tol,
 
-TEST_TABLE(TABLE=TABLSN[2],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE_CALC=0., VALE_REFE=0.0  )
-
-TEST_TABLE(TABLE=TABLSN[2],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE_CALC=0., VALE_REFE=0.0  )
-
-TEST_TABLE(TABLE=TABLST[2],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           VALE_REFE=0.0  )
-
-TEST_TABLE(TABLE=TABLST[2],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           VALE_REFE=0.0  )
-
-#====================================================
-#=================== PROPA 3 ========================
-#====================================================
-
-TEST_TABLE(TABLE=TABLSN[3],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           VALE_REFE=0.0  )
-
-TEST_TABLE(TABLE=TABLSN[3],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           VALE_REFE=0.0  )
-
-TEST_TABLE(TABLE=TABLST[3],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MAX',
-           CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           VALE_REFE=0.0  )
-
-TEST_TABLE(TABLE=TABLST[3],
-           REFERENCE='ANALYTIQUE',
-           NOM_PARA='X1',
-           PRECISION=tol,
-           TYPE_TEST='MIN',
-           CRITERE='ABSOLU',
-           VALE_CALC=0.,
-           VALE_REFE=0.0  )
-
-
-#----------------------------------------------
-#         POST TRAITEMENT pour le dernier calcul
-#----------------------------------------------
-
-i = nbcalc-1
-MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i])
-
-MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
-
-DEPL=POST_CHAM_XFEM(MODELE_VISU = MOVISU,
-                    RESULTAT=RESU[i])
-
-IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=DEPL))
+               TYPE_TEST='MIN',
+               CRITERE='ABSOLU',
+               VALE_CALC=VAL_CALC[(i-1)*4+3],
+               VALE_REFE=0.0  )
 
 FIN();
+

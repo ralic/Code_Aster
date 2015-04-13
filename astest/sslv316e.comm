@@ -15,9 +15,14 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: daniele.colombo at ifpen.fr
+# person_in_charge: samuel.geniaut at edf.fr
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),);
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_94',);
+
+# ON IGNORE L'ALARME XFEM2_94 PARCE QUE MEME SI DANS LE CAS OU ELLE EST
+# EMISE ON PEUT OBTENIR DES VALEURS DE KI, KII, KIII ET BETA QUI NE SONT PAS
+# CORRECTES, DANS CE CAS TEST CES VALEURS (CALCULEES PAR CALC_G) NE SONT PAS
+# UTILISEES.
 
 #----------------------------------------------
 #                 MAILLAGE
@@ -51,7 +56,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        );
 
 #----------------------------------------------
-#                   MATERIAU (invariant de la fissure)
+#                   MATERIAU
 #----------------------------------------------
 
 E=205000.0E6
@@ -59,11 +64,21 @@ nu=0.
 rho=7800.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,RHO=rho,),);
 
-CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
-                      AFFE=_F(TOUT = 'OUI',
-                              MATER=ACIER,
-                              ),
-                             )
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MODELE,
+                       AFFE=_F(TOUT = 'OUI',
+                                MATER=ACIER,
+                                ),
+                             );
+
+#----------------------------------------------
+#              GRILLE AUXILIAIRE
+#----------------------------------------------
+
+MaiGril=LIRE_MAILLAGE(FORMAT='MED', UNITE=41,
+                      INFO_MED=1,);
+
+Grille=DEFI_GRILLE(MAILLAGE=MaiGril);
 
 #----------------------------------------------
 #              FISSURE INITIALE
@@ -72,6 +87,7 @@ CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 FISS = [None]*nbcalc
 
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
+                       MAILLAGE_GRILLE=Grille,
                        DEFI_FISS=_F(
                                  FORM_FISS = 'DEMI_PLAN',
                                  PFON      =(0. , 2. ,9.),
@@ -84,6 +100,7 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
 #----------------------------------------------
 
 PRES=-1.E6
+
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
 #----------------------------------------------
@@ -91,6 +108,7 @@ PRES=-1.E6
 MODELX = [None]*nbcalc
 CHXFEM = [None]*nbcalc
 RESU = [None]*nbcalc
+CH = [None]*nbcalc
 SIF = [None]*nbcalc
 SIF1 = [None]*nbcalc
 LSN = [None]*nbcalc
@@ -110,28 +128,27 @@ ZERO=FORMULE(NOM_PARA='G',
 RI = 0.2
 RS = 0.8
 
-
 for i in range(nbcalc) :
 
-   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,
-                              FISSURE=FISS[i])
+   MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,);
 
-   CH=AFFE_CHAR_MECA(MODELE=MODELX[i],
-                      PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
-                      DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
-                                _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
-                                _F(GROUP_NO='P4',DY=0.0,),),)
-
-
+   CH[i]=AFFE_CHAR_MECA(MODELE=MODELX[i],
+                        PRES_REP=_F(GROUP_MA=('SURFSUP',),PRES=PRES,),
+                        DDL_IMPO=(_F(GROUP_NO='SURFINF',DZ=0.0,),
+                                  _F(GROUP_NO=('LIG1','LIG5'),DX=0.0,),
+                                  _F(GROUP_NO='P4',DY=0.0,),),);
 
    RESU[i]=MECA_STATIQUE(MODELE=MODELX[i],
-                         CHAM_MATER=CHAMPMA,
-                         EXCIT=_F(CHARGE=CH)
-                         )
+                         CHAM_MATER=CHAMPMA1,
+                         EXCIT=(
+                                _F(CHARGE=CH[i],),),
+                         INFO=1,);
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
-                         THETA=_F( FISSURE=FISS[i],),
+                         THETA=_F( FISSURE=FISS[i],
+                                   R_INF=RI,
+                                   R_SUP=RS,),
                          LISSAGE=_F( DEGRE=0,),);
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
@@ -139,14 +156,13 @@ for i in range(nbcalc) :
                    ACTION=(_F(OPERATION='EXTR',
                              NOM_PARA=('NUME_ORDRE','NUM_PT',
                                        'ABSC_CURV','K1','K2',
-                                       'K3','G','G_IRWIN','NUME_FOND'),
+                                       'K3','G','G_IRWIN','NUME_FOND',),
                              ),
                           _F(OPERATION='OPER',
                              FORMULE=ZERO,
                              NOM_PARA='BETA',),
                           ),
                         );
-
 
    if ( i != (nbcalc-1) ) :
       FISS[i+1] = CO('FISS_%d'%(i+1))
@@ -166,10 +182,7 @@ for i in range(nbcalc) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  CRIT_ANGL_BIFURCATION = 'ANGLE_IMPO',
-                 INFO=0,)
-
-   DETRUIRE(CONCEPT=_F(NOM=(CH)),INFO=1)
-
+                 INFO=0,);
 
 #----------------------------------------------
 #         POST TRAITEMENT
@@ -188,14 +201,13 @@ FOND=[None]*nbcalc
 TABLSN=[None]*nbcalc
 TABLST=[None]*nbcalc
 
-
 # VERIFICATION DE LA POSITION DU CHAQUE FOND DE FISSURE CALCULE
 for i in range(1,nbcalc) :
 
 #   CALCUL DE LA POSITION CORRECTE
     y=y+da*cos(i*beta)
     z=z+da*sin(i*beta)
-
+    
 
 #   EXTRACTION DES LEVEL SETS POUR LES POINTS D'INTERSECTION
 #   ENTRE L'ARETE DONNANT LA POSITION CORRECTE DU FOND ET
@@ -210,70 +222,139 @@ for i in range(1,nbcalc) :
                      NOM_CHAM='LTNO',
                      FISSURE=FISS[i],);
 
+    FOND[i]=INTE_MAIL_3D(MAILLAGE=MAILLAG1,
+                         DEFI_SEGMENT=_F(
+                         ORIGINE=(0,y,z),
+                         EXTREMITE=(1,y,z),
+                                         ),
+                         );
 
-    TABLSN[i]=MACR_LIGN_COUPE(CHAM_GD=CHLN[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
-                     LIGN_COUPE=(
-                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
-                    ))
-
-    TABLST[i]=MACR_LIGN_COUPE(CHAM_GD=CHLT[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
-                     LIGN_COUPE=(
-                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
-                    ))
-
+    TABLSN[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                       CHEMIN=FOND[i],
+                                       CHAM_GD=CHLN[i],
+                                       TOUT_CMP='OUI',
+                                       OPERATION='EXTRACTION',),);
+    TABLST[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                       CHEMIN=FOND[i],
+                                       CHAM_GD=CHLT[i],
+                                       TOUT_CMP='OUI',
+                                       OPERATION='EXTRACTION',),); 
 
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
 #   SELECTIONNES, LES LEVEL SETS DOIVENT ETRE EGAL A ZERO.
-    TEST_TABLE(TABLE=TABLSN[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
 
-               TYPE_TEST='MAX',
-               CRITERE='ABSOLU',
-               VALE_CALC=0.0, VALE_REFE=0.0  )
+TEST_TABLE(TABLE=TABLSN[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
+           VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLSN[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
+TEST_TABLE(TABLE=TABLSN[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
+           VALE_REFE=0.0  )
 
-               TYPE_TEST='MIN',
-               CRITERE='ABSOLU',
-               VALE_CALC=0.0, VALE_REFE=0.0  )
+TEST_TABLE(TABLE=TABLST[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
+           VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLST[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
+TEST_TABLE(TABLE=TABLST[1],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
+           VALE_REFE=0.0  )
 
-               TYPE_TEST='MAX',
-               CRITERE='ABSOLU',
-               VALE_CALC=0.0, VALE_REFE=0.0  )
 
-    TEST_TABLE(TABLE=TABLST[i],
-               REFERENCE='ANALYTIQUE',
-               NOM_PARA='X1',
-               PRECISION=tol,
+TEST_TABLE(TABLE=TABLSN[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.00194430788232,
+           VALE_REFE=0.0  )
 
-               TYPE_TEST='MIN',
-               CRITERE='ABSOLU',
-               VALE_CALC=0.0, VALE_REFE=0.0  )
-#----------------------------------------------
-#         POST TRAITEMENT pour le dernier calcul
-#----------------------------------------------
+TEST_TABLE(TABLE=TABLSN[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.00208878595822,
+           VALE_REFE=0.0  )
 
-i = nbcalc-1
-MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i])
+TEST_TABLE(TABLE=TABLST[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.0000020648521785,
+           VALE_REFE=0.0  )
 
-MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
-                   AFFE=_F(TOUT='OUI',
-                           PHENOMENE='MECANIQUE',
-                           MODELISATION='3D',),)
+TEST_TABLE(TABLE=TABLST[2],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=-0.00000210139801416,
+           VALE_REFE=0.0  )
 
-DEPL=POST_CHAM_XFEM(MODELE_VISU = MOVISU,
-                    RESULTAT=RESU[i])
 
-IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=DEPL))
+TEST_TABLE(TABLE=TABLSN[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC=0.000916126384552,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLSN[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC=-4.82229871114E-05,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE_CALC= -0.00114299409011,
+           VALE_REFE=0.0  )
+
+TEST_TABLE(TABLE=TABLST[3],
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='X1',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE_CALC= -0.00123082096986,
+           VALE_REFE=0.0  )
 
 FIN();

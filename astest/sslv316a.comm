@@ -115,7 +115,6 @@ beta=30.0/180.0*3.1415
 ZERO=FORMULE(NOM_PARA='G',
              VALE='0.0*G+beta',);
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 RI = 0.2
 RS = 0.8
 
@@ -198,7 +197,7 @@ for i in range(1,nbcalc) :
 #   CALCUL DE LA POSITION CORRECTE
     y=y+da*cos(i*beta)
     z=z+da*sin(i*beta)
-
+    
 
 #   EXTRACTION DES LEVEL SETS POUR LES POINTS D'INTERSECTION
 #   ENTRE L'ARETE DONNANT LA POSITION CORRECTE DU FOND ET
@@ -213,33 +212,36 @@ for i in range(1,nbcalc) :
                      NOM_CHAM='LTNO',
                      FISSURE=FISS[i],);
 
+    FOND[i]=INTE_MAIL_3D(MAILLAGE=MAILLAG1,
+                         DEFI_SEGMENT=_F(
+                         ORIGINE=(0,y,z),
+                         EXTREMITE=(1,y,z),
+                                         ),
+                         );
 
-    TABLSN[i]=MACR_LIGN_COUPE(CHAM_GD=CHLN[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
-                     LIGN_COUPE=(
-                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
-                    ))
-
-    TABLST[i]=MACR_LIGN_COUPE(CHAM_GD=CHLT[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
-                     LIGN_COUPE=(
-                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
-                    ))
+    TABLSN[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                       CHEMIN=FOND[i],
+                                       CHAM_GD=CHLN[i],
+                                       TOUT_CMP='OUI',
+                                       OPERATION='EXTRACTION',),);
+    TABLST[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                       CHEMIN=FOND[i],
+                                       CHAM_GD=CHLT[i],
+                                       TOUT_CMP='OUI',
+                                       OPERATION='EXTRACTION',),); 
 
 
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
 #   SELECTIONNES, LES LEVEL SETS DOIVENT ETRE EGAL A ZERO.
 
-#====================================================
-#=================== PROPA 1 ========================
-#====================================================
-
 TEST_TABLE(TABLE=TABLSN[1],
            REFERENCE='ANALYTIQUE',
            NOM_PARA='X1',
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC= 0.0 ,
-           ORDRE_GRANDEUR=0.33,
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[1],
@@ -248,8 +250,8 @@ TEST_TABLE(TABLE=TABLSN[1],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0 ,
-           ORDRE_GRANDEUR=0.33,
+           VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[1],
@@ -259,6 +261,7 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[1],
@@ -268,11 +271,9 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
-#====================================================
-#=================== PROPA 2 ========================
-#====================================================
 
 TEST_TABLE(TABLE=TABLSN[2],
            REFERENCE='ANALYTIQUE',
@@ -280,7 +281,7 @@ TEST_TABLE(TABLE=TABLSN[2],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.000330212300116,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[2],
@@ -289,7 +290,7 @@ TEST_TABLE(TABLE=TABLSN[2],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.000330218784977,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -298,7 +299,8 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.0000022346236495,
+#          ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -307,12 +309,10 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.00000224958677238,
+#          ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
-#====================================================
-#=================== PROPA 3 ========================
-#====================================================
 
 TEST_TABLE(TABLE=TABLSN[3],
            REFERENCE='ANALYTIQUE',
@@ -320,7 +320,7 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.00343792629812,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[3],
@@ -329,7 +329,7 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.00353203423708,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -338,7 +338,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.000220485060318,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -347,7 +347,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.000221566669104,
            VALE_REFE=0.0  )
 
 
@@ -361,7 +361,7 @@ MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
 MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
                       AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),)
+                              MODELISATION='3D',),) 
 
 DEPL=POST_CHAM_XFEM(
                        MODELE_VISU   = MOVISU,

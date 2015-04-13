@@ -1,6 +1,6 @@
-subroutine xcalculfmm(nbno, jvtemp, jcalculs, jcopiels, jnodto, jzero, ndim, &
-                      nodvois, jltno, jvcn, jgrlr, jbl, jbeta, jlistp , jvp, &
-                      jcoor, deltat, levset, signls)
+subroutine xcalculfmm(nbno,jcalculs, jcopiels, jnodto, ndim, nodvois, &
+                      jltno, jvcn, jgrlr, jbl, jbeta, jlistp , jvp, &
+                      vale, deltat, levset, signls)
 
    implicit none
 !
@@ -10,14 +10,14 @@ subroutine xcalculfmm(nbno, jvtemp, jcalculs, jcopiels, jnodto, jzero, ndim, &
 #include "asterfort/xcalculgeo.h"
 
 
- integer           :: jvtemp, jcalculs, jcopiels, jzero, jnodto
+ integer           :: jcalculs, jcopiels, jnodto
  integer           :: jbl, jbeta, jlistp, jvp
- integer           :: jvcn, jgrlr, jltno, jcoor
+ integer           :: jvcn, jgrlr, jltno
  integer           :: ndim, nbno, nodvois
  real(kind=8)      :: deltat
  character(len=2)  :: levset
  character(len=3)  :: signls
-
+ real(kind=8)      :: vale(:)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,6 @@ subroutine xcalculfmm(nbno, jvtemp, jcalculs, jcopiels, jnodto, jzero, ndim, &
 !      JVP     = VECTEUR DES VITESSES DE PROPAGATION EN CHAQUE POINT
 !                DU DOMAINE DE CALCUL (MODULE DE LA VITESSE DU POINT
 !                PROJETE SUR LE FOND DE LA FISSURE)
-!      JCOOR   = COORDONNE DES NOEUDS
 !      DELTAT  = TEMPS TOTAL DU PAS DE PROPAGATION
 !      LEVSET  = INFORMATION SUR LA LEVEL SET : LSN OU LST
 !      SIGNLS  = INFORMATION SUR LA CALCUL DE LA LEVEL AU-DESSUS DE L'ISOZERO OU EN-DESSOUS
@@ -164,8 +163,8 @@ subroutine xcalculfmm(nbno, jvtemp, jcalculs, jcopiels, jnodto, jzero, ndim, &
 
      else
          !calcul geometrique pour les noeuds problématiques
-         call xcalculgeo(ndim, jcoor, jvp, jbl, deltat, jnodto, nbno, &
-                         jbeta, jlistp, zi(jvcn-1+nodvois), newlst, newlsn)
+         call xcalculgeo(ndim, vale, jvp, jbl, deltat,jbeta, &
+                         jlistp, zi(jvcn-1+nodvois), newlst, newlsn)
          if (levset .eq. 'LN') then
              if (zr(jltno-1+zi(jvcn-1+nodvois)) .gt. 0.d0) then
                 if (signls .eq. 'inf') then

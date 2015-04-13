@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# person_in_charge: samuel.geniaut at edf.fr
+# person_in_charge: daniele.colombo at ifpen.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),)
@@ -51,6 +51,16 @@ mod=AFFE_MODELE(MAILLAGE=poutre,
                          MODELISATION='D_PLAN',),),);
 
 # *********************************************
+# GRILLE AUXILIAIRE POUR LES LEVEL SETS
+# *********************************************
+
+#mailvs=LIRE_MAILLAGE(FORMAT='MED',
+#                     INFO_MED=1,
+#                     UNITE=41,);
+
+#grille=DEFI_GRILLE(MAILLAGE=mailvs);
+
+# *********************************************
 # DEFINITION DE LA FISSURE DANS LE MODELE
 # *********************************************
 
@@ -71,6 +81,7 @@ LT = FORMULE(VALE='Y-YFiss',
 
 # DEFINITION DE LA FISSURE INITIALE
 fiss[0] = DEFI_FISS_XFEM(MAILLAGE=poutre,
+#                         MAILLAGE_GRILLE=grille,
                          DEFI_FISS=_F(FONC_LT=LT,
                                       FONC_LN=LN,),
                          );
@@ -107,7 +118,6 @@ IMPR_RESU(FORMAT='MED',
           UNITE=30,
           RESU=_F(CHAM_GD=LST[0],),);
 
-timestep=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
 # PROPAGATION
 for i in range(0,NPS) :
@@ -121,12 +131,13 @@ for i in range(0,NPS) :
                             FORCE_NODALE=_F(GROUP_NO='Forza',FY=-1000.,)
                             );
 
+
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                           CHAM_MATER=champma,
                           EXCIT=(_F(CHARGE=cauxl[i],),
                                  ),
-                     INFO=1,
-                     );
+                          INST=1.,
+                          INFO=1,);
 
     SIF[i]=CALC_G(OPTION='CALC_K_G',
                   THETA=_F(FISSURE=fiss[i],),
@@ -141,8 +152,8 @@ for i in range(0,NPS) :
                  FISSURE=_F(FISS_ACTUELLE=fiss[i],
                             FISS_PROPAGEE=fiss[i+1],
                             TABLE=SIF[i],),
-                 METHODE_PROPA='SIMPLEXE',
-                 DA_MAX=2,
+                 METHODE_PROPA='SIMPLEXE',               
+                 DA_MAX=2,             
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
@@ -150,9 +161,8 @@ for i in range(0,NPS) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  RAYON=RS,
-                 RAYON_TORE=15.0,
                  INFO=0,);
-
+                
 #     LEVEL SET AU PAS DE PROPAGATION COURANT
       LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
@@ -162,7 +172,7 @@ for i in range(0,NPS) :
                           OPERATION='EXTR',
                           FISSURE=fiss[i+1],
                           NOM_CHAM='LTNO',);
-
+                          
       IMPR_RESU(FORMAT='MED',
                 UNITE=30,
                 RESU=_F(CHAM_GD=LSN[i+1],),);
@@ -209,7 +219,7 @@ DISTMAX=2.0
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=1.13699045812,
+           VALE_CALC=1.2455864246 ,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -220,7 +230,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=0.839872418334,
+           VALE_CALC=0.71492848914,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -231,7 +241,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=0.327439645294,
+           VALE_CALC=0.31472178267,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -242,7 +252,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=1.8461939604,
+           VALE_CALC=1.83307412158,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -268,7 +278,8 @@ for i in range(0,NPS-1) :
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN',),) 
 
-   DEPL[i]=POST_CHAM_XFEM(MODELE_VISU   = MOVI[i],
+   DEPL[i]=POST_CHAM_XFEM(
+                          MODELE_VISU   = MOVI[i],
                           RESULTAT=ResX[i],
                           );
 
@@ -278,3 +289,4 @@ for i in range(0,NPS-1) :
 
 
 FIN();
+

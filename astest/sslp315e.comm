@@ -1,4 +1,4 @@
-# TITRE PROPAGATION D UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
+# TITRE PROPAGATION D'UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# person_in_charge: samuel.geniaut at edf.fr
+# person_in_charge: daniele.colombo at ifpen.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),)
@@ -118,7 +118,6 @@ IMPR_RESU(FORMAT='MED',
           UNITE=30,
           RESU=_F(CHAM_GD=LST[0],),);
 
-timestep=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1,),);
 
 # PROPAGATION
 for i in range(0,NPS) :
@@ -132,16 +131,16 @@ for i in range(0,NPS) :
                             FORCE_NODALE=_F(GROUP_NO='Forza',FY=-1000.,)
                             );
 
+
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
                           CHAM_MATER=champma,
                           EXCIT=(_F(CHARGE=cauxl[i],),
                                  ),
-                     );
+                          INST=1.,
+                          INFO=1,);
 
     SIF[i]=CALC_G(OPTION='CALC_K_G',
-                  THETA=_F(FISSURE=fiss[i],
-                           R_INF=RI,
-                           R_SUP=RS,),
+                  THETA=_F(FISSURE=fiss[i],),
                   RESULTAT=ResX[i],
                   INFO=2,);
 
@@ -153,7 +152,7 @@ for i in range(0,NPS) :
                  FISSURE=_F(FISS_ACTUELLE=fiss[i],
                             FISS_PROPAGEE=fiss[i+1],
                             TABLE=SIF[i],),
-                 METHODE_PROPA='SIMPLEXE',
+                 METHODE_PROPA='GEOMETRIQUE',
                  DA_MAX=2,
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
@@ -162,7 +161,6 @@ for i in range(0,NPS) :
                  COMP_LINE=_F(COEF_MULT_MINI=0.,
                               COEF_MULT_MAXI=1.,),
                  RAYON=RS,
-                 RAYON_TORE=14.0,
                  INFO=0,);
 
 #     LEVEL SET AU PAS DE PROPAGATION COURANT
@@ -221,7 +219,7 @@ DISTMAX=2.0
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=1.27390503379,
+           VALE_CALC=1.24763660102,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -232,7 +230,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=0.728786254173,
+           VALE_CALC=0.751918066864,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -243,7 +241,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=0.322582311653,
+           VALE_CALC=0.249613824332,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MAX',
@@ -254,7 +252,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=2.0,
-           VALE_CALC=1.70856555203,
+           VALE_CALC=1.73319730729,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',
@@ -280,7 +278,8 @@ for i in range(0,NPS-1) :
                                  PHENOMENE='MECANIQUE',
                                  MODELISATION='D_PLAN',),) 
 
-   DEPL[i]=POST_CHAM_XFEM(MODELE_VISU   = MOVI[i],
+   DEPL[i]=POST_CHAM_XFEM(
+                          MODELE_VISU   = MOVI[i],
                           RESULTAT=ResX[i],
                           );
 

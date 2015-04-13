@@ -164,7 +164,6 @@ for i in range(nbcalc) :
                           ),
                         );
 
-
    if ( i != (nbcalc-1) ) :
       FISS[i+1] = CO('FISS_%d'%(i+1))
       PROPA_FISS(MODELE=MODELX[i],
@@ -201,14 +200,13 @@ FOND=[None]*nbcalc
 TABLSN=[None]*nbcalc
 TABLST=[None]*nbcalc
 
-
 # VERIFICATION DE LA POSITION DU CHAQUE FOND DE FISSURE CALCULE
 for i in range(1,nbcalc) :
 
 #   CALCUL DE LA POSITION CORRECTE
     y=y+da*cos(i*beta)
     z=z+da*sin(i*beta)
-
+    
 
 #   EXTRACTION DES LEVEL SETS POUR LES POINTS D'INTERSECTION
 #   ENTRE L'ARETE DONNANT LA POSITION CORRECTE DU FOND ET
@@ -223,25 +221,27 @@ for i in range(1,nbcalc) :
                      NOM_CHAM='LTNO',
                      FISSURE=FISS[i],);
 
+    FOND[i]=INTE_MAIL_3D(MAILLAGE=MAILLAG1,
+                         DEFI_SEGMENT=_F(
+                         ORIGINE=(0,y,z),
+                         EXTREMITE=(1,y,z),
+                                         ),
+                         );
 
-    TABLSN[i]=MACR_LIGN_COUPE(CHAM_GD=CHLN[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
-                     LIGN_COUPE=(
-                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
-                    ))
-
-    TABLST[i]=MACR_LIGN_COUPE(CHAM_GD=CHLT[i], MODELE=MODELX[i], NOM_CHAM='NEUT',
-                     LIGN_COUPE=(
-                       _F(TYPE='SEGMENT', NB_POINTS=10, COOR_ORIG=(0,y,z), COOR_EXTR=(1,y,z),),
-                    ))
-
+    TABLSN[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
+                                       CHEMIN=FOND[i],
+                                       CHAM_GD=CHLN[i],
+                                       TOUT_CMP='OUI',
+                                       OPERATION='EXTRACTION',),);
+    TABLST[i]= POST_RELEVE_T(ACTION=_F(INTITULE='Test LST',
+                                       CHEMIN=FOND[i],
+                                       CHAM_GD=CHLT[i],
+                                       TOUT_CMP='OUI',
+                                       OPERATION='EXTRACTION',),); 
 
 #   VERIFICATION DES VALEURS DES LEVEL SETS. POUR LES POINTS
 #   SELECTIONNES, LES LEVEL SETS DOIVENT ETRE EGAL A ZERO.
 
-#====================================================
-#=================== PROPA 1 ========================
-#====================================================
-
 TEST_TABLE(TABLE=TABLSN[1],
            REFERENCE='ANALYTIQUE',
            NOM_PARA='X1',
@@ -249,7 +249,7 @@ TEST_TABLE(TABLE=TABLSN[1],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           ORDRE_GRANDEUR=0.33,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[1],
@@ -259,7 +259,7 @@ TEST_TABLE(TABLE=TABLSN[1],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
-           ORDRE_GRANDEUR=0.33,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[1],
@@ -269,6 +269,7 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[1],
@@ -278,11 +279,9 @@ TEST_TABLE(TABLE=TABLST[1],
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
            VALE_CALC=0.0,
+           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
-#====================================================
-#=================== PROPA 2 ========================
-#====================================================
 
 TEST_TABLE(TABLE=TABLSN[2],
            REFERENCE='ANALYTIQUE',
@@ -290,7 +289,7 @@ TEST_TABLE(TABLE=TABLSN[2],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.00194430788232,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[2],
@@ -299,7 +298,7 @@ TEST_TABLE(TABLE=TABLSN[2],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.00208878595822,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -308,7 +307,7 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.0000020648521785,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -317,19 +316,17 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.00000210139801416,
            VALE_REFE=0.0  )
 
-#====================================================
-#=================== PROPA 3 ========================
-#====================================================
+
 TEST_TABLE(TABLE=TABLSN[3],
            REFERENCE='ANALYTIQUE',
            NOM_PARA='X1',
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=0.000919044989978,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLSN[3],
@@ -338,7 +335,7 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=-0.0000452786534832,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -347,7 +344,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC= -0.00114299409232,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -356,7 +353,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC= -0.00123082134073,
            VALE_REFE=0.0  )
 
 FIN();

@@ -1,0 +1,491 @@
+# TITRE PROPAGATION PLANE D'UNE FISSURE SEMI-ELLIPTIQUE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# MODELISATION B : METHODE SIMPLEXE
+
+
+DEBUT(CODE =_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_18',
+#      PAR_LOT='NON'
+      )
+
+type_cas = 'cas_test'
+#type_cas = 'etude'
+
+
+# REMARQUE 1 : 
+# le PAR_LOT='NON' est necessaire pour :
+# - EXTR_TABLE, qui permet de s'arreter en cas dons multiples (facultatif pour le cas test)
+# - EXTR_TABLE, qui permet de recuperer les coordonnees des points du fond pour
+#               le calcul exact des DTAN (facultatif pour le cas test)
+#
+#
+# REMARQUE 2 : 
+# POUR LE CAS TEST : ON BLOQUE LES POINTS A B C QUI SE TROUVE DANS LE PLAN MILIEU (PLAN DE PROPA)
+# CELA N'EST PAS GENANT CAR ON PROPAGE JUSTE UN PAS
+# SI ON VEUT SIMULER LA PROPA COMPLETE ALORS IL VAUT MIEUX BLOQUER LES POINTS D E F 
+# QUI SE TROUVENT SUR LA SURFACE INFERIEURE
+
+
+# unite du maillage : metres
+
+#---------------------------------------------------------------------
+#                 PARAMETRES UTILISATEUR
+#---------------------------------------------------------------------
+
+# parametres de la fissure initiale
+# ---------------------------------
+
+# demi-grand axe
+a=0.119E-3
+
+# demi-petit axe
+b=0.100E-3
+
+
+# parametres de raffinement
+# -------------------------
+
+# taille des mailles du maillage grossier initial 
+h0 = 0.15e-3 
+
+# taille cible des mailles apres raffinement 
+hc = b/15.
+
+# nombre de niveau de raffinements
+# attention, en python log = ln (logarithme neperien)
+n = (log(h0)-log(hc))/log(2)
+nb_raff = int(n)+1
+print '_'*3+'INFO'+3*'_'+' nb_raff = ',nb_raff
+
+# taille des mailles apres raffinement
+h = h0/(2.**nb_raff)
+print '_'*3+'INFO'+3*'_'+' h = ',h
+
+# rayon du disque de raffinement
+r_raff = 4*h
+
+
+# parametres numeriques pour CALC_G
+# ---------------------------------
+rinf = 2*h
+rsup = 4*h
+
+
+# parametres pour la propagation
+#-------------------------------
+
+# nombre de pas de propagation a simuler
+if type_cas == 'cas_test' : 
+   nb_pas = 1
+elif type_cas == 'etude' : 
+   nb_pas = 30
+
+# Pour la loi de Paris :
+if type_cas == 'cas_test' : 
+   damax = 0.112e-3
+elif type_cas == 'etude' : 
+   damax = 10*h
+
+c = 10**(-9.2)
+m = 3.5
+
+
+#--------------------------------------------------------------------
+#     CONCEPT INDEPENDANT DE L'ITERATION DE PROPAGATION
+#--------------------------------------------------------------------
+
+# MATERIAU
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3))
+
+# erreur en distance pour une fissure: -r
+MDISTF=FORMULE(NOM_PARA=('X1','X2'),VALE= '-1.*sqrt(X1**2+X2**2)')
+
+
+#--------------------------------------------------------------------
+#                 RAFFINEMENT INITIAL
+#--------------------------------------------------------------------
+
+print '_'*3+'INFO'+3*'_'+' raffinement initial'
+
+
+# initialisation des concepts pour le raffinement
+MAIT = [None]*((nb_raff+1)*(nb_pas+1))
+
+FISS = [None]*(nb_pas+1)
+LSN  = [None]*(nb_raff+1)
+LST  = [None]*(nb_raff+1)
+
+
+i_propa=0
+
+i_raff = 0
+
+i_tot = 0
+
+MAIT[i_tot]=LIRE_MAILLAGE(FORMAT='MED')
+
+MAIT[i_tot]=MODI_MAILLAGE(reuse=MAIT[i_raff],
+                          MAILLAGE=MAIT[i_raff],
+                          ORIE_PEAU_3D=_F(GROUP_MA=('FACESUP','FACEINF')))
+
+
+# boucle de raffinements +une iteration en plus pour la definition de la fissure sur le maillage le plus fin
+for i_raff in range(nb_raff+1) :
+   
+   MO=AFFE_MODELE(MAILLAGE=MAIT[i_tot],
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='3D'))
+  
+   # definition de la fissure semi elliptique                     
+   FISS[i_propa]=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],  
+                                DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
+                                             DEMI_GRAND_AXE = a,
+                                             DEMI_PETIT_AXE = b,
+                                             CENTRE         = ( 0.,0.,0.),
+                                             VECT_X         = ( 0.,1.,0.), 
+                                             VECT_Y         = (-1.,0.,0.),
+                                             ),
+                                  )
+      
+   # pas de raffinement a la derniere iteration
+   if i_raff != nb_raff :
+
+      # evaluation de l'erreur       
+      CHERR=RAFF_XFEM(FISSURE=FISS[i_propa])
+
+      # definition du type du maillage total n+1
+      MAIT[i_tot+1]=CO('MAIT_%d' %(i_tot+1))
+
+      # valeur du critere de raffinement
+      # on prend un coef de 2 sur la taille donnee a Blsurf 
+      # car les aspect ratios sont entre 1 et 2.
+      crit = -max(r_raff , 2.*h0/(2.**i_raff) )
+
+      MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                     NIVE_MAX           = nb_raff,
+                     CHAM_GD            = CHERR,
+                     CRIT_RAFF_ABS      = crit,
+                     USAGE_CMP          = 'RELATIF', 
+                     MAILLAGE_N         = MAIT[i_tot],
+                     MAILLAGE_NP1       = MAIT[i_tot+1])
+
+      DETRUIRE(CONCEPT=_F(NOM=(MO,FISS[i_propa],CHERR,MAIT[i_tot])),INFO=1)
+
+      i_tot = i_tot +1
+      
+# impression du "denier" (c-a-d le plus raffine) maillage total
+DEFI_FICHIER(ACTION='ASSOCIER',UNITE=100+i_propa,FICHIER='./REPE_OUT/mail_'+str(i_propa)+'.med')
+IMPR_RESU(FORMAT='MED',UNITE=100+i_propa,RESU=_F(MAILLAGE=MAIT[i_tot]))
+
+# a ce niveau, FISS[i_propa] est la fissure defini sur le maillage raffine MAIT[i_tot]
+
+
+#--------------------------------------------------------------------
+#           BOUCLE SUR LES PAS DE PROPAGATIONS
+#--------------------------------------------------------------------
+
+for i_propa in xrange(nb_pas) :
+
+   print '_'*3+'INFO'+3*'_'+' pas de propagation ',i_propa
+
+
+   
+   if i_propa != 0 :
+
+      MO=AFFE_MODELE(MAILLAGE=MAIT[i_tot],
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D'))
+
+
+      #definition de la fissure
+      FISS[i_propa]=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
+                                   DEFI_FISS=_F(CHAM_NO_LSN = LSN[nb_raff],
+                                                CHAM_NO_LST = LST[nb_raff],),);
+
+      DETRUIRE(CONCEPT=_F(NOM=LSN[nb_raff]),INFO=1)
+      DETRUIRE(CONCEPT=_F(NOM=LST[nb_raff]),INFO=1)
+
+   if type_cas == 'etude' : 
+
+      # RECUPERATION DE LA TABLE CONTENANT LE NOMBRE DE FONDS DE FISSURE
+      NB_FOND=RECU_TABLE(CO=FISS[i_propa],NOM_TABLE='NB_FOND_FISS')
+
+      dict = NB_FOND.EXTR_TABLE().values()
+      nb_fond = dict['NOMBRE'][0]
+      if nb_fond != 1 :
+         print '<F> : erreur fatale : le nombre de fonds de fissure est different de 1'
+         FIN()
+
+   
+   MODX=MODI_MODELE_XFEM(MODELE_IN=MO,
+                         FISSURE=FISS[i_propa])
+
+   CHMAT=AFFE_MATERIAU(MAILLAGE=MAIT[i_tot],
+                       MODELE=MODX,
+                       AFFE=_F(TOUT='OUI',MATER=MAT))
+
+   if type_cas == 'cas_test' : 
+
+      AFFE=AFFE_CHAR_MECA(MODELE=MODX,
+                          DDL_IMPO=(_F(GROUP_NO='A',DY=0,DZ=0,),
+                                    _F(GROUP_NO='B',DY=0,DZ=0,),
+                                    _F(GROUP_NO='C',DX=0,DZ=0,)
+                                    )
+                        )
+
+   elif type_cas == 'etude' : 
+
+      AFFE=AFFE_CHAR_MECA(MODELE=MODX,
+                          DDL_IMPO=(_F(GROUP_NO='D',DY=0,DZ=0,),
+                                    _F(GROUP_NO='E',DY=0,DZ=0,),
+                                    _F(GROUP_NO='F',DX=0,DZ=0,)
+                                    )
+                        )
+
+   PRESS=AFFE_CHAR_MECA(MODELE=MODX,
+                        FORCE_FACE=(_F(GROUP_MA='FACESUP',FZ=220,),
+                                    _F(GROUP_MA='FACEINF',FZ=-220,)
+                                    )
+                        )
+
+
+   # Resolution
+   print '_'*3+'INFO'+3*'_'+'    resolution '
+   RESU=MECA_STATIQUE(MODELE=MODX,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=(_F(CHARGE=AFFE,),
+                             _F(CHARGE=PRESS,),),
+                      )
+
+   #-----------------------------------------------------------------------------------------
+   #                POST-TRAITEMENT EN MECANIQUE DE LA RUPTURE
+   #-----------------------------------------------------------------------------------------
+
+   print '_'*3+'INFO'+3*'_'+'    calcul des K '
+   # LISSAGE LEGENDRE
+   # les K sont en Pa.sqrt(m)
+   TAB_GK=CALC_G(RESULTAT=RESU,
+                 OPTION='CALC_K_G',
+                 THETA=_F(FISSURE=FISS[i_propa],
+                          NB_POINT_FOND=36,
+                          ),
+                 LISSAGE=_F(LISSAGE_THETA='LEGENDRE',
+                            LISSAGE_G='LEGENDRE',
+                            DEGRE=3),
+                 )
+
+   IMPR_TABLE(TABLE=TAB_GK)
+
+   # Mise a jour du maillage de la fissure
+   
+   FISS[i_propa+1] = CO('FISS_%d'%(i_propa+1))
+
+   print '_'*3+'INFO'+3*'_'+'    mise a jour des level sets'
+   PROPA_FISS(MODELE=MODX,
+              METHODE_PROPA='SIMPLEXE',
+              ZONE_MAJ='TOUT',
+              DA_MAX=damax,
+              FISSURE=_F(FISS_ACTUELLE=FISS[i_propa],
+                         FISS_PROPAGEE=FISS[i_propa+1],
+                         NB_POINT_FOND=36,
+                         TABLE        =TAB_GK),
+              RAYON=rsup,
+              COMP_LINE=_F(COEF_MULT_MINI=0.1,
+                           COEF_MULT_MAXI=1,),
+              LOI_PROPA=_F(LOI='PARIS',
+                           C=c,
+                           M=m,
+                           MATER=MAT,),
+              )
+
+   DETRUIRE(CONCEPT=_F(NOM=(FISS[i_propa],MODX,CHMAT,AFFE,PRESS,RESU,TAB_GK)),INFO=1)
+
+   if type_cas == 'etude' :
+      DETRUIRE(CONCEPT=_F(NOM=(NB_FOND,TB_FOND)),INFO=1)
+
+   #-----------------------------------------------------------------------------------------
+   #                RAFFINEMENT DU MAILLAGE APRES PROPAGATION
+   #-----------------------------------------------------------------------------------------
+
+   print '_'*3+'INFO'+3*'_'+'    raffinement de maillage'
+   # feinte : il faut que homard reparte du meme maillage (meme nom) que le denier NP1
+                    
+   # Extraction des level sets
+   # attention, il faut les level sets soient suffisamment bien calculees pour que le critere
+   # de raffinement soit correct et qu'on raffine bien la ou il faut
+   # cela signifie que le maillage i_raff du pas precedent soit assez raffine au niveau du nouveau front
+   # c'est normalement le cas, sauf si on fait des pas d'avancee enormes (plusieurs fois h0)
+   # normalement, on avance de quelques h, soit damax < h0
+   i_raff=0
+   LSN[i_raff]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                     OPERATION='EXTR',
+                     FISSURE=FISS[i_propa+1],
+                     NOM_CHAM='LNNO')
+
+   LST[i_raff]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                     OPERATION='EXTR',
+                     FISSURE=FISS[i_propa+1],
+                     NOM_CHAM='LTNO')
+    
+   # Critere initial : on peut utiliser RAFF_XFEM ici car la fissure
+   # est definie sur le maillage en entree du raffinement
+   CHERR=RAFF_XFEM(FISSURE=FISS[i_propa+1])
+
+
+   # Raffinements successifs autour du fond de fissure
+   # la boucle de raffinement recalcule les level sets par interpolation Homard, puis re-calcul du critere
+   for i_raff in range(nb_raff) :
+          
+      # definition du type du maillage n+1
+      MAIT[i_tot+1] =CO('MAIT_%d' %(i_tot+1)  )
+      LSN[i_raff+1] =CO('LSN_%d'  %(i_raff+1) )
+      LST[i_raff+1] =CO('LST_%d'  %(i_raff+1) )   
+           
+      crit = -max(r_raff , 2.*h0/(2.**i_raff) )
+                   
+      MACR_ADAP_MAIL( ADAPTATION='RAFF_DERA',
+                      NIVE_MAX = nb_raff,
+                      GROUP_MA = 'VOL',
+                      CHAM_GD = CHERR,
+                      CRIT_RAFF_ABS =crit,
+                      CRIT_DERA_ABS =crit,
+                      USAGE_CMP ='RELATIF',
+                      MAILLAGE_N   = MAIT[i_tot],
+                      MAILLAGE_NP1 = MAIT[i_tot+1],
+                      MAJ_CHAM=(_F(TYPE_CHAM='NOEU_NEUT_R',
+                                   CHAM_GD  = LSN[i_raff],
+                                   CHAM_MAJ = LSN[i_raff+1]),
+                                _F(TYPE_CHAM='NOEU_NEUT_R',
+                                   CHAM_GD  = LST[i_raff],
+                                   CHAM_MAJ = LST[i_raff+1]),),)
+      
+      DETRUIRE(CONCEPT=_F(NOM=(CHERR,MAIT[i_tot])),INFO=1)
+
+      # pour re-calculer le critere, on ne peut plus utiliser RAFF_XFEM 
+      # car cette commande aurait besoin de la fissure sur le dernier maillage raffine
+      # (on n'a plus de concept sd_fiss_xfem)
+      # on re-calcule le critere de distance a la main, a partir des level sets actualisees
+
+      #On renomme le composante X1 en X2
+      LSTB=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                      OPERATION='ASSE',
+                      MAILLAGE=MAIT[i_tot+1],
+                      ASSE=_F(TOUT='OUI',
+                              CHAM_GD = LST[i_raff+1],
+                              NOM_CMP='X1',
+                              NOM_CMP_RESU='X2'))
+
+      #On affecte a chaque noeud du maillage  la formule MDISTF
+      CHFOR=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
+                       OPERATION='AFFE',
+                       MAILLAGE=MAIT[i_tot+1],
+                       AFFE=_F(TOUT='OUI',
+                               NOM_CMP='X1',
+                               VALE_F=MDISTF)
+                       )
+
+      # On evalue en tout noeud le champ de formules
+      CERRB=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                       OPERATION='EVAL',
+                       CHAM_F=CHFOR,
+                       CHAM_PARA=(LSN[i_raff+1],LSTB))
+
+
+      #Champ d'Erreur de la fissure
+      CHERR=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                       OPERATION='ASSE',
+                       MAILLAGE=MAIT[i_tot+1],
+                       ASSE=_F(TOUT='OUI',
+                               CHAM_GD = CERRB,
+                               NOM_CMP='X1',
+                               NOM_CMP_RESU='X1'))
+
+      DETRUIRE(CONCEPT=_F(NOM=(LSTB,CHFOR,CERRB)),INFO=1)
+
+      i_tot=i_tot+1
+
+   # menage
+   for i_raff in range(nb_raff) :
+      DETRUIRE(CONCEPT=_F(NOM=(LSN[i_raff],LST[i_raff])),INFO=1),
+
+   DETRUIRE(CONCEPT=_F(NOM=(CHERR,MO)),INFO=1)
+
+   # on detruit la fissure propagee definie sur le maillage raffine vis-a-vis de l'ancienne position du fond
+   DETRUIRE(CONCEPT=_F(NOM=FISS[i_propa+1]),INFO=1)
+
+   #-----------------------------------------------------------------------------------------
+   #                FIN DU RAFFINEMENT DU MAILLAGE APRES PROPAGATION
+   #-----------------------------------------------------------------------------------------
+  
+   # a ce niveau, LSN[nb_raff] et LST[nb_raff] permettent de definir la fissure propagee
+   # sur le maillage raffine MAIT[i_tot] vis-a-vis de la nouvelle position du fond
+  
+   # impression du "dernier" (c-a-d le plus raffine) maillage total
+   DEFI_FICHIER(ACTION='ASSOCIER',UNITE=100+i_propa+1,
+                FICHIER='./REPE_OUT/mail_'+str(i_propa+1)+'.med')
+   
+   IMPR_RESU(FORMAT='MED',UNITE=100+i_propa+1,RESU=_F(MAILLAGE=MAIT[i_tot]))
+
+
+
+   # impression des level sets de la fissure apres propagation, definies sur le maillage raffine
+   DEFI_FICHIER(ACTION='ASSOCIER',UNITE=200+i_propa+1,
+                FICHIER='./REPE_OUT/ls_'+str(i_propa+1)+'.med')
+   
+   IMPR_RESU(FORMAT='MED',UNITE=200+i_propa+1,RESU=(_F(CHAM_GD=LSN[nb_raff]),
+                                                    _F(CHAM_GD=LST[nb_raff]),
+                                                    ),
+             )
+
+
+#-----------------------------------------------------------------------------------------
+#           FIN DE LA BOUCLE SUR LES PAS DE PROPAGATIONS
+#-----------------------------------------------------------------------------------------
+
+
+# Procedure de validation
+if type_cas == 'cas_test' :
+    
+   # Modele
+   MO_TEST=AFFE_MODELE(MAILLAGE=MAIT[i_tot],
+                       AFFE=_F(TOUT='OUI',
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='3D',),)
+
+   # Fissure
+   FI_TEST=DEFI_FISS_XFEM(MAILLAGE=MAIT[i_tot],
+                          DEFI_FISS=_F(CHAM_NO_LSN = LSN[nb_raff],
+                                       CHAM_NO_LST = LST[nb_raff],),);
+
+   # extraction des coordonnees max du fond de fissure
+   TB_FOND=RECU_TABLE(CO=FI_TEST,NOM_TABLE='FOND_FISS')   
+
+   # test
+   TEST_TABLE(CRITERE='RELATIF',
+              REFERENCE='SOURCE_EXTERNE',
+              PRECISION=0.050000000000000003,
+              VALE_CALC=0.000168712274531,
+              VALE_REFE=1.7330000000000001E-4,
+              NOM_PARA='COOR_Y',
+              TYPE_TEST='MAX',
+              TABLE=TB_FOND,)
+
+FIN();

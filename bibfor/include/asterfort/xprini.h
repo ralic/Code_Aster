@@ -18,22 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xprini(ligrel, noma, cnxinv, grille, fispre,&
-                      fiss, cnsln, cnslt, cnsgls, noesom,&
-                      noresi, vcn, grlr, lcmin)
-        character(len=19) :: ligrel
-        character(len=8) :: noma
+    subroutine xprini(noma, cnxinv, grille, noesom, vcn, grlr, lcmin, ndim)
+        character(len=8)  :: noma
         character(len=19) :: cnxinv
-        aster_logical :: grille
-        character(len=8) :: fispre
-        character(len=8) :: fiss
-        character(len=19) :: cnsln
-        character(len=19) :: cnslt
-        character(len=19) :: cnsgls
+        aster_logical     :: grille
         character(len=19) :: noesom
-        character(len=19) :: noresi
         character(len=24) :: vcn
         character(len=24) :: grlr
-        real(kind=8) :: lcmin
+        real(kind=8)      :: lcmin
+        integer           :: ndim
     end subroutine xprini
 end interface

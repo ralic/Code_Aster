@@ -5,5 +5,6 @@ P mpi_nbcpu 1
 P mpi_nbnoeud 1
 P testlist verification sequential
 
-F comm sslp319f.comm D 1
-F mmed sslp318a.mmed D 20
+F comm zzzz309f.comm D 1
+F datg zzzz309a.datg D 16
+F mmed zzzz309a.mmed D 20

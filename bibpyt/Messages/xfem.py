@@ -211,6 +211,11 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
      Numéros des mailles de la zone fissure.
 """),
 
+    27: _(u"""
+     L'utilisation de la grille auxiliaire avec la méthode SIMPLEXE n'est pas disponible.
+     Utiliser la méthode UPWIND ou effectuer le calcul sur le maillage physique.    
+"""),
+
     29: _(u"""
      Nombre de mailles contenant le fond de fissure : %(i1)d
 """),
@@ -407,8 +412,6 @@ Utilisez ELIM_ARETE='DUAL'.
      fond de la fissure (il ne faut pas utiliser ZONE_MAJ='TOUT' dans PROPA_FISS). Dans ce
      cas, si vous utilisez la méthode simplexe (METHODE='SIMPLEXE'), vous pouvez essayer
      d'utiliser un rayon de localisation plus élevé (opérande RAYON_TORE).
-     Si vous utilisez la méthode simplexe, vous pouvez essayer d'utiliser la méthode UPWIND
-     qui est plus robuste, stable et performante (METHODE='UPWIND').
 
      Dans tout le cas, il faut vérifier que l'angle de propagation de la fissure calculée
      par CALC_G a sens physique pour le problème à résoudre.

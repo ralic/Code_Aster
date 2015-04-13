@@ -22,9 +22,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('XFEM_69'),
 
 # XFEM_69 EST IGNORE PARCE QUE CETTE ALARME NE S'APPLIQUE PAS A CE CAS TEST
 # COMME DECRIT DANS LE MESSAGE D'ALARME LUI-MEME
-
-# METHODE SIMPLEXE
       
+# METHODE GEOMETRIQUE
+
 #  MAILLAGE 10X10
 SIF10=CREA_TABLE(LISTE=(_F(LISTE_R=(1.,1.,1.,1.,1.,1.,1.,1.,1.,1.),PARA='K1'),
                         _F(LISTE_R=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.),PARA='K2'),
@@ -58,9 +58,9 @@ MeshSEB=LIRE_MAILLAGE(INFO=1,FORMAT='MED', UNITE=20,);
 #----------------------------------------------
 
 ModSEB=AFFE_MODELE(MAILLAGE=MeshSEB,
-                   AFFE=(_F(   GROUP_MA='Vol',
-                               PHENOMENE='MECANIQUE',
-                               MODELISATION='3D',),),);
+                   AFFE=(_F(GROUP_MA='Vol',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),),);
 
 #----------------------------------------------
 #                   MATERIAU
@@ -72,8 +72,7 @@ Alu=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
 
 ChAlu=AFFE_MATERIAU(MAILLAGE=MeshSEB,
                        MODELE=ModSEB,
-                       AFFE=_F(
-                                GROUP_MA='Vol',
+                       AFFE=_F(TOUT = 'OUI',
                                 MATER=Alu,
                                 ),
                              );
@@ -93,7 +92,7 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MeshSEB,
                                   PFON=(30.,4.,5.),
                                   NORMALE=(0.,0.,1.),
                                   DTAN=(0.,1.,0.),
-                       ),);
+                       ),);  
 
 #----------------------------------------------
 #                  PROPAGATION
@@ -134,6 +133,7 @@ LSTH = [None]*nbcalc
 
 FiH = [None]*infit
 MeH = [None]*infit
+MoH = [None]*infit
 LSNHT = [None]*infit
 LSTHT = [None]*infit
 LSTGR=[None]*infit
@@ -175,6 +175,9 @@ CHERR[0] = RAFF_XFEM(FISSURE=FISS[0])
 
 for i in range(nbcalc) :
 
+
+#   CHERR[0] = RAFF_XFEM(FISSURE=FISS[i])
+#   MoH[0] = Mod[i]
    LSNHT[0] = LSN[i]
    LSTHT[0] = LST[i]
 
@@ -258,7 +261,8 @@ for i in range(nbcalc) :
 
    MatRaf=AFFE_MATERIAU(MAILLAGE=MeshH[i],
                         MODELE=ModH[i],
-                        AFFE=_F(GROUP_MA='Vol',
+                        AFFE=_F(
+                                GROUP_MA='Vol',
                                 MATER=Alu,),);
 
    MODX[i]=MODI_MODELE_XFEM(MODELE_IN=ModH[i],FISSURE=FISSH[i],INFO=1,);
@@ -279,7 +283,7 @@ for i in range(nbcalc) :
                             NB_POINT_FOND=(10,10,10,10),
                             TABLE=SIF40,
                            ),
-                 METHODE_PROPA='SIMPLEXE',
+                 METHODE_PROPA='SIMPLEXE',                 
                  DA_MAX=da,
                  ZONE_MAJ='TOUT',
                  LOI_PROPA=_F(LOI='PARIS',
@@ -300,7 +304,7 @@ for i in range(nbcalc) :
                             NB_POINT_FOND=10,
                             TABLE=SIF10,
                            ),
-                 METHODE_PROPA='SIMPLEXE',
+                 METHODE_PROPA='SIMPLEXE',              
                  DA_MAX=da,
                  ZONE_MAJ='TOUT',
                  LOI_PROPA=_F(LOI='PARIS',
@@ -321,7 +325,8 @@ for i in range(nbcalc) :
                         OPERATION='EXTR',
                         FISSURE=FISS[i+1],
                         NOM_CHAM='LTNO',);
-
+                        
+                                     
       CHERR[0] = RAFF_XFEM(FISSURE=FISS[i+1])
       DETRUIRE(CONCEPT=_F(NOM=MODX[i],))
       DETRUIRE(CONCEPT=_F(NOM=ModH[i],))
@@ -348,7 +353,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC=16.0000286486,
+           VALE_CALC=16.0000000006, 
            VALE_REFE=16.0,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',
@@ -372,10 +377,11 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC=27.9999841746,
+           VALE_CALC=28.0000027707,
            VALE_REFE=28.0,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MAX',
            TABLE=TB_FOND2,)
 
 FIN();
+

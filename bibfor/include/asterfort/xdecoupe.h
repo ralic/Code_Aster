@@ -16,8 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xprcfl(ligrel, lcmin)
-        character(len=19) :: ligrel
-        real(kind=8) :: lcmin
-    end subroutine xprcfl
+
+   subroutine xdecoupe(elp, cnset, nse, nnose)
+     integer          :: cnset(:)
+     integer          :: nse
+     integer          :: nnose
+     character(len=8) :: elp    
+                  
+   end subroutine
+   
 end interface

@@ -35,7 +35,6 @@ subroutine op0010()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/r8prem.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
@@ -76,21 +75,19 @@ subroutine op0010()
 #include "asterfort/xprls.h"
 #include "asterfort/xprmil.h"
 #include "asterfort/xprpls.h"
-#include "asterfort/xprrei.h"
-#include "asterfort/xprreo.h"
 #include "asterfort/xprtor.h"
-#include "asterfort/xprupw.h"
+#include "asterfort/xprfastmarching.h"
 #include "asterfort/xprupw_fmm.h"
 #include "asterfort/xprvit.h"
     integer :: ifm, niv, ibid, ndim, iret, jcaraf, clsm, jma, jconx1, jconx2, nbma, i , ima
     integer :: j, nbrinit
     integer :: iadrma
-    real(kind=8) :: lcmin, deltat
+    real(kind=8) :: lcmin
     character(len=8) :: k8bid, noma, nomo, fiss, fispre, method, fisini, ncrack
     character(len=8) :: ma_grill_pre
     character(len=16) :: k16bid, typdis, operation
     character(len=19) :: cnsvt, cnsvn, grlt, grln, cnslt, cnsln, cnsen, cnsenr
-    character(len=19) :: noesom, isozro, noresi, cnxinv, cnsbl, cnsdis, cnslj
+    character(len=19) :: noesom, isozro, cnxinv, cnsbl, cnsdis, cnslj
     character(len=19) :: vpoint, delta, mai
     character(len=24) :: lismae, lisnoe, vcn, grlr, vcnt, grlrt
     real(kind=8) :: meserr(3)
@@ -174,7 +171,6 @@ subroutine op0010()
 !
     call getvid(' ', 'MODELE', scal=nomo, nbret=ibid)
 !
-!    
 !     SEARCH FOR THE CRACK THAT MUST BE PROPAGATED
     if(operation.ne.'PROPA_COHESIF') then
         call dismoi('NB_FISS_XFEM', nomo, 'MODELE', repi=nfiss)
@@ -224,6 +220,12 @@ subroutine op0010()
             call utmess('A', 'XFEM_69')
         endif
     endif
+    
+!   CHECK IF THE AUXILIARY GRID USED WHITH THE SIMPLEXE METHODE
+    if (method .eq. 'SIMPLEXE' .and. grille) then
+        call utmess('F', 'XFEM_27')
+    endif     
+    
 !
 !     CHECK IF THE LOCALIZATION OF THE DOMAIN SHOULD BE ACTIVATED
     locdom=.false.
@@ -309,7 +311,7 @@ subroutine op0010()
             call utmess('F', 'XFEM2_87')
         endif
     endif
-!    
+!
 !     RECUPERATION DES VITESSES DE PROPAGATION, DES ANGLES
 !     DE BIFURCATION ET DE L'AVANCEE MAXIMALE DE LA FISSURE
 !     A PROPAGER
@@ -344,7 +346,7 @@ subroutine op0010()
     call cnocns(fispre//'.LTNO', 'V', cnslt)
     call cnocns(fispre//'.LNNO', 'V', cnsln)
     call cnocns(fispre//'.GRLTNO', 'V', grlt)
-    call cnocns(fispre//'.GRLNNO', 'V', grln)   
+    call cnocns(fispre//'.GRLNNO', 'V', grln)
 !
 ! --- DUPLICATION DES GROUP_MA_ENRI ET GROUP_NO_ENRI
 !
@@ -515,12 +517,11 @@ subroutine op0010()
 !
     ligr_dnoma='&&OP0010.LIGDMA'
     call x_tmp_ligr(dnoma, ligr_dnoma)
-!
+
 !-----------------------------------------------------------------------
-!     INITIALISE THE SIMPLEXE OR THE UPWIND SCHEME
+!     INITIALISE UPWIND FAST MARCHING
 !-----------------------------------------------------------------------
     noesom = '&&OP0010.NOESOM'
-    noresi = '&&OP0010.NORESI'
 
     if (.not.grille) then
         vcn = '&&OP0010.VCN'
@@ -537,16 +538,8 @@ subroutine op0010()
         lcmin=zr(ibid)
     endif
 !
-!     FISPRE AND FISS ARE NOT USED BY THE UPWIND SCHEMA. HOWEVER THEY
-!     ARE PASSED TO THE SUBROUTINE IN ORDER TO USE THE SAME SUBROUTINE
-!     FOR THE SIMPLEXE AND UPWIND SCHEMA.
-!
-  
-    call xprini(ligr_dnoma, dnoma, dcnxin, grille, fispre,&
-                fiss, dcnsln, dcnslt, dgrlt, noesom,&
-                noresi, vcn, grlr, lcmin)                  
-                
-!
+    call xprini(dnoma, dcnxin, grille, noesom, vcn, grlr, lcmin, ndim)
+    
 !-----------------------------------------------------------------------
 !     CALCUL DES POINTS DU FOND DE FISSURE SUR LA GRILLE
 !     DANS LE CADRE DE L'UTILISATION D'UN FOND VIRTUEL
@@ -562,12 +555,9 @@ subroutine op0010()
         cnsljg = '&&OP0010.CNSLJG'
         cnseg='&&OP0010.CNSEG'
         cnseng='&&OP0010.CNSENG'
-        
-
-
         call xenrch(dnoma, dcnslt, dcnsln, cnsljg,&
                     cnseg, cnseng, ndim, fispre, goinop,&
-                    lismag, lisnog)          
+                    lismag, lisnog)
 !
         call jedetr(cnsljg)
         call jedetr(cnseg)
@@ -578,7 +568,7 @@ subroutine op0010()
 !     CALCUL DES CHAM_NO_S DES VITESSES DE PROPAGATION
 !-----------------------------------------------------------------------
 !
-! si locfom = false, on iniatilise la valeur de radtor à 0
+!   Si locfom = false, initialisation de radtor à 0
     radtor =  0.d0
 !
     if (locdom) then
@@ -603,8 +593,6 @@ subroutine op0010()
     cnsdis='&&OP0010.CNSDIS'
     delta='&&OP0010.DELTA'
 !
-    deltat = lcmin*0.45d0
-
     if ((method.eq.'GEOMETRI') .and. (operation.ne.'PROPA_COHESIF')) then
          call pre_traitement(dnoma, fispre, ndim, vbeta, vgamma)
 !         
@@ -669,13 +657,12 @@ subroutine op0010()
     nodtor='&&OP0010.NODTOR'
     eletor='&&OP0010.ELETOR'
     liggrd='&&OP0010.LIGGRD'
-!            
+!
     call xprtor(method, dnoma, dcnxin, fispre,&
                 fiss, vcn, grlr, dcnsln, dgrln,&
                 dcnslt, dgrlt, locdom, radtor, radimp,&
                 cnsdis, disfr, cnsbl, nodtor, eletor,&
-                liggrd, vcnt, grlrt)         
-                  
+                liggrd, vcnt, grlrt)
 !
 !     CHECK IF THE RADIUS OF THE TORUS IS GREATER THAN THE CRITICAL
 !     VALUE
@@ -774,8 +761,6 @@ subroutine op0010()
     if (method .eq. 'GEOMETRI') then
         write(ifm,*)'   '
         write(ifm,*)'   UTILISATION DE LA METHODE GEOMETRIQUE.'
-        
-
         call xprgeo(dnoma, dcnsln, dcnslt, dgrln, dgrlt,&
                     vpoint, cnsbl, dttot, nodtor, liggrd,&
                     cnsbet, listp, operation)
@@ -801,53 +786,22 @@ subroutine op0010()
     endif
 !
     isozro = '&&OP0010.ISOZRO'
-!
-    if (method .eq. 'SIMPLEXE') then
-        call xprrei(dnoma, fiss, fispre, noesom, noresi,&
-                    dcnsln, dcnslt, dgrln, deltat, lcmin,&
-                    'LN', isozro, dcnxin, nodtor, eletor,&
-                    liggrd)
-    endif
-!
-! "ELSE" AVOIDED IN ORDER TO LEAVE ROOM FOR A FUTURE METHOD
-    if (method .eq. 'UPWIND') then
-        call xprupw('REINITLN', dnoma, fispre, vcnt, grlrt,&
-                    noesom, lcmin, dcnsln, dgrln, dcnslt,&
-                    dgrlt, deltat, noresi, isozro, nodtor,&
-                    eletor, liggrd)
-    endif
-!
-    if (method.eq.'UPW_FMM') then
+
+    if (method.eq.'UPWIND') then
             nbrinit = 1
             call xprupw_fmm('REINITLN', dnoma, fispre, vcnt, grlrt,&
                              noesom, lcmin, dcnsln, dgrln, dcnslt, &
                              dgrlt, isozro, nodtor, eletor, liggrd,&
                              vpoint ,cnsbl ,dttot ,cnsbet ,listp,nbrinit)
     endif
-
-!-----------------------------------------------------------------------
-!     REORTHOGONALISATION DE LST
-!-----------------------------------------------------------------------
-    if (niv .ge. 0) then
-        write(ifm,*)
-        write(ifm,*)'OP0010-6) REORTHOGONALISATION DE LST'
-        write(ifm,906)
-    endif
-!
+    
     if (method .eq. 'SIMPLEXE') then
-        call xprreo(dnoma, fiss, noesom, noresi, dcnsln,&
-                    dcnslt, dgrln, dgrlt, deltat, isozro,&
-                    dcnxin, nodtor, eletor, liggrd)
-    endif
-!
-! "ELSE" AVOIDED IN ORDER TO LEAVE ROOM FOR A FUTURE METHOD
-    if (method .eq. 'UPWIND') then
-        call xprupw('REORTHOG', dnoma, fispre, vcnt, grlrt,&
-                    noesom, lcmin, dcnsln, dgrln, dcnslt,&
-                    dgrlt, deltat, noresi, isozro, nodtor,&
-                    eletor, liggrd)
-    endif
-!
+        call xprfastmarching('REINITLN', dnoma, fispre, cnxinv, &
+                              noesom, lcmin, dcnsln, dgrln, dcnslt, &
+                              dgrlt, isozro, nodtor, eletor, liggrd,&
+                              vpoint ,cnsbl ,dttot ,cnsbet ,listp)
+     endif    
+    
     call jedetr(isozro)
 !
 !-----------------------------------------------------------------------
@@ -859,25 +813,9 @@ subroutine op0010()
         write(ifm,*)'OP0010-7) REINITIALISATION DE LST'
         write(ifm,907)
     endif
-!
-    if (method .eq. 'SIMPLEXE') then
-        call xprrei(dnoma, fiss, fispre, noesom, noresi,&
-                    dcnsln, dcnslt, dgrlt, deltat, lcmin,&
-                    'LT', isozro, dcnxin, nodtor, eletor,&
-                    liggrd)
-    endif
-!
-! "ELSE" AVOIDED IN ORDER TO LEAVE ROOM FOR A FUTURE METHOD
-    if (method .eq. 'UPWIND') then
-        call xprupw('REINITLT', dnoma, fispre, vcnt, grlrt,&
-                    noesom, lcmin, dcnsln, dgrln, dcnslt,&
-                    dgrlt, deltat, noresi, isozro, nodtor,&
-                    eletor, liggrd)
-    endif
-!
-    call jedetr(isozro)
-! on réinitialise deux fois pour redresser l'iso zéro
-    if (method.eq.'UPW_FMM') then
+
+!   On réinitialise deux fois pour redresser l'iso zéro
+    if (method.eq.'UPWIND') then
         do nbrinit = 1 , 2
            call xprupw_fmm('REINITLT', dnoma, fispre, vcnt, grlrt,&
                            noesom, lcmin, dcnsln, dgrln, dcnslt, &
@@ -885,6 +823,14 @@ subroutine op0010()
                            vpoint ,cnsbl ,dttot ,cnsbet ,listp,nbrinit)
            call jedetr(isozro)
         enddo
+    endif
+    
+    if (method .eq. 'SIMPLEXE') then    
+        call xprfastmarching('REINITLT', dnoma, fispre, cnxinv, &
+                             noesom, lcmin, dcnsln, dgrln, dcnslt, &
+                             dgrlt, isozro, nodtor, eletor, liggrd,&
+                             vpoint ,cnsbl ,dttot ,cnsbet ,listp)
+        call jedetr(isozro)                             
     endif
 
 !------------------------------------------------------------------!
@@ -894,7 +840,7 @@ subroutine op0010()
     call jedetr(vvit)
     call jedetr(vbeta)
     call jedetr(noesom)
-    if (method(1:6) .eq. 'UPWIND' .or. method(1:7) .eq. 'UPW_FMM') then
+    if ( method .eq. 'UPWIND') then
         if (.not.grille) then
             call jedetr(vcn)
             call jedetr(grlr)
@@ -938,6 +884,7 @@ subroutine op0010()
         call xprpls(ligr_noma, dnoma, dcnsln, dcnslt, noma,&
                     cnsln, cnslt, grln, grlt, corres,&
                     ndim, ndomp, edomg)
+!
 !       STORE THE LIST OF THE NODES OF THE STRUCTURAL MESH WHERE THE
 !       PROJECTION HAS BEEN CARRIED OUT
         call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=j)
@@ -975,16 +922,13 @@ subroutine op0010()
     if (niv .ge. 0) then
         write(ifm,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',&
         clsm
-        print*, 'coucou1'
     endif
-    
 !
 !-----------------------------------------------------------------------
 !     EXTENSION DES LEVEL SETS AUX NOEUDS MILIEUX
 !-----------------------------------------------------------------------
 !
     call xprmil(noma, cnslt, cnsln)
-    print*, 'coucou2'
 !
 !     IF THE DOMAINE LOCALISATION HAS BEEN USED ON THE PHYSICAL MODEL,
 !     THE VALUES OF THE LEVEL SET GRADIENTS OUTSIDE THE DOMAINE MUST
@@ -1035,7 +979,6 @@ subroutine op0010()
 !
         call jedetr(grltc)
         call jedetr(grlnc)
-        print*, 'coucou3'
 !
     endif
 !
@@ -1047,14 +990,12 @@ subroutine op0010()
                 'F', ibid)
     call cnscno(grln, ' ', 'NON', 'G', fiss//'.GRLNNO',&
                 'F', ibid)
-    print*, 'coucou4'
 !
 !     IF THE DOMAIN LOCALISATION HAS NOT BEEN USED, THE BOOLEAN LIST
 !     OF THE NODES IN THE TORE MUST BE DESTROYED
     if (.not.locdom) then
         call jedetr(fiss//'.PRO.NOEUD_TORE')
     endif
-    print*, 'coucou5'
 !
 !     IF THE DOMAIN LOCALISATION HAS BEEN USED, THE RADIUS OF THE TORUS
 !     USED IN THE LOCALISATION MUST BE STORED
@@ -1063,7 +1004,6 @@ subroutine op0010()
 !        VALUE OF THE RADIUS USED IN THE ACTUAL PROPAGATION
         zr(ibid) = radtor
     endif
-    print*, 'coucou6'
 !
     call jedetr(delta)
 !----------------------------------------------------------------------+
@@ -1077,12 +1017,11 @@ subroutine op0010()
 !-----------------------------------------------------------------------
 !     CALCUL DE L'ENRICHISSEMENT ET DES POINTS DU FOND DE FISSURE
 !-----------------------------------------------------------------------
-
-    print*, 'coucou6'
+!
     cnslj = '&&OP0010.CNSLJ'
     cnsen='&&OP0010.CNSEN'
     cnsenr='&&OP0010.CNSENR'
-    goinop=.false.     
+    goinop=.false.
     call xenrch(noma, cnslt, cnsln, cnslj,&
                 cnsen, cnsenr, ndim, fiss, goinop,&
                 lismae, lisnoe, operation_opt=operation)
@@ -1130,7 +1069,6 @@ subroutine op0010()
     903 format (10x,35('-'))
     904 format (10x,26('-'))
     905 format (10x,23('-'))
-    906 format (10x,26('-'))
     907 format (10x,23('-'))
     908 format (10x,33('-'))
 !

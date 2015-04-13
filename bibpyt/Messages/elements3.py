@@ -69,17 +69,6 @@ cata_msg = {
  Seuls sont admis les matériaux  'THER' et 'THER_COQUE' pour le calcul des flux pour les coques thermiques
 """),
 
-    19 : _(u"""
- L'option  %(k1)s  n'est disponible qu'avec des éléments TETRA ou HEXA en 3D et
- des éléments TRIA ou QUAD en 2D.
- Or, la maille  %(k2)s  est de type  %(k3)s .
-"""),
-
-    20 : _(u"""
- La maille  %(k1)s  ne répond pas au critère géométrique sur les mailles HEXA :
- Les cotés opposés doivent être parallèles
-"""),
-
     26 : _(u"""
  Mauvaise définition des caractéristiques de la section
 """),

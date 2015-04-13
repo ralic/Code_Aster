@@ -16,15 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-subroutine xcalculfmm(nbno, jvtemp, jcalculs, jcopiels, jnodto, jzero, ndim, &
-                      nodvois, jltno, jvcn, jgrlr, jbl, jbeta, jlistp , jvp, jcoor, &
+subroutine xcalculfmm(nbno, jcalculs, jcopiels, jnodto, ndim, nodvois, &
+                      jltno, jvcn, jgrlr, jbl, jbeta, jlistp , jvp, vale, &
                       deltat, levset, signls)
         integer           :: nbno                     
-        integer           :: jvtemp
         integer           :: jcalculs
         integer           :: jcopiels
         integer           :: jnodto
-        integer           :: jzero 
         integer           :: ndim
         integer           :: nodvois 
         integer           :: jltno
@@ -34,7 +32,7 @@ subroutine xcalculfmm(nbno, jvtemp, jcalculs, jcopiels, jnodto, jzero, ndim, &
         integer           :: jbeta
         integer           :: jlistp
         integer           :: jvp
-        integer           :: jcoor                                        
+        real(kind=8)      :: vale(:)                                       
         real(kind=8)      :: deltat
         character(len=2)  :: levset
         character(len=3)  :: signls 

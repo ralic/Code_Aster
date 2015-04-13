@@ -12,7 +12,7 @@ subroutine xproj(p, a, b, c, m,&
     aster_logical :: in
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,8 @@ subroutine xproj(p, a, b, c, m,&
 !
 !     ------------------------------------------------------------------
 !
+    real(kind=8), parameter :: rtol=1.d-12
+!
     integer :: i
     real(kind=8) :: ab(3), bc(3), ac(3), ap(3), norme, vnt(3), ps, ps1, ps2
 !
@@ -60,12 +62,12 @@ subroutine xproj(p, a, b, c, m,&
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    do 100 i = 1, 3
+    do i = 1, 3
         ab(i)=b(i)-a(i)
         bc(i)=c(i)-b(i)
         ac(i)=c(i)-a(i)
         ap(i)=p(i)-a(i)
-100 end do
+    end do
 !
 !  CALCUL DE LA NORMALE A L'ISOZERO
 !  PROJECTION DE P SUR LE TRIANGLE VOIR R5.03.50-B
@@ -73,19 +75,24 @@ subroutine xproj(p, a, b, c, m,&
     call normev(vn, norme)
     call provec(ap, vn, vnt)
     ps=ddot(3,vnt,1,ac,1)
-    eps(1)=-1*ps/norme
+    eps(1)=-ps/norme
     ps=ddot(3,vnt,1,ab,1)
     eps(2)=ps/norme
-    eps(3)=1-eps(1)-eps(2)
+    eps(3)=1.d0-eps(1)-eps(2)
+!
+!  reajustement des composantes de eps quasi-nulles
+   if (abs(eps(1)).lt.rtol) eps(1)=0.d0
+   if (abs(eps(2)).lt.rtol) eps(2)=0.d0
+   if (abs(eps(3)).lt.rtol) eps(3)=0.d0
 !
 !  ON REPERE AVANT RECTIFICATION SI LA PROJECTION EST DANS LE TRIANGLE
     in = .false.
     if (eps(1) .ge. 0.d0 .and. eps(2) .ge. 0.d0 .and. eps(3) .ge. 0.d0) in = .true.
 !
 !  CALCULATE THE COORDINATES OF THE PROJECTED POINT
-    do 150 i = 1, 3
+    do i = 1, 3
         mp(i)=a(i)+eps(1)*ab(i)+eps(2)*ac(i)
-150 end do
+    end do
 !
 !  SI M EST DS LE SECTEUR 1
     if (eps(1) .lt. 0.d0) then
@@ -116,11 +123,11 @@ subroutine xproj(p, a, b, c, m,&
     if (eps(1) .gt. 1.d0) eps(1)=1.d0
     if (eps(2) .gt. 1.d0) eps(2)=1.d0
 !
-    eps(3) = 1-eps(1)-eps(2)
+    eps(3) = 1.d0-eps(1)-eps(2)
 !
-    do 200 i = 1, 3
+    do i = 1, 3
         m(i)=a(i)+eps(1)*ab(i)+eps(2)*ac(i)
-200 end do
+    end do
 !
 !  CALCUL DE LA DISTANCE PM
     d=padist(3,p,m)

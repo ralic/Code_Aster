@@ -1,4 +1,4 @@
-P time_limit 90
+P time_limit 60
 P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
@@ -7,3 +7,4 @@ P testlist verification sequential
 
 F comm sslv316e.comm D 1
 F mmed sslv315a.mmed D 20
+F libr sslv316b.41 D 41

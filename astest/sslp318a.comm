@@ -50,14 +50,6 @@ champma=AFFE_MATERIAU(MAILLAGE=MaiPlate,
                               MATER=steel,),);
 
 #***********************************
-# DISCRETISATION EN TEMPS
-#***********************************
-
-TimeStep=DEFI_LIST_REEL(DEBUT=0,
-                        INTERVALLE=_F(JUSQU_A=1,
-                                      NOMBRE=1,),);
-
-#***********************************
 # DEFINITION DE LA FISSURE
 #***********************************
 
@@ -92,7 +84,6 @@ FOND2=FORMULE(NOM_PARA='NUME_ORDRE',
 # PROPAGATION DE LA FISSURE
 #****************************
 
-
 force = [None]*NPS
 vinc = [None]*NPS
 ModX = [None]*NPS
@@ -123,7 +114,6 @@ for i in range(1,NPS-1) :
     force[i]=AFFE_CHAR_MECA(MODELE=ModX[i],
                             PRES_REP=_F(GROUP_MA='force',
                                         PRES=-1E6,),);
-
 
 
     ResX[i]=MECA_STATIQUE(MODELE=ModX[i],
@@ -202,7 +192,7 @@ TOL_K2=0.01*KI_broek
 TEST_TABLE(TABLE=SIF_1,
            NOM_PARA='K1',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(2.2914396426887E7, ),
+           VALE_CALC=(22914396.4269, ),
            TYPE_TEST='MAX',
            VALE_REFE=KI_broek,
            PRECISION=0.05,
@@ -226,9 +216,9 @@ TEST_TABLE(TABLE=SIF_1,
            NOM_PARA='K2',
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=(7488.1641027818, ),
+           VALE_CALC=(7488.16410372, ),
            TYPE_TEST='MAX',
-           VALE_REFE=(7488.1641027818, ),)
+           VALE_REFE=(7488.16410372, ),)
 #==================================
 #Propa 2
 #==================================
@@ -241,7 +231,7 @@ TOL_K2=0.01*KI_broek
 TEST_TABLE(TABLE=SIF_2,
            NOM_PARA='K1',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(2.5803536128667E+07, ),
+           VALE_CALC=(25803533.9607, ),
            TYPE_TEST='MAX',
            VALE_REFE=KI_broek,
            PRECISION=0.05,
@@ -265,9 +255,9 @@ TEST_TABLE(TABLE=SIF_2,
            NOM_PARA='K2',
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=(10356.8683518, ),
+           VALE_CALC=(4028.3252732, ),
            TYPE_TEST='MAX',
-           VALE_REFE=(10356.8683518,),)
+           VALE_REFE=(4028.3252732,),)
 #==================================
 #Propa 3
 #==================================
@@ -280,7 +270,7 @@ TOL_K2=0.01*KI_broek
 TEST_TABLE(TABLE=SIF_3,
            NOM_PARA='K1',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(2.8809299070586E+07,),
+           VALE_CALC=(28809289.8662,),
            TYPE_TEST='MAX',
            VALE_REFE=KI_broek,
            PRECISION=0.05,
@@ -304,9 +294,9 @@ TEST_TABLE(TABLE=SIF_3,
            NOM_PARA='K2',
            CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
-           VALE_CALC=(13550.3208518, ),
+           VALE_CALC=(20639.8846506, ),
            TYPE_TEST='MAX',
-           VALE_REFE=(13550.3208518,),)
+           VALE_REFE=(20639.8846506,),)
 #----------------------------------------------
 #         EDITION DE FICHIERS MED
 #----------------------------------------------

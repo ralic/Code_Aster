@@ -15,8 +15,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# person_in_charge: samuel.geniaut at edf.fr
-# MODELISATION B : METHODE SIMPLEXE
+# person_in_charge: daniele.colombo at ifpen.fr
+
+# MODELISATION F: METHODE FASTMARCHING
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
               DEBUG=_F(SDVERI='OUI'),
@@ -27,7 +28,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 #                 MAILLAGE
 #----------------------------------------------
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',);
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED');
+
+#MAILLAG2=LIRE_MAILLAGE(UNITE=21, FORMAT='MED');
 
 #Largeur de la plaque
 W = 10.
@@ -52,22 +55,22 @@ yinit = 15.
 # Chargement de traction
 PRES = -1.E6
 
-
 #----------------------------------------------
 #                   MODELE
 #----------------------------------------------
 
 MODEL = [None]*(NPAS+1)
-MODE = [None]*(NPAS+1)
-MOD = [None]*(NPAS+1)
-MOD[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
+
+
+MODEL[0]=AFFE_MODELE(MAILLAGE=MAILLAG1,
                       AFFE=(_F(GROUP_MA=('Surface',),
                                PHENOMENE='MECANIQUE',
                                MODELISATION='D_PLAN',),
-                            _F(GROUP_MA=('LIG2','LIG4',),
+                            _F(GROUP_MA=('LIG2','LIG4'),
                                PHENOMENE='MECANIQUE',
                                MODELISATION='D_PLAN',),),);
 
+#grille=DEFI_GRILLE(MAILLAGE=MAILLAG2);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -82,7 +85,7 @@ nu=0.
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu,),);
 
 CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
-                       MODELE=MOD[0],
+                       MODELE=MODEL[0],
                        AFFE=_F(TOUT = 'OUI',
                                 MATER=ACIER,
                                 ),
@@ -103,9 +106,8 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='X-X0');
 FISS = [None]*(NPAS+1)
 
 FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
+#                       MAILLAGE_GRILLE=grille,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-#                        TYPE_ENRI_FOND = 'GEOMETRIQUE',
-#                        RAYON_ENRI = 0.2,
                        );
 
 #----------------------------------------------
@@ -113,78 +115,81 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
 #----------------------------------------------
 afiss=[None]*(NPAS+1)
 faW = [None]*(NPAS+1)
-K1REF = [None]*(NPAS+1)
 CHXFE = [None]*(NPAS+1)
+K1REF = [None]*(NPAS+1)
 CHRIG = [None]*(NPAS+1)
 RESU = [None]*(NPAS+1)
 SIF = [None]*(NPAS+1)
 LSN = [None]*(NPAS+1)
 LST = [None]*(NPAS+1)
-TAB = [None]*(NPAS+1) 
+TAB = [None]*(NPAS+1)
 afiss[0]=xinit
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+    
+FOND1=FORMULE(NOM_PARA='NUME_ORDRE',
+                VALE='0*NUME_ORDRE+1',);
 
 VALE_CALC=[
- 4.1749113788366E+06,
--2.9454328338046E+02,
- 4.6025451489773E+06,
--3.2310277996169E+02,
- 5.0675326692381E+06,
--3.8371114003750E+02,
- 5.5759028915192E+06,
--4.5261093614732E+02,
- 6.1344931686212E+06,
--5.1254193799144E+02,
- 6.7512055221532E+06,
--5.6659888588323E+02,
- 7.4353027006797E+06,
--6.2369896604690E+02,
- 8.1977753525454E+06,
--6.8957952200643E+02,
- 9.0518104539414E+06,
--7.7164415779324E+02,
- 1.0013397225965E+07,
--8.8006270171795E+02,
- 1.1102125790241E+07,
--1.0279583406129E+03,
- 1.2342256435225E+07,
--1.2349723359670E+03,
- 1.3764178620281E+07,
--1.5245947388699E+03,
- 1.5406429731067E+07,
--1.9206360431408E+03,
- 1.7318530271450E+07,
--2.4530081053653E+03,
+         4174911.37884 , 
+         -294.543283365 , 
+         4602538.46391 ,
+         140.532994154 ,
+         5067526.07587 ,
+         -92.1854378146 ,
+         5575879.77053 ,
+         31.596688479  ,
+         6134453.31429 ,
+        -22.0812157066 ,
+         6751140.45223 ,
+         1.80902413832 ,
+         7435205.88086 ,
+        -14.6515381546 ,
+         8197636.56704 ,
+        -12.9342862152 ,
+         9051618.46432 ,
+        -21.8742530941 ,
+         10013136.948  ,
+        -27.5009584328 ,
+         11101777.9888 ,
+        -36.819345074  ,
+         12341796.2792 ,
+        -47.1435308564 ,
+         13763571.5389 ,
+        -60.5512425919 ,
+         15405621.7406 ,
+        -77.2532936849 , 
+         17317438.2217 ,
+        -98.7961543647 ,
  ]
 
 
 
 for i in range(1,NPAS+1) :
-
+    
     afiss[i]=xinit+i*DA
-                                                                                                                        
-    MODEL[i]=MODI_MODELE_XFEM(MODELE_IN=MOD[0],FISSURE=FISS[i-1],);
+   
+    MODEL[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL[0],FISSURE=FISS[i-1],);
 
     CHRIG[i]=AFFE_CHAR_MECA(MODELE=MODEL[i],
-                             DDL_IMPO=( _F(GROUP_NO='P1', DY=0.0,),_F(GROUP_NO=('P4',), DX=0.0, DY=0.0)),
-                             PRES_REP=_F(GROUP_MA=('LIG2','LIG4',),PRES=PRES,),
-                                           );    
- 
+                            DDL_IMPO=( _F(GROUP_NO='P1', DY=0.0,),_F(GROUP_NO=('P4',), DX=0.0, DY=0.0)),
+                            PRES_REP=_F(GROUP_MA=('LIG2','LIG4',),PRES=PRES,),
+                                          );
+    
     RESU[i]=MECA_STATIQUE(MODELE=MODEL[i],
                          CHAM_MATER=CHAMPMA1,
                          EXCIT=(
                                 _F(CHARGE=CHRIG[i],),),
+                         INST=1.0,
+                         SOLVEUR=_F(METHODE='MULT_FRONT',),
                          );
-
-    SIF[i]=CALC_G        (RESULTAT=RESU[i],
+    
+    SIF[i]=CALC_G(RESULTAT=RESU[i],
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i-1],),
                          );
-    
-    IMPR_TABLE(TABLE=SIF[i],
-                );
-
+                         
+    IMPR_TABLE(TABLE=SIF[i],);
+ 
 #Formule de KI (ref. Tada Irwin)                
     faW[0]=1.12-0.231*((afiss[0]/W))+10.55*((afiss[0]/W)**2)-21.72*((afiss[0]/W)**3)+30.35*((afiss[0]/W)**4)
     K1REF[0]=-PRES*sqrt(pi*afiss[0])*faW[0]
@@ -206,23 +211,16 @@ for i in range(1,NPAS+1) :
     # TEST DE REFERENCE SUR K2
     TEST_TABLE(CRITERE='ABSOLU',
                REFERENCE='AUTRE_ASTER',
-               PRECISION=(2*(10**(-3)))*K1REF[i-1],
-               VALE_CALC=0.,
+               PRECISION=(5*(10**(-3)))*K1REF[i-1],
+               VALE_CALC=0,
                VALE_REFE=0,
                NOM_PARA='K2',
                TYPE_TEST='MAX',
                TABLE=SIF[i],)
-    # TEST DE NON REGRESSION SUR K2
-    TEST_TABLE(VALE_CALC=VALE_CALC[(i-1)*2+1],
-               NOM_PARA='K2',
-               TYPE_TEST='MAX',
-               TABLE=SIF[i],)
-    IMPR_TABLE(TABLE=SIF[i],FORMAT_R='E20.13',NOM_PARA='K2');
 
-    FISS[i] = CO('FISS_%d'%(i))
-#Propagation de la fissure avec la methode simplexe  
+    FISS[i] = CO('FISS_%d'%(i))              
     if ( i != NPAS+1 ) :
-        PROPA_FISS(MODELE=MODEL[i],
+      PROPA_FISS(MODELE=MODEL[i],
                  FISSURE=_F(FISS_ACTUELLE=FISS[i-1],
                             FISS_PROPAGEE=FISS[i],
                             TABLE=SIF[i],),
@@ -236,7 +234,36 @@ for i in range(1,NPAS+1) :
                  COMP_LINE =_F(COEF_MULT_MINI=0.,
                                COEF_MULT_MAXI=1.,),
                  );
-                      
 
+#Test des coordonnees du fond de fissure y proche de yinit
+#en developpement
+
+#----------------------------------------------
+#         EDITION DE FICHIERS MED
+#----------------------------------------------
+#
+MAXFE = [None]*(NPAS+1)
+MOVIS = [None]*(NPAS+1)
+DEPL = [None]*(NPAS+1)
+
+
+for i in range(1,NPAS+1) :
+   MAXFE[i]=POST_MAIL_XFEM(MODELE=MODEL[i]);
+
+   MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
+                         AFFE=_F(TOUT='OUI',
+                                 PHENOMENE='MECANIQUE',
+                                 MODELISATION='D_PLAN',),) 
+
+   DEPL[i]=POST_CHAM_XFEM(
+                          MODELE_VISU   = MOVIS[i],
+                          RESULTAT=RESU[i],
+                          );
+
+#   DEFI_FICHIER(UNITE=30+i,);
+#   IMPR_RESU(
+#             FORMAT='MED',
+#             UNITE=30+i,
+#             RESU=_F(RESULTAT=DEPL[i],),);
              
 FIN();

@@ -16,22 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xprreo(noma, fiss, noesom, noresi, cnsln,&
-                      cnslt, cnsgln, cnsglt, deltat, isozro,&
-                      cnxinv, nodtor, eletor, liggrd)
-        character(len=8) :: noma
-        character(len=8) :: fiss
-        character(len=19) :: noesom
-        character(len=19) :: noresi
-        character(len=19) :: cnsln
-        character(len=19) :: cnslt
-        character(len=19) :: cnsgln
-        character(len=19) :: cnsglt
-        real(kind=8) :: deltat
-        character(len=19) :: isozro
-        character(len=19) :: cnxinv
-        character(len=19) :: nodtor
-        character(len=19) :: eletor
-        character(len=19) :: liggrd
-    end subroutine xprreo
+
+    subroutine xsolveurtria(coor_nod, x, y, z, D, indmax, solution )
+    
+        integer                           ::  indmax    
+        real(kind=8),dimension(3,3)       ::  coor_nod
+        real(kind=8)                      ::  D(:)
+        real(kind=8)                      ::  x(:)
+        real(kind=8)                      ::  y(:)
+        real(kind=8)                      ::  z(:)
+        real(kind=8)                      ::  solution                                
+   end subroutine
+   
 end interface

@@ -40,11 +40,11 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",
                  UIinfo={"groupes":("Post-traitements","Rupture",)},
 
         METHODE_PROPA = SIMP(statut='o',typ='TXM',
-                               into=("SIMPLEXE","UPWIND","MAILLAGE","INITIALISATION","GEOMETRIQUE","UPW_FMM") ),
+                               into=("SIMPLEXE","MAILLAGE","INITIALISATION","GEOMETRIQUE","UPWIND") ),
 
         OPERATION = SIMP(statut='f',typ='TXM', into=("RIEN","DETECT_COHESIF","PROPA_COHESIF"), defaut="RIEN" ),
 
-        b_hamilton = BLOC(condition="(METHODE_PROPA=='SIMPLEXE') or (METHODE_PROPA=='UPWIND') or (METHODE_PROPA=='UPW_FMM') or (METHODE_PROPA=='GEOMETRIQUE' and OPERATION=='RIEN') ",
+        b_hamilton = BLOC(condition="(METHODE_PROPA=='SIMPLEXE') or (METHODE_PROPA=='UPWIND') or (METHODE_PROPA=='GEOMETRIQUE' and OPERATION=='RIEN') ",
               MODELE        = SIMP(statut='o',typ=modele_sdaster),
               TEST_MAIL     = SIMP(statut='f',typ='TXM',into=("NON","OUI",),defaut="NON"),
               DA_MAX        = SIMP(statut='o',typ='R',max=1,val_min=0.0),

@@ -1,6 +1,5 @@
 subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
-                  cnslt, isozro, levset, nodtor, eletor,&
-                  poifi, trifi)
+                  cnslt, isozro, levset, nodtor, eletor)
 !
 ! aslint: disable=W1501
     implicit none
@@ -32,8 +31,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
     character(len=2) :: levset
     character(len=8) :: noma, fispre
-    character(len=19) :: cnsln, cnslt, isozro, noesom, nodtor, eletor, poifi
-    character(len=19) :: trifi
+    character(len=19) :: cnsln, cnslt, isozro, noesom, nodtor, eletor
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,14 +70,6 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !                    ='LT' SI ON REINITIALISE LT
 !        NODTOR  :   LISTE DES NOEUDS DEFINISSANT LE DOMAINE DE CALCUL
 !        ELETOR  :   LISTE DES ELEMENTS DEFINISSANT LE DOMAINE DE CALCUL
-!        POIFI   :   POUR LA METHODE UPWIND: NOM DE L'OBJET JEVEUX OU
-!                    LES POINTS DEFINISSANTS LA SURFACE LSN=0 DOIVENT
-!                    ETRE STOCKES
-!                    POUR LES AUTRES METHODES: ' '
-!        TRIFI   :   POUR LA METHODE UPWIND: NOM DE L'OBJET JEVEUX OU
-!                    LES POINTS D'INTERSECTION ENTRE CHAQUE ELEMENT ET
-!                    LSN=0 SONT STOCKES
-!                    POUR LES AUTRES METHODES: ' '
 !    SORTIE
 !        CNSLN   :   CHAM_NO_S LEVEL SET NORMALE
 !                    (CALCULEE SEULEMENT SI LEVSET = 'LN')
@@ -112,7 +102,7 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
 !
 !     UPWIND INTEGRATION
     integer :: jtri, nbpfis, pos
-    aster_logical :: intabl, upwind
+    aster_logical :: intabl
 !
 !  TRIANGLES ABC QUE L'ON PEUT FORMER A PARTIR DE N POINTS (N=3 A 6)
     integer :: iatri(20), ibtri(20), ictri(20)
@@ -201,18 +191,10 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     call jemarq()
     call infmaj()
     call infniv(ifm, niv)
-!
-    poifis = poifi
-    trifis = trifi
-!
-!     CHECK IF THE UPWIND SCHEME WILL BE USED
-    if ((poifis(1:1).ne.' ') .and. (trifis(1:1).ne.' ')) then
-        upwind = .true.
-    else
-        upwind = .false.
-        poifis = '&&XPRLS0.SPOI'
-        trifis = '&&XPRLS0.STRI'
-    endif
+
+!   CREATION DES OBJETS
+    poifis = '&&XPRLS0.SPOI'
+    trifis = '&&XPRLS0.STRI'
 !
 !     EVALUATION OF THE TOLERANCE USED TO ASSESS IF THE VALUE OF THE
 !     NORMAL LEVELSET IN ONE NODE IS ZERO OR NOT
@@ -897,14 +879,12 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
                     if (in) then
                         if (.not.dejain) then
                             bestdi = d
-                            if (levset .eq. 'LN') bestli = eps(1)*lstb + eps(2)*lstc + eps(3)*lst&
-                                                           &a
+                            if (levset .eq. 'LN') bestli = eps(1)*lstb + eps(2)*lstc + eps(3)*lsta
                             dejain=.true.
                         endif
                         if (d .lt. bestdi) then
                             bestdi = d
-                            if (levset .eq. 'LN') bestli = eps(1)*lstb + eps(2)*lstc + eps(3)*lst&
-                                                           &a
+                            if (levset .eq. 'LN') bestli = eps(1)*lstb + eps(2)*lstc + eps(3)*lsta
                         endif
                     endif
                 end do
@@ -988,11 +968,8 @@ subroutine xprls0(fispre, noma, noesom, armin, cnsln,&
     call jedetr(vnouls)
     call jedetr(vnoult)
     call jedetr(pproj)
-!
-    if (.not.upwind) then
-        call jedetr(poifis)
-        call jedetr(trifis)
-    endif
+    call jedetr(poifis)
+    call jedetr(trifis)
 !
 !-----------------------------------------------------------------------
 !     FIN

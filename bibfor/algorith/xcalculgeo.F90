@@ -1,5 +1,5 @@
-subroutine xcalculgeo(ndim, jcoor, jvp, jbl, deltat, jnodto, nbno, &
-                      jbeta, jlistp, node, newlst, newlsn)
+subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
+                      jlistp, node, newlst, newlsn)
     implicit none
 !
 #include "jeveux.h"
@@ -8,9 +8,10 @@ subroutine xcalculgeo(ndim, jcoor, jvp, jbl, deltat, jnodto, nbno, &
 #include "asterfort/cescns.h"
 #include "asterfort/cnscno.h"
 
-    integer             :: jcoor, jbl, jvp, jnodto, jbeta, jlistp
-    integer             :: node, ndim, nbno
+    integer             :: jbl, jvp, jbeta, jlistp
+    integer             :: node, ndim
     real(kind=8)        :: newlsn, newlst, deltat
+    real(kind=8)        :: vale(:)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +34,7 @@ subroutine xcalculgeo(ndim, jcoor, jvp, jbl, deltat, jnodto, nbno, &
 !
 !     ------------------------------------------------------------------
 !
-!   xcaclulgeo   : calcul géométrique des points problèmes
+!   xcaclulgeo   : calcul géométrique pour les points problematiques
 
 !    ENTREE
 !        NDIM    : DIMENSION DE L'ESPACE
@@ -63,8 +64,9 @@ subroutine xcalculgeo(ndim, jcoor, jvp, jbl, deltat, jnodto, nbno, &
 !
 !     ------------------------------------------------------------------
 
-    integer :: k, pos, pos1
-    real(kind=8) :: t1(3), n1(3), p1(3), deltaa, cbeta, sbeta
+    integer                      :: k, pos, pos1
+    real(kind=8),dimension(ndim) :: t1, n1, p1
+    real(kind=8)                 :: deltaa, cbeta, sbeta
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -93,8 +95,8 @@ subroutine xcalculgeo(ndim, jcoor, jvp, jbl, deltat, jnodto, nbno, &
 !        NEW CRACK TIP POSITION
         p1(k) = zr(jlistp-1+pos1+k)+deltaa*t1(k)
 !        NEW VALUES OF THE TWO LEVEL SETS
-        newlsn = newlsn+(zr(jcoor-1+pos1+k)-p1(k))*n1(k)
-        newlst = newlst+(zr(jcoor-1+pos1+k)-p1(k))*t1(k)
+        newlsn = newlsn+(vale(pos1+k)-p1(k))*n1(k)
+        newlst = newlst+(vale(pos1+k)-p1(k))*t1(k)
     end do
 
 end subroutine
