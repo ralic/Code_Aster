@@ -25,6 +25,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
 #include "asterfort/medith.h"
+#include "asterfort/load_neut_excl.h"
 #include "asterfort/ntdoth.h"
 #include "asterfort/nttain.h"
 #include "asterfort/nttcmv.h"
@@ -121,6 +122,10 @@ implicit none
 !
     call ntdoth(model, mate, cara_elem, list_load,&
                 matcst_ = matcst, coecst_ = coecst )
+!
+! - EVOL_CHAR is prohibden
+!
+    call load_neut_excl('THER_NON_LINE_MO', list_load_ = list_load)
 !
 ! - Save list of loads in results datastructure
 !
