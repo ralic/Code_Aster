@@ -1,4 +1,4 @@
-# TITRE TEST DE LA LOI DE HUJEUX SUR UN POINT MATERIEL
+# TITRE TEST DE LA LOI DE HUJEUX SUR UN POINT MATERIEL - CAS D'UN SABLE DENSE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,6 +156,9 @@ TABTND2  = CALC_TABLE(TABLE=TABTND,
                       ACTION= _F(OPERATION='OPER',NOM_PARA='TRSIG',FORMULE=FORMU1),)
 TABTNDC3 = CALC_TABLE(TABLE=TABTNDC1,
                       ACTION= _F(OPERATION='OPER',NOM_PARA='TRSIG',FORMULE=FORMU2),)
+
+# IMPR_TABLE(TABLE=TABTNDC3,)
+
 
 # pour l'essai 'TD' -> valeurs de reference de ssnv197a ('TRACE' pour sigma et epsilon)
 
@@ -453,27 +456,27 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.02,
-           VALE_CALC=-52899.815825867,
+           VALE_CALC=-53331.6200633,
            VALE_REFE=-52999,
            NOM_PARA='TRSIG',
            TABLE=TABTNDC3,
            FILTRE=_F(CRITERE='ABSOLU',
                      PRECISION=9.0E-05,
                      NOM_PARA='INST_1',
-                     VALE=70.0,),
+                     VALE=56.0,),
            )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.02,
-           VALE_CALC=-45561.45238617,
+           VALE_CALC=-45468.2892083,
            VALE_REFE=-4.5671900000000001E4,
            NOM_PARA='TRSIG',
            TABLE=TABTNDC3,
            FILTRE=_F(CRITERE='ABSOLU',
                      PRECISION=9.0E-05,
                      NOM_PARA='INST_1',
-                     VALE=90.0,),
+                     VALE=69.6,),
            )
 
 
@@ -679,7 +682,5 @@ TEST_TABLE(CRITERE='RELATIF',
                      NOM_PARA='INST_1',
                      VALE=30.0,),
            )
-
-
 
 FIN()

@@ -814,6 +814,7 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
             # Calcul
             # ---
             calc_ok = True
+            info_dbg= False
 
             try:
 # Contrainte SIGMA_1 imposee
@@ -898,9 +899,6 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
             # ========================================================
             inst  = TabRes['INST']
             
-            print
-            print ' * INST FINAL = %f' %(inst[-1])
-            
             q   =NP.array(TabRes['SIZZ']) - NP.array(TabRes['SIXX'])
             p   =(NP.array(TabRes['SIZZ'])+2*NP.array(TabRes['SIXX'])) /3.
             epzz=NP.array(TabRes['EPZZ'])
@@ -909,34 +907,27 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
             dqdp  =NP.abs( (q[1:]-q[:-1])/(p[1:]-p[:-1]) )
             
             interv=20
-            
-            print ' * Q  = %e' %(q[-1])
-            print ' * P  = %e' %(p[-1])
-            print ' * INST PEAK LIST =',inst_peak
-            
             indx_peak=[]
             
             for n,t in enumerate(inst_peak):
               if t<=inst[-1]:
                 indx_peak.append(inst.index(t))
 
-            print ' * INDEX PEAK LIST =',indx_peak
+            if info_dbg:
+              print
+              print ' * INST FINAL = %f' %(inst[-1])
+              print ' * Q  = %e' %(q[-1])
+              print ' * P  = %e' %(p[-1])
+              print ' * INST PEAK LIST =',inst_peak
+              print ' * INDEX PEAK LIST =',indx_peak
             
             indx_init,numcyc=-1,-1
             
             for k,n in enumerate(indx_peak):
-            
-              print
-              print ' * INDEX PEAK = %d' %(n)
-              print ' * P  = %e' %(p[n])
-              print ' * Q  = %e' %(q[n])
               
               n0=min(interv,len(depzzm[:n]))
               depzzmax=max(depzzm[n-n0:n])
               dqdpmin =min(dqdp[n-n0:n])
-              
-              print ' * DEPM = %f' %(depzzmax)
-              print ' * DQDP  = %f' %(dqdpmin)
               
               ncrit,nume1,nume2=0,0,0
               if depzzmax>10.:
@@ -945,8 +936,15 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
               if dqdpmin<.25:
                 nume2=list(dqdp).index(dqdpmin)
                 ncrit+=1
-
-              print ' * CRIT =%d   NUME_DEPS =%d   NUME_DQDP =%d'\
+                
+              if info_dbg:
+                print
+                print '   + INDEX PEAK = %d' %(n)
+                print '   + P  = %e' %(p[n])
+                print '   + Q  = %e' %(q[n])
+                print '   + DEPM = %f' %(depzzmax)
+                print '   + DQDP  = %f' %(dqdpmin)
+                print '   + CRIT =%d   NUME_DEPS =%d   NUME_DQDP =%d'\
                     %(ncrit,nume1,nume2)
                 
               if ncrit>=2:
@@ -975,30 +973,36 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
               inst_init= TabRes['INST'][indx_init]
               
               print titre
-              print ' * ETAT INIT:'
-              print '   CYCLE NUMERO %d SUR %d' %(2*numcyc,2*NB_CYCLE)
-              print '   INDEX INIT=%d' %(indx_init)
-              print '   INST INIT =%f' %(inst_init)
+              if info_dbg:
+                print ' * ETAT INIT:'
+                print '   + CYCLE NUMERO %d SUR %d' %(2*numcyc,2*NB_CYCLE)
+                print '   + INDEX INIT=%d' %(indx_init)
+                print '   + INST INIT =%f' %(inst_init)
               
               sigm,epsi,=[0.]*6,[0.]*6,
               for n in range(3):
                 sigm[n]=TabRes['SI%s' %(comp[n])][indx_init]
                 epsi[n]=TabRes['EP%s' %(comp[n])][indx_init]
                 
-                print '   EP%s =%e   SI%s =%e' %(comp[n],epsi[n],comp[n],sigm[n])
+                if info_dbg:
+                  print '   + EP%s =%e   SI%s =%e' %(comp[n],epsi[n],comp[n],sigm[n])
               
               p = (sigm[0]+sigm[1]+sigm[2]) /3.
               q = sigm[2]-sigm[0]
               
-              print '   P =%e  Q=%e' %(p,q)
+              if info_dbg:
+                print '   + P =%e  Q=%e' %(p,q)
               
               vari =[]
               for n in range(50):
                 vari.append(TabRes['V%d' %(n+1)][indx_init])
-                print '   V%d =%f' %(n,vari[n])
                 
-              print
-              print '   *** BOUCLE SUR LES CYCLES TND A EPSILON IMPOSE ***'
+                if info_dbg:
+                  print '   V%d =%f' %(n,vari[n])
+                
+              if info_dbg:
+                print
+                print '   *** BOUCLE SUR LES CYCLES TND A EPSILON IMPOSE ***'
               
               indx_max,inst_max,=indx_init,inst_init,
               
@@ -1034,9 +1038,10 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
               
                 gamma =.04*(-1.)**(nbc+nbc0)
                 
-                print
-                print '   * CYCLE NUMERO %d SUR %d' %(nbc+1,NB_CYCLE_EPSILON)
-                print '   * GAMMA_MAX =%e' %(gamma)
+                if info_dbg:
+                  print
+                  print '   * CYCLE NUMERO %d SUR %d' %(nbc+1,NB_CYCLE_EPSILON)
+                  print '   * GAMMA_MAX =%e' %(gamma)
                 
                 __EVOLM,calc_ok_mono,=\
                  essai_TND_C_mono(self, inst_max, sigm, epsi,
@@ -1051,7 +1056,8 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
                 
                 if abs(q) < .95*SIGM_IMPOSE[j]:
                 
-                  print '   * AUGMENTATION GAMMA_MAX =%e' %(coef_gamma*gamma)
+                  if info_dbg:
+                    print '   * AUGMENTATION GAMMA_MAX =%e' %(coef_gamma*gamma)
                 
                   __EVOLM,calc_ok_mono,=\
                    essai_TND_C_mono(self, inst_max, sigm, epsi,
@@ -1072,7 +1078,11 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
                 
                 inst  = __TabResm['INST']
                 
-                print '   * INST FINAL = %f' %(inst[-1])
+                print '  * INST='
+                print inst
+                
+                if info_dbg:
+                  print '   * INST FINAL = %f' %(inst[-1])
                 
                 q =NP.array(__TabResm['SIZZ']) - NP.array(__TabResm['SIXX'])
                 p =(NP.array(__TabResm['SIZZ'])+2*NP.array(__TabResm['SIXX'])) /3.
@@ -1085,28 +1095,31 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
                 for n in range(3):
                   sigm[n]=__TabResm['SI%s' %(comp[n])][indx_max]
                   epsi[n]=__TabResm['EP%s' %(comp[n])][indx_max]
-                
-                  print '   * EP%s =%e   SI%s =%e' %(comp[n],epsi[n],comp[n],sigm[n])
+                  
+                  if info_dbg:
+                    print '   * EP%s =%e   SI%s =%e' %(comp[n],epsi[n],comp[n],sigm[n])
               
                 for n in range(50):
                   vari[n]=__TabResm['V%d' %(n+1)][indx_max]
-                  print '   * V%d =%f' %(n,vari[n])
+                  
+                  if info_dbg:
+                    print '   * V%d =%f' %(n,vari[n])
      
                 print '   * INDEX MAX SIGMA=%d' %(indx_max)
                 print '   * INST MAX SIGMA =%f' %(inst_max)
                 print '   * MAX P =%e  Q =%e' %(p[indx_max],q[indx_max])
                 
                 nf=1000
-                if nbc<NB_CYCLE_EPSILON-1:
-                  nf =indx_max-1
+                if nbc<NB_CYCLE_EPSILON:
+                  nf =indx_max
                   
-                TabResm['INST']+=__TabResm['INST'][:nf]
-                TabResm['SIXX']+=__TabResm['SIXX'][:nf]
-                TabResm['SIYY']+=__TabResm['SIYY'][:nf]
-                TabResm['SIZZ']+=__TabResm['SIZZ'][:nf]
-                TabResm['EPXX']+=__TabResm['EPXX'][:nf]
-                TabResm['EPYY']+=__TabResm['EPYY'][:nf]
-                TabResm['EPZZ']+=__TabResm['EPZZ'][:nf]
+                TabResm['INST']+=__TabResm['INST'][1:nf]
+                TabResm['SIXX']+=__TabResm['SIXX'][1:nf]
+                TabResm['SIYY']+=__TabResm['SIYY'][1:nf]
+                TabResm['SIZZ']+=__TabResm['SIZZ'][1:nf]
+                TabResm['EPXX']+=__TabResm['EPXX'][1:nf]
+                TabResm['EPYY']+=__TabResm['EPYY'][1:nf]
+                TabResm['EPZZ']+=__TabResm['EPZZ'][1:nf]
 # ---- Fin de la boucle de calcul
 #      Debut des post-traitements
 # ---------------------------------
@@ -1114,13 +1127,13 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
             
               calc_ok=calc_ok_mono
             
-              inst = TabRes['INST'][:indx_init]+TabResm['INST']
-              sig_xx = NP.array(TabRes['SIXX'][:indx_init]+TabResm['SIXX'])
-              sig_yy = NP.array(TabRes['SIYY'][:indx_init]+TabResm['SIYY'])
-              sig_zz = NP.array(TabRes['SIZZ'][:indx_init]+TabResm['SIZZ'])
-              eps_xx = NP.array(TabRes['EPXX'][:indx_init]+TabResm['EPXX'])
-              eps_yy = NP.array(TabRes['EPYY'][:indx_init]+TabResm['EPYY'])
-              eps_zz = NP.array(TabRes['EPZZ'][:indx_init]+TabResm['EPZZ'])
+              inst = TabRes['INST']+TabResm['INST']
+              sig_xx = NP.array(TabRes['SIXX']+TabResm['SIXX'])
+              sig_yy = NP.array(TabRes['SIYY']+TabResm['SIYY'])
+              sig_zz = NP.array(TabRes['SIZZ']+TabResm['SIZZ'])
+              eps_xx = NP.array(TabRes['EPXX']+TabResm['EPXX'])
+              eps_yy = NP.array(TabRes['EPYY']+TabResm['EPYY'])
+              eps_zz = NP.array(TabRes['EPZZ']+TabResm['EPZZ'])
               
             else:
             
@@ -1132,7 +1145,8 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
               eps_yy = NP.array(TabRes['EPYY'])
               eps_zz = NP.array(TabRes['EPZZ'])
               
-            print '>> INST FINAL = %f' %(inst[-1])
+            if info_dbg:
+              print '>> INST FINAL = %f' %(inst[-1])
 # --- Fin modifs fiche 23451
 
             p = (sig_xx + sig_yy + sig_zz) / 3.
