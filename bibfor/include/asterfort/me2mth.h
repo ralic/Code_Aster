@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine me2mth(modelz, nchar, lchar, matez, caraz,&
-                      timez, chtnz, vecelz)
-        character(len=*) :: modelz
-        integer :: nchar
-        character(len=*) :: lchar(*)
-        character(len=*) :: matez
-        character(len=*) :: caraz
-        character(len=*) :: timez
-        character(len=*) :: chtnz
-        character(len=*) :: vecelz
+    subroutine me2mth(model_, nb_load, list_name_, mate_, cara_elem_,&
+                      time_ , temp_  , vect_elem_)
+        character(len=*), intent(in) :: model_
+        character(len=*), intent(in) :: temp_
+        character(len=*), intent(in) :: cara_elem_
+        character(len=*), intent(in) :: mate_
+        character(len=*), intent(in) :: vect_elem_
+        character(len=*), intent(in) :: time_
+        character(len=*), intent(in) :: list_name_(*)
+        integer, intent(in) :: nb_load
     end subroutine me2mth
 end interface
