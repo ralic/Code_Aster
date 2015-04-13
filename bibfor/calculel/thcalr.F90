@@ -1,6 +1,6 @@
-subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
+subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
                   resuc1, nbordr, modele, mate, cara,&
-                  nchar, ctyp)
+                  nb_load, ctyp)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
@@ -54,6 +54,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/load_neut_excl.h"
 #include "asterfort/mecara.h"
 #include "asterfort/mecham.h"
 #include "asterfort/medom1.h"
@@ -71,12 +72,12 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbordr, nchar
+    integer :: nbordr, nb_load
     integer :: vali
     character(len=4) :: ctyp
     character(len=8) :: resuco, resuc1, modele, cara
     character(len=16) :: tysd
-    character(len=19) :: knum, kcha
+    character(len=19) :: knum, lload_name
     character(len=24) :: mate
     aster_logical :: newcal
 !
@@ -129,7 +130,12 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
     call modopt(resuco, modele, lesopt, nbopt)
     call jeveuo(lesopt, 'L', jopt)
 !
-    call jeveuo(kcha//'.LCHA', 'L', jcha)
+    call jeveuo(lload_name//'.LCHA', 'L', jcha)
+!
+! - EVOL_CHAR is prohibiden
+!
+    call load_neut_excl('CALC_ERREUR', lload_name_ = lload_name)
+
     call jeveuo(knum, 'L', jordr)
 !
     if (newcal) then
@@ -160,15 +166,15 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
         call jeveuo(knum, 'L', jordr)
 !
         call calcop(option, lesopt, resuco, resuc1, knum,&
-                    nbordr, kcha, nchar, ctyp, tysd,&
+                    nbordr, lload_name, nb_load, ctyp, tysd,&
                     iret)
         if (iret .eq. 0) goto 120
 !
 !
         nuord=zi(jordr)
-        call medom1(modele, mate, cara, kcha, nchar,&
+        call medom1(modele, mate, cara, lload_name, nb_load,&
                     ctyp, resuco, nuord)
-        call jeveuo(kcha//'.LCHA', 'L', jcha)
+        call jeveuo(lload_name//'.LCHA', 'L', jcha)
 !
         call mecham(option, modele, cara, nh, chgeom,&
                     chcara, chharm, iret)
@@ -196,8 +202,8 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
             chflup=' '
 !
 ! PREPARATION DES CALCULS D'INDICATEUR (CONNECTIVITE INVERSE, CHARGE)
-            call jeveuo(kcha//'.LCHA', 'L', jcha)
-            call resth2(modele, ligrmo, zk8(jcha), nchar, ma,&
+            call jeveuo(lload_name//'.LCHA', 'L', jcha)
+            call resth2(modele, ligrmo, zk8(jcha), nb_load, ma,&
                         cartef, nomgdf, carteh, nomgdh, cartet,&
                         nomgdt, cartes, nomgds, chgeom, chsour,&
                         psourc)
@@ -221,9 +227,8 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                 write (ifm,*)&
      &        '* QUE LA DERNIERE OCCURENCE DE AFFE_CHAR_THER*'
                 write (ifm,*)'  LISTE DES CHARGEMENTS :'
-                do bufin1 = 1, nchar
-                    write (ifm,*)'                        ',&
-     &          zk8(jcha+bufin1-1)
+                do bufin1 = 1, nb_load
+                    write (ifm,*)'                        ',zk8(jcha+bufin1-1)
                 end do
                 write (ifm,*)'  CL DE FLUX RETENUE      ',nomgdf
                 write (ifm,*)'  CL D''ECHANGE RETENUE    ',nomgdh
@@ -237,7 +242,7 @@ subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
                 call jemarq()
                 call jerecu('V')
                 iordr=zi(jordr+iaux-1)
-                call medom1(modele, mate, cara, kcha, nchar,&
+                call medom1(modele, mate, cara, lload_name, nb_load,&
                             ctyp, resuco, iordr)
                 call mecara(cara, chcara)
 ! RECUPERATION DU PARM_THETA CORRESPONDANT A IORDR

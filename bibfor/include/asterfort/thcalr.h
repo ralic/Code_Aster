@@ -18,20 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine thcalr(newcal, tysd, knum, kcha, resuco,&
+    subroutine thcalr(newcal, tysd, knum, lload_name, resuco,&
                       resuc1, nbordr, modele, mate, cara,&
-                      nchar, ctyp)
+                      nb_load, ctyp)
         aster_logical :: newcal
         character(len=16) :: tysd
         character(len=19) :: knum
-        character(len=19) :: kcha
+        character(len=19) :: lload_name
         character(len=8) :: resuco
         character(len=8) :: resuc1
         integer :: nbordr
         character(len=8) :: modele
         character(len=24) :: mate
         character(len=8) :: cara
-        integer :: nchar
+        integer :: nb_load
         character(len=4) :: ctyp
     end subroutine thcalr
 end interface
