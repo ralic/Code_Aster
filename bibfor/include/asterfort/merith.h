@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine merith(modelz, nchar, lchar, mate, caraz,&
-                      timez, matelz, nh, basez)
-        character(len=*) :: modelz
-        integer :: nchar
-        character(len=*) :: lchar(*)
+    subroutine merith(model_, nb_load, list_name_, mate, cara_elem_,&
+                      time_, matr_elem_, nh, base_)
+        character(len=*) :: model_
+        integer :: nb_load
+        character(len=*) :: list_name_(*)
         character(len=*) :: mate
-        character(len=*) :: caraz
-        character(len=*) :: timez
-        character(len=*) :: matelz
+        character(len=*) :: cara_elem_
+        character(len=*) :: time_
+        character(len=*) :: matr_elem_
         integer :: nh
-        character(len=*) :: basez
+        character(len=*) :: base_
     end subroutine merith
 end interface
