@@ -206,9 +206,6 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         noparr(5) = 'TOTALE'
         if (motfac .eq. 'ENER_DISS') then
             option='DISS_ELEM'
-            noparr(6) = 'ENDO'
-            noparr(7) = 'PLAS'
-            nbparr = 7
         else if (motfac.eq.'ENER_ELAS') then
             option='ENEL_ELEM'
             noparr(6) = 'MEMBRANE'
@@ -218,9 +215,6 @@ subroutine peingl(resu, modele, mate, cara, nh,&
             nbparr = 9
         else if (motfac.eq.'ENER_TOTALE') then
             option='ENER_TOTALE'
-            noparr(6) = 'MEMBRANE'
-            noparr(7) = 'FLEXION'
-            nbparr = 7
         endif
     endif
     energi = zero
@@ -564,17 +558,15 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     vk8(1) = noma
                     vk8(2) = 'TOUT'
 !
-                    else if (motfac.eq.'ENER_ELAS'  .or.&
-     &               motfac.eq.'ENER_TOTALE'.or.&
-     &               motfac.eq.'ENER_DISS') then
+                else if (motfac.eq.'ENER_ELAS'  .or.&
+     &                   motfac.eq.'ENER_TOTALE'.or.&
+     &                   motfac.eq.'ENER_DISS') then
 !
 ! ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 ! ---          SUR LE MODELE :
 !              -------------
-                    if (motfac .eq. 'ENER_TOTALE') then
+                    if (motfac .eq. 'ENER_TOTALE' .or. motfac.eq.'ENER_DISS') then
                         call mesomm(lchout(1), 1, vr=work(1))
-                    else if (motfac.eq.'ENER_DISS') then
-                        call mesomm(lchout(1), 3, vr=work(1))
                     else
                         call mesomm(lchout(1), 5, vr=work(1))
                     endif
@@ -587,19 +579,21 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         energi = work(1)
                     endif
 !
-                    valr(2) = energi
-                    valr(3) = work(2)
-                    valr(4) = work(3)
                     vk8(1) = noma
                     vk8(2) = 'TOUT'
-                    if (motfac .eq. 'ENER_ELAS') then
+                    valr(2) = energi
+                    if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_TOTALE') then
+                        valr(3) = work(2)
+                        valr(4) = work(3)
+                        if (motfac .eq. 'ENER_ELAS') then
 ! ---    AJOUT INUTILE POUR L INSTANT PUISQUE WORK(4) ET WORK(5)
 !        SONT NULS. EN PREVISION DU CALCUL DE L ENERGIE ELASTIQUE
 !        DE CISAILLEMENT ET DE COUPLAGE MEMBRANE FLEXION POUR LES
 !        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE
 !        UN JOUR.
-                        valr(5) = work(4)
-                        valr(6) = work(5)
+                            valr(5) = work(4)
+                            valr(6) = work(5)
+                        endif
                     endif
 !
                 endif
@@ -659,17 +653,15 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         valr(2) = indic1/volume
                         vk24(1) = nomgrm
 !
-                        else if (motfac.eq.'ENER_ELAS' .or.&
-     &                 motfac.eq.'ENER_TOTALE' .or.&
-     &                 motfac.eq.'ENER_DISS') then
+                    else if (motfac.eq.'ENER_ELAS' .or.&
+     &                       motfac.eq.'ENER_TOTALE' .or.&
+     &                       motfac.eq.'ENER_DISS') then
 !
 ! ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 ! ---          SUR LE MODELE :
 !              -------------
-                        if (motfac .eq. 'ENER_TOTALE') then
+                        if (motfac .eq. 'ENER_TOTALE' .or. motfac.eq.'ENER_DISS') then
                             call mesomm(lchout(1), 1, vr=work(1), nbma=nbma, linuma=zi(jad))
-                        else if (motfac.eq.'ENER_DISS') then
-                            call mesomm(lchout(1), 3, vr=work(1), nbma=nbma, linuma=zi(jad))
                         else
                             call mesomm(lchout(1), 5, vr=work, nbma=nbma, linuma=zi(jad))
                         endif
@@ -686,18 +678,20 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                             energi = work(1)
                         endif
 !
-                        valr(2) = energi
-                        valr(3) = work(2)
-                        valr(4) = work(3)
                         vk24(1) = nomgrm
-                        if (motfac .eq. 'ENER_ELAS') then
+                        valr(2) = energi
+                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_TOTALE') then
+                            valr(3) = work(2)
+                            valr(4) = work(3)
+                            if (motfac .eq. 'ENER_ELAS') then
 ! ---    AJOUT INUTILE POUR L INSTANT PUISQUE WORK(4) ET WORK(5)
 !        SONT NULS. EN PREVISION DU CALCUL DE L ENERGIE ELASTIQUE
 !        DE CISAILLEMENT ET DE COUPLAGE MEMBRANE FLEXION POUR LES
 !        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE
 !        UN JOUR.
-                            valr(5) = work(4)
-                            valr(6) = work(5)
+                                valr(5) = work(4)
+                                valr(6) = work(5)
+                            endif
                         endif
 !
                     endif
@@ -759,17 +753,15 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         valr(2) = indic1/volume
                         vk8(1) = nommai
 !
-                        else if (motfac.eq.'ENER_ELAS' .or.&
-     &                 motfac.eq.'ENER_TOTALE' .or.&
-     &                 motfac.eq.'ENER_DISS') then
+                    else if (motfac.eq.'ENER_ELAS' .or.&
+     &                       motfac.eq.'ENER_TOTALE' .or.&
+     &                       motfac.eq.'ENER_DISS') then
 !
 ! ---          SOMMATION DE L'ENERGIE ( ELASTIQUE OU TOTALE)
 ! ---          SUR LE MODELE :
 !              -------------
-                        if (motfac .eq. 'ENER_TOTALE') then
+                        if (motfac .eq. 'ENER_TOTALE' .or. motfac.eq.'ENER_DISS') then
                             call mesomm(lchout(1), 1, vr=work(1), nbma=1, linuma=[nume])
-                        else if (motfac.eq.'ENER_DISS') then
-                            call mesomm(lchout(1), 3, vr=work(1), nbma=1, linuma=[nume])
                         else
                             call mesomm(lchout(1), 5, vr=work, nbma=1, linuma=[nume])
                         endif
@@ -783,17 +775,19 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         endif
 !
                         valr(2) = energi
-                        valr(3) = work(2)
-                        valr(4) = work(3)
                         vk8(1) = nommai
-                        if (motfac .eq. 'ENER_ELAS') then
+                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_TOTALE') then
+                            valr(3) = work(2)
+                            valr(4) = work(3)
+                            if (motfac .eq. 'ENER_ELAS') then
 ! ---    AJOUT INUTILE POUR L INSTANT PUISQUE WORK(4) ET WORK(5)
 !        SONT NULS. EN PREVISION DU CALCUL DE L ENERGIE ELASTIQUE
 !        DE CISAILLEMENT ET DE COUPLAGE MEMBRANE FLEXION POUR LES
 !        PLAQUES EN MECA STATIQUE UNIQUEMENT, SI ON L AUTORISE
 !        UN JOUR.
-                            valr(5) = work(4)
-                            valr(6) = work(5)
+                                valr(5) = work(4)
+                                valr(6) = work(5)
+                            endif
                         endif
 !
                     endif
