@@ -120,7 +120,7 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
     50 : _(u"""
   -> Le maillage utilisé pour la représentation des level-sets est 2D
      mais il contient des éléments 1D aussi.
-  -> La méthode UPWIND_FMM sélectionnée dans PROPA_FISS peut gérer des
+  -> La méthode UPWIND sélectionnée dans PROPA_FISS peut gérer des
      grilles 2D définies seulement par des éléments QUAD4.
   -> Risque & Conseil:
      Veuillez donner un maillage défini seulement par des éléments
@@ -136,7 +136,7 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
     52 : _(u"""
   -> Le maillage utilisé pour la représentation des level-sets est 3D
      mais il contient des éléments 2D et/ou 1D aussi.
-  -> La méthode UPWIND_FMM sélectionnée dans PROPA_FISS peut gérer des
+  -> La méthode UPWIND sélectionnée dans PROPA_FISS peut gérer des
      grilles 3D définies seulement par des éléments HEXA8.
   -> Risque & Conseil:
      Veuillez donner un maillage défini seulement par des éléments
@@ -146,14 +146,14 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
     53 : _(u"""
   -> Dans le maillage utilisé pour la représentation des level-sets,
      il y a des éléments qui ne sont pas disponibles pour la méthode
-     UPWIND_FMM (PROPA_FISS).
+     UPWIND (PROPA_FISS).
   -> Risque & Conseil:
      Veuillez vérifier le maillage et utiliser uniquement des éléments
      QUAD4 en 2D et HEXA8 en 3D.
   """),
 
     54 : _(u"""
-  -> Il n'y a pas d'éléments disponibles pour la méthode UPWIND_FMM
+  -> Il n'y a pas d'éléments disponibles pour la méthode UPWIND
      (PROPA_FISS) dans le maillage utilisé pour la représentation
      des level-sets.
   -> Risque & Conseil:
