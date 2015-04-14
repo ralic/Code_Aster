@@ -32,8 +32,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
 execfile('fort.33', globals())
 
 # read the previous 'fort.34'
+import re
 try:
-    existing_keywords = open( 'fort.34', 'rb' ).read().split()
+    text = open( 'fort.34', 'rb' ).read()
+    recmt = re.compile('^#')
+    existing_keywords = [line for line in text.splitlines() if not recmt.search(line)]
 except IOError:
     existing_keywords = ['???']
 

@@ -1,5 +1,6 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois@edf.fr
+# Don't forget to change person in charge in `printKeywordsUsage` function
 
 import os
 import tempfile
@@ -81,7 +82,8 @@ def printKeywordsUsage( commands, fileList=None ):
         lines.append( fmt.format(word, *cmds) )
     print os.linesep.join(lines)
     if fileList:
-        open( fileList, 'wb').write( os.linesep.join(allKwd) )
+        picline = '# person_in_charge: mathieu.courtois@edf.fr'
+        open( fileList, 'wb').write( os.linesep.join([picline] + allKwd) )
         line = "\n    {:^60}"
         print line.format( "*" * 60 )
         print line.format( "Nom du fichier à recopier pour mettre à jour vocab01a.34" )
