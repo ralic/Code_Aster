@@ -42,9 +42,7 @@ Risques & conseils :
  La grandeur :  %(k1)s  n'existe pas dans le catalogue des grandeurs.
 """),
 
-    4 : _(u"""
- incohérence des maillages : %(k1)s  et  %(k2)s
-"""),
+
 
     5 : _(u"""
  Erreur de programmation (ou d'utilisation ?) :
@@ -80,28 +78,6 @@ Risques & conseils :
 Erreur de programmation lors de l'assemblage :
    Les quantités que l'on cherche à assembler (MATR_ELEM ou VECT_ELEM) ont été calculées avec au
    moins 2 partitions différentes :  %(k1)s et %(k2)s
-"""),
-
-    11 : _(u"""
- le mode_local:  %(k1)s  ne doit pas être vecteur ou matrice.
-"""),
-
-    12 : _(u"""
- le mode_local:  %(k1)s  ne doit pas être "DIFF__".
-"""),
-
-    13 : _(u"""
-Erreur utilisateur concernant le parallélisme des calculs élémentaires :
-  La partition des éléments du modèle a été faite sur %(i1)d processeurs.
-  Mais maintenant, le nombre de processeurs disponibles est de %(i2)d.
-
-Conseil :
-  Il faut utiliser la commande MODI_MODELE pour modifier la partition du modèle
-  afin qu'elle soit cohérente avec le nombre de processeurs disponibles pour les calculs.
-"""),
-
-    14 : _(u"""
-  incompatibilité des type_champ ("ELGA"/"ELNO")  pour l option :  %(k1)s  entre les 2 TYPE_ELEM :  %(k2)s  et  %(k3)s
 """),
 
     15 : _(u"""
@@ -201,20 +177,6 @@ Conseil :
  Vérifiez que la structure de données %(k1)s est bien celle qu'il faut utiliser.
 """),
 
-    30 : _(u"""
-Erreur utilisateur :
-  -> Le TYPE_ELEMENT %(k1)s  ne sait pas encore calculer l'option:  %(k2)s.
-
-  -> Risques & Conseils :
-   * Si vous utilisez une commande de "calcul" (THER_LINEAIRE, STAT_NON_LINE, ...), il n'y a pas
-     moyen de contourner ce problème. Il faut changer de modélisation ou émettre une demande d'évolution.
-
-   * Si c'est un calcul de post-traitement, vous pouvez sans doute "éviter" le problème
-     en ne faisant le post-traitement que sur les mailles qui savent le faire.
-     Pour cela, il faut sans doute utiliser un mot clé de type "GROUP_MA".
-     S'il n'y en a pas, il faut faire une demande d'évolution.
-"""),
-
     31 : _(u"""
   La température n'est pas correctement renseignée
 """),
@@ -244,10 +206,7 @@ Conseil :
   Relancez le calcul en créant une nouvelle structure de données résultat.
 """),
 
-    34 : _(u"""
- le calcul de l'option :  %(k1)s
- n'est possible pour aucun des types d'éléments du LIGREL.
-"""),
+
 
     35 : _(u"""
  Erreur utilisateur :
@@ -296,43 +255,6 @@ Conseil :
 
     41 : _(u"""  Maille : %(k1)s. Cette maille appartient aux GROUP_MA : %(k2)s %(k3)s %(k4)s %(k5)s
 """),
-
-    42 : _(u"""
- Erreur Programmeur:
- Incohérence fortran/catalogue
- TYPE_ELEMENT :  %(k1)s
- OPTION       :  %(k2)s
- La routine texxxx.f correspondant au calcul élémentaire ci-dessus est erronée
- Elle écrit en dehors de la zone allouée au paramètre (OUT) %(k3)s.
-
-"""),
-
-    43 : _(u"""
-Alarme utilisateur :
-  Le TYPE_ELEMENT %(k1)s devrait calculer l'option:  %(k2)s, 
-  mais il ne le fait pas encore (la programmation est manquante).
-
-  Pour l'instant, l'élément est ignoré pour le calcul de cette option, 
-  ce qui peut entraîner des résultats faux.
-
-
--> Risques & Conseils :
-   * Cette situation est très dangereuse. Il y a un risque de résultats faux.
-   * Si ce manque dans la programmation vous semble important, il faut émettre
-     une demande d'évolution.
-"""),
-
-    44 : _(u"""
-Erreur :
-  Le TYPE_ELEMENT %(k1)s devrait calculer l'option :  %(k2)s, 
-  mais il ne le fait pas encore (la programmation est manquante).
-  Le calcul n'est possible que dans les cas "triviaux" : chargement nul, ...
-
--> Risques & Conseils :
-   * Si ce manque dans la programmation vous semble important, il faut émettre
-     une demande d'évolution.
-"""),
-
 
 
 

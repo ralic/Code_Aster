@@ -244,13 +244,8 @@ Conseil :
  l'utilisation de 'PREF_NUME' est recommandée.
 """),
 
-    55 : _(u"""
- comportement : %(k1)s non trouve
-"""),
 
-    56 : _(u"""
- pour la maille  %(k1)s
-"""),
+
 
     57 : _(u"""
 Erreur d'utilisation pour la commande CREA_MAILLAGE / CREA_GROUP_MA :

@@ -51,14 +51,7 @@ Routine : %(k2)s
 On ne sait pas traiter ce type d'élément : %(k1)s
 """),
 
-    5 : _(u"""
-Erreur de programmation :
-    On ne trouve pas le triplet ( %(k1)s )
-    correspondant à (terme élémentaire, élément de référence, famille).
-Conseils :
-    Vérifiez le catalogue d'éléments.
-    L'élément de référence ou la famille de points de Gauss ne sont pas définis.
-"""),
+
 
     6 : _(u"""
 Erreur de programmation :

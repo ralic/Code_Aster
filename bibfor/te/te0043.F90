@@ -240,7 +240,7 @@ subroutine te0043(option, nomte)
             if (abs(omega) .ge. r8prem()) then
                 kmess(1) = nomte
                 kmess(2) = option
-                call utmess('F', 'CALCULEL_30', nk=2, valk=kmess)
+                call utmess('F', 'CALCUL_37', nk=2, valk=kmess)
             endif
         endif
         call jevech('PVECTUR', 'E', lvectu)

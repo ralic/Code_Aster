@@ -331,9 +331,7 @@ Erreur programmeur dans DEFI_MATERIAU :
  concept de type :  %(k1)s  interdit pour la courbe de traction %(k2)s
 """),
 
-    92 : _(u"""
- matériau : %(k1)s  non affecté par la commande AFFE_MATERIAU.
-"""),
+
 
     93 : _(u"""
   les fonctions complexes ne sont pas implémentées

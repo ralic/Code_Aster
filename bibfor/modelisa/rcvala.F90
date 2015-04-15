@@ -107,7 +107,7 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
                 goto 9
             endif
         enddo
-        call utmess('F', 'MODELISA6_92', sk=nomat)
+        call utmess('F', 'CALCUL_45', sk=nomat)
     else
         if (nbmat.gt.1) then
             call tecael(iadzi, iazk24)

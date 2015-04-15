@@ -168,32 +168,7 @@ Conseil :
   MACR_ECLA_PG(... NOM_CHAM=('SIEF_ELGA', 'VARI_ELGA'),
 """),
 
-    25: _(u"""
- le LIGREL :  %(k1)s  ne contient pas d éléments finis
-"""),
 
-    26: _(u"""
- l'option  %(k1)s  n'existe pas.
-"""),
-
-    27: _(u"""
- Erreur utilisateur :
-   Le maillage associé au champ: %(k1)s  (%(k3)s)
-   est différent de celui associe au LIGREL:  %(k2)s  (%(k4)s)
-"""),
-
-    28: _(u"""
-  erreur programmeur : appel a calcul, le champ: %(k1)s  est un champ "in" et un champ "out".
-"""),
-
-    29: _(u"""
- la grandeur associée au champ  %(k1)s : %(k2)s
- n'est pas celle associée au paramètre  %(k3)s : %(k4)s  (option: %(k5)s
-"""),
-
-    30: _(u"""
-  on n'arrive pas a étendre la carte:  %(k1)s
-"""),
 
     31: _(u"""
 Erreur utilisateur dans la commande AFFE_CARA_ELEM :
@@ -263,9 +238,7 @@ Erreur :
    Le modèle n'a pas été trouvé. Le calcul n'est pas possible.
 """),
 
-    45: _(u"""
- famille de points de Gauss "liste" interdite: %(k1)s
-"""),
+
 
     46: _(u"""
   mode ligne  %(k1)s  /= mode colonne  %(k2)s
@@ -288,34 +261,8 @@ Erreur utilisateur :
   Le champ %(k1)s n'est pas associé au maillage %(k2)s.
 """),
 
-    51: _(u"""
- Erreur :
-   Le code cherche à utiliser dans un calcul élémentaire un CHAM_ELEM "étendu" (VARI_R ou sous-points).
-   La programmation de la routine exchml.f ne sait pas encore traiter ce cas.
- Conseil :
-   Il y a peut-être lieu d'émettre une demande d'évolution pour traiter ce cas.
-"""),
 
-    52: _(u"""
- problème noeud tardif pour un champ à représentation constante
-"""),
 
-    53: _(u"""
- Le calcul de l'option %(k1)s n'est pas possible. Il manque le CARA_ELEM.
-"""),
-
-    54: _(u"""
- Le calcul de l'option %(k1)s n'est pas possible. Il manque le CHAM_MATER.
-"""),
-
-    55: _(u"""
- Le calcul de l'option %(k1)s n'est pas possible. Il manque le MODELE.
-"""),
-
-    56: _(u"""
-  erreur lors d'une extraction:
-  le champ associe au paramètre :  %(k1)s  n'est pas dans la liste des champs paramètres.
-"""),
 
     57: _(u"""
   Erreur utilisateur dans la commande CREA_CHAMP :
@@ -342,12 +289,6 @@ Conseil :
 
 
 
-
-    61: _(u"""
- Erreur développeur :
- L'option que l'on calcule ne connaît pas le paramètre :  %(k1)s
- Erreur probable dans un catalogue(typelem)
-"""),
 
     62: _(u"""
  Erreur utilisateur POST_CHAMP /MIN_MAX_SP :
@@ -380,91 +321,6 @@ Erreur d'utilisation :
  On ne peut pas filtrer les mailles de type %(k1)s car ce n'est pas un type de maille connu.
 """),
 
-    69: _(u"""
- le paramètre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s
-"""),
-
-    70: _(u"""
- le paramètre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s  pour le type_élément:  %(k3)s
-"""),
-
-    71: _(u"""
- on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au paramètre: %(k1)s
-  - option: %(k2)s
-  - type_élément: %(k3)s
-"""),
-
-    72: _(u"""
-Erreur utilisateur dans un calcul élémentaire de forces réparties :
-  On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
-   - option        : %(k2)s
-   - type_élément  : %(k3)s
-   - maille        : %(k4)s
-  On a trouvé un noeud sur lequel il existe des composantes mais pas toutes.
-  On ne peut pas continuer
-
-Risques et conseils :
-  Si le champ provient de CREA_CHAMP/AFFE, vérifier que vous avez bien affecté FX,FY [FZ]
-"""),
-
-    73: _(u"""
-Erreur dans un calcul élémentaire :
-  On n'a pas trouvé toutes les composantes voulues du champ pour le paramètre : %(k1)s
-   - option        : %(k2)s
-   - type_élément  : %(k3)s
-   - maille        : %(k4)s
-
-Risques et conseils :
-  Certaines informations sur le contexte de cette erreur sont imprimées ci-dessous.
-  Elles peuvent aider à comprendre une éventuelle erreur d'utilisation.
-"""),
-
-    74: _(u"""
-Erreur utilisateur dans un calcul élémentaire :
-  Le matériau est nécessaire sur la maille : %(k4)s
-  - option de calcul élémentaire : %(k2)s
-  - type_élément                 : %(k3)s
-
-Conseils :
-  * Peut-être avez-vous oublié de renseigner le mot clé CHAM_MATER dans la commande courante.
-  * Dans la commande AFFE_MATERIAU, avez-vous affecté un matériau sur la maille incriminée ?
-"""),
-
-    75: _(u"""
-Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques de "coque" sont nécessaires sur la maille : %(k4)s
-  - option de calcul élémentaire : %(k2)s
-  - type_élément                 : %(k3)s
-
-Conseils :
-  * Peut-être avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
-  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques de "coque"
-    sur la maille incriminée ?
-"""),
-
-    76: _(u"""
-Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques de "poutre" sont nécessaires sur la maille : %(k4)s
-  - option de calcul élémentaire : %(k2)s
-  - type_élément                 : %(k3)s
-
-Conseils :
-  * Peut-être avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
-  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques de "poutre"
-    sur la maille incriminée ?
-"""),
-
-    77: _(u"""
-Erreur utilisateur dans un calcul élémentaire :
-  Des caractéristiques d'"orientation" sont nécessaires sur la maille : %(k4)s
-  - option de calcul élémentaire : %(k2)s
-  - type_élément                 : %(k3)s
-
-Conseils :
-  * Peut-être avez-vous oublié de renseigner le mot clé CARA_ELEM dans la commande courante.
-  * Dans la commande AFFE_CARA_ELEM, avez-vous affecté des caractéristiques d'"orientation"
-    sur la maille incriminée ?
-"""),
 
     78: _(u"""
 Erreur utilisateur :

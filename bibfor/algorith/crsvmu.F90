@@ -144,7 +144,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, syme,&
             if (prti(1) .ne. nbproc) then
                 vali(1)=prti(1)
                 vali(2)=nbproc
-                call utmess('F', 'CALCULEL_13', ni=2, vali=vali)
+                call utmess('F', 'CALCUL_35', ni=2, vali=vali)
             endif
 !
             call jeveuo(partit//'.PRTK', 'L', vk24=prtk)

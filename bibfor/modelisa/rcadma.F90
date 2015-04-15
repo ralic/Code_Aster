@@ -66,12 +66,12 @@ subroutine rcadma(jmat, phenom, nomres, valres, icodre, iarret)
 !     -- SELON LA VALEUR DE IARRET ON ARRETE OU NON :
     if (iarret .ge. 1) then
         valk = nomphe
-        call utmess('F+', 'MODELISA9_55', sk=valk)
+        call utmess('F+', 'CALCUL_46', sk=valk)
         if (iarret .eq. 1) then
             call tecael(iadzi, iazk24)
             nomail = zk24(iazk24-1+3)(1:8)
             valk = nomail
-            call utmess('F+', 'MODELISA9_56', sk=valk)
+            call utmess('F+', 'CALCUL_47', sk=valk)
         endif
         call utmess('F', 'VIDE_1')
     endif

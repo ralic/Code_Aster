@@ -1,7 +1,8 @@
 subroutine arlref(elrefe, fami, nomte, ndim, nno,&
                   nnos, npg, jpoids, jcoopg, jvf,&
                   jdfde, jdfd2, jgano)
-    implicit none
+use module_calcul, only : ca_iactif_, ca_jnolfp_, ca_jpnlfp_, ca_nblfpg_, ca_nbsav_
+implicit none
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
@@ -14,9 +15,9 @@ subroutine arlref(elrefe, fami, nomte, ndim, nno,&
 #include "asterfort/utmess.h"
 
         character(len=*), intent(in), optional :: elrefe
-        character(len=*), intent(in) :: fami
-        character(len=16) :: nomte
-        integer, intent(out), optional :: ndim
+        character(len=*), intent(in)    :: fami
+        character(len=16), intent(in)   :: nomte
+        integer, intent(out), optional  :: ndim
         integer, intent(out), optional  :: nno
         integer, intent(out), optional  :: nnos
         integer, intent(out), optional  :: npg
@@ -69,12 +70,6 @@ subroutine arlref(elrefe, fami, nomte, ndim, nno,&
 !                             dimensions de la matrice: nno et npg
 
 !   -------------------------------------------------------------------
-    integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
-    common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
-
-    character(len=16) :: option, nomtm
-    common /cakk01/option,nomtm
-
 
     integer :: nbnomx, nbfamx
     parameter    ( nbnomx=27, nbfamx=20)
@@ -89,8 +84,6 @@ subroutine arlref(elrefe, fami, nomte, ndim, nno,&
 !   -- pour faire des "save" et gagner du temps CPU :
     integer :: maxsav
     parameter (maxsav=5)
-    integer :: nbsav
-    common /caii13/nbsav
     integer :: addsav(5, 10), k1, k2, nusav
     character(len=32) :: nomsav(maxsav)
     save nomsav,addsav
@@ -98,7 +91,7 @@ subroutine arlref(elrefe, fami, nomte, ndim, nno,&
 ! DEB ------------------------------------------------------------------
 
 !   -- pour etre sur que elrefe est appele "sous" te0000
-    ASSERT(iactif.eq.1)
+    ASSERT(ca_iactif_.eq.1)
 
     if (.not.present(elrefe)) then
         call elref1(elrf)
@@ -112,7 +105,7 @@ subroutine arlref(elrefe, fami, nomte, ndim, nno,&
 
 !   -- pour gagner du temps, on regarde si la famille a ete sauvee:
 !   ---------------------------------------------------------------
-    nusav = indk32(nomsav,noflpg,1,nbsav)
+    nusav = indk32(nomsav,noflpg,1,ca_nbsav_)
     if (nusav .gt. 0) then
         ndiml = addsav(nusav,1)
         nnol = addsav(nusav,2)
@@ -130,13 +123,13 @@ subroutine arlref(elrefe, fami, nomte, ndim, nno,&
 
 !   -- calcul de nufpg :
 !   --------------------
-    nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
+    nuflpg = indk32(zk32(ca_jpnlfp_),noflpg,1,ca_nblfpg_)
     if (nuflpg .eq. 0) then
-        call utmess('F', 'DVP_5', sk=noflpg)
+        call utmess('F', 'CALCUL_43', sk=noflpg)
     endif
-    nufgpg = zi(jnolfp-1+nuflpg)
+    nufgpg = zi(ca_jnolfp_-1+nuflpg)
     if (nufgpg .eq. 0) then
-        call utmess('F', 'CALCULEL2_45', sk=noflpg)
+        call utmess('F', 'CALCUL_7', sk=noflpg)
     endif
     call jenuno(jexnum('&CATA.TM.NOFPG', nufgpg), nofgpg)
     ASSERT(nofgpg(1:8).eq.elrf)
@@ -176,8 +169,8 @@ subroutine arlref(elrefe, fami, nomte, ndim, nno,&
 !   -- on sauvegarde les valeurs calculees :
 !   ----------------------------------------
 !   -- on decale tout le monde vers le bas:
-    nbsav = min(nbsav+1,maxsav)
-    do k1 = nbsav - 1,1,-1
+    ca_nbsav_ = min(ca_nbsav_+1,maxsav)
+    do k1 = ca_nbsav_ - 1,1,-1
         nomsav(k1+1) = nomsav(k1)
         do k2 = 1,10
             addsav(k1+1,k2) = addsav(k1,k2)

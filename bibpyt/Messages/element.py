@@ -19,9 +19,6 @@
 
 cata_msg = {
 
-    68: _(u"""
- Erreur lors du calcul de la pression: la maille n'est que partiellement affectée.
-"""),
 
     15 : _(u"""   Maille concernée : %(k1)s
 """),

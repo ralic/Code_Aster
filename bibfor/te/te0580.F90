@@ -218,11 +218,10 @@ subroutine te0580(nomopt, nomte)
         if (nomte.eq.'MECA_XH_FACE4' .or. nomte.eq.'MECA_XHT_FACE4' &
             .or. nomte.eq.'MECA_XT_FACE4') code='A'
     endif
-    call utmess(code, 'CALCULEL_44',2,valk=valk)
+    call utmess(code, 'CALCUL_42',2,valk=valk)
 
 
 !   -- sortie normale :
 999 continue
 
 end subroutine
-

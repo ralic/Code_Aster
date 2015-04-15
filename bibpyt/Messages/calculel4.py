@@ -72,16 +72,6 @@ Risques et conseils :
  on peut faire une double projection en passant par un maillage intermédiaire linéaire.
 """),
 
-    10 : _(u"""
- Erreur d'utilisation :
-   On ne trouve pas de variables de commandes ('TEMP', 'HYDR', ...) :
-   Option: %(k2)s  type_élément: %(k3)s )
-
- Risques & conseils :
-   La cause la plus fréquente de cette erreur est d'avoir oublié de
-   renseigner AFFE_MATERIAU/AFFE_VARC.
-   (Ou de n'avoir renseigné que AFFE_VARC/VALE_REF sans avoir renseigné EVOL ou CHAM_GD)
-"""),
 
     11 : _(u"""
  Erreur d'utilisation lors de l'affectation des variables de commande (AFFE_MATERIAU/AFFE_VARC):
@@ -90,11 +80,6 @@ Risques et conseils :
    L'absence de ces 2 mots clés n'est permise que pour NOM_VARC='TEMP' (modélisations THM)
 """),
 
-    12 : _(u"""
- Erreur de programmation (catalogue des éléments finis) :
- Les éléments finis ayant l'attribut VF_AVEC_VOISIN='OUI' ne peuvent créer que des
- matrices élémentaires non-symétriques.
-"""),
 
     13 : _(u"""
  Erreur d'utilisation (AFFE_MATERIAU/AFFE_VARC) :
@@ -272,32 +257,6 @@ Erreur utilisateur :
  erreur dans etenca pour le problème dual
 """),
 
-    69 : _(u"""
- Erreur utilisateur :
-    On ne trouve pas la variable de commande :  %(k1)s
-    pour la maille                : %(k2)s
-    pour l'instant de calcul      : '%(k3)s'
-
- Conseils :
-    Les variables de commande sont des variables connues a priori qui influencent
-    le calcul du comportement des matériaux (exemple : la température).
-
-    Lorsque le comportement mécanique dépend d'une variable de commande, il faut que l'utilisateur
-    la fournisse au calcul.
-    Cela se fait via la commande AFFE_MATERIAU / AFFE_VARC.
-
-    Les variables de commande les plus utilisées sont :
-      'TEMP'  : la température
-      'HYDR'  : l'hydratation
-      'SECH'  : le séchage
-      'CORR'  : la corrosion
-      'IRRA'  : l'irradiation
-
-    Attention au fait que les variables de commandes doivent pouvoir être calculées pour TOUS
-    les instants du calcul. Pour cela, si on utilise une structure de données EVOL_XXX pour
-    renseigner une variable de commande (AFFE_MATERIAU/AFFE_VARC/EVOL), il faut faire attention
-    à utiliser éventuellement les mots clés PROL_GAUCHE et PROL_DROIT.
-"""),
 
     70 : _(u"""
 Erreur utilisateur dans CREA_CHAMP :
@@ -395,10 +354,6 @@ Conseil :
  tous les triangles aient au moins un sommet intérieur.
 """),
 
-    91 : _(u"""
- On ne trouve pas de routine te0NPQ.
- NPQ doit être compris entre 1 et 600 ici : NPQ = %(k1)s
-"""),
 
     92 : _(u"""
   relation :  %(k1)s  non implantée sur les poulies
@@ -406,22 +361,6 @@ Conseil :
 
     93 : _(u"""
   déformation :  %(k1)s  non implantée sur les poulies
-"""),
-
-    94 : _(u"""
- l'attribut:  %(k1)s  n'existe pas pour le type:  %(k2)s
-"""),
-
-    95 : _(u"""
- Erreur de programmation ou d'utilisation :
-   On ne trouve pas dans les arguments de la routine calcul de champ a associer
-   au paramètre: %(k1)s  (option: %(k2)s  type_élément: %(k3)s )
-"""),
-
-    96 : _(u"""
- Erreur de programmation :
- on n'a pas pu extraire toutes les composantes voulues du champ global associe
- au paramètre: %(k1)s  (option: %(k2)s  type_élément: %(k3)s )
 """),
 
     98 : _(u"""

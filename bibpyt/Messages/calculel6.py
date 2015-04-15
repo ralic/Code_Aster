@@ -201,21 +201,6 @@ Conseils :
  "sous-points" différents (COQUE_NCOU, TUYAU_NCOU, ...) ?
 """),
 
-    58: _(u"""
- Erreur de programmation :
- Pour la variable de commande %(k1)s, on cherche à utiliser la famille
- de points de Gauss '%(k2)s'.
- Mais cette famille n'est pas prévue dans la famille "liste" (MATER).
-
- Contexte de l'erreur :
-    option       : %(k3)s
-    type_élément : %(k4)s
-
- Conseil :
- Émettez une fiche d'anomalie
-"""),
-
-
 
 
 
@@ -259,15 +244,6 @@ Conseils :
 
 """),
 
-    67: _(u"""
- Erreur utilisateur :
-   Un calcul élémentaire nécessite une ou plusieurs variables de commande (CVRC).
-   Sur la maille : %(k1)s, on ne trouve pas le bon nombre de "CVRC" :
-   On attend : %(i2)d "CVRC",  mais on n'en trouve que : %(i1)d
-
- Conseil :
-   Vérifier les occurrences de AFFE_MATERIAU/AFFE_VARC pour la maille concernée.
-"""),
 
     68: _(u"""
  la liste des composantes fournies à NOCART est incorrecte.

@@ -20,9 +20,9 @@ interface
                       nnos, npg, jpoids, jcoopg, jvf,&
                       jdfde, jdfd2, jgano)
         character(len=*), intent(in), optional :: elrefe
-        character(len=*), intent(in) :: fami
-        character(len=16) :: nomte
-        integer, intent(out), optional :: ndim
+        character(len=*), intent(in)    :: fami
+        character(len=16), intent(in)   :: nomte
+        integer, intent(out), optional  :: ndim
         integer, intent(out), optional  :: nno
         integer, intent(out), optional  :: nnos
         integer, intent(out), optional  :: npg

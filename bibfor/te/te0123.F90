@@ -1,6 +1,5 @@
 subroutine te0123(option, nomte)
 ! ======================================================================
-! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +15,6 @@ subroutine te0123(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
 !  TE0123
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
 !                          EN 2D
@@ -26,7 +24,8 @@ subroutine te0123(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    implicit none
+use module_calcul, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref2.h"
@@ -67,8 +66,6 @@ subroutine te0123(option, nomte)
     character(len=16) :: phenom
 !
 !
-    integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
-    common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !
     icontp=1
     ivarip=1
@@ -207,8 +204,8 @@ subroutine te0123(option, nomte)
         numa=zi(iadzi-1+1)
         codvoi='A2'
 !
-        call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
-                    jptvoi, jelvoi, nbvois, livois, tyvois,&
+        call voiuti(numa, codvoi, nvoima, nscoma, ca_jrepe_,&
+                    ca_jptvoi_, ca_jelvoi_, nbvois, livois, tyvois,&
                     nbnovo, nbsoco, lisoco)
 !
         if (zk16(icompo+2) .ne. 'PETIT') then

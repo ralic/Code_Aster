@@ -15,7 +15,8 @@ subroutine te0427(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
+use module_calcul, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
@@ -29,8 +30,6 @@ subroutine te0427(option, nomte)
 !          MODELISATION : VF1
 !          OPTION       : 'RIGI_MECA' OU 'CHAR_MECA_PESA_R'
 !.......................................................................
-    integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
-    common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 !
     character(len=16) :: codvoi
     integer :: nvoima, nscoma, nbvois
@@ -84,8 +83,8 @@ subroutine te0427(option, nomte)
 11  continue
     10 end do
 !
-    call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
-                jptvoi, jelvoi, nbvois, livois, tyvois,&
+    call voiuti(numa, codvoi, nvoima, nscoma, ca_jrepe_,&
+                ca_jptvoi_, ca_jelvoi_, nbvois, livois, tyvois,&
                 nbnovo, nbsoco, lisoco)
     do 1,kvois=1,nbvois
     nnov=nbnovo(kvois)

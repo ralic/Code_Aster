@@ -74,7 +74,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL_30":
+   if err.id_message == "CALCUL_37":
       is_ok = 1
 
 # TEST_RESU

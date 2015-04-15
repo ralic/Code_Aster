@@ -1,5 +1,6 @@
 subroutine te0520(option, nomte)
-    implicit none
+use module_calcul, only : ca_jelvoi_, ca_jptvoi_, ca_jrepe_
+implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/ismaem.h"
@@ -45,8 +46,6 @@ subroutine te0520(option, nomte)
     integer :: iinstp, ideplm, ideplp, icompo, icarcr
     integer :: icontm, ivarip, ivarim, ivectu, icontp
 ! =====================================================================
-    integer :: evfini, calvoi, jrepe, jptvoi, jelvoi
-    common /caii19/evfini,calvoi,jrepe,jptvoi,jelvoi
 ! =====================================================================
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: dimdep, dimdef, dimcon, nbvari, nddls, nddlm, nddlfa, nddlk
@@ -150,8 +149,8 @@ subroutine te0520(option, nomte)
         call utmess('F', 'VOLUFINI_9', si=typvf)
     endif
     if (option .ne. 'FORC_NODA') then
-        call voiuti(numa, codvoi, nvoima, nscoma, jrepe,&
-                    jptvoi, jelvoi, nbvois, livois, tyvois,&
+        call voiuti(numa, codvoi, nvoima, nscoma, ca_jrepe_,&
+                    ca_jptvoi_, ca_jelvoi_, nbvois, livois, tyvois,&
                     nbnovo, nbsoco, lisoco)
     endif
 ! =====================================================================

@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mecoel(iacti2)
-        integer :: iacti2
+    subroutine mecoel(iactif)
+        integer :: iactif
     end subroutine mecoel
 end interface

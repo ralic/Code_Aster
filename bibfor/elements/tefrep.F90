@@ -80,7 +80,7 @@ subroutine tefrep(option, nomte, param, iforc)
         valk(2) = option
         valk(3) = nomte
         valk(4) = nommai
-        call utmess('F', 'CALCULEL2_72', nk=4, valk=valk)
+        call utmess('F', 'CALCUL_18', nk=4, valk=valk)
     endif
 !
 9999  continue

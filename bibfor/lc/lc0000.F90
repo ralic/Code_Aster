@@ -6,7 +6,8 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
                   sigp, vip, ndsde, dsidep, icomp,&
                   nvi, nwkout, wkout, codret)
 ! aslint: disable=W1501,W1504
-    implicit none
+use module_calcul, only : ca_iactif_
+implicit none
 !       ================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -238,20 +239,11 @@ subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
     integer :: numlc
     integer :: codret
 !     ----------------------------------------------------------------
-!     COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
-    integer :: nfpgmx
-    parameter (nfpgmx=10)
-    integer :: nfpg, jfpgl, decala(nfpgmx), km, kp, kr, iredec
-    common /caii17/nfpg,jfpgl,decala,km,kp,kr,iredec
-    real(kind=8) :: instm1, instp1, td1, tf1
-    common /carr01/instm1,instp1,td1,tf1
-    integer :: nute, jnbelr, jnoelr, iactif, jpnlfp, jnolfp, nblfpg
-    common /caii11/nute,jnbelr,jnoelr,iactif,jpnlfp,jnolfp,nblfpg
 !     ------------------------------------------------------------------
 !
 !     NUMLC doit etre compris entre 1 et 100
 !
-    if (iactif .ne. 2) then
+    if (ca_iactif_ .ne. 2) then
         if (option(1:9) .ne. 'RIGI_MECA') then
 !           DEFORMATION MECANIQUE ASSOCIEE A LA VARIABLE DE
 !           COMMANDE PTOT. CE CALCUL N'EST POSSIBLE QUE :

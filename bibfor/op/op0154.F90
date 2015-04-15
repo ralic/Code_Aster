@@ -57,7 +57,7 @@ subroutine op0154()
 #include "asterfort/vtgpld.h"
 #include "asterfort/assert.h"
 #include "asterfort/modi_alea.h"
-    integer :: n1, n2, nbocc, nboc1, nboc2, nop, i, dim, ier
+    integer :: n1, n2, nbocc, nboc1, nboc2, i, dim, ier
     aster_logical :: bidim
     character(len=8) :: ma, ma2, depla, coutur, mab
     character(len=16) :: kbi1, kbi2, option

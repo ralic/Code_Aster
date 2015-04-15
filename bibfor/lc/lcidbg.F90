@@ -1,7 +1,8 @@
 subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
                   neps, epsm, deps, nsig, sigm, vim, option)
-    implicit none
-    
+use module_calcul, only : ca_jvcnom_, ca_nbcvrc_
+implicit none
+
 #include "jeveux.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/utmess.h"
@@ -12,7 +13,7 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
 #include "asterfort/utlcal.h"
 
     integer :: kpg, ksp, neps, nsig, iv, nbvari, iadzi, iazk24
-    integer :: nval,nimp, nbcvrc, jvcnom, ier, nbvrc, iref(10), ier2, nl1
+    integer :: nval,nimp,   ier, nbvrc, iref(10), ier2, nl1
     character(len=*) ::  fami
     character(len=8) ::  typmod(*),nomail,novrc,nomvrc(10)
     character(len=16)::  compor(*), option, algo
@@ -20,7 +21,6 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
     real(kind=8) :: deps(neps), epsm(neps),vim(*),sigm(nsig), epsp(neps)
     real(kind=8) :: crit(*), lvalr(20), vref(10), vrcm(10),vrcp(10), valvrc
     real(kind=8) :: instam, instap,rac2
-    common /caii14/nbcvrc,jvcnom
     data nimp / 0/
     save nimp
 !
@@ -46,7 +46,7 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
 ! ======================================================================
 !.......................................................................
 !
-!   but: impression d'un fichier de commande simu_point_mat en cas d'echec 
+!   but: impression d'un fichier de commande simu_point_mat en cas d'echec
 !   l'ecriture de defi_materiau est laisse pour le moment a l'utilisateur
 !
 !       in      fami    famille de point de gauss (rigi,mass,...)
@@ -94,11 +94,11 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
     rac2=sqrt(2.0d0)
     if (compor(3) .eq. 'SIMO_MIEHE') goto 999
     if (option(1:4).eq. 'RIGI') goto 999
-    
+
     nbvrc=0
-    if (nbcvrc .gt. 0) then
-       do iv=1,nbcvrc
-          novrc=zk8(jvcnom-1+iv)
+    if (ca_nbcvrc_ .gt. 0) then
+       do iv=1,ca_nbcvrc_
+          novrc=zk8(ca_jvcnom_-1+iv)
           call rcvarc(' ', novrc, '-', fami, kpg,ksp, valvrc , ier)
           if (ier .eq. 0) then
               nbvrc=nbvrc+1
@@ -133,8 +133,8 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
        nval=2
     else if (typmod(1).eq.'3D') then
        nval=3
-    endif 
-    
+    endif
+
     do iv=1,neps
        epsp(iv)=epsm(iv)+deps(iv)
     enddo
@@ -148,15 +148,15 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
        sigm(5)=0.d0
        sigm(6)=0.d0
     endif
-    
+
     lvalr(1)=instam
     lvalr(2)=instap
     file='REPE_OUT/simu_point_mat_'//nomail
-!   longueur de la chaine    
+!   longueur de la chaine
     nl1 = lxlgut(file)
     file=file(1:nl1)//'_inst_'
     call codree(instap, 'E', file(nl1+7:64))
- 
+
     call utmess('I','COMPOR2_70',sk=nomail,si=kpg, nr=2, valr=lvalr,fname=file)
     call utmess('I','COMPOR2_71',sk='EXX', nr=4, valr=[instam,epsm(1),instap,epsp(1)],fname=file)
     call utmess('I','COMPOR2_71',sk='EYY', nr=4, valr=[instam,epsm(2),instap,epsp(2)],fname=file)
@@ -166,7 +166,7 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
        call utmess('I','COMPOR2_71',sk='EXZ', nr=4, valr=[instam,epsm(5),instap,epsp(5)],fname=file)
        call utmess('I','COMPOR2_71',sk='EYZ', nr=4, valr=[instam,epsm(6),instap,epsp(6)],fname=file)
     endif
-    
+
     if (nbvrc .gt. 0) then
        do iv=1,nbvrc
           call utmess('I','COMPOR2_81',sk=nomvrc(iv), nr=4, &
@@ -193,19 +193,19 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
     call utmess('I','COMPOR2_86',fname=file)
 
     call utmess('I','COMPOR2_78',sk=compor(1),fname=file)
-    
+
     if ((compor(1).eq.'MONOCRISTAL').or.compor(1).eq.'POLYCRISTAL') then
         call utmess('I','COMPOR2_87',sk=compor(7),fname=file)
     endif
-    
-    call utlcal('VALE_NOM', algo, crit(6))   
-     
+
+    call utlcal('VALE_NOM', algo, crit(6))
+
     call utmess('I','COMPOR2_88',si=int(crit(1)), sr=crit(3), sk=algo, fname=file)
 
     call utmess('I','COMPOR2_89',si=int(crit(5)), sr=crit(4), fname=file)
-    
+
     call utmess('I','COMPOR2_90',sk=compor(3), fname=file)
-    
+
     call utmess('I','COMPOR2_85',fname=file)
 
     if (nbvrc.gt.0) then
@@ -225,6 +225,6 @@ subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
     else
        call utmess('I','COMPOR2_80',fname=file)
     endif
-    
+
 999 continue
 end subroutine

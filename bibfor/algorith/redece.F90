@@ -6,8 +6,8 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
                   sigf, vinf, ndsde, dsde, nwkout,&
                   wkout, codret)
 ! aslint: disable=W1306,W1504
-    implicit none
-!       ================================================================
+use module_calcul, only : ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
+implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,24 +163,19 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: dsdelo(ndsde)
     real(kind=8) :: deltat, td, tf
 !       ----------------------------------------------------------------
-!       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
-    integer :: nfpgmx
-    parameter (nfpgmx=10)
-    integer :: nfpg, jfpgl, decala(nfpgmx), km, kp, kr, iredec
-    common /caii17/nfpg,jfpgl,decala,km,kp,kr,iredec
-    real(kind=8) :: timed1, timef1, td1, tf1
-    common /carr01/timed1,timef1,td1,tf1
+    integer :: ca_nfpgmx
+    parameter (ca_nfpgmx=10)
 !       ----------------------------------------------------------------
 !       ----------------------------------------------------------------
     common /tdim/   ndt  , ndi
 !       ----------------------------------------------------------------
 !       ----------------------------------------------------------------
 !       -- POUR LES VARIABLES DE COMMANDE :
-    iredec=1
-    timed1=instam
-    timef1=instap
-    td1=instam
-    tf1=instap
+    ca_iredec_=1
+    ca_timed1_=instam
+    ca_timef1_=instap
+    ca_td1_=instam
+    ca_tf1_=instap
 !
 !
     ipal = int(crit(5))
@@ -255,10 +250,10 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
 ! --       INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
         if (k .eq. 1) then
             td = instam
-            td1 = td
+            ca_td1_ = td
             deltat = (instap - instam) / npal
             tf = td + deltat
-            tf1=tf
+            ca_tf1_=tf
             if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
                 call r8inir(ndsde, 0.d0, dsde, 1)
             endif
@@ -270,9 +265,9 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
 ! --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
         else if (k .gt. 1) then
             td = tf
-            td1=td
+            ca_td1_=td
             tf = tf + deltat
-            tf1=tf
+            ca_tf1_=tf
             call lcsove(eps, deps, eps)
             call lceqvn(ndt, sigf, sd)
             call lceqvn(nvi, vinf, vind)
