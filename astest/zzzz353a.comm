@@ -1,5 +1,6 @@
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'));
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+
 # TITRE VALIDATION SYNTAXIQUE OPERATEURS PLUGIN CONDUITE FORCEE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,77 +18,63 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-
-############################
-## CAS DE CHARGE DU CALCUL ##
-#############################
-
-#0 : conditions aux limites seules
-#1 : gravite seule
-#2 : gravite, poids de l'eau, sans pression, T_moy
-#3 : gravite, poids de l'eau, PMIS, T_moy
-#4 : gravite, poids de l'eau, PMIS, T_max_S
-#5 : gravite, poids de l'eau, PMIS, T_min_S
-#6 : gravite, T_max_HS
-#7 : gravite, T_min_HS
-
+#CFP_TMOY : conduite pleine, poids de l'acier+de l'eau, pression interne (hydrostatique + surpression), Temp moyenne en service
 #############################
 #### Lecture du maillage
-MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
-## Creation d'un groupe permettant de definir l'abscisse curviligne de la conduite
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',);
+##Creation d'un groupe permettant de definir l'abscisse curviligne de la conduite
+
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ABSC_CURV=_F(GROUP_MA='CF_all',
+                                GROUP_NO_ORIG='No_aval',),);
+##Creation d'un groupe permettant de definir l'abscisse curviligne de la conduite
+
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
                                  NOM='abs_curv',
                                  GROUP_MA='CF_all',
-                                 GROUP_NO_ORIG='No_amont'),);
+                                 GROUP_NO_ORIG='No_aval',),);
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1e+11,
                             NU=0.3,
                             RHO=7800.0,
                             ALPHA=1.2e-05,),);
 
-RESSORT=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.0E13,
-                                     # RIGI_TAN=rigidite_normale_contact,
-                                     COULOMB=0.,                                     
+RESSORT=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1e+13,
+                                     RIGI_TAN=1e+13,
+                                     COULOMB=0.4,
                                      DIST_1=1.0,),);
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=7.0,
-                                    PAS=1.0,),);
+L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
+                                   VALE=(0.0,1.0,),
+                                   PAS_MINI=1e-06,
+                                   PAS_MAXI=1.0,),);
 
-L_GRAV=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                                           1.0,1.0,),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+L_INST2=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
+                                    VALE=(0.0,1.0,2.0,),
+                                    PAS_MINI=1e-06,
+                                    PAS_MAXI=1.0,),);
 
-L_PRESS=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                                            1.0,0.0,
-                                            2.0,0.0,
-                                            3.0,1.0,
-                                            4.0,1.0,
-                                            5.0,1.0,
-                                            6.0,0.0,
-                                            7.0,0.0,),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+L_GRAV=DEFI_FONCTION(
+                     NOM_PARA='INST',
+                     VALE=(0.0 ,0.0 ,
+                           1.0 ,1.0 ,),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
 
-L_TEMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,25.,
-                                           1.0,25.,
-                                           2.0,10.,
-                                           3.0,10.,
-                                           4.0,45.,
-                                           5.0,-5.,
-                                           6.0,55.,
-                                           7.0,-15.,),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
-
-L_EAU=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
-                                          1.0,0.0,
-                                          2.0,1.0,
-                                          3.0,1.0,
-                                          4.0,1.0,
-                                          5.0,1.0,
-                                          6.0,0.0,
-                                          7.0,0.0,),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+L_RAMP=DEFI_FONCTION(
+                     NOM_PARA='INST',
+                     VALE=(0.0 ,0.0 ,
+                           1.0 ,0.0 ,
+                           2.0 ,1.0 ,),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
 
 MODE=AFFE_MODELE(MAILLAGE=MAIL,
                  AFFE=(_F(GROUP_MA='CF_all',
@@ -98,381 +85,358 @@ MODE=AFFE_MODELE(MAILLAGE=MAIL,
                           MODELISATION='DIS_T',),),);
 
 TUYAU=AFFE_CARA_ELEM(MODELE=MODE,
-                     POUTRE=(_F(GROUP_MA=('CF_all', ),
-                                SECTION='CERCLE',
-                                TUYAU_NSEC=8,
-                                TUYAU_NCOU=1,
-                                MODI_METRIQUE='OUI',
-                                CARA=('EP', 'R'),
-                                VALE=(0.045, 0.85),
-                                VARI_SECT='CONSTANT',),),
+                     POUTRE=_F(GROUP_MA='CF_all',
+                               SECTION='CERCLE',
+                               VARI_SECT='CONSTANT',
+                               CARA=('EP','R',),
+                               VALE=(0.045,0.85,),
+                               MODI_METRIQUE='OUI',
+                               TUYAU_NSEC=16,
+                               TUYAU_NCOU=1,),
                      DISCRET=(_F(CARA='K_T_D_L',
-                                GROUP_MA='pilette',
-                                VALE=(0.,0.,0.,),),
+                                 GROUP_MA='pilette',
+                                 VALE=(0.0,0.0,0.0,),),
                               _F(CARA='M_T_D_L',
-                                GROUP_MA='pilette',
-                                VALE=0.,),),
+                                 GROUP_MA='pilette',
+                                 VALE=0.0,),),
                      ORIENTATION=_F(GROUP_NO='No_amont',
                                     CARA='GENE_TUYAU',
                                     VALE=(0.0,0.0,1.0,),),);
 
-CH_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+CH_TREF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                    OPERATION='AFFE',
                    MAILLAGE=MAIL,
                    AFFE=_F(GROUP_MA='CF_all',
                            NOM_CMP='TEMP',
-                           VALE_F=L_TEMP,),);
+                           VALE=25.0,),);
 
-RES_TEMP=CREA_RESU(OPERATION='AFFE',
-                   TYPE_RESU='EVOL_VARC',
-                   NOM_CHAM='TEMP',
-                   AFFE=_F(CHAM_GD=CH_TEMP,
-                           CARA_ELEM=TUYAU,
-                           LIST_INST=L_INST,),);
+R_TREF=CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='EVOL_VARC',
+                 NOM_CHAM='TEMP',
+                 AFFE=(
+                 _F(CHAM_GD=CH_TREF,
+                    CARA_ELEM=TUYAU,
+                    INST=0.0,),
+                 _F(CHAM_GD=CH_TREF,
+                    CARA_ELEM=TUYAU,
+                    INST=2.0,),),);
 
-MATE=AFFE_MATERIAU(MAILLAGE=MAIL,
-                   AFFE=(_F(GROUP_MA='CF_all',
-                            MATER=ACIER,),
-                         _F(GROUP_MA='pilette',
-                            MATER=RESSORT,),),
-                   AFFE_VARC=_F(NOM_VARC='TEMP',
-                                EVOL=RES_TEMP,
-                                VALE_REF=25.0,),);
+M_TREF=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(GROUP_MA='CF_all',
+                              MATER=ACIER,),
+                           _F(GROUP_MA='pilette',
+                              MATER=RESSORT,),),
+                     AFFE_VARC=_F(NOM_VARC='TEMP',
+                                  EVOL=R_TREF,
+                                  VALE_REF=25.0,),);
+
+CHTMOY=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAIL,
+                  AFFE=_F(GROUP_MA='CF_all',
+                          NOM_CMP='TEMP',
+                          VALE=15.0,),);
+
+R_TMOY=CREA_RESU(OPERATION='AFFE',
+                 TYPE_RESU='EVOL_VARC',
+                 NOM_CHAM='TEMP',
+                 AFFE=(
+                 _F(CHAM_GD=CH_TREF,
+                    CARA_ELEM=TUYAU,
+                    INST=0.0,),
+                 _F(CHAM_GD=CHTMOY,
+                    CARA_ELEM=TUYAU,
+                    INST=1.0,),
+                 _F(CHAM_GD=CHTMOY,
+                    CARA_ELEM=TUYAU,
+                    INST=2.0,),),);
+
+M_TMOY=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=(_F(GROUP_MA='CF_all',
+                              MATER=ACIER,),
+                           _F(GROUP_MA='pilette',
+                              MATER=RESSORT,),),
+                     AFFE_VARC=_F(NOM_VARC='TEMP',
+                                  EVOL=R_TMOY,
+                                  VALE_REF=25.0,),);
 
 COND_LIM=AFFE_CHAR_MECA(MODELE=MODE,
-                        DDL_IMPO=(
-                                 _F(GROUP_NO='No_amont',
-                                     DX=0.0,DY=0.0,DZ=0.0,DRX=0.0,DRY=0.0,DRZ=0.0,WO=0.0,WI1=0.0,WO1=0.0,UI2=0.0,VI2=0.0,WI2=0.0,UO2=0.0,VO2=0.0,WO2=0.0,UI3=0.0,VI3=0.0,WI3=0.0,UO3=0.0,VO3=0.0,WO3=0.0,),
-                                 _F(GROUP_NO='No_aval',
-                                     DX=0.0,DY=0.0,DZ=0.0,DRX=0.0,DRY=0.0,DRZ=0.0,WO=0.0,WI1=0.0,WO1=0.0,UI2=0.0,VI2=0.0,WI2=0.0,UO2=0.0,VO2=0.0,WO2=0.0,UI3=0.0,VI3=0.0,WI3=0.0,UO3=0.0,VO3=0.0,WO3=0.0,),
-                                 _F(GROUP_NO='ancrage',
-                                     DX=0.0,DY=0.0,DZ=0.0,),
-                                 _F(GROUP_MA='massif',
-                                     DX=0.0,DY=0.0,DZ=0.0,DRX=0.0,DRY=0.0,DRZ=0.0,WO=0.0,WI1=0.0,WO1=0.0,UI2=0.0,VI2=0.0,WI2=0.0,UO2=0.0,VO2=0.0,WO2=0.0,UI3=0.0,VI3=0.0,WI3=0.0,UO3=0.0,VO3=0.0,WO3=0.0,),
-                                  ),);
+                        DDL_IMPO=(_F(GROUP_NO='No_amont',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     DRX=0.0,
+                                     DRY=0.0,
+                                     DRZ=0.0,),
+                                  _F(GROUP_NO='No_aval',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     DRX=0.0,
+                                     DRY=0.0,
+                                     DRZ=0.0,),
+                                  _F(GROUP_NO='ancrage',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(GROUP_MA='massif',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,
+                                     DRX=0.0,
+                                     DRY=0.0,
+                                     DRZ=0.0,),),);
 
 GRAV=AFFE_CHAR_MECA(MODELE=MODE,
                     PESANTEUR=_F(GRAVITE=9.81,
                                  DIRECTION=(0.0,0.0,-1.0,),),);
 
 EAU=AFFE_CHAR_MECA(MODELE=MODE,
-                   FORCE_POUTRE=(_F(GROUP_MA=('CF_all', ),
-                                    FZ=-2.2266744790664714E4,
-                                    TYPE_CHARGE='FORCE',),),);
+                   FORCE_POUTRE=_F(GROUP_MA='CF_all',
+                                   TYPE_CHARGE='FORCE',
+                                   FZ=-22266.7447907,),);
 
-FPSTAT=DEFI_FONCTION(NOM_PARA='Z',VALE=(-10.0,1000.*9.81*10.,
-                                        0.0,0.0,),INTERPOL=('LIN','LIN',),PROL_DROITE='LINEAIRE',PROL_GAUCHE='LINEAIRE',);
+FPSTAT=DEFI_FONCTION(
+                     NOM_PARA='Z',
+                     VALE=(-10.0 ,98100.0 ,
+                           0.0 ,0.0 ,),
+                     INTERPOL=('LIN','LIN',),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',);
 
 PSTAT=AFFE_CHAR_MECA_F(MODELE=MODE,
-                       FORCE_TUYAU=(_F(GROUP_MA='CF_all',PRES=FPSTAT,),),);
+                       FORCE_TUYAU=_F(GROUP_MA='CF_all',
+                                      PRES=FPSTAT,),);
 
-PSERV=AFFE_CHAR_MECA(MODELE=MODE,
-                     FORCE_TUYAU=(_F(GROUP_MA='CF_all',PRES=1.E+5,),),);
+F_SURP = FORMULE(VALE='ABSC*9.81*1000.',
+                 NOM_PARA='ABSC',);
 
-PMIS_0 = DEFI_FONCTION(VALE=(-9.6592589099382931, 0.0, -9.6592582628906811, 1.4116654013050691E4, -9.0122106501343797, 1.2339817763050691E4, -8.3651630373780748, 1.0562981513050689E4, -8.06486719355064, 9810.0, -7.7645713497232043, 9810.0, -6.7655671246769105, 9810.0, -5.176380894118509, 9810.0, -2.5881904470592545, 9810.0, 0.0, 9810.0, 2.5881904470592544E-06, 0.0),
-                       NOM_PARA='Z',
-                       PROL_DROITE='EXCLU',
-                       PROL_GAUCHE='EXCLU',
-                       INFO=1,
-                       INTERPOL=('LIN', ),
-                       VERIF='CROISSANT',);
+SURP=AFFE_CHAR_MECA_F(MODELE=MODE,
+                      FORCE_TUYAU=_F(GROUP_MA='CF_all',
+                                     PRES=F_SURP,),);
 
-MAIL = DEFI_GROUP(reuse=MAIL,
-                  MAILLAGE=MAIL,
-                  CREA_GROUP_MA=_F(NOM='GMSP_0',
-                                   MAILLE=('M2', 'M3', 'M4', 'M5'),
-                                   TYPE_MAILLE='TOUT',),
-                  ALARME='NON',);
+CFP_TMOY=STAT_NON_LINE(MODELE=MODE,
+                       CHAM_MATER=M_TMOY,
+                       CARA_ELEM=TUYAU,
+                       EXCIT=(_F(CHARGE=COND_LIM,),
+                              _F(CHARGE=GRAV,
+                                 FONC_MULT=L_GRAV,),
+                              _F(CHARGE=EAU,
+                                 FONC_MULT=L_RAMP,),
+                              _F(CHARGE=PSTAT,
+                                 FONC_MULT=L_RAMP,),
+                              _F(CHARGE=SURP,
+                                 FONC_MULT=L_RAMP,),),
+                       COMPORTEMENT=(_F(GROUP_MA='pilette',
+                                        RELATION='DIS_CHOC',),
+                                     _F(GROUP_MA='CF_all',
+                                        RELATION='ELAS',),),
+                       INCREMENT=_F(LIST_INST=L_INST2,),
+                       NEWTON=_F(REAC_INCR=1,
+                                 MATRICE='TANGENTE',
+                                 REAC_ITER=1,),);
 
-SURP_0 = AFFE_CHAR_MECA_F(MODELE=MODE,
-                          FORCE_TUYAU=_F(GROUP_MA=('GMSP_0', ),
-                                         PRES=PMIS_0,),);
+CFP_TMOY=CALC_CHAMP(reuse =CFP_TMOY,
+                    RESULTAT=CFP_TMOY,
+                    INST=2.0,
+                    GROUP_MA='CF_all',
+                    CONTRAINTE=('SIGM_ELNO','SIGM_ELGA',),
+                    CRITERES='SIEQ_ELGA',);
 
-## Resolution du probleme EF pour les differents cas de charge
+CFP_TMOY=CALC_CHAMP(reuse =CFP_TMOY,
+                    RESULTAT=CFP_TMOY,
+                    INST=2.0,
+                    GROUP_MA='pilette',
+                    CONTRAINTE='EFGE_ELNO',
+                    FORCE='REAC_NODA',);
 
-RESU=STAT_NON_LINE(MODELE=MODE,
-                   CHAM_MATER=MATE,
-                   CARA_ELEM=TUYAU,
-                   EXCIT=(_F(CHARGE=COND_LIM,),
-                          _F(CHARGE=GRAV,FONC_MULT=L_GRAV,),
-                          _F(CHARGE=EAU,FONC_MULT=L_EAU,),
-                          _F(CHARGE=PSTAT,FONC_MULT=L_EAU,),
-                          _F(CHARGE=PSERV,FONC_MULT=L_PRESS,),
-                          _F(CHARGE=SURP_0,FONC_MULT=L_PRESS,),),
-                   COMPORTEMENT=(_F(RELATION='DIS_CHOC',
-                                 GROUP_MA='pilette',),
-                              _F(RELATION='ELAS',
-                                 GROUP_MA='CF_all',),),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_INCR=1,
-                             REAC_ITER=1,),);
+DEPL4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              INTITULE='Deplacement ',
+                              RESULTAT=CFP_TMOY,
+                              NOM_CHAM='DEPL',
+                              INST=2.0,
+                              GROUP_NO='abs_curv',
+                              NOM_CMP=('DX','DY','DZ',),),);
 
-#####################################
-## Impressions et post-traitements ##
-#####################################
+TA_DEPL=CREA_TABLE(LISTE=(_F(PARA='ABSC_CURV',
+                             LISTE_R=(1.0,2.0,3.0,4.0,),),
+                          _F(PARA='--',
+                             LISTE_K=('--','--','--','--',),),
+                          _F(PARA='DZ-CFP-TMOY',
+                             LISTE_R=(1.0,2.0,3.0,4.0,),),),);
 
-RESU=CALC_CHAMP(reuse =RESU,
-                RESULTAT=RESU,
-                GROUP_MA='CF_all',
-                CONTRAINTE=('SIGM_ELNO','SIGM_ELGA'),
-                CRITERES='SIEQ_ELGA',);
+IMPR_TABLE(TABLE=TA_DEPL,
+           FORMAT='TABLEAU',
+           UNITE=8,
+           SEPARATEUR=';',
+           COMMENTAIRE='#',
+           COMM_PARA=
+"""Deplacements de la CF - Depl X - Depl Y - Depl Z - et module - selon l abscisse curviligne pour les differents cas de charge;
+""",);
 
-RESU=CALC_CHAMP(RESULTAT=RESU,
-                reuse =RESU,
-                GROUP_MA='pilette',
-                CONTRAINTE='EFGE_ELNO',
-                FORCE='REAC_NODA',);
+DETRUIRE(CONCEPT=_F(NOM=TA_DEPL,),
+         INFO=1,);
 
-P_ANGL_0 = POST_CHAMP(GROUP_MA=('massif', ),
-                      RESULTAT=RESU,
-                      EXTR_TUYAU=_F(NUME_COUCHE=1,
-                                    NIVE_COUCHE='SUP',
-                                    ANGLE=90,
-                                    NOM_CHAM=('SIGM_ELGA', ),),);
+VMIS4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
+                         NOM_CHAM='SIEQ_ELGA',
+                         INST=2.0,
+                         NOM_CMP='VMIS',
+                         GROUP_MA='CF_all',),);
 
-IMPR_RESU(FORMAT='RESULTAT',
-          RESU=_F(SOUS_TITRE=('Angle=90; SIXX=Contrainte longitudinale ; SIYY=Contrainte circonferencielle ', ),
-                  RESULTAT=P_ANGL_0,
-                  NOM_CMP=('SIXX', 'SIYY'),
-                  GROUP_MA=('massif', ),
-                  IMPR_COOR='NON',
-                  FORM_TABL='EXCEL',
-                  TOUT_ORDRE='OUI',
-                  NOM_CHAM=('SIGM_ELGA', ),),
-          MODELE=MODE,
-          UNITE=9,);
+TRESCA4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
+                           NOM_CHAM='SIEQ_ELGA',
+                           INST=2.0,
+                           NOM_CMP='TRESCA',
+                           GROUP_MA='CF_all',),);
 
-## Calcul de la contrainte de Von Mises maxi aux points de Gauss
+DETRUIRE(CONCEPT=(_F(NOM=TRESCA4,),
+                  _F(NOM=VMIS4,),),
+         INFO=1,);
 
-MAXVMIS=POST_CHAMP(RESULTAT=RESU,
-                   GROUP_MA='CF_all',
-                   MIN_MAX_SP=_F(NOM_CHAM='SIEQ_ELGA',
-                                 NOM_CMP='VMIS',
-                                 TYPE_MAXI='MAXI_ABS',
-                                 NUME_CHAM_RESU=1),);
+SIXXMAX4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
+                            NOM_CHAM='SIGM_ELGA',
+                            INST=2.0,
+                            NOM_CMP='SIXX',
+                            GROUP_MA='CF_all',),);
 
-## Calcul de la contrainte de Tresca maxi aux points de Gauss
-MAXTRESC=POST_CHAMP(RESULTAT=RESU,
-                   GROUP_MA='CF_all',
-                   MIN_MAX_SP=_F(NOM_CHAM='SIEQ_ELGA',
-                                 NOM_CMP='TRESCA',
-                                 TYPE_MAXI='MAXI_ABS',
-                                 NUME_CHAM_RESU=1),);
+SIYYMAX4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
+                            NOM_CHAM='SIGM_ELGA',
+                            INST=2.0,
+                            NOM_CMP='SIYY',
+                            GROUP_MA='CF_all',),);
 
-## Calcul de la contrainte longitudinelle maxi aux points de Gauss
-MAXSIXX=POST_CHAMP(RESULTAT=RESU,
-                   GROUP_MA='CF_all',
-                   MIN_MAX_SP=_F(NOM_CHAM='SIGM_ELGA',
-                                 NOM_CMP='SIXX',
-                                 TYPE_MAXI='MAXI_ABS',
-                                 NUME_CHAM_RESU=1),);
+P_ANG=POST_CHAMP(RESULTAT=CFP_TMOY,
+                 INST=2.0,
+                 GROUP_MA='CF_all',
+                 EXTR_TUYAU=_F(NOM_CHAM='SIGM_ELGA',
+                               NUME_COUCHE=1,
+                               NIVE_COUCHE='SUP',
+                               ANGLE=45,),);
 
-## Calcul de la contrainte circonferencielle maxi aux points de Gauss
-MAXSIYY=POST_CHAMP(RESULTAT=RESU,
-                   GROUP_MA='CF_all',
-                   MIN_MAX_SP=_F(NOM_CHAM='SIGM_ELGA',
-                                 NOM_CMP='SIYY',
-                                 TYPE_MAXI='MAXI_ABS',
-                                 NUME_CHAM_RESU=1),);
+T_ANG=CREA_TABLE(RESU=_F(RESULTAT=P_ANG,
+                         NOM_CHAM='SIGM_ELGA',
+                         INST=2.0,
+                         NOM_CMP=('SIXX','SIYY',),
+                         GROUP_MA='CF_all',),);
 
-#### Impression des visualisations Salome
+PIL4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
+                        NOM_CHAM='EFGE_ELNO',
+                        INST=2.0,
+                        TOUT_CMP='OUI',
+                        GROUP_MA='pilette',),);
+
+PIL_G_4=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
+                           NOM_CHAM='REAC_NODA',
+                           INST=2.0,
+                           NOM_CMP=('DX','DY','DZ',),
+                           GROUP_NO='ancrage',),);
+
+CFP_TMOY=CALC_CHAMP(reuse =CFP_TMOY,
+                    RESULTAT=CFP_TMOY,
+                    INST=2.0,
+                    GROUP_MA='CF_all',
+                    FORCE='REAC_NODA',);
+
+MASS=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                             INTITULE='Massif-CFP-TMOY',
+                             RESULTAT=CFP_TMOY,
+                             NOM_CHAM='REAC_NODA',
+                             INST=2.0,
+                             GROUP_NO='No_amont',
+                             RESULTANTE=('DX','DY','DZ',),
+                             MOMENT=('DRX','DRY','DRZ',),
+                             POINT=(0.0,0.0,0.0,),
+                             REPERE='GLOBAL',),);
+
+IMPR_TABLE(TABLE=MASS,
+           UNITE=12,
+           NOM_PARA=('INTITULE','RESULT_X','RESULT_Y','RESULT_Z','MOMENT_X','MOMENT_Y','MOMENT_Z',),
+           SEPARATEUR=';',
+           COMM_PARA='Torseur du massif ',);
+
+FVM4=DEFI_FONCTION(
+                   NOM_PARA='ABSC',
+                   ABSCISSE=(1.0,2.0,3.0,4.0,),
+                   ORDONNEE=(10.0,20.0,30.0,40.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',
+                   VERIF='NON',);
+
+ABS_GAUS=DEFI_LIST_REEL(VALE=(1.0,2.0,3.0,4.0,),);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE='',
+              UNITE=54,
+              COURBE=_F(FONCTION=FVM4,
+                        LIST_PARA=ABS_GAUS,
+                        LEGENDE='CFP-TMOY',
+                        COULEUR=4,
+                        MARQUEUR=0,
+                        FREQ_MARQUEUR=0,),
+              TITRE='Contrainte de Von Mises Maxi',
+              BORNE_Y=(0.0,10000.0,),
+              LEGENDE_X='Abscisse curviligne de la CF',
+              LEGENDE_Y='Vmis Max',);
 
 IMPR_RESU(FORMAT='MED',
           UNITE=80,
-          RESU=(_F(RESULTAT=RESU,
+          RESU=_F(RESULTAT=CFP_TMOY,
                   NOM_CHAM='DEPL',
-                  NOM_CMP=('DX','DY','DZ',),),
-               _F(RESULTAT=MAXVMIS,),
-               _F(RESULTAT=MAXTRESC,),
-               _F(RESULTAT=MAXSIXX,),
-               _F(RESULTAT=MAXSIYY,),),);
+                  INST=2.0,
+                  NOM_CMP=('DX','DY','DZ',),
+                  NOM_RESU_MED='CFP_TMOY',),);
 
-## Impression des reactions aux pilettes (reperes global et local)
+TOTO=CREA_TABLE(RESU=_F(RESULTAT=CFP_TMOY,
+                        NOM_CHAM='DEPL',
+                        INST=2.0,
+                        TOUT_CMP='OUI',
+                        GROUP_NO='abs_curv',),);
 
-IMPR_RESU(MODELE=MODE,
-          FORMAT='RESULTAT',
-          UNITE=10,
-          RESU=(_F(RESULTAT=RESU,
-                   NOM_CHAM='REAC_NODA',
-                   TOUT_ORDRE='OUI',
-                   FORM_TABL='EXCEL',
-                   NOM_CMP=('DX','DY','DZ',),
-                   GROUP_NO='ancrage',
-                   SOUS_TITRE='Reactions aux pilettes',
-                   ),
-                ),);
-
-IMPR_RESU(MODELE=MODE,
-          FORMAT='RESULTAT',
-          UNITE=11,
-          RESU=(_F(RESULTAT=RESU,
-                   NOM_CHAM='EFGE_ELNO',
-                   TOUT_ORDRE='OUI',
-                   FORM_TABL='EXCEL',
-                   NOM_CMP=('N','VY','VZ'),
-                   GROUP_NO='ancrage',
-                   SOUS_TITRE='Efforts aux pilettes en repere local (negatif = compression)',
-                   ),
-                ),);
-
-MASSIFS=CALC_CHAMP(RESULTAT=RESU,
-                   GROUP_MA='massif',
-                   FORCE='REAC_NODA',);
-
-IMPR_RESU(MODELE=MODE,
-          FORMAT='RESULTAT',
-          UNITE=12,
-          RESU=(_F(RESULTAT=MASSIFS,
-                   NOM_CHAM='REAC_NODA',
-                   TOUT_ORDRE='OUI',
-                   FORM_TABL='EXCEL',
-                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','WO','WI1','UI2','VI2','WI2','UO2','VO2','WO2','UI3','VI3','WI3','UO3','VO3','WO3',),
-                   GROUP_MA='massif',
-                   SOUS_TITRE='Reactions aux massifs',),),);
-
-AMO_AVA=CALC_CHAMP(RESULTAT=RESU,
-                   GROUP_MA='CF_all',
-                   FORCE='REAC_NODA',);
-
-IMPR_RESU(MODELE=MODE,
-          FORMAT='RESULTAT',
-          UNITE=12,
-          RESU=(_F(RESULTAT=AMO_AVA,
-                   NOM_CHAM='REAC_NODA',
-                   TOUT_ORDRE='OUI',
-                   FORM_TABL='EXCEL',
-                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','WO','WI1','UI2','VI2','WI2','UO2','VO2','WO2','UI3','VI3','WI3','UO3','VO3','WO3',),
-                   GROUP_NO='No_amont',
-                   SOUS_TITRE='Reactions noeud amont',),),);
-
-IMPR_RESU(MODELE=MODE,
-          FORMAT='RESULTAT',
-          UNITE=12,
-          RESU=(_F(RESULTAT=AMO_AVA,
-                   NOM_CHAM='REAC_NODA',
-                   TOUT_ORDRE='OUI',
-                   FORM_TABL='EXCEL',
-                   NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','WO','WI1','UI2','VI2','WI2','UO2','VO2','WO2','UI3','VI3','WI3','UO3','VO3','WO3',),
-                   GROUP_NO='No_aval',
-                   SOUS_TITRE='Reactions noeud aval',),),);
-
-#### Impressions sur les abscisses curvilignes
-
-C_VMIS_1 = CREA_CHAMP(INFO=1,
-                      TYPE_CHAM='ELGA_SPMX_R',
-                      OPERATION='EXTR',
-                      PROL_ZERO='NON',
-                      RESULTAT=MAXVMIS,
-                      NOM_CHAM='UT01_ELGA',
-                      NUME_ORDRE=1,);
-
-VMIS_1 = DEFI_FONCTION(PROL_DROITE='LINEAIRE',
-                       PROL_GAUCHE='LINEAIRE',
-                       VALE=(0.56350832689629016, 208767.66075885622, 2.5, 109101.95127626369, 4.4364916731037098, 352004.65048299992, 5.2615251261159415, 558729.64643105329, 6.1602540443207623, 265852.27147409634, 7.0589829625255831, 282154.62658533198, 7.9089288581940398, 347366.94360430457, 9.9310319330425489, 160708.73010064033, 11.95313500723627, 724205.97509553609, 13.366589226886463, 2.0138684812231283e-12, 16.201809808833932, 9.5922118211763608e-14, 19.0370303907814, 4.0362561174213859e-13),
-                       NOM_PARA='ABSC',
-                       NOM_RESU='VMIS',
-                       VERIF='NON',
-                       INTERPOL=('LIN', ),);
-
-ABS_FONC = DEFI_LIST_REEL(VALE=(0.0, 0.56350832689629016, 2.5, 4.4364916731037098, 5.2615251261159415, 6.1602540443207623, 7.0589829625255831, 7.9089288581940398, 9.9310319330425489, 11.95313500723627, 13.366589226886463, 16.201809808833932, 19.0370303907814, 19.862063841069613),);
-
-IMPR_FONCTION(FORMAT='XMGRACE',
-              COURBE=(_F(FREQ_MARQUEUR=0,
-                         COULEUR=1,
-                         MARQUEUR=0,
-                         LEGENDE='Gravite',
-                         FONCTION=VMIS_1,
-                         LIST_PARA=ABS_FONC,
-                         TRI='N',),
-                      _F(ABSCISSE=(19.862063841069613, 0.0),
-                         COULEUR=11,
-                         MARQUEUR=0,
-                         STYLE=4,
-                         LEGENDE='contrainte admissible',
-                         ORDONNEE=(2.35000000E8, 2.35000000E8),
-                         TRI='N',
-                         FREQ_MARQUEUR=0,),
-                      _F(ABSCISSE=(5.0, 5.0),
-                         COULEUR=10,
-                         MARQUEUR=0,
-                         STYLE=2,
-                         LEGENDE='pilettes',
-                         ORDONNEE=(0.0, 1.0276515352875076E8),
-                         TRI='N',
-                         FREQ_MARQUEUR=0,),
-                      _F(ABSCISSE=(19.862063841069613, 19.862063841069613),
-                         COULEUR=15,
-                         MARQUEUR=0,
-                         STYLE=4,
-                         LEGENDE='massifs',
-                         ORDONNEE=(0.0, 1.0276515352875076E8),
-                         TRI='N',
-                         FREQ_MARQUEUR=0,),
-                      ),
-              PILOTE='',
-              UNITE=53,
-              BORNE_Y=(0.0, 1.0276515352875076E8),
-              LEGENDE_X='Abscisse curviligne de la CF',
-              TITRE='Contrainte de Von Mises Maxi',
-              LEGENDE_Y='Vmis Max',
-              ECHELLE_X='LIN',
-              ECHELLE_Y='LIN',);
+IMPR_TABLE(TABLE=TOTO,
+           UNITE=8,
+           SEPARATEUR=';',);
 
 #### TEST SUR LES RESULTATS #####
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   MAILLE='M4',
-                   POINT=1,
-                   RESULTAT=MAXVMIS,
-                   NOM_CHAM='UT01_ELGA',
-                   NOM_CMP='VAL',
-                   VALE_CALC=1.00537848139E+06,
-                   CRITERE='RELATIF',),
-                 _F(NUME_ORDRE=2,
-                   MAILLE='M4',
-                   POINT=1,
-                   RESULTAT=MAXTRESC,
-                   NOM_CHAM='UT01_ELGA',
-                   NOM_CMP='VAL',
-                   VALE_CALC=7.4409533550154E+07,
-                   CRITERE='RELATIF',),
-                 _F(NUME_ORDRE=3,
-                   MAILLE='M4',
-                   POINT=1,
-                   RESULTAT=MAXSIXX,
-                   NOM_CHAM='UT01_ELGA',
-                   NOM_CMP='VAL',
-                   VALE_CALC=6.8821977323467E+07,
-                   CRITERE='RELATIF',),
-                 _F(NUME_ORDRE=4,
-                   MAILLE='M4',
-                   POINT=1,
-                   RESULTAT=MAXSIYY,
-                   NOM_CHAM='UT01_ELGA',
-                   NOM_CMP='VAL',
-                   VALE_CALC=4.7437867739945E+07,
-                   CRITERE='RELATIF',),
-                 _F(NUME_ORDRE=5,
-                   NOEUD='N4',
-                   RESULTAT=MASSIFS,
-                   NOM_CHAM='REAC_NODA',
-                   NOM_CMP='DZ',
-                   VALE_CALC=-1.7843214968881E+07,
-                   CRITERE='RELATIF',),
-                 _F(NUME_ORDRE=6,
-                   NOEUD='N6',
-                   RESULTAT=AMO_AVA,
-                   NOM_CHAM='REAC_NODA',
-                   NOM_CMP='DZ',
-                   VALE_CALC=3.3900707014954E+06,
-                   CRITERE='RELATIF',),
-                 _F(NUME_ORDRE=7,
-                   NOEUD='N6',
-                   RESULTAT=AMO_AVA,
-                   NOM_CHAM='REAC_NODA',
+
+TEST_RESU(RESU=(_F(RESULTAT=CFP_TMOY,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N1',
+                   CRITERE='RELATIF',
+                   VALE_CALC=0.000221865632786,),
+                _F(RESULTAT=CFP_TMOY,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DEPL',
                    NOM_CMP='WO',
-                   VALE_CALC=1.0923442622416E+07,
-                   CRITERE='RELATIF',),),);
+                   NOEUD='N1',
+                   CRITERE='RELATIF',
+                   VALE_CALC=-0.000115524385573,),
+                _F(RESULTAT=CFP_TMOY,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='TRESCA',
+                   MAILLE='M4',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   CRITERE='RELATIF',
+                   VALE_CALC=32614582.7879,),
+                _F(RESULTAT=CFP_TMOY,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VMIS',
+                   MAILLE='M4',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   CRITERE='RELATIF',
+                   VALE_CALC=29972121.8432,),
+                _F(RESULTAT=CFP_TMOY,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',
+                   CRITERE='RELATIF',
+                   VALE_CALC=-2200417.99324,),),);
 
 FIN();
