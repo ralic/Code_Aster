@@ -97,7 +97,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
     real(kind=8) :: rbid33(3, 3), rbid1(1)
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, nnop), dgdgl(4, 3)
-    real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), r, ur
+    real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), r
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3), deplb1(3, 27), deplb2(3, 27)
     aster_logical :: grdepl, axi, cplan
 !
@@ -206,46 +206,16 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
 !
-! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T+
-        if (axi) then
-            ur = 0.d0
-            do n = 1, nnop
-                ur = ur + ff(n)*zr(ideplp-1+ddls*(n-1)+1)
-                do ig = 1, nfh
-                    ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*ig+1) *&
-                            xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
-                end do
-                do ig = 1, nfe
-                    ur = ur + ff(n) *zr(ideplp-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
-                end do
-            end do
-        endif
-!
 ! -     CALCUL DE DEPS
-        call xcinem(axi, nnop, nnops, ideplp, grdepl,&
-                    ndim, he, r, ur,&
+        call xcinem(axi, igeom, nnop, nnops, ideplp, grdepl,&
+                    ndim, he,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
                     deps, rbid33, heavn)
 !
-! -     CALCUL DU DEPL. RADIAL (AXISYMETRIQUE) EN T-
-        if (axi) then
-            ur = 0.d0
-            do n = 1, nnop
-                ur = ur + ff(n)*zr(idepl-1+ddls*(n-1)+1)
-                do ig = 1, nfh
-                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*ig+1) *&
-                            xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
-                end do
-                do ig = 1, nfe
-                    ur = ur + ff(n) *zr(idepl-1+ddls*(n-1)+ndim*(nfh+ ig)+1) *fe(ig)
-                end do
-            end do
-        endif
-!
 ! -     CALCUL DE EPS
-        call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                    ndim, he, r, ur,&
+        call xcinem(axi, igeom, nnop, nnops, idepl, grdepl,&
+                    ndim, he,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
                     eps, rbid33, heavn)

@@ -18,18 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xcinem(axi, nnop, nnos, idepl, grand, ndim, he,&
-                      r, ur, nfiss, nfh, nfe, ddls, ddlm,&
+    subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand, ndim, he,&
+                      nfiss, nfh, nfe, ddls, ddlm,&
                       fe, dgdgl, ff, dfdi, f, eps, grad, heavn)
         aster_logical, intent(in) :: axi
+        integer, intent(in) :: igeom
         integer, intent(in) :: nnop
         integer, intent(in) :: nnos
         integer, intent(in) :: idepl
         aster_logical, intent(in) :: grand
         integer, intent(in) :: ndim
         real(kind=8), intent(in) :: he(nfiss)
-        real(kind=8), intent(in) :: r
-        real(kind=8), intent(in) :: ur
         integer, intent(in) :: nfiss
         integer, intent(in) :: nfh
         integer, intent(in) :: nfe

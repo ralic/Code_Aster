@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sslv155e.comm D 1
+F comm sslv155e.com1 D 1
 F mmed sslv155b.mmed D 20
 

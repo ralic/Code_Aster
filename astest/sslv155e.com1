@@ -21,53 +21,53 @@ POURSUITE(CODE='OUI')
 # -------------------------------------------------------------
 #           TEST DE NON REGRESSION DES CONTRAINTES
 #    SIEF_ELGA CALCULEES PAR MECA_STATIQUE ET STAT_NON_LINE
-#              SUR LES ELEMENTS X-FEM AXIS (LINEAIRE)
+#              SUR LES ELEMENTS X-FEM AXIS (QUADRATIQUES)
 # -------------------------------------------------------------
 
 L_INST=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F(JUSQU_A=1.,NOMBRE=1))
 
 # on realise avec STAT_NON_LINE un calcul strictement identique a celui
 # realise avec MECA_STATIQUE pour produire le resultat RESU
-RESSNL=STAT_NON_LINE(MODELE=MODEX,
+RESSNL=STAT_NON_LINE(MODELE=MODX,
                      CHAM_MATER=MATE,
                      EXCIT=(_F(CHARGE=CHAR),),
-                     COMPORTEMENT=_F(RELATION='ELAS', GROUP_MA='FACE'),
+                     COMPORTEMENT=_F(RELATION='ELAS', TOUT='OUI'),
                      INCREMENT=_F(LIST_INST=L_INST, INST_FIN=1.,))
 
-# test de non regression, 'M17067' est une maille portant un element crack-tip
+# test de non regression, 'M636' est une maille portant un element crack-tip
 # -> test sur le resultat produit par MECA_STATIQUE
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  MAILLE='M17067',
-                  POINT=1,
-                  VALE_CALC=8.20211238696133E+06),)
-# -> test sur le resultat produit par STAT_NON_LINE
+                  MAILLE='M636',
+                  POINT=22,
+                  VALE_CALC=3.17473661462020E+07),)
+## -> test sur le resultat produit par STAT_NON_LINE
 TEST_RESU(RESU=_F(RESULTAT=RESSNL,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  MAILLE='M17067',
-                  POINT=1,
-                  VALE_CALC=8.20211238696133E+06),)
+                  MAILLE='M636',
+                  POINT=22,
+                  VALE_CALC=3.17473661462020E+07),)
 
-# test de non regression, 'M15681' est une maille portant un element heaviside
+# test de non regression, 'M646' est une maille portant un element heaviside
 # -> test sur le resultat produit par MECA_STATIQUE
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  MAILLE='M15681',
+                  MAILLE='M646',
                   POINT=3,
-                  VALE_CALC=1.78002307190023E+05),)
-# -> test sur le resultat produit par STAT_NON_LINE
+                  VALE_CALC=2.42138715869164E+06),)
+## -> test sur le resultat produit par STAT_NON_LINE
 TEST_RESU(RESU=_F(RESULTAT=RESSNL,
                   NUME_ORDRE=1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIYY',
-                  MAILLE='M15681',
+                  MAILLE='M646',
                   POINT=3,
-                  VALE_CALC=1.78002307190023E+05),)
+                  VALE_CALC=2.42138715869164E+06),)
 
 FIN()

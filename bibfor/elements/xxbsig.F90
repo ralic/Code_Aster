@@ -82,7 +82,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
     integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt, iret
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se, i_dim
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: rbid, rbid6(6), rbid33(3, 3)
+    real(kind=8) :: rbid6(6), rbid33(3, 3)
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
     real(kind=8) :: dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), sign(2*ndim)
@@ -190,8 +190,8 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
         if (grdepl) then
-            call xcinem(axi, nnop, nnops, idepl, .true._1,&
-                        ndim, he, r, rbid,&
+            call xcinem(axi, igeom, nnop, nnops, idepl, .true._1,&
+                        ndim, he,&
                         nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f,&
                         rbid6, rbid33, heavn)

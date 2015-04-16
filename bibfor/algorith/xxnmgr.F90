@@ -101,7 +101,7 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: dsidep(6, 6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sig(6), fe(4), baslog(3*ndim)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: rbid, rbid33(3, 3), rbid1(1)
+    real(kind=8) :: rbid33(3, 3), rbid1(1)
     real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, ndim), dgdgl(4, 3)
     real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe))
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3)
@@ -205,15 +205,15 @@ subroutine xxnmgr(elrefp, elrese, ndim, coorse, igeom,&
 !       CALCUL EN T-
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                    ndim, he, rbid, rbid,&
+        call xcinem(axi, igeom, nnop, nnops, idepl, grdepl,&
+                    ndim, he,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, fm,&
                     epsm, rbid33, heavn)
 !
 !       CALCUL EN T+
-        call xcinem(axi, nnop, nnops, ideplp, grdepl,&
-                    ndim, he, rbid, rbid,&
+        call xcinem(axi, igeom, nnop, nnops, ideplp, grdepl,&
+                    ndim, he,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
                     epsp, rbid33, heavn)

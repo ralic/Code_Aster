@@ -93,7 +93,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
     character(len=16) :: compo2(4)
     integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg, iret
-    integer :: ddld, ddls, ddlx, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
+    integer :: ddld, ddls, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
     real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfe+nfh)), rbid33(3, 3)
@@ -101,7 +101,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
     real(kind=8) :: dgdgl(4, 3), pff(6, nnop, nnop)
     real(kind=8) :: def(6, ndim*(1+nfh+nfe), nnop)
-    real(kind=8) :: ur, r
+    real(kind=8) :: r
     aster_logical :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
@@ -211,25 +211,10 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !       ET CALCUL DE FF, DFDI, ET EPS
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' .or.&
             option(1: 9) .eq. 'RAPH_MECA') then
-! -         CALCUL DU DEPL. RADIAL
- ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):
-         if (axi) then
-            ur = 0.d0
-             do n = 1, nnop
-                call indent(n,ddls,ddlm,nnops,ddlx)
-                ur = ur + ff(n)*zr(idepl-1+ddlx+1)
-                do ig = 1, nfh
-                    ur = ur + ff(n) *zr(idepl-1+ddlx+ndim*ig+1)*xcalc_heav(&
-                         heavn(n,ig),hea_se,heavn(n,5))
-                end do
-                do ig = 1, nfe
-                    ur = ur + ff(n) *zr(idepl-1+ddlx+ndim*(nfh+ ig)+1) *fe(ig)
-                end do
-             end do
-         endif
+!
             call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-            call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
-                        r, ur, nfiss, nfh, nfe, ddls, ddlm,&
+            call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he,&
+                        nfiss, nfh, nfe, ddls, ddlm,&
                         fe, dgdgl, ff, dfdi, f, eps, rbid33, heavn)
 !
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL

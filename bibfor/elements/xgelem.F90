@@ -429,8 +429,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnos, idepl, grdepl,&
-                    ndim, he, rbid, rbid,&
+        call xcinem(axi, igeom, nnop, nnos, idepl, grdepl,&
+                    ndim, he,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
                     eps, grad, heavn)

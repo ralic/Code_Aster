@@ -77,7 +77,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
     character(len=2) :: k2bid
     character(len=16) :: phenom
-    integer :: kpg, n, i, j, ino, iret, ipg, ig, hea_se
+    integer :: kpg, n, i, j, ino, iret, ipg, hea_se
     integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
     aster_logical :: grdepl, axi
@@ -87,7 +87,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     real(kind=8) :: r8bi7(7), r8bi3(3)
     real(kind=8) :: dfdi(nnop, ndim), dgdgl(4, 3)
     real(kind=8) :: grad(3, 3)
-    real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6), ur
+    real(kind=8) :: zero, s, sth, d(4, 4), epsth(6)
     integer :: nnops
 !
     data    zero / 0d0 /
@@ -178,32 +178,12 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
             ASSERT(iret.ne.0)
         endif
 !
-!       CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPLACEMENT 
-!       RADIAL SI AXI (NECESSAIRE POUR LE CALCUL DES DEFORMATIONS EPS)
-        r = 0.d0
-        ur = 0.d0
-        if (axi) then
-            do ino = 1, nnop
-                r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-                ur = ur + ff(ino)*zr(idepl-1+ddls*(ino-1)+1)
-                do ig = 1, nfh
-                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*ig+1)&
-                                           *xcalc_heav(heavn(ino,ig),&
-                                                       hea_se,heavn(ino,5))
-                end do
-                do ig = 1, nfe
-                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*(nfh+ ig)+1) *fe(ig)
-                end do
-            end do
-            ASSERT(r.ge.0d0)
-        endif
-!
 !       CALCUL DES DEFORMATIONS EPS
 !
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
                     xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnops, idepl, grdepl,&
-                    ndim, he, r, ur,&
+        call xcinem(axi, igeom, nnop, nnops, idepl, grdepl,&
+                    ndim, he,&
                     nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f,&
                     eps, grad, heavn)

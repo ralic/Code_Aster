@@ -1,5 +1,5 @@
-subroutine xcinem(axi, nnop, nnos, idepl, grand,&
-                  ndim, he, r, ur,&
+subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
+                  ndim, he,&
                   nfiss, nfh, nfe, ddls, ddlm,&
                   fe, dgdgl, ff, dfdi, f,&
                   eps, grad, heavn)
@@ -25,6 +25,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/indent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -34,6 +35,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 #include "asterfort/xcalc_code.h"
 !
     aster_logical, intent(in) :: axi
+    integer, intent(in) :: igeom
     integer, intent(in) :: nnop
     integer, intent(in) :: nnos
     integer, intent(in) :: idepl
@@ -41,8 +43,6 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     integer, intent(in) :: ndim
     integer, intent(in) :: nfiss
     real(kind=8), intent(in) :: he(nfiss)
-    real(kind=8), intent(in) :: r
-    real(kind=8), intent(in) :: ur
     integer, intent(in) :: nfh
     integer, intent(in) :: nfe
     integer, intent(in) :: ddls
@@ -75,8 +75,6 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 !                --> DEFORMATION EPS PETITES
 ! IN  NDIM   : DIMENSION DE L'ESPACE
 ! IN  HE     : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
-! IN  R      : RADIUS POUR CALCULER EPSILON_33 POUR AXI
-! IN UR      : DEPLACEMNET RADIAL POUR CALCULER EPSILON_33 POUR AXI
 ! IN  NFH    : NOMBRE DE FONCTIONS HEAVYSIDE (PAR NOEUD)
 ! IN  NFE    : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 ! IN  DDLT   : NOMBRE DE DDLS TOTAL PAR NOEUD
@@ -89,7 +87,7 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
 ! OUT GRAD   : GRADIENT DES DÉPLACEMENTS
 ! IN  HEAVN  : DEFINITION DES DOMAINES DES FONCTIONS HEAVISIDES
 !
-    real(kind=8) :: zero, un, rac2
+    real(kind=8) :: zero, un, rac2, r, ur
     integer :: i, j, k, n, p, ig, cpt, nn, hea_se
     real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
     aster_logical :: ldec
@@ -104,6 +102,8 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
     un = 1.d0
     rac2 = sqrt(2.d0)
     hea_se=xcalc_code(nfiss, he_real=[he])
+    r = 0.d0
+    ur = 0.d0
 !
 ! --- MATRICE IDENTITE
 !
@@ -148,6 +148,10 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
                 grad(i,j) = grad(i,j) + dfdi(n,j) * zr(idepl-1+nn+cpt)
 404         continue
 403     continue
+        if(axi) then
+            r = r + ff(n) * zr(igeom-1+2*(n-1)+1)
+            ur = ur + ff(n) * zr(idepl-1+nn+1)
+        endif
 !
 ! -- DDLS HEAVISIDE
         do 405 ig = 1, nfh
@@ -158,6 +162,10 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
                             * dfdi(n, j) * zr(idepl-1+nn+cpt)
 407             continue
 406         continue
+            if(axi) then
+                ur = ur + ff(n) * zr(idepl-1+nn+ndim*ig+1) * xcalc_heav(&
+                          heavn(n,ig),hea_se,heavn(n,5))
+            endif
 405     continue
 !
 ! -- DDL ENRICHIS EN FOND DE FISSURE
@@ -169,8 +177,15 @@ subroutine xcinem(axi, nnop, nnos, idepl, grand,&
                                 &dgl(ig,j))
 410             continue
 409         continue
+            if(axi) then
+                ur = ur + ff(n) * zr(idepl-1+nn+ndim*(nfh+ig)+1) * fe(ig)
+            endif
 408     continue
 402 continue
+!
+    if(axi) then
+        ASSERT(r.gt.zero)
+    endif
 !
     if (grand) then
         do 421 j = 1, ndim

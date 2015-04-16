@@ -105,7 +105,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: dtdm(3, 3), tzero(3), dzero(3, 4), lsng, lstg, th
     real(kind=8) :: dudme(3, 4), dtdme(3, 4), du1dme(3, 4), du2dme(3, 4)
     real(kind=8) :: du3dme(3, 4),sigse(6*27), dfdx(27), dfdy(27), dfdz(27)
-    real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3), ur, r
+    real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3), r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref, tempg
     real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef, rho, rac2
     real(kind=8) :: dtx, dty, dtz
@@ -338,21 +338,10 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 100     continue
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
-!       ET DU DEPL. RADIAL
         if (axi) then
             r = 0.d0
-            ur = 0.d0
             do 114 ino = 1, nnop
                 r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
-                ur = ur + ff(ino)*zr(idepl-1+ddls*(ino-1)+1)
-                do 115 ig = 1, nfh
-                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim* ig+1) *&
-                             xcalc_heav(heavn(ino,ig),hea_se,heavn(ino,5))
-115             continue
-                do 116 ig = 1, nfe
-                    ur = ur + ff(ino) *zr(idepl-1+ddls*(ino-1)+ndim*( nfh+ig)+1) *fe(ig)
-116             continue
-!
 114         continue
 !
             if (axi) then
@@ -467,8 +456,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
 !
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
-        call xcinem(axi, nnop, nnops, idepl, grdepl, ndim, he,&
-                    r, ur, nfiss, nfh, nfe, ddls, ddlm,&
+        call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he,&
+                    nfiss, nfh, nfe, ddls, ddlm,&
                     fe, dgdgl, ff, dfdi, f, eps, grad, heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
