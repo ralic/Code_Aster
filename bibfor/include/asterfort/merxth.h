@@ -17,8 +17,8 @@
 !
 interface
     subroutine merxth(modele, charge, infcha, carele, mate,&
-                      inst, chtni, merigi, compor, tmpchi,&
-                      tmpchf)
+                      inst, chtni, merigi, compor, varc_curr,&
+                      tmpchi, tmpchf)
         character(len=24) :: modele
         character(len=24) :: charge
         character(len=24) :: infcha
@@ -28,6 +28,7 @@ interface
         character(len=24) :: chtni
         character(len=24) :: merigi
         character(len=24) :: compor
+        character(len=19), intent(in) :: varc_curr
         character(len=24) :: tmpchi
         character(len=24) :: tmpchf
     end subroutine merxth

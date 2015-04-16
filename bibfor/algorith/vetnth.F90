@@ -1,6 +1,6 @@
 subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
                   chtnz, compoz, tpchiz, tpchfz, chhyz,&
-                  vecelz, veceiz)
+                  vecelz, veceiz, varc_curr)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
 #include "asterfort/reajre.h"
     character(len=*) :: optioz, modelz, carelz, matcdz, instz, chtnz, vecelz
     character(len=*) :: veceiz, compoz, tpchiz, tpchfz, chhyz
+    character(len=19), intent(in) :: varc_curr
 !
 ! 0.2. ==> COMMUNS
 !
@@ -80,14 +81,12 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
     integer :: iret, ibid, nchin, nchout, i, ifm, niv
     character(len=8) :: lpain(nchinx), lpaout(nchoux), newnom
     character(len=16) :: option
-    character(len=19) :: chvarc, stano, pintto, cnseto, heavto, loncha, basloc
+    character(len=19) :: stano, pintto, cnseto, heavto, loncha, basloc
     character(len=19) :: lsn, lst, hea_no
     character(len=24) :: modele, carele, matcod, inst, chtn, vecel, vecei
     character(len=24) :: compor, tmpchi, tmpchf, chhy, ligrmo, lchin(nchinx)
     character(len=24) :: chgeom, lchout(nchoux), chcara(18)
     aster_logical :: lnlin
-!
-    chvarc = '&&NXACMV.CHVARC'
 !
 !
 ! DEB ------------------------------------------------------------------
@@ -208,7 +207,7 @@ subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
     lpain(5) = 'PCACOQU'
     lchin(5) = chcara(7)
     lpain(6) = 'PVARCPR'
-    lchin(6) = chvarc
+    lchin(6) = varc_curr
     nchin = 6
 !
 !====

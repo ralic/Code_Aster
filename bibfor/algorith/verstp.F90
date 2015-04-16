@@ -1,6 +1,6 @@
 subroutine verstp(modele, charge, infcha, carele, mate,&
                   inst, compor, chti, chtip, chthy,&
-                  chthyp, chtsci, chtscf, veres)
+                  chthyp, chtsci, chtscf, varc_curr, veres)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ subroutine verstp(modele, charge, infcha, carele, mate,&
 #include "asterfort/reajre.h"
     character(len=24) :: modele, charge, infcha, carele, inst, chti, chtip
     character(len=24) :: veres, mate, chthy, chthyp, chtsci, chtscf, compor
+    character(len=19), intent(in) :: varc_curr
 ! ----------------------------------------------------------------------
 ! CALCUL DES VECTEURS ELEMENTAIRES RESIDU
 !
@@ -103,7 +104,7 @@ subroutine verstp(modele, charge, infcha, carele, mate,&
     lpain(9) = 'PTMPCHF'
     lchin(9) = chtscf
     lpain(10) = 'PVARCPR'
-    lchin(10) = '&&NXACMV.CHVARC'
+    lchin(10) = varc_curr
 !
     lpaout(2) = 'PHYDRPP'
     lchout(2) = chthyp

@@ -20,12 +20,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxnewt(model      , mate  , cara_elem, list_load, nume_dof   ,&
-                      solver     , time  , lonch    , matass   , maprec     ,&
-                      cnchci     , vtemp , vtempm   , vtempp   , vec2nd     ,&
-                      mediri     , conver, vhydr    , vhydrp   , tmpchi     ,&
-                      tmpchf     , compor, cnvabt   , cnresi   , ther_crit_i,&
-                      ther_crit_r, reasma, testr    , testm)
+    subroutine nxnewt(model      , mate       , cara_elem, list_load, nume_dof,&
+                      solver     , time       , lonch    , matass   , maprec  ,&
+                      cnchci     , varc_curr  , vtemp    , vtempm   , vtempp  ,&
+                      vec2nd     , mediri     , conver   , vhydr    , vhydrp  ,&
+                      tmpchi     , tmpchf     , compor   , cnvabt   , cnresi  ,&
+                      ther_crit_i, ther_crit_r, reasma   , testr    , testm)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -33,6 +33,7 @@ interface
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: solver
         character(len=24), intent(in) :: time
+        character(len=19), intent(in) :: varc_curr
         integer :: lonch
         character(len=24) :: matass
         character(len=19) :: maprec

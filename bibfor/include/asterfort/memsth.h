@@ -16,11 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine memsth(modele, carele, mate, inst, memass)
+    subroutine memsth(modele, carele, mate, inst, varc_curr,&
+                      memass)
         character(len=24) :: modele
         character(len=24) :: carele
         character(len=24) :: mate
         character(len=24) :: inst
+        character(len=19), intent(in) :: varc_curr
         character(len=24) :: memass
     end subroutine memsth
 end interface

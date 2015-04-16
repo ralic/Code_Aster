@@ -1,8 +1,8 @@
-subroutine nxpred(model , mate  , cara_elem, list_load, nume_dof,&
-                  solver, lostat, time     , lonch    , matass  ,&
-                  maprec, vtemp , vtempm   , vtempp   , vhydr   ,&
-                  vhydrp, tmpchi, tmpchf   , compor   , cndirp  ,&
-                  cnchci, vec2nd, vec2ni)
+subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof,&
+                  solver, lostat   , time     , lonch    , matass  ,&
+                  maprec, varc_curr, vtemp    , vtempm   , vtempp  ,&
+                  vhydr , vhydrp   , tmpchi   , tmpchf   , compor  ,&
+                  cndirp, cnchci   , vec2nd   , vec2ni)
 !
 implicit none
 !
@@ -45,6 +45,7 @@ implicit none
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr
     integer :: lonch
     character(len=19) :: maprec
     character(len=24) :: matass, cndirp, cnchci, cnresi
@@ -120,7 +121,7 @@ implicit none
 !
         call verstp(model, lload_name, lload_info, cara_elem, mate,&
                     time, compor, vtemp, vtemp, vhydr,&
-                    vhydrp, tmpchi, tmpchf, veresi)
+                    vhydrp, tmpchi, tmpchf, varc_curr, veresi)
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', rbid,&
                     typres, cnresi)

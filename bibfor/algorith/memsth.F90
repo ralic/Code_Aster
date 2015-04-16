@@ -1,4 +1,5 @@
-subroutine memsth(modele, carele, mate, inst, memass)
+subroutine memsth(modele, carele, mate, inst, varc_curr,&
+                  memass)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +31,7 @@ subroutine memsth(modele, carele, mate, inst, memass)
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
     character(len=24) :: modele, carele, inst, memass, mate
+    character(len=19), intent(in) :: varc_curr
 ! ----------------------------------------------------------------------
 ! CALCUL DES MATRICES ELEMENTAIRES DE MASSE THERMIQUE
 !
@@ -45,13 +47,12 @@ subroutine memsth(modele, carele, mate, inst, memass)
     character(len=16) :: option
     character(len=24) :: ligrmo, lchin(14), lchout(1)
     character(len=24) :: chgeom, chcara(18)
-    character(len=19) :: chvarc, stano, pintto, cnseto, heavto, hea_no
+    character(len=19) :: stano, pintto, cnseto, heavto, hea_no
     character(len=19) :: loncha, basloc, lsn, lst
     integer :: iret, ilires
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    chvarc = '&&NXACMV.CHVARC'
 !
     call jemarq()
     call megeom(modele, chgeom)
@@ -103,7 +104,7 @@ subroutine memsth(modele, carele, mate, inst, memass)
         lpain(4) = 'PTEMPSR'
         lchin(4) = inst
         lpain(5) = 'PVARCPR'
-        lchin(5) = chvarc
+        lchin(5) = varc_curr
         lpain(6) = 'PSTANO'
         lchin(6) = stano
         lpain(7) = 'PPINTTO'

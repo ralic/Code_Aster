@@ -18,7 +18,7 @@
 interface
     subroutine vetnth(optioz, modelz, carelz, matcdz, instz,&
                       chtnz, compoz, tpchiz, tpchfz, chhyz,&
-                      vecelz, veceiz)
+                      vecelz, veceiz, varc_curr)
         character(len=*) :: optioz
         character(len=*) :: modelz
         character(len=*) :: carelz
@@ -31,5 +31,6 @@ interface
         character(len=*) :: chhyz
         character(len=*) :: vecelz
         character(len=*) :: veceiz
+        character(len=19), intent(in) :: varc_curr
     end subroutine vetnth
 end interface

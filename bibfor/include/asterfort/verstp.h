@@ -18,7 +18,7 @@
 interface
     subroutine verstp(modele, charge, infcha, carele, mate,&
                       inst, compor, chti, chtip, chthy,&
-                      chthyp, chtsci, chtscf, veres)
+                      chthyp, chtsci, chtscf, varc_curr, veres)
         character(len=24) :: modele
         character(len=24) :: charge
         character(len=24) :: infcha
@@ -33,5 +33,6 @@ interface
         character(len=24) :: chtsci
         character(len=24) :: chtscf
         character(len=24) :: veres
+        character(len=19), intent(in) :: varc_curr
     end subroutine verstp
 end interface

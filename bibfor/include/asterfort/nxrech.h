@@ -18,17 +18,18 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nxrech(model , mate       , cara_elem  , list_load, numedd,&
-                      time  , lonch      , compor     , vtempm   , vtempp,&
-                      vtempr, vtemp      , vhydr      , vhydrp   , tmpchi,&
-                      tmpchf, vec2nd     , cnvabt     , cnresi   , rho   ,&
-                      iterho, ther_para_r, ther_para_i)
+    subroutine nxrech(model , mate  , cara_elem  , list_load  , nume_dof,&
+                      time  , lonch , compor     , varc_curr  , vtempm  ,&
+                      vtempp, vtempr, vtemp      , vhydr      , vhydrp  ,&
+                      tmpchi, tmpchf, vec2nd     , cnvabt     , cnresi  ,&
+                      rho   , iterho, ther_para_r, ther_para_i)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: list_load
-        character(len=24), intent(in) :: numedd
+        character(len=24), intent(in) :: nume_dof
         character(len=24), intent(in) :: time
+        character(len=19), intent(in) :: varc_curr
         integer :: lonch
         character(len=24) :: compor
         character(len=24) :: vtempm

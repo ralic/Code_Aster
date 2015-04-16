@@ -1,9 +1,9 @@
-subroutine nxnewt(model      , mate  , cara_elem, list_load, nume_dof   ,&
-                  solver     , time  , lonch    , matass   , maprec     ,&
-                  cnchci     , vtemp , vtempm   , vtempp   , vec2nd     ,&
-                  mediri     , conver, vhydr    , vhydrp   , tmpchi     ,&
-                  tmpchf     , compor, cnvabt   , cnresi   , ther_crit_i,&
-                  ther_crit_r, reasma, testr    , testm)
+subroutine nxnewt(model      , mate       , cara_elem, list_load, nume_dof,&
+                  solver     , time       , lonch    , matass   , maprec  ,&
+                  cnchci     , varc_curr  , vtemp    , vtempm   , vtempp  ,&
+                  vec2nd     , mediri     , conver   , vhydr    , vhydrp  ,&
+                  tmpchi     , tmpchf     , compor   , cnvabt   , cnresi  ,&
+                  ther_crit_i, ther_crit_r, reasma   , testr    , testm)
 !
 implicit none
 !
@@ -48,6 +48,7 @@ implicit none
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr
     integer :: lonch
     aster_logical :: conver, reasma
     character(len=19) :: maprec
@@ -111,7 +112,7 @@ implicit none
 !
     call verstp(model, lload_name, lload_info, cara_elem, mate,&
                 time, compor, vtemp, vtempm, vhydr,&
-                vhydrp, tmpchi, tmpchf, veresi)
+                vhydrp, tmpchi, tmpchf, varc_curr, veresi)
     call asasve(veresi, nume_dof, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
@@ -170,8 +171,8 @@ implicit none
 !==========================================================
 !
         call merxth(model, lload_name, lload_info, cara_elem, mate,&
-                    time, vtempm, merigi, compor, tmpchi,&
-                    tmpchf)
+                    time, vtempm, merigi, compor, varc_curr,&
+                    tmpchi, tmpchf)
         call jeveuo(merigi, 'L', jmer)
         call jeveuo(mediri, 'L', jmed)
 !

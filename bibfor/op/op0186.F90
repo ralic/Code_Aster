@@ -78,10 +78,10 @@ implicit none
     character(len=19) :: sdobse
     character(len=16) :: tysd, k16b1, k16b2
     character(len=19) :: list_load, list_load_save
-    character(len=19) :: solver, maprec, sddisc, sdcrit
+    character(len=19) :: solver, maprec, sddisc, sdcrit, varc_curr
     character(len=24) :: model, mate, cara_elem, result
     character(len=24) :: time, tmpchi, tmpchf, compor, vtemp, vtempm, vtempp
-    character(len=24) :: vtempr, vec2nd, vec2ni, numedd, mediri, matass, cndirp
+    character(len=24) :: vtempr, vec2nd, vec2ni, nume_dof, mediri, matass, cndirp
     character(len=24) :: cnchci, cnresi, vabtla, vhydr, vhydrp
     character(len=24) :: sdieto, tpscvt
     character(len=76) :: fmt2, fmt3, fmt4
@@ -115,6 +115,7 @@ implicit none
 !
     solver    = '&&OP0186.SOLVER'
     list_load = '&&OP0186.LISCHA'
+    varc_curr = '&&OP0186.CHVARC'
 !
 ! - Read parameters
 !
@@ -143,9 +144,9 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    call nxinit(result   , model         , mate       , cara_elem, compor,&
-                list_load, list_load_save, solver     , para     , numedd,&
-                lostat   , levol         , l_ther_nonl, sddisc   , sdieto,&
+    call nxinit(result   , model         , mate       , cara_elem, compor  ,&
+                list_load, list_load_save, solver     , para     , nume_dof,&
+                lostat   , levol         , l_ther_nonl, sddisc   , sdieto  ,&
                 vhydr    , sdobse        , mailla     , sdcrit   , time  )
 !
     if (lostat) then
@@ -274,12 +275,12 @@ implicit none
 ! ON ASSEMBLE LES SECONDS MEMBRES CHAR_THER_LINEAIRE+CHAR_THER_NONLIN+
 ! CHAR_THER_EVOLNI EN BETA DANS VEC2ND (IDEM EN RHO_CP DANS VEC2NI)
 ! ON ASSEMBLE LA MATRICE A = TANGENTE (MTAN_*) + DIRICHLET
-    call nxacmv(model , mate  , cara_elem, list_load, numedd,&
-                solver, lostat, time     , tpsthe   , reasvc,&
-                reasvt, reasmt, reasrg   , reasms   , creas ,&
-                vtemp , vhydr , tmpchi   , tmpchf   , vec2nd,&
-                vec2ni, matass, maprec   , cndirp   , cnchci,&
-                mediri, compor)
+    call nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
+                solver, lostat, time     , tpsthe   , reasvc  ,&
+                reasvt, reasmt, reasrg   , reasms   , creas   ,&
+                vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
+                vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
+                cnchci, mediri, compor)
 !
 ! ======================================================================
 !                        PHASE DE PREDICTION
@@ -292,11 +293,11 @@ implicit none
 ! SYSTEME LINEAIRE RESOLU:  A * (T+,1 - T-) = B
 ! SOLUTION: VTEMP= T- ET VTEMPM = T+,1
 !
-    call nxpred(model , mate  , cara_elem, list_load, numedd,&
-                solver, lostat, time     , neq      , matass,&
-                maprec, vtemp , vtempm   , vtempp   , vhydr ,&
-                vhydrp, tmpchi, tmpchf   , compor   , cndirp,&
-                cnchci, vec2nd, vec2ni)
+    call nxpred(model , mate     , cara_elem, list_load, nume_dof,&
+                solver, lostat   , time     , neq      , matass  ,&
+                maprec, varc_curr, vtemp    , vtempm   , vtempp  ,&
+                vhydr , vhydrp   , tmpchi   , tmpchf   , compor  ,&
+                cndirp, cnchci   , vec2nd   , vec2ni)
 !
 ! ======================================================================
 !              ITERATIONS DE LA METHODE DE NEWTON-RAPHSON
@@ -329,12 +330,12 @@ implicit none
 ! SYSTEME LINEAIRE RESOLU:  A * (T+,I+1 - T+,I) = B
 ! SOLUTION: VTEMPP = T+,I+1 - T+,I
 !
-    call nxnewt(model      , mate  , cara_elem, list_load, numedd     ,&
-                solver     , time  , neq      , matass   , maprec     ,&
-                cnchci     , vtemp , vtempm   , vtempp   , vec2nd     ,&
-                mediri     , conver, vhydr    , vhydrp   , tmpchi     ,&
-                tmpchf     , compor, vabtla   , cnresi   , ther_crit_i,&
-                ther_crit_r, reasma, testr    , testm)
+    call nxnewt(model      , mate       , cara_elem, list_load, nume_dof,&
+                solver     , time       , neq      , matass   , maprec  ,&
+                cnchci     , varc_curr  , vtemp    , vtempm   , vtempp  ,&
+                vec2nd     , mediri     , conver   , vhydr    , vhydrp  ,&
+                tmpchi     , tmpchf     , compor   , vabtla   , cnresi  ,&
+                ther_crit_i, ther_crit_r, reasma   , testr    , testm)
 !
 ! --- SI NON CONVERGENCE ALORS RECHERCHE LINEAIRE
 !       (CALCUL DE RHO) SUR L INCREMENT VTEMPP
@@ -347,11 +348,11 @@ implicit none
 !
 ! ON CALCULE LE RHO/ VTEMPR = T+,I+1BIS = T+,1 + RHO * (T+,I+1 - T+,I)
 ! MINIMISE VEC2ND - RESI_THER(T+,I+1BIS) - (BT)*LAGRANGE
-            call nxrech(model , mate       , cara_elem  , list_load, numedd,&
-                        time  , neq        , compor     , vtempm   , vtempp,&
-                        vtempr, vtemp      , vhydr      , vhydrp   , tmpchi,&
-                        tmpchf, vec2nd     , vabtla     , cnresi   , rho   ,&
-                        iterho, ther_para_r, ther_para_i)
+            call nxrech(model , mate  , cara_elem  , list_load  , nume_dof,&
+                        time  , neq   , compor     , varc_curr  , vtempm  ,&
+                        vtempp, vtempr, vtemp      , vhydr      , vhydrp  ,&
+                        tmpchi, tmpchf, vec2nd     , vabtla     , cnresi  ,&
+                        rho   , iterho, ther_para_r, ther_para_i)
         else
             rho = 1.d0
         endif

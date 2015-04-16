@@ -1,5 +1,5 @@
 subroutine mergth(modele, charge, infcha, carele, mate,&
-                  inst, merigi)
+                  inst, varc_curr, merigi)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
     character(len=24) :: modele, charge, infcha, carele, inst, merigi, mate
+    character(len=19), intent(in) :: varc_curr
 ! ----------------------------------------------------------------------
 ! CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE THERMIQUE
 !  - TERMES DE VOLUME
@@ -54,7 +55,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
     character(len=16) :: option
     character(len=24) :: ligrel(2), lchin(16), lchout(1), ligcal
     character(len=24) :: chgeom, chcara(18), chharm
-    character(len=19) :: chvarc, stano, pintto, cnseto, heavto, loncha, basloc
+    character(len=19) :: stano, pintto, cnseto, heavto, loncha, basloc
     character(len=19) :: lsn, lst, pinter, ainter, cface, longco, baseco, hea_no
     integer :: iret, nchar, ilires, icha, jchar, jinf
     aster_logical :: lxfem
@@ -70,7 +71,6 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
     data nomopt/'_COEH_','_PARO_'/
     data nompar/'PCOEFH','PHECHP'/
     data nligr/1,2/
-    chvarc = '&&NXACMV.CHVARC'
 !
     call jemarq()
     call jeexin(charge, iret)
@@ -154,7 +154,7 @@ subroutine mergth(modele, charge, infcha, carele, mate,&
         lpain(6) = 'PCAMASS'
         lchin(6) = chcara(12)
         lpain(7) = 'PVARCPR'
-        lchin(7) = chvarc
+        lchin(7) = varc_curr
         lpain(8) = 'PSTANO'
         lchin(8) = stano
         lpain(9) = 'PPINTTO'

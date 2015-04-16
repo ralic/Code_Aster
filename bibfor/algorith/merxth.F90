@@ -1,6 +1,6 @@
 subroutine merxth(modele, charge, infcha, carele, mate,&
-                  inst, chtni, merigi, compor, tmpchi,&
-                  tmpchf)
+                  inst, chtni, merigi, compor, varc_curr,&
+                  tmpchi, tmpchf)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,7 @@ subroutine merxth(modele, charge, infcha, carele, mate,&
 #include "asterfort/reajre.h"
     character(len=24) :: modele, charge, infcha, carele, inst, chtni, merigi
     character(len=24) :: mate, compor, tmpchi, tmpchf
+    character(len=19), intent(in) :: varc_curr
 ! ----------------------------------------------------------------------
 ! CALCUL DES MATRICES TANGENTES ELEMENTAIRES
 ! EN THERMIQUE NON LINEAIRE
@@ -112,7 +113,7 @@ subroutine merxth(modele, charge, infcha, carele, mate,&
         lpain(7) = 'PTMPCHF'
         lchin(7) = tmpchf
         lpain(8) = 'PVARCPR'
-        lchin(8) = '&&NXACMV.CHVARC'
+        lchin(8) = varc_curr
 !
         lpaout(1) = 'PMATTTR'
         lchout(1) = merigi(1:8)//'.ME001'
@@ -138,7 +139,7 @@ subroutine merxth(modele, charge, infcha, carele, mate,&
                 lpain(4) = 'PTEMPEI'
                 lchin(4) = chtni
                 lpain(5) = 'PVARCPR'
-                lchin(5) = '&&NXACMV.CHVARC'
+                lchin(5) = varc_curr
 !
                 lpaout(1) = 'PMATTTR'
                 lchout(1) = merigi(1:8)//'.ME001'

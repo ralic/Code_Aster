@@ -50,7 +50,7 @@ implicit none
 !
     integer :: ifm, niv
     character(len=16) :: k16b1, k16b2
-    character(len=19) :: chsol
+    character(len=19) :: chsol, varc_curr
     character(len=24) :: mediri, vhydr, tmpchi, tmpchf, vec2ni, criter, result
     character(len=24) :: vtemp
     complex(kind=8) :: c16bid
@@ -67,17 +67,18 @@ implicit none
     lload_func = list_load(1:19)//'.FCHA'
     chsol = '&&NTRESO_SOLUTION  '
     criter = '&&NTRESO_RESGRA_GCPC    '
+    varc_curr = '&&NTRESO.CHVARC'
 !
     call getres(result, k16b1, k16b2)
     vtemp='&&NXLECTVAR_____'
 !
 ! 1 ==> ASSEMBLAGE DU SECOND MEMBRE
     call nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
-                solver, lostat, time     , tpsthe   , reasvc,&
-                reasvt, reasmt, reasrg   , reasms   , creas ,&
-                vtemp , vhydr , tmpchi   , tmpchf   , vec2nd,&
-                vec2ni, matass, maprec   , cndirp   , cnchci,&
-                mediri, compor)
+                solver, lostat, time     , tpsthe   , reasvc  ,&
+                reasvt, reasmt, reasrg   , reasms   , creas   ,&
+                vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
+                vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
+                cnchci, mediri, compor)
 !
 ! 2 ==> RESOLUTION AVEC VEC2ND COMME SECOND MEMBRE
     call resoud(matass, maprec, solver, cnchci, 0,&

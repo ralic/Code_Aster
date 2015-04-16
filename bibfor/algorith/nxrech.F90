@@ -1,8 +1,8 @@
-subroutine nxrech(model , mate       , cara_elem  , list_load, numedd,&
-                  time  , lonch      , compor     , vtempm   , vtempp,&
-                  vtempr, vtemp      , vhydr      , vhydrp   , tmpchi,&
-                  tmpchf, vec2nd     , cnvabt     , cnresi   , rho   ,&
-                  iterho, ther_para_r, ther_para_i)
+subroutine nxrech(model , mate  , cara_elem  , list_load  , nume_dof,&
+                  time  , lonch , compor     , varc_curr  , vtempm  ,&
+                  vtempp, vtempr, vtemp      , vhydr      , vhydrp  ,&
+                  tmpchi, tmpchf, vec2nd     , cnvabt     , cnresi  ,&
+                  rho   , iterho, ther_para_r, ther_para_i)
 !
 implicit none
 !
@@ -39,8 +39,9 @@ implicit none
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: cara_elem
     character(len=19), intent(in) :: list_load
-    character(len=24), intent(in) :: numedd
+    character(len=24), intent(in) :: nume_dof
     character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr
     integer :: ther_para_i(*), lonch
     real(kind=8) :: ther_para_r(*), rho
     character(len=24) :: vtemp, vtempm, vtempp, vtempr, cnvabt, cnresi, vec2nd
@@ -106,8 +107,8 @@ implicit none
 !
         call verstp(model, lload_name, lload_info, cara_elem, mate,&
                     time, compor, vtemp, vtempr, vhydr,&
-                    vhydrp, tmpchi, tmpchf, veresi)
-        call asasve(veresi, numedd, typres, varesi)
+                    vhydrp, tmpchi, tmpchf, varc_curr, veresi)
+        call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', r8bid,&
                     typres, cnresi)
         call jeveuo(cnresi(1:19)//'.VALE', 'L', jvare)
@@ -116,7 +117,7 @@ implicit none
 !
         call vethbt(model, lload_name, lload_info, cara_elem, mate,&
                     vtempr, vebtla)
-        call asasve(vebtla, numedd, typres, vabtla)
+        call asasve(vebtla, nume_dof, typres, vabtla)
         call ascova('D', vabtla, bidon, 'INST', r8bid,&
                     typres, cnvabt)
         call jeveuo(cnvabt(1:19)//'.VALE', 'L', jbtla)

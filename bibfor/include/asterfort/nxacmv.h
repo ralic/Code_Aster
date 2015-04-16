@@ -20,19 +20,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxacmv(model , mate  , cara_elem, list_load, numedd,&
-                      solver, lostat, time     , tpsthe   , reasvc,&
-                      reasvt, reasmt, reasrg   , reasms   , creas ,&
-                      vtemp , vhydr , tmpchi   , tmpchf   , vec2nd,&
-                      vec2ni, matass, maprec   , cndirp   , cnchci,&
-                      mediri, compor)
+    subroutine nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
+                      solver, lostat, time     , tpsthe   , reasvc  ,&
+                      reasvt, reasmt, reasrg   , reasms   , creas   ,&
+                      vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
+                      vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
+                      cnchci, mediri, compor)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: list_load
-        character(len=24), intent(in) :: numedd
+        character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: solver
         character(len=24), intent(in) :: time
+        character(len=19), intent(in) :: varc_curr
         aster_logical :: lostat
         real(kind=8) :: tpsthe(6)
         aster_logical :: reasvc

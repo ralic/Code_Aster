@@ -1,9 +1,9 @@
-subroutine nxacmv(model , mate  , cara_elem, list_load, numedd,&
-                  solver, lostat, time     , tpsthe   , reasvc,&
-                  reasvt, reasmt, reasrg   , reasms   , creas ,&
-                  vtemp , vhydr , tmpchi   , tmpchf   , vec2nd,&
-                  vec2ni, matass, maprec   , cndirp   , cnchci,&
-                  mediri, compor)
+subroutine nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
+                  solver, lostat, time     , tpsthe   , reasvc  ,&
+                  reasvt, reasmt, reasrg   , reasms   , creas   ,&
+                  vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
+                  vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
+                  cnchci, mediri, compor)
 !
 implicit none
 !
@@ -56,9 +56,10 @@ implicit none
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: cara_elem
     character(len=19), intent(in) :: list_load
-    character(len=24), intent(in) :: numedd
+    character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: time
+    character(len=19), intent(in) :: varc_curr
     aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
     real(kind=8) :: tpsthe(6)
     character(len=1) :: creas
@@ -94,7 +95,6 @@ implicit none
     character(len=1) :: typres
     character(len=2) :: codret
     character(len=8) :: k8bid, nomcmp(6)
-    character(len=19) :: varc_curr
     character(len=16) :: k16bid, option, nomcmd
     character(len=24) :: ligrmo, merigi, memass, mediri, tlimat(3), bidon
     character(len=24) :: vediri, vechtp, vetntp, vetnti, vadirp, vachtp, vechtn
@@ -119,7 +119,6 @@ implicit none
 !
     call jemarq()
     call infniv(ifm, niv)
-    varc_curr = '&&NXACMV.CHVARC'
 !
 !====
 ! 1. PREALABLE
@@ -172,7 +171,7 @@ implicit none
 !
 ! 1.2. ==> TEMPERATURES IMPOSEES (DIRICHLET)                 ---& CNDIRP
         call vedith(model, list_load, time, vediri)
-        call asasve(vediri, numedd, typres, vadirp)
+        call asasve(vediri, nume_dof, typres, vadirp)
         call ascova('D', vadirp, lload_func, 'INST', tpsthe(1),&
                     typres, cndirp)
         call jeveuo(cndirp(1:19)//'.VALE', 'L', jndirp)
@@ -180,7 +179,7 @@ implicit none
 ! 1.3. ==> CHARGES CINEMATIQUES                              ---& CNCHCI
 !
         cnchci = ' '
-        call ascavc(lload_name, lload_info, lload_func, numedd, tpsthe(1),&
+        call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsthe(1),&
                     cnchci)
 !
 ! 1.4. ==> CONTRIBUTION DU CHAMP A L'INSTANT PRECEDENT       ---& CNTNTP
@@ -198,14 +197,14 @@ implicit none
 ! CALCULS ELEMENTAIRES ET SOMMATION DANS LES VECT_ELEM VETNTP
             call vetnth(option, model, cara_elem, mate, time,&
                         vtemp, compor, tmpchi, tmpchf, vhydr,&
-                        vetntp, vetnti)
+                        vetntp, vetnti, varc_curr)
 !
-            call asasve(vetntp, numedd, typres, cntntp)
+            call asasve(vetntp, nume_dof, typres, cntntp)
             call jeveuo(cntntp, 'L', jtn)
             call jeveuo(zk24(jtn)(1:19)//'.VALE', 'L', jntntp)
 !
             if (.not.llin) then
-                call asasve(vetnti, numedd, typres, cntnti)
+                call asasve(vetnti, nume_dof, typres, cntnti)
                 call jeveuo(cntnti, 'L', jtni)
                 call jeveuo(zk24(jtni)(1:19)//'.VALE', 'L', jntnti)
             endif
@@ -229,7 +228,7 @@ implicit none
         call vechth('STAT', model, lload_name, lload_info, cara_elem,&
                     mate  , time , vtemp     , vechtp,&
                     varc_curr_ = varc_curr)
-        call asasve(vechtp, numedd, typres, vachtp)
+        call asasve(vechtp, nume_dof, typres, vachtp)
         call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
                     typres, cnchtp)
         call jeveuo(cnchtp(1:19)//'.VALE', 'L', jnchtp)
@@ -238,7 +237,7 @@ implicit none
         if (.not.llin) then
             call vechnl(model, lload_name, lload_info, cara_elem, time,&
                         vtemp, vechtn)
-            call asasve(vechtn, numedd, typres, vachtn)
+            call asasve(vechtn, nume_dof, typres, vachtn)
             call ascova('D', vachtn, bidon, 'INST', tpsthe(1),&
                         typres, cnchnl)
             call jeveuo(cnchnl(1:19)//'.VALE', 'L', jnchnl)
@@ -352,20 +351,21 @@ implicit none
             creas = 'M'
             vtemp2 = vtemp
             call merxth(model, lload_name, lload_info, cara_elem, mate,&
-                        time, vtemp2, merigi, compor, tmpchi,&
-                        tmpchf)
+                        time, vtemp2, merigi, compor, varc_curr,&
+                        tmpchi, tmpchf)
 !
 ! 3.1.2. ==> (RE)CALCUL DES MATRICES DE MASSE ET DE RIGIDITE EN LINEAIRE
 !
         else
 !
             if (reasms) then
-                call memsth(model, cara_elem, mate, time, memass)
+                call memsth(model, cara_elem, mate, time, varc_curr,&
+                            memass)
             endif
 !
             if (reasrg) then
                 call mergth(model, lload_name, lload_info, cara_elem, mate,&
-                            time, merigi)
+                            time, varc_curr, merigi)
             endif
 !
         endif
@@ -401,7 +401,7 @@ implicit none
             endif
         endif
 !
-        call asmatr(nbmat, tlimat, ' ', numedd, solver,&
+        call asmatr(nbmat, tlimat, ' ', nume_dof, solver,&
                     lload_info, 'ZERO', 'V', 1, matass)
 !
 ! 3.3. ==> DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT
