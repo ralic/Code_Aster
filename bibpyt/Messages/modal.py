@@ -177,4 +177,9 @@ ce qui est incompatible avec l'algorithme des puissances inverses utilisé pour 
 
 """),
 
+    18: _(u"""
+L'utilisation du parallélisme dans CALC_MODES avec OPTION='BANDES' et des matrices
+généralisées n'est pas possible.
+"""),
+
 }

@@ -440,7 +440,7 @@ def recup_modele_partition(MATR_RIGI, dbg):
     vlili = aster.getvectjev(nume_lili[0:24])
     buff_ligrel = vlili[1]
     if (buff_ligrel == 'LIAISONS'):
-        assert(False)  # Pb, on arrive pas a recuperer le nom du modele
+        UTMESS('F', 'MODAL_18')
     vlgrf = buff_ligrel[0:19] + '.LGRF'
     buff_modele = aster.getvectjev(vlgrf[0:24])
     nommod = buff_modele[1]
