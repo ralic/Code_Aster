@@ -1,6 +1,6 @@
 subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                   liordr, lresu, nbnoec, linoec, nbmaec,&
-                  limaec, nomcmp, lvarie, carael)
+                  limaec, nomcmp, lvarie, carael, nopara)
     implicit none
 !
 #include "asterf_types.h"
@@ -12,6 +12,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/irchme.h"
+#include "asterfort/irmpar.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -30,6 +31,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 #include "asterfort/as_allocate.h"
 !
     character(len=8) :: carael
+    character(len=16) :: nopara
     character(len=*) :: nomcon, novcmp, nocham, liordr, nomcmp, partie
     integer :: ifichi, nbnoec, linoec(*), nbmaec, limaec(*)
     aster_logical :: lresu, lvarie
@@ -67,6 +69,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 ! IN  LIMAEC : I   : NUMEROS DES MAILLES A IMPRIMER
 ! IN  NOMCMP : K*  : NOMS DES COMPOSANTES A IMPRIMER
 ! IN  CARAEL : K*  : NOM DU CARA_ELEM
+! IN  NOPARA : K16 : NOM D'UN PARAMATRE A AJOUTER
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
@@ -156,6 +159,10 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
         if (iret .ne. 0) then
             call celces(carael//'.CAFIBR', 'V', cesfib)
         endif
+    endif
+!
+    if ( nopara.ne.' ' ) then
+        call irmpar(nomcon, ifichi, nopara)
     endif
 !
 !     --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
@@ -276,7 +283,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             call irchme(ifichi, cham19, partie, nochmd, noresu,&
                         nosy16, typech, numord, nbrcmp, zk8(jnocmp),&
                         nbnoec, linoec, nbmaec, limaec, lvarie,&
-                        sdcarm, codret)
+                        sdcarm, nopara, codret)
 !
 999         continue
 !

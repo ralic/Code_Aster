@@ -123,6 +123,10 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
              ),
            ),
 ###
+           b_param         =BLOC(condition="""(RESULTAT != None)and(FORMAT == 'MED')""",
+             NOM_PARA        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1),
+           ),
+###
            b_parametres    =BLOC(condition="""(RESULTAT != None)and(FORMAT == 'RESULTAT')""",
              regles=(EXCLUS('TOUT_PARA','NOM_PARA'),),
              TOUT_PARA       =SIMP(statut='f',typ='TXM',into=("OUI","NON",) ),

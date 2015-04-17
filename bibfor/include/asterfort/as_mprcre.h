@@ -16,25 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 #include "asterf_types.h"
-!
 interface
-    subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
-                      liordr, lresu, nbnoec, linoec, nbmaec,&
-                      limaec, nomcmp, lvarie, carael, nopara)
-        character(len=*) :: nomcon
-        integer :: ifichi
-        character(len=*) :: nocham
-        character(len=*) :: novcmp
-        character(len=*) :: partie
-        character(len=*) :: liordr
-        aster_logical :: lresu
-        integer :: nbnoec
-        integer :: linoec(*)
-        integer :: nbmaec
-        integer :: limaec(*)
-        character(len=*) :: nomcmp
-        aster_logical :: lvarie
-        character(len=8) :: carael
-        character(len=16) :: nopara
-    end subroutine iremed
+    subroutine as_mprcre(fid, nom, type, desc, dtunit,&
+                         cret)
+        aster_int :: fid
+        character(len=*) :: nom
+        aster_int :: type
+        character(len=*) :: desc
+        character(len=*) :: dtunit
+        aster_int :: cret
+    end subroutine as_mprcre
 end interface

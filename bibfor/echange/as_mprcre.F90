@@ -1,3 +1,6 @@
+subroutine as_mprcre(fid, nom, type, desc, dtunit,&
+                     cret)
+! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -15,26 +18,28 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+    implicit none
 #include "asterf_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
+#include "med/mprcre.h"
+    character(len=*) :: nom
+    character(len=*) :: desc
+    character(len=*) :: dtunit
+    aster_int :: fid, cret, type
+#ifdef _DISABLE_MED
+    call utmess('F', 'FERMETUR_2')
+#else
 !
-interface
-    subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
-                      liordr, lresu, nbnoec, linoec, nbmaec,&
-                      limaec, nomcmp, lvarie, carael, nopara)
-        character(len=*) :: nomcon
-        integer :: ifichi
-        character(len=*) :: nocham
-        character(len=*) :: novcmp
-        character(len=*) :: partie
-        character(len=*) :: liordr
-        aster_logical :: lresu
-        integer :: nbnoec
-        integer :: linoec(*)
-        integer :: nbmaec
-        integer :: limaec(*)
-        character(len=*) :: nomcmp
-        aster_logical :: lvarie
-        character(len=8) :: carael
-        character(len=16) :: nopara
-    end subroutine iremed
-end interface
+#if med_int_kind != aster_int_kind
+    med_int :: fid4, cret4, typ4
+    fid4 = fid
+    typ4 = type
+    call mprcre(fid4, nom, typ4, desc, dtunit, cret4)
+    cret = cret4
+#else
+    call mprcre(fid, nom, type, desc, dtunit, cret)
+#endif
+!
+#endif
+end subroutine

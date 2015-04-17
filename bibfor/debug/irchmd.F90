@@ -41,7 +41,7 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
     integer :: numord
 !
     character(len=8) :: typech, noresu, sdcarm
-    character(len=16) :: nomsym
+    character(len=16) :: nomsym, nopara
     character(len=19) :: chan19
     character(len=64) :: noch64
     parameter (sdcarm = ' ')
@@ -52,10 +52,11 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
 !
     noresu=' '
     nomsym=' '
+    nopara=' '
     numord=0
     call irchme(ifichi, chan19, partie, noch64, noresu,&
                 nomsym, typech, numord, 0, [' '],&
                 0, [0], 0, [0], .false._1,&
-                sdcarm, codret)
+                sdcarm, nopara, codret)
 !
 end subroutine

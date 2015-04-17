@@ -1,3 +1,6 @@
+subroutine as_mprrvw(fid, nom, numdt, numit, dt,&
+                     val, cret)
+! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -15,26 +18,28 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+    implicit none
 #include "asterf_types.h"
+#include "asterf.h"
+#include "asterfort/utmess.h"
+#include "med/mprrvw.h"
+    character(len=*) :: nom
+    aster_int :: fid, numdt, numit, cret
+    real(kind=8) :: dt, val
+#ifdef _DISABLE_MED
+    call utmess('F', 'FERMETUR_2')
+#else
 !
-interface
-    subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
-                      liordr, lresu, nbnoec, linoec, nbmaec,&
-                      limaec, nomcmp, lvarie, carael, nopara)
-        character(len=*) :: nomcon
-        integer :: ifichi
-        character(len=*) :: nocham
-        character(len=*) :: novcmp
-        character(len=*) :: partie
-        character(len=*) :: liordr
-        aster_logical :: lresu
-        integer :: nbnoec
-        integer :: linoec(*)
-        integer :: nbmaec
-        integer :: limaec(*)
-        character(len=*) :: nomcmp
-        aster_logical :: lvarie
-        character(len=8) :: carael
-        character(len=16) :: nopara
-    end subroutine iremed
-end interface
+#if med_int_kind != aster_int_kind
+    med_int :: fid4, numdt4, numit4, cret4
+    fid4 = fid
+    numdt4 = numdt
+    numit4 = numit
+    call mprrvw(fid4, nom, numdt4, numit4, dt, val, cret4)
+    cret = cret4
+#else
+    call mprrvw(fid, nom, numdt, numit, dt, val, cret)
+#endif
+!
+#endif
+end subroutine

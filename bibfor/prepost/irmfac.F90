@@ -4,6 +4,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -62,7 +63,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     integer :: nbnot, nvamin, nbpara, jpara, nbmat, nbcmp, nbnosy, nbordr
     integer :: nbcmdu, jnunot, jnosy, jordr, jcmp, jncmed, jnumat, nfor, nresu
     integer :: ncham, n01, nmail, ncoor, ninf, nsup, nvamax, npart, infmai
-    integer :: ier, ibid, iret, ncarae, nvari
+    integer :: ier, ibid, iret, ncarae, nvari, npara
 !
     real(kind=8) :: borsup, borinf
 !
@@ -70,7 +71,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     character(len=3) :: coor, tmax, tmin, saux03, variel
     character(len=4) :: partie
     character(len=8) :: tabl, resu, nomab, tycha, leresu, nomgd, carael
-    character(len=16) :: formr, tyres
+    character(len=16) :: formr, tyres, nopara
     character(len=19) :: resu19
     character(len=24) :: novcmp, nonuma, nonuno, nchsym, nnuord, nnopar, nlicmp
     character(len=80) :: titre
@@ -196,6 +197,13 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
         endif
     endif
 !
+!     --- RECUPERATION DE NOM_PARA
+    nopara = ' '
+    call getvtx('RESU', 'NOM_PARA', iocc=ioccur, scal=nopara, nbret=npara)
+    if ( npara.gt.0 ) then
+        ASSERT(lresu)
+    endif
+!
 !     --- TEST DE LA COHERENCE DU MAILLAGE ET DU MODELE ---
 !
     if (lmodel .and. nmail .ne. 0) then
@@ -300,7 +308,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
         if (formaf(1:4) .eq. 'MED') then
             call iremed(leresu, ifichi, nchsym, novcmp, partie,&
                         nnuord, lresu, nbnot, zi(jnunot), nbmat,&
-                        zi(jnumat), nlicmp, lvarie, carael)
+                        zi(jnumat), nlicmp, lvarie, carael, nopara)
         else
             call irecri(leresu, formaf, ifichi, titre, lgmsh,&
                         nbnosy, zk16(jnosy), partie, nbpara, zk16(jpara),&

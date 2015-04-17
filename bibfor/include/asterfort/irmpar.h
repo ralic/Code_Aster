@@ -18,23 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
-                      liordr, lresu, nbnoec, linoec, nbmaec,&
-                      limaec, nomcmp, lvarie, carael, nopara)
+    subroutine irmpar(nomcon, ifichi, nopara)
         character(len=*) :: nomcon
         integer :: ifichi
-        character(len=*) :: nocham
-        character(len=*) :: novcmp
-        character(len=*) :: partie
-        character(len=*) :: liordr
-        aster_logical :: lresu
-        integer :: nbnoec
-        integer :: linoec(*)
-        integer :: nbmaec
-        integer :: limaec(*)
-        character(len=*) :: nomcmp
-        aster_logical :: lvarie
-        character(len=8) :: carael
         character(len=16) :: nopara
-    end subroutine iremed
+    end subroutine irmpar
 end interface
