@@ -72,6 +72,9 @@ subroutine vrcdec()
     fapg=zk8(jfpgl-1+k)
     noflpg = nomte//elrefe//fapg
     nuflpg = indk32(zk32(jpnlfp),noflpg,1,nblfpg)
+!   on s'assure que la famille nomte//elrefe//fapg a
+!   bien ete trouvee dans l'objet '&CATA.TE.PNLOCFPG'
+    ASSERT(nuflpg.gt.0)
     nufgpg = zi(jnolfp-1+nuflpg)
     ASSERT(nufgpg.gt.0)
     nbpg=tmfpg(nufgpg)
