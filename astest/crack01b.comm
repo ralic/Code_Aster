@@ -162,38 +162,76 @@ dict = NB_FOND.EXTR_TABLE().values()
 nb_fond = dict['NOMBRE'][0]
 DETRUIRE(CONCEPT=_F(NOM=NB_FOND),INFO=1)
 
-G1 = [None]*nb_fond
-G2 = [None]*nb_fond
+GK1 = [None]*nb_fond
+GK2 = [None]*nb_fond
+G1  = [None]*nb_fond
+G2  = [None]*nb_fond
 
 for i in range(nb_fond) :
+
+#  ---
+#  option CALC_K_G
+#  ---
+
+   GK1[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
+                          NUME_FOND=i+1,
+                          R_INF=2*h,
+                          R_SUP=5*h,),
+                 RESULTAT=RESU,
+                 OPTION='CALC_K_G')
+
+   IMPR_TABLE(TABLE=GK1[i])
+
+#  calcul sans R_INF et R_SUP
+   GK2[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
+                         NUME_FOND=i+1,),
+                 RESULTAT=RESU,
+                 OPTION='CALC_K_G')
+
+#  ---
+#  option CALC_G
+#  ---
 
    G1[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
                          NUME_FOND=i+1,
                          R_INF=2*h,
                          R_SUP=5*h,),
-                RESULTAT=RESU,
-                OPTION='CALC_K_G')
+                RESULTAT=RESU,)
 
-   IMPR_TABLE(TABLE=G1[i])
+   IMPR_TABLE(TABLE=GK1[i])
 
 #  calcul sans R_INF et R_SUP
    G2[i]=CALC_G(THETA=_F(FISSURE=fiss_1,
-                         NUME_FOND=i+1,),
-                RESULTAT=RESU,
-                OPTION='CALC_K_G')
+                        NUME_FOND=i+1,),
+                RESULTAT=RESU,)
 
 #----------------------------------------------------------------------
 #              TEST
 #----------------------------------------------------------------------
 
 # VALEUR DE REFERENCE MILIEU INFINI :
-G_REF=11.58648
+G_LOC=11.58648
 K1_REF=1.595769E6
+# POUR UN RADIAN
+G_REF=23.17296
+ 
+# pour G obtenu avec l'operateur CALC_G, la valeur de non regression 
+# doit etre identique (a la multiplication pres par la longueur "ray" de 
+# la fissure) entre les options CALC_G et CALC_K_G
+vale_calc_g1 = 11.2442850838
+vale_calc_g2 = 11.2509670624
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=11.2442850838,
-           VALE_REFE=11.58648,
+           VALE_CALC=vale_calc_g1,
+           VALE_REFE=G_LOC,
+           NOM_PARA='G',
+           TABLE=GK1_0,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=ray*vale_calc_g1,
+           VALE_REFE=G_REF,
            NOM_PARA='G',
            TABLE=G1_0,)
 
@@ -202,13 +240,20 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=1637224.10372,
            VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           TABLE=G1_0,)
+           TABLE=GK1_0,)
 
 #  sans R_INF et R_SUP
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=11.2509670624,
-           VALE_REFE=11.58648,
+           VALE_CALC=vale_calc_g2,
+           VALE_REFE=G_LOC,
+           NOM_PARA='G',
+           TABLE=GK2_0,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.029999999999999999,
+           VALE_CALC=ray*vale_calc_g2,
+           VALE_REFE=G_REF,
            NOM_PARA='G',
            TABLE=G2_0,)
 
@@ -217,5 +262,5 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=1616050.22039,
            VALE_REFE=1.595769E6,
            NOM_PARA='K1',
-           TABLE=G2_0,)
+           TABLE=GK2_0,)
 FIN()

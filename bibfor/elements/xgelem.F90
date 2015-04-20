@@ -451,6 +451,9 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         if (cp) then
             dudm(3,3)= eps(3)
         endif
+        if (axi) then
+            dudm(3,3)= dudm(1,4)/r
+        endif
 !
 !       ------------------------------------------------
 !       3) CALCUL DU CHAMP THETA ET DE SA DERIVEE (DTDM)
@@ -470,8 +473,17 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
             end do
         end do
 !
-        divt = 0.d0
+!       valeur du champ theta dans la quatrieme colonne
         do i = 1, ndim
+            dtdm(i,4) = theta(i)
+        end do
+!
+        if (axi) then
+            dtdm(3,3) = dtdm(1,4)/r
+        endif
+!
+        divt = 0.d0
+        do i = 1, 3
             divt = divt + dtdm(i,i)
         end do
 !
@@ -639,10 +651,10 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
         prod = 0.d0
         prod2 = 0.d0
-        do i = 1, ndim
-            do j = 1, ndim
-                do k = 1, ndim
-                    do m = 1, ndim
+        do i = 1, 3
+            do j = 1, 3
+                do k = 1, 3
+                    do m = 1, 3
                         prod =prod+f(i,j)*sr(j,k)*dudm(i,m)*dtdm(m,k)
                     end do
                 end do

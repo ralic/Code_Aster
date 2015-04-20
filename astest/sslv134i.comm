@@ -93,12 +93,15 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
-TAB=CALC_G(THETA=_F(FISSURE=FISS,),
+TABKG=CALC_G(THETA=_F(FISSURE=FISS,),
            RESULTAT=RESU,
            COMPORTEMENT=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
 
-IMPR_TABLE(TABLE=TAB,);
+TABG=CALC_G(THETA=_F(FISSURE=FISS,),
+            RESULTAT=RESU,);
+
+IMPR_TABLE(TABLE=TABKG,);
 
 SIF=POST_K1_K2_K3(MODELISATION='AXIS',
                     FISSURE=FISS,
@@ -107,30 +110,47 @@ SIF=POST_K1_K2_K3(MODELISATION='AXIS',
                     );
 
 IMPR_TABLE(TABLE=SIF,);
+
 # ---------------
 # VALEUR DE REFERENCE MILIEU INFINI :
-G_REF=11.58648
+G_LOC=11.58648
 K1_REF=1.595769E6
+# POUR UN RADIAN
+G_REF=23.17296
 
+# longueur de la fissure
+a = 2.
+
+# pour G obtenu avec l'operateur CALC_G, la valeur de non regression 
+# doit etre identique (a la multiplication pres par la longueur de 
+# la fissure) entre les options CALC_G et CALC_K_G
+vale_calc_g = 11.756931305835
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.021000000000000001,
-           VALE_CALC=11.756931305835,
+           VALE_CALC=vale_calc_g,
+           VALE_REFE=G_LOC,
+           NOM_PARA='G',
+           TABLE=TABKG,)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.021000000000000001,
+           VALE_CALC=a*vale_calc_g,
            VALE_REFE=G_REF,
            NOM_PARA='G',
-           TABLE=TAB,)
+           TABLE=TABG,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.060000000000000001,
            VALE_CALC=1.6739010427576E+06,
            VALE_REFE=K1_REF,
            NOM_PARA='K1',
-           TABLE=TAB,)
+           TABLE=TABKG,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.06,
            VALE_CALC=12.251309056872,
-           VALE_REFE=G_REF,
+           VALE_REFE=G_LOC,
            NOM_PARA='G',
            TABLE=SIF,)
 
@@ -151,14 +171,14 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_CALC=11.756931305835,
            VALE_REFE=G_REF,
            NOM_PARA='G',
-           TABLE=TAB,)
+           TABLE=TABKG,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2E-2,
            VALE_CALC=1.6739010427576E+06,
            VALE_REFE=K1_REF,
            NOM_PARA='K1',
-           TABLE=TAB,)
+           TABLE=TABKG,)
 
 # -------------------------------------------------------------
 #            POUR VALIDER LA FORCE CONTRIGUGE
@@ -194,12 +214,16 @@ RES_XROT=POST_CHAM_XFEM(MODELE_VISU = MOD_XROT,
 
 #-------------------------------------------------------
 # Taille d'element h = 0.1
-TAB_ROT=CALC_G(THETA=_F(FISSURE=FISS,),
-           RESULTAT=RESU_ROT,
-           COMPORTEMENT=_F(RELATION='ELAS',),
-           OPTION='CALC_K_G',);
+TABKG_RO=CALC_G(THETA=_F(FISSURE=FISS,),
+                RESULTAT=RESU_ROT,
+                COMPORTEMENT=_F(RELATION='ELAS',),
+                OPTION='CALC_K_G',);
 
-IMPR_TABLE(TABLE=TAB_ROT,);
+TABG_RO=CALC_G(THETA=_F(FISSURE=FISS,),
+               RESULTAT=RESU_ROT,
+               COMPORTEMENT=_F(RELATION='ELAS',));
+
+IMPR_TABLE(TABLE=TABKG_RO,);
 
 SIF_ROT=POST_K1_K2_K3(MODELISATION='AXIS',
                     FISSURE=FISS,
@@ -210,28 +234,42 @@ SIF_ROT=POST_K1_K2_K3(MODELISATION='AXIS',
 IMPR_TABLE(TABLE=SIF_ROT,);
 
 # VALEUR DE REFERENCE OBETNUS DE FISSURE MAILLE DANS SSLV134C (DE CALC_G)
-G_REF=2136.52
+G_LOC=2136.52
 K1_REF=21.911E6
 
+# POUR UN RADIAN
+G_REF=a*2136.52
+
+# pour G obtenu avec l'operateur CALC_G, la valeur de non regression 
+# doit etre identique (a la multiplication pres par la longueur de 
+# la fissure) entre les options CALC_G et CALC_K_G
+vale_calc_g = 2133.0633846696
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=3.0000000000000001E-3,
-           VALE_CALC=2133.0633846696,
+           VALE_CALC=vale_calc_g,
+           VALE_REFE=G_LOC,
+           NOM_PARA='G',
+           TABLE=TABKG_RO,)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=3.0000000000000001E-3,
+           VALE_CALC=a*vale_calc_g,
            VALE_REFE=G_REF,
            NOM_PARA='G',
-           TABLE=TAB_ROT,)
+           TABLE=TABG_RO,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=2.5E-2,
            VALE_CALC=2.2425710175363E+07,
            VALE_REFE=K1_REF,
            NOM_PARA='K1',
-           TABLE=TAB_ROT,)
+           TABLE=TABKG_RO,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=4.0000000000000001E-2,
            VALE_CALC=2220.0805498582,
-           VALE_REFE=G_REF,
+           VALE_REFE=G_LOC,
            NOM_PARA='G',
            TABLE=SIF_ROT,)
 

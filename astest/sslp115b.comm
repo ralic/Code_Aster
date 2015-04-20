@@ -312,24 +312,27 @@ Gref = 55.36
 # KIref =  sqrt( E * Gref / (1 - nu^2)) = 3574.396129741035
 KIref = 3574.39612
 
+vale_calc_g_1 = 54.9352527268
+vale_calc_g_2 = 54.5665050638
+vale_calc_g_3 = 53.4924548957
 
 # 1) le G de CALC_G
-TEST_TABLE(PRECISION=0.021,
-           VALE_CALC=54.8177886721,
+TEST_TABLE(PRECISION=0.02,
+           VALE_CALC=vale_calc_g_1,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGA1)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.4347463389,
+           VALE_CALC=vale_calc_g_2,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGA2)
 
-TEST_TABLE(PRECISION=0.04,
-           VALE_CALC=53.3484131987,
+TEST_TABLE(PRECISION=0.035,
+           VALE_CALC=vale_calc_g_3,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
@@ -337,21 +340,21 @@ TEST_TABLE(PRECISION=0.04,
 
 # 2) le G de CALC_K_G
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.9352527268,
+           VALE_CALC=vale_calc_g_1,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGAK1,)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=54.5665050638,
+           VALE_CALC=vale_calc_g_2,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGAK2,)
 
 TEST_TABLE(PRECISION=0.035,
-           VALE_CALC=53.4924548957,
+           VALE_CALC=vale_calc_g_3,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',

@@ -320,7 +320,7 @@ subroutine xvrcin(ligmex, celthx, nomevo, nomsym, celmex, l_xfem)
                 advelt = jcelvt-1+advelt
 !               -> sur la famille XFEM : recopie des valeurs lues
                 zr(advelm : advelm+lgelt) = zr(advelt : advelt+lgelt)
-!               -> sur la famille NOEU : on ecrit r8vide
+!               -> sur la famille NOEU : on ecrit NaN
                 do ival = lgelt+1,lgelm
                     zr(advelm-1+ival) = r8nan
                 enddo
