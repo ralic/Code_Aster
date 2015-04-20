@@ -41,8 +41,8 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
     integer :: numord
 !
     character(len=8) :: typech, noresu, sdcarm
-    character(len=16) :: nomsym, nopara
-    character(len=19) :: chan19
+    character(len=16) :: nomsym
+    character(len=19) :: chan19, nopara
     character(len=64) :: noch64
     parameter (sdcarm = ' ')
 !

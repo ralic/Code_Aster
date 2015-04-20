@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine irmpar(nomcon, ifichi, nopara)
+    subroutine irmpar(nomcon, ifichi, linopa)
         character(len=*) :: nomcon
         integer :: ifichi
-        character(len=16) :: nopara
+        character(len=19) :: linopa
     end subroutine irmpar
 end interface

@@ -1,6 +1,6 @@
 subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
                   liordr, lresu, nbnoec, linoec, nbmaec,&
-                  limaec, nomcmp, lvarie, carael, nopara)
+                  limaec, nomcmp, lvarie, carael, linopa)
     implicit none
 !
 #include "asterf_types.h"
@@ -31,7 +31,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
 #include "asterfort/as_allocate.h"
 !
     character(len=8) :: carael
-    character(len=16) :: nopara
+    character(len=19) :: linopa
     character(len=*) :: nomcon, novcmp, nocham, liordr, nomcmp, partie
     integer :: ifichi, nbnoec, linoec(*), nbmaec, limaec(*)
     aster_logical :: lresu, lvarie
@@ -161,8 +161,8 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
         endif
     endif
 !
-    if ( nopara.ne.' ' ) then
-        call irmpar(nomcon, ifichi, nopara)
+    if ( linopa.ne.' ' ) then
+        call irmpar(nomcon, ifichi, linopa)
     endif
 !
 !     --- BOUCLE SUR LE NOMBRE DE CHAMPS A IMPRIMER
@@ -283,7 +283,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
             call irchme(ifichi, cham19, partie, nochmd, noresu,&
                         nosy16, typech, numord, nbrcmp, zk8(jnocmp),&
                         nbnoec, linoec, nbmaec, limaec, lvarie,&
-                        sdcarm, nopara, codret)
+                        sdcarm, linopa, codret)
 !
 999         continue
 !

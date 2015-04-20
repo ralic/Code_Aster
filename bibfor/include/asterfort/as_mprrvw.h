@@ -17,8 +17,8 @@
 !
 #include "asterf_types.h"
 interface
-    subroutine as_mprrvw(fid, nom, type, desc, dtunit,&
-                         cret)
+    subroutine as_mprrvw(fid, nom, numdt, numit, dt,&
+                         val, cret)
         character(len=*) :: nom
         aster_int :: fid, numdt, numit, cret
         real(kind=8) :: dt, val

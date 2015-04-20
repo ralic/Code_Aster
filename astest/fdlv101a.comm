@@ -122,7 +122,7 @@ MODES=CALC_MODES(MATR_RIGI=MATASKS,
 
 IMPR_RESU(FORMAT='MED',
           RESU=_F(RESULTAT=MODES,
-                  NOM_PARA='AMOR_REDUIT',
+                  NOM_PARA=('AMOR_REDUIT', 'FREQ',),
                   NOM_CHAM='DEPL'),)
 
 NUMGEN=NUME_DDL_GENE(       BASE=MODES,

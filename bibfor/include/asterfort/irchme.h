@@ -21,7 +21,7 @@ interface
     subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
                       nomsym, typech, numord, nbrcmp, nomcmp,&
                       nbnoec, linoec, nbmaec, limaec, lvarie,&
-                      sdcarm, nopara, codret)
+                      sdcarm, linopa, codret)
         integer :: ifichi
         character(len=19) :: chanom
         character(len=*) :: partie
@@ -38,7 +38,7 @@ interface
         integer :: limaec(*)
         aster_logical :: lvarie
         character(len=8) :: sdcarm
-        character(len=16) :: nopara
+        character(len=19) :: linopa
         integer :: codret
     end subroutine irchme
 end interface

@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine irmpav(nomcon, ifichi, nopara, numdt, numit,&
-                      dt, val)
-        character(len=16) :: nopara
+    subroutine irmpav(nomcon, ifichi, linopa, numdt, numit,&
+                      dt)
+        character(len=19) :: linopa
         character(len=*) :: nomcon
         integer :: ifichi, numdt, numit
-        real(kind=8) :: dt, val
+        real(kind=8) :: dt
     end subroutine irmpav
 end interface

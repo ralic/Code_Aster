@@ -1,17 +1,22 @@
-subroutine irmpar(nomcon, ifichi, nopara)
+subroutine irmpar(nomcon, ifichi, linopa)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_mficom.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mfiope.h"
 #include "asterfort/as_mprcre.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 !
-    character(len=16) :: nopara
+    character(len=19) :: linopa
     character(len=*) :: nomcon
     integer :: ifichi
 ! ======================================================================
@@ -41,10 +46,13 @@ subroutine irmpar(nomcon, ifichi, nopara)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: edleaj, idfimd, codret, hdfok, medok
+    integer :: edleaj, idfimd, codret, hdfok, medok, jlnopa
+    integer :: nbpara, inopar
+    integer :: typflo
+    parameter (typflo=6)
     character(len=1) :: saux01
     character(len=8) :: saux08
-    character(len=16) :: saux16
+    character(len=16) :: saux16, nopara
     character(len=64) :: saux64
     character(len=200) :: nofimd, nopar2
     character(len=255) :: kfic
@@ -79,14 +87,20 @@ subroutine irmpar(nomcon, ifichi, nopara)
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
-    saux64 = nomcon//nopara
-    nopar2 = nopara
-    saux16 = ' '
-    call as_mprcre(idfimd, saux64, 0, nopar2, saux16, codret)
-    if (codret .ne. 0) then
-        saux08='mprcre'
-        call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    call jeveuo(linopa, 'L', jlnopa)
+    call jelira(linopa, 'LONMAX', nbpara)
+    do inopar = 0, nbpara-1
+        nopara = zk16(jlnopa+inopar)
+        saux64 = nomcon//nopara
+        nopar2 = nopara
+        saux16 = ' '
+!       TROISIEME ARGUMENT : 6 TYPE FLOTTANT DANS MED
+        call as_mprcre(idfimd, saux64, typflo, nopar2, saux16, codret)
+        if (codret .ne. 0) then
+            saux08='mprcre'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
+    enddo
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then

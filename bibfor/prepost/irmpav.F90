@@ -1,21 +1,27 @@
-subroutine irmpav(nomcon, ifichi, nopara, numdt, numit,&
-                  dt, val)
+subroutine irmpav(nomcon, ifichi, linopa, numdt, numit,&
+                  dt)
     implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/as_mficom.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mfiope.h"
-#include "asterfort/as_mprcre.h"
+#include "asterfort/as_mprrvw.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rsadpa.h"
+#include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 !
-    character(len=16) :: nopara
+    character(len=19) :: linopa
     character(len=*) :: nomcon
     integer :: ifichi, numdt, numit
-    real(kind=8) :: dt, val
+    real(kind=8) :: dt
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,9 +53,11 @@ subroutine irmpav(nomcon, ifichi, nopara, numdt, numit,&
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: edleaj, idfimd, codret, hdfok, medok
+    integer :: edleaj, idfimd, codret, hdfok, medok, jlnopa
+    integer :: nbpara, inopar, iaux
     character(len=1) :: saux01
     character(len=8) :: saux08
+    character(len=16) :: nopara
     character(len=64) :: saux64
     character(len=200) :: nofimd
     character(len=255) :: kfic
@@ -84,13 +92,21 @@ subroutine irmpav(nomcon, ifichi, nopara, numdt, numit,&
         call utmess('F', 'DVP_97', sk=saux08, si=codret)
     endif
 !
-    saux64 = nomcon//nopara
-    call as_mprrvw(idfimd, saux64, numdt, numit, dt,&
-                   val, codret)
-    if (codret .ne. 0) then
-        saux08='mprcre'
-        call utmess('F', 'DVP_97', sk=saux08, si=codret)
-    endif
+    call jeveuo(linopa, 'L', jlnopa)
+    call jelira(linopa, 'LONMAX', nbpara)
+    do inopar = 0, nbpara-1
+        nopara = zk16(jlnopa+inopar)
+        call rsadpa(nomcon, 'L', 1, nopara, numdt,&
+                    0, sjv=iaux, styp=saux08, istop=1)
+!
+        saux64 = nomcon//nopara
+        call as_mprrvw(idfimd, saux64, numdt, numit, dt,&
+                       zr(iaux), codret)
+        if (codret .ne. 0) then
+            saux08='mprcre'
+            call utmess('F', 'DVP_97', sk=saux08, si=codret)
+        endif
+    enddo
 !
     call as_mficlo(idfimd, codret)
     if (codret .ne. 0) then
