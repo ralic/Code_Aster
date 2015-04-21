@@ -329,35 +329,8 @@ DEPZON[4] = CALC_TABLE(TABLE = DEPPLY,
 #                   TEST TABLE
 #----------------------------------------------
 
-vale = [0,0,0,0,0]
 preci = 0.05
 
-VALE_CALC=[
- -0.00159827452433,
- 0.016539940031205,
- 0.011804091165555,
- 0.044271736807697,
- -0.012567353983782,
- 0.001568728686073,
- 0.0,
- 0.016459160538893,
- 0.0,
- 0.016696443779768,
- -0.00803178004993,
- 9.2145694721025E-04,
- 0.0074454650494103,
- 0.042662597897824,
- 9.8730205088576E-03,
- 0.040717753526894,
- -0.014349754949192,
- 0.007187661561766,
- 0.013851515611115,
- 0.045018363761539,
- 0.0,
- 0.017444156556877,
- -0.012037354959620,
- 9.3161952580596E-05,
-]
 
 for i in [1,2,3,4]: #Boucle sur les zones
 
@@ -366,42 +339,42 @@ for i in [1,2,3,4]: #Boucle sur les zones
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX-DX',
              TYPE_TEST='MIN',
-             VALE_CALC=VALE_CALC[(i-1)*6+0], VALE_REFE=vale[i], TOLE_MACHINE=4.E-04,  # TODO TOLE_MACHINE
+             VALE_CALC=0., VALE_REFE=0,
              CRITERE='ABSOLU',
              PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DX-DX',
              TYPE_TEST='MAX',
-             VALE_CALC=VALE_CALC[(i-1)*6+1], VALE_REFE=vale[i], TOLE_MACHINE=4.E-04,  # TODO TOLE_MACHINE
+             VALE_CALC=0., VALE_REFE=0,
              CRITERE='ABSOLU',
              PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MIN',
-             VALE_CALC=VALE_CALC[(i-1)*6+2], VALE_REFE=0, TOLE_MACHINE=4.E-04,        # TODO TOLE_MACHINE
+             VALE_CALC=0., VALE_REFE=0,
              CRITERE='ABSOLU',
              PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DY-DY',
              TYPE_TEST='MAX',
-             VALE_CALC=VALE_CALC[(i-1)*6+3], VALE_REFE=0, TOLE_MACHINE=4.E-04,        # TODO TOLE_MACHINE
+             VALE_CALC=0., VALE_REFE=0,
              CRITERE='ABSOLU',
              PRECISION=preci,
              REFERENCE='ANALYTIQUE',);
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MIN',
-             VALE_CALC=VALE_CALC[(i-1)*6+4], VALE_REFE=0, TOLE_MACHINE=4.E-04,        # TODO TOLE_MACHINE
+             VALE_CALC=0., VALE_REFE=0,
              CRITERE='ABSOLU',
              PRECISION=preci,
              REFERENCE='ANALYTIQUE');
   TEST_TABLE(TABLE=DEPZON[i],
              NOM_PARA='DZ',
              TYPE_TEST='MAX',
-             VALE_CALC=VALE_CALC[(i-1)*6+5], VALE_REFE=0, TOLE_MACHINE=4.E-04,        # TODO TOLE_MACHINE
+             VALE_CALC=0., VALE_REFE=0,
              CRITERE='ABSOLU',
              PRECISION=preci,
              REFERENCE='ANALYTIQUE');

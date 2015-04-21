@@ -19,7 +19,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
 
 MAIL=LIRE_MAILLAGE();
-                                                                                                                            
+
 # Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
 MAIL=MODI_MAILLAGE(reuse =MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 

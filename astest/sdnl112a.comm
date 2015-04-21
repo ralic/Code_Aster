@@ -306,7 +306,7 @@ TEST_TABLE(
 MELFLU45=CALC_FLUI_STRU(VITE_FLUI      = _F(VITE_MIN    = vite_min,
                                             VITE_MAX    = vite_max,
                                             NB_POIN     = nb_poin),
-                        BASE_MODALE    = _F(MODE_MECA   = MODES,
+                        BASE_MODALE    = _F(MODE_MECA   = MODES, 
                                             NUME_ORDRE  = (4,5),
                                             AMOR_REDUIT = (4.999E-03,4.999E-03),),
                         TYPE_FLUI_STRU = TYPEFLUI,

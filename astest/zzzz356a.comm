@@ -46,7 +46,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='TEST3',
                                 OPTION='SPHERE',
                                 POINT=(0.228545,0.768977),
-                                RAYON=(0.04),),),                              
+                                RAYON=(0.04),),),
                                 );
 MA=DEFI_GROUP(reuse =MA,
                MAILLAGE=MA,
@@ -58,7 +58,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 GROUP_MA='TEST2',),
                               _F(
                                 NOM='TEST3',
-                                GROUP_MA='TEST3',),),                              
+                                GROUP_MA='TEST3',),),
                                 );
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=MA),)
 
@@ -106,24 +106,21 @@ TABLE3=CALC_TABLE(reuse=TABLE3,
                            VALE=1.),
                   )
 
-           
+
 TEST_TABLE(TABLE=TABLE1,
            NOM_PARA='NOMBRE',
            TYPE_TEST='SOMM',
-           VALE_CALC=1241,
-           TOLE_MACHINE=10,
+           VALE_CALC=1241.0,
            CRITERE='ABSOLU')
-           
+
 TEST_TABLE(TABLE=TABLE2,
            NOM_PARA='NOMBRE',
            TYPE_TEST='SOMM',
-           TOLE_MACHINE=5,
-           VALE_CALC=306,
+           VALE_CALC=306.0,
            CRITERE='ABSOLU')
 TEST_TABLE(TABLE=TABLE3,
            NOM_PARA='NOMBRE',
            TYPE_TEST='SOMM',
-           TOLE_MACHINE=0.5,
-           VALE_CALC=7,
+           VALE_CALC=7.0,
            CRITERE='ABSOLU')
 FIN()

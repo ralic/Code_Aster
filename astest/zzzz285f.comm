@@ -181,7 +181,6 @@ for bord in ('BDRO', 'BCOU',):
           TEST_TABLE(TABLE=TERR, NOM_PARA='MAX_X1',
                      VALE_CALC=0.0,
                      VALE_REFE=0.0,
-                     TOLE_MACHINE=toler[legende],
                      LEGENDE=legende,
                      REFERENCE='ANALYTIQUE', CRITERE='ABSOLU', PRECISION=toler[legende]);
 

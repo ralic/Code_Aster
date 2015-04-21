@@ -384,11 +384,11 @@ for modeli in lmodeli :
                TEST_RESU(CHAM_NO=(
                           _F(TYPE_TEST='MIN', CHAM_GD=CHDIFF,  NOM_CMP=cmp,
                              REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE='ABSOLU',
-                             PRECISION=preci, TOLE_MACHINE=preci,)))
+                             PRECISION=preci,  )))
                TEST_RESU(CHAM_NO=(
                           _F(TYPE_TEST='MAX', CHAM_GD=CHDIFF,  NOM_CMP=cmp,
                              REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE='ABSOLU',
-                             PRECISION=preci, TOLE_MACHINE=preci,)))
+                             PRECISION=preci,  )))
                DETRUIRE(CONCEPT=_F(NOM=(CHDIFF)),INFO=1,)
 
 
@@ -407,11 +407,11 @@ for modeli in lmodeli :
                TEST_RESU(RESU=(
                           _F(TYPE_TEST='MIN', RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=inst,  NOM_CMP=cmp,
                              REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE=('ABSOLU','RELATIF'),
-                             PRECISION=preci, TOLE_MACHINE=(preci,1.e-6),)))
+                             PRECISION=preci,  )))
                TEST_RESU(RESU=(
                           _F(TYPE_TEST='MAX', RESULTAT=U1, NOM_CHAM='SIEF_ELGA', INST=inst,  NOM_CMP=cmp,
                              REFERENCE='ANALYTIQUE', VALE_REFE=0., VALE_CALC=0. , CRITERE=('ABSOLU','RELATIF'),
-                             PRECISION=preci, TOLE_MACHINE=(preci,1.e-6),)))
+                             PRECISION=preci,  )))
 
 
            DETRUIRE(CONCEPT=_F(NOM=(UR2,CHTIME,UR1)),INFO=1,)

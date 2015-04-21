@@ -314,8 +314,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
               UNITE=8,);
 
 TEST_TABLE(
-           VALE_CALC=3.7035669605053002E8,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=370356696.05,
            NOM_PARA='MOYE_SIZZ',
            TABLE=INT_SI,
            FILTRE=_F(NOM_PARA='INST',

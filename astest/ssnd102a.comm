@@ -278,7 +278,7 @@ for LeDiscret in ListeDiscrets:
          motclefs['VALEUR'] = []
          for ind in range(len(LesInstants)):
             motclefs['VALEUR'].append(_F(FONCTION=LaF[ii],NOM_PARA='INST',PRECISION=2.00E-08,
-                                         VALE_PARA=LesInstants[ind], TOLE_MACHINE=2.e-8,   #TODO vale_calc
+                                         VALE_PARA=LesInstants[ind],
                                          VALE_CALC=Lvale[ind], VALE_REFE=Lvale[ind],
                                          REFERENCE='ANALYTIQUE',CRITERE='RELATIF'))
          TEST_FONCTION(**motclefs)
@@ -293,7 +293,7 @@ for LeDiscret in ListeDiscrets:
          vale = Energie[jj]
          vari = "V%d" % (jj*3+3)
          motclefs['RESU'].append(_F(RESULTAT=RESU1,INST=TempsMaxi,NOM_CHAM='VARI_ELGA',
-                                    CRITERE=('RELATIF','ABSOLU'),TOLE_MACHINE=(3.00E-06,1.0E-05),
+                                    CRITERE=('RELATIF','ABSOLU'),
                                     MAILLE=LaMaille,POINT=1,NOM_CMP=vari,VALE_CALC=vale,))
       TEST_RESU(**motclefs)
 
@@ -425,7 +425,7 @@ for LeDiscret in ListeDiscrets:
          vari = "V%d" % (jj*3+3)
          motclefs['RESU'].append(_F(RESULTAT=RESU2,INST=TempsMaxi,NOM_CHAM='VARI_ELGA',
                                     REFERENCE='ANALYTIQUE',
-                                    CRITERE=('RELATIF','ABSOLU'),PRECISION=1.00E-10, TOLE_MACHINE=(1.00E-10, 1.0E-05),
+                                    CRITERE=('RELATIF','ABSOLU'),PRECISION=1.00E-10,
                                     MAILLE=LaMaille,POINT=1,NOM_CMP=vari,VALE_CALC=vale,VALE_REFE=vale,))
       TEST_RESU(**motclefs)
 

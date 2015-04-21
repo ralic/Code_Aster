@@ -98,7 +98,6 @@ IMPR_TABLE(TABLE=VL)
 
 TEST_TABLE(
            VALE_CALC=0.105,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='EPYY',
            TABLE=VL,
            FILTRE=_F(NOM_PARA='INST',
@@ -107,7 +106,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=333.085077103,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIYY',
            TABLE=VL,
            FILTRE=_F(NOM_PARA='INST',
@@ -116,7 +114,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=0.100836436536,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='V1',
            TABLE=VL,
            FILTRE=_F(NOM_PARA='INST',

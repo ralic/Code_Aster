@@ -249,7 +249,6 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   NOM_CHAM='SIGM_NOEU',
                   NOM_CMP='SIYY',
                   VALE_CALC=-12.0022706458,
-                  TOLE_MACHINE=2.E-6,               # TODO TOLE_MACHINE
                   ),
           )
 

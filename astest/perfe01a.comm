@@ -168,8 +168,8 @@ LINSTA=DEFI_LIST_REEL(DEBUT=0.,
                                      NOMBRE=20,),
                                   _F(JUSQU_A=10.,
                                      NOMBRE=3),),);
-                                     
-LISTPS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),                          
+
+LISTPS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
                          ECHEC=_F(SUBD_NIVEAU=10,
                                   SUBD_METHODE='MANUEL',
                                   SUBD_PAS=10,
@@ -177,8 +177,8 @@ LISTPS=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
                                   SUBD_PAS_MINI=1e-8,
                                   ACTION='DECOUPE'),
                                   );
-                                  
-                                  
+
+
 SIGEPS=SIMU_POINT_MAT(INFO=2,
                    COMPORTEMENT=_F(
                                 RELATION='POLYCRISTAL',
@@ -205,7 +205,6 @@ IMPR_TABLE(TABLE=SIGEPS,
 
 TEST_TABLE(
            VALE_CALC=440.511663307,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='SIZZ',
            TABLE=SIGEPS,
            FILTRE=_F(NOM_PARA='INST',

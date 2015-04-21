@@ -24,7 +24,7 @@ DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 MAYA=LIRE_MAILLAGE( )
 
 MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
-                                
+
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'MECANIQUE',
                                         MODELISATION = 'C_PLAN')
@@ -162,10 +162,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=10,
                    NOM_CHAM='FORC_NODA',
                    NOEUD='NO000007',
                    NOM_CMP='DY',
-                   VALE_CALC=-6.97269570082E-07,
+                   VALE_CALC=0.0,
                    VALE_REFE=0.0,
                    REFERENCE='ANALYTIQUE',
-                   TOLE_MACHINE=4.E-6,               # TODO TOLE_MACHINE
                    PRECISION=1.E-3,
                    CRITERE='ABSOLU',),
                 ),

@@ -31,7 +31,7 @@ EPMAX=CREA_CHAMP( OPERATION='EXTR',
 
 IMPR_RESU(RESU=_F(CHAM_GD=EPMAX,VALE_MAX='OUI',VALE_MIN='OUI'))
 
-MAX_EP=POST_ELEM(  
+MAX_EP=POST_ELEM(
                    MINMAX=_F(NOM_CHAM='EPSG_ELGA',MODELE=MO_MEC45,
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 TOUT='OUI',CHAM_GD=EPMAX,))
@@ -39,7 +39,6 @@ IMPR_TABLE(TABLE=MAX_EP)
 
 TEST_TABLE(
            VALE_CALC=690.231884264,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='MAX_EPXX',
            TABLE=MAX_EP,
            )

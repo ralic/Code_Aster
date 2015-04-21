@@ -180,7 +180,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000002E-05,
-           VALE_CALC=-3.99999878198,
+           VALE_CALC=-3.99999878197,
            VALE_REFE=-4.0,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
@@ -189,41 +189,41 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000002E-05,
-           VALE_CALC=9.82662981243E-12,
+           VALE_CALC=9.83523157127E-13,
            VALE_REFE=0.0,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MAX',
            TABLE=LAG,
-           TOLE_MACHINE=1.e-5) # variabilite entre Aster4 et clap0f0q
+           )
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000002E-05,
-           VALE_CALC=-2.53988636623E-11,
+           VALE_CALC=-6.67000678744E-13,
            VALE_REFE=0.0,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MIN',
            TABLE=LAG,
-           TOLE_MACHINE=1.e-5) # variabilite entre Aster4 et clap0f0q
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000002E-05,
-           VALE_CALC=-0.499997419935,
+           VALE_CALC=-0.499997385269,
            VALE_REFE=-0.5,
            NOM_PARA='LAGS_F2',
            TYPE_TEST='MAX',
            TABLE=LAG,
-           TOLE_MACHINE=1.e-5) # variabilite entre Aster4 et clap0f0q
+           )
 
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000002E-05,
-           VALE_CALC=-0.499997714664,
+           VALE_CALC=-0.499997721761,
            VALE_REFE=-0.5,
            NOM_PARA='LAGS_F2',
            TYPE_TEST='MIN',
            TABLE=LAG,
-           TOLE_MACHINE=1.e-5) # variabilite entre Aster4 et clap0f0q
+           )
 
 FIN();

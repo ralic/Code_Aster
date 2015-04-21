@@ -1,19 +1,19 @@
 # CYLINDRE 3D CREUX EN ROTATION AUTOUR DE SON AXE AVEC GYROSCOPIE 3D
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 import numpy as NP
@@ -103,7 +103,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=MODES0,
-                   VALE_CALC=2601.74482843,
+                   VALE_CALC=2601.74482844,
                    VALE_REFE=2562.0800000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,),
@@ -223,7 +223,7 @@ for i in range(nbV):
     RIGIDi=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=RIGID,COEF_R=1.0,),
                                   _F(MATR_ASSE=RIGIDR,COEF_R=OM**2,),),)
     GYASSi=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=AMOR,COEF_R=1.0,),
-                                  _F(MATR_ASSE=GYASS,COEF_R=OM,),),),                                    
+                                  _F(MATR_ASSE=GYASS,COEF_R=OM,),),),
     # CALCUL DES MODES AVEC GYROSCOPIE ET SANS RAIDEUR CENTRIFUGE
     lmod1[i]=CALC_MODES(MATR_RIGI=RIGID,
                             VERI_MODE=_F(STOP_ERREUR='NON',
@@ -262,14 +262,14 @@ for i in range(nbV):
                                              ),
                             )
     DETRUIRE(CONCEPT=_F(NOM=RIGIDi),INFO=1)
-    DETRUIRE(CONCEPT=_F(NOM=GYASSi),INFO=1)    
+    DETRUIRE(CONCEPT=_F(NOM=GYASSi),INFO=1)
 
 #VITESSE DE ROTATION OMEGA=3000 TR/MIN
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod1_2,
-                   VALE_CALC=53.89838086,
+                   VALE_CALC=53.8983808653,
                    VALE_REFE=53.2600000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,),
@@ -301,7 +301,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod1_2,
-                   VALE_CALC=2963.08539115,
+                   VALE_CALC=2963.08539116,
                    VALE_REFE=2928.5000000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,
@@ -319,7 +319,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod1_2,
-                   VALE_CALC=6265.88011463,
+                   VALE_CALC=6265.88011464,
                    VALE_REFE=6211.4000000000001,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
@@ -328,7 +328,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod1_2,
-                   VALE_CALC=6306.00528119,
+                   VALE_CALC=6306.0052812,
                    VALE_REFE=6251.8000000000001,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
@@ -358,7 +358,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=26.95065297,
+                   VALE_CALC=26.9506529732,
                    VALE_REFE=26.6300000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,),
@@ -366,25 +366,23 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=49.99920088,
+                   VALE_CALC=49.9992153267,
                    VALE_REFE=49.9900000000001,
-                   TOLE_MACHINE=5.E-6,      # ajustement pour calibre7
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,),
                 _F(NUME_ORDRE=3,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=50.00079911,
+                   VALE_CALC=50.0007846733,
                    VALE_REFE=50.00000000000001,
-                   TOLE_MACHINE=5.E-6,      # ajustement pour calibre7
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=2562.88948240,
+                   VALE_CALC=2562.8894824,
                    VALE_REFE=2523.7400000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,
@@ -393,7 +391,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=2640.18522150,
+                   VALE_CALC=2640.1852215,
                    VALE_REFE=2600.9900000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,
@@ -402,7 +400,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=2962.72006550,
+                   VALE_CALC=2962.7200655,
                    VALE_REFE=2928.0900000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,
@@ -411,7 +409,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=3032.55103131,
+                   VALE_CALC=3032.55103132,
                    VALE_REFE=2997.7200000000001,
                    CRITERE='RELATIF',
                    PRECISION=2.E-2,
@@ -420,7 +418,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=6265.78581699,
+                   VALE_CALC=6265.78581703,
                    VALE_REFE=6211.3300000000001,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
@@ -429,7 +427,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=6305.90802445,
+                   VALE_CALC=6305.9080245,
                    VALE_REFE=6251.7300000000001,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
@@ -438,7 +436,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=6312.92345718,
+                   VALE_CALC=6312.92345719,
                    VALE_REFE=6312.8400000000001,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,
@@ -447,7 +445,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=lmod2_2,
-                   VALE_CALC=6381.94883085,
+                   VALE_CALC=6381.94883081,
                    VALE_REFE=6388.0300000000001,
                    CRITERE='RELATIF',
                    PRECISION=1.E-2,

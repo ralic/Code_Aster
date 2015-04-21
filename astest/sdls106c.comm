@@ -1,19 +1,19 @@
 # TITRE CALCUL MODAL D'UNE PLAQUE RECTANGULAIRE SIMPLEMENT APPUYEE SUR TOUS SES BORDS
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
 ########################################################################
@@ -22,7 +22,7 @@
 
 #           PLAQUE DECOUPEE EN 2 PARTIES
 
-#           AVEC INTERFACES DE TYPE CRAIG-BAMPTON
+#           AVEC INTERFACES DE TYPE CRAIG-BAMPTON 
 
 #           MAILLAGES INCOMPATIBLES ET MODES DE COUPLAGE
 
@@ -41,14 +41,14 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 PRE_IDEAS(UNITE_MAILLAGE=20,
           UNITE_IDEAS=19,
           );
-
+          
 PRE_IDEAS(UNITE_MAILLAGE=30,
           UNITE_IDEAS=29,
-          );
+          );         
 
 MAILLA1=LIRE_MAILLAGE(UNITE=20,FORMAT='ASTER')
 MAILLA2=LIRE_MAILLAGE(UNITE=30,FORMAT='ASTER')
-                                                                                                                            
+
 # Pertubation legere des coordonnes des maillages pour eviter les modes multiples ou retournes :
 MAILLA1=MODI_MAILLAGE(reuse =MAILLA1, MAILLAGE=MAILLA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 MAILLA2=MODI_MAILLAGE(reuse =MAILLA2, MAILLAGE=MAILLA2, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
@@ -63,8 +63,8 @@ MODELE2=AFFE_MODELE(MAILLAGE=MAILLA2,
                     AFFE=_F( GROUP_MA = 'CALCUL',
                              PHENOMENE = 'MECANIQUE',
                              MODELISATION = 'DKT'));
-
-
+                             
+                             
 #
 MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
 
@@ -74,7 +74,7 @@ CHAMAT1=AFFE_MATERIAU(  MAILLAGE=MAILLA1,
                                     MATER = MATER))
 CHAMAT2=AFFE_MATERIAU(  MAILLAGE=MAILLA2,
                        AFFE=_F( GROUP_MA = 'CALCUL',
-                                    MATER = MATER))
+                                    MATER = MATER))                                    
 #
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
                             COQUE=_F( EPAIS = 0.01,
@@ -203,7 +203,7 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                                      TOUT_CMP='OUI',
                                      NBMOD=20,
                                      SHIFT=1.));
-
+ 
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
                         MATR_MASS=MASS_2,
                         MODE_INTERF=_F(GROUP_NO = 'BLOQUE',
@@ -314,9 +314,9 @@ MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        SQUELETTE=SQUEL,
                        TOUT_ORDRE='OUI',
                        TOUT_CHAM='OUI')
-
+                       
 IMPR_RESU(FORMAT='MED',
-          RESU=_F(RESULTAT=MODGLO));
+          RESU=_F(RESULTAT=MODGLO));                       
 
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
@@ -362,7 +362,7 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=6,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=0.0770665809109,
+                   VALE_CALC=0.0770665632278,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
                    PRECISION=0.1,),

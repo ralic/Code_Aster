@@ -177,7 +177,6 @@ for bord in ('BDRO', 'BCOU',) :
           legende=bord+"_"+typmail+"_"+typch
           TEST_TABLE(TABLE=TERR, NOM_PARA='MAX_X1', VALE_CALC=0.0, VALE_REFE=0.0, LEGENDE=legende,
                      REFERENCE='ANALYTIQUE', CRITERE='ABSOLU',
-                     TOLE_MACHINE=toler[legende],
                      PRECISION=toler[legende]);
 
           DETRUIRE(CONCEPT=_F(NOM=(U1,U2,U1B,EABSO,ERELA,TERR,F1,CHF1)))

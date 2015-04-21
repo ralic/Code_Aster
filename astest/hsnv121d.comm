@@ -26,7 +26,7 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 
 MO=AFFE_MODELE(
                MAILLAGE=MA,
-                  
+
                AFFE=_F(
                TOUT = 'OUI',
                PHENOMENE = 'MECANIQUE',
@@ -204,7 +204,6 @@ VT=STAT_NON_LINE( reuse=VT,
                 ITER_GLOB_MAXI = 50)
               )
 
-# TOLE_MACHINE pourquoi ?
 TEST_RESU(RESU=(_F(INST=2.0,
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
@@ -213,8 +212,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=303.401010101,
                    VALE_REFE=303.0,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=1.E-2,
-                   TOLE_MACHINE=(1.E-2, 1.E-4),),
+                   PRECISION=1.E-2,),
                 _F(INST=2.0,
                    RESULTAT=VT,
                    NOM_CHAM='DEPL',
@@ -223,8 +221,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=-108.657237142,
                    VALE_REFE=-110.0,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.014999999999999999,
-                   TOLE_MACHINE=(0.014999999999999999, 1.E-4),),
+                   PRECISION=0.014999999999999999,),
                 _F(INST=2.0,
                    POINT=1,
                    SOUS_POINT=1,
@@ -234,7 +231,7 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_CALC=1498.15194571,
                    VALE_REFE=1453.0,
                    REFERENCE='ANALYTIQUE',
-                   PRECISION=0.032, TOLE_MACHINE=(0.031, 1.E-4),
+                   PRECISION=0.032,
                    MAILLE='MA1',),
                 _F(INST=2.0,
                    POINT=1,
@@ -246,7 +243,6 @@ TEST_RESU(RESU=(_F(INST=2.0,
                    VALE_REFE=0.2475,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=0.014999999999999999,
-                   TOLE_MACHINE=(0.014999999999999999, 1.E-4),
                    MAILLE='MA1',),
                 ),
           )

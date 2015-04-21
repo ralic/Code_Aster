@@ -293,7 +293,6 @@ dy2b = T_DEPL2['DY',2]
 
 TEST_TABLE(
            VALE_CALC=6.62232935794E-07,
-           TOLE_MACHINE = 1.0000000000000001E-05,
            NOM_PARA     = 'DX',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -302,7 +301,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=-1.38749110626E-06,
-           TOLE_MACHINE = 1.0000000000000001E-05,
            NOM_PARA     = 'DX',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -311,7 +309,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=1.98447709114E-06,
-           TOLE_MACHINE = 1.0000000000000001E-05,
            NOM_PARA     = 'DY',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -320,7 +317,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=-1.56574909119E-06,
-           TOLE_MACHINE = 1.0000000000000001E-05,
            NOM_PARA     = 'DY',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -330,7 +326,6 @@ TEST_TABLE(
 tempMat2 = T_TEMP['TEMP',2]
 TEST_TABLE(
            VALE_CALC=111.487273613,
-           TOLE_MACHINE = 1.E-4,
            NOM_PARA     = 'TEMP',
            TABLE        = T_TEMP,
            FILTRE       = _F(NOM_PARA = 'NOEUD',
@@ -340,7 +335,6 @@ TEST_TABLE(
 debtot2 = DEB_FIN['DEBTOT',2]
 TEST_TABLE(
            VALE_CALC=0.0009928399,
-           TOLE_MACHINE = 1.E-3,
            NOM_PARA     = 'DEBTOT',
            TABLE        = DEB_FIN,
            FILTRE       = _F(NOM_PARA = 'FISSURE',
@@ -350,7 +344,6 @@ TEST_TABLE(
 coefConv2 = TBL_FIN2['COEF_CONV',11]
 TEST_TABLE(
            VALE_CALC=214.6674,
-           TOLE_MACHINE = 1.E-4,
            NOM_PARA     = 'COEF_CONV',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA = 'COTES',
@@ -360,7 +353,6 @@ TEST_TABLE(
 press2 = TBL_FIN2['PRESSION',11]
 TEST_TABLE(
            VALE_CALC=903494.8,
-           TOLE_MACHINE = 1.E-4,
            NOM_PARA     = 'PRESSION',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA = 'COTES',
@@ -370,7 +362,6 @@ TEST_TABLE(
 tempFl2 = TBL_FIN2['TEMP',11]
 TEST_TABLE(
            VALE_CALC=89.24661,
-           TOLE_MACHINE = 1.E-4,
            NOM_PARA     = 'TEMP',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA='COTES',
@@ -380,7 +371,6 @@ TEST_TABLE(
 flux2 = TBL_FIN2['FLUX',11]
 TEST_TABLE(
            VALE_CALC=396.1546,
-           TOLE_MACHINE = 1.E-3,
            NOM_PARA     = 'FLUX',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA = 'COTES',

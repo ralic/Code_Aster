@@ -24,7 +24,7 @@ MA=LIRE_MAILLAGE()
 MO=AFFE_MODELE(
 
                 MAILLAGE=MA,
-                   
+
 
                 AFFE=_F(
                 TOUT = 'OUI',
@@ -291,7 +291,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    RESULTAT=V,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYZ',
-                   VALE_CALC=-1.34493436082E-11,
+                   VALE_CALC=0.,
                    VALE_REFE=0.0,
                    CRITERE='ABSOLU',
                    REFERENCE = 'ANALYTIQUE',
@@ -302,9 +302,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    NOM_CHAM='REAC_NODA',
                    NOEUD='NO3',
                    NOM_CMP='DX',
-                   VALE_CALC=1.56760120841,
+                   VALE_CALC=0.,
                    VALE_REFE=0.0,
-                   TOLE_MACHINE=2.2E-5,             # TODO TOLE_MACHINE
                    CRITERE='ABSOLU',
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.6,),

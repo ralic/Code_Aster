@@ -122,6 +122,42 @@ resu=[None]*len(compor)
 vmis=[None]*len(compor)
 epsg=[None]*len(compor)
 icl=-1
+
+# valeurs calculées (vale_calc) :
+vale_calc={}
+vale_calc[0,0]=681.4872513552
+vale_calc[0,1]=680.4145315789
+vale_calc[0,2]=680.2823502644
+vale_calc[0,3]=680.1600006413
+vale_calc[1,0]=681.4872513552
+vale_calc[1,1]=680.4145300933
+vale_calc[1,2]=680.2823491806
+vale_calc[1,3]=680.1600001844
+vale_calc[2,0]=681.4261630127
+vale_calc[2,1]=680.2940477990
+vale_calc[2,2]=680.1027226768
+vale_calc[2,3]=679.9214369838
+vale_calc[3,0]=681.4872973467
+vale_calc[3,1]=680.4144826223
+vale_calc[3,2]=680.2822881775
+vale_calc[3,3]=680.1599245472
+vale_calc[4,0]=681.4872973467
+vale_calc[4,1]=680.4144826223
+vale_calc[4,2]=680.2822881775
+vale_calc[4,3]=680.1599245472
+vale_calc[5,0]=681.4872973467
+vale_calc[5,1]=680.4144826223
+vale_calc[5,2]=680.2822881775
+vale_calc[5,3]=680.1599245472
+vale_calc[6,0]=681.4886356801
+vale_calc[6,1]=680.4158365426
+vale_calc[6,2]=680.2836521946
+vale_calc[6,3]=680.1613002677
+
+
+
+
+
 for icomp,comp in enumerate(compor) :
 
     resu[icomp]=STAT_NON_LINE(MODELE=modele,CHAM_MATER=mat,
@@ -189,35 +225,32 @@ for icomp,comp in enumerate(compor) :
                               NOM_CMP='VMIS',MAILLE='M2',POINT=1,);
     epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
                               NOM_CMP='EPZZ',MAILLE='M2',POINT=1,);
-    TEST_FONCTION(VALEUR=(_F(VALE_CALC=681.487251355,
+ 
+    TEST_FONCTION(VALEUR=(_F(VALE_CALC=vale_calc[icomp,0],
                              VALE_REFE=681.5,
                              VALE_PARA=1.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=2.E-3,          # TODO TOLE_MACHINE
                              PRECISION=2.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=680.414531579,
+                          _F(VALE_CALC=vale_calc[icomp,1],
                              VALE_REFE=680.39999999999998,
                              VALE_PARA=2.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=1.E-3,          # TODO TOLE_MACHINE
                              PRECISION=1.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=680.282350264,
+                          _F(VALE_CALC=vale_calc[icomp,2],
                              VALE_REFE=680.29999999999995,
                              VALE_PARA=3.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=1.E-3,          # TODO TOLE_MACHINE
                              PRECISION=1.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),
-                          _F(VALE_CALC=680.160000641,
+                          _F(VALE_CALC=vale_calc[icomp,3],
                              VALE_REFE=680.20000000000005,
                              VALE_PARA=4.0,
                              REFERENCE='AUTRE_ASTER',
-                             TOLE_MACHINE=1.E-3,          # TODO TOLE_MACHINE
                              PRECISION=1.E-3,
                              NOM_PARA='INST',
                              FONCTION=vmis[icomp],),

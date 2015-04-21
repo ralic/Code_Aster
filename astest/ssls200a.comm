@@ -186,49 +186,49 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='DEPL',
-                   VALE_CALC=45031.303335607,
+                   VALE_CALC=45031.3033356,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='EFGE_ELNO',
-                   VALE_CALC=1.8383669335155E5,
+                   VALE_CALC=183836.693352,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='EPSI_ELGA',
-                   VALE_CALC=85399.560259808,
+                   VALE_CALC=85399.5602598,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT2,
                    NOM_CHAM='EPSI_ELNO',
-                   VALE_CALC=31618.269149024,
+                   VALE_CALC=31618.269149,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT2,
                    NOM_CHAM='EPSI_NOEU',
-                   VALE_CALC=9399.596248364,
+                   VALE_CALC=9399.59624836,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='SIEF_ELGA',
-                   VALE_CALC=1.3664895073008E+06,
+                   VALE_CALC=1366489.5073,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='SIGM_ELNO',
-                   VALE_CALC=1.5977007456203E+06,
+                   VALE_CALC=1597700.74562,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
                    RESULTAT=MESTAT,
                    NOM_CHAM='DEGE_ELNO',
-                   VALE_CALC=63974.29538834,
+                   VALE_CALC=63974.2953883,
                    ),
                 _F(NUME_ORDRE=1,
                    TYPE_TEST='SOMM_ABS',
@@ -263,15 +263,14 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.0,
+           VALE_CALC=0.,
            NOM_PARA='INST',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS2,
            )
 
 TEST_TABLE(
-           VALE_CALC=3.1737674236121E7,
-           TOLE_MACHINE=2.9999999999999997E-4,
+           VALE_CALC=31737674.2361,
            NOM_PARA='TOTALE',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS2,
@@ -285,112 +284,112 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=101.42804345939,
+           VALE_CALC=101.428043459,
            NOM_PARA='MASSE',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.79166666666666996,
+           VALE_CALC=0.791666666667,
            NOM_PARA='CDG_X',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.41666666666667002,
+           VALE_CALC=0.416666666667,
            NOM_PARA='CDG_Y',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.83333333333333004,
+           VALE_CALC=0.833333333333,
            NOM_PARA='CDG_Z',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=42.881522818108998,
+           VALE_CALC=42.8815228181,
            NOM_PARA='IX_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=52.774983223877001,
+           VALE_CALC=52.7749832239,
            NOM_PARA='IY_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=32.016043662522002,
+           VALE_CALC=32.0160436625,
            NOM_PARA='IZ_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=2.8174456516497002,
+           VALE_CALC=2.81744565165,
            NOM_PARA='IXY_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=5.6348913032994998,
+           VALE_CALC=5.6348913033,
            NOM_PARA='IXZ_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=13.839293040904,
+           VALE_CALC=13.8392930409,
            NOM_PARA='IYZ_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=23.090901720559,
+           VALE_CALC=23.0909017206,
            NOM_PARA='IX_PRIN_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=44.887018239619998,
+           VALE_CALC=44.8870182396,
            NOM_PARA='IY_PRIN_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=59.694629744328999,
+           VALE_CALC=59.6946297443,
            NOM_PARA='IZ_PRIN_G',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=125.44376870922,
+           VALE_CALC=125.443768709,
            NOM_PARA='ALPHA',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=58.461139706551002,
+           VALE_CALC=58.4611397066,
            NOM_PARA='BETA',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,
            )
 
 TEST_TABLE(
-           VALE_CALC=148.75614101555001,
+           VALE_CALC=148.756141016,
            NOM_PARA='GAMMA',
            TYPE_TEST='SOMM_ABS',
            TABLE=MASS3,

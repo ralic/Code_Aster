@@ -213,8 +213,7 @@ IMPR_TABLE(TABLE=FODEP,
            TITRE='CT : Courbe Force Deplacement',);
 
 TEST_TABLE(
-           VALE_CALC=74040.999999,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=74040.9999989,
            NOM_PARA='FG_EXT',
            TABLE=FODEP,
            FILTRE=_F(NOM_PARA='INST',
@@ -223,7 +222,6 @@ TEST_TABLE(
 
 TEST_TABLE(
            VALE_CALC=3.38221454633,
-           TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TABLE=FODEP,
            FILTRE=_F(NOM_PARA='INST',

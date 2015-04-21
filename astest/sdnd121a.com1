@@ -150,23 +150,21 @@ E_E_ada = DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=TEMPSFIN,
                         VALE_FONC=ERRE_ada,);
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0916517629633,
-                        VALE_REFE=0.0,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0, TOLE_MACHINE=0.1,
+                        VALE_REFE=0.0,  
                         CRITERE='ABSOLU',
                         VALE_PARA=duree,
                         REFERENCE='ANALYTIQUE',
-                        PRECISION=0.10000000000000001,
-                        TOLE_MACHINE=1.0E-5,
+                        PRECISION=0.1,
                         FONCTION=E_E_eul,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0630520811374,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0, TOLE_MACHINE=0.1,
                         VALE_REFE=0.0,
                         CRITERE='ABSOLU',
                         VALE_PARA=duree,
                         REFERENCE='ANALYTIQUE',
-                        PRECISION=0.10000000000000001,
-                        TOLE_MACHINE=1.0E-5,
+                        PRECISION=0.1,
                         FONCTION=E_E_ada,),
               )
 
@@ -182,7 +180,6 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0,
                         VALE_PARA=duree,
                         REFERENCE='ANALYTIQUE',
                         PRECISION=1.E-08,
-                        TOLE_MACHINE=1.0E-5,
                         FONCTION=E_F_ada,),
               )
 
@@ -192,14 +189,156 @@ tio_eulb= DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=tio_eul,
                         VALE_FONC=tio_eul,);
 
+# valeurs calculées (vale_calc_euler):
+vale_calc_euler={}
+vale_calc_euler[0]=0.02486800000000
+vale_calc_euler[1]=0.02526400000000
+vale_calc_euler[2]=0.04633199999999
+vale_calc_euler[3]=0.04672399999999
+vale_calc_euler[4]=0.06625599999998
+vale_calc_euler[5]=0.06664799999998
+vale_calc_euler[6]=0.20819200000013
+vale_calc_euler[7]=0.20858400000013
+vale_calc_euler[8]=0.23684000000015
+vale_calc_euler[9]=0.23723600000015
+vale_calc_euler[10]=0.25978800000018
+vale_calc_euler[11]=0.26018000000018
+vale_calc_euler[12]=0.28671600000020
+vale_calc_euler[13]=0.28710800000020
+vale_calc_euler[14]=0.42742800000034
+vale_calc_euler[15]=0.42782000000035
+vale_calc_euler[16]=0.44961600000037
+vale_calc_euler[17]=0.45000800000037
+vale_calc_euler[18]=0.47172800000039
+vale_calc_euler[19]=0.47212000000039
+vale_calc_euler[20]=0.61247200000053
+vale_calc_euler[21]=0.61286400000053
+vale_calc_euler[22]=0.63955600000056
+vale_calc_euler[23]=0.63995200000056
+vale_calc_euler[24]=0.66257600000058
+vale_calc_euler[25]=0.66296800000058
+vale_calc_euler[26]=0.69108400000061
+vale_calc_euler[27]=0.69147600000061
+vale_calc_euler[28]=0.83282400000075
+vale_calc_euler[29]=0.83321600000075
+vale_calc_euler[30]=0.85307600000077
+vale_calc_euler[31]=0.85346800000077
+vale_calc_euler[32]=0.87476400000079
+vale_calc_euler[33]=0.87515600000079
+vale_calc_euler[34]=1.015656000000
+vale_calc_euler[35]=1.016048000000
+vale_calc_euler[36]=1.041160000000
+vale_calc_euler[37]=1.041552000000
+vale_calc_euler[38]=1.062679999999
+vale_calc_euler[39]=1.063071999999
+vale_calc_euler[40]=1.091571999998
+vale_calc_euler[41]=1.091959999998
+vale_calc_euler[42]=1.235471999995
+vale_calc_euler[43]=1.235863999995
+vale_calc_euler[44]=1.252223999994
+vale_calc_euler[45]=1.252615999994
+vale_calc_euler[46]=1.269939999994
+vale_calc_euler[47]=1.270335999994
+vale_calc_euler[48]=1.412415999990
+vale_calc_euler[49]=1.412807999990
+vale_calc_euler[50]=1.438983999989
+vale_calc_euler[51]=1.439379999989
+vale_calc_euler[52]=1.459519999989
+vale_calc_euler[53]=1.459911999989
+vale_calc_euler[54]=1.485131999988
+vale_calc_euler[55]=1.485523999988
+vale_calc_euler[56]=1.626791999984
+vale_calc_euler[57]=1.627187999984
+vale_calc_euler[58]=1.646255999984
+vale_calc_euler[59]=1.646651999984
+vale_calc_euler[60]=1.664183999983
+vale_calc_euler[61]=1.664575999983
+vale_calc_euler[62]=1.807395999979
+vale_calc_euler[63]=1.807783999979
+vale_calc_euler[64]=1.836503999979
+vale_calc_euler[65]=1.836895999979
+vale_calc_euler[66]=1.858743999978
+vale_calc_euler[67]=1.859139999978
+vale_calc_euler[68]=1.884831999977
+vale_calc_euler[69]=1.885223999977
+vale_calc_euler[70]=2.025555999975
+vale_calc_euler[71]=2.025951999975
+vale_calc_euler[72]=2.047667999976
+vale_calc_euler[73]=2.048063999976
+vale_calc_euler[74]=2.068871999976
+vale_calc_euler[75]=2.069263999976
+vale_calc_euler[76]=2.210067999980
+vale_calc_euler[77]=2.210459999980
+vale_calc_euler[78]=2.237991999981
+vale_calc_euler[79]=2.238387999981
+vale_calc_euler[80]=2.261115999982
+vale_calc_euler[81]=2.261507999982
+vale_calc_euler[82]=2.288767999982
+vale_calc_euler[83]=2.289159999982
+vale_calc_euler[84]=2.429779999987
+vale_calc_euler[85]=2.430171999987
+vale_calc_euler[86]=2.451335999987
+vale_calc_euler[87]=2.451731999987
+vale_calc_euler[88]=2.473535999988
+vale_calc_euler[89]=2.473927999988
+vale_calc_euler[90]=2.614227999992
+vale_calc_euler[91]=2.614619999992
+vale_calc_euler[92]=2.640591999993
+vale_calc_euler[93]=2.640987999993
+vale_calc_euler[94]=2.663107999993
+vale_calc_euler[95]=2.663503999993
+vale_calc_euler[96]=2.692131999994
+vale_calc_euler[97]=2.692519999994
+vale_calc_euler[98]=2.834895999998
+vale_calc_euler[99]=2.835287999998
+vale_calc_euler[100]=2.853479999999
+vale_calc_euler[101]=2.853875999999
+vale_calc_euler[102]=2.873691999999
+vale_calc_euler[103]=2.874087999999
+vale_calc_euler[104]=3.015088000003
+vale_calc_euler[105]=3.015476000003
+vale_calc_euler[106]=3.040500000004
+vale_calc_euler[107]=3.040896000004
+vale_calc_euler[108]=3.061208000005
+vale_calc_euler[109]=3.061604000005
+vale_calc_euler[110]=3.088436000005
+vale_calc_euler[111]=3.088824000005
+vale_calc_euler[112]=3.231388000010
+vale_calc_euler[113]=3.231780000010
+vale_calc_euler[114]=3.248452000010
+vale_calc_euler[115]=3.248844000010
+vale_calc_euler[116]=3.264992000011
+vale_calc_euler[117]=3.265388000011
+vale_calc_euler[118]=3.408820000015
+vale_calc_euler[119]=3.409208000015
+vale_calc_euler[120]=3.437312000015
+vale_calc_euler[121]=3.437708000016
+vale_calc_euler[122]=3.458528000016
+vale_calc_euler[123]=3.458920000016
+vale_calc_euler[124]=3.483884000017
+vale_calc_euler[125]=3.484276000017
+vale_calc_euler[126]=3.624892000021
+vale_calc_euler[127]=3.625284000021
+vale_calc_euler[128]=3.646244000022
+vale_calc_euler[129]=3.646636000022
+vale_calc_euler[130]=3.666012000022
+vale_calc_euler[131]=3.666408000022
+vale_calc_euler[132]=3.808048000026
+vale_calc_euler[133]=3.808436000026
+vale_calc_euler[134]=3.836760000027
+vale_calc_euler[135]=3.837152000027
+vale_calc_euler[136]=3.859668000028
+vale_calc_euler[137]=3.860060000028
+vale_calc_euler[138]=3.886528000028
+vale_calc_euler[139]=3.886916000028
+
 for i in range(0,len(t_inout_euler)):
-   TEST_FONCTION(VALEUR=_F(VALE_CALC=t_inout_analyique[i],
+   TEST_FONCTION(VALEUR=_F(VALE_CALC=vale_calc_euler[i],
                            VALE_REFE=t_inout_analyique[i],
-                           CRITERE='ABSOLU',
+                           CRITERE='RELATIF',
                            VALE_PARA=t_inout_euler[i],
                            REFERENCE='ANALYTIQUE',
-                           TOLE_MACHINE=1.2E-05,  #TODO creer une liste des vale_calc
-                           PRECISION=1.2E-05,
+                           PRECISION=2.E-04,
                            FONCTION=tio_eulb,),
                  )
 
@@ -208,14 +347,156 @@ tio_adab= DEFI_FONCTION(NOM_PARA='INST',
                         VALE_PARA=tio_ada,
                         VALE_FONC=tio_ada,);
 
+# valeurs calculées (vale_calc_adapt):
+vale_calc_adapt={}
+vale_calc_adapt[0]=0.02486800000000
+vale_calc_adapt[1]=0.02526400000000
+vale_calc_adapt[2]=0.04633199999999
+vale_calc_adapt[3]=0.04672399999999
+vale_calc_adapt[4]=0.06625599999998
+vale_calc_adapt[5]=0.06664799999998
+vale_calc_adapt[6]=0.20819200000013
+vale_calc_adapt[7]=0.20858400000013
+vale_calc_adapt[8]=0.23684000000015
+vale_calc_adapt[9]=0.23723600000015
+vale_calc_adapt[10]=0.25978800000018
+vale_calc_adapt[11]=0.26018000000018
+vale_calc_adapt[12]=0.28671600000020
+vale_calc_adapt[13]=0.28710800000020
+vale_calc_adapt[14]=0.42742800000034
+vale_calc_adapt[15]=0.42782000000035
+vale_calc_adapt[16]=0.44961600000037
+vale_calc_adapt[17]=0.45000800000037
+vale_calc_adapt[18]=0.47172800000039
+vale_calc_adapt[19]=0.47212000000039
+vale_calc_adapt[20]=0.61247200000053
+vale_calc_adapt[21]=0.61286400000053
+vale_calc_adapt[22]=0.63955600000056
+vale_calc_adapt[23]=0.63995200000056
+vale_calc_adapt[24]=0.66257600000058
+vale_calc_adapt[25]=0.66296800000058
+vale_calc_adapt[26]=0.69108400000061
+vale_calc_adapt[27]=0.69147600000061
+vale_calc_adapt[28]=0.83282400000075
+vale_calc_adapt[29]=0.83321600000075
+vale_calc_adapt[30]=0.85307600000077
+vale_calc_adapt[31]=0.85346800000077
+vale_calc_adapt[32]=0.87476400000079
+vale_calc_adapt[33]=0.87515600000079
+vale_calc_adapt[34]=1.015656000000
+vale_calc_adapt[35]=1.016048000000
+vale_calc_adapt[36]=1.041160000000
+vale_calc_adapt[37]=1.041552000000
+vale_calc_adapt[38]=1.062679999999
+vale_calc_adapt[39]=1.063071999999
+vale_calc_adapt[40]=1.091571999998
+vale_calc_adapt[41]=1.091959999998
+vale_calc_adapt[42]=1.235471999995
+vale_calc_adapt[43]=1.235863999995
+vale_calc_adapt[44]=1.252223999994
+vale_calc_adapt[45]=1.252615999994
+vale_calc_adapt[46]=1.269939999994
+vale_calc_adapt[47]=1.270335999994
+vale_calc_adapt[48]=1.412415999990
+vale_calc_adapt[49]=1.412807999990
+vale_calc_adapt[50]=1.438983999989
+vale_calc_adapt[51]=1.439379999989
+vale_calc_adapt[52]=1.459519999989
+vale_calc_adapt[53]=1.459911999989
+vale_calc_adapt[54]=1.485131999988
+vale_calc_adapt[55]=1.485523999988
+vale_calc_adapt[56]=1.626791999984
+vale_calc_adapt[57]=1.627187999984
+vale_calc_adapt[58]=1.646255999984
+vale_calc_adapt[59]=1.646651999984
+vale_calc_adapt[60]=1.664183999983
+vale_calc_adapt[61]=1.664575999983
+vale_calc_adapt[62]=1.807395999979
+vale_calc_adapt[63]=1.807783999979
+vale_calc_adapt[64]=1.836503999979
+vale_calc_adapt[65]=1.836895999979
+vale_calc_adapt[66]=1.858743999978
+vale_calc_adapt[67]=1.859139999978
+vale_calc_adapt[68]=1.884831999977
+vale_calc_adapt[69]=1.885223999977
+vale_calc_adapt[70]=2.025555999975
+vale_calc_adapt[71]=2.025951999975
+vale_calc_adapt[72]=2.047667999976
+vale_calc_adapt[73]=2.048063999976
+vale_calc_adapt[74]=2.068871999976
+vale_calc_adapt[75]=2.069263999976
+vale_calc_adapt[76]=2.210067999980
+vale_calc_adapt[77]=2.210459999980
+vale_calc_adapt[78]=2.237991999981
+vale_calc_adapt[79]=2.238387999981
+vale_calc_adapt[80]=2.261115999982
+vale_calc_adapt[81]=2.261507999982
+vale_calc_adapt[82]=2.288767999982
+vale_calc_adapt[83]=2.289159999982
+vale_calc_adapt[84]=2.429779999987
+vale_calc_adapt[85]=2.430171999987
+vale_calc_adapt[86]=2.451335999987
+vale_calc_adapt[87]=2.451731999987
+vale_calc_adapt[88]=2.473535999988
+vale_calc_adapt[89]=2.473927999988
+vale_calc_adapt[90]=2.614227999992
+vale_calc_adapt[91]=2.614619999992
+vale_calc_adapt[92]=2.640591999993
+vale_calc_adapt[93]=2.640987999993
+vale_calc_adapt[94]=2.663107999993
+vale_calc_adapt[95]=2.663503999993
+vale_calc_adapt[96]=2.692131999994
+vale_calc_adapt[97]=2.692519999994
+vale_calc_adapt[98]=2.834895999998
+vale_calc_adapt[99]=2.835287999998
+vale_calc_adapt[100]=2.853479999999
+vale_calc_adapt[101]=2.853875999999
+vale_calc_adapt[102]=2.873691999999
+vale_calc_adapt[103]=2.874087999999
+vale_calc_adapt[104]=3.015088000003
+vale_calc_adapt[105]=3.015476000003
+vale_calc_adapt[106]=3.040500000004
+vale_calc_adapt[107]=3.040896000004
+vale_calc_adapt[108]=3.061208000005
+vale_calc_adapt[109]=3.061604000005
+vale_calc_adapt[110]=3.088436000005
+vale_calc_adapt[111]=3.088824000005
+vale_calc_adapt[112]=3.231388000010
+vale_calc_adapt[113]=3.231780000010
+vale_calc_adapt[114]=3.248452000010
+vale_calc_adapt[115]=3.248844000010
+vale_calc_adapt[116]=3.264992000011
+vale_calc_adapt[117]=3.265388000011
+vale_calc_adapt[118]=3.408820000015
+vale_calc_adapt[119]=3.409208000015
+vale_calc_adapt[120]=3.437312000015
+vale_calc_adapt[121]=3.437708000016
+vale_calc_adapt[122]=3.458528000016
+vale_calc_adapt[123]=3.458920000016
+vale_calc_adapt[124]=3.483884000017
+vale_calc_adapt[125]=3.484276000017
+vale_calc_adapt[126]=3.624892000021
+vale_calc_adapt[127]=3.625284000021
+vale_calc_adapt[128]=3.646244000022
+vale_calc_adapt[129]=3.646636000022
+vale_calc_adapt[130]=3.666012000022
+vale_calc_adapt[131]=3.666408000022
+vale_calc_adapt[132]=3.808048000026
+vale_calc_adapt[133]=3.808436000026
+vale_calc_adapt[134]=3.836760000027
+vale_calc_adapt[135]=3.837152000027
+vale_calc_adapt[136]=3.859668000028
+vale_calc_adapt[137]=3.860060000028
+vale_calc_adapt[138]=3.886528000028
+vale_calc_adapt[139]=3.886916000028
+
 for i in range(0,len(t_inout_adapt)):
-   TEST_FONCTION(VALEUR=_F(VALE_CALC=t_inout_analyique[i],
+   TEST_FONCTION(VALEUR=_F(VALE_CALC=vale_calc_adapt[i],
                            VALE_REFE=t_inout_analyique[i],
-                           CRITERE='ABSOLU',
+                           CRITERE='RELATIF',
                            VALE_PARA=t_inout_adapt[i],
                            REFERENCE='ANALYTIQUE',
-                           TOLE_MACHINE=1.2E-05,  #TODO creer une liste des vale_calc
-                           PRECISION=1.2E-05,
+                           PRECISION=2.E-04,
                            FONCTION=tio_adab,),
                  )
 
@@ -229,58 +510,58 @@ for i in range(0,len(t_inout_adapt)):
 # c_rappel=0. # amortissement au noeud de rappel (pour un probleme plus general)
 # INCLUDE(UNITE=61);
 # INCLUDE(UNITE=62);
-# 
+#
 # err_globale_D_euler = NP.sqrt( NP.sum((d_euler-D)**2) / NP.sum(D**2) ) *100
 # err_globale_V_euler = NP.sqrt( NP.sum((v_euler-V)**2) / NP.sum(V**2) ) *100
 # err_globale_A_euler = NP.sqrt( NP.sum((a_euler-A)**2) / NP.sum(A**2) ) *100
-# 
+#
 # err_globale_D_adapt = NP.sqrt( NP.sum((d_adapt-D)**2) / NP.sum(D**2) ) *100
 # err_globale_V_adapt = NP.sqrt( NP.sum((v_adapt-V)**2) / NP.sum(V**2) ) *100
 # err_globale_A_adapt = NP.sqrt( NP.sum((a_adapt-A)**2) / NP.sum(A**2) ) *100
-# 
-# 
+#
+#
 # TEMPSFIN = DEFI_LIST_REEL(VALE=duree,);
-# 
+#
 # ERRE_eul= DEFI_LIST_REEL(VALE=err_globale_E_euler,);
 # E_E_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRE_eul,);
-# 
+#
 # ERRD_eul= DEFI_LIST_REEL(VALE=err_globale_D_euler,);
 # E_D_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRD_eul,);
-# 
+#
 # ERRV_eul= DEFI_LIST_REEL(VALE=err_globale_V_euler,);
 # E_V_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRV_eul,);
-# 
+#
 # ERRA_eul= DEFI_LIST_REEL(VALE=err_globale_A_euler,);
 # E_A_eul = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRA_eul,);
-# 
+#
 # ERRE_ada= DEFI_LIST_REEL(VALE=err_globale_E_adapt,);
 # E_E_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRE_ada,);
-# 
+#
 # ERRD_ada= DEFI_LIST_REEL(VALE=err_globale_D_adapt,);
 # E_D_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRD_ada,);
-# 
+#
 # ERRV_ada= DEFI_LIST_REEL(VALE=err_globale_V_adapt,);
 # E_V_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRV_ada,);
-# 
+#
 # ERRA_ada= DEFI_LIST_REEL(VALE=err_globale_A_adapt,);
 # E_A_ada = DEFI_FONCTION(NOM_PARA='INST',
 #                         VALE_PARA=TEMPSFIN,
 #                         VALE_FONC=ERRA_ada,);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_E_eul,
 #                             PRECISION = 1.2E-1,
 #                             VALE_PARA = duree,
@@ -288,7 +569,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
 #                             ),),);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_D_eul,
 #                             PRECISION = 1.E-2,
 #                             VALE_PARA = duree,
@@ -296,7 +577,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
 #                             ),),);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_V_eul,
 #                             PRECISION = 2.E-1,
 #                             VALE_PARA = duree,
@@ -304,7 +585,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
 #                             ),),);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_A_eul,
 #                             PRECISION = 4.E-1,
 #                             VALE_PARA = duree,
@@ -312,7 +593,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
 #                             ),),);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_E_ada,
 #                             PRECISION = 5.E-2,
 #                             VALE_PARA = duree,
@@ -320,7 +601,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
 #                             ),),);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_D_ada,
 #                             PRECISION = 1.E-2,
 #                             VALE_PARA = duree,
@@ -328,7 +609,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
 #                             ),),);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_V_ada,
 #                             PRECISION = 4.E-2,
 #                             VALE_PARA = duree,
@@ -336,7 +617,7 @@ for i in range(0,len(t_inout_adapt)):
 #                             VALE_REFE = 0.,
 #                             CRITERE='ABSOLU',
 #                             ),),);
-# 
+#
 # TEST_FONCTION ( VALEUR =(_F(FONCTION = E_A_ada,
 #                             PRECISION = 4.E-1,
 #                             VALE_PARA = duree,
