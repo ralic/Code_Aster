@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine dhrc_recup_mate(imate, compor, h, a0, c0,&
+    subroutine dhrc_recup_mate(imate, compor, a0, c0,&
                      aa_t, ga_t, ab, gb, ac,&
                      gc, aa_c, ga_c, cstseu)
         integer :: imate
         character(len=16) :: compor
-        real(kind=8) :: h
         real(kind=8) :: a0(6, 6)
         real(kind=8) :: c0(2, 2, 2)
         real(kind=8) :: aa_t(6, 6, 2)
@@ -32,6 +31,6 @@ interface
         real(kind=8) :: gc(2, 2, 2)
         real(kind=8) :: aa_c(6, 6, 2)
         real(kind=8) :: ga_c(6, 6, 2)
-        real(kind=8) :: cstseu(2)
+        real(kind=8) :: cstseu(6)
     end subroutine dhrc_recup_mate
 end interface 

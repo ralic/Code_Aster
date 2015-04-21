@@ -36,7 +36,7 @@ interface
         integer :: indi(6)
         real(kind=8) :: neta1(2)
         real(kind=8) :: neta2(2)
-        real(kind=8) :: cstseu(2)
+        real(kind=8) :: cstseu(6)
         real(kind=8) :: jacob(6, 6)
     end subroutine dhrc_jacob
 end interface 

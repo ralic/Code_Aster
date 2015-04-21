@@ -47,7 +47,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
     integer :: codret
 !
-    real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), cstseu(2)
+    real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), cstseu(6)
     real(kind=8) :: a0(6, 6), c0(2, 2, 2)
     real(kind=8) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
     real(kind=8) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
@@ -212,14 +212,14 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !     SEUILS D'ENDOMMAGEMENT
 !
         seuils(1)=g1/cstseu(1)-1.0d0
-        seuils(2)=g2/cstseu(1)-1.0d0
+        seuils(2)=g2/cstseu(2)-1.0d0
 !
 !     SEUILS DE PLASTICITE
 !
-        seuils(3)= (neta1(1)/cstseu(2))**2.0d0-1.0d0
-        seuils(4)= (neta1(2)/cstseu(2))**2.0d0-1.0d0
-        seuils(5)= (neta2(1)/cstseu(2))**2.0d0-1.0d0
-        seuils(6)= (neta2(2)/cstseu(2))**2.0d0-1.0d0
+        seuils(3)= (neta1(1)/cstseu(3))**2.0d0-1.0d0
+        seuils(4)= (neta1(2)/cstseu(4))**2.0d0-1.0d0
+        seuils(5)= (neta2(1)/cstseu(5))**2.0d0-1.0d0
+        seuils(6)= (neta2(2)/cstseu(6))**2.0d0-1.0d0
 !
 222     continue
 !
@@ -340,14 +340,14 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !     SEUILS D'ENDOMMAGEMENT
 !
             seuils(1)=g1/cstseu(1)-1.0d0
-            seuils(2)=g2/cstseu(1)-1.0d0
+            seuils(2)=g2/cstseu(2)-1.0d0
 !
 !     SEUILS DE PLASTICITE
 !
-            seuils(3)= (neta1(1)/cstseu(2))**2.0d0-1.0d0
-            seuils(4)= (neta1(2)/cstseu(2))**2.0d0-1.0d0
-            seuils(5)= (neta2(1)/cstseu(2))**2.0d0-1.0d0
-            seuils(6)= (neta2(2)/cstseu(2))**2.0d0-1.0d0
+            seuils(3)= (neta1(1)/cstseu(3))**2.0d0-1.0d0
+            seuils(4)= (neta1(2)/cstseu(4))**2.0d0-1.0d0
+            seuils(5)= (neta2(1)/cstseu(5))**2.0d0-1.0d0
+            seuils(6)= (neta2(2)/cstseu(6))**2.0d0-1.0d0
 !
             l=0
             do k = 1, 6
@@ -377,9 +377,9 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
             vip(k)=vint(k)
         end do
 ! --  CALCUL DE LA DISSIPATION
-        vip(7)=(vip(1)+vip(2))*cstseu(1)
-        vip(8)=vip(8)+(abs(vip(3)-vim(3))+abs(vip(4)-vim(4))&
-                      +abs(vip(5)-vim(5))+abs(vip(6)-vim(6)))*cstseu(2)
+        vip(7)=(vip(1)*cstseu(1)+vip(2)*cstseu(2))
+        vip(8)=vip(8)+(abs(vip(3)-vim(3))*cstseu(3)+abs(vip(4)-vim(4))*cstseu(4)&
+                      +abs(vip(5)-vim(5))*cstseu(5)+abs(vip(6)-vim(6))*cstseu(6))
 !
     else
         do k = 1, 8

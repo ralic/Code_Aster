@@ -169,7 +169,7 @@ subroutine te0409(option, nomte)
     real(kind=8) :: a0(6, 6), c0(2, 2, 2)
     real(kind=8) :: aa_t(6, 6, 2), ab_(6, 2, 2), ac_(2, 2, 2), aa_c(6, 6, 2)
     real(kind=8) :: ga_t(6, 6, 2), gb_(6, 2, 2), gc_(2, 2, 2), ga_c(6, 6, 2)
-    real(kind=8) :: cstseu(2)
+    real(kind=8) :: cstseu(6)
 !   -- attention la taille de ecp depend du nombre de variable interne
 !   -- lors de l ajout de variable interne il faut incrementer ecr et ecrp
     real(kind=8) :: epst(6), ep, surfgp, sig(8), dsig(8), ecr(24), ecrp(24)
@@ -559,7 +559,7 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
-                call dhrc_recup_mate(zi(imate), compor, ep, a0, c0,&
+                call dhrc_recup_mate(zi(imate), compor, a0, c0,&
                                      aa_t, ga_t, ab_, gb_, ac_,&
                                      gc_, aa_c, ga_c, cstseu)
 !

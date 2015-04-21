@@ -29,7 +29,7 @@ interface
         real(kind=8) :: neta1(2)
         real(kind=8) :: neta2(2)
         integer :: indip(6)
-        real(kind=8) :: cstseu(2)
+        real(kind=8) :: cstseu(6)
         real(kind=8) :: eps(8)
         real(kind=8) :: vint(*)
         real(kind=8) :: dsidep(6, 6)

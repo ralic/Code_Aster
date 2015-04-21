@@ -29,7 +29,7 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
     real(kind=8) :: c(2, 2, 2)
     real(kind=8) :: bp1(6, 2), cp1(2, 2), as1(6, 6), bs1(6, 2), cs1(2, 2)
     real(kind=8) :: bp2(6, 2), cp2(2, 2), as2(6, 6), bs2(6, 2), cs2(2, 2)
-    real(kind=8) :: neta1(2), neta2(2), cstseu(2)
+    real(kind=8) :: neta1(2), neta2(2), cstseu(6)
 !
     real(kind=8) :: jacob(6, 6), jacobt(6, 6)
 !
@@ -119,11 +119,11 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
 !
     do k = 1, 6
         jacobt(1,k)=jacobt(1,k)/cstseu(1)
-        jacobt(2,k)=jacobt(2,k)/cstseu(1)
-        jacobt(3,k)=jacobt(3,k)*2.0d0*neta1(1)/(cstseu(2)**2.0d0)
-        jacobt(4,k)=jacobt(4,k)*2.0d0*neta1(2)/(cstseu(2)**2.0d0)
-        jacobt(5,k)=jacobt(5,k)*2.0d0*neta2(1)/(cstseu(2)**2.0d0)
-        jacobt(6,k)=jacobt(6,k)*2.0d0*neta2(2)/(cstseu(2)**2.0d0)
+        jacobt(2,k)=jacobt(2,k)/cstseu(2)
+        jacobt(3,k)=jacobt(3,k)*2.0d0*neta1(1)/(cstseu(3)**2.0d0)
+        jacobt(4,k)=jacobt(4,k)*2.0d0*neta1(2)/(cstseu(4)**2.0d0)
+        jacobt(5,k)=jacobt(5,k)*2.0d0*neta2(1)/(cstseu(5)**2.0d0)
+        jacobt(6,k)=jacobt(6,k)*2.0d0*neta2(2)/(cstseu(6)**2.0d0)
     end do
 !
 ! ----------------------------------------------------------------------

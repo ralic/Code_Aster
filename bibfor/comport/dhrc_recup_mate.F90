@@ -1,4 +1,4 @@
-subroutine dhrc_recup_mate(imate, compor, h, a0, c0, aa_t, ga_t, ab, gb,&
+subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb,&
                            ac, gc, aa_c, ga_c, cstseu)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,12 +29,12 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, c0, aa_t, ga_t, ab, gb,&
 !
     character(len=16) :: compor
     integer :: imate
-    real(kind=8) :: a0(6, 6), c0(2, 2, 2), h
+    real(kind=8) :: a0(6, 6), c0(2, 2, 2)
     real(kind=8) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
     real(kind=8) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
     real(kind=8) :: aa_c(6, 6, 2)
     real(kind=8) :: ga_c(6, 6, 2)
-    real(kind=8) :: cstseu(2)
+    real(kind=8) :: cstseu(6)
 ! ----------------------------------------------------------------------
 !
 ! BUT : LECTURE DES PARAMETRES MATERIAU POUR LE MODELE DHRC
@@ -60,9 +60,7 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, c0, aa_t, ga_t, ab, gb,&
 !            (2): POUR LE GLISSEMENT
 ! ----------------------------------------------------------------------
 !
-    integer :: icodre(3), i, j, l, jadr, n1, icodre1
-    real(kind=8) :: valres(3)
-    character(len=16) :: nomres(3)
+    integer :: i, j, l, jadr, n1, icodre1
 ! ----------------------------------------------------------------------
 !
     if ((.not.( compor(1:4) .eq. 'DHRC'))) then
@@ -248,16 +246,21 @@ subroutine dhrc_recup_mate(imate, compor, h, a0, c0, aa_t, ga_t, ab, gb,&
     gc=reshape(source=zr(jadr:jadr+8), shape=(/2,2,2/))
 !
 !     -----------------------------------------------------------------
-!     SEUILS CSTSEU
+!     SEUILS NYD
 !     -----------------------------------------------------------------
 !
-    nomres(1) = 'SYD'
-    nomres(2) = 'SCRIT'
-    nomres(3) = 'K0MICR'
+    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'NYD', &
+                0, [' '], [0.d0], jadr, n1, icodre1, 1)
+    ASSERT(n1.eq.2)
+    cstseu(1:2)=zr(jadr:jadr+1)
 !
-    call rcvala(imate, ' ', 'DHRC', 0, '', [0.0d0], 3, nomres, valres, icodre, 1)
+!     -----------------------------------------------------------------
+!     SEUILS SCRIT
+!     -----------------------------------------------------------------
 !
-    cstseu(1)=valres(1)**2*valres(3)*h
-    cstseu(2)=valres(2)*h
+    call rcadlv(' ', 1, 1, '+',imate, ' ', 'DHRC', 'SCRIT', &
+                0, [' '], [0.d0], jadr, n1, icodre1, 1)
+    ASSERT(n1.eq.4)
+    cstseu(3:6)=zr(jadr:jadr+3)
 !
 end subroutine

@@ -25,7 +25,7 @@ loi = LoiComportement(
    La loi de comportement s'écrit directement en terme de contraintes et de déformations généralisées.
    La modélisation jusqu'à la rupture n'est pas recommandée, puisque les phénomènes de plastification des aciers et de propagation de fissures ne sont pas
    pris en compte. L'identification des paramètres nécessaires à cette loi de comportement se fait via une procédure préalable d'homogénéisation.
-   Pour les précisions sur la formulation du modèle voir [R7.01.33]""",
+   Pour les précisions sur la formulation du modèle voir [R7.01.36]""",
     num_lc=9999,
     nb_vari=9,
     nom_vari=('ENDOSUP', 'ENDOINF', 'GLISXSUP', 'GLISYSUP',

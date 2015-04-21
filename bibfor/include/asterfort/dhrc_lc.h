@@ -39,7 +39,7 @@ interface
         real(kind=8) :: gc(2, 2, 2)
         real(kind=8) :: aa_c(6, 6, 2)
         real(kind=8) :: ga_c(6, 6, 2)
-        real(kind=8) :: cstseu(2)
+        real(kind=8) :: cstseu(6)
         real(kind=8) :: crit(*)
         integer :: codret
         real(kind=8) :: dsidep(6, 6)

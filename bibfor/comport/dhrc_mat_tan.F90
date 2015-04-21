@@ -26,7 +26,7 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
     real(kind=8) :: eps(8), vint(*)
     real(kind=8) :: a(6, 6), ap1(6, 6), ap2(6, 6)
     real(kind=8) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2)
-    real(kind=8) :: neta1(2), neta2(2), cstseu(2)
+    real(kind=8) :: neta1(2), neta2(2), cstseu(6)
     real(kind=8) :: bocaj(6, 6)
     real(kind=8) :: dsidep(6, 6)
 !
@@ -80,11 +80,11 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !
     do k = 1, 6
         dsedep(1,k) = dsida(k,1)/cstseu(1)
-        dsedep(2,k) = dsida(k,2)/cstseu(1)
-        dsedep(3,k) = dsida(k,3)*2.d0*neta1(1)/(cstseu(2)**2.d0)
-        dsedep(4,k) = dsida(k,4)*2.d0*neta1(2)/(cstseu(2)**2.d0)
-        dsedep(5,k) = dsida(k,5)*2.d0*neta2(1)/(cstseu(2)**2.d0)
-        dsedep(6,k) = dsida(k,6)*2.d0*neta2(2)/(cstseu(2)**2.d0)
+        dsedep(2,k) = dsida(k,2)/cstseu(2)
+        dsedep(3,k) = dsida(k,3)*2.d0*neta1(1)/(cstseu(3)**2.d0)
+        dsedep(4,k) = dsida(k,4)*2.d0*neta1(2)/(cstseu(4)**2.d0)
+        dsedep(5,k) = dsida(k,5)*2.d0*neta2(1)/(cstseu(5)**2.d0)
+        dsedep(6,k) = dsida(k,6)*2.d0*neta2(2)/(cstseu(6)**2.d0)
     end do
 !
 !----------------------------------------------------------------------
