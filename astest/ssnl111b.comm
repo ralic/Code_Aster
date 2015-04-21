@@ -216,6 +216,111 @@ UELAS=MECA_STATIQUE(
 
 CALC_CHAMP(reuse=UELAS,RESULTAT=UELAS,LIST_INST=L_INST,CONTRAINTE=('EFGE_ELNO'))
 
+CALC_CHAMP(reuse=UELAS,RESULTAT=UELAS,LIST_INST=L_INST,
+           DEFORMATION=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA'))
+#IMPR_RESU(RESU=_F(RESULTAT=UELAS, NOM_CHAM=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA', )))
+
+# NON REGRESSION POUR EPSI_ELGA (POUR REFERENCE SUR EPME_ELGA
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPSI_ELGA',
+                   MAILLE='BARR1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=5.0E-4,
+                   ),
+                _F(INST=2.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPSI_ELGA',
+                   MAILLE='BARR1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=11.0E-4,
+                   ),
+                _F(INST=3.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPSI_ELGA',
+                   MAILLE='BARR2',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=22.0E-4,
+                   ),
+                ),
+          )
+
+
+
+# TEST EPVC_ELGA
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='BARR1',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=150.0E-5,
+                   VALE_REFE=150.0E-5,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   ),
+                _F(INST=2.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='BARR1',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=330.0E-5,
+                   VALE_REFE=330.0E-5,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   ),
+                _F(INST=3.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='BARR2',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=220.0E-5,
+                   VALE_REFE=220.0E-5,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   ),
+                ),
+          )
+
+# TEST EPME_ELGA
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='BARR1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-1.0E-3,
+                   VALE_REFE=-1.0E-3,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   ),
+                _F(INST=2.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='BARR1',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-22.0E-4,
+                   VALE_REFE=-22.0E-4,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   ),
+                _F(INST=3.0,
+                   RESULTAT=UELAS,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='BARR2',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   ),
+                ),
+          )
+
+
+
+
 
 #
 
@@ -455,7 +560,7 @@ U=STAT_NON_LINE(
               )
 
 CALC_CHAMP(reuse=U,CONTRAINTE=('SIEF_ELNO'),RESULTAT=U)
-
+CALC_CHAMP(reuse=U,DEFORMATION=('EPME_ELGA', 'EPSP_ELGA'),RESULTAT=U)
 
 #
 #
@@ -612,7 +717,109 @@ TEST_RESU(RESU=(_F(INST=1.0,
                 ),
           )
 
-#
 
+
+ACIER2=DEFI_MATERIAU(
+
+
+                ELAS=_F(
+                E = 200000.,
+                NU = 0.30,
+                ALPHA = 1.E-5),
+
+                ECRO_LINE=_F(
+                D_SIGM_EPSI = 180.,
+                SY = 100.)
+              )
+
+CARBA2=AFFE_CARA_ELEM(
+                          MODELE=MO,
+                           
+                           BARRE=_F(
+       GROUP_MA = 'TOUT',
+
+                                   SECTION = 'GENERALE',
+                                   CARA = ( 'A', ),
+                                   VALE = (  1.5,  ))
+                        )
+
+
+
+
+CTM2=AFFE_MATERIAU(
+
+               MAILLAGE=MA,
+
+                AFFE=_F(
+                   TOUT = 'OUI',
+                   MATER = ACIER2,
+                   ),
+                AFFE_VARC=_F(
+                   TOUT='OUI',
+                   EVOL=TEMPRESU,
+                   NOM_VARC='TEMP',
+                   NOM_CHAM='TEMP',
+                   VALE_REF=0.),
+              )
+
+
+U2=STAT_NON_LINE(
+                            MODELE=MO,
+                         CARA_ELEM=CARBA2,
+                        CHAM_MATER=CTM2,EXCIT=(
+                             _F(
+                CHARGE = LIAISON),),
+                         COMPORTEMENT=_F(
+                RELATION = 'VMIS_ISOT_LINE',
+                TOUT = 'OUI'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST,
+                NUME_INST_INIT = 0,
+                NUME_INST_FIN = 6,),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_INCR = 1,
+                REAC_ITER = 5),
+                       CONVERGENCE=_F(
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_GLOB_MAXI = 15),
+                           SOLVEUR=_F(
+                METHODE = 'LDLT')
+              )
+
+CALC_CHAMP(reuse=U2,DEFORMATION=('EPME_ELGA', 'EPSP_ELGA'),RESULTAT=U2)
+
+
+TEST_RESU(RESU=(_F(INST=1.0,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   VALE_CALC=-150.202408916,
+                   POINT = 1,
+                   MAILLE='BARR1',),
+                _F(INST=1.0,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPME_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.00124966265181,
+                   POINT = 1,
+                   MAILLE='BARR1',),
+                
+                _F(INST=1.0,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.0007489879554233332,
+                   VALE_REFE=-0.0007489879554233332,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   POINT = 1,
+                   MAILLE='BARR1',),
+                ),
+          )
+
+
+
+#
 FIN()
 #

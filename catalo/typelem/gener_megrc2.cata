@@ -48,6 +48,8 @@ MODE_LOCAL__
 
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EXX     )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EXX     )
+    EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L)
+    EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L)
     EENERR   = ENER_R   ELEM__         (TOTALE   )
     COMEG2R  = OME2_R   ELEM__         (OMEG2    )
     ECONTPG  = SIEF_R   ELGA__ RIGI    (SIXX     )
@@ -104,6 +106,19 @@ OPTION__
     EPSI_ELGA        433  IN__  CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                           OUT__ EDEFOPG  PDEFOPG
     EPSI_ELNO          4  IN__  EDEFOPG  PDEFOPG
+                          OUT__ EDEFONO  PDEFONO
+    EPME_ELGA        531  IN__  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EDEFOPG  PDEFORR
+                          OUT__ EDEFOPG  PDEFOPG
+    EPME_ELNO          4  IN__  EDEFOPG  PDEFOPG
+                          OUT__ EDEFONO  PDEFONO
+    EPVC_ELGA        531  IN__  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                          OUT__ EDFVCPG  PDEFOPG
+    EPVC_ELNO          4  IN__  EDFVCPG  PDEFOPG
+                          OUT__ EDFVCNO  PDEFONO
+    EPSP_ELGA        531  IN__  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  EDEFOPG  PDEFORR
+                                ECONTPG  PCONTRR
+                          OUT__ EDEFOPG  PDEFOPG  
+    EPSP_ELNO          4  IN__  EDEFOPG  PDEFOPG
                           OUT__ EDEFONO  PDEFONO
     FORC_NODA        430  IN__  CCACOQU  PCACOQU  ECONTPG  PCONTMR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR

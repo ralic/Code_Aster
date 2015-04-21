@@ -138,6 +138,7 @@ MATRICE__
     MMATZZR = MSIZ_R DDL_NOZ1 DDL_NOZ1
 
 OPTION__
+    EPSI_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX
     EPSP_ELGA                 -2 IN__ OUT__ XXXXXX XXXXXX
     EPSP_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX
     VARI_ELNO                 -2 IN__ OUT__ XXXXXX XXXXXX

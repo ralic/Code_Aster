@@ -115,7 +115,11 @@ U2=STAT_NON_LINE(MODELE=MO1,
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 
-#IMPR_RESU(RESU=_F(RESULTAT=U2,INST=1.))
+
+U2 = CALC_CHAMP(RESULTAT = U2, reuse=U2, DEFORMATION = ('EPSI_ELGA','EPVC_ELGA','EPME_ELGA'),)
+U2 = CALC_CHAMP(RESULTAT = U2, reuse=U2, DEFORMATION = ('EPSP_ELGA',),)
+
+#IMPR_RESU(RESU=_F(RESULTAT=U2, MAILLE='AM27', INST = 1.0, NOM_CHAM=('SIEF_ELGA','EPSI_ELGA','EPSP_ELGA',)))
 
 TEST_RESU(RESU=(_F(INST=1.,
                    REFERENCE='AUTRE_ASTER',
@@ -164,4 +168,412 @@ TEST_RESU(RESU=(_F(INST=1.,
                    ),
                ))
 
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC= 22.5E-5,
+                   VALE_REFE= 22.5E-5,
+                   PRECISION=1.E-6,
+                   ),
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=15,
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=15E-5,
+                   VALE_REFE=15E-5,
+                   PRECISION=1.E-6,
+                   ),
+               _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=23,
+                   NOM_CMP='EPTHER_L',
+                   
+                   VALE_CALC=7.5E-5,
+                   VALE_REFE=7.5E-5,
+                   PRECISION=1.E-6,
+                   ),
+               ))
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSI_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 3.934818089E-04,
+                   ),
+                _F(INST=1.,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSI_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=15,
+                   NOM_CMP='EPYY',
+                   VALE_CALC=1.315366886E-04,
+                   ),
+               ))
+
+
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 0.0001684818089,
+                   VALE_REFE= 0.0001684818089,
+                   PRECISION=1.E-6,
+                   ),
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=15,
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-1.84633114e-05,
+                   VALE_REFE=-1.84633114e-05,
+                   PRECISION=1.E-6,
+                   ),
+               ))
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 0.0,
+                   VALE_REFE= 0.0,
+                   PRECISION=1.E-6,
+                   CRITERE = 'ABSOLU',
+                   ),
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPYY',
+                   VALE_CALC= 0.0,
+                   VALE_REFE= 0.0,
+                   PRECISION=1.E-6,
+                   CRITERE = 'ABSOLU',
+                   ),
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXY',
+                   VALE_CALC= 0.0,
+                   VALE_REFE= 0.0,
+                   PRECISION=1.E-6,
+                   CRITERE = 'ABSOLU',
+                   ),
+               ))
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSI_ELGA',
+                   MAILLE='AM27',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   NOM_CMP='EXX',
+                   VALE_CALC= 3.889143290E-04,
+                   ),
+               ))
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='AM27',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC= 45E-5,
+                   VALE_REFE= 45E-5,
+                   PRECISION=1.E-6,
+                   ),
+               ))
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='AM27',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   NOM_CMP='EXX',
+                   VALE_CALC= -6.108567099999998e-05,
+                   VALE_REFE= -6.108567099999998e-05,
+                   PRECISION=1.E-6,
+                   ),
+               ))
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U2,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='AM27',
+                   POINT=1,
+                   SOUS_POINT=1,
+                   NOM_CMP='EXX',
+                   VALE_CALC= 0.,
+                   VALE_REFE= 0.,
+                   PRECISION=1.E-6,
+                   CRITERE = 'ABSOLU',
+                   ),
+               ))
+
+
+
+BETON3=DEFI_MATERIAU(ELAS=_F(E=3.E10, NU=0.2, ALPHA=1.E-5),
+                    ECRO_LINE=_F(
+                                 D_SIGM_EPSI = 1.E10,
+                                 SY = 5E+6)
+                   )
+ACIER3=DEFI_MATERIAU(ELAS=_F(E=2.E11, NU=0.3, ALPHA=2.E-5),
+                    ECRO_LINE=_F(
+                                 D_SIGM_EPSI = 0.5E11,
+                                 SY = 1E7)
+                   )
+
+
+
+
+CHMA3=AFFE_MATERIAU(MAILLAGE=MA1,
+                    AFFE=(_F(GROUP_MA='SDAL',MATER=BETON3),
+                                        _F(GROUP_MA='ARMA',MATER=ACIER3),),
+                    AFFE_VARC = _F( TOUT = 'OUI', NOM_VARC = 'TEMP', EVOL=TEMP_SP2,VALE_REF=20.),
+                                  )
+
+U3=STAT_NON_LINE(MODELE=MO1,
+                 CHAM_MATER=CHMA3,
+                 CARA_ELEM=CA1,
+                 EXCIT=(_F(CHARGE=CL1,),
+                                             ),
+                 COMPORTEMENT=(_F(GROUP_MA=('SDAL',),RELATION='VMIS_ISOT_LINE'),
+                               _F(GROUP_MA=('ARMA',),RELATION='GRILLE_ISOT_LINE'),
+                              
+                              ),
+                 NEWTON=_F(REAC_INCR=1,
+                            REAC_ITER=1,
+                            REAC_ITER_ELAS=1,
+                            MATRICE='TANGENTE',
+                            PAS_MINI_ELAS=100,
+                            ),
+                 INCREMENT=_F(LIST_INST=LINST),
+                 );
+
+
+U3 = CALC_CHAMP(RESULTAT = U3, reuse=U3, DEFORMATION = ('EPSI_ELGA','EPME_ELGA','EPVC_ELGA'),)
+U3 = CALC_CHAMP(RESULTAT = U3, reuse=U3, DEFORMATION = ('EPSP_ELGA',),)
+U3 = CALC_CHAMP(RESULTAT = U3, reuse=U3, DEFORMATION = ('EPSI_ELNO','EPME_ELNO','EPVC_ELNO'),)
+U3 = CALC_CHAMP(RESULTAT = U3, reuse=U3, DEFORMATION = ('EPSP_ELNO',),)
+
+
+COU_MOY = POST_CHAMP(RESULTAT=U3, 
+                     EXTR_COQUE=_F(NOM_CHAM =('EPME_ELGA',
+                                              'EPVC_ELGA','EPSP_ELGA',
+                                              'EPME_ELNO',
+                                              'EPVC_ELNO','EPSP_ELNO'), 
+                                              NUME_COUCHE = 1, 
+                                              NIVE_COUCHE = 'MOY'))
+
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='SIXX',
+                   VALE_CALC= 4692545.78591,
+                   ),
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-435458.298972,
+                   ),
+# on ne met pas ce test, car il n'est pas vérifié
+                #_F(INST=1.,
+                   #RESULTAT=U3,
+                   #NOM_CHAM='SIEF_ELGA',
+                   #MAILLE='M27',
+                   #POINT=1,
+                   #SOUS_POINT=8,
+                   #NOM_CMP='SIZZ',
+                   #VALE_CALC=0.,
+                   #),
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-984198.049033,
+                   ),
+               ))
+
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 0.000172601772587,
+                   ),
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-5.33224957473E-05,
+                   ),
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXY',
+                   VALE_CALC=-4.3360773596E-05,
+                   ),
+               ))
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U3,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC= 1.3280524396853315e-05,
+                   VALE_REFE= 1.3280524396853315e-05,
+                   PRECISION=1.E-6,
+                   ),
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U3,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-7.523580542166669e-06,
+                   VALE_REFE=-7.523580542166669e-06,
+                   PRECISION=1.E-6,
+                   ),
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U3,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='M27',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   NOM_CMP='EPXY',
+                   VALE_CALC=-3.992851634680005e-06,
+                   VALE_REFE=-3.992851634680005e-06,
+                   PRECISION=1.E-6,
+                   ),
+               ))
+
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='SIEF_ELGA',
+                   MAILLE='AM27',
+                   POINT=1,
+                   NOM_CMP='SIXX',
+                   VALE_CALC= -10298988.0073,
+                   ),
+               ))
+
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   RESULTAT=U3,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='AM27',
+                   POINT=1,
+                   NOM_CMP='EXX',
+                   VALE_CALC= -5.59797601457E-05,
+                   ),
+               ))
+
+
+TEST_RESU(RESU=(
+                _F(INST=1.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U3,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='AM27',
+                   POINT=1,
+                   NOM_CMP='EXX',
+                   VALE_CALC= -4.484820109199999e-06,
+                   VALE_REFE= -4.484820109199999e-06,
+                   PRECISION=1.E-6,
+                   ),
+               ))
+
+
+               
 FIN()

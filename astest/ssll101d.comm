@@ -179,6 +179,9 @@ RESU1=MECA_STATIQUE(       MODELE=MODELE,
                            CARA_ELEM=CARELEM,
                            EXCIT=_F( CHARGE = COND_LIM),)
 
+CALC_CHAMP(reuse=RESU1, RESULTAT=RESU1, DEFORMATION=('EPME_ELGA', 'EPVC_ELGA',))
+
+
 #
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS

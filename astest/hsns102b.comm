@@ -188,10 +188,60 @@ DEP=STAT_NON_LINE(  MODELE=LEMOD,
                                    )
 DEPB=CALC_CHAMP(CONTRAINTE=('SIGM_ELNO'),RESULTAT=DEP,GROUP_MA='GEOB')
 
+CALC_CHAMP(reuse=DEP, RESULTAT=DEP, DEFORMATION=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'),
+           GROUP_MA='GEOA')
+
+IMPR_RESU(RESU=_F(RESULTAT=DEP, NOM_CHAM=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'), 
+                  INST = 1., MAILLE = 'M107'))
 
 DEPB=CALC_CHAMP(reuse =DEPB,
                 RESULTAT=DEPB,
                 CONTRAINTE='SIGM_NOEU',);
+
+
+# TEST DE EPME_ELGA, EPVC_ELGA ET EPSP_ELGA SUR LES GRILLE_MEMBRANE
+
+TEST_RESU(RESU=(_F(MAILLE='M107',
+                   POINT = 1,
+                   INST=1.0,
+                   RESULTAT=DEP,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EXX',
+                   VALE_CALC= 5.68067753827888E-04,
+                   ),
+                _F(MAILLE='M107',
+                   POINT = 1,
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP,
+                   NOM_CHAM='EPVC_ELGA',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC= 1.00000000000000E-03,
+                   VALE_REFE=1.00000000000000E-03,
+                   ),
+                _F(MAILLE='M107',
+                   POINT = 1,
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP,
+                   NOM_CHAM='EPME_ELGA',
+                   NOM_CMP='EXX',
+                   VALE_CALC=-4.31932246172112E-04,
+                   VALE_REFE=-4.31932246172112E-04,
+                   ),
+                _F(MAILLE='M107',
+                   POINT = 1,
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EXX',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   CRITERE='ABSOLU',
+                   ),
+          ))
+
 
 
 # -------------------------------------------------
@@ -244,5 +294,93 @@ TEST_RESU(RESU=_F(GROUP_NO='PMA',
                   VALE_REFE=-8.5714290E7,
                   PRECISION=1.E-2,),
           )
+
+# deuxieme calcul en VMIS_ISOT_LINE pour tester EPSP_ELGA
+
+
+ACIER2=DEFI_MATERIAU(
+                    ELAS=_F(
+                            E = 2.E11,
+                            NU = 0.0,
+                            ALPHA = 1.E-5,
+                            ),
+                    ECRO_LINE=_F(
+                                 D_SIGM_EPSI = 0.5E11,
+                                 SY = 1E7)
+                    )
+
+
+MATAF2=AFFE_MATERIAU(   INFO=1,
+                    MAILLAGE=MA,
+                    AFFE=(  _F(GROUP_MA = ('GEOA',),
+                               MATER = ACIER2,
+                               ),
+                            _F(GROUP_MA = ('GEOB'),
+                               MATER = BETON,
+                               ),
+                        ),
+                    AFFE_VARC=( _F( GROUP_MA='GEOA',
+                                    EVOL=TA,
+                                    #EVOL=TEMPERA,
+                                    NOM_VARC='TEMP',
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=20.0),
+                                _F( GROUP_MA='GEOB',
+                                    EVOL=TB,
+                                    NOM_VARC='TEMP',
+                                    NOM_CHAM='TEMP',
+                                    VALE_REF=20.0),
+                                ),
+                )
+
+
+DEP2=STAT_NON_LINE(  MODELE=LEMOD,
+                    CHAM_MATER=MATAF2,
+                    CARA_ELEM=LECAR,
+                    EXCIT=      _F( CHARGE = CL,),
+                    COMPORTEMENT= ( _F( RELATION = 'GRILLE_ISOT_LINE',GROUP_MA = 'GEOA'),
+                                    _F( RELATION = 'ELAS',GROUP_MA = 'GEOB'),
+                                  ),
+                    INCREMENT=  _F( LIST_INST = ZLIST,),
+                    NEWTON=     _F( MATRICE = 'ELASTIQUE',),
+                    CONVERGENCE=_F(RESI_GLOB_MAXI = 1.E-3,
+                                   ITER_GLOB_MAXI = 30,),
+                                   )
+
+CALC_CHAMP(reuse=DEP2, RESULTAT=DEP2, DEFORMATION=('EPME_ELGA','EPSP_ELGA'),
+           GROUP_MA='GEOA')
+
+
+TEST_RESU(RESU=(_F(MAILLE='M107',
+                   POINT = 1,
+                   INST=1.0,
+                   RESULTAT=DEP2,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   VALE_CALC= -43272304.9744,
+                   ),
+                _F(MAILLE='M107',
+                   POINT = 1,
+                   INST=1.0,
+                   RESULTAT=DEP2,
+                   NOM_CHAM='EPME_ELGA',
+                   NOM_CMP='EXX',
+                   VALE_CALC= -0.000715446099488,
+                   ),
+                _F(MAILLE='M107',
+                   POINT = 1,
+                   INST=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=DEP2,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EXX',
+                   VALE_CALC=-0.000499084574616,
+                   VALE_REFE=-0.000499084574616,
+                   ),
+          ))
+
+
+
+
 
 FIN()

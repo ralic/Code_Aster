@@ -21,11 +21,12 @@ def post_champ_prod(RESULTAT,**args):
    raise AsException("type de concept resultat non prevu")
 
 
-# liste des options possibles pour les 4 mots clés EXTR_COQUE, EXTR_TUYAY, EXTR_PMF et MIN_MAX_SP :
+# liste des options possibles pour les 4 mots clés EXTR_COQUE, EXTR_TUYAU, EXTR_PMF et MIN_MAX_SP :
 liste_option_extr=("EPEQ_ELGA","EPEQ_ELNO","EPSI_ELGA","EPSI_ELNO",
                    "SIEF_ELGA","SIEF_ELNO",
                    "SIEQ_ELGA","SIEQ_ELNO","SIGM_ELGA","SIGM_ELNO",
-                   "VARI_ELGA","VARI_ELNO",)
+                   "VARI_ELGA","VARI_ELNO","EPVC_ELGA","EPVC_ELNO",
+                   "EPME_ELGA","EPME_ELNO","EPSP_ELGA","EPSP_ELNO" )
 
 
 POST_CHAMP=OPER(nom="POST_CHAMP",op=155,sd_prod=post_champ_prod, reentrant='n',

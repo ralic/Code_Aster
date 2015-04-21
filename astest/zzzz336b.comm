@@ -234,6 +234,11 @@ U_POU=STAT_NON_LINE(MODELE=MOPOU,
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 
+CALC_CHAMP(reuse=U_POU,RESULTAT=U_POU,DEFORMATION=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA',))
+
+#IMPR_RESU(RESU=_F(RESULTAT = U_POU, NOM_CHAM=('EPSI_ELGA', 'EPME_ELGA', 'EPVC_ELGA'), GROUP_MA = 'POUTRE'))
+
+
 IMPR_RESU(RESU=_F(RESULTAT = U_POU, NOM_CHAM='DEPL', GROUP_NO = 'P3'))
 
 
@@ -257,6 +262,41 @@ TEST_RESU(RESU=(_F(INST=2.,
                    VALE_CALC=-4.00000000000267E-02,
                    VALE_REFE=-4.01394722938527E-02,
                    PRECISION=4.E-2,),
+               ))
+
+
+TEST_RESU(RESU=(_F(INST=2.,
+                   RESULTAT=U_POU,
+                   NOM_CHAM='EPSI_ELGA',
+                   MAILLE='M1',
+                   POINT = 1,
+                   SOUS_POINT = 8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.006,
+                   ),
+                _F(INST=2.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U_POU,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='M1',
+                   POINT = 1,
+                   SOUS_POINT = 8,
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=0.006,
+                   VALE_REFE=0.006,
+                   ),
+                _F(INST=2.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U_POU,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='M1',
+                   POINT = 1,
+                   SOUS_POINT = 8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   CRITERE='ABSOLU'
+                   ),
                ))
 
 
@@ -464,6 +504,9 @@ U_POU3=STAT_NON_LINE(MODELE=MOPOU,
                  INCREMENT=_F(LIST_INST=LINST),
                  );
 
+
+CALC_CHAMP(reuse=U_POU3,RESULTAT=U_POU3,DEFORMATION=('EPME_ELGA', 'EPVC_ELGA','EPSP_ELGA'))
+
 IMPR_RESU(RESU=_F(RESULTAT=U_POU3, NOM_CHAM='SIEF_ELGA', INST = 2.0, MAILLE = 'M1'))
 
 TEST_RESU(RESU=(
@@ -495,6 +538,43 @@ TEST_RESU(RESU=(
                    ),
                ))
 
+
+TEST_RESU(RESU=(
+                _F(INST=2.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U_POU3,
+                   NOM_CHAM='EPVC_ELGA',
+                   MAILLE='M1',
+                   POINT = 1,
+                   SOUS_POINT = 8,
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=8E-4,
+                   VALE_REFE=8E-4,
+                   ),
+                _F(INST=2.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U_POU3,
+                   NOM_CHAM='EPME_ELGA',
+                   MAILLE='M1',
+                   POINT = 1,
+                   SOUS_POINT = 8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-8E-4,
+                   VALE_REFE=-8E-4,
+                   ),
+                _F(INST=2.,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=U_POU3,
+                   NOM_CHAM='EPSP_ELGA',
+                   MAILLE='M1',
+                   POINT = 1,
+                   SOUS_POINT = 8,
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.,
+                   VALE_REFE=0.,
+                   CRITERE='ABSOLU'
+                   ),
+               ))
 
 
 FIN()

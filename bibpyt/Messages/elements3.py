@@ -55,6 +55,13 @@ cata_msg = {
  Les champs de température (TGU et TGV) sont différents
 """),
 
+    13 : _(u"""
+  Les composantes SIXZ et SIYZ du champs de contraintes sont nulles pour les
+  éléments DKT et TUYAU. Le calcul des composantes EPXZ et EPYZ du champs de déformations
+  anélastiques donnerait des valeurs fausses. Ces valeurs sont donc mises
+  à zéro et ne doivent pas être prises en compte.
+"""),
+
     16 : _(u"""
  Comportement: %(k1)s non implanté
 """),

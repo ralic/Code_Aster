@@ -60,6 +60,8 @@ MODE_LOCAL__
     EDEFOPC  = EPSI_C   ELGA__ RIGI    (EPXX     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     )
     EDEFONC  = EPSI_C   ELNO__ IDEN__  (EPXX     )
+    EDFVCPG  = EPSI_R   ELGA__ RIGI    (EPTHER_L)
+    EDFVCNO  = EPSI_R   ELNO__ IDEN__  (EPTHER_L)
     EDFEQPG  = EPSI_R   ELGA__ RIGI    (INVA_2   PRIN_1   PRIN_2   PRIN_3   INVA_2SG VECT_1_X
                                         VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z VECT_3_X
                                         VECT_3_Y VECT_3_Z )
@@ -135,7 +137,21 @@ OPTION__
                           OUT__ EDEFOPC  PDEFOPC  EDEFOPG  PDEFOPG
     EPSI_ELNO          4  IN__  EDEFOPG  PDEFOPG
                           OUT__ EDEFONC  PDEFONC  EDEFONO  PDEFONO
-    FORC_NODA        156  IN__  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR  DDL_MECA PDEPLMR
+    EPME_ELGA       531   IN__   CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                 EDEFOPG  PDEFORR
+                          OUT__  EDEFOPG  PDEFOPG
+    EPME_ELNO       4     IN__   EDEFOPG  PDEFOPG
+                          OUT__  EDEFONO  PDEFONO
+    EPVC_ELGA       531   IN__   CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                          OUT__  EDFVCPG  PDEFOPG
+    EPVC_ELNO       4     IN__   EDFVCPG  PDEFOPG
+                          OUT__  EDFVCNO  PDEFONO
+    EPSP_ELGA       531   IN__   CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
+                                 EDEFOPG  PDEFORR  EEFGEGA  PCONTRR  CCAGNBA  PCAGNBA
+                          OUT__  EDEFOPG  PDEFOPG
+    EPSP_ELNO       4     IN__   EDEFOPG  PDEFOPG
+                          OUT__  EDEFONO  PDEFONO
+    FORC_NODA    156  IN__  CCAORIE  PCAORIE  CCOMPOR  PCOMPOR  EEFGEGA  PCONTMR  DDL_MECA PDEPLMR
                                 DDL_MECA PDEPLPR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                           OUT__ MVECTUR  PVECTUR
     FULL_MECA        248  IN__  CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR

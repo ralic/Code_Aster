@@ -272,6 +272,10 @@ Conseil :
  impossibilité, la surface de l'élément est nulle.
 """),
 
+    49 : _(u"""
+ Le comportement matériau %(k1)s n'est pas traité pour l'option %(k2)s.
+"""),
+
     50 : _(u"""
  comportement élastique inexistant
 """),
