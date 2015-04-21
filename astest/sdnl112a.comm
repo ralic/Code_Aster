@@ -26,6 +26,9 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 
 TUBE=LIRE_MAILLAGE(FORMAT='MED')
+                                                                                                                            
+# Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
+TUBE=MODI_MAILLAGE(reuse =TUBE, MAILLAGE=TUBE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
@@ -189,7 +192,7 @@ FREQ1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=25.39099699260,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=25.39099701209,
                         VALE_PARA=4.811,
                         FONCTION=FREQ1,
                         ),
@@ -206,7 +209,7 @@ FREQ2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=52.85637777599,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=52.85637768323,
                         VALE_PARA=4.811,
                         FONCTION=FREQ2,
                         ),
@@ -223,7 +226,7 @@ AMOR1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.02805218744559,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.02805218756152,
                         VALE_PARA=4.811,
                         FONCTION=AMOR1,
                         ),
@@ -290,8 +293,7 @@ DYN0=POST_DYNA_ALEA(INTERSPECTRE=_F(
 IMPR_TABLE(  TABLE=DYN0, )
 
 TEST_TABLE(
-           VALE_CALC=0.00228421358252,
-           TOLE_MACHINE=3.E-6,                 # TODO TOLE_MACHINE
+           VALE_CALC=0.00228420956268,
            NOM_PARA='ECART',
            TABLE=DYN0,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -304,7 +306,7 @@ TEST_TABLE(
 MELFLU45=CALC_FLUI_STRU(VITE_FLUI      = _F(VITE_MIN    = vite_min,
                                             VITE_MAX    = vite_max,
                                             NB_POIN     = nb_poin),
-                        BASE_MODALE    = _F(MODE_MECA   = MODES, 
+                        BASE_MODALE    = _F(MODE_MECA   = MODES,
                                             NUME_ORDRE  = (4,5),
                                             AMOR_REDUIT = (4.999E-03,4.999E-03),),
                         TYPE_FLUI_STRU = TYPEFLUI,
@@ -334,7 +336,7 @@ REPP45=REST_SPEC_PHYS(BASE_ELAS_FLUI = MELFLU45,
 DYN45=POST_DYNA_ALEA(INTERSPECTRE=_F(INTE_SPEC = REPP45,
                                      OPTION    = 'DIAG'))
 
-TEST_TABLE(VALE_CALC=7.59125198917E-31,
+TEST_TABLE(VALE_CALC=6.27838364383E-30,
            CRITERE        = 'ABSOLU',
            ORDRE_GRANDEUR = 2.0E-3, # ~ RMS de déplacement obténu sur les 4 premiers modes
            NOM_PARA       = 'ECART',

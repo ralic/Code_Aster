@@ -1,11 +1,10 @@
-
 # TITRE CALCUL DE MODE NON-LINEAIRE SYST 1 DDL (AFFE_CHAR_CINE)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.                                                   
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
 # THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 # WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
@@ -26,6 +25,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
      )
 
 MA=LIRE_MAILLAGE(FORMAT='ASTER',);
+                                                                                                                            
+# Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
+MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 
 MO = AFFE_MODELE( MAILLAGE = MA,
         AFFE = (_F(  MAILLE=('M1','P2',), PHENOMENE='MECANIQUE', MODELISATION = 'DIS_T'),
@@ -139,9 +141,8 @@ T = math.sqrt(m/k)*tau_p
 fsc = 1./T
 
 TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
-                       VALE_CALC=fs,
-                       REFERENCE='ANALYTIQUE', 
-                       TOLE_MACHINE=1.3E-04,          # TODO TOLE_MACHINE Centos
+                       VALE_CALC=0.64670395145148,
+                       REFERENCE='ANALYTIQUE',
                        VALE_REFE=fsc,
                        FONCTION=FREQC,),
              )

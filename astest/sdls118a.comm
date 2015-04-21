@@ -20,6 +20,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),);
 
 MAIL0=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
+                                                                                                                            
+# Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
+MAIL0=MODI_MAILLAGE(reuse =MAIL0, MAILLAGE=MAIL0, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAIL0,
@@ -267,7 +270,7 @@ RESU1X = DYNA_ISS_VARI(
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
-                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.0,),
                        UNITE_RESU_IMPE = 32,
@@ -284,7 +287,7 @@ RESU1Z = DYNA_ISS_VARI(
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
-                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.0,),
                        UNITE_RESU_IMPE = 32,
@@ -304,7 +307,7 @@ RESU2X = DYNA_ISS_VARI(
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
-                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.5,),
                        UNITE_RESU_IMPE = 32,
@@ -321,7 +324,7 @@ RESU2Z = DYNA_ISS_VARI(
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
-                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.5,),
                        UNITE_RESU_IMPE = 32,
@@ -348,7 +351,7 @@ REP2=RECU_FONCTION(    INTE_SPEC=RESU2Z,
 # w=30. a0=1.0
 # reference: valx=0.732,valz= 0.730
 # non regression: nrgx=7.67061E-01, nrgz=7.67061E-01
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093761,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093771972,
                         VALE_REFE=0.732,
                         CRITERE='RELATIF',
                         VALE_PARA=30.0,
@@ -357,7 +360,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093761,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093761,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093771972,
                         VALE_REFE=0.730,
                         CRITERE='RELATIF',
                         VALE_PARA=30.0,
@@ -366,15 +369,13 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093761,
                         FONCTION=REP2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.767031,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093771972,
                         VALE_PARA=30.0,
                         FONCTION=REP1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.767031,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093771972,
                         VALE_PARA=30.0,
                         FONCTION=REP2,
                         ),
@@ -383,7 +384,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.767031,
 # w=60. a0=2.0
 # reference: valx=0.402,valz= 0.416
 # non regression: valx=4.36637E-01, valz=4.36637E-01
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645976034,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645991857,
                         VALE_REFE=0.402,
                         CRITERE='RELATIF',
                         VALE_PARA=60.0,
@@ -392,7 +393,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645976034,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645976034,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645991857,
                         VALE_REFE=0.416,
                         CRITERE='RELATIF',
                         VALE_PARA=60.0,
@@ -401,15 +402,13 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645976034,
                         FONCTION=REP2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.4366365,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645991857,
                         VALE_PARA=60.0,
                         FONCTION=REP1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.4366365,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645991857,
                         VALE_PARA=60.0,
                         FONCTION=REP2,
                         ),
@@ -418,7 +417,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.4366365,
 # w=90. a0=3.0
 # reference: valx=0.251,valz= 0.270
 # non regression: valx=2.51483E-01, valz=2.51483E-01
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316690143,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316699203,
                         VALE_REFE=0.251,
                         CRITERE='RELATIF',
                         VALE_PARA=90.0,
@@ -427,7 +426,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316690143,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316690143,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316699203,
                         VALE_REFE=0.270,
                         CRITERE='RELATIF',
                         VALE_PARA=90.0,
@@ -436,15 +435,13 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316690143,
                         FONCTION=REP2,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146317,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316699203,
                         VALE_PARA=90.0,
                         FONCTION=REP1,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146317,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316699203,
                         VALE_PARA=90.0,
                         FONCTION=REP2,
                         ),
@@ -477,20 +474,18 @@ REP4=RECU_FONCTION(    INTE_SPEC=RN11Z,
                     NOM_CMP_I = 'DZ',
                       )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.005270275310,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.005270279644,
                          VALE_REFE=1.0,
                          CRITERE='RELATIF',
                          VALE_PARA=30.0,
                          REFERENCE='ANALYTIQUE',
-                         TOLE_MACHINE=0.015,
                          PRECISION=0.01,
                          FONCTION=REP3,),
-                      _F(VALE_CALC=1.0301404253,
+                      _F(VALE_CALC=1.030140438233,
                          VALE_REFE=1.0,
                          CRITERE='RELATIF',
                          VALE_PARA=30.0,
                          REFERENCE='ANALYTIQUE',
-                         TOLE_MACHINE=0.06,
                          PRECISION=0.04,
                          FONCTION=REP4,),
                       ),
@@ -504,7 +499,7 @@ RESU2X_D = DYNA_ISS_VARI(
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
-                       MATR_COHE = _F(TYPE =    'MITA_LUCO',    
+                       MATR_COHE = _F(TYPE =    'MITA_LUCO',
                                   VITE_ONDE = 600. ,
                                   PARA_ALPHA =0.5,),
                        UNITE_RESU_IMPE = 32,
@@ -522,7 +517,7 @@ REP5=RECU_FONCTION(    INTE_SPEC=RESU2X_D,
                     NUME_ORDRE_I = 1,
                       )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.767030937610,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093771972,
                         VALE_REFE=0.732,
                         CRITERE='RELATIF',
                         VALE_PARA=30.0,

@@ -60,7 +60,9 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
 
          DEFORME         =FACT(statut='f',
            OPTION          =SIMP(statut='o',typ='TXM',into=("TRAN",) ),
-           DEPL            =SIMP(statut='o',typ=cham_no_sdaster ),
+           regles=UN_PARMI('DEPL','ALEA'),
+           DEPL            =SIMP(statut='f',typ=cham_no_sdaster ),
+           ALEA            =SIMP(statut='f',typ='R' ),
          ),
 
          EQUE_PIQUA      =FACT(statut='f',

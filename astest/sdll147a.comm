@@ -1,4 +1,3 @@
-
 # TITRE SIMPLE POUTRE VERTICALE MONTEE SUR UN RESSORT SOUMISE A UN SEISME
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +19,9 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
 
 MAIL=LIRE_MAILLAGE();
+                                                                                                                            
+# Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
+MAIL=MODI_MAILLAGE(reuse =MAIL, MAILLAGE=MAIL, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
@@ -170,98 +172,98 @@ REPGUP=COMB_SISM_MODAL(MODE_MECA=MODES,
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=1,
                   RESULTAT=MODECA,
-                  VALE_CALC=1.5491943226358,
+                  VALE_CALC=1.54919430365,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=2,
                   RESULTAT=MODECA,
-                  VALE_CALC=3.107551438801,
+                  VALE_CALC=3.10755141605,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=3,
                   RESULTAT=MODECA,
-                  VALE_CALC=9.3245300415725,
+                  VALE_CALC=9.32452997334,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=4,
                   RESULTAT=MODECA,
-                  VALE_CALC=9.5870612490701,
+                  VALE_CALC=9.58706112404,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=5,
                   RESULTAT=MODECA,
-                  VALE_CALC=15.547112609525,
+                  VALE_CALC=15.5471124959,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=6,
                   RESULTAT=MODECA,
-                  VALE_CALC=21.778952588689,
+                  VALE_CALC=21.7789524306,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=7,
                   RESULTAT=MODECA,
-                  VALE_CALC=26.36518615935,
+                  VALE_CALC=26.3651858706,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=8,
                   RESULTAT=MODECA,
-                  VALE_CALC=28.023559687023,
+                  VALE_CALC=28.023559484,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=9,
                   RESULTAT=MODECA,
-                  VALE_CALC=34.284194672867,
+                  VALE_CALC=34.2841944307,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=10,
                   RESULTAT=MODECA,
-                  VALE_CALC=40.56369329853,
+                  VALE_CALC=40.5636930178,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=11,
                   RESULTAT=MODECA,
-                  VALE_CALC=46.864148730311,
+                  VALE_CALC=46.8641484019,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=12,
                   RESULTAT=MODECA,
-                  VALE_CALC=50.060463212131,
+                  VALE_CALC=50.0604629015,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=13,
                   RESULTAT=MODECA,
-                  VALE_CALC=53.18629486166,
+                  VALE_CALC=53.1862944627,
                   ),
           )
 
 TEST_RESU(RESU=_F(PARA='FREQ',
                   NUME_MODE=14,
                   RESULTAT=MODECA,
-                  VALE_CALC=59.528203850076,
+                  VALE_CALC=59.5282034183,
                   ),
           )
 
@@ -270,7 +272,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=3.2396394052792E-03,
+                  VALE_CALC=0.00323963944463,
                   ),
           )
 
@@ -279,7 +281,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -289,7 +291,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=1.3090923593833E-03,
+                  VALE_CALC=0.00130909236888,
                   ),
           )
 
@@ -298,7 +300,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRX',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -308,7 +310,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRY',
-                  VALE_CALC=1.4914878580484E-04,
+                  VALE_CALC=0.000149148786609,
                   ),
           )
 
@@ -317,7 +319,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRZ',
-                  VALE_CALC=7.0064923216241E-46,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -327,7 +329,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=9.4449003235868E-08,
+                  VALE_CALC=9.44490024966E-08,
                   ),
           )
 
@@ -336,7 +338,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=2.0194839173658E-28,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -346,7 +348,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=1.5182762043245E-07,
+                  VALE_CALC=1.51827620086E-07,
                   ),
           )
 
@@ -355,7 +357,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRX',
-                  VALE_CALC=1.2621774483536E-29,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -365,7 +367,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRY',
-                  VALE_CALC=1.5358175191567E-25,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -375,7 +377,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRZ',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -385,7 +387,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=9.056974877545E-06,
+                  VALE_CALC=9.05697416225E-06,
                   ),
           )
 
@@ -394,7 +396,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -404,7 +406,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=7.2126964195151E-06,
+                  VALE_CALC=7.21269617485E-06,
                   ),
           )
 
@@ -413,7 +415,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRX',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -423,7 +425,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRY',
-                  VALE_CALC=1.6632972701712E-06,
+                  VALE_CALC=1.66329719803E-06,
                   ),
           )
 
@@ -432,7 +434,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRZ',
-                  VALE_CALC=2.8025969286496E-45,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -442,7 +444,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=2.5849394142282E-26,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -452,7 +454,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC=4.3790577010151E-47,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -462,7 +464,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=5.1698788284564E-26,
+                  VALE_CALC=0.,
                   CRITERE='ABSOLU',
                   ),
           )
@@ -472,7 +474,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DX',
-                  VALE_CALC=0.61824985176146,
+                  VALE_CALC=0.618249848478,
                   ),
           )
 
@@ -481,7 +483,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DY',
-                  VALE_CALC=0.25000000000000,
+                  VALE_CALC=0.25,
                   ),
           )
 
@@ -490,7 +492,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.56926959473828,
+                  VALE_CALC=0.56926959151,
                   ),
           )
 
@@ -499,7 +501,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRX',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   ),
           )
 
@@ -508,7 +510,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRY',
-                  VALE_CALC=0.096304357433140,
+                  VALE_CALC=0.0963043562685,
                   ),
           )
 
@@ -517,7 +519,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRZ',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   ),
           )
 
@@ -526,7 +528,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DX',
-                  VALE_CALC=0.24879675464209,
+                  VALE_CALC=0.248796754735,
                   ),
           )
 
@@ -535,7 +537,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DY',
-                  VALE_CALC=0.25000000000000,
+                  VALE_CALC=0.25,
                   ),
           )
 
@@ -544,7 +546,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.24941080125292,
+                  VALE_CALC=0.249410801297,
                   ),
           )
 
@@ -553,7 +555,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRX',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   ),
           )
 
@@ -562,7 +564,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRY',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   ),
           )
 
@@ -571,7 +573,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRZ',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   ),
           )
 
@@ -580,7 +582,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DX',
-                  VALE_CALC=0.20128061437786,
+                  VALE_CALC=0.201280620252,
                   ),
           )
 
@@ -589,7 +591,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DY',
-                  VALE_CALC=0.25000000000000,
+                  VALE_CALC=0.25,
                   ),
           )
 
@@ -598,7 +600,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.22473145378803,
+                  VALE_CALC=0.224731456129,
                   ),
           )
 
@@ -607,7 +609,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRX',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
 
                   ),
           )
@@ -617,7 +619,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRY',
-                  VALE_CALC=0.011827974442827,
+                  VALE_CALC=0.0118279731853,
                   ),
           )
 
@@ -626,7 +628,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRZ',
-                  VALE_CALC=0.0E+00,
+                  VALE_CALC=0.,
                   ),
           )
 
@@ -635,7 +637,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DX',
-                  VALE_CALC=0.25000000000000,
+                  VALE_CALC=0.25,
                   ),
           )
 
@@ -644,7 +646,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DY',
-                  VALE_CALC=0.25000000000000,
+                  VALE_CALC=0.25,
 
                   ),
           )
@@ -654,7 +656,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.25000000000000,
+                  VALE_CALC=0.25,
                   ),
           )
 
@@ -665,8 +667,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DX',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -676,7 +676,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=9326.6031903447,
+                  VALE_CALC=9326.60864995,
                   ),
           )
 
@@ -686,8 +686,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DZ',
                   VALE_CALC=0.,
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   CRITERE='ABSOLU',
                   ),
@@ -698,7 +696,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRX',
-                  VALE_CALC=777.21693252872,
+                  VALE_CALC=777.217842463,
                   ),
           )
 
@@ -709,8 +707,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DRY',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -722,8 +718,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DRZ',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -735,8 +729,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DX',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -746,7 +738,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=9326.6031903447,
+                  VALE_CALC=9326.59398733,
 
                   ),
           )
@@ -758,8 +750,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DZ',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -769,7 +759,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRX',
-                  VALE_CALC=777.21693252872,
+                  VALE_CALC=777.215398694,
                   ),
           )
 
@@ -778,7 +768,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRY',
-                  VALE_CALC=1.9606618500589E+07,
+                  VALE_CALC=19606618.1953,
 
                   ),
           )
@@ -790,8 +780,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DRZ',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -803,8 +791,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DX',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -814,7 +800,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DY',
-                  VALE_CALC=18653.206380689,
+                  VALE_CALC=18653.2022104,
 
                   ),
           )
@@ -826,8 +812,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DZ',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -839,8 +823,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DRX',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -852,8 +834,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DRY',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -865,8 +845,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DRZ',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -876,7 +854,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
-                  VALE_CALC=9.4449003235868E+05,
+                  VALE_CALC=944490.024966,
                   ),
           )
 
@@ -887,8 +865,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   NOM_CMP='DY',
                   VALE_CALC=0.,
                   CRITERE='ABSOLU',
-                  TOLE_MACHINE=.01,
-# TOLE_MACHINE CAR ON TESTE UN ZERO NUMERIQUE
 # VALEUR A COMPARER AUX VALEURS DE REACTIONS NON NULLES, SUPERIEURES A 10.E4 N
                   ),
           )
@@ -898,7 +874,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DZ',
-                  VALE_CALC=1.5182762043245E+06,
+                  VALE_CALC=1518276.20086,
                   ),
           )
 

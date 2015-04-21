@@ -55,6 +55,8 @@ subroutine op0154()
 #include "asterfort/vdiff.h"
 #include "asterfort/vecini.h"
 #include "asterfort/vtgpld.h"
+#include "asterfort/assert.h"
+#include "asterfort/modi_alea.h"
     integer :: n1, n2, nbocc, nboc1, nboc2, nop, i, dim, ier
     aster_logical :: bidim
     character(len=8) :: ma, ma2, depla, coutur, mab
@@ -63,7 +65,7 @@ subroutine op0154()
     character(len=24) :: valk(3)
     real(kind=8) :: ltchar, pt(3), pt2(3), dir(3), angl
 !
-    real(kind=8) :: axe1(3), axe2(3), perp(3)
+    real(kind=8) :: axe1(3), axe2(3), perp(3), alea
 !
 ! -DEB------------------------------------------------------------------
 !
@@ -101,22 +103,27 @@ subroutine op0154()
 !     ---------------------------------------
     call getfac('DEFORME', nbocc)
     if (nbocc .ne. 0) then
-        call getvtx('DEFORME', 'OPTION', iocc=1, scal=option, nbret=nop)
-        call getvid('DEFORME', 'DEPL', iocc=1, scal=depla, nbret=n1)
-        call dismoi('NOM_MAILLA', depla, 'CHAM_NO', repk=mab)
-        if (mab .ne. ma) then
-            valk(1)=ma
-            valk(2)=mab
-            call utmess('F', 'CALCULEL5_1', nk=2, valk=valk)
+        call getvr8('DEFORME', 'ALEA', iocc=1, scal=alea, nbret=n1)
+        if (n1.eq.1) then
+            call modi_alea(ma,alea)
+        else
+            call getvid('DEFORME', 'DEPL', iocc=1, scal=depla, nbret=n1)
+            ASSERT(n1.eq.1)
+            call dismoi('NOM_MAILLA', depla, 'CHAM_NO', repk=mab)
+            if (mab .ne. ma) then
+                valk(1)=ma
+                valk(2)=mab
+                call utmess('F', 'CALCULEL5_1', nk=2, valk=valk)
+            endif
+            call chpver('F', depla, 'NOEU', 'DEPL_R', ier)
+            geomi = ma//'.COORDO'
+            geomf = ma//'.COORD2'
+            call vtgpld('CUMU', geomi, 1.d0, depla, 'V',&
+                        geomf)
+            call detrsd('CHAMP_GD', geomi)
+            call copisd('CHAMP_GD', 'G', geomf, geomi)
+            call detrsd('CHAMP_GD', geomf)
         endif
-        call chpver('F', depla, 'NOEU', 'DEPL_R', ier)
-        geomi = ma//'.COORDO'
-        geomf = ma//'.COORD2'
-        call vtgpld('CUMU', geomi, 1.d0, depla, 'V',&
-                    geomf)
-        call detrsd('CHAMP_GD', geomi)
-        call copisd('CHAMP_GD', 'G', geomf, geomi)
-        call detrsd('CHAMP_GD', geomf)
     endif
 !
 !

@@ -49,6 +49,10 @@ PRE_IDEAS(UNITE_MAILLAGE=30,
 
 MAILLA1=LIRE_MAILLAGE(UNITE=20,FORMAT='ASTER',)
 MAILLA2=LIRE_MAILLAGE(UNITE=30,FORMAT='ASTER',)
+                                                                                                                            
+# Pertubation legere des coordonnes des maillages pour eviter les modes multiples ou retournes :
+MAILLA1=MODI_MAILLAGE(reuse =MAILLA1, MAILLAGE=MAILLA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
+MAILLA2=MODI_MAILLAGE(reuse =MAILLA2, MAILLAGE=MAILLA2, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 
 
 MODELE1=AFFE_MODELE(MAILLAGE=MAILLA1,
@@ -328,46 +332,41 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=17.130729485,
+                   VALE_CALC=17.1301413392,
                    VALE_REFE=17.120000000000001,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.012500000000000001,),
                 _F(PARA='FREQ',
                    NUME_MODE=2,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=35.949976144,
+                   VALE_CALC=35.9507834278,
                    VALE_REFE=35.609999999999999,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.012500000000000001,),
                 _F(PARA='FREQ',
                    NUME_MODE=3,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=50.149926023,
+                   VALE_CALC=50.1003550029,
                    VALE_REFE=49.990000000000002,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-3,      #TODO variabilite
                    PRECISION=0.012500000000000001,),
                 _F(PARA='FREQ',
                    NUME_MODE=4,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=66.556106995,
+                   VALE_CALC=66.5555145326,
                    VALE_REFE=66.420000000000002,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.012500000000000001,),
                 _F(PARA='FREQ',
                    NUME_MODE=5,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MODGLO,
-                   VALE_CALC=68.900395429,
+                   VALE_CALC=68.89790163,
                    VALE_REFE=68.480000000000004,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.012500000000000001,),
                 ),
           )

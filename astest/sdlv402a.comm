@@ -36,6 +36,9 @@ DEBUG=_F(SDVERI='NON'))
 #**************************************
 
 MAYA1=LIRE_MAILLAGE(UNITE=20);
+                                                                                                                            
+# Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
+MAYA1=MODI_MAILLAGE(reuse =MAYA1, MAILLAGE=MAYA1, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
 
 MAYA1=DEFI_GROUP( reuse=MAYA1,   MAILLAGE=MAYA1,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -332,46 +335,41 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=1,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MODGLO,
-                   VALE_CALC=431.134032626,
+                   VALE_CALC=431.114649492,
                    VALE_REFE=430.852,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
                    PRECISION=1.E-2,),
                 _F(PARA='FREQ',
                    NUME_MODE=2,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MODGLO,
-                   VALE_CALC=708.292928908,
+                   VALE_CALC=708.289921628,
                    VALE_REFE=707.717,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
                    PRECISION=1.E-2,),
                 _F(PARA='FREQ',
                    NUME_MODE=3,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MODGLO,
-                   VALE_CALC=810.113542957,
+                   VALE_CALC=810.122505648,
                    VALE_REFE=808.549,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
                    PRECISION=1.E-2,),
                 _F(PARA='FREQ',
                    NUME_MODE=4,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MODGLO,
-                   VALE_CALC=932.998489424,
+                   VALE_CALC=933.038203977,
                    VALE_REFE=930.199,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
                    PRECISION=0.04,),
                 _F(PARA='FREQ',
                    NUME_MODE=5,
                    REFERENCE='AUTRE_ASTER',
                    RESULTAT=MODGLO,
-                   VALE_CALC=1213.72619927,
+                   VALE_CALC=1213.69979276,
                    VALE_REFE=1193.94,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,               # TODO TOLE_MACHINE
                    PRECISION=0.05,),
                 ),
           )
