@@ -314,6 +314,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                 ipoin1 = zi(jlongr-1+igre)
                 ipoin2 = zi(jlongr-1+igre+1)
                 nbelgr = ipoin2-ipoin1-1
+                if ( nbelgr.eq.0 ) cycle
                 ima = zi(jligr-1+ipoin1+1-1)
                 if (ima .le. 0) goto 202
                 ipoin = point(ima)
@@ -535,13 +536,15 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                     ipoin1 = zi(jlongr-1+igrel)
                     ipoin2 = zi(jlongr-1+igrel+1)
                     nbelgr = ipoin2-ipoin1-1
+                    if ( nbelgr.eq.0 ) cycle
                     ima = zi(jligr-1+ipoin1+1-1)
                     ipoin = point(ima)
                     nnoe = point(ima+1)-ipoin
                     itype = typma(ima)
                     call jenuno(jexnum('&CATA.TM.NOMTM', itype), ktype)
                     call irmac2(ktype, ityca, gtype, nnoe)
-                    call jeveuo(jexnom('&&GILIRE.CORR_ASTER_GIBI', gtype), 'L', iacorr)
+                    call jeveuo(jexnom('&&GILIRE.CORR_ASTER_GIBI', gtype),&
+                                'L', iacorr)
                     do 306 i = 1, nbelgr
                         iel = iel +1
                         ima = zi(jligr-1+ipoin1+i-1)
@@ -555,7 +558,7 @@ subroutine irmaca(ifc, ndim, nno, coordo, nbma,&
                             ij = zi(iacorr-1+j)
                             zi(jnoe-1+(iel-1)*nnoe+j) = connex(ipoin- 1+ij)
 308                     continue
-306                 continue
+306                  continue
 304             continue
                 if (nive .eq. 3) then
                     write(ifc,'(5(I5))') ityca,izero,izero,nnoe,nbelt

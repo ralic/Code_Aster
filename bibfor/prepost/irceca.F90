@@ -387,6 +387,7 @@ subroutine irceca(ifi, ligrel, nbgrel, longr, ncmpmx,&
                 ipoin1 = longr(igrel)
                 ipoin2 = longr(igrel+1)
                 nbelgr = ipoin2-ipoin1-1
+                if ( nbelgr.eq.0 ) cycle
                 if (mode .eq. 0) then
                     ielt = ielt + nbelgr
                     goto 202
