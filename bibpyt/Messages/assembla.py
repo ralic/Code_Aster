@@ -27,6 +27,11 @@ cata_msg = {
   Conseil : Changer de solveur
 """),
 
+    2 : _(u"""
+  Erreur d'utilisation :
+    La distribution des matrices élémentaires est interdite dans ASSE_MATRICE.
+"""),
+
     3: _(u"""
  Le calcul est séquentiel, on ne peut donc pas utiliser MATR_DISTRIBUEE='OUI'.
  On force MATR_DISTRIBUEE='NON'.
