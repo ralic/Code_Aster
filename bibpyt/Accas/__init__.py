@@ -75,3 +75,5 @@ from Noyau.N_Exception import AsException
 from Noyau.N_utils import AsType
 
 from Noyau.N_VALIDATOR import Valid, RangeVal, OrdList, NoRepeat, LongStr, EnumVal, CardVal, TypeVal, InstanceVal, OrVal, AndVal, PairVal
+from Noyau.N_VALIDATOR import Compulsory, Together, Absent
+

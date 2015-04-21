@@ -101,6 +101,9 @@ en état initial ne sera pas transmis à EPX pour les éléments affectés des m
     19 : _(u"""Le type de charge %(k1)s n'est pas pris en compte par CALC_EUROPLEXUS'
 """),
 
+    20 : _(u"""Le concept %(k1)s donné par %(k2)s n'a pas été trouvé.'
+"""),
+
     22 : _(u"""La valeur du mot-clé %(k1)s du matériau %(k2)s est différente de %(k3)s.
 """),
 
@@ -258,7 +261,7 @@ Il n'existe pas de traduction dans le matériau EPX correspondant.
 """),
 
     47 : _(u"""
-Vous avez demandé à ce que le champ de variables internes soit pris en 
+Vous avez demandé à ce que le champ de variables internes soit pris en
 compte dans l'état initial du calcul EPX. La transformation de ce champ
 de Code_Aster vers EPX n'est pas programmée pour le comportement  %(k1)s.
 Les valeurs de ce champ dans l'état initial sont donc nulles pour les mailles
@@ -266,10 +269,10 @@ sur lesquelles ce comportement est affecté.
 """),
 
     48 : _(u"""
-Vous avez demandé à ce que le champ de variables internes soit pris en 
+Vous avez demandé à ce que le champ de variables internes soit pris en
 compte dans l'état initial du calcul EPX. Cependant la transformation
 du champ de variables internes de Code_Aster vers EPX n'est programmée
-pour aucun des comportements présents dans le calcul. 
+pour aucun des comportements présents dans le calcul.
 
 La commande VARI_INT = 'OUI' n'a ici aucun effet et est donc inutile.
 """),
@@ -278,17 +281,17 @@ La commande VARI_INT = 'OUI' n'a ici aucun effet et est donc inutile.
 Le paramètre %(k1)s est présent dans le mot-clé %(k2)s du matériau %(k3)s.
 Sa valeur est différente de la valeur imposée :
 Valeur imposée  : %(r1)f
-Valeur présente : %(r2)f 
+Valeur présente : %(r2)f
 """),
 
     50 : _(u"""
 Le fichier correspondant à l'unité %(i1)d donnée dans UNITE_MED de LIRE_EUROPLEXUS
-n'est pas un fichier MED ou est absent. 
+n'est pas un fichier MED ou est absent.
 """),
 
     51 : _(u"""
 Le fichier correspondant à l'unité donnée dans UNITE_MED de LIRE_EUROPLEXUS
-ne contient pas de champ %(k1)s. Il ne peut pas être traité. 
+ne contient pas de champ %(k1)s. Il ne peut pas être traité.
 """),
 
     52 : _(u"""
@@ -297,7 +300,7 @@ facteur %(k3)s d'AFFE_CARA_ELEM.
 """),
 
     53 : _(u"""
-Le mot-clé CARA_ELEM est renseigné alors qu'un état initial est donné via ETAT_INIT. 
+Le mot-clé CARA_ELEM est renseigné alors qu'un état initial est donné via ETAT_INIT.
 Il n'est pas nécessaire de renseigner CARA_ELEM dans ce cas sauf si vous souhaitez
 fournir des informations différentes de celles contenues dans le résultat de l'état initial.
 """),
@@ -305,7 +308,7 @@ fournir des informations différentes de celles contenues dans le résultat de l
     54 : _(u"""
 Un champ de type %(k1)s contenu dans le fichier MED est porté par des éléments EUROPLEXUS de type %(k2)s.
 LIRE_EUROPLEXUS ne sait pas traduire les données de ce champ. Les éléments du modèle
-Code_Aster associés aux mêmes éléments du maillage, s'ils existent, 
+Code_Aster associés aux mêmes éléments du maillage, s'ils existent,
 gardent des valeurs nulles sur le champ correspondant.
 """),
 
@@ -313,7 +316,7 @@ gardent des valeurs nulles sur le champ correspondant.
 Un champ de variables internes contenu dans le fichier MED est associé à la loi
 de comportement %(k1)s d'EUROPLEXUS.
 LIRE_EUROPLEXUS ne sait pas traduire les données de ce champ. Les éléments du modèle
-Code_Aster associés aux mêmes éléments du maillage, s'ils existent, 
+Code_Aster associés aux mêmes éléments du maillage, s'ils existent,
 gardent des valeurs nulles sur le champ correspondant.
 """),
 

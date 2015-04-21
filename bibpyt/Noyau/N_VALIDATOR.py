@@ -508,7 +508,6 @@ class ListVal(Valid):
 
 
 class Compulsory(ListVal):
-
     """
         Validateur operationnel
         Verification de la présence obligatoire d'un élément dans une liste
@@ -560,13 +559,110 @@ class Compulsory(ListVal):
         return _(u"La valeur n'est pas dans la liste des choix possibles")
 
 
-class NoRepeat(ListVal):
+class Together(ListVal):
+    """
+        Validateur operationnel
+        si un des éléments est présent les autres doivent aussi l'être
+    """
+    registry = {}
 
+    def __init__(self, elem=()):
+        if not is_sequence(elem):
+            elem = (elem,)
+        Valid.__init__(self, elem=elem)
+        self.elem = elem
+        self.cata_info = ""
+
+    def info(self):
+        return ufmt(_(u"%s présent ensemble"), `self.elem`)
+
+    def default(self, valeur, elem):
+        return valeur
+
+    def verif_item(self, valeur):
+        return 1
+
+    def convert(self, valeur):
+        elem = list(self.elem)
+        for val in valeur:
+            v = self.adapt(val)
+            if v in elem: elem.remove(v)
+        if ( len(elem) == 0 ): return valeur
+        if len(elem) != len(list(self.elem)) :
+            raise ValError( ufmt(_(u"%s ne contient pas les éléments devant être présent ensemble: %s "), valeur, elem))
+        return valeur
+
+    def has_into(self):
+        return 1
+
+    def verif(self, valeur):
+        if not is_sequence(valeur):
+            liste = list(valeur)
+        else:
+            liste = valeur
+        compte = 0
+        for val in self.elem:
+            if val in liste: compte += 1
+        if ( compte == 0 ): return 1
+        if ( compte != len( list(self.elem) ) ): return 0
+        return 1
+
+    def info_erreur_item(self):
+        return _(u"La valeur n'est pas dans la liste des choix possibles")
+
+
+class Absent(ListVal):
+    """
+        Validateur operationnel
+        si un des éléments est présent non valide
+    """
+    registry = {}
+
+    def __init__(self, elem=()):
+        if not is_sequence(elem):
+            elem = (elem,)
+        Valid.__init__(self, elem=elem)
+        self.elem = elem
+        self.cata_info = ""
+
+    def info(self):
+        return ufmt(_(u"%s absent"), `self.elem`)
+
+    def default(self, valeur, elem):
+        return valeur
+
+    def verif_item(self, valeur):
+        return 1
+
+    def convert(self, valeur):
+        elem = list(self.elem)
+        for val in valeur:
+            v = self.adapt(val)
+            if v in elem:
+                raise ValError( ufmt(_(u"%s n'est pas autorisé : %s "), v, elem))
+        return valeur
+
+    def has_into(self):
+        return 1
+
+    def verif(self, valeur):
+        if not is_sequence(valeur):
+            liste = list(valeur)
+        else:
+            liste = valeur
+        for val in self.elem:
+            if val in liste: return 0
+        return 1
+
+    def info_erreur_item(self):
+        return _(u"La valeur n'est pas dans la liste des choix possibles")
+
+
+class NoRepeat(ListVal):
     """
         Validateur operationnel
         Verification d'absence de doublons dans la liste.
     """
-
     def __init__(self):
         Valid.__init__(self)
         self.cata_info = ""

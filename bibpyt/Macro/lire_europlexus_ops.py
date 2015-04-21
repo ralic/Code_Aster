@@ -81,7 +81,25 @@ class LireEPX():
 
         # Récuperation des concepts de la base
         macro = CONTEXT.get_current_step()
-
+        #
+        # Recherche dans le jdc la création du concept CARA_ELEM
+        if ( self.CARA_ELEM != None ):
+            FindEtape = False
+            self.CARA_ELEM_CONCEPT = self.CARA_ELEM
+            nomsd = self.CARA_ELEM.get_name()
+            jdc = CONTEXT.get_current_step().jdc
+            for UneEtape in jdc.etapes:
+                if (UneEtape.nom=='AFFE_CARA_ELEM') and (UneEtape.sdnom==nomsd):
+                    self.CARA_ELEM = UneEtape
+                    FindEtape = True
+                    break
+            #
+            if ( not FindEtape ):
+                UTMESS('F', 'PLEXUS_20', valk=[nomsd, 'CARA_ELEM'])
+            #
+        else:
+            self.CARA_ELEM_CONCEPT = None
+        #
         # récuperation du maillage
         nom_MODELE = self.MODELE.get_name()
         iret, ibid, nomsd = aster.dismoi('NOM_MAILLA', nom_MODELE, 'MODELE',
@@ -286,8 +304,8 @@ le mot-clé %s""" % mc_cara)
             'TOUT_ORDRE': 'OUI',
             'INFO': self.INFO,
         }
-        if self.CARA_ELEM is not None:
-            lire_resu['CARA_ELEM'] = self.CARA_ELEM
+        if self.CARA_ELEM_CONCEPT is not None:
+            lire_resu['CARA_ELEM'] = self.CARA_ELEM_CONCEPT
         if self.CHAM_MATER is not None:
             lire_resu['CHAM_MATER'] = self.CHAM_MATER
         if self.EXCIT is not None:
@@ -337,13 +355,13 @@ le mot-clé %s""" % mc_cara)
             type_cham = ch_split[0]
             mode_epx = ch_split[1]
             loi = ch_split[2]
-            
+
             if type_cham == "CONT":
-                
+
                 if not info_mode_epx.has_key(mode_epx):
                     UTMESS('A', 'PLEXUS_54', valk=[type_cham, mode_epx])
                     continue
-                    
+
                 if info_mode_epx[mode_epx]['NOM_CMP'] is None:
                     UTMESS('A', 'PLEXUS_54', valk=[type_cham, mode_epx])
                     continue
@@ -367,7 +385,7 @@ le mot-clé %s""" % mc_cara)
                     dic_champ_cont[mc_cara][nom_cham_med] = mode_epx
 
             if type_cham == "ECRO":
-                
+
                 if not info_mode_epx.has_key(mode_epx):
                     UTMESS('A', 'PLEXUS_54', valk=[type_cham, mode_epx])
                     continue
@@ -379,7 +397,7 @@ le mot-clé %s""" % mc_cara)
                 if not info_comp_epx.has_key(loi):
                     UTMESS('A', 'PLEXUS_55', valk=loi)
                     continue
-                        
+
                 nbcomp = len(dic_champ_med[nom_cham_med])
                 nbcomp_ref = info_comp_epx[loi]['NB_VAR_EPX']
                 if nbcomp != nbcomp_ref:
@@ -665,8 +683,8 @@ présentes%s""" % compo)
             }
             if self.CHAM_MATER is not None:
                 dic['CHAM_MATER'] = self.CHAM_MATER
-            if self.CARA_ELEM is not None:
-                dic['CARA_ELEM'] = self.CARA_ELEM
+            if self.CARA_ELEM_CONCEPT is not None:
+                dic['CARA_ELEM'] = self.CARA_ELEM_CONCEPT
 
             dic['CHAM_GD'] = __EFFG[i]
             dicAffe.append(dic)

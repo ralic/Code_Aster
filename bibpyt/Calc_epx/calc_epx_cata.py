@@ -121,7 +121,7 @@ cata_compor = {
         'NB_VAR_ASTER': 5,
         'NB_VAR_EPX': 8,
         'TRANSFO': True,
-    
+
     },
     'BPEL_FROT': {
         'LOI': ['BPEL_ACIER',],
@@ -131,7 +131,7 @@ cata_compor = {
         'NB_VAR_ASTER': 1,
         'NB_VAR_EPX': 6,
         'TRANSFO': False,
-    },    
+    },
     'GLRC_DAMAGE': {
         'LOI': ['RELATION', 'BETON', 'NAPPE', 'CABLE_PREC',
                 'CISAIL_NL', 'LINER'],
@@ -180,8 +180,8 @@ cata_compor = {
                si c'est une liste cela signifie qu'un traitement est
                a faire sur les données Aster pour les mettre en forme
                pour EPX.
-               Si c'est un nombre, c'est que le paramètre n'a pas de 
-               traduction dans EPX. La valeur donnée est une valeur 
+               Si c'est un nombre, c'est que le paramètre n'a pas de
+               traduction dans EPX. La valeur donnée est une valeur
                imposée au paramètre Aster.
     BESOIN   : o/f , précise si le paramètre est obligatoire ou non
     TYPE     : reel, fonc(fonction) ou mfac(comme mot-clé facteur)
@@ -522,11 +522,13 @@ cata_cara_elem = {
             'MOT_CLE_EPX': 'EPAIS',
             'MOT_CLE_ASTER': 'EPAIS',
             'VERIF': {'EXCENTREMENT': [0.],
-                      'INER_ROTA': ['NON'],
                       'VECTEUR': None,  # pris en compte ailleurs
                       'ANGL_REP': None,  # pris en compte ailleurs
                       'COQUE_NCOU': [1],
                       'INER_ROTA': ['OUI', ],
+                      'A_CIS': None,            # Pas de prise en compte par Exp
+                      'COEF_RIGI_DRZ': None ,   # Pas de prise en compte par Exp
+                      'MODI_METRIQUE':['NON',],
                       },
         }
     ],
@@ -538,7 +540,10 @@ cata_cara_elem = {
             'INFO_CLE': 'SECTION',
             'CARA_ASTER': [' ', ' ', ' ', 'HY', 'HZ'],
             'CARA_EPX': ['VX', 'VY', 'VZ', 'AY', 'AZ'],
-            'VERIF': {'SECTION': ['RECTANGLE']},
+            'VERIF': {'SECTION': ['RECTANGLE'],
+                      'VARI_SECT': ['CONSTANT',],
+                      'MODI_METRIQUE':['NON',],
+                      },
         }
     ],
     'RIGI_PARASOL': [

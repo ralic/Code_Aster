@@ -44,8 +44,8 @@ except:
 #-----------------------------------------------------------------------
 
 
-def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL, 
-                        CARA_ELEM=None, MODELE=None, 
+def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
+                        CARA_ELEM=None, MODELE=None,
                         CHAM_MATER=None, FONC_PARASOL=None,
                         OBSERVATION=None, COURBE=None,
                         DOMAINES=None, INTERFACES=None,
@@ -202,8 +202,7 @@ class EUROPLEXUS:
 
             # CARA_ELEM
             if CARA_ELEM is None :
-                iret, ibid, nomsd = aster.dismoi('CARA_ELEM', nom_RESU_INIT,
-                                                 'RESULTAT', 'F')
+                iret, ibid, nomsd = aster.dismoi('CARA_ELEM', nom_RESU_INIT, 'RESULTAT', 'F')
                 nomsd = nomsd.strip()
                 if nomsd[:8] == '#PLUSIEU':
                     UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT, 'CARA_ELEM'])
@@ -216,21 +215,37 @@ class EUROPLEXUS:
                 UTMESS('A','PLEXUS_53')
 
             # CHAM_MATER
-            iret, ibid, nomsd = aster.dismoi('CHAM_MATER', nom_RESU_INIT,
-                                             'RESULTAT', 'F')
+            iret, ibid, nomsd = aster.dismoi('CHAM_MATER', nom_RESU_INIT, 'RESULTAT', 'F')
             nomsd = nomsd.strip()
             if nomsd[:8] == '#PLUSIEU':
                 UTMESS('F', 'PLEXUS_37', valk=[nom_RESU_INIT, 'CHAM_MATER'])
             self.CHAM_MATER = macro.get_concept(nomsd)
         else:
-            self.MODELE = MODELE
-            self.CARA_ELEM = CARA_ELEM
+            self.MODELE     = MODELE
+            self.CARA_ELEM  = CARA_ELEM
             self.CHAM_MATER = CHAM_MATER
-
+        #
+        # Recherche dans le jdc la création du concept CARA_ELEM
+        if ( self.CARA_ELEM != None ):
+            FindEtape = False
+            self.CARA_ELEM_CONCEPT = self.CARA_ELEM
+            nomsd = self.CARA_ELEM.get_name()
+            jdc = CONTEXT.get_current_step().jdc
+            for UneEtape in jdc.etapes:
+                if (UneEtape.nom=='AFFE_CARA_ELEM') and (UneEtape.sdnom==nomsd):
+                    self.CARA_ELEM = UneEtape
+                    FindEtape = True
+                    break
+            #
+            if ( not FindEtape ):
+                UTMESS('F', 'PLEXUS_20', valk=[nomsd, 'CARA_ELEM'])
+            #
+        else:
+            self.CARA_ELEM_CONCEPT = None
+        #
         # récuperation du maillage
         nom_MODELE = self.MODELE.get_name()
-        iret, ibid, nomsd = aster.dismoi('NOM_MAILLA', nom_MODELE, 'MODELE',
-                                         'F')
+        iret, ibid, nomsd = aster.dismoi('NOM_MAILLA', nom_MODELE, 'MODELE', 'F')
         nomsd = nomsd.strip()
         self.MAILLAGE = macro.get_concept(nomsd)
 
@@ -438,7 +453,7 @@ class EUROPLEXUS:
         dic_gr_cara_supp = {}
         # Récuperer s'il a lieu les fonctions de ressorts de sol et discrets
         if self.FONC_PARASOL is not None:
-            dic_gr_cara_supp = get_FONC_PARASOL(epx, self.FONC_PARASOL, 
+            dic_gr_cara_supp = get_FONC_PARASOL(epx, self.FONC_PARASOL,
                                                 dic_gr_cara_supp)
         # récupérer les orientations des poutres
         if self.CARA_ELEM:
@@ -461,7 +476,7 @@ class EUROPLEXUS:
                     continue
                 [epx, mode_from_cara] = export_cara(cle, epx,
                                               cara_elem_struc[cle],
-                                              self.MAILLAGE, self.CARA_ELEM,
+                                              self.MAILLAGE, self.CARA_ELEM_CONCEPT,
                                               dic_gr_cara_supp, mode_from_cara)
 
                 if cle == 'COQUE':
@@ -482,7 +497,7 @@ class EUROPLEXUS:
                                 dicOrthotropie[group] = vect
 
                     self.dicOrthotropie = dicOrthotropie
-                            
+
         self.mode_from_cara = mode_from_cara
 
 
@@ -523,7 +538,7 @@ class EUROPLEXUS:
         # blocs d'écriture de tous les noeuds et toutes les mailles
         [bloc_poin, bloc_elem] = self.write_all_gr()
 
-        # Traitement du mot-cle facteur OBSERVATION (EPX = LISTING) 
+        # Traitement du mot-cle facteur OBSERVATION (EPX = LISTING)
         # Ecriture LISTING
         if self.OBSERVATION is not None:
             listing_fact = self.OBSERVATION.List_F()[0]
@@ -537,7 +552,7 @@ class EUROPLEXUS:
                 epx[directive].add_bloc(bloc_champ)
             bloc_freq = BLOC_DONNEES(cle_freq_listing, cle=vale_freq_listing)
             epx[directive].add_bloc(bloc_freq)
-            
+
             # noeuds
             if listing_fact.has_key('TOUT_GROUP_NO'):
                 # tous les noeuds du modèle
@@ -549,7 +564,7 @@ class EUROPLEXUS:
             else:
                 bloc = BLOC_DONNEES('NOPO')
                 epx[directive].add_bloc(bloc)
-            
+
             # mailles
             if listing_fact.has_key('TOUT_GROUP_MA'):
                 # toutes les mailles du modèle
@@ -981,21 +996,21 @@ class EUROPLEXUS:
         dic_champ_med = med_aster.get_nom_champ_med(fichier_med)
         if len(dic_champ_med.keys()) == 0:
             UTMESS('F', 'PLEXUS_14')
-        
+
         unite = self.get_unite_libre()
         # ca ne marche pas avec ca :
         # DEFI_FICHIER(UNITE=unite, FICHIER=fichier_med, ACTION='ASSOCIER')
-        
+
         # mais ca marche avec ca
         fort = 'fort.%i' % unite
         if os.path.isfile(fort):
             os.remove(fort)
         os.symlink(fichier_med, fort)
-        
-        
+
+
         resu = LIRE_EUROPLEXUS(UNITE_MED=unite,
                             MODELE=self.MODELE,
-                            CARA_ELEM=self.CARA_ELEM,
+                            CARA_ELEM=self.CARA_ELEM_CONCEPT,
                             CHAM_MATER=self.CHAM_MATER,
                             COMPORTEMENT=self.COMPORTEMENT,
                             EXCIT=self.EXCIT,
@@ -1032,7 +1047,7 @@ class EUROPLEXUS:
             if self.dic_epx_geom[model]['RESU_POIN']:
                 entite_geo['POIN'].extend(self.dic_epx_geom[model]
                                                        ['GROUP_MA'])
-        li_blocs = [] 
+        li_blocs = []
         for cle in ['POIN', 'ELEM']:
             bloc = BLOC_DONNEES(cle, l_group=entite_geo[cle],)
             li_blocs.append(bloc)
