@@ -4,6 +4,7 @@ function cgverho(imate)
 #include "jeveux.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/tecach.h"
 !
     integer :: imate
@@ -44,11 +45,17 @@ function cgverho(imate)
     aster_logical :: rhoabs
     real(kind=8) :: rhobid(1)
     character(len=16) :: phenom
+    character(len=4) :: fami
 !
 ! ----------------------------------------------------------------------
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre)
-    call rcvalb('RIGI', 1, 1, '+', zi(imate),&
+    if (lteatt('LXFEM','OUI')) then
+        fami='XFEM'
+    else
+        fami='RIGI'
+    endif
+    call rcvalb(fami, 1, 1, '+', zi(imate),&
                 ' ', phenom, 0, ' ', [0.d0],&
                 1, 'RHO', rhobid(1), codrho(1), 0)
 !

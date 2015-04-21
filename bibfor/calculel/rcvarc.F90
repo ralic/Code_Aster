@@ -102,15 +102,11 @@ subroutine rcvarc(arret, novrc, poum, fami, kpg,&
 !   -----------------------------------------------------------
     k=indik8(zk8(jfpgl),fami,1,nfpg)
     if (k .eq. 0) then
-        if (arret .eq. ' ') then
-            goto 998
-        else
-            valk(1)=novrc
-            valk(2)=fami
-            valk(3)=option
-            valk(4)=nomte
-            call utmess('F', 'CALCULEL6_58', nk=4, valk=valk)
-        endif
+        valk(1)=novrc
+        valk(2)=fami
+        valk(3)=option
+        valk(4)=nomte
+        call utmess('F', 'CALCULEL6_58', nk=4, valk=valk)
     endif
     kpgmat=decala(k)+kpg
 
