@@ -40,7 +40,6 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: mate
@@ -137,8 +136,9 @@ implicit none
 !            RQ : POUR LE CALCUL THERMIQUE, LES ARGUMENTS VTEMPP,
 !                 VTEMPD ET THETA SONT INUTILISES.
 !
-        call vechth(model, lload_name, lload_info, cara_elem, mate,&
-                    time, vtemp, vechtp)
+        call vechth('MOVE' , model, lload_name, lload_info, cara_elem,&
+                    mate   , time , vtemp , vechtp,&
+                    time_move_ = timemo)
         call asasve(vechtp, nume_dof, typres, vachtp)
         call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
                     typres, cnchtp)

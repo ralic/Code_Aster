@@ -94,7 +94,7 @@ implicit none
     character(len=1) :: typres
     character(len=2) :: codret
     character(len=8) :: k8bid, nomcmp(6)
-    character(len=19) :: chvarc
+    character(len=19) :: varc_curr
     character(len=16) :: k16bid, option, nomcmd
     character(len=24) :: ligrmo, merigi, memass, mediri, tlimat(3), bidon
     character(len=24) :: vediri, vechtp, vetntp, vetnti, vadirp, vachtp, vechtn
@@ -119,7 +119,7 @@ implicit none
 !
     call jemarq()
     call infniv(ifm, niv)
-    chvarc = '&&NXACMV.CHVARC'
+    varc_curr = '&&NXACMV.CHVARC'
 !
 !====
 ! 1. PREALABLE
@@ -159,7 +159,7 @@ implicit none
 ! ======================================================================
 !
 !     VARIABLES DE COMMANDE
-    call vrcins(model, mate, cara_elem, tpsthe(1), chvarc,&
+    call vrcins(model, mate, cara_elem, tpsthe(1), varc_curr,&
                 codret)
 !
     if (reasvt) then
@@ -226,8 +226,9 @@ implicit none
 !
 !
 ! CALCULS ELEMENTAIRES ET SOMMATION DANS LES VECT_ELEM VECHTP ET VACHTP
-        call vechth(model, lload_name, lload_info, cara_elem, mate,&
-                    time, vtemp, vechtp)
+        call vechth('STAT', model, lload_name, lload_info, cara_elem,&
+                    mate  , time , vtemp     , vechtp,&
+                    varc_curr_ = varc_curr)
         call asasve(vechtp, numedd, typres, vachtp)
         call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
                     typres, cnchtp)

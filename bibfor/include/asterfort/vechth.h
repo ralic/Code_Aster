@@ -16,15 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vechth(modelz, chargz, infocz, carelz, matez,&
-                      instz, chtnz, vecelz)
-        character(len=*) :: modelz
-        character(len=*) :: chargz
-        character(len=*) :: infocz
-        character(len=*) :: carelz
-        character(len=*) :: matez
-        character(len=*) :: instz
-        character(len=*) :: chtnz
-        character(len=*) :: vecelz
+    subroutine vechth(type_ther , model_, lload_name_, lload_info_, cara_elem_,&
+                      mate_     , time_ , temp_prev_ , vect_elem_ , varc_curr_,&
+                      time_move_)
+        character(len=4), intent(in) :: type_ther
+        character(len=*), intent(in) :: model_
+        character(len=*), intent(in) :: lload_name_
+        character(len=*), intent(in) :: lload_info_
+        character(len=*), intent(in) :: cara_elem_
+        character(len=*), intent(in) :: time_
+        character(len=*), intent(in) :: temp_prev_
+        character(len=*), intent(inout) :: vect_elem_
+        character(len=*), intent(in) :: mate_
+        character(len=*), optional, intent(in) :: varc_curr_
+        character(len=*), optional, intent(in) :: time_move_
     end subroutine vechth
 end interface
