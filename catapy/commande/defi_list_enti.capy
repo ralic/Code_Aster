@@ -42,9 +42,12 @@ DEFI_LIST_ENTI=OPER(nom="DEFI_LIST_ENTI",op=22,sd_prod=listis_sdaster,
          # extraction d'une liste de nume_ordre dans une sd_resultat :
          #------------------------------------------------------------
          b_extr       =BLOC(condition = "OPERATION == 'NUME_ORDRE'",
-             RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
-             PARAMETRE       =SIMP(statut='o',typ='TXM',),
-             INTERV_R        =SIMP(statut='o',typ='R',min=2,max=2),
+             RESULTAT   = SIMP(statut='o',typ=resultat_sdaster),
+             PARAMETRE  = SIMP(statut='o',typ='TXM',),
+             INTERVALLE = FACT(statut='o', max='**',
+                               fr=tr("Définition des intervalles de recherche"),
+                 VALE = SIMP(statut='o', typ='R', min=2, max=2),
+             ),
          ),
 
 

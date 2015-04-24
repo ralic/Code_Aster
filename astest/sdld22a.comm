@@ -210,7 +210,13 @@ DEPLTRAN=REST_GENE_PHYS(  RESU_GENE=DYNAMODA,  NOM_CHAM=('DEPL', 'VITE','ACCE'),
                             LIST_INST=LISTR8,    INTERPOL='LIN'  )
 
 
-lnuor=DEFI_LIST_ENTI( OPERATION='NUME_ORDRE', RESULTAT=DEPLTRAN, PARAMETRE='INST', INTERV_R= (1.36,  1.46, ),)
+lnuor = DEFI_LIST_ENTI(OPERATION='NUME_ORDRE',
+                       RESULTAT=DEPLTRAN,
+                       PARAMETRE='INST',
+                       INTERVALLE=(
+                           _F(VALE=(1.36, 1.37)),
+                           _F(VALE=(1.45, 1.46)),
+                       ),)
 
 DEPLTRA1=EXTR_RESU( RESULTAT=DEPLTRAN, ARCHIVAGE=_F(LIST_ORDRE = lnuor, CHAM_EXCLU = ('ACCE') ) )
 
