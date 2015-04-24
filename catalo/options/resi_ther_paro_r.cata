@@ -23,7 +23,6 @@ OPTION__
         PHECHPR  COEH_R
         PTEMPSR  INST_R
         PTEMPEI  TEMP_R
-        PDEPLAR  DEPL_R
    OUT__
 PRESIDU VTEM_R RESL__
 

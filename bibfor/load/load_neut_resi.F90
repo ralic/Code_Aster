@@ -1,13 +1,12 @@
-subroutine load_neut_2mbr(stop_calc, model     , time      , i_load    , load_name ,&
-                          load_nume, nb_in_maxi, nb_in_prep, lpain     , lchin    , &
-                          base     , resu_elem , vect_elem , time_move_)
+subroutine load_neut_resi(stop_calc , model     , time , load_name, load_nume,&
+                          nb_in_maxi, nb_in_prep, lpain, lchin    , base     ,&
+                          resu_elem , vect_elem )
 !
 implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/copisd.h"
-#include "asterfort/exisd.h"
 #include "asterfort/reajre.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
@@ -34,7 +33,6 @@ implicit none
     character(len=1), intent(in) :: stop_calc
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: time
-    integer, intent(in) :: i_load
     character(len=8), intent(in) :: load_name
     integer, intent(in) :: load_nume
     integer, intent(in) :: nb_in_maxi
@@ -44,20 +42,17 @@ implicit none
     character(len=19), intent(inout) :: resu_elem
     character(len=19), intent(in) :: vect_elem
     character(len=1), intent(in) :: base
-    character(len=24), optional, intent(in) :: time_move_
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Neumann loads computation - Thermic
 ! 
-! Elementary (on one load) - Second member
+! Elementary (on one load) - Residuals
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  stop_calc        : CALCUL subroutine comportement
 ! In  model            : name of the model
 ! In  time             : time (<CARTE>)
-! In  i_load           : index of current load
 ! In  load_name        : name of current load
 ! In  load_nume        : identification of load type
 ! In  nb_in_maxi       : maximum number of input fields
@@ -67,48 +62,39 @@ implicit none
 ! IO  resu_elem        : name of resu_elem
 ! In  vect_elem        : name of vect_elem
 ! In  base             : JEVEUX base to create vect_elem
-! In  time_move        : modified time (<CARTE>) for THER_NON_LINE_MO
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
     parameter (nb_type_neum=9)
 !
-    integer :: iexist, i_type_neum, nb_in_add, ibid
-    character(len=16) :: load_option
-    character(len=19) :: load_ligrel  
+    integer :: i_type_neum, nb_in_add, ibid
+    character(len=16) :: resi_option
+    character(len=24) :: load_ligrel  
     integer :: nbout, nbin
     character(len=8) :: lpaout, newnom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    lpaout = 'PVECTTR'
+    lpaout = 'PRESIDU'
 !
     do i_type_neum = 1, nb_type_neum
 !
 ! ----- Get information about load
 !
-        if (present(time_move_)) then
-            call load_neut_spec('MOVE'     , model       , time       , load_name , load_nume,&
-                                i_type_neum, nb_type_neum, nb_in_maxi , nb_in_prep, lchin    ,&
-                                lpain      , nb_in_add   , load_ligrel,&
-                                load_option,&
-                                time_move_ = time_move_ )
-        else
-            call load_neut_spec('STAT'      , model       , time       , load_name , load_nume,&
-                                i_type_neum , nb_type_neum, nb_in_maxi , nb_in_prep, lchin    ,&
-                                lpain       , nb_in_add   , load_ligrel,&
-                                load_option)
-        endif
+        call load_neut_spec('STAT'      , model       , time       , load_name , load_nume,&
+                            i_type_neum , nb_type_neum, nb_in_maxi , nb_in_prep, lchin    ,&
+                            lpain       , nb_in_add   , load_ligrel,&
+                            resi_option_ = resi_option)
 !
-        if (load_option .ne. 'No_Load') then
+        if (resi_option .ne. 'No_Load') then
 !
 ! --------- Generate new RESU_ELEM name
 !
             newnom = resu_elem(10:16)
             call gcnco2(newnom)
             resu_elem(10:16) = newnom(2:8)
-            call corich('E', resu_elem, i_load, ibid)
+            call corich('E', resu_elem, -1, ibid)
 !
 ! --------- Number of fields
 !
@@ -117,14 +103,12 @@ implicit none
 !
 ! --------- Computation
 !
-            call calcul(stop_calc, load_option, load_ligrel, nbin  , lchin,&
+            call calcul(stop_calc, resi_option, load_ligrel, nbin  , lchin,&
                         lpain    , nbout      , resu_elem  , lpaout, base ,&
                         'OUI')
 !
-! --------- Copying output field
+! --------- Add RESU_ELEM in vect_elem
 !
-            call exisd('CHAMP_GD', resu_elem, iexist)
-            ASSERT((iexist.gt.0).or.(stop_calc.eq.'C'))
             call reajre(vect_elem, resu_elem, base)
         endif
     end do

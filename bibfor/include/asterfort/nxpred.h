@@ -20,11 +20,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof,&
-                      solver, lostat   , time     , lonch    , matass  ,&
-                      maprec, varc_curr, vtemp    , vtempm   , vtempp  ,&
-                      vhydr , vhydrp   , tmpchi   , tmpchf   , compor  ,&
-                      cndirp, cnchci   , vec2nd   , vec2ni)
+    subroutine nxpred(model    , mate     , cara_elem, list_load, nume_dof,&
+                      solver   , lostat   , time     , lonch    , matass  ,&
+                      maprec   , varc_curr, temp_prev, temp_iter, vtempp  ,&
+                      hydr_prev, hydr_curr, dry_prev , dry_curr , compor  ,&
+                      cndirp   , cnchci   , vec2nd   , vec2ni)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -37,13 +37,13 @@ interface
         integer :: lonch
         character(len=24) :: matass
         character(len=19) :: maprec
-        character(len=24) :: vtemp
-        character(len=24) :: vtempm
+        character(len=24) :: temp_prev
+        character(len=24) :: temp_iter
         character(len=24) :: vtempp
-        character(len=24) :: vhydr
-        character(len=24) :: vhydrp
-        character(len=24) :: tmpchi
-        character(len=24) :: tmpchf
+        character(len=24) :: hydr_prev
+        character(len=24) :: hydr_curr
+        character(len=24) :: dry_prev
+        character(len=24) :: dry_curr
         character(len=24) :: compor
         character(len=24) :: cndirp
         character(len=24) :: cnchci

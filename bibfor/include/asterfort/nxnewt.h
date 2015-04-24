@@ -20,11 +20,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxnewt(model      , mate       , cara_elem, list_load, nume_dof,&
-                      solver     , time       , lonch    , matass   , maprec  ,&
-                      cnchci     , varc_curr  , vtemp    , vtempm   , vtempp  ,&
-                      vec2nd     , mediri     , conver   , vhydr    , vhydrp  ,&
-                      tmpchi     , tmpchf     , compor   , cnvabt   , cnresi  ,&
+    subroutine nxnewt(model      , mate       , cara_elem, list_load, nume_dof ,&
+                      solver     , time       , lonch    , matass   , maprec   ,&
+                      cnchci     , varc_curr  , temp_prev, temp_iter, vtempp   ,&
+                      vec2nd     , mediri     , conver   , hydr_prev, hydr_curr,&
+                      dry_prev   , dry_curr   , compor   , cnvabt   , cnresi   ,&
                       ther_crit_i, ther_crit_r, reasma   , testr    , testm)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
@@ -38,16 +38,16 @@ interface
         character(len=24) :: matass
         character(len=19) :: maprec
         character(len=24) :: cnchci
-        character(len=24) :: vtemp
-        character(len=24) :: vtempm
+        character(len=24) :: temp_prev
+        character(len=24) :: temp_iter
         character(len=24) :: vtempp
         character(len=24) :: vec2nd
         character(len=24) :: mediri
         aster_logical :: conver
-        character(len=24) :: vhydr
-        character(len=24) :: vhydrp
-        character(len=24) :: tmpchi
-        character(len=24) :: tmpchf
+        character(len=24) :: hydr_prev
+        character(len=24) :: hydr_curr
+        character(len=24) :: dry_prev
+        character(len=24) :: dry_curr
         character(len=24) :: compor
         character(len=24) :: cnvabt
         character(len=24) :: cnresi

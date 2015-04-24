@@ -1,8 +1,8 @@
-subroutine nxnewt(model      , mate       , cara_elem, list_load, nume_dof,&
-                  solver     , time       , lonch    , matass   , maprec  ,&
-                  cnchci     , varc_curr  , vtemp    , vtempm   , vtempp  ,&
-                  vec2nd     , mediri     , conver   , vhydr    , vhydrp  ,&
-                  tmpchi     , tmpchf     , compor   , cnvabt   , cnresi  ,&
+subroutine nxnewt(model      , mate       , cara_elem, list_load, nume_dof ,&
+                  solver     , time       , lonch    , matass   , maprec   ,&
+                  cnchci     , varc_curr  , temp_prev, temp_iter, vtempp   ,&
+                  vec2nd     , mediri     , conver   , hydr_prev, hydr_curr,&
+                  dry_prev   , dry_curr   , compor   , cnvabt   , cnresi   ,&
                   ther_crit_i, ther_crit_r, reasma   , testr    , testm)
 !
 implicit none
@@ -52,8 +52,8 @@ implicit none
     integer :: lonch
     aster_logical :: conver, reasma
     character(len=19) :: maprec
-    character(len=24) :: matass, cnchci, cnresi, vtemp, vtempm, vtempp, vec2nd
-    character(len=24) :: vhydr, vhydrp, compor, tmpchi, tmpchf
+    character(len=24) :: matass, cnchci, cnresi, temp_prev, temp_iter, vtempp, vec2nd
+    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     integer :: ther_crit_i(*)
     real(kind=8) :: ther_crit_r(*)
 !
@@ -63,7 +63,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     VAR VTEMPM : ITERE PRECEDENT DU CHAMP DE TEMPERATURE
+!     VAR temp_iter : ITERE PRECEDENT DU CHAMP DE TEMPERATURE
 !     OUT VTEMPP : ITERE COURANT   DU CHAMP DE TEMPERATURE
 !     OUT VHYDRP : ITERE COURANT   DU CHAMP D HYDRATATION
 !
@@ -85,8 +85,6 @@ implicit none
     real(kind=8), pointer :: vare(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
-
-!
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
@@ -98,7 +96,7 @@ implicit none
     typres = 'R'
     chsol  = '&&NXNEWT.SOLUTION'
     bidon  = '&&FOMULT.BIDON'
-    veresi = '&&VERESI           .RELR'
+    veresi = '&&VERESI'
     vebtla = '&&VETBTL           .RELR'
     merigi = '&&METRIG           .RELR'
     lload_name = list_load(1:19)//'.LCHA'
@@ -108,11 +106,14 @@ implicit none
 !
     call jeveuo(vec2nd(1:19)//'.VALE', 'L', j2nd)
 !
-! --- VECTEURS RESIDUS ELEMENTAIRES - CALCUL ET ASSEMBLAGE
+! - Neumann loads elementary vectors (residuals)
 !
-    call verstp(model, lload_name, lload_info, cara_elem, mate,&
-                time, compor, vtemp, vtempm, vhydr,&
-                vhydrp, tmpchi, tmpchf, varc_curr, veresi)
+    call verstp(model   , lload_name, lload_info, mate     , time     ,&
+                compor  , temp_prev , temp_iter , hydr_prev, hydr_curr,&
+                dry_prev, dry_curr  , varc_curr , veresi)
+!
+! - Neumann loads vector (residuals)
+!
     call asasve(veresi, nume_dof, typres, varesi)
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
@@ -121,7 +122,7 @@ implicit none
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
     call vethbt(model, lload_name, lload_info, cara_elem, mate,&
-                vtempm, vebtla)
+                temp_iter, vebtla)
     call asasve(vebtla, nume_dof, typres, vabtla)
     call ascova('D', vabtla, bidon, 'INST', r8bid,&
                 typres, cnvabt)
@@ -149,7 +150,7 @@ implicit none
     if (ther_crit_i(1) .ne. 0) then
         if (testm .lt. ther_crit_r(1)) then
             conver=.true.
-            call copisd('CHAMP_GD', 'V', vtempm(1:19), vtempp(1:19))
+            call copisd('CHAMP_GD', 'V', temp_iter(1:19), vtempp(1:19))
             goto 999
         else
             conver=.false.
@@ -157,7 +158,7 @@ implicit none
     else
         if (testr .lt. ther_crit_r(2)) then
             conver=.true.
-            call copisd('CHAMP_GD', 'V', vtempm(1:19), vtempp(1:19))
+            call copisd('CHAMP_GD', 'V', temp_iter(1:19), vtempp(1:19))
             goto 999
         else
             conver=.false.
@@ -171,8 +172,8 @@ implicit none
 !==========================================================
 !
         call merxth(model, lload_name, lload_info, cara_elem, mate,&
-                    time, vtempm, merigi, compor, varc_curr,&
-                    tmpchi, tmpchf)
+                    time, temp_iter, merigi, compor, varc_curr,&
+                    dry_prev, dry_curr)
         call jeveuo(merigi, 'L', jmer)
         call jeveuo(mediri, 'L', jmed)
 !

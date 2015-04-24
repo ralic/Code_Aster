@@ -1,8 +1,8 @@
-subroutine nxrech(model , mate  , cara_elem  , list_load  , nume_dof,&
-                  time  , lonch , compor     , varc_curr  , vtempm  ,&
-                  vtempp, vtempr, vtemp      , vhydr      , vhydrp  ,&
-                  tmpchi, tmpchf, vec2nd     , cnvabt     , cnresi  ,&
-                  rho   , iterho, ther_para_r, ther_para_i)
+subroutine nxrech(model   , mate     , cara_elem  , list_load  , nume_dof ,&
+                  time    , lonch    , compor     , varc_curr  , temp_iter,&
+                  vtempp  , vtempr   , temp_prev  , hydr_prev  , hydr_curr,&
+                  dry_prev, dry_curr , vec2nd     , cnvabt     , cnresi   ,&
+                  rho     , iterho   , ther_para_r, ther_para_i)
 !
 implicit none
 !
@@ -44,8 +44,8 @@ implicit none
     character(len=19), intent(in) :: varc_curr
     integer :: ther_para_i(*), lonch
     real(kind=8) :: ther_para_r(*), rho
-    character(len=24) :: vtemp, vtempm, vtempp, vtempr, cnvabt, cnresi, vec2nd
-    character(len=24) :: vhydr, vhydrp, compor, tmpchi, tmpchf
+    character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
+    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,19 +69,19 @@ implicit none
     parameter (rhomin = -2.d0, rhomax = 2.d0)
     data typres        /'R'/
     data bidon         /'&&FOMULT.BIDON'/
-    data veresi        /'&&VERESI           .RELR'/
     data vebtla        /'&&VETBTL           .RELR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     varesi = '&&VARESI'
+    veresi = '&&VERESI'
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
 !
 ! --- RECUPERATION D'ADRESSES JEVEUX
 !
-    call jeveuo(vtempm(1:19)//'.VALE', 'E', vr=tempm)
+    call jeveuo(temp_iter(1:19)//'.VALE', 'E', vr=tempm)
     call jeveuo(vtempp(1:19)//'.VALE', 'E', vr=tempp)
     call jeveuo(vtempr(1:19)//'.VALE', 'E', vr=tempr)
     call jeveuo(vec2nd(1:19)//'.VALE', 'L', j2nd)
@@ -103,11 +103,14 @@ implicit none
             tempr(i) = tempm(i) + rho * tempp(i)
         end do
 !
-! --- VECTEURS RESIDUS ELEMENTAIRES - CALCUL ET ASSEMBLAGE
+! ----- Neumann loads elementary vectors (residuals)
 !
-        call verstp(model, lload_name, lload_info, cara_elem, mate,&
-                    time, compor, vtemp, vtempr, vhydr,&
-                    vhydrp, tmpchi, tmpchf, varc_curr, veresi)
+        call verstp(model   , lload_name, lload_info, mate     , time     ,&
+                    compor  , temp_prev , vtempr    , hydr_prev, hydr_curr,&
+                    dry_prev, dry_curr  , varc_curr , veresi)
+!
+! ----- Neumann loads vector (residuals)
+!
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', r8bid,&
                     typres, cnresi)

@@ -1,6 +1,6 @@
-subroutine verstp(model   , lload_name, lload_info, mate     , time     ,&
-                  compor  , temp_prev , temp_iter , hydr_prev, hydr_curr,&
-                  dry_prev, dry_curr  , varc_curr , vect_elem)
+subroutine hydr_resi(model    , mate     , time     , compor    , temp_prev,&
+                     temp_iter, hydr_prev, hydr_curr, dry_prev  , dry_curr ,&
+                     varc_curr, vect_elem)
 !
 implicit none
 !
@@ -8,17 +8,9 @@ implicit none
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/gcnco2.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/reajre.h"
-#include "asterfort/load_neut_prep.h"
-#include "asterfort/load_neut_resi.h"
-#include "asterfort/hydr_resi.h"
 #include "asterfort/inical.h"
-#include "asterfort/load_list_info.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,8 +30,6 @@ implicit none
 ! ======================================================================
 !
     character(len=24), intent(in) :: model
-    character(len=24), intent(in) :: lload_name
-    character(len=24), intent(in) :: lload_info
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: temp_prev
@@ -56,14 +46,12 @@ implicit none
 !
 ! Thermic - Loads
 ! 
-! Neumann loads elementary vectors (residuals)
+! Hydratation elementary vectors (residuals)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of the model
 ! In  mate             : name of material characteristics (field)
-! In  lload_name       : name of object for list of loads name
-! In  lload_info       : name of object for list of loads info
 ! In  time             : time (<CARTE>)
 ! In  temp_prev        : previous temperature
 ! In  temp_iter        : temperature field at current Newton iteration
@@ -77,60 +65,84 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_in_maxi, nbout
-    parameter (nb_in_maxi = 5, nbout = 2)
-    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
-    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
+    integer :: nbin, nbout
+    parameter (nbin = 10, nbout = 2)
+    character(len=8) :: lpain(nbin), lpaout(nbout)
+    character(len=19) :: lchin(nbin), lchout(nbout)
 !
     character(len=1) :: base, stop_calc
-    character(len=8) :: load_name
+    character(len=8) :: newnom
+    character(len=16) :: option
     character(len=19) :: resu_elem
-    integer :: load_nume
-    aster_logical :: load_empty
-    integer :: i_load, nb_load, nb_in_prep
-    character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
+    character(len=24) :: ligrel_model
+    character(len=24) :: chgeom
+    integer :: ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !
 ! - Initializations
 !
-    resu_elem   = '&&VERSTP.0000000'
-    stop_calc   = 'S'
-    base        = 'V'
+    resu_elem    = '&&HYDRES.0000000'
+    stop_calc    = 'S'
+    base         = 'V'
+    option       = 'RESI_RIGI_MASS'
+    ligrel_model = model(1:8)//'.MODELE'
 !
 ! - Init fields
 !
-    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+    call inical(nbin  , lpain, lchin, nbout, lpaout,&
                 lchout)    
 !
-! - Loads
+! - Geometry field
 !
-    call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
-                        lload_name, lload_info)
+    call megeom(model, chgeom)
 !
-! - Hydratation vector
+! - Input fields
 !
-    call hydr_resi(model    , mate     , time     , compor    , temp_prev,&
-                   temp_iter, hydr_prev, hydr_curr, dry_prev  , dry_curr ,&
-                   varc_curr, vect_elem)
+    lpain(1)  = 'PGEOMER'
+    lchin(1)  = chgeom(1:19)
+    lpain(2)  = 'PMATERC'
+    lchin(2)  = mate(1:19)
+    lpain(3)  = 'PTEMPSR'
+    lchin(3)  = time(1:19)
+    lpain(4)  = 'PTEMPEI'
+    lchin(4)  = temp_iter(1:19)
+    lpain(5)  = 'PHYDRPM'
+    lchin(5)  = hydr_prev(1:19)
+    lpain(6)  = 'PCOMPOR'
+    lchin(6)  = compor(1:19)
+    lpain(7)  = 'PTEMPER'
+    lchin(7)  = temp_prev(1:19)
+    lpain(8)  = 'PTMPCHI'
+    lchin(8)  = dry_prev(1:19)
+    lpain(9)  = 'PTMPCHF'
+    lchin(9)  = dry_curr(1:19)
+    lpain(10) = 'PVARCPR'
+    lchin(10) = varc_curr(1:19)
 !
-! - Preparing input fields
+! - Output fields
 !
-    call load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain, &
-                        temp_iter_ = temp_iter)
+    lpaout(1) = 'PRESIDU'
+    lchout(1) = '&&HYDRES.???????'
+    lpaout(2) = 'PHYDRPP'
+    lchout(2) = hydr_curr(1:19)
 !
-! - Computation
+! - Generate new RESU_ELEM name
 !
-    do i_load = 1, nb_load
-        load_name = v_load_name(i_load)(1:8)
-        load_nume = v_load_info(nb_load+i_load+1)
-        if (load_nume .gt. 0) then
-            call load_neut_resi(stop_calc , model     , time , load_name, load_nume,&
-                                nb_in_maxi, nb_in_prep, lpain, lchin    , base     ,&
-                                resu_elem , vect_elem )
-        endif
-    end do
+    newnom = resu_elem(10:16)
+    call gcnco2(newnom)
+    lchout(1) (10:16) = newnom(2:8)
+    call corich('E', lchout(1), -1, ibid)
+!
+! - Number of fields
+!
+    call calcul(stop_calc, option, ligrel_model, nbin  , lchin,&
+                lpain    , nbout , lchout      , lpaout, base ,&
+                'OUI')
+!
+! - Add RESU_ELEM in vect_elem
+!
+    call reajre(vect_elem, lchout(1), base)
 !
 end subroutine

@@ -16,22 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine verstp(model   , lload_name, lload_info, mate     , time     ,&
-                      compor  , temp_prev , temp_iter , hydr_prev, hydr_curr,&
-                      dry_prev, dry_curr  , varc_curr , vect_elem)
+    subroutine load_neut_resi(stop_calc , model     , time , load_name, load_nume,&
+                              nb_in_maxi, nb_in_prep, lpain, lchin    , base     ,&
+                              resu_elem , vect_elem )
+        character(len=1), intent(in) :: stop_calc
         character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: lload_name
-        character(len=24), intent(in) :: lload_info
         character(len=24), intent(in) :: time
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: temp_prev
-        character(len=24), intent(in) :: temp_iter
-        character(len=24), intent(in) :: hydr_prev   
-        character(len=24), intent(in) :: hydr_curr
-        character(len=24), intent(in) :: dry_prev   
-        character(len=24), intent(in) :: dry_curr
-        character(len=24), intent(in) :: compor
-        character(len=19), intent(in) :: varc_curr    
-        character(len=24), intent(inout) :: vect_elem
-    end subroutine verstp
+        character(len=8), intent(in) :: load_name
+        integer, intent(in) :: load_nume
+        integer, intent(in) :: nb_in_maxi
+        integer, intent(in) :: nb_in_prep
+        character(len=*), intent(inout) :: lpain(nb_in_maxi)
+        character(len=*), intent(inout) :: lchin(nb_in_maxi)
+        character(len=19), intent(inout) :: resu_elem
+        character(len=19), intent(in) :: vect_elem
+        character(len=1), intent(in) :: base
+    end subroutine load_neut_resi
 end interface

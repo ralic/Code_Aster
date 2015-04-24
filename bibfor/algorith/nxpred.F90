@@ -1,8 +1,8 @@
-subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof,&
-                  solver, lostat   , time     , lonch    , matass  ,&
-                  maprec, varc_curr, vtemp    , vtempm   , vtempp  ,&
-                  vhydr , vhydrp   , tmpchi   , tmpchf   , compor  ,&
-                  cndirp, cnchci   , vec2nd   , vec2ni)
+subroutine nxpred(model    , mate     , cara_elem, list_load, nume_dof,&
+                  solver   , lostat   , time     , lonch    , matass  ,&
+                  maprec   , varc_curr, temp_prev, temp_iter, vtempp  ,&
+                  hydr_prev, hydr_curr, dry_prev , dry_curr , compor  ,&
+                  cndirp   , cnchci   , vec2nd   , vec2ni)
 !
 implicit none
 !
@@ -49,8 +49,8 @@ implicit none
     integer :: lonch
     character(len=19) :: maprec
     character(len=24) :: matass, cndirp, cnchci, cnresi
-    character(len=24) :: vtempm, vtempp, vtemp, vec2nd, vec2ni
-    character(len=24) :: vhydr, vhydrp, compor, tmpchi, tmpchf
+    character(len=24) :: temp_iter, vtempp, temp_prev, vec2nd, vec2ni
+    character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     aster_logical :: lostat
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     VAR VTEMPM : ITERE PRECEDENT DU CHAMP DE TEMPERATURE
+!     VAR temp_iter : ITERE PRECEDENT DU CHAMP DE TEMPERATURE
 !     OUT VTEMPP : ITERE COURANT   DU CHAMP DE TEMPERATURE
 !
 ! --------------------------------------------------------------------------------------------------
@@ -108,8 +108,8 @@ implicit none
     call jeveuo(vec2ni(1:19)//'.VALE', 'L', j2ni)
     call jeveuo(cndirp(1:19)//'.VALE', 'L', vr=dirp)
     call jeveuo(vtempp(1:19)//'.VALE', 'E', vr=tempp)
-    call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
-    call jeveuo(vtemp(1:19)//'.VALE', 'L', vr=temp)
+    call jeveuo(temp_iter(1:19)//'.VALE', 'E', jtempm)
+    call jeveuo(temp_prev(1:19)//'.VALE', 'L', vr=temp)
 !
     if (lostat) then
 !
@@ -117,11 +117,14 @@ implicit none
 !  INITIALISATION POUR LE PREMIER PAS DE CALCUL
 !=======================================================================
 !
-! --- VECTEURS RESIDUS ELEMENTAIRES - CALCUL ET ASSEMBLAGE
+! ----- Neumann loads elementary vectors (residuals)
 !
-        call verstp(model, lload_name, lload_info, cara_elem, mate,&
-                    time, compor, vtemp, vtemp, vhydr,&
-                    vhydrp, tmpchi, tmpchf, varc_curr, veresi)
+        call verstp(model   , lload_name, lload_info, mate     , time     ,&
+                    compor  , temp_prev , temp_prev , hydr_prev, hydr_curr,&
+                    dry_prev, dry_curr  , varc_curr , veresi)
+!
+! ----- Neumann loads vector (residuals)
+!
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', rbid,&
                     typres, cnresi)
@@ -130,7 +133,7 @@ implicit none
 ! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
 !
         call vethbt(model, lload_name, lload_info, cara_elem, mate,&
-                    vtemp, vebtla)
+                    temp_prev, vebtla)
         call asasve(vebtla, nume_dof, typres, vabtla)
         call ascova('D', vabtla, bidon, 'INST', rbid,&
                     typres, cnvabt)
@@ -139,7 +142,7 @@ implicit none
 ! --- B . TEMPERATURE - CALCUL ET ASSEMBLAGE
 !
         call vethbu(model, matass, lload_name, lload_info, cara_elem,&
-                    mate, vtemp, vebuem)
+                    mate, temp_prev, vebuem)
         call asasve(vebuem, nume_dof, typres, vabuem)
         call ascova('D', vabuem, bidon, 'INST', rbid,&
                     typres, cnvabu)
@@ -155,10 +158,10 @@ implicit none
                     vtempp, chsol, 'V', [0.d0], [cbid],&
                     criter, .true._1, 0, iret)
 !
-! --- RECOPIE DANS VTEMPM DU CHAMP SOLUTION CHSOL
+! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
-        call copisd('CHAMP_GD', 'V', chsol, vtempm(1:19))
-        call jeveuo(vtempm(1:19)//'.VALE', 'E', jtempm)
+        call copisd('CHAMP_GD', 'V', chsol, temp_iter(1:19))
+        call jeveuo(temp_iter(1:19)//'.VALE', 'E', jtempm)
         do k = 1, lonch
             zr(jtempm+k-1) = zr(jtempm+k-1) + temp(k)
         end do
@@ -179,9 +182,9 @@ implicit none
                     vtempp, chsol, 'V', [0.d0], [cbid],&
                     criter, .true._1, 0, iret)
 !
-! --- RECOPIE DANS VTEMPM DU CHAMP SOLUTION CHSOL
+! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
-        call copisd('CHAMP_GD', 'V', chsol, vtempm(1:19))
+        call copisd('CHAMP_GD', 'V', chsol, temp_iter(1:19))
 !
     endif
 !

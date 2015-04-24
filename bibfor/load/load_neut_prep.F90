@@ -1,5 +1,5 @@
-subroutine load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain,&
-                          mate_, varc_curr_, temp_prev_)
+subroutine load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin     , lpain,&
+                          mate_, varc_curr_, temp_prev_, temp_iter_)
 !
 implicit none
 !
@@ -35,6 +35,7 @@ implicit none
     character(len=24), optional, intent(in) :: mate_
     character(len=19), optional, intent(in) :: varc_curr_
     character(len=19), optional, intent(in) :: temp_prev_
+    character(len=19), optional, intent(in) :: temp_iter_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,6 +53,7 @@ implicit none
 ! In  mate             : name of material characteristics (field)
 ! In  varc_curr        : command variable for current time
 ! In  temp_prev        : temperature at beginning of current time
+! In  temp_iter        : temperature field at current Newton iteration
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,6 +76,11 @@ implicit none
         nb_in_prep = nb_in_prep + 1
         lpain(nb_in_prep) = 'PTEMPER'
         lchin(nb_in_prep) = temp_prev_(1:19)
+    endif
+    if (present(temp_iter_)) then
+        nb_in_prep = nb_in_prep + 1
+        lpain(nb_in_prep) = 'PTEMPEI'
+        lchin(nb_in_prep) = temp_iter_(1:19)
     endif
     if (present(mate_)) then
         nb_in_prep = nb_in_prep + 1

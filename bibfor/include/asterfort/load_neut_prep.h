@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain,&
-                              mate_, varc_curr_, temp_prev_)
+    subroutine load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin     , lpain,&
+                              mate_, varc_curr_, temp_prev_, temp_iter_)
         character(len=24), intent(in) :: model
         integer, intent(in) :: nb_in_maxi
         character(len=8), intent(inout) :: lpain(nb_in_maxi)
@@ -26,5 +26,6 @@ interface
         character(len=24), optional, intent(in) :: mate_
         character(len=19), optional, intent(in) :: varc_curr_
         character(len=19), optional, intent(in) :: temp_prev_
+        character(len=19), optional, intent(in) :: temp_iter_
     end subroutine load_neut_prep
 end interface

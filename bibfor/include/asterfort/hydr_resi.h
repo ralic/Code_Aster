@@ -16,12 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine verstp(model   , lload_name, lload_info, mate     , time     ,&
-                      compor  , temp_prev , temp_iter , hydr_prev, hydr_curr,&
-                      dry_prev, dry_curr  , varc_curr , vect_elem)
+    subroutine hydr_resi(model    , mate     , time     , compor    , temp_prev,&
+                         temp_iter, hydr_prev, hydr_curr, dry_prev  , dry_curr ,&
+                         varc_curr, vect_elem)
         character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: lload_name
-        character(len=24), intent(in) :: lload_info
         character(len=24), intent(in) :: time
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: temp_prev
@@ -33,5 +31,5 @@ interface
         character(len=24), intent(in) :: compor
         character(len=19), intent(in) :: varc_curr    
         character(len=24), intent(inout) :: vect_elem
-    end subroutine verstp
+    end subroutine hydr_resi
 end interface

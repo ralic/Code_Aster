@@ -221,13 +221,14 @@ implicit none
 !
     if (reasvc) then
 !
-! 2.1. ==> CHARGEMENTS THERMIQUES                            ---& CNCHTP
+! ----- Neumann loads elementary vectors (second member)
 !
-!
-! CALCULS ELEMENTAIRES ET SOMMATION DANS LES VECT_ELEM VECHTP ET VACHTP
         call vechth('STAT', model, lload_name, lload_info, cara_elem,&
                     mate  , time , vtemp     , vechtp,&
                     varc_curr_ = varc_curr)
+!
+! ----- Neumann loads assembled vector (second member)
+!
         call asasve(vechtp, nume_dof, typres, vachtp)
         call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
                     typres, cnchtp)
