@@ -31,7 +31,6 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/masstg.h"
 #include "asterfort/pmfinfo.h"
@@ -81,8 +80,7 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
 !
     else if (nomte .eq.'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-        call jevech('PFIBRES', 'L', jacf)
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
         call poutre_modloc('CAGNPO', noms_cara, nb_cara, lvaleur=vale_cara)
         alfay = vale_cara(1)

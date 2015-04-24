@@ -77,8 +77,7 @@ subroutine te0537(option, nomte)
     ASSERT(nno.eq.nnoel)
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-    call jevech('PFIBRES', 'L', jacf)
+    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
     alpha = 0.d0
     call jevech('PCAORIE', 'L', lorien)

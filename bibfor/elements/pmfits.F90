@@ -35,7 +35,7 @@ subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
 !           Types 2
 !               vf(4,*) : Yp groupes de fibres
 !               vf(5,*) : Zp groupes de fibres
-!               vf(6,*) : num du groupe
+!               vf(6,*) : GX groupes de fibres
 !       vsig(*) : contrainte normale dans chaque fibre
 !
 !   OUT
@@ -61,7 +61,7 @@ subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
     vs(:)=0.0d0
 !
     if ( typfib.eq.1 ) then
-!       3 caractéristiques utiles par fibre : y z aire
+!       caractéristiques utiles par fibre : Y Z AIRE
         do ii = 1, nf
             yy   = vf(1,ii)
             zz   = vf(2,ii)
@@ -73,7 +73,7 @@ subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
             vs(3) = vs(3)+zz*sigsf
         enddo
     else if ( typfib.eq.2 ) then
-!       6 caractéristiques utiles par fibre : y z aire yp zp numgr
+!       caractéristiques utiles par fibre : Y Z AIRE YP ZP GX
         do ii = 1, nf
             yy   = vf(1,ii)
             zz   = vf(2,ii)

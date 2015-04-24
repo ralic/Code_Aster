@@ -34,7 +34,6 @@ subroutine pmfrig(nomte, icdmat, klv)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/pmfinfo.h"
 #include "asterfort/pmfitg.h"
@@ -83,8 +82,7 @@ subroutine pmfrig(nomte, icdmat, klv)
         call pmfk01(casect, gxjx, xl, klv)
     else if (nomte.eq.'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-        call jevech('PFIBRES', 'L', jacf)
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), cars1)
         a     = cars1(1)

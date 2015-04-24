@@ -94,8 +94,7 @@ subroutine te0517(option, nomte)
         enddo
     else if (option .eq. 'FORC_NODA') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-        call jevech('PFIBRES', 'L', jacf)
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
         call jevech('PCAORIE', 'L', iorien)
         call jevech('PGEOMER', 'L', igeom)

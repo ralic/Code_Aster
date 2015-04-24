@@ -40,7 +40,7 @@ subroutine pmfitg(typfib, nf, ncarf, vf, vs)
 !       Types 2
 !          vf(4,*) : Yp groupes de fibres
 !          vf(5,*) : Zp groupes de fibres
-!          vf(6,*) : num du groupe
+!          vf(6,*) : GX groupes de fibres
 !
 ! OUT
 !   vs(1) : surface totale              : somme(ds)
@@ -68,7 +68,7 @@ subroutine pmfitg(typfib, nf, ncarf, vf, vs)
     vs(:) = 0.0d0
 !
     if ( typfib.eq.1 ) then
-!       3 caractéristiques utiles par fibre : y  z  aire
+!       caractéristiques utiles par fibre : Y  Z  AIRE
         do ii = 1, nf
             yy   = vf(1,ii)
             zz   = vf(2,ii)
@@ -82,7 +82,7 @@ subroutine pmfitg(typfib, nf, ncarf, vf, vs)
             vs(6) = vs(6) + yy*zz*aire
         enddo
     else if ( typfib.eq.2 ) then
-!       6 caractéristiques utiles par fibre : y  z  aire  yp  zp  numgr
+!       caractéristiques utiles par fibre : Y  Z  AIRE  YP  ZP  GX
         do ii = 1, nf
             yy   = vf(1,ii)
             zz   = vf(2,ii)

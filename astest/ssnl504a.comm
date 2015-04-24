@@ -1,0 +1,617 @@
+# person_in_charge: dominique.geoffroy at edf.fr
+# DATE   : 24/04/2015
+# AUTEUR : D. GEOFFROY
+# TITRE  : FAISCEAU DE POUTRE MULTIFIBRES
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+# --------------------------------------------------------------------
+# MODELISATION POU_D_EM AVEC PMFS ET ASSEMBLAGE_FIBRE
+# --------------------------------------------------------------------
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',),PAR_LOT='NON');
+
+#DOFs (master-like) applied for the test
+DOFm=[1.0,1.0,1.0,0.1,0.1,0.1]
+
+#Positions of the beams in the mesh in the Y-Z plane
+pos_pout=[
+[0.0, 0.0],
+[0.0, -2.0],
+[0.0, 3.0],
+[4.0, 0.0],
+[-1.0, 0.0],
+[-3.0, -1.0],
+[-3.0, 3.0],
+[-2.0, -3.0],
+[5.0, -3.0],
+[1.0, -3.0],
+]
+
+#Computing DOFs on all beams considering beam kinematics
+# u = u0 - Y*theta_z + Z*theta_y
+# v = v0 - Z*theta_x + Y*theta_z
+# w = w0 + Y*theta_x - Z*theta_y
+dX=[]
+dY=[]
+dZ=[]
+for i in pos_pout :
+  dX.append(DOFm[0] - i[0]*DOFm[5] + i[1]*DOFm[4])
+  dY.append(DOFm[1] - i[1]*DOFm[3] + i[0]*DOFm[5])
+  dZ.append(DOFm[2] + i[0]*DOFm[3] - i[1]*DOFm[4])
+
+
+MA=LIRE_MAILLAGE(UNITE=20,
+                 FORMAT='MED',
+                 INFO=1,);
+                 
+MA2=LIRE_MAILLAGE(UNITE=21,
+                 FORMAT='MED',
+                 INFO=1,);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2e+11,
+                            NU=0.3,
+                            RHO=7850.0,),);
+
+GF=DEFI_GEOM_FIBRE(FIBRE=(_F(GROUP_FIBRE='FP1',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP2',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP3',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP4',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP5',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP6',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP7',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP8',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP9',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),
+                          _F(GROUP_FIBRE='FP10',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),),),);
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,
+                  MATER_SECT=ACIER,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='FP1',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP2',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP3',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP4',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP5',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP6',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP7',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP8',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP9',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                              _F(GROUP_FIBRE='FP10',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),),);
+
+GF2=DEFI_GEOM_FIBRE(FIBRE=(_F(GROUP_FIBRE='FPM1',
+                             CARA='DIAMETRE',
+                             VALE=(0.1,0.0,0.02,0.0,0.1,0.02,-0.1,0.0,0.02,0.0,-0.1,0.02,),
+                             COOR_AXE_POUTRE=(0.0,0.0,),
+                            ),
+                         ),
+                   ASSEMBLAGE_FIBRE=(_F(GROUP_ASSE_FIBRE='ASSE',
+                                        GROUP_FIBRE= ('FPM1','FPM1','FPM1','FPM1','FPM1','FPM1','FPM1','FPM1','FPM1','FPM1',),
+                                        COOR_GROUP_FIBRE= (0.0, 0.0, 0.0, -2.0, 0.0, 3.0, 4.0, 0.0, -1.0, 0.0, -3.0, -1.0, -3.0, 3.0, -2.0, -3.0, 5.0, -3.0, 1.0, -3.0,),
+                                        GX_GROUP_FIBRE=(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, ),
+                                       ),
+                                    ),
+                  ),
+
+COMPF2=DEFI_COMPOR(GEOM_FIBRE=GF2,
+                  MATER_SECT=ACIER,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='ASSE',
+                                 MATER=ACIER,
+                                 RELATION='ELAS',),
+                             ),);
+
+
+MODELE=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(GROUP_MA=('P1','P2','P3','P4','P5','P6','P7','P8','P9','P10',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='POU_D_EM',),);
+
+MODELE2=AFFE_MODELE(MAILLAGE=MA2,
+                   AFFE=_F(GROUP_MA=('P1',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='POU_D_EM',),);
+
+CAREL=AFFE_CARA_ELEM(MODELE=MODELE,
+                     INFO=2,
+                     POUTRE=(_F(GROUP_MA='P1',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P2',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P3',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P4',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P5',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P6',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P7',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P8',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P9',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),
+                             _F(GROUP_MA='P10',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(0.00125664,6.28319e-06,6.28319E-06,1.0,),),),
+                     GEOM_FIBRE=GF,
+                     MULTIFIBRE=(_F(GROUP_MA='P1',
+                                    GROUP_FIBRE='FP1',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P2',
+                                    GROUP_FIBRE='FP2',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P3',
+                                    GROUP_FIBRE='FP3',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P4',
+                                    GROUP_FIBRE='FP4',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P5',
+                                    GROUP_FIBRE='FP5',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P6',
+                                    GROUP_FIBRE='FP6',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P7',
+                                    GROUP_FIBRE='FP7',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P8',
+                                    GROUP_FIBRE='FP8',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P9',
+                                    GROUP_FIBRE='FP9',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                                 _F(GROUP_MA='P10',
+                                    GROUP_FIBRE='FP10',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),),);
+
+CAREL2=AFFE_CARA_ELEM(MODELE=MODELE2,
+                     INFO=2,
+                     POUTRE=(_F(GROUP_MA='P1',
+                                SECTION='GENERALE',
+                                CARA=('A','IY','IZ','JX',),
+                                VALE=(10.0*0.00125664,1.0e-06,1.0e-06,1.0,),),
+                             ),
+                     GEOM_FIBRE=GF2,
+                     MULTIFIBRE=(_F(GROUP_MA='P1',
+                                    GROUP_FIBRE='ASSE',
+                                    PREC_AIRE=0.01,
+                                    PREC_INERTIE=0.01,),
+                    ),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(GROUP_MA=('P1','P2','P3','P4','P5','P6','P7','P8','P9','P10',),
+                            MATER=ACIER,),
+                    AFFE_COMPOR=_F(GROUP_MA=('P1','P2','P3','P4','P5','P6','P7','P8','P9','P10',),
+                                   COMPOR=COMPF,),);
+
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MA2,
+                    AFFE=_F(GROUP_MA=('P1',),
+                            MATER=ACIER,),
+                    AFFE_COMPOR=_F(GROUP_MA=('P1',),
+                                   COMPOR=COMPF2,),);
+
+# CONDITIONS AUX LIMITES
+ENCAST=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=(_F(GROUP_NO='Nfixes',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,
+                                   ),
+                                _F(GROUP_NO='P2N',
+                                   DX=dX[1],
+                                   DY=dY[1],
+                                   DZ=dZ[1],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P3N',
+                                   DX=dX[2],
+                                   DY=dY[2],
+                                   DZ=dZ[2],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P4N',
+                                   DX=dX[3],
+                                   DY=dY[3],
+                                   DZ=dZ[3],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P5N',
+                                   DX=dX[4],
+                                   DY=dY[4],
+                                   DZ=dZ[4],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P6N',
+                                   DX=dX[5],
+                                   DY=dY[5],
+                                   DZ=dZ[5],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P7N',
+                                   DX=dX[6],
+                                   DY=dY[6],
+                                   DZ=dZ[6],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P8N',
+                                   DX=dX[7],
+                                   DY=dY[7],
+                                   DZ=dZ[7],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P9N',
+                                   DX=dX[8],
+                                   DY=dY[8],
+                                   DZ=dZ[8],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),
+                                _F(GROUP_NO='P10N',
+                                   DX=dX[9],
+                                   DY=dY[9],
+                                   DZ=dZ[9],
+                                   DRX=DOFm[3],
+                                   DRY=DOFm[4],
+                                   DRZ=DOFm[5],
+                                  ),),);
+
+ENCAST2=AFFE_CHAR_MECA(MODELE=MODELE2,
+                      DDL_IMPO=(_F(GROUP_NO='Nfixes',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                                   ),);
+
+DPT=AFFE_CHAR_MECA(MODELE=MODELE,
+                   DDL_IMPO=_F(GROUP_NO='P1N',
+                               DRX=DOFm[3],
+                               DRY=DOFm[4],
+                               DRZ=DOFm[5],
+                               DY=dY[0],
+                               DZ=dZ[0],
+                               DX=dX[0],),);
+                               
+DPT2=AFFE_CHAR_MECA(MODELE=MODELE2,
+                   DDL_IMPO=_F(GROUP_NO='P1N',
+                               DX=DOFm[0],
+                               DY=DOFm[1],
+                               DZ=DOFm[2],
+                               DRX=DOFm[3],
+                               DRY=DOFm[4],
+                               DRZ=DOFm[5],
+                             ),);
+
+LINE=DEFI_FONCTION(
+                   NOM_PARA='INST',
+                   VALE=(0.0 ,0.0 ,
+                         1.0 ,1.0 ,
+                         2.0 ,2.0 ,),
+                   PROL_DROITE='EXCLU',
+                   PROL_GAUCHE='EXCLU',);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=1,),);
+
+U=STAT_NON_LINE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CAREL,
+                EXCIT=(_F(CHARGE=ENCAST,),
+                       _F(CHARGE=DPT,),),
+                COMPORTEMENT=_F(RELATION='MULTIFIBRE',TOUT='OUI',),
+                INCREMENT=_F(LIST_INST=LINST,),
+                NEWTON=_F(PREDICTION='TANGENTE',
+                          MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
+                SOLVEUR=_F(METHODE='MUMPS',),);
+
+U2=STAT_NON_LINE(MODELE=MODELE2,
+                CHAM_MATER=CHMAT2,
+                CARA_ELEM=CAREL2,
+                EXCIT=(_F(CHARGE=ENCAST2,),
+                       _F(CHARGE=DPT2,),),
+                COMPORTEMENT=_F(RELATION='MULTIFIBRE',TOUT='OUI',),
+                INCREMENT=_F(LIST_INST=LINST,),
+                NEWTON=_F(PREDICTION='TANGENTE',
+                          MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
+                SOLVEUR=_F(METHODE='MUMPS',),);
+
+
+U=CALC_CHAMP(reuse =U,
+             RESULTAT=U,
+             INST=1.0,
+             GROUP_MA=('P1','P2','P3','P4','P5','P6','P7','P8','P9','P10',),
+             FORCE='FORC_NODA',);
+
+U2=CALC_CHAMP(reuse =U2,
+             RESULTAT=U2,
+             INST=1.0,
+             GROUP_MA=('P1',),
+             FORCE='FORC_NODA',);
+
+TABL=CREA_TABLE(RESU=_F(RESULTAT=U,
+                        NOM_CHAM='FORC_NODA',
+                        TOUT_CMP='OUI',
+                        TOUT='OUI',),);
+TABL2=CREA_TABLE(RESU=_F(RESULTAT=U2,
+                        NOM_CHAM='FORC_NODA',
+                        TOUT_CMP='OUI',
+                        TOUT='OUI',),);                        
+
+tmp=TABL.EXTR_TABLE().values()
+tmp2=TABL2.EXTR_TABLE().values()
+
+FX=tmp['DX']
+FY=tmp['DY']
+FZ=tmp['DZ']
+MX=tmp['DRX']
+MY=tmp['DRY']
+MZ=tmp['DRZ']
+
+FX2=tmp2['DX']
+FY2=tmp2['DY']
+FZ2=tmp2['DZ']
+MX2=tmp2['DRX']
+MY2=tmp2['DRY']
+MZ2=tmp2['DRZ']
+
+
+EF0=[0, 0, 0, 0, 0, 0]
+EF1=[0, 0, 0, 0, 0, 0]
+for i in range(10) :
+  EF0[0]=EF0[0]+FX[i*2]
+  EF0[1]=EF0[1]+FY[i*2]
+  EF0[2]=EF0[2]+FZ[i*2]
+  EF0[3]=EF0[3]+MX[i*2]+pos_pout[i][0]*FZ[i*2]-pos_pout[i][1]*FY[i*2]
+  EF0[4]=EF0[4]+MY[i*2]+pos_pout[i][1]*FX[i*2]
+  EF0[5]=EF0[5]+MZ[i*2]-pos_pout[i][0]*FX[i*2]
+
+  EF1[0]=EF1[0]+FX[i*2+1]
+  EF1[1]=EF1[1]+FY[i*2+1]
+  EF1[2]=EF1[2]+FZ[i*2+1]
+  EF1[3]=EF1[3]+MX[i*2+1]+pos_pout[i][0]*FZ[i*2+1]-pos_pout[i][1]*FY[i*2+1]
+  EF1[4]=EF1[4]+MY[i*2+1]+pos_pout[i][1]*FX[i*2+1]
+  EF1[5]=EF1[5]+MZ[i*2+1]-pos_pout[i][0]*FX[i*2+1]
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DX',
+                   RESULTAT=U2,
+                   NOEUD = 'N1',
+                   VALE_CALC=-2337344934.27,
+                   VALE_REFE=EF0[0],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   RESULTAT=U2,
+                   NOEUD = 'N1',
+                   VALE_CALC=-153812376.32,
+                   VALE_REFE=EF0[1],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DZ',
+                   RESULTAT=U2,
+                   NOEUD = 'N1',
+                   VALE_CALC=-168892021.057,
+                   VALE_REFE=EF0[2],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                    NOM_CMP='DRX',
+                   RESULTAT=U2,
+                   NOEUD = 'N1',
+                   VALE_CALC=-329490238.508,
+                   VALE_REFE=-329490238.508,
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRY',
+                   RESULTAT=U2,
+                   NOEUD = 'N1',
+                   VALE_CALC=-117872556.363,
+                   VALE_REFE=EF0[4],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRZ',
+                   RESULTAT=U2,
+                   NOEUD = 'N1',
+                   VALE_CALC=-1912852934.92,
+                   VALE_REFE=EF0[5],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DX',
+                   RESULTAT=U2,
+                   NOEUD = 'N2',
+                   VALE_CALC=2337344934.27,
+                   VALE_REFE=EF1[0],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   RESULTAT=U2,
+                   NOEUD = 'N2',
+                   VALE_CALC=153812376.32,
+                   VALE_REFE=EF1[1],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DZ',
+                   RESULTAT=U2,
+                   NOEUD = 'N2',
+                   VALE_CALC=168892021.057,
+                   VALE_REFE=EF1[2],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                    NOM_CMP='DRX',
+                   RESULTAT=U2,
+                   NOEUD = 'N2',
+                   VALE_CALC=329490238.508,
+                   VALE_REFE=329490238.508,
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRY',
+                   RESULTAT=U2,
+                   NOEUD = 'N2',
+                   VALE_CALC=286764577.42,
+                   VALE_REFE=EF1[4],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                _F(NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DRZ',
+                   RESULTAT=U2,
+                   NOEUD = 'N2',
+                   VALE_CALC=1759040558.6,
+                   VALE_REFE=EF1[5],
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=0.050000000000000003,),
+                ),
+          )
+FIN();

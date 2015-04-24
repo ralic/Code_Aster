@@ -110,8 +110,7 @@ subroutine te0020(nomopt, nomte)
 ! --------------------------------------------------------------------------------------------------
     if (nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-        call jevech('PFIBRES', 'L', jacf)
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
         a   = carsec(1)
         xiy = carsec(5)

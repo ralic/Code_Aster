@@ -48,8 +48,7 @@ subroutine ef0517(nomte)
         call jevech('PEFFORR', 'E', icontn)
 ! --------------------------------------------------------------------------------------------------
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-        call jevech('PFIBRES', 'L', jacf)
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !       On projette avec les fcts de forme sur les noeuds début et fin de l'élément
 !       pour le point 1
         ksi1=-sqrt(5.d0/3.d0)

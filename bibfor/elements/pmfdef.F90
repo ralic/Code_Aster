@@ -53,25 +53,27 @@ subroutine pmfdef(typfib, nf, ncarf, vf, dege, deff)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii
-    real(kind=8) :: yy,zz
+    integer :: i
+    real(kind=8) :: yy,zz,yp,zp
 !
 ! --------------------------------------------------------------------------------------------------
 !
     if ( typfib.eq.1 ) then
 !       3 caractéristiques utiles par fibre : y z aire
-        do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            deff(ii) = dege(1) - yy*dege(6) + zz*dege(5)
+        do i = 1, nf
+            yy   = vf(1,i)
+            zz   = vf(2,i)
+            deff(i) = dege(1) - yy*dege(6) + zz*dege(5)
         enddo
     else if ( typfib.eq.2 ) then
 !       6 caractéristiques utiles par fibre : y z aire yp zp numgr
-        do ii = 1, nf
-            yy   = vf(1,ii)
-            zz   = vf(2,ii)
-            deff(ii) = dege(1) - yy*dege(6) + zz*dege(5)
-        enddo
+        do  i = 1, nf
+            yy   = vf(1,i)
+            zz   = vf(2,i)
+            yp   = vf(4,i)
+            zp   = vf(5,i)
+            deff(i) = dege(1) - (yy-yp)*dege(6) + (zz-zp)*dege(5)
+        end do
     else
         call utmess('F', 'ELEMENTS2_40', si=typfib)
     endif

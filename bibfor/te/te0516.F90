@@ -128,8 +128,7 @@ subroutine te0516(option, nomte)
     vecteu = option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
 !
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-    call jevech('PFIBRES', 'L', jacf)
+    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
 !   Nombre de composantes du champs PSTRX?? par points de gauss
 !   La 15eme composante ne concerne pas les POU_D_TGM

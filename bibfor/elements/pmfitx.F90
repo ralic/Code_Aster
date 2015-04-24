@@ -77,8 +77,7 @@ subroutine pmfitx(icdmat, isw, casect, gto)
 !
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-    call jevech('PFIBRES', 'L', jacf)
+    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
 !   Récupération des différents matériaux dans SDCOMP dans COMPOR
     call jevech('PCOMPOR', 'L', icompo)

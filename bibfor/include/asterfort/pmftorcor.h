@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf, nbassfi)
-        integer,intent(out) :: nbfibr
-        integer,intent(out) :: nbgrfi
-        integer,intent(out) :: tygrfi
-        integer,intent(out) :: nbcarm
-        integer,intent(out) :: nug(*)
-        integer,intent(out), optional :: jacf
-        integer,intent(out), optional :: nbassfi
-    end subroutine pmfinfo
+    subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
+        integer :: tygrfi
+        integer :: nbpout
+        real(kind=8) :: gxjx
+        real(kind=8) :: gxjxpout(*)
+        real(kind=8) :: deplm(12)
+        real(kind=8) :: deplp(12)
+        real(kind=8) :: xl
+        real(kind=8) :: fl(12)
+    end subroutine pmftorcor
 end interface

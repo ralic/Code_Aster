@@ -109,8 +109,7 @@ subroutine te0235(option, nomte)
 !       calcul de RHO MOYEN
         call pmfitx(zi(lmater), 2, casrho, rbid)
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-        call jevech('PFIBRES', 'L', jacf)
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
         call pmfitg(tygrfi, nbfibr, nbcarm, zr(jacf), carsec)
         a   = carsec(1)

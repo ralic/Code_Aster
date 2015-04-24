@@ -77,15 +77,14 @@ subroutine te0478(option, nomte)
 !   POUTRES MULTIFIBRES
     if (nomte .eq. 'MECA_POU_D_EM' .or. nomte .eq. 'MECA_POU_D_TGM') then
 !       Récupération des caractéristiques des fibres
-        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-        call jevech('PFIBRES', 'L', jacf)
+        call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
         call jevech('PCAORIE', 'L', iorien)
         call matrot(zr(iorien), pgl)
 !       position et poids des points de gauss, dans l'espace utilisateur
         call ppga1d(ndim, nno, npg, zr(ipoids), zr(ivf), zr(idfde), zr(igeom), copg)
         gm1(1)=0.d0
 !       boucle sur les fibres/sous-points
-!           données   : nbcarm valeurs par fibre <yf,zf,Aire> +<yp,zp,Numgr>
+!           données   : nbcarm valeurs par fibre <yf,zf,Aire> + <yp,zp,Numgr>
 !           résultats : 4 valeurs par fibre  <x,y,z,w>
         do ifi = 1, nbfibr
             gm1(2)=zr(jacf+(ifi-1)*nbcarm)

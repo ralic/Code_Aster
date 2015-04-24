@@ -64,8 +64,7 @@ subroutine te0463(option, nomte)
     call jevech('PCOOPGM', 'E', icopg)
 ! --------------------------------------------------------------------------------------------------
 !   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-    call jevech('PFIBRES', 'L', jacf)
+    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf)
 !
     call jevech('PCAORIE', 'L', iorien)
     call matrot(zr(iorien), pgl)

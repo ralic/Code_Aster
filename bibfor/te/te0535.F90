@@ -44,18 +44,23 @@ subroutine te0535(option, nomte)
 #include "asterfort/lonele.h"
 #include "asterfort/matela.h"
 #include "asterfort/matrot.h"
+#include "asterfort/pmfasseinfo.h"
 #include "asterfort/pmfbkb.h"
 #include "asterfort/pmfbts.h"
 #include "asterfort/pmfdef.h"
 #include "asterfort/pmfdge.h"
+#include "asterfort/pmfdgedef.h"
 #include "asterfort/pmffft.h"
 #include "asterfort/pmfinfo.h"
 #include "asterfort/pmfite.h"
+#include "asterfort/pmfitebkbbts.h"
 #include "asterfort/pmfitg.h"
 #include "asterfort/pmfits.h"
+#include "asterfort/pmfitsbts.h"
 #include "asterfort/pmfmats.h"
 #include "asterfort/pmfmcf.h"
 #include "asterfort/pmfpti.h"
+#include "asterfort/pmftorcor.h"
 #include "asterfort/porea1.h"
 #include "asterfort/poutre_modloc.h"
 #include "asterfort/ptkg00.h"
@@ -84,11 +89,11 @@ subroutine te0535(option, nomte)
 !
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk), rgeom(nk)
-    real(kind=8) :: deplm(12), deplp(12), matsec(6), dege(6)
+    real(kind=8) :: deplm(12), deplp(12), matsec(6)
     real(kind=8) :: xi, wi, b(4), gg, vs(3), ve(12)
     real(kind=8) :: defam(6), defap(6)
     real(kind=8) :: alicom, dalico, ss1, hv, he, minus
-    real(kind=8) :: vv(12), fv(12), sv(78), ksg(3)
+    real(kind=8) :: vv(12), fv(12), sv(78)
     real(kind=8) :: gamma, angp(3), sigma(nd), cars1(6)
     real(kind=8) :: a, xiy, xiz, ey, ez
     aster_logical :: vecteu, matric, reactu
@@ -97,8 +102,17 @@ subroutine te0535(option, nomte)
 !
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
+    real(kind=8), pointer :: gxjxpou(:) => null()
+    real(kind=8), pointer :: yj(:) => null(), zj(:) => null() 
+    real(kind=8), pointer :: deffibasse(:) => null(), vsigv(:) => null()
+    real(kind=8), pointer :: vev(:) => null()
 !
+    real(kind=8), allocatable :: vfv(:,:), matsecp(:,:), vvp(:,:), skp(:,:)
+
     integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+
+    integer :: nbassepou,maxfipoutre
+    integer, pointer :: nbfipoutre(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 3
@@ -119,9 +133,22 @@ subroutine te0535(option, nomte)
     matric = option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_TANG'
     vecteu = option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA'
 ! --------------------------------------------------------------------------------------------------
-!   Récupération des caractéristiques des fibres
-    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug)
-    call jevech('PFIBRES', 'L', jacf)
+!   Récupération des caractéristiques des fibres et preparation des tableaux dynamiques
+    call pmfinfo(nbfibr,nbgrfi,tygrfi,nbcarm,nug,jacf=jacf,nbassfi=nbassepou)
+    AS_ALLOCATE( size=nbassepou , vi= nbfipoutre)
+    AS_ALLOCATE(vr=gxjxpou, size=nbassepou)
+    call pmfasseinfo(tygrfi,nbfibr,nbcarm,zr(jacf),maxfipoutre, nbfipoutre, gxjxpou)
+    AS_ALLOCATE(vr=yj, size=nbassepou)
+    AS_ALLOCATE(vr=zj, size=nbassepou)
+    AS_ALLOCATE(vr=deffibasse, size=maxfipoutre)
+    AS_ALLOCATE(vr=vsigv, size=maxfipoutre)
+    AS_ALLOCATE(vr=vev, size=maxfipoutre)
+
+!   Dimension = 2 on doit passer par allocate
+    allocate(vfv(7,maxfipoutre))
+    allocate(matsecp(6,nbassepou))
+    allocate(vvp(12,nbassepou))
+    allocate(skp(78,nbassepou))
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCOMPOR', 'L', icompo)
@@ -186,6 +213,7 @@ subroutine te0535(option, nomte)
     call jeveuo(zk16(icompo-1+7), 'L', isdcom)
     read (zk16(icompo-1+2),'(I16)') nbvalc
 !
+!   Recuperation pour assemblage de fibres
 !   On reserve quelques places
     AS_ALLOCATE(vr=defmfib, size=nbfibr)
     AS_ALLOCATE(vr=defpfib, size=nbfibr)
@@ -232,6 +260,7 @@ subroutine te0535(option, nomte)
     call matela(zi(imate), mator, 0, 0.d0, e, nu)
     g = e/ (2.d0* (1.d0+nu))
     gxjx = g*xjx
+
 !   Déplacements dans le repère local
     call utpvgl(nno, nc, pgl, zr(ideplm), deplm)
     call utpvgl(nno, nc, pgl, zr(ideplp), deplp)
@@ -242,6 +271,7 @@ subroutine te0535(option, nomte)
     call r8inir(nk, 0.0d+0, klv, 1)
     call r8inir(nk, 0.0d+0, sk, 1)
     call r8inir(12, 0.0d+0, fl, 1)
+    call r8inir(12, 0.0d+0, ve, 1)
     call r8inir(12, 0.0d+0, fv, 1)
 !
 !   Boucle pour calculer le alpha mode incompatible : alico
@@ -249,6 +279,7 @@ subroutine te0535(option, nomte)
     minus=1.d-6
     ss1=0.0d+0
     dalico=0.0d+0
+
     do ico = 1, icomax
         he=0.0d+0
         hv=0.0d+0
@@ -257,10 +288,13 @@ subroutine te0535(option, nomte)
 !           Position, poids x jacobien et matrice B et G
             call pmfpti(ip, zr(ipoids), zr(ivf), xl, xi, wi, b, gg)
 !           Déformations '-' et increment de deformation par fibre
-            call pmfdge(b, gg, deplm, alicom, dege)
-            call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), dege, defmfib)
-            call pmfdge(b, gg, deplp, dalico, dege)
-            call pmfdef(tygrfi, nbfibr, nbcarm, zr(jacf), dege, defpfib)
+            call pmfdgedef(tygrfi, b, gg, deplm, alicom, nbfibr, nbcarm, &
+                           zr(jacf), nbassepou, maxfipoutre, nbfipoutre, yj, zj, &
+                           deffibasse, vfv, defmfib)
+            call pmfdgedef(tygrfi, b, gg, deplp, dalico, nbfibr, nbcarm, &
+                           zr(jacf), nbassepou, maxfipoutre, nbfipoutre, yj, zj, &
+                           deffibasse, vfv, defpfib)
+
 !
             iposig=jsigfb + nbfibr*(ip-1)
             ipomod=jmodfb + nbfibr*(ip-1)
@@ -311,28 +345,23 @@ subroutine te0535(option, nomte)
         if (option .ne. 'RAPH_MECA') then
             ipomod = jmodfb + nbfibr*(ip-1)
 !           Calcul des caracteristiques de section par integration sur les fibres
-            call pmfite(tygrfi, nbfibr, nbcarm, zr(jacf), zr(ipomod), matsec)
-            call pmfbkb(matsec, b, wi, gxjx, sk)
+            call pmfitebkbbts(tygrfi, nbfibr, nbcarm, zr(jacf), zr(ipomod), b, wi, gxjx, gxjxpou, &
+                              g, gg, nbassepou, maxfipoutre, nbfipoutre, vev, yj, zj, &
+                              vfv, skp, sk, vv, vvp)
             do i = 1, nk
                 klv(i) = klv(i)+sk(i)
             enddo
-!           On se sert de pmfbts pour calculer bt,ks,g. g est scalaire
-            ksg(1) = matsec(1)*gg
-            ksg(2) = matsec(2)*gg
-            ksg(3) = matsec(3)*gg
-            call pmfbts(b, wi, ksg, vv)
+
             do i = 1, 12
                 fv(i) = fv(i)+vv(i)
             enddo
+
         endif
 !       si pas RIGI_MECA_TANG, on calcule les forces internes
         if (option .ne. 'RIGI_MECA_TANG') then
             iposig=jsigfb + nbfibr*(ip-1)
-!           Efforts généralisés à "+" :
-!               vs : < int(sig.ds) int(sig.y.ds)  int(sig.z.ds) >
-!               vs : <     Nx          -Mz             My       >
-            call pmfits(tygrfi, nbfibr, nbcarm, zr(jacf), zr(iposig), vs)
-            call pmfbts(b, wi, vs, ve)
+            call pmfitsbts(tygrfi, nbfibr, nbcarm, zr(jacf), zr(iposig), b, wi, &
+                           nbassepou, yj, zj, maxfipoutre, nbfipoutre, vsigv, vfv, vvp, ve)
             do i = 1, 12
                 fl(i) = fl(i)+ve(i)
             enddo
@@ -347,8 +376,8 @@ subroutine te0535(option, nomte)
     endif
 !
 !   Torsion a part pour les forces interne
-    fl(10) = gxjx*(deplm(10)+deplp(10)-deplm(4)-deplp(4))/xl
-    fl(4) = -fl(10)
+    call pmftorcor(tygrfi, nbassepou, gxjx, gxjxpou, deplm, deplp, xl, fl)
+
 !   Stockage des efforts généralisés et passage des forces en repère local
     if (vecteu) then
 !       on sort les contraintes sur chaque fibre
@@ -396,8 +425,17 @@ subroutine te0535(option, nomte)
         zi(jcret) = codret
     endif
 !
+!   Deallocation memoire pour tableaux temporaires
+    AS_DEALLOCATE(vi=nbfipoutre)
     AS_DEALLOCATE(vr=defmfib)
     AS_DEALLOCATE(vr=defpfib)
+    AS_DEALLOCATE(vr=gxjxpou)
+    AS_DEALLOCATE(vr=yj)
+    AS_DEALLOCATE(vr=zj)
+    AS_DEALLOCATE(vr=deffibasse)
+    AS_DEALLOCATE(vr=vsigv)
+    AS_DEALLOCATE(vr=vev)
+    deallocate(vfv,matsecp,vvp,skp)
     call jedetr('&&TE0535.MODUFIB')
     call jedetr('&&TE0535.SIGFIB')
 end subroutine

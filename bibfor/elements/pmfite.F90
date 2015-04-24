@@ -80,6 +80,7 @@ subroutine pmfite(typfib, nf, ncarf, vf, ve, vs)
             vs(6) = vs(6) + yy*zz*eds
         enddo
     else if ( typfib.eq.2 ) then
+
 !       6 caractéristiques utiles par fibre : y z aire yp zp numgr
         do ii = 1, nf
             yy   = vf(1,ii)
