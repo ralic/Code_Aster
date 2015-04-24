@@ -108,7 +108,7 @@ implicit none
 ! - Loads
 !
     call load_list_info(load_empty, nb_load  , v_load_name, v_load_info,&
-                        list_load = list_load)
+                        list_load_ = list_load )
     if (load_empty) then
         goto 99
     endif

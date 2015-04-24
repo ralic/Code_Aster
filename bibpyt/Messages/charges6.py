@@ -30,4 +30,7 @@ cata_msg = {
  en dimension : 3D, 2D ou AXIS.
 """),
 
+    3 : _(u"""
+ Les chargements thermiques de type EVOL_CHAR ne sont pas pris en compte dans cet opérateur.
+"""),
 }
