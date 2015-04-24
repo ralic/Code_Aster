@@ -84,7 +84,7 @@ def append_to_file(fname, txt, delimiter=None, stdout=None):
 def read_keyword_value(kw, txt):
     """Read all values of a keyword
     Return a list of positions and a list of couples (keyword, value)."""
-    re_vale = re.compile('(?P<key>%s) *= *(?P<val>[^,]+)' % kw, re.M)
+    re_vale = re.compile('(?P<key>%s) *= *(?P<val>[^, \)]+)' % kw, re.M)
     found = []
     for mat in re_vale.finditer(txt):
         found.append({

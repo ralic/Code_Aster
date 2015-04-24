@@ -65,6 +65,13 @@ Appels récursifs de messages d'erreur ou d'alarme.
   Validation du concept '%(k1)s'.
 """),
 
+    87: _(u"""
+  On ne devrait pas ignorer des alarmes si elles ne sont pas émises !
+  Merci de retirer ces alarmes de DEBUT ou POURSUITE.
+
+  Alarme(s) : '%(k1)s'
+"""),
+
     # on ne veut pas émettre d'alarme mais que le message se voit, donc on
     # fait la mise en forme ici !
     88 : {  'message' : _(u"""
