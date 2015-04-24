@@ -167,13 +167,11 @@ implicit none
 !
     if (reasma) then
 !
-!==========================================================
-! --- (RE)CALCUL DE LA MATRICE TANGENTE
-!==========================================================
+! ---- Tangent matrix (non-linear) - Volumic and surfacic terms
 !
-        call merxth(model, lload_name, lload_info, cara_elem, mate,&
-                    time, temp_iter, merigi, compor, varc_curr,&
-                    dry_prev, dry_curr)
+        call merxth(model   , lload_name, lload_info, cara_elem, mate    ,&
+                    time    , temp_iter , compor    , varc_curr, dry_prev,&
+                    dry_curr, merigi)
         call jeveuo(merigi, 'L', jmer)
         call jeveuo(mediri, 'L', jmed)
 !

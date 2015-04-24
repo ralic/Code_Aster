@@ -50,6 +50,7 @@ implicit none
 !                        '2MBR' for second member (vector)
 !                        'RESI' for residual (vector)
 !                        'MRIG' for rigidity (matrix)
+!                        'MTAN' for tangent matrix
 ! Out load_type_ligr   : type of LIGREL for current load
 ! Out load_opti_r      : option for real parameter 
 ! Out load_opti_f      : option for function parameter 
@@ -75,6 +76,8 @@ implicit none
     character(len=16) :: opti_resi_f(nb_type_neum), opti_resi_r(nb_type_neum)
     character(len=8) :: para_mrig_r(nb_type_neum), para_mrig_f(nb_type_neum)
     character(len=16) :: opti_mrig_f(nb_type_neum), opti_mrig_r(nb_type_neum)
+    character(len=8) :: para_mtan_r(nb_type_neum), para_mtan_f(nb_type_neum)
+    character(len=16) :: opti_mtan_f(nb_type_neum), opti_mtan_r(nb_type_neum)
 !
 ! - Keyword in AFFE_CHAR_THER
 !
@@ -193,6 +196,30 @@ implicit none
                       'PHECHPF','       ','       ','       ',&
                       '       ','       '/
 !
+! - Name of option for tangent matrix (real coefficient)
+!
+    data opti_mtan_r /'MTAN_THER_COEF_R','No_Load','No_Load','No_Load',&
+                      'MTAN_THER_PARO_R','No_Load','No_Load','No_Load',&
+                      'MTAN_THER_RAYO_R','No_Load'/
+!
+! - Name of option for tangent matrix (function coefficient)
+!
+    data opti_mtan_f /'MTAN_THER_COEF_F','No_Load','No_Load'         ,'No_Load'         ,&
+                      'MTAN_THER_PARO_F','No_Load','MTAN_THER_FLUXNL','MTAN_THER_SOURNL',&
+                      'MTAN_THER_RAYO_F','No_Load'/
+!
+! - Name of input parameter field for tangent matrix  (real coefficient)
+!
+    data para_mtan_r /'PCOEFHR','       ','       ','       ',&
+                      'PHECHPR','       ','       ','       ',&
+                      'PRAYONR','       '/
+!
+! - Name of input parameter field for tangent matrix  (function coefficient)
+!
+    data para_mtan_f /'PCOEFHF','       ','       ','       ',&
+                      'PHECHPF','       ','PFLUXNL','PSOURNL',&
+                      'PRAYONF','       '/
+!
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(i_type_neum.le.nb_type_neum)
@@ -208,6 +235,8 @@ implicit none
             load_opti_r_ = opti_resi_r(i_type_neum)
         elseif (type_calc_.eq.'MRIG') then
             load_opti_r_ = opti_mrig_r(i_type_neum)
+        elseif (type_calc_.eq.'MTAN') then
+            load_opti_r_ = opti_mtan_r(i_type_neum)
         else
             ASSERT(.false.)
         endif
@@ -219,6 +248,8 @@ implicit none
             load_opti_f_ = opti_resi_f(i_type_neum)
         elseif (type_calc_.eq.'MRIG') then
             load_opti_f_ = opti_mrig_f(i_type_neum)
+        elseif (type_calc_.eq.'MTAN') then
+            load_opti_f_ = opti_mtan_f(i_type_neum)
         else
             ASSERT(.false.)
         endif
@@ -232,6 +263,9 @@ implicit none
             load_para_r_(2) = para_resi_r2(i_type_neum)
         elseif (type_calc_.eq.'MRIG') then
             load_para_r_(1) = para_mrig_r(i_type_neum)
+            load_para_r_(2) = ' '
+        elseif (type_calc_.eq.'MTAN') then
+            load_para_r_(1) = para_mtan_r(i_type_neum)
             load_para_r_(2) = ' '
         else
             ASSERT(.false.)
@@ -247,6 +281,9 @@ implicit none
         elseif (type_calc_.eq.'MRIG') then
             load_para_f_(1) = para_mrig_f(i_type_neum)
             load_para_f_(2) = ' '
+        elseif (type_calc_.eq.'MTAN') then
+            load_para_f_(1) = para_mtan_f(i_type_neum)
+            load_para_f_(2) = ' '
         else
             ASSERT(.false.)
         endif
@@ -258,16 +295,18 @@ implicit none
         load_obje_(1) = object1(i_type_neum)
         load_obje_(2) = object2(i_type_neum)
         if (present(type_calc_)) then
-            if (type_calc_.eq.'MRIG'.and.i_type_neum.eq.1) then
-                load_obje_(1) = object2(i_type_neum)
-                load_obje_(2) = object1(i_type_neum)      
+            if (type_calc_.eq.'MRIG'.or.type_calc_.eq.'MTAN') then
+                if (i_type_neum.eq.1) then
+                    load_obje_(1) = object2(i_type_neum)
+                    load_obje_(2) = object1(i_type_neum)
+                endif    
             endif
         endif
-        if (present(nb_obje_)) then
-            nb_obje_ = 1
-            if (load_obje_(2).ne.' ') then
-                nb_obje_ = 2
-            endif
+    endif
+    if (present(nb_obje_)) then
+        nb_obje_ = 1
+        if (load_obje_(2).ne.' ') then
+            nb_obje_ = 2
         endif
     endif
 !

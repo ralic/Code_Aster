@@ -1,7 +1,7 @@
 subroutine nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
                   solver, lostat, time     , tpsthe   , reasvc  ,&
                   reasvt, reasmt, reasrg   , reasms   , creas   ,&
-                  vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
+                  vtemp , vhydr , varc_curr, dry_prev , dry_curr,&
                   vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
                   cnchci, mediri, compor)
 !
@@ -64,8 +64,8 @@ implicit none
     real(kind=8) :: tpsthe(6)
     character(len=1) :: creas
     character(len=19) :: maprec
-    character(len=24) :: vtemp, vec2nd, vec2ni, vhydr, compor, tmpchi
-    character(len=24) :: tmpchf, matass, cndirp, cnchci, cnchtp, cntntp, cntnti
+    character(len=24) :: vtemp, vec2nd, vec2ni, vhydr, compor, dry_prev
+    character(len=24) :: dry_curr, matass, cndirp, cnchci, cnchtp, cntntp, cntnti
     character(len=24) :: cnchnl
 !
 ! --------------------------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ implicit none
 !
 ! CALCULS ELEMENTAIRES ET SOMMATION DANS LES VECT_ELEM VETNTP
             call vetnth(option, model, cara_elem, mate, time,&
-                        vtemp, compor, tmpchi, tmpchf, vhydr,&
+                        vtemp, compor, dry_prev, dry_curr, vhydr,&
                         vetntp, vetnti, varc_curr)
 !
             call asasve(vetntp, nume_dof, typres, cntntp)
@@ -351,9 +351,12 @@ implicit none
 !
             creas = 'M'
             vtemp2 = vtemp
-            call merxth(model, lload_name, lload_info, cara_elem, mate,&
-                        time, vtemp2, merigi, compor, varc_curr,&
-                        tmpchi, tmpchf)
+!
+! -------- Tangent matrix (non-linear) - Volumic and surfacic terms
+!
+            call merxth(model   , lload_name, lload_info, cara_elem, mate    ,&
+                        time    , vtemp2    , compor    , varc_curr, dry_prev,&
+                        dry_curr, merigi)
 !
 ! 3.1.2. ==> (RE)CALCUL DES MATRICES DE MASSE ET DE RIGIDITE EN LINEAIRE
 !

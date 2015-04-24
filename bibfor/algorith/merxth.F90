@@ -1,6 +1,21 @@
-subroutine merxth(modele, charge, infcha, carele, mate,&
-                  inst, chtni, merigi, compor, varc_curr,&
-                  tmpchi, tmpchf)
+subroutine merxth(model   , lload_name, lload_info, cara_elem, mate    ,&
+                  time    , temp_iter , compor    , varc_curr, dry_prev,&
+                  dry_curr, matr_elem)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/calcul.h"
+#include "asterfort/ther_mtan.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/inical.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/memare.h"
+#include "asterfort/load_list_info.h"
+#include "asterfort/load_neut_mtan.h"
+#include "asterfort/load_neut_prep.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,158 +32,114 @@ subroutine merxth(modele, charge, infcha, carele, mate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/calcul.h"
-#include "asterfort/codent.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecara.h"
-#include "asterfort/megeom.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
-    character(len=24) :: modele, charge, infcha, carele, inst, chtni, merigi
-    character(len=24) :: mate, compor, tmpchi, tmpchf
+!
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: lload_name
+    character(len=24), intent(in) :: lload_info
+    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: temp_iter
+    character(len=24), intent(in) :: dry_prev   
+    character(len=24), intent(in) :: dry_curr
+    character(len=24), intent(in) :: compor
     character(len=19), intent(in) :: varc_curr
-! ----------------------------------------------------------------------
-! CALCUL DES MATRICES TANGENTES ELEMENTAIRES
-! EN THERMIQUE NON LINEAIRE
-!  - TERMES DE VOLUME
-!  - TERMES DE SURFACE DUS AUX CONDITIONS LIMITES ET CHARGEMENTS
+    character(len=24), intent(inout) :: matr_elem
 !
-! IN  MODELE  : NOM DU MODELE
-! IN  CHARGE  : LISTE DES CHARGES
-! IN  INFCHA  : INFORMATIONS SUR LES CHARGEMENTS
-! IN  CARELE  : CHAMP DE CARA_ELEM
-! IN  MATE    : MATERIAU CODE
-! IN  INST    : CARTE CONTENANT LA VALEUR DE L'INSTANT
-! IN  CHTNI   : IEME ITEREE DU CHAMP DE TEMPERATURE
-! IN  COMPOR  : COMPORTEMENT (POUR LE SECHAGE)
-! IN  TMPCHI  : CHAMP DE TEMPERAT. A T    (POUR LE CALCUL DE D-SECHAGE)
-! IN  TMPCHI  : CHAMP DE TEMPERAT. A T+DT (POUR LE CALCUL DE D-SECHAGE)
-! OUT MERIGI  : MATRICES ELEMENTAIRES
+! --------------------------------------------------------------------------------------------------
+!
+! Thermic
+! 
+! Tangent matrix (non-linear) - Volumic and surfacic terms
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  model            : name of the model
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  lload_name       : name of object for list of loads name
+! In  lload_info       : name of object for list of loads info
+! In  time             : time (<CARTE>)
+! In  compor           : name of comportment definition (field)
+! In  temp_iter        : temperature field at current Newton iteration
+! In  dry_prev         : previous drying
+! In  dry_curr         : current drying
+! In  varc_curr        : command variable for current time
+! IO  matr_elem        : name of matr_elem result
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nb_in_maxi, nbout
+    parameter (nb_in_maxi = 10, nbout = 1)
+    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
+    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
+!
+    integer :: iret
+    character(len=1) :: base, stop_calc
+    character(len=8) :: load_name, newnom
+    character(len=19) :: resu_elem
+    integer :: load_nume
+    aster_logical :: load_empty
+    integer :: i_load, nb_load, nb_in_prep
+    character(len=24), pointer :: v_load_name(:) => null()
+    integer, pointer :: v_load_info(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
 !
+! - Initializations
 !
-    character(len=8) :: nomcha, lpain(10), lpaout(1)
-    character(len=16) :: option
-    character(len=24) :: ligrel(2), lchin(10), lchout(1)
-    character(len=24) :: chgeom, chcara(18)
-    integer :: iret, nchar, ilires, icha, jchar, jinf
-! ----------------------------------------------------------------------
-    integer :: nbchmx
-    parameter (nbchmx=5)
-    integer :: nligr(nbchmx), k
-    character(len=6) :: nomopr(nbchmx), nomopf(nbchmx), nomchp(nbchmx)
-    character(len=7) :: nompar(nbchmx), nompaf(nbchmx)
-    data nomchp/'.COEFH','.FLUNL','.SOUNL','.RAYO','.HECHP'/
-    data nomopr/'COEF_R','      ','      ','RAYO_R','PARO_R'/
-    data nomopf/'COEF_F','FLUXNL','SOURNL','RAYO_F','PARO_F'/
-    data nompar/'PCOEFHR','       ','       ','PRAYONR','PHECHPR'/
-    data nompaf/'PCOEFHF','PFLUXNL','PSOURNL','PRAYONF','PHECHPF'/
-    data nligr/1,1,1,1,2/
-! DEB ------------------------------------------------------------------
-    call jemarq()
-    call jeexin(charge, iret)
-    if (iret .ne. 0) then
-        call jelira(charge, 'LONMAX', nchar)
-        call jeveuo(charge, 'L', jchar)
-    else
-        nchar = 0
-    endif
+    resu_elem   = '&&MERXTH.0000000'
+    stop_calc   = 'S'
+    base        = 'V'
 !
-    call megeom(modele, chgeom)
-    call mecara(carele, chcara)
+! - Prepare MATR_ELEM
 !
-    call jeexin(merigi, iret)
+    call jeexin(matr_elem(1:19)//'.RELR', iret)
     if (iret .eq. 0) then
-        merigi = '&&METRIG           .RELR'
-        call memare('V', merigi, modele(1:8), mate, carele,&
+        call memare('V', matr_elem, model, mate, cara_elem,&
                     'MTAN_THER')
     else
-        call jedetr(merigi)
+        call jedetr(matr_elem(1:19)//'.RELR')
     endif
 !
-    ligrel(1) = modele(1:8)//'.MODELE'
+! - Generate new RESU_ELEM name
 !
-    ilires = 0
+    newnom = resu_elem(10:16)
+    call gcnco2(newnom)
+    resu_elem(10:16) = newnom(2:8)
 !
-    if (modele .ne. ' ') then
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
-        lpain(2) = 'PMATERC'
-        lchin(2) = mate
-        lpain(3) = 'PTEMPSR'
-        lchin(3) = inst
-        lpain(4) = 'PTEMPEI'
-        lchin(4) = chtni
-        lpain(5) = 'PCOMPOR'
-        lchin(5) = compor
-        lpain(6) = 'PTMPCHI'
-        lchin(6) = tmpchi
-        lpain(7) = 'PTMPCHF'
-        lchin(7) = tmpchf
-        lpain(8) = 'PVARCPR'
-        lchin(8) = varc_curr
+! - Tangent matrix - Volumic terms
 !
-        lpaout(1) = 'PMATTTR'
-        lchout(1) = merigi(1:8)//'.ME001'
-        option = 'MTAN_RIGI_MASS'
-        ilires = ilires + 1
-        call codent(ilires, 'D0', lchout(1) (12:14))
-        call calcul('S', option, ligrel(1), 8, lchin,&
-                    lpain, 1, lchout, lpaout, 'V',&
-                    'OUI')
-        call reajre(merigi, lchout(1), 'V')
-    endif
+    call ther_mtan(model    , mate    , time    , varc_curr, compor   ,&
+                   temp_iter, dry_prev, dry_curr, resu_elem, matr_elem)
 !
-    if (nchar .gt. 0) then
-        call jeveuo(infcha, 'L', jinf)
-        do 20 icha = 1, nchar
-            if (zi(jinf+nchar+icha) .gt. 0) then
-                nomcha = zk24(jchar+icha-1) (1:8)
-                ligrel(2) = nomcha//'.CHTH.LIGRE'
-                lpain(1) = 'PGEOMER'
-                lchin(1) = chgeom
-                lpain(3) = 'PTEMPSR'
-                lchin(3) = inst
-                lpain(4) = 'PTEMPEI'
-                lchin(4) = chtni
-                lpain(5) = 'PVARCPR'
-                lchin(5) = varc_curr
+! - Init fields
 !
-                lpaout(1) = 'PMATTTR'
-                lchout(1) = merigi(1:8)//'.ME001'
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+                lchout)
 !
-                do 10 k = 1, nbchmx
-                    lchin(2) = zk24(jchar+icha-1) (1:8)//'.CHTH'// nomchp(k)// '.DESC'
-                    call jeexin(lchin(2), iret)
-                    if (iret .gt. 0) then
-                        if (zi(jinf+nchar+icha) .eq. 1) then
-                            option = 'MTAN_THER_'//nomopr(k)
-                            lpain(2) = nompar(k)
-                            else if (zi(jinf+nchar+icha).eq.2 .or.&
-                        zi(jinf+nchar+icha).eq.3) then
-                            option = 'MTAN_THER_'//nomopf(k)
-                            lpain(2) = nompaf(k)
-                        endif
-                        ilires = ilires + 1
-                        call codent(ilires, 'D0', lchout(1) (12:14))
-                        call calcul('S', option, ligrel(nligr(k)), 5, lchin,&
-                                    lpain, 1, lchout, lpaout, 'V',&
-                                    'OUI')
-                        call reajre(merigi, lchout(1), 'V')
-                    endif
-10              continue
-            endif
+! - Loads
 !
-20      continue
+    call load_list_info(load_empty, nb_load   , v_load_name, v_load_info,&
+                        lload_name, lload_info)
+
 !
-    endif
-! FIN ------------------------------------------------------------------
-    call jedema()
+! - Preparing input fields
+!
+    call load_neut_prep(model, nb_in_maxi, nb_in_prep, lchin, lpain, &
+                        varc_curr_ = varc_curr, temp_iter_ = temp_iter)
+!
+! - Computation
+!
+    do i_load = 1, nb_load
+        load_name = v_load_name(i_load)(1:8)
+        load_nume = v_load_info(nb_load+i_load+1)
+        if (load_nume .gt. 0) then
+            call load_neut_mtan(stop_calc , model     , time , load_name, load_nume,&
+                                nb_in_maxi, nb_in_prep, lpain, lchin    , base     ,&
+                                resu_elem , matr_elem )
+        endif
+    end do
+!
 end subroutine

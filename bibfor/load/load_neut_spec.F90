@@ -197,8 +197,8 @@ implicit none
 ! ----- Number of input fields which been added
 !
         nb_in_add = i_field_in - nb_in_prep
-!
         ASSERT(i_field_in.le.nb_in_maxi)
+        
     endif
 !
 end subroutine

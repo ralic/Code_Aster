@@ -23,7 +23,7 @@ interface
     subroutine nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
                       solver, lostat, time     , tpsthe   , reasvc  ,&
                       reasvt, reasmt, reasrg   , reasms   , creas   ,&
-                      vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
+                      vtemp , vhydr , varc_curr, dry_prev , dry_curr,&
                       vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
                       cnchci, mediri, compor)
         character(len=24), intent(in) :: model
@@ -44,8 +44,8 @@ interface
         character(len=1) :: creas
         character(len=24) :: vtemp
         character(len=24) :: vhydr
-        character(len=24) :: tmpchi
-        character(len=24) :: tmpchf
+        character(len=24) :: dry_prev
+        character(len=24) :: dry_curr
         character(len=24) :: vec2nd
         character(len=24) :: vec2ni
         character(len=24) :: matass
