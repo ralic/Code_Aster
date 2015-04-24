@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mergth(model, lload_name, lload_info, cara_elem, mate,&
-                      time , varc_curr , matr_elem)
+    subroutine ther_mrig(model    , mate     , time     , cara_elem, varc_curr,&
+                         resu_elem, matr_elem)
         character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: lload_name
-        character(len=24), intent(in) :: lload_info
         character(len=24), intent(in) :: time
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: varc_curr
-        character(len=24), intent(inout) :: matr_elem
-    end subroutine mergth
+        character(len=19), intent(in) :: resu_elem   
+        character(len=24), intent(in) :: matr_elem
+    end subroutine ther_mrig
 end interface

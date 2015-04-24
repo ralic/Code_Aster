@@ -173,7 +173,7 @@ implicit none
 !
 ! ----- XFEM fields
 !
-        if (type_calc.eq.'2MBR') then
+        if (type_calc.eq.'2MBR'.or.type_calc.eq.'MRIG') then
             if (l_xfem) then
                 call xajcin(model     , load_option, nb_in_maxi, lchin, lpain,&
                             i_field_in)

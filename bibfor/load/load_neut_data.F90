@@ -47,8 +47,9 @@ implicit none
 ! In  i_type_neum      : index for Neumann load type
 ! In  nb_type_neumz    : maximum number of Neumann load type
 ! In  type_calc        : type of option to compute
-!                        '2MBR' for second member
-!                        'RESI' for residuel
+!                        '2MBR' for second member (vector)
+!                        'RESI' for residual (vector)
+!                        'MRIG' for rigidity (matrix)
 ! Out load_type_ligr   : type of LIGREL for current load
 ! Out load_opti_r      : option for real parameter 
 ! Out load_opti_f      : option for function parameter 
@@ -72,6 +73,8 @@ implicit none
     character(len=8) :: para_resi_r1(nb_type_neum), para_resi_f1(nb_type_neum)
     character(len=8) :: para_resi_r2(nb_type_neum), para_resi_f2(nb_type_neum)
     character(len=16) :: opti_resi_f(nb_type_neum), opti_resi_r(nb_type_neum)
+    character(len=8) :: para_mrig_r(nb_type_neum), para_mrig_f(nb_type_neum)
+    character(len=16) :: opti_mrig_f(nb_type_neum), opti_mrig_r(nb_type_neum)
 !
 ! - Keyword in AFFE_CHAR_THER
 !
@@ -166,6 +169,30 @@ implicit none
                        '       ','       ','       ','       ',&
                        '       ','       '/
 !
+! - Name of option for rigidity matrix (real coefficient)
+!
+    data opti_mrig_r /'RIGI_THER_COEH_R','No_Load','No_Load','No_Load',&
+                      'RIGI_THER_PARO_R','No_Load','No_Load','No_Load',&
+                      'No_Load'         ,'No_Load'/
+!
+! - Name of option for rigidity matrix (function coefficient)
+!
+    data opti_mrig_f /'RIGI_THER_COEH_F','No_Load','No_Load','No_Load',&
+                      'RIGI_THER_PARO_F','No_Load','No_Load','No_Load',&
+                      'No_Load'         ,'No_Load'/
+!
+! - Name of input parameter field for rigidity matrix  (real coefficient)
+!
+    data para_mrig_r /'PCOEFHR','       ','       ','       ',&
+                      'PHECHPR','       ','       ','       ',&
+                       '       ','       '/
+!
+! - Name of input parameter field for rigidity matrix  (function coefficient)
+!
+    data para_mrig_f /'PCOEFHF','       ','       ','       ',&
+                      'PHECHPF','       ','       ','       ',&
+                      '       ','       '/
+!
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(i_type_neum.le.nb_type_neum)
@@ -179,6 +206,8 @@ implicit none
             load_opti_r_ = opti_2mbr_r(i_type_neum)
         elseif (type_calc_.eq.'RESI') then
             load_opti_r_ = opti_resi_r(i_type_neum)
+        elseif (type_calc_.eq.'MRIG') then
+            load_opti_r_ = opti_mrig_r(i_type_neum)
         else
             ASSERT(.false.)
         endif
@@ -188,6 +217,8 @@ implicit none
             load_opti_f_ = opti_2mbr_f(i_type_neum)
         elseif (type_calc_.eq.'RESI') then
             load_opti_f_ = opti_resi_f(i_type_neum)
+        elseif (type_calc_.eq.'MRIG') then
+            load_opti_f_ = opti_mrig_f(i_type_neum)
         else
             ASSERT(.false.)
         endif
@@ -199,6 +230,9 @@ implicit none
         elseif (type_calc_.eq.'RESI') then
             load_para_r_(1) = para_resi_r1(i_type_neum)
             load_para_r_(2) = para_resi_r2(i_type_neum)
+        elseif (type_calc_.eq.'MRIG') then
+            load_para_r_(1) = para_mrig_r(i_type_neum)
+            load_para_r_(2) = ' '
         else
             ASSERT(.false.)
         endif
@@ -210,6 +244,9 @@ implicit none
         elseif (type_calc_.eq.'RESI') then
             load_para_f_(1) = para_resi_f1(i_type_neum)
             load_para_f_(2) = para_resi_f2(i_type_neum)
+        elseif (type_calc_.eq.'MRIG') then
+            load_para_f_(1) = para_mrig_f(i_type_neum)
+            load_para_f_(2) = ' '
         else
             ASSERT(.false.)
         endif
@@ -220,8 +257,14 @@ implicit none
     if (present(load_obje_)) then
         load_obje_(1) = object1(i_type_neum)
         load_obje_(2) = object2(i_type_neum)
+        if (present(type_calc_)) then
+            if (type_calc_.eq.'MRIG'.and.i_type_neum.eq.1) then
+                load_obje_(1) = object2(i_type_neum)
+                load_obje_(2) = object1(i_type_neum)      
+            endif
+        endif
         if (present(nb_obje_)) then
-            nb_obje_ = 1        
+            nb_obje_ = 1
             if (load_obje_(2).ne.' ') then
                 nb_obje_ = 2
             endif
