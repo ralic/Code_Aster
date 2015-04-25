@@ -45,7 +45,7 @@ for mod in MODULES_RAISING_FPE:
 # Pas d'import des autres packages d'aster car l'import de ce module est
 # fait avant l'ajout des paths. Les autres imports seront possibles une fois
 # les arguments de la ligne de commande parsés.
-import E_Core
+import aster_settings
 from strfunc import convert, ufmt
 from decorators import jdc_required, stop_on_returncode, never_fail
 import aster_core
@@ -109,7 +109,7 @@ class SUPERV:
 
     def set_i18n(self):
         """Met en place les fonctions d'internationalisation."""
-        # should be already done by E_Core.getargs
+        # should be already done by aster_settings.getargs
         import i18n
 
     def init_timer(self):
@@ -355,7 +355,7 @@ class SUPERV:
         divers traitements
         """
         if not coreopts:
-            coreopts = E_Core.getargs()
+            coreopts = aster_settings.getargs()
         self.coreopts = coreopts
         try:
             self.InitEnv()
@@ -379,7 +379,6 @@ class SUPERV:
 
     def _mem_stat_init(self, tag=None):
         """Set the initial memory consumption"""
-        import aster_core
         rval, iret = aster_core.get_mem_stat('VMSIZE')
         assert iret == 0
         self._mem_ini = rval[0]
@@ -387,7 +386,6 @@ class SUPERV:
 
     def _mem_stat_jdc(self, tag=None):
         """Set the memory"""
-        import aster_core
         rval, iret = aster_core.get_mem_stat('VMSIZE')
         assert iret == 0
         mjdc = rval[0] - self._mem_ini
@@ -397,7 +395,7 @@ class SUPERV:
 def main():
     """Main."""
     appli = SUPERV()
-    ier = appli.main(coreopts=E_Core.getargs(sys.argv))
+    ier = appli.main(coreopts=aster_settings.getargs(sys.argv))
     sys.exit(ier)
 
 

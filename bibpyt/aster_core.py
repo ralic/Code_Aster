@@ -21,7 +21,7 @@ This module manages core settings of aster.
 '''
 
 # .. note:: Some of these functions are binded into C through
-#   ``_aster_core`` (see ``bibc/astercore_module.c``). They have been
+#   ``_aster_core`` (see ``bibc/aster_core_module.c``). They have been
 #   written in python for convenience.
 
 # .. note:: the _aster_core module contains globals that is set for a
@@ -98,7 +98,7 @@ def register(catalog, settings, logger=None):
     This function must be called in order to initialize aster.
 
     :catalog: a JDC instance
-    :setting: aster settings object (as given by Execution.E_Core.CoreOptions)
+    :settings: aster settings object (as given by aster_settings.CoreOptions)
     :logger: the message logger (default: Utilitai.Utmess.MessageLog)
     '''
     if logger is None:
