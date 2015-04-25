@@ -164,8 +164,7 @@ The ASTERDATADIR environment variable changes the data directory.
         self.info['versMAJ'] = version[0]
         self.info['versMIN'] = version[1]
         self.info['versSUB'] = version[2]
-        self.info[
-            'exploit'] = aster_pkginfo.version_info.branch.startswith('v')
+        self.info['exploit'] = aster_pkginfo.version_info.branch.startswith('v')
         self.info['versionD0'] = '%d.%02d.%02d' % version
         self.info['versLabel'] = aster_pkginfo.get_version_desc()
 

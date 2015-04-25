@@ -151,7 +151,6 @@ def configure(self):
     paths =  libpaths + ldpaths
     os.environ['LD_LIBRARY_PATH'] = os.pathsep.join(p for p in paths if p)
 
-    self.load('scm_aster', tooldir='waftools')
     self.set_installdirs()
     self.load('parallel', tooldir='waftools')
     self.load('python_cfg', tooldir='waftools')
@@ -180,6 +179,7 @@ def configure(self):
     self.recurse('bibfor')
     self.recurse('bibcxx')
     self.recurse('bibc')
+    self.recurse('bibpyt')
     self.recurse('mfront')
     self.recurse('i18n')
     self.recurse('data')
@@ -227,7 +227,6 @@ def build(self):
     for optional in lsub:
         if osp.exists(osp.join(optional, 'wscript')):
             self.recurse(optional)
-    self.load('scm_aster', tooldir='waftools')
     self.recurse('data')
 
 def build_elements(self):
