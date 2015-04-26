@@ -78,6 +78,10 @@ Une déclaration d'une de ces informations sur un groupe de mailles contenant le
 ne permet pas à CALC_EUROPLEXUS de retrouver les informations.
 """),
 
+    13 : _(u"""
+    Lancement d'Europlexus en utilisant %(k1)s
+"""),
+
     14 : _(u"""
 Le fichier MED contenant les résultats d'Europlexus est introuvable ou vide.
 L'exécution d'Europlexus s'est probablement mal déroulée.
