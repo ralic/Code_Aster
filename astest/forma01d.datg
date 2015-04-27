@@ -1,9 +1,11 @@
-import geompy
-import smesh
-from geompy import *
-from smesh import *
+# coding=utf-8
 
-import math
+import salome
+from salome.geom import geomBuilder
+from salome.smesh import smeshBuilder
+import NETGENPlugin
+geompy = geomBuilder.New(salome.myStudy)
+smesh = smeshBuilder.New(salome.myStudy)
 
 #===================================================
 #                  GEOMETRIE
@@ -14,7 +16,7 @@ Plaque = geompy.MakeFaceHW(100, 150, 1)
 
 geompy.TranslateDXDYDZ(Plaque, 50, 75, 0)
 
-[gauche,bas,haut,droite] = geompy.SubShapeAllSorted(Plaque, geompy.ShapeType["EDGE"])
+[gauche, bas, haut, droite] = geompy.SubShapeAllSorted(Plaque, geompy.ShapeType["EDGE"])
 
 geompy.addToStudy( Plaque, 'Plaque' )
 geompy.addToStudyInFather( Plaque, gauche, 'gauche' )
@@ -27,28 +29,29 @@ geompy.addToStudyInFather( Plaque, droite, 'droite' )
 #                  --------
 #===================================================
 #
-M_Plaque = Mesh(Plaque,"Plaque")
+M_Plaque = smesh.Mesh(Plaque,"Plaque")
 
-import NETGENPlugin
-NETGEN_2D = M_Plaque.Triangle(algo=NETGEN)
-NETGEN_2D_Parameters=NETGEN_2D.Parameters()
+NETGEN_2D = M_Plaque.Triangle(algo=smeshBuilder.NETGEN)
+NETGEN_2D_Parameters = NETGEN_2D.Parameters()
 NETGEN_2D_Parameters.SetMaxSize( 5 )
 NETGEN_2D_Parameters.SetSecondOrder( 1 )
 NETGEN_2D_Parameters.SetOptimize( 1 )
 NETGEN_2D_Parameters.SetFineness( 3 )
-#NETGEN_2D_Parameters.SetGrowthRate( 0.1 )
-#NETGEN_2D_Parameters.SetNbSegPerEdge( 3 )
-#NETGEN_2D_Parameters.SetNbSegPerRadius( 5 )
 NETGEN_2D_Parameters.SetQuadAllowed( 0 )
 
 isDone = M_Plaque.Compute()
-if not isDone: print 'Mesh', M_Plaque.GetMesh(), ': computation failed'
+if not isDone:
+    raise RuntimeError( 'Mesh  {}: computation failed'\
+                        .format(M_Plaque.GetMesh()) )
 
-M_Plaque.Group(gauche,'gauche')
-M_Plaque.Group(droite,'droite')
-M_Plaque.Group(bas,'bas')
-M_Plaque.Group(haut,'haut')
+M_Plaque.Group(gauche, 'gauche')
+M_Plaque.Group(droite, 'droite')
+M_Plaque.Group(bas, 'bas')
+M_Plaque.Group(haut, 'haut')
 
+# export as a med file
+medFile = "plaque.med"
+M_Plaque.ExportMED( medFile )
 
 # Mise a  jour de l'arbre
 #---------------------------
