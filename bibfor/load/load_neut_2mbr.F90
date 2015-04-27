@@ -72,11 +72,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum=9)
+    parameter (nb_type_neum=10)
 !
     integer :: iexist, i_type_neum, nb_in_add, ibid
     character(len=16) :: load_option
-    character(len=19) :: load_ligrel  
+    character(len=24) :: load_ligrel  
     integer :: nbout, nbin
     character(len=8) :: lpaout, newnom
 !
@@ -89,16 +89,14 @@ implicit none
 ! ----- Get information about load
 !
         if (present(time_move_)) then
-            call load_neut_spec('MOVE'     , model       , time       , load_name , load_nume,&
-                                i_type_neum, nb_type_neum, nb_in_maxi , nb_in_prep, lchin    ,&
-                                lpain      , nb_in_add   , load_ligrel,&
-                                load_option,&
-                                time_move_ = time_move_ )
+            call load_neut_spec('MOVE'    , '2MBR'     , model       , time       , load_name  ,&
+                                load_nume , i_type_neum, nb_type_neum, nb_in_maxi , nb_in_prep ,&
+                                lchin     , lpain      , nb_in_add   , load_ligrel, load_option,&
+                                time_move_ = time_move_)
         else
-            call load_neut_spec('STAT'      , model       , time       , load_name , load_nume,&
-                                i_type_neum , nb_type_neum, nb_in_maxi , nb_in_prep, lchin    ,&
-                                lpain       , nb_in_add   , load_ligrel,&
-                                load_option)
+            call load_neut_spec('STAT'    , '2MBR'     , model       , time       , load_name  ,&
+                                load_nume , i_type_neum, nb_type_neum, nb_in_maxi , nb_in_prep ,&
+                                lchin     , lpain      , nb_in_add   , load_ligrel, load_option)
         endif
 !
         if (load_option .ne. 'No_Load') then

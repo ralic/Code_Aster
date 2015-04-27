@@ -124,12 +124,12 @@ implicit none
 !
 ! - Save list of loads in results datastructure
 !
-    noobj ='12345678'//'.1234'//'.EXCIT.INFC'
+    noobj ='12345678.1234.EXCIT'
     call gnomsd(' ', noobj, 10, 13)
     list_load_save = noobj(1:19)
     call copisd('LISTE_CHARGES', 'G', list_load, list_load_save)
 !
-! --- PARAMETRES DONNES APRES LE MOT-CLE FACTEUR SOLVEUR
+! - Solver parameters
 !
     call cresol(solver)
 !

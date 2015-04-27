@@ -66,7 +66,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum=9)
+    parameter (nb_type_neum=10)
 !
     integer :: i_type_neum, nb_in_add, ibid
     character(len=16) :: resi_option
@@ -82,10 +82,9 @@ implicit none
 !
 ! ----- Get information about load
 !
-        call load_neut_spec('STAT'      , model       , time       , load_name , load_nume,&
-                            i_type_neum , nb_type_neum, nb_in_maxi , nb_in_prep, lchin    ,&
-                            lpain       , nb_in_add   , load_ligrel,&
-                            resi_option_ = resi_option)
+        call load_neut_spec('STAT'    , 'RESI'     , model       , time       , load_name  ,&
+                            load_nume , i_type_neum, nb_type_neum, nb_in_maxi , nb_in_prep ,&
+                            lchin     , lpain      , nb_in_add   , load_ligrel, resi_option)
 !
         if (resi_option .ne. 'No_Load') then
 !

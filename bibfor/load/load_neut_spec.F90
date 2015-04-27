@@ -1,14 +1,14 @@
-subroutine load_neut_spec(type_ther   , model        , time       , load_name , load_nume,&
-                          i_type_neum , nb_type_neumz, nb_in_maxi , nb_in_prep, lchin    ,&
-                          lpain       , nb_in_add    , load_ligrel,&
-                          load_option_, resi_option_,&
-                          time_move_  )
+subroutine load_neut_spec(type_ther , type_calc  , model        , time       , load_name  ,&
+                          load_nume , i_type_neum, nb_type_neumz, nb_in_maxi , nb_in_prep ,&
+                          lchin     , lpain      , nb_in_add    , load_ligrel, load_option,&
+                          time_move_)
 !
 implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
+#include "asterfort/load_neut_data.h"
+#include "asterfort/load_neut_iden.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/xajcin.h"
@@ -32,6 +32,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=4), intent(in) :: type_ther
+    character(len=4), intent(in) :: type_calc
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: time
     character(len=8), intent(in) :: load_name
@@ -44,8 +45,7 @@ implicit none
     character(len=*), intent(inout) :: lchin(nb_in_maxi)
     integer, intent(out) :: nb_in_add
     character(len=19), intent(out) :: load_ligrel
-    character(len=16), optional, intent(out) :: load_option_
-    character(len=16), optional, intent(out) :: resi_option_
+    character(len=16), intent(out) :: load_option
     character(len=24), optional, intent(in) :: time_move_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,6 +59,9 @@ implicit none
 ! In  type_ther        : type of thermics
 !                        'MOVE' for moving sources
 !                        'STAT' if not
+! In  type_calc        : type of option to compute
+!                        '2MBR' for second member
+!                        'RESI' for residuel
 ! In  model            : name of the model
 ! In  time             : time (<CARTE>)
 ! In  time_move        : modified time (<CARTE>) for THER_NON_LINE_MO
@@ -72,92 +75,24 @@ implicit none
 ! IO  lchin            : list of input fields
 ! Out nb_in_add        : number of input fields which been added
 ! Out load_ligrel      : name of LIGREL for current load
-! Out load_option      : name of option for second member
-! Out resi_option      : name of option for residual
+! Out load_option      : name of option for current load
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_type_neum
-    parameter (nb_type_neum = 9)
-    character(len=6) :: object(nb_type_neum)
-    character(len=6) :: ligrel(nb_type_neum)
-    character(len=24) :: keyw(nb_type_neum) 
-    character(len=7) :: para_2mbr_r(nb_type_neum), para_2mbr_f(nb_type_neum)
-    character(len=16) :: opti_2mbr_f(nb_type_neum), opti_2mbr_r(nb_type_neum)
-    character(len=7) :: para_resi_r(nb_type_neum), para_resi_f(nb_type_neum)
-    character(len=16) :: opti_resi_f(nb_type_neum), opti_resi_r(nb_type_neum)
+    parameter (nb_type_neum = 10)
+    aster_logical :: list_load_keyw(nb_type_neum)
 !
     integer :: i_field_in
-    character(len=19) :: ligrel_load, ligrel_model, name_input, para_supp
+    character(len=19) :: ligrel_load, ligrel_model, cart_name
     logical :: l_constant, l_fonct_0, l_fonct_t
-    integer :: ier, iret, ireth
+    integer :: ier, nb_obje, i_obje
     logical :: l_xfem
-!
-! - Keyword in AFFE_CHAR_THER
-!
-    data keyw     /'ECHANGE'      ,'FLUX_REP_XYZ' ,'FLUX_REP_NORM','SOURCE' ,&
-                   'ECHANGE_PAROI','PRE_GRAD_TEMP','FLUX_NL'      ,'SOUR_NL',&
-                   'RAYONNEMENT'/
-!
-! - Object name construct in AFFE_CHAR_THER
-!
-    data object   /'.T_EXT','.FLURE','.FLUR2','.SOURE',&
-                   '.HECHP','.GRAIN','.FLUNL','.SOUNL',&
-                   '.RAYO '/
-!
-! - Type of LIGREL to compute
-!
-    data ligrel   /'Model','Model','Model','Model',&
-                   'Load' ,'Model','Model','Model',&
-                   'Model'/
-!
-! - Name of option for second member (real coefficient)
-!
-    data opti_2mbr_r /'CHAR_THER_TEXT_R','CHAR_THER_FLUN_R','CHAR_THER_FLUX_R','CHAR_THER_SOUR_R',&
-                      'CHAR_THER_PARO_R','CHAR_THER_GRAI_R','No_Load'         ,'No_Load'         ,&
-                      'No_Load'/
-!
-! - Name of option for second member (function coefficient)
-!
-    data opti_2mbr_f /'CHAR_THER_TEXT_F','CHAR_THER_FLUN_F','CHAR_THER_FLUX_F','CHAR_THER_SOUR_F',&
-                      'CHAR_THER_PARO_F','CHAR_THER_GRAI_F','No_Load'         ,'No_Load'         ,&
-                      'No_Load'/
-!
-! - Name of input parameter field for second member  (real coefficient)
-!
-    data para_2mbr_r /'PT_EXTR','PFLUXNR','PFLUXVR','PSOURCR',&
-                      'PHECHPR','PGRAINR','       ','       ',&
-                      '       '/
-!
-! - Name of input parameter field for second member  (function coefficient)
-!
-    data para_2mbr_f /'PT_EXTF','PFLUXNF','PFLUXVF','PSOURCF',&
-                      'PHECHPF','PGRAINF','       ','       ',&
-                      '       '/
-!
-! - Name of option for residual (real coefficient)
-!
-    data opti_resi_r /'RESI_THER_COEF_R','No_Load','No_Load'         ,'No_Load'         ,&
-                      'RESI_THER_PARO_R','No_Load','RESI_THER_FLUXNL','RESI_THER_SOURNL',&
-                      'RESI_THER_RAYO_R'/
-!
-! - Name of option for residual (function coefficient)
-!
-    data opti_resi_f /'RESI_THER_COEF_F','No_Load','No_Load'         ,'No_Load',&
-                      'RESI_THER_PARO_F','No_Load','RESI_THER_FLUXNL','RESI_THER_SOURNL',&
-                      'RESI_THER_RAYO_F'/
-!
-! - Name of input parameter field for residual (real coefficient)
-!
-    data para_resi_r /'PT_EXTR','PFLUXNR','PFLUXVR','PSOURCR',&
-                      'PHECHPR','PGRAINR','PFLUXNL','PSOURNL',&
-                      'PRAYONR'/
-!
-! - Name of input parameter field for residual (function coefficient)
-!
-    data para_resi_f /'PT_EXTF','PFLUXNF','PFLUXVF','PSOURCF',&
-                      'PHECHPF','PGRAINF','PFLUXNL','PSOURNL',&
-                      'PRAYONF'/
+    character(len=6) :: load_type_ligr
+    character(len=16) :: load_opti_r, load_opti_f
+    character(len=8)  :: load_para_r(2), load_para_f(2), load_para(2)
+    character(len=24) :: load_keyw
+    character(len=10) :: load_obje(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,12 +101,7 @@ implicit none
     load_ligrel  = ' '
     call exixfe(model, ier)
     l_xfem       = ier.ne.0
-    if (present(load_option_)) then
-        load_option_  = 'No_Load'
-    endif
-    if (present(resi_option_)) then
-        resi_option_  = 'No_Load'
-    endif
+    load_option  = 'No_Load'
     l_constant   = .false.
     l_fonct_0    = .false.
     l_fonct_t    = .false.
@@ -181,11 +111,11 @@ implicit none
 !
 ! - Identify current load
 !
-    iret = 0
-    name_input = load_name(1:8)//'.CHTH'//object(i_type_neum)
-    call exisd('CHAMP_GD', name_input, iret)
+    call load_neut_iden(nb_type_neum, load_name, list_load_keyw)
 !
-    if (iret .ne. 0) then
+! - Get information about load
+!
+    if (list_load_keyw(i_type_neum)) then
 !
 ! ----- Value type
 !
@@ -199,77 +129,43 @@ implicit none
             ASSERT(.false.)
         endif
 !
+! ----- Get data
+!
+        call load_neut_data(i_type_neum   , nb_type_neumz, type_calc,&
+                            load_type_ligr, load_opti_r  , load_opti_f, load_para_r,&
+                            load_para_f   , load_keyw    , load_obje  , nb_obje)
+!
 ! ----- Name of option
 !
-        if (present(load_option_)) then
-            if (l_constant) then
-                load_option_ = opti_2mbr_r(i_type_neum)
-            else if (l_fonct_0.or.l_fonct_t) then
-                load_option_ = opti_2mbr_f(i_type_neum)
-            else
-                ASSERT(.false.)
-            endif
-        elseif (present(resi_option_)) then
-            if (l_constant) then
-                resi_option_ = opti_resi_r(i_type_neum)
-            else if (l_fonct_0.or.l_fonct_t) then
-                resi_option_ = opti_resi_f(i_type_neum)
-            else
-                ASSERT(.false.)
-            endif
+        if (l_constant) then
+            load_option  = load_opti_r
+            load_para(1) = load_para_r(1)
+            load_para(2) = load_para_r(2)
+        else if (l_fonct_0.or.l_fonct_t) then
+            load_option  = load_opti_f
+            load_para(1) = load_para_f(1)
+            load_para(2) = load_para_f(2)
         else
             ASSERT(.false.)
         endif
 !
-! ----- Name of input fields
+! ----- Input fields
 !
-        if (present(load_option_)) then
-            i_field_in = i_field_in+1
-            lchin(i_field_in) = name_input(1:19)
-            if (l_constant) then
-                lpain(i_field_in) = para_2mbr_r(i_type_neum) 
-            else if (l_fonct_0.or.l_fonct_t) then
-                lpain(i_field_in) = para_2mbr_f(i_type_neum)
-            else
-                ASSERT(.false.)
+        do i_obje = 1, nb_obje
+            cart_name  = load_name(1:8)//'.CHTH'//load_obje(i_obje)
+            if (load_keyw.ne.'EVOL_CHAR') then
+                i_field_in = i_field_in+1
+                lchin(i_field_in) = cart_name(1:19)
+                lpain(i_field_in) = load_para(i_obje)
             endif
-        elseif (present(resi_option_)) then
-            i_field_in = i_field_in+1
-            lchin(i_field_in) = name_input(1:19)
-            if (l_constant) then
-                lpain(i_field_in) = para_resi_r(i_type_neum) 
-            else if (l_fonct_0.or.l_fonct_t) then
-                lpain(i_field_in) = para_resi_f(i_type_neum)
-            else
-                ASSERT(.false.)
-            endif
-        else
-            ASSERT(.false.)
-        endif
+        end do 
 !
-! ----- For ECHANGE_PARA: two carts
-!
-        if (keyw(i_type_neum) .eq. 'ECHANGE') then
-            para_supp = load_name(1:8)//'.CHTH.COEFH'
-            call exisd('CHAMP_GD', para_supp, ireth)
-            ASSERT(ireth.ne.0)
-            i_field_in = i_field_in+1
-            if (l_constant) then
-                lpain(i_field_in) = 'PCOEFHR'
-            else if (l_fonct_0.or.l_fonct_t) then
-                lpain(i_field_in) = 'PCOEFHF'
-            else
-                ASSERT(.false.)
-            endif
-            lchin(i_field_in) = para_supp(1:19)
-        endif   
-!
-! ----- For PAROI
+! ----- Select time for ECHANGE_PAROI load
 !
         i_field_in = i_field_in+1
         lpain(i_field_in) = 'PTEMPSR'
         lchin(i_field_in) = time
-        if (keyw(i_type_neum) .eq. 'ECHANGE_PAROI') then
+        if (load_keyw .eq. 'ECHANGE_PAROI') then
             if (type_ther.eq.'MOVE') then
                 lchin(i_field_in) = time_move_
             endif
@@ -277,9 +173,9 @@ implicit none
 !
 ! ----- XFEM fields
 !
-        if (present(load_option_)) then
+        if (type_calc.eq.'2MBR') then
             if (l_xfem) then
-                call xajcin(model     , load_option_, nb_in_maxi, lchin, lpain,&
+                call xajcin(model     , load_option, nb_in_maxi, lchin, lpain,&
                             i_field_in)
             endif
         endif
@@ -289,9 +185,9 @@ implicit none
         if (l_xfem) then
             load_ligrel = ligrel_model
         else
-            if (ligrel(i_type_neum).eq.'Load') then
+            if (load_type_ligr.eq.'Load') then
                 load_ligrel = ligrel_load
-            elseif (ligrel(i_type_neum).eq.'Model') then
+            elseif (load_type_ligr.eq.'Model') then
                 load_ligrel = ligrel_model
             else
                 ASSERT(.false.)
