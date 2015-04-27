@@ -6,4 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm sdld22a.comm D 1
+F comm sdld22a.com1 D 1
 F mail sdld22a.mail D 20
