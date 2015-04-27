@@ -19,10 +19,13 @@ AFFE_CHAR_THER=OPER(nom="AFFE_CHAR_THER",op=34,sd_prod=char_ther
                     ,fr=tr("Affectation de charges et conditions aux limites thermiques constantes"),
                     reentrant='n',
             UIinfo={"groupes":("Chargements","Thermique",)},
-      regles=(AU_MOINS_UN('TEMP_IMPO','SOURCE','FLUX_REP','ECHANGE',
+      regles=(AU_MOINS_UN('EVOL_CHAR', 'TEMP_IMPO','SOURCE','FLUX_REP','ECHANGE',
                           'ECHANGE_PAROI','PRE_GRAD_TEMP','LIAISON_DDL','LIAISON_GROUP',
                           'LIAISON_UNIF','LIAISON_CHAMNO','RAYONNEMENT','LIAISON_MAIL' ),),
          MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
+         EVOL_CHAR       =SIMP(statut='f',fr=tr("Champ d'échange thermique issu d'un autre calcul"),
+                               typ=evol_char,min=1,max=1),
+
 
          TEMP_IMPO       =FACT(statut='f',max='**',
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),

@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lisnnl(phenoz, charge, prefob)
-        character(len=*) :: phenoz
-        character(len=8) :: charge
-        character(len=13) :: prefob
+    subroutine lisnnl(phenom_, load, obje_pref)
+        character(len=*), intent(in) :: phenom_
+        character(len=8), intent(in) :: load
+        character(len=13), intent(out) :: obje_pref
     end subroutine lisnnl
 end interface

@@ -1,4 +1,8 @@
-subroutine lisnnl(phenoz, charge, prefob)
+subroutine lisnnl(phenom_, load, obje_pref)
+!
+implicit none
+!
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,37 +21,36 @@ subroutine lisnnl(phenoz, charge, prefob)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit      none
-#include "asterfort/assert.h"
-    character(len=*) :: phenoz
-    character(len=8) :: charge
-    character(len=13) :: prefob
+    character(len=*), intent(in) :: phenom_
+    character(len=8), intent(in) :: load
+    character(len=13), intent(out) :: obje_pref
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE UTILITAIRE (LISTE_CHARGES)
+! Loads - Utility
 !
-! NOM DU PREFIXE DE L'OBJET DE LA CHARGE
+! Get prefix of object for a load
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  PHENOM : TYPE DE PHENOMENE (MECANIQUE, THERMIQUE, ACOUSTIQUE)
-! IN  CHARGE : NOM DE LA CHARGE (AFFE_CHAR_*)
-! OUT PREFOB : PREFIXE DE L'OBJET DE LA CHARGE
+! In  phenom       : phenomenon (MECANIQUE/THERMIQUE/ACOUSTIQUE)
+! In  load         : name of load
+! Out obje_pref    : prefix of object
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: phenom
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    phenom = phenoz
+    obje_pref = ' '
+    phenom    = phenom_
     if (phenom .eq. 'MECANIQUE') then
-        prefob = charge(1:8)//'.CHME'
+        obje_pref = load(1:8)//'.CHME'
     else if (phenom.eq.'THERMIQUE') then
-        prefob = charge(1:8)//'.CHTH'
+        obje_pref = load(1:8)//'.CHTH'
     else if (phenom.eq.'ACOUSTIQUE') then
-        prefob = charge(1:8)//'.CHAC'
+        obje_pref = load(1:8)//'.CHAC'
     else
         ASSERT(.false.)
     endif

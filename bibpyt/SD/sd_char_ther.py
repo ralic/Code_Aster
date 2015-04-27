@@ -47,6 +47,7 @@ class sd_char_chth(AsBase):
     HECHP = Facultatif(sd_carte())
     RAYO = Facultatif(sd_carte())
     T_EXT = Facultatif(sd_carte())
+    EVOL_CHAR = Facultatif(AsVK8(SDNom(nomj='.EVOL.CHAR'), lonmax=1, ))
 
     # parfois, TEMP_IMPO crée une carte de sd_fonction :
     # il faut alors vérifier ces sd_fonction

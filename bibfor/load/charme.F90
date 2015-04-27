@@ -197,7 +197,7 @@ subroutine charme(load, vale_type)
 !
 ! ----- EVOL_CHAR
 !
-        call cbprca(load)
+        call cbprca('MECANIQUE', load)
 !
 ! ----- PESANTEUR
 !

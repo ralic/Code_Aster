@@ -1,4 +1,4 @@
-subroutine cbprca(load)
+subroutine cbprca(phenom_, load)
 !
 implicit none
 !
@@ -6,6 +6,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/lisnnl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -26,6 +27,7 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    character(len=*), intent(in) :: phenom_
     character(len=8), intent(in) :: load
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,7 +38,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  load      : name of load
+! In  phenom       : phenomenon (MECANIQUE/THERMIQUE/ACOUSTIQUE)
+! In  load         : name of load
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,10 +48,13 @@ implicit none
     character(len=8) :: evol_char
     integer :: nb_occ, nb_cham
     character(len=16) :: type_sd
+    character(len=13) :: obje_pref
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call getvid(' ', 'EVOL_CHAR', scal=evol_char, nbret=nb_occ)
+    call lisnnl(phenom_, load, obje_pref)
+!
     if (nb_occ .ne. 0) then
 !
 ! ----- Check
@@ -63,7 +69,7 @@ implicit none
 !
 ! ----- Save
 !
-        object = load//'.CHME.EVOL.CHAR'
+        object = obje_pref(1:13)//'.EVOL.CHAR'
         call wkvect(object, 'G V K8', 1, vk8 = p_object)
         p_object(1) = evol_char
 

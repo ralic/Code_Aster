@@ -17,6 +17,7 @@ subroutine charth(load, vale_type)
 #include "asterfort/cbflnl.h"
 #include "asterfort/cbflux.h"
 #include "asterfort/cbgrai.h"
+#include "asterfort/cbprca.h"
 #include "asterfort/cbrayo.h"
 #include "asterfort/cbsonl.h"
 #include "asterfort/cbsour.h"
@@ -120,6 +121,10 @@ subroutine charth(load, vale_type)
 !
         call caechp(load, ligrch, ligrmo, mesh, vale_type, &
                     nb_dim)
+!
+! ----- EVOL_CHAR
+!
+        call cbprca('THERMIQUE', load)
 !
 ! ----- GRADIENT INITIAL
 !
