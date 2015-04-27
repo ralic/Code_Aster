@@ -79,6 +79,12 @@ subroutine rsutc2(typres, nomch, nomgd, typsd)
     else if (nomch.eq.'VITE_VENT') then
         nomgd = 'DEPL_R'
         typsd = 'NOEU'
+    else if (nomch.eq.'T_EXT') then
+        nomgd = 'TEMP_R'
+        typsd = 'NOEU'
+    else if (nomch.eq.'COEF_H') then
+        nomgd = 'COEH_R'
+        typsd = 'NOEU'
     else
 !
         call utmess('F', 'PREPOST4_76')
