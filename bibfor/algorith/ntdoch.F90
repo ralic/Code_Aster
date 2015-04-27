@@ -15,6 +15,8 @@ implicit none
 #include "asterfort/lisccr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/load_neut_iden.h"
+#include "asterfort/load_neut_data.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -57,28 +59,24 @@ implicit none
     parameter   (nb_info_maxi=99)
     character(len=24) :: list_info_type(nb_info_maxi)
 !
-    integer :: nb_type_maxi
-    parameter   (nb_type_maxi = 10)
-    character(len=6) :: object(nb_type_maxi)
+    integer :: nb_type_neum
+    parameter   (nb_type_neum = 10)
+    aster_logical :: list_load_keyw(nb_type_neum)
 !
     aster_logical :: l_func_mult, l_load_user
     integer :: nb_info_type
     character(len=24) :: info_type
-    integer :: nb_load, n1, i_load, i_type, iret
-    character(len=24) :: ligrch, lchin, const_func
+    integer :: nb_load, n1, i_load, i_type_neum, iret
+    character(len=24) :: ligrch, const_func
+    character(len=10) :: load_obje(2)
+    character(len=19) :: cart_name
     character(len=24) :: load_name, load_type, load_para, load_func
     real (kind=8) :: rcoef
-    character(len=16) :: pheno
+    character(len=16) :: pheno, load_option
     character(len=24) :: lloadr_name, lloadr_func
     integer, pointer :: v_loadr_info(:) => null()
     character(len=24), pointer :: v_loadr_name(:) => null()
     character(len=24), pointer :: v_loadr_func(:) => null()
-!
-    data object/&
-          '.SOURE'  ,'.FLURE'  ,'.FLUR2'  ,&
-          '.T_EXT'  ,'.COEFH'  ,'.HECHP'  ,&
-          '.GRAIN'  ,'.FLUNL'  ,'.SOUNL'  ,&
-          '.RAYO'   /
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -162,12 +160,12 @@ implicit none
 ! --------- Dirichlet loads (AFFE_CHAR_THER)
 !
             info_type = 'RIEN'
-            lchin = ligrch(1:13)//'.CIMPO.DESC'
-            call jeexin(lchin, iret)
+            cart_name = ligrch(1:13)//'.CIMPO'
+            call jeexin(cart_name//'.DESC', iret)
             if (iret .ne. 0) then
                 if (load_type(5:7) .eq. '_FO') then
                     info_type = 'DIRI_FO'
-                    call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=load_para)
+                    call dismoi('PARA_INST', cart_name, 'CARTE', repk=load_para)
                     if (load_para(1:3) .eq. 'OUI') then
                         info_type = 'DIRI_FT'
                     endif
@@ -200,19 +198,24 @@ implicit none
                 endif
             endif
 !
-! --------- Other loads (AFFE_CHAR_THER)
+! --------- Identify type of Neumann loads 
 !
-            do i_type = 1 ,nb_type_maxi
+            call load_neut_iden(nb_type_neum, load_name, list_load_keyw)
+!
+! --------- Add Neuman loads
+!
+            do i_type_neum = 1 ,nb_type_neum
                 info_type = 'RIEN'
-                lchin = ligrch(1:13)//object(i_type)//'.DESC'
-                call exisd('CHAMP_GD', lchin, iret)
-                if (iret .ne. 0) then
-                    if ((i_type.ge.6) .and. l_func_mult) then
-                        call utmess('F', 'CHARGES_20', sk=load_name(1:8))
+                if (list_load_keyw(i_type_neum)) then
+                    call load_neut_data(i_type_neum, nb_type_neum, '2MBR',&
+                                        load_opti_f_ = load_option, load_obje_ = load_obje)
+                    cart_name  = load_name(1:8)//'.CHTH'//load_obje(1)
+                    if ((load_option.eq.'No_load') .and. l_func_mult) then
+                        call utmess('F', 'CHARGES_20', sk=load_name)
                     endif
                     if (load_type(5:7) .eq. '_FO') then
                         info_type = 'NEUM_FO'
-                        call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=load_para)
+                        call dismoi('PARA_INST', cart_name, 'CARTE', repk=load_para)
                         if (load_para(1:3) .eq. 'OUI') then
                             info_type = 'NEUM_FT'
                         endif

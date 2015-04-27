@@ -220,9 +220,11 @@ implicit none
     if (present(load_obje_)) then
         load_obje_(1) = object1(i_type_neum)
         load_obje_(2) = object2(i_type_neum)
-        nb_obje_ = 1        
-        if (load_obje_(2).ne.' ') then
-            nb_obje_ = 2
+        if (present(nb_obje_)) then
+            nb_obje_ = 1        
+            if (load_obje_(2).ne.' ') then
+                nb_obje_ = 2
+            endif
         endif
     endif
 !
