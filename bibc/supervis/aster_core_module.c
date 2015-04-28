@@ -508,9 +508,9 @@ void DEFSS(UTALRM,utalrm, _IN char *bool, _IN STRING_SIZE lbool,
     s_id = MakeCStrFromFStr(idmess, lidm);
 
     if ( ! strcmp(onoff, "OFF") ) {
-        res = PyObject_CallMethod(get_sh_msglog(), "disable_alarm", "s", s_id);
+        res = PyObject_CallMethod(get_sh_msglog(), "disable_alarm", "sO", s_id, Py_True);
     } else {
-        res = PyObject_CallMethod(get_sh_msglog(), "reset_alarm", "s", s_id);
+        res = PyObject_CallMethod(get_sh_msglog(), "reset_alarm", "sO", s_id, Py_True);
     }
 
     Py_DECREF(res);
