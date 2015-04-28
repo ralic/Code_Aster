@@ -1,25 +1,24 @@
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # METHODE X-FEM ET ELEMENTS COHESIFS
 
 DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('MODELE1_63',))
+      DEBUG=_F(SDVERI='OUI'))
 
 # explication des alarmes ignorees :
 # <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
@@ -35,7 +34,7 @@ a=25.
 b= 6.
 
 PRE_GMSH();
-# pas d etape de raffinement de maillage  
+# pas d etape de raffinement de maillage
 MA=LIRE_MAILLAGE(INFO=1);
 
 MA=DEFI_GROUP(reuse=MA,
@@ -72,10 +71,10 @@ Gc = 0.25e-3
 pena_lagr = 2.0
 MAT=DEFI_MATERIAU(ELAS=_F(E=E,NU=nu),
                   RUPT_FRAG=_F(GC=Gc,SIGM_C=Sc,PENA_LAGR=pena_lagr,),);
-                            
+
 # attention, il est imperatif de ne definir des elements finis que sur ces groupes,
 # car le maillage contient des mailles de faces situees dans le plan median de la structure
-# sur lesquelles il ne faut surtout par creer d'elements (de bords...)                            
+# sur lesquelles il ne faut surtout par creer d'elements (de bords...)
 MO_SAIN=AFFE_MODELE(MAILLAGE=MA,
                     AFFE=_F(GROUP_MA=('VOL','M_HAUT','M_BAS'),
                             PHENOMENE='MECANIQUE',
@@ -85,7 +84,7 @@ MO_SAIN=AFFE_MODELE(MAILLAGE=MA,
 # on garde une fissure de type elliptique
 # mais on etend les axes
 FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
-                    TYPE_DISCONTINUITE='COHESIF',  
+                    TYPE_DISCONTINUITE='COHESIF',
                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                  DEMI_GRAND_AXE = 50.*a,
                                  DEMI_PETIT_AXE = 50.*b,

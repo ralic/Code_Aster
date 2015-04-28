@@ -20,7 +20,7 @@
 
 
 POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',
-      IGNORE_ALARM=('MODELE1_63','MODELE1_64','SUPERVIS_1'))
+      IGNORE_ALARM='SUPERVIS_1')
 
 pas=0.001
 Tfin=11.14-pas
@@ -72,21 +72,21 @@ t_a_z=RECU_FONCTION(RESU_GENE=DYNGENT,
 t_Abs_x0=CALC_FONCTION(INTERPOL='LIN',
                     COMB=(_F(FONCTION=t_a_x,
                                COEF=1,),
-                            _F(FONCTION=ACC_X, 
+                            _F(FONCTION=ACC_X,
                                COEF=1,),),);
 
 t_Abs_y0=CALC_FONCTION(INTERPOL='LIN',
                     COMB=(_F(FONCTION=t_a_y,
                                COEF=1,),
-                            _F(FONCTION=ACC_Y,   
+                            _F(FONCTION=ACC_Y,
                                COEF=1,),),);
 
 t_Abs_z0=CALC_FONCTION(INTERPOL='LIN',
                     COMB=(_F(FONCTION=t_a_z,
                                COEF=1,),
-                            _F(FONCTION=ACC_Z, 
+                            _F(FONCTION=ACC_Z,
                                COEF=1,),),);
-                               
+
 L_tmp0,ordo=t_a_x.Valeurs()
 L_tmp=DEFI_LIST_REEL(VALE=L_tmp0);
 t_Abs_x=CALC_FONC_INTERP(LIST_PARA=L_tmp,
@@ -164,7 +164,7 @@ C_TEMP=CALC_TRANSFERT(NOM_CHAM='ACCE',
                               MESURE_Z=t_Abs_z,
                               TYPE_RESU='HARMONIQUE',
                               TABLE_RESU=CO("TABLE01"),),
-                              );                
+                              );
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
           VALE_CALC=-1.3233422078,

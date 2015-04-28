@@ -18,7 +18,7 @@
 
 #---------------------------------------------------------------------
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('COMPOR4_70','COMPOR2_25'),DEBUG=_F(SDVERI='NON'), IMPR_MACRO='OUI')
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'), IMPR_MACRO='OUI')
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 # <CALCULEL3_47> AVEC CALC_PRECONT, ON PASSE CONSCIEMMENT DE LA LDC 'SANS'

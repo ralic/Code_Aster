@@ -20,7 +20,7 @@
 
 
 POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',
-      IGNORE_ALARM=('MODELE1_63','MODELE1_64','SUPERVIS_1'))
+      IGNORE_ALARM='SUPERVIS_1')
 
 
 #On passe les signaux en frequentiel pour tester la macro en frequentiel
@@ -148,7 +148,7 @@ C_FREQ=CALC_TRANSFERT(NOM_CHAM='ACCE',
                               MESURE_Z=f_Abs_z,
                               TYPE_RESU='HARMONIQUE',
                               TABLE_RESU=CO("TABLE00"),),
-                              );                
+                              );
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
           VALE_CALC=-1.3233422078,

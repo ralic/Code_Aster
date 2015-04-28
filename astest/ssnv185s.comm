@@ -17,10 +17,9 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-      DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('MODELE1_63'))
+      DEBUG=_F(SDVERI='OUI'))
 
-# <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD" 
+# <MODELE1_63> : DANS UN MODELE, IL EXISTE DES ELEMENTS DE TYPE "BORD"
 #                  QUI N'ONT PAS DE VOISIN AVEC RIGIDITE
 #                  LE MODELE PROVOQUANT CES ALARMES NE SERT QU'A LA VISUALISATION
 
@@ -47,8 +46,8 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                    _F(NOM='PTB',GROUP_MA='GM256',),
                                    _F(NOM='PTC',GROUP_MA='GM257',),
                                    _F(GROUP_MA='VOL',),),);
-                    
-                    
+
+
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
@@ -244,21 +243,21 @@ VAL_CALC = [1.1643586672024E+07 ,
 TEST_TABLE(TABLE=SIF,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
-           VALE_CALC=VAL_CALC[0], VALE_REFE=K1REF,    
+           VALE_CALC=VAL_CALC[0], VALE_REFE=K1REF,
            CRITERE='RELATIF',
-           PRECISION=prec,    
+           PRECISION=prec,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=SIF,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
-           VALE_CALC=VAL_CALC[1], VALE_REFE=K1REF,    
+           VALE_CALC=VAL_CALC[1], VALE_REFE=K1REF,
            CRITERE='RELATIF',
-           PRECISION=prec,    
+           PRECISION=prec,
            REFERENCE='ANALYTIQUE',);
 
 # calcul legendre pas ouvert avec le cohesif
-           
+
 GLAGR=CALC_G(RESULTAT=RESU,
              OPTION='CALC_K_G',
              INST=1.0,
@@ -271,19 +270,19 @@ IMPR_TABLE(TABLE=SIF,UNITE=6);
 TEST_TABLE(TABLE=GLAGR,
            NOM_PARA='G',
            TYPE_TEST='MAX',
-           VALE_CALC=661.33224677535, 
-           VALE_REFE=GREF,    
+           VALE_CALC=661.33224677535,
+           VALE_REFE=GREF,
            CRITERE='RELATIF',
-           PRECISION=0.09,    
+           PRECISION=0.09,
            REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=GLAGR,
            NOM_PARA='G',
            TYPE_TEST='MIN',
-           VALE_CALC=661.33224677535, 
-           VALE_REFE=GREF,    
+           VALE_CALC=661.33224677535,
+           VALE_REFE=GREF,
            CRITERE='RELATIF',
-           PRECISION=0.09,    
+           PRECISION=0.09,
            REFERENCE='ANALYTIQUE')
 
 # on a enleve la partie POST_K1_K2_K3
@@ -316,7 +315,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE_CALC=DXREF,
            CRITERE='RELATIF',
-           
+
            )
 
 TEST_TABLE(TABLE=TABDEP,
@@ -324,7 +323,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE_CALC=DYREF,
            CRITERE='RELATIF',
-           
+
            )
 
 TEST_TABLE(TABLE=TABDEP,
@@ -332,7 +331,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE_CALC=DZREF,
            CRITERE='RELATIF',
-           
+
            )
 
 
@@ -343,7 +342,7 @@ TEST_TABLE(TABLE=TABDEP,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='3D')) 
+                             MODELISATION='3D'))
 
 RES_VISU=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                         RESULTAT = RESU)
@@ -365,7 +364,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=4.3392028143818E-13,                  
+                   VALE_CALC=4.3392028143818E-13,
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -373,7 +372,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=0.92815725572923,                   
+                   VALE_CALC=0.92815725572923,
                    CRITERE='ABSOLU',
                    ),
                 _F(NUME_ORDRE=1,
@@ -381,7 +380,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_VISU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.54612495462764,                   
+                   VALE_CALC=0.54612495462764,
                    CRITERE='ABSOLU',
                    ),
                 ),

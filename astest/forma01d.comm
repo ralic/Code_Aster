@@ -21,7 +21,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON',),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('MODELE1_63','UTILITAI4_2'),
+      IGNORE_ALARM='UTILITAI4_2',
       )
 
 import math
@@ -41,10 +41,10 @@ r=10.
 # taille des mailles initiales (diagonales des triangles)
 h0 = 7.
 
-# nombre de segment le long du (quart de) trou 
+# nombre de segment le long du (quart de) trou
 nb_cercles=42
 
-# taille cible des mailles apres raffinement 
+# taille cible des mailles apres raffinement
 hc = math.pi/2*r/nb_cercles
 
 # ======================================================================
@@ -72,13 +72,13 @@ print 'hello r_raff ',r_raff
 nb_iter = nb_raff+1
 MA    = [None]*(nb_iter+1)
 DIAM= [None]*(nb_iter+1)
-i_raff=0   
+i_raff=0
 
 MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED')
 
 for i_raff in range(nb_iter) :
 
-   FISS=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],  
+   FISS=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],
                          TYPE_DISCONTINUITE='INTERFACE',
                          DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                       DEMI_GRAND_AXE = r,
@@ -103,7 +103,7 @@ for i_raff in range(nb_iter) :
                   ADD_CHAM = _F(CHAM_GD = DIAM[i_raff+1],
                                 CHAM_CAT='DIAMETRE'),
                   )
-                  
+
    DETRUIRE(CONCEPT=_F(NOM=(FISS,CHERR)),INFO=1)
 
 # impression du dernier maillage
@@ -124,7 +124,7 @@ MAT=DEFI_MATERIAU(ELAS=_F(E=200000.0,
 #                 MAILLAGE=MA[nb_iter],
 #                 CREA_GROUP_NO=_F(NOM='NTROU',OPTION='ENV_SPHERE',POINT=(0.,0.,),PRECISION=r/10.,RAYON=r/10.),
 #                 INFO=2 )
-                        
+
 
 MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
                           MAILLAGE=MA[nb_iter],
@@ -163,23 +163,23 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  DX=0.0,),),
                     PRES_REP=_F(GROUP_MA='haut',
                                 PRES=-100.0,),);
-                                
-# pour bloquer les modes rigides de l'inclusion centrale 
+
+# pour bloquer les modes rigides de l'inclusion centrale
 #CHARINC=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                       DDL_IMPO=_F(GROUP_NO='NTROU',
 #                                   DX=0.0,DY=-10.0,),
 #                       );
-                                
+
 RESU=MECA_STATIQUE(MODELE=MODELEK,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=CHAR,),
       #                   _F(CHARGE=CHARINC,),
                            ),);
-                           
+
 # ======================================================================
 #                 POST-TRAITEMENT
 # ======================================================================
-                        
+
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
 
 # on definit les noeuds pour le post-traitement (on ne pouvait pas le faire dans le maillage, of course)
@@ -194,9 +194,9 @@ MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
 
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=_F(GROUP_MA='plaque', 
+                     AFFE=_F(GROUP_MA='plaque',
                              PHENOMENE='MECANIQUE',
-                             MODELISATION='C_PLAN',),) 
+                             MODELISATION='C_PLAN',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                         RESULTAT    = RESU)
@@ -205,7 +205,7 @@ RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,
                     RESULTAT=RES_XFEM,
                     CRITERES=('SIEQ_ELNO','SIEQ_ELGA','SIEQ_NOEU'),
                     CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'),);
-           
+
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM))
 
 
@@ -216,7 +216,7 @@ SIG_A=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               GROUP_NO='A',
                               NOM_CMP='SIXX',),);
 
-# on filtre en supprimant les noeuds cote "moins" (cote trou)                                 
+# on filtre en supprimant les noeuds cote "moins" (cote trou)
 SIG_A = CALC_TABLE(reuse = SIG_A,
                    TABLE = SIG_A,
                    ACTION = (_F(OPERATION = 'FILTRE',
@@ -232,8 +232,8 @@ SIG_B=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               NOM_CHAM='SIGM_NOEU',
                               GROUP_NO='B',
                               NOM_CMP='SIYY',),);
-                                 
-# on filtre en supprimant les noeuds cote "moins" (cote trou)                                 
+
+# on filtre en supprimant les noeuds cote "moins" (cote trou)
 SIG_B = CALC_TABLE(reuse = SIG_B,
                    TABLE = SIG_B,
                    ACTION = (_F(OPERATION = 'FILTRE',
@@ -244,7 +244,7 @@ SIG_B = CALC_TABLE(reuse = SIG_B,
 IMPR_TABLE(TABLE=SIG_B)
 
 # test sur les contraintes
-# attention, la notion de SIGM_NOEU est particuliere pour X-FEM 
+# attention, la notion de SIGM_NOEU est particuliere pour X-FEM
 # car les sous-elements de visu ont des noeuds doubles non connectes
 # on a donc plusieurs valeurs pour une position de noeud (SIGM_NOEU = SIGM_ELNO en fait)
 # on teste donc le min et le max de chaque table
