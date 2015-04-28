@@ -283,7 +283,7 @@ def NormeAster(RESULTAT, Depl_Ana, P_ana, MAIL, MODELE, GROUP_MA_VOL, GROUP_MA_S
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI'),
       PAR_LOT='NON',
-      IGNORE_ALARM=('CALCULEL2_63','SUPERVIS_1','CONTACT3_16'))
+      IGNORE_ALARM=('MODELE1_63','SUPERVIS_1','CONTACT3_16'))
 
 #================================================================================================
 # Definition des caracteristiques du materiau

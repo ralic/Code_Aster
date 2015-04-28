@@ -20,7 +20,7 @@
 from Contrib.veri_matr_tang import VERI_MATR_TANG
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-      IGNORE_ALARM='COMPOR1_70',DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='OUI'))
 
 
 compor=[]

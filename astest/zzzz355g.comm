@@ -22,7 +22,7 @@
 #   FRICTION OPTION : 2 (IFROT)
 #   FLUID TYPE : 5 (AIR + SATURATED STEAM)
 #############################################################################################
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), IGNORE_ALARM=('COMPOR4_70'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
 Npos = 4
 

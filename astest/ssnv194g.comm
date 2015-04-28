@@ -17,11 +17,11 @@
 # ======================================================================
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),
-         IGNORE_ALARM=('MECANONLINE5_21'))
+         )
 
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-# IGNORE_ALARM='MECANONLINE5_21' car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-3 suffit pour une bonne precision
+# IGNORE_ALARM= car pour RUNGE_KUTTA, RESI_GLOB_RELA=1.E-3 suffit pour une bonne precision
 # comparaison : resi_inte_rela  CPU total (calibre7)   RESU
 #                1.E-4           98s                   OK
 #                1.E-3           51s                   OK

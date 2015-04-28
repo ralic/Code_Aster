@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-              IGNORE_ALARM=('MODELISA4_1','CALCULEL5_7',))
+              IGNORE_ALARM=('MODELISA4_1',))
 # MODELISA4_1 : le maillage est forme de 2 pyramides disjointes
 # CALCULEL5_7 : en attendant la realisation de la fiche 18290
 

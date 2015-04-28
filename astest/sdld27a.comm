@@ -27,7 +27,7 @@
 from numpy import math
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM='ALGELINE5_27')
+      )
 
 MA=LIRE_MAILLAGE( )
 

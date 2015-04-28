@@ -20,7 +20,7 @@
 
 
 POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',
-      IGNORE_ALARM=('CALCULEL2_63','CALCULEL2_64','SUPERVIS_1'))
+      IGNORE_ALARM=('MODELE1_63','MODELE1_64','SUPERVIS_1'))
 
 
 #On passe les signaux en frequentiel pour tester la macro en frequentiel

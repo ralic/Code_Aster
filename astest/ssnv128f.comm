@@ -25,7 +25,7 @@
 #
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM=('CALCULEL2_63'))
+      IGNORE_ALARM=('MODELE1_63'))
 
 #......................................................................
 #  CALCUL TEST ELEMENTS FINIS DE CONTACT 3D HEXA20

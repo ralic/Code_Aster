@@ -17,7 +17,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI',),
-      IGNORE_ALARM=('MED_1',),);
+      );
 
 CoefRef = 1.0E-05
 

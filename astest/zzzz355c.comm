@@ -23,7 +23,7 @@
 #   FLUID TYPE : 4 (AIR + OVERHEATED STEAM)
 #############################################################################################
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), IGNORE_ALARM=('COMPOR4_70'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
 Npos = 2
 

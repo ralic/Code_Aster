@@ -28,7 +28,7 @@
 # --------------------------------------------------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),
-    IGNORE_ALARM='MODELISA4_8'
+    
 )
 
 MAIL=LIRE_MAILLAGE()

@@ -18,7 +18,7 @@
 # METHODE PAR PROJECTION SUR UN MAILLAGE - FISSURE INITIALE INCLINEE
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('XFEM2_94','XFEM2_18'),);
+      IGNORE_ALARM=('XFEM2_18'),);
 #----------------------------------------------
 #                 MAILLAGE
 #----------------------------------------------

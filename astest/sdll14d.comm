@@ -23,7 +23,7 @@
 #    AVEC L'OPTION 'PLUS_GRANDE'
 #---------------------------------------------------------------------
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),
-       IGNORE_ALARM=('ALGELINE3_58','ALGELINE4_68'),)
+       IGNORE_ALARM=('ALGELINE3_58',),)
 
 #
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',   INFO=2)

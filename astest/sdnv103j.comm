@@ -17,7 +17,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-IGNORE_ALARM=('ELEMENTS4_74'),DEBUG=_F(SDVERI='OUI'))
+DEBUG=_F(SDVERI='OUI'))
 
 MA1=LIRE_MAILLAGE(FORMAT='MED',);
 

@@ -18,7 +18,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
-IGNORE_ALARM='COMPOR1_70',DEBUG=_F(SDVERI='NON',JXVERI='OUI'))
+DEBUG=_F(SDVERI='NON',JXVERI='OUI'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
 

@@ -17,7 +17,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('ALGELINE3_67',),
+       DEBUG=_F(SDVERI='OUI'),
        IMPR_MACRO='OUI',
          )
 

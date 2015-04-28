@@ -18,7 +18,7 @@
 #       PROJECTION SUR UN MAILLAGE DIFFERENT
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
-IGNORE_ALARM=('CALCULEL5_7'),DEBUG=_F(SDVERI='OUI'))
+DEBUG=_F(SDVERI='OUI'))
 
 
 # F2 : formule utilisee pour calculer l'erreur relative :

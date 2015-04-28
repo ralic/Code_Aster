@@ -19,7 +19,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('CALCULEL2_63'),
+      IGNORE_ALARM=('MODELE1_63'),
       PAR_LOT='NON')
 
 # le PAR_LOT='NON' est necessaire a la recuperation dans un entier du nombre de fonds de fissure (EXTR_TABLE)
