@@ -245,7 +245,7 @@ print "ALPHA=0.0"
 
 ssi_1_a = DYNA_ISS_VARI(
 #                      FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,     
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.999 ,
+                       NOM_CMP =  'DX' ,
                       FONC_SIGNAL   = ACCE_X2 ,         
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
@@ -283,9 +283,8 @@ testr_1=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_1 ),);
                                                     
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           TOLE_MACHINE=1.e-4,
            PRECISION=1.E-2,
-           VALE_CALC= 1.08283316E-03,
+           VALE_CALC=0.00108283316036,
            VALE_REFE=0.0,
            NOM_PARA='ECART_TYPE ',
            TABLE=testr_1,)
@@ -304,7 +303,7 @@ pas_f=2.5
 
 ssi_1_b = DYNA_ISS_VARI(
                       FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,     
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
+                       NOM_CMP =  'DX' ,
                       FONC_SIGNAL   = ACCE_X ,         
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
@@ -342,7 +341,7 @@ testr_1b=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_1b ),);
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC= 1.32859701E-03,
+           VALE_CALC=0.00132859701368,
            VALE_REFE=0.0,
            NOM_PARA='ECART_TYPE ',
            TABLE=testr_1b,)
@@ -361,7 +360,7 @@ fmax=100./2.
 pas_f=2.5
 ssi_2_a = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,      
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
+                       NOM_CMP =  'DX' ,
                       FONC_SIGNAL   = ACCE_X ,         
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
@@ -397,7 +396,7 @@ fmax=35.0
 pas_f=2.5
 ssi_2_b = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,      
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
+                       NOM_CMP =  'DX' ,
                       FONC_SIGNAL   = ACCE_X ,         
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
@@ -482,9 +481,8 @@ testm_2=INFO_FONCTION(MAX=_F(FONCTION=test_2 ),);
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           TOLE_MACHINE=1.e-4,
            PRECISION=1.E-2,
-           VALE_CALC=1.8386023467034E-03,
+           VALE_CALC=0.0018386023467,
            VALE_REFE=0.0,
            NOM_PARA='ACCE',
            TABLE=testm_2,
@@ -495,9 +493,8 @@ TEST_TABLE(CRITERE='ABSOLU',
 
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           TOLE_MACHINE=1.e-4,
            PRECISION=1.E-3,
-           VALE_CALC=4.6343191997696E-04,
+           VALE_CALC=0.000463431919977,
            VALE_REFE=0.0,
            NOM_PARA='ECART_TYPE ',
            TABLE=testr_2,)
@@ -505,22 +502,20 @@ TEST_TABLE(CRITERE='ABSOLU',
 # -------REFERENCE = 'NON_DEFINI',  
 #        (valeurs du SRO du signal de sortie pour le cas avec variabilite)
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.23913965,
-                        VALE_REFE=0.23855000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.24704882298287,
+                        VALE_REFE=0.23855,
                         CRITERE='RELATIF',
-                        VALE_PARA=(0.050000000000000003, 30.0),
+                        VALE_PARA=(0.05, 30.0),
                         REFERENCE='NON_DEFINI',
-                        PRECISION=1.E-2,
-                        TOLE_MACHINE=1.E-2,
+                        PRECISION=5.E-2,
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SRADBX2,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.53624565,
-                        TOLE_MACHINE=1.e-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.54972381045908,
                         CRITERE='RELATIF',
-                        VALE_PARA=(0.050000000000000003, 10.0),
+                        VALE_PARA=(0.05, 10.0),
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SRADBX2,
                         ),
@@ -529,24 +524,22 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.53624565,
 # -------REFERENCE = 'AUTRE_ASTER',  on considere le calcul approche avec freq_fin<freq_coup
 #        (la reference est le calcul complet SRADBX2)                                              
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.23707497,
-                        VALE_REFE=0.23855000000000001,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.24481344943722,
+                        VALE_REFE=0.23855,
                         CRITERE='RELATIF',
-                        VALE_PARA=(0.050000000000000003, 30.0),
+                        VALE_PARA=(0.05, 30.0),
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.10000000000000001,
-                        TOLE_MACHINE=1.E-2,
+                        PRECISION=0.1,
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SRADBX3,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.53625,
-                        VALE_REFE=0.53472699999999995,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.54972881944242,
+                        VALE_REFE=0.534727,
                         CRITERE='RELATIF',
-                        VALE_PARA=(0.050000000000000003, 10.0),
+                        VALE_PARA=(0.05, 10.0),
                         REFERENCE='AUTRE_ASTER',
-                        TOLE_MACHINE=1.E-3,
-                        PRECISION=1.E-2,
+                        PRECISION=5.E-2,
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SRADBX3,),
               )
@@ -562,7 +555,7 @@ fmax=35.0
 pas_f=2.5
 ssi_4_a = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,      
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
+                       NOM_CMP =  'DX' ,
                       FONC_SIGNAL   = ACCE_X ,         
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
@@ -594,22 +587,20 @@ SRADBX4=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ssi_4, LIST_FREQ = L_FREQ,
 # -------REFERENCE = 'NON_DEFINI',  
 #        (valeurs du SRO du signal de sortie pour le cas avec variabilite)
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.23911997,
-                        VALE_REFE=0.23902999999999999,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.24206790953408,
+                        VALE_REFE=0.23903,
                         CRITERE='RELATIF',
-                        VALE_PARA=(0.050000000000000003, 30.0),
+                        VALE_PARA=(0.05, 30.0),
                         REFERENCE='NON_DEFINI',
-                        PRECISION=2.E-3,
-                        TOLE_MACHINE=1.E-3,
+                        PRECISION=3.E-2,
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SRADBX4,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.57383146,
-                        TOLE_MACHINE=1.E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.58159937286633,
                         CRITERE='RELATIF',
-                        VALE_PARA=(0.050000000000000003, 10.0),
+                        VALE_PARA=(0.05, 10.0),
                         NOM_PARA=('AMOR', 'FREQ'),
                         FONCTION=SRADBX4,
                         ),

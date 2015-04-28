@@ -268,7 +268,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
                         UTMESS('F','ALGORITH6_86')
                   else :
                      fact = 1./(nbno)
-                     XO[modp,mods]=1./(maxm**2.)*fact*NP.inner(MCMP,PVEC[modp])
+                     XO[modp,mods]=1./(maxm**2.)*fact*abs(NP.inner(MCMP,PVEC[modp]))
          # CAS 2: MODES EF
          if INTERF['MODE_INTERF'] =='TOUT':
             for modp in range(0,nbme):

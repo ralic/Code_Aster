@@ -21,9 +21,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 
 MAIL0=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI',),);
 
-# Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
-MAIL0=MODI_MAILLAGE(reuse =MAIL0, MAILLAGE=MAIL0, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
-
 
 MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAIL0,
                      CREA_POI1=_F(NOM_GROUP_MA='P3',
@@ -384,7 +381,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.76703093760960,
 # w=60. a0=2.0
 # reference: valx=0.402,valz= 0.416
 # non regression: valx=4.36637E-01, valz=4.36637E-01
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645991857,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645976034,
                         VALE_REFE=0.402,
                         CRITERE='RELATIF',
                         VALE_PARA=60.0,
@@ -393,7 +390,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645991857,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645991857,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645976034,
                         VALE_REFE=0.416,
                         CRITERE='RELATIF',
                         VALE_PARA=60.0,
@@ -417,7 +414,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.43663645976034,
 # w=90. a0=3.0
 # reference: valx=0.251,valz= 0.270
 # non regression: valx=2.51483E-01, valz=2.51483E-01
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316699203,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316690143,
                         VALE_REFE=0.251,
                         CRITERE='RELATIF',
                         VALE_PARA=90.0,
@@ -426,7 +423,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316699203,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316699203,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.25146316690143,
                         VALE_REFE=0.270,
                         CRITERE='RELATIF',
                         VALE_PARA=90.0,
@@ -474,14 +471,14 @@ REP4=RECU_FONCTION(    INTE_SPEC=RN11Z,
                     NOM_CMP_I = 'DZ',
                       )
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.005270279644,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.005270275310,
                          VALE_REFE=1.0,
                          CRITERE='RELATIF',
                          VALE_PARA=30.0,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=0.01,
                          FONCTION=REP3,),
-                      _F(VALE_CALC=1.030140425288,
+                      _F(VALE_CALC=1.019483967030,
                          VALE_REFE=1.0,
                          CRITERE='RELATIF',
                          VALE_PARA=30.0,
