@@ -1,6 +1,7 @@
-subroutine load_neut_spec(type_ther , type_calc  , model        , time       , load_name  ,&
-                          load_nume , i_type_neum, nb_type_neumz, nb_in_maxi , nb_in_prep ,&
-                          lchin     , lpain      , nb_in_add    , load_ligrel, load_option,&
+subroutine load_neut_spec(type_ther   , type_calc  , model        , time       , load_name  ,&
+                          load_nume   , i_type_neum, nb_type_neumz, nb_in_maxi , nb_in_prep ,&
+                          lchin       , lpain      , nb_in_add    , lpaout     , load_ligrel,&
+                          load_option,&
                           time_move_)
 !
 implicit none
@@ -44,6 +45,7 @@ implicit none
     character(len=*), intent(inout) :: lpain(nb_in_maxi)
     character(len=*), intent(inout) :: lchin(nb_in_maxi)
     integer, intent(out) :: nb_in_add
+    character(len=8), intent(out) :: lpaout
     character(len=19), intent(out) :: load_ligrel
     character(len=16), intent(out) :: load_option
     character(len=24), optional, intent(in) :: time_move_
@@ -60,8 +62,10 @@ implicit none
 !                        'MOVE' for moving sources
 !                        'STAT' if not
 ! In  type_calc        : type of option to compute
-!                        '2MBR' for second member
-!                        'RESI' for residuel
+!                        '2MBR' for second member (vector)
+!                        'RESI' for residual (vector)
+!                        'MRIG' for rigidity (matrix)
+!                        'MTAN' for tangent matrix
 ! In  model            : name of the model
 ! In  time             : time (<CARTE>)
 ! In  time_move        : modified time (<CARTE>) for THER_NON_LINE_MO
@@ -74,6 +78,7 @@ implicit none
 ! IO  lpain            : list of input parameters
 ! IO  lchin            : list of input fields
 ! Out nb_in_add        : number of input fields which been added
+! Out lpaout           : name of output parameter
 ! Out load_ligrel      : name of LIGREL for current load
 ! Out load_option      : name of option for current load
 !
@@ -192,6 +197,20 @@ implicit none
             else
                 ASSERT(.false.)
             endif
+        endif
+!
+! ----- Ouput parameter
+!
+        if (type_calc.eq.'2MBR') then
+            lpaout = 'PVECTTR'
+        else if (type_calc.eq.'RESI') then
+            lpaout = 'PRESIDU'
+        else if (type_calc.eq.'MRIG') then
+            lpaout = 'PMATTTR'
+        else if (type_calc.eq.'MTAN') then
+            lpaout = 'PMATTTR'
+        else
+            ASSERT(.false.)
         endif
 !
 ! ----- Number of input fields which been added

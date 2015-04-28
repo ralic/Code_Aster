@@ -6,7 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/load_neut_2mbr.h"
+#include "asterfort/load_neut_comp.h"
 #include "asterfort/load_neut_prep.h"
 #include "asterfort/assert.h"
 #include "asterfort/inical.h"
@@ -148,14 +148,13 @@ implicit none
         load_nume = v_load_info(nb_load+i_load+1)
         if (load_nume .gt. 0) then
             if (type_ther.eq.'MOVE') then
-                call load_neut_2mbr(stop_calc, model     , time      , i_load    , load_name ,&
-                                    load_nume, nb_in_maxi, nb_in_prep, lpain     , lchin    , &
-                                    base     , resu_elem , vect_elem , &
-                                    time_move_ = time_move)
+                call load_neut_comp('2MBR'   , stop_calc , model         , time      , load_name,&
+                                    load_nume, nb_in_maxi, nb_in_prep    , lpain     , lchin    ,&
+                                    base     , resu_elem , vect_elem     , time_move , i_load)
             else
-                call load_neut_2mbr(stop_calc, model     , time      , i_load    , load_name ,&
-                                    load_nume, nb_in_maxi, nb_in_prep, lpain     , lchin    , &
-                                    base     , resu_elem , vect_elem )
+                call load_neut_comp('2MBR'   , stop_calc , model         , time      , load_name,&
+                                    load_nume, nb_in_maxi, nb_in_prep    , lpain     , lchin    ,&
+                                    base     , resu_elem , vect_elem     , i_load_ = i_load)
             endif
         endif
     end do

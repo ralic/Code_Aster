@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/memare.h"
 #include "asterfort/load_list_info.h"
-#include "asterfort/load_neut_mrig.h"
+#include "asterfort/load_neut_comp.h"
 #include "asterfort/load_neut_prep.h"
 !
 ! ======================================================================
@@ -126,9 +126,9 @@ implicit none
         load_name = v_load_name(i_load)(1:8)
         load_nume = v_load_info(nb_load+i_load+1)
         if (load_nume .gt. 0) then
-            call load_neut_mrig(stop_calc , model     , time , load_name, load_nume,&
-                                nb_in_maxi, nb_in_prep, lpain, lchin    , base     ,&
-                                resu_elem , matr_elem )
+            call load_neut_comp('MRIG'   , stop_calc , model     , time , load_name,&
+                                load_nume, nb_in_maxi, nb_in_prep, lpain, lchin    ,&
+                                base     , resu_elem , matr_elem )
         endif
     end do
 !

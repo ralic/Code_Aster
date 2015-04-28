@@ -87,10 +87,10 @@ implicit none
 !
 ! - Object name construct in AFFE_CHAR_THER
 !
-    data object1  /'.T_EXT','.FLURE','.FLUR2','.SOURE',&
+    data object1  /'.COEFH','.FLURE','.FLUR2','.SOURE',&
                    '.HECHP','.GRAIN','.FLUNL','.SOUNL',&
                    '.RAYO ','.EVOL.CHAR'/
-    data object2  /'.COEFH',' '     ,' '     ,' '     ,&
+    data object2  /'.T_EXT',' '     ,' '     ,' '     ,&
                    ' '     ,' '     ,' '     ,' '     ,&
                    ' '     ,' '     /
 !
@@ -114,25 +114,25 @@ implicit none
 !
 ! - Name of input parameter field for second member  (real coefficient)
 !
-    data para_2mbr_r1 /'PT_EXTR','PFLUXNR','PFLUXVR','PSOURCR',&
+    data para_2mbr_r1 /'PCOEFHR','PFLUXNR','PFLUXVR','PSOURCR',&
                        'PHECHPR','PGRAINR','       ','       ',&
                        '       ','       '/
 !
 ! - Name of input parameter field for second member  (function coefficient)
 !
-    data para_2mbr_f1 /'PT_EXTF','PFLUXNF','PFLUXVF','PSOURCF',&
+    data para_2mbr_f1 /'PCOEFHF','PFLUXNF','PFLUXVF','PSOURCF',&
                        'PHECHPF','PGRAINF','       ','       ',&
                        '       ','       '/
 !
 ! - Name of input parameter field for second member  (real coefficient)
 !
-    data para_2mbr_r2 /'PCOEFHR','       ','       ','       ',&
+    data para_2mbr_r2 /'PT_EXTR','       ','       ','       ',&
                        '       ','       ','       ','       ',&
                        '       ','       '/
 !
 ! - Name of input parameter field for second member  (function coefficient)
 !
-    data para_2mbr_f2 /'PCOEFHF','       ','       ','       ',&
+    data para_2mbr_f2 /'PT_EXTF','       ','       ','       ',&
                        '       ','       ','       ','       ',&
                        '       ','       '/
 !
@@ -150,25 +150,25 @@ implicit none
 !
 ! - Name of input parameter field for residual (real coefficient)
 !
-    data para_resi_r1 /'PT_EXTR','PFLUXNR','PFLUXVR','PSOURCR',&
+    data para_resi_r1 /'PCOEFHR','PFLUXNR','PFLUXVR','PSOURCR',&
                        'PHECHPR','PGRAINR','PFLUXNL','PSOURNL',&
                        'PRAYONR','       '/
 !
 ! - Name of input parameter field for residual (function coefficient)
 !
-    data para_resi_f1 /'PT_EXTF','PFLUXNF','PFLUXVF','PSOURCF',&
+    data para_resi_f1 /'PCOEFHF','PFLUXNF','PFLUXVF','PSOURCF',&
                        'PHECHPF','PGRAINF','PFLUXNL','PSOURNL',&
                        'PRAYONF','       '/
 !
 ! - Name of input parameter field for second member  (real coefficient)
 !
-    data para_resi_r2 /'PCOEFHR','       ','       ','       ',&
+    data para_resi_r2 /'PT_EXTR','       ','       ','       ',&
                        '       ','       ','       ','       ',&
                        '       ','       '/
 !
 ! - Name of input parameter field for second member  (function coefficient)
 !
-    data para_resi_f2 /'PCOEFHF','       ','       ','       ',&
+    data para_resi_f2 /'PT_EXTF','       ','       ','       ',&
                        '       ','       ','       ','       ',&
                        '       ','       '/
 !
@@ -294,14 +294,6 @@ implicit none
     if (present(load_obje_)) then
         load_obje_(1) = object1(i_type_neum)
         load_obje_(2) = object2(i_type_neum)
-        if (present(type_calc_)) then
-            if (type_calc_.eq.'MRIG'.or.type_calc_.eq.'MTAN') then
-                if (i_type_neum.eq.1) then
-                    load_obje_(1) = object2(i_type_neum)
-                    load_obje_(2) = object1(i_type_neum)
-                endif    
-            endif
-        endif
     endif
     if (present(nb_obje_)) then
         nb_obje_ = 1
