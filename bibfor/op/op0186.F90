@@ -293,11 +293,11 @@ implicit none
 ! SYSTEME LINEAIRE RESOLU:  A * (T+,1 - T-) = B
 ! SOLUTION: VTEMP= T- ET VTEMPM = T+,1
 !
-    call nxpred(model , mate     , cara_elem, list_load, nume_dof,&
-                solver, lostat   , time     , neq      , matass  ,&
-                maprec, varc_curr, vtemp    , vtempm   , vtempp  ,&
-                vhydr , vhydrp   , tmpchi   , tmpchf   , compor  ,&
-                cndirp, cnchci   , vec2nd   , vec2ni)
+    call nxpred(model , mate  , cara_elem, list_load, nume_dof,&
+                solver, lostat, tpsthe   , time     , matass  ,&
+                neq   , maprec, varc_curr, vtemp    , vtempm  ,&
+                vtempp, vhydr , vhydrp   , tmpchi   , tmpchf  ,&
+                compor, cndirp, cnchci   , vec2nd   , vec2ni)
 !
 ! ======================================================================
 !              ITERATIONS DE LA METHODE DE NEWTON-RAPHSON
@@ -330,12 +330,13 @@ implicit none
 ! SYSTEME LINEAIRE RESOLU:  A * (T+,I+1 - T+,I) = B
 ! SOLUTION: VTEMPP = T+,I+1 - T+,I
 !
-    call nxnewt(model      , mate       , cara_elem, list_load, nume_dof,&
-                solver     , time       , neq      , matass   , maprec  ,&
-                cnchci     , varc_curr  , vtemp    , vtempm   , vtempp  ,&
-                vec2nd     , mediri     , conver   , vhydr    , vhydrp  ,&
-                tmpchi     , tmpchf     , compor   , vabtla   , cnresi  ,&
-                ther_crit_i, ther_crit_r, reasma   , testr    , testm)
+    call nxnewt(model      , mate       , cara_elem  , list_load, nume_dof,&
+                solver     , tpsthe     , time       , neq      , matass  ,&
+                maprec     , cnchci     , varc_curr  , vtemp    , vtempm  ,&
+                vtempp     , vec2nd     , mediri     , conver   , vhydr   ,&
+                vhydrp     , tmpchi     , tmpchf     , compor   , vabtla  ,&
+                cnresi     , ther_crit_i, ther_crit_r, reasma   , testr   ,&
+                testm)
 !
 ! --- SI NON CONVERGENCE ALORS RECHERCHE LINEAIRE
 !       (CALCUL DE RHO) SUR L INCREMENT VTEMPP
@@ -348,11 +349,11 @@ implicit none
 !
 ! ON CALCULE LE RHO/ VTEMPR = T+,I+1BIS = T+,1 + RHO * (T+,I+1 - T+,I)
 ! MINIMISE VEC2ND - RESI_THER(T+,I+1BIS) - (BT)*LAGRANGE
-            call nxrech(model , mate  , cara_elem  , list_load  , nume_dof,&
-                        time  , neq   , compor     , varc_curr  , vtempm  ,&
-                        vtempp, vtempr, vtemp      , vhydr      , vhydrp  ,&
-                        tmpchi, tmpchf, vec2nd     , vabtla     , cnresi  ,&
-                        rho   , iterho, ther_para_r, ther_para_i)
+            call nxrech(model , mate  , cara_elem, list_load  , nume_dof   ,&
+                        tpsthe, time  , neq      , compor     , varc_curr  ,&
+                        vtempm, vtempp, vtempr   , vtemp      , vhydr      ,&
+                        vhydrp, tmpchi, tmpchf   , vec2nd     , vabtla     ,&
+                        cnresi, rho   , iterho   , ther_para_r, ther_para_i)
         else
             rho = 1.d0
         endif

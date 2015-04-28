@@ -70,9 +70,9 @@ implicit none
     character(len=24) :: ligrch, const_func
     character(len=10) :: load_obje(2)
     character(len=19) :: cart_name
-    character(len=24) :: load_name, load_type, load_para, load_func
+    character(len=24) :: load_name, load_type, load_para, load_func, load_keyw
     real (kind=8) :: rcoef
-    character(len=16) :: pheno, load_option
+    character(len=16) :: pheno, load_opti_f
     character(len=24) :: lloadr_name, lloadr_func
     integer, pointer :: v_loadr_info(:) => null()
     character(len=24), pointer :: v_loadr_name(:) => null()
@@ -208,19 +208,26 @@ implicit none
                 info_type = 'RIEN'
                 if (list_load_keyw(i_type_neum)) then
                     call load_neut_data(i_type_neum, nb_type_neum, '2MBR',&
-                                        load_opti_f_ = load_option, load_obje_ = load_obje)
+                                        load_opti_f_ = load_opti_f,&
+                                        load_obje_   = load_obje,&
+                                        load_keyw_   = load_keyw)
                     cart_name  = load_name(1:8)//'.CHTH'//load_obje(1)
-                    if ((load_option.eq.'No_load') .and. l_func_mult) then
+                    if ((load_opti_f.eq.'No_load') .and. l_func_mult) then
                         call utmess('F', 'CHARGES_20', sk=load_name)
                     endif
-                    if (load_type(5:7) .eq. '_FO') then
-                        info_type = 'NEUM_FO'
-                        call dismoi('PARA_INST', cart_name, 'CARTE', repk=load_para)
-                        if (load_para(1:3) .eq. 'OUI') then
-                            info_type = 'NEUM_FT'
-                        endif
+                    if (load_keyw.eq.'EVOL_CHAR') then
+                        ASSERT (load_type(5:7) .ne. '_FO')
+                        info_type = 'NEUM_CSTE'
                     else
-                       info_type = 'NEUM_CSTE'
+                        if (load_type(5:7) .eq. '_FO') then
+                            info_type = 'NEUM_FO'
+                            call dismoi('PARA_INST', cart_name, 'CARTE', repk=load_para)
+                            if (load_para(1:3) .eq. 'OUI') then
+                                info_type = 'NEUM_FT'
+                            endif
+                        else
+                           info_type = 'NEUM_CSTE'
+                        endif
                     endif
                 endif
                 if (info_type .ne. 'RIEN') then

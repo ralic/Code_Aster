@@ -1,8 +1,8 @@
-subroutine nxrech(model   , mate     , cara_elem  , list_load  , nume_dof ,&
-                  time    , lonch    , compor     , varc_curr  , temp_iter,&
-                  vtempp  , vtempr   , temp_prev  , hydr_prev  , hydr_curr,&
-                  dry_prev, dry_curr , vec2nd     , cnvabt     , cnresi   ,&
-                  rho     , iterho   , ther_para_r, ther_para_i)
+subroutine nxrech(model    , mate    , cara_elem, list_load  , nume_dof   ,&
+                  tpsthe   , time    , lonch    , compor     , varc_curr  ,&
+                  temp_iter, vtempp  , vtempr   , temp_prev  , hydr_prev  ,&
+                  hydr_curr, dry_prev, dry_curr , vec2nd     , cnvabt     ,&
+                  cnresi   , rho     , iterho   , ther_para_r, ther_para_i)
 !
 implicit none
 !
@@ -40,6 +40,7 @@ implicit none
     character(len=24), intent(in) :: cara_elem
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
+    real(kind=8) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=19), intent(in) :: varc_curr
     integer :: ther_para_i(*), lonch
@@ -62,6 +63,7 @@ implicit none
     character(len=24) :: vebtla, veresi, varesi, bidon, vabtla
     character(len=1) :: typres
     integer :: itrmax, k, iterho
+    real(kind=8) :: time_curr
     real(kind=8), pointer :: tempm(:) => null()
     real(kind=8), pointer :: tempp(:) => null()
     real(kind=8), pointer :: tempr(:) => null()
@@ -76,6 +78,7 @@ implicit none
     call jemarq()
     varesi = '&&VARESI'
     veresi = '&&VERESI'
+    time_curr = tpsthe(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
 !
@@ -105,9 +108,9 @@ implicit none
 !
 ! ----- Neumann loads elementary vectors (residuals)
 !
-        call verstp(model   , lload_name, lload_info, mate     , time     ,&
-                    compor  , temp_prev , vtempr    , hydr_prev, hydr_curr,&
-                    dry_prev, dry_curr  , varc_curr , veresi)
+        call verstp(model    , lload_name, lload_info, mate     , time_curr,&
+                    time     , compor    , temp_prev , vtempr   , hydr_prev,&
+                    hydr_curr, dry_prev  , dry_curr  , varc_curr, veresi)
 !
 ! ----- Neumann loads vector (residuals)
 !

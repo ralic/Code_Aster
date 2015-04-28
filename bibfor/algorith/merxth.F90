@@ -1,6 +1,6 @@
-subroutine merxth(model   , lload_name, lload_info, cara_elem, mate    ,&
-                  time    , temp_iter , compor    , varc_curr, dry_prev,&
-                  dry_curr, matr_elem)
+subroutine merxth(model    , lload_name, lload_info, cara_elem, mate     ,&
+                  time_curr, time      , temp_iter , compor   , varc_curr,&
+                  dry_prev , dry_curr  , matr_elem)
 !
 implicit none
 !
@@ -36,6 +36,7 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: lload_name
     character(len=24), intent(in) :: lload_info
+    real(kind=8), intent(in) :: time_curr
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: cara_elem
@@ -59,6 +60,7 @@ implicit none
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  lload_name       : name of object for list of loads name
 ! In  lload_info       : name of object for list of loads info
+! In  time_curr        : current time
 ! In  time             : time (<CARTE>)
 ! In  compor           : name of comportment definition (field)
 ! In  temp_iter        : temperature field at current Newton iteration
@@ -136,9 +138,9 @@ implicit none
         load_name = v_load_name(i_load)(1:8)
         load_nume = v_load_info(nb_load+i_load+1)
         if (load_nume .gt. 0) then
-            call load_neut_comp('MTAN'   , stop_calc , model     , time , load_name,&
-                                load_nume, nb_in_maxi, nb_in_prep, lpain, lchin    ,&
-                                base     , resu_elem , matr_elem )
+            call load_neut_comp('MTAN'   , stop_calc, model     , time_curr , time ,&
+                                load_name, load_nume, nb_in_maxi, nb_in_prep, lpain,&
+                                lchin    , base     , resu_elem , matr_elem )
         endif
     end do
 !

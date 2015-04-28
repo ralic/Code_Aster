@@ -1,9 +1,10 @@
-subroutine nxnewt(model      , mate       , cara_elem, list_load, nume_dof ,&
-                  solver     , time       , lonch    , matass   , maprec   ,&
-                  cnchci     , varc_curr  , temp_prev, temp_iter, vtempp   ,&
-                  vec2nd     , mediri     , conver   , hydr_prev, hydr_curr,&
-                  dry_prev   , dry_curr   , compor   , cnvabt   , cnresi   ,&
-                  ther_crit_i, ther_crit_r, reasma   , testr    , testm)
+subroutine nxnewt(model    , mate       , cara_elem  , list_load, nume_dof ,&
+                  solver   , tpsthe     , time       , lonch    , matass   ,&
+                  maprec   , cnchci     , varc_curr  , temp_prev, temp_iter,&
+                  vtempp   , vec2nd     , mediri     , conver   , hydr_prev,&
+                  hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt   ,&
+                  cnresi   , ther_crit_i, ther_crit_r, reasma   , testr    ,&
+                  testm)
 !
 implicit none
 !
@@ -47,6 +48,7 @@ implicit none
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
+    real(kind=8) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=19), intent(in) :: varc_curr
     integer :: lonch
@@ -78,6 +80,7 @@ implicit none
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
     character(len=24) :: tlimat(2), mediri, merigi, cnvabt
     real(kind=8) :: testr, testm, vnorm
+    real(kind=8) :: time_curr
     character(len=24) :: lload_name, lload_info
     integer :: iret
     real(kind=8), pointer :: btla(:) => null()
@@ -99,6 +102,7 @@ implicit none
     veresi = '&&VERESI'
     vebtla = '&&VETBTL           .RELR'
     merigi = '&&METRIG           .RELR'
+    time_curr = tpsthe(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
 !
@@ -108,9 +112,9 @@ implicit none
 !
 ! - Neumann loads elementary vectors (residuals)
 !
-    call verstp(model   , lload_name, lload_info, mate     , time     ,&
-                compor  , temp_prev , temp_iter , hydr_prev, hydr_curr,&
-                dry_prev, dry_curr  , varc_curr , veresi)
+    call verstp(model    , lload_name, lload_info, mate     , time_curr,&
+                time     , compor    , temp_prev , temp_iter, hydr_prev,&
+                hydr_curr, dry_prev  , dry_curr  , varc_curr, veresi)
 !
 ! - Neumann loads vector (residuals)
 !
@@ -169,9 +173,9 @@ implicit none
 !
 ! ---- Tangent matrix (non-linear) - Volumic and surfacic terms
 !
-        call merxth(model   , lload_name, lload_info, cara_elem, mate    ,&
-                    time    , temp_iter , compor    , varc_curr, dry_prev,&
-                    dry_curr, merigi)
+        call merxth(model    , lload_name, lload_info, cara_elem, mate     ,&
+                    time_curr, time      , temp_iter , compor   , varc_curr,&
+                    dry_prev , dry_curr  , merigi)
         call jeveuo(merigi, 'L', jmer)
         call jeveuo(mediri, 'L', jmed)
 !

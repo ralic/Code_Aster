@@ -1,6 +1,6 @@
-subroutine vechth(type_ther , model_, lload_name_, lload_info_, cara_elem_,&
-                  mate_     , time_ , temp_prev_ , vect_elem_ , varc_curr_,&
-                  time_move_)
+subroutine vechth(type_ther , model_   , lload_name_, lload_info_, cara_elem_,&
+                  mate_     , time_curr, time_      , temp_prev_ , vect_elem_,&
+                  varc_curr_, time_move_)
 !
 implicit none
 !
@@ -36,6 +36,7 @@ implicit none
     character(len=*), intent(in) :: lload_name_
     character(len=*), intent(in) :: lload_info_
     character(len=*), intent(in) :: cara_elem_
+    real(kind=8), intent(in) :: time_curr
     character(len=*), intent(in) :: time_
     character(len=*), intent(in) :: temp_prev_
     character(len=*), intent(inout) :: vect_elem_
@@ -59,6 +60,7 @@ implicit none
 ! In  cara_elem        : name of elementary characteristics (field)
 ! In  lload_name       : name of object for list of loads name
 ! In  lload_info       : name of object for list of loads info
+! In  time_curr        : current time
 ! In  time             : time (<CARTE>)
 ! In  varc_curr        : command variable for current time
 ! In  temp_prev        : previous temperature
@@ -148,13 +150,14 @@ implicit none
         load_nume = v_load_info(nb_load+i_load+1)
         if (load_nume .gt. 0) then
             if (type_ther.eq.'MOVE') then
-                call load_neut_comp('2MBR'   , stop_calc , model         , time      , load_name,&
-                                    load_nume, nb_in_maxi, nb_in_prep    , lpain     , lchin    ,&
-                                    base     , resu_elem , vect_elem     , time_move , i_load)
+                call load_neut_comp('2MBR'   , stop_calc, model     , time_curr , time     ,&
+                                    load_name, load_nume, nb_in_maxi, nb_in_prep, lpain    ,&
+                                    lchin    , base     , resu_elem , vect_elem , time_move,&
+                                    i_load)
             else
-                call load_neut_comp('2MBR'   , stop_calc , model         , time      , load_name,&
-                                    load_nume, nb_in_maxi, nb_in_prep    , lpain     , lchin    ,&
-                                    base     , resu_elem , vect_elem     , i_load_ = i_load)
+                call load_neut_comp('2MBR'   , stop_calc, model     , time_curr , time      ,&
+                                    load_name, load_nume, nb_in_maxi, nb_in_prep, lpain     ,&
+                                    lchin    , base     , resu_elem , vect_elem , i_load_ = i_load)
             endif
         endif
     end do

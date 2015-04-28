@@ -56,8 +56,8 @@ implicit none
 ! Out load_opti_f      : option for function parameter 
 ! Out load_para_r      : name of parameterS (real)
 ! Out load_para_f      : name of parameterS (function)
+! Out load_keyw        : keyword in AFFE_CHAR_THER for this load
 ! Out load_obje        : name of objectS (cart in AFFE_CHAR_THER)
-! Out resi_option      : name of option for residual
 ! Out nb_obje          : number of objects 
 !
 ! --------------------------------------------------------------------------------------------------

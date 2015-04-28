@@ -75,6 +75,7 @@ implicit none
     character(len=24) :: ligrmo, mediri, tlimat(3)
     character(len=24) :: vediri, vechtp, vadirp, vachtp, metrnl
     character(len=19) :: resu_elem
+    real(kind=8) :: time_curr
     character(len=24), pointer :: p_relr(:) => null()
     real(kind=8), pointer :: chtp(:) => null()
     real(kind=8), pointer :: dirp(:) => null()
@@ -95,7 +96,8 @@ implicit none
     vachtp    = '&&VATCHA'
     time_move = '&&NTTCMV.TIMEMO'
     merigi    = '&&METRIG'
-    creas      = ' '
+    creas     = ' '
+    time_curr = tpsthe(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
     lload_func = list_load(1:19)//'.FCHA'
@@ -137,8 +139,8 @@ implicit none
 !            RQ : POUR LE CALCUL THERMIQUE, LES ARGUMENTS VTEMPP,
 !                 VTEMPD ET THETA SONT INUTILISES.
 !
-        call vechth('MOVE' , model, lload_name, lload_info, cara_elem,&
-                    mate   , time , vtemp , vechtp,&
+        call vechth('MOVE' , model    , lload_name, lload_info, cara_elem,&
+                    mate   , time_curr, time      , vtemp     , vechtp   ,&
                     time_move_ = time_move)
         call asasve(vechtp, nume_dof, typres, vachtp)
         call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&

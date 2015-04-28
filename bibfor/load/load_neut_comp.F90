@@ -1,6 +1,7 @@
-subroutine load_neut_comp(type_calc, stop_calc , model         , time      , load_name,&
-                          load_nume, nb_in_maxi, nb_in_prep    , lpain     , lchin    ,&
-                          base     , resu_elem , matr_vect_elem, time_move_, i_load_  )
+subroutine load_neut_comp(type_calc, stop_calc, model     , time_curr     , time      ,&
+                          load_name, load_nume, nb_in_maxi, nb_in_prep    , lpain     ,&
+                          lchin    , base     , resu_elem , matr_vect_elem, time_move_,&
+                          i_load_  )
 !
 implicit none
 !
@@ -33,6 +34,7 @@ implicit none
     character(len=4), intent(in) :: type_calc
     character(len=1), intent(in) :: stop_calc
     character(len=24), intent(in) :: model
+    real(kind=8), intent(in) :: time_curr
     character(len=24), intent(in) :: time
     character(len=8), intent(in) :: load_name
     integer, intent(in) :: load_nume
@@ -61,6 +63,7 @@ implicit none
 !                        'MTAN' for tangent matrix
 ! In  stop_calc        : CALCUL subroutine comportement
 ! In  model            : name of the model
+! In  time_curr        : current time
 ! In  time             : time (<CARTE>)
 ! In  load_name        : name of current load
 ! In  load_nume        : identification of load type
@@ -92,16 +95,16 @@ implicit none
 ! ----- Get information about load
 !
         if (present(time_move_)) then
-            call load_neut_spec('MOVE'     , type_calc  , model       , time       , load_name  ,&
-                                load_nume  , i_type_neum, nb_type_neum, nb_in_maxi , nb_in_prep ,&
-                                lchin      , lpain      , nb_in_add   , lpaout     , load_ligrel,&
-                                load_option,&
+            call load_neut_spec('MOVE'     , type_calc  , model      , time_curr   , time       ,&
+                                load_name  , load_nume  , i_type_neum, nb_type_neum, nb_in_maxi ,&
+                                nb_in_prep , lchin      , lpain      , nb_in_add   , lpaout     ,&
+                                load_ligrel, load_option,&
                                 time_move_ = time_move_)
         else
-            call load_neut_spec('STAT'     , type_calc  , model       , time       , load_name  ,&
-                                load_nume  , i_type_neum, nb_type_neum, nb_in_maxi , nb_in_prep ,&
-                                lchin      , lpain      , nb_in_add   , lpaout     , load_ligrel,&
-                                load_option)
+            call load_neut_spec('STAT'     , type_calc  , model      , time_curr   , time       ,&
+                                load_name  , load_nume  , i_type_neum, nb_type_neum, nb_in_maxi ,&
+                                nb_in_prep , lchin      , lpain      , nb_in_add   , lpaout     ,&
+                                load_ligrel, load_option)
         endif
 !
         if (load_option .ne. 'No_Load') then

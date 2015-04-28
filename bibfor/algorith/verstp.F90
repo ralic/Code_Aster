@@ -1,6 +1,6 @@
-subroutine verstp(model   , lload_name, lload_info, mate     , time     ,&
-                  compor  , temp_prev , temp_iter , hydr_prev, hydr_curr,&
-                  dry_prev, dry_curr  , varc_curr , vect_elem)
+subroutine verstp(model    , lload_name, lload_info, mate      , time_curr,&
+                  time     , compor    , temp_prev , temp_iter , hydr_prev,&
+                  hydr_curr, dry_prev  , dry_curr  , varc_curr , vect_elem)
 !
 implicit none
 !
@@ -40,6 +40,7 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: lload_name
     character(len=24), intent(in) :: lload_info
+    real(kind=8), intent(in) :: time_curr
     character(len=24), intent(in) :: time
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: temp_prev
@@ -64,6 +65,7 @@ implicit none
 ! In  mate             : name of material characteristics (field)
 ! In  lload_name       : name of object for list of loads name
 ! In  lload_info       : name of object for list of loads info
+! In  time_curr        : current time
 ! In  time             : time (<CARTE>)
 ! In  temp_prev        : previous temperature
 ! In  temp_iter        : temperature field at current Newton iteration
@@ -127,9 +129,9 @@ implicit none
         load_name = v_load_name(i_load)(1:8)
         load_nume = v_load_info(nb_load+i_load+1)
         if (load_nume .gt. 0) then
-            call load_neut_comp('RESI'   , stop_calc , model     , time , load_name,&
-                                load_nume, nb_in_maxi, nb_in_prep, lpain, lchin    ,&
-                                base     , resu_elem , vect_elem )
+            call load_neut_comp('RESI'   , stop_calc, model     , time_curr , time ,&
+                                load_name, load_nume, nb_in_maxi, nb_in_prep, lpain,&
+                                lchin    , base     , resu_elem , vect_elem )
         endif
     end do
 !

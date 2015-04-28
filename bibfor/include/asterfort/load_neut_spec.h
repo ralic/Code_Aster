@@ -16,14 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine load_neut_spec(type_ther  , type_calc  , model        , time       , load_name  ,&
-                              load_nume  , i_type_neum, nb_type_neumz, nb_in_maxi , nb_in_prep ,&
-                              lchin      , lpain      , nb_in_add    , lpaout     , load_ligrel,&
-                              load_option,&
+    subroutine load_neut_spec(type_ther  , type_calc  , model      , time_curr    , time      ,&
+                              load_name  , load_nume  , i_type_neum, nb_type_neumz, nb_in_maxi,&
+                              nb_in_prep , lchin      , lpain      , nb_in_add    , lpaout    ,&
+                              load_ligrel, load_option,&
                               time_move_)
         character(len=4), intent(in) :: type_ther
         character(len=4), intent(in) :: type_calc
         character(len=24), intent(in) :: model
+        real(kind=8), intent(in) :: time_curr
         character(len=24), intent(in) :: time
         character(len=8), intent(in) :: load_name
         integer, intent(in) :: load_nume

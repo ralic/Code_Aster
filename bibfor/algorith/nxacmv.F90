@@ -94,6 +94,7 @@ implicit none
     integer :: j2ni, j2ni1, j2ni2, j2ni3, iret, typcum, ifm, niv
     character(len=1) :: typres
     character(len=2) :: codret
+    real(kind=8) :: time_curr
     character(len=8) :: k8bid, nomcmp(6)
     character(len=16) :: k16bid, option, nomcmd
     character(len=24) :: ligrmo, merigi, memass, mediri, tlimat(3), bidon
@@ -129,6 +130,7 @@ implicit none
     vachtp = '&&'//nompro//'VATCHA'
     vachtn = '&&'//nompro//'VANCHA'
     creas = ' '
+    time_curr = tpsthe(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
     lload_func = list_load(1:19)//'.FCHA'
@@ -223,8 +225,8 @@ implicit none
 !
 ! ----- Neumann loads elementary vectors (second member)
 !
-        call vechth('STAT', model, lload_name, lload_info, cara_elem,&
-                    mate  , time , vtemp     , vechtp,&
+        call vechth('STAT', model    , lload_name, lload_info, cara_elem,&
+                    mate  , time_curr, time      , vtemp     , vechtp,&
                     varc_curr_ = varc_curr)
 !
 ! ----- Neumann loads assembled vector (second member)
@@ -354,9 +356,9 @@ implicit none
 !
 ! -------- Tangent matrix (non-linear) - Volumic and surfacic terms
 !
-            call merxth(model   , lload_name, lload_info, cara_elem, mate    ,&
-                        time    , vtemp2    , compor    , varc_curr, dry_prev,&
-                        dry_curr, merigi)
+            call merxth(model    , lload_name, lload_info, cara_elem, mate     ,&
+                        time_curr, time      , vtemp2    , compor   , varc_curr,&
+                        dry_prev , dry_curr  , merigi)
 !
 ! 3.1.2. ==> (RE)CALCUL DES MATRICES DE MASSE ET DE RIGIDITE EN LINEAIRE
 !
@@ -368,8 +370,8 @@ implicit none
             endif
 !
             if (reasrg) then
-                call mergth(model, lload_name, lload_info, cara_elem, mate,&
-                            time, varc_curr, merigi)
+                call mergth(model    , lload_name, lload_info, cara_elem, mate,&
+                            time_curr, time      , varc_curr , merigi)
             endif
 !
         endif

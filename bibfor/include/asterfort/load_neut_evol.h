@@ -16,20 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vechth(type_ther , model_   , lload_name_, lload_info_, cara_elem_,&
-                      mate_     , time_curr, time_      , temp_prev_ , vect_elem_,&
-                      varc_curr_, time_move_)
-        character(len=4), intent(in) :: type_ther
-        character(len=*), intent(in) :: model_
-        character(len=*), intent(in) :: lload_name_
-        character(len=*), intent(in) :: lload_info_
-        character(len=*), intent(in) :: cara_elem_
+    subroutine load_neut_evol(nb_type_neumz, type_calc  , time_curr, load_name, load_type_ligr,&
+                              load_opti_r  , load_para_r, load_obje, nb_obje)
+        integer, intent(in) :: nb_type_neumz
+        character(len=4), intent(in) :: type_calc
         real(kind=8), intent(in) :: time_curr
-        character(len=*), intent(in) :: time_
-        character(len=*), intent(in) :: temp_prev_
-        character(len=*), intent(inout) :: vect_elem_
-        character(len=*), intent(in) :: mate_
-        character(len=*), optional, intent(in) :: varc_curr_
-        character(len=*), optional, intent(in) :: time_move_
-    end subroutine vechth
+        character(len=8), intent(in) :: load_name
+        character(len=6), intent(out) :: load_type_ligr
+        character(len=16), intent(out) :: load_opti_r
+        character(len=8), intent(out) :: load_para_r(2)
+        character(len=19), intent(out) :: load_obje(2)
+        integer, intent(out) :: nb_obje
+    end subroutine load_neut_evol
 end interface

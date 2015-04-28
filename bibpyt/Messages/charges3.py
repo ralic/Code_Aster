@@ -91,4 +91,13 @@ Les composantes dans le champ de vent %(k1)s doivent être exactement DX, DY et 
 Les chargements de type EVOL_CHAR ne sont pas traités par CALC_VECT_ELEM.
 """),
 
+    12 : _(u"""
+Problème lors du traitement du chargement de type EVOL_CHAR %(k1)s.
+L'extraction du chargement a échoué pour l'instant %(r1)f.
+Le chargement est mal défini:
+- soit %(k1)s n'est pas indexé par l'instant;
+- soit le chargement n'a pas été trouvé pour cet instant;
+- soit il manque l'un des deux champs nécessaires;
+"""),
+
 }

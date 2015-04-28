@@ -16,12 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine merxth(model   , lload_name, lload_info, cara_elem, mate    ,&
-                      time    , temp_iter , compor    , varc_curr, dry_prev,&
-                      dry_curr, matr_elem)
+    subroutine merxth(model    , lload_name, lload_info, cara_elem, mate     ,&
+                      time_curr, time      , temp_iter , compor   , varc_curr,&
+                      dry_prev , dry_curr  , matr_elem)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: lload_name
         character(len=24), intent(in) :: lload_info
+        real(kind=8), intent(in) :: time_curr
         character(len=24), intent(in) :: time
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem

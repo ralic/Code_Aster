@@ -20,17 +20,18 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxpred(model    , mate     , cara_elem, list_load, nume_dof,&
-                      solver   , lostat   , time     , lonch    , matass  ,&
-                      maprec   , varc_curr, temp_prev, temp_iter, vtempp  ,&
-                      hydr_prev, hydr_curr, dry_prev , dry_curr , compor  ,&
-                      cndirp   , cnchci   , vec2nd   , vec2ni)
+    subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof ,&
+                      solver, lostat   , tpsthe   , time     , matass   ,&
+                      lonch , maprec   , varc_curr, temp_prev, temp_iter,&
+                      vtempp, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
+                      compor, cndirp   , cnchci   , vec2nd   , vec2ni)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: solver
+        real(kind=8) :: tpsthe(6)
         character(len=24), intent(in) :: time
         character(len=19), intent(in) :: varc_curr
         aster_logical :: lostat

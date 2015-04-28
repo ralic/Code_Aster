@@ -1,8 +1,8 @@
-subroutine nxpred(model    , mate     , cara_elem, list_load, nume_dof,&
-                  solver   , lostat   , time     , lonch    , matass  ,&
-                  maprec   , varc_curr, temp_prev, temp_iter, vtempp  ,&
-                  hydr_prev, hydr_curr, dry_prev , dry_curr , compor  ,&
-                  cndirp   , cnchci   , vec2nd   , vec2ni)
+subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof ,&
+                  solver, lostat   , tpsthe   , time     , matass   ,&
+                  lonch , maprec   , varc_curr, temp_prev, temp_iter,&
+                  vtempp, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
+                  compor, cndirp   , cnchci   , vec2nd   , vec2ni)
 !
 implicit none
 !
@@ -44,6 +44,7 @@ implicit none
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
+    real(kind=8) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=19), intent(in) :: varc_curr
     integer :: lonch
@@ -69,6 +70,7 @@ implicit none
     integer :: jtempm
     integer :: jbuem
     real(kind=8) :: rbid
+    real(kind=8) :: time_curr
     character(len=1) :: typres
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla, criter
@@ -99,6 +101,7 @@ implicit none
     vebuem = '&&VEBUEM           .RELR'
     vabuem = ' '
     cnresi = ' '
+    time_curr = tpsthe(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
 !
@@ -119,9 +122,9 @@ implicit none
 !
 ! ----- Neumann loads elementary vectors (residuals)
 !
-        call verstp(model   , lload_name, lload_info, mate     , time     ,&
-                    compor  , temp_prev , temp_prev , hydr_prev, hydr_curr,&
-                    dry_prev, dry_curr  , varc_curr , veresi)
+        call verstp(model    , lload_name, lload_info, mate     , time_curr,&
+                    time     , compor    , temp_prev , temp_prev, hydr_prev,&
+                    hydr_curr, dry_prev  , dry_curr  , varc_curr, veresi)
 !
 ! ----- Neumann loads vector (residuals)
 !
