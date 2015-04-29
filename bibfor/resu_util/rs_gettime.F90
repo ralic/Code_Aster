@@ -1,14 +1,13 @@
-subroutine rs_getlast(result_, nume_last, inst_last)
+subroutine rs_gettime(result_, nume, inst)
 !
 implicit none
 !
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/rsorac.h"
-#include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,44 +25,32 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
-    integer, intent(out) :: nume_last
-    real(kind=8), optional, intent(out) :: inst_last
+    integer, intent(in) :: nume
+    real(kind=8), intent(out) :: inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Results datastructure - Utility
 !
-! Get last index stored in results datastructure
+! Get time at index stored in results datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  result           : name of results datastructure
-! Out nume_last        : last index stored in results datastructure
-! Out inst_last        : last time stored in results datastructure
-!
+! In  nume             : index to find in results datastructure
+! Out inst             : time found in results datastructure
+!                        
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result
-    character(len=8) :: k8bid
-    complex(kind=8) :: c16bid
-    integer :: list(1), iret, jinst
-    real(kind=8) :: r8bid
+    integer :: j_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
     result    = result_
-    nume_last = 0
-    call rsorac(result, 'DERNIER', 0  , r8bid, k8bid,&
-                c16bid, 0.d0     , ' ', list , 1    ,&
-                iret)
-    if (iret .eq. 0) then
-        call utmess('F', 'RESULTAT1_1', sk=result)
-    endif
-    nume_last = list(1)
-    if (present(inst_last)) then
-        call rsadpa(result, 'L', 1, 'INST', nume_last,&
-                    0, sjv=jinst)
-        inst_last = zr(jinst)
-    endif
+    inst      = r8vide()
+    call rsadpa(result, 'L', 1, 'INST', nume,&
+                0, sjv=j_inst)
+    inst      = zr(j_inst)
 
 end subroutine
