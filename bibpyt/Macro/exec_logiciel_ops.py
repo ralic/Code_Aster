@@ -42,6 +42,7 @@ class ExecProgram( object ):
     :step: the *etape* object
     :prog: the program to execute
     :args: the arguments passed to the program
+    :shell: indicator to run the program through a shell
     :debug: debug flag
     :exitCodeMax: the maximum acceptable return code
     """
@@ -72,6 +73,7 @@ class ExecProgram( object ):
         """Pre-execution function, read the keywords"""
         self.prog = kwargs['LOGICIEL']
         self.args = list( kwargs['ARGUMENT'] or [] )
+        self.shell = kwargs['SHELL'] == 'OUI'
         self.debug = kwargs['INFO'] == 2
         self.exitCodeMax = kwargs['CODE_RETOUR_MAXI']
 
@@ -84,6 +86,39 @@ class ExecProgram( object ):
 
     def cleanUp( self ):
         """Cleanup function executed even if `execute` fails"""
+
+    def buildCommand( self ):
+        """Return the command line to execute"""
+        cmd = [self.prog] + self.args
+        if self.shell:
+            cmd = ' '.join(cmd)
+        return cmd
+
+    def executeCommand( self, cmd, silent=False ):
+        """Execute the command line. Return the Popen object"""
+        if not silent:
+            UTMESS('I', 'EXECLOGICIEL0_8',  valk=cmd, print_as='E')
+        process = subprocess.Popen(cmd, shell=self.shell, stdout=PIPE, stderr=PIPE)
+        return process
+
+    def _execute( self ):
+        """Execute the program"""
+        cmd = self.buildCommand()
+        process = self.executeCommand( cmd )
+        output, error = process.communicate()
+        ok = self.isOk( process.returncode )
+        # always print the output
+        if True:
+            UTMESS('I', 'EXECLOGICIEL0_11',
+                   vali=[self.exitCodeMax, process.returncode])
+            UTMESS('I', 'EXECLOGICIEL0_9',  valk=output)
+        # print error in debug mode or if it failed
+        if self.debug or not ok:
+            UTMESS('I', 'EXECLOGICIEL0_10', valk=error, print_as='E')
+        # error
+        if not ok:
+            UTMESS('F', 'EXECLOGICIEL0_3',
+                   vali=[self.exitCodeMax, process.returncode])
 
     def isOk( self, exitCode ):
         """Tell if the execution succeeded"""
@@ -101,25 +136,7 @@ class ExecExternal( ExecProgram ):
 
     def execute( self ):
         """Execute the program"""
-        # TODO cmd = self.buildCommand()
-        cmd = ' '.join([self.prog] + self.args)
-        # TODO self.executeCommand( cmd )
-        UTMESS('I', 'EXECLOGICIEL0_8',  valk=cmd, print_as='E')
-        process = subprocess.Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
-        output, error = process.communicate()
-        ok = self.isOk( process.returncode )
-        # always print the output
-        if True:
-            UTMESS('I', 'EXECLOGICIEL0_11',
-                   vali=[self.exitCodeMax, process.returncode])
-            UTMESS('I', 'EXECLOGICIEL0_9',  valk=output)
-        # print error in debug mode or if it failed
-        if self.debug or not ok:
-            UTMESS('I', 'EXECLOGICIEL0_10', valk=error, print_as='E')
-        # error
-        if not ok:
-            UTMESS('F', 'EXECLOGICIEL0_3',
-                   vali=[self.exitCodeMax, process.returncode])
+        return self._execute()
 
 
 class ExecMesher( ExecExternal ):
@@ -190,14 +207,6 @@ class ExecGibi( ExecMesher ):
         PRE_GIBI(UNITE_GIBI=ulGibi,
                  UNITE_MAILLAGE=ulMesh)
 
-
-class ExecSalome( ExecExternal ):
-    """Execute a SALOME script from Code_Aster"""
-
-
-            # if len(self.args) < 1:
-            #     UTMESS('F', 'EXECLOGICIEL0_1')
-            # self.fileOut = self.args[0]
 
 
 

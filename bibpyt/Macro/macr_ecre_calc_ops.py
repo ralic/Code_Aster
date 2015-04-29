@@ -72,10 +72,7 @@ def macr_ecre_calc_ops(
     defaut = '00'
 
     # IMPORTATION DE COMMANDES ASTER
-    EXEC_LOGICIEL = self.get_cmd("EXEC_LOGICIEL")
     CREA_TABLE = self.get_cmd("CREA_TABLE")
-#  IMPR_TABLE     = self.get_cmd("IMPR_TABLE")
-    IMPR_FONCTION = self.get_cmd("IMPR_FONCTION")
 
     # RECUPERATION DES MOTS-CLES FACTEURS
     dFISSURE = FISSURE[0].cree_dict_valeurs(FISSURE[0].mc_liste)

@@ -32,9 +32,14 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
                  EXCLUS('MAILLAGE','SALOME'),
                  ),
 
-      LOGICIEL = SIMP(statut='f', typ=('Fichier','','Sauvegarde')),
-      ARGUMENT = SIMP(statut='f', max='**', typ='TXM'),
-
+      LOGICIEL = SIMP(statut='f', typ=('Fichier','','Sauvegarde'),
+                      fr=tr("Programme ou script à exécuter")),
+      ARGUMENT = SIMP(statut='f', max='**', typ='TXM',
+                      fr=tr("Arguments à transmettre à LOGICIEL")),
+      SHELL = SIMP(statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON',
+                   fr=tr("Execution dans un shell, nécessaire si LOGICIEL n'est pas "
+                         "mais une ligne de commande complète utilisant des "
+                         "redirections ou des caractères de completions")),
 
       MACHINE_DISTANTE = FACT(statut='f',
         SSH_ADRESSE  = SIMP(statut='o', typ='TXM', val_min=1, val_max=255,
