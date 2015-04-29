@@ -20,11 +20,9 @@
 # depuis le répertoire "outils"
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON',)
-
-import os.path as osp
-import Templates
-TEMPLATESDIR = osp.dirname(Templates.__file__)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),
+      IMPR_MACRO='NON',)
 
 EXEC_LOGICIEL(LOGICIEL='ls -la', SHELL='OUI')
 
