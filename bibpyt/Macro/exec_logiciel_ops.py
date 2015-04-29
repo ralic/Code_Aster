@@ -54,14 +54,16 @@ class ExecProgram( object ):
             class_ = ExecSalome
         elif kwargs['MAILLAGE']:
             fmt = kwargs['MAILLAGE']['FORMAT']
-            if fmt not in ('GMSH', 'GIBI', ): #'SALOME'
+            if fmt not in ('GMSH', 'GIBI', 'SALOME'):
                 UTMESS('F', 'EXECLOGICIEL0_2', valk=fmt)
-            if fmt == 'GMSH':
+            if fmt == 'SALOME':
+                class_ = ExecSalome
+            elif fmt == 'GMSH':
                 class_ = ExecGmsh
             elif fmt == 'GIBI':
                 class_ = ExecGibi
         else:
-            class_ = ExecExternal
+            class_ = ExecProgram
         return class_(macro)
 
     def __init__( self, step ):
@@ -79,7 +81,7 @@ class ExecProgram( object ):
 
     def execute( self ):
         """Execute the program"""
-        raise NotImplementedError("must be implemented in a subclass")
+        self.executeCommand()
 
     def post( self ):
         """Execute a post-function"""
@@ -87,38 +89,45 @@ class ExecProgram( object ):
     def cleanUp( self ):
         """Cleanup function executed even if `execute` fails"""
 
-    def buildCommand( self ):
+    def buildCmdLine( self ):
         """Return the command line to execute"""
         cmd = [self.prog] + self.args
         if self.shell:
             cmd = ' '.join(cmd)
         return cmd
 
-    def executeCommand( self, cmd, silent=False ):
-        """Execute the command line. Return the Popen object"""
-        if not silent:
-            UTMESS('I', 'EXECLOGICIEL0_8',  valk=cmd, print_as='E')
-        process = subprocess.Popen(cmd, shell=self.shell, stdout=PIPE, stderr=PIPE)
-        return process
-
-    def _execute( self ):
-        """Execute the program"""
-        cmd = self.buildCommand()
-        process = self.executeCommand( cmd )
+    def executeCmdLine( self, cmd, capture, silent=False ):
+        """Execute the command line.
+        Return output, error and the exit code"""
+        if self.debug or not silent:
+            UTMESS('I', 'EXECLOGICIEL0_8',  valk=repr(cmd))
+        options = { 'close_fds': True }
+        if capture:
+            options['stdout'] = PIPE
+            options['stderr'] = PIPE
+        process = subprocess.Popen(cmd, shell=self.shell, **options)
         output, error = process.communicate()
-        ok = self.isOk( process.returncode )
-        # always print the output
-        if True:
+        status = process.returncode
+        return output or '', error or '', status
+
+    def executeCommand( self, capture=True, silent=False ):
+        """Execute the program"""
+        cmd = self.buildCmdLine()
+        output, error, exitCode = self.executeCmdLine( cmd, capture, silent )
+        ok = self.isOk( exitCode )
+        # print the output
+        if self.debug or not silent:
             UTMESS('I', 'EXECLOGICIEL0_11',
-                   vali=[self.exitCodeMax, process.returncode])
-            UTMESS('I', 'EXECLOGICIEL0_9',  valk=output)
+                   vali=[self.exitCodeMax, exitCode])
+            if capture:
+                UTMESS('I', 'EXECLOGICIEL0_9',  valk=output)
         # print error in debug mode or if it failed
-        if self.debug or not ok:
+        if (self.debug or not ok) and capture:
             UTMESS('I', 'EXECLOGICIEL0_10', valk=error, print_as='E')
         # error
         if not ok:
             UTMESS('F', 'EXECLOGICIEL0_3',
-                   vali=[self.exitCodeMax, process.returncode])
+                   vali=[self.exitCodeMax, exitCode])
 
     def isOk( self, exitCode ):
         """Tell if the execution succeeded"""
@@ -127,19 +136,7 @@ class ExecProgram( object ):
         return exitCode <= self.exitCodeMax
 
 
-class ExecExternal( ExecProgram ):
-    """Execute an external program"""
-
-    def __init__( self, step ):
-        """Initialisation"""
-        super(ExecExternal, self).__init__( step )
-
-    def execute( self ):
-        """Execute the program"""
-        return self._execute()
-
-
-class ExecMesher( ExecExternal ):
+class ExecMesher( ExecProgram ):
     """Execute a mesher
 
     fileIn --[ mesher ]--> fileOut --[ LIRE_MAILLAGE ]--> mesh
@@ -175,6 +172,40 @@ class ExecMesher( ExecExternal ):
                              INFO=2 if self.debug else 1)
 
 
+class ExecSalome( ExecMesher ):
+    """Execute a SALOME script from Code_Aster to create a med file
+    A new SALOME session is started in background and stopped after
+    the execution of the script.
+
+    Additional attributes:
+    :pid: port id of the SALOME session
+    """
+
+    def configure( self, kwargs ):
+        """Pre-execution function, read the keywords"""
+        super(ExecSalome, self).configure( kwargs )
+        self.format = "MED"
+        if len(self.args) != 1:
+            UTMESS('F', 'EXECLOGICIEL0_1')
+        self.fileOut = self.args[0]
+        self.uniteAster.Libre(action='ASSOCIER', nom=self.fileOut)
+        # start a SALOME session
+        portFile = tempfile.NamedTemporaryFile(dir='.', suffix='.port').name
+        self.prog = self.prog or osp.join(aster_core.get_option('repout'), 'salome')
+        self.args = ['start', '-t', '--ns-port-log={}'.format(portFile)]
+        # do not capture the output, it will block!
+        self.executeCommand(capture=False, silent=True)
+        self.pid = open(portFile, 'rb').read().strip()
+        # prepare the main command
+        self.args = ['shell', '-p', self.pid, self.fileIn]
+
+    def cleanUp( self ):
+        """Close the SALOME session"""
+        self.args = ['shell', '-p', self.pid,
+                     'killSalomeWithPort.py', 'args:{}'.format(self.pid)]
+        self.executeCommand(silent=True)
+
+
 class ExecGmsh( ExecMesher ):
     """Execute Gmsh from Code_Aster"""
 
@@ -185,7 +216,8 @@ class ExecGmsh( ExecMesher ):
         self.fileOut = tempfile.NamedTemporaryFile(dir='.', suffix='.med').name
         self.uniteAster.Libre(action='ASSOCIER', nom=self.fileOut)
         self.prog = self.prog or osp.join(aster_core.get_option('repout'), 'gmsh')
-        self.args.extend( ['-3', '-format', 'med', self.fileIn, '-o', self.fileOut] )
+        self.args.extend( ['-3', '-format', 'med',
+                           self.fileIn, '-o', self.fileOut] )
 
 
 class ExecGibi( ExecMesher ):
@@ -206,7 +238,7 @@ class ExecGibi( ExecMesher ):
         ulMesh = self.uniteAster.Libre(action='ASSOCIER', nom=self.fileOut)
         PRE_GIBI(UNITE_GIBI=ulGibi,
                  UNITE_MAILLAGE=ulMesh)
-
+        super(ExecGibi, self).post()
 
 
 

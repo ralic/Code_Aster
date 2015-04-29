@@ -19,8 +19,8 @@
 
 cata_msg = {
     1 : _(u"""
-Format Salomé, l'argument 1 doit être
-le nom du fichier MED produit par le script python.
+Format SALOME, l'argument 1 doit être le nom du fichier MED produit
+par le script SALOME. Les autres arguments ne sont pas utilisés.
 """),
 
     2 : _(u"""

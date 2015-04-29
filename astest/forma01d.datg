@@ -11,7 +11,7 @@ smesh = smeshBuilder.New(salome.myStudy)
 #                  GEOMETRIE
 #                  ---------
 #===================================================
-
+print "build the geometry..."
 Plaque = geompy.MakeFaceHW(100, 150, 1)
 
 geompy.TranslateDXDYDZ(Plaque, 50, 75, 0)
@@ -28,7 +28,7 @@ geompy.addToStudyInFather( Plaque, droite, 'droite' )
 #                  MAILLAGE
 #                  --------
 #===================================================
-#
+print "set the mesh parameters..."
 M_Plaque = smesh.Mesh(Plaque,"Plaque")
 
 NETGEN_2D = M_Plaque.Triangle(algo=smeshBuilder.NETGEN)
@@ -39,6 +39,7 @@ NETGEN_2D_Parameters.SetOptimize( 1 )
 NETGEN_2D_Parameters.SetFineness( 3 )
 NETGEN_2D_Parameters.SetQuadAllowed( 0 )
 
+print "compute the mesh..."
 isDone = M_Plaque.Compute()
 if not isDone:
     raise RuntimeError( 'Mesh  {}: computation failed'\
@@ -51,6 +52,7 @@ M_Plaque.Group(haut, 'haut')
 
 # export as a med file
 medFile = "plaque.med"
+print "export the mesh file:", medFile
 M_Plaque.ExportMED( medFile )
 
 # Mise a  jour de l'arbre
