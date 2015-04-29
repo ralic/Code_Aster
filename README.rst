@@ -13,8 +13,8 @@ Code_Aster source files are stored into several repositories:
 - `src`_: source files (C, fortran, python) and build scripts (~350MB)
 - *validation*: a few testcase files with non-public data (~1GB)
 - *data*: data about materials that can not be freely distributed
-- `perf`_: this one containing some testcase files used for
-   performance benchmarking.
+- `perf`_: this one containing some testcase files used for performance
+  benchmarking.
 
 
 Other independent repositories exist:
