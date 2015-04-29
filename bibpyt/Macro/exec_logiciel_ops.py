@@ -284,14 +284,22 @@ class ExecSalomeScript( ExecProgram ):
 def writeSalomeScript( orig, new, factKw ):
     """Create the SALOME script using a 'template'"""
     text = open( orig, 'rb' ).read()
-    for name, value in zip( factKw['NOM_PARA'] or [], factKw['VALE'] or [] ):
-        text = re.sub(re.escape(name), value, text)
-    for i, fileName in enumerate(factKw['FICHIERS_ENTREE'] or []):
-        text = re.sub('INPUTFILE{}'.format(i + 1), fileName, text)
-    for i, fileName in enumerate(factKw['FICHIERS_SORTIE'] or []):
-        text = re.sub('OUTPUTFILE{}'.format(i + 1), fileName, text)
+    text = _textReplace( text, factKw['NOM_PARA'], factKw['VALE'] )
+    text = _textReplaceNumb( text, 'INPUTFILE{}', factKw['FICHIERS_ENTREE'] )
+    text = _textReplaceNumb( text, 'OUTPUTFILE{}', factKw['FICHIERS_SORTIE'] )
     open(new, 'wb').write( text )
 
+
+def _textReplace( text, inStr, outStr ):
+    """Replace input strings by output strings"""
+    for orig, new in zip( inStr or [], outStr or [] ):
+        text = re.sub(re.escape(orig), new, text)
+    return text
+
+def _textReplaceNumb( text, pattern, outStr ):
+    """Replace input strings by output strings"""
+    inStr = [ pattern.format(i + 1) for i in range(len(outStr or [])) ]
+    return _textReplace( text, inStr, outStr )
 
 def safe_remove( fileName ):
     """Remove a file without failing if it does not exist"""
