@@ -48,21 +48,43 @@ magibi = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GIBI',
                                    UNITE_GEOM=14,),
                        INFO=1)
 
-# ----------------------------------------------------------------------------
-# TEST_TABLE toujours ok pour disposer d'un test valide
-# En cas d'erreur, le code retour de la commande doit arreter l'execution.
-tab1 = CREA_TABLE(LISTE=(_F(PARA='TEST',
-                            TYPE_K='K8',
-                            LISTE_K='VALEUR  ',),
-                         _F(PARA='BOOLEEN',
-                            LISTE_I=1,),),)
-
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC_I=1,
-           NOM_PARA='BOOLEEN',
-           TABLE=tab1,
-           FILTRE=_F(NOM_PARA='TEST',
-                     VALE_K='VALEUR  ',),
-           )
+TEST_RESU(MAILLAGE=(
+    _F(MAILLAGE=magmsh,
+       CARA='NB_MAILLE',
+       REFERENCE='ANALYTIQUE',
+       VALE_REFE_I=605,
+       VALE_CALC_I=605,
+      ),
+    _F(MAILLAGE=magmsh,
+       CARA='NB_NOEUD',
+       REFERENCE='ANALYTIQUE',
+       VALE_REFE_I=130,
+       VALE_CALC_I=130,
+      ),
+    _F(MAILLAGE=mamed,
+       CARA='NB_MAILLE',
+       REFERENCE='ANALYTIQUE',
+       VALE_REFE_I=1508,
+       VALE_CALC_I=1508,
+      ),
+    _F(MAILLAGE=mamed,
+       CARA='NB_NOEUD',
+       REFERENCE='ANALYTIQUE',
+       VALE_REFE_I=2917,
+       VALE_CALC_I=2917,
+      ),
+    _F(MAILLAGE=magibi,
+       CARA='NB_MAILLE',
+       REFERENCE='ANALYTIQUE',
+       VALE_REFE_I=14,
+       VALE_CALC_I=14,
+      ),
+    _F(MAILLAGE=magibi,
+       CARA='NB_NOEUD',
+       REFERENCE='ANALYTIQUE',
+       VALE_REFE_I=27,
+       VALE_CALC_I=27,
+      ),
+))
 
 FIN()
