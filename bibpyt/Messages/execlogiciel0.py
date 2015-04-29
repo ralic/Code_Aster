@@ -52,7 +52,6 @@ Mode de lancement inconnu : %(k1)s
 """),
 
     8 : _(u"""
-----------------------------------------------------------------------------------
  Commande :
    %(k1)s
 """),
@@ -70,7 +69,7 @@ Mode de lancement inconnu : %(k1)s
 """),
 
     11 : _(u"""
- Code retour = %(i1)d      (maximum toléré : %(i2)d)
+ Code retour = %(i2)d      (maximum toléré : %(i1)d)
 """),
 
     # 12 : _(u""" """),

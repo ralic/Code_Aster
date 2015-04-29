@@ -1,5 +1,4 @@
 # coding=utf-8
-# ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -14,7 +13,6 @@
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-# ======================================================================
 
 # person_in_charge: mathieu.courtois at edf.fr
 
@@ -25,10 +23,6 @@ from Cata.cata import _F
 from Cata.cata import DEFI_FICHIER
 from Cata.cata import INFO_EXEC_ASTER
 from Cata.cata import DETRUIRE
-
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------
 
 
 class UniteAster:
@@ -49,14 +43,12 @@ class UniteAster:
     Attribut privé :
        infos[numéro unité] = { 'nom' : x, 'etat' : x , 'etat_init' : x }
     """
-#-------------------------------------------------------------------------
 
     def __init__(self):
         """Initialise le dictionnaire des unités.
         """
         self.infos = {}
 
-#-------------------------------------------------------------------------
     def _setinfo(self, ul):
         """Remplit les infos de l'unité 'ul'.
         """
@@ -95,7 +87,6 @@ class UniteAster:
         # print 'DEBUG infos[unit] = ', self.infos[unit]
         DETRUIRE(CONCEPT=_F(NOM=__tab), INFO=1)
 
-#-------------------------------------------------------------------------
     def Libre(self, nom=None, action='RESERVER'):
         """Réserve/associe et retourne une unité libre en y associant, s'il est
         fourni, le fichier 'nom'.
@@ -119,7 +110,6 @@ class UniteAster:
         self.infos[unit]['etat_init'] = 'F'
         return unit
 
-#-------------------------------------------------------------------------
     def Nom(self, ul):
         """Retourne le nom du fichier associé à l'unité 'ul'.
         """
@@ -133,7 +123,16 @@ class UniteAster:
             self._setinfo(unit)
         return self.infos[unit]['nom']
 
-#-------------------------------------------------------------------------
+    def Unite(self, nom):
+        """Retourne l'unité logique associée au fichier `nom`.
+        On retourne 0 si le nom n'a pas été trouvé."""
+        ul = 0
+        for unit, infos in self.infos.items():
+            if infos['nom'] == nom.strip():
+                ul = unit
+                break
+        return ul
+
     def Etat(self, ul, **kargs):
         """Retourne l'état de l'unité si 'etat' n'est pas fourni
         et/ou change son état :
@@ -189,7 +188,6 @@ class UniteAster:
         self.infos[unit]['etat'] = new
         return self.infos[unit]['etat']
 
-#-------------------------------------------------------------------------
     def EtatInit(self, ul=None):
         """Remet l'unité 'ul' dans son état initial.
         Si 'ul' est omis, toutes les unités sont remises dans leur état initial.

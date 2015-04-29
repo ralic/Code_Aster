@@ -17,10 +17,9 @@
 # person_in_charge: j-pierre.lefebvre at edf.fr
 
 def exec_logiciel_prod(self, MAILLAGE, **args):
-   if MAILLAGE != None:
-      mcf = MAILLAGE[0]
-      self.type_sdprod(mcf['MAILLAGE'], maillage_sdaster)
-   return None
+    if MAILLAGE != None:
+        return maillage_sdaster
+    return None
 
 EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
                       op=OPS('Macro.exec_logiciel_ops.exec_logiciel_ops'),
@@ -51,9 +50,6 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
          FORMAT     = SIMP(statut='o', typ='TXM', into=("GMSH", "GIBI", "SALOME")),
          UNITE_GEOM = SIMP(statut='f', typ='I', val_min=10, val_max=90, defaut=16,
                            fr=tr("Unité logique définissant le fichier (fort.N) contenant les données géométriques (datg)")),
-         UNITE      = SIMP(statut='f', typ='I', val_min=10, val_max=90, defaut=19,
-                           fr=tr("Unité logique définissant le fichier (fort.N) produit par le mailleur")),
-         MAILLAGE   = SIMP(statut='o', typ=CO),
       ),
 
 

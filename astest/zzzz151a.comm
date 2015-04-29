@@ -16,61 +16,56 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# ATTENTION LES DIFFERENTS LOGICIELS APPELES DOIVENT ETRE ACCESSIBLES 
+# ATTENTION LES DIFFERENTS LOGICIELS APPELES DOIVENT ETRE ACCESSIBLES
 # DEPUIS LE REPERTOIRE ./outils
 #
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='OUI',)
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='NON',)
 
 import os.path as osp
 import Templates
 TEMPLATESDIR = osp.dirname(Templates.__file__)
 
-EXEC_LOGICIEL(LOGICIEL='ls -la')
+EXEC_LOGICIEL(LOGICIEL='ls', ARGUMENT='-la')
 
 EXEC_LOGICIEL(LOGICIEL='pwd',
               MACHINE_DISTANTE=_F(SSH_ADRESSE  = 'localhost',
                                   SSH_PORT     = 22,),);
- 
-EXEC_LOGICIEL(LOGICIEL='fic=`mktemp`;salome start -t --ns-port-log=$fic;\
-                        salome shell -p `cat $fic`  ./fort.19; salome shell -p\
-                        `cat $fic` killSalomeWithPort.py args:`cat $fic`; rm -f $fic', INFO=2);
 
-DEFI_FICHIER(ACTION='ASSOCIER',
-               TYPE='LIBRE',
-               UNITE=33,
-               FICHIER='Mesh_1.med',
-               ACCES='OLD',)
-               
-sammed = LIRE_MAILLAGE(INFO=1,
-                        UNITE=33,
-                        FORMAT='MED',
-                        INFO_MED=1,
-                        )
-DEFI_FICHIER(ACTION='LIBERER',
-               UNITE=33,)
+# EXEC_LOGICIEL(LOGICIEL='fic=`mktemp`; salome start -t --ns-port-log=$fic; '
+#                        'salome shell -p `cat $fic` ./fort.19; '
+#                        'salome shell -p `cat $fic` killSalomeWithPort.py args:`cat $fic`;'
+#                        'rm -f $fic',
+#               INFO=2);
+#
+# DEFI_FICHIER(ACTION='ASSOCIER',
+#                TYPE='LIBRE',
+#                UNITE=33,
+#                FICHIER='Mesh_1.med',
+#                ACCES='OLD',)
+#
+# sammed = LIRE_MAILLAGE(INFO=1,
+#                         UNITE=33,
+#                         FORMAT='MED',
+#                         INFO_MED=1,
+#                         )
+# DEFI_FICHIER(ACTION='LIBERER',
+#                UNITE=33,)
 
 
-EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
-                          UNITE_GEOM=16,
-                          UNITE=19,
-                          MAILLAGE=CO('magmsh'),),
-              # sur l'AlphaServer, gmsh 1.44 (!) retourne un code retour 1...
-              CODE_RETOUR_MAXI=1,
-              INFO=1)
+magmsh = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
+                                   UNITE_GEOM=16,),
+                       CODE_RETOUR_MAXI=1,
+                       INFO=1)
 
-EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='SALOME',
-                          UNITE_GEOM=17,
-                          UNITE=21,
-                          MAILLAGE=CO('mamed'),),
-              ARGUMENT='cube.mmed',
-              INFO=1)
+#mamed = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='SALOME',
+#                                  UNITE_GEOM=17,),
+#                      ARGUMENT='cube.mmed',
+#                      INFO=1)
 
-EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GIBI',
-                          UNITE_GEOM=14,
-                          UNITE=20,
-                          MAILLAGE=CO('magibi'),),
-              INFO=1)
+magibi = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GIBI',
+                                   UNITE_GEOM=14,),
+                       INFO=1)
 
 # ----------------------------------------------------------------------------
 # TEST_TABLE toujours ok pour disposer d'un test valide

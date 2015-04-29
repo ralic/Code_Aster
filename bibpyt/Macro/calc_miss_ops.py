@@ -31,7 +31,6 @@ def calc_miss_ops(self, **kwargs):
     from Miss.miss_utils import MISS_PARAMETER
     from Miss.miss_calcul import CalculMiss
 
-    ier = 0
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
