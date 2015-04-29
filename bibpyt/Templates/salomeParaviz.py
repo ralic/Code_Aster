@@ -18,32 +18,22 @@
 #
 import os
 
-# Donnees utilisateur
-#
+# NOM_PARA requis dans EXEC_LOGICIEL: INPUTFILE1, CHOIX
+
 # Pour isovaleurs
 # INPUTFILE1 : Fichier de resultat MED
 # CHOIX = 'DEPL', 'ISO', 'GAUSS', 'ON_DEFORMED'
-#
+
 # Pour courbes
 # INPUTFILE1 : Fichier de resultat TXT
 # CHOIX = 'COURBE'
 
 
-#%====================Choix et fichier================================%
-# CHOIX = DEPL, GAUSS, ISO, COURBE
-# Cette partie est modifiee automatiquement par Stanley
 
-INPUTFILE1 = '/tmp/mon-fichier.med'
-OUTPUTFILE1 = ''
-STUDY = ''
-CHOIX = 'DEPL'
-
-#%=================================================================%
-
-if CHOIX not in ['DEPL', 'ISO', 'GAUSS', 'COURBE', 'ON_DEFORMED']:
+if 'CHOIX' not in ['DEPL', 'ISO', 'GAUSS', 'COURBE', 'ON_DEFORMED']:
     raise Exception("Erreur de type de visualisation!")
-if not os.path.isfile(INPUTFILE1):
-    raise Exception("Fichier %s non present!" % INPUTFILE1)
+if not os.path.isfile('INPUTFILE1'):
+    raise Exception("Fichier %s non present!" % 'INPUTFILE1')
 
 #%====================Initialisation Salome================================%
 import re
@@ -58,9 +48,9 @@ myStudyManager = obj._narrow(SALOMEDS.StudyManager)
 
 root = os.path.normpath(
     os.path.dirname(os.path.abspath(os.path.realpath(sys.argv[0]))))
-INPUTFILE2 = os.path.join(root, INPUTFILE1)
-if not os.path.isfile(INPUTFILE2):
-    raise Exception("Fichier %s non present!" % INPUTFILE1)
+file1 = os.path.join(root, 'INPUTFILE1')
+if not os.path.isfile(file1):
+    raise Exception("Fichier %s non present!" % 'INPUTFILE1')
 
 #%====================Initialisation etude================================%
 
@@ -79,7 +69,7 @@ view = None
 try:
     # Cas vue active OK
     v = GetActiveView()
-    if CHOIX == 'COURBE':
+    if 'CHOIX' == 'COURBE':
         if 'LineChartView' in str(type(v)):
             view = v
     else:
@@ -91,7 +81,7 @@ except:
         anim = GetAnimationScene()
         liste_view = anim.ViewModules
         for v in liste_view:
-            if CHOIX == 'COURBE':
+            if 'CHOIX' == 'COURBE':
                 if 'LineChartView' in str(type(v)):
                     view = v
             else:
@@ -100,9 +90,9 @@ except:
 
     except:
         pass
-if view == None and CHOIX == 'COURBE':
+if view == None and 'CHOIX' == 'COURBE':
     view = CreateXYPlotView()
-if view == None and CHOIX != 'COURBE':
+if view == None and 'CHOIX' != 'COURBE':
     view = CreateRenderView()
 SetActiveView(view)
 L = view.Representations
@@ -125,12 +115,12 @@ def convert(fname):
     open(fname, 'w').write(os.linesep.join(cont))
 
 
-if CHOIX == 'COURBE':
+if 'CHOIX' == 'COURBE':
     CHOIXF = 'COURBE'
 
     # reader Table
-    convert(INPUTFILE2)
-    myResult = CSVReader(FileName=INPUTFILE2)
+    convert(file1)
+    myResult = CSVReader(FileName=file1)
     if myResult is None:
         raise "Erreur de fichier"
     myResult.FieldDelimiterCharacters = ' '
@@ -153,9 +143,9 @@ if CHOIX == 'COURBE':
 
 #%====================Construction isovaleurs====================%
 
-if CHOIX != 'COURBE':
+if 'CHOIX' != 'COURBE':
 
-    myResult = MEDReader(FileName=INPUTFILE2)
+    myResult = MEDReader(FileName=file1)
     if myResult is None:
         raise Exception("Erreur de fichier MED")
 
@@ -165,7 +155,7 @@ if CHOIX != 'COURBE':
             for elt in arrs_with_dis]
     id_champ = [[nom.split('/')[3], type] for nom, type in arrs]
 
-    CHOIXF = CHOIX
+    CHOIXF = 'CHOIX'
 
     # Champ variable ou non
 

@@ -18,7 +18,7 @@
 
 # Script permettant de recuperer les etudes ouvertes dans Salome
 
-OUTPUTFILE1 = ''
+# un FICHIERS_SORTIE requis dans EXEC_LOGICIEL: OUTPUTFILE1
 
 try:
     import salome
@@ -36,9 +36,9 @@ except Exception, e:
     print e
 
 try:
-    if OUTPUTFILE1:
+    if 'OUTPUTFILE1':
         # On ecrit les etudes ouvertes dans un fichier
-        fw = file(OUTPUTFILE1, 'w')
+        fw = file('OUTPUTFILE1', 'w')
         fw.write('\n'.join(List_Studies))
 
 except Exception, e:

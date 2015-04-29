@@ -82,7 +82,6 @@ import types
 import salomeVisu
 __salome__ = True
 __rcstanley__ = '.stanley_salome'
-from salomeRunScript import MakeTempScript, DelTempScript, RunScript
 
 
 # Version du fichier des parametres Stanley

@@ -742,14 +742,11 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
         """
         result = []
 
-        _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-        unite = _UL['UNITE_LIBRE', 1]
-
         dSALOME = {
             'CHEMIN_SCRIPT': osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
             'SALOME_HOST': self.machine_name,
             'SALOME_PORT': self.salome_port,
-            'FICHIERS_SORTIE': ['./fort.%s' % unite],
+            'FICHIERS_SORTIE': ['studyList'],
         }
 
         EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
@@ -757,11 +754,9 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
                       SALOME=dSALOME
                       )
 
-        f = open('./fort.%s' % unite, 'r')
+        f = open('studyList', 'r')
         result = [study.strip() for study in f.readlines()]
         f.close()
-
-        DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 
         return result
 
@@ -895,7 +890,6 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
         dSALOME = {'CHEMIN_SCRIPT': osp.join(TEMPLATESDIR, 'salomeParaviz.py'),
                    'SALOME_PORT': self.salome_port,
                    'FICHIERS_ENTREE': [medFilePath],
-                   #'SALOME_RUNAPPLI'  : self.salome_runscript,
                    'NOM_PARA': ['CHOIX', 'STUDY'],
                    'VALE': ['COURBE', self.study_name],
                    }

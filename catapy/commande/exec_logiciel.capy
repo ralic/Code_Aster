@@ -16,7 +16,10 @@
 # ======================================================================
 # person_in_charge: j-pierre.lefebvre at edf.fr
 
-def exec_logiciel_prod(self, MAILLAGE, **args):
+def exec_logiciel_prod(self, SALOME, MAILLAGE, **args):
+    if SALOME != None:
+        if len(SALOME['NOM_PARA'] or []) != len(SALOME['VALE'] or []):
+            raise AsException(tr("SALOME: NOM_PARA et VALE doivent avoir le même cardinal"))
     if MAILLAGE != None:
         return maillage_sdaster
     return None
@@ -59,18 +62,13 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
 
 
       SALOME = FACT(statut='f',
-           regles=(UN_PARMI('CHEMIN_SCRIPT', 'UNITE_SCRIPT'),
-                   PRESENT_PRESENT('NOM_PARA','VALE'),),
+           regles=(PRESENT_PRESENT('NOM_PARA','VALE'),),
          CHEMIN_SCRIPT     = SIMP(statut='f', typ=('Fichier','','Sauvegarde'),
                                fr=tr("Chemin du script Salome")),
-         UNITE_SCRIPT      = SIMP(statut='f', typ='I', val_min=80, val_max=99,
-                               fr=tr("Unité logique du script Salome")),
          SALOME_HOST       = SIMP(statut='f', typ='TXM', defaut='localhost',
                                fr=tr("Machine sur laquelle tourne Salome")),
          SALOME_PORT       = SIMP(statut='f', typ='I', val_min=2800, val_max=2900, defaut=2810,
                                fr=tr("Port de l'instance Salome (2810 ou supérieur)")),
-         SALOME_RUNAPPLI   = SIMP(statut='f', typ='TXM',
-                               fr=tr("Chemin vers le script de lancement runAppli de Salome")),
          FICHIERS_ENTREE   = SIMP(statut='f', typ='TXM', validators=NoRepeat(),max='**',
                                fr=tr("Liste des fichiers d'entrée du script Salome")),
          FICHIERS_SORTIE   = SIMP(statut='f', typ='TXM', validators=NoRepeat(),max='**',

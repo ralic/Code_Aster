@@ -18,33 +18,23 @@
 
 import os
 
-# Donnees utilisateur
-#
+# NOM_PARA requis dans EXEC_LOGICIEL: INPUTFILE1, CHOIX
+
+# STUDY = nom de l'étude
+
 # Pour isovaleurs
 # INPUTFILE1 : Fichier de resultat MED
 # CHOIX = 'DEPL', 'ISO', 'GAUSS', 'ON_DEFORMED'
-#
+
 # Pour courbes
 # INPUTFILE1 : Fichier de resultat TXT
 # CHOIX = 'COURBE'
 
 
-#%====================Choix et fichier================================%
-# CHOIX = DEPL, GAUSS, ISO, COURBE
-# Cette partie est modifiee automatiquement par Stanley
-
-INPUTFILE1 = '/tmp/mon-fichier.med'
-OUTPUTFILE1 = ''
-STUDY = ''
-CHOIX = 'DEPL'
-
-
-#%=================================================================%
-
-if CHOIX not in ['DEPL', 'ISO', 'GAUSS', 'COURBE', 'ON_DEFORMED']:
+if 'CHOIX' not in ['DEPL', 'ISO', 'GAUSS', 'COURBE', 'ON_DEFORMED']:
     raise Exception("Erreur de type de visualisation!")
-if not os.path.isfile(INPUTFILE1):
-    raise Exception("Fichier %s non present!" % INPUTFILE1)
+if not os.path.isfile('INPUTFILE1'):
+    raise Exception("Fichier %s non present!" % 'INPUTFILE1')
 
 
 #%====================Initialisation Salome================================%
@@ -58,14 +48,14 @@ myStudyManager = obj._narrow(SALOMEDS.StudyManager)
 
 root = os.path.normpath(
     os.path.dirname(os.path.abspath(os.path.realpath(sys.argv[0]))))
-INPUTFILE2 = os.path.join(root, INPUTFILE1)
-if not os.path.isfile(INPUTFILE2):
-    raise Exception("Fichier %s non present!" % INPUTFILE1)
+file1 = os.path.join(root, 'INPUTFILE1')
+if not os.path.isfile(file1):
+    raise Exception("Fichier %s non present!" % 'INPUTFILE1')
 
 #%====================Initialisation etude================================%
-if STUDY:
+if 'STUDY':
     # Si on a le nom de l'etude
-    study = myStudyManager.GetStudyByName(STUDY)
+    study = myStudyManager.GetStudyByName('STUDY')
     salome.salome_init(study._get_StudyId())
     import visu_gui
     import VISU
@@ -94,8 +84,8 @@ if myViewManager is None:
 
 #%===================Construction courbe======================%
 
-if CHOIX == 'COURBE':
-    table_txt = myVisu.ImportTables(INPUTFILE2, 0)
+if 'CHOIX' == 'COURBE':
+    table_txt = myVisu.ImportTables(file1, 0)
     if table_txt:
         IsFound, aSObject = table_txt.FindSubObject(1)
         if IsFound:
@@ -110,7 +100,7 @@ if CHOIX == 'COURBE':
 #%====================Construction isovaleurs====================%
 
 else:
-    myResult = myVisu.ImportFile(INPUTFILE2)
+    myResult = myVisu.ImportFile(file1)
     if myResult is None:
         raise Exception("Erreur de fichier MED")
 
@@ -126,7 +116,7 @@ else:
     # Si on a plusieurs instants, on a visualisation de type Presentation
     # animee
 
-    if CHOIX == 'ON_DEFORMED':
+    if 'CHOIX' == 'ON_DEFORMED':
         if LISTE_CHAMP_NODE == []:
             raise Exception("Erreur de champ")
         TYPE_ENTITE = VISU.NODE
@@ -170,7 +160,7 @@ else:
                 resu.append(res)
                 resuanim.append(resanim)
 
-    if CHOIX == 'DEPL':
+    if 'CHOIX' == 'DEPL':
         TYPE_ENTITE = VISU.NODE
         if LISTE_CHAMP_NODE == []:
             raise Exception("Erreur de champ")
@@ -200,7 +190,7 @@ else:
             resu.append(res)
             resuanim.append(resanim)
 
-    if CHOIX == 'GAUSS':
+    if 'CHOIX' == 'GAUSS':
         TYPE_ENTITE = VISU.CELL
         if LISTE_CHAMP_CELL == []:
             raise Exception("Erreur de champ")
@@ -233,7 +223,7 @@ else:
                 resu.append(res)
                 resuanim.append(resanim)
 
-    if CHOIX == 'ISO':
+    if 'CHOIX' == 'ISO':
         if LISTE_CHAMP_CELL == []:
             TYPE_ENTITE = VISU.NODE
             if LISTE_CHAMP_NODE == []:
@@ -272,7 +262,7 @@ else:
 
 #%=============== Affichage ============================%
 myView1 = myViewManager.GetCurrentView()
-if CHOIX == 'COURBE':
+if 'CHOIX' == 'COURBE':
     myView1 = myViewManager.CreateXYPlot()
     myView1.Display(myContainer)
     session = naming_service.Resolve('/Kernel/Session')

@@ -33,19 +33,9 @@ EXEC_LOGICIEL(LOGICIEL='pwd',
                                   SSH_PORT     = 22,),
 )
 
-
 magmsh = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
                                    UNITE_GEOM=16,),
                        CODE_RETOUR_MAXI=1,
-                       INFO=1)
-
-mamed = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='SALOME',
-                                 UNITE_GEOM=17,),
-                     ARGUMENT='plaque.med',
-                     INFO=1)
-
-magibi = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GIBI',
-                                   UNITE_GEOM=14,),
                        INFO=1)
 
 TEST_RESU(MAILLAGE=(
@@ -61,18 +51,33 @@ TEST_RESU(MAILLAGE=(
        VALE_REFE_I=130,
        VALE_CALC_I=130,
       ),
-    _F(MAILLAGE=mamed,
+))
+
+masalom = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='SALOME',
+                                    UNITE_GEOM=17,),
+                        ARGUMENT='plaque.med',
+                        INFO=1)
+
+TEST_RESU(MAILLAGE=(
+    _F(MAILLAGE=masalom,
        CARA='NB_MAILLE',
        REFERENCE='ANALYTIQUE',
        VALE_REFE_I=1508,
        VALE_CALC_I=1508,
       ),
-    _F(MAILLAGE=mamed,
+    _F(MAILLAGE=masalom,
        CARA='NB_NOEUD',
        REFERENCE='ANALYTIQUE',
        VALE_REFE_I=2917,
        VALE_CALC_I=2917,
       ),
+))
+
+magibi = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GIBI',
+                                   UNITE_GEOM=14,),
+                       INFO=1)
+
+TEST_RESU(MAILLAGE=(
     _F(MAILLAGE=magibi,
        CARA='NB_MAILLE',
        REFERENCE='ANALYTIQUE',

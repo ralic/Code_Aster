@@ -23,7 +23,9 @@ This module defines the EXEC_LOGICIEL operator
 """
 
 import sys
+import os
 import os.path as osp
+import re
 import subprocess
 from subprocess import PIPE
 import tempfile
@@ -51,7 +53,7 @@ class ExecProgram( object ):
     def factory(macro, **kwargs):
         """Factory that returns the object according to the arguments"""
         if kwargs['SALOME']:
-            class_ = ExecSalome
+            class_ = ExecSalomeScript
         elif kwargs['MAILLAGE']:
             fmt = kwargs['MAILLAGE']['FORMAT']
             if fmt not in ('GMSH', 'GIBI', 'SALOME'):
@@ -240,6 +242,63 @@ class ExecGibi( ExecMesher ):
                  UNITE_MAILLAGE=ulMesh)
         super(ExecGibi, self).post()
 
+
+class ExecSalomeScript( ExecProgram ):
+    """Execute a SALOME script using runSalomeScript
+
+    Additional attributes:
+    :runSalomeScript: path to runSalomeScript on the SALOME host
+    :fileOut: the file that Code_Aster will read
+    :format: format of the mesh that will be read by Code_Aster (not the
+             format of fileOut)
+    :uniteAster: UniteAster object
+    """
+
+    def configure( self, kwargs ):
+        """Pre-execution function, read the keywords"""
+        super(ExecSalomeScript, self).configure( kwargs )
+        factKw = kwargs['SALOME']
+        if not self.prog:
+            if os.environ.get('APPLI'):
+                self.prog = osp.join(os.environ['HOME'], os.environ['APPLI'],
+                                     'runSalomeScript')
+            else:
+                self.prog = osp.join(aster_core.get_option('repout'),
+                                     'runSalomeScript')
+        # XXX should be tested, '-d' ?
+        self.args.extend( ['-m', factKw['SALOME_HOST']] )
+        # self.args.extend( ['-u', factKw['SALOME_USER']] )
+        self.args.extend( ['-p', str( factKw['SALOME_PORT'] )] )
+        # input and output files
+        for fileName in factKw['FICHIERS_ENTREE'] or []:
+            self.args.extend( ['-i', fileName] )
+        for fileName in factKw['FICHIERS_SORTIE'] or []:
+            self.args.extend( ['-o', fileName] )
+            safe_remove( fileName )
+        # change NOM_PARA/VALE in the original script
+        script = tempfile.NamedTemporaryFile(dir='.', suffix='.py').name
+        writeSalomeScript( factKw['CHEMIN_SCRIPT'], script, factKw )
+        self.args.append( script )
+
+
+def writeSalomeScript( orig, new, factKw ):
+    """Create the SALOME script using a 'template'"""
+    text = open( orig, 'rb' ).read()
+    for name, value in zip( factKw['NOM_PARA'] or [], factKw['VALE'] or [] ):
+        text = re.sub(re.escape(name), value, text)
+    for i, fileName in enumerate(factKw['FICHIERS_ENTREE'] or []):
+        text = re.sub('INPUTFILE{}'.format(i + 1), fileName, text)
+    for i, fileName in enumerate(factKw['FICHIERS_SORTIE'] or []):
+        text = re.sub('OUTPUTFILE{}'.format(i + 1), fileName, text)
+    open(new, 'wb').write( text )
+
+
+def safe_remove( fileName ):
+    """Remove a file without failing if it does not exist"""
+    try:
+        os.remove( fileName )
+    except OSError:
+        pass
 
 
 def exec_logiciel_ops(self, **kwargs):

@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-debug = False
+debug = True
 
 import os
 import commands
@@ -111,19 +111,16 @@ class VISU:
 
         result = []
 
-        _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
-        unite = _UL['UNITE_LIBRE', 1]
-
         dSALOME = {
             'CHEMIN_SCRIPT': osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
             'SALOME_HOST': self.salome_host,
             'SALOME_PORT': self.salome_port,
-            'FICHIERS_SORTIE': ['./fort.%s' % unite],
-            'SALOME_RUNAPPLI': self.salome_runscript,
+            'FICHIERS_SORTIE': ['studyList'],
         }
 
         if self.mode == 'LOCAL':
-            EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                          CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
                           )
@@ -133,14 +130,15 @@ class VISU:
                 'SSH_LOGIN': self.machine_salome_login
             }
 
-            EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                          CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
                           )
 
         try:
-            f = open('./fort.%s' % unite, 'r')
+            f = open('studyList', 'r')
             result = [study.strip() for study in f.readlines()]
             f.close()
         except:
@@ -150,8 +148,6 @@ class VISU:
         if len(result) == 0:
             UTMESS('A', 'STANLEY_19', valk=[
                    self.salome_host, str(self.salome_port), self.salome_runscript])
-
-        DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 
         return result
 
@@ -260,13 +256,13 @@ class ISOVALEURS(VISU):
                    'SALOME_HOST': self.salome_host,
                    'SALOME_PORT': self.salome_port,
                    'FICHIERS_ENTREE': [medFilePath],
-                   'SALOME_RUNAPPLI': self.salome_runscript,
                    'NOM_PARA': ['CHOIX', 'STUDY'],
                    'VALE': [self.visuType, self.studyName],
                    }
 
         if self.mode == 'LOCAL':
-            EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                          CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
                           )
@@ -276,7 +272,8 @@ class ISOVALEURS(VISU):
                 'SSH_LOGIN': self.machine_salome_login
             }
 
-            EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                          CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE
@@ -377,13 +374,13 @@ class COURBES(VISU):
                    'SALOME_HOST': self.salome_host,
                    'SALOME_PORT': self.salome_port,
                    'FICHIERS_ENTREE': [datafile],
-                   'SALOME_RUNAPPLI': self.salome_runscript,
                    'NOM_PARA': ['CHOIX', 'STUDY'],
                    'VALE': ['COURBE', self.studyName],
                    }
 
         if self.mode == 'LOCAL':
-            EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                          CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME
                           )
@@ -393,7 +390,8 @@ class COURBES(VISU):
                 'SSH_LOGIN': self.machine_salome_login
             }
 
-            EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                          CODE_RETOUR_MAXI=-1,
                           INFO=2,
                           SALOME=dSALOME,
                           MACHINE_DISTANTE=dMACHINE_DISTANTE

@@ -174,10 +174,6 @@ Les mots-clés SALOME_HOST et SSH_ADRESSE ont été définis simultanément et s
 C'est SALOME_HOST qui définira l'adresse de la machine distante.
 """),
 
-    23 : _(u"""
-Les listes de paramètres (mot-clé NOM_PARA) et de valeurs (mot-clé VALE) doivent être de même longueur !
-"""),
-
     24 : _(u"""
 Le nom du répertoire contenant les outils externes est trop long pour être stocké
 dans la variable prévue (de longueur %(i1)d).
