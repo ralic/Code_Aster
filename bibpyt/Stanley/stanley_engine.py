@@ -472,15 +472,14 @@ class PARAMETRES:
                 'bulle': _(u"Port de Salome sur la machine hebergeant le service Salome."),
             },
             'machine_salome_runscript': {
-                'label':  _(u"Lanceur runSalomeScript"),
-                'val': os.path.join(aster_core.get_option('repout'),
-                                    'runSalomeScript'),
+                'label':  _(u"Lanceur salome"),
+                'val': os.path.join(aster_core.get_option('repout'), 'salome'),
                 'type': 'texte',
                 'section': 'CONFIG',
                 'mode_graphique': ['Salome'],
                 'mode': ['LOCAL',
                          'DISTANT'],
-                'bulle': _(u"Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."),
+                'bulle': _(u"Chemin vers le script salome (dans l'arborescence de Salome)."),
             },
 
             'machine_win': {

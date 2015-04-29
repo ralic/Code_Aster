@@ -109,9 +109,9 @@ Erreur : mode WINDOWS non implémenté
     19 : _(u"""
 Erreur: il est possible que STANLEY ne puisse pas contacter Salomé :
 
- - machine Salomé définie   : %(k1)s
- - port de Salomé           : %(k2)s
- - lanceur runSalomeScript  : %(k3)s
+ - machine Salomé définie : %(k1)s
+ - port de Salomé         : %(k2)s
+ - lanceur Salomé         : %(k3)s
 
 Vous pouvez modifier ces valeurs dans les paramètres dans STANLEY.
 

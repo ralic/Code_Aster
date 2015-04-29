@@ -244,10 +244,9 @@ class ExecGibi( ExecMesher ):
 
 
 class ExecSalomeScript( ExecProgram ):
-    """Execute a SALOME script using runSalomeScript
+    """Execute a SALOME script using the `salome` launcher
 
     Additional attributes:
-    :runSalomeScript: path to runSalomeScript on the SALOME host
     :fileOut: the file that Code_Aster will read
     :format: format of the mesh that will be read by Code_Aster (not the
              format of fileOut)
@@ -261,24 +260,27 @@ class ExecSalomeScript( ExecProgram ):
         if not self.prog:
             if os.environ.get('APPLI'):
                 self.prog = osp.join(os.environ['HOME'], os.environ['APPLI'],
-                                     'runSalomeScript')
+                                     'salome')
             else:
                 self.prog = osp.join(aster_core.get_option('repout'),
-                                     'runSalomeScript')
+                                     'salome')
+        self.args.insert(0, 'shell')
         # XXX should be tested, '-d' ?
         self.args.extend( ['-m', factKw['SALOME_HOST']] )
         # self.args.extend( ['-u', factKw['SALOME_USER']] )
         self.args.extend( ['-p', str( factKw['SALOME_PORT'] )] )
-        # input and output files
-        for fileName in factKw['FICHIERS_ENTREE'] or []:
-            self.args.extend( ['-i', fileName] )
-        for fileName in factKw['FICHIERS_SORTIE'] or []:
-            self.args.extend( ['-o', fileName] )
-            safe_remove( fileName )
         # change NOM_PARA/VALE in the original script
         script = tempfile.NamedTemporaryFile(dir='.', suffix='.py').name
         writeSalomeScript( factKw['CHEMIN_SCRIPT'], script, factKw )
         self.args.append( script )
+        # input and output files
+        inputs = factKw['FICHIERS_ENTREE'] or []
+        if inputs:
+            self.args.append( 'args:' + ','.join(inputs) )
+        outputs =  factKw['FICHIERS_SORTIE'] or []
+        if outputs:
+            self.args.append( 'out:' + ','.join(outputs) )
+        safe_remove( *outputs )
 
 
 def writeSalomeScript( orig, new, factKw ):
@@ -301,12 +303,13 @@ def _textReplaceNumb( text, pattern, outStr ):
     inStr = [ pattern.format(i + 1) for i in range(len(outStr or [])) ]
     return _textReplace( text, inStr, outStr )
 
-def safe_remove( fileName ):
+def safe_remove( *args ):
     """Remove a file without failing if it does not exist"""
-    try:
-        os.remove( fileName )
-    except OSError:
-        pass
+    for fileName in args:
+        try:
+            os.remove( fileName )
+        except OSError:
+            pass
 
 
 def exec_logiciel_ops(self, **kwargs):

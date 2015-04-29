@@ -141,8 +141,6 @@ Mode de lancement inconnu : %(k1)s
 %(k1)s
 """),
 
-    19 : _(u"""Information : le champs "%(k1)s" n'a pas été trouvé dans le script Salomé, mais il n'est peut être pas nécessaire."""),
-
     20 : _(u"""
 
 

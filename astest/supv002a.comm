@@ -101,7 +101,7 @@ previous_errors = [
     'nomres', 'nomta', 'nomtyp', 'nume',
     'numeli', 'overflow', 'phenomene', 'pnosym', 'pos',
     'raymin', 'rcmaco', 'relcom',
-    'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'runSalomeScript', 'sch',
+    'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'sch',
     'skin', 'tbliva', 'tmax', 'tmin', 'typelem', 'typesd',
     'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect',
     'CELK', 'DRDY', 'DRDYB', 'LIGREL', 'LILI', 'dmax', 'elem', 'ep', 'erjac', 'gl',
