@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoin(evol_noli, l_etat_init, inst_init, nume_init)
+    subroutine nmdoin(evol_noli, l_init_evol, inst_init, nume_init)
         character(len=24), intent(in) :: evol_noli
-        aster_logical, intent(in) :: l_etat_init
+        aster_logical, intent(in) :: l_init_evol
         integer, intent(out) :: nume_init
         real(kind=8), intent(out) :: inst_init
     end subroutine nmdoin

@@ -1,19 +1,17 @@
-subroutine nmdoin(evol_noli, l_etat_init, inst_init, nume_init)
+subroutine nmdoin(evol_noli, l_init_evol, inst_init, nume_init)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rs_gettime.h"
 #include "asterfort/rs_getlast.h"
+#include "asterfort/rs_getnume.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +32,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: evol_noli
-    aster_logical, intent(in) :: l_etat_init
+    aster_logical, intent(in) :: l_init_evol
     integer, intent(out) :: nume_init
     real(kind=8), intent(out) :: inst_init
 !
@@ -46,8 +44,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  evol_noli        : name of result datastructure in initial state
-! In  l_reuse          : .true. if result datastructure in initial state
+! In  evol_noli        : name of result datastructure in ETAT_INIT
+! In  l_init_evol      : .true. if result datastructure in ETAT_INIT
 ! Out nume_init        : initial storing index
 !                        -1 if not defined
 ! Out inst_init        : initial time
@@ -55,19 +53,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, nume_last, nume, tnum(1)
-    integer :: n1, n2, n3
-    integer :: jinst
-    real(kind=8) :: prec, inst, inst_last
-    complex(kind=8) :: c16bid
-    character(len=8) :: k8bid, criter
+    integer :: nume_last, nume_user
+    integer :: n1, n2, iret
+    real(kind=8) :: prec, inst_user, inst_last, inst_etat_init
+    character(len=8) :: criter
     character(len=16) :: keyw_fact
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    call jemarq()
-!
-! - Initializations
 !
     inst_init = r8vide()
     nume_init = -1
@@ -75,12 +67,12 @@ implicit none
 !
 ! - Initial time search
 !
-    if (l_etat_init) then
+    if (l_init_evol) then
 !
 ! ----- Read storing index and time by user
 !
-        call getvr8(keyw_fact, 'INST'      , iocc=1, scal=inst, nbret=n1)
-        call getvis(keyw_fact, 'NUME_ORDRE', iocc=1, scal=nume, nbret=n2)
+        call getvr8(keyw_fact, 'INST'      , iocc=1, scal=inst_user, nbret=n1)
+        call getvis(keyw_fact, 'NUME_ORDRE', iocc=1, scal=nume_user, nbret=n2)
 !
 ! ----- No storing index/time by user => last one in results datastructure
 !
@@ -90,41 +82,35 @@ implicit none
             inst_init = inst_last
         endif
 !
-! ----- Time by user
+! ----- Time by user => get storing index
 !
         if (n1 .ne. 0) then
-            inst_init = inst
-            call getvr8(keyw_fact, 'PRECISION', iocc=1, scal=prec, nbret=ibid)
-            call getvtx(keyw_fact, 'CRITERE', iocc=1, scal=criter, nbret=ibid)
-            call rsorac(evol_noli, 'INST', ibid, inst_init, k8bid,&
-                        c16bid, prec, criter, tnum, 1,&
-                        n3)
-            nume_init=tnum(1)            
-            if (n3 .eq. 0) then
+            inst_init = inst_user
+            call getvr8(keyw_fact, 'PRECISION', iocc=1, scal=prec)
+            call getvtx(keyw_fact, 'CRITERE', iocc=1, scal=criter)
+            call rs_getnume(evol_noli, inst_init, criter, prec, nume_init, iret)           
+            if (iret .eq. 0) then
                 call utmess('F', 'ETATINIT_3', sk=evol_noli)
             endif
-            if (n3 .lt. 0) then
+            if (iret .eq. 2) then
                 call utmess('F', 'ETATINIT_4', sk=evol_noli)
             endif
+            ASSERT(iret.eq.1)
         endif
 !
-! ----- Storing index by user
+! ----- Storing index by user => get time
 !
         if (n2 .ne. 0) then
-            nume_init = nume
-            call rsadpa(evol_noli, 'L', 1, 'INST', nume_init,&
-                        0, sjv=jinst, styp=k8bid)
-            inst_init = zr(jinst)
+            nume_init = nume_user
+            call rs_gettime(evol_noli, nume_init, inst_init)
         endif
     endif
 !
 ! - Initial time defined by user
 !
-    call getvr8(keyw_fact, 'INST_ETAT_INIT', iocc=1, scal=inst, nbret=n2)
+    call getvr8(keyw_fact, 'INST_ETAT_INIT', iocc=1, scal=inst_etat_init, nbret=n2)
     if (n2 .ne. 0) then
-        inst_init = inst
+        inst_init = inst_etat_init
     endif
-!
-    call jedema()
 !
 end subroutine
