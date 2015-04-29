@@ -216,7 +216,7 @@ INTERREZ=REST_SPEC_PHYS(         MODE_MECA=FREQZ,
                                    NUME_ORDRE=(1, 2, 3, 4, 5, 6, 7, 8,),
                                INTE_SPEC_GENE=DYNALEAZ,
                                      NOM_CHAM='DEPL',
-                                         NOEUD='P4',
+                                         GROUP_NO='GR_P4',
                                       NOM_CMP='DX',
                                        OPTION='TOUT_TOUT'   )
 

@@ -179,7 +179,7 @@ cata_msg = {
 """),
 
     68 : _(u"""
- il faut autant de "NOEUD" que de "NOM_CMP"
+ Il faut spécifier autant de noeuds (par GROUP_NO ou NOEUD) que de composants (NOM_CMP)
 """),
 
     69 : _(u"""

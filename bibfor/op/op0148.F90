@@ -25,6 +25,7 @@ subroutine op0148()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
@@ -38,6 +39,7 @@ subroutine op0148()
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/ordis.h"
+#include "asterfort/reliem.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/speph0.h"
 #include "asterfort/spephy.h"
@@ -53,9 +55,10 @@ subroutine op0148()
     integer :: iv, ivale, ivale1, ivite, jnuor, nbfo1, nbm
     integer :: nbmr, nbn, nbp, nbpf, nnn, nplace
     integer :: npv, numod, i1, i3, il, ivitef, lnumi, lrefes
-    integer :: ioptch
+    integer :: ioptch, nbmcl
     aster_logical :: intmod, intphy
-    character(len=8) :: nomu, table, nommai, mode, nomcmp, cmp1, k8b, depla(3)
+    character(len=8) :: nomu, table, nommai, nomcmp, cmp1, depla(3)
+    character(len=8) :: limocl(2), typem, maillage, modmec
     character(len=16) :: concep, cmd, optcal, optcha
     character(len=19) :: base, typflu, nomcha
     character(len=24) :: fsic, fsvk, vite, numo, freq, refeba, sipo
@@ -63,7 +66,7 @@ subroutine op0148()
     character(len=24) :: chnumi, chfreq
     real(kind=8) :: epsi, val, vitef
 !
-    integer :: iarg, lfreq
+    integer :: lfreq
 !
     data depla  /'DX      ','DY      ','DZ      '/
 !
@@ -111,7 +114,7 @@ subroutine op0148()
         else
             ismf = 6
         endif
-        call getvid(' ', 'MODE_MECA', scal=mode)
+        call getvid(' ', 'MODE_MECA', scal=modmec)
     endif
 !
     call getvtx(' ', 'OPTION', scal=optcal)
@@ -139,6 +142,8 @@ subroutine op0148()
             call utmess('A', 'MODELISA5_80')
         endif
     endif
+    modmec = zk8(irefba+1)
+    call dismoi('NOM_MAILLA', modmec, 'RESULTAT', repk=maillage)
 !
     vite = base//'.VITE'
     call jeveuo(vite, 'L', ivite)
@@ -147,12 +152,12 @@ subroutine op0148()
     call getvr8(' ', 'PRECISION', scal=epsi)
 !
     ivitef = 1
-    do 300 i3 = 1, npv
+    do i3 = 1, npv
         val = zr(ivite-1+i3)-vitef
         if (abs(val) .lt. epsi) then
             ivitef = i3
         endif
-300 end do
+    end do
 !
     numo = base//'.NUMO'
     call jeveuo(numo, 'L', inumo)
@@ -186,25 +191,26 @@ subroutine op0148()
 !
     nomobj = '&&OP0148.TEMP.NUOR'
     call wkvect(nomobj, 'V V I', nbmr, jnuor)
-    do 150 i1 = 1, nbmr
+    do i1 = 1, nbmr
         zi(jnuor-1+i1) = zi(lnumi-1+i1)
-150 end do
+    end do
     call ordis(zi(jnuor), nbmr)
     call wkvect('&&OP0148.MODE', 'V V I', nbmr, inuor)
     nnn = 1
     zi(inuor) = zi(jnuor)
-    do 20 i = 2, nbmr
+    do i = 2, nbmr
         if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 20
         nnn = nnn + 1
         zi(inuor+nnn-1) = zi(jnuor+i-1)
- 20 end do
+    end do
+ 20 continue
     nbmr = nnn
-    do 30 im = 1, nbm
+    do im = 1, nbm
         if (zi(inumo+im-1) .eq. zi(inuor)) then
             imod1 = im
             goto 31
         endif
- 30 end do
+    end do
     call utmess('F', 'MODELISA5_78')
  31 continue
 !
@@ -213,19 +219,17 @@ subroutine op0148()
 !
 ! --- 4.RECUPERATION DES NOEUDS ---
 !
-    call getvem(nommai, 'NOEUD', ' ', 'NOEUD', 0,&
-                iarg, 0, k8b, nbn)
-    nbn = -nbn
-!
-    call wkvect('&&OP0148.TEMP.NOEN', 'V V K8', nbn, inoen)
+    typem = 'NO_NOEUD'
+    nbmcl = 2
+    limocl(1) = 'GROUP_NO'
+    limocl(2) = 'NOEUD'
+    call reliem(' ', maillage, typem, ' ', 1,&
+                nbmcl, limocl, limocl, '&&OP0148.TEMP.NOEN', nbn)
+    call jeveuo('&&OP0148.TEMP.NOEN','L',inoen)
     call wkvect('&&OP0148.TEMP.NOEI', 'V V I ', nbn, inoei)
-!
-    call getvem(nommai, 'NOEUD', ' ', 'NOEUD', 0,&
-                iarg, nbn, zk8(inoen), ibid)
-!
-    do 40 in = 0, nbn-1
+    do in = 0, nbn-1
         call jenonu(jexnom(nomnoe, zk8(inoen+in)), zi(inoei+in))
- 40 end do
+    end do
 !
 !
 ! --- 5.SI RESTITUTION D'INTERSPECTRES DE DEPLACEMENTS, VITESSES ---
@@ -258,7 +262,7 @@ subroutine op0148()
 !
         do 70 imr = 1, nbmr
             numod = zi(inuor + imr - 1)
-            call rsexch('F', mode, 'SIPO_ELNO', numod, sipo,&
+            call rsexch('F', modmec, 'SIPO_ELNO', numod, sipo,&
                         icode)
             sipo = sipo(1:19)//'.CELV'
             call jeveuo(sipo, 'L', isip)

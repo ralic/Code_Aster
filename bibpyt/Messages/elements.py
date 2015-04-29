@@ -302,7 +302,9 @@ Erreur utilisateur :
  GROUP_MA :  %(k1)s  inconnu dans le maillage
 """),
 
-
+    63 : _(u"""
+ Le groupe de mailles %(k1)s n'existe pas.
+"""),
 
 
 

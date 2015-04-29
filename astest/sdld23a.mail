@@ -32,6 +32,10 @@ SEG2
        M9      P8       B 
 FINSF
 %
+ GROUP_NO
+ GR_P4            
+ P4       
+ FINSF
 %
 %
 FIN

@@ -198,7 +198,7 @@ for i in range(len(vite)):
                      NOM_CHAM='DEPL',
                       NOM_CMP='DX',
                        OPTION='TOUT_TOUT',
-                        NOEUD=('N_02_030','N_02_031' )
+                        GROUP_NO=('GN02_030','GN02_031')
                )
 
   DYN0[i]=POST_DYNA_ALEA(INTERSPECTRE=_F(

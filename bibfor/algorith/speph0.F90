@@ -3,7 +3,9 @@ subroutine speph0(nomu, table)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/gettco.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -15,6 +17,7 @@ subroutine speph0(nomu, table)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/posddl.h"
+#include "asterfort/reliem.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
@@ -23,6 +26,7 @@ subroutine speph0(nomu, table)
 #include "asterfort/titre.h"
 #include "asterfort/utchdl.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utnono.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -52,18 +56,19 @@ subroutine speph0(nomu, table)
 !
     integer :: ibid, nbmod1, nbtrou, lnumor, nbmode, ilmode, im, imod1, iad
     integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn
-    integer :: nbmail, i, inoeud, iddl, nupo, ivari, napex1
+    integer :: nbmail, i, inoeud, iddl, nupo, ivari, napex1, jvnomai
     integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
-    integer :: isip, icham, nbn1, nbn2, tmod(1)
-    integer :: i1, lnumi, lnumj, mxval, lfreq, lrefes, lfreqs
+    integer :: isip, icham, tmod(1), nbmcl, iarg, ncmp
+    integer :: i1, lnumi, lnumj, mxval, lfreq, lrefes, lfreqs, nbno, nbgrno, nbgrma
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
     aster_logical :: intmod, intphy, intdon
-    character(len=8) :: k8b, modmec, modsta, noeud, noma, cmp
+    character(len=8) :: k8b, modmec, modsta, noeud, noma, cmp, mail
+    character(len=8) :: maillage, limocl(4), nomcmp
     character(len=16) :: movrep, optcal, optcha, typcha, acces, typmec, nocham
-    character(len=16) :: optch1, maille
+    character(len=16) :: optch1, maille, typem
     character(len=16) :: option
-    character(len=24) :: cham19, typba
+    character(len=24) :: cham19, typba, group
     character(len=24) :: valk(3)
     character(len=24) :: chnumi, chnumj, chfreq
 !
@@ -133,26 +138,71 @@ subroutine speph0(nomu, table)
         end do
     endif
 !
+
+    call dismoi('NOM_MAILLA', modmec, 'RESULTAT', repk=maillage)
+
     napexc = 0
     movrep = 'RELATIF'
     call getvid(' ', 'MODE_STAT', scal=modsta, nbret=ibid)
+
     if (ibid .ne. 0) then
-        call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=0, nbret=napexc)
-        napexc = -napexc
-        if (napexc .ne. 0) then
-            call wkvect('&&SPEPH0.LISTENOEEXC', 'V V K8', napexc, ilnoex)
-            call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=napexc, vect=zk8(ilnoex),&
-                        nbret=ibid)
-        endif
-!
         call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=0, nbret=ncmpex)
         ncmpex = -ncmpex
         if (ncmpex .ne. 0) then
             call wkvect('&&SPEPH0.LISTECMPEXC', 'V V K8', ncmpex, ilcpex)
-            call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=ncmpex, vect=zk8(ilcpex),&
-                        nbret=ibid)
-        endif
-!
+            call getvtx('EXCIT', 'NOM_CMP', iocc=1, nbval=ncmpex, vect=zk8(ilcpex))
+        else
+            ASSERT(.false.)
+        end if
+
+        if (ncmpex.eq.1) then
+            typem = 'NO_NOEUD'
+            nbmcl = 2
+            limocl(1) = 'GROUP_NO'
+            limocl(2) = 'NOEUD'
+            call reliem(' ', maillage, typem, 'EXCIT', 1,&
+                        nbmcl, limocl, limocl, '&&SPEPH0.LISTENOEEXC', napexc)
+            call jeveuo('&&SPEPH0.LISTENOEEXC','L',ilnoex)
+            if (napexc.gt.1) then
+                nomcmp = zk8(ilcpex)
+                ncmpex = napexc
+                call jedetr('&&SPEPH0.LISTECMPEXC')
+                call wkvect('&&SPEPH0.LISTECMPEXC', 'V V K8', ncmpex, ilcpex)
+                do i = 1, ncmpex
+                    zk8(ilcpex) = nomcmp
+                end do
+            end if
+        else
+            call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=0, nbret=napexc)
+            if (napexc.eq.0) then
+                call getvtx('EXCIT', 'GROUP_NO', iocc=1, nbval=0, nbret=nbgrno)
+                nbgrno = -nbgrno
+                call wkvect('&&SPEPH0.LISTENOEEXC', 'V V K8', nbgrno, ilnoex)
+                do i = 1, nbgrno
+                    call getvem(maillage, 'NOEUD', 'EXCIT', 'GROUP_NO', i,&
+                                    iarg, 0, group, iret)
+                    call utnono(' ', maillage, 'NOEUD', group, noeud,&
+                                iret)
+                    if (iret.eq.10) then
+                        call utmess('F', 'ELEMENTS_67', sk=group)
+                    else if (iret.eq.1) then
+                        ASSERT(.false.)
+                    else
+                        zk8(ilnoex+i-1) = noeud
+                    end if
+                end do
+                napexc = nbgrno
+            else
+                napexc = -napexc
+                call wkvect('&&SPEPH0.LISTENOEEXC', 'V V K8', napexc, ilnoex)
+                call getvtx('EXCIT', 'NOEUD', iocc=1, nbval=napexc, vect=zk8(ilnoex))
+            end if
+
+            if (napexc.ne.ncmpex) then
+                ASSERT(.false.)
+            end if
+        end if
+
         call getvtx(' ', 'MOUVEMENT', scal=movrep, nbret=ibid)
     endif
 !
@@ -208,26 +258,117 @@ subroutine speph0(nomu, table)
 !
 !     --- RECUPERATION DES NOEUDS, NOM_CMP ET MAILLE ---
 !
-    call getvtx(' ', 'NOEUD', nbval=0, nbret=nbn1)
-    call getvtx(' ', 'NOM_CMP', nbval=0, nbret=nbn2)
-    if (nbn1 .ne. nbn2) then
-        call utmess('F', 'ALGORITH10_68')
-    endif
-    nbn = -nbn1
-    AS_ALLOCATE(vk8=noeud_rep, size=nbn)
-    AS_ALLOCATE(vk8=nocmp_rep, size=nbn)
-    call getvtx(' ', 'NOEUD', nbval=nbn, vect=noeud_rep, nbret=ibid)
-    call getvtx(' ', 'NOM_CMP', nbval=nbn, vect=nocmp_rep, nbret=ibid)
-!
-    call getvtx(' ', 'MAILLE', nbval=0, nbret=nbmail)
-    if (nbmail .ne. 0) then
-        nbmail = -nbmail
-        if (nbn .ne. nbmail) then
-            call utmess('F', 'ALGORITH10_69')
+    call getvtx(' ', 'NOM_CMP', iocc=1, nbval=0, nbret=ncmp)
+    ncmp = -ncmp
+    if (ncmp .ne. 0) then
+        AS_ALLOCATE(ncmp, vk8=nocmp_rep)
+        call getvtx(' ', 'NOM_CMP', iocc=1, nbval=ncmp, vect=nocmp_rep)
+    else
+        ASSERT(.false.)
+    end if
+
+    jvnomai = 0
+
+    if (ncmp.eq.1) then
+        typem = 'NO_NOEUD'
+        nbmcl = 2
+        limocl(1) = 'GROUP_NO'
+        limocl(2) = 'NOEUD'
+        call reliem(' ', maillage, typem, ' ', 1,&
+                    nbmcl, limocl, limocl, '&&SPEPH0.LISTENOEREP', nbno)
+        call jeveuo('&&SPEPH0.LISTENOEREP','L', vk8=noeud_rep)
+        if (nbno.gt.1) then
+            nomcmp = nocmp_rep(1)
+            ncmp = nbno
+            AS_DEALLOCATE(vk8=nocmp_rep)
+            AS_ALLOCATE(ncmp, vk8=nocmp_rep)
+            do i = 1, ncmp
+                nocmp_rep(i) = nomcmp
+            end do
+        end if
+
+        typem = 'NO_MAILLE'
+        nbmcl = 2
+        limocl(1) = 'GROUP_MA'
+        limocl(2) = 'MAILLE'
+        call reliem(' ', maillage, typem, ' ', 1,&
+                    nbmcl, limocl, limocl, '&&SPEPH0.LISTEMAEREP', nbmail)
+        if (nbmail .ne. 0) then
+            call jeveuo('&&SPEPH0.LISTEMAEREP','L',vk8=maille_rep)
+            if (nbno .ne. nbmail) then
+                call utmess('F', 'ALGORITH10_69')
+            endif
         endif
-        AS_ALLOCATE(vk8=maille_rep, size=nbn)
-        call getvtx(' ', 'MAILLE', nbval=nbn, vect=maille_rep, nbret=ibid)
-    endif
+
+        jvnomai = 1
+    else
+        call getvtx(' ', 'NOEUD', iocc=1, nbval=0, nbret=nbno)
+        if (nbno.eq.0) then
+            call getvtx(' ', 'GROUP_NO', iocc=1, nbval=0, nbret=nbgrno)
+            nbgrno = -nbgrno
+            AS_ALLOCATE(nbgrno, vk8=noeud_rep)
+            do i = 1, nbgrno
+                call getvem(maillage, 'GROUP_NO', ' ', 'GROUP_NO', i, &
+                            iarg, 0, group, iret)
+                call utnono(' ', maillage, 'NOEUD', group, noeud,&
+                            iret)
+                if (iret.eq.10) then
+                    call utmess('F', 'ELEMENTS_67', sk=group)
+                else if (iret.eq.1) then
+                    ASSERT(.false.)
+                else
+                    noeud_rep(i) = noeud
+                end if
+            end do
+            nbno = nbgrno
+        else
+            nbno = -nbno
+            AS_ALLOCATE(nbno, vk8=noeud_rep)
+            call getvtx(' ', 'NOEUD', iocc=1, nbval=nbno, vect=noeud_rep)
+        end if
+
+        if (nbno.ne.ncmp) then
+            call utmess('F', 'ALGORITH10_68', sk=group)
+        end if
+
+        call getvtx(' ', 'MAILLE', iocc=1, nbval=0, nbret=nbmail)
+        if (nbmail.eq.0) then
+            call getvtx(' ', 'GROUP_MA', iocc=1, nbval=0, nbret=nbgrma)
+            if (nbgrma .ne. 0) then
+                nbgrma = -nbgrma
+                AS_ALLOCATE(nbgrma, vk8=maille_rep)
+                do i = 1, nbgrma
+                    call getvem(maillage, 'GROUP_MA', 'EXCIT', 'GROUP_MA', i,&
+                                    iarg, 0, group, iret)
+                    call utnono(' ', maillage, 'MAILLE', group, mail,&
+                                iret)
+                    if (iret.eq.10) then
+                        call utmess('F', 'ELEMENTS_63', sk=group)
+                    else if (iret.eq.1) then
+                        ASSERT(.false.)
+                    else
+                        maille_rep(i) = mail
+                    end if
+                end do
+                nbmail = nbgrma
+                if (nbno .ne. nbmail) then
+                    call utmess('F', 'ALGORITH10_69')
+                endif
+            end if
+        else
+            nbmail = -nbmail
+            AS_ALLOCATE(nbmail, vk8=maille_rep)
+            call getvtx(' ', 'MAILLE', iocc=1, nbval=nbmail, vect=maille_rep)
+
+            if (nbno .ne. nbmail) then
+                call utmess('F', 'ALGORITH10_69')
+            endif
+        end if
+
+    end if
+
+    nbn = nbno
+!
 !
 !     --- RECUPERATION DU NUMERO DU DDL ---
 !
@@ -319,7 +460,13 @@ subroutine speph0(nomu, table)
         endif
         call rsexch('F', modsta, optch1, numod, cham19,&
                     iret)
-        call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
+
+        if (typcha(1:7) .eq. 'CHAM_NO') then
+            call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
+        else if (typcha(1:9).eq.'CHAM_ELEM') then
+            call jeveuo(cham19(1:19)//'.CELV', 'L', isip)
+        end if
+
         do in = 1, nbn
             icham1 = icham + nbn* (imr-1) + in - 1
             zr(icham1) = zr(isip+nume_ddl(in)-1)
@@ -333,7 +480,13 @@ subroutine speph0(nomu, table)
         numod = zi(ilmode+imr-1)
         call rsexch('F', modmec, optch1, numod, cham19,&
                     iret)
-        call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
+
+        if (typcha(1:7) .eq. 'CHAM_NO') then
+            call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
+        else if (typcha(1:9).eq.'CHAM_ELEM') then
+            call jeveuo(cham19(1:19)//'.CELV', 'L', isip)
+        end if
+
         if (typmec .eq. 'MODE_MECA_C') then
             do in = 1, nbn
                 icham1 = icham + napex1*nbn + nbn* (imr-1) + in - 1
@@ -409,13 +562,15 @@ subroutine speph0(nomu, table)
     call jedetr('&&SPEPH0_CHAM')
     call jedetr('&&SPEPH0.TEMP.FONR')
     call jedetr('&&SPEPH0.TEMP.FONI')
-    AS_DEALLOCATE(vk8=noeud_rep)
+    if (jvnomai.eq.0) then
+        AS_DEALLOCATE(vk8=noeud_rep)
+        AS_DEALLOCATE(vk8=maille_rep)
+    end if
     AS_DEALLOCATE(vk8=nocmp_rep)
     call jeexin('&&SPEPH0.LISTENOEEXC', iret)
     if (iret .ne. 0) call jedetr('&&SPEPH0.LISTENOEEXC')
     call jeexin('&&SPEPH0.LISTECMPEXC', iret)
     if (iret .ne. 0) call jedetr('&&SPEPH0.LISTECMPEXC')
-    AS_DEALLOCATE(vk8=maille_rep)
 !
     call jedema()
 end subroutine

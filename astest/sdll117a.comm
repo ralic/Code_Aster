@@ -1041,7 +1041,7 @@ for i in range(len(vite)):
                  BASE_ELAS_FLUI=MELES7,
                     VITE_FLUI=vite[i],
                  INTE_SPEC_GENE=RPM7[i],
-                          NOEUD='N100',
+                       GROUP_NO='GR_N100',
                        NOM_CHAM='DEPL',
                         NOM_CMP='DX',
                          OPTION='TOUT_TOUT'
@@ -1517,7 +1517,7 @@ for i in range(len(vite)):
                  BASE_ELAS_FLUI=MELES2,
                     VITE_FLUI=vite[i],
                  INTE_SPEC_GENE=RPM10[i],
-                          NOEUD='N100',
+                       GROUP_NO='GR_N100',
                        NOM_CHAM='DEPL',
                         NOM_CMP='DX',
                          OPTION='TOUT_TOUT'

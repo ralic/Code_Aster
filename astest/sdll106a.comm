@@ -209,8 +209,8 @@ INTERRE2=REST_SPEC_PHYS(         MODE_MECA=MODES,
                                     NUME_ORDRE=( 1,  2, ),
                                 INTE_SPEC_GENE=DYNALEA2,
                                       NOM_CHAM='DEPL',
-                                         NOEUD=( 'P2',   'P3',   'P4',  ),
-                                       NOM_CMP=('DY', 'DY', 'DY', ),
+                                         GROUP_NO='RESTIT',
+                                       NOM_CMP='DY',
                                         OPTION='TOUT_TOUT'  )
 
 REP1=RECU_FONCTION(    INTE_SPEC=INTERRE1,

@@ -146,11 +146,11 @@ INTERRE1=REST_SPEC_PHYS(         MODE_MECA=FREQ1,
                                      MODE_STAT=MODESTA1,
                                  EXCIT=_F(   NOEUD = 'P1',
                                           NOM_CMP = 'DX'),
-                                     MOUVEMENT='ABSOLU',
-                                         NOEUD='P2',
-                                      NOM_CHAM='ACCE',
-                                       NOM_CMP='DX',
-                                        OPTION='TOUT_TOUT'  )
+                                     MOUVEMENT = 'ABSOLU',
+                                         NOEUD = 'P2',
+                                      NOM_CHAM = 'ACCE',
+                                       NOM_CMP = 'DX',
+                                        OPTION = 'TOUT_TOUT'  )
 
 DYNALEA2=DYNA_ALEA_MODAL(
           BASE_MODALE=_F(
