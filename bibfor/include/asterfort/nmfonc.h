@@ -18,26 +18,26 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmfonc(parcri, parmet, method, solveu, modele,&
-                      defico, lischa, lcont, lunil, sdnume,&
-                      sddyna, sdcriq, mate, compoz, result,&
-                      carcri, fonact)
-        real(kind=8), intent(in) :: parcri(*)
-        real(kind=8), intent(in) :: parmet(*)
-        character(len=16), intent(in) :: method(*)
-        character(len=19), intent(in) :: solveu
-        character(len=24), intent(in) :: modele
-        character(len=24), intent(in) :: defico
-        character(len=19), intent(in) :: lischa
-        aster_logical, intent(in) :: lcont
-        aster_logical, intent(in) :: lunil
+    subroutine nmfonc(crit_para  , algo_para     , algo_meth, solver , model ,&
+                      sdcont_defi, list_load     , l_cont   , l_unil , sdnume,&
+                      sddyna     , sdcriq        , mate     , compor_, result,&
+                      comp_para  , list_func_acti)
+        real(kind=8), intent(in) :: crit_para(*)
+        real(kind=8), intent(in) :: algo_para(*)
+        character(len=16), intent(in) :: algo_meth(*)
+        character(len=19), intent(in) :: solver
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: sdcont_defi
+        character(len=19), intent(in) :: list_load
+        aster_logical, intent(in) :: l_cont
+        aster_logical, intent(in) :: l_unil
         character(len=19), intent(in) :: sdnume
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sdcriq
         character(len=24), intent(in) :: mate
-        character(len=*), intent(in) :: compoz
+        character(len=*), intent(in) :: compor_
         character(len=8), intent(in) :: result
-        character(len=24), intent(in) :: carcri
-        integer, intent(inout) :: fonact(*)
+        character(len=24), intent(in) :: comp_para
+        integer, intent(inout) :: list_func_acti(*)
     end subroutine nmfonc
 end interface

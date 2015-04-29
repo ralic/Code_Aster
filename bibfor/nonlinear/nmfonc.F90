@@ -1,12 +1,11 @@
-subroutine nmfonc(parcri, parmet, method, solveu, modele,&
-                  defico, lischa, lcont, lunil, sdnume,&
-                  sddyna, sdcriq, mate, compoz, result,&
-                  carcri, fonact)
+subroutine nmfonc(crit_para  , algo_para     , algo_meth, solver , model ,&
+                  sdcont_defi, list_load     , l_cont   , l_unil , sdnume,&
+                  sddyna     , sdcriq        , mate     , compor_, result,&
+                  comp_para  , list_func_acti)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/gcucon.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
@@ -18,13 +17,11 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 #include "asterfort/exfonc.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/infdbg.h"
+#include "asterfort/infniv.h"
 #include "asterfort/ischar.h"
 #include "asterfort/isdiri.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcpqu.h"
@@ -49,23 +46,23 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    real(kind=8), intent(in) :: parcri(*)
-    real(kind=8), intent(in) :: parmet(*)
-    character(len=16), intent(in) :: method(*)
-    character(len=19), intent(in) :: solveu
-    character(len=24), intent(in) :: modele
-    character(len=24), intent(in) :: defico
-    character(len=19), intent(in) :: lischa
-    aster_logical, intent(in) :: lcont
-    aster_logical, intent(in) :: lunil
+    real(kind=8), intent(in) :: crit_para(*)
+    real(kind=8), intent(in) :: algo_para(*)
+    character(len=16), intent(in) :: algo_meth(*)
+    character(len=19), intent(in) :: solver
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=19), intent(in) :: list_load
+    aster_logical, intent(in) :: l_cont
+    aster_logical, intent(in) :: l_unil
     character(len=19), intent(in) :: sdnume
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sdcriq
     character(len=24), intent(in) :: mate
-    character(len=*), intent(in) :: compoz
+    character(len=*), intent(in) :: compor_
     character(len=8), intent(in) :: result
-    character(len=24), intent(in) :: carcri
-    integer, intent(inout) :: fonact(*)
+    character(len=24), intent(in) :: comp_para
+    integer, intent(inout) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,657 +72,541 @@ subroutine nmfonc(parcri, parmet, method, solveu, modele,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! NB: to ask list_func_acti, use ISFONC.F90 subroutine !
 !
-! IN  MODELE : MODELE MECANIQUE
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! IN  SDNUME : NOM DE LA SD NUMEROTATION
-! IN  LCONT  : .TRUE. S'IL Y A DU CONTACT
-! IN  LUNIL  : .TRUE. S'IL Y A LIAISON_UNILATER
-! IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDCRIQ : SD CRITERE QUALITE
-! IN  MATE   : NOM DU CHAMP DE MATERIAU
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION
-! IN  PARCRI : RESI_CONT_RELA VAUT R8VIDE SI NON ACTIF
-! IN  METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
-! IN  ZFON   : LONGUEUR DU VECTEUR FONACT
-! IN  LISCHA : SD DE DEFINITION DES CHARGES
-! IN  COMPOR : CARTE DE COMPORTEMENT
-! IN  RESULT : STRUCTURE DONNEE RESULTAT
-! In  carcri : name of <CARTE> CARCRI
-! OUT FONACT : FONCTIONNALITES SPECIFIQUES ACTIVEES (VOIR ISFONC)
+! In  crit_para        : parameters for convergence criteria
+! In  algo_para        : parameters for algorithm criteria
+! In  algo_meth        : parameters for algorithm methods
+! In  solver           : datastructure for solver parameters 
+! In  model            : name of the model
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  list_load        : name of datastructure for list of loads
+! In  l_cont           : .true. if contact
+! In  l_unil           : .true. if unilateral condition
+! In  sdnume           : datastructure for dof positions
+! In  sddyna           : dynamic parameters datastructure
+! In  sdcriq           : datastructure for quality indicators
+! In  mate             : name of material characteristics (field)
+! In  compor           : name of comportment definition (field)
+! In  result           : name of results datastructure
+! In  comp_para        : parameters for comportment
+! IO  list_func_acti   : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc, iret, nbss, nbsst
-    integer :: nbfonc, iform
-    aster_logical :: lbors, lfrot, lchoc, lallv
-    aster_logical :: lboucg, lboucf, lboucc
-    integer :: ixfem, ichar, iflamb, imvibr, istab, nmatdi
-    aster_logical :: lsuiv, llapl, lcine, ldidi
+    integer :: nocc, iret, nb_subs_stat, nb_load_subs
+    integer :: i_cont_form
+    aster_logical :: l_deborst, l_frot, l_elem_choc, l_all_verif
+    aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont
+    integer :: ixfem, ichar, i_buckl, i_vibr_mode, i_stab
+    aster_logical :: l_load_undead, l_load_laplace, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
-    character(len=16) :: nomcmd, k16bid, matdis
+    character(len=16) :: command, k16bid, matdis
     character(len=19) :: compor
-    character(len=24) :: metres, precon, errthm
-    aster_logical :: lstat, ldyna, larrno
-    aster_logical :: lnewtc, lnewtf, lnewtg
-    aster_logical :: lexpl
+    character(len=24) :: solv_type, solv_precond, sdcriq_errt
+    aster_logical :: l_stat, l_dyna, l_stop_no
+    aster_logical :: l_newt_cont, l_newt_frot, l_newt_geom
+    aster_logical :: l_dyna_expl
     integer :: ifm, niv
-    integer :: nsta
+    integer :: nb_dof_stab
     character(len=24), pointer :: slvk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
+    compor = compor_
 !
-! --- INITIALISATIONS
-!
-    nbfonc = 0
-    compor = compoz
-!
-! --- AFFICHAGE
-!
+! - Print
+!    
+    call infniv(ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> ... CREATION VECTEUR '//&
-     &                'FONCTIONNALITES ACTIVEES: '
+        write (ifm,*) '<MECANONLINE> ... CREATION VECTEUR FONCTIONNALITES ACTIVEES: '
     endif
 !
-! --- NOM DE LA COMMANDE: STAT_NON_LINE, DYNA_NON_LINE
+! - Command
 !
-    call getres(k8bid, k16bid, nomcmd)
-    lstat = nomcmd(1:4).eq.'STAT'
-    ldyna = nomcmd(1:4).eq.'DYNA'
-    lexpl = ndynlo(sddyna,'EXPLICITE')
+    call getres(k8bid, k16bid, command)
+    l_stat      = command(1:4).eq.'STAT'
+    l_dyna      = command(1:4).eq.'DYNA'
+    l_dyna_expl = ndynlo(sddyna,'EXPLICITE')
+
 !
-    call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
-    metres=slvk(1)
-!
-! --- ELEMENTS EN GRANDES ROTATIONS
+! - Large rotations
 !
     call jeexin(sdnume(1:19)//'.NDRO', iret)
-    if (iret .ne. 0) fonact(15) = 1
+    if (iret.gt.0) list_func_acti(15) = 1
 !
-! --- ELEMENTS AVEC ENDO AUX NOEUDS
+! - Damaged nodes
 !
     call jeexin(sdnume(1:19)//'.ENDO', iret)
-    if (iret .ne. 0) fonact(40) = 1
+    if (iret.gt.0) list_func_acti(40) = 1
 !
-! --- RECHERCHE LINEAIRE
+! - Line search
 !
     call getfac('RECH_LINEAIRE', nocc)
-    if (nocc .ne. 0) fonact(1) = 1
+    if (nocc.gt.0) list_func_acti(1) = 1
 !
-! --- PILOTAGE
+! - Continuation methods (PILOTAGE)
 !
-    if (lstat) then
-        nocc = 0
+    if (l_stat) then
         call getfac('PILOTAGE', nocc)
-        if (nocc .ne. 0) fonact(2) = 1
+        if (nocc .ne. 0) list_func_acti(2) = 1
     endif
 !
-! --- LIAISON UNILATERALE
+! - Unilateral condition
 !
-    if (lunil) fonact(12) = 1
+    if (l_unil) list_func_acti(12) = 1
 !
-! --- ENERGIE
+! - Energy computation
 !
     call getfac('ENERGIE', nocc)
-    if (nocc .ne. 0) fonact(50) = 1
+    if (nocc .ne. 0) list_func_acti(50) = 1
 !
-! --- PROJ_MODAL
+! - Modal projection for dynamic
 !
-    if (ldyna) then
+    if (l_dyna) then
         call getfac('PROJ_MODAL', nocc)
-        if (nocc .ne. 0) fonact(51) = 1
+        if (nocc .ne. 0) list_func_acti(51) = 1
     endif
 !
-! --- MATR_DISTRIBUEE
+! - Distributed matrix (parallel computaing)
 !
     matdis='NON'
-    call getvtx('SOLVEUR', 'MATR_DISTRIBUEE', iocc=1, scal=matdis, nbret=nmatdi)
-    if (matdis .eq. 'OUI') fonact(52) = 1
+    call getvtx('SOLVEUR', 'MATR_DISTRIBUEE', iocc=1, scal=matdis)
+    if (matdis .eq. 'OUI') list_func_acti(52) = 1
 !
-! --- DEBORST ?
+! - Deborst algorithm
 !
-    call nmcpqu(compor, 'C_PLAN', 'DEBORST', lbors)
-    if (lbors) fonact(7) = 1
+    call nmcpqu(compor, 'C_PLAN', 'DEBORST', l_deborst)
+    if (l_deborst) list_func_acti(7) = 1
 !
-! --- CONVERGENCE SUR CRITERE EN CONTRAINTE GENERALISEE
+! - Reference criterion
 !
-    if (parcri(6) .ne. r8vide()) fonact(8) = 1
+    if (crit_para(6) .ne. r8vide()) list_func_acti(8) = 1
 !
-! --- CONVERGENCE SUR CRITERE NORME PAR FORC CMP
+! - By components criterion
 !
-    if (parcri(7) .ne. r8vide()) fonact(35) = 1
+    if (crit_para(7) .ne. r8vide()) list_func_acti(35) = 1
 !
-! --- X-FEM
+! - X-FEM
 !
-    call exixfe(modele, ixfem)
-    if (ixfem .ne. 0) fonact(6) = 1
+    call exixfe(model, ixfem)
+    if (ixfem .ne. 0) list_func_acti(6) = 1
 !
-! --- CONTACT / FROTTEMENT
+! - Contact_friction
 !
-    if (lcont) then
-        iform = cfdisi(defico,'FORMULATION')
-        if (iform .eq. 2) then
-            fonact(5) = 1
-            fonact(17) = cfdisi(defico,'ALL_INTERPENETRE')
-            fonact(26) = 1
-            lfrot = cfdisl(defico,'FROTTEMENT')
-            if (lfrot) then
-                fonact(10) = 1
-                fonact(27) = 1
+    if (l_cont) then
+        i_cont_form = cfdisi(sdcont_defi,'FORMULATION')
+        if (i_cont_form .eq. 2) then
+            list_func_acti(5)  = 1
+            list_func_acti(17) = cfdisi(sdcont_defi,'ALL_INTERPENETRE')
+            list_func_acti(26) = 1
+            l_frot = cfdisl(sdcont_defi,'FROTTEMENT')
+            if (l_frot) then
+                list_func_acti(10) = 1
+                list_func_acti(27) = 1
             endif
-        else if (iform.eq.3) then
-            fonact(9) = 1
-            fonact(26) = 1
-            lfrot = cfdisl(defico,'FROTTEMENT')
-            if (lfrot) then
-                fonact(25) = 1
-                fonact(27) = 1
+        else if (i_cont_form.eq.3) then
+            list_func_acti(9) = 1
+            list_func_acti(26) = 1
+            l_frot = cfdisl(sdcont_defi,'FROTTEMENT')
+            if (l_frot) then
+                list_func_acti(25) = 1
+                list_func_acti(27) = 1
             endif
-! --- GLUTE TANT QUE XFEM NE DISTINGUE PAS
-! --- CONTACT/FROTTEMENT
-            fonact(27) = 1
-        else if (iform.eq.1) then
-            fonact(4) = 1
-            lfrot = cfdisl(defico,'FROTTEMENT')
-            if (lfrot) then
-                fonact(3) = 1
+            list_func_acti(27) = 1
+        else if (i_cont_form.eq.1) then
+            list_func_acti(4) = 1
+            l_frot = cfdisl(sdcont_defi,'FROTTEMENT')
+            if (l_frot) then
+                list_func_acti(3) = 1
             endif
         else
             ASSERT(.false.)
         endif
     endif
 !
-! --- MODE ALL VERIF
+! - Contact: no computation
 !
-    if (lcont) then
-        lallv = cfdisl(defico,'ALL_VERIF')
-        if (lallv) fonact(38) = 1
+    if (l_cont) then
+        l_all_verif = cfdisl(sdcont_defi,'ALL_VERIF')
+        if (l_all_verif) list_func_acti(38) = 1
     endif
 !
-! --- BOUCLES EXTERNES CONTACT / FROTTEMENT
+! - Contact: fixed loops
 !
-    if (lcont) then
-!
-        lboucg = .false.
-        lboucf = .false.
-        lboucc = .false.
-!
-! ----- BOUCLE SUR GEOMETRIE
-!
-        lboucg = cfdisl(defico,'GEOM_BOUCLE')
-!
-! ----- BOUCLE SUR FROTTEMENT
-!
-        if (lfrot) lboucf = cfdisl(defico,'FROT_BOUCLE')
-!
-! ----- BOUCLE SUR CONTACT
-!
-        lboucc = cfdisl(defico,'CONT_BOUCLE')
-!
-! ----- TOUTES LES ZONES EN VERIF -> PAS DE BOUCLES
-!
-        lallv = cfdisl(defico,'ALL_VERIF')
-        if (lallv) then
-            lboucc = .false.
-            lboucg = .false.
-            lboucf = .false.
+    if (l_cont) then
+        l_loop_geom = .false.
+        l_loop_frot = .false.
+        l_loop_cont = .false.
+        l_loop_geom = cfdisl(sdcont_defi,'GEOM_BOUCLE')
+        if (l_frot) l_loop_frot = cfdisl(sdcont_defi,'FROT_BOUCLE')
+        l_loop_cont = cfdisl(sdcont_defi,'CONT_BOUCLE')
+        if (l_all_verif) then
+            l_loop_cont = .false.
+            l_loop_geom = .false.
+            l_loop_frot = .false.
         endif
-!
-! ----- CONTACT DISCRET -> PAS DE BOUCLES CONT/FROT
-!
-        if (iform .eq. 1) then
-            lboucc = .false.
-            lboucf = .false.
+        if (i_cont_form .eq. 1) then
+            l_loop_cont = .false.
+            l_loop_frot = .false.
         endif
-!
-! ----- BOUCLES EXTERNES
-!
-        if (lboucg) fonact(31) = 1
-        if (lboucf) fonact(32) = 1
-        if (lboucc) fonact(33) = 1
-!
-        if (lboucg .or. lboucf .or. lboucc) fonact(34) = 1
+        if (l_loop_geom) list_func_acti(31) = 1
+        if (l_loop_frot) list_func_acti(32) = 1
+        if (l_loop_cont) list_func_acti(33) = 1
+        if (l_loop_geom .or. l_loop_frot .or. l_loop_cont) list_func_acti(34) = 1
     endif
 !
-! --- NEWTON GENERALISE
+! - Generalized Newton
 !
-    if (lcont) then
-        if (iform .eq. 2) then
-            lnewtg = cfdisl(defico,'GEOM_NEWTON')
-            lnewtf = cfdisl(defico,'FROT_NEWTON')
-            lnewtc = cfdisl(defico,'CONT_NEWTON')
-            if (lnewtf) fonact(47) = 1
-            if (lnewtc) fonact(53) = 1
-            if (lnewtg) fonact(55) = 1
+    if (l_cont) then
+        if (i_cont_form .eq. 2) then
+            l_newt_geom = cfdisl(sdcont_defi,'GEOM_NEWTON')
+            l_newt_frot = cfdisl(sdcont_defi,'FROT_NEWTON')
+            l_newt_cont = cfdisl(sdcont_defi,'CONT_NEWTON')
+            if (l_newt_frot) list_func_acti(47) = 1
+            if (l_newt_cont) list_func_acti(53) = 1
+            if (l_newt_geom) list_func_acti(55) = 1
         endif
     endif
 !
-! --- AU MOINS UNE CHARGE SUIVEUSE
+! - At least, one undead load ?
 !
     ichar = 0
-    lsuiv = ischar(lischa,'NEUM','SUIV',ichar )
-    if (lsuiv) fonact(13) = 1
+    l_load_undead = ischar(list_load, 'NEUM', 'SUIV', ichar)
+    if (l_load_undead) list_func_acti(13) = 1
 !
-! --- AU MOINS UNE CHARGE DE TYPE DIDI
+! - At least, one "DIDI" load ?
 !
     ichar = 0
-    ldidi = ischar(lischa,'DIRI','DIDI',ichar )
-    if (ldidi) fonact(22) = 1
+    l_load_didi = ischar(list_load,'DIRI','DIDI', ichar)
+    if (l_load_didi) list_func_acti(22) = 1
 !
-! --- AU MOINS UNE CHARGE DE TYPE DIRICHLET PAR
-! --- ELIMINATION (AFFE_CHAR_CINE)
+! - At least, one AFFE_CHAR_CINE load ?
 !
-    lcine = isdiri(lischa,'ELIM')
-    if (lcine) fonact(36) = 1
+    l_load_elim = isdiri(list_load,'ELIM')
+    if (l_load_elim) list_func_acti(36) = 1
 !
-! --- AU MOINS UNE CHARGE DE TYPE FORCE DE LAPLACE
+! - At least, one Laplace load ?
 !
-    llapl = ischar(lischa,'NEUM','LAPL',ichar )
-    if (llapl) fonact(20) = 1
+    l_load_laplace = ischar(list_load,'NEUM','LAPL',ichar )
+    if (l_load_laplace) list_func_acti(20) = 1
 !
-! --- SOUS STRUCTURES STATIQUES
+! - Static substructuring-
 !
-    call dismoi('NB_SS_ACTI', modele, 'MODELE', repi=nbss)
-    if (nbss .gt. 0) fonact(14) = 1
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nb_subs_stat)
+    if (nb_subs_stat .gt. 0) list_func_acti(14) = 1
 !
-! --- CALCUL PAR SOUS-STRUCTURATION
+! - Substructuring loads
 !
-    call nmlssv('LECT', lischa, nbsst)
-    if (nbsst .gt. 0) fonact(24) = 1
+    call nmlssv('LECT', list_load, nb_load_subs)
+    if (nb_load_subs .gt. 0) list_func_acti(24) = 1
 !
-! --- CALCUL DE FLAMBEMENT
+! - Buckling
 !
-    iflamb = 0
-    call getfac('CRIT_STAB', iflamb)
-    if (iflamb .gt. 0) fonact(18) = 1
+    call getfac('CRIT_STAB', i_buckl)
+    if (i_buckl .gt. 0) list_func_acti(18) = 1
 !
-! --- CALCUL DE STABILITE
+! - Stability
 !
-    istab = 0
-    call getvtx('CRIT_STAB', 'DDL_STAB', iocc=1, nbval=0, nbret=nsta)
-    istab = -nsta
-    if (istab .gt. 0) fonact(49) = 1
+    i_stab = 0
+    call getvtx('CRIT_STAB', 'DDL_STAB', iocc=1, nbval=0, nbret=nb_dof_stab)
+    i_stab = -nb_dof_stab
+    if (i_stab .gt. 0) list_func_acti(49) = 1
 !
-! --- CALCUL DE MODES VIBRATOIRES
+! - Vibration modes
 !
-    imvibr = 0
-    if (ldyna) then
-        call getfac('MODE_VIBR', imvibr)
-        if (imvibr .gt. 0) fonact(19) = 1
+    if (l_dyna) then
+        call getfac('MODE_VIBR', i_vibr_mode)
+        if (i_vibr_mode .gt. 0) list_func_acti(19) = 1
     endif
 !
-! --- ERREUR EN TEMPS
+! - THM time error
 !
-    if (lstat) then
-        errthm = sdcriq(1:19)//'.ERRT'
-        call jeexin(errthm, iret)
-        if (iret .ne. 0) fonact(21) = 1
+    if (l_stat) then
+        sdcriq_errt = sdcriq(1:19)//'.ERRT'
+        call jeexin(sdcriq_errt, iret)
+        if (iret .ne. 0) list_func_acti(21) = 1
     endif
 !
-! --- ALGORITHME IMPLEX
+! - IMPLEX algorithm
 !
-    if (lstat) then
-        if (method(1) .eq. 'IMPLEX') fonact(28) = 1
+    if (l_stat) then
+        if (algo_meth(1) .eq. 'IMPLEX') list_func_acti(28) = 1
     endif
 !
-! --- ALGORITHME NEWTON_KRYLOV
+! - NEWTON_KRYLOV algorithm
 !
-    if (method(1) .eq. 'NEWTON_KRYLOV') fonact(48) = 1
+    if (algo_meth(1) .eq. 'NEWTON_KRYLOV') list_func_acti(48) = 1
 !
-! --- ELEMENTS DIS_CHOC ?
+! - DIS_CHOC elements ?
 !
-    call nmcpqu(compor, 'RELCOM', 'DIS_CHOC', lchoc)
-    if (lchoc) fonact(29) = 1
+    call nmcpqu(compor, 'RELCOM', 'DIS_CHOC', l_elem_choc)
+    if (l_elem_choc) list_func_acti(29) = 1
 !
-! --- PRESENCE DE VARIABLES DE COMMANDE
+! - Command variables
 !
     call dismoi('EXI_VARC', mate, 'CHAM_MATER', repk=repk)
-    if (repk .eq. 'OUI') fonact(30) = 1
+    if (repk .eq. 'OUI') list_func_acti(30) = 1
 !
-! --- MODELISATION THM ?
+! - THM ?
 !
-    call dismoi('EXI_THM', modele, 'MODELE', repk=repk)
-    if (repk .eq. 'OUI') fonact(37) = 1
+    call dismoi('EXI_THM', model, 'MODELE', repk=repk)
+    if (repk .eq. 'OUI') list_func_acti(37) = 1
 !
-! --- PRESENCE D'ELEMENTS UTILISANT STRX (PMF)
+! - Elemesnt with STRX field (multifibers for instantce)
 !
-    call dismoi('EXI_STRX', modele, 'MODELE', repk=repk)
-    if (repk .eq. 'OUI') fonact(56) = 1
+    call dismoi('EXI_STRX', model, 'MODELE', repk=repk)
+    if (repk .eq. 'OUI') list_func_acti(56) = 1
 !
-! --- CONCEPT REENTRANT ?
+! - REUSE ?
 !
     call gcucon(result, 'EVOL_NOLI', iret)
-    if (iret .gt. 0) fonact(39) = 1
+    if (iret .gt. 0) list_func_acti(39) = 1
 !
-! --- SOLVEUR LDLT?
+! - Does ETAT_INIT (initial state) exist ?
 !
-    if (metres .eq. 'LDLT') fonact(41) = 1
+    call getfac('ETAT_INIT', nocc)
+    if (nocc.gt.0) list_func_acti(59) = 1
 !
-! --- SOLVEUR MULT_FRONT?
+! - Solvers
 !
-    if (metres .eq. 'MULT_FRONT') fonact(42) = 1
-!
-! --- SOLVEUR GCPC?
-!
-    if (metres .eq. 'GCPC') fonact(43) = 1
-!
-! --- SOLVEUR MUMPS?
-!
-    if (metres .eq. 'MUMPS') fonact(44) = 1
-!
-! --- SOLVEUR PETSC?
-!
-    if (metres .eq. 'PETSC') fonact(45) = 1
-!
-! --- PRECONDITIONNEUR LDLT_SP?
-!
-    if (metres .eq. 'PETSC' .or. metres .eq. 'GCPC') then
-        precon=slvk(2)
-        if (precon .eq. 'LDLT_SP') fonact(46) = 1
+    call jeveuo(solver//'.SLVK', 'L', vk24=slvk)
+    solv_type=slvk(1)
+    if (solv_type .eq. 'LDLT') list_func_acti(41) = 1
+    if (solv_type .eq. 'MULT_FRONT') list_func_acti(42) = 1
+    if (solv_type .eq. 'GCPC') list_func_acti(43) = 1
+    if (solv_type .eq. 'MUMPS') list_func_acti(44) = 1
+    if (solv_type .eq. 'PETSC') list_func_acti(45) = 1
+    if (solv_type .eq. 'PETSC' .or. solv_type .eq. 'GCPC') then
+        solv_precond=slvk(2)
+        if (solv_precond .eq. 'LDLT_SP') list_func_acti(46) = 1
     endif
 !
-! --- BLINDAGE ARRET=NON
+! - ARRET=NON
 !
-    larrno = (nint(parcri(4)).eq.1)
-    if (larrno) then
+    l_stop_no = (nint(crit_para(4)).eq.1)
+    if (l_stop_no) then
         call utmess('A', 'MECANONLINE5_37')
     endif
 !
-! --- CALCUL DYNAMIQUE EXPLICITE
+! - Explicit dynamics
 !
-    if (lexpl) fonact(54) = 1
+    if (l_dyna_expl) list_func_acti(54) = 1
 !
 ! - Do elastic properties are functions ?
 !
     call dismoi('ELAS_FO', mate, 'CHAM_MATER', repk=repk)
-    if (repk .eq. 'OUI') then
-        fonact(57) = 1
-    endif
+    if (repk .eq. 'OUI') list_func_acti(57) = 1
 !
 ! - Post-treatment on comportment laws ?
 !
-    call dismoi('POST_INCR', carcri, 'CARTE_CARCRI', repk=repk)
-    if (repk .eq. 'OUI') then
-        fonact(58) = 1
-    endif
-
+    call dismoi('POST_INCR', comp_para, 'CARTE_CARCRI', repk=repk)
+    if (repk .eq. 'OUI') list_func_acti(58) = 1
 !
-! --- AFFICHAGE
+! - Print
 !
     if (niv .ge. 2) then
 !
-! ----- METHODES DE RESOLUTION
+! ----- Solving methods
 !
-        if (isfonc(fonact,'IMPLEX')) then
-            write (ifm,*) '<MECANONLINE> ...... METHODE IMPLEX'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'IMPLEX')) then
+            write (ifm,*) '<MECANONLINE> ...... METHODE IMPLEX'  
         endif
-        if (isfonc(fonact,'EXPLICITE')) then
+        if (isfonc(list_func_acti,'EXPLICITE')) then
             write (ifm,*) '<MECANONLINE> ...... METHODE EXPLICITE'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'NEWTON_KRYLOV')) then
+        if (isfonc(list_func_acti,'NEWTON_KRYLOV')) then
             write (ifm,*) '<MECANONLINE> ...... METHODE NEWTON_KRYLOV'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'RECH_LINE')) then
-            write (ifm,*) '<MECANONLINE> ...... RECHERCHE LINEAIRE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'RECH_LINE')) then
+            write (ifm,*) '<MECANONLINE> ...... RECHERCHE LINEAIRE'  
         endif
-        if (isfonc(fonact,'PILOTAGE')) then
-            write (ifm,*) '<MECANONLINE> ...... PILOTAGE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'PILOTAGE')) then
+            write (ifm,*) '<MECANONLINE> ...... PILOTAGE'  
         endif
-        if (isfonc(fonact,'DEBORST')) then
-            write (ifm,*) '<MECANONLINE> ...... METHODE DEBORST'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'DEBORST')) then
+            write (ifm,*) '<MECANONLINE> ...... METHODE DEBORST' 
         endif
-        if (isfonc(fonact,'SOUS_STRUC')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL PAR SOUS-'//&
-            'STRUCTURATION'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'SOUS_STRUC')) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL PAR SOUS-STRUCTURATION'
         endif
-        if (isfonc(fonact,'PROJ_MODAL')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL PAR PROJECTION'//&
-     &                    ' MODALE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'PROJ_MODAL')) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL PAR PROJECTION MODALE'    
         endif
 !
-! ----- CONTACT
+! ----- Contact
 !
-        if (isfonc(fonact,'CONTACT')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'CONTACT')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT' 
         endif
-        if (isfonc(fonact,'CONT_DISCRET')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT DISCRET'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'CONT_DISCRET')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT DISCRET'  
         endif
-        if (isfonc(fonact,'CONT_CONTINU')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT CONTINU'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'CONT_CONTINU')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT CONTINU' 
         endif
-        if (isfonc(fonact,'CONT_XFEM')) then
+        if (isfonc(list_func_acti,'CONT_XFEM')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT XFEM'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'BOUCLE_EXT_GEOM')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE GEOM'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'BOUCLE_EXT_GEOM')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE GEOM'  
         endif
-        if (isfonc(fonact,'BOUCLE_EXT_CONT')) then
+        if (isfonc(list_func_acti,'BOUCLE_EXT_CONT')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE CONTACT'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'BOUCLE_EXT_FROT')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE FROT'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'BOUCLE_EXT_FROT')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE FROT' 
         endif
-        if (isfonc(fonact,'BOUCLE_EXTERNE')) then
+        if (isfonc(list_func_acti,'BOUCLE_EXTERNE')) then
             write (ifm,*) '<MECANONLINE> ...... BOUCLE EXTERNE'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'GEOM_NEWTON')) then
-            write (ifm,*) '<MECANONLINE> ...... GEOMETRIE AVEC '//&
-            'NEWTON GENERALISE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'GEOM_NEWTON')) then
+            write (ifm,*) '<MECANONLINE> ...... GEOMETRIE AVEC NEWTON GENERALISE'
         endif
-        if (isfonc(fonact,'FROT_NEWTON')) then
-            write (ifm,*) '<MECANONLINE> ...... FROTTEMENT AVEC '//&
-            'NEWTON GENERALISE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'FROT_NEWTON')) then
+            write (ifm,*) '<MECANONLINE> ...... FROTTEMENT AVEC NEWTON GENERALISE'
         endif
-        if (isfonc(fonact,'CONT_NEWTON')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT AVEC '//&
-            'NEWTON GENERALISE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'CONT_NEWTON')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT AVEC NEWTON GENERALISE'
         endif
-        if (isfonc(fonact,'CONT_ALL_VERIF')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT SANS '//&
-            'CALCUL SUR TOUTES LES ZONES'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'CONT_ALL_VERIF')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT SANS CALCUL SUR TOUTES LES ZONES'
         endif
-        if (isfonc(fonact,'CONTACT_INIT')) then
-            write (ifm,*) '<MECANONLINE> ...... CONTACT INITIAL '
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'CONTACT_INIT')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT INITIAL'   
         endif
-        if (isfonc(fonact,'LIAISON_UNILATER')) then
+        if (isfonc(list_func_acti,'LIAISON_UNILATER')) then
             write (ifm,*) '<MECANONLINE> ...... LIAISON UNILATERALE'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'FROT_DISCRET')) then
+        if (isfonc(list_func_acti,'FROT_DISCRET')) then
             write (ifm,*) '<MECANONLINE> ...... FROTTEMENT DISCRET'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'FROT_CONTINU')) then
+        if (isfonc(list_func_acti,'FROT_CONTINU')) then
             write (ifm,*) '<MECANONLINE> ...... FROTTEMENT CONTINU'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'FROT_XFEM')) then
-            write (ifm,*) '<MECANONLINE> ...... FROTTEMENT XFEM'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'FROT_XFEM')) then
+            write (ifm,*) '<MECANONLINE> ...... FROTTEMENT XFEM'  
         endif
 !
-! ----- ELEMENTS FINIS
+! ----- Finite elements
 !
-        if (isfonc(fonact,'ELT_CONTACT')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE CONTACT'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'ELT_CONTACT')) then
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE CONTACT'    
         endif
-        if (isfonc(fonact,'ELT_FROTTEMENT')) then
+        if (isfonc(list_func_acti,'ELT_FROTTEMENT')) then
             write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE FROTTEMENT'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'DIS_CHOC')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'DIS_CHOC')) then
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DIS_CHOC '   
         endif
-        if (isfonc(fonact,'GD_ROTA')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES'//&
-     &                  ' EN GRANDES ROTATIONS'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'GD_ROTA')) then
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES EN GRANDES ROTATIONS'
         endif
-        if (isfonc(fonact,'XFEM')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS XFEM'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'XFEM')) then
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS XFEM' 
         endif
-        if (isfonc(fonact,'EXI_STRX')) then
-            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES'//&
-     &                  ' DE TYPE PMF'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'EXI_STRX')) then
+            write (ifm,*) '<MECANONLINE> ...... ELEMENTS DE STRUCTURES DE TYPE PMF'
         endif
 !
 ! ----- CONVERGENCE
 !
-        if (isfonc(fonact,'RESI_REFE')) then
-            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_REFE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'RESI_REFE')) then
+            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_REFE' 
         endif
-        if (isfonc(fonact,'RESI_COMP')) then
-            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_COMP'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'RESI_COMP')) then
+            write (ifm,*) '<MECANONLINE> ...... CONVERGENCE PAR RESI_COMP'   
         endif
 !
-! ----- CHARGEMENTS
+! ----- Loads
 !
-        if (isfonc(fonact,'FORCE_SUIVEUSE')) then
-            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'FORCE_SUIVEUSE')) then
+            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS SUIVEURS'   
         endif
-        if (isfonc(fonact,'DIDI')) then
-            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS DE '//&
-            'DIRICHLET DIFFERENTIEL'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'DIDI')) then
+            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS DE DIRICHLET DIFFERENTIEL' 
         endif
-        if (isfonc(fonact,'DIRI_CINE')) then
-            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS '//&
-            'CINEMATIQUES PAR ELIMINATION'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'DIRI_CINE')) then
+            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS CINEMATIQUES PAR ELIMINATION'
         endif
-        if (isfonc(fonact,'LAPLACE')) then
-            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS '//&
-            'DE LAPLACE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'LAPLACE')) then
+            write (ifm,*) '<MECANONLINE> ...... CHARGEMENTS DE LAPLACE'
         endif
 !
 ! ----- MODELISATION
 !
-        if (isfonc(fonact,'MACR_ELEM_STAT')) then
+        if (isfonc(list_func_acti,'MACR_ELEM_STAT')) then
             write (ifm,*) '<MECANONLINE> ...... MACRO-ELEMENTS STATIQUES'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'THM')) then
-            write (ifm,*) '<MECANONLINE> ...... MODELISATION THM'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'THM')) then
+            write (ifm,*) '<MECANONLINE> ...... MODELISATION THM' 
         endif
-        if (isfonc(fonact,'ENDO_NO')) then
-            write (ifm,*) '<MECANONLINE> ...... MODELISATION GVNO'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'ENDO_NO')) then
+            write (ifm,*) '<MECANONLINE> ...... MODELISATION GVNO' 
         endif
 !
-! ----- POST-TRAITEMENTS
+! ----- Post-treatments
 !
-        if (isfonc(fonact,'CRIT_STAB')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE FLAMBEMENT'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'CRIT_STAB')) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE FLAMBEMENT'  
         endif
-        if (isfonc(fonact,'DDL_STAB')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE STABILITE'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'DDL_STAB')) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL CRITERE STABILITE' 
         endif
-        if (isfonc(fonact,'MODE_VIBR')) then
+        if (isfonc(list_func_acti,'MODE_VIBR')) then
             write (ifm,*) '<MECANONLINE> ...... CALCUL MODES VIBRATOIRES'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'ENERGIE')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL DES ENERGIES'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'ENERGIE')) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL DES ENERGIES'   
         endif
-        if (isfonc(fonact,'ERRE_TEMPS_THM')) then
-            write (ifm,*) '<MECANONLINE> ...... CALCUL ERREUR TEMPS EN THM'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'ERRE_TEMPS_THM')) then
+            write (ifm,*) '<MECANONLINE> ...... CALCUL ERREUR TEMPS EN THM'  
         endif
-        if (isfonc(fonact,'POST_INCR')) then
+        if (isfonc(list_func_acti,'POST_INCR')) then
             write (ifm,*) '<MECANONLINE> ...... CALCUL POST_INCR'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'EXI_VARC')) then
+        if (isfonc(list_func_acti,'EXI_VARC')) then
             write (ifm,*) '<MECANONLINE> ...... VARIABLES DE COMMANDE'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'ELAS_FO')) then
+        if (isfonc(list_func_acti,'ELAS_FO')) then
             write (ifm,*) '<MECANONLINE> ...... Elasticite fonction'
-            nbfonc = nbfonc + 1
         endif
 !
-        if (isfonc(fonact,'REUSE')) then
-            write (ifm,*) '<MECANONLINE> ...... CONCEPT RE-ENTRANT'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'REUSE')) then
+            write (ifm,*) '<MECANONLINE> ...... CONCEPT RE-ENTRANT'    
+        endif
+        if (isfonc(list_func_acti,'ETAT_INIT')) then
+            write (ifm,*) '<MECANONLINE> ...... Etat initial present'    
         endif
 !
-        if (isfonc(fonact,'LDLT')) then
+! ----- Solver options
+!
+        if (isfonc(list_func_acti,'LDLT')) then
             write (ifm,*) '<MECANONLINE> ...... SOLVEUR LDLT'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'MULT_FRONT')) then
-            write (ifm,*) '<MECANONLINE> ...... SOLVEUR MULT_FRONT'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'MULT_FRONT')) then
+            write (ifm,*) '<MECANONLINE> ...... SOLVEUR MULT_FRONT'  
         endif
-        if (isfonc(fonact,'GCPC')) then
-            write (ifm,*) '<MECANONLINE> ...... SOLVEUR GCPC'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'GCPC')) then
+            write (ifm,*) '<MECANONLINE> ...... SOLVEUR GCPC'    
         endif
-        if (isfonc(fonact,'MUMPS')) then
+        if (isfonc(list_func_acti,'MUMPS')) then
             write (ifm,*) '<MECANONLINE> ...... SOLVEUR MUMPS'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'PETSC')) then
+        if (isfonc(list_func_acti,'PETSC')) then
             write (ifm,*) '<MECANONLINE> ...... SOLVEUR PETSC'
-            nbfonc = nbfonc + 1
         endif
-        if (isfonc(fonact,'LDLT_SP')) then
-            write (ifm,*) '<MECANONLINE> ...... PRECONDITIONNEUR LDLT_SP'
-            nbfonc = nbfonc + 1
+        if (isfonc(list_func_acti,'LDLT_SP')) then
+            write (ifm,*) '<MECANONLINE> ...... PRECONDITIONNEUR LDLT_SP' 
         endif
-        if (isfonc(fonact,'MATR_DISTRIBUEE')) then
-            write (ifm,*) '<MECANONLINE> ...... MATRICE GLOBALE '//&
-            'DISTRIBUEE'
-            nbfonc = nbfonc + 1
-        endif
-!
-        if (nbfonc .eq. 0) then
-            write (ifm,*) '<MECANONLINE> ...... <AUCUNE>'
+        if (isfonc(list_func_acti,'MATR_DISTRIBUEE')) then
+            write (ifm,*) '<MECANONLINE> ...... MATRICE GLOBALE DISTRIBUEE'
         endif
     endif
 !
-! --- FONCTIONNALITES INCOMPATIBLES
+! - Check compatibility of some functionnalities
 !
-    call exfonc(fonact, parmet, method, solveu, defico,&
-                sddyna, mate)
+    call exfonc(list_func_acti, algo_para, algo_meth, solver, sdcont_defi,&
+                sddyna        , mate)
 !
-    call jedema()
 end subroutine
