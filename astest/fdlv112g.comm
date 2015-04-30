@@ -197,6 +197,7 @@ CALC_MISS(TYPE_RESU='FICHIER_TEMPS',
           FACTEUR_INTERPOL=7,
           PRECISION = 1E-10,
           PAS_INST = 0.01,
+          COEF_SURECH = 1.0, # Pour accélérer le calcul on ne suréchantillonne pas
           UNITE_RESU_RIGI=35,
           PARAMETRE=_F(FREQ_IMAG=0.1,
                        Z0=5.0,

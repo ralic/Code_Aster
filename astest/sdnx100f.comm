@@ -450,6 +450,7 @@ CALC_MISS(
              UNITE_IMPR_ASTER=26,
              INST_FIN = 11.0,
              PAS_INST = 0.05,
+             COEF_SURECH = 1.0, # Pour accélérer le calcul on ne suréchantillonne pas
              PCENT_FREQ_CALCUL=40,
              FACTEUR_INTERPOL=10,
              PRECISION = 1E-10,

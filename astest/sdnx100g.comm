@@ -254,6 +254,7 @@ CALC_MISS(
              #INST_FIN = 0.02,
              PRECISION = 1E-10,
              PAS_INST = 0.008,
+             COEF_SURECH = 1.0, # Pour accélérer le calcul on ne suréchantillonne pas
              FACTEUR_INTERPOL = 5,
              UNITE_RESU_RIGI = 35,
              UNITE_RESU_AMOR = 37,

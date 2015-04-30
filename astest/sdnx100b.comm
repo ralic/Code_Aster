@@ -480,6 +480,7 @@ CALC_MISS(
              INST_FIN = 11.0,
              PRECISION = 1E-10,
              PAS_INST = 0.05,
+             COEF_SURECH = 1.0, # Pour accélérer le calcul on ne suréchantillonne pas
              UNITE_RESU_RIGI = 35,
              UNITE_RESU_AMOR = 37,
              UNITE_RESU_MASS = 38,
