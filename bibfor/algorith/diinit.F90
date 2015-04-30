@@ -1,6 +1,6 @@
-subroutine diinit(meshz , modelz, result, mate  , carele,&
-                  fonact, sddyna, parcri, instin, solveu,&
-                  defico, sddisc)
+subroutine diinit(mesh_      , model_, result, mate     , cara_elem,&
+                  func_acti  , sddyna, parcri, inst_init, solver   ,&
+                  sdcont_defi, sddisc)
 !
 implicit none
 !
@@ -12,9 +12,9 @@ implicit none
 #include "asterfort/nmcrar.h"
 #include "asterfort/nmcrdd.h"
 #include "asterfort/nmcrli.h"
+#include "asterfort/nmcrpc.h"
 #include "asterfort/nmcrsu.h"
-#include "asterfort/pascom.h"
-#include "asterfort/pascou.h"
+#include "asterfort/ndxcfl.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,81 +34,79 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=*), intent(in) :: meshz
-    character(len=*), intent(in) :: modelz
-    real(kind=8) :: instin, parcri(*)
-    character(len=8) :: result
-    character(len=19) :: sddisc, sddyna, solveu
-    character(len=24) :: carele, mate
-    character(len=24) :: defico
-    integer :: fonact(*)
+    character(len=*), intent(in) :: mesh_
+    character(len=*), intent(in) :: model_
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: mate
+    real(kind=8), intent(in) :: inst_init
+    real(kind=8), intent(in) :: parcri(*)
+    character(len=8), intent(in) :: result
+    character(len=19), intent(in) :: solver
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (STRUCTURES DE DONNES)
+! MECA_NON_LINE - Datastructures
 !
-! CREATION SD DISCRETISATION ET ARCHIVAGE
+! Time discretization and storing datastructures
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! IN  SDDYNA : NOM DE LA SD DEDIEE A LA DYNAMIQUE (CF NDLECT)
-! IN  PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE (CF NMDOCN)
-! IN  RESULT : NOM UTILISATEUR DU RESULTAT
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  NOMO   : NOM DU MODELE
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  INSTIN : INSTANT INITIAL QUAND ETAT_INIT
-! IN  SOLVEU : SD SOLVEUR
-! IN  DEFICO : SD DE DEFINITION DU CONTACT
-! OUT SDDISC : SD DISCRETISATION
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  result           : name of the results datastructure
+! In  sddyna           : name of dynamic parameters
+! In  parcri           : convergence criteria
+! In  func_acti        : active functionnalities vector (see nmfonc)
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  solver           : name of solver parameters
+! In  sddisc           : datastructure for time discretization
+! In  inst_init        : initial time if ETAT_INIT
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, nm
-    aster_logical :: lexpl, lprmo
-    aster_logical :: limpex, lctcd
-    character(len=8) :: meca
-    character(len=19) :: lisins
+    aster_logical :: l_expl, l_implex, l_cont_disc
+    character(len=19) :: list_inst
     character(len=8) :: model, mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=lisins, nbret=n1)
-    ASSERT(n1.ne.0)
-    model = modelz
-    mesh  = meshz
+    call getvid('INCREMENT', 'LIST_INST', iocc=1, scal=list_inst)
+    model = model_
+    mesh  = mesh_
 !
-! --- FONCTIONNALITES ACTIVEES
+! - Active functionnalities
 !
-    lexpl = ndynlo(sddyna,'EXPLICITE' )
-    lprmo = ndynlo(sddyna,'PROJ_MODAL')
-    limpex = isfonc(fonact,'IMPLEX')
-    lctcd = isfonc(fonact,'CONT_DISCRET')
+    l_expl       = ndynlo(sddyna,'EXPLICITE')
+    l_implex     = isfonc(func_acti,'IMPLEX')
+    l_cont_disc  = isfonc(func_acti,'CONT_DISCRET')
 !
-! --- CREATION SD DISCRETISATION
+! - Create time discretization datastructure
 !
-    call nmcrli(instin, lisins, sddisc)
+    call nmcrli(inst_init, list_inst, sddisc)
 !
-! --- EVALUATION DE LA CONDITION DE COURANT EN EXPLICITE
+! - Courant condition
 !
-    if (lexpl) then
-        if (lprmo) then
-            call getvid('PROJ_MODAL', 'MODE_MECA', iocc=1, scal=meca, nbret=nm)
-            call pascom(meca, sddyna, sddisc)
-        else
-            call pascou(mate, carele, sddyna, sddisc)
-        endif
+    if (l_expl) then
+        call ndxcfl(mate, cara_elem, sddyna, sddisc)
     endif
 !
-! --- CREATION SD ARCHIVAGE
+! - Create storing datastructure
 !
-    call nmcrar(result, sddisc, fonact)
+    call nmcrar(result, sddisc, func_acti)
 !
-! --- SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
+! - Automatic management of time stepping
 !
-    call nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
-                solveu, defico)
+    call nmcrsu(sddisc, list_inst, parcri, l_implex, l_cont_disc,&
+                solver, sdcont_defi)
+!
+! - Table for parameters
+!
+    call nmcrpc(result)
 !
 end subroutine

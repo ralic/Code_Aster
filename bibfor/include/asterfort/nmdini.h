@@ -18,16 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdini(motfac, iocc, provli, instin, linsei,&
-                      tole, nbinst, linsti, numini)
-        character(len=16) :: motfac
-        integer :: iocc
-        character(len=19) :: provli
-        real(kind=8) :: instin
-        aster_logical :: linsei
-        real(kind=8) :: tole
-        integer :: nbinst
-        aster_logical :: linsti
-        integer :: numini
+    subroutine nmdini(keywf  , list_inst     , inst_init, l_inst_init, tole,&
+                      nb_inst, l_init_noexist, nume_ini )
+        character(len=16), intent(in) :: keywf
+        character(len=19), intent(in) :: list_inst
+        real(kind=8), intent(in) :: tole
+        real(kind=8), intent(in) :: inst_init
+        aster_logical, intent(in) :: l_inst_init
+        integer, intent(in) :: nb_inst
+        aster_logical, intent(out) :: l_init_noexist
+        integer, intent(out) :: nume_ini
     end subroutine nmdini
 end interface

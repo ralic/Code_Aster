@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ntcrli(inst_init, list_inst, sddisc)
+    subroutine ndxcfl(mate, cara_elem, sddyna, sddisc)
         character(len=19), intent(in) :: sddisc
-        character(len=19), intent(in) :: list_inst
-        real(kind=8), intent(in) :: inst_init
-    end subroutine ntcrli
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: cara_elem
+        character(len=24), intent(in) :: mate
+    end subroutine ndxcfl
 end interface

@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcrlm(lisins, sddisc, provli, tpsinf)
-        character(len=19) :: lisins
-        character(len=19) :: sddisc
-        character(len=19) :: provli
-        character(len=24) :: tpsinf
+    subroutine nmcrlm(listr8_sdaster, sddisc, list_inst_work)
+        character(len=19), intent(in) :: list_inst_work
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: listr8_sdaster
     end subroutine nmcrlm
 end interface

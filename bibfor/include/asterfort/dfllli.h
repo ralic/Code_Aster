@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dfllli(lisins, dtmin, nbinst)
-        character(len=19) :: lisins
-        real(kind=8) :: dtmin
-        integer :: nbinst
+    subroutine dfllli(listr8_sdaster, dtmin, nb_inst)
+        character(len=19), intent(in) :: listr8_sdaster
+        real(kind=8), intent(out) :: dtmin
+        integer, intent(out) :: nb_inst
     end subroutine dfllli
 end interface

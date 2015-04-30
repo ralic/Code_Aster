@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
-                      numfin)
-        character(len=16) :: motfac
-        integer :: iocc
-        character(len=19) :: provli
-        real(kind=8) :: tole
-        integer :: nbinst
-        integer :: numfin
+    subroutine nmdifi(keywf, list_inst, tole, nb_inst, nume_end)
+        character(len=16), intent(in) :: keywf
+        character(len=19), intent(in) :: list_inst
+        real(kind=8), intent(in) :: tole
+        integer, intent(in) :: nb_inst
+        integer, intent(out) :: nume_end
     end subroutine nmdifi
 end interface

@@ -1,5 +1,15 @@
-subroutine nmdini(motfac, iocc, provli, instin, linsei,&
-                  tole, nbinst, linsti, numini)
+subroutine nmdini(keywf  , list_inst     , inst_init, l_inst_init, tole,&
+                  nb_inst, l_init_noexist, nume_ini )
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utacli.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,116 +29,96 @@ subroutine nmdini(motfac, iocc, provli, instin, linsei,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utacli.h"
-#include "asterfort/utmess.h"
-    character(len=16) :: motfac
-    character(len=19) :: provli
-    real(kind=8) :: tole, instin
-    aster_logical :: linsei, linsti
-    integer :: numini, nbinst, iocc
+    character(len=16), intent(in) :: keywf
+    character(len=19), intent(in) :: list_inst
+    real(kind=8), intent(in) :: tole
+    real(kind=8), intent(in) :: inst_init
+    aster_logical, intent(in) :: l_inst_init
+    integer, intent(in) :: nb_inst
+    aster_logical, intent(out) :: l_init_noexist
+    integer, intent(out) :: nume_ini
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - DISCRETISATION)
+! *_NON_LINE - Time discretization datastructure
 !
-! DETERMINATION DU NUMERO D'ORDRE INITIAL
+! Index of initial time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keywf            : factor keyword
+! In  list_inst        : list of times from INCREMENT/LIST_INST
+! In  tole             : tolerance to search time
+! In  inst_init        : initial time if ETAT_INIT
+! In  l_inst_init      : .true. if initial time in ETAT_INIT
+! In  nb_inst          : number of time steps in list
+! Out l_init_noexist   : .true. if initial time doesn't exist in list of times
+! Out nume_ini         : index of initial time
 !
-! IN  MOTFAC : MOT-CLEF FACTEUR POUR INFO SUR INCREMENT
-! IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
-! IN  PROVLI : NOM DE LA LISTE D'INSTANT PROVISOIRE
-! IN  TOLE   : TOLERANCE POUR RECHERCHE DANS LISTE D'INSTANTS
-! IN  LINSEI : .TRUE. SI L'INSTANT DE L'ETAT INITIAL EXISTE
-! IN  INSTIN : INSTANT INITIAL QUAND ETAT_INIT
-! IN  NBINST : NOMBRE D'INSTANTS DANS LA LISTE
-! OUT LINSTI : .TRUE. SI L'INSTANT INITIAL N'EXISTAIT PAS
-!              DANS LA LISTE D'INSTANTS -> ON A PRIS LE PLUS PROCHE
-! OUT NUMINI : NUMERO D'ORDRE INITIAL
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    integer :: n1, n2, i
+    integer :: n1, n2, i_inst
     real(kind=8) :: inst, ins, dt, dtmin
-    integer :: jinst
+    real(kind=8), pointer :: v_list_inst(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nume_ini       = 0
+    l_init_noexist = .false.
 !
-! --- INITIALISATIONS
+! - Acces to list of times
 !
-    numini = 0
-    linsti = .false.
+    call jeveuo(list_inst, 'L', vr = v_list_inst)
 !
-! --- ACCES LISTE D'INSTANTS PROVISOIRE
+! - Get keywords
 !
-    call jeveuo(provli, 'L', jinst)
+    call getvis(keywf, 'NUME_INST_INIT', iocc=1, scal=nume_ini, nbret=n1)
+    call getvr8(keywf, 'INST_INIT'     , iocc=1, scal=inst    , nbret=n2)
 !
-! --- LECTURE MOTS-CLEFS
+! - No NUME_INST_INIT/INST_INIT
 !
-    call getvis(motfac, 'NUME_INST_INIT', iocc=iocc, scal=numini, nbret=n1)
-    call getvr8(motfac, 'INST_INIT', iocc=iocc, scal=inst, nbret=n2)
+    if ((n1+n2 .eq. 0) .and. (.not.l_inst_init)) then
+        nume_ini = 0
 !
-! --- PAS D'OCCURRENCE DES MOTS-CLES -> NUMERO INITIAL
-!
-    if ((n1+n2 .eq. 0) .and. (.not.linsei)) then
-        numini = 0
-!
-! --- MOTS-CLES INST_INIT OU INSTANT DEFINI PAR ETAT_INIT
+! - INCREMENT/INST_INIT or ETAT_INIT/INST_INIT
 !
     else if (n1 .eq. 0) then
         if (n2 .eq. 0) then
 !
-! ------- INSTANT DEFINI PAR ETAT_INIT
+! --------- ETAT_INIT/INST_INIT
 !
-            inst = instin
-            call utacli(inst, zr(jinst), nbinst, tole, numini)
+            inst = inst_init
+            call utacli(inst, v_list_inst, nb_inst, tole, nume_ini)
 !
-! ------- SI INST NON PRESENT DANS LA LISTE D'INSTANT
-! ------- ON CHERCHE L INSTANT LE PLUS PROCHE AVANT L'INSTANT CHERCHE
+! --------- Not found: get nearest time before
 !
-            if (numini .lt. 0) then
-                linsti = .true.
-                dtmin = inst - zr(jinst)
-                ins = zr(jinst)
-                do 40 i = 1, nbinst-1
-                    dt = inst - zr(jinst+i)
+            if (nume_ini .lt. 0) then
+                l_init_noexist = .true.
+                dtmin          = inst - v_list_inst(1)
+                ins            = v_list_inst(1)
+                do i_inst = 1, nb_inst-1
+                    dt = inst - v_list_inst(1+i_inst)
                     if (dt .le. 0.d0) then
                         goto 45
                     endif
                     if (dt .lt. dtmin) then
                         dtmin = dt
-                        ins = zr(jinst+i)
+                        ins = v_list_inst(1+i_inst)
                     endif
- 40             continue
+                end do
  45             continue
                 inst = ins
             endif
         endif
-!
-        call utacli(inst, zr(jinst), nbinst, tole, numini)
-        if (numini .lt. 0) then
+        call utacli(inst, v_list_inst, nb_inst, tole, nume_ini)
+        if (nume_ini .lt. 0) then
             call utmess('F', 'DISCRETISATION_89', sr=inst)
         endif
     endif
 !
-! --- VERIFICATIONS
+! - Checks
 !
-    ASSERT(numini.ge.0)
-    ASSERT(numini.le.nbinst)
-!
-    call jedema()
+    ASSERT(nume_ini.ge.0)
+    ASSERT(nume_ini.le.nb_inst)
 !
 end subroutine

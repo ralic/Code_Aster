@@ -18,15 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
-                      instin, nbtemp, dtmin)
-        character(len=19) :: sddisc
-        character(len=19) :: provli
-        integer :: numini
-        integer :: numfin
-        aster_logical :: linsti
-        real(kind=8) :: instin
-        integer :: nbtemp
-        real(kind=8) :: dtmin
+    subroutine nmcrls(sddisc   , list_inst  , nume_ini, nume_end, l_init_noexist,&
+                      inst_init, nb_inst_new, dtmin)
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: list_inst
+        integer, intent(in) :: nume_ini
+        integer, intent(in) :: nume_end
+        aster_logical, intent(in) :: l_init_noexist
+        real(kind=8), intent(in) :: inst_init
+        integer, intent(out) :: nb_inst_new
+        real(kind=8), intent(out) :: dtmin
     end subroutine nmcrls
 end interface

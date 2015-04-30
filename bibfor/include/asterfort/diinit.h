@@ -16,20 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine diinit(meshz , modelz, result, mate  , carele,&
-                      fonact, sddyna, parcri, instin, solveu,&
-                      defico, sddisc)
-        character(len=*), intent(in) :: meshz
-        character(len=*), intent(in) :: modelz
-        character(len=8) :: result
-        character(len=24) :: mate
-        character(len=24) :: carele
-        integer :: fonact(*)
-        character(len=19) :: sddyna
-        real(kind=8) :: parcri(*)
-        real(kind=8) :: instin
-        character(len=19) :: solveu
-        character(len=24) :: defico
-        character(len=19) :: sddisc
+    subroutine diinit(mesh_      , model_, result, mate     , cara_elem,&
+                      func_acti  , sddyna, parcri, inst_init, solver   ,&
+                      sdcont_defi, sddisc)
+        character(len=*), intent(in) :: mesh_
+        character(len=*), intent(in) :: model_
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: cara_elem
+        character(len=24), intent(in) :: mate
+        real(kind=8), intent(in) :: inst_init
+        real(kind=8), intent(in) :: parcri(*)
+        character(len=8), intent(in) :: result
+        character(len=19), intent(in) :: solver
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: func_acti(*)
     end subroutine diinit
 end interface

@@ -1,5 +1,12 @@
-subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
-                  numfin)
+subroutine nmdifi(keywf, list_inst, tole, nb_inst, nume_end)
+!
+implicit none
+!
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utacli.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,78 +26,61 @@ subroutine nmdifi(motfac, iocc, provli, tole, nbinst,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utacli.h"
-#include "asterfort/utmess.h"
-    character(len=16) :: motfac
-    character(len=19) :: provli
-    real(kind=8) :: tole
-    integer :: numfin, nbinst, iocc
+    character(len=16), intent(in) :: keywf
+    character(len=19), intent(in) :: list_inst
+    real(kind=8), intent(in) :: tole
+    integer, intent(in) :: nb_inst
+    integer, intent(out) :: nume_end
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - DISCRETISATION)
+! *_NON_LINE - Time discretization datastructure
 !
-! DETERMINATION DU NUMERO D'ORDRE FINAL
+! Index of final time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keywf            : factor keyword
+! In  list_inst        : list of times from INCREMENT/LIST_INST
+! In  tole             : tolerance to search time
+! In  nb_inst          : number of time steps in list
+! Out nume_end         : index of final time
 !
-! IN  MOTFAC : MOT-CLEF FACTEUR
-! IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
-! IN  PROVLI : NOM DE LA LISTE D'INSTANT PROVISOIRE
-! IN  TOLE   : TOLERANCE POUR RECHERCHE DANS LISTE D'INSTANTS
-! IN  NBINST : NOMBRE D'INSTANTS DANS LA LISTE
-! OUT NUMFIN : NUMERO D'ORDRE FINAL
-!
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: n1, n2
     real(kind=8) :: inst
-    integer :: jinst
+    real(kind=8), pointer :: v_list_inst(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    nume_end = 0
 !
-! --- INITIALISATIONS
+! - Acces to list of times
 !
-    numfin = 0
+    call jeveuo(list_inst, 'L', vr = v_list_inst)
 !
-! --- NOM SD_DISC
+! - Get keywords
 !
-    call jeveuo(provli, 'L', jinst)
+    call getvis(keywf, 'NUME_INST_FIN', iocc=1, scal=nume_end, nbret=n1)
+    call getvr8(keywf, 'INST_FIN'     , iocc=1, scal=inst    , nbret=n2)
 !
-! --- LECTURE MOTS-CLEFS
-!
-    call getvis(motfac, 'NUME_INST_FIN', iocc=iocc, scal=numfin, nbret=n1)
-    call getvr8(motfac, 'INST_FIN', iocc=iocc, scal=inst, nbret=n2)
-!
-! --- PAS D'OCCURENCE DES MOTS-CLES -> NUMERO INITIAL
+! - No NUME_INST_FIN/INST_FIN
 !
     if (n1+n2 .eq. 0) then
-        numfin = nbinst-1
+        nume_end = nb_inst-1
 !
-! --- MOTS-CLES INST_FIN
+! - INST_FIN
 !
     else if (n1 .eq. 0) then
-        call utacli(inst, zr(jinst), nbinst, tole, numfin)
+        call utacli(inst, v_list_inst, nb_inst, tole, nume_end)
     endif
 !
-! --- VERIFICATIONS
+! - Checks
 !
-    if (numfin .lt. 0 .or. numfin .gt. (nbinst-1)) then
+    if (nume_end .lt. 0 .or. nume_end .gt. (nb_inst-1)) then
         call utmess('F', 'DISCRETISATION_94')
-        numfin = nbinst - 1
+        nume_end = nb_inst - 1
     endif
-!
-    call jedema()
 !
 end subroutine

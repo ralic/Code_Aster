@@ -1,4 +1,12 @@
-subroutine nmcrlm(lisins, sddisc, provli, tpsinf)
+subroutine nmcrlm(listr8_sdaster, sddisc, list_inst_work)
+!
+implicit none
+!
+#include "asterfort/dfllli.h"
+#include "asterfort/dfllvd.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,70 +26,56 @@ subroutine nmcrlm(lisins, sddisc, provli, tpsinf)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit     none
-#include "jeveux.h"
-#include "asterfort/dfllli.h"
-#include "asterfort/dfllvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedup1.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/wkvect.h"
-    character(len=24) :: tpsinf
-    character(len=19) :: provli
-    character(len=19) :: sddisc, lisins
+    character(len=19), intent(in) :: list_inst_work
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: listr8_sdaster
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES - DISCRETISATION)
+! *_NON_LINE - Time discretization datastructure
 !
-! CREATION LISTE D'INSTANT PROVISOIRE ET TPSINF A PARTIR DE LIST_R8
+! Create list of times and information vector from LISTR8_SDASTER
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  LISINS : LISTE D'INSTANTS (SD_LISTR8 OU SD_LIST_INST)
 ! In  sddisc           : datastructure for time discretization
-! OUT TPSINF : INFORMATIONS SUR LA DISCRETISATION
-! OUT PROVLI : LISTE D'INSTANT PROVISOIRE
+! In  listr8_sdaster   : list of reals (listr8_sdaster)
+! In  list_inst_work   : name of working list of time
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: llinr, jlinr
+    integer :: llinr
     integer :: nb_inst
     real(kind=8) :: dtmin
-    character(len=8) :: metlis
+    character(len=8) :: list_method
+    character(len=24) :: sddisc_linf
+    real(kind=8), pointer :: v_sddisc_linf(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
+    llinr       = dfllvd('LLINR')
+    sddisc_linf = sddisc(1:19)//'.LINF'
 !
-! --- INITIALISATIONS
+! - Some checks
 !
-    llinr = dfllvd('LLINR')
+    call dfllli(listr8_sdaster, dtmin, nb_inst)
 !
-! --- QUELQUES VERIFICATIONS SUR LA LISTE FOURNIE
+! - Copy listr8sdaster in list of times
 !
-    call dfllli(lisins, dtmin, nb_inst)
+    call jedup1(listr8_sdaster(1:19)//'.VALE', 'V', list_inst_work)
 !
-! --- DUPLICATION LISTE D'INSTANTS DANS OBJET PROVISOIRE
+! - Create information vector
 !
-    call jedup1(lisins(1:19)//'.VALE', 'V', provli)
+    call wkvect(sddisc_linf, 'V V R', llinr, vr = v_sddisc_linf)
 !
-! --- CREATION SD TPSINF
+! - Update information vector
 !
-    call wkvect(tpsinf, 'V V R', llinr, jlinr)
-!
-! --- REMPLISSAGE SD TPSINF
-!
-    metlis = 'MANUEL'
+    list_method = 'MANUEL'
     call utdidt('E', sddisc, 'LIST', 'METHODE',&
-                valk_ = metlis)
+                valk_ = list_method)
     call utdidt('E', sddisc, 'LIST', 'DTMIN',&
                 valr_ = dtmin)
     call utdidt('E', sddisc, 'LIST', 'NBINST',&
                 vali_ = nb_inst)
-!
-    call jedema()
 !
 end subroutine

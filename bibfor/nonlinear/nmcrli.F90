@@ -1,4 +1,26 @@
-subroutine nmcrli(instin, lisins, sddisc)
+subroutine nmcrli(inst_init, list_inst, sddisc)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/getres.h"
+#include "asterc/gettco.h"
+#include "asterc/r8vide.h"
+#include "asterfort/diinst.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/infniv.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jedupo.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmcrlm.h"
+#include "asterfort/nmcrls.h"
+#include "asterfort/nmcrpc.h"
+#include "asterfort/nmdifi.h"
+#include "asterfort/nmdini.h"
+#include "asterfort/utdidt.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,186 +40,151 @@ subroutine nmcrli(instin, lisins, sddisc)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterc/gettco.h"
-#include "asterc/r8vide.h"
-#include "asterfort/diinst.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jedup1.h"
-#include "asterfort/jedupo.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmcrlm.h"
-#include "asterfort/nmcrls.h"
-#include "asterfort/nmcrpc.h"
-#include "asterfort/nmdifi.h"
-#include "asterfort/nmdini.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
-    character(len=19) :: sddisc, lisins
-    real(kind=8) :: instin
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: list_inst
+    real(kind=8), intent(in) :: inst_init
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE *_NON_LINE (STRUCTURES DE DONNES)
+! MECA_NON_LINE - Datastructures
 !
-! CREATION SD DISCRETISATION
+! Time discretization datastructure
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN  INSTIN : INSTANT INITIAL QUAND ETAT_INIT
-!                R8VIDE SI NON DEFINI
-! IN  LISINS : LISTE D'INSTANTS (SD_LISTR8 OU SD_LIST_INST)
 ! In  sddisc           : datastructure for time discretization
+! In  inst_init        : initial time if ETAT_INIT
+! In  list_inst        : list of times from INCREMENT/LIST_INST
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: jinst
-    integer :: numini, numfin, nume_inst
-    integer :: iocc
-    integer :: n1
+    integer :: ifm, niv
+    integer :: nume_ini, nume_end, nume_inst
     integer :: nb_inst_new, nb_inst
     real(kind=8) :: tole
     real(kind=8) :: dtmin, dt0
-    aster_logical :: linsti, linsei
-    character(len=8) :: result
-    character(len=24) :: tpsipo
-    character(len=24) :: tpspil, tpsdin, tpsite, tpsbcl
-    integer :: jpil, jnivtp, jiter, jbcle
-    character(len=24) :: lisifr, lisdit
-    character(len=24) :: tpsinf
-    integer :: ifm, niv
-    character(len=16) :: typeco, motfac, typres, nomcmd
-    character(len=19) :: provli
+    aster_logical :: l_init_noexist, l_inst_init
+    character(len=24) :: list_inst_info
+    character(len=24) :: list_inst_ditr
+    character(len=16) :: list_inst_type, keywf
+    character(len=24) :: sddisc_bcle
+    integer, pointer :: v_sddisc_bcle(:) => null()
+    character(len=24) :: sddisc_epil
+    integer, pointer :: v_sddisc_epil(:) => null()
+    character(len=19) :: list_inst_work
+    real(kind=8), pointer :: v_list_work(:) => null()
+    character(len=24) :: sddisc_dini
+    integer, pointer :: v_sddisc_dini(:) => null()
+    character(len=24) :: sddisc_iter
+    integer, pointer :: v_sddisc_iter(:) => null()
+    character(len=24) :: sddisc_lipo
+    character(len=24) :: sddisc_ditr
+    character(len=24) :: sddisc_linf
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
+    call infniv(ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... CREATION SD DISCRETISATION'
     endif
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    linsti = .false.
-    iocc = 1
-    motfac = 'INCREMENT'
-    provli = '&&NMCRLI.PROVLI'
+    l_init_noexist = .false.
+    keywf          = 'INCREMENT'
+    list_inst_work = '&&NMCRLI.PROVLI'
 !
-! --- NOM SDS DE LA SDLIST
+! - Create loops object
+! --- 1 - Newton (ITERAT)
+! --- 2 - Time stepping (NUME_INST)
+! --- 3 - Fixed loops (NIVEAU)
 !
-    lisifr = lisins(1:8)//'.LIST.INFOR'
-    lisdit = lisins(1:8)//'.LIST.DITR'
+    sddisc_bcle = sddisc(1:19)//'.BCLE'
+    call wkvect(sddisc_bcle, 'V V I', 3, vi = v_sddisc_bcle)
 !
-! --- NOM SDS DE LA SDDISC
+! - Create continuation choice object
 !
-    tpsdin = sddisc(1:19)//'.DINI'
-    tpsbcl = sddisc(1:19)//'.BCLE'
-    tpsite = sddisc(1:19)//'.ITER'
-    tpsipo = sddisc(1:19)//'.LIPO'
+    sddisc_epil = sddisc(1:19)//'.EPIL'
+    call wkvect(sddisc_epil, 'V V I', 2, vi = v_sddisc_epil)
+    v_sddisc_epil(1) = 1
+    v_sddisc_epil(2) = 1
 !
-    tpspil = sddisc(1:19)//'.EPIL'
-    tpsinf = sddisc(1:19)//'.LINF'
+! - Type of list_inst
 !
-! --- OBJETS NIVEAUX DE BOUCLE
-! --- 1 - ITERAT (NEWTON)
-! --- 2 - NUMINS (PAS DE TEMPS)
-! --- 3 - NIVEAU (BOUCLE CONTACT/XFEM)
-! --- 4 - PREMIE (0 SI TOUT PREMIER, 1 SINON)
+    call gettco(list_inst, list_inst_type)
 !
-    call wkvect(tpsbcl, 'V V I', 4, jbcle)
+! - Create list of times and information vector
 !
-! --- OBJET CHOIX DE LA SOLUTION EQUATION DE PILOTAGE
-!
-    call wkvect(tpspil, 'V V I', 2, jpil)
-    zi(jpil) = 1
-    zi(jpil+1) = 1
-!
-! --- LECTURE DE LA LISTE D'INSTANTS
-!
-    call gettco(lisins, typeco)
-!
-! --- CREATION LISTE D'INSTANT PROVISOIRE ET TPSINF
-!
-    if (typeco .eq. 'LISTR8_SDASTER') then
-        call nmcrlm(lisins, sddisc, provli, tpsinf)
-    else if (typeco.eq.'LIST_INST') then
-        call jedup1(lisdit, 'V', provli)
-        call jedup1(lisifr, 'V', tpsinf)
+    if (list_inst_type .eq. 'LISTR8_SDASTER') then
+        call nmcrlm(list_inst, sddisc, list_inst_work)
+    else if (list_inst_type.eq.'LIST_INST') then
+        sddisc_linf    = sddisc(1:19)//'.LINF'
+        list_inst_info = list_inst(1:8)//'.LIST.INFOR'
+        list_inst_ditr = list_inst(1:8)//'.LIST.DITR'
+        call jedup1(list_inst_ditr, 'V', list_inst_work)
+        call jedup1(list_inst_info, 'V', sddisc_linf)
     endif
 !
-! --- INFOS LISTE D'INSTANTS
+! - Get parameters
 !
     call utdidt('L', sddisc, 'LIST', 'DTMIN',&
                 valr_ = dtmin)
     call utdidt('L', sddisc, 'LIST', 'NBINST',&
                 vali_ = nb_inst)
 !
-! --- ACCES LISTE D'INSTANTS PROVISOIRE
+! - Acces to list of times
 !
-    call jeveuo(provli, 'L', jinst)
+    call jeveuo(list_inst_work, 'L', vr = v_list_work)
 !
-! --- TOLERANCE POUR RECHERCHE DANS LISTE D'INSTANTS
+! - Get parameters
 !
-    call getvr8(motfac, 'PRECISION', iocc=1, scal=tole, nbret=n1)
+    call getvr8(keywf, 'PRECISION', iocc=1, scal=tole)
     tole = abs(dtmin) * tole
 !
-! --- L'INSTANT DE L'ETAT INITIAL EXISTE-T-IL ?
+! - Have an initial time in ETAT_INIT ?
 !
-    if (instin .eq. r8vide()) then
-        linsei = .false.
+    if (inst_init .eq. r8vide()) then
+        l_inst_init = .false.
     else
-        linsei = .true.
+        l_inst_init = .true.
     endif
 !
-! --- DETERMINATION DU NUMERO D'ORDRE INITIAL
+! - Index of initial time
 !
-    call nmdini(motfac, iocc, provli, instin, linsei,&
-                tole, nb_inst, linsti, numini)
+    call nmdini(keywf  , list_inst_work, inst_init, l_inst_init, tole,&
+                nb_inst, l_init_noexist, nume_ini)
 !
-! --- DETERMINATION DU NUMERO D'ORDRE FINAL
+! - Index of final time
 !
-    call nmdifi(motfac, iocc, provli, tole, nb_inst,&
-                numfin)
+    call nmdifi(keywf, list_inst_work, tole, nb_inst, nume_end)
 !
-! --- VERIFICATION SENS DE LA LISTE
+! - Check
 !
-    if (numini .ge. numfin) then
+    if (nume_ini .ge. nume_end) then
         call utmess('F', 'DISCRETISATION_92')
     endif
 !
-! --- RETAILLAGE DE LA LISTE D'INSTANT PROVISOIRE -> SDDISC.DITR
+! - Resize list of times
 !
-    call nmcrls(sddisc, provli, numini, numfin, linsti,&
-                instin, nb_inst_new, dtmin)
+    call nmcrls(sddisc   , list_inst_work, nume_ini, nume_end, l_init_noexist,&
+                inst_init, nb_inst_new   , dtmin)
 !
-! --- INDICATEUR DU NIVEAU DE SUBDIVISION DES PAS DE TEMPS
+! - Create object for subdividing time steps
 !
-    call wkvect(tpsdin, 'V V I', nb_inst_new, jnivtp)
+    sddisc_dini = sddisc(1:19)//'.DINI'
+    call wkvect(sddisc_dini, 'V V I', nb_inst_new, vi = v_sddisc_dini)
     do nume_inst = 1, nb_inst_new
-        zi(jnivtp-1+nume_inst) = 1
+        v_sddisc_dini(nume_inst) = 1
     end do
 !
-! --- VECTEUR POUR STOCKER ITERAT NEWTON
+! - Create object for number of iterations
 !
-    call wkvect(tpsite, 'V V I', nb_inst_new, jiter)
+    sddisc_iter = sddisc(1:19)//'.ITER'
+    call wkvect(sddisc_iter, 'V V I', nb_inst_new, vi = v_sddisc_iter)
 !
-! --- ENREGISTREMENT DES INFORMATIONS
+! - Save parameters
 !
     dt0 = diinst(sddisc,1) - diinst(sddisc,0)
-!
     call utdidt('E', sddisc, 'LIST', 'DT-',&
                 valr_ = dt0)
     call utdidt('E', sddisc, 'LIST', 'NBINST',&
@@ -205,18 +192,14 @@ subroutine nmcrli(instin, lisins, sddisc)
     call utdidt('E', sddisc, 'LIST', 'DTMIN',&
                 valr_ = dtmin)
 !
-! --- STOCKAGE DE LA LISTE DES INSTANTS DE PASSAGE OBLIGATOIRES (JALONS)
+! - Save object of time steps
 !
-    call jedupo(sddisc(1:19)//'.DITR', 'V', tpsipo, .false._1)
+    sddisc_ditr = sddisc(1:19)//'.DITR'
+    sddisc_lipo = sddisc(1:19)//'.LIPO'
+    call jedupo(sddisc_ditr, 'V', sddisc_lipo, .false._1)
 !
-! --- CREATION DE LA TABLE DES PARAMETRES CALCULES
+! - Clean
 !
-    call getres(result, typres, nomcmd)
-    if (nomcmd .ne. 'CALC_POINT_MAT') then
-        call nmcrpc(result)
-    endif
-!
-    call jedetr(provli)
-    call jedema()
+    call jedetr(list_inst_work)
 !
 end subroutine
