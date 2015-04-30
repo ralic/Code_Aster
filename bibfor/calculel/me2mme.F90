@@ -1,5 +1,5 @@
-subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
-                  time, matelz, nh, basez)
+subroutine me2mme(modelz, nb_load, lchar, mate, caraz,&
+                  time, vect_elem_, nharm, basez)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,13 +46,14 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/me2mme_evol.h"
 !
-    character(len=8) :: modele, cara, kbid, lcmp(5)
-    character(len=*) :: modelz, caraz, matelz, lchar(*), mate, basez
-    character(len=19) :: matel
+    character(len=8) :: model, cara_elem, kbid, lcmp(5)
+    character(len=*) :: modelz, caraz, vect_elem_, lchar(*), mate, basez
+    character(len=19) :: vect_elem
     real(kind=8) :: time
     aster_logical :: lfonc
-    integer :: nchar
+    integer :: nb_load
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DES SECONDS MEMBRES ELEMENTAIRES
@@ -101,11 +102,11 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=2) :: codret
     integer :: nbin
 !-----------------------------------------------------------------------
-    integer :: icha, ier, ifla, ilires, iret
-    integer :: j, jveass, nh
+    integer :: i_load, ier, ifla, ilires, iret
+    integer :: j, jveass, nharm
 !-----------------------------------------------------------------------
     parameter(nbin=44)
-    character(len=8) :: lpain(nbin), lpaout(1), noma, exiele
+    character(len=8) :: lpain(nbin), lpaout(1), noma, exiele, load_name
     character(len=16) :: option
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, pinter, hea_no
@@ -113,14 +114,15 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     character(len=24) :: ligrmo, ligrch, chtime, chlapl, chcara(18)
     character(len=24) :: chharm
     character(len=19) :: chvarc, chvref
+    real(kind=8) :: inst_prev, inst_curr, inst_theta
     integer :: i
     aster_logical :: ltemp
 !
 !
     call jemarq()
-    modele=modelz
-    cara=caraz
-    matel=matelz
+    model=modelz
+    cara_elem=caraz
+    vect_elem=vect_elem_
     base=basez
 !
     do i = 1, nbin
@@ -133,18 +135,18 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 !
 !     -- CALCUL DE .RERR:
-    call memare(base, matel, modele, mate, cara,&
+    call memare(base, vect_elem, model, mate, cara_elem,&
                 'CHAR_MECA')
 !
 !     -- S'IL N' Y A PAS D'ELEMENTS CLASSIQUES, ON RESSORT:
-    call dismoi('EXI_ELEM', modele, 'MODELE', repk=exiele)
+    call dismoi('EXI_ELEM', model, 'MODELE', repk=exiele)
 !
 !
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM
 !        ET CHAM_MATER :
 !
-    call megeom(modele, chgeom)
-    call mecara(cara, chcara)
+    call megeom(model, chgeom)
+    call mecara(cara_elem, chcara)
 !
 !     LES CHAMPS "IN" PRIS DANS CARA_ELEM SONT NUMEROTES DE 21 A 32 :
 !     ---------------------------------------------------------------
@@ -175,25 +177,25 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
     ilires=0
 !
 !  ---VERIFICATION DE L'EXISTENCE D'UN MODELE X-FEM-------
-    call exixfe(modele, ier)
+    call exixfe(model, ier)
 !
     if (ier .ne. 0) then
 !
 !  ---  CAS DU MODELE X-FEM-----------
 !
         ilires=ilires+1
-        pintto=modele(1:8)//'.TOPOSE.PIN'
-        cnseto=modele(1:8)//'.TOPOSE.CNS'
-        heavto=modele(1:8)//'.TOPOSE.HEA'
-        loncha=modele(1:8)//'.TOPOSE.LON'
-        pmilto=modele(1:8)//'.TOPOSE.PMI'
-        hea_no=modele(1:8)//'.TOPONO.HNO'
-        basloc=modele(1:8)//'.BASLOC'
-        lsn=modele(1:8)//'.LNNO'
-        lst=modele(1:8)//'.LTNO'
-        stano=modele(1:8)//'.STNO'
-        fissno=modele(1:8)//'.FISSNO'
-        pinter=modele(1:8)//'.TOPOFAC.OE'
+        pintto=model(1:8)//'.TOPOSE.PIN'
+        cnseto=model(1:8)//'.TOPOSE.CNS'
+        heavto=model(1:8)//'.TOPOSE.HEA'
+        loncha=model(1:8)//'.TOPOSE.LON'
+        pmilto=model(1:8)//'.TOPOSE.PMI'
+        hea_no=model(1:8)//'.TOPONO.HNO'
+        basloc=model(1:8)//'.BASLOC'
+        lsn=model(1:8)//'.LNNO'
+        lst=model(1:8)//'.LTNO'
+        stano=model(1:8)//'.STNO'
+        fissno=model(1:8)//'.FISSNO'
+        pinter=model(1:8)//'.TOPOFAC.OE'
     else
         pintto='&&ME2MME.PINTTO.BID'
         cnseto='&&ME2MME.CNSETO.BID'
@@ -239,16 +241,16 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
 !
     noma=chgeom(1:8)
-    call vrcins(modele, mate, cara, time, chvarc,&
+    call vrcins(model, mate, cara_elem, time, chvarc,&
                 codret)
-    call vrcref(modele, mate(1:8), cara, chvref(1:19))
+    call vrcref(model, mate(1:8), cara_elem, chvref(1:19))
 !
-    if (nchar .eq. 0) goto 60
-    call jeexin(matel//'.RELR', iret)
-    if (iret .gt. 0) call jedetr(matel//'.RELR')
+    if (nb_load .eq. 0) goto 60
+    call jeexin(vect_elem//'.RELR', iret)
+    if (iret .gt. 0) call jedetr(vect_elem//'.RELR')
 !
     lpaout(1)='PVECTUR'
-    lchout(1)=matel(1:8)//'.VEXXX'
+    lchout(1)=vect_elem(1:8)//'.0000000'
     lpain(1)='PGEOMER'
     lchin(1)=chgeom
     lpain(2)='PMATERC'
@@ -258,7 +260,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !
     ifla=0
 !
-    ligrmo=modele//'.MODELE'
+    ligrmo=model//'.MODELE'
 !
 !        -- EN PRINCIPE, EXITIM EST TOUJOURS .TRUE.
     chtime='&&ME2MME.CH_INST_R'
@@ -266,17 +268,22 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                 ncmp=1, nomcmp='INST   ', sr=time)
     lpain(5)='PTEMPSR'
     lchin(5)=chtime
+
+    inst_prev  = time
+    inst_curr  = time
+    inst_theta = 0.d0
 !
 !
 !
-    do icha = 1, nchar
-        call dismoi('TYPE_CHARGE', lchar(icha), 'CHARGE', repk=kbid)
+    do i_load = 1, nb_load
+        load_name = lchar(i_load)
+        call dismoi('TYPE_CHARGE', lchar(i_load), 'CHARGE', repk=kbid)
         if (kbid(5:7) .eq. '_FO') then
             lfonc=.true.
         else
             lfonc=.false.
         endif
-        ligrch=lchar(icha)//'.CHME.LIGRE'
+        ligrch=lchar(i_load)//'.CHME.LIGRE'
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.CIMPO', iret)
         if (iret .ne. 0) then
@@ -294,7 +301,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrch, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.FORNO', iret)
@@ -312,7 +319,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrch, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 !
 !      -- SI LE MODELE NE CONTIENT PAS D'ELEMENTS CLASSIQUES, ON SAUTE:
@@ -334,7 +341,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.FCO2D', iret)
@@ -353,7 +360,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.FCO3D', iret)
@@ -372,7 +379,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.F2D3D', iret)
@@ -391,7 +398,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.F1D3D', iret)
@@ -410,7 +417,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.F2D2D', iret)
@@ -429,7 +436,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.F1D2D', iret)
@@ -447,7 +454,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.F1D1D', iret)
@@ -465,7 +472,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.PESAN', iret)
@@ -480,7 +487,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.ROTAT', iret)
@@ -497,7 +504,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.EPSIN', iret)
@@ -512,7 +519,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
                 lpain(4)='PEPSINR'
             endif
             lchin(4)=ligrch(1:13)//'.EPSIN.DESC'
-            call meharm(modele, nh, chharm)
+            call meharm(model, nharm, chharm)
             lpain(13)='PHARMON'
             lchin(13)=chharm
             lpain(15)='PCOMPOR'
@@ -522,7 +529,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.FELEC', iret)
@@ -535,7 +542,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
 !         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
@@ -567,7 +574,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         end do
  30     continue
 ! ====================================================================
@@ -586,7 +593,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.VNOR ', iret)
@@ -604,7 +611,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call jeexin(ligrch(1:13)//'.VEASS', iret)
@@ -613,7 +620,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call codent(ilires, 'D0', lchout(1)(12:14))
             call jeveuo(ligrch(1:13)//'.VEASS', 'L', jveass)
             call copisd('CHAMP_GD', base, zk8(jveass), lchout(1))
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
         call exisd('CHAMP_GD', ligrch(1:13)//'.ONDE ', iret)
@@ -632,13 +639,15 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 ! ====================================================================
 
-        call jeexin(lchar(icha)//'.CHME.EVOL.CHAR', ier)
+        call jeexin(lchar(i_load)//'.CHME.EVOL.CHAR', ier)
         if (ier.ne.0) then
-            call utmess('F','CHARGES3_11')
+            call me2mme_evol(model     , cara_elem, mate       , nharm    , base    ,&
+                            i_load    , load_name, ligrmo, inst_prev, inst_curr,&
+                            inst_theta, lchout(1), vect_elem)
         endif
 !
 ! ====================================================================
@@ -655,7 +664,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
             call calcul('S', option, ligrmo, 6, lchin,&
                         lpain, 1, lchout, lpaout, base,&
                         'OUI')
-            call reajre(matel, lchout(1), base)
+            call reajre(vect_elem, lchout(1), base)
         endif
 !
 ! ====================================================================
@@ -667,14 +676,14 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
 !       -- CHARGEMENT DE DILATATION THERMIQUE :
     call nmvcd2('TEMP', mate, ltemp)
     if (ltemp) then
-        call vrcins(modele, mate, cara, time, chvarc,&
+        call vrcins(model, mate, cara_elem, time, chvarc,&
                     codret)
         option='CHAR_MECA_TEMP_R'
         lpain(2)='PMATERC'
         lchin(2)=mate
         lpain(4)='PVARCRR'
         lchin(4)=chvref
-        call meharm(modele, nh, chharm)
+        call meharm(model, nharm, chharm)
         lpain(13)='PHARMON'
         lchin(13)=chharm
         lpain(16)=' '
@@ -684,7 +693,7 @@ subroutine me2mme(modelz, nchar, lchar, mate, caraz,&
         call calcul('S', option, ligrmo, nbin, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
-        call reajre(matel, lchout(1), base)
+        call reajre(vect_elem, lchout(1), base)
         call detrsd('CHAMP_GD', chvarc)
     endif
 !
