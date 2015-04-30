@@ -243,6 +243,16 @@ class OJB(AsBase):
         else:
             return None
 
+    def changeJeveuxValues(self, nbval, indices, reel, imag, num = 1):
+        """Modify values of existing data structures"""
+        nomj = self.nomj()
+        if aster.jeveux_exists(nomj):
+            obj_simple = aster.jeveux_getattr(nomj, 'XOUS')[1].strip() == 'S'
+            if obj_simple:
+                assert num==1,"""For vectors last argument must be set to 1"""
+            # aster.putvectjev can be used for vectors (num=1) and collections
+            aster.putvectjev(nomj, nbval, indices, reel, imag, num)
+
     def get_stripped(self):
         """Fonction utilitaire, renvoie une liste de chaines 'strippées'"""
         data = self.get()

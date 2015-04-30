@@ -42,6 +42,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
 #include "asterfort/vrcins.h"
+#include "asterfort/getvtx.h"
     integer :: nchar, nh
     real(kind=8) :: time
     character(len=*) :: modelz, carelz, matelz
@@ -68,11 +69,12 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbout, nbin
+    integer :: nbout, nbin, nbval
     parameter    (nbout=2, nbin=32)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
+    character(len=3) :: tout
     character(len=2) :: codret
     character(len=8) :: k8bid
     character(len=16) :: option, k16bid, nomcmd
@@ -182,7 +184,12 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 !
 ! --- MATRICES DE RIGIDITE
 !
-    if ((lxfem) .or. ((.not.lxfem).and.(icode.eq.0))) then
+    tout = 'OUI'
+    if (nomcmd .eq. 'CALC_MATR_ELEM') then
+        call getvtx(' ', 'CALC_ELEM_MODELE', scal=tout, nbret=nbval)
+    endif
+    if (tout .eq. 'OUI') then
+      if ((lxfem) .or. ((.not.lxfem).and.(icode.eq.0))) then
         lpain(1) = 'PGEOMER'
         lchin(1) = chgeom(1:19)
         lpain(2) = 'PMATERC'
@@ -253,6 +260,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
         call reajre(matele, lchout(1), base)
         call reajre(matele, lchout(2), base)
         ilires = ilires + 2
+      endif
     endif
 !
 ! --- MATRICE DIRICHLET

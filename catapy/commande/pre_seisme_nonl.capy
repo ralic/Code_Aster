@@ -15,7 +15,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-def pre_seisme_nonl_sdprod(self, RESULTAT, PARAMETRE, **args):
+def pre_seisme_nonl_sdprod(self, RESULTAT, **args):
+   if RESULTAT[0]['RESULTAT'] :
+       self.type_sdprod(RESULTAT[0]['RESULTAT'], evol_noli)
    if RESULTAT[0]['MODELE'] :
        self.type_sdprod(RESULTAT[0]['MODELE'], modele_sdaster)
    if RESULTAT[0]['MAILLAGE'] :
@@ -25,18 +27,18 @@ def pre_seisme_nonl_sdprod(self, RESULTAT, PARAMETRE, **args):
    if RESULTAT[0]['CARA_ELEM'] :
        self.type_sdprod(RESULTAT[0]['CARA_ELEM'], cara_elem)
    if RESULTAT[0]['BASE_MODALE'] :
-       if PARAMETRE[0]['PRE_CALC_MISS']:
+       if args['PRE_CALC_MISS']:
            self.type_sdprod(RESULTAT[0]['BASE_MODALE'], mode_meca)
        else:
            raise AsException("Le mot-clé PRE_CALC_MISS est obligatoire pour créer un concept de type BASE_MODALE")
    if RESULTAT[0]['MACR_ELEM_DYNA'] :
-       if PARAMETRE[0]['PRE_CALC_MISS']:
+       if args['PRE_CALC_MISS']:
            self.type_sdprod(RESULTAT[0]['MACR_ELEM_DYNA'], macr_elem_dyna)
        else:
            raise AsException("Le mot-clé PRE_CALC_MISS est obligatoire pour créer un concept de type MACR_ELEM_DYNA")
    if RESULTAT[0]['CHARGE'] :
        for mcfact in RESULTAT[0]['CHARGE']:
-           if mcfact['OPTION'] == 'LAPL_TEMPS' and PARAMETRE[0]['PRE_CALC_MISS']:
+           if mcfact['OPTION'] == 'LAPL_TEMPS' and args['PRE_CALC_MISS']:
                raise AsException("Le mot-clé POST_CALC_MISS est obligatoire pour créer une charge de type LAPL_TEMPS")
            self.type_sdprod(mcfact['NOM'], char_meca)
 
@@ -69,13 +71,13 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                      regles=affe_cara_elem_regles(),
                      **AFFE_CARA_ELEM.entites
                                     ),
+   
                  AFFE_CHAR_MECA = FACT(statut='d',
                      regles=affe_char_meca_regles(),
                      **AFFE_CHAR_MECA.entites
                                     ),
-                 PARAMETRE = FACT( statut = 'o', min = 1, max = 1,
-                                   regles = UN_PARMI('PRE_CALC_MISS','POST_CALC_MISS'),
-                                   PRE_CALC_MISS = FACT(statut = 'f', max = 1,
+   
+                 PRE_CALC_MISS = FACT(statut = 'f', max = 1,
                                                          REDUC_DYNA_ISS = SIMP(statut='f', typ='TXM', into=('OUI','NON',), defaut='NON'),
                                                          REDUC_DYNA_IFS = SIMP(statut='f', typ='TXM', into=('OUI','NON',), defaut='NON'),
                                                          NMAX_MODE_ISS = SIMP(statut='o', typ='I'),
@@ -85,15 +87,45 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                                                          CALC_MISS_OPTION = SIMP(statut='o',typ='TXM', into=('ISS','ISFS')),
                                                          GROUP_NO_INTERF = SIMP(statut='o', typ=grno, max='**'),
                                                          ),
-                                    POST_CALC_MISS = FACT(statut = 'f', max = 1,
+   
+                 POST_CALC_MISS = FACT(statut = 'f', max = 1,
                                                           MACR_ELEM_DYNA  = SIMP(statut='o', typ=macr_elem_dyna,
                                                                            fr=tr("Macro élément produit en amont")),
+                                                          GROUP_NO_CENT = SIMP(statut='o', typ=grno, max='**'),
+                                                          GROUP_MA_INTERF = SIMP(statut='o', typ=grma, max='**'),
+                                                  #  b_unite_resu = BLOC(regles= AU_MOINS_UN('UNITE_RESU_RIGI','UNITE_RESU_AMOR','UNITE_RESU_MASS'),
                                                           UNITE_RESU_RIGI = SIMP(statut='f', typ='I'),
                                                           UNITE_RESU_MASS = SIMP(statut='f', typ='I'),
                                                           UNITE_RESU_AMOR = SIMP(statut='f', typ='I'),
+                                                  #                       ), 
                                                          ),
-                                  ),
+   
+                 STAT_DYNA = FACT(statut='f', min = 1, max = 1,
+                                     COMPORTEMENT = C_COMPORTEMENT('STAT_NON_LINE'),
+                                     CONVERGENCE = C_CONVERGENCE(),
+                                     RESULTAT = SIMP(statut='o',typ=evol_noli),
+                                     EXCIT = FACT(statut='o',max='**',
+                                                  CHARGE = SIMP(statut='o',typ=(char_meca,char_cine_meca)),
+                                                  FONC_MULT = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                                  TYPE_CHARGE = SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
+                                                                     into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
+                                            ),
+                                     BASE_MODALE = SIMP(statut='o', typ=mode_meca,),
+                                     UNITE_IMPE_TEMPS = FACT(statut='o', max='**',
+                                                    #         b_unite_resu = BLOC(regles= AU_MOINS_UN('UNITE_RESU_RIGI','UNITE_RESU_AMOR','UNITE_RESU_MASS'),
+                                                                                 UNITE_RESU_RIGI = SIMP(statut='f', typ='I'),
+                                                                                 UNITE_RESU_MASS = SIMP(statut='f', typ='I'),
+                                                                                 UNITE_RESU_AMOR = SIMP(statut='f', typ='I'),
+                                                    #                    ), 
+                                                             ),
+                                     UNITE_IMPE_FREQ = SIMP(statut='o', typ='I'),
+                                     FORCE_SOL = SIMP(statut='o',typ=char_meca),
+                                     COEF_AMOR = SIMP(statut='f', typ='R', defaut= 0.0),
+                                     NB_INST = SIMP(statut='f', typ='R', defaut= 100.0),
+                                    ),
+
                  RESULTAT = FACT(statut='o', min = 1, max = 1,
+                                     RESULTAT = SIMP(statut='f',typ=CO),
                                      MODELE = SIMP(statut='f',typ=CO),
                                      MAILLAGE = SIMP(statut='f',typ=CO),
                                      CHAM_MATER = SIMP(statut='f',typ=CO),
@@ -109,6 +141,6 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                                                   ),
                                     ),
 
-                   INFO = SIMP( statut='f', typ='I', defaut= 1 ,into=(1,2) ),
+                  INFO = SIMP( statut='f', typ='I', defaut= 1 ,into=(1,2) ),
 
 )

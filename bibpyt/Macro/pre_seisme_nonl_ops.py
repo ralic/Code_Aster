@@ -18,7 +18,8 @@
 
 from Noyau.N_types import force_list
 from Noyau.N_utils import AsType
-from Cata.cata import _F, fonction_sdaster, fonction_c, nappe_sdaster
+from Cata.cata import _F, fonction_sdaster, fonction_c, nappe_sdaster, \
+                      cara_elem, cham_mater, maillage_sdaster, modele_sdaster
 
 import numpy as NP
 import pprint
@@ -32,7 +33,9 @@ from Cata.cata import _F, DETRUIRE, DEFI_MAILLAGE, ASSE_MAILLAGE, \
     AFFE_MATERIAU, AFFE_MODELE, AFFE_CARA_ELEM, LIRE_MAILLAGE,  \
     AFFE_CHAR_MECA, ASSE_MATRICE, DEFI_INTERF_DYNA, CALC_MATR_ELEM, \
     DEFI_BASE_MODALE, CALC_MODES, NUME_DDL, MODE_STATIQUE, \
-    MACR_ELEM_DYNA
+    MACR_ELEM_DYNA, DEFI_FONCTION, DEFI_LIST_REEL, STAT_NON_LINE, \
+    CREA_CHAMP, NUME_DDL_GENE, LIRE_IMPE_MISS, COMB_MATR_ASSE, \
+    PROD_MATR_CHAM, DEFI_LIST_INST, CREA_MAILLAGE, DYNA_NON_LINE
 
 
 def pre_seisme_nonl_ops(self, **args):
@@ -62,10 +65,14 @@ class PreSeismeNonL(object):
     @staticmethod
     def Factory(parent, param):
         """Factory that returns the calculation object"""
-        if param['PARAMETRE'].has_key('PRE_CALC_MISS'):
+        #if param['PARAMETRE'].has_key('PRE_CALC_MISS'):
+        if param['PRE_CALC_MISS']:
             return PreCalcMiss(parent, param)
-        elif param['PARAMETRE'].has_key('POST_CALC_MISS'):
+#        elif param['PARAMETRE'].has_key('POST_CALC_MISS'):
+        elif param['POST_CALC_MISS']:
             return PostCalcMiss(parent, param)
+        elif param['STAT_DYNA']:
+            return StatDyna(parent, param)
         else:
             raise NotImplementedError, "option calcul non défini"
 
@@ -130,9 +137,11 @@ class PreCalcMiss(PreSeismeNonL):
     def calc_base_modale(self):
         """Execute the eigenmodes calculation"""
         if self.type_calcul == 'ISFS':
-            nbmodes1 = self.param['PARAMETRE'][
+            #nbmodes1 = self.param['PARAMETRE'][
+            nbmodes1 = self.param[
                 'PRE_CALC_MISS']['NMAX_MODE_ISS']
-            nbmodes2 = self.param['PARAMETRE'][
+            #nbmodes2 = self.param['PARAMETRE'][
+            nbmodes2 = self.param[
                 'PRE_CALC_MISS']['NMAX_MODE_IFS']
             bamoISS = BaseModale(
                 self, self.param, self.model, nbmodes1, self.typ_ISS)
@@ -142,7 +151,8 @@ class PreCalcMiss(PreSeismeNonL):
             bamoISFS.combine_base_modale(bamoISS)
             self.bamo = bamoISFS
         else:
-            nbmodes1 = self.param['PARAMETRE'][
+            #nbmodes1 = self.param['PARAMETRE'][
+            nbmodes1 = self.param[
                 'PRE_CALC_MISS']['NMAX_MODE_ISS']
             bamoISS = BaseModale(
                 self, self.param, self.model, nbmodes1, self.typ_ISS)
@@ -151,13 +161,16 @@ class PreCalcMiss(PreSeismeNonL):
 
     def set_type(self):
         """Set the type of MISS calculation"""
-        self.type_calcul = self.param['PARAMETRE'][
+        #self.type_calcul = self.param['PARAMETRE'][
+        self.type_calcul = self.param[
             'PRE_CALC_MISS']['CALC_MISS_OPTION']
-        if self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI':
+        #if self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI':
+        if self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI':
             self.typ_ISS = 'DYNA'
         else:
             self.typ_ISS = 'STAT'
-        if self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI':
+        #if self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI':
+        if self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI':
             self.typ_IFS = 'DYNA'
         else:
             self.typ_IFS = 'STAT'
@@ -237,23 +250,31 @@ class BaseModale(object):
         charge = self.param['AFFE_CHAR_MECA']
         for key in charge:
             if key == 'LIAISON_SOLIDE':
-                if not self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_CENT']:
-                    raise AsException(
-                        "Le mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie")
+                #if not self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_CENT']:
+                #if not self.param['PRE_CALC_MISS'].has_key('GROUP_NO_CENT'):
+                #   raise AsException(
+                #        "Le mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie")
+                msg_error = "\n\nLe mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie"
+                assert self.param['PRE_CALC_MISS'].has_key('GROUP_NO_CENT') == True, msg_error 
                 return True
         return False
 
     def defi_interf_dyna(self):
         """Build the dynamic interface where the substructuring approach is applied"""
-        if (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
-                self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
-            grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
+        #if (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
+        #        self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
+        if (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
+                self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
+            #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
+            grno = self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
         else:
             if self.check_radier_rigide():
-                grno = self.param['PARAMETRE'][
+               #grno = self.param['PARAMETRE'][
+                grno = self.param[
                     'PRE_CALC_MISS']['GROUP_NO_CENT']
             else:
-                grno = self.param['PARAMETRE'][
+               #grno = self.param['PARAMETRE'][
+                grno = self.param[
                     'PRE_CALC_MISS']['GROUP_NO_INTERF']
         _C_LIM0 = AFFE_CHAR_MECA(
             MODELE=self.model.get_model(), DDL_IMPO=_F(GROUP_NO=grno,
@@ -296,9 +317,11 @@ class BaseModale(object):
     def modes_statiques(self):
         """Calculate static/interface modes"""
         if self.check_radier_rigide():
-            grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_CENT']
+            #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_CENT']
+            grno = self.param['PRE_CALC_MISS']['GROUP_NO_CENT']
         else:
-            grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
+            #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
+            grno = self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
         _modsta = MODE_STATIQUE(MATR_RIGI=self.matr_rigi,
                                 MODE_STAT=_F(GROUP_NO=grno, TOUT_CMP='OUI',))
         self.modes = _modsta
@@ -353,11 +376,15 @@ class MacroElement(object):
     def check_reduc_dyna(self):
         """Check if dynamic reduction is used within the super-element"""
         reduc_dyna = False
-        if self.param['PARAMETRE'].has_key('PRE_CALC_MISS'):
-            if (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
-                    self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
+        #if self.param['PARAMETRE'].has_key('PRE_CALC_MISS'):
+        #    if (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
+        #            self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
+        if self.param['PRE_CALC_MISS']:
+            if (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
+                    self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
                 reduc_dyna = True
-        if self.param['PARAMETRE'].has_key('POST_CALC_MISS'):
+        #if self.param['PARAMETRE'].has_key('POST_CALC_MISS'):
+        if self.param['POST_CALC_MISS']:
             bamo_nom_long = aster.getvectjev(
                 self.mael.nom + (8 - len(self.mael.nom)) * ' ' + '.MAEL_REFE')
             bamo_nom_short = bamo_nom_long[0].split()[0]
@@ -369,8 +396,10 @@ class MacroElement(object):
 
     def set_mael(self):
         """Build the super-element"""
-        if self.param['PARAMETRE'].has_key('POST_CALC_MISS'):
-            self.mael = self.param['PARAMETRE'][
+        #if self.param['PARAMETRE'].has_key('POST_CALC_MISS'):
+        if self.param['POST_CALC_MISS']:
+            #self.mael = self.param['PARAMETRE'][
+            self.mael = self.param[
                 'POST_CALC_MISS']['MACR_ELEM_DYNA']
         else:
             self.mael = None
@@ -386,7 +415,8 @@ class MacroElement(object):
             '_Mael', self.param['RESULTAT']['MACR_ELEM_DYNA'])
         _Mael = MACR_ELEM_DYNA(
             BASE_MODALE=Bamo, MATR_RIGI=self.bamo.get_rigi(),
-            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
+            #MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
+            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.param['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
 
 
 class Properties(object):
@@ -447,7 +477,8 @@ class Model(object):
     @staticmethod
     def factory(parent, mail, properties):
         """Factory that returns the Model object"""
-        if properties['PARAMETRE'].has_key('PRE_CALC_MISS'):
+        #if properties['PARAMETRE'].has_key('PRE_CALC_MISS'):
+        if properties['PRE_CALC_MISS']:
             if mail.check_ficti_nodes():
                 return ModelBaMoReduc(parent, mail, properties)
             else:
@@ -530,6 +561,334 @@ class Model(object):
         self.cond_lim = _ACh_CL
 
 
+class StatDyna(object):
+
+    def __init__(self, parent, properties):
+        """initializations"""
+        self.parent = parent
+        self.args = properties
+        self.resu_snl = properties['STAT_DYNA']['RESULTAT']  
+
+        self.modele = self.set_from_resu('model', self.resu_snl)
+        self.maillage = self.set_from_resu('mesh', self.resu_snl)
+        self.mater = self.set_from_resu('mater', self.resu_snl)
+        self.cara_elem = self.set_from_resu('caraele', self.resu_snl)
+        self.coef_amor = properties['STAT_DYNA']['COEF_AMOR']        
+
+        self.charges = properties['STAT_DYNA']['EXCIT']
+        self.chsol = properties['STAT_DYNA']['FORCE_SOL']
+
+        if properties['STAT_DYNA']['COMPORTEMENT']:
+            self.comportement = properties['STAT_DYNA']['COMPORTEMENT']
+        else:
+            self.comportement = mc_comport(self.resu_snl)
+
+        if properties['STAT_DYNA']['CONVERGENCE']:
+            self.converge = properties['STAT_DYNA']['CONVERGENCE']
+        else:
+            self.converge = mc_converge()
+
+        self.base_modale = properties['STAT_DYNA']['BASE_MODALE']
+        self.UL_impe_freq = properties['STAT_DYNA']['UNITE_IMPE_FREQ']
+
+        if properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_RIGI']:
+            self.UL_impe_temps_K = properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_RIGI']
+            fid = open('./fort.%s' % self.UL_impe_temps_K, 'r')
+        if properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_AMOR']:
+            self.UL_impe_temps_C = properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_AMOR']
+            fid = open('./fort.%s' % self.UL_impe_temps_K, 'r')
+        if properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_MASS']:
+            self.UL_impe_temps_M = properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_MASS']
+            fid = open('./fort.%s' % self.UL_impe_temps_K, 'r')
+        
+        data = fid.readline().split()
+        fid.close()
+        self.pas_inst_impe = float(data[1])
+        self.nb_inst = properties['STAT_DYNA']['NB_INST']
+        self.inst_init = self.resu_snl.LIST_PARA()['INST'][-1]
+
+    def run(self):
+        """Execute static-dynamic transition"""
+        self.etapeStatique()
+        self.etapeDynamique()
+
+    def set_from_resu(self, what, resu):
+        """Extract a parameter from a result"""
+        assert what in ('mesh', 'model', 'caraele', 'mater')
+        key, typ = {'mesh': ('NOM_MAILLA', maillage_sdaster),
+                    'model': ('NOM_MODELE', modele_sdaster),
+                    'caraele': ('CARA_ELEM', cara_elem),
+                    'mater': ('CHAM_MATER', cham_mater)
+                    }[what]
+        nom_co = aster.dismoi(key, resu.nom, 'RESULTAT', 'F')[2].strip()
+        return self.parent.get_concept_by_type(nom_co, typ)
+
+    def etapeStatique(self):
+        """Execute static calculation"""
+        _chsol = self.calc_chsol_equi()
+        self.add_charge(_chsol)
+
+        _lreel = DEFI_LIST_REEL( VALE = self.resu_snl.LIST_PARA()['INST'] ); 
+        _linst = DEFI_LIST_INST(DEFI_LIST=_F(METHODE ='AUTO', LIST_INST = _lreel,),);
+
+        _ResuSNL = STAT_NON_LINE(**self.non_line(
+                                  EXCIT = self.charges,
+                                  INCREMENT = _F(LIST_INST = _linst,),          
+                                )
+                             );
+ 
+        self.resu_snl = _ResuSNL     
+
+    def etapeDynamique(self):
+        """Execute dynamic calculation"""
+        _DEPF = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                 OPERATION='EXTR',
+                 RESULTAT = self.resu_snl,
+                 NOM_CHAM='DEPL',
+                 INST = self.inst_init,
+                 INFO=1,); 
+
+        _SIGF = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                 OPERATION='EXTR',
+                 RESULTAT = self.resu_snl,
+                 NOM_CHAM='SIEF_ELGA',
+                 INST = self.inst_init,
+                 INFO=1,); 
+                 
+        _VARF = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                 OPERATION='EXTR',
+                 RESULTAT=self.resu_snl,
+                 NOM_CHAM='VARI_ELGA',
+                 INST = self.inst_init,
+                 INFO=1,);  
+
+        _CNUL = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                  OPERATION='ASSE',
+                  CHAM_NO = _DEPF,
+                  MODELE = self.modele,
+                  ASSE=(_F(TOUT='OUI',
+                           CHAM_GD = _DEPF,
+                           CUMUL='OUI',
+                           COEF_R=0.0,),),);   
+
+        TFIN_TOTAL = self.pas_inst_impe * (self.nb_inst + 1)
+
+        _larch = DEFI_LIST_REEL(DEBUT = self.inst_init,
+                     INTERVALLE=_F(JUSQU_A = TFIN_TOTAL,
+                                   PAS = self.pas_inst_impe,),);        
+
+        _linst2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = _larch,),
+                                 ECHEC=_F(SUBD_PAS=2,SUBD_NIVEAU=10,),);
+
+        N_stab1 = int(0.75*self.nb_inst)
+        TFIN1 = N_stab1 * self.pas_inst_impe
+
+        self.parent.DeclareOut('_ResuDNL', self.args['RESULTAT']['RESULTAT'])  
+        self.init_amor(self.coef_amor)
+        alpha_HHT = -7.0
+        _ResuDNL = DYNA_NON_LINE(**self.non_line(
+                                  SCHEMA_TEMPS = _F(SCHEMA='HHT',ALPHA = alpha_HHT,
+                                            MODI_EQUI='NON', FORMULATION='DEPLACEMENT',),
+                                  ETAT_INIT=_F(SIGM=_SIGF,VARI=_VARF,DEPL=_DEPF,VITE=_CNUL,ACCE=_CNUL),
+                                  EXCIT = self.charges,
+                                  INCREMENT=_F(LIST_INST = _linst2, INST_FIN = TFIN1,),
+                                  ARCHIVAGE=_F(LIST_INST = _larch,),                                                               
+                                )
+                             );
+
+        N_stab2 = self.nb_inst - N_stab1 
+        TFIN2 = TFIN1 + N_stab2 * self.pas_inst_impe                       
+        TDEBUT2 = TFIN1
+
+        self.modi_charge(self.chsol)  
+        _ResuDNL = DYNA_NON_LINE(**self.non_line(
+                                  reuse = _ResuDNL,
+                                  EXCIT = self.charges,
+                                  SCHEMA_TEMPS = _F(SCHEMA='HHT',ALPHA = alpha_HHT,
+                                            MODI_EQUI='NON', FORMULATION='DEPLACEMENT',),
+                                  ETAT_INIT=_F(EVOL_NOLI = _ResuDNL, INST = TDEBUT2,),
+                                  INCREMENT=_F(LIST_INST = _linst2, INST_FIN = TFIN2,),
+                                  ARCHIVAGE=_F(LIST_INST = _larch,),                                                         
+                                )
+                             );
+
+        self.init_amor(0.0)
+
+    def non_line(self, **kwds):
+        """Return the common keywords for STAT_NON_LINE and DYNA_NON_LINE
+        All keywords can be overridden using `kwds`."""
+        keywords = {
+            'MODELE': self.modele,
+            'CARA_ELEM': self.cara_elem,
+            'CHAM_MATER': self.mater,
+            'COMPORTEMENT': self.comportement,
+            'CONVERGENCE': self.converge,
+            'NEWTON': _F(MATRICE='TANGENTE',
+                         #PREDICTION='ELASTIQUE',
+                         REAC_ITER=1,),
+            'SOLVEUR': _F(METHODE='MUMPS', NPREC = 20,),
+            'AFFICHAGE': _F(INFO_RESIDU='OUI'),
+        }
+        keywords.update(kwds)
+        return keywords
+
+    def init_amor(self, coef):
+        """Initialization of the RIGI_PARASOL damping values"""
+        val = coef * 1.E16
+        lvalues = self.cara_elem.sdj.CARAMOXV.get()
+        p_ind = range(1, len(lvalues)+1)
+        p_real = len(lvalues)*(val,)
+        p_imag = len(lvalues)*(0.0,)
+        self.cara_elem.sdj.CARAMOXV.changeJeveuxValues(len(lvalues),tuple(p_ind),
+                                                 tuple(p_real),tuple(p_imag))     
+
+    def mc_converge(self):
+        """Build 'Converge' keywords set"""
+
+    def mc_comport(self, resu):
+        """Build 'Comportement' keywords set"""
+        
+        resu_INST0 = resu.sdj.TACH.get()[64][0]
+        nom_maillage = aster.getvectjev(
+            resu_INST0[0:19] + '.NOMA')[0] 
+        lnom_mailles = aster.getvectjev(
+            nom_maillage + (8 - len(nom_maillage)) * ' ' + '.NOMMAI')
+
+        col_mailles = aster.getcolljev(
+            resu_INST0[0:19] + '.LIMA') 
+        num_param = len(col_mailles)
+
+        anom_mailles = NP.array(lnom_mailles)
+        kw_comp = []
+        if col_mailles[3] != (0,):
+            for n in range(num_param):
+                relation    = aster.getvectjev(
+                         resu_INST0[0:19] + '.VALE')[20*(n+2)] 
+                deformation = aster.getvectjev(
+                         resu_INST0[0:19] + '.VALE')[20*(n+2)+2] 
+                grma = anom_mailles(NP.array(col_mailles[n+1]))
+       
+                kw_comp.append(_F(RELATION = relation,
+                                    GROUP_MA = grma,
+                                    DEFORMATION='PETIT'))
+        else:
+            kw_comp = _F(RELATION = relation,
+                         TOUT = 'OUI',
+                         DEFORMATION='PETIT')
+
+
+    def calc_chsol_equi(self):
+        """Compute the corrective force coming from the soil"""
+
+        _NUMGEN = NUME_DDL_GENE(BASE = self.base_modale,
+                                STOCKAGE='PLEIN',);
+
+        _impeF = LIRE_IMPE_MISS( BASE = self.base_modale, 
+                                 UNITE_RESU_IMPE = self.UL_impe_freq, 
+                                 NUME_DDL_GENE = _NUMGEN,              
+                                 #ISSF='OUI', 
+                                 SYME='OUI', TYPE='ASCII', FREQ_EXTR = 0.1,);
+
+        _Ks = COMB_MATR_ASSE(COMB_C=( _F(MATR_ASSE = _impeF,
+                                         COEF_C=1.0 + 0j,), ),
+                             SANS_CMP='LAGR',);
+
+        _Z0 = LIRE_IMPE_MISS(UNITE_RESU_IMPE = self.UL_impe_temps_K, 
+                               SYME = 'OUI', INST_EXTR = 0.0, 
+                               BASE = self.base_modale, 
+                               NUME_DDL_GENE = _NUMGEN);
+
+        _DIFFK = COMB_MATR_ASSE(COMB_C = (_F(MATR_ASSE = _Z0, COEF_C =  1.0 + 0j),
+                                          _F(MATR_ASSE = _Ks, COEF_C = -1.0 + 0j), # Z0-KS
+                                         ),
+                                SANS_CMP='LAGR',
+                                );  
+        
+        nom_mail = self.maillage.nom
+        nom_mael = aster.getvectjev(nom_mail + (8 - len(nom_mail)) * ' ' + '.NOMACR')[0]
+        maelk = _DIFFK.EXTR_MATR_GENE()
+        nbmod = maelk.shape[0]
+
+        p_real = []
+        p_imag = []
+        for n2 in range(0,nbmod):
+            for n1 in range(0,n2+1):
+                p_real.append(NP.real(maelk[n1,n2]))
+                p_imag.append(NP.imag(maelk[n1,n2]))
+
+        last_ind = nbmod*(nbmod+1)/2
+        p_ind = range(1, last_ind +1)
+        
+        aster.putvectjev(nom_mael + (8 - len(nom_mael)) * ' '+ '.MAEL_RAID_VALE         ', last_ind, tuple(
+                   p_ind), tuple(p_real), tuple(p_imag), 1)
+         
+        _DEPL0 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
+                           OPERATION = 'EXTR',
+                           RESULTAT = self.resu_snl,  
+                           NOM_CHAM = 'DEPL',
+                           INST = self.inst_init,          
+                           INFO = 1,);
+
+        lchar = []
+        for elem in self.charges.List_F():
+            lchar.append(elem['CHARGE'])
+
+        _rigiEle = CALC_MATR_ELEM( MODELE = self.modele , 
+                                   OPTION= 'RIGI_MECA',
+                                   CALC_ELEM_MODELE = 'NON',
+                                   CHAM_MATER = self.mater,
+                                   CARA_ELEM = self.cara_elem,
+                                   CHARGE = lchar,
+                                  );
+        
+        _NUME = NUME_DDL( MATR_RIGI = _rigiEle, METHODE='MUMPS' );
+        _MATKZ = ASSE_MATRICE( MATR_ELEM = _rigiEle, NUME_DDL = _NUME ); 
+
+        _DEPL1 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
+                           OPERATION = 'ASSE',
+                           NUME_DDL = _NUME,
+                           MODELE = self.modele,
+                           ASSE = (_F(TOUT = 'OUI',
+                                    CHAM_GD = _DEPL0,
+                                    CUMUL = 'OUI',
+                                    COEF_R = 1.0,),
+                                 ),
+                           ) ;
+
+        _VFORC = PROD_MATR_CHAM( MATR_ASSE = _MATKZ, CHAM_NO = _DEPL1 );
+
+        _CHFORC= AFFE_CHAR_MECA( MODELE = self.modele, VECT_ASSE = _VFORC,);
+
+        maelZ = _Z0.EXTR_MATR_GENE()
+        nbmod = maelZ.shape[0]
+
+        p_real = []
+        p_imag = []
+        for n2 in range(0,nbmod):
+            for n1 in range(0,n2+1):
+                p_real.append(NP.real(maelZ[n1,n2]))
+                p_imag.append(NP.imag(maelZ[n1,n2]))
+
+        last_ind = nbmod*(nbmod+1)/2
+        p_ind = range(1, last_ind +1)
+
+        aster.putvectjev(nom_mael + (8 - len(nom_mael)) * ' '+ '.MAEL_RAID_VALE         ', last_ind, tuple(
+                   p_ind), tuple(p_real), tuple(p_imag), 1)
+
+        return _CHFORC
+
+    def add_charge(self, chsol):
+        """Add the corrective force coming from the soil"""
+        mcfact_chsol = _F(CHARGE = chsol)
+        self.charges.append(mcfact_chsol)
+
+    def modi_charge(self, chsol):
+        """Replace the corrective force with the Laplace-Time force"""        
+        mcfact_chsol = _F(CHARGE = chsol)
+        self.charges.pop()
+        self.charges.append(mcfact_chsol)
+
+
 class ModelMacrElem(Model):
 
     """Define a numerical model combined with superelements.
@@ -540,6 +899,7 @@ class ModelMacrElem(Model):
         """Define the physics of the numerical modelling"""
         self.link_macro_elem()
         self.fiction_model()
+        self.parasol_model()
         self.args.set_key(
             ('AFFE_MODELE', 'MAILLAGE'), self.mesh.get_new_mesh())
         if self.args['RESULTAT'].has_key('MODELE'):
@@ -569,6 +929,7 @@ class ModelMacrElem(Model):
     def affe_cara_elem(self):
         """Define the constitutive law of discret elements"""
         self.fiction_cara_elem()
+        self.parasol_cara_elem()
         self.args.set_key(('AFFE_CARA_ELEM', 'MODELE'), self.modele)
 
     def affe_char_meca(self):
@@ -587,16 +948,22 @@ class ModelMacrElem(Model):
         for mm in mcfact:
             if mm['OPTION'] == 'LAPL_TEMPS':
                 cmd_charge = {'SUPER_MAILLE': 'STAT1'}
-                if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_RIGI']:
-                    UL_rigi = self.args['PARAMETRE'][
+                #if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_RIGI']:
+                #    UL_rigi = self.args['PARAMETRE'][
+                if self.args['POST_CALC_MISS'].has_key('UNITE_RESU_RIGI'):
+                    UL_rigi = self.args[
                         'POST_CALC_MISS']['UNITE_RESU_RIGI']
                     cmd_charge['UNITE_RESU_RIGI'] = UL_rigi
-                if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_MASS']:
-                    UL_mass = self.args['PARAMETRE'][
+                #if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_MASS']:
+                #    UL_mass = self.args['PARAMETRE'][
+                if self.args['POST_CALC_MISS'].has_key('UNITE_RESU_MASS'):
+                    UL_mass = self.args[
                         'POST_CALC_MISS']['UNITE_RESU_MASS']
                     cmd_charge['UNITE_RESU_MASS'] = UL_mass
-                if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_AMOR']:
-                    UL_amor = self.args['PARAMETRE'][
+                #if self.args['PARAMETRE']['POST_CALC_MISS']['UNITE_RESU_AMOR']:
+                #    UL_amor = self.args['PARAMETRE'][
+                if self.args['POST_CALC_MISS'].has_key('UNITE_RESU_AMOR'):
+                    UL_amor = self.args[
                         'POST_CALC_MISS']['UNITE_RESU_AMOR']
                     cmd_charge['UNITE_RESU_AMOR'] = UL_amor
                 charge_sol = _F(**cmd_charge)
@@ -605,6 +972,28 @@ class ModelMacrElem(Model):
 
     def other_loads(self):
         """Define other loading entries"""
+
+    def parasol_model(self):
+        """Define the RIGI_PARASOL group within the model"""
+        mcfact_DisTR = _F( GROUP_MA= 'PARA_SOL', 
+                           PHENOMENE='MECANIQUE', MODELISATION='DIS_TR')
+        self.args.add_MCFACT(('AFFE_MODELE', 'AFFE'), mcfact_DisTR)
+
+    def parasol_cara_elem(self):
+        """Define the RIGI_PARASOL values of damping"""
+        valC = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        mcfact_CEle = _F(GROUP_MA = self.args['POST_CALC_MISS']['GROUP_MA_INTERF'], GROUP_MA_POI1 = 'PARA_SOL', 
+                         GROUP_NO_CENTRE = self.args['POST_CALC_MISS']['GROUP_NO_CENT'],
+                         COEF_GROUP = 1., CARA='A_TR_D_N', VALE=valC, EUROPLEXUS = 'OUI',)
+        self.args.add_MCFACT(('AFFE_CARA_ELEM', 'RIGI_PARASOL'), mcfact_CEle)
+        valK = (1.E-9, 1.E-9, 1.E-9, 1.E-9, 0., 0., 0., 0., 0., 0.,)
+        valM = (1.E-3, 1.E-3, 1.E-3, 1.E-3, 1.E-3, 1.E-3,)
+        mcfact_MEle = _F(
+            GROUP_MA='PARA_SOL', CARA='M_TR_D_N', VALE=valK)
+        mcfact_KEle = _F(
+            GROUP_MA='PARA_SOL', CARA='K_TR_D_N', VALE=valM)
+        self.args.add_MCFACT(('AFFE_CARA_ELEM', 'DISCRET'), mcfact_MEle)
+        self.args.add_MCFACT(('AFFE_CARA_ELEM', 'DISCRET'), mcfact_KEle)
 
 
 class ModelDynaReduc(ModelMacrElem):
@@ -632,11 +1021,12 @@ class ModelDynaReduc(ModelMacrElem):
             GROUP_MA=self.ma_fict, CARA='K_TR_D_N', VALE=valM)
         self.args.add_MCFACT(('AFFE_CARA_ELEM', 'DISCRET'), mcfact_MEle)
         self.args.add_MCFACT(('AFFE_CARA_ELEM', 'DISCRET'), mcfact_KEle)
-
+        
     def other_loads(self):
         """Define the relation between the physical and generalized DoF's"""
         liaison_interf = _F(MACR_ELEM_DYNA=self.args[
-                            'PARAMETRE']['POST_CALC_MISS']['MACR_ELEM_DYNA'])
+                            #'PARAMETRE']['POST_CALC_MISS']['MACR_ELEM_DYNA'])
+                            'POST_CALC_MISS']['MACR_ELEM_DYNA'])
         self.args.add_MCFACT(
             ('AFFE_CHAR_MECA', 'LIAISON_INTERF'), liaison_interf)
 
@@ -656,6 +1046,12 @@ class ModelBaMoReduc(ModelDynaReduc):
     def other_loads(self):
         """Define other loading entries"""
 
+    def parasol_cara_elem(self):
+        """D"""
+
+    def parasol_model(self):
+        """D"""
+
 
 class ModelBaseModale(ModelMacrElem):
 
@@ -671,6 +1067,12 @@ class ModelBaseModale(ModelMacrElem):
 
     def other_loads(self):
         """Define other loading entries"""
+
+    def parasol_cara_elem(self):
+        """D"""
+
+    def parasol_model(self):
+        """D"""
 
 
 class Mesh(object):
@@ -712,7 +1114,11 @@ class Mesh(object):
             if self.param['RESULTAT'].has_key('MAILLAGE'):
                 self.parent.DeclareOut(
                     '_NewMesh', self.param['RESULTAT']['MAILLAGE'])
-            _NewMesh = ASSE_MAILLAGE(**self.asse_mail)
+            _MeshTmp = ASSE_MAILLAGE(**self.asse_mail)
+            _NewMesh = CREA_MAILLAGE(MAILLAGE = _MeshTmp,
+                                     CREA_POI1 =_F(NOM_GROUP_MA = 'PARA_SOL',
+                                     GROUP_MA = self.param['POST_CALC_MISS']['GROUP_MA_INTERF']),); 
+
             self.new_mesh = _NewMesh
 
     def get_new_mesh(self):
@@ -737,12 +1143,15 @@ class Mesh(object):
             mael = self.macro_elem.get_mael()
             Nb_no = len(mael._get_sdj().LINO.get())
         else:
-            if self.param['PARAMETRE']['PRE_CALC_MISS']['NMAX_MODE_IFS']:
-                nb_modes_IFS = self.param['PARAMETRE'][
+            #if self.param['PARAMETRE']['PRE_CALC_MISS']['NMAX_MODE_IFS']:
+            #    nb_modes_IFS = self.param['PARAMETRE'][
+            if self.param['PRE_CALC_MISS']['NMAX_MODE_IFS']:
+                nb_modes_IFS = self.param[
                     'PRE_CALC_MISS']['NMAX_MODE_IFS']
             else:
                 nb_modes_IFS = 0
-            Nb_no = self.param['PARAMETRE'][
+            #Nb_no = self.param['PARAMETRE'][
+            Nb_no = self.param[
                 'PRE_CALC_MISS']['NMAX_MODE_ISS'] + nb_modes_IFS
         return Nb_no
 
@@ -750,8 +1159,10 @@ class Mesh(object):
         """Check if fictitious cells and nodes should be added to the mesh"""
         if self.macro_elem:
             return self.macro_elem.check_reduc_dyna()
-        elif (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
-              self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
+        #elif (self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
+        #      self.param['PARAMETRE']['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
+        elif (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
+              self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
             return True
         else:
             return False
