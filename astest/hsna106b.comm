@@ -1,0 +1,199 @@
+# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS AXI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE()
+
+
+L_INST=DEFI_LIST_REEL(         DEBUT=0.0,INTERVALLE=(
+                              _F(  JUSQU_A = 1.0,  NOMBRE = 10),
+                                         _F(  JUSQU_A = 2.0,  NOMBRE = 10))
+                          )
+                          
+TFONC=DEFI_FONCTION(NOM_PARA='INST',
+                    NOM_RESU='TEMP',
+                    VALE=( 0. ,   1200.0,
+                           2.,    1800.,),
+                    PROL_GAUCHE='CONSTANT',
+                    PROL_DROITE='CONSTANT',)
+
+TIMPO=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_TEMP_F',
+                 MAILLAGE=MA,
+                 AFFE=_F(TOUT = 'OUI',
+                         NOM_CMP = 'TEMP',
+                         VALE_F = TFONC))
+
+TEMPE=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD = TIMPO,
+                        LIST_INST = L_INST))
+
+# PARTIE MECANIQUE
+# ON DEGENERE LA LOI POUR AVOIR UNE LOI DE VISCOSITE
+# DE TYPE NORTON D OU F1_M=0.D0                                 
+# CETTE LOI ANISOTROPE AVEC UNE SEULE PHASE ET UNE LOI DE NORTON
+# EST IDENTIQUE A UNE LOI CONTENUE DANS ZMAT
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E = 80000.,
+                                                       NU = 0.35,
+                                                    ALPHA = 0.00004),
+                                       LEMAITRE=_F(N = 4.39,
+                                                              UN_SUR_K = 0.003944,
+                                                              UN_SUR_M = 0.
+                                       ),);
+
+CM2=AFFE_MATERIAU(MAILLAGE=MA,
+                  AFFE=_F( TOUT = 'OUI', MATER = ACIER ),
+                  AFFE_VARC=(
+                             _F(TOUT='OUI',
+                                EVOL=TEMPE,
+                                VALE_REF=1200.,
+                                NOM_VARC='TEMP',
+                                NOM_CHAM='TEMP'),))
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE ='MECANIQUE',
+                       MODELISATION ='AXIS'))                             
+
+
+F_CHAR=DEFI_FONCTION(      NOM_PARA='INST',
+                             PROL_DROITE='CONSTANT',
+                                   VALE=(  0.,      0.,
+                                           1.,      0.,
+                                           2.,    20.,   )
+                         )
+
+
+
+CHR_LIAI=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+                              _F(  NOEUD = 'NO1',  DY = 0.),
+                                       _F(  NOEUD = 'NO2',  DY = 0.))
+                          )
+
+CHR_TRAC=AFFE_CHAR_MECA(       MODELE=MO,
+                              FACE_IMPO=_F(  MAILLE = 'MA2',  DY = 1.)
+                          )
+
+VL=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CM2,EXCIT=(
+                             _F(
+                CHARGE = CHR_LIAI), _F(
+                CHARGE = CHR_TRAC,
+                FONC_MULT = F_CHAR,
+                TYPE_CHARGE = 'DIDI')),
+                         COMPORTEMENT=_F(
+                RELATION = 'LEMAITRE',
+		ITER_INTE_MAXI = 100,
+		RESI_INTE_RELA = 1.E-12),
+                         INCREMENT=_F(
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F(
+                RESI_GLOB_MAXI = 1.E-1,
+                ITER_GLOB_MAXI = 50),
+#                     RECH_LINEAIRE=_F(
+#                ITER_LINE_MAXI = 3)
+              )
+
+VL=STAT_NON_LINE( reuse=VL,
+                            MODELE=MO,
+                        CHAM_MATER=CM2,
+                         ETAT_INIT=_F(
+                EVOL_NOLI = VL,
+                NUME_ORDRE = 10),EXCIT=(
+                             _F(
+                CHARGE = CHR_LIAI), _F(
+                CHARGE = CHR_TRAC,
+                FONC_MULT = F_CHAR,
+                TYPE_CHARGE = 'DIDI')),
+                         COMPORTEMENT=_F(
+                RELATION = 'LEMAITRE',
+		ITER_INTE_MAXI = 100,
+		RESI_INTE_RELA = 1.E-12),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                            NEWTON=_F(
+#               PREDICTION = 'ELASTIQUE',
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_GLOB_MAXI = 50),
+#                     RECH_LINEAIRE=_F(
+#                ITER_LINE_MAXI = 0)
+              )
+
+VL=CALC_CHAMP(reuse=VL,RESULTAT=VL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO'))
+
+
+VL=CALC_CHAMP(reuse =VL,
+          RESULTAT=VL,
+          DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU');
+
+TEST_RESU(RESU=(_F(INST=0.3,
+                   RESULTAT=VL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-91.7598,
+                   VALE_REFE=-91.7598,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-2,),
+                _F(INST=0.8,
+                   RESULTAT=VL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-92.5802,
+                   VALE_REFE=-92.5802,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-2,),
+                _F(INST=1.3,
+                   RESULTAT=VL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=70.1846,
+                   VALE_REFE=70.1846,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-2,),
+                _F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='SIGM_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=84.4144,
+                   VALE_REFE=84.4120,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-2,),
+),)
+
+
+FIN(  )
+#
