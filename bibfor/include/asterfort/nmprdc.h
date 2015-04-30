@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmprdc(method, numedd, depmoi, sddisc, numins,&
-                      incest, depest)
-        character(len=16) :: method(*)
-        character(len=24) :: numedd
-        character(len=19) :: depmoi
-        character(len=19) :: sddisc
-        integer :: numins
-        character(len=19) :: incest
-        character(len=19) :: depest
+    subroutine nmprdc(algo_meth, nume_dof , disp_prev, sddisc, nume_inst,&
+                      incr_esti, disp_esti)
+        character(len=16), intent(in) :: algo_meth(*)
+        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: disp_prev
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in)  :: nume_inst
+        character(len=19), intent(in) :: incr_esti
+        character(len=19), intent(in) :: disp_esti
     end subroutine nmprdc
 end interface

@@ -37,6 +37,11 @@ cata_msg = {
  - vérifiez que le concept fourni sous le mot-clé EVOL_NOLI contient suffisamment d'instants pour interpoler le champ souhaité
 """),
 
+    28 : _(u"""
+ La prédiction par DEPL_CALCULE à l'instant de calcul %(r1)f à partir du concept %(k1)s n'a pas pu être construite car les maillages sont différents et vous utilisez des conditions limites de type Lagrange (AFFE_CHAR_MECA).
+ Conseil : essayez avec des conditions limites de type AFFE_CHAR_CINE si c'est possible. Mais dans ce cas, le champ de déplacements n'étant plus cinématiquement admissible au premier pas de temps, vous risquez d'avoir des problèmes de convergence.
+"""),
+
     37 : _(u"""
     ARRET=NON donc poursuite du calcul sans avoir eu convergence.
 """),
