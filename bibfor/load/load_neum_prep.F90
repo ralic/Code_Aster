@@ -172,13 +172,15 @@ implicit none
         lpain(nb_in_prep) = 'PHARMON'
         lchin(nb_in_prep) = chharm(1:19)
     endif
+    if (present(varc_curr)) then
+        nb_in_prep = nb_in_prep + 1
+        lpain(nb_in_prep) = 'PVARCPR'
+        lchin(nb_in_prep) = varc_curr(1:19)
+    endif
 !
 ! - Specific
 !
     if (load_type.eq.'Dead'.or.load_type.eq.'Pilo') then
-        nb_in_prep = nb_in_prep + 1
-        lpain(nb_in_prep) = 'PVARCPR'
-        lchin(nb_in_prep) = varc_curr(1:19)
         nb_in_prep = nb_in_prep + 1
         lpain(nb_in_prep) = 'PCOMPOR'
         lchin(nb_in_prep) = mate(1:8)//'.COMPOR'
