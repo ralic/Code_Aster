@@ -28,6 +28,7 @@ mail=DEFI_GROUP(reuse = mail,
                   ),
            );
 
+
 mat1= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10,
                               RHO= 2400.,
                               NU= 0.2,

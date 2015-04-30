@@ -35,7 +35,8 @@ from Cata.cata import _F, DETRUIRE, DEFI_MAILLAGE, ASSE_MAILLAGE, \
     DEFI_BASE_MODALE, CALC_MODES, NUME_DDL, MODE_STATIQUE, \
     MACR_ELEM_DYNA, DEFI_FONCTION, DEFI_LIST_REEL, STAT_NON_LINE, \
     CREA_CHAMP, NUME_DDL_GENE, LIRE_IMPE_MISS, COMB_MATR_ASSE, \
-    PROD_MATR_CHAM, DEFI_LIST_INST, CREA_MAILLAGE, DYNA_NON_LINE
+    PROD_MATR_CHAM, DEFI_LIST_INST, CREA_MAILLAGE, DYNA_NON_LINE, \
+    DEFI_GROUP
 
 
 def pre_seisme_nonl_ops(self, **args):
@@ -224,6 +225,15 @@ class BaseModale(object):
         else:
             self.assemblage_dyna()
             self.modes_dynamiques()
+        self.grno_interf = self.from_grma_interf()
+
+    def from_grma_interf(self):
+        grma = self.param['PRE_CALC_MISS']['GROUP_MA_INTERF']
+        mail = self.model.mesh.add_group_no(grma)
+        return grma
+
+    def get_grno_interf(self):
+        return self.grno_interf
 
     def get_num_modes(self):
         """Return the number of modes stored within self.modes"""
@@ -266,7 +276,7 @@ class BaseModale(object):
         if (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
                 self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
             #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
-            grno = self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
+            grno = self.get_grno_interf() #self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
         else:
             if self.check_radier_rigide():
                #grno = self.param['PARAMETRE'][
@@ -274,8 +284,7 @@ class BaseModale(object):
                     'PRE_CALC_MISS']['GROUP_NO_CENT']
             else:
                #grno = self.param['PARAMETRE'][
-                grno = self.param[
-                    'PRE_CALC_MISS']['GROUP_NO_INTERF']
+                grno =  self.get_grno_interf() #self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
         _C_LIM0 = AFFE_CHAR_MECA(
             MODELE=self.model.get_model(), DDL_IMPO=_F(GROUP_NO=grno,
                                                        DX=0.0, DY=0.0, DZ=0.0,),)
@@ -321,7 +330,7 @@ class BaseModale(object):
             grno = self.param['PRE_CALC_MISS']['GROUP_NO_CENT']
         else:
             #grno = self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF']
-            grno = self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
+            grno = self.get_grno_interf() #self.param['PRE_CALC_MISS']['GROUP_NO_INTERF']
         _modsta = MODE_STATIQUE(MATR_RIGI=self.matr_rigi,
                                 MODE_STAT=_F(GROUP_NO=grno, TOUT_CMP='OUI',))
         self.modes = _modsta
@@ -416,7 +425,7 @@ class MacroElement(object):
         _Mael = MACR_ELEM_DYNA(
             BASE_MODALE=Bamo, MATR_RIGI=self.bamo.get_rigi(),
             #MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.param['PARAMETRE']['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
-            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.param['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
+            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.bamo.get_grno_interf(),) #SANS_GROUP_NO=self.param['PRE_CALC_MISS']['GROUP_NO_INTERF'],)
 
 
 class Properties(object):
@@ -507,6 +516,10 @@ class Model(object):
     def get_properties(self):
         """Return the set of keywords related to the properties of the numerical model"""
         return self.args
+
+    def modi_mesh(self, msh):
+        """Modify the existing mesh of the current numerical model"""
+        self.mesh = msh
 
     def get_model(self):
         """Return the numerical model"""
@@ -1124,6 +1137,17 @@ class Mesh(object):
     def get_new_mesh(self):
         """Return the mesh concept which might contain a superelement"""
         return self.new_mesh
+
+    def add_group_no(self, nom):
+        lgrno = self.old_mesh.LIST_GROUP_NO()
+        check = 0
+        for grp in lgrno:
+           if grp[0] == nom:
+              check = 1
+        if check == 0:
+           string = "DEFI_GROUP(reuse =" + self.old_mesh.nom + "," +
+                           "MAILLAGE = " + self.old_mesh.nom +", CREA_GROUP_NO=(_F(GROUP_MA =" + nom + "),),);"
+           exec(self.old_mesh.nom + string)
 
     def __set_list_supermaille(self, MacroElem):
         """Build a set of supermeshes"""

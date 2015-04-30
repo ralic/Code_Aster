@@ -47,7 +47,7 @@ PRE_SEISME_NONL(
                                 REDUC_DYNA_IFS = 'NON',
                                 NMAX_MODE_ISS = 6,
                                 CALC_MISS_OPTION = 'ISS',
-                                GROUP_NO_INTERF = 'RADIER',
+                                GROUP_MA_INTERF = 'RADIER',
                                 GROUP_NO_CENT = 'CENT_RAD',
                                   ),
 
@@ -143,6 +143,8 @@ PRE_SEISME_NONL(
 
 
 );
+
+FIN();
 
 IMPR_CO(CHAINE='MAEL0   .LINO', UNITE = 6);
 
