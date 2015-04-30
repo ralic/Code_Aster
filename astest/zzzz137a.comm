@@ -201,5 +201,53 @@ TEST_RESU(RESU=_F(INST=1.0,
                   PRECISION=9.9999999999999995E-07,),
           )
 
+# 5) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC CALC_VECT_ELEM :
+# -----------------------------------------------------------------
+
+F1bis=DEFI_FONCTION(NOM_PARA='INST', VALE=(0., 0., 1., 1.,))
+
+CH_ALL=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(  GROUP_MA = 'AB',   DY = 0.) ,
+                      PRES_REP=(
+                                _F(  GROUP_MA = 'CD',   PRES = 1.),
+                                _F(  GROUP_MA = 'CD',   PRES = 3.),
+                               ),
+                      EVOL_CHAR=PRESLU,
+                      )
+
+U5=MECA_STATIQUE(MODELE=MO,
+                 LIST_INST=LINST,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F( CHARGE = CH_ALL, FONC_MULT = F1bis),),)
+
+TEST_RESU(RESU=_F(INST=1.0,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U5,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N1',
+                  NOM_CMP='DY',
+                  VALE_CALC=-7.0,
+                  VALE_REFE=-7.0,
+                  PRECISION=9.9999999999999995E-07,),
+          )
+
+
+rigiel    = CALC_MATR_ELEM(MODELE=MO, CHAM_MATER=CHMAT, OPTION='RIGI_MECA', CHARGE=CH_ALL)
+vecel     = CALC_VECT_ELEM(CHARGE=CH_ALL, INST=1.0, CHAM_MATER=CHMAT, OPTION='CHAR_MECA')
+numeddl   = NUME_DDL(MATR_RIGI = rigiel)
+matass    = ASSE_MATRICE(MATR_ELEM=rigiel , NUME_DDL=numeddl)
+vecas     = ASSE_VECTEUR(VECT_ELEM=vecel, NUME_DDL=numeddl)
+k         = FACTORISER(MATR_ASSE=matass);
+U6        = RESOUDRE( MATR = k, CHAM_NO= vecas )
+TEST_RESU(CHAM_NO=_F(
+                  REFERENCE='ANALYTIQUE',
+                  CHAM_GD=U6,
+                  NOEUD='N1',
+                  NOM_CMP='DY',
+                  VALE_CALC=-7.0,
+                  VALE_REFE=-7.0,
+                  PRECISION=9.9999999999999995E-07,),
+          )
+
 FIN()
 #
