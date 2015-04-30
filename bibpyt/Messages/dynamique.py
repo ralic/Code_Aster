@@ -225,4 +225,30 @@ Les signaux d'entraînements ne sont pas discrétisés de la même manière. Vé
     41 : _(u"""
 Les signaux servant de supports à la détermination des signaux d'entraînement ne sont pas discrétisés de la même manière. Vérifier le pas de chaque signaux ainsi que leur longueur.
 """),  
+
+    50 : _(u"""
+Schéma multi-pas
+On n'a pas trouvé l'instant précédent dans la structure de données résultat du mot-clef ETAT_INIT.
+C'est probablement parce qu'il n'y a pas assez d'instants archivés.
+On ignore donc le calcul du second membre pour cet instant.
+"""),  
+
+    51 : _(u"""
+Schéma multi-pas
+On n'a pas trouvé l'instant précédent dans la structure de données résultat du mot-clef ETAT_INIT.
+C'est probablement parce que la structure de données vient d'un calcul statique (STAT_NON_LINE) ou d'une lecture directe (LIRE_RESU).
+On ignore donc le calcul du second membre pour cet instant.
+"""), 
+
+    52 : _(u"""
+Schéma multi-pas
+L'instant précédent et l'instant initial sont presque confondus.
+On ignore donc le calcul du second membre pour cet instant.
+"""), 
+
+    53 : _(u"""
+Schéma multi-pas
+On n'a pas de structure de données résultat dans le mot-clef ETAT_INIT parce que l'état initial est entré champ par champ.
+On ignore donc le calcul du second membre pour cet instant.
+"""), 
 }
