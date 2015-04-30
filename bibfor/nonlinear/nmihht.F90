@@ -1,8 +1,14 @@
-subroutine nmihht(modele, numedd, mate, compor, carele,&
-                  lischa, carcri, comref, fonact, sdstat,&
-                  sddyna, sdtime, sdnume, defico, resoco,&
-                  resocu, valinc, sddisc, parcon, solalg,&
-                  veasse, result)
+subroutine nmihht(model      , nume_dof , mate     , compor        , cara_elem  ,&
+                  list_load  , comp_para, varc_refe, list_func_acti, sdstat     ,&
+                  sddyna     , sdtime   , sdnume   , sdcont_defi   , sdcont_solv,&
+                  sdunil_solv, hval_incr, sddisc   , crit_refe_para, hval_algo  ,&
+                  hval_veasse, result)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/nmchht.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,81 +27,86 @@ subroutine nmihht(modele, numedd, mate, compor, carele,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/exisd.h"
-#include "asterfort/getvid.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/nmchht.h"
-#include "asterfort/nmvcex.h"
-    integer :: fonact(*)
-    character(len=19) :: sddyna, sdnume
-    character(len=19) :: lischa
-    character(len=24) :: modele, mate, carele, numedd
-    character(len=24) :: compor, carcri, comref
-    character(len=24) :: sdtime, sdstat
-    character(len=19) :: sddisc
-    real(kind=8) :: parcon(*)
-    character(len=24) :: defico, resoco, resocu
-    character(len=19) :: solalg(*), veasse(*), valinc(*)
-    character(len=8) :: result
 !
-! ----------------------------------------------------------------------
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    character(len=24), intent(in) :: compor
+    character(len=24), intent(in) :: comp_para
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: varc_refe
+    integer, intent(in) :: list_func_acti(*)
+    character(len=24), intent(in) :: sdstat
+    character(len=19), intent(in) :: sddyna
+    character(len=24), intent(in) :: sdtime
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sdnume
+    character(len=24), intent(in) :: sdcont_defi
+    character(len=24), intent(in) :: sdcont_solv
+    character(len=24), intent(in) :: sdunil_solv
+    real(kind=8), intent(in) :: crit_refe_para(*)
+    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: hval_veasse(*)
+    character(len=8), intent(in) :: result
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME)
+! --------------------------------------------------------------------------------------------------
 !
-! INITIALISATIONS SPECIFIQUES POUR SCHEMAS MULTIPAS EN POURSUITE
+! MECA_NON_LINE - Init
 !
-! ----------------------------------------------------------------------
+! Initialiasations for multi-step schemes
 !
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  SDTIME : SD TIMER
-! IN  SDSTAT : SD STATISTIQUES
+! --------------------------------------------------------------------------------------------------
 !
+! In  model            : name of the model
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  compor           : name of comportment definition (field)
+! In  comp_para        : parameters for comportment (field)
+! In  nume_dof         : name of numbering (NUME_DDL)
+! In  list_load        : name of datastructure for list of loads
+! In  varc_refe        : name of reference command variables vector
+! In  list_func_acti   : list of active functionnalities
+! In  sdstat           : datastructure for statistics
+! In  sddyna           : dynamic parameters datastructure
+! In  sdtime           : datastructure for timers management
+! In  sddisc           : datastructure for time discretization
+! In  sdnume           : datastructure for dof positions
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  sdcont_solv      : name of contact definition datastructure for solving
+! In  sdunil_defi      : name of unilateral condition datastructure (from DEFI_CONTACT)
+! In  crit_refe_para   : parameters for reference criterion
+! In  hval_incr        : hat-variable for incremental values fields
+! In  hval_algo        : hat-variable for algorithms fields
+! In  hval_veasse      : hat-variable for vectors (node fields)
+! In  result           : name of result datastructure (EVOL_NOLI)
 !
+! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_init_state, l_reuse
 !
-    integer :: ifm, niv
-    integer :: nocc, iret
-    aster_logical :: evonol
-    character(len=19) :: commoi, insmoi
-    character(len=24) :: k24bid
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+
 !
+! - Does ETAT_INIT (initial state) exist ?
 !
-    call jemarq()
-    call infdbg('MECA_NON_LINE', ifm, niv)
+    l_init_state = isfonc(list_func_acti,'ETAT_INIT')
 !
-! --- AFFICHAGE
+! - REUSE ?
 !
-    if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE> INITIALISATION MULTI-PAS'
+    l_reuse      = isfonc(list_func_acti,'REUSE')
+!
+! - Compute previous second member for multi-step schemes
+!
+    if (l_reuse.or.l_init_state) then
+        call nmchht(model      , mate       , cara_elem     , compor        , comp_para  ,&
+                    list_load  , nume_dof   , varc_refe     , list_func_acti, sdstat     ,&
+                    sddyna     , sdtime     , sddisc        , sdnume        , sdcont_defi,&
+                    sdcont_solv, sdunil_solv, crit_refe_para, hval_incr     , hval_algo  ,&
+                    hval_veasse, result)
     endif
-!
-    call getvid('ETAT_INIT', 'EVOL_NOLI', iocc=1, scal=k24bid, nbret=nocc)
-    evonol = nocc .gt. 0
-!
-! --- DECOMPACTION DES VARIABLES CHAPEAUX
-!
-    call nmchex(valinc, 'VALINC', 'COMMOI', commoi)
-    if (evonol) then
-        call nmvcex('INST', commoi, insmoi)
-        call exisd('CHAMP_GD', insmoi, iret)
-        if (iret .ne. 0) then
-            call nmchht(modele, numedd, mate, compor, carele,&
-                        lischa, carcri, comref, fonact, sdstat,&
-                        sddyna, sdtime, defico, resoco, resocu,&
-                        valinc, sddisc, parcon, solalg, veasse,&
-                        sdnume, result)
-        endif
-    endif
-!
-    call jedema()
+
 end subroutine

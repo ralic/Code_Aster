@@ -16,32 +16,32 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmchht(model    , nume_ddl, mate       , compor     , cara_elem  ,&
-                      list_load, carcri  , varc_refe  , acti_func  , sdstat     ,&
-                      sddyna   , sdtime  , sdcont_defi, sdcont_solv, sdunil_solv,&
-                      hval_incr, sddisc  , parcon     , hval_algo  , hval_veasse,&
-                      sdnume   , result)
-        integer, intent(in) :: acti_func(*)
-        character(len=19), intent(in) :: sddyna
-        character(len=19), intent(in) :: sdnume
-        character(len=19), intent(in) :: list_load
+    subroutine nmchht(model      , mate       , cara_elem     , compor        , comp_para  ,&
+                      list_load  , nume_dof   , varc_refe     , list_func_acti, sdstat     ,&
+                      sddyna     , sdtime     , sddisc        , sdnume        , sdcont_defi,&
+                      sdcont_solv, sdunil_solv, crit_refe_para, hval_incr     , hval_algo  ,&
+                      hval_veasse, result)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
-        character(len=24), intent(in) :: nume_ddl
         character(len=24), intent(in) :: compor
-        character(len=24), intent(in) :: carcri
+        character(len=24), intent(in) :: comp_para
+        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: varc_refe
-        character(len=24), intent(in) :: sdtime
+        integer, intent(in) :: list_func_acti(*)
         character(len=24), intent(in) :: sdstat
+        character(len=19), intent(in) :: sddyna
+        character(len=24), intent(in) :: sdtime
         character(len=19), intent(in) :: sddisc
-        real(kind=8), intent(in) :: parcon(*)
+        character(len=19), intent(in) :: sdnume
         character(len=24), intent(in) :: sdcont_defi
         character(len=24), intent(in) :: sdcont_solv
         character(len=24), intent(in) :: sdunil_solv
-        character(len=19), intent(in) :: hval_veasse(*)
+        real(kind=8), intent(in) :: crit_refe_para(*)
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
+        character(len=19), intent(in) :: hval_veasse(*)
         character(len=8), intent(in) :: result
     end subroutine nmchht
 end interface

@@ -251,4 +251,10 @@ Schéma multi-pas
 On n'a pas de structure de données résultat dans le mot-clef ETAT_INIT parce que l'état initial est entré champ par champ.
 On ignore donc le calcul du second membre pour cet instant.
 """), 
+
+    52 : _(u"""
+Schéma multi-pas
+L'instant précédent et l'instant initial sont presque confondus.
+On ignore donc le calcul du second membre pour cet instant.
+"""), 
 }
