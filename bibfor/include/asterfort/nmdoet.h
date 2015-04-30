@@ -18,19 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdoet(model , compor, list_func_acti, nume_ddl, sdpilo     ,&
-                      sddyna, sdcriq, sd_inout      , solalg  , l_acce_zero,&
-                      inst_0)
+    subroutine nmdoet(model    , compor, list_func_acti, nume_ddl , sdpilo     ,&
+                      sddyna   , sdcriq, sdinout       , hval_algo, l_acce_zero,&
+                      inst_init)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: compor
         character(len=24), intent(in) :: sdcriq
         character(len=24), intent(in) :: nume_ddl
-        character(len=24), intent(in) :: sd_inout
+        character(len=24), intent(in) :: sdinout
         character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: sdpilo
-        character(len=19), intent(in) :: solalg(*)
+        character(len=19), intent(in) :: hval_algo(*)
         integer, intent(in) :: list_func_acti(*)
         aster_logical, intent(out) :: l_acce_zero
-        real(kind=8), intent(out) :: inst_0
+        real(kind=8), intent(out) :: inst_init
     end subroutine nmdoet
 end interface

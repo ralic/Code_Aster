@@ -71,11 +71,7 @@ implicit none
 ! - Final number of time steps
 !
     nb_inst_new = (nume_end-nume_ini) + 1
-    ASSERT(nb_inst_new.le.nb_inst)
-!
-! --- NOMS SD_DISC
-!
-    sddisc_ditr = sddisc(1:19)//'.DITR'
+    ASSERT(nb_inst_new.le.nb_inst)  
 !
 ! - Acces to list of times
 !
@@ -83,7 +79,11 @@ implicit none
 !
 ! - Create new list of time
 !
+    sddisc_ditr = sddisc(1:19)//'.DITR'
     call wkvect(sddisc_ditr, 'V V R', nb_inst_new, vr = v_sddisc_ditr)
+!
+! - Update new list of time
+!
     pos = 0
     do i_inst = nume_ini, nume_end
         v_sddisc_ditr(pos+1) = v_list_inst(i_inst+1)
