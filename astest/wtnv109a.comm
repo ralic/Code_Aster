@@ -36,10 +36,7 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
 #  LISTE DES INSTANTS DE CALCUL
 ####################################
 LI=DEFI_LIST_REEL(   DEBUT=0.,
-                       INTERVALLE=_F(  JUSQU_A = 1.E10, NOMBRE = 1)
-#                      INTERVALLE =( JUSQU_A = 3. NOMBRE = 1)
-#                      INTERVALLE =( JUSQU_A = 4. NOMBRE = 1)
-#                      INTERVALLE =( JUSQU_A = 5. NOMBRE = 1)
+                       INTERVALLE=_F(  JUSQU_A = 1.E2, NOMBRE = 1)
                      )
 
 ############################################
@@ -143,21 +140,14 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                  )
 
 CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
-                     DDL_IMPO=(_F(NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
-                                  PRE1=500.0,),
-                               _F(GROUP_NO='BAS',
-                                  DX=0.0,
-                                  DY=0.0,
+                     DDL_IMPO=(_F(TOUT=('OUI'),
+                                  PRE1=500.0),
+                                  _F(TOUT=('OUI'), DX=0.0,),
+                                  _F(TOUT=('OUI'), DY=0.0,),                     
+                           _F(GROUP_NO='BAS',
                                   DZ = 0.,),
-                               _F(NOEUD=('NO13','NO18','NO20','NO15'),
-                                     TEMP = 0.),
-                               _F(NOEUD=('NO9','NO10','NO11','NO12'),
-                                  DX=0.0,
-                                  DY=0.0,
-                                  DZ=5.0000000000000001E-4,),
+
                                _F(GROUP_NO='HAUT',
-                                  DX=0.0,
-                                  DY=0.0,
                                   DZ=1.E-3,),),);
 
 MESTAT=STAT_NON_LINE(
@@ -182,14 +172,15 @@ MESTAT=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 10),
               )
 
+
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MESTAT,
                   NOM_CHAM='DEPL',
                   NOEUD='NO1',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598920E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )
@@ -200,8 +191,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO6',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598920E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )
@@ -212,8 +203,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO8',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598920E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )
@@ -224,8 +215,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO3',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598920E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )

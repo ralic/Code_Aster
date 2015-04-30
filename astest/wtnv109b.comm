@@ -35,7 +35,7 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
 #  LISTE DES INSTANTS DE CALCUL
 ####################################
 LI=DEFI_LIST_REEL(   DEBUT=0.,
-                       INTERVALLE=_F(  JUSQU_A = 1.E10, NOMBRE = 1)
+                       INTERVALLE=_F(  JUSQU_A = 1.E2, NOMBRE = 1)
                      )
 
 ############################################
@@ -138,18 +138,11 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                         MATER = MATERIAU))
 
 CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
-                          _F( NOEUD=('N1','N2','N3','N4'),
+                          _F( TOUT=('OUI'),
                                      PRE1 = 500.),
                          _F(  GROUP_NO = 'BAS',
                                      DX = 0.,
                                      DY = 0.,),
-                         _F(NOEUD=('N1','N2'),
-                                     TEMP = 0.),
-
-                         _F(  NOEUD = ('N6','N8',),
-                                     DX = 0.,
-                                     DY = 0.5E-3),
-
                          _F(  GROUP_NO = 'HAUT',
                                      DX = 0.,
                                      DY = 1.E-3,
@@ -178,10 +171,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='N3',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598920E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
-                  PRECISION=1.0000000000000001E-05,),
+                  PRECISION=1.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -190,10 +183,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='N4',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598920E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
-                  PRECISION=1.0000000000000001E-05,),
+                  PRECISION=1.E-3,),
           )
 
 FIN()

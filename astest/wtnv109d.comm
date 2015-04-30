@@ -43,19 +43,10 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
 
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,
-                  INTERVALLE=_F(JUSQU_A=1.E10,
+                  INTERVALLE=_F(JUSQU_A=100.,
                                 NOMBRE=1,),);
 ############################################
 
-#
-# DEFINITION DES FONCTIONS DE COMPORTEMENT :
-# VISCOSITE LIQUIDE ET GAZ : UNITE : PA.S
-#
-#
-#
-#
-#
-#
 
 
 UN=DEFI_CONSTANTE(VALE=1.0,);
@@ -166,35 +157,17 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                              MATER=ARGILE0,),);
 
 
-CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,
-                     DDL_IMPO=(_F(NOEUD=('NO1','NO3','NO2','NO7','NO9','NO8','NO16','NO19',),
-                                  PRE1=500.0,),
-                               _F(GROUP_NO='BAS',
-                                  DX=0.0,
-                                  DY=0.0,
+CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
+                     DDL_IMPO=(_F(TOUT=('OUI'),
+                                  PRE1=500.0),
+                                  _F(TOUT=('OUI'), DX=0.0,),
+                                  _F(TOUT=('OUI'), DY=0.0,),                     
+                           _F(GROUP_NO='BAS',
                                   DZ = 0.,),
-                               _F(NOEUD=('NO2','NO3','NO9','NO8'),
-                                     TEMP = 0.),
-                               _F(NOEUD=('NO5','NO4','NO18','NO21','NO10','NO11'),
-                                  DX=0.0,
-                                  DY=0.0,
-                                  DZ=5.0000000000000001E-4,),
+
                                _F(GROUP_NO='HAUT',
-                                  DX=0.0,
-                                  DY=0.0,
-                                  DZ=1.E-3,),),
-                     LIAISON_DDL=(_F(NOEUD=('NO1','NO16'),
-                                     DDL=('TEMP','TEMP'),
-                                     COEF_MULT=(1.0,-1.0),
-                                     COEF_IMPO=0.0,),
-                                  _F(NOEUD=('NO1','NO19'),
-                                     DDL=('TEMP','TEMP'),
-                                     COEF_MULT=(1.0,-1.0),
-                                     COEF_IMPO=0.0,),
-                                  _F(NOEUD=('NO1','NO7'),
-                                     DDL=('TEMP','TEMP'),
-                                     COEF_MULT=(1.0,-1.0),
-                                     COEF_IMPO=0.0,),),);
+                                  DZ=1.E-3,),),);
+
 MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      CHAM_MATER=CHMAT0,
                      EXCIT=_F(CHARGE=CHAR0,),
@@ -217,8 +190,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO1',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598914E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )
@@ -229,8 +202,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO16',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598914E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )
@@ -241,8 +214,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO19',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598914E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )
@@ -253,16 +226,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
                   NOEUD='NO7',
                   NOM_CMP='TEMP',
-                  VALE_CALC=-1.28598914E-08,
-                  VALE_REFE=-1.2860000000000001E-08,
+                  VALE_CALC=-1.04458421323E-07,
+                  VALE_REFE=-1.045E-07,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,),
           )
 
 FIN();
-#
-#
-#
-#
-#
-#
