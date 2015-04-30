@@ -52,7 +52,7 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !  OUT M, N ET GAMMA : COEFFICIENT DE VISCOSITE A L INSTANT COURANT
 ! ----------------------------------------------------------------------
     integer :: i, j, k
-    real(kind=8) :: valres(27), a(3), q(3), fmel(3), val(1)
+    real(kind=8) :: valres(27), a(3), q(3), fmel(3), val(2)
     real(kind=8) :: m11(2), m22(2), m33(2), m44(2), m55(2), m66(2)
     real(kind=8) :: m12(2), m13(2), m23(2)
     integer :: icodre(27)
@@ -66,6 +66,7 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
     nomc(1) = 'E       '
     nomc(2) = 'NU      '
     nomc(3) = 'F_ALPHA '
+    nomc(4) = 'C_ALPHA '
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
@@ -81,13 +82,13 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                1, nomc(3), val, icodre(3), 2)
-    alpham=val(1)
+                2, nomc(3), val, icodre(3), 2)
+    alpham=val(1)*zalpha + val(2)*(1.d0-zalpha)
 !
     call rcvalb(fami, kpg, ksp, c1, imat,&
                 ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                1, nomc(3), val, icodre(3), 2)
-    alphap=val(1)
+                2, nomc(3), val, icodre(3), 2)
+    alphap=val(1)*zalpha + val(2)*(1.d0-zalpha)
 !
 ! 2 - MATRICE D ANISOTROPIE
 ! 2.1 - TEST POUR SAVOIR SI ON EST EN COORDONNEES
