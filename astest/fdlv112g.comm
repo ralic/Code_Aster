@@ -27,7 +27,12 @@ mail=DEFI_GROUP(reuse = mail,
                         _F(GROUP_MA=('PBASE',)),
                   ),
            );
-
+mail =DEFI_GROUP(reuse = mail,
+                     MAILLAGE=mail,
+                     CREA_GROUP_MA=(
+                         _F(NOM= 'NISFS', UNION=('SURFBAS2','IFLUSTR2',),),  # Noeuds Joints Fondation        
+                                   ),
+                    ); 
 
 mat1= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10,
                               RHO= 2400.,
@@ -54,18 +59,15 @@ PRE_SEISME_NONL(
                                 MACR_ELEM_DYNA = CO('MAEL0'),
                                ),
 
-                 PARAMETRE = _F(  
-                                  PRE_CALC_MISS= _F(
+                PRE_CALC_MISS= _F(
                                                      REDUC_DYNA_ISS = 'NON',
                                                      REDUC_DYNA_IFS = 'OUI',
                                                      NMAX_MODE_ISS = 6,
                                                      NMAX_MODE_IFS = 54,
-                                                     GROUP_NO_INTERF = 'NISFS',
+                                                     GROUP_MA_INTERF = 'NISFS',
                                                      GROUP_NO_CENT = 'PBASE',
                                                      CALC_MISS_OPTION = 'ISFS',
                                                     ),
-                                ),
-
                  AFFE_MODELE = _F( 
                                    MAILLAGE=mail,
                                    AFFE=( 
@@ -231,12 +233,11 @@ PRE_SEISME_NONL(
                                 CHAM_MATER = CO('CHMATB')
                                ),
 
-                 PARAMETRE = _F(
                                 POST_CALC_MISS = _F(
                                                    MACR_ELEM_DYNA = MAEL,
-                                                   UNITE_RESU_RIGI = 35,),
-                                ),
-
+                                                   UNITE_RESU_RIGI = 35,
+                                                     GROUP_MA_INTERF = 'NISFS',
+                                                     GROUP_NO_CENT = 'PBASE',),
                  AFFE_MODELE = _F(
                                   MAILLAGE=mail,
                                   AFFE=(

@@ -86,7 +86,6 @@ PRE_SEISME_NONL = MACRO(nom="PRE_SEISME_NONL",
                                                          GROUP_NO_CENT = SIMP(statut='f', typ=grno, max='**'),
                                                          CALC_MISS_OPTION = SIMP(statut='o',typ='TXM', into=('ISS','ISFS')),
                                                          GROUP_MA_INTERF = SIMP(statut='f', typ=grma, max='**'),
-                                                         GROUP_NO_INTERF = SIMP(statut='f', typ=grno, max='**'),
                                                          ),
    
                  POST_CALC_MISS = FACT(statut = 'f', max = 1,

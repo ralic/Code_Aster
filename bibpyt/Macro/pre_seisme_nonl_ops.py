@@ -1130,7 +1130,8 @@ class Mesh(object):
             _MeshTmp = ASSE_MAILLAGE(**self.asse_mail)
             _NewMesh = CREA_MAILLAGE(MAILLAGE = _MeshTmp,
                                      CREA_POI1 =_F(NOM_GROUP_MA = 'PARA_SOL',
-                                     GROUP_MA = self.param['POST_CALC_MISS']['GROUP_MA_INTERF']),); 
+                                     GROUP_MA = self.param['POST_CALC_MISS']['GROUP_MA_INTERF']),
+                                        ); 
 
             self.new_mesh = _NewMesh
 
@@ -1140,13 +1141,14 @@ class Mesh(object):
 
     def add_group_no(self, nom):
         lgrno = self.old_mesh.LIST_GROUP_NO()
+        nomma = nom[0]
+        print "IFLUSTR2=", self.old_mesh.nom, nom
         check = 0
         for grp in lgrno:
-           if grp[0] == nom:
+           if grp[0] == nomma:
               check = 1
         if check == 0:
-           string = "DEFI_GROUP(reuse =" + self.old_mesh.nom + "," +
-                           "MAILLAGE = " + self.old_mesh.nom +", CREA_GROUP_NO=(_F(GROUP_MA =" + nom + "),),);"
+           string = "DEFI_GROUP(reuse =" + self.old_mesh.nom + "," + "MAILLAGE = " + self.old_mesh.nom +", CREA_GROUP_NO=(_F(GROUP_MA =" + nomma + "),),);"
            exec(self.old_mesh.nom + string)
 
     def __set_list_supermaille(self, MacroElem):
