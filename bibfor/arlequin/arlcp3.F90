@@ -2,7 +2,7 @@ subroutine arlcp3(nbma1 ,nbma2 ,numno1,numno2,m3dea , &
                   m1dea ,numn1t,numn2t,len1  ,len2  , lisrel, charge)
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

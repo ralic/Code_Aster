@@ -4,7 +4,7 @@ subroutine dsqnib(qsi, eta, caraq4, an, am,&
     real(kind=8) :: qsi, eta, caraq4(*)
     real(kind=8) :: an(4, 12), am(4, 8), nfx(12), nfy(12), nmx(8), nmy(8)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

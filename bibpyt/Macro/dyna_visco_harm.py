@@ -229,4 +229,3 @@ def dyna_visco_harm(self, EXCIT, list_FREQ, modes,
 
 
     return dyna_harm
-

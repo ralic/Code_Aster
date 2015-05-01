@@ -295,4 +295,3 @@ def extr_matr_elim_lagr(self, matr_asse):
     #-- Fin elimination
 
     return matr_sans_lagr
-

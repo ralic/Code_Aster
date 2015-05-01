@@ -7,7 +7,7 @@ subroutine parglr(nlit, elb, ea, nua, liner, omx, omy, rx, ry, hh,&
     real(kind=8) :: bn11, bn12, bn22, bn33, bm11, bm12, bm22, bc11, bc22, hh
 !.......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

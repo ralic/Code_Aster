@@ -310,7 +310,7 @@ def _capy_comport(comport, properties, typ, indent):
 capy_header = """#
 # Automatically-generated file. Do not edit!
 #
-# COPYRIGHT (C) 1991 - 2014  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 #
 def C_MFRONT_OFFICIAL():
     keywords = {

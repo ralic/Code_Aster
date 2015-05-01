@@ -2,7 +2,7 @@
 #
 #       Mathematical utility routines
 #       Copyright (C) 1999, Wesley Phoa
-#  Copyright (c) 2008-2013 EDF R&D      www.code-aster.org
+#  Copyright (c) 2008 - 2015 EDF R&D      www.code-aster.org
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY

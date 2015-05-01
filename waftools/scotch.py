@@ -105,4 +105,3 @@ int main(void){
         raise
     else:
         self.end_msg( '.'.join([str(i) for i in eval(ret)]) )
-

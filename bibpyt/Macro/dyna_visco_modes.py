@@ -88,4 +88,3 @@ def dyna_visco_modes(self, TYPE_RESU, TYPE_MODE, list_FREQ, fmax, RESI_RELA,
 
 
     return _modes
-

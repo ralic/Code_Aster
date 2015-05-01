@@ -180,4 +180,3 @@ def dyna_visco_modes_calc( self, TYPE_MODE, freq1, nmode, RESI_RELA, i, j,
     DETRUIRE(CONCEPT = _F (NOM = __modtmp,) , )
 
     return _modes, freq1, nmode
-

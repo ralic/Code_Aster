@@ -14,7 +14,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm,&
     real(kind=8) :: taur, materf(nmat*2), rr, dt, vind(36), dy(12)
     real(kind=8) :: dpdtau, dprdas, hsr(nsg, nsg), hr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

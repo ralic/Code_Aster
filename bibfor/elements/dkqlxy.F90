@@ -3,7 +3,7 @@ subroutine dkqlxy(qsi, eta, hlt2, depf, codi,&
     implicit  none
     real(kind=8) :: qsi, eta, codi(*), lcot(*), hlt2(4, 6), depf(12), lambda(4)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

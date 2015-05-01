@@ -346,4 +346,3 @@ subroutine xvrcin(ligmex, celthx, nomevo, nomsym, celmex, l_xfem)
 end subroutine
 
 
-

@@ -18,7 +18,7 @@ subroutine lc0013(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: sigm(6), vim(7), sigp(6), vip(7), dsidep(6, 6)
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

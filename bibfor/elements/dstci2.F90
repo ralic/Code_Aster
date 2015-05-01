@@ -8,7 +8,7 @@ subroutine dstci2(dci, carat3, hft2, dfc, dmc,&
     real(kind=8) :: dci(2, 2), carat3(*), hft2(2, 6), dmc(3, 2), dfc(3, 2)
     real(kind=8) :: bca(2, 3), an(3, 9), am(3, 6)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
