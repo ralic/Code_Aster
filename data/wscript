@@ -82,8 +82,8 @@ def _env2dict(self, src, env, install_tests):
         tfel = osp.dirname( osp.dirname(env['MFRONT']) )
         text += os.linesep.join([
             "# MFront specific",
-            "export TFEL_HOME={}".format( tfel ),
-            "export PATH=${TFEL_HOME}/bin:$PATH"
+            "export TFELHOME={}".format( tfel ),
+            "export PATH=${TFELHOME}/bin:$PATH"
         ])
     dico['MFRONT_SPECIFIC'] = text
     return dico
