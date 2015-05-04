@@ -29,8 +29,7 @@ subroutine granac(fami, kpg, ksp, icdmat, materi,&
     data           nomgrd /'GRAN_FO'/
 !
     depsgr = 0.0d0
-    if (compo(1:13) .eq. 'GRAN_IRRA_LOG' .or. compo(1:13) .eq. 'LEMAITRE_IRRA' .or.&
-        compo(1:10) .eq. 'LMARC_IRRA') then
+    if (compo(1:13) .eq. 'GRAN_IRRA_LOG' .or. compo(1:13) .eq. 'LEMAITRE_IRRA') then
         nbpar=2
         nompar(1)='TEMP'
         nompar(2)='IRRA'

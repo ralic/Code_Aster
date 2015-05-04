@@ -27,27 +27,6 @@ cata_msg = {
  caractéristique fluage incomplet
 """),
 
-    12 : _(u"""
- F reste toujours négative
-"""),
-
-    13 : _(u"""
- F  reste toujours positive
-"""),
-
-    14 : _(u"""
- signe de SIGMA indéterminé
-"""),
-
-    15 : _(u"""
- changement de signe de SIGMA
-"""),
-
-    16 : _(u"""
- F=0 : pas converge
-"""),
-
-
     20 : _(u"""
  La définition du repère d'orthotropie a été mal faite.
  Utilisez soit ANGL_REP  soit ANGL_AXE de la commande AFFE_CARA_ELEM mot clé facteur MASSIF
@@ -116,10 +95,6 @@ Arrêt suite à l'échec de l'intégration de la loi de comportement.
 
     89 : _(u"""
  le paramètre A doit être >=0
-"""),
-
-    90 : _(u"""
- la loi LMARC_IRRA n'est compatible qu'avec une modélisation poutre
 """),
 
     91 : _(u"""

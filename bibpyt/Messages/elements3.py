@@ -167,10 +167,6 @@ cata_msg = {
   le coefficient de poisson est non constant. la programmation actuelle n en tient pas compte.
 """),
 
-    60 : _(u"""
- Noeuds confondus pour un élément de poutre
-"""),
-
     61 : _(u"""
  loi  %(k1)s  indisponible pour les POU_D_E/d_t
 """),

@@ -327,9 +327,6 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
             call utmess('F', 'ALGORITH8_89')
         endif
 !
-    else if (compor(1)(1:10).eq.'LMARC_IRRA') then
-        call utmess('F', 'ALGORITH8_90')
-!
     endif
 !
 !       TRAITEMENT DES PARAMETRES DE LA LOI DE GRANDISSEMENT

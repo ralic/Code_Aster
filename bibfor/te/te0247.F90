@@ -46,8 +46,6 @@ subroutine te0247(option, nomte)
 #include "asterfort/matrot.h"
 #include "asterfort/matro2.h"
 #include "asterfort/moytem.h"
-#include "asterfort/nmfgas.h"
-#include "asterfort/nmlmab.h"
 #include "asterfort/nmpoel.h"
 #include "asterfort/porea1.h"
 #include "asterfort/porigi.h"
@@ -69,7 +67,7 @@ subroutine te0247(option, nomte)
     integer :: igeom, icompo, imate, iorien, nd, nk
     integer :: iinstm, iinstp, icarcr, icontm, ideplm, ideplp, imatuu
     integer :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
-    integer :: jtab(7), jcret, kk, lgpg, iret, iretm, iretp, iret2
+    integer :: jcret, iret, iretm, iretp
     integer :: npg, ndimel, nnoel, nnosel
     integer :: lrcou, istrxm, istrxp, ldep
     parameter    (nno=2,nc=6,nd=nc*nno,nk=nd*(nd+1)/2)
@@ -77,22 +75,14 @@ subroutine te0247(option, nomte)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey
     real(kind=8) :: a2, xiy2, xiz2, alfay2, alfaz2, xjx2, xl
 !
-    integer :: nbclma, nbclem
-    parameter (nbclma=12,nbclem=7)
-    real(kind=8) :: coelma(nbclma), coelem(nbclem)
-    integer :: codlma(nbclma), codlem(nbclem)
-    character(len=8) :: nomlma(nbclma), nomlem(nbclem)
     character(len=24) :: valk(2)
 !
-    real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), kls(nk), flc, effnoc
+    real(kind=8) :: pgl(3, 3), fl(nd), klv(nk)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), rad, angarc, angs2, ang
-    real(kind=8) :: effnom, tempm, tempp
-    real(kind=8) :: irram, irrap, epsthe(1)
+    real(kind=8) :: tempm, tempp
+    real(kind=8) :: epsthe(1)
     real(kind=8) :: sigma(nd), rgeom(nk), gamma, angp(3)
     aster_logical :: reactu, matric, vecteu
-!
-    data nomlma / 'K','N','DE_0','P','P1','P2','M','RM', 'A_0','Y_0','Y_I','B'/
-    data nomlem / 'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K', 'BETA','PHI_ZERO','L'/
 ! --------------------------------------------------------------------------------------------------
     integer, parameter :: nb_cara = 17
     real(kind=8) :: vale_cara(nb_cara)
@@ -217,97 +207,6 @@ subroutine te0247(option, nomte)
                         zr( icontp), angs2, rad)
         endif
 !
-    else if ((zk16(icompo).eq.'LMARC_IRRA').or. (zk16(icompo).eq.'LEMAITRE_IRRA')) then
-        call tecach('OON', 'PVARIMR', 'L', iret, nval=7, itab=jtab)
-        lgpg = max(jtab(6),1)*jtab(7)
-!
-!       calcul des matrices elementaires elastiques
-        call porigi(nomte, e, nu, xl, klv)
-!
-        if ((itemp.ne.0) .and. (nu.ne.num)) then
-            call utmess('A', 'ELEMENTS3_59')
-        endif
-!
-        call nmpoel(nomte, npg, klv, xl, nno,&
-                    nc, pgl, pgl1, pgl2, zr(ideplp),&
-                    epsthe(1), e, em, zr(icontm), fl,&
-                    zr(icontp), angs2, rad)
-!
-!       calcul de la matrice tangente et correction des termes d'allongement
-!       des vecteurs forces nodales et efforts
-        if (vecteu) then
-            if (xl .eq. 0.d0) then
-                call utmess('F', 'ELEMENTS3_60')
-            endif
-            effnom = zr(icontm)
-            if (zk16(icompo) .eq. 'LMARC_IRRA') then
-                call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                            ' ', 'LMARC_IRRA', 0, ' ', [0.d0],&
-                            12, nomlma(1), coelma(1), codlma(1), 1)
-                call rcvarc(' ', 'IRRA', '-', 'RIGI', 1, 1, irram, iret2)
-                if (iret2 .gt. 0) irram=0.d0
-                call rcvarc(' ', 'IRRA', '+', 'RIGI', 1, 1, irrap, iret2)
-                if (iret2 .gt. 0) irrap=0.d0
-                call nmlmab(pgl, nno, npg, nc, zr(ideplp),&
-                            effnom, tempm, tempp, zi(imate), zr(icarcr),&
-                            zr(iinstm), zr(iinstp), xl, e, a,&
-                            coelma, irram, irrap, zr(ivarim), zr(ivarip),&
-                            kls, flc, effnoc, em, iret)
-                do kk = 1, 4
-                    zr(ivarip+lgpg+kk-1) = zr(ivarip+kk-1)
-                    zr(ivarip+2*lgpg+kk-1) = zr(ivarip+kk-1)
-                enddo
-                call rcvarc(' ', 'IRRA', '+', 'RIGI', 1, 1, irrap, iret2)
-                if (iret2 .gt. 0) irrap=0.d0
-                zr(ivarip+5-1) = irrap
-                call rcvarc(' ', 'IRRA', '+', 'RIGI', 2, 1, irrap, iret2)
-                if (iret2 .gt. 0) irrap=0.d0
-                zr(ivarip+lgpg+5-1) = irrap
-                call rcvarc(' ', 'IRRA', '+', 'RIGI', 3, 1, irrap, iret2)
-                if (iret2 .gt. 0) irrap=0.d0
-                zr(ivarip+2*lgpg+5-1) = irrap
-!
-            else if (zk16(icompo).eq.'LEMAITRE_IRRA') then
-                call rcvalb('RIGI', 1, 1, '+', zi(imate),&
-                            ' ', 'LEMAITRE_IRRA', 0, ' ', [0.d0],&
-                            7, nomlem(1), coelem(1), codlem(1), 1)
-                call rcvarc(' ', 'IRRA', '-', 'RIGI', 1, 1, irram, iret2)
-                if (iret2 .gt. 0) irram=0.d0
-                call rcvarc(' ', 'IRRA', '+', 'RIGI', 1, 1, irrap, iret2)
-                if (iret2 .gt. 0) irrap=0.d0
-                call nmfgas('RIGI', npg, zi(imate), pgl, nno,&
-                            nc, zr( ideplp), effnom, zr(ivarim), zr(icarcr),&
-                            zr(iinstm), zr(iinstp), xl, a, coelem,&
-                            irram, irrap, kls, flc, effnoc,&
-                            zr(ivarip))
-                zr(ivarip+1) = irrap
-                zr(ivarip+lgpg) = zr(ivarip)
-                call rcvarc(' ', 'IRRA', '+', 'RIGI', 2, 1, irrap, iret2)
-                if (iret2 .gt. 0) irrap=0.d0
-                zr(ivarip+lgpg+1) = irrap
-                zr(ivarip+2*lgpg) = zr(ivarip)
-                call rcvarc(' ', 'IRRA', '+', 'RIGI', 3, 1, irrap, iret2)
-                if (iret2 .gt. 0) irrap=0.d0
-                zr(ivarip+2*lgpg+1) = irrap
-            endif
-!           modification de l'effort normal
-            if (npg .eq. 2) then
-                zr(icontp) = effnoc
-                zr(icontp+6) = effnoc
-            else
-                zr(icontp) = effnoc
-                zr(icontp+6) = effnoc
-                zr(icontp+12) = effnoc
-            endif
-!
-            fl(1) = -flc
-            fl(7) = flc
-            if (option .eq. 'FULL_MECA') then
-                klv(1) = kls(1)
-                klv(22) = kls(22)
-                klv(28) = kls(28)
-            endif
-        endif
     else
         call utmess('F', 'ELEMENTS3_61', sk=zk16(icompo))
     endif

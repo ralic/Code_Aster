@@ -107,10 +107,6 @@ cata_msg = {
  développement non implanté
 """),
 
-    79 : _(u"""
- loi de comportement avec irradiation, le paramètre N doit être supérieur à 0
-"""),
-
     80 : _(u"""
  loi de comportement avec irradiation, le paramètre PHI_ZERO doit être supérieur à 0
 """),
