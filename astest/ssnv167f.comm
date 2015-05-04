@@ -48,7 +48,7 @@ CHBLO = AFFE_CHAR_MECA(    MODELE=MO,
 
 CHCO=DEFI_CONTACT(MODELE       = MO,
                   FORMULATION  = 'CONTINUE',
-                  ALGO_RESO_GEOM = 'POINT_FIXE',
+                  ALGO_RESO_GEOM = 'NEWTON',
                   ZONE=(_F(
                           GROUP_MA_MAIT = 'CONT2',
                           GROUP_MA_ESCL = 'CONT1',
