@@ -77,7 +77,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
     real(kind=8) :: dplmod(nbchoc, neqgen, *), gyogen(*), dt, dtsto, tfin
     real(kind=8) :: vrotat, conv, facobj, tinit, angini, epsi, errt, r8bid1
     real(kind=8) :: temps, coefm(*), psidel(*), deux, pow, fsauv(palmax, 3)
-    real(kind=8) :: vrotin, arotin, dtmax, dtmin, tol, coeff, seuil1, seuil2
+    real(kind=8) :: vrotin, arotin, dtmax, dtmin, tol, coeff, seuil1, seuil2,alpha
     aster_logical :: lamor, prdeff, adapt, flagdt, condrepri
     character(len=3) :: finpal(palmax)
     character(len=4) :: intk
@@ -209,6 +209,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !
 !   parametres du schema adaptatif
     call getvr8('SCHEMA_TEMPS', 'TOLERANCE', iocc=1, scal=tol, nbret=n1)
+    call getvr8('SCHEMA_TEMPS', 'ALPHA', iocc=1, scal=alpha, nbret=n1)
 !   on laisse l'option pour schema adaptatif ou pas
     adapt=.true.
 !
@@ -364,7 +365,7 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                         vrotat, typal, finpal, cnpal, prdeff,&
                         conv, fsauv, typbas, pulsa2, masgen,&
                         descmm, riggen, descmr, lamor, descma,&
-                        zr(jtra1), temps, tol, zr(jdepi), zr(jviti),&
+                        zr(jtra1), temps, alpha, zr(jdepi), zr(jviti),&
                         zr(jkde), zr(jkvi), fonca, foncv, iarchi,&
                         zr(jrigy), zr(jamgy), nbconv, nbmxcv, vitvar,&
                         gyogen, rgygen, amogen, errt)
@@ -380,14 +381,14 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
                         vrotat, typal, finpal, cnpal, prdeff,&
                         conv, fsauv, typbas, pulsa2, masgen,&
                         descmm, riggen, descmr, lamor, descma,&
-                        zr(jtra1), temps, tol, zr(jdepi), zr(jviti),&
+                        zr(jtra1), temps, alpha, zr(jdepi), zr(jviti),&
                         zr(jkde), zr(jkvi), fonca, foncv, iarchi,&
                         zr(jrigy), zr(jamgy), nbconv, nbmxcv, vitvar,&
                         gyogen, rgygen, amogen, errt)
         endif
 !
 !       ON PASSE A L'INSTANT SUIVANT OU ON ADAPTE LE PAS?
-        if ((errt.lt.1.d0) .or. (dt.le.dtmin) .or. (.not.adapt)) then
+        if ((errt.lt.tol) .or. (dt.le.dtmin) .or. (.not.adapt)) then
             call dcopy(neqgen, zr(jacce), 1, zr(jacci), 1)
             call dcopy(neqgen, zr(jvite), 1, zr(jviti), 1)
             call dcopy(neqgen, zr(jdepl), 1, zr(jdepi), 1)
@@ -468,12 +469,12 @@ subroutine mdruku(method, tinit, tfin, dt, dtmin,&
 !                   diminution   maximale de : 0.2*dt
             seuil1 = (0.9/5.0d0)**(1.0d0/pow)
             seuil2 = (0.9/0.2d0)**(1.0d0/pow)
-            if (errt .lt. seuil1) then
+            if ((errt/tol) .lt. seuil1) then
                 coeff = 5.0d0
-            else if (errt .gt. seuil2) then
+            else if ((errt/tol) .gt. seuil2) then
                 coeff = 0.2d0
             else
-                coeff=0.9d0*(1.d0/errt)**pow
+                coeff=0.9d0*(tol/errt)**pow
             endif
             dt = dt * coeff
 !

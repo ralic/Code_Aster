@@ -9,7 +9,7 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
                   vrotat, typal, finpal, cnpal, prdeff,&
                   conv, fsauv, typbas, pulsa2, masgen,&
                   descmm, riggen, descmr, lamor, descma,&
-                  work1, temps, tol, depli, vitei,&
+                  work1, temps, alpha, depli, vitei,&
                   kde, kvi, fonca, foncv, istep,&
                   rigy, amgy, nbconv, nbmxcv, vitvar,&
                   gyogen, rgygen, amogen, errt)
@@ -65,11 +65,11 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
     real(kind=8) :: pulsa2(*), masgen(*), riggen(*), parcho(*), dplred(*)
     real(kind=8) :: dplrev(*), angini, dtsto, vrotat, errt, errd, dteval
     real(kind=8) :: errv, edp(4), r8bid, psidel(*), conv, skd
-    real(kind=8) :: skv, tol, temps, adp(6, 6), arot, fsauv(palmax, 3), vrot
+    real(kind=8) :: skv, temps, adp(6, 6), arot, fsauv(palmax, 3), vrot
     real(kind=8) :: gyogen(*), rgygen(*), amogen(*), saucho(*), saured(*), saurev(*)
     real(kind=8) :: work1(*), amgy(*), rigy(*), depl(*), vite(*), acce(*)
     real(kind=8) :: fext(*), depli(*), vitei(*), kde(*)
-    real(kind=8) :: kvi(*), errde, errvi
+    real(kind=8) :: kvi(*), errde, errvi,testeo,alpha
 !   ------------------------------------------------------------------------------------
 !   Definition of statement functions giving the appropriate (i,j) term in the mass,
 !   rigidity and damping matrices
@@ -176,24 +176,23 @@ subroutine mdbs32(neqgen, depl, vite, acce, fext,&
     enddo
 !   Mémorisation du dernier étage. Pas à faire pour des raisons CPU. !! dimensions de kde, kvi
 !
-!   estimation erreur
     errd=0.d0
     errv=0.d0
+!   estimation erreur
     do im = 1, neqgen
 !       Erreur sur les déplacements, sur les vitesses.
 !           ee=[1,netag+1] erreur+= dt*edp(ee)*kde((ee-1)*neqgen+im)
 !       Multiplication par 'dt' quelques lignes plus bas
         errde=edp(1)*kde(im)+edp(2)*kde(neqgen+im)+edp(3)*kde(neqgen*2+im)+edp(4)*vite(im)
         errvi=edp(1)*kvi(im)+edp(2)*kvi(neqgen+im)+edp(3)*kvi(neqgen*2+im)+edp(4)*acce(im)
-!       déplacements. Ajouter atol pour tenir compte d'une tolérance relative.
-        skd=max(tol*abs(depli(im)),100.d0*r8prem())
+!       déplacements. On ajoute alpha pour regulariser la tolérance relative.
+        skd=max(abs(depli(im))+alpha,100.d0*r8prem())
         errd = errd+(errde/skd)**2
-!       vitesses. Ajouter atol pour tenir compte d'une tolérance relative.
-        skv=max(tol*abs(vitei(im)),100.d0*r8prem())
+!       vitesses. On ajoute alpha pour regulariser la tolérance relative.
+        skv=max(abs(vitei(im))+alpha,100.d0*r8prem())
         errv = errv+(errvi/skv)**2
     enddo
-!
 !   Pour éviter des problèmes numériques on compare à la tol machine
-    errt = max(dt*sqrt((errd+errv)/(2*neqgen)),100.d0*r8prem())
+    errt = max( sqrt(errd+errv)/(2*neqgen), 100.d0*r8prem() )
 !
 end subroutine

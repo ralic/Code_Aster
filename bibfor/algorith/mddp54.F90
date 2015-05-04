@@ -9,7 +9,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
                   vrotat, typal, finpal, cnpal, prdeff,&
                   conv, fsauv, typbas, pulsa2, masgen,&
                   descmm, riggen, descmr, lamor, descma,&
-                  work1, temps, tol, depli, vitei,&
+                  work1, temps, alpha, depli, vitei,&
                   kde, kvi, fonca, foncv, istep,&
                   rigy, amgy, nbconv, nbmxcv, vitvar,&
                   gyogen, rgygen, amogen, errt)
@@ -67,12 +67,12 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
     real(kind=8) :: pulsa2(*), masgen(*), riggen(*), parcho(*), dplred(*)
     real(kind=8) :: dplrev(*), angini, dtsto, vrotat, errt, errd
     real(kind=8) :: errv, r8bid
-    real(kind=8) :: psidel(*), conv, skd, skv, tol, temps, arot
+    real(kind=8) :: psidel(*), conv, skd, skv, temps, arot
     real(kind=8) :: cdp(7), adp(6, 6), b4b5(7), errde, errvi
     real(kind=8) :: fsauv(palmax, 3), vrot, gyogen(*), rgygen(*), amogen(*)
     real(kind=8) :: saucho(nbchoc, *), saured(*), saurev(*), work1(*), amgy(*), rigy(*), depl(*)
     real(kind=8) :: vite(*), acce(*), fext(*), depli(*), vitei(*)
-    real(kind=8) :: kde(*), kvi(*)
+    real(kind=8) :: kde(*), kvi(*),testeo,alpha
 !
 !   ------------------------------------------------------------------------------------
 !   Definition of statement functions giving the appropriate (i,j) term in the mass,
@@ -226,6 +226,7 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
 !   estimation erreur
     errd=0.d0
     errv=0.d0
+!
     do im = 1, neqgen
 !       Erreur sur les déplacements, sur les vitesses. On peut gagner du CPU car b4b5(2) = 0
 !       Multiplication par 'dt' quelques lignes plus bas
@@ -238,11 +239,11 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
         enddo
         errde = errde + b4b5(netag+1)*vite(im)
         errvi = errvi + b4b5(netag+1)*acce(im)
-!       déplacements. Ajouter atol pour tenir compte d'une tolérance relative.
-        skd=max(tol*abs(depli(im)),100.0d0*r8prem())
+!       déplacements. On ajoute alpha pour regulariser la tolérance relative.
+        skd=max(abs(depli(im))+alpha,100.d0*r8prem())
         errd = errd+(errde/skd)**2
-!       vitesses. Ajouter atol pour tenir compte d'une tolérance relative.
-        skv=max(tol*abs(vitei(im)),100.0d0*r8prem())
+!       vitesses. On ajoute alpha pour regulariser la tolérance relative.
+        skv=max(abs(vitei(im))+alpha,100.d0*r8prem())
         errv = errv+(errvi/skv)**2
     enddo
 !   Calcul de la vitesse et du déplacement
@@ -259,6 +260,6 @@ subroutine mddp54(neqgen, depl, vite, acce, fext,&
 !    enddo
 !
 !   Pour éviter des problèmes numériques on compare à la tol machine
-    errt = max( dt*sqrt((errd+errv)/(2*neqgen)), 100.0d0*r8prem() )
+    errt = max( sqrt(errd+errv)/(2*neqgen), 100.d0*r8prem() )
 !
 end subroutine

@@ -29,7 +29,7 @@ interface
                       vrotat, typal, finpal, cnpal, prdeff,&
                       conv, fsauv, typbas, pulsa2, masgen,&
                       descmm, riggen, descmr, lamor, descma,&
-                      work1, temps, tol, depli, vitei,&
+                      work1, temps, alpha, depli, vitei,&
                       kde, kvi, fonca, foncv, istep,&
                       rigy, amgy, nbconv, nbmxcv, vitvar,&
                       gyogen, rgygen, amogen, errt)
@@ -90,7 +90,6 @@ interface
         integer :: descma
         real(kind=8) :: work1(*)
         real(kind=8) :: temps
-        real(kind=8) :: tol
         real(kind=8) :: depli(*)
         real(kind=8) :: vitei(*)
         real(kind=8) :: kde(*)
@@ -107,5 +106,6 @@ interface
         real(kind=8) :: rgygen(*)
         real(kind=8) :: amogen(*)
         real(kind=8) :: errt
+        real(kind=8) :: alpha
     end subroutine mddp54
 end interface

@@ -93,6 +93,7 @@ MODES=CALC_MODES(MATR_RIGI=MATRRIGI,
                  )
 
 
+
 OMEGA=2.*pi
 
 #
@@ -152,6 +153,7 @@ RIGIDGEN=PROJ_MATR_BASE(  BASE=MODES,
                             MATR_ASSE=MATRRIGI
                          )
 
+
 #
 PLANZ=DEFI_OBSTACLE(   TYPE='PLAN_Z' )
 
@@ -180,7 +182,7 @@ DYNAMOA1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 #
 DYRK541=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.0E-04,),
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.0E-03,ALPHA=1.0E+08),
                                MATR_MASS=MASSEGEN,
                                MATR_RIGI=RIGIDGEN,
                                AMOR_MODAL=_F(AMOR_REDUIT=0.,),
@@ -201,7 +203,7 @@ DYRK541=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 #
 DYRK321=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-04,),
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-03,ALPHA=1.0E+08),
                                MATR_MASS=MASSEGEN,
                                MATR_RIGI=RIGIDGEN,
                                AMOR_MODAL=_F(AMOR_REDUIT=0.,),
@@ -287,7 +289,7 @@ DYNAMOA2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 #
 DYRK542=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',),
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.0E-03,ALPHA=1.0E+08),
                                MATR_MASS=MASSEGEN,
                                MATR_RIGI=RIGIDGEN,
                                AMOR_MODAL=_F(AMOR_REDUIT=0.,),
@@ -308,7 +310,7 @@ DYRK542=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 #
 DYRK322=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',),
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-03,ALPHA=1.0E+08),
                                MATR_MASS=MASSEGEN,
                                MATR_RIGI=RIGIDGEN,
                                AMOR_MODAL=_F(AMOR_REDUIT=0.,),
@@ -394,7 +396,7 @@ DYNAMOA3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 #
 DYRK543=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',),
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.0E-03,ALPHA=1.0E+08),
                                MATR_MASS=MASSEGEN,
                                MATR_RIGI=RIGIDGEN,
                                AMOR_MODAL=_F(AMOR_REDUIT=0.,),
@@ -482,7 +484,7 @@ DYNAMOA4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 #
 DYRK544=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',),
+                               SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_54',TOLERANCE=1.0E-03,ALPHA=1.0E+08),
                                MATR_MASS=MASSEGEN,
                                MATR_RIGI=RIGIDGEN,
                                AMOR_MODAL=_F(AMOR_REDUIT=0.,),
@@ -503,7 +505,7 @@ DYRK544=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                            )
 #
 DYRK324=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
-                                SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',),
+                                SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-03,ALPHA=1.0E+08),
                                 MATR_MASS=MASSEGEN,
                                 MATR_RIGI=RIGIDGEN,
                                 AMOR_MODAL=_F(AMOR_REDUIT=0.,),
@@ -798,8 +800,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=15.2671,
-           VALE_CALC=15.26671,
-           TOLE_MACHINE=1.E-5,             # TODO TOLE_MACHINE
+           VALE_CALC=15.2672576773,
            PRECISION=1.E-4,
            NOM_PARA='PUIS_USURE',
            TABLE=TTRK541,
@@ -810,8 +811,8 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=15.2671,
-           VALE_CALC=15.266698,
-           TOLE_MACHINE=3.E-6,             # TODO TOLE_MACHINE
+           VALE_CALC=15.2672133568,
+           # TOLE_MACHINE=3.E-6,             # TODO TOLE_MACHINE
            PRECISION=8.0E-05,
            NOM_PARA='PUIS_USURE',
            TABLE=TTRK321,
@@ -857,8 +858,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=0.409062,
-           VALE_CALC=0.40906995945879,
-           TOLE_MACHINE=2.E-5,             # TODO TOLE_MACHINE
+           VALE_CALC=0.409069936427,
            PRECISION=3.0E-05,
            NOM_PARA='PUIS_USURE',
            TABLE=TTRK542,
@@ -869,8 +869,8 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=0.409062,
-           VALE_CALC=0.40906920479793,
-           TOLE_MACHINE=5.E-5,             # TODO TOLE_MACHINE
+           VALE_CALC=0.409069721231,
+           # TOLE_MACHINE=5.E-5,             # TODO TOLE_MACHINE
            PRECISION=5.0E-05,
            NOM_PARA='PUIS_USURE',
            TABLE=TTRK322,
@@ -916,8 +916,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=2.26164E-4,
-           VALE_CALC=2.2630166E-04,
-           TOLE_MACHINE=1.E-5,             # TODO TOLE_MACHINE
+           VALE_CALC=0.000226305799583,
            PRECISION=1.0E-03,
            NOM_PARA='PUIS_USURE',
            TABLE=TTRK543,

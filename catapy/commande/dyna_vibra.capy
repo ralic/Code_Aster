@@ -120,6 +120,7 @@ regles=(ENSEMBLE('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
             ),
           b_runge_kutta     =BLOC(condition="SCHEMA=='RUNGE_KUTTA_54' or SCHEMA=='RUNGE_KUTTA_32'",
                 TOLERANCE           =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+                ALPHA               =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
             ),
           ),
 
