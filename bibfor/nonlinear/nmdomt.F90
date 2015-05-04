@@ -1,4 +1,16 @@
-subroutine nmdomt(method, parmet)
+subroutine nmdomt(algo_meth, algo_para)
+!
+implicit none
+!
+#include "asterc/getfac.h"
+#include "asterc/r8prem.h"
+#include "asterfort/assert.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,29 +30,18 @@ subroutine nmdomt(method, parmet)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterc/getfac.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/utmess.h"
-    character(len=16) :: method(*)
-    real(kind=8) :: parmet(*)
+    character(len=16), intent(inout) :: algo_meth(*)
+    real(kind=8), intent(inout) :: algo_para(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (LECTURE)
+! MECA_NON_LINE - Read
 !
-! LECTURE DES DONNEES DE RESOLUTION
+! Parameters of non-linear algorithm
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! OUT METHOD  : DESCRIPTION DE LA METHODE DE RESOLUTION
+! IO  algo_meth        : parameters for algorithm methods
 !                 1 : NOM DE LA METHODE NON LINEAIRE (NEWTON OU IMPLEX)
 !                     (NEWTON OU NEWTON_KRYLOV OU IMPLEX)
 !                 2 : TYPE DE MATRICE (TANGENTE OU ELASTIQUE)
@@ -49,7 +50,7 @@ subroutine nmdomt(method, parmet)
 !                 5 : METHODE D'INITIALISATION
 !                 6 : NOM CONCEPT EVOL_NOLI SI PREDICTION 'DEPL_CALCULE'
 !                 7 : METHODE DE RECHERCHE LINEAIRE
-! OUT PARMET  : PARAMETRES DE LA METHODE
+! IO  algo_para        : parameters for algorithm criteria
 !                 1 : REAC_INCR
 !                 2 : REAC_ITER
 !                 3 : PAS_MINI_ELAS
@@ -60,127 +61,124 @@ subroutine nmdomt(method, parmet)
 !                 8 : RHO_MAX
 !                 9 : RHO_EXCL
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: reincr, reiter, reitel, itrlmx
-    real(kind=8) :: pasmin, relirl
-    real(kind=8) :: rhomin, rhomax, rhoexc
+    integer :: reac_incr, reac_iter, reac_iter_elas, iter_line_maxi
+    real(kind=8) :: pas_mini_elas, resi_line_rela
+    real(kind=8) :: reli_rho_mini, reli_rho_maxi, reli_rho_excl
     integer :: ifm, niv
-    integer :: ibid, iret, nocc
-    character(len=16) :: relmet
+    integer :: iret, nocc, vali(2)
+    character(len=16) :: reli_meth, keywf
+    character(len=32) :: valk
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('MECA_NON_LINE', ifm, niv)
-!
-! --- AFFICHAGE
-!
+    call infniv(ifm, niv)
     if (niv .ge. 2) then
         write (ifm,*) '<MECANONLINE> ... LECTURE DONNEES RESOLUTION'
     endif
 !
-! --- RECUPERATION DE LA METHODE DE RESOLUTION
+! - Get method
 !
-    call getvtx(' ', 'METHODE', scal=method(1), nbret=ibid)
-!
-! --- INITIALISATIONS
-!
-    if ((method(1) .eq. 'NEWTON') .or. (method(1) .eq. 'NEWTON_KRYLOV')) then
-!
-        call getvtx('NEWTON', 'MATRICE', iocc=1, scal=method(2), nbret=iret)
-!
-        call getvis('NEWTON', 'REAC_INCR', iocc=1, scal=reincr, nbret=iret)
-        if (reincr .lt. 0) then
-            ASSERT(.false.)
-        else
-            parmet(1) = reincr
-        endif
-!
-        call getvis('NEWTON', 'REAC_ITER', iocc=1, scal=reiter, nbret=iret)
-        if (reiter .lt. 0) then
-            ASSERT(.false.)
-        else
-            parmet(2) = reiter
-        endif
-!
-        call getvr8('NEWTON', 'PAS_MINI_ELAS', iocc=1, scal=pasmin, nbret=iret)
+    keywf = 'NEWTON'
+    call getvtx(' ', 'METHODE', scal=algo_meth(1))
+    if ((algo_meth(1) .eq. 'NEWTON') .or. (algo_meth(1) .eq. 'NEWTON_KRYLOV')) then
+        call getvtx(keywf, 'MATRICE', iocc=1, scal=algo_meth(2))
+        call getvtx(keywf, 'PREDICTION', iocc=1, scal=algo_meth(5), nbret=iret)
         if (iret .le. 0) then
-            parmet(3) = -9999.0d0
-        else
-            parmet(3) = pasmin
+            algo_meth(5) = algo_meth(2)
         endif
-!
-        call getvis('NEWTON', 'REAC_ITER_ELAS', iocc=1, scal=reitel, nbret=iret)
-        if (reiter .lt. 0) then
-            ASSERT(.false.)
-        else
-            parmet(4) = reitel
-        endif
-!
-        call getvtx('NEWTON', 'PREDICTION', iocc=1, scal=method(5), nbret=iret)
-        if (iret .le. 0) then
-            method(5) = method(2)
-        endif
-!
-        if (method(5) .eq. 'DEPL_CALCULE') then
-            call getvid('NEWTON', 'EVOL_NOLI', iocc=1, scal=method(6), nbret=iret)
+        if (algo_meth(5) .eq. 'DEPL_CALCULE') then
+            vali(1) = 13
+            vali(2) = 4
+            valk    = "PREDICTION='DEPL_CALCULE'"
+            call utmess('A', 'SUPERVIS_9', sk = valk, ni = 2, vali = vali) 
+            call utmess('A', 'MECANONLINE5_57') 
+            call getvid(keywf, 'EVOL_NOLI', iocc=1, scal=algo_meth(6), nbret=iret)
             if (iret .le. 0) then
                 call utmess('F', 'MECANONLINE5_45')
             endif
         endif
-!
-    else if (method(1) .eq. 'IMPLEX') then
-        parmet(1) = 1
-        method(5) = 'TANGENTE'
-!
+    else if (algo_meth(1) .eq. 'IMPLEX') then
+        algo_meth(5) = 'TANGENTE'
     else
         ASSERT(.false.)
     endif
 !
-! --- PARAMETRES DE LA RECHERCHE LINEAIRE
+! - Get parameters (method)
 !
-    relmet = 'CORDE'
-    itrlmx = 0
-    relirl = 1.d-3
-    rhomin = 0.d0
-    rhomax = 1.d0
-    rhoexc = 0.d0
-!
-    call getfac('RECH_LINEAIRE', nocc)
-    if (nocc .ne. 0) then
-        call getvtx('RECH_LINEAIRE', 'METHODE', iocc=1, scal=relmet, nbret=iret)
-        call getvr8('RECH_LINEAIRE', 'RESI_LINE_RELA', iocc=1, scal=relirl, nbret=iret)
-        call getvis('RECH_LINEAIRE', 'ITER_LINE_MAXI', iocc=1, scal=itrlmx, nbret=iret)
-        call getvr8('RECH_LINEAIRE', 'RHO_MIN', iocc=1, scal=rhomin, nbret=iret)
-        call getvr8('RECH_LINEAIRE', 'RHO_MAX', iocc=1, scal=rhomax, nbret=iret)
-        call getvr8('RECH_LINEAIRE', 'RHO_EXCL', iocc=1, scal=rhoexc, nbret=iret)
-!
-        if (rhomin .ge. -rhoexc .and. rhomin .le. rhoexc) then
-            call utmess('A', 'MECANONLINE5_46')
-            rhomin = +rhoexc
+    if ((algo_meth(1) .eq. 'NEWTON') .or. (algo_meth(1) .eq. 'NEWTON_KRYLOV')) then
+        call getvis(keywf, 'REAC_INCR', iocc=1, scal=reac_incr)
+        if (reac_incr .lt. 0) then
+            ASSERT(.false.)
+        else
+            algo_para(1) = reac_incr
         endif
-        if (rhomax .ge. -rhoexc .and. rhomax .le. rhoexc) then
-            call utmess('A', 'MECANONLINE5_47')
-            rhomax = -rhoexc
+        call getvis(keywf, 'REAC_ITER', iocc=1, scal=reac_iter)
+        if (reac_iter .lt. 0) then
+            ASSERT(.false.)
+        else
+            algo_para(2) = reac_iter
         endif
-!
-        if (rhomax .lt. rhomin) then
-            call utmess('A', 'MECANONLINE5_44')
-            call getvr8('RECH_LINEAIRE', 'RHO_MIN', iocc=1, scal=rhomax, nbret=iret)
-            call getvr8('RECH_LINEAIRE', 'RHO_MAX', iocc=1, scal=rhomin, nbret=iret)
+        call getvr8(keywf, 'PAS_MINI_ELAS', iocc=1, scal=pas_mini_elas, nbret=iret)
+        if (iret .le. 0) then
+            algo_para(3) = -9999.0d0
+        else
+            algo_para(3) = pas_mini_elas
         endif
-!
-        if (abs(rhomax-rhomin) .le. r8prem()) then
-            call utmess('F', 'MECANONLINE5_43')
+        call getvis(keywf, 'REAC_ITER_ELAS', iocc=1, scal=reac_iter_elas)
+        if (reac_iter .lt. 0) then
+            ASSERT(.false.)
+        else
+            algo_para(4) = reac_iter_elas
         endif
-!
+    else if (algo_meth(1) .eq. 'IMPLEX') then
+        algo_para(1) = 1
+    else
+        ASSERT(.false.)
     endif
 !
-    method(7) = relmet
-    parmet(5) = itrlmx
-    parmet(6) = relirl
-    parmet(7) = rhomin
-    parmet(8) = rhomax
-    parmet(9) = rhoexc
+! - Get parameters (line search)
+!
+    keywf  = 'RECH_LINEAIRE'
+    reli_meth = 'CORDE'
+    iter_line_maxi = 0
+    resi_line_rela = 1.d-3
+    reli_rho_mini = 0.d0
+    reli_rho_maxi = 1.d0
+    reli_rho_excl = 0.d0
+!
+    call getfac(keywf, nocc)
+    if (nocc .ne. 0) then
+        call getvtx(keywf, 'METHODE'       , iocc=1, scal=reli_meth)
+        call getvr8(keywf, 'RESI_LINE_RELA', iocc=1, scal=resi_line_rela)
+        call getvis(keywf, 'ITER_LINE_MAXI', iocc=1, scal=iter_line_maxi)
+        call getvr8(keywf, 'RHO_MIN'       , iocc=1, scal=reli_rho_mini)
+        call getvr8(keywf, 'RHO_MAX'       , iocc=1, scal=reli_rho_maxi)
+        call getvr8(keywf, 'RHO_EXCL'      , iocc=1, scal=reli_rho_excl)
+        if (reli_rho_mini .ge. -reli_rho_excl .and. reli_rho_mini .le. reli_rho_excl) then
+            call utmess('A', 'MECANONLINE5_46')
+            reli_rho_mini = +reli_rho_excl
+        endif
+        if (reli_rho_maxi .ge. -reli_rho_excl .and. reli_rho_maxi .le. reli_rho_excl) then
+            call utmess('A', 'MECANONLINE5_47')
+            reli_rho_maxi = -reli_rho_excl
+        endif
+        if (reli_rho_maxi .lt. reli_rho_mini) then
+            call utmess('A', 'MECANONLINE5_44')
+            call getvr8(keywf, 'RHO_MIN', iocc=1, scal=reli_rho_maxi)
+            call getvr8(keywf, 'RHO_MAX', iocc=1, scal=reli_rho_mini)
+        endif
+        if (abs(reli_rho_maxi-reli_rho_mini) .le. r8prem()) then
+            call utmess('F', 'MECANONLINE5_43')
+        endif
+    endif
+!
+    algo_meth(7) = reli_meth
+    algo_para(5) = iter_line_maxi
+    algo_para(6) = resi_line_rela
+    algo_para(7) = reli_rho_mini
+    algo_para(8) = reli_rho_maxi
+    algo_para(9) = reli_rho_excl
 !
 end subroutine

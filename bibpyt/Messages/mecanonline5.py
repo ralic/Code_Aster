@@ -266,4 +266,9 @@ Il faut préciser un concept EVOL_NOLI en prédiction de type 'DEPL_CALCULE'
   Il n'est pas possible actuellement de calculer des modes vibratoires (MODE_VIBR)
   sur un modèle dont au moins une matrice assemblée (masse ou raideur) est non-symétrique.
 """),
+
+    57 : _(u"""
+De manière générale, PREDICTION = 'DEPL_CALCULE' est là pour éviter de devoir factoriser une matrice et gagner en temps de calcul. 
+Mais les limitations (problèmes de conditions limites) font que cette fonctionnalité n'est pas à recommander et qu'on lui préférera par exemple un PREDICTION='ELASTIQUE'.
+"""),
 }
