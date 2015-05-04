@@ -178,12 +178,14 @@ U = CALC_EUROPLEXUS(
            NOM_CMP  = 'N',
            NUM_GAUSS = 1,
            GROUP_MA = 'GRSG3',
+           NOM_COURBE = 'N_GRSG3'
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V3',
            NUM_GAUSS = 1,
            GROUP_MA = 'GRSG3',
+           NOM_COURBE = 'V3_GRSG3'
            ),
    ),
    );
@@ -194,7 +196,7 @@ IMPR_RESU(RESU=_F(RESULTAT=U,NOM_CHAM=('VARI_ELGA'), GROUP_MA='GRSG3'))
 
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='SIEF_ELGA_N_GRSG',
+           NOM_PARA='N_GRSG3',
            TYPE_TEST='MAX',
            REFERENCE = 'ANALYTIQUE',
            VALE_REFE = 1.E6,

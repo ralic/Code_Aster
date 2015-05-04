@@ -82,6 +82,7 @@ ne permet pas à CALC_EUROPLEXUS de retrouver les informations.
     Lancement d'Europlexus en utilisant %(k1)s
 """),
 
+
     14 : _(u"""
 Le fichier MED contenant les résultats d'Europlexus est introuvable ou vide.
 L'exécution d'Europlexus s'est probablement mal déroulée.
@@ -106,6 +107,11 @@ en état initial ne sera pas transmis à EPX pour les éléments affectés des m
 """),
 
     20 : _(u"""Le concept %(k1)s donné par %(k2)s n'a pas été trouvé.'
+"""),
+
+    21 : _(u"""
+Dans l'occurrence %(i1)d du mot-clé COURBE, NOM_COURBE dépasse.%(i2)d caractères.
+Le nom de la colonne correspondante sera tronqué dans la table. 
 """),
 
     22 : _(u"""La valeur du mot-clé %(k1)s du matériau %(k2)s est différente de %(k3)s.

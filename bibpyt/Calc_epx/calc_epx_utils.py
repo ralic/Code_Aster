@@ -161,19 +161,38 @@ def lire_pun(fichier):
 #-----------------------------------------------------------------------
 
 
-def get_val_exclu(fact, dic_aster2epx):
+def ctime(fact):
     """
-    Recherche parmi les clés de dic_aster2epx celle qui est présente dans
-    fact.
-    Retourne alors le mot-clé EPX correspondant à cette clé et la valeur
-    trouvée dans fact.
+    Renvoie un bloc de données indiquant les instants à imprimer selon
+    les différentes possibilités d'EPX (correspond à /CTIME/ de EPX)
     """
-    for cle in dic_aster2epx.keys():
+    from Calc_epx.calc_epx_struc import BLOC_DONNEES
+    
+    cata_inst = {
+    'PAS_NBRE': 'FREQ',
+    'PAS_INST': 'TFREQ',
+    'INST'    : 'TIME',
+    'NUME_ORDRE' : 'NUPA',
+    }  
+    
+    blocs_ctime = []
+    
+    for cle in cata_inst.keys():
         val = get_motcle(fact, cle, code_mess=None)
         if val is not None:
-            cle_epx = dic_aster2epx[cle]
-            break
-    return cle_epx, val
+            cle_epx = cata_inst[cle]
+            
+            if cle_epx == 'TIME':
+                bloc_ctime = BLOC_DONNEES(cle_epx, l_group=val, cle_l_group='PROG',
+                                          dispo_group='hori')
+            elif cle_epx == 'NUPA':
+                bloc_ctime = BLOC_DONNEES(cle_epx, l_group=val, dispo_group='hori')
+            else:
+                bloc_ctime = BLOC_DONNEES(cle_epx, cle=val)
+            
+            blocs_ctime.append(bloc_ctime)
+            
+    return blocs_ctime
 #------------------------------------------------------------------------
 
 

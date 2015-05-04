@@ -422,6 +422,7 @@ U = CALC_EUROPLEXUS(
            NOM_CHAM = 'DEPL',
            NOM_CMP  = 'DZ',
            GROUP_NO = ('PMMA'),
+           NOM_COURBE = 'DZ_PMMA'
            ),
    ),
    ARCHIVAGE   = _F(PAS_NBRE=500,),

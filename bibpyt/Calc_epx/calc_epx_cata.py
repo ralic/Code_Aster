@@ -676,15 +676,19 @@ cata_charge = {
 
 # Autres dictionnaires de correspondance.
 
-cata_inst = {
-    'PAS_NBRE': 'FREQ',
-    'PAS_INST': 'TFREQ'
-}
-
-cata_courbe = {
-    'PAS_NBRE_COURBE': 'FREQ',
-    'PAS_INST_COURBE': 'TFREQ'
-}
+# ces deux catalogues ne sont plus utilisés, tout est géré directement 
+# dans calc_epx_utils.ctime
+#cata_inst = {
+    #'PAS_NBRE': 'FREQ',
+    #'PAS_INST': 'TFREQ',
+    #'INST'    : 'TIME'
+#}
+#
+#cata_courbe = {
+    #'PAS_NBRE_COURBE': 'FREQ',
+    #'PAS_INST_COURBE': 'TFREQ'
+    #'INST_COURBE'    : 'TIME'
+#}
 
 cata_champs = {
     'DEPL': 'DEPL',

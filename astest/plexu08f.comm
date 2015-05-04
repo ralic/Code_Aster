@@ -123,6 +123,14 @@ PLATEAU=DEFI_FONCTION(NOM_PARA='INST',
                      PROL_GAUCHE='CONSTANT',
                      );
 
+
+l_inst = [2e-5*i for i in range(10)]
+l_inst.append(0.004)
+l_nume_ordre = range(100,105)
+
+
+TAB1 = CO('TAB1')
+
 U_EPX = CALC_EUROPLEXUS(
    ETAT_INIT=_F(RESULTAT=U_ASTER,CONTRAINTE='OUI',EQUILIBRE='NON'),
    COMPORTEMENT =(_F(
@@ -139,12 +147,34 @@ U_EPX = CALC_EUROPLEXUS(
                NMAX      = 200,
                PASFIX    = 2e-5,
                ),
-   ARCHIVAGE   = _F(PAS_NBRE=100,),
+   OBSERVATION =_F(TOUT_GROUP_NO ='OUI', NOM_CHAM = 'DEPL', 
+                   INST = l_inst,
+                   NUME_ORDRE = l_nume_ordre,
+                   PAS_INST = 0.001,
+                   PAS_NBRE = 99,
+                   ),
+   ARCHIVAGE   = _F(INST = l_inst,
+                   NUME_ORDRE = l_nume_ordre,
+                   PAS_INST = 0.001,
+                   PAS_NBRE = 99),
+   INST_COURBE = l_inst,
+   NUME_ORDRE_COURBE = l_nume_ordre,
+   PAS_INST_COURBE = 0.001,
+   PAS_NBRE_COURBE=99,
+   TABLE_COURBE    = TAB1,
+   COURBE = (_F(
+           NOM_CHAM = 'DEPL',
+           NOM_CMP  = 'DX',
+           GROUP_NO = 'GRN1',
+           NOM_COURBE = 'DX__________GRN1',
+           ),
+        ),
    );
 
+IMPR_TABLE(TABLE = TAB1)
 
 #IMPR_RESU(RESU=_F(RESULTAT=U_ASTER,NOM_CHAM=('DEPL','SIEF_ELGA',),INST=1.0))
-#IMPR_RESU(RESU=_F(RESULTAT=U_EPX,NOM_CHAM=('DEPL','SIEF_ELGA',),INST=0.004))
+IMPR_RESU(RESU=_F(RESULTAT=U_EPX,NOM_CHAM=('DEPL',),GROUP_NO = 'GRN1'))
 
 # REFERENCE ETAT INITIAL ASTER
 

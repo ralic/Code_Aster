@@ -169,11 +169,13 @@ U1 = CALC_EUROPLEXUS(
            NOM_CHAM = 'DEPL',
            NOM_CMP  = 'DX',
            GROUP_NO = 'NY10',
+           NOM_COURBE = 'DX_NY10',
            ),
            _F(
            NOM_CHAM = 'DEPL',
            NOM_CMP  = 'DY',
            GROUP_NO = 'NY10',
+           NOM_COURBE = 'DY_NY10',
            ),
    ),
    );

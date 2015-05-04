@@ -151,48 +151,56 @@ U_EPX = CALC_EUROPLEXUS(
            NOM_CMP  = 'V1',
            NUM_GAUSS = 1,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V1_CUBE',
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V2',
            NUM_GAUSS = 2,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V2_CUBE',
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V3',
            NUM_GAUSS = 3,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V3_CUBE',
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V4',
            NUM_GAUSS = 4,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V4_CUBE',
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V5',
            NUM_GAUSS = 5,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V5_CUBE',
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V6',
            NUM_GAUSS = 6,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V6_CUBE',
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V7',
            NUM_GAUSS = 7,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V7_CUBE',
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V8',
            NUM_GAUSS = 8,
            GROUP_MA = 'CUBE',
+           NOM_COURBE = 'V8_CUBE',
            ),
    ),
    );
@@ -214,7 +222,7 @@ U_EPX2 = LIRE_EUROPLEXUS(UNITE_MED = 19,
 IMPR_TABLE(TABLE=TAB1)
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V1_CUB',
+           NOM_PARA='V1_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.,
                       ),
@@ -224,7 +232,7 @@ TEST_TABLE(TABLE=TAB1,
            )
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V2_CUB',
+           NOM_PARA='V2_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.,
                       ),
@@ -234,7 +242,7 @@ TEST_TABLE(TABLE=TAB1,
            )
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V3_CUB',
+           NOM_PARA='V3_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.,
                       ),
@@ -244,7 +252,7 @@ TEST_TABLE(TABLE=TAB1,
            )
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V4_CUB',
+           NOM_PARA='V4_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.,
                       ),
@@ -257,7 +265,7 @@ TEST_TABLE(TABLE=TAB1,
 
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V1_CUB',
+           NOM_PARA='V1_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.004,
                       ),
@@ -267,7 +275,7 @@ TEST_TABLE(TABLE=TAB1,
            )
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V2_CUB',
+           NOM_PARA='V2_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.004,
                       ),
@@ -277,7 +285,7 @@ TEST_TABLE(TABLE=TAB1,
            )
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V3_CUB',
+           NOM_PARA='V3_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.004,
                       ),
@@ -287,7 +295,7 @@ TEST_TABLE(TABLE=TAB1,
            )
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V4_CUB',
+           NOM_PARA='V4_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.004,
                       ),
@@ -303,7 +311,7 @@ TEST_TABLE(TABLE=TAB1,
 
 
 TEST_TABLE(TABLE=TAB1,
-           NOM_PARA='VARI_ELGA_V5_CUB',
+           NOM_PARA='V5_CUBE',
            FILTRE = _F(NOM_PARA = 'TEMPS',
                        VALE = 0.004,
                       ),

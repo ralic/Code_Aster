@@ -407,6 +407,7 @@ U = CALC_EUROPLEXUS(
            NOM_CHAM = 'DEPL',
            NOM_CMP  = 'DZ',
            GROUP_NO = ('PMMA'),
+           NOM_COURBE = 'DZ_PMMA'
            ),
    ),
    ARCHIVAGE   = _F(PAS_NBRE=500,),
@@ -525,24 +526,28 @@ U2 = CALC_EUROPLEXUS(
            NOM_CHAM = 'DEPL',
            NOM_CMP  = 'DZ',
            GROUP_NO = ('PMMA'),
+           NOM_COURBE = 'DZ_PMMA',
            ),
            _F(
            NOM_CHAM = 'SIEF_ELGA',
            NOM_CMP  = 'NXX',
            NUM_GAUSS = 1,
            GROUP_MA = ('GRM65'),
+           NOM_COURBE = 'NXX_GRM65'
            ),
            _F(
            NOM_CHAM = 'EPSI_ELGA',
            NOM_CMP  = 'EXY',
            NUM_GAUSS = 3,
            GROUP_MA = ('GRM65'),
+           NOM_COURBE = 'EXY_GRM65'
            ),
            _F(
            NOM_CHAM = 'VARI_ELGA',
            NOM_CMP  = 'V1',
            NUM_GAUSS = 2,
            GROUP_MA = ('GRM65'),
+           NOM_COURBE = 'V1_GRM65'
            ),
    ),
    ARCHIVAGE   = _F(PAS_NBRE=500,),

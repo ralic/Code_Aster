@@ -284,7 +284,8 @@ class BLOC_DONNEES:
     """
 
     def __init__(self, mot_cle, l_group=None, cle='', val_cle='', cara=[],
-                 vale=[], titre=None, lect_term='fin'):
+                 vale=[], titre=None, lect_term='fin', cle_l_group='LECT',
+                 dispo_group='verti'):
         """
             Création de l'objet.
             Seul mot_cle est obligatoire.
@@ -309,9 +310,15 @@ class BLOC_DONNEES:
         self.cara = cara
         self.vale = vale
         self.titre = titre
+        self.cle_groupes = cle_l_group
         if lect_term != 'fin' and lect_term != 'debut':
             raise Exception('lect_term doit etre egal à debut ou fin')
         self.lect_term = lect_term
+        if dispo_group != 'verti' and dispo_group != 'hori':
+            raise Exception('dispo_group doit etre egal à verti ou hori')
+        self.dispo_group = dispo_group
+        
+        self.lenmax = 80
 
 #------------------------------------------------------------------------
     def write(self, decal):
@@ -327,32 +334,67 @@ class BLOC_DONNEES:
                            % (self.cle, self.val_cle))
 
         if self.lect_term == 'fin':
-            for i, car in enumerate(self.cara):
-                if len(self.vale) != 0:
-                    liste_ligne.append((decal + decal3) * ' ' + '%s %s'
-                                       % (car, self.vale[i]))
-                else:
-                    liste_ligne.append((decal + decal3) * ' ' + '%s' % (car,))
-            if self.groupes is not None:
-                liste_ligne.append((decal + decal3) * ' ' + 'LECT')
-                for gr in self.groupes:
-                    liste_ligne.append((decal + decal3 + decal2) * ' ' + '%s'
-                                       % gr.strip())
-                liste_ligne.append((decal + decal3) * ' ' + 'TERM')
+            
+            lignes_cara = self.write_cara_val(decal, decal3)
+            liste_ligne.extend(lignes_cara)
+            
+            lignes_groupes = self.write_groupes(decal, decal2, decal3)
+            liste_ligne.extend(lignes_groupes)
         else:
-            if self.groupes is not None:
-                liste_ligne.append((decal + decal3) * ' ' + 'LECT')
-                for gr in self.groupes:
-                    liste_ligne.append((decal + decal3 + decal2) * ' ' + '%s'
-                                       % gr.strip())
-                liste_ligne.append((decal + decal3) * ' ' + 'TERM')
-            for i, car in enumerate(self.cara):
-                if len(self.vale) != 0:
-                    liste_ligne.append((decal + decal3) * ' ' + '%s %s'
-                                       % (car, self.vale[i]))
-                else:
-                    liste_ligne.append((decal + decal3) * ' ' + '%s' % (car,))
+            lignes_groupes = self.write_groupes(decal, decal2, decal3)
+            liste_ligne.extend(lignes_groupes)
+            
+            lignes_cara = self.write_cara_val(decal, decal3)
+            liste_ligne.extend(lignes_cara)
         return liste_ligne
+#------------------------------------------------------------------------    
+    def write_cara_val(self, decal, decal3):
+        """
+            Ecriture des caracteristiques du bloc
+        """
+        lignes_cara = []
+        for i, car in enumerate(self.cara):
+            if len(self.vale) != 0:
+                lignes_cara.append((decal + decal3) * ' ' + '%s %s'
+                                   % (car, self.vale[i]))
+            else:
+                lignes_cara.append((decal + decal3) * ' ' + '%s' % (car,))
+        return lignes_cara
+#------------------------------------------------------------------------
+    def write_groupes(self, decal, decal2, decal3):
+        """
+            Ecriture des groupes du bloc
+        """
+        lignes_groupes = []
+        if self.groupes is not None:
+            if self.dispo_group == 'verti':
+                lignes_groupes.append((decal + decal3) * ' ' + self.cle_groupes)
+                for gr in self.groupes:
+                    lignes_groupes.append((decal + decal3 + decal2) * ' ' + '%s'
+                                       % (str(gr).strip()))
+                lignes_groupes.append((decal + decal3) * ' ' + 'TERM')
+            else:
+                
+                ligne = (decal + decal3) * ' ' + self.cle_groupes
+                for gr in self.groupes:
+                    grs = str(gr).strip()
+                    l = len(grs)
+                    l_ligne = len(ligne)
+                    if (l + l_ligne + 1) > self.lenmax:
+                        lignes_groupes.append(ligne)
+                        ligne = (decal + decal3 + len(self.cle_groupes)) * ' '
+                        ligne += ' %s'%grs
+                    else:
+                        ligne+= ' %s'%grs
+                l = len('TERM')
+                l_ligne = len(ligne)
+                if (l + l_ligne + 1) > self.lenmax:
+                    lignes_groupes.append(ligne)
+                    ligne = (decal + decal3) * ' ' + 'TERM'
+                else:
+                    ligne+=' TERM'
+                lignes_groupes.append(ligne)
+        return lignes_groupes
 #------------------------------------------------------------------------
 #
 #------------------------------------------------------------------------
