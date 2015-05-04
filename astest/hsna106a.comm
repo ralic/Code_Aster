@@ -1,6 +1,5 @@
 # MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION THERMIQUE PLASTIQUE GRANDES DEFORMATIONS AXI
-#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,8 +152,8 @@ VL=STAT_NON_LINE(
                          COMPORTEMENT=_F(
                 RELATION = 'META_LEMA_ANI',
                 RELATION_KIT = 'ZIRC',
-		ITER_INTE_MAXI = 100,
-		RESI_INTE_RELA = 1.E-12),
+                ITER_INTE_MAXI = 100,
+                RESI_INTE_RELA = 1.E-12),
                          INCREMENT=_F(
                 LIST_INST = L_INST,
                 NUME_INST_FIN = 10),
@@ -182,8 +181,8 @@ VL=STAT_NON_LINE( reuse=VL,
                          COMPORTEMENT=_F(
                 RELATION = 'META_LEMA_ANI',
                 RELATION_KIT = 'ZIRC',
-		ITER_INTE_MAXI = 100,
-		RESI_INTE_RELA = 1.E-12),
+                ITER_INTE_MAXI = 100,
+                RESI_INTE_RELA = 1.E-12),
                          INCREMENT=_F(
                 LIST_INST = L_INST),
                             NEWTON=_F(
