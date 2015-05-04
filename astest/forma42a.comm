@@ -1,0 +1,255 @@
+#AJOUT
+# TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTE AVEC STAT_NON_LINE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2012  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+#---------------------------------------------------------------------
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='NON'),);
+# SDVERI='NON' car la verification est trop couteuse en CPU
+
+MA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA=('CAB5',
+                                          'CAB1',
+                                          'CAB4',
+                                          'CAB3',
+                                          'CAB2',
+                                          'PP',
+                                          'SU3',
+                                          ),),);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA='VOLTOT',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA=('CAB1',
+                                   'CAB2',
+                                   'CAB3',
+                                   'CAB4',
+                                   'CAB5',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='BARRE',),),);
+
+CE=AFFE_CARA_ELEM(MODELE=MO,
+                  BARRE=_F(GROUP_MA=('CAB5',
+                                      'CAB4',
+                                      'CAB3',
+                                      'CAB2',
+                                      'CAB1',),
+                           SECTION='CERCLE',
+                           CARA='R',
+                           VALE=2.8209E-2,),);
+
+MBETON=DEFI_MATERIAU(ELAS=_F(E=4.E10,
+                             NU=0.2,
+                             RHO=2500.,),
+                     BPEL_BETON=_F(PERT_FLUA=0,),);
+
+MCABLE=DEFI_MATERIAU(ELAS=_F(E=1.93E11,
+                             NU=0.3,
+                             RHO=7850.,),
+                     BPEL_ACIER=_F(F_PRG=1.94E11,
+                                   FROT_COURB=0.0,
+                                   FROT_LINE=1.5E-3,),);
+
+CMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=(_F(GROUP_MA='VOLTOT',
+                            MATER=MBETON,),
+                         _F(GROUP_MA=('CAB1',
+                                       'CAB2',
+                                       'CAB3',
+                                       'CAB4',
+                                       'CAB5',
+                                       ),
+                            MATER=MCABLE,),),);
+
+CLIM=AFFE_CHAR_MECA(MODELE=MO,
+                    PESANTEUR=_F(GRAVITE=9.81,
+                                 DIRECTION=(0.,0.,-1.,),),
+                    DDL_IMPO=(_F(GROUP_NO='PX',
+                                 DY=0.,),
+                              _F(GROUP_NO='PY',
+                                 DX=0.,),
+                              _F(GROUP_NO='PP',
+                                 DX=0.,
+                                 DY=0.,),
+                              _F(GROUP_NO='SU3',
+                                 DZ=0.,),),);
+
+CAB_BP=DEFI_CABLE_BP(MODELE=MO,
+                      CHAM_MATER=CMAT,
+                      CARA_ELEM=CE,
+                      GROUP_MA_BETON='VOLTOT',
+                      DEFI_CABLE=(_F(GROUP_MA='CAB1',
+                                     GROUP_NO_ANCRAGE= ('PC1D','PC1F'),),
+                                  _F(GROUP_MA='CAB2',
+                                     GROUP_NO_ANCRAGE=('PC2D','PC2F'),),
+                                  _F(GROUP_MA='CAB3',
+                                     GROUP_NO_ANCRAGE=('PC3D','PC3F'),),
+                                  _F(GROUP_MA='CAB4',
+                                     GROUP_NO_ANCRAGE=('PC4D','PC4F'),),
+                                  _F(GROUP_MA='CAB5',
+                                     GROUP_NO_ANCRAGE=('PC5D','PC5F'),),),
+                      TYPE_ANCRAGE=('ACTIF','PASSIF',),
+                      TENSION_INIT=3.75E6,
+                      RECUL_ANCRAGE=0.001,);
+
+
+
+
+CMCAB=AFFE_CHAR_MECA(MODELE=MO,
+                      RELA_CINE_BP=_F(CABLE_BP=CAB_BP,
+                                      SIGM_BPEL='OUI',
+                                      RELA_CINE='OUI',),);
+
+
+LIST=DEFI_LIST_REEL(VALE=(0.,600.,),
+                    INFO=1,);
+
+RES0=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CMAT,
+                   CARA_ELEM=CE,
+                   EXCIT=(_F(CHARGE=CLIM,),
+                          _F(CHARGE=CMCAB,)),
+                   COMPORTEMENT=(_F(RELATION='ELAS',
+                                 GROUP_MA='VOLTOT',),
+                              _F(RELATION='ELAS',
+                                 GROUP_MA='CABLE',),),
+                   INCREMENT=_F(LIST_INST=LIST,),
+                   NEWTON=_F(),);
+# ---------------------
+# POST-TRAITEMENT
+# ---------------------
+RES0=CALC_CHAMP(reuse =RES0,
+                RESULTAT=RES0,
+                CONTRAINTE= 'SIEF_ELNO',);
+
+#IMPR_RESU(FORMAT='MED',
+#          RESU=_F(RESULTAT=RES0,),);
+
+# RECUPERATION DE LA TENSION DANS LES CABLES SELON BPEL
+# ----------------------------------------------------
+TAB_1_I=RECU_TABLE(CO=CAB_BP,
+                 NOM_TABLE='CABLE_BP',);
+
+IMPR_TABLE(TABLE=TAB_1_I,);
+
+# RECUPERATION DE LA TENSION APRES MISE EN CHARGE
+#------------------------------------------------
+TAB_1_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='cable1',
+                            RESULTAT=RES0,
+                            NOM_CHAM='SIEF_ELNO',
+                            GROUP_NO='CAB1',
+                            NOM_CMP='N',),);
+
+IMPR_TABLE(TABLE=TAB_1_F,);
+
+#TRACE DES DIFFERENTS PROFILS DE CONTRAINTE
+#------------------------------------------------
+N1_I=RECU_FONCTION(TABLE=TAB_1_I,
+                   PARA_X='ABSC_CURV',
+                   PARA_Y='TENSION',
+                   FILTRE=_F(NOM_PARA='NOM_CABLE',
+                             VALE_K='CAB1',),
+);
+
+N1_0=RECU_FONCTION(TABLE=TAB_1_F,
+                   PARA_X='ABSC_CURV',
+                   PARA_Y='N',
+                   FILTRE=_F(NOM_PARA='INST',
+                             VALE=0,),);
+
+N1_600=RECU_FONCTION(TABLE=TAB_1_F,
+                     PARA_X='ABSC_CURV',
+                     PARA_Y='N',
+                     FILTRE=_F(NOM_PARA='INST',
+                               VALE=600,),);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=38,
+              COURBE=(_F(FONCTION=N1_I),
+                      _F(FONCTION=N1_0,),
+                      _F(FONCTION=N1_600,),),);
+# TEST_RESU - COMPARAISON AVEC LES VALEURS DE REFERENCES CASTEM AVEC PHASAGE
+# CF. SSNV164
+#-----------------------------------------------
+#  CABLE 1 - INST 600s
+TEST_RESU(RESU=(_F(INST=600.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='N',
+                   VALE_CALC= 3.42790881E+06,
+                   VALE_REFE=3.519000E6,
+                   CRITERE='RELATIF',
+                   PRECISION=3.E-2,
+                   MAILLE='M5655',),
+                _F(INST=600.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N6',
+                   NOM_CMP='N',
+                   VALE_CALC= 3.45515536E+06,
+                   VALE_REFE=3.546000E6,
+                   CRITERE='RELATIF',
+                   PRECISION=3.E-2,
+                   MAILLE='M5660',),
+                _F(INST=600.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N11',
+                   NOM_CMP='N',
+                   VALE_CALC= 3.48553573E+06,
+                   VALE_REFE=3.597000E6,
+                   CRITERE='RELATIF',
+                   PRECISION=3.5E-2,
+                   MAILLE='M5664',),
+                _F(INST=600.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N16',
+                   NOM_CMP='N',
+                   VALE_CALC= 3.60777445E+06,
+                   VALE_REFE=3.635000E6,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-2,
+                   MAILLE='M5670',),
+                _F(INST=600.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=RES0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOEUD='N101',
+                   NOM_CMP='N',
+                   VALE_CALC= 3.40344411E+06,
+                   VALE_REFE=3.614000E6,
+                   CRITERE='RELATIF',
+                   PRECISION=6.E-2,
+                   MAILLE='M5674',),
+                ),
+          )
+
+
+FIN(FORMAT_HDF='NON',);
+#CHECKSUM:273bf96b80db79a609c856778b413f3e  -:FIN CHECKSUM
