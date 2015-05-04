@@ -27,17 +27,18 @@
 
 void DEFSP(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, INTEGER *info)
 {
-    char *cmdline, *ncmd, *fname;
+    char *cmdline, *fname;
     size_t ldeb;
     int ier;
-    
+
 #if defined _POSIX
-    ncmd = "rm -f ";
-    ldeb = 6;
+    char ncmd[] = "rm -f ";
 #else
-    ncmd = "del ";
-    ldeb = 4;
+    char ncmd[] = "del ";
 #endif
+    ldeb = strlen(ncmd);
+
+    if ( lnom1 == 0 || nom1[0] == ' ') return;
 
     cmdline = (char*)malloc((ldeb + lnom1 + 1) * sizeof(char));
     fname = MakeCStrFromFStr(nom1, lnom1);
