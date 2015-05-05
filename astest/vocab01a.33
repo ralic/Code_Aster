@@ -131,10 +131,10 @@ def vocab01_ops(self, EXISTANT, INFO, **kwargs):
                      "maintenant, il y en a {}.".format(nbExist, nbWords),
                      "Relancez avec INFO=2 pour écrire la nouvelle liste "
                      "et comparer avec le fichier vocab01a.34 existant."))
-    __tab = CREA_TABLE(LISTE=_F(PARA='NBMOT', LISTE_I=nbExist <= nbWords))
+    __tab = CREA_TABLE(LISTE=_F(PARA='NBMOT', LISTE_I=nbWords))
     TEST_TABLE(REFERENCE='ANALYTIQUE',
-               VALE_CALC_I=nbExist <= nbWords,
-               VALE_REFE_I=nbExist <= nbWords,
+               VALE_CALC_I=nbExist,
+               VALE_REFE_I=nbExist,
                NOM_PARA='NBMOT',
                TABLE=__tab,)
 
@@ -143,9 +143,10 @@ def vocab01_ops(self, EXISTANT, INFO, **kwargs):
     if nbDel:
         UTMESS('A', 'CATAMESS_2',
                valk=("Liste des %d mots-clefs supprimés ou non définis dans "
-                     "cette version (MFront est-il présent ?) "
-                     "(relancer avec INFO=2 "
-                     "pour produire la nouvelle liste) :" % nbDel,
+                     "cette version.\nIl faut activer le support de MFront "
+                     "pour que tous les mots-clés soient reconnus.\n\n"
+                     "Relancer avec INFO=2 "
+                     "pour produire la nouvelle liste :" % nbDel,
                      str(list(diff)) ))
 
 
