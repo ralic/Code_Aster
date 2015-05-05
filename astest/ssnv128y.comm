@@ -118,6 +118,7 @@ U2M=STAT_NON_LINE(MODELE   = MO,
                 COMPORTEMENT  = _F(RELATION = 'ELAS'),
                 NEWTON     = _F(REAC_ITER = 1),
                 INCREMENT  = _F(LIST_INST = L_INST),
+                SOLVEUR    = _F(METHODE='MUMPS',),
                 CONVERGENCE= _F(ARRET = 'OUI',
                                ITER_GLOB_MAXI = 15,),);
 
