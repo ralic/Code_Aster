@@ -26,9 +26,9 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #
 
 TUBE=LIRE_MAILLAGE(FORMAT='MED')
-                                                                                                                            
+
 # Pertubation legere des coordonnes du maillage pour eviter les modes multiples ou retournes :
-TUBE=MODI_MAILLAGE(reuse =TUBE, MAILLAGE=TUBE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),) 
+TUBE=MODI_MAILLAGE(reuse =TUBE, MAILLAGE=TUBE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
 MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,ABSC_CURV=_F(NOEUD_ORIG='N_01_001',TOUT='OUI'))
 
 TUBE=DEFI_GROUP( reuse=TUBE,   MAILLAGE=TUBE,
@@ -293,7 +293,7 @@ DYN0=POST_DYNA_ALEA(INTERSPECTRE=_F(
 IMPR_TABLE(  TABLE=DYN0, )
 
 TEST_TABLE(
-           VALE_CALC=0.00228420956268,
+           VALE_CALC=0.00228420678028,
            NOM_PARA='ECART',
            TABLE=DYN0,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -306,7 +306,7 @@ TEST_TABLE(
 MELFLU45=CALC_FLUI_STRU(VITE_FLUI      = _F(VITE_MIN    = vite_min,
                                             VITE_MAX    = vite_max,
                                             NB_POIN     = nb_poin),
-                        BASE_MODALE    = _F(MODE_MECA   = MODES, 
+                        BASE_MODALE    = _F(MODE_MECA   = MODES,
                                             NUME_ORDRE  = (4,5),
                                             AMOR_REDUIT = (4.999E-03,4.999E-03),),
                         TYPE_FLUI_STRU = TYPEFLUI,
