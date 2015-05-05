@@ -53,7 +53,7 @@ subroutine chflch(rigthe, vec2nd)
 !   ------------------------------------------------------------------------------------
     integer :: neq, nchar, ialich, jinf, ialifc, nchci, ich, iret, jnchtp, j2nd, lonch, k
     integer :: n1, jpro, jval, loncm1, jndirp
-    real    :: tpsthe(1)
+    real(kind=8) :: tpsthe(1)
     logical :: fmult, coecst
     character(len=8) :: typch, parcha, mate, carele, numedd
     character(len=19) :: infcha, nomcha
@@ -149,7 +149,7 @@ subroutine chflch(rigthe, vec2nd)
                     zk24(jpro+3) = 'TOUTRESU'
                     zk24(jpro+4) = 'CC      '
                     zk24(jpro+5) = nomfct
-!    
+!
                     call wkvect(nomfct(1:19)//'.VALE', 'V V R', 2, jval)
                     zr(jval) = 1.0d0
                     zr(jval+1)= 1.0d0
@@ -202,7 +202,7 @@ subroutine chflch(rigthe, vec2nd)
     call jeveuo(cnchtp(1:19)//'.VALE', 'L', jnchtp)
     call jedetr(vechtp)
     call jedetr(vechtn)
-! 
+!
     call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
     call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', lonch)
     loncm1 = lonch - 1
