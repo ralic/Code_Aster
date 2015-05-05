@@ -1,4 +1,4 @@
-subroutine nmevdg(sddisc, vale, iechec, ievdac)
+subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ subroutine nmevdg(sddisc, vale, iechec, ievdac)
 #include "asterfort/tbacce.h"
 #include "asterfort/tbliva.h"
 #include "asterfort/utdidt.h"
-    integer :: iechec, ievdac
+    integer :: i_echec, i_echec_acti
     character(len=19) :: sddisc, vale(*)
 !
 ! ----------------------------------------------------------------------
@@ -40,7 +40,7 @@ subroutine nmevdg(sddisc, vale, iechec, ievdac)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization TEMPORELLE
 ! IN  VALE   : INCREMENTS DES VARIABLES
 !               OP0070: VARIABLE CHAPEAU
 !               OP0033: TABLE
@@ -52,7 +52,7 @@ subroutine nmevdg(sddisc, vale, iechec, ievdac)
 !
 !
     integer :: ifm, niv, ier
-    real(kind=8) :: r8bid, valref, dval
+    real(kind=8) :: valref, dval, r8bid
     integer :: ibid
     character(len=8) :: k8bid, crit, typext
     complex(kind=8) :: c16bid
@@ -72,18 +72,19 @@ subroutine nmevdg(sddisc, vale, iechec, ievdac)
 !
 ! --- INITIALISATIONS
 !
-    ievdac = 0
+    i_echec_acti = 0
+    r8bid        = 0.d0
 !
 ! --- PARAMETRES
 !
-    call utdidt('L', sddisc, 'ECHE', iechec, 'NOM_CHAM',&
-                r8bid, ibid, nocham)
-    call utdidt('L', sddisc, 'ECHE', iechec, 'NOM_CMP',&
-                r8bid, ibid, nocmp)
-    call utdidt('L', sddisc, 'ECHE', iechec, 'VALE_REF',&
-                valref, ibid, k8bid)
-    call utdidt('L', sddisc, 'ECHE', iechec, 'CRIT_COMP',&
-                r8bid, ibid, crit)
+    call utdidt('L', sddisc, 'ECHE', 'NOM_CHAM', index_ = i_echec,&
+                valk_ = nocham)
+    call utdidt('L', sddisc, 'ECHE', 'NOM_CMP', index_ = i_echec,&
+                valk_ = nocmp)
+    call utdidt('L', sddisc, 'ECHE', 'VALE_REF', index_ = i_echec,&
+                valr_ = valref)
+    call utdidt('L', sddisc, 'ECHE', 'CRIT_COMP', index_ = i_echec,&
+                valk_ = crit)
 !
 ! --- DVAL :MAX EN VALEUR ABSOLUE DU DELTA(CHAMP+CMP)
 !
@@ -111,7 +112,7 @@ subroutine nmevdg(sddisc, vale, iechec, ievdac)
     ASSERT(crit.eq.'GT')
 !
     if (dval .gt. valref) then
-        ievdac = iechec
+        i_echec_acti = i_echec
     endif
 !
     call jedema()

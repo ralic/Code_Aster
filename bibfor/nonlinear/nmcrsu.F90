@@ -53,7 +53,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 !
 ! IN  PARCRI : PARAMETRES DES CRITERES DE CONVERGENCE (CF NMDOCN)
 ! IN  LISINS : SD_LIST_INST OU SD_LISTR8
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! IN  LCTCD  : .TRUE. SI CONTACT DISCRET
 ! IN  LIMPEX : .TRUE. SI IMPLEX
 ! IN  SOLVEU : SD SOLVEUR
@@ -64,14 +64,13 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     character(len=16) :: pred
     character(len=16) :: metlis, modetp
     integer :: iret
-    real(kind=8) :: r8bid, elasdt, valr
-    integer :: nadapt, iadapt
-    integer :: iter1, iter2, ibid
+    real(kind=8) :: elasdt, valr
+    integer :: nb_adapt, i_adapt
+    integer :: iter1, iter2
     integer :: ifm, niv, itmx, vali
     aster_logical :: ldeco
     real(kind=8) :: rgmaxi, rgrela, inikry
-    character(len=8) :: k8bid
-    character(len=19) :: even
+    character(len=19) :: event_name
     character(len=16) :: typeco, nopara, decoup
     character(len=24) :: lisevr, lisevk, lisesu
     character(len=24) :: lisavr, lisavk, listpr, listpk
@@ -96,10 +95,10 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     rgmaxi = parcri(3)
     rgrela = parcri(2)
     inikry = 0.9d0
-    call utdidt('L', sddisc, 'LIST', ibid, 'NADAPT',&
-                r8bid, nadapt, k8bid)
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
+    call utdidt('L', sddisc, 'LIST', 'NADAPT',&
+                vali_ = nb_adapt)
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
 !
 ! --- NOM SDS DE LA LISINS
 !
@@ -137,7 +136,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
         call jedup1(lisevr, 'V', tpsevr)
         call jedup1(lisevk, 'V', tpsevk)
         call jedup1(lisesu, 'V', tpsesu)
-        if (nadapt .ne. 0) then
+        if (nb_adapt .ne. 0) then
             call jedup1(lisavr, 'V', tpsavr)
             call jedup1(lisavk, 'V', tpsavk)
             call jedup1(listpr, 'V', tpstpr)
@@ -164,8 +163,8 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 !
 ! --- DECOUPAGE ACTIVE
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'EXIS_DECOUPE',&
-                r8bid, ibid, decoup)
+    call utdidt('L', sddisc, 'LIST', 'EXIS_DECOUPE',&
+                valk_ = decoup)
     ldeco = decoup.eq.'OUI'
 !
 ! --- SI NEWTON/PREDICTION ='DEPL_CALCULE', ALORS ON INTERDIT
@@ -181,7 +180,7 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
     endif
 !
 ! --- SI ON DOIT DECOUPER - CAPTURE MATRICE SINGULIERE DANS SOLVEUR
-!     ET ECHEC DU SOLVEUR ITERATIF 
+!     ET ECHEC DU SOLVEUR ITERATIF
 !
     if (ldeco) then
         if (solveu(1:8) .ne. '&&OP0033') then
@@ -197,38 +196,38 @@ subroutine nmcrsu(sddisc, lisins, parcri, limpex, lctcd,&
 !
     if (metlis .eq. 'AUTO') then
         call getvis('CONVERGENCE', 'ITER_GLOB_MAXI', iocc=1, scal=itmx, nbret=iret)
-        do 25 iadapt = 1, nadapt
-            call utdidt('L', sddisc, 'ADAP', iadapt, 'NOM_EVEN',&
-                        r8bid, ibid, even)
-            if (even .eq. 'SEUIL_SANS_FORMULE') then
-                call utdidt('L', sddisc, 'ADAP', iadapt, 'NOM_PARA',&
-                            r8bid, ibid, nopara)
+        do i_adapt = 1, nb_adapt
+            call utdidt('L', sddisc, 'ADAP', 'NOM_EVEN', index_ = i_adapt,&
+                        valk_ = event_name)
+            if (event_name .eq. 'SEUIL_SANS_FORMU') then
+                call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_ = i_adapt,&
+                            valk_ = nopara)
                 if (nopara .eq. 'NB_ITER_NEWT') then
-                    call utdidt('L', sddisc, 'ADAP', iadapt, 'VALE',&
-                                r8bid, vali, k8bid)
+                    call utdidt('L', sddisc, 'ADAP', 'VALE', index_ = i_adapt,&
+                                vali_ = vali)
                     if (vali .eq. 0) then
                         vali = itmx / 2
                         valr = vali
-                        call utdidt('E', sddisc, 'ADAP', iadapt, 'VALE',&
-                                    valr, ibid, k8bid)
+                        call utdidt('E', sddisc, 'ADAP', 'VALE', index_ = i_adapt,&
+                                    valr_ = valr)
                     endif
                 endif
             endif
- 25     continue
+        end do
     endif
 !
 ! --- VERIF COHERENCE AVEC IMPLEX
 !
     if (metlis .eq. 'AUTO') then
-        do 27 iadapt = 1, nadapt
-            call utdidt('L', sddisc, 'ADAP', iadapt, 'METHODE',&
-                        r8bid, ibid, modetp)
+        do i_adapt = 1, nb_adapt
+            call utdidt('L', sddisc, 'ADAP', 'METHODE', index_ = i_adapt,&
+                        valk_ = modetp)
             if (modetp .eq. 'IMPLEX') then
                 if (.not.limpex) then
                     call utmess('F', 'MECANONLINE6_4')
                 endif
             endif
- 27     continue
+        end do
     endif
 !
 ! --- CREATION SD STOCKAGE DES INFOS EN COURS DE CALCUL

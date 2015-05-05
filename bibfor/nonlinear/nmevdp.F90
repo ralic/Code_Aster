@@ -1,4 +1,4 @@
-subroutine nmevdp(sddisc, ievdac, retswa)
+subroutine nmevdp(sddisc, retswa)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ subroutine nmevdp(sddisc, ievdac, retswa)
 #include "asterfort/jemarq.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
-    integer :: ievdac, retswa
+    integer :: retswa
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
@@ -37,8 +37,7 @@ subroutine nmevdp(sddisc, ievdac, retswa)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+! In  sddisc           : datastructure for time discretization TEMPORELLE
 ! OUT RETSWA : CODE RETOUR CHANGE PILOTAGE
 !               0 ECHEC DU SWAP
 !               1 SWAP OK - ON REFAIT LE PAS DE TEMPS
@@ -46,10 +45,8 @@ subroutine nmevdp(sddisc, ievdac, retswa)
 !
 !
 !
-    real(kind=8) :: r8bid
-    integer :: ibid
     integer :: piless
-    character(len=8) :: k8bid, pilcho
+    character(len=8) :: pilcho
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,8 +58,8 @@ subroutine nmevdp(sddisc, ievdac, retswa)
 !
 ! --- PARAMETRES
 !
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'ESSAI_ITER_PILO',&
-                r8bid, piless, k8bid)
+    call utdidt('L', sddisc, 'ECHE', 'ESSAI_ITER_PILO',&
+                vali_ = piless)
 !
 ! --- L'UTILISATEUR UTILISE LE PILOTAGE
 ! --- ET SOUHAITE BASCULER SI NON-CONVERGENCE
@@ -89,10 +86,10 @@ subroutine nmevdp(sddisc, ievdac, retswa)
 !
 ! --- SAUVEGARDE INFO
 !
-    call utdidt('E', sddisc, 'ECHE', ievdac, 'ESSAI_ITER_PILO',&
-                r8bid, piless, k8bid)
-    call utdidt('E', sddisc, 'ECHE', ievdac, 'CHOIX_SOLU_PILO',&
-                r8bid, ibid, pilcho)
+    call utdidt('E', sddisc, 'ECHE', 'ESSAI_ITER_PILO',&
+                vali_ = piless)
+    call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO',&
+                valk_ = pilcho)
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
-subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
-                  ievdac, numins, iterat, retact)
+subroutine nmevac(sdimpr      , sddisc   , sderro, sdcont_defi, sdcont_solv,&
+                  i_echec_acti, nume_inst, iterat, retact)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,10 +21,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 !
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmadcp.h"
 #include "asterfort/nmdeco.h"
 #include "asterfort/nmecev.h"
@@ -35,10 +32,10 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
     character(len=24) :: sdimpr, sderro
-    character(len=24) :: defico, resoco
+    character(len=24) :: sdcont_defi, sdcont_solv
     character(len=19) :: sddisc
-    integer :: ievdac
-    integer :: iterat, numins
+    integer :: i_echec_acti
+    integer :: iterat, nume_inst
     integer :: retact
 !
 ! ----------------------------------------------------------------------
@@ -51,7 +48,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 !
 !
 ! IN  SDIMPR : SD AFFICHAGE
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! IN  SDERRO : SD ERREUR
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACTreac
@@ -66,22 +63,16 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
-    real(kind=8) :: r8bid
-    character(len=16) :: action, nomevd
+    character(len=16) :: action, event_name
     integer :: retsup, retswa, retpen, retdec
     aster_logical :: trydec, litmax
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
     retact = 3
     action = 'ARRET'
     trydec = .false.
-    ASSERT(ievdac.ne.0)
+    ASSERT(i_echec_acti.ne.0)
 !
 ! --- RECUPERATION ERREURS PARTICULIERES
 !
@@ -90,12 +81,12 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         call nmerge(sderro, 'ITER_MAXI', litmax)
     endif
 !
-! --- EVENEMENT ET ACTION
+! - Event and action
 !
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'NOM_EVEN',&
-                r8bid, ibid, nomevd)
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'ACTION',&
-                r8bid, ibid, action)
+    call utdidt('L', sddisc, 'ECHE', 'NOM_EVEN', index_ = i_echec_acti,&
+                valk_ = event_name)
+    call utdidt('L', sddisc, 'ECHE', 'ACTION'  , index_ = i_echec_acti,&
+                valk_ = action)
 !
 ! --- REALISATION DE L'ACTION
 !
@@ -123,7 +114,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
     else if (action.eq.'AUTRE_PILOTAGE') then
         if (litmax) then
             call utmess('I', 'MECANONLINE10_34')
-            call nmevdp(sddisc, ievdac, retswa)
+            call nmevdp(sddisc, retswa)
         else
             retswa = 0
         endif
@@ -136,7 +127,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
         endif
     else if (action.eq.'ADAPT_COEF_PENA') then
         call utmess('I', 'MECANONLINE10_35')
-        call nmadcp(sddisc, defico, resoco, ievdac, retpen)
+        call nmadcp(sddisc, sdcont_defi, sdcont_solv, i_echec_acti, retpen)
         trydec = .false.
         if (retpen .eq. 0) then
             retact = 3
@@ -155,7 +146,7 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 !
     if (trydec) then
         call utmess('I', 'MECANONLINE10_33')
-        call nmdeco(sddisc, numins, iterat, ievdac, retdec)
+        call nmdeco(sddisc, nume_inst, iterat, i_echec_acti, retdec)
         if (retdec .eq. 0) then
             retact = 3
         else if (retdec.eq.1) then
@@ -170,12 +161,11 @@ subroutine nmevac(sdimpr, sddisc, sderro, defico, resoco,&
 ! --- ECHEC DE L'ACTION -> EVENEMENT ERREUR FATALE
 !
     if (retact .eq. 3) then
-        call nmecev(sderro, 'E', nomevd, action)
+        call nmecev(sderro, 'E', event_name, action)
     endif
 !
 ! --- ON DESACTIVE LES EVENEMENTS
 !
     call nmeraz(sderro, 'EVEN')
 !
-    call jedema()
 end subroutine

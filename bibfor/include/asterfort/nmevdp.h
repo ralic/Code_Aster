@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmevdp(sddisc, ievdac, retswa)
+    subroutine nmevdp(sddisc, retswa)
         character(len=19) :: sddisc
-        integer :: ievdac
         integer :: retswa
     end subroutine nmevdp
 end interface

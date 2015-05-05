@@ -49,11 +49,9 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: r8bid
     real(kind=8) :: instan
     integer :: lenivo
     character(len=16) :: metlis
-    integer :: ibid
     aster_logical :: lprint
 !
 ! ----------------------------------------------------------------------
@@ -61,8 +59,8 @@ subroutine nmimpt(numins, sddisc, sdimpr)
 !
 ! --- METHODE DE GESTION DE LA LISTE D'INSTANTS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
     if (metlis .eq. 'MANUEL') then
         lenivo = dinins(sddisc,numins)
     else if (metlis.eq.'AUTO') then

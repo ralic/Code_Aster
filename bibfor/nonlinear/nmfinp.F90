@@ -47,17 +47,11 @@ subroutine nmfinp(sddisc, numins, lstop)
 !
 !
 !
-!
-    integer :: ibid
-    real(kind=8) :: r8bid, prec, jalon
+    real(kind=8) :: prec, jalon
     real(kind=8) :: inst
     character(len=16) :: metlis
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     lstop = .false.
     inst = diinst(sddisc,numins)
@@ -69,8 +63,8 @@ subroutine nmfinp(sddisc, numins, lstop)
 !
 ! --- METHODE DE GESTION DE LA LISTE D'INSTANTS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
 !
 ! --- CONVERGENCE DU CALCUL: DERNIER PAS !
 !
@@ -83,5 +77,4 @@ subroutine nmfinp(sddisc, numins, lstop)
         if (jalon .eq. r8vide()) lstop = .true.
     endif
 !
-    call jedema()
 end subroutine

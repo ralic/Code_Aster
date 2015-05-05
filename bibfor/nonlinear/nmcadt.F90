@@ -1,4 +1,4 @@
-subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
+subroutine nmcadt(sddisc, i_adapt, nume_inst, hval_incr, dtp)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,10 +28,11 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
-    integer :: iadapt, numins
-    character(len=19) :: valinc(*)
-    character(len=19) :: sddisc
-    real(kind=8) :: dtp
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: i_adapt
+        integer, intent(in) :: nume_inst
+        character(len=19), intent(in) :: hval_incr(*)
+        real(kind=8), intent(out) :: dtp
 !
 ! ----------------------------------------------------------------------
 !
@@ -42,7 +43,7 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  IADAPT : NUMERO DE LA METHODE D ADAPTATION TRAITEE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -51,9 +52,9 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
 !
 !
 !
-    integer :: ibid, nit, nbiter
-    real(kind=8) :: r8bid, dtm, pcent, valref, dval
-    character(len=8) :: k8bid, typext
+    integer :: nit, nbiter
+    real(kind=8) :: dtm, pcent, valref, dval
+    character(len=8) :: typext
     character(len=16) :: modetp, nocham, nocmp
     real(kind=8) :: eta, etad
     character(len=24) :: tpsite
@@ -70,39 +71,39 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
 !
 ! --- METHODE DE CALCUL DE DT+
 !
-    call utdidt('L', sddisc, 'ADAP', iadapt, 'METHODE',&
-                r8bid, ibid, modetp)
+    call utdidt('L', sddisc, 'ADAP', 'METHODE', index_ = i_adapt,&
+                valk_ = modetp)
 !
 ! --- PAS DE TEMPS PAR DEFAUT (LE DERNIER, SAUF SI JALON)
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'DT-',&
-                dtm, ibid, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'DT-',&
+                valr_ = dtm)
 !
 !     ------------------------------------------------------------------
     if (modetp .eq. 'FIXE') then
 !     ------------------------------------------------------------------
 !
-        call utdidt('L', sddisc, 'ADAP', iadapt, 'PCENT_AUGM',&
-                    pcent, ibid, k8bid)
+        call utdidt('L', sddisc, 'ADAP', 'PCENT_AUGM', index_ = i_adapt,&
+                    valr_ = pcent)
         dtp = dtm * (1.d0 + pcent / 100.d0)
 !
 !     ------------------------------------------------------------------
     else if (modetp.eq.'DELTA_GRANDEUR') then
 !     ------------------------------------------------------------------
 !
-        call utdidt('L', sddisc, 'ADAP', iadapt, 'NOM_CHAM',&
-                    r8bid, ibid, nocham)
-        call utdidt('L', sddisc, 'ADAP', iadapt, 'NOM_CMP',&
-                    r8bid, ibid, nocmp)
-        call utdidt('L', sddisc, 'ADAP', iadapt, 'VALE_REF',&
-                    valref, ibid, k8bid)
+        call utdidt('L', sddisc, 'ADAP', 'NOM_CHAM', index_ = i_adapt,&
+                    valk_ = nocham)
+        call utdidt('L', sddisc, 'ADAP', 'NOM_CMP', index_ = i_adapt,&
+                    valk_ = nocmp)
+        call utdidt('L', sddisc, 'ADAP', 'VALE_REF', index_ = i_adapt,&
+                    valr_ = valref)
         typext = 'MAX_ABS'
 !
 ! ----- CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
 ! -----             = VREF / MAX ( |DELTA(CHAMP+CMP)| )
 ! ----- DVAL :MAX EN VALEUR ABSOLUE DU DELTA(CHAMP+CMP)
 !
-        call extdch(typext, valinc, nocham, nocmp, dval)
+        call extdch(typext, hval_incr, nocham, nocmp, dval)
 !
 ! ----- LE CHAMP DE VARIATION EST IDENTIQUEMENT NUL : ON SORT
 !
@@ -116,9 +117,9 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
     else if (modetp.eq.'ITER_NEWTON') then
 !     ------------------------------------------------------------------
 !
-        call utdidt('L', sddisc, 'ADAP', iadapt, 'NB_ITER_NEWTON_REF',&
-                    r8bid, nit, k8bid)
-        nbiter = zi(jiter-1+numins)
+        call utdidt('L', sddisc, 'ADAP', 'NB_ITER_NEWTON_REF', index_ = i_adapt,&
+                    vali_ = nit)
+        nbiter = zi(jiter-1+nume_inst)
         dtp = dtm * sqrt( dble(nit) / dble(nbiter+1) )
 !
 !     ------------------------------------------------------------------
@@ -140,7 +141,7 @@ subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
 !
         nocham = 'VARI_ELGA'
         nocmp = 'V1'
-        call extdch(typext, valinc, nocham, nocmp, dval)
+        call extdch(typext, hval_incr, nocham, nocmp, dval)
 !
 ! ----- LE CHAMP DE VARIATION EST IDENTIQUEMENT NUL : ON SORT
 !

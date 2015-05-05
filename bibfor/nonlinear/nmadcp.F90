@@ -1,4 +1,4 @@
-subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
+subroutine nmadcp(sddisc, defico, resoco, i_event_acti, retpen)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
-    integer :: ievdac
+    integer :: i_event_acti
     character(len=24) :: defico, resoco
     character(len=19) :: sddisc
     integer :: retpen
@@ -45,18 +45,16 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
 !
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+! In  sddisc           : datastructure for time discretization
+! IN  i_event_acti     : INDICE DE L'EVENEMENT ACTIF
 ! OUT RETPEN : CODE RETOUR ADAPTATION PENALISATION
 !               0 ON N'A PAS ADAPTE
 !               1 ON A ADAPTE
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
-    character(len=8) :: k8bid
-    real(kind=8) :: penmax, coefpn, newcoe
-    real(kind=8) :: cmmaxi
+    real(kind=8) :: pene_maxi, coefpn, newcoe
+    real(kind=8) :: coef_maxi
     real(kind=8) :: jeumin, jeumax, jeufin
     integer :: nbliai, nzoco
     integer :: iliai, izone
@@ -72,10 +70,10 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
 ! --- INITIALISATIONS
 !
     retpen = 1
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'PENE_MAXI',&
-                penmax, ibid, k8bid)
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'COEF_MAXI',&
-                cmmaxi, ibid, k8bid)
+    call utdidt('L', sddisc, 'ECHE', 'PENE_MAXI', index_ = i_event_acti,&
+                valr_ = pene_maxi)
+    call utdidt('L', sddisc, 'ECHE', 'COEF_MAXI', index_ = i_event_acti,&
+                valr_ = coef_maxi)
 !
 ! --- PARAMETRES
 !
@@ -93,7 +91,7 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
 !
 ! --- DETECTION PENETRATION MAXIMUM/MINIMUM
 !
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
         jeufin = zr(jjeuit+3*(iliai-1)+1-1)
         izone = zi(jnumli+4*(iliai-1)+4-1)
         jeumin = zr(jctevp+3*(izone-1)+1-1)
@@ -107,17 +105,17 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
         zr(jctevp+3*(izone-1)+1-1) = jeumin
         zr(jctevp+3*(izone-1)+2-1) = jeumax
         zr(jctevp+3*(izone-1)+3-1) = jeufin
-10  end do
+    end do
 !
 ! --- DETECTION PENETRATION MAXIMUM
 !
-    do 15 izone = 1, nzoco
+    do izone = 1, nzoco
         call cfmmco(defico, resoco, izone, 'E_N', 'L',&
                     coefpn)
-        if (jeumax .gt. penmax) then
+        if (jeumax .gt. pene_maxi) then
             newcoe = coefpn*2.d0
-            if (newcoe .gt. cmmaxi) then
-                newcoe = cmmaxi
+            if (newcoe .gt. coef_maxi) then
+                newcoe = coef_maxi
                 retpen = 0
             endif
             call cfmmco(defico, resoco, izone, 'E_N', 'E',&
@@ -126,7 +124,7 @@ subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
         if (retpen .eq. 1) then
             call utmess('I', 'MECANONLINE10_46', si=izone, sr=newcoe)
         endif
-15  end do
+    end do
 !
 ! --- AFFICHAGE
 !

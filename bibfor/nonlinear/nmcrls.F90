@@ -48,7 +48,7 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 ! RETAILLE PROVLI SUIVANT [NUMINI,NUMFIN]
 !
 ! IN  PROVLI : NOM DE LA LISTE D'INSTANT PROVISOIRE
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! IN  NUMINI : PREMIER INSTANT
 ! IN  NUMFIN : DERNIER INSTANT
 ! IN  LINSTI : .TRUE. SI L'INSTANT INITIAL N'EXISTAIT PAS
@@ -59,9 +59,8 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 !
 !
 !
-    integer :: pos, i, ibid, nbinst
-    real(kind=8) :: deltat, r8bid, valr(2)
-    character(len=8) :: k8bid
+    integer :: pos, i, nb_inst
+    real(kind=8) :: deltat, valr(2)
     character(len=24) :: tpsdit
     integer :: jtemps, jinst
 !
@@ -71,13 +70,13 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 !
 ! --- INITIALISATIONS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbinst, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NBINST',&
+                vali_ = nb_inst)
 !
 ! --- NOMBRE FINAL D'INSTANTS
 !
     nbtemp = (numfin-numini) + 1
-    ASSERT(nbtemp.le.nbinst)
+    ASSERT(nbtemp.le.nb_inst)
 !
 ! --- NOMS SD_DISC
 !
@@ -91,18 +90,18 @@ subroutine nmcrls(sddisc, provli, numini, numfin, linsti,&
 !
     call wkvect(tpsdit, 'V V R', nbtemp, jtemps)
     pos = 0
-    do 20 i = numini, numfin
+    do i = numini, numfin
         zr(jtemps+pos) = zr(jinst+i)
         pos = pos+1
- 20 end do
+    end do
 !
 ! --- NOUVEL INTERVALLE DE TEMPS MINIMAL : DTMIN
 !
     dtmin = r8maem()
-    do 25 i = 1, nbtemp-1
+    do i = 1, nbtemp-1
         deltat = zr(jtemps-1+i+1) - zr(jtemps-1+i)
         dtmin = min(deltat,dtmin)
- 25 end do
+    end do
 !
 ! --- SI L'INSTANT INITIAL N'EXISTAIT PAS DANS LA LISTE D'INSTANTS
 ! --- ON A PRIS PLUS HAUT L'INSTANT LE PLUS PROCHE PRECEDENT : ICI

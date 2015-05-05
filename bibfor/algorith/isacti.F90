@@ -1,4 +1,9 @@
-subroutine isacti(sddisc, actioz, ievdac)
+subroutine isacti(sddisc, action_name_s_, i_action)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +23,9 @@ subroutine isacti(sddisc, actioz, ievdac)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit      none
-#include "asterfort/utdidt.h"
-    character(len=19) :: sddisc
-    character(len=*) :: actioz
-    integer :: ievdac
+    character(len=19), intent(in) :: sddisc
+    character(len=*), intent(in) :: action_name_s_
+    integer, intent(out) :: i_action
 !
 ! ----------------------------------------------------------------------
 !
@@ -33,30 +36,28 @@ subroutine isacti(sddisc, actioz, ievdac)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  ACTION : ACTION A CHERCHER
-! OUT LACTI  : .TRUE. SI TRAITE
-!              .FALSE. SINON
+! In  sddisc           : datastructure for time discretization
+! In  action_name_s    : action to search
+! Out i_action         : index of action
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, ieven, neven
-    real(kind=8) :: r8bid
-    character(len=16) :: action, act, k16bid
+    integer :: i_echec, nb_echec
+    character(len=16) :: action_name_s, action_name
 !
 ! ----------------------------------------------------------------------
 !
-    ievdac = 0
-    action = actioz
-    call utdidt('L', sddisc, 'LIST', ibid, 'NECHEC',&
-                r8bid, neven, k16bid)
+    i_action = 0
+    action_name_s = action_name_s_
+    call utdidt('L', sddisc, 'LIST', 'NECHEC',&
+                vali_ = nb_echec)
 !
-    do 10 ieven = 1, neven
-        call utdidt('L', sddisc, 'ECHE', ieven, 'ACTION',&
-                    r8bid, ibid, act)
-        if (act .eq. action) then
-            ievdac = ieven
+    do i_echec = 1, nb_echec
+        call utdidt('L', sddisc, 'ECHE', 'ACTION', index_ = i_echec,&
+                    valk_ = action_name)
+        if (action_name .eq. action_name_s) then
+            i_action = i_echec
         endif
-10  end do
+    end do
 !
 end subroutine

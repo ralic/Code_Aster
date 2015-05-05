@@ -85,7 +85,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !                'ANGL_INCR_DEPL'
 !                'NORM_INCR_DEPL'
 !                'RESIDU'
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! IN  SDTIME : SD TIMER
 ! IN  LICITE : CODE RETOUR PILOTAGE DES DEUX PARAMETRES DE PILOTAGE
 ! IN  RHO    : PARAMETRE DE RECHERCHE_LINEAIRE
@@ -111,11 +111,11 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
 !
     integer :: ldccv(2), ierm, indic, sel
-    real(kind=8) :: f(2), r8bid
+    real(kind=8) :: f(2)
     character(len=8) :: choix, txt
     character(len=19) :: depold, depdel, deppr1, deppr2
     character(len=24) :: typpil
-    integer :: ifm, niv, ib, ibid
+    integer :: ifm, niv
     aster_logical :: swloun, isxfe
     aster_logical :: switch, mixte
     real(kind=8) :: miincr, miresi, contra, precyc, fnid(2)
@@ -150,8 +150,8 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 ! --- VERIFICATION DE LA COMPATIBILITE
 !
     if (mixte) then
-        call utdidt('L', sddisc, 'ECHE', 0, 'CHOIX_SOLU_PILO',&
-                    r8bid, ibid, choix)
+        call utdidt('L', sddisc, 'ECHE', 'CHOIX_SOLU_PILO',&
+                    valk_ = choix)
         if (choix .eq. 'AUTRE') then
             call utmess('F', 'MECANONLINE_62')
         endif
@@ -194,7 +194,7 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
             call nmceni(numedd, depdel, deppr1, deppr2, rho,&
                         sdpilo, eta(2), isxfe, f(2))
         endif
-        goto 5000
+        goto 500
     endif
 !
 ! --- SELECTION SELON LA METHODE CHOISIE: NORM_INCR_DEPL OU MIXTE
@@ -209,14 +209,14 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
 !
         if (mixte) then
             miincr = min(f(1),f(2))/max(f(1),f(2))
-            if (miincr .le. contra) goto 6000
+            if (miincr .le. contra) goto 600
 !
 ! ------- ECHEC DU CONTRASTE: ON ENCHAINE PAR LA SELECTION RESIDU
 !
             fnid(1) = f(1)
             fnid(2) = f(2)
         else
-            goto 5000
+            goto 500
         endif
     endif
 !
@@ -239,10 +239,10 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
         if (mixte) then
             if (ldccv(1) .eq. 0 .and. ldccv(2) .eq. 0) then
                 miresi = min(f(1),f(2))/max(f(1),f(2))
-                if (miresi .le. contra) goto 6000
+                if (miresi .le. contra) goto 600
             endif
         else
-            goto 5000
+            goto 500
         endif
     endif
 !
@@ -255,26 +255,26 @@ subroutine nmcese(modele, numedd, mate, carele, comref,&
         ldccv(1) = 0
         ldccv(2) = 0
         switch = nmrcyc(sddisc,iterat,precyc)
-        goto 6000
+        goto 600
     endif
 !
-5000 continue
+500 continue
 !
 ! --- PERMUTATION PAR EVENT DRIVEN (HORS STRATEGIE 'MIXTE')
 !
-    call utdidt('L', sddisc, 'ECHE', ib, 'CHOIX_SOLU_PILO',&
-                r8bid, ibid, choix)
+    call utdidt('L', sddisc, 'ECHE', 'CHOIX_SOLU_PILO',&
+                valk_ = choix)
     ASSERT(choix.eq.'NATUREL'.or.choix.eq.'AUTRE')
     if (choix .eq. 'AUTRE' .or. swloun) then
         switch = .true.
         txt = 'NATUREL'
         if (choix .eq. 'AUTRE') then
-            call utdidt('E', sddisc, 'ECHE', ib, 'CHOIX_SOLU_PILO',&
-                        r8bid, ibid, txt)
+            call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO',&
+                        valk_ = txt)
         endif
     endif
 !
-6000 continue
+600 continue
 !
 ! --- RETOUR DE LA SELECTION AVEC EVENTUELLEMENT INTERVERSION
 !

@@ -58,7 +58,7 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
 !
 !
 !
-    integer :: retact, ievdac
+    integer :: retact, i_event_acti
     aster_logical :: arret
     character(len=4) :: etfixe
     integer :: actfix
@@ -82,9 +82,9 @@ subroutine nmactf(sdimpr, sddisc, sderro, defico, resoco,&
     if (etfixe .eq. 'CONV') then
         retact = 0
     else if (etfixe.eq.'EVEN') then
-        call nmacto(sddisc, ievdac)
-        call nmevac(sdimpr, sddisc, sderro, defico, resoco,&
-                    ievdac, numins, iterat, retact)
+        call nmacto(sddisc, i_event_acti)
+        call nmevac(sdimpr      , sddisc, sderro, defico, resoco,&
+                    i_event_acti, numins, iterat, retact)
 ! ----- ON NE PEUT PAS CONTINUER LES ITERATIONS DE NEWTON ICI
         ASSERT(retact.ne.2)
     else if (etfixe.eq.'CONT') then

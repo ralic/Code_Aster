@@ -16,14 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
+    subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
                       typext, dt0)
-        integer :: nbins
+        integer :: nb_inst_ins, nume_inst, nb_inst_ini
         character(len=19) :: sddisc
-        integer :: numins
-        real(kind=8) :: newins(nbins)
-        integer :: nbini
-        character(len=4) :: typext
+        real(kind=8) :: newins(nb_inst_ins)
         real(kind=8) :: dt0
+        character(len=4) :: typext
     end subroutine nmdcei
 end interface

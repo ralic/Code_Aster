@@ -1,4 +1,4 @@
-subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
+subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,15 +19,12 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-#include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/dinins.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
     character(len=19) :: sddisc
-    integer :: numins, ievdac, retdec
+    integer :: nume_inst, i_event_acti, retdec
     real(kind=8) :: dtmin
 !
 ! ----------------------------------------------------------------------
@@ -39,9 +36,9 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  NUMINS : NUMERO DE L'INSTANT COURANT
-! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+! In  i_event_acti     : index of active event
 ! IN  DTMIN  : INTERVALLE DE TEMPS MINIMAL SUR LA LISTE CREEE
 ! OUT RETDEC : CODE RETOUR DECOUPE
 !               0 ECHEC DE LA DECOUPE
@@ -50,29 +47,25 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: r8bid
-    character(len=8) :: k8bid
-    integer :: ibid
     integer :: nbnivo, lenivo
     real(kind=8) :: pasmin
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- NIVEAU DE REDECOUPAGE ACTUEL
 !
-    lenivo = dinins(sddisc,numins)
+    lenivo = dinins(sddisc,nume_inst)
 !
 ! --- NIVEAU MAXI DE SUBDIVISION
 !
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'SUBD_NIVEAU',&
-                r8bid, nbnivo, k8bid)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_NIVEAU', index_ = i_event_acti, &
+                vali_ = nbnivo)
 !
 ! --- PAS MINIMUM
 !
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'SUBD_PAS_MINI',&
-                pasmin, ibid, k8bid)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_PAS_MINI', index_ = i_event_acti, &
+                valr_ = pasmin)
 !
 ! --- TAILLE DE PAS MINIMALE ATTEINTE PENDANT LA SUBDIVISION
 !
@@ -93,7 +86,6 @@ subroutine nmdecv(sddisc, numins, ievdac, dtmin, retdec)
         retdec = 1
     endif
 !
-999  continue
-!
-    call jedema()
+999 continue
+
 end subroutine

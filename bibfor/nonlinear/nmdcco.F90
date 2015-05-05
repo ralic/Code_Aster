@@ -1,5 +1,5 @@
-subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
-                  ratio, optdec, retdec, ldcext, subdur)
+subroutine nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac,&
+                  ratio , optdec      , retdec, ldcext, subdur)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,12 +21,9 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
 !
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
-    integer :: ievdac, nbrpas, retdec
+    integer :: i_event_acti, nbrpas, retdec
     real(kind=8) :: ratio, deltac, subdur
     aster_logical :: ldcext
     character(len=4) :: typdec
@@ -40,9 +37,8 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+! In  sddisc           : datastructure for time discretization
+! In  i_event_acti     : index of active event
 ! OUT RATIO  : RATIO DU PREMIER PAS DE TEMPS
 ! OUT TYPDEC : TYPE DE DECOUPE
 !              'SUBD' - SUBDIVISION PAR UN NOMBRE DE PAS DONNE
@@ -65,15 +61,9 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
 !
 !
 !
-    integer :: ibid
-    character(len=8) :: k8bid
     real(kind=8) :: subins
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     retdec = 0
     ratio = 1.d0
@@ -85,14 +75,13 @@ subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
 !
 ! --- PARAMETRES
 !
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'SUBD_INST',&
-                subins, ibid, k8bid)
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'SUBD_DUREE',&
-                subdur, ibid, k8bid)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_INST', index_ = i_event_acti,&
+                valr_ = subins)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_DUREE', index_ = i_event_acti,&
+                valr_ = subdur)
     typdec = 'DELT'
     deltac = subins
     ldcext = .true.
     retdec = 1
-!
-    call jedema()
+
 end subroutine

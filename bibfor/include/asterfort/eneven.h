@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine eneven(sddisc, ievent, lacti)
-        character(len=19) :: sddisc
-        integer :: ievent
+    subroutine eneven(sddisc, i_event, lacti)
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: i_event
         aster_logical :: lacti
     end subroutine eneven
 end interface

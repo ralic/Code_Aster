@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
-                      nbrpas, dtmin, retdec)
+    subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat,&
+                      nbrpas, dtmin       , retdec)
         character(len=19) :: sddisc
-        integer :: ievdac
+        integer :: i_event_acti
         character(len=24) :: nomlis
         real(kind=8) :: instam
         real(kind=8) :: deltat

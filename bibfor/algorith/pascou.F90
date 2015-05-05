@@ -62,10 +62,10 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
     integer :: ibid, jcesd, jcesl, n1, i
     integer :: nbma, ima, iad, nbinst, nbmcfl
-    real(kind=8) :: dtcou, valeur, phi, r8b
+    real(kind=8) :: dtcou, valeur, phi
     aster_logical :: booneg, boopos
     character(len=6) :: nompro
-    character(len=8) :: k8bid, mo, lpain(3), lpaout(1), stocfl, maicfl, mail
+    character(len=8) :: mo, lpain(3), lpaout(1), stocfl, maicfl, mail
     character(len=19) :: chams
     character(len=24) :: chgeom, ligrel, lchin(3), lchout(1), chcara(18)
     real(kind=8), pointer :: ditr(:) => null()
@@ -161,8 +161,8 @@ subroutine pascou(mate, carele, sddyna, sddisc)
         endif
 !
 !       VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
-        call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
-                    r8b, nbinst, k8bid)
+        call utdidt('L', sddisc, 'LIST', 'NBINST',&
+                    vali_ = nbinst)
         call jeveuo(sddisc//'.DITR', 'L', vr=ditr)
 !
         call dismoi('NOM_MAILLA', mo, 'MODELE', repk=mail)

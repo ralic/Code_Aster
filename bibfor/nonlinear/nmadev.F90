@@ -39,19 +39,18 @@ subroutine nmadev(sddisc, sderro, iterat)
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  ITERAT : NUMERO DE L'ITERATION DE NEWTON
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, vali, nbok
-    integer :: iadapt, nadapt
-    real(kind=8) :: r8bid, vale
-    character(len=8) :: k8bid, cricom, metlis
+    integer :: vali, nb_event_ok
+    integer :: i_adapt, nb_adapt
+    real(kind=8) :: vale
+    character(len=8) :: cricom, metlis
     character(len=16) :: nopara
-    character(len=19) :: even
+    character(len=19) :: event_name
     aster_logical :: itemax, lerrit, divres, cvnewt
 !
 ! ----------------------------------------------------------------------
@@ -61,9 +60,9 @@ subroutine nmadev(sddisc, sderro, iterat)
 ! --- LA MISE A JOUR DE L'INDICATEUR DE SUCCES DES ITERATIONS DE NEWTON
 ! --- N'EST FAITE QU'EN GESTION AUTO DU PAS DE TEMPS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
-    if (metlis .ne. 'AUTO') goto 9999
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
+    if (metlis .ne. 'AUTO') goto 999
 !
 ! --- EVENEMENTS
 !
@@ -77,33 +76,33 @@ subroutine nmadev(sddisc, sderro, iterat)
 !
 ! --- BOUCLE SUR LES OCCURENCES D'ADAPTATION
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'NADAPT',&
-                r8bid, nadapt, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NADAPT',&
+                vali_ = nb_adapt)
 !
-    do 10 iadapt = 1, nadapt
+    do i_adapt = 1, nb_adapt
 !
 ! ----- NOM DE L'EVENEMENT
 !
-        call utdidt('L', sddisc, 'ADAP', iadapt, 'NOM_EVEN',&
-                    r8bid, ibid, even)
+        call utdidt('L', sddisc, 'ADAP', 'NOM_EVEN', index_ = i_adapt, &
+                    valk_ = event_name)
 !
-        if (even .eq. 'SEUIL_SANS_FORMULE') then
+        if (event_name .eq. 'SEUIL_SANS_FORMU') then
 !
 ! ------- PARAMETRES DU SEUIL
 !
-            call utdidt('L', sddisc, 'ADAP', iadapt, 'NOM_PARA',&
-                        r8bid, ibid, nopara)
-            call utdidt('L', sddisc, 'ADAP', iadapt, 'CRIT_COMP',&
-                        r8bid, ibid, cricom)
-            call utdidt('L', sddisc, 'ADAP', iadapt, 'VALE',&
-                        vale, vali, k8bid)
+            call utdidt('L', sddisc, 'ADAP', 'NOM_PARA', index_ = i_adapt, &
+                        valk_ = nopara)
+            call utdidt('L', sddisc, 'ADAP', 'CRIT_COMP', index_ = i_adapt, &
+                        valk_ = cricom)
+            call utdidt('L', sddisc, 'ADAP', 'VALE', index_ = i_adapt, &
+                        valr_ = vale, vali_ = vali)
 !
             ASSERT(nopara.eq.'NB_ITER_NEWT')
 !
 ! ------- RECUP DU NB DE SUCCES CONSECUTIFS : NBOK
 !
-            call utdidt('L', sddisc, 'ADAP', iadapt, 'NB_EVEN_OK',&
-                        r8bid, nbok, k8bid)
+            call utdidt('L', sddisc, 'ADAP', 'NB_EVEN_OK', index_ = i_adapt, &
+                        vali_ = nb_event_ok)
 !
 ! ------- EN CAS DE NOUVEAU SUCCES A CONVERGENCE
 !
@@ -111,23 +110,23 @@ subroutine nmadev(sddisc, sderro, iterat)
                 if (cricom .eq. 'LT' .and. iterat .lt. vali .or. cricom .eq. 'GT' .and.&
                     iterat .gt. vali .or. cricom .eq. 'LE' .and. iterat .le. vali .or.&
                     cricom .eq. 'GE' .and. iterat .ge. vali) then
-                    nbok = nbok+1
+                    nb_event_ok = nb_event_ok+1
                 endif
             endif
 !
 ! ------- EN CAS D'ECHEC: ON REMET A ZERO
 !
-            if (lerrit .or. itemax .or. divres) nbok=0
+            if (lerrit .or. itemax .or. divres) nb_event_ok=0
 !
 ! ------- ENREGISTREMENT DU NB DE SUCCES CONSECUTIFS
 !
-            call utdidt('E', sddisc, 'ADAP', iadapt, 'NB_EVEN_OK',&
-                        r8bid, nbok, k8bid)
+            call utdidt('E', sddisc, 'ADAP', 'NB_EVEN_OK', index_ = i_adapt, &
+                        vali_ = nb_event_ok)
 !
         endif
- 10 end do
+    end do
 !
-9999 continue
+999 continue
 !
     call jedema()
 end subroutine

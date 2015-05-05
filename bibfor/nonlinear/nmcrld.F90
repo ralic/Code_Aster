@@ -36,21 +36,18 @@ subroutine nmcrld(sddisc)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 !
 !
 !
 !
     integer :: leevr, leevk, lesur
     integer :: iecerr
-    integer :: nechec
+    integer :: nb_echec
     character(len=24) :: tpsinf
     character(len=24) :: tpsevr, tpsevk, tpsesu
     integer :: jeevr, jeevk, jesur
-    real(kind=8) :: r8bid
-    character(len=8) :: k8bid
-    integer :: ibid
-    character(len=16) :: even
+    character(len=16) :: event_name
     real(kind=8) :: dtmin
     real(kind=8) :: pasmin, pcplus, penmax
     character(len=16) :: submet, subaut, action
@@ -65,12 +62,12 @@ subroutine nmcrld(sddisc)
 !
 ! --- INITIALISATIONS
 !
-    nechec = 2
+    nb_echec = 2
     iecerr = 1
-    call utdidt('E', sddisc, 'LIST', ibid, 'NECHEC',&
-                r8bid, nechec, k8bid)
-    call utdidt('L', sddisc, 'LIST', ibid, 'DTMIN',&
-                dtmin, ibid, k8bid)
+    call utdidt('E', sddisc, 'LIST', 'NECHEC',&
+                vali_ = nb_echec)
+    call utdidt('L', sddisc, 'LIST', 'DTMIN',&
+                valr_ = dtmin)
 !
 ! --- TAILLE DES VECTEURS
 !
@@ -87,9 +84,9 @@ subroutine nmcrld(sddisc)
 !
 ! --- CREATION DES SD
 !
-    call wkvect(tpsevr, 'V V R', nechec*leevr, jeevr)
-    call wkvect(tpsevk, 'V V K16', nechec*leevk, jeevk)
-    call wkvect(tpsesu, 'V V R', nechec*lesur, jesur)
+    call wkvect(tpsevr, 'V V R', nb_echec*leevr, jeevr)
+    call wkvect(tpsevk, 'V V K16', nb_echec*leevk, jeevk)
+    call wkvect(tpsesu, 'V V R', nb_echec*lesur, jesur)
 !
 ! --- VALEURS POUR ACTION = ARRET
 !
@@ -111,9 +108,9 @@ subroutine nmcrld(sddisc)
 !
 ! --- CREATION EVENEMENT 'ERRE'
 !
-    even = 'ERRE'
+    event_name = 'ERRE'
     call dfllsv(tpsinf, tpsevr, tpsevk, tpsesu, iecerr,&
-                even, action, submet, subaut, pasmin,&
+                event_name, action, submet, subaut, pasmin,&
                 nbrpas, niveau, pcplus, cmmaxi, prcoll,&
                 ducoll, penmax, cricmp, valere, nocham,&
                 nocmp)

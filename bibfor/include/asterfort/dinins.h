@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    function dinins(sddisc, numins)
-        character(len=19) :: sddisc
-        integer :: numins
+    function dinins(sddisc, nume_inst)
+        integer, intent(in) :: nume_inst
+        character(len=19), intent(in) :: sddisc
         integer :: dinins
     end function dinins
 end interface

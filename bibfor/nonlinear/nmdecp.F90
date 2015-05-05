@@ -1,5 +1,5 @@
-subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
-                  deltac, ratio, optdec, ldcext, durdec,&
+subroutine nmdecp(sddisc, iterat, i_event_acti, typdec, nbrpas,&
+                  deltac, ratio , optdec      , ldcext, durdec,&
                   retdec)
 !
 ! ======================================================================
@@ -22,15 +22,12 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
 !
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmdcae.h"
 #include "asterfort/nmdcco.h"
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
-    integer :: ievdac, iterat, retdec
+    integer :: i_event_acti, iterat, retdec
     integer :: nbrpas
     aster_logical :: ldcext
     real(kind=8) :: ratio, deltac, durdec
@@ -46,9 +43,9 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
-! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+! In  i_event_acti     : index of active event
 ! OUT RATIO  : RATIO DU PREMIER PAS DE TEMPS
 ! OUT TYPDEC : TYPE DE DECOUPE
 !              'SUBD' - SUBDIVISION PAR UN NOMBRE DE PAS DONNE
@@ -71,15 +68,9 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
 !
 !
 !
-    integer :: ibid
-    real(kind=8) :: r8bid
     character(len=16) :: subaut
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     retdec = 0
     optdec = ' '
@@ -93,8 +84,8 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
 !
 ! --- TYPE DE DECOUPAGE AUTO
 !
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'SUBD_METHODE_AUTO',&
-                r8bid, ibid, subaut)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_METHODE_AUTO', index_ = i_event_acti, &
+                valk_ = subaut)
 !
 ! --- PARAMETRES SUIVANT DECOUPE
 !
@@ -102,11 +93,10 @@ subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
         call nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
                     optdec, retdec)
     else if (subaut.eq.'COLLISION') then
-        call nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
+        call nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac,&
                     ratio, optdec, retdec, ldcext, durdec)
     else
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine

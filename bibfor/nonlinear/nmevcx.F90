@@ -1,5 +1,5 @@
-subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
-                  ievdac)
+subroutine nmevcx(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
+                  i_echec_acti)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,13 +21,12 @@ subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
 !
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/nmevcc.h"
 #include "asterfort/nmevco.h"
-    character(len=24) :: defico, resoco
-    integer :: iechec, ievdac, numins
+    character(len=24) :: sdcont_defi, sdcont_solv
+    integer :: i_echec, i_echec_acti, nume_inst
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
@@ -38,8 +37,7 @@ subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
 !
 ! ----------------------------------------------------------------------
 !
-!
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  DEFICO : SD DE DEFINITION DU CONTACT
 ! IN  RESOCO : SD DE RESOLUTION DU CONTACT
@@ -49,19 +47,19 @@ subroutine nmevcx(sddisc, numins, defico, resoco, iechec,&
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: lctcc, lctcd
+    aster_logical :: l_cont_cont, l_cont_disc
 !
 ! ----------------------------------------------------------------------
 !
-    lctcc = cfdisl(defico,'FORMUL_CONTINUE')
-    lctcd = cfdisl(defico,'FORMUL_DISCRETE')
-    ievdac = 0
+    l_cont_cont  = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
+    l_cont_disc  = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
+    i_echec_acti = 0
 !
-    if (lctcd) then
-        call nmevco(sddisc, numins, resoco, iechec, ievdac)
-    else if (lctcc) then
-        call nmevcc(sddisc, numins, defico, resoco, iechec,&
-                    ievdac)
+    if (l_cont_disc) then
+        call nmevco(sddisc, nume_inst, sdcont_solv, i_echec    , i_echec_acti)
+    else if (l_cont_cont) then
+        call nmevcc(sddisc, nume_inst, sdcont_defi, sdcont_solv, i_echec,&
+                    i_echec_acti)
     else
         ASSERT(.false.)
     endif

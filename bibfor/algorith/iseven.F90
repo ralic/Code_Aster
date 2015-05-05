@@ -1,4 +1,9 @@
-subroutine iseven(sddisc, nomevz, lacti)
+subroutine iseven(sddisc, event_name_s_, lacti)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +23,8 @@ subroutine iseven(sddisc, nomevz, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/utdidt.h"
-    character(len=19) :: sddisc
-    character(len=*) :: nomevz
+    character(len=19), intent(in) :: sddisc
+    character(len=*), intent(in) :: event_name_s_
     aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
@@ -34,30 +36,29 @@ subroutine iseven(sddisc, nomevz, lacti)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  NOMEVT : EVENEMENT A CHERCHER
+! In  sddisc           : datastructure for time discretization
+! IN  event_name_s     : EVENEMENT A CHERCHER
 ! OUT LACTI  : .TRUE. SI TRAITE
 !              .FALSE. SINON
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, ieven, neven
-    real(kind=8) :: r8bid
-    character(len=16) :: nomevd, nomevt, k16bid
+    integer :: i_event, nb_event
+    character(len=16) :: event_name, event_name_s
 !
 ! ----------------------------------------------------------------------
 !
     lacti = .false.
-    nomevt = nomevz
-    call utdidt('L', sddisc, 'LIST', ibid, 'NECHEC',&
-                r8bid, neven, k16bid)
+    event_name_s = event_name_s_
+    call utdidt('L', sddisc, 'LIST', 'NECHEC',&
+                vali_ = nb_event)
 !
-    do 10 ieven = 1, neven
-        call utdidt('L', sddisc, 'ECHE', ieven, 'NOM_EVEN',&
-                    r8bid, ibid, nomevd)
-        if (nomevd .eq. nomevt) then
+    do i_event = 1, nb_event
+        call utdidt('L', sddisc, 'ECHE', 'NOM_EVEN', index_ = i_event,&
+                    valk_ = event_name)
+        if (event_name .eq. event_name_s) then
             lacti = .true.
         endif
- 10 end do
+    end do
 !
 end subroutine

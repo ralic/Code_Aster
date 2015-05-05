@@ -1,4 +1,10 @@
-subroutine dieven(sddisc, ievent, lacti)
+subroutine dieven(sddisc, i_event, lacti)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,44 +24,38 @@ subroutine dieven(sddisc, ievent, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/utdidt.h"
-    character(len=19) :: sddisc
-    integer :: ievent
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: i_event
     aster_logical :: lacti
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE UTILITAIRE EVENEMENT
 !
 ! RETOURNE LA VALEUR D'UN EVENEMENT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  IEVENT : INDICE DE L'EVENEMENT ACTIVE
-! OUT LACTI  : .TRUE. SI ACTIVE
-!              .FALSE. SI DESACTIVE
+! In  sddisc           : datastructure for time discretization
+! IN  IEVENT           : INDICE DE L'EVENEMENT ACTIVE
+! OUT LACTI            : .TRUE. SI ACTIVE
+!                        .FALSE. SI DESACTIVE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid
-    real(kind=8) :: r8bid
     character(len=16) :: active
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    if (ievent .ne. 0) then
-        call utdidt('L', sddisc, 'ECHE', ievent, 'VERIF_EVEN',&
-                    r8bid, ibid, active)
+    if (i_event .ne. 0) then
+        call utdidt('L', sddisc, 'ECHE', 'VERIF_EVEN', index_ = i_event,&
+                    valk_ = active)
         if (active .eq. 'OUI') then
             lacti = .true.
         else if (active.eq.'NON') then
             lacti = .false.
         else
-            write(6,*) 'DIEVEN: ',ievent,active
+            write(6,*) 'DIEVEN: ',i_event,active
             ASSERT(.false.)
         endif
     endif

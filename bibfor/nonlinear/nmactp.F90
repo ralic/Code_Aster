@@ -48,7 +48,7 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
 !
 ! IN  SDIMPR : SD AFFICHAGE
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! IN  SDERRO : SD GESTION DES ERREURS
 ! IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 ! IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
@@ -59,13 +59,11 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
 !
 !
-    integer :: retact, ievdac, actpas, iterat, ibid
+    integer :: retact, i_echec_acti, actpas, iterat, i_action
     character(len=4) :: etinst
     aster_logical :: arret
     integer :: piless
     character(len=16) :: pilcho
-    real(kind=8) :: r8bid
-    character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,9 +85,9 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
     if (etinst .eq. 'CONV') then
         retact = 0
     else if (etinst.eq.'EVEN') then
-        call nmacto(sddisc, ievdac)
-        call nmevac(sdimpr, sddisc, sderro, defico, resoco,&
-                    ievdac, numins, iterat, retact)
+        call nmacto(sddisc, i_echec_acti)
+        call nmevac(sdimpr      , sddisc, sderro, defico, resoco,&
+                    i_echec_acti, numins, iterat, retact)
     else if (etinst.eq.'ERRE') then
         retact = 1
     else if (etinst.eq.'STOP') then
@@ -163,14 +161,14 @@ subroutine nmactp(sdimpr, sddisc, sderro, defico, resoco,&
 !
 ! ----- REMISE A ZERO ESSAI_ITER_PILO
 !
-        call isacti(sddisc, 'AUTRE_PILOTAGE', ievdac)
-        if (ievdac .ne. 0) then
+        call isacti(sddisc, 'AUTRE_PILOTAGE', i_action)
+        if (i_action .ne. 0) then
             piless = 1
             pilcho = 'NATUREL'
-            call utdidt('E', sddisc, 'ECHE', ievdac, 'ESSAI_ITER_PILO',&
-                        r8bid, piless, k8bid)
-            call utdidt('E', sddisc, 'ECHE', ievdac, 'CHOIX_SOLU_PILO',&
-                        r8bid, ibid, pilcho)
+            call utdidt('E', sddisc, 'ECHE', 'ESSAI_ITER_PILO',&
+                        vali_ = piless)
+            call utdidt('E', sddisc, 'ECHE', 'CHOIX_SOLU_PILO',&
+                        valk_ = pilcho)
         endif
     endif
 !

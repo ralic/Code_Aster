@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmevel(sddisc, numins, defico, resoco, vale,&
-                      nombcl, lsvimx, ldvres, linsta, lerrcv,&
+    subroutine nmevel(sddisc, nume_inst, defico, resoco, vale,&
+                      nombcl, lsvimx   , ldvres, linsta, lerrcv,&
                       lerror, conver)
         character(len=19) :: sddisc
-        integer :: numins
+        integer :: nume_inst
         character(len=24) :: defico
         character(len=24) :: resoco
         character(len=19) :: vale(*)

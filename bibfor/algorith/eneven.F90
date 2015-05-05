@@ -1,4 +1,9 @@
-subroutine eneven(sddisc, ievent, lacti)
+subroutine eneven(sddisc, i_event, lacti)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,11 +23,8 @@ subroutine eneven(sddisc, ievent, lacti)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/utdidt.h"
-    character(len=19) :: sddisc
-    integer :: ievent
+    character(len=19), intent(in) :: sddisc
+    integer, intent(in) :: i_event
     aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
@@ -33,27 +35,25 @@ subroutine eneven(sddisc, ievent, lacti)
 !
 ! ----------------------------------------------------------------------
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  IEVENT : INDICE DE L'EVENEMENT ACTIVE
 ! IN  LACTI  : .TRUE. SI ACTIVATION
 !              .FALSE. SI DESACTIVATION
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid
-    real(kind=8) :: r8bid
     character(len=16) :: active
 !
 ! ----------------------------------------------------------------------
 !
-    if (ievent .ne. 0) then
+    if (i_event .ne. 0) then
         if (lacti) then
             active = 'OUI'
         else
             active = 'NON'
         endif
-        call utdidt('E', sddisc, 'ECHE', ievent, 'VERIF_EVEN',&
-                    r8bid, ibid, active)
+        call utdidt('E', sddisc, 'ECHE', 'VERIF_EVEN', index_ = i_event,&
+                    valk_ = active)
     endif
 !
 end subroutine

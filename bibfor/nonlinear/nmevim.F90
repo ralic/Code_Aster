@@ -43,7 +43,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 ! ----------------------------------------------------------------------
 !
 ! IN  SDIMPR : SD AFFICHAGE
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization TEMPORELLE
 ! IN  SDERRO : SD ERREUR
 ! IN  NOMBCL : NOM DE LA BOUCLE
 !               'NEWT' - BOUCLE DE NEWTON
@@ -53,10 +53,8 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lacti, cvbouc, lerrei, llign, lldcbo
-    integer :: ievdac
-    real(kind=8) :: r8bid
-    integer :: ibid
-    character(len=16) :: nomevd, action
+    integer :: i_echec_acti
+    character(len=16) :: event_name, action
     integer :: ieven, zeven
     character(len=24) :: errinf
     integer :: jeinfo
@@ -91,7 +89,7 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
 !
 ! --- EMISSION DES MESSAGES RELATIFS AUX EVENEMENTS INTRINSEQUES
 !
-    do 10 ieven = 1, zeven
+    do ieven = 1, zeven
         icode = zi(jeeact-1+ieven)
         teven = zk16(jeeniv-1+ieven)(1:9)
         meven = zk24(jeemsg-1+ieven)
@@ -135,27 +133,27 @@ subroutine nmevim(sdimpr, sddisc, sderro, nombcl)
                 endif
             endif
         endif
- 10 end do
+    end do
 !
 ! --- EMISSION DES MESSAGES RELATIFS AUX EVENEMENTS UTILISATEURS
 !
-    call nmacto(sddisc, ievdac)
-    lacti = ievdac.gt.0
+    call nmacto(sddisc, i_echec_acti)
+    lacti = i_echec_acti.gt.0
     if (lacti) then
-        call utdidt('L', sddisc, 'ECHE', ievdac, 'NOM_EVEN',&
-                    r8bid, ibid, nomevd)
-        call utdidt('L', sddisc, 'ECHE', ievdac, 'ACTION',&
-                    r8bid, ibid, action)
-        if (nomevd .eq. 'COLLISION') then
+        call utdidt('L', sddisc, 'ECHE', 'NOM_EVEN', index_ = i_echec_acti,&
+                    valk_ = event_name)
+        call utdidt('L', sddisc, 'ECHE', 'ACTION', index_ = i_echec_acti,&
+                    valk_ = action)
+        if (event_name .eq. 'COLLISION') then
             if (llign) call nmimpx(sdimpr)
             call utmess('I', 'MECANONLINE10_21')
-        else if (nomevd.eq.'INTERPENETRATION') then
+        else if (event_name.eq.'INTERPENETRATION') then
             if (llign) call nmimpx(sdimpr)
             call utmess('I', 'MECANONLINE10_22')
-        else if (nomevd.eq.'DIVE_RESI') then
+        else if (event_name.eq.'DIVE_RESI') then
             if (llign) call nmimpx(sdimpr)
             call utmess('I', 'MECANONLINE10_23')
-        else if (nomevd.eq.'DELTA_GRANDEUR') then
+        else if (event_name.eq.'DELTA_GRANDEUR') then
             if (llign) call nmimpx(sdimpr)
             call utmess('I', 'MECANONLINE10_24')
         endif

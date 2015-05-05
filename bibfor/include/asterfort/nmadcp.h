@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmadcp(sddisc, defico, resoco, ievdac, retpen)
+    subroutine nmadcp(sddisc, defico, resoco, i_event_acti, retpen)
         character(len=19) :: sddisc
         character(len=24) :: defico
         character(len=24) :: resoco
-        integer :: ievdac
+        integer :: i_event_acti
         integer :: retpen
     end subroutine nmadcp
 end interface

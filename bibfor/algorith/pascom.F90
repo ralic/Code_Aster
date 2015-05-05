@@ -52,11 +52,11 @@ subroutine pascom(meca, sddyna, sddisc)
 !
 !
 !
-    integer :: n1, i, ibid
+    integer :: n1, i
     integer :: iad, nbinst
     integer :: nbmode
     integer :: iorol
-    real(kind=8) :: dtcou, phi, dt, r8b
+    real(kind=8) :: dtcou, phi, dt
     character(len=8) :: k8bid, stocfl
     integer, pointer :: ordr(:) => null()
     real(kind=8), pointer :: ditr(:) => null()
@@ -84,7 +84,7 @@ subroutine pascom(meca, sddyna, sddisc)
     else
         dtcou = 1.d0 / sqrt(zr(iad))
     endif
-    do 21 i = 1, nbmode-1
+    do i = 1, nbmode-1
         iorol = ordr(1+i)
         call rsadpa(meca, 'L', 1, 'OMEGA2', iorol,&
                     0, sjv=iad, styp=k8bid)
@@ -95,13 +95,13 @@ subroutine pascom(meca, sddyna, sddisc)
         endif
 !       DT = 1.D0 / SQRT(ZR(IAD))
         if (dt .lt. dtcou) dtcou = dt
-21  end do
+    end do
 !
     call getvtx('SCHEMA_TEMPS', 'STOP_CFL', iocc=1, scal=stocfl, nbret=n1)
 !
 !     VERIFICATION DE LA CONFORMITE DE LA LISTE D'INSTANTS
-    call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
-                r8b, nbinst, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NBINST',&
+                vali_ = nbinst)
     call jeveuo(sddisc//'.DITR', 'L', vr=ditr)
 !
     if (ndynlo(sddyna,'DIFF_CENT')) then
@@ -117,7 +117,7 @@ subroutine pascom(meca, sddyna, sddisc)
         endif
     endif
 !
-    do 20 i = 1, nbinst-1
+    do i = 1, nbinst-1
         if (ditr(i+1)-ditr(i) .gt. dtcou) then
             if (stocfl(1:3) .eq. 'OUI') then
                 call utmess('F', 'DYNAMIQUE_2')
@@ -125,7 +125,7 @@ subroutine pascom(meca, sddyna, sddisc)
                 call utmess('A', 'DYNAMIQUE_2')
             endif
         endif
-20  end do
+    end do
 !
     call jedema()
 !

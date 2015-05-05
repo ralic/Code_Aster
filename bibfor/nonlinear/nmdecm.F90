@@ -1,5 +1,5 @@
-subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
-                  nbrpas, dtmin, retdec)
+subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat,&
+                  nbrpas, dtmin       , retdec)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,14 +20,11 @@ subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit     none
-#include "jeveux.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmdecc.h"
 #include "asterfort/utdidt.h"
-    integer :: ievdac
+    integer :: i_event_acti
     character(len=19) :: sddisc
     character(len=24) :: nomlis
     integer :: nbrpas
@@ -43,8 +40,8 @@ subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+! In  sddisc           : datastructure for time discretization
+! In  i_event_acti     : index of active event
 ! IN  NOMLIS : NOM DE LA LISTE DES INSTANTS A AJOUTER
 ! IN  INSTAM : INSTANT AU DEBUT
 ! IN  DELTAT : INCREMENT DE TEMPS COURANT
@@ -61,16 +58,11 @@ subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
 !
 !
 !
-    real(kind=8) :: r8bid, ratio, deltac
-    character(len=8) :: k8bid
+    real(kind=8) :: ratio, deltac
     character(len=16) :: optdec
     character(len=4) :: typdec
 !
 ! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- INITIALISATIONS
 !
     dtmin = r8gaem()
     retdec = 0
@@ -83,11 +75,8 @@ subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
 ! --- DONNEES
 !
     if (typdec .eq. 'SUBD') then
-        call utdidt('L', sddisc, 'ECHE', ievdac, 'SUBD_PAS',&
-                    r8bid, nbrpas, k8bid)
-!      ELSEIF (TYPDEC.EQ.'DELT') THEN
-!        CALL UTDIDT('L'   ,SDDISC,'ECHE',IEVDAC,'SUBD_INCR'  ,
-!     &              DELTAC,IBID  ,K8BID )
+        call utdidt('L', sddisc, 'ECHE', 'SUBD_PAS', index_ = i_event_acti, &
+                    vali_ = nbrpas)
     else
         ASSERT(.false.)
     endif
@@ -98,5 +87,4 @@ subroutine nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
                 ratio, typdec, nbrpas, deltac, dtmin,&
                 retdec)
 !
-    call jedema()
 end subroutine

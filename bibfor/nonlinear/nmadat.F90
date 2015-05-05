@@ -52,7 +52,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  NBITER : NOMBRE D'ITERATIONS DE NEWTON
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -61,9 +61,8 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
 !
     integer :: ifm, niv
-    integer :: ibid, nadapt, iadapt, jdt
+    integer :: nb_adapt, i_adapt, jdt
     character(len=19) :: metlis, modetp, dtplus
-    character(len=8) :: k8bid
     real(kind=8) :: r8bid, dt, min, pasmin, pasmax, dtm, jalon
     real(kind=8) :: newins, newdt, deltac
     real(kind=8) :: inst, prec, valr(2)
@@ -71,7 +70,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     aster_logical :: ladap, uncrok
     character(len=24) :: tpsite
     integer :: jiter
-    integer :: nbini, nmax, inspas
+    integer :: nb_inst, nmax, inspas
     character(len=24) :: tpsext
     integer :: jtpsex
 !
@@ -84,18 +83,18 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     dtplus = '&&NMADAP.DTPLUS'
 !
-! --- PARAMETRES
+! - Parameters
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'PAS_MINI',&
-                pasmin, ibid, k8bid)
-    call utdidt('L', sddisc, 'LIST', ibid, 'PAS_MAXI',&
-                pasmax, ibid, k8bid)
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
-    call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbini, k8bid)
-    call utdidt('L', sddisc, 'LIST', ibid, 'NB_PAS_MAXI',&
-                r8bid, nmax, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'PAS_MINI',&
+                valr_ = pasmin)
+    call utdidt('L', sddisc, 'LIST', 'PAS_MAXI',&
+                valr_ = pasmax)
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
+    call utdidt('L', sddisc, 'LIST', 'NBINST',&
+                vali_ = nb_inst)
+    call utdidt('L', sddisc, 'LIST', 'NB_PAS_MAXI',&
+                vali_ = nmax)
 !
 ! --- NOM SDS DE LA SDDISC
 !
@@ -109,7 +108,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! --- ON NE FAIT DE L'ADAPTATION DE PAS DE TEMPS QU'EN GESTION AUTO
 !
     if (metlis .eq. 'MANUEL') then
-        goto 9999
+        goto 999
     endif
 !
 ! --- INSTANT COURANT
@@ -119,27 +118,27 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! --- PROCHAIN INSTANT DE PASSAGE OBLIGATOIRE (JALON) ?
 !
     call nmjalo(sddisc, inst, prec, jalon)
-    if (jalon .eq. r8vide()) goto 9999
+    if (jalon .eq. r8vide()) goto 999
 !
 ! --- NOMBRE DE SCHEMAS D'ADAPTATION : NADAPT
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'NADAPT',&
-                r8bid, nadapt, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NADAPT',&
+                vali_ = nb_adapt)
 !
 ! --- LISTE DES NADAPT PAS DE TEMPS POSSIBLES
 !
-    call wkvect(dtplus, 'V V R', nadapt, jdt)
+    call wkvect(dtplus, 'V V R', nb_adapt, jdt)
 !
 ! --- PAS DE TEMPS PAR DEFAUT (LE DERNIER, SAUF SI JALON) : DTM
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'DT-',&
-                dtm, ibid, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'DT-',&
+                valr_ = dtm)
 !
 ! --- STOCKAGE DU NOMBRE D'ITERATIONS DE NEWTON ET EXTENSION
 !
     call jeveuo(tpsite, 'L', jiter)
     zi(jiter-1+numins) = nbiter
-    call juveca(tpsite, nbini+1)
+    call juveca(tpsite, nb_inst+1)
 !
 ! ----------------------------------------------------------------------
 !    CALCUL DU PAS DE TEMPS
@@ -147,20 +146,20 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     call utmess('I', 'ADAPTATION_1')
 !
-    do 100 iadapt = 1, nadapt
+    do i_adapt = 1, nb_adapt
 !
-        call utdidt('L', sddisc, 'ADAP', iadapt, 'METHODE',&
-                    r8bid, ibid, modetp)
+        call utdidt('L', sddisc, 'ADAP', 'METHODE', index_ = i_adapt,&
+                    valk_ = modetp)
 !
-        zr(jdt-1+iadapt) = r8vide()
+        zr(jdt-1+i_adapt) = r8vide()
 !
 ! ----- DOIT-ON ADAPTER ?
 !
-        ladap = diadap(sddisc,iadapt)
+        ladap = diadap(sddisc,i_adapt)
         if (ladap) then
-            call nmcadt(sddisc, iadapt, numins, valinc, zr(jdt-1+iadapt))
+            call nmcadt(sddisc, i_adapt, numins, valinc, zr(jdt-1+i_adapt))
         endif
-        newdt = zr(jdt-1+iadapt)
+        newdt = zr(jdt-1+i_adapt)
 !
 ! ----- AFFICHAGE
 !
@@ -169,7 +168,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
         else
             call utmess('I', 'ADAPTATION_3', sk=modetp)
         endif
-100 end do
+    end do
 !
 ! --- ON CHOISIT LE PLUS PETIT DT PARMI LES NADAPT PAS DE TEMPS
 ! --- POSSIBLES
@@ -177,13 +176,13 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     dt = r8maem()
     uncrok = .false.
-    do 200 iadapt = 1, nadapt
-        newdt = zr(jdt-1+iadapt)
+    do i_adapt = 1, nb_adapt
+        newdt = zr(jdt-1+i_adapt)
         if (newdt .ne. r8vide()) then
             dt = min(dt,newdt)
             uncrok = .true.
         endif
-200 end do
+    end do
 !
     if (uncrok) then
         call utmess('I', 'ADAPTATION_5', sr=dt)
@@ -237,13 +236,13 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !       NOUVEAU DE PAS INFERIEUR A JALON, MAIS TROP PROCHE DE JALON :
 !       ON FORCE A Y PASSER ET ON ENREGISTRE DT
         dt = jalon-inst
-        call utdidt('E', sddisc, 'LIST', ibid, 'DT-',&
-                    dt, ibid, k8bid)
+        call utdidt('E', sddisc, 'LIST', 'DT-',&
+                    valr_ = dt)
     else
 !       NOUVEAU PAS DE TEMPS OK
 !       ON ENREGISTRE DT
-        call utdidt('E', sddisc, 'LIST', ibid, 'DT-',&
-                    dt, ibid, k8bid)
+        call utdidt('E', sddisc, 'LIST', 'DT-',&
+                    valr_ = dt)
     endif
 !
     call utmess('I', 'ADAPTATION_6', sr=dt)
@@ -263,10 +262,10 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     inspas = 1
     newins = inst+dt
-    call nmdcei(sddisc, numins, [newins], nbini, inspas,&
+    call nmdcei(sddisc, numins, [newins], nb_inst, inspas,&
                 'ADAP', r8bid)
 !
-9999 continue
+999 continue
 !
     call jedetr(dtplus)
     call jedema()

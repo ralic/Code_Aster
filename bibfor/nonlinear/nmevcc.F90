@@ -1,5 +1,5 @@
-subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
-                  ievdac)
+subroutine nmevcc(sddisc      , nume_inst, sdcont_defi, sdcont_solv, i_echec,&
+                  i_echec_acti)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,8 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
-    character(len=24) :: defico, resoco
-    integer :: iechec, ievdac, numins
+    character(len=24) :: sdcont_defi, sdcont_solv
+    integer :: i_echec, i_echec_acti, nume_inst
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  DEFICO : SD DE DEFINITION DU CONTACT
 ! IN  RESOCO : SD DE RESOLUTION DU CONTACT
@@ -62,8 +62,6 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
     integer :: ntpc, iptc
     real(kind=8) :: instam, instap
     aster_logical :: levent
-    integer :: ibid
-    character(len=8) :: k8bid
     integer :: zeven
 !
 ! ----------------------------------------------------------------------
@@ -79,27 +77,27 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
 !
 ! --- INITIALISATIONS
 !
-    ievdac = 0
+    i_echec_acti = 0
     levent = .false.
-    ASSERT(numins.gt.0)
+    ASSERT(nume_inst.gt.0)
 !
 ! --- PARAMETRES
 !
-    ntpc = cfdisi(defico,'NTPC')
-    instap = diinst(sddisc,numins)
-    instam = diinst(sddisc,numins-1)
-    call utdidt('L', sddisc, 'ECHE', iechec, 'SUBD_DUREE',&
-                subdur, ibid, k8bid)
+    ntpc = cfdisi(sdcont_defi,'NTPC')
+    instap = diinst(sddisc,nume_inst)
+    instam = diinst(sddisc,nume_inst-1)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_DUREE', index_ = i_echec,&
+                valr_ = subdur)
 !
 ! --- ACCES OBJETS DU CONTACT
 !
-    ctevco = resoco(1:14)//'.EVENCO'
+    ctevco = sdcont_solv(1:14)//'.EVENCO'
     call jeveuo(ctevco, 'E', jctevc)
     zeven = cfmmvd('ZEVEN')
 !
 ! --- STATUT DE LA COLLISION
 !
-    do 10 iptc = 1, ntpc
+    do iptc = 1, ntpc
         etacin = zr(jctevc+zeven*(iptc-1)+1-1)
         etacfi = zr(jctevc+zeven*(iptc-1)+2-1)
         etacol = zr(jctevc+zeven*(iptc-1)+3-1)
@@ -124,12 +122,12 @@ subroutine nmevcc(sddisc, numins, defico, resoco, iechec,&
         endif
         zr(jctevc+zeven*(iptc-1)+3-1) = etacol
         zr(jctevc+zeven*(iptc-1)+4-1) = fincol
- 10 end do
+    end do
 !
 ! --- ACTIVATION EVENEMENT
 !
     if (levent) then
-        ievdac = iechec
+        i_echec_acti = i_echec
     endif
 !
     call jedema()

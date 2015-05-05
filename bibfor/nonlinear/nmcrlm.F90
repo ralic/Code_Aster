@@ -40,7 +40,7 @@ subroutine nmcrlm(lisins, sddisc, provli, tpsinf)
 ! ----------------------------------------------------------------------
 !
 ! IN  LISINS : LISTE D'INSTANTS (SD_LISTR8 OU SD_LIST_INST)
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! OUT TPSINF : INFORMATIONS SUR LA DISCRETISATION
 ! OUT PROVLI : LISTE D'INSTANT PROVISOIRE
 !
@@ -48,9 +48,9 @@ subroutine nmcrlm(lisins, sddisc, provli, tpsinf)
 !
 !
     integer :: llinr, jlinr
-    integer :: nbinst, ibid
-    real(kind=8) :: dtmin, r8bid
-    character(len=8) :: metlis, k8bid
+    integer :: nb_inst
+    real(kind=8) :: dtmin
+    character(len=8) :: metlis
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ subroutine nmcrlm(lisins, sddisc, provli, tpsinf)
 !
 ! --- QUELQUES VERIFICATIONS SUR LA LISTE FOURNIE
 !
-    call dfllli(lisins, dtmin, nbinst)
+    call dfllli(lisins, dtmin, nb_inst)
 !
 ! --- DUPLICATION LISTE D'INSTANTS DANS OBJET PROVISOIRE
 !
@@ -75,12 +75,12 @@ subroutine nmcrlm(lisins, sddisc, provli, tpsinf)
 ! --- REMPLISSAGE SD TPSINF
 !
     metlis = 'MANUEL'
-    call utdidt('E', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
-    call utdidt('E', sddisc, 'LIST', ibid, 'DTMIN',&
-                dtmin, ibid, k8bid)
-    call utdidt('E', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbinst, k8bid)
+    call utdidt('E', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
+                valr_ = dtmin)
+    call utdidt('E', sddisc, 'LIST', 'NBINST',&
+                vali_ = nb_inst)
 !
     call jedema()
 !

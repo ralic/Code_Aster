@@ -1,4 +1,10 @@
-function dinins(sddisc, numins)
+function dinins(sddisc, nume_inst)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,45 +24,35 @@ function dinins(sddisc, numins)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
     integer :: dinins
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utdidt.h"
-    integer :: numins
-    character(len=19) :: sddisc
+    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: sddisc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (UTILITAIRE - DISCRETISATION)
 !
 ! ACCES AU NIVEAU DE SUBDIVISION D'UN INSTANT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sddisc           : datastructure for time discretization
+! IN  nume_inst        : NUMERO DE L'INSTANT
+! OUT DININS           : NIVEAU DE SUBDIVISION DE L'INSTANT (1=PAS REDECOUPE)
 !
-! IN  SDDISC : SD DISCRETISATION
-! IN  NUMINS : NUMERO DE L'INSTANT
-! OUT DININS : NIVEAU DE SUBDIVISION DE L'INSTANT (1=PAS REDECOUPE)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: jnivtp, ibid
-    character(len=24) :: tpsdin
+    character(len=24) :: sddisc_dini
+    integer, pointer :: v_sddisc_dini(:) => null()
     character(len=16) :: metlis
-    real(kind=8) :: r8bid
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
 !
 ! --- LA NOTION DE SOUS-NIVEAU N'EXISTE PAS EN GESTION AUTO
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
     if (metlis .eq. 'AUTO') then
         dinins = 1
         goto 999
@@ -64,11 +60,10 @@ function dinins(sddisc, numins)
 !
 ! --- ACCES SD LISTE D'INSTANTS
 !
-    tpsdin = sddisc(1:19)//'.DINI'
-    call jeveuo(tpsdin, 'L', jnivtp)
-    ASSERT(numins.ge.1)
-    dinins = zi(jnivtp-1+numins)
+    sddisc_dini = sddisc(1:19)//'.DINI'
+    call jeveuo(sddisc_dini, 'L', vi = v_sddisc_dini)
+    ASSERT(nume_inst.ge.1)
+    dinins = v_sddisc_dini(nume_inst)
 !
-999  continue
-    call jedema()
+999 continue
 end function

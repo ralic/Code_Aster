@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine isacti(sddisc, actioz, ievdac)
-        character(len=19) :: sddisc
-        character(len=*) :: actioz
-        integer :: ievdac
+    subroutine isacti(sddisc, action_name_s_, i_action)
+        character(len=19), intent(in) :: sddisc
+        character(len=*), intent(in) :: action_name_s_
+        integer, intent(out) :: i_action
     end subroutine isacti
 end interface

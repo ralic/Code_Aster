@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcadt(sddisc, iadapt, numins, valinc, dtp)
-        character(len=19) :: sddisc
-        integer :: iadapt
-        integer :: numins
-        character(len=19) :: valinc(*)
-        real(kind=8) :: dtp
+    subroutine nmcadt(sddisc, i_adapt, nume_inst, hval_incr, dtp)
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: i_adapt
+        integer, intent(in) :: nume_inst
+        character(len=19), intent(in) :: hval_incr(*)
+        real(kind=8), intent(out) :: dtp
     end subroutine nmcadt
 end interface

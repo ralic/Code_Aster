@@ -45,7 +45,7 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
 !
 ! ----------------------------------------------------------------------
 !
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! IN  ITER1  : ITER_GLOB_MAXI
 ! IN  ITER2  : ITER_GLOB_ELAS
 ! IN  ELASDT : PAS_MINI_ELAS
@@ -62,8 +62,7 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
     integer :: typres, ibid, nbiter, mxiter, mniter
     integer :: maxgeo, nbreag
     integer :: nmax, nplus
-    integer :: iechec, nechec, itesup, nbitct
-    character(len=8) :: k8bid
+    integer :: i_echec, nb_echec, itesup, nbitct
     character(len=24) :: infocv, infore
     integer :: jifcv, jifre
 !
@@ -78,17 +77,17 @@ subroutine nmcerr(sddisc, iter1, iter2, elasdt, rgmaxi,&
     itesup = 0
     nmax = 0
     nbitct = 0
-    call utdidt('L', sddisc, 'LIST', ibid, 'NECHEC',&
-                r8bid, nechec, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC',&
+                vali_ = nb_echec)
 !
 ! --- NOMBRE D'ITERATIONS AUTORISEES EN PLUS
 !
-    do 10 iechec = 1, nechec
-        call utdidt('L', sddisc, 'ECHE', iechec, 'PCENT_ITER_PLUS',&
-                    pcplus, ibid, k8bid)
+    do i_echec = 1, nb_echec
+        call utdidt('L', sddisc, 'ECHE', 'PCENT_ITER_PLUS', index_ = i_echec,&
+                    valr_ = pcplus)
         nplus = nint(pcplus)
         nmax = max(nmax,nplus)
- 10 end do
+    end do
 !
 ! --- NOMBRE MAXIMUM D'ITERATIONS
 !

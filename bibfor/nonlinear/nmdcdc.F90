@@ -40,7 +40,7 @@ subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization
 ! IN  NUMINS : NUMERO D'INSTANTS
 ! IN  NOMLIS : NOM DE LA LISTE DES INSTANTS A AJOUTER
 ! IN  NBRPAS : NOMBRE D'INSTANTS A AJOUTER
@@ -49,10 +49,8 @@ subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
 !
 !
     integer :: jinst
-    integer :: nbins, nbini
-    real(kind=8) :: r8bid, dt0
-    character(len=8) :: k8bid
-    integer :: ibid
+    integer :: nb_inst_ins, nb_inst_ini
+    real(kind=8) :: dt0
     character(len=16) :: metlis
 !
 ! ----------------------------------------------------------------------
@@ -65,37 +63,37 @@ subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
 !
 ! --- GESTION DE LA LISTE D'INSTANT
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
 !
 ! --- LONGUEUR INITIALE DE LA LISTE D'INSTANTS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbini, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NBINST',&
+                vali_ = nb_inst_ini)
 !
 ! --- NOMBRE D'INSTANTS A AJOUTER
 !
     if (metlis .eq. 'AUTO') then
-        nbins = 1
+        nb_inst_ins = 1
     else if (metlis.eq.'MANUEL') then
-        nbins = nbrpas - 1
+        nb_inst_ins = nbrpas - 1
     else
         ASSERT(.false.)
     endif
 !
 ! --- EXTENSION DE LA LISTE D'INSTANTS
 !
-    call nmdcei(sddisc, numins, zr(jinst), nbini, nbins,&
+    call nmdcei(sddisc, numins, zr(jinst), nb_inst_ini, nb_inst_ins,&
                 'DECO', dt0)
 !
 ! --- EXTENSION DE LA LISTE DES NIVEAUX DE DECOUPAGE
 !
-    call nmdcen(sddisc, numins, nbini, nbins)
+    call nmdcen(sddisc, numins, nb_inst_ini, nb_inst_ins)
 !
 ! --- ENREGISTREMENT INFOS
 !
-    call utdidt('E', sddisc, 'LIST', ibid, 'DT-',&
-                dt0, ibid, k8bid)
+    call utdidt('E', sddisc, 'LIST', 'DT-',&
+                valr_ = dt0)
 !
     call jedema()
 end subroutine

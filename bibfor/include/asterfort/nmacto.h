@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmacto(sddisc, ievdac)
-        character(len=19) :: sddisc
-        integer :: ievdac
+    subroutine nmacto(sddisc, i_echec_acti)
+        character(len=19), intent(in) :: sddisc
+        integer, intent(out) :: i_echec_acti
     end subroutine nmacto
 end interface

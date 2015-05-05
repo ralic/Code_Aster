@@ -1,4 +1,4 @@
-subroutine nmacto(sddisc, ievdac)
+subroutine nmacto(sddisc, i_echec_acti)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,43 +20,31 @@ subroutine nmacto(sddisc, ievdac)
 !
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/dieven.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utdidt.h"
-    character(len=19) :: sddisc
-    integer :: ievdac
+    character(len=19), intent(in) :: sddisc
+    integer, intent(out) :: i_echec_acti
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! RECHERCHE DES EVENEMENTS ACTIVES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sddisc           : datastructure for time discretization
+! Out i_echec_acti     : Index of echec
 !
-! IN  SDDISC : SD DISCRETISATION
-! OUT IEVDAC : VAUT IECHEC SI EVENEMENT ACTIVE
-!                   0 SINON
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-!
-    real(kind=8) :: r8bid
-    integer :: ibid, nechec, iechec
-    character(len=8) :: k8bid
+    integer :: nb_echec, i_echec
     aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- NOMBRE D'EVENT-DRIVEN : NECHEC
-!
-    call utdidt('L', sddisc, 'LIST', ibid, 'NECHEC',&
-                r8bid, nechec, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC',&
+                vali_ = nb_echec)
     lacti = .false.
 !
 ! --- BOUCLE SUR LES EVENT-DRIVEN
@@ -64,16 +52,15 @@ subroutine nmacto(sddisc, ievdac)
 ! --- ON NE CHERCHE PAS A VERIFIER LES AUTRES EVENEMENTS
 ! --- ATTENTION, L'ORDRE D'EVALUATION A DONC UNE IMPORTANCE !
 !
-    ievdac = 0
-    do 100 iechec = 1, nechec
-        call dieven(sddisc, iechec, lacti)
+    i_echec_acti = 0
+    do i_echec = 1, nb_echec
+        call dieven(sddisc, i_echec, lacti)
         if (lacti) then
-            ievdac = iechec
-            goto 888
+            i_echec_acti = i_echec
+            goto 99
         endif
-100 end do
+    end do
 !
-888 continue
+99  continue
 !
-    call jedema()
 end subroutine

@@ -18,10 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdcco(sddisc, ievdac, typdec, nbrpas, deltac,&
-                      ratio, optdec, retdec, ldcext, subdur)
+    subroutine nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac,&
+                      ratio , optdec      , retdec, ldcext, subdur)
         character(len=19) :: sddisc
-        integer :: ievdac
+        integer :: i_event_acti
         character(len=4) :: typdec
         integer :: nbrpas
         real(kind=8) :: deltac

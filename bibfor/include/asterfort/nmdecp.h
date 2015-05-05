@@ -18,19 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdecp(sddisc, iterat, ievdac, typdec, nbrpas,&
-                      deltac, ratio, optdec, ldcext, durdec,&
+    subroutine nmdecp(sddisc, iterat, i_event_acti, typdec, nbrpas,&
+                      deltac, ratio , optdec      , ldcext, durdec,&
                       retdec)
         character(len=19) :: sddisc
-        integer :: iterat
-        integer :: ievdac
-        character(len=4) :: typdec
+        integer :: i_event_acti, iterat, retdec
         integer :: nbrpas
-        real(kind=8) :: deltac
-        real(kind=8) :: ratio
-        character(len=16) :: optdec
         aster_logical :: ldcext
-        real(kind=8) :: durdec
-        integer :: retdec
+        real(kind=8) :: ratio, deltac, durdec
+        character(len=4) :: typdec
+        character(len=16) :: optdec
     end subroutine nmdecp
 end interface

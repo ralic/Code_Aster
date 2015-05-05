@@ -1,4 +1,4 @@
-subroutine nmevin(sddisc, resoco, iechec, ievdac)
+subroutine nmevin(sddisc, resoco, i_echec, i_echec_acti)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
     character(len=24) :: resoco
-    integer :: iechec, ievdac
+    integer :: i_echec, i_echec_acti
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
@@ -40,7 +40,7 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization TEMPORELLE
 ! IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 ! IN  IECHEC : OCCURRENCE DE L'ECHEC
 ! OUT IEVDAC : VAUT IECHEC SI EVENEMENT DECLENCHE
@@ -56,9 +56,7 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
     integer :: jjeuit
     real(kind=8) :: jeufin, pnmaxi
     aster_logical :: levent
-    real(kind=8) :: penmax
-    integer :: ibid
-    character(len=8) :: k8bid
+    real(kind=8) :: pene_maxi
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,9 +71,9 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
 !
 ! --- INITIALISATIONS
 !
-    call utdidt('L', sddisc, 'ECHE', iechec, 'PENE_MAXI',&
-                penmax, ibid, k8bid)
-    ievdac = 0
+    call utdidt('L', sddisc, 'ECHE', 'PENE_MAXI', index_ = i_echec,&
+                valr_ = pene_maxi)
+    i_echec_acti = 0
     levent = .false.
     pnmaxi = 0.d0
 !
@@ -90,20 +88,20 @@ subroutine nmevin(sddisc, resoco, iechec, ievdac)
 !
 ! --- DETECTION PENETRATION
 !
-    do 10 iliai = 1, nbliai
+    do iliai = 1, nbliai
         jeufin = zr(jjeuit+3*(iliai-1)+1-1)
         if (jeufin .le. 0.d0) then
-            if (abs(jeufin) .gt. penmax) then
+            if (abs(jeufin) .gt. pene_maxi) then
                 if (abs(jeufin) .gt. pnmaxi) pnmaxi = abs(jeufin)
                 levent = .true.
             endif
         endif
- 10 end do
+    end do
 !
 ! --- ACTIVATION EVENEMENT
 !
     if (levent) then
-        ievdac = iechec
+        i_echec_acti = i_echec
     endif
 !
     call jedema()

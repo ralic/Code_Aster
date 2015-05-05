@@ -1,4 +1,4 @@
-subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
+subroutine nmdeco(sddisc, nume_inst, iterat, i_event_acti, retdec)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,8 +35,8 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 #include "asterfort/nmdecv.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
-    integer :: ievdac
-    integer :: numins, iterat
+    integer :: i_event_acti
+    integer :: nume_inst, iterat
     character(len=19) :: sddisc
     integer :: retdec
 !
@@ -49,8 +49,8 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
-! IN  IEVDAC : INDICE DE L'EVENEMENT ACTIF
+! In  sddisc           : datastructure for time discretization
+! In  i_event_acti     : index of active event
 ! IN  NUMINS : NUMERO D'INSTANTS
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! OUT RETDEC : CODE RETOUR DECOUPE
@@ -61,8 +61,7 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! ----------------------------------------------------------------------
 !
     character(len=16) :: submet, metlis
-    real(kind=8) :: r8bid, dtmin, durdec
-    integer :: ibid
+    real(kind=8) :: dtmin, durdec
     integer :: nbrpas
     real(kind=8) :: deltat, instam, instap
     real(kind=8) :: insref, deltac
@@ -85,17 +84,17 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 !
 ! --- INFORMATIONS SUR LE PAS DE TEMPS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'METHODE',&
-                r8bid, ibid, metlis)
-    instam = diinst(sddisc,numins-1)
-    instap = diinst(sddisc,numins)
+    call utdidt('L', sddisc, 'LIST', 'METHODE',&
+                valk_ = metlis)
+    instam = diinst(sddisc,nume_inst-1)
+    instap = diinst(sddisc,nume_inst)
     deltat = instap-instam
     insref = instap
 !
 ! --- METHODE DE SUBDIVISION
 !
-    call utdidt('L', sddisc, 'ECHE', ievdac, 'SUBD_METHODE',&
-                r8bid, ibid, submet)
+    call utdidt('L', sddisc, 'ECHE', 'SUBD_METHODE', index_ = i_event_acti, &
+                valk_ = submet)
 !
 ! --- TYPE DE SUBDIVISION
 !
@@ -114,12 +113,12 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 ! --- DECOUPE DU PAS DE TEMPS
 !
     if (submet .eq. 'MANUEL') then
-        call nmdecm(sddisc, ievdac, nomlis, instam, deltat,&
+        call nmdecm(sddisc, i_event_acti, nomlis, instam, deltat,&
                     nbrpas, dtmin, retdec)
         ldcext = .false.
         durdec = -1.d0
     else if (submet.eq.'AUTO') then
-        call nmdeca(sddisc, iterat, ievdac, nomlis, instam,&
+        call nmdeca(sddisc, iterat, i_event_acti, nomlis, instam,&
                     deltat, nbrpas, dtmin, ldcext, durdec,&
                     retdec)
     else
@@ -143,25 +142,25 @@ subroutine nmdeco(sddisc, numins, iterat, ievdac, retdec)
 !
 ! --- VERIFICATIONS DE LA DECOUPE
 !
-    call nmdecv(sddisc, numins, ievdac, dtmin, retdec)
+    call nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
     if (retdec .eq. 0) goto 999
 !
 ! --- MISE A JOUR DES SD APRES DECOUPE
 !
-    call nmdcdc(sddisc, numins, nomlis, nbrpas)
+    call nmdcdc(sddisc, nume_inst, nomlis, nbrpas)
 !
 ! --- EXTENSION DE LA DECOUPE AUX PAS SUIVANTS
 !
 888 continue
     if (ldcext) then
-        instam = diinst(sddisc,numins-1)
-        instap = diinst(sddisc,numins)
+        instam = diinst(sddisc,nume_inst-1)
+        instap = diinst(sddisc,nume_inst)
         deltac = instap-instam
         if (metlis .eq. 'MANUEL') then
-            call nmdcex(sddisc, insref, durdec, ievdac, deltac,&
+            call nmdcex(sddisc, insref, durdec, i_event_acti, deltac,&
                         retdex)
         else if (metlis.eq.'AUTO') then
-            call nmdcax(sddisc, insref, numins, durdec, deltac)
+            call nmdcax(sddisc, insref, nume_inst, durdec, deltac)
             retdex = 1
         else
             ASSERT(.false.)

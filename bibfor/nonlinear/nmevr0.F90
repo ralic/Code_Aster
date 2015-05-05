@@ -20,10 +20,7 @@ subroutine nmevr0(sddisc)
 !
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/dieven.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmlerr.h"
 #include "asterfort/utdidt.h"
     character(len=19) :: sddisc
@@ -37,45 +34,34 @@ subroutine nmevr0(sddisc)
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization TEMPORELLE
 !
 !
 !
 !
-    integer :: ibid
-    integer :: itesup, iechec, nechec
+    integer :: itesup, i_echec, nb_echec
     real(kind=8) :: r8bid
-    character(len=8) :: k8bid
-    character(len=16) :: action, nomevd
+    character(len=16) :: action, event_name
     aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- NOMBRE D'EVENT-DRIVEN : NECHEC
-!
-    call utdidt('L', sddisc, 'LIST', ibid, 'NECHEC',&
-                r8bid, nechec, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'NECHEC',&
+                vali_ = nb_echec)
 !
 ! --- DESACTIVATION DES EVENEMENTS
 !
-    do 100 iechec = 1, nechec
-!
-! ----- RECUPERATION DU NOM DE L'EVENT-DRIVEN
-!
-        call utdidt('L', sddisc, 'ECHE', iechec, 'NOM_EVEN',&
-                    r8bid, ibid, nomevd)
+    do i_echec = 1, nb_echec
+        call utdidt('L', sddisc, 'ECHE', 'NOM_EVEN', index_ = i_echec,&
+                    valk_ = event_name)
         lacti = .false.
-        call dieven(sddisc, iechec, lacti)
-        call utdidt('L', sddisc, 'ECHE', iechec, 'ACTION',&
-                    r8bid, ibid, action)
+        call dieven(sddisc, i_echec, lacti)
+        call utdidt('L', sddisc, 'ECHE', 'ACTION', index_ = i_echec,&
+                    valk_ = action)
         if (action .eq. 'ITER_SUPPL') then
             itesup = 0
             call nmlerr(sddisc, 'E', 'ITERSUP', r8bid, itesup)
         endif
-100 end do
-!
-    call jedema()
+    end do
 !
 end subroutine

@@ -56,20 +56,19 @@ subroutine nmcrli(instin, lisins, sddisc)
 ! IN  INSTIN : INSTANT INITIAL QUAND ETAT_INIT
 !                R8VIDE SI NON DEFINI
 ! IN  LISINS : LISTE D'INSTANTS (SD_LISTR8 OU SD_LIST_INST)
-! OUT SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 !
 ! ----------------------------------------------------------------------
 !
     integer :: jinst
-    integer :: numini, numfin, numins
-    integer :: ibid, iocc
+    integer :: numini, numfin, nume_inst
+    integer :: iocc
     integer :: n1
-    integer :: nbtemp, nbinst
+    integer :: nb_inst_new, nb_inst
     real(kind=8) :: tole
-    real(kind=8) :: r8bid
     real(kind=8) :: dtmin, dt0
     aster_logical :: linsti, linsei
-    character(len=8) :: k8bid, result
+    character(len=8) :: result
     character(len=24) :: tpsipo
     character(len=24) :: tpspil, tpsdin, tpsite, tpsbcl
     integer :: jpil, jnivtp, jiter, jbcle
@@ -141,10 +140,10 @@ subroutine nmcrli(instin, lisins, sddisc)
 !
 ! --- INFOS LISTE D'INSTANTS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'DTMIN',&
-                dtmin, ibid, k8bid)
-    call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbinst, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'DTMIN',&
+                valr_ = dtmin)
+    call utdidt('L', sddisc, 'LIST', 'NBINST',&
+                vali_ = nb_inst)
 !
 ! --- ACCES LISTE D'INSTANTS PROVISOIRE
 !
@@ -166,11 +165,11 @@ subroutine nmcrli(instin, lisins, sddisc)
 ! --- DETERMINATION DU NUMERO D'ORDRE INITIAL
 !
     call nmdini(motfac, iocc, provli, instin, linsei,&
-                tole, nbinst, linsti, numini)
+                tole, nb_inst, linsti, numini)
 !
 ! --- DETERMINATION DU NUMERO D'ORDRE FINAL
 !
-    call nmdifi(motfac, iocc, provli, tole, nbinst,&
+    call nmdifi(motfac, iocc, provli, tole, nb_inst,&
                 numfin)
 !
 ! --- VERIFICATION SENS DE LA LISTE
@@ -182,29 +181,29 @@ subroutine nmcrli(instin, lisins, sddisc)
 ! --- RETAILLAGE DE LA LISTE D'INSTANT PROVISOIRE -> SDDISC.DITR
 !
     call nmcrls(sddisc, provli, numini, numfin, linsti,&
-                instin, nbtemp, dtmin)
+                instin, nb_inst_new, dtmin)
 !
 ! --- INDICATEUR DU NIVEAU DE SUBDIVISION DES PAS DE TEMPS
 !
-    call wkvect(tpsdin, 'V V I', nbtemp, jnivtp)
-    do numins = 1, nbtemp
-        zi(jnivtp-1+numins) = 1
+    call wkvect(tpsdin, 'V V I', nb_inst_new, jnivtp)
+    do nume_inst = 1, nb_inst_new
+        zi(jnivtp-1+nume_inst) = 1
     end do
 !
 ! --- VECTEUR POUR STOCKER ITERAT NEWTON
 !
-    call wkvect(tpsite, 'V V I', nbtemp, jiter)
+    call wkvect(tpsite, 'V V I', nb_inst_new, jiter)
 !
 ! --- ENREGISTREMENT DES INFORMATIONS
 !
     dt0 = diinst(sddisc,1) - diinst(sddisc,0)
 !
-    call utdidt('E', sddisc, 'LIST', ibid, 'DT-',&
-                dt0, ibid, k8bid)
-    call utdidt('E', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbtemp, k8bid)
-    call utdidt('E', sddisc, 'LIST', ibid, 'DTMIN',&
-                dtmin, ibid, k8bid)
+    call utdidt('E', sddisc, 'LIST', 'DT-',&
+                valr_ = dt0)
+    call utdidt('E', sddisc, 'LIST', 'NBINST',&
+                vali_ = nb_inst_new)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
+                valr_ = dtmin)
 !
 ! --- STOCKAGE DE LA LISTE DES INSTANTS DE PASSAGE OBLIGATOIRES (JALONS)
 !

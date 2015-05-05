@@ -1,4 +1,4 @@
-subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
+subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
                   typext, dt0)
 !
 ! ======================================================================
@@ -28,9 +28,9 @@ subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utdidt.h"
-    integer :: nbins, numins, nbini
+    integer :: nb_inst_ins, nume_inst, nb_inst_ini
     character(len=19) :: sddisc
-    real(kind=8) :: newins(nbins)
+    real(kind=8) :: newins(nb_inst_ins)
     real(kind=8) :: dt0
     character(len=4) :: typext
 !
@@ -43,7 +43,7 @@ subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
 ! ----------------------------------------------------------------------
 !
 !
-! IN  SDDISC : SD DISCRETISATION
+! In  sddisc           : datastructure for time discretization
 ! IN  NEWINS : VECTEUR DES NOUVEAUX INSTANTS A AJOUTER (LONGUEUR NBINS)
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  NBINS  : NOMBRE DE PAS DE TEMPS A INSERER
@@ -56,11 +56,10 @@ subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
 !
 !
 !
-    integer :: ipas, nbnew, ibid
+    integer :: i_inst, nb_inst_new
     character(len=24) :: tpsdit
     integer :: jtemps
-    character(len=8) :: k8bid
-    real(kind=8) :: inst, deltat, r8bid, dtmin
+    real(kind=8) :: time, deltat, dtmin
 !
 ! ----------------------------------------------------------------------
 !
@@ -72,51 +71,51 @@ subroutine nmdcei(sddisc, numins, newins, nbini, nbins,&
 !
 ! --- NOUVEAU NOMBRE D'INSTANTS
 !
-    nbnew = nbini + nbins
+    nb_inst_new = nb_inst_ini + nb_inst_ins
 !
 ! --- ALLONGEMENT DE LA LISTE D'INSTANTS
 !
-    call juveca(tpsdit, nbnew)
+    call juveca(tpsdit, nb_inst_new)
     call jeveuo(tpsdit, 'E', jtemps)
 !
 ! --- RECOPIE DE LA PARTIE HAUTE DE LA LISTE
 !
-    do 10 ipas = nbini, numins+1, -1
-        inst = zr(jtemps+ipas-1)
-        zr(jtemps+ipas+nbins-1) = inst
-10  end do
+    do i_inst = nb_inst_ini, nume_inst+1, -1
+        time = zr(jtemps+i_inst-1)
+        zr(jtemps+i_inst+nb_inst_ins-1) = time
+    end do
 !
 ! --- INSERTION DES INSTANTS SUPPLEMENTAIRES
 !
-    do 20 ipas = 1, nbins
-        inst = newins(ipas)
+    do i_inst = 1, nb_inst_ins
+        time = newins(i_inst)
         if (typext .eq. 'DECO') then
-            zr(jtemps+ipas+numins-1) = inst
+            zr(jtemps+i_inst+nume_inst-1) = time
         else if (typext.eq.'ADAP') then
-            zr(jtemps+ipas+numins) = inst
+            zr(jtemps+i_inst+nume_inst) = time
         else
             ASSERT(.false.)
         endif
-20  end do
+    end do
 !
 ! --- VALEUR DU NOUVEAU DELTAT
 !
-    dt0 = zr(jtemps-1+numins+1)-zr(jtemps-1+numins)
+    dt0 = zr(jtemps-1+nume_inst+1)-zr(jtemps-1+nume_inst)
 !
 ! --- NOUVEL INTERVALLE DE TEMPS MINIMAL : DTMIN
 !
     dtmin = r8maem()
-    do 25 ipas = 1, nbnew-1
-        deltat = zr(jtemps-1+ipas+1) - zr(jtemps-1+ipas)
+    do i_inst = 1, nb_inst_new-1
+        deltat = zr(jtemps-1+i_inst+1) - zr(jtemps-1+i_inst)
         dtmin = min(deltat,dtmin)
-25  end do
+    end do
 !
 ! --- ENREGISTREMENT INFOS
 !
-    call utdidt('E', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbnew, k8bid)
-    call utdidt('E', sddisc, 'LIST', ibid, 'DTMIN',&
-                dtmin, ibid, k8bid)
+    call utdidt('E', sddisc, 'LIST', 'NBINST',&
+                vali_ = nb_inst_new)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
+                valr_ = dtmin)
 !
     call jedema()
 !

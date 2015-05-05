@@ -1,4 +1,4 @@
-subroutine nmevel(sddisc, numins, defico, resoco, vale,&
+subroutine nmevel(sddisc, nume_inst, defico, resoco, vale,&
                   nombcl, lsvimx, ldvres, linsta, lerrcv,&
                   lerror, conver)
 !
@@ -22,11 +22,8 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
 !
     implicit none
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/eneven.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/nmevcx.h"
 #include "asterfort/nmevdg.h"
 #include "asterfort/nmevin.h"
@@ -34,7 +31,7 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
     character(len=19) :: sddisc, vale(*)
     character(len=4) :: nombcl
     character(len=24) :: defico, resoco
-    integer :: numins
+    integer :: nume_inst
     aster_logical :: lsvimx, ldvres, linsta, lerrcv, lerror, conver
 !
 ! ----------------------------------------------------------------------
@@ -48,7 +45,7 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
 ! NB: DES QU'UN EVENT-DRIVEN EST SATISFAIT, ON SORT
 ! ON NE CHERCHE PAS A VERIFIER LES AUTRES EVENEMENTS
 !
-! IN  SDDISC : SD DISCRETISATION TEMPORELLE
+! In  sddisc           : datastructure for time discretization TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  DEFICO : SD DE DEFINITION DU CONTACT
 ! IN  RESOCO : SD DE RESOLUTION DU CONTACT
@@ -69,81 +66,74 @@ subroutine nmevel(sddisc, numins, defico, resoco, vale,&
 !
 ! ----------------------------------------------------------------------
 !
-    real(kind=8) :: r8bid
-    integer :: ibid, nechec, iechec, ievdac
-    character(len=8) :: k8bid
-    character(len=16) :: nomevd
+    integer :: nb_echec, i_echec, i_echec_acti
+    character(len=16) :: event_name
 !
 ! ----------------------------------------------------------------------
 !
-    call jemarq()
-!
-! --- INITIALISATIONS
-!
-    ievdac = 0
+    i_echec_acti = 0
 !
 ! --- NOMBRE D'EVENT-DRIVEN : NECHEC
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'NECHEC',&
-                r8bid, nechec, k8bid)
+    call utdidt('L', sddisc, 'LIST',  'NECHEC',&
+                vali_ = nb_echec)
 !
 ! --- DETECTION DU _PREMIER_ EVENEMENT DECLENCHE
 ! --- DES QU'UN EVENT-DRIVEN EST SATISFAIT, ON SORT
 ! --- ON NE CHERCHE PAS A VERIFIER LES AUTRES EVENT
 !
-    do 100 iechec = 1, nechec
+    do i_echec = 1, nb_echec
 !
 ! ----- RECUPERATION DU NOM DE L'EVENT-DRIVEN
 !
-        call utdidt('L', sddisc, 'ECHE', iechec, 'NOM_EVEN',&
-                    r8bid, ibid, nomevd)
+        call utdidt('L', sddisc, 'ECHE', 'NOM_EVEN', index_ = i_echec, &
+                    valk_ = event_name)
 !
 ! ----- PAR DEFAUT: EVENEMENT NON ACTIVE
 !
-        call eneven(sddisc, iechec, .false._1)
+        call eneven(sddisc, i_echec, .false._1)
 !
-        if (nomevd .eq. 'ERRE') then
+        if (event_name .eq. 'ERRE') then
             if (lsvimx .or. lerrcv .or. lerror) then
-                ievdac = iechec
-                goto 8888
+                i_echec_acti = i_echec
+                goto 99
             endif
-        else if (nomevd.eq.'DIVE_RESI') then
+        else if (event_name.eq.'DIVE_RESI') then
             if (ldvres) then
-                ievdac = iechec
-                if (ievdac .ne. 0) goto 8888
+                i_echec_acti = i_echec
+                if (i_echec_acti .ne. 0) goto 99
             endif
-        else if (nomevd.eq.'DELTA_GRANDEUR') then
+        else if (event_name.eq.'DELTA_GRANDEUR') then
             if (conver) then
-                call nmevdg(sddisc, vale, iechec, ievdac)
-                if (ievdac .ne. 0) goto 8888
+                call nmevdg(sddisc, vale, i_echec, i_echec_acti)
+                if (i_echec_acti .ne. 0) goto 99
             endif
-        else if (nomevd.eq.'COLLISION') then
+        else if (event_name.eq.'COLLISION') then
             if (nombcl .eq. 'INST') then
-                call nmevcx(sddisc, numins, defico, resoco, iechec,&
-                            ievdac)
-                if (ievdac .ne. 0) goto 8888
+                call nmevcx(sddisc, nume_inst, defico, resoco, i_echec,&
+                            i_echec_acti)
+                if (i_echec_acti .ne. 0) goto 99
             endif
-        else if (nomevd.eq.'INTERPENETRATION') then
+        else if (event_name.eq.'INTERPENETRATION') then
             if (nombcl .eq. 'INST') then
-                call nmevin(sddisc, resoco, iechec, ievdac)
-                if (ievdac .ne. 0) goto 8888
+                call nmevin(sddisc, resoco, i_echec, i_echec_acti)
+                if (i_echec_acti .ne. 0) goto 99
             endif
-        else if (nomevd.eq.'INSTABILITE') then
-            if (linsta) ievdac = iechec
-            if (ievdac .ne. 0) goto 8888
+        else if (event_name.eq.'INSTABILITE') then
+            if (linsta) i_echec_acti = i_echec
+            if (i_echec_acti .ne. 0) goto 99
         else
-            write(6,*) 'NOMEVD: ',nomevd
+            write(6,*) 'NOMEVD: ',event_name
             ASSERT(.false.)
         endif
-100 end do
+    end do
 !
-8888 continue
+99  continue
 !
 ! --- DECLENCHEMENT DE L'EVENEMENT
 !
-    if (ievdac .ne. 0) then
-        call eneven(sddisc, ievdac, .true._1)
+    if (i_echec_acti .ne. 0) then
+        call eneven(sddisc, i_echec_acti, .true._1)
     endif
 !
-    call jedema()
 end subroutine

@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utdidt(getset, sddisc, typque, iocc, quest,&
-                      valr, vali, valk)
-        character(len=1) :: getset
-        character(len=19) :: sddisc
-        character(len=4) :: typque
-        integer :: iocc
-        character(len=*) :: quest
-        real(kind=8) :: valr
-        integer :: vali
-        character(len=*) :: valk
+    subroutine utdidt(getset, sddisc, ques_type, question, index_, &
+                      valr_ , vali_ , valk_    )
+        character(len=1), intent(in) :: getset
+        character(len=19), intent(in) :: sddisc
+        character(len=4), intent(in) :: ques_type
+        character(len=*), intent(in) :: question
+        integer, intent(in), optional :: index_
+        integer, intent(inout), optional :: vali_
+        real(kind=8), intent(inout), optional :: valr_
+        character(len=*), intent(inout), optional :: valk_
     end subroutine utdidt
 end interface

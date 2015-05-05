@@ -58,15 +58,13 @@ subroutine ntcrli(instin, lisins, sddisc)
 ! ----------------------------------------------------------------------
 !
     integer :: jinst
-    integer :: numini, numfin, numins
-    integer :: ibid, iocc
+    integer :: numini, numfin, nume_inst
+    integer :: iocc
     integer :: n1
     integer :: nbtemp, nbinst
     real(kind=8) :: tole
-    real(kind=8) :: r8bid
     real(kind=8) :: dtmin, dt0
     aster_logical :: linsti, linsei
-    character(len=8) :: k8bid
     character(len=24) :: lisifr, lisdit
     character(len=24) :: tpsipo, tpsinf
     character(len=24) :: tpsdin, tpsbcl
@@ -128,10 +126,10 @@ subroutine ntcrli(instin, lisins, sddisc)
 !
 ! --- INFOS LISTE D'INSTANTS
 !
-    call utdidt('L', sddisc, 'LIST', ibid, 'DTMIN',&
-                dtmin, ibid, k8bid)
-    call utdidt('L', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbinst, k8bid)
+    call utdidt('L', sddisc, 'LIST', 'DTMIN',&
+                valr_ = dtmin)
+    call utdidt('L', sddisc, 'LIST', 'NBINST',&
+                vali_ = nbinst)
 !
 ! --- ACCES LISTE D'INSTANTS PROVISOIRE
 !
@@ -174,20 +172,20 @@ subroutine ntcrli(instin, lisins, sddisc)
 ! --- INDICATEUR DU NIVEAU DE SUBDIVISION DES PAS DE TEMPS
 !
     call wkvect(tpsdin, 'V V I', nbtemp, jnivtp)
-    do 30 numins = 1, nbtemp
-        zi(jnivtp-1+numins) = 1
- 30 end do
+    do nume_inst = 1, nbtemp
+        zi(jnivtp-1+nume_inst) = 1
+    end do
 !
 ! --- ENREGISTREMENT DES INFORMATIONS
 !
     dt0 = diinst(sddisc,1) - diinst(sddisc,0)
 !
-    call utdidt('E', sddisc, 'LIST', ibid, 'DT-',&
-                dt0, ibid, k8bid)
-    call utdidt('E', sddisc, 'LIST', ibid, 'NBINST',&
-                r8bid, nbtemp, k8bid)
-    call utdidt('E', sddisc, 'LIST', ibid, 'DTMIN',&
-                dtmin, ibid, k8bid)
+    call utdidt('E', sddisc, 'LIST', 'DT-',&
+                valr_ = dt0)
+    call utdidt('E', sddisc, 'LIST', 'NBINST',&
+                vali_ = nbtemp)
+    call utdidt('E', sddisc, 'LIST', 'DTMIN',&
+                valr_ = dtmin)
 !
 ! --- STOCKAGE DE LA LISTE DES INSTANTS DE PASSAGE OBLIGATOIRES
 !

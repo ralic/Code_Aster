@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine iseven(sddisc, nomevz, lacti)
-        character(len=19) :: sddisc
-        character(len=*) :: nomevz
+    subroutine iseven(sddisc, event_name_s_, lacti)
+        character(len=19), intent(in) :: sddisc
+        character(len=*), intent(in) :: event_name_s_
         aster_logical :: lacti
     end subroutine iseven
 end interface

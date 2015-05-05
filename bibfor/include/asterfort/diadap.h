@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    function diadap(sddisc, iadapt)
-        character(len=19) :: sddisc
-        integer :: iadapt
+    function diadap(sddisc, i_adapt)
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: i_adapt
         aster_logical :: diadap
     end function diadap
 end interface
