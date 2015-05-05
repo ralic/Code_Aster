@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine op5901(nboccm, sdcomp)
+    subroutine dc_monocristal(nboccm, sdcomp)
         integer, intent(in) :: nboccm
         character(len=8), intent(in) :: sdcomp
-    end subroutine op5901
+    end subroutine dc_monocristal
 end interface

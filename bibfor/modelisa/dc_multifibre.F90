@@ -1,4 +1,4 @@
-subroutine op5903(nbocci, sdcomp)
+subroutine dc_multifibre(nbocci, sdcomp)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,13 +16,9 @@ subroutine op5903(nbocci, sdcomp)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-! --------------------------------------------------------------------------------------------------
+! person_in_charge: jean-luc.flejou at edf.fr
 !
 !                   DEFI_COMPOR / MULTIFIBRE
-!
-! person_in_charge: jean-luc.flejou at edf.fr
-! --------------------------------------------------------------------------------------------------
 !
     implicit none
 !

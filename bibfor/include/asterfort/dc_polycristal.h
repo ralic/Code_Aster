@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine op5902(nboccp, sdcomp)
+    subroutine dc_polycristal(nboccp, sdcomp)
         integer, intent(in) :: nboccp
         character(len=8), intent(in) :: sdcomp
-    end subroutine op5902
+    end subroutine dc_polycristal
 end interface

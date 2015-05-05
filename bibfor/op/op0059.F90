@@ -6,9 +6,9 @@ subroutine op0059()
 #include "asterc/getres.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
-#include "asterfort/op5901.h"
-#include "asterfort/op5902.h"
-#include "asterfort/op5903.h"
+#include "asterfort/dc_monocristal.h"
+#include "asterfort/dc_polycristal.h"
+#include "asterfort/dc_multifibre.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,19 +52,19 @@ subroutine op0059()
 !
 !        MONOCRISTAL
 !
-        call op5901(nboccm, sdcomp)
+        call dc_monocristal(nboccm, sdcomp)
 !
     else if (nboccp.gt.0) then
 !
 !        POLYCRISTAL
 !
-        call op5902(nboccp, sdcomp)
+        call dc_polycristal(nboccp, sdcomp)
 !
     else if (nbocci.gt.0) then
 !
 !        MULTIFIBRE
 !
-        call op5903(nbocci, sdcomp)
+        call dc_multifibre(nbocci, sdcomp)
 !
     endif
 !

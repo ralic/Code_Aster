@@ -1,21 +1,4 @@
-subroutine op5902(nboccp, sdcomp)
-!
-    implicit none
-!
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterfort/assert.h"
-#include "asterfort/codent.h"
-#include "asterfort/eulnau.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
+subroutine dc_polycristal(nboccp, sdcomp)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +16,24 @@ subroutine op5902(nboccp, sdcomp)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
+! person_in_charge: jean-luc.flejou at edf.fr
+!
+    implicit none
+!
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/eulnau.h"
+#include "asterfort/getvid.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
     integer, intent(in) :: nboccp
     character(len=8), intent(in) :: sdcomp

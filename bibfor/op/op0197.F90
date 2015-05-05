@@ -107,6 +107,7 @@ subroutine op0197()
     data chcop1 / '&&OPTIW1' /
     data chcop2/ '&&OPTIW2' /
 !     ------------------------------------------------------------------
+    c16b = dcmplx(0., 0.)
     call jemarq()
     call infmaj()
 !     ------------------------------------------------------------------
@@ -219,8 +220,8 @@ subroutine op0197()
 !       DANS LES INSTANTS DE CALCUL
 !
         call getvid('RESU', 'EVOL_NOLI', iocc=iresu, scal=resu, nbret=n1)
-        call rs_getfirst(resu, nume_first, inst_first)              
-        call rs_getlast(resu, nume_last , inst_last)   
+        call rs_getfirst(resu, nume_first, inst_first)
+        call rs_getlast(resu, nume_last , inst_last)
         tpsmin = inst_first
         tpsmax = inst_last
         if (zr(iinst) .lt. tpsmin) then
@@ -394,7 +395,7 @@ subroutine op0197()
         end do
 !
         call jedetr('&&OP0197.L_NOM_MAT')
-        call rccome(chcop2, 'WEIBULL', iret, k11_ind_nomrc=k11) 
+        call rccome(chcop2, 'WEIBULL', iret, k11_ind_nomrc=k11)
         call jeveuo(chcop2//k11//'.VALR', 'E', iweir)
         call jeveuo(chcop2//k11//'.VALK', 'L', iweik)
 !

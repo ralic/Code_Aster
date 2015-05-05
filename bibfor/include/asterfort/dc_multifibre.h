@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine op5903(nbocci, sdcomp)
+    subroutine dc_multifibre(nbocci, sdcomp)
         integer, intent(in) :: nbocci
         character(len=8), intent(in) :: sdcomp
-    end subroutine op5903
+    end subroutine dc_multifibre
 end interface
