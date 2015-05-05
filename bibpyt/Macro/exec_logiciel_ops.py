@@ -34,7 +34,20 @@ import traceback
 import aster_core
 from Utilitai.Utmess import UTMESS
 from Utilitai.UniteAster import UniteAster
-from Cata.cata import LIRE_MAILLAGE, PRE_GMSH, PRE_GIBI
+from Cata.cata import LIRE_MAILLAGE, PRE_GIBI
+
+
+class CommandLine( object ):
+    """Simple command line builder"""
+
+    def __init__( self ):
+        """Initialisation"""
+
+    def build( self, cmd, shell=False ):
+        """Return the command line to execute"""
+        if shell:
+            cmd = ' '.join(cmd)
+        return cmd
 
 
 class ExecProgram( object ):
@@ -47,6 +60,7 @@ class ExecProgram( object ):
     :shell: indicator to run the program through a shell
     :debug: debug flag
     :exitCodeMax: the maximum acceptable return code
+    :cmdBuilder: object to build the command line
     """
 
     @staticmethod
@@ -71,7 +85,6 @@ class ExecProgram( object ):
     def __init__( self, step ):
         """Initialisation"""
         self.step = step
-        self.prog = None
 
     def configure( self, kwargs ):
         """Pre-execution function, read the keywords"""
@@ -80,6 +93,7 @@ class ExecProgram( object ):
         self.shell = kwargs['SHELL'] == 'OUI'
         self.debug = kwargs['INFO'] == 2
         self.exitCodeMax = kwargs['CODE_RETOUR_MAXI']
+        self.cmdBuilder = CommandLine()
 
     def execute( self ):
         """Execute the program"""
@@ -90,13 +104,6 @@ class ExecProgram( object ):
 
     def cleanUp( self ):
         """Cleanup function executed even if `execute` fails"""
-
-    def buildCmdLine( self ):
-        """Return the command line to execute"""
-        cmd = [self.prog] + self.args
-        if self.shell:
-            cmd = ' '.join(cmd)
-        return cmd
 
     def executeCmdLine( self, cmd, capture, silent=False ):
         """Execute the command line.
@@ -114,7 +121,7 @@ class ExecProgram( object ):
 
     def executeCommand( self, capture=True, silent=False ):
         """Execute the program"""
-        cmd = self.buildCmdLine()
+        cmd = self.cmdBuilder.build( [self.prog] + self.args, self.shell )
         output, error, exitCode = self.executeCmdLine( cmd, capture, silent )
         ok = self.isOk( exitCode )
         # print the output
@@ -257,18 +264,22 @@ class ExecSalomeScript( ExecProgram ):
         """Pre-execution function, read the keywords"""
         super(ExecSalomeScript, self).configure( kwargs )
         factKw = kwargs['SALOME']
-        if not self.prog:
-            if os.environ.get('APPLI'):
-                self.prog = osp.join(os.environ['HOME'], os.environ['APPLI'],
-                                     'salome')
-            else:
-                self.prog = osp.join(aster_core.get_option('repout'),
-                                     'salome')
+        if os.environ.get('APPLI'):
+            local = osp.join(os.environ['HOME'], os.environ['APPLI'],
+                             'salome')
+        else:
+            local = osp.join(aster_core.get_option('repout'),
+                             'salome')
+        if not self.prog or factKw['MACHINE']:
+            self.prog = local
         self.args.insert(0, 'shell')
-        # XXX should be tested, '-d' ?
-        self.args.extend( ['-m', factKw['SALOME_HOST']] )
-        # self.args.extend( ['-u', factKw['SALOME_USER']] )
-        self.args.extend( ['-p', str( factKw['SALOME_PORT'] )] )
+        if factKw['MACHINE']:
+            self.args.extend( ['-m', factKw['MACHINE']] )
+            # suppose the path to salome is the same on the remote host
+            # if LOGICIEL is not provided
+            self.args.extend( ['-d', kwargs['LOGICIEL'] or local] )
+            self.args.extend( ['-u', factKw['UTILISATEUR']] )
+        self.args.extend( ['-p', str( factKw['PORT'] )] )
         # change NOM_PARA/VALE in the original script
         script = tempfile.NamedTemporaryFile(dir='.', suffix='.py').name
         writeSalomeScript( factKw['CHEMIN_SCRIPT'], script, factKw )

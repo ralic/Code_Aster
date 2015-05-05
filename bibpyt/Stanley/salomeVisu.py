@@ -80,7 +80,8 @@ class VISU:
 
         if debug:
             print "AA1/", self.salome_host, self.salome_port, self.salome_runscript, self.machine_salome_login, self.mode
-
+        if self.salome_host in (None, '', 'localhost'):
+            self.mode = 'LOCAL'
         if self.mode == 'LOCAL':
             self.salome_host = 'localhost'
 
@@ -113,29 +114,21 @@ class VISU:
 
         dSALOME = {
             'CHEMIN_SCRIPT': osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
-            'SALOME_HOST': self.salome_host,
-            'SALOME_PORT': self.salome_port,
+            'PORT': self.salome_port,
             'FICHIERS_SORTIE': ['studyList'],
         }
 
-        if self.mode == 'LOCAL':
-            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
-                          CODE_RETOUR_MAXI=-1,
-                          INFO=2,
-                          SALOME=dSALOME
-                          )
-        else:
-            dMACHINE_DISTANTE = {
-                'SSH_ADRESSE': self.salome_host,
-                'SSH_LOGIN': self.machine_salome_login
-            }
+        if self.mode != 'LOCAL':
+            dSALOME.update({
+                'MACHINE' : self.salome_host,
+                'UTILISATEUR' : self.machine_salome_login,
+            })
 
-            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
-                          CODE_RETOUR_MAXI=-1,
-                          INFO=2,
-                          SALOME=dSALOME,
-                          MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          )
+        EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                      SALOME=dSALOME,
+                      CODE_RETOUR_MAXI=-1,
+                      INFO=2,
+                      )
 
         try:
             f = open('studyList', 'r')
@@ -253,31 +246,23 @@ class ISOVALEURS(VISU):
         """
 
         dSALOME = {'CHEMIN_SCRIPT': self.chemin_script,
-                   'SALOME_HOST': self.salome_host,
-                   'SALOME_PORT': self.salome_port,
+                   'PORT': self.salome_port,
                    'FICHIERS_ENTREE': [medFilePath],
                    'NOM_PARA': ['CHOIX', 'STUDY'],
                    'VALE': [self.visuType, self.studyName],
                    }
 
-        if self.mode == 'LOCAL':
-            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
-                          CODE_RETOUR_MAXI=-1,
-                          INFO=2,
-                          SALOME=dSALOME
-                          )
-        else:
-            dMACHINE_DISTANTE = {
-                'SSH_ADRESSE': self.salome_host,
-                'SSH_LOGIN': self.machine_salome_login
-            }
+        if self.mode != 'LOCAL':
+            dSALOME.update({
+                'MACHINE' : self.salome_host,
+                'UTILISATEUR' : self.machine_salome_login,
+            })
 
-            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
-                          CODE_RETOUR_MAXI=-1,
-                          INFO=2,
-                          SALOME=dSALOME,
-                          MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          )
+        EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                      SALOME=dSALOME,
+                      CODE_RETOUR_MAXI=-1,
+                      INFO=2,
+                      )
 
         if not debug:
             try:
@@ -371,31 +356,23 @@ class COURBES(VISU):
         """
 
         dSALOME = {'CHEMIN_SCRIPT': self.chemin_script,
-                   'SALOME_HOST': self.salome_host,
-                   'SALOME_PORT': self.salome_port,
+                   'PORT': self.salome_port,
                    'FICHIERS_ENTREE': [datafile],
                    'NOM_PARA': ['CHOIX', 'STUDY'],
                    'VALE': ['COURBE', self.studyName],
                    }
 
-        if self.mode == 'LOCAL':
-            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
-                          CODE_RETOUR_MAXI=-1,
-                          INFO=2,
-                          SALOME=dSALOME
-                          )
-        else:
-            dMACHINE_DISTANTE = {
-                'SSH_ADRESSE': self.salome_host,
-                'SSH_LOGIN': self.machine_salome_login
-            }
+        if self.mode != 'LOCAL':
+            dSALOME.update({
+                'MACHINE' : self.salome_host,
+                'UTILISATEUR' : self.machine_salome_login,
+            })
 
-            EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
-                          CODE_RETOUR_MAXI=-1,
-                          INFO=2,
-                          SALOME=dSALOME,
-                          MACHINE_DISTANTE=dMACHINE_DISTANTE
-                          )
+        EXEC_LOGICIEL(LOGICIEL=self.salome_runscript,
+                      SALOME=dSALOME,
+                      CODE_RETOUR_MAXI=-1,
+                      INFO=2,
+                      )
 
         if not debug:
             try:

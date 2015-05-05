@@ -420,8 +420,10 @@ class InterfaceParametres(Frame):
         return user
 
     def get_machine_name(self):
-        """! Recupere le nom de la machine distance pour les parametres corba"""
+        """! Recupere le nom de la machine distante pour les parametres corba"""
         # on retourne le nom de la machine locale
+        # XXX on ne peut pas utiliser un salome distant,
+        #     il faudrait un utilisateur et un chemin
         import socket
         machine_name = socket.gethostname()
         return machine_name
@@ -744,14 +746,13 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
 
         dSALOME = {
             'CHEMIN_SCRIPT': osp.join(TEMPLATESDIR, 'salomeGetStudies.py'),
-            'SALOME_HOST': self.machine_name,
-            'SALOME_PORT': self.salome_port,
+            'PORT': self.salome_port,
             'FICHIERS_SORTIE': ['studyList'],
         }
 
-        EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+        EXEC_LOGICIEL(SALOME=dSALOME
+                      CODE_RETOUR_MAXI=-1,
                       INFO=2,
-                      SALOME=dSALOME
                       )
 
         f = open('studyList', 'r')
@@ -794,7 +795,7 @@ class CalcEssaiSalome(CalcEssaiLogiciel):
             return
 
         dSALOME = {'CHEMIN_SCRIPT': script,
-                   'SALOME_PORT': self.salome_port,
+                   'PORT': self.salome_port,
                    'FICHIERS_ENTREE': [medFilePath],
                    'NOM_PARA': ['CHOIX', 'STUDY'],
                    'VALE': [choix, self.study_name],
@@ -888,15 +889,15 @@ class CalcEssaiSalomeCourbes(CalcEssaiSalome):
         """
 
         dSALOME = {'CHEMIN_SCRIPT': osp.join(TEMPLATESDIR, 'salomeParaviz.py'),
-                   'SALOME_PORT': self.salome_port,
+                   'PORT': self.salome_port,
                    'FICHIERS_ENTREE': [medFilePath],
                    'NOM_PARA': ['CHOIX', 'STUDY'],
                    'VALE': ['COURBE', self.study_name],
                    }
 
-        EXEC_LOGICIEL(CODE_RETOUR_MAXI=-1,
+        EXEC_LOGICIEL(SALOME=dSALOME
+                      CODE_RETOUR_MAXI=-1,
                       INFO=2,
-                      SALOME=dSALOME
                       )
 
         UTMESS('I', 'STANLEY_20')

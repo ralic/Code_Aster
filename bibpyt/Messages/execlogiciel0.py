@@ -32,23 +32,8 @@ Code retour incorrect (MAXI %(i1)d) : %(i2)d
 
 """),
 
-    4 : _(u"""
-Le mot-clé logiciel n'est pas utilise avec ce format.
-"""),
-
-    5 : _(u"""
-Erreurs lors de l'exécution du fichier ci-dessous :
-<<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>
-%(k1)s
-<<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>
-"""),
-
     6 : _(u"""
 Le fichier %(k1)s n'existe pas.
-"""),
-
-    7 : _(u"""
-Mode de lancement inconnu : %(k1)s
 """),
 
     8 : _(u"""
@@ -70,106 +55,6 @@ Mode de lancement inconnu : %(k1)s
 
     11 : _(u"""
  Code retour = %(i2)d      (maximum toléré : %(i1)d)
-"""),
-
-    # 12 : _(u""" """),
-
-    13 : _(u"""
- -> Le maillage n'a pas été produit par le logiciel externe (format "%(k1)s")
-
- -> Conseil :
-    Vous devriez trouver ci-dessus des messages du logiciel en question
-    expliquant les raisons de cet échec.
-"""),
-
-
-
-
-    14 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . Il est probable que les clés SSH ne soient pas configurées correctement.
-
- -> Conseil :
-    Vérifier que les clés SSH sont correctement configurées sur les différentes machines.
-    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
-%(k1)s
-"""),
-
-
-    15 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . La machine distante n'a pas pus être contactée.
-
- -> Conseil :
-    Vérifier l'adresse de la machine.
-    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
-%(k1)s
-"""),
-
-
-    16 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . Le serveur SSH de la machine distante n'a pas pus être contacté.
-
- -> Conseil :
-    Vérifier le port SSH de la machine.
-    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
-%(k1)s
-"""),
-
-    17 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . Il est probable que le logiciel défini par le mot clé LOGICIEL ne soit pas présent
-      sur la machine distante.
-
- -> Conseil :
-    Vérifier le mot-clé LOGICIEL
-    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
-%(k1)s
-"""),
-
-    18 : _(u"""
- -> Il y a eu une erreur lors de la connexion à la machine distante via SSH :
-    . Soit l'adresse (ou le port SSH) de la machine n'est pas correcte.
-    . Soit les clés SSH ne sont pas configurées correctement.
-    . Soit le logiciel défini par le mot clé LOGICIEL n'est pas présent sur la machine distante.
-    . Soit une autre raison est à l'origine de cet échec.
-
- -> Conseil :
-    Vous devriez trouver ci-dessus des messages expliquant les raisons de cet échec.
-    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
-%(k1)s
-"""),
-
-    20 : _(u"""
-
-
-----------------------------------------------------------------------------------
------ Script Salomé --------------------------------------------------------------
-
-%(k1)s
-
------ fin Script Salomé ----------------------------------------------------------
-----------------------------------------------------------------------------------
-
-
-"""),
-
-    21 : _(u"""
-
-----------------------------------------------------------------------------------
------ Commandes à exécuter -------------------------------------------------------
-
-%(k1)s
-
-----------------------------------------------------------------------------------
-----------------------------------------------------------------------------------
-
-"""),
-
-    22 : _(u"""
-Les mots-clés SALOME_HOST et SSH_ADRESSE ont été définis simultanément et sont différents.
-C'est SALOME_HOST qui définira l'adresse de la machine distante.
 """),
 
     24 : _(u"""

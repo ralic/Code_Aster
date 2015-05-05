@@ -26,14 +26,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 
 EXEC_LOGICIEL(LOGICIEL='ls -la', SHELL='OUI')
 
-EXEC_LOGICIEL(LOGICIEL='pwd',
-              MACHINE_DISTANTE=_F(SSH_ADRESSE  = 'localhost',
-                                  SSH_PORT     = 22,),
-)
+EXEC_LOGICIEL(LOGICIEL='pwd', SHELL='NON')
 
 magmsh = EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
                                    UNITE_GEOM=16,),
-                       CODE_RETOUR_MAXI=1,
                        INFO=1)
 
 TEST_RESU(MAILLAGE=(
