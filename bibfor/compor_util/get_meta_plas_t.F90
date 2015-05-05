@@ -1,5 +1,5 @@
-subroutine get_meta_plas_t(poum     , fami     , kpg      , ksp      , j_mater    ,&
-                           meta_type, nb_phasis, phas_prev, phas_curr, zalpha_curr,&
+subroutine get_meta_plas_t(poum     , fami     , kpg      , ksp      , j_mater   ,&
+                           meta_type, nb_phasis, phas_prev, phas_curr, zcold_curr,&
                            kpt      , fpt)
 !
 implicit none
@@ -33,7 +33,7 @@ implicit none
     integer, intent(in) :: nb_phasis
     real(kind=8), intent(in) :: phas_prev(*)
     real(kind=8), intent(in) :: phas_curr(*)
-    real(kind=8), intent(in) :: zalpha_curr
+    real(kind=8), intent(in) :: zcold_curr
     real(kind=8), intent(out) :: kpt(*)
     real(kind=8), intent(out) :: fpt(*)
 !
@@ -57,7 +57,7 @@ implicit none
 ! In  nb_phasis    : number of phasis
 ! In  phas_prev    : previous phasis
 ! In  phas_curr    : current phasis
-! In  zalpha_curr  : sum of "cold" phasis
+! In  zcold_curr   : sum of cold phasis
 ! Out kpt          : transformation plasticity - constant k
 ! Out fpt          : transformation plasticity - function f'
 !
@@ -126,7 +126,7 @@ implicit none
         deltaz = (phas_curr(i_phasis) - phas_prev(i_phasis))
         if (deltaz .gt. 0.d0) then
             call rcvalb(fami, kpg, ksp, poum, j_mater,&
-                        ' ', 'META_PT', 1, 'META', [zalpha_curr],&
+                        ' ', 'META_PT', 1, 'META', [zcold_curr],&
                         1, nomres(i_phasis), valres(i_phasis), codret(i_phasis), 2)
             fpt(i_phasis) = valres(i_phasis)
         else

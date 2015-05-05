@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine meta_vpta_coef(rela_comp, lgpg       , fami     , kpg      , j_mater  ,&
-                              l_temp   , temp       , meta_type, nb_phasis, phas_prev,&
-                              phas_curr, zalpha_curr, young    ,  deuxmu  , coef     ,&
+    subroutine meta_vpta_coef(rela_comp, lgpg      , fami     , kpg      , j_mater  ,&
+                              l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
+                              phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
                               trans)
         character(len=16), intent(in) :: rela_comp
         integer, intent(in) :: lgpg 
@@ -31,7 +31,7 @@ interface
         integer, intent(in) :: nb_phasis
         real(kind=8), intent(in) :: phas_prev(*)
         real(kind=8), intent(in) :: phas_curr(*)
-        real(kind=8), intent(in) :: zalpha_curr
+        real(kind=8), intent(in) :: zcold_curr
         real(kind=8), intent(in) :: young
         real(kind=8), intent(in) :: deuxmu
         real(kind=8), intent(out) :: coef

@@ -15,8 +15,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine get_meta_plas_t(poum     , fami     , kpg      , ksp      , j_mater    ,&
-                               meta_type, nb_phasis, phas_prev, phas_curr, zalpha_curr,&
+    subroutine get_meta_plas_t(poum     , fami     , kpg      , ksp      , j_mater   ,&
+                               meta_type, nb_phasis, phas_prev, phas_curr, zcold_curr,&
                                kpt      , fpt)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
@@ -27,7 +27,7 @@ interface
         integer, intent(in) :: nb_phasis
         real(kind=8), intent(in) :: phas_prev(*)
         real(kind=8), intent(in) :: phas_curr(*)
-        real(kind=8), intent(in) :: zalpha_curr
+        real(kind=8), intent(in) :: zcold_curr
         real(kind=8), intent(out) :: kpt(*)
         real(kind=8), intent(out) :: fpt(*)
     end subroutine get_meta_plas_t

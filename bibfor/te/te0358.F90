@@ -63,7 +63,7 @@ implicit none
     real(kind=8) :: sig(6), sigdv(6)
     real(kind=8) :: dfdx(9), dfdy(9), dfdz(9), poids, kron(6)
     real(kind=8) :: coef, trans
-    real(kind=8) :: zalpha_curr
+    real(kind=8) :: zcold_curr
     real(kind=8) :: phas_prev(4), phas_curr(4), temp
     logical :: l_temp
 !
@@ -163,7 +163,7 @@ implicit none
         call get_meta_phasis(fami     , '-'      , ipg        , ispg, meta_type,&
                              nb_phasis, phas_prev)
         call get_meta_phasis(fami     , '+'      , ipg        , ispg, meta_type,&
-                             nb_phasis, phas_curr, zalpha = zalpha_curr)
+                             nb_phasis, phas_curr, zcold_ = zcold_curr)
 !
 ! ----- Get elastic parameters
 !
@@ -175,9 +175,9 @@ implicit none
 !
 ! ----- Compute coefficients for second member
 !
-        call meta_vpta_coef(rela_comp, lgpg       , fami     , ipg      , j_mater  ,&
-                            l_temp   , temp       , meta_type, nb_phasis, phas_prev,&
-                            phas_curr, zalpha_curr, young    ,  deuxmu  , coef     ,&
+        call meta_vpta_coef(rela_comp, lgpg      , fami     , ipg      , j_mater  ,&
+                            l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
+                            phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
                             trans)
 !
 ! ----- Compute stresses

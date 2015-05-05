@@ -53,7 +53,7 @@ subroutine metau1(l_meta)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres)
 !
-    real(kind=8) :: zalpha, zalpha_comp
+    real(kind=8) :: zcold, zhot
     real(kind=8) :: coef, coef1, coef2
     real(kind=8) :: young, nu
     real(kind=8) :: epsth, epsthe(2)
@@ -112,8 +112,8 @@ subroutine metau1(l_meta)
 !
 ! ----- Get phasis
 !
-        call get_meta_phasis('RIGI', '+', kp, ispg, meta_type,&
-                             nb_phasis, phasis, zalpha, zalpha_comp)
+        call get_meta_phasis('RIGI'   , '+'   , kp   , ispg, meta_type,&
+                             nb_phasis, phasis, zcold, zhot)
 !
 ! ----- Axi-symmetric case
 !
@@ -148,9 +148,9 @@ subroutine metau1(l_meta)
 !
 ! ----- Compute
 !
-        coef = young/(1.d0-2.d0*nu)
-        coef1 = zalpha_comp* (epsthe(1)-(1-valres(1))*valres(2))
-        coef2 = zalpha* (epsthe(2)+valres(1)*valres(2))
+        coef  = young/(1.d0-2.d0*nu)
+        coef1 = zhot* (epsthe(1)-(1-valres(1))*valres(2))
+        coef2 = zcold* (epsthe(2)+valres(1)*valres(2))
         epsth = coef1 + coef2
         poids = poids*coef*epsth
 !

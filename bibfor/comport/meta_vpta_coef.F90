@@ -1,6 +1,6 @@
-subroutine meta_vpta_coef(rela_comp, lgpg       , fami     , kpg      , j_mater  ,&
-                          l_temp   , temp       , meta_type, nb_phasis, phas_prev,&
-                          phas_curr, zalpha_curr, young    ,  deuxmu  , coef     ,&
+subroutine meta_vpta_coef(rela_comp, lgpg      , fami     , kpg      , j_mater  ,&
+                          l_temp   , temp      , meta_type, nb_phasis, phas_prev,&
+                          phas_curr, zcold_curr, young    , deuxmu   , coef     ,&
                           trans)
 !
 implicit none
@@ -42,7 +42,7 @@ implicit none
     integer, intent(in) :: nb_phasis
     real(kind=8), intent(in) :: phas_prev(*)
     real(kind=8), intent(in) :: phas_curr(*)
-    real(kind=8), intent(in) :: zalpha_curr
+    real(kind=8), intent(in) :: zcold_curr
     real(kind=8), intent(in) :: young
     real(kind=8), intent(in) :: deuxmu
     real(kind=8), intent(out) :: coef
@@ -71,7 +71,7 @@ implicit none
 ! In  nb_phasis     : number of phasis
 ! In  phas_prev     : previous phasis
 ! In  phas_curr     : current phasis
-! In  zalpha_curr   : sum of "cold" phasis
+! In  zcold_curr    : sum of cold phasis
 ! In  young         : Young modulus
 ! In  deuxmu        : e/(1.d0+nu)
 ! Out coef          : coefficient for command variable second member
@@ -123,8 +123,8 @@ implicit none
 ! - Transformation plasticity parameters
 !
     if (l_plas_tran) then
-        call get_meta_plas_t('+'      , fami     , kpg      , ksp      , j_mater    ,&
-                             meta_type, nb_phasis, phas_prev, phas_curr, zalpha_curr,&
+        call get_meta_plas_t('+'      , fami     , kpg      , ksp      , j_mater   ,&
+                             meta_type, nb_phasis, phas_prev, phas_curr, zcold_curr,&
                              kpt      , fpt)
     endif
 !
@@ -155,7 +155,7 @@ implicit none
 ! ----- Mixing law: yield
 !
         call get_meta_mixd('+'   , fami     , kpg      , ksp        , j_mater     ,&
-                           l_visc, meta_type, nb_phasis, zalpha_curr, fmel  = fmel)
+                           l_visc, meta_type, nb_phasis, zcold_curr, fmel  = fmel)
 !
 ! ----- Get point on hardening curve
 !
@@ -166,11 +166,11 @@ implicit none
 ! ----- Compute coefficient
 !
         rprim = 0.d0
-        if (zalpha_curr .gt. 0.d0) then
+        if (zcold_curr .gt. 0.d0) then
             do i_phasis = 1, nb_phasis
                 rprim = rprim + phas_curr(i_phasis)*r0(i_phasis)
             end do
-            rprim = rprim/zalpha_curr
+            rprim = rprim/zcold_curr
         else
             rprim = 0.d0
         endif

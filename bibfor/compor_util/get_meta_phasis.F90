@@ -1,5 +1,5 @@
-subroutine get_meta_phasis(fami     , poum  , ipg   , ispg       , meta_type, &
-                           nb_phasis, phasis, zalpha, zalpha_comp)
+subroutine get_meta_phasis(fami     , poum  , ipg   , ispg , meta_type,&
+                           nb_phasis, phasis, zcold_, zhot_)
 !
 implicit none
 !
@@ -30,8 +30,8 @@ implicit none
     integer, intent(in) :: meta_type
     integer, intent(in) :: nb_phasis
     real(kind=8), intent(out) :: phasis(*)
-    real(kind=8), optional, intent(out) :: zalpha
-    real(kind=8), optional, intent(out) :: zalpha_comp
+    real(kind=8), optional, intent(out) :: zcold_
+    real(kind=8), optional, intent(out) :: zhot_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,14 +51,14 @@ implicit none
 !                       2 - Zirconium
 ! In  nb_phasis    : number of phasis
 ! Out phasis       : phasis
-! Out zalpha       : sum of nb_phase phasis
-! Out zalpha_comp  : complementary of zalpha
+! Out zcold        : sum of cold phasis
+! Out zhot         : hot phasis
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: steel(4), zirc(2)
     integer :: i_phasis, iret
-    real(kind=8) :: zalpha_in
+    real(kind=8) :: zcold
 !
     data steel /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
     data zirc  /'ALPHPUR','ALPHBETA'/
@@ -83,15 +83,15 @@ implicit none
         endif
     end do
 !
-    zalpha_in = 0.d0
+    zcold = 0.d0
     do i_phasis = 1, nb_phasis
-        zalpha_in = zalpha_in + phasis(i_phasis)
+        zcold = zcold + phasis(i_phasis)
     end do
 !
-    if (present(zalpha)) then
-        zalpha      = zalpha_in
+    if (present(zcold_)) then
+        zcold_ = zcold
     endif
-    if (present(zalpha_comp)) then
-        zalpha_comp = 1.d0 - zalpha 
+    if (present(zhot_)) then
+        zhot_  = 1.d0 - zcold 
     endif
 end subroutine
