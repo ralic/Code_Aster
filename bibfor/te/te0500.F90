@@ -282,7 +282,7 @@ subroutine te0500(option, nomte)
 !
 ! --- BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 10 , ipi = 1,npg
+    do ipi = 1,npg
 !
     kpi = ipi
 !
@@ -306,13 +306,12 @@ subroutine te0500(option, nomte)
 !
         tertps = tertps + raux*poids2*((fluhpx-fluhmx)**2+(fluhpy- fluhmy)**2)
 !
-        tertps = tertps + raux*poids2*((fluhpx-fluhmx)**2+(fluhpy- fluhmy)**2)
     else
         iaux = lxlgut(option)
         call utmess('F', 'INDICATEUR_92', sk=option(1:iaux))
     endif
 !
-    10 end do
+    end do
 !
 ! --- FIN BOUCLE SUR LES POINTS DE GAUSS
 !

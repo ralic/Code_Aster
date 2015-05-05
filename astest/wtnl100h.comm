@@ -178,7 +178,7 @@ for k in range(1,nbadap+1):
                       RESULTAT=RESU_1,
                       NOM_CHAM='ERME_NOEU',
                       NOM_CMP='ESTERG1',
-                      VALE_CALC=5.2034169568591E-03,
+                      VALE_CALC=0.00520341695686,
                       CRITERE='RELATIF',
                       ),
               )
@@ -186,7 +186,7 @@ for k in range(1,nbadap+1):
     TEST_RESU(RESU=_F(PARA='ERRE_TPS_GLOB',
                       INST=250.0,
                       RESULTAT=RESU_1,
-                      VALE_CALC=0.135001800617,
+                      VALE_CALC=0.0954606886887,
 
                       CRITERE='RELATIF',
                       ),
