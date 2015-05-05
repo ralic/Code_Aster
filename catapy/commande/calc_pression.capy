@@ -24,7 +24,7 @@
 CALC_PRESSION=MACRO(nom="CALC_PRESSION",
                     op=OPS('Macro.calc_pression_ops.calc_pression_ops'),
                     sd_prod=cham_no_sdaster,
-                    fr="Calcul de la pression nodale sur une interface a partir de SIEF_NOEUD. Cette option n existe que pour les éléments isoparamétriques.",
+                    fr="Calcul de la pression nodale sur une interface a partir de SIEF_NOEU. Cette option n existe que pour les éléments isoparamétriques.",
 
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli)),
