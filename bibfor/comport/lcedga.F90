@@ -14,6 +14,7 @@ implicit none
 #include "asterfort/edgrep.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/rcvarc.h"
+#include "asterfort/verift.h"
 #include "asterfort/get_meta_phasis.h"
 !
 ! ======================================================================
@@ -81,11 +82,11 @@ implicit none
     real(kind=8) :: phase(3), phasm(3), zalpha
     real(kind=8) :: zero, prec, rbid
     real(kind=8) :: kron(6)
-    real(kind=8) :: mum, mu, troikm, troisk, alpham, alphap, anic(6, 6)
+    real(kind=8) :: mum, mu, troiskm, troisk, anic(6, 6)
     real(kind=8) :: ani(6, 6)
     real(kind=8) :: m(3), n(3), gamma(3), depsth
     real(kind=8) :: deps(2*ndim), sigm(2*ndim)
-    real(kind=8) :: trdeps, trsigm, trsigp
+    real(kind=8) :: trdeps, trsigm, trsigp, epsthe(3)
     real(kind=8) :: dvdeps(2*ndim), dvepel(2*ndim)
     real(kind=8) :: dvsigm(2*ndim), dvsitr(2*ndim), dvsigp(2*ndim)
     real(kind=8) :: eqsitr, eqeptr
@@ -165,10 +166,10 @@ implicit none
 ! REPERE (R - T - Z) DONC IL FAUT FAIRE UN CHANGEMENT DE REPERE
 ! EN AXI C EST SIMPLE CAR IL SUFFIT D INVERSER LES TERMES 2 ET 3
 !
-    call edgmat(fami, kpg, ksp, imat, c1,&
-                zalpha, temp, dt, mum, mu,&
-                troikm, troisk, alpham, alphap, anic,&
-                m, n, gamma,zcylin)
+    call edgmat(fami   , kpg   , ksp   , imat  , c1 ,&
+                zalpha , temp  , dt    , mum   , mu ,&
+                troiskm, troisk, anic  , m     , n  ,&
+                gamma  , zcylin)
 !
 ! CHANGEMENT DE REPERE DE LA MATRICE D ANISOTROPIE
 ! SEULEMENT SI ON EST EN COORDONNEES CYLINDRIQUES
@@ -206,10 +207,12 @@ implicit none
 !
 ! 3.2 - TRACE
 !
-        depsth = alphap*(tp-tref) - alpham*(tm-tref)
+        call verift(fami, kpg, ksp, 'T', imat,&
+                    vepsth=epsthe)
+        depsth = phase(nz)*epsthe(1) + zalpha*epsthe(2)
         trdeps = (deps(1)+deps(2)+deps(3))/3.d0
         trsigm = (sigm(1)+sigm(2)+sigm(3))/3.d0
-        trsigp = trsigm*troisk/troikm + troisk*(trdeps-depsth)
+        trsigp = trsigm*troisk/troiskm + troisk*(trdeps-depsth)
 !
 ! 3.3 - DEVIATEUR DE LA CONTRAINTE ESSAI CONNUE DVSITR
 !

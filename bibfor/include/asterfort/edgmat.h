@@ -16,28 +16,26 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine edgmat(fami, kpg, ksp, imat, c1,&
-                      zalpha, temp, dt, mum, mu,&
-                      troikm, troisk, alpham, alphap, ani,&
-                      m, n, gamma,zcylin)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imat
-        character(len=1) :: c1
-        real(kind=8) :: zalpha
-        real(kind=8) :: temp
-        real(kind=8) :: dt
-        real(kind=8) :: mum
-        real(kind=8) :: mu
-        real(kind=8) :: troikm
-        real(kind=8) :: troisk
-        real(kind=8) :: alpham
-        real(kind=8) :: alphap
-        real(kind=8) :: ani(6, 6)
-        real(kind=8) :: m(3)
-        real(kind=8) :: n(3)
-        real(kind=8) :: gamma(3)
-        logical :: zcylin
+    subroutine edgmat(fami   , kpg   , ksp   , imat  , c1 ,&
+                      zalpha , temp  , dt    , mum   , mu ,&
+                      troiskm, troisk, ani   , m     , n  ,&
+                      gamma  , zcylin)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: imat
+        character(len=1), intent(in) :: c1
+        real(kind=8), intent(in) :: zalpha
+        real(kind=8), intent(in) :: temp
+        real(kind=8), intent(in) :: dt
+        real(kind=8), intent(out) :: mum
+        real(kind=8), intent(out) :: mu
+        real(kind=8), intent(out) :: troiskm
+        real(kind=8), intent(out) :: troisk
+        real(kind=8), intent(out) :: ani(6, 6)
+        real(kind=8), intent(out) :: m(3)
+        real(kind=8), intent(out) :: n(3)
+        real(kind=8), intent(out) :: gamma(3)
+        logical, intent(out) :: zcylin
     end subroutine edgmat
 end interface

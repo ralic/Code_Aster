@@ -1,20 +1,14 @@
-subroutine edgmat(fami, kpg, ksp, imat, c1,&
-                  zalpha, temp, dt, mum, mu,&
-                  troikm, troisk, alpham, alphap, ani,&
-                  m, n, gamma,zcylin)
+subroutine edgmat(fami   , kpg   , ksp   , imat  , c1 ,&
+                  zalpha , temp  , dt    , mum   , mu ,&
+                  troiskm, troisk, ani   , m     , n  ,&
+                  gamma  , zcylin)
 !
-    implicit none
+implicit none
 !
-!
+#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: kpg, ksp, imat
-    logical :: zcylin
-    real(kind=8) :: zalpha, temp, dt
-    real(kind=8) :: mum, mu, troikm, troisk, alpham, alphap, ani(6, 6)
-    real(kind=8) :: m(3), n(3), gamma(3)
-    character(len=*) :: fami
-    character(len=1) :: c1
+#include "asterfort/get_elas_para.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +27,26 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! ----------------------------------------------------------------------
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: imat
+    character(len=1), intent(in) :: c1
+    real(kind=8), intent(in) :: zalpha
+    real(kind=8), intent(in) :: temp
+    real(kind=8), intent(in) :: dt
+    real(kind=8), intent(out) :: mum
+    real(kind=8), intent(out) :: mu
+    real(kind=8), intent(out) :: troiskm
+    real(kind=8), intent(out) :: troisk
+    real(kind=8), intent(out) :: ani(6, 6)
+    real(kind=8), intent(out) :: m(3)
+    real(kind=8), intent(out) :: n(3)
+    real(kind=8), intent(out) :: gamma(3)
+    logical, intent(out) :: zcylin
+!
+! --------------------------------------------------------------------------------------------------
+!
 !    MODELE VISCOPLASTIQUE SANS SEUIL DE EDGAR
 !    RECUPERATION DES CARACTERISTIQUES MATERIAUX
 !  IN  FAMI :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
@@ -46,49 +59,38 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !  OUT MU     : COEFFICIENT DE L ELASTICITE A L INSTANT COURANT
 !  OUT TROIKM : COEFFICIENT DE L ELASTICITE A L INSTANT MOINS
 !  OUT TROISK : COEFFICIENT DE L ELASTICITE A L INSTANT COURANT
-!  OUT ALPHAM : DILATATION THERMIQUE A L INSTANT MOINS
-!  OUT ALPHAP : DILATATION THERMIQUE A L INSTANT COURANT
 !  OUT ANI    : MATRICE D ANISOTROPIE DE HILL
 !  OUT M, N ET GAMMA : COEFFICIENT DE VISCOSITE A L INSTANT COURANT
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: i, j, k
-    real(kind=8) :: valres(27), a(3), q(3), fmel(3), val(2)
+    real(kind=8) :: valres(27), a(3), q(3), fmel(3)
     real(kind=8) :: m11(2), m22(2), m33(2), m44(2), m55(2), m66(2)
     real(kind=8) :: m12(2), m13(2), m23(2)
-    integer :: icodre(27)
+    real(kind=8) :: young, nu, youngm, num
+    integer :: icodre(27), elas_type
     character(len=8) :: nomc(27)
 !
-! 1 - CARACTERISTIQUES ELASTIQUES
-!     YOUNG ET NU OBLIGATOIRES
-!     ALPHA FACULTATIFS
+! --------------------------------------------------------------------------------------------------
 !
-!-----------------------------------------------------------------------
-    nomc(1) = 'E       '
-    nomc(2) = 'NU      '
-    nomc(3) = 'F_ALPHA '
-    nomc(4) = 'C_ALPHA '
+    nomc(1:27)   = ' '
+    valres(1:27) = 0.d0
+    icodre(1:27) = 0
 !
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                2, nomc, valres, icodre, 2)
-    mum = valres(1)/(2.d0*(1.d0+valres(2)))
-    troikm = valres(1)/(1.d0-2.d0*valres(2))
+! - Get elastic parameters (only isotropic elasticity)
 !
-    call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                2, nomc, valres, icodre, 2)
-    mu = valres(1)/(2.d0*(1.d0+valres(2)))
-    troisk = valres(1)/(1.d0-2.d0*valres(2))
+    call get_elas_para(fami, imat, '-', kpg, ksp,&
+                       elas_type, e = youngm, nu = num)
+    ASSERT(elas_type.eq.1)
+    mum     = youngm/(2.d0*(1.d0+num))
+    troiskm = youngm/(1.d0-2.d0*num)
 !
-    call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                2, nomc(3), val, icodre(3), 2)
-    alpham=val(1)*zalpha + val(2)*(1.d0-zalpha)
-!
-    call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'ELAS_META', 0, ' ', [0.d0],&
-                2, nomc(3), val, icodre(3), 2)
-    alphap=val(1)*zalpha + val(2)*(1.d0-zalpha)
+    call get_elas_para(fami, imat, c1, kpg, ksp,&
+                       elas_type, e = young, nu = nu)
+    ASSERT(elas_type.eq.1)
+    mu      = young/(2.d0*(1.d0+nu))
+    troisk  = young/(1.d0-2.d0*nu)
 !
 ! 2 - MATRICE D ANISOTROPIE
 ! 2.1 - TEST POUR SAVOIR SI ON EST EN COORDONNEES
@@ -99,18 +101,18 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
                 ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
                 1, nomc(16), valres(16), icodre(16), 0)
     if (icodre(16).eq.0) then
-      m11(1)=valres(16)
-    else
-      nomc(16)= 'F_MXX_XX'
-      call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
-                1, nomc(16), valres(16), icodre(16), 0)
-      if (icodre(16).eq.0) then
         m11(1)=valres(16)
-        zcylin=.false.
-      else
-        call utmess('F', 'ALGORITH17_42')
-      endif
+    else
+        nomc(16)= 'F_MXX_XX'
+        call rcvalb(fami, kpg, ksp, c1, imat,&
+                    ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
+                    1, nomc(16), valres(16), icodre(16), 0)
+        if (icodre(16).eq.0) then
+            m11(1)=valres(16)
+            zcylin=.false.
+        else
+            call utmess('F', 'ALGORITH17_42')
+        endif
     endif
 
 
@@ -119,84 +121,84 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !       PHASE CHAUDE => INDICE 2
 !
     if (zcylin) then
-      nomc(17)= 'C_MRR_RR'
-      nomc(18)= 'F_MTT_TT'
-      nomc(19)= 'C_MTT_TT'
-      nomc(20)= 'F_MZZ_ZZ'
-      nomc(21)= 'C_MZZ_ZZ'
-      nomc(22)= 'F_MRT_RT'
-      nomc(23)= 'C_MRT_RT'
-      nomc(24)= 'F_MRZ_RZ'
-      nomc(25)= 'C_MRZ_RZ'
-      nomc(26)= 'F_MTZ_TZ'
-      nomc(27)= 'C_MTZ_TZ'
+        nomc(17)= 'C_MRR_RR'
+        nomc(18)= 'F_MTT_TT'
+        nomc(19)= 'C_MTT_TT'
+        nomc(20)= 'F_MZZ_ZZ'
+        nomc(21)= 'C_MZZ_ZZ'
+        nomc(22)= 'F_MRT_RT'
+        nomc(23)= 'C_MRT_RT'
+        nomc(24)= 'F_MRZ_RZ'
+        nomc(25)= 'C_MRZ_RZ'
+        nomc(26)= 'F_MTZ_TZ'
+        nomc(27)= 'C_MTZ_TZ'
 !
-      call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
-                11, nomc(17), valres(17), icodre(17), 2)
+        call rcvalb(fami, kpg, ksp, c1, imat,&
+                    ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
+                    11, nomc(17), valres(17), icodre(17), 2)
 !
-      m22(1)=valres(18)
-      m33(1)=valres(20)
-      m44(1)=valres(22)
-      m55(1)=valres(24)
-      m66(1)=valres(26)
+        m22(1)=valres(18)
+        m33(1)=valres(20)
+        m44(1)=valres(22)
+        m55(1)=valres(24)
+        m66(1)=valres(26)
 !
-      m11(2)=valres(17)
-      m22(2)=valres(19)
-      m33(2)=valres(21)
-      m44(2)=valres(23)
-      m55(2)=valres(25)
-      m66(2)=valres(27)
+        m11(2)=valres(17)
+        m22(2)=valres(19)
+        m33(2)=valres(21)
+        m44(2)=valres(23)
+        m55(2)=valres(25)
+        m66(2)=valres(27)
     else
-      nomc(17)= 'C_MXX_XX'
-      nomc(18)= 'F_MYY_YY'
-      nomc(19)= 'C_MYY_YY'
-      nomc(20)= 'F_MZZ_ZZ'
-      nomc(21)= 'C_MZZ_ZZ'
-      nomc(22)= 'F_MXY_XY'
-      nomc(23)= 'C_MXY_XY'
-      nomc(24)= 'F_MXZ_XZ'
-      nomc(25)= 'C_MXZ_XZ'
-      nomc(26)= 'F_MYZ_YZ'
-      nomc(27)= 'C_MYZ_YZ'
+        nomc(17)= 'C_MXX_XX'
+        nomc(18)= 'F_MYY_YY'
+        nomc(19)= 'C_MYY_YY'
+        nomc(20)= 'F_MZZ_ZZ'
+        nomc(21)= 'C_MZZ_ZZ'
+        nomc(22)= 'F_MXY_XY'
+        nomc(23)= 'C_MXY_XY'
+        nomc(24)= 'F_MXZ_XZ'
+        nomc(25)= 'C_MXZ_XZ'
+        nomc(26)= 'F_MYZ_YZ'
+        nomc(27)= 'C_MYZ_YZ'
 !
-      call rcvalb(fami, kpg, ksp, c1, imat,&
-                ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
-                11, nomc(17), valres(17), icodre(17), 2)
+        call rcvalb(fami, kpg, ksp, c1, imat,&
+                    ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
+                    11, nomc(17), valres(17), icodre(17), 2)
 !
-      m22(1)=valres(18)
-      m33(1)=valres(20)
-      m44(1)=valres(22)
-      m55(1)=valres(24)
-      m66(1)=valres(26)
+        m22(1)=valres(18)
+        m33(1)=valres(20)
+        m44(1)=valres(22)
+        m55(1)=valres(24)
+        m66(1)=valres(26)
 !
-      m11(2)=valres(17)
-      m22(2)=valres(19)
-      m33(2)=valres(21)
-      m44(2)=valres(23)
-      m55(2)=valres(25)
-      m66(2)=valres(27)
+        m11(2)=valres(17)
+        m22(2)=valres(19)
+        m33(2)=valres(21)
+        m44(2)=valres(23)
+        m55(2)=valres(25)
+        m66(2)=valres(27)
     endif
 
 !
 ! 2.3 - ON COMPLETE LA MATRICE MIJ(1) ET MIJ(2)
 !
-    do 5 k = 1, 2
+    do k = 1, 2
         m12(k)=(-m11(k)-m22(k)+m33(k))/2.d0
         m13(k)=(-m11(k)+m22(k)-m33(k))/2.d0
         m23(k)=( m11(k)-m22(k)-m33(k))/2.d0
- 5  continue
+    end do
 !
 ! 2.4 - ON CONSTRUIT ANI(I,J) SUIVANT LE % DE PHASE FROIDE
 ! SI 0   <ZALPHA<0.01 => ANI(I,J)=MIJ(2)
 ! SI 0.01<ZALPHA<0.99 => ANI(I,J)=ZALPHA*MIJ(1)+(1-ZALPHA)*MIJ(2)
 ! SI 0.99<ZALPHA<1    => ANI(I,J)=MIJ(1)
 !
-    do 10 i = 1, 6
-        do 15 j = 1, 6
+    do i = 1, 6
+        do j = 1, 6
             ani(i,j)=0.d0
-15      continue
-10  continue
+        end do
+    end do
 !
     if (zalpha .le. 0.01d0) then
         ani(1,1)=m11(2)
@@ -263,12 +265,12 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
                 ' ', 'META_LEMA_ANI', 0, ' ', [0.d0],&
                 12, nomc(4), valres(4), icodre(4), 2)
 !
-    do 20 k = 1, 3
+    do k = 1, 3
         a(k)=valres(4+k-1)
         m(k)=valres(7+k-1)
         n(k)=1.d0/valres(10+k-1)
         q(k)=valres(13+k-1)
-20  continue
+    end do
 !
 ! 3.2 - LOI DES MELANGES FMEL SUR LA CONTRAINTE VISQUEUSE
 !
@@ -304,13 +306,13 @@ subroutine edgmat(fami, kpg, ksp, imat, c1,&
 !
 ! 3.3 - PARAMETRE INTERVENANT DANS LA CONTRAINTE VISQUEUSE
 !
-    do 25 k = 1, 3
+    do k = 1, 3
         gamma(k)=fmel(k)*a(k)
         if (gamma(k) .ne. 0.d0) then
             gamma(k)=log(gamma(k))-log(2.d0*mu)-n(k)*log(dt)
             gamma(k)=gamma(k)+(n(k)*q(k)/(temp+273.d0))
             gamma(k)=exp(gamma(k))
         endif
-25  continue
+    end do
 !
 end subroutine
