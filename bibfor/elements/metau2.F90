@@ -55,7 +55,7 @@ subroutine metau2(l_meta)
     real(kind=8) :: zcold, zhot
     real(kind=8) :: coef, coef1, coef2
     real(kind=8) :: young, nu
-    real(kind=8) :: epsth, epsthe(2)
+    real(kind=8) :: epsth, epsthe(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: poids
     real(kind=8) :: phasis(7)

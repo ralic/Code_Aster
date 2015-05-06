@@ -96,7 +96,7 @@ subroutine nzisfw(fami, kpg, ksp, ndim, imat,&
 !
     real(kind=8) :: rbid, precr
     real(kind=8) :: kron(6)
-    real(kind=8) :: valres(20), epsthe(2)
+    real(kind=8) :: valres(20), epsthe(3)
 !
     character(len=1) :: c1
     integer :: icodre(20), test

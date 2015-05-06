@@ -70,7 +70,7 @@ subroutine lcgdpm(fami, kpg, ksp, ndim, imat,&
     integer :: ind(3, 3), nbr
 !
     real(kind=8) :: phase(5), phasm(5), zalpha
-    real(kind=8) :: temp, dt, epsthe(2)
+    real(kind=8) :: temp, dt, epsthe(3)
 !
     real(kind=8) :: epsth, e, nu, mu, mum, troisk
     real(kind=8) :: fmel, sy(5), h(5), hmoy, hplus(5), r(5), rmoy

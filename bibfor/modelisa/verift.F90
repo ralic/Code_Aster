@@ -37,7 +37,7 @@ implicit none
     character(len=8), optional, intent(in) :: materi_
     integer, optional, intent(out) :: iret
     real(kind=8), optional, intent(out) :: epsth
-    real(kind=8), optional, intent(out) :: vepsth(*)
+    real(kind=8), optional, intent(out) :: vepsth(3)
     real(kind=8), optional, intent(out) :: temp_prev_
     real(kind=8), optional, intent(out) :: temp_curr_
     real(kind=8), optional, intent(out) :: temp_refe_

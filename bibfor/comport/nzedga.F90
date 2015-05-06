@@ -82,7 +82,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat,&
 !
     real(kind=8) :: epsth, e, deuxmu, deumum, troisk
     real(kind=8) :: fmel(1), sy(3), h(3), hmoy, hplus(3), r(3), rmoy
-    real(kind=8) :: theta(4), epsthe(2)
+    real(kind=8) :: theta(4), epsthe(3)
     real(kind=8) :: eta(5), n(3), unsurn(5), c(3), m(3), cmoy, mmoy, cr
     real(kind=8) :: dz(2), dz1(2), dz2(2), vi(3), dvin, vimoy, ds
     real(kind=8) :: trans, kpt(2), zvarim, zvarip, deltaz
