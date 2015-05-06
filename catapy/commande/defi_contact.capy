@@ -484,7 +484,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
                                                             fr=tr("Paramètres du frottement de Coulomb"),
                                                             COULOMB    = SIMP(statut='o',typ='R',),
-                                                            SEUIL_INIT = SIMP(statut='f',typ='R',defaut=0.E+0),
+                                                            SEUIL_INIT = SIMP(statut='f',typ='R'),
 #
                                           regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
                                                   SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),

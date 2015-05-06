@@ -41,7 +41,7 @@ function cfmmvd(vect)
     integer :: zmeth, ztole, ztabf
     parameter (zmeth=22,ztole=3 ,ztabf=34)
     integer :: zcmcf, ztgde, zdirn, zdime
-    parameter (zcmcf=12,ztgde=6 ,zdirn=6 ,zdime = 18)
+    parameter (zcmcf=13,ztgde=6 ,zdirn=6 ,zdime = 18)
     integer :: zpoud, ztypm, zperc, ztypn
     parameter (zpoud=3 ,ztypm=2 ,zperc=4 ,ztypn = 2)
     integer :: zmesx, zapme, zmaes

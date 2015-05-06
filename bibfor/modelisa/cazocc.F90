@@ -59,7 +59,7 @@ subroutine cazocc(char, motfac, izone)
     integer :: jcmcf, jexclf
     character(len=16) :: glis, integ, staco0, algoc, algof
     real(kind=8) :: rexclf, direxf(3)
-    real(kind=8) :: coefff, seuili
+    real(kind=8) :: coefff, seuili,seuil_auto
     real(kind=8) :: coefaf, coefac
     real(kind=8) :: algocr, algofr
     real(kind=8) :: typint, ctrini
@@ -86,6 +86,7 @@ subroutine cazocc(char, motfac, izone)
     coefff = 0.d0
     coefaf = 100.d0
     seuili = 0.d0
+    seuil_auto = 0.0
     ctrini = 0.d0
     lintno = .false.
     lsscon = .false.
@@ -177,6 +178,7 @@ subroutine cazocc(char, motfac, izone)
     if (lfrot) then
         call getvr8(motfac, 'COULOMB', iocc=izone, scal=coefff, nbret=noc)
         call getvr8(motfac, 'SEUIL_INIT', iocc=izone, scal=seuili, nbret=noc)
+        if (noc .eq. 0) seuil_auto = 1.0
         if (coefff .eq. 0.d0) then
             coefaf = 0.d0
             algofr = 0.d0
@@ -284,6 +286,7 @@ subroutine cazocc(char, motfac, izone)
     zr(jexclf-1+zexcl*(izone-1)+1) = direxf(1)
     zr(jexclf-1+zexcl*(izone-1)+2) = direxf(2)
     zr(jexclf-1+zexcl*(izone-1)+3) = direxf(3)
+    zr(jcmcf-1+zcmcf*(izone-1)+13) = seuil_auto
 !
     call jedema()
 end subroutine
