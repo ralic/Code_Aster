@@ -2,7 +2,9 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                   crit, typmod, instam, instap, coord,&
                   deps2, sigm2, vim, option, sigp,&
                   vip, dsidep, iret)
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/edgani.h"
@@ -12,15 +14,8 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 #include "asterfort/edgrep.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/rcvarc.h"
-    integer :: ndim, imat, iret, kpg, ksp
-    character(len=16) :: option
-    character(len=8) :: typmod(2)
-    character(len=*) :: fami
-    real(kind=8) :: crit(3), instam, instap, coord(3)
-    real(kind=8) :: deps2(6)
-    real(kind=8) :: sigm2(6), vim(2), sigp(6), vip(2)
-    real(kind=8) :: dsidep(6, 6)
-! ----------------------------------------------------------------------
+#include "asterfort/get_meta_phasis.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +33,17 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! ----------------------------------------------------------------------
+    integer :: ndim, imat, iret, kpg, ksp
+    character(len=16) :: option
+    character(len=8) :: typmod(2)
+    character(len=*) :: fami
+    real(kind=8) :: crit(3), instam, instap, coord(3)
+    real(kind=8) :: deps2(6)
+    real(kind=8) :: sigm2(6), vim(2), sigp(6), vip(2)
+    real(kind=8) :: dsidep(6, 6)
+!
+! --------------------------------------------------------------------------------------------------
+!
 !     MODELE VISCOPLASTIQUE SANS SEUIL DE EDGAR
 !     INTEGRATION DU MODELE PAR UNE METHODE DE NEWTON
 ! IN  NDIM    : DIMENSION DE L'ESPACE
@@ -66,11 +71,12 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !                              IRET=1 => ECHEC
 !               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 !               L'ORDRE :  XX YY ZZ SQRT(2)XY SQRT(2)XZ SQRT(2)YZ
-! ----------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: i, j, k, nz, ndimsi
     integer :: ire2
-    integer :: iter, itemax
+    integer :: iter, itemax, nb_phasis, meta_type
     real(kind=8) :: tm, tp, tref, temp, dt
     real(kind=8) :: phase(3), phasm(3), zalpha
     real(kind=8) :: zero, prec, rbid
@@ -87,15 +93,11 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
     real(kind=8) :: y(2*ndim+1), g(2*ndim+1), maxg, dgdy(2*ndim+1, 2*ndim+1)
     real(kind=8) :: vect(2*ndim), mat(2*ndim+1, 2*ndim+1)
     real(kind=8) :: r1(2*ndim+1, 2*ndim), h1(2*ndim, 2*ndim)
-!
     character(len=1) :: c1
-    character(len=8) :: zirc(2)
     aster_logical :: resi, rigi
     logical :: zcylin
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
+!
     data          kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
-    data          zirc /'ALPHPUR','ALPHBETA'/
 !
 ! LEXIQUE SUR LE NOM DES VARIABLES VALABLES DANS TOUTES LES ROUTINES
 ! INDICE I QUAND SOMMATION SUR LA DIMENSION DE L ESPACE
@@ -104,9 +106,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 ! DVX POUR LA PARTIE DEVIATORIQUE DE X
 ! EQX POUR EQUIVALENT AU SENS DE HILL
 !
-! *******************
-! 1 - INITIALISATION
-! *******************
+! --------------------------------------------------------------------------------------------------
 !
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
@@ -117,9 +117,11 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
         ndimsi=6
     endif
 !
-    zero=100.d0*r8prem()
-    dt = instap-instam
+    zero = 100.d0*r8prem()
+    dt   = instap-instam
     iret = 0
+!
+! - Get temperatures
 !
     call rcvarc('F', 'TEMP', '-', fami, kpg,&
                 ksp, tm, ire2)
@@ -127,47 +129,32 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                 1, tref, ire2)
     call rcvarc('F', 'TEMP', '+', fami, kpg,&
                 ksp, tp, ire2)
-!
-! 1.1 - NOMBRE DE PHASES
-!
-    nz=3
-!
-! 1.2 - RECUPERATION DES PHASES METALLURGIQUES
-!
     if (resi) then
-!
         temp=tp
         c1='+'
-        do 5 k = 1, nz-1
-            call rcvarc(' ', zirc(k), '+', fami, kpg,&
-                        ksp, phase(k), ire2)
-            if (ire2 .eq. 1) phase(k)=0.d0
-            call rcvarc(' ', zirc(k), '-', fami, kpg,&
-                        ksp, phasm(k), ire2)
-            if (ire2 .eq. 1) phasm(k)=0.d0
-  5     continue
-!
     else
-!
         temp=tm
         c1='-'
-        do 10 k = 1, nz-1
-            call rcvarc(' ', zirc(k), '-', fami, kpg,&
-                        ksp, phase(k), ire2)
-            if (ire2 .eq. 1) phase(k)=0.d0
- 10     continue
-!
     endif
 !
-    zalpha=phase(1)+phase(2)
-    phase(nz)=1.d0-zalpha
+! - Get metallurgical phasis
 !
-! 1.3 - TEST SUR LES PHASES
-!
-    do 15 k = 1, nz
+    meta_type = 2
+    nz        = 3
+    nb_phasis = 2
+    if (resi) then
+        call get_meta_phasis(fami     , '+'  , kpg   , ksp , meta_type,&
+                             nb_phasis, phase, zcold_ = zalpha, zhot_ = phase(nz))
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+                             nb_phasis, phasm)
+    else
+        call get_meta_phasis(fami     , '-'  , kpg   , ksp , meta_type,&
+                             nb_phasis, phase, zcold_ = zalpha, zhot_ = phase(nz))
+    endif
+    do k = 1, nz
         if (phase(k) .le. zero) phase(k)=0.d0
         if (phase(k) .ge. 1.d0) phase(k)=1.d0
- 15 continue
+    end do
     if (zalpha .le. zero) zalpha=0.d0
     if (zalpha .ge. 1.d0) zalpha=1.d0
 !
@@ -187,13 +174,13 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 ! SEULEMENT SI ON EST EN COORDONNEES CYLINDRIQUES
 !
     if (zcylin) then
-      call edgrep(typmod, coord, anic, ani)
+        call edgrep(typmod, coord, anic, ani)
     else
-      do 16 i = 1,6
-        do 17 k = 1,6
-          ani(i,k) = anic(i,k)
- 17     continue
- 16   continue
+        do i = 1,6
+            do k = 1,6
+                ani(i,k) = anic(i,k)
+            end do
+        end do
     endif
 !
     if (resi) then
@@ -208,14 +195,14 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 ! 3.1 - JE PREFERE REPASSER LES CONTRAINTES ET DEFORMATIONS
 !       SANS LE SQRT(2)
 !
-        do 20 i = 1, ndimsi
+        do i = 1, ndimsi
             sigm(i)=sigm2(i)
             deps(i)=deps2(i)
             if (i .ge. 4) then
                 sigm(i)=sigm2(i)/sqrt(2.d0)
                 deps(i)=deps2(i)/sqrt(2.d0)
             endif
- 20     continue
+        end do
 !
 ! 3.2 - TRACE
 !
@@ -226,14 +213,13 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !
 ! 3.3 - DEVIATEUR DE LA CONTRAINTE ESSAI CONNUE DVSITR
 !
-        do 25 i = 1, ndimsi
+        do i = 1, ndimsi
             dvdeps(i) = deps(i) - trdeps * kron(i)
             dvsigm(i) = sigm(i) - trsigm * kron(i)
- 25     continue
-!
-        do 30 i = 1, ndimsi
+        end do
+        do i = 1, ndimsi
             dvsitr(i) = mu*dvsigm(i)/mum + 2.d0*mu*dvdeps(i)
- 30     continue
+        end do
 !
 ! 3.4 - CONTRAINTE EQUIVALENTE ESSAI CONNUE EQSITR
 !
@@ -248,13 +234,11 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !       ALORS SIGP=DVSITR + TRSIGP ET VIP(1)=VIM(1)
 !
         if (eqeptr .le. 1.d-05) then
-!
-            do 35 i = 1, ndimsi
+            do i = 1, ndimsi
                 sigp(i) = dvsitr(i)+trsigp*kron(i)
- 35         continue
+            end do
             vip(1)=vim(1)
             vip(2)=0.d0
-!
         else
 !
 ! 4.2 - SYSTEME NON LINEAIRE A RESOUDRE EN [DVEPEL,DP]
@@ -299,11 +283,11 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                 goto 998
             endif
 !
-            do 40 i = 1, ndimsi
+            do i = 1, ndimsi
                 dvsigp(i) = (1.d0-3.d0*mu*dp/eqsitr)*dvsitr(i)
                 dvepel(i)= dvsigp(i)/(2.d0*mu)
                 y(i)=dvepel(i)
- 40         continue
+            end do
             y(ndimsi+1)=dp
 !
 ! 4.2.2 - CALCUL DE G SA DERIVEE ET LE CRITERE D ARRET
@@ -316,7 +300,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 ! 4.2.3 - ITERATION DE NEWTON
 ! ATTENTION SI W MATRICE DGDY MODIFIE
 !
-            do 50 iter = 1, itemax
+            do iter = 1, itemax
                 if (maxg .le. prec) goto 999
 !
                 call mgauss('NFSP', dgdy, g, ndimsi+1, ndimsi+1,&
@@ -327,10 +311,10 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                     goto 998
                 endif
 !
-                do 55 i = 1, ndimsi+1
+                do i = 1, ndimsi+1
                     y(i)=y(i)+g(i)
                     if (i .le. ndimsi) dvsigp(i)=2.d0*mu*y(i)
- 55             continue
+                end do
 !
                 if (y(ndimsi+1) .le. 0.d0) then
                     iret = 1
@@ -341,7 +325,7 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                             mu, ani, gamma, m, n,&
                             g, maxg, dgdy)
 !
- 50         continue
+            end do
 !
             iret = 1
             goto 998
@@ -350,9 +334,9 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 !
 ! 4.2.3 - CALCUL DE SIGMA ET P
 !
-            do 60 i = 1, ndimsi
+            do i = 1, ndimsi
                 sigp(i) = dvsigp(i)+trsigp*kron(i)
- 60         continue
+            end do
             dp=y(ndimsi+1)
             vip(1)=vim(1)+dp
             vip(2)=1.d0
@@ -370,39 +354,39 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
     if (rigi) then
         if ((option(1:4).eq.'RIGI') .or. ((option(1:4).eq.'FULL').and.( vip(2).eq.0.d0))) then
 !
-            do 70 i = 1, ndimsi
-                do 75 j = 1, ndimsi
+            do i = 1, ndimsi
+                do j = 1, ndimsi
                     dsidep(i,j)=0.d0
- 75             continue
- 70         continue
+                end do
+            end do
 !
-            do 80 i = 1, ndimsi
+            do i = 1, ndimsi
                 if (i .le. 3) dsidep(i,i)=(4.d0*mu/3.d0)+troisk/3.d0
                 if (i .gt. 3) dsidep(i,i)=2.d0*mu
- 80         continue
+            end do
 !
-            do 90 i = 1, 3
-                do 95 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     if (i .ne. j) dsidep(i,j)=(-2.d0*mu/3.d0)+troisk/ 3.d0
- 95             continue
- 90         continue
+                end do
+            end do
         endif
 !
         if ((option(1:4).eq.'FULL') .and. (vip(2).eq.1.d0)) then
 !
-            do 200 j = 1, ndimsi
-                do 201 i = 1, ndimsi+1
+            do j = 1, ndimsi
+                do i = 1, ndimsi+1
                     r1(i,j)=0.d0
-201             continue
+                end do
                 r1(j,j)=1.d0
-200         continue
+            end do
 !
-            do 202 i = 1, ndimsi+1
-                do 203 k = 1, ndimsi+1
+            do i = 1, ndimsi+1
+                do k = 1, ndimsi+1
                     mat(i,k)=dgdy(i,k)
                     if (k .ge. 4) mat(i,k)=mat(i,k)/2.d0
-203             continue
-202         continue
+                end do
+            end do
 !
             call mgauss('NFSP', mat, r1, ndimsi+1, ndimsi+1,&
                         ndimsi, rbid, ire2)
@@ -411,39 +395,39 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
                 goto 998
             endif
 !
-            do 204 j = 1, ndimsi
-                do 205 i = 1, ndimsi
+            do j = 1, ndimsi
+                do i = 1, ndimsi
                     h1(i,j)=r1(i,j)
-205             continue
-204         continue
+                end do
+            end do
 !
 ! ON COMPLETE
 !
-            do 206 i = 1, ndimsi
+            do i = 1, ndimsi
                 vect(i)=h1(i,1)+h1(i,2)+h1(i,3)
                 vect(i)=-2.d0*mu*vect(i)
                 if (i .le. 3) vect(i)=vect(i)+troisk
                 vect(i)=vect(i)/3.d0
-206         continue
+            end do
 !
-            do 207 i = 1, ndimsi
-                do 208 j = 1, ndimsi
+            do i = 1, ndimsi
+                do j = 1, ndimsi
                     h1(i,j)=2.d0*mu*h1(i,j)
                     if (j .le. 3) h1(i,j)=h1(i,j)+vect(i)
-208             continue
-207         continue
+                end do
+            end do
 !
 ! ON AFFECTE H1 A DSIDEP AVEC LES RACINE DE 2 POUR I NE J
 !
-            do 400 i = 1, ndimsi
-                do 410 j = 1, ndimsi
+            do i = 1, ndimsi
+                do j = 1, ndimsi
                     dsidep(i,j)=h1(i,j)
                     if ((i.eq.j) .and. (i.ge.4)) dsidep(i,j)=2.d0* dsidep(i,j)/4.d0
                     if ((i.ne.j) .and. ((i.ge.4).or.(j.ge.4))) then
                         dsidep(i,j)=sqrt(2.d0)*dsidep(i,j)/2.d0
                     endif
-410             continue
-400         continue
+                end do
+            end do
         endif
     endif
 !
@@ -452,9 +436,9 @@ subroutine lcedga(fami, kpg, ksp, ndim, imat,&
 ! *************************************
 !
     if (resi) then
-        do 160 i = 4, ndimsi
+        do i = 4, ndimsi
             sigp(i)=sigp(i)*sqrt(2.d0)
-160     continue
+        end do
     endif
 !
 998 continue
