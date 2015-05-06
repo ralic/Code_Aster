@@ -1,6 +1,21 @@
 subroutine epstmc(fami, ndim, instan, poum, igau,&
                   isgau, xyzgau, repere, mater, option,&
                   epsth)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/matrot.h"
+#include "asterfort/get_elas_type.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
+#include "asterfort/utpslg.h"
+#include "asterfort/utrcyl.h"
+#include "asterfort/verift.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,14 +32,22 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!.======================================================================
-    implicit none
 !
-!      EPSTMC :   CALCUL DES DEFORMATIONS THERMIQUES / HYDRIQUE (RETRAIT
-!                 ENDOGENE) / DE SECHAGE (RETRAIT DE DESSICCATION)
-!                 POUR LES ELEMENTS ISOPARAMETRIQUES
+    character(len=*) :: fami, poum
+    character(len=16) :: option
+    real(kind=8) :: instan, epsth(6), xyzgau(3)
+    real(kind=8) :: repere(7)
+    integer :: ndim, igau, isgau
 !
-!   ARGUMENT        E/S  TYPE         ROLE
+! --------------------------------------------------------------------------------------------------
+!
+!  CALCUL DES DEFORMATIONS THERMIQUES 
+!  CALCUL DES DEFORMATIONS HYDRIQUES (RETRAIT ENDOGENE)
+!  CALCUL DES DEFORMATIONS DE SECHAGE (RETRAIT DE DESSICCATION)
+!  POUR LES ELEMENTS ISOPARAMETRIQUES
+!
+! --------------------------------------------------------------------------------------------------
+!
 !    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
 !    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 !    POUM           IN     K1       T+ OU T-
@@ -37,47 +60,29 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 !    OPTION         IN     K16      OPTION DE CALCUL
 !    EPSTH(6)       IN     R        VECTEUR DES DEFORMATIONS THERMIQUES
 !
-!.========================= DEBUT DES DECLARATIONS ====================
-! -----  ARGUMENTS
-#include "asterfort/assert.h"
-#include "asterfort/matrot.h"
-#include "asterfort/get_elas_type.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/utmess.h"
-#include "asterfort/utpslg.h"
-#include "asterfort/utrcyl.h"
-#include "asterfort/verift.h"
-    character(len=*) :: fami, poum
-    character(len=16) :: option
-    real(kind=8) :: instan, epsth(6), xyzgau(3)
-    real(kind=8) :: repere(7)
-    integer :: ndim, igau, isgau
-! -----  VARIABLES LOCALES
-!-----------------------------------------------------------------------
-    integer :: mater, nbres, nbv
-    real(kind=8) :: biot, e, zero
-!-----------------------------------------------------------------------
-    parameter (nbres = 3)
 !
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: nbres = 3
     integer :: icodre(nbres)
-    character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
-    character(len=32) :: phenom
-    integer :: elas_type
+    real(kind=8) :: valres(nbres)
 !
-    real(kind=8) :: valres(nbres), valpar, bendog, kdessi, angl(3)
+    integer :: mater, nbv
+    real(kind=8) :: biot, e, zero
+    character(len=8) :: nompar, elem_name
+    character(len=16) :: elas_keyword
+    character(len=32) :: phenom, valk(2)
+    integer :: elas_type
+    real(kind=8) :: valpar, bendog, kdessi, angl(3)
     real(kind=8) :: dire(3), orig(3), p(3, 3), epsthl(6), troisk
     real(kind=8) :: vepst1(6), vepst2(6), hydr, sech, sref, ptot, nu
     integer :: k, iret, irepto
-    character(len=6) :: epsa(6)
-    data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
-     &              'EPSAYZ'/
+    integer :: iadzi, iazk24
+    character(len=6), parameter :: epsa(6)=(/'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ','EPSAYZ'/)
 !
-!.========================= DEBUT DU CODE EXECUTABLE ==================
+! --------------------------------------------------------------------------------------------------
 !
-! ---- INITIALISATIONS
-!      ---------------
     zero = 0.d0
     nompar = 'INST'
     valpar = instan
@@ -214,31 +219,22 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
 ! ---- ------------------------------------------------------------
     else
 !
-!
-! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
-!      --------------------------------------------
-!        call rccoma(mater, 'ELAS', 1, phenom, icodre(1))
-
-!
 ! ----- Get elasticity type
 !
-        call get_elas_type(mater, elas_type)
-!
-!      ------------
-! ---- CAS ISOTROPE
-!      ------------
+        call get_elas_type(mater, elas_type, elas_keyword)
         if (elas_type.eq.1) then
-!
+            if (elas_keyword.eq.'ELAS_META') then
+                call tecael(iadzi, iazk24)
+                elem_name = zk24(iazk24-1+3) (1:8)
+                valk(1) = elem_name
+                valk(2) = 'EPVC_ELGA'
+                call utmess('F', 'COMPOR5_11', nk = 2, valk = valk)
+            endif
             call verift(fami, igau, isgau, poum, mater,&
                         epsth=epsth(1) )
             epsth(2) = epsth(1)
             epsth(3) = epsth(1)
-!
-!      --------------
-! ---- CAS ORTHOTROPE
-!      --------------
         else if (elas_type.eq.2)  then
-!
             if (repere(1) .gt. 0.d0) then
                 angl(1) = repere(2)
                 angl(2) = repere(3)
@@ -248,32 +244,22 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
                 dire(1) = repere(2)
                 dire(2) = repere(3)
                 dire(3) = repere(4)
-!
                 orig(1) = repere(5)
                 orig(2) = repere(6)
                 orig(3) = repere(7)
                 call utrcyl(xyzgau, dire, orig, p)
             endif
-!
             call verift(fami, igau, isgau, poum, mater,&
                         vepsth=epsthl)
-!
             epsthl(4) = 0.d0
             epsthl(5) = 0.d0
             epsthl(6) = 0.d0
-!
-!
-!
             vepst1(1)=epsthl(1)
             vepst1(2)=epsthl(4)
             vepst1(3)=epsthl(2)
             vepst1(4)=epsthl(5)
             vepst1(5)=epsthl(6)
             vepst1(6)=epsthl(3)
-!
-!
-!        PASSAGE DES DEFORMATIONS DANS LE REPERE D ORTHOTROPIE
-!        AU REPERE GLOBAL
             call utpslg(1, 3, p, vepst1, vepst2)
             epsth(1)=vepst2(1)
             epsth(2)=vepst2(3)
@@ -282,12 +268,7 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
             epsth(5)=vepst2(4)
             epsth(6)=vepst2(5)
             if (ndim .eq. 2) epsth(3)=epsthl(3)
-!
-!      -----------------------
-! ---- CAS ISOTROPE-TRANSVERSE
-!      -----------------------
         else if (elas_type.eq.3) then
-!
             if (repere(1) .gt. 0.d0) then
                 angl(1) = repere(2)
                 angl(2) = repere(3)
@@ -297,33 +278,24 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
                 dire(1) = repere(2)
                 dire(2) = repere(3)
                 dire(3) = repere(4)
-!
                 orig(1) = repere(5)
                 orig(2) = repere(6)
                 orig(3) = repere(7)
                 call utrcyl(xyzgau, dire, orig, p)
             endif
-!
             call verift(fami, igau, isgau, poum, mater,&
                         vepsth=epsthl)
-!
             epsthl(3) = epsthl(2)
             epsthl(2) = epsthl(1)
             epsthl(4) = 0.d0
             epsthl(5) = 0.d0
             epsthl(6) = 0.d0
-!
-!
             vepst1(1)=epsthl(1)
             vepst1(2)=epsthl(4)
             vepst1(3)=epsthl(2)
             vepst1(4)=epsthl(5)
             vepst1(5)=epsthl(6)
             vepst1(6)=epsthl(3)
-!
-!
-!        PASSAGE DES DEFORMATIONS DANS LE REPERE D ORTHOTROPIE
-!        AU REPERE GLOBAL
             call utpslg(1, 3, p, vepst1, vepst2)
             epsth(1)=vepst2(1)
             epsth(2)=vepst2(3)
@@ -337,5 +309,4 @@ subroutine epstmc(fami, ndim, instan, poum, igau,&
         endif
     endif
 !
-!.============================ FIN DE LA ROUTINE ======================
 end subroutine

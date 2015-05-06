@@ -56,6 +56,13 @@ Erreur utilisateur :
   Le comportement sélectionné ne sait pas gérer ce cas.
 """),
 
+    11 : _(u"""
+  Sur la maille %(k1)s le matériau est de type métallurgique (ELAS_META).
+  L'option %(k2)s que l'on cherche à calculer n'est pas possible.
+  NB: si vous calculer une déformation partielle comme EPSP_ELGA, il est nécessaire de calculer la 
+contribution thermique EPVC_ELGA.
+"""),
+
     32 : _(u"""
 Erreur utilisateur :
   Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau %(k2)s.
