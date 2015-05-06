@@ -16,20 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine verift(fami         , kpg          , ksp          , poum  , j_mater,&
-                      materiz      , iret         , epsth        , vepsth,&
-                      temp_prev_out, temp_curr_out, temp_refe_out)
+    subroutine verift(fami      , kpg       , ksp       , poum  , j_mater,&
+                      materi_   , iret      , epsth     , vepsth,&
+                      temp_prev_, temp_curr_, temp_refe_)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: j_mater
         character(len=*), intent(in) :: poum
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
-        character(len=8), optional, intent(in) :: materiz
+        character(len=8), optional, intent(in) :: materi_
         integer, optional, intent(out) :: iret
         real(kind=8), optional, intent(out) :: epsth
         real(kind=8), optional, intent(out) :: vepsth(*)
-        real(kind=8), optional, intent(out) :: temp_prev_out
-        real(kind=8), optional, intent(out) :: temp_curr_out
-        real(kind=8), optional, intent(out) :: temp_refe_out
+        real(kind=8), optional, intent(out) :: temp_prev_
+        real(kind=8), optional, intent(out) :: temp_curr_
+        real(kind=8), optional, intent(out) :: temp_refe_
     end subroutine verift
 end interface

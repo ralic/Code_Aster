@@ -230,7 +230,7 @@ subroutine te0531(option,nomte)
                     ASSERT(ksp.le.nbsp)
                                 
                     call verift(fami, ipg, ksp, '+', zi( imate),&
-                                materiz=materi, epsth=epsth)
+                                materi_=materi, epsth=epsth)
 
                     icomp = idefo+nbcmp*nbsp*(ipg-1)+nbcmp*(ksp-1)-1
                     if (lmeca) then

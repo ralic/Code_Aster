@@ -1,6 +1,6 @@
-subroutine verift(fami         , kpg          , ksp          , poum  , j_mater,&
-                  materiz      , iret         , epsth        , vepsth, &
-                  temp_prev_out, temp_curr_out, temp_refe_out)
+subroutine verift(fami      , kpg       , ksp       , poum  , j_mater,&
+                  materi_   , iret      , epsth     , vepsth,&
+                  temp_prev_, temp_curr_, temp_refe_)
 !
 implicit none
 !
@@ -34,13 +34,13 @@ implicit none
     integer, intent(in) :: ksp
     character(len=*), intent(in) :: poum
     integer, intent(in) :: j_mater
-    character(len=8), optional, intent(in) :: materiz
+    character(len=8), optional, intent(in) :: materi_
     integer, optional, intent(out) :: iret
     real(kind=8), optional, intent(out) :: epsth
     real(kind=8), optional, intent(out) :: vepsth(*)
-    real(kind=8), optional, intent(out) :: temp_prev_out
-    real(kind=8), optional, intent(out) :: temp_curr_out
-    real(kind=8), optional, intent(out) :: temp_refe_out
+    real(kind=8), optional, intent(out) :: temp_prev_
+    real(kind=8), optional, intent(out) :: temp_curr_
+    real(kind=8), optional, intent(out) :: temp_refe_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,10 @@ implicit none
 !                    1 if not
 ! Out epsth        : thermic dilatation increment if poum=T
 !                    thermic dilatation if poum = + ou -
-! Out vepsth       : non-isotropic thermic dilatation
+! Out vepsth       : non-isotropic or multiphasic thermic dilatation
+! Out temp_prev    : previous temperature
+! Out temp_curr    : current temperature
+! Out temp_refe    : reference temperature
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,13 +78,12 @@ implicit none
     integer :: iadzi, iazk24
     integer :: elas_type
     character(len=16) :: elas_keyword
-
 !
 ! --------------------------------------------------------------------------------------------------
 !
     materi = ' '
-    if (present(materiz)) then
-        materi = materiz
+    if (present(materi_)) then
+        materi = materi_
     endif
 !
     iret_temp      = 0
@@ -230,14 +232,14 @@ implicit none
 !
 ! - Output temperature
 !
-    if (present(temp_refe_out)) then
-        temp_refe_out = temp_refe
+    if (present(temp_refe_)) then
+        temp_refe_ = temp_refe
     endif
-    if (present(temp_prev_out)) then
-        temp_prev_out = temp_prev
+    if (present(temp_prev_)) then
+        temp_prev_ = temp_prev
     endif
-    if (present(temp_curr_out)) then
-        temp_curr_out = temp_curr
+    if (present(temp_curr_)) then
+        temp_curr_ = temp_curr
     endif
 !
 ! - Output strains
