@@ -195,16 +195,10 @@ cata_msg = {
  pour l'option "RICE_TRACEY", la relation " %(k1)s " n'est pas admise
 """),
 
-    75 : _(u"""
-On ne sait pas calculer les déformations plastiques avec de l'élasticité non-isotrope.
-"""),
-
     76 : _(u"""
- couplage fluage/fissuration :
- la loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANGER
+Couplage fluage/fissuration :
+La loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANGER
 """),
-
-
 
     80 : _(u"""
  situation de contact impossible

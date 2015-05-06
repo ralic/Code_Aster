@@ -1,22 +1,24 @@
 subroutine te0333(option, nomte)
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcgr.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/get_elas_type.h"
+#include "asterfort/get_elas_para.h"
 #include "asterfort/epsvmc.h"
-#include "asterfort/granvi.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/ortrep.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/granvi.h"
+#include "asterfort/ortrep.h"
 !
-    character(len=16) :: option, nomte
-! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,244 +35,216 @@ subroutine te0333(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
+! person_in_charge: mickael.abbas at edf.fr
 !
-!     BUT: CALCUL DES DEFORMATIONS PLASTIQUES AUX NOEUDS ET PG
-!          ELEMENTS ISOPARAMETRIQUES 3D
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-!     IN   OPTION : OPTIONS DE CALCUL
-!                   'EPSP_ELGA'
-!          NOMTE  : NOM DU TYPE ELEMENT
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: jgano, mxcmel, nbres, nbsgm, i, ndim, nno, nbsig, idsig, nnos
+! Elementary computation
+!
+! Elements: 3D
+! Option: EPSP_ELGA
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: mxcmel=162
+    integer, parameter :: nbsgm=6
+    real(kind=8) :: epsi_meca(mxcmel), epsi_plas(mxcmel)
+    real(kind=8) :: sigma(nbsgm)
+    real(kind=8) :: epsi_creep(nbsgm)
+    integer :: i, ndim, nno, nbsig, idsig
     integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, itemps, imate
     integer :: idefp, icompo, nbvari, ivari, nvi, nvif, ibid, jtab(7), iret
     integer :: idim
-    parameter (mxcmel=162)
-    parameter (nbres=2)
-    parameter (nbsgm=6)
-    real(kind=8) :: valres(nbres)
-    real(kind=8) :: epsm(mxcmel), epspla(mxcmel)
-    real(kind=8) :: sigma(nbsgm)
-    real(kind=8) :: valpar(2), c1, c2, trsig, xyz(3)
-    real(kind=8) :: repere(7), nharm, e, nu, zero, un, tempg
-    real(kind=8) :: epsflf(nbsgm)
-    integer :: icodre(nbres)
-    character(len=16) :: nomres(nbres)
-    character(len=8) :: nompar(2), mod3d
-    character(len=16) :: optio2, phenom, cmp1, cmp2, cmp3
-    aster_logical :: lflu, ltemp
-! DEB ------------------------------------------------------------------
+    real(kind=8) :: c1, c2, trsig, xyz(3)
+    real(kind=8) :: repere(7), nharm, e, nu, zero, un, tempg, time
+    character(len=8) :: mod3d
+    integer :: elas_type
+    character(len=16) :: optio2, kit_comp_1, kit_comp_2, rela_comp, elas_keyword
+    aster_logical :: l_creep, l_temp
 !
-! --- INITIALISATIONS :
-!     ---------------
-    zero = 0.0d0
-    un = 1.0d0
+! --------------------------------------------------------------------------------------------------
+!
+    zero  = 0.d0
+    un    = 1.d0
     nharm = zero
     mod3d = '3D'
 !
-! --- CARACTERISTIQUES DU TYPE D'ELEMENT :
-! --- GEOMETRIE ET INTEGRATION
-!     ------------------------
+! - Finite element informations
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
-                     jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
+    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, npg=npg,&
+                     jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
-! --- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT :
-!      -----------------------------------------
+! - Number of stress components
+!
     nbsig = nbsigm()
+    ASSERT(nbsig.eq.nbsgm)
 !
-! --- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
-!     ----------------------------------------------
+! - Geometry
+!
     call jevech('PGEOMER', 'L', igeom)
 !
-! --- RECUPERATION DU MATERIAU :
-!     ------------------------
+! - Material parameters
+!
     call jevech('PMATERC', 'L', imate)
 !
-! --- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
-!     ------------------------------------------------------------
-!     COORDONNEES DU BARYCENTRE ( POUR LE REPERE CYLINDRIQUE )
+! - Orthotropic parameters
+!
     xyz(1) = 0.d0
     xyz(2) = 0.d0
     xyz(3) = 0.d0
-    do 190 i = 1, nno
-        do 200 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-200     continue
-190 end do
+        end do
+    end do
     call ortrep(zi(imate), ndim, xyz, repere)
 !
-! --- RECUPERATION DE L'INSTANT COURANT :
-!     ---------------------------------
+! - Current time
+!
     call jevech('PTEMPSR', 'L', itemps)
+    time = zr(itemps)
 !
+! - Current displacements (nodes)
 !
-! ---    RECUPERATION DU CHAMP DE DEPLACEMENTS AUX NOEUDS  :
-!        ------------------------------------------------
     call jevech('PDEPLAR', 'L', idepl)
 !
-! ---    RECUPERATION DU CHAMP DE CONTRAINTES AUX POINTS D'INTEGRATION :
-!        -------------------------------------------------------------
+! - Current stresses (gauss points)
+!
     call jevech('PCONTRR', 'L', idsig)
 !
+! - Comportment
 !
-! ---    ON VERIFIE QUE LE MATERIAU EST ISOTROPE
-! ---    (POUR L'INSTANT PAS D'ORTHOTROPIE NI D'ISOTROPIE TRANSVERSE
-! ---    EN PLASTICITE) :
-!        --------------
-    call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
-    if (phenom .eq. 'ELAS_ORTH' .or. phenom .eq. 'ELAS_ISTR') then
-        call utmess('F', 'ELEMENTS3_75', sk=phenom(1:12))
-    endif
-!
-! ---  CALCUL DES DEFORMATIONS HORS THERMIQUES CORRESPONDANTES AU
-! ---  CHAMP DE DEPLACEMENT I.E. EPSM = EPST - EPSTH - EPSRET - EPSANEL
-! ---  OU EPST  SONT LES DEFORMATIONS TOTALES
-! ---    EPST = B.U
-! --- ET EPSTH SONT LES DEFORMATIONS THERMIQUES
-! ---    EPSTH = ALPHA*(T-TREF) :
-! --- ET EPSRET SONT LES DEFORMATIONS LIEES AU RETRAIT
-! ---    DE DESSICCATION ET  D HYDRATION
-! --- EPSRET = - B_ENDO * HYDR - K_DESSIC *(SREF-S)
-!          ----------------------
-    optio2 = 'EPME_ELGA'
-    call epsvmc('RIGI', nno, ndim, nbsig, npg,&
-                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
-                zr(itemps), zi(imate), repere, nharm, optio2,&
-                epsm)
-!
-!
-! --- RECUPERATION DU COMPORTEMENT  :
-!     -------------------------------
     call jevech('PCOMPOR', 'L', icompo)
+    rela_comp  = zk16(icompo)
+    kit_comp_1 = zk16(icompo+7)
+    kit_comp_2 = zk16(icompo+8)
 !
-! --- RECUPERATION DES VARIABLES INTERNES AUX PT D'INTEGRATION COURANT :
-!    ------------------------------------------------------------------
+! - Internal variables
+!
     call jevech('PVARIGR', 'L', ivari)
     call tecach('OON', 'PVARIGR', 'L', iret, nval=7,&
                 itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
 !
+! - Elasticity: only isotropic and not metallurgy !
 !
-! --- VERIFICATION DU COMPORTEMENT FLUAGE :
-!     -------------------------------------
-    cmp1 = zk16(icompo)
-    cmp2 = zk16(icompo+7)
-    cmp3 = zk16(icompo+8)
-    if (cmp1(1:10) .ne. 'GRANGER_FP' .and.&
-        (cmp1(1:7).ne.'KIT_DDI'.or.cmp2(1:10).ne.'GRANGER_FP')) then
-        lflu = .false.
-        do 60 i = 1, mxcmel
-            epspla(i) = zero
- 60     continue
-        do 70 i = 1, nbsig
-            epsflf(i) = zero
- 70     continue
+    call get_elas_type(zi(imate), elas_type, elas_keyword)
+    if (elas_type.eq.1) then
+        if (elas_keyword.eq.'ELAS_META') then
+            call utmess('F', 'ELEMENTS6_1')
+        endif
     else
-        call granvi(mod3d, ibid, ibid, nvif)
-        lflu = .true.
+        call utmess('F', 'ELEMENTS6_2')
     endif
 !
-! --- DEPENDANCE DES CARACTERISTIQUES MECANIQUES AVEC LA TEMPERATURE :
-!     ----------------------------------------------------------------
-    ltemp = .false.
-    if (cmp1(1:15) .eq. 'BETON_DOUBLE_DP') then
+! - Compute mechanical strains epsi_meca = epsi_tota - epsi_varc
+! -- Command variables strains: epsi_varc (contains thermics, drying, ...)
+! -- Total strains: epsi_tota
+!
+    optio2 = 'EPME_ELGA'
+    call epsvmc('RIGI', nno, ndim, nbsig, npg,&
+                ipoids, ivf, idfde, zr(igeom), zr(idepl),&
+                zr(itemps), zi(imate), repere, nharm, optio2,&
+                epsi_meca)
+!
+! - Creep strains: epsi_creep
+!
+    if (rela_comp(1:10) .ne. 'GRANGER_FP' .and.&
+       (rela_comp(1:7).ne.'KIT_DDI'.or.kit_comp_1(1:10).ne.'GRANGER_FP')) then
+        l_creep = .false.
+        do i = 1, mxcmel
+            epsi_plas(i) = zero
+        end do
+        do i = 1, nbsig
+            epsi_creep(i) = zero
+        end do
+    else
+        call granvi(mod3d, ibid, ibid, nvif)
+        l_creep = .true.
+    endif
+!
+! - Materials parameters depend on temperature ?
+!
+    l_temp = .false.
+    if (rela_comp(1:15) .eq. 'BETON_DOUBLE_DP') then
         nvi = 3
-        ltemp = .true.
-    else if (cmp1(1:7).eq.'KIT_DDI') then
-        if (cmp3(1:15) .eq. 'BETON_DOUBLE_DP') then
-            if (cmp2(1:10) .eq. 'GRANGER_FP') then
+        l_temp = .true.
+    else if (rela_comp(1:7).eq.'KIT_DDI') then
+        if (kit_comp_2(1:15) .eq. 'BETON_DOUBLE_DP') then
+            if (kit_comp_1(1:10) .eq. 'GRANGER_FP') then
                 nvi = nvif + 3
-                ltemp = .true.
+                l_temp = .true.
             else
                 call utmess('F', 'ELEMENTS3_76')
             endif
         endif
     endif
 !
-! --- BOUCLE SUR LES POINTS D'INTEGRATION :
-!     -----------------------------------
+! - Loop on Gauss points
 !
-    do 140 igau = 1, npg
+    do igau = 1, npg
 !
-!  ---   TEMPERATURE AU POINT D'INTEGRATION COURANT :
-!        ------------------------------------------
+! ----- Get current temperature
+!
         call rcvarc(' ', 'TEMP', '+', 'RIGI', igau,&
                     1, tempg, iret)
 !
-        if (ltemp) then
-            if (tempg .lt. zr(ivari+ (igau-1)*nbvari+nvi- 1)) tempg = zr(&
-                                                                      ivari+ (igau-1&
-                                                                      )*nbvari+nvi-1&
-                                                                      )
+! ----- Change temperature from internal variable (maximum) for BETON_DOUBLE_DP/GRANGER_FP
+!
+        if (l_temp) then
+            if (tempg .lt. zr(ivari+ (igau-1)*nbvari+nvi- 1)) then
+                tempg = zr(ivari+(igau-1)*nbvari+nvi-1)
+            endif
         endif
 !
-! ---    RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
-!        ---------------------------------------------
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
+! ----- Get elastic parameters (only isotropic elasticity)
 !
-        nompar(1) = 'TEMP'
-        nompar(2) = 'INST'
-        valpar(1) = tempg
-        valpar(2) = zr(itemps)
+        call get_elas_para('RIGI', zi(imate), '+', igau, 1,&
+                           elas_type, time = time, temp = tempg, e = e, nu = nu)
+        ASSERT(elas_type.eq.1)
 !
-        call rcvalb('RIGI', igau, 1, '+', zi(imate),&
-                    ' ', 'ELAS', 2, nompar, valpar,&
-                    2, nomres, valres, icodre, 1)
+! ----- Compute creep strains (current Gauss point)
 !
-!
-        e = valres(1)
-        nu = valres(2)
-!
-! ---    TENSEUR DE DEFORMATION DE FLUAGE AU PT D'INTEGRATION COURANT :
-!        --------------------------------------------------------------
-        if (lflu) then
-!
-            call calcgr(igau, nbsig, nbvari, zr(ivari), nu,&
-                        epsflf)
-!
+        if (l_creep) then
+            call calcgr(igau      , nbsig, nbvari, zr(ivari), nu,&
+                        epsi_creep)
         endif
 !
-! ----      TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
-!           ------------------------------------------------------
-        do 120 i = 1, nbsig
-            sigma(i) = zr(idsig+ (igau-1)*nbsig+i-1)
-120     continue
+! ----- Compute stresses (current Gauss point)
 !
+        do i = 1, nbsig
+            sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
+        end do
         trsig = sigma(1) + sigma(2) + sigma(3)
+!
+! ----- Compute plastic strains (current Gauss point) epsi_plas = epsi_tota - epsi_elas - epsi_creep
+! -- Creep strains: epsi_creep
+! -- Elastic strains: epsi_elas
 !
         c1 = (un+nu)/e
         c2 = nu/e
+        epsi_plas(nbsig*(igau-1)+1) = epsi_meca(nbsig*(igau-1)+1) - (c1* sigma(1)-c2*trsig) -&
+                                      epsi_creep(1)
+        epsi_plas(nbsig*(igau-1)+2) = epsi_meca(nbsig*(igau-1)+2) - (c1* sigma(2)-c2*trsig) -&
+                                      epsi_creep(2)
+        epsi_plas(nbsig*(igau-1)+3) = epsi_meca(nbsig*(igau-1)+3) - (c1* sigma(3)-c2*trsig) -&
+                                      epsi_creep(3)
+        epsi_plas(nbsig*(igau-1)+4) = epsi_meca(nbsig*(igau-1)+4) - c1* sigma(4) - epsi_creep(4 )
+        epsi_plas(nbsig*(igau-1)+5) = epsi_meca(nbsig*(igau-1)+5) - c1* sigma(5) - epsi_creep(5 )
+        epsi_plas(nbsig*(igau-1)+6) = epsi_meca(nbsig*(igau-1)+6) - c1* sigma(6) - epsi_creep(6 )
+    end do
 !
-! ---       TENSEUR DES DEFORMATIONS PLASTIQUES AU POINT
-! ---       D'INTEGRATION COURANT
-! ---       I.E. EPSPLA = EPS_TOT - EPS_THERM - EPS_ANELAS - EPS_ELAS :
-! ---                             - EPS_FLUAGE :
-!           ---------------------------------------------------------
-        epspla(nbsig* (igau-1)+1) = epsm(nbsig* (igau-1)+1) - (c1* sigma(1)-c2*trsig) - epsflf(1)
-        epspla(nbsig* (igau-1)+2) = epsm(nbsig* (igau-1)+2) - (c1* sigma(2)-c2*trsig) - epsflf(2)
-        epspla(nbsig* (igau-1)+3) = epsm(nbsig* (igau-1)+3) - (c1* sigma(3)-c2*trsig) - epsflf(3)
-        epspla(nbsig* (igau-1)+4) = epsm( nbsig* (igau-1)+4) - c1* sigma(4) - epsflf(4 )
-        epspla(nbsig* (igau-1)+5) = epsm( nbsig* (igau-1)+5) - c1* sigma(5) - epsflf(5 )
-        epspla(nbsig* (igau-1)+6) = epsm( nbsig* (igau-1)+6) - c1* sigma(6) - epsflf(6 )
+! - Plastic strain output
 !
-140 end do
-!
-! --- RECUPERATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
-!     -------------------------------------------------------------
     call jevech('PDEFOPG', 'E', idefp)
-!
-! --- AFFECTATION DU VECTEUR EN SORTIE DES DEFORMATIONS PLASTIQUES :
-!     ------------------------------------------------------------
-! ---    AFFECTATION DU VECTEUR EN SORTIE AVEC LES DEFORMATIONS AUX
-! ---    POINTS D'INTEGRATION :
-!        --------------------
-    do 160 igau = 1, npg
-        do 150 isig = 1, nbsig
-            zr(idefp+nbsig* (igau-1)+isig-1) = epspla(nbsig* (igau-1)+ isig)
-150     continue
-160 end do
+    do igau = 1, npg
+        do isig = 1, nbsig
+            zr(idefp+nbsig*(igau-1)+isig-1) = epsi_plas(nbsig*(igau-1)+ isig)
+        end do
+    end do
 !
 end subroutine
