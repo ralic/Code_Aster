@@ -17,7 +17,7 @@
 interface
     subroutine get_elas_para(fami     , j_mater, poum, ipg, ispg, &
                              elas_type,&
-                             time     ,&
+                             time     , temp,&
                              e   , nu  , g,&
                              e1  , e2  , e3,&
                              nu12, nu13, nu23,&
@@ -29,6 +29,7 @@ interface
         integer, intent(in) :: ispg
         integer, intent(out) :: elas_type
         real(kind=8), optional, intent(in) :: time
+        real(kind=8), optional, intent(in) :: temp
         real(kind=8), optional, intent(out) :: e
         real(kind=8), optional, intent(out) :: nu
         real(kind=8), optional, intent(out) :: e1

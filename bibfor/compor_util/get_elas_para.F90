@@ -1,6 +1,6 @@
 subroutine get_elas_para(fami     , j_mater, poum, ipg, ispg, &
                          elas_type,&
-                         time     ,&
+                         time     , temp,&
                          e   , nu  , g,&
                          e1  , e2  , e3,&
                          nu12, nu13, nu23,&
@@ -37,6 +37,7 @@ implicit none
     integer, intent(in) :: ispg
     integer, intent(out) :: elas_type
     real(kind=8), optional, intent(in) :: time
+    real(kind=8), optional, intent(in) :: temp
     real(kind=8), optional, intent(out) :: e
     real(kind=8), optional, intent(out) :: nu
     real(kind=8), optional, intent(out) :: g
@@ -61,6 +62,7 @@ implicit none
 ! In  fami         : Gauss family for integration point rule
 ! In  j_mater      : coded material address
 ! In  time         : current time
+! In  time         : current temperature
 ! In  poum         : '-' or '+' for parameters evaluation (previous or current temperature)
 ! In  ipg          : current point gauss
 ! In  ispg         : current "sous-point" gauss
@@ -89,8 +91,8 @@ implicit none
     character(len=16) :: nomres(nbresm)
     real(kind=8) :: valres(nbresm)
 !
-    character(len=8) :: para_name
-    real(kind=8) :: para_vale
+    character(len=8) :: para_name(2)
+    real(kind=8) :: para_vale(2)
     integer :: nbres, nb_para
     real(kind=8) :: c10, c01, c20, k
     real(kind=8) :: un
@@ -98,14 +100,19 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    un        = 1.d0
-    nb_para   = 0
-    para_name = ' '
-    para_vale = 0.d0
+    un             = 1.d0
+    nb_para        = 0
+    para_name(1:2) = ' '
+    para_vale(1:2) = 0.d0
     if (present(time)) then
-        nb_para   = 1
-        para_name = 'INST'
-        para_vale = time
+        nb_para   = nb_para + 1
+        para_name(nb_para) = 'INST'
+        para_vale(nb_para) = time
+    endif
+    if (present(temp)) then
+        nb_para   = nb_para + 1
+        para_name(nb_para) = 'TEMP'
+        para_vale(nb_para) = temp
     endif
 !
 ! - Get type of elasticity (Isotropic/Orthotropic/Transverse isotropic)
