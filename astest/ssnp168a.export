@@ -1,0 +1,14 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm ssnp168a.comm D 1
+F mmed ssnp168a.mmed D 20
+F libr ssnp168a.23 D 23
+F libr ssnp168a.24 D 24
+F dat ssnp168a.29 D 29
+F dat ssnp168a.30 D 30
+F datg ssnp168a.datg D 16

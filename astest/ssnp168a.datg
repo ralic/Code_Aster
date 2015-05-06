@@ -1,0 +1,232 @@
+# EPROUVETTE NOORU-MOHAMED differents hauteurs
+
+# A----------------------B
+# O                      P
+# |                      |
+# |                      |
+# |M___L            D___C|
+# _____|            |____
+# |J   K            E   F|
+# |                      |
+# |                      |
+# R                      Q
+# H----------------------G
+
+# IMPORTATION DES LIBRAIRIES
+import sys, math
+# PARAMETRES POUR PLACER DIFFERENTS POINTS DE FACON INTERACTIVE, CES POINTS SERONT UTILISE POUR LA CREATION DU MAILLAGE AFIN DE PARAMATRER L'ORIENTATION DU MAILLAGE
+Lhori = 200.      # LONGUEUR HORISONTALE    (DISTANCE ENTRE LES POINTS A ET B ) 
+Lvert = 200.      # LONGUEUR VERTICALE      (DISTANCE ENTRE LES POINTS A ET H ) 
+Ee = 5.           # EPAISSEUR DE L'ENTAILLE (DISTANCE ENTRE LES POINTS M ET J ) 
+El_gauche = 42.          # LONGEUR DE L'ENTAILLE   (DISTANCE ENTRE LES POINTS M ET L ) 
+El_droite = 42.          # LONGEUR DE L'ENTAILLE   (DISTANCE ENTRE LES POINTS M ET L ) 
+Ey_gauche = 0.           # COORDONNEES Y DU CENTRE DE L'ENTAILLE a GAUCHE
+Ey_droite = 0.           # COORDONNEES Y DU CENTRE DE L'ENTAILLE a DROITE
+Lsup=50.           #la partie superieur d'eprouvette
+Linf=-50.           #la partie inferieur d'eprouvette
+cc=15.              #couche
+
+# Parametres de maillage
+max_size=30.
+min_size=2.
+max_local_size=1.
+
+import salome
+salome.salome_init()
+theStudy = salome.myStudy
+
+####################################################
+##       Begin of NoteBook variables section      ##
+####################################################
+import salome_notebook
+notebook = salome_notebook.NoteBook(theStudy)
+notebook.set("min_size", min_size)
+notebook.set("max_local_size", max_local_size)
+notebook.set("max_size", max_size)
+####################################################
+##        End of NoteBook variables section       ##
+####################################################
+
+# INITIALISATION DES DIFFERENTS PARAMETRES POUR LA VISUALISATION EN SALOME
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+
+# IMPORTATION ET APPEL DES DIFFERENTS SCRIPTS
+import GEOM
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(theStudy)
+geompy.init_geom(theStudy)
+
+SD={} # CREATION D'UN DICTIONNAIRE, OUTIL SIMPLE POUR CATALOGUER LES DIFFERENTS SOUS OBJETS ET LES DIFFERENTES OPERATIONS QUE L'ON VEUT AFFICHER DANS L'HISTORIQUE DE SALOME
+SD1={}# CREATION D'UN DICTIONNAIRE SUPPLEMENTAIRE POUR STOCKER LES POINTS
+
+
+###############
+##### 2D ######
+###############
+#POINTS DE REFERENCES POUR LE CONTOUR EXTERIEUR ON COMMENCE PAR LE BAS ET ON TOURNE DANS LE SENS DIRECT
+SD1["A"] = geompy.MakeVertex(-Lhori/2,       	         Lsup,	        0)                                      
+SD1["B"] = geompy.MakeVertex( Lhori/2,       	         Lsup,  	        0)
+SD1["C"] = geompy.MakeVertex( Lhori/2,       	         Ee/2 + Ey_droite, 	0)
+SD1["D"] = geompy.MakeVertex( Lhori/2 - El_droite,   	 Ee/2 + Ey_droite, 	0)
+SD1["E"] = geompy.MakeVertex( Lhori/2 - El_droite,  	-Ee/2 + Ey_droite, 	0)
+SD1["F"] = geompy.MakeVertex( Lhori/2     , 	        -Ee/2 + Ey_droite, 	0)
+SD1["G"] = geompy.MakeVertex( Lhori/2,      	         Linf,          	0)                                      
+SD1["H"] = geompy.MakeVertex(-Lhori/2,      	         Linf,          	0)
+SD1["J"] = geompy.MakeVertex(-Lhori/2,      	        -Ee/2 + Ey_gauche, 	0)
+SD1["K"] = geompy.MakeVertex(-Lhori/2 +El_gauche,    	-Ee/2 + Ey_gauche, 	0)
+SD1["L"] = geompy.MakeVertex(-Lhori/2 +El_gauche,   	 Ee/2 + Ey_gauche, 	0)
+SD1["M"] = geompy.MakeVertex(-Lhori/2    ,   	         Ee/2 + Ey_gauche, 	0)
+SD1["O"] = geompy.MakeVertex(-Lhori/2,	 	         Lsup-cc   , 		0)
+SD1["P"] = geompy.MakeVertex( Lhori/2	, 	         Lsup-cc,		0)
+SD1["Q"] = geompy.MakeVertex( Lhori/2,		         Linf+cc   , 		0)
+SD1["R"] = geompy.MakeVertex(-Lhori/2,		         Linf+cc,	 	0)
+
+#UNE FOIS LES POINTS DE REFERENCES CREES ET STOCKES DANS LE DICTIONNAIRE NOUS LES RELIENS PAR DES POLYLINES
+
+CONTOUR = geompy.MakePolyline([SD1["A"],SD1["B"],SD1["C"],SD1["D"],SD1["E"],SD1["F"],SD1["G"],SD1["H"],SD1["J"],SD1["K"],SD1["L"],SD1["M"],SD1["A"]])
+
+# CREATION DES FACES A PARTIR DES CONTOURS 
+FACE = geompy.MakeFace(CONTOUR, 1)
+
+# UNE FOIS LES FACES CONSTRUITES ON DECOUPE LA FACE PRINCIPALE (FACECOUNTOUR) PAR LES DEUX ARCS
+# ON ATTACHE LE RESULTAT DE CETTE OPERATION A UN OBJET de TYPE FACE
+
+# CREATION DES DIFFERENTS GROUPE DE NOEUDS
+# ON NOMME DIFFERENTES PARTIE DE LA GEOMETRIE POUR APPLIQUER LES CONDITIONS AUX LIMITES CES GROUPES, BASES SUR LA GEOMETRIE SERVIRONT A CREER LES GROUPES DE NOEUDS  SUR LE MAILLAGE. 
+# (ON UTILISERA PAR LA SUITE UNE FONCTION QUI RECUPERERA LES NOEUDS DU MAILLAGES SITUE SUR LE GROUPE QUE L'ON VIENT DE DEFINIR
+
+SINGU_H = geompy.MakeFace(geompy.MakePolyline([SD1["A"],SD1["B"],SD1["P"],SD1["O"],SD1["A"]]), 1)
+SINGU_B = geompy.MakeFace(geompy.MakePolyline([SD1["R"],SD1["Q"],SD1["G"],SD1["H"],SD1["R"]]), 1)
+DEDANS = geompy.MakeFace(geompy.MakePolyline([SD1["O"],SD1["P"],SD1["C"],SD1["D"],SD1["E"],SD1["F"],SD1["Q"],SD1["R"],SD1["J"],SD1["K"],SD1["L"],SD1["M"],SD1["O"]]),1)
+
+# ON DEFINIT DEUX ANGLES POUR ENSUITE TRACER LES DEUX DROITES AUX NIVEAUX DES ENTAILLES
+from math import *
+
+angle_bas = 25.
+angle_haut = 33.
+angle_bas_rad = angle_bas*pi/180.
+angle_haut_rad = angle_haut*pi/180.
+
+Abscisse_X_bas = (Lsup-(Ee/2 + Ey_droite))/tan(angle_bas_rad)
+Abscisse_X_haut = (Lsup-(Ee/2 + Ey_droite))/tan(angle_haut_rad)
+
+SD1["S"] = geompy.MakeVertex( Lhori/2 - El_droite - Abscisse_X_haut,    Lsup,    0)
+SD1["T"] = geompy.MakeVertex(-Lhori/2 + El_gauche + Abscisse_X_bas,     Linf,    0)
+
+TRAJET_H = geompy.MakeLineTwoPnt(SD1["D"],SD1["S"])
+TRAJET_B = geompy.MakeLineTwoPnt(SD1["K"],SD1["T"])
+
+
+MainObject = geompy.MakePartition([FACE], [TRAJET_H,TRAJET_B,SINGU_H,SINGU_B], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+
+#on cree les points A,B appartenant au maillage 1) on recupere les coordonnes 2) on les passe en arguments
+coords = geompy.PointCoordinates(SD1["A"])
+SD["P_HAUT"]=geompy.GetInPlace(MainObject,geompy.MakeVertex(coords[0],coords[1],coords[2]))
+coords = geompy.PointCoordinates(SD1["G"])
+SD["P_BAS"]=geompy.GetInPlace(MainObject,geompy.MakeVertex(coords[0],coords[1],coords[2]))
+coords = geompy.PointCoordinates(SD1["S"])
+SD["P_DS"]=geompy.GetInPlace(MainObject,geompy.MakeVertex(coords[0],coords[1],coords[2]))
+
+#encastrement HG
+FC_BAS=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["H"],SD1["G"]) )
+#faceHaut AB
+FC_HAUT=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["A"],SD1["B"]) )
+#cote gauche AM
+FC_GAUCH=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["A"],SD1["M"]) )
+#cote gauche FG
+FC_DROIT=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["F"],SD1["G"]) )
+
+SD["FC_AB"]=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["A"],SD1["B"]) )
+SD["FC_OP"]=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["O"],SD1["P"]) )
+SD["FC_AO"]=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["A"],SD1["O"]) )
+SD["FC_BP"]=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["B"],SD1["P"]) )
+
+SD["SINGU_H"]=geompy.GetInPlace(MainObject,SINGU_H)
+SD["SINGU_B"]=geompy.GetInPlace(MainObject,SINGU_B)
+SD["FC_HAUT"]= geompy.GetInPlace(MainObject,FC_HAUT)
+SD["FC_BAS"]= geompy.GetInPlace(MainObject,FC_BAS)
+SD["TRAJET_H"]= geompy.GetInPlace(MainObject,TRAJET_H)
+SD["TRAJET_B"]= geompy.GetInPlace(MainObject,TRAJET_B)
+SD["FACE_SUP"]= geompy.CreateGroup(MainObject, geompy.ShapeType["EDGE"])
+geompy.UnionList(SD["FACE_SUP"],[FC_HAUT])
+SD["DEDANS"]=geompy.GetInPlace(MainObject,DEDANS)
+
+SD["FACE_INF"]= geompy.CreateGroup(MainObject, geompy.ShapeType["EDGE"])
+geompy.UnionList(SD["FACE_INF"],[FC_BAS])
+
+SD1["AUXILAIRE"]= geompy.CreateGroup(MainObject, geompy.ShapeType["EDGE"])
+geompy.UnionList(SD1["AUXILAIRE"],[geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["O"],SD1["M"]) )])
+geompy.UnionList(SD1["AUXILAIRE"],[geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD1["F"],SD1["Q"]) )])
+
+#CREATION DE L'OBJET PRINCIPALE
+geompy.addToStudy(MainObject, "SPECIMEN")
+
+# ON RELIE L'ENSEMBLE DES SOUS OBJETS A L'OBJET PRINCIPALE POUR LES CONSERVER DANS L'HISTORIQUE
+keys=SD.keys()
+keys.sort()
+for name in keys:
+    geompy.addToStudyInFather(MainObject,SD[name],name)
+    
+# ON AFFICHE ENSEMBLE DE POINTS
+keys=SD1.keys()
+keys.sort()
+for name in keys:
+    geompy.addToStudy(SD1[name],name)
+
+####################################################################
+#######################" SMESH #####################################
+####################################################################
+
+import SMESH, SALOMEDS
+import StdMeshers
+import NETGENPlugin
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(theStudy)
+
+# NOM DE L'OBJET
+MESH = smesh.Mesh(MainObject,"SPECIMEN")
+
+# NETGEN_1D2D
+NETGEN_2D = MESH.Triangle(algo=smeshBuilder.NETGEN)
+NETGEN_Parameters = NETGEN_2D.Parameters()
+NETGEN_Parameters.SetMaxSize( "max_size" )
+NETGEN_Parameters.SetSecondOrder( 0 )
+NETGEN_Parameters.SetOptimize( 1 )
+NETGEN_Parameters.SetFineness( 2 )
+NETGEN_Parameters.SetMinSize( "min_size" )
+NETGEN_Parameters.SetQuadAllowed( 0 )
+NETGEN_Parameters.SetLocalSizeOnShape(SD["TRAJET_H"], "max_local_size")
+NETGEN_Parameters.SetLocalSizeOnShape(SD["TRAJET_B"], "max_local_size")
+
+
+# ON LISTE L'ENSEMBLE DES GROUPES GEOMETRIQUES SOUS FORME DE GROUPES DE NOEUDS (CONVERSION GROUPE GEOMETRIQUE -> GROUPE DE NOEUDS)
+mesh_group=[]
+items=SD.items()
+items.sort()
+mesh_group.append(MESH.Group(MainObject,"SPECIMEN"))
+for name, ref in items:
+   mesh_group.append(MESH.Group(ref,name))
+
+# ON PEUT MAINTENANT CALCULER LE MAILLAGE AVEC COMPUTE ET SPECIFIER SI ON VEUT DES ELEMENTS LINEAIRES OU QUADRATIQUES
+MESH.Compute()
+MESH.ConvertToQuadratic( 1 )
+
+
+# ENFIN ON EXPORTE LE MAILLAGE SOUS LE FORMAT MED POUR POUVOIR L'UTILISER DANS LA SIMULATION
+#Triangles.ExportMED("/local01/eprouvette/droitlight.med", 0)
+
+####### show mesh ########
+def GetStringID(object):
+        """get ID for given object in the string form, for example 0:1:3:12 """
+        """ If considered object is Mesh instance mmm, then one should pass mmm.GetMesh() as input object\n
+        If considered object is Algorithm instance aaa, then one should pass aaa.GetAlgorithm() as input object\n """
+        ior  = salome.orb.object_to_string(object) # get unique ior ID of the object
+        sobj = salome.myStudy.FindObjectIOR(ior)   # object pointer of SALOMEDS.Study type (Kernel module)
+        ID=sobj.GetID()
+        return ID
+	
+main_id=GetStringID(MESH.GetMesh())
+gs = salome.ImportComponentGUI("SMESH")
+gs.CreateAndDisplayActor(main_id)
