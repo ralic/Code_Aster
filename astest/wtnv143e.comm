@@ -1,4 +1,3 @@
-# MODIF  DATE 10/10/2013   AUTEUR : bertrand.paul at ifpen.fr
 # TITRE : APPLICATION D'UNE PRESSION SUR DES LEVRES D'ELEMENTS HM-XFEM
 #         QUADRATIQUES TETRA10
 # ssnv203c.para = tps_job 60 mem_job 512Mo ncpus 1 liste_test S
