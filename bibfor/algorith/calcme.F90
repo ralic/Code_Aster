@@ -67,6 +67,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 #include "asterfort/mctgel.h"
 #include "asterfort/matini.h"
 #include "asterfort/mcbnvi.h"
+#include "asterfort/lcidbg.h"
     aster_logical :: mectru, pre2tr
     integer :: ndim, dimdef, dimcon, nvimec, addeme, addete, addep1
     integer :: addep2, adcome, imate, yate, retcom
@@ -138,6 +139,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         (thmc.eq.'LIQU_GAZ') .or. (thmc.eq.'LIQU_AD_GAZ_VAPE')) then
         yapre2 = .true.
     endif
+! ======================================================================
+! --- INITIALISATION INDICATEUR RETCOM
+! ======================================================================
+    retcom = 0
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES -------------------------------------------
 ! ======================================================================
@@ -225,6 +230,11 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !
         call mcbnvi(typmod, ndt, ndi)
 !
+        complg(1) = 'MOHR_COULOMB'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc=55
+
         mectru = .true.
         tini = t - dt
         call matini(6, 6, 0.d0, dsdeme)
@@ -258,6 +268,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI CJS, LOI LAIGLE, LOI HOEK-BROWN OU LOI DRUCKER_PRAGER -------
 ! ======================================================================
     if (meca .eq. 'CJS') then
+
+        complg(1) = 'CJS'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc=23
+
         mectru = .true.
         tini = t - dt
         call nmcjs(typmod, imate, compor, crit, instam,&
@@ -327,6 +343,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     [0.d0], retcom)
     endif
     if (meca .eq. 'DRUCK_PRAGER' .or. meca .eq. 'DRUCK_PRAG_N_A') then
+
+        complg(1) = meca
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 16
+
         mectru = .true.
         tini = t - dt
         call lcdrpr(typmod, option, imate, meca, congem(adcome),&
@@ -396,6 +418,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI VISC_DRUC_PRAG -----------------------------------------------
 ! ======================================================================
     if (meca .eq. 'VISC_DRUC_PRAG') then
+
+        complg(1) = 'VISC_DRUC_PRAG'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 42
+
         tini = t - dt
         call dpvplc(typmod, option, imate, crit, instam,&
                     instap, tini, t, tref, deps,&
@@ -424,6 +452,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI CAM_CLAY -----------------------------------------------------
 ! ======================================================================
     if (meca .eq. 'CAM_CLAY') then
+
+        complg(1) = 'CAM_CLAY'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 22
+
         tini = t - dt
         call nmccam(ndim, typmod, imate, compor, crit,&
                     instam, instap, tini, t, tref,&
@@ -452,6 +486,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI BARCELONE ----------------------------------------------------
 ! ======================================================================
     if (meca .eq. 'BARCELONE') then
+
+        complg(1) = 'BARCELONE'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 9999
+
         tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
@@ -483,6 +523,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI ELAS_GONF ----------------------------------------------------
 ! ======================================================================
     if (meca .eq. 'ELAS_GONF') then
+
+        complg(1) = 'ELAS_GONF'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 9999
+
         tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
@@ -524,6 +570,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI HOEK_BROWN_TOT -----------------------------------------------
 ! ======================================================================
     if (meca .eq. 'HOEK_BROWN_TOT') then
+
+        complg(1) = 'HOEK_BROWN_TOT'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 9999
+
         tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
@@ -566,6 +618,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI MAZARS -------------------------------------------------------
 ! ======================================================================
     if (meca .eq. 'MAZARS') then
+
+        complg(1) = 'MAZARS'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 8
+
         tini = t - dt
         call lcmaza('RIGI', 1, 1, ndim, typmod,&
                     imate, compor, defgem( addeme+ndim), deps, vintm,&
@@ -594,6 +652,12 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- LOI ENDO_ISOT_BETON ----------------------------------------------
 ! ======================================================================
     if (meca .eq. 'ENDO_ISOT_BETON') then
+
+        complg(1) = 'ENDO_ISOT_BETON'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        numlc = 6
+
         tini = t - dt
         if (option(6:9) .eq. 'COUP') then
 !           on interdit le couplage fluage-eib car dans ce cas dsdeme(6,12)
@@ -623,6 +687,16 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                 end do
             endif
         endif
+    endif
+! ======================================================================
+! --- AFFICHAGE DES DONNEES NECESSAIRES POUR REJOUER CALCUL SI ---------
+! --- ECHEC DU MODELE DE COMPORTEMENT - RETCOM.EQ.1 --------------------
+! ======================================================================
+    if(retcom .eq. 1) then
+        call lcidbg(fami, kpg, spt, typmod, complg, &
+                    crit, instam, instap, 6, & 
+                    defgem(addeme+ndim),deps, 6,&
+                    congem(adcome), vintm, option) 
     endif
 ! ======================================================================
 end subroutine
