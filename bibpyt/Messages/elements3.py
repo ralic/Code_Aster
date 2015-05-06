@@ -196,8 +196,7 @@ cata_msg = {
 """),
 
     75 : _(u"""
- le matériau %(k1)s  n'est pas autorisé pour calculer les déformations plastiques :
- seuls les matériaux isotropes sont traités en plasticité
+On ne sait pas calculer les déformations plastiques avec de l'élasticité non-isotrope.
 """),
 
     76 : _(u"""
@@ -205,15 +204,7 @@ cata_msg = {
  la loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANGER
 """),
 
-    77 : _(u"""
-  -> Attention vous êtes en contraintes planes, et vous utilisez la loi
-     de comportement %(k1)s. La composante du tenseur des déformations
-     plastiques EPZZ est calculée en supposant l'incompréhensibilité des
-     déformations plastiques : EPZZ = -(EPXX + EPYY).
-  -> Risque & Conseil :
-     Vérifiez que cette expression est valide avec votre loi de comportement.
 
-"""),
 
     80 : _(u"""
  situation de contact impossible
