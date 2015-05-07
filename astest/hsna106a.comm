@@ -94,8 +94,6 @@ ACIER=DEFI_MATERIAU(ELAS_META=_F(E = 80000.,
                             F1_M=0.0,    F2_M=0.77E-04,  C_M=0.0,  
                             F1_N=4.39,    F2_N=2.96,     C_N=4.39,  
                             F1_Q=19922.8, F2_Q=21023.7,  C_Q=0.0, 
-#                           F_MRR_RR=0.4414,             C_MRR_RR=1.,
-#                           F_MTT_TT=0.714,              C_MTT_TT=1.,
                             F_MRR_RR=1.,                 C_MRR_RR=1.,
                             F_MTT_TT=1.,                 C_MTT_TT=1.,
                             F_MZZ_ZZ=1.,                 C_MZZ_ZZ=1.,
@@ -162,8 +160,6 @@ VL=STAT_NON_LINE(
                        CONVERGENCE=_F(
                 RESI_GLOB_MAXI = 1.E-1,
                 ITER_GLOB_MAXI = 50),
-#                     RECH_LINEAIRE=_F(
-#                ITER_LINE_MAXI = 3)
               )
 
 VL=STAT_NON_LINE( reuse=VL,
@@ -190,17 +186,11 @@ VL=STAT_NON_LINE( reuse=VL,
                        CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),
-#                     RECH_LINEAIRE=_F(
-#                ITER_LINE_MAXI = 0)
               )
 
+# Test stresses: comparison with LEMAITRE (hsna106b)
 
-VL=CALC_CHAMP(reuse=VL,RESULTAT=VL,CONTRAINTE=('SIGM_ELNO'),DEFORMATION=('EPSI_ELGA','EPSI_ELNO'))
-
-
-VL=CALC_CHAMP(reuse =VL,
-          RESULTAT=VL,
-          DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU');
+VL=CALC_CHAMP(reuse=VL,RESULTAT=VL,CONTRAINTE=('SIGM_ELNO','SIGM_NOEU'))
 
 TEST_RESU(RESU=(_F(INST=0.3,
                    RESULTAT=VL,
@@ -240,6 +230,108 @@ TEST_RESU(RESU=(_F(INST=0.3,
                    PRECISION=1.E-2,),
 ),)
 
+# Test strains: comparison with LEMAITRE (hsna106b)
 
-FIN(  )
+VL=CALC_CHAMP(reuse=VL,RESULTAT=VL,DEFORMATION=('EPSI_NOEU',))
+
+TEST_RESU(RESU=(
+                _F(INST=1.3,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=0.006,
+                   VALE_REFE=0.006,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+                _F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPSI_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=0.02,
+                   VALE_REFE=0.02,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+           ),)
+
+VL=CALC_CHAMP(reuse=VL,RESULTAT=VL,DEFORMATION=('EPSP_NOEU',))
+
+TEST_RESU(RESU=(
+                _F(INST=1.3,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPSP_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.0104773071226,
+                   VALE_REFE=-0.0104773071226,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+                _F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPSP_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.00505515026067,
+                   VALE_REFE=-0.00505515920024,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-5,),
+           ),)
+
+VL=CALC_CHAMP(reuse=VL,RESULTAT=VL,DEFORMATION=('EPVC_NOEU',))
+
+TEST_RESU(RESU=(
+                _F(INST=0.8,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPVC_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=0.0096,
+                   VALE_REFE=0.0096,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+                _F(INST=1.3,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPVC_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=0.0156,
+                   VALE_REFE=0.0156,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+                _F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPVC_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPTHER_L',
+                   VALE_CALC=0.024,
+                   VALE_REFE=0.024,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+           ),)
+
+VL=CALC_CHAMP(reuse=VL,RESULTAT=VL,DEFORMATION=('EPME_NOEU',))
+
+TEST_RESU(RESU=(
+                _F(INST=1.3,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPME_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.0096,
+                   VALE_REFE=-0.0096,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+                _F(INST=2.0,
+                   RESULTAT=VL,
+                   NOM_CHAM='EPME_NOEU',
+                   NOEUD='NO3',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.004,
+                   VALE_REFE=-0.004,
+                   REFERENCE='AUTRE_ASTER',
+                   PRECISION=1.E-6,),
+           ),)
+
+FIN()
 #
