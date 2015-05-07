@@ -31,6 +31,7 @@ def impr_diag_campbell_ops(
     import aster
     from Accas import _F
     from Noyau.N_types import is_float
+    from Utilitai.Utmess import UTMESS
 
     from Macro.impr_diag_campbell_utils import (
         CLASS_MODES, EXTR_FREQ, TRI_MODE_MACf, TRI_MODE_MACt, TRI_MODE_MACl, CALC_MACf,
@@ -68,6 +69,10 @@ def impr_diag_campbell_ops(
     num_vit_tri = sup_redon_listv(VITE_ROTA)
     # Recupere les modes suivant l'ordre de la liste des vitesses de rotation
     nbV1 = len(VITE_ROTA)
+
+    if nbV1 < 2:
+        UTMESS('F', 'CAMPBELL_1')
+
     __lmo = [None] * nbV1
     for ii in range(0, nbV1):
         itri = num_vit_tri[ii]
