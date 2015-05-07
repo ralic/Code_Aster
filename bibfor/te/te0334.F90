@@ -115,12 +115,14 @@ implicit none
                 itab=jtab)
     nbvari = max(jtab(6),1)*jtab(7)
 !
-! - Elasticity: only isotropic and not metallurgy !
+! - Elasticity: only isotropic and not metallurgy except META_LEMA_ANI !
 !
     call get_elas_type(zi(imate), elas_type, elas_keyword)
     if (elas_type.eq.1) then
         if (elas_keyword.eq.'ELAS_META') then
-            call utmess('F', 'ELEMENTS6_1')
+            if (rela_comp.ne.'META_LEMA_ANI') then
+                call utmess('F', 'ELEMENTS6_1')
+            endif
         endif
     else
         call utmess('F', 'ELEMENTS6_2')
