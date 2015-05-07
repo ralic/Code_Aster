@@ -207,7 +207,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                              PRECISION=0.22,
              VALE_CALC=VALE_CALC[(i-1)*2+0],
              VALE_REFE=LAGS_A,
-             TOLE_MACHINE=1.E-5,                 # TODO TOLE_MACHINE
+             TOLE_MACHINE=5.E-5,                 # TODO TOLE_MACHINE
              NOM_PARA='LAGS_C',
              TYPE_TEST='MAX',
              TABLE=LAG[i],)
@@ -217,7 +217,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                              PRECISION=0.22,
              VALE_CALC=VALE_CALC[(i-1)*2+1],
              VALE_REFE=LAGS_A,
-             TOLE_MACHINE=1.E-5,                 # TODO TOLE_MACHINE
+             TOLE_MACHINE=5.E-5,                 # TODO TOLE_MACHINE
              NOM_PARA='LAGS_C',
              TYPE_TEST='MIN',
              TABLE=LAG[i],)

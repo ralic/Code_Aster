@@ -32,8 +32,13 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 #                MAILLAGE
 #----------------------------------------------
 
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
 
-MAILLAG1=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
+MAILLAG1=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+                      CREA_POI1 =(_F(NOM_GROUP_MA = 'RESSORT1',
+                                     NOEUD = 'N454'),
+                                  _F(NOM_GROUP_MA = 'RESSORT2',
+                                     NOEUD = 'N47'),),);
 
 MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                     MAILLAGE=MAILLAG1,
@@ -65,7 +70,13 @@ MAILLAG1=MODI_MAILLAGE(reuse=MAILLAG1,
 #----------------------------------------------
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
-                     AFFE=(_F(GROUP_MA=('FPRESH'),
+                     AFFE=(_F(GROUP_MA = 'RESSORT1',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DIS_T'),
+                           _F(GROUP_MA = 'RESSORT2',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DIS_T'),
+                           _F(GROUP_MA=('FPRESH'),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D'),
                            _F(GROUP_MA=('FPRESV'),
@@ -78,6 +89,17 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D')),
                               INFO=1);
+
+cara_ele=AFFE_CARA_ELEM(MODELE=MODELEIN,
+                        #INFO=2,
+                        DISCRET=(_F(GROUP_MA='RESSORT1',
+                                    REPERE='GLOBAL',
+                                    CARA='K_T_D_N',
+                                    VALE=(0.,1.E3,0.)),
+                                    _F(GROUP_MA='RESSORT2',
+                                       REPERE='GLOBAL',
+                                       CARA='K_T_D_N',
+                                       VALE=(0.,1.E3,0.)),),);
 
 # FORME ANALYTIQUE POUR LA FISSURE
 
@@ -155,21 +177,20 @@ CHCINE=AFFE_CHAR_MECA(MODELE=MODELEK,
                                 _F(GROUP_NO=('BLOCAX'),
                                    DX=0.),
                                 _F(GROUP_NO=('BLOCAY'),
-                                   DY=0.)),
-                      LIAISON_GROUP=(_F(GROUP_NO_1 = ('BLOCAX2'),
-                                        GROUP_NO_2 = ('BLOCAX2'),
-                                        DDL_1      = 'DX',
-                                        DDL_2      = 'H1X',
-                                        COEF_MULT_1=  1.,
-                                        COEF_MULT_2=  1.,
-                                        COEF_IMPO= 0.),
-                                     _F(GROUP_NO_1 = ('BLOCAY2'),
-                                        GROUP_NO_2 = ('BLOCAY2'),
-                                        DDL_1      = 'DY',
-                                        DDL_2      = 'H1Y',
-                                        COEF_MULT_1=  1.,
-                                        COEF_MULT_2=  1.,
-                                        COEF_IMPO= 0.)),
+                                   DY=0.),
+                                _F(GROUP_NO=('BLOCAX2'),
+                                   DX=0.,H1X=0),
+                                _F(GROUP_NO=('BLOCAY2'),
+                                   DY=0.,H1Y=0)
+                                ),
+#                      LIAISON_GROUP=(_F(GROUP_NO_1 = ('BLOCAX2'),GROUP_NO_2 = ('BLOCAX2'),
+#                                        DDL_1      = 'DX', DDL_2      = 'H1X',
+#                                        COEF_MULT_1=  1.,  COEF_MULT_2=  1.,
+#                                        COEF_IMPO= 0.),
+#                                     _F(GROUP_NO_1 = ('BLOCAY2'), GROUP_NO_2 = ('BLOCAY2'),
+#                                        DDL_1      = 'DY', DDL_2      = 'H1Y',
+#                                        COEF_MULT_1=  1., COEF_MULT_2=  1.,
+#                                        COEF_IMPO= 0.)),
                       );
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -202,6 +223,7 @@ L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,NOMBRE=1));
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA1,
+                    CARA_ELEM=cara_ele,
                     CONTACT=CTXFEM,
                     EXCIT=(
                            _F(CHARGE=CHCINE),
@@ -215,7 +237,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     INCREMENT=_F(LIST_INST=L_INS1,
                                  INST_FIN=1.0),
                     CONVERGENCE=_F(
-                                   ITER_GLOB_MAXI=50,
+                                   ITER_GLOB_MAXI=20,
                                    RESI_GLOB_RELA=1.E-6),
                     SOLVEUR=_F(METHODE='MUMPS',
 

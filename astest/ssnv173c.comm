@@ -46,7 +46,6 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LN=LN),);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         CRITERE=1.1E-04,
                          FISSURE=FISS,
                          INFO=1,);
 

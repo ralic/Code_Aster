@@ -71,7 +71,6 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
     integer :: islvk
     character(len=19) :: matas1, solvez
     character(len=24) :: metres, kprecond
-    aster_logical :: filtrage
 !
 !----------------------------------------------------------------------
     call jemarq()
@@ -87,21 +86,15 @@ subroutine prere3(solveu, base, iret, matpre, matass,&
     ASSERT(kprecond(1:3) .eq. 'OUI')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   FILTRAGE DES TERMES PRESQUE NULS EN FONCTION DU SOLVEUR 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    filtrage=.false.
-!    if ( metres .eq. 'MUMPS' .or.  metres .eq. 'LDLT')   filtrage=.true.  
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   CALCUL DU PRE CONDITIONNEUR XFEM :: 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (kprecond.eq.'OUI_DPB') then
 !
-      call xfem_precond('PRE_COND_DPB', matas1, base, filtrage)
+      call xfem_precond('PRE_COND_DPB', matas1, base)
 !
     else
 !
-      call xfem_precond('PRE_COND', matas1, base, filtrage)
+      call xfem_precond('PRE_COND', matas1, base)
 !
     endif
 !

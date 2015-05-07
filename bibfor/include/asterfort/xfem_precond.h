@@ -17,10 +17,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xfem_precond(action, matass, base, filtrage)
+    subroutine xfem_precond(action, matass, base)
         character(len=*) :: action
         character(len=*) :: matass
         character(len=1),optional :: base
-        aster_logical,optional :: filtrage
     end subroutine xfem_precond
 end interface

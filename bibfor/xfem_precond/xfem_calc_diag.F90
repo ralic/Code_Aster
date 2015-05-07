@@ -119,7 +119,7 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
          endif
        endif
 !
-30  enddo
+30  continue
 !
     do 60 iligl=1,neq
       if (ieq_loc(iligl) .le. 0 ) goto 60
@@ -131,7 +131,7 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
                                            ni=2, vali=[iligl,nunoi])
       endif
       tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))=scal/rcoef
-60  enddo
+60  continue
 !
     jcoll=1
     nunoj=deeq(2*(jcoll-1)+1)

@@ -25,7 +25,7 @@ interface
                       lpenaf, coefff, tau1, tau2, rese,&
                       nrese, mproj, norm, nsinge,&
                       nsingm, rre, rrm, nvit, nconta,&
-                      jddle, jddlm, nfhe, mmat)
+                      jddle, jddlm, nfhe, nfhm, heavn, mmat)
         integer :: ndim
         integer :: jnne(3)
         integer :: ndeple
@@ -58,6 +58,8 @@ interface
         integer :: jddle(2)
         integer :: jddlm(2)
         integer :: nfhe
+        integer :: nfhm
+        integer :: heavn(*)
         real(kind=8) :: mmat(336, 336)
     end subroutine xmmab2
 end interface

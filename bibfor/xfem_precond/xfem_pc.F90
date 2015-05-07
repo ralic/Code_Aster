@@ -1,4 +1,4 @@
-subroutine xfem_pc(matass, base, filtrage, typ_pc)
+subroutine xfem_pc(matass, base)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,9 +57,8 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
 #include "asterfort/xfem_calc_diag.h"
 #include "asterfort/xfem_store_pc.h"
 !-----------------------------------------------------------------------
-    character(len=*) :: matass, typ_pc
+    character(len=*) :: matass
     character(len=1) :: base
-    aster_logical :: filtrage
 !-----------------------------------------------------------------------
     character(len=1) :: bas1
     character(len=8) :: nomgd, noma
@@ -74,8 +73,8 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
     integer, pointer :: ieq_loc(:) => null()
     aster_logical, pointer :: is_xfem(:) => null()
     integer :: nuno, neq, ieq, jcmp, jdeeq
-    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm
-    real(kind=8) :: kmin, kmax, coef, scal, seuil
+    integer :: jdime, nbnomax, nbnoxfem, maxi_ddl, nvale, niv, ifm
+    real(kind=8) :: kmin, kmax, coef, scal
     aster_logical :: lmd
     parameter    (pc_1='&&XFEM_PC_1')
 !-----------------------------------------------------------------------

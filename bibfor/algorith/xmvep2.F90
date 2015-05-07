@@ -77,7 +77,6 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
 !
     coefi = xcalc_saut(1,0,1)
     lmultc = nfiss.gt.1
-    coefi = xcalc_saut(1,0,1,-88)
     if (.not.lmultc) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])
       hea_fa(2)=xcalc_code(1,he_inte=[+1])

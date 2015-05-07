@@ -337,7 +337,7 @@ subroutine te0366(option, nomte)
                             coeffp, coefff, lpenaf, tau1, tau2,&
                             rese, mprojt, norm, nsinge,&
                             nsingm, rre, rrm, nvit, contac,&
-                            ddle, ddlm, nfhe, mmat)
+                            ddle, ddlm, nfhe, nfhm, zi(jheavn), mmat)
 !
             else if (inadh.eq.0) then
 !
@@ -350,7 +350,7 @@ subroutine te0366(option, nomte)
                             lpenaf, coefff, tau1, tau2, rese,&
                             nrese, mprojt, norm, nsinge,&
                             nsingm, rre, rrm, nvit, contac,&
-                            ddle, ddlm, nfhe, mmat)
+                            ddle, ddlm, nfhe, nfhm, zi(jheavn), mmat)
             endif
         else
             ASSERT(.false.)

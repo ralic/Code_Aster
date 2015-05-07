@@ -110,12 +110,12 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
                     do 30 ifh = 1, nfhe
                         iescl(1+ifh)=xcalc_heav(heavn(nfhe*(inoe-1)+ifh),&
                                                 heavfa(1),&
-                                                -99)
+                                                heavn(nfhe*nne+nfhm*nnm+inoe))
  30                 continue
                 else
                         iescl(2)=xcalc_heav(heavn(inoe),&
                                             hea_fa(1),&
-                                            heavn(nne+nnm+inoe))
+                                            heavn(nfhe*nne+nfhm*nnm+inoe))   
                 endif
                 do 40 iddl = 1, 1+nfhe
                     pl = in + (iddl-1)*ndim + idim
@@ -137,12 +137,12 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
                 do 70 ifh = 1, nfhm
                     imait(1+ifh)=xcalc_heav(heavn(nfhe*nne+nfhm*(inom-1)+ifh),&
                                             heavfa(2),&
-                                            -99)
+                                            heavn((1+nfhe)*nne+nfhm*nnm+inom))
  70             continue
             else
                     imait(2)=xcalc_heav(heavn(nne+inom),&
                                         hea_fa(2),&
-                                        heavn(2*nne+nnm+inom))
+                                        heavn((1+nfhe)*nne+nfhm*nnm+inom)) 
             endif
             do 80 iddl = 1, 1+nfhm+nsingm
                 pl = in + (iddl-1)*ndim + idim

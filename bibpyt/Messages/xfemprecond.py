@@ -22,10 +22,8 @@ cata_msg = {
 
     1: _(u"""
   Alarme émise par le pré-conditionneur XFEM:
-  La matrice n'est pas symétrique ou à une structure
-  non symétrique. Le calcul du pré-conditionneur
-  XFEM <<NODAL>> ne supporte pas encore ce type de
-  matrices.
+  La structure de la matrice n'est reconnue par le pré-conditionneur
+  XFEM.
   Par précaution, on ne modifie pas le problème de départ.
   La résolution se poursuit sans pré-conditionneur XFEM.
 """),
@@ -50,11 +48,12 @@ cata_msg = {
 
     7 : _(u"""
   Le pré-conditionneur XFEM a détecté une ligne pratiquement nulle à l'équation %(i1)d
-  correspondante au noeud N%(i2)d et au dégré de liberté %(k1)s.
+  correspondante au noeud N%(i2)d et au degré de liberté %(k1)s.
   Conseils:
-    - S'il s'agit d'un dégré de liberté de type contact : vérifier que le chargement contact est 
-      bien appliqué à la résolution.
-    - Sinon, désactiver le pré-conditionneur X-FEM dans le MODI_MODELE_XFEM > PRETRAITEMENTS='SANS'
+    - S'il s'agit d'un degré de liberté de type contact : vérifier que le chargement contact est 
+      bien appliqué à la résolution et que toutes les sous-facettes de contact sont présentes en
+      activant MODI_MODELE_XFEM/DECOUPE_FACETTE='SOUS_ELEMENTS'
+    - Sinon, désactiver le pré-conditionneur X-FEM dans le MODI_MODELE_XFEM/PRETRAITEMENTS='SANS'
       pour tenter de poursuivre le calcul. Cette opération est très risquée.
 """),
 

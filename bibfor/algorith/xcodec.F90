@@ -131,8 +131,8 @@ subroutine xcodec(noma, modelx, k8condi, linter)
        crit2(2)=1.d-5
        zk8(jcond)='OUI'
     elseif ( k8condi .eq. 'SANS' ) then
-       crit2(1)=1.d-100
-       crit2(2)=1.d-100
+       crit2(1)=1.d-4
+       crit2(2)=1.d-4
        zk8(jcond)='NON'
     else
        ASSERT(.false.)
