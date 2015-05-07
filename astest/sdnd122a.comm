@@ -141,7 +141,7 @@ T = math.sqrt(m/k)*tau_p
 fsc = 1./T
 
 TEST_FONCTION(VALEUR=_F(VALE_PARA=es,
-                       VALE_CALC=0.64670395145148,
+                       TOLE_MACHINE=5.e-6, VALE_CALC=0.64670395145148,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=fsc,
                        FONCTION=FREQC,),
