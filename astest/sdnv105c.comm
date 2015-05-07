@@ -238,6 +238,7 @@ CHA_cont=DEFI_CONTACT(MODELE         = MO,
                               GROUP_MA_MAIT = 'CONBAS',
                               GROUP_MA_ESCL = 'CONHAUT',
                               COULOMB       = mu_frot,
+                              SEUIL_INIT=0.0,
                       ),
          )
 
@@ -255,6 +256,7 @@ CHA_con2=DEFI_CONTACT(MODELE         = MO,
                               GROUP_MA_MAIT = 'CONBAS',
                               GROUP_MA_ESCL = 'CONHAUT',
                               COULOMB       = mu_frot,
+                              SEUIL_INIT=0.0,
                       ),
          )
 
