@@ -32,7 +32,8 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
-!       EPS     : TENSEUR DE DEFORMATIONS
+!       EPS   : TENSEUR DE DEFORMATIONS
+!               (EXX EYY 2EXY KXX KYY 2KXY)
 !       B       : TENSEUR ASSOCIE AUX DEFORMATIONS PLASTIQUES
 !       C       : TENSEUR DE RAIDEUR D'ÉCROUISSAGE PLASTIQUE
 !       VINT   : VECTEUR DES VARIABLES INTERNES
@@ -56,12 +57,13 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
     do k = 1, 2
 !     CALCUL DE NETA1 ET NETA2
         do i = 1, 6
-            neta1(k) = neta1(k)-eps(i)*b(i,k,1)*0.5d0
-            neta2(k) = neta2(k)-eps(i)*b(i,k,2)*0.5d0
+            neta1(k) = neta1(k)-eps(i)*b(i,k,1)
+            neta2(k) = neta2(k)-eps(i)*b(i,k,2)
             if (i .lt. 3) then
                 neta1(k) = neta1(k)-vint(i+2)*c(i,k,1)
                 neta2(k) = neta2(k)-vint(i+4)*c(i,k,2)
             endif
         end do
     end do
+!
 end subroutine

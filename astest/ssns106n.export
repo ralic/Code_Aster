@@ -7,3 +7,4 @@ P testlist verification sequential
 
 F comm ssns106n.comm D 1
 F mmed ssns106d.mmed D 20
+F libr ssns106i.12 D 12

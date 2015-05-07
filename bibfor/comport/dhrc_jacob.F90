@@ -36,18 +36,54 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
 ! ----------------------------------------------------------------------
 !
 !      CALCUL DE LA MATRICE JACOBIENNE DES SEUILS
-!      APPELE PAR "LCGLCC"
+!      APPELE PAR "DHRC_LC"
 !
 ! IN:
-!       EPS     : TENSEUR DE DEFORMATIONS
-!       B       : TENSEUR ASSOCIE AUX DEFORMATIONS PLASTIQUES
-!       C       : TENSEUR DE RAIDEUR D'ÉCROUISSAGE PLASTIQUE
+!       EPS   : TENSEUR DE DEFORMATIONS
+!               (EXX EYY 2EXY KXX KYY 2KXY)
+!       AS1   : DERIVEE SECONDE DU TENSEUR DE RAIDEUR ELASTIQUE PAR
+!               RAPPORT A D1
+!       AS2   : DERIVEE SECONDE DU TENSEUR DE RAIDEUR ELASTIQUE PAR
+!               RAPPORT A D2
+!       BP1   : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR COUPLE PAR
+!               RAPPORT A D1
+!               LA PREMIERE COMPOSANTE DE BP CORRESPOND AUX DEFORMATIONS M-F
+!               LA DEUXIEME COMPOSANTE DE BP CORRESPOND AUX GLISSEMENTS
+!       BP2   : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR COUPLE PAR
+!               RAPPORT A D2
+!       LA PREMIERE COMPOSANTE DE BP CORRESPOND AUX DEFORMATIONS M-F
+!       LA DEUXIEME COMPOSANTE DE BP CORRESPOND AUX GLISSEMENTS
+!       BS1   : DERIVEE SECONDE DU TENSEUR DE RAIDEUR COUPLE PAR
+!               RAPPORT A D1
+!       LA PREMIERE COMPOSANTE DE BS CORRESPOND AUX DEFORMATIONS M-F
+!       LA DEUXIEME COMPOSANTE DE BS CORRESPOND AUX GLISSEMENTS
+!       BS2   : DERIVEE SECONDE DU TENSEUR DE RAIDEUR COUPLE PAR
+!               RAPPORT A D2
+!       LA PREMIERE COMPOSANTE DE BS CORRESPOND AUX DEFORMATIONS M-F
+!       LA DEUXIEME COMPOSANTE DE BS CORRESPOND AUX GLISSEMENTS
+!       C(k,l,i) : TENSEUR DE RAIDEUR D'ECROUISSAGE
+!                  LA PREMIERE COMPOSANTE DE C CORRESPOND AUX GLISSEMENTS
+!                  LA DEUXIEME COMPOSANTE DE C CORRESPOND AUX GLISSEMENTS
+!                  LA TROISIEME COMPOSANTE DE C CORRESPOND A LA DISTINCTION
+!                  ENTRE PARTIE SUPERIEURE ET INFERIEURE DE LA PLAQUE
+!       CP1   : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR ECROUISSAGE PAR
+!               RAPPORT A D1
+!               LES COMPOSANTES DE CP CORRESPONDENT AUX GLISSEMENTS
+!       CP2   : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR ECROUISSAGE PAR
+!               RAPPORT A D2
+!               LES COMPOSANTES DE CP CORRESPONDENT AUX GLISSEMENTS
+!       CS1   : DERIVEE SECONDE DU TENSEUR DE RAIDEUR ECROUISSAGE PAR
+!               RAPPORT A D1
+!               LES COMPOSANTES DE CS CORRESPONDENT AUX GLISSEMENTS
+!       CS2   : DERIVEE SECONDE DU TENSEUR DE RAIDEUR ECROUISSAGE PAR
+!               RAPPORT A D2
+!               LES COMPOSANTES DE CS CORRESPONDENT AUX GLISSEMENTS
 !       VINT   : VECTEUR DES VARIABLES INTERNES
 !                VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !
 ! OUT:
 !       JACOB   : MATRICE JACOBIENNE DES SEUILS ACTIVÉS
-!       JACOBT   : MATRICE JACOBIENNE DES SEUILS (TOUS)
+!       JACOBT  : MATRICE JACOBIENNE DES SEUILS (TOUS)
 !
 ! ----------------------------------------------------------------------
 !
@@ -65,8 +101,8 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
             jacobt(2,2)=jacobt(2,2)- eps(k)* as2(k,i)* eps(i)*0.5d0
 !
             if (i .lt. 3) then
-                jacobt(1,1)=jacobt(1,1)- eps(k)* bs1(k,i)* vint(i+2)*0.5d0
-                jacobt(2,2)=jacobt(2,2)- eps(k)* bs2(k,i)* vint(i+4)*0.5d0
+                jacobt(1,1)=jacobt(1,1)- eps(k)* bs1(k,i)* vint(i+2)
+                jacobt(2,2)=jacobt(2,2)- eps(k)* bs2(k,i)* vint(i+4)
                 if (k .lt. 3) then
                     jacobt(1,1)=jacobt(1,1)- vint(k+2)* cs1(k,i)*vint(i+2)*0.5d0
                     jacobt(2,2)=jacobt(2,2)- vint(k+4)* cs2(k,i)*vint(i+4)*0.5d0
@@ -74,19 +110,34 @@ subroutine dhrc_jacob(eps, vint, c, bp1,&
             endif
         end do
 !
-        jacobt(1,3)=jacobt(1,3)- eps(k)*bp1(k,1)*0.5d0
-        jacobt(1,4)=jacobt(1,4)- eps(k)*bp1(k,2)*0.5d0
+!       jacobt(1,2)=0.d0 par construction du modèle
 !
-        jacobt(2,5)=jacobt(2,5)- eps(k)*bp2(k,1)*0.5d0
-        jacobt(2,6)=jacobt(2,6)- eps(k)*bp2(k,2)*0.5d0
+        jacobt(1,3)=jacobt(1,3)- eps(k)*bp1(k,1)
+        jacobt(1,4)=jacobt(1,4)- eps(k)*bp1(k,2)
+! Pour évolution
+!        jacobt(1,5)=0.d0 - couplage endommagement haut glissement bas x
+!        jacobt(1,6)=0.d0 - couplage endommagement haut glissement bas y
 !
-        jacobt(3,1)=jacobt(3,1)- eps(k)*bp1(k,1)*0.5d0
+! Pour évolution
+!        jacobt(2,3)=0.d0 - couplage endommagement bas glissement haut x
+!        jacobt(2,4)=0.d0 - couplage endommagement bas glissement haut y
 !
-        jacobt(4,1)=jacobt(4,1)- eps(k)*bp1(k,2)*0.5d0
+        jacobt(2,5)=jacobt(2,5)- eps(k)*bp2(k,1)
+        jacobt(2,6)=jacobt(2,6)- eps(k)*bp2(k,2)
 !
-        jacobt(5,2)=jacobt(5,2)- eps(k)*bp2(k,1)*0.5d0
+        jacobt(3,1)=jacobt(3,1)- eps(k)*bp1(k,1)
+        jacobt(4,1)=jacobt(4,1)- eps(k)*bp1(k,2)
 !
-        jacobt(6,2)=jacobt(6,2)- eps(k)*bp2(k,2)*0.5d0
+! Pour évolution
+!        jacobt(5,1)=0.d0 - couplage endommagement haut glissement bas x
+!        jacobt(6,1)=0.d0 - couplage endommagement haut glissement bas y
+!
+! Pour évolution
+!        jacobt(3,2)=0.d0 - couplage endommagement bas glissement haut x
+!        jacobt(4,2)=0.d0 - couplage endommagement bas glissement haut y
+!
+        jacobt(5,2)=jacobt(5,2)- eps(k)*bp2(k,1)
+        jacobt(6,2)=jacobt(6,2)- eps(k)*bp2(k,2)
 !
         if (k .lt. 3) then
             jacobt(1,3)=jacobt(1,3)- vint(k+2)*cp1(k,1)

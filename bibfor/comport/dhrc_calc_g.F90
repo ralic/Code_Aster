@@ -32,7 +32,8 @@ subroutine dhrc_calc_g(eps, vint, ap1, bp1, cp1, ap2, bp2, cp2, g1, g2)
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
-!       EPS     : TENSEUR DES DEFORMATIONS
+!       EPS   : TENSEUR DE DEFORMATIONS
+!               (EXX EYY 2EXY KXX KYY 2KXY)
 !       A       : TENSEUR ELASTIQUE ENDOMMAGE
 !       B       : TENSEUR ASSOCIE AUX DEFORMATIONS PLASTIQUES
 !       C       : TENSEUR DE RAIDEUR D'ÉCROUISSAGE PLASTIQUE
@@ -60,20 +61,20 @@ subroutine dhrc_calc_g(eps, vint, ap1, bp1, cp1, ap2, bp2, cp2, g1, g2)
 !
     do k = 1, 6
         do i = 1, 6
-            g1 = g1 - eps(k) * ap1(k,i) * eps(i)
-            g2 = g2 - eps(k) * ap2(k,i) * eps(i)
+            g1 = g1 + eps(k) * ap1(k,i) * eps(i)
+            g2 = g2 + eps(k) * ap2(k,i) * eps(i)
             if (i .lt. 3) then
-                g1 = g1 - eps(k) * bp1(k,i) * vint(i+2)
-                g2 = g2 - eps(k) * bp2(k,i) * vint(i+4)
+                g1 = g1 + 2.d0 * eps(k) * bp1(k,i) * vint(i+2)
+                g2 = g2 + 2.d0 * eps(k) * bp2(k,i) * vint(i+4)
                 if (k .lt. 3) then
-                    g1 = g1 - vint(k+2) * cp1(k,i) * vint(i+2)
-                    g2 = g2 - vint(k+4) * cp2(k,i) * vint(i+4)
+                    g1 = g1 + vint(k+2) * cp1(k,i) * vint(i+2)
+                    g2 = g2 + vint(k+4) * cp2(k,i) * vint(i+4)
                 endif
             endif
         end do
     end do
 !
-    g1 = g1*0.5d0
-    g2 = g2*0.5d0
+    g1 = -g1*0.5d0
+    g2 = -g2*0.5d0
 !
 end subroutine

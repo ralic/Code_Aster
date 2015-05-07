@@ -39,6 +39,8 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
 !
 ! OUT:
 !       B     : TENSEUR DE RAIDEUR COUPLE ELAS-PLAS
+!       LA PREMIERE COMPOSANTE DE B CORRESPOND AUX DEFORMATIONS M-F
+!       LA DEUXIEME COMPOSANTE DE B CORRESPOND AUX GLISSEMENTS
 !       LA TROISIEME COMPOSANTE DE B CORRESPOND A LA DISTINCTION
 !       ENTRE PARTIE SUPERIEURE ET INFERIEURE DE LA PLAQUE
 !       BP1   : DERIVEE PREMIERE DU TENSEUR DE RAIDEUR COUPLE PAR
@@ -63,22 +65,17 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
     do i = 1, 6
         do k = 1, 2
 !
-! --      ON DIVISE B0 PAR 2 DANS A CAR ON SOMME LES DEUX FONCTIONS
-!         D'ENDOMMAGEMENT CE QUI FAIT UN FACTEUR 2 A D=0
+            b(i,k,1)=gb(i,k,1)*vint(1)/(ab(i,k,1)+vint(1))
+            b(i,k,2)=gb(i,k,2)*vint(2)/(ab(i,k,2)+vint(2))
 !
-            b(i,k,1)= 0.5d0* (gb(i,k,1)*vint(1))/(ab(i,k,1)+vint(1))
+            bp1(i,k)=ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**2
+            bp2(i,k)=ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**2
 !
-            bp1(i,k)= 0.5d0* ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**2
-!
-            bs1(i,k)=-ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**3
-!
-            b(i,k,2)= 0.5d0* (gb(i,k,2)*vint(2))/(ab(i,k,2)+ vint(2))
-!
-            bp2(i,k)= 0.5d0* ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+ vint(2))**2
-!
-            bs2(i,k)=-ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**3
+            bs1(i,k)=-2.d0*ab(i,k,1)*gb(i,k,1)/(ab(i,k,1)+vint(1))**3
+            bs2(i,k)=-2.d0*ab(i,k,2)*gb(i,k,2)/(ab(i,k,2)+vint(2))**3
 !
         end do
     end do
 !
 end subroutine
+

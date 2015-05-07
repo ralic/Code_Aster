@@ -22,7 +22,8 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !
 #include "asterfort/matini.h"
 #include "asterc/r8prem.h"
-    real(kind=8) :: vint(*), eps(8)
+!
+    real(kind=8) :: vint(*), eps(*)
     real(kind=8) :: a0(6, 6)
     real(kind=8) :: aa_t(6, 6, 2), ga_t(6, 6, 2), aa_c(6, 6, 2), ga_c(6, 6, 2)
     real(kind=8) :: a(6, 6), ap1(6, 6), ap2(6, 6), as1(6, 6), as2(6, 6)
@@ -32,6 +33,8 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
+!       EPS   : TENSEUR DE DEFORMATIONS
+!               (EXX EYY 2EXY KXX KYY 2KXY)
 !       VINT   : VECTEUR DES VARIABLES INTERNES
 !                VINT=(D1,D2,EPSP1X,EPSP1Y,EPSP2X,EPSP2Y)
 !       A0     : RAIDEUR ELASTIQUE (D=0)
@@ -56,355 +59,157 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
 ! ----------------------------------------------------------------------
 !
     integer :: i, j
-    real(kind=8) :: multeps, multk, h
+    real(kind=8) :: treps, trkap
+
+! -- POUR LES TERMES DE MF POSITION D EVALUATION DE LA DEFORMATION POUR DISTINGUER TRAC-COMP
 !
-    call matini(6, 6, 0.0d0, a)
-    call matini(6, 6, 0.0d0, ap1)
-    call matini(6, 6, 0.0d0, ap2)
-    call matini(6, 6, 0.0d0, as1)
-    call matini(6, 6, 0.0d0, as2)
+    call matini(6, 6, 0.d0, a)
+    call matini(6, 6, 0.d0, ap1)
+    call matini(6, 6, 0.d0, ap2)
+    call matini(6, 6, 0.d0, as1)
+    call matini(6, 6, 0.d0, as2)
 !
-    multeps=eps(1)*eps(2)-eps(3)**2.0d0
-    multk  =eps(4)*eps(5)-eps(6)**2.0d0
+    treps=eps(1)+eps(2)
+    trkap=eps(4)+eps(5)
 !
-    h=0.1d0
-!
-!
+! -- TERMES DE MEMBRANE PURE
     do i = 1, 3
+        if (eps(i) .ge. -r8prem()) then
+            a(i,i)=0.5d0*a0(i,i)*((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))/(aa_t(i,i,1)+vint(1)) &
+                                 +(aa_t(i,i,2)+ga_t(i,i,2)*vint(2))/(aa_t(i,i,2)+vint(2)))
 !
-! --  ON DIVISE A0 PAR 2 DANS A CAR ON SOMME LES DEUX FONCTIONS
-!     D'ENDOMMAGEMENT CE QUI FAIT UN FACTEUR 2 A D=0
+            ap1(i,i)=0.5d0*a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**2.d0
+            ap2(i,i)=0.5d0*a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**2.d0
 !
-        if (eps(i) .gt. r8prem()) then
-!
-            a (i,i)= a0(i,i)*0.5d0* ((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))&
-            /(aa_t(i,i,1)+vint(1)) + (aa_t(i,i,2)+ga_t(i,i,2)*vint(2))&
-            /(aa_t(i,i,2)+vint(2)))
-!
-            ap1(i,i)= a0(i,i)*0.5d0* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
-            /(aa_t(i,i,1)+vint(1))**2
-!
-            ap2(i,i)= a0(i,i)*0.5d0* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
-            /(aa_t(i,i,2)+vint(2))**2
-!
-            as1(i,i)=-a0(i,i)* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
-            /(aa_t(i,i,1)+vint(1))**3
-!
-            as2(i,i)=-a0(i,i)* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
-            /(aa_t(i,i,2)+vint(2))**3
+            as1(i,i)=-a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**3.d0
+            as2(i,i)=-a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**3.d0
 !
         else
+            a(i,i)=0.5d0*a0(i,i)*((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))/(aa_c(i,i,1)+vint(1)) &
+                                 +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))/(aa_c(i,i,2)+vint(2)))
 !
-            a (i,i)= a0(i,i)*0.5d0* ((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))&
-            /(aa_c(i,i,1)+vint(1)) +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))&
-            /(aa_c(i,i,2)+vint(2)))
+            ap1(i,i)=0.5d0*a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**2.d0
+            ap2(i,i)=0.5d0*a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**2.d0
 !
-            ap1(i,i)= a0(i,i)*0.5d0* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
-            /(aa_c(i,i,1)+vint(1))**2
-!
-            ap2(i,i)= a0(i,i)*0.5d0* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
-            /(aa_c(i,i,2)+vint(2))**2
-!
-            as1(i,i)=-a0(i,i)* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
-            /(aa_c(i,i,1)+vint(1))**3
-!
-            as2(i,i)=-a0(i,i)* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
-            /(aa_c(i,i,2)+vint(2))**3
+            as1(i,i)=-a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**3.d0
+            as2(i,i)=-a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**3.d0
         endif
 !
         do j = 1, 3
             if (j .ne. i) then
-                if (multeps .gt. r8prem()) then
+                if (treps .ge. -r8prem()) then
+               a(i,j)=0.5d0*a0(i,j)*((aa_t(i,j,1)+ga_t(i,j,1)*vint(1))/(aa_t(i,j,1)+vint(1)) &
+                                    +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2))/(aa_t(i,j,2)+vint(2)))
 !
-                    a (i,j)= a0(i,j)*0.5d0* ((aa_t(i,j,1)+ga_t(i,j,1)*&
-                    vint(1)) /(aa_t(i,j,1)+vint(1)) +(aa_t(i,j,2)+&
-                    ga_t(i,j,2)*vint(2)) /(aa_t(i,j,2)+vint(2)))
+               ap1(i,j)=0.5d0*a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**2.d0
+               ap2(i,j)=0.5d0*a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**2.d0
 !
-                    ap1(i,j)= a0(i,j)*0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
-                    1.0d0) /(aa_t(i,j,1)+vint(1))**2
-!
-                    ap2(i,j)= a0(i,j)*0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
-                    1.0d0) /(aa_t(i,j,2)+vint(2))**2
-!
-                    as1(i,j)=-a0(i,j)* aa_t(i,j,1)*(ga_t(i,j,1)-1.0d0)&
-                    /(aa_t(i,j,1)+vint(1))**3
-!
-                    as2(i,j)=-a0(i,j)* aa_t(i,j,2)*(ga_t(i,j,2)-1.0d0)&
-                    /(aa_t(i,j,2)+vint(2))**3
+               as1(i,j)=-a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**3.d0
+               as2(i,j)=-a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**3.d0
 !
                 else
+               a(i,j)=0.5d0*a0(i,j)*((aa_c(i,j,1)+ga_c(i,j,1)*vint(1))/(aa_c(i,j,1)+vint(1)) &
+                                    +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2))/(aa_c(i,j,2)+vint(2)))
 !
-                    a (i,j)= a0(i,j)*0.5d0* ((aa_c(i,j,1)+ga_c(i,j,1)*&
-                    vint(1)) /(aa_c(i,j,1)+vint(1)) +(aa_c(i,j,2)+&
-                    ga_c(i,j,2)*vint(2)) /(aa_c(i,j,2)+vint(2)))
+               ap1(i,j)=0.5d0*a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**2.d0
+               ap2(i,j)=0.5d0*a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**2.d0
 !
-                    ap1(i,j)= a0(i,j)*0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
-                    1.0d0) /(aa_c(i,j,1)+vint(1))**2
-!
-                    ap2(i,j)= a0(i,j)*0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
-                    1.0d0) /(aa_c(i,j,2)+vint(2))**2
-!
-                    as1(i,j)=-a0(i,j)* aa_c(i,j,1)*(ga_c(i,j,1)-1.0d0)&
-                    /(aa_c(i,j,1)+vint(1))**3
-!
-                    as2(i,j)=-a0(i,j)* aa_c(i,j,2)*(ga_c(i,j,2)-1.0d0)&
-                    /(aa_c(i,j,2)+vint(2))**3
+               as1(i,j)=-a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**3.d0
+               as2(i,j)=-a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**3.d0
                 endif
             endif
-!
         end do
-!
     end do
 !
+! -- TERMES DE FLEXION PURE
+! -- DANS LES DKTG LA COURBURE EST EGALE A - LA DERIVEE DE LA FLECHE
+! -- C EST POURQUOI ON TESTE L OPPOSE DE LA COURBURE
     do i = 4, 6
+        if (eps(i) .lt. -r8prem()) then
+            a(i,i)=0.5d0*a0(i,i)*((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))/(aa_c(i,i,1)+vint(1)) &
+                                 +(aa_t(i,i,2)+ga_t(i,i,2)*vint(2))/(aa_t(i,i,2)+vint(2)))
 !
-! --  ON DIVISE A0 PAR 2 DANS A CAR ON SOMME LES DEUX FONCTIONS
-!     D'ENDOMMAGEMENT CE QUI FAIT UN FACTEUR 2 A D=0
-        if (eps(i) .gt. r8prem()) then
+            ap1(i,i)=0.5d0*a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**2.d0
+            ap2(i,i)=0.5d0*a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**2.d0
 !
-            a (i,i)= a0(i,i)*0.5d0* ((aa_c(i,i,1)+ga_c(i,i,1)*vint(1))&
-            /(aa_c(i,i,1)+vint(1)) +(aa_t(i,i,2)+ga_t(i,i,2)*vint(2))&
-            /(aa_t(i,i,2)+vint(2)))
-!
-            ap1(i,i)= a0(i,i)*0.5d0* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
-            /(aa_c(i,i,1)+vint(1))**2
-!
-            ap2(i,i)= a0(i,i)*0.5d0* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
-            /(aa_t(i,i,2)+vint(2))**2
-!
-            as1(i,i)=-a0(i,i)* aa_c(i,i,1)*(ga_c(i,i,1)-1.0d0)&
-            /(aa_c(i,i,1)+vint(1))**3
-!
-            as2(i,i)=-a0(i,i)* aa_t(i,i,2)*(ga_t(i,i,2)-1.0d0)&
-            /(aa_t(i,i,2)+vint(2))**3
+            as1(i,i)=-a0(i,i)*aa_c(i,i,1)*(ga_c(i,i,1)-1.d0)/(aa_c(i,i,1)+vint(1))**3.d0
+            as2(i,i)=-a0(i,i)*aa_t(i,i,2)*(ga_t(i,i,2)-1.d0)/(aa_t(i,i,2)+vint(2))**3.d0
 !
         else
+            a(i,i)=0.5d0*a0(i,i)*((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))/(aa_t(i,i,1)+vint(1)) &
+                                 +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))/(aa_c(i,i,2)+vint(2)))
 !
-            a (i,i)= a0(i,i)*0.5d0* ((aa_t(i,i,1)+ga_t(i,i,1)*vint(1))&
-            /(aa_t(i,i,1)+vint(1)) +(aa_c(i,i,2)+ga_c(i,i,2)*vint(2))&
-            /(aa_c(i,i,2)+vint(2)))
+            ap1(i,i)=0.5d0*a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**2.d0
+            ap2(i,i)=0.5d0*a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**2.d0
 !
-            ap1(i,i)= a0(i,i)*0.5d0* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
-            /(aa_t(i,i,1)+vint(1))**2
-!
-            ap2(i,i)= a0(i,i)*0.5d0* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
-            /(aa_c(i,i,2)+vint(2))**2
-!
-            as1(i,i)=-a0(i,i)* aa_t(i,i,1)*(ga_t(i,i,1)-1.0d0)&
-            /(aa_t(i,i,1)+vint(1))**3
-!
-            as2(i,i)=-a0(i,i)* aa_c(i,i,2)*(ga_c(i,i,2)-1.0d0)&
-            /(aa_c(i,i,2)+vint(2))**3
+            as1(i,i)=-a0(i,i)*aa_t(i,i,1)*(ga_t(i,i,1)-1.d0)/(aa_t(i,i,1)+vint(1))**3.d0
+            as2(i,i)=-a0(i,i)*aa_c(i,i,2)*(ga_c(i,i,2)-1.d0)/(aa_c(i,i,2)+vint(2))**3.d0
         endif
 !
         do j = 4, 6
             if (j .ne. i) then
-                if (multk .gt. r8prem()) then
+                if (trkap .ge. -r8prem()) then
+                a(i,j)=0.5d0*a0(i,j)*((aa_c(i,j,1)+ga_c(i,j,1)*vint(1))/(aa_c(i,j,1)+vint(1)) &
+                                     +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2))/(aa_t(i,j,2)+vint(2)))
 !
-                    a (i,j)= a0(i,j)*0.5d0* ((aa_c(i,j,1)+ga_c(i,j,1)*&
-                    vint(1)) /(aa_c(i,j,1)+vint(1)) +(aa_t(i,j,2)+&
-                    ga_t(i,j,2)*vint(2)) /(aa_t(i,j,2)+vint(2)))
+                ap1(i,j)=0.5d0*a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**2.d0
+                ap2(i,j)=0.5d0*a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**2.d0
 !
-                    ap1(i,j)= a0(i,j)*0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
-                    1.0d0) /(aa_c(i,j,1)+vint(1))**2
-!
-!
-                    ap2(i,j)= a0(i,j)*0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
-                    1.0d0) /(aa_t(i,j,2)+vint(2))**2
-!
-                    as1(i,j)=-a0(i,j)* aa_c(i,j,1)*(ga_c(i,j,1)-1.0d0)&
-                    /(aa_c(i,j,1)+vint(1))**3
-!
-                    as2(i,j)=-a0(i,j)* aa_t(i,j,2)*(ga_t(i,j,2)-1.0d0)&
-                    /(aa_t(i,j,2)+vint(2))**3
+                as1(i,j)=-a0(i,j)*aa_c(i,j,1)*(ga_c(i,j,1)-1.d0)/(aa_c(i,j,1)+vint(1))**3.d0
+                as2(i,j)=-a0(i,j)*aa_t(i,j,2)*(ga_t(i,j,2)-1.d0)/(aa_t(i,j,2)+vint(2))**3.d0
 !
                 else
+                a(i,j)=0.5d0*a0(i,j)*((aa_t(i,j,1)+ga_t(i,j,1)*vint(1))/(aa_t(i,j,1)+vint(1)) &
+                                     +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2))/(aa_c(i,j,2)+vint(2)))
 !
-                    a (i,j)= a0(i,j)*0.5d0* ((aa_t(i,j,1)+ga_t(i,j,1)*&
-                    vint(1)) /(aa_t(i,j,1)+vint(1)) +(aa_c(i,j,2)+&
-                    ga_c(i,j,2)*vint(2)) /(aa_c(i,j,2)+vint(2)))
+                ap1(i,j)=0.5d0*a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**2.d0
+                ap2(i,j)=0.5d0*a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**2.d0
 !
-                    ap1(i,j)= a0(i,j)*0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
-                    1.0d0) /(aa_t(i,j,1)+vint(1))**2
-!
-                    ap2(i,j)= a0(i,j)*0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
-                    1.0d0) /(aa_c(i,j,2)+vint(2))**2
-!
-                    as1(i,j)=-a0(i,j)* aa_t(i,j,1)*(ga_t(i,j,1)-1.0d0)&
-                    /(aa_t(i,j,1)+vint(1))**3
-!
-                    as2(i,j)=-a0(i,j)* aa_c(i,j,2)*(ga_c(i,j,2)-1.0d0)&
-                    /(aa_c(i,j,2)+vint(2))**3
+                as1(i,j)=-a0(i,j)*aa_t(i,j,1)*(ga_t(i,j,1)-1.d0)/(aa_t(i,j,1)+vint(1))**3.d0
+                as2(i,j)=-a0(i,j)*aa_c(i,j,2)*(ga_c(i,j,2)-1.d0)/(aa_c(i,j,2)+vint(2))**3.d0
                 endif
             endif
-!
         end do
-!
     end do
 !
+! -- TERMES DE MEMBRANE-FLEXION
     do i = 1, 3
+        a(i,i+3)=(a0(i,i+3)+0.25d0*(ga_t(i,i+3,1)*vint(1)/(aa_t(i,i+3,1)+vint(1))&
+                                    +ga_t(i,i+3,2)*vint(2)/(aa_t(i,i+3,2)+vint(2))&
+                                    +ga_c(i,i+3,1)*vint(1)/(aa_c(i,i+3,1)+vint(1))&
+                                    +ga_c(i,i+3,2)*vint(2)/(aa_c(i,i+3,2)+vint(2))))
 !
-        if ((eps(i)-2.d0*abs(eps(i+3))/h) .gt. r8prem()) then
-            a(i,i+3)= a0(i,i+3)-1.0d0+1.d0/2.d0* ((aa_t(i,i+3,1)+ga_t(&
-            i,i+3,1)*vint(1)) /(aa_t(i,i+3,1)+vint(1)) +(aa_t(i,i+3,2)&
-            +ga_t(i,i+3,2)*vint(2)) /(aa_t(i,i+3,2)+vint(2)))
+        ap1(i,i+3)=0.25d0*(aa_t(i,i+3,1)*ga_t(i,i+3,1)/(aa_t(i,i+3,1)+vint(1))**2.d0&
+                           +aa_c(i,i+3,1)*ga_c(i,i+3,1)/(aa_c(i,i+3,1)+vint(1))**2.d0)
+        ap2(i,i+3)=0.25d0*(aa_t(i,i+3,2)*ga_t(i,i+3,2)/(aa_t(i,i+3,2)+vint(2))**2.d0&
+                           +aa_c(i,i+3,2)*ga_c(i,i+3,2)/(aa_c(i,i+3,2)+vint(2))**2.d0)
 !
-            ap1(i,i+3)= 0.5d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-&
-            1.0d0) /(aa_t(i,i+3,1)+vint(1))**2
-!
-            ap2(i,i+3)= 0.5d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-&
-            1.0d0) /(aa_t(i,i+3,2)+vint(2))**2
-!
-            as1(i,i+3)=-1.d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-1.0d0)&
-            /(aa_t(i,i+3,1)+vint(1))**3
-!
-            as2(i,i+3)=-1.d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-1.0d0)&
-            /(aa_t(i,i+3,2)+vint(2))**3
-!
-        else if ((eps(i)+2.d0*abs(eps(i+3))/h).gt.r8prem()) then
-!
-            if (eps(i+3) .gt. r8prem()) then
-                a(i,i+3)= a0(i,i+3)-1.0d0+0.5d0* ((aa_c(i,i+3,1)+&
-                ga_c(i,i+3,1)*vint(1)) /(aa_c(i,i+3,1)+vint(1))&
-                +(aa_t(i,i+3,2)+ga_t(i,i+3,2)*vint(2)) /(aa_t(i,i+3,2)&
-                +vint(2)))
-!
-                ap1(i,i+3)= 0.5d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-&
-                1.0d0) /(aa_c(i,i+3,1)+vint(1))**2
-!
-                ap2(i,i+3)= 0.5d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-&
-                1.0d0) /(aa_t(i,i+3,2)+vint(2))**2
-!
-                as1(i,i+3)=-1.d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-1.0d0)&
-                /(aa_c(i,i+3,1)+vint(1))**3
-!
-                as2(i,i+3)=-1.d0* aa_t(i,i+3,2)*(ga_t(i,i+3,2)-1.0d0)&
-                /(aa_t(i,i+3,2)+vint(2))**3
-            else
-                a(i,i+3)= a0(i,i+3)-1.0d0+0.5d0* ((aa_t(i,i+3,1)+&
-                ga_t(i,i+3,1)*vint(1)) /(aa_t(i,i+3,1)+vint(1))&
-                +(aa_c(i,i+3,2)+ga_c(i,i+3,2)*vint(2)) /(aa_c(i,i+3,2)&
-                +vint(2)))
-!
-                ap1(i,i+3)= 0.5d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-&
-                1.0d0) /(aa_t(i,i+3,1)+vint(1))**2
-!
-                ap2(i,i+3)= 0.5d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-&
-                1.0d0) /(aa_c(i,i+3,2)+vint(2))**2
-!
-                as1(i,i+3)=-1.d0* aa_t(i,i+3,1)*(ga_t(i,i+3,1)-1.0d0)&
-                /(aa_t(i,i+3,1)+vint(1))**3
-!
-                as2(i,i+3)=-1.d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-1.0d0)&
-                /(aa_c(i,i+3,2)+vint(2))**3
-            endif
-!
-        else
-!
-            a(i,i+3)= a0(i,i+3)-1.0d0+0.5d0* ((aa_c(i,i+3,1)+ga_c(&
-            i,i+3,1)*vint(1)) /(aa_c(i,i+3,1)+vint(1)) +(aa_c(i,i+3,2)&
-            +ga_c(i,i+3,2)*vint(2)) /(aa_c(i,i+3,2)+vint(2)))
-!
-            ap1(i,i+3)= 0.5d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-&
-            1.0d0) /(aa_c(i,i+3,1)+vint(1))**2
-!
-            ap2(i,i+3)= 0.5d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-&
-            1.0d0) /(aa_c(i,i+3,2)+vint(2))**2
-!
-            as1(i,i+3)=-1.d0* aa_c(i,i+3,1)*(ga_c(i,i+3,1)-1.0d0)&
-            /(aa_c(i,i+3,1)+vint(1))**3
-!
-            as2(i,i+3)=-1.d0* aa_c(i,i+3,2)*(ga_c(i,i+3,2)-1.0d0)&
-            /(aa_c(i,i+3,2)+vint(2))**3
-        endif
-!
+        as1(i,i+3)=-0.5*(aa_t(i,i+3,1)*ga_t(i,i+3,1)/(aa_t(i,i+3,1)+vint(1))**3.d0&
+                       +aa_c(i,i+3,1)*ga_c(i,i+3,1)/(aa_c(i,i+3,1)+vint(1))**3.d0)
+        as2(i,i+3)=-0.5*(aa_t(i,i+3,2)*ga_t(i,i+3,2)/(aa_t(i,i+3,2)+vint(2))**3.d0&
+                       +aa_c(i,i+3,2)*ga_c(i,i+3,2)/(aa_c(i,i+3,2)+vint(2))**3.d0)
         do j = 4, 6
             if (j .ne. (i+3)) then
-                if ((multeps-2.d0*abs(multk)/h) .gt. r8prem()) then
+                a(i,j)=(a0(i,j)+0.25d0*(ga_t(i,j,1)*vint(1)/(aa_t(i,j,1)+vint(1))&
+                                        +ga_t(i,j,2)*vint(2)/(aa_t(i,j,2)+vint(2))&
+                                        +ga_c(i,j,1)*vint(1)/(aa_c(i,j,1)+vint(1))&
+                                        +ga_c(i,j,2)*vint(2)/(aa_c(i,j,2)+vint(2))))
 !
-                    a(i,j)= a0(i,j)-1.0d0+0.5d0* ((aa_t(i,j,1)+&
-                    ga_t(i,j,1)*vint(1)) /(aa_t(i,j,1)+vint(1))&
-                    +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2)) /(aa_t(i,j,2)+&
-                    vint(2)))
+                    ap1(i,j)=0.25d0*(aa_t(i,j,1)*ga_t(i,j,1)/(aa_t(i,j,1)+vint(1))**2.d0&
+                                     +aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**2.d0)
+                    ap2(i,j)=0.25d0*(aa_t(i,j,2)*ga_t(i,j,2)/(aa_t(i,j,2)+vint(2))**2.d0&
+                                     +aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**2.d0)
 !
-                    ap1(i,j)= 0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
-                    1.0d0) /(aa_t(i,j,1)+vint(1))**2
-!
-                    ap2(i,j)= 0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
-                    1.0d0) /(aa_t(i,j,2)+vint(2))**2
-!
-                    as1(i,j)=-1.d0* aa_t(i,j,1)*(ga_t(i,j,1)-1.0d0)&
-                    /(aa_t(i,j,1)+vint(1))**3
-!
-                    as2(i,j)=-1.d0* aa_t(i,j,2)*(ga_t(i,j,2)-1.0d0)&
-                    /(aa_t(i,j,2)+vint(2))**3
-!
-                    else if ((multeps+2.d0*abs(multk)/h).gt.r8prem())&
-                then
-!
-                    if (multk .gt. r8prem()) then
-                        a(i,j)= a0(i,j)-1.0d0+1.d0/2.d0* ((aa_c(i,j,1)&
-                        +ga_c(i,j,1)*vint(1)) /(aa_c(i,j,1)+vint(1))&
-                        +(aa_t(i,j,2)+ga_t(i,j,2)*vint(2)) /(aa_t(i,j,&
-                        2)+vint(2)))
-!
-                        ap1(i,j)= 0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)&
-                        -1.0d0) /(aa_c(i,j,1)+vint(1))**2
-!
-                        ap2(i,j)= 0.5d0* aa_t(i,j,2)*(ga_t(i,j,2)&
-                        -1.0d0) /(aa_t(i,j,2)+vint(2))**2
-!
-                        as1(i,j)=-1.d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
-                        1.0d0) /(aa_c(i,j,1)+vint(1))**3
-!
-                        as2(i,j)=-1.d0* aa_t(i,j,2)*(ga_t(i,j,2)-&
-                        1.0d0) /(aa_t(i,j,2)+vint(2))**3
-                    else
-                        a(i,j)= a0(i,j)-1.0d0+0.5d0* ((aa_t(i,j,1)&
-                        +ga_t(i,j,1)*vint(1)) /(aa_t(i,j,1)+vint(1))&
-                        +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2)) /(aa_c(i,j,&
-                        2)+vint(2)))
-!
-                        ap1(i,j)= 0.5d0* aa_t(i,j,1)*(ga_t(i,j,1)&
-                        -1.0d0) /(aa_t(i,j,1)+vint(1))**2
-!
-                        ap2(i,j)= 0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)&
-                        -1.0d0) /(aa_c(i,j,2)+vint(2))**2
-!
-                        as1(i,j)=-1.d0* aa_t(i,j,1)*(ga_t(i,j,1)-&
-                        1.0d0) /(aa_t(i,j,1)+vint(1))**3
-!
-                        as2(i,j)=-1.d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
-                        1.0d0) /(aa_c(i,j,2)+vint(2))**3
-                    endif
-!
-                else
-!
-                    a(i,j)= a0(i,j)-1.0d0+0.5d0* ((aa_c(i,j,1)+&
-                    ga_c(i,j,1)*vint(1)) /(aa_c(i,j,1)+vint(1))&
-                    +(aa_c(i,j,2)+ga_c(i,j,2)*vint(2)) /(aa_c(i,j,2)+&
-                    vint(2)))
-!
-                    ap1(i,j)= 0.5d0* aa_c(i,j,1)*(ga_c(i,j,1)-&
-                    1.0d0) /(aa_c(i,j,1)+vint(1))**2
-!
-                    ap2(i,j)= 0.5d0* aa_c(i,j,2)*(ga_c(i,j,2)-&
-                    1.0d0) /(aa_c(i,j,2)+vint(2))**2
-!
-                    as1(i,j)=-1.d0* aa_c(i,j,1)*(ga_c(i,j,1)-1.0d0)&
-                    /(aa_c(i,j,1)+vint(1))**3
-!
-                    as2(i,j)=-1.d0* aa_c(i,j,2)*(ga_c(i,j,2)-1.0d0)&
-                    /(aa_c(i,j,2)+vint(2))**3
-                endif
-            endif
+                    as1(i,j)=-0.5*(aa_t(i,j,1)*ga_t(i,j,1)/(aa_t(i,j,1)+vint(1))**3.d0&
+                                 +aa_c(i,j,1)*ga_c(i,j,1)/(aa_c(i,j,1)+vint(1))**3.d0)
+                    as2(i,j)=-0.5*(aa_t(i,j,2)*ga_t(i,j,2)/(aa_t(i,j,2)+vint(2))**3.d0&
+                                 +aa_c(i,j,2)*ga_c(i,j,2)/(aa_c(i,j,2)+vint(2))**3.d0)
+            end if
         end do
-!
     end do
 !
     do i = 1, 3
         do j = 1, 3
-            if (a(i,j+3) .lt. 100.d0*r8prem()) a(i,j+3)=0.0d0
             a(j+3,i)  =a(i,j+3)
             ap1(j+3,i)=ap1(i,j+3)
             ap2(j+3,i)=ap2(i,j+3)
@@ -413,4 +218,5 @@ subroutine dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, eps, vint, a, ap1, ap2, as1, 
         end do
     end do
 !
-end subroutine
+end subroutine dhrc_calc_a
+

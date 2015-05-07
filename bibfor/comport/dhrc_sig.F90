@@ -31,7 +31,8 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
-!       EPS     : TENSEUR DE DEFORMATIONS
+!       EPS   : TENSEUR DE DEFORMATIONS
+!               (EXX EYY 2EXY KXX KYY 2KXY)
 !       A       : TENSEUR DE RAIDEUR ELASTIQUE ENDOMMAGEE
 !       B       : TENSEUR ASSOCIE AUX DEFORMATIONS PLASTIQUES
 !       C       : TENSEUR DE RAIDEUR D'ÉCROUISSAGE PLASTIQUE
@@ -41,7 +42,7 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 ! OUT:
 !       SIG     : CONTRAINTES GENERALISEES ASSOCIEES AUX
 !       DEFORMATIONS MEMBRANAIRE, DE FLEXION ET DE GLISSEMENT
-!
+!                 (NXX NYY NXY MXX MYY MXY)
 ! ----------------------------------------------------------------------
 !
     integer :: i, k
@@ -54,9 +55,9 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
         do i = 1, 6
             sig(k) = sig(k)+a(k,i)*eps(i)
             if (i .lt. 3) then
-                sig(k) = sig(k)+(b(k,i,1)*vint(i+2) +b(k,i,2)*vint(i+4))*0.5d0
+                sig(k) = sig(k)+(b(k,i,1)*vint(i+2) +b(k,i,2)*vint(i+4))
             endif
         end do
-end do
+    end do
 !
 end subroutine

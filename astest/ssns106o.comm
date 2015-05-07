@@ -23,7 +23,7 @@
 # ======================================================================
 # Principe du test :
 # ------------------
-#  Une plaque est soumise a deux chargements équivalents :
+#  Une plaque est soumise a deux chargements ÃÂ©quivalents :
 #   * 1) deplacement impose
 #   * 2) chargement thermique (dilatation)
 #  On peut alors verifier que le chargement 2 produit les memes efforts que le chargement 1.
@@ -217,7 +217,7 @@ RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
-                   VALE_CALC=3.80288037596113E+05,  ))
+                   VALE_CALC=380288.037637,  ))
 
 
 # 1.1.2 Calcul avec dilatation thermique :
@@ -240,7 +240,7 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC=3.80288037596113E+05, VALE_REFE=3.80288037596113E+05,  ))
+                   VALE_CALC=380288.037596, VALE_REFE=3.80288037596113E+05,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
@@ -293,7 +293,7 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC=12379.1720185, VALE_REFE=12379.1720185,  ))
+                   VALE_CALC=12379.1705014, VALE_REFE=12379.1720185,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
@@ -335,7 +335,7 @@ RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
-                   VALE_CALC= 8000000.0,  ))
+                   VALE_CALC=8000000.0,  ))
 
 
 # 2.1.2 Calcul avec dilatation thermique :
@@ -358,7 +358,7 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC= 8000000.0, VALE_REFE= 8000000.0,  ))
+                   VALE_CALC=8000000.0, VALE_REFE= 8000000.0,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
@@ -387,7 +387,7 @@ RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',
-                   VALE_CALC= 200000.0,  ))
+                   VALE_CALC=200000.0,  ))
 
 
 # 2.2.2 Calcul avec dilatation thermique :
@@ -410,7 +410,7 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC= 200000.0, VALE_REFE= 200000.0,  ))
+                   VALE_CALC=200000.0, VALE_REFE= 200000.0,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
@@ -425,80 +425,7 @@ relation='DHRC'
 #-------------------------------------
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=MAT_G))
 
-MAT_G=DEFI_MATERIAU(ELAS_DHRC=_F(   ALPHA=1.e-5,
-                            A0=(3.685E+09, 6.985E+08, 0.000E+00, 4.944E+03, 6.651E+02, 0.000E+00,
-                                3.684E+09, 0.000E+00, 6.161E+02, 4.318E+03, 0.000E+00, 1.409E+09,
-                                0.000E+00, 0.000E+00, 8.309E+02, 3.154E+06, 5.835E+05, 0.000E+00,
-                                3.028E+06, 0.000E+00, 1.177E+06,),
-                               ),
-
-                    DHRC=_F(
-                               NYD=(1.7E10*1.7E10*1.476E-11*0.1,1.7E10*1.7E10*1.476E-11*0.1,),
-                               SCRIT=(.5E10*0.1,.5E10*0.1,.5E10*0.1,.5E10*0.1,),
-
-                               AA_C=( 2.086E+00, 2.085E+00, 1.000E+00, 2.063E+00, 1.764E+00,
-                                      1.000E+00, 2.086E+00, 1.000E+00, 1.764E+00, 2.096E+00,
-                                      1.000E+00, 1.118E+00, 1.000E+00, 1.000E+00, 1.122E+00,
-                                      2.088E+00, 2.092E+00, 1.000E+00, 2.096E+00, 1.000E+00,
-                                      1.120E+00, 2.085E+00, 2.085E+00, 1.000E+00, 2.058E+00,
-                                      1.764E+00, 1.000E+00, 2.086E+00, 1.000E+00, 1.764E+00,
-                                      2.085E+00, 1.000E+00, 1.118E+00, 1.000E+00, 1.000E+00,
-                                      1.122E+00, 2.088E+00, 2.092E+00, 1.000E+00, 2.096E+00,
-                                      1.000E+00, 1.120E+00,),
-
-                               AA_T=( 1.952E+00, 1.704E+00, 1.000E+00, 2.017E+00, 1.233E+00,
-                                      1.000E+00, 1.945E+00, 1.000E+00, 1.224E+00, 2.025E+00,
-                                      1.000E+00, 1.118E+00, 1.000E+00, 1.000E+00, 1.122E+00,
-                                      2.004E+00, 1.882E+00, 1.000E+00, 2.025E+00, 1.000E+00,
-                                      1.120E+00, 1.952E+00, 1.705E+00, 1.000E+00, 2.015E+00,
-                                      1.233E+00, 1.000E+00, 1.945E+00, 1.000E+00, 1.224E+00,
-                                      2.026E+00, 1.000E+00, 1.118E+00, 1.000E+00, 1.000E+00,
-                                      1.122E+00, 2.004E+00, 1.882E+00, 1.000E+00, 2.025E+00,
-                                      1.000E+00, 1.120E+00,),
-
-                               GA_C=( 8.998E-01, 8.914E-01, 1.000E+00, 1.017E+01, 3.416E+00,
-                                      1.000E+00, 8.998E-01, 1.000E+00, 3.416E+00, 1.034E+01,
-                                      1.000E+00, 3.928E-01, 1.000E+00, 1.000E+00, 2.248E+01,
-                                      9.035E-01, 8.912E-01, 1.000E+00, 8.969E-01, 1.000E+00,
-                                      3.944E-01, 8.998E-01, 8.914E-01, 1.000E+00, -8.195E+00,
-                                      -1.416E+00, 1.000E+00, 8.998E-01, 1.000E+00, -1.416E+00,
-                                      -8.325E+00, 1.000E+00, 3.928E-01, 1.000E+00, 1.000E+00,
-                                      -2.048E+01, 9.035E-01, 8.912E-01, 1.000E+00, 8.970E-01,
-                                      1.000E+00, 3.943E-01,),
-
-                               GA_T=( 1.007E-01, 2.211E-01, 1.000E+00, 8.651E+01, 1.590E+01,
-                                      1.000E+00, 9.489E-02, 1.000E+00, 1.549E+01, 8.919E+01,
-                                      1.000E+00, 3.928E-01, 1.000E+00, 1.000E+00, 2.248E+01,
-                                      1.112E-01, 1.883E-01, 1.000E+00, 2.908E-02, 1.000E+00,
-                                      3.944E-01, 1.005E-01, 2.210E-01, 1.000E+00, -8.454E+01,
-                                     -1.390E+01, 1.000E+00, 9.489E-02, 1.000E+00, -1.350E+01,
-                                     -8.718E+01, 1.000E+00, 3.928E-01, 1.000E+00, 1.000E+00,
-                                     -2.048E+01, 1.111E-01, 1.882E-01, 1.000E+00, 2.917E-02,
-                                      1.000E+00, 3.943E-01,),
-
-                               AB=(  1.219E+00, 6.895E-01, 1.000E+00, 1.191E+00, 6.234E-01,
-                                     1.000E+00, 6.351E-01, 1.238E+00, 1.000E+00, 6.522E-01,
-                                     1.260E+00, 1.000E+00, 1.227E+00, 6.950E-01, 1.000E+00,
-                                     1.199E+00, 6.287E-01, 1.000E+00, 6.315E-01, 1.219E+00,
-                                     1.000E+00, 6.473E-01, 1.241E+00, 1.000E+00,),
-
-                               GB=( -1.071E+08, -2.012E+07, 0.000E+00, 3.474E+06, 6.100E+05,
-                                     0.000E+00, -1.689E+07, -1.035E+08, 0.000E+00, 4.224E+05,
-                                     2.594E+06, 0.000E+00, -1.070E+08, -2.007E+07, 0.000E+00,
-                                    -3.470E+06, -6.087E+05, 0.000E+00, -1.684E+07, -1.034E+08,
-                                     0.000E+00, -4.208E+05, -2.592E+06, 0.000E+00,),
-
-                               C0=(  5.756E+07, 0.000E+00, 0.000E+00, 5.717E+07, 5.753E+07,
-                                     0.000E+00, 0.000E+00, 5.712E+07,),
-
-                               AC=(  1.865E+00, 1.000E+00, 1.000E+00, 1.779E+00, 1.872E+00,
-                                     1.000E+00, 1.000E+00, 1.785E+00,),
-
-                               GC=(  2.310E-01, 1.000E+00, 1.000E+00, 2.605E-01, 2.327E-01,
-                                     1.000E+00, 1.000E+00, 2.577E-01,),
-
-                              ),
-                   );
+INCLUDE(UNITE=12, INFO=1,);
 
 
 #-------------------------------------------
@@ -526,7 +453,7 @@ RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
-                   VALE_CALC= 710512.362725,  ))
+                   VALE_CALC=389432.446717,  ))
 
 
 # 3.1.2 Calcul avec dilatation thermique :
@@ -549,7 +476,7 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC= 710512.362725, VALE_REFE= 710512.362725,  ))
+                   VALE_CALC=389432.445867, VALE_REFE= 389432.446717,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
@@ -578,7 +505,7 @@ RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',
-                   VALE_CALC= 18249.3521728,  ))
+                   VALE_CALC=14102.7428392,  ))
 
 
 # 3.2.2 Calcul avec dilatation thermique :
@@ -601,7 +528,7 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC= 18249.3521728, VALE_REFE= 18249.3521728,  ))
+                   VALE_CALC=14102.7428388, VALE_REFE= 14102.7428388,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
@@ -682,7 +609,7 @@ RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',
-                   VALE_CALC= 745621.659319,  ))
+                   VALE_CALC=745621.659319,  ))
 
 
 # 4.1.2 Calcul avec dilatation thermique :
@@ -705,7 +632,7 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='NXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC= 745621.659319, VALE_REFE= 745621.659319,  ))
+                   VALE_CALC=745621.659319, VALE_REFE= 745621.659319,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
 
@@ -734,7 +661,7 @@ RESU_G1=CALC_CHAMP(reuse=RESU_G1,RESULTAT=RESU_G1,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G1, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',
-                   VALE_CALC= 7989.15818449,  ))
+                   VALE_CALC=7989.15818449,  ))
 
 
 # 4.2.2 Calcul avec dilatation thermique :
@@ -757,13 +684,8 @@ RESU_G2=CALC_CHAMP(reuse=RESU_G2,RESULTAT=RESU_G2,CONTRAINTE=('EFGE_ELNO',))
 
 TEST_RESU(RESU=_F( RESULTAT=RESU_G2, NOM_CHAM='EFGE_ELNO', INST=1.,
                    MAILLE='M8', NOEUD='N7', NOM_CMP='MXX',  REFERENCE = 'AUTRE_ASTER',
-                   VALE_CALC= 7989.15833907, VALE_REFE= 7989.15818449,  ))
+                   VALE_CALC=7989.15833907, VALE_REFE= 7989.15818449,  ))
 
 DETRUIRE(INFO=1, CONCEPT=_F(NOM=(RESU_G1, RESU_G2)))
-
-
-
-
-
 
 FIN()

@@ -36,6 +36,8 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !      APPELE PAR "SEUGLC"
 !
 ! IN:
+!       EPS   : TENSEUR DE DEFORMATIONS
+!               (EXX EYY 2EXY KXX KYY 2KXY)
 !       A       : TENSEUR DE RAIDEUR ELASTIQUE ENDOMMAGEE
 !
 ! OUT:
@@ -54,7 +56,8 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !
 ! ----------------------------------------------------------------------
 !     CALCUL DE DSIDA
-! ----------------------------------------------------------------------
+!     DIFFERENTIELLES DES CONTRAINTES N ET M PAR RAPPORT AUX VARI D ET EGLISS
+! ---------------------------------------------------------------------------
 !     INITIALISATION
     dsida(:,:) = 0.d0
 !
@@ -63,14 +66,14 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
             dsida(k,1) = dsida(k,1)+ap1(k,i)*eps(i)
             dsida(k,2) = dsida(k,2)+ap2(k,i)*eps(i)
             if (i .lt. 3) then
-                dsida(k,1) = dsida(k,1)+bp1(k,i)*vint(i+2)*0.5d0
-                dsida(k,2) = dsida(k,2)+bp2(k,i)*vint(i+4)*0.5d0
+                dsida(k,1) = dsida(k,1)+bp1(k,i)*vint(i+2)
+                dsida(k,2) = dsida(k,2)+bp2(k,i)*vint(i+4)
             endif
         end do
-        dsida(k,3) = b(k,1,1)*0.5d0
-        dsida(k,4) = b(k,2,1)*0.5d0
-        dsida(k,5) = b(k,1,2)*0.5d0
-        dsida(k,6) = b(k,2,2)*0.5d0
+        dsida(k,3) = b(k,1,1)
+        dsida(k,4) = b(k,2,1)
+        dsida(k,5) = b(k,1,2)
+        dsida(k,6) = b(k,2,2)
     end do
 !
 !----------------------------------------------------------------------
@@ -89,6 +92,8 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b,&
 !
 !----------------------------------------------------------------------
 !    CALCUL DE DSIDEP
+!    DERIVEES DES VARI PAR RAPPORT AUX DEFORMATIONS GENERALISEES =
+!    bocaj(jb,lb)*dsedep(l,i)
 !----------------------------------------------------------------------
 !
     do k = 1, 6

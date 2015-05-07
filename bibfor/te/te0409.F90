@@ -220,8 +220,8 @@ subroutine te0409(option, nomte)
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
-    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
-        'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA') then
+    if (option .eq. 'FULL_MECA'      .or. option .eq. 'RAPH_MECA'&
+   .or. option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA') then
 !
         if (.not. lrgm) then
             call jevech('PCARCRI', 'L', icarcr)
@@ -234,8 +234,7 @@ subroutine te0409(option, nomte)
 !           -- on verifie que le nombre de varint tient dans ecr
             ASSERT(nbvari.le.24)
 !
-            call tecach('OON', 'PCONTMR', 'L', iret, nval=7,&
-                        itab=jtab)
+            call tecach('OON', 'PCONTMR', 'L', iret, nval=7, itab=jtab)
             icontm=jtab(1)
             ASSERT(npg.eq.jtab(3))
 !
@@ -344,9 +343,8 @@ subroutine te0409(option, nomte)
 !              T2UI : MATRICE DE PASSAGE (2x2) ; INTRINSEQUE -> UTILISATEUR
 !
             alpha = zr(icacoq+1) * r8dgrd()
-            beta = zr(icacoq+2) * r8dgrd()
-            call coqrep(pgl, alpha, beta, t2iu, t2ui,&
-                        c, s)
+            beta  = zr(icacoq+2) * r8dgrd()
+            call coqrep(pgl, alpha, beta, t2iu, t2ui, c, s)
 !
 !           -- PASSAGE DES EFFORTS GENERALISES AUX POINTS D'INTEGRATION
 !              DU REPERE UTILISATEUR AU REPERE INTRINSEQUE
@@ -393,19 +391,14 @@ subroutine te0409(option, nomte)
                 poids = carat3(8)
             endif
 !
-            call pmrvec('ZERO', 3, 2*nno, bm, um,&
-                        eps)
-            call pmrvec('ZERO', 3, 2*nno, bm, dum,&
-                        deps)
-            call pmrvec('ZERO', 3, 3*nno, bf, uf,&
-                        khi)
-            call pmrvec('ZERO', 3, 3*nno, bf, duf,&
-                        dkhi)
+            call pmrvec('ZERO', 3, 2*nno, bm, um, eps)
+            call pmrvec('ZERO', 3, 2*nno, bm, dum,deps)
+            call pmrvec('ZERO', 3, 3*nno, bf, uf, khi)
+            call pmrvec('ZERO', 3, 3*nno, bf, duf,dkhi)
+!
             if (q4gg) then
-                call pmrvec('ZERO', 2, 3*nno, bc, uf,&
-                            gam)
-                call pmrvec('ZERO', 2, 3*nno, bc, duf,&
-                            dgam)
+                call pmrvec('ZERO', 2, 3*nno, bc, uf, gam)
+                call pmrvec('ZERO', 2, 3*nno, bc, duf, dgam)
             endif
 
 !           -- EULER_ALMANSI - TERMES QUADRATIQUES
@@ -566,7 +559,7 @@ subroutine te0409(option, nomte)
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
 !
-!               -- endommagement couple plasticite
+!               -- endommagement couple glissement acier beton
                 call r8inir(36, 0.d0, dsidep, 1)
                 call dhrc_lc(epsm, deps, ecr, pgl, option,&
                              sig, ecrp, a0, c0, aa_t,&
