@@ -543,6 +543,14 @@ subroutine mminfp(izone, defico, questz, irep, rrep,&
         else
             ASSERT(.false.)
         endif
+    else if (questi.eq.'SEUIL_AUTO') then
+        if (iform .eq. 2) then
+            call jeveuo(caracf, 'L', jcmcf)
+            lrep(1) = (nint(zr(jcmcf-1+zcmcf*(izone-1)+13)) .eq. 1)
+        else
+            ASSERT(.false.)
+        endif
+
 !
 !
     else if (questi.eq.'COEF_PENA_CONT') then

@@ -59,10 +59,10 @@ subroutine cazocc(char, motfac, izone)
     integer :: jcmcf, jexclf
     character(len=16) :: glis, integ, staco0, algoc, algof
     real(kind=8) :: rexclf, direxf(3)
-    real(kind=8) :: coefff, seuili,seuil_auto
+    real(kind=8) :: coefff, seuili
     real(kind=8) :: coefaf, coefac
     real(kind=8) :: algocr, algofr
-    real(kind=8) :: typint, ctrini
+    real(kind=8) :: typint, ctrini,seuil_auto
     integer :: parint
     aster_logical :: lintno, lfrot, lsscon, lssfro, lexdir
     aster_logical :: lgliss, lnewtg, lnewtc
@@ -287,6 +287,8 @@ subroutine cazocc(char, motfac, izone)
     zr(jexclf-1+zexcl*(izone-1)+2) = direxf(2)
     zr(jexclf-1+zexcl*(izone-1)+3) = direxf(3)
     zr(jcmcf-1+zcmcf*(izone-1)+13) = seuil_auto
+    write (6,*) "seuil_auto",seuil_auto
+    
 !
     call jedema()
 end subroutine

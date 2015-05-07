@@ -18,11 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
-                      iptc, epsint, jeusgn)
-        aster_logical :: loptin
+    subroutine mmopti(loptin,l_auto_seuil, resoco, seuili, ctcini, lgliss,&
+                      iptc, epsint, jeusgn,pres_cont)
+        aster_logical :: loptin,l_auto_seuil
         character(len=24) :: resoco
-        real(kind=8) :: seuili
+        real(kind=8) :: seuili,pres_cont
         integer :: ctcini
         aster_logical :: lgliss
         integer :: iptc

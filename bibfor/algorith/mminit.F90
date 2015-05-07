@@ -63,7 +63,7 @@ implicit none
     integer :: ifm, niv
     aster_logical :: ldyna
     aster_logical :: lctcc, ltfcm, lxfcm
-    character(len=19) :: depgeo, deplam
+    character(len=19) :: depgeo, deplam,depinit
     character(len=19) :: vitini, accini
     character(len=19) :: depmoi, accplu, vitplu
     character(len=19) :: xseuco, xseucp
@@ -105,9 +105,16 @@ implicit none
 !
 ! --- MISE A ZERO LAGRANGIENS (LAMBDA TOTAUX)
 !
+!
+! --- SAUVEGARDE DES DEPLACEMENTS/LAGS_C INST MOINS 
+!     POUR EVENTUEL TRAITEMENT DU SEUIL_AUTO
+!
+
     if (ltfcm) then
         call xmiszl(depmoi, defico, noma)
     else if (lctcc) then
+        depinit = resoco(1:14)//'.INIT'
+        call copisd('CHAMP_GD', 'V', depmoi, depinit)
         call misazl(sdnume, depmoi)
         if (ldyna) then
             call misazl(sdnume, accplu)

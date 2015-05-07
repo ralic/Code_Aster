@@ -1,5 +1,5 @@
-subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
-                  iptc, epsint, jeusgn)
+subroutine mmopti(loptin,l_auto_seuil, resoco, seuili, ctcini, lgliss,&
+                  iptc, epsint, jeusgn,pres_cont)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,8 +29,8 @@ subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
 #include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     integer :: ctcini, iptc
-    real(kind=8) :: seuili, epsint, jeusgn
-    aster_logical :: loptin, lgliss
+    real(kind=8) :: seuili, epsint, jeusgn,pres_cont
+    aster_logical :: loptin, lgliss,l_auto_seuil
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,8 +68,10 @@ subroutine mmopti(loptin, resoco, seuili, ctcini, lgliss,&
 !
 ! --- SEUIL_INIT
 !
-    if (loptin) then
+    if (loptin .and. (.not.l_auto_seuil)) then
         zr(jtabf+ztabf*(iptc-1)+16) = seuili
+    else if (loptin .and. l_auto_seuil) then    
+        zr(jtabf+ztabf*(iptc-1)+16) = pres_cont
     endif
 !
 ! --- CONTACT_INIT

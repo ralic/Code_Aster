@@ -43,6 +43,12 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 #include "asterfort/mminfm.h"
 #include "asterfort/mminfr.h"
 #include "asterfort/mmopti.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/mmextm.h"
+#include "asterfort/cnsred.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/mmvalp.h"
 #include "blas/ddot.h"
     aster_logical :: loptin
     character(len=8) :: noma
@@ -69,6 +75,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     integer :: ifm, niv
     integer :: nzoco, ndimg
     character(len=24) :: tabfin, crnudd
+    character(len=19) :: cnsplu, cnscon
     integer :: jtabf, jcrnud
     integer :: izone, ip, imae, iptm
     integer :: iptc
@@ -78,13 +85,16 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     real(kind=8) :: vectpm(3), jeusgn
     real(kind=8) :: seuili, epsint
     real(kind=8) :: armini
+    real(kind=8) :: mlagc(9)
     character(len=8) :: aliase, nommam
+    character(len=19) :: depplu,depmoi
     aster_logical :: lveri
     integer :: ibid
     integer :: jdecme
     integer :: ctcini, typint, typapp, entapp
     integer :: posmae, nummae, posmam, nummam
-    aster_logical :: lappar, lgliss, lexfro
+    real(kind=8) :: lambdc(1)
+    aster_logical :: lappar, lgliss, lexfro,l_auto_seuil
     integer :: ndexfr
 !
 ! ----------------------------------------------------------------------
@@ -135,8 +145,26 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
         jdecme = mminfi(defico,'JDECME',izone )
         nbmae = mminfi(defico,'NBMAE' ,izone )
         lgliss = mminfl(defico,'GLISSIERE_ZONE' ,izone )
-        seuili = mminfr(defico,'SEUIL_INIT' ,izone )
-        seuili = -abs(seuili)
+        l_auto_seuil = mminfl(defico,'SEUIL_AUTO' ,izone )
+        
+! MODE_FORCE : L_AUTO_SEUIL = FALSE
+!
+! --- TRANSFORMATION DU CHAMP DEPMOI ISSU DU CALCUL PRECEDENT EN CHAM_NO_S 
+!           ET REDUCTION SUR LES LAGRANGES
+!    
+! MODE_AUTO  : L_AUTO_SEUIL = TRUE, RECUPERATION DU SEUIL_INIT UTILISATEUR
+         if (l_auto_seuil) then 
+	              depmoi =  resoco(1:14)//'.INIT'
+         	      cnsplu = '&&APINIT.CNSPLU'
+	              call cnocns(depmoi, 'V', cnsplu)
+	              cnscon = '&&APINIT.CNSCON'
+	              call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
+	                'V', cnscon)	        
+         else 
+             seuili = mminfr(defico,'SEUIL_INIT' ,izone )
+             seuili = -abs(seuili)     
+	                              
+         endif    
         ctcini = mminfi(defico,'CONTACT_INIT' ,izone )
         typint = mminfi(defico,'INTEGRATION' ,izone )
 !
@@ -169,6 +197,11 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! ------- NOEUDS EXCLUS PAR SANS_GROUP_NO_FR OU SANS_NOEUD_FR
 !
             call mminfm(posmae, defico, 'NDEXFR', ndexfr)
+
+!
+! ------- MULTIPLICATEURS DE CONTACT SUR LES NOEUDS ESCLAVES
+!
+           if (loptin .and. l_auto_seuil) call mmextm(defico, cnscon, posmae, mlagc)
 !
 ! ------- BOUCLE SUR LES POINTS
 !
@@ -211,11 +244,19 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 ! --------- JEU SIGNE
 !
                 jeusgn = ddot(ndimg ,norm ,1 ,vectpm,1 )
+
+
+!
+! --------- MULTIPLICATEUR DE LAGRANGE DE CONTACT DU POINT
+!
+                if (l_auto_seuil) &
+                    call mmvalp(ndimg, aliase, nnomae, 1, ksipr1,&
+                            ksipr2, mlagc, lambdc)
 !
 ! --------- TRAITEMENT DES OPTIONS
 !
-                call mmopti(loptin, resoco, seuili, ctcini, lgliss,&
-                            iptc, epsint, jeusgn)
+                call mmopti(loptin,l_auto_seuil, resoco, seuili, ctcini, lgliss,&
+                            iptc, epsint, jeusgn,lambdc(1))
 !
 ! --------- LIAISON DE CONTACT EFFECTIVE
 !
@@ -247,4 +288,6 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     endif
 !
     call jedema()
+    call detrsd('CHAM_NO_S', cnsplu)
+    call detrsd('CHAM_NO_S', cnscon)
 end subroutine
