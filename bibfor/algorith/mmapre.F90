@@ -87,7 +87,7 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
     real(kind=8) :: armini
     real(kind=8) :: mlagc(9)
     character(len=8) :: aliase, nommam
-    character(len=19) :: depplu,depmoi
+    character(len=19) :: depmoi
     aster_logical :: lveri
     integer :: ibid
     integer :: jdecme
@@ -154,16 +154,15 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !    
 ! MODE_AUTO  : L_AUTO_SEUIL = TRUE, RECUPERATION DU SEUIL_INIT UTILISATEUR
          if (l_auto_seuil) then 
-	              depmoi =  resoco(1:14)//'.INIT'
-         	      cnsplu = '&&APINIT.CNSPLU'
-	              call cnocns(depmoi, 'V', cnsplu)
-	              cnscon = '&&APINIT.CNSCON'
-	              call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
-	                'V', cnscon)	        
+                  depmoi =  resoco(1:14)//'.INIT'
+                  cnsplu = '&&APINIT.CNSPLU'
+                  call cnocns(depmoi, 'V', cnsplu)
+                  cnscon = '&&APINIT.CNSCON'
+                  call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
+                              'V', cnscon)  
          else 
-             seuili = mminfr(defico,'SEUIL_INIT' ,izone )
-             seuili = -abs(seuili)     
-	                              
+                  seuili = mminfr(defico,'SEUIL_INIT' ,izone )
+                  seuili = -abs(seuili)                                  
          endif    
         ctcini = mminfi(defico,'CONTACT_INIT' ,izone )
         typint = mminfi(defico,'INTEGRATION' ,izone )

@@ -287,7 +287,6 @@ subroutine cazocc(char, motfac, izone)
     zr(jexclf-1+zexcl*(izone-1)+2) = direxf(2)
     zr(jexclf-1+zexcl*(izone-1)+3) = direxf(3)
     zr(jcmcf-1+zcmcf*(izone-1)+13) = seuil_auto
-    write (6,*) "seuil_auto",seuil_auto
     
 !
     call jedema()

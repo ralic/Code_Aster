@@ -101,7 +101,7 @@ subroutine mmopti(loptin,l_auto_seuil, resoco, seuili, ctcini, lgliss,&
 !
 ! --- NOEUDS EXCLUS: PAS EN CONTACT
 !
-    if (zr(jtabf+ztabf*(iptc-1)+18) .eq. 1.d0) then
+    if (nint(zr(jtabf+ztabf*(iptc-1)+18)) .eq. 1) then
         zr(jtabf+ztabf*(iptc-1)+22) = 0.d0
     endif
 !
