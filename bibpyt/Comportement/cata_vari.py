@@ -27,6 +27,7 @@ DICT_NOM_VARI = {
     "ACIER3": _(u"phase métallurgique acier variable interne 3"),
     "ACIER4": _(u"phase métallurgique acier variable interne 4"),
     "ACIER5": _(u"phase métallurgique acier variable interne 5"),
+    "ADOUMEMB": _(u"affaiblissement relatif de raideur en membrane"),
     "ADOUCOMP": _(u"affaiblissement relatif de raideur en membrane en compression"),
     "ADOUFLEX": _(u"affaiblissement relatif de raideur en flexion"),
     "ADOUTRAC": _(u"affaiblissement relatif de raideur en membrane en traction"),

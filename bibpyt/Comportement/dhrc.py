@@ -27,9 +27,9 @@ loi = LoiComportement(
    pris en compte. L'identification des paramètres nécessaires à cette loi de comportement se fait via une procédure préalable d'homogénéisation.
    Pour les précisions sur la formulation du modèle voir [R7.01.36]""",
     num_lc=9999,
-    nb_vari=9,
+    nb_vari=11,
     nom_vari=('ENDOSUP', 'ENDOINF', 'GLISXSUP', 'GLISYSUP',
-              'GLISXINF', 'GLISYINF', 'DISSENDO', 'DISSGLIS', 'DISSIP',),
+              'GLISXINF', 'GLISYINF', 'DISSENDO', 'DISSGLIS', 'DISSIP', 'ADOUMEMB', 'ADOUFLEX'),
     mc_mater = ('DHRC'),
     modelisation = ('DKTG'),
     deformation = ('PETIT', 'GROT_GDEP'),
