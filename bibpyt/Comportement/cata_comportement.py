@@ -470,7 +470,8 @@ class CataLoiComportement(Singleton):
         CALL LCDISCARD(COMPOR)
         ==> catalc.discard(COMPOR)"""
         if not names:
-            names = [i for i in self._dico.keys() if i.startswith('COMP!')]
+            names = self._dico.keys()
+        names = [i for i in names if i.startswith('COMP!')]
         i = 0
         for loi in names:
             if self._dico.get(loi):

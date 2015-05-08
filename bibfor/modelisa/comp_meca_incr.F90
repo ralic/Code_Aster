@@ -3,8 +3,9 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/lctest.h"
 #include "asterc/lccree.h"
+#include "asterc/lctest.h"
+#include "asterc/lcdiscard.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,6 +52,7 @@ subroutine comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 !
     call lccree(1, rela_comp, rela_code_py)
     call lctest(rela_code_py, 'PROPRIETES', 'COMP_ELAS', iret)
+    call lcdiscard(rela_code_py)
     if (iret .eq. 0) then
         type_comp = 'COMP_INCR'
     else

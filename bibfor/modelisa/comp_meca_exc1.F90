@@ -5,8 +5,6 @@ subroutine comp_meca_exc1(defo_comp, mult_comp, nb_vari_exte, l_kit_meta, l_cris
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !

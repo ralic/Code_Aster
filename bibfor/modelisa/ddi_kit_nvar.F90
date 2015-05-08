@@ -6,6 +6,7 @@ subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,8 +48,8 @@ subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua
 ! In  rela_coup    : relation for coupling (GLRC)
 ! Out nb_vari_flua : number of internal variables for fluage
 ! Out nb_vari_plas : number of internal variables for plasticity
-! Out nb_vari_cpla : number of internal variables for plane stress 
-! Out nb_vari_coup : number of internal variables for coupling 
+! Out nb_vari_cpla : number of internal variables for plane stress
+! Out nb_vari_coup : number of internal variables for coupling
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,18 +66,22 @@ subroutine ddi_kit_nvar(rela_flua, rela_plas, rela_cpla, rela_coup, nb_vari_flua
     if (rela_flua .ne. ' ') then
         call lccree(1, rela_flua, rela_py)
         call lcinfo(rela_py, ibid, nb_vari_flua)
+        call lcdiscard(rela_py)
     endif
     if (rela_plas .ne. ' ') then
         call lccree(1, rela_plas, rela_py)
         call lcinfo(rela_py, ibid, nb_vari_plas)
+        call lcdiscard(rela_py)
     endif
     if (rela_cpla .ne. ' ') then
         call lccree(1, rela_cpla, rela_py)
         call lcinfo(rela_py, ibid, nb_vari_cpla)
+        call lcdiscard(rela_py)
     endif
     if (rela_coup .ne. ' ') then
         call lccree(1, rela_coup, rela_py)
         call lcinfo(rela_py, ibid, nb_vari_coup)
+        call lcdiscard(rela_py)
     endif
 !
 end subroutine

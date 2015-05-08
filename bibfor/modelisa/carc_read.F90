@@ -15,6 +15,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 #include "asterc/lcalgo.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
+#include "asterc/lcdiscard.h"
 #include "asterc/umat_get_function.h"
 #include "asterc/mfront_get_pointers.h"
 #include "asterfort/assert.h"
@@ -63,8 +64,8 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
     integer, parameter :: carsiz=21
     character(len=16) :: keywordfact
     integer :: iocc, iret, nbocc, ndim
-    integer :: cpointer_nbvarext, cpointer_namevarext, cpointer_fct_ldc
-    integer :: cpointer_matprop, cpointer_nbprop
+    integer :: cptr_nbvarext, cptr_namevarext, cptr_fct_ldc
+    integer :: cptr_matprop, cptr_nbprop
     character(len=16) :: algo_inte, type_matr_tang, method, post_iter, post_incr
     real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
@@ -116,6 +117,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
             endif
             call lccree(1, rela_meca, rela_meca_py)
             call lctest(rela_meca_py, 'ALGO_INTE', algo_inte, iret)
+            call lcdiscard(rela_meca_py)
             if (iret .eq. 0) then
                 texte(1) = algo_inte
                 texte(2) = 'ALGO_INTE'
@@ -244,9 +246,9 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! ----- Get function pointers for mfront
 !
-        cpointer_nbvarext = 0
-        cpointer_namevarext = 0
-        cpointer_fct_ldc = 0
+        cptr_nbvarext = 0
+        cptr_namevarext = 0
+        cptr_fct_ldc = 0
         call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
         l_mfront = l_mfront_offi
         if (.not. l_mfront) then
@@ -279,14 +281,16 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !           The keywords in DEFI_MATERIAU are those for Tridimensional hypothesis
 !FIXME      ASSERT(nom_mod_mfront == '_Tridimensional' .or. .not. l_mfront_offi)
             call mfront_get_pointers(libr_name, subr_name, nom_mod_mfront,&
-                                     cpointer_nbvarext, cpointer_namevarext,&
-                                     cpointer_fct_ldc,&
-                                     cpointer_matprop, cpointer_nbprop)
+                                     cptr_nbvarext, cptr_namevarext,&
+                                     cptr_fct_ldc,&
+                                     cptr_matprop, cptr_nbprop)
         elseif ( l_umat ) then
             call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
             call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
-            call umat_get_function(libr_name, subr_name, cpointer_fct_ldc)
+            call umat_get_function(libr_name, subr_name, cptr_fct_ldc)
         endif
+!
+        call lcdiscard(rela_comp_py)
 !
 ! ----- Save options in list
 !
@@ -303,12 +307,12 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
         info_carc_valr(carsiz*(iocc-1) + 11) = amplitude
         info_carc_valr(carsiz*(iocc-1) + 12) = taux_retour
         info_carc_valr(carsiz*(iocc-1) + 13) = ipostiter
-        info_carc_valr(carsiz*(iocc-1) + 14) = dble(cpointer_nbvarext)
-        info_carc_valr(carsiz*(iocc-1) + 15) = dble(cpointer_namevarext)
-        info_carc_valr(carsiz*(iocc-1) + 16) = dble(cpointer_fct_ldc)
+        info_carc_valr(carsiz*(iocc-1) + 14) = dble(cptr_nbvarext)
+        info_carc_valr(carsiz*(iocc-1) + 15) = dble(cptr_namevarext)
+        info_carc_valr(carsiz*(iocc-1) + 16) = dble(cptr_fct_ldc)
         info_carc_valr(carsiz*(iocc-1) + 18) = parm_alpha
-        info_carc_valr(carsiz*(iocc-1) + 19) = dble(cpointer_matprop)
-        info_carc_valr(carsiz*(iocc-1) + 20) = dble(cpointer_nbprop)
+        info_carc_valr(carsiz*(iocc-1) + 19) = dble(cptr_matprop)
+        info_carc_valr(carsiz*(iocc-1) + 20) = dble(cptr_nbprop)
         info_carc_valr(carsiz*(iocc-1) + 21) = ipostincr
         info_carc_valk(2*(iocc-1) + 1) = rela_comp
         info_carc_valk(2*(iocc-1) + 2) = algo_inte

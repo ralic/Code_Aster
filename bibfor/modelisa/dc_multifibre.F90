@@ -29,6 +29,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
 #include "asterf_types.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_meca_vari.h"
@@ -103,6 +104,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
         call lccree(1, rela_comp, rela_comp_py)
 !       ALGO1D
         call lctest(rela_comp_py, 'MODELISATION', '1D', irett)
+        call lcdiscard(rela_comp_py)
         if (irett .eq. 0) then
             l_auto_deborst = .true.
             algo1d = 'DEBORST'

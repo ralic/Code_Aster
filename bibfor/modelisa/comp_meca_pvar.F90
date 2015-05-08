@@ -4,9 +4,9 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcvari.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/comp_meca_code.h"
@@ -257,6 +257,10 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
                             rela_code_py, meta_code_py, zk16(j_vari_name))
 !
  10     continue
+!
+        call lcdiscard(comp_code_py)
+        call lcdiscard(rela_code_py)
+        call lcdiscard(meta_code_py)
 !
     enddo
 !

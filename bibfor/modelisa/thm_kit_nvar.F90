@@ -6,6 +6,7 @@ subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, nb_vari_thmc
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,19 +64,20 @@ subroutine thm_kit_nvar(rela_thmc, rela_hydr, rela_meca, rela_ther, nb_vari_thmc
     nb_vari_hydr = 0
     nb_vari_meca = 0
 !
-        call lccree(1, rela_thmc, rela_thmc_py)
-        call lcinfo(rela_thmc_py, ibid, nb_vari_thmc)
+    call lccree(1, rela_thmc, rela_thmc_py)
+    call lcinfo(rela_thmc_py, ibid, nb_vari_thmc)
+    call lcdiscard(rela_thmc_py)
 
+    call lccree(1, rela_ther, rela_ther_py)
+    call lcinfo(rela_ther_py, ibid, nb_vari_ther)
+    call lcdiscard(rela_ther_py)
 
-        call lccree(1, rela_ther, rela_ther_py)
-        call lcinfo(rela_ther_py, ibid, nb_vari_ther)
+    call lccree(1, rela_hydr, rela_hydr_py)
+    call lcinfo(rela_hydr_py, ibid, nb_vari_hydr)
+    call lcdiscard(rela_hydr_py)
 
-
-        call lccree(1, rela_hydr, rela_hydr_py)
-        call lcinfo(rela_hydr_py, ibid, nb_vari_hydr)
-
-
-        call lccree(1, rela_meca, rela_meca_py)
-        call lcinfo(rela_meca_py, ibid, nb_vari_meca)
+    call lccree(1, rela_meca, rela_meca_py)
+    call lcinfo(rela_meca_py, ibid, nb_vari_meca)
+    call lcdiscard(rela_meca_py)
 !
 end subroutine

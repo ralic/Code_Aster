@@ -26,14 +26,15 @@ subroutine mfront_get_function(rela_comp, name)
 !
 #include "asterc/lccree.h"
 #include "asterc/lcsymb.h"
+#include "asterc/lcdiscard.h"
 !
     character(len=16) :: rela_comp_py
     character(len=128) :: symbol
-    integer :: nchar
 !
     name = ' '
     call lccree(1, rela_comp, rela_comp_py)
     call lcsymb(rela_comp_py, symbol)
+    call lcdiscard(rela_comp_py)
 !
     name = symbol
 !

@@ -6,6 +6,7 @@ subroutine comp_meca_vari(rela_comp, defo_comp, type_cpla, nb_vari, kit_comp,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_code.h"
 #include "asterfort/comp_meca_exc1.h"
@@ -170,6 +171,10 @@ subroutine comp_meca_vari(rela_comp, defo_comp, type_cpla, nb_vari, kit_comp,&
         nb_vari_comp(1) = nb_vari_cg(1)
         nb_vari_comp(2) = nb_vari_cg(2)
     endif
+!
+    call lcdiscard(comp_code_py)
+    call lcdiscard(rela_code_py)
+    call lcdiscard(meta_code_py)
 !
 ! - Exception for number of internal variables
 !

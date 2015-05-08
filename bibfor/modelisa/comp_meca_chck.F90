@@ -8,6 +8,7 @@ subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_va
 #include "asterc/getfac.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_full.h"
 #include "asterfort/comp_meca_l.h"
@@ -160,6 +161,8 @@ subroutine comp_meca_chck(model         , mesh       , full_elem_s, info_comp_va
           call utmess('A', 'COMPOR1_47', nk = 2, valk = texte)
        endif
 
+       call lcdiscard(rela_comp_py)
+       call lcdiscard(defo_comp_py)
     end do
 !
 end subroutine

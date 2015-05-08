@@ -9,6 +9,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcvari.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
@@ -151,6 +152,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
             lcompo(2)=vale(1+nbcomp*(inum-1)+2)
             call lccree(2, lcompo, comco2)
             call lcinfo(comco2, numlc, nbvari)
+            call lcdiscard(comco2)
             if (nbvari .ne. nbvar2) then
                 codret = 200
                 exit
@@ -174,6 +176,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
 50          continue
             zi(jcorva+inum3-1)=inum2
         end do
+        call lcdiscard(comco2)
 20  end do
     if ( codret.eq.200 ) goto 9999
 !
@@ -260,6 +263,7 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
                 end do
             end do
         end do
+        call lcdiscard(comco2)
 60  continue
 !
     nomres=nochmd(1:8)//'VARI_ELGA_NOMME'

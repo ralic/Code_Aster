@@ -7,8 +7,6 @@ subroutine comp_meta_read(list_vale)
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -74,4 +72,3 @@ subroutine comp_meta_read(list_vale)
     end do
 !
 end subroutine
-

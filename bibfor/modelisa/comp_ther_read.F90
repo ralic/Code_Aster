@@ -7,6 +7,7 @@ subroutine comp_ther_read(list_vale)
 #include "asterfort/getvtx.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
@@ -69,6 +70,7 @@ subroutine comp_ther_read(list_vale)
                     scal = rela_comp)
         call lccree(1, rela_comp, comp_code)
         call lcinfo(comp_code, nume_comp, nb_vari)
+        call lcdiscard(comp_code)
 !
 ! ----- Save options in list
 !

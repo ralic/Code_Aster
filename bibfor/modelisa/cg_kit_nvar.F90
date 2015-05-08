@@ -5,6 +5,7 @@ subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
 #include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +48,9 @@ subroutine cg_kit_nvar(rela_cg, nb_vari_cg)
 !
     call lccree(1, rela_cg(1), rela_py)
     call lcinfo(rela_py, ibid, nb_vari_cg(1))
+    call lcdiscard(rela_py)
     call lccree(1, rela_cg(2), rela_py)
     call lcinfo(rela_py, ibid, nb_vari_cg(2))
+    call lcdiscard(rela_py)
 !
 end subroutine

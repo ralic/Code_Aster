@@ -86,6 +86,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 #include "asterc/iisnan.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/betnvi.h"
@@ -309,6 +310,7 @@ subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
 !
         call lccree(1, cmp2, comcod)
         call lcinfo(comcod, numlc2, nbvar2)
+        call lcdiscard(comcod)
         call redece(fami, kpg, ksp, ndim, typmod,&
                     imat, cmp2, crit, timed, timef,&
                     neps, epsdt, deps, nsig, sigd,&

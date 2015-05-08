@@ -7,6 +7,7 @@ subroutine comp_comp_read(list_vale)
 #include "asterfort/getvid.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
@@ -98,6 +99,7 @@ subroutine comp_comp_read(list_vale)
         nb_vari   = cpri(2)
         call lccree(1, rela_comp, comp_code)
         call lcinfo(comp_code, nume_comp, idummy)
+        call lcdiscard(comp_code)
 !
 ! ----- Save options in list
 !

@@ -6,6 +6,7 @@ recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter
 #include "asterfort/assert.h"
 #include "asterc/lccree.h"
 #include "asterc/lctype.h"
+#include "asterc/lcdiscard.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 2091 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,6 +71,7 @@ recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter
     else if (what .eq. 'MFRONT_OFFI') then
         call lccree(1, rela_comp, rela_comp_py)
         call lctype(rela_comp_py, ldctyp)
+        call lcdiscard(rela_comp_py)
         l_detec = ldctyp == 'mfront'
     else if (what .eq. 'MFRONT') then
         l_detec = (rela_comp .eq. 'MFRONT')
