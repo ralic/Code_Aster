@@ -2442,6 +2442,31 @@ void DEFSS(LCTYPE, lctype, _IN char *compor, STRING_SIZE lcompor,
    Py_XDECREF(catalc);
 }
 
+void DEFS(LCDISCARD, lcdiscard, _IN char *compor, STRING_SIZE lcompor)
+{
+/*
+   Supprime la loi "de travail"
+   Si compor=' ', on supprime toutes les lois de travail
+
+       CALL LCDISCARD(COMPOR)
+       ==> catalc.discard(COMPOR)
+*/
+   PyObject *catalc, *res;
+
+   catalc = GetJdcAttr("catalc");
+   if ( compor[0] == ' ' ) {
+       res = PyObject_CallMethod(catalc, "discard", NULL);
+   } else {
+       res = PyObject_CallMethod(catalc, "discard", "s#", compor, lcompor);
+   }
+   if (res == NULL) {
+      MYABORT("Echec lors de la suppression des comportements (lcdiscard) !");
+   }
+
+   Py_XDECREF(res);
+   Py_XDECREF(catalc);
+}
+
 void DEFSS(LCSYMB, lcsymb, _IN char *compor, STRING_SIZE lcompor,
                           _OUT char *name, STRING_SIZE lname)
 {

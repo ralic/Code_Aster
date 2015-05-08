@@ -444,7 +444,7 @@ class CataLoiComportement(Singleton):
         self._dico = {}
         # pour nommer les comportements
         self._name_num = 0
-        self._name_template = 'COMP%012d'     # 16 caractères
+        self._name_template = 'COMP!%011d'     # 16 caractères
         self.debug = False
 
     def _name(self):
@@ -459,6 +459,25 @@ class CataLoiComportement(Singleton):
             msg = ufmt(u"Comportement déjà défini : %s", loi)
             raise CataComportementError(msg)
         self._dico[loi] = comport
+
+    def discard(self, *names):
+        """Supprime une ou plusieurs lois de comportement "de travail" du catalogue
+        Il n'y a pas d'erreur si elles n'existent pas.
+        Si on ne donne pas de nom, on supprime toutes les lois "de travail".
+        Une loi "de travail" est créée par assemblage (cf. ``create``) et ne
+        fait pas partie des lois définies dans bibpyt/Comportement.
+
+        CALL LCDISCARD(COMPOR)
+        ==> catalc.discard(COMPOR)"""
+        if not names:
+            names = [i for i in self._dico.keys() if i.startswith('COMP!')]
+        i = 0
+        for loi in names:
+            if self._dico.get(loi):
+                del self._dico[loi]
+                i += 1
+        if self.debug:
+            print "CATALC: {} objects removed".format(i)
 
     def get(self, loi):
         """Retourne l'objet LoiComportement dont le nom est 'loi'"""

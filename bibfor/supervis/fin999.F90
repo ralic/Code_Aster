@@ -28,6 +28,7 @@ subroutine fin999()
 #include "asterf.h"
 #include "asterc/chkmsg.h"
 #include "asterc/dllcls.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/asmpi_checkalarm.h"
     integer :: ichk
@@ -55,5 +56,7 @@ subroutine fin999()
 ! --- TEST ERREUR E SANS ERREUR F
 !
     call chkmsg(1, ichk)
+!
+    call lcdiscard(" ")
 !
 end subroutine
