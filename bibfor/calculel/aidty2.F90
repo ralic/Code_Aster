@@ -1,5 +1,5 @@
 subroutine aidty2(impr)
-! person_in_charge: jessica.haelewyn at edf.fr
+
     implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,25 +48,25 @@ subroutine aidty2(impr)
     call jelira('&CATA.OP.NOMOPT', 'NOMUTI', nbop)
 !
     call wkvect('&&AIDTY2.NOP2', 'V V K16', nbop, ianop2)
-    do 7,iop=1,nbop
-    call jenuno(jexnum('&CATA.OP.NOMOPT', iop), noop)
-    zk16(ianop2-1+iop)=noop
-    7 end do
+    do iop=1,nbop
+        call jenuno(jexnum('&CATA.OP.NOMOPT', iop), noop)
+        zk16(ianop2-1+iop)=noop
+    end do
 !
 !
 !     -- ECRITURE DES COUPLES (TE,OPT)
 !     --------------------------------
-    do 10,ite=1,nbte
-    call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
-    do 101,iop=1,nbop
-    ioptte= optte(nbop*(ite-1)+iop)
-    if (ioptte .eq. 0) goto 101
-    call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
-    nucalc= zi(iaopmo)
-    if (nucalc .le. 0) goto 101
-    write(impr,*)'&&CALCUL/'//nomte//'/'//zk16(ianop2-1+iop)
-101  continue
-    10 end do
+    do ite=1,nbte
+        call jenuno(jexnum('&CATA.TE.NOMTE', ite), nomte)
+        do 101,iop=1,nbop
+            ioptte= optte(nbop*(ite-1)+iop)
+            if (ioptte .eq. 0) goto 101
+            call jeveuo(jexnum('&CATA.TE.OPTMOD', ioptte), 'L', iaopmo)
+            nucalc= zi(iaopmo)
+            if (nucalc .le. 0) goto 101
+            write(impr,*)'&&CALCUL/'//nomte//'/'//zk16(ianop2-1+iop)
+101     continue
+    end do
 !
 !
 !     2) IMPRESSION DE LIGNES PERMETTANT LE SCRIPT "USAGE_ROUTINES" :
