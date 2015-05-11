@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/lteatt.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -79,12 +80,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: elas_keyword
+    character(len=16) :: elas_keyword, rela_comp
     integer :: elas_type
     real(kind=8) :: epsi_varc(162), epsi_tota_g(162), epsi_tota(162)
     real(kind=8) :: xyzgau(3), d(4, 4)
     real(kind=8) :: zero, un, deux
-    integer :: i, kpg
+    integer :: i, iret, kpg, j_compo
     aster_logical :: l_modi_cp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -97,6 +98,17 @@ implicit none
     epsi_tota(1:nbsig*npg)   = zero
     epsi_tota_g(1:nbsig*npg) = zero
     epsi_varc(1:nbsig*npg)   = zero
+!
+! - Get comportment
+!
+    if (option(1:4).eq.'EPME'.or.option(1:4).eq.'EPMG') then
+        call tecach('NNN', 'PCOMPOR', 'L', iret, iad=j_compo)
+        if (iret.eq.0) then
+            rela_comp  = zk16(j_compo)
+        else
+            rela_comp = 'Unknown'
+        endif
+    endif
 !
 ! - Total strains: first order (small strains)
 !
@@ -117,20 +129,25 @@ implicit none
         epsi(i) = epsi_tota(i) + epsi_tota_g(i)
     end do
 !
+! - Elasticity type
+!
+    call get_elas_type(j_mater, elas_type, elas_keyword)
+!
 ! - Mechanical strains: not metallurgy except META_LEMA_ANI !
 !
     if (option(1:4).eq.'EPME'.or.option(1:4).eq.'EPMG') then
-        call get_elas_type(j_mater, elas_type, elas_keyword)
-        if (elas_keyword.eq.'ELAS_META') then
+        if (elas_keyword.eq.'ELAS_META'.and.rela_comp.ne.'META_LEMA_ANI') then
             call utmess('F', 'ELEMENTS6_4')
         endif
     endif
 !
 ! - Compute variable commands strains (thermics, drying, etc.)
 !
-    call epthmc(fami, nno, ndim, nbsig, npg,&
-                zr(j_vf), xyz, repere, time, j_mater,&
-                option, epsi_varc)
+    if (option(1:4).eq.'EPME'.or.option(1:4).eq.'EPMG'.or.lteatt('C_PLAN','OUI')) then
+        call epthmc(fami, nno, ndim, nbsig, npg,&
+                    zr(j_vf), xyz, repere, time, j_mater,&
+                    option, epsi_varc)
+    endif
 !
 ! - Mechanical strains
 !

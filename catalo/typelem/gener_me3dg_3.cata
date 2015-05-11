@@ -187,12 +187,12 @@ OPTION__
     EPEQ_ELNO        335  IN__  EDEFONO  PDEFORR  
                           OUT__ EDFEQNO  PDEFOEQ  
     EPME_ELGA         25  IN__  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  
-                                ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
+                                ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CCOMPOR  PCOMPOR  
                           OUT__ EDEFOPG  PDEFOPG  
     EPME_ELNO          4  IN__  EDEFOPG  PDEFOPG  
                           OUT__ EDEFONO  PDEFONO  
     EPMG_ELGA         25  IN__  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR  
-                                ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
+                                ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CCOMPOR  PCOMPOR  
                           OUT__ EDEFOPG  PDEFOPG  
     EPMG_ELNO          4  IN__  EDEFOPG  PDEFOPG  
                           OUT__ EDEFONO  PDEFONO  

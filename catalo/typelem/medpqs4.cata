@@ -257,12 +257,12 @@ OPTION__
     EPFP_ELNO          4  IN__  EDEFOPG  PDEFOPG  
                           OUT__ EDEFONO  PDEFONO  
     EPME_ELGA         87  IN__  CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                                CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
+                                CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CCOMPOR  PCOMPOR  
                           OUT__ EDEFOPG  PDEFOPG  
     EPME_ELNO          4  IN__  EDEFOPG  PDEFOPG  
                           OUT__ EDEFONO  PDEFONO  
     EPMG_ELGA         87  IN__  CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  
-                                CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  
+                                CTEMPSR  PTEMPSR  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CCOMPOR  PCOMPOR  
                           OUT__ EDEFOPG  PDEFOPG  
     EPMG_ELNO          4  IN__  EDEFOPG  PDEFOPG  
                           OUT__ EDEFONO  PDEFONO  
