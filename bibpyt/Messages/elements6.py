@@ -34,6 +34,9 @@ On ne sait pas calculer les déformations plastiques avec de l'élasticité non-
      déformations plastiques : EPZZ = -(EPXX + EPYY).
   -> Risque & Conseil :
      Vérifiez que cette expression est valide avec votre loi de comportement.
+"""),
 
+    4 : _(u"""
+On ne sait pas calculer les déformations mécaniques avec des lois prenant en compte la métallurgie.
 """),
 }

@@ -16,25 +16,25 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine epsvmc(fami, nno, ndim, nbsig, npg,&
-                      ipoids, ivf, idfde, xyz, depl,&
-                      instan, mater, repere, nharm, option,&
-                      epsm)
-        character(len=4) :: fami
-        integer :: nno
-        integer :: ndim
-        integer :: nbsig
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
-        real(kind=8) :: xyz(1)
-        real(kind=8) :: depl(1)
-        real(kind=8) :: instan
-        integer :: mater
-        real(kind=8) :: repere(7)
-        real(kind=8) :: nharm
-        character(len=16) :: option
-        real(kind=8) :: epsm(1)
+    subroutine epsvmc(fami   , nno    , ndim  , nbsig, npg   ,&
+                      j_poids, j_vf   , j_dfde, xyz  , disp  ,&
+                      time   , j_mater, repere, nharm, option,&
+                      epsi   )
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: nno
+        integer, intent(in) :: ndim
+        integer, intent(in) :: nbsig
+        integer, intent(in) :: npg
+        integer, intent(in) :: j_poids
+        integer, intent(in) :: j_vf
+        integer, intent(in) :: j_dfde
+        real(kind=8), intent(in) :: xyz(1)
+        real(kind=8), intent(in) :: disp(1)
+        real(kind=8), intent(in) :: time
+        integer, intent(in) :: j_mater
+        real(kind=8), intent(in) :: repere(7)
+        real(kind=8), intent(in) :: nharm
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(out) :: epsi(1)
     end subroutine epsvmc
 end interface
