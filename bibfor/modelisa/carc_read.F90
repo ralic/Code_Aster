@@ -222,26 +222,30 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! ----- Get POST_ITER
 !
-        ipostiter = 0.d0
-        post_iter = ' '
-        if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
-            call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter, nbret = iret)
-            if (iret .eq. 1) then
-               if (post_iter .eq. 'CRIT_RUPT') then
-                   ipostiter = 1.d0
-               endif
+        if (getexm('COMPORTEMENT','POST_ITER') .eq. 1) then
+            ipostiter = 0.d0
+            post_iter = ' '
+            if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
+                call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter, nbret = iret)
+                if (iret .eq. 1) then
+                    if (post_iter .eq. 'CRIT_RUPT') then
+                        ipostiter = 1.d0
+                    endif
+                endif
             endif
         endif
 !
 ! ----- Get POST_INCR
 !
-        ipostincr = 0.d0
-        post_incr = ' '
-        call getvtx(keywordfact, 'POST_INCR', iocc = iocc, scal = post_incr, nbret = iret)
-        if (iret .eq. 1) then
-           if (post_incr .eq. 'REST_ECRO') then
-                ipostincr = 1.d0
-           endif
+        if (getexm('COMPORTEMENT','POST_INCR') .eq. 1) then
+            ipostincr = 0.d0
+            post_incr = ' '
+            call getvtx(keywordfact, 'POST_INCR', iocc = iocc, scal = post_incr, nbret = iret)
+            if (iret .eq. 1) then
+               if (post_incr .eq. 'REST_ECRO') then
+                    ipostincr = 1.d0
+               endif
+            endif
         endif
 !
 ! ----- Get function pointers for mfront
