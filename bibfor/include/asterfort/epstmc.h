@@ -16,19 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine epstmc(fami, ndim, instan, poum, igau,&
-                      isgau, xyzgau, repere, mater, option,&
-                      epsth)
-        character(len=*) :: fami
-        integer :: ndim
-        real(kind=8) :: instan
-        character(len=*) :: poum
-        integer :: igau
-        integer :: isgau
-        real(kind=8) :: xyzgau(3)
-        real(kind=8) :: repere(7)
-        integer :: mater
-        character(len=16) :: option
-        real(kind=8) :: epsth(6)
+    subroutine epstmc(fami     , ndim  , instan, poum   , kpg   ,&
+                      ksp      , xyzgau, repere, j_mater, option,&
+                      epsi_varc)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: ndim
+        character(len=*), intent(in) :: poum
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: j_mater
+        real(kind=8), intent(in) :: xyzgau(3)
+        real(kind=8), intent(in) :: repere(7)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(in) :: instan
+        real(kind=8), intent(out) :: epsi_varc(6)
     end subroutine epstmc
 end interface

@@ -294,9 +294,7 @@ Erreur utilisateur :
  ELREFA inconnu:  %(k1)s
 """),
 
-    58 : _(u"""
- la nature du matériau  %(k1)s  nécessite la définition du coefficient  B_ENDOGE dans DEFI_MATERIAU.
-"""),
+
 
     62 : _(u"""
  GROUP_MA :  %(k1)s  inconnu dans le maillage

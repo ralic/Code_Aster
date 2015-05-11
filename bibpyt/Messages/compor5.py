@@ -63,6 +63,18 @@ Erreur utilisateur :
 contribution thermique EPVC_ELGA.
 """),
 
+    12 : _(u"""
+Problème lors du calcul des déformations hydriques (retrait endogène).
+Il manque la définition du coefficient B_ENDOGE dans DEFI_MATERIAU.
+La déformation est supposée nulle.
+"""),
+
+    13 : _(u"""
+Problème lors du calcul des déformations dues à la pression du fluide.
+Il manque la définition du coefficient BIOT_COEF dans DEFI_MATERIAU.
+La déformation est supposée nulle.
+"""),
+
     32 : _(u"""
 Erreur utilisateur :
   Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau %(k2)s.

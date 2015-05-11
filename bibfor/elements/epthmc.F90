@@ -1,6 +1,12 @@
-subroutine epthmc(fami, nno, ndim, nbsig, npg,&
-                  ni, xyz, repere, instan, mater,&
-                  option, epsith)
+subroutine epthmc(fami      , nno      , ndim  , nbsig, npg    ,&
+                  shape_func, xyz      , repere, time , j_mater,&
+                  option    , epsi_varc)
+!
+implicit none
+!
+#include "asterfort/epstmc.h"
+#include "asterfort/lteatt.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,118 +23,113 @@ subroutine epthmc(fami, nno, ndim, nbsig, npg,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!.======================================================================
-    implicit none
 !
-!      EPTHMC   -- CALCUL DES  DEFORMATIONS THERMIQUES+RETRAIT
-!                  AUX POINTS D'INTEGRATION
-!                  POUR LES ELEMENTS ISOPARAMETRIQUES
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: nno
+    integer, intent(in) :: ndim
+    integer, intent(in) :: nbsig
+    integer, intent(in) :: npg
+    real(kind=8), intent(in) :: shape_func(1)
+    real(kind=8), intent(in) :: xyz(*)
+    real(kind=8), intent(in) :: repere(7)
+    real(kind=8), intent(in) :: time
+    integer, intent(in) :: j_mater
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(out) :: epsi_varc(1)
 !
-!   ARGUMENT        E/S  TYPE         ROLE
-!    FAMI           IN     K4       FAMILLE DU POINT DE GAUSS
-!    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
-!    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
-!    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
-!                                   A L'ELEMENT
-!    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
-!                                   DE L'ELEMENT
-!    NI(1)          IN     R        FONCTIONS DE FORME
-!    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
-!    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
-!    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
-!    MATER          IN     I        MATERIAU
-!    OPTION         IN     K16      OPTION DE CALCUL
-!    EPSITH(1)      OUT    R        DEFORMATIONS THERMIQUES
-!                                   AUX POINTS D'INTEGRATION
+! --------------------------------------------------------------------------------------------------
 !
-!.========================= DEBUT DES DECLARATIONS ====================
-! -----  ARGUMENTS
-#include "asterfort/epstmc.h"
-#include "asterfort/lteatt.h"
-    character(len=*) :: fami
-    character(len=16) :: k16bid, option
-    integer :: ndim
-    real(kind=8) :: ni(1), epsith(1)
-    real(kind=8) :: instan, repere(7), xyz(*)
-! -----  VARIABLES LOCALES
-    real(kind=8) :: epsth(6), epshy(6), epsse(6), xyzgau(3), epsan(6), epspt(6)
-    character(len=16) :: optio2, optio3, optio4, optio5
-!.========================= DEBUT DU CODE EXECUTABLE ==================
+! Compute variable commands strains (thermics, drying, etc.)
 !
-! --- INITIALISATIONS :
-!     -----------------
-!-----------------------------------------------------------------------
-    integer :: i, idim, igau, mater, nbsig, ndim2, nno
-    integer :: npg
+! --------------------------------------------------------------------------------------------------
+!
+! In  fami         : Gauss family for integration point rule
+! In  nno          : number of nodes
+! In  ndim         : dimension of space
+! In  nbsig        : number of stress tensor components
+! In  npg          : number of Gauss points
+! In  shape_func   : shape function
+! In  xyz          : coordinates of element
+! In  j_mater      : coded material address
+! In  repere       : definition of basis (for non-isotropic materials)
+! In  time         : current time
+! In  option       : name of option to compute
+! Out epsi_varc    : command variables strains
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) :: epsi_ther(6), epsi_hydr(6), epsi_sech(6), xyzgau(3), epsi_anel(6), epsi_pres(6)
+    character(len=16) :: optio2
+    integer :: i, idim, kpg, ndim2
     real(kind=8) :: zero
-!-----------------------------------------------------------------------
-    zero = 0.0d0
-    k16bid = ' '
 !
-    do 10 i = 1, nbsig*npg
-        epsith(i) = zero
-10  end do
-!
-    ndim2 = ndim
+! --------------------------------------------------------------------------------------------------
+!    
+    zero   = 0.d0
+    epsi_varc(1:nbsig*npg) = zero
+    ndim2  = ndim
     if (lteatt('FOURIER','OUI')) then
         ndim2 = 2
     endif
 !
-! --- CALCUL DES CONTRAINTES D'ORIGINE THERMIQUE :
-! ---  BOUCLE SUR LES POINTS D'INTEGRATION
-!      -----------------------------------
-    do 20 igau = 1, npg
+! - Loop on Gauss points
 !
-        xyzgau(1) = zero
-        xyzgau(2) = zero
-        xyzgau(3) = zero
+    do kpg = 1, npg
 !
-        do 30 i = 1, nno
-            do 40 idim = 1, ndim2
-                xyzgau(idim) = xyzgau(idim) + ni(i+nno*(igau-1))*xyz( idim+ndim2*(i-1))
-40          continue
-30      continue
+! ----- Coordinates of Gauss point
 !
-!  --      CALCUL DES DEFORMATIONS THERMIQUES  AU POINT D'INTEGRATION
-!  --      COURANT
-!          -------
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, mater, k16bid,&
-                    epsth)
+        xyzgau(1:3) = zero
+        do i = 1, nno
+            do idim = 1, ndim2
+                xyzgau(idim) = xyzgau(idim) + shape_func(i+nno*(kpg-1))*xyz( idim+ndim2*(i-1))
+            end do
+        end do
 !
-!  --      DEFORMATIONS THERMIQUES SUR L'ELEMENT
-!          -------------------------------------
-        do 50 i = 1, nbsig
-            epsith(i+nbsig*(igau-1)) = epsith(i+nbsig*(igau-1)) + epsth(i)
-50      continue
+! ----- Thermic strains
+!
+        optio2 = ' '
+        call epstmc(fami, ndim, time, '+', kpg,&
+                    1, xyzgau, repere, j_mater, optio2,&
+                    epsi_ther)
+!
+! ----- Hydric strains
 !
         optio2 = option(1:9) // '_HYDR'
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, mater, optio2,&
-                    epshy)
-        optio3 = option(1:9) // '_SECH'
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, mater, optio3,&
-                    epsse)
-        optio4 = option(1:9) // '_EPSA'
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, mater, optio4,&
-                    epsan)
-        optio5 = option(1:9) // '_PTOT'
-        call epstmc(fami, ndim, instan, '+', igau,&
-                    1, xyzgau, repere, mater, optio5,&
-                    epspt)
+        call epstmc(fami, ndim, time, '+', kpg,&
+                    1, xyzgau, repere, j_mater, optio2,&
+                    epsi_hydr)
 !
-!  --     DEFORMATIONS DE RETRAIT SUR L'ELEMENT
-!         -------------------------------------
-        do 60 i = 1, nbsig
-            epsith(i+nbsig*(igau-1)) = epsith(&
-                                       i+nbsig*(igau-1)) + epshy(i) + epsse(i) + epsan(i) + epspt&
-                                       &(i&
-                                       )
-60      continue
+! ----- Drying strains
 !
-20  end do
+        optio2 = option(1:9) // '_SECH'
+        call epstmc(fami, ndim, time, '+', kpg,&
+                    1, xyzgau, repere, j_mater, optio2,&
+                    epsi_sech)
 !
-!.============================ FIN DE LA ROUTINE ======================
+! ----- Anelastic strains (given by user)
+!
+        optio2 = option(1:9) // '_EPSA'
+        call epstmc(fami, ndim, time, '+', kpg,&
+                    1, xyzgau, repere, j_mater, optio2,&
+                    epsi_anel)
+!
+! ----- Pressure strains
+!
+        optio2 = option(1:9) // '_PTOT'
+        call epstmc(fami, ndim, time, '+', kpg,&
+                    1, xyzgau, repere, j_mater, optio2,&
+                    epsi_pres)
+!
+! ----- Total command variables strains
+!
+        do i = 1, nbsig
+            epsi_varc(i+nbsig*(kpg-1)) = epsi_varc(i+nbsig*(kpg-1)) + &
+                                         epsi_ther(i)+&
+                                         epsi_hydr(i)+&
+                                         epsi_sech(i)+&
+                                         epsi_anel(i)+&
+                                         epsi_pres(i)
+        end do
+    end do
+!
 end subroutine
