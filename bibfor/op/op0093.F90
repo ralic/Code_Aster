@@ -67,6 +67,8 @@ subroutine op0093()
 !--                          --C
 !------------------------------C
 !
+    call infmaj()
+    call infniv(ifm, niv)
     masse = ' '
     amor = ' '
     raide = ' '
@@ -110,8 +112,6 @@ subroutine op0093()
     call vpcrea(0, resu, masse, amor, raide,&
                 numedd, ibid)
 !
-    call infmaj()
-    call infniv(ifm, niv)
 !
     call dismoi('NOM_MAILLA', raide, 'MATR_ASSE', repk=nomma)
     call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=nume)

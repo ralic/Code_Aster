@@ -21,6 +21,10 @@ subroutine crsint(solveu)
 #include "asterfort/jemarq.h"
 #include "asterfort/sdsolv.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/asmpi_comm_jev.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/infniv.h"
+
     character(len=19) :: solveu
 !-----------------------------------------------------------------------
 !     CREATION D'UNE SD SOLVEUR MUMPS POUR LA ROUTINE CONINT (OPERATEUR
@@ -33,8 +37,13 @@ subroutine crsint(solveu)
 !----------------------------------------------------------------------
     integer :: zslvk, zslvr, zslvi
     integer :: islvk, islvr, islvi
+    integer :: i, monit(12), niv, nbproc,rang,ifm
+    mpi_int :: mrank, msize
+    character(len=24) :: kmonit(12)
 !----------------------------------------------------------------------
     call jemarq()
+    call infniv(ifm, niv)
+
     zslvk = sdsolv('ZSLVK')
     zslvr = sdsolv('ZSLVR')
     zslvi = sdsolv('ZSLVI')
@@ -68,5 +77,42 @@ subroutine crsint(solveu)
     zi(islvi-1+6) = 1
     zi(islvi-1+7) = -9999
     zi(islvi-1+8) = 0
+
+
+!   -- si on ne veut pas se planter dans preres avec INFO=2,
+!      il faut ajouter tout ce bazar :
+!   -------------------------------------------------------------
+    if (niv .ge. 2) then
+        call asmpi_info(rank=mrank, size=msize)
+        rang = to_aster_int(mrank)
+        nbproc = to_aster_int(msize)
+
+        kmonit(1)='&MUMPS.INFO.MAILLE'
+        kmonit(2)='&MUMPS.INFO.MEMOIRE'
+        kmonit(9)='&MUMPS.NB.MAILLE'
+        kmonit(10)='&MUMPS.INFO.MEM.EIC'
+        kmonit(11)='&MUMPS.INFO.MEM.EOC'
+        kmonit(12)='&MUMPS.INFO.MEM.USE'
+        call wkvect(kmonit(1), 'V V I', nbproc, monit(1))
+        call wkvect(kmonit(2), 'V V I', nbproc, monit(2))
+        call wkvect(kmonit(9), 'V V I', nbproc, monit(9))
+        call wkvect(kmonit(10), 'V V I', nbproc, monit(10))
+        call wkvect(kmonit(11), 'V V I', nbproc, monit(11))
+        call wkvect(kmonit(12), 'V V I', nbproc, monit(12))
+        do i = 1, nbproc
+            zi(monit(1)+i-1)=0
+            zi(monit(2)+i-1)=0
+            zi(monit(9)+i-1)=0
+            zi(monit(10)+i-1)=0
+            zi(monit(11)+i-1)=0
+            zi(monit(12)+i-1)=0
+        end do
+! -----
+        call asmpi_comm_jev('REDUCE', kmonit(9))
+! ----- CORRECTION SI MODAL
+
+    endif
+
+
     call jedema()
 end subroutine
