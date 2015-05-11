@@ -46,7 +46,7 @@ subroutine xfem_precond(action, matass, base, filtrage)
 !
     call jemarq()
 !
-    ASSERT((action .eq. 'PRE_COND').or.(action .eq. 'PRE_COND_DPB').or.(action .eq. 'FIN'))
+    ASSERT((action .eq. 'PRE_COND').or.(action .eq. 'FIN'))
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (action .eq. 'PRE_COND') then 
@@ -54,13 +54,6 @@ subroutine xfem_precond(action, matass, base, filtrage)
        ASSERT(present(base) .and. present(filtrage))
 !    PRE_CONDITIONNEMENT DE LA MATRICE
        call xfem_pc(matass, base, filtrage,'D')
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    elseif (action .eq. 'PRE_COND_DPB') then 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-       ASSERT(present(base) .and. present(filtrage))
-!    PRE_CONDITIONNEMENT DE LA MATRICE
-       call xfem_pc(matass, base, filtrage,'DPB')
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     elseif (action .eq. 'FIN') then 

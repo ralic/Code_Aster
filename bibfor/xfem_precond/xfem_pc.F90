@@ -54,14 +54,8 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
 #include "asterfort/wkvect.h"
 #include "asterfort/xfem_count_ddl.h"
 #include "asterfort/xfem_count_no.h"
-#include "asterfort/xfem_calc_pc.h"
-#include "asterfort/xfem_calc_mloc.h"
 #include "asterfort/xfem_calc_diag.h"
 #include "asterfort/xfem_store_pc.h"
-#include "asterfort/xfem_mult_l.h"
-#include "asterfort/xfem_mult_r.h"
-#include "asterfort/xfem_over_write.h"
-#include "asterfort/xfem_over_write_2.h"
 !-----------------------------------------------------------------------
     character(len=*) :: matass, typ_pc
     character(len=1) :: base
@@ -74,28 +68,15 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refn(:) => null()
     real(kind=8), pointer :: tab_mloc(:) => null()
-    real(kind=8), pointer :: vect_col(:) => null(), vect_col_2(:) => null()
-    real(kind=8), pointer :: vect_raw(:) => null(), vect_raw_2(:) => null()
     integer, pointer :: ino_xfem(:) => null()
     integer, pointer :: neq_mloc(:) => null()
     integer, pointer :: iglob_ddl(:) => null()
-    integer, pointer :: nnz_mloc(:) => null()
     integer, pointer :: ieq_loc(:) => null()
-    integer, pointer :: nblig_pc(:) => null(), nblig_pc_2(:) => null()
-    integer, pointer :: nz_raw(:) => null(), nz_raw_2(:) => null()
-    integer, pointer :: smhc_pc(:) => null(), smhc_pc_2(:) => null()
-    integer, pointer :: smhc_adr(:) => null(), smhc_adr_2(:) => null()
-    integer, pointer :: vect_adr(:) => null(), vect_adr_2(:) => null()
-    integer, pointer :: adr_raw(:) => null(), adr_raw_2(:) => null()
     aster_logical, pointer :: is_xfem(:) => null()
-    aster_logical, pointer :: is_connec(:) => null(), is_connec_2(:) => null()
-    aster_logical, pointer :: is_svd(:) => null()
     integer :: nuno, neq, ieq, jcmp, jdeeq
-    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm, iret_pc
+    integer :: jdime, nbnomax, nbnoxfem, deca, maxi_ddl, nvale, niv, ifm
     real(kind=8) :: kmin, kmax, coef, scal, seuil
     aster_logical :: lmd
-    integer :: size_smhc, size_vect_col, size_vect_raw
-    integer :: size_smhc_2, size_vect_col_2, size_vect_raw_2
     parameter    (pc_1='&&XFEM_PC_1')
 !-----------------------------------------------------------------------
 !
@@ -108,7 +89,6 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
     lmd=.false.
     if (refa(11) .eq. 'MATR_DISTR') lmd=.true.
     if (lmd) then 
-!       call utmess('A', 'XFEM_PRECOND_2')
        goto 999
     endif
 !
@@ -166,187 +146,13 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
     coef=(kmin+kmax)/2.d0
     scal=dsqrt(coef)
 !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   CONDENSATION DANS UN "ZR" DES MATRICES LOCALES DE PRE CONDITIONNMENT
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    deca=maxi_ddl**2
-    AS_ALLOCATE(vr=tab_mloc,size=nbnoxfem*deca)
-    AS_ALLOCATE(vi=nnz_mloc,size=nbnoxfem)
-!
-    call xfem_calc_mloc(matas1, nonu, neq, zi(jdeeq), nbnomax, &
-                         ino_xfem, is_xfem, nbnoxfem, ieq_loc, neq_mloc,&
-                         nnz_mloc, deca, tab_mloc)
-!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! FACTORISATION DE CHOLESKY DES MATRICES LOCALES
+! MISE A ECHELLE DES DDLS X-FEM
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-    if (typ_pc.ne.'DPB') goto 999
-!
-    if (nvale.eq.2) then
-      call xfem_calc_pc('IS_SYME', nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
-                        1.d0, iret_pc)
-      if ( iret_pc .ne. 0) goto 999
-    endif
-!
-    AS_ALLOCATE(vl=is_svd,size=nbnoxfem)
-!
-    call xfem_calc_pc('CHOLESKY', nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
-                        1.d0, iret_pc, is_svd)
-!
-    if ( iret_pc .ne. 0) goto 999
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! INVERSE DES MATICES CHOLESKY DES MATRICES LOCALES
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-    call xfem_calc_pc('INV_AND_SCAL', nbnoxfem, neq_mloc, nnz_mloc, deca, tab_mloc,&
-                        scal, iret_pc, is_svd)
-!
-    if ( iret_pc .ne. 0) goto 999
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! STOCKAGE DES MATRICES BLOC INVERSE DANS UNE MATR_ASSE (PRE CONDITIONNEUR)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-    call xfem_store_pc(matas1, bas1, nonu, neq, zi(jdeeq),&
-                       nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc,&
-                       maxi_ddl, iglob_ddl, deca, tab_mloc, pc_1, 'D_P_B')
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! ACTION DU PRE-CONDITIONNEUR A DROITE ET A GAUCHE SUR MATRICE ASTER
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-!---------------------------------------
-!   PHASE 1: PRODUIT A DROITE
-!---------------------------------------
-    AS_ALLOCATE(vi=nblig_pc,size=nbnoxfem)
-!
-!    - PREMIERE PASSE : CALCUL DE L ESPACE <DENSE> NECESSAIRE POUR STOCKER LES PRODUITS LOCAUX
-!
-    call xfem_mult_r('COMPTAGE', matas1, maxi_ddl, iglob_ddl, nbnoxfem,&
-                     neq_mloc, nblig_pc, size_smhc, size_vect_col, deca)
-!
-    AS_ALLOCATE(vr=vect_col,size=size_vect_col)
-    AS_ALLOCATE(vi=smhc_pc,size=size_smhc)
-    AS_ALLOCATE(vi=smhc_adr,size=nbnoxfem)
-    AS_ALLOCATE(vi=vect_adr,size=nbnoxfem)
-!
-!    - DEUXIEME PASSE : PRODUITS LOCAUX : K * Pc  
-!
-    call xfem_mult_r('REMPLISSAGE', matas1, maxi_ddl, iglob_ddl, nbnoxfem,&
-                     neq_mloc, nblig_pc, size_smhc, size_vect_col, deca,&
-                     tab_mloc, smhc_pc, smhc_adr, vect_adr, vect_col)
-!
-!---------------------------------------
-!   PHASE 2: PRODUIT A GAUCHE
-!---------------------------------------
-    AS_ALLOCATE(vi=nz_raw,size=nbnoxfem)
-    AS_ALLOCATE(vl=is_connec,size=neq)
-    AS_ALLOCATE(vi=adr_raw,size=nbnoxfem)
-!
-!    - PREMIERE PASSE : CALCUL DE L ESPACE <DENSE> NECESSAIRE POUR STOCKER LES PRODUITS LOCAUX
-!
-    call xfem_mult_l('COMPTAGE', matas1, nbnomax, ino_xfem, nbnoxfem,&
-                     neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
-                     nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr,&
-                     size_vect_col, deca, is_connec, nz_raw, adr_raw,&
-                     size_vect_raw)
-!
-    AS_ALLOCATE(vr=vect_raw,size=size_vect_raw)
-!
-!    - DEUXIEME PASSE : PRODUITS LOCAUX : Pc^T * (K*Pc)
-!
-    call xfem_mult_l('REMPLISSAGE', matas1, nbnomax, ino_xfem, nbnoxfem,&
-                     neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
-                     nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr,&
-                     size_vect_col, deca, is_connec, nz_raw, adr_raw,&
-                     size_vect_raw, vect_raw, vect_col, tab_mloc)
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   CAS DES MATRICES NON SYMETRIQUES
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if ( nvale.eq.2) then
-      AS_ALLOCATE(vi=nblig_pc_2,size=nbnoxfem)
-      call xfem_mult_r('COMPTAGE', matas1, maxi_ddl, iglob_ddl, nbnoxfem,&
-                     neq_mloc, nblig_pc_2, size_smhc_2, size_vect_col_2, deca)
-      AS_ALLOCATE(vr=vect_col_2,size=size_vect_col_2)
-      AS_ALLOCATE(vi=smhc_pc_2,size=size_smhc_2)
-      AS_ALLOCATE(vi=smhc_adr_2,size=nbnoxfem)
-      AS_ALLOCATE(vi=vect_adr_2,size=nbnoxfem)
-      call xfem_mult_r('REMPLISSAGE', matas1, maxi_ddl, iglob_ddl, nbnoxfem,&
-                     neq_mloc, nblig_pc_2, size_smhc_2, size_vect_col_2, deca,&
-                     tab_mloc, smhc_pc_2, smhc_adr_2, vect_adr_2, vect_col_2, 2)
-!
-      AS_ALLOCATE(vi=nz_raw_2,size=nbnoxfem)
-      AS_ALLOCATE(vl=is_connec_2,size=neq)
-      AS_ALLOCATE(vi=adr_raw_2,size=nbnoxfem)
-      call xfem_mult_l('COMPTAGE', matas1, nbnomax, ino_xfem, nbnoxfem,&
-                     neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
-                     nblig_pc_2, size_smhc_2, smhc_pc_2, smhc_adr_2, vect_adr_2,&
-                     size_vect_col_2, deca, is_connec_2, nz_raw_2, adr_raw_2,&
-                     size_vect_raw_2)
-      AS_ALLOCATE(vr=vect_raw_2,size=size_vect_raw_2)
-      call xfem_mult_l('REMPLISSAGE', matas1, nbnomax, ino_xfem, nbnoxfem,&
-                     neq, ieq_loc, neq_mloc, maxi_ddl, iglob_ddl,&
-                     nblig_pc_2, size_smhc_2, smhc_pc_2, smhc_adr_2, vect_adr_2,&
-                     size_vect_col_2, deca, is_connec_2, nz_raw_2, adr_raw_2,&
-                     size_vect_raw_2, vect_raw_2, vect_col_2, tab_mloc, 2)
-    endif
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!   COMPRESSION ET REMPLACEMENT DE LA MATRICE
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-!  CALCUL D UN SEUIL DE FILTRAGE DES TERMES DES MATRICES CALCULEES: SEUIL=10E-16*SCAL^2
-    seuil=r8prem()*coef
-!
-    if (nvale .eq. 1) then 
-      call xfem_over_write(matas1, bas1, nbnomax, ino_xfem, neq, &
-                           ieq_loc, nbnoxfem, neq_mloc, maxi_ddl, iglob_ddl,&
-                           nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr, &
-                           size_vect_col, vect_col, adr_raw, size_vect_raw, &
-                           vect_raw, is_connec, coef, filtrage, seuil)
-    else
-!      call xfem_matimp(matas1, 32, 'MATLAB')
-      call xfem_over_write_2(matas1, bas1, nbnomax, ino_xfem, neq, &
-                             ieq_loc, nbnoxfem, neq_mloc, maxi_ddl, iglob_ddl,&
-                             nblig_pc, size_smhc, smhc_pc, smhc_adr, vect_adr, &
-                             size_vect_col, vect_col, adr_raw, size_vect_raw, &
-                             vect_raw, is_connec, coef, filtrage, seuil, nvale,&
-                             size_vect_col_2, vect_col_2,size_vect_raw_2, vect_raw_2)
-!      call xfem_matimp(pc_1, 33, 'MATLAB')
-!      call xfem_matimp(matas1, 34, 'MATLAB')
-!      ASSERT(.false.)
-    endif
- 
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! STOCKAGE DU NOUVEL ETAT DE LA MATRICE ASTER
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    call jeveuo(matas1//'.REFA', 'E', vk24=refa)
-    refa(17)='XFEM_PRECOND'
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! STOCKAGE DU PRECONDITIONNEUR DANS LA MATR_ASSE / SUR LA BASE VOLATILE
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    ASSERT( refa(18)(1:19) .eq. ' ' )
-    refa(18)(1:19)=pc_1
-    call mtdscr(pc_1)
-!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!
-999 continue
-!
-! EN CAS DE SORTIE BRUTALE
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   if (refa(18)(1:19) .eq. ' ' .or. iret_pc.ne.0) then
-    AS_DEALLOCATE(vr=tab_mloc)
     AS_ALLOCATE(vr=tab_mloc,size=nbnoxfem*maxi_ddl)
-!      call xfem_matimp(matas1, 32, 'MATLAB')
     call xfem_calc_diag(matas1, nonu, neq, zi(jdeeq), nbnomax, &
                          ino_xfem, is_xfem, nbnoxfem, ieq_loc,&
-                         scal, maxi_ddl, tab_mloc)
+                         scal, maxi_ddl, zk8(jcmp), tab_mloc)
     call xfem_store_pc(matas1, bas1, nonu, neq, zi(jdeeq),&
                        nbnoxfem, nbnomax, ino_xfem, ieq_loc, neq_mloc,&
                        maxi_ddl, iglob_ddl, maxi_ddl, tab_mloc, pc_1, 'DIAGO')
@@ -355,10 +161,9 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
     ASSERT( refa(18)(1:19) .eq. ' ' )
     refa(18)(1:19)=pc_1
     call mtdscr(pc_1)
-   endif
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-! NETTOYAGES ...
+! DESALLOCATIONS  ...
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
     AS_DEALLOCATE(vl=is_xfem)
@@ -367,28 +172,8 @@ subroutine xfem_pc(matass, base, filtrage, typ_pc)
     AS_DEALLOCATE(vi=ieq_loc)
     AS_DEALLOCATE(vi=iglob_ddl)
     AS_DEALLOCATE(vr=tab_mloc)
-    AS_DEALLOCATE(vi=nnz_mloc)
-    AS_DEALLOCATE(vl=is_svd)
-    AS_DEALLOCATE(vi=nblig_pc)
-    AS_DEALLOCATE(vr=vect_col)
-    AS_DEALLOCATE(vi=smhc_pc)
-    AS_DEALLOCATE(vi=smhc_adr)
-    AS_DEALLOCATE(vi=vect_adr)
-    AS_DEALLOCATE(vi=nz_raw)
-    AS_DEALLOCATE(vl=is_connec)
-    AS_DEALLOCATE(vi=adr_raw)
-    AS_DEALLOCATE(vr=vect_raw)
-    if (nvale.eq.2) then
-      AS_DEALLOCATE(vi=nblig_pc_2)
-      AS_DEALLOCATE(vr=vect_col_2)
-      AS_DEALLOCATE(vi=smhc_pc_2)
-      AS_DEALLOCATE(vi=smhc_adr_2)
-      AS_DEALLOCATE(vi=vect_adr_2)
-      AS_DEALLOCATE(vi=nz_raw_2)
-      AS_DEALLOCATE(vl=is_connec_2)
-      AS_DEALLOCATE(vi=adr_raw_2)
-      AS_DEALLOCATE(vr=vect_raw_2)
-    endif
+!
+999 continue
 !
     call jedema()
 !

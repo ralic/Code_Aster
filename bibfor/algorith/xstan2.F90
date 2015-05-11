@@ -1,4 +1,4 @@
-subroutine xstan2(crimax, noma, modele, crit2)
+subroutine xstan2(noma, modele, crit2)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ subroutine xstan2(crimax, noma, modele, crit2)
 #include "asterfort/isnomi.h"
 !
     character(len=8) :: modele, noma
-    real(kind=8) :: crimax, crit2(2)
+    real(kind=8) :: crit2(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ subroutine xstan2(crimax, noma, modele, crit2)
 ! ----------------------------------------------------------------------
 !
 !
-!  IN  CRIMAX : CRITERE (RAPPORT MAXIMUM ENTRE LES VOLUMES)
+!  IN  CRIT2 : CRITERE (RAPPORT MAXIMUM ENTRE LES VOLUMES)
 !  IN  NOMA   : NOM DE L'OBJET MAILLAGE
 !  I/O MODELE   : NOM DE LA SD MODELE_XFEM
 !
@@ -248,11 +248,10 @@ subroutine xstan2(crimax, noma, modele, crit2)
  50             continue
             end do
 !         CALCUL DU CRITERE
-            crimaxi=crimax
             if (.not.isnomi(elrefp,inoloc)) then
-              if (crimax.lt.0.d0) crimaxi=crit2(1)**ndim
+              crimaxi=crit2(1)**ndim
             else
-              if (crimax.lt.0.d0) crimaxi=crit2(2)**ndim
+              crimaxi=crit2(2)**ndim
             endif
             crit=min(vmoin,vplus)/vtot            
             if (crit .lt. crimaxi) then

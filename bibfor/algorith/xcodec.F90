@@ -1,4 +1,4 @@
-subroutine xcodec(noma, modelx, k8condi, crimax, linter)
+subroutine xcodec(noma, modelx, k8condi, linter)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,7 +38,6 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
     character(len=8) :: noma, modelx, k8condi
     character(len=19) :: ligre1, maxfem
     integer :: jcond
-    real(kind=8) :: crimax
     aster_logical :: linter
 !
 ! ----------------------------------------------------------------------
@@ -53,7 +52,6 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  MODELX : NOM DU MODELE XFEM MODIFIE
-! IN  CRIMAX : CRITERE MAXIMUM
 !
 !
 !
@@ -120,25 +118,21 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
        call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
        call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
        if (maxfem .ne. 'LINE') then
-          crimax=-1.
           crit2(1)=1.d-6
           crit2(2)=1.d-5
           zk8(jcond)='OUI'
        else
-          crimax=-1.
           crit2(1)=1.d-8
-          crit2(2)=10**(-3.5)
+          crit2(2)=1.d-5
           zk8(jcond)='OUI'
        endif
     elseif ( k8condi .eq. 'FORCE' ) then
-       crimax=-1.
        crit2(1)=1.d-8
-       crit2(2)=10**(-3.5)
-       zk8(jcond)='OUI_DPB'
+       crit2(2)=1.d-5
+       zk8(jcond)='OUI'
     elseif ( k8condi .eq. 'SANS' ) then
-       ASSERT(crimax.gt.0.d0)
-       crit2(1)=-1.
-       crit2(2)=-1.
+       crit2(1)=1.d-100
+       crit2(2)=1.d-100
        zk8(jcond)='NON'
     else
        ASSERT(.false.)
@@ -148,7 +142,7 @@ subroutine xcodec(noma, modelx, k8condi, crimax, linter)
 !   CRIT2(1) => POUR LES NOEUDS SOMMETS
 !   CRIT2(2) => POUR LES NOEUDS MILIEUX
 !
-    call xstan2(crimax, noma, modelx, crit2)
+    call xstan2(noma, modelx, crit2)
 !
 ! --- ORIENTATION DES FACETTES DE PEAU X-FEM (COMME ORIE_PEAU)
 !

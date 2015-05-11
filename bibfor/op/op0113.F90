@@ -63,7 +63,6 @@ subroutine op0113()
 #include "asterfort/xverm2.h"
 #include "asterfort/xvermo.h"
 !
-    real(kind=8) :: crimax
     integer :: ibid, iel, ima, nmoth
     integer :: i, j2
     integer :: jmofis
@@ -258,9 +257,8 @@ subroutine op0113()
 !-----------------------------------------------------------------------
 !
     call getvtx(motfac, 'PRETRAITEMENTS', iocc=1, scal=k8condi, nbret=ibid)
-    call getvr8(motfac, 'CRITERE', iocc=1, scal=crimax, nbret=ibid)
 !
-    call xcodec(noma, modelx, k8condi, crimax, linter)
+    call xcodec(noma, modelx, k8condi, linter)
 !
 ! --- MENAGE
 !

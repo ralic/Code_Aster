@@ -30,14 +30,6 @@ cata_msg = {
   La résolution se poursuit sans pré-conditionneur XFEM.
 """),
 
-    # 2 : _(u"""
-    #  Erreur de programmation :
-    #  On essaie d'activer le préconditionneur <<NODAL>>
-    #  alors que l'ordonnancement des numéros d'équation stockées dans le
-    #  NUME_DDL associé à la  matrice en cours de factorisation
-    #  ne correspond pas l'application identité.
-    #"""),
-
     3 : _(u"""
   Erreur calcul matriciel:
   La matrice %(i1)d est pré-conditionnée sur les noeuds
@@ -52,17 +44,18 @@ cata_msg = {
   Vous pourriez obtenir des résultats inattendus.
 """),
 
-    5 : _(u"""
-  Alarme émise par le pré-conditionneur XFEM:
-  Le calcul d'une matrice locale de pré-conditionnement a
-  échoué.
-  Par précaution, on ne modifie pas le problème de départ.
-  La résolution se poursuit sans le pré-conditionneur XFEM.
+    6 : _(u"""
+  La mise à l'échelle des ddls X-FEM sera activée pour la suite de la résolution.
 """),
 
-    6 : _(u"""
-  Le pré-conditionneur XFEM <<NODAL>> sera activé pour la
-  suite de la résolution.
+    7 : _(u"""
+  Le pré-conditionneur XFEM a détecté une ligne pratiquement nulle à l'équation %(i1)d
+  correspondante au noeud N%(i2)d et au dégré de liberté %(k1)s.
+  Conseils:
+    - S'il s'agit d'un dégré de liberté de type contact : vérifier que le chargement contact est 
+      bien appliqué à la résolution.
+    - Sinon, désactiver le pré-conditionneur X-FEM dans le MODI_MODELE_XFEM > PRETRAITEMENTS='SANS'
+      pour tenter de poursuivre le calcul. Cette opération est très risquée.
 """),
 
 }

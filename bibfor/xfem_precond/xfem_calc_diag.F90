@@ -1,6 +1,6 @@
 subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
                            ino_xfem, is_xfem, nbnoxfem, ieq_loc,&
-                           scal, deca, tab_mloc)
+                           scal, deca, k8cmp, tab_mloc)
 !-----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,7 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -51,6 +52,7 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
     integer :: ieq_loc(neq)
     aster_logical :: is_xfem(nbnomax)
     real(kind=8) :: tab_mloc(deca*nbnoxfem), scal
+    character(len=8) :: k8cmp(*)
 !
 !-----------------------------------------------------------------------
 !
@@ -89,14 +91,16 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
            jpos=ieq_loc(jcoll)
        endif
        iligl=zi4(jsmhc-1+kterm)
+       ipos=ieq_loc(iligl)
+       if (ipos.le.0) goto 30
        nunoi=deeq(2*(iligl-1)+1)
-       ipos=ieq_loc(iligl)    
        if (is_xfem(nunoi).and.ipos.gt.0) then
          tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos)=max(&
                         tab_mloc(deca*(ino_xfem(nunoi)-1)+ipos),&
                         abs(zr(jvale-1+kterm)))
        endif
        if (iligl .eq. jcoll) goto 30
+       if (jpos.le.0) goto 30
        if (is_xfem(nunoj).and.jpos.gt.0) then
          tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos)=max(&
                         tab_mloc(deca*(ino_xfem(nunoj)-1)+jpos),&
@@ -118,12 +122,14 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
 30  enddo
 !
     do 60 iligl=1,neq
+      if (ieq_loc(iligl) .le. 0 ) goto 60
       nunoi=deeq(2*(iligl-1)+1)
-      if ( ieq_loc(iligl) .eq. 0 ) goto 60
       if ( .not. is_xfem(nunoi) ) goto 60
       rcoef=sqrt(tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl)))
-      if(rcoef.le.0.d0) write(6,*)' ieq=',iligl
-      ASSERT(rcoef.gt.0.d0)
+      if (rcoef.le.0.d0) then
+         call utmess('F', 'XFEMPRECOND_7', nk=1, valk=k8cmp(deeq(2*(iligl-1)+2)),&
+                                           ni=2, vali=[iligl,nunoi])
+      endif
       tab_mloc(deca*(ino_xfem(nunoi)-1)+ieq_loc(iligl))=scal/rcoef
 60  enddo
 !

@@ -19,7 +19,7 @@
 interface
     subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
                                ino_xfem, is_xfem, nbnoxfem, ieq_loc,&
-                               scal, deca, tab_mloc)
+                               scal, deca, k8cmp, tab_mloc)
         character(len=19) :: matass
         character(len=14) :: nonu
         integer :: neq
@@ -31,6 +31,7 @@ interface
         integer :: ieq_loc(neq)
         integer :: deca
         real(kind=8) :: scal
+        character(len=8) :: k8cmp(*)
         real(kind=8) :: tab_mloc(deca*nbnoxfem)
     end subroutine xfem_calc_diag
 end interface
