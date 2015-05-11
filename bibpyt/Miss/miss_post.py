@@ -232,8 +232,8 @@ class PostMiss(object):
 
     def check_datafile_exist(self):
         """Vérifie l'existence des fichiers."""
-        assert osp.exists('fort.%s' % self.param['UNITE_RESU_IMPE'])
-        assert osp.exists('fort.%s' % self.param['UNITE_RESU_FORC'])
+        assert osp.exists(self.param.UL.Nom( self.param['UNITE_RESU_IMPE'] ))
+        assert osp.exists(self.param.UL.Nom( self.param['UNITE_RESU_FORC'] ))
 
     def init_table(self):
         """Initialise la table"""
@@ -1014,7 +1014,6 @@ class PostMissFichierTemps(PostMissFichier):
         else:
             self.impr_impe(Z_temps, self.param['UNITE_RESU_RIGI'])
 
-
     def impr_impe(self, Zdt, unite_type_impe):
         """Ecriture d'une impédance quelconque dans le fichier de sortie en argument"""
         fname = self.fname(unite_type_impe)
@@ -1038,8 +1037,8 @@ class PostMissFichierTemps(PostMissFichier):
                     txt.append(fmt_ligne % tuple(Zdt[l, c:c+nb_colonne, n]))
         fid.write(os.linesep.join(txt))
         fid.close()
-        shutil.copyfile(fname, osp.join( self.param['_INIDIR'], 'fort' + '.' + str(unite_type_impe) ))
-
+        shutil.copyfile(fname, osp.join(self.param['_INIDIR'],
+                                        self.param.UL.Nom(unite_type_impe)))
 
     def ecri_forc(self, fs_temps):
         """Ecriture de l'effort sismique dans le fichier de sortie"""
@@ -1064,7 +1063,8 @@ class PostMissFichierTemps(PostMissFichier):
                 txt.append(fmt_ligne % tuple(fs_temps[mode:mode+nb_colonne, n]))
         fid.write(os.linesep.join(txt))
         fid.close()
-        shutil.copyfile(fname, osp.join( self.param['_INIDIR'], 'fort' + '.' + str(ul)))
+        shutil.copyfile(fname, osp.join(self.param['_INIDIR'],
+                                        self.param.UL.Nom(ul)))
 
 
     def cumtrapz(self, a):
@@ -1102,7 +1102,7 @@ class PostMissFichierTemps(PostMissFichier):
         """
         fich = '%s.%s' % (self.param['PROJET'], ext)
         return osp.join(self.param['_WRKDIR'], fich)
-        
+
 class PostMissChar(PostMiss):
     """Post-traitement avec sortie charge"""
 
@@ -1150,49 +1150,49 @@ class PostMissChar(PostMiss):
             ndeca = nbmod
         elif self.param['NOM_CMP'] == 'DZ':
             ndeca = 2*nbmod
-            
+
         if self.param['VARI'] == 'OUI':
-           MODELE  =  self.param['MODELE']
-           MATR_GENE = self.param['MATR_GENE']
-           INFO = self.param['INFO']
-           ISSF = self.param['ISSF']
-           NOM_CMP = self.param['NOM_CMP']
-           PRECISION = self.param['PRECISION']
-           PAS=self.df 
-           INTERF = self.param['INTERF']
-           MATR_COHE = self.param['MATR_COHE']
-           UNITE_RESU_IMPE = self.param['UNITE_RESU_IMPE']
-           TYPE=self.param['TYPE']
-           FMAX=self.fmax
-           FINI=0.0
-           imod=1
-           FSIST=force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,unit,
-            UNITE_RESU_IMPE,PRECISION,INTERF,MATR_COHE,TYPE,FINI,PAS,FMAX)
+            MODELE  =  self.param['MODELE']
+            MATR_GENE = self.param['MATR_GENE']
+            INFO = self.param['INFO']
+            ISSF = self.param['ISSF']
+            NOM_CMP = self.param['NOM_CMP']
+            PRECISION = self.param['PRECISION']
+            PAS = self.df
+            INTERF = self.param['INTERF']
+            MATR_COHE = self.param['MATR_COHE']
+            UNITE_RESU_IMPE = self.param['UNITE_RESU_IMPE']
+            TYPE = self.param['TYPE']
+            FMAX = self.fmax
+            FINI = 0.0
+            imod = 1
+            FSIST = force_iss_vari(self, imod, MATR_GENE, NOM_CMP, ISSF, INFO, unit,
+             UNITE_RESU_IMPE, PRECISION, INTERF, MATR_COHE, TYPE, FINI, PAS, FMAX)
 
         for ino in range(0, self.nbno):
-           no = self.List_Noeu_Fictif[ino]
-           if self.param['VARI'] == 'NON':
-             fx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+1)
-             fy = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+2)
-             fz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+3)
-             frx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+4)
-             fry = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+5)
-             frz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+6)
-           elif self.param['VARI'] == 'OUI':
-             fx = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+1)
-             fy = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+2)
-             fz = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+3)
-             frx = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+4)
-             fry = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+5)
-             frz = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+6)
-             
-           self.Force_Nodale.append(_F(NOEUD=no,
-                                  FX= fx,
-                                  FY= fy,
-                                  FZ= fz,
-                                  MX= frx,
-                                  MY= fry,
-                                  MZ= frz,),);
+            no = self.List_Noeu_Fictif[ino]
+            if self.param['VARI'] == 'NON':
+                fx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+1)
+                fy = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+2)
+                fz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+3)
+                frx = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+4)
+                fry = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+5)
+                frz = self.calc_forc_comp_temps(unit, __linst, __fdep, ndeca+6*ino+6)
+            elif self.param['VARI'] == 'OUI':
+                fx = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+1)
+                fy = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+2)
+                fz = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+3)
+                frx = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+4)
+                fry = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+5)
+                frz = self.calc_forc_vari_temps(FSIST, __linst, __fdep, 6*ino+6)
+
+            self.Force_Nodale.append(_F(NOEUD=no,
+                                   FX= fx,
+                                   FY= fy,
+                                   FZ= fz,
+                                   MX= frx,
+                                   MY= fry,
+                                   MZ= frz,),);
 
         DETRUIRE(CONCEPT=_F(NOM=__fdep))
 
@@ -1236,31 +1236,31 @@ class PostMissChar(PostMiss):
                                     _F(FONCTION=__FILTRE,)
                                     ),
                               LIST_PARA=__lfreq, NOM_PARA='FREQ',
-                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                              PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                          )
 
         __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0, METHODE='COMPLET',
                             SYME='NON'))
-                        
+
         __fTC = DEFI_CONSTANTE(VALE=__fTT(0))
-        
+
         __fT1 = CALC_FONCTION(COMB=(
-                                    _F(FONCTION=__fTT,COEF=1.0,),
-                                    _F(FONCTION=__fTC,COEF=-1.0,)
+                                    _F(FONCTION=__fTT, COEF=1.0,),
+                                    _F(FONCTION=__fTC, COEF=-1.0,)
                                     ),
                               LIST_PARA=linst, NOM_PARA='INST',
-                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                              PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                          )
 
         DETRUIRE(CONCEPT=_F(NOM=(__fHr, __fHi, __fH, __fT0, __fTT, __fTC, __lfreq)))
         return __fT1
-        
+
     def calc_forc_vari_temps(self, FSIST, linst, fdepl, indice):
         """???"""
 
         __lfreq = DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=self.fmax, PAS=self.df,),)
-        NB_FREQ=self.nb_freq
+        NB_FREQ = self.nb_freq
 
         if self.param['FREQ_MAX'] is None :
             __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
@@ -1274,13 +1274,13 @@ class PostMissChar(PostMiss):
                        INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',);
 
         Vale = []
-        for k in range(0,NB_FREQ):
-           freqk=k*self.df
-           Vale.append(freqk)
-           Vale.append(NP.real(FSIST[k,indice-1]).tolist())
-           Vale.append(NP.imag(FSIST[k,indice-1]).tolist())
+        for k in range(0, NB_FREQ):
+            freqk = k*self.df
+            Vale.append(freqk)
+            Vale.append(NP.real(FSIST[k, indice-1]).tolist())
+            Vale.append(NP.imag(FSIST[k, indice-1]).tolist())
 
-        __fH=DEFI_FONCTION(NOM_PARA='FREQ', VALE_C=Vale,
+        __fH = DEFI_FONCTION(NOM_PARA='FREQ', VALE_C=Vale,
                     PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',);
 
         __fT0 = CALC_FONCTION(MULT=(
@@ -1289,20 +1289,20 @@ class PostMissChar(PostMiss):
                                     _F(FONCTION=__FILTRE,)
                                     ),
                               LIST_PARA=__lfreq, NOM_PARA='FREQ',
-                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                              PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                          )
-                         
+
         __fTT = CALC_FONCTION( FFT=_F(FONCTION=__fT0, METHODE='COMPLET',
                             SYME='NON'))
 
         __fTC = DEFI_CONSTANTE(VALE=__fTT(0))
-        
+
         __fT1 = CALC_FONCTION(COMB=(
-                                    _F(FONCTION=__fTT,COEF=1.0,),
-                                    _F(FONCTION=__fTC,COEF=-1.0,)
+                                    _F(FONCTION=__fTT, COEF=1.0,),
+                                    _F(FONCTION=__fTC, COEF=-1.0,)
                                     ),
                               LIST_PARA=linst, NOM_PARA='INST',
-                              PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                              PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                          )
 
         DETRUIRE(CONCEPT=_F(NOM=(__fH, __fT0, __fTT, __fTC, __lfreq)))

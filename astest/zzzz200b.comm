@@ -450,6 +450,10 @@ TABSOL=DEFI_SOL_MISS(
 
 # TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
 #---------------------------------------
+DEFI_FICHIER(ACTION='ASSOCIER',
+             UNITE=25,
+             FICHIER='impedances.miss')
+
 CALC_MISS(
     TYPE_RESU='FICHIER',
     TABLE_SOL=TABSOL,
@@ -473,11 +477,8 @@ CALC_MISS(
         SPEC_MAX=0.03,
         SPEC_NB=2048,
     ),
-    INFO=2,
 )
 
-DEFI_FICHIER(ACTION='LIBERER',UNITE=25,);
-#
 # ----------------------------------------------------------------------
 # AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES
 
@@ -1111,6 +1112,9 @@ CARA_EL3=AFFE_CARA_ELEM( MODELE=STICKMOD,
               GROUP_MA_SEG2='LRADIER',
               FREQ_EXTR=4.0, UNITE_RESU_IMPE=25)
                );
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=25,);
+
 ASSEMBLAGE(MODELE=STICKMOD,
                 CHAM_MATER=CHAMPMAT,
                 CARA_ELEM=CARA_EL3,
@@ -1130,7 +1134,7 @@ MODE3=CALC_MODES( MATR_RIGI=MATRRIGB,
                   CALC_FREQ=_F( NMAX_FREQ = 10 ),
                   #VERI_MODE=_F(  STOP_ERREUR='NON')
                  );
-                  
+
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
