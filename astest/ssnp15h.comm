@@ -19,10 +19,10 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='NON',),
-      IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS3_77',),);
+      IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS6_3',),);
 
 # SDVERI='NON' car la verification est trop couteuse en CPU
-# IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS3_77',) : utilisation d'une loi de comportement
+# IGNORE_ALARM=('ELEMENTS3_11','ELEMENTS6_3',) : utilisation d'une loi de comportement
 # non-lineaire en contraintes planes
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 2D CONTRAINTES PLANES
