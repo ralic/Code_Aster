@@ -42,13 +42,10 @@ for mod in MODULES_RAISING_FPE:
     except ImportError:
         pass
 
-# Pas d'import des autres packages d'aster car l'import de ce module est
-# fait avant l'ajout des paths. Les autres imports seront possibles une fois
-# les arguments de la ligne de commande parsés.
 import aster_settings
+import aster_core
 from strfunc import convert, ufmt
 from decorators import jdc_required, stop_on_returncode, never_fail
-import aster_core
 
 
 class Interrupt(Exception):
@@ -109,7 +106,7 @@ class SUPERV:
 
     def set_i18n(self):
         """Met en place les fonctions d'internationalisation."""
-        # should be already done by aster_settings.getargs
+        # should be already done by importing aster_settings
         import i18n
 
     def init_timer(self):
@@ -318,8 +315,8 @@ class SUPERV:
     def InitEnv(self):
         """Initialize the environment (language & encoding, paths...)"""
         # import after getting opts as is may change sys.path
-        from E_utils import copierBase, lierRepertoire
         if self.coreopts.get_option('totalview') == 1:
+            from E_utils import copierBase, lierRepertoire
             curPID = os.getpid()
             pathOrigine = os.getcwd()
             pathDestination = osp.join(pathOrigine, "tv_" + str(curPID))

@@ -108,7 +108,7 @@ def register(catalog, settings, logger=None):
 
 
 def _print_alarm():
-    import aster_core
+    """Emet une alarme en cas de modification de la version du dépôt"""
     from Utilitai.Utmess import UTMESS
     changes = aster_pkginfo.version_info.changes
     uncommitted = aster_pkginfo.version_info.uncommitted

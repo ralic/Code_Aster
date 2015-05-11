@@ -35,8 +35,8 @@ from optparse import OptionParser
 import aster_pkginfo
 import aster
 import aster_core
-from i18n import localization
-from strfunc import convert
+from Execution.i18n import localization
+from Execution.strfunc import convert
 
 
 def check_value(option, opt, value, parser):
