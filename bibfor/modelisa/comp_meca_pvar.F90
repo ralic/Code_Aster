@@ -66,14 +66,14 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
     integer :: j_list_occ
     integer :: j_vari_name, j_vari_link
     character(len=19) :: compor_s
-    character(len=16) :: vari_excl
+    character(len=16) :: vari_excl, prev_rela_comp
     character(len=16) :: rela_comp, defo_comp, type_cpla, type_matg, post_iter
     character(len=16) :: kit_comp(9)
     character(len=16) :: comp_code_py, rela_code_py, meta_code_py
     integer :: j_comp_d, j_comp_l, iadc
     aster_logical :: l_kit_meta, l_affe
     aster_logical :: l_cristal, l_exte_comp, l_pmf, l_matr_tgsc, l_crit_rupt
-    aster_logical :: l_excl, l_kit_thm
+    aster_logical :: l_excl, l_kit_thm, prev_exte_comp, prev_pmf
     integer :: nb_elem, nocc, nb_vari, nb_vari_all
     integer :: i_elem, iocc, i_kit
     integer :: idummy
@@ -118,6 +118,9 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
 !
 ! - Get element on which comportment has been defined
 !
+    prev_rela_comp = " "
+    prev_exte_comp = .false.
+    prev_pmf = .false.
     do i_elem = 1, nb_elem
         nume_elem = i_elem
         if (present(compor_cart)) then
@@ -125,8 +128,16 @@ subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
                         1, 1, iadc)
             if (iadc .gt. 0) then
                 rela_comp = cesv(1+iadc-2+1)
-                call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-                call comp_meca_l(rela_comp, 'PMF', l_pmf)
+                if (rela_comp .ne. prev_rela_comp) then
+                    call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
+                    call comp_meca_l(rela_comp, 'PMF', l_pmf)
+                    prev_rela_comp = rela_comp
+                    prev_exte_comp = l_exte_comp
+                    prev_pmf = l_pmf
+                else
+                    l_exte_comp = prev_exte_comp
+                    l_pmf = prev_pmf
+                endif
 !
                 if (.not.l_exte_comp .and. .not. l_pmf) then
                     read (cesv(1+iadc-2+12),'(I16)') iocc
