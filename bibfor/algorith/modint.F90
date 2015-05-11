@@ -116,18 +116,11 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     character(len=1) :: listyp(2)
     character(len=19) :: lismat(2), imped, solveu, nume91, nume, prno
     character(len=24) :: valk
-    real(kind=8), pointer :: hessenberg(:) => null()
-    real(kind=8), pointer :: imagpart(:) => null()
-    real(kind=8), pointer :: leftmodes(:) => null()
-    real(kind=8), pointer :: matr_eigen_work(:) => null()
     real(kind=8), pointer :: matr_mod_red(:) => null()
     real(kind=8), pointer :: matr_work_dggev(:) => null()
-    real(kind=8), pointer :: realpart(:) => null()
-    real(kind=8), pointer :: rightmodes(:) => null()
     real(kind=8), pointer :: vect_alphai(:) => null()
     real(kind=8), pointer :: vect_alphar(:) => null()
     real(kind=8), pointer :: vect_beta(:) => null()
-    real(kind=8), pointer :: vect_temp_2(:) => null()
     real(kind=8), pointer :: v_f_pro(:) => null()
     integer, pointer :: v_ind_f_pro(:) => null()
     real(kind=8), pointer :: vale(:) => null()
@@ -465,16 +458,8 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
     call detrsd('MATR_ASSE', imped)
 !
-!    call jedetr('&&MODINT.VECT_TEMP')
-!    AS_DEALLOCATE(vr=vect_temp_2)
-!    call jedetr('&&MODINT.KRYLOV_INT')
     call jedetr('&&MODINT.SE_KRYLOV')
-!    AS_DEALLOCATE(vr=hessenberg)
 !
-!    AS_DEALLOCATE(vr=leftmodes)
-!    AS_DEALLOCATE(vr=rightmodes)
-!    AS_DEALLOCATE(vr=realpart)
-!    AS_DEALLOCATE(vr=imagpart)
     AS_DEALLOCATE(vr=v_f_pro)
     AS_DEALLOCATE(vi=v_ind_f_pro)
 !
