@@ -137,4 +137,10 @@ La valeur propre numéro %(i1)d du module tangent local est négative et vaut %(
 L'énergie libre n'est donc pas convexe ce qui peut mener à des problèmes de convergence.
 """),
 
+    72: _(u"""
+L'occurrence %(i1)d du mot-clef COMPORTEMENT n'affecte aucune maille du modèle.
+Par défaut, on affecte le comportement élastique en petites déformations sur les mailles du modèle non affectées par l'utilisateur
+Conseils: vérifier que ce comportement est voulu (pas d'oubli dans AFFE_MODELE).
+"""),
+
 }

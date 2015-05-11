@@ -1,6 +1,6 @@
 subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
@@ -126,8 +126,8 @@ subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
 ! - Save informations in COMPOR <CARTE>
 !
-    call comp_meca_save(mesh, chmate, compor, nb_cmp, p_info_comp_valk,&
-                        p_info_comp_vali, p_info_comp_nvar)
+    call comp_meca_save(model           , mesh            , chmate          , compor, nb_cmp,&
+                        p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
 !
 ! - Prepare informations about internal variables
 !

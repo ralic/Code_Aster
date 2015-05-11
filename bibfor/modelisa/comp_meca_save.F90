@@ -1,7 +1,7 @@
-subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
-                          info_comp_vali, info_comp_nvar)
+subroutine comp_meca_save(model         , mesh          , chmate          , compor, nb_cmp,&
+                          info_comp_valk, info_comp_vali, info_comp_nvar)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
@@ -9,8 +9,13 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/nmdpmf.h"
 #include "asterfort/nocart.h"
 #include "asterfort/reliem.h"
@@ -34,6 +39,7 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: chmate
     character(len=19), intent(in) :: compor
@@ -50,20 +56,25 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  model            : name of model
 ! In  mesh             : name of mesh
-! In  chmate           : name of material field
+! In  chmate           : name of material fi_elemd
 ! In  compor           : name of <CARTE> COMPOR
 ! In  nb_cmp           : number of components in <CARTE> COMPOR
-! In  info_comp_valk : comportment informations (character)
-! In  info_comp_vali : comportment informations (integer)
-! In  info_comp_nvar : comportment informations (int. vari. count)
+! In  info_comp_valk   : comportment informations (character)
+! In  info_comp_vali   : comportment informations (integer)
+! In  info_comp_nvar   : comportment informations (int. vari. count)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
-    integer :: nb_elem_affe
+    integer :: nb_elem_affe, nb_elem_mesh, nb_grel, nb_elem_liel, nb_model_affe
     integer, pointer :: p_elem_affe(:) => null()
+    integer, pointer :: p_elem_mesh(:) => null()
+    integer :: i_grel, i_elem_mesh, i_elem_liel, i_elem_affe
+    integer, pointer :: p_liel(:) => null()
+    character(len=19) :: ligrmo
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
     character(len=8) :: typmcl(2)
@@ -75,7 +86,7 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
     aster_logical :: l_cristal, l_umat, l_mfront, l_exte_comp
     aster_logical :: l_matr_tgsc, l_crit_rupt
     aster_logical :: l_pmf, l_is_pmf
-    integer :: nume_comp, nb_vari, nb_vari_comp(9)
+    integer :: nume_comp, nb_vari, nb_vari_comp(9), elem_nume
     integer :: nb_vari_exte, unit_comp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,7 +99,28 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
     motcle(2) = 'MAILLE'
     typmcl(1) = 'GROUP_MA'
     typmcl(2) = 'MAILLE'
-    l_is_pmf = .false.
+    l_is_pmf  = .false.
+    ligrmo    =  model//'.MODELE'
+!
+! - Create list of elements belongs to MODELE
+!
+    call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem_mesh)
+    AS_ALLOCATE(vi = p_elem_mesh, size = nb_elem_mesh)
+    call jelira(ligrmo(1:19)//'.LIEL', 'NUTIOC', nb_grel)
+    do i_grel = 1, nb_grel
+        call jeveuo(jexnum(ligrmo(1:19)//'.LIEL', i_grel), 'L', vi = p_liel)
+        call jelira(jexnum(ligrmo(1:19)//'.LIEL', i_grel), 'LONMAX', nb_elem_liel)
+        do i_elem_mesh = 1, nb_elem_mesh
+            elem_nume = i_elem_mesh
+            do i_elem_liel = 1, nb_elem_liel-1
+                if (elem_nume .eq. p_liel(i_elem_liel)) then
+                    p_elem_mesh(i_elem_mesh) = 1             
+                    goto 20
+                endif
+            end do
+20          continue
+        end do
+    end do
 !
 ! - Access to COMPOR <CARTE>
 !
@@ -143,12 +175,31 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 !
         call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
         if (nt .ne. 0) then
+            nb_elem_affe = 0
             l_affe_all = .true.
         else
             l_affe_all = .false.
             call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
                         2, motcle, typmcl, list_elem_affe, nb_elem_affe)
             if (nb_elem_affe .eq. 0) l_affe_all = .true.
+        endif
+!
+! ----- Check if elements belong to model
+!
+        nb_model_affe = 0
+        if (nb_elem_affe.ne.0) then
+            call jeveuo(list_elem_affe, 'L', vi = p_elem_affe)
+            do i_elem_affe = 1, nb_elem_affe
+                elem_nume = p_elem_affe(i_elem_affe)
+                if (p_elem_mesh(elem_nume).ne.0) then
+                    nb_model_affe = nb_model_affe + 1
+                endif
+            end do
+        endif
+        if (.not.l_affe_all) then
+            if (nb_model_affe.eq.0) then
+                call utmess('A', 'COMPOR4_72', si = iocc)
+            endif
         endif
 !
 ! ----- Set in <CARTE>
@@ -196,6 +247,7 @@ subroutine comp_meca_save(mesh, chmate, compor, nb_cmp, info_comp_valk,&
 !
     if (l_is_pmf) call nmdpmf(compor, chmate)
 !
+    AS_DEALLOCATE(vi = p_elem_mesh)
     call jedetr(compor//'.NCMP')
     call jedetr(compor//'.VALV')
 !
