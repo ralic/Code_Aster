@@ -294,7 +294,8 @@ OPTION__
                           OUT__ EDEFOPG  PDEFOPG
     EPME_ELNO          4  IN__  EDEFOPG  PDEFOPG
                           OUT__ EDEFONO  PDEFONO
-    EPVC_ELGA        531  IN__  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
+    EPVC_ELGA        531  IN__  NGEOMER  PGEOMER  CCOMPOR  PCOMPOR  CMATERC  PMATERC  ZVARCPG  PVARCPR  
+                                ZVARCPG  PVARCRR  ENBSP_I  PNBSP_I
                           OUT__ EDFVCPG  PDEFOPG
     EPVC_ELNO          4  IN__  EDFVCPG  PDEFOPG
                           OUT__ EDFVCNO  PDEFONO

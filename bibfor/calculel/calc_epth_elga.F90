@@ -1,4 +1,4 @@
-subroutine calc_epth_elga(fami   , ndim  , poum  , kpg      , ksp,&
+subroutine calc_epth_elga(fami   , ndim  , poum  , kpg  , ksp,&
                           j_mater, xyzgau, repere, epsi_ther)
 !
 implicit none
@@ -7,8 +7,12 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/get_elas_type.h"
+#include "asterfort/get_meta_phasis.h"
+#include "asterfort/get_meta_type.h"
+#include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
+#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utrcyl.h"
@@ -65,13 +69,13 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elem_name
-    character(len=16) :: elas_keyword
+    character(len=16) :: elas_keyword, rela_comp
     character(len=32) :: valk(2)
-    integer :: elas_type
-    real(kind=8) :: angl(3)
+    integer :: elas_type, meta_type, nb_phasis, iret
+    real(kind=8) :: angl(3), epsthe(3), phase(2)
     real(kind=8) :: dire(3), orig(3), p_glob_loca(3, 3), epsi_ther_vect(6), epsi_ther_scal
-    real(kind=8) :: vepst1(6), vepst2(6)
-    integer :: iadzi, iazk24
+    real(kind=8) :: vepst1(6), vepst2(6), zcold, zhot
+    integer :: iadzi, iazk24, icompo
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,14 +86,25 @@ implicit none
     call get_elas_type(j_mater, elas_type, elas_keyword)
     ASSERT(elas_type.le.3)
 !
-! - Strains for metallurgical laws: not possible
+! - Comportment
+!
+    call tecach('NNN', 'PCOMPOR', 'L', iret, iad=icompo)
+    if (iret.eq.0) then
+        rela_comp  = zk16(icompo)
+    else
+        rela_comp = 'Unknown'
+    endif
+!
+! - Strains for metallurgical laws: not possible except META_LEMA_ANI
 !
     if (elas_keyword.eq.'ELAS_META') then
-        call tecael(iadzi, iazk24)
-        elem_name = zk24(iazk24-1+3) (1:8)
-        valk(1) = elem_name
-        valk(2) = 'EPVC_ELGA'
-        call utmess('F', 'COMPOR5_11', nk = 2, valk = valk)
+        if (rela_comp.ne.'META_LEMA_ANI') then
+            call tecael(iadzi, iazk24)
+            elem_name = zk24(iazk24-1+3) (1:8)
+            valk(1) = elem_name
+            valk(2) = 'EPVC_ELGA'
+            call utmess('F', 'COMPOR5_11', nk = 2, valk = valk)
+        endif
     endif
 !
 ! - Non-isotropic elasticity: prepare basis
@@ -114,8 +129,18 @@ implicit none
 ! - Compute (local) thermic strains
 !
     if (elas_type.eq.1) then
-        call verift(fami, kpg, ksp, poum, j_mater,&
-                    epsth = epsi_ther_scal )
+        if (rela_comp.eq.'META_LEMA_ANI') then
+            call get_meta_type(meta_type, nb_phasis)
+            ASSERT(nb_phasis.eq.2)
+            call get_meta_phasis(fami     , '+' , kpg   , ksp , meta_type,&
+                                 nb_phasis, phase, zcold_ = zcold, zhot_ = zhot)
+            call verift(fami, kpg, ksp, '+', j_mater,&
+                        vepsth=epsthe)
+            epsi_ther_scal = zhot*epsthe(1) + zcold*epsthe(2)
+        else
+            call verift(fami, kpg, ksp, poum, j_mater,&
+                        epsth = epsi_ther_scal)
+        endif        
         epsi_ther(1) = epsi_ther_scal
         epsi_ther(2) = epsi_ther_scal
         epsi_ther(3) = epsi_ther_scal
