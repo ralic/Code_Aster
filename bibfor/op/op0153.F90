@@ -56,7 +56,7 @@ subroutine op0153()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
-    integer :: i, ibid, idangt, idcotu, idvcob, idvctu, ifires
+    integer :: i, ibid, idangt, idvcob, idvctu, ifires
     integer :: indic, info, iobst, ipoupr, ipourp, iprfuo, iprfut
     integer :: ipus, ire1, ire2, iret, itube, ivuso
     integer :: ivusob, ivust, ivustu, jfn, jins2, jinst
@@ -143,7 +143,7 @@ subroutine op0153()
 !     ------------------------------------------------------------------
     call getvis(' ', 'INFO', scal=info, nbret=n0)
     if (info .gt. 1) then
-        write(ifires,1000)
+        write(ifires,100)
         write(ifires,*)
         write(ifires,*) resu
     endif
@@ -170,14 +170,14 @@ subroutine op0153()
         call jeveuo(linst//'.VALE', 'L', jinst)
     endif
     call wkvect('&&OP0153.INSTAN2', 'V V R', nbinst, jins2)
-    do 10 i = 0, nbinst-1
+    do i = 0, nbinst-1
         zr(jins2+i) = zr(jinst+i)
-10  end do
+    end do
     call getvr8(' ', 'COEF_INST', scal=coinst, nbret=n1)
     if (n1 .ne. 0) then
-        do 12 i = 0, nbinst-1
+        do i = 0, nbinst-1
             zr(jins2+i) = zr(jins2+i) * coinst
-12      continue
+        end do
     endif
 !
     call wkvect('&&OP0153.USURE_TUBE', 'V V R', nbinst, jusut)
@@ -200,9 +200,8 @@ subroutine op0153()
         call wkvect('&&OP0153.POURPU', 'V V R', nbsect, ipourp)
         call wkvect('&&OP0153.VCTU', 'V V R', nbsect, idvctu)
         call wkvect('&&OP0153.VCOB', 'V V R', nbsect, idvcob)
-        call wkvect('&&OP0153.COTU', 'V V K16', nbsect, idcotu)
         epsil = 1.d-4
-        do 14 i = 1, nbsect
+        do i = 1, nbsect
             if (i .eq. 1) then
                 call getvr8('SECTEUR', 'ANGL_INIT', iocc=1, scal=zr(idangt), nbret=na)
 !
@@ -223,8 +222,7 @@ subroutine op0153()
             endif
             call getvr8('SECTEUR', 'COEF_USUR_MOBILE', iocc=i, scal=zr(idvctu+i-1), nbret=n5)
             call getvr8('SECTEUR', 'COEF_USUR_OBST', iocc=i, scal=zr( idvcob+i-1), nbret=n5)
-            call getvtx('SECTEUR', 'CONTACT', iocc=i, scal=zk16(idcotu+i- 1), nbret=n5)
-14      continue
+        end do
     else
         indic = 1
     endif
@@ -243,7 +241,7 @@ subroutine op0153()
         call usuvus(puusur, zr(jusut), nbinst, zr(jins2), itube,&
                     nbpt, zr(jfn), zr(jvg), iret)
     endif
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
 !
 !     --- CALCUL DU VOLUME D'USURE OBSTABLE ---
     iobst = 2
@@ -257,77 +255,75 @@ subroutine op0153()
         call usuvus(puusur, zr(jusuo), nbinst, zr(jins2), iobst,&
                     nbpt, zr(jfn), zr(jvg), iret)
     endif
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
 !
     if (indic .eq. 0) then
         call getvr8(' ', 'LARGEUR_OBST', scal=haut, nbret=n1)
         if (n1 .le. 0) then
             haut=0.011d0
         endif
-        if (info .gt. 1) write(ifires,1130)
+        if (info .gt. 1) write(ifires,200)
         call getvr8(' ', 'RAYON_MOBILE', scal=rayot, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'PREPOST4_11')
         endif
-        do 24 i = 1, nbsect
-            do 22 k = 1, nbinst
+        do i = 1, nbsect
+            do k = 1, nbinst
                 zr(iprfut+(k-1)*nbsect+i-1) = rayot - sqrt(&
                                               rayot* rayot-2.d0*zr(&
                                               ivustu+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(i&
                                               &dangt+i-1))&
                                               )&
                                               )
-22          continue
-24      continue
+            end do
+        end do
         call getvr8(' ', 'RAYON_OBST', scal=rayoo, nbret=n1)
         if (n1 .eq. 0) then
             call utmess('F', 'PREPOST4_12')
         endif
-        do 20 i = 1, nbsect
-            do 23 k = 1, nbinst
+        do i = 1, nbsect
+            do k = 1, nbinst
                 zr(iprfuo+(k-1)*nbsect+i-1) = rayoo - sqrt(&
                                               rayoo* rayoo-2.d0*zr(&
                                               ivusob+(k-1)*nbsect+i-1)/ (haut*(zr( idangt+i)-zr(i&
                                               &dangt+i-1))&
                                               )&
                                               )
-23          continue
-20      continue
+            end do
+        end do
     endif
 !
 !      --- IMPRESSIONS DES RESULTATS ---
 !
 !
     if (indic .ne. 0) goto 666
-    do 25 i = 1, nbsect
+    do i = 1, nbsect
         if (info .gt. 1) then
             write(ifires,*)
             write(ifires,*)
-            write(ifires,1090) 'SECTEUR : ',zr(idangt+i-1),' / ',&
+            write(ifires,190) 'SECTEUR : ',zr(idangt+i-1),' / ',&
             zr(idangt+i)
             write(ifires,*)
-            write(ifires,1120) 'TYPE DE CONTACT     ',':',&
-     &    zk16(idcotu+i-1)
-            write(ifires,1040) 'COEF USURE TUBE     ',':',&
+            write(ifires,140) 'COEF USURE TUBE     ',':',&
      &    zr(idvctu+i-1)
-            write(ifires,1040) 'COEF USURE OBSTACLE ',':', zr(idvcob+&
+            write(ifires,140) 'COEF USURE OBSTACLE ',':', zr(idvcob+&
             i-1)
-            write(ifires,1030) 'PRESENCE DU CRAYON  ',':',&
+            write(ifires,130) 'PRESENCE DU CRAYON  ',':',&
      &                       zr(ipoupr+i-1)*100.d0,'%'
-            write(ifires,1060) 'PUISSANCE D USURE   ',':',&
+            write(ifires,160) 'PUISSANCE D USURE   ',':',&
      &    zr(ipus+i-1),'W'
-            write(ifires,1030) '% PU DANS CE SECTEUR',':', zr(ipourp+&
+            write(ifires,130) '% PU DANS CE SECTEUR',':', zr(ipourp+&
             i-1),'%'
             write(ifires,*)
-            write(ifires,1010) 'ANNEES','V_USUR_TUBE','V_USUR_OBST',&
+            write(ifires,110) 'ANNEES','V_USUR_TUBE','V_USUR_OBST',&
             'P_USUR_TUBE','P_USUR_OBST'
         endif
-        do 27 k = 1, nbinst
-            if (info .gt. 1) write(ifires, 1080) (zr(jins2+k-1) / coinst),&
+        do k = 1, nbinst
+            if (info .gt. 1) write(ifires, 180) (zr(jins2+k-1) / coinst),&
                              zr(ivustu+(k-1)*nbsect+i-1), zr(ivusob+(k-1)*nbsect+i-1),&
                              zr(iprfut+(k-1)*nbsect+i-1), zr(iprfuo+(k-1)*nbsect+i-1)
-27      continue
-25  end do
+        end do
+    end do
 666  continue
 !     --- CALCUL DE PROFONDEUR D'USURE ---
     if (indic .eq. 1) call usupru(zr(jusut), zr(jusuo), nbinst, zr(jprut))
@@ -440,7 +436,7 @@ subroutine op0153()
     call tbajli(resu, 1, 'PUIS_USUR_GLOBAL', [ibid], [puusur],&
                 [c16b], k8b, 0)
 !
-    do 26 k = 1, nbinst
+    do k = 1, nbinst
 !        -INST-
         valer(1) = zr(jins2+k-1) / coinst + dinst
 !        -DUREE-
@@ -455,7 +451,7 @@ subroutine op0153()
         valer(6) = zr(jprut+k-1)
         call tbajli(resu, 6, nopar(2), [ibid], valer,&
                     [c16b], k8b, 0)
-        do 28 i = 1, nbsect
+        do i = 1, nbsect
 !           -ANGLE_DEBUT-
             valer(4) = zr(idangt+i-1)
 !           -ANGLE_FIN-
@@ -474,30 +470,29 @@ subroutine op0153()
             valer(11) = zr(ivusob+(k-1)*nbsect+i-1) + zr(ivuso+i-1)
             call tbajli(resu, nbpar2, nopar2, [i], valer,&
                         [c16b], k8b, 0)
-28      continue
-26  end do
+        end do
+    end do
     if (nbsect .ne. 0 .and. info .gt. 1) then
         write(ifires,*)
         write(ifires,*) 'PUISSANCE D USURE MOYENNE'
-        write(ifires,1020) pmoye,'W'
+        write(ifires,120) pmoye,'W'
     endif
 !
 888  continue
 !
     call titre()
 !
-    1000 format(/,80('-'))
-    1010 format(a11,2x,a15,2x,a15,2x,a15,2x,a15)
-    1020 format(1pe12.5,1x,a1)
-    1030 format(a20,1x,a1,1x,f6.2,1x,a1)
-    1040 format(a20,1x,a1,1x,1pe11.4)
-    1060 format(a20,1x,a1,1x,1pe12.5,1x,a1)
-    1080 format(1pe12.5,2x,1pe16.9,2x,1pe16.9,2x,1pe16.9,2x,1pe16.9)
-    1090 format(a10,1x,f7.2,a3,f7.2)
-    1120 format(a20,1x,a1,1x,a14)
-    1130 format(&
+    100 format(/,80('-'))
+    110 format(a11,2x,a15,2x,a15,2x,a15,2x,a15)
+    120 format(1pe12.5,1x,a1)
+    130 format(a20,1x,a1,1x,f6.2,1x,a1)
+    140 format(a20,1x,a1,1x,1pe11.4)
+    160 format(a20,1x,a1,1x,1pe12.5,1x,a1)
+    180 format(1pe12.5,2x,1pe16.9,2x,1pe16.9,2x,1pe16.9,2x,1pe16.9)
+    190 format(a10,1x,f7.2,a3,f7.2)
+    200 format(&
      &'LES PROFONDEURS USEES PAR SECTEUR SONT DES APPROXIMATIONS')
 !
-9999  continue
+999  continue
     call jedema()
 end subroutine
