@@ -106,42 +106,42 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 ! - CALCUL DES COEFFICIENTS BI (MOYENNE DES DERIVEES DES FCTS DE FORME)
     call r8inir(3*nno, 0.d0, bi, 1)
     den = 0.d0
-    do 2 kpg = 1, nbpg2
+    do kpg = 1, nbpg2
         call dfdm3d(nno, kpg, ipoid2, idfde2, geom,&
                     jac, dfdx, dfdy, dfdz)
         den = den + jac
-        do 3 ino = 1, nno
+        do ino = 1, nno
             bi(1,ino) = bi(1,ino) + jac * dfdx(ino)
             bi(2,ino) = bi(2,ino) + jac * dfdy(ino)
             bi(3,ino) = bi(3,ino) + jac * dfdz(ino)
-  3     continue
-  2 end do
-    do 4 i = 1, 3
-        do 5 ino = 1, nno
+        end do
+    end do
+    do i = 1, 3
+        do ino = 1, nno
             bi(i,ino) = bi(i,ino)/ den
-  5     continue
-  4 end do
+        end do
+    end do
 !
 ! - CALCUL DES COEFFICIENTS GAMMA
 !
-    do 6 i = 1, 4
-        do 7 k = 1, 3
+    do i = 1, 4
+        do k = 1, 3
             hx(k,i) = 0.d0
-            do 8 j = 1, nno
+            do j = 1, nno
                 hx(k,i) = hx(k,i) + h(j,i) * geom(k,j)
-  8         continue
-  7     continue
-  6 end do
+            end do
+        end do
+    end do
 !
-    do 9 i = 1, 4
-        do 10 j = 1, nno
+    do i = 1, 4
+        do j = 1, nno
             s = 0.d0
-            do 11 k = 1, 3
+            do k = 1, 3
                 s = s + hx(k,i) * bi(k,j)
- 11         continue
+            end do
             gam(i,j) = 0.125d0 * (h(j,i) - s)
- 10     continue
-  9 end do
+        end do
+    end do
 !
 ! - CALCUL POUR LE POINT DE GAUSS CENTRAL
     kpg = 1
@@ -157,7 +157,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     else if (phenom.eq.'ELAS_ORTH') then
         nomres(2)='NU_LT'
     else
-        ASSERT(.false.)
+        call utmess('F','ELEMENTS6_5',sk = phenom)
     endif
 !
     call rcvalb('FPG1', 1, 1, '+', imate,&
@@ -178,20 +178,20 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
                 r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
-    do 41 i = 1, nno
-        do 31 j = 1, 3
+    do i = 1, nno
+        do j = 1, 3
             def(1,j,i) = f(j,1)*dfdi(i,1)
             def(2,j,i) = f(j,2)*dfdi(i,2)
             def(3,j,i) = f(j,3)*dfdi(i,3)
             def(4,j,i) = (f(j,1)*dfdi(i,2) + f(j,2)*dfdi(i,1))/rac2
             def(5,j,i) = (f(j,1)*dfdi(i,3) + f(j,3)*dfdi(i,1))/rac2
             def(6,j,i) = (f(j,2)*dfdi(i,3) + f(j,3)*dfdi(i,2))/rac2
- 31     continue
- 41 continue
+        end do
+    end do
 !
-    do 180 i = 1, 72
+    do i = 1, 72
         qplus(i) = sigm(i+6,kpg)
-180 continue
+    end do
 !
     call r8inir(3*nno, 0.d0, vectu, 1)
     call r8inir(6*nbpg2, 0.d0, sigas, 1)
@@ -200,28 +200,28 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
 !      OPERATEUR DE STABILISATION DU GRADIENT AUX 8 POINTS DE GAUSS
 !
-    do 290 kpg = 1, nbpg2
+    do kpg = 1, nbpg2
         kp = 3*(kpg-1)
         call invjac(nno, kpg, ipoid2, idfde2, geom,&
                     invja, jac)
 !
-        do 165 i = 1, 3
+        do i = 1, 3
             dh(1,3*(kpg-1)+i) = coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg) * invja(2,i)
-165     continue
+        end do
 !
-        do 166 i = 1, 3
+        do i = 1, 3
             dh(2,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(3,i) + coopg2(3*kpg) * invja(1,i)
-166     continue
+        end do
 !
-        do 167 i = 1, 3
+        do i = 1, 3
             dh(3,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(2,i) + coopg2(3*kpg-1) * invja(1,i)
-167     continue
+        end do
 !
-        do 168 i = 1, 3
+        do i = 1, 3
             dh(4,3*(kpg-1)+i) = coopg2(3*kpg-2) * coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg-1) &
                                 &* coopg2(3*kpg) * invja(1,i) + coopg2(3*kpg-2) * coopg2(3*kpg) *&
                                 & invja(2,i)
-168     continue
+        end do
 !
 !
 !  CALCUL DE BN AU POINT DE GAUSS KPG
@@ -232,28 +232,28 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
 !    CONTRAINTES DE HOURGLASS
 !
-        do 32 i = 1, 6
+        do i = 1, 6
             ii = 12*(i-1)
-            do 34 ia = 1, 4
+            do ia = 1, 4
                 iaa = 3*(ia-1)
-                do 35 j = 1, 3
+                do j = 1, 3
                     sigas(i,kpg) = sigas(i,kpg) + qplus(ii+iaa+j) * dh(ia,kp+j)
- 35             continue
- 34         continue
- 32     continue
+                end do
+            end do
+        end do
 !
 !     CALCUL DES FORCES INTERNES
 !
-        do 250 i = 1, nno
-            do 240 j = 1, 3
-                do 230 kl = 1, 3
+        do i = 1, nno
+            do j = 1, 3
+                do kl = 1, 3
                     vectu(j,i) = vectu(j,i) + (def(kl,j,i)+ bn(kl,j,i) )* (sigas(kl,kpg)+sigm(kl,&
                                  &1))*jac + (rac2*def(kl+ 3,j,i)+ bn(kl+3,j,i))* (sigas(kl+3,kpg)&
                                  &+sigm(kl+3, 1))*jac
-230             continue
-240         continue
-250     continue
+                end do
+            end do
+        end do
 !
-290 continue
+    end do
 !
 end subroutine

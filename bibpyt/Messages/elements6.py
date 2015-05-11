@@ -37,11 +37,11 @@ On ne sait pas calculer les déformations plastiques avec de l'élasticité non-
 """),
 
     4 : _(u"""
-On ne sait pas calculer les déformations mécaniques avec des lois prenant en compte la métallurgie.
-"""),
-
-    4 : _(u"""
 On ne sait pas calculer les déformations mécaniques EPME_ELGA avec des lois prenant en compte la métallurgie.
 NB: si vous calculer une déformation partielle comme EPSP_ELGA, il est nécessaire de calculer EPME_ELGA.
+"""),
+
+    5 : _(u"""
+On ne peut pas utiliser le modèle 3D_SI avec un comportement élastique de type %(k1)s.
 """),
 }
