@@ -24,13 +24,13 @@ MPa = 1000000.0;
 
 # ------------------- Lecture du maillage
 
-MAILLAGE=LIRE_MAILLAGE(    UNITE=20 )
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', UNITE=20 )
 
 #
 
 MODELE=AFFE_MODELE(INFO=1,
                  MAILLAGE=MAILLAGE,AFFE=(
-                     _F(  GROUP_MA = ('CUBE',),
+                     _F(  GROUP_MA = ('CUBE','FACE_SUP','FACE_COTE'),
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = '3D'),
                             ) )
@@ -69,8 +69,8 @@ BLOQ=AFFE_CHAR_MECA(
 PRES=AFFE_CHAR_MECA(
                       MODELE=MODELE,
                       PRES_REP=(
-                        _F(  GROUP_MA='FACE_SUP',
-                               PRES = 1000,
+                        _F(  GROUP_MA=('FACE_SUP','FACE_COTE'),
+                               PRES = 100000,
                                ),
                                ),)
 
@@ -109,7 +109,6 @@ PLATEAU=DEFI_FONCTION(NOM_PARA='INST',
                      PROL_GAUCHE='CONSTANT',
                      );
 
-
 U_EPX = CALC_EUROPLEXUS(
    ETAT_INIT=_F(RESULTAT=U_ASTER,CONTRAINTE='OUI',EQUILIBRE='NON'),
    COMPORTEMENT =(_F(
@@ -135,33 +134,31 @@ U_EPX = CALC_EUROPLEXUS(
 
 # REFERENCE ETAT INITIAL ASTER
 
-a="""
-
-
 TEST_RESU(RESU=(_F(INST=1.0,
                    RESULTAT=U_ASTER,
                    NOM_CHAM='DEPL',
-                   NOEUD='N8',
+                   GROUP_NO='GRN1',
                    NOM_CMP='DX',
-                   VALE_CALC=2.15537139042198E-03,
+                   VALE_CALC=-9.07102694457E-06,
                    ),
                 _F(INST=1.0,
                    RESULTAT=U_ASTER,
                    NOM_CHAM='DEPL',
-                   NOEUD='N7',
+                   GROUP_NO='GRN1',
                    NOM_CMP='DY',
-                   VALE_CALC=-2.15537139042198E-03,
+                   VALE_CALC=-6.54472368612E-07,
                    ),
                 _F(INST=1.0,
                    RESULTAT=U_ASTER,
                    NOM_CHAM='DEPL',
-                   NOEUD='N6',
+                   GROUP_NO='GRN1',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.E-02,
+                   VALE_CALC=-6.2234063541E-06 ,
                    ),
                 ),
             )
-            
+
+
             
 TEST_RESU(RESU=(            
                 _F(INST=1.0,
@@ -169,77 +166,61 @@ TEST_RESU(RESU=(
                    RESULTAT=U_ASTER,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
-                   VALE_CALC=1.20270859098697E+08,
-                   MAILLE='M1',),
+                   VALE_CALC=-90491.3795116,
+                   MAILLE = 'M93',),
                 _F(INST=1.0,
-                   POINT=2,
+                   POINT=1,
                    RESULTAT=U_ASTER,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-2.15863269903220E+07,
-                   MAILLE='M1',),
+                   VALE_CALC=-4495.07212071,
+                   MAILLE = 'M93',),
                 _F(INST=1.0,
-                   POINT=3,
+                   POINT=1,
                    RESULTAT=U_ASTER,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
-                   VALE_CALC=3.78842807394021E+08,
-                   MAILLE='M1',),
-                _F(INST=1.0,
-                   POINT=4,
-                   RESULTAT=U_ASTER,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXY',
-                   VALE_CALC=-3.58270324318444E+04,
-                   MAILLE='M1',),
-                _F(INST=1.0,
-                   POINT=5,
-                   RESULTAT=U_ASTER,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXZ',
-                   VALE_CALC=-1.48252765464761E+07,
-                   MAILLE='M1',),
-                _F(INST=1.0,
-                   POINT=6,
-                   RESULTAT=U_ASTER,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIYZ',
-                   VALE_CALC=1.47199039729651E+07,
-                   MAILLE='M1',),
-                
+                   VALE_CALC=-92662.5352308,
+                   MAILLE = 'M93',),
                 ),
           )
+
+# RESULTATS APRES PASSAGE DANS EPX
 
 TEST_RESU(RESU=(_F(INST=0.004,
                    RESULTAT=U_EPX,
                    NOM_CHAM='DEPL',
-                   NOEUD='N8',
+                   GROUP_NO='GRN1',
                    NOM_CMP='DX',
-                   VALE_CALC=2.15537139042198E-03,
-                   VALE_REFE=2.15537139042198E-03,
-                   REFERENCE ='ANALYTIQUE',
+                   VALE_CALC=-9.07068363627E-06,
+                   VALE_REFE=-9.07102694457E-06,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 5E-5,
                    ),
                 _F(INST=0.004,
                    RESULTAT=U_EPX,
                    NOM_CHAM='DEPL',
-                   NOEUD='N7',
+                   GROUP_NO='GRN1',
                    NOM_CMP='DY',
-                   VALE_CALC=-2.15537139042198E-03,
-                   VALE_REFE=-2.15537139042198E-03,
-                   REFERENCE ='ANALYTIQUE',
+                   VALE_CALC=-6.54453170354E-07,
+                   VALE_REFE=-6.54472368612E-07,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 5E-5,
                    ),
                 _F(INST=0.004,
                    RESULTAT=U_EPX,
                    NOM_CHAM='DEPL',
-                   NOEUD='N6',
+                   GROUP_NO='GRN1',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.E-02,
-                   VALE_REFE=1.E-02,
-                   REFERENCE ='ANALYTIQUE',
+                   VALE_CALC=-6.22326643992E-06 ,
+                   VALE_REFE=-6.2234063541E-06 ,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 5E-5,
                    ),
                 ),
             )
-            
+
+
             
 TEST_RESU(RESU=(            
                 _F(INST=0.004,
@@ -247,57 +228,34 @@ TEST_RESU(RESU=(
                    RESULTAT=U_EPX,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
-                   VALE_CALC=1.20270859098697E+08,
-                   VALE_REFE=1.20270859098697E+08,
-                   REFERENCE ='ANALYTIQUE',
-                   MAILLE='M1',),
+                   VALE_CALC=-90490.2753104,
+                   VALE_REFE=-90491.3795116,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 5E-5,
+                   MAILLE = 'M93',),
                 _F(INST=0.004,
-                   POINT=2,
+                   POINT=1,
                    RESULTAT=U_EPX,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
-                   VALE_CALC=-2.15863269903220E+07,
-                   VALE_REFE=-2.15863269903220E+07,
-                   REFERENCE ='ANALYTIQUE',
-                   MAILLE='M1',),
+                   VALE_CALC=-4494.75415162,
+                   VALE_REFE=-4495.07212071,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 1E-4,
+                   MAILLE = 'M93',),
                 _F(INST=0.004,
-                   POINT=3,
+                   POINT=1,
                    RESULTAT=U_EPX,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIZZ',
-                   VALE_CALC=3.78842807394021E+08,
-                   VALE_REFE=3.78842807394021E+08,
-                   REFERENCE ='ANALYTIQUE',
-                   MAILLE='M1',),
-                _F(INST=0.004,
-                   POINT=4,
-                   RESULTAT=U_EPX,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXY',
-                   VALE_CALC=-3.58270324318444E+04,
-                   VALE_REFE=-3.58270324318444E+04,
-                   REFERENCE ='ANALYTIQUE',
-                   MAILLE='M1',),
-                _F(INST=0.004,
-                   POINT=5,
-                   RESULTAT=U_EPX,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIXZ',
-                   VALE_CALC=-1.48252765464761E+07,
-                   VALE_REFE=-1.48252765464761E+07,
-                   REFERENCE ='ANALYTIQUE',
-                   MAILLE='M1',),
-                _F(INST=0.004,
-                   POINT=6,
-                   RESULTAT=U_EPX,
-                   NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='SIYZ',
-                   VALE_CALC=1.47199039729651E+07,
-                   VALE_REFE=1.47199039729651E+07,
-                   REFERENCE ='ANALYTIQUE',
-                   MAILLE='M1',),
-                
+                   VALE_CALC=-92663.6670429,
+                   VALE_REFE=-92662.5352308,
+                   REFERENCE = 'ANALYTIQUE',
+                   PRECISION = 5E-5,
+                   MAILLE = 'M93',),
                 ),
           )
-"""
+
+
+
 FIN()
