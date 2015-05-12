@@ -28,6 +28,7 @@ import aster
 
 from Utilitai.Utmess import UTMESS, ASSERT
 from Utilitai.partition import MAIL_PY
+from Utilitai.UniteAster import UniteAster
 
 from Cata.cata import _F, DETRUIRE, DEFI_MAILLAGE, ASSE_MAILLAGE, \
     AFFE_MATERIAU, AFFE_MODELE, AFFE_CARA_ELEM, LIRE_MAILLAGE,  \
@@ -66,10 +67,8 @@ class PreSeismeNonL(object):
     @staticmethod
     def Factory(parent, param):
         """Factory that returns the calculation object"""
-        #if param['PARAMETRE'].has_key('PRE_CALC_MISS'):
         if param['PRE_CALC_MISS']:
             return PreCalcMiss(parent, param)
-#        elif param['PARAMETRE'].has_key('POST_CALC_MISS'):
         elif param['POST_CALC_MISS']:
             return PostCalcMiss(parent, param)
         elif param['STAT_DYNA']:
@@ -265,7 +264,7 @@ class BaseModale(object):
                 #   raise AsException(
                 #        "Le mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie")
                 msg_error = "\n\nLe mot-clé GROUP_NO_CENT est obligatoire lorsqu'une LIAISON_SOLIDE est définie"
-                assert self.param['PRE_CALC_MISS'].has_key('GROUP_NO_CENT') == True, msg_error 
+                assert self.param['PRE_CALC_MISS'].has_key('GROUP_NO_CENT') == True, msg_error
                 return True
         return False
 
@@ -580,13 +579,13 @@ class StatDyna(object):
         """initializations"""
         self.parent = parent
         self.args = properties
-        self.resu_snl = properties['STAT_DYNA']['RESULTAT']  
+        self.resu_snl = properties['STAT_DYNA']['RESULTAT']
 
         self.modele = self.set_from_resu('model', self.resu_snl)
         self.maillage = self.set_from_resu('mesh', self.resu_snl)
         self.mater = self.set_from_resu('mater', self.resu_snl)
         self.cara_elem = self.set_from_resu('caraele', self.resu_snl)
-        self.coef_amor = properties['STAT_DYNA']['COEF_AMOR']        
+        self.coef_amor = properties['STAT_DYNA']['COEF_AMOR']
 
         self.charges = properties['STAT_DYNA']['EXCIT']
         self.chsol = properties['STAT_DYNA']['FORCE_SOL']
@@ -604,16 +603,18 @@ class StatDyna(object):
         self.base_modale = properties['STAT_DYNA']['BASE_MODALE']
         self.UL_impe_freq = properties['STAT_DYNA']['UNITE_IMPE_FREQ']
 
+        UL = UniteAster()
         if properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_RIGI']:
             self.UL_impe_temps_K = properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_RIGI']
-            fid = open('./fort.%s' % self.UL_impe_temps_K, 'r')
+            fid = open(UL.Nom(self.UL_impe_temps_K), 'r')
         if properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_AMOR']:
             self.UL_impe_temps_C = properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_AMOR']
-            fid = open('./fort.%s' % self.UL_impe_temps_K, 'r')
+            fid = open(UL.Nom(self.UL_impe_temps_K), 'r')
         if properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_MASS']:
             self.UL_impe_temps_M = properties['STAT_DYNA']['UNITE_IMPE_TEMPS']['UNITE_RESU_MASS']
-            fid = open('./fort.%s' % self.UL_impe_temps_K, 'r')
-        
+            fid = open(UL.Nom(self.UL_impe_temps_K), 'r')
+        UL.EtatInit()
+
         data = fid.readline().split()
         fid.close()
         self.pas_inst_impe = float(data[1])
@@ -641,16 +642,16 @@ class StatDyna(object):
         _chsol = self.calc_chsol_equi()
         self.add_charge(_chsol)
 
-        _lreel = DEFI_LIST_REEL( VALE = self.resu_snl.LIST_PARA()['INST'] ); 
+        _lreel = DEFI_LIST_REEL( VALE = self.resu_snl.LIST_PARA()['INST'] );
         _linst = DEFI_LIST_INST(DEFI_LIST=_F(METHODE ='AUTO', LIST_INST = _lreel,),);
 
         _ResuSNL = STAT_NON_LINE(**self.non_line(
                                   EXCIT = self.charges,
-                                  INCREMENT = _F(LIST_INST = _linst,),          
+                                  INCREMENT = _F(LIST_INST = _linst,),
                                 )
                              );
- 
-        self.resu_snl = _ResuSNL     
+
+        self.resu_snl = _ResuSNL
 
     def etapeDynamique(self):
         """Execute dynamic calculation"""
@@ -659,21 +660,21 @@ class StatDyna(object):
                  RESULTAT = self.resu_snl,
                  NOM_CHAM='DEPL',
                  INST = self.inst_init,
-                 INFO=1,); 
+                 INFO=1,);
 
         _SIGF = CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  OPERATION='EXTR',
                  RESULTAT = self.resu_snl,
                  NOM_CHAM='SIEF_ELGA',
                  INST = self.inst_init,
-                 INFO=1,); 
-                 
+                 INFO=1,);
+
         _VARF = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                  OPERATION='EXTR',
                  RESULTAT=self.resu_snl,
                  NOM_CHAM='VARI_ELGA',
                  INST = self.inst_init,
-                 INFO=1,);  
+                 INFO=1,);
 
         _CNUL = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='ASSE',
@@ -682,13 +683,13 @@ class StatDyna(object):
                   ASSE=(_F(TOUT='OUI',
                            CHAM_GD = _DEPF,
                            CUMUL='OUI',
-                           COEF_R=0.0,),),);   
+                           COEF_R=0.0,),),);
 
         TFIN_TOTAL = self.pas_inst_impe * (self.nb_inst + 1)
 
         _larch = DEFI_LIST_REEL(DEBUT = self.inst_init,
                      INTERVALLE=_F(JUSQU_A = TFIN_TOTAL,
-                                   PAS = self.pas_inst_impe,),);        
+                                   PAS = self.pas_inst_impe,),);
 
         _linst2 = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = _larch,),
                                  ECHEC=_F(SUBD_PAS=2,SUBD_NIVEAU=10,),);
@@ -696,7 +697,7 @@ class StatDyna(object):
         N_stab1 = int(0.75*self.nb_inst)
         TFIN1 = N_stab1 * self.pas_inst_impe
 
-        self.parent.DeclareOut('_ResuDNL', self.args['RESULTAT']['RESULTAT'])  
+        self.parent.DeclareOut('_ResuDNL', self.args['RESULTAT']['RESULTAT'])
         self.init_amor(self.coef_amor)
         alpha_HHT = -7.0
         _ResuDNL = DYNA_NON_LINE(**self.non_line(
@@ -705,15 +706,15 @@ class StatDyna(object):
                                   ETAT_INIT=_F(SIGM=_SIGF,VARI=_VARF,DEPL=_DEPF,VITE=_CNUL,ACCE=_CNUL),
                                   EXCIT = self.charges,
                                   INCREMENT=_F(LIST_INST = _linst2, INST_FIN = TFIN1,),
-                                  ARCHIVAGE=_F(LIST_INST = _larch,),                                                               
+                                  ARCHIVAGE=_F(LIST_INST = _larch,),
                                 )
                              );
 
-        N_stab2 = self.nb_inst - N_stab1 
-        TFIN2 = TFIN1 + N_stab2 * self.pas_inst_impe                       
+        N_stab2 = self.nb_inst - N_stab1
+        TFIN2 = TFIN1 + N_stab2 * self.pas_inst_impe
         TDEBUT2 = TFIN1
 
-        self.modi_charge(self.chsol)  
+        self.modi_charge(self.chsol)
         _ResuDNL = DYNA_NON_LINE(**self.non_line(
                                   reuse = _ResuDNL,
                                   EXCIT = self.charges,
@@ -721,7 +722,7 @@ class StatDyna(object):
                                             MODI_EQUI='NON', FORMULATION='DEPLACEMENT',),
                                   ETAT_INIT=_F(EVOL_NOLI = _ResuDNL, INST = TDEBUT2,),
                                   INCREMENT=_F(LIST_INST = _linst2, INST_FIN = TFIN2,),
-                                  ARCHIVAGE=_F(LIST_INST = _larch,),                                                         
+                                  ARCHIVAGE=_F(LIST_INST = _larch,),
                                 )
                              );
 
@@ -753,22 +754,22 @@ class StatDyna(object):
         p_real = len(lvalues)*(val,)
         p_imag = len(lvalues)*(0.0,)
         self.cara_elem.sdj.CARAMOXV.changeJeveuxValues(len(lvalues),tuple(p_ind),
-                                                 tuple(p_real),tuple(p_imag))     
+                                                 tuple(p_real),tuple(p_imag))
 
     def mc_converge(self):
         """Build 'Converge' keywords set"""
 
     def mc_comport(self, resu):
         """Build 'Comportement' keywords set"""
-        
+
         resu_INST0 = resu.sdj.TACH.get()[64][0]
         nom_maillage = aster.getvectjev(
-            resu_INST0[0:19] + '.NOMA')[0] 
+            resu_INST0[0:19] + '.NOMA')[0]
         lnom_mailles = aster.getvectjev(
             nom_maillage + (8 - len(nom_maillage)) * ' ' + '.NOMMAI')
 
         col_mailles = aster.getcolljev(
-            resu_INST0[0:19] + '.LIMA') 
+            resu_INST0[0:19] + '.LIMA')
         num_param = len(col_mailles)
 
         anom_mailles = NP.array(lnom_mailles)
@@ -776,11 +777,11 @@ class StatDyna(object):
         if col_mailles[3] != (0,):
             for n in range(num_param):
                 relation    = aster.getvectjev(
-                         resu_INST0[0:19] + '.VALE')[20*(n+2)] 
+                         resu_INST0[0:19] + '.VALE')[20*(n+2)]
                 deformation = aster.getvectjev(
-                         resu_INST0[0:19] + '.VALE')[20*(n+2)+2] 
+                         resu_INST0[0:19] + '.VALE')[20*(n+2)+2]
                 grma = anom_mailles(NP.array(col_mailles[n+1]))
-       
+
                 kw_comp.append(_F(RELATION = relation,
                                     GROUP_MA = grma,
                                     DEFORMATION='PETIT'))
@@ -796,27 +797,27 @@ class StatDyna(object):
         _NUMGEN = NUME_DDL_GENE(BASE = self.base_modale,
                                 STOCKAGE='PLEIN',);
 
-        _impeF = LIRE_IMPE_MISS( BASE = self.base_modale, 
-                                 UNITE_RESU_IMPE = self.UL_impe_freq, 
-                                 NUME_DDL_GENE = _NUMGEN,              
-                                 #ISSF='OUI', 
+        _impeF = LIRE_IMPE_MISS( BASE = self.base_modale,
+                                 UNITE_RESU_IMPE = self.UL_impe_freq,
+                                 NUME_DDL_GENE = _NUMGEN,
+                                 #ISSF='OUI',
                                  SYME='OUI', TYPE='ASCII', FREQ_EXTR = 0.1,);
 
         _Ks = COMB_MATR_ASSE(COMB_C=( _F(MATR_ASSE = _impeF,
                                          COEF_C=1.0 + 0j,), ),
                              SANS_CMP='LAGR',);
 
-        _Z0 = LIRE_IMPE_MISS(UNITE_RESU_IMPE = self.UL_impe_temps_K, 
-                               SYME = 'OUI', INST_EXTR = 0.0, 
-                               BASE = self.base_modale, 
+        _Z0 = LIRE_IMPE_MISS(UNITE_RESU_IMPE = self.UL_impe_temps_K,
+                               SYME = 'OUI', INST_EXTR = 0.0,
+                               BASE = self.base_modale,
                                NUME_DDL_GENE = _NUMGEN);
 
         _DIFFK = COMB_MATR_ASSE(COMB_C = (_F(MATR_ASSE = _Z0, COEF_C =  1.0 + 0j),
                                           _F(MATR_ASSE = _Ks, COEF_C = -1.0 + 0j), # Z0-KS
                                          ),
                                 SANS_CMP='LAGR',
-                                );  
-        
+                                );
+
         nom_mail = self.maillage.nom
         nom_mael = aster.getvectjev(nom_mail + (8 - len(nom_mail)) * ' ' + '.NOMACR')[0]
         maelk = _DIFFK.EXTR_MATR_GENE()
@@ -831,31 +832,31 @@ class StatDyna(object):
 
         last_ind = nbmod*(nbmod+1)/2
         p_ind = range(1, last_ind +1)
-        
+
         aster.putvectjev(nom_mael + (8 - len(nom_mael)) * ' '+ '.MAEL_RAID_VALE         ', last_ind, tuple(
                    p_ind), tuple(p_real), tuple(p_imag), 1)
-         
+
         _DEPL0 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
                            OPERATION = 'EXTR',
-                           RESULTAT = self.resu_snl,  
+                           RESULTAT = self.resu_snl,
                            NOM_CHAM = 'DEPL',
-                           INST = self.inst_init,          
+                           INST = self.inst_init,
                            INFO = 1,);
 
         lchar = []
         for elem in self.charges.List_F():
             lchar.append(elem['CHARGE'])
 
-        _rigiEle = CALC_MATR_ELEM( MODELE = self.modele , 
+        _rigiEle = CALC_MATR_ELEM( MODELE = self.modele ,
                                    OPTION= 'RIGI_MECA',
                                    CALC_ELEM_MODELE = 'NON',
                                    CHAM_MATER = self.mater,
                                    CARA_ELEM = self.cara_elem,
                                    CHARGE = lchar,
                                   );
-        
+
         _NUME = NUME_DDL( MATR_RIGI = _rigiEle, METHODE='MUMPS' );
-        _MATKZ = ASSE_MATRICE( MATR_ELEM = _rigiEle, NUME_DDL = _NUME ); 
+        _MATKZ = ASSE_MATRICE( MATR_ELEM = _rigiEle, NUME_DDL = _NUME );
 
         _DEPL1 = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
                            OPERATION = 'ASSE',
@@ -896,7 +897,7 @@ class StatDyna(object):
         self.charges.append(mcfact_chsol)
 
     def modi_charge(self, chsol):
-        """Replace the corrective force with the Laplace-Time force"""        
+        """Replace the corrective force with the Laplace-Time force"""
         mcfact_chsol = _F(CHARGE = chsol)
         self.charges.pop()
         self.charges.append(mcfact_chsol)
@@ -988,14 +989,14 @@ class ModelMacrElem(Model):
 
     def parasol_model(self):
         """Define the RIGI_PARASOL group within the model"""
-        mcfact_DisTR = _F( GROUP_MA= 'PARA_SOL', 
+        mcfact_DisTR = _F( GROUP_MA= 'PARA_SOL',
                            PHENOMENE='MECANIQUE', MODELISATION='DIS_TR')
         self.args.add_MCFACT(('AFFE_MODELE', 'AFFE'), mcfact_DisTR)
 
     def parasol_cara_elem(self):
         """Define the RIGI_PARASOL values of damping"""
         valC = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-        mcfact_CEle = _F(GROUP_MA = self.args['POST_CALC_MISS']['GROUP_MA_INTERF'], GROUP_MA_POI1 = 'PARA_SOL', 
+        mcfact_CEle = _F(GROUP_MA = self.args['POST_CALC_MISS']['GROUP_MA_INTERF'], GROUP_MA_POI1 = 'PARA_SOL',
                          GROUP_NO_CENTRE = self.args['POST_CALC_MISS']['GROUP_NO_CENT'],
                          COEF_GROUP = 1., CARA='A_TR_D_N', VALE=valC, EUROPLEXUS = 'OUI',)
         self.args.add_MCFACT(('AFFE_CARA_ELEM', 'RIGI_PARASOL'), mcfact_CEle)
@@ -1034,7 +1035,7 @@ class ModelDynaReduc(ModelMacrElem):
             GROUP_MA=self.ma_fict, CARA='K_TR_D_N', VALE=valM)
         self.args.add_MCFACT(('AFFE_CARA_ELEM', 'DISCRET'), mcfact_MEle)
         self.args.add_MCFACT(('AFFE_CARA_ELEM', 'DISCRET'), mcfact_KEle)
-        
+
     def other_loads(self):
         """Define the relation between the physical and generalized DoF's"""
         liaison_interf = _F(MACR_ELEM_DYNA=self.args[
@@ -1131,7 +1132,7 @@ class Mesh(object):
             _NewMesh = CREA_MAILLAGE(MAILLAGE = _MeshTmp,
                                      CREA_POI1 =_F(NOM_GROUP_MA = 'PARA_SOL',
                                      GROUP_MA = self.param['POST_CALC_MISS']['GROUP_MA_INTERF']),
-                                        ); 
+                                        );
 
             self.new_mesh = _NewMesh
 

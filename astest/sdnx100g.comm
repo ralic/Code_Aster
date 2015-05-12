@@ -144,8 +144,6 @@ PRE_SEISME_NONL(
 
 );
 
-FIN();
-
 IMPR_CO(CHAINE='MAEL0   .LINO', UNITE = 6);
 
 
@@ -242,6 +240,9 @@ amto2=COMB_MATR_ASSE(COMB_R=(
                             ),
                                 SANS_CMP='LAGR',
                     );
+
+DEFI_FICHIER(UNITE=35,
+             FICHIER='impe_rigi')
 
 CALC_MISS(
              TYPE_RESU='FICHIER_TEMPS',
@@ -415,7 +416,7 @@ PESAX=AFFE_CHAR_MECA(MODELE=MODELB,
 PESAY=AFFE_CHAR_MECA(MODELE=MODELB,
                     PESANTEUR=_F(GRAVITE=1.0,
                                  DIRECTION=(0.0,-1.0,0.0,),),);
-                                 
+
 PESAZ=AFFE_CHAR_MECA(MODELE=MODELB,
                     PESANTEUR=_F(GRAVITE=9.81,
                                  DIRECTION=(0.0,0.0,-1.0,),),);
@@ -448,7 +449,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                                    PAS=dt,),);
 
 L_REEL= DEFI_LIST_REEL(DEBUT=-1.0,
-                        INTERVALLE=_F(JUSQU_A=0.0,   
+                        INTERVALLE=_F(JUSQU_A=0.0,
                                       PAS=1.0,),);
 
 
@@ -471,7 +472,7 @@ STA0 = STAT_NON_LINE(MODELE=MODELB,
                  INCREMENT=_F(LIST_INST=L_REEL,),
                           );
 
-            
+
 IMPR_RESU( RESU=_F(RESULTAT = STA0, NOM_CHAM='DEPL', INST=0.0,
                    GROUP_NO=('CENT_RAD',)), );
 
@@ -500,7 +501,7 @@ PRE_SEISME_NONL(
                             ),
 );
 
-Nbinst = 52 
+Nbinst = 52
 TFIN = Nbinst * dt
 
 IMPR_RESU( RESU=_F(RESULTAT = DYNA, NOM_CHAM='DEPL', #INST=TFIN,
@@ -530,8 +531,8 @@ DYNA=DYNA_NON_LINE(
                  NEWTON=_F(MATRICE='ELASTIQUE',
                            REAC_INCR=0,REAC_ITER=0,
                            ),
-                 ETAT_INIT=_F(EVOL_NOLI=DYNA, INST=TFIN, 
-                              ),  
+                 ETAT_INIT=_F(EVOL_NOLI=DYNA, INST=TFIN,
+                              ),
                  SCHEMA_TEMPS = _F(SCHEMA='HHT',ALPHA=-0.0,
                                    FORMULATION='DEPLACEMENT',),
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
@@ -540,6 +541,9 @@ DYNA=DYNA_NON_LINE(
                  SOLVEUR=_F(METHODE='MUMPS',),
                  INCREMENT=_F(LIST_INST=L_INST, INST_FIN = TFIN*1.25),
                           );
+
+# pas avant car utilisé par FORCE_SOL
+DEFI_FICHIER(ACTION='LIBERER', UNITE=35)
 
 
 GABKDZ=RECU_FONCTION(RESULTAT=DYNA,
@@ -566,42 +570,41 @@ IMPR_FONCTION(FORMAT='AGRAF',
               );
 
 TEST_FONCTION(VALEUR=(
-                      _F(VALE_CALC = -1.27057207385664E-02, 
-                         VALE_REFE = -1.27057207385667E-02, 
-                         PRECISION = 0.1, 
+                      _F(VALE_CALC = -1.27057207385664E-02,
+                         VALE_REFE = -1.27057207385667E-02,
+                         PRECISION = 0.1,
                          TOLE_MACHINE = 3.E-06,
                          REFERENCE = 'AUTRE_ASTER',
                          VALE_PARA = 0.312, #A la fin du 1er DYNA_NON_LINE
-                         FONCTION = GDBKDZ, 
+                         FONCTION = GDBKDZ,
                          ),
                       _F(VALE_CALC = -1.34066736177442E-02,
-                         VALE_REFE = -1.27057207385667E-02, 
-                         PRECISION = 0.1, 
+                         VALE_REFE = -1.27057207385667E-02,
+                         PRECISION = 0.1,
                          TOLE_MACHINE = 3.E-06,
                          REFERENCE = 'AUTRE_ASTER',
-                         VALE_PARA = 0.416, #A la fin du 2eme DYNA_NON_LINE 
-                         FONCTION = GDBKDZ, 
+                         VALE_PARA = 0.416, #A la fin du 2eme DYNA_NON_LINE
+                         FONCTION = GDBKDZ,
                          ),
                       _F(VALE_CALC = -1.12105863729370E-16,
                          VALE_REFE = 0.00,
-                         PRECISION = 0.1, 
+                         PRECISION = 0.1,
                          TOLE_MACHINE = 3.E-06,
                          CRITERE = 'ABSOLU',
                          REFERENCE = 'AUTRE_ASTER',
-                         VALE_PARA = 0.312, #A la fin du 1er DYNA_NON_LINE 
-                         FONCTION = GABKDZ, 
+                         VALE_PARA = 0.312, #A la fin du 1er DYNA_NON_LINE
+                         FONCTION = GABKDZ,
                          ),
                       _F(VALE_CALC = 3.84270207809421E-02,
                          VALE_REFE = 0.00,
-                         PRECISION = 0.1, 
+                         PRECISION = 0.1,
                          TOLE_MACHINE = 3.E-06,
                          CRITERE = 'ABSOLU',
                          REFERENCE = 'AUTRE_ASTER',
-                         VALE_PARA = 0.416, #A la fin du 2eme DYNA_NON_LINE 
-                         FONCTION = GABKDZ, 
+                         VALE_PARA = 0.416, #A la fin du 2eme DYNA_NON_LINE
+                         FONCTION = GABKDZ,
                          ),
                       ),
               );
 
 FIN();
-
