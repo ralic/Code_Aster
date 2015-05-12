@@ -67,8 +67,8 @@ subroutine rcevoa(typtab, nommat)
     complex(kind=8) :: cbid
     aster_logical :: exist, trouve
     integer :: icodre(4)
-    character(len=8) :: k8b, nomres, crit(2), nompar
-    character(len=16) :: motclf, valek(4), table, concep, nomcmd, nomval(4)
+    character(len=8) :: k8b, nomres, crit(2), nompar, table
+    character(len=16) :: motclf, valek(4), concep, nomcmd, nomval(4)
     character(len=19) :: nomf
     character(len=24) :: instan, ktheta, abscur, valk(7)
 !
@@ -319,7 +319,7 @@ subroutine rcevoa(typtab, nommat)
 
 ! ------------calcul du facteur d amorcage elementaire
                     fam = ( sittef / aamorc ) ** ( -1.d0 / bamorc )
-                    zr(jfaij-1+nbitot*(i1-1)+i2) = fam                
+                    zr(jfaij-1+nbitot*(i1-1)+i2) = fam
 220         continue
 210     continue
 !
