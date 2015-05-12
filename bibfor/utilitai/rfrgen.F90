@@ -36,6 +36,7 @@ subroutine rfrgen(trange)
 #include "asterfort/rstran.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
+#include "asterfort/utnono.h"
 #include "asterfort/vprecu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
@@ -67,15 +68,15 @@ subroutine rfrgen(trange)
     character(len=24) :: valk(2), nogno
     character(len=4) :: interp(2), intres
     character(len=8) :: k8b, crit, noeud, cmp, noma, nomacc, basemo
-    character(len=8) :: monmot(2), nonmot
+    character(len=8) :: monmot(2), nonmot, nomno
     character(len=14) :: nume
     character(len=16) :: nomcmd, typcon, nomcha, tysd
     character(len=19) :: nomfon, knume, kinst, resu, fonct
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iagno, idbase, iddl, idinsg, idvecf,  ie
-    integer :: ier, ierd, ign2, ii, ino, inoeud, iordr
+    integer :: i, idbase, iddl, idinsg, idvecf,  ie
+    integer :: ier, ierd, ii, inoeud, iordr
     integer :: ip,   iret, itresu, jfon, jinst
     integer ::  lfon, lg1, lg2, lordr,  lpro
     integer :: lvar, n1, n2, n3, nbexci, nbinsg
@@ -240,14 +241,16 @@ subroutine rfrgen(trange)
 !
             call getvtx(' ', 'GROUP_NO', scal=nogno, nbret=ngn)
             if (ngn .ne. 0) then
-                call jenonu(jexnom(noma//'.GROUPENO', nogno), ign2)
-                if (ign2 .le. 0) then
-                    call utmess('F', 'ELEMENTS_67', sk=nogno)
-                endif
-                call jeveuo(jexnum(noma//'.GROUPENO', ign2), 'L', iagno)
-!
-                ino = zi(iagno)
-                call jenuno(jexnum(noma//'.NOMNOE', ino), noeud)
+                call utnono(' ', noma, 'NOEUD', nogno, nomno,&
+                                    iret)
+                 if (iret .eq. 10) then
+                      call utmess('F', 'ELEMENTS_67', sk=nogno)
+                 else if (iret.eq.1) then
+                      valk(1) = nogno
+                      valk(2) = nomno
+                      call utmess('A', 'SOUSTRUC_87', nk=2, valk=valk)
+                 endif
+                 noeud= nomno
             endif
             call posddl('NUME_DDL', nume, noeud, cmp, inoeud,&
                         iddl)
