@@ -45,6 +45,8 @@ from Utilitai.Utmess import UTMESS
 from Utilitai.System import ExecCommand
 from Utilitai.utils import set_debug, _print, _printDBG
 from Utilitai.utils import encode_str, decode_str, send_file
+
+from Miss.miss_utils import copie_fichier
 from Miss.miss_fichier_sol import fichier_sol
 from Miss.miss_fichier_option import fichier_option
 from Miss.miss_resu_aster import ResuAsterReader
@@ -308,8 +310,8 @@ class CalculMiss(object):
         return osp.join('./', osp.basename(self._fichier_tmp(ext)))
 
     def _fichier_aster(self, unite):
-        """Nom du fichier d'unité logique unite dans le répertoire d'exécution de Code_Aster.
-        """
+        """Nom du fichier d'unité logique unite dans le répertoire d'exécution
+        de Code_Aster"""
         filename = osp.join(self.param['_INIDIR'], self.param.UL.Nom(unite))
         return filename
 
@@ -513,13 +515,3 @@ def get_number_PC(parent, macr_elem, lgrpc):
     lgrpma = mail.LIST_GROUP_MA()
     result = sum([nbel for name, nbel, dim in lgrpma if name in lgrpc])
     return result
-
-
-def copie_fichier(src, dst):
-    """Copie d'un fichier.
-    """
-    if src and dst:
-        try:
-            shutil.copyfile(src, dst)
-        except:
-            raise aster.error('MISS0_6', valk=(src, dst))

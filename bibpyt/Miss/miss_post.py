@@ -27,7 +27,6 @@ avec "_xxxx" (soit _9000002).
 """
 
 import os
-import shutil
 import traceback
 import os.path as osp
 
@@ -52,8 +51,10 @@ from Cata.cata import (
 from Utilitai.Table import Table
 from Utilitai.Utmess import UTMESS
 from Utilitai.utils import set_debug, _print, _printDBG
-from Miss.miss_resu_miss import MissCsolReader
 from Utilitai.force_iss_vari import force_iss_vari
+
+from Miss.miss_resu_miss import MissCsolReader
+
 
 # correspondance
 FKEY = {
@@ -83,6 +84,12 @@ class PostMiss(object):
     def set_filename_callback(self, callback):
         """Enregistre la fonction qui fournit le nom du fichier associé à un type"""
         self.fname = callback
+
+    def _fichier_aster(self, unite):
+        """Nom du fichier d'unité logique unite dans le répertoire d'exécution
+        de Code_Aster"""
+        filename = osp.join(self.param['_INIDIR'], self.param.UL.Nom(unite))
+        return filename
 
     def run(self):
         """Enchaine les tâches élémentaires"""
@@ -1016,9 +1023,6 @@ class PostMissFichierTemps(PostMissFichier):
 
     def impr_impe(self, Zdt, unite_type_impe):
         """Ecriture d'une impédance quelconque dans le fichier de sortie en argument"""
-        fname = self.fname(unite_type_impe)
-        fid = open(fname, 'w')
-
         if self.param['NB_MODE'] < 6:
             nb_colonne = self.param['NB_MODE']
         else:
@@ -1035,17 +1039,12 @@ class PostMissFichierTemps(PostMissFichier):
             for l in range(0, self.nrows):
                 for c in range(0, self.ncols, nb_colonne):
                     txt.append(fmt_ligne % tuple(Zdt[l, c:c+nb_colonne, n]))
-        fid.write(os.linesep.join(txt))
-        fid.close()
-        shutil.copyfile(fname, osp.join(self.param['_INIDIR'],
-                                        self.param.UL.Nom(unite_type_impe)))
+
+        with open(self._fichier_aster(unite_type_impe), 'wb') as fid:
+            fid.write(os.linesep.join(txt))
 
     def ecri_forc(self, fs_temps):
         """Ecriture de l'effort sismique dans le fichier de sortie"""
-        ul = self.param['EXCIT_SOL']['UNITE_RESU_FORC']
-        fname = self.fname(ul)
-        fid = open(fname, 'w')
-
         if self.param['NB_MODE'] < 6:
             nb_colonne = self.param['NB_MODE']
         else:
@@ -1061,11 +1060,10 @@ class PostMissFichierTemps(PostMissFichier):
             txt.append('%s' % str(n*self.dt))
             for mode in range(0, self.param['NB_MODE'], nb_colonne):
                 txt.append(fmt_ligne % tuple(fs_temps[mode:mode+nb_colonne, n]))
-        fid.write(os.linesep.join(txt))
-        fid.close()
-        shutil.copyfile(fname, osp.join(self.param['_INIDIR'],
-                                        self.param.UL.Nom(ul)))
 
+        ul = self.param['EXCIT_SOL']['UNITE_RESU_FORC']
+        with open(self._fichier_aster(ul), 'wb') as fid:
+            fid.write(os.linesep.join(txt))
 
     def cumtrapz(self, a):
         """Integration en temps (accélération -> vitesse -> déplacement)"""
@@ -1075,7 +1073,6 @@ class PostMissFichierTemps(PostMissFichier):
             b[k+1] = NP.add(a[k], a[k+1])/2.
         c = NP.add.accumulate(b)
         return c
-
 
     def calc_depl(self, champ_dir, __linst):
         """Lecture du fichier déplacement/vitesse/accélération pour le calcul de l'effort sismique"""
@@ -1095,13 +1092,6 @@ class PostMissFichierTemps(PostMissFichier):
         if (self.param['EXCIT_SOL']['NOM_CHAM'] == 'DEPL'):
             __depl_champ =  __champ
         return __depl_champ
-
-    # --- utilitaires internes
-    def _fichier_tmp(self, ext):
-        """Retourne le nom d'un fichier MISS dans WRKDIR.
-        """
-        fich = '%s.%s' % (self.param['PROJET'], ext)
-        return osp.join(self.param['_WRKDIR'], fich)
 
 class PostMissChar(PostMiss):
     """Post-traitement avec sortie charge"""

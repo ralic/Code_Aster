@@ -30,6 +30,7 @@ import os.path as osp
 import re
 import pprint
 from math import log
+import shutil
 
 import numpy as NP
 
@@ -290,3 +291,13 @@ def double(string):
 def get_puis2(nval):
     """Retourne N, la plus grande puissance de 2 telle que 2**N <= nval"""
     return int(log(nval, 2.))
+
+
+def copie_fichier(src, dst):
+    """Copie d'un fichier.
+    """
+    if src and dst:
+        try:
+            shutil.copyfile(src, dst)
+        except:
+            raise aster.error('MISS0_6', valk=(src, dst))
