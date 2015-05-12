@@ -13,3 +13,25 @@
  LIGNE            RESU2    SIGM_ELNO        1.00000E+01  1.00000E+00  1.00000E+00  1.10000E+02
  LIGNE            RESU2    SIGM_ELNO        1.00000E+01  2.00000E+00  1.00000E+00  5.00000E+01
 #FIN_TABLE
+#DEBUT_TABLE
+#TITRE RESU3 (MECANIQUE) DE TYPE  TABL_POST_RELE
+ INTITULE         RESU     NOM_CHAM         ANGLE        INST         ABSC_CURV    SIZZ
+ K16              K8       K16              R            R            R            R
+ LIGNE            RESU3    SIGM_ELNO        1.00000E+01  0.00000E+00  1.00000E+00  0.00000E+00
+ LIGNE            RESU3    SIGM_ELNO        1.00000E+01  1.00000E+00  1.00000E+00 -1.00000E+02
+#FIN_TABLE
+#DEBUT_TABLE
+#TITRE RESU4 (MECANIQUE) DE TYPE  TABL_POST_RELE
+ INTITULE         RESU     NOM_CHAM         ANGLE        INST         ABSC_CURV    SIZZ
+ K16              K8       K16              R            R            R            R
+ LIGNE            RESU4    SIGM_ELNO        1.00000E+01  0.00000E+00  1.00000E+00 -1.00000E+02
+ LIGNE            RESU4    SIGM_ELNO        1.00000E+01  1.00000E+00  1.00000E+00 -2.00000E+02
+#FIN_TABLE
+#DEBUT_TABLE
+#TITRE RESU5 (MECANIQUE) DE TYPE  TABL_POST_RELE
+ INTITULE         RESU     NOM_CHAM         ANGLE        INST         ABSC_CURV    SIZZ
+ K16              K8       K16              R            R            R            R
+ LIGNE            RESU5    SIGM_ELNO        1.00000E+01  0.00000E+00  1.00000E+00  1.00000E+02
+ LIGNE            RESU5    SIGM_ELNO        1.00000E+01  1.00000E+00  1.00000E+00  2.00000E+02
+#FIN_TABLE
+

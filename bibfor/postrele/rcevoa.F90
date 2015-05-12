@@ -1,7 +1,7 @@
 subroutine rcevoa(typtab, nommat)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
-!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,7 +14,9 @@ subroutine rcevoa(typtab, nommat)
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: the-hiep.chau at edf.fr
 !
     implicit none
 #include "asterf_types.h"
@@ -271,7 +273,10 @@ subroutine rcevoa(typtab, nommat)
                 call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
                             valr=vale)
             endif
-            sitt1 = abs(sitt1)
+!
+!  CORRECTION DE issue [23782] SUPPRESSION DES VALEURS ABOLUES sitt1 = abs(sitt1)
+!
+
 !
             do 220 i2 = i1+1, nbitot
 !
@@ -290,18 +295,31 @@ subroutine rcevoa(typtab, nommat)
                     call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
                                 valr=vale)
                 endif
-                sitt2 = abs(sitt2)
+!
+!  CORRECTION DE issue [23782]
+!  SUPPRESSION DES VALEURS ABOLUES sitt2 = abs(sitt2)
 !
                 zr(jfaij-1+nbitot*(i1-1)+i2) = 0.d0
-                if (max(sitt1,sitt2) .gt. r8prem()) then
+
+!CALCUL DU FACTEUR R
+!EVOLUTION fiche [21804]  R = 0. si min(sitt1, sitt2) < 0.
+!   on ne calcule R que si sitt1 et sitt2 sont positifs
+!  d ou on n a plus besoin de valeur absolue ( issue [23782])
+
+  if ((sitt1 .gt. r8prem()) .and. (sitt2 .gt. r8prem())) then
 ! ------------calcul du rapport de charge
-                    rij = min(sitt1,sitt2) / max(sitt1,sitt2)
-! ------------calcul de DELTASIGTT efficace
-                    sittef = abs(sitt1-sitt2) / ( 1.d0 - ( rij / ramorc ))
-! ------------calcul du facteur d'amorcage elementaire
-                    fam = ( sittef / aamorc ) ** ( -1.d0 / bamorc )
-                    zr(jfaij-1+nbitot*(i1-1)+i2) = fam
+                     rij = min(sitt1,sitt2) / max(sitt1,sitt2)
+               else
+                 rij = 0.
                 endif
+
+! ------------calcul de DELTASIGTT efficace
+
+                    sittef = abs(sitt1-sitt2)/ ( 1.d0 - ( rij / ramorc ))
+
+! ------------calcul du facteur d amorcage elementaire
+                    fam = ( sittef / aamorc ) ** ( -1.d0 / bamorc )
+                    zr(jfaij-1+nbitot*(i1-1)+i2) = fam                
 220         continue
 210     continue
 !

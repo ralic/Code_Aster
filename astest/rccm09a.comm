@@ -31,6 +31,15 @@ T_RESU1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
 T_RESU2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=2,)
 
+T_RESU3 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=3,)
+
+T_RESU4 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=4,)
+
+T_RESU5 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=5,)
+
 #--------------------------------------------------------------------------------
 #   option = 'AMORCAGE'
 #   chargement mecanique
@@ -59,6 +68,85 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=10.0,),
            )
 
+AMOR_1b=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                        OPTION='AMORCAGE',
+                     TYPE_RESU='VALE_MAX',
+                         MATER=MAT,
+                          INFO=2,
+                         TITRE='FACTEUR AMORCAGE, RESULTAT: RESU1 SEUL',
+                   TRANSITOIRE=(_F(  TABL_SIGM_THETA = T_RESU1,
+                                     NB_OCCUR = 1 ),)
+              )
+
+IMPR_TABLE ( TABLE = AMOR_1b )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 7.047118910E-11,
+           VALE_REFE= 7.04711891E-11,
+           NOM_PARA='FACT_AMORCAGE',
+           TABLE=AMOR_1b,
+           FILTRE=_F(NOM_PARA='THETA',
+                     VALE=10.0,),
+           )
+
+AMOR_1c=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                        OPTION='AMORCAGE',
+                     TYPE_RESU='VALE_MAX',
+                         MATER=MAT,
+                          INFO=2,
+                         TITRE='FACTEUR AMORCAGE, RESULTAT: RESU3 (RESU1 NEGATIF)',
+                   TRANSITOIRE=(_F(  TABL_SIGM_THETA = T_RESU3,
+                                     NB_OCCUR = 1 ),)
+              )
+
+IMPR_TABLE ( TABLE = AMOR_1c )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 7.047118910E-11,
+           VALE_REFE= 7.04711891E-11,
+           NOM_PARA='FACT_AMORCAGE',
+           TABLE=AMOR_1c,
+           FILTRE=_F(NOM_PARA='THETA',
+                     VALE=10.0,),
+           )
+
+AMOR_1d=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                        OPTION='AMORCAGE',
+                     TYPE_RESU='VALE_MAX',
+                         MATER=MAT,
+                          INFO=2,
+                         TITRE='FACTEUR AMORCAGE, RESULTAT: RESU4 (RESU3, OFFSET 100, NOCC=10)',
+                   TRANSITOIRE=(_F(  TABL_SIGM_THETA = T_RESU4,
+                                     NB_OCCUR = 10 ),)
+              )
+
+IMPR_TABLE ( TABLE = AMOR_1d )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 7.047118910E-10,
+           VALE_REFE= 7.04711891E-10,
+           NOM_PARA='FACT_AMORCAGE',
+           TABLE=AMOR_1d,
+           FILTRE=_F(NOM_PARA='THETA',
+                     VALE=10.0,),
+           )
+
+AMOR_1e=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
+                        OPTION='AMORCAGE',
+                     TYPE_RESU='VALE_MAX',
+                         MATER=MAT,
+                          INFO=2,
+                         TITRE='FACTEUR AMORCAGE, RESULTAT: RESU5 (RESU1, OFFSET 100)',
+                   TRANSITOIRE=(_F(  TABL_SIGM_THETA = T_RESU5,
+                                     NB_OCCUR = 1 ),)
+              )
+IMPR_TABLE ( TABLE = AMOR_1e )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 5.25773990E-10,
+           VALE_REFE= 5.2577399E-10,
+           NOM_PARA='FACT_AMORCAGE',
+           TABLE=AMOR_1e,
+           FILTRE=_F(NOM_PARA='THETA',
+                     VALE=10.0,),
+           )
+
 AMOR_2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                         OPTION='AMORCAGE',
                      TYPE_RESU='VALE_MAX',
@@ -71,7 +159,6 @@ AMOR_2=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
               )
 
 IMPR_TABLE ( TABLE = AMOR_2 )
-
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC= 2.45295595E-10,
            VALE_REFE=2.4529560000000001E-10,
@@ -80,6 +167,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='THETA',
                      VALE=10.0,),
            )
+
 
 AMOR_3=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
                         OPTION='AMORCAGE',
@@ -94,14 +182,14 @@ AMOR_3=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
               )
 
 IMPR_TABLE ( TABLE = AMOR_3 )
-
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC= 3.67913445E-10,
-           VALE_REFE=3.6791344999999999E-10,
+           VALE_CALC= 2.45295595E-10,
+           VALE_REFE=2.4529560000000001E-10,
            NOM_PARA='FACT_AMORCAGE',
-           TABLE=AMOR_3,
+           TABLE=AMOR_2,
            FILTRE=_F(NOM_PARA='THETA',
                      VALE=10.0,),
            )
+
 
 FIN( )
