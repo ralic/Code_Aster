@@ -212,101 +212,6 @@ MODCOT2=REST_SOUS_STRUC(RESU_GENE=RESGEN,
                        TOUT_ORDRE='OUI',
                        SOUS_STRUC='CARRE2',);
 
-# VERIFICATION CONTINUITE DEPLACEMENT AUX INTERFACES
-T1_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE1',
-                      NOEUD=('N9'),
-                      RESULTAT=MODCOT1,
-                      NOM_CHAM='DEPL',
-                      TOUT_ORDRE='OUI',
-                      NOM_CMP='DZ',
-                      OPERATION='EXTRACTION',
-                      ),);
-
-T2_DZ=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE2',
-                      NOEUD=('N70'),
-                      RESULTAT=MODCOT2,
-                      NOM_CHAM='DEPL',
-                      TOUT_ORDRE='OUI',
-                      NOM_CMP='DZ',
-                      OPERATION='EXTRACTION',
-                      ),);
-
-F_DZ=FORMULE(NOM_PARA=('DZ_C1', 'DZ_C2',),
-                VALE='abs (DZ_C1 - DZ_C2)')
-
-TC_DZ=CALC_TABLE(TABLE=T1_DZ,
-              ACTION=(_F(OPERATION='RENOMME',
-                                  NOM_PARA=('DZ', 'DZ_C1'),),
-                               _F(OPERATION='COMB',
-                                  TABLE=T2_DZ,
-                                  NOM_PARA=('NUME_ORDRE',),),
-                               _F(OPERATION='RENOMME',
-                                  NOM_PARA=('DZ', 'DZ_C2'),),
-                               _F(OPERATION='OPER',
-                                  NOM_PARA='ECART',
-                                  FORMULE=F_DZ),
-                      ),
-              TITRE='Comparaison DZ ssd 1 / ssd 2')
-
-#DRY de ssd 1 correspond a -DRX de ssd 2
-
-T1_DRY=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE1',
-                      NOEUD=('N9'),
-                      RESULTAT=MODCOT1,
-                      NOM_CHAM='DEPL',
-                      TOUT_ORDRE='OUI',
-                      NOM_CMP='DRY',
-                      OPERATION='EXTRACTION',
-                      ),);
-
-T2_DRX=POST_RELEVE_T(ACTION=_F(INTITULE='CARRE2',
-                      NOEUD=('N70'),
-                      RESULTAT=MODCOT2,
-                      NOM_CHAM='DEPL',
-                      TOUT_ORDRE='OUI',
-                      NOM_CMP='DRX',
-                      OPERATION='EXTRACTION',
-                      ),);
-
-F_DRXY=FORMULE(NOM_PARA=('DRY_C1', 'DRX_C2',),
-                VALE='abs (DRY_C1 + DRX_C2)')
-
-TC_DRXY=CALC_TABLE(TABLE=T1_DRY,
-              ACTION=(_F(OPERATION='RENOMME',
-                                  NOM_PARA=('DRY', 'DRY_C1'),),
-                               _F(OPERATION='COMB',
-                                  TABLE=T2_DRX,
-                                  NOM_PARA=('NUME_ORDRE',),),
-                               _F(OPERATION='RENOMME',
-                                  NOM_PARA=('DRX', 'DRX_C2'),),
-                               _F(OPERATION='OPER',
-                                  NOM_PARA='ECART',
-                                  FORMULE=F_DRXY),
-                      ),
-              TITRE='Comparaison DRXY ssd 1 / ssd 2')
-
-#IMPR_TABLE(TABLE=TC_DZ)
-#IMPR_TABLE(TABLE=TC_DRXY)
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=5.E-3,
-           TOLE_MACHINE=5.E-3,      #TODO variabilite
-           VALE_CALC= 0.00397790378725,
-           VALE_REFE=0.0,
-           NOM_PARA='ECART',
-           TYPE_TEST='SOMM',
-           TABLE=TC_DZ,)
-
-TEST_TABLE(CRITERE='ABSOLU',
-           REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,         #7.0E-3,
-           TOLE_MACHINE=0.02,      #TODO variabilite
-           VALE_CALC=0.0115681675186,
-           VALE_REFE=0.0,
-           NOM_PARA='ECART',
-           TYPE_TEST='SOMM',
-           TABLE=TC_DRXY,)
 
 # VERIFICATION NULLITE DU TRAVAIL DES FORCES DE LIAISON
 # SDVERI:NON EXISTENCE D'OBJETS NON CONFORMES POUR LES table_container
@@ -326,7 +231,6 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    VALE_CALC=17.1307294807,
                    VALE_REFE=17.120000000000001,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.0125,),
                 _F(PARA='FREQ',
                    NUME_MODE=2,
@@ -335,7 +239,6 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    VALE_CALC=35.9499761313,
                    VALE_REFE=35.609999999999999,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.0125,),
                 _F(PARA='FREQ',
                    NUME_MODE=3,
@@ -344,7 +247,6 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    VALE_CALC=50.1499255678,
                    VALE_REFE=49.990000000000002,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-3,      #TODO variabilite
                    PRECISION=0.012500000000000001,),
                 _F(PARA='FREQ',
                    NUME_MODE=4,
@@ -353,7 +255,6 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    VALE_CALC=66.5561069933,
                    VALE_REFE=66.420000000000002,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.0125,),
                 _F(PARA='FREQ',
                    NUME_MODE=5,
@@ -362,7 +263,6 @@ TEST_RESU(RESU=(_F(PARA='FREQ',
                    VALE_CALC=68.9003935432,
                    VALE_REFE=68.480000000000004,
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-4,      #TODO variabilite
                    PRECISION=0.0125,),
                 ),
           )

@@ -84,12 +84,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 #include "asterfort/resoud.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/rsadpa.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
 #include "blas/dgeev.h"
 #include "blas/dggev.h"
-    integer :: nddlin, nbmod, nnoint, neq, switch
+    integer :: nddlin, nbmod, nnoint, neq, switch,jfreq
     real(kind=8) :: shift
     character(len=19) :: masse, raide, ssami, raiint
     character(len=24) :: coint, noddli, matmod, vefreq
@@ -97,19 +98,19 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     character(len=6)  :: k6bid
     character(len=24) :: dummy1,dummy3
     character(len=16) :: nmopt
-    
-    
+
+
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: lmatmo, i1, j1, k1, m1, lmakry, nsekry
+    integer :: lmatmo, i1, j1, k1, m1, lmakry, nsekry,nsekry2,nsekry3
     integer ::       lmatk, lmatm, lmapro
     integer :: lkpro,  lmatrm, lmatrk, lwork
     integer ::   limped,   lmatma, iret
     integer :: nbvect, ibid,   no, nbsst, lindin, coeff, lvp
-    integer :: ifm,niv
+    integer :: ifm,niv,mode_symetrique
     integer(kind=4) :: info
     real(kind=8) :: temp, pi, rbid, norm, lambda, comlin(2), swork(1), max
-    real(kind=8) :: abs, bande(2)
+    real(kind=8) ::  bande(2), freq1,freq2
     parameter    (pi=3.141592653589793238462643d0)
     complex(kind=8) :: cbid
     character(len=1) :: listyp(2)
@@ -133,12 +134,13 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     integer, pointer :: v_ind_lag(:) => null()
     integer, pointer :: delg(:) => null()
     integer, pointer :: ddl_actif_int(:) => null()
+    real(kind=8) :: mval,normx,valx,avalx
     cbid = dcmplx(0.d0, 0.d0)
 !
 !-- DEBUT --C
 !
     call jemarq()
-    call infniv(ifm, niv)    
+    call infniv(ifm, niv)
 !
 !------------------------------------------------------------C
 !--                                                        --C
@@ -149,7 +151,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
 !
 !-- ON DESACTIVE LE TEST FPE
     call matfpe(-1)
-    
+
     call mtdscr(ssami)
     call jeveuo(ssami(1:19)//'.&INT', 'L', lmatma)
 !
@@ -159,7 +161,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     lismat(2)=ssami
     if (switch .eq. 1) then
         call getvr8('MODE_INTERF', 'SHIFT', iocc=1, scal=rbid, nbret=ibid)
-        shift=-(rbid*2.d0*pi)**2  
+        shift=-(rbid*2.d0*pi)**2
     endif
 !
     comlin(1)=1.d0
@@ -210,6 +212,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
         nbvect=coeff*(6+int(norm)+2)
     endif
     nsekry=int(nbvect*nbsst/coeff)
+    nsekry2=nsekry+5
     coeff=int(nbvect/coeff)
     write(ifm,*)'------------------------------------------------',&
      &'------------------------'
@@ -219,17 +222,34 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
      &'------------------------'
 !--
 !-- Appel a nmop45 pour le calcul des modes du modele d'interface
-!-- 
+!--
     bande(1)=0.d0
     bande(2)=1.d0
     nmopt='PLUS_PETITE'
     modes='&&MODEST'
     dummy1='&&DUMY1'
     dummy3='&&DUMMY3'
-    call nmop45(imped, ssami, 0, nmopt, nsekry,&
+    call nmop45(imped, ssami, 0, nmopt, nsekry2,&
                   2, bande, 'VIBR', dummy1, 0,&
                   modes, '&&DUMMY2', dummy3, 0)
-!    
+!   -- on examine les modes calcules pour savoir ou tronquer sans couper
+!      un sous-espace propre en 2 :
+    nsekry3=0
+    do j1 = nsekry, nsekry2-1
+      call rsadpa(modes, 'L', 1, 'FREQ', j1, 0, sjv=jfreq)
+      freq1=zr(jfreq)
+      call rsadpa(modes, 'L', 1, 'FREQ', j1+1, 0, sjv=jfreq)
+      freq2=zr(jfreq)
+      if (abs(freq1-freq2) / (abs(freq1)+abs(freq2)) .gt.1.e-6) then
+          ! on peut "couper" a j1 :
+          nsekry3=j1
+          exit
+      endif
+    enddo
+    ASSERT (nsekry3.ne.0)
+    if (nsekry3.gt.nsekry) nsekry=nsekry3
+
+!
     call wkvect('&&MODINT.SE_KRYLOV', 'V V R', neq*nsekry, lmakry)
     call jeveuo('&&MOIN93.V_IND_LAG', 'L', vi=v_ind_lag)
     call jeveuo('&&MOIN93.DDL_ACTIF_INT', 'L', vi=ddl_actif_int)
@@ -250,12 +270,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
       end do
     end do
 !
-    !call detrsd('RESULTAT',modes)
-    !call detrsd('RESULTAT','&&DUMMY2')
     call jedetc('G',modes,1)
     call jedetc('G','&&DUMMY2',1)
-    
-    
+
+
     no=max(nsekry,nbvect)
     AS_ALLOCATE(vr=v_f_pro, size=no)
     AS_ALLOCATE(vi=v_ind_f_pro, size=no)
@@ -265,7 +283,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
     call dismoi('SOLVEUR', raide, 'MATR_ASSE', repk=solveu)
     call resoud(raide, '&&MOIN93.MATPRE', solveu, ' ', nsekry,&
                 ' ', ' ', ' ', zr(lmakry), [cbid],&
-                ' ', .true._1, 0, iret)         
+                ' ', .true._1, 0, iret)
 !
 !---------------------------------------------C
 !--                                         --C
@@ -358,7 +376,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
       ! appel depuis modexp => il faut redimensionner l'objet
       call jedetr(vefreq)
       call wkvect(vefreq, 'V V R', nbmod, lvp)
-    endif  
+    endif
 !
     do i1 = 1, nbmod
         temp=1.d+16
@@ -390,13 +408,48 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift,&
             end do
         end do
     end do
-!
+
+    !-- normalisation des modes et mise a zero des ddls de Lagrange :
+    do j1 = 1, nbmod
+        normx=-1.d0
+        do i1 = 1, neq
+            if (delg(i1) .lt. 0) then
+                zr(lmatmo+(j1-1)*neq+i1-1)=0.d0
+            else
+                valx=zr(lmatmo+(j1-1)*neq+i1-1)
+                avalx=abs(valx)
+                if (avalx.gt.normx) then
+                    if (avalx/normx .le. 1.0000001) then
+                        mode_symetrique=1
+                    else
+                        mode_symetrique=0
+                    endif
+                    normx=avalx
+                    mval=valx
+                endif
+            endif
+        enddo
+        ASSERT(normx.gt.0.d0)
+
+!       -- Si le mode est symetrique, on choisit celui qui a son premier "max" >0:
+        if (mode_symetrique.eq.1) then
+            do i1 = 1, neq
+                valx=zr(lmatmo+(j1-1)*neq+i1-1)
+                avalx=abs(valx)
+                if (avalx.gt.0.9999999d0*normx) then
+                    if (mval*valx.lt.0.d0) mval=-mval
+                    exit
+                endif
+            enddo
+        endif
+    enddo
+
 !---------------------------------------C
 !--                                   --C
 !-- DESTRUCTION DES OBJETS DE TRAVAIL --C
 !--                                   --C
 !---------------------------------------C
-!
+
     call jedetr('&&MODINT.M_PROJ_TEMP')
     call jedetr('&&MODINT.K_PROJ_TEMP')
     call jedetr('&&MODINT.M_PROJ')

@@ -212,7 +212,7 @@ MODES_3=CALC_MODES(MATR_RIGI=RAID3,
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=MODES_3,
-                   VALE_CALC=5.8056600717,
+                   VALE_CALC=5.80566007143,
                    CRITERE='RELATIF',
                    ),
                 _F(NUME_ORDRE=2,
@@ -261,6 +261,23 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID1,
                                       NBMOD=15,
                                       ),
                       );
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=17.0766310916   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=3,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=46.8649647866   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=4,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=65.347462514    ))
+TEST_RESU(RESU=_F(NUME_ORDRE=5,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=122.25937036    ))
+TEST_RESU(RESU=_F(NUME_ORDRE=6,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=200.707299327   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=7,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=303.020462716   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=8,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=417.642148716   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=9,  PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=449.261461807   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=10, PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=586.808074262   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=11, PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=611.306792577   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=12, PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=945.832036526   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=13, PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=981.101284526   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=14, PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=1025.15862065   ))
+TEST_RESU(RESU=_F(NUME_ORDRE=15, PARA='FREQ', RESULTAT=MODESTA1,   VALE_CALC=1337.04990633   ))
+
+
 
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID2,
                        MATR_MASS=MASS2,
@@ -376,52 +393,45 @@ RESGEN=CALC_MODES(MATR_RIGI=RIGGEN,
 #--   ENTRE LES PLATE-FORMES, ET INDUIT UNE VARIABILITE IMPORTANTE SUR LES MODES CALCULES,
 #--   MEME QUAND LES FREQUENCES SONT BIEN CALCULEES. COMME L'ENSEMBLE DU PROCESSUS CONSISTE A
 #--   TRAVAILLER SUR DES RESIDUS, CES ERREURS SONT PROPAGEES ET AMPLIFIEES TOUT AU LONG DU PROCESS
-#--   EN ATTENDANT DE TROUVER UNE SOLUTION PERENNE, ON AUGMENTE LE TOLE_MACHINE DE FACON PEU
-#--   RAISONNABLE. UNE ANALYSE PLUS DETAILLEE DU PROBLEME SE TROUVE DANS LE REX, FICHE 21190.
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=RESGEN,
-                   VALE_CALC=5.84076246261,
+                   VALE_CALC=5.84076246326,
                    VALE_REFE=5.8056600720645,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,
                    PRECISION=0.051,),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=RESGEN,
-                   VALE_CALC=17.7521345433,
+                   VALE_CALC=17.7520234104,
                    VALE_REFE=17.174981373298,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,
                    PRECISION=0.11,),
                 _F(NUME_ORDRE=3,
                    PARA='FREQ',
                    RESULTAT=RESGEN,
-                   VALE_CALC=20.6416510917,
+                   VALE_CALC=20.6416510922,
                    VALE_REFE=20.516032680878,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,
                    PRECISION=0.051,),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    RESULTAT=RESGEN,
-                   VALE_CALC=33.7495554176,
+                   VALE_CALC=33.7495554058,
                    VALE_REFE=32.421556089455,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,
                    PRECISION=0.11,),
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
                    RESULTAT=RESGEN,
-                   VALE_CALC=63.1876472355,
+                   VALE_CALC=63.2464385049,
                    VALE_REFE=39.844576402654,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,
                    PRECISION=1.51,),
                 ),
           )
@@ -657,58 +667,46 @@ INDIC=CALC_CORR_SSD(MODELE_GENE=MODEGE2,
 #--   ENTRE LES PLATE-FORMES, ET INDUIT UNE VARIABILITE IMPORTANTE SUR LES MODES CALCULES,
 #--   MEME QUAND LES FREQUENCES SONT BIEN CALCULEES. COMME L'ENSEMBLE DU PROCESSUS CONSISTE A
 #--   TRAVAILLER SUR DES RESIDUS, CES ERREURS SONT PROPAGEES ET AMPLIFIEES TOUT AU LONG DU PROCESS
-#--   EN ATTENDANT DE TROUVER UNE SOLUTION PERENNE, ON AUGMENTE LE TOLE_MACHINE DE FACON PEU
-#--   RAISONNABLE. UNE ANALYSE PLUS DETAILLEE DU PROBLEME SE TROUVE DANS LE REX, FICHE 21190.
-#--   NEANMOINS, MALGR2 UNE VARIABILITE IMPORTANTE SUR LE RESULTAT, ON CONSTATE QUE LA METHODOLOGIE
-#--   PERMET D'AMELIORER SENSIBLEMENT LA QUALITE DU MODELE REDUIT.
-
-#-- Avec la modification d'algorithme dans modint.F90, les resultats devraient etre plus stables
-#--  A verifier, pour revenir a des TOLE_MACHINE usuels
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=RESGEN2,
-                   VALE_CALC=5.83274261898,
+                   VALE_CALC=5.83274258557,
                    VALE_REFE=5.8056600720645,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,          
                    PRECISION=1.E-2,),
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=RESGEN2,
-                   VALE_CALC=17.1736583565,
+                   VALE_CALC=17.1735598001,
                    VALE_REFE=17.174981373298,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,          
                    PRECISION=1.1E-3,),
                 _F(NUME_ORDRE=3,
                    PARA='FREQ',
                    RESULTAT=RESGEN2,
-                   VALE_CALC= 20.5251745919,
+                   VALE_CALC=20.5251751313,
                    VALE_REFE=20.516032680878,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,          
                    PRECISION=2.1E-3,),
                 _F(NUME_ORDRE=4,
                    PARA='FREQ',
                    RESULTAT=RESGEN2,
-                   VALE_CALC=32.5550248513 ,
+                   VALE_CALC=32.5550245148 ,
                    VALE_REFE=32.421556089455,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,          
                    PRECISION=5.1E-3,),
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
                    RESULTAT=RESGEN2,
-                   VALE_CALC= 39.8383196108,
+                   VALE_CALC=39.8467015169,
                    VALE_REFE=39.844576402654,
                    REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   TOLE_MACHINE=1.E-2,          
                    PRECISION=0.051,),
                 ),
           )
