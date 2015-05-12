@@ -58,6 +58,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
 !
 !
     real(kind=8) :: sca, nodup, coef, nodup1, nodup2
+    real(kind=8) :: norm_depold
     integer :: jdu1
     integer :: neq, i, j
     character(len=19) :: profch, chapil, chapic, selpil
@@ -95,6 +96,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
     nodup = 0.d0
     nodup1 = 0.d0
     nodup2 = 0.d0
+    norm_depold = 0.d0
     f = 0.d0
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call dismoi('PROF_CHNO', depdel, 'CHAM_NO', repk=profch)
@@ -113,6 +115,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
     if (isxfe) then
         do i = 1, neq
             if (deeq(2*i) .gt. 0) then
+                norm_depold = norm_depold + depol(i)**2
                 if (coee(i) .eq. 0.d0) then
                     sca = sca + depol(i)* vcoef(i)**2*(depde(i) + rho*du0(1+i-1) + eta*zr(jdu1+i-&
                           &1))
@@ -143,10 +146,11 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold,&
             coef = plsl(i)
             sca = sca + (depol(i)*(depde(i) + rho*du0(i) + eta*zr(jdu1+i-1)) )*coef
             nodup = nodup + ( depde(i) + rho*du0(i) + eta*zr(jdu1+i-1))**2
+            norm_depold = norm_depold + depol(i)**2
         end do
     endif
 !
-    if (nodup .eq. 0.d0) then
+    if (nodup .eq. 0.d0.or.norm_depold.eq.0.d0) then
         indic = 0
         f = 0.d0
     else
