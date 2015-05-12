@@ -22,8 +22,7 @@ subroutine mmreac(nbdm  ,ndim  ,nne   ,nnm   ,jgeom , &
     implicit none
 #include "jeveux.h"
 
-    
-    real(kind=8) :: ppe     
+    real(kind=8) :: ppe
     integer :: nbdm, ndim, nne, nnm
     integer :: jgeom, jdepm,jdepde
     real(kind=8) :: geomae(9, 3), geomam(9, 3)
@@ -57,13 +56,15 @@ subroutine mmreac(nbdm  ,ndim  ,nne   ,nnm   ,jgeom , &
 ! ----------------------------------------------------------------------
 !
 !
+    geomae = 0.d0
+    geomam = 0.d0
 !
 ! --- NOEUDS ESCLAVES
 !
     do  inoe = 1, nne
         do 110 idim = 1, ndim
-            geomae(inoe,idim) = zr( jgeom+(inoe-1)*ndim+idim-1) + zr(jdepm+(inoe-1)*nbdm+idim-1)& 
-                                             +ppe* zr(jdepde+(inoe-1)*nbdm+idim-1)      
+            geomae(inoe,idim) = zr( jgeom+(inoe-1)*ndim+idim-1) + zr(jdepm+(inoe-1)*nbdm+idim-1)&
+                                             +ppe* zr(jdepde+(inoe-1)*nbdm+idim-1)
 110      continue
   end do
 !
