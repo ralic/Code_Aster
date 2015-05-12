@@ -95,6 +95,7 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, comp_code_p
 !
 ! - Coding metallurgy comportment
 !
+    meta_code_py = ' '
     if (l_kit_meta) then
         rela_meta = kit_comp(1)
         call lccree(1, rela_meta, meta_code_py)
