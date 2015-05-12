@@ -137,6 +137,8 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !
 ! --- BOUCLE SUR LES ZONES
 !
+    cnsplu = '&&APINIT.CNSPLU'
+    cnscon = '&&APINIT.CNSCON'
     ip = 1
     do izone = 1, nzoco
 !
@@ -146,24 +148,22 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
         nbmae = mminfi(defico,'NBMAE' ,izone )
         lgliss = mminfl(defico,'GLISSIERE_ZONE' ,izone )
         l_auto_seuil = mminfl(defico,'SEUIL_AUTO' ,izone )
-        
+
 ! MODE_FORCE : L_AUTO_SEUIL = FALSE
 !
-! --- TRANSFORMATION DU CHAMP DEPMOI ISSU DU CALCUL PRECEDENT EN CHAM_NO_S 
+! --- TRANSFORMATION DU CHAMP DEPMOI ISSU DU CALCUL PRECEDENT EN CHAM_NO_S
 !           ET REDUCTION SUR LES LAGRANGES
-!    
+!
 ! MODE_AUTO  : L_AUTO_SEUIL = TRUE, RECUPERATION DU SEUIL_INIT UTILISATEUR
-         if (l_auto_seuil) then 
-                  depmoi =  resoco(1:14)//'.INIT'
-                  cnsplu = '&&APINIT.CNSPLU'
-                  call cnocns(depmoi, 'V', cnsplu)
-                  cnscon = '&&APINIT.CNSCON'
-                  call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
-                              'V', cnscon)  
-         else 
-                  seuili = mminfr(defico,'SEUIL_INIT' ,izone )
-                  seuili = -abs(seuili)                                  
-         endif    
+        if (l_auto_seuil) then
+            depmoi =  resoco(1:14)//'.INIT'
+            call cnocns(depmoi, 'V', cnsplu)
+            call cnsred(cnsplu, 0, [0], 1, 'LAGS_C',&
+                        'V', cnscon)
+        else
+            seuili = mminfr(defico,'SEUIL_INIT' ,izone )
+            seuili = -abs(seuili)
+        endif
         ctcini = mminfi(defico,'CONTACT_INIT' ,izone )
         typint = mminfi(defico,'INTEGRATION' ,izone )
 !
@@ -200,7 +200,9 @@ subroutine mmapre(loptin, noma, numedd, defico, resoco,&
 !
 ! ------- MULTIPLICATEURS DE CONTACT SUR LES NOEUDS ESCLAVES
 !
-           if (loptin .and. l_auto_seuil) call mmextm(defico, cnscon, posmae, mlagc)
+            if (loptin .and. l_auto_seuil) then
+                call mmextm(defico, cnscon, posmae, mlagc)
+            endif
 !
 ! ------- BOUCLE SUR LES POINTS
 !
