@@ -65,7 +65,7 @@ subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
 !
 !
 ! In  sd_cont_solv   : data structure for contact solving
-! In  sd_cont_defi   : data structure from contact definition 
+! In  sd_cont_defi   : data structure from contact definition
 ! In  l_frot_zone    : .true. if friction on zone
 ! In  l_loop_cont    : .true. if fixed poitn on contact loop
 ! In  l_coef_adap    : .true. if automatic lagrangian adaptation
@@ -125,6 +125,7 @@ subroutine mmalgo(sd_cont_defi, sd_cont_solv, l_loop_cont, l_frot_zone, l_vite,&
     coef_cont_prev = cycl_hist(25*(point_index-1)+12+2)
     pres_cont_prev = cycl_hist(25*(point_index-1)+12+3)
     dist_cont_prev = cycl_hist(25*(point_index-1)+12+4)
+! XXX next value seems uninitiliased in ssnp121i
     indi_frot_prev = nint(cycl_hist(25*(point_index-1)+12+5))
     coef_frot_prev = cycl_hist(25*(point_index-1)+12+6)
     pres_frot_prev(1) = cycl_hist(25*(point_index-1)+12+7)

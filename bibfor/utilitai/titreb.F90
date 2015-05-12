@@ -73,7 +73,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
 !
 !     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
     parameter          (mxdemo=20)
-    character(len=16) :: demons(mxdemo), cbid, k16bid, tysd
+    character(len=16) :: demons(mxdemo), cbid, tysd
     character(len=24) :: para(2)
     integer :: mxpara(mxdemo)
     character(len=80), pointer :: titr(:) => null()
@@ -340,7 +340,7 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             call titrec(donnee, iligd, icold, nbtitr, mxpara(iplace),&
                         para, nbpara)
             cgen = nomsym
-            igen = lxlgut(k16bid)
+            igen = lxlgut(nomsym)
 !
         case (18)
 !        --- NUMERO D'ORDRE POUR UN CHAMP D'UN RESULTAT ---
@@ -356,7 +356,6 @@ subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
             call rsnopa(para(1)(1:8), 0, '&&TITREB.NOM_ACCE', nbacce, nbpa)
             call jeexin('&&TITREB.NOM_ACCE', iret)
             if (iret .gt. 0) call jeveuo('&&TITREB.NOM_ACCE', 'E', jpara)
-            k16bid = nomsym
             ibid = iordr
             do iacc = 1, nbacce
                 call gettco(para(1)(1:8), tysd)
