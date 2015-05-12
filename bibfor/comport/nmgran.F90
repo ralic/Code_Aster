@@ -290,9 +290,9 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !  ------- CARACTERISTIQUES EFFET DU VIEILLISSEMENT
 !
     if (compor(1) (1:14) .eq. 'GRANGER_FP_V') then
-        nomres(1)='QSR_V'
+        nomres(1)='QSR_VEIL'
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
+                    ' ', 'V_GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(1), valres(1), icodre(1), 0)
         if (icodre(1) .ne. 0) valres(1)=0.d0
         qsrv=valres(1)
