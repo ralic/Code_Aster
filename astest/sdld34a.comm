@@ -191,11 +191,30 @@ PROJ_BASE(BASE=MODES,
                                   TYPE_VECT='DEPL',
                                   VECT_ASSE=DEPLINI,),);
 
+### A TITRE D'EXEMPLE, ON PEUT EGALEMENT DONNER UN ETAT INITIAL SUR LA BASE D'UN RESULTAT GENE
+
+RESUINI=CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='DYNA_TRANS',
+                  MATR_RIGI=RIGIDITE,
+                  MATR_MASS=MASSE,
+                  NOM_CHAM='DEPL',
+                  AFFE=(_F(CHAM_GD=DEPLINI,INST=0.0,),),);
+
+PROJ_BASE(BASE=MODES,
+          STOCKAGE='DIAG',
+          RESU_GENE=_F(RESULTAT=CO('INIGEN'), 
+                       RESU=RESUINI,
+                       TYPE_VECT='DEPL',),);
+
+###
+
 TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         SCHEMA_TEMPS=_F(SCHEMA='EULER',),
                         MATR_MASS=MAGE,
                         MATR_RIGI=RIGE,
-                        ETAT_INIT=_F(DEPL=DIGE,),
+                        # ETAT_INIT=_F(DEPL=DIGE,),
+                        ETAT_INIT=_F(RESULTAT=INIGEN,INST_INIT=0.0),
+
                         INCREMENT=_F(INST_FIN=tfin,
                                      PAS=pdt,),);
 
@@ -249,19 +268,19 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.999999866513,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=9.9999999999999995E-07,
                          FONCTION=DXXDIS2,),
-                      _F(VALE_CALC=0.999995906947,
+                      _F(VALE_CALC=1.000004026275,
                          VALE_REFE=1,
                          VALE_PARA=2,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-4,
                          FONCTION=DXGEDIS2,),
-                      _F(VALE_CALC=0.999995906947,
+                      _F(VALE_CALC=1.000004026275,
                          VALE_REFE=1,
                          VALE_PARA=2,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=1.E-4,
                          FONCTION=DXGEMO,),
-                      _F(VALE_CALC=0.999995906947,
+                      _F(VALE_CALC=1.000004026275,
                          VALE_REFE=1,
                          VALE_PARA=2,
                          REFERENCE='ANALYTIQUE',

@@ -304,10 +304,12 @@ subroutine op0079()
                     vectass2(imod) = ddot(neq,vectass1,1,vale,1)
 !
                 end do
+
+
 !
 ! ----- FACTORISATION ET RESOLUTION SYSTEME
-!
-                ind = ii-1+(iord-1)*nbmode+imod
+!                     
+                ind = ii+(iord-1)*nbmode
                 call trlds(matrnorm, nbmode, nbmode, icod)
                 if (icod .ne. 0) then
                     call utmess('F', 'ALGORITH9_42')
