@@ -31,7 +31,7 @@ loi = LoiComportement(
         'VG32', 'VG33', 'VG34', 'VG35', 'VG36', 'VG37', 'VG38', 'VG39', 'VG40', 'VG41',
         'VG42', 'VG43', 'VG44', 'VG45', 'VG46', 'VG47', 'VG48', 'VG49', 'VG50', 'VG51',
         'VG52', 'VG53', 'VG54', 'VG55'),
-    mc_mater = ('ELAS', 'V_GRANGER_FP'),
+    mc_mater = ('ELAS', 'GRANGER_FP', 'V_GRANGER_FP'),
     modelisation = ('3D', 'AXIS', 'D_PLAN'),
     deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
     nom_varc = ('TEMP', 'SECH', 'HYDR'),
