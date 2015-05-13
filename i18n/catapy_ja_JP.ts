@@ -306,12 +306,12 @@
     <message>
       <location filename="../cata.py" line="4780"/>
       <source>Maille de longueur non nulle.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">ゼロ以外の長さのメッシュ</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4780"/>
       <source>Vecteur dont la projection sur le plan normal à l'axe X local donne Y local.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">ローカルX軸に垂直な平面上の射影ベクトルは、ローカルY軸を与えます。</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="4780"/>
@@ -326,7 +326,7 @@
     <message>
       <location filename="../cata.py" line="4780"/>
       <source>Noeud ou Maille de longueur nulle.</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">節点または長さがゼロのメッシュ</translation>
     </message>
     <message>
       <location filename="../cata.py" line="4780"/>
@@ -416,7 +416,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5794"/>
       <source>Définition d'un chargement de rotation</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">回転負荷の定義</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="6665"/>
@@ -501,7 +501,7 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5794"/>
       <source>Applique à des noeuds des forces nodales</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">節点に節点力を適用する</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="5794"/>
@@ -851,17 +851,17 @@
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8517"/>
       <source>chargement mécanique</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">機械的負荷</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8517"/>
       <source>chargement thermique</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">熱負荷</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8517"/>
       <source>chargement acoustique</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">音響負荷</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8613"/>
@@ -881,7 +881,7 @@
     <message>
       <location filename="../cata.py" line="29561"/>
       <source>Resultat d'une commande globale</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">全体的なコマンドの結果</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
@@ -911,47 +911,47 @@
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour le calcul de deformations</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">変形の計算のオプション</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour le calcul d'energies</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">エネルギーの計算のオプション</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour le calcul de criteres</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">計算条件のオプション</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour le calcul de variables internes</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">内部変数の計算のオプション</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>nom de la variable a extraire</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">取得する変数の名前</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour le calcul de flux hydraulique</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">油圧フローの計算のオプション</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour le calcul de champs en thermique</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">温度場の計算のオプション</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour le calcul de champs en acoustique</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">音場の計算のオプション</translation>
     </message>
     <message>
       <location filename="../cata.py" line="8738"/>
       <source>Options pour des forces nodales et des reactions nodales</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">節点力と節点反力のオプション</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="8738"/>

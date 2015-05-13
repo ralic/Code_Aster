@@ -16,7 +16,7 @@
     <message>
       <location filename="../cata.py" line="2703"/>
       <source>Nombre de variables internes</source>
-      <translation type="unfinished"/>
+      <translation type="unfinished">Número de variáveis internas</translation>
     </message>
     <message encoding="UTF-8">
       <location filename="../cata.py" line="2703"/>
