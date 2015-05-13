@@ -35,7 +35,7 @@ DYNA_VIBRA=MACRO(nom="DYNA_VIBRA",
                  sd_prod=dyna_vibra_prod,
                  reentrant='f',
                  fr=tr("Calcul dynamique"),
-                 UIinfo={"groupes":("Resolution","Dynamique",)},
+                 UIinfo={"groupes":("Résolution","Dynamique",)},
         BASE_CALCUL     =SIMP(statut='o',typ='TXM',position='global',into=("PHYS","GENE") ),
         TYPE_CALCUL     =SIMP(statut='o',typ='TXM',position='global',into=("HARM","TRAN") ),
 

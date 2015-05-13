@@ -33,7 +33,7 @@ def l_nom_cham_pas_elga() :
      return list(set(C_NOM_CHAM_INTO())-set(C_NOM_CHAM_INTO('ELGA',)))
 
 LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
-            UIinfo={"groupes":("Lecture","Resultats et champs",)},
+            UIinfo={"groupes":("Lecture","Résultats et champs",)},
                fr=tr("Lire dans un fichier, soit format IDEAS, soit au format ENSIGHT soit au format MED,"
                   " des champs et les stocker dans une SD résultat"),
 

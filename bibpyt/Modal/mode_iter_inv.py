@@ -43,7 +43,7 @@ def mode_iter_inv_prod(TYPE_RESU, **args ):
 MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
                     ,fr=tr("Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes"),
                      reentrant='n',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("CACHE",)},
 
          TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",
                                into=("MODE_FLAMB","DYNAMIQUE","GENERAL"),

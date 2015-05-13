@@ -18,7 +18,7 @@
 CALC_ERC_DYN=OPER(nom="CALC_ERC_DYN",op=66,sd_prod=mode_meca,
                   fr="Calcul de l'erreur en relation de comportement en dynamique sous une formulation fr?quentielle",
                   reentrant='n',
-                  UIinfo={"groupes":("R?solution","Dynamique",)},
+                  UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=( UN_PARMI('FREQ','LIST_FREQ'),),
 
          MATR_MASS       =SIMP(statut='o',typ=(matr_asse_depl_r ) ),

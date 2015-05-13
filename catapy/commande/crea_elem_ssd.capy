@@ -28,7 +28,7 @@ CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
                     fr=tr("Creation de macro-element dynamique en enchainant les commandes : "
                          "CALC_MATR_ELEM, NUME_DDL, ASSE_MATRICE, MODE_ITER_SIMULT, "
                          "DEFI_INTERF_DYNA, DEFI_BASE_MODALE et MACR_ELEM_DYNA"),
-                    UIinfo={"groupes":("Matrices/vecteurs",)},
+                    UIinfo={"groupes":("Matrices et vecteurs",)},
 
 # pour CAL_MATR_ELEM + NUME_DDL + ASSE_MATRICE + MODE_ITER_SIMULT + MODE_STATIQUE
          MODELE          =SIMP(statut='o',typ=modele_sdaster),

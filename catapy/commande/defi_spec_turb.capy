@@ -18,7 +18,7 @@
 DEFI_SPEC_TURB=OPER(nom="DEFI_SPEC_TURB",op= 145,sd_prod=spectre_sdaster,
                     fr=tr("Definition d'un spectre d'excitation turbulente"),
                     reentrant='n',
-            UIinfo={"groupes":("Modelisation","Outils-metier",)},
+            UIinfo={"groupes":("Modélisation","Outils-métier",)},
          regles=(UN_PARMI('SPEC_LONG_COR_1','SPEC_LONG_COR_2','SPEC_LONG_COR_3',
                           'SPEC_LONG_COR_4','SPEC_CORR_CONV_1','SPEC_CORR_CONV_2',
                           'SPEC_CORR_CONV_3','SPEC_FONC_FORME','SPEC_EXCI_POINT'),),

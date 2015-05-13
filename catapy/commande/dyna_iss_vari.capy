@@ -29,7 +29,7 @@ DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",
                     fr=tr("Calcul du spectre de réponse ou de la reponse temporelle "
                          "sismique incoherente par decomposition spectrale"),
                     reentrant='n',
-                    UIinfo={"groupes":("Outils métier",)},
+                    UIinfo={"groupes":("Outils-métier",)},
          regles=(UN_PARMI('FONC_SIGNAL','NB_FREQ'),),
          FONC_SIGNAL     =SIMP(statut='f',typ=(fonction_sdaster) ),
          NB_FREQ       =SIMP(statut='f',typ='I' ),

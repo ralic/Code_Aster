@@ -19,7 +19,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                      fr=tr("Calcul de la reponse dynamique transitoire d'un systeme amorti ou non en coordonees generalisees"
                         " par superposition modale ou par sous structuration"),
                      reentrant='f',
-            UIinfo={"groupes":("Resolution","Dynamique",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
       regles=(EXCLUS('AMOR_MODAL','MATR_AMOR'),
               PRESENT_ABSENT('MODE_STAT','MODE_CORR'),),
           SCHEMA_TEMPS  =FACT(statut='d',

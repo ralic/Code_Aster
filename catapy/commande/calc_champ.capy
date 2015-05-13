@@ -21,7 +21,7 @@ def calc_champ_prod(RESULTAT,**args):
         % (RESULTAT, type(RESULTAT)))
 
 CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
-                UIinfo={"groupes":("Post traitements",)},
+                UIinfo={"groupes":("Post-traitements",)},
                 fr=tr("Completer ou creer un resultat en calculant des champs par elements ou aux noeuds"),
      MODELE           = SIMP(statut='f',typ=modele_sdaster),
      CHAM_MATER       = SIMP(statut='f',typ=cham_mater),

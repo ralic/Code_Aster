@@ -48,7 +48,7 @@ def mode_iter_simult_prod(TYPE_RESU, **args ):
 MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45, sd_prod= mode_iter_simult_prod,
                       fr=tr("Calcul des modes propres par itérations simultanées : valeurs propres et modes propres réels ou complexes"),
                       reentrant='n',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("CACHE",)},
          METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",
                                into=("TRI_DIAG","JACOBI","SORENSEN","QZ") ),
          b_tri_diag =BLOC(condition = "METHODE == 'TRI_DIAG'",
