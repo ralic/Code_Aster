@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,11 +19,16 @@
 #
 #  RECUPERATION DES EFFORTS VIA YACS POUR COUPLAGE IFS
 #
+
+from Cata import cata
+from Cata.cata import *
+
+
 MODI_CHAR_YACS=OPER(nom            = "MODI_CHAR_YACS",
                    op              = 112,
                    sd_prod         = char_meca,
                    reentrant       = 'o',
-                   UIinfo          = {"groupes":("Résultats et champs",)},
+                   UIinfo          = {"groupes":("CACHE",)},
                    fr              = tr("Reception des forces nodales via YACS lors du couplage de  Code_Aster et Saturne"),
                    CHAR_MECA       = SIMP(statut ='o', typ = char_meca),
                    MATR_PROJECTION = SIMP(statut ='o', typ = corresp_2_mailla,),

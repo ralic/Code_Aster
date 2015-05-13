@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,9 +19,14 @@
 # 
 #  ENVOI DES CHAMPS CINEMATIQUES VIA YACS POUR COUPLAGE IFS 
 #
+
+from Cata import cata
+from Cata.cata import *
+
+
 ENV_CINE_YACS=PROC(nom             = "ENV_CINE_YACS",
                    op              = 111,
-                   UIinfo          = {"groupes":("Résultats et champs",)},
+                   UIinfo          = {"groupes":("CACHE",)},
                    fr              = tr("Envoi des champs de deplacement et vitesse via YACS pour Couplage de Code_Aster et Saturne"),
                    regles          = (EXCLUS('ETAT_INIT','RESULTAT',),),
                    MATR_PROJECTION = SIMP(statut='o', typ=corresp_2_mailla,),

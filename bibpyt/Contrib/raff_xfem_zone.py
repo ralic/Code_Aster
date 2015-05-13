@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,13 +19,17 @@
 
 # commande cachee appelee uniquement par la macro RAFF_XFEM
 
+from Cata import cata
+from Cata.cata import *
+
+
 RAFF_XFEM_ZONE=OPER(nom="RAFF_XFEM_ZONE",
                     op=188,
 #                    sd_prod=cham_elem,
                     sd_prod=carte_sdaster,
                     fr=tr("Calcul d'un indicateur binaire pour le raffinement"),
                     reentrant='n',
-                    UIinfo={"groupes":("Résultats et champs","Rupture",)},
+                    UIinfo={"groupes":("CACHE",)},
 
                     FISSURE=SIMP(statut='o',typ=fiss_xfem,min=1,max=1),
                     RAYON  =SIMP(statut='o',typ='R',val_min=0.),                

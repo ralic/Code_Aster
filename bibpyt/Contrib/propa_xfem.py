@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -16,8 +17,11 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
+from Cata import cata
+from Cata.cata import *
+
 PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
-                UIinfo={"groupes":("Post-traitements","Rupture",)},
+                UIinfo={"groupes":("CACHE",)},
                 fr=tr("Propagation de fissure avec X-FEM"),
     
     METHODE =SIMP(statut='f',typ='TXM',into=("SIMPLEXE","GEOMETRIQUE","UPWIND"),defaut="GEOMETRIQUE"),

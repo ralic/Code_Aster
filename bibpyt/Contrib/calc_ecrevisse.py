@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,6 +17,10 @@
 # ======================================================================
 # person_in_charge: marina.bottoni at edf.fr
 
+from Cata import cata
+from Cata.cata import *
+
+
 
 def calc_ecrevisse_prod(self,CHARGE_MECA,CHARGE_THER1,CHARGE_THER2,TABLE,DEBIT,**args):
 
@@ -32,7 +37,7 @@ CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",
                      op=OPS('Macro.calc_ecrevisse_ops.calc_ecrevisse_ops'),
                      sd_prod=calc_ecrevisse_prod,
                      reentrant='n',
-                     UIinfo={"groupes":("Outils-métier",)},fr=tr("Procedure de couplage avec Ecrevisse"),
+                     UIinfo={"groupes":("CACHE",)},fr=tr("Procedure de couplage avec Ecrevisse"),
                      regles   = (UN_PARMI('LOGICIEL','VERSION'),),
 
 #      CONCEPTS SORTANTS : 2 CHARGEMENTS THERMIQUE + 1 MECANIQUE + 2 TABLES POUR LE POST-TRAITEMENT

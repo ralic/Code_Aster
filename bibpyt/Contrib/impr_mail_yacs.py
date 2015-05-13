@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,8 +19,13 @@
 #
 # RECUPERATION DES MAILLAGES IFS VENANT DE SATURNE VIA YACS
 #
+
+from Cata import cata
+from Cata.cata import *
+
+
 IMPR_MAIL_YACS=PROC(nom="IMPR_MAIL_YACS",op=43,
-            UIinfo={"groupes":("Maillage",)},
+            UIinfo={"groupes":("CACHE",)},
                fr=tr("Lecture d'un maillage via YACS lors du Couplage de Code_Aster et Saturne"),
          UNITE_MAILLAGE = SIMP(statut='f',typ='I',defaut=30),
          TYPE_MAILLAGE = SIMP(statut='o',typ='TXM',into=("SOMMET","MILIEU")),

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,10 +18,15 @@
 # person_in_charge: nicolas.greffet at edf.fr
 #
 # RECUPERATION DE PARAMETRES DE COUPLAGE VIA YACS
-# 
+#
+
+from Cata import cata
+from Cata.cata import *
+
+ 
 RECU_PARA_YACS=OPER(nom="RECU_PARA_YACS",op=114,sd_prod=listr8_sdaster,
                    reentrant = 'n',
-                    UIinfo={"groupes":("Fonction",)},
+                    UIinfo={"groupes":("CACHE",)},
                    fr        = tr("Gestion des scalaires via YACS pour le coupleur IFS"),
           DONNEES = SIMP(statut='o',typ='TXM',into=("INITIALISATION","CONVERGENCE","FIN","PAS",) ),
           b_init   = BLOC(condition= "DONNEES=='INITIALISATION'",

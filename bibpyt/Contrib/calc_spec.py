@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,12 +19,16 @@
 # person_in_charge: mathieu.corus at edf.fr
 
 
+from Cata import cata
+from Cata.cata import *
+
+
 CALC_SPEC=MACRO(nom="CALC_SPEC",
                 op=OPS('Macro.calc_spec_ops.calc_spec_ops'),
                 sd_prod=interspectre,
                 reentrant='n',
                 fr=tr("Calcule une matrice interspectrale ou des fonctions de transferts"),
-                UIinfo={"groupes":("Fonctions",)},
+                UIinfo={"groupes":("CACHE",)},
          TAB_ECHANT      =FACT(statut='f',
            NOM_TAB                  =SIMP(statut='o',typ=table_sdaster),
            LONGUEUR_DUREE           =SIMP(statut='f',typ='R'),

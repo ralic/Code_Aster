@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,10 +17,13 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
+from Cata import cata
+from Cata.cata import *
+
 TEST_TEMPS=MACRO(nom="TEST_TEMPS",
                  op=OPS('Macro.test_temps_ops.test_temps_ops'),
                  sd_prod=None,
-                 UIinfo={"groupes":("Utilitaires",)},
+                 UIinfo={"groupes":("CACHE",)},
                  fr=tr("Permet de vérifier le temps passé dans les commandes"),
                  reentrant='n',
 

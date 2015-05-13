@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +18,10 @@
 # person_in_charge: marina.bottoni at edf.fr
 
 
+from Cata import cata
+from Cata.cata import *
+
+
 def macr_ecre_calc_prod(self,TABLE,DEBIT,**args):
 
   self.type_sdprod(TABLE,table_sdaster)
@@ -27,7 +32,7 @@ MACR_ECRE_CALC=MACRO(nom="MACR_ECRE_CALC",
                      op=OPS('Macro.macr_ecre_calc_ops.macr_ecre_calc_ops'),
                      sd_prod=macr_ecre_calc_prod,
                      reentrant='n',
-                     UIinfo={"groupes":("Résolution","Outils-métier",)},
+                     UIinfo={"groupes":("CACHE",)},
                      fr=tr("Procedure de couplage avec Ecrevisse"),
 
                      regles = (UN_PARMI('LOGICIEL','VERSION'),),

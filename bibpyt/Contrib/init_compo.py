@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -15,9 +16,15 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # person_in_charge: nicolas.greffet at edf.fr
+
+
+from Cata import cata
+from Cata.cata import *
+
+
 INIT_COMPO=PROC(nom="INIT_COMPO",
                 op=  117,
-                UIinfo={"groupes":("Gestion du travail",)},
+                UIinfo={"groupes":("CACHE",)},
                 fr=tr("Initialiser adresse component YACS"),
            COMPO           =SIMP(statut='o',typ='I',),
 )  ;

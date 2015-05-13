@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,13 +19,19 @@
 #
 # MACRO DE COUPLAGE IFS AVEC SATURNE VIA YACS
 #
+
+
+from Cata import cata
+from Cata.cata import *
+
+
 CALC_IFS_DNL= MACRO(nom='CALC_IFS_DNL',
                     op=OPS("Macro.calc_ifs_dnl_ops.calc_ifs_dnl_ops"),
                     sd_prod=evol_noli,
                     reentrant='f',
                     fr=tr("Calcul de l'évolution dynamique d'une structure couplée à un "
                          "domaine fluide (résolu avec le code Saturne) via YACS"),
-            UIinfo={"groupes":("Résolution","Dynamique",)},
+            UIinfo={"groupes":("CACHE",)},
 
 #IFS
 #=>

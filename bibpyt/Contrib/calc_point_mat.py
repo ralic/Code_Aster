@@ -16,8 +16,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: jean-michel.proix at edf.fr
+
+
+from Cata import cata
+from Cata.cata import *
+
+
 CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='f',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("CACHE",)},
             fr=tr("Intégrer une loi de comportement"),
      MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
      COMPORTEMENT    =C_COMPORTEMENT('CALC_POINT_MAT'),

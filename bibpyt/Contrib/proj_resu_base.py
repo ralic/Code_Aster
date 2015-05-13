@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -16,10 +17,14 @@
 # ======================================================================
 # person_in_charge: albert.alarcon at edf.fr
 
+from Cata import cata
+from Cata.cata import *
+
+
 PROJ_RESU_BASE=OPER(nom="PROJ_RESU_BASE",op=  79,sd_prod=tran_gene,
                     fr=tr("Projection d'une sd resultat assemblee sur une base (modale ou de RITZ)"),
                     reentrant='n',
-            UIinfo={"groupes":("Matrices et vecteurs",)},
+            UIinfo={"groupes":("CACHE",)},
          BASE            =SIMP(statut='o',typ=(mode_meca,mode_gene) ),
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
          TYPE_VECT       =SIMP(statut='f',typ='TXM',defaut="FORC"),

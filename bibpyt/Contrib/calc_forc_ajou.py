@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,11 +16,17 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: nicolas.greffet at edf.fr
+
+
+from Cata import cata
+from Cata.cata import *
+
+
 CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
                    fr=tr("Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure"
                          " en analyse sismique"),
                    reentrant ='n',
-            UIinfo={"groupes":("Matrices et vecteurs",)},
+            UIinfo={"groupes":("CACHE",)},
 
         regles=(EXCLUS('MODE_MECA','MODELE_GENE'),
                 PRESENT_PRESENT( 'MODELE_GENE','NUME_DDL_GENE'),
