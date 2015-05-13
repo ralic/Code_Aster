@@ -262,7 +262,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
     DEFI_FICHIER = self.get_cmd('DEFI_FICHIER')
     DEFI_GROUP = self.get_cmd('DEFI_GROUP')
     CALC_TABLE = self.get_cmd('CALC_TABLE')
-    PROPA_XFEM = self.get_cmd('PROPA_XFEM')
+    from Contrib.propa_xfem import PROPA_XFEM
     MODI_MODELE_XFEM = self.get_cmd('MODI_MODELE_XFEM')
     POST_RUPTURE = self.get_cmd('POST_RUPTURE')
     DETRUIRE = self.get_cmd('DETRUIRE')

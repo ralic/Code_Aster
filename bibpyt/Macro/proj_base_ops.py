@@ -42,7 +42,8 @@ def proj_base_ops(self, BASE, NB_VECT,
 
     PROJ_MATR_BASE = self.get_cmd('PROJ_MATR_BASE')
     PROJ_VECT_BASE = self.get_cmd('PROJ_VECT_BASE')
-    PROJ_RESU_BASE = self.get_cmd('PROJ_RESU_BASE')
+    from Contrib.proj_resu_base import PROJ_RESU_BASE
+
 
     if MATR_ASSE_GENE:
         for m in MATR_ASSE_GENE:

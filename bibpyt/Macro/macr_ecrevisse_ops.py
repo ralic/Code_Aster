@@ -80,7 +80,7 @@ def macr_ecrevisse_ops(self, reuse,
     DETRUIRE = self.get_cmd("DETRUIRE")
     AFFE_MATERIAU = self.get_cmd("AFFE_MATERIAU")
     STAT_NON_LINE = self.get_cmd("STAT_NON_LINE")
-    CALC_ECREVISSE = self.get_cmd("CALC_ECREVISSE")
+    from Contrib.calc_ecrevisse import CALC_ECREVISSE    
     CO = self.get_cmd("CO")
     CREA_TABLE = self.get_cmd("CREA_TABLE")
 

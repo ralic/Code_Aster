@@ -52,10 +52,10 @@ def calc_ifs_dnl_ops(self, GROUP_MA_IFS, NOM_CMP_IFS, UNITE_NOEUD, UNITE_ELEM, M
     LIRE_MAILLAGE = self.get_cmd('LIRE_MAILLAGE')
     PROJ_CHAMP = self.get_cmd('PROJ_CHAMP')
     # Operateurs specifiques pour IFS
-    IMPR_MAIL_YACS = self.get_cmd('IMPR_MAIL_YACS')
-    ENV_CINE_YACS = self.get_cmd('ENV_CINE_YACS')
-    MODI_CHAR_YACS = self.get_cmd('MODI_CHAR_YACS')
-    RECU_PARA_YACS = self.get_cmd('RECU_PARA_YACS')
+    from Contrib.impr_mail_yacs import IMPR_MAIL_YACS
+    from Contrib.env_cine_yacs import ENV_CINE_YACS
+    from Contrib.modi_char_yacs import MODI_CHAR_YACS
+    from Contrib.recu_para_yacs import RECU_PARA_YACS
     # =================================================================#
     # Gestion des mots cles specifiques a CALC_IFS_DNL                #
     # --------------------------------------------------------------- #

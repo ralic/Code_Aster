@@ -60,7 +60,7 @@ def defi_cable_bp_ops(self, MODELE, CHAM_MATER, CARA_ELEM, GROUP_MA_BETON,
     # On importe les definitions des commandes a utiliser dans la macro
     DEFI_GROUP = self.get_cmd('DEFI_GROUP')
     IMPR_RESU = self.get_cmd('IMPR_RESU')
-    DEFI_CABLE_OP = self.get_cmd('DEFI_CABLE_OP')
+    from Contrib.defi_cable_op import DEFI_CABLE_OP
 
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)

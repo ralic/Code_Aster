@@ -35,7 +35,6 @@ def simu_point_mat_ops(
     AFFE_MATERIAU = self.get_cmd('AFFE_MATERIAU')
     AFFE_MODELE = self.get_cmd('AFFE_MODELE')
     CALC_CHAMP = self.get_cmd('CALC_CHAMP')
-    CALC_POINT_MAT = self.get_cmd('CALC_POINT_MAT')
     CALC_TABLE = self.get_cmd('CALC_TABLE')
     CREA_CHAMP = self.get_cmd('CREA_CHAMP')
     CREA_RESU = self.get_cmd('CREA_RESU')
@@ -47,7 +46,8 @@ def simu_point_mat_ops(
     POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
     STAT_NON_LINE = self.get_cmd('STAT_NON_LINE')
     IMPR_RESU = self.get_cmd('IMPR_RESU')
-
+    from Contrib.calc_point_mat import CALC_POINT_MAT
+    
     from Accas import _F
     from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme

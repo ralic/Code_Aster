@@ -39,8 +39,7 @@ def macro_matr_ajou_ops(
     AFFE_CHAR_THER = self.get_cmd('AFFE_CHAR_THER')
     CALC_MATR_AJOU = self.get_cmd('CALC_MATR_AJOU')
     THER_LINEAIRE = self.get_cmd('THER_LINEAIRE')
-    CALC_FORC_AJOU = self.get_cmd('CALC_FORC_AJOU')
-
+    from Contrib.calc_forc_ajou import CALC_FORC_AJOU
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 

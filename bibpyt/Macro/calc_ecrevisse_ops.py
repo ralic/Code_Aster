@@ -185,7 +185,6 @@ def calc_ecrevisse_ops(self,
     # IMPORTATION DE COMMANDES ASTER
     DEFI_GROUP = self.get_cmd("DEFI_GROUP")
     POST_RELEVE_T = self.get_cmd("POST_RELEVE_T")
-    MACR_ECRE_CALC = self.get_cmd("MACR_ECRE_CALC")
     IMPR_TABLE = self.get_cmd("IMPR_TABLE")
     DETRUIRE = self.get_cmd("DETRUIRE")
     IMPR_CO = self.get_cmd("IMPR_CO")
@@ -197,7 +196,8 @@ def calc_ecrevisse_ops(self,
     AFFE_CHAR_MECA_F = self.get_cmd("AFFE_CHAR_MECA_F")
     DEFI_FICHIER = self.get_cmd("DEFI_FICHIER")
     DEFI_CONSTANTE = self.get_cmd("DEFI_CONSTANTE")
-
+    from Contrib.macr_ecre_calc import MACR_ECRE_CALC
+    
     # RECUPERATION DES MOTS-CLES FACTEURS
     dRESULTAT = RESULTAT[0].cree_dict_valeurs(RESULTAT[0].mc_liste)
     for i in dRESULTAT.keys():

@@ -59,7 +59,8 @@ def raff_xfem_ops(self, FISSURE, TYPE, **args):
     FORMULE = self.get_cmd('FORMULE')
     CREA_CHAMP = self.get_cmd('CREA_CHAMP')
     DETRUIRE = self.get_cmd('DETRUIRE')
-    RAFF_XFEM_ZONE = self.get_cmd('RAFF_XFEM_ZONE')
+    from Contrib.raff_xfem_zone import RAFF_XFEM_ZONE
+
     IMPR_CO = self.get_cmd('IMPR_CO')
 
     assert (TYPE in ('DISTANCE', 'ZONE'))
