@@ -225,7 +225,7 @@ IMPR_TABLE(TABLE=T_SIGN_1)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_REFE=1.5,VALE_CALC=1.49816561236,
+           VALE_REFE=1.5,VALE_CALC=1.49816793017,
            NOM_PARA='DX',
            TABLE=T_DX_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -233,7 +233,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_REFE=1.73,VALE_CALC=1.72993263917,
+           VALE_REFE=1.73,VALE_CALC=1.72993531555,
            NOM_PARA='ETA_PILO',
            TABLE=T_ETA_1,
            FILTRE=_F(NOM_PARA='INST',
@@ -256,7 +256,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   RESULTAT=U_1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
-                  VALE_REFE=0.48698,VALE_CALC=0.486988132811,
+                  VALE_REFE=0.48698,VALE_CALC=0.486989105726,
                   MAILLE='CUBE',),
           )
 
@@ -266,7 +266,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   RESULTAT=U_1,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIGN',
-                  VALE_REFE=0.649,VALE_CALC=0.649317510415,
+                  VALE_REFE=0.649,VALE_CALC=0.649318807634,
                   MAILLE='CUBEDEG',),
           )
 
@@ -276,7 +276,7 @@ TEST_RESU(RESU=_F(INST=3.00007,
                   NOM_CHAM='DEPL',
                   NOEUD='NS19',
                   NOM_CMP='SIGN',
-                  VALE_CALC=0.649317510415,
+                  VALE_CALC=0.649318807634,
                   VALE_REFE=0.649,),
           )
 

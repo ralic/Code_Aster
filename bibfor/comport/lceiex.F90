@@ -18,15 +18,14 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jerome.laverne at edf.fr
+! person_in_charge: kyrylo.kazymyrenko at edf.fr
 !
     implicit none
 #include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/zerofr.h"
 #include "asterfort/utmess.h"
-#include "asterc/r8prem.h"
+
 
     character(len=16) :: option
     integer :: mat, kpg, ksp, i, codret
@@ -37,28 +36,65 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !            LOI DE COMPORTEMENT COHESIVE CZM_EXP_MIX
 !            POUR LES ELEMENTS D'INTERFACE 2D ET 3D.
 !
-! IN : FAMI,KPG,KSP,MAT,OPTION
-!      MU  : LAGRANGE
-!      SU  : SAUT DE U
-!      VIM : VARIABLES INTERNES
+
+
+!-----------------------------------------------------------------------
 !
-! OUT : DE    : DELTA, SOLUTION DE LA MINIMISATION
-!       DDEDT : D(DELTA)/DT
-!       VIP   : VARIABLES INTERNES MISES A JOUR
-!       R     : PENALISATION DU LAGRANGE
+! ---------------------------
+! -- PRINCIPALES NOTATIONS --
+! ---------------------------
+!
+! -  CARACTERISTIQUES DE LA ZONE COHESIVE
+!    GC     : ENERGIE COHESIVE
+!    SC     : CONTRAINTE CRITIQUE
+!    DC     : OUVERTURE CRITIQUE
+!    H      : DECROISSANCE DE LA CONTRAINTE COHESIVE
+!    R      : PARAMETRE DE PENALISATION
+!
+! -  DONNEES D'ENTREE
+!    MU     : LAGRANGE
+!    SU     : SAUT DE U
+!    VIM    : VARIABLES INTERNES
+!             |1   : PLUS GRANDE NORME DU SAUT (KA)
+!             |2   : REGIME DE LA LOI (REGM)
+!             |      |0 : ADHERENCE INITIALE OU COURANTE
+!             |      |1 : DISSIPATION
+!             |      |2 : SURFACE LIBRE FINALE (RUPTURE)
+!             |      |3 : SURFACE LIBRE (SOUS CONTRAINTE)
+!             |3   : INDICATEUR D'ENDOMMAGEMENT
+!             |      |0 : SAIN
+!             |      |1 : ENDOMMAGE
+!             |      |2 : CASSE
+!             |4   : POURCENTAGE D'ENERGIE DISSIPEE (GA)
+!             |5   : VALEUR DE L'ENERGIE DISSIPEE (GA*GC)
+!             |6   : ENERGIE RESIDUELLE COURANTE (RIEN)
+!             |7-9 : VALEURS DE DELTA
+!
+!
+! -  DONNEES DE SORTIE
+!    DE     : DELTA
+!    DDEDT  : DERIVEE DE DELTA
+!    VIP    : VARIABLES INTERNES MISES A JOUR
+!
+! -  GRANDEURS LOCALES
+!    GA     : POURCENTAGE D'ENERGIE DISSIPEE
+!    REGM   : REGIME DE FONCTIONNEMENT DE LA LOI A L'INSTANT PRECEDENT
+!    REGIME : NOUVEAU REGIME DE FONCTIONNEMENT
+!    KA     : OUVERTURE MAXIMALE COURANTE
+!    SK     : CONTRAINTE CRITIQUE COURANTE
+!    T      : FORCE COHESIVE LAMBDA + R.[U]
+!
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas
     integer :: regime
-    real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap, r, r1
+    real(kind=8) :: sc, gc, dc, dc1, c, h, ka, sk, val(4), tmp, ga, kap, gap, r
     real(kind=8) :: dn, tn, t(3), ddndtn
     integer :: cod(4)
     character(len=16) :: nom(4)
     character(len=1) :: poum
     data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
-    common /essai/ sc,gc,tn,r1
-!-----------------------------------------------------------------------
-!
+
 !
 ! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
@@ -115,6 +151,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 !    SI RIGI_MECA_*
     if (.not. resi) then
         regime = nint(vim(2))
+        dn=vim(7)
         goto 5000
     endif
 !
@@ -137,8 +174,9 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     else if (tn .lt. r*dc) then
         regime = 1
 !
+
 !    UTILISATION D UN ALGORITHME DE NEWTON
-! ! ! 
+! ! !
 ! !
 !     1 - DETERMINATION DE BORNES BMIN ET BMAX POUR NEWTON, AINSI
 !         QUE D UN POINT D INITIALISATION JUDICIEUX  (solution de la bi-lineaire)
@@ -161,7 +199,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
 200     continue
 !         TEST DU CRITERE
         res = sc*exp(-sc*dn/gc) + r*dn-tn
-        if (abs(res) .lt. 1.d-4 .or. i > 1000) goto 210
+        if (abs(res) .lt. 1.d-8 .or. i > 1000) goto 210
         i = i + 1
 !
 !         NOUVEL ESTIMATEUR
@@ -198,24 +236,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     de(2) = t(2)/(c+r)
     de(3) = t(3)/(c+r)
 !
-!
-! -- actualisation des variables internes
-!   V1 :  plus grande norme du saut (SEUIL EN SAUT)
-!   V2 :  regime de la loi
-!        -1 : contact
-!         0 : adherence initiale ou courante
-!         1 : dissipation
-!         2 : surface libre finale (RUPTURE)
-!         3 : SURFACE LIBRE (SOUS CONTRAINTE)
-!   V3 :  INDICATEUR D'ENDOMMAGEMENT
-!         0 : SAIN
-!         1 : ENDOMMAGE
-!         2 : CASSE
-!   V4 :  POURCENTAGE D'ENERGIE DISSIPEE
-!   V5 :  VALEUR DE L'ENERGIE DISSIPEE (V4*GC)
-!   V6 :  ENERGIE RESIDUELLE COURANTE
-!        (NULLE POUR CE TYPE D'IRREVERSIBILITE)
-!   V7 A V9 : VALEURS DE delta
+
 !
     kap = min( max(ka,dn) , dc )
     gap = kap/dc * (2.d0 - kap/dc)
@@ -225,7 +246,7 @@ subroutine lceiex(fami, kpg, ksp, mat, option,&
     vip(1) = kap
     vip(2) = regime
 !
-    if (kap .eq. r8prem()) then
+    if (kap .eq. 0.d0) then
         vip(3) = 0.d0
     else if (kap.eq.dc) then
         vip(3) = 2.d0
