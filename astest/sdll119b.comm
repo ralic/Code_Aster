@@ -38,6 +38,10 @@ DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 POUTRE=LIRE_MAILLAGE(FORMAT='MED', )
 
+# Pour obtenir les memes resultats sur toutes les machines, on desymetrise le probleme
+# en modifiant legerement la geometrie du maillage :
+MODI_MAILLAGE(reuse =POUTRE, MAILLAGE=POUTRE, DEFORME=_F(OPTION='TRAN', ALEA=1.e-8,),)
+
 #
 
 MODELE=AFFE_MODELE(
@@ -401,7 +405,7 @@ FREQ_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=4.73495565238,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.734955646800,
                         VALE_REFE=4.47,
                         VALE_PARA=4.0,
                         REFERENCE='SOURCE_EXTERNE',
@@ -421,12 +425,11 @@ AMOR_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22647420,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22647439082963,
                         VALE_REFE=0.19,
                         VALE_PARA=4.0,
                         REFERENCE='SOURCE_EXTERNE',
                         PRECISION=0.2,
-                        TOLE_MACHINE=1.E-5,     # ajustement pour clap0f0q
                         FONCTION=AMOR_1,),
               )
 
@@ -446,7 +449,7 @@ FREQ_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.003853,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.003853019577,
                         VALE_PARA=4.0,
                         FONCTION=FREQ_2,
                         ),
@@ -464,10 +467,9 @@ AMOR_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415295,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415274374856,
                         VALE_PARA=4.0,
                         FONCTION=AMOR_2,
-                        TOLE_MACHINE=1.E-5,     # ajustement pour clap0f0q
                         ),
               )
 
