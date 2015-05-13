@@ -1,7 +1,7 @@
 subroutine barych(ch1z, ch2z, r1, r2, chz,&
                   base)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,7 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
 !
     character(len=5) :: vale
     character(len=4) :: docu, scal
+    character(len=24) :: valk(2)
 !-----------------------------------------------------------------------
     integer :: i, iach, iach1, iach2, ibid, ier, jrefe
     integer :: lon1, lon2, long
@@ -92,7 +93,12 @@ subroutine barych(ch1z, ch2z, r1, r2, chz,&
  2              continue
             endif
         else
-            call vtcopy(ch2, ch, 'F', ier)
+            call vtcopy(ch2, ch, ' ', ier)
+            if ( ier.ne.0 ) then
+                valk(1) = ch1
+                valk(2) = ch2
+                call utmess('F', 'ALGELINE7_21', nk=2, valk=valk)
+            endif
             call jeveuo(ch//vale, 'E', iach)
             call jeveuo(ch1//vale, 'L', iach1)
             if (scal(1:1) .eq. 'R') then

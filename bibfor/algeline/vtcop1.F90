@@ -9,8 +9,10 @@ subroutine vtcop1(chin, chout, kstop, codret)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
 #include "asterfort/wkvect.h"
@@ -21,7 +23,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     integer :: codret
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +56,7 @@ subroutine vtcop1(chin, chout, kstop, codret)
     integer :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
     integer :: jcmpgd, ncmpmx, icmp
     character(len=1) :: typ1, typ2
-    character(len=8) :: nomgd
+    character(len=8) :: nomgd, noma
     character(len=24) :: valk(4)
     character(len=19) :: ch1, ch2, pfchno
     integer, pointer :: trav1(:) => null()
@@ -254,7 +256,13 @@ subroutine vtcop1(chin, chout, kstop, codret)
             if (kstop .eq. 'F') then
                 ASSERT(.false.)
             else
+                valk(1) = zk8(jcmpgd+nucp2-1)
+                noma = refe2(1)
+                call jenuno(jexnum(noma//'.NOMNOE', nuno2), valk(2))
+                valk(3) = ch1
+                call utmess('A', 'ALGELINE7_20', nk=3, valk=valk)
                 codret = 1
+                exit
             endif
         endif
     end do
