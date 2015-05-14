@@ -162,8 +162,8 @@ extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRI
 #define CALL_ASMPI_CHECK(a) CALLP(ASMPI_CHECK,asmpi_check,a)
 extern void DEFP(ASMPI_CHECK,asmpi_check,INTEGER *);
 
-#define CALL_ASMPI_WARN() CALL0(ASMPI_WARN,asmpi_warn)
-extern void DEF0(ASMPI_WARN,asmpi_warn);
+#define CALL_ASMPI_WARN(a) CALLP(ASMPI_WARN,asmpi_warn,a)
+extern void DEFP(ASMPI_WARN,asmpi_warn,INTEGER *);
 
 /* routines intrinseques fortran */
 #define CALL_ABORTF() CALL0(ABORTF,abortf)
@@ -172,8 +172,8 @@ extern void DEF0(ABORTF,abortf);
 /* routines de manipulation de la SD MATERIAU */
 #define CALL_RCVALE_WRAP(a,b,c,d,e,f,g,h,i,j) \
         CALLSSPSPPSPPP(RCVALE_WRAP,rcvale_wrap,a,b,c,d,e,f,g,h,i,j)
-extern void DEFSSPSPPSPPP(RCVALE_WRAP, rcvale_wrap, char *,STRING_SIZE, char *,STRING_SIZE, 
-    INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, 
+extern void DEFSSPSPPSPPP(RCVALE_WRAP, rcvale_wrap, char *,STRING_SIZE, char *,STRING_SIZE,
+    INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *,
     INTEGER *);
 
 
