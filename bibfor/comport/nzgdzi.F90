@@ -401,7 +401,7 @@ implicit none
         nomcle(2)='SIGM_F2'
         nomcle(3)='SIGM_C'
         if (iret1 .eq. 1) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_40',sk='SIGM_*')
         endif
         do k = 1, nb_phasis
             call rctrac(imat, 2, nomcle(k), temp, jprol,&

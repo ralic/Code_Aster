@@ -19,7 +19,7 @@ subroutine lc0022(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504
+! aslint: disable=W1504,W0104
     implicit none
 #include "asterfort/nmccam.h"
 #include "asterfort/rcvarc.h"
@@ -44,7 +44,7 @@ subroutine lc0022(fami, kpg, ksp, ndim, imate,&
                 ksp, tref, iret)
 !
     call nmccam(ndim, typmod, imate, compor, crit,&
-                instam, instap, tm, tp, tref,&
+                tm, tp, tref,&
                 deps, sigm, vim, option, sigp,&
                 vip, dsidep, codret)
 !

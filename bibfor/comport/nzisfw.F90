@@ -406,7 +406,7 @@ implicit none
         nomcle(4)='SIGM_F4'
         nomcle(5)='SIGM_C'
         if (iret1 .eq. 1) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_40',sk='SIGM_*')
         endif
         do k = 1, nb_phasis
             call rctrac(imat, 2, nomcle(k), temp, jprol,&
@@ -426,7 +426,7 @@ implicit none
         rmoy = 0.d0
         hmoy = 0.d0
     endif
-    rmoy =(1.d0-fmel(1))*r(nb_phasis)+fmel(1)*rmoy
+    rmoy = (1.d0-fmel(1))*r(nb_phasis)+fmel(1)*rmoy
     hmoy = (1.d0-fmel(1))*h(nb_phasis)+fmel(1)*hmoy
 !
 ! ********************************

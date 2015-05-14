@@ -15,6 +15,8 @@ subroutine te0095(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
+!
     implicit none
 !
 !.......................................................................
@@ -88,14 +90,14 @@ subroutine te0095(option, nomte)
 ! - PAS DE CALCUL DE G POUR LES ELEMENTS OU LA VALEUR DE THETA EST NULLE
 !
     compt = 0
-    do 30 i = 1, nno
+    do i = 1, nno
         thet = 0.d0
-        do 20 j = 1, ndim
+        do j = 1, ndim
             thet = thet + abs(zr(ithet+ndim* (i-1)+j-1))
- 20     continue
+        end do
         if (thet .lt. epsi) compt = compt + 1
- 30  continue
-    if (compt .eq. nno) goto 100
+    end do
+    if (compt .eq. nno) goto 999
 !
 ! RECUPERATION CHARGE, MATER...
     call jevech('PGEOMER', 'L', igeom)
@@ -144,26 +146,26 @@ subroutine te0095(option, nomte)
 ! - RECUPERATION DES CHARGES ET PRE DEFORMATIONS ----------------
 !
     if (fonc) then
-        do 150 i = 1, nno
-            do 130 j = 1, ndim
+        do i = 1, nno
+            do j = 1, ndim
                 vaparu(j) = zr(igeom+ndim*(i-1)+j-1)
                 vaparv(j) = zr(igeom+ndim*(i-1)+j-1)
-130         continue
-            do 140 j = 1, ndim
+            end do
+            do j = 1, ndim
                 kk = ndim*(i-1) + j
                 call fointe('FM', zk8(iforfu+j-1), 3, nompar, vaparu,&
                             fnou(kk), ier)
                 call fointe('FM', zk8(iforfv+j-1), 3, nompar, vaparv,&
                             fnov(kk), ier)
-140         continue
-150     continue
+            end do
+        end do
     else
-        do 8000 i = 1, nno
-            do 6000 j = 1, ndim
+        do i = 1, nno
+            do j = 1, ndim
                 fnou(ndim*(i-1)+j) = zr(iforcu+ndim*(i-1)+j-1)
                 fnov(ndim*(i-1)+j) = zr(iforcv+ndim*(i-1)+j-1)
-6000         continue
-8000     continue
+            end do
+        end do
     endif
 !
     if ((ipesau.ne.0) .or. (irotau.ne.0)) then
@@ -172,25 +174,25 @@ subroutine te0095(option, nomte)
                     ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre, 1)
         if (ipesau .ne. 0) then
-            do 160 i = 1, nno
-                do 161 j = 1, ndim
+            do i = 1, nno
+                do j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnou(kk) = fnou(kk) + rho(1)*zr(ipesau)*zr(ipesau+j)
-161             continue
-160         continue
+                end do
+            end do
         endif
         if (irotau .ne. 0) then
             om = zr(irotau)
-            do 170 i = 1, nno
+            do i = 1, nno
                 omo = 0.d0
-                do 171 j = 1, ndim
+                do j = 1, ndim
                     omo = omo + zr(irotau+j)*zr(igeom+ndim*(i-1)+j-1)
-171             continue
-                do 172 j = 1, ndim
+                end do
+                do j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnou(kk) = fnou(kk) + rho(1)*om*om*(zr(igeom+kk-1)- omo*zr(irotau+j))
-172             continue
-170         continue
+                end do
+            end do
         endif
     endif
 !
@@ -200,48 +202,48 @@ subroutine te0095(option, nomte)
                     ' ', phenom, 1, ' ', [rbid],&
                     1, 'RHO', rho, icodre, 1)
         if (ipesav .ne. 0) then
-            do 260 i = 1, nno
-                do 261 j = 1, ndim
+            do i = 1, nno
+                do j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnov(kk) = fnov(kk) + rho(1)*zr(ipesav)*zr(ipesav+j)
-261             continue
-260         continue
+                end do
+            end do
         endif
         if (irotav .ne. 0) then
             om = zr(irotav)
-            do 270 i = 1, nno
+            do i = 1, nno
                 omo = 0.d0
-                do 271 j = 1, ndim
+                do j = 1, ndim
                     omo = omo + zr(irotav+j)*zr(igeom+ndim*(i-1)+j-1)
-271             continue
-                do 272 j = 1, ndim
+                end do
+                do j = 1, ndim
                     kk = ndim*(i-1) + j
                     fnov(kk) = fnov(kk) + rho(1)*om*om*(zr(igeom+kk-1)- omo*zr(irotav+j))
-272             continue
-270         continue
+                end do
+            end do
         endif
     endif
 !
 ! ======================================================================
 ! - BOUCLE SUR LES POINTS DE GAUSS
 !
-    do 90 kp = 1, npg1
+    do kp = 1, npg1
         l = (kp-1)*nno
         tgu = 0.d0
         tgv = 0.d0
         xg = 0.d0
         yg = 0.d0
-        do 50 i = 1, 3
+        do i = 1, 3
             tgudm(i) = 0.d0
             tgvdm(i) = 0.d0
-            do 40 j = 1, 4
+            do j = 1, 4
                 dudm(i,j) = 0.d0
                 dvdm(i,j) = 0.d0
                 dtdm(i,j) = 0.d0
                 dfudm(i,j) = 0.d0
                 dfvdm(i,j) = 0.d0
- 40         continue
- 50     continue
+            end do
+        end do
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
@@ -256,7 +258,7 @@ subroutine te0095(option, nomte)
 !   (TGUDM ET TGVDM)AUX POINTS DE GAUSS
 !
         iret3 = 0
-        do 80 i = 1, nno
+        do i = 1, nno
             der(1) = dfdi(i)
             der(2) = dfdi(i+nno)
             der(3) = dfdi(i+2*nno)
@@ -267,14 +269,14 @@ subroutine te0095(option, nomte)
                         1, tgp, iret2)
             if ((iret1+iret2) .eq. 0) then
                 if (iret0 .eq. 1) then
-                    call utmess('F', 'CALCULEL_31')
+                    call utmess('F', 'COMPOR5_43')
                 endif
                 tgu = tgu + tgm*der(4)
                 tgv = tgv + tgp*der(4)
-                do 75 j = 1, ndim
+                do j = 1, ndim
                     tgudm(j) = tgudm(j) + tgm*der(j)
                     tgvdm(j) = tgvdm(j) + tgp*der(j)
- 75             continue
+                end do
             else
                 iret3 = iret3+1
                 tgu=0.d0
@@ -283,31 +285,31 @@ subroutine te0095(option, nomte)
 !
             xg = xg + zr(igeom+2* (i-1))*der(4)
             yg = yg + zr(igeom+2* (i-1)+1)*der(4)
-            do 70 j = 1, ndim
-                do 60 k = 1, ndim
+            do j = 1, ndim
+                do k = 1, ndim
                     dudm(j,k) = dudm(j,k) + zr(idepu+ndim* (i-1)+j-1)* der(k)
                     dvdm(j,k) = dvdm(j,k) + zr(idepv+ndim* (i-1)+j-1)* der(k)
                     dtdm(j,k) = dtdm(j,k) + zr(ithet+ndim* (i-1)+j-1)* der(k)
                     dfudm(j,k) = dfudm(j,k) + fnou(ndim*(i-1)+j)*der( k)
                     dfvdm(j,k) = dfvdm(j,k) + fnov(ndim*(i-1)+j)*der( k)
- 60             continue
+                end do
                 dudm(j,4) = dudm(j,4) + zr(idepu+ndim*(i-1)+j-1)*der( 4)
                 dvdm(j,4) = dvdm(j,4) + zr(idepv+ndim*(i-1)+j-1)*der( 4)
                 dtdm(j,4) = dtdm(j,4) + zr(ithet+ndim*(i-1)+j-1)*der( 4)
                 dfudm(j,4) = dfudm(j,4) + fnou(ndim*(i-1)+j)*der(4)
                 dfvdm(j,4) = dfvdm(j,4) + fnov(ndim*(i-1)+j)*der(4)
- 70         continue
- 80     continue
+            end do
+        end do
 !
 ! - RECUPERATION DES DONNEES MATERIAUX
         if (iret3 .eq. 0) then
             ttrgu = tgu - tref
             ttrgv = tgv - tref
         else
-            do 85 j = 1, ndim
+            do j = 1, ndim
                 tgudm(j) = 0.d0
                 tgvdm(j) = 0.d0
- 85         continue
+            end do
             ttrgu = 0.d0
             ttrgv = 0.d0
         endif
@@ -317,7 +319,7 @@ subroutine te0095(option, nomte)
                     valrsv, devrsv, icorsv)
         if (iret0 .eq. 0) then
             if ((icodre(3) .ne.0) .or. ((icorsv(3) .ne.0))) then
-                call utmess('F', 'CALCULEL_31')
+                call utmess('F', 'COMPOR5_43')
             endif
         else
             valres(3) = 0.d0
@@ -345,13 +347,13 @@ subroutine te0095(option, nomte)
 ! 
 !DANS CETTE OPTION, LA PRISE EN COMPTE D'UNE CONTRAINTE INITIALE N'EST PAS PREVUE ACTUELLEMENT
 !
-        do 112 i = 1, 6
+        do i = 1, 6
             sigin(i) = 0.d0
             epsref(i)= 0.d0
-            do 113 j = 1, 3
+            do j = 1, 3
                 dsigin(i,j) = 0.d0
-113         continue
-112     continue
+            end do
+        end do
         
         call gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
                     tgudm, tgvdm, ttrgu, ttrgv, poids,sigin,&
@@ -359,11 +361,11 @@ subroutine te0095(option, nomte)
                     c1, c2, c3, k3a, alpha,&
                     coef, rho(1), puls, gelem)
         guv3 = guv3 + gelem
- 90  continue
+    end do
 !
     g = guv3
 !
     zr(ific) = g
-100 continue
+999 continue
     call jedema()
 end subroutine

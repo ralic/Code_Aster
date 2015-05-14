@@ -139,7 +139,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
         call moytem(fami, npg, 1, '-', tempm,&
                     iretm)
         if ((iretp+iretm) .ge. 1) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_40',sk='DIS_GRICRA')
         endif
         temp = (tempp+tempm)/2.d0
 !
@@ -174,7 +174,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
         call moytem(fami, npg, 1, '-', tempm,&
                     iretm)
         if ((iretp+iretm) .ge. 1) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_40',sk='DIS_GRICRA')
         endif
         temp = (tempp + tempm)/2.d0
         nbpar=2

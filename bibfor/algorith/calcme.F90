@@ -6,7 +6,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                   dsde, deps, p1, p2, t,&
                   dt, retcom, dp1, dp2, sat,&
                   tbiot, ang2, aniso, phenom)
-! aslint: disable=W1504
+! aslint: disable=W1504, W1501
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -460,7 +460,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 
         tini = t - dt
         call nmccam(ndim, typmod, imate, compor, crit,&
-                    instam, instap, tini, t, tref,&
+                    tini, t, tref,&
                     deps, congem(adcome), vintm, option, congep(adcome),&
                     vintp, dsdeme, retcom)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then

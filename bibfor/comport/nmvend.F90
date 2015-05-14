@@ -1,5 +1,5 @@
 subroutine nmvend(fami, kpg, ksp, materd, materf,&
-                  nmat, dt1, epsm, deps, sigm,&
+                  nmat, dt1, deps, sigm,&
                   vim, ndim, crit, dammax, etatf,&
                   p, np, beta, nb, iter,&
                   ier)
@@ -37,7 +37,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
     integer :: kpg, ksp, nmat, np, nb, ier, ndim
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: p(np), beta(nb), vim(*), dt1, crit(*)
-    real(kind=8) :: epsm(6), deps(6), sigm(6)
+    real(kind=8) :: deps(6), sigm(6)
     character(len=*) :: fami
     character(len=7) :: etatf(3)
     character(len=16) :: meth
@@ -72,7 +72,6 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 ! INFO P(1)=RPOINT,  P(2)=DFOINT
 !-----------------------------------------------------------------------
     integer :: i, ndt, ndi, niter, iret, iret1, iret2, iret3, it2, iter
-    integer(kind=8) :: ir
     real(kind=8) :: dammax, prec, precr, val0, devse(6)
 !
     real(kind=8) :: e, nu, alphap, alpham, dd, dr
@@ -80,7 +79,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
     real(kind=8) :: xap, epsef(6)
     real(kind=8) :: seq1md, seqe, troisk, troikm, sigmmo
     real(kind=8) :: tp, tm, tref
-    common /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,ir,unsurn,unsurm
+    common /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,unsurn,unsurm
     real(kind=8) :: mu, syvp, kvp, seq, ad, dt, unsurn, unsurm, rm, dm, rd, nvp
     real(kind=8) :: em, num, devsig(6), depsmo, coef, sigpmo, df, val1, devsm(6)
     real(kind=8) :: mum
@@ -135,9 +134,9 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
     endif
 !
     if (dm .ge. 1.d0) dm=dammax
-    do 15 i = 1, 6
+    do i = 1, 6
         epsef(i)=devsm(i)/(1.d0-dm)/2.d0/mum+devep(i)
-15  end do
+    end do
     call lcprsv(2.d0*mu, epsef, devse)
 !
 ! -- TEMPERATURE
@@ -150,7 +149,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
                 ksp, tp, iret3)
     iret=iret1+iret2+iret3
     if ((iret.eq.0) .and. ((alphap+alpham).eq.0.d0)) then
-        call utmess('F', 'CALCULEL_31')
+        call utmess('F', 'COMPOR5_44')
     else if (((alphap+alpham).eq.0.d0).or.(iret.ge.1)) then
         coef = 0.d0
     else
@@ -166,7 +165,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
         val0 = nmfend(0.d0)
         if (val0 .gt. 0.d0) then
             ier=21
-            goto 9999
+            goto 999
         endif
 !
 !        PRECISION RELATIVE DE RESOLUTION : F(X) < PREC
@@ -193,13 +192,13 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
                 it2=it2+1
                 if (it2 .gt. niter) then
                     ier=22
-                    goto 9999
+                    goto 999
                 endif
                 goto 30
             else
 !              RECHERCHE DE XAP TEL QUE F(XAP) >0
 !              A FAIRE : UNE VRAIE DICHOTOMIE
-                do 22 i = 1, niter
+                do i = 1, niter
                     xap = xap/2.d0
                     if (abs(xap) .lt. r8miem()) then
                         dr=0.d0
@@ -207,9 +206,9 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
                     endif
                     val1 = nmfend(xap)
                     if (val1 .gt. 0.d0) goto 21
-22              continue
+                end do
                 ier=23
-                goto 9999
+                goto 999
             endif
         endif
 !
@@ -221,7 +220,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 !        RESOLUTION 1D
         call zerofr(0, meth, nmfend, 0.d0, xap,&
                     precr, niter, dr, ier, iter)
-        if (ier .ne. 0) goto 9999
+        if (ier .ne. 0) goto 999
 !
 50      continue
 !
@@ -238,9 +237,9 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
 !
         seq=(1.d0-df)*seqe-3.d0*mu*dr
         deno=1.d0+3.d0*mu*dr/seq
-        do 16 i = 1, 6
+        do i = 1, 6
             devsig(i)=(1.d0-df)*devse(i)/deno
-16      continue
+        end do
 !
     else
 !
@@ -253,26 +252,26 @@ subroutine nmvend(fami, kpg, ksp, materd, materf,&
     endif
 !
     depsmo = 0.d0
-    do 13 i = 1, 3
+    do i = 1, 3
         depsmo = depsmo + deps(i) -coef
-13  end do
+    end do
     depsmo = depsmo/3.d0
 !
     sigmmo = 0.d0
-    do 17 i = 1, 3
+    do i = 1, 3
         sigmmo = sigmmo + sigm(i)
-17  end do
+    end do
     sigmmo = sigmmo /3.d0
     sigpmo=(sigmmo/troikm/(1.d0-dm)+depsmo)*(1.d0-df)*troisk
-    do 18 i = 1, 3
+    do i = 1, 3
         beta(i)=devsig(i)+sigpmo
-18  end do
-    do 19 i = 4, 6
+    end do
+    do i = 4, 6
         beta(i)=devsig(i)
-19  end do
+    end do
 !
     p(1)=dr/dt
     p(2)=dd/dt
 !
-9999  continue
+999 continue
 end subroutine

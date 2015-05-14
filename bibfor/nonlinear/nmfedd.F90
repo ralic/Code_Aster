@@ -33,11 +33,10 @@ function nmfedd(dr)
 !     VARIABLES LOCALES:
 !     ------------------
 !----- COMMONS NECESSAIRES A VENDOCHAB
-    common   /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,ir,unsurn,unsurm
+    common   /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,unsurn,unsurm
     real(kind=8) :: mu, syvp, kvp, rm, dm, seqe, ad, dt, unsurn, unsurm
     real(kind=8) :: dd, rd, unmd, dtn, puis, epsi
     real(kind=8) :: gprime, dprime, coef, gder
-    integer(kind=8) :: ir
 !      EPSI=R8PREM()
     epsi=1.d-8
 !

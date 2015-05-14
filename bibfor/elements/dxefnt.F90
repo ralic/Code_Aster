@@ -117,7 +117,7 @@ subroutine dxefnt(nomte, pgl, sigt)
             somire = iret2+iret3+iret4
             if (somire .eq. 0) then
                 if (iret1 .eq. 1) then
-                    call utmess('F', 'CALCULEL_31')
+                    call utmess('F', 'COMPOR5_43')
                 else
 !
 ! --- BOUCLE SUR LES NOEUDS

@@ -98,7 +98,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     call rcvarc('F', 'TEMP', 'REF', fami, kpg,&
                 ksp, tref, iret1)
     if ((iret1+iret2+iret3) .ge. 1) then
-        call utmess('F', 'CALCULEL_31')
+        call utmess('F', 'COMPOR5_40', sk=compor(1))
     endif
     nompar = 'TEMP'
 !
@@ -123,20 +123,20 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     tkp=tp+tabs
     tkref=tref+tabs
     l=0
-    do 40 i = 1, 9
-        do 41 k = 1, ndimsi
+    do i = 1, 9
+        do k = 1, ndimsi
             l=l+1
             am(k,i)=vim(l)
- 41     continue
+        end do
         ammo(i)=0.d0
-        do 42 n = 1, 3
+        do n = 1, 3
             ammo(i)=ammo(i)+am(n,i)
- 42     continue
+        end do
         ammo(i)=ammo(i)/3.d0
-        do 43 k = 1, ndimsi
+        do k = 1, ndimsi
             amdv(k,i)=am(k,i)-ammo(i)*kron(k)
- 43     continue
- 40 end do
+        end do
+    end do
     agem = vim(l+1)
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES
@@ -159,7 +159,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                 1, nomres(3), valres(3), icodre(3), 2)
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).eq.0)) then
         if ((icodre(3).ne.0) .or. (iisnan(tref).ne.0)) then
-            call utmess('F', 'CALCULEL_15')
+            call utmess('F', 'COMPOR5_42')
         else
             epsthm = valres(3)*(tm-tref)
         endif
@@ -184,9 +184,9 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     if (icodre(3) .ne. 0) then
         valres(3) = 0.d0
         epsthp = 0.d0
-        elseif (((iisnan(tp).gt.0).or.(iisnan(tm).gt.0).or. (iisnan(tref)&
-    .gt.0)).and.(icodre(3) .eq. 0 )) then
-        call utmess('F', 'CALCULEL_15')
+    elseif (((iisnan(tp).gt.0).or.(iisnan(tm).gt.0).or.(iisnan(tref).gt.0)).and.&
+             (icodre(3) .eq. 0 )) then
+        call utmess('F', 'COMPOR5_42')
     else
         epsthp = valres(3)*(tp-tref)
     endif
@@ -246,7 +246,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     nomres(15) = 'TAUX_7'
     nomres(16) = 'TAUX_8'
     coefj=0.d0
-    do 110 i = 1, 8
+    do i = 1, 8
         call rcvalb(fami, kpg, ksp, '+', imate,&
                     ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
                     1, nomres(i), valres(i), icodre(i), 0)
@@ -263,7 +263,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         j(i)=valres(i)
         taux(i)=valres(i+8)
         coefj=coefj+j(i)
-110 end do
+    end do
 !
 !  ------- CARACTERISTIQUES EFFET DE LA TEMPERATURE
 !
@@ -341,48 +341,48 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !--3  CALCUL DE SIGMP, SIGEL
 !   -------------------------
     sigmmo = 0.d0
-    do 113 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + sigm(k)
-113 end do
+    end do
     sigmmo = sigmmo /3.d0
-    do 140 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmdv(k) = sigm(k)- sigmmo * kron(k)
         sigmp(k)=deuxmu/deumum*sigmdv(k) + troisk/troikm*sigmmo*kron(&
         k)
-140 end do
+    end do
     sigmpo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmpo = sigmpo + sigmp(k)
-116 end do
+    end do
     sigmpo = sigmpo /3.d0
-    do 127 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmpd(k) = sigmp(k)- sigmpo * kron(k)
-127 end do
+    end do
 !
 ! -------  QUELQUES COEFFICIENTS-------------------------
 !
     coefb=0.d0
-    do 150 i = 1, 8
+    do i = 1, 8
         coefb=coefb+j(i)*(1-(taux(i)/delta)*(1-exp(-dteqt/taux(i))))
-150 end do
+    end do
     coefd=(hygrp*tpprim*vieil)*coefb
-    do 135 k = 1, ndimsi
+    do k = 1, ndimsi
         coefa(k)=0.d0
-        do 130 i = 1, 8
+        do i = 1, 8
             coefa(k)=coefa(k)+amdv(k,i)*(1-exp(-dteqt/taux(i)))
-130     continue
+        end do
         coefc(k)= (sigmdv(k)*hygrm*tmprim)*vieil*coefb
         coeff(k)=coefa(k)-coefc(k)
-135 end do
+    end do
     coefa(9)=0.d0
-    do 118 i = 1, 8
+    do i = 1, 8
         coefa(9)=coefa(9)+ammo(i)*(1-exp(-dteqt/taux(i)))
-118 end do
+    end do
     coefc(9)= (sigmmo*hygrm*tmprim)*vieil*coefb
     coeff(9)=coefa(9)-coefc(9)
-    do 125 k = 1, 3
+    do k = 1, 3
         coefk(k)= coeff(k)+coeff(9)
-125 end do
+    end do
 !
 ! ------- CALCUL DE DEPSMO ET DEPSDV
 !
@@ -411,81 +411,81 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         deps3=deps3-(3.d0/(deuxmu*2.d0+troisk))*sigmp(3)
     endif
     depsmo = 0.d0
-    do 111 k = 1, 3
+    do k = 1, 3
         deps(k) = depst(k)-ther
         deps(k+3) = depst(k+3)
         depsmo = depsmo + deps(k)
-111 end do
+    end do
     if (cplan) then
         deps(3) = deps3-ther
         depsmo = deps(1) + deps(2) + deps(3)
     endif
     depsmo = depsmo/3.d0
-    do 115 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = deps(k) - depsmo * kron(k)
-115 end do
+    end do
 !
-    do 129 k = 1, ndimsi
+    do k = 1, ndimsi
         sigldv(k) = sigmpd(k) + deuxmu * depsdv(k)
-129 end do
+    end do
     siglmo = sigmpo +troisk*depsmo
 !
 !--4-CALCUL DE SIGP
 !------------------------
 !
     if ((option(1:9) .eq. 'RAPH_MECA') .or. (option(1:9) .eq. 'FULL_MECA')) then
-        do 117 k = 1, ndimsi
+        do k = 1, ndimsi
             sigpdv(k)=sigldv(k)-e*coeff(k)
             sigpdv(k)=sigpdv(k)/(1+e*coefd)
-117     continue
+        end do
         sigpmo= siglmo-e*coeff(9)
         sigpmo = sigpmo/(1+e*coefd)
-        do 151 k = 1, ndimsi
+        do k = 1, ndimsi
             sigp(k)=sigpdv(k)+sigpmo*kron(k)
-151     continue
+        end do
 !
 !-- 6 CALCUL DE VIP
 !   -------------------
 !--------CALCUL DE DS
-        do 119 k = 1, ndimsi
+        do k = 1, ndimsi
             smdv(k)=sigmdv(k)*hygrm*tmprim
             spdv(k)=sigpdv(k)*hygrp*tpprim
             dsdv(k)=spdv(k)-smdv(k)
-119     continue
+        end do
         smmo=sigmmo*hygrm*tmprim
         spmo=sigpmo*hygrp*tpprim
         dsmo = spmo-smmo
 !--------CALCUL DE APDV, APMO
-        do 160 i = 1, 8
-            do 170 k = 1, ndimsi
+        do i = 1, 8
+            do k = 1, ndimsi
                 apdv(k,i)=amdv(k,i)*exp(-dteqt/taux(i))
                 apdv(k,i)=apdv(k,i)+ dsdv(k)*vieil *j(i)*(taux(i)/&
                 delta)*(1-exp(-dteqt/taux(i)))
-170         continue
+            end do
             apmo(i)= ammo(i)*exp(-dteqt/taux(i))
             apmo(i)=apmo(i)+ dsmo*vieil *j(i)*(taux(i)/delta)*(1-exp(-&
             dteqt/taux(i)))
-160     continue
+        end do
 !
-        do 180 k = 1, ndimsi
+        do k = 1, ndimsi
             apdv(k,9)=amdv(k,9)
-            do 190 i = 1, 8
+            do i = 1, 8
                 apdv(k,9)=apdv(k,9)+j(i)*vieil*dsdv(k)
-190         continue
-180     continue
+            end do
+        end do
         apmo(9)= ammo(9)
-        do 200 i = 1, 8
+        do i = 1, 8
             apmo(9)=apmo(9)+j(i)*vieil*dsmo
-200     continue
+        end do
 !--------CALCUL DES AP ET DES VIP
         l=0
-        do 210 i = 1, 9
-            do 220 k = 1, ndimsi
+        do i = 1, 9
+            do k = 1, ndimsi
                 ap(k,i)=apdv(k,i)+apmo(i)*kron(k)
                 l=l+1
                 vip(l)=ap(k,i)
-220         continue
-210     continue
+            end do
+        end do
         vip(l+1)=agep
     endif
 !
@@ -501,26 +501,27 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
             coefh = 1.d0
             coefi = 1.d0
         endif
-        do 260 k = 1, 3
-            do 270 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l) = dsidep(k,l)+(troisk/(3.d0*coefi))
                 dsidep(k,l) = dsidep(k,l)-deuxmu/(3.d0*coefh)
-270         continue
-260     continue
-        do 280 k = 1, ndimsi
+            end do
+        end do
+        do k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k) + deuxmu/coefh
-280     continue
+        end do
 !
 !----------- CORRECTION POUR LES CONTRAINTES PLANES :
         if (cplan) then
-            do 136 k = 1, ndimsi
-                if (k .eq. 3) goto 136
-                do 137 l = 1, ndimsi
-                    if (l .eq. 3) goto 137
-                    dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(&
-                    k,3)*dsidep(3,l)
-137             continue
-136         continue
+            do k = 1, ndimsi
+                if (k .ne. 3) then
+                    do l = 1, ndimsi
+                        if (l .ne. 3) then
+                            dsidep(k,l)=dsidep(k,l) - 1.d0/dsidep(3,3)*dsidep(k,3)*dsidep(3,l)
+                        endif
+                    end do
+                endif
+            end do
         endif
     endif
 end subroutine

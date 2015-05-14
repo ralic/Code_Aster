@@ -217,7 +217,7 @@ subroutine nmelru(fami, kpg, ksp, idecpg, poum,&
 !    nrj = 0.5d0*k*divu*divu - 9/2*k*alpha*alpha*(temp- tref)*(temp- tref)
     if (iret1 .eq. 0) then
         if (iret2 .eq. 1) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_43')
         else
             dnrj = 0.5d0*dk*divu*divu-k3*divu*(alpha+dalpha*(temp- tref))
         endif

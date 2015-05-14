@@ -35,7 +35,6 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501
 !
     character(len=*), intent(in) :: fami
     integer, intent(in) :: kpg
@@ -388,7 +387,7 @@ implicit none
         nomcle(2)='SIGM_F2'
         nomcle(3)='SIGM_C'
         if (iret1 .eq. 1) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_40',sk='SIGM_*')
         endif
         do k = 1, nb_phasis
             call rctrac(imat, 2, nomcle(k), temp, jprol,&

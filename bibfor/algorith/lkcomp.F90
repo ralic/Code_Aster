@@ -170,7 +170,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
     if ((iisnan(tp).eq.0) .and. (iisnan(tm).gt.0)) then
         if ((iisnan(tref).gt.0) .and. (indal .eq. 0)) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_41')
         else
             coef = alpha*(tp-tref) - alpha*(tm-tref)
         endif
@@ -265,31 +265,6 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
                     materd, ucrvm, seuvm)
 !
 ! =================================================================
-! --- VERIFICATION SUR L'AXE HYDROSTATIQUE ------------------------
-! =================================================================
-!
-!           IF ((UCRIV .LT. ZERO).OR.(UCRVM .LT. ZERO)) THEN
-!
-!              CALL LKVARP(VINM, NBMAT,  MATERD, PARAEP)
-!
-!              CALL LKVACP(NBMAT, MATERD, PARAEP, VARPL)
-!
-!              CALL LKVARV(VINTR,NBMAT, MATERD, PARAVI)
-!
-!              CALL LKVACV(NBMAT, MATERD, PARAVI, VARVI)
-!
-!           IF ((-(VARVI(3)/VARVI(2))).LT.(-(VARPL(3)/VARPL(2)))) THEN
-!                RETCOM = 1
-!                GOTO 1000
-!
-!                  ELSE
-!                CALL UTMESS('F','COMPOR1_28')
-!
-!           ENDIF
-!
-!           ENDIF
-!
-! =================================================================
 ! --- PAS DE VISCOSITE  -------------------------------------------
 ! =================================================================
         if (seuilv .lt. zero) then
@@ -326,7 +301,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
                         depsv, dgamv, iret)
             if (iret .eq. 1) then
                 retcom = 1
-                goto 1000
+                goto 999
             endif
 !
             dvml1 = trace(ndi,depsv)
@@ -374,7 +349,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
         if ((ucrip .lt. zero) .or. (ucrpm .lt. zero)) then
             retcom = 1
-            goto 1000
+            goto 999
         endif
 !
 !==================================================================
@@ -443,7 +418,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
             if (iret .eq. 1) then
                 retcom = 1
-                goto 1000
+                goto 999
             endif
 !
 ! -------- DELTA XIP
@@ -494,54 +469,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! --  INDICATEUR DE PLASTICITE
 !
             vinp(7) = 1.d0
-! =================================================================
-! --- DEFINITION DES INVARIANTS ET DU DEVIATEUR  A L ETAT PLUS-----
-! =================================================================
-!
-!             I1PL = TRACE(NDI,SIGPL)
-!
-!             CALL LCDEVI(SIGPL,SPL)
-!
-!             CALL LCPRSC(SPL, SPL, SIIP)
-!
-!             SIIP = SQRT(SIIP)
-!
-! =================================================================
-! --- AJUSTEMENT DES CONTRAINTES POUR ANNULER LE CRITERE PLASTIQUE
-! =================================================================
-!           CALL LKVARV(VINTR,NBMAT, MATERD, PARAVI)
-!
-!          CALL LKVARP(VINP, NBMAT, MATERD, PARAEP)
-!
-!           RCOS3T = COS3T  (SPL, MATERD(1,2), LGLEPS)
-!
-!          CALL LKVACP(NBMAT, MATERD, PARAEP, VARPL)
-!
-!           CALL LKHTET(NBMAT, MATERD, RCOS3T, H0E, H0C, HTHETA)
-!
-!          ETA = ((SIIP * HTHETA / SIGC / H0C)**(UN/PARAEP(1)) -
-!     &      VARPL(1)*SIIP*HTHETA - VARPL(3))/
-!     &      VARPL(2)/I1PL
-!         write(6,*) 'ETA', ETA
-!           ETA = UN
-!           IPL = I1PL * ETA
-!
-!          DO 45 I = 1, NDT
-!           SIGPN(I) = SPL(I) + IPL/TROIS*KRON(I)
-!           SIGPL(I) = SIGPN(I)
-!  45    CONTINUE
-!
-!           CALL LKCRIP( IPL,SPL,VINP,NBMAT,MATERD,UCRIPL,
-!     &                  SEUIPL)
-!           IF (UCRIPL  .LT. ZERO) THEN
-!       CALL UTMESS('A','COMPOR1_28')
-!           write (6,*) 'COND 4 UCRIPL ',UCRIPL
-!           RETCOM = 1
-!           GOTO 1000
-!           ENDIF
-!
         endif
-!
     endif
 !
 ! =================================================================
@@ -613,7 +541,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
             if (iret .eq. 1) then
                 retcom = 1
-                goto 1000
+                goto 999
             endif
 !
         endif
@@ -628,5 +556,5 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
         deps(i) = mun * depsth(i)
     end do
 ! =================================================================
-1000 continue
+999 continue
 end subroutine

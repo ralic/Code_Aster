@@ -33,10 +33,9 @@ function nmfend(dr)
 !     VARIABLES LOCALES:
 !     ------------------
 !----- COMMONS NECESSAIRES A VENDOCHAB
-    common   /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,ir,unsurn,unsurm
+    common   /fvendo/mu,syvp,kvp,rm,dm,seqe,ad,dt,rd,unsurn,unsurm
     real(kind=8) :: mu, syvp, kvp, rm, dm, seqe, ad, dt, unsurn, unsurm
     real(kind=8) :: dd, rd, gder, unmd, dtn, puis
-    integer(kind=8) :: ir
 !
     dtn=dt**unsurn
 !

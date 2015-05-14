@@ -265,7 +265,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
     else if ((compo.eq.'GRAN_IRRA_LOG').or.(compo.eq.'VISC_IRRA_LOG')) then
         if (algo(1:10) .eq. 'ANALYTIQUE') then
             if (.not. ltemp) then
-                call utmess('F', 'CALCULEL_31')
+                call utmess('F', 'COMPOR5_40',sk=compo)
             endif
             do i = 1, nf
                 ivari = nbvalc* (i-1) + 1

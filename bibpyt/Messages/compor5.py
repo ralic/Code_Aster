@@ -27,7 +27,6 @@ On ne trouve pas la courbe de traction (mot-clef %(k1)s) dans le matériau fourn
 La courbe de traction est une fonction du paramètre %(k1)s alors qu'on attend le paramètre EPSI.
 """),
 
-
     4 : _(u"""
 La courbe de traction est une nappe dont le paramètre qui n'est pas EPSI n'est pas traité dans la loi de comportement.
 """),
@@ -75,12 +74,6 @@ Il manque la définition du coefficient BIOT_COEF dans DEFI_MATERIAU.
 La déformation est supposée nulle.
 """),
 
-    32 : _(u"""
-Erreur utilisateur :
-  Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau %(k2)s.
-  On ne peut donc pas calculer la déformation thermique.
-"""),
-
     15 : _(u"""
  La nature du matériau élastique %(k1)s n'est pas traitée.
 """),
@@ -109,6 +102,34 @@ Erreur utilisateur :
   Pour les poutres multifibres, l'utilisation de lois de comportement via
   DEBORST nécessite d'avoir un seul matériau par poutre!
  """),
+ 
+    32 : _(u"""
+Sur la maille %(k1)s le calcul est thermo mécanique. Mais il manque le paramètre matériau %(k2)s.
+On ne peut donc pas calculer la déformation thermique.
+"""),
+
+    40 : _(u"""
+Les caractéristiques matériaux dans %(k1)s dépendent de la température mais elle n'est pas renseignée.
+Il faut une température dans AFFE_MATERIAU/AFFE_VARC.
+"""),
+
+    41 : _(u"""
+Le paramètre ALPHA a été fourni mais on ne peut pas calculer la déformation thermique car la température n'est pas renseignée.
+"""),
+
+    42 : _(u"""
+Il existe un champ de température mais vous n'avez pas renseigné la paramètre ALPHA dans DEFI_MATERIAU ou la 
+température de référence dans AFFE_MATERIAU/AFFE_VARC.
+On ne peut pas calculer la déformation thermique.
+"""),
+
+    43 : _(u"""
+Il existe un champ de température mais il manque la température de référence dans AFFE_MATERIAU/AFFE_VARC.
+"""),
+
+    44 : _(u"""
+Il existe un champ de température mais vous n'avez pas renseigné la paramètre ALPHA dans DEFI_MATERIAU.
+"""),
 
     56 : _(u"""
 Plusieurs matériaux de type %(k1)s ont été trouvés.

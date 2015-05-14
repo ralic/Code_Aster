@@ -431,7 +431,7 @@ implicit none
             nomcle(4)='SIGM_F4'
             nomcle(5)='SIGM_C'
             if (iret2 .eq. 1) then
-                call utmess('F', 'CALCULEL_31')
+                call utmess('F', 'COMPOR5_40',sk='SIGM_*')
             endif
             do k = 1, nb_phasis
                 call rctrac(imat, 2, nomcle(k), temp, jprol,&
@@ -573,8 +573,7 @@ implicit none
 ! DANS LE CAS NON LINEAIRE
 ! VERIFICATION QU ON EST DANS LE BON INTERVALLE
 !
-            if (compor(1)(1:10) .eq. 'META_P_INL' .or. compor(1)(1: 10) .eq.&
-                'META_V_INL') then
+            if (compor(1)(1:10) .eq. 'META_P_INL' .or. compor(1)(1: 10) .eq.'META_V_INL') then
                 do j = 1, maxval
                     test=0
                     do k = 1, nb_phasis
@@ -582,7 +581,7 @@ implicit none
                             vip(k)=vi(k)+dp
                             hplus(k)=h(k)
                             if (iret2 .eq. 1) then
-                                call utmess('F', 'CALCULEL_31')
+                                call utmess('F', 'COMPOR5_40',sk='SIGM_*')
                             endif
                             call rctrac(imat, 2, nomcle(k), temp, jprol,&
                                         jvale, nbval(k), rbid)

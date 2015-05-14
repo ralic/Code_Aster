@@ -17,7 +17,7 @@
 !
 interface
     subroutine nmvend(fami, kpg, ksp, materd, materf,&
-                      nmat, dt1, epsm, deps, sigm,&
+                      nmat, dt1, deps, sigm,&
                       vim, ndim, crit, dammax, etatf,&
                       p, np, beta, nb, iter,&
                       ier)
@@ -30,7 +30,6 @@ interface
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: dt1
-        real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(*)

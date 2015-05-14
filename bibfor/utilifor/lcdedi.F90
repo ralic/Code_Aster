@@ -89,7 +89,7 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd,&
 !
     if ((iisnan(tf).eq.0) .and. (iisnan(td).eq.0)) then
         if (iisnan(tr) .ne. 0) then
-            call utmess('F', 'CALCULEL_31')
+            call utmess('F', 'COMPOR5_43')
         else
             if (materd(nmat,1) .eq. 0) then
                 alphad = materd(3,1)

@@ -1,5 +1,5 @@
 subroutine nmccam(ndim, typmod, imate, compor, crit,&
-                  instam, instap, tm, tp, tref,&
+                  tm, tp, tref,&
                   deps, sigm, pcrm, option, sigp,&
                   pcrp, dsidep, retcom)
 ! ======================================================================
@@ -37,7 +37,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     integer :: ndim, imate, retcom
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
-    real(kind=8) :: crit(3), instam, instap, tm, tp, tref
+    real(kind=8) :: crit(3), tm, tp, tref
     real(kind=8) :: deps(6), deuxmu
     real(kind=8) :: sigm(6), pcrm(7), sigp(6), pcrp(7), dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -102,7 +102,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     character(len=8) :: nompar(10)
 ! ======================================================================
     real(kind=8) :: valrm(5)
-    character(len=16) :: valkm(5)
+    character(len=24) :: valkm(5)
 ! ======================================================================
     parameter   ( zero   = 0.d0   )
     parameter   ( un     = 1.d0   )
@@ -148,7 +148,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !
         if ((iisnan(tp).eq.0) .and. (iisnan(tm).gt.0)) then
             if ((iisnan(tref).gt.0) .or. (icodre(1) .ne.0)) then
-                call utmess('F', 'CALCULEL_31')
+                call utmess('F', 'COMPOR5_42')
             else
                 coef = valres(1)*(tp-tref) - valres(1)*(tm-tref)
             endif
@@ -169,11 +169,9 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
         ptrac = valres(9)
 !
     endif
-    if ((&
-        (compor(1)(1:6) .eq. 'KIT_HM') .or. (compor(1)(1:7) .eq. 'KIT_HHM') .or.&
-        (compor(1)(1:7) .eq. 'KIT_THM') .or. (compor(1)(1:8) .eq. 'KIT_THHM')&
-        )&
-        .and. (compor(11)(1:9) .eq. 'CAM_CLAY ')) then
+    if (((compor(1)(1:6) .eq. 'KIT_HM') .or. (compor(1)(1:7) .eq. 'KIT_HHM') .or.&
+        (compor(1)(1:7) .eq. 'KIT_THM') .or. (compor(1)(1:8) .eq. 'KIT_THHM')).and.&
+        (compor(11)(1:9) .eq. 'CAM_CLAY ')) then
 !
         call rcvala(imate, ' ', 'ELAS', 1, nompar,&
                     valpam, 1, nomres(1), valres(1), icodre(1),&
@@ -220,36 +218,36 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
         call utmess('F', 'ALGORITH6_63')
     endif
     depsmo = 0.d0
-    do 110 k = 1, ndimsi
+    do k = 1, ndimsi
         depsth(k) = deps(k)
-110 end do
-    do 111 k = 1, 3
+    end do
+    do k = 1, 3
         depsth(k) = depsth(k) - coef
         depsmo = depsmo + depsth(k)
-111 end do
+    end do
     depsmo = -depsmo
-    do 115 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = depsth(k) + depsmo/3.d0 * kron(k)
-115 end do
+    end do
 !
 !     -- 4 CALCUL DE SIGMMO, SIGMDV, SIGEL,SIMOEL,SIELEQ, SIEQM :
 !     -------------------------------------------------------------
     sigmmo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + sigm(k)
-116 end do
+    end do
     sigmmo = -sigmmo /3.d0
     if (sigmmo .lt. ptrac) then
         call utmess('F', 'ALGORITH6_64')
     endif
     sieleq = 0.d0
     sieqm = 0.d0
-    do 117 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmdv(k) = sigm(k) + sigmmo * kron(k)
         sieqm = sieqm + sigmdv(k)**2
         sigel(k) = sigmdv(k) + deuxmu * depsdv(k)
         sieleq = sieleq + sigel(k)**2
-117 end do
+    end do
     sieleq = sqrt(1.5d0*sieleq)
     sieqm = sqrt(1.5d0*sieqm)
 !
@@ -265,7 +263,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
         call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
                     valr=valrm)
         retcom = 1
-        goto 30
+        goto 999
     endif
     simoel = sigmmo*exp(xk0*depsmo)+kcam/xk0*(exp(xk0*depsmo)-un)
 ! ---- INITIALISATION A T=0
@@ -306,10 +304,10 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !      -- TRAITEMENT DE L'ELASTICITE
             pcrp(1) = pcrm(1)
             pcrp(2) = 0.d0
-            do 118 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigpdv(k) = sigel(k)
                 sigp(k) = sigel(k)-simoel*kron(k)
-118         end do
+            end do
 !
             pcrp(3) = simoel
             pcrp(4) = sieleq
@@ -384,7 +382,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                 call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
                             valr=valrm)
                 retcom = 1
-                goto 30
+                goto 999
             endif
 !
             f1 = (simoel+kcam/xk0)*exp(-xk0*v0)-kcam/xk0-ptrac
@@ -405,7 +403,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
             fp = m**2*f4**2*(f1p*f2 + f1*f2p) + 2.d0*m**2*f4*f4p*f1* f2
 !
 !
-            do 200 iter = 1, nint(crit(1))
+            do iter = 1, nint(crit(1))
 !
 !     --CRITERE DE CONVERGENCE
                 if ((abs(f)/seuil) .le. crit(3)) goto 100
@@ -432,7 +430,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                     call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
                                 valr=valrm)
                     retcom = 1
-                    goto 30
+                    goto 999
                 endif
                 f1 = (simoel+kcam/xk0)*exp(-xk0*v0)-kcam/xk0-ptrac
                 f2 = (simoel+kcam/xk0)*exp(-xk0*v0)-kcam/xk0-ptrac -2.d0*pcrm(1)*exp(xk*v0)
@@ -466,7 +464,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                     call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
                                 valr=valrm)
                     retcom = 1
-                    goto 30
+                    goto 999
                 endif
 !
                 fxi1 = (simoel+kcam/xk0)*exp(-xk0*xinf)-kcam/xk0- ptrac
@@ -483,9 +481,9 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                 if ((signf*signfi) .lt. zero) xsup = v0
                 if ((signf*signfi) .gt. zero) xinf = v0
 !
-200         end do
+            end do
             retcom = 1
-            goto 30
+            goto 999
 100         continue
             deppmo=v0
 !
@@ -502,7 +500,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
                 call utmess('A', 'COMPOR1_41', nk=3, valk=valkm, nr=3,&
                             valr=valrm)
                 retcom = 1
-                goto 30
+                goto 999
             endif
 !
 !
@@ -510,11 +508,11 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !     -- REACTUALISATION DES CONTRAINTES
             sigpmo = (sigmmo+kcam/xk0)*exp(xk0*(depsmo-deppmo))-kcam/ xk0
             call r8inir(6, 0.d0, sigpdv, 1)
-            do 119 k = 1, ndimsi
+            do k = 1, ndimsi
                 sigpdv(k) = sigel(k)/(1.d0+(3.d0*deuxmu/2.d0*deppmo)/ (m*m*(sigpmo-pcrp(1)-ptrac)&
                             &))
                 sigp(k) = sigpdv(k)-sigpmo*kron(k)
-119         end do
+            end do
 !
 !
 ! ---- V(3) CONTRAINTE VOLUMIQUE
@@ -522,9 +520,9 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !
 ! ---- V(4) CONTRAINTE EQUIVALENTE
             sieqp = 0.0d0
-            do 440 k = 1, ndimsi
+            do k = 1, ndimsi
                 sieqp = sieqp + sigpdv(k)**2.d0
-440         continue
+            end do
             pcrp(4) = sqrt(1.5d0*sieqp)
 !
 ! ---- V(5) DEFORMATION PLASTIQUE VOLUMIQUE
@@ -532,9 +530,9 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !
 ! ---- V(6) DEFORMATION PLASTIQUE EQUIVALENTE
             depseq = 0.0d0
-            do 450 k = 1, ndimsi
+            do k = 1, ndimsi
                 depseq = depseq + depsdv(k)*depsdv(k)
-450         continue
+            end do
             depseq = sqrt(2.d0/3.d0*depseq)
             pcrp(6) = pcrm(6) + depseq
 !
@@ -581,14 +579,14 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !     -- 7.1 CALCUL DE DSIDEP(6,6)-ELASTIQUE:
 !     ---------------------------------------
         if (matr .eq. 0) then
-            do 127 k = 1, 3
-                do 128 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l) = xk0*simoel+kcam-deuxmu/3.d0
-128             end do
-127         end do
-            do 129 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = dsidep(k,k)+deuxmu
-129         end do
+            end do
         endif
 !
 !     -- 7.2 CALCUL DE DSIDEP(6,6)-EN VITESSE :
@@ -599,51 +597,51 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !     -- 7.2.1 CALCUL DU MODULE ELASTOPLASTIQUE H
 !
             valm = 0.d0
-            do 158 i = 1, ndimsi
+            do i = 1, ndimsi
                 valm = valm + sigmdv(i)**2
-158         end do
+            end do
 !
             h = 4.d0*m**4*(sigmmo-ptrac)*(sigmmo-ptrac-pcrm(1))* (xk0*(sigmmo-ptrac-pcrm(1))+xk*p&
                 &crm(1))+deuxmu*9.d0*valm
 !
 !
 !     -- 7.2.2 CALCUL D'UN TERME INTERMEDIAIRE
-            do 160 k = 1, 3
+            do k = 1, 3
                 a(k) = 0.d0
-160         end do
-            do 130 k = 1, 3
-                a(k)=-deux*xk0*m*m*(sigmmo-ptrac)*(sigmmo-ptrac-pcrm(&
-                1)) *kron(k)+ 3.d0*deuxmu*sigmdv(k)
-130         end do
+            end do
+            do k = 1, 3
+                a(k)=-deux*xk0*m*m*(sigmmo-ptrac)*(sigmmo-ptrac-pcrm(1))*kron(k)+&
+                     3.d0*deuxmu*sigmdv(k)
+            end do
             call r8inir(3, 0.d0, aa, 1)
-            do 131 k = 4, ndimsi
+            do k = 4, ndimsi
                 aa(k) = 3.d0*deuxmu*sigmdv(k)
-131         end do
+            end do
 !
 !     -- 7.2.3 CALCUL DES TERMES DE DSIDEP
             call r8inir(ndimsi*ndimsi, 0.d0, dsidep, 1)
-            do 132 k = 1, 3
-                do 133 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l)=xk0*(sigmmo-ptrac)-deuxmu/3.d0-a(k)*a(&
                     l)/h
-133             end do
-132         end do
-            do 134 k = 1, 3
-                do 135 l = 4, ndimsi
+                end do
+            end do
+            do k = 1, 3
+                do l = 4, ndimsi
                     dsidep(k,l) = -a(k)*aa(l)
                     dsidep(k,l) = dsidep(k,l)/h
                     dsidep(l,k) = dsidep(k,l)
-135             end do
-134         end do
-            do 136 k = 4, ndimsi
-                do 137 l = 4, ndimsi
+                end do
+            end do
+            do k = 4, ndimsi
+                do l = 4, ndimsi
                     dsidep(k,l) = -aa(k)*aa(l)
                     dsidep(k,l) = dsidep(k,l)/h
-137             end do
-136         end do
-            do 138 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = deuxmu + dsidep(k,k)
-138         end do
+            end do
 !
         endif
 !
@@ -653,9 +651,9 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !     -- 7.2.1 CALCUL DU MODULE ELASTOPLASTIQUE H
 !
             valp = 0.d0
-            do 159 i = 1, ndimsi
+            do i = 1, ndimsi
                 valp = valp + sigpdv(i)**2
-159         end do
+            end do
 !
             h = 4.d0*m**4*(sigpmo-ptrac)*(sigpmo-ptrac-pcrp(1))* (xk0*(sigpmo-ptrac-pcrp(1))+xk*p&
                 &crp(1))+deuxmu*9.d0*valp
@@ -664,48 +662,48 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
             call r8inir(3, 0.d0, a, 1)
             call r8inir(3, 0.d0, aa, 1)
 !
-            do 4130 k = 1, 3
+            do k = 1, 3
                 a(k) = -deux*xk0*m*m*(sigpmo-ptrac)*(sigpmo-ptrac- pcrp(1)) *kron(k)+ 3.d0*deuxmu&
                        &*sigpdv(k)
-4130         end do
+            end do
 !
-            do 4131 k = 4, ndimsi
+            do k = 4, ndimsi
                 aa(k) = 3.d0*deuxmu*sigpdv(k)
-4131         end do
+            end do
 !
 !     -- 7.2.3 CALCUL DES TERMES DE DSIDEP
             call r8inir(ndimsi*ndimsi, 0.d0, dsidep, 1)
-            do 4132 k = 1, 3
-                do 4133 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l)=xk0*(sigpmo-ptrac)-deuxmu/3.d0-a(k)*a(&
                     l)/h
-4133             end do
-4132         end do
-            do 4134 k = 1, 3
-                do 4135 l = 4, ndimsi
+                end do
+            end do
+            do k = 1, 3
+                do l = 4, ndimsi
                     dsidep(k,l) = -a(k)*aa(l)
                     dsidep(k,l) = dsidep(k,l)/h
                     dsidep(l,k) = dsidep(k,l)
-4135             end do
-4134         end do
-            do 4136 k = 4, ndimsi
-                do 4137 l = 4, ndimsi
+                end do
+            end do
+            do k = 4, ndimsi
+                do l = 4, ndimsi
                     dsidep(k,l) = -aa(k)*aa(l)
                     dsidep(k,l) = dsidep(k,l)/h
-4137             end do
-4136         end do
-            do 4138 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = deuxmu + dsidep(k,k)
-4138         end do
+            end do
 !
         endif
 !     -- 7.3 CALCUL DE DSIDEP(6,6)-MATRICE COHERENTE :
 !     ----------------------------------------------
         if (matr .eq. 3) then
             sieqp = 0.0d0
-            do 300 k = 1, ndimsi
+            do k = 1, ndimsi
                 sieqp = sieqp + sigpdv(k)**2
-300         end do
+            end do
             sieqp = sqrt(1.5d0*sieqp)
             diff2 = abs((pcrp(1)-sigpmo)/pcrp(1))
             if (diff2 .lt. crit(3)) then
@@ -715,60 +713,60 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !     -- CALCUL DE Q+
 !     -- CALCUL DU TENSEUR HH QUI MULTIMPLIE LA DEFORMATION
                 call r8inir(6*6, 0.d0, ses, 1)
-                do 1000 k = 1, ndimsi
-                    do 1001 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         ses(k,l) = 1.d0/2.d0*( sigpdv(k)*sigel(l)+ sigel(k)*sigpdv(l))
-1001                 end do
-1000             end do
+                    end do
+                end do
                 call r8inir(6*6, 0.d0, hh, 1)
-                do 301 k = 1, ndimsi
-                    do 302 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         hh(k,l) = -deuxmu*3.d0*ses(k,l)/2.d0/sieleq/ sieqp
-302                 end do
-301             end do
-                do 303 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     hh(k,k) = deuxmu+hh(k,k)
-303             end do
+                end do
                 if (ndim .eq. 2) then
                     hh(5,5) = 1.d0
                     hh(6,6) = 1.d0
                 endif
 !     -- INVERSE DE HH
                 call r8inir(6*6, 0.d0, hhm, 1)
-                do 304 k = 1, 6
+                do k = 1, 6
                     hhm(k,k)=1.d0
-304             end do
+                end do
                 call mgauss('NFWP', hh, hhm, 6, 6,&
                             6, rbid, iret)
 !
 !     -- CALCUL DU TENSEUR GG QUI MULTIMPLIE LA CONTRAINTE
                 call r8inir(6*6, 0.d0, gg, 1)
                 call r8inir(6*6, 0.d0, sps, 1)
-                do 1002 k = 1, ndimsi
-                    do 1003 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         sps(k,l) = sigpdv(k)*sigpdv(l)
-1003                 end do
-1002             end do
-                do 305 k = 1, ndimsi
-                    do 306 l = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         gg(k,l) = -3.d0*sieleq*sps(k,l)/2.d0/sieqp**3
-306                 end do
-305             end do
-                do 307 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     gg(k,k) = sieleq/sieqp + gg(k,k)
-307             end do
+                end do
 !     --  MATRICE DE PROJECTION SUR L'ESPACE DES CONTRAINTES
 !     -- DEVIATORIQUES
                 call r8inir(6*6, 0.d0, v, 1)
-                do 315 k = 1, 3
-                    do 316 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         v(k,l) = -1.d0/3.d0
                         v(l,k) = v(k,l)
-316                 end do
-315             end do
-                do 317 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     v(k,k) = v(k,k) + 1.d0
-317             end do
+                end do
 !     --  PRODUIT DE LA MATRICE DE PROJECTION SUR L'ESPACE
 !     --  DES CONTRAINTES DEVIATORIQUES PAR GG
                 call r8inir(6*6, 0.d0, d1g, 1)
@@ -784,55 +782,55 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !     --  DES CONTRAINTES DEVIATORIQUES PAR LA MATRICE IDENTITE
 !     --  D'ORDRE 2
                 call r8inir(6*6, 0.d0, id2, 1)
-                do 308 k = 1, 3
-                    do 309 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         id2(k,l) = -1.d0/3.d0/xk0/sigpmo
-309                 end do
-308             end do
+                    end do
+                end do
 !     -- SOMME DES TERMES DEVIATORIQUE ET HYDROSTATIQUE
                 call r8inir(6*6, 0.d0, devhyd, 1)
-                do 310 k = 1, ndimsi
-                    do 311 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         devhyd(k,l) = d1ghhm(k,l)/deuxmu + id2(k,l)
-311                 end do
-310             end do
+                    end do
+                end do
                 if (ndim .eq. 2) then
                     devhyd(5,5) = 1.d0
                     devhyd(6,6) = 1.d0
                 endif
 !     -- INVERSE DE LA SOMME DES TERMES DEVIATORIQUE ET HYDROSTATIQUE
                 call r8inir(6*6, 0.d0, devhym, 1)
-                do 312 k = 1, 6
+                do k = 1, 6
                     devhym(k,k)=1.d0
-312             end do
+                end do
                 call mgauss('NFWP', devhyd, devhym, 6, 6,&
                             6, rbid, iret)
 !     -- TERMES DE L'OPERATEUR TANGENT
                 call r8inir(6*6, 0.d0, dsidep, 1)
-                do 313 k = 1, 6
-                    do 314 l = 1, 6
+                do k = 1, 6
+                    do l = 1, 6
                         dsidep(k,l) = devhym(k,l)
-314                 end do
-313             end do
+                    end do
+                end do
             else
 !
 !      ---7.4 OPERATEUR TANGENT COHERENT CAS GENERAL
 !      -- CALCUL DES INCREMENTS DE P ET DE S
                 deltap = sigpmo - sigmmo
                 call r8inir(6, 0.d0, deltas, 1)
-                do 140 k = 1, ndimsi
+                do k = 1, ndimsi
                     deltas(k)=sigpdv(k)-sigmdv(k)
-140             end do
+                end do
 !
 !     --  CALCUL DE VECTEURS INTERMEDIAIRES
                 spards = 0.d0
-                do 141 k = 1, ndimsi
+                do k = 1, ndimsi
                     spards = spards+deltas(k)*sigpdv(k)
-141             end do
+                end do
                 call r8inir(6, 0.d0, tplus, 1)
-                do 142 k = 1, ndimsi
+                do k = 1, ndimsi
                     tplus(k) = sigpdv(k) + deltas(k)
-142             end do
+                end do
 !
 !      -- 7.4.1 TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE
                 hp = 4.d0*m**4*xk*sigpmo*pcrp(1)*(sigpmo-pcrp(1))
@@ -856,43 +854,31 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !     -- CALCUL DE LA MATRICE CC-SYMETRISATION DE TPLUS.I
 !
                 call r8inir(6*6, 0.d0, cc, 1)
-                do 172 k = 1, ndimsi
-                    do 173 l = 1, ndimsi
-                        cc(k,l)=(tplus(k)*kron(l)+kron(k)*tplus(l))/&
-                        2.d0
-173                 end do
-172             end do
-!          DO 172 K=1,3
-!          DO 173 L=1,3
-!              CC(K,L)=(TPLUS(K)+TPLUS(L))/2.D0
-! 173  CONTINUE
-! 172  CONTINUE
-!          DO 174 K=1,3
-!          DO 175 L=4,NDIMSI
-!              CC(K,L)=TPLUS(L)/2.D0
-!              CC(L,K)=CC(K,L)
-! 175  CONTINUE
-! 174  CONTINUE
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
+                        cc(k,l)=(tplus(k)*kron(l)+kron(k)*tplus(l))/2.d0
+                    end do
+                end do
 !
 !     -- CALCUL DES TERMES D'UNE MATRICE INTERMEDIAIRE C
 !
                 call r8inir(6*6, 0.d0, c, 1)
-                do 170 k = 1, ndimsi
-                    do 171 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         c(k,l) = 9.d0/2.d0/(hp+xa)*(sigpdv(k)*tplus(l) + tplus(k)*sigpdv(l))
-171                 end do
-170             end do
-                do 149 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     c(k,k) = c(k,k)+1.d0/deuxmu+xc+xd
-149             end do
+                end do
 !
 !     -- ASSEMBLAGE DES TERMES POUR LA PARTIE DEVIATORIQUE
                 call r8inir(6*6, 0.d0, ee, 1)
-                do 180 k = 1, ndimsi
-                    do 181 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         ee(k,l) = c(k,l) - rap*cc(k,l)
-181                 continue
-180             continue
+                    end do
+                end do
 !
 !      -- TERMES NECESSAIRES A LA PARTIE HYDROSTATIQUE
                 xu = 2.d0*m**2*xk*pcrp(1)
@@ -913,73 +899,72 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 !
 !     --  VECTEUR INTERMEDIAIRE
                 call r8inir(6, 0.d0, fv, 1)
-                do 190 k = 1, ndimsi
+                do k = 1, ndimsi
                     fv(k)=3.d0*xf/xe*sigpdv(k)-ct*kron(k)/3.d0
-190             end do
+                end do
 !     -- SYMMETRISATION DEFV ET SA PROJECTION SUR L'ESPACE
 !     -- DES CONTRAINTES HYDROSTATIQUES
                 call r8inir(6*6, 0.d0, ffi, 1)
-                do 195 k = 1, 3
-                    do 196 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         ffi(k,l) = -(1.d0/3.d0)*(fv(k)+fv(l))/2.d0
-196                 end do
-195             end do
-                do 197 k = 1, 3
-                    do 198 l = 4, ndimsi
+                    end do
+                end do
+                do k = 1, 3
+                    do l = 4, ndimsi
                         ffi(k,l) = -(1.d0/3.d0)*fv(l)/2.d0
                         ffi(l,k) = ffi(k,l)
-198                 end do
-197             end do
+                    end do
+                end do
 !     --  MATRICE DE PROJECTION SUR L'ESPACE DES CONTRAINTES
 !     -- DEVIATORIQUES
                 call r8inir(6*6, 0.d0, v, 1)
-                do 185 k = 1, 3
-                    do 186 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         v(k,l) = -1.d0/3.d0
                         v(l,k) = v(k,l)
-186                 end do
-185             end do
-                do 187 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     v(k,k) = v(k,k) + 1.d0
-187             end do
+                end do
 !     -- PROJECTION DE EE SUR L'ESPACE DES CONTRAINTES
 !     -- DEVIATORIQUES
                 call r8inir(6*6, 0.d0, s, 1)
                 call promat(ee, 6, ndimsi, ndimsi, v,&
                             6, ndimsi, ndimsi, s)
 !
-!C
 !     -- COMBINAISON DES DEUX PARTIES DEVIATORIQUE ET
 !     -- HYDROSTATIQUE
                 call r8inir(6*6, 0.d0, t, 1)
-                do 204 k = 1, ndimsi
-                    do 205 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         t(k,l) = s(k,l)+ ffi(k,l)
-205                 end do
-204             end do
+                    end do
+                end do
                 if (ndim .eq. 2) then
                     t(5,5) = 1.d0
                     t(6,6) = 1.d0
                 endif
 !     -- INVERSE DE LA MATRICE T
                 call r8inir(6*6, 0.d0, vv, 1)
-                do 108 k = 1, 6
+                do k = 1, 6
                     vv(k,k)=1.d0
-108             end do
+                end do
                 call mgauss('NFWP', t, vv, 6, 6,&
                             6, rbid, iret)
 !     --  7.3.3 CALCUL DES TERMES DSIDEP L'OPERATEUR TANGENT
                 call r8inir(6*6, 0.d0, dsidep, 1)
-                do 106 k = 1, 6
-                    do 107 l = 1, 6
+                do k = 1, 6
+                    do l = 1, 6
                         dsidep(k,l) = vv(k,l)
-107                 end do
-106             end do
+                    end do
+                end do
 !
             endif
         endif
     endif
 ! ======================================================================
- 30 continue
+999 continue
 ! =====================================================================
 end subroutine

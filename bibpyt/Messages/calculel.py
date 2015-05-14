@@ -177,10 +177,6 @@ Conseil :
  Vérifiez que la structure de données %(k1)s est bien celle qu'il faut utiliser.
 """),
 
-    31 : _(u"""
-  La température n'est pas correctement renseignée
-"""),
-
     32 : _(u"""
 Erreur utilisateur :
   -> L'utilisation de la commande %(k1)s avec l'option %(k5)s pour

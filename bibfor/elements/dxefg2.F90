@@ -96,7 +96,7 @@ subroutine dxefg2(pgl, sigt)
                 if (iret.eq.0) call utmess('F','CALCULEL3_18')
 !               -- sinon, il n'y a rien a calculer
                 ASSERT(igau.eq.1)
-                goto 9999
+                goto 999
             endif
 
 
@@ -104,7 +104,7 @@ subroutine dxefg2(pgl, sigt)
             if (iretm .ne. 0) tmoypg=(tinfpg+tsuppg)/2.d0
 !
             if (iret1 .eq. 1) then
-                call utmess('F', 'CALCULEL_31')
+                call utmess('F', 'COMPOR5_43')
             else
 !
 !  --          LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON
@@ -126,6 +126,6 @@ subroutine dxefg2(pgl, sigt)
         end do
     end if
 
-9999 continue
+999 continue
 
 end subroutine
