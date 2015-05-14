@@ -37,12 +37,14 @@ except:
 
 from Messages.context_info import message_context_concept
 from Utilitai.string_utils import cut_long_lines, copy_text_to, clean_string
+from Utilitai.utils import get_time
 from Execution.strfunc import convert, ufmt, to_unicode
 from Execution.E_Exception import ST
 
 from Noyau.N_types import force_list
 from Noyau.N_utils import Singleton
 
+DEBUG = False
 CENTER = 1
 DECORATED = 2
 ALL_UNIT = 4
@@ -641,6 +643,9 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         newtxt = format['final'] % dmsg
         # on décale
         l_txt = [format['decal'] + line for line in newtxt.splitlines()]
+        if DEBUG:
+            l_txt.append('...' + ' ' * 50 + \
+                         ' {!s} [pid {!s}]'.format(get_time(), os.getpid()))
 
         return clean_string(os.linesep.join(l_txt))
 

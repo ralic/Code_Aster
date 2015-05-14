@@ -172,6 +172,12 @@ def send_file(fname, dest):
     proc = Popen(["scp", "-rBCq", "-o", "StrictHostKeyChecking=no", fname, dst])
     return proc.wait()
 
+def get_time():
+    """Return the current time with milliseconds"""
+    ct =  time.time()
+    msec = (ct - long(ct)) * 1000
+    return time.strftime('%H:%M:%S') + '.%03d' % msec
+
 
 if __name__ == '__main__':
     npar = ('X', 'Y',)
