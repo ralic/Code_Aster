@@ -662,6 +662,9 @@ void DEFP( ASABRT, asabrt, _IN INTEGER *iret )
      * the processes are not interrupted.
      * That's why a global flag is used to by-pass `MPI_Finalize` in
      * case of error.
+     * But the same problem appears if `MPI_Finalize` is called before
+     * a `MPI_Abort`. That's why a call to asmpi_check has been added before
+     * calling MPI_Finalize.
      *
      * to test MPI_Abort : http://www.netlib.org/blacs/blacs_errata.html
      */
@@ -678,14 +681,17 @@ void terminate( void )
 {
     /*! Function registered using atexit() in main.
      */
-    printf("End of the Code_Aster execution");
+    INTEGER dummy=0;
+    printf("End of the Code_Aster execution\n");
 #ifdef _USE_MPI
     if ( gErrFlg == 0 ) {
-        printf(" - MPI exits normally\n");
+        /* see help of asabrt */
+        CALL_ASMPI_CHECK(&dummy);
+        printf("Code_Aster MPI exits normally\n");
         MPI_Errhandler_free(&errhdlr);
         MPI_Finalize();
     } else {
-        printf(" - MPI exits with errors\n");
+        printf("Code_Aster MPI exits with errors\n");
     }
 #endif
     printf("\n");

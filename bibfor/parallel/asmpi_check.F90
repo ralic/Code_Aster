@@ -55,7 +55,7 @@ subroutine asmpi_check(iret)
     mpi_int :: term
     integer :: i, nbterm, nbproc, np1, resp0
     mpi_int :: nbpro4, rank, istat, mpicou, wki(1), nbv, ip4
-    real(kind=8) :: valr(1), tres, timout, t0, tf
+    real(kind=8) :: tres, timeout, t0, tf
     aster_logical, pointer :: isterm(:) => null()
     mpi_int, pointer :: diag(:) => null()
     mpi_int, pointer :: request(:) => null()
@@ -77,10 +77,10 @@ subroutine asmpi_check(iret)
         AS_ALLOCATE(vi4=request, size=nbproc)
 
         call uttrst(tres)
-        timout = tres * 0.2d0
-        if (timout < 0) then
-            timout = 120.
-            call utmess('A', 'APPELMPI_94', sr=timout)
+        timeout = tres * 0.2d0
+        if (timeout < 0) then
+            timeout = 120.
+            call utmess('A', 'APPELMPI_94', sr=timeout)
         endif
 
 !       Ask each processor for its status
@@ -112,10 +112,9 @@ subroutine asmpi_check(iret)
             lcont = nbterm .lt. np1
 !           timeout
             tf = asmpi_wtime()
-            if (lcont .and. (tf - t0) .gt. timout) then
+            if (lcont .and. (tf - t0) .gt. timeout) then
                 lcont = .false.
-                valr(1) = timout
-                call utmess('E', 'APPELMPI_97', sr=valr(1))
+                call utmess('E', 'APPELMPI_97', sr=timeout)
                 do i = 1, np1
                     if (.not. isterm(i)) then
                         call utmess('E+', 'APPELMPI_96', si=i)
