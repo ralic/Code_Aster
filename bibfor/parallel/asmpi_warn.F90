@@ -22,6 +22,7 @@ subroutine asmpi_warn(iexc)
 #include "asterf_types.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_split_comm.h"
+#include "asterc/asabrt.h"
 #include "asterfort/asmpi_check.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/asmpi_status.h"
@@ -30,11 +31,19 @@ subroutine asmpi_warn(iexc)
 #include "asterfort/utmess.h"
     integer, intent(in) :: iexc
 !-----------------------------------------------------------------------
-!     FONCTION REALISEE : MPI COMM WARN
-!       UN PROCESSEUR A RENCONTRE UNE ERREUR, IL EMET SON MESSAGE
-!       ET ENVOIE L'INFO AU PROC #0.
+!   Function : MPI COMM WARN
+!       A processor raised an error, it emits the message
+!       and send the information to proc #0.
+!       iexc = 0 (stop with abort)
+!       iexc = 1 (raise an exception)
 !-----------------------------------------------------------------------
-#if defined(_USE_MPI) && !defined(ASTER_DISABLE_MPI_CHECK)
+#ifdef _USE_MPI
+!
+! Si on désactive le controle des erreurs entre processeurs, on fait abort
+!
+# ifdef ASTER_DISABLE_MPI_CHECK
+    call asabrt(6)
+# else
 !
 #include "mpif.h"
 #include "asterf_constant.h"
@@ -84,6 +93,7 @@ subroutine asmpi_warn(iexc)
 !     INUTILE DE TESTER IRET, ON SAIT QU'IL Y A UNE ERREUR
 !
 999  continue
+# endif
 #else
     integer :: idummy
     idummy = iexc
