@@ -53,6 +53,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
     real(kind=8) :: p1, p2, p3, p4, p5, xxg5(20), xyg5(20), xzg5(20)
     real(kind=8) :: pxg5(20), xa, xb
     real(kind=8) :: zero, unquar, undemi, un, deux, xno(3*27), vol, a2, b2
+    real(kind=8) :: untiers
 ! -----  FONCTIONS FORMULES
 #define t(u) 2.0d0*(u) - 1.0d0
 ! DEB ------------------------------------------------------------------
@@ -64,6 +65,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
     undemi = 0.5d0
     un = 1.0d0
     deux = 2.0d0
+    untiers = 1.d0/3.d0
     rac5 = sqrt(5.d0)
 !
 !     -- CALCUL DE NBPG,NDIM,VOL,NNO,XNO :
@@ -410,9 +412,9 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
             pxg5(5) = 0.236926885056189d0
 !         IL FAUT MULTIPLIER LES POIDS PAR 0.5 POUR OBTENIR VOL=1
             do 73 iz = 1, 5
-                xpg(iz) = 0.d0
-                ypg(iz) = 0.d0
-                zpg(iz) = xxg5(iz)
+                xpg(iz) = xxg5(iz)
+                ypg(iz) = untiers
+                zpg(iz) = untiers
                 hpg(iz) = pxg5(iz)*0.5d0
 73          continue
             goto 170

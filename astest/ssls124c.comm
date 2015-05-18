@@ -153,6 +153,35 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 ),
           )
 
+CHAMEL=CALC_CHAM_ELEM( MODELE=MODMEC31,
+                                                MAILLE='M1',
+                                                OPTION='COOR_ELGA' )
+
+TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=CHAMEL,
+                                                 NOM_CMP='X',
+                                                 MAILLE='M1',
+                                                 POINT=1,
+                                                 REFERENCE='ANALYTIQUE',
+                                                 VALE_REFE=6.66666666667,
+                                                 VALE_CALC=6.66666666667,
+                                               ),
+                                           _F(CHAM_GD=CHAMEL,
+                                                 NOM_CMP='Y',
+                                                 MAILLE='M1',
+                                                 POINT=2,
+                                                 REFERENCE='ANALYTIQUE',
+                                                 VALE_REFE=3.33333333333333,
+                                                 VALE_CALC=3.33333333333333,
+                                               ),
+                                           _F(CHAM_GD=CHAMEL,
+                                                 NOM_CMP='Z',
+                                                 MAILLE='M1',
+                                                 POINT=5,
+                                                 REFERENCE='ANALYTIQUE',
+                                                 VALE_REFE=9.53089922969332,
+                                                 VALE_CALC=9.53089922969332,
+                                               )))
+
 # CAS 2 :
 
 h=5.0
