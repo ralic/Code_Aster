@@ -22,6 +22,8 @@ subroutine eclpgr()
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/eclpgc.h"
@@ -32,6 +34,7 @@ subroutine eclpgr()
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
@@ -44,10 +47,10 @@ subroutine eclpgr()
 !
 ! ---------------------------------------------------------------------
     real(kind=8) :: prec
-    integer :: ibid, iret, i, iains1, iains2
+    integer :: ibid, iret, i, iains1, iains2, cret
     integer :: nbsy, np, nc, isy
     integer :: nbordr, iordr
-    integer :: mxsy, iret2
+    integer :: mxsy, iret2, nbproc
     parameter(mxsy=15)
     character(len=8) :: mo1, ma1, ma2, kbid, resu, evo1, crit
     character(len=16) :: typres, nomcmd, nomsy1, nomsy2, licham(mxsy)
@@ -55,6 +58,7 @@ subroutine eclpgr()
     character(len=19) :: ligrel, ch1, ch2, prchno
     character(len=24) :: nomfpg, valk(2)
     integer, pointer :: nume_ordre(:) => null()
+    mpi_int :: msize
 ! DEB -----------------------------------------------------------------
 !
     call jemarq()
@@ -71,6 +75,12 @@ subroutine eclpgr()
     call getvid('ECLA_PG', 'MODELE_INIT', iocc=1, scal=mo1, nbret=ibid)
     call getvtx('ECLA_PG', 'NOM_CHAM', iocc=1, nbval=mxsy, vect=licham,&
                 nbret=nbsy)
+!
+    call asmpi_info(size=msize)
+    nbproc = to_aster_int(msize)
+    if ( nbproc.gt.1 ) then
+        call utmess('F', 'CALCULEL2_59')
+    endif
 !
     call dismoi('NOM_MAILLA', mo1, 'MODELE', repk=ma1)
 !

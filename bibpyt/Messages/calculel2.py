@@ -284,6 +284,10 @@ Conseil :
   Il faut utiliser le mot clé AFFE_VARC / CHAM_GD
 """),
 
+    59: _(u"""
+  La fonctionnalité ECLA_PG de CREA_RESU n'est pas disponible en parallèle.
+"""),
+
 
 
 
