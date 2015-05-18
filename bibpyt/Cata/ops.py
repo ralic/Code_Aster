@@ -156,9 +156,10 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
     code = None if CODE == 'NON' else 'TEST'
     commun_DEBUT_POURSUITE(
         self.jdc, PAR_LOT, IMPR_MACRO, code, DEBUG, IGNORE_ALARM, LANG, INFO)
+    only_syntax = False
     if aster_exists:
         self.jdc.set_poursuite(True)
-    only_syntax = self.jdc.syntax_check()
+        only_syntax = self.jdc.syntax_check()
 
     if self.codex:
         base = 'glob.1'
