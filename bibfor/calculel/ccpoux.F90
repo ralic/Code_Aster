@@ -83,13 +83,15 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
 !
     character(len=1) :: typcoe
     character(len=5) :: ch5
+    character(len=6) :: tsca
     character(len=8) :: k8b, curpar, ncmppe(4), tpf(11), charge, typcha
-    character(len=8) :: ncmpfo(11), modele, fmult
+    character(len=8) :: ncmpfo(11), modele, fmult, nomgd
     character(len=16) :: typemo
     character(len=19) :: chdynr, chacce
     character(len=24) :: chamgd, nochin, nochi1, chdepl, ligrmo
     character(len=8), pointer :: fcha(:) => null()
     real(kind=8), pointer :: nldepl(:) => null()
+    complex(kind=8), pointer :: nldepl_c(:) => null()
     character(len=8), pointer :: lcha(:) => null()
 !
     data         ncmppe/ 'G' , 'AG' , 'BG' , 'CG' /
@@ -116,16 +118,27 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     calpha = czero
     chdynr = '&&MECALM.M.GAMMA'
     if ((typesd.eq.'MODE_MECA'.and.typemo(1:8).eq.'MODE_DYN' ) .or. (typesd.eq.'MODE_ACOU')) then
+        call dismoi('NOM_GD', chdynr, 'CHAMP', repk=nomgd)
+        call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
         call jeveuo(chdynr//'.VALE', 'E', lvale)
         call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
         call rsexch('F', resuin, 'DEPL', nordre, chamgd,&
                     ier)
-        call jeveuo(chamgd(1:19)//'.VALE', 'L', vr=nldepl)
         call rsadpa(resuin, 'L', 1, 'OMEGA2', nordre,&
                     0, sjv=lfreq, styp=k8b)
-        do ii = 0, neq - 1
-            zr(lvale+ii) = -zr(lfreq)*nldepl(ii+1)
-        end do
+        if ( tsca.eq.'R' ) then
+            call jeveuo(chamgd(1:19)//'.VALE', 'L', vr=nldepl)
+            do ii = 0, neq - 1
+                zr(lvale+ii) = -zr(lfreq)*nldepl(ii+1)
+            end do
+        elseif( tsca.eq.'C' ) then
+            call jeveuo(chamgd(1:19)//'.VALE', 'L', vc=nldepl_c)
+            do ii = 0, neq - 1
+                zc(lvale+ii) = -zr(lfreq)*nldepl_c(ii+1)
+            end do
+        else
+            ASSERT(.false.)
+        endif
         call jelibe(chamgd(1:19)//'.VALE')
     else if (typesd.eq.'DYNA_TRANS') then
         call jeveuo(chdynr//'.VALE', 'E', lvale)
