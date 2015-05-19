@@ -32,13 +32,13 @@ subroutine asmpi_stop(imode)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 
     implicit none
+#include "asterf.h"
 #include "asterf_debug.h"
 #include "asterf_types.h"
+#include "asterc/asabrt.h"
 #include "asterfort/utmess.h"
-#include "asterf.h"
 #include "asterfort/assert.h"
 #include "asterfort/gtstat.h"
-#include "asterfort/jefini.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/ststat.h"
 #include "asterf_constant.h"
@@ -66,7 +66,7 @@ subroutine asmpi_stop(imode)
 #ifdef _USE_MPI
         call utmess('D', 'APPELMPI_99')
 #endif
-        call jefini('ERREUR')
+        call asabrt(6)
 !
     else if (imod2 == 2) then
         if (labort) then
