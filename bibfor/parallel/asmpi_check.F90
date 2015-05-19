@@ -49,6 +49,7 @@ subroutine asmpi_check(iret)
 #include "asterf_constant.h"
 #include "asterc/asmpi_irecv_i4.h"
 #include "asterc/asmpi_send_i4.h"
+#include "asterc/asmpi_cancel.h"
 #include "asterc/asmpi_test.h"
 
     aster_logical :: lcont
@@ -143,6 +144,10 @@ subroutine asmpi_check(iret)
                 ip4 = i
                 DEBUG_MPI('mpi_check:send status / to', wki(1), ip4)
                 call asmpi_send_i4(wki, nbv, ip4, ST_TAG_CNT, mpicou)
+            else
+!               cancel those have not answered
+                DEBUG_MPI('mpi_check', 'cancel request for proc', i)
+                call asmpi_cancel(request(i))
             endif
         end do
 !

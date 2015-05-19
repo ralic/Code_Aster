@@ -469,6 +469,19 @@ void DEFPP(ASMPI_TEST, asmpi_test, MPI_Fint *request, INTEGER4 *flag) {
 }
 
 /*!
+ * Wrapper around MPI_Cancel
+ * Do not check returncode because all errors raise
+ */
+void DEFP(ASMPI_CANCEL, asmpi_cancel, MPI_Fint *request) {
+    MPI_Request mpireq;
+#ifdef _USE_MPI
+    mpireq = MPI_Request_f2c(*request);
+    AS_ASSERT(MPI_Cancel(&mpireq) == MPI_SUCCESS);
+#endif
+    return;
+}
+
+/*!
  * Wrapper around MPI_Wtime
  * Do not check returncode because all errors raise
  */
@@ -694,7 +707,7 @@ void terminate( void )
         printf("Code_Aster MPI exits with errors\n");
     }
 #endif
-    printf("\n");
+    printf("Exited\n");
     return;
 }
 
