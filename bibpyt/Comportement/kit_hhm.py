@@ -44,8 +44,8 @@ loi = LoiComportement(
     nom_vari=None,  # depend des modeles de comportement
     mc_mater=None,
     modelisation=(
-        'D_PLAN_HHM', 'D_PLAN_HHMS', 'D_PLAN_HHMD', 'AXIS_HHM', 'AXIS_HHMS', 'AXIS_HHMD', '3D_HHM',
-        '3D_HHMS', '3D_HHMD', 'D_PLAN_HH2MD D_PLAN_HH2MS', 'AXIS_HH2MD', 'AXIS_HH2MS', '3D_HH2MD', '3D_HH2MS'),
+        'D_PLAN_HHM', 'D_PLAN_HHMS', 'D_PLAN_HHMD', 'AXIS_HHM', 'AXIS_HHMS', 'AXIS_HHMD', '3D_HHM', 'D_PLAN_HH2M_SI',
+        '3D_HHMS', '3D_HHMD', 'D_PLAN_HH2MD', 'D_PLAN_HH2MS', 'AXIS_HH2MD', 'AXIS_HH2MS', '3D_HH2MD', '3D_HH2MS', '3D_HH2M_SI',),
     deformation = ('PETIT'),
     nom_varc = None,
     algo_inte = ('SANS_OBJET'),

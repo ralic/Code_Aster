@@ -146,6 +146,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "TUYAU_6M",        # RESP. : PROIX J.M.PROIX
                                   "SHB",             # RESP. : DESROCHES X.DESROCHES
                                   "D_PLAN_HHM",      # RESP. : GRANET S.GRANET
+                                  "D_PLAN_HH2M_SI",   # RESP. : GRANET S.GRANET
                                   "D_PLAN_HM",       # RESP. : GRANET S.GRANET
                                   "D_PLAN_HM_SI",    # RESP. : GRANET S.GRANET
                                   "D_PLAN_THM",      # RESP. : GRANET S.GRANET
@@ -202,6 +203,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_HH2D",       # RESP. : GRANET S.GRANET
                                   "AXIS_HH2S",       # RESP. : GRANET S.GRANET
                                   "3D_HHM" ,         # RESP. : GRANET S.GRANET
+                                  "3D_HH2M_SI" ,      # RESP. : GRANET S.GRANET
                                   "3D_HM",           # RESP. : GRANET S.GRANET
                                   "3D_HM_SI",        # RESP. : GRANET S.GRANET
                                   "3D_THHM",         # RESP. : GRANET S.GRANET
