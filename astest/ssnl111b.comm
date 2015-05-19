@@ -314,6 +314,7 @@ TEST_RESU(RESU=(_F(INST=1.0,
                    VALE_REFE=0.,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.E-3,
+                   CRITERE = 'ABSOLU',
                    ),
                 ),
           )
