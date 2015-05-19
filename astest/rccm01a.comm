@@ -124,6 +124,36 @@ SNROC=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
 
 IMPR_TABLE(    TABLE=SNROC,)        
 
+# VALIDATION DU CALCUL DE SN AVEC TRAITEMENT DE PLUSIEURS SITUATIONS EN DONNEE ENTREE
+
+SNROC2 =POST_RCCM(TYPE_RESU='DETAILS',
+                INFO=2,
+                TITRE='CALCUL DE SN AVEC 2 SITUATION 1 EN DONNEE ENTREE',
+                TYPE_RESU_MECA='EVOLUTION',
+                OPTION='SN',
+                MATER=MAT,
+                TRANSITOIRE=(
+                _F(NB_OCCUR=1,
+                   TABL_RESU_MECA=T_RESU1,),
+                _F(NB_OCCUR=1,
+                   TABL_RESU_MECA=T_RESU1,),),);
+
+IMPR_TABLE(TABLE=SNROC2,);
+
+SNROC3 =POST_RCCM(TYPE_RESU='DETAILS',
+                INFO=2,
+                TITRE='CALCUL DE SN AVEC SITUATION 1 ET SITUATION 2 EN DONNEE ENTREE',
+                TYPE_RESU_MECA='EVOLUTION',
+                OPTION='SN',
+                MATER=MAT,
+                TRANSITOIRE=(
+                _F(NB_OCCUR=1,
+                   TABL_RESU_MECA=T_RESU1,),
+                _F(NB_OCCUR=1,
+                   TABL_RESU_MECA=T_RESU2,),),);
+
+IMPR_TABLE(TABLE=SNROC3,);
+
 
 # VALIDATION DU CALCUL EN FATIGUE
 FAT_A=POST_RCCM(TYPE_RESU_MECA='EVOLUTION',
@@ -380,6 +410,44 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='VALE_MAXI_PARAB',
            TYPE_TEST='MAX',
            TABLE=SNROC,)
+
+# SN POUR TRAITEMENT DE PLUSIEURS SITUATIONS EN DONNEE ENTREE
+
+TEST_TABLE(TABLE=SNROC2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           NOM_PARA='SN',
+           TYPE_TEST='MAX',
+           VALE_REFE=200.0,
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.0,);
+
+TEST_TABLE(TABLE=SNROC2,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           NOM_PARA='SN',
+           TYPE_TEST='MAX',
+           VALE_REFE=225.0,
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=225.0,);
+
+TEST_TABLE(TABLE=SNROC3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           NOM_PARA='SN',
+           TYPE_TEST='MAX',
+           VALE_REFE=200.0,
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.0,);
+
+TEST_TABLE(TABLE=SNROC3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           NOM_PARA='SN',
+           TYPE_TEST='MAX',
+           VALE_REFE=225.0,
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=225.0,);
 
 # FU - CAS A
 TEST_TABLE(REFERENCE='ANALYTIQUE',
