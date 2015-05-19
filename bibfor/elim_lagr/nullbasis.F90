@@ -104,6 +104,7 @@
     call skeleton_of_nullbasis( mat_c, mat_z, nnzmax_row ) 
 !   Sert à conserver la structure creuse lors des appels à MatZeroRows
     call MatSetOption(mat_z,MAT_KEEP_NONZERO_PATTERN,PETSC_TRUE, ierr) 
+    call matset_to_identity( mat_z ) 
 !
     allocate( val(nc), stat = ierr)
     ASSERT( ierr == 0 )
