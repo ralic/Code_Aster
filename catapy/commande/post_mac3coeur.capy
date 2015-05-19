@@ -19,7 +19,7 @@
 POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                        op=OPS("Mac3coeur.post_mac3coeur_ops.post_mac3coeur_ops"),
 
-           TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","TEST","900","1300","N4","EPR") ),
+           TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","TEST","900","1300","N4")),
            RESULTAT     = SIMP(statut='o',typ=evol_noli),                             # SD_RESULTAT
            INST         = SIMP(statut='o',typ='R', max=1),                            # INSTANT
            
