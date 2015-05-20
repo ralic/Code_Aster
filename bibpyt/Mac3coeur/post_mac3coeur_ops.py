@@ -484,7 +484,7 @@ def post_mac3coeur_ops(self, **args):
                 l_para = ['COOR_X', ] + \
                     _coeur.nomContactAssLame + _coeur.nomContactCuve
 
-                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, NOM_PARA=l_para)
+                IMPR_TABLE(UNITE=_unit, TABLE=_TAB3, NOM_PARA=l_para,FORMAT_R='E12.6',)
 
     # "
     #                                          MOT-CLE FACTEUR DEFORMATION
