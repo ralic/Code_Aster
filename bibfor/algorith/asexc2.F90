@@ -85,6 +85,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
     integer :: iarg
     character(len=24), pointer :: group_no(:) => null()
     character(len=8), pointer :: noeud(:) => null()
+    real(kind=8) :: correc
 !
 !     ------------------------------------------------------------------
 !
@@ -134,9 +135,9 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
             call getvr8(motfac, 'AXE', iocc=ioc, nbval=3, vect=dirsp0,&
                         nbret=n1)
             xnorm = zero
-            do 12 id = 1, 3
+            do id = 1, 3
                 xnorm = xnorm + dirsp0(id) * dirsp0(id)
- 12         continue
+            end do
             if (xnorm .lt. epsi) then
                 ier = ier + 1
                 call utmess('E', 'SEISME_4')
@@ -187,7 +188,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
         if (knat .eq. 'VITE') inat = 2
         if (knat .eq. 'DEPL') inat = 3
 !
-        do 14 id = 1, 3
+        do id = 1, 3
             dirsp0(id) = xnorm * dirsp0(id)
             if (abs(dirsp0(id)) .gt. epsi) then
                 ndir(id) = 1
@@ -209,13 +210,13 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             call utmess('E', 'SEISME_1', nk=2, valk=valk)
                             goto 20
                         endif
-                        do 22 is = 1, nsupp(id)
+                        do is = 1, nsupp(id)
                             if (nomsup(id,is) .eq. noeu) then
                                 ier = ier + 1
                                 call utmess('E', 'SEISME_7', sk=noeu)
                                 goto 20
                             endif
- 22                     continue
+                        end do
                         nsupp(id) = nsupp(id) + 1
                         nomsup(id,nsupp(id)) = noeu
                         nomspe(id,nsupp(id)) = nomsp0(id)
@@ -246,13 +247,13 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                         call jeveuo(jexnom(obj1, grnoeu), 'L', jdgn)
                         do 32 ino = 1, nno
                             call jenuno(jexnum(obj2, zi(jdgn+ino-1)), noeu)
-                            do 34 is = 1, nsupp(id)
+                            do is = 1, nsupp(id)
                                 if (nomsup(id,is) .eq. noeu) then
                                     ier = ier + 1
                                     call utmess('E', 'SEISME_7', sk=noeu)
                                     goto 32
                                 endif
- 34                         continue
+                            end do
                             nsupp(id) = nsupp(id) + 1
                             nomsup(id,nsupp(id)) = noeu
                             nomspe(id,nsupp(id)) = nomsp0(id)
@@ -264,7 +265,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                     AS_DEALLOCATE(vk24=group_no)
                 endif
             endif
- 14     continue
+        end do
 !
  10 end do
 !
@@ -275,16 +276,16 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
 !     --- NOM DES SUPPORTS PAR DIRECTION ---
     nbsupm = max(nsupp(1),nsupp(2),nsupp(3))
     call wkvect(knoeu, 'V V K8', 3*nbsupm, jkno)
-    do 54 is = 1, 3*nbsupm
+    do is = 1, 3*nbsupm
         zk8(jkno+is-1) = '        '
- 54 end do
-    do 50 id = 1, 3
+    end do
+    do id = 1, 3
         i = nbsupm*(id-1)
-        do 52 is = 1, nsupp(id)
+        do is = 1, nsupp(id)
             i = i + 1
             zk8(jkno+i-1) = nomsup(id,is)
- 52     continue
- 50 end do
+        end do
+    end do
 !
 !     --- INTERPOLATION DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
@@ -292,7 +293,7 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
         write(ifm,1020)
     endif
     call wkvect(kvspe, 'V V R', 3*nbsupm*nbmode, jvspe)
-    do 40 im = 1, nbmode
+    do im = 1, nbmode
         ii = 0
         amor = amort(im)
         omega2 = parmod(im,2)
@@ -300,15 +301,19 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
         freq = uns2pi * omega
         valpu(1) = amor
         valpu(2) = freq
-        if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
-        do 42 id = 1, 3
+        if (corfre) then 
+            correc = sqrt( un - amor*amor )
+        else
+            correc =1.
+        endif
+        do id = 1, 3
             iii = 0
             if (ndir(id) .eq. 1) then
-                do 44 is = 1, nsupp(id)
+                do is = 1, nsupp(id)
                     call fointe('F ', nomspe(id, is), 2, nompu, valpu,&
                                 resu, ier)
                     coef = dirspe(id,is)*echspe(id,is)
-                    resu = resu * coef
+                    resu = resu * coef * correc
                     if (nature(id,is) .eq. 2) resu = resu * omega
                     if (nature(id,is) .eq. 3) resu = resu * omega2
                     j = id + 3*(im-1) + 3*nbmode*(is-1)
@@ -329,10 +334,10 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                             endif
                         endif
                     endif
- 44             continue
+                end do
             endif
- 42     continue
- 40 end do
+        end do
+    end do
 !
 !     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
@@ -340,22 +345,26 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
         write(ifm,1320)
     endif
     call wkvect(kaspe, 'V V R', 3*nbsupm, jaspe)
-    do 60 id = 1, 3
+    do id = 1, 3
         j = nbsupm*(id-1)
         if (ndir(id) .eq. 1) then
             iii = 0
-            do 62 is = 1, nsupp(id)
+            do is = 1, nsupp(id)
                 coef = dirspe(id,is)*echspe(id,is)
                 valpu(1) = amort(nbmode)
                 valpu(2) = fcoup
-                if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
+                if (corfre) then 
+                    correc = sqrt( un - amor*amor )
+                else
+                    correc = 1. 
+                endif
                 omega = deuxpi * fcoup
                 call fointe('F ', nomspe(id, is), 2, nompu, valpu,&
                             resu, ier)
                 if (nature(id,is) .eq. 2) resu = resu * omega
                 if (nature(id,is) .eq. 3) resu = resu * omega * omega
                 j = j + 1
-                resu = resu * coef
+                resu = resu * coef * correc
                 zr(jaspe+j-1) = resu
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (iii .eq. 0) then
@@ -365,9 +374,9 @@ subroutine asexc2(motfac, nbocc, nbmode, parmod, amort,&
                         write(ifm,1430)nomsup(id,is),resu
                     endif
                 endif
- 62         continue
+            end do
         endif
- 60 end do
+    end do
 !
     1000 format(/,1x,'--- VALEURS DU SPECTRE ---')
     1020 format(1x,'MODE      FREQUENCE   AMORTISSEMENT   ',&

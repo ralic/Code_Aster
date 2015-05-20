@@ -41,7 +41,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
          AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r ),
 
          MASS_INER       =SIMP(statut='f',typ=table_sdaster ),
-         CORR_FREQ       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+         CORR_FREQ       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
 
          EXCIT           =FACT(statut='o',max='**',
            regles=(UN_PARMI('AXE','TRI_AXE','TRI_SPEC' ),),

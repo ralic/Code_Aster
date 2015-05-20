@@ -61,6 +61,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
     character(len=4) :: knat
     character(len=8) :: spect, nomspe(3), nompu(2)
     character(len=9) :: niveau
+    real(kind=8) :: correc
 !     ------------------------------------------------------------------
     data  nompu / 'AMOR' , 'FREQ'    /
     data   dir  / 'X' , 'Y' , 'Z' /
@@ -85,6 +86,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
         fcoup = uns2pi * sqrt(parmod(nbmode,2))
     endif
 !
+
     do 10 ioc = 1, nbocc
 !
         echspe(1) = un
@@ -101,9 +103,9 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
             call getvr8(motfac, 'AXE', iocc=ioc, nbval=3, vect=dirspe,&
                         nbret=n1)
             xnorm = zero
-            do 12 id = 1, 3
+            do id = 1, 3
                 xnorm = xnorm + dirspe(id) * dirspe(id)
- 12         continue
+            end do
             if (xnorm .lt. epsi) then
                 ier = ier + 1
                 call utmess('E', 'SEISME_4')
@@ -151,7 +153,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
         if (knat .eq. 'VITE') inat = 2
         if (knat .eq. 'DEPL') inat = 3
 !
-        do 14 id = 1, 3
+        do id = 1, 3
             dirspe(id) = xnorm * dirspe(id)
             if (abs(dirspe(id)) .gt. epsi) then
                 if (ndir(id) .ne. 0) then
@@ -163,7 +165,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
                 endif
                 nature(id) = inat
             endif
- 14     continue
+        end do
 !
  10 end do
 !
@@ -176,7 +178,7 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
         write(ifm,1000)
         write(ifm,1010)
     endif
-    do 20 im = 1, nbmode
+    do im = 1, nbmode
         ii = 0
         amor = amort(im)
         omega2 = parmod(im,2)
@@ -184,18 +186,22 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
         freq = uns2pi * omega
         valpu(1) = amor
         valpu(2) = freq
-        if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
-        do 22 id = 1, 3
+        if (corfre) then 
+            correc = sqrt( un - amor*amor )
+        else
+            correc = 1. 
+        endif
+        do id = 1, 3
             if (ndir(id) .eq. 1) then
                 call fointe('F ', nomspe(id), 2, nompu, valpu,&
                             resu, ier)
                 coef = dirspe(id)*echspe(id)
                 if (nature(id) .eq. 1) then
-                    valspe(id,im) = resu * coef
+                    valspe(id,im) = resu * coef * correc
                 else if (nature(id).eq.2) then
-                    valspe(id,im) = resu * coef * omega
+                    valspe(id,im) = resu * coef * omega * correc
                 else
-                    valspe(id,im) = resu * coef * omega2
+                    valspe(id,im) = resu * coef * omega2 * correc
                 endif
                 if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
                     if (ii .eq. 0) then
@@ -207,35 +213,39 @@ subroutine asexc1(motfac, nbocc, nbmode, parmod, amort,&
                     endif
                 endif
             endif
- 22     continue
- 20 end do
+        end do
+    end do
 !
 !     --- VALEURS ASYMPTOTIQUES DES SPECTRES ---
     if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') then
         write(ifm,1300)
         write(ifm,1310)
     endif
-    do 30 id = 1, 3
+    do id = 1, 3
         if (ndir(id) .eq. 1) then
             amor=amort(nbmode)
             valpu(1) = amor
             valpu(2) = fcoup
             omega = deuxpi * fcoup
-            if (corfre) valpu(2) = valpu(2) * sqrt( un - amor*amor )
+            if (corfre) then 
+                correc = sqrt( un - amor*amor )
+            else
+                correc = 1.
+            endif
             call fointe('F ', nomspe(id), 2, nompu, valpu,&
                         resu, ier)
             coef = dirspe(id)*echspe(id)
             if (nature(id) .eq. 1) then
-                asyspe(id) = resu * coef
+                asyspe(id) = resu * coef * correc
             else if (nature(id).eq.2) then
-                asyspe(id) = resu * coef * omega
+                asyspe(id) = resu * coef * omega * correc
             else
-                asyspe(id) = resu * coef * omega * omega
+                asyspe(id) = resu * coef * omega * omega * correc
             endif
             if (niveau .eq. 'TOUT     ' .or. niveau .eq. 'SPEC_OSCI') write(ifm, 1410)dir(id),&
                                                                       asyspe(id)
         endif
- 30 end do
+    end do
 !
     1000 format(/,1x,'--- VALEURS DU SPECTRE ---')
     1010 format(1x,&
