@@ -272,7 +272,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=0.00323963944463,
+                  VALE_CALC=0.00323164571657,
                   ),
           )
 
@@ -291,7 +291,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.00130909236888,
+                  VALE_CALC=0.00130585974692,
                   ),
           )
 
@@ -310,7 +310,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRY',
-                  VALE_CALC=0.000149148786609,
+                  VALE_CALC=0.000148773380394,
                   ),
           )
 
@@ -329,7 +329,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=9.44490024966E-08,
+                  VALE_CALC=9.41617548673E-08,
                   ),
           )
 
@@ -348,7 +348,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=1.51827620086E-07,
+                  VALE_CALC=1.51457530857E-07,
                   ),
           )
 
@@ -387,7 +387,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=9.05697416225E-06,
+                  VALE_CALC=9.03091705545E-06,
                   ),
           )
 
@@ -406,7 +406,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=7.21269617485E-06,
+                  VALE_CALC=7.19442289758E-06,
                   ),
           )
 
@@ -425,7 +425,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DRY',
-                  VALE_CALC=1.66329719803E-06,
+                  VALE_CALC=1.65860598054E-06,
                   ),
           )
 
@@ -474,7 +474,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DX',
-                  VALE_CALC=0.618249848478,
+                  VALE_CALC=0.618541129658,
                   ),
           )
 
@@ -492,7 +492,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.56926959151,
+                  VALE_CALC=0.570250453627,
                   ),
           )
 
@@ -510,7 +510,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRY',
-                  VALE_CALC=0.0963043562685,
+                  VALE_CALC=0.0962842143496,
                   ),
           )
 
@@ -528,7 +528,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DX',
-                  VALE_CALC=0.248796754735,
+                  VALE_CALC=0.24879675213,
                   ),
           )
 
@@ -546,7 +546,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.249410801297,
+                  VALE_CALC=0.249410800769,
                   ),
           )
 
@@ -582,7 +582,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DX',
-                  VALE_CALC=0.201280620252,
+                  VALE_CALC=0.201273081033,
                   ),
           )
 
@@ -600,7 +600,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DZ',
-                  VALE_CALC=0.224731456129,
+                  VALE_CALC=0.224730232078,
                   ),
           )
 
@@ -619,7 +619,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='ACCE_ABSOLU',
                   NOM_CMP='DRY',
-                  VALE_CALC=0.0118279731853,
+                  VALE_CALC=0.0118246724141,
                   ),
           )
 
@@ -768,7 +768,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DRY',
-                  VALE_CALC=19606618.1953,
+                  VALE_CALC=19548763.3778,
 
                   ),
           )
@@ -854,7 +854,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
-                  VALE_CALC=944490.024966,
+                  VALE_CALC=941617.548673,
                   ),
           )
 
@@ -874,7 +874,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   RESULTAT=REPGUP,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DZ',
-                  VALE_CALC=1518276.20086,
+                  VALE_CALC=1514575.30857,
                   ),
           )
 

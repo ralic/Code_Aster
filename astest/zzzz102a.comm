@@ -32,7 +32,7 @@ LBEWA=LIRE_FONCTION(     UNITE=19,
                PROL_DROITE='CONSTANT',    PROL_GAUCHE='EXCLU' )
 
 TEST_FONCTION(VALEUR=_F(VALE_REFE=-0.638,
-                        VALE_CALC=-0.638,
+                        VALE_CALC=-0.63800000000000,
                         PRECISION=1.E-3,
                         REFERENCE='ANALYTIQUE',
                         VALE_PARA=7.935,
@@ -88,7 +88,7 @@ SLBEWA=CALC_FONCTION(
 
 MSLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
 
-TEST_TABLE(VALE_CALC=35.655740052613,
+TEST_TABLE(VALE_CALC=35.6557400526,
            NOM_PARA='ACCE',
            TABLE=MSLBEWA,
            FILTRE=(_F(NOM_PARA='FONCTION',
@@ -104,7 +104,7 @@ TEST_TABLE(VALE_CALC=35.655740052613,
 
 VAL=6.38000E-01 * G
 TEST_FONCTION(VALEUR=_F(VALE_REFE=6.258778,
-                        VALE_CALC=6.259178,
+                        VALE_CALC=6.259178134193,
                         PRECISION=1.E-3,
                         REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 100.0),
@@ -150,7 +150,7 @@ OMEGA2=4. * pi * pi * FMAX * FMAX
 VAL= 6.38000E-01 / OMEGA2
 
 TEST_FONCTION(VALEUR=_F(VALE_REFE=1.61607288E-06,
-                        VALE_CALC=1.616176E-06,
+                        VALE_CALC=1.616175680899E-06,
                         PRECISION=1.E-3,
                         REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 100.0),
@@ -172,7 +172,7 @@ LBEWS=LIRE_FONCTION(     UNITE=18,
                PROL_DROITE='EXCLU',    PROL_GAUCHE='EXCLU'  )
 
 TEST_FONCTION(VALEUR=_F(VALE_REFE=1.0,
-                        VALE_CALC=1.0,
+                        VALE_CALC=1.000000000000,
                         PRECISION=1.E-3,
                         REFERENCE='ANALYTIQUE',
                         VALE_PARA=3.1,
@@ -233,7 +233,7 @@ SLBEWS=CALC_FONCTION(
 # ---------------------------------------------------------------
 
 TEST_FONCTION(VALEUR=_F(VALE_REFE=1.0,
-                        VALE_CALC=0.99985961,
+                        VALE_CALC=0.99985961064395,
                         PRECISION=1.E-3,
                         REFERENCE='ANALYTIQUE',
                         VALE_PARA=(1.E-2, 100.0),
@@ -633,39 +633,39 @@ SPECT_X=DEFI_NAPPE(   NOM_PARA='AMOR',
 
 #
 #
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.08405133,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.08405133087984,
                          VALE_PARA=(0.20000000000000001, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=0.04476387,
+                      _F(VALE_CALC=0.04476387403315,
                          VALE_PARA=(1.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=1.833227E-03,
+                      _F(VALE_CALC=1.833226849144E-03,
                          VALE_PARA=(5.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=2.742857E-04,
+                      _F(VALE_CALC=2.742856528838E-04,
                          VALE_PARA=(10.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=8.609706E-05,
+                      _F(VALE_CALC=8.609706341908E-05,
                          VALE_PARA=(15.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=4.311124E-05,
+                      _F(VALE_CALC=4.311123608539E-05,
                          VALE_PARA=(20.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=2.686936E-05,
+                      _F(VALE_CALC=2.686935974295E-05,
                          VALE_PARA=(25.0, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=1.934132E-05,
+                      _F(VALE_CALC=1.934132480986E-05,
                          VALE_PARA=(29.5, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
-                      _F(VALE_CALC=1.334950E-05,
+                      _F(VALE_CALC=1.334949866011E-05,
                          VALE_PARA=(35.5, 0.029999999999999999),
                          NOM_PARA=('FREQ', 'AMOR'),
                          FONCTION=SPECT2,),
@@ -1351,7 +1351,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM02,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX02,
-                     VALE_CALC=0.084356701,),
+                     VALE_CALC=0.0842807740134,),
           )
 
 #
@@ -1381,7 +1381,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM1,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX1,
-                     VALE_CALC=0.044744011345237,),
+                     VALE_CALC=0.0447638480023,),
           )
 
 #
@@ -1411,7 +1411,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM5,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX5,
-                     VALE_CALC= 1.8359792090449E-03,),
+                     VALE_CALC=0.00183322183302,),
           )
 
 #
@@ -1441,7 +1441,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM10,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX10,
-                     VALE_CALC= 2.7410890794057E-04,),
+                     VALE_CALC=0.000274285747923,),
           )
 
 #
@@ -1471,7 +1471,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM15,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX15,
-                     VALE_CALC= 8.63191793955E-05,),
+                     VALE_CALC=8.60969479687E-05,),
           )
 
 #
@@ -1501,7 +1501,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM20,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX20,
-                     VALE_CALC= 4.3195361169053E-05,),
+                     VALE_CALC=4.31112271697E-05,),
           )
 
 #
@@ -1531,7 +1531,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM25,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX25,
-                     VALE_CALC= 2.692262055671E-05,),
+                     VALE_CALC=2.68693573384E-05,),
           )
 
 #
@@ -1561,7 +1561,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM29,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX29,
-                     VALE_CALC= 1.9378298493322E-05,),
+                     VALE_CALC=1.93413192556E-05,),
           )
 
 #
@@ -1592,7 +1592,7 @@ NOM_CHAM='DEPL', RESULTAT=SISM35,
 TEST_RESU(CHAM_NO=_F(NOEUD='P2',
                      NOM_CMP='DX',
                      CHAM_GD=DEPLX35,
-                     VALE_CALC= 1.3368863021884E-05,),
+                     VALE_CALC=1.33494981286E-05,),
           )
 
 
