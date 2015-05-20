@@ -36,24 +36,17 @@ def C_RELATION( COMMAND ):
                                         "ELAS_VMIS_TRAC",
                                      )
     elif COMMAND =='DEFI_COMPOR' :
-                   return (             "ELAS",  #uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
-                                        "BETON_UMLV_FP",
-                                        "BETON_DOUBLE_DP",
-                                        "CORR_ACIER",
-                                        "ENDO_PORO_BETON",
-                                        "FLUA_PORO_BETON",
-                                        "GRANGER_FP",
-                                        "GRANGER_FP_V",
-                                        "GRANGER_FP_INDT",
-                                        "GRAN_IRRA_LOG",
-                                        "MAZARS_GC",
-                                        "VISC_IRRA_LOG",
-                                        "VMIS_CINE_GC",
-                                        "VMIS_CINE_LINE",
-                                        "VMIS_ISOT_LINE",
-                                        "VMIS_ISOT_TRAC",
-                                        "VMIS_ISOT_PUIS",
-                                     )
+                   return ( "ELAS",  #uniquement ce qui a du sens (cf doc) et qui fait l'objet d'un test
+                            "CORR_ACIER",
+                            "GRANGER_FP_INDT",
+                            "GRAN_IRRA_LOG",
+                            "MAZARS_GC",
+                            "VISC_IRRA_LOG",
+                            "VMIS_CINE_GC",
+                            "VMIS_CINE_LINE",
+                            "VMIS_ISOT_LINE",
+                            "VMIS_ISOT_TRAC",
+                            )
     else:
         native = [
                                         "ELAS",
