@@ -57,7 +57,7 @@ subroutine te0531(option,nomte)
     character(len=4) :: fami
     character(len=8) :: materi, nompar, nomres(2)
     character(len=32) :: phenom
-    aster_logical :: lmeca, pmf, grille, tuyau, barre, dkt, lplas
+    aster_logical :: lmeca, pmf, grille, tuyau, barre, coque, lplas
 
     nbcmp=1
     materi = ' '
@@ -71,7 +71,11 @@ subroutine te0531(option,nomte)
     pmf    = lteatt('TYPMOD2','PMF')
     tuyau  = lteatt('TUYAU'  ,'OUI')
     barre  = (nomte.eq.'MECA_BARRE')
-    dkt    = (nomte(1:4).eq.'MEDK')
+    if (grille) then
+        coque = .false.
+    else
+        coque  = lteatt('COQUE'  ,'OUI')
+    endif
 !
     call tecach('NNN', 'PMATERC', 'L', iret, iad=imate)
     call jevech('PDEFOPG', 'E', idefo)
@@ -101,7 +105,7 @@ subroutine te0531(option,nomte)
         nbsp = 1
     endif
 !
-    if (dkt .or. tuyau)then
+    if (coque .or. tuyau)then
 !
         nbcou=zi(jnbspi-1+1)
         if (lplas) then
