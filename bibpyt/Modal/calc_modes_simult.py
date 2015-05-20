@@ -70,6 +70,8 @@ def calc_modes_simult(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
 
     if OPTION == 'BANDE':
         motcles_calc_vp[type_vp] = calc_vp[type_vp]
+        if calc_vp['TABLE_'+type_vp] != None:
+            motcles_calc_vp['TABLE_'+type_vp] = calc_vp['TABLE_'+type_vp]
 
     motcles_calc_vp['SEUIL_' + type_vp] = calc_vp['SEUIL_' + type_vp]
 
