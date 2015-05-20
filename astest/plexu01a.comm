@@ -130,8 +130,8 @@ am_x = 1.E-8
 am_y = 1.E-8
 am_z = 1.E-8
 
-Lcoef = [am_x, am_y, am_z]
-Lamor = map(lambda x,y: x*y,Lrigi[0:3],Lcoef)
+Lcoef = [am_x, am_y, am_z, 0.0, 0.0, 0.0]
+Lamor = map(lambda x,y: x*y,Lrigi,Lcoef)
 Lrigi.extend(Lamor)
 print 'Lrigi=',Lrigi
 
@@ -142,7 +142,7 @@ ELEM = AFFE_CARA_ELEM(MODELE = MO,
                       RIGI_PARASOL=_F(GROUP_MA='DALLE',
                                     GROUP_MA_POI1 = 'PDALLE',
                                     COEF_GROUP=1.0,
-                                    CARA=('K_TR_D_N','A_T_D_N'),
+                                    CARA=('K_TR_D_N','A_TR_D_N'),
                                     EUROPLEXUS='OUI',
                                     VALE=Lrigi,
                                     COOR_CENTRE=(0.0,0.0,-1.16E+01,),),
@@ -188,9 +188,9 @@ NFAT=DEFI_FONCTION(NOM_PARA='INST',
                    );
 
 NFAR=DEFI_FONCTION(NOM_PARA='INST',
-                   VALE=(-10.,     10.,
-                          0.0,     0.0,
-                          10.,     -10.
+                   VALE=(-100000.0,     0.0,
+                          0.0,          0.0,
+                          100000.0,     0.0,
                         ),
                    );
 
@@ -209,7 +209,7 @@ U = CALC_EUROPLEXUS(
                      NFKT = NFKT,
                      NFKR = NFKR,
                      NFAT = NFAT,
-#                     NFAR = NFAR,
+                     NFAR = NFAR,
                     ),
    EXCIT=(_F(CHARGE=CH_PI,FONC_MULT=FONCCB,),),
    CALCUL = _F(TYPE_DISCRETISATION  ='UTIL',
