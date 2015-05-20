@@ -199,11 +199,11 @@ subroutine op0148()
     nnn = 1
     zi(inuor) = zi(jnuor)
     do i = 2, nbmr
-        if (zi(jnuor+i-1) .eq. zi(inuor+nnn-1)) goto 20
-        nnn = nnn + 1
-        zi(inuor+nnn-1) = zi(jnuor+i-1)
+        if (zi(jnuor+i-1) .ne. zi(inuor+nnn-1)) then
+            nnn = nnn + 1
+            zi(inuor+nnn-1) = zi(jnuor+i-1)
+        end if
     end do
- 20 continue
     nbmr = nnn
     do im = 1, nbm
         if (zi(inumo+im-1) .eq. zi(inuor)) then
