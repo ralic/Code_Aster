@@ -58,7 +58,6 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
 #include "asterfort/dvolu2.h"
 #include "asterfort/dvolu3.h"
 #include "asterfort/dvolu4.h"
-#include "asterfort/dvolu5.h"
     integer :: nsommx, icnc(nsommx+2, *), noeu1, noeu2
     integer :: nbelt, nbnoe
     integer :: tbelzo(nbelt), tbnozo(nbnoe)
@@ -205,8 +204,6 @@ subroutine dfort3(nsommx, icnc, noeu1, noeu2, tbelzo,&
                     voli = dvolu3(coorn,norm,coord1)
                 else if (nint.eq.2.and.nbi.eq.4) then
                     voli = dvolu2(coorn,norm)
-                else if (nint.eq.2.and.nbi.eq.6) then
-                    voli = dvolu5(nuef,coorn,norm,volume,coord1, coord2)
                 else if (nbi.eq.0) then
                     voli = 0.0d0
                 else
