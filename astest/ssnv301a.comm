@@ -21,10 +21,10 @@
 
 DEBUT(   CODE=_F(NIV_PUB_WEB='INTERNET'))
 
-MAYA=LIRE_MAILLAGE(FORMAT='MED', )
+MAYA=LIRE_MAILLAGE(FORMAT='MED' )
 
 MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
-                                
+
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'THERMIQUE',
                                         MODELISATION = '3D')
@@ -407,7 +407,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 MODEL2=AFFE_MODELE(    MAILLAGE=MAYA,
-                                
+
                                  AFFE=_F(  TOUT = 'OUI',
                                         PHENOMENE = 'MECANIQUE',
                                         MODELISATION = '3D')
@@ -520,11 +520,32 @@ CALCNL=STAT_NON_LINE(
                 ITER_LINE_MAXI = 3)
               )
 
-IMPR_RESU(RESU=(
-_F(RESULTAT=THERL),
-_F(RESULTAT=CALCNL),
-),
-FORMAT='MED',INFO=1)
+IMPR_RESU(RESU=(_F(RESULTAT=THERL),
+                _F(RESULTAT=CALCNL),),
+          FORMAT='MED',INFO=1)
+
+
+CALCNL=CALC_ERREUR(reuse =CALCNL,
+                 RESULTAT=CALCNL,
+                 INST= 5,
+                 OPTION=('ERME_ELEM'));
+
+
+
+
+# test de ERME_ELEM en non regression uniquement.
+# TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
+#                    NOM_CHAM='ERME_ELEM',
+#                    NUME_ORDRE=1,
+#                    NOM_CMP='TERMS2',
+#                    MAILLE='MA000120',
+#                    VALE_CALC=0.0708130249443,
+#                    VALE_REFE=0.0708130249443,
+#                    REFERENCE='NON_DEFINI',
+#                    CRITERE='ABSOLU',
+#                    ),),)
+
+
 
 FIN()
 
@@ -599,5 +620,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=3,
                    MAILLE='MA000074',),
                 ),
           )
+
+
 
 #
