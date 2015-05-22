@@ -182,4 +182,61 @@ L'utilisation du parallélisme dans CALC_MODES avec OPTION='BANDES' et des matri
 généralisées n'est pas possible.
 """),
 
+    19: _(u"""
+Opérateur CALC_MODES sur plusieurs sous-bandes:
+  Votre calcul semble déséquilibré: la sous-bande n°%(i1)d comporte %(i2)d mode(s) propre(s) alors
+  que la n°%(i3)d en comporte %(i4)d !
+  Cela risque de produire des modes de qualité très différentes et d'impacter la robustesse et
+  les performances globales du calcul.
+  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes par sous-bande avec
+  un déséquilibre maximum de X3 entre les sous-bandes.
+
+  Conseil:
+    * Il est intéressant de calibrer un tel calcul modal en utilisant l'opérateur INFO_MODE
+      dans un pré-calcul séparé. C'est généralement très rapide (surtout en parallèle) et cela
+      fournit des informations concrêtes pour proposer un découpage homogène et réaliste.
+"""),
+   20: _(u"""
+Opérateur CALC_MODES sur plusieurs sous-bandes:
+  La sous-bande n°%(i1)d comporte %(i2)d mode(s) propre(s). Ce n'est pas assez !
+  Vous pouvez sans doute optimiser les performances de votre calcul en la groupant avec une
+  deux sous-bandes contigües.
+  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes par sous-bande avec
+  un déséquilibre maximum de X3 entre les sous-bandes.
+
+  Conseil:
+    * Il est intéressant de calibrer un tel calcul modal en utilisant l'opérateur INFO_MODE
+      dans un pré-calcul séparé. C'est généralement très rapide (surtout en parallèle) et cela
+      fournit des informations concrêtes pour proposer un découpage homogène et réaliste.
+"""),
+   21: _(u"""
+Opérateur CALC_MODES sur plusieurs sous-bandes:
+  La sous-bande n°%(i1)d comporte %(i2)d modes propres. C'est un peu trop !
+  Vous pouvez sans doute optimiser les performances et la robustesse de votre calcul ainsi que
+  la qualité des modes obtenus, en redécoupant cette sous-bande.
+  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes par sous-bande avec
+  un déséquilibre maximum de X3 entre les sous-bandes.
+
+  Conseil:
+    * Il est intéressant de calibrer un tel calcul modal en utilisant l'opérateur INFO_MODE
+      dans un pré-calcul séparé. C'est généralement très rapide (surtout en parallèle) et cela
+      fournit des informations concrêtes pour proposer un découpage homogène et réaliste.
+"""),
+   21: _(u"""
+Opérateur CALC_MODES:
+  Votre calcul cherche à déterminer %(i1)d modes propres à la fois. C'est un peu trop !
+  Vous pouvez sans doute optimiser les performances, la robustesse de votre calcul ainsi que
+  la qualité des modes obtenus, en redécoupant votre calcul en plusieurs paquets.
+  Idéalement, un calcul modal devrait chercher:
+      - entre 20 et 60 modes à la fois (avec les options 'CENTRE', 'BANDE' ou 'PLUS_PETITE/GRANDE'),
+      - au maximum une dizaine (avec 'PROCHE', 'SEPARE' ou 'AJUSTE').
+
+  Conseils:
+    * Pour faciliter un calcul par paquets de modes vous pouvez utilisez l'option 'BANDE'.
+    * Sur un problème modal généralisé standard, il peut être aussi intéressant de calibrer la
+      charge en utilisant l'opérateur INFO_MODE dans un pré-calcul séparé.
+      C'est généralement très rapide (surtout en parallèle) et cela fournit des informations
+      concrêtes pour ensuite paramétrer un découpage homogène et réaliste.
+"""),
+
 }

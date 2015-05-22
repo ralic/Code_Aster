@@ -429,6 +429,7 @@ subroutine op0044()
 !     ----------- DDL : LAGRANGE, BLOQUE PAR AFFE_CHAR_CINE  -----------
 !     ------------------------------------------------------------------
 !
+    if (nfreq>20) call utmess('A', 'MODAL_21', si=nfreq)
     call wkvect('&&OP0044.POSITION.DDL', 'V V I', neq*mxddl, lddl)
     call wkvect('&&OP0044.DDL.BLOQ.CINE', 'V V I', neq, lprod)
     call vpddl(raide, masse, neq, nblagr, nbcine,&

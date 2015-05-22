@@ -489,9 +489,27 @@ def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc):
     proc_sb_nvide = []
     # Recuperation du nbre de modes total theorique
     nbmodeth = 0
+    modemin=1000000
+    imin=0
+    modemax=-1
+    imax=0
     for i in range(0, nnfreq - 1):
-        nbmodeth = nbmodeth + __nbmodi['NB_MODE', i + 1]
+        modei=__nbmodi['NB_MODE', i + 1]
+        nbmodeth = nbmodeth + modei
+        if ( modei > modemax) :
+            modemax=modei
+            imax=i+1
+        if ( modei < modemin) :
+            modemin=modei
+            imin=i+1
 
+    if ((modemax > 3*modemin) & (modemax > 50)):
+        UTMESS('I', 'MODAL_19', vali=(imin,modemin,imax,modemax),)
+    if (modemin < 10):
+        UTMESS('I', 'MODAL_20', vali=(imin,modemin),)  
+    if (modemax > 100):
+        UTMESS('I', 'MODAL_21', vali=(imax,modemax),)
+    
     # Recuperation du nbre de sous-bandes non vides
     nbsb_nonvide = 0
     for i in range(0, nnfreq - 1):

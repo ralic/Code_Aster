@@ -399,6 +399,7 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo,&
 !
 !
 ! --  ON MODIFIE LES VALEURS NFREQ ET DE NBVECT DE LA SD EIGENSOLVER
+    if (nfreq>200) call utmess('A', 'MODAL_21', si=nfreq)
     call vpecri(eigsol, 'I', 1, k24bid, rbid,&
                 nfreq)
     call vpecri(eigsol, 'I', 2, k24bid, rbid,&
