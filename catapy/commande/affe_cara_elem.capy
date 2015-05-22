@@ -21,17 +21,9 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
     """Fonction sdprod de AFFE_CARA_ELEM"""
     from Noyau.N_types import force_tuple
     # fonctions locales pour le sdprod de AFFE_CARA_ELEM
-    def afficheMessage(MessageAffeCara):
-        """Définition d'une fonction pour affichage"""
-        xx = max(map(len,MessageAffeCara.split('\n')))
-        xx = max( (xx-16)/4,10)
-        print "\n"*2,"! "*xx , "Affe_Cara_Elem","! "*xx
-        print MessageAffeCara
-        print "! "*(2*xx+8),"\n"*2
-
     def valeurCara(cara, Lcara, Lvale, valdefaut=None):
         """Retourne la valeur de la caractéristiques 'cara' dans 'Lcara'."""
-        if cara in Lcara :
+        if cara in Lcara:
             return Lvale[Lcara.index(cara)]
         else:
             if valdefaut != None :
@@ -39,79 +31,77 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
             else:
                 raise AsException("Erreur construction de la commande")
 
-    def check(cond, message, vmess=None):
+    def check(cond, message, mcf, occ, prop=None):
         """Vérifie que la condition 'cond' est ok, sinon lève une exception"""
-        if not cond :
-            if vmess != None :
-                mess = str(message) % vmess
-            else:
-                mess = message
-            print afficheMessage( mess )
-            raise AsException( mess )
+        if not cond:
+            fmt = tr(u"Mot-clé {mcf!r}, occurrence {occ:d}, {text!s}")
+            text = unicode(message).format(**locals())
+            msg = unicode(fmt).format(**locals())
+            raise AsException( msg )
 
-    # les messages doivent être courts pour être visible dans eficas
-    mess0 = tr("%(k2)s, occurrence %(i1)d, les cardinaux de CARA et VALE sont différents.")
+    # les messages doivent être courts pour être visibles dans eficas
+    mess0 = tr(u"les cardinaux de CARA et VALE sont différents.")
+    mess1 = tr(u"mauvaise définition de {prop!r}.")
     # - - - - - - - - - - - - - - -
     if POUTRE != None:
-        mess1 = tr("POUTRE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
         for i in range(len(POUTRE)):
             i1 = i + 1
             mclf = POUTRE[i]
             if mclf['SECTION'] == 'CERCLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
-                check( len(cara) == len(vale), mess0, {'i1':i1,'k2':'POUTRE'} )
+                check( len(cara) == len(vale), mess0, 'POUTRE', i1)
                 if mclf['VARI_SECT']=='CONSTANT':
                     rayon = valeurCara('R',  cara, vale)
                     ep    = valeurCara('EP', cara, vale, rayon)
-                    check( rayon > 0.0, mess1 , {'i1':i1,'k2':'R'} )
-                    check( 0 < ep <= rayon, mess1 , {'i1':i1,'k2':'EP'} )
+                    check( rayon > 0.0, mess1, 'POUTRE', i1, 'R')
+                    check( 0 < ep <= rayon, mess1, 'POUTRE', i1, 'EP')
                 elif mclf['VARI_SECT']=='HOMOTHETIQUE':
                     if mclf['GROUP_MA'] :
                         r_debut  = valeurCara('R_DEBUT',  cara, vale)
                         r_fin    = valeurCara('R_FIN',    cara, vale)
                         ep_debut = valeurCara('EP_DEBUT', cara, vale, r_debut)
                         ep_fin   = valeurCara('EP_FIN',   cara, vale, r_fin)
-                        check( r_debut > 0.0, mess1 , {'i1':i1,'k2':'R_DEBUT'} )
-                        check( r_fin   > 0.0, mess1 , {'i1':i1,'k2':'R_FIN'} )
+                        check( r_debut > 0.0, mess1, 'POUTRE', i1, 'R_DEBUT')
+                        check( r_fin   > 0.0, mess1, 'POUTRE', i1, 'R_FIN')
                     elif mclf['MAILLE'] :
                         r_debut  = valeurCara('R1',  cara, vale)
                         r_fin    = valeurCara('R2',  cara, vale)
                         ep_debut = valeurCara('EP1', cara, vale, r_debut)
                         ep_fin   = valeurCara('EP2', cara, vale, r_fin)
-                        check( r_debut > 0.0, mess1 , {'i1':i1,'k2':'R1'} )
-                        check( r_fin   > 0.0, mess1 , {'i1':i1,'k2':'R2'} )
-                    check( (0.0< ep_debut <= r_debut), mess1 , {'i1':i1,'k2':'EP1'} )
-                    check( (0.0< ep_fin   <= r_fin),   mess1 , {'i1':i1,'k2':'EP2'} )
+                        check( r_debut > 0.0, mess1, 'POUTRE', i1, 'R1')
+                        check( r_fin   > 0.0, mess1, 'POUTRE', i1, 'R2')
+                    check( (0.0< ep_debut <= r_debut), mess1, 'POUTRE', i1, 'EP1')
+                    check( (0.0< ep_fin   <= r_fin),   mess1, 'POUTRE', i1, 'EP2')
             elif mclf['SECTION'] == 'RECTANGLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
-                check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'POUTRE'} )
+                check( len(cara) == len(vale), mess0, 'POUTRE', i1)
                 if mclf['VARI_SECT']=='CONSTANT':
                     if 'H' in cara :
                         h  = valeurCara('H',  cara, vale)
                         ep = valeurCara('EP', cara, vale, h*0.5)
-                        check( h > 0.0, mess1 , {'i1':i1,'k2':'H'} )
-                        check( (0.0< ep <= h*0.5), mess1 , {'i1':i1,'k2':'EP'} )
+                        check( h > 0.0, mess1, 'POUTRE', i1, 'H')
+                        check( (0.0< ep <= h*0.5), mess1, 'POUTRE', i1, 'EP')
                     else:
                         hy  = valeurCara('HY',  cara, vale)
                         epy = valeurCara('EPY', cara, vale, hy*0.5)
                         hz  = valeurCara('HZ',  cara, vale)
                         epz = valeurCara('EPZ', cara, vale, hz*0.5)
-                        check( hy > 0.0, mess1 , {'i1':i1,'k2':'HY'} )
-                        check( hz > 0.0, mess1 , {'i1':i1,'k2':'HZ'} )
-                        check( (0< epy <= hy*0.5), mess1 , {'i1':i1,'k2':'EPY'} )
-                        check( (0< epz <= hz*0.5), mess1 , {'i1':i1,'k2':'EPZ'} )
+                        check( hy > 0.0, mess1, 'POUTRE', i1, 'HY')
+                        check( hz > 0.0, mess1, 'POUTRE', i1, 'HZ')
+                        check( (0< epy <= hy*0.5), mess1, 'POUTRE', i1, 'EPY')
+                        check( (0< epz <= hz*0.5), mess1, 'POUTRE', i1, 'EPZ')
                 elif mclf['VARI_SECT']=='HOMOTHETIQUE':
                     if 'H1' in cara :
                         h1  = valeurCara('H1',  cara, vale)
                         ep1 = valeurCara('EP1', cara, vale, h1*0.5)
                         h2  = valeurCara('H2',  cara, vale)
                         ep2 = valeurCara('EP2', cara, vale, h2*0.5)
-                        check( h1 > 0.0, mess1 , {'i1':i1,'k2':'H1'} )
-                        check( h2 > 0.0, mess1 , {'i1':i1,'k2':'H2'} )
-                        check( (0< ep1 <= h1*0.5), mess1 , {'i1':i1,'k2':'EP1'} )
-                        check( (0< ep2 <= h2*0.5), mess1 , {'i1':i1,'k2':'EP2'} )
+                        check( h1 > 0.0, mess1, 'POUTRE', i1, 'H1')
+                        check( h2 > 0.0, mess1, 'POUTRE', i1, 'H2')
+                        check( (0< ep1 <= h1*0.5), mess1, 'POUTRE', i1, 'EP1')
+                        check( (0< ep2 <= h2*0.5), mess1, 'POUTRE', i1, 'EP2')
                     else:
                         hy1  = valeurCara('HY1',  cara, vale)
                         epy1 = valeurCara('EPY1', cara, vale, hy1*0.5)
@@ -121,14 +111,14 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
                         epz1 = valeurCara('EPZ1', cara, vale, hz1*0.5)
                         hz2  = valeurCara('HZ2',  cara, vale)
                         epz2 = valeurCara('EPZ2', cara, vale, hz2*0.5)
-                        check( hy1 > 0.0, mess1 , {'i1':i1,'k2':'HY1'} )
-                        check( hy2 > 0.0, mess1 , {'i1':i1,'k2':'HY2'} )
-                        check( hz1 > 0.0, mess1 , {'i1':i1,'k2':'HZ1'} )
-                        check( hz2 > 0.0, mess1 , {'i1':i1,'k2':'HZ2'} )
-                        check( (0< epy1 <= hy1*0.5), mess1 , {'i1':i1,'k2':'EPY1'} )
-                        check( (0< epy2 <= hy2*0.5), mess1 , {'i1':i1,'k2':'EPY2'} )
-                        check( (0< epz1 <= hz1*0.5), mess1 , {'i1':i1,'k2':'EPZ1'} )
-                        check( (0< epz2 <= hz2*0.5), mess1 , {'i1':i1,'k2':'EPZ2'} )
+                        check( hy1 > 0.0, mess1, 'POUTRE', i1, 'HY1')
+                        check( hy2 > 0.0, mess1, 'POUTRE', i1, 'HY2')
+                        check( hz1 > 0.0, mess1, 'POUTRE', i1, 'HZ1')
+                        check( hz2 > 0.0, mess1, 'POUTRE', i1, 'HZ2')
+                        check( (0< epy1 <= hy1*0.5), mess1, 'POUTRE', i1, 'EPY1')
+                        check( (0< epy2 <= hy2*0.5), mess1, 'POUTRE', i1, 'EPY2')
+                        check( (0< epz1 <= hz1*0.5), mess1, 'POUTRE', i1, 'EPZ1')
+                        check( (0< epz2 <= hz2*0.5), mess1, 'POUTRE', i1, 'EPZ2')
                 elif mclf['VARI_SECT']=='AFFINE':
                     hy   = valeurCara('HY',   cara, vale)
                     hz1  = valeurCara('HZ1',  cara, vale)
@@ -136,31 +126,31 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
                     epy  = valeurCara('EPY',  cara, vale, hy*0.5)
                     epz1 = valeurCara('EPZ1', cara, vale, hz1*0.5)
                     epz2 = valeurCara('EPZ2', cara, vale, hz2*0.5)
-                    check( hy  > 0.0, mess1 , {'i1':i1,'k2':'HY'} )
-                    check( hz1 > 0.0, mess1 , {'i1':i1,'k2':'HZ1'} )
-                    check( hz2 > 0.0, mess1 , {'i1':i1,'k2':'HZ2'} )
-                    check( (0< epy  <= hy *0.5), mess1 , {'i1':i1,'k2':'EPY'} )
-                    check( (0< epz1 <= hz1*0.5), mess1 , {'i1':i1,'k2':'EPZ1'} )
-                    check( (0< epz2 <= hz2*0.5), mess1 , {'i1':i1,'k2':'EPZ2'} )
+                    check( hy  > 0.0, mess1, 'POUTRE', i1, 'HY')
+                    check( hz1 > 0.0, mess1, 'POUTRE', i1, 'HZ1')
+                    check( hz2 > 0.0, mess1, 'POUTRE', i1, 'HZ2')
+                    check( (0< epy  <= hy *0.5), mess1, 'POUTRE', i1, 'EPY')
+                    check( (0< epz1 <= hz1*0.5), mess1, 'POUTRE', i1, 'EPZ1')
+                    check( (0< epz2 <= hz2*0.5), mess1, 'POUTRE', i1, 'EPZ2')
             elif mclf['SECTION'] == 'GENERALE':
                 if mclf['VARI_SECT']=='CONSTANT':
                     tmp = mclf.cree_dict_toutes_valeurs()
                     if 'CARA' in tmp.keys() :
                         cara = force_tuple( mclf['CARA'] )
                         vale = force_tuple( mclf['VALE'] )
-                        check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'POUTRE'} )
+                        check( len(cara) == len(vale), mess0, 'POUTRE', i1)
                         a  = valeurCara('A' , cara, vale)
                         iy = valeurCara('IY', cara, vale)
                         iz = valeurCara('IZ', cara, vale)
                         jx = valeurCara('JX', cara, vale)
-                        check( a  > 0.0, mess1 , {'i1':i1,'k2':'A'} )
-                        check( iy > 0.0, mess1 , {'i1':i1,'k2':'IY'} )
-                        check( iz > 0.0, mess1 , {'i1':i1,'k2':'IZ'} )
-                        check( jx > 0.0, mess1 , {'i1':i1,'k2':'JX'} )
+                        check( a  > 0.0, mess1, 'POUTRE', i1, 'A')
+                        check( iy > 0.0, mess1, 'POUTRE', i1, 'IY')
+                        check( iz > 0.0, mess1, 'POUTRE', i1, 'IZ')
+                        check( jx > 0.0, mess1, 'POUTRE', i1, 'JX')
                 elif mclf['VARI_SECT']=='HOMOTHETIQUE':
                     cara = force_tuple( mclf['CARA'] )
                     vale = force_tuple( mclf['VALE'] )
-                    check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'POUTRE'} )
+                    check( len(cara) == len(vale), mess0, 'POUTRE', i1)
                     a1  = valeurCara('A1' , cara, vale)
                     iy1 = valeurCara('IY1', cara, vale)
                     iz1 = valeurCara('IZ1', cara, vale)
@@ -169,81 +159,78 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
                     iy2 = valeurCara('IY2', cara, vale)
                     iz2 = valeurCara('IZ2', cara, vale)
                     jx2 = valeurCara('JX2', cara, vale)
-                    check( a1  > 0.0, mess1 , {'i1':i1,'k2':'A1'} )
-                    check( iy1 > 0.0, mess1 , {'i1':i1,'k2':'IY1'} )
-                    check( iz1 > 0.0, mess1 , {'i1':i1,'k2':'IZ1'} )
-                    check( jx1 > 0.0, mess1 , {'i1':i1,'k2':'JX1'} )
-                    check( a2  > 0.0, mess1 , {'i1':i1,'k2':'A2'} )
-                    check( iy2 > 0.0, mess1 , {'i1':i1,'k2':'IY2'} )
-                    check( iz2 > 0.0, mess1 , {'i1':i1,'k2':'IZ2'} )
-                    check( jx2 > 0.0, mess1 , {'i1':i1,'k2':'JX2'} )
+                    check( a1  > 0.0, mess1, 'POUTRE', i1, 'A1')
+                    check( iy1 > 0.0, mess1, 'POUTRE', i1, 'IY1')
+                    check( iz1 > 0.0, mess1, 'POUTRE', i1, 'IZ1')
+                    check( jx1 > 0.0, mess1, 'POUTRE', i1, 'JX1')
+                    check( a2  > 0.0, mess1, 'POUTRE', i1, 'A2')
+                    check( iy2 > 0.0, mess1, 'POUTRE', i1, 'IY2')
+                    check( iz2 > 0.0, mess1, 'POUTRE', i1, 'IZ2')
+                    check( jx2 > 0.0, mess1, 'POUTRE', i1, 'JX2')
     # - - - - - - - - - - - - - - -
     if BARRE != None:
-        mess1 = tr("BARRE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
         for i in range(len(BARRE)):
             i1 = i + 1
             mclf = BARRE[i]
             if mclf['SECTION'] == 'CERCLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
-                check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'BARRE'} )
+                check( len(cara) == len(vale), mess0, 'BARRE', i1)
                 rayon = valeurCara('R',  cara, vale)
                 ep    = valeurCara('EP', cara, vale, rayon)
-                check( rayon > 0.0, mess1 , {'i1':i1,'k2':'R'} )
-                check( (0.0 < ep <= rayon), mess1 , {'i1':i1,'k2':'EP'} )
+                check( rayon > 0.0, mess1, 'BARRE', i1, 'R')
+                check( (0.0 < ep <= rayon), mess1, 'BARRE', i1, 'EP')
             elif mclf['SECTION'] == 'RECTANGLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
-                check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'BARRE'} )
+                check( len(cara) == len(vale), mess0, 'BARRE', i1)
                 if 'H' in cara :
                     h  = valeurCara('H',  cara, vale)
                     ep = valeurCara('EP', cara, vale, h*0.5)
-                    check( h > 0.0, mess1 , {'i1':i1,'k2':'H'} )
-                    check( (0< ep <= h*0.5), mess1 , {'i1':i1,'k2':'EP'} )
+                    check( h > 0.0, mess1, 'BARRE', i1, 'H')
+                    check( (0< ep <= h*0.5), mess1, 'BARRE', i1, 'EP')
                 else:
                     hy  = valeurCara('HY',  cara, vale)
                     epy = valeurCara('EPY', cara, vale, hy*0.5)
                     hz  = valeurCara('HZ',  cara, vale)
                     epz = valeurCara('EPZ', cara, vale, hz*0.5)
-                    check( hy > 0.0, mess1 , {'i1':i1,'k2':'HY'} )
-                    check( hz > 0.0, mess1 , {'i1':i1,'k2':'HZ'} )
-                    check( (0< epy <= hy*0.5), mess1 , {'i1':i1,'k2':'EPY'} )
-                    check( (0< epz <= hz*0.5), mess1 , {'i1':i1,'k2':'EPZ'} )
+                    check( hy > 0.0, mess1, 'BARRE', i1, 'HY')
+                    check( hz > 0.0, mess1, 'BARRE', i1, 'HZ')
+                    check( (0< epy <= hy*0.5), mess1, 'BARRE', i1, 'EPY')
+                    check( (0< epz <= hz*0.5), mess1, 'BARRE', i1, 'EPZ')
             elif mclf['SECTION'] == 'GENERALE':
                 tmp = mclf.cree_dict_toutes_valeurs()
                 if 'CARA' in tmp.keys() :
                     cara = force_tuple( mclf['CARA'] )
                     vale = force_tuple( mclf['VALE'] )
-                    check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'BARRE'} )
+                    check( len(cara) == len(vale), mess0, 'BARRE', i1)
                     vale = valeurCara('A' , cara, vale)
-                    check( vale > 0.0, mess1 , {'i1':i1,'k2':'A'} )
+                    check( vale > 0.0, mess1, 'BARRE', i1, 'A')
     # - - - - - - - - - - - - - - -
     if COQUE != None:
-        mess1 = tr("COQUE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
         for i in range(len(COQUE)):
             i1 = i + 1
             mclf = COQUE[i]
             if 'EPAIS' in mclf :
                 vale =  mclf['EPAIS']
-                check( vale > 0.0, mess1 , {'i1':i1,'k2':'EPAIS'} )
+                check( vale > 0.0, mess1, 'COQUE', i1, 'EPAIS')
             if 'A_CIS' in mclf :
                 vale =  mclf['A_CIS']
-                check( vale > 0.0, mess1 , {'i1':i1,'k2':'A_CIS'} )
+                check( vale > 0.0, mess1, 'COQUE', i1, 'A_CIS')
             if 'COEF_RIGI_DRZ' in mclf :
                 vale =  mclf['COEF_RIGI_DRZ']
-                check( vale > 0.0, mess1 , {'i1':i1,'k2':'COEF_RIGI_DRZ'} )
+                check( vale > 0.0, mess1, 'COQUE', i1, 'COEF_RIGI_DRZ')
             if 'COQUE_NCOU' in mclf :
                 vale =  mclf['COQUE_NCOU']
-                check( vale > 0,   mess1 , {'i1':i1,'k2':'COQUE_NCOU'} )
+                check( vale > 0,   mess1, 'COQUE', i1, 'COQUE_NCOU')
     # - - - - - - - - - - - - - - -
     if CABLE != None:
-        mess1 = tr("CABLE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
         for i in range(len(CABLE)):
             i1 = i + 1
             mclf = CABLE[i]
             if 'SECTION' in mclf :
                 vale =  mclf['SECTION']
-                check( vale>0.0, mess1 , {'i1':i1,'k2':'SECTION'} )
+                check( vale>0.0, mess1, 'CABLE', i1, 'SECTION')
     # - - - - - - - - - - - - - - -
     if DISCRET != None:
         pass
@@ -252,16 +239,15 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
         pass
     # - - - - - - - - - - - - - - -
     if GRILLE != None:
-        mess1 = tr("GRILLE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
         for i in range(len(GRILLE)):
             i1 = i + 1
             mclf = GRILLE[i]
             if 'SECTION' in mclf :
                 vale =  mclf['SECTION']
-                check( vale>=0.0, mess1 , {'i1':i1,'k2':'SECTION'} )
+                check( vale>=0.0, mess1, 'GRILLE', i1, 'SECTION')
             if 'EXCENTREMENT' in mclf :
                 vale =  mclf['EXCENTREMENT']
-                check( vale>=0.0, mess1 , {'i1':i1,'k2':'EXCENTREMENT'} )
+                check( vale>=0.0, mess1, 'GRILLE', i1, 'EXCENTREMENT')
     #
     # Tout est ok
     return cara_elem

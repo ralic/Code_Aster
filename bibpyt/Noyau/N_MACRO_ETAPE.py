@@ -125,7 +125,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
         except AsException, e:
             self.reset_current_step()
             raise AsException("Etape ", self.nom, 'ligne : ', self.appel[0],
-                              'fichier : ', self.appel[1], e)
+                              'fichier : ', self.appel[1], str(e))
         except (EOFError, self.UserError):
             # Le retablissement du step courant n'est pas strictement
             # necessaire. On le fait pour des raisons de coherence
@@ -174,13 +174,11 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
                 sd_prod = apply(sd_prod, (self,), d)
             except (EOFError, self.UserError):
                 raise
-            except:
+            except Exception, exc:
                 if CONTEXT.debug:
                     traceback.print_exc()
-                l = traceback.format_exception(
-                    sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2])
-                raise AsException(
-                    "impossible d affecter un type au resultat\n", string.join(l[2:]))
+                raise AsException("impossible d affecter un type au resultat:",
+                                  str(exc))
 
         # on teste maintenant si la SD est réutilisée ou s'il faut la créer
         if self.definition.reentrant != 'n' and self.reuse:
