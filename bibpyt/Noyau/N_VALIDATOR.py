@@ -1445,6 +1445,12 @@ class FunctionVal(Valid):
     def verif(self, valeur):
         return self.function(valeur)
 
+    def verif_item(self, valeur):
+        return self.function(valeur)
+
+    def convert(self, valeur):
+        return valeur
+
 # MC ca ne devrait plus servir !
 CoercableFuncs = {types.IntType:     int,
                   types.LongType:    long,
