@@ -16,241 +16,234 @@
 # ======================================================================
 # person_in_charge: jean-luc.flejou at edf.fr
 
-#
-# Définition d'une fonction pour affichage
-#
-#   AfficheMessage(texte)
-#       affichage de texte
-#
-def AfficheMessage(MessageAffeCara):
-    xx = max(map(len,MessageAffeCara.split('\n')))
-    xx = max( (xx-16)/4,10)
-    print "\n"*2,"! "*xx , "Affe_Cara_Elem","! "*xx
-    print MessageAffeCara
-    print "! "*(2*xx+8),"\n"*2
-
-
-def ValeurCara(cara, Lcara, Lvale, valdefaut=None):
-    if ( cara in Lcara ):
-        return Lvale[Lcara.index(cara)]
-    else:
-        if valdefaut != None :
-            return valdefaut
-        else:
-            raise AsException("Erreur construction de la commande")
-
-
-def TransformeTuple(vale):
-    if ( type(vale) is tuple ):
-        return vale
-    elif ( type(vale) is list ):
-        return vale
-    else:
-        return tuple( (vale,) )
-
-
-def IsDefinitionOK(cond, message , vmess=None):
-    if ( not cond ):
-        if ( vmess != None ):
-            mess = str(message) % vmess
-        else:
-            mess = message
-        print AfficheMessage( mess )
-        raise AsException( mess )
-
 
 def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,**args):
-    #
-    mess0 =tr("Concept : %(k1)s\nOccurence numéro %(i1)d de %(k2)s, les cardinaux de CARA et VALE sont différents.")
+    """Fonction sdprod de AFFE_CARA_ELEM"""
+    from Noyau.N_types import force_tuple
+    # fonctions locales pour le sdprod de AFFE_CARA_ELEM
+    def afficheMessage(MessageAffeCara):
+        """Définition d'une fonction pour affichage"""
+        xx = max(map(len,MessageAffeCara.split('\n')))
+        xx = max( (xx-16)/4,10)
+        print "\n"*2,"! "*xx , "Affe_Cara_Elem","! "*xx
+        print MessageAffeCara
+        print "! "*(2*xx+8),"\n"*2
+
+    def valeurCara(cara, Lcara, Lvale, valdefaut=None):
+        """Retourne la valeur de la caractéristiques 'cara' dans 'Lcara'."""
+        if cara in Lcara :
+            return Lvale[Lcara.index(cara)]
+        else:
+            if valdefaut != None :
+                return valdefaut
+            else:
+                raise AsException("Erreur construction de la commande")
+
+    def check(cond, message, vmess=None):
+        """Vérifie que la condition 'cond' est ok, sinon lève une exception"""
+        if not cond :
+            if vmess != None :
+                mess = str(message) % vmess
+            else:
+                mess = message
+            print afficheMessage( mess )
+            raise AsException( mess )
+
+    # les messages doivent être courts pour être visible dans eficas
+    mess0 = tr("%(k2)s, occurrence %(i1)d, les cardinaux de CARA et VALE sont différents.")
     # - - - - - - - - - - - - - - -
     if POUTRE != None:
-        mess1 = tr("Concept : %(k1)s\nOccurence numéro %(i1)d de POUTRE, mauvaise définition de %(k2)s.")
-        for ii in range(len(POUTRE)):
-            mclf = POUTRE[ii]
-            if (mclf['SECTION'] == 'CERCLE'):
-                cara = TransformeTuple( mclf['CARA'] )
-                vale = TransformeTuple( mclf['VALE'] )
-                IsDefinitionOK( len(cara) == len(vale), mess0 , {'k1':self.sdnom,'i1':ii+1,'k2':'POUTRE'} )
-                if (mclf['VARI_SECT']=='CONSTANT'):
-                    rayon = ValeurCara('R',  cara, vale)
-                    ep    = ValeurCara('EP', cara, vale, rayon)
-                    IsDefinitionOK( rayon > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'R'} )
-                    IsDefinitionOK( (0< ep <= rayon), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP'} )
-                elif (mclf['VARI_SECT']=='HOMOTHETIQUE'):
-                    if ( mclf['GROUP_MA'] ):
-                        r_debut  = ValeurCara('R_DEBUT',  cara, vale)
-                        r_fin    = ValeurCara('R_FIN',    cara, vale)
-                        ep_debut = ValeurCara('EP_DEBUT', cara, vale, r_debut)
-                        ep_fin   = ValeurCara('EP_FIN',   cara, vale, r_fin)
-                        IsDefinitionOK( r_debut > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'R_DEBUT'} )
-                        IsDefinitionOK( r_fin   > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'R_FIN'} )
-                    elif ( mclf['MAILLE'] ):
-                        r_debut  = ValeurCara('R1',  cara, vale)
-                        r_fin    = ValeurCara('R2',  cara, vale)
-                        ep_debut = ValeurCara('EP1', cara, vale, r_debut)
-                        ep_fin   = ValeurCara('EP2', cara, vale, r_fin)
-                        IsDefinitionOK( r_debut > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'R1'} )
-                        IsDefinitionOK( r_fin   > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'R2'} )
-                    IsDefinitionOK( (0.0< ep_debut <= r_debut), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP1'} )
-                    IsDefinitionOK( (0.0< ep_fin   <= r_fin),   mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP2'} )
-            elif (mclf['SECTION'] == 'RECTANGLE'):
-                cara = TransformeTuple( mclf['CARA'] )
-                vale = TransformeTuple( mclf['VALE'] )
-                IsDefinitionOK( len(cara) == len(vale), mess0 , {'k1':self.sdnom,'i1':ii+1,'k2':'POUTRE'} )
-                if (mclf['VARI_SECT']=='CONSTANT'):
-                    if ( 'H' in cara ):
-                        h  = ValeurCara('H',  cara, vale)
-                        ep = ValeurCara('EP', cara, vale, h*0.5)
-                        IsDefinitionOK( h > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'H'} )
-                        IsDefinitionOK( (0.0< ep <= h*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP'} )
+        mess1 = tr("POUTRE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
+        for i in range(len(POUTRE)):
+            i1 = i + 1
+            mclf = POUTRE[i]
+            if mclf['SECTION'] == 'CERCLE':
+                cara = force_tuple( mclf['CARA'] )
+                vale = force_tuple( mclf['VALE'] )
+                check( len(cara) == len(vale), mess0, {'i1':i1,'k2':'POUTRE'} )
+                if mclf['VARI_SECT']=='CONSTANT':
+                    rayon = valeurCara('R',  cara, vale)
+                    ep    = valeurCara('EP', cara, vale, rayon)
+                    check( rayon > 0.0, mess1 , {'i1':i1,'k2':'R'} )
+                    check( 0 < ep <= rayon, mess1 , {'i1':i1,'k2':'EP'} )
+                elif mclf['VARI_SECT']=='HOMOTHETIQUE':
+                    if mclf['GROUP_MA'] :
+                        r_debut  = valeurCara('R_DEBUT',  cara, vale)
+                        r_fin    = valeurCara('R_FIN',    cara, vale)
+                        ep_debut = valeurCara('EP_DEBUT', cara, vale, r_debut)
+                        ep_fin   = valeurCara('EP_FIN',   cara, vale, r_fin)
+                        check( r_debut > 0.0, mess1 , {'i1':i1,'k2':'R_DEBUT'} )
+                        check( r_fin   > 0.0, mess1 , {'i1':i1,'k2':'R_FIN'} )
+                    elif mclf['MAILLE'] :
+                        r_debut  = valeurCara('R1',  cara, vale)
+                        r_fin    = valeurCara('R2',  cara, vale)
+                        ep_debut = valeurCara('EP1', cara, vale, r_debut)
+                        ep_fin   = valeurCara('EP2', cara, vale, r_fin)
+                        check( r_debut > 0.0, mess1 , {'i1':i1,'k2':'R1'} )
+                        check( r_fin   > 0.0, mess1 , {'i1':i1,'k2':'R2'} )
+                    check( (0.0< ep_debut <= r_debut), mess1 , {'i1':i1,'k2':'EP1'} )
+                    check( (0.0< ep_fin   <= r_fin),   mess1 , {'i1':i1,'k2':'EP2'} )
+            elif mclf['SECTION'] == 'RECTANGLE':
+                cara = force_tuple( mclf['CARA'] )
+                vale = force_tuple( mclf['VALE'] )
+                check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'POUTRE'} )
+                if mclf['VARI_SECT']=='CONSTANT':
+                    if 'H' in cara :
+                        h  = valeurCara('H',  cara, vale)
+                        ep = valeurCara('EP', cara, vale, h*0.5)
+                        check( h > 0.0, mess1 , {'i1':i1,'k2':'H'} )
+                        check( (0.0< ep <= h*0.5), mess1 , {'i1':i1,'k2':'EP'} )
                     else:
-                        hy  = ValeurCara('HY',  cara, vale)
-                        epy = ValeurCara('EPY', cara, vale, hy*0.5)
-                        hz  = ValeurCara('HZ',  cara, vale)
-                        epz = ValeurCara('EPZ', cara, vale, hz*0.5)
-                        IsDefinitionOK( hy > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HY'} )
-                        IsDefinitionOK( hz > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HZ'} )
-                        IsDefinitionOK( (0< epy <= hy*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPY'} )
-                        IsDefinitionOK( (0< epz <= hz*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPZ'} )
-                elif (mclf['VARI_SECT']=='HOMOTHETIQUE'):
-                    if ( 'H1' in cara ):
-                        h1  = ValeurCara('H1',  cara, vale)
-                        ep1 = ValeurCara('EP1', cara, vale, h1*0.5)
-                        h2  = ValeurCara('H2',  cara, vale)
-                        ep2 = ValeurCara('EP2', cara, vale, h2*0.5)
-                        IsDefinitionOK( h1 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'H1'} )
-                        IsDefinitionOK( h2 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'H2'} )
-                        IsDefinitionOK( (0< ep1 <= h1*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP1'} )
-                        IsDefinitionOK( (0< ep2 <= h2*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP2'} )
+                        hy  = valeurCara('HY',  cara, vale)
+                        epy = valeurCara('EPY', cara, vale, hy*0.5)
+                        hz  = valeurCara('HZ',  cara, vale)
+                        epz = valeurCara('EPZ', cara, vale, hz*0.5)
+                        check( hy > 0.0, mess1 , {'i1':i1,'k2':'HY'} )
+                        check( hz > 0.0, mess1 , {'i1':i1,'k2':'HZ'} )
+                        check( (0< epy <= hy*0.5), mess1 , {'i1':i1,'k2':'EPY'} )
+                        check( (0< epz <= hz*0.5), mess1 , {'i1':i1,'k2':'EPZ'} )
+                elif mclf['VARI_SECT']=='HOMOTHETIQUE':
+                    if 'H1' in cara :
+                        h1  = valeurCara('H1',  cara, vale)
+                        ep1 = valeurCara('EP1', cara, vale, h1*0.5)
+                        h2  = valeurCara('H2',  cara, vale)
+                        ep2 = valeurCara('EP2', cara, vale, h2*0.5)
+                        check( h1 > 0.0, mess1 , {'i1':i1,'k2':'H1'} )
+                        check( h2 > 0.0, mess1 , {'i1':i1,'k2':'H2'} )
+                        check( (0< ep1 <= h1*0.5), mess1 , {'i1':i1,'k2':'EP1'} )
+                        check( (0< ep2 <= h2*0.5), mess1 , {'i1':i1,'k2':'EP2'} )
                     else:
-                        hy1  = ValeurCara('HY1',  cara, vale)
-                        epy1 = ValeurCara('EPY1', cara, vale, hy1*0.5)
-                        hy2  = ValeurCara('HY2',  cara, vale)
-                        epy2 = ValeurCara('EPY2', cara, vale, hy2*0.5)
-                        hz1  = ValeurCara('HZ1',  cara, vale)
-                        epz1 = ValeurCara('EPZ1', cara, vale, hz1*0.5)
-                        hz2  = ValeurCara('HZ2',  cara, vale)
-                        epz2 = ValeurCara('EPZ2', cara, vale, hz2*0.5)
-                        IsDefinitionOK( hy1 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HY1'} )
-                        IsDefinitionOK( hy2 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HY2'} )
-                        IsDefinitionOK( hz1 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HZ1'} )
-                        IsDefinitionOK( hz2 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HZ2'} )
-                        IsDefinitionOK( (0< epy1 <= hy1*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPY1'} )
-                        IsDefinitionOK( (0< epy2 <= hy2*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPY2'} )
-                        IsDefinitionOK( (0< epz1 <= hz1*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPZ1'} )
-                        IsDefinitionOK( (0< epz2 <= hz2*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPZ2'} )
-                elif (mclf['VARI_SECT']=='AFFINE'):
-                    hy   = ValeurCara('HY',   cara, vale)
-                    hz1  = ValeurCara('HZ1',  cara, vale)
-                    hz2  = ValeurCara('HZ2',  cara, vale)
-                    epy  = ValeurCara('EPY',  cara, vale, hy*0.5)
-                    epz1 = ValeurCara('EPZ1', cara, vale, hz1*0.5)
-                    epz2 = ValeurCara('EPZ2', cara, vale, hz2*0.5)
-                    IsDefinitionOK( hy  > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HY'} )
-                    IsDefinitionOK( hz1 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HZ1'} )
-                    IsDefinitionOK( hz2 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HZ2'} )
-                    IsDefinitionOK( (0< epy  <= hy *0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPY'} )
-                    IsDefinitionOK( (0< epz1 <= hz1*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPZ1'} )
-                    IsDefinitionOK( (0< epz2 <= hz2*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPZ2'} )
-            elif (mclf['SECTION'] == 'GENERALE'):
-                if (mclf['VARI_SECT']=='CONSTANT'):
+                        hy1  = valeurCara('HY1',  cara, vale)
+                        epy1 = valeurCara('EPY1', cara, vale, hy1*0.5)
+                        hy2  = valeurCara('HY2',  cara, vale)
+                        epy2 = valeurCara('EPY2', cara, vale, hy2*0.5)
+                        hz1  = valeurCara('HZ1',  cara, vale)
+                        epz1 = valeurCara('EPZ1', cara, vale, hz1*0.5)
+                        hz2  = valeurCara('HZ2',  cara, vale)
+                        epz2 = valeurCara('EPZ2', cara, vale, hz2*0.5)
+                        check( hy1 > 0.0, mess1 , {'i1':i1,'k2':'HY1'} )
+                        check( hy2 > 0.0, mess1 , {'i1':i1,'k2':'HY2'} )
+                        check( hz1 > 0.0, mess1 , {'i1':i1,'k2':'HZ1'} )
+                        check( hz2 > 0.0, mess1 , {'i1':i1,'k2':'HZ2'} )
+                        check( (0< epy1 <= hy1*0.5), mess1 , {'i1':i1,'k2':'EPY1'} )
+                        check( (0< epy2 <= hy2*0.5), mess1 , {'i1':i1,'k2':'EPY2'} )
+                        check( (0< epz1 <= hz1*0.5), mess1 , {'i1':i1,'k2':'EPZ1'} )
+                        check( (0< epz2 <= hz2*0.5), mess1 , {'i1':i1,'k2':'EPZ2'} )
+                elif mclf['VARI_SECT']=='AFFINE':
+                    hy   = valeurCara('HY',   cara, vale)
+                    hz1  = valeurCara('HZ1',  cara, vale)
+                    hz2  = valeurCara('HZ2',  cara, vale)
+                    epy  = valeurCara('EPY',  cara, vale, hy*0.5)
+                    epz1 = valeurCara('EPZ1', cara, vale, hz1*0.5)
+                    epz2 = valeurCara('EPZ2', cara, vale, hz2*0.5)
+                    check( hy  > 0.0, mess1 , {'i1':i1,'k2':'HY'} )
+                    check( hz1 > 0.0, mess1 , {'i1':i1,'k2':'HZ1'} )
+                    check( hz2 > 0.0, mess1 , {'i1':i1,'k2':'HZ2'} )
+                    check( (0< epy  <= hy *0.5), mess1 , {'i1':i1,'k2':'EPY'} )
+                    check( (0< epz1 <= hz1*0.5), mess1 , {'i1':i1,'k2':'EPZ1'} )
+                    check( (0< epz2 <= hz2*0.5), mess1 , {'i1':i1,'k2':'EPZ2'} )
+            elif mclf['SECTION'] == 'GENERALE':
+                if mclf['VARI_SECT']=='CONSTANT':
                     tmp = mclf.cree_dict_toutes_valeurs()
-                    if ( 'CARA' in tmp.keys() ):
-                        cara = TransformeTuple( mclf['CARA'] )
-                        vale = TransformeTuple( mclf['VALE'] )
-                        IsDefinitionOK( len(cara) == len(vale), mess0 , {'k1':self.sdnom,'i1':ii+1,'k2':'POUTRE'} )
-                        a  = ValeurCara('A' , cara, vale)
-                        iy = ValeurCara('IY', cara, vale)
-                        iz = ValeurCara('IZ', cara, vale)
-                        jx = ValeurCara('JX', cara, vale)
-                        IsDefinitionOK( a  > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'A'} )
-                        IsDefinitionOK( iy > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'IY'} )
-                        IsDefinitionOK( iz > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'IZ'} )
-                        IsDefinitionOK( jx > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'JX'} )
-                elif (mclf['VARI_SECT']=='HOMOTHETIQUE'):
-                    cara = TransformeTuple( mclf['CARA'] )
-                    vale = TransformeTuple( mclf['VALE'] )
-                    IsDefinitionOK( len(cara) == len(vale), mess0 , {'k1':self.sdnom,'i1':ii+1,'k2':'POUTRE'} )
-                    a1  = ValeurCara('A1' , cara, vale)
-                    iy1 = ValeurCara('IY1', cara, vale)
-                    iz1 = ValeurCara('IZ1', cara, vale)
-                    jx1 = ValeurCara('JX1', cara, vale)
-                    a2  = ValeurCara('A2' , cara, vale)
-                    iy2 = ValeurCara('IY2', cara, vale)
-                    iz2 = ValeurCara('IZ2', cara, vale)
-                    jx2 = ValeurCara('JX2', cara, vale)
-                    IsDefinitionOK( a1  > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'A1'} )
-                    IsDefinitionOK( iy1 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'IY1'} )
-                    IsDefinitionOK( iz1 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'IZ1'} )
-                    IsDefinitionOK( jx1 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'JX1'} )
-                    IsDefinitionOK( a2  > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'A2'} )
-                    IsDefinitionOK( iy2 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'IY2'} )
-                    IsDefinitionOK( iz2 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'IZ2'} )
-                    IsDefinitionOK( jx2 > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'JX2'} )
+                    if 'CARA' in tmp.keys() :
+                        cara = force_tuple( mclf['CARA'] )
+                        vale = force_tuple( mclf['VALE'] )
+                        check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'POUTRE'} )
+                        a  = valeurCara('A' , cara, vale)
+                        iy = valeurCara('IY', cara, vale)
+                        iz = valeurCara('IZ', cara, vale)
+                        jx = valeurCara('JX', cara, vale)
+                        check( a  > 0.0, mess1 , {'i1':i1,'k2':'A'} )
+                        check( iy > 0.0, mess1 , {'i1':i1,'k2':'IY'} )
+                        check( iz > 0.0, mess1 , {'i1':i1,'k2':'IZ'} )
+                        check( jx > 0.0, mess1 , {'i1':i1,'k2':'JX'} )
+                elif mclf['VARI_SECT']=='HOMOTHETIQUE':
+                    cara = force_tuple( mclf['CARA'] )
+                    vale = force_tuple( mclf['VALE'] )
+                    check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'POUTRE'} )
+                    a1  = valeurCara('A1' , cara, vale)
+                    iy1 = valeurCara('IY1', cara, vale)
+                    iz1 = valeurCara('IZ1', cara, vale)
+                    jx1 = valeurCara('JX1', cara, vale)
+                    a2  = valeurCara('A2' , cara, vale)
+                    iy2 = valeurCara('IY2', cara, vale)
+                    iz2 = valeurCara('IZ2', cara, vale)
+                    jx2 = valeurCara('JX2', cara, vale)
+                    check( a1  > 0.0, mess1 , {'i1':i1,'k2':'A1'} )
+                    check( iy1 > 0.0, mess1 , {'i1':i1,'k2':'IY1'} )
+                    check( iz1 > 0.0, mess1 , {'i1':i1,'k2':'IZ1'} )
+                    check( jx1 > 0.0, mess1 , {'i1':i1,'k2':'JX1'} )
+                    check( a2  > 0.0, mess1 , {'i1':i1,'k2':'A2'} )
+                    check( iy2 > 0.0, mess1 , {'i1':i1,'k2':'IY2'} )
+                    check( iz2 > 0.0, mess1 , {'i1':i1,'k2':'IZ2'} )
+                    check( jx2 > 0.0, mess1 , {'i1':i1,'k2':'JX2'} )
     # - - - - - - - - - - - - - - -
     if BARRE != None:
-        mess1 = tr("Concept : %s\n" % self.sdnom + "Occurence numéro %d de BARRE, mauvaise définition de %s.")
-        for ii in range(len(BARRE)):
-            mclf = BARRE[ii]
-            if (mclf['SECTION'] == 'CERCLE'):
-                cara = TransformeTuple( mclf['CARA'] )
-                vale = TransformeTuple( mclf['VALE'] )
-                IsDefinitionOK( len(cara) == len(vale), mess0 , {'k1':self.sdnom,'i1':ii+1,'k2':'BARRE'} )
-                rayon = ValeurCara('R',  cara, vale)
-                ep    = ValeurCara('EP', cara, vale, rayon)
-                IsDefinitionOK( rayon > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'R'} )
-                IsDefinitionOK( (0.0 < ep <= rayon), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP'} )
-            elif (mclf['SECTION'] == 'RECTANGLE'):
-                cara = TransformeTuple( mclf['CARA'] )
-                vale = TransformeTuple( mclf['VALE'] )
-                IsDefinitionOK( len(cara) == len(vale), mess0 , {'k1':self.sdnom,'i1':ii+1,'k2':'BARRE'} )
-                if ( 'H' in cara ):
-                    h  = ValeurCara('H',  cara, vale)
-                    ep = ValeurCara('EP', cara, vale, h*0.5)
-                    IsDefinitionOK( h > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'H'} )
-                    IsDefinitionOK( (0< ep <= h*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EP'} )
+        mess1 = tr("BARRE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
+        for i in range(len(BARRE)):
+            i1 = i + 1
+            mclf = BARRE[i]
+            if mclf['SECTION'] == 'CERCLE':
+                cara = force_tuple( mclf['CARA'] )
+                vale = force_tuple( mclf['VALE'] )
+                check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'BARRE'} )
+                rayon = valeurCara('R',  cara, vale)
+                ep    = valeurCara('EP', cara, vale, rayon)
+                check( rayon > 0.0, mess1 , {'i1':i1,'k2':'R'} )
+                check( (0.0 < ep <= rayon), mess1 , {'i1':i1,'k2':'EP'} )
+            elif mclf['SECTION'] == 'RECTANGLE':
+                cara = force_tuple( mclf['CARA'] )
+                vale = force_tuple( mclf['VALE'] )
+                check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'BARRE'} )
+                if 'H' in cara :
+                    h  = valeurCara('H',  cara, vale)
+                    ep = valeurCara('EP', cara, vale, h*0.5)
+                    check( h > 0.0, mess1 , {'i1':i1,'k2':'H'} )
+                    check( (0< ep <= h*0.5), mess1 , {'i1':i1,'k2':'EP'} )
                 else:
-                    hy  = ValeurCara('HY',  cara, vale)
-                    epy = ValeurCara('EPY', cara, vale, hy*0.5)
-                    hz  = ValeurCara('HZ',  cara, vale)
-                    epz = ValeurCara('EPZ', cara, vale, hz*0.5)
-                    IsDefinitionOK( hy > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HY'} )
-                    IsDefinitionOK( hz > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'HZ'} )
-                    IsDefinitionOK( (0< epy <= hy*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPY'} )
-                    IsDefinitionOK( (0< epz <= hz*0.5), mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPZ'} )
-            elif (mclf['SECTION'] == 'GENERALE'):
+                    hy  = valeurCara('HY',  cara, vale)
+                    epy = valeurCara('EPY', cara, vale, hy*0.5)
+                    hz  = valeurCara('HZ',  cara, vale)
+                    epz = valeurCara('EPZ', cara, vale, hz*0.5)
+                    check( hy > 0.0, mess1 , {'i1':i1,'k2':'HY'} )
+                    check( hz > 0.0, mess1 , {'i1':i1,'k2':'HZ'} )
+                    check( (0< epy <= hy*0.5), mess1 , {'i1':i1,'k2':'EPY'} )
+                    check( (0< epz <= hz*0.5), mess1 , {'i1':i1,'k2':'EPZ'} )
+            elif mclf['SECTION'] == 'GENERALE':
                 tmp = mclf.cree_dict_toutes_valeurs()
-                if ( 'CARA' in tmp.keys() ):
-                    cara = TransformeTuple( mclf['CARA'] )
-                    vale = TransformeTuple( mclf['VALE'] )
-                    IsDefinitionOK( len(cara) == len(vale), mess0 , {'k1':self.sdnom,'i1':ii+1,'k2':'BARRE'} )
-                    vale = ValeurCara('A' , cara, vale)
-                    IsDefinitionOK( vale > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'A'} )
+                if 'CARA' in tmp.keys() :
+                    cara = force_tuple( mclf['CARA'] )
+                    vale = force_tuple( mclf['VALE'] )
+                    check( len(cara) == len(vale), mess0 , {'i1':i1,'k2':'BARRE'} )
+                    vale = valeurCara('A' , cara, vale)
+                    check( vale > 0.0, mess1 , {'i1':i1,'k2':'A'} )
     # - - - - - - - - - - - - - - -
     if COQUE != None:
-        mess1 = tr("Concept : %s\n" % self.sdnom + "Occurence numéro %d de COQUE, mauvaise définition de %s.")
-        for ii in range(len(COQUE)):
-            mclf = COQUE[ii]
-            if ( 'EPAIS' in mclf ):
+        mess1 = tr("COQUE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
+        for i in range(len(COQUE)):
+            i1 = i + 1
+            mclf = COQUE[i]
+            if 'EPAIS' in mclf :
                 vale =  mclf['EPAIS']
-                IsDefinitionOK( vale > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EPAIS'} )
-            if ( 'A_CIS' in mclf ):
+                check( vale > 0.0, mess1 , {'i1':i1,'k2':'EPAIS'} )
+            if 'A_CIS' in mclf :
                 vale =  mclf['A_CIS']
-                IsDefinitionOK( vale > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'A_CIS'} )
-            if ( 'COEF_RIGI_DRZ' in mclf ):
+                check( vale > 0.0, mess1 , {'i1':i1,'k2':'A_CIS'} )
+            if 'COEF_RIGI_DRZ' in mclf :
                 vale =  mclf['COEF_RIGI_DRZ']
-                IsDefinitionOK( vale > 0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'COEF_RIGI_DRZ'} )
-            if ( 'COQUE_NCOU' in mclf ):
+                check( vale > 0.0, mess1 , {'i1':i1,'k2':'COEF_RIGI_DRZ'} )
+            if 'COQUE_NCOU' in mclf :
                 vale =  mclf['COQUE_NCOU']
-                IsDefinitionOK( vale > 0,   mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'COQUE_NCOU'} )
+                check( vale > 0,   mess1 , {'i1':i1,'k2':'COQUE_NCOU'} )
     # - - - - - - - - - - - - - - -
     if CABLE != None:
-        mess1 = tr("Concept : %s\n" % self.sdnom + "Occurence numéro %d de CABLE, mauvaise définition de %s.")
-        for ii in range(len(CABLE)):
-            mclf = CABLE[ii]
-            if ( 'SECTION' in mclf ):
+        mess1 = tr("CABLE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
+        for i in range(len(CABLE)):
+            i1 = i + 1
+            mclf = CABLE[i]
+            if 'SECTION' in mclf :
                 vale =  mclf['SECTION']
-                IsDefinitionOK( vale>0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'SECTION'} )
+                check( vale>0.0, mess1 , {'i1':i1,'k2':'SECTION'} )
     # - - - - - - - - - - - - - - -
     if DISCRET != None:
         pass
@@ -259,15 +252,16 @@ def affe_cara_elem_prod(self,POUTRE,BARRE,COQUE,CABLE,DISCRET,DISCRET_2D,GRILLE,
         pass
     # - - - - - - - - - - - - - - -
     if GRILLE != None:
-        mess1 = tr("Concept : %s\n" % self.sdnom + "Occurence numéro %d de GRILLE, mauvaise définition de %s.")
-        for ii in range(len(GRILLE)):
-            mclf = GRILLE[ii]
-            if ( 'SECTION' in mclf ):
+        mess1 = tr("GRILLE, occurrence %(i1)d, mauvaise définition de %(k2)s.")
+        for i in range(len(GRILLE)):
+            i1 = i + 1
+            mclf = GRILLE[i]
+            if 'SECTION' in mclf :
                 vale =  mclf['SECTION']
-                IsDefinitionOK( vale>=0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'SECTION'} )
-            if ( 'EXCENTREMENT' in mclf ):
+                check( vale>=0.0, mess1 , {'i1':i1,'k2':'SECTION'} )
+            if 'EXCENTREMENT' in mclf :
                 vale =  mclf['EXCENTREMENT']
-                IsDefinitionOK( vale>=0.0, mess1 , {'k1':self.sdnom,'i1':ii+1,'k2':'EXCENTREMENT'} )
+                check( vale>=0.0, mess1 , {'i1':i1,'k2':'EXCENTREMENT'} )
     #
     # Tout est ok
     return cara_elem
