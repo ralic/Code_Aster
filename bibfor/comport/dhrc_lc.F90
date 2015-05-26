@@ -33,7 +33,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 #include "asterfort/dhrc_calc_c.h"
 #include "asterfort/dhrc_calc_g.h"
 #include "asterfort/dhrc_calc_n.h"
-#include "asterfort/dhrc_calc_q.h"
 #include "asterfort/dhrc_jacob.h"
 #include "asterfort/dhrc_mat_tan.h"
 #include "asterfort/dhrc_sig.h"
@@ -124,7 +123,6 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
     real(kind=8) :: dsidem(3, 3), dsidec(3, 3), dsidef(3, 3)
     real(kind=8) :: dsidmg(3, 3), dsidcg(3, 3), dsidfg(3, 3)
     real(kind=8) :: xab1(3, 3)
-    real(kind=8) :: epse(6), epsmg(6)
 !
 ! --  OPTION ET MODELISATION
     rigi = (option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL')
@@ -165,21 +163,13 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 ! ---   A L'ELEMENT AU REPERE GLOBAL DE LA COQUE
     eps(3)=eps(3)*0.5d0
     eps(6)=eps(6)*0.5d0
-    epsm(3)=epsm(3)*0.5d0
-    epsm(6)=epsm(6)*0.5d0
 !
     call r8inir(8, 0.0d0, epsg, 1)
-    call r8inir(6, 0.0d0, epsmg, 1)
 !
     call dxefro(1, t2ev2, eps, epsg)
-    call dxefro(1, t2ev2, epsm, epsmg)
 !
     epsg(3)=epsg(3)*2.d0
     epsg(6)=epsg(6)*2.d0
-    epsm(3)=epsm(3)*2.d0
-    epsm(6)=epsm(6)*2.d0
-    epsmg(3)=epsmg(3)*2.d0
-    epsmg(6)=epsmg(6)*2.d0
 !
 ! ---------------------------------------------------------------------
 !
@@ -210,9 +200,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
         call dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
         call dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
-        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsmg, vim, a, ap1, ap2, as1, as2)
-        call dhrc_calc_q(a, b, vint, epsg, epse)
-        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epse, vint, a, ap1, ap2, as1, as2)
+        call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vint, a, ap1, ap2, as1, as2)
 !
 ! ----------------------------------------------------------------------
 ! -------CALCUL DES FORCES THERMODYNAMIQUES -------
@@ -337,9 +325,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
                 call dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
                 call dhrc_calc_c(c0, ac, gc, vint, c, cp1, cp2, cs1, cs2)
-                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsmg, vim, a, ap1, ap2, as1, as2)
-                call dhrc_calc_q(a, b, vint, epsg, epse)
-                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epse, vint, a, ap1, ap2, as1, as2)
+                call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vint, a, ap1, ap2, as1, as2)
             endif
 !
 ! --  CALCUL DES SEUILS AVEC VARIABLES ACTUALISEES
@@ -420,9 +406,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option,&
 !
     call dhrc_calc_b(ab, gb, vip, b, bp1, bp2, bs1, bs2)
     call dhrc_calc_c(c0, ac, gc, vip, c, cp1, cp2, cs1, cs2)
-    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsmg, vim, a, ap1, ap2, as1, as2)
-    call dhrc_calc_q(a, b, vint, epsg, epse)
-    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epse, vip, a, ap1, ap2, as1, as2)
+    call dhrc_calc_a(a0, aa_t, ga_t, aa_c, ga_c, epsg, vip, a, ap1, ap2, as1, as2)
     call dhrc_calc_n(epsg, vip, b, c, neta1, neta2)
 !
     if (resi) then

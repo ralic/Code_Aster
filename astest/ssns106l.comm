@@ -16,30 +16,30 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#  DETAILS : MODELISATION : MULTI-COUCHES
-#                          (DKT- ENDO_ISOT_BETON+2*GRILLE ACIER)
-#                                           VS.
-#                           DKTG (GLRC_DM)
+# COMPARAISON DES MODELE GLRC_DM ET DHRC
+#
+# DETAILS : MODELISATION : DKTG (GLRC_DM OU DHRC)
 #            MAILLAGE     : TRIA3
 #            CHARGEMENT   : CYCLIQUE DISTORSION ET CISAILLEMENT
 
-DEBUT(CODE=_F(
-NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'),)
 # SDVERI='NON' car la verification est trop couteuse en CPU
+
+# PARAMETRES
 EP = 0.1;
 
 D0 = 0.0033;
+fx = 5000000.0;
 
 t1 = 1.0;
-
-t2 = (3 * t1);
-
-t3 = (4 * t1);
+t2 = (3.0 * t1);
+t3 = (4.0 * t1);
 
 dt = 0.05;
 
-fx = 5000000.0;
-
+EGM = 35625.E6;
+EGF = 38660.E6;
+EB  = 32308.E6;
 
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -59,22 +59,15 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
                                       GROUP_NO='A1',),);
 
 MA=CREA_MAILLAGE(MAILLAGE=MAIL,
-                 CREA_MAILLE=(
-                                _F(NOM='DALLE_G',
-                                   GROUP_MA='DALLE',
-                                   PREF_MAILLE='G',),),);
+                 CREA_MAILLE=(_F(NOM='DALLE_G',
+                                 GROUP_MA='DALLE',
+                                 PREF_MAILLE='G',),),);
 
 MO_G=AFFE_MODELE(MAILLAGE=MA,
                  INFO=1,
                  AFFE=_F(GROUP_MA=('DALLE_G','A1A2','A4A3','A2A4','A3A1',),
                          PHENOMENE='MECANIQUE',
                          MODELISATION='DKTG',),);
-
-EB = 32308000000.0;
-
-EGM = 35625000000.0;
-
-EGF = 38660000000.0;
 
 MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
                                  NU_M=0.18,
@@ -86,16 +79,23 @@ MAT_G=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=EGM,
                                NYT=3.7E5,
                                MYF=9.E3,),);
 
+#BETON DHRC
 
 INCLUDE(UNITE=12, INFO=1,);
 
+# -- AFFECTATION DU MATERIAU POUR GLRC_DM --
+
 MATER_G=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=(_F(GROUP_MA='DALLE_G',
-                             MATER=MAT_G,),),);
+                      AFFE=(_F(GROUP_MA='DALLE_G',
+                               MATER=MAT_G,),),);
+
+# -- AFFECTATION DU MATERIAU POUR DHRC --
 
 MATER_D=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA='DALLE_G',
                              MATER=MAT_D,),),);
+
+# -- AFFECTATION DES CARACTERISTIQUES POUR GLRC_DM ET DHRC --
 
 CAEL_G=AFFE_CARA_ELEM(MODELE=MO_G,
                       COQUE=_F(GROUP_MA='DALLE_G',
@@ -103,34 +103,33 @@ CAEL_G=AFFE_CARA_ELEM(MODELE=MO_G,
                                ANGL_REP=(0.0,0.0,),
                                INER_ROTA='OUI',),);
 
-UX_0 = FORMULE(VALE='D1',
-                   NOM_PARA='X',);
+UX_IMPOS=FORMULE(VALE='D0*Y',
+                 NOM_PARA='Y',);
 
-UX_IMPOS = FORMULE(VALE='D0*Y',
-                   NOM_PARA='Y',);
-
-UY_IMPOS = FORMULE(VALE='D0*X',
-                   NOM_PARA='X',);
+UY_IMPOS=FORMULE(VALE='D0*X',
+                 NOM_PARA='X',);
 
 COND_0=AFFE_CHAR_CINE(MODELE=MO_G,
                       MECA_IMPO=_F(GROUP_NO='A1',
-                                  DX=0.0,
-                                  DY=0.0,
-                                  DZ=0.0,
-                                  DRX=0.0,
-                                  DRY=0.0,
-                                  DRZ=0.0,),);
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),);
 
 COND_1=AFFE_CHAR_CINE_F(MODELE=MO_G,
                         MECA_IMPO=_F(GROUP_NO='CL_IMPOS',
-                                    DX=UX_IMPOS,
-                                    DY=UY_IMPOS,),);
+                                     DX=UX_IMPOS,
+                                     DY=UY_IMPOS,),);
 
-chf1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+chf1=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.,0.,
                          t1,1.,
                          t2,-1.,
-                         t3,0.,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         t3,0.,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
 
 inst1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=t3,
@@ -138,8 +137,8 @@ inst1=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                     LIST_INST=inst1,),
-                       ECHEC=_F(ACTION        = 'DECOUPE',
-                                SUBD_METHODE  = 'MANUEL',
+                       ECHEC=_F(ACTION='DECOUPE',
+                                SUBD_METHODE='MANUEL',
                                 SUBD_PAS=4,
                                 SUBD_PAS_MINI=0.0001,),);
 
@@ -149,8 +148,8 @@ inst1R=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEFLISTR=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                     LIST_INST=inst1R,),
-                       ECHEC=_F(ACTION        = 'DECOUPE',
-                                SUBD_METHODE  = 'MANUEL',
+                       ECHEC=_F(ACTION='DECOUPE',
+                                SUBD_METHODE='MANUEL',
                                 SUBD_PAS=4,
                                 SUBD_PAS_MINI=0.0001,),);
 
@@ -167,10 +166,11 @@ RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
-RESU_G=CALC_CHAMP(reuse =RESU_G,RESULTAT=RESU_G,PRECISION=1.E-3,
-             FORCE=('FORC_NODA',),
-             VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),
-             )
+RESU_G=CALC_CHAMP(reuse=RESU_G,
+                  RESULTAT=RESU_G,
+                  FORCE='FORC_NODA',
+                  VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),
+                  PRECISION=1.E-3,)
 
 RESU_D=STAT_NON_LINE(MODELE=MO_G,
                      CHAM_MATER=MATER_D,
@@ -185,18 +185,19 @@ RESU_D=STAT_NON_LINE(MODELE=MO_G,
                      NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
-RESU_D=CALC_CHAMP(reuse =RESU_D,RESULTAT=RESU_D,PRECISION=1.E-3,
-             FORCE=('FORC_NODA',),
-             VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),
-             )
+RESU_D=CALC_CHAMP(reuse=RESU_D,
+                  RESULTAT=RESU_D,
+                  FORCE='FORC_NODA',
+                  VARI_INTERNE=('VARI_ELNO','VARI_NOEU',),
+                  PRECISION=1.E-3,)
 
 ############### POST TRAITEMENT #################################
 
-FORM_A = FORMULE(VALE='abs(DX+DY)',
-                 NOM_PARA=('DX','DY',),);
+FORM_A=FORMULE(VALE='abs(DX+DY)',
+               NOM_PARA=('DX','DY',),);
 
-FORM_V = FORMULE(VALE='(DX*DX+DY*DY)**0.5*(DX+DY)/abs(DX+DY)',
-                 NOM_PARA=('DX','DY',),);
+FORM_V=FORMULE(VALE='(DX*DX+DY*DY)**0.5*(DX+DY)/abs(DX+DY)',
+               NOM_PARA=('DX','DY',),);
 
 DIF_REL = FORMULE(VALE='(VG-V)/V',
                   NOM_PARA=('V','VG',),);
