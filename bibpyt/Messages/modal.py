@@ -222,7 +222,7 @@ Opérateur CALC_MODES sur plusieurs sous-bandes:
       dans un pré-calcul séparé. C'est généralement très rapide (surtout en parallèle) et cela
       fournit des informations concrêtes pour proposer un découpage homogène et réaliste.
 """),
-   21: _(u"""
+   22: _(u"""
 Opérateur CALC_MODES:
   Votre calcul cherche à déterminer %(i1)d modes propres à la fois. C'est un peu trop !
   Vous pouvez sans doute optimiser les performances, la robustesse de votre calcul ainsi que
