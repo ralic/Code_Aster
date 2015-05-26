@@ -20,6 +20,27 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'), PAR_LOT='NON')
 
+#===========================================================================
+#  Principe du test :
+#  ------------------
+#  On resout un probleme mecanique assez simple comportant des conditions aux limites
+#  de type LIAISON_MAIL.
+#  La dualisation de ces conditions aux limites interdit l'utilisation des solveurs multigrille de PETCS
+#  (a cause des ddls de Lagrange).
+#
+#  Il faut donc utiliser la fonctionnalite ELIM_LAGR='OUI'.
+#  Mais le code, pour eliminer chaque ddl de Lagrange est oblige d'eliminer un ddl physique.
+#  Au bout du compte, certains noeuds ont donc moins de ddls que les autres, ce qui empeche
+#  theoriquement d'utiliser les solveurs multigrille.
+#
+#  Dans ce cas de figure, le code ajoute alors des ddls fictifs pour que tous les noeuds du modele
+#  aient le meme nombre de ddls et que l'on puisse utiliser 'GAMG', 'BOOMER' et 'ML'
+#
+#  Ce test montre que cette strategie est interessante : le nombre d'iterations pour converger
+#  est tres nettement diminue en ajoutant des ddls fictifs.
+#
+#===========================================================================
+
 
 MATERI=DEFI_MATERIAU( ELAS=_F(  E = 0.75, NU =0.3))
 
