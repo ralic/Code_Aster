@@ -33,11 +33,11 @@ subroutine b3d_valp33(x33, x3, v33)
 !     on affiche un message non bloquant
 !=====================================================================
     implicit none
-#include "asterfort/matini.h"
-#include "asterfort/b3d_jacob3.h"
-#include "asterfort/b3d_jacob2.h"
-#include "asterfort/matmat.h"
 #include "asterfort/affiche33.h"
+#include "asterfort/assert.h"
+#include "asterfort/b3d_jacob3.h"
+#include "asterfort/matini.h"
+#include "asterfort/matmat.h"
     real(kind=8) :: x33(3, 3)
     real(kind=8) :: x3(3)
     real(kind=8) :: v33(3, 3)
@@ -59,8 +59,6 @@ subroutine b3d_valp33(x33, x3, v33)
     vpmultiple=.false.
     diago=.false.
     ordre=.true.
-!     print*
-!     call affiche33(x33)
 !     on verifie si x33 n est pas deja diagonale ( a epsv*xmax pres)
     xmax=max(abs(x33(1,1)),abs(x33(2,2)),abs(x33(3,3)))
     depsv=epsv*xmax
@@ -68,7 +66,6 @@ subroutine b3d_valp33(x33, x3, v33)
         (abs(x33(2,3)).le.depsv)) then
         diago=.true.
         call matini(3, 3, 0.D0, v33)
-!       print*,'matrice deja diagonale'
 !      mise en ordre des valeurs propres
         imin=1
         if (x33(2,2) .lt. x33(imin,imin)) imin=2
@@ -100,39 +97,18 @@ subroutine b3d_valp33(x33, x3, v33)
         if ((abs(x33(1,3)).le.depsv2) .and. (abs(x33(2,3)).le.depsv2)) then
 !        on utilise le fait que la matrice ne soit pas diagonale dans
 !        la base rz ou xy pour se ramener a un pb 2 d
-!         print*,'on passe par diag2d'
-            call b3d_jacob2(x33, x3, v33, epsv)
+            ASSERT(.false.)
         else
 !        cas general
-!         print*,'cas general'
-!         call affiche33(x33)
-!         read*
             call b3d_jacob3(x33, 3, x3, v33, vpmultiple,&
                             epsv)
         end if
     end if
-!
-!**************************************************
-!     controle d orthogonalite et des normes de v33
-!     le but est de s assurer que v33 est bien une
-!     matrice de passage
-!      print*,'valeurs propres', x3(1),x3(2),x3(3)
-!      do i=1,3
-!       do j=1,3
-!        v33t(i,j)=v33(j,i)
-!       end do
-!      end do
-!      call matmat(v33,v33t,3,3,3,u33)
-!      print*, 'image matrice identite av correction'
-!      call affiche33(u33)
-!     correction des erreurs numeriques eventuelle
-!
 !     **verif produit scalaire entre v1 et v2*****
     eps1=0.d0
     do i = 1, 3
         eps1=eps1+v33(i,1)*v33(i,2)
     end do
-!     print*,'erreur produit scalaire v1 v2 av corr',eps1
 !     correction v2 pour assurer le produit scalaire
     xn2=0.d0
     do i = 1, 3
@@ -141,7 +117,6 @@ subroutine b3d_valp33(x33, x3, v33)
     end do
     xn2=dsqrt(xn2)
 !     renormalisation de v2
-!      print*,'xn2 ds valp33',xn2
     if (xn2 .lt. 0.95) then
         erreur=.true.
         goto 10
@@ -149,21 +124,9 @@ subroutine b3d_valp33(x33, x3, v33)
     do i = 1, 3
         v33(i,2)=v33(i,2)/xn2
     end do
-!     test nouveau produit scalaire
-!      eps1=0.d0
-!      do i=1,3
-!       eps1=eps1+v33(i,1)*v33(i,2)
-!      end do
-!      print*,'erreur produit scalaire v1 v2 ap corr',eps1
-!
-!     **verif produit vectoriel v1 V v2 -v3=0*****
     eps3(1)=v33(2,1)*v33(3,2)-v33(3,1)*v33(2,2)-v33(1,3)
     eps3(2)=v33(3,1)*v33(1,2)-v33(1,1)*v33(3,2)-v33(2,3)
     eps3(3)=v33(1,1)*v33(2,2)-v33(2,1)*v33(1,2)-v33(3,3)
-!      print*,'erreur produit vectoriel av corr'
-!      do i=1,3
-!       print*,'eps(',i,')=',eps3(i)
-!      end do
 !
 !     correction produit vectoriel
     xn3=0.d0
@@ -176,44 +139,16 @@ subroutine b3d_valp33(x33, x3, v33)
     do i = 1, 3
         v33(i,3)=v33(i,3)/xn3
     end do
-!
-!     **verif produit vectoriel v1 V v2 -v3=0*****
-!      eps3(1)=v33(2,1)*v33(3,2)-v33(3,1)*v33(2,2)-v33(1,3)
-!      eps3(2)=v33(3,1)*v33(1,2)-v33(1,1)*v33(3,2)-v33(2,3)
-!      eps3(3)=v33(1,1)*v33(2,2)-v33(2,1)*v33(1,2)-v33(3,3)
-!      print*,'erreur produit vectoriel ap corr'
-!      do i=1,3
-!       print*,'eps(',i,')=',eps3(i)
-!      end do
-!
-!     ** image diagonalisee de la matrice initiale**
-!      call b3d_chrep(u33,x33,v33)
-!      print*, 'matrice dans la base principale'
-!      call affiche33(u33)
-!      print*, 'retour matrice dans base fixe'
     do i = 1, 3
         do j = 1, 3
             v33t(i,j)=v33(j,i)
         end do
     end do
-!      call b3d_chrep(u033,u33,v33t)
-!      call affiche33(u033)
-!      print*,'comparaision matrice init'
-!      do i=1,3
-!        do j=1,3
-!         dif33(i,j)=x33(i,j)-u033(i,j)
-!        end do
-!      end do
-!      call affiche33(dif33)
-!***********************************************
-!
 !     verif validite des matrice de passage
 !     (on change de nase une matrice unitaire)
     erreur=.false.
     call matmat(v33, v33t, 3, 3, 3,&
                 u33)
-!      print*,'Image matrice identite apres correction'
-!       call affiche33(u33)
     do i = 1, 3
         do j = 1, 3
             if (i .eq. j) then
@@ -267,6 +202,5 @@ subroutine b3d_valp33(x33, x3, v33)
     print*,'valeurs propres:',x3(1),x3(2),x3(3)
     print*,'matrice de passage:'
     call affiche33(v33)
-!      read*
 end if
 end subroutine

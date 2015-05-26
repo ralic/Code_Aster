@@ -63,8 +63,6 @@ subroutine b3d_vectp(aa, vp, x, n)
             print*,'matrice a diagonaliser :'
             call affiche33(aa)
         end if
-!      xn=dsqrt(x(1)**2+x(2)**2+x(3)**2)
-!      print*,'norme de vp apres normalisation',xn
     else if (n.eq.2) then
         if (abs(a) .ge. abs(d) .and. abs(a) .ge. abs(f)) then
             x(1)=-b/a

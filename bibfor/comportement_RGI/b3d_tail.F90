@@ -92,16 +92,4 @@ subroutine b3d_tail(xmat, nmat, ifou, mfr1, nmat0,&
         print*,'ENDO3D non implante pour cette formulation'
         read*
     end if
-!     variable logique localisation
-!     la transformation de Hillerborgh n est activee que si t33 non nul
-!     c a d fourni en prametres materiaux
-!      if(t33(1,1).eq.0.)then
-!       if(local)then
-!        print*, 'Traitement Hillerborgh necessite les tailles'
-!        print*, 'Programme stop dans b3d_tail'
-!        stop
-!       end if
-!      end if
-!      call affiche33(t33)
-!      read*
 end subroutine

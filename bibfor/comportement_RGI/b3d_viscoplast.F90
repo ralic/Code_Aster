@@ -68,7 +68,6 @@ subroutine b3d_viscoplast(pg, etag, dt, epg0, dff3,&
 !     deformation volumique limite a l infini si pression maintenue
     vpl00=0.d0
     do i = 1, 3
-!       print*,'ds b3d_viscoplast dff',dff3(i)
         epspl3(i)=epg1*dff3(i)/(1.d0-dff3(i))
         vpl00=vpl00+epspl3(i)
     end do
@@ -79,7 +78,6 @@ subroutine b3d_viscoplast(pg, etag, dt, epg0, dff3,&
         else
             print*,'bg>0.9999 dans b3d_viscoplast !'
             dvgeff=pg/xmg/0.0001d0
-!        read*
         end if
     else
         dvgeff=0.d0
@@ -96,7 +94,6 @@ subroutine b3d_viscoplast(pg, etag, dt, epg0, dff3,&
             do i = 1, 3
                 epspl3(i)=epspl3(i)*xlambda
             end do
-!       print*,'vgeff',vgeff,'vp0',vp0,'lambda',xlambda
         end if
     else
 !      la pression de gel est negative : on la fait tendre vers 0
@@ -107,7 +104,6 @@ subroutine b3d_viscoplast(pg, etag, dt, epg0, dff3,&
             do i = 1, 3
                 epspl3(i)=epspl3(i)*xlambda
             end do
-!       print*,'vgeff',vgeff,'vp0',vp0,'lambda',xlambda
         end if
     end if
 !
@@ -136,9 +132,6 @@ subroutine b3d_viscoplast(pg, etag, dt, epg0, dff3,&
     do i = 4, 6
         epspfg6(i)=epspg6(i)
     end do
-!      do i=1,6
-!        print*,'b3d_viscoplast epsp(',i,')=',epspfg6(i)
-!      end do
 !     retour des deformations plastiques initiales en base fixe
 !     retour en base fixe
     call x6x33(epspg6, x33)
@@ -150,18 +143,12 @@ subroutine b3d_viscoplast(pg, etag, dt, epg0, dff3,&
     call b3d_chrep(epsp33, x33, vssd33t)
     call x33x6(epsp33, epspfg6)
 !     calcul des endo reel de gel en fonction des deformation plastiques
-!     call affiche33(epsp33)
     call b3d_valp33(epsp33, eplg3, vplg33)
-!      call affiche33(vplg33)
-!      print*,eplg3
-!      print*,epg1
-!      call affiche33(vplg33t)
     call transpos1(vplg33t, vplg33, 3)
 !
 !     mise a jour des endommagement reels associes a la def visco plasti
     do i = 1, 3
         aux0=(epg0+eplg3(i))
         dg3(i)=eplg3(i)/aux0
-!       print*,'d diffus (',i,')=',dg3(i)
     end do
 end subroutine

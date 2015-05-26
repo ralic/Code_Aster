@@ -51,7 +51,7 @@ subroutine b3d_jacob3(a, idim, d, x, control,&
 !
 !===============================================================
     implicit none
-#include "asterfort/jacob2.h"
+#include "asterfort/assert.h"
 #include "asterfort/b3d_degre3.h"
 #include "asterfort/b3d_vectp.h"
 !     varibles supplementaires...
@@ -64,7 +64,7 @@ subroutine b3d_jacob3(a, idim, d, x, control,&
     real(kind=8) :: ad(3), c1, c2, c0, deps, aux, d1, d2, d3, xi1, xi2, xi3
 !
     if (idim .ne. 3) then
-        call jacob2(a, d, x)
+        ASSERT(.false.)
     endif
     c2=-a(1,1)-a(2,2)-a(3,3)
     c1= (a(1,1)*a(2,2)+a(2,2)*a(3,3)+a(3,3)*a(1,1))&

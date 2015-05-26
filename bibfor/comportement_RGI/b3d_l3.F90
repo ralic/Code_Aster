@@ -54,8 +54,6 @@ subroutine b3d_l3(local, t33, n33, vt33, vss33,&
             end do
         end do
 !       correction des directions pour les propagations de fissure biais
-!        print*,'cos directeur des dp de taille ds b3ssd'
-!        call affiche33 (codir33)
         do i = 1, 3
             denom=max(codir33(i,1),codir33(i,2),codir33(i,3))
             l3(i)=l3(i)*2.d0/denom

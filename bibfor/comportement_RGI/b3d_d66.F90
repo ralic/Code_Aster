@@ -99,9 +99,6 @@ subroutine b3d_d66(nu, sn3, d66, e0, prog1,&
         s33(3,2) = t27 * t46 * t51
         s33(3,3) = -(-t1 + t2 - 1.d0 + t16) * t6 * t23 * t50
     end if
-!     print*,'1-dt33'
-!     call affiche33(s33)
-!     read*
     do i = 1, 3
         do j = 1, 3
             if (i .eq. j) then
@@ -118,8 +115,4 @@ subroutine b3d_d66(nu, sn3, d66, e0, prog1,&
         sdmax=max(sn3(k),sn3(l))
         d66(i,i)=1.d0-1.d0/sdmax
     end do
-!     affichage de la matrice d'endommagement en base principale de fissuration
-!     print*,'endo dt66 en base principale de fissuration'
-!     call affiche66(d66)
-!     read*
 end subroutine

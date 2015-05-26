@@ -39,13 +39,13 @@ subroutine b3d_srf(sigal6, vss33, spl6, long3, eps23,&
 !     mais effective au sens de la poro mecanique
 !=====================================================================
     implicit none
+#include "asterfort/assert.h"
 #include "asterfort/b3d_actherm.h"
-#include "asterfort/x6x33.h"
 #include "asterfort/b3d_chrep.h"
+#include "asterfort/b3d_flu1d.h"
 #include "asterfort/indice1.h"
 #include "asterfort/x33x6.h"
-#include "asterfort/b3d_flu1d.h"
-#include "asterfort/b3d_relax1.h"
+#include "asterfort/x6x33.h"
 #include "asterf_types.h"
 !     declaration externes
     real(kind=8) :: sigal6(6), vss33(3, 3), spl6(6), dlt3(3), long3(3), eps23(3)
@@ -368,10 +368,7 @@ subroutine b3d_srf(sigal6, vss33, spl6, long3, eps23,&
 !          relaxation de la contrainte plastique dans la fissure refermee
                 spl0=spl33(i,i)
 !           if((spl0.gt.0.).and.((s1-spl0).lt.0.)) then
-                call b3d_relax1(spl0, s0, s1, vsigma, eta1,&
-                                E1, eta2, e0, dt, sref1,&
-                                spl1, dw3(i), sref, wref, wfeff3(i),&
-                                long3(i), xx1, dlt3(i), dtpic)
+                ASSERT(.false.)
 !           else
 !            spl1=spl0
 !            print*, 'pas de relaxation'
