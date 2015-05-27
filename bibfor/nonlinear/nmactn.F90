@@ -26,6 +26,7 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmacto.h"
+#include "asterfort/nmcrel.h"
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmevac.h"
 #include "asterfort/nmleeb.h"
@@ -124,6 +125,7 @@ subroutine nmactn(sdimpr, sddisc, sderro, defico, resoco,&
 !
             call utmess('A', 'MECANONLINE2_37')
             actnew = 0
+            call nmcrel(sderro, 'ITER_MAXI', .false._1)
             call nmeceb(sderro, 'RESI', 'CONV')
         else
 !
