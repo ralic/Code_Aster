@@ -19,11 +19,13 @@
 cata_msg = {
 
     1 : _(u"""
-Aucun noeud n'est apparié.
-La définition de vos surfaces ou de vos paramètres d'appariement est incorrecte.
-Vérifier TOLE_PROJ_EXT et/ou la définition de vos surfaces.
-Vérifier les déplacements induits par votre modélisation.
-Cette alarme peut entraîner des résultats faux si elle apparaît dans la résolution du contact en Newton généralisé.
+Aucun noeud n'est apparié. Cette alarme peut entraîner des résultats faux si elle apparaît dans la résolution du contact en Newton généralisé.
+Conseils :
+1. On préconise d'utiliser CONTACT_INIT='OUI' pour initialiser le contact en tout point de la zone
+2. Vérifiez la définition de vos surfaces ou de vos paramètres d'appariement
+3. Vérifier TOLE_PROJ_EXT (prolongement fictif de la maille maître).
+4. Vérifier les déplacements induits par votre modélisation.
+5. Si l'alarme persiste, changez d'algorithme avec ALGO_RESO_GEOM='POINT_FIXE' dans DEFI_CONTACT
 """),
 
     13 : _(u"""
