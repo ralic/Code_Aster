@@ -1702,7 +1702,7 @@ class FileExtVal(RegExpVal):
         self.ext = ext
         self.errormsg = u'"%%(value)s" n\'est pas un nom de fichier %(ext)s valide' % {
             "ext": ext}
-        RegExpVal.__init__(self, "^[\w\-]+\.%s$" % self.ext)
+        RegExpVal.__init__(self, "^\S+\.%s$" % self.ext)
 
     def info(self):
         return u'Un nom de fichier se terminant par ".%s" est attendu.' % self.ext
