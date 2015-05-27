@@ -133,6 +133,8 @@ OPTION__
                           OUT__ MMATUNS  PMATUNS
     RIGI_MECA_PRSU_R 573  IN__  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                           OUT__ MMATUNS  PMATUNS
+    SYME_MDNS_R      222  IN__  MMATUNS  PNOSYM
+                          OUT__ MMATUUR  PSYM
     TOU_INI_ELEM      99  IN__
                           OUT__ EERREUR  PERREUR
     TOU_INI_ELGA      99  IN__
