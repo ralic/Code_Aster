@@ -15,23 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine crgdm(imate,compor,lambda,deuxmu,lamf,deumuf,gt, &
-     &gc,gf,seuil,alpha,alfmc,ep,lrgm,ipg)
-              integer :: imate
-              character(len=16) :: compor
-              real(kind=8) :: lambda
-              real(kind=8) :: deuxmu
-              real(kind=8) :: lamf
-              real(kind=8) :: deumuf
-              real(kind=8) :: gt
-              real(kind=8) :: gc
-              real(kind=8) :: gf
-              real(kind=8) :: seuil
-              real(kind=8) :: alpha
-              real(kind=8) :: alfmc
-              real(kind=8) :: ep
-              aster_logical :: lrgm
-              integer :: ipg
-            end subroutine crgdm
-          end interface 
+interface
+    subroutine glrc_change_rep_mat(vmp, vfp, dspdep, dsidep)
+        real(kind=8) :: vmp(2, 2)
+        real(kind=8) :: vfp(2, 2)
+        real(kind=8) :: dspdep(6, *)
+        real(kind=8) :: dsidep(6, *)
+    end subroutine glrc_change_rep_mat
+end interface

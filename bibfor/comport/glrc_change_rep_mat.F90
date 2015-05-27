@@ -1,4 +1,4 @@
-subroutine tanmgl(vmp, vfp, dspdep, dsidep)
+subroutine glrc_change_rep_mat(vmp, vfp, dspdep, dsidep)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ subroutine tanmgl(vmp, vfp, dspdep, dsidep)
     integer :: t(2, 2), i, j, k, l, n, m
 ! ----------------------------------------------------------------------
 !
-!   ROUTINE DE CHANGEMENT DE REPERE DE LA MATRICE TANGENTE POUR LCGLDM
+!   ROUTINE DE CHANGEMENT DE REPERE DE LA MATRICE TANGENTE POUR GLRC_LC
 !
 ! IN:
 !       VMP(2,2)    : MATRICE DES VECTEURS PROPRES DE MEMBRANE
@@ -40,17 +40,17 @@ subroutine tanmgl(vmp, vfp, dspdep, dsidep)
     t(2,1)=3
     t(2,2)=2
 !
-    do 20 i = 1, 2
-        do 21 j = i, 2
-            do 22 k = 1, 2
-                do 23 l = 1, 2
+    do i = 1, 2
+        do j = i, 2
+            do k = 1, 2
+                do l = 1, 2
                     if (t(i,j) .ge. t(k,l)) then
                         rtemp = 0.d0
                         rtpf = 0.d0
                         rtmf = 0.d0
                         rtfm = 0.d0
-                        do 24 m = 1, 2
-                            do 25 n = 1, 2
+                        do m = 1, 2
+                            do n = 1, 2
                                 rtemp = rtemp + dspdep(n,m) * vmp(k,m) * vmp(i,n) * vmp(j,n) * vm&
                                         &p(l,m)
 !
@@ -62,8 +62,8 @@ subroutine tanmgl(vmp, vfp, dspdep, dsidep)
 !
                                 rtfm = rtfm + dspdep(n+3,m) * vmp(k,m) * vfp(i,n) * vfp(j,n) * vm&
                                        &p(l,m)
-25                          continue
-24                      continue
+                            enddo
+                        enddo
 !
                         rtemp = rtemp + dspdep(3,3) * vmp(i,1) * vmp( j,2) * vmp(k,1) * vmp(l,2)
                         rtemp = rtemp + dspdep(3,3) * vmp(i,2) * vmp( j,1) * vmp(k,2) * vmp(l,1)
@@ -78,19 +78,19 @@ subroutine tanmgl(vmp, vfp, dspdep, dsidep)
                             dsidep(t(k,l)+3,t(i,j)) = dsidep(t(k,l)+3, t(i,j) ) + rtmf
                         endif
                     endif
-23              continue
-22          continue
-21      continue
-20  continue
+                enddo
+            enddo
+        enddo
+    enddo
 !
-    dsidep(3,3) = dsidep(3,3)/2.0d0
-    dsidep(6,6) = dsidep(6,6)/2.0d0
-    dsidep(6,3) = dsidep(6,3)/2.0d0
+    dsidep(3,3) = dsidep(3,3)*0.5d0
+    dsidep(6,6) = dsidep(6,6)*0.5d0
+    dsidep(6,3) = dsidep(6,3)*0.5d0
 !
-    do 26 i = 1, 6
-        do 27 j = i+1, 6
+    do i = 1, 6
+        do j = i+1, 6
             dsidep(i,j)=dsidep(j,i)
-27      continue
-26  continue
+        enddo
+    enddo
 !
 end subroutine

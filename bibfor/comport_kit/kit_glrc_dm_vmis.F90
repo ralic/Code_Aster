@@ -23,9 +23,9 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/crgdm.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lcgldm.h"
+#include "asterfort/glrc_recup_mate.h"
+#include "asterfort/glrc_lc.h"
 #include "asterfort/nmcine.h"
 #include "asterfort/nmisot.h"
 #include "asterfort/r8inir.h"
@@ -52,7 +52,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
 ! ----------------------------------------------------------------------
 !
 !
-    aster_logical :: rigi, resi, lbid
+    aster_logical :: rigi, resi
     integer :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
@@ -106,18 +106,18 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
     endif
 !
 !-----LECTURE DES PARAMETRES D ENDOMMAGEMENT
-    call crgdm(imate, 'GLRC_DM         ', lambda, deuxmu, lamf,&
-               deumuf, gt, gc, gf, seuil,&
-               alpha, alfmc, ep, .false._1, 1)
+    call glrc_recup_mate(imate, 'GLRC_DM         ', lambda, deuxmu, lamf,&
+                         deumuf, gt, gc, gf, seuil,&
+                         alpha, alfmc, ep, .false._1)
 !
 !-----OBTENTION DU MODULE ELASTIQUE INITIAL
     call r8inir(6, 0.d0, demp, 1)
     call r8inir(7, 0.d0, vip, 1)
 !
-    call lcgldm(demp, demp, vip, 'RIGI_MECA_TANG  ', demp,&
-                vip, cel, lambda, deuxmu, lamf,&
-                deumuf, gt, gc, gf, seuil,&
-                alpha, alfmc, crit, iret)
+    call glrc_lc(demp, demp, vip, 'RIGI_MECA_TANG  ', demp,&
+                 vip, cel, lambda, deuxmu, lamf,&
+                 deumuf, gt, gc, gf, seuil,&
+                 alpha, alfmc, crit, iret)
 !
     do j = 1, 6
         do i = 1, 6
@@ -164,10 +164,10 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim,&
 !
 !-------CALCUL DE L ENDOMMAGEMENT
         call r8inir(6, 0.d0, sigpd, 1)
-        call lcgldm(emmp, demp, vim, 'FULL_MECA       ', sigpd,&
-                    vip, tandam, lambda, deuxmu, lamf,&
-                    deumuf, gt, gc, gf, seuil,&
-                    alpha, alfmc, crit, iret)
+        call glrc_lc(emmp, demp, vim, 'FULL_MECA       ', sigpd,&
+                     vip, tandam, lambda, deuxmu, lamf,&
+                     deumuf, gt, gc, gf, seuil,&
+                     alpha, alfmc, crit, iret)
 !
 !-------CALCUL DE L INCREMENT DE LA DEFORMATION ELASTIQUE
 !        PUIS DEPS - DEPS^D

@@ -1,6 +1,5 @@
-subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
-                 deumuf, gt, gc, gf, seuil,&
-                 alpha, alfmc, ep, lrgm, ipg)
+subroutine glrc_recup_mate(imate, compor, lambda, deuxmu, lamf, deumuf, gt, gc, gf, seuil,&
+                 alpha, alfmc, ep, lrgm)
 ! person_in_charge: sebastien.fayolle at edf.fr
 ! aslint: disable=W1504
     implicit none
@@ -27,7 +26,7 @@ subroutine crgdm(imate, compor, lambda, deuxmu, lamf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     aster_logical :: lrgm
-    integer :: imate, ipg
+    integer :: imate
     real(kind=8) :: lambda, deuxmu, deumuf, lamf
     real(kind=8) :: gt, gc, gf, seuil, alpha, alfmc
     character(len=16) :: compor, phenom

@@ -1,7 +1,7 @@
-subroutine lcgldm(epsm, deps, vim, option, sig,&
-                  vip, dsidep, lambda, deuxmu, lamf,&
-                  deumuf, gmt, gmc, gf, seuil,&
-                  alf, alfmc, crit, codret)
+subroutine glrc_lc(epsm, deps, vim, option, sig,&
+                   vip, dsidep, lambda, deuxmu, lamf,&
+                   deumuf, gmt, gmc, gf, seuil,&
+                   alf, alfmc, crit, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,11 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/ceps33.h"
-#include "asterfort/cntmat.h"
-#include "asterfort/cstgld.h"
 #include "asterfort/diago2.h"
-#include "asterfort/gldloc.h"
+#include "asterfort/glrc_calc_cst.h"
+#include "asterfort/glrc_calc_eps33.h"
+#include "asterfort/glrc_integ_loc.h"
+#include "asterfort/glrc_sig_mat.h"
 #include "asterfort/r8inir.h"
     integer :: codret
     real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), seuil, alfmc
@@ -128,8 +128,7 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
     trot = efp(1)+efp(2)
 !
 ! --  CALCUL DES CONSTANTES INDEPENDANTES DE DA1, DA2 ET EPS33
-    call cstgld(lamf, muf, alf, gf, emp,&
-                efp, qff)
+    call glrc_calc_cst(lamf, muf, alf, gf, efp, qff)
 !
 ! --  INITIALISATION DE DA1, DA2 ET EPS33
     if (lelas) then
@@ -146,12 +145,12 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
         told = crit(3)
         kdmax = nint(crit(1))
 !
-        call gldloc(lambda, deuxmu, deumuf, seuil, alf,&
-                    alfmc, gmt, gmc, gf, cof1,&
-                    vim, q2d, qff, tr2d, eps33,&
-                    de33d1, de33d2, ksi2d, dksi1, dksi2,&
-                    da1, da2, kdmax, told, codret,&
-                    emp)
+        call glrc_integ_loc(lambda, deuxmu, seuil, alf,&
+                            alfmc, gmt, gmc, cof1,&
+                            vim, q2d, qff, tr2d, eps33,&
+                            de33d1, de33d2, ksi2d, dksi1, dksi2,&
+                            da1, da2, kdmax, told, codret,&
+                            emp)
 !
         if (da1 .lt. vim(1)) da1 = vim(1)
         if (da2 .lt. vim(2)) da2 = vim(2)
@@ -193,23 +192,23 @@ subroutine lcgldm(epsm, deps, vim, option, sig,&
             elas = (elas1.and.elas2)
         endif
     endif
-    call ceps33(lambda, deuxmu, alfmc, gmt, gmc,&
-                tr2d, da1, da2, eps33, de33d1,&
-                de33d2, ksi2d, dksi1, dksi2, cof1,&
-                q2d, emp, cof2, dq2d)
+    call glrc_calc_eps33(lambda, deuxmu, alfmc, gmt, gmc,&
+                         tr2d, da1, da2, eps33, de33d1,&
+                         de33d2, ksi2d, dksi1, dksi2, cof1,&
+                         q2d, emp, cof2, dq2d)
 !
 ! --  CALCUL DE LA TRACE 3D
     treps = tr2d + eps33
 !
 ! --  CALCUL DES CONTRAINTES GENERALISEES ET DE LA MATRICE TANGENTE
 !
-    call cntmat(lambda, deuxmu, lamf, deumuf, alf,&
-                alfmc, emp, efp, eps, vmp,&
-                vfp, tr2d, trot, treps, gmt,&
-                gmc, gf, da1, da2, ksi2d,&
-                qff, cof1, q2d, de33d1, de33d2,&
-                elas, elas1, elas2, coup, rigi,&
-                resi, option, dsidep, sig, cof2,&
-                dq2d)
+    call glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf,&
+                      alfmc, emp, efp, eps, vmp,&
+                      vfp, tr2d, trot, treps, gmt,&
+                      gmc, gf, da1, da2, ksi2d,&
+                      qff, cof1, q2d, de33d1, de33d2,&
+                      elas, elas1, elas2, coup, rigi,&
+                      resi, option, dsidep, sig, cof2,&
+                      dq2d)
 !
 end subroutine

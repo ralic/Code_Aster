@@ -16,28 +16,35 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcgldm(epsm, deps, vim, option, sig,&
-                      vip, dsidep, lambda, deuxmu, lamf,&
-                      deumuf, gmt, gmc, gf, seuil,&
-                      alf, alfmc, crit, codret)
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: vim(*)
-        character(len=16) :: option
-        real(kind=8) :: sig(6)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: dsidep(6, 6)
+    subroutine glrc_integ_loc(lambda, deuxmu, seuil, alf,&
+                              alfmc, gmt, gmc, cof1,&
+                              vim, q2d, qff, tr2d, eps33,&
+                              de33d1, de33d2, ksi2d, dksi1, dksi2,&
+                              da1, da2, kdmax, told, codret,&
+                              emp)
         real(kind=8) :: lambda
         real(kind=8) :: deuxmu
-        real(kind=8) :: lamf
-        real(kind=8) :: deumuf
-        real(kind=8) :: gmt
-        real(kind=8) :: gmc
-        real(kind=8) :: gf
         real(kind=8) :: seuil
         real(kind=8) :: alf
         real(kind=8) :: alfmc
-        real(kind=8) :: crit(*)
+        real(kind=8) :: gmt
+        real(kind=8) :: gmc
+        real(kind=8) :: cof1(2)
+        real(kind=8) :: vim(*)
+        real(kind=8) :: q2d(2)
+        real(kind=8) :: qff(2)
+        real(kind=8) :: tr2d
+        real(kind=8) :: eps33
+        real(kind=8) :: de33d1
+        real(kind=8) :: de33d2
+        real(kind=8) :: ksi2d
+        real(kind=8) :: dksi1
+        real(kind=8) :: dksi2
+        real(kind=8) :: da1
+        real(kind=8) :: da2
+        integer :: kdmax
+        real(kind=8) :: told
         integer :: codret
-    end subroutine lcgldm
+        real(kind=8) :: emp(2)
+    end subroutine glrc_integ_loc
 end interface

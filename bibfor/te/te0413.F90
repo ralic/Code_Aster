@@ -2,10 +2,10 @@ subroutine te0413(option, nomte)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/crgdm.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/glrc_recup_mate.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
@@ -128,9 +128,9 @@ subroutine te0413(option, nomte)
 !
             call jevech('PMATERC', 'L', imate)
 !
-            call crgdm(zi(imate), 'GLRC_DM         ', r8b(1), r8b(2), r8b(3),&
-                       r8b(4), r8b(5), r8b(6), r8b(7), seuil,&
-                       r8b(8), r8b(9), ep, .false._1, ipg)
+            call glrc_recup_mate(zi(imate), 'GLRC_DM         ', r8b(1), r8b(2), r8b(3),&
+                                 r8b(4), r8b(5), r8b(6), r8b(7), seuil,&
+                                 r8b(8), r8b(9), ep, .false._1)
 !
 !  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 !        ==========================================================

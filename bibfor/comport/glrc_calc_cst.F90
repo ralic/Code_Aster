@@ -1,5 +1,4 @@
-subroutine cstgld(lamf, muf, alf, gf, emp,&
-                  efp, qff)
+subroutine glrc_calc_cst(lamf, muf, alf, gf, efp, qff)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +20,7 @@ subroutine cstgld(lamf, muf, alf, gf, emp,&
 !
     implicit none
     real(kind=8) :: lamf, muf, alf, gf, trot, trot2
-    real(kind=8) :: emp(2), efp(2)
+    real(kind=8) :: efp(2)
 !
 !----------------------------------------------------------------------
 !        CALCUL DES CONSTANTES INDEPENDANTES DE DA1, DA2 ET EPS33
@@ -63,20 +62,20 @@ subroutine cstgld(lamf, muf, alf, gf, emp,&
 ! -------- CALCUL DE QFF --------------------
 !
     if (trot .gt. 0.0d0) then
-        qff(1) = 0.0d0
-        qff(2) = 0.5d0*lamf*trot2
-    else
         qff(1) = 0.5d0*lamf*trot2
         qff(2) = 0.0d0
+    else
+        qff(1) = 0.0d0
+        qff(2) = 0.5d0*lamf*trot2
     endif
 !
-    do 4510, k = 1,2
-    if (efp(k) .gt. 0.0d0) then
-        qff(2) = qff(2) + muf*efp(k)**2
-    else
-        qff(1) = qff(1) + muf*efp(k)**2
-    endif
-    4510 end do
+    do k = 1,2
+        if (efp(k) .gt. 0.0d0) then
+            qff(1) = qff(1) + muf*efp(k)**2
+        else
+            qff(2) = qff(2) + muf*efp(k)**2
+        endif
+    end do
 !
     qff(1) = alf*qff(1)*(1.0d0 - gf1)
     qff(2) = alf*qff(2)*(1.0d0 - gf2)

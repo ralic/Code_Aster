@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
+    subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf,&
                       alfmc, emp, efp, eps, vmp,&
                       vfp, tr2d, trot, treps, gmt,&
                       gmc, gf, da1, da2, ksi2d,&
@@ -62,5 +62,5 @@ interface
         real(kind=8) :: sig(6)
         real(kind=8) :: cof2(2)
         real(kind=8) :: dq2d(2)
-    end subroutine cntmat
+    end subroutine glrc_sig_mat
 end interface

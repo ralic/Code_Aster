@@ -1,7 +1,7 @@
-subroutine ceps33(lambda, deuxmu, alfmc, gmt, gmc,&
-                  tr2d, da1, da2, eps33, de33d1,&
-                  de33d2, ksi2d, dksi1, dksi2, cof1,&
-                  q2d, emp, cof2, dq2d)
+subroutine glrc_calc_eps33(lambda, deuxmu, alfmc, gmt, gmc,&
+                           tr2d, da1, da2, eps33, de33d1,&
+                           de33d2, ksi2d, dksi1, dksi2, cof1,&
+                           q2d, emp, cof2, dq2d)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,21 +93,21 @@ subroutine ceps33(lambda, deuxmu, alfmc, gmt, gmc,&
         dgtr2(2) = dgtr2(2)/(alfmc+da2)**3
     endif
 !
-    do 50, k = 1,2
-    if (emp(k) .gt. 0.0d0) then
-        gi(1,k) = 1.0d0 - gmt
-        gi(2,k) = 1.0d0 - gmt
-        dgi(1,k) = 0.0d0
-        dgi(2,k) = 0.0d0
-    else
-        gi(1,k) = alfmc*(1.0d0 - gmc)*(1.0d0+da1)**2/(alfmc+da1)** 2
-        gi(2,k) = alfmc*(1.0d0 - gmc)*(1.0d0+da2)**2/(alfmc+da2)** 2
-        dgi(1,k) = 2.d0*alfmc*(1.0d0-gmc)*(1.0d0+da1)*(alfmc- 1.0d0)
-        dgi(1,k) = dgi(1,k)/(alfmc+da1)**3
-        dgi(2,k) = 2.d0*alfmc*(1.0d0-gmc)*(1.0d0+da2)*(alfmc- 1.0d0)
-        dgi(2,k) = dgi(2,k)/(alfmc+da2)**3
-    endif
-    50 end do
+    do k = 1,2
+        if (emp(k) .gt. 0.0d0) then
+            gi(1,k) = 1.0d0 - gmt
+            gi(2,k) = 1.0d0 - gmt
+            dgi(1,k) = 0.0d0
+            dgi(2,k) = 0.0d0
+        else
+            gi(1,k) = alfmc*(1.0d0 - gmc)*(1.0d0+da1)**2/(alfmc+da1)** 2
+            gi(2,k) = alfmc*(1.0d0 - gmc)*(1.0d0+da2)**2/(alfmc+da2)** 2
+            dgi(1,k) = 2.d0*alfmc*(1.0d0-gmc)*(1.0d0+da1)*(alfmc- 1.0d0)
+            dgi(1,k) = dgi(1,k)/(alfmc+da1)**3
+            dgi(2,k) = 2.d0*alfmc*(1.0d0-gmc)*(1.0d0+da2)*(alfmc- 1.0d0)
+            dgi(2,k) = dgi(2,k)/(alfmc+da2)**3
+        endif
+    end do
 !
     cof1(1) = 0.5d0*lambda*gtr2(1)
     cof1(2) = 0.5d0*lambda*gtr2(2)

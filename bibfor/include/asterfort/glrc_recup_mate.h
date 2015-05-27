@@ -15,15 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine cstgld(lamf, muf, alf, gf, emp,&
-                      efp, qff)
-        real(kind=8) :: lamf
-        real(kind=8) :: muf
-        real(kind=8) :: alf
-        real(kind=8) :: gf
-        real(kind=8) :: emp(2)
-        real(kind=8) :: efp(2)
-        real(kind=8) :: qff(2)
-    end subroutine cstgld
-end interface
+          interface 
+            subroutine glrc_recup_mate(imate,compor,lambda,deuxmu,lamf,deumuf,gt, &
+      gc,gf,seuil,alpha,alfmc,ep,lrgm)
+              integer :: imate
+              character(len=16) :: compor
+              real(kind=8) :: lambda
+              real(kind=8) :: deuxmu
+              real(kind=8) :: lamf
+              real(kind=8) :: deumuf
+              real(kind=8) :: gt
+              real(kind=8) :: gc
+              real(kind=8) :: gf
+              real(kind=8) :: seuil
+              real(kind=8) :: alpha
+              real(kind=8) :: alfmc
+              real(kind=8) :: ep
+              aster_logical :: lrgm
+            end subroutine glrc_recup_mate
+          end interface 

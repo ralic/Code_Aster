@@ -1,11 +1,11 @@
-subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
-                  alfmc, emp, efp, eps, vmp,&
-                  vfp, tr2d, trot, treps, gmt,&
-                  gmc, gf, da1, da2, ksi2d,&
-                  qff, cof1, q2d, de33d1, de33d2,&
-                  elas, elas1, elas2, coup, rigi,&
-                  resi, option, dsidep, sig, cof2,&
-                  dq2d)
+subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf,&
+                        alfmc, emp, efp, eps, vmp,&
+                        vfp, tr2d, trot, treps, gmt,&
+                        gmc, gf, da1, da2, ksi2d,&
+                        qff, cof1, q2d, de33d1, de33d2,&
+                        elas, elas1, elas2, coup, rigi,&
+                        resi, option, dsidep, sig, cof2,&
+                        dq2d)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,9 +29,9 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 ! --  IN
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterfort/glrc_change_rep_mat.h"
 #include "asterfort/matinv.h"
 #include "asterfort/r8inir.h"
-#include "asterfort/tanmgl.h"
     aster_logical :: resi, rigi, coup, elas, elas1, elas2
 !
     real(kind=8) :: lambda, deuxmu, lamf, deumuf, alf, treps, gmt, gmc, gf
@@ -127,7 +127,7 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 !
     lambdd = lambda *0.5d0*(fd1 + fd2)
 !
-    do 80 k = 1, 2
+    do k = 1, 2
         if (emp(k) .gt. 0.d0) then
             fdi1(k) = (1.d0 + gmt*da1) / (1.d0 + da1)
             fdi2(k) = (1.d0 + gmt*da2) / (1.d0 + da2)
@@ -143,34 +143,34 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
         sigp(1) = sigp(1) + deumud(k)*emp(k)*vmp(1,k)**2
         sigp(2) = sigp(2) + deumud(k)*emp(k)*vmp(2,k)**2
         sigp(3) = sigp(3) + deumud(k)*emp(k)*vmp(1,k)*vmp(2,k)
- 80 end do
+    end do
 !
 ! --  CALCUL DE LA CONTRAINTE DE FLEXION SIGF
     if (trot .gt. 0.0d0) then
-        lamfd = lamf*(alf + gf2*da2)/(alf + da2)
-        dlmfd2 = -lamf*alf*(1.0d0 - gf2)/(alf + da2)**2
-        dlmfd1 = 0.0d0
-    else
         lamfd = lamf*(alf + gf1*da1)/(alf + da1)
         dlmfd1 = -lamf*alf*(1.0d0 - gf1)/(alf + da1)**2
         dlmfd2 = 0.0d0
+    else
+        lamfd = lamf*(alf + gf2*da2)/(alf + da2)
+        dlmfd1 = 0.0d0
+        dlmfd2 = -lamf*alf*(1.0d0 - gf2)/(alf + da2)**2
     endif
 !
-    do 90 k = 1, 2
+    do k = 1, 2
         if (efp(k) .gt. 0.0d0) then
-            demudf(k) = deumuf*(alf + gf2*da2)/(alf + da2)
-            d2mudf(k) = -deumuf*alf*(1.0d0 - gf2)/(alf + da2)**2
-            d1mudf(k) = 0.0d0
-        else
             demudf(k) = deumuf*(alf + gf1*da1)/(alf + da1)
             d1mudf(k) = -deumuf*alf*(1.0d0 - gf1)/(alf + da1)**2
             d2mudf(k) = 0.0d0
+        else
+            demudf(k) = deumuf*(alf + gf2*da2)/(alf + da2)
+            d1mudf(k) = 0.0d0
+            d2mudf(k) = -deumuf*alf*(1.0d0 - gf2)/(alf + da2)**2
         endif
 !
         sigf(1) = sigf(1) + demudf(k)*efp(k)*vfp(1,k)**2
         sigf(2) = sigf(2) + demudf(k)*efp(k)*vfp(2,k)**2
         sigf(3) = sigf(3) + demudf(k)*efp(k)*vfp(1,k)*vfp(2,k)
- 90 end do
+    end do
 !
 ! --  CALCUL DE SIG
     if (resi .and. (.not.coup)) then
@@ -206,17 +206,17 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 !
         de33i = -lambda*ksi2d/(deuxmu + lambda*ksi2d)
 !
-        do 100 k = 1, 2
-            do 110 l = 1, 2
+        do k = 1, 2
+            do l = 1, 2
                 dspdep(k,l) = lambdd + lambda*ksi2d*de33i
                 dspdep(k+3,l+3) = lamfd
-110         continue
-100     continue
+            enddo
+        enddo
 !
-        do 120 k = 1, 2
+        do k = 1, 2
             dspdep(k,k) = dspdep(k,k) + deumud(k)
             dspdep(k+3,k+3) = dspdep(k+3,k+3) + demudf(k)
-120     continue
+        enddo
 !
         if (abs(emp(1) - emp(2)) .le. r8prem()) then
             dspdep(3,3)=deumud(1)
@@ -269,9 +269,9 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 !
                 call matinv('S', 2, a, ainv, deta)
 !
-                do 930 i = 1, 2
-                    do 931 k = 1, 2
-                        do 932 l = 1, 2
+                do i = 1, 2
+                    do k = 1, 2
+                        do l = 1, 2
                             dspdep(l,k) = dspdep(l,k) -dndd(l,i)*( dndd(k,1)*ainv(i,1)+dndd(k,2)*&
                                           &ainv(i,2))
 !
@@ -283,9 +283,9 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 !
                             dspdep(l,k+3) = dspdep(l,k+3) - dndd(l,i)* (dmdd(k,1)*ainv(i,1)+dmdd(&
                                             &k,2)*ainv(i,2))
-932                     continue
-931                 continue
-930             continue
+                        enddo
+                    enddo
+                enddo
 !
             else if (.not. elas1) then
 !
@@ -296,8 +296,8 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 !
                 ainv(1,1)=1.d0/a(1,1)
 !
-                do 950 k = 1, 2
-                    do 951 l = 1, 2
+                do k = 1, 2
+                    do l = 1, 2
                         dspdep(l,k)=dspdep(l,k)-dndd(l,1)*dndd(k,1)*&
                         ainv(1,1)
 !
@@ -307,8 +307,8 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
                         dspdep(l+3,k) = dspdep(l+3,k) - dmdd(l,1)* dndd(k,1)* ainv(1,1)
 !
                         dspdep(l,k+3) = dspdep(l,k+3) - dndd(l,1)* dmdd(k,1)* ainv(1,1)
-951                 continue
-950             continue
+                    enddo
+                enddo
 !
             else if (.not. elas2) then
 !
@@ -319,8 +319,8 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
 !
                 ainv(2,2)=1.d0/a(2,2)
 !
-                do 960 k = 1, 2
-                    do 961 l = 1, 2
+                do k = 1, 2
+                    do l = 1, 2
                         dspdep(l,k)=dspdep(l,k)-dndd(l,2)*dndd(k,2)*&
                         ainv(2,2)
 !
@@ -329,10 +329,10 @@ subroutine cntmat(lambda, deuxmu, lamf, deumuf, alf,&
                         dspdep(l+3,k) = dspdep(l+3,k) - dmdd(l,2)* dndd(k,2)* ainv(2,2)
 !
                         dspdep(l,k+3) = dspdep(l,k+3) - dndd(l,2)* dmdd(k,2)* ainv(2,2)
-961                 continue
-960             continue
+                    enddo
+                enddo
             endif
         endif
-        call tanmgl(vmp, vfp, dspdep, dsidep)
+        call glrc_change_rep_mat(vmp, vfp, dspdep, dsidep)
     endif
 end subroutine

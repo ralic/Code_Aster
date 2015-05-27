@@ -27,7 +27,6 @@ subroutine te0409(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/coqrep.h"
 #include "asterfort/coqgth.h"
-#include "asterfort/crgdm.h"
 #include "asterfort/dhrc_lc.h"
 #include "asterfort/dhrc_recup_mate.h"
 #include "asterfort/dkqbf.h"
@@ -43,12 +42,13 @@ subroutine te0409(option, nomte)
 #include "asterfort/dxtloc.h"
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/glrc_recup_mate.h"
+#include "asterfort/glrc_lc.h"
 #include "asterfort/glrcmm.h"
 #include "asterfort/gquad4.h"
 #include "asterfort/gtria3.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jquad4.h"
-#include "asterfort/lcgldm.h"
 #include "asterfort/maglrc.h"
 #include "asterfort/nmcoup.h"
 #include "asterfort/pmrvec.h"
@@ -530,19 +530,19 @@ subroutine te0409(option, nomte)
                     end do
                 endif
 !
-                call crgdm(zi(imate), compor, lambda, deuxmu, lamf,&
-                           deumuf, gt, gc, gf, seuil,&
-                           alphaf, alfmc, ep, lrgm, ipg)
+                call glrc_recup_mate(zi(imate), compor, lambda, deuxmu, lamf,&
+                                     deumuf, gt, gc, gf, seuil,&
+                                     alphaf, alfmc, ep, lrgm)
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
 !
 !               -- endommagement seulement
                 call r8inir(36, 0.d0, dsidep, 1)
-                call lcgldm(epsm, deps, ecr, option, sig,&
-                            ecrp, dsidep, lambda, deuxmu, lamf,&
-                            deumuf, gt, gc, gf, seuil,&
-                            alphaf, alfmc, zr(icarcr), codret)
+                call glrc_lc(epsm, deps, ecr, option, sig,&
+                             ecrp, dsidep, lambda, deuxmu, lamf,&
+                             deumuf, gt, gc, gf, seuil,&
+                             alphaf, alfmc, zr(icarcr), codret)
 !
             else if (compor(1:4).eq. 'DHRC') then
 !
