@@ -14,15 +14,16 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# Le calcul de la pression sur une interface est utilie en mécanique notamment  
+# Le calcul de la pression sur une interface est utilie en mécanique notamment
 # en mécanique de contact, mécanique de la rupture,....
 # Cette routine produit un cham_gd calculé à partir du tenseur de contraintes nodale SIEF_NOEU
-# L'option n'existe que pour les éléments isoparamétriques mais elle pourra être étendue 
-# au frottement et aux éléments de structures si le besoin se manifeste. 
+# L'option n'existe que pour les éléments isoparamétriques mais elle pourra être étendue
+# au frottement et aux éléments de structures si le besoin se manifeste.
 
 
 CALC_PRESSION=MACRO(nom="CALC_PRESSION",
                     op=OPS('Macro.calc_pression_ops.calc_pression_ops'),
+                    UIinfo={"groupes":("Post-traitements",)},
                     sd_prod=cham_no_sdaster,
                     fr="Calcul de la pression nodale sur une interface a partir de SIEF_NOEU. Cette option n existe que pour les éléments isoparamétriques.",
 
@@ -32,7 +33,7 @@ CALC_PRESSION=MACRO(nom="CALC_PRESSION",
          INST            =SIMP(statut='o',typ='R',max='**'),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
          NUME_ORDRE      =SIMP(statut='f',typ='I'),
-         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")), 
-         PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),             
+         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU")),
+         PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 );

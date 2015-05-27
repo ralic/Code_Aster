@@ -54,8 +54,33 @@ except IOError:
 #
 #    ************************************************************
 
+# Pour la vérification des valeurs de UIinfo
+authorized = (
+    'Acoustique',
+    'Chargements',
+    'Dynamique',
+    'Eléments de structure',
+    'Fonctions',
+    'Gestion du travail',
+    'Impression',
+    'Lecture',
+    'Maillage',
+    'Matrices et vecteurs',
+    'Modélisation',
+    'Mécanique',
+    'Outils-métier',
+    'Post-traitements',
+    'Rupture',
+    'Résolution',
+    'Résultats et champs',
+    'Tables',
+    'Thermique',
+    'Utilitaires',
+)
+
 # TEST_TABLE are included in the "macro-command"
 VOCAB01(EXISTANT=existing_keywords,
+        UIINFO=authorized,
         INFO=1)
 
 FIN()

@@ -17,12 +17,13 @@
 # person_in_charge: romeo.fernandes at edf.fr
 
 POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
+                       UIinfo={"groupes":("Outils-métier",)},
                        op=OPS("Mac3coeur.post_mac3coeur_ops.post_mac3coeur_ops"),
 
            TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","TEST","900","1300","N4")),
            RESULTAT     = SIMP(statut='o',typ=evol_noli),                             # SD_RESULTAT
            INST         = SIMP(statut='o',typ='R', max=1),                            # INSTANT
-           
+
            LAME    = FACT(statut='f',max='**',
                           fr=tr("Post-traitement des lames d'eau, par grille ou valeurs min/max"),
 
@@ -43,23 +44,23 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
 
            DEFORMATION = FACT(statut='f',max='**',
                               fr=tr("Post-traitement des deformations, par grille ou valeurs min/max"),
-       
-                 UNITE        = SIMP(statut='o',typ='I', max=1),   
+
+                 UNITE        = SIMP(statut='o',typ='I', max=1),
                  FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
-                 
+
                  b_def_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr=tr("Paramètres pour le format GRACE"),
                        regles=UN_PARMI('NUME_GRILLE','TYPE_RESU','POSITION'),
                        TYPE_VISU    = SIMP(statut='o',typ='TXM',into=("AMPLITUDE","MODULE","VECTEUR","DEFORME")),
                        TYPE_RESU    = SIMP(statut='f',typ='TXM',into=("MINI","MAXI")),
                        NUME_GRILLE  = SIMP(statut='f',typ='I', max=1), # NUMERO DE LA GRILLE A POST-TRAITER
-                       POSITION     = SIMP(statut='f',typ='TXM', max=1),  
+                       POSITION     = SIMP(statut='f',typ='TXM', max=1),
                        CONCEPTION   = SIMP(statut='f',typ='TXM', max=1),
                                    ),
-                 
+
                  b_def_table  = BLOC(condition = "FORMAT == 'TABLE' ",fr=tr("Paramètres pour le format TABLE"),
                        NOM_SITE     = SIMP(statut='o',typ='TXM', max=1),
                                    ),
-                 
+
 
            ),
 )
