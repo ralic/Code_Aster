@@ -29,7 +29,8 @@ cata_msg = {
 
     2 : _(u"""
   Erreur d'utilisation :
-    La distribution des matrices élémentaires est interdite dans ASSE_MATRICE.
+    La matrice élémentaire %(k1)s n'est pas complète au sens MPI.
+    La commande ASSE_MATRICE n'autorise pas cela.
 """),
 
     3: _(u"""

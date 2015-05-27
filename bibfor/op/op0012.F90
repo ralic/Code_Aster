@@ -39,10 +39,11 @@ subroutine op0012()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8) :: nu, matas, syme, sym2, kmpic, modele
+    character(len=8) :: mpicomp
+    character(len=8) :: nu, matas, syme, sym2, kmpic
     character(len=16) :: typm, oper
     character(len=19) :: solveu
-    character(len=24) :: lchci, lmatel, partit, partit2, ligrel
+    character(len=24) :: lchci, lmatel
     integer :: itysca, nbchc, nbmat, jlimat, jlchci, ibid, k
     integer :: ico
     character(len=24), pointer :: slvk(:) => null()
@@ -82,17 +83,11 @@ subroutine op0012()
 !
 !---- MOT CLE : NUME_DDL
     call getvid(' ', 'NUME_DDL', scal=nu, nbret=ibid)
-    call dismoi('NOM_MODELE', nu, 'NUME_DDL', repk = modele)
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk = ligrel)
-    call dismoi('PARTITION', ligrel, 'LIGREL', repk = partit)
-    if( partit.ne. ' ' ) then
-        call utmess('F', 'ASSEMBLA_2')
-    endif
 !---- POUR ASSE_MATRICE, ASSMAM INTERDIT LA DISTRIBUTION DES RESU_ELEM
     do k = 0, nbmat-1
-        call dismoi('PARTITION', zk24(jlimat+k), 'MATR_ELEM', repk = partit2)
-        if( partit2.ne. ' ' ) then
-            call utmess('F', 'ASSEMBLA_2')
+        call dismoi('MPI_COMPLET', zk24(jlimat+k), 'MATR_ELEM', repk = mpicomp)
+        if( mpicomp .eq. 'NON' ) then
+            call utmess('F', 'ASSEMBLA_2', nk = 1, valk = zk24(jlimat+k))
         endif
     enddo
 !
