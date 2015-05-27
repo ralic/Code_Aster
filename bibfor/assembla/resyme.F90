@@ -132,6 +132,8 @@ subroutine resyme(resu1z, basez, resu2z)
                 ASSERT(nbgr.eq.vresl2(2))
                 do igr = 1, nbgr
                     if (vresl1(2+igr) .gt. 0) then
+! SI ON PLANTE DANS CET ASSERT ALORS IL FAUT VERIFIER SI L'OPTION SYME_MDNS
+! EST BIEN BRANCHE DANS LE TYPELEM DE L'ELEMENT GENER_*. 
                         ASSERT(vresl2(2+igr).ne.0)
                     endif
                 end do
