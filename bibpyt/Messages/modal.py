@@ -194,39 +194,39 @@ Opérateur CALC_MODES sur plusieurs sous-bandes:
   Conseil:
     * Il est intéressant de calibrer un tel calcul modal en utilisant l'opérateur INFO_MODE
       dans un pré-calcul séparé. C'est généralement très rapide (surtout en parallèle) et cela
-      fournit des informations concrêtes pour proposer un découpage homogène et réaliste.
+      fournit des informations concrètes pour proposer un découpage homogène et réaliste.
 """),
    20: _(u"""
 Opérateur CALC_MODES sur plusieurs sous-bandes:
   La sous-bande n°%(i1)d comporte %(i2)d mode(s) propre(s). Ce n'est pas assez !
   Vous pouvez sans doute optimiser les performances de votre calcul en la groupant avec une
-  deux sous-bandes contigües.
+  deux sous-bandes contiguës.
   Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes par sous-bande avec
   un déséquilibre maximum de X3 entre les sous-bandes.
 
   Conseil:
     * Il est intéressant de calibrer un tel calcul modal en utilisant l'opérateur INFO_MODE
       dans un pré-calcul séparé. C'est généralement très rapide (surtout en parallèle) et cela
-      fournit des informations concrêtes pour proposer un découpage homogène et réaliste.
+      fournit des informations concrètes pour proposer un découpage homogène et réaliste.
 """),
    21: _(u"""
 Opérateur CALC_MODES sur plusieurs sous-bandes:
   La sous-bande n°%(i1)d comporte %(i2)d modes propres. C'est un peu trop !
   Vous pouvez sans doute optimiser les performances et la robustesse de votre calcul ainsi que
-  la qualité des modes obtenus, en redécoupant cette sous-bande.
+  la qualité des modes obtenus, en découpant à nouveau cette sous-bande.
   Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes par sous-bande avec
   un déséquilibre maximum de X3 entre les sous-bandes.
 
   Conseil:
     * Il est intéressant de calibrer un tel calcul modal en utilisant l'opérateur INFO_MODE
       dans un pré-calcul séparé. C'est généralement très rapide (surtout en parallèle) et cela
-      fournit des informations concrêtes pour proposer un découpage homogène et réaliste.
+      fournit des informations concrètes pour proposer un découpage homogène et réaliste.
 """),
    22: _(u"""
 Opérateur CALC_MODES:
   Votre calcul cherche à déterminer %(i1)d modes propres à la fois. C'est un peu trop !
   Vous pouvez sans doute optimiser les performances, la robustesse de votre calcul ainsi que
-  la qualité des modes obtenus, en redécoupant votre calcul en plusieurs paquets.
+  la qualité des modes obtenus, en découpant à nouveau votre calcul en plusieurs paquets.
   Idéalement, un calcul modal devrait chercher:
       - entre 20 et 60 modes à la fois (avec les options 'CENTRE', 'BANDE' ou 'PLUS_PETITE/GRANDE'),
       - au maximum une dizaine (avec 'PROCHE', 'SEPARE' ou 'AJUSTE').
@@ -236,7 +236,7 @@ Opérateur CALC_MODES:
     * Sur un problème modal généralisé standard, il peut être aussi intéressant de calibrer la
       charge en utilisant l'opérateur INFO_MODE dans un pré-calcul séparé.
       C'est généralement très rapide (surtout en parallèle) et cela fournit des informations
-      concrêtes pour ensuite paramétrer un découpage homogène et réaliste.
+      concrètes pour ensuite paramétrer un découpage homogène et réaliste.
 """),
 
 }
