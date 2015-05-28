@@ -179,6 +179,15 @@ Risques & conseils :
  CMP non traitée
 """),
 
+    51 : _(u"""
+ Commande CREA_RESU   
+ La numérotation fournie avec les mots clés MATR_RIGI ou MATR_MASS est différente de celle des champs
+ fournis sous le mot clé AFFE. 
+ 
+ Risques & conseils :
+ Les champs ont pu être créés par la commande CREA_CHAMP sans préciser la numérotation (mot clé NUME_DDL absent)
+"""),
+
     54 : _(u"""
   incrément de déformation cumulée (DP) = - %(k1)s
 """),

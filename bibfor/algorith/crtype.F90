@@ -76,7 +76,7 @@ subroutine crtype()
     integer :: ino, nbv(1), jrefe, nb_load, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
-    integer :: nbordr1, nbordr2
+    integer :: nbordr1, nbordr2, ier1
 !
     parameter  (mxpara=10)
 !
@@ -641,6 +641,23 @@ subroutine crtype()
             else
                 call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE',&
                             matric, ier)
+!                            
+!               compare numedd and profchno of all the new fields added (only DEPL) 
+!                            
+                do j = nbordr1+1,nbordr2-nbordr1
+                   call rsexch(' ',resu19,'DEPL', j, nomch, ier1)
+                   if ( ier1 .eq. 0 ) then 
+                     call dismoi('PROF_CHNO', nomch, 'CHAMP', repk=profch,& 
+                                  arret='C',ier=ier)
+                     if ( ier .eq. 0 ) then 
+                       if (.not.idensd('PROF_CHNO',numedd(1:14)//'.NUME',profch)) then
+                          valkk(1)=numedd
+                          valkk(2)=profch
+                          call utmess('A','ALGORITH2_51',nk=2,valk=valkk)
+                       endif
+                     endif  
+                   endif
+                end do                            
             endif
         end if
     endif
