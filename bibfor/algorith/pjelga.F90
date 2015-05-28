@@ -45,6 +45,8 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 #include "asterfort/pjcorr.h"
 #include "asterfort/pjxxch.h"
 #include "asterfort/titre.h"
+#include "asterfort/xcesrd.h"
+#include "asterfort/xnpgxx.h"
     character(len=8) :: nomo2, prol0
     character(len=16) :: corres
     character(len=19) :: cham1, ligre1
@@ -55,6 +57,7 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
 !
 !
     integer :: nncp
+    character(len=3) :: exixfm
     character(len=4) :: tycha2
     character(len=8) :: ma1p
     character(len=8) :: nompar
@@ -62,6 +65,7 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
     character(len=19) :: cham1e, chauxs, chbid
     character(len=19) :: prfchn
     character(len=19) :: cns1, ch2s
+    character(len=19) :: chsnpg
     character(len=24) :: nomfpg
 !
     integer :: jcnsv
@@ -106,6 +110,21 @@ subroutine pjelga(nomo2, cham1, ligre1, prol0, corres,&
     ch2s = '&&OP0166'//'.CH2S'
     call pjcorr(nomo2, chbid, cns1, ch2s, ligre2,&
                 corres, option, nompar, iret)
+!
+!   construction du CHAM_ELEM_S conteant le nombre de points
+!   de Gauss reellement utilises par chaque element, dans le
+!   cas d'un champs ELGA, base sur la famille "XFEM"
+    chsnpg = '&&CHPCHD.CHSNPG'
+    call xnpgxx(ligre2, option, nompar, chsnpg, exixfm)
+!
+    if (exixfm.eq.'OUI') then
+!        si le champ ELGA s'appuie sur la famille "XFEM", on
+!        annule toutes les composantes associees aux points
+!        de Gauss inutilises
+         call xcesrd(ch2s, chsnpg)
+    endif
+!
+    call detrsd('CHAM_ELEM_S', chsnpg)
 !
     call cescel(ch2s, ligre2, option, nompar, prol0,&
                 nncp, 'G', leres1, 'A', iret)

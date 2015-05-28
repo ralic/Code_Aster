@@ -33,6 +33,7 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"
+#include "asterfort/calc_coor_elga.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/codent.h"
@@ -100,13 +101,11 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
     call jedetr(litrou)
 !
 !
-!
 !     1.  CALCUL DU CHAMP DE COORDONNEES DES ELGA (CHAMG):
 !     -------------------------------------------------------
     chamg='&&PJMA2P.PGCOOR'
-    call calcul('S', 'COOR_ELGA', ligrel, 1, chgeom,&
-                'PGEOMER', 1, chamg, 'PCOORPG ', 'V',&
-                'OUI')
+!
+    call calc_coor_elga(ligrel, chgeom, chamg)
 !
 !     -- TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
     ces='&&PJMA2P.PGCORS'
@@ -161,30 +160,34 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !        CALCUL DE '.PJEF_EL'
 !     ----------------------------------------------------------------
     nbno2p=0
+    do ima = 1, nbma
+        call jeveuo(jexnum('&CATA.TM.TMDIM', typmail(ima)), 'L', jdimt)
+        if (zi(jdimt) .eq. ndim) then
+            nbpt=zi(jcesd-1+5+4*(ima-1)+1)
+            if (nbpt .eq. 0) cycle
+            nbno2p=nbno2p+nbpt
+        endif
+    end do
 !
-!     NBMA*27*2 = NB MAX DE MAILLES * NB DE PG MAX PAR MAILLE * 2
 !     ON CREE UN TABLEAU, POUR CHAQUE JPO2, ON STOCKE DEUX VALEURS :
 !      * LA PREMIERE VALEUR EST LE NUMERO DE LA MAILLE
 !      * LA DEUXIEME VALEUR EST LE NUMERO DU PG DANS CETTE MAILLE
-    call wkvect(corres//'.PJEF_EL', 'V V I', nbma*27*2, jpo2)
+    call wkvect(corres//'.PJEF_EL', 'V V I', nbno2p*2, jpo2)
 !
     ipo=1
     do ima = 1, nbma
         call jeveuo(jexnum('&CATA.TM.TMDIM', typmail(ima)), 'L', jdimt)
         if (zi(jdimt) .eq. ndim) then
             nbpt=zi(jcesd-1+5+4*(ima-1)+1)
-            if (nbpt .eq. 0) goto 100
+            if (nbpt .eq. 0) cycle
             call jenuno(jexnum(mail2//'.NOMMAI', ima), noma)
             do ipg = 1, nbpt
                 zi(jpo2-1+ipo)=ima
                 zi(jpo2-1+ipo+1)=ipg
                 ipo=ipo+2
             end do
-            nbno2p=nbno2p+nbpt
         endif
-100     continue
     end do
-!
 !
 !     3. CREATION DU .DIME DU NOUVEAU MAILLAGE
 !        IL Y A AUTANT DE MAILLES QUE DE NOEUDS

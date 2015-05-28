@@ -1,0 +1,13 @@
+COOR_3D
+N1        0.   0.   0.
+N2        1.   0.   0.
+N3        0.   1.   0.
+N4        0.   0.   1.
+
+FINSF
+
+TETRA4
+ M1       N1  N2 N3 N4
+FINSF
+
+FIN
