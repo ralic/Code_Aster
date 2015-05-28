@@ -1278,18 +1278,16 @@ class Mesh:
         l_gma = []
         l_mcf = []
         for gma in self.physicals.keys():
-            l_gma.append(self.physicals[gma])
+            l_gma.append(_F(NOM=gma))
             l_mcf.append(_F(GROUP_MA=self.physicals[gma], NOM=gma))
 
-        DEFI_GROUP(reuse=MA,
-                   MAILLAGE=MA,
+        _SMESH02 = COPIER (CONCEPT=MA)
+        
+        DEFI_GROUP(reuse=_SMESH02,
+                   MAILLAGE=_SMESH02,
                    CREA_GROUP_MA=tuple(l_mcf),
+                   DETR_GROUP_MA=tuple(l_gma),
                    )
-
-        _SMESH02 = CREA_MAILLAGE(
-            MAILLAGE=MA,
-            DETR_GROUP_MA=_F(GROUP_MA=tuple(l_gma)),
-        )
 
         DETRUIRE(CONCEPT=_F(NOM=MA), INFO=1)
 
@@ -1335,7 +1333,6 @@ class Mesh:
           MODI_QUAD      = 'OUI' si line->quad, 'NON' sinon
           CREA_GROUP_NO  = 'OUI' si on cree les group_no, 'NON' sinon
         """
-
         nom_gmsh = 'fort.' + repr(UNITE_GMSH)
         self.Create(nom_gmsh)
 
