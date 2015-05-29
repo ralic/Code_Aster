@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-13 17:37+0200\n"
-"PO-Revision-Date: 2015-05-13 11:31-0400\n"
+"POT-Creation-Date: 2015-05-29 18:01+0200\n"
+"PO-Revision-Date: 2015-05-29 12:01-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
@@ -56,9 +56,8 @@ msgid "phase métallurgique acier variable interne 5"
 msgstr "Internal variable for steel metallurgical phasis 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:30
-#, fuzzy
 msgid "affaiblissement relatif de raideur en membrane"
-msgstr "relative attenuation of stiffness out of membrane in tension"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:31
 msgid "affaiblissement relatif de raideur en membrane en compression"
@@ -8365,6 +8364,25 @@ msgstr ""
 msgid " Nombre de valeurs propres : %(i1)d\n"
 msgstr " Number of eigenvalues : %(i1)d\n"
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:93
+#, fuzzy, python-format
+msgid ""
+" On ne peut pas remplir la composante %(k1)s du noeud numéro %(k2)s\n"
+" pour le champ \"%(k3)s\"\n"
+msgstr ""
+"\n"
+" the component %(k1)s of the node %(k2)s for the mesh %(k3)s does not "
+"exist. \n"
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:97
+#, python-format
+msgid ""
+" La combinaison linéaire de \"%(k1)s\" et \"%(k2)s\" est impossible.\n"
+" Cela est dû au fait qu'il manque des degrés de liberté dans  \"%(k1)s\" "
+"par\n"
+" rapport à \"%(k2)s\".\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:22
 msgid ""
 "\n"
@@ -9085,14 +9103,11 @@ msgstr ""
 " one cannot restore a velocity \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:181
-#, fuzzy
 msgid ""
 "\n"
 " Il faut spécifier autant de noeuds (par GROUP_NO ou NOEUD) que de "
 "composants (NOM_CMP)\n"
 msgstr ""
-"\n"
-" One needs as much name for NOM_CHAM_MED than for NOM_CHAM. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith10.py:185
 msgid ""
@@ -16731,24 +16746,20 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:21
 msgid ""
 "\n"
-"Aucun noeud n'est apparié.\n"
-"La définition de vos surfaces ou de vos paramètres d'appariement est "
-"incorrecte.\n"
-"Vérifier TOLE_PROJ_EXT et/ou la définition de vos surfaces.\n"
-"Vérifier les déplacements induits par votre modélisation.\n"
-"Cette alarme peut entraîner des résultats faux si elle apparaît dans la "
-"résolution du contact en Newton généralisé.\n"
+"Aucun noeud n'est apparié. Cette alarme peut entraîner des résultats faux si "
+"elle apparaît dans la résolution du contact en Newton généralisé.\n"
+"Conseils :\n"
+"1. On préconise d'utiliser CONTACT_INIT='OUI' pour initialiser le contact en "
+"tout point de la zone\n"
+"2. Vérifiez la définition de vos surfaces ou de vos paramètres "
+"d'appariement\n"
+"3. Vérifier TOLE_PROJ_EXT (prolongement fictif de la maille maître).\n"
+"4. Vérifier les déplacements induits par votre modélisation.\n"
+"5. Si l'alarme persiste, changez d'algorithme avec "
+"ALGO_RESO_GEOM='POINT_FIXE' dans DEFI_CONTACT\n"
 msgstr ""
-"\n"
-"No node is paired. \n"
-"The definition of your surfaces or your parameters of pairing is "
-"incorrect. \n"
-"Check TOLE_PROJ_EXT and/or the definition of your surfaces. \n"
-"Check the displacements induced by your modelization. \n"
-"This alarm can involve false results if it appears in the resolution of the "
-"contact in generalized Newton. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:29
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:31
 #, python-format
 msgid ""
 "\n"
@@ -16765,7 +16776,7 @@ msgstr ""
 " on the mesh %(k1)s. \n"
 "Error of definition of the mesh or difficult projection. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:36
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:38
 #, python-format
 msgid ""
 "\n"
@@ -16778,7 +16789,7 @@ msgstr ""
 "on the mesh %(k1)s. \n"
 "Error of definition of the mesh or difficult projection. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:41
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:43
 #, python-format
 msgid ""
 "\n"
@@ -16790,7 +16801,7 @@ msgstr ""
 "%(k1)s. \n"
 "Error of definition of the mesh or difficult projection. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:46
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:48
 #, python-format
 msgid ""
 "\n"
@@ -16801,7 +16812,7 @@ msgstr ""
 "The resulting normal vector is null on the level of the node %(k1)s. \n"
 "Error of definition of the mesh or difficult projection. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:51
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:53
 #, python-format
 msgid ""
 "\n"
@@ -16812,7 +16823,7 @@ msgstr ""
 "The resulting tangent vectors are null on the level of the node %(k1)s. \n"
 "Error of definition of the mesh or difficult projection. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:56
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:58
 #, python-format
 msgid ""
 "\n"
@@ -16831,7 +16842,7 @@ msgstr ""
 " Erreur of definition of the mesh or difficult projection. Contact the "
 "assistance in this last case. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:63
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:65
 #, python-format
 msgid ""
 "\n"
@@ -16842,7 +16853,7 @@ msgstr ""
 "The mesh %(k1)s is of type 'POI1', it is not authorized on a mesh Master in "
 "the case of a pairing MAIT_ESCL. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:67
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:69
 #, python-format
 msgid ""
 "\n"
@@ -16853,7 +16864,7 @@ msgstr ""
 "The mesh %(k1)s is of standard beam and its tangent is null. \n"
 "Check your mesh. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:72
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:74
 #, python-format
 msgid ""
 "\n"
@@ -16864,7 +16875,7 @@ msgstr ""
 "The mesh %(k1)s is of standard beam, it requires the definition of a local "
 "base. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:76
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:78
 #, python-format
 msgid ""
 "\n"
@@ -16875,7 +16886,7 @@ msgstr ""
 "The mesh %(k1)s is of type 'POI1', it requires the explicit definition of "
 "its norm. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:80
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:82
 #, python-format
 msgid ""
 "\n"
@@ -16886,7 +16897,7 @@ msgstr ""
 "The mesh %(k1)s is of type 'POI1', it requires the explicit definition of a "
 "non-zero norm. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:84
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:86
 msgid ""
 "\n"
 "Un élément de type POI1 ne peut pas être une maille maître.\n"
@@ -17931,6 +17942,15 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:30
+#, python-format
+msgid ""
+"\n"
+"  Erreur d'utilisation :\n"
+"    La matrice élémentaire %(k1)s n'est pas complète au sens MPI.\n"
+"    La commande ASSE_MATRICE n'autorise pas cela.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:36
 msgid ""
 "\n"
 " Le calcul est séquentiel, on ne peut donc pas utiliser "
@@ -17941,7 +17961,7 @@ msgstr ""
 " Computation is sequential, one cannot thus use MATR_DISTRIBUEE='OUI'. \n"
 " MATR_DISTRIBUEE= is forced'NON'. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:35
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:41
 #, python-format
 msgid ""
 "\n"
@@ -17961,7 +17981,7 @@ msgstr ""
 " Advice: Modify the partitioning of the meshes of your model in\n"
 " AFFE_MODELE/PARTITION/PARALLELISME or decrease the number of processors. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:44
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:50
 msgid ""
 "\n"
 " modèles discordants\n"
@@ -17969,7 +17989,7 @@ msgstr ""
 "\n"
 " unmatched models \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:52
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:58
 #, python-format
 msgid ""
 "\n"
@@ -17980,7 +18000,7 @@ msgstr ""
 " the key word:  %(k1)s is incorrect. \n"
 " one waits: \"CUMU\" or\" ZERO\" \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:58
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:64
 msgid ""
 "\n"
 " on ne peut assembler que des vecteurs réels ou complexes\n"
@@ -17988,7 +18008,7 @@ msgstr ""
 "\n"
 " one can assemble only real or complex vectors \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:65
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:71
 msgid ""
 "\n"
 " ICHIN = 0\n"
@@ -17996,7 +18016,7 @@ msgstr ""
 "\n"
 " ICHIN = 0 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:69
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:75
 msgid ""
 "\n"
 " ICHIN < -2\n"
@@ -18004,7 +18024,7 @@ msgstr ""
 "\n"
 " ICHIN < -2 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:73
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:79
 msgid ""
 "\n"
 " S => ICHIN=/0\n"
@@ -18012,7 +18032,7 @@ msgstr ""
 "\n"
 " S => ICHIN=/0 \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:77
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:83
 msgid ""
 "\n"
 " action : E/L/S\n"
@@ -18020,7 +18040,7 @@ msgstr ""
 "\n"
 " action: E/L/S \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:81
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:87
 msgid ""
 "\n"
 " Erreur développeur dans l'assemblage.\n"
@@ -18033,7 +18053,7 @@ msgstr ""
 " The elementary vectors or the elementary matrixes are incoherent: they do "
 "not relate to the same model or they do not compute the same option. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:86
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:92
 msgid ""
 "\n"
 " Erreur développeur dans l'assemblage.\n"
@@ -18045,7 +18065,7 @@ msgstr ""
 " The elementary vectors or the elementary matrixes contain neither "
 "substructures, nor object LISTE_RESU. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:91
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:97
 msgid ""
 "\n"
 "  Erreur programmeur :\n"
@@ -18059,7 +18079,7 @@ msgstr ""
 "wants\n"
 " to assemble, one does not find any resuelem. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:97
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:103
 msgid ""
 "\n"
 " modèles différents\n"
@@ -18067,7 +18087,7 @@ msgstr ""
 "\n"
 " different models \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:102
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:108
 #, python-format
 msgid ""
 "\n"
@@ -18076,7 +18096,7 @@ msgstr ""
 "\n"
 " the node:  %(k1)s component:  %(k2)s several times are locked. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:106
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:112
 msgid ""
 "\n"
 " l'entier décrivant la position du premier Lagrange ne peut être égal qu'à "
@@ -18086,7 +18106,7 @@ msgstr ""
 " the integer describing the position of first Lagrange can be equal only to "
 "+1 or -1. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:110
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:116
 msgid ""
 "\n"
 " le nombre de noeuds effectivement numérotés ne correspond pas au nombre\n"
@@ -18096,7 +18116,7 @@ msgstr ""
 " the number of actually numbered nodes does not correspond to the number\n"
 " of nodes to numbering \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:115
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:121
 #, python-format
 msgid ""
 "\n"
@@ -18105,7 +18125,7 @@ msgstr ""
 "\n"
 " there N is no model in the list %(k1)s .NUMÉRIQUE.LILI \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:119
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:125
 msgid ""
 "\n"
 " noeud inexistant\n"
@@ -18113,7 +18133,7 @@ msgstr ""
 "\n"
 " non-existent node \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:123
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:129
 #, python-format
 msgid ""
 "\n"
@@ -18122,7 +18142,7 @@ msgstr ""
 "\n"
 " method:  %(k1)s unknown factor. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:133
 msgid ""
 "\n"
 " noeud incorrect\n"
@@ -18130,7 +18150,7 @@ msgstr ""
 "\n"
 " incorrect node \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:137
 #, python-format
 msgid ""
 "\n"
@@ -18142,7 +18162,7 @@ msgstr ""
 "matrixes. \n"
 " only the phenomena MECANIQUE and\" THERMAL\" are\" allowed\" \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:142
 #, python-format
 msgid ""
 "\n"
@@ -18153,7 +18173,7 @@ msgstr ""
 " the node:  %(i1)d RESUEL:  %(k1)s VECT_ELEM:  %(k2)s \n"
 " does not have address in:  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:141
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:147
 #, python-format
 msgid ""
 "\n"
@@ -18164,7 +18184,7 @@ msgstr ""
 " the node:  %(i1)d RESUEL:  %(k1)s VECT_ELEM:  %(k2)s \n"
 " an address has:  %(i2)d > NEQUA:  %(i3)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:146
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:152
 #, python-format
 msgid ""
 "\n"
@@ -18173,7 +18193,7 @@ msgstr ""
 "\n"
 " NDDL:  %(i1)d > NDDL_MAX:  %(i2)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:150
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:156
 #, python-format
 msgid ""
 "\n"
@@ -18194,7 +18214,7 @@ msgstr ""
 " --- NOAH by NEMA:  %(i3)d \n"
 " --- NOAH by NODE:  %(i4)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:160
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:166
 #, python-format
 msgid ""
 "\n"
@@ -18242,8 +18262,8 @@ msgstr ""
 " Be you on to have indicated this load behind the key word CHARGES\n"
 " with command CALC_MATR_ELEM/OPTION='RIGI_MECA' ? \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:180
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:184
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:186
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:190
 #, python-format
 msgid ""
 "\n"
@@ -18252,7 +18272,7 @@ msgstr ""
 "\n"
 " --- NDDL:  %(i1)d > NDDL_MAX:  %(i2)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:194
 #, python-format
 msgid ""
 "\n"
@@ -18263,7 +18283,7 @@ msgstr ""
 " --- the node:  %(i1)d RESUEL:  %(k1)s VECT_ELEM:  %(k2)s \n"
 " --- D does not haveaddresses in the dialup:  %(k3)s \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:193
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:199
 #, python-format
 msgid ""
 "\n"
@@ -18274,7 +18294,7 @@ msgstr ""
 " --- the node:  %(i1)d RESUEL:  %(k1)s VECT_ELEM:  %(k2)s \n"
 " --- an address has:  %(i2)d > NEQUA:  %(i3)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:198
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:204
 #, python-format
 msgid ""
 "\n"
@@ -18287,7 +18307,7 @@ msgstr ""
 " one put 2 times first Lagrange:  %(i1)d \n"
 " behind the node:  %(i2)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:204
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:210
 #, python-format
 msgid ""
 "\n"
@@ -18300,7 +18320,7 @@ msgstr ""
 " one put 2 times 2nd Lagrange:  %(i1)d \n"
 " behind the node:  %(i2)d \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:210
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:216
 #, python-format
 msgid ""
 "\n"
@@ -20727,7 +20747,13 @@ msgid ""
 "  Il faut utiliser le mot clé AFFE_VARC / CHAM_GD\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:287
+msgid ""
+"\n"
+"  La fonctionnalité ECLA_PG de CREA_RESU n'est pas disponible en parallèle.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:297
 #, python-format
 msgid ""
 "\n"
@@ -20740,7 +20766,7 @@ msgstr ""
 " There is nothing with compute because the field %(k1)s does not exist for "
 "the sequence numbers indicated. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:300
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:304
 #, python-format
 msgid ""
 "\n"
@@ -20775,7 +20801,7 @@ msgstr ""
 "mesh\n"
 " (for example 'PLAN_DIAG' in thermal, 'AXIS_SI' in mechanics) \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:315
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:319
 msgid ""
 "Erreur d'utilisation :\n"
 " On ne peut pas utiliser plus de 50 paramètres pour évaluer une fonction.\n"
@@ -20787,7 +20813,7 @@ msgstr ""
 " Here, the various fields of key word CHAM_PARA have with the total more "
 "than 50 components. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:320
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:324
 #, python-format
 msgid ""
 "Erreur d'utilisation :\n"
@@ -20798,7 +20824,7 @@ msgstr ""
 " One cannot filter the meshes of the type %(k1)s because it is not a kind of "
 "mesh known. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:325
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:329
 #, python-format
 msgid ""
 "\n"
@@ -20823,7 +20849,7 @@ msgstr ""
 "CREA_CHAMP,\n"
 " one can see their contents with key word INFO=2. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:335
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:339
 #, python-format
 msgid ""
 "\n"
@@ -20840,7 +20866,7 @@ msgstr ""
 " that the field of functions is %(k2)s _F (geometry and/or time),\n"
 " NOM_CHAM must be %(k2)s and not %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:342
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:346
 #, python-format
 msgid ""
 "\n"
@@ -20867,7 +20893,7 @@ msgstr ""
 " the Council: \n"
 " If necessary, it is necessary to ask an evolution of the code. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:358
 #, python-format
 msgid ""
 "\n"
@@ -20880,7 +20906,7 @@ msgstr ""
 " Computation of the thermal strain of an element of grid. \n"
 " One does not find a temperature on the mesh %(k1)s. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:360
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:364
 msgid ""
 "\n"
 " il faut un MODELE\n"
@@ -20888,7 +20914,7 @@ msgstr ""
 "\n"
 " a MODELE is needed \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:364
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:368
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
@@ -20900,7 +20926,7 @@ msgid ""
 "  mécanique qui utilise le mot clé IMPE_FACE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:374
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:378
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
@@ -20912,7 +20938,7 @@ msgid ""
 "  mécanique qui utilise le mot clé ONDE_FLUI.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:386
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:390
 msgid ""
 "\n"
 " La carte de COMPORTEMENT est absente.\n"
@@ -20921,7 +20947,7 @@ msgid ""
 "clé COMPORTEMENT.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:392
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:396
 #, python-format
 msgid ""
 "\n"
@@ -20932,7 +20958,7 @@ msgstr ""
 " The option %(k1)s is not available for any the elements of your model. \n"
 " The computation of indicator of error is thus impossible. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:397
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:401
 #, python-format
 msgid ""
 "\n"
@@ -20973,7 +20999,7 @@ msgstr ""
 "impossible. \n"
 " \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:412
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:416
 #, python-format
 msgid ""
 "\n"
@@ -20995,7 +21021,7 @@ msgstr ""
 "Advice: \n"
 " To check the construction of the field of functions is %(k2)s _F \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:422
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:426
 msgid ""
 "\n"
 " votre chargement contient plus d'une charge répartie\n"
@@ -21005,7 +21031,7 @@ msgstr ""
 " your loading contains more than one distributed load\n"
 " computation is not possible for the models of beam. \n"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:427
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:431
 msgid ""
 "\n"
 " pour un modèle comportant des éléments de plaque ou de coque\n"
@@ -24008,6 +24034,14 @@ msgid ""
 "  ne connaît le paramètre %(k1)s de l'option %(k2)s.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/campbell.py:23
+msgid ""
+"\n"
+" Il faut au moins deux vitesses de rotation pour construire un diagramme de "
+"Campbell.\n"
+" "
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/cataelem.py:22
 #, python-format
 msgid ""
@@ -24136,7 +24170,7 @@ msgstr ""
 "%(k2)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/catamess.py:30
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Erreur lors de la vérification du catalogue de commandes.\n"
@@ -24144,11 +24178,6 @@ msgid ""
 "\n"
 "%(k2)s\n"
 msgstr ""
-"\n"
-"Error while verifying the messages.\n"
-"%(k1)s\n"
-"\n"
-"%(k2)s\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/catamess.py:37
 msgid ""
@@ -24616,14 +24645,12 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:22
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge %(k1)s a été utilisée plus d'une fois dans EXCIT: il faut la "
 "supprimer.\n"
 msgstr ""
-"\n"
-"The load  %(k1)s was used more once in EXCIT: it should be removed. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:26
 msgid ""
@@ -24646,31 +24673,25 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:35
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge %(k1)s  n'est pas compatible avec FONC_MULT.\n"
 msgstr ""
-"\n"
-" the load %(k1)s is not compatible with FONC_MULT \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:39
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge %(k1)s n'est pas thermique.\n"
 msgstr ""
-"\n"
-" the load %(k1)s is not thermal \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:43
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge %(k1)s n'est pas mécanique.\n"
 msgstr ""
-"\n"
-"The load  %(k1)s is not mechanical. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:47
 #, python-format
@@ -24685,15 +24706,12 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge %(k1)s est de type cinématique (AFFE_CHAR_CINE):\n"
 " elle ne peut pas être différentielle.\n"
 msgstr ""
-"\n"
-"Load  %(k1)s is of the kinematical type (AFFE_CHAR_CINE): \n"
-" it cannot be differential. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:59
 #, python-format
@@ -24706,45 +24724,35 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:65
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge %(k1)s est de type cinématique (AFFE_CHAR_CINE):\n"
 " elle ne peut pas être pilotée.\n"
 msgstr ""
-"\n"
-"Load  %(k1)s is of the kinematical type (AFFE_CHAR_CINE): \n"
-" it cannot be controlled. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:70
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "On ne peut pas piloter la charge %(k1)s car c'est une charge fonction du "
 "temps.\n"
 msgstr ""
-"\n"
-"One cannot control more than one load. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:74
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge de type EVOL_CHAR %(k1)s  ne peut pas être pilotée.\n"
 msgstr ""
-"\n"
-"The load of the type EVOL_CHAR  %(k1)s cannot be controlled. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:78
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "La charge %(k1)s ne peut pas utiliser de fonction multiplicatrice FONC_MULT\n"
 " car elle est pilotée.\n"
 msgstr ""
-"\n"
-"The load  %(k1)s cannot use multiplying function FONC_MULT\n"
-" because it is controlled. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/charges.py:83
 msgid ""
@@ -31410,13 +31418,11 @@ msgstr ""
 " impossibility, the surface of the element is null. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:275
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Le comportement matériau %(k1)s n'est pas traité pour l'option %(k2)s.\n"
 msgstr ""
-"\n"
-" the parameter:  %(k1)s is not a parameter of the option:  %(k2)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:279
 msgid ""
@@ -31467,13 +31473,11 @@ msgstr ""
 " GROUP_MA:  %(k1)s unknown in the mesh \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:303
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Le groupe de mailles %(k1)s n'existe pas.\n"
 msgstr ""
-"\n"
-" the mesh group\" %(k1)s\" does not exist. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements.py:313
 msgid ""
@@ -32436,16 +32440,12 @@ msgstr ""
 " for the option\" RICE_TRACEY\", the relation\" %(k1)s\" is not allowed \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements3.py:198
-#, fuzzy
 msgid ""
 "\n"
 "Couplage fluage/fissuration :\n"
 "La loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de "
 "GRANGER\n"
 msgstr ""
-"\n"
-" coupling creep/cracking: \n"
-" model BETON_DOUBLE_DP can be coupled only with one creep model of GRANGER \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements3.py:203
 msgid ""
@@ -33405,17 +33405,14 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements6.py:26
-#, fuzzy
 msgid ""
 "\n"
 "On ne sait pas calculer les déformations plastiques avec de l'élasticité non-"
 "isotrope.\n"
 msgstr ""
-"\n"
-" For compute the elastic strain, the total deflection is compulsory. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements6.py:30
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  -> Attention vous êtes en contraintes planes, et vous utilisez la loi\n"
@@ -33426,14 +33423,6 @@ msgid ""
 "     Vérifiez que cette expression est valide avec votre loi de "
 "comportement.\n"
 msgstr ""
-"\n"
-" - > Attention you are in plane stresses, and you use the constitutive law\n"
-" %(k1)s. The component of the tensor of plastic strains\n"
-" EPZZ is calculated by supposing the incomprehensibility of\n"
-" the plastic strains: EPZZ = - (EPXX + EPYY). \n"
-" - > Risks & advices: \n"
-" Check that this statement is valid with your constitutive law. \n"
-" \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements6.py:39
 msgid ""
@@ -33445,14 +33434,12 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elements6.py:44
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "On ne peut pas utiliser le modèle 3D_SI avec un comportement élastique de "
 "type %(k1)s.\n"
 msgstr ""
-"\n"
-" One cannot affect moments distributed on elements of the type %(k1)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/elimlagr.py:23
 msgid ""
@@ -33737,15 +33724,11 @@ msgstr ""
 " It can not be converted automatically\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/execlogiciel0.py:21
-#, fuzzy
 msgid ""
 "\n"
 "Format SALOME, l'argument 1 doit être le nom du fichier MED produit\n"
 "par le script SALOME. Les autres arguments ne sont pas utilisés.\n"
 msgstr ""
-"\n"
-"Format Salome, argument 1 must be\n"
-" the name of file MED produces by script python. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/execlogiciel0.py:26
 #, python-format
@@ -33777,14 +33760,12 @@ msgstr ""
 "The file %(k1)s does not exist. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/execlogiciel0.py:39
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Commande :\n"
 "   %(k1)s\n"
 msgstr ""
-"\n"
-" net:  %(k1)s \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/execlogiciel0.py:44
 #, python-format
@@ -33821,13 +33802,11 @@ msgstr ""
 "----------------------------------------------------------------- \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/execlogiciel0.py:56
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 " Code retour = %(i2)d      (maximum toléré : %(i1)d)\n"
 msgstr ""
-"\n"
-" Return code = %(i1)d (maximum tolerated:  %(i2)d) \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/execlogiciel0.py:60
 #, python-format
@@ -37411,34 +37390,28 @@ msgstr ""
 " There are too many columns of the type SUIVI_DDL ( %(i1)dcolumns). \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/imprresusp.py:23
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  Visualisation aux sous-points :\n"
 "  Le numéro d'ordre %(i1)d n'existe pas pour le résultat %(k1)s.\n"
 msgstr ""
-"\n"
-"The sequence number %(i1)d does not belong to the result %(k1)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/imprresusp.py:28
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  Visualisation aux sous-points :\n"
 "  L'instant %(r1)e n'existe pas pour le résultat %(k1)s.\n"
 msgstr ""
-"\n"
-" The array %(k1)s does not exist in the result %(k2)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/imprresusp.py:33
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "  Visualisation aux sous-points :\n"
 "  Le champ %(k2)s n'existe pas pour le résultat %(k1)s.\n"
 msgstr ""
-"\n"
-" The array %(k1)s does not exist in the result %(k2)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/imprresusp.py:38
 #, python-format
@@ -44298,6 +44271,110 @@ msgid ""
 "\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:180
+msgid ""
+"\n"
+"L'utilisation du parallélisme dans CALC_MODES avec OPTION='BANDES' et des "
+"matrices\n"
+"généralisées n'est pas possible.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:185
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES sur plusieurs sous-bandes:\n"
+"  Votre calcul semble déséquilibré: la sous-bande n°%(i1)d comporte %(i2)d "
+"mode(s) propre(s) alors\n"
+"  que la n°%(i3)d en comporte %(i4)d !\n"
+"  Cela risque de produire des modes de qualité très différentes et "
+"d'impacter la robustesse et\n"
+"  les performances globales du calcul.\n"
+"  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes "
+"par sous-bande avec\n"
+"  un déséquilibre maximum de X3 entre les sous-bandes.\n"
+"\n"
+"  Conseil:\n"
+"    * Il est intéressant de calibrer un tel calcul modal en utilisant "
+"l'opérateur INFO_MODE\n"
+"      dans un pré-calcul séparé. C'est généralement très rapide (surtout en "
+"parallèle) et cela\n"
+"      fournit des informations concrètes pour proposer un découpage homogène "
+"et réaliste.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:199
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES sur plusieurs sous-bandes:\n"
+"  La sous-bande n°%(i1)d comporte %(i2)d mode(s) propre(s). Ce n'est pas "
+"assez !\n"
+"  Vous pouvez sans doute optimiser les performances de votre calcul en la "
+"groupant avec une\n"
+"  deux sous-bandes contiguës.\n"
+"  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes "
+"par sous-bande avec\n"
+"  un déséquilibre maximum de X3 entre les sous-bandes.\n"
+"\n"
+"  Conseil:\n"
+"    * Il est intéressant de calibrer un tel calcul modal en utilisant "
+"l'opérateur INFO_MODE\n"
+"      dans un pré-calcul séparé. C'est généralement très rapide (surtout en "
+"parallèle) et cela\n"
+"      fournit des informations concrètes pour proposer un découpage homogène "
+"et réaliste.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:212
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES sur plusieurs sous-bandes:\n"
+"  La sous-bande n°%(i1)d comporte %(i2)d modes propres. C'est un peu trop !\n"
+"  Vous pouvez sans doute optimiser les performances et la robustesse de "
+"votre calcul ainsi que\n"
+"  la qualité des modes obtenus, en découpant à nouveau cette sous-bande.\n"
+"  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes "
+"par sous-bande avec\n"
+"  un déséquilibre maximum de X3 entre les sous-bandes.\n"
+"\n"
+"  Conseil:\n"
+"    * Il est intéressant de calibrer un tel calcul modal en utilisant "
+"l'opérateur INFO_MODE\n"
+"      dans un pré-calcul séparé. C'est généralement très rapide (surtout en "
+"parallèle) et cela\n"
+"      fournit des informations concrètes pour proposer un découpage homogène "
+"et réaliste.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:225
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES:\n"
+"  Votre calcul cherche à déterminer %(i1)d modes propres à la fois. C'est un "
+"peu trop !\n"
+"  Vous pouvez sans doute optimiser les performances, la robustesse de votre "
+"calcul ainsi que\n"
+"  la qualité des modes obtenus, en découpant à nouveau votre calcul en "
+"plusieurs paquets.\n"
+"  Idéalement, un calcul modal devrait chercher:\n"
+"      - entre 20 et 60 modes à la fois (avec les options 'CENTRE', 'BANDE' "
+"ou 'PLUS_PETITE/GRANDE'),\n"
+"      - au maximum une dizaine (avec 'PROCHE', 'SEPARE' ou 'AJUSTE').\n"
+"\n"
+"  Conseils:\n"
+"    * Pour faciliter un calcul par paquets de modes vous pouvez utilisez "
+"l'option 'BANDE'.\n"
+"    * Sur un problème modal généralisé standard, il peut être aussi "
+"intéressant de calibrer la\n"
+"      charge en utilisant l'opérateur INFO_MODE dans un pré-calcul séparé.\n"
+"      C'est généralement très rapide (surtout en parallèle) et cela fournit "
+"des informations\n"
+"      concrètes pour ensuite paramétrer un découpage homogène et réaliste.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modal0.py:21
 msgid ""
 "\n"
@@ -45569,14 +45646,11 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa10.py:22
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "On ne sait pas calculer l'option %(k1)s pour une élasticité de type %(k2)s.\n"
 msgstr ""
-"\n"
-" One does not know compute the criterion %(k1)s for the fields of the "
-"quantity %(k2)s. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modelisa10.py:26
 msgid ""
@@ -52370,11 +52444,9 @@ msgstr ""
 "The type of load %(k1)s is not taken into account by CALC_EUROPLEXUS' \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:108
-#, fuzzy, python-format
+#, python-format
 msgid "Le concept %(k1)s donné par %(k2)s n'a pas été trouvé.'\n"
 msgstr ""
-"\n"
-"The type %(k1)s material was not found.\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/plexus.py:111
 #, python-format
@@ -62070,7 +62142,7 @@ msgstr ""
 "Error: WINDOWS mode not implemented \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/stanley.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "\n"
 "Erreur: il est possible que STANLEY ne puisse pas contacter Salomé :\n"
@@ -62084,17 +62156,6 @@ msgid ""
 "Si STANLEY est bien lancé, vous pouvez essayer d'activer le module VISU.\n"
 "\n"
 msgstr ""
-"\n"
-"Error: it is possible that STANLEY cannot contact Salomé:\n"
-"\n"
-" - defined Salomé machine:  %(k1)s\n"
-" - Salomé port:  %(k2)s\n"
-" - runSalomeScript launcher:  %(k3)s\n"
-"\n"
-"You can adjust these values in the parameters in STANLEY.\n"
-"\n"
-"If STANLEY launched after all, you can try to activate the VISU module.\n"
-"\n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/stanley.py:122
 msgid ""
@@ -69327,7 +69388,6 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:404
-#, fuzzy
 msgid ""
 "\n"
 "  -> Une face contient au moins 3 points d'intersection avec la courbe "
@@ -69352,27 +69412,6 @@ msgid ""
 "fissure calculée\n"
 "     par CALC_G a sens physique pour le problème à résoudre.\n"
 msgstr ""
-"\n"
-" - > a face contains at least 3 points of intersection with the curve of "
-"isovalor zero of the field\n"
-" of level-set bus the value of the level-sets to the nodes of the mesh "
-"probably\n"
-" was badly reactualized at the time of the phase of rebootstrapping or with "
-"the preceding propagation. \n"
-" - > Risks & advices: \n"
-" You can use a mesh more refined or an auxiliary grid more\n"
-" refined current mesh. \n"
-" You can check that the area of upgraded level-sets is localised around\n"
-" the bottom of crack (one should not use ZONE_MAJ='TOUT' in PROPA_FISS). In "
-"this case,\n"
-" if you use the method simplex (METHODE='SIMPLEXE'), you can try\n"
-" to use a higher radius of localization (operand RAYON_TORE). \n"
-" If you use the method simplex, you can try to use the method UPWIND\n"
-" which is more robust, stable and powerful (METHODE='UPWIND'). \n"
-" \n"
-" In all the case, it should be checked that the angle of propagation of "
-"crack calculated\n"
-" by CALC_G has meaning physical for the problem to solve. \n"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:420
 msgid ""
@@ -69806,6 +69845,14 @@ msgid ""
 "  -> Vous avez renseigné le mot-clé EVOL de AFFE_MATERIAU / AFFE_VARC avec "
 "un résultat thermique X-FEM.\n"
 "     Dans ce cas, le mot-clé MODELE de AFFE_MATERIAU devient obligatoire.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:648
+msgid ""
+"\n"
+"  -> Les chargements de type FORCE_FACE ne sont pas gérés pour le calcul de "
+"l'option CALC_G sur les éléments de bord X-FEM.\n"
+"     Seuls les chargements de type PRES_REP peuvent être pris en compte.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:22
@@ -71007,7 +71054,7 @@ msgstr "%s does not contain the compulsory elements: %s  "
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:559
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:611
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:658
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1374
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1375
 msgid "La valeur n'est pas dans la liste des choix possibles"
 msgstr "The value is not in the list of the possible choices"
 
@@ -71017,9 +71064,9 @@ msgid "%s présent ensemble"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:592
-#, fuzzy, python-format
+#, python-format
 msgid "%s ne contient pas les éléments devant être présent ensemble: %s "
-msgstr "%s does not contain the compulsory elements: %s  "
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:629
 #, python-format
@@ -71027,9 +71074,9 @@ msgid "%s absent"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:642
-#, fuzzy, python-format
+#, python-format
 msgid "%s n'est pas autorisé : %s "
-msgstr "%s is not in %s"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:671
 msgid ": pas de présence de doublon dans la liste"
@@ -71097,103 +71144,103 @@ msgstr "%s is not by decreasing values"
 msgid "%s n'est pas du bon type"
 msgstr "%s is not of the good type"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1178
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1179
 #, python-format
 msgid "%s doit être inférieur a %s"
 msgstr "%s must be lower has %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1181
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1182
 #, python-format
 msgid "valeur dans l'intervalle %s , %s"
 msgstr "value in the interval %s, %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1186
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1187
 #, python-format
 msgid "%s devrait être comprise entre %s et %s"
 msgstr "%s should be understood between %s and %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1193
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1194
 #, python-format
 msgid "La valeur doit etre comprise entre %s et %s"
 msgstr "The value must lie between %s and %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1214
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1215
 #, python-format
 msgid "%s doit etre inferieur a %s"
 msgstr "%s must be lower has %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1217
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1218
 #, python-format
 msgid "longueur de liste comprise entre  %s et %s"
 msgstr "length of list ranging between %s and %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1221
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1222
 #, python-format
 msgid "Le cardinal de la liste doit etre compris entre %s et %s"
 msgstr "The cardinal of the list must lie between %s and %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1248
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1249
 #, python-format
 msgid "%s devrait etre de longueur inferieure a %s"
 msgstr "%s should be lower length has %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1251
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1252
 #, python-format
 msgid "%s devrait etre de longueur superieure a %s"
 msgstr "%s should be higher length has %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1298
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1299
 msgid "valeur paire"
 msgstr "even value"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1301
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1302
 msgid "La valeur saisie doit etre paire"
 msgstr "The seized value must be even"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1308
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1309
 #, python-format
 msgid "%s contient des valeurs non paires"
 msgstr "%s contains noneven values"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1352
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1353
 #, python-format
 msgid "%s contient des valeurs hors des choix possibles: %s "
 msgstr "%s contains values out of possible choices: %s  "
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1410
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1411
 #, python-format
 msgid "valeur %s pour la somme des cles A et B "
 msgstr "value %s for the sum of keys A and B  "
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1479
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1486
 #, python-format
 msgid "valeur de %s"
 msgstr "value of %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1522
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1529
 msgid "type non supporté"
 msgstr "type not supported"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1527
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1534
 #, python-format
 msgid "valeur d'instance de %s"
 msgstr "value of authority of %s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1543
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1550
 msgid ": vérifie les types dans un tuple"
 msgstr ": check the types in a tuple"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1546
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1553
 msgid "Les types entrés ne sont pas permis"
 msgstr "The entered types are not allowed"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1559
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1564
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1566
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1571
 #, python-format
 msgid "%s devrait etre de type  %s "
 msgstr "%s should be of %s type  "
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1657
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1664
 #, python-format
 msgid "%s n'est pas dans %s"
 msgstr "%s is not in %s"
@@ -71437,9 +71484,8 @@ msgid "Port de Salome sur la machine hebergeant le service Salome."
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Stanley/stanley_engine.py:475
-#, fuzzy
 msgid "Lanceur salome"
-msgstr "Launch vehicle runSalomeScript"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Stanley/stanley_engine.py:482
 msgid "Chemin vers le script salome (dans l'arborescence de Salome)."
@@ -71618,7 +71664,7 @@ msgstr "length of command Shell greater than %d characters."
 msgid "Command output :"
 msgstr "Command output:"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:53
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:55
 msgid ""
 "\n"
 "Il y a probablement une erreur dans la programmation.\n"
@@ -71628,11 +71674,11 @@ msgstr ""
 "There is probably an error in the programming. \n"
 "Please contact your technical assistance."
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:184
 msgid "On ne peut pas lever d'exception dans une exécution MPI."
 msgstr "One cannot raise exception in an execution MPI."
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:273
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:275
 #, python-format
 msgid ""
 "Erreur de programmation.\n"
@@ -71665,7 +71711,7 @@ msgstr ""
 " \n"
 "%s"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:556
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:558
 msgid ""
 "Ceci est une alarme. Si vous ne comprenez pas le sens de cette\n"
 "alarme, vous pouvez obtenir des résultats inattendus !"
@@ -71673,11 +71719,11 @@ msgstr ""
 "This is an alarm. If you do not understand the meaning of this\n"
 " alarm, you can obtain unexpected results!"
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:558
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:560
 msgid "Cette erreur sera suivie d'une erreur fatale."
 msgstr "This error will be followed of a fatal error."
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:559
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:561
 msgid ""
 "Cette erreur est fatale. Le code s'arrête. Toutes les étapes\n"
 "du calcul ont été sauvées dans la base jusqu'au moment de l'arret."
@@ -71685,7 +71731,7 @@ msgstr ""
 "This error is fatal. The code stops. All the stages\n"
 " of computation were saved in the base until the moment of the stop."
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:561
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:563
 msgid "Cette erreur est fatale. Le code s'arrête."
 msgstr "This error is fatal. The code stops."
 
@@ -71892,463 +71938,21 @@ msgstr ""
 msgid "Mot-clé simple : %s %s"
 msgstr "Simple key word: %s %s"
 
-#~ msgid "tenseur cinématique 1, composante XX"
-#~ msgstr "kinematical tensor 1, component XX"
-
-#~ msgid "tenseur cinématique 1, composante XY"
-#~ msgstr "kinematical tensor 1, component XY"
-
-#~ msgid "tenseur cinématique 1, composante XZ"
-#~ msgstr "kinematical tensor 1, component XZ"
-
-#~ msgid "tenseur cinématique 1, composante YY"
-#~ msgstr "kinematical tensor 1, component YY"
-
-#~ msgid "tenseur cinématique 1, composante YZ"
-#~ msgstr "kinematical tensor 1, component YZ"
-
-#~ msgid "tenseur cinématique 1, composante ZZ"
-#~ msgstr "kinematical tensor 1, component ZZ"
-
-#~ msgid "tenseur cinématique 2, composante XX"
-#~ msgstr "kinematical tensor 2, component XX"
-
-#~ msgid "tenseur cinématique 2, composante XY"
-#~ msgstr "kinematical tensor 2, component XY"
-
-#~ msgid "tenseur cinématique 2, composante XZ"
-#~ msgstr "kinematical tensor 2, component XZ"
-
-#~ msgid "tenseur cinématique 2, composante YY"
-#~ msgstr "kinematical tensor 2, component YY"
-
-#~ msgid "tenseur cinématique 2, composante YZ"
-#~ msgstr "kinematical tensor 2, component YZ"
-
-#~ msgid "tenseur cinématique 2, composante ZZ"
-#~ msgstr "kinematical tensor 2, component ZZ"
-
 #~ msgid ""
 #~ "\n"
-#~ " il faut autant de \"NOEUD\" que de \"NOM_CMP\"\n"
+#~ "Aucun noeud n'est apparié.\n"
+#~ "La définition de vos surfaces ou de vos paramètres d'appariement est "
+#~ "incorrecte.\n"
+#~ "Vérifier TOLE_PROJ_EXT et/ou la définition de vos surfaces.\n"
+#~ "Vérifier les déplacements induits par votre modélisation.\n"
+#~ "Cette alarme peut entraîner des résultats faux si elle apparaît dans la "
+#~ "résolution du contact en Newton généralisé.\n"
 #~ msgstr ""
 #~ "\n"
-#~ " one needs as much\" NODE\" than of\" NOM_CMP\" \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " loi de comportement avec irradiation, le paramètre N doit être supérieur "
-#~ "à 0\n"
-#~ msgstr ""
-#~ "\n"
-#~ " constitutive law with irradiation, parameter N must be higher than 0 \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " F reste toujours négative\n"
-#~ msgstr ""
-#~ "\n"
-#~ " F remains always negative \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " F  reste toujours positive\n"
-#~ msgstr ""
-#~ "\n"
-#~ " F remains always positive \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " signe de SIGMA indéterminé\n"
-#~ msgstr ""
-#~ "\n"
-#~ " sign SIGMA undetermined \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " changement de signe de SIGMA\n"
-#~ msgstr ""
-#~ "\n"
-#~ " change of sign of SIGMA \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " F=0 : pas converge\n"
-#~ msgstr ""
-#~ "\n"
-#~ " F=0: not converges \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " la loi LMARC_IRRA n'est compatible qu'avec une modélisation poutre\n"
-#~ msgstr ""
-#~ "\n"
-#~ " model LMARC_IRRA is compatible only with one modelization beam \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Contact méthode continue.\n"
-#~ "  La méthode de Newton généralisée pour la boucle de géométrie n'est pas "
-#~ "utilisable avec la pénalisation.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Contact continuous method. \n"
-#~ " The method of Newton generalized for the loop of geometry is not usable "
-#~ "with the penalization. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " la nature du matériau  %(k1)s  nécessite la définition du coefficient  "
-#~ "B_ENDOGE dans DEFI_MATERIAU.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the nature of the material %(k1)s requires the definition of coefficient "
-#~ "B_ENDOGE in DEFI_MATERIAU. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " L'option  %(k1)s  n'est disponible qu'avec des éléments TETRA ou HEXA en "
-#~ "3D et\n"
-#~ " des éléments TRIA ou QUAD en 2D.\n"
-#~ " Or, la maille  %(k2)s  est de type  %(k3)s .\n"
-#~ msgstr ""
-#~ "\n"
-#~ " The option %(k1)s is available only with elements TETRA or HEXA in 3D "
-#~ "and\n"
-#~ " elements TRIA or QUAD in 2D. \n"
-#~ " However, the mesh %(k2)s is of type %(k3)s. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " La maille  %(k1)s  ne répond pas au critère géométrique sur les mailles "
-#~ "HEXA :\n"
-#~ " Les cotés opposés doivent être parallèles\n"
-#~ msgstr ""
-#~ "\n"
-#~ " The mesh %(k1)s does not answer the geometrical criterion on meshes "
-#~ "HEXA: \n"
-#~ " The with dimensions opposite ones must be parallel \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " Noeuds confondus pour un élément de poutre\n"
-#~ msgstr ""
-#~ "\n"
-#~ " Nodes confused for a beam element \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " le matériau %(k1)s  n'est pas autorisé pour calculer les déformations "
-#~ "plastiques :\n"
-#~ " seuls les matériaux isotropes sont traités en plasticité\n"
-#~ msgstr ""
-#~ "\n"
-#~ " the material %(k1)s is not authorized for compute the plastic strains: \n"
-#~ " only the isotropic materials are treated in plasticity \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Le mot-clé logiciel n'est pas utilise avec ce format.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "The software key word is not uses with this format. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Erreurs lors de l'exécution du fichier ci-dessous :\n"
-#~ "<<<<<<<<<<<<<<< DEBUT DU FICHIER >>>>>>>>>>>>>>>\n"
-#~ "%(k1)s\n"
-#~ "<<<<<<<<<<<<<<<  FIN  DU FICHIER >>>>>>>>>>>>>>>\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Errors during the execution of the file below: \n"
-#~ "<<<<<<<<<<<<<<< DEBUT OF THE FICHIER >>>>>>>>>>>>>>>\n"
-#~ " %(k1)s\n"
-#~ " <<<<<<<<<<<<<<< FIN OF THE FICHIER >>>>>>>>>>>>>>> \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Mode de lancement inconnu : %(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Mode of unknown launching:  %(k1)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "----------------------------------------------------------------------------------\n"
-#~ " Commande :\n"
-#~ "   %(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ "---------------------------------------------------------------------------------- \n"
-#~ " Order: \n"
-#~ "  %(k1)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " -> Le maillage n'a pas été produit par le logiciel externe (format "
-#~ "\"%(k1)s\")\n"
-#~ "\n"
-#~ " -> Conseil :\n"
-#~ "    Vous devriez trouver ci-dessus des messages du logiciel en question\n"
-#~ "    expliquant les raisons de cet échec.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " - > the mesh was not produced by the offsite software (format\" %(k1)s"
-#~ "\")\n"
-#~ "\n"
-#~ " - > Conseil: \n"
-#~ " You should find above messages of the software in question\n"
-#~ " explaining the reasons of this failure. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " -> Il y a eu une erreur lors de la connexion à la machine distante via "
-#~ "SSH :\n"
-#~ "    . Il est probable que les clés SSH ne soient pas configurées "
-#~ "correctement.\n"
-#~ "\n"
-#~ " -> Conseil :\n"
-#~ "    Vérifier que les clés SSH sont correctement configurées sur les "
-#~ "différentes machines.\n"
-#~ "    Vous pouvez essayer de relancer manuellement la commande suivante "
-#~ "depuis le serveur Aster :\n"
-#~ "%(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " - > There was an error at the time of connection to the remote machine "
-#~ "via SSH: \n"
-#~ " . It is probable that keys SSH are not configured correctly. \n"
-#~ " \n"
-#~ " - > the Council: \n"
-#~ " Check that keys SSH are correctly configured on the various machines. \n"
-#~ " You can try to manually start again the following command since the "
-#~ "server Aster: \n"
-#~ " %(k1)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " -> Il y a eu une erreur lors de la connexion à la machine distante via "
-#~ "SSH :\n"
-#~ "    . La machine distante n'a pas pus être contactée.\n"
-#~ "\n"
-#~ " -> Conseil :\n"
-#~ "    Vérifier l'adresse de la machine.\n"
-#~ "    Vous pouvez essayer de relancer manuellement la commande suivante "
-#~ "depuis le serveur Aster :\n"
-#~ "%(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " - > There was an error at the time of connection to the remote machine "
-#~ "via SSH: \n"
-#~ " . The remote machine does not have pus being not contacted. \n"
-#~ " \n"
-#~ " - > the Council: \n"
-#~ " Check the address of the machine. \n"
-#~ " You can try to manually start again the following command since the "
-#~ "server Aster: \n"
-#~ " %(k1)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " -> Il y a eu une erreur lors de la connexion à la machine distante via "
-#~ "SSH :\n"
-#~ "    . Le serveur SSH de la machine distante n'a pas pus être contacté.\n"
-#~ "\n"
-#~ " -> Conseil :\n"
-#~ "    Vérifier le port SSH de la machine.\n"
-#~ "    Vous pouvez essayer de relancer manuellement la commande suivante "
-#~ "depuis le serveur Aster :\n"
-#~ "%(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " - > There was an error at the time of connection to the remote machine "
-#~ "via SSH: \n"
-#~ " . Server SSH of the remote machine does not have pus contacted being. \n"
-#~ " \n"
-#~ " - > the Council: \n"
-#~ " Check port SSH of the machine. \n"
-#~ " You can try to manually start again the following command since the "
-#~ "server Aster: \n"
-#~ " %(k1)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " -> Il y a eu une erreur lors de la connexion à la machine distante via "
-#~ "SSH :\n"
-#~ "    . Il est probable que le logiciel défini par le mot clé LOGICIEL ne "
-#~ "soit pas présent\n"
-#~ "      sur la machine distante.\n"
-#~ "\n"
-#~ " -> Conseil :\n"
-#~ "    Vérifier le mot-clé LOGICIEL\n"
-#~ "    Vous pouvez essayer de relancer manuellement la commande suivante "
-#~ "depuis le serveur Aster :\n"
-#~ "%(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " - > There was an error at the time of connection to the remote machine "
-#~ "via SSH: \n"
-#~ " . It is probable that the software defined by the SOFTWARE key word is "
-#~ "not present\n"
-#~ " on the distant machine. \n"
-#~ " \n"
-#~ " - > the Council: \n"
-#~ " To check the SOFTWARE key word\n"
-#~ " Vous can try to manually start again the following command since the "
-#~ "server Aster: \n"
-#~ " %(k1)s \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " -> Il y a eu une erreur lors de la connexion à la machine distante via "
-#~ "SSH :\n"
-#~ "    . Soit l'adresse (ou le port SSH) de la machine n'est pas correcte.\n"
-#~ "    . Soit les clés SSH ne sont pas configurées correctement.\n"
-#~ "    . Soit le logiciel défini par le mot clé LOGICIEL n'est pas présent "
-#~ "sur la machine distante.\n"
-#~ "    . Soit une autre raison est à l'origine de cet échec.\n"
-#~ "\n"
-#~ " -> Conseil :\n"
-#~ "    Vous devriez trouver ci-dessus des messages expliquant les raisons de "
-#~ "cet échec.\n"
-#~ "    Vous pouvez essayer de relancer manuellement la commande suivante "
-#~ "depuis le serveur Aster :\n"
-#~ "%(k1)s\n"
-#~ msgstr ""
-#~ "\n"
-#~ " - > There was an error at the time of connection to the remote machine "
-#~ "via SSH: \n"
-#~ " . That is to say the address (or port SSH) of the machine is not "
-#~ "correct\n"
-#~ ". That is to say keys SSH are not configured correctly\n"
-#~ ". That is to say the software defined by the SOFTWARE key word is not "
-#~ "present on the distant machine\n"
-#~ ". That is to say another reason is at the origin of this failure. \n"
-#~ " \n"
-#~ " - > the Council: \n"
-#~ " You should find above messages explaining the reasons of this failure. \n"
-#~ " You can try to manually start again the following command since the "
-#~ "server Aster: \n"
-#~ " %(k1)s \n"
-
-#~ msgid ""
-#~ "Information : le champs \"%(k1)s\" n'a pas été trouvé dans le script "
-#~ "Salomé, mais il n'est peut être pas nécessaire."
-#~ msgstr ""
-#~ "Information: the fields\" %(k1)s\" was not found in the Salomé scripting, "
-#~ "but it is perhaps not necessary."
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "\n"
-#~ "----------------------------------------------------------------------------------\n"
-#~ "----- Script Salomé "
-#~ "--------------------------------------------------------------\n"
-#~ "\n"
-#~ "%(k1)s\n"
-#~ "\n"
-#~ "----- fin Script Salomé "
-#~ "----------------------------------------------------------\n"
-#~ "----------------------------------------------------------------------------------\n"
-#~ "\n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ " \n"
-#~ " \n"
-#~ "---------------------------------------------------------------------------------- \n"
-#~ "----- Salomé scripting "
-#~ "-------------------------------------------------------------- \n"
-#~ " \n"
-#~ " %(k1)s \n"
-#~ " \n"
-#~ "----- fine Salomé Scripting "
-#~ "---------------------------------------------------------- \n"
-#~ "---------------------------------------------------------------------------------- \n"
-#~ " \n"
-#~ " \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "----------------------------------------------------------------------------------\n"
-#~ "----- Commandes à exécuter "
-#~ "-------------------------------------------------------\n"
-#~ "\n"
-#~ "%(k1)s\n"
-#~ "\n"
-#~ "----------------------------------------------------------------------------------\n"
-#~ "----------------------------------------------------------------------------------\n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ " \n"
-#~ "---------------------------------------------------------------------------------- \n"
-#~ "----- Commands to be executed "
-#~ "------------------------------------------------------- \n"
-#~ " \n"
-#~ " %(k1)s \n"
-#~ " \n"
-#~ "---------------------------------------------------------------------------------- \n"
-#~ "---------------------------------------------------------------------------------- \n"
-#~ " \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Les mots-clés SALOME_HOST et SSH_ADRESSE ont été définis simultanément et "
-#~ "sont différents.\n"
-#~ "C'est SALOME_HOST qui définira l'adresse de la machine distante.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Key words SALOME_HOST and SSH_ADRESSE were simultaneously defined and are "
-#~ "different. \n"
-#~ "It is SALOME_HOST which will define the address of the distant machine. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Les listes de paramètres (mot-clé NOM_PARA) et de valeurs (mot-clé VALE) "
-#~ "doivent être de même longueur !\n"
-#~ msgstr ""
-#~ "\n"
-#~ "The value and parameter lists (key word NOM_PARA) (key word VALE) must be "
-#~ "of the same length! \n"
-
-#~ msgid ""
-#~ "\n"
-#~ " les noeuds DEBUT et fin n appartiennent pas au maillage.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " nodes DEBUT and fine N do not belong to the mesh. \n"
-
-#~ msgid ""
-#~ "\n"
-#~ "  -> Aucun noeud n'a été trouvé pour le calcul du résidu local.\n"
-#~ "  -> Le calcul du résidu local n'est pas possible.\n"
-#~ "  -> Risque & Conseil:\n"
-#~ "     Veuillez vérifier que la fissure n'est pas à l'extérieur du\n"
-#~ "     maillage après la propagation actuelle.\n"
-#~ "  "
-#~ msgstr ""
-#~ "\n"
-#~ " - > No node was found for the computation of the local residue. \n"
-#~ " - > the computation of the local residue is not possible. \n"
-#~ " - > Risks & advices: \n"
-#~ " Please check that the crack is not outside\n"
-#~ " the mesh after the current propagation. \n"
-#~ " "
-
-#~ msgid ""
-#~ "\n"
-#~ "  -> Le nombre maximal d'itérations a été atteint.\n"
-#~ "  -> Risque & Conseil:\n"
-#~ "     Essayer d'utiliser un maillage plus raffiné, ou bien une grille "
-#~ "auxiliaire.\n"
-#~ "  "
-#~ msgstr ""
-#~ "\n"
-#~ " - > the maximum number of iterations was reached. \n"
-#~ " - > Risks & advices: \n"
-#~ " Try to use a mesh more refined, or an auxiliary grid. \n"
-#~ " "
+#~ "No node is paired. \n"
+#~ "The definition of your surfaces or your parameters of pairing is "
+#~ "incorrect. \n"
+#~ "Check TOLE_PROJ_EXT and/or the definition of your surfaces. \n"
+#~ "Check the displacements induced by your modelization. \n"
+#~ "This alarm can involve false results if it appears in the resolution of "
+#~ "the contact in generalized Newton. \n"

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: code-aster\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-13 17:37+0200\n"
-"PO-Revision-Date: 2015-05-13 11:32-0400\n"
+"POT-Creation-Date: 2015-05-29 18:01+0200\n"
+"PO-Revision-Date: 2015-05-29 12:01-0400\n"
 "Last-Translator: ottovonvictor <ottovonvictor@yahoo.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -56,9 +56,8 @@ msgid "phase métallurgique acier variable interne 5"
 msgstr "Variável interna para a metalúrgica de aço fase 5"
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:30
-#, fuzzy
 msgid "affaiblissement relatif de raideur en membrane"
-msgstr "atenuação relativa da rigidez em flexão"
+msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Comportement/cata_vari.py:31
 msgid "affaiblissement relatif de raideur en membrane en compression"
@@ -6864,6 +6863,22 @@ msgstr ""
 msgid " Nombre de valeurs propres : %(i1)d\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:93
+#, python-format
+msgid ""
+" On ne peut pas remplir la composante %(k1)s du noeud numéro %(k2)s\n"
+" pour le champ \"%(k3)s\"\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/algeline7.py:97
+#, python-format
+msgid ""
+" La combinaison linéaire de \"%(k1)s\" et \"%(k2)s\" est impossible.\n"
+" Cela est dû au fait qu'il manque des degrés de liberté dans  \"%(k1)s\" "
+"par\n"
+" rapport à \"%(k2)s\".\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/algorith.py:22
 msgid ""
 "\n"
@@ -12891,16 +12906,20 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:21
 msgid ""
 "\n"
-"Aucun noeud n'est apparié.\n"
-"La définition de vos surfaces ou de vos paramètres d'appariement est "
-"incorrecte.\n"
-"Vérifier TOLE_PROJ_EXT et/ou la définition de vos surfaces.\n"
-"Vérifier les déplacements induits par votre modélisation.\n"
-"Cette alarme peut entraîner des résultats faux si elle apparaît dans la "
-"résolution du contact en Newton généralisé.\n"
+"Aucun noeud n'est apparié. Cette alarme peut entraîner des résultats faux si "
+"elle apparaît dans la résolution du contact en Newton généralisé.\n"
+"Conseils :\n"
+"1. On préconise d'utiliser CONTACT_INIT='OUI' pour initialiser le contact en "
+"tout point de la zone\n"
+"2. Vérifiez la définition de vos surfaces ou de vos paramètres "
+"d'appariement\n"
+"3. Vérifier TOLE_PROJ_EXT (prolongement fictif de la maille maître).\n"
+"4. Vérifier les déplacements induits par votre modélisation.\n"
+"5. Si l'alarme persiste, changez d'algorithme avec "
+"ALGO_RESO_GEOM='POINT_FIXE' dans DEFI_CONTACT\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:29
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:31
 #, python-format
 msgid ""
 "\n"
@@ -12911,7 +12930,7 @@ msgid ""
 "Erreur de définition de la maille ou projection difficile.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:36
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:38
 #, python-format
 msgid ""
 "\n"
@@ -12920,7 +12939,7 @@ msgid ""
 "Erreur de définition de la maille ou projection difficile.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:41
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:43
 #, python-format
 msgid ""
 "\n"
@@ -12928,7 +12947,7 @@ msgid ""
 "Erreur de définition de la maille ou projection difficile.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:46
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:48
 #, python-format
 msgid ""
 "\n"
@@ -12936,7 +12955,7 @@ msgid ""
 "Erreur de définition de la maille ou projection difficile.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:51
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:53
 #, python-format
 msgid ""
 "\n"
@@ -12944,7 +12963,7 @@ msgid ""
 "Erreur de définition de la maille ou projection difficile.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:56
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:58
 #, python-format
 msgid ""
 "\n"
@@ -12956,7 +12975,7 @@ msgid ""
 "l'assistance dans ce dernier cas.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:63
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:65
 #, python-format
 msgid ""
 "\n"
@@ -12964,7 +12983,7 @@ msgid ""
 "maître dans le cas d'un appariement MAIT_ESCL.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:67
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:69
 #, python-format
 msgid ""
 "\n"
@@ -12972,7 +12991,7 @@ msgid ""
 "Vérifiez votre maillage.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:72
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:74
 #, python-format
 msgid ""
 "\n"
@@ -12980,7 +12999,7 @@ msgid ""
 "locale.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:76
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:78
 #, python-format
 msgid ""
 "\n"
@@ -12988,7 +13007,7 @@ msgid ""
 "de sa normale.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:80
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:82
 #, python-format
 msgid ""
 "\n"
@@ -12996,7 +13015,7 @@ msgid ""
 "d'une normale non nulle.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:84
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/appariement.py:86
 msgid ""
 "\n"
 "Un élément de type POI1 ne peut pas être une maille maître.\n"
@@ -13766,6 +13785,15 @@ msgid ""
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:30
+#, python-format
+msgid ""
+"\n"
+"  Erreur d'utilisation :\n"
+"    La matrice élémentaire %(k1)s n'est pas complète au sens MPI.\n"
+"    La commande ASSE_MATRICE n'autorise pas cela.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:36
 msgid ""
 "\n"
 " Le calcul est séquentiel, on ne peut donc pas utiliser "
@@ -13773,7 +13801,7 @@ msgid ""
 " On force MATR_DISTRIBUEE='NON'.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:35
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:41
 #, python-format
 msgid ""
 "\n"
@@ -13786,13 +13814,13 @@ msgid ""
 "processeurs.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:44
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:50
 msgid ""
 "\n"
 " modèles discordants\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:52
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:58
 #, python-format
 msgid ""
 "\n"
@@ -13800,37 +13828,37 @@ msgid ""
 " on attend : \"CUMU\" ou \"ZERO\"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:58
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:64
 msgid ""
 "\n"
 " on ne peut assembler que des vecteurs réels ou complexes\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:65
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:71
 msgid ""
 "\n"
 " ICHIN = 0\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:69
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:75
 msgid ""
 "\n"
 " ICHIN < -2\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:73
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:79
 msgid ""
 "\n"
 " S => ICHIN=/0\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:77
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:83
 msgid ""
 "\n"
 " action : E/L/S\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:81
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:87
 msgid ""
 "\n"
 " Erreur développeur dans l'assemblage.\n"
@@ -13839,7 +13867,7 @@ msgid ""
 "option.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:86
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:92
 msgid ""
 "\n"
 " Erreur développeur dans l'assemblage.\n"
@@ -13847,7 +13875,7 @@ msgid ""
 "sous-structures, ni objet LISTE_RESU.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:91
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:97
 msgid ""
 "\n"
 "  Erreur programmeur :\n"
@@ -13856,60 +13884,60 @@ msgid ""
 "    assembler, on ne trouve aucun resuelem.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:97
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:103
 msgid ""
 "\n"
 " modèles différents\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:102
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:108
 #, python-format
 msgid ""
 "\n"
 " le noeud:  %(k1)s composante:  %(k2)s  est bloqué plusieurs fois.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:106
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:112
 msgid ""
 "\n"
 " l'entier décrivant la position du premier Lagrange ne peut être égal qu'à "
 "+1 ou -1 .\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:110
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:116
 msgid ""
 "\n"
 " le nombre de noeuds effectivement numérotés ne correspond pas au nombre\n"
 " de noeuds à numéroter\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:115
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:121
 #, python-format
 msgid ""
 "\n"
 " il n y a pas de modèle dans la liste  %(k1)s .NUME.LILI\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:119
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:125
 msgid ""
 "\n"
 " noeud inexistant\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:123
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:129
 #, python-format
 msgid ""
 "\n"
 " méthode :  %(k1)s  inconnue.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:127
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:133
 msgid ""
 "\n"
 " noeud incorrect\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:131
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:137
 #, python-format
 msgid ""
 "\n"
@@ -13917,7 +13945,7 @@ msgid ""
 " seuls sont admis les phénomènes \"MECANIQUE\" et \"THERMIQUE\"\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:136
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:142
 #, python-format
 msgid ""
 "\n"
@@ -13925,7 +13953,7 @@ msgid ""
 " n'a pas d'adresse dans : %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:141
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:147
 #, python-format
 msgid ""
 "\n"
@@ -13933,14 +13961,14 @@ msgid ""
 "   a une adresse  : %(i2)d  > NEQUA : %(i3)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:146
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:152
 #, python-format
 msgid ""
 "\n"
 " NDDL :  %(i1)d  > NDDL_MAX : %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:150
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:156
 #, python-format
 msgid ""
 "\n"
@@ -13953,7 +13981,7 @@ msgid ""
 " --- NNOE par NODE : %(i4)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:160
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:166
 #, python-format
 msgid ""
 "\n"
@@ -13980,15 +14008,15 @@ msgid ""
 "   de la commande CALC_MATR_ELEM/OPTION='RIGI_MECA' ?\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:180
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:184
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:186
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:190
 #, python-format
 msgid ""
 "\n"
 " --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:188
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:194
 #, python-format
 msgid ""
 "\n"
@@ -13996,7 +14024,7 @@ msgid ""
 " --- n'a pas d''adresse  dans la numérotation : %(k3)s\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:193
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:199
 #, python-format
 msgid ""
 "\n"
@@ -14004,7 +14032,7 @@ msgid ""
 " --- a une adresse : %(i2)d   > NEQUA : %(i3)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:198
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:204
 #, python-format
 msgid ""
 "\n"
@@ -14013,7 +14041,7 @@ msgid ""
 " derrière le noeud :  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:204
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:210
 #, python-format
 msgid ""
 "\n"
@@ -14022,7 +14050,7 @@ msgid ""
 " derrière le noeud :  %(i2)d\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:210
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/assembla.py:216
 #, python-format
 msgid ""
 "\n"
@@ -15745,7 +15773,13 @@ msgid ""
 "  Il faut utiliser le mot clé AFFE_VARC / CHAM_GD\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:293
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:287
+msgid ""
+"\n"
+"  La fonctionnalité ECLA_PG de CREA_RESU n'est pas disponible en parallèle.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:297
 #, python-format
 msgid ""
 "\n"
@@ -15754,7 +15788,7 @@ msgid ""
 "numéros d'ordre indiqués.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:300
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:304
 #, python-format
 msgid ""
 "\n"
@@ -15775,7 +15809,7 @@ msgid ""
 "         (par exemple 'PLAN_DIAG' en thermique, 'AXIS_SI' en mécanique)\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:315
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:319
 msgid ""
 "Erreur d'utilisation :\n"
 " On ne peut pas utiliser plus de 50 paramètres pour évaluer une fonction.\n"
@@ -15783,7 +15817,7 @@ msgid ""
 "50 composantes.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:320
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:324
 #, python-format
 msgid ""
 "Erreur d'utilisation :\n"
@@ -15791,7 +15825,7 @@ msgid ""
 "de maille connu.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:325
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:329
 #, python-format
 msgid ""
 "\n"
@@ -15806,7 +15840,7 @@ msgid ""
 "  on peut voir leur contenu avec le mot clé INFO=2.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:335
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:339
 #, python-format
 msgid ""
 "\n"
@@ -15817,7 +15851,7 @@ msgid ""
 "  NOM_CHAM doit être %(k2)s et pas %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:342
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:346
 #, python-format
 msgid ""
 "\n"
@@ -15833,7 +15867,7 @@ msgid ""
 "  Si nécessaire, il faut demander une évolution du code.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:354
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:358
 #, python-format
 msgid ""
 "\n"
@@ -15842,13 +15876,13 @@ msgid ""
 "  On ne trouve pas de température sur le maille %(k1)s.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:360
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:364
 msgid ""
 "\n"
 " il faut un MODELE\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:364
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:368
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
@@ -15860,7 +15894,7 @@ msgid ""
 "  mécanique qui utilise le mot clé IMPE_FACE.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:374
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:378
 msgid ""
 "\n"
 "Erreur utilisateur :\n"
@@ -15872,7 +15906,7 @@ msgid ""
 "  mécanique qui utilise le mot clé ONDE_FLUI.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:386
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:390
 msgid ""
 "\n"
 " La carte de COMPORTEMENT est absente.\n"
@@ -15881,7 +15915,7 @@ msgid ""
 "clé COMPORTEMENT.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:392
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:396
 #, python-format
 msgid ""
 "\n"
@@ -15889,7 +15923,7 @@ msgid ""
 " Le calcul d'indicateur d'erreur est donc impossible.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:397
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:401
 #, python-format
 msgid ""
 "\n"
@@ -15913,7 +15947,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:412
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:416
 #, python-format
 msgid ""
 "\n"
@@ -15927,14 +15961,14 @@ msgid ""
 "  Vérifier la construction du champ de fonctions est %(k2)s_F\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:422
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:426
 msgid ""
 "\n"
 " votre chargement contient plus d'une charge répartie\n"
 " le calcul n'est pas possible pour les modèles de poutre.\n"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:427
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/calculel2.py:431
 msgid ""
 "\n"
 " pour un modèle comportant des éléments de plaque ou de coque\n"
@@ -18076,6 +18110,14 @@ msgid ""
 "\n"
 "  Erreur développeur : le champ n'a pas été créé car aucun type élément\n"
 "  ne connaît le paramètre %(k1)s de l'option %(k2)s.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/campbell.py:23
+msgid ""
+"\n"
+" Il faut au moins deux vitesses de rotation pour construire un diagramme de "
+"Campbell.\n"
+" "
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/cataelem.py:22
@@ -33611,6 +33653,110 @@ msgid ""
 "ce qui est incompatible avec l'algorithme des puissances inverses utilisé "
 "pour l'amélioration.\n"
 "\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:180
+msgid ""
+"\n"
+"L'utilisation du parallélisme dans CALC_MODES avec OPTION='BANDES' et des "
+"matrices\n"
+"généralisées n'est pas possible.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:185
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES sur plusieurs sous-bandes:\n"
+"  Votre calcul semble déséquilibré: la sous-bande n°%(i1)d comporte %(i2)d "
+"mode(s) propre(s) alors\n"
+"  que la n°%(i3)d en comporte %(i4)d !\n"
+"  Cela risque de produire des modes de qualité très différentes et "
+"d'impacter la robustesse et\n"
+"  les performances globales du calcul.\n"
+"  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes "
+"par sous-bande avec\n"
+"  un déséquilibre maximum de X3 entre les sous-bandes.\n"
+"\n"
+"  Conseil:\n"
+"    * Il est intéressant de calibrer un tel calcul modal en utilisant "
+"l'opérateur INFO_MODE\n"
+"      dans un pré-calcul séparé. C'est généralement très rapide (surtout en "
+"parallèle) et cela\n"
+"      fournit des informations concrètes pour proposer un découpage homogène "
+"et réaliste.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:199
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES sur plusieurs sous-bandes:\n"
+"  La sous-bande n°%(i1)d comporte %(i2)d mode(s) propre(s). Ce n'est pas "
+"assez !\n"
+"  Vous pouvez sans doute optimiser les performances de votre calcul en la "
+"groupant avec une\n"
+"  deux sous-bandes contiguës.\n"
+"  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes "
+"par sous-bande avec\n"
+"  un déséquilibre maximum de X3 entre les sous-bandes.\n"
+"\n"
+"  Conseil:\n"
+"    * Il est intéressant de calibrer un tel calcul modal en utilisant "
+"l'opérateur INFO_MODE\n"
+"      dans un pré-calcul séparé. C'est généralement très rapide (surtout en "
+"parallèle) et cela\n"
+"      fournit des informations concrètes pour proposer un découpage homogène "
+"et réaliste.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:212
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES sur plusieurs sous-bandes:\n"
+"  La sous-bande n°%(i1)d comporte %(i2)d modes propres. C'est un peu trop !\n"
+"  Vous pouvez sans doute optimiser les performances et la robustesse de "
+"votre calcul ainsi que\n"
+"  la qualité des modes obtenus, en découpant à nouveau cette sous-bande.\n"
+"  Idéalement, un calcul multi-bande devrait comporter entre 20 et 60 modes "
+"par sous-bande avec\n"
+"  un déséquilibre maximum de X3 entre les sous-bandes.\n"
+"\n"
+"  Conseil:\n"
+"    * Il est intéressant de calibrer un tel calcul modal en utilisant "
+"l'opérateur INFO_MODE\n"
+"      dans un pré-calcul séparé. C'est généralement très rapide (surtout en "
+"parallèle) et cela\n"
+"      fournit des informations concrètes pour proposer un découpage homogène "
+"et réaliste.\n"
+msgstr ""
+
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/modal.py:225
+#, python-format
+msgid ""
+"\n"
+"Opérateur CALC_MODES:\n"
+"  Votre calcul cherche à déterminer %(i1)d modes propres à la fois. C'est un "
+"peu trop !\n"
+"  Vous pouvez sans doute optimiser les performances, la robustesse de votre "
+"calcul ainsi que\n"
+"  la qualité des modes obtenus, en découpant à nouveau votre calcul en "
+"plusieurs paquets.\n"
+"  Idéalement, un calcul modal devrait chercher:\n"
+"      - entre 20 et 60 modes à la fois (avec les options 'CENTRE', 'BANDE' "
+"ou 'PLUS_PETITE/GRANDE'),\n"
+"      - au maximum une dizaine (avec 'PROCHE', 'SEPARE' ou 'AJUSTE').\n"
+"\n"
+"  Conseils:\n"
+"    * Pour faciliter un calcul par paquets de modes vous pouvez utilisez "
+"l'option 'BANDE'.\n"
+"    * Sur un problème modal généralisé standard, il peut être aussi "
+"intéressant de calibrer la\n"
+"      charge en utilisant l'opérateur INFO_MODE dans un pré-calcul séparé.\n"
+"      C'est généralement très rapide (surtout en parallèle) et cela fournit "
+"des informations\n"
+"      concrètes pour ensuite paramétrer un découpage homogène et réaliste.\n"
 msgstr ""
 
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/modal0.py:21
@@ -52593,6 +52739,14 @@ msgid ""
 "     Dans ce cas, le mot-clé MODELE de AFFE_MATERIAU devient obligatoire.\n"
 msgstr ""
 
+#: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem.py:648
+msgid ""
+"\n"
+"  -> Les chargements de type FORCE_FACE ne sont pas gérés pour le calcul de "
+"l'option CALC_G sur les éléments de bord X-FEM.\n"
+"     Seuls les chargements de type PRES_REP peuvent être pris en compte.\n"
+msgstr ""
+
 #: /home/mc/dev/integration-default/src/bibpyt/Messages/xfem2.py:22
 msgid ""
 "\n"
@@ -53438,7 +53592,7 @@ msgstr ""
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:559
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:611
 #: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:658
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1374
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1375
 msgid "La valeur n'est pas dans la liste des choix possibles"
 msgstr ""
 
@@ -53528,103 +53682,103 @@ msgstr ""
 msgid "%s n'est pas du bon type"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1178
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1179
 #, python-format
 msgid "%s doit être inférieur a %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1181
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1182
 #, python-format
 msgid "valeur dans l'intervalle %s , %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1186
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1187
 #, python-format
 msgid "%s devrait être comprise entre %s et %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1193
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1194
 #, python-format
 msgid "La valeur doit etre comprise entre %s et %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1214
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1215
 #, python-format
 msgid "%s doit etre inferieur a %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1217
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1218
 #, python-format
 msgid "longueur de liste comprise entre  %s et %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1221
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1222
 #, python-format
 msgid "Le cardinal de la liste doit etre compris entre %s et %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1248
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1249
 #, python-format
 msgid "%s devrait etre de longueur inferieure a %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1251
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1252
 #, python-format
 msgid "%s devrait etre de longueur superieure a %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1298
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1299
 msgid "valeur paire"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1301
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1302
 msgid "La valeur saisie doit etre paire"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1308
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1309
 #, python-format
 msgid "%s contient des valeurs non paires"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1352
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1353
 #, python-format
 msgid "%s contient des valeurs hors des choix possibles: %s "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1410
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1411
 #, python-format
 msgid "valeur %s pour la somme des cles A et B "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1479
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1486
 #, python-format
 msgid "valeur de %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1522
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1529
 msgid "type non supporté"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1527
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1534
 #, python-format
 msgid "valeur d'instance de %s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1543
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1550
 msgid ": vérifie les types dans un tuple"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1546
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1553
 msgid "Les types entrés ne sont pas permis"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1559
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1564
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1566
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1571
 #, python-format
 msgid "%s devrait etre de type  %s "
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1657
+#: /home/mc/dev/integration-default/src/bibpyt/Noyau/N_VALIDATOR.py:1664
 #, python-format
 msgid "%s n'est pas dans %s"
 msgstr ""
@@ -54020,18 +54174,18 @@ msgstr ""
 msgid "Command output :"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:53
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:55
 msgid ""
 "\n"
 "Il y a probablement une erreur dans la programmation.\n"
 "Veuillez contacter votre assistance technique."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:182
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:184
 msgid "On ne peut pas lever d'exception dans une exécution MPI."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:273
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:275
 #, python-format
 msgid ""
 "Erreur de programmation.\n"
@@ -54050,23 +54204,23 @@ msgid ""
 "%s"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:556
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:558
 msgid ""
 "Ceci est une alarme. Si vous ne comprenez pas le sens de cette\n"
 "alarme, vous pouvez obtenir des résultats inattendus !"
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:558
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:560
 msgid "Cette erreur sera suivie d'une erreur fatale."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:559
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:561
 msgid ""
 "Cette erreur est fatale. Le code s'arrête. Toutes les étapes\n"
 "du calcul ont été sauvées dans la base jusqu'au moment de l'arret."
 msgstr ""
 
-#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:561
+#: /home/mc/dev/integration-default/src/bibpyt/Utilitai/Utmess.py:563
 msgid "Cette erreur est fatale. Le code s'arrête."
 msgstr ""
 
