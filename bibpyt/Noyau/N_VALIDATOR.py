@@ -1033,6 +1033,7 @@ class AndVal(Valid):
         return chaine
 
     def info_erreur_liste(self):
+        chaine = ""
         a = 1
         for v in self.validators:
             if v.info_erreur_liste() != " ":
