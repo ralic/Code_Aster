@@ -1,0 +1,373 @@
+# ce fichier est la concatenation de 3 fichiers distincts, il ne peut pas etre 
+# execute en l'etat dans Salome. Il faut separer les 3 parties ci-dessous en 3 fichiers
+# distincts
+
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+# 1ere partie du fichier : maillage sain
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v7.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.NoteBook(theStudy)
+sys.path.insert( 0, r'/local00/home/F97355/dev/fiches/23749/maillages')
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+# hauteur totale du tube
+hauteur = 6.
+
+# rayon interne du tube
+r_int = 1.
+
+# rayon externe du tube
+r_ext = 2.
+
+# nombre de segments selon la hauteur
+#n_seg_h = 20
+n_seg_h = 40
+
+# nombre de segments selon l'epaisseur
+#n_seg_ray = 4
+n_seg_ray = 8
+
+# nombre de segments selon le demi-perimetre
+#n_seg_per = 20
+n_seg_per = 40
+
+
+
+geompy = geomBuilder.New(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+assert r_int < r_ext
+Cylinder_1 = geompy.MakeCylinderRH(r_ext, hauteur)
+Cylinder_2 = geompy.MakeCylinderRH(r_int, hauteur)
+
+tube = geompy.MakeCutList(Cylinder_1, [Cylinder_2], True)
+Rotation_1 = geompy.MakeRotation(tube, OX, -90*math.pi/180.0)
+#Translation_1 = geompy.MakeTranslation(Rotation_1, 0, -0.5*hauteur, 0)
+Translation_1 = geompy.MakeTranslation(Rotation_1, 0, 0., 0)
+Plane_1 = geompy.MakePlane(O, OZ, 10*max(hauteur,r_ext))
+
+Partition_1 = geompy.MakePartition([Translation_1], [Plane_1], [], [], geompy.ShapeType["SOLID"], 0, [], 0)
+[Compound_1, Compound_2, Compound_3, Compound_4] = geompy.Propagate(Partition_1)
+haut = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(haut, [31, 42])
+bas = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(bas, [21, 45])
+ext = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(ext, [38, 4])
+inter = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(inter, [34, 48])
+face2remove = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(face2remove, [26, 14])
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( OX, 'OX' )
+geompy.addToStudy( OY, 'OY' )
+geompy.addToStudy( OZ, 'OZ' )
+geompy.addToStudy( Cylinder_1, 'Cylinder_1' )
+geompy.addToStudy( Cylinder_2, 'Cylinder_2' )
+geompy.addToStudy( tube, 'tube' )
+geompy.addToStudy( Rotation_1, 'Rotation_1' )
+geompy.addToStudy( Translation_1, 'Translation_1' )
+geompy.addToStudy( Plane_1, 'Plane_1' )
+geompy.addToStudy( Partition_1, 'Partition_1' )
+geompy.addToStudyInFather( Partition_1, Compound_1, 'Compound_1' )
+geompy.addToStudyInFather( Partition_1, Compound_2, 'Compound_2' )
+geompy.addToStudyInFather( Partition_1, Compound_3, 'Compound_3' )
+geompy.addToStudyInFather( Partition_1, Compound_4, 'Compound_4' )
+geompy.addToStudyInFather( Partition_1, haut, 'haut' )
+geompy.addToStudyInFather( Partition_1, bas, 'bas' )
+geompy.addToStudyInFather( Partition_1, ext, 'ext' )
+geompy.addToStudyInFather( Partition_1, inter, 'inter' )
+geompy.addToStudyInFather( Partition_1, face2remove, 'face2remove' )
+
+###
+### SMESH component
+###
+
+import  SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+
+smesh = smeshBuilder.New(theStudy)
+Mesh_1 = smesh.Mesh(Partition_1)
+Hexa_3D = Mesh_1.Hexahedron(algo=smeshBuilder.Hexa)
+Regular_1D = Mesh_1.Segment(geom=Compound_1)
+
+Nb_Segments_1 = Regular_1D.NumberOfSegments(n_seg_h)
+Nb_Segments_1.SetDistrType( 0 )
+Nb_Segments_2 = smesh.CreateHypothesis('NumberOfSegments')
+
+Nb_Segments_2.SetNumberOfSegments( n_seg_ray )
+Nb_Segments_2.SetDistrType( 0 )
+status = Mesh_1.AddHypothesis(Regular_1D,Compound_2)
+status = Mesh_1.AddHypothesis(Nb_Segments_2,Compound_2)
+
+Nb_Segments_3 = smesh.CreateHypothesis('NumberOfSegments')
+Nb_Segments_3.SetNumberOfSegments( n_seg_per )
+Nb_Segments_3.SetDistrType( 0 )
+status = Mesh_1.AddHypothesis(Regular_1D,Compound_3)
+status = Mesh_1.AddHypothesis(Nb_Segments_3,Compound_3)
+status = Mesh_1.AddHypothesis(Regular_1D,Compound_4)
+status = Mesh_1.AddHypothesis(Nb_Segments_3,Compound_4)
+
+Quadrangle_2D = Mesh_1.Quadrangle(algo=smeshBuilder.QUADRANGLE,geom=haut)
+status = Mesh_1.AddHypothesis(Quadrangle_2D,bas)
+status = Mesh_1.AddHypothesis(Quadrangle_2D,ext)
+status = Mesh_1.AddHypothesis(Quadrangle_2D,inter)
+status = Mesh_1.AddHypothesis(Quadrangle_2D,face2remove)
+isDone = Mesh_1.Compute()
+
+[ SubMesh_1, SubMesh_2, SubMesh_3, SubMesh_4, SubMesh_5, SubMesh_6, SubMesh_7, SubMesh_8, SubMesh_9 ] = Mesh_1.GetMesh().GetSubMeshes()
+SubMesh_1 = Regular_1D.GetSubMesh()
+SubMesh_2 = Mesh_1.GetSubMesh( Compound_2, 'SubMesh_2' )
+SubMesh_3 = Mesh_1.GetSubMesh( Compound_3, 'SubMesh_3' )
+SubMesh_4 = Mesh_1.GetSubMesh( Compound_4, 'SubMesh_4' )
+SubMesh_5 = Quadrangle_2D.GetSubMesh()
+SubMesh_6 = Mesh_1.GetSubMesh( bas, 'SubMesh_6' )
+SubMesh_7 = Mesh_1.GetSubMesh( ext, 'SubMesh_7' )
+SubMesh_8 = Mesh_1.GetSubMesh( inter, 'SubMesh_8' )
+SubMesh_9 = Mesh_1.GetSubMesh( face2remove, 'SubMesh_9' )
+
+
+## Set names of Mesh objects
+smesh.SetName(SubMesh_8, 'SubMesh_8')
+smesh.SetName(SubMesh_9, 'SubMesh_9')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+smesh.SetName(SubMesh_3, 'SubMesh_3')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_6, 'SubMesh_6')
+smesh.SetName(Hexa_3D.GetAlgorithm(), 'Hexa_3D')
+smesh.SetName(SubMesh_7, 'SubMesh_7')
+smesh.SetName(Regular_1D.GetAlgorithm(), 'Regular_1D')
+smesh.SetName(SubMesh_4, 'SubMesh_4')
+smesh.SetName(Quadrangle_2D.GetAlgorithm(), 'Quadrangle_2D')
+smesh.SetName(SubMesh_5, 'SubMesh_5')
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(Nb_Segments_3, 'Nb. Segments_3')
+smesh.SetName(Nb_Segments_2, 'Nb. Segments_2')
+smesh.SetName(Nb_Segments_1, 'Nb. Segments_1')
+
+
+Gr_haut = Mesh_1.GroupOnGeom(haut,'haut',SMESH.FACE)
+smesh.SetName(Gr_haut, 'haut')
+Gr_bas = Mesh_1.GroupOnGeom(bas,'bas',SMESH.FACE)
+smesh.SetName(Gr_bas, 'bas')
+Gr_ext = Mesh_1.GroupOnGeom(ext,'ext',SMESH.FACE)
+smesh.SetName(Gr_ext, 'ext')
+Gr_inter= Mesh_1.GroupOnGeom(inter,'inter',SMESH.FACE)
+smesh.SetName(Gr_inter, 'inter')
+Gr_face2remove = Mesh_1.GroupOnGeom(face2remove,'face2remove',SMESH.FACE)
+smesh.SetName(Gr_face2remove, 'face2remove')
+
+IDs_face2remove = Gr_face2remove.GetListOfID()
+Mesh_1.RemoveElements( IDs_face2remove )
+
+all_faces = Mesh_1.CreateEmptyGroup( SMESH.FACE, 'all_faces' )
+nbAdd = all_faces.AddFrom( Mesh_1.GetMesh() )
+
+all_edges = Mesh_1.CreateEmptyGroup( SMESH.EDGE, 'all_edges' )
+nbAdd = all_edges.AddFrom( Mesh_1.GetMesh() )
+IDs_all_edges = all_edges.GetListOfID()
+Mesh_1.RemoveElements( IDs_all_edges )
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+# 2eme partie du fichier : definition d la fissure
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+
+# generation d'une ellipe (tronquee) longi 
+# demi-grand axe : a 
+# demi-petit axe : b 
+# centre : C
+a = 0.25
+b = 0.2
+
+#rayon interne tube
+R1=1.
+
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.notebook
+
+import os
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+
+geompy = geomBuilder.New(theStudy)
+
+# creation du repere
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+#-----------------------------------------------------------------------------------------
+# 1) ellipse tronquee dans le repere basique (centre en 0, a suivant OX et b suivant OY)
+#-----------------------------------------------------------------------------------------
+
+# creation d'un disque centre en O, de rayon r=b et de normale OZ
+# le point de couture est sur l'axe OX
+disque = geompy.MakeDiskPntVecR(O, OZ, b)
+
+# rotation du disque d'un quart de tour pour que le point de couture soit sur OY (cote negatif)
+geompy.Rotate(disque, OZ, 90*math.pi/180.)
+
+# creation de la face elliptique en etirant le disque suivant l'axe OX
+ellipse = geompy.MakeScaleAlongAxes(disque, O, a/b, 1, 1)
+
+# creation de l'outil pour tronquer l'ellipse
+tool = geompy.MakeFaceHW(4*a, 4*b, 1)
+geompy.TranslateDXDYDZ(tool, 0., -2*b-b/2., 0)
+
+# creation de l'outil pour tronquer l'ellipse
+tool2 = geompy.MakeFaceHW(4*a, 4*b, 1)
+geompy.TranslateDXDYDZ(tool2, 2*a+a/2., 0., 0.)
+
+# tronquage de l'ellipse
+ellipse_tronquee = geompy.MakeCutList(ellipse, [tool,tool2], True)
+
+# # verification que l'ellipse tronquee ne contient bien que 2 vertex
+# list_vertex = geompy.ExtractShapes(ellipse_tronquee, geompy.ShapeType["VERTEX"], True)
+# if len(list_vertex) != 2 :
+#    print "Erreur : l'objet cree contient "+str(len(list_vertex))+" points. Or il ne devrait y en avoir que 2."
+#    assert(list_vertex == 2)
+
+#-----------------------------------------------------------------------------------------
+# positionnement de l'ellipse : sens longi, en peau externe, sur l'extrados, section mediane
+#-----------------------------------------------------------------------------------------
+
+# orientation de l'ellipse
+geompy.Rotate(ellipse_tronquee, OZ, -90*math.pi/180.)
+
+# positionnement sur la peau interne
+geompy.TranslateDXDYDZ(ellipse_tronquee, R1, 0., 0.)
+
+geompy.addToStudy( ellipse_tronquee, 'ellipse_tronquee')
+
+# export au format Brep
+geompy.Export(ellipse_tronquee, "/home/D24752/data/ast_dev/tube_pres/fissure.brep", "BREP")
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)
+
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+# 3eme partie du fichier : insertion avec le blocFissure de la fissure definie en partie 2. 
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+###########################################################################################
+
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+import math
+
+sys.path.append('/home/D24752/salome/V2014_2/modules/SMESH_V7_4_0/share/salome/plugins/smesh')
+
+from blocFissure import gmu
+from blocFissure.gmu import initLog
+initLog.setDebug()
+#initLog.setVerbose()
+
+# rappel des dimensions de la fissure elliptique tronquee:
+# demi-grand axe : a 
+# demi-petit axe : b 
+a = 0.25
+b = 0.2
+
+# approx longueur ellipse entiere
+h=((a-b)/(a+b))**2
+l_app=3.14*(a+b)*(1+3*h/(10+math.sqrt(4-3*h)))
+
+# approx longueur quart d'ellipse
+l=l_app/4.
+
+from blocFissure.casStandard import casStandard
+
+dicoParams = dict(
+                  nomCas            = 'fiss_tube',
+                  brepFaceFissure   = "/home/D24752/data/ast_dev/tube_pres/fissure.brep",
+                  maillageSain      = "/home/D24752/data/ast_dev/tube_pres/ma_hexa_sain.mmed",
+                  edgeFissIds       = [4],
+                  lgInfluence       = b,
+                  meshBrep          = (0.01,0.05),
+                  rayonPipe         = b/5.,
+                  lenSegPipe        = l/30.,
+                  nbSegRad          = 5,
+                  nbSegCercle       = 32,
+                  areteFaceFissure  = 0.05
+                  )
+
+execInstance = casStandard(dicoParams)
+
+
+# comment recuperer l'objet maille ici ?
+# pour recreer les bons groupes
+# 

@@ -644,4 +644,9 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les él
   -> Vous avez renseigné le mot-clé EVOL de AFFE_MATERIAU / AFFE_VARC avec un résultat thermique X-FEM.
      Dans ce cas, le mot-clé MODELE de AFFE_MATERIAU devient obligatoire.
 """),
+
+    98: _(u"""
+  -> Les chargements de type FORCE_FACE ne sont pas gérés pour le calcul de l'option CALC_G sur les éléments de bord X-FEM.
+     Seuls les chargements de type PRES_REP peuvent être pris en compte.
+"""),
 }

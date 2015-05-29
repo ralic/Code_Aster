@@ -1,0 +1,10 @@
+P time_limit 240
+P memory_limit 1024
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm sslv322c.comm D 1
+F datg sslv322c.datg D 16
+F mmed sslv322c.mmed D 20

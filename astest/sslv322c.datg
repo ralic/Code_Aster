@@ -1,0 +1,132 @@
+# -*- coding: iso-8859-1 -*-
+
+###
+### This file is generated automatically by SALOME v7.4.0 with dump python functionality
+###
+
+import sys
+import salome
+
+salome.salome_init()
+theStudy = salome.myStudy
+
+import salome_notebook
+notebook = salome_notebook.NoteBook(theStudy)
+sys.path.insert( 0, r'/local00/home/F97355/dev/fiches/23749/maillages')
+
+###
+### GEOM component
+###
+
+import GEOM
+from salome.geom import geomBuilder
+import math
+import SALOMEDS
+
+# hauteur totale du tube
+hauteur = 6.
+
+# rayon interne du tube
+r_int = 1.
+
+# rayon externe du tube
+r_ext = 2.
+
+## nombre de segments selon la hauteur
+#n_seg_h = 20
+
+## nombre de segments selon l'epaisseur
+#n_seg_ray = 4
+
+## nombre de segments selon le demi-perimetre
+#n_seg_per = 20
+
+geompy = geomBuilder.New(theStudy)
+
+O = geompy.MakeVertex(0, 0, 0)
+OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
+OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
+OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
+
+assert r_int < r_ext
+Cylinder_1 = geompy.MakeCylinderRH(r_ext, hauteur)
+Cylinder_2 = geompy.MakeCylinderRH(r_int, hauteur)
+
+tube = geompy.MakeCutList(Cylinder_1, [Cylinder_2], True)
+Rotation_1 = geompy.MakeRotation(tube, OX, -90*math.pi/180.0)
+Translation_1 = geompy.MakeTranslation(Rotation_1, 0, 0., 0)
+
+Vertex_1 = geompy.MakeVertex(-2, 6, 0)
+Partition_1 = geompy.MakePartition([Translation_1], [Vertex_1], [], [], geompy.ShapeType["SOLID"], 0, [], 0)
+
+listSubShapeIDs = geompy.SubShapeAllIDs(Partition_1, geompy.ShapeType["FACE"])
+bas = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(bas, [12])
+haut = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(haut, [17])
+inter = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(inter, [22])
+ext = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(ext, [3])
+all_faces = geompy.CreateGroup(Partition_1, geompy.ShapeType["FACE"])
+geompy.UnionIDs(all_faces, [3, 12, 17, 22])
+point = geompy.CreateGroup(Partition_1, geompy.ShapeType["VERTEX"])
+geompy.UnionIDs(point, [6])
+
+geompy.addToStudy( O, 'O' )
+geompy.addToStudy( Translation_1, 'Translation_1' )
+geompy.addToStudy( Vertex_1, 'Vertex_1' )
+geompy.addToStudy( Partition_1, 'Partition_1' )
+geompy.addToStudyInFather( Partition_1, bas, 'bas' )
+geompy.addToStudyInFather( Partition_1, haut, 'haut' )
+geompy.addToStudyInFather( Partition_1, inter, 'inter' )
+geompy.addToStudyInFather( Partition_1, ext, 'ext' )
+geompy.addToStudyInFather( Partition_1, all_faces, 'all_faces' )
+geompy.addToStudyInFather( Partition_1, point, 'point' )
+
+###
+### SMESH component
+###
+
+import  SMESH, SALOMEDS
+from salome.smesh import smeshBuilder
+
+smesh = smeshBuilder.New(theStudy)
+Mesh_1 = smesh.Mesh(Partition_1)
+GHS3D_3D = Mesh_1.Tetrahedron(algo=smeshBuilder.GHS3D)
+BLSURF = Mesh_1.Triangle(algo=smeshBuilder.BLSURF,geom=all_faces)
+BLSURF_Parameters_1 = BLSURF.Parameters()
+BLSURF_Parameters_1.SetPhysicalMesh( 2 )
+BLSURF_Parameters_1.SetPhySize( 0.2 )
+BLSURF_Parameters_1.SetMinSize( 0.2 )
+BLSURF_Parameters_1.SetMaxSize( 0.2 )
+isDone = Mesh_1.Compute()
+[ SubMesh_1 ] = Mesh_1.GetMesh().GetSubMeshes()
+SubMesh_1 = BLSURF.GetSubMesh()
+SubMesh_2 = Mesh_1.GetSubMesh( point, 'SubMesh_2' )
+
+## Set names of Mesh objects
+smesh.SetName(GHS3D_3D.GetAlgorithm(), 'GHS3D_3D')
+smesh.SetName(BLSURF.GetAlgorithm(), 'BLSURF')
+smesh.SetName(BLSURF_Parameters_1, 'BLSURF Parameters_1')
+smesh.SetName(Mesh_1.GetMesh(), 'Mesh_1')
+smesh.SetName(SubMesh_1, 'SubMesh_1')
+smesh.SetName(SubMesh_2, 'SubMesh_2')
+
+all_edges = Mesh_1.CreateEmptyGroup( SMESH.EDGE, 'all_edges' )
+nbAdd = all_edges.AddFrom( Mesh_1.GetMesh() )
+IDs_all_edges = all_edges.GetListOfID()
+Mesh_1.RemoveElements( IDs_all_edges )
+
+Gr_haut = Mesh_1.GroupOnGeom(haut,'haut',SMESH.FACE)
+smesh.SetName(Gr_haut, 'haut')
+Gr_bas = Mesh_1.GroupOnGeom(bas,'bas',SMESH.FACE)
+smesh.SetName(Gr_bas, 'bas')
+Gr_ext = Mesh_1.GroupOnGeom(ext,'ext',SMESH.FACE)
+smesh.SetName(Gr_ext, 'ext')
+Gr_inter= Mesh_1.GroupOnGeom(inter,'inter',SMESH.FACE)
+smesh.SetName(Gr_inter, 'inter')
+
+
+if salome.sg.hasDesktop():
+  salome.sg.updateObjBrowser(1)

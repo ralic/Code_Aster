@@ -1,0 +1,505 @@
+# TITRE FISSURE LONGITUDINALE SEMI-ELLIPTIQUE DEBOUCHANT EN PEAU INTERNE D'UN TUBE SOUS PRESSION 
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# MODALISATION B : X-FEM MAILLAGE HEXA STRUCTURE
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('XFEM_22', 'MODELE1_63', 'UTILITAI4_2'));
+
+# IGNORE_ALARM : 'XFEM_22' -> on ne modelise qu'un demi-tube, donc on 
+#                             applique la condition de symetrie sur des
+#                             noeuds par lesquels passe la fissure. Il 
+#                             est legitime d'ignorer cette alarme.
+# IGNORE_ALARM : 'MODELE1_63' -> a cause de la visu XFEM
+# IGNORE_ALARM : 'UTILITAI4_2' -> a cause de la visu XFEM
+
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+#          RAFFINEMENT AVEC RAFF_XFEM / MACR_ADAP_MAIL
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+
+# demi grand axe
+a=0.25
+
+# demi-petit axe
+b=0.2
+
+#rayon interne tube
+R1=1.
+
+#rayon externe tube
+R2=2.
+
+#demi-longueur tube
+L=6.
+
+# h0 : initial elements size 
+h0 = 0.15
+
+# hc : target elements size (taille cible)
+hc = b/30.
+
+# useful parameters
+#------------------
+
+# number of mesh refinements
+n = (log(h0)-log(hc))/log(2)
+nb_raff = int(n)+1
+
+# h : final elements size 
+h = h0/(2.**nb_raff)
+
+# radius of refinements disc
+r_raff = 6*h
+
+# initialization
+nb_iter = nb_raff+1
+MA      = [None]*(nb_iter+1)
+MO      = [None]*nb_iter
+CHERR   = [None]*nb_iter
+DIAM    = [None]*(nb_iter+1)
+
+print 'n = %f' % n
+print 'nb_raff = %f' % nb_raff
+print 'nb_iter = %f' % nb_iter
+print 'h = %f' % h
+
+i_raff=0   
+MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED',);
+
+# refinements loop
+for i_raff in range(nb_iter) :
+                                  
+   Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],
+                DEFI_FISS=(
+                    _F(FORM_FISS='ELLIPSE',
+                       DEMI_GRAND_AXE=a,
+                       DEMI_PETIT_AXE=b,
+                       CENTRE=(R1, 0., 0.),
+                       VECT_X=(0., 1., 0.),
+                       VECT_Y=(1., 0., 0.),),
+                ),);
+
+
+   l_fiss = (Fiss_01,)
+   
+   # errors evaluation      
+   CHERR[i_raff]=RAFF_XFEM(FISSURE=l_fiss,
+                           TYPE='ZONE',
+                           RAYON=r_raff)
+   
+   # mesh concept n+1
+   MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
+   DIAM[i_raff+1]=CO('DIAM_%d' % (i_raff+1))
+    
+   MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
+                  CHAM_GD            = CHERR[i_raff],
+                  CRIT_RAFF_ABS      = 0.5,
+                  DIAM_MIN           = hc,
+                  MAILLAGE_N         = MA[i_raff],
+                  MAILLAGE_NP1       = MA[i_raff+1],
+#                  ADD_CHAM = _F(CHAM_GD = DIAM[i_raff+1],
+#                                CHAM_CAT='DIAMETRE'),
+                  FRONTIERE_ANALYTIQUE=(
+                    _F(NOM='FACE_INTERIEURE',
+                       TYPE='CYLINDRE',
+                       X_CENTRE= 0.,
+                       Y_CENTRE= 0.,
+                       Z_CENTRE= 0.,
+                       X_AXE=  0.,
+                       Y_AXE=  1.,
+                       Z_AXE=  0.,
+                       RAYON= 1,
+                       GROUP_MA=('inter',),),),)
+                  
+   DETRUIRE(CONCEPT=_F(NOM=l_fiss),INFO=1)
+#   IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[i_raff]))
+   
+assert(nb_iter == i_raff+1)
+
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]))
+
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+#          CALCUL MECANIQUE SUR LE MAILLAGE RAFFINE
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+
+# creation des noeuds servant a bloquer les modes rigides
+eps = 1.e-2*h
+MA[nb_iter]=DEFI_GROUP(reuse =MA[nb_iter],
+                       MAILLAGE=MA[nb_iter],
+                       CREA_GROUP_NO=(
+                                      _F(NOM='A', 
+                                         OPTION='ENV_SPHERE',
+                                         POINT=(R2, L, 0.),
+                                         PRECISION=eps,
+                                         RAYON=eps),
+                                      _F(NOM='B',
+                                         OPTION='ENV_SPHERE',
+                                         POINT=(-1.*R2, L, 0.),
+                                         PRECISION=eps, 
+                                         RAYON=eps),
+                                      ),
+                       INFO=2);
+   
+MA[nb_iter]=MODI_MAILLAGE(reuse=MA[nb_iter],
+                          MAILLAGE=MA[nb_iter],
+                          ORIE_PEAU_3D=_F(GROUP_MA=('inter',),),);
+
+Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
+                       DEFI_FISS=(
+                           _F(FORM_FISS='ELLIPSE',
+                              DEMI_GRAND_AXE=a,
+                              DEMI_PETIT_AXE=b,
+                              CENTRE=(R1, 0., 0.),
+                              VECT_X=(0., 1., 0.),
+                              VECT_Y=(1., 0., 0.),),
+                       ),);
+
+l_fiss = (Fiss_01,)
+
+MOD=AFFE_MODELE(MAILLAGE=MA[nb_iter],
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),)
+
+MODX=MODI_MODELE_XFEM(MODELE_IN=MOD,
+                      FISSURE=l_fiss)
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                            NU=0.3,),)
+
+MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
+                   AFFE=_F(TOUT='OUI',
+                           MATER=ACIER))
+
+CHAR=AFFE_CHAR_MECA(MODELE=MODX,
+                    DDL_IMPO=(
+                              _F(GROUP_NO='A'  , DZ=0.0,),
+                              _F(GROUP_NO='B'  , DZ=0.0,),
+                              _F(GROUP_MA='bas', DY=0.0,),
+                              ),
+                    LIAISON_DDL=(
+                                 _F(GROUP_NO=('A','B',),
+                                    DDL=('DX','DX',),
+                                    COEF_MULT=(1,1,),
+                                    COEF_IMPO=0,),
+                                ),
+                    PRES_REP=(
+                              _F(GROUP_MA='inter', PRES=1000000.0,),
+                              _F(FISSURE=l_fiss  , PRES=1000000.0,),
+                             ),
+                    );
+
+RESU=MECA_STATIQUE(MODELE=MODX,
+                   CHAM_MATER=MATE,
+                   SOLVEUR=_F(METHODE='MUMPS'),
+                   EXCIT=_F(CHARGE=CHAR),)
+
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+#          POST-TRAITEMENTS SPECIFIQUES A XFEM POUR VISU
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+
+MA_VISU=POST_MAIL_XFEM(MODELE=MODX)
+
+MO_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D'))
+
+RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
+                       RESULTAT=RESU)
+
+RE_VISU=CALC_CHAMP(RESULTAT=RE_VISU,reuse=RE_VISU,
+                   CRITERES=('SIEQ_ELGA','SIEQ_ELNO'))
+                  
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RE_VISU))
+
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+#                       POST-TRAITEMENT RUPTURE
+#-----------------------------------------------------------------------
+#-----------------------------------------------------------------------
+
+# rq : tant que issue23504 n'est pas defiinitivement corrigee
+#      on ne peut pas tester l'option 'CALC_K_G'
+
+rinf = 2.*h
+rsup = 4.*h
+
+# LISSAGE LEGENDRE
+CGleg=CALC_G(RESULTAT=RESU,
+             OPTION='CALC_G',
+             LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                          DEGRE = 5,
+                          LISSAGE_G='LEGENDRE',),
+             THETA = _F(R_INF=rinf,
+                        R_SUP=rsup,
+                        FISSURE=l_fiss,),)
+
+# LISSAGE LEGENDRE : INDEPENDANCE AU CHOIX DES COURONNES
+CGleg2=CALC_G(RESULTAT=RESU,
+              OPTION='CALC_G',
+              LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                           DEGRE = 5,
+                           LISSAGE_G='LEGENDRE',),
+              THETA = _F(R_INF=1.*h,
+                         R_SUP=5.*h,
+                         FISSURE=l_fiss,),)
+
+# LISSAGE LAGRANGE + REPARTITION UNIFORME DE 15 POINTS
+CGla15=CALC_G(RESULTAT=RESU,
+              OPTION='CALC_G',
+              LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                           LISSAGE_G='LAGRANGE',),
+              THETA = _F(R_INF=rinf,
+                         R_SUP=rsup,
+                         FISSURE=l_fiss,
+                         NB_POINT_FOND = 15,),);
+
+
+# LISSAGE LAGRANGE_REGU + REPARTITION UNIFORME DE 15 POINTS
+CGregu=CALC_G(RESULTAT=RESU,
+              OPTION='CALC_G',
+              LISSAGE = _F(LISSAGE_THETA='LAGRANGE_REGU',
+                           LISSAGE_G='LAGRANGE_REGU',),
+              THETA = _F(R_INF=rinf,
+                         R_SUP=rsup,
+                         FISSURE=l_fiss,
+                         NB_POINT_FOND = 15,),);
+
+#----------------------------------------------------------------------
+#               TRACE DES COURBES G EN FONCTION DE ABS_CURV
+#----------------------------------------------------------------------
+
+# rq : le sens de parcours de l'abscisse curviligne le long du front 
+#       est oppose a celui de la modelisation A (FEM) du fait de l'orientation
+#       automatique dans DEFI_FISS_XFEM. On se ramene au meme sans de parcours 
+#       avec CALC_TABLE
+
+ABSCURV2 = FORMULE(NOM_PARA='ABSC_CURV', VALE="-1.*ABSC_CURV + 0.35451270172" )
+
+CGleg=CALC_TABLE(reuse=CGleg,
+                 TABLE=CGleg,
+                 ACTION=(
+                         _F(OPERATION='OPER', NOM_PARA='ABSCURV2', FORMULE=ABSCURV2,),
+                         _F(OPERATION='SUPPRIME', NOM_PARA='ABSC_CURV',),
+                         _F(OPERATION='RENOMME', NOM_PARA=('ABSCURV2','ABSC_CURV',),),
+                         _F(OPERATION='TRI', NOM_PARA='ABSC_CURV', ORDRE='CROISSANT'),
+                         ),
+                 )
+
+CGleg2=CALC_TABLE(reuse=CGleg2,
+                  TABLE=CGleg2,
+                  ACTION=(
+                          _F(OPERATION='OPER', NOM_PARA='ABSCURV2', FORMULE=ABSCURV2,),
+                          _F(OPERATION='SUPPRIME', NOM_PARA='ABSC_CURV',),
+                          _F(OPERATION='RENOMME', NOM_PARA=('ABSCURV2','ABSC_CURV',),),
+                          _F(OPERATION='TRI', NOM_PARA='ABSC_CURV', ORDRE='CROISSANT'),
+                          ),
+                  )
+
+CGla15=CALC_TABLE(reuse=CGla15,
+                  TABLE=CGla15,
+                  ACTION=(
+                          _F(OPERATION='OPER', NOM_PARA='ABSCURV2', FORMULE=ABSCURV2,),
+                          _F(OPERATION='SUPPRIME', NOM_PARA='ABSC_CURV',),
+                          _F(OPERATION='RENOMME', NOM_PARA=('ABSCURV2','ABSC_CURV',),),
+                          _F(OPERATION='TRI', NOM_PARA='ABSC_CURV', ORDRE='CROISSANT'),
+                          ),
+                  )
+
+CGregu=CALC_TABLE(reuse=CGregu,
+                  TABLE=CGregu,
+                  ACTION=(
+                          _F(OPERATION='OPER', NOM_PARA='ABSCURV2', FORMULE=ABSCURV2,),
+                          _F(OPERATION='SUPPRIME', NOM_PARA='ABSC_CURV',),
+                          _F(OPERATION='RENOMME', NOM_PARA=('ABSCURV2','ABSC_CURV',),),
+                          _F(OPERATION='TRI', NOM_PARA='ABSC_CURV', ORDRE='CROISSANT'),
+                          ),
+                  )
+ 
+#IMPR_TABLE(TABLE=CGleg , FORMAT_R='E12.10')
+#IMPR_TABLE(TABLE=CGleg2, FORMAT_R='E12.10')
+#IMPR_TABLE(TABLE=CGla15, FORMAT_R='E12.10')
+#IMPR_TABLE(TABLE=CGregu, FORMAT_R='E12.10')
+
+FCGleg  = RECU_FONCTION(TABLE=CGleg , PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGleg2 = RECU_FONCTION(TABLE=CGleg2, PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGla15 = RECU_FONCTION(TABLE=CGla15, PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGregu = RECU_FONCTION(TABLE=CGregu, PARA_X='ABSC_CURV', PARA_Y='G',)
+
+# interpollation polynomiale (MS Excel) de la reference Murakami : G(s)
+def G_Murakami(x):
+    a4 =  6.283263E+02
+    a3 = -6.566832E+02
+    a2 =  2.494929E+02
+    a1 = -3.818541E+01
+    a0 =  8.632910E+00
+    return a4*x**4.+a3*x**3.+a2*x**2.+a1*x**1.+a0*x**0.
+s_deb = 0.
+s_fin = 0.354497665
+npt_s = 100
+s_Mur = [s_deb + ipt*(s_fin-s_deb)/npt_s for ipt in xrange(npt_s+1)]
+G_Mur = [G_Murakami(s) for s in s_Mur]
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=31,
+              COURBE=(
+                      _F(FONCTION=FCGleg,
+                         LEGENDE='LEGENDRE 5 / couronne 1',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(FONCTION=FCGleg2,
+                         LEGENDE='LEGENDRE 5 / couronne 2',
+                         MARQUEUR=2,
+                         COULEUR=2),
+                      _F(FONCTION=FCGla15,
+                         LEGENDE='LAGRANGE / nb_pt_fond = 15 / couronne 1',
+                         MARQUEUR=3,
+                         COULEUR=3),
+                      _F(FONCTION=FCGregu,
+                         LEGENDE='LAGRANGE_REGU / nb_pt_fond = 15 / couronne 1',
+                         MARQUEUR=4,
+                         COULEUR=4),
+                      _F(ABSCISSE=s_Mur,
+                         ORDONNEE=G_Mur,
+                         LEGENDE='Reference Murakami',
+                         MARQUEUR=0,
+                         COULEUR=5),
+                       ),
+              TITRE='sslv322b / taux de restitution d energie',
+              LEGENDE_X='s',
+              LEGENDE_Y='G',
+              );
+
+#----------------------------------------------------------------------
+#                       GRANDEURS TESTEES
+#----------------------------------------------------------------------
+
+# - le point d'abscisse curviligne s = 0.            correspond au point ou le front debouche
+# - le point d'abscisse curviligne s = 0.35451270172 correspond au point ou le front est le plus profond
+#
+#   -> on teste la valeur de G aux points s = 0. et s = 0.35451270172, la reference est 'AUTRE_ASTER' 
+#      et provient de la modelisation A (FEM)
+
+#----------------------------------------------------------------------
+# 1. LEGENDRE 5 avec la couronne 1
+#----------------------------------------------------------------------
+
+TEST_TABLE(TABLE=CGleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=8.E-3,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=9.14391046455,
+           )
+TEST_TABLE(TABLE=CGleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.35451270172,),
+           NOM_PARA='G',
+           PRECISION=4.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.36839171252,
+           )
+
+#----------------------------------------------------------------------
+# 1. LEGENDRE 5 avec la couronne 2
+#----------------------------------------------------------------------
+
+TEST_TABLE(TABLE=CGleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=6.E-3,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=9.16903677269,
+           )
+TEST_TABLE(TABLE=CGleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.35451270172,),
+           NOM_PARA='G',
+           PRECISION=4.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.3684142542,
+           )
+
+#----------------------------------------------------------------------
+# LAGRANGE avec la couronne 1 + repartition uniforme de 15 points
+#----------------------------------------------------------------------
+
+TEST_TABLE(TABLE=CGla15,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=2.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=9.0356292169,
+           )
+TEST_TABLE(TABLE=CGla15,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.35451270172,),
+           NOM_PARA='G',
+           PRECISION=4.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.33548381054,
+           )
+
+#----------------------------------------------------------------------
+# LAGRANGE_REGU avec la couronne 1 + repartition uniforme de 15 points
+#----------------------------------------------------------------------
+
+TEST_TABLE(TABLE=CGregu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=3.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=9.03106470966,
+           )
+TEST_TABLE(TABLE=CGregu,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.35451270172,),
+           NOM_PARA='G',
+           PRECISION=4.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.33913829375,
+           )
+
+FIN()

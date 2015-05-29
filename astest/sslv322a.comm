@@ -1,0 +1,460 @@
+# TITRE FISSURE LONGITUDINALE SEMI-ELLIPTIQUE DEBOUCHANT EN PEAU INTERNE D'UN TUBE SOUS PRESSION 
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# MODALISATION A : FEM (FISSURE MAILLEE)
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
+
+# demi grand axe
+a=0.25
+
+# demi-petit axe
+b=0.2
+
+#rayon interne tube
+R1=1.
+
+#rayon externe tube
+R2=2.
+
+#demi-longueur tube
+L=6
+
+eps=1.e-3
+
+# attention, les groupes sont incomplets (maillage genere sous Salome avec le blocFissure)
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+# re construction dse groupes 'inter' et 'bas'
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=(
+                             _F(NOM='new_inter',UNION=('inter','faceCircPipe0','facePeau1')),
+                             _F(NOM='new_bas'  ,UNION=('bas'  ,'faceCircPipe1','facePeau0')),
+                            ),
+              )
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              DETR_GROUP_MA=(
+                             _F(NOM='inter',),
+                             _F(NOM='bas'  ,),
+                            ),
+              CREA_GROUP_MA=(
+                             _F(NOM='inter',UNION=('new_inter',)),
+                             _F(NOM='bas'  ,UNION=('new_bas',)),
+                            ),
+              )
+
+# creation des noeuds servant a bloquer les modes rigides
+MA=DEFI_GROUP(reuse =MA,
+                 MAILLAGE=MA,
+                 CREA_GROUP_NO=(
+                                 _F(NOM='A',OPTION='ENV_SPHERE',POINT=(R2, L, 0.),PRECISION=eps,RAYON=eps),
+                                 _F(NOM='B',OPTION='ENV_SPHERE',POINT=(-1.*R2, L, 0.),PRECISION=eps,RAYON=eps),
+                                ),
+                 INFO=2)
+
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_3D=_F(GROUP_MA=('inter','FACE1','FACE2'),),
+                 )
+
+# Barsoum
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                GROUP_MA_FOND='FONDFISS'))
+
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA))
+
+MOD=AFFE_MODELE(MAILLAGE=MA,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),)
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                         NU=0.3,),)
+
+MATE=AFFE_MATERIAU(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           MATER=ACIER))
+
+
+CHAR=AFFE_CHAR_MECA(MODELE=MOD,
+                    DDL_IMPO=(
+                        _F(GROUP_NO='A',DZ=0.0,),
+                        _F(GROUP_NO='B',DZ=0.0,),
+                        _F(GROUP_MA='bas',DY=0.0,),
+                        ),
+                    LIAISON_DDL=( _F(GROUP_NO=('A','B',),
+                                      DDL=('DX','DX',),
+                                     COEF_MULT=(1,1,),
+                                     COEF_IMPO=0,),
+                        ),
+                    PRES_REP=( _F(GROUP_MA=('inter','FACE1','FACE2'),
+                                   PRES=1000000.0,),
+                        ),
+                    );
+
+RESU=MECA_STATIQUE(MODELE=MOD,
+                   CHAM_MATER=MATE,
+                   SOLVEUR=_F(METHODE='MUMPS'),
+                   EXCIT=_F(CHARGE=CHAR),
+                   )
+                  
+#IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU))
+
+#----------------------------------------------------------------------
+#                       POST-TRAITEMENT RUPTURE
+#----------------------------------------------------------------------
+
+# TAILLE DE MAILLE DANS LE TORE = RAYON DU TORE / NOMBRE DE COUCHES
+h=8e-3
+
+Fiss_01=DEFI_FOND_FISS(MAILLAGE=MA,
+                       FOND_FISS=_F(GROUP_MA='FONDFISS',),
+                       LEVRE_SUP=_F(GROUP_MA='FACE1',),
+                       LEVRE_INF=_F(GROUP_MA='FACE2',),
+                       )
+# # POUR AFFICHER LES COORDONEES DES NOEUDS DU FOND
+# ff =  aster.getvectjev("Fiss_01 .FONDFISS       ")
+# nb_pt=len(ff)/4
+# for i in range(nb_pt) :
+#    coor = [ff[4*i], ff[4*i+1],ff[4*i+2],ff[4*i+3]]
+#    print coor
+
+rinf = 2.*h
+rsup = 4.*h
+
+# 'CALC_G' LISSAGE LEGENDRE
+CGleg=CALC_G(RESULTAT=RESU,
+             OPTION='CALC_G',
+             LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                          DEGRE = 5,
+                          LISSAGE_G='LEGENDRE',),
+             THETA = _F(R_INF=rinf,
+                        R_SUP=rsup,
+                        FOND_FISS=Fiss_01,),)
+
+# 'CALC_G' LISSAGE LEGENDRE : INDEPENDANCE AU CHOIX DES COURONNES
+CGleg2=CALC_G(RESULTAT=RESU,
+              OPTION='CALC_G',
+              LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                           DEGRE = 5,
+                           LISSAGE_G='LEGENDRE',),
+              THETA = _F(R_INF=1.*h,
+                         R_SUP=5.*h,
+                         FOND_FISS=Fiss_01,),)
+
+# 'CALC_K_G' LISSAGE LEGENDRE
+CGKleg=CALC_G(RESULTAT=RESU,
+              OPTION='CALC_K_G',
+              LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
+                           DEGRE = 5,
+                           LISSAGE_G='LEGENDRE',),
+              THETA = _F(R_INF=rinf,
+                         R_SUP=rsup,
+                         FOND_FISS=Fiss_01,),)
+
+# 'CALC_G' LISSAGE LAGRANGE_NO_NO 
+CGlagno=CALC_G(RESULTAT=RESU,
+               OPTION='CALC_G',
+               LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                            LISSAGE_G='LAGRANGE_NO_NO',),
+               THETA = _F(R_INF=rinf,
+                          R_SUP=rsup,
+                          FOND_FISS=Fiss_01,
+                          ),);
+
+# 'CALC_K_G' LISSAGE LAGRANGE_NO_NO 
+CGKlano=CALC_G(RESULTAT=RESU,
+               OPTION='CALC_K_G',
+               LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                            LISSAGE_G='LAGRANGE_NO_NO',),
+               THETA = _F(R_INF=rinf,
+                          R_SUP=rsup,
+                          FOND_FISS=Fiss_01,
+                         ),);
+
+# 'CALC_G' LISSAGE LAGRANGE 
+CGlag=CALC_G(RESULTAT=RESU,
+             OPTION='CALC_G',
+             LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                          LISSAGE_G='LAGRANGE',),
+             THETA = _F(R_INF=rinf,
+                        R_SUP=rsup,
+                        FOND_FISS=Fiss_01,
+                        ),);
+
+# 'CALC_K_G' LISSAGE LAGRANGE 
+CGKlag=CALC_G(RESULTAT=RESU,
+              OPTION='CALC_K_G',
+              LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
+                           LISSAGE_G='LAGRANGE',),
+              THETA = _F(R_INF=rinf,
+                         R_SUP=rsup,
+                         FOND_FISS=Fiss_01,
+                         ),);
+
+#----------------------------------------------------------------------
+#               TRACE DES COURBES G EN FONCTION DE ABS_CURV
+#----------------------------------------------------------------------
+
+#IMPR_TABLE(TABLE=CGleg)
+#IMPR_TABLE(TABLE=CGleg2)
+#IMPR_TABLE(TABLE=CGKleg)
+#IMPR_TABLE(TABLE=CGlagno)
+#IMPR_TABLE(TABLE=CGKlano)
+#IMPR_TABLE(TABLE=CGlag)
+#IMPR_TABLE(TABLE=CGKlag)
+
+FCGleg   = RECU_FONCTION(TABLE=CGleg  , PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGleg2  = RECU_FONCTION(TABLE=CGleg2 , PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGKleg  = RECU_FONCTION(TABLE=CGKleg , PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGlagno = RECU_FONCTION(TABLE=CGlagno, PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGKlano = RECU_FONCTION(TABLE=CGKlano, PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGlag   = RECU_FONCTION(TABLE=CGlag  , PARA_X='ABSC_CURV', PARA_Y='G',)
+FCGKlag  = RECU_FONCTION(TABLE=CGKlag , PARA_X='ABSC_CURV', PARA_Y='G',)
+
+# interpollation polynomiale (MS Excel) de la reference Murakami : G(s)
+def G_Murakami(x):
+    a4 =  6.283263E+02
+    a3 = -6.566832E+02
+    a2 =  2.494929E+02
+    a1 = -3.818541E+01
+    a0 =  8.632910E+00
+    return a4*x**4.+a3*x**3.+a2*x**2.+a1*x**1.+a0*x**0.
+s_deb = 0.
+s_fin = 0.354497665
+npt_s = 100
+s_Mur = [s_deb + ipt*(s_fin-s_deb)/npt_s for ipt in xrange(npt_s+1)]
+G_Mur = [G_Murakami(s) for s in s_Mur]
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=31,
+              COURBE=(
+                      _F(FONCTION=FCGleg,
+                         LEGENDE='CALC_G / LEGENDRE 5 / couronne 1',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(FONCTION=FCGleg2,
+                         LEGENDE='CALC_G / LEGENDRE 5 / couronne 2',
+                         MARQUEUR=2,
+                         COULEUR=2),
+                      _F(FONCTION=FCGKleg,
+                         LEGENDE='CALC_K_G / LEGENDRE 5 / couronne 1',
+                         MARQUEUR=3,
+                         COULEUR=3),
+                      _F(FONCTION=FCGlagno,
+                         LEGENDE='CALC_G / LAGRANGE_NO_NO / couronne 1',
+                         MARQUEUR=4,
+                         COULEUR=4),
+                      _F(FONCTION=FCGKlano,
+                         LEGENDE='CALC_K_G / LAGRANGE_NO_NO / couronne 1',
+                         MARQUEUR=5,
+                         COULEUR=5),
+                      _F(FONCTION=FCGlag,
+                         LEGENDE='CALC_G / LAGRANGE / couronne 1',
+                         MARQUEUR=6,
+                         COULEUR=6),
+                      _F(FONCTION=FCGKlag,
+                         LEGENDE='CALC_K_G / LAGRANGE / couronne 1',
+                         MARQUEUR=7,
+                         COULEUR=7),
+                      _F(ABSCISSE=s_Mur,
+                         ORDONNEE=G_Mur,
+                         LEGENDE='Reference Murakami',
+                         MARQUEUR=0,
+                         COULEUR=8),
+                       ),
+              TITRE='sslv322a / taux de restitution d energie',
+              LEGENDE_X='s',
+              LEGENDE_Y='G',
+              );
+
+
+#----------------------------------------------------------------------
+#                       GRANDEURS TESTEES
+#----------------------------------------------------------------------
+
+# - le point d'abscisse curviligne s = 0.          correspond au point ou le front debouche
+# - le point d'abscisse curviligne s = 0.354497665 correspond au point ou le front est le plus profond
+#
+#   -> on teste la valeur de G aux points s = 0. et s = 0.354497665
+
+#----------------------------------------------------------------------
+# 1. LEGENDRE 5 FEM avec la couronne 1 est teste uniquement en non regression car ce sera la valeur 
+#    de reference 'AUTRE_ASTER' pour tous les autres TEST_TABLE de cette modelisation (A) et des 
+#    autres modelisations de ce cas-test
+#----------------------------------------------------------------------
+
+TEST_TABLE(TABLE=CGleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           VALE_CALC=9.21683395221,
+           )
+TEST_TABLE(TABLE=CGleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='G',
+           VALE_CALC=7.61774576541,
+           )
+
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           VALE_CALC=9.21683395221,
+           )
+TEST_TABLE(TABLE=CGKleg,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='G',
+           VALE_CALC=7.61774576541,
+           )
+
+#----------------------------------------------------------------------
+# 2. LEGENDRE 5 : independance au choix des couronnes
+#----------------------------------------------------------------------
+
+TEST_TABLE(TABLE=CGleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=2.E-4,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=9.21776645806,
+           )
+TEST_TABLE(TABLE=CGleg2,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='G',
+           PRECISION=2.E-4,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.61657902756,
+           )
+
+#----------------------------------------------------------------------
+# 3. LAGRANGE_NO_NO avec la couronne 1
+#----------------------------------------------------------------------
+
+# rq : LAGRANGE_NO_NO est mauvais au bord c'est pourqoi les PRECISION
+#      sont elevees
+
+TEST_TABLE(TABLE=CGlagno,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=1.3E-1,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=8.04320597764,
+           )
+TEST_TABLE(TABLE=CGlagno,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='G',
+           PRECISION=3.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.43595734928,
+           )
+
+TEST_TABLE(TABLE=CGKlano,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=5.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=9.60693844043,
+           )
+TEST_TABLE(TABLE=CGKlano,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='G',
+           PRECISION=3.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.7847371844,
+           )
+
+#----------------------------------------------------------------------
+# 4. LAGRANGE avec la couronne 1
+#----------------------------------------------------------------------
+
+# rq : LAGRANGE est mauvais au bord c'est pourqoi les PRECISION
+#      sont elevees
+
+TEST_TABLE(TABLE=CGlag,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=2.1E-1,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=7.31114030771,
+           )
+TEST_TABLE(TABLE=CGlag,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='G',
+           PRECISION=6.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.23627747521,
+           )
+
+TEST_TABLE(TABLE=CGKlag,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     CRITERE='ABSOLU',
+                     PRECISION=1.E-11,
+                     VALE=0.0,),
+           NOM_PARA='G',
+           PRECISION=4.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=9.21683395221,
+           VALE_CALC=8.91600118292,
+           )
+TEST_TABLE(TABLE=CGKlag,
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                     VALE=0.354497665,),
+           NOM_PARA='G',
+           PRECISION=2.E-2,
+           REFERENCE='AUTRE_ASTER',
+           VALE_REFE=7.61774576541,
+           VALE_CALC=7.48019879988,
+           )
+
+FIN()
