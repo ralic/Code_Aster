@@ -51,7 +51,7 @@ subroutine op0093()
 #include "asterfort/wkvect.h"
     integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, nbmodd
     integer :: nbmost, lddld, i, lmodd, nbmodf, nbfona, lddlf, lmodf, nbmoad
-    integer :: nbmoda, nbmoin, nbmodi, massfa
+    integer :: nbmoda, nbmoin, nbmodi, massfa, jrefa
     character(len=8) :: resu, nomma
     character(len=14) :: nume
     character(len=16) :: k16bid, concep
@@ -124,7 +124,9 @@ subroutine op0093()
     call mtcopy(raide, raidfa, iret)
     call mtdscr(raidfa)
     call jeveuo(raidfa(1:19)//'.&INT', 'E', lmatr)
-    call preres(solveu, 'V', iret, matpre, raidfa,&
+    call jeveuo(raidfa(1:19)//'.REFA', 'E', jrefa)
+    zk24(jrefa-1+7)=solveu
+    call preres(' ', 'V', iret, matpre, raidfa,&
                 ibid, -9999)
     if (iret .eq. 2) then
         valk = raide
