@@ -4,6 +4,9 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
                   solveu)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/jelira.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/resoud.h"
 !
@@ -59,7 +62,8 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
     real(kind=8) :: zero, sr, si
     integer :: i
     complex(kind=8) :: cbid
-    character(len=1) :: kbid
+    character(len=1) :: kbid, rouc
+    character(len=14) :: nu
     character(len=19) :: k19bid, matass, chcine, criter
     integer :: iret
     cbid = dcmplx(0.d0, 0.d0)
@@ -75,12 +79,9 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
     chcine=' '
     criter=' '
     k19bid=' '
-    call mrmult('ZERO', lamor, yh, u1, 1,&
-                .false._1)
-    call mrmult('ZERO', lmasse, yb, u2, 1,&
-                .false._1)
-    call mrmult('ZERO', lmasse, yh, u3, 1,&
-                .false._1)
+    call mrmult('ZERO', lamor, yh, u1, 1, .false._1)
+    call mrmult('ZERO', lmasse, yb, u2, 1, .false._1)
+    call mrmult('ZERO', lmasse, yh, u3, 1, .false._1)
 !-RM-DEB
 !     LA BOUCLE 5 REALISE LE PRODUIT PAR MASSE*INV(MASSE_REG)*MASSR
 !     OR CETTE MATRICE EST EGALE A MASSE
@@ -90,7 +91,9 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
         u2(i) = u2(i)*lbloq(i)
     end do
 !-RM-FIN
-    if (si .ne. zero) then
+    call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=nu)
+    call jelira(matass//'.VALM', 'TYPE', cval=rouc)
+    if (rouc.eq.'C') then
         do i = 1, n, 1
             v(i) = dcmplx(u1(i)) + sigma*dcmplx(u3(i)) + dcmplx(u2(i))
         end do
@@ -108,7 +111,7 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
                 zb(i) = - dimag(sigma*v(i))*lbloq(i)
             end do
         endif
-    else
+    else if ((si .eq. zero).and.(rouc.eq.'R')) then
         do i = 1, n, 1
             u1(i) = u1(i) + sr*u3(i) + u2(i)
         end do
@@ -119,5 +122,8 @@ subroutine wp2ay1(appr, lmatra, lmasse, lamor, sigma,&
             zh(i) = -u1(i)
             zb(i) = (yh(i) - sr*u1(i))*lbloq(i)
         end do
+    else
+! Cas non prevu, cf wpfopr/wpsorn
+        ASSERT(.false.)
     endif
 end subroutine

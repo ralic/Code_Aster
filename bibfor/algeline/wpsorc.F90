@@ -131,7 +131,7 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
 ! POUR LE FONCTIONNEMENT GLOBAL
     integer :: i, j
     integer :: vali(11)
-    integer :: au1, au2, au3, au5
+    integer :: au1, au2, au3
 !
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14)
@@ -187,8 +187,6 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect,&
     call wkvect('&&WPSORC.VECTEUR.AUX.U1R', 'V V C', nbeq, au1)
     call wkvect('&&WPSORC.VECTEUR.AUX.U2R', 'V V C', nbeq, au2)
     call wkvect('&&WPSORC.VECTEUR.AUX.U3R', 'V V C', nbeq, au3)
-    call wkvect('&&WPSORC.VECTEUR.AUX.U5C', 'V V C', 2*nbeq, au5)
-!      CALL WKVECT('&&WPSORC.VECTEUR.AUX.VC ','V V C',NBEQ,AV   )
 !******************************************************************
  20 continue
 !

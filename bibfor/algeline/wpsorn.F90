@@ -127,7 +127,7 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
 ! POUR LE FONCTIONNEMENT GLOBAL
     integer :: i, j
     integer :: vali(11)
-    integer :: au1, au2, au3, au5, av
+    integer :: au1, au2, au3, av
 !
 ! POUR ARPACK
     integer :: ido, info, ishfts, mode, iparam(11), ipntr(14)
@@ -185,7 +185,6 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq,&
     call wkvect('&&WPSORN.VECTEUR.AUX.U1R', 'V V R', nbeq, au1)
     call wkvect('&&WPSORN.VECTEUR.AUX.U2R', 'V V R', nbeq, au2)
     call wkvect('&&WPSORN.VECTEUR.AUX.U3R', 'V V R', nbeq, au3)
-    call wkvect('&&WPSORN.VECTEUR.AUX.U5C', 'V V C', 2*nbeq, au5)
     call wkvect('&&WPSORN.VECTEUR.AUX.VC ', 'V V C', nbeq, av)
 !******************************************************************
  20 continue
