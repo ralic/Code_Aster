@@ -21,6 +21,8 @@
 
 # p=1.0E6, E1=1.0E9, E2=1.0E9, nu1=0.2, nu2=0.2, R1 = 1.0, R2 = 0.6, R3 = 0.2
 
+import math
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 PRE_GMSH();
@@ -193,6 +195,44 @@ RESU2 =  STAT_NON_LINE(MODELE      = MO,
                                         ),
                        ARCHIVAGE   = _F(CHAM_EXCLU = 'VARI_ELGA',),
                        INFO=1,);
+
+# calcul de l'erreur en termes de norme L2 de la pressions de contact
+
+PRES=FORMULE(NOM_PARA=('X','Y'),VALE='-pres_cont*EXP(0.1)')
+
+Ucal=CREA_CHAMP(OPERATION='EXTR',
+                TYPE_CHAM='NOEU_DEPL_R',
+                RESULTAT=RESU1,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1)
+
+tabL2=POST_ERREUR(OPTION='LAGR_RELA',
+                  CHAM_GD=Ucal,
+                  MODELE=MO,
+                  GROUP_MA='S2R2',
+                  LAGS_C=PRES)
+
+IMPR_TABLE(TABLE=tabL2)
+
+print "I=", pres_cont*EXP(0.1)*sqrt(2.*math.pi*R2)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='ANALYTIQUE',
+           VALE_CALC=179687.767294,
+           VALE_REFE=179780.177088,
+           NOM_PARA='REFERENCE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
+
+TEST_TABLE(CRITERE='RELATIF',
+           VALE_CALC=0.00695124027566,
+           NOM_PARA='ERREUR RELATIVE',
+           FILTRE=_F(NOM_PARA='GROUP_MA',
+                     VALE_K='TOTAL'),
+           TABLE=tabL2,
+           );
 
 #+----------------------------------------+
 #|          tests de validation           |
