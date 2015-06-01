@@ -178,10 +178,6 @@ OPTION__
                                 E3NEUTI  PLONGCO  N1NEUT_R PLST     E14NEUTR PPINTER  E1NEUTR  PSEUIL   
                                 STANO_I  PSTANO   
                               OUT__  MVECTUR  PVECTUR
-    CHAR_MECA_PESA_R 441  IN__  E36NEUI  PCNSETO  NGEOMER  PGEOMER  E6NEUTI  PHEAVTO  E10NEUTI  PLONCHA  
-                                N1NEUT_R PLSN     N1NEUT_R PLST     CMATERC  PMATERC  CPESANR  PPESANR  
-                                E6NEUTR  PPINTTO  STANO_I  PSTANO   ZVARCPG  PVARCPR  
-                              OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F  37  IN__  E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   NGEOMER  PGEOMER  
                                 E3NEUTI  PLONGCO  N1NEUT_R PLST     E14NEUTR PPINTER  CPRESSF  PPRESSF  
                                 STANO_I  PSTANO   CTEMPSR  PTEMPSR  N1NEUT_R PLSN
