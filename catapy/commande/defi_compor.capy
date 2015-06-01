@@ -52,7 +52,7 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
         ),
 #
         b_ecp_cfc = BLOC(condition="ECOULEMENT=='MONO_DD_FAT'",
-            FAMI_SYST_GLIS = SIMP(statut='f', typ='TXM', max=1, into=('OCTAEDRIQUE','UTILISATEUR',), defaut=('OCTAEDRIQUE',),),
+            FAMI_SYST_GLIS = SIMP(statut='f', typ='TXM', max=1, into=('OCTAEDRIQUE',), defaut=('OCTAEDRIQUE',),),
         ),
 #
         b_dd_cfc = BLOC(condition="ECOULEMENT=='MONO_DD_CFC' or ECOULEMENT=='MONO_DD_CFC_IRRA'",
