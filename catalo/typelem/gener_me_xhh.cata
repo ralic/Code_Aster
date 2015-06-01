@@ -161,7 +161,7 @@ MODE_LOCAL__
     E512NEUI = N512_I   ELEM__         (X[512]   )
     E220NEUR = N480_R   ELEM__         (X[220]   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
-   
+    E1NEUTK  = NEUT_K8  ELEM__         (Z1       )   
    
     ECONTPG  = SIEF_R   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
@@ -332,7 +332,7 @@ OPTION__
     SIGM_ELGA        546  IN__  ECONTPG  PSIEFR   
                           OUT__ ECONTPC  PSIGMC   ECONTPG  PSIGMR   
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N3NEUT_R PGRADLN  N3NEUT_R PGRADLT  N1NEUT_R PLSN     
-                                N1NEUT_R PLST     E10NEUTI  PLONCHA  E512NEUI PCNSETO  
+                                N1NEUT_R PLST     E10NEUTI PLONCHA  E512NEUI PCNSETO  E1NEUTK  PDECOU
                                 E128NEUI PHEAVTO  E132NEUR PPINTTO  E220NEUR PAINTTO
                           OUT__ E90NEUTR PAINTER  E162NEUR PBASECO  E54NEUTI PCFACE   E54NEUTR PGESCLA  
                                 E54NEUTR PGESCLO  E54NEUTR PGMAITR  E3NEUTI  PLONGCO  E54NEUTR PPINTER  

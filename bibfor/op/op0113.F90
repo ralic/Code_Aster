@@ -63,20 +63,20 @@ subroutine op0113()
 #include "asterfort/xverm2.h"
 #include "asterfort/xvermo.h"
 !
-    integer :: ibid, iel, ima, nmoth
+    integer :: iret, iel, ima, nmoth
     integer :: i, j2
     integer :: jmofis
     integer :: nbma, nelt
     integer :: nb1
     integer :: nfiss, jnfis
     integer :: ndim
-    character(len=16) :: motfac, k16bid, line_quad
+    character(len=16) :: motfac, k16bid, line_quad, face
     character(len=19) :: ligr1, ligr2
     character(len=24) :: liel1, liel2
     character(len=24) :: mail2
     character(len=24) :: trav
     integer :: jmail2, jtab, jxc
-    character(len=8) :: modelx, mod1, modthx, noma, k8cont, k8condi
+    character(len=8) :: modelx, mod1, modthx, noma, k8cont, k8condi, decou
     aster_logical :: linter
     character(len=8), pointer :: lgrf1(:) => null()
     character(len=8), pointer :: lgrf2(:) => null()
@@ -96,7 +96,7 @@ subroutine op0113()
 !
 ! --- NOM DU MODELE INITIAL
 !
-    call getvid(motfac, 'MODELE_IN', iocc=1, scal=mod1, nbret=ibid)
+    call getvid(motfac, 'MODELE_IN', iocc=1, scal=mod1, nbret=iret)
     ligr1 = mod1//'.MODELE'
     liel1 = ligr1//'.LIEL'
 !
@@ -134,7 +134,7 @@ subroutine op0113()
 ! --- RECUPERER LES FISSURES ET REMPLISSAGE DE MODELX//'.FISS'
 !
     call getvid(motfac, 'FISSURE', iocc=1, nbval=nfiss, vect=zk8(jmofis),&
-                nbret=ibid)
+                nbret=iret)
 !
 !     VERIFICATION DE LA COHERENCE DES MOT-CLES FISSURE ET MODELE_IN
 !     (COHERENCE DES MAILLAGES SOUS-JACENTS AUX FISSURES ET MODELE)
@@ -146,7 +146,7 @@ subroutine op0113()
 !
 ! --- CONTACT ?
 !
-    call getvtx(motfac, 'CONTACT', iocc=1, scal=k8cont, nbret=ibid)
+    call getvtx(motfac, 'CONTACT', iocc=1, scal=k8cont, nbret=iret)
     call wkvect(modelx//'.XFEM_CONT', 'G V I', 1, jxc)
     if (k8cont .eq. 'SANS') then
         zi(jxc) = 0
@@ -163,6 +163,13 @@ subroutine op0113()
         endif
     else
         ASSERT(.false.)
+    endif
+!
+    call getvtx(motfac, 'DECOUPE_FACETTE', iocc=1, scal=face, nbret=iret)
+    if (iret.eq.0) then
+       decou=' '
+    else
+       decou = face(1:8)
     endif
 !
 ! --- CREATION DU TABLEAU DE TRAVAIL
@@ -256,9 +263,9 @@ subroutine op0113()
 !         ET VERIFICATION DES CRITERES DE CONDITIONNEMENT
 !-----------------------------------------------------------------------
 !
-    call getvtx(motfac, 'PRETRAITEMENTS', iocc=1, scal=k8condi, nbret=ibid)
+    call getvtx(motfac, 'PRETRAITEMENTS', iocc=1, scal=k8condi, nbret=iret)
 !
-    call xcodec(noma, modelx, k8condi, linter)
+    call xcodec(noma, modelx, k8condi, linter, decou)
 !
 ! --- MENAGE
 !

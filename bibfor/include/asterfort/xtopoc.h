@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xtopoc(modele)
+    subroutine xtopoc(modele, decou)
         character(len=8) :: modele
+        character(len=8) :: decou
     end subroutine xtopoc
 end interface

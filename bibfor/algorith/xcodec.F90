@@ -1,4 +1,4 @@
-subroutine xcodec(noma, modelx, k8condi, linter)
+subroutine xcodec(noma, modelx, k8condi, linter, decou)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ subroutine xcodec(noma, modelx, k8condi, linter)
 #include "asterfort/xtopoc.h"
 #include "asterfort/xtopoh.h"
 #include "asterfort/xtopoi.h"
-    character(len=8) :: noma, modelx, k8condi
+    character(len=8) :: noma, modelx, k8condi, decou
     character(len=19) :: ligre1, maxfem
     integer :: jcond
     aster_logical :: linter
@@ -99,7 +99,7 @@ subroutine xcodec(noma, modelx, k8condi, linter)
 !
 ! --- CALCUL DE LA TOPOLOGIE DES FACETTES DE CONTACT
 !
-    call xtopoc(modelx)
+    call xtopoc(modelx, decou)
 !
 ! --- REDEFINITION DES FONCTIONS HEAVISIDE PAR NOEUD
 !

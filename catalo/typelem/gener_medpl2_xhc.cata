@@ -174,7 +174,7 @@ MODE_LOCAL__
     CGEOMER  = GEOM_R   ELEM__         (X        Y        )
     CFORCEF  = FORC_F   ELEM__         (FX       FY       )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
-   
+
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
     XFGEOM_R = GEOM_R   ELGA__ XFEM    (X        Y        )
     ZVARIPG  = VARI_R   ELGA__ XFEM    (VARI     )
@@ -365,8 +365,9 @@ OPTION__
     SIGM_ELGA           546   IN__   ECONTPG  PSIEFR
                           OUT__ ECONTPC  PSIGMC   ECONTPG  PSIGMR   
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN     
-                                N1NEUT_R PLST     E10NEUTI  PLONCHA  E36NEUI  PCNSETO  E1NEUTI  PTYPDIS
+                                N1NEUT_R PLST     E10NEUTI PLONCHA  E36NEUI  PCNSETO  E1NEUTI  PTYPDIS
                                 E6NEUTI  PHEAVTO  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  E15NEUTR PAINTTO
+                                E1NEUTK  PDECOU
                           OUT__ E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   E14NEUTR PGESCLA  
                                 E14NEUTR PGESCLO  E14NEUTR PGMAITR  E3NEUTI  PLONGCO  E14NEUTR PPINTER  
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET 

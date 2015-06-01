@@ -6,7 +6,6 @@ subroutine te0510(option, nomte)
 #include "asterfort/dismoi.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -58,10 +57,10 @@ subroutine te0510(option, nomte)
 !......................................................................
 !
 !
-    character(len=8) :: elp, noma
-    character(len=16) :: typdis, face
+    character(len=8) :: elp, noma, face
+    character(len=16) :: typdis
     integer :: igeom, jlsn, jlst, jgrlsn, jgrlst
-    integer :: jcnset, jpint, jmilt, jnit, jaint
+    integer :: jcnset, jpint, jmilt, jnit, jaint, jdecou
     integer :: jout1, jout2, jout3, jout4, jout5, jout6, jout7, jphe
     integer :: iadzi, iazk24
     integer :: ninter, nface, cface(18, 6), nmaabs
@@ -110,8 +109,6 @@ subroutine te0510(option, nomte)
 !
     zxain = xxmmvd('ZXAIN')
     ASSERT(zxain.eq.zxainx)
-!     RECUPERATION DU TYPE DE FACETTES A GENERER
-    call getvtx(motfac, 'DECOUPE_FACETTE', iocc=1, scal=face, nbret=ibid)
 !
     call elref1(elp)
     call elrefe_info(elrefe=elp, fami='RIGI', ndim=ndim, nno=nnop)
@@ -128,6 +125,10 @@ subroutine te0510(option, nomte)
     call jevech('PLONCHA', 'L', jnit)
     call jevech('PHEAVTO', 'L', jphe)
     call jevech('PAINTTO', 'L', jaint)
+    call jevech('PDECOU', 'L', jdecou)
+!
+!     RECUPERATION DU TYPE DE FACETTES A GENERER
+    face=zk8(jdecou)
 !
 !   PREMIERE DETECTION TYPE DISCONTINUITE
 !   SUR LE TYPE D ELEMENT
@@ -159,7 +160,7 @@ subroutine te0510(option, nomte)
     nmaabs=zi(iadzi)
 !
     if (enr .eq. 'XH1' .or. enr .eq. 'XH2' .or. enr .eq. 'XH3' .or. enr .eq. 'XH4') then
-! --- PAS D'ELEMENTS COUPÃES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
+! --- PAS D'ELEMENTS COUPEES PLUSIEURS FOIS SANS CONTACT POUR L'INSTANT
         goto 999
     endif
 !
@@ -220,7 +221,7 @@ subroutine te0510(option, nomte)
         nptf = 0
 ! ----------------------------------------------------------------------
 !       RECHERCHE DES INTERSECTIONS ARETES-FISSURE
-!       ET DÃCOUPAGE EN FACETTES
+!       ET DECOUPAGE EN FACETTES
         do i = 1, 2*nfiss
             fisc(i)=0
         end do
@@ -252,13 +253,13 @@ subroutine te0510(option, nomte)
             endif
         end do
 !
-        if (enr(2:2) .eq. 'H' .and. face(1:15).eq.'SOUS_ELEMENTS') then
+        if (enr(2:2) .eq. 'H' .and. face(1:8).eq.'SOUS_ELE') then
             call xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter, ninter,&
                         jphe, ndim, ainter, nface, nptf, cface, &
                         igeom ,jlsn, jaint, jgrlsn, nfiss, ifiss,&
                         fisc, nfisc, ncompe, nnop)
                         nbtot = ninter
-        elseif (enr(2:2) .eq. 'T' .and. face(1:15).eq.'SOUS_ELEMENTS') then
+        elseif (enr(2:2) .eq. 'T' .and. face(1:8).eq.'SOUS_ELE') then
             call xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter, ninter,&
                         jphe, ndim, ainter, nface, nptf, cface, &
                         igeom, jlsn, jlst, jaint, jgrlsn)

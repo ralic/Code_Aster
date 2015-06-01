@@ -58,6 +58,7 @@ MODE_LOCAL__
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )
+    E1NEUTK  = NEUT_K8  ELEM__         (Z1       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     STANO_I  = N120_I   ELNO__ IDEN__  (X1       )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
@@ -107,7 +108,7 @@ OPTION__
                                 DDL_THER PTEMPER  N5NEUTI  PHEA_NO
                           OUT__ ETEMXPG  PTEMP_R
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN     
-                                N1NEUT_R PLST     E10NEUTI  PLONCHA  E36NEUI  PCNSETO
+                                N1NEUT_R PLST     E10NEUTI PLONCHA  E36NEUI  PCNSETO  E1NEUTK  PDECOU
                                 E6NEUTI  PHEAVTO  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  E15NEUTR PAINTTO
                           OUT__ E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   E14NEUTR PGESCLA  
                                 E14NEUTR PGESCLO  E14NEUTR PGMAITR  E3NEUTI  PLONGCO  E14NEUTR PPINTER  

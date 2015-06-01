@@ -131,7 +131,7 @@ MODE_LOCAL__
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA     )
-   
+    E1NEUTK  = NEUT_K8  ELEM__         (Z1       ) 
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
     N6NEUT_R = NEUT_R   ELNO__ IDEN__  (X[6]     )
@@ -297,7 +297,7 @@ OPTION__
     SIGM_ELGA        546  IN__  ECONTPG  PSIEFR   
                           OUT__ ECONTPC  PSIGMC   ECONTPG  PSIGMR   
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN     
-                                N1NEUT_R PLST     E10NEUTI  PLONCHA  E72NEUI  PCNSETO
+                                N1NEUT_R PLST     E10NEUTI PLONCHA  E72NEUI  PCNSETO  E1NEUTK  PDECOU
                                 E24NEUI  PHEAVTO  E24NEUTR PPINTTO  E22NEUTR PPMILTO  E60NEUTR PAINTTO
                           OUT__ E40NEUTR PAINTER  E32NEUTR PBASECO  E14NEUTI PCFACE   E16NEUTR PGESCLA  
                                 E16NEUTR PGESCLO  E16NEUTR PGMAITR  E3NEUTI  PLONGCO  E16NEUTR PPINTER  

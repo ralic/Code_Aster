@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2013  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,14 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine xcodec(noma, modelx, k8condi, linter, decou)
-        character(len=8) :: noma
+    subroutine xchdec(modelx, decou, chdec)
         character(len=8) :: modelx
-        character(len=8) :: k8condi
-        aster_logical :: linter
         character(len=8) :: decou
-    end subroutine xcodec
+        character(len=19) :: chdec
+    end subroutine xchdec
 end interface

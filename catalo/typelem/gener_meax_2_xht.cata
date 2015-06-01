@@ -84,7 +84,7 @@ MODE_LOCAL__
     E35NEUTR = N480_R   ELEM__         (X[35]    )
     E15NEUTR = N480_R   ELEM__         (X[15]    )
     E18NEUI  = N120_I   ELEM__         (X[18]    )
-   
+    E1NEUTK  = NEUT_K8  ELEM__         (Z1       )   
     E22NEUTR = N480_R   ELEM__         (X[22]    )
     E36NEUI  = N512_I   ELEM__         (X[36]    )
     ECODRET  = CODE_I   ELEM__         (IRET     )
@@ -297,7 +297,7 @@ OPTION__
     SISE_ELNO        289  IN__  ECONTPG  PCONTRR  E10NEUTI  PLONCHA  
                           OUT__ ECONTSE  PCONTSER 
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN     
-                                N1NEUT_R PLST     E10NEUTI  PLONCHA  E36NEUI  PCNSETO
+                                N1NEUT_R PLST     E10NEUTI  PLONCHA E36NEUI  PCNSETO  E1NEUTK  PDECOU
                                 E6NEUTI  PHEAVTO  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  E15NEUTR PAINTTO
                           OUT__ E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   E14NEUTR PGESCLA  
                                 E14NEUTR PGESCLO  E14NEUTR PGMAITR  E3NEUTI  PLONGCO  E14NEUTR PPINTER  

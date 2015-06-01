@@ -95,7 +95,6 @@ MODE_LOCAL__
     EDEFOPG  = EPSI_R   ELGA__ XFEM    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
-
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E10NEUTI = N120_I    ELEM__         (X[10]     )
@@ -116,7 +115,7 @@ MODE_LOCAL__
     ECONTPC  = SIEF_C   ELGA__ XFEM    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECONTSE  = N1920R   ELEM__         (X[1920]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-
+    E1NEUTK  = NEUT_K8  ELEM__         (Z1       )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EFACY_R  = FACY_R   ELGA__ RIGI    (DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1
                                         EPNMAX1  EPNMOY1  SIGEQ1   NBRUP1   ENDO1    DTAUM2
@@ -335,6 +334,7 @@ OPTION__
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N3NEUT_R PGRADLN  N3NEUT_R PGRADLT  N1NEUT_R PLSN
                                 N1NEUT_R PLST     E320NEUI PCNSETO  E10NEUTI  PLONCHA  E1NEUTI  PTYPDIS
                                 E32NEUTI PHEAVTO  E33NEUTR PPINTTO  E198NEUT PPMILTO  E55NEUTR PAINTTO
+                                E1NEUTK  PDECOU
                           OUT__ E170NEUT PAINTER  E306NEUT PBASECO  E90NEUTI PCFACE   E102NEUT PGESCLA
                                 E102NEUT PGESCLO  E102NEUT PGMAITR  E3NEUTI  PLONGCO  E102NEUT PPINTER
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET

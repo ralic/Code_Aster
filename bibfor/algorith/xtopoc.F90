@@ -1,4 +1,4 @@
-subroutine xtopoc(modele)
+subroutine xtopoc(modele, decou)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,6 +26,7 @@ subroutine xtopoc(modele)
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dbgcal.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
@@ -33,7 +34,8 @@ subroutine xtopoc(modele)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mecact.h"
-    character(len=8) :: modele
+#include "asterfort/xchdec.h"
+    character(len=8) :: modele, decou
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,7 +54,7 @@ subroutine xtopoc(modele)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=7, nbin=13)
+    parameter    (nbout=7, nbin=14)
     character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
     character(len=8) :: nomfis, cpar
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -66,7 +68,7 @@ subroutine xtopoc(modele)
     integer :: jcesd, jcesl, iad, i, nbma, ima
     integer :: jmofis, jnfiss, nfiss, ifiss, ityp
     character(len=16) :: typdis, memtyp
-    character(len=19) :: typenr
+    character(len=19) :: typenr, chdec
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: nbsp(:) => null()
@@ -93,6 +95,9 @@ subroutine xtopoc(modele)
 !
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
+!
+    chdec='&&XTOPOC.CHDEC'
+    call xchdec(modele, decou, chdec)
 !
 ! --- RECUPERATION DES DONNEES XFEM
 !
@@ -194,6 +199,8 @@ subroutine xtopoc(modele)
     lchin(12) = milt
     lpain(13) = 'PTYPDIS'
     lchin(13) = typenr
+    lpain(14) = 'PDECOU'
+    lchin(14) = chdec
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !
@@ -220,6 +227,8 @@ subroutine xtopoc(modele)
     call calcul('C', option, ligrel, nbin, lchin,&
                 lpain, nbout, lchout, lpaout, 'G',&
                 'OUI')
+!
+    call detrsd('CHAM_ELEM_S', chdec)
 !
     call jedema()
 end subroutine

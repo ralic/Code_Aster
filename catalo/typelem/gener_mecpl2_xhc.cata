@@ -133,7 +133,6 @@ MODE_LOCAL__
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E1NEUTI  = NEUT_I   ELEM__         (X1       )
-   
     E3NEUTI  = N120_I   ELEM__         (X[3]     )
     E6NEUTI  = N128_I   ELEM__         (X[6]     )
     E10NEUTI  = N120_I   ELEM__         (X[10]     )
@@ -370,6 +369,7 @@ OPTION__
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN     
                                 N1NEUT_R PLST     E10NEUTI  PLONCHA  E36NEUI  PCNSETO  E1NEUTI  PTYPDIS
                                 E6NEUTI  PHEAVTO  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  E15NEUTR PAINTTO
+                                E1NEUTK  PDECOU
                           OUT__ E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   E14NEUTR PGESCLA  
                                 E14NEUTR PGESCLO  E14NEUTR PGMAITR  E3NEUTI  PLONGCO  E14NEUTR PPINTER  
     TOPOSE           514  IN__  NGEOMER  PGEOMER  N1NEUT_R PLEVSET

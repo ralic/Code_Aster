@@ -101,6 +101,7 @@ MODE_LOCAL__
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     EGNEUT_F = NEUT_F   ELGA__ XFEM    (X[30]    )
     EGNEUT_R = NEUT_R   ELGA__ XFEM    (X[30]    )
+    E1NEUTK  = NEUT_K8  ELEM__         (Z1       )
     EGTHETA  = G        ELEM__         (GTHETA   )
     EKTHETA  = G        ELEM__         (GTHETA   FIC1     FIC2     K1       K2       )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
@@ -302,7 +303,7 @@ OPTION__
     SISE_ELNO        289  IN__  ECONTPG  PCONTRR  E10NEUTI  PLONCHA
                           OUT__ ECONTSE  PCONTSER
     TOPOFA           510  IN__  NGEOMER  PGEOMER  N2NEUT_R PGRADLN  N2NEUT_R PGRADLT  N1NEUT_R PLSN
-                                N1NEUT_R PLST     E10NEUTI  PLONCHA  E36NEUI  PCNSETO
+                                N1NEUT_R PLST     E10NEUTI PLONCHA  E36NEUI  PCNSETO  E1NEUTK  PDECOU
                                 E6NEUTI  PHEAVTO  E6NEUTR  PPINTTO  E22NEUTR PPMILTO  E15NEUTR PAINTTO
                           OUT__ E35NEUTR PAINTER  E28NEUTR PBASECO  E9NEUTI  PCFACE   E14NEUTR PGESCLA
                                 E14NEUTR PGESCLO  E14NEUTR PGMAITR  E3NEUTI  PLONGCO  E14NEUTR PPINTER

@@ -35,6 +35,7 @@ OPTION__
         PHEAVTO  N128_I
         PAINTTO  N480_R
         PTYPDIS  NEUT_I
+        PDECOU   NEUT_K8
    OUT__
         PPINTER  N120_R ELEM__
         PAINTER  N480_R ELEM__
