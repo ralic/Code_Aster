@@ -73,7 +73,6 @@ MATASSR1=ASSE_MATRICE(  MATR_ELEM=MELR1,   NUME_DDL=NUM1 )
 MATASSM1=ASSE_MATRICE(  MATR_ELEM=MELM1,   NUME_DDL=NUM1 )
 
 #--------------------------------------------------------------------
-#--------------------------------------------------------------------
 
 
 FREQ1=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=8,
@@ -86,48 +85,7 @@ FREQ1=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=8,
                                   ),
                  )
 
-
-FREQ1=NORM_MODE(reuse=FREQ1,   MODE=FREQ1,   NORME='TRAN' )
-
 # ---------------------------------------------------------------------
-MODE11=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ1,
-                    # FREQ: 11.7642
-                    # NUMERO_MODE: 1
-                      NUME_ORDRE=1
-                           )
-
-MODE21=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ1,
-                    # FREQ: 11.7642
-                    # NUMERO_MODE: 2
-                      NUME_ORDRE=2
-                           )
-
-MODE31=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ1,
-                    # FREQ: 105.8811
-                    # NUMERO_MODE: 3
-                      NUME_ORDRE=3
-                           )
-
-MODE41=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ1,
-                      NUME_ORDRE=4
-                           )
-
-MODE71=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ1,
-                      NUME_ORDRE=7
-                           )
-
-MODE81=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ1,
-                      NUME_ORDRE=8
-                           )
-
-# ---------------------------------------------------------------------
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -195,105 +153,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=1.E-2,),
                 ),)
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE11,
-                      VALE_CALC=-0.707158701475,
-                      VALE_REFE=-0.707,
-                      TOLE_MACHINE=1.E-3,       # ajustement pour clap0f0q
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE11,
-                      VALE_CALC=1.0,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.04,
-                      CHAM_GD=MODE21,
-                      VALE_CALC=0.706994742746,
-                      VALE_REFE=0.707,
-                      TOLE_MACHINE=1.E-3,       # ajustement pour clap0f0q
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE21,
-                      VALE_CALC=1.0,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE31,
-                      VALE_CALC=0.707106782255,
-                      VALE_REFE=0.707,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE31,
-                      VALE_CALC=1.0,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE41,
-                      VALE_CALC=-0.370147382424,
-                      VALE_REFE=-0.37,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE41,
-                      VALE_CALC=0.523467453151,
-                      VALE_REFE=0.523,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE71,
-                      VALE_CALC=0.707106783306,
-                      VALE_REFE=0.707,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE71,
-                      VALE_CALC=1.0,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE81,
-                      VALE_CALC=-0.388465784729,
-                      VALE_REFE=-0.388,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE81,
-                      VALE_CALC=0.549373590886,
-                      VALE_REFE=0.549,
-                      REFERENCE='ANALYTIQUE',),
-                   ),
-          )
 
 FIN()

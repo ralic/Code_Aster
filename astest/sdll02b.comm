@@ -75,7 +75,6 @@ MATASSM2=ASSE_MATRICE(  MATR_ELEM=MELM2,   NUME_DDL=NUM2,
                            CHAR_CINE=CH2)
 
 #--------------------------------------------------------------------
-#--------------------------------------------------------------------
 
 
 FREQ2=CALC_MODES(MATR_RIGI=MATASSR2,
@@ -89,46 +88,10 @@ FREQ2=CALC_MODES(MATR_RIGI=MATASSR2,
                  )
 
 
-FREQ2=NORM_MODE(reuse=FREQ2,   MODE=FREQ2,   NORME='TRAN' )
-
-# ---------------------------------------------------------------------
-MODE12=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
-                      NUME_ORDRE=1
-                           )
-
-MODE22=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
-                      NUME_ORDRE=2
-                           )
-
-MODE32=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
-                      NUME_ORDRE=3
-                           )
-
-MODE42=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
-                      NUME_ORDRE=4
-                           )
-
-MODE72=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
-                      NUME_ORDRE=7
-                           )
-
-MODE82=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=FREQ2,
-                      NUME_ORDRE=8
-                           )
-
-# ---------------------------------------------------------------------
-
-
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
                    RESULTAT=FREQ2,
-                   VALE_CALC=11.764183404,
+                   VALE_CALC=11.7641834045,
                    VALE_REFE=11.76,
                    REFERENCE='ANALYTIQUE',
                    CRITERE='RELATIF',
@@ -136,7 +99,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=FREQ2,
-                   VALE_CALC=11.764183438,
+                   VALE_CALC=11.7641834381,
                    VALE_REFE=11.76,
                    REFERENCE='ANALYTIQUE',
                    CRITERE='RELATIF',
@@ -176,7 +139,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=7,
                    PARA='FREQ',
                    RESULTAT=FREQ2,
-                   VALE_CALC=576.980226710,
+                   VALE_CALC=576.98022671,
                    VALE_REFE=576.44000000000005,
                    REFERENCE='ANALYTIQUE',
                    CRITERE='RELATIF',
@@ -191,153 +154,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=1.E-2,),
                 ),)
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      TOLE_MACHINE=5.e-4,   #TODO variabilite
-                      PRECISION=0.02,
-                      CHAM_GD=MODE12,
-                      VALE_CALC=-0.707108931,
-                      VALE_REFE=-0.69999999999999996,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE12,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      TOLE_MACHINE=5.e-4,   #TODO variabilite
-                      PRECISION=0.040000000000000001,
-                      CHAM_GD=MODE22,
-                      VALE_CALC=0.707102141,
-                      VALE_REFE=0.70699999999999996,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE22,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE32,
-                      VALE_CALC=0.707107144,
-                      VALE_REFE=0.70699999999999996,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE32,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE42,
-                      TOLE_MACHINE=5.E-6,       # ajustement pour clap0f0q
-                      VALE_CALC=-0.370146882,
-                      VALE_REFE=-0.37,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE42,
-                      TOLE_MACHINE=5.E-6,       # ajustement pour clap0f0q
-                      VALE_CALC=0.523468389,
-                      VALE_REFE=0.52300000000000002,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE72,
-                      VALE_CALC=0.70710679968782,
-                      VALE_REFE=0.70699999999999996,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE72,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='B',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE82,
-                      VALE_CALC=-0.388465763,
-                      VALE_REFE=-0.38800000000000001,
-                      REFERENCE='ANALYTIQUE',),
-                   _F(NOEUD='C',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE82,
-                      VALE_CALC=0.549373634,
-                      VALE_REFE=0.54900000000000004,
-                      REFERENCE='ANALYTIQUE',),
-                   ),
-          )
-
-# ---------------------------------------------------------------------
-
-FREQ2=NORM_MODE(reuse=FREQ2,   MODE=FREQ2,   NORME='EUCL_TRAN' )
-
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   PARA='MASS_GENE',
-                   RESULTAT=FREQ2,
-                   VALE_CALC=0.084511993,
-                   VALE_REFE=0.084364300000000003,
-                   REFERENCE='ANALYTIQUE',
-                   TOLE_MACHINE=1.e-4,   #TODO variabilite
-                   PRECISION=2.3999999999999998E-3,),
-                _F(NUME_ORDRE=2,
-                   PARA='MASS_GENE',
-                   RESULTAT=FREQ2,
-                   VALE_CALC=0.091503742,
-                   VALE_REFE=0.091677499999999995,
-                   REFERENCE='ANALYTIQUE',
-                   TOLE_MACHINE=1.e-4,   #TODO variabilite
-                   PRECISION=2.5000000000000001E-3,),
-                _F(NUME_ORDRE=3,
-                   PARA='RIGI_GENE',
-                   RESULTAT=FREQ2,
-                   VALE_CALC=35204.153131825),
-                _F(NUME_ORDRE=4,
-                   PARA='RIGI_GENE',
-                   RESULTAT=FREQ2,
-                   VALE_CALC=4.1597199999999997E4,),
-                _F(NUME_ORDRE=5,
-                   RESULTAT=FREQ2,
-                   NOM_CHAM='DEPL',
-                   NOEUD='C',
-                   NOM_CMP='DY',
-                   VALE_CALC=0.52043099999999998,),
-                _F(NUME_ORDRE=6,
-                   RESULTAT=FREQ2,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N6',
-                   NOM_CMP='DRZ',
-                   VALE_CALC=-6.4744200000000003,),
-                ),
-          )
-
-# ---------------------------------------------------------------------
 
 FIN()
 #

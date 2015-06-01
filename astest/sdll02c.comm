@@ -112,58 +112,11 @@ MODES=CALC_MODES(MATR_RIGI=MATRI_AS,
 
 
 #
-MODES=NORM_MODE( reuse=MODES,   MODE=MODES,
-                      NORME='TRAN'
-                    )
-
-MODE_1=CREA_CHAMP(      RESULTAT=MODES,
-                        OPERATION='EXTR',
-                         TYPE_CHAM='NOEU_DEPL_R',
-                         NOM_CHAM='DEPL',
-                       NUME_ORDRE=1
-                    )
-
-MODE_2=CREA_CHAMP(      RESULTAT=MODES,
-                        OPERATION='EXTR',
-                         TYPE_CHAM='NOEU_DEPL_R',
-                         NOM_CHAM='DEPL',
-                       NUME_ORDRE=2
-                    )
-
-MODE_3=CREA_CHAMP(      RESULTAT=MODES,
-                        OPERATION='EXTR',
-                         TYPE_CHAM='NOEU_DEPL_R',
-                         NOM_CHAM='DEPL',
-                       NUME_ORDRE=3
-                    )
-
-MODE_4=CREA_CHAMP(      RESULTAT=MODES,
-                        OPERATION='EXTR',
-                         TYPE_CHAM='NOEU_DEPL_R',
-                         NOM_CHAM='DEPL',
-                       NUME_ORDRE=4
-                    )
-
-MODE_7=CREA_CHAMP(      RESULTAT=MODES,
-                        OPERATION='EXTR',
-                         TYPE_CHAM='NOEU_DEPL_R',
-                         NOM_CHAM='DEPL',
-                       NUME_ORDRE=7
-                    )
-
-MODE_8=CREA_CHAMP(      RESULTAT=MODES,
-                        OPERATION='EXTR',
-                         TYPE_CHAM='NOEU_DEPL_R',
-                         NOM_CHAM='DEPL',
-                       NUME_ORDRE=8
-                    )
-
-#
 #---------------------------------------------------------------------
 #                      VERIFICATIONS DES RESULTATS
 #---------------------------------------------------------------------
 #
-#FREQUENCES ET MODES DE VIBRATION DE LA STRUCTURE
+#FREQUENCES DE VIBRATION DE LA STRUCTURE
 #################################################
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PARA='FREQ',
@@ -176,7 +129,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=2,
                    PARA='FREQ',
                    RESULTAT=MODES,
-                   VALE_CALC=11.804351794,
+                   VALE_CALC=11.8043517938,
                    VALE_REFE=11.76,
                    REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
@@ -200,7 +153,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=5,
                    PARA='FREQ',
                    RESULTAT=MODES,
-                   VALE_CALC=299.685294510,
+                   VALE_CALC=299.68529451,
                    VALE_REFE=294.10000000000002,
                    REFERENCE='NON_DEFINI',
                    CRITERE='RELATIF',
@@ -231,103 +184,5 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    PRECISION=0.065000000000000002,),
                 ),)
 
-TEST_RESU(CHAM_NO=(_F(NOEUD='NO2',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_1,
-                      VALE_CALC=-0.707106783,
-                      VALE_REFE=-0.70699999999999996,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO41',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_1,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO2',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_2,
-                      VALE_CALC=0.707106776,
-                      VALE_REFE=0.70699999999999996,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO41',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_2,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO2',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_3,
-                      VALE_CALC=0.707106781,
-                      VALE_REFE=0.70699999999999996,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO41',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_3,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO2',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_4,
-                      VALE_CALC=-0.372637654,
-                      VALE_REFE=-0.37,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO41',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_4,
-                      VALE_CALC=0.526989225,
-                      VALE_REFE=0.52300000000000002,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO2',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      VALE_CALC=0.707106781,
-                      CHAM_GD=MODE_7,
-                      VALE_REFE=0.70699999999999996,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO41',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.02,
-                      CHAM_GD=MODE_7,
-                      VALE_CALC=1.000000000,
-                      VALE_REFE=1.0,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO2',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.040000000000000001,
-                      CHAM_GD=MODE_8,
-                      VALE_CALC=-0.403480261,
-                      VALE_REFE=-0.38800000000000001,
-                      REFERENCE='NON_DEFINI',),
-                   _F(NOEUD='NO41',
-                      CRITERE='RELATIF',
-                      NOM_CMP='DY',
-                      PRECISION=0.040000000000000001,
-                      CHAM_GD=MODE_8,
-                      VALE_CALC=0.570607258,
-                      VALE_REFE=0.54900000000000004,
-                      REFERENCE='NON_DEFINI',),
-                   ),
-          )
 
 FIN()
