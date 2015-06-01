@@ -97,12 +97,14 @@ subroutine vpvers(eigsol, modes, checksd)
         valk(1) = matra
         valk(2) = matrc
         if (lpg) call utmess('F', 'ALGELINE5_82')
-        if (optiof .eq. 'BANDE') call utmess('F', 'ALGELINE2_66', nk=2, valk=valk)
-        if (((appr.eq.'I').or.(appr.eq.'C')) .and. (abs(freq1).lt.eps)) then
+        if (optiof(1:5) .eq. 'BANDE') call utmess('F', 'ALGELINE2_66', nk=2, valk=valk)
+        if (((appr.eq.'I').or.(appr.eq.'C')) .and.&
+            ((abs(freq1).lt.eps).or.(optiof(1:11).eq.'PLUS_PETITE'))) then
             call utmess('F', 'ALGELINE2_67')
         endif
         if (modrig(1:11) .eq. 'MODE_RIGIDE') call utmess('F', 'ALGELINE2_68', nk=2, valk=valk)
-        if ((method(1:8).eq.'SORENSEN') .and. (abs(freq1).lt.eps)) then
+        if ((method(1:8).eq.'SORENSEN') .and.&
+            ((abs(freq1).lt.eps).or.(optiof(1:11).eq.'PLUS_PETITE'))) then
             call utmess('F', 'ALGELINE2_71')
         endif
         if (method(1:6) .eq. 'JACOBI') call utmess('F', 'ALGELINE5_64', sk=matrc)
