@@ -49,6 +49,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 #include "jeveux.h"
 #include "asterfort/coesp1.h"
 #include "asterfort/coesp4.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -57,6 +58,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/permnoe.h"
 #include "asterfort/recude.h"
 #include "asterfort/spect2.h"
 #include "asterfort/spect4.h"
@@ -70,7 +72,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     integer :: nbm, nuor(nbm), vali(2)
 !
     integer :: dim, nbval, icmp
-    character(len=8) :: nomcmp, depla(3)
+    character(len=8) :: nomcmp, depla(3), maillage
     character(len=19) :: typflu, caelem
     character(len=24) :: refe, fsic, fsvi, fsvk, profvn, frhoe, nomcha, valr
     character(len=24) :: chvale
@@ -104,6 +106,7 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
     refe = base//'.REMF'
     call jeveuo(refe, 'L', irefe)
     typflu = zk8(irefe)
+    call dismoi('NOM_MAILLA', zk8(irefe+1), 'RESULTAT', repk=maillage)
 !
 ! --- 1.2.TEST DE COMPATIBILITE TYPE DE SPECTRE/CONFIGURATION ETUDIEE
 !
@@ -236,18 +239,20 @@ subroutine spect1(casint, nomu, spectr, ispect, base,&
                 do 30 ip = 1, nbp
                     zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+idep- 1)
  30             continue
+                call permnoe(maillage, zr(idefm+nbp*(im-1)), 1, nbp)
                 call jelibe(nomcha)
  40         continue
         else
             do 45 im = 1, nbm
                 write(nomcha(14:16),'(I3.3)') nuor(im)
-                call jeveuo(nomcha, 'L', icha)
+                call jeveuo(nomcha, 'L', icha)              
                 do 35 ip = 1, nbp
                     zr(idefm+nbp*(im-1)+ip-1) = zr(icha+6*(ip-1)+icmp- 1)
  35             continue
+                call permnoe(maillage, zr(idefm+nbp*(im-1)), 1, nbp)
                 call jelibe(nomcha)
  45         continue
-        endif
+        endif 
 !
         do 90 jm = imodi, imodf
             ideb = jm

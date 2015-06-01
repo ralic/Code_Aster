@@ -52,6 +52,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 #include "asterfort/dismoi.h"
 #include "asterfort/exmano.h"
 #include "asterfort/extmod.h"
+#include "asterfort/extmod_sorted.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -66,6 +67,7 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/permnoe.h"
 !
     character(len=24) :: valk(4)
 !
@@ -273,8 +275,9 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe,&
             call dismoi('NOM_MAILLA', masse, 'MATR_ASSE', repk=mailla)
             call dismoi('NB_EQUA', masse, 'MATR_ASSE', repi=neq)
 !
-            call extmod(base, numddl, nuor, nbm, vecr3,&
+            call extmod_sorted(base, numddl, nuor, nbm, vecr3,&
                         neq, lnoe, [idep], 1)
+            call permnoe(mailla, vecr3, nbm, lnoe)
 !
         endif
 !

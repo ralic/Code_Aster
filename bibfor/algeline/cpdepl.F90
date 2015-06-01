@@ -32,7 +32,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
 !
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/extmod.h"
+#include "asterfort/extmod_sorted.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
@@ -75,7 +75,7 @@ subroutine cpdepl(melflu, base, nuor, nbm)
         write(nomcha(14:16),'(I3.3)') nuor(im)
         call jeveuo(nomcha, 'E', icham)
         zi(imod) = nuor(im)
-        call extmod(base, numddl, zi(imod), 1, zr(icham),&
+        call extmod_sorted(base, numddl, zi(imod), 1, zr(icham),&
                     neq, lnoe, iddl, 6)
         call jelibe(nomcha)
     end do

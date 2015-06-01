@@ -255,55 +255,55 @@ F_FREQ=RECU_FONCTION(
                       NUME_MODE=1
                           )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.0219403445,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.02194033845,
                         VALE_PARA=0.5,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.2511728417,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.25117283546,
                         VALE_PARA=0.75,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.4059906262,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.40599061936,
                         VALE_PARA=1.0,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.3826358183,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.38263581151,
                         VALE_PARA=1.25,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.3826358349,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.38263582817,
                         VALE_PARA=1.5,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.3826358773,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.38263587053,
                         VALE_PARA=1.75,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.3826359915,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.38263598475,
                         VALE_PARA=2.0,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.3826358176,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.38263581086,
                         VALE_PARA=2.25,
                         FONCTION=F_FREQ,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=20.3826358179,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=20.38263581112,
                         VALE_PARA=2.5,
                         FONCTION=F_FREQ,
                         ),
@@ -317,62 +317,62 @@ F_AMOR=RECU_FONCTION(
                       NUME_MODE=1
                           )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0100811178,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01008111778875,
                         VALE_PARA=0.5,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0100666940,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01006669403636,
                         VALE_PARA=0.75,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.0101839121,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01018391207052,
                         VALE_PARA=1.0,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=9.5153951955E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=9.515395200039E-03,
                         VALE_PARA=1.25,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=5.3547458442E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.354745851500E-03,
                         VALE_PARA=1.5,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.5939597335E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.593959743481E-03,
                         VALE_PARA=1.75,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.00059156246116,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-5.915624481573E-04,
                         VALE_PARA=2.0,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.2018219546E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.201821938111E-03,
                         VALE_PARA=2.25,
                         FONCTION=F_AMOR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-8.2368172269E-3,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-8.236817206548E-03,
                         VALE_PARA=2.5,
                         FONCTION=F_AMOR,
                         ),
               )
 
 TEST_TABLE(
-           VALE_CALC=1.7757593299007E-06,
+           VALE_CALC=1.77575932829E-06,
            NOM_PARA='ECART',
            TABLE=DYN0_0,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -383,7 +383,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.4003794579704E-06,
+           VALE_CALC=6.40037945227E-06,
            NOM_PARA='ECART',
            TABLE=DYN0_25,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -394,7 +394,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.5773770436729E-05,
+           VALE_CALC=1.57737704239E-05,
            NOM_PARA='ECART',
            TABLE=DYN0_50,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -405,7 +405,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.3538272835292E-05,
+           VALE_CALC=3.35382728078E-05,
            NOM_PARA='ECART',
            TABLE=DYN0_75,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -416,7 +416,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.004983798439E-05,
+           VALE_CALC=8.00498378827E-05,
            NOM_PARA='ECART',
            TABLE=DYN0_100,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -427,7 +427,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.6851322923942E-4,
+           VALE_CALC=0.000168513228736,
            NOM_PARA='ECART',
            TABLE=DYN0_125,
            FILTRE=(_F(NOM_PARA='NOEUD_I',
@@ -438,7 +438,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.4034223669809E-4,
+           VALE_CALC=0.000640342435104,
            TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_150,
@@ -450,7 +450,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.8693192431264E-4,
+           VALE_CALC=0.000786932168158,
            TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_175,
@@ -462,7 +462,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=9.4626637442493E-4,
+           VALE_CALC=0.000946266667642,
            TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_200,
