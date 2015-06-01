@@ -125,6 +125,7 @@ subroutine irchor(ioccur, leresu, lresul, nchsym, nnuord,&
 !       *** N22 EST NEGATIF SI L'UTILISATEUR DONNE UNE LISTE DE NOMS
 !           (PAR DEFAUT TOUS LES CHAMPS CAR MOT-CLE FACULTATIF)
         if (abs(n21)+abs(n22) .eq. 0) n21=1
+        if ((n22.eq.0) .and. (n23.lt.0)) call utmess('F', 'PREPOST2_1')
         if (n21 .gt. 0 .and. toucha .eq. 'OUI' .and. nnrmed .eq. 0) then
 !         - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
             call jelira(leresu//'           .DESC', 'NOMUTI', nbnosy)

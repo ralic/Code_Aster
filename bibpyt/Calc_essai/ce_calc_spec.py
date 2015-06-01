@@ -27,7 +27,8 @@ import tkFont
 from Accas import _F
 import aster
 from Macro.calc_spec_ops import FonctionError
-from Cata.cata import DETRUIRE, CREA_TABLE, CALC_SPEC, RECU_FONCTION, IMPR_TABLE
+from Cata.cata import DETRUIRE, CREA_TABLE, RECU_FONCTION, IMPR_TABLE
+from Contrib.calc_spec import CALC_SPEC 
 from Calc_essai.cata_ce import InterSpectre, CreaTable, Tempo
 from Calc_essai.outils_ihm import MultiList, DispFRFDialogue, VisuSpectre
 from Utilitai.Utmess import UTMESS, MESSAGE_LOGGER
