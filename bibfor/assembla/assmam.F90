@@ -194,7 +194,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !   ELLAGR : 0 : PAS D'ELEMENT DE LAGRANGE
 !            1 : IL EXISTE DES ELEMENTS DE LAGRANGE
     ellagr=0
-!   KAMPIC : 'OUI' -> LA MATR_ASSE EST 'MPI_COMPLET'
+!   kampic : 'OUI' -> la matr_asse est 'MPI_COMPLET'
     kampic='OUI'
 !
 !
@@ -490,13 +490,20 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
             if (ier .eq. 0) goto 70
 !
 !
-!                   -- CALCUL DE KAMPIC :
+!           -- calcul de kampic :
             call dismoi('MPI_COMPLET', resu, 'RESUELEM', repk=kempic)
             if (kempic .eq. 'NON') then
                 ASSERT(ldist)
                 kampic='NON'
             else
-                ASSERT(.not.ldist)
+                if (ldist) then
+!                   -- Si la matrice est distribuee, les resuelem ne sont pas MPI_COMPLET
+!                      => un ASSERT devrait suffire.
+!                      Mais cette situation semble pouvoir se produire (issue23778).
+!                      En attendant la correction de issue18990, on emet un message d'erreur
+!                      pour tenter d'aider l'utilisateur :
+                       call utmess('F', 'ASSEMBLA_6')
+                endif
             endif
 !
 !
