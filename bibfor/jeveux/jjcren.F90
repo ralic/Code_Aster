@@ -15,6 +15,9 @@ subroutine jjcren(nomlu, icre, iret)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+!
+! In case of failure in this subroutine, check the string `nomlu`.
+!
     implicit none
 #include "asterf_types.h"
 #include "jeveux_private.h"

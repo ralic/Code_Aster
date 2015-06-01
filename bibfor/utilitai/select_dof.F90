@@ -79,7 +79,7 @@ implicit none
 ! In  nume_ddl      : name of numbering (NUME_DDL)
 ! In  chamno        : name of nodal field (CHAMNO)
 ! In  nb_node       : number of nodes
-! In  list_node     : list of nodes (absolute index in mesh) 
+! In  list_node     : list of nodes (absolute index in mesh)
 ! In  nb_cmp        : number of components
 ! In  list_cmp      : list of components (name)
 !
@@ -91,6 +91,7 @@ implicit none
     integer :: i_ligr_mesh
     character(len=8) :: name_cmp, mesh
     character(len=19) :: prof_chno, nume_equl, prof_gene
+    character(len=14) :: nume_ddl
     integer :: iexi
     logical :: l_matr_dist, l_prof_gene
     integer :: node_nume, idx_gd, length_prno
@@ -106,6 +107,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     prof_chno   = ' '
+    nume_ddl = ' '
     l_matr_dist = .false.
 !
 ! - Check output parameters
@@ -114,7 +116,7 @@ implicit none
     ASSERT(EXCLUS2(tabl_equa, list_equa))
     ASSERT(EXCLUS2(list_equa, list_idx_dof))
 !
-! - Check input parameters 
+! - Check input parameters
 !
     if (present(list_idx_dof)) then
         ASSERT(present(nb_nodez))
@@ -125,8 +127,9 @@ implicit none
 ! - Get name prof_chno
 !
     if (present(nume_ddlz)) then
+        nume_ddl = nume_ddlz
         ASSERT(.not.present(chamnoz))
-        call dismoi('PROF_CHNO', nume_ddlz, 'NUME_DDL', repk=prof_chno)
+        call dismoi('PROF_CHNO', nume_ddl, 'NUME_DDL', repk=prof_chno)
     elseif (present(chamnoz)) then
         ASSERT(.not.present(nume_ddlz))
         call dismoi('PROF_CHNO', chamnoz  , 'CHAM_NO', repk=prof_chno)
@@ -137,9 +140,9 @@ implicit none
 ! - Check if nume_ddl is correct (Distributed matrix)
 !
     if (present(nume_ddlz)) then
-        call jeexin(nume_ddlz(1:14)//'.NSLV', iexi)
+        call jeexin(nume_ddl//'.NSLV', iexi)
         if (iexi.gt.0) then
-            nume_equl   = nume_ddlz//'.NUML'
+            nume_equl   = nume_ddl//'.NUML'
             call jeexin(nume_equl(1:19)//'.NUGL', iexi)
             l_matr_dist = iexi.ne.0
             if (l_matr_dist) then
@@ -153,7 +156,7 @@ implicit none
     idx_gd = 0
     nb_ec  = 0
     if (present(nume_ddlz)) then
-        call dismoi('NUM_GD_SI', nume_ddlz, 'NUME_DDL', repi=idx_gd)
+        call dismoi('NUM_GD_SI', nume_ddl, 'NUME_DDL', repi=idx_gd)
     elseif (present(chamnoz)) then
         call dismoi('NUM_GD'   , chamnoz  , 'CHAM_NO' , repi=idx_gd)
     else
@@ -199,7 +202,7 @@ implicit none
 !
     mesh = ' '
     if (present(nume_ddlz)) then
-        call dismoi('NOM_MAILLA', nume_ddlz, 'NUME_DDL', repk=mesh)
+        call dismoi('NOM_MAILLA', nume_ddl, 'NUME_DDL', repk=mesh)
     elseif (present(chamnoz)) then
         call dismoi('NOM_MAILLA', chamnoz  , 'CHAM_NO' , repk=mesh)
     else
@@ -262,14 +265,14 @@ implicit none
             node_nume   = node_sele(i_node)
             i_dof       = v_prno((nb_ec+2)*(node_nume-1)+1) - 1
             nb_cmp_node = v_prno((nb_ec+2)*(node_nume-1)+2)
-            desc_gran(1:10) = 0   
+            desc_gran(1:10) = 0
             if (nb_cmp_node.ne.0) then
                 do i_ec = 1, nb_ec
                     desc_gran(i_ec) = v_prno((nb_ec+2)*(node_nume-1)+2+i_ec)
                 end do
             endif
             do i_cmp_glob = 1, nb_cmp_gd
-                if (exisdg(desc_gran,i_cmp_glob)) then     
+                if (exisdg(desc_gran,i_cmp_glob)) then
                     i_dof      = i_dof + 1
                     i_cmp      = cmp_sele(i_cmp_glob)
                     if (i_cmp.ne.0) then
