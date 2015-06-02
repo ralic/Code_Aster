@@ -20,7 +20,7 @@ import math
 MPa = 1e6
 #-----------------------------------------------
 # PARAMETRES DU CALCUL
-#-----------------------------------------------  
+#-----------------------------------------------
 ## BETON
 # epaisseur de la plaque
 ep_beton = 0.15
@@ -59,14 +59,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #-----------------------------------------------
 # LECTURE DU MAILLAGE
-#-----------------------------------------------    
+#-----------------------------------------------
 MAIL=LIRE_MAILLAGE(FORMAT='MED',);
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='A',),
-                               _F(GROUP_MA='B',)
-                               ,),);
+                               _F(GROUP_MA='B',),),);
 
 MAIL=MODI_MAILLAGE(reuse =MAIL,
                    MAILLAGE=MAIL,
@@ -76,92 +75,83 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 
 #-----------------------------------------------
 # CREATION DU MODELE
-#-----------------------------------------------   
+#-----------------------------------------------
 MO=AFFE_MODELE(MAILLAGE=MAIL,
-                 INFO=1,
-                 AFFE=_F(TOUT='OUI',
-                         PHENOMENE='MECANIQUE',
-                         MODELISATION='DKTG',),);
-                         
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='DKTG',),);
+
 #-----------------------------------------------
 # DEFINTION DES MATERIAUX ET CARACTERSISTIQUES
 #-----------------------------------------------
-BETON = DEFI_MATERIAU(ELAS=_F(E=E_beton,
+BETON=DEFI_MATERIAU(ELAS=_F(E=E_beton,
                             NU=Nu_beton,
-                            RHO=Rho_beton,
-                            ),
-                      BETON_ECRO_LINE=_F(
-                                         D_SIGM_EPSI=DE_beton,
-                                         SYT=ft,
-                                         ),);
-ACIER = DEFI_MATERIAU(ELAS=_F(E=E_acier,
+                            RHO=Rho_beton,),
+                    BETON_ECRO_LINE=_F(D_SIGM_EPSI=DE_beton,
+                                       SYT=ft,),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E_acier,
                             NU=Nu_acier,
                             RHO=Rho_acier,),
-                    ECRO_LINE=_F(
-                                D_SIGM_EPSI=Dsde_acier,
-                                 SY=sy_acier,
-                                 ),);
+                    ECRO_LINE=_F(D_SIGM_EPSI=Dsde_acier,
+                                 SY=sy_acier,),);
  
-MAT_T1 = DEFI_GLRC(
-         RELATION = 'GLRC_DM',
-         BETON =_F(MATER = BETON,
-                    EPAIS = ep_beton),
-         NAPPE =_F(MATER = ACIER,
-                    OMX = section_acier ,
-                    OMY = section_acier, 
-                    RX = excentr,
-                    RY = excentr,
-                ),
-        COMPR='GAMMA',
-        GAMMA_C = gamma_c,        
-        INFO =2        
-)            
+MAT_T1=DEFI_GLRC(RELATION='GLRC_DM',
+                 BETON=_F(MATER=BETON,
+                          EPAIS=ep_beton),
+                 NAPPE=_F(MATER=ACIER,
+                          OMX=section_acier,
+                          OMY=section_acier, 
+                          RX=excentr,
+                          RY=excentr,),
+                COMPR='GAMMA',
+                GAMMA_C=gamma_c,        
+                INFO=2,);
+
 # la parametres de GLRC sont obtenus a partir de la commande DEFI_GLRC precdente, on y ajoute les parametres
 # GAMMA_C
 # ALPHA_C
 
-MAT_T=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=34017455010.1217  ,
-                            NU_M=0.169526519709666     ,
-                            E_F=39050803170.5617   ,
-                            NU_F=0.148684256599951),
-                    GLRC_DM=_F(NYT = 284655.602596095,
-                               NYC = 462878.885865470     ,
-                               MYF =8134.26013556288    ,
-                               GAMMA_T = 0.156875895604477    ,
-                               GAMMA_C=0.35  ,
-                               GAMMA_F=0.406803320715256     ,
-                               ALPHA_C =60
-                               ),
-                               );
+MAT_T=DEFI_MATERIAU(ELAS_GLRC=_F(E_M=34017455010.1217,
+                                 NU_M=0.169526519709666,
+                                 E_F=39050803170.5617,
+                                 NU_F=0.148684256599951),
+                    GLRC_DM=_F(NYT=284655.602596095,
+                               NYC=462878.885865470,
+                               MYF=8134.26013556288,
+                               GAMMA_T=0.156875895604477,
+                               GAMMA_C=0.35,
+                               GAMMA_F=0.406803320715256,
+                               ALPHA_C=60,),);
                                
 MATER=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',
                              MATER=MAT_T,),),);
-                             
+
 CAEL=AFFE_CARA_ELEM(MODELE=MO,
-                      COQUE=_F(GROUP_MA='POUTRE',
-                               EPAIS=ep_beton,
-                               ANGL_REP=(0.0,0.0,),
-                               INER_ROTA='OUI',),);
+                    COQUE=_F(GROUP_MA='POUTRE',
+                             EPAIS=ep_beton,
+                             ANGL_REP=(0.0,0.0,),
+                             INER_ROTA='OUI',),);
 
 #-----------------------------------------------
-# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS 
-#-----------------------------------------------                                 
+# DEFINTION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+#-----------------------------------------------
 CL=AFFE_CHAR_MECA(MODELE=MO,
-                       DDL_IMPO=(_F(GROUP_NO='AA',
-                                    DX=0.0,
-                                    DY=0.0,
-                                    DZ=0.0,
-                                    DRX=0.0,
-                                    DRY=0.0,
-                                    DRZ=0.0,),
-                                 _F(GROUP_MA='A',
-                                    DX=0.0,
-                                    DRY=0.0,),),);
+                  DDL_IMPO=(_F(GROUP_NO='AA',
+                               DX=0.0,
+                               DY=0.0,
+                               DZ=0.0,
+                               DRX=0.0,
+                               DRY=0.0,
+                               DRZ=0.0,),
+                            _F(GROUP_MA='A',
+                               DX=0.0,
+                               DRY=0.0,),),);
 
 CHARGE=AFFE_CHAR_MECA(MODELE=MO,
-                       FORCE_ARETE=_F(GROUP_MA='B',
-                                      FX=1000.0/0.15,),);
+                      FORCE_ARETE=_F(GROUP_MA='B',
+                                     FX=1000.0/0.15,),);
 
 t1 = 1.0
 t2 = 3.0
@@ -176,7 +166,8 @@ t10 = 19.0
 
 dt = 0.05;
 
-FOFO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+FOFO=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,
                          t1,-250.,
                          t2,55.,
                          t3,-365.0,
@@ -186,35 +177,39 @@ FOFO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                          t7,-675.0,
                          t8,368.0,
                          t9,-790.0,
-                         t10,376.0,
-                         ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
+                         t10,376.0,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
 
-LINST=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=t10,
-                                   PAS=dt,),);                       
+INST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=t10,
+                                  PAS=dt,),);
+
+LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                  LIST_INST=INST,),
+                     ECHEC=_F(ACTION='DECOUPE',
+                              SUBD_METHODE='MANUEL',),);
 
 #-----------------------------------------------
-# CALCUL DES RESULTATS POUR LE CHARGEMENT 
-#-----------------------------------------------                               
+# CALCUL DES RESULTATS POUR LE CHARGEMENT
+#-----------------------------------------------
 RESU=STAT_NON_LINE(MODELE=MO,
-                      CHAM_MATER=MATER,
-                      CARA_ELEM=CAEL,
-                      EXCIT=(_F(CHARGE=CL),
-                             _F(CHARGE=CHARGE,
-                                FONC_MULT=FOFO,),),
-                      COMPORTEMENT=_F(RELATION='GLRC_DM',
+                   CHAM_MATER=MATER,
+                   CARA_ELEM=CAEL,
+                   EXCIT=(_F(CHARGE=CL),
+                          _F(CHARGE=CHARGE,
+                             FONC_MULT=FOFO,),),
+                   COMPORTEMENT=_F(RELATION='GLRC_DM',
                                    ITER_INTE_MAXI=30,),
-                      INCREMENT=_F(LIST_INST=LINST,
-                                   ),
-                      NEWTON=_F(REAC_ITER=1,),
-                      );
+                   INCREMENT=_F(LIST_INST=LINST,),
+                   NEWTON=_F(REAC_ITER=1,),);
 
 #-----------------------------------------------
 # CALCUL DES TEST_RESU
-#-----------------------------------------------    
+#-----------------------------------------------
 # les resultats experimentaux sont donnees dans le fichier joint
 # il s'agit des points de la numerisation de la courbe de reponse du specimen: deformation (-) et force (kN)                   
-INCLUDE(UNITE = 12)                      
+INCLUDE(UNITE = 12)
 
 # on a identifie les points numerises les plus proches des pic de chaque cycle pour la comparaison avec la solution numerique
 # les deformations sont converties en deplacement par la multiplication par la longueur du speciment l= 0.7m
@@ -319,9 +314,27 @@ TEST_RESU(RESU=(_F(NOM_CMP='DX',
                      REFERENCE='SOURCE_EXTERNE',
                      VALE_CALC=(2.0309820028114E-03, ),
                      VALE_REFE=(val_exp[2*604]*0.7, ),
-                     PRECISION=0.025,),
-                  ),
-           )
-            
+                     PRECISION=0.025,),),);
+
+#CALC_CHAMP(reuse=RESU,RESULTAT=RESU,FORCE = ('FORC_NODA'));
+
+#tb_f=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
+#                RESULTAT=RESU,
+#                NOM_CHAM='FORC_NODA',
+#                GROUP_MA='B',),);
+
+#tb_db=CREA_TABLE(RESU=_F(TOUT_CMP='OUI',
+#                         RESULTAT=RESU,
+#                         NOM_CHAM='DEPL',
+#                         GROUP_NO ='BB',),);
+
+#DX=tb_db.EXTR_TABLE().values()['DX']
+#table_f = tb_f.EXTR_TABLE().values()
+#FX=[]
+#for i in range(len(table_f['DX'])/3):
+#    FX.append(table_f['DX'][i*3]+table_f['DX'][i*3+1]+table_f['DX'][i*3+2])
+
+#for i in range(len(FX)):
+#    print DX[i], FX[i]
 
 FIN()

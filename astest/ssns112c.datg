@@ -1,0 +1,97 @@
+[Project]
+project_name = ssns112c
+projectdir = /home/D47456/Bureau/DHRC/final/ssns112c
+project_description = Benmansour
+	QJ5TC
+geometry_view = 
+number_elements = 3900
+number_nodes = 6149
+type_identification = Elastic+Damage+Slidding
+
+[Geometry]
+x_size = 150.0
+y_size = 75.0
+z_size = 150.0
+d1x = 14.0
+d1y = 5.0
+d2x = 14.0
+d2y = 5.0
+h1x = 8.0
+h1y = 2.0
+h2x = 8.0
+h2y = 2.0
+
+[Material]
+s_young = 195.0
+s_poisson = 0.3
+s_y_strength = 610.0
+s_density = 7850.0
+c_type = User Defined
+c_young = 28.5
+c_poisson = 0.2
+c_density = 2200.0
+c_c_strength = 25.0
+c_c_strain = 2.25
+c_t_strength = 2.94
+p_type = User Defined
+l_type = Orthotropic TCD
+l_num = 6.0
+c_fpd = 20.0
+alpha_t_c1x = 41.033
+gamma_t_c1x = 0.1133
+alpha_t_t1x = 1.0
+gamma_t_t1x = 0.0
+alpha_t_c1y = 41.033
+gamma_t_c1y = 0.1133
+alpha_t_t1y = 1.0
+gamma_t_t1y = 0.0
+alpha_t_c1z = 41.033
+gamma_t_c1z = 0.1133
+alpha_t_t1z = 1.0
+gamma_t_t1z = 0.0
+alpha_t_c2x = 41.033
+gamma_t_c2x = 0.1133
+alpha_t_t2x = 1.0
+gamma_t_t2x = 0.0
+alpha_t_c2y = 41.033
+gamma_t_c2y = 0.1133
+alpha_t_t2y = 1.0
+gamma_t_t2y = 0.0
+alpha_t_c2z = 41.033
+gamma_t_c2z = 0.1133
+alpha_t_t2z = 1.0
+gamma_t_t2z = 0.0
+alpha_xy_c1x = 39.307
+gamma_xy_c1x = 0.1133
+alpha_xy_t1x = 1.0
+gamma_xy_t1x = -0.0439
+alpha_xy_c1y = 41.87
+gamma_xy_c1y = 0.1133
+alpha_xy_t1y = 1.0
+gamma_xy_t1y = 0.02
+alpha_xy_c1z = 41.87
+gamma_xy_c1z = 0.1133
+alpha_xy_t1z = 1.0
+gamma_xy_t1z = 0.02
+alpha_xy_c2x = 39.307
+gamma_xy_c2x = 0.1133
+alpha_xy_t2x = 1.0
+gamma_xy_t2x = -0.0439
+alpha_xy_c2y = 41.87
+gamma_xy_c2y = 0.1133
+alpha_xy_t2y = 1.0
+gamma_xy_t2y = 0.02
+alpha_xy_c2z = 41.87
+gamma_xy_c2z = 0.1133
+alpha_xy_t2z = 1.0
+gamma_xy_t2z = 0.02
+tau_crit = 5.0
+
+[Aster]
+file_comm = 
+file_mesh = ssns112c.mmed
+file_distr = 
+server_name = Aster5
+nb_max_proc = 0
+runOk = 1
+
