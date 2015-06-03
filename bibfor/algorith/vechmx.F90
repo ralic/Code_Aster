@@ -1,5 +1,5 @@
 subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
-                  nbin, lpain, lchin, lastin, vecele)
+                  nbin_maxi, lpain, lchin, lastin, vecele)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,9 +33,9 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 #include "asterfort/lisltc.h"
 #include "asterfort/lisopt.h"
 #include "asterfort/reajre.h"
-    integer :: nbin, lastin
-    character(len=8) :: lpain(nbin)
-    character(len=19) :: lchin(nbin)
+    integer :: nbin_maxi, lastin
+    character(len=8) :: lpain(nbin_maxi)
+    character(len=19) :: lchin(nbin_maxi)
     character(len=19) :: lischa
     character(len=24) :: nomlis
     integer :: ichar, nbch
@@ -57,7 +57,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 ! IN  ICHAR  : INDICE DE LA CHARGE
 ! IN  NOMLIS : LISTE DES INDEX DES CHARGES
 ! IN  NBCH   : LONGUEUR DE NOMLIS
-! IN  NBIN   : NOMBRE MAXI DE CHAMPS D'ENTREE
+! IN  NBIN_MAXI   : NOMBRE MAXI DE CHAMPS D'ENTREE
 ! IN  LPAIN  : LISTE DES PARAMETRES IN
 ! IN  LCHIN  : LISTE DES CHAMPS IN
 ! IN  LASTIN : NOMBRE EFFECTIF DE CHAMPS IN
@@ -70,7 +70,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
     character(len=8) :: lpaout(nbout)
     character(len=19) :: lchout(nbout)
 !
-    integer :: jlisci, ich, ibid
+    integer :: jlisci, ich, ibid, nbin
     integer :: iret
     integer :: indxch
     character(len=16) :: option
@@ -108,7 +108,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 !
 ! --- CALCUL
 !
-    do 70 ich = 1, nbch
+    do ich = 1, nbch
         indxch = zi(jlisci-1+ich)
         call lisopt(prefob, nomo, typech, indxch, option,&
                     parain, paraou, carte, ligcal)
@@ -117,9 +117,9 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 !
 ! ------- CARTE D'ENTREE
 !
-            lastin = lastin + 1
-            lchin(lastin) = carte
-            lpain(lastin) = parain
+            nbin = lastin + 1
+            lchin(nbin) = carte
+            lpain(nbin) = parain
 !
 ! ------- CARTE DE SORTIE
 !
@@ -127,8 +127,8 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 !
 ! ------- CALCUL
 !
-            ASSERT(lastin.le.nbin)
-            call calcul('S', option, ligcal, lastin, lchin,&
+            ASSERT(nbin.le.nbin_maxi)
+            call calcul('S', option, ligcal, nbin, lchin,&
                         lpain, nbout, lchout, lpaout, 'V',&
                         'OUI')
 !
@@ -138,7 +138,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
             ASSERT(iret.gt.0)
             call reajre(vecele, lchout(1), 'V')
         endif
-70  end do
+    end do
 !
     call jedema()
 end subroutine

@@ -57,7 +57,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 ! IN  CARELE : CARACTERISTIQUES DES POUTRES ET COQUES
 ! IN  MATE   : MATERIAU CODE
 ! IN  VARPLU : VARIABLES DE COMMANDE A L'INSTANT T+
-! IN  NBIN   : NOMBRE MAXI DE CHAMPS D'ENTREE
+! IN  nbin_maxi   : NOMBRE MAXI DE CHAMPS D'ENTREE
 ! IN  LPAIN  : LISTE DES PARAMETRES IN
 ! IN  LCHIN  : LISTE DES CHAMPS IN
 ! IN  LASTIN : NOMBRE EFFECTIF DE CHAMPS IN
@@ -65,10 +65,10 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbin
-    parameter    (nbin=42)
-    character(len=8) :: lpain(nbin)
-    character(len=19) :: lchin(nbin)
+    integer :: nbin_maxi
+    parameter    (nbin_maxi=42)
+    character(len=8) :: lpain(nbin_maxi)
+    character(len=19) :: lchin(nbin_maxi)
 !
     integer :: ichar, nbchar, lastin
     character(len=8) :: nomch0
@@ -100,7 +100,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 ! --- CHAMPS D'ENTREES STANDARDS
 !
     call vechmp(nomo, mate, carele, varplu, lxfem,&
-                partps, nbin, lpain, lchin, lastin)
+                partps, nbin_maxi, lpain, lchin, lastin)
 !
 ! --- LISTE DES INDEX DES CHARGES
 !
@@ -109,7 +109,7 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 !
 ! --- CALCUL
 !
-    do 80 ichar = 1, nbchar
+    do ichar = 1, nbchar
         call lislco(lischa, ichar, genrec)
         lneum = lisico('NEUM_MECA',genrec)
         if (lneum) then
@@ -121,9 +121,9 @@ subroutine vechms(nomo, mate, carele, varplu, lischa,&
 ! ------- BOUCLE SUR LES TOUS LES TYPES DE CHARGE PREVUS
 !
             call vechmx(nomo, lischa, ichar, nbch, nomlis,&
-                        nbin, lpain, lchin, lastin, vecele)
+                        nbin_maxi, lpain, lchin, lastin, vecele)
         endif
- 80 continue
+    end do
 !
  99 continue
 !

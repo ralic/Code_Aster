@@ -1,5 +1,5 @@
 subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
-                  partps, nbin, lpain, lchin, lastin)
+                  partps, nbin_maxi, lpain, lchin, lastin)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,9 +27,9 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/mecoor.h"
-    integer :: nbin, lastin
-    character(len=8) :: lpain(nbin)
-    character(len=19) :: lchin(nbin)
+    integer :: nbin_maxi, lastin
+    character(len=8) :: lpain(nbin_maxi)
+    character(len=19) :: lchin(nbin_maxi)
     character(len=8) :: nomo
     aster_logical :: lxfem
     real(kind=8) :: partps(3)
@@ -52,7 +52,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
 ! IN  MATE   : MATERIAU CODE
 ! IN  VARPLU : VARIABLES DE COMMANDE A L'INSTANT T+
 ! IN  LXFEM  : .TRUE. SI XFEM
-! IN  NBIN   : NOMBRE MAXI DE CHAMPS D'ENTREE
+! IN  nbin_maxi   : NOMBRE MAXI DE CHAMPS D'ENTREE
 ! OUT LPAIN  : LISTE DES PARAMETRES IN
 ! OUT LCHIN  : LISTE DES CHAMPS IN
 ! OUT LASTIN : NOMBRE EFFECTIF DE CHAMPS IN
@@ -164,7 +164,7 @@ subroutine vechmp(nomo, mate, carele, varplu, lxfem,&
     lpain(lastin) = 'PCOMPOR'
     lchin(lastin) = mate(1:8)//'.COMPOR'
 !
-    ASSERT(lastin.le.nbin)
+    ASSERT(lastin.le.nbin_maxi)
 !
     call jedema()
 end subroutine

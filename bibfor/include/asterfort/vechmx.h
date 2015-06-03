@@ -17,15 +17,15 @@
 !
 interface
     subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
-                      nbin, lpain, lchin, lastin, vecele)
-        integer :: nbin
+                      nbin_maxi, lpain, lchin, lastin, vecele)
+        integer :: nbin_maxi
         character(len=8) :: nomo
         character(len=19) :: lischa
         integer :: ichar
         integer :: nbch
         character(len=24) :: nomlis
-        character(len=8) :: lpain(nbin)
-        character(len=19) :: lchin(nbin)
+        character(len=8) :: lpain(nbin_maxi)
+        character(len=19) :: lchin(nbin_maxi)
         integer :: lastin
         character(len=19) :: vecele
     end subroutine vechmx
