@@ -103,25 +103,26 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jccid, jdiri, jvcfo, jiner
-    integer :: ifm, niv, nocc
-    integer :: neq
-    character(len=8) :: noddlm
+    integer :: jccid=0, jdiri=0, jvcfo=0, jiner=0
+    integer :: ifm=0, niv=0, nocc=0
+    integer :: neq=0
+    character(len=8) :: noddlm=' '
     aster_logical :: ldyna, lstat, lcine, lctcc
-    character(len=19) :: profch, foiner
-    character(len=19) :: commoi, depmoi
-    character(len=19) :: cndiri, cnbudi, cnvcfo, cnfext, cnvcf1, cnrefe, cnfint
-    character(len=19) :: cnfnod, cndipi, cndfdo
-    integer :: jfnod
-    integer :: ieq
-    aster_logical :: lrefe, linit, lcmp
-    real(kind=8) :: val1, val4, val5
-    real(kind=8) :: maxres
-    integer :: irela, imaxi, iresi, irefe, ichar, icomp
-    aster_logical :: lndepl, lpilo
-    character(len=16) :: nfrot, ngeom
-    character(len=24) :: sdnuco
-    integer :: jnuco
+    character(len=19) :: profch=' ', foiner=' '
+    character(len=19) :: commoi=' ', depmoi=' '
+    character(len=19) :: cndiri=' ', cnbudi=' ', cnvcfo=' ', cnfext=' '
+    character(len=19) :: cnvcf1=' ', cnrefe=' ', cnfint=' '
+    character(len=19) :: cnfnod=' ', cndipi=' ', cndfdo=' '
+    integer :: jfnod=0
+    integer :: ieq=0
+    aster_logical :: lrefe=.false._1, linit=.false._1, lcmp=.false._1
+    real(kind=8) :: val1=0.d0, val4=0.d0, val5=0.d0
+    real(kind=8) :: maxres=0.d0
+    integer :: irela=0, imaxi=0, iresi=0, irefe=0, ichar=0, icomp=0
+    aster_logical :: lndepl=.false._1, lpilo=.false._1
+    character(len=16) :: nfrot=' ', ngeom=' '
+    character(len=24) :: sdnuco=' '
+    integer :: jnuco=0
     real(kind=8), pointer :: budi(:) => null()
     real(kind=8), pointer :: dfdo(:) => null()
     real(kind=8), pointer :: dipi(:) => null()
@@ -378,7 +379,7 @@ subroutine nmresi(noma, mate, numedd, sdnume, fonact,&
                     call nmvcmx(mate, noma, comref, commoi)
                 endif
             endif
-        endif 
+        endif
     endif
 !
     call jedema()

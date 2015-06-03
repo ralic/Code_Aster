@@ -57,14 +57,13 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: lallv, lreag
-    character(len=24) :: clreac
-    integer :: jclrea
-    character(len=16) :: geonoe, k16bla
-    real(kind=8) :: geoval, r8bid
+    character(len=24) :: clreac=' '
+    character(len=16) :: geonoe=' ', k16bla=' '
+    integer :: jclrea, ctcite
+    real(kind=8) :: geoval
     aster_logical :: ctderg, cvresi
     aster_logical :: dvpfix, dvfixg
-    integer :: ctcite
+    aster_logical :: lallv, lreag
 !
 ! ----------------------------------------------------------------------
 !
@@ -84,7 +83,7 @@ subroutine cfconv(noma, sdstat, sdimpr, sderro, defico,&
 ! --- VALEURS NON AFFECTEES DANS LE TABLEAU
 !
     call nmimck(sdimpr, 'BOUC_NOEU', k16bla, .false._1)
-    call nmimcr(sdimpr, 'BOUC_VALE', r8bid, .false._1)
+    call nmimcr(sdimpr, 'BOUC_VALE', 0.d0, .false._1)
 !
 ! --- CONVERGENCE DES RESIDUS D'EQUILIBRE ?
 !

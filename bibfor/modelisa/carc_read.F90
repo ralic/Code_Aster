@@ -62,20 +62,23 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: carsiz=21
-    character(len=16) :: keywordfact
-    integer :: iocc, iret, nbocc, ndim
-    integer :: cptr_nbvarext, cptr_namevarext, cptr_fct_ldc
-    integer :: cptr_matprop, cptr_nbprop
-    character(len=16) :: algo_inte, type_matr_tang, method, post_iter, post_incr
-    real(kind=8) :: parm_theta, vale_pert_rela
-    real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha, resi_radi_rela
-    integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    real(kind=8) :: ipostiter, ipostincr
-    character(len=16) :: rela_comp, rela_comp_py, kit_comp(9)
-    character(len=16) :: rela_thmc, rela_hydr, rela_ther, rela_meca, rela_meca_py
-    aster_logical :: l_kit_thm, l_mfront, l_mfront_offi, l_umat
-    character(len=16) :: texte(3), nom_mod_mfront
-    character(len=255) :: libr_name, subr_name
+    character(len=16) :: keywordfact=' '
+    integer :: iocc=0, iret=0, nbocc=0, ndim=0
+    integer :: cptr_nbvarext=0, cptr_namevarext=0, cptr_fct_ldc=0
+    integer :: cptr_matprop=0, cptr_nbprop=0
+    character(len=16) :: algo_inte=' ', type_matr_tang=' ', method=' ', post_iter=' ', post_incr=' '
+    real(kind=8) :: parm_theta=0.d0, vale_pert_rela=0.d0
+    real(kind=8) :: resi_deborst_max=0.d0, seuil=0.d0, amplitude=0.d0, taux_retour=0.d0
+    real(kind=8) :: parm_alpha=0.d0, resi_radi_rela=0.d0
+    integer :: type_matr_t=0, iter_inte_pas=0, iter_deborst_max=0
+    real(kind=8) :: ipostiter=0.d0, ipostincr=0.d0
+    character(len=16) :: rela_comp=' ', rela_comp_py=' '
+    character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
+    character(len=16):: rela_thmc=' ', rela_hydr=' ', rela_ther=' ', rela_meca=' ', rela_meca_py=' '
+    aster_logical :: l_kit_thm=.false._1, l_mfront=.false._1
+    aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1
+    character(len=16) :: texte(3)=(/ ' ',' ',' '/), nom_mod_mfront=' '
+    character(len=255) :: libr_name=' ', subr_name=' '
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -76,12 +76,12 @@ subroutine cfmmcv(noma, modele, numedd, fonact, sddyna,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lctcd, lctcc, lnewtc
-    aster_logical :: mmcvca
-    character(len=8) :: nomo
-    character(len=16) :: k16bla
-    real(kind=8) :: r8bid
-    integer :: ntpc
+    aster_logical :: lctcd=.false._1, lctcc=.false._1, lnewtc=.false._1
+    aster_logical :: mmcvca=.false._1
+    character(len=8) :: nomo=' '
+    character(len=16) :: k16bla=' '
+    real(kind=8) :: r8bid=0.d0
+    integer :: ntpc=0
 !
 ! --------------------------------------------------------------------------------------------------
 !
