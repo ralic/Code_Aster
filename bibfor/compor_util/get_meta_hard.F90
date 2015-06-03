@@ -59,7 +59,7 @@ implicit none
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
-! In  nb_phasis    : number of phasis
+! In  nb_phasis    : total number of phasis (cold and hot)
 ! In  l_hard_line  : .true. if linear hardening
 ! In  young        : Young modulus
 ! In  l_temp       : .true. if temperature command variable is affected
@@ -86,18 +86,23 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    if (meta_type.eq.1) then
+        ASSERT(nb_phasis.eq.5) 
+    elseif (meta_type.eq.2) then
+        ASSERT(nb_phasis.eq.3)
+    else
+        ASSERT(.false.)
+    endif
+!
     if (l_hard_line) then
+        nb_res = nb_phasis
         if (meta_type.eq.1) then
-            ASSERT(nb_phasis.eq.4)
-            nb_res    = 5
             nomres(1) = 'F1_D_SIGM_EPSI'
             nomres(2) = 'F2_D_SIGM_EPSI'
             nomres(3) = 'F3_D_SIGM_EPSI'
             nomres(4) = 'F4_D_SIGM_EPSI'
             nomres(5) = 'C_D_SIGM_EPSI'
         elseif (meta_type.eq.2) then
-            ASSERT(nb_phasis.eq.2)
-            nb_res    = 3
             nomres(1) = 'F1_D_SIGM_EPSI'
             nomres(2) = 'F2_D_SIGM_EPSI'
             nomres(3) = 'C_D_SIGM_EPSI'
@@ -115,14 +120,12 @@ implicit none
         nb_vale   = 1
         keyw_fact = 'META_TRACTION'
         if (meta_type.eq.1) then
-            ASSERT(nb_phasis.eq.4)
             keyw_trac(1) = 'SIGM_F1'
             keyw_trac(2) = 'SIGM_F2'
             keyw_trac(3) = 'SIGM_F3'
             keyw_trac(4) = 'SIGM_F4'
             keyw_trac(5) = 'SIGM_C'
         elseif (meta_type.eq.2) then
-            ASSERT(nb_phasis.eq.2)
             keyw_trac(1) = 'SIGM_F1'
             keyw_trac(2) = 'SIGM_F2'
             keyw_trac(3) = 'SIGM_C'
@@ -130,7 +133,7 @@ implicit none
             ASSERT(.false.)
         endif
 
-        do i_phasis = 1, nb_phasis+1
+        do i_phasis = 1, nb_phasis
             call rctype(j_mater, nb_vale, 'TEMP', [temp], para_vale,&
                         para_type, keyw_factz = keyw_fact, keywz = keyw_trac(i_phasis))
             if ((para_type.eq.'TEMP') .and. (.not.l_temp)) then

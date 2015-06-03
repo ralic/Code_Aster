@@ -68,7 +68,7 @@ implicit none
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
-! In  nb_phasis     : number of phasis
+! In  nb_phasis     : total number of phasis (cold and hot)
 ! In  phas_prev     : previous phasis
 ! In  phas_curr     : current phasis
 ! In  zcold_curr    : sum of cold phasis
@@ -80,7 +80,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: j_vari
-    integer :: i_phasis, ksp
+    integer :: i_phasis, i_phasis_c, ksp, nb_phasis_c
     real(kind=8) :: epsp(5), r0(5)
     real(kind=8) :: kpt(4), fpt(4)
     real(kind=8) :: eta(5), n(5), unsurn(5), c(5), m(5)
@@ -89,7 +89,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    ASSERT(nb_phasis.le.4)
+    ASSERT(nb_phasis.le.5)
+    nb_phasis_c = nb_phasis-1
     trans     = 0.d0
     coef      = 1.d0
     ksp       = 1
@@ -106,13 +107,13 @@ implicit none
 ! - Cumulated plastic strain
 !
     call jevech('PVARIPR', 'L', j_vari)
-    do i_phasis = 1, nb_phasis+1
+    do i_phasis = 1, nb_phasis
         epsp(i_phasis) = zr(j_vari+lgpg*(kpg-1)-1+i_phasis)
     end do
 !
 ! - Is elastic ?
 !
-    l_elas = zr(j_vari+lgpg*(kpg-1)-1+nb_phasis+2).lt.0.5d0
+    l_elas = zr(j_vari+lgpg*(kpg-1)+nb_phasis).lt.0.5d0
 !
 ! - Characteristics of comportment law
 !
@@ -136,13 +137,13 @@ implicit none
                            c        , m)
     endif
 !
-! - Compute Sum(iphase) [kpt * fpt]
+! - Compute Sum(iphase) [kpt * fpt] on cold phasis
 !
     trans     = 0.d0
-    do i_phasis = 1, nb_phasis
-        deltaz = (phas_curr(i_phasis)-phas_prev(i_phasis))
+    do i_phasis_c = 1, nb_phasis_c
+        deltaz = (phas_curr(i_phasis_c)-phas_prev(i_phasis_c))
         if (deltaz.gt.0) then
-            trans = trans+kpt(i_phasis)*fpt(i_phasis)*deltaz
+            trans = trans+kpt(i_phasis_c)*fpt(i_phasis_c)*deltaz
         endif
     end do
 !
@@ -167,14 +168,14 @@ implicit none
 !
         rprim = 0.d0
         if (zcold_curr .gt. 0.d0) then
-            do i_phasis = 1, nb_phasis
-                rprim = rprim + phas_curr(i_phasis)*r0(i_phasis)
+            do i_phasis_c = 1, nb_phasis_c
+                rprim = rprim + phas_curr(i_phasis_c)*r0(i_phasis_c)
             end do
             rprim = rprim/zcold_curr
         else
             rprim = 0.d0
         endif
-        rprim = (1.d0-fmel)*r0(nb_phasis+1)+fmel*rprim
+        rprim = (1.d0-fmel)*r0(nb_phasis)+fmel*rprim
         coef  = 1.d0-(1.5d0*deuxmu)/(1.5d0*deuxmu+rprim)
     endif
 !

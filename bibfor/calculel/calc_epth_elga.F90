@@ -131,7 +131,7 @@ implicit none
     if (elas_type.eq.1) then
         if (rela_comp.eq.'META_LEMA_ANI') then
             call get_meta_type(meta_type, nb_phasis)
-            ASSERT(nb_phasis.eq.2)
+            ASSERT(nb_phasis.eq.3)
             call get_meta_phasis(fami     , '+' , kpg   , ksp , meta_type,&
                                  nb_phasis, phase, zcold_ = zcold, zhot_ = zhot)
             call verift(fami, kpg, ksp, '+', j_mater,&

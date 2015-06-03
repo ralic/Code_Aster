@@ -54,7 +54,7 @@ implicit none
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
-! In  nb_phasis    : number of phasis
+! In  nb_phasis    : total number of phasis (cold and hot)
 ! Out eta          : viscosity parameter - eta
 ! Out n            : viscosity parameter - n
 ! Out unsurn       : viscosity parameter - 1/n
@@ -72,27 +72,31 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    if (meta_type.eq.1) then
+        ASSERT(nb_phasis.eq.5) 
+    elseif (meta_type.eq.2) then
+        ASSERT(nb_phasis.eq.3)
+    else
+        ASSERT(.false.)
+    endif
+    nb_res = nb_phasis
 !
 ! - Name of parameters
 !
     if (meta_type.eq.1) then
-        ASSERT(nb_phasis.eq.4)
         if (present(eta)) then
             nomres(1)     = 'F1_ETA'
             nomres(2)     = 'F2_ETA'
             nomres(3)     = 'F3_ETA'
             nomres(4)     = 'F4_ETA'
             nomres(5)     = 'C_ETA'
-            nb_res        = 5
             eta(1:nb_res) = 0.d0
         endif
     elseif (meta_type.eq.2) then
-        ASSERT(nb_phasis.eq.2)
         if (present(eta)) then
             nomres(1)     = 'F1_ETA'
             nomres(2)     = 'F2_ETA'
             nomres(3)     = 'C_ETA'
-            nb_res        = 3
             eta(1:nb_res) = 0.d0
         endif
     else
@@ -113,24 +117,20 @@ implicit none
 ! - Name of parameters
 !
     if (meta_type.eq.1) then
-        ASSERT(nb_phasis.eq.4)
         if (present(n)) then
             nomres(1)        = 'F1_N'
             nomres(2)        = 'F2_N'
             nomres(3)        = 'F3_N'
             nomres(4)        = 'F4_N'
             nomres(5)        = 'C_N'
-            nb_res           = 5
             n(1:nb_res)      = 20.d0
             unsurn(1:nb_res) = 1.d0
         endif
     elseif (meta_type.eq.2) then
-        ASSERT(nb_phasis.eq.2)
         if (present(n)) then
             nomres(1)        = 'F1_N'
             nomres(2)        = 'F2_N'
             nomres(3)        = 'C_N'
-            nb_res           = 3
             n(1:nb_res)      = 20.d0
             unsurn(1:nb_res) = 1.d0
         endif
@@ -154,23 +154,19 @@ implicit none
 ! - Name of parameters
 !
     if (meta_type.eq.1) then
-        ASSERT(nb_phasis.eq.4)
         if (present(c)) then
             nomres(1)   = 'F1_C'
             nomres(2)   = 'F2_C'
             nomres(3)   = 'F3_C'
             nomres(4)   = 'F4_C'
             nomres(5)   = 'C_C'
-            nb_res      = 5
             c(1:nb_res) = 0.d0
         endif
     elseif (meta_type.eq.2) then
-        ASSERT(nb_phasis.eq.2)
         if (present(c)) then
             nomres(1)   = 'F1_C'
             nomres(2)   = 'F2_C'
             nomres(3)   = 'C_C'
-            nb_res      = 3
             c(1:nb_res) = 0.d0
         endif
     endif
@@ -189,23 +185,19 @@ implicit none
 ! - Name of parameters
 !
     if (meta_type.eq.1) then
-        ASSERT(nb_phasis.eq.4)
         if (present(m)) then
             nomres(1)   = 'F1_M'
             nomres(2)   = 'F2_M'
             nomres(3)   = 'F3_M'
             nomres(4)   = 'F4_M'
             nomres(5)   = 'C_M'
-            nb_res      = 5
             m(1:nb_res) = 20.d0
         endif
     elseif (meta_type.eq.2) then
-        ASSERT(nb_phasis.eq.2)
         if (present(m)) then
             nomres(1)   = 'F1_M'
             nomres(2)   = 'F2_M'
             nomres(3)   = 'C_M'
-            nb_res      = 3
             m(1:nb_res) = 20.d0
         endif
     endif

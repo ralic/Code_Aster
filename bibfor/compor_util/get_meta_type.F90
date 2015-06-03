@@ -36,7 +36,7 @@ implicit none
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
-! Out nb_phasis    : number of phasis
+! Out nb_phasis    : total number of phasis (cold and hot)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,13 +59,13 @@ implicit none
                 ksp, r8dummy, iret_steel)
     if (iret_steel .eq. 0) then
         meta_type = 1
-        nb_phasis = 4
+        nb_phasis = 5
     else
         call rcvarc(' ', zirc, '+', 'RIGI', kpg,&
                     ksp, r8dummy, iret_zirc)
         if (iret_zirc .eq. 0) then
             meta_type = 2
-            nb_phasis = 2
+            nb_phasis = 3
         endif
     endif
 

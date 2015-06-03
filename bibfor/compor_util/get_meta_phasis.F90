@@ -1,5 +1,5 @@
-subroutine get_meta_phasis(fami     , poum  , ipg   , ispg , meta_type,&
-                           nb_phasis, phasis, zcold_, zhot_)
+subroutine get_meta_phasis(fami     , poum   , ipg   , ispg , meta_type,&
+                           nb_phasis, phasis_, zcold_, zhot_)
 !
 implicit none
 !
@@ -29,7 +29,7 @@ implicit none
     integer, intent(in) :: ispg
     integer, intent(in) :: meta_type
     integer, intent(in) :: nb_phasis
-    real(kind=8), intent(out) :: phasis(*)
+    real(kind=8), optional, intent(out) :: phasis_(*)
     real(kind=8), optional, intent(out) :: zcold_
     real(kind=8), optional, intent(out) :: zhot_
 !
@@ -49,7 +49,7 @@ implicit none
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
-! In  nb_phasis    : number of phasis
+! In  nb_phasis    : total number of phasis (cold and hot)
 ! Out phasis       : phasis
 ! Out zcold        : sum of cold phasis
 ! Out zhot         : hot phasis
@@ -57,41 +57,55 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: steel(4), zirc(2)
-    integer :: i_phasis, iret
-    real(kind=8) :: zcold
+    integer :: i_phasis_c, iret, nb_phasis_c
+    real(kind=8) :: zcold, phasis(5)
 !
     data steel /'PFERRITE','PPERLITE','PBAINITE','PMARTENS'/
     data zirc  /'ALPHPUR','ALPHBETA'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    do i_phasis = 1, nb_phasis
+    nb_phasis_c = nb_phasis-1
+!
+! - Set cold phasis
+!
+    do i_phasis_c = 1, nb_phasis_c
         if (meta_type.eq.1) then
-            call rcvarc('F', steel(i_phasis), poum, fami, ipg,&
-                        ispg, phasis(i_phasis), iret)
+            call rcvarc('F', steel(i_phasis_c), poum, fami, ipg,&
+                        ispg, phasis(i_phasis_c), iret)
             if (iret .eq. 1) then
-                phasis(i_phasis) = 0.d0
+                phasis(i_phasis_c) = 0.d0
             endif
         elseif (meta_type.eq.2) then
-            call rcvarc('F', zirc(i_phasis), poum, fami, ipg,&
-                        ispg, phasis(i_phasis), iret)
+            call rcvarc('F', zirc(i_phasis_c), poum, fami, ipg,&
+                        ispg, phasis(i_phasis_c), iret)
             if (iret .eq. 1) then
-                phasis(i_phasis) = 0.d0
+                phasis(i_phasis_c) = 0.d0
             endif
         else
             ASSERT(.false.)
         endif
     end do
 !
+! - Sum of cold phasis
+!
     zcold = 0.d0
-    do i_phasis = 1, nb_phasis
-        zcold = zcold + phasis(i_phasis)
+    do i_phasis_c = 1, nb_phasis_c
+        zcold = zcold + phasis(i_phasis_c)
     end do
 !
+! - Set hot phasis
+!
+    phasis(nb_phasis) = 1.d0 - zcold 
+!
+    if (present(phasis_)) then
+        phasis_(1:nb_phasis) = phasis(1:nb_phasis)
+    endif
     if (present(zcold_)) then
         zcold_ = zcold
     endif
     if (present(zhot_)) then
         zhot_  = 1.d0 - zcold 
     endif
+!
 end subroutine

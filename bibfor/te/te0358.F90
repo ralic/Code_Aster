@@ -64,7 +64,7 @@ implicit none
     real(kind=8) :: dfdx(9), dfdy(9), dfdz(9), poids, kron(6)
     real(kind=8) :: coef, trans
     real(kind=8) :: zcold_curr
-    real(kind=8) :: phas_prev(4), phas_curr(4), temp
+    real(kind=8) :: phas_prev(5), phas_curr(5), temp
     logical :: l_temp
 !
     data kron  /1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -97,13 +97,17 @@ implicit none
         goto 99 
     endif
 !
-! - Type of phasis
+! - Get type of phasis
 !
-    type_phas = zk16(j_compor+7)
     call get_meta_type(meta_type, nb_phasis)
+    ASSERT(nb_phasis.le.5)
     if ((meta_type.eq.0).or.(rela_comp.eq.'META_LEMA_ANI')) then
         goto 99
     endif
+!
+! - Check type of phasis
+!
+    type_phas = zk16(j_compor+7)
     valk(1) = type_phas
     if (type_phas.eq.'ACIER') then
         if (meta_type.ne.1) then

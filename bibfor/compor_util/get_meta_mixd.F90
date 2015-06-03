@@ -53,7 +53,7 @@ implicit none
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
-! In  nb_phasis    : number of phasis
+! In  nb_phasis    : total number of phasis (cold and hot)
 ! In  l_visc       : .true. if visco-plasticity
 ! In  zalpha       : sum of "cold" phasis
 ! Out fmel         : mixing function
@@ -70,6 +70,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    if (meta_type.eq.1) then
+        ASSERT(nb_phasis.eq.5) 
+    elseif (meta_type.eq.2) then
+        ASSERT(nb_phasis.eq.3)
+    else
+        ASSERT(.false.)
+    endif
 !
 ! - Mixing function
 !
@@ -92,9 +99,8 @@ implicit none
 ! - Elasticity yield by phasis
 !
     if (present(sy)) then
+        nb_res = nb_phasis
         if (meta_type.eq.1) then
-            ASSERT(nb_phasis.eq.4)  
-            nb_res    = 5
             nomres(1) = 'F1_SY'
             nomres(2) = 'F2_SY'
             nomres(3) = 'F3_SY'
@@ -109,8 +115,6 @@ implicit none
             endif
             sy(1:nb_res) = 0.d0
         elseif (meta_type.eq.2) then
-            ASSERT(nb_phasis.eq.2)  
-            nb_res    = 3
             nomres(1) = 'F1_SY'
             nomres(2) = 'F2_SY'
             nomres(3) = 'C_SY'

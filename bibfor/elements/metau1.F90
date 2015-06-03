@@ -1,6 +1,6 @@
 subroutine metau1(l_meta)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -59,7 +59,6 @@ subroutine metau1(l_meta)
     real(kind=8) :: epsth, epsthe(3)
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, r
-    real(kind=8) :: phasis(7)
     integer :: nb_node, ispg, kp, npg, i_node, elas_type, k
     integer :: meta_type, nb_phasis
     integer :: ipoids, ivf, idfde
@@ -75,6 +74,7 @@ subroutine metau1(l_meta)
 ! - Get metallurgy type
 !
     call get_meta_type(meta_type, nb_phasis)
+    ASSERT(nb_phasis.le.5)
     if (meta_type .eq. 0) then
         l_meta = .false.
         goto 999
@@ -113,7 +113,8 @@ subroutine metau1(l_meta)
 ! ----- Get phasis
 !
         call get_meta_phasis('RIGI'   , '+'   , kp   , ispg, meta_type,&
-                             nb_phasis, phasis, zcold, zhot)
+                             nb_phasis,&
+                             zcold_ = zcold, zhot_ = zhot)
 !
 ! ----- Axi-symmetric case
 !

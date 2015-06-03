@@ -54,7 +54,7 @@ implicit none
 !                       0 - No metallurgy
 !                       1 - Steel
 !                       2 - Zirconium
-! In  nb_phasis    : number of phasis
+! In  nb_phasis    : total number of phasis (cold and hot)
 ! In  phas_prev    : previous phasis
 ! In  phas_curr    : current phasis
 ! In  zcold_curr   : sum of cold phasis
@@ -68,24 +68,29 @@ implicit none
     real(kind=8) :: valres(nb_res_mx)
     integer :: codret(nb_res_mx)
     character(len=16) :: nomres(nb_res_mx)
-    integer :: nb_res, i_phasis
+    integer :: nb_res, i_phasis, nb_phasis_cold
     real(kind=8) :: deltaz
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
+    if (meta_type.eq.1) then
+        ASSERT(nb_phasis.eq.5) 
+    elseif (meta_type.eq.2) then
+        ASSERT(nb_phasis.eq.3)
+    else
+        ASSERT(.false.)
+    endif
+    nb_phasis_cold = nb_phasis - 1
 !
 ! - Name of parameters - Constant k
 !
     if (meta_type.eq.1) then
-        ASSERT(nb_phasis.eq.4)
         nb_res = 4
         nomres(1) = 'F1_K'
         nomres(2) = 'F2_K'
         nomres(3) = 'F3_K'
         nomres(4) = 'F4_K'   
     elseif (meta_type.eq.2) then
-        ASSERT(nb_phasis.eq.2)
         nb_res = 2
         nomres(1) = 'F1_K'
         nomres(2) = 'F2_K'
@@ -98,21 +103,19 @@ implicit none
     call rcvalb(fami, kpg, ksp, poum, j_mater,&
                 ' ', 'META_PT', 0, ' ', [0.d0],&
                 nb_res, nomres, valres, codret, 2)
-    do i_phasis = 1, nb_phasis
+    do i_phasis = 1, nb_phasis_cold
         kpt(i_phasis) = valres(i_phasis)
     end do
 !
 ! - Name of parameters - function f'
 !
     if (meta_type.eq.1) then
-        ASSERT(nb_phasis.eq.4)
         nb_res    = 4
         nomres(1) = 'F1_D_F_META'
         nomres(2) = 'F2_D_F_META'
         nomres(3) = 'F3_D_F_META'
         nomres(4) = 'F4_D_F_META'
     elseif (meta_type.eq.2) then
-        ASSERT(nb_phasis.eq.2)
         nb_res    = 2
         nomres(1) = 'F1_D_F_META'
         nomres(2) = 'F2_D_F_META'
@@ -122,7 +125,7 @@ implicit none
 !
 ! - Get parameters - function f'
 !
-    do i_phasis = 1, nb_phasis
+    do i_phasis = 1, nb_phasis_cold
         deltaz = (phas_curr(i_phasis) - phas_prev(i_phasis))
         if (deltaz .gt. 0.d0) then
             call rcvalb(fami, kpg, ksp, poum, j_mater,&

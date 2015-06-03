@@ -1,6 +1,7 @@
 subroutine metau2(l_meta)
 !
-    implicit none
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -51,14 +52,12 @@ subroutine metau2(l_meta)
     integer :: icodre(nbres)
     real(kind=8) :: valres(nbres)
 !
-!
     real(kind=8) :: zcold, zhot
     real(kind=8) :: coef, coef1, coef2
     real(kind=8) :: young, nu
     real(kind=8) :: epsth, epsthe(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: poids
-    real(kind=8) :: phasis(7)
     integer :: nb_node, ispg, kp, npg, i_node, elas_type
     integer :: meta_type, nb_phasis
     integer :: ipoids, idfde
@@ -109,7 +108,8 @@ subroutine metau2(l_meta)
 ! ----- Get phasis
 !
         call get_meta_phasis('RIGI', '+', kp, ispg, meta_type,&
-                             nb_phasis, phasis, zcold, zhot)
+                             nb_phasis,&
+                             zcold_ = zcold, zhot_ = zhot)
 !
 ! ----- Compute thermic strain
 !
