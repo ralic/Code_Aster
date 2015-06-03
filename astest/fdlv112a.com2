@@ -23,7 +23,7 @@ POURSUITE(CODE='OUI',DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',
       IGNORE_ALARM='SUPERVIS_1')
 
 pas=0.001
-Tfin=11.14-pas
+Tfin=4.-pas
 #------------------------------------------
 #          calcul standard
 #------------------------------------------
@@ -50,7 +50,7 @@ DYNGENT=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  FONC_MULT=ACC_Z,),
                           ),);
 
-#On récupère les accelerations du calcul du calcul dynamique DYNGEN
+#On recupere les accelerations du calcul du calcul dynamique DYNGEN
 t_a_x=RECU_FONCTION(RESU_GENE=DYNGENT,
                          NOM_CHAM='ACCE',
                          NOM_CMP='DX',
@@ -97,7 +97,7 @@ t_Abs_z=CALC_FONC_INTERP(LIST_PARA=L_tmp,
                        FONCTION=t_Abs_z0,);
 
 #------------------------------------------------------------------------------------
-#          Calculs préalable à l'utilisation de la macro commande
+#          Calculs prealable a l'utilisation de la macro commande
 #------------------------------------------------------------------------------------
 
 TDYNGENX=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
@@ -167,27 +167,129 @@ C_TEMP=CALC_TRANSFERT(NOM_CHAM='ACCE',
                               );
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-          VALE_CALC=-1.3233422078,
-          VALE_REFE=-1.3233422078,
+          VALE_CALC=5.08741E+01,
+          VALE_REFE=5.08741E+01,
           NOM_PARA='Re_FX',
-          TABLE=TABLE00,
+          TABLE=TABLE01,
           FILTRE=_F(NOM_PARA='FREQ',
-                    VALE=1.08520E+01,),
+                    VALE=1.0E+01,),
           )
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-          VALE_CALC=11.1943835916,
-          VALE_REFE=11.1943835916,
+          VALE_CALC=-1.91601E+01,
+          VALE_REFE=-1.91601E+01,
           NOM_PARA='Im_FX',
-          TABLE=TABLE00,
+          TABLE=TABLE01,
           FILTRE=_F(NOM_PARA='FREQ',
-                    VALE=1.08520E+01,),
+                    VALE=1.0E+01,),
           )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC_C=(-1.3233422078+11.1943835916j),
-                        VALE_REFE_C=(-1.3233422078+11.1943835916j),
-                        VALE_PARA=10.852017937219731,NOM_PARA='FREQ',
+
+# Validation en temporel de CALC_TRANSFERT :
+#
+C_TEMP2=CALC_TRANSFERT(NOM_CHAM='ACCE',
+                    RESULTAT_X=TDYNGENX,
+                    RESULTAT_Y=TDYNGENY,
+                    RESULTAT_Z=TDYNGENZ,
+                    REPERE='RELATIF',
+                    ENTREE=_F(NOEUD='NO1996',),
+                    SORTIE=_F(NOEUD='NO2815',),
+                    ENTRAINEMENT=_F(DX=ACC_X,
+                                     DY=ACC_Y,
+                                     DZ=ACC_Z,
+                                    ),
+                    SIGNAL=_F(MESURE_X=t_Abs_x,
+                              MESURE_Y=t_Abs_y,
+                              MESURE_Z=t_Abs_z,
+                              TYPE_RESU='TEMPOREL',
+                              TABLE_RESU=CO("TABLE02"),),
+                              );
+
+FXT = RECU_FONCTION(TABLE     = TABLE02,PARA_X='INST', PARA_Y  = 'FX',)
+FXTH = CALC_FONCTION(FFT=_F(FONCTION=FXT,))
+
+
+# Les ecarts avec la reference sont dus au fait 
+# que les frequences ne sont pas tout a fait identiques
+#
+TEST_FONCTION(VALEUR=_F(VALE_CALC_C=(48.848769-22.565944j),
+                        VALE_REFE_C=(50.8741-19.1601j),
+                        VALE_PARA=10.009766,NOM_PARA='FREQ',
                         REFERENCE='AUTRE_ASTER',
-                        FONCTION=F_ACC_X,),
-              )
+                        PRECISION=8.E-2,
+                        FONCTION=FXTH,),)
+
+# Validation en absolu de CALC_TRANSFERT :
+# On va comparer relatif et absolu avec un entrainement nul
+#
+
+ACC_X2=CALC_FONCTION(COMB=_F(FONCTION=ACC_X,COEF=0.,),);
+ACC_Y2=CALC_FONCTION(COMB=_F(FONCTION=ACC_Y,COEF=0.,),);
+ACC_Z2=CALC_FONCTION(COMB=_F(FONCTION=ACC_Z,COEF=0.,),);
+
+C_TEMPA=CALC_TRANSFERT(NOM_CHAM='ACCE',
+                    RESULTAT_X=TDYNGENX,
+                    RESULTAT_Y=TDYNGENY,
+                    RESULTAT_Z=TDYNGENZ,
+                    REPERE='ABSOLU',
+                    ENTREE=_F(NOEUD='NO1258',),
+                    SORTIE=_F(NOEUD='NO2815',),
+                    SIGNAL=_F(MESURE_X=t_Abs_x,
+                              MESURE_Y=t_Abs_y,
+                              MESURE_Z=t_Abs_z,
+                              TYPE_RESU='HARMONIQUE',
+                              TABLE_RESU=CO("TABLE_A"),),
+                              );
+
+C_TEMP3=CALC_TRANSFERT(NOM_CHAM='ACCE',
+                    RESULTAT_X=TDYNGENX,
+                    RESULTAT_Y=TDYNGENY,
+                    RESULTAT_Z=TDYNGENZ,
+                    REPERE='RELATIF',
+                    ENTREE=_F(NOEUD='NO1258',),
+                    SORTIE=_F(NOEUD='NO2815',),
+                    ENTRAINEMENT=_F(DX=ACC_X2,
+                                     DY=ACC_Y2,
+                                     DZ=ACC_Z2,
+                                    ),
+                    SIGNAL=_F(MESURE_X=t_Abs_x,
+                              MESURE_Y=t_Abs_y,
+                              MESURE_Z=t_Abs_z,
+                              TYPE_RESU='HARMONIQUE',
+                              TABLE_RESU=CO("TABLE03"),),
+                              );
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+          VALE_CALC=552.425522239,
+          VALE_REFE=552.425522239,
+          NOM_PARA='Re_FX',
+          TABLE=TABLE_A,
+          FILTRE=_F(NOM_PARA='FREQ',
+                    VALE=1.0E+01,),
+          )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+          VALE_CALC=-156.573222501,
+          VALE_REFE=-156.573222501,
+          NOM_PARA='Im_FX',
+          TABLE=TABLE_A,
+          FILTRE=_F(NOM_PARA='FREQ',
+                    VALE=1.0E+01,),
+          )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+          VALE_CALC=552.425522239,
+          VALE_REFE=552.425522239,
+          NOM_PARA='Re_FX',
+          TABLE=TABLE03,
+          FILTRE=_F(NOM_PARA='FREQ',
+                    VALE=1.0E+01,),
+          )
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+          VALE_CALC=-156.573222501,
+          VALE_REFE=-156.573222501,
+          NOM_PARA='Im_FX',
+          TABLE=TABLE03,
+          FILTRE=_F(NOM_PARA='FREQ',
+                    VALE=1.0E+01,),
+          )
+
 
 FIN();

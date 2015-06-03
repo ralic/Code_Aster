@@ -18,10 +18,10 @@
 # person_in_charge: julie.fouque at edf.fr
         
 def calc_transfert_ops(
-    self, NOM_CHAM,ENTREE,SORTIE,RESULTAT_X,RESULTAT_Y,RESULTAT_Z, REPERE, ENTRAINEMENT,
+    self, NOM_CHAM,ENTREE,SORTIE,RESULTAT_X,RESULTAT_Y,RESULTAT_Z, REPERE,
         SIGNAL, **args):
     """
-           Macro permettant le calcul de fonctions de transfert et de signaux déconvolués
+           Macro permettant le calcul de fonctions de transfert et de signaux deconvolues
     """
     import os
     import aster_core
@@ -207,9 +207,9 @@ def calc_transfert_ops(
     Ab_L_Im=[]
     LTEST=[]
     if REPERE=='RELATIF' :
-        for mentr in ENTRAINEMENT:
-             s_entr = mentr.val
-             for mm in entrain :
+        for mentr in args.get('ENTRAINEMENT'):
+            s_entr = mentr.val
+            for mm in entrain :
                 if type(s_entr[mm])==fonction_c:
                    _test=s_entr[mm]
                    Test_F,Test_Re,Test_Im=_test.Valeurs()
@@ -239,10 +239,11 @@ def calc_transfert_ops(
                       Ab_L_Re.append(B)
                       Ab_L_Im.append(C)#On recupere la demi liste et on regarde si elle est compatible
     else :
-         _A=[]
-         _A[0:len(LISTFREQ)]=len(LISTFREQ)*[0]
-         Ab_L_Re.append(_A)
-         Ab_L_Im.append(_A)   
+        _A=[]
+        _A[0:len(LISTFREQ)]=len(LISTFREQ)*[0]
+        for i in range(3):
+            Ab_L_Re.append(_A)
+            Ab_L_Im.append(_A)   
          
     #On verifie que les signaux d'entrainements sont discretises de la meme maniere    
     for ii in range(1,len(LTEST)) :
@@ -365,7 +366,7 @@ def calc_transfert_ops(
                        Sign_Re.append(B)
                        Sign_Im.append(C)
                 else :
-                   _test=s_entr[mm]
+                   _test=s_sign[ss]
                    Test_T,Test_Ord=_test.Valeurs()
                    STEST.append(Test_T)
                    if (Tcal[len(Tcal)-1]-Test_T[len(Test_T)-1])/Test_T[len(Test_T)-1]>1.E-8:
@@ -456,10 +457,3 @@ def calc_transfert_ops(
         table_s=CREA_TABLE(TYPE_TABLE='TABLE',**motssign)
         
     return ier
-
-
-
-
-
-
-
