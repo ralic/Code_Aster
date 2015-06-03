@@ -151,24 +151,24 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     ipf = 1
     do 50 im2 = 1, nbmr
 !
-        ival(3) = nuor(im2)
+        ival(2) = nuor(im2)
 !
         ideb = im2
         if (casint) ideb = 1
 !
         do 60 im1 = ideb, im2
 !
-            ival(2) = nuor(im1)
+            ival(3) = nuor(im1)
 !
             do 200 i1 = 1, mxval
-                if ((zi(lnumi-1+i1) .eq. ival(3)) .and. (zi(lnumj-1+ i1) .eq. ival(2))) then
+                if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+ i1) .eq. ival(3))) then
                     call jeveuo(jexnum(chvale, i1), 'L', ifonc)
                 endif
 200         continue
 !
             call jecroc(jexnum(crvale, ipf))
-            zi(lrnumi-1+ipf) = ival(3)
-            zi(lrnumj-1+ipf) = ival(2)
+            zi(lrnumi-1+ipf) = ival(2)
+            zi(lrnumj-1+ipf) = ival(3)
             if (ival(2) .eq. ival(3)) then
                 nbabs = nbpf
             else

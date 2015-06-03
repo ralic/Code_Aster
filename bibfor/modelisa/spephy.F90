@@ -140,18 +140,18 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table,&
 !
     do 30 imj = 1, nbmr
 !
-        ival(3) = nuor(imj)
+        ival(2) = nuor(imj)
 !
         ideb = imj
         if (intmod) ideb = 1
 !
         do 40 imi = ideb, imj
 !
-            ival(2) = nuor(imi)
+            ival(3) = nuor(imi)
 !
             exiind = .false.
             do 210 i1 = 1, mxval
-                if ((zi(lnumi-1+i1) .eq. ival(3)) .and. (zi(lnumj-1+ i1) .eq. ival(2))) then
+                if ((zi(lnumi-1+i1) .eq. ival(2)) .and. (zi(lnumj-1+ i1) .eq. ival(3))) then
                     exiind = .true.
                     call jeveuo(jexnum(chvale, i1), 'L', ifon)
                 endif

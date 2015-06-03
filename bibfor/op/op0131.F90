@@ -343,10 +343,13 @@ subroutine op0131()
             endif
             do 641 j = i, nk
                 ij = 0
-                do 650 num = 1, itail1
-                    if ((i .eq. zi(lnumi-1+num)) .and. (j .eq. zi( lnumj-1+num))) ij = &
-                                                                                  num
-650              continue
+                do num = 1, itail1
+                    if ((i .eq. zi(lnumi-1+num)) .and. (j .eq. zi( lnumj-1+num))) then
+                        ij = num
+                        goto 650
+                    end if
+                end do
+650             continue
                 xcgrep = zc(iadjgj-1+(j-1)*ndimre+i)
                 call jeveuo(jexnum(chvale, ij), 'E', ispec)
                 if (i .eq. j) then

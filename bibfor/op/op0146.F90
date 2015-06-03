@@ -379,8 +379,8 @@ subroutine op0146()
             do 210 im1 = ideb, im2
                 ij = ij + 1
 !
-                zi(lnumj-1+ij) = zi(inumo+im1-1)
                 zi(lnumi-1+ij) = zi(inumo+im2-1)
+                zi(lnumj-1+ij) = zi(inumo+im1-1)
 !
                 call jecroc(jexnum(chvale, ij))
                 if (zi(lnumi-1+ij) .eq. zi(lnumj-1+ij)) then

@@ -461,11 +461,7 @@ subroutine speph0(nomu, table)
         call rsexch('F', modsta, optch1, numod, cham19,&
                     iret)
 
-        if (typcha(1:7) .eq. 'CHAM_NO') then
-            call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
-        else if (typcha(1:9).eq.'CHAM_ELEM') then
-            call jeveuo(cham19(1:19)//'.CELV', 'L', isip)
-        end if
+        call jeveuo(cham19(1:19)//'.VALE', 'L', isip)
 
         do in = 1, nbn
             icham1 = icham + nbn* (imr-1) + in - 1
