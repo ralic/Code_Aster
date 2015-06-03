@@ -34,19 +34,33 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    integer :: ndim, imat, iret, kpg, ksp
-    character(len=16) :: option
-    character(len=8) :: typmod(2)
-    character(len=*) :: fami
-    real(kind=8) :: crit(3), instam, instap, coord(3)
-    real(kind=8) :: deps2(6)
-    real(kind=8) :: sigm2(6), vim(2), sigp(6), vip(2)
-    real(kind=8) :: dsidep(6, 6)
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imat
+    real(kind=8), intent(in) :: crit(*)
+    character(len=8), intent(in) :: typmod(2)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(in) :: coord(3)
+    real(kind=8), intent(in) :: deps2(*)
+    real(kind=8), intent(in) :: sigm2(*)
+    real(kind=8), intent(in) :: vim(2)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(out) :: sigp(*)
+    real(kind=8), intent(out) :: vip(2)
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     MODELE VISCOPLASTIQUE SANS SEUIL DE EDGAR
-!     INTEGRATION DU MODELE PAR UNE METHODE DE NEWTON
+! Comportment
+!
+! META_LEMA_ANI
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  IMAT    : ADRESSE DU MATERIAU CODE
 ! IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
@@ -81,7 +95,6 @@ implicit none
     real(kind=8) :: tm, tp, tref, temp, dt
     real(kind=8) :: phase(3), phasm(3), zalpha
     real(kind=8) :: zero, prec, rbid
-    real(kind=8) :: kron(6)
     real(kind=8) :: mum, mu, troiskm, troisk, anic(6, 6)
     real(kind=8) :: ani(6, 6)
     real(kind=8) :: m(3), n(3), gamma(3), depsth
@@ -97,8 +110,7 @@ implicit none
     character(len=1) :: c1
     aster_logical :: resi, rigi
     logical :: zcylin
-!
-    data          kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
+    real(kind=8), parameter :: kron(6) = (/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/)
 !
 ! LEXIQUE SUR LE NOM DES VARIABLES VALABLES DANS TOUTES LES ROUTINES
 ! INDICE I QUAND SOMMATION SUR LA DIMENSION DE L ESPACE
@@ -109,6 +121,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    do i = 1, 2*ndim
+        sigp(i) = 0.d0
+    end do
+    vip(1:2)        = 0.d0
+    dsidep(1:6,1:6) = 0.d0
+    iret            = 0
     resi = option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL'
     rigi = option(1:4).eq.'RIGI' .or. option(1:4).eq.'FULL'
 !
@@ -355,7 +373,7 @@ implicit none
 ! SI FULL MAIS VIP(2)=1 => MATRICE COHERENTE A TP
 !
     if (rigi) then
-        if ((option(1:4).eq.'RIGI') .or. ((option(1:4).eq.'FULL').and.( vip(2).eq.0.d0))) then
+        if ((option(1:4).eq.'RIGI') .or. ((option(1:4).eq.'FULL').and.( vip(2).le.0.5d0))) then
 !
             do i = 1, ndimsi
                 do j = 1, ndimsi
@@ -375,7 +393,7 @@ implicit none
             end do
         endif
 !
-        if ((option(1:4).eq.'FULL') .and. (vip(2).eq.1.d0)) then
+        if ((option(1:4).eq.'FULL') .and. (vip(2).ge.0.5d0)) then
 !
             do j = 1, ndimsi
                 do i = 1, ndimsi+1

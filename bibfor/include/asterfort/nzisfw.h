@@ -20,23 +20,23 @@ interface
                       compor, crit, instam, instap, epsm,&
                       deps, sigm, vim, option, sigp,&
                       vip, dsidep, iret)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imat
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(3)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: vim(7)
-        character(len=16) :: option
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip(7)
-        real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: ndim
+        integer, intent(in) :: imat
+        character(len=16), intent(in) :: compor(*)
+        real(kind=8), intent(in) :: crit(*)
+        real(kind=8), intent(in) :: instam
+        real(kind=8), intent(in) :: instap
+        real(kind=8), intent(in) :: epsm(*)
+        real(kind=8), intent(in) :: deps(*)
+        real(kind=8), intent(in) :: sigm(*)
+        real(kind=8), intent(in) :: vim(7)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(out) :: sigp(*)
+        real(kind=8), intent(out) :: vip(7)
+        real(kind=8), intent(out) :: dsidep(6, 6)
+        integer, intent(out) :: iret
     end subroutine nzisfw
 end interface

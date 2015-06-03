@@ -20,23 +20,23 @@ interface
                       compor, crit, instam, instap, fm,&
                       df, sigm, vim, option, sigp,&
                       vip, dsigdf, iret)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imat
-        character(len=16) :: compor(3)
-        real(kind=8) :: crit(3)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: fm(3, 3)
-        real(kind=8) :: df(3, 3)
-        real(kind=8) :: sigm(*)
-        real(kind=8) :: vim(8)
-        character(len=16) :: option
-        real(kind=8) :: sigp(*)
-        real(kind=8) :: vip(8)
-        real(kind=8) :: dsigdf(6, 3, 3)
-        integer :: iret
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: ndim
+        integer, intent(in) :: imat
+        character(len=16), intent(in) :: compor(*)
+        real(kind=8), intent(in) :: crit(*)
+        real(kind=8), intent(in) :: instam
+        real(kind=8), intent(in) :: instap
+        real(kind=8), intent(in) :: fm(3, 3)
+        real(kind=8), intent(in) :: df(3, 3)
+        real(kind=8), intent(in) :: sigm(*)
+        real(kind=8), intent(in) :: vim(8)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(out) :: sigp(*)
+        real(kind=8), intent(out) :: vip(8)
+        real(kind=8), intent(out) :: dsigdf(6, 3, 3)
+        integer, intent(out) :: iret
     end subroutine lcgdpm
 end interface

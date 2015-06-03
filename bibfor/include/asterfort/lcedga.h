@@ -20,23 +20,23 @@ interface
                       crit, typmod, instam, instap, coord,&
                       deps2, sigm2, vim, option, sigp,&
                       vip, dsidep, iret)
-        integer :: ndim
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imat
-        real(kind=8) :: crit(3)
-        character(len=8) :: typmod(2)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: coord(3)
-        real(kind=8) :: deps2(6)
-        real(kind=8) :: sigm2(6)
-        real(kind=8) :: vim(2)
-        character(len=16) :: option
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip(2)
-        real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: ndim
+        integer, intent(in) :: imat
+        real(kind=8), intent(in) :: crit(*)
+        character(len=8), intent(in) :: typmod(2)
+        real(kind=8), intent(in) :: instam
+        real(kind=8), intent(in) :: instap
+        real(kind=8), intent(in) :: coord(3)
+        real(kind=8), intent(in) :: deps2(*)
+        real(kind=8), intent(in) :: sigm2(*)
+        real(kind=8), intent(in) :: vim(2)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(out) :: sigp(*)
+        real(kind=8), intent(out) :: vip(2)
+        real(kind=8), intent(out) :: dsidep(6, 6)
+        integer, intent(out) :: iret
     end subroutine lcedga
 end interface
