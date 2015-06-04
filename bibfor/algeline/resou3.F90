@@ -113,7 +113,7 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
        secm19=chsecm
        call copisd(' ', base, secm19, chtrav)
        call jeveuo(secm19//'.VALE', 'L', jsecm)
-       call jeveuo(chtrav//'.VALE', 'L', jtrav)
+       call jeveuo(chtrav//'.VALE', 'E', jtrav)
        call xfem_pc_rhs(matas1, nsecm, zr(jsecm), zr(jtrav))
     else
        call xfem_pc_rhs(matas1, nsecm, rsolu)
@@ -131,7 +131,7 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm,&
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (nsecm .eq. 0) then
        solu19=chsolu
-       call jeveuo(solu19//'.VALE', 'L', jsolu)
+       call jeveuo(solu19//'.VALE', 'E', jsolu)
        call xfem_pc_sol(matas1, nsecm, zr(jsolu))
     else
        call xfem_pc_sol(matas1, nsecm, rsolu)

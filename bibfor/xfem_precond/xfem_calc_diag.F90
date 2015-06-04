@@ -67,14 +67,14 @@ subroutine xfem_calc_diag(matass, nonu, neq, deeq, nbnomax, &
 !
     call jeveuo(nonu//'.SMOS.SMDI', 'L', vi=smdi)
     call jeveuo(nonu//'.SMOS.SMHC', 'L', jsmhc)
-    call jeveuo(jexnum(matass//'.VALM', 1), 'L', jvale)
+    call jeveuo(jexnum(matass//'.VALM', 1), 'E', jvale)
     call jelira(jexnum(matass//'.VALM', 1), 'LONMAX', nnz)
     call jelira(matass//'.VALM', 'NMAXOC', nvale)
     if (nvale .eq. 1) then
        lsym=.true.
     else if (nvale.eq.2) then
        lsym=.false.
-       call jeveuo(jexnum(matass//'.VALM', 2), 'L', jval2)
+       call jeveuo(jexnum(matass//'.VALM', 2), 'E', jval2)
     else
         ASSERT(.false.)
     endif
