@@ -141,7 +141,7 @@ subroutine op0079()
         if (nu(1:1) .ne. ' ') then
             numdd1=nu
         else
-            call dismoi('REF_RIGI_PREM', res, 'RESU_DYNA', repk=matric)
+            call dismoi('REF_RIGI_PREM', res, 'RESU_DYNA', repk=matric, arret='C')
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
                 call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=nu)
@@ -155,7 +155,7 @@ subroutine op0079()
         if (nu(1:1) .ne. ' ') then
             numdd2=nu
         else
-            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then
                 call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=nu)
@@ -171,7 +171,7 @@ subroutine op0079()
         call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
         matri2 = matric(1:16)
         call jeveuo(matri2//'   .REFA', 'L', vk24=refa)
-        numdd2=refa(2)
+        numdd2=refa(2)(1:14)
     endif
 !
     if (numdd1 .ne. numdd2) then

@@ -121,7 +121,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'MODE_MECA' .or. typesd.eq.'DYNA_TRANS') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse)
+            call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse, arret='C')
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)
@@ -131,7 +131,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     else if (typesd.eq.'DYNA_HARMO') then
         call jeexin(resuin//'           .REFD', iret)
         if (iret .ne. 0) then
-            call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse)
+            call dismoi('REF_MASS_PREM', resuin, 'RESU_DYNA', repk=masse, arret='C')
             if (masse .ne. ' ') then
                 call mtdscr(masse)
                 call jeveuo(masse(1:19)//'.&INT', 'E', lmat)

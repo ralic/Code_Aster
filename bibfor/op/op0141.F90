@@ -147,7 +147,7 @@ subroutine op0141()
 ! RECUPERATION DE LA NUMEROTATION DES BASES
 !
     if ((typba1(1:9).eq.'MODE_MECA') .or. (typba1(1:9).eq.'MODE_GENE')) then
-        call dismoi('REF_RIGI_PREM', base1, 'RESU_DYNA', repk=matri1)
+        call dismoi('REF_RIGI_PREM', base1, 'RESU_DYNA', repk=matri1, arret='C')
         call exisd('MATR_ASSE', matri1, iret)
         if (iret .ne. 0) then
             call dismoi('NOM_NUME_DDL', matri1, 'MATR_ASSE', repk=numdd1)
@@ -168,7 +168,7 @@ subroutine op0141()
 !
 !
     if ((typba2(1:9).eq.'MODE_MECA') .or. (typba2(1:9).eq.'MODE_GENE')) then
-        call dismoi('REF_RIGI_PREM', base2, 'RESU_DYNA', repk=matri2)
+        call dismoi('REF_RIGI_PREM', base2, 'RESU_DYNA', repk=matri2, arret='C')
         call exisd('MATR_ASSE', matri2, iret)
         if (iret .ne. 0) then
             call dismoi('NOM_NUME_DDL', matri2, 'MATR_ASSE', repk=numdd2)

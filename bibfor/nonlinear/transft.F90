@@ -67,7 +67,7 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     call dismoi('NUME_DDL', modein, 'RESU_DYNA', repk=numedd)
     call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=rigid)
     call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse)
-    call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amort)
+    call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amort, arret='C')
 !
 ! RECUPERATION DE LA FREQUENCE
     call rsadpa(modein, 'L', 1, 'FREQ', 2,&

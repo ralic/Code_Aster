@@ -94,7 +94,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc,&
 !
 ! --- RECUPERATION CONCEPTS AMONT
 !
-    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf, arret='C')
     call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
 !
     if (intf .eq. '        ') then

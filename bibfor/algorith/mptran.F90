@@ -419,7 +419,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr,&
         call jelira(nomres//'           .ORDR', 'LONUTI', nbord)
         call dismoi('TYPE_BASE', nombas, 'RESU_DYNA', repk=typba, arret='C',&
                     ier=iret)
-        call dismoi('REF_RIGI_PREM', nombas, 'RESU_DYNA', repk=raide)
+        call dismoi('REF_RIGI_PREM', nombas, 'RESU_DYNA', repk=raide, arret='C')
         if (typba(1:1) .ne. ' ') then
             if (raide(1:8) .eq. '        ') then
                 call jeveuo(jexnum(nombas//'           .TACH', 1), 'L', jbasm)

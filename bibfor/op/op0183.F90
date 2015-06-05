@@ -181,7 +181,7 @@ subroutine op0183()
 !
     numref=' '
     call refdcp(resuco, resuc1)
-    call dismoi('REF_RIGI_PREM', resuc1, 'RESU_DYNA', repk=raide)
+    call dismoi('REF_RIGI_PREM', resuc1, 'RESU_DYNA', repk=raide, arret='C')
     if (raide .ne. ' ') then
         call dismoi('NOM_NUME_DDL', raide, 'MATR_ASSE', repk=numref)
     endif

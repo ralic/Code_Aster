@@ -124,7 +124,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !-----RECUPERATION DE LA BASE MODALE AMONT------------------------------
 !
     call jeveuo(modcyc//'.CYCL_REFE', 'L', vk24=cycl_refe)
-    basmod = cycl_refe(3)
+    basmod = cycl_refe(3)(1:8)
 !
 !-----RECUPERATION DU .DESC---------------------------------------------
 !
@@ -163,7 +163,7 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf,&
 !
 !-----RECUPERATION MATRICE DE MASSE-------------------------------------
 !
-    call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass)
+    call dismoi('REF_MASS_PREM', basmod, 'RESU_DYNA', repk=mass, arret='C')
     call mtexis(mass, ier)
     if (ier .eq. 0) then
         valk (1) = mass(1:8)

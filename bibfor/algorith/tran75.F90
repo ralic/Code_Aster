@@ -199,7 +199,7 @@ subroutine tran75(nomres, typres, nomin, basemo)
             call jeveuo(numddl//'.NUME.REFN', 'L', vk24=refn)
             matric = refn(1)
             mailla = matric(1:8)
-            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
             if (tousno) call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
         endif
 !

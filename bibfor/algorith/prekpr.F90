@@ -47,7 +47,7 @@ subroutine prekpr(modmec, mtrmas, nbddl, numer, mailla,&
 !
 !
 !
-    call dismoi('REF_MASS_PREM', modmec, 'RESU_DYNA', repk=mtrmas)
+    call dismoi('REF_MASS_PREM', modmec, 'RESU_DYNA', repk=mtrmas, arret='C')
     call dismoi('NB_EQUA', mtrmas, 'MATR_ASSE', repi=nbddl)
     call dismoi('NOM_NUME_DDL', mtrmas, 'MATR_ASSE', repk=numer)
     call dismoi('NOM_MAILLA', mtrmas, 'MATR_ASSE', repk=mailla)

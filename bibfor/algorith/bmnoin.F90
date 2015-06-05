@@ -77,7 +77,7 @@ subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
 !
     if (basmod(1:1) .ne. ' ') then
 !
-        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intf, arret='C')
         if (intf .eq. '        ') then
             valk (1) = basmod
             call utmess('F', 'ALGORITH12_30', sk=valk(1))

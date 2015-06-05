@@ -138,8 +138,7 @@ subroutine op0109()
                 prec, crit, iret)
     if (iret .ne. 0) goto 999
     call jeveuo(knume, 'L', jordr)
-    call dismoi('REF_MASS_PREM', meca, 'RESU_DYNA', repk=masse, arret='C',&
-                ier=iret)
+    call dismoi('REF_MASS_PREM', meca, 'RESU_DYNA', repk=masse, arret='C')
     nomsy = 'DEPL'
     call vprecu(meca, nomsy, nbordr, zi(jordr), kvec,&
                 nbpara, nopara(1), k8b, kval, k8b,&

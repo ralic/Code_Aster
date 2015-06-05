@@ -99,7 +99,7 @@ subroutine vpcrea(icond, modes, masse, amor, raide,&
     else
         call dismoi('REF_RIGI_PREM', modes, 'RESU_DYNA', repk=raide2)
         call dismoi('REF_MASS_PREM', modes, 'RESU_DYNA', repk=masse2)
-        call dismoi('REF_AMOR_PREM', modes, 'RESU_DYNA', repk=amor2)
+        call dismoi('REF_AMOR_PREM', modes, 'RESU_DYNA', repk=amor2, arret='C')
         if ((raide.ne.raide2) .or. (masse.ne.masse2) .or. (amor.ne.amor2)) ier = 1
         if (ier .ne. 0) then
             valk(1) = modes

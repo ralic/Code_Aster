@@ -70,7 +70,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !
 !
     integer :: iarefm, iret, nbnoe, iaconx
-    integer :: nbmtot, nbmdef, ier
+    integer :: nbmtot, nbmdef
     integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie
     integer :: iacon1, iadesm, ialica, ialich, iaprno, icas
     integer :: igex, instdy, iocc, ldgn, ldgn0, lnocmp
@@ -103,8 +103,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !     RECUPERATION DES INFOS UTILES
 ! **********************
     call dismoi('NUME_DDL', basmod, 'RESU_DYNA', repk=numddl)
-    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf, arret='C',&
-                ier=ier)
+    call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=lintf, arret='C')
 !
     call dismoi('NOM_MODELE', numddl, 'NUME_DDL', repk=nomo)
     if (raidf .ne. blanc) then
@@ -277,7 +276,7 @@ subroutine comp81(nomres, basmod, raidf, noma)
 ! STOCKAGE DU NOM DU CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     zk8(iarefm-1+4)=chcar
 ! STOCKAGE DU NOM DE LA NUMEROTATION
-    zk8(iarefm-1+5)=nu
+    zk8(iarefm-1+5)=nu(1:8)
 ! STOCKAGE DU NOM DU CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     zk8(iarefm-1+6)= 'OUI_RIGI'
     zk8(iarefm-1+7)= 'OUI_MASS'

@@ -170,9 +170,16 @@ subroutine dismdy(questi, nomobz, repi, repkz, ierd)
                 repi = repi+1
                 if (repi .eq. numocc) then
                     repk = zk24(jref+corent(intyre))
-!             --- RETOURNER EGALEMENT L'INDICE ABSOLUE DE L'ENTREE
+!                   --- RETOURNER EGALEMENT L'INDICE ABSOLUE DE L'ENTREE
                     repi = ibid
-                    goto 88
+                    if (repk .eq. ' ') then
+                        numocc = numocc + senpar
+                        if ((numocc.gt.nbrefs) .or. (numocc.eq.0)) then
+                            goto 99
+                        end if
+                    else
+                        goto 88
+                    end if
                 endif
             endif
         end do

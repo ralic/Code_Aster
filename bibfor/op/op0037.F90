@@ -36,6 +36,7 @@ subroutine op0037()
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
@@ -283,12 +284,9 @@ subroutine op0037()
             amor=mat3
         endif
     else
-        call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raide, arret='C',&
-                    ier=iret)
-        call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse, arret='C',&
-                    ier=iret)
-        call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amor, arret='C',&
-                    ier=iret)
+        call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raide, arret='C')
+        call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse, arret='C')
+        call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amor, arret='C')
         if (raide .eq. ' ') then
             lrefe = .false.
             call rsexch(' ', modein, 'DEPL', 1, chamno,&
@@ -311,6 +309,12 @@ subroutine op0037()
     call dismoi('NOM_MODELE', raide, 'MATR_ASSE', repk=modele)
 !
 !     --- COMPATIBILITE DES MODES ---
+    if (lbasm) then
+        call jeexin(modeou//'           .REFD', l1)
+        call jeexin(modeou//'           .INDI', l2)
+        if (l1 .gt. 0) call jedetr(modeou//'           .REFD')
+        if (l2 .gt. 0) call jedetr(modeou//'           .INDI')
+    end if
     call vpcrea(0, modeou, masse, amor, raide,&
                 nume, ibid)
 !

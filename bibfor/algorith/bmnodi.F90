@@ -69,7 +69,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
     character(len=8) :: basmod, nomint, intf, blanc, intfb
     character(len=24) :: noeint, idesc
     character(len=24) :: valk(3)
-    integer :: vali, ier
+    integer :: vali
     integer :: idec(300)
     character(len=10) :: typbas(3)
     integer :: i, inoe, iordef, j, lldes, llnoe
@@ -97,8 +97,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
 !-------------RECUPERATION DU TYPE DE BASE ET INTERF_DYNA------------
 !
     if (basmod .ne. blanc) then
-        call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=idesc, arret='C',&
-                    ier=ier)
+        call dismoi('TYPE_BASE', basmod, 'RESU_DYNA', repk=idesc, arret='C')
         call dismoi('NB_MODES_DYN', basmod, 'RESULTAT', repi=nbmod)
         if (idesc(1:9) .ne. 'CLASSIQUE') then
             valk (1) = basmod
@@ -107,7 +106,7 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef,&
             call utmess('F', 'ALGORITH12_27', nk=3, valk=valk)
         endif
 !
-        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intfb)
+        call dismoi('REF_INTD_PREM', basmod, 'RESU_DYNA', repk=intfb, arret='C')
         if (intf .ne. blanc .and. intf .ne. intfb) then
             valk (1) = basmod
             valk (2) = intfb

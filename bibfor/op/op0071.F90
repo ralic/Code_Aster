@@ -81,7 +81,7 @@ subroutine op0071()
 !
 !
     call dismoi('NOM_NUME_DDL', matras, 'MATR_ASSE', repk=numdd1)
-    call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+    call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
     if (matric .ne. ' ') then
         call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numdd2)
     else

@@ -121,18 +121,18 @@ subroutine op0168()
 !
             if (nbmr .eq. 1) then
 !      --- MATRICES DE REFERENCE DES MODES ---
-                call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raide)
-                call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse)
-                call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amor)
+                call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raide, arret='C')
+                call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=masse, arret='C')
+                call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amor, arret='C')
                 call dismoi('NUME_DDL', modein, 'RESU_DYNA', repk=numedd)
                 call vpcrea(0, modeou, masse, amor, raide,&
                             numedd, ibid)
             endif
 !
             zk8(jnom+nbmr-1) = modein
-            call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raidi)
-            call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=massi)
-            call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amori)
+            call dismoi('REF_RIGI_PREM', modein, 'RESU_DYNA', repk=raidi, arret='C')
+            call dismoi('REF_MASS_PREM', modein, 'RESU_DYNA', repk=massi, arret='C')
+            call dismoi('REF_AMOR_PREM', modein, 'RESU_DYNA', repk=amori, arret='C')
             if (massi .ne. masse .or. amori .ne. amor .or. raidi .ne. raide) then
                 call utmess('F', 'ALGELINE3_9')
             endif

@@ -87,12 +87,13 @@ subroutine tran77(nomres, typres, nomin, basemo)
     real(kind=8), pointer :: disc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
-    data blanc    /'        '/
 !      DATA CHAMN2   /'&&TRAN77.CHAMN2'/
 !      DATA NOMCMP   /'DX      ','DY      ','DZ      ',
 !     &               'DRX     ','DRY     ','DRZ     '/
 !     ------------------------------------------------------------------
     call jemarq()
+!
+    blanc = '        '
     mode = basemo
     trange = nomin
     call gettco(nomin, concep)
@@ -116,10 +117,10 @@ subroutine tran77(nomres, typres, nomin, basemo)
 !
 !
     if (mode .eq. blanc) then
-        call dismoi('REF_RIGI_PREM', trange, 'RESU_DYNA', repk=matgen)
+        call dismoi('REF_RIGI_PREM', trange, 'RESU_DYNA', repk=matgen, arret='C')
         call dismoi('REF_INTD_PREM', trange, 'RESU_DYNA', repk=basemo)
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
             if (matric .ne. blanc) then
                 call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
                 call dismoi('NOM_MAILLA', matric, 'MATR_ASSE', repk=mailla)

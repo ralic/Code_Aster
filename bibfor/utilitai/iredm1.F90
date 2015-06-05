@@ -62,7 +62,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
     character(len=24) :: nomch0
     character(len=80) :: titre
     aster_logical :: lamor
-    integer :: iarg, ir
+    integer :: iarg
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
@@ -104,8 +104,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods,&
 !
 !     --- ON RECUPERE LE TYPE D'INTERFACE ---
 !
-    call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=interf, arret='C',&
-                ier=ir)
+    call dismoi('REF_INTD_PREM', basemo, 'RESU_DYNA', repk=interf, arret='C')
     if (interf .ne. ' ') then
         call jeveuo(interf//'.IDC_TYPE', 'L', vk8=idc_type)
         typi = idc_type(1)

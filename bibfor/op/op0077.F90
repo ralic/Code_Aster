@@ -162,7 +162,7 @@ subroutine op0077()
 !      PROMES=.FALSE.
     if ((concep(1:9).eq.'TRAN_GENE') .or. (concep(1:9).eq.'MODE_GENE') .or.&
         (concep(1:9).eq.'HARM_GENE')) then
-        call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=matgen)
+        call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=matgen, arret='C')
         call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen)
 ! LE RESU_GENE VIENT DE PROJ_MESU_MODAL
         if ((matgen(1:8).eq.blanc) .and. (numgen(1:8).eq.blanc)) then

@@ -131,9 +131,9 @@ subroutine orth99(nomres, ritz)
     call jeveuo(base//'           .ORDR', 'L', jordm)
 ! RECUPERATION DE LA NUMEROTATION DES BASES
     if ((typbas.eq.'MODE_MECA') .or. (typbas.eq.'MODE_GENE')) then
-        call dismoi('REF_RIGI_PREM', base, 'RESU_DYNA', repk=matri1)
+        call dismoi('REF_RIGI_PREM', base, 'RESU_DYNA', repk=matri1, arret='C')
     else
-        call dismoi('REF_AMOR_PREM', base, 'RESU_DYNA', repk=matri1)
+        call dismoi('REF_AMOR_PREM', base, 'RESU_DYNA', repk=matri1, arret='C')
     endif
     if (matri1 .ne. ' ') then
         call dismoi('NOM_NUME_DDL', matri1, 'MATR_ASSE', repk=numdd1)

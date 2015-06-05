@@ -43,7 +43,7 @@ subroutine imbamo(nomres)
     character(len=8) :: nomres, intf, nomnoe, nomcmp
     character(len=19) :: raid, mass, typeba, valk(4)
     character(len=14) :: numref
-    integer :: ldpar(nbpabm), ier, vali(2)
+    integer :: ldpar(nbpabm), vali(2)
     character(len=16) :: bmpara(nbpabm), typdef
     character(len=8) :: rescyc
     character(len=8) :: k8bid
@@ -64,16 +64,11 @@ subroutine imbamo(nomres)
 !
 !------------------RECUPERATION DES CONCEPT AMONT-----------------------
 !
-    call dismoi('REF_RIGI_PREM', nomres, 'RESU_DYNA', repk=raid, arret='C',&
-                ier=ier)
-    call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=mass, arret='C',&
-                ier=ier)
-    call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numref, arret='C',&
-                ier=ier)
-    call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=intf, arret='C',&
-                ier=ier)
-    call dismoi('TYPE_BASE', nomres, 'RESU_DYNA', repk=typeba, arret='C',&
-                ier=ier)
+    call dismoi('REF_RIGI_PREM', nomres, 'RESU_DYNA', repk=raid, arret='C')
+    call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=mass, arret='C')
+    call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numref, arret='C')
+    call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=intf, arret='C')
+    call dismoi('TYPE_BASE', nomres, 'RESU_DYNA', repk=typeba, arret='C')
 !
 !--------------------------------ECRITURES------------------------------
 !

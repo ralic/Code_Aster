@@ -169,8 +169,7 @@ subroutine peecin(resu, modele, mate, cara, nh,&
 !        - DANS LE CAS OU CE N'EST PAS UN RESULTAT DE TYPE EVOL_NOLI -
 !        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
         if (typres(1:9) .ne. 'EVOL_NOLI') then
-            call dismoi('REF_MASS_PREM', resul, 'RESU_DYNA', repk=nommas, arret='C',&
-                        ier=iret)
+            call dismoi('REF_MASS_PREM', resul, 'RESU_DYNA', repk=nommas, arret='C')
             if (nommas .eq. ' ') goto 5
             call dismoi('SUR_OPTION', nommas, 'MATR_ASSE', repk=opt, arret='C',&
                         ier=ie)

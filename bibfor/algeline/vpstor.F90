@@ -125,8 +125,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
             call dismoi('NUME_DDL', modes, 'RESU_DYNA', repk=nume, arret='C')
         endif
     else
-        call dismoi('REF_RIGI_PREM', modes, 'RESU_DYNA', repk=k24b, arret='C',&
-                    ier=iret)
+        call dismoi('REF_RIGI_PREM', modes, 'RESU_DYNA', repk=k24b, arret='C')
         raide = k24b(1:8)
         call exisd('MATR_ASSE', raide, iret)
         if (iret .ne. 0) then
@@ -184,8 +183,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
 !            ON EST PASSE PAR UN PROJ_MATR_BASE
                 call jeveuo(raide(1:19)//'.REFA', 'L', jmodg)
                 basemo = zk24(jmodg)(1:8)
-                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2, arret='C',&
-                            ier=iret)
+                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2, arret='C')
                 if (raide2 .eq. ' ') then
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
                     sd2 = zk24(jmod2)(1:8)
@@ -223,8 +221,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq,&
                 call jeveuo(zk24(jmodg)(1:8)//'      .MODG.SSME', 'L', jmacr)
                 call jeveuo(zk8(jmacr)//'.MAEL_INER_REFE', 'L', jbasm)
                 basemo = zk24(jbasm)(1:8)
-                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2, arret='C',&
-                            ier=iret)
+                call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=raide2, arret='C')
                 if (raide2 .eq. ' ') then
                     call jeveuo(jexnum(basemo//'           .TACH', 1), 'L', jmod2)
                     sd2 = zk24(jmod2)(1:8)

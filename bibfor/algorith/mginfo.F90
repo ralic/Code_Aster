@@ -57,10 +57,10 @@ subroutine mginfo(modmec, numddl, nbmode, neq)
 !
 !
     call dismoi('NUME_DDL', modmec, 'RESU_DYNA', repk=numddl)
-    call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matric)
     if (numddl(1:1) .ne. ' ') then
         call dismoi('NB_EQUA', numddl, 'NUME_DDL', repi=neq)
     else
+        call dismoi('REF_RIGI_PREM', modmec, 'RESU_DYNA', repk=matric)
         call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
         call dismoi('NB_EQUA', matric, 'MATR_ASSE', repi=neq)
     endif

@@ -62,8 +62,8 @@ subroutine clas99(nomres)
 !-----------------------------------------------------------------------
     call jemarq()
 !
-    call dismoi('REF_RIGI_PREM', nomres, 'RESU_DYNA', repk=raid)
-    call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=mass)
+    call dismoi('REF_RIGI_PREM', nomres, 'RESU_DYNA', repk=raid, arret='C')
+    call dismoi('REF_MASS_PREM', nomres, 'RESU_DYNA', repk=mass, arret='C')
     call dismoi('NUME_DDL', nomres, 'RESU_DYNA', repk=numddl)
     call dismoi('REF_INTD_PREM', nomres, 'RESU_DYNA', repk=intf)
 !

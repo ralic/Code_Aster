@@ -91,11 +91,11 @@ subroutine harm75(nomres, typres, nomin, basemo)
     integer, pointer :: desc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ------------------------------------------------------------------
-    data chamno   /'&&HARM75.CHAMNO'/
-    data blanc    /'        '/
-! ------------------------------------------------------------------
 !
     call jemarq()
+!
+    chamno = '&&HARM75.CHAMNO'
+    blanc = '        '
 !
     matric=' '
 !
@@ -149,12 +149,11 @@ subroutine harm75(nomres, typres, nomin, basemo)
 !
     if (mode .eq. ' ') then
 !
-        call dismoi('REF_RIGI_PREM', hrange, 'RESU_DYNA', repk=matgen, arret='C',&
-                    ier=iret)
+        call dismoi('REF_RIGI_PREM', hrange, 'RESU_DYNA', repk=matgen, arret='C')
         call dismoi('BASE_MODALE', hrange, 'RESU_DYNA', repk=basemo)
 !
         if (matgen(1:8) .ne. blanc) then
-            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+            call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
             if (matric .ne. blanc) then
                 call dismoi('NOM_NUME_DDL', matric, 'MATR_ASSE', repk=numddl)
             else

@@ -107,12 +107,11 @@ subroutine op0072()
     call jeveuo(vectas//'           .VALE', 'L', iadvec)
     call jeveuo(vectas//'           .REFE', 'L', vk24=refe)
     call jelira(vectas//'           .VALE', 'TYPE', cval=typvec)
-    call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C',&
-                ier=iret)
+    call dismoi('TYPE_BASE', basemo, 'RESU_DYNA', repk=typeba, arret='C')
 !
     if (typbas(1:9) .eq. 'MODE_MECA') then
         proch1 = refe(2)(1:19)
-        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric)
+        call dismoi('REF_RIGI_PREM', basemo, 'RESU_DYNA', repk=matric, arret='C')
         if (typeba(1:1) .eq. ' ') then
             call exisd('MATR_ASSE', matric, iret)
             if (iret .ne. 0) then

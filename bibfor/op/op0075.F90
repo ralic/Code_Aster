@@ -47,7 +47,7 @@ subroutine op0075()
     character(len=19) :: profno
     character(len=24) :: matgen, numgen, basemo
     aster_logical :: prsimp
-    integer :: nbord, i, iord, lpain(3), lpaout(3), ibid, ir1, iret
+    integer :: nbord, i, iord, lpain(3), lpaout(3), ibid, ir1
     integer :: j, j3refe, jrefn, n1, nbcham
     integer, pointer :: ordr(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -55,9 +55,11 @@ subroutine op0075()
     call jemarq()
     call infmaj()
 !     ------------------------------------------------------------------
-    data k8bid/'        '/
-    data param/'MODELE','CHAMPMAT','CARAELEM'/
+    k8bid = '        '
     blanc8 = '        '
+    param(1) = 'MODELE'
+    param(2) = 'CHAMPMAT'
+    param(3) = 'CARAELEM'
 !     -----------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
 !
@@ -94,12 +96,9 @@ subroutine op0075()
 !       -           OU 2) SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
     prsimp=.true.
 !
-    call dismoi('BASE_MODALE', resin, 'RESU_DYNA', repk=basemo, arret='C',&
-                ier=iret)
-    call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen, arret='C',&
-                ier=iret)
-    call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=matgen, arret='C',&
-                ier=iret)
+    call dismoi('BASE_MODALE', resin, 'RESU_DYNA', repk=basemo, arret='C')
+    call dismoi('NUME_DDL', resin, 'RESU_DYNA', repk=numgen, arret='C')
+    call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=matgen, arret='C')
 !
 !   --- LE RESU_GENE NE VIENT PAS DE PROJ_MESU_MODAL
     if ((matgen(1:8).ne.blanc8) .or. (numgen(1:8).ne.blanc8)) then

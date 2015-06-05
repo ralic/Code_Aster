@@ -124,9 +124,9 @@ subroutine refe99(nomres)
 !
         do i = 1, nbmome
             momeca = zk8(ltmome-1+i)
-            call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid)
-            call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass)
-            call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor)
+            call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid, arret='C')
+            call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass, arret='C')
+            call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor, arret='C')
             call dismoi('NUME_DDL', momeca, 'RESU_DYNA', repk=numbis)
 !           Check for nume_ddl coherence of each mode_meca with that of interf_dyna
             if (numbis(1:14) .ne. numddl(1:14)) then
@@ -233,9 +233,9 @@ subroutine refe99(nomres)
             nbmod1 = 0
             do i = 1, nbmome
                 momeca = zk8(ltmome-1+i)
-                call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid)
-                call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass)
-                call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor)
+                call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid,arret='C')
+                call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass,arret='C')
+                call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor,arret='C')
                 call dismoi('NUME_DDL', momeca, 'RESU_DYNA', repk=numbis)
                 if (numddl .eq. ' ') numddl = numbis
 !               Determine the real number of modes to recuperate from each base
@@ -302,9 +302,9 @@ subroutine refe99(nomres)
         intf = ' '
         call getvid('DIAG_MASS', 'MODE_MECA', iocc=1, scal=momeca, nbret=ibid)
 !
-        call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid)
-        call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass)
-        call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor)
+        call dismoi('REF_RIGI_PREM', momeca, 'RESU_DYNA', repk=raid, arret='C')
+        call dismoi('REF_MASS_PREM', momeca, 'RESU_DYNA', repk=mass, arret='C')
+        call dismoi('REF_AMOR_PREM', momeca, 'RESU_DYNA', repk=amor, arret='C')
         call dismoi('NOM_NUME_DDL', mass, 'MATR_ASSE', repk=numddl)
         call dismoi('NB_MODES_TOT', momeca, 'RESULTAT', repi=nbmod1)
         concep(1) = raid

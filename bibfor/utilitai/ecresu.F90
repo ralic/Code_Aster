@@ -103,7 +103,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
         nbva2=2*nbva
         call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=riggen)
         call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=masgen)
-        call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen)
+        call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen, arret='C')
     endif
 !
 !  Creation objet de stockage en LTPS pour les valeurs d'instants
@@ -221,7 +221,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !               HARM_GENE A TRAN_GENE
             call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=riggen)
             call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=masgen)
-            call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen)
+            call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen, arret='C')
 !
             nbsauv = nbordr
 !           --- RECUPERATION DU PAS DE TEMPS, NOMBRE DE MODES ET
@@ -308,7 +308,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou,&
 !               TRAN_GENE A HARM_GENE
             call dismoi('REF_RIGI_PREM', resin, 'RESU_DYNA', repk=riggen)
             call dismoi('REF_MASS_PREM', resin, 'RESU_DYNA', repk=masgen)
-            call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen)
+            call dismoi('REF_AMOR_PREM', resin, 'RESU_DYNA', repk=amogen, arret='C')
 !
             nbsauv = nbordr
 !           --- RECUPERATION DU NOMBRE DE MODES ET LA BASE MODALE
