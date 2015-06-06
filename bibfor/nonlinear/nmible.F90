@@ -114,8 +114,9 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 !
 ! --- PREMIERE ITERATION DE FROTTEMENT
 !
-        call mmbouc(resoco, 'FROT', 'INIT', mmitfr)
-        call mmbouc(resoco, 'FROT', 'INCR', mmitfr)
+        call mmbouc(resoco, 'FROT', 'INIT')
+        call mmbouc(resoco, 'FROT', 'INCR')
+        call mmbouc(resoco, 'FROT', 'READ', mmitfr)
         call nmimci(sdimpr, 'BOUC_FROT', mmitfr, .true._1)
     endif
 !
@@ -131,8 +132,9 @@ subroutine nmible(modele, noma, defico, resoco, fonact,&
 !
 ! --- PREMIERE ITERATION DE CONTACT
 !
-        call mmbouc(resoco, 'CONT', 'INIT', mmitca)
-        call mmbouc(resoco, 'CONT', 'INCR', mmitca)
+        call mmbouc(resoco, 'CONT', 'INIT')
+        call mmbouc(resoco, 'CONT', 'INCR')
+        call mmbouc(resoco, 'CONT', 'READ', mmitca)
         call nmimci(sdimpr, 'BOUC_CONT', mmitca, .true._1)
     endif
 !

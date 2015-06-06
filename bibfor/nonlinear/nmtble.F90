@@ -200,9 +200,9 @@ subroutine nmtble(modele, noma, mate, defico, resoco,&
 !
 ! --- INCREMENTATION DES COMPTEURS
 !
-    if (.not.mmcvca .and. niveau .eq. 1) call mmbouc(resoco, 'CONT', 'INCR', mmitco)
-    if (.not.mmcvfr .and. niveau .eq. 2) call mmbouc(resoco, 'FROT', 'INCR', mmitfr)
-    if (.not.mmcvgo .and. niveau .eq. 3) call mmbouc(resoco, 'GEOM', 'INCR', mmitgo)
+    if (.not.mmcvca .and. niveau .eq. 1) call mmbouc(resoco, 'CONT', 'INCR')
+    if (.not.mmcvfr .and. niveau .eq. 2) call mmbouc(resoco, 'FROT', 'INCR')
+    if (.not.mmcvgo .and. niveau .eq. 3) call mmbouc(resoco, 'GEOM', 'INCR')
 !
 ! --- MISE A JOUR DES ITERATEURS DE BOUCLE
 !

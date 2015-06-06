@@ -123,10 +123,10 @@ subroutine cfcgeo(noma, defico, resoco, solalg, dvgeom,&
 !
 ! --- CALCUL DU DEPLACEMENT
 !
-    do 10 ii = 1, neq
+    do ii = 1, neq
         auto2(ii) = auto2(ii) + auto1(ii)
         auto1(ii) = depde(ii) - auto2(ii)
- 10 end do
+    end do
 !
 ! --- CALCUL DU MAX DE LA NORME DU DEPLACEMENT (SAUF LAGRANGES)
 !

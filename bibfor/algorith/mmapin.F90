@@ -57,7 +57,6 @@ subroutine mmapin(modele, noma, defico, resoco, numedd,&
 !
     aster_logical :: lctcc, ltfcm, lallv
     aster_logical :: loptin
-    integer :: mmitgo
 !
 ! ----------------------------------------------------------------------
 !
@@ -77,10 +76,10 @@ subroutine mmapin(modele, noma, defico, resoco, numedd,&
 ! --- REALISATION DE L'APPARIEMENT
 !
     if (.not.lallv .and. (lctcc.or.ltfcm)) then
-        call mmbouc(resoco, 'GEOM', 'INIT', mmitgo)
+        call mmbouc(resoco, 'GEOM', 'INIT')
         call nmctcg(modele, noma, defico, resoco, loptin,&
                     sdstat, sdtime, numedd)
-        call mmbouc(resoco, 'GEOM', 'INCR', mmitgo)
+        call mmbouc(resoco, 'GEOM', 'INCR')
     endif
 !
     call jedema()

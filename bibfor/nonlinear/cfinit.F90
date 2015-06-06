@@ -67,7 +67,6 @@ implicit none
     integer :: jclrea
     character(len=24) :: autoc1, autoc2
     aster_logical :: leltc, lctcd, lallv
-    integer :: mmitgo
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,8 +102,8 @@ implicit none
             endif
         endif
 !
-        call mmbouc(resoco, 'GEOM', 'INIT', mmitgo)
-        call mmbouc(resoco, 'GEOM', 'INCR', mmitgo)
+        call mmbouc(resoco, 'GEOM', 'INIT')
+        call mmbouc(resoco, 'GEOM', 'INCR')
 !
 ! ----- INITIALISATION DES VECTEURS POUR REAC_GEOM
 !

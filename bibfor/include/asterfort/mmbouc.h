@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmbouc(resoco, nombcl, typope, valbcl)
-        character(len=24) :: resoco
-        character(len=4) :: nombcl
-        character(len=4) :: typope
-        integer :: valbcl
+    subroutine mmbouc(sdcont_solv, loop_name, operation, loop_value)
+        character(len=24), intent(in) :: sdcont_solv
+        character(len=4), intent(in) :: loop_name
+        character(len=4), intent(in) :: operation
+        integer, intent(out), optional :: loop_value
     end subroutine mmbouc
 end interface

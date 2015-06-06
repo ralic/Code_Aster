@@ -1,4 +1,9 @@
-subroutine mmbouc(resoco, nombcl, typope, valbcl)
+subroutine mmbouc(sdcont_solv, loop_name, operation, loop_value)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,88 +21,83 @@ subroutine mmbouc(resoco, nombcl, typope, valbcl)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! REPONSABLE
+! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=24) :: resoco
-    character(len=4) :: nombcl
-    character(len=4) :: typope
-    integer :: valbcl
+    character(len=24), intent(in) :: sdcont_solv
+    character(len=4), intent(in) :: loop_name
+    character(len=4), intent(in) :: operation
+    integer, intent(out), optional :: loop_value
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
+! Contact - Solve
 !
-! GESTION DES BOUCLES
+! All methods - Loops management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  sdcont_solv      : name of contact solving datastructure
+! In  loop_name        : name of loop
+!                        'CONT' - Contact status
+!                        'FROT' - Friction trigger
+!                        'GEOM' - Geometric loop
+! In  operation        : type of operation on loop
+!                        'READ' - Read value of loop iteration
+!                        'INCR' - Add iteration to loop
+!                        'INIT' - Initialization of loop
+! Out loop_value       : value of loop (iteration)
 !
-! IN  RESOCO : SD POUR LA RESOLUTION DU CONTACT
-! IN  NOMBCL : NOM DE LA BOUCLE
-!               CONT - CONTRAINTES ACTIVES
-!               FROT - SEUILS DE FROTTEMENT
-!               GEOM - GEOMETRIE
-! IN  TYPOPE : TYPE DE L'OPERATION
-!               READ - LECTURE
-!               INIT - INITIALISATION A ZERO
-!               INCR - INCREMENTATION
-! OUT VALBCL : VALEUR DE LA BOUCLE
+! --------------------------------------------------------------------------------------------------
 !
+    character(len=24) :: sdcont_mboucl
+    integer, pointer :: v_sdcont_mboucl(:) => null()
 !
+! --------------------------------------------------------------------------------------------------
 !
+    sdcont_mboucl = sdcont_solv(1:14)//'.MBOUCL'
+    call jeveuo(sdcont_mboucl, 'E', vi = v_sdcont_mboucl)
 !
-    character(len=24) :: mboucl
-    integer :: jmbouc
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-    mboucl = resoco(1:14)//'.MBOUCL'
-    call jeveuo(mboucl, 'E', jmbouc)
-!
-    if (nombcl .eq. 'CONT') then
-        if (typope .eq. 'INIT') then
-            zi(jmbouc-1+1) = 0
-        else if (typope.eq.'INCR') then
-            zi(jmbouc-1+1) = zi(jmbouc-1+1) +1
-        else if (typope.eq.'READ') then
-            valbcl = zi(jmbouc-1+1)
+    if (loop_name .eq. 'CONT') then
+        if (operation .eq. 'INIT') then
+            v_sdcont_mboucl(1) = 0
+        else if (operation.eq.'INCR') then
+            v_sdcont_mboucl(1) = v_sdcont_mboucl(1) +1
+        else if (operation.eq.'READ') then
+            loop_value = v_sdcont_mboucl(1)
         else
             ASSERT(.false.)
         endif
-        valbcl = zi(jmbouc-1+1)
-    else if (nombcl.eq.'FROT') then
-        if (typope .eq. 'INIT') then
-            zi(jmbouc-1+2) = 0
-        else if (typope.eq.'INCR') then
-            zi(jmbouc-1+2) = zi(jmbouc-1+2) +1
-        else if (typope.eq.'READ') then
-            valbcl = zi(jmbouc-1+2)
+        if (present(loop_value)) then
+            loop_value = v_sdcont_mboucl(1)
+        endif
+    else if (loop_name.eq.'FROT') then
+        if (operation .eq. 'INIT') then
+            v_sdcont_mboucl(2) = 0
+        else if (operation.eq.'INCR') then
+            v_sdcont_mboucl(2) = v_sdcont_mboucl(2) +1
+        else if (operation.eq.'READ') then
+            loop_value = v_sdcont_mboucl(2)
         else
             ASSERT(.false.)
         endif
-        valbcl = zi(jmbouc-1+2)
-    else if (nombcl.eq.'GEOM') then
-        if (typope .eq. 'INIT') then
-            zi(jmbouc-1+3) = 0
-        else if (typope.eq.'INCR') then
-            zi(jmbouc-1+3) = zi(jmbouc-1+3) +1
-        else if (typope.eq.'READ') then
-            valbcl = zi(jmbouc-1+3)
+        if (present(loop_value)) then
+            loop_value = v_sdcont_mboucl(2)
+        endif
+    else if (loop_name.eq.'GEOM') then
+        if (operation .eq. 'INIT') then
+            v_sdcont_mboucl(3) = 0
+        else if (operation.eq.'INCR') then
+            v_sdcont_mboucl(3) = v_sdcont_mboucl(3) +1
+        else if (operation.eq.'READ') then
+            loop_value = v_sdcont_mboucl(3)
         else
             ASSERT(.false.)
         endif
-        valbcl = zi(jmbouc-1+3)
+        if (present(loop_value)) then
+            loop_value = v_sdcont_mboucl(3)
+        endif
     else
         ASSERT(.false.)
     endif
 !
-    call jedema()
 end subroutine
